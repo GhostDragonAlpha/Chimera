@@ -53,6 +53,7 @@ def bench(fn, n: int, warmup: int = 2) -> float:
 def hot_paths():
     """(name, callable, reps, budget_seconds, why) -- budgets from what the GAME needs."""
     from body import humanoid
+    from mjcf_body import FastBody
     from fields import Coupling, LightField, Star, ROCK
     from planner import Planner, Stance, Terrain
 
@@ -69,12 +70,21 @@ def hot_paths():
     c = Coupling(stiffness=ROCK.stiffness)
     p = np.array([1.496e11, 0, 0])
 
+    fb = FastBody(humanoid(base_pos=(0, 0, 2.0)), dt=1e-3)
+    fb.step(20)
+    INF = float('inf')
     return [
-        # a body must step at least as fast as the frame it is drawn in
-        ('body.step()', lambda: h.tree.step(1e-3), 6, FRAME,
-         'one physics tick must fit in one frame'),
-        ('mass_matrix_f()', lambda: h.tree.mass_matrix_f(), 6, FRAME * 0.5,
-         'the hot spot INSIDE step -- 24 unit-acceleration RNEA passes'),
+        # THE GAME'S PATH. A body must step at least as fast as the frame it is drawn in.
+        ('FastBody.step()', lambda: fb.step(1), 400, FRAME,
+         'the physics tick the game actually runs'),
+        # EXEMPT, WITH THE REASON WRITTEN DOWN -- the discipline bind_guard's `# bind-public:`
+        # marker enforces. This one is allowed to be slow because being READABLE is its job: it is
+        # the second messenger that proved FastBody correct to 1e-13 m (mjcf_witness 4/4). An
+        # exemption is a claim about PURPOSE. "It was easier" would not qualify.
+        ('body.step() [reference]', lambda: h.tree.step(1e-3), 4, INF,
+         'REFERENCE IMPLEMENTATION -- readability is the deliverable, not speed'),
+        ('mass_matrix_f() [ref]', lambda: h.tree.mass_matrix_f(), 4, INF,
+         'REFERENCE -- 24 unit-acceleration RNEA passes, kept legible on purpose'),
         ('humanoid() build', lambda: humanoid(), 3, 0.25,
          'spawning a character must not stall the frame'),
         ('planner.plan()', lambda: pl.plan(st, ['footL', 'footR'], goal=goal), 20, 1e-3,
@@ -103,7 +113,7 @@ def backends() -> list:
 def main() -> int:
     print('\nWITNESS: performance budgets\n' + '=' * 78)
     print('  A budget is DECLARED before measuring. Exceeding it is a FAILURE, not a note.\n')
-    print(f"  {'operation':<24}{'measured':>12}{'budget':>12}{'ratio':>9}   verdict")
+    print(f"  {'operation':<26}{'measured':>12}{'budget':>12}{'ratio':>9}   verdict")
     print('  ' + '-' * 74)
 
     fails = []
@@ -114,9 +124,11 @@ def main() -> int:
         if not ok:
             fails.append((name, t, budget, ratio, why))
         unit = (f'{t*1e6:8.1f} us' if t < 1e-3 else f'{t*1e3:8.2f} ms')
-        bud = (f'{budget*1e6:8.1f} us' if budget < 1e-3 else f'{budget*1e3:8.2f} ms')
-        print(f"  {name:<24}{unit:>12}{bud:>12}{ratio:8.1f}x   "
-              f"{'ok' if ok else 'OVER BUDGET'}")
+        bud = ('  exempt' if budget == float('inf') else
+               (f'{budget*1e6:8.1f} us' if budget < 1e-3 else f'{budget*1e3:8.2f} ms'))
+        rat = '     --' if budget == float('inf') else f'{ratio:7.1f}x'
+        print(f"  {name:<26}{unit:>12}{bud:>12}{rat:>9}   "
+              f"{'exempt: ' + why[:34] if budget == float('inf') else ('ok' if ok else 'OVER BUDGET')}")
 
     print('\n  FAST BACKENDS AVAILABLE ON THIS MACHINE:')
     for mod, what, have in backends():

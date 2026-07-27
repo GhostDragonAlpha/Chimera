@@ -26,7 +26,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from body import Humanoid, humanoid                                          # noqa: E402
+from body import Humanoid, humanoid
+from physics import quat_to_mat                                          # noqa: E402
 
 
 def _fmt(v) -> str:
@@ -110,3 +111,42 @@ if __name__ == '__main__':
     print(f'\nMuJoCo model: nq {m.nq}, nv {m.nv}, nbody {m.nbody}, njnt {m.njnt}')
     print(f'ours:         nq {hh.tree.n + 7}, nv {hh.tree.nv}, links {len(hh.tree.links)} + base')
     print(f'total mass:   MuJoCo {m.body_mass.sum():.6f} kg   ours {hh.tree.total_mass():.6f} kg')
+
+
+class FastBody:
+    """THE GAME'S PHYSICS PATH. Same body, stepped in C instead of in numpy.
+
+    Our FloatingTree builds a 24x24 mass matrix by 24 unit-acceleration RNEA passes every tick --
+    96% of a 51 ms step. MuJoCo uses O(n) articulated-body dynamics and never forms the matrix.
+    Same model, same answer: mjcf_witness measured the two agreeing to 1e-13 m, which is ROUNDOFF,
+    so this is not an approximation of our engine -- it IS our engine, compiled.
+
+    The numpy tree keeps its job: readable enough to trust as the second messenger that proved this
+    one correct. That is why it stays, and why it is allowed to stay slow.
+    """
+
+    def __init__(self, h, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665)):
+        import mujoco
+        self.h = h
+        self.dt = dt
+        self.m, self.d, self.xml = build(h, dt=dt, gravity=gravity)
+        self._mj = mujoco
+        push_state(h, self.d)
+        mujoco.mj_forward(self.m, self.d)
+
+    def step(self, n: int = 1) -> None:
+        for _ in range(n):
+            self._mj.mj_step(self.m, self.d)
+
+    def sync_to_tree(self) -> None:
+        """Write MuJoCo's state back into the numpy tree, so anything reading the tree -- the
+        witnesses, the renderer, sense() -- sees the stepped body without knowing who stepped it."""
+        s = pull_state(self.d)
+        t = self.h.tree
+        t.base_pos[:] = s['pos']
+        t.base_quat[:] = s['quat']
+        t.base_rot = quat_to_mat(t.base_quat)
+        t.q[:] = s['q']
+        t.qd[:] = s['qd']
+        t.v_base[:] = s['v']
+        t.w_base[:] = t.base_rot @ np.array(self.d.qvel[3:6])   # body -> world, our convention
