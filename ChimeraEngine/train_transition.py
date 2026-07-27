@@ -70,7 +70,17 @@ def act(theta, o, h):
     return 0.5 * (np.tanh(np.tanh(o @ W1 + b1) @ W2 + b2) + 1.0)      # -> [0, 1] activations
 
 
-def rollout(theta, seed: int, gravity_z: float) -> float:
+# A FIXED TARGET SET FOR TRAINING. The direction used to be drawn from the seed, so worst-of-N was
+# "score on the hardest direction drawn this time" -- a DIFFERENT PROBLEM each evaluation rather
+# than a hard one, and no optimiser can climb that. Six fixed directions spanning the reach; the
+# policy still sees (target - tip) in its observation, so generalising to unseen directions is what
+# the held-out set checks.
+TRAIN_DIRS = np.array([[1, 0, 0.3], [0, 1, 0.3], [-0.6, 0.5, 0.6], [0.5, -0.8, 0.0],
+                       [0.2, 0.2, -1.0], [-0.7, -0.4, 0.4]], float)
+TRAIN_DIRS /= np.linalg.norm(TRAIN_DIRS, axis=1, keepdims=True)
+
+
+def rollout(theta, seed: int, gravity_z: float, tdir=None) -> float:
     """One episode. Returns the score; higher is better."""
     rng = np.random.default_rng(seed)
     h = humanoid(base_pos=(0.0, 0.0, 0.0), gravity=(0.0, 0.0, gravity_z))
@@ -85,17 +95,20 @@ def rollout(theta, seed: int, gravity_z: float) -> float:
     start = o0 + R0 @ np.array([0.0, 0.0, -0.25])
     # a target inside the limb's reach, in a random direction -- the planner supplies this in the
     # game, so training must not assume any particular one
-    tdir = rng.normal(size=3); tdir /= np.linalg.norm(tdir)
-    target = start + tdir * 0.28
+    if tdir is None:
+        tdir = rng.normal(size=3); tdir /= np.linalg.norm(tdir)
+    target = start + np.asarray(tdir, float) * 0.28
 
     n = int(EPISODE / DT)
-    best_d, effort, L0 = 1e9, 0.0, None
+    best_d, effort, held = 1e9, 0.0, []
     for k in range(0, n, CONTROL_EVERY):
         fb.sync_to_tree()
         R, o = h.tree.frame_of(swing)
         tip = o + R @ np.array([0.0, 0.0, -0.25])
         d = float(np.linalg.norm(tip - target))
         best_d = min(best_d, d)
+        if k > n * 0.66:                 # only the LAST THIRD counts toward the score
+            held.append(d)
         ob = np.concatenate([h.tree.up(), [abs(gravity_z)], h.tree.w_base,
                              h.tree.q, h.tree.qd, target - tip])
         a = act(theta, ob, h)
@@ -107,36 +120,45 @@ def rollout(theta, seed: int, gravity_z: float) -> float:
         if not np.all(np.isfinite(h.tree.q)):
             return -10.0
     fb.sync_to_tree()
-    # REWARD IN PHYSICS (§9.3): closed the gap, minus the work it took. No "looks natural" term.
-    return float(2.0 - 6.0 * best_d - 0.004 * effort / max(1, n // CONTROL_EVERY))
+    # REACH AND *HOLD* (§9.1). I first scored best_d -- the CLOSEST APPROACH EVER -- and that
+    # rewards FLAILING: a limb thrashing at random sweeps a large volume and passes near the target
+    # by chance. Measured: a dead policy scored 0.284 and random ones 0.40-1.14, so thrashing was
+    # already near-optimal and the optimiser found it in one generation with nothing left to climb.
+    # Scoring the MEAN distance over the last third instead means you have to arrive AND STAY.
+    hold_d = float(np.mean(held)) if held else 1.0
+    return float(2.0 - 6.0 * hold_d - 0.004 * effort / max(1, n // CONTROL_EVERY))
 
 
-def score(theta, restarts: int, seed_base: int = 0):
-    """N randomised starts, and the genome is worth its WORST one.
+def score(theta, dirs, seed_base: int = 0, reduce: str = 'mean'):
+    """Score over a set of target directions.
 
-    seed_base is FIXED during training. I first varied it per generation, so every generation faced
-    different starts and fitness was not comparable across them -- selection had nothing stable to
-    climb and the best-of-generation column was pure noise. Randomised starts must be randomised
-    ACROSS THE POPULATION, not across time; held-out seeds at the end are what catch overfitting.
+    THE DISTINCTION THAT WAS MISSING. Section 9.5 says "score N randomised starts and keep the
+    WORST", and that rule is right -- for the ACCEPTANCE GATE, where it is what catches a walker
+    that got lucky. It is poison as a TRAINING SIGNAL: worst-of-5 is an extreme-order statistic
+    from five samples, ES estimates a gradient by averaging fitness against perturbations, and a
+    noisy fitness gives a meaningless direction. Three runs of declining best-of-generation is what
+    that looks like.
+
+    So: TRAIN on the mean, GATE on the worst. Same rollouts, different reduction.
     """
-    rs = [rollout(theta, seed_base + i, -9.80665 * (0.2 + 1.0 * (i % 3) / 2.0))
-          for i in range(restarts)]
+    rs = [rollout(theta, seed_base + i, -9.80665 * (0.2 + 1.0 * (i % 3) / 2.0), dirs[i % len(dirs)])
+          for i in range(len(dirs))]
     worst, mean = float(np.min(rs)), float(np.mean(rs))
-    return worst, mean, (worst / mean if mean > 1e-9 else 0.0)
+    fit = mean if reduce == 'mean' else worst
+    return fit, worst, mean, (worst / mean if mean > 1e-9 else 0.0)
 
 
 def main() -> int:
     quick = '--quick' in sys.argv
     gens = int(sys.argv[sys.argv.index('--gens') + 1]) if '--gens' in sys.argv else (6 if quick else 25)
     pop = int(sys.argv[sys.argv.index('--pop') + 1]) if '--pop' in sys.argv else (16 if quick else 40)
-    restarts = 3 if quick else 5
 
     h = humanoid()
     P = n_params(h)
     print(f'\nTRAIN: the transition controller\n' + '=' * 74)
     print(f'  body {h.describe()}')
     print(f'  policy {obs_dim(h)} -> {HID} -> {ACT_DIM}  = {P} parameters')
-    print(f'  {pop} genomes x {restarts} randomised starts x {EPISODE}s @ {1/(DT*CONTROL_EVERY):.0f} Hz drive')
+    print(f'  {pop} genomes x {len(TRAIN_DIRS)} fixed targets x {EPISODE}s @ {1/(DT*CONTROL_EVERY):.0f} Hz drive')
     print(f'  gravity randomised 0.2g .. 1.2g, CONDITIONED (it is an observation, not a setting)')
     print(f'  scored on the WORST restart -- one rollout is a coin toss\n')
     print(f"  {'gen':>4}{'best':>9}{'worst':>9}{'mean':>9}{'robust':>8}{'sigma':>8}{'sec':>7}")
@@ -158,8 +180,8 @@ def main() -> int:
         eps = rng.normal(0.0, 1.0, (half, P))
         pert = np.concatenate([eps, -eps])
         cand = mu + sigma * pert
-        res = [score(cand[i], restarts, 1000) for i in range(pop)]   # FIXED training seeds
-        fit = np.array([r[0] for r in res])                 # THE WORST, not the mean
+        res = [score(cand[i], TRAIN_DIRS, 1000, 'mean') for i in range(pop)]
+        fit = np.array([r[0] for r in res])                 # TRAIN on the mean
         ranks = np.empty(pop); ranks[np.argsort(fit)] = np.arange(pop)
         adv = ranks / (pop - 1) - 0.5                       # -0.5 .. +0.5, scale-free
         mu = mu + (LR / (pop * sigma)) * (pert.T @ adv)
@@ -167,13 +189,15 @@ def main() -> int:
         sigma = max(0.04, sigma * (0.97 if fit[order[0]] > best_ever else 1.01))
         if fit[order[0]] > best_ever:
             best_ever, best_theta = float(fit[order[0]]), cand[order[0]].copy()
-        w, m, rob = res[order[0]]
+        _, w, m, rob = res[order[0]]
         print(f'  {g:4d}{fit[order[0]]:9.3f}{w:9.3f}{m:9.3f}{rob:8.3f}{sigma:8.3f}'
               f'{time.perf_counter()-tg:7.1f}')
 
-    w, m, rob = score(best_theta, restarts * 2, 50_000)     # HELD-OUT seeds, never trained on
+    rngh = np.random.default_rng(2024)
+    held = rngh.normal(size=(10, 3)); held /= np.linalg.norm(held, axis=1, keepdims=True)
+    _, w, m, rob = score(best_theta, held, 50_000, 'worst')   # GATE: unseen dirs, worst-of-N
     print('\n  ' + '-' * 54)
-    print(f'  HELD OUT ({restarts*2} unseen starts): worst {w:.3f}  mean {m:.3f}  '
+    print(f'  GATE ({len(held)} unseen directions, worst-of-N): worst {w:.3f}  mean {m:.3f}  '
           f'robustness {rob:.3f}')
     print(f'  total {time.perf_counter()-t0:.0f}s')
     out = Path(__file__).resolve().parent / 'transition_policy.npy'
