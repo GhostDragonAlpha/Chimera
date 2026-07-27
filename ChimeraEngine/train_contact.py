@@ -35,8 +35,9 @@ from body import ACT_DIM, humanoid                                           # n
 from mjcf_body import to_mjcf                                                # noqa: E402
 from train_gpu import muscle_tables, muscle_torque_gpu                       # noqa: E402
 
-DT = 1e-3
-CONTROL_EVERY = 10
+DT = 5e-4                             # halved: the corrected (stronger) muscle destabilised
+                                      # the contact sim at 1e-3; this is what free-space used
+CONTROL_EVERY = 20                    # still 100 Hz control
 EPISODE = 2.0
 HID = 32
 LR = 0.5
@@ -122,9 +123,15 @@ def main() -> int:
             ctrl[:] = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch)).clamp(-400, 400)
             for _ in range(CONTROL_EVERY):
                 mjw.step(m, d)
+            # BOUND every per-step term. A few worlds diverge to huge FINITE foot positions (~1e6)
+            # -- not NaN, so nan_to_num misses them -- and one such world makes the batch mean -5e6
+            # and destroys the gradient. Clamping foot drift to 2 m means a diverged world scores
+            # BADLY but finitely, which is the correct signal (select away from it) instead of a
+            # poison pill. This does not hide divergence; it stops one bad world drowning 255 good.
             head_sum += torch.nan_to_num(xpos[:, HEAD, 2], nan=0.0).clamp(0, STAND_H)
-            foot_sum += (torch.linalg.norm(torch.nan_to_num(xpos[:, FL] - fhL), dim=1)
-                         + torch.linalg.norm(torch.nan_to_num(xpos[:, FR] - fhR), dim=1))
+            foot_sum += (torch.nan_to_num(torch.linalg.norm(xpos[:, FL] - fhL, dim=1), nan=2.0)
+                         + torch.nan_to_num(torch.linalg.norm(xpos[:, FR] - fhR, dim=1), nan=2.0)
+                         ).clamp(max=4.0)
             cnt += 1
 
         head_m = head_sum / max(cnt, 1)
