@@ -41,27 +41,17 @@ def cpu_torque(h, q, act, qd=None):
     return np.asarray(h.tree.muscle_torques(), float).copy()
 
 
-def gpu_torque_np(h, q, act):
-    """EXACT numpy replica of muscle_torque_gpu -- the arithmetic the GPU kernel runs."""
-    n = h.tree.n
-    S = len(next(iter(h.pairs.values())).flexor.arm_q)
-    aq = np.zeros((n, S)); ar = np.zeros((n, S)); ac = np.zeros((n, S))
-    tmax = np.zeros((n, 2)); rest = np.zeros((n, 2)); wid = np.zeros((n, 2))
-    for name, pr in h.pairs.items():
-        j = h.joint[name]; f = pr.flexor
-        aq[j] = f.arm_q; ar[j] = f.arm_r; ac[j] = f.arm_cum
-        for k, msc in enumerate((pr.flexor, pr.extensor)):
-            tmax[j, k] = msc.max_tension; rest[j, k] = msc.rest_length; wid[j, k] = msc.width
-    q0 = aq[:, 0]; dq = aq[:, 1] - aq[:, 0]; L0 = np.full(n, 0.30 * h.height)
-    x = np.clip((q - q0) / dq, 0, S - 1.0001); i0 = x.astype(int); fr = x - i0
-    idx = np.arange(n)
-    r = ar[idx, i0] + (ar[idx, i0 + 1] - ar[idx, i0]) * fr
-    L = L0 - (ac[idx, i0] + (ac[idx, i0 + 1] - ac[idx, i0]) * fr)
-    e = (L[:, None] / rest - 1.0) / wid
-    fl = np.exp(-e * e)
-    a = np.clip(act.reshape(n, 2), 0, 1)
-    Tn = a * tmax * fl
-    return (Tn[:, 0] - Tn[:, 1]) * r
+def gpu_torque_real(h, q, act, qd=None):
+    """Call the ACTUAL GPU functions on CPU-torch, so this witnesses the real training code, not a
+    hand-copied replica that could drift from it."""
+    import torch
+    from train_gpu import muscle_tables, muscle_torque_gpu
+    tb = muscle_tables(h, 'cpu', torch)
+    qd = np.zeros(h.tree.n) if qd is None else qd
+    qt = torch.tensor(q, dtype=torch.float32).unsqueeze(0)
+    qdt = torch.tensor(qd, dtype=torch.float32).unsqueeze(0)
+    at = torch.tensor(act, dtype=torch.float32).unsqueeze(0)
+    return muscle_torque_gpu(tb, qt, qdt, at, torch).squeeze(0).numpy()
 
 
 def main() -> int:
@@ -76,11 +66,11 @@ def main() -> int:
         q = rng.normal(0, 0.3, n)
         act = rng.uniform(0, 1, 2 * n)
         tc = cpu_torque(h, q, act, qd=None)
-        tg = gpu_torque_np(h, q, act)
+        tg = gpu_torque_real(h, q, act)
         d = float(np.max(np.abs(tc - tg)))
         worst = max(worst, d)
     print(f"      worst per-joint torque difference over 8 random states: {worst:.3e} N.m")
-    check("GPU and CPU muscle torques agree at zero velocity", worst < 1e-6,
+    check("GPU and CPU muscle torques agree at zero velocity", worst < 1e-3,   # float32 floor ~1e-5
           f"{worst:.2e} N.m -- if this fails, the activation mapping or the tables differ and every "
           "GPU-trained policy is against the wrong body")
 
@@ -89,15 +79,13 @@ def main() -> int:
     act = rng.uniform(0.3, 1, 2 * n)
     qd = rng.normal(0, 4.0, n)                        # real shortening/lengthening speeds
     tc = cpu_torque(h, q, act, qd=qd)
-    tg = gpu_torque_np(h, q, act)                     # GPU has no qd
+    tg = gpu_torque_real(h, q, act, qd=qd)               # now WITH force-velocity
     d = float(np.max(np.abs(tc - tg)))
     rel = d / max(float(np.max(np.abs(tc))), 1e-9)
     print(f"      worst difference at qd~4 rad/s: {d:.2f} N.m ({100*rel:.0f}% of peak torque)")
-    print(f"      the CPU applies Hill force-velocity (lose force shortening, gain lengthening);")
-    print(f"      the GPU port does NOT. This is the divergence, and it is real, not roundoff.")
-    check("the ONLY difference is force-velocity, and it is significant when moving", rel > 0.05,
-          f"{100*rel:.0f}% of peak -- so the GPU trained a body that makes full force at any speed, "
-          "and the CPU/game body does not. That gap must be closed, not ignored")
+    print(f"      both now apply Hill force-velocity, so a moving body agrees too.")
+    check("GPU and CPU agree WITH velocity (force-velocity now in the GPU port)", d < 1e-4,
+          f"{d:.2e} N.m at qd~4 rad/s -- the seam is closed at both ends, static and moving")
 
     n_fail = sum(1 for ok in results if not ok)
     print("\n" + "=" * 68)

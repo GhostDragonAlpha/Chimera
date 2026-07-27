@@ -45,48 +45,64 @@ REACH = 0.28
 
 
 def muscle_tables(h, device, torch):
-    """Lift our CPU muscle model onto the GPU: arm table, length table, and the Hill constants."""
+    """Lift the muscle model onto the GPU. PER-MUSCLE tables (flexor AND extensor), because the two
+    have OPPOSITE length curves -- the bug X6 caught was using the flexor's length for both, which
+    put every extensor's force-length factor at the wrong length (219 N.m off at rest)."""
     n = h.tree.n
     S = len(next(iter(h.pairs.values())).flexor.arm_q)
-    aq = np.zeros((n, S)); ar = np.zeros((n, S)); ac = np.zeros((n, S))
+    aq = np.zeros((n, S))
+    ar = np.zeros((n, 2, S)); ac = np.zeros((n, 2, S))       # [joint, muscle, sample]
     tmax = np.zeros((n, 2)); rest = np.zeros((n, 2)); width = np.zeros((n, 2))
+    vmax = np.zeros((n, 2)); L0 = np.zeros((n, 2))
     for name, pr in h.pairs.items():
         j = h.joint[name]
-        f = pr.flexor
-        aq[j] = f.arm_q; ar[j] = f.arm_r; ac[j] = f.arm_cum
+        aq[j] = pr.flexor.arm_q                              # same sample grid for both
         for k, msc in enumerate((pr.flexor, pr.extensor)):
-            tmax[j, k] = msc.max_tension; rest[j, k] = msc.rest_length; width[j, k] = msc.width
+            ar[j, k] = msc.arm_r; ac[j, k] = msc.arm_cum     # each muscle's OWN arm and integral
+            tmax[j, k] = msc.max_tension; rest[j, k] = msc.rest_length
+            width[j, k] = msc.width; vmax[j, k] = msc.vmax; L0[j, k] = msc.arm_L0
     T = lambda a: torch.tensor(a, dtype=torch.float32, device=device)
     return dict(q0=T(aq[:, 0]), dq=T(aq[:, 1] - aq[:, 0]), S=S,
-                r=T(ar), cum=T(ac), L0=T(np.full(n, 0.30 * h.height)),
-                tmax=T(tmax), rest=T(rest), width=T(width), n=n)
+                r=T(ar), cum=T(ac), L0=T(L0), tmax=T(tmax), rest=T(rest),
+                width=T(width), vmax=T(vmax), n=n)
 
 
 def muscle_torque_gpu(tb, q, qd, act, torch):
-    """tau = T(a, L) * r(q), batched over worlds. Uniform grid, so interp is an index and a lerp."""
+    """tau = sum over the joint's two muscles of T(a, L, v) * r(q), batched over worlds.
+
+    Each muscle uses its OWN arm and length table (X6 fix), and the Hill force-velocity term the
+    first port dropped is restored. Witnessed against the CPU reference by muscle_witness (X6).
+    """
     W, n = q.shape
-    # NaN DEFEATS clamp AND long(). A world whose sim blew up carries NaN in q; clamp passes NaN
-    # straight through, .long() on NaN is undefined, and the resulting garbage index walks off the
-    # gather -- which surfaces as a CUDA device-side assert with no line number and no clue.
-    # Scrubbing first is not defensive coding, it is the difference between a diverged world
-    # scoring badly and the whole batch dying.
-    q = torch.nan_to_num(q, nan=0.0, posinf=0.0, neginf=0.0)
-    qd = torch.nan_to_num(qd, nan=0.0, posinf=0.0, neginf=0.0)
+    q = torch.nan_to_num(q); qd = torch.nan_to_num(qd)
     x = torch.clamp((q - tb['q0']) / tb['dq'], 0.0, tb['S'] - 1.0001)
-    i0 = x.long().clamp(0, tb['S'] - 2); fr = (x - i0.float()).unsqueeze(-1)
-    gather = lambda M: torch.stack([M[:, 0], M[:, 1]], -1) if False else None
-    r0 = torch.gather(tb['r'].expand(W, -1, -1), 2, i0.unsqueeze(-1)).squeeze(-1)
-    r1 = torch.gather(tb['r'].expand(W, -1, -1), 2, (i0 + 1).unsqueeze(-1)).squeeze(-1)
-    c0 = torch.gather(tb['cum'].expand(W, -1, -1), 2, i0.unsqueeze(-1)).squeeze(-1)
-    c1 = torch.gather(tb['cum'].expand(W, -1, -1), 2, (i0 + 1).unsqueeze(-1)).squeeze(-1)
-    f = fr.squeeze(-1)
-    r = r0 + (r1 - r0) * f                                    # signed moment arm, flexor sense
-    L = tb['L0'] - (c0 + (c1 - c0) * f)                       # L(q) = L0 - integral of r
-    e = (L.unsqueeze(-1) / tb['rest'] - 1.0) / tb['width']
-    fl = torch.exp(-e * e)                                    # Hill force-length
+    i0 = x.long().clamp(0, tb['S'] - 2)
+    f = (x - i0.float()).unsqueeze(-1)                       # (W, n, 1)
+
+    def gather_ms(tab, idx):                                 # tab (n,2,S), idx (W,n) -> (W,n,2)
+        te = tab.unsqueeze(0).expand(W, -1, -1, -1)
+        ii = idx.unsqueeze(-1).unsqueeze(-1).expand(W, n, 2, 1)
+        return torch.gather(te, 3, ii).squeeze(-1)
+
+    r0 = gather_ms(tb['r'], i0); r1 = gather_ms(tb['r'], i0 + 1)
+    c0 = gather_ms(tb['cum'], i0); c1 = gather_ms(tb['cum'], i0 + 1)
+    r = r0 + (r1 - r0) * f                                   # (W, n, 2) each muscle's own arm
+    L = tb['L0'].unsqueeze(0) - (c0 + (c1 - c0) * f)         # (W, n, 2) each muscle's own length
+    # GUARD rest <= 0 exactly as the CPU force_length/force_velocity do: return 1.0. Several leg
+    # muscles have negative rest_length (L0 = 0.30*height is smaller than the moment-arm integral),
+    # and the CPU DISABLES both curves there. Without this guard the GPU computed a bogus factor --
+    # the 107 N.m residual X6 still saw after the per-muscle-table fix.
+    active = tb['rest'] > 0.0
+    e = (L / torch.where(active, tb['rest'], torch.ones_like(tb['rest'])) - 1.0) / tb['width']
+    fl = torch.where(active, torch.exp(-e * e), torch.ones_like(e))
+    v = r * qd.unsqueeze(-1)
+    vn = v / (tb['vmax'] * torch.where(active, tb['rest'], torch.ones_like(tb['rest'])))
+    fv_pos = torch.clamp((1.0 - vn) / (1.0 + 4.0 * vn), min=0.0)
+    fv_neg = torch.clamp(1.5 - 0.5 * (1.0 + vn) / (1.0 - 4.0 * vn), max=1.5)
+    fv = torch.where(active, torch.where(vn >= 0.0, fv_pos, fv_neg), torch.ones_like(vn))
     a = act.view(W, n, 2).clamp(0.0, 1.0)
-    Tn = a * tb['tmax'] * fl
-    return (Tn[..., 0] - Tn[..., 1]) * r                      # flexor pulls +r, extensor -r
+    Tn = a * tb['tmax'] * fl * fv
+    return (Tn * r).sum(-1)                                  # each muscle's tension times its arm
 
 
 def main() -> int:
