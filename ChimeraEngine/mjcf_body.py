@@ -70,7 +70,20 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665)) -> str:
              f'diaginertia="{Ib[0,0]:.10g} {Ib[1,1]:.10g} {Ib[2,2]:.10g}"/>']
     for c in kids[-1]:
         lines += emit(c, 4)
-    lines += ['    </body>', '  </worldbody>', '</mujoco>']
+    lines += ['    </body>', '  </worldbody>']
+    # ONE TORQUE MOTOR PER JOINT. MuJoCo has tendon wrapping and its own muscle model, but our
+    # transmission is a MEASURED r(q) TABLE -- a curve sampled off MyoSuite geometry and published
+    # in-vivo data -- and no MuJoCo primitive takes a table. Re-fitting it to tendon geometry would
+    # mean training against an APPROXIMATION of the levers the game actually runs, which is the
+    # sim-to-sim mistake §3.4 exists to prevent, one layer down.
+    #
+    # So the seam closes the other way round: the muscle model stays OURS (it is the measured part)
+    # and MuJoCo supplies only the dynamics (the fast part). tau = T(a, L) * r(q) is computed by
+    # muscle_torques() and handed over as ctrl. Same torque, same body, nothing re-derived.
+    lines.append('  <actuator>')
+    for L in t.links:
+        lines.append(f'    <motor name="m_{L.name}" joint="{L.name}" gear="1" ctrllimited="false"/>')
+    lines += ['  </actuator>', '</mujoco>']
     return '\n'.join(lines)
 
 
@@ -134,8 +147,13 @@ class FastBody:
         push_state(h, self.d)
         mujoco.mj_forward(self.m, self.d)
 
-    def step(self, n: int = 1) -> None:
+    def step(self, n: int = 1, actuated: bool = True) -> None:
+        """One tick. With `actuated`, OUR muscle model computes the joint torques and MuJoCo
+        integrates them -- the measured half and the fast half, each doing its own job."""
         for _ in range(n):
+            if actuated and self.h.tree.muscles:
+                self.sync_to_tree()                  # muscle torque depends on q and qd
+                self.d.ctrl[:] = self.h.tree.muscle_torques()
             self._mj.mj_step(self.m, self.d)
 
     def sync_to_tree(self) -> None:

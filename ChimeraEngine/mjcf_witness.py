@@ -132,6 +132,45 @@ def main() -> int:
           f"worst base drift {worst:.2e} m across every timestep tried -- not 'close enough', "
           "IDENTICAL to the precision of the machine. MuJoCo and this engine implement the same "
           "dynamics, so a policy trained in one runs in the other")
+    # ── X5: THE ACTUATED SEAM ────────────────────────────────────────────────────────────────
+    print("\nX5  ACTUATED -- the muscles driving, not just gravity")
+    print("    Our transmission is a MEASURED r(q) TABLE and no MuJoCo primitive takes a table, so")
+    print("    re-fitting it to tendon geometry would train against an APPROXIMATION of the levers")
+    print("    the game runs. The seam closes the other way: the muscle model stays OURS, MuJoCo")
+    print("    supplies only the dynamics, and tau = T(a,L)*r(q) is handed over as ctrl.")
+
+    def run_actuated(dt, T=0.16, engine="ours"):
+        from body import humanoid as _hum
+        from mjcf_body import FastBody
+        hh = _hum(base_pos=(0, 0, 2.0), gravity=(0, 0, -9.80665))
+        rng = np.random.default_rng(4)
+        hh.tree.q[:] = rng.normal(0, 0.15, hh.tree.n)
+        for nm, pr in hh.pairs.items():
+            pr.drive(0.6 if 'shin' in nm else -0.4, co_contract=0.2)
+        n = int(round(T / dt))
+        if engine == 'ours':
+            for _ in range(n):
+                hh.tree.step(dt)
+        else:
+            fb = FastBody(hh, dt=dt); fb.step(n); fb.sync_to_tree()
+        return hh.tree.base_pos.copy(), hh.tree.q.copy()
+
+    prev, ratios = None, []
+    for dt in (4e-4, 2e-4):
+        pa, qa = run_actuated(dt, engine='ours')
+        pb, qb = run_actuated(dt, engine='mj')
+        dp = float(np.linalg.norm(pa - pb)); dq = float(np.max(np.abs(qa - qb)))
+        r = (prev / dp) if prev else None
+        if r: ratios.append(r)
+        print(f"      dt {dt:7.1e} -> base {dp:.3e} m, worst joint {dq:.3e} rad"
+              + (f"   ratio {r:5.2f}x" if r else ""))
+        prev = dp
+    conv = all(1.4 < r < 3.2 for r in ratios) if ratios else False
+    check("the ACTUATED bodies agree, and the residual is truncation not a model difference", conv,
+          f"ratios {', '.join(f'{r:.2f}x' for r in ratios)} per halving -- FIRST ORDER, so the two "
+          "engines apply the SAME muscle torques to the SAME body and differ only in how they "
+          "integrate. Flat ~1.0x would have meant different levers and blocked training")
+
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 72)
     print(f"{len(results) - n_fail}/{len(results)} checks passed")
