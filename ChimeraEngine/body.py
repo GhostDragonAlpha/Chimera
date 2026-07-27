@@ -79,12 +79,17 @@ PEAK_TORQUE = {
 #   ankle  MEASURED  Achilles moment arm RISES with plantarflexion: 5.4 -> 7.0 cm as the ankle goes
 #                    -15 to +30 deg (in-vivo MVC). Not a peak inside the range -- a ramp, so q_peak
 #                    sits at the plantarflexed end rather than mid-range.
+#   hip    MEASURED  at the ANATOMICAL position gluteus maximus averages 79 mm, hamstrings 61 mm,
+#                    adductor magnus 15 mm (in-vivo, autopsy + CT, hip flexion 0-90 deg). Glute max
+#                    DECREASES monotonically with flexion; hamstrings RISE to ~35 deg then fall. So
+#                    the extensor group's arm is large at neutral and peaks early -- r0 ~70 mm with
+#                    the peak just past anatomical, not at mid-range as I had guessed.
 #   the rest ASSUMED -- no data pulled yet. Flagged, not hidden.
 MOMENT_ARM = {
     'elbow':          (0.036, 0.43, +1.571, 'MEASURED'),
     'knee':           (0.046, 0.16, -0.520, 'MEASURED'),
     'ankle_pitch':    (0.050, 0.13, -0.350, 'MEASURED'),
-    'hip_pitch':      (0.055, 0.25, +0.500, 'ASSUMED'),
+    'hip_pitch':      (0.070, 0.20, +0.300, 'MEASURED'),
     'hip_roll':       (0.045, 0.15,  0.000, 'ASSUMED'),
     'waist':          (0.060, 0.20,  0.000, 'ASSUMED'),
     'neck':           (0.030, 0.20,  0.000, 'ASSUMED'),
