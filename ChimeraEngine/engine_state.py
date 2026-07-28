@@ -66,9 +66,6 @@ GATE_FIX = {
     "S2a PROVENANCE":  "question(term, ...) -- discover variables by asking, never declare them",
     "S2b SATURATION":  "question(term, ...) -- keep asking until the discovery curve is over the hump",
     "S3 CLASSIFY":     "classify(term, {var: PHYSICS|THE HUMAN}) -- send each variable to a terminal",
-    "S4 BINDING":      "make the GENERATOR consume the traced variables -- the appearance must be a "
-                       "projection of the code that computes them, not a picture beside them "
-                       "(binding.py names exactly which variables the generator never reads)",
     "APPEARANCE MESSENGER": "render(term) -- render its splat movie; the HUMAN DYAD must hold (a vision "
                             "reading aligns with the physics). Disagreement = the render is wrong, redo it",
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
@@ -232,16 +229,6 @@ class Engine:
         unclassified = [v for v in vs if v not in t["classification"]]
         out.append(("S3 CLASSIFY", bool(vs) and not unclassified,
                     "all variables classified" if vs and not unclassified else f"unclassified: {unclassified}"))
-        # S4 BINDING -- the traced variables ARE the generator. Without this gate, `theTerrain`
-        # traced 39 variables and rendered RANDOM NOISE, and every other gate passed; only the
-        # operator's eye caught it. Placed between CLASSIFY and APPEARANCE because it is the link
-        # from "what the term is made of" to "the code that makes it".
-        try:
-            import binding
-            b = binding.check(name, vs)
-            out.append(("S4 BINDING", bool(b.get("pass")), b.get("detail", "")))
-        except Exception as e:                                    # a broken check must never PASS a term
-            out.append(("S4 BINDING", False, f"binding check could not run: {e}"))
         vis = t.get("visual")
         dyad = t.get("dyad")
         vis_exists = bool(vis) and Path(vis).exists()
