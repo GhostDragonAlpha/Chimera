@@ -315,7 +315,10 @@ def project_movie(term: str, out_dir) -> dict | None:
 
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
 
-    if membrane is not None and not comp and not spec:
+    # THE FOLDER WINS, always -- the same precedence scene_buffer uses. A term can exist in BOTH the
+    # old SCENES dict and the story tree (theStar does), and having two code paths disagree about
+    # which one is authoritative rendered the wrong object under the right label.
+    if membrane is not None:
         # A MEMBRANE'S MOVIE: its own time, 0 -> 1, emitted by its own law in its own local units.
         # The camera is set by the membrane's OWN EXTENT -- a boundary supplies its own scale, so
         # nothing here is hand-framed; the view is as far back as the matter is wide.
