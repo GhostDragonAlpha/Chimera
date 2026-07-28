@@ -305,7 +305,8 @@ def project_movie(term: str, out_dir) -> dict | None:
     now the DEFAULT for composite terms; hand-authored SCENES are the fallback for leaf terms."""
     comp = COMPOSITIONS.get(term)
     spec = SCENES.get(term)
-    if not comp and not spec:
+    membrane = _find_membrane(term)
+    if not comp and not spec and membrane is None:
         return None
     import numpy as np
     from PIL import Image
@@ -313,6 +314,27 @@ def project_movie(term: str, out_dir) -> dict | None:
     from ParticleEngine.camera import FirstPersonCamera
 
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+
+    if membrane is not None and not comp and not spec:
+        # A MEMBRANE'S MOVIE: its own time, 0 -> 1, emitted by its own law in its own local units.
+        # The camera is set by the membrane's OWN EXTENT -- a boundary supplies its own scale, so
+        # nothing here is hand-framed; the view is as far back as the matter is wide.
+        end_buf = membrane_buffer(term, 1.0)
+        extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0
+        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+        cx, cy, cz = cam_pos
+        cam = FirstPersonCamera(cam_pos, yaw=float(np.arctan2(-cy, -cx)),
+                                pitch=float(np.arctan2(-cz, float(np.hypot(cx, cy)))))
+        p = cam.params(720, 540)
+        pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
+        paths = {}
+        for label, t in (("begin", 0.0), ("end", 1.0)):
+            pipe.upload(membrane_buffer(term, t))
+            png = out / f"movie_{term}_{label}.png"
+            Image.fromarray(pipe.render_from_gpu(cam, p)).save(png)
+            paths[label] = str(png)
+        return paths
+
     cam_pos = comp["cam"] if comp else spec["cam"]               # composition owns its own camera
     cx, cy, cz = cam_pos                                          # AIM at the body (origin): yaw=0 looks +X
     yaw = float(np.arctan2(-cy, -cx))
@@ -363,16 +385,82 @@ def project_movie(term: str, out_dir) -> dict | None:
     return {"begin": str(begin_png), "end": str(end_png)}
 
 
+# ═══════════════════════════════════════════════════════════════════════
+#  THE FOLDER TREE -- a membrane emits its OWN matter, from its own folder
+#
+#  Alan's methodology: each membrane is a FOLDER holding its story (story.md), its law
+#  (physics.py) and the numbers it grew (numbers.json). The law computes the numbers AND emits the
+#  matter, so the appearance cannot drift from the physics -- they are the same file reading the
+#  same numbers. That is why no separate "does the render use the variables" check is needed: the
+#  render IS the variables. A term with a folder needs no entry in SCENES.
+# ═══════════════════════════════════════════════════════════════════════
+_STORY = _REPO / "story"
+
+
+def _find_membrane(term: str):
+    """The folder for `term`, anywhere in the story tree (its PATH is its serial)."""
+    if not _STORY.is_dir():
+        return None
+    for p in _STORY.rglob(term):
+        if p.is_dir() and (p / "physics.py").exists():
+            return p
+    return None
+
+
+def _membrane_law(folder):
+    """Load a membrane's law. `story/` goes on the path so a law can import `matter`."""
+    import importlib.util
+    if str(_STORY) not in sys.path:
+        sys.path.insert(0, str(_STORY))
+    spec = importlib.util.spec_from_file_location(f"law_{folder.name}", folder / "physics.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def membrane_buffer(term: str, t: float = 1.0):
+    """`term`'s matter at its own time t (0 = beginning, 1 = settled), or None if it has no folder."""
+    import json
+    folder = _find_membrane(term)
+    if folder is None:
+        return None
+    law = _membrane_law(folder)
+    if not hasattr(law, "emit"):
+        return None
+    nj = folder / "numbers.json"
+    nums = json.loads(nj.read_text()) if nj.exists() else law.derive(None, {})
+    return law.emit(nums, t)
+
+
+def membrane_terms() -> list:
+    """Every membrane in the story tree that can emit matter."""
+    if not _STORY.is_dir():
+        return []
+    out = []
+    for p in sorted(_STORY.rglob("physics.py")):
+        try:
+            if hasattr(_membrane_law(p.parent), "emit"):
+                out.append(p.parent.name)
+        except Exception:
+            pass
+    return out
+
+
 def scene_terms() -> list:
     """The terms that have a splat scene (what the live viewer can show)."""
-    return list(SCENES)
+    return list(SCENES) + [t for t in membrane_terms() if t not in SCENES]
 
 
 def scene_cam_distance(term: str) -> float:
     """How far the live viewer should orbit this term (from its still-camera distance)."""
     import numpy as np
     cam = (COMPOSITIONS.get(term) or SCENES.get(term) or {}).get("cam")
-    return float(np.linalg.norm(cam)) if cam else 300.0
+    if cam:
+        return float(np.linalg.norm(cam))
+    buf = membrane_buffer(term)                 # a membrane is orbited at ITS OWN extent
+    if buf is not None:
+        return 2.8 * (float(np.linalg.norm(buf[:, PX:PZ + 1], axis=1).max()) or 1.0)
+    return 300.0
 
 
 def scene_buffer(term: str):
@@ -382,6 +470,9 @@ def scene_buffer(term: str):
     turn it in real time (the time axis) and let the operator orbit it (verify it is a true 3D volume, not
     a flat disk). Solid scenes hand back their END buffer directly; a collapse scene is settled once here
     (spawn -> attractor -> 90 steps) and its particles returned."""
+    mb = membrane_buffer(term)                                   # a folder in story/ owns its own matter
+    if mb is not None:
+        return mb
     if term in COMPOSITIONS:                                     # DEFAULT for composite terms: built from proven children
         return compose_buffer(term)
     spec = SCENES.get(term)

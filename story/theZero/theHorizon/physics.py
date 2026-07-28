@@ -44,6 +44,28 @@ def derive(parent, free):
     }
 
 
+def emit(nums, t=1.0):
+    """The matter of theHorizon, in its own local units: the fence is drawn at radius 1 = r_s.
+
+    At t=0 there is only the point (the parent's zero). As the membrane's time runs, the horizon
+    the added mass demands appears around it -- the first LENGTH, hence the first boundary, hence
+    the first membrane. The interior is left empty on purpose: it has no hair to draw."""
+    import numpy as np
+    from matter import blank, fibonacci_sphere, paint, GLOW
+
+    n_shell, n_point = 9000, 500
+    d = fibonacci_sphere(n_shell)
+    shell = blank(n_shell)
+    shell[:, 0:3] = d * float(t)                       # the fence grows to r_s (= 1 locally)
+    shell[:, 21:24] = d                                # outward normal -> cull the far side
+    paint(shell, (0.45, 0.70, 1.00), 1.0, 0.032)       # grain size is LOCAL: ~1/30 of the extent
+
+    core = blank(n_point)
+    core[:, 0:3] = fibonacci_sphere(n_point) * 0.012   # the point you may not divide by
+    paint(core, (1.0, 1.0, 1.0), 1.0, 0.018)
+    return np.concatenate([core, shell], axis=0)
+
+
 def measure(nums):
     """What training must check: the crossing is where the two lengths agree, and it lands at the
     Planck scale. Exact, so the residual is a check on the arithmetic, not a fitted number."""

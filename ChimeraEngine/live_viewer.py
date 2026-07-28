@@ -131,7 +131,11 @@ class LiveViewer:
                 self._last_input = time.time()   # mark "moving" -> the render thread drops to the fast LOD
 
     def set_scene(self, term: str):
-        if term in self._sa.SCENES:
+        # Accept anything the viewer OFFERS, not just the hand-authored SCENES dict. A membrane in
+        # story/ emits its own matter and appears in scene_terms(); gating on SCENES silently
+        # refused it -- the label changed and the scene did not, which is the worst kind of failure
+        # because it looks like it worked.
+        if term in self._sa.scene_terms():
             self._pending = term
 
     @property
