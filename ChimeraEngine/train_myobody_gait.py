@@ -52,7 +52,14 @@ GAMMA, LAM, CLIP = 0.99, 0.95, 0.2
 EPOCHS, MINIBATCH, LR = 5, 8192, 3e-4
 ENT, VCOEF = 0.004, 0.5
 ALIVE_BONUS = 0.4
-FALL_FRAC = 0.6
+# "ALIVE" MUST MEAN STANDING. At 0.6 the alive line sat at 0.59 m while the standing keyframe is
+# 0.98 m -- a body folded into a crouch kept collecting ALIVE_BONUS every step, so the cheapest way
+# to score was SINK AND STOP MOVING. Measured live: the synergy run's survival climbed 16% -> 48%
+# while its distance FELL 0.44 -> 0.20 m. That is the satisficer, not a gait.
+# Sized from measurement, not taste: 12 seeds of the trained stand land at 0.87-1.03 m (collapses at
+# 0.20-0.21), and human walking dips the CoM only ~4 cm. 0.8 * 0.98 = 0.78 m keeps every real stand
+# and every normal gait dip, and excludes the crouch.
+FALL_FRAC = 0.8
 EFFORT = 0.01
 TARGET_SPEED = 0.8
 CAPTURE = 0.8                         # weight of the capture-point term (support + placement in one)
