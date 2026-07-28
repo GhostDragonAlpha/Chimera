@@ -57,6 +57,8 @@ def derive(parent, free):
         "giants_possible": (m_out / M_EARTH) > M_CRIT_CORE,
         "rocky_inside": True,
         "r_rocky_au": 0.5 * (R_IN + r_snow),          # where the rocky world this story follows sits
+        "T_star_surface": float(parent["T_surface"]),  # the star is the CAUSE of the gradient; carry it
+        "R_star": float(parent["R"]),
     }
 
 
@@ -98,7 +100,25 @@ def emit(nums, t=1.0):
     b[:, 19] = np.where(icy, 0.14 + 0.34 * tt, 0.45)
     b[:, 20] = 0.010 + np.where(icy, 0.005 * tt, 0.004)
     b[:, 11] = SOLID
-    return b
+
+    # THE STAR ITSELF. Leaving it out drew the effect without its cause -- and worse, the rocky inner
+    # disk then read as a dim brown object at the centre, which is a render telling a lie about what
+    # kind of star this is. Its colour is its own surface temperature, carried down from the parent.
+    from matter import fibonacci_sphere, blackbody_rgb
+    n_s = 2500
+    d = fibonacci_sphere(n_s)
+    star = blank(n_s)
+    # SCALE, DECLARED RATHER THAN HIDDEN. True size here is R_star / snow_line = 6.96e8 / 4.01e11
+    # = 0.0017 -- SUB-PIXEL, invisible. This draws it at 0.055, an exaggeration of ~32x, for the same
+    # reason games draw mountains 40x too tall: at true scale the thing that matters most cannot be
+    # seen. The number is written down so the lie is auditable and can be replaced by a point light
+    # (which is the honest fix: a star at this scale is not a sphere, it is a source).
+    STAR_EXAGGERATION = 32.0
+    star[:, 0:3] = d * (float(nums.get("R_star", 6.957e8)) / (nums["snow_line_au"] * 1.495978707e11)
+                        * STAR_EXAGGERATION)
+    star[:, 21:24] = d
+    paint(star, blackbody_rgb(float(nums.get("T_star_surface", 5772.0))), 1.0, 0.006, SOLID)
+    return np.concatenate([star, b], axis=0)
 
 
 def measure(nums):

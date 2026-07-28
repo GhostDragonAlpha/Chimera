@@ -8,5 +8,7 @@
   "inventory_jump": 4.2,
   "giants_possible": true,
   "rocky_inside": true,
-  "r_rocky_au": 1.5402688317687565
+  "r_rocky_au": 1.5402688317687565,
+  "T_star_surface": 5772.003429145849,
+  "R_star": 695700000.0
 }
