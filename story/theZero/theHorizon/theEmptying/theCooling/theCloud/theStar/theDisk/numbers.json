@@ -1,0 +1,12 @@
+{
+  "L": 3.828e+26,
+  "snow_line_au": 2.680537663537513,
+  "T_at_1au": 278.3299094172851,
+  "T_at_snow": 170.0,
+  "solid_inside_earths": 3.312035885991146,
+  "solid_outside_earths": 53.16231210706989,
+  "inventory_jump": 4.2,
+  "giants_possible": true,
+  "rocky_inside": true,
+  "r_rocky_au": 1.5402688317687565
+}
