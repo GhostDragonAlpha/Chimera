@@ -100,7 +100,7 @@ def _geom_low(m, d, gi, mujoco):
     return z - float(s[0])
 
 
-def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed, decode=None, OBS=None):
+def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed, decode=None, OBS=None, cpg_omega=None):
     """One episode. Returns the two contact traces + distance travelled.
 
     `decode` maps a synergy-space action to 290 muscle activations (None = the policy already emits
@@ -124,11 +124,16 @@ def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed, decode=Non
     OMEGA0 = float(np.sqrt(-m.opt.gravity[2] / max(d.subtree_com[0][2], 1e-3)))
     prev_com = d.subtree_com[0][:2].copy()
     last_c = np.zeros(len(links)); last_xoff = np.zeros(2)
+    phase = 0.0
+    dt_ctrl = m.opt.timestep * CONTROL_EVERY
     with torch.no_grad():
         for k in range(0, steps, CONTROL_EVERY):
             base = np.concatenate([d.qpos[3:7], d.qvel[3:6], d.qvel[0:3], d.qpos[7:], d.qvel[6:]])
             if OBS is not None and OBS > len(base):          # the policy also senses contact + XcoM
-                base = np.concatenate([base, last_c, last_xoff])
+                extra = [last_c, last_xoff]
+                if cpg_omega is not None:                    # CPG policy: append the phase clock (sin, cos)
+                    extra.append(np.array([np.sin(phase), np.cos(phase)]))
+                base = np.concatenate([base] + extra)
             ob = torch.tensor(np.nan_to_num(base), dtype=torch.float32).unsqueeze(0).clamp(-20, 20)
             mean, std, _v = ac(ob)
             a = mean + std * torch.randn_like(std)
@@ -136,6 +141,8 @@ def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed, decode=Non
             d.ctrl[:] = act.squeeze(0).numpy()
             for _ in range(CONTROL_EVERY):
                 mujoco.mj_step(m, d)
+            if cpg_omega is not None:
+                phase += cpg_omega * dt_ctrl                 # advance the clock exactly as training did
             # TRUTH: MuJoCo's own contact list
             touched = set()
             for ci in range(d.ncon):
@@ -172,7 +179,7 @@ def main() -> int:
     N = int(sys.argv[sys.argv.index('--n') + 1]) if '--n' in sys.argv else 5
     secs = float(sys.argv[sys.argv.index('--secs') + 1]) if '--secs' in sys.argv else 4.0
     tag = {'walk': 'myobody_walk', 'stand': 'myobody', 'gait': 'myobody_gait',
-           'syn': 'myobody_syn'}[which]
+           'syn': 'myobody_syn', 'cpg': 'myobody_cpg', 'ctrl': 'myobody_ctrl'}[which]
     meta = np.load(HERE / f'{tag}_meta.npy', allow_pickle=True).item()
     OBS, HID, ACT = int(meta['OBS']), int(meta['HID']), int(meta['ACT'])
 
@@ -196,7 +203,10 @@ def main() -> int:
     print(f'  contact links: {links}   (proxy threshold {FOOT_Z*100:.0f} cm)\n')
 
     # pass 1: collect truth + raw foot heights, then CALIBRATE the proxy threshold against truth
-    raw = [rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, s, decode, OBS)
+    cpg_omega = float(meta['OMEGA_SWING']) if meta.get('CPG') else None
+    if cpg_omega is not None:
+        print(f'  CPG policy: phase clock at omega_swing = {cpg_omega:.3f} rad/s reconstructed in the witness\n')
+    raw = [rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, s, decode, OBS, cpg_omega)
            for s in range(N)]
     T_all = np.concatenate([r[0] for r in raw]); H_all = np.concatenate([r[1] for r in raw])
     cand = np.arange(0.0, 0.121, 0.002)
