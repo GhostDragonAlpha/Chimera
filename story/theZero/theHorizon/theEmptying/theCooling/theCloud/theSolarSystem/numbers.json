@@ -1,0 +1,13 @@
+{
+  "M_total": 1.9909109109109107e+30,
+  "M_star": 1.98892e+30,
+  "M_star_solar": 1.0,
+  "M_disk": 1.99091091091081e+27,
+  "M_disk_solar": 0.0010010010010009503,
+  "L": 3.828e+26,
+  "flattened": true,
+  "kepler_exponent": 1.5,
+  "T_at_1au_days": 365.21005381619494,
+  "hydrogen_frac": 0.75,
+  "helium_frac": 0.25
+}

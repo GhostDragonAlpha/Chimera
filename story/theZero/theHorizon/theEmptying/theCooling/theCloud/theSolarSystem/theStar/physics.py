@@ -62,10 +62,10 @@ def minimum_stellar_mass(t_ignite=T_IGNITE):
 
 
 def derive(parent, free):
-    if parent is None or not parent.get("collapsing"):
-        raise ValueError("theStar requires a parent cloud that is collapsing")
+    if parent is None or not parent.get("flattened"):
+        raise ValueError("theStar requires a parent SYSTEM (the star is a sibling of the planets)")
     M_min = minimum_stellar_mass()
-    M = float(free.get("M_star", M_SUN))          # which fragment this membrane follows
+    M = float(parent["M_star"])                   # the system decides the split; the star inherits it
     # HONEST LABEL: these are EMPIRICAL main-sequence scalings (L ~ M^3.5, R ~ M^0.8) normalised on
     # the Sun, not derived here. So at 1 M_sun the surface temperature returning 5772 K is
     # definitional, not a prediction; the scalings predict only for OTHER masses. The derived,

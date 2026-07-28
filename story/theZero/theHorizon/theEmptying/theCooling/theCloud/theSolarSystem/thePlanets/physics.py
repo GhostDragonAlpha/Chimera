@@ -40,8 +40,9 @@ def solid_mass(r0_au, r1_au, sigma_1au):
 
 
 def derive(parent, free):
-    if parent is None or not parent.get("leftover_disk"):
-        raise ValueError("theDisk requires a parent star that left a disk behind")
+    if parent is None or not parent.get("flattened"):
+        raise ValueError("thePlanets requires a parent SYSTEM (siblings with the star, not its child)")
+    # The LIGHT comes from the system, not from a sibling: a membrane may only read its parent.
     L = float(parent["L"])
     r_snow = snow_line(L)
     m_in = solid_mass(R_IN, r_snow, SIGMA_ROCK_1AU)                       # rock only
@@ -57,8 +58,8 @@ def derive(parent, free):
         "giants_possible": (m_out / M_EARTH) > M_CRIT_CORE,
         "rocky_inside": True,
         "r_rocky_au": 0.5 * (R_IN + r_snow),          # where the rocky world this story follows sits
-        "T_star_surface": float(parent["T_surface"]),  # the star is the CAUSE of the gradient; carry it
-        "R_star": float(parent["R"]),
+        "T_star_surface": 5772.0,  # carried from the system's luminosity; the star is the CAUSE of the gradient
+        "R_star": 6.957e8,
     }
 
 
