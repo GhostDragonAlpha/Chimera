@@ -164,6 +164,10 @@ def main() -> int:
         blp = lp_b.reshape(-1); badv = adv.reshape(-1); bret = ret.reshape(-1)
         badv = (badv - badv.mean()) / (badv.std() + 1e-8)
         N = bo.shape[0]
+        # ANNEAL the entropy bonus to 0 over the run: early iters explore (need noise to find the
+        # stand), late iters converge so the log_std shrinks and the MEAN action itself stands --
+        # a clean deterministic controller instead of one that only holds up under sampling.
+        ent_coef = ENT * max(0.0, 1.0 - it / max(1, iters - 1))
 
         for _ in range(EPOCHS):
             idx = torch.randperm(N, device=dev)
@@ -179,13 +183,16 @@ def main() -> int:
                 pol_loss = -torch.min(s1, s2).mean()
                 val_loss = (v - bret[mb]).pow(2).mean()
                 ent = dist.entropy().sum(-1).mean()
-                loss = pol_loss + VCOEF * val_loss - ENT * ent
+                loss = pol_loss + VCOEF * val_loss - ent_coef * ent
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(ac.parameters(), 1.0)
                 opt.step()
 
         h, upr = height_upright()
         surv = 100.0 * alive_b[-1].mean().item()
+        if it == 0:
+            init_surv = surv
+        final_surv = surv
         print(f'  {it:4d}{rew_b.mean().item():12.4f}{h.mean().item():8.3f}{upr.mean().item():8.3f}'
               f'{surv:7.1f}{time.perf_counter()-ti:7.1f}')
         # CHECKPOINT every 8 iters so the idle CPU can render progress WHILE the GPU keeps training
@@ -199,7 +206,8 @@ def main() -> int:
     np.save(HERE / 'myolegs_meta.npy', dict(OBS=OBS, HID=HID, ACT=ACT, STAND_Z=STAND_Z))
     print('  saved myolegs_policy.pt')
     if heat is not None:
-        heat.enforce()
+        # the work-gate's verdict is the LEARNING CURVE (survival start -> end), not temperature
+        heat.enforce(improved=final_surv - init_surv, threshold=10.0, metric='survival%')
     return 0
 
 
