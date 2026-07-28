@@ -48,6 +48,8 @@ def main() -> int:
     OBS, HID, ACT, STAND_Z = int(meta['OBS']), int(meta['HID']), int(meta['ACT']), float(meta['STAND_Z'])
 
     m = mujoco.MjModel.from_xml_path(str(MYOLEGS))
+    m.vis.global_.offheight = 720            # myoLegs ships a 480-tall offscreen buffer; enlarge it
+    m.vis.global_.offwidth = 512
     d = mujoco.MjData(m)
     nj = m.nq - 7
     ac = build_ac(OBS, ACT, HID, torch)
