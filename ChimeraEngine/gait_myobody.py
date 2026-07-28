@@ -100,8 +100,14 @@ def _geom_low(m, d, gi, mujoco):
     return z - float(s[0])
 
 
-def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed):
-    """One episode. Returns the two contact traces + distance travelled."""
+def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed, decode=None, OBS=None):
+    """One episode. Returns the two contact traces + distance travelled.
+
+    `decode` maps a synergy-space action to 290 muscle activations (None = the policy already emits
+    muscles). `OBS` lets the walk/gait/synergy policies receive the LARGER observation they were
+    trained on (contacts + capture-point offset) -- feeding a policy a different observation than it
+    trained on would measure a different controller than the one we are judging.
+    """
     nj = m.nq - 7
     mujoco.mj_resetDataKeyframe(m, d, 0)
     d.qpos[7:] += np.random.default_rng(seed).normal(0, 0.03, nj)
@@ -115,13 +121,19 @@ def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed):
     truth, proxy = [], []
     fell_at = None
     steps = int(secs / m.opt.timestep)
+    OMEGA0 = float(np.sqrt(-m.opt.gravity[2] / max(d.subtree_com[0][2], 1e-3)))
+    prev_com = d.subtree_com[0][:2].copy()
+    last_c = np.zeros(len(links)); last_xoff = np.zeros(2)
     with torch.no_grad():
         for k in range(0, steps, CONTROL_EVERY):
-            ob = torch.tensor(np.nan_to_num(np.concatenate([d.qpos[3:7], d.qvel[3:6], d.qvel[0:3],
-                              d.qpos[7:], d.qvel[6:]])), dtype=torch.float32).unsqueeze(0).clamp(-20, 20)
+            base = np.concatenate([d.qpos[3:7], d.qvel[3:6], d.qvel[0:3], d.qpos[7:], d.qvel[6:]])
+            if OBS is not None and OBS > len(base):          # the policy also senses contact + XcoM
+                base = np.concatenate([base, last_c, last_xoff])
+            ob = torch.tensor(np.nan_to_num(base), dtype=torch.float32).unsqueeze(0).clamp(-20, 20)
             mean, std, _v = ac(ob)
-            a = (mean + std * torch.randn_like(std)).clamp(0.0, 1.0)
-            d.ctrl[:] = a.squeeze(0).numpy()
+            a = mean + std * torch.randn_like(std)
+            act = decode(a) if decode is not None else a.clamp(0.0, 1.0)
+            d.ctrl[:] = act.squeeze(0).numpy()
             for _ in range(CONTROL_EVERY):
                 mujoco.mj_step(m, d)
             # TRUTH: MuJoCo's own contact list
@@ -139,7 +151,14 @@ def rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, seed):
             # PROXY: record the lowest point of each link's collision geoms (GPU-computable from
             # geom pose alone -- no contact readback, so no CPU sync in a batched rollout). The
             # height->contact THRESHOLD is calibrated against the truth below, never guessed.
-            proxy.append([min(_geom_low(m, d, gi, mujoco) for gi in geoms[L]) for L in links])
+            lows = [min(_geom_low(m, d, gi, mujoco) for gi in geoms[L]) for L in links]
+            proxy.append(lows)
+            # feed the NEXT step the senses the policy was trained on
+            last_c = np.array([1.0 if lo <= 0.002 else 0.0 for lo in lows])
+            com = d.subtree_com[0][:2].copy()
+            com_v = (com - prev_com) / (m.opt.timestep * CONTROL_EVERY)
+            prev_com = com
+            last_xoff = com_v / OMEGA0                      # XcoM offset = v / omega0
             if fell_at is None and d.qpos[2] < 0.6 * stand_z:
                 fell_at = k * m.opt.timestep
     dist = float(np.dot(d.qpos[0:2] - start_xy, head))
@@ -152,7 +171,8 @@ def main() -> int:
     which = sys.argv[sys.argv.index('--policy') + 1] if '--policy' in sys.argv else 'walk'
     N = int(sys.argv[sys.argv.index('--n') + 1]) if '--n' in sys.argv else 5
     secs = float(sys.argv[sys.argv.index('--secs') + 1]) if '--secs' in sys.argv else 4.0
-    tag = 'myobody_walk' if which == 'walk' else 'myobody'
+    tag = {'walk': 'myobody_walk', 'stand': 'myobody', 'gait': 'myobody_gait',
+           'syn': 'myobody_syn'}[which]
     meta = np.load(HERE / f'{tag}_meta.npy', allow_pickle=True).item()
     OBS, HID, ACT = int(meta['OBS']), int(meta['HID']), int(meta['ACT'])
 
@@ -161,13 +181,23 @@ def main() -> int:
     d = mujoco.MjData(m)
     ac = build_ac(OBS, ACT, HID, torch)
     ac.load_state_dict(torch.load(HERE / f'{tag}_policy.pt', map_location='cpu')); ac.eval()
+
+    decode = None
+    if 'NMUS' in meta:                                  # a SYNERGY policy: 16 coeffs -> 290 muscles
+        z = np.load(HERE / 'myobody_synergies.npz', allow_pickle=True)
+        mu_s = torch.tensor(z['mean'], dtype=torch.float32)
+        syn = torch.tensor(z['synergies'], dtype=torch.float32)
+        sc = torch.tensor(z['scale'], dtype=torch.float32)
+        decode = lambda c: torch.clamp(mu_s + (c * sc) @ syn, 0.0, 1.0)
+        print(f'  synergy policy: {ACT} coefficients decoded to {int(meta["NMUS"])} muscles')
     links, geoms, floor = foot_sets(m, mujoco)
 
     print(f'\nGAIT WITNESS — {tag}_policy.pt, {N} randomized starts of {secs:.0f}s\n' + '=' * 74)
     print(f'  contact links: {links}   (proxy threshold {FOOT_Z*100:.0f} cm)\n')
 
     # pass 1: collect truth + raw foot heights, then CALIBRATE the proxy threshold against truth
-    raw = [rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, s) for s in range(N)]
+    raw = [rollout(m, d, ac, torch, mujoco, links, geoms, floor, secs, s, decode, OBS)
+           for s in range(N)]
     T_all = np.concatenate([r[0] for r in raw]); H_all = np.concatenate([r[1] for r in raw])
     cand = np.arange(0.0, 0.121, 0.002)
     scores = [float(((H_all <= c).astype(int) == T_all).mean()) for c in cand]
