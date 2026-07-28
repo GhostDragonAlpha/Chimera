@@ -75,8 +75,11 @@ def main() -> int:
             qj = torch.tensor(np.nan_to_num(d.qpos[7:]), dtype=torch.float32).unsqueeze(0)
             qdj = torch.tensor(np.nan_to_num(d.qvel[6:]), dtype=torch.float32).unsqueeze(0)
             ob = torch.nan_to_num(torch.cat([quat, angv, linv, qj, qdj], 1)).clamp(-20, 20)
-            mean, _s, _v = ac(ob)
-            d.ctrl[:] = mean.clamp(0.0, 1.0).squeeze(0).numpy()   # 80 muscle activations
+            mean, std, _v = ac(ob)
+            # the policy is still a STOCHASTIC controller (log_std ~0.5): sampled actions hold the
+            # stand (pelvis ~0.95 m), the bare mean collapses. Act the way it was trained to act.
+            a = mean + std * torch.randn_like(std)
+            d.ctrl[:] = a.clamp(0.0, 1.0).squeeze(0).numpy()      # 80 muscle activations
             for _ in range(CONTROL_EVERY):
                 mujoco.mj_step(m, d)
             pz = float(d.qpos[2]); heights.append(pz)
