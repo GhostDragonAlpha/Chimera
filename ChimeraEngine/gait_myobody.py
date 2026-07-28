@@ -179,7 +179,8 @@ def main() -> int:
     N = int(sys.argv[sys.argv.index('--n') + 1]) if '--n' in sys.argv else 5
     secs = float(sys.argv[sys.argv.index('--secs') + 1]) if '--secs' in sys.argv else 4.0
     tag = {'walk': 'myobody_walk', 'stand': 'myobody', 'gait': 'myobody_gait',
-           'syn': 'myobody_syn', 'cpg': 'myobody_cpg', 'ctrl': 'myobody_ctrl'}[which]
+           'syn': 'myobody_syn', 'cpg': 'myobody_cpg', 'ctrl': 'myobody_ctrl',
+           'syncpg': 'myobody_syncpg', 'synctrl': 'myobody_synctrl'}[which]
     meta = np.load(HERE / f'{tag}_meta.npy', allow_pickle=True).item()
     OBS, HID, ACT = int(meta['OBS']), int(meta['HID']), int(meta['ACT'])
 
