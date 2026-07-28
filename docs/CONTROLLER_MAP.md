@@ -18,6 +18,24 @@ every scenario — because a scenario is just a parameter set. Context also *sel
 same button fires a different formula-instance depending on what's in front of you (near a ledge, at
 cover, holding a ball) — exactly how a modern "action" button already works.
 
+## The process principle — positions are OUTPUTS, never inputs
+
+Every formula commands a **process and its stop condition**, never a final position. The hand does not
+aim its fingers at coordinates — it *closes until it cannot* (contact stops it), and the object decides
+where the fingers land. Reach *until contact or full extension*. Push *until the object moves or force
+maxes*. Stand *until balanced*. **The environment and the object determine where things end up; the
+formula only says the ACTION and WHEN TO STOP.** So one GRAB serves a pin and a bowling ball
+identically — the object parameterizes the *result*, not the command.
+
+This is why the **muscle** is the substrate and the **reflex** is the controller: a muscle contracts
+until its force balances the load ("close until you can't" is what a muscle *does*), and the stop
+conditions are sensory — contact, force, balance — which is exactly a reflex. So every atom is:
+**apply effort in a direction → stop when a sensor says stop.** That single shape *is* the state-machine
+transition. **Never reward matching a target pose;** reward the OUTCOME of the process (grasped,
+balanced, still) and let the position emerge. *(Applied 2026-07-27: the full-body stand's flailing arms
+are fixed not by a pose target but by rewarding "be still" + costing wasted muscle drive — the arms
+relax and hang on their own, position emergent.)*
+
 ## The ATOMS — the shared sub-states (~13, the "Frankenstein" parts)
 
 Every formula is stitched from these. They are what gets reused, so they are what we train once and
@@ -39,24 +57,48 @@ share everywhere. The commonality goes all the way down: ~13 atoms → ~50 formu
 | **SWING** | ballistic limb motion (throw, strike, stride) |
 | **LAUNCH / ABSORB** | explosive leg extension (jump) / flexion to absorb (land) |
 
-## The MAP — button → formula → atoms → context → variant
+## Two binding surfaces, ONE formula layer
 
-| input | formula (verb) | atoms it stitches | driven by | contextual variant |
-|---|---|---|---|---|
-| **Left Stick** | MOVE (walk↔run by magnitude) | STEP · PLANT · SHIFT · BALANCE · RECOVER | terrain slope/stairs, gravity, friction | in water → swim-stroke; at edge → edge-shuffle |
-| **L3 click** | SPRINT | STEP(fast) · SWING | gravity (Moon = longer float) | — |
-| **Right Stick** | LOOK / AIM-orient | ORIENT (head→torso→body) | — | with LT → fine-aim |
-| **A / ✕** | JUMP → TRAVERSE | LAUNCH · ABSORB / REACH+PULL / SWING-leg | ledge height, gap width, gravity | ledge → **mantle**; obstacle → **vault**; else jump |
-| **B / ○** | CROUCH → LOW | SHIFT-down · PLANT / SWING | speed, overhead clearance | running → **slide**; hold → **prone/crawl**; at cover → **take-cover** |
-| **X / □** | GRAB / INTERACT | REACH · GRIP · BRACE · (LIFT) | **object: size, mass, shape, grips** | pin → pinch; ball → two-hand; door → PUSH/PULL; lever → PULL |
-| **Y / △** | USE / STOW held item | item-specific | held item's genome | — |
-| **LB** | LEFT HAND / lean-left | REACH(L) · GRIP(L) / SHIFT(L) | object; cover geometry | at cover → lean-left peek |
-| **RB** | RIGHT HAND / lean-right | REACH(R) · GRIP(R) / SHIFT(R) | object; cover | at cover → lean-right peek |
-| **LT** | AIM / BRACE (raise & steady) | ORIENT · BRACE | held mass (heavier → more brace) | two-hand item → both arms |
-| **RT** | ACTION: THROW / STRIKE | SWING (wind → release) / PUSH | **held mass/shape sets the arc** | empty hand → punch; held → throw |
-| **D-pad** | STANCE / GESTURE select | pose set | — | up → stand-tall; down → prone; ←/→ → emote |
+Input is decoupled from the formula — a membrane seam. The formulas below don't care what triggers
+them, so we bind them **twice**: **keyboard + mouse (the PRIMARY target — this is a PC game)** and a
+standard **Xbox gamepad (the port)**. Same formulas, two thin binding tables. A touch or VR surface
+later is just a third table over the identical formula layer. (Note: in-game, BALANCE is always-on —
+the body is always trying to stand — so Space is JUMP, not stand; the `play_myolegs` demo only bound
+Space to the stand policy to show it on/off.)
 
-*(ORIENT is the 14th atom — head/torso/whole-body aim; used by Right Stick and every aimed action.)*
+### Bindings
+
+| formula (verb) | Keyboard + Mouse — **PRIMARY** | Xbox gamepad |
+|---|---|---|
+| MOVE (walk↔run) | **W A S D** | Left Stick |
+| SPRINT | **Shift** (hold) | L3 (click) |
+| LOOK / AIM-orient | **Mouse** | Right Stick |
+| JUMP → TRAVERSE (mantle / vault) | **Space** | A / ✕ |
+| CROUCH → LOW (slide / prone) | **Ctrl** (hold) · **C** (toggle) | B / ○ |
+| GRAB / INTERACT | **E** | X / □ |
+| ACTION: THROW / STRIKE / FIRE | **Left Mouse** | RT |
+| AIM / BRACE (raise & steady) | **Right Mouse** (hold) | LT |
+| USE / STOW held item | **R** | Y / △ |
+| LEFT HAND / lean-left | **Q** | LB |
+| RIGHT HAND / lean-right | **F** | RB |
+| STANCE / GESTURE select | **Mouse-wheel · 1-9** | D-pad |
+
+### Formula detail (input-agnostic — this is what actually gets trained)
+
+| formula | atoms it stitches | driven by | contextual variant |
+|---|---|---|---|
+| MOVE | STEP · PLANT · SHIFT · BALANCE · RECOVER | terrain slope/stairs, gravity, friction | water → swim-stroke; edge → shuffle |
+| SPRINT | STEP(fast) · SWING | gravity (Moon = longer float) | — |
+| LOOK / AIM | ORIENT (head→torso→body) | — | while aiming → fine-aim |
+| JUMP → TRAVERSE | LAUNCH · ABSORB / REACH+PULL / SWING-leg | ledge height, gap width, gravity | ledge → **mantle**; obstacle → **vault**; else jump |
+| CROUCH → LOW | SHIFT-down · PLANT / SWING | speed, overhead clearance | running → **slide**; hold → **prone/crawl**; at cover → **take-cover** |
+| GRAB / INTERACT | REACH · GRIP · BRACE · LIFT | **object: size, mass, shape, grips** | pin → pinch; ball → two-hand; door → PUSH/PULL |
+| THROW / STRIKE | SWING (wind → release) / PUSH | **held mass/shape sets the arc** | empty hand → punch; held → throw |
+| AIM / BRACE | ORIENT · BRACE | held mass (heavier → more brace) | two-hand item → both arms |
+| LEFT / RIGHT HAND | REACH · GRIP / SHIFT | object; cover geometry | at cover → lean & peek |
+| STANCE / GESTURE | pose set | — | stand-tall / prone / emote |
+
+*(ORIENT is the 14th atom — head/torso/whole-body aim; used by LOOK and every aimed action.)*
 
 ## Where the parameters come from — the membranes
 

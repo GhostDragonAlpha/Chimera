@@ -41,7 +41,8 @@ ENT = 0.004
 VCOEF = 0.5
 ALIVE_BONUS = 0.2
 FALL_FRAC = 0.6                       # fallen when root drops below FALL_FRAC * standing height
-EFFORT = 0.002
+EFFORT = 0.01                         # cost of muscle drive: relax what doesn't earn reward (the arms)
+STILL = 0.3                           # reward a SETTLED body (low joint velocity) -- process, not a target pose
 
 
 def build_ac(OBS, ACT, torch):
@@ -98,7 +99,7 @@ def main() -> int:
     print(f'\nPPO: the FULL-BODY {nu}-muscle humanoid learns to STAND  ({nj} joints)\n' + '=' * 74)
     print(f'  {W} envs x {T} steps = {W*T} samples/iter   actor-critic {OBS}->{HID}->{ACT}')
     print(f'  reward = height x uprightness + alive; terminate when root < {FALL_Z:.2f} m\n')
-    print(f"  {'iter':>4}{'reward/step':>12}{'height':>8}{'upright':>8}{'surv%':>7}{'sec':>7}")
+    print(f"  {'iter':>4}{'reward/step':>12}{'height':>8}{'upright':>8}{'still':>8}{'surv%':>7}{'sec':>7}")
     print('  ' + '-' * 48)
 
     def observe():
@@ -141,10 +142,13 @@ def main() -> int:
                 for _ in range(CONTROL_EVERY):
                     mjw.step(m, d)
                 h, upr = height_upright()
+                # "be still", NOT "match a pose": reward low joint velocity so the body settles and
+                # the arms stop flailing -- their resting position EMERGES, it is never commanded.
+                still = torch.exp(-STILL * torch.nan_to_num(qvel[:, 6:]).pow(2).mean(1))
                 alive = alive * (torch.nan_to_num(qpos[:, 2]) > FALL_Z).float()
                 effort = raw.clamp(0.0, 1.0).pow(2).mean(1)
                 obs_b[t] = o; act_b[t] = raw; lp_b[t] = lp; val_b[t] = v
-                rew_b[t] = (h * upr + ALIVE_BONUS - EFFORT * effort) * alive
+                rew_b[t] = (h * upr * (0.5 + 0.5 * still) + ALIVE_BONUS - EFFORT * effort) * alive
                 alive_b[t] = alive
             _, _, last_v = ac(observe())
 
@@ -182,12 +186,13 @@ def main() -> int:
                 opt.step()
 
         h, upr = height_upright()
+        still = torch.exp(-STILL * torch.nan_to_num(qvel[:, 6:]).pow(2).mean(1))
         surv = 100.0 * alive_b[-1].mean().item()
         if it == 0:
             init_surv = surv
         final_surv = surv
         print(f'  {it:4d}{rew_b.mean().item():12.4f}{h.mean().item():8.3f}{upr.mean().item():8.3f}'
-              f'{surv:7.1f}{time.perf_counter()-ti:7.1f}')
+              f'{still.mean().item():8.3f}{surv:7.1f}{time.perf_counter()-ti:7.1f}')
         if not smoke and (it + 1) % 8 == 0:
             torch.save(ac.state_dict(), HERE / 'myobody_policy.pt')
             np.save(HERE / 'myobody_meta.npy', dict(OBS=OBS, HID=HID, ACT=ACT, STAND_Z=STAND_Z))
