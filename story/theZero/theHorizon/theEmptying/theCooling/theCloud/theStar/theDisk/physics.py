@@ -71,7 +71,7 @@ def emit(nums, t=1.0):
     fourfold, so the outer disk turns bright and dense. The line is not drawn -- it is where the
     colour changes because that is where the physics changes."""
     import numpy as np
-    from matter import blank, paint, SOLID
+    from matter import blank, paint, lit, SOLID
 
     n = 24000
     tt = float(t)
@@ -88,12 +88,18 @@ def emit(nums, t=1.0):
     b[:, 2] = rng.normal(0.0, 0.05 * rr * (1.0 - 0.6 * tt), n)  # it settles thinner as it cools
 
     icy = rr > 1.0                                              # beyond the snow line water is solid
-    rock = np.array([0.62, 0.45, 0.32], np.float32)
-    ice = np.array([0.80, 0.90, 1.00], np.float32)
-    col = np.where(icy[:, None], ice, rock)
-    # at t=0 nothing has condensed yet: uniform warm vapour. the sorting APPEARS as time runs.
-    warm = np.array([0.75, 0.62, 0.50], np.float32)
-    b[:, 16:19] = warm * (1.0 - tt) + col * tt
+    # ALBEDO is the matter: what fraction of arriving light each material returns. Ice is bright
+    # BECAUSE it is ice; rock is dark BECAUSE it is rock. Neither is a brightness -- it is a ratio.
+    rock = np.array([0.20, 0.15, 0.11], np.float32)             # dark silicate, albedo ~0.15
+    ice = np.array([0.75, 0.82, 0.90], np.float32)              # water ice, albedo ~0.8
+    warm = np.array([0.45, 0.37, 0.30], np.float32)             # uncondensed vapour+dust at t=0
+    albedo = np.where(icy[:, None], ice, rock) * tt + warm[None, :] * (1.0 - tt)
+
+    # THE LIGHT: irradiance falls as 1/r^2 from the star at the centre. The inner disk receives
+    # thousands of times more than the edge, which is why the rocky zone BLAZES despite being made
+    # of the darker material -- a splat is a measurement of light, not a painted colour.
+    E = 1.0 / np.clip(rr, 1e-3, None) ** 2
+    b[:, 16:19] = lit(albedo, E, e_ref=1.0)                     # e_ref = irradiance at the snow line
 
     # The fourfold jump shown as DENSITY, not brightness -- and kept below saturation, or the ice
     # reads as a solid sheet and hides that a disk is overwhelmingly empty space.

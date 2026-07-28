@@ -46,6 +46,29 @@ def paint(buf: np.ndarray, rgb, alpha: float, size: float, kind: float = SOLID) 
     return buf
 
 
+def lit(albedo, irradiance, e_ref: float = 1.0, tone: float = 0.25):
+    """A SPLAT IS A MEASUREMENT OF LIGHT, not a coloured object.
+
+    What leaves a grain is `albedo * E / pi` -- the matter says what FRACTION it returns, the light
+    says HOW MUCH arrives. So the same rock is brilliant near a star and near-black far from one,
+    and neither is a different material.
+
+        albedo     (3,) or (N,3)   the matter's response  -- this is the material DNA
+        irradiance  scalar or (N,) W/m^2 arriving         -- this is the light
+        e_ref                      irradiance treated as "correctly exposed"
+
+    TONE, DECLARED: real irradiance spans thousands to one across a disk while a display spans about
+    a hundred to one, so a curve is unavoidable -- exactly what a camera does. `tone` is that curve
+    (0.25 = fourth root), and it is the ONE human parameter here. Everything else is measured."""
+    import numpy as np
+    a = np.asarray(albedo, dtype=np.float32)
+    e = np.asarray(irradiance, dtype=np.float32)
+    scale = np.clip(e / max(e_ref, 1e-30), 0.0, None) ** tone
+    if a.ndim == 1:
+        a = a[None, :]
+    return np.clip(a * scale.reshape(-1, 1), 0.0, 1.0)
+
+
 def blackbody_rgb(T: float) -> tuple:
     """A crude but honest colour for a temperature: the colour is a MEASUREMENT of the physics,
     never a choice. Cool -> red, ~5800 K -> white, very hot -> blue-white."""
