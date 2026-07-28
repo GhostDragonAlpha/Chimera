@@ -1,5 +1,23 @@
 # HOW THIS GAME IS BUILT
 
+> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
+>
+> **A product, not a sum.** Any factor at zero takes the whole result to zero, and no amount of the
+> other two makes up for it.
+>
+> * **HIERARCHY** alone — an outline of empty claims.
+> * **PHYSICS** alone — equations with no scale to live at.
+> * **HIERARCHY × PHYSICS**, no human — correct, and meaningless.
+> * **HUMAN × HIERARCHY**, no physics — a story that does not run.
+>
+> Every failure in building this has been one factor going to zero:
+> a terrain with 39 traced variables rendered from *noise* (**physics = 0**);
+> a walking controller built six membranes deep with nothing proven beneath it (**hierarchy = 0**);
+> a physics engine outside the tree entirely (not in the product at all).
+>
+> **4-dimensional**: three of space and one of time — so a chapter is never a picture, it is a
+> movie, from its beginning to its end, at its own scale.
+
 **You write chapters. Each chapter must be PROVEN, VISUAL, and LEARNED. That is the whole method.**
 
 There is no asset pipeline, no level editor, and no content budget. The world is a story told in

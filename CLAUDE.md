@@ -1,5 +1,13 @@
 # Chimera — Project Manual
 
+> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
+>
+> **A product, not a sum** — any factor at zero takes the whole result to zero, and the other two
+> cannot make up for it. Hierarchy alone is an outline; physics alone has no scale to live at;
+> both without the human are correct and meaningless. Every failure here has been one factor going
+> to zero (39 variables traced and rendered from noise = physics 0; a walker built six membranes
+> deep with nothing proven beneath it = hierarchy 0).
+>
 > # HOW THIS GAME IS BUILT (2026-07-28 — read `story/README.md` first, then come back)
 >
 > **You write CHAPTERS. Each chapter must be PROVEN, VISUAL, and LEARNED.**
