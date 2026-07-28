@@ -35,8 +35,8 @@ VCOEF = 0.5
 ALIVE_BONUS = 0.4                     # staying up must BEAT a doomed forward lunge, or it dives & falls
 FALL_FRAC = 0.6
 EFFORT = 0.01                         # relax wasted drive (arms) -- but legs are free to step
-TARGET_SPEED = 1.0
-FWD_LOCAL = np.array([1.0, 0.0, 0.0])  # body local +X as forward; VERIFY on run 1 (flip if it walks backward)
+TARGET_SPEED = 0.5                    # QUASI-STATIC: slow enough to re-stand between steps (STAND<->STEP)
+FWD_LOCAL = np.array([1.0, 0.0, 0.0])  # body local +X as forward (verified: walks forward, fwd > 0)
 
 
 def build_ac(OBS, ACT, torch):
@@ -188,7 +188,7 @@ def main() -> int:
                 torch.nn.utils.clip_grad_norm_(ac.parameters(), 1.0)
                 opt.step()
 
-        dist_m = (((qpos[:, 0:2] - start_xy) * head0).sum(1) * alive).mean().item()
+        dist_m = ((qpos[:, 0:2] - start_xy) * head0).sum(1).mean().item()   # mean fwd displacement (shown even if fallen)
         mean_fwd = (fwd_sum / T).mean().item()
         surv = 100.0 * alive_b[-1].mean().item()
         if it == 0:
