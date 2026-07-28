@@ -5,6 +5,22 @@ where every sentence is also an equation and the equation draws itself. Read thi
 you touch anything. It is short because the method is simple; it is exact because almost every way
 of going wrong here *looks* like working.
 
+**What this is, commercially.** CHIMERA is a space game, funded by a pipeline that turns real 3D
+scans and authored assets into labelled, re-composable **object genomes** (shape + material,
+serial-numbered) so that **one person builds at studio scale.** Everything in the world is a Gaussian
+splat; every material is a trained composition of splat types; every genome is either **measured from
+reality** (`Construction/`) or **grown under physics** (`core/trainables/`, `story/`) — one library
+seen from two directions. Nothing is hand-authored, which is why the content budget does not scale
+with the size of the world.
+
+**The Unreal Engine pipeline is RETIRED (2026-07-23), and MuJoCo was deleted (2026-07-28).** Do not
+start an editor, run a preflight, or follow a task board. A stray "Unreal" keyword in an old doc is
+not a signal — read the file. Nothing simulates outside the Chimera Engine.
+
+**Read in this order:** this file · `story/README.md` · `Chimera/docs/THE_STORY.md` (**the human
+story — the source of every membrane**) · `CLAUDE.md` · `ChimeraEngine/MCP_ENGINE.md` ·
+`Chimera/docs/EXPERIMENTAL_METHOD.md` (before debugging anything).
+
 ---
 
 ## 0. The formula. Everything else is commentary.
@@ -47,6 +63,67 @@ physics. When he says a render is wrong, the render is wrong; you do not defend 
 physics is wrong and start over.
 
 ---
+
+## 1b. HOW A THING BECOMES TRUE — the dyad. Read this twice.
+
+Building a chapter does not make it true. **A term is proven only when its two messengers, from two
+independent systems, AGREE:**
+
+- **PHYSICS (you) → a NUMBER.** From the law. Deterministic, measured. The star's blackbody
+  temperature; the world's ocean and land fractions.
+- **HUMAN (the operator + a vision model as their proxy eye) → a TERM.** A separate model LOOKS at the
+  render, **blind to the number**, and says what it sees: *"a warm white sun"*, *"a living blue world"*.
+- **CROSS-REFERENCE → an alignment 0→1.** `alignment ≥ threshold` = the dyad holds. Below = **the
+  render is wrong.**
+
+Two **different kinds** of output — a number, a term — are what make the sides independent. If they
+produce the *same* kind of thing you have one system twice: **identical outputs are the tell of a
+false dyad, not proof.**
+
+> **A MONAD IS NEVER PROOF.** A system that measures itself proves nothing. This is the single most
+> common way to fail here, and it is seductive because it feels like diligence:
+> - you render something and **look at it yourself** → monad
+> - you measure pixels off your own picture and call it convergence → monad
+> - you script the `Engine` class from a driver instead of calling the tool → monad, recorded `[~]`
+> - you widen a tolerance until the check passes → **fix the physics, never the tolerance**
+
+**Hard rules of the human side** (`ChimeraEngine/human_messenger.py`):
+- **No vision model loaded = FAIL, never a skip.** The operator is summoned so a mind is present.
+- **The human disagrees ⇒ the PHYSICS is wrong. Start over.** You do not doubt the eye.
+- **The only override for a dark eye is the operator doing the reading themselves** — they are the
+  terminal; their judgment needs no model.
+
+**The shared view exists so both sides see the SAME picture** — `ChimeraEngine/gallery.py` on
+`127.0.0.1`. You cannot tune a render you cannot see; that is the monad trap wearing overalls.
+
+**Rendering IS physics.** An appearance is a projection of the matter, so it is yours to produce —
+and the human's to judge. Never the reverse.
+
+## 1c. The engine loop, and the authority you actually have
+
+The story tree (`grow.py`) is how a membrane is *built*. The engine is how it is *gated*:
+
+```
+orient → next → frame → question × N → classify → render(splat movie) → [human dyad] → prove
+```
+
+1. **`orient` first, every time.** Read the state; never guess it.
+2. **You do not pick the term — `next` does.** Setting-first from the seed. Jumping to a mid-tree
+   scene is the founding failure of this project, and it has been repeated since.
+3. **Discover variables by `question`, never declare them.** Keep asking until `saturated` (dry tail +
+   Chao2 completeness). **Inventing variables in your head is already a failure** — and stopping
+   because you *feel* complete is how you get 0.53 completeness and a chapter full of one-offs.
+4. **`classify` every variable** to `PHYSICS` (yours) or `THE HUMAN` (the operator's `decide`). No
+   other terminal is legal. **An LLM is never a terminal.**
+5. **`render`, then let the dyad judge.** No render = nothing to judge = cannot be proven.
+6. **`prove` only through the tool.** Read the refusal; do exactly what it says.
+7. **Taste terminates at the operator.** `decide` is theirs, never yours.
+
+**You are the head of the dragon.** You own every engineering and technical decision and you execute
+without asking which wrench to pick up. **Legal stops are only:** (a) the term is genuinely proven,
+(b) a real blocker — name the cause, (c) a taste decision that is the operator's, (d) the human eye
+is dark and unoverridden. *"Which term?"* is never legal — `next` answered it. *"Which technical
+approach?"* is never legal — that is your half.
 
 ## 2. A chapter is a folder, and it describes everything inside one membrane
 
@@ -189,6 +266,9 @@ is literal: a folder's path is its address, its parent's numbers are its signal.
 | **two authorities** | a term in both the old `SCENES` dict and the new tree | the **old object rendered under the new label** |
 | **saturation** | 16k soft blobs piled into one place | hard **square tiles** — a render lying about density |
 | **let it run** | watching a dying run "to see how it ends" | pure cost; kill at the **first hint** |
+| **the monad** | rendering something and judging it yourself; measuring pixels off your own picture; scripting the engine from a driver | it *feels* like diligence. **One system twice is not evidence.** |
+| **declared, not discovered** | writing down the variables you think a membrane has | the discovery curve never saturates — one-off after one-off, Chao2 completeness ~0.5 |
+| **widened the tolerance** | the check now passes | **fix the physics, never the tolerance** |
 
 **Economy is a rule, not a preference.** A run whose outcome you already know is entropy: watts,
 heat, wall-clock, zero information. Kill it. But the counter-rule is equally hard: **a number
