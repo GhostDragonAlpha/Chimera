@@ -51,13 +51,14 @@ def bench(fn, n: int, warmup: int = 2) -> float:
 
 
 def hot_paths():
-    """(name, callable, reps, budget_seconds, why) -- budgets from what the GAME needs."""
-    from body import humanoid
-    from mjcf_body import FastBody
+    """(name, callable, reps, budget_seconds, why) -- budgets from what the GAME needs.
+
+    The body/FastBody entries were retired with the physics that ran OUTSIDE the Chimera Engine:
+    a budget for a path that no longer exists measures nothing. What remains is what the engine
+    actually runs per frame."""
     from fields import Coupling, LightField, Star, ROCK
     from planner import Planner, Stance, Terrain
 
-    h = humanoid()
     sun = Star.from_irradiance(center=(0, 0, 0), at_distance=1.496e11, irradiance=1361.0)
     lf = LightField(stars=[sun])
     terr = Terrain(kind='slope', material='scree', slope_deg=18.0)
@@ -70,23 +71,7 @@ def hot_paths():
     c = Coupling(stiffness=ROCK.stiffness)
     p = np.array([1.496e11, 0, 0])
 
-    fb = FastBody(humanoid(base_pos=(0, 0, 2.0)), dt=1e-3)
-    fb.step(20)
-    INF = float('inf')
     return [
-        # THE GAME'S PATH. A body must step at least as fast as the frame it is drawn in.
-        ('FastBody.step()', lambda: fb.step(1), 400, FRAME,
-         'the physics tick the game actually runs'),
-        # EXEMPT, WITH THE REASON WRITTEN DOWN -- the discipline bind_guard's `# bind-public:`
-        # marker enforces. This one is allowed to be slow because being READABLE is its job: it is
-        # the second messenger that proved FastBody correct to 1e-13 m (mjcf_witness 4/4). An
-        # exemption is a claim about PURPOSE. "It was easier" would not qualify.
-        ('body.step() [reference]', lambda: h.tree.step(1e-3), 4, INF,
-         'REFERENCE IMPLEMENTATION -- readability is the deliverable, not speed'),
-        ('mass_matrix_f() [ref]', lambda: h.tree.mass_matrix_f(), 4, INF,
-         'REFERENCE -- 24 unit-acceleration RNEA passes, kept legible on purpose'),
-        ('humanoid() build', lambda: humanoid(), 3, 0.25,
-         'spawning a character must not stall the frame'),
         ('planner.plan()', lambda: pl.plan(st, ['footL', 'footR'], goal=goal), 20, 1e-3,
          'one contact decision, priced at ~0.8 MFLOP in THE_BODY.md 4.2'),
         ('light.irradiance_at()', lambda: lf.irradiance_at(p), 4000, 2e-5,
