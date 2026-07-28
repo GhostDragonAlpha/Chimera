@@ -266,6 +266,18 @@ material painted on a surface.** Isolate one thing → make variations → place
 - **The exploit is the product** — a degenerate winner is the optimiser auditing your spec.
   Iterate the objective, never the artifact.
 - **Measure the thing, not a proxy** (`docs/EXPERIMENTAL_METHOD.md`).
+- **DERIVE it before you TRAIN it** (2026-07-28). Trace every membrane's variables and show the
+  equations CLOSE before a run — else it is guess-and-check on a 2-hour loop (= training the RULES).
+  A real derivation predicts what it was never fitted to. `docs/THE_MATHEMATICS_OF_WALKING.md`.
+- **One change at a time** — three coupled changes is a three-body problem with no attributable
+  solution. And watch the second variable you changed by accident (an action-space swap silently
+  rescales exploration noise).
+- **Command the PROCESS and its stop condition, never the final position** — positions are OUTPUTS;
+  in rewards, reward the outcome (grasped/balanced/still), not a target pose. `docs/CONTROLLER_MAP.md`.
+- **The work-gate judges LEARNING, not heat** — temperature is a readout; a coasting run has neither
+  heat nor a learning curve (`ChimeraEngine/gpu_gate.py`).
+- **Verify your own MEASUREMENT, not just the claim** — before reporting a result that contradicts a
+  prior one, suspect the instrument first.
 - **Build in one of six directions, from the player outward** — §6 below. Without a
   priority rule the pipeline yields unrelated assets instead of a place.
 
