@@ -44,6 +44,25 @@ GPU-hour. That is derive-before-train.
 Dynamical-systems theorem (stable limit cycle of the Hopf normal form) + the measured
 swing frequency ω_swing.
 
-## Witness: PENDING
-Gait run with the CPG-augmented policy: periodicity → ~1.0, duty > 0.5, robustness → ~1.0.
-Receipt-to-be: `gait_myobody.py` on the CPG policy.
+## Witness: TESTED — the WEAK form is REFUTED (2026-07-28)
+Built as a phase clock in the OBSERVATION (sin φ, cos φ) at ω_swing = 4.171 rad/s, on the synergy
+base, warm-started from the stand, 15 iters. Gait witness, worst-of-5 (`gait_myobody.py`):
+- **synergy + CPG (clock):  periodicity 0.15** (mean 0.36) — NOT A GAIT; stands ~still, dist −0.06 m
+- **synergy control (no clock): periodicity 0.48** (mean 0.54) — RUN/TROT; travels, but falls 4/5
+
+The prediction periodicity → 1.0 FAILED — the clock made it WORSE. Iteration 0 was byte-identical
+between the arms, so it is a clean one-variable A/B.
+
+**Why it failed (honest):** this was the WEAK form. The phase only *informed* the observation, and
+nothing in the reward rewarded phase-locking, so PPO had no gradient to synchronise with the clock —
+it stayed decorative and the policy drifted to the laziest optimum (stand still). The STRONG form this
+membrane's own `outputs.json` specifies — the phase DRIVES the muscle pattern (activation = f(φ)) and
+the policy only *stabilises* it — is UNTESTED.
+
+**Deeper finding:** neither policy WALKS (one freezes at periodicity 0.15, one falls forward at 0.48).
+The base task selects stand-or-fall, not walk — a problem UPSTREAM of rhythm. And per the studio's own
+law (PROGRAM the rules / TRAIN the numbers), a rhythm is a NUMBER: hand-coding a Hopf oscillator may be
+the wrong tool, versus TRAINING the gait from reference motion (imitation), which the project already
+found "has the reward RIGHT".
+
+The Hopf limit-cycle THEOREM (above) stands. **Status: rhythm/ is OPEN. Do not claim a limit cycle.**
