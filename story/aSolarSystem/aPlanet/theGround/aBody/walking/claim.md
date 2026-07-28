@@ -31,9 +31,11 @@ game's locomotion axis — one derivation, every planet.
                of pressure, never airborne beyond the step. The deepest membrane —
                the "finger touches finger." [inherits μ_s]
 
-## Why (terminal) — OPEN
-NOT closed. No child above is proven yet. This is the derive-before-you-train
-frontier: each child's equation must CLOSE on paper — predicting a fact it was not
-fitted to — before a single GPU-hour is spent. The reference derivation already
-drafted is `docs/THE_MATHEMATICS_OF_WALKING.md`; this membrane will absorb it one
-child at a time, each resting on the seams inherited above.
+## Why (terminal → PHYSICS through its children) — DERIVATION COMPLETE
+All five children are now derivation-CLOSED — Newtonian / dynamical-systems theorems
+from the inherited constants, each predicting a fact it was not fitted to. walking is
+therefore **proven on paper**; it rests on PHYSICS through its subtree. What remains is
+the WITNESS: `stance/` is already witnessed (the stand); `step/ swing/ rhythm/ contact/`
+await one gait run. The load-bearing proof is `rhythm/` — the Hopf oscillator's provable
+stable limit cycle, tuned to ω_swing = 4.170 rad/s, antiphase-coupled, contact-entrained.
+Reference: `docs/THE_MATHEMATICS_OF_WALKING.md`. The falsifiable witness: periodicity → 1.0.
