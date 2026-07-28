@@ -103,8 +103,21 @@ def main() -> int:
         own['v.weight'] = sd['v.weight']; own['v.bias'] = sd['v.bias']
         Wn, bn = project_head(sd, mu_s, syn, scale, torch)
         own['mean.weight'] = Wn; own['mean.bias'] = bn
+        # MATCH THE EXPLORATION, or the transfer silently changes a second variable. The stand is a
+        # STOCHASTIC controller -- its deterministic mean collapses (0.92 -> 0.03 m) and it only holds
+        # up because of constant motor noise. The SAME nominal log_std produces a 6x SMALLER
+        # muscle-space perturbation through the synergy decoder (measured), so the naive transfer ran
+        # the policy near-deterministically and it fell (survival 69% -> 0.5%). Rescale log_std so the
+        # per-muscle noise matches the 290-dim control exactly.
+        old_std = float(sd['log_std'].exp().mean())
+        probe = torch.randn(4096, K, device=dev)
+        g = float(((probe * scale) @ syn).std())                # muscle-space std per unit coeff noise
+        new_std = old_std / max(g, 1e-6)
+        own['log_std'] = torch.full((K,), float(np.log(new_std)), device=dev)
         ac.load_state_dict(own)
         print(f'  warm-started from the STAND policy, head PROJECTED into {K}-dim synergy space')
+        print(f'  exploration matched: log_std {float(sd["log_std"].mean()):.2f} -> '
+              f'{np.log(new_std):.2f} (same {old_std:.3f} per-muscle noise as the 290-dim control)')
     opt = torch.optim.Adam(ac.parameters(), lr=LR)
 
     def decode(c):
