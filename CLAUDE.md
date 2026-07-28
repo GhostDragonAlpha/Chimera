@@ -1,17 +1,47 @@
 # Chimera — Project Manual
 
-> **THE GOAL: a space game.** Everything below serves it.
+> # HOW THIS GAME IS BUILT (2026-07-28 — read `story/README.md` first, then come back)
 >
-> The world is built from **typed bricks** — matter with only the properties the game
-> reads — assembled bottom-up and baked. The bricks are **trained against reality's own
-> numbers**, not hand-tuned. Object genomes recovered from real scans (`Construction/`)
-> and genomes generated from a learned latent (`WorldModel/`) are the same library seen
-> from two directions: extraction and generation.
+> **You write CHAPTERS. Each chapter must be PROVEN, VISUAL, and LEARNED.**
+> There is no asset pipeline and no content budget. The world is one story told in order
+> from a seed, where every sentence is also an equation, and the equation also draws itself.
+>
+> **A chapter is a folder** in `story/` holding `story.md` (the human story — what this
+> membrane IS, the **node**), `physics.py` (the law reaching it from its parent — the
+> **edge** — with `derive()` for its numbers and `emit()` for its matter), and
+> `numbers.json`. Subfolders are the concepts it contains. **The path is the serial is the
+> compressed story.** `story/grow.py` is the only machinery: the same three moves at every
+> folder, so adding world means adding a chapter, never more code.
+>
+> * **PROVEN** — the law derives this membrane's numbers from its parent's, and *predicts a
+>   fact it was never fitted to*. If you are choosing a number, you broke the chain and
+>   substituted taste for a law. (¶4 put in η, mₑ, 13.6 eV → **3760 K** for recombination;
+>   literature ~3700 K.)
+> * **VISUAL** — `emit()` sits in the *same file* as `derive()` and reads the *same numbers*,
+>   so appearance cannot drift from physics. **No aesthetic passes** — a colour is a
+>   measurement. Watch it turn in the live viewer, and **sample the video**: one frame cannot
+>   show motion, and comparing frames is what catches a scene that silently didn't switch.
+> * **LEARNED** — the law fixes the FORM; the free numbers are *trained* against that
+>   membrane's own measurable target, never tuned. Program the rules, train the numbers.
+>
+> **Every membrane works in its own local units** (a boundary supplies its own unit, grain
+> size included) — which is why 41 orders of magnitude cost no precision.
+> **Linear yet branched**: every path from the seed is one line; chapters can be revisited
+> and improved without disturbing neighbours, because a child consumes its parent's
+> `numbers.json`, never its parent's reasoning.
+> **From zero only ADDITION is legal** — nothing is subtracted from the story.
+> **Nothing simulates outside the Chimera Engine.** (MuJoCo and its trainers were deleted
+> 2026-07-28; a foreign engine's floor is not the planet.)
 
-> The Unreal Engine 5 pipeline is retired (2026-07-23). UE-only docs were deleted.
-> Everything below is engine-agnostic or current.
+> The world's matter is **typed bricks** trained against reality's own numbers, never
+> hand-tuned. Object genomes recovered from real scans (`Construction/`) and genomes
+> generated from a learned latent (`WorldModel/`) are the same library from two directions.
+> The Unreal Engine 5 pipeline is retired (2026-07-23); everything below is engine-agnostic.
 
 ## NEW AGENT? START HERE
+
+**-1. `story/README.md` — HOW THE GAME IS BUILT.** Chapters, proven/visual/learned, the two
+   authors (human = nodes, physics = edges). Everything below is the machinery that serves it.
 
 0. **`python -m core.terms <word>`** — the TERMINOLOGY INDEX (73 terms, `docs/TERMINOLOGY.md`).
    This project uses genetics, physics and cell-biology terms **literally, not as metaphor**:
