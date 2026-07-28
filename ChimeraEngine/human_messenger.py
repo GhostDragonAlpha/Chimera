@@ -44,6 +44,9 @@ PHYSICS_READING = {
                   "(blue, then white/frozen) on the other -- a temperature gradient across the worlds",
     "aPlanet": "a single planet seen from space: blue oceans, green continents of land, and white "
                "polar ice caps -- a living habitable world like Earth",
+    "theTerrain": "a spherical world's solid surface seen from space with rugged, uneven RELIEF: large "
+                  "dark-blue low basins, green lowland, and tan-and-brown higher ground -- a bumpy "
+                  "topographic globe of basins, plains and uplands, not a smooth flat ball",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 

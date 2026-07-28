@@ -36,6 +36,8 @@ PHYSICS = {
                        "law": "chlorophyll reflectance -> a lush habitable surface is vegetation-dominated"},
     "aPlanet":        {"feature": "habitable_world", "floor": 0.04,
                        "law": "liquid water AND land -> a habitable world shows BOTH ocean-blue and continent-green from space"},
+    "theTerrain":     {"feature": "relief_range", "floor": 0.04,
+                       "law": "continuous solid relief spans a RANGE of elevations -> the surface shows BOTH low basins and high uplands, not one uniform shade"},
 }
 
 # convergence tolerances: the residual must be strictly BELOW these. Set with margin from the
@@ -173,6 +175,20 @@ def measure_habitable_world(a):
     return float(ocean.sum()) / n, float(land.sum()) / n
 
 
+def measure_relief_range(a):
+    """Low-basin and high-upland fractions of the relief disk. Continuous solid relief spans a RANGE of
+    elevations, so the hypsometric extremes must BOTH appear: navy basins (low ground) AND warm/bright
+    uplands (arid rock, snow -- high ground). A FLAT uniform sphere shows one shade and one of these
+    collapses to ~0. Returns (basin_frac, upland_frac)."""
+    import numpy as np
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    disk = a.sum(-1) > 60
+    basin = disk & (b > r * 1.15) & (b > g * 1.05) & (b > 60)      # low: navy basins (below the sea datum)
+    upland = disk & (r >= g) & (r > 80) & ~basin                   # high: warm/bright uplands (arid rock, snow)
+    n = max(int(disk.sum()), 1)
+    return float(basin.sum()) / n, float(upland.sum()) / n
+
+
 # --- the convergence test: predicted (physics) vs measured (pixels) ------------
 def converge(term: str, png: str) -> dict:
     """Do the term's two messengers AGREE? Predict the feature from the physics law, measure it from
@@ -226,6 +242,16 @@ def converge(term: str, png: str) -> dict:
                 "residual": round(both, 3), "tol": floor,
                 "detail": (f"ocean-blue {ocean:.3f} and land-green {land:.3f} of the world disk; a "
                            f"habitable world needs BOTH >= {floor}; min {both:.3f} "
+                           f"{'>=' if both >= floor else '<'} floor")}
+
+    if feat == "relief_range":
+        basin, upland = measure_relief_range(a); floor = spec["floor"]
+        both = min(basin, upland)                             # relief only if BOTH low and high appear
+        return {"has_test": True, "converged": both >= floor, "feature": feat, "law": spec["law"],
+                "predicted": f"basin AND upland each >= {floor}", "measured": f"basin {basin:.3f}, upland {upland:.3f}",
+                "residual": round(both, 3), "tol": floor,
+                "detail": (f"low basins {basin:.3f} and high uplands {upland:.3f} of the relief disk; "
+                           f"continuous relief needs BOTH >= {floor}; min {both:.3f} "
                            f"{'>=' if both >= floor else '<'} floor")}
 
     if feat == "green_dominance":

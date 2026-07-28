@@ -36,6 +36,7 @@ SCENES = {
     "theStar":        {"kind": "collapse", "type": "atmosphere", "count": 7000, "spread": 55, "size": 3.4,
                        "color": (1.0, 0.93, 0.82, 1.0), "pull": 1.4, "cam": (0.0, -210.0, 26.0)},
     "aPlanet":        {"kind": "planet", "radius": 88.0, "ocean": 0.66, "cam": (0.0, -250.0, 40.0)},
+    "theTerrain":     {"kind": "terrain", "radius": 88.0, "relief": 0.13, "sea": 0.5, "cam": (0.0, -250.0, 40.0)},
     "thePlanets":     {"kind": "row", "span": 500.0, "cam": (0.0, -520.0, 55.0),
                        "planets": [((1.00, 0.28, 0.12), 30.0),   # molten red   (hottest)
                                    ((1.00, 0.52, 0.16), 30.0),   # orange
@@ -180,6 +181,42 @@ def _planet_buffers(spec: dict, term: str):
     return end, begin
 
 
+def _terrain_buffers(spec: dict, term: str):
+    """Build (end, begin) for theTerrain: a sphere shell RADIALLY DISPLACED by its elevation field, so the
+    relief -- mountains, basins -- is REAL 3D relief, tinted hypsometrically by height. The appearance
+    DERIVES from the elevation field: if the physics (the field) is right, the relief is right. No
+    atmosphere -- theTerrain is the solid relief ALONE (theAtmosphere is its sibling), which is also what
+    distinguishes its render from aPlanet's flat ocean/continent disc."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec["radius"]); relief = float(spec.get("relief", 0.13)); sea = float(spec.get("sea", 0.5))
+    n_s = 40000
+    dirs = _fibonacci_sphere(n_s)
+    elev = _fbm(dirs, rng, octaves=5)                              # the elevation field = spherical-harmonic sum + roughness
+    hn = (elev - elev.min()) / (np.ptp(elev) + 1e-9)               # normalised elevation 0..1
+    surf = np.zeros((n_s, NCOLS), dtype=np.float32)
+    surf[:, PX:PZ + 1] = (dirs * (R * (1.0 + relief * (hn - sea)))[:, None])   # DISPLACE the shell by height about the sea datum
+    surf[:, NX:NZ + 1] = dirs                                      # outward normal ~ radial -> back-face cull the far side
+    surf[:, TYPE] = 3.0; surf[:, ALPHA] = 1.0; surf[:, SIZE] = 3.5
+    # HYPSOMETRIC TINT -- the relief reads by colour too: ocean basins (navy, darker deeper) below the sea
+    # datum; green lowland -> arid tan -> grey rock -> white peak above it.
+    o = np.clip(hn / sea, 0.0, 1.0)                               # 0 abyss .. 1 shoreline
+    ocean = np.stack([0.02 + 0.03 * o, 0.06 + 0.14 * o, 0.26 + 0.22 * o], axis=1)
+    l = np.clip((hn - sea) / (1.0 - sea), 0.0, 1.0)              # 0 lowland .. 1 peak
+    lp = np.array([0.0, 0.40, 0.72, 1.0])
+    stops = np.array([[0.15, 0.42, 0.14], [0.46, 0.40, 0.20], [0.50, 0.50, 0.52], [0.96, 0.97, 1.0]])
+    land = np.stack([np.interp(l, lp, stops[:, c]) for c in range(3)], axis=1)
+    surf[:, CR:CB + 1] = np.where((hn < sea)[:, None], ocean, land).astype(np.float32)
+    # BEGIN: the relief ACCRETING -- its grains flung out into a dust cloud that condenses into the sphere.
+    end = surf
+    begin = end.copy()
+    spread = R * (1.4 + 2.2 * rng.random(len(begin)))
+    tang = rng.normal(0.0, R * 0.5, (len(begin), 3))
+    ndir = end[:, PX:PZ + 1] / (np.linalg.norm(end[:, PX:PZ + 1], axis=1, keepdims=True) + 1e-9)
+    begin[:, PX:PZ + 1] = ndir * spread[:, None] + tang
+    return end, begin
+
+
 def _solid_sphere(center, radius, color, rng, gain: float = _SURFACE_GAIN):
     """A solid opaque sphere of one colour at `center` -- the reusable body (calibrated over-accumulation)."""
     import numpy as np
@@ -296,7 +333,7 @@ def project_movie(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "row": _row_buffers, "system": _system_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -350,7 +387,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "row": _row_buffers, "system": _system_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
