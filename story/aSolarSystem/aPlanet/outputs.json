@@ -1,0 +1,12 @@
+{
+  "_comment": "aPlanet's port. g is the load-bearing handoff: it is what makes the gait gravity-portable — change it here, and every walking equation below re-derives itself.",
+  "hands_down": {
+    "g_surface": "G*M/R^2  (m/s^2)  — Earth 9.81, Moon 1.62, Mars 3.72",
+    "R": "planet radius from mass-radius relation",
+    "T_surface": "from planet.py climate solve",
+    "water_state": "ocean | ice | vapor",
+    "atmosphere": "retained | thin | none  (Jeans)"
+  },
+  "source": "Chimera/core/trainables/planet.py",
+  "note": "g flows to theGround (sets friction via repose) and to aBody/walking (sets omega0, the swing period, and the Froude number)."
+}

@@ -1,0 +1,10 @@
+{
+  "_comment": "The PORT: what aSolarSystem hands down to its children. Real values come from the catalog export at run time; this declares the schema of the seam.",
+  "source": "Chimera/core/trainables/bigbang.py --export-catalog",
+  "artifact": "bigbang.systems.json",
+  "hands_down": {
+    "star": ["g_surface", "mass", "luminosity"],
+    "per_planet": ["mass", "semimajor_axis", "eccentricity"]
+  },
+  "note": "Each per_planet triple instantiates one aPlanet/ child. A child reads this file by walking '..' up the tree — that upward path IS the inheritance channel."
+}

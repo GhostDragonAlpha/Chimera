@@ -1,0 +1,13 @@
+{
+  "_comment": "aBody's port: the measured constants that turn walking's governing laws from symbols into numbers.",
+  "hands_down": {
+    "M_kg": 82.04,
+    "H_com_m": 0.965,
+    "L_leg_m": 0.845,
+    "m_leg_kg": 13.65,
+    "d_hip_to_legcom_m": 0.374,
+    "I_hip_kgm2": 2.879,
+    "proven_capability": "static balance (stand), 77% survival, contact-witnessed"
+  },
+  "source": "vendor/myo_sim myobody.xml (measured) + ChimeraEngine/train_myobody.py (stand)"
+}
