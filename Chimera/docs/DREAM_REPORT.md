@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-27T07:15:02Z
+consolidated: 2026-07-28T07:15:01Z
 
 ## Awaiting your approval
 14 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -13,12 +13,12 @@ consolidated: 2026-07-27T07:15:02Z
 - H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
 
 ## Open phantom pains
-- phase_4d2da4e032a4aa07:P1 [20d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_3414a5cc1ff49e30:P1 [20d] Phase 2 dependencies may still block Phase 3 wiring
-- phase_33cc2d55125bc551:P1 [20d] sleepwalker may still attempt PIE if runtime_report is not checked properly
-- phase_a06bc8140bd62718:P1 [20d] phase_da55128aec6d109a:P1
-- phase_0ddffb52d2d75240:P1 [20d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
-- phase_3baeff0ccd0f4556:P1 [20d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
+- phase_4d2da4e032a4aa07:P1 [21d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_3414a5cc1ff49e30:P1 [21d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_33cc2d55125bc551:P1 [21d] sleepwalker may still attempt PIE if runtime_report is not checked properly
+- phase_a06bc8140bd62718:P1 [21d] phase_da55128aec6d109a:P1
+- phase_0ddffb52d2d75240:P1 [21d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
+- phase_3baeff0ccd0f4556:P1 [21d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 1 **Hierarchical_Membrane_System** (system-verified 2026-07-22T00:52:10)
@@ -39,10 +39,10 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 82 batteries, 914 atoms, 888 reps this pass (14 failing), 28 PIE atoms exported
+[rep] 82 batteries, 914 atoms, 884 reps this pass (12 failing), 28 PIE atoms exported
 [rep] failing: subsystem_AErisaid (4 atoms red)
-[rep] failing: Game_Feel (3 atoms red)
 [rep] failing: Any_position-dependent_beat_against_chimeradefault (1 atoms red)
+[rep] failing: Malcolm_Envelope (1 atoms red)
 ```
 
 ## Tonight's distillation
