@@ -76,14 +76,31 @@ def _seed(term: str) -> int:
     return zlib.crc32(term.encode("utf-8")) & 0x7FFFFFFF
 
 
-def _fibonacci_sphere(n: int) -> "any":
-    """n unit vectors spread evenly over the sphere (the golden-angle spiral). Deterministic."""
+def _fibonacci_sphere(n: int, jitter: float = 0.0, seed: int = 0) -> "any":
+    """n unit vectors spread evenly over the sphere (the golden-angle spiral). Deterministic.
+
+    JITTER BREAKS THE LATTICE. The golden-angle spiral is *regular*, and a regular sampling pattern
+    is VISIBLE: zoom into a planet's ocean and you can see the spiral arms as faint curved streaks --
+    which is what makes a smooth surface read like "a crappy voxel calculation". `jitter` displaces
+    each grain TANGENTIALLY (in the surface, then renormalised back onto the shell) by a fraction of
+    the mean grain spacing, turning the spiral into blue noise. It is tangential ON PURPOSE: RADIAL
+    jitter scatters grains in depth and lets the background speckle through between them, which is a
+    worse artifact and was removed once already."""
     import numpy as np
     i = np.arange(n, dtype=np.float64)
     z = 1.0 - 2.0 * (i + 0.5) / n                 # -1..1, even in area
     r = np.sqrt(np.clip(1.0 - z * z, 0.0, 1.0))
     theta = np.pi * (1.0 + 5.0 ** 0.5) * i        # golden angle
-    return np.stack([r * np.cos(theta), r * np.sin(theta), z], axis=1)
+    d = np.stack([r * np.cos(theta), r * np.sin(theta), z], axis=1)
+    if jitter > 0.0:
+        rng = np.random.default_rng(seed)
+        spacing = 2.0 / np.sqrt(max(n, 1))                       # mean angular spacing on a unit sphere
+        v = rng.normal(0.0, 1.0, (n, 3))
+        v -= (v * d).sum(1, keepdims=True) * d                   # project into the TANGENT plane
+        v /= (np.linalg.norm(v, axis=1, keepdims=True) + 1e-12)
+        d = d + v * (jitter * spacing * rng.random((n, 1)) ** 0.5)
+        d /= (np.linalg.norm(d, axis=1, keepdims=True) + 1e-12)  # back onto the shell: no depth change
+    return d
 
 
 def _fbm(dirs, rng, octaves: int = 4):
@@ -92,7 +109,11 @@ def _fbm(dirs, rng, octaves: int = 4):
     val = np.zeros(len(dirs)); total = 0.0; amp = 1.0
     for o in range(octaves):
         freq = 1.15 * (1.9 ** o)                  # low freqs first -> a few big land masses
-        for _ in range(2):                        # two waves/octave for isotropy
+        # WAVES PER OCTAVE: 2 was too few. A sum of 8 plane waves is not noise, it is INTERFERENCE --
+        # and zoomed in, its ripple shows as faint curved arcs across the ocean, which is the
+        # "crappy voxel calculation" look. Directions are drawn per wave, so more of them average
+        # into something isotropic instead of a standing pattern. Cost is linear and tiny.
+        for _ in range(7):
             k = rng.normal(size=3); k /= (np.linalg.norm(k) + 1e-9)
             phase = rng.uniform(0.0, 2.0 * np.pi)
             val += amp * np.sin(freq * np.pi * (dirs @ k) + phase)
@@ -111,7 +132,7 @@ def _planet_buffers(spec: dict, term: str):
     # ── SURFACE: an even shell of opaque splats ──
     n_s = 40000                                                     # MORE, SMALLER grains: fills the shell with no lattice while
                                                                      # each grain covers ~8x less area than SIZE 9 -> ~8x less overdraw
-    dirs = _fibonacci_sphere(n_s)                                    # (n,3) unit
+    dirs = _fibonacci_sphere(n_s, jitter=0.85, seed=_seed(term))     # (n,3) unit -- lattice broken
     z = dirs[:, 2]                                                   # latitude sine
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
     surf[:, PX:PZ + 1] = dirs * R                                   # a CLEAN shell (no radial jitter). Radial jitter scattered grains
@@ -208,7 +229,7 @@ def _terrain_buffers(spec: dict, term: str):
     rng = np.random.default_rng(_seed(term))
     R = float(spec["radius"]); relief = float(spec.get("relief", 0.13)); sea = float(spec.get("sea", 0.5))
     n_s = 40000
-    dirs = _fibonacci_sphere(n_s)
+    dirs = _fibonacci_sphere(n_s, jitter=0.85, seed=_seed(term))     # lattice broken -- see the docstring
     elev = _fbm(dirs, rng, octaves=5)                              # the elevation field = spherical-harmonic sum + roughness
     hn = (elev - elev.min()) / (np.ptp(elev) + 1e-9)               # normalised elevation 0..1
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
