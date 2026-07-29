@@ -63,6 +63,9 @@ def derive(parent, free):
     L = luminosity(M)
     T = surface_temperature(L, R)
     return {
+        # ITS REAL SIZE: the photosphere. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": R,
         # ITS OWN DURATION: its whole life -- fuel over burn rate. t=1 in emit() means this much real time.
         "duration_s": lifetime_years(M) * 3.1557e7,
         "M": M,

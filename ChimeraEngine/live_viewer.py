@@ -294,6 +294,7 @@ def _tree_of(folder):
             pass
     node["membrane"] = (folder / "physics.py").exists()
     node["duration_s"] = node["numbers"].get("duration_s")
+    node["extent_m"] = node["numbers"].get("extent_m")
     for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         if (c / "story.md").exists():
             node["children"].append(_tree_of(c))
@@ -439,7 +440,21 @@ function pick(t){
     for(const [u,nm] of U){ if(d>=u){ dur=(d/u).toPrecision(3)+' '+nm; break; } }
     if(!dur) dur=d.toExponential(2)+' s';
   }
-  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ')+(dur?('   ·   its movie spans '+dur):'');
+  // AND HOW BIG IT IS. Every membrane emits at radius ~1 locally, so on screen a galaxy and a star
+  // are the same size; without this a person cannot tell 15 kpc from 700,000 km. Light-crossing is
+  // given too, because above planetary scale a distance is really a WAIT -- the same wait a ship's
+  // thruster has to serve.
+  const C_=2.99792458e8, YR=3.1557e7;
+  const LEN=[[3.0857e19,'kpc'],[3.0857e16,'pc'],[C_*YR,'light-years'],[1.496e11,'AU'],
+             [6.957e8,'solar radii'],[6.371e6,'Earth radii'],[1e3,'km'],[1,'m']];
+  const TIM=[[3.1557e16,'Gyr'],[3.1557e13,'Myr'],[YR,'yr'],[86400,'days'],[3600,'h'],[60,'min'],[1,'s']];
+  function say(v,tab){ for(const [u,nm] of tab){ if(v>=u) return (v/u).toPrecision(3)+' '+nm; }
+                       return v.toExponential(2)+' '+tab[tab.length-1][1]; }
+  const e=n.extent_m;
+  let size='';
+  if(typeof e==='number'&&e>0) size='   ·   '+say(e,LEN)+' across, light takes '+say(e/C_,TIM);
+  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ')
+      +(dur?('   ·   its movie spans '+dur):'')+size;
   const nums=n.numbers||{};
   document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));

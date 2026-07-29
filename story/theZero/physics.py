@@ -12,6 +12,9 @@ ALLOWED = "addition"
 def derive(parent, free):
     """The seed takes nothing and hands down the rule that shapes the next membrane."""
     return {
+        # ITS REAL SIZE: a point. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": 0.0,
         # ITS OWN DURATION: a point has no duration. t=1 in emit() means this much real time.
         "duration_s": 0.0,
         "r": 0.0,

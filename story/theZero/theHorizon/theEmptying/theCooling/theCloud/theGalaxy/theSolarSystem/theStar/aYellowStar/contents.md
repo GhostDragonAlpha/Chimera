@@ -13,6 +13,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 6.957e+08 |
 | `duration_s` | 3.156e+17 |
 | `M` | 1.989e+30 |
 | `M_solar` | 1 |

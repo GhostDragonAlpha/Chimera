@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 4.118e+17 |
 | `duration_s` | 6.326e+13 |
 | `T` | 3760 |
 | `one_plus_z` | 1380 |

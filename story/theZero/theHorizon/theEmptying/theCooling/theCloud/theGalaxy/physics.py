@@ -52,6 +52,9 @@ def derive(parent, free):
     M_stars = n * m_cloud
     M_dyn = enclosed_mass(R_DISK_KPC)                  # what the rotation curve says is really there
     return {
+        # ITS REAL SIZE: where the stellar disk fades out. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": R_DISK_KPC * KPC,
         # ITS OWN DURATION: its own free-fall. t=1 in emit() means this much real time.
         "duration_s": _clk.dynamical_time(M_dyn / ((4.0/3.0)*pi*(R_DISK_KPC*KPC)**3)),
         "M_cloud_solar": m_cloud / M_SUN,

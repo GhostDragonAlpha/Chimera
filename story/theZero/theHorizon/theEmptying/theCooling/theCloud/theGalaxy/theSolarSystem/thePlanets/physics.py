@@ -113,6 +113,9 @@ def derive(parent, free):
     m_out = solid_mass(r_snow, R_OUT, SIGMA_ROCK_1AU * ICE_TO_ROCK)       # rock AND ice
     worlds = sweep_planets(r_snow, float(parent["M_star"]))               # GROW them, do not place them
     return {
+        # ITS REAL SIZE: the outermost world. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": R_OUT * AU,
         # ITS OWN DURATION: accretion: ~100 Myr to sweep the disk clean. t=1 in emit() means this much real time.
         "duration_s": 1.0e8 * 3.1557e7,
         "L": L,

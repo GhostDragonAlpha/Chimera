@@ -40,6 +40,9 @@ def derive(parent, free):
     M = float(parent["M_star"])
     rho = N_PROTONS_CM3 * 1e6 * M_PROTON                     # protons/cm^3 -> kg/m^3
     return {
+        # ITS REAL SIZE: the system it fills. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": 30.0 * AU,
         # ITS OWN DURATION: light across the system it fills. t=1 in emit() means this much real time.
         "duration_s": _clk.light_crossing(30.0 * AU),
         "rho": rho,

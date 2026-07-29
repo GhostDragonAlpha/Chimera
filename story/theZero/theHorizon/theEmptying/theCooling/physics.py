@@ -65,6 +65,9 @@ def derive(parent, free):
     T_nuclei = permitted_at(E_DEUTERON)             # photon-glut estimate: 1.2e9 K (bottleneck ~8e8)
     T_atoms = atoms_permitted_at(0.5)               # SOLVED from Saha, not estimated
     return {
+        # ITS REAL SIZE: how far light had got by then. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": 2.99792458e8 * 3.8e5 * 3.1557e7,
         # ITS OWN DURATION: to recombination: 380,000 years. t=1 in emit() means this much real time.
         "duration_s": 3.8e5 * 3.1557e7,
         "T_start": parent["T"],

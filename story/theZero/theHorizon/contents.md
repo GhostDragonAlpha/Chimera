@@ -16,6 +16,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 2.286e-35 |
 | `duration_s` | 5.391e-44 |
 | `M_added` | 1.539e-08 |
 | `r_s` | 2.286e-35 |

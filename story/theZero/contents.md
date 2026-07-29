@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 0 |
 | `duration_s` | 0 |
 | `r` | 0 |
 | `volume` | 0 |

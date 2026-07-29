@@ -33,6 +33,9 @@ def derive(parent, free):
     t_P = l_P / C
     m_P = sqrt(HBAR * C / G)
     return {
+        # ITS REAL SIZE: the fence it drew. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": schwarzschild(M),
         # ITS OWN DURATION: the first tick it made. t=1 in emit() means this much real time.
         "duration_s": t_P,
         "M_added": M,

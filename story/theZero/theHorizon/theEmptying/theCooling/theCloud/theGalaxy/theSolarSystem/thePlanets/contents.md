@@ -13,6 +13,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 4.488e+12 |
 | `duration_s` | 3.156e+15 |
 | `L` | 3.828e+26 |
 | `snow_line_au` | 2.681 |

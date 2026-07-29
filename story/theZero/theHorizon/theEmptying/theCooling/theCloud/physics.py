@@ -52,6 +52,9 @@ def derive(parent, free):
     m_after = jeans_mass(T, rho)
 
     return {
+        # ITS REAL SIZE: the Jeans length: sound in a free-fall time. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": _clk.dynamical_time(rho) * cs_after,
         # ITS OWN DURATION: it falls through itself. t=1 in emit() means this much real time.
         "duration_s": _clk.dynamical_time(rho),
         "T": T,

@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 2.286e-35 |
 | `duration_s` | 3.066e-40 |
 | `S` | 8.675e-23 |
 | `bits` | 9.065 |

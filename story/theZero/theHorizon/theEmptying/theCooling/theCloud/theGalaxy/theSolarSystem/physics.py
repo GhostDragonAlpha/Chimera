@@ -46,6 +46,9 @@ def derive(parent, free):
     SIGMA_SB, T_ICE = 5.670374419e-8, 170.0
     r_snow_au = ((L / (16.0 * pi * SIGMA_SB * T_ICE ** 4)) ** 0.5) / AU
     return {
+        # ITS REAL SIZE: where its disk stops holding together. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": DISK_EDGE_AU * AU,
         # ITS OWN DURATION -- and the TICK is not the MOVIE. The dynamical time here is 29 years
         # (an orbit out at the disk edge); that is how fast the system RINGS, not how long it takes
         # to BECOME. Formation runs for many dynamical times, and the number that bounds it is

@@ -13,6 +13,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 4.488e+12 |
 | `duration_s` | 1.497e+04 |
 | `rho` | 8.363e-21 |
 | `thinner_than_air` | 1.465e+20 |

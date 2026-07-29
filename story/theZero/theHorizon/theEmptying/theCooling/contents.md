@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `extent_m` | 3.595e+21 |
 | `duration_s` | 1.199e+13 |
 | `T_start` | 7.972e+30 |
 | `T_nuclei` | 1.214e+09 |

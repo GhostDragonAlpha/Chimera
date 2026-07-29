@@ -20,6 +20,9 @@ def derive(parent, free):
     t_evap = 5120.0 * pi * G ** 2 * M ** 3 / (HBAR * C ** 4)
     bits = S / (KB * 0.6931471805599453)                # nats -> bits
     return {
+        # ITS REAL SIZE: the space the fence drew. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": parent["r_s"],
         # ITS OWN DURATION: the runaway that empties it -- lifetime ~ M^3. t=1 in emit() means this much real time.
         "duration_s": t_evap,
         "S": S,

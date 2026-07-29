@@ -55,6 +55,9 @@ def derive(parent, free):
     r_s = float(parent["r_s"])
     grav, kin, net = gps_drift_us_per_day()
     return {
+        # ITS REAL SIZE: its ceiling -- where the clock stops. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": r_s,
         # ITS OWN DURATION: light crossing its own ceiling. t=1 in emit() means this much real time.
         "duration_s": r_s / 2.99792458e8,
         "r_s": r_s,                                   # the ceiling: at r = r_s the clock STOPS

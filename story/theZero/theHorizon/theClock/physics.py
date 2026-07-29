@@ -68,6 +68,9 @@ def derive(parent, free):
     galaxy_rho = (1.045e11 * M_SUN) / ((4.0 / 3.0) * pi * (15.0 * 3.0857e19) ** 3)
     cloud_rho = 1.103e-18                                       # theCloud's own number, kg/m^3
     return {
+        # ITS REAL SIZE: its ceiling. Everything emits at radius ~1 locally, so this is
+        # the only place the true scale is recorded -- and a human needs it to know what they see.
+        "extent_m": float(parent["r_s"]),
         # ITS OWN DURATION: the law itself is instantaneous; it is the tick. t=1 in emit() means this much real time.
         "duration_s": t_P,
         # PASSED THROUGH, because a child may only read its parent: theDensityClock lives inside
