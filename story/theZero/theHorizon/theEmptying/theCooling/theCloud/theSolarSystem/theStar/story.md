@@ -1,5 +1,7 @@
 # theStar
 
+**In plain words —** Squeeze gas hard enough and it catches fire and stops falling. Squeeze too little and it just goes cold and stiff instead — so there is a smallest possible star.
+
 *Chapter 6.*
 
 A cloud that cannot stop falling gets denser, and as it does the Jeans mass falls with it — so the

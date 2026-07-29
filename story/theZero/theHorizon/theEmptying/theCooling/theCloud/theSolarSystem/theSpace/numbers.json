@@ -1,0 +1,12 @@
+{
+  "rho": 8.3631096e-21,
+  "thinner_than_air": 1.4647661678378579e+20,
+  "coasts": true,
+  "gravity_range": "infinite",
+  "v_orbit_1au": 29788.512236597926,
+  "v_escape_1au": 42127.31800791369,
+  "light_time_1au_s": 499.00478383615643,
+  "light_time_30au_s": 14970.143515084692,
+  "sky_is_dark": true,
+  "M_star": 1.98892e+30
+}

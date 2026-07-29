@@ -1,5 +1,7 @@
 # theSpace
 
+**In plain words —** Empty of stuff, completely full of pull. Nothing out there slows you down, and everything out there is tugging on you.
+
 **the medium you fly — the dark, gravity, scale**
 
 Space is not empty. It is empty of **matter** and completely full of **gravity**, and those two facts

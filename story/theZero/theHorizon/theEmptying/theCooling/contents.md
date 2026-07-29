@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theCloud` | Gravity has no threshold, but it does have an opponent: **pressure**, which pushes back the inst |
+| `theCloud` | While light was still shoving matter around, nothing could clump. The moment matter turned neutral, light let go — and gravity finally had something to pull on |
 
 ## Hands down
 

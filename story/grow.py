@@ -37,12 +37,25 @@ def _fmt(v):
     return str(v)
 
 
+_PLAIN = "**In plain words —**"
+
+
 def _summary(folder: Path) -> str:
-    """A membrane's one-line self-description: the first real sentence of its own story."""
+    """A membrane's one-line self-description.
+
+    EVERY CHAPTER OPENS WITH A PLAIN-WORDS LINE, before any equation -- the label that comes before
+    the thing, so a reader knows what they are about to look at. It is also the chapter's own LOW-LOD
+    version of itself, which is why the index harvests it: a parent's contents list is literally its
+    children described at lower detail. One line, two jobs. Falls back to the first real sentence."""
     s = folder / "story.md"
     if not s.exists():
         return "(awaiting the human story)"
-    for line in s.read_text(encoding="utf-8", errors="replace").splitlines():
+    text = s.read_text(encoding="utf-8", errors="replace")
+    for line in text.splitlines():
+        t = line.strip()
+        if t.startswith(_PLAIN):
+            return t[len(_PLAIN):].strip().rstrip(".")
+    for line in text.splitlines():
         t = line.strip()
         if t and not t.startswith(("#", ">", "*", "`", "|", "-")):
             return t.rstrip(".")[:96]

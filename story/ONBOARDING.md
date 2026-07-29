@@ -170,6 +170,21 @@ theCooling/
 **Work ONE membrane at a time.** A chapter is the description of everything contained in the membrane
 you chose — not a race down the tree.
 
+### Every chapter opens with plain words, before any equation
+
+```markdown
+# theCooling
+
+**In plain words —** As the universe spreads out it cools, and every time it gets cold enough,
+one more kind of thing is allowed to stay in one piece instead of being smashed apart.
+```
+
+The **label that comes before the thing** — the reader knows what they are looking at before a symbol
+appears. It is also the chapter's own **low-LOD version of itself**, so `grow.py` harvests it into
+every ancestor's `contents.md`: a parent's contents list is its children at lower detail. **One line,
+two jobs**, and it is required — a membrane nobody can read is a membrane nobody can judge, and the
+human is the judge.
+
 ### LISTING is generated. DEFINING is written.
 
 - **LISTING** what a membrane contains is mechanical — the folders already know. `grow.py` writes

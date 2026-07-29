@@ -9,8 +9,10 @@
 
 | membrane | what it is |
 |---|---|
-| `thePlanets` | What missed the star cannot leave — angular momentum has nowhere to go — so it settles into a di |
-| `theStar` | A cloud that cannot stop falling gets denser, and as it does the Jeans mass falls with it — so t |
+| `theDensityClock` | Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you |
+| `thePlanets` | Near the star it is too warm for ice, so only rock survives and you get small worlds. Farther out ice survives too, and there is four times more of it — enough to build giants |
+| `theSpace` | Empty of stuff, completely full of pull. Nothing out there slows you down, and everything out there is tugging on you |
+| `theStar` | Squeeze gas hard enough and it catches fire and stops falling. Squeeze too little and it just goes cold and stiff instead — so there is a smallest possible star |
 
 ## Hands down
 

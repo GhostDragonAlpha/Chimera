@@ -1,5 +1,7 @@
 # theZero
 
+**In plain words —** A black hole and an electron turn out to be the same kind of thing: a point described by just three numbers. You cannot divide by that point — but you can add to it, and everything else is what got added.
+
 *Paragraph 1.*
 
 The story starts as a black hole, and a black hole is defined by one number: **zero**. The

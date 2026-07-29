@@ -1,5 +1,7 @@
 # theCloud
 
+**In plain words —** While light was still shoving matter around, nothing could clump. The moment matter turned neutral, light let go — and gravity finally had something to pull on.
+
 *Chapter 5.*
 
 Gravity has no threshold, but it does have an opponent: **pressure**, which pushes back the instant

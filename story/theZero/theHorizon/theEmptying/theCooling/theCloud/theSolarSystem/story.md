@@ -1,5 +1,7 @@
 # theSolarSystem
 
+**In plain words —** A spinning cloud cannot fall straight in. It falls freely along its axis and gets held out sideways, so it flattens into a disc with almost everything piled in the middle.
+
 *Chapter 6.* — **the setting you fly**
 
 A cloud does not fall straight in. It is turning, however slightly, and turning is the one thing

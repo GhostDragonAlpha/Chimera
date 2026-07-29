@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theCooling` | The sea the fence left behind is expanding, and expansion cools it: `T ∝ 1/a`, so the clock and  |
+| `theCooling` | As the universe spreads out it cools, and every time it gets cold enough, one more kind of thing is allowed to stay in one piece instead of being smashed apart |
 
 ## Hands down
 

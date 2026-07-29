@@ -37,6 +37,21 @@ and neither one alone is the game.
 
 ## A chapter is a folder
 
+**Every chapter opens with a plain-words line, before any equation:**
+
+```markdown
+# theCooling
+
+**In plain words —** As the universe spreads out it cools, and every time it gets cold enough,
+one more kind of thing is allowed to stay in one piece instead of being smashed apart.
+```
+
+That is the **label that comes before the thing** — a reader knows what they are about to look at
+before a single symbol appears. It is also the chapter's own **low-LOD version of itself**, which is
+why `grow.py` harvests it into every ancestor's index: a parent's contents list is literally its
+children described at lower detail. **One line, two jobs** — and it is not optional, because a
+membrane nobody can read is a membrane nobody can judge.
+
 ```
 theCooling/
   story.md        one paragraph. the human story. what this is.

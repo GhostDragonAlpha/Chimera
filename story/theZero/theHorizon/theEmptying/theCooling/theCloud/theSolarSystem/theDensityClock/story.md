@@ -1,5 +1,7 @@
 # theDensityClock
 
+**In plain words —** Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you.
+
 **time leans with mass and speed**
 
 Time is not a backdrop the world happens in front of. It is a **local rate**, and two things bend it:

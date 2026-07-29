@@ -1,5 +1,7 @@
 # theHorizon
 
+**In plain words —** Put mass at a point and you get a distance for free. That distance is a fence around the point, and nothing in the universe is allowed to be smaller than it.
+
 *Paragraph 2.*
 
 Since division by zero is forbidden, the only legal act is addition — and the instant you add mass

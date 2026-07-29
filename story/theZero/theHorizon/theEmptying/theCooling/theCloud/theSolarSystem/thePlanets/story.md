@@ -1,5 +1,7 @@
 # theDisk
 
+**In plain words —** Near the star it is too warm for ice, so only rock survives and you get small worlds. Farther out ice survives too, and there is four times more of it — enough to build giants.
+
 *Chapter 7.*
 
 What missed the star cannot leave — angular momentum has nowhere to go — so it settles into a disk
