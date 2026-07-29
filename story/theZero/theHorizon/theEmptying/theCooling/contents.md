@@ -26,4 +26,6 @@
 | `helium_frac` | 0.25 |
 | `transparent` | True |
 | `delta_rho_over_rho` | 1e-05 |
+| `eta` | 6.1e-10 |
+| `n_gamma_per_K3` | 2.029e+07 |
 | `neutral` | True |

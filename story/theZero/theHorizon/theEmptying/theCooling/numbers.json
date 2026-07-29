@@ -10,5 +10,7 @@
   "helium_frac": 0.25,
   "transparent": true,
   "delta_rho_over_rho": 1e-05,
+  "eta": 6.1e-10,
+  "n_gamma_per_K3": 20288000.0,
   "neutral": true
 }

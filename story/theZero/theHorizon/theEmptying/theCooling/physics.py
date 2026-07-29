@@ -80,6 +80,14 @@ def derive(parent, free):
         "helium_frac": HELIUM_MASS_FRAC,
         "transparent": True,                        # nothing left for photons to scatter from
         "delta_rho_over_rho": DELTA,                # what gravity is finally allowed to pull on
+        # CARRIED FOR THE CHILD, and it closes a duplicate. eta IS the baryon density -- there are
+        # this many baryons for every photon, and the photon count follows from T alone. theCloud
+        # was carrying its own separate measurement of the same fact (today's baryon density) and
+        # running it back through the redshift. Two independently measured constants standing for
+        # one number is how they drift; they currently agree to 0.16%, which is the check, not the
+        # excuse. The child now derives rho from this.
+        "eta": ETA,
+        "n_gamma_per_K3": 2.0288e7,                 # (2 zeta(3)/pi^2)(k/hbar c)^3 -- photons per m^3 per K^3
         "neutral": True,
     }
 

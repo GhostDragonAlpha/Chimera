@@ -101,6 +101,55 @@ def typed_literals(folder: Path) -> list:
     return found
 
 
+# ── CHECK 3 ─────────────────────────────────────────────────────────────────────────────────────
+# The form that hid longest, because it looks like good practice: a module-level constant, named in
+# capitals, used inside derive(). `rho = RHO_B_NOW * one_plus_z ** 3` reads as clean code. What it
+# actually was: a second, independently measured statement of a number the PARENT already carried
+# (eta), reachable only by going out to the present day and back. Neither of the first two checks
+# sees it -- it is not a literal in the return dict and not a .get() default.
+#
+# This cannot decide which constants are legitimate; most are. A membrane is allowed to assert
+# measured facts -- the crushing strength of rock, the helium fraction. What it lists is the
+# ASSUMPTION MANIFEST: everything this membrane states on its own authority rather than inheriting.
+# Read it and ask of each one: does my parent already know this?
+
+# Laws of nature and unit conversions -- asserting these is not an assumption about anything.
+_UNIVERSAL = {
+    "G", "C", "C_LIGHT", "KB", "K_B", "HBAR", "H", "H_PLANCK", "EV", "AMU", "M_E", "M_H", "M_P",
+    "M_N", "SIGMA_SB", "SIGMA", "PI", "TWO_PI", "N_A", "R_GAS", "ALPHA", "E_CHARGE",
+    "M_SUN", "R_SUN", "L_SUN", "T_SUN", "M_EARTH", "R_EARTH", "AU", "PC", "KPC", "LY", "KM",
+    "YEAR", "YEAR_S", "DAY", "SECOND", "T_FREEZE", "T_BOIL", "RHO_WATER",
+}
+
+
+def asserted_constants(folder: Path) -> list:
+    """Module-level numeric constants that derive() actually uses, minus the universal ones."""
+    py = folder / "physics.py"
+    try:
+        tree = ast.parse(py.read_text(encoding="utf-8", errors="replace"))
+    except SyntaxError:
+        return []
+    consts = {}
+    for st in tree.body:
+        if isinstance(st, ast.Assign) and len(st.targets) == 1 and isinstance(st.targets[0], ast.Name):
+            nm = st.targets[0].id
+            if nm.isupper() and nm not in ("FREE", "LENS"):
+                try:
+                    v = ast.literal_eval(st.value)
+                except Exception:
+                    continue
+                if isinstance(v, (int, float)) and not isinstance(v, bool):
+                    consts[nm] = v
+    used = []
+    for fn in tree.body:
+        if isinstance(fn, ast.FunctionDef) and fn.name == "derive":
+            for node in ast.walk(fn):
+                if isinstance(node, ast.Name) and node.id in consts and node.id not in _UNIVERSAL:
+                    if node.id not in [u[0] for u in used]:
+                        used.append((node.id, consts[node.id], node.lineno))
+    return used
+
+
 # ── CHECK 2 ─────────────────────────────────────────────────────────────────────────────────────
 def _free_of(folder: Path) -> dict:
     try:
@@ -179,8 +228,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--typed", action="store_true")
     ap.add_argument("--slider", action="store_true")
+    ap.add_argument("--assumes", action="store_true")
     args = ap.parse_args()
-    both = not (args.typed or args.slider)
+    both = not (args.typed or args.slider or args.assumes)
     seed = ROOT / "theZero"
     bad = 0
 
@@ -201,6 +251,18 @@ def main() -> int:
                     print(f"     line {line:>4}  {tag}  {key:<26} = {val!r}")
         if not any_found:
             print("  none.")
+        print()
+
+    if args.assumes or both:
+        print("ASSUMPTION MANIFEST -- module constants derive() uses on its own authority")
+        print("  (universal constants and unit conversions excluded; most of what is left is")
+        print("   legitimate. Of each one ask: DOES MY PARENT ALREADY KNOW THIS?)")
+        for folder in membranes():
+            a = asserted_constants(folder)
+            if a:
+                print(f"\n  {folder.name}")
+                for nm, val, line in a:
+                    print(f"     line {line:>4}  {nm:<24} = {val!r}")
         print()
 
     if args.slider or both:

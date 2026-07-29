@@ -17,11 +17,11 @@
 |---|---|
 | `extent_m` | 4.629e+20 |
 | `duration_s` | 2.337e+15 |
-| `M_cloud_solar` | 6.15e+05 |
+| `M_cloud_solar` | 6.074e+05 |
 | `n_clouds` | 1.7e+05 |
-| `M_stars_solar` | 1.045e+11 |
+| `M_stars_solar` | 1.033e+11 |
 | `M_dynamical_solar` | 1.688e+11 |
-| `dark_ratio` | 1.614 |
+| `dark_ratio` | 1.634 |
 | `v_flat_kms` | 220 |
 | `R_disk_kpc` | 15 |
 | `bulge_frac` | 0.2 |

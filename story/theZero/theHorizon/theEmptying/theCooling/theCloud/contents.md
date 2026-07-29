@@ -15,18 +15,19 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 4.118e+17 |
-| `duration_s` | 6.326e+13 |
+| `extent_m` | 4.103e+17 |
+| `duration_s` | 6.331e+13 |
 | `T` | 3760 |
 | `one_plus_z` | 1380 |
-| `rho` | 1.103e-18 |
-| `c_s` | 6510 |
+| `rho` | 1.101e-18 |
+| `c_s` | 6481 |
 | `c_s_before` | 1.731e+08 |
-| `sound_speed_drop` | 2.659e+04 |
-| `M_jeans` | 1.223e+36 |
-| `M_jeans_solar` | 6.15e+05 |
-| `M_jeans_before_solar` | 1.156e+19 |
-| `jeans_drop` | 1.88e+13 |
+| `sound_speed_drop` | 2.671e+04 |
+| `M_jeans` | 1.208e+36 |
+| `M_jeans_solar` | 6.074e+05 |
+| `M_jeans_before_solar` | 1.157e+19 |
+| `jeans_drop` | 1.905e+13 |
 | `collapsing` | True |
+| `mu` | 1.231 |
 | `hydrogen_frac` | 0.75 |
 | `helium_frac` | 0.25 |

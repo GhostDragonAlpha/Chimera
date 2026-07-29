@@ -28,7 +28,17 @@ def crossing():
 FREE = {
     # THE HUMAN'S ONE DIAL AT THE SEED: how much is added to zero. Everything about the fence,
     # and every scale below it, follows from this single number.
-    "M_added": {"label": "mass added to zero", "default": 1.539e-8,
+    "M_added": {
+        # DECLARED LOCAL, and the reason is an open problem in physics rather than a shortcut.
+        # This dial sets the SEED's Planck-scale quantities -- its radius, its area, its entropy,
+        # and the temperature the sea starts at. It reaches theEmptying and theCooling and stops.
+        #
+        # It stops because everything below is anchored on two things the seed's mass does not
+        # touch: ATOMIC BINDING ENERGIES (13.6 eV is why recombination happens at 3760 K, in a
+        # universe of any mass) and ETA, the baryon-to-photon ratio. Deriving eta from the seed IS
+        # THE BARYOGENESIS PROBLEM, and nobody has solved it. So the disconnection is real, and
+        # naming it is more honest than inventing a link that would make the audit look better.
+        "local": "sets the seed's scale; below it the story is anchored on atomic binding and eta","label": "mass added to zero", "default": 1.539e-8,
                 "lo": 1.0e-9, "hi": 1.0e-6, "unit": "kg", "log": True},
 }
 

@@ -13,17 +13,26 @@ M_H = 1.6735575e-27          # hydrogen mass
 M_SUN = 1.98892e30
 
 GAMMA = 5.0 / 3.0            # monatomic gas
-MU = 1.22                    # mean molecular weight of neutral primordial H+He
+# MU IS DERIVED, not typed. The mean molecular weight of a neutral gas follows from what it is
+# MADE of: 1/mu = X + Y/4, because hydrogen contributes one particle per unit mass and helium one
+# per four. The parent already carries X and Y, so typing 1.22 here was a third statement of the
+# same composition. From the parent's 0.75/0.25 it comes out 1.231.
+def mean_molecular_weight(x_hydrogen, y_helium):
+    """1/mu = X + Y/4 for NEUTRAL gas -- one particle per hydrogen, one per four helium masses."""
+    return 1.0 / (x_hydrogen + 0.25 * y_helium)
+
 T_CMB_NOW = 2.7255           # measured today -- with the parent's T it fixes how far back this is
-RHO_B_NOW = 4.20e-28         # baryon density today, kg/m^3 (Omega_b h^2 = 0.0224, measured)
+# RHO_B_NOW is GONE. It was a second, independently measured statement of the baryon density, run
+# backwards through the redshift -- while the parent already carried eta, which says the same thing
+# and says it at the temperature we are actually at. Two authorities for one number.
 
 
-def sound_speed(T, mu=MU):
+def sound_speed(T, mu):
     """A neutral gas carries only its own thermal speed."""
     return sqrt(GAMMA * KB * T / (mu * M_H))
 
 
-def jeans_mass(T, rho, mu=MU):
+def jeans_mass(T, rho, mu):
     """The smallest mass whose gravity beats its own pressure.
 
         M_J = (5kT / (G mu m_H))^{3/2} * (3 / (4 pi rho))^{1/2}
@@ -40,16 +49,22 @@ def derive(parent, free):
     if parent is None or not parent.get("transparent"):
         raise ValueError("theCloud requires a parent that has gone transparent")
     T = float(parent["T_end"])                       # 3760 K, derived by the parent
+    MU = mean_molecular_weight(float(parent["hydrogen_frac"]), float(parent["helium_frac"]))
     # how far back this is, from OUR OWN temperature against the one measured today
     one_plus_z = T / T_CMB_NOW
-    rho = RHO_B_NOW * one_plus_z ** 3                # the sea was denser then by (1+z)^3
+    # DENSITY FROM THE PARENT'S ETA, at this temperature -- no trip through the present day needed.
+    # A blackbody at T holds n_gamma = 2.0288e7 * T^3 photons per cubic metre; eta says how many
+    # baryons ride along with each one; a baryon weighs about a hydrogen mass whether it ends up in
+    # hydrogen or helium. Three facts, all of them the parent's or a law's.
+    n_gamma = float(parent["n_gamma_per_K3"]) * T ** 3
+    rho = float(parent["eta"]) * n_gamma * M_H
 
-    cs_after = sound_speed(T)                        # neutral gas: its own thermal speed
+    cs_after = sound_speed(T, MU)                        # neutral gas: its own thermal speed
     cs_before = C / sqrt(3.0)                        # welded to photons: radiation's stiffness
     # Before transparency the SAME formula applies with the radiation-dominated sound speed:
     T_eff_before = cs_before ** 2 * MU * M_H / (GAMMA * KB)
-    m_before = jeans_mass(T_eff_before, rho)
-    m_after = jeans_mass(T, rho)
+    m_before = jeans_mass(T_eff_before, rho, MU)
+    m_after = jeans_mass(T, rho, MU)
 
     return {
         # ITS REAL SIZE: the Jeans length: sound in a free-fall time. Everything emits at radius ~1 locally, so this is
@@ -68,6 +83,7 @@ def derive(parent, free):
         "M_jeans_before_solar": m_before / M_SUN,    # ~1e17 suns: nothing, so nothing collapsed
         "jeans_drop": m_before / m_after,            # ~13 orders of magnitude, = (c_s ratio)^3
         "collapsing": True,
+        "mu": MU,                                    # derived from the parent's composition
         "hydrogen_frac": parent["hydrogen_frac"],
         "helium_frac": parent["helium_frac"],
     }
@@ -108,9 +124,20 @@ def emit(nums, t=1.0):
 
 
 def measure(nums):
-    """What training must check -- both facts, not preferences: the first collapsible mass lands at
-    the scale of the first structures (10^5-10^7 suns), and the Jeans drop is exactly the cube of
-    the sound-speed drop, because M_J ~ c_s^3."""
+    """What training must check -- facts, not preferences: the first collapsible mass lands at the
+    scale of the first structures (10^5-10^7 suns), the Jeans drop is exactly the cube of the
+    sound-speed drop because M_J ~ c_s^3, and the two independent routes to the baryon density
+    still agree.
+
+    THAT LAST ONE IS WHY THE SECOND CONSTANT COULD BE DROPPED. The density here now comes from the
+    parent's eta at this temperature. Running TODAY's separately measured baryon density back
+    through the redshift must land in the same place -- and it does, to 0.16%. If the two ever
+    diverge, one of the measurements has moved and the story should say so rather than quietly
+    keep the one it happens to use."""
     ratio = nums["jeans_drop"] / nums["sound_speed_drop"] ** 3
+    rho_via_today = 4.20e-28 * nums["one_plus_z"] ** 3      # Omega_b h^2 = 0.0224, measured today
+    agree = abs(nums["rho"] - rho_via_today) / rho_via_today
     return {"first_mass_is_stellar_cluster_scale": 1e5 < nums["M_jeans_solar"] < 1e7,
-            "drop_is_cs_cubed": abs(ratio - 1.0) < 1e-6}
+            "drop_is_cs_cubed": abs(ratio - 1.0) < 1e-6,
+            "rho_routes_agree": agree < 0.02,
+            "rho_route_disagreement": agree}
