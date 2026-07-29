@@ -227,6 +227,76 @@ Keep the two lists separate: **DECLARED** (`story.md`, the story's promise) vs *
 
 ---
 
+## 4b. THE PROCEDURE — building one membrane, start to finish
+
+Follow this in order. It is written so it can be executed without asking anyone anything.
+
+**1. Take your membrane. Do not choose another.** Find its folder's parent and read the parent's
+`numbers.json` — **that is the entire set of things you may inherit.** Not a sibling's, not a
+grandparent's. If what you need is not there, the number belongs to your parent and your parent
+should derive it (see the snow-line case in §6).
+
+**2. Check `story/HIERARCHIES.md` for a missing level.** The real paths are written down —
+`… galaxy → molecular cloud → star system …`, `… cell → tissue → organ …`. If a step is missing
+between you and your parent, **say so and stop**; do not skip it and do not invent one.
+
+**3. Decide `the` or `a`.** Are you the LAW (what this kind of thing is) or the INSTANCE (the one
+that formed here)? They are different chapters. Aim for both to exist eventually.
+
+**4. Write `story.md`:** `# name`, then the `**In plain words —**` line, then the chapter — what it
+IS and the physics reaching it from its parent — then what it **DECLARES** it contains (from
+`Chimera/docs/THE_STORY.md`). Declaring a child is not building it.
+
+**5. Write `physics.py`:**
+```python
+def derive(parent, free) -> dict     # numbers, from the PARENT's numbers only
+def emit(nums, t=1.0) -> (N,28)      # matter, in LOCAL units, from those same numbers
+def layout(nums) -> {child:(centre,scale)}   # optional: WHERE the children sit, in your frame
+def measure(nums) -> dict            # the facts a check should test
+```
+
+**6. `python story/grow.py`** — your membrane must appear with sensible numbers. **Compare every
+number to reality and write the comparison in the commit.** If it is far off, the physics is wrong;
+fix the physics, never fudge a constant.
+
+**7. Restart the viewer and LOOK:**
+```bash
+python ChimeraEngine/gallery.py 8765     # then open /live and click your membrane
+```
+
+**8. Get a blind eye to read it.** Never judge your own render (§2). Compare what it reports to what
+your physics predicts.
+
+**9. Commit and push**, stating branch + SHA, with the numbers and the comparisons in the message.
+
+---
+
+## 4c. COMPOSITION — a parent is MADE OF its children
+
+`layout(nums)` returns `{child: (centre, scale)}` in **your** frame, and the child is grown, emitted
+in **its own** local units, and placed. The parent supplies only **where** and **how big** —
+structure, which is its own physics. The child always supplies its own appearance.
+
+Four rules, each learned by breaking it:
+
+- **Convert units at the seam.** A child works in *its* unit; you work in *yours*. `thePlanets` is
+  in snow-line units, `theSolarSystem` in disk-edge units — placed at 1.0 the composed extent came
+  out **11.2**. If you find yourself converting, ask whether the number should live in the parent
+  instead: the snow line is a fact about the *system's light*, so the system derives it and the
+  planets inherit it. **Two authorities for one number is how they drift apart.**
+- **LOD every placed child by its size.** Placing a full-resolution child into a small footprint
+  crams its grains into one 32-px tile, overruns `MAX_PER_TILE`, and the cap evicts *the parent's*
+  grains — **a black, tile-shaped hole**. A thing occupying 4% of the frame does not need 20,000
+  grains to say so.
+- **Never duplicate a child.** `theSolarSystem` drew its own core *and* placed `theStar` — the same
+  matter twice, and it was what overran the tile.
+- **A membrane may only read its PARENT.** This is not tidiness: it decides what can reach what.
+  `theDensityClock` sitting inside one solar system made time dilation **unreachable from
+  `theShip`** — a dependency that does not resolve. It moved beside `theHorizon`, whose radius *is*
+  its ceiling, and now everything below inherits it.
+
+---
+
 ## 5. Three tests every chapter must pass
 
 ### PROVEN — the math closes, and predicts what it was never fitted to
@@ -317,6 +387,11 @@ folder's path is its address, its parent's numbers are its signal.
 | **saturation** | 16k soft blobs piled into one place | hard **square tiles** — a render lying about density |
 | **widened the tolerance** | the check passes now | fix the physics, never the tolerance |
 | **let it run** | watching a dying run "to see how it ends" | pure cost; kill at the **first hint** |
+| **skipped a level** | `theCloud → theSolarSystem` with no galaxy between | check `HIERARCHIES.md`; a cloud does not become a system on its own |
+| **unreachable physics** | a law parented inside one place | `theShip` could not reach `theDensityClock` — a membrane reads only its PARENT |
+| **not mass-conserving** | a growth rule that hands out more than exists | 101 Earth masses from a disk holding 56 |
+| **duplicated a child** | parent draws its own version *and* places the child | the same matter twice; it overran a tile and left a black hole |
+| **two copies of one function** | `fibonacci_sphere` in both `matter.py` and `splat_appearance.py` | one gained `jitter`, the other did not — crash, and drift |
 
 **Economy is a rule.** A run whose outcome you already know is entropy — watts, heat, wall-clock,
 zero information. Kill it. The counter-rule is equally hard: **a number without its control is not
@@ -345,6 +420,7 @@ zero of the same curve. The baseline adjudicates.
 |---|---|
 | `story/` | the tree. Every folder is a membrane |
 | `story/README.md` | how the game is built (short) |
+| `story/HIERARCHIES.md` | **the prebuilt paths** — cosmic and biological. Check before inventing a level |
 | `story/grow.py` | the enzyme — same three moves at every folder |
 | `story/matter.py` | the splat buffer, `lit()`, `blackbody_rgb()`, local-unit helpers |
 | `Chimera/docs/THE_STORY.md` | **the human story — the source of every membrane** |

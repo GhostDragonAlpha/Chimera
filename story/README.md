@@ -140,6 +140,28 @@ creature. That is the content budget: **one law, every world.**
 
 ---
 
+## Composition — a parent is made of its children
+
+A law may define `layout(nums) -> {child: (centre, scale)}`. Each named child is grown, emitted in
+**its own** local units, and placed in the parent's frame. The parent supplies only **where** and
+**how big** (structure — an orbital radius is derived, not decorated); the child supplies its own
+appearance, always.
+
+So looking at `theSolarSystem` shows you the star and the worlds inside it, and zooming in is just
+reading the same tree at a finer level. **That is LOD of meaning applied to matter: every level is
+the level below, placed.**
+
+Four rules, each learned by breaking it: convert units at the seam (or better — move the number to
+the parent that owns it); **LOD every placed child by its size**; never duplicate a child; and
+**a membrane may only read its PARENT**, because that is what decides which physics is reachable
+from where.
+
+## Don't invent levels
+
+`HIERARCHIES.md` holds the established paths — `galaxy → molecular cloud → star system`,
+`cell → tissue → organ → organism`. If a step feels missing between a membrane and its parent, it
+probably *is* one. Check there first; skipping a level is a bug, not a shortcut.
+
 ## The enzyme
 
 `grow.py` walks the tree and does the same three moves at every folder — read the concept, derive
