@@ -12,6 +12,8 @@ except Exception:                            # pragma: no cover - CPU fallback p
 
 import os as _os
 _TILE_DIAG = _os.environ.get('CHIMERA_TILE_DIAG') == '1'
+# how full a tile must get before it is worth reporting, as a fraction of the cap
+_TILE_DIAG_AT = float(_os.environ.get('CHIMERA_TILE_DIAG_AT', '0.5'))
 TILE_SIZE = 32
 MAX_PER_TILE = 4096
 PX, PY, PZ = 0, 1, 2
@@ -524,7 +526,7 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     capped = cp.minimum(per_tile, max_pt)
     if _TILE_DIAG:
         _pt = per_tile.get(); _hot = int(_pt.max())
-        if _hot > max_pt * 0.5:
+        if _hot > max_pt * _TILE_DIAG_AT:
             _i = int(_pt.argmax())
             print("[tile-diag] busiest tile %d (px x=%d..%d y=%d..%d) holds %d of %d allowed; "
                   "%d tiles over cap; total expansions %d for %d splats"

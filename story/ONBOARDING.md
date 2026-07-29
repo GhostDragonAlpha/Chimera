@@ -17,9 +17,21 @@ with the size of the world.
 not start an editor or a task board. A stray "Unreal" in an old doc is not a signal — read the file.
 **Nothing simulates outside the Chimera Engine.**
 
-**Read in order:** this file · `story/README.md` · `Chimera/docs/THE_STORY.md` (**the human story —
-the source of every membrane**) · `CLAUDE.md` · `ChimeraEngine/MCP_ENGINE.md` ·
+**Read in order:** this file · `story/README.md` · **`story/LANGUAGE.md`** (the grammar — the four
+verbs, the article system, and the VISIBILITY MODEL that decides what can reach what) ·
+`Chimera/docs/THE_STORY.md` (**the human story — the source of every membrane**) · `CLAUDE.md` ·
+`docs/THE_WORKFLOW.md` (the method end to end) · `ChimeraEngine/MCP_ENGINE.md` ·
 `Chimera/docs/EXPERIMENTAL_METHOD.md` (before debugging anything).
+
+**Before you assume a word means what it means elsewhere:**
+
+```bash
+python -m core.terms <word>          # the terminology index; --list, --search X
+```
+
+This project uses genetics, physics and cell-biology terms **literally, not as metaphor**. Read
+"membrane" or "recombination" or "heritability" as a figure of speech and you will write the wrong
+code.
 
 ---
 
@@ -366,6 +378,22 @@ cannot drift from physics — there is nothing to cross-check because they are o
 - **Declare every exaggeration.** At true scale a star in its own disk is **sub-pixel**. Draw it 32×
   oversize if you must, but name the constant and compute the true ratio beside it.
 
+### The render laws — every one of these was a DEFECT first
+
+They live in code comments where they were learned, which is how two of them got broken a second
+time. They are laws, not preferences, and each has a **tell** you can look for.
+
+| law | why | the tell when it is broken |
+|---|---|---|
+| **The grain must be at least half the spacing.** `matter.surface_grain(n)` | *n* grains on a sphere sit `sqrt(4πr²/n)` apart. Narrower than half that and the surface leaks — and there is nothing behind a planet, so the leak is **black**. | an ocean that reads as loose grit floating in space |
+| **The grain COUNT follows projected area.** `matter.grains_for(radius, extent)` | A thing that occupies one pixel does not need a thousand grains to say so. A thousand all land in one 32-px tile, overrun `MAX_PER_TILE`, and the cap **evicts everything else in that tile**. | a hard-edged **black rectangle** whose pixel bounds are multiples of 32 |
+| **The material decides the splat.** | Ice and rock ARE granular — crystals, gravel, snow. **Water is not**: a liquid has no smallest piece, so its splats must be *wider than their spacing and half transparent* so no single one is ever visible. | a smooth ice cap above a sea of blue pebbles |
+| **Topography has a RED spectrum** (power ~ 1/k) | Independent per-grain heights are white noise, and white noise renders as spikes — a real hill's neighbour is nearly the same height. Sum waves at 1/k amplitude and you get ground. | a hedgehog |
+| **Exposure is a declared instrument setting.** `lit(..., e_ref=)` | `e_ref` is the irradiance the render calls "correct exposure". Leave it at one solar constant and a world further out is physically right and **too dark to read**. A camera exposes for its subject. | a measured 47→15 grey ramp you cannot see |
+| **A membrane's movie shows ITS OWN rhythm.** | `theHumanClock`'s gearing law. A one-YEAR movie cannot also show 394 sunrises — that is flicker, not a day. The day belongs to the ground, one rung down, where it is the right length of film. | strobing |
+| **A season is not a second variable — it IS the sun's declination.** | The spin axis is fixed in space while the planet orbits, so the sun climbs above the equator and falls below it once a year. One number tilts the terminator AND melts one cap while growing the other. | two phases that drift apart |
+| **Frame on a PERCENTILE, not the maximum.** `scene_cam_distance` | One distant marker grain otherwise defines the framing and leaves the subject a dot 9 units away. | a correct render of nothing |
+
 ### LEARNED — the free numbers are trained, never tuned
 The law fixes the **form**; what it leaves open goes in `trained.json`, fitted against that
 membrane's own measurable target. **Program the rules, train the numbers.** You write the
@@ -392,19 +420,98 @@ Change the planet and the same equations produce a different creature. **One law
 
 ## 7. How to run it
 
+### The viewer — this is the deliverable, not a debug tool
+
+**Double-click `DEMO.bat`.** That is the whole answer for a human. It finds python, frees a stale
+port, starts the server, waits until it actually *answers* (not until the process exists), opens the
+browser, and prints the real error if it fails. Closing the window stops it.
+
+From a shell it is:
+
 ```bash
-python story/grow.py                              # grow the tree; writes numbers.json + contents.md
+python ChimeraEngine/gallery.py 8765          # then open http://127.0.0.1:8765/live
+```
+
+**When you are told to work on a membrane, the only acceptable response is the PICTURE of that
+membrane.** Not a description of it, not a claim that it renders. Fetch the frame and LOOK at it.
+
+### The pages
+
+| URL | what it is |
+|---|---|
+| `/live` | the interface: hierarchy on the left, chapter in the middle, dials on the right |
+| `/live?blind=1` | the same without the labels — for judging a render without being told what it is |
+| `/frame?term=X` | one settled JPEG of membrane X. **This is how an agent looks at its own work.** |
+
+`/frame` blocks until the scene has actually loaded AND a new frame exists. A response of exactly
+**33,267 bytes is the blank placeholder** — it means the render never happened, not that the
+membrane is black. Check `gallery_err.log`.
+
+### The controls, and they are two different kinds
+
+| endpoint | kind | what it does |
+|---|---|---|
+| `/time?t=0..1` | — | scrub the membrane's own movie, `t=0` its beginning to `t=1` its settled end |
+| `/free?term=&name=&value=` | **the world** | move a `FREE` number. **Re-derives the whole subtree.** |
+| `/lens?term=&name=&value=` | **the picture** | move a `LENS` number. Re-emits only; nothing downstream moves. |
+| `/input?dazim=&delev=&zoom=` | — | orbit and zoom |
+
+**Never merge those two panels.** A `FREE` dial changes what the world *is*; a `LENS` dial is a
+declared exaggeration — a lie the render is telling, shown with the handle to turn it off. `/live`
+has a **"show it at true scale"** button that sets every lens to 1.0, and what you get is usually a
+smooth ball and an empty black disk. That is the honest picture.
+
+### Growing and reading the tree
+
+```bash
+python story/grow.py                              # grow it; writes numbers.json + contents.md
 python story/grow.py --read [--depth N]           # READ the story at any resolution
-python ChimeraEngine/splat_appearance.py <term>   # render one chapter's movie (begin -> end)
-python ChimeraEngine/gallery.py 8765              # the shared view; /live, /live?blind=1, /frame?term=X
+python ChimeraEngine/splat_appearance.py <term>   # render one chapter's movie, begin -> end
 ```
 
 `grow.py` is the only machinery: the same three moves at every folder, which makes this **growth
-rather than construction** — a cell does not consult a blueprint of the finished body; it divides and
-differentiates from local signals, and its position determines its identity. Here that is literal: a
-folder's path is its address, its parent's numbers are its signal.
+rather than construction** — a cell does not consult a blueprint of the finished body; it divides
+and differentiates from local signals, and its position determines its identity. Here that is
+literal: a folder's path is its address, its parent's numbers are its signal.
 
 **Adding world means adding a chapter. It never means adding more machinery.**
+
+### Checking that the chain is real
+
+```bash
+python story/audit.py                # all three checks
+python story/audit.py --typed        # numbers that did not come from the parent
+python story/audit.py --assumes      # the assumption manifest
+python story/audit.py --slider       # move every FREE dial; who responds?
+```
+
+Three ways a derivation quietly stops being one, each of which shipped into this tree:
+
+- **`--typed`** — a bare number in `derive()`'s return (`"T_star_surface": 5772.0`), **or** the
+  disguised form `parent.get("k", 86400.0)`, which reads as defensive programming and serves a typed
+  value the instant the parent stops carrying `k`. Silently. `.get` cannot fail.
+- **`--assumes`** — module constants `derive()` uses on its own authority, minus laws of nature and
+  unit conversions. Of each one ask: **does my parent already know this?**
+- **`--slider`** — the one that convicts. Move a `FREE` number and every descendant that depends on
+  it MUST move. Anything that does not move was typed. If a dial really is local, say so in its
+  `FREE` entry — `"local": "<the reason>"` — so the claim is written down instead of being a silent
+  absence, and the audit will honour it.
+
+### The rasteriser instrument
+
+```bash
+CHIMERA_TILE_DIAG=1 CHIMERA_TILE_DIAG_AT=0.1 python ChimeraEngine/gallery.py 8765
+```
+
+Reports any 32-px tile filling past that fraction of `MAX_PER_TILE`. **The tell you are looking for
+is a hard-edged black RECTANGLE on the tile grid**, not a dim patch — measure its pixel bounds and
+if they are multiples of 32, it is a tile eviction, not a coincidence.
+
+The cause is always the same: too many grains packed into a sub-pixel body, which overruns the tile
+and evicts everything else in it. The fix is always the same: **`matter.grains_for(radius, extent)`**
+— grain count follows PROJECTED AREA. A thing that occupies one pixel does not need a thousand grains
+to say so. (Measured: eleven worlds at a flat 900 grains each put 4,801 splats in a tile that allows
+4,096. With the law applied they take 176 between them.)
 
 ---
 
@@ -454,18 +561,60 @@ zero of the same curve. The baseline adjudicates.
 
 ## 10. Where things are
 
+### The tree and its language
+
 | path | what |
 |---|---|
 | `story/` | the tree. Every folder is a membrane |
 | `story/README.md` | how the game is built (short) |
+| **`story/LANGUAGE.md`** | **the grammar** — four verbs, the article system, unit suffixes as a type system, and §7's **visibility model**: `numbers.json` is `protected`, a `derive()` local is `private`, and there is **no `public`** |
 | `story/HIERARCHIES.md` | **the prebuilt paths** — cosmic and biological. Check before inventing a level |
 | `story/grow.py` | the enzyme — same three moves at every folder |
-| `story/matter.py` | the splat buffer, `lit()`, `blackbody_rgb()`, local-unit helpers |
-| `Chimera/docs/THE_STORY.md` | **the human story — the source of every membrane** |
-| `ChimeraEngine/splat_appearance.py` | render; folder membranes win over the old `SCENES` dict |
-| `ChimeraEngine/gallery.py` · `live_viewer.py` | the shared view: `/live`, `/live?blind=1`, `/frame?term=X` |
+| **`story/audit.py`** | **the three checks** — `--typed`, `--assumes`, `--slider`. A rule nothing checks is prose |
+| `story/matter.py` | the splat buffer, `lit()`, `blackbody_rgb()`, `surface_grain()`, `grains_for()` |
+| `story/clock.py` | `dynamical_time(ρ)`, `light_crossing(r)`, `child_phase()`, `human(seconds)` |
+| `story/scale.py` | how big a thing is **said the way a person would say it** — and `travel_time(d, a)` |
+| `story/claim.md` | the claim template |
+
+### Seeing it
+
+| path | what |
+|---|---|
+| **`DEMO.bat`** | **double-click.** Starts the viewer, waits until it answers, opens the browser |
+| `ChimeraEngine/gallery.py` · `live_viewer.py` | the server: `/live`, `/live?blind=1`, `/frame?term=X`, `/time`, `/free`, `/lens` |
+| `ChimeraEngine/splat_appearance.py` | render + composition; folder membranes win over the old `SCENES` dict |
+| `ParticleEngine/gpu_pipeline.py` | the rasteriser. `TILE_SIZE`, `MAX_PER_TILE`, and `CHIMERA_TILE_DIAG=1` |
 | `ChimeraEngine/human_messenger.py` | the eye's expected readings; the LM Studio path |
+| `ChimeraEngine/story.py` | read the hierarchy as a story; `audit` finds plot holes = missing why-edges |
+
+### The method
+
+| path | what |
+|---|---|
+| `Chimera/docs/THE_STORY.md` | **the human story — the source of every membrane** |
 | `CLAUDE.md` | the project manual (the formula is at the top) |
+| `docs/THE_WORKFLOW.md` | the method end to end: the verb (PROVE), the gates, the doc map |
+| `docs/THE_METHOD_AS_A_STORY.md` | every law Alan gave, placed at the membrane that forced it |
+| `docs/THE_ORDER.md` | what runs, in what sequence, and what is currently broken |
+| `Chimera/docs/EXPERIMENTAL_METHOD.md` | ten rules for diagnosing a live system without fooling yourself |
+| `python -m core.terms <word>` | the terminology index — 73 terms, used **literally** |
+
+### Where the story is going
+
+| path | what |
+|---|---|
+| `docs/THE_MATHEMATICS_OF_WALKING.md` | **derive before you train.** Every membrane's principle, every constant measured |
+| `docs/CONTROLLER_MAP.md` · `docs/CAPTURE_LIST.md` | the controller IS the compression: ~14 atoms → ~50 formulas → ~12 buttons |
+| `ChimeraEngine/THE_BODY.md` | first-person movement with real physics (**read its status banner**) |
+| `ChimeraEngine/THE_RELATIVE_ENGINE.md` | why refusing a global frame is the whole trick |
+| `ChimeraEngine/THE_ACTUATED_MEMBRANE.md` | matter that *does* something |
+| `ChimeraEngine/ROADMAP.md` | the road to a game |
+| `ChimeraEngine/SOUND_DESIGN.md` | matter's second projection. **DESIGN — not built** |
+| `ChimeraEngine/RENDERER_V2.md` | the renderer rebuild. **DESIGN — not built** |
+| `docs/LOCAL_BIG_MODELS.md` | what this machine can and cannot run locally, measured |
+
+**A doc marked DESIGN is not a description of something that exists.** Check the banner before you
+build against it.
 
 ---
 
