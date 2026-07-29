@@ -134,7 +134,7 @@ def emit(nums, t=1.0):
     rad = 1.0 + 0.55 * rng.random(n_c) ** 0.7
     c = blank(n_c)
     c[:, 0:3] = dc * rad[:, None]
-    paint(c, blackbody_rgb(min(T * 1.15, 4.0e4)), 0.035 * tt, 0.055, GLOW)
+    paint(c, blackbody_rgb(min(T * 1.15, 4.0e4)), 0.035 * tt, 0.330, GLOW)  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     return np.concatenate([b, c], axis=0)
 
 

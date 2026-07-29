@@ -263,7 +263,7 @@ def emit(nums, t=1.0):
     rb = 0.22 * rng.random(n_b) ** 0.45
     b = blank(n_b)
     b[:, 0:3] = v * rb[:, None] * (1.0 + 0.6 * (1.0 - tt))       # it was wider before it settled
-    paint(b, blackbody_rgb(4200.0), 0.16, 0.010, GLOW)
+    paint(b, blackbody_rgb(4200.0), 0.16, 0.060, GLOW)  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     return np.concatenate([b, d], axis=0)
 
 

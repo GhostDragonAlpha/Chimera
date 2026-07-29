@@ -117,7 +117,8 @@ def emit(nums, t=1.0):
     rgb = blackbody_rgb(min(T, 4.0e4))
 
     opacity = 0.95 * (1.0 - tt) ** 2 + 0.05        # OPAQUE -> transparent, all at once near the end
-    # GRAIN SIZE FROM THE SPACING, and divided by GLOW's hidden 6x (see matter.py).
+    # GRAIN SIZE FROM THE SPACING. (It used to divide by 6 to undo a hidden multiplier in the
+    # rasteriser; that multiplier is gone, so the number here is now the number that renders.)
     #
     # This read 0.055, which the rasteriser turned into 0.33 -- TEN TIMES the distance between
     # neighbouring grains at this count. Every pixel then accumulated ~100 overlapping splats and the
@@ -127,7 +128,7 @@ def emit(nums, t=1.0):
     #
     # A soft volume genuinely wants overlap -- that is what makes it read as gas rather than as
     # beads -- so this asks for about twice the closing size, which is a field you can see through.
-    grain = 2.0 * surface_grain(n, radius=float(np.median(rad))) / 6.0
+    grain = 2.0 * surface_grain(n, radius=float(np.median(rad)))
     paint(b, rgb, opacity, grain, GLOW)
 
     if tt > 0.55:                                   # the density contrast, once there is light to see it by

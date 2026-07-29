@@ -54,7 +54,7 @@ def emit(nums, t=1.0):
     b = blank(n)
     b[:, 0:3] = d * reach[:, None]
     rgb = blackbody_rgb(min(nums.get("T", 1e4), 4.0e4))
-    paint(b, rgb, max(0.10, 1.0 - 0.75 * runaway), 0.030 + 0.055 * runaway, GLOW)
+    paint(b, rgb, max(0.10, 1.0 - 0.75 * runaway), 0.180 + 0.330 * runaway, GLOW)  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
 
     if tt < 1.0:                                        # what has not left yet is still ON the fence
         keep = blank(3000)

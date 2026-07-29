@@ -127,7 +127,17 @@ def emit(nums, t=1.0):
     body = blank(n)
     body[:, 0:3] = d * rad[:, None]
     body[:, 21:24] = d * tt                                    # a surface appears only once it has one
-    paint(body, rgb, 0.10 + 0.90 * tt ** 2, 0.030 - 0.008 * tt, SOLID if tt > 0.8 else GLOW)
+    # THE GRAIN SHRINKS SMOOTHLY, and it did not used to.
+    #
+    # The type switches from GLOW to SOLID at t=0.8 -- correctly, because a collapsing cloud has no
+    # surface and an ignited star does. But GLOW used to carry a hidden 6x size multiplier, so at
+    # that instant every grain shrank SIX-FOLD in one frame: a pop, in the middle of the one moment
+    # this membrane exists to show. Nothing in the physics does that; a cloud condensing into a
+    # photosphere is continuous.
+    #
+    # The multiplier is gone, so the size now says what it means, and it interpolates: coarse while
+    # diffuse (0.18), fine once there is a surface to resolve (0.03).
+    paint(body, rgb, 0.10 + 0.90 * tt ** 2, 0.180 - 0.150 * tt, SOLID if tt > 0.8 else GLOW)
 
     # the leftover: angular momentum flattens what missed into a disk that stays
     n_d = 9000

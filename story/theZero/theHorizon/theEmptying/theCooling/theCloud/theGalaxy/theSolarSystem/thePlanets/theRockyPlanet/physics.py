@@ -278,7 +278,7 @@ def emit(nums, t=1.0):
     rr = float(nums.get("core_frac", 0.547)) * (rng.random(len(di)) ** (1.0 / 3.0))
     ib = blank(len(di))
     ib[:, 0:3] = di * rr[:, None]
-    paint(ib, (0.55, 0.30, 0.16), 0.30, 0.010, GLOW)      # iron at core temperature, seen as heat
+    paint(ib, (0.55, 0.30, 0.16), 0.30, 0.060, GLOW)      # iron at core temperature, seen as heat  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     parts.append(ib)
 
     # ── the air, if it kept any: a shell as deep as its own scale height says ──
@@ -295,7 +295,7 @@ def emit(nums, t=1.0):
         cosa = np.clip(da @ sun, 0.0, None)
         a[:, 16:19] = (ca[None, :] * (0.08 + 0.92 * cosa)[:, None]).astype(np.float32)
         a[:, 19] = 0.035
-        a[:, 20] = 0.0045      # the grain must be finer than the shell is thick, or blur IS the sky
+        a[:, 20] = 0.0270      # the grain must be finer than the shell is thick, or blur IS the sky  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
         a[:, 11] = GLOW
         parts.append(a)
 

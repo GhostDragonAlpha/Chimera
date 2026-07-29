@@ -399,7 +399,7 @@ def emit(nums, t=1.0):
         ca = np.clip(np.array([0.30, 0.52, 1.00]) * (0.35 + 0.9 * float(nums["P_surface_bar"])), 0, 1)
         a[:, 16:19] = (ca[None, :] * (0.08 + 0.92 * np.clip(da @ sun, 0.0, None))[:, None]).astype(np.float32)
         a[:, 19] = 0.040
-        a[:, 20] = 0.0045
+        a[:, 20] = 0.0270  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
         a[:, 11] = GLOW
         parts.append(a)
 

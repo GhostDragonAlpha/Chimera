@@ -103,7 +103,7 @@ def emit(nums, t=1.0):
     b[:, 17] = np.where(inside, 0.85, 0.24)
     b[:, 18] = np.where(inside, 0.35, 0.32)
     b[:, 19] = np.where(inside, 0.55, 0.06)
-    b[:, 20] = 0.010
+    b[:, 20] = 0.060  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     b[:, 11] = GLOW
 
     # the press: a bar filling across the band, which is the one thing the player controls

@@ -23,26 +23,16 @@ NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-fa
 SOLID = 3.0                     # opaque, isotropic grain -- matter you can see the surface of
 GLOW = 5.0                      # big soft blob -- light, plasma, a field
 
-# ⚠ THE SIZE YOU WRITE IS NOT ALWAYS THE SIZE THAT RENDERS.
+# THE SIZE YOU WRITE IS THE SIZE THAT RENDERS. That was not true until 2026-07-29.
 #
-# The rasteriser looks the type up in `gpu_pipeline._profile()` and multiplies your grain by it:
+# GLOW used to carry a hidden 6x multiplier in `gpu_pipeline._profile()`, so
+# `paint(b, colour, alpha, 0.055, GLOW)` drew a 0.33 splat and no author could tell. It put seven
+# membranes over the rasteriser's per-tile cap, silently invalidated both helpers below (they return
+# the size you should ASK for, which was not the size that LANDED), and gave theStar a six-fold pop
+# in grain size at t=0.8 where its type switched.
 #
-#     SOLID  ->  x1.0     what you asked for
-#     GLOW   ->  x6.0     SIX TIMES what you asked for
-#
-# So `paint(b, colour, alpha, 0.055, GLOW)` renders a 0.33 splat, and on theCooling that is a
-# 195-PIXEL radius -- one grain covering 144 tiles. It is why seven membranes were over the
-# rasteriser's per-tile cap while their emits looked completely reasonable.
-#
-# IT ALSO SILENTLY BREAKS THE TWO HELPERS BELOW. `surface_grain(n)` returns the exact size needed to
-# close a surface; paint that with GLOW and you get six times it. `grains_for()` budgets by projected
-# area and is computed from the size you asked for, not the size that lands. **If you use GLOW,
-# divide by 6 before handing the number to either helper, or work in SOLID.**
-#
-# This should probably not exist -- a membrane ought to state its own grain size and be believed.
-# It is documented rather than removed because deleting it changes the appearance of every glow
-# render in the tree at once, and that is a deliberate call, not a cleanup.
-TYPE_SIZE_MULTIPLIER = {SOLID: 1.0, GLOW: 6.0}
+# It is gone. Every GLOW call in the tree was multiplied by 6 in the same commit, so the pictures did
+# not move -- only the honesty did. **A membrane states its own grain size and is believed.**
 
 
 def blank(n: int) -> np.ndarray:

@@ -99,7 +99,7 @@ def emit(nums, t=1.0):
     b[:, 17] = 0.75 * (1.0 - lean) + 0.10
     b[:, 18] = 1.00 * (1.0 - lean) + 0.10
     b[:, 19] = 0.10 + 0.35 * lean
-    b[:, 20] = 0.020
+    b[:, 20] = 0.120  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     b[:, 11] = GLOW
 
     # the fence itself -- where the clock stops

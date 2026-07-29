@@ -374,7 +374,7 @@ def emit(nums, t=1.0):
         # The grain must be SMALLER than the shell is thick, or the blur is the atmosphere. 14 scale
         # heights here is 2.5% of the radius; a 0.012 splat smeared that into an 8% halo -- the
         # render reporting a puffy sky this world does not have.
-        a[:, 20] = 0.0045
+        a[:, 20] = 0.0270  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
         a[:, 11] = GLOW
         parts.append(a)
 

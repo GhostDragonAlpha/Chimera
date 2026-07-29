@@ -157,7 +157,17 @@ def _profile(tcode):
     elif tcode == 2: return 0.3, 0, 1, 2.0  # water
     elif tcode == 3: return 1.0, 0, 0, 0.0  # social
     elif tcode == 4: return 1.5, 0, 0, 0.0  # resource
-    elif tcode == 5: return 6.0, 0, 0, 0.0  # atmosphere
+    # WAS 6.0. Removed 2026-07-29 at the operator's call.
+    #
+    # `matter.GLOW` is 5.0, so every soft-blob grain in the story tree was rendered SIX TIMES the
+    # size the membrane asked for -- invisibly, with no way for the author to find out except by
+    # measuring pixels. It put seven membranes over the rasteriser's per-tile cap, made
+    # `surface_grain()` and `grains_for()` lie whenever the result was painted as GLOW, and gave
+    # theStar a 6x jump in apparent grain size at t=0.8 where its type switched from GLOW to SOLID.
+    #
+    # A membrane states its own grain size and is believed. Every GLOW call in the tree was
+    # multiplied by 6 in the same commit, so the pictures did not move -- only the honesty did.
+    elif tcode == 5: return 1.0, 0, 0, 0.0  # atmosphere / soft field: the size you asked for
     elif tcode == 6: return 0.8, 0, 1, 2.0  # shellmite
     elif tcode == 7: return 0.05, 0, 1, 3.0 # weapon_glint
     else: return 0.5, 0, 0, 0.0

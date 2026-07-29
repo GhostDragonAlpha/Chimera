@@ -113,7 +113,7 @@ def emit(nums, t=1.0):
         b[:, 2] = rng.normal(0.0, 0.010, per)
         heat = min(1.0, omega / 6.0)                            # fast rings run hot
         paint(b, (0.35 + 0.65 * heat, 0.55 + 0.25 * (1 - heat), 1.0 - 0.55 * heat),
-              0.16 + 0.30 * heat, 0.012, GLOW)
+              0.16 + 0.30 * heat, 0.072, GLOW)  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
         parts.append(b)
     return np.concatenate(parts, axis=0)
 

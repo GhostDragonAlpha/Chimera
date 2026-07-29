@@ -119,7 +119,7 @@ def emit(nums, t=1.0):
     # onto the same pixels, and a saturated tile shows up as a hard square edge -- the render lying
     # about density. Low alpha lets the density itself do the brightening, which is the honest way:
     # a clump is bright because there is more gas there, not because each grain got louder.
-    paint(b, blackbody_rgb(T), 0.055 - 0.030 * pull, 0.024 - 0.007 * pull, GLOW)
+    paint(b, blackbody_rgb(T), 0.055 - 0.030 * pull, 0.144 - 0.042 * pull, GLOW)  # x6: GLOW no longer carries a hidden multiplier (gpu_pipeline._profile)
     return b
 
 
