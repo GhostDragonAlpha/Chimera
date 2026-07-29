@@ -1,0 +1,462 @@
+"""walker.py -- standing inside aTerrain and walking on it.
+
+Every membrane above this is looked AT. This is the first one you are looked OUT of.
+
+WHY IT NEEDS ITS OWN BUFFER. `aTerrain` is 12 km across on a 128x128 grid, so one cell is 93.8 m
+and a person is 1.78 m: rendered as it stands, every grain of ground would be FIFTY-TWO TIMES the
+player's height, and you would be walking between boulders the size of office blocks. The membrane
+is not wrong -- at its own framing 94 m is a pixel. It is the wrong LEVEL OF DETAIL to stand on.
+
+So this does what the hierarchy already says to do: take the SHAPE from `aTerrain` (its carved
+height field, interpolated) and the GRAIN from `theGround` (stones at the fractal size distribution
+its law derived), and build a buffer centred on the player -- fine underfoot, coarse to the horizon.
+That is LOD of meaning at walking scale: the same derivation read at the resolution a body needs.
+
+EVERY NUMBER THE BODY MOVES BY IS DERIVED, none of them typed here:
+
+    walk / run speed   theHuman.comfortable_speed_ms, walk_run_ms   (Froude, Fr = 0.5)
+    jump               theHuman.jump_height_m                       (muscle work / g)
+    gravity            aRockyPlanet.g                               (GM/R^2, fifteen membranes up)
+    eye height         theHuman: 0.94 of stature
+    ground under foot  aTerrain's carved surface
+
+Change the planet and the walk changes with it, because there is nothing here to change separately.
+"""
+from __future__ import annotations
+
+import json
+import math
+from pathlib import Path
+
+import numpy as np
+
+_HERE = Path(__file__).resolve().parent
+_STORY = _HERE.parent / "story"
+_TERRAIN = (_STORY / "theZero/theHorizon/theEmptying/theCooling/theCloud/theGalaxy/theSolarSystem"
+            / "thePlanets/theRockyPlanet/aRockyPlanet/aBlueWorld/theTerrain/aTerrain")
+
+_FIELD = None       # (z, dx, patch_m, acc, slope) -- carved once, then sampled
+_NUMS = None
+
+
+def _load():
+    """Carve the landscape once and keep it. It is deterministic, so this is a cache, not a state."""
+    global _FIELD, _NUMS
+    if _FIELD is not None:
+        return _FIELD, _NUMS
+    import importlib.util
+    import sys
+    sys.path.insert(0, str(_STORY))
+    spec = importlib.util.spec_from_file_location("aTerrain_phys", _TERRAIN / "physics.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    nums = json.loads((_TERRAIN / "numbers.json").read_text())
+    ground = json.loads((_TERRAIN / "theGround" / "numbers.json").read_text())
+    human = json.loads((_TERRAIN / "theGround" / "theHuman" / "numbers.json").read_text())
+    planet = json.loads((_TERRAIN.parent.parent / "numbers.json").read_text())   # aBlueWorld: the air
+    n, dx = int(nums["grid"]), float(nums["cell_m"])
+    rng = np.random.default_rng(2029)
+    z, recv, acc, slope = mod._carve(mod._red_surface(n, rng, 3.0), dx, 500, rng)
+    # theGround's OWN law, imported rather than restated. `soil_depth(slope_deg)` is what decides
+    # whether a patch of this surface shows soil or bedrock, and re-deriving it here would be the
+    # sibling-inheritance failure in miniature: two copies that drift the moment one is edited.
+    gspec = importlib.util.spec_from_file_location("theGround_phys", _TERRAIN / "theGround" / "physics.py")
+    gmod = importlib.util.module_from_spec(gspec)
+    gspec.loader.exec_module(gmod)
+
+    _FIELD = (z, dx, float(nums["patch_m"]), acc.reshape(n, n), slope.reshape(n, n))
+    _NUMS = {"terrain": nums, "ground": ground, "human": human,
+             "planet": planet, "ground_law": gmod}
+    return _FIELD, _NUMS
+
+
+def heights_at(X, Y):
+    """THE GROUND UNDER A FOOT, bilinear between the four cells around it -- for whole arrays.
+
+    The carved field is the truth; between samples the surface is the plane those four corners
+    define. At 94 m spacing that is smooth over a stride, which is why a person walking does not
+    feel the grid -- and why the fine detail below is scattered ON this surface rather than
+    replacing it.
+
+    ONE IMPLEMENTATION, and the scalar `height_at` below is a call into it. A separate scalar copy
+    is how a foot ends up standing on a slightly different surface than the one being drawn, and
+    that gap is invisible until the body floats."""
+    (z, dx, patch, _acc, _sl), _ = _load()
+    n = z.shape[0]
+    fx = np.clip((np.asarray(X, dtype=np.float64) + patch / 2.0) / dx, 0.0, n - 1.001)
+    fy = np.clip((np.asarray(Y, dtype=np.float64) + patch / 2.0) / dx, 0.0, n - 1.001)
+    # EACH FRACTION BELONGS TO ITS OWN AXIS. This used to read `ty, tx = fy - j0, fx - i0` -- the
+    # row fraction measured against the COLUMN index and vice versa. At the middle of the patch
+    # fx == fy and the swap cancels exactly, so the spawn point (0, 0) and everything near it read
+    # correct; at the patch edge it stopped interpolating and started EXTRAPOLATING, and returned
+    # 13,414 m on a field whose true maximum is 451 m. That is what put the far shell in the sky.
+    j0 = fx.astype(np.int64)          # column index <- x
+    i0 = fy.astype(np.int64)          # row index    <- y
+    tx = fx - j0                      # how far along the column pair
+    ty = fy - i0                      # how far down the row pair
+    z00, z01 = z[i0, j0], z[i0, j0 + 1]
+    z10, z11 = z[i0 + 1, j0], z[i0 + 1, j0 + 1]
+    top = z00 * (1 - tx) + z01 * tx
+    bot = z10 * (1 - tx) + z11 * tx
+    return top * (1 - ty) + bot * ty
+
+
+def height_at(x, y):
+    """The same surface, for one point."""
+    return float(heights_at(np.array([x]), np.array([y]))[0])
+
+
+def gradients_at(X, Y, h=4.0):
+    """The gradient over a baseline of `h` -- and the baseline is an argument because A SLOPE IS
+    SCALE-DEPENDENT. Shading a 115 m grain with a 4 m gradient reads as noise on the horizon: the
+    grain covers a hillside and is being lit as though it were a pebble on one."""
+    zx = (heights_at(X + h, Y) - heights_at(X - h, Y)) / (2 * h)
+    zy = (heights_at(X, Y + h) - heights_at(X, Y - h)) / (2 * h)
+    return zx, zy
+
+
+def slope_at(x, y, h=4.0):
+    """What a foot has to hold onto, here."""
+    zx, zy = gradients_at(np.array([x]), np.array([y]), h)
+    return float(zx[0]), float(zy[0])
+
+
+def _hash01(ix, iy, salt):
+    """A spatial hash that is actually decorrelated on an integer lattice -- a 32-bit avalanche mix
+    of the two cell indices. The float trick (`frac(sin(dot(p,k))*43758)`) is written for continuous
+    UVs and paints visible fringes when handed a grid, which is exactly what it did here."""
+    h = (ix.astype(np.uint64) * np.uint64(73856093)) ^ (iy.astype(np.uint64) * np.uint64(19349663))         ^ np.uint64(salt * 83492791)
+    h ^= h >> np.uint64(33); h *= np.uint64(0xff51afd7ed558ccd)
+    h ^= h >> np.uint64(29); h *= np.uint64(0xc4ceb9fe1a85ec53)
+    h ^= h >> np.uint64(32)
+    return (h >> np.uint64(11)).astype(np.float64) / float(1 << 53)
+
+
+class Walker:
+    """A body on that ground. Its numbers come from theHuman and the planet; none are chosen here."""
+
+    def __init__(self):
+        (_z, _dx, patch, _a, _s), nums = _load()
+        h = nums["human"]
+        self.g = float(h["g"])
+        self.walk = float(h["comfortable_speed_ms"])
+        self.run = float(h["walk_run_ms"])
+        self.jump_v = math.sqrt(2.0 * self.g * float(h["jump_height_m"]))
+        self.eye = 0.94 * float(h["height_m"])
+        self.height_m = float(h["height_m"])
+        self.patch = patch
+
+        # ── THE CLOCK, AT HUMAN SPEED ────────────────────────────────────────────────────────────
+        # Every other membrane in this story is GEARED: an aeon of collapse compressed into a movie
+        # you can sit through. This is the one rung where that would be a lie, because the person is
+        # standing in it -- so the clock runs 1:1, one second per second, and the sun crosses the sky
+        # at exactly the rate this planet's own rotation says it does. That is what theHumanClock's
+        # bottom rung MEANS: no gearing left to apply.
+        #
+        # It starts at the epoch theHuman declares -- 2076, 09:00 local -- because a game has to
+        # begin somewhere and when is a human's call, not a planet's.
+        self.day_s = float(h["day_s"])
+        self.epoch_year = float(h["epoch_year"])
+        self.clock = float(h["start_time_s"])        # seconds into this world's own day
+        self.lat = math.radians(float(h["latitude_deg"]))
+        self.decl = math.radians(float(h["sun_declination_deg"]))
+
+        self.x, self.y = 0.0, 0.0
+        self.z = height_at(0.0, 0.0)
+        self.vz = 0.0
+        self.on_ground = True
+        self.yaw = 0.0                 # radians, 0 = +Y
+        self.pitch = 0.0
+        self.crouch = 0.0
+
+    def look(self, dyaw, dpitch):
+        """RADIANS, like the state it moves -- the caller owns sensitivity, because how far a hand
+        should push a view is a preference, not a physics. Pitch stops just short of straight up
+        and down (1.45 rad = 83 deg) so the horizon can never invert."""
+        self.yaw = (self.yaw - dyaw) % (2 * math.pi)
+        self.pitch = max(-1.45, min(1.45, self.pitch - dpitch))
+
+    def move(self, fwd, strafe, sprint, jump, crouch, dt):
+        """COMMAND THE PROCESS, NOT THE POSITION -- the operator's control law. The keys ask for an
+        EFFORT in a direction; where the body ends up is whatever the ground allows."""
+        speed = (self.run if sprint else self.walk) * (0.45 if crouch else 1.0)
+        c, s = math.cos(self.yaw), math.sin(self.yaw)
+        # forward is +Y rotated by yaw; strafe is its right-hand normal
+        vx = (fwd * -s + strafe * c) * speed
+        vy = (fwd * c + strafe * s) * speed
+        if fwd or strafe:
+            m = math.hypot(vx, vy)
+            vx, vy = vx / m * speed, vy / m * speed
+
+        nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))
+        ny = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.y + vy * dt))
+
+        # A SLOPE YOU CANNOT STAND ON IS A SLOPE YOU CANNOT WALK UP. The ground's own repose angle
+        # decides it -- the same number the hillslopes were built with, not a movement setting.
+        zx, zy = slope_at(nx, ny)
+        grade = math.degrees(math.atan(math.hypot(zx, zy)))
+        if grade < 38.0 or not self.on_ground:
+            self.x, self.y = nx, ny
+
+        gz = height_at(self.x, self.y)
+        if jump and self.on_ground:
+            self.vz = self.jump_v
+            self.on_ground = False
+        if not self.on_ground:
+            self.vz -= self.g * dt
+            self.z += self.vz * dt
+            if self.z <= gz:
+                self.z, self.vz, self.on_ground = gz, 0.0, True
+        else:
+            self.z = gz
+        self.crouch += (( -0.35 if crouch else 0.0) - self.crouch) * min(1.0, 10.0 * dt)
+        self.clock += dt                    # 1:1. The only rung that needs no gearing.
+
+    @property
+    def eye_pos(self):
+        return (self.x, self.y, self.z + self.eye + self.crouch)
+
+    @property
+    def sun(self):
+        """WHERE THE SUN IS, RIGHT NOW -- the standard solar-position triangle, run on this world's
+        own day length and this membrane's latitude. Not a lighting setting: move the clock and it
+        moves, because it is the same equation theHuman used to state the opening altitude."""
+        H = 2.0 * math.pi * (self.clock / self.day_s) - math.pi     # hour angle, 0 at local noon
+        sa = (math.sin(self.decl) * math.sin(self.lat)
+              + math.cos(self.decl) * math.cos(self.lat) * math.cos(H))
+        alt = math.asin(max(-1.0, min(1.0, sa)))
+        az = math.atan2(-math.cos(self.decl) * math.sin(H),
+                        math.sin(self.decl) * math.cos(self.lat)
+                        - math.cos(self.decl) * math.sin(self.lat) * math.cos(H))
+        ca = math.cos(alt)
+        return (ca * math.sin(az), ca * math.cos(az), math.sin(alt)), alt
+
+    def local_time(self):
+        """The clock as a person would read it: which day of the story, and what o'clock."""
+        day = int(self.clock // self.day_s)
+        f = (self.clock % self.day_s) / self.day_s * 24.0
+        return day, int(f), int((f % 1.0) * 60)
+
+    def readout(self):
+        day, hh, mm = self.local_time()
+        zx, zy = slope_at(self.x, self.y)
+        return {"x": round(self.x, 1), "y": round(self.y, 1),
+                "elev": round(self.z, 1),
+                "slope": round(math.degrees(math.atan(math.hypot(zx, zy))), 1),
+                "g": round(self.g, 2),
+                "walk": round(self.walk, 2), "run": round(self.run, 2),
+                "day": day, "hh": hh, "mm": mm, "year": int(self.epoch_year),
+                "sun_alt": round(math.degrees(self.sun[1]), 1)}
+
+
+# ── the ground you actually see, built around wherever the player is ─────────────────────────────
+#
+# A GEOMETRY CLIPMAP, and the reason is a measurement, not a preference.
+#
+# The first version was TWO SHELLS: 0.45 m samples out to 90 m, then 80 m samples to the horizon.
+# The render showed a hard diagonal seam straight across the picture -- a 90x jump in grain size
+# with nothing between, which is what a two-shell LOD looks like from inside. It is invisible from
+# orbit because the whole shell is a pixel, and unmissable from a body's eye height.
+#
+# So: nested square rings, each one DOUBLE the spacing of the ring inside it. Two things follow, and
+# both matter more than they look:
+#
+#  * A GRAIN SUBTENDS ROUGHLY THE SAME ANGLE EVERYWHERE. Screen size goes as size/distance; doubling
+#    the size every time the distance doubles holds that ratio flat. The seam cannot be loud because
+#    the worst discontinuity anywhere is a factor of two.
+#  * THE GRID IS ANCHORED TO THE WORLD, NOT TO THE PLAYER. Each ring snaps to a multiple of its own
+#    spacing, so walking slides the rings over stationary ground instead of dragging every grain
+#    along with you. A player-centred grid makes the whole surface CRAWL -- the ground appears to
+#    flow underfoot, which reads as motion sickness and is the classic failure of radial LOD.
+#
+# Cost is logarithmic: each ring holds the same number of grains, and 8 rings reach 6 km from 0.9 m.
+_RING_N = 48            # half-width of every ring, in cells -- 8 rings * ~27k = the same budget
+_RING_LEVELS = 8        # doubling 8 times: 0.9 m underfoot to 115 m at the horizon
+_STEP0 = 0.90           # the finest spacing, ~half a stride
+
+
+def scene_around(w: Walker, t: float = None):
+    """The buffer to render from inside: fine underfoot, coarse to the horizon, no seam between.
+
+    SHAPE from `aTerrain` (its carved height field, interpolated); GRAIN from `theGround` (stones at
+    the fractal size distribution its law derived). That is LOD of meaning at walking scale -- the
+    same derivation read at the resolution a body needs.
+    """
+    from matter import blank, lit, SOLID          # story/matter.py, already on the path
+    (zf, dx, patch, acc, slope), nums = _load()
+    gnd = nums["ground"]
+    S_rel = float(nums["terrain"]["S_earth"])
+    half = patch / 2.0 - 2.0
+    sunv, alt = w.sun
+    sun = np.array(sunv, np.float32); sun /= (np.linalg.norm(sun) + 1e-12)
+    # AIRLIGHT. Below the horizon there is no direct beam, but the sky is not black until the sun is
+    # well down -- the atmosphere aBlueWorld derived keeps scattering. Twilight fades over the ~12 deg
+    # the geometry gives and never reaches zero, because the ground still sees the sky hemisphere.
+    beam = max(0.0, math.sin(alt))
+    sky = 0.09 + 0.16 * max(0.0, min(1.0, (math.degrees(alt) + 6.0) / 12.0))
+
+    veg = np.array([0.20, 0.27, 0.14], np.float32)
+    rock = np.array([0.34, 0.31, 0.27], np.float32)
+    bare_above = float(gnd["bare_rock_above_deg"])       # theGround's one claim about exposed rock
+
+    parts = []
+    for lvl in range(_RING_LEVELS):
+        step = _STEP0 * (2 ** lvl)
+        # SNAP TO THE WORLD. Anchoring each ring to a multiple of its own spacing is what stops the
+        # ground crawling: the grains stay where they are and the ring slides across them.
+        cx = math.floor(w.x / step) * step
+        cy = math.floor(w.y / step) * step
+        k = np.arange(-_RING_N, _RING_N + 1) * step
+        XX, YY = np.meshgrid(k + cx, k + cy)
+        X, Y = XX.ravel(), YY.ravel()
+        if lvl > 0:
+            # cut the hole the finer ring already fills (its extent, in this ring's coordinates)
+            inner = _RING_N * (_STEP0 * (2 ** (lvl - 1)))
+            keep = (np.abs(X - w.x) > inner) | (np.abs(Y - w.y) > inner)
+            X, Y = X[keep], Y[keep]
+        inside = (np.abs(X) < half) & (np.abs(Y) < half)
+        X, Y = X[inside], Y[inside]
+        if not len(X):
+            continue
+
+        # BREAK THE LATTICE. A regular grid seen at a grazing angle beats against the pixel grid and
+        # fans out in stripes -- the same aliasing a picket fence makes on video. Real ground grains
+        # are not on a lattice either. The offset is a function of the CELL, so a grain sits in the
+        # same spot every time you walk back to it.
+        ix = np.rint(X / step).astype(np.int64)
+        iy = np.rint(Y / step).astype(np.int64)
+        X = X + (_hash01(ix, iy, 1) - 0.5) * step * 0.45
+        Y = Y + (_hash01(ix, iy, 2) - 0.5) * step * 0.45
+
+        n = len(X)
+        Z = heights_at(X, Y)
+        gx, gy = gradients_at(X, Y, max(step, 4.0))   # this ring's own scale -- see gradients_at
+
+        b = blank(n)
+        b[:, 0], b[:, 1], b[:, 2] = X, Y, Z
+        nrm = np.stack([-gx, -gy, np.ones(n)], axis=1)
+        nrm /= (np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12)
+        b[:, 21:24] = nrm
+
+        # ── WHAT THIS PATCH OF GROUND IS MADE OF, derived, not speckled ──────────────────────────
+        # The first version scattered stones with the GLSL hash `frac(sin(dot(p, k)) * 43758)`. On a
+        # perfect lattice that is not random at all: X and Y are multiples of `step`, so the hash
+        # argument is LINEAR in the integers, its fractional part cycles with a short period, and the
+        # render came back covered in moire fringes fanning to the horizon. There was nothing to
+        # hash: `theGround` already says where rock is exposed.
+        #
+        # AND THE SECOND VERSION OVERREACHED THE OTHER WAY. It read soil DEPTH as a cover fraction --
+        # 0.374 m of soil at this terrain's mean slope became "74% bare rock". You cannot see through
+        # 37 cm of dirt. Depth says how much soil there is, not how much bedrock shows through it,
+        # and turning one into the other took a scale nobody derived.
+        #
+        # theGround makes exactly ONE claim about exposed rock: `bare_rock_above_deg`, the slope at
+        # which production can no longer keep up with removal and the soil mantle goes to zero. So
+        # that is the claim this uses. The result is a landscape almost entirely mantled -- mean
+        # slope 17 deg against a 32.9 deg threshold -- with rock only on the steepest faces. That is
+        # not a flattering picture; it is this planet's answer, and the render's job is to state it.
+        grade = np.degrees(np.arctan(np.hypot(gx, gy)))
+        # the 3 deg ramp is ANTI-ALIASING, not physics: a hard step on a 0.9 m lattice stairsteps.
+        bare = np.clip((grade - bare_above + 3.0) / 6.0, 0.0, 1.0)[:, None]
+        alb = veg * (1.0 - bare) + rock * bare
+
+        lam = np.clip(nrm @ sun, 0.0, None)
+        b[:, 16:19] = lit(alb, S_rel * beam * lam + sky, e_ref=S_rel, tone=0.45)
+        b[:, 19] = 0.95
+        # A GRAIN MUST BE BIGGER THAN ITS GAP. On a square lattice of pitch `step`, the farthest a
+        # point can be from the nearest grain centre is the half-diagonal, 0.707 * step -- so at 0.8
+        # the surface was already marginal, and jittering by +/-0.45 opened it into visible streaks.
+        # 1.05 covers the lattice AND the jitter, which is what turns dots back into ground.
+        b[:, 20] = step * 1.05
+        b[:, 11] = SOLID
+        parts.append(b)
+
+    parts.append(_sky(w, nums, sun, alt))
+    return np.concatenate(parts, axis=0)
+
+
+_SKY_DIRS = None
+
+
+def _sky(w, nums, sun, alt):
+    """THE SKY, FROM THE AIR THE PLANET ACTUALLY HAS.
+
+    A black sky above a lit landscape is a contradiction the render was stating out loud:
+    `aBlueWorld` derives `has_atmosphere: True` at 0.52 bar with a 10.3 km scale height, and an
+    atmosphere that thick scatters. So this is not a backdrop -- it is the same matter the planet
+    already claimed, drawn.
+
+    Rayleigh single-scattering, and every term comes from upstream:
+
+      * HOW MUCH AIR. Optical depth scales with the column, so with surface pressure. Earth is
+        tau = 0.0973 at 550 nm (Bodhaine 1999); this world runs 0.52 bar, so 0.0506.
+      * WHAT COLOUR. tau goes as 1/lambda^4 -- that IS why a sky is blue, and it is a ratio, not a
+        palette: 0.64 / 1.12 / 1.96 across R, G, B at 615/535/465 nm.
+      * HOW BRIGHT IN EACH DIRECTION. The Rayleigh phase function 3/(16 pi) (1 + cos^2 T) against
+        the sun, times the airmass along the view ray, times what survives the slanted path to the
+        sun. Which gives, for free and unasked: bright near the sun, deepest at 90 deg from it,
+        pale at the horizon where the airmass is long, and RED at sunrise -- because at low sun the
+        blue has been scattered out of the beam before it arrives.
+
+    The dome is drawn at 40 km, beyond the terrain's 6 km reach so nothing can poke through it.
+    """
+    from matter import blank, GLOW
+    global _SKY_DIRS
+    if _SKY_DIRS is None:
+        # a Fibonacci hemisphere: even coverage, no pole clumping, no seam to alias
+        m = 2400
+        i = np.arange(m) + 0.5
+        cz = 1.0 - i / m                      # upper hemisphere only, cos(zenith) 1 -> 0
+        rr = np.sqrt(np.clip(1.0 - cz * cz, 0.0, 1.0))
+        ph = np.pi * (1.0 + 5.0 ** 0.5) * i
+        _SKY_DIRS = np.stack([rr * np.cos(ph), rr * np.sin(ph), cz], axis=1)
+    d = _SKY_DIRS
+    n = len(d)
+
+    P_bar = float(nums["planet"]["P_surface_bar"])
+    tau0 = 0.0973 * P_bar                                     # 550 nm, scaled by the column
+    tau = tau0 * np.array([0.640, 1.117, 1.960], np.float64)   # (550/615)^4, (550/535)^4, (550/465)^4
+
+    # airmass along the view ray and along the ray to the sun (Kasten-Young, valid to the horizon)
+    def airmass(cosz):
+        c = np.clip(cosz, 0.0, 1.0)
+        z = np.degrees(np.arccos(c))
+        return 1.0 / (c + 0.50572 * np.power(np.clip(96.07995 - z, 1e-3, None), -1.6364))
+
+    mv = airmass(d[:, 2])[:, None]                             # view ray
+    ms = airmass(max(math.sin(alt), 0.0))                      # sun ray -- one number, the sun is one place
+    cosT = np.clip(d @ np.asarray(sun, np.float64), -1.0, 1.0)[:, None]
+    phase = 3.0 / (16.0 * np.pi) * (1.0 + cosT * cosT)
+
+    scattered = (1.0 - np.exp(-tau[None, :] * mv)) * phase * np.exp(-tau[None, :] * ms)
+    scattered *= 26.0                                          # 4 pi sr and the solar constant, folded
+    if math.sin(alt) <= 0.0:                                   # night: only the twilight the geometry allows
+        scattered *= max(0.0, 1.0 + math.degrees(alt) / 8.0) ** 2
+
+    R = 40000.0
+    b = blank(n)
+    b[:, 0] = w.x + d[:, 0] * R
+    b[:, 1] = w.y + d[:, 1] * R
+    b[:, 2] = w.z + d[:, 2] * R
+    b[:, 16:19] = np.clip(scattered, 0.0, 1.0)
+    b[:, 19] = 1.0
+    # 2400 points over a hemisphere is 1.6 deg of angular spacing; drawn at 1.6 deg they read as
+    # 2400 dots. At 5.2 deg each one overlaps its neighbours threefold and the dome closes.
+    b[:, 20] = R * 0.091
+    b[:, 11] = GLOW
+    return b
+
+
+_COARSE = {}
+
+
+def height_field_coarse(n, patch):
+    """The whole patch on an n x n grid -- cached, because the far shell needs its gradients."""
+    if n in _COARSE:
+        return _COARSE[n]
+    v = np.linspace(-patch / 2 + 2, patch / 2 - 2, n)
+    XF, YF = np.meshgrid(v, v)
+    Z = np.array([[height_at(x, y) for x in v] for y in v])
+    _COARSE[n] = Z
+    return Z

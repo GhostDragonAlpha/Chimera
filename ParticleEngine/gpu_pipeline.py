@@ -494,8 +494,28 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     empty = (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32))
     if nv == 0:
         return empty
-    r = np.maximum((srad * 1.5).astype(np.int64) + 1, 1)             # match the compositor's 1.5*rad reach
-    px = sx.astype(np.int64); py = sy.astype(np.int64)
+    # CLAMP BEFORE THE CAST, OR int64 WRAPS AND A SPAN GOES NEGATIVE.
+    #
+    # `_project` rejects vz >= 0 and cw <= 0, but not cw ~ 0 -- a grain lying in the camera's own
+    # view plane divides by a denormal and projects to ~1e33. `astype(int64)` cannot hold that, so it
+    # saturates to INT64_MIN, `px - r` WRAPS ROUND to INT64_MAX, and the two clips land on opposite
+    # ends: tx0 = tiles_x-1 while tx1 = 0. The span nx = tx1 - tx0 + 1 comes out NEGATIVE and
+    # np.repeat/cp.repeat raise "all elements of 'repeats' should not be negative".
+    #
+    # Found from inside the first-person walk, where a grain of ground sits 1.67 m under the eye and
+    # sweeps through the view plane every time you look down -- a framing no orbit camera can reach,
+    # which is why 41 orders of magnitude of scenes never hit it.
+    #
+    # The clamp is exact, not a fudge: a splat further off-screen than the screen is wide contributes
+    # to no tile, and one whose radius exceeds the diagonal already covers every tile. Both are
+    # unchanged by pinning them at those bounds, and NaN maps to the same finite range.
+    span = np.int64(tiles_x * tile_sz + tiles_y * tile_sz)
+    srad = np.nan_to_num(srad, nan=0.0, posinf=float(span), neginf=0.0)
+    sx = np.nan_to_num(sx, nan=-1e9, posinf=1e9, neginf=-1e9)
+    sy = np.nan_to_num(sy, nan=-1e9, posinf=1e9, neginf=-1e9)
+    r = np.clip((srad * 1.5), 0.0, float(span)).astype(np.int64) + 1   # compositor's 1.5*rad reach
+    px = np.clip(sx, -float(span), float(span)).astype(np.int64)
+    py = np.clip(sy, -float(span), float(span)).astype(np.int64)
     tx0 = np.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = np.clip((px + r) // tile_sz, 0, tiles_x - 1)
     ty0 = np.clip((py - r) // tile_sz, 0, tiles_y - 1); ty1 = np.clip((py + r) // tile_sz, 0, tiles_y - 1)
     nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
@@ -530,8 +550,15 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     AND its 3 host downloads + 2 uploads -- the whole tile stage becomes a sub-ms GPU op."""
     n_tiles = tiles_x * tiles_y
     sx = cp.asarray(kx)[:nv]; sy = cp.asarray(ky)[:nv]; srad = cp.asarray(krad)[:nv]
-    r = cp.maximum((srad * 1.5).astype(cp.int64) + 1, 1)
-    px = sx.astype(cp.int64); py = sy.astype(cp.int64)
+    # Same clamp as the CPU path -- see the long note in `_build_tiles_cpu`. A grain in the camera's
+    # view plane projects to ~1e33, int64 saturates, `px - r` wraps, and the span goes negative.
+    span = tiles_x * tile_sz + tiles_y * tile_sz
+    srad = cp.nan_to_num(srad, nan=0.0, posinf=float(span), neginf=0.0)
+    sx = cp.nan_to_num(sx, nan=-1e9, posinf=1e9, neginf=-1e9)
+    sy = cp.nan_to_num(sy, nan=-1e9, posinf=1e9, neginf=-1e9)
+    r = cp.clip(srad * 1.5, 0.0, float(span)).astype(cp.int64) + 1
+    px = cp.clip(sx, -float(span), float(span)).astype(cp.int64)
+    py = cp.clip(sy, -float(span), float(span)).astype(cp.int64)
     tx0 = cp.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = cp.clip((px + r) // tile_sz, 0, tiles_x - 1)
     ty0 = cp.clip((py - r) // tile_sz, 0, tiles_y - 1); ty1 = cp.clip((py + r) // tile_sz, 0, tiles_y - 1)
     nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1

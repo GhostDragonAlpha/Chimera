@@ -1,6 +1,13 @@
 {
   "extent_m": 1.78,
   "duration_s": 3.796884626882747,
+  "epoch_year": 2076.0,
+  "start_hour": 9.0,
+  "start_time_s": 32400.0,
+  "day_s": 86400.0,
+  "sun_declination_deg": 0.0,
+  "sun_altitude_at_start_deg": 37.41337713233705,
+  "has_seasons": false,
   "height_m": 1.78,
   "mass_kg": 71.289,
   "com_height_m": 1.0234999999999999,
@@ -30,7 +37,6 @@
   "femur_stress_running_MPa": 4.585906121112737,
   "bone_safety_factor": 32.70891205326366,
   "T_surface": 279.1908308653023,
-  "day_s": 86400.0,
   "latitude_deg": 30.77072291868692,
   "S_earth": 1.0048952107836961
 }

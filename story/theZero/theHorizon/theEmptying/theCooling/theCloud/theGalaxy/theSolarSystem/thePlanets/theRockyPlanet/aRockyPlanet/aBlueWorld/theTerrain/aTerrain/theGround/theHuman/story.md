@@ -28,6 +28,40 @@ from that height and from `g`:
 | femur, running | 4.6 MPa against 150 — **33× safety** |
 | foot on the ground | 19 kPa against the 110 the ground carries — **it holds, 5.8×** |
 
+## When
+
+Height was the only free number here until the game needed somewhere to begin. A date is not a fact
+about a planet - it is a count from a convention, and this is the only chapter in the story with
+anyone in it to keep a calendar. So the epoch is **free here, and it is a human decision**, declared
+rather than typed under a comment pretending it was inherited.
+
+**2076, at 09:00 local.** Fifty years on from the day this chapter was written: far enough that the
+world is not a documentary about the present, near enough that the person standing in it is
+recognisably us.
+
+The hour is not taste. `aTerrain`'s whole claim is a carved drainage network, and **a valley is only
+visible in raking light** - at local noon the sun stands at 59 degrees and the relief that 500
+erosion steps earned goes flat. At 09:00 the sun is at **37.4 degrees**, low enough to cast the
+valleys and high enough to see by.
+
+And **the clock runs 1:1**. Every membrane above this one is geared - an aeon of collapse compressed
+into a movie you can sit through - because nothing else is watchable otherwise. Here that would be a
+lie: the person is standing in it. So one second is one second, and the sun crosses the sky at
+exactly the rate this planet's own rotation says it does. That is what the bottom rung of
+`theHumanClock` means: there is no gearing left to apply.
+
+| | |
+|---|---|
+| sunrise | **06:00**, due east |
+| noon | 59.2 degrees - which is 90 minus the 30.77 latitude, exactly |
+| sunset | **18:00**, due west |
+| seasons | **none** |
+
+That last row is not a design choice, it is an admission: **no membrane in this chain derives an
+axial tilt.** With no obliquity there is no solar declination, so every day of the year is the
+equinox and the sun rises due east whatever the date. Put a tilt in `aBlueWorld` and the seasons
+appear here for free. Until then this world has none, and the render must not imply otherwise.
+
 ## Standing is not a state, it is a process
 
 A body balanced above its feet is an **inverted pendulum**, and it topples at `ω₀ = √(g/H)`. On Earth
@@ -77,6 +111,26 @@ same `t`.
 **And its movie is 1.3 seconds long.** Every other membrane in this story runs a film measured in
 years or aeons and has to be geared down to be seen at all. This one is inside the band a person can
 feel — the bottom of `theHumanClock`'s ladder, finally reached.
+
+## And you can stand up in it
+
+This is the chapter you can enter. `ChimeraEngine/walker.py` puts the eye at **0.94 of stature** and
+hands the keyboard the four verbs a body has - and every speed in it is a number off this page:
+walking is `comfortable_speed_ms`, running is the Froude limit `walk_run_ms`, the jump is
+`sqrt(2g x jump_height_m)`, and what the feet are on is `aTerrain`'s carved surface. **There is
+nothing to tune, because there is no movement setting anywhere in it.** Change the star's mass and
+the planet moves, gravity changes, and the walk changes with it.
+
+The ground you see is the same derivation read at the resolution a body needs: **shape** from
+`aTerrain`, **grain** from `theGround`, in eight nested rings each double the spacing of the one
+inside it - so a grain subtends about 1.9 degrees wherever it is, and the level of detail has no
+seam to show. The rings are anchored to the world, not to the player, which is why walking slides
+them over stationary ground instead of dragging the whole landscape along with you.
+
+And the sky is not a backdrop. `aBlueWorld` derived half an atmosphere; this draws it - Rayleigh
+scattering with the optical depth scaled by that pressure and coloured by one-over-lambda-to-the-
+fourth. **Nobody wrote that sunrise should be red.** It comes out red because at 06:00 the beam
+crosses 38 airmasses and the blue is scattered out of it before it arrives.
 
 *Contained in `theGround`. What it hands on: a body that can be stood up, and everything the planet
 underneath decides about how it moves.*

@@ -66,6 +66,12 @@ class LiveViewer:
         self._radius = splat_appearance.scene_cam_distance(term)
         self._radius0 = self._radius
         self._in = {"dazim": 0.0, "delev": 0.0, "zoom": 0.0}
+        # WALK MODE. Every other membrane in this story is looked AT; this is the one you are
+        # looked OUT of. The body's numbers come from theHuman and the planet -- nothing is set here.
+        self._walk = None                 # a walker.Walker once someone asks to stand up
+        self._walk_in = {"fwd": 0.0, "strafe": 0.0, "sprint": False,
+                         "jump": False, "crouch": False, "mx": 0.0, "my": 0.0}
+        self._walk_dirty = True
         self._last_input = 0.0     # wall-time of the last drag/zoom -> drives the moving-vs-settled LOD
         self._clients = 0                                          # active /stream connections
         self._running = True
@@ -92,6 +98,37 @@ class LiveViewer:
                 now = time.time(); dt = min(0.1, now - last); last = now
                 if self._clients <= 0:                                  # nobody watching -> free the shared 4090 (LM Studio needs it)
                     time.sleep(0.1); continue
+                if self._walk is not None:
+                    # ── STANDING IN IT ──────────────────────────────────────────────────────────
+                    with self._lock:
+                        wi = dict(self._walk_in)
+                        self._walk_in["mx"] = self._walk_in["my"] = 0.0
+                        self._walk_in["jump"] = False
+                    self._walk.look(wi["mx"], wi["my"])
+                    self._walk.move(wi["fwd"], wi["strafe"], wi["sprint"],
+                                    wi["jump"], wi["crouch"], dt)
+                    # the ground is rebuilt around the player only when they have moved far enough
+                    # to matter -- the near shell is 180 m across, so a stride does not need one.
+                    # Rebuilt when the player has moved far enough to matter, OR when the sun has --
+                    # the clock runs 1:1 here, so at 15 deg/hour a half-degree is about two minutes.
+                    # Standing still must not freeze the light; it is a real sky on a real rotation.
+                    sun_moved = abs(self._walk.clock - getattr(self, "_walk_clock", -1e18)) > 120.0
+                    if self._walk_dirty or self._walk_moved() > 12.0 or sun_moved:
+                        import walker as _wk
+                        buf = _wk.scene_around(self._walk)
+                        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
+                        self._walk_anchor = (self._walk.x, self._walk.y)
+                        self._walk_clock = self._walk.clock
+                        self._walk_dirty = False
+                    ex, ey, ez = self._walk.eye_pos
+                    cam.position = np.array([ex, ey, ez], dtype=np.float32)
+                    # yaw 0 looks along +Y, which is how the walker's own frame is defined
+                    cam.yaw = self._walk.yaw + math.pi / 2.0
+                    cam.pitch = self._walk.pitch
+                    self._publish(pipe.render_from_gpu(cam, params_hi))
+                    time.sleep(max(0.0, 1 / 60 - (time.time() - now)))
+                    continue
+
                 if (self._pending != self._loaded or self._t != self._loaded_t
                         or self._reload):                                # (re)load, on this thread
                     want_t = self._t
@@ -138,14 +175,22 @@ class LiveViewer:
                 # switch traded a visible pop for 25 ms. Deleted.
                 params = params_hi
                 img = pipe.render_from_gpu(cam, params)
-                buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=85)
-                with self._lock:
-                    self._latest = buf.getvalue()
+                self._publish(img)
                 time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
         except Exception as e:                                          # a dead render thread must be visible, not silent
             import traceback
             self._err = f"{e}\n{traceback.format_exc()}"
             print(f"[live_viewer] render thread died: {self._err}")
+
+    def _publish(self, img):
+        from PIL import Image
+        buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=85)
+        with self._lock:
+            self._latest = buf.getvalue()
+
+    def _walk_moved(self) -> float:
+        ax, ay = getattr(self, "_walk_anchor", (1e18, 1e18))
+        return math.hypot(self._walk.x - ax, self._walk.y - ay)
 
     # ── read/control surface (called from HTTP threads) ──
     def frame(self) -> bytes:
@@ -165,6 +210,37 @@ class LiveViewer:
             self._in["dazim"] += dazim; self._in["delev"] += delev; self._in["zoom"] += zoom
             if dazim or delev or zoom:
                 self._last_input = time.time()   # mark "moving" -> the render thread drops to the fast LOD
+
+    def stand(self, on: bool = True) -> dict:
+        """Enter (or leave) the body. Standing up is EXPENSIVE -- aTerrain has to carve its
+        drainage network before there is ground to stand on -- so it happens once, here, and
+        never on the render thread's per-frame path."""
+        if not on:
+            with self._lock:
+                self._walk = None
+                self._reload = True          # the orbit view must reload its own buffer
+            return {"walking": False}
+        if self._walk is None:
+            import walker as _wk
+            w = _wk.Walker()                 # spawns at the middle of the terrain, feet on the surface
+            with self._lock:
+                self._walk = w
+                self._walk_dirty = True
+        return {"walking": True, **self._walk.readout()}
+
+    def walk_input(self, fwd=0.0, strafe=0.0, sprint=False, jump=False, crouch=False, mx=0.0, my=0.0):
+        with self._lock:
+            if self._walk is None:
+                return {"walking": False}
+            self._walk_in["fwd"] = float(fwd)
+            self._walk_in["strafe"] = float(strafe)
+            self._walk_in["sprint"] = bool(sprint)
+            self._walk_in["crouch"] = bool(crouch)
+            self._walk_in["jump"] = self._walk_in["jump"] or bool(jump)   # never drop a jump between frames
+            self._walk_in["mx"] += float(mx)
+            self._walk_in["my"] += float(my)
+            w = self._walk
+        return {"walking": True, **w.readout()}
 
     def set_scene(self, term: str):
         # Accept anything the viewer OFFERS, not just the hand-authored SCENES dict. A membrane in
@@ -207,6 +283,26 @@ def handle(handler) -> bool:
         v = get_viewer()
         v.input(dazim=_f(qs, "dazim"), delev=_f(qs, "delev"), zoom=_f(qs, "zoom"))
         _send(handler, 204, "text/plain", b""); return True
+    if path == "/stand":
+        # STAND UP / SIT DOWN. This is the only place in the viewer where the camera stops being a
+        # thing that looks AT a membrane and becomes a thing INSIDE one.
+        import json as _json
+        on = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
+        try:
+            r = get_viewer().stand(on)
+        except Exception as e:
+            import traceback; traceback.print_exc()
+            r = {"walking": False, "error": str(e)}
+        _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/walk":
+        import json as _json
+        r = get_viewer().walk_input(
+            fwd=_f(qs, "fwd"), strafe=_f(qs, "strafe"),
+            sprint=(qs.get("sprint") or ["0"])[0] == "1",
+            jump=(qs.get("jump") or ["0"])[0] == "1",
+            crouch=(qs.get("crouch") or ["0"])[0] == "1",
+            mx=_f(qs, "mx"), my=_f(qs, "my"))
+        _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
     if path == "/time":
         get_viewer().set_time(_f(qs, "t"))
         _send(handler, 204, "text/plain", b""); return True
@@ -494,6 +590,17 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  #dials label i{float:right;font-style:normal;color:var(--hot);font-family:ui-monospace,Menlo,monospace}
  #dials input[type=range]{width:100%;accent-color:#5f8ee0;height:16px}
  #dials .free label i{color:#e8a05c}
+ /* THE BODY. Only offered on theHuman's own ground -- you cannot stand on a star. */
+ #body{position:absolute;left:16px;bottom:14px}
+ #body button{background:#131a2b;color:#cfe0ff;border:1px solid #2b3552;border-radius:8px;
+              padding:8px 14px;font-size:12px;cursor:pointer;letter-spacing:.3px}
+ #body button:hover{background:#1b2540;border-color:#41527d}
+ #body button.on{background:#2a1c12;border-color:#7a4b26;color:#e8a05c}
+ #walkhud{margin-top:9px;font:11px ui-monospace,Menlo,monospace;color:#9fb0d0;line-height:1.6;
+          text-shadow:0 1px 6px #000;display:none}
+ #walkhud i{color:#e8a05c;font-style:normal}
+ #walkhud.on{display:block}
+ #stage.walking{cursor:none}
 </style>
 <aside>
   <h1>Chimera</h1>
@@ -516,8 +623,12 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       <div id=freebox></div>
       <div id=lensbox></div>
     </div>
+    <div id=body>
+      <button id=standbtn>stand up in it</button>
+      <div id=walkhud></div>
+    </div>
   </div>
-  <footer><div id=nums></div><div class=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
+  <footer><div id=nums></div><div class=hint id=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
 </main>
 <script>
 const TREE=__TREE__, READINGS=__READINGS__, KINDS=__KINDS__, TERMS=__TERMS__;
@@ -544,6 +655,7 @@ TERMS.filter(t=>!INDEX[t]).forEach(t=>{
   d.innerHTML='<span class=dot></span><span class=nm>'+t+'</span>';
   d.onclick=()=>pick(t);d.dataset.name=t;treeEl.appendChild(d);});
 function pick(t){
+  if(typeof WALKING!=='undefined' && WALKING && t!==WALK_TERM) sitDown();
   term=t;
   fetch('/scene?term='+encodeURIComponent(t));
   document.querySelectorAll('.node').forEach(e=>e.classList.toggle('on',e.dataset.name===t));
@@ -580,6 +692,7 @@ function pick(t){
       +(dur?('   ·   its movie spans '+dur):'')+size;
   const nums=n.numbers||{};
   paintFree();
+  if(typeof showStand==='function') showStand();
   tval.textContent=(tsl.value/1000).toFixed(3)+elapsed(tsl.value/1000);
   document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));
@@ -679,7 +792,7 @@ function flush(){if(pend.dazim||pend.delev||pend.zoom){
   fetch('/input?dazim='+pend.dazim.toFixed(4)+'&delev='+pend.delev.toFixed(4)+'&zoom='+pend.zoom.toFixed(4));
   pend={dazim:0,delev:0,zoom:0};}sending=false;}
 function queue(){if(!sending){sending=true;requestAnimationFrame(flush);}}
-function down(x,y){drag=true;lx=x;ly=y;stage.classList.add('drag');}
+function down(x,y){if(WALKING)return;drag=true;lx=x;ly=y;stage.classList.add('drag');}
 function move(x,y){if(!drag)return;pend.dazim+=-(x-lx)*0.006;pend.delev+=(y-ly)*0.006;lx=x;ly=y;queue();}
 function up(){drag=false;stage.classList.remove('drag');}
 stage.addEventListener('mousedown',e=>down(e.clientX,e.clientY));
@@ -688,6 +801,86 @@ window.addEventListener('mouseup',up);
 stage.addEventListener('touchstart',e=>{const t=e.touches[0];down(t.clientX,t.clientY);},{passive:true});
 stage.addEventListener('touchmove',e=>{const t=e.touches[0];move(t.clientX,t.clientY);},{passive:true});
 stage.addEventListener('touchend',up);
-stage.addEventListener('wheel',e=>{e.preventDefault();pend.zoom+=(e.deltaY>0?0.06:-0.06);queue();},{passive:false});
+stage.addEventListener('wheel',e=>{if(WALKING)return;e.preventDefault();pend.zoom+=(e.deltaY>0?0.06:-0.06);queue();},{passive:false});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE BODY -- Call of Duty controls, driving numbers nothing here chose.
+   WASD, mouse look, shift sprint, space jump, ctrl crouch. Every SPEED comes
+   from theHuman's derivation and this planet's g; the browser sends INTENT
+   (-1..1 on two axes + four flags) and never a position. That is the project's
+   own control law: command the process, never the final position.
+   ══════════════════════════════════════════════════════════════════════════ */
+const KEY={}, standbtn=document.getElementById('standbtn'),
+      walkhud=document.getElementById('walkhud'), hint=document.getElementById('hint');
+let WALKING=false, mdx=0, mdy=0, jumped=false;
+const WALK_TERM='theHuman';
+
+function canStand(){ return term===WALK_TERM; }
+function showStand(){
+  standbtn.style.display = canStand()||WALKING ? '' : 'none';
+}
+standbtn.onclick=()=>{ WALKING ? sitDown() : standUp(); };
+
+async function standUp(){
+  standbtn.textContent='carving the ground...'; standbtn.disabled=true;
+  const r=await fetch('/stand?on=1').then(x=>x.json()).catch(e=>({error:''+e}));
+  standbtn.disabled=false;
+  if(!r.walking){ standbtn.textContent='could not stand: '+(r.error||'?'); return; }
+  WALKING=true; standbtn.textContent='sit back down'; standbtn.classList.add('on');
+  walkhud.classList.add('on'); stage.classList.add('walking');
+  hint.textContent='WASD move · mouse look · shift run · space jump · ctrl crouch · esc to release';
+  stage.requestPointerLock();
+  paintWalk(r);
+}
+async function sitDown(){
+  WALKING=false; document.exitPointerLock();
+  standbtn.textContent='stand up in it'; standbtn.classList.remove('on');
+  walkhud.classList.remove('on'); stage.classList.remove('walking');
+  hint.textContent='drag to orbit · scroll to zoom · it turns on its own';
+  await fetch('/stand?on=0');
+  showStand();
+}
+
+/* the mouse is only ours while it is LOCKED -- otherwise the page still orbits normally */
+document.addEventListener('pointerlockchange',()=>{
+  if(WALKING && document.pointerLockElement!==stage){ /* esc released it; still standing */ }
+});
+stage.addEventListener('click',()=>{ if(WALKING && document.pointerLockElement!==stage) stage.requestPointerLock(); });
+window.addEventListener('mousemove',e=>{
+  if(WALKING && document.pointerLockElement===stage){ mdx+=e.movementX; mdy+=e.movementY; }
+});
+window.addEventListener('keydown',e=>{
+  if(!WALKING) return;
+  if(e.code==='Space'){ jumped=true; e.preventDefault(); }
+  KEY[e.code]=true;
+  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft'].includes(e.code)) e.preventDefault();
+});
+window.addEventListener('keyup',e=>{ KEY[e.code]=false; });
+
+function paintWalk(r){
+  if(!r||!r.walking) return;
+  walkhud.innerHTML =
+    'x <i>'+r.x.toFixed(1)+'</i> m &nbsp; y <i>'+r.y.toFixed(1)+'</i> m<br>'+
+    'elevation <i>'+r.elev.toFixed(1)+'</i> m &nbsp; slope <i>'+r.slope.toFixed(1)+'</i>&deg;<br>'+
+    'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &nbsp; walk <i>'+r.walk.toFixed(2)+
+    '</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
+}
+
+/* 30 Hz of INTENT. Deltas are consumed, never resent -- a dropped packet must not
+   double a turn, and the sensitivity lives here because it is a preference, not a physics. */
+showStand();
+const LOOK=0.0022;
+setInterval(async()=>{
+  if(!WALKING) return;
+  const fwd=(KEY['KeyW']?1:0)-(KEY['KeyS']?1:0),
+        str=(KEY['KeyD']?1:0)-(KEY['KeyA']?1:0),
+        mx=mdx*LOOK, my=mdy*LOOK;
+  mdx=0; mdy=0;
+  const j=jumped; jumped=false;
+  const q='/walk?fwd='+fwd+'&strafe='+str+'&sprint='+(KEY['ShiftLeft']?1:0)+
+          '&jump='+(j?1:0)+'&crouch='+(KEY['ControlLeft']?1:0)+'&mx='+mx+'&my='+my;
+  try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
+},33);
+
 </script>
 """

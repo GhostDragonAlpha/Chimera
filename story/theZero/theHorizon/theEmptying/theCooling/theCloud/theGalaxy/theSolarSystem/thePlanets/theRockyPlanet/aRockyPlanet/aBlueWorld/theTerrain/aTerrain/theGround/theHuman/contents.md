@@ -15,6 +15,13 @@
 |---|---|
 | `extent_m` | 1.78 |
 | `duration_s` | 3.797 |
+| `epoch_year` | 2076 |
+| `start_hour` | 9 |
+| `start_time_s` | 3.24e+04 |
+| `day_s` | 8.64e+04 |
+| `sun_declination_deg` | 0 |
+| `sun_altitude_at_start_deg` | 37.41 |
+| `has_seasons` | False |
 | `height_m` | 1.78 |
 | `mass_kg` | 71.29 |
 | `com_height_m` | 1.023 |
@@ -44,6 +51,5 @@
 | `femur_stress_running_MPa` | 4.586 |
 | `bone_safety_factor` | 32.71 |
 | `T_surface` | 279.2 |
-| `day_s` | 8.64e+04 |
 | `latitude_deg` | 30.77 |
 | `S_earth` | 1.005 |

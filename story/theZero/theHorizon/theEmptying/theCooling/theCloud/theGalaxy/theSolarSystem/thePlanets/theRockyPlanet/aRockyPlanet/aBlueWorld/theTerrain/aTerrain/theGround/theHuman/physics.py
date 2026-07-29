@@ -27,6 +27,7 @@ AND THEN IT SAYS SOMETHING NOBODY MEASURED. The same body on the Moon breaks int
 -- which is slower than a comfortable walk, and is exactly why the Apollo crews bunny-hopped instead
 of walking. One law, every world.
 """
+import math
 from math import pi, sqrt, radians
 
 # ── DEMPSTER'S ANTHROPOMETRIC RATIOS: segment lengths and masses as fractions of stature and body
@@ -63,6 +64,23 @@ FREE = {
     # a fact about a body. Everything else on this page follows from it and from g.
     "height_m": {"lo": 1.2, "hi": 2.2, "default": 1.78,
                  "label": "height", "unit": "m"},
+
+    # WHEN. A date is not a fact about a planet -- it is a count from a convention, and the only
+    # membrane in this story with anyone in it to keep a calendar is this one. So the epoch is FREE
+    # here, and it is the second of exactly two legal terminals: a HUMAN decision, taken openly,
+    # rather than a number typed under a comment pretending it was inherited.
+    #
+    # Fifty years on from the day this chapter was written. Far enough that the world is not a
+    # documentary about the present; near enough that the person standing in it is recognisably us.
+    "epoch_year": {"lo": 2026.0, "hi": 3026.0, "default": 2076.0,
+                   "label": "start year", "unit": "", "local": "a calendar is a human convention"},
+
+    # AND AT WHAT HOUR. Not taste: it is the hour that RENDERS what this ground is. aTerrain's whole
+    # claim is a carved drainage network, and a valley is only visible in raking light -- at local
+    # noon the sun is overhead, shadows are shortest, and the relief the terrain spent 500 erosion
+    # steps earning goes flat. 09:00 is low enough to cast the valleys and high enough to see by.
+    "start_hour": {"lo": 0.0, "hi": 24.0, "default": 9.0,
+                   "label": "start hour", "unit": "h", "local": "where in its own day the story opens"},
 }
 
 
@@ -132,6 +150,22 @@ def derive(parent, free):
     free = free or {}
     g = float(parent["g"])
     h = float(free.get("height_m", FREE["height_m"]["default"]))
+    epoch_year = float(free.get("epoch_year", FREE["epoch_year"]["default"]))
+    start_hour = float(free.get("start_hour", FREE["start_hour"]["default"]))
+
+    # ── WHERE THE SUN IS WHEN THE STORY OPENS ────────────────────────────────────────────────────
+    # The hour comes from above (this world's own day, which is NOT 24 h because it was derived, not
+    # assumed); the latitude comes from aTerrain. What is NOT here is an axial tilt: no membrane in
+    # this chain derives one, so the sun's declination is UNDEFINED, and the honest thing is to say
+    # so rather than type 23.44 deg because Earth has it. Declination 0 is not a choice of season --
+    # it is what a chain with no obliquity in it actually says. Put a tilt in aBlueWorld and the
+    # seasons appear here for free; until then this world has none, and the render must not imply it.
+    day_s = float(parent["day_s"])
+    lat = math.radians(float(parent["latitude_deg"]))
+    decl = 0.0                                   # no obliquity anywhere upstream -- see above
+    hour_angle = math.radians(15.0 * (start_hour - 12.0) * (24.0 * 3600.0 / day_s))
+    sun_alt = math.asin(math.sin(decl) * math.sin(lat)
+                        + math.cos(decl) * math.cos(lat) * math.cos(hour_angle))
 
     m = body_mass(h)
     com_h = COM_FRAC * h
@@ -160,6 +194,15 @@ def derive(parent, free):
         # ITS OWN DURATION: one stride. The rhythm this body actually lives in -- and the first
         # membrane in the whole story whose movie is INSIDE theHumanClock's 0.04-10 s band.
         "duration_s": 2.0 * T_swing,
+
+        # ── THE CLOCK THE GAME STARTS ON ─────────────────────────────────────────────────────
+        "epoch_year": epoch_year,
+        "start_hour": start_hour,
+        "start_time_s": start_hour / 24.0 * day_s,      # seconds into this world's own day
+        "day_s": day_s,
+        "sun_declination_deg": math.degrees(decl),
+        "sun_altitude_at_start_deg": math.degrees(sun_alt),
+        "has_seasons": False,           # nothing upstream derives an axial tilt. Stated, not hidden.
 
         "height_m": h,
         "mass_kg": m,
