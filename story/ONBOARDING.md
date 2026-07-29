@@ -179,11 +179,20 @@ you chose — not a race down the tree.
 one more kind of thing is allowed to stay in one piece instead of being smashed apart.
 ```
 
-The **label that comes before the thing** — the reader knows what they are looking at before a symbol
-appears. It is also the chapter's own **low-LOD version of itself**, so `grow.py` harvests it into
-every ancestor's `contents.md`: a parent's contents list is its children at lower detail. **One line,
-two jobs**, and it is required — a membrane nobody can read is a membrane nobody can judge, and the
-human is the judge.
+**That line is not a summary of the chapter. At that zoom it IS the chapter.** Zoom in and it becomes
+the equations; zoom in again and it becomes its children, each of which is again one sentence. So the
+story is readable at **any** resolution and is *complete* at each one — which is **LOD of meaning**,
+the identical law the matter obeys: every level is the level below, averaged.
+
+That is why it is **required**, why `grow.py` harvests it into every ancestor's `contents.md` (a
+parent's contents list is its children at lower detail), and why it must never drift: it is not
+documentation *about* a level, it is *the level itself*. Unlike a code comment, it is **consumed** —
+a wrong or missing line shows up immediately as a wrong or empty parent index.
+
+```bash
+python story/grow.py --read --depth 2      # the universe in three sentences
+python story/grow.py --read                # the whole chain, seed to star
+```
 
 ### LISTING is generated. DEFINING is written.
 
@@ -258,6 +267,7 @@ Change the planet and the same equations produce a different creature. **One law
 
 ```bash
 python story/grow.py                              # grow the tree; writes numbers.json + contents.md
+python story/grow.py --read [--depth N]           # READ the story at any resolution
 python ChimeraEngine/splat_appearance.py <term>   # render one chapter's movie (begin -> end)
 python ChimeraEngine/gallery.py 8765              # the shared view; /live, /live?blind=1, /frame?term=X
 ```
