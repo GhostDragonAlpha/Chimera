@@ -18,6 +18,8 @@
 
 | number | value |
 |---|---|
+| `snow_line_au` | 2.681 |
+| `disk_edge_au` | 30 |
 | `M_total` | 1.991e+30 |
 | `M_star` | 1.989e+30 |
 | `M_star_solar` | 1 |

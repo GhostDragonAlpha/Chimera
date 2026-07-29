@@ -44,7 +44,11 @@ def derive(parent, free):
         raise ValueError("thePlanets requires a parent SYSTEM (siblings with the star, not its child)")
     # The LIGHT comes from the system, not from a sibling: a membrane may only read its parent.
     L = float(parent["L"])
-    r_snow = snow_line(L)
+    # THE SNOW LINE IS INHERITED, not recomputed. It is a fact about the SYSTEM's light, so the
+    # system owns it -- and that is also what lets the system place this child correctly in its own
+    # frame (this membrane works in units of the snow line; the system's frame is the disk edge).
+    # Recomputing it here would be two authorities for one number, which is how they drift apart.
+    r_snow = float(parent.get("snow_line_au") or snow_line(L))
     m_in = solid_mass(R_IN, r_snow, SIGMA_ROCK_1AU)                       # rock only
     m_out = solid_mass(r_snow, R_OUT, SIGMA_ROCK_1AU * ICE_TO_ROCK)       # rock AND ice
     return {

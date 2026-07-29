@@ -16,6 +16,7 @@ M_SUN = 1.98892e30
 L_SUN = 3.828e26
 AU = 1.495978707e11
 
+DISK_EDGE_AU = 30.0          # where this system's disk stops holding together
 STAR_FRACTION = 0.999        # the centre takes ~99.9% of the mass...
                              # ...and the leftover keeps nearly all the ANGULAR MOMENTUM, which is
                              # exactly why it cannot follow the mass inward. That asymmetry IS the disk.
@@ -36,7 +37,14 @@ def derive(parent, free):
     M_star = STAR_FRACTION * M_total
     M_disk = M_total - M_star
     L = L_SUN * (M_star / M_SUN) ** 3.5                    # main-sequence mass-luminosity
+    # THE SNOW LINE IS A FACT ABOUT THIS SYSTEM'S LIGHT, so it belongs here and the planets INHERIT
+    # it rather than recomputing it. It is also the unit thePlanets works in, which is what lets
+    # this membrane place that child correctly in its own frame.
+    SIGMA_SB, T_ICE = 5.670374419e-8, 170.0
+    r_snow_au = ((L / (16.0 * pi * SIGMA_SB * T_ICE ** 4)) ** 0.5) / AU
     return {
+        "snow_line_au": r_snow_au,
+        "disk_edge_au": DISK_EDGE_AU,
         "M_total": M_total,
         "M_star": M_star,
         "M_star_solar": M_star / M_SUN,
@@ -82,14 +90,36 @@ def emit(nums, t=1.0):
     b[:, 20] = 0.011
     b[:, 11] = SOLID
 
-    # the centre, taking 99.9% of the mass. It only glows once it exists.
-    n_c = 2500
-    dc = rng.normal(0.0, 1.0, (n_c, 3))
-    dc /= (np.linalg.norm(dc, axis=1, keepdims=True) + 1e-9)
-    core = blank(n_c)
-    core[:, 0:3] = dc * (0.30 * (1.0 - tt) + 0.030 * tt)
-    paint(core, blackbody_rgb(2000.0 + 4000.0 * tt ** 2), 0.35 + 0.65 * tt, 0.014, SOLID)
-    return np.concatenate([core, b], axis=0)
+    # THE CENTRE IS NOT DRAWN HERE. It is theStar, and theStar is a CHILD of this membrane -- a
+    # parent must not duplicate what its child provides, or the same matter exists twice. It also
+    # broke the picture: 2500 grains packed into a 0.03 ball, plus the placed child, overran a
+    # single 32px tile's MAX_PER_TILE, and the cap evicted the DISK's grains from that tile -- a
+    # black, tile-shaped hole exactly where the star should be. This membrane emits the DISK; the
+    # star arrives through layout().
+    # While the system is still collapsing (t < 1) there IS no star yet, so the infalling matter is
+    # all there is to draw -- which is why the swirl above starts spherical and only then flattens.
+    return b
+
+
+def layout(nums):
+    """WHERE the things inside this membrane sit, in ITS frame (1.0 = the disk's outer edge).
+
+    A parent is made of its children, so this says only WHERE each one goes and HOW BIG it is --
+    structure, which is the parent's own physics. Their APPEARANCE is always their own.
+
+    The star sits at the centre because it holds 99.9% of the mass, and its scale is its TRUE size
+    against the disk: R_sun / 30 AU = 1.55e-4, which is sub-pixel. So it is drawn at a declared
+    exaggeration, the same auditable lie as STAR_EXAGGERATION -- at this scale a star is a SOURCE,
+    not a sphere, and until the renderer has point lights the alternative is not drawing it at all."""
+    R_SUN, AU = 6.957e8, 1.495978707e11
+    true_scale = R_SUN / (DISK_EDGE_AU * AU)          # 1.55e-4 -- invisible, and that is the truth
+    STAR_EXAGGERATION = 260.0                          # declared, not hidden
+    return {
+        "theStar":    ((0.0, 0.0, 0.0), true_scale * STAR_EXAGGERATION),
+        # thePlanets works in units of the SNOW LINE; this frame is units of the DISK EDGE.
+        # Both are in AU, so the conversion is a ratio this membrane already knows.
+        "thePlanets": ((0.0, 0.0, 0.0), nums["snow_line_au"] / nums["disk_edge_au"]),
+    }
 
 
 def measure(nums):

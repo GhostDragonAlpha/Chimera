@@ -470,18 +470,55 @@ def _membrane_law(folder):
     return mod
 
 
-def membrane_buffer(term: str, t: float = 1.0):
-    """`term`'s matter at its own time t (0 = beginning, 1 = settled), or None if it has no folder."""
+def _membrane_own(folder, t):
+    """Just this membrane's own matter, without its children."""
     import json
+    law = _membrane_law(folder)
+    if not hasattr(law, "emit"):
+        return None, None
+    nj = folder / "numbers.json"
+    nums = json.loads(nj.read_text()) if nj.exists() else law.derive(None, {})
+    return law.emit(nums, t), (law, nums)
+
+
+def membrane_buffer(term: str, t: float = 1.0, _depth: int = 0):
+    """`term`'s matter at its own time t (0 = beginning, 1 = settled), or None if it has no folder.
+
+    A PARENT IS MADE OF ITS CHILDREN. If a membrane's law defines `layout(nums) -> {child: (centre,
+    scale)}`, each named child is grown, emitted in ITS OWN local units, and then placed into this
+    frame -- so looking at a system SHOWS you the star and the worlds inside it, and zooming in is
+    just reading the same tree at a finer level. That is LOD of meaning applied to matter: every
+    level is the level below, placed.
+
+    The parent supplies only WHERE and HOW BIG -- structure, which is the parent's own physics (an
+    orbital radius is derived, not decorated). The child supplies its own APPEARANCE, always."""
     folder = _find_membrane(term)
     if folder is None:
         return None
-    law = _membrane_law(folder)
-    if not hasattr(law, "emit"):
+    own, ln = _membrane_own(folder, t)
+    if own is None:
         return None
-    nj = folder / "numbers.json"
-    nums = json.loads(nj.read_text()) if nj.exists() else law.derive(None, {})
-    return law.emit(nums, t)
+    law, nums = ln
+    if _depth > 4 or not hasattr(law, "layout"):
+        return own
+    import numpy as np
+    parts = [own]
+    for child, (centre, scale) in (law.layout(nums) or {}).items():
+        cb = membrane_buffer(child, t, _depth + 1)
+        if cb is None:
+            continue
+        # LOD BY PLACED SIZE -- the pixel-budget law, and here it is load-bearing, not an
+        # optimisation. Placing a child at full resolution into a small footprint crams all its
+        # grains into one or two 32px tiles, blows past MAX_PER_TILE, and the cap keeps the NEAREST
+        # -- which are the child's own sub-pixel splats. The PARENT's grains in those tiles are then
+        # evicted and nothing draws: a BLACK TILE-SHAPED HOLE where the child should be. A thing
+        # that occupies 4% of the frame does not need 20,000 grains to say so.
+        keep = max(48, int(len(cb) * min(1.0, float(scale) ** 1.6)))
+        if keep < len(cb):
+            step = max(1, len(cb) // keep)
+            cb = cb[::step]
+        parts.append(_place(cb, centre, scale))
+    return np.concatenate(parts, axis=0) if len(parts) > 1 else own
 
 
 def membrane_terms() -> list:
