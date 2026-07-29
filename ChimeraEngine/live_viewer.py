@@ -278,8 +278,18 @@ def _page(blind: bool = False) -> str:
     import splat_appearance
     terms = splat_appearance.scene_terms()
     readings = {} if blind else {t: PHYSICS_READING.get(t, "") for t in terms}
+    # WHICH OF THESE IS REAL? A term with a folder in story/ is a MEMBRANE: its numbers are derived
+    # from its parent and its picture is emitted by the same law. A term without one is a PAINTED
+    # SCENE -- a hand-authored entry that merely shares a name with a term the story declares.
+    # They looked identical here, so a painting could be mistaken for a proven world (theTerrain's
+    # relief was 0.13 of its radius because someone PICKED 0.13 -- with no parent, nothing could
+    # contradict it). The viewer now says which is which, so nobody has to guess.
+    membranes = set(splat_appearance.membrane_terms())
+    kinds = {t: ("membrane" if t in membranes else "painted") for t in terms}
     import json
-    return _PAGE.replace("__TERMS__", json.dumps(terms)).replace("__READINGS__", json.dumps(readings))
+    return (_PAGE.replace("__TERMS__", json.dumps(terms))
+                 .replace("__READINGS__", json.dumps(readings))
+                 .replace("__KINDS__", json.dumps(kinds)))
 
 
 _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera live viewer</title>
@@ -307,12 +317,22 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera live viewer</title>
 <div id=cap></div>
 <div id=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own so the movie plays</div>
 <script>
-const TERMS=__TERMS__, READINGS=__READINGS__;
+const TERMS=__TERMS__, READINGS=__READINGS__, KINDS=__KINDS__;
 let term=TERMS.includes("aPlanet")?"aPlanet":TERMS[0];
 const bar=document.getElementById('bar'), cap=document.getElementById('cap'), stage=document.getElementById('stage');
 function paintBar(){bar.innerHTML='';TERMS.forEach(t=>{const b=document.createElement('button');
   b.textContent=t;if(t===term)b.className='on';b.onclick=()=>{term=t;pick(t);};bar.appendChild(b);});}
-function caption(){cap.innerHTML='<b>'+term+'</b>'+(READINGS[term]?' &mdash; physics expects: '+READINGS[term]:'');}
+function caption(){
+  // SAY WHAT YOU ARE LOOKING AT. A membrane is derived from its parent and emits its own matter;
+  // a painted scene is hand-authored and answers to nothing. Showing them identically is how a
+  // picture gets mistaken for a proven world.
+  var k = KINDS[term] || 'painted';
+  var tag = (k === 'membrane')
+     ? '<span style="color:#7fd18a">membrane</span>'
+     : '<span style="color:#d1a04a">painted scene &mdash; not a membrane, nothing derives it</span>';
+  cap.innerHTML = '<b>'+term+'</b> &nbsp;<small>'+tag+'</small>'
+                + (READINGS[term] ? '<br>physics expects: '+READINGS[term] : '');
+}
 function pick(t){fetch('/scene?term='+encodeURIComponent(t));paintBar();caption();}
 paintBar();caption();
 // mouse / touch orbit -> /input (throttled by rAF)
