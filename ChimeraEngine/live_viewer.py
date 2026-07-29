@@ -72,6 +72,7 @@ class LiveViewer:
         self._walk_in = {"fwd": 0.0, "strafe": 0.0, "sprint": False,
                          "jump": False, "crouch": False, "mx": 0.0, "my": 0.0}
         self._walk_dirty = True
+        self._view = "first"              # 'first' = through the eyes; 'third' = watching the body
         self._last_input = 0.0     # wall-time of the last drag/zoom -> drives the moving-vs-settled LOD
         self._clients = 0                                          # active /stream connections
         self._running = True
@@ -112,19 +113,47 @@ class LiveViewer:
                     # Rebuilt when the player has moved far enough to matter, OR when the sun has --
                     # the clock runs 1:1 here, so at 15 deg/hour a half-degree is about two minutes.
                     # Standing still must not freeze the light; it is a real sky on a real rotation.
+                    import walker as _wk
                     sun_moved = abs(self._walk.clock - getattr(self, "_walk_clock", -1e18)) > 120.0
                     if self._walk_dirty or self._walk_moved() > 12.0 or sun_moved:
-                        import walker as _wk
-                        buf = _wk.scene_around(self._walk)
-                        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
+                        self._ground_np = np.ascontiguousarray(_wk.scene_around(self._walk),
+                                                               dtype=np.float32)
+                        if self._view != "third":
+                            pipe.upload(self._ground_np)
                         self._walk_anchor = (self._walk.x, self._walk.y)
                         self._walk_clock = self._walk.clock
                         self._walk_dirty = False
-                    ex, ey, ez = self._walk.eye_pos
-                    cam.position = np.array([ex, ey, ez], dtype=np.float32)
-                    # yaw 0 looks along +Y, which is how the walker's own frame is defined
-                    cam.yaw = self._walk.yaw + math.pi / 2.0
-                    cam.pitch = self._walk.pitch
+                    wx, wy = self._walk.x, self._walk.y
+                    if self._view == "third":
+                        # THE BODY CHANGES EVERY FRAME (the gait phase is the distance walked), so
+                        # third person re-uploads ground+body each tick. The ground array is cached;
+                        # the body is ~2,900 grains from a 48-pose cache -- the upload is the cost,
+                        # and it is the same ~7 MB the rebuild path already pays.
+                        body = _wk.body_buffer(self._walk)
+                        pipe.upload(np.ascontiguousarray(
+                            np.concatenate([self._ground_np, body], axis=0), dtype=np.float32))
+                        # an over-the-shoulder orbit: behind the facing, raised by the look pitch,
+                        # aimed at the chest -- and never below the ground it is looking across.
+                        f = (-math.sin(self._walk.yaw), math.cos(self._walk.yaw))
+                        e = max(-0.35, min(1.25, self._walk.pitch))
+                        # 3.2 m, chest-high: close enough that the body's 2 cm grains read as a
+                        # figure at this FOV, far enough that the whole stride stays in frame.
+                        D = 3.2
+                        pivot = (wx, wy, self._walk.z + 0.70 * self._walk.eye + self._walk.crouch)
+                        cx = wx - f[0] * D * math.cos(e)
+                        cy = wy - f[1] * D * math.cos(e)
+                        cz = pivot[2] + D * math.sin(e)
+                        cz = max(cz, _wk.height_at(cx, cy) + 0.4)
+                        cam.position = np.array([cx, cy, cz], dtype=np.float32)
+                        dx, dy, dz = pivot[0] - cx, pivot[1] - cy, pivot[2] - cz
+                        cam.yaw = math.atan2(dy, dx)
+                        cam.pitch = math.atan2(dz, math.hypot(dx, dy))
+                    else:
+                        ex, ey, ez = self._walk.eye_pos
+                        cam.position = np.array([ex, ey, ez], dtype=np.float32)
+                        # yaw 0 looks along +Y, which is how the walker's own frame is defined
+                        cam.yaw = self._walk.yaw + math.pi / 2.0
+                        cam.pitch = self._walk.pitch
                     self._publish(pipe.render_from_gpu(cam, params_hi))
                     time.sleep(max(0.0, 1 / 60 - (time.time() - now)))
                     continue
@@ -254,7 +283,15 @@ class LiveViewer:
             self._walk_in["mx"] += float(mx)
             self._walk_in["my"] += float(my)
             w = self._walk
-        return {"walking": True, **w.readout()}
+        return {"walking": True, "view": self._view, **w.readout()}
+
+    def set_view(self, mode):
+        """First person or third. Switching INTO third forces one upload on the next tick even if
+        nothing else changed (the cached ground alone is on the GPU; the body must join it)."""
+        with self._lock:
+            self._view = "third" if str(mode) == "third" else "first"
+            self._walk_dirty = True
+        return {"view": self._view}
 
     def set_walk_rate(self, x):
         """Gear the standing body's clock. Held on the walker itself so the sun, the seasons and
@@ -342,6 +379,10 @@ def handle(handler) -> bool:
             jump=(qs.get("jump") or ["0"])[0] == "1",
             crouch=(qs.get("crouch") or ["0"])[0] == "1",
             mx=_f(qs, "mx"), my=_f(qs, "my"))
+        _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/view":
+        import json as _json
+        r = get_viewer().set_view((qs.get("mode") or ["first"])[0])
         _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
     if path == "/place":
         # WHAT IS THERE, before you go: the planet's own numbers read at a latitude. Instant --
@@ -963,7 +1004,7 @@ function enterWalkUI(){
      hide what cannot act. */
   document.getElementById('freebox').style.display='none';
   document.getElementById('lensbox').style.display='none';
-  hint.textContent='WASD move · mouse or drag to look · shift run · space jump · ctrl/C crouch · esc frees the mouse';  if(latslider){ latslider.disabled=true; lonslider.disabled=true; }   /* moving house is a re-carve: stop first */
+  hint.textContent='WASD move · mouse or drag to look · shift run · space jump · ctrl/C crouch · V first/third person · esc frees the mouse';  if(latslider){ latslider.disabled=true; lonslider.disabled=true; }   /* moving house is a re-carve: stop first */
 }
 function exitWalkUI(){
   WALKING=false; try{ document.exitPointerLock(); }catch(e){}
@@ -999,9 +1040,15 @@ window.addEventListener('mousemove',e=>{
 window.addEventListener('keydown',e=>{
   if(!WALKING) return;
   if(e.code==='Space'){ jumped=true; e.preventDefault(); }
+  if(e.code==='KeyV' && !KEY['KeyV']){ toggleView(); }
   KEY[e.code]=true;
-  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft','KeyC'].includes(e.code)) e.preventDefault();
+  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft','KeyC','KeyV'].includes(e.code)) e.preventDefault();
 });
+var VIEW='first';
+async function toggleView(){
+  try{ const r=await fetch('/view?mode='+(VIEW==='third'?'first':'third')).then(x=>x.json());
+       VIEW=r.view; }catch(e){}
+}
 window.addEventListener('keyup',e=>{ KEY[e.code]=false; });
 
 function pad2(n){ return String(n).padStart(2,'0'); }
@@ -1013,6 +1060,7 @@ function paintWalk(r){
       fmtLat(r.lat)+' '+fmtLon(r.lon)+' &middot; <i>'+r.T_C.toFixed(0)+'&deg;C</i>'+(r.snow?' &middot; snow':'')+'<br>'+
     'x <i>'+r.x.toFixed(1)+'</i> &nbsp;y <i>'+r.y.toFixed(1)+'</i> &nbsp;elev <i>'+r.elev.toFixed(1)+'</i> m &nbsp;slope <i>'+r.slope.toFixed(1)+'&deg;</i><br>'+
     'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &middot; walk <i>'+r.walk.toFixed(2)+'</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
+  if(typeof r.view==='string') VIEW=r.view;
   if(!clockDrag){
     if(dayslider){ dayslider.max=(r.dpy||383)-1; dayslider.value=r.day; }
     if(hourslider) hourslider.value=r.hh*60+r.mm;

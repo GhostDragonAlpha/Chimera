@@ -74,6 +74,9 @@ def _static():
         # theGround's OWN law, imported rather than restated. `soil_depth(slope_deg)` decides
         # whether this surface shows soil or bedrock; a re-derived copy would drift on first edit.
         "ground_law": _mod("theGround_phys", _TERRAIN / "theGround" / "physics.py"),
+        # theHuman's law: the body itself. Third person does not build a figure -- it borrows the
+        # membrane's own emit(), so the person you watch IS the chapter's stick figure, derived.
+        "human_law": _mod("theHuman_phys", _TERRAIN / "theGround" / "theHuman" / "physics.py"),
         # aBlueWorld's law, for temperature_at() -- ITS OWN DOCSTRING is the authority here:
         # "THE ONE LATITUDE PROFILE THIS STORY USES, and every membrane below must read it from
         # here... snow is a temperature, not a latitude." So the place picker asks the planet.
@@ -285,6 +288,7 @@ class Walker:
         self.yaw = 0.0                 # radians, 0 = +Y
         self.pitch = 0.0
         self.crouch = 0.0
+        self.dist = 0.0                # ground actually covered -- the gait phase reads THIS
 
     def look(self, dyaw, dpitch):
         """RADIANS, like the state it moves -- the caller owns sensitivity, because how far a hand
@@ -305,6 +309,7 @@ class Walker:
             m = math.hypot(vx, vy)
             vx, vy = vx / m * speed, vy / m * speed
 
+        ox, oy = self.x, self.y
         nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))
         ny = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.y + vy * dt))
 
@@ -314,6 +319,10 @@ class Walker:
         grade = math.degrees(math.atan(math.hypot(zx, zy)))
         if grade < 38.0 or not self.on_ground:
             self.x, self.y = nx, ny
+
+        # THE LEGS MOVE WHEN THE GROUND DOES. Distance is measured off the position that survived
+        # the slope gate, so walking into a wall does not pump the stride.
+        self.dist += math.hypot(self.x - ox, self.y - oy)
 
         gz = height_at(self.x, self.y)
         if jump and self.on_ground:
@@ -522,6 +531,57 @@ def scene_around(w: Walker, t: float = None):
 
     parts.append(_sky(w, nums, sun, alt))
     return np.concatenate(parts, axis=0)
+
+
+_BODY_CACHE = {}     # quantised gait phase -> theHuman's local-frame body (emit is deterministic)
+
+
+def body_buffer(w: Walker):
+    """theHuman's own figure, standing in the world: emit() gives the body in local units
+    (1.0 tall, walking along local +X, origin at the CoM); this places it -- yaw, stature,
+    soles on the carved ground -- and relights it under the walker's real sky.
+
+    The phase is DISTANCE, not time: one emit() movie is one gait cycle, and a cycle covers
+    two strides of ground, so t = dist / (2 * stride_m). A body that walks when the ground
+    scrolls and freezes when it stops cannot drift out of step with its own motion."""
+    st = _static()
+    hn = st["human"]
+    height = float(hn["height_m"])
+    cycle = 2.0 * float(hn["stride_m"])
+    t = (w.dist / cycle) % 1.0
+
+    q = int(t * 48) % 48                       # 48 poses over a 1.3 m cycle = 27 mm per pose
+    if q not in _BODY_CACHE:
+        _BODY_CACHE[q] = st["human_law"].emit(hn, q / 48.0).copy()
+    b = _BODY_CACHE[q].copy()
+
+    # local +X (emit's walking direction) -> the walker's facing (yaw 0 = +Y)
+    a = w.yaw + math.pi / 2.0
+    c, s = math.cos(a), math.sin(a)
+    x, y = b[:, 0].copy(), b[:, 1].copy()
+    b[:, 0] = (x * c - y * s) * height + w.x
+    b[:, 1] = (x * s + y * c) * height + w.y
+    # emit centres on the CoM; the walker's z is the SOLES. com_height_m up from the feet is the
+    # same number both used, so the soles land exactly on the carved surface -- plus the crouch dip.
+    b[:, 2] = b[:, 2] * height + w.z + float(hn["com_height_m"]) + w.crouch
+    nx, ny = b[:, 21].copy(), b[:, 22].copy()
+    b[:, 21] = nx * c - ny * s
+    b[:, 22] = nx * s + ny * c
+    b[:, 20] *= height
+
+    # RELIT UNDER THE REAL SKY -- same beam + airlight as the ground, so one sun serves the
+    # whole picture. emit's own sun is a demo light for the membrane view and stays there.
+    from matter import lit
+    (_f, nums) = _load()
+    S_rel = float(nums["terrain"]["S_earth"])
+    sunv, alt = w.sun
+    sun = np.array(sunv, np.float64); sun /= (np.linalg.norm(sun) + 1e-12)
+    beam = max(0.0, math.sin(alt))
+    sky = 0.09 + 0.16 * max(0.0, min(1.0, (math.degrees(alt) + 6.0) / 12.0))
+    lam = np.clip(b[:, 21:24] @ sun, 0.0, None)
+    body_alb = np.array([0.52, 0.44, 0.38], np.float32)
+    b[:, 16:19] = lit(body_alb, S_rel * beam * lam + sky, e_ref=S_rel, tone=0.45)
+    return b
 
 
 _SKY_DIRS = None
