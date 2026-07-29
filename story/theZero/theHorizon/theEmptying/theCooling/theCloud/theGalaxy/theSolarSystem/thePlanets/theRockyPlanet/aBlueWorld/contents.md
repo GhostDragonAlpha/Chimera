@@ -7,7 +7,9 @@
 
 ## Contains
 
-*nothing yet — this is a leaf of the story as written*
+| membrane | what it is |
+|---|---|
+| `theTerrain` | The last chapter said how much water there is but refused to say where the coast |
 
 ## Hands down
 
@@ -15,23 +17,26 @@
 |---|---|
 | `extent_m` | 5.283e+06 |
 | `duration_s` | 3.407e+07 |
-| `T_surface` | 271.5 |
-| `T_surface_C` | -1.66 |
-| `T_bare` | 237 |
-| `greenhouse_K` | 34.46 |
-| `albedo` | 0.4174 |
-| `tau_greenhouse` | 0.9616 |
-| `co2_multiple` | 3.337 |
+| `T_surface` | 272.6 |
+| `T_surface_C` | -0.5331 |
+| `T_bare` | 239.1 |
+| `greenhouse_K` | 33.56 |
+| `albedo` | 0.3972 |
+| `tau_greenhouse` | 0.9216 |
+| `co2_multiple` | 3.074 |
 | `thermostat_saturated` | False |
 | `T_without_thermostat` | 234 |
-| `thermostat_worth_K` | 37.53 |
+| `thermostat_worth_K` | 38.66 |
 | `M_water` | 6.986e+20 |
 | `water_earth_oceans` | 0.499 |
 | `ocean_depth_m` | 1992 |
 | `water_state` | liquid |
-| `ice_fraction` | 0.3669 |
-| `ice_line_lat_deg` | 39.28 |
-| `ocean_fraction` | 0.6331 |
+| `ice_fraction` | 0.433 |
+| `ice_line_lat_deg` | 34.54 |
+| `dT_equator_pole` | 45 |
+| `T_equator` | 287.6 |
+| `T_pole` | 242.6 |
+| `ocean_fraction` | 0.567 |
 | `colour` | Blue |
 | `surface_rgb` | [0.09, 0.22, 0.42] |
 | `name` | aBlueWorld |

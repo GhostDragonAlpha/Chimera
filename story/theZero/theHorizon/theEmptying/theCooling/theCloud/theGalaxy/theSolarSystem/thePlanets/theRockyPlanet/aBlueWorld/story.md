@@ -1,9 +1,12 @@
 # aBlueWorld
 
 **In plain words —** This is the weather, worked out for the world the last chapter built. It turns
-out to be an ice-age Earth: an average of about **−1.7 °C**, ice reaching down from both poles to
-about **39° latitude**, and liquid ocean across the middle two-thirds. That liquid water is why it is
+out to be an ice-age Earth: an average of about **−0.5 °C**, ice reaching down from both poles to
+about **35° latitude**, and liquid ocean across the middle third. That liquid water is why it is
 called *a blue world* — the name is the answer, not a label put on it.
+
+It is not uniformly cold. The same profile that puts the ice line at 35° puts the **equator at
++14.5 °C** and the **poles at −30.5 °C** — a temperate band with an ice sheet at each end.
 
 *The first membrane that could have gone either way.* Everything above this was forced. Here three
 different feedbacks push against each other, and the temperature is whatever value all three can
@@ -14,7 +17,7 @@ agree on at once.
 Three loops, all running into each other:
 
 - **The greenhouse.** The air the parent kept lets sunlight in and slows heat out, so the ground runs
-  hotter than bare balance. Earth's version of this is worth 33 K; this world's is worth **34.5 K**.
+  hotter than bare balance. Earth's version of this is worth 33 K; this world's is worth **33.6 K**.
 - **Ice.** Cool it down and ice spreads; ice is bright, so it reflects more, so it cools further.
   A runaway, if nothing stops it.
 - **Carbon.** Cool it down and the rain stops scrubbing CO₂ out of the air, so CO₂ builds up, so the
@@ -28,22 +31,33 @@ climate.
 
 | | mean temperature |
 |---|---|
-| with the carbon cycle | **271.5 K** (−1.7 °C) — ice caps, open ocean |
+| with the carbon cycle | **272.6 K** (−0.5 °C) — ice caps, open ocean |
 | without it | **234.0 K** — frozen pole to pole, permanently |
 
-**37.5 K.** That is what the carbonate–silicate cycle is worth to this planet, and it is the
+**38.7 K.** That is what the carbonate–silicate cycle is worth to this planet, and it is the
 difference between a world you could stand on and a snowball. It is also the honest reason a
 habitable zone has an outer edge: the thermostat is bounded by the carbon a planet actually has, and
-past that bound it runs out of gas. Here it is holding **3.3×** Earth's CO₂ and has plenty left.
+past that bound it runs out of gas. Here it is holding **3.1×** Earth's CO₂ and has plenty left.
 
 ## It gets Earth right, and it was not fitted to
 
 Run Earth's own mass and orbit through this same law and it returns **288 K** and an ocean
 **2,700 m** deep. Both are Earth's measured values. Neither was put in.
 
-And a check nobody arranged: an ice line at **39°** is where the ice actually reached at the Last
-Glacial Maximum — about 40° north. This world simply sits permanently in the state Earth visits
+And a check nobody arranged: an ice line at **35°** is close to where the ice actually stood at the
+Last Glacial Maximum — about 40° north. This world simply sits permanently in the state Earth visits
 during an ice age.
+
+### One profile, or the numbers drift
+
+Temperature-against-latitude used to be written twice — once here as a straight ramp, and again in
+the terrain below with different constants. The two answers were six degrees apart, and the terrain
+drew a hard white band across a world that does not have one. There is now **one** profile, it lives
+here because the climate does, and everything below reads it rather than rebuilding it.
+
+Fixing that turned up a second error underneath it. Earth's albedo of 0.30 is measured **with** its
+ice on, so feeding 0.30 in as the ice-free ground and then adding ice counts Earth's ice twice. The
+ice-free figure is **0.227** — solved from the measurement, not chosen.
 
 ## Where the water came from
 

@@ -29,10 +29,15 @@ M_EARTH = 5.9722e24
 RHO_WATER = 1000.0
 
 # ── the numbers this law is calibrated on, all of them Earth's, all measured ──
-EARTH_ALBEDO = 0.30            # what Earth actually returns to space
+EARTH_ALBEDO = 0.30            # what Earth actually returns to space, measured -- INCLUDING its ice
+# THE ICE-FREE ALBEDO, SOLVED FROM THAT. 0.30 is Earth WITH its ice, so feeding 0.30 in as the
+# ice-free ground and then adding ice on top counts Earth's ice twice -- which is exactly what broke
+# the earth_T_is_288 check the moment the ice model got better. Earth freezes 18.6% of its area at
+# 288 K, so 0.30 = 0.186*0.62 + 0.814*A_free  ->  A_free = 0.227. Derived, not chosen.
 EARTH_TAU = 0.835              # the greenhouse depth that turns 255 K into 288 K -- SOLVED, not picked
 EARTH_WATER_FRAC = 2.34e-4     # ocean mass / planet mass
 SNOWBALL_ALBEDO = 0.62         # a fully glaciated world, from the Neoproterozoic record
+ICEFREE_ALBEDO = 0.227         # solved above; the ground and cloud under the ice
 
 T_FREEZE = 273.15
 T_BOIL = 373.15                # at one bar; thinner air boils water colder, and this law says so
@@ -53,17 +58,41 @@ def bare_temperature(S, albedo):
     return ((1.0 - albedo) * S / (4.0 * SIGMA_SB)) ** 0.25
 
 
+def temperature_at(T_mean, sin_lat):
+    """THE ONE LATITUDE PROFILE THIS STORY USES, and every membrane below must read it from here.
+
+    Sunlight arrives at a slant away from the equator, so temperature falls with latitude. The
+    standard climatological form is quadratic in sin(latitude) -- T = T_mean + dT*(1/3 - sin^2 lat) --
+    and the 1/3 is not a fudge: it is the area-weighted mean of sin^2 over a sphere, which is what
+    makes the profile average back to T_mean exactly.
+
+    On Earth's 288 K it gives +30 C at the equator and -15 C at the pole. Both are right.
+
+    IT LIVES HERE BECAUSE THE CLIMATE DOES. The terrain below needs it too (snow is a temperature,
+    not a latitude), and a child that re-derived it with its own constants drew an ice edge six
+    degrees away from the one this membrane had already solved -- two authorities for one number,
+    which is how they drift apart."""
+    return T_mean + DT_POLE * (1.0 / 3.0 - sin_lat * sin_lat)
+
+
 def ice_fraction(T):
-    """How much of a world is under ice at a given mean temperature. Calibrated at BOTH ends against
-    real states: Earth's 288 K mean puts the ice line at the poles (f=0), and 243 K is the fully
-    glaciated snowball. A straight ramp between two measured points, and said to be one."""
-    return min(1.0, max(0.0, (T_ICE_LINE - T) / DT_POLE))
+    """How much of a world freezes, read straight off that profile: the area poleward of wherever it
+    crosses 0 C. Area on a sphere goes as sin(latitude), so the fraction IS 1 - sin(lat_ice).
+
+    Still anchored at both ends by measurement -- a 243 K mean freezes the equator too and returns a
+    full snowball, and Earth's 288 K freezes only what is poleward of about 55 degrees."""
+    s2 = 1.0 / 3.0 - (T_FREEZE - T) / DT_POLE
+    if s2 <= 0.0:
+        return 1.0                                   # the freezing line has reached the equator
+    if s2 >= 1.0:
+        return 0.0                                   # it never freezes anywhere
+    return 1.0 - sqrt(s2)
 
 
-def albedo_of(T, bare=EARTH_ALBEDO):
+def albedo_of(T, bare=ICEFREE_ALBEDO):
     """ICE IS BRIGHT, so a world that cools reflects more, which cools it further. This is the
     feedback that makes climate a FIXED POINT rather than a formula."""
-    return bare + (SNOWBALL_ALBEDO - bare) * ice_fraction(T)
+    return bare + (SNOWBALL_ALBEDO - bare) * ice_fraction(T)   # bare = ICE-FREE, never Earth's 0.30
 
 
 def carbon_buffer(T, cap):
@@ -200,6 +229,11 @@ def derive(parent, free):
         "water_state": state,
         "ice_fraction": frozen,
         "ice_line_lat_deg": ice_lat,
+        # THE PROFILE ITSELF, handed down. A child that needs a temperature at a place must
+        # use THIS one, never a second copy of it.
+        "dT_equator_pole": DT_POLE,
+        "T_equator": temperature_at(T, 0.0),
+        "T_pole": temperature_at(T, 1.0),
         "ocean_fraction": ocean_frac,
 
         "colour": colour,
