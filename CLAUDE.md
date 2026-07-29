@@ -170,8 +170,25 @@ pawn stands on formed ground, witnessed by CONTACT)
 
 - **RTX 4090, 24.5 GB VRAM · 128 GB RAM.**
 - `C:` PCIe NVMe (OS + pagefile) · `D:` SATA SSD · `E:` spanned QLC NVMe pair · `F:` USB SSD.
-- **`E:` is fast sequential (4,782 MB/s) and slow random (352 MB/s at 4 MB).** MoE model
-  reads are random — sequential benchmarks mislead here.
+- **RANDOM read is the only disk number that matters for a big model** — MoE reads are
+  scattered, so sequential benchmarks mislead. Re-measured 2026-07-29 with the OS cache
+  bypassed (`FILE_FLAG_NO_BUFFERING`), 400 reads over a 37 GB file, and the old
+  "`E:` 352 MB/s" note was **wrong — E: does 1,198 MB/s at 4 MB**:
+
+  | drive | hardware | 1 MB | 4 MB | 16 MB |
+  |---|---|---:|---:|---:|
+  | **C:** | PCIe NVMe 1.86 TB | 1,567 | **2,787** | 3,055 |
+  | `E:` | 2× Intel SSDPEKNW010T8 (660p QLC), spanned | 692 | 1,198 | 1,331 |
+  | `F:` | Samsung T7 (USB) | 576 | 812 | 933 |
+  | `D:` | Samsung 860 EVO (SATA) | 464 | 509 | 524 |
+
+  **C: is 2.3× E: and is the only drive worth streaming a model from** — which collides
+  with the pagefile rule below, so weigh it per job rather than assuming E: is faster
+  because it is the "fast" drive.
+- **RAM is MAXED and cannot be raised**: MSI MAG B760 TOMAHAWK, 4/4 slots filled with
+  32 GB DDR5-5400 (~86 GB/s dual-channel), board ceiling 128 GB. Anything needing more
+  than ~150 GB resident is a **platform change** (Threadripper/EPYC, 8–12 channels), not
+  an upgrade. See `docs/LOCAL_BIG_MODELS.md` for what that rules in and out.
 - **Never memory-map a model on `C:`** — it competes with `pagefile.sys`, and SSDs degrade
   past ~80% full. Measured 50% slower in place than the benchmark predicted.
 - **System Restore was entitled to 15% of `C:` (279 GB)** and silently consumed ~190 GB
