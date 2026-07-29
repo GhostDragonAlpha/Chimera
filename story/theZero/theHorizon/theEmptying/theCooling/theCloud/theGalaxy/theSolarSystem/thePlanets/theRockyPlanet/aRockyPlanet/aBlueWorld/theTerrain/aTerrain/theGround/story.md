@@ -1,0 +1,73 @@
+# theGround
+
+**In plain words —** Four metres across. The parent gave the *shape* of the land over twelve
+kilometres, and never said what any of it is made of — but a shape cannot be stood on. This chapter
+answers the only question a body actually asks of a planet: **will it hold me, and how far do I
+sink?** It holds. You sink less than a millimetre.
+
+*The scale where "the ground" stops being a surface and becomes a material.*
+
+## Soil is made from the rock underneath it, and the deeper it gets the slower it is made
+
+Bedrock turns into soil when frost, roots and water get at it — and a thick soil **insulates** the
+rock from all three. So production falls off exponentially with depth (Heimsath, Dietrich,
+Nishiizumi & Finkel 1997, measured with cosmogenic nuclides):
+
+```
+P(h)  =  P₀ · e^(−h/h₀)
+```
+
+Balance that against erosion carrying it away and the steady depth is `h = h₀·ln(P₀/E)`.
+
+### And that equation predicts a hillside without being told about one
+
+There is no slope anywhere in it. But erosion rises steeply with slope, so:
+
+| slope | soil |
+|---|---|
+| 0° | 2.15 m |
+| 5° | 1.00 m |
+| 10° | 0.65 m |
+| **17°** (this land's mean) | **0.37 m** |
+| 24° | 0.19 m |
+| 30° | 0.06 m |
+| **33°** | **none — bare rock** |
+
+**Soil thins uphill, deepens in hollows, and runs out entirely above about 33°.** That is what every
+hillside on Earth looks like, and none of it was put in — it falls out of one exponential and one
+erosion rate. The bare-rock threshold in particular is not a rule added on top: it is where the
+logarithm goes negative, because the hill is being stripped faster than rock can become soil.
+
+## Breaking rock is fractal, which is why all soil has the same shape
+
+Break a rock and you get pieces; break those and you get the same distribution one scale down.
+Repeat, and the mass fraction coarser than `d` follows a power law with dimension **2.6**. It is why
+every soil on every planet has the same *shape* of grain-size curve however different its chemistry:
+a few big clasts, a great many fines.
+
+## Will it hold a person
+
+Terzaghi: ground fails when a load pushes a wedge of it sideways, and what resists is friction
+between grains plus whatever sticks them together.
+
+| | |
+|---|---|
+| the ground carries | **110 kPa** |
+| one foot, standing | **19 kPa** |
+| sinkage | **under 1 mm** |
+
+**The friction angle is not the repose angle**, and that distinction cost a fix. Loose material
+poured into a heap settles at **40.03°** — this studio's own number, *grown* from a stochastic
+sandpile in `core/trainables/granular.py` and never fitted to the lunar measurements it landed
+inside. But the same material **under a foot** is compacted, and Terzaghi's factors climb so steeply
+with angle that using the loose value returned 413 kPa — three times what real soil carries. Same
+property, different packing, different number.
+
+## What was wrong first
+
+The erosion reference was set at 50 mm/kyr, which put the bare-rock threshold at **15°** — below
+this landscape's own mean slope of 17°. The entire hillside would have been stripped rock, and the
+chapter would have described a world with no soil on it at all. 21 mm/kyr puts the threshold at 33°,
+which is where real soil-mantled hillslopes go bare.
+
+*Contained in `aTerrain`. What it hands on: a surface that bears weight, and the grain of it.*

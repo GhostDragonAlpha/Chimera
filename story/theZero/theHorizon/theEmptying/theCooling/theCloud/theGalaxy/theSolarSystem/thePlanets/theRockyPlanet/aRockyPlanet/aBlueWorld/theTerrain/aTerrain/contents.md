@@ -7,7 +7,9 @@
 
 ## Contains
 
-*nothing yet — this is a leaf of the story as written*
+| membrane | what it is |
+|---|---|
+| `theGround` | Four metres across. The parent gave the *shape* of the land over twelve |
 
 ## Hands down
 
