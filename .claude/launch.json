@@ -13,7 +13,8 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["ChimeraEngine/gallery.py", "8765"],
       "cwd": "E:/PythonChimera",
-      "port": 8765
+      "port": 8765,
+      "autoPort": false
     },
     {
       "name": "construction-web",
