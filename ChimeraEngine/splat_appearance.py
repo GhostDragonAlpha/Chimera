@@ -129,7 +129,7 @@ def _planet_buffers(spec: dict, term: str):
     land_noise = _fbm(dirs, rng)
     thresh = np.quantile(land_noise, ocean_frac)                   # top (1-ocean) fraction becomes land
     is_land = land_noise > thresh
-    is_ice = np.abs(z) > 0.88                                       # small polar caps override (lat > ~62 deg)
+    is_ice = np.abs(z) > 0.80                                       # polar caps (lat > ~53 deg)
     is_land &= ~is_ice
     is_ocean = ~is_land & ~is_ice
 
@@ -138,8 +138,14 @@ def _planet_buffers(spec: dict, term: str):
     surf[is_ocean, CR] = 0.02 + 0.04 * depth[is_ocean]
     surf[is_ocean, CG] = 0.08 + 0.12 * depth[is_ocean]
     surf[is_ocean, CB] = 0.30 + 0.22 * depth[is_ocean]            # -> (0.02,0.08,0.30) abyss to (0.06,0.20,0.52) shelf (navy)
-    # land: vivid equatorial green -> mid-latitude arid tan (aridity from |lat| + noise)
-    aridity = np.clip(np.abs(z) * 0.9 + 0.30 * _fbm(dirs, rng), 0.0, 1.0)
+    # land: vivid equatorial green -> arid tan in the SUBTROPICS -> cold again toward the poles.
+    # CAUGHT BY THE DYAD: an eye reading this render blind reported "pale TAN patches near the top
+    # and bottom edges" where the physics claims white ice caps. The bug was physical, not cosmetic --
+    # aridity was `|z| * 0.9`, which peaks at the POLES and paints them desert. Deserts sit at ~25 deg,
+    # where the Hadley cell's air descends dry; the poles are cold. So aridity is a BAND, not a ramp.
+    lat_desert = 0.42                                               # sin(lat) ~ 0.42 => ~25 deg
+    band = np.exp(-((np.abs(z) - lat_desert) / 0.26) ** 2)
+    aridity = np.clip(band + 0.25 * _fbm(dirs, rng), 0.0, 1.0)
     surf[is_land, CR] = 0.13 + 0.34 * aridity[is_land]
     surf[is_land, CG] = 0.44 - 0.12 * aridity[is_land]
     surf[is_land, CB] = 0.12 + 0.05 * aridity[is_land]           # -> (0.13,0.44,0.12) jungle to (0.47,0.32,0.17) desert
