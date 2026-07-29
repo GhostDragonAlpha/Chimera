@@ -113,6 +113,8 @@ def derive(parent, free):
     m_out = solid_mass(r_snow, R_OUT, SIGMA_ROCK_1AU * ICE_TO_ROCK)       # rock AND ice
     worlds = sweep_planets(r_snow, float(parent["M_star"]))               # GROW them, do not place them
     return {
+        # ITS OWN DURATION: accretion: ~100 Myr to sweep the disk clean. t=1 in emit() means this much real time.
+        "duration_s": 1.0e8 * 3.1557e7,
         "L": L,
         "snow_line_au": r_snow,                       # ~2.7 AU: computed, and it is the asteroid belt
         "T_at_1au": temperature(1.0, L),

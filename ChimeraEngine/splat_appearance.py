@@ -470,6 +470,17 @@ def _membrane_law(folder):
     return mod
 
 
+def _child_numbers(term: str):
+    """A child's grown numbers, for the one thing a parent legitimately needs from below: how long
+    that child takes, so it can be shown at the right phase of the parent's own movie."""
+    import json
+    f = _find_membrane(term)
+    if f is None:
+        return None
+    nj = f / "numbers.json"
+    return json.loads(nj.read_text()) if nj.exists() else None
+
+
 def _membrane_own(folder, t):
     """Just this membrane's own matter, without its children."""
     import json
@@ -504,7 +515,19 @@ def membrane_buffer(term: str, t: float = 1.0, _depth: int = 0):
     import numpy as np
     parts = [own]
     for child, (centre, scale) in (law.layout(nums) or {}).items():
-        cb = membrane_buffer(child, t, _depth + 1)
+        # THE CHILD'S OWN TIME, not the parent's. A child whose duration is shorter FINISHES EARLY
+        # inside its parent's movie -- stars light while a galaxy is still assembling. So its t runs
+        # faster by exactly the ratio of their durations and clamps once it is done. This is the one
+        # place true relative rates are used, and it is the place they matter: it is what makes the
+        # nesting a single performance instead of eleven separate clips.
+        ct = t
+        pdur = float(nums.get("duration_s") or 0.0)
+        if pdur > 0.0:
+            cn = _child_numbers(child)
+            cdur = float((cn or {}).get("duration_s") or 0.0)
+            if cdur > 0.0:
+                ct = max(0.0, min(1.0, t * (pdur / cdur)))
+        cb = membrane_buffer(child, ct, _depth + 1)
         if cb is None:
             continue
         # LOD BY PLACED SIZE -- the pixel-budget law, and here it is load-bearing, not an

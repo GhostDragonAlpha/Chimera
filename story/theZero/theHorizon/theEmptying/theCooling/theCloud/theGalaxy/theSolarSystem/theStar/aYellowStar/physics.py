@@ -63,6 +63,8 @@ def derive(parent, free):
     L = luminosity(M)
     T = surface_temperature(L, R)
     return {
+        # ITS OWN DURATION: its whole life -- fuel over burn rate. t=1 in emit() means this much real time.
+        "duration_s": lifetime_years(M) * 3.1557e7,
         "M": M,
         "M_solar": M / M_SUN,
         "R": R,

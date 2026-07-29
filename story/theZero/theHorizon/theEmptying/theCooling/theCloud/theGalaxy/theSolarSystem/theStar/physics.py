@@ -74,6 +74,8 @@ def derive(parent, free):
     R = R_SUN * (M / M_SUN) ** 0.8
     T_surface = (L / (4.0 * pi * R ** 2 * SIGMA_SB)) ** 0.25         # what balance forces it to glow at
     return {
+        # ITS OWN DURATION: contraction to ignition: ~30 Myr. t=1 in emit() means this much real time.
+        "duration_s": 3.0e7 * 3.1557e7,
         "M_min_kg": M_min,
         "M_min_solar": M_min / M_SUN,             # ~0.07: below this, degeneracy wins and no fire
         "T_max_at_min": max_temperature(M_min),

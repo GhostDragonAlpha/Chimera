@@ -12,6 +12,8 @@ ALLOWED = "addition"
 def derive(parent, free):
     """The seed takes nothing and hands down the rule that shapes the next membrane."""
     return {
+        # ITS OWN DURATION: a point has no duration. t=1 in emit() means this much real time.
+        "duration_s": 0.0,
         "r": 0.0,
         "volume": 0.0,
         "hair": 3,                       # mass, charge, angular momentum -- and nothing else

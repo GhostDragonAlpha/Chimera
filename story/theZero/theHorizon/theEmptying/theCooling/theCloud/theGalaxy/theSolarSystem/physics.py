@@ -28,6 +28,9 @@ def kepler_period(a_au, m_star):
     return sqrt(4.0 * pi ** 2 * a ** 3 / (G * m_star))
 
 
+import clock as _clk
+
+
 def derive(parent, free):
     if parent is None or not parent.get("collapsing"):
         raise ValueError("theSolarSystem requires a parent cloud that is collapsing")
@@ -43,6 +46,12 @@ def derive(parent, free):
     SIGMA_SB, T_ICE = 5.670374419e-8, 170.0
     r_snow_au = ((L / (16.0 * pi * SIGMA_SB * T_ICE ** 4)) ** 0.5) / AU
     return {
+        # ITS OWN DURATION -- and the TICK is not the MOVIE. The dynamical time here is 29 years
+        # (an orbit out at the disk edge); that is how fast the system RINGS, not how long it takes
+        # to BECOME. Formation runs for many dynamical times, and the number that bounds it is
+        # measured: protoplanetary disks disperse in 3-10 Myr, so the gas is simply gone after that.
+        "duration_s": 6.0e6 * 3.1557e7,
+        "t_dyn_s": _clk.dynamical_time(M_total / ((4.0/3.0)*pi*(DISK_EDGE_AU*AU)**3)),
         "snow_line_au": r_snow_au,
         "disk_edge_au": DISK_EDGE_AU,
         "M_total": M_total,

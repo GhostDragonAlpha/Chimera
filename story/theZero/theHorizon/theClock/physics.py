@@ -68,6 +68,8 @@ def derive(parent, free):
     galaxy_rho = (1.045e11 * M_SUN) / ((4.0 / 3.0) * pi * (15.0 * 3.0857e19) ** 3)
     cloud_rho = 1.103e-18                                       # theCloud's own number, kg/m^3
     return {
+        # ITS OWN DURATION: the law itself is instantaneous; it is the tick. t=1 in emit() means this much real time.
+        "duration_s": t_P,
         # PASSED THROUGH, because a child may only read its parent: theDensityClock lives inside
         # this membrane now and its ceiling is still the horizon's radius.
         "r_s": float(parent["r_s"]),

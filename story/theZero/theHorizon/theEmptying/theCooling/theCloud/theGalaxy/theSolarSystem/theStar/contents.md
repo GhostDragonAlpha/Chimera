@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 9.467e+14 |
 | `M_min_kg` | 1.388e+29 |
 | `M_min_solar` | 0.0698 |
 | `T_max_at_min` | 4e+06 |

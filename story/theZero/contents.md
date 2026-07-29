@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 0 |
 | `r` | 0 |
 | `volume` | 0 |
 | `hair` | 3 |

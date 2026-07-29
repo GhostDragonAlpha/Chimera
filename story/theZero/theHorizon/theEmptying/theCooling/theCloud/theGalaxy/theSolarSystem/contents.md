@@ -17,6 +17,8 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 1.893e+14 |
+| `t_dyn_s` | 9.161e+08 |
 | `snow_line_au` | 2.681 |
 | `disk_edge_au` | 30 |
 | `M_total` | 1.991e+30 |

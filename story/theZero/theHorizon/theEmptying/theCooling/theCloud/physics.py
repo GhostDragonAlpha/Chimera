@@ -33,6 +33,9 @@ def jeans_mass(T, rho, mu=MU):
     return (5.0 * KB * T / (G * mu * M_H)) ** 1.5 * (3.0 / (4.0 * pi * rho)) ** 0.5
 
 
+import clock as _clk
+
+
 def derive(parent, free):
     if parent is None or not parent.get("transparent"):
         raise ValueError("theCloud requires a parent that has gone transparent")
@@ -49,6 +52,8 @@ def derive(parent, free):
     m_after = jeans_mass(T, rho)
 
     return {
+        # ITS OWN DURATION: it falls through itself. t=1 in emit() means this much real time.
+        "duration_s": _clk.dynamical_time(rho),
         "T": T,
         "one_plus_z": one_plus_z,
         "rho": rho,

@@ -293,6 +293,7 @@ def _tree_of(folder):
         except Exception:
             pass
     node["membrane"] = (folder / "physics.py").exists()
+    node["duration_s"] = node["numbers"].get("duration_s")
     for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         if (c / "story.md").exists():
             node["children"].append(_tree_of(c))
@@ -429,7 +430,16 @@ function pick(t){
   tg.textContent=live?(inst?'an instance':'the law'):'not built';
   tg.className='tag '+(live?(inst?'t-inst':'t-law'):'t-paint');
   document.getElementById('plain').textContent=n.plain||(READINGS[t]?('physics expects: '+READINGS[t]):'');
-  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ');
+  // WHAT t=1 MEANS. Until the clocks were wired, every membrane's movie ran 0->1 in an arbitrary
+  // unit and the fourth dimension was unlabelled. This says the real elapsed time.
+  const d=n.duration_s;
+  let dur='';
+  if(typeof d==='number'&&d>0){
+    const U=[[3.1557e16,'Gyr'],[3.1557e13,'Myr'],[3.1557e7,'yr'],[86400,'days'],[3600,'h'],[60,'min'],[1,'s']];
+    for(const [u,nm] of U){ if(d>=u){ dur=(d/u).toPrecision(3)+' '+nm; break; } }
+    if(!dur) dur=d.toExponential(2)+' s';
+  }
+  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ')+(dur?('   ·   its movie spans '+dur):'');
   const nums=n.numbers||{};
   document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));

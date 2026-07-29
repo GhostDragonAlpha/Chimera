@@ -41,6 +41,9 @@ def winding_turns(r_kpc, dr_kpc=5.0, v=V_FLAT, age_yr=1.0e10):
     return t * (1.0 / orbital_period(r_kpc, v) - 1.0 / orbital_period(r_kpc + dr_kpc, v))
 
 
+import clock as _clk
+
+
 def derive(parent, free):
     if parent is None or not parent.get("collapsing"):
         raise ValueError("theGalaxy requires a parent cloud that is collapsing")
@@ -49,6 +52,8 @@ def derive(parent, free):
     M_stars = n * m_cloud
     M_dyn = enclosed_mass(R_DISK_KPC)                  # what the rotation curve says is really there
     return {
+        # ITS OWN DURATION: its own free-fall. t=1 in emit() means this much real time.
+        "duration_s": _clk.dynamical_time(M_dyn / ((4.0/3.0)*pi*(R_DISK_KPC*KPC)**3)),
         "M_cloud_solar": m_cloud / M_SUN,
         "n_clouds": n,
         "M_stars_solar": M_stars / M_SUN,              # ~1e11 suns: a disk galaxy

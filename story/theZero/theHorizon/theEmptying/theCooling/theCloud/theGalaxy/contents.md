@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 2.337e+15 |
 | `M_cloud_solar` | 6.15e+05 |
 | `n_clouds` | 1.7e+05 |
 | `M_stars_solar` | 1.045e+11 |

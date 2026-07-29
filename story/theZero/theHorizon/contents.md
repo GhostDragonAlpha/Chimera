@@ -16,6 +16,7 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 5.391e-44 |
 | `M_added` | 1.539e-08 |
 | `r_s` | 2.286e-35 |
 | `lambda_C` | 2.286e-35 |

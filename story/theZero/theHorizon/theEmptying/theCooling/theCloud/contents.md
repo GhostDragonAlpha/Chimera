@@ -15,6 +15,7 @@
 
 | number | value |
 |---|---|
+| `duration_s` | 6.326e+13 |
 | `T` | 3760 |
 | `one_plus_z` | 1380 |
 | `rho` | 1.103e-18 |

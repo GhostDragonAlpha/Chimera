@@ -65,6 +65,8 @@ def derive(parent, free):
     T_nuclei = permitted_at(E_DEUTERON)             # photon-glut estimate: 1.2e9 K (bottleneck ~8e8)
     T_atoms = atoms_permitted_at(0.5)               # SOLVED from Saha, not estimated
     return {
+        # ITS OWN DURATION: to recombination: 380,000 years. t=1 in emit() means this much real time.
+        "duration_s": 3.8e5 * 3.1557e7,
         "T_start": parent["T"],
         "T_nuclei": T_nuclei,                       # ~1e9 K: nuclei survive
         "T_atoms": T_atoms,                         # ~3700 K: atoms survive -> transparency

@@ -33,6 +33,8 @@ def derive(parent, free):
     t_P = l_P / C
     m_P = sqrt(HBAR * C / G)
     return {
+        # ITS OWN DURATION: the first tick it made. t=1 in emit() means this much real time.
+        "duration_s": t_P,
         "M_added": M,
         "r_s": schwarzschild(M),
         "lambda_C": compton(M),

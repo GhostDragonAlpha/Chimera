@@ -20,6 +20,8 @@ def derive(parent, free):
     t_evap = 5120.0 * pi * G ** 2 * M ** 3 / (HBAR * C ** 4)
     bits = S / (KB * 0.6931471805599453)                # nats -> bits
     return {
+        # ITS OWN DURATION: the runaway that empties it -- lifetime ~ M^3. t=1 in emit() means this much real time.
+        "duration_s": t_evap,
         "S": S,
         "bits": bits,
         "T": T,

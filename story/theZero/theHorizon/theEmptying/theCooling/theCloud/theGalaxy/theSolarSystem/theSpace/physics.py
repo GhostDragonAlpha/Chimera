@@ -31,12 +31,17 @@ def light_time(r):
     return r / C
 
 
+import clock as _clk
+
+
 def derive(parent, free):
     if parent is None or not parent.get("flattened"):
         raise ValueError("theSpace requires a parent SYSTEM")
     M = float(parent["M_star"])
     rho = N_PROTONS_CM3 * 1e6 * M_PROTON                     # protons/cm^3 -> kg/m^3
     return {
+        # ITS OWN DURATION: light across the system it fills. t=1 in emit() means this much real time.
+        "duration_s": _clk.light_crossing(30.0 * AU),
         "rho": rho,
         "thinner_than_air": AIR_DENSITY / rho,               # ~1e20: why nothing pushes back
         "coasts": True,                                      # no drag -> Newton's first law, visible
