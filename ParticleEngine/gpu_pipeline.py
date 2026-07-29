@@ -10,6 +10,8 @@ try:
 except Exception:                            # pragma: no cover - CPU fallback path
     _HAS_CUPY = False
 
+import os as _os
+_TILE_DIAG = _os.environ.get('CHIMERA_TILE_DIAG') == '1'
 TILE_SIZE = 32
 MAX_PER_TILE = 4096
 PX, PY, PZ = 0, 1, 2
@@ -520,6 +522,29 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     sorted_splat = splat[order].astype(cp.int32)
     per_tile = cp.bincount(sorted_tile, minlength=n_tiles)[:n_tiles]
     capped = cp.minimum(per_tile, max_pt)
+    if _TILE_DIAG:
+        _pt = per_tile.get(); _hot = int(_pt.max())
+        if _hot > max_pt * 0.5:
+            _i = int(_pt.argmax())
+            print("[tile-diag] busiest tile %d (px x=%d..%d y=%d..%d) holds %d of %d allowed; "
+                  "%d tiles over cap; total expansions %d for %d splats"
+                  % (_i, (_i % tiles_x) * tile_sz, (_i % tiles_x) * tile_sz + tile_sz - 1,
+                     (_i // tiles_x) * tile_sz, (_i // tiles_x) * tile_sz + tile_sz - 1,
+                     _hot, max_pt, int((_pt > max_pt).sum()), total, nv), flush=True)
+            # WHAT is filling it: the radii of the splats binned there, and how many of them have
+            # their CENTRE outside the tile (those are the ones that cost a slot and paint nothing).
+            _m = (sorted_tile == _i)
+            _ids = sorted_splat[_m]
+            _rr = srad[_ids]; _cx = sx[_ids]; _cy = sy[_ids]
+            _tx = (_i % tiles_x) * tile_sz; _ty = (_i // tiles_x) * tile_sz
+            _inside = ((_cx >= _tx) & (_cx < _tx + tile_sz) & (_cy >= _ty) & (_cy < _ty + tile_sz))
+            _kept = _ids[:max_pt]
+            _kept_in = int(((sx[_kept] >= _tx) & (sx[_kept] < _tx + tile_sz)
+                            & (sy[_kept] >= _ty) & (sy[_kept] < _ty + tile_sz)).sum())
+            print("[tile-diag]   radii px: min %.1f med %.1f max %.1f | centres INSIDE the tile: %d of %d"
+                  " | of the %d KEPT, %d are centred inside"
+                  % (float(_rr.min()), float(cp.median(_rr)), float(_rr.max()),
+                     int(_inside.sum()), int(_m.sum()), min(max_pt, int(_m.sum())), _kept_in), flush=True)
     within = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(per_tile) - per_tile, per_tile)
     keep = within < cp.repeat(capped, per_tile)
     offsets = cp.zeros(n_tiles + 1, dtype=cp.int32); offsets[1:] = cp.cumsum(capped).astype(cp.int32)

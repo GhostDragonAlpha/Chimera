@@ -164,7 +164,7 @@ def emit(nums, t=1.0):
     fourfold, so the outer disk turns bright and dense. The line is not drawn -- it is where the
     colour changes because that is where the physics changes."""
     import numpy as np
-    from matter import blank, paint, lit, SOLID
+    from matter import blank, paint, lit, grains_for, SOLID
 
     n = 24000
     tt = float(t)
@@ -203,7 +203,7 @@ def emit(nums, t=1.0):
     # THE STAR ITSELF. Leaving it out drew the effect without its cause -- and worse, the rocky inner
     # disk then read as a dim brown object at the centre, which is a render telling a lie about what
     # kind of star this is. Its colour is its own surface temperature, carried down from the parent.
-    from matter import fibonacci_sphere, blackbody_rgb
+    from matter import fibonacci_sphere, blackbody_rgb, grains_for
     # A HANDFUL OF GRAINS, because the star is sub-pixel here. 2500 of them all land in one 32px
     # tile, overrun MAX_PER_TILE, and the cap evicts the DISK's grains from that tile -- a black,
     # tile-shaped hole exactly where the star should be. Same law as composition LOD: a thing that
@@ -234,7 +234,12 @@ def emit(nums, t=1.0):
     for i, w in enumerate(nums.get("worlds", [])):
         aa = float(w["a_au"]) / r_snow                       # into this membrane's units
         rr_w = float(w["R"]) / (r_snow * 1.495978707e11) * WORLD_EXAGGERATION
-        n_w = 900
+        # THE SAME LAW THE STAR ABOVE OBEYS, which was written there and not applied here -- so it
+        # got broken a second time. A flat 900 grains put five sub-pixel worlds (0.24 px radius at
+        # this framing) into the tiles around screen centre: 4,801 splats in a tile that allows
+        # 4,096, and that tile rendered as a hard-edged black rectangle. Grains now follow PROJECTED
+        # AREA, floored so a sub-pixel world is still a visible dot.
+        n_w = grains_for(rr_w, R_OUT / r_snow, full=900, floor=16)
         dw = fibonacci_sphere(n_w)
         ang = 2.399963 * i                                   # spread them around, not lined up
         cen = np.array([aa * np.cos(ang), aa * np.sin(ang), 0.0], np.float32)

@@ -29,6 +29,34 @@ def blank(n: int) -> np.ndarray:
     return np.zeros((n, NCOLS), dtype=np.float32)
 
 
+def grains_for(radius: float, extent: float, full: int = 900, floor: int = 16,
+               screen_px: int = 1080, per_px: float = 0.5) -> int:
+    """HOW MANY GRAINS A BODY DESERVES AT THIS FRAMING. The pixel-budget law, and it is a
+    CORRECTNESS rule, not an optimisation.
+
+    A thing that occupies one pixel does not need a thousand grains to say so -- and if you give it
+    a thousand anyway they all land in the same 32-px tile, overrun the rasteriser's MAX_PER_TILE,
+    and the cap evicts everything ELSE in that tile. The result is a BLACK, TILE-SHAPED HOLE next to
+    the object: not a dim patch, a hard-edged rectangle on the tile grid, which is the tell.
+
+    MEASURED, and this is what the law is written from: thePlanets drew each of eleven worlds with
+    900 grains. At a framing 11.2 units across, the inner worlds are 0.0096 units in radius -- a
+    QUARTER OF A PIXEL. Five of them within 36 px of screen centre put 4,801 splats into one tile
+    that allows 4,096, and tile 989 (x 928-959, y 512-543) rendered as background.
+
+    The same law is what the star above already obeys. It was written down there and not applied
+    here, which is how a rule that is only prose gets broken twice.
+
+    Grains scale with PROJECTED AREA -- a body twice as wide on screen deserves four times as many.
+    The floor keeps a sub-pixel body visible as a dot; the cap stops a close one from exploding.
+
+    `extent` is the membrane's own drawn extent (its 99th-percentile radius), and the 2.8 is the
+    camera-distance rule the viewer uses, so this needs nothing the emit does not already know."""
+    px_r = abs(float(radius)) / max(abs(float(extent)), 1e-12) * (screen_px / 2.0) / 2.8
+    n = int(per_px * np.pi * px_r * px_r)
+    return int(min(max(n, floor), full))
+
+
 def surface_grain(n: int, radius: float = 1.0, cover: float = 0.58) -> float:
     """HOW BIG A GRAIN HAS TO BE TO CLOSE A SURFACE. Not a taste setting -- arithmetic.
 
