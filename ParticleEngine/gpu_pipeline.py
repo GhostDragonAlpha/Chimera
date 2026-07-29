@@ -120,6 +120,14 @@ def _sim_attract(dp, ax, ay, az, strength, target_type, radius, n):
 # ═══════════════════════════════════════════════════════════════════
 #  TYPE PROFILE
 # ═══════════════════════════════════════════════════════════════════
+# A tangent disc's variance, as a multiple of the grain's isotropic variance. WIDE across the
+# surface so neighbours overlap and the shell has no gaps; THIN along the normal so the disc
+# foreshortens at the limb exactly as the grain spacing does -- which is what keeps screen coverage
+# constant from the sub-camera point out to the edge.
+_DISC_WIDE = 1.45
+_DISC_THIN = 0.10
+
+
 @cuda.jit(device=True)
 def _profile(tcode):
     if tcode == 0: return 0.3, 1, 0, 0.0    # dust: accum opacity, isotropic
@@ -180,9 +188,34 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
         sc12[i] = (sp2a - sp2p) * dy*dz
         sc22[i] = sp2p + (sp2a - sp2p) * dz*dz
     else:
+        # SURFACE GRAINS ARE DISCS, NOT BALLS.
+        # A shell of ISOTROPIC spheres has non-uniform screen coverage: at the limb the grains pile
+        # up along the view ray (dense), and at the sub-camera point they spread to their true
+        # tangential spacing (sparse). Where coverage is marginal, which grain wins is decided by
+        # sub-pixel depth -- so a biome edge SWIMS as the body turns. That is the distortion.
+        # A disc lying in the tangent plane fixes it by construction: face-on you see full width,
+        # and at the limb it foreshortens by exactly the same cos(phi) as the spacing does, so
+        # coverage is constant everywhere. This is why real 3DGS splats are flattened ellipsoids.
+        # The normal is already carried per-grain (it drives the back-face cull); this uses it for
+        # SHAPE as well. A zero normal (no surface) falls back to the isotropic ball.
+        nx = dp[o + NX]; ny = dp[o + NY]; nz = dp[o + NZ]
+        nn2 = nx*nx + ny*ny + nz*nz
         s2 = s * s
-        sc00[i] = s2; sc01[i] = 0.0; sc02[i] = 0.0
-        sc11[i] = s2; sc12[i] = 0.0; sc22[i] = s2
+        if nn2 > 1e-6:
+            inv = 1.0 / math.sqrt(nn2)
+            ux, uy, uz = nx*inv, ny*inv, nz*inv
+            wide = s2 * _DISC_WIDE                     # across the surface
+            thin = s2 * _DISC_THIN                     # along the normal
+            d = thin - wide
+            sc00[i] = wide + d*ux*ux
+            sc01[i] = d*ux*uy
+            sc02[i] = d*ux*uz
+            sc11[i] = wide + d*uy*uy
+            sc12[i] = d*uy*uz
+            sc22[i] = wide + d*uz*uz
+        else:
+            sc00[i] = s2; sc01[i] = 0.0; sc02[i] = 0.0
+            sc11[i] = s2; sc12[i] = 0.0; sc22[i] = s2
 
 
 # ═══════════════════════════════════════════════════════════════════

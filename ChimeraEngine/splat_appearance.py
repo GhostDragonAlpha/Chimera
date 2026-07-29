@@ -119,9 +119,20 @@ def _planet_buffers(spec: dict, term: str):
                                                                      # background SPECKLE through between them (the "lattice dots").
     surf[:, NX:NZ + 1] = dirs                                       # outward normal = the shell direction -> back-face cull the far side
     surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
-    surf[:, ALPHA] = 1.0                                            # FULLY OPAQUE: each grain covers its core solid (no background
-                                                                     # bleed in the gaps) AND the front-to-back early-out fires after
-                                                                     # ~1 grain -> line-of-sight stops at the surface, composite is cheaper.
+    surf[:, ALPHA] = 0.55                                           # NOT fully opaque -- and this is the distortion fix.
+                                                                     # With a = 1.0 the Gaussian weight at a grain's centre gives
+                                                                     # al = 1.0, so `trans` goes to zero and the front-to-back early-out
+                                                                     # fires on the FIRST splat: the image becomes a hard Voronoi whose
+                                                                     # cells are decided by DEPTH RANK, not screen distance. At the
+                                                                     # sub-camera point a sphere's surface is perpendicular to the view,
+                                                                     # so every neighbour sits at nearly the same depth -- sub-pixel
+                                                                     # differences pick the winner, it flips pixel to pixel, and biome
+                                                                     # edges MOTTLE and SWIM as the body turns. (At the limb depths
+                                                                     # separate strongly and the sort is stable, which is why the
+                                                                     # artifact is centred.) At 0.55 several overlapping discs each
+                                                                     # contribute and the colour is their Gaussian-weighted blend, so a
+                                                                     # depth tie stops being visible. The wider tangent discs
+                                                                     # (_DISC_WIDE in gpu_pipeline) keep the shell gap-free at this alpha.
     surf[:, SIZE] = 3.5                                             # SMALL grains: projected ~15px (was ~42px) -> ~8x less overdraw,
                                                                      # the dominant render cost. 40k of them still fill the shell (gap 0, measured).
 
