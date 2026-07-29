@@ -107,10 +107,23 @@ class LiveViewer:
                 cam.pitch = math.atan2(fz, math.hypot(fx, fy))
                 if self._loaded is None:
                     time.sleep(0.05); continue
-                moving = (now - self._last_input) < 0.30               # dragging/zooming in the last 0.3s
-                params = params_lo if moving else params_hi           # LOD: small while moving, full when settled
+                # ONE RESOLUTION, ALWAYS. This used to drop to 1152x648 whenever you touched the
+                # mouse and snap back to 1920x1080 0.3s after you stopped. But the browser scales
+                # both to the same display size, so the low pass MAGNIFIES every splat by 1.67x --
+                # grains near pixel-size go visibly chunky the instant you drag, then shrink again.
+                # That is the "inexplicable splat magnification" and the POP: the surface jumps
+                # discontinuously because its rasterisation changed, not because anything moved.
+                # A resolution switch can never be smooth -- pixels are discrete -- so the only
+                # honest fix is not to switch. (Nothing offline ever reproduced this, because the
+                # offline path renders at one size: max/median frame delta was 1.1x, flat.)
+                # AND IT WAS BUYING ALMOST NOTHING. Measured on this scene, warm:
+                #     1920x1080  128.5 ms   7.8 fps        1152x648  103.1 ms   9.7 fps
+                #     1280x720    97.8 ms  10.2 fps         960x540  100.2 ms  10.0 fps
+                # Nearly FLAT -- the cost is per-SPLAT work (project, bin, sort), not pixels. So the
+                # switch traded a visible pop for 25 ms. Deleted.
+                params = params_hi
                 img = pipe.render_from_gpu(cam, params)
-                buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=(72 if moving else 85))
+                buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=85)
                 with self._lock:
                     self._latest = buf.getvalue()
                 time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
