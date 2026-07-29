@@ -45,6 +45,8 @@
 | `M` | 2.985e+24 |
 | `S_earth` | 0.9028 |
 | `days_per_year` | 394.3 |
+| `day_s` | 8.64e+04 |
+| `day_hours` | 24 |
 | `has_atmosphere` | True |
 | `P_surface_bar` | 0.5291 |
 | `scale_height_m` | 9967 |

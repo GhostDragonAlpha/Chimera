@@ -199,7 +199,7 @@ def derive(parent, free):
     T_bare = bare_temperature(S, A)
     frozen = ice_fraction(T)
 
-    M_water = delivered_water(M, float(parent.get("solid_outside_earths", 53.16)))
+    M_water = delivered_water(M, float(parent["solid_outside_earths"]))
     depth = ocean_depth(M_water, R)
     state = water_state(T, P_bar, frozen)
     colour, rgb = surface_class(state, depth > 1.0)
@@ -251,12 +251,18 @@ def derive(parent, free):
         "g": float(parent["g"]),
         "R": R, "M": M,
         "S_earth": float(parent.get("S_earth", 1.0)),
-        "days_per_year": float(parent.get("days_per_year", 365.0)),
+        "days_per_year": float(parent["days_per_year"]),
+        # THE DAY, CARRIED. Dropping it here silently cost the terrain its spin: theTerrain asked
+        # for `parent.get("day_s", 86400.0)`, got the default, and ran a 24-hour movie no matter
+        # where the rotation dial was set. A carrying membrane must pass on what its own children
+        # need, even when it does not use the number itself.
+        "day_s": float(parent["day_s"]),
+        "day_hours": float(parent["day_hours"]),
         "has_atmosphere": has_air,
         "P_surface_bar": P_bar,
         "scale_height_m": float(parent.get("scale_height_m", 0.0)),
-        "T_star_surface": float(parent.get("T_star_surface", 5772.0)),
-        "walk_run_ms": float(parent.get("walk_run_ms", 2.04)),
+        "T_star_surface": float(parent["T_star_surface"]),
+        "walk_run_ms": float(parent["walk_run_ms"]),
     }
 
 

@@ -33,6 +33,8 @@
   "M": 2.9851909641982103e+24,
   "S_earth": 0.9027826406576174,
   "days_per_year": 394.32591976641265,
+  "day_s": 86400.0,
+  "day_hours": 24.0,
   "has_atmosphere": true,
   "P_surface_bar": 0.5290965555922157,
   "scale_height_m": 9967.268128124793,

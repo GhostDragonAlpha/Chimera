@@ -201,8 +201,8 @@ def derive(parent, free):
         "leg_swing_s": 2.0 * pi * sqrt(LEG_M / g),
         "leg_m": LEG_M,
 
-        "T_star_surface": float(parent.get("T_star_surface", 5772.0)),
-        "solid_outside_earths": float(parent.get("solid_outside_earths", 53.16)),
+        "T_star_surface": float(parent["T_star_surface"]),
+        "solid_outside_earths": float(parent["solid_outside_earths"]),
     }
 
 

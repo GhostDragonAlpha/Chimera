@@ -57,7 +57,7 @@ def derive(parent, free):
     band_lo, band_hi = FUSION_S, SUSTAINED_S
     # How far the human band sits from the clocks this story has already derived -- i.e. how much
     # gearing each one needs before a player could ever feel it.
-    sun_dyn = float(parent.get("t_dyn_sun_s", 1769.0))
+    sun_dyn = float(parent["t_dyn_sun_s"])
     return {
         # ITS OWN DURATION: one comfortable press -- the unit the player actually acts in.
         "duration_s": HOLD_MAX_S,

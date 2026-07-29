@@ -205,7 +205,7 @@ def derive(parent, free):
         # ITS OWN DURATION: one day. This is where the gearing ladder steps down -- the parent's
         # movie was a year and could not show a sunrise; here the sun crosses the sky once, which is
         # exactly the rhythm a person standing on the ground would recognise.
-        "duration_s": float(parent.get("day_s", 86400.0)),
+        "duration_s": float(parent["day_s"]),
 
         "g": g, "R": R, "area_m2": area,
         "max_relief_m": h_max,
@@ -231,16 +231,19 @@ def derive(parent, free):
         "name": "a" + cls + "Terrain",                     # DERIVED, and it is the child's folder name
 
         # carried down for anything that has to stand on it
-        "day_s": float(parent.get("day_s", 86400.0)),
-        "T_surface": float(parent.get("T_surface", 288.0)),
-        "dT_equator_pole": float(parent.get("dT_equator_pole", 45.0)),   # the parent's profile, carried not copied
+        # NO DEFAULT. `parent.get("day_s", 86400.0)` is a typed literal wearing defensive
+        # clothing: when the parent stopped carrying the number this quietly served 24 hours
+        # forever instead of failing. If the parent MUST supply it, ask for it and let it break.
+        "day_s": float(parent["day_s"]),
+        "T_surface": float(parent["T_surface"]),
+        "dT_equator_pole": float(parent["dT_equator_pole"]),   # the parent's profile, carried not copied
         "lapse_rate_K_per_km": 0.66 * g / 1005.0 * 1e3,
         "S_earth": float(parent.get("S_earth", 1.0)),
         "P_surface_bar": float(parent.get("P_surface_bar", 1.0)),
-        "scale_height_m": float(parent.get("scale_height_m", 8500.0)),
+        "scale_height_m": float(parent["scale_height_m"]),
         "surface_rgb": list(parent.get("surface_rgb", [0.09, 0.22, 0.42])),
-        "T_star_surface": float(parent.get("T_star_surface", 5772.0)),
-        "walk_run_ms": float(parent.get("walk_run_ms", 2.04)),
+        "T_star_surface": float(parent["T_star_surface"]),
+        "walk_run_ms": float(parent["walk_run_ms"]),
         "has_atmosphere": bool(parent.get("has_atmosphere")),
     }
 

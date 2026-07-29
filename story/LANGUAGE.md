@@ -90,9 +90,40 @@ ratios end in `_frac`, `_ratio`, or read as a plain count.
 Not a sibling, not a grandparent, not a child. This is the strictest rule in the language and it is
 what makes the tree a program rather than a pile.
 
-**The corollary is the useful part:** if two siblings need the same number, **the number belongs to
-their parent.** The snow line is a fact about the *system's light*, so `theSolarSystem` derives it
-and `thePlanets` inherits it — rather than both computing it and drifting apart.
+### It is a visibility model, and the parallel is exact
+
+This is the same thing a class does with `private` and `protected`, and saying it that way makes the
+whole discipline snap into focus:
+
+| the language | the parallel | who can see it |
+|---|---|---|
+| a local inside `derive()` | **private** | nobody — it does not survive the call |
+| a key in the returned `numbers.json` | **protected** | this membrane's **children**, and no one else |
+| — | **public** | **does not exist.** Nothing is visible outside the line of descent |
+| a `FREE` entry | a **constructor argument** | the human, at the door |
+| `derive(parent, free)` | a **constructor taking its base's state** | — |
+| the folder tree | **single inheritance**, no interfaces, no friends | — |
+
+**A sibling has no authority over you.** It is not that reading one is discouraged — there is no
+expression for it. `theStar` and `thePlanets` are both children of `theSolarSystem`, so they are as
+invisible to each other as two unrelated classes, and that is *correct*: neither one is the reason
+the other is true.
+
+**So the only legal way to share a number between siblings is to HOIST IT TO THE PARENT** — exactly
+the refactor you do when two subclasses need the same field. The snow line is a fact about the
+*system's light*, so `theSolarSystem` derives it and `thePlanets` inherits it, rather than both
+computing it and drifting apart.
+
+**And the illegal way is the classic smell, in its classic form: copy the value.** When `thePlanets`
+needed the star's surface temperature it could not say `theStar.T`, so it typed `5772.0` — a
+hard-coded duplicate of another object's field, under a comment claiming it was inherited. Any
+reviewer would catch that in Java. It is the same bug here, and it has the same fix: move the field
+up to the common base.
+
+One more, and it is the rule that the moon came through: **`emit()` is a read-only method.**
+`derive()` constructs the state; `emit()` may only *read* it and turn it into matter. It has no
+authority to introduce a fact. A star-ball drawn beside a planet was `emit()` minting an object the
+constructor never made — a render method assigning to a field that does not exist.
 
 And the cost of getting it wrong is not tidiness: `theDensityClock` parented inside one solar system
 made time dilation **unreachable from `theShip`**. A misplaced membrane is a dependency that does
@@ -104,6 +135,13 @@ carried `"T_star_surface": 5772.0` this way, so moving the star's mass shifted t
 the sunlight the same colour forever. The language cannot stop you typing a number; only the test
 can. **The test is a slider: move a free number at the top, and anything downstream that does not
 move was typed, not derived.**
+
+**And the disguised form hides longest: `parent.get("day_s", 86400.0)`.** It reads as defensive
+programming. What it does is serve a typed number the instant the parent stops carrying the real
+one — silently, forever, with no error, because `.get` cannot fail. `theTerrain` ran a 24-hour day
+at *every* setting of the rotation dial for exactly this reason. **If the parent must supply it,
+write `parent["k"]` and let it break.** A default that can never fire is dead code with one job:
+hiding the day it starts firing. `story/audit.py` lists every one of them.
 
 ## 8. What cannot be said
 
