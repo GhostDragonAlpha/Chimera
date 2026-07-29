@@ -211,7 +211,7 @@ class LiveViewer:
             if dazim or delev or zoom:
                 self._last_input = time.time()   # mark "moving" -> the render thread drops to the fast LOD
 
-    def stand(self, on: bool = True, day=None, minute=None) -> dict:
+    def stand(self, on: bool = True, day=None, minute=None, lat=None, lon=None) -> dict:
         """Enter (or leave) the body. Standing up is EXPENSIVE -- aTerrain has to carve its
         drainage network before there is ground to stand on -- so it happens once, here, and
         never on the render thread's per-frame path."""
@@ -220,9 +220,17 @@ class LiveViewer:
                 self._walk = None
                 self._reload = True          # the orbit view must reload its own buffer
             return {"walking": False}
+        import walker as _wk
+        # A DIFFERENT PLACE IS A DIFFERENT GROUND. If the picker moved, the old walker's field is
+        # the wrong planet's-worth of hills -- drop it and carve the new place (cached per place,
+        # so returning somewhere is instant).
+        want = _wk._place_key(lat, lon)
+        if self._walk is not None and getattr(self._walk, "_place_key", None) != want:
+            with self._lock:
+                self._walk = None
         if self._walk is None:
-            import walker as _wk
-            w = _wk.Walker()                 # spawns at the middle of the terrain, feet on the surface
+            w = _wk.Walker(lat, lon)         # spawns at the middle of that place's patch
+            w._place_key = want
             with self._lock:
                 self._walk = w
                 self._walk_dirty = True
@@ -319,7 +327,9 @@ def handle(handler) -> bool:
         try:
             day = _f(qs, "day") if "day" in qs else None
             minute = _f(qs, "minute") if "minute" in qs else None
-            r = get_viewer().stand(on, day, minute)
+            lat = _f(qs, "lat") if "lat" in qs else None
+            lon = _f(qs, "lon") if "lon" in qs else None
+            r = get_viewer().stand(on, day, minute, lat, lon)
         except Exception as e:
             import traceback; traceback.print_exc()
             r = {"walking": False, "error": str(e)}
@@ -333,6 +343,14 @@ def handle(handler) -> bool:
             crouch=(qs.get("crouch") or ["0"])[0] == "1",
             mx=_f(qs, "mx"), my=_f(qs, "my"))
         _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/place":
+        # WHAT IS THERE, before you go: the planet's own numbers read at a latitude. Instant --
+        # no carving -- so the picker can narrate while you drag.
+        import json as _json
+        import walker as _wk
+        info = _wk.place_info(_f(qs, "lat") if "lat" in qs else None,
+                              _f(qs, "lon") if "lon" in qs else None)
+        _send(handler, 200, "application/json", _json.dumps(info).encode()); return True
     if path == "/rate":
         import json as _json
         r = get_viewer().set_walk_rate(_f(qs, "x"))
@@ -671,6 +689,11 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
         <input type=range id=dayslider min=0 max=382 step=1 value=96>
         <label>time of day <i id=hourval></i></label>
         <input type=range id=hourslider min=0 max=1439 step=1 value=540>
+        <label>latitude <i id=latval></i></label>
+        <input type=range id=latslider min=-850 max=850 step=5 value=308>
+        <label>longitude <i id=lonval></i></label>
+        <input type=range id=lonslider min=-180 max=180 step=1 value=0>
+        <p class=note id=placeinfo></p>
       </div>
       <div id=freebox></div>
       <div id=lensbox></div>
@@ -890,6 +913,36 @@ var standbtn=document.getElementById('standbtn'),
     dayval=document.getElementById('dayval'),
     hourval=document.getElementById('hourval');
 var WALK_TERM='theHuman', LOOK=0.0022;
+var latslider=document.getElementById('latslider'),
+    lonslider=document.getElementById('lonslider'),
+    latval=document.getElementById('latval'),
+    lonval=document.getElementById('lonval'),
+    placeinfo=document.getElementById('placeinfo'), placeTimer=null;
+
+function fmtLat(v){ return Math.abs(v).toFixed(1)+'\u00B0'+(v<0?'S':'N'); }
+function fmtLon(v){ return Math.abs(v).toFixed(0)+'\u00B0'+(v<0?'W':'E'); }
+function placeLabels(){
+  latval.textContent=fmtLat(latslider.value/10);
+  lonval.textContent=fmtLon(+lonslider.value);
+}
+/* WHAT IS THERE, narrated while you drag: the planet's own numbers at that latitude */
+function askPlace(){
+  if(placeTimer) return;
+  placeTimer=setTimeout(async()=>{ placeTimer=null;
+    try{
+      const r=await fetch('/place?lat='+(latslider.value/10)+'&lon='+lonslider.value).then(x=>x.json());
+      let bits=[r.T_C.toFixed(0)+'\u00B0C'];
+      if(r.snow) bits.push('snow -- above the ice line ('+r.ice_line_lat_deg.toFixed(1)+'\u00B0)');
+      if(r.midnight_sun) bits.push('midnight sun in summer, polar night in winter');
+      else if(r.sun_overhead) bits.push('the sun passes straight overhead here');
+      placeinfo.textContent=bits.join(' \u00B7 ');
+    }catch(e){}
+  }, 150);
+}
+if(latslider){
+  [latslider,lonslider].forEach(sl=>sl.addEventListener('input',()=>{ placeLabels(); askPlace(); }));
+  placeLabels(); askPlace();
+}
 
 function canStand(){ return term===WALK_TERM; }
 function showStand(){ if(!standbtn) return;
@@ -910,7 +963,7 @@ function enterWalkUI(){
      hide what cannot act. */
   document.getElementById('freebox').style.display='none';
   document.getElementById('lensbox').style.display='none';
-  hint.textContent='WASD move · mouse or drag to look · shift run · space jump · ctrl/C crouch · esc frees the mouse';
+  hint.textContent='WASD move · mouse or drag to look · shift run · space jump · ctrl/C crouch · esc frees the mouse';  if(latslider){ latslider.disabled=true; lonslider.disabled=true; }   /* moving house is a re-carve: stop first */
 }
 function exitWalkUI(){
   WALKING=false; try{ document.exitPointerLock(); }catch(e){}
@@ -920,12 +973,14 @@ function exitWalkUI(){
   document.getElementById('freebox').style.display='';
   document.getElementById('lensbox').style.display='';
   hint.textContent='drag to orbit · scroll to zoom · it turns on its own';
+  if(latslider){ latslider.disabled=false; lonslider.disabled=false; }
   showStand();
 }
 async function standUp(){
   standbtn.textContent='carving the ground...'; standbtn.disabled=true;
   /* WHEN was chosen on the sliders before play -- send it with the entry */
-  const q='/stand?on=1&day='+(dayslider?dayslider.value:96)+'&minute='+(hourslider?hourslider.value:540);
+  const q='/stand?on=1&day='+(dayslider?dayslider.value:96)+'&minute='+(hourslider?hourslider.value:540)
+         +(latslider?('&lat='+(latslider.value/10)+'&lon='+lonslider.value):'');
   const r=await fetch(q).then(x=>x.json()).catch(e=>({error:''+e}));
   standbtn.disabled=false;
   if(!r.walking){ standbtn.textContent='\u25B6 play';
@@ -954,7 +1009,8 @@ function paintWalk(r){
   if(!r||!r.walking) return;
   walkhud.innerHTML =
     '<i>'+r.year+'</i> &middot; day <i>'+r.day+'</i> of '+(r.dpy||383)+' &middot; <i>'+pad2(r.hh)+':'+pad2(r.mm)+'</i> &middot; <i>'+r.season+'</i><br>'+
-    'sun <i>'+r.sun_alt.toFixed(1)+'&deg;</i> &middot; daylight <i>'+r.daylight.toFixed(1)+'</i> h<br>'+
+    'sun <i>'+r.sun_alt.toFixed(1)+'&deg;</i> &middot; daylight <i>'+r.daylight.toFixed(1)+'</i> h &middot; '+
+      fmtLat(r.lat)+' '+fmtLon(r.lon)+' &middot; <i>'+r.T_C.toFixed(0)+'&deg;C</i>'+(r.snow?' &middot; snow':'')+'<br>'+
     'x <i>'+r.x.toFixed(1)+'</i> &nbsp;y <i>'+r.y.toFixed(1)+'</i> &nbsp;elev <i>'+r.elev.toFixed(1)+'</i> m &nbsp;slope <i>'+r.slope.toFixed(1)+'&deg;</i><br>'+
     'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &middot; walk <i>'+r.walk.toFixed(2)+'</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
   if(!clockDrag){

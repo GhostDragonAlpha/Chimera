@@ -39,17 +39,26 @@ _FIELD = None       # (z, dx, patch_m, acc, slope) -- carved once, then sampled
 _NUMS = None
 
 
-def _load():
-    """Carve the landscape once and keep it. It is deterministic, so this is a cache, not a state."""
-    global _FIELD, _NUMS
-    if _FIELD is not None:
-        return _FIELD, _NUMS
+_STATIC = None      # laws + numbers, loaded once -- no carving in here
+_FIELDS = {}        # (latq, lonq) -> ((z, dx, patch, acc, slope), nums-with-place)  [None = default]
+_ACTIVE = None      # which place height_at()/scene_around() read -- set by Walker
+
+
+def _static():
+    """Everything that does NOT depend on the place: the story's numbers and its law modules.
+    Loaded once; carving (the expensive, per-place part) lives in _load()."""
+    global _STATIC
+    if _STATIC is not None:
+        return _STATIC
     import importlib.util
     import sys
     sys.path.insert(0, str(_STORY))
-    spec = importlib.util.spec_from_file_location("aTerrain_phys", _TERRAIN / "physics.py")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+
+    def _mod(name, path):
+        spec = importlib.util.spec_from_file_location(name, path)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        return m
 
     nums = json.loads((_TERRAIN / "numbers.json").read_text())
     ground = json.loads((_TERRAIN / "theGround" / "numbers.json").read_text())
@@ -58,20 +67,90 @@ def _load():
     # theHumanClock: the OTHER end of the ladder -- the band of durations a player can feel.
     # The walker's clock rate is DEFINED against it, not asserted (see Walker.__init__).
     hclock = json.loads((_STORY / "theZero/theHorizon/theClock/theHumanClock" / "numbers.json").read_text())
-    n, dx = int(nums["grid"]), float(nums["cell_m"])
-    rng = np.random.default_rng(2029)
-    z, recv, acc, slope = mod._carve(mod._red_surface(n, rng, 3.0), dx, 500, rng)
-    # theGround's OWN law, imported rather than restated. `soil_depth(slope_deg)` is what decides
-    # whether a patch of this surface shows soil or bedrock, and re-deriving it here would be the
-    # sibling-inheritance failure in miniature: two copies that drift the moment one is edited.
-    gspec = importlib.util.spec_from_file_location("theGround_phys", _TERRAIN / "theGround" / "physics.py")
-    gmod = importlib.util.module_from_spec(gspec)
-    gspec.loader.exec_module(gmod)
+    _STATIC = {
+        "terrain": nums, "ground": ground, "human": human, "planet": planet, "human_clock": hclock,
+        # the terrain law (the carve) -- run per place in _load()
+        "terrain_law": _mod("aTerrain_phys", _TERRAIN / "physics.py"),
+        # theGround's OWN law, imported rather than restated. `soil_depth(slope_deg)` decides
+        # whether this surface shows soil or bedrock; a re-derived copy would drift on first edit.
+        "ground_law": _mod("theGround_phys", _TERRAIN / "theGround" / "physics.py"),
+        # aBlueWorld's law, for temperature_at() -- ITS OWN DOCSTRING is the authority here:
+        # "THE ONE LATITUDE PROFILE THIS STORY USES, and every membrane below must read it from
+        # here... snow is a temperature, not a latitude." So the place picker asks the planet.
+        "planet_law": _mod("aBlueWorld_phys", _TERRAIN.parent.parent / "physics.py"),
+    }
+    return _STATIC
 
-    _FIELD = (z, dx, float(nums["patch_m"]), acc.reshape(n, n), slope.reshape(n, n))
-    _NUMS = {"terrain": nums, "ground": ground, "human": human,
-             "planet": planet, "human_clock": hclock, "ground_law": gmod}
-    return _FIELD, _NUMS
+
+def _place_key(lat, lon):
+    """None means THE DEFAULT PLACE -- the story's own aTerrain, byte-identical. Anything else is
+    quantised to 0.1 degree so a slider's float jitter cannot mint a second copy of one hill."""
+    if lat is None and lon is None:
+        return None
+    st = _static()
+    d_lat = float(st["terrain"]["latitude_deg"])
+    la = d_lat if lat is None else float(lat)
+    lo = 0.0 if lon is None else float(lon)
+    la = max(-85.0, min(85.0, la))
+    lo = ((lo + 180.0) % 360.0) - 180.0
+    key = (round(la, 1), round(lo, 1))
+    # picking the default place by hand IS the default place
+    if key == (round(d_lat, 1), 0.0):
+        return None
+    return key
+
+
+def _place_seed(key):
+    """The ground under a place is DETERMINISTIC: the seed is a stable mix of the quantised
+    coordinates, so walking back to (61.5, 12.0) next year finds the same hills."""
+    if key is None:
+        return 2029                          # the story's own patch, unchanged since it was carved
+    la, lo = key
+    return (int((la + 90.0) * 10) * 73856093 ^ int((lo + 180.0) * 10) * 19349663) & 0x7FFFFFFF
+
+
+def place_info(lat, lon):
+    """What the planet already knows about a place, WITHOUT carving it (this feeds the picker's
+    label, so it must be instant). Temperature from the planet's one latitude law; snow where
+    that law says water is solid; the midnight sun where the derived tilt says the sun can miss
+    the horizon. Nothing here is invented -- it is aBlueWorld's own numbers, read at a latitude."""
+    st = _static()
+    p = st["planet"]
+    la = float(st["terrain"]["latitude_deg"]) if lat is None else float(lat)
+    la = max(-85.0, min(85.0, la))
+    T = float(st["planet_law"].temperature_at(float(p["T_surface"]), math.sin(math.radians(abs(la)))))
+    eps = float(p["obliquity_effective_deg"])
+    return {
+        "lat": la,
+        "lon": 0.0 if lon is None else float(lon),
+        "T_C": T - 273.15,
+        "snow": T < 273.15,
+        "ice_line_lat_deg": float(p["ice_line_lat_deg"]),
+        "polar_circle_lat_deg": 90.0 - eps,
+        "midnight_sun": abs(la) >= 90.0 - eps,
+        "sun_overhead": abs(la) <= eps,
+    }
+
+
+def _load():
+    """The ACTIVE place's carved field + numbers. Cached per place: carving is ~13 s of erosion,
+    so each place pays it once and the default place is pre-paid at server start."""
+    global _FIELDS
+    key = _ACTIVE
+    if key in _FIELDS:
+        return _FIELDS[key]
+    st = _static()
+    nums = st["terrain"]
+    n, dx = int(nums["grid"]), float(nums["cell_m"])
+    rng = np.random.default_rng(_place_seed(key))
+    mod = st["terrain_law"]
+    z, recv, acc, slope = mod._carve(mod._red_surface(n, rng, 3.0), dx, 500, rng)
+
+    info = place_info(key[0] if key else None, key[1] if key else None)
+    merged = dict(st)
+    merged["place"] = info
+    _FIELDS[key] = ((z, dx, float(nums["patch_m"]), acc.reshape(n, n), slope.reshape(n, n)), merged)
+    return _FIELDS[key]
 
 
 def heights_at(X, Y):
@@ -139,9 +218,14 @@ def _hash01(ix, iy, salt):
 class Walker:
     """A body on that ground. Its numbers come from theHuman and the planet; none are chosen here."""
 
-    def __init__(self):
+    def __init__(self, lat=None, lon=None):
+        # WHERE. Setting the module's active place is what points height_at()/scene_around() at
+        # this walker's own carved field. One walker per server; the seam is explicit.
+        global _ACTIVE
+        _ACTIVE = _place_key(lat, lon)
         (_z, _dx, patch, _a, _s), nums = _load()
         h = nums["human"]
+        place = nums["place"]
         self.g = float(h["g"])
         self.walk = float(h["comfortable_speed_ms"])
         self.run = float(h["walk_run_ms"])
@@ -163,7 +247,14 @@ class Walker:
         self.year_s = float(h["year_s"])
         self.days_per_year = float(h["days_per_year"])
         self.epoch_year = float(h["epoch_year"])
-        self.lat = math.radians(float(h["latitude_deg"]))
+        # THE PLACE decides the latitude; the story's aTerrain is simply the default place. The
+        # sun, the seasons, the daylight and the snow all follow from this one number plus the
+        # planet's own laws -- nothing else about the place is free to disagree.
+        self.lat = math.radians(float(place["lat"]))
+        self.lat_deg = float(place["lat"])
+        self.lon_deg = float(place["lon"])
+        self.T_here_C = float(place["T_C"])
+        self.snow = bool(place["snow"])
         self.eps = math.radians(float(h["obliquity_deg"]))
         # ONE CLOCK, counted from this world's northern spring equinox -- so it carries the season
         # AND the hour in a single number, and there is no second timeline to fall out of step.
@@ -294,6 +385,8 @@ class Walker:
                 "day": day, "hh": hh, "mm": mm, "year": int(self.epoch_year),
                 "dpy": int(self.days_per_year),
                 "rate": self.rate,
+                "lat": round(self.lat_deg, 1), "lon": round(self.lon_deg, 1),
+                "T_C": round(self.T_here_C, 1), "snow": self.snow,
                 "sun_alt": round(math.degrees(self.sun[1]), 1),
                 "season": self.season(),
                 "decl": round(math.degrees(self.declination), 1),
@@ -348,6 +441,11 @@ def scene_around(w: Walker, t: float = None):
 
     veg = np.array([0.20, 0.27, 0.14], np.float32)
     rock = np.array([0.34, 0.31, 0.27], np.float32)
+    if nums["place"]["snow"]:
+        # SNOW IS A TEMPERATURE, NOT A LATITUDE -- aBlueWorld's own words. Where its latitude law
+        # puts this place below freezing, the soil mantle wears snow; the steep faces stay rock,
+        # because the same slopes too steep to hold soil are too steep to hold a snowpack.
+        veg = np.array([0.76, 0.80, 0.86], np.float32)
     bare_above = float(gnd["bare_rock_above_deg"])       # theGround's one claim about exposed rock
 
     parts = []

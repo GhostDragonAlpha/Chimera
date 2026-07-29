@@ -317,7 +317,11 @@ def emit(nums, t=1.0):
     # so a sun near -Y lights the face square-on and the world reads FLAT -- which is what a smaller
     # offset gave. At 1.15 the sun is ~65 degrees off the eye, which puts the terminator across the
     # visible disk. A sphere only reads as a sphere when you can see its shadow line.
-    TILT = 0.41                                            # radians; Earth's is 0.409
+    # THE TILT IS DERIVED NOW, AND THE MOVIE MUST WEAR IT. This was `TILT = 0.41` -- Earth's --
+    # typed while theRockyPlanet was deriving 37.4 deg from the impact distribution: the render
+    # contradicting the numbers it sits on, which is the exact failure the slider test exists to
+    # catch (turn the axis percentile and the year-movie's seasons would not have moved).
+    TILT = float(np.radians(float(nums["obliquity_effective_deg"])))
     orbit = 2.0 * pi * tt - 1.15
     decl = TILT * np.cos(orbit)                            # the sun's height above the equator
     sun = np.array([np.sin(orbit) * np.cos(decl),
