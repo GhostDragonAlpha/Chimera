@@ -10,6 +10,7 @@
 | membrane | what it is |
 |---|---|
 | `theDensityClock` | Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you |
+| `theHumanClock` | A person can only produce and notice events inside a narrow band of speeds — |
 
 ## Hands down
 
