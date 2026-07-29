@@ -543,12 +543,15 @@ def scene_terms() -> list:
 def scene_cam_distance(term: str) -> float:
     """How far the live viewer should orbit this term (from its still-camera distance)."""
     import numpy as np
+    # THE FOLDER WINS -- the same precedence scene_buffer and project_movie use. A term can exist in
+    # both the old dicts and the story tree (theSolarSystem and theStar both do), and taking the
+    # dict's camera for a membrane put the eye 462 units from a 1-unit object: a BLACK SCREEN.
+    buf = membrane_buffer(term)                 # a membrane is orbited at ITS OWN measured extent
+    if buf is not None:
+        return 2.8 * (float(np.linalg.norm(buf[:, PX:PZ + 1], axis=1).max()) or 1.0)
     cam = (COMPOSITIONS.get(term) or SCENES.get(term) or {}).get("cam")
     if cam:
         return float(np.linalg.norm(cam))
-    buf = membrane_buffer(term)                 # a membrane is orbited at ITS OWN extent
-    if buf is not None:
-        return 2.8 * (float(np.linalg.norm(buf[:, PX:PZ + 1], axis=1).max()) or 1.0)
     return 300.0
 
 

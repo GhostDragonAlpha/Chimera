@@ -262,6 +262,50 @@ def _stream(handler):
             v._clients = max(0, v._clients - 1)                     # last viewer left -> render thread idles the GPU
 
 
+_STORY = Path(__file__).resolve().parent.parent / "story"
+_PLAIN = "**In plain words —**"
+
+
+def _plain_of(folder) -> str:
+    s = folder / "story.md"
+    if not s.exists():
+        return ""
+    txt = s.read_text(encoding="utf-8", errors="replace")
+    for line in txt.splitlines():
+        t = line.strip()
+        if t.startswith(_PLAIN):
+            return t[len(_PLAIN):].strip()
+    return ""
+
+
+def _tree_of(folder):
+    """The membrane tree, as the FILESYSTEM has it -- name, its plain words, the numbers it hands
+    down, and its children. THE HIERARCHY IS THE NAVIGATION: a flat row of buttons cannot show that
+    theStar and thePlanets live INSIDE theSolarSystem, which is the one fact the whole method is
+    built on."""
+    import json
+    node = {"name": folder.name, "plain": _plain_of(folder), "children": [], "numbers": {}}
+    nj = folder / "numbers.json"
+    if nj.exists():
+        try:
+            n = json.loads(nj.read_text())
+            node["numbers"] = {k: v for k, v in list(n.items())[:10]}
+        except Exception:
+            pass
+    node["membrane"] = (folder / "physics.py").exists()
+    for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
+        if (c / "story.md").exists():
+            node["children"].append(_tree_of(c))
+    return node
+
+
+def story_tree():
+    if not _STORY.is_dir():
+        return []
+    return [_tree_of(d) for d in sorted(_STORY.iterdir())
+            if d.is_dir() and not d.name.startswith((".", "_")) and (d / "story.md").exists()]
+
+
 def _page(blind: bool = False) -> str:
     """The shared view. `blind=1` withholds the physics's expected reading.
 
@@ -289,54 +333,102 @@ def _page(blind: bool = False) -> str:
     import json
     return (_PAGE.replace("__TERMS__", json.dumps(terms))
                  .replace("__READINGS__", json.dumps(readings))
-                 .replace("__KINDS__", json.dumps(kinds)))
+                 .replace("__KINDS__", json.dumps(kinds))
+                 .replace("__TREE__", json.dumps(story_tree())))
 
 
-_PAGE = """<!doctype html><meta charset=utf-8><title>Chimera live viewer</title>
+_PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <style>
- :root{color-scheme:dark}
- body{margin:0;background:#06070c;color:#cfe0ff;font-family:system-ui,-apple-system,sans-serif;
-      display:flex;flex-direction:column;align-items:center;min-height:100vh}
- h1{font-weight:600;font-size:17px;margin:14px 0 2px}
- #bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 10px}
- button{background:#111a2e;color:#cfe0ff;border:1px solid #2a3350;border-radius:8px;padding:6px 12px;
-        font-size:13px;cursor:pointer}
- button.on{background:#24406e;border-color:#4a74c0;color:#fff}
- #stage{position:relative;width:1600px;max-width:96vw;aspect-ratio:16/9;background:#04050b;
-        border:1px solid #2a3350;border-radius:12px;overflow:hidden;touch-action:none;cursor:grab}
+ :root{color-scheme:dark;--bg:#06070c;--panel:#0b0e17;--line:#1e2740;--ink:#cfe0ff;--dim:#6b7899;
+       --live:#7fd18a;--paint:#d1a04a;--hot:#ffd98a}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,sans-serif;
+      height:100vh;display:grid;grid-template-columns:300px 1fr;grid-template-rows:100vh}
+ aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px 0 40px}
+ aside h1{font-size:15px;margin:0 16px 2px;font-weight:650}
+ aside p.sub{margin:0 16px 14px;color:var(--dim);font-size:12px}
+ .node{padding:5px 10px 5px 0;cursor:pointer;border-left:2px solid transparent;display:flex;gap:7px;align-items:baseline}
+ .node:hover{background:#121a2c}
+ .node.on{background:#1b2942;border-left-color:#5f8ee0}
+ .node .nm{font-size:13px}
+ .node.paint .nm{color:var(--paint)}
+ .dot{width:6px;height:6px;border-radius:50%;background:var(--live);flex:none;margin-top:6px}
+ .node.paint .dot{background:var(--paint)}
+ .kids{overflow:hidden}
+ main{display:grid;grid-template-rows:1fr auto;min-width:0}
+ #stage{position:relative;background:#04050b;overflow:hidden;touch-action:none;cursor:grab}
  #stage.drag{cursor:grabbing}
- #view{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
- #cap{max-width:720px;color:#8892b0;font-size:13px;text-align:center;margin:10px 14px 4px}
- #cap b{color:#ffe9a8}
- #hint{color:#59668a;font-size:12px;margin-bottom:20px}
+ #view{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
+ #hud{position:absolute;left:16px;top:14px;pointer-events:none;max-width:60%}
+ #hud b{font-size:20px;color:#fff;letter-spacing:.2px}
+ #hud .tag{font-size:11px;padding:2px 7px;border-radius:99px;border:1px solid;margin-left:8px;vertical-align:3px}
+ .t-live{color:var(--live);border-color:#2c5f3a}
+ .t-paint{color:var(--paint);border-color:#5f4a1e}
+ #plain{margin-top:8px;color:#b9c8e6;font-size:14px;max-width:640px;text-shadow:0 1px 8px #000}
+ #serial{margin-top:6px;color:var(--dim);font:11px ui-monospace,Menlo,monospace}
+ footer{border-top:1px solid var(--line);background:var(--panel);padding:10px 16px;display:flex;
+        gap:26px;align-items:center;flex-wrap:wrap;min-height:52px}
+ footer .num{font:12px ui-monospace,Menlo,monospace;color:var(--dim);white-space:nowrap}
+ footer .num i{color:var(--hot);font-style:normal}
+ footer .hint{margin-left:auto;color:#4d587a;font-size:11px}
 </style>
-<h1>Chimera &mdash; live interactive viewer <span style="color:#59668a;font-weight:400">(the shared view, in motion)</span></h1>
-<div id=bar></div>
-<div id=stage><img id=view src="/stream" alt="live render"></div>
-<div id=cap></div>
-<div id=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own so the movie plays</div>
+<aside>
+  <h1>Chimera</h1>
+  <p class=sub>the story, as a hierarchy &mdash; click any membrane</p>
+  <div id=tree></div>
+</aside>
+<main>
+  <div id=stage>
+    <img id=view src="/stream" alt="live render">
+    <div id=hud><div><b id=nm></b><span id=tag class=tag></span></div>
+      <div id=plain></div><div id=serial></div></div>
+  </div>
+  <footer><div id=nums></div><div class=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
+</main>
 <script>
-const TERMS=__TERMS__, READINGS=__READINGS__, KINDS=__KINDS__;
-let term=TERMS.includes("aPlanet")?"aPlanet":TERMS[0];
-const bar=document.getElementById('bar'), cap=document.getElementById('cap'), stage=document.getElementById('stage');
-function paintBar(){bar.innerHTML='';TERMS.forEach(t=>{const b=document.createElement('button');
-  b.textContent=t;if(t===term)b.className='on';b.onclick=()=>{term=t;pick(t);};bar.appendChild(b);});}
-function caption(){
-  // SAY WHAT YOU ARE LOOKING AT. A membrane is derived from its parent and emits its own matter;
-  // a painted scene is hand-authored and answers to nothing. Showing them identically is how a
-  // picture gets mistaken for a proven world.
-  var k = KINDS[term] || 'painted';
-  var tag = (k === 'membrane')
-     ? '<span style="color:#7fd18a">membrane</span>'
-     : '<span style="color:#d1a04a">painted scene &mdash; not a membrane, nothing derives it</span>';
-  cap.innerHTML = '<b>'+term+'</b> &nbsp;<small>'+tag+'</small>'
-                + (READINGS[term] ? '<br>physics expects: '+READINGS[term] : '');
+const TREE=__TREE__, READINGS=__READINGS__, KINDS=__KINDS__, TERMS=__TERMS__;
+let term=null, INDEX={}, PATH={};
+function index(n,trail){INDEX[n.name]=n;PATH[n.name]=trail.concat(n.name);
+  (n.children||[]).forEach(c=>index(c,PATH[n.name]));}
+TREE.forEach(n=>index(n,[]));
+const treeEl=document.getElementById('tree');
+function row(n,depth){
+  const d=document.createElement('div');
+  d.className='node'+(n.membrane?'':' paint');
+  d.style.paddingLeft=(10+depth*15)+'px';
+  d.innerHTML='<span class=dot></span><span class=nm>'+n.name+'</span>';
+  d.onclick=()=>pick(n.name);
+  d.dataset.name=n.name;
+  treeEl.appendChild(d);
+  (n.children||[]).forEach(c=>row(c,depth+1));
 }
-function pick(t){fetch('/scene?term='+encodeURIComponent(t));paintBar();caption();}
-paintBar();caption();
-// mouse / touch orbit -> /input (throttled by rAF)
+TREE.forEach(n=>row(n,0));
+// terms that exist as scenes but have no folder (painted) get listed after the tree
+TERMS.filter(t=>!INDEX[t]).forEach(t=>{
+  const d=document.createElement('div');
+  d.className='node paint';d.style.paddingLeft='10px';
+  d.innerHTML='<span class=dot></span><span class=nm>'+t+'</span>';
+  d.onclick=()=>pick(t);d.dataset.name=t;treeEl.appendChild(d);});
+function pick(t){
+  term=t;
+  fetch('/scene?term='+encodeURIComponent(t));
+  document.querySelectorAll('.node').forEach(e=>e.classList.toggle('on',e.dataset.name===t));
+  const n=INDEX[t]||{}, live=(KINDS[t]==='membrane');
+  document.getElementById('nm').textContent=t;
+  const tg=document.getElementById('tag');
+  tg.textContent=live?'membrane':'painted scene';
+  tg.className='tag '+(live?'t-live':'t-paint');
+  document.getElementById('plain').textContent=n.plain||(READINGS[t]?('physics expects: '+READINGS[t]):'');
+  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ');
+  const nums=n.numbers||{};
+  document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
+    let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));
+    return '<span class=num>'+k+' <i>'+v+'</i></span>';}).join(' &nbsp; ');
+}
+pick(TERMS.includes('theSolarSystem')?'theSolarSystem':TERMS[0]);
 let drag=false,lx=0,ly=0,pend={dazim:0,delev:0,zoom:0},sending=false;
+const stage=document.getElementById('stage');
 function flush(){if(pend.dazim||pend.delev||pend.zoom){
   fetch('/input?dazim='+pend.dazim.toFixed(4)+'&delev='+pend.delev.toFixed(4)+'&zoom='+pend.zoom.toFixed(4));
   pend={dazim:0,delev:0,zoom:0};}sending=false;}
@@ -353,23 +445,3 @@ stage.addEventListener('touchend',up);
 stage.addEventListener('wheel',e=>{e.preventDefault();pend.zoom+=(e.deltaY>0?0.06:-0.06);queue();},{passive:false});
 </script>
 """
-
-
-if __name__ == "__main__":
-    # standalone convenience: serve JUST the live viewer (gallery.py mounts it in the shared page)
-    import functools, http.server
-
-    class H(http.server.BaseHTTPRequestHandler):
-        def do_GET(self):
-            if handle(self):
-                return
-            self.send_response(302); self.send_header("Location", "/live"); self.end_headers()
-
-        def log_message(self, *a):
-            pass
-
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8766
-    get_viewer()
-    with http.server.ThreadingHTTPServer(("127.0.0.1", port), H) as srv:  # 127.0.0.1 only -- the studio's bind rule
-        print(f"live viewer at http://127.0.0.1:{port}/live")
-        srv.serve_forever()
