@@ -162,7 +162,8 @@ def handle(handler) -> bool:
     path = urlparse(handler.path).path
     qs = parse_qs(urlparse(handler.path).query)
     if path in ("/live", "/live.html"):
-        _send(handler, 200, "text/html; charset=utf-8", _page().encode("utf-8")); return True
+        blind = (qs.get("blind") or ["0"])[0] not in ("0", "", "false")
+        _send(handler, 200, "text/html; charset=utf-8", _page(blind).encode("utf-8")); return True
     if path == "/terms":
         import json, splat_appearance
         _send(handler, 200, "application/json", json.dumps(splat_appearance.scene_terms()).encode()); return True
@@ -176,6 +177,34 @@ def handle(handler) -> bool:
         _send(handler, 204, "text/plain", b""); return True
     if path == "/stream":
         _stream(handler); return True
+    if path == "/frame":
+        # ONE REQUEST = ONE PICTURE. It is a web server; you ask it for the page.
+        # `/frame?term=theCooling` sets the scene, waits for the renderer to actually produce that
+        # scene, and returns a single JPEG. No browser, no clicking, and no stale frame -- which is
+        # what made the shared view read the RIGHT label over the WRONG picture.
+        v = get_viewer()
+        term = (qs.get("term") or [""])[0]
+        if term:
+            v.set_scene(term)
+        before = v.frame()
+        with v._lock:
+            v._clients += 1                                          # wake the render thread (it idles the GPU otherwise)
+        try:
+            # WHAT A REFRESH ACTUALLY IS. `_latest` starts as a BLANK jpeg, and the thread must
+            # (a) notice a client, (b) upload the scene to the GPU, (c) draw. Grab too early and you
+            # get black. And `v.term` returns `_loaded or _pending`, so it reports the NEW name
+            # instantly and proves nothing. Wait for the scene to be LOADED and a NEW frame drawn.
+            deadline = time.time() + 30.0
+            while time.time() < deadline:
+                if ((not term) or v._loaded == term) and v.frame() is not before:
+                    break
+                time.sleep(0.05)
+            time.sleep(0.20)                                          # one more frame, so it is settled
+            jpg = v.frame()
+        finally:
+            with v._lock:
+                v._clients = max(0, v._clients - 1)
+        _send(handler, 200, "image/jpeg", jpg); return True
     return False
 
 
@@ -220,14 +249,22 @@ def _stream(handler):
             v._clients = max(0, v._clients - 1)                     # last viewer left -> render thread idles the GPU
 
 
-def _page() -> str:
+def _page(blind: bool = False) -> str:
+    """The shared view. `blind=1` withholds the physics's expected reading.
+
+    THE LIGHT MUST COME FROM CHIMERA -- a dyad judges what the ENGINE renders, live and in motion,
+    not a still someone chose the camera and the moment for. But this page normally prints
+    "physics expects: ..." beside the render, because the OPERATOR is entitled to see both sides.
+    A proxy eye is not: shown the expected answer, it would confirm rather than observe, and the
+    dyad becomes theatre. So blind mode serves the identical picture with the caption withheld --
+    same light, same scene, no answer."""
     try:
         from human_messenger import PHYSICS_READING
     except Exception:
         PHYSICS_READING = {}
     import splat_appearance
     terms = splat_appearance.scene_terms()
-    readings = {t: PHYSICS_READING.get(t, "") for t in terms}
+    readings = {} if blind else {t: PHYSICS_READING.get(t, "") for t in terms}
     import json
     return _PAGE.replace("__TERMS__", json.dumps(terms)).replace("__READINGS__", json.dumps(readings))
 
