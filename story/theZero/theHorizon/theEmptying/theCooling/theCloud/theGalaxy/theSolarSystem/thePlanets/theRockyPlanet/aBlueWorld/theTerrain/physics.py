@@ -45,6 +45,17 @@ SHELF_SHARE = 0.25       # a quarter of continental area is margin, measured on 
 PEAK_SIGMAS = 5.8
 OCEAN_ROUGHNESS_RATIO = 0.62
 
+# THE LENS -- dials that change the PICTURE and nothing else. Every one of them is a declared
+# exaggeration: true scale here is invisible (this world's tallest mountain is two parts in a
+# thousand of its radius), so the render lies, says so, and hands you the dial to turn it back.
+# Set every lens to 1.0 and you are looking at what is really there.
+LENS = {
+    "relief": {"lo": 1.0, "hi": 60.0, "default": 12.0,
+               "label": "relief", "unit": "x true height"},
+    "exposure": {"lo": 0.15, "hi": 1.0, "default": 0.42,
+                 "label": "film speed", "unit": "gamma"},
+}
+
 # THE FREE DIAL.
 FREE = {
     "continental_fraction": {"lo": 0.0, "hi": 0.95, "default": 0.40,
@@ -258,10 +269,12 @@ def emit(nums, t=1.0):
     R = float(nums["extent_m"])
     sl = float(nums["sea_level_m"])
     f_c = float(nums["continental_fraction"])
-    # 12x, not 40x: at 40 a 10 km mountain became 7.6% of the planet's radius and the limb
-    # grew a beard. 12 keeps relief visible (2.3% of the radius) without lying about the shape
-    # of the world. Every height keeps its true ratio to every other height either way.
-    RELIEF_EXAGGERATION = 12.0
+    # 12x by default, and a DIAL rather than a constant: at 40 a 10 km mountain became 7.6% of the
+    # planet's radius and the limb grew a beard; at 1.0 you see the true shape, which is a smooth
+    # ball. Every height keeps its true ratio to every other height at any setting.
+    lens = nums.get("_lens", {})
+    RELIEF_EXAGGERATION = float(lens.get("relief", 12.0))
+    TONE = float(lens.get("exposure", 0.42))
 
     n = 46000
     d = fibonacci_sphere(n, jitter=0.9, seed=57)
@@ -363,7 +376,7 @@ def emit(nums, t=1.0):
     sun = np.array([np.sin(day), -np.cos(day), 0.22], np.float32)
     sun /= np.linalg.norm(sun)
     cosang = np.clip(d @ sun, 0.0, None)
-    b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=0.42)
+    b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=TONE)
     # Water has no grain and rock does -- so the sea blends and the land does not.
     # Sea ice is a SOLID, so it gets rock's grain, not water's -- it is the ocean that has no
     # smallest piece, and the moment it freezes it does.

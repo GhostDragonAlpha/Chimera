@@ -46,6 +46,13 @@ DT_POLE = 45.0                 # equator-to-pole spread -- the scale over which 
 CO2_EFOLD_K = 13.7             # Berner: how fast silicate weathering responds to temperature
 
 
+# THE LENS -- picture-only dials, declared so the exaggerations are auditable and reversible.
+LENS = {
+    "exposure": {"lo": 0.15, "hi": 1.0, "default": 0.42, "label": "film speed", "unit": "gamma"},
+    "star_marker": {"lo": 0.0, "hi": 4.0, "default": 1.0, "label": "star marker", "unit": "x"},
+}
+
+
 def greenhouse_factor(tau):
     """A grey atmosphere lets sunlight in and slows infrared out, so the ground must run hotter than
     the balance point to push the same energy through: T_surf = T_bare * (1 + 3/4 tau)^(1/4).
@@ -270,6 +277,9 @@ def emit(nums, t=1.0):
 
     tt = float(t)
     rng = np.random.default_rng(41)
+    lens = nums.get("_lens", {})
+    TONE = float(lens.get("exposure", 0.42))
+    MARK = float(lens.get("star_marker", 1.0))
     S_rel = float(nums.get("S_earth", 1.0))
     frozen = float(nums.get("ice_fraction", 0.0))
     ocean_f = float(nums.get("ocean_fraction", 0.0))
@@ -329,7 +339,7 @@ def emit(nums, t=1.0):
     # world at a measured 47->15 grey ramp: the terminator was physically right and simply too dark
     # to read. A camera pointed at a planet exposes FOR that planet, so the reference is the light
     # this world actually receives. The falloff across the disk is unchanged -- only the film speed.
-    b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=0.42)
+    b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=TONE)
     # THE GRAIN IS A PROPERTY OF THE MATERIAL, not of the renderer.
     #
     # Ice and rock ARE granular -- crystals, gravel, snow -- so their grains should read as grains,
@@ -369,7 +379,7 @@ def emit(nums, t=1.0):
     n_s = 120
     ds = fibonacci_sphere(n_s)
     st = blank(n_s)
-    st[:, 0:3] = ds * 0.018 + sun * 1.30
+    st[:, 0:3] = ds * (0.018 * MARK) + sun * 1.30
     st[:, 21:24] = ds
     paint(st, blackbody_rgb(float(nums.get("T_star_surface", 5772.0))), 1.0, 0.007, SOLID)
     parts.append(st)

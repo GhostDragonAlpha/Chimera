@@ -11,6 +11,15 @@ AU = 1.495978707e11
 M_EARTH = 5.9722e24
 L_SUN = 3.828e26
 
+# THE LENS -- the two biggest declared exaggerations in this story, now dials instead of
+# constants. At 1.0 both the star and the worlds shrink to their true angular size, which is
+# sub-pixel: a disk with nothing visible in it. That is what a solar system ACTUALLY looks like,
+# and being able to see it is the point of having the dial.
+LENS = {
+    "star_size": {"lo": 1.0, "hi": 120.0, "default": 32.0, "label": "star size", "unit": "x true"},
+    "world_size": {"lo": 1.0, "hi": 2500.0, "default": 900.0, "label": "world size", "unit": "x true"},
+}
+
 T_ICE = 170.0                # water condenses here: the one temperature that matters most
 ICE_TO_ROCK = 4.2            # water is ~4x as abundant as rock -> the solid inventory JUMPS
 SIGMA_ROCK_1AU = 7.0         # minimum-mass nebula: rock surface density at 1 AU, g/cm^2
@@ -203,7 +212,7 @@ def emit(nums, t=1.0):
     # reason games draw mountains 40x too tall: at true scale the thing that matters most cannot be
     # seen. The number is written down so the lie is auditable and can be replaced by a point light
     # (which is the honest fix: a star at this scale is not a sphere, it is a source).
-    STAR_EXAGGERATION = 32.0
+    STAR_EXAGGERATION = float(nums.get("_lens", {}).get("star_size", 32.0))
     star[:, 0:3] = d * (float(nums.get("R_star", 6.957e8)) / (nums["snow_line_au"] * 1.495978707e11)
                         * STAR_EXAGGERATION)
     star[:, 21:24] = d
@@ -214,7 +223,7 @@ def emit(nums, t=1.0):
     # SCALE, DECLARED: Earth's radius against the snow line is 6.37e6/4.01e11 = 1.6e-5, sub-pixel, the
     # same problem as the star. Bodies are drawn at a stated exaggeration so a system READS as a system;
     # the true radius is in numbers.json and the ratio between worlds is exactly right.
-    WORLD_EXAGGERATION = 900.0
+    WORLD_EXAGGERATION = float(nums.get("_lens", {}).get("world_size", 900.0))
     parts = [star, b]
     rock_a = np.array([0.34, 0.27, 0.21], np.float32)      # albedo, not brightness
     ice_a = np.array([0.72, 0.78, 0.86], np.float32)

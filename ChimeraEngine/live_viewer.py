@@ -233,6 +233,27 @@ def handle(handler) -> bool:
                            capture_output=True, cwd=str(_HERE.parent))
             get_viewer().force_reload()
         _send(handler, 204, "text/plain", b""); return True
+    if path == "/lens":
+        # THE LENS. Deliberately a DIFFERENT endpoint from /free, because it is a different kind of
+        # act: /free changes what the world IS and re-derives the whole subtree; /lens changes only
+        # what the camera does with it. Nothing is regrown, because nothing downstream depends on a
+        # camera setting -- which is exactly the property that makes an exaggeration honest.
+        import json as _json
+        term = (qs.get("term") or [""])[0]
+        name = (qs.get("name") or [""])[0]
+        try:
+            val = float((qs.get("value") or ["1"])[0])
+        except ValueError:
+            val = 1.0
+        import splat_appearance as _sa
+        folder = _sa._find_membrane(term)
+        if folder is not None and name:
+            lj = folder / "lens.json"
+            cur = _json.loads(lj.read_text()) if lj.exists() else {}
+            cur[name] = val
+            lj.write_text(_json.dumps(cur, indent=2))
+            get_viewer().force_reload()
+        _send(handler, 204, "text/plain", b""); return True
     if path == "/scene":
         term = (qs.get("term") or [""])[0]
         get_viewer().set_scene(term)
@@ -348,15 +369,24 @@ def _tree_of(folder):
     # DERIVED number would let a human set a value the physics forbids, which is the one thing the
     # whole method exists to prevent. The absence of a handle is itself the lesson -- that number
     # belongs to the universe, not to you.
+    #
+    # LENS is the other list, and it is deliberately kept separate rather than merged into one
+    # "settings" panel: a FREE dial changes what the world IS and re-derives everything below it;
+    # a LENS dial changes only what the camera does with what is already there. Showing them in one
+    # box would teach a person that relief exaggeration and day length are the same kind of thing,
+    # and they are opposites -- one is a fact you may choose, the other is a lie you may see through.
     node["free"] = {}
+    node["lens"] = {}
     py = folder / "physics.py"
     if py.exists():
         try:
             import ast as _ast
             tree = _ast.parse(py.read_text(encoding="utf-8", errors="replace"))
             for st in tree.body:
-                if isinstance(st, _ast.Assign) and getattr(st.targets[0], "id", "") == "FREE":
-                    node["free"] = _ast.literal_eval(st.value)
+                if isinstance(st, _ast.Assign):
+                    nm = getattr(st.targets[0], "id", "")
+                    if nm in ("FREE", "LENS"):
+                        node[nm.lower()] = _ast.literal_eval(st.value)
         except Exception:
             pass
     tj = folder / "trained.json"
@@ -365,6 +395,12 @@ def _tree_of(folder):
             node["free_set"] = json.loads(tj.read_text())
         except Exception:
             node["free_set"] = {}
+    lj = folder / "lens.json"
+    if lj.exists():
+        try:
+            node["lens_set"] = json.loads(lj.read_text())
+        except Exception:
+            node["lens_set"] = {}
     for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         if (c / "story.md").exists():
             node["children"].append(_tree_of(c))
@@ -478,6 +514,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       <label>t <i id=tval>1.000</i></label>
       <input type=range id=tslider min=0 max=1000 value=1000>
       <div id=freebox></div>
+      <div id=lensbox></div>
     </div>
   </div>
   <footer><div id=nums></div><div class=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
@@ -591,6 +628,50 @@ function paintFree(){
       },420);
     };
   });
+  paintLens();
+}
+
+// ── THE LENS: dials that change the PICTURE and nothing else ──────────────────────
+// Kept in its own box, below the free dials, because it is the opposite kind of thing. A free dial
+// is a fact you are allowed to choose; a lens dial is a LIE THE RENDER IS TELLING, shown to you with
+// the handle to turn it off. Set them all to 1 and you see the world at true scale -- which is
+// usually a smooth ball and an empty black disk, and that is the honest answer.
+function paintLens(){
+  const n=INDEX[term]||{}, L=n.lens||{}, set=n.lens_set||{}, box=document.getElementById('lensbox');
+  if(!box) return;
+  const keys=Object.keys(L);
+  if(!keys.length){ box.innerHTML=''; return; }
+  let h='<h3 style="margin-top:16px">the lens <span class=note style="font-weight:400">'
+       +'&mdash; changes what you see, never what is</span></h3>'
+       +'<p class=note>true scale is mostly invisible: this world&rsquo;s tallest mountain is two parts '
+       +'in a thousand of its radius. every exaggeration is declared here and can be turned back.</p>'
+       +'<div class=free>';
+  for(const k of keys){
+    const f=L[k], cur=(k in set)?set[k]:f.default;
+    const lo=Math.log10(f.lo||0.01), hi=Math.log10(f.hi), pos=Math.round(1000*(Math.log10(Math.max(cur,f.lo||0.01))-lo)/(hi-lo));
+    h+='<label>'+f.label+' <i id="lv_'+k+'">'+(+cur).toPrecision(3)+' '+(f.unit||'')+'</i></label>'
+      +'<input type=range data-k="'+k+'" data-lo="'+lo+'" data-hi="'+hi+'" min=0 max=1000 value="'+pos+'">';
+  }
+  box.innerHTML=h+'</div><button id="truescale">show it at true scale</button>';
+  box.querySelectorAll('input[type=range]').forEach(el=>{
+    let tm=null;
+    el.oninput=()=>{
+      const lo=+el.dataset.lo, hi=+el.dataset.hi, k=el.dataset.k;
+      const v=Math.pow(10, lo+(hi-lo)*el.value/1000);
+      document.getElementById('lv_'+k).textContent=v.toPrecision(3)+' '+((INDEX[term].lens[k].unit)||'');
+      // NO PAGE RELOAD. A lens change re-emits the same membrane; nothing downstream is regrown,
+      // so the picture updates on the next frame and the panel keeps its state.
+      clearTimeout(tm); tm=setTimeout(()=>{
+        fetch('/lens?term='+encodeURIComponent(term)+'&name='+encodeURIComponent(k)+'&value='+v);
+      },300);
+    };
+  });
+  const b=document.getElementById('truescale');
+  if(b) b.onclick=()=>{
+    Promise.all(keys.map(k=>fetch('/lens?term='+encodeURIComponent(term)
+      +'&name='+encodeURIComponent(k)+'&value='+(L[k].lo||1))))
+      .then(()=>setTimeout(()=>location.reload(),900));
+  };
 }
 let drag=false,lx=0,ly=0,pend={dazim:0,delev:0,zoom:0},sending=false;
 const stage=document.getElementById('stage');

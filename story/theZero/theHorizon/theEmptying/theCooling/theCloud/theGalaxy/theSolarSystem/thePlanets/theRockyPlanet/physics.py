@@ -35,6 +35,12 @@ R_EARTH = 6.371e6
 EARTH_ALBEDO = 0.30            # what Earth actually returns to space -- the reference for the bare temperature
 LEG_M = 0.845                  # a person's leg, measured off this studio's own body. The handoff to walking.
 
+# THE LENS -- picture-only dials, declared so the exaggerations are auditable and reversible.
+LENS = {
+    "exposure": {"lo": 0.15, "hi": 1.0, "default": 0.42, "label": "film speed", "unit": "gamma"},
+    "star_marker": {"lo": 0.0, "hi": 4.0, "default": 1.0, "label": "star marker", "unit": "x"},
+}
+
 # THE FREE DIAL. Not derivable from formation: the spin a world ends with is whatever the last giant
 # impact left it. Declared here so the engine can put a slider on it.
 FREE = {
@@ -221,6 +227,9 @@ def emit(nums, t=1.0):
 
     tt = float(t)
     rng = np.random.default_rng(31)
+    lens = nums.get("_lens", {})
+    TONE = float(lens.get("exposure", 0.42))
+    MARK = float(lens.get("star_marker", 1.0))
     S_rel = float(nums.get("S_earth", 1.0))
     rock = np.array([0.32, 0.26, 0.20], np.float32)       # dry silicate, albedo ~0.26
 
@@ -253,7 +262,7 @@ def emit(nums, t=1.0):
     # world at a measured 47->15 grey ramp: the terminator was physically right and simply too dark
     # to read. A camera pointed at a planet exposes FOR that planet, so the reference is the light
     # this world actually receives. The falloff across the disk is unchanged -- only the film speed.
-    b[:, 16:19] = lit(rock, S_rel * cosang + 0.010, e_ref=max(S_rel, 1e-6), tone=0.42)   # the floor is scattered skylight
+    b[:, 16:19] = lit(rock, S_rel * cosang + 0.010, e_ref=max(S_rel, 1e-6), tone=TONE)   # the floor is scattered skylight
     b[:, 19] = 0.95
     b[:, 20] = surface_grain(n)          # closes the surface by arithmetic, not by eye
     b[:, 11] = SOLID
@@ -299,7 +308,7 @@ def emit(nums, t=1.0):
     n_s = 120
     ds = fibonacci_sphere(n_s)
     st = blank(n_s)
-    st[:, 0:3] = ds * 0.018 + sun * 1.30
+    st[:, 0:3] = ds * (0.018 * MARK) + sun * 1.30
     st[:, 21:24] = ds
     paint(st, blackbody_rgb(float(nums.get("T_star_surface", 5772.0))), 1.0, 0.007, SOLID)
     parts.append(st)

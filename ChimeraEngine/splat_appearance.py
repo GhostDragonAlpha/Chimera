@@ -481,6 +481,34 @@ def _child_numbers(term: str):
     return json.loads(nj.read_text()) if nj.exists() else None
 
 
+def _lens_of(folder, law):
+    """THE LENS -- the second kind of dial, and it must never be confused with the first.
+
+    A membrane's `FREE` numbers change WHAT THE WORLD IS: turn the spin dial and the day really is
+    shorter, and every number downstream is re-derived. A membrane's `LENS` numbers change only WHAT
+    YOU SEE: a relief exaggeration, a marker's size, the film speed. Nothing downstream moves,
+    because nothing downstream depends on them -- they are a camera setting, not a fact.
+
+    They exist because true scale is often INVISIBLE. This world's tallest mountain is two parts in
+    a thousand of its radius; a star at a planet's distance is off-screen and sub-pixel. Every game
+    lies about this. The rule here is that the lie is DECLARED, sits next to the true number, and is
+    a dial a person can turn back to 1.0 to see what is really there.
+
+    Read from `lens.json` beside the membrane if it exists, defaults otherwise."""
+    import json
+    spec = getattr(law, "LENS", None) or {}
+    vals = {k: v.get("default", 1.0) for k, v in spec.items()}
+    lj = folder / "lens.json"
+    if lj.exists():
+        try:
+            for k, v in (json.loads(lj.read_text()) or {}).items():
+                if k in vals:
+                    vals[k] = float(v)
+        except Exception:
+            pass
+    return vals
+
+
 def _membrane_own(folder, t):
     """Just this membrane's own matter, without its children."""
     import json
@@ -489,6 +517,10 @@ def _membrane_own(folder, t):
         return None, None
     nj = folder / "numbers.json"
     nums = json.loads(nj.read_text()) if nj.exists() else law.derive(None, {})
+    lens = _lens_of(folder, law)
+    if lens:
+        nums = dict(nums)
+        nums["_lens"] = lens        # emit() reads it; derive() never sees it, which is the point
     return law.emit(nums, t), (law, nums)
 
 
