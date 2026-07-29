@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theSolarSystem` | A spinning cloud cannot fall straight in. It falls freely along its axis and gets held out sideways, so it flattens into a disc with almost everything piled in the middle |
+| `theGalaxy` | The clumps of gas keep falling into each other and pile up into one enormous |
 
 ## Hands down
 

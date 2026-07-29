@@ -9,6 +9,7 @@
 
 | membrane | what it is |
 |---|---|
+| `theDensityClock` | Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you |
 | `theEmptying` | Everything a black hole knows is written on its surface, not stored inside it. And a surface like that glows — so it hands back what the point could never hold |
 
 ## Hands down

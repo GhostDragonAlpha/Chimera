@@ -1,0 +1,17 @@
+{
+  "M_cloud_solar": 614969.6120244551,
+  "n_clouds": 170000.0,
+  "M_stars_solar": 104544834044.15738,
+  "M_dynamical_solar": 168757905790.17657,
+  "dark_ratio": 1.6142156361250435,
+  "v_flat_kms": 220.0,
+  "R_disk_kpc": 15.0,
+  "bulge_frac": 0.2,
+  "r_system_kpc": 8.2,
+  "T_orbit_myr": 228.9949343472331,
+  "winding_turns": 16.541321312091096,
+  "arms_are_waves": true,
+  "collapsing": true,
+  "hydrogen_frac": 0.75,
+  "helium_frac": 0.25
+}
