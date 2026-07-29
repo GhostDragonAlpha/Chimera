@@ -35,7 +35,70 @@ code.
 
 ---
 
-## 0. The formula. Everything else is commentary.
+## 0. THE PROCEDURE — do this
+
+**If you read nothing else, read this section.** Everything after it is *why*. It is written so it
+can be executed without asking anyone anything.
+
+**Four things will get you thrown out, and every one has bitten someone here:**
+
+1. **You do not pick the membrane.** Alan names it, or `next` does. Jumping to a mid-tree scene is
+   this project's founding failure and it has been repeated since.
+2. **You read only your PARENT's `numbers.json`.** Not a sibling's, not a grandparent's.
+3. **You never judge your own render.** A system that measures itself proves nothing (§3).
+4. **You never type a number the physics should have produced.** `story/audit.py` finds them.
+
+---
+
+**1. Take your membrane. Do not choose another.** Find its folder's parent and read the parent's
+`numbers.json` — **that is the entire set of things you may inherit.** If what you need is not
+there, the number belongs to your parent and **your parent should derive it**, because being what
+both children can see is what a parent is FOR. Never type it. (§7 has the case that cost a day.)
+
+**2. Check `story/HIERARCHIES.md` for a missing level.** The real paths are written down —
+`… galaxy → molecular cloud → star system …`, `… cell → tissue → organ …`. If a step is missing
+between you and your parent, **say so and stop**; do not skip it and do not invent one.
+
+**3. Decide `the` or `a`.** Are you the LAW (what this kind of thing is) or the INSTANCE (the one
+that formed here)? Different chapters. If you are an instance, **you do not know your own name yet**
+— it is derived from what your physics finds (§6).
+
+**4. Write `story.md`:** `# name`, then the `**In plain words —**` line, then the chapter — what it
+IS and the physics reaching it from its parent — then what it **DECLARES** it contains (from
+`Chimera/docs/THE_STORY.md`). Declaring a child is not building it.
+
+**5. Write `physics.py`:**
+```python
+def derive(parent, free) -> dict     # numbers, from the PARENT's numbers only
+def emit(nums, t=1.0) -> (N,28)      # matter, in LOCAL units, from those same numbers
+def layout(nums) -> {child:(centre,scale)}   # optional: WHERE the children sit, in your frame
+def measure(nums) -> dict            # the facts a check should test
+```
+Anything free goes in a `FREE` dict; any declared exaggeration goes in a `LENS` dict. Never a bare
+constant in `emit()`.
+
+**6. `python story/grow.py`** — your membrane must appear with sensible numbers. **Compare every
+number to reality and write the comparison in the commit.** If it is far off the physics is wrong;
+fix the physics, never fudge a constant.
+
+**7. `python story/audit.py`** — three ways a derivation quietly stops being one. Anything it flags
+is yours to answer before you go further.
+
+**8. LOOK AT IT.** `DEMO.bat`, or:
+```bash
+python ChimeraEngine/gallery.py 8765     # then /live, and click your membrane
+```
+**When you are told to work on a membrane, the deliverable is the PICTURE of that membrane** — not a
+description, not a claim that it renders. Fetch the frame and look.
+
+**9. Get a blind eye to read it.** Never judge your own render (§3). Compare what it reports to what
+your physics predicts.
+
+**10. Commit and push**, stating branch + SHA, with the numbers and the comparisons in the message.
+
+---
+
+## 1. The formula. Everything else is commentary.
 
 > # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
 
@@ -57,7 +120,7 @@ beginning to end, at its own scale.
 
 ---
 
-## 1. Who writes what
+## 2. Who writes what
 
 | | writes | produces | in the graph |
 |---|---|---|---|
@@ -74,7 +137,7 @@ wrong, it is wrong — you do not defend it, you assume the physics is wrong and
 
 ---
 
-## 2. How a thing becomes true — the dyad. Read this twice.
+## 3. How a thing becomes true — the dyad. Read this twice.
 
 Building a chapter does not make it true. **A term is proven only when two messengers, from two
 independent systems, AGREE:**
@@ -129,7 +192,7 @@ python ChimeraEngine/gallery.py 8765          # the shared view
 
 ---
 
-## 3. The engine loop, and the authority you have
+## 4. The engine loop, and the authority you have
 
 The tree (`grow.py`) is how a membrane is *built*. The engine is how it is *gated*:
 
@@ -156,17 +219,21 @@ never legal — `next` answered it. *"Which approach?"* is never legal — that 
 
 ---
 
-## 4. A chapter is a folder describing everything inside ONE membrane
+## 5. A chapter is a folder describing everything inside ONE membrane
 
 **A membrane is a boundary. A boundary is a scale.** The folder tree *is* the scale ladder, and a
 chapter's **path is its serial is its compressed story**:
 
 ```
-theZero/theHorizon/theEmptying/theCooling/theCloud/theSolarSystem/theStar
+theZero/theHorizon/theEmptying/theCooling/theCloud/theGalaxy/theSolarSystem/theStar/aYellowStar
  = "the point you may not divide by, fenced, emptying into the space it drew, cooling until
-    structure is permitted, gravity finally allowed to pull, swirling into a system, and in it
-    a fall stopped by fire"
+    structure is permitted, gravity finally allowed to pull, gathered into an island of stars,
+    swirling into a system, and in it a fall stopped by fire, and this one is yellow"
 ```
+
+*(For years this example read `theCloud/theSolarSystem` with no galaxy between — the file
+demonstrating the very "skipped a level" failure it names in §8. A cloud does not become a system on
+its own. Check `HIERARCHIES.md`.)*
 
 ```
 theCooling/
@@ -189,27 +256,35 @@ Every concept wants **two** membranes, because they are different kinds of claim
 | prefix | what it is | example |
 |---|---|---|
 | **`theX`** | **the LAW** — what an X *is*, and what any X must satisfy | `theStar`: a fall stopped by fire, above a minimum mass of 0.070 M☉ |
-| **`aX`** | **the INSTANCE** — the one that formed here, inheriting from the law | `aStar`: M = 1.000 M☉ → R, L, T = 5772 K, lifetime 10 Gyr |
+| **`aX`** | **the INSTANCE** — the one that formed here, inheriting from the law | `aYellowStar`: M = 1.025 M☉ → R, L, T = **5839 K**, lifetime 9.4 Gyr |
 
 The law says what is **possible**; the instance is what **happened**. An instance sits *inside* its
 law and reads its numbers from it, so it cannot contradict it — and the law stays checkable against
 reality independently of any instance grown from it.
 
-Aim for both, everywhere: `theTerrain`/`aTerrain`, `theGround`/`aGround`, `theHuman`/`aHuman`.
+Aim for both, everywhere — but the instance's name is **derived**, so you do not know it in
+advance: `theTerrain` produced **`aRiverTerrain`** because 57% of its land gets rain rather than ice.
+
+**The taxonomy differs by kind, and picking the right one is part of the work.** A body seen from
+OUTSIDE is classified by its colour, because that is what its surface is made of (`aYellowStar` from
+the Harvard sequence, `aBlueWorld` because its water is liquid). A surface you **stand on** is
+classified by **what carves it** (`aRiverTerrain`, `aGlacierTerrain`, `aDesertTerrain`). Same rule
+either way: **the class word is whatever physics is in charge.**
 
 **An instance is named by its KIND, and the kind is DERIVED.** Not `aStar`, `aStarB` — **`aYellowStar`**:
 
 ```
-T_surface = 5772 K  →  Harvard class G  →  "Yellow"  →  folder: aYellowStar
+T_surface = 5839 K  →  Harvard class G  →  "Yellow"  →  folder: aYellowStar
 ```
 
 `measure()` checks the folder name still matches the class its own physics produces, so a wrong
 rename fails and a changed mass forces a rename. **The name is a claim; test it like one.** Use the
 real taxonomy per kind — spectral class for stars, composition for worlds — never letters.
 
-**It is also a diagnostic.** The only painted scenes left are `aPlanet` and `theTerrain` — each
-missing its other half (an instance with no law; a law with no instance). That is exactly why
-nothing derived them and why both carried wrong numbers for so long.
+**It is also a diagnostic.** A membrane with no opposite number is usually a membrane nothing
+derived. `theTerrain` was a painted scene for months — a law with no instance — and it carried wrong
+numbers the whole time; it is now derived, and it produced `aRiverTerrain`. **`aPlanet` is the one
+still left**: an instance with no law, painted, deriving nothing.
 
 Viewer colours: **green = `the` (a law) · red = `a` (an instance) · hollow = not built.**
 
@@ -249,51 +324,7 @@ Keep the two lists separate: **DECLARED** (`story.md`, the story's promise) vs *
 
 ---
 
-## 4b. THE PROCEDURE — building one membrane, start to finish
-
-Follow this in order. It is written so it can be executed without asking anyone anything.
-
-**1. Take your membrane. Do not choose another.** Find its folder's parent and read the parent's
-`numbers.json` — **that is the entire set of things you may inherit.** Not a sibling's, not a
-grandparent's. If what you need is not there, the number belongs to your parent and your parent
-should derive it (see the snow-line case in §6).
-
-**2. Check `story/HIERARCHIES.md` for a missing level.** The real paths are written down —
-`… galaxy → molecular cloud → star system …`, `… cell → tissue → organ …`. If a step is missing
-between you and your parent, **say so and stop**; do not skip it and do not invent one.
-
-**3. Decide `the` or `a`.** Are you the LAW (what this kind of thing is) or the INSTANCE (the one
-that formed here)? They are different chapters. Aim for both to exist eventually.
-
-**4. Write `story.md`:** `# name`, then the `**In plain words —**` line, then the chapter — what it
-IS and the physics reaching it from its parent — then what it **DECLARES** it contains (from
-`Chimera/docs/THE_STORY.md`). Declaring a child is not building it.
-
-**5. Write `physics.py`:**
-```python
-def derive(parent, free) -> dict     # numbers, from the PARENT's numbers only
-def emit(nums, t=1.0) -> (N,28)      # matter, in LOCAL units, from those same numbers
-def layout(nums) -> {child:(centre,scale)}   # optional: WHERE the children sit, in your frame
-def measure(nums) -> dict            # the facts a check should test
-```
-
-**6. `python story/grow.py`** — your membrane must appear with sensible numbers. **Compare every
-number to reality and write the comparison in the commit.** If it is far off, the physics is wrong;
-fix the physics, never fudge a constant.
-
-**7. Restart the viewer and LOOK:**
-```bash
-python ChimeraEngine/gallery.py 8765     # then open /live and click your membrane
-```
-
-**8. Get a blind eye to read it.** Never judge your own render (§2). Compare what it reports to what
-your physics predicts.
-
-**9. Commit and push**, stating branch + SHA, with the numbers and the comparisons in the message.
-
----
-
-## 4c. COMPOSITION — a parent is MADE OF its children
+## 6. COMPOSITION — a parent is MADE OF its children
 
 `layout(nums)` returns `{child: (centre, scale)}` in **your** frame, and the child is grown, emitted
 in **its own** local units, and placed. The parent supplies only **where** and **how big** —
@@ -309,7 +340,9 @@ Four rules, each learned by breaking it:
 - **LOD every placed child by its size.** Placing a full-resolution child into a small footprint
   crams its grains into one 32-px tile, overruns `MAX_PER_TILE`, and the cap evicts *the parent's*
   grains — **a black, tile-shaped hole**. A thing occupying 4% of the frame does not need 20,000
-  grains to say so.
+  grains to say so. Use **`matter.grains_for(radius, extent)`**; do not eyeball it. (Measured: eleven
+  worlds at a flat 900 grains each put 4,801 splats in a tile that allows 4,096. The law was written
+  in a comment for the star six lines above the loop that broke it.)
 - **Never duplicate a child.** `theSolarSystem` drew its own core *and* placed `theStar` — the same
   matter twice, and it was what overran the tile.
 - **A SIBLING'S NUMBER COMES THROUGH THE PARENT, OR NOT AT ALL — and the failure mode is a
@@ -330,7 +363,7 @@ Four rules, each learned by breaking it:
 
 ---
 
-## 5. Three tests every chapter must pass
+## 7. Three tests every chapter must pass
 
 ### PROVEN — the math closes, and predicts what it was never fitted to
 A membrane reads **only its parent** — never a sibling. If you are *choosing* a number you broke the
@@ -340,10 +373,18 @@ never given.**
 | chapter | in went | out came | reality |
 |---|---|---|---|
 | theCooling | η, mₑ, 13.6 eV (Saha) | atoms at **3760 K** | ~3700 K |
-| theCloud | that T, CMB today, baryon density | first collapsible mass **6.1×10⁵ M☉** | 10⁵–10⁶ |
+| theCloud | that T, **η** (not today's density — see §4c) | first collapsible mass **6.07×10⁵ M☉** | 10⁵–10⁶ |
+| **theGalaxy** | the same Jeans law, run **down** the ladder | fragmentation stops at **1.75 M☉**; metal-free gas at **150 M☉** | why a star weighs a sun; **why Population III were hundreds** |
 | theStar | G, ħ, mₑ, m_H, ignition T | minimum star **0.070 M☉** | 0.075–0.08 |
-| thePlanets | the star's L | snow line **2.68 AU**; T at 1 AU **278 K** | belt 2.1–3.3; Earth 279 K |
+| thePlanets | the star's L | snow line **2.80 AU**; T at 1 AU **284 K** | belt 2.1–3.3; Earth 279 K |
+| **theRockyPlanet** | v_esc vs √(2kT/m), one inequality | Earth keeps N₂/O₂/H₂O/CO₂ and **loses H₂ and He**; Mars sits on the margin | both exactly right, neither fitted |
+| **aBlueWorld** | greenhouse + ice-albedo + carbon, solved as a fixed point | Earth's own mass and orbit return **288 K** and a **2,700 m** ocean | 288 K, 2,700 m |
+| **theTerrain** | σ/(ρg), and Airy isostasy | Earth: **29.6% land**, **3,815 m** mean ocean. Mars holds a mountain **2.6×** Earth's tallest | 29%, 3,800 m; Olympus/Mauna Kea = 2.15× |
 | theDensityClock | GM/rc², v²/2c² | GPS drift **+38.5 μs/day** | 38.6 |
+
+**Read that Mars row as the shape of the whole test.** `h = σ/(ρg)` contains no geology — only
+gravity and the strength of rock — and it says a low-gravity world carries a taller mountain. It was
+shown Earth and returned Mars.
 
 ### VISUAL — it emits its own matter, and it turns
 
@@ -375,8 +416,13 @@ cannot drift from physics — there is nothing to cross-check because they are o
 - **Local units at every membrane.** A horizon is 2.3×10⁻³⁵ m, a planet 6.4×10⁶ m; in metres one is
   float dust. Emit at radius ~1 in your own frame — **grain size included** (`SIZE=2.6` on a
   radius-1 sphere is bigger than the object; it rendered a solid blue disk).
-- **Declare every exaggeration.** At true scale a star in its own disk is **sub-pixel**. Draw it 32×
-  oversize if you must, but name the constant and compute the true ratio beside it.
+- **Declare every exaggeration — and make it a DIAL.** At true scale a star in its own disk is
+  **sub-pixel**. Draw it 32× oversize if you must, but that number belongs in the membrane's `LENS`
+  dict, not buried in `emit()`, so it appears in the viewer next to the true value with a **"show it
+  at true scale"** button beside it. A lie you can turn off is auditable; a constant is not.
+  **A `FREE` dial changes what the world IS and re-derives the subtree; a `LENS` dial changes only
+  the picture.** Never merge the two panels — one is a fact you may choose, the other is a lie you
+  may see through.
 
 ### The render laws — every one of these was a DEFECT first
 
@@ -405,7 +451,7 @@ Change the planet and the same equations produce a different creature. **One law
 
 ---
 
-## 6. Laws of the tree
+## 8. Laws of the tree
 
 - **Linear, yet branched.** Every path from the seed to a leaf is one linear story; a tree holds many
   and they share an origin. Sequence runs *along the branches*.
@@ -418,7 +464,7 @@ Change the planet and the same equations produce a different creature. **One law
 
 ---
 
-## 7. How to run it
+## 9. How to run it — THE WEB SERVER
 
 ### The viewer — this is the deliverable, not a debug tool
 
@@ -435,17 +481,47 @@ python ChimeraEngine/gallery.py 8765          # then open http://127.0.0.1:8765/
 **When you are told to work on a membrane, the only acceptable response is the PICTURE of that
 membrane.** Not a description of it, not a claim that it renders. Fetch the frame and LOOK at it.
 
+### How the server is actually built — read this before you debug it
+
+**One process, one GPU, one render thread.** `gallery.py` is a `http.server` on **127.0.0.1 only**
+(the studio's bind rule — never `0.0.0.0`; the pre-commit hook enforces it). It mounts
+`live_viewer.py`, which owns a **single background thread that is the sole owner of the GPU**.
+Nothing else may touch the pipeline. That thread:
+
+1. sleeps while `_clients == 0` — **with no viewer connected it does not render at all**, so the
+   4090 is free for LM Studio. Ask for a frame and it wakes;
+2. re-emits when the term, the time `t`, or a dial has changed;
+3. renders, JPEG-encodes, and publishes the bytes;
+4. pushes them to browsers as **MJPEG** (`multipart/x-mixed-replace`) on `/stream`.
+
+So the page is not polling and there is no websocket. `/live` is a static HTML shell whose `<img>`
+points at `/stream`; every control is a plain `fetch()` that returns **204 No Content** and changes
+the thread's state. **It is a web server — ask it for the page.** Do not drive a browser to do what
+a GET does.
+
+**Consequences you will hit:**
+
+- **A stale server holds the port and the new one dies silently.** That is the usual reason "nothing
+  happens". `DEMO.bat` frees it for you; by hand, kill whatever owns 8765 first.
+- **Errors do not reach the browser.** The render thread catches and stores them. Read
+  `gallery_err.log` / `gallery_out.log`, or `live_viewer`'s `_err`.
+- **The first render of a session compiles CUDA kernels** and can take a while. That is not a hang.
+- **Two servers cannot share the GPU.** Start one.
+
 ### The pages
 
 | URL | what it is |
 |---|---|
 | `/live` | the interface: hierarchy on the left, chapter in the middle, dials on the right |
-| `/live?blind=1` | the same without the labels — for judging a render without being told what it is |
-| `/frame?term=X` | one settled JPEG of membrane X. **This is how an agent looks at its own work.** |
+| `/live?blind=1` | identical picture, navigation intact — **only the "physics expects…" caption withheld.** For a proxy eye: shown the answer, an eye confirms instead of observes |
+| `/stream` | the MJPEG stream the page's `<img>` reads. Opening it counts as a client |
+| `/frame?term=X` | **one request, one JPEG.** No browser, no clicking. **This is how an agent looks at its own work.** |
+| `/terms` | JSON list of every renderable term |
+| `/` | the still gallery — the settled `output/movie_*_end.png` renders |
 
-`/frame` blocks until the scene has actually loaded AND a new frame exists. A response of exactly
-**33,267 bytes is the blank placeholder** — it means the render never happened, not that the
-membrane is black. Check `gallery_err.log`.
+`/frame` sets the scene and **blocks until that term has actually loaded AND a new frame exists**,
+so it cannot hand you the previous membrane's picture. A response of exactly **33,267 bytes is the
+blank placeholder** — the render never happened; it does not mean the membrane is black.
 
 ### The controls, and they are two different kinds
 
@@ -460,6 +536,32 @@ membrane is black. Check `gallery_err.log`.
 declared exaggeration — a lie the render is telling, shown with the handle to turn it off. `/live`
 has a **"show it at true scale"** button that sets every lens to 1.0, and what you get is usually a
 smooth ball and an empty black disk. That is the honest picture.
+
+They also behave differently, and the difference is the point:
+
+- `/free` writes the value to that membrane's **`trained.json`**, runs `grow.py`, and forces a
+  reload — so **every `numbers.json` below it is rewritten on disk.** It is slow, and it is supposed
+  to be: you changed the world.
+- `/lens` writes to that membrane's **`lens.json`** and re-emits. Nothing is regrown, no page
+  reload, next frame shows it. You changed the camera.
+
+Both are readable from `physics.py` without running anything — `FREE = {...}` and `LENS = {...}` are
+module-level dicts the viewer parses with `ast`, which is why a dial appears in the UI the moment you
+declare it and needs no registration anywhere.
+
+### Driving it from an agent, without a browser
+
+```bash
+curl -s "http://127.0.0.1:8765/frame?term=aBlueWorld" -o frame.jpg   # then LOOK at frame.jpg
+curl -s "http://127.0.0.1:8765/time?t=0.35"                          # scrub, then fetch again
+curl -s "http://127.0.0.1:8765/free?term=theTerrain&name=continental_fraction&value=0.15"
+curl -s "http://127.0.0.1:8765/lens?term=theTerrain&name=relief&value=1"
+curl -s "http://127.0.0.1:8765/terms"
+```
+
+`/time`, `/free`, `/lens` and `/input` return 204 and change state; fetch `/frame` afterwards to see
+the result. **Sample more than one frame** — one picture cannot show motion, and comparing two is
+what caught a viewer silently refusing to switch scenes: the label changed and the render did not.
 
 ### Growing and reading the tree
 
@@ -515,7 +617,7 @@ to say so. (Measured: eleven worlds at a flat 900 grains each put 4,801 splats i
 
 ---
 
-## 8. The ways this goes wrong — all observed in one build
+## 10. The ways this goes wrong — all observed in one build
 
 | failure | what it looked like | the tell |
 |---|---|---|
@@ -545,7 +647,7 @@ zero of the same curve. The baseline adjudicates.
 
 ---
 
-## 9. Working with Alan
+## 11. Working with Alan
 
 - He speaks in bursts and corrects hard. **The correction is the signal** — take it literally, not
   diplomatically. He has caught by eye: an amputated body, a sideways-sliding ground, a mis-metered
@@ -559,7 +661,7 @@ zero of the same curve. The baseline adjudicates.
 
 ---
 
-## 10. Where things are
+## 12. Where things are
 
 ### The tree and its language
 
