@@ -36,7 +36,18 @@ SCENES = {
     "theStar":        {"kind": "collapse", "type": "atmosphere", "count": 7000, "spread": 55, "size": 3.4,
                        "color": (1.0, 0.93, 0.82, 1.0), "pull": 1.4, "cam": (0.0, -210.0, 26.0)},
     "aPlanet":        {"kind": "planet", "radius": 88.0, "ocean": 0.66, "cam": (0.0, -250.0, 40.0)},
-    "theTerrain":     {"kind": "terrain", "radius": 88.0, "relief": 0.13, "sea": 0.5, "cam": (0.0, -250.0, 40.0)},
+    # RELIEF AT ITS TRUE SCALE. It was 0.13 of the radius -- 40x too tall -- and the cost was
+    # visible: measured, the silhouette WOBBLED 2.1% as the body turned (against 0.3% for the
+    # undisplaced aPlanet), so the object appeared to change shape at the sub-camera point.
+    # Earth's ENTIRE relief, Everest (+8.85 km) to Challenger Deep (-10.99 km), is 19.8 km on a
+    # 6371 km radius = 0.0031. And the ceiling is derivable, not looked up: rock crushes under its
+    # own weight above h_max = sigma/(rho*g) = 2e8/(2700*9.81) = 7.5 km, which is 0.0012 of R --
+    # the same law that predicts Olympus Mons at 20 km on Mars.
+    # SO A PLANET IS SMOOTHER THAN A BILLIARD BALL, and at true scale its relief is INVISIBLE from
+    # space. That is not a defect to compensate for: at this membrane's scale terrain is carried by
+    # COLOUR (the hypsometric tint), and it only becomes geometry when you descend to it. Any
+    # exaggeration must be declared like STAR_EXAGGERATION, never smuggled into the constant.
+    "theTerrain":     {"kind": "terrain", "radius": 88.0, "relief": 0.0031, "sea": 0.5, "cam": (0.0, -250.0, 40.0)},
     "thePlanets":     {"kind": "row", "span": 500.0, "cam": (0.0, -520.0, 55.0),
                        "planets": [((1.00, 0.28, 0.12), 30.0),   # molten red   (hottest)
                                    ((1.00, 0.52, 0.16), 30.0),   # orange
