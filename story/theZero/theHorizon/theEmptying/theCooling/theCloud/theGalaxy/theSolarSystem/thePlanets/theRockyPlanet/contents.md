@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aBlueWorld` | This is the weather, worked out for the world the last chapter built. It turns |
+| `aRockyPlanet` | This is the same world as the last chapter, seen from the inside. Because it was |
 
 ## Hands down
 
