@@ -37,6 +37,31 @@ and neither one alone is the game.
 
 ## A chapter is a folder
 
+## `the` and `a` — the prefix is a classification
+
+**Every concept wants two membranes, and they are different kinds of claim:**
+
+| prefix | what it is | example |
+|---|---|---|
+| **`theX`** | **the LAW** — what an X *is*, and the constraints any X must satisfy | `theStar`: a fall stopped by fire, and the least mass at which fire can light (0.070 M☉) |
+| **`aX`** | **the INSTANCE** — the one that actually formed here, inheriting from the law | `aStar`: this system's star. M = 1.000 M☉ → R, L, T = 5772 K, lifetime 10 Gyr |
+
+The law says what is *possible*; the instance is what *happened*. An instance always sits **inside**
+its law and reads its numbers from it, so it can never contradict it — and the law can be checked
+against reality independently of any instance that grew from it.
+
+**This is the target shape for every concept**, all the way down: `theTerrain` / `aTerrain`,
+`theGround` / `aGround`, `theOcean` / `anOcean`, `theHuman` / `aHuman`.
+
+**It also diagnoses the two orphans.** `aPlanet` and `theTerrain` are the only painted scenes left,
+and each is missing its other half — `aPlanet` is an instance with no law above it, `theTerrain` a
+law with no instance below it. That is precisely why nothing derives them and why both held wrong
+numbers for so long (relief 40× too tall, aridity peaking at the poles).
+
+In the viewer: **green = `the`, a law · red = `a`, an instance · hollow = not built yet.**
+
+---
+
 **Every chapter opens with a plain-words line, before any equation:**
 
 ```markdown

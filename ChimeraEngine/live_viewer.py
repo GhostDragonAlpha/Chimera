@@ -341,7 +341,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <style>
  :root{color-scheme:dark;--bg:#06070c;--panel:#0b0e17;--line:#1e2740;--ink:#cfe0ff;--dim:#6b7899;
-       --live:#7fd18a;--paint:#d1a04a;--hot:#ffd98a}
+       --law:#7fd18a;--inst:#e8705c;--paint:#5c6683;--hot:#ffd98a}
  *{box-sizing:border-box}
  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,sans-serif;
       height:100vh;display:grid;grid-template-columns:300px 1fr;grid-template-rows:100vh}
@@ -352,9 +352,13 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  .node:hover{background:#121a2c}
  .node.on{background:#1b2942;border-left-color:#5f8ee0}
  .node .nm{font-size:13px}
+ /* THE PREFIX IS A CLASSIFICATION. `the` names the LAW -- what a thing IS. `a` names the
+    INSTANCE grown from it. They are different kinds of claim, so they get different colours. */
+ .node.inst .nm{color:var(--inst)}
  .node.paint .nm{color:var(--paint)}
- .dot{width:6px;height:6px;border-radius:50%;background:var(--live);flex:none;margin-top:6px}
- .node.paint .dot{background:var(--paint)}
+ .dot{width:6px;height:6px;border-radius:50%;background:var(--law);flex:none;margin-top:6px}
+ .node.inst .dot{background:var(--inst)}
+ .node.paint .dot{background:transparent;border:1px solid var(--paint)}
  .kids{overflow:hidden}
  main{display:grid;grid-template-rows:1fr auto;min-width:0}
  #stage{position:relative;background:#04050b;overflow:hidden;touch-action:none;cursor:grab}
@@ -363,8 +367,9 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  #hud{position:absolute;left:16px;top:14px;pointer-events:none;max-width:60%}
  #hud b{font-size:20px;color:#fff;letter-spacing:.2px}
  #hud .tag{font-size:11px;padding:2px 7px;border-radius:99px;border:1px solid;margin-left:8px;vertical-align:3px}
- .t-live{color:var(--live);border-color:#2c5f3a}
- .t-paint{color:var(--paint);border-color:#5f4a1e}
+ .t-law{color:var(--law);border-color:#2c5f3a}
+ .t-inst{color:var(--inst);border-color:#6e392f}
+ .t-paint{color:var(--paint);border-color:#39415c}
  #plain{margin-top:8px;color:#b9c8e6;font-size:14px;max-width:640px;text-shadow:0 1px 8px #000}
  #serial{margin-top:6px;color:var(--dim);font:11px ui-monospace,Menlo,monospace}
  footer{border-top:1px solid var(--line);background:var(--panel);padding:10px 16px;display:flex;
@@ -375,7 +380,10 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
 </style>
 <aside>
   <h1>Chimera</h1>
-  <p class=sub>the story, as a hierarchy &mdash; click any membrane</p>
+  <p class=sub>the story, as a hierarchy &mdash; click any membrane<br>
+     <span style="color:#7fd18a">&#9679; the</span> = the law &nbsp;
+     <span style="color:#e8705c">&#9679; a</span> = an instance &nbsp;
+     <span style="color:#5c6683">&#9675;</span> = not built</p>
   <div id=tree></div>
 </aside>
 <main>
@@ -395,7 +403,7 @@ TREE.forEach(n=>index(n,[]));
 const treeEl=document.getElementById('tree');
 function row(n,depth){
   const d=document.createElement('div');
-  d.className='node'+(n.membrane?'':' paint');
+  d.className='node'+(n.membrane?(n.name[0]==='a'&&n.name[1]===n.name[1].toUpperCase()?' inst':''):' paint');
   d.style.paddingLeft=(10+depth*15)+'px';
   d.innerHTML='<span class=dot></span><span class=nm>'+n.name+'</span>';
   d.onclick=()=>pick(n.name);
@@ -415,10 +423,11 @@ function pick(t){
   fetch('/scene?term='+encodeURIComponent(t));
   document.querySelectorAll('.node').forEach(e=>e.classList.toggle('on',e.dataset.name===t));
   const n=INDEX[t]||{}, live=(KINDS[t]==='membrane');
+  const inst=(t[0]==='a'&&t[1]===t[1].toUpperCase());
   document.getElementById('nm').textContent=t;
   const tg=document.getElementById('tag');
-  tg.textContent=live?'membrane':'painted scene';
-  tg.className='tag '+(live?'t-live':'t-paint');
+  tg.textContent=live?(inst?'an instance':'the law'):'not built';
+  tg.className='tag '+(live?(inst?'t-inst':'t-law'):'t-paint');
   document.getElementById('plain').textContent=n.plain||(READINGS[t]?('physics expects: '+READINGS[t]):'');
   document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ');
   const nums=n.numbers||{};

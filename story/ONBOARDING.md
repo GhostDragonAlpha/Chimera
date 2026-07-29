@@ -170,6 +170,27 @@ theCooling/
 **Work ONE membrane at a time.** A chapter is the description of everything contained in the membrane
 you chose — not a race down the tree.
 
+### `the` and `a` — the prefix is a classification, and it is the target shape
+
+Every concept wants **two** membranes, because they are different kinds of claim:
+
+| prefix | what it is | example |
+|---|---|---|
+| **`theX`** | **the LAW** — what an X *is*, and what any X must satisfy | `theStar`: a fall stopped by fire, above a minimum mass of 0.070 M☉ |
+| **`aX`** | **the INSTANCE** — the one that formed here, inheriting from the law | `aStar`: M = 1.000 M☉ → R, L, T = 5772 K, lifetime 10 Gyr |
+
+The law says what is **possible**; the instance is what **happened**. An instance sits *inside* its
+law and reads its numbers from it, so it cannot contradict it — and the law stays checkable against
+reality independently of any instance grown from it.
+
+Aim for both, everywhere: `theTerrain`/`aTerrain`, `theGround`/`aGround`, `theHuman`/`aHuman`.
+
+**It is also a diagnostic.** The only painted scenes left are `aPlanet` and `theTerrain` — each
+missing its other half (an instance with no law; a law with no instance). That is exactly why
+nothing derived them and why both carried wrong numbers for so long.
+
+Viewer colours: **green = `the` (a law) · red = `a` (an instance) · hollow = not built.**
+
 ### Every chapter opens with plain words, before any equation
 
 ```markdown
