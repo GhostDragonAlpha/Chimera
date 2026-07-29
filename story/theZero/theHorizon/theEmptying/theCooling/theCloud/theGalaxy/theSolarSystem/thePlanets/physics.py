@@ -137,8 +137,12 @@ def derive(parent, free):
         "giants_possible": (m_out / M_EARTH) > M_CRIT_CORE,
         "rocky_inside": True,
         "r_rocky_au": 0.5 * (R_IN + r_snow),          # where the rocky world this story follows sits
-        "T_star_surface": 5772.0,  # carried from the system's luminosity; the star is the CAUSE of the gradient
-        "R_star": 6.957e8,
+        # INHERITED, not typed. These used to be the literals 5772.0 and 6.957e8 sitting under a
+        # comment that CLAIMED they were carried from the system -- so changing the star's mass moved
+        # the snow line and left the sunlight the same colour. The star is a SIBLING and cannot be
+        # read directly; the parent carries its numbers across, which is what a parent is for.
+        "T_star_surface": float(parent["T_star_surface"]),
+        "R_star": float(parent["R_star"]),
         # CARRIED FOR THE CHILDREN, not used here: a world can only read its parent, and it needs the
         # star's mass to know its own YEAR (T = 2*pi*sqrt(a^3/GM)) and the outer ice inventory to know
         # where its water came from. A parent that withholds what its children need forces them to

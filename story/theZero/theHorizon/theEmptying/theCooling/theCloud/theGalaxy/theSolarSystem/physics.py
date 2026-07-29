@@ -14,6 +14,7 @@ from math import pi, sqrt
 G = 6.67430e-11
 M_SUN = 1.98892e30
 L_SUN = 3.828e26
+R_STAR_SUN = 6.957e8      # the Sun's photosphere -- the normalisation for R ~ M^0.8
 AU = 1.495978707e11
 
 DISK_EDGE_AU = 30.0          # where this system's disk stops holding together
@@ -72,6 +73,19 @@ def derive(parent, free):
         "M_disk": M_disk,
         "M_disk_solar": M_disk / M_SUN,
         "L": L,                                            # what lights everything outward
+        # THE STAR'S SIZE AND COLOUR, CARRIED FOR ITS SIBLINGS -- and this is what a parent is FOR.
+        # theStar and thePlanets are siblings: neither can read the other, and a membrane may only
+        # read its parent. So if the SYSTEM does not carry the star's radius and surface temperature,
+        # the planets cannot know the colour of their own sunlight -- and what they did instead was
+        # TYPE 5772.0 as a literal under a comment claiming it was inherited. That is the same lie
+        # as drawing a star-ball: an assertion wearing a derivation's clothes. Change the star's mass
+        # and nothing downstream moved.
+        #
+        # Same empirical main-sequence scalings as the luminosity above, computed ONCE, here, because
+        # this is the only membrane both children can see.
+        "R_star": R_STAR_SUN * (M_star / M_SUN) ** 0.8,
+        "T_star_surface": (L / (4.0 * pi * (R_STAR_SUN * (M_star / M_SUN) ** 0.8) ** 2
+                                * 5.670374419e-8)) ** 0.25,
         "flattened": True,                                 # angular momentum did this, not a choice
         "kepler_exponent": 1.5,                            # T^2 ~ a^3 -- measured in bigbang.py at 1.50
         "T_at_1au_days": kepler_period(1.0, M_star) / 86400.0,

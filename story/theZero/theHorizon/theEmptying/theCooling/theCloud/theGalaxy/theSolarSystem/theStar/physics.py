@@ -70,9 +70,15 @@ def derive(parent, free):
     # the Sun, not derived here. So at 1 M_sun the surface temperature returning 5772 K is
     # definitional, not a prediction; the scalings predict only for OTHER masses. The derived,
     # predictive result of this membrane is M_min.
-    L = L_SUN * (M / M_SUN) ** 3.5
-    R = R_SUN * (M / M_SUN) ** 0.8
-    T_surface = (L / (4.0 * pi * R ** 2 * SIGMA_SB)) ** 0.25         # what balance forces it to glow at
+    # READ, DO NOT RE-DERIVE. The system already computed these from the same mass with the same
+    # scalings, and it had to -- the planets are this star's siblings and can only reach its numbers
+    # through their shared parent. Computing them a second time here would be two authorities for
+    # one number, which is exactly how the climate and the terrain ended up with ice lines six
+    # degrees apart. The fallbacks exist only so this membrane still runs standalone.
+    L = float(parent.get("L") or L_SUN * (M / M_SUN) ** 3.5)
+    R = float(parent.get("R_star") or R_SUN * (M / M_SUN) ** 0.8)
+    T_surface = float(parent.get("T_star_surface")
+                      or (L / (4.0 * pi * R ** 2 * SIGMA_SB)) ** 0.25)   # what balance forces it to glow at
     return {
         # ITS REAL SIZE: the photosphere. Everything emits at radius ~1 locally, so this is
         # the only place the true scale is recorded -- and a human needs it to know what they see.

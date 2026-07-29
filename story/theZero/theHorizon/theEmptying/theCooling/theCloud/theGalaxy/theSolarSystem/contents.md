@@ -28,6 +28,8 @@
 | `M_disk` | 1.991e+27 |
 | `M_disk_solar` | 0.001001 |
 | `L` | 3.828e+26 |
+| `R_star` | 6.957e+08 |
+| `T_star_surface` | 5772 |
 | `flattened` | True |
 | `kepler_exponent` | 1.5 |
 | `T_at_1au_days` | 365.2 |

@@ -98,6 +98,13 @@ And the cost of getting it wrong is not tidiness: `theDensityClock` parented ins
 made time dilation **unreachable from `theShip`**. A misplaced membrane is a dependency that does
 not resolve.
 
+**The way this rule actually breaks is a LITERAL.** A membrane needs a sibling's number, cannot say
+it, and types the value instead — usually under a comment claiming it was inherited. `thePlanets`
+carried `"T_star_surface": 5772.0` this way, so moving the star's mass shifted the snow line and left
+the sunlight the same colour forever. The language cannot stop you typing a number; only the test
+can. **The test is a slider: move a free number at the top, and anything downstream that does not
+move was typed, not derived.**
+
 ## 8. What cannot be said
 
 The language has no way to express these, and that is deliberate:
@@ -106,6 +113,12 @@ The language has no way to express these, and that is deliberate:
   choosing a value, you have broken the chain and substituted taste for a law.
 - **An appearance that disagrees with the physics.** `emit` reads the same `numbers` as `derive`, in
   the same file — there is no channel through which they could differ.
+- **A body the derivation did not produce.** `emit` may only speak of what `derive` made. An
+  exaggeration is a *scale* on something real; it is not a way to introduce an object. A "star
+  marker" drawn beside a planet is **a moon**, and no moon was derived — the fact that the render
+  needed one is not an argument, it is the bug. A light source is said by its **light**: the
+  terminator, the lit limb, the shadow. If a thing is off-screen at true scale, it is off-screen;
+  go up a level, where it is real and placed.
 - **A skipped level.** `HIERARCHIES.md` holds the real paths; a missing step is a bug, not a shortcut.
 - **A subtraction.** From zero only addition is legal. Chapters are revisited, never removed.
 - **Self-judgement.** A membrane cannot certify its own render; that needs a second, blind eye.

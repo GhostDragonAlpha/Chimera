@@ -157,6 +157,19 @@ creature. That is the content budget: **one law, every world.**
 
 ---
 
+## Two rules that cost a day each
+
+**A render may not contain a body the derivation did not produce.** An exaggeration scales something
+derived; it cannot invent an object. A "star marker" drawn beside a planet is a moon, and no moon was
+derived. A light source is told by its light — the terminator already says where the star is. If a
+thing is off-screen at true scale, go up a level; that is what the hierarchy is *for*.
+
+**A sibling's number comes through the parent, or not at all.** `theStar` and `thePlanets` cannot
+read each other. When the planets needed the star's colour they typed `5772.0` under a comment
+claiming it was inherited — so changing the star moved the snow line and left the sunlight identical.
+The parent carries it. **The test is a slider:** move a free number at the top, and anything that
+fails to move downstream is typed, not derived.
+
 ## Composition — a parent is made of its children
 
 A law may define `layout(nums) -> {child: (centre, scale)}`. Each named child is grown, emitted in

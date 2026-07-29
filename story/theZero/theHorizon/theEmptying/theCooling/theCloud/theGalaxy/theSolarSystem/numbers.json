@@ -10,6 +10,8 @@
   "M_disk": 1.99091091091081e+27,
   "M_disk_solar": 0.0010010010010009503,
   "L": 3.828e+26,
+  "R_star": 695700000.0,
+  "T_star_surface": 5772.003429145849,
   "flattened": true,
   "kepler_exponent": 1.5,
   "T_at_1au_days": 365.21005381619494,

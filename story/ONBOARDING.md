@@ -300,6 +300,17 @@ Four rules, each learned by breaking it:
   grains to say so.
 - **Never duplicate a child.** `theSolarSystem` drew its own core *and* placed `theStar` — the same
   matter twice, and it was what overran the tile.
+- **A SIBLING'S NUMBER COMES THROUGH THE PARENT, OR NOT AT ALL — and the failure mode is a
+  LITERAL.** `theStar` and `thePlanets` are siblings, so the planets cannot read the star. What
+  happened instead: `thePlanets` **typed `"T_star_surface": 5772.0`** under a comment saying
+  *"carried from the system's luminosity"*. It was carried from nowhere. Change the star's mass and
+  the snow line moved while the sunlight stayed exactly the same colour, forever. The fix is never
+  to type the value — it is that **the parent carries it**, because being the thing both children
+  can see is what a parent is FOR. The system now derives `R_star` and `T_star_surface` once, and
+  both children read them.
+  **The test is a slider:** move a free number at the top and every consequence must move. Anything
+  that does not move is typed. Moving `M_system` now walks the star K→G→F→A, shifts the snow line
+  1.54→7.56 AU, and selects a *different* habitable world with different gravity.
 - **A membrane may only read its PARENT.** This is not tidiness: it decides what can reach what.
   `theDensityClock` sitting inside one solar system made time dilation **unreachable from
   `theShip`** — a dependency that does not resolve. It moved beside `theHorizon`, whose radius *is*
@@ -323,6 +334,21 @@ never given.**
 | theDensityClock | GM/rc², v²/2c² | GPS drift **+38.5 μs/day** | 38.6 |
 
 ### VISUAL — it emits its own matter, and it turns
+
+> **A RENDER MAY NOT CONTAIN A BODY THE DERIVATION DID NOT PRODUCE.** An exaggeration may *scale*
+> something derived. It may never *invent an object*. Observed: the planet membranes drew a small
+> sphere beside the world, commented *"the star, drawn as a marker — direction true, distance
+> declared-false"*. A star is 28,000 planetary radii away and a quarter of a degree across: at any
+> framing that shows the planet it is **off-screen and sub-pixel**. Drawn at 1.3 radii it is not a
+> star, **it is a moon**, and no moon was ever derived. Alan saw it in one glance.
+>
+> **A light source is told by its light.** Where the star was, was already fully said by the
+> terminator, by which limb is lit, by the shadow. The marker was redundant *and* false.
+>
+> **The tell:** you catch yourself writing "so you can see where X is". If X is off-screen at true
+> scale, say it with its EFFECT, or go up a level — `theSolarSystem` is where the star and the
+> planets are both real and both placed. **That is what the hierarchy is for: you build the star
+> first so that you can see the planet.**
 `emit()` lives in the **same file** as `derive()` and reads the **same numbers**, so appearance
 cannot drift from physics — there is nothing to cross-check because they are one thing.
 
@@ -402,6 +428,8 @@ folder's path is its address, its parent's numbers are its signal.
 | **not mass-conserving** | a growth rule that hands out more than exists | 101 Earth masses from a disk holding 56 |
 | **duplicated a child** | parent draws its own version *and* places the child | the same matter twice; it overran a tile and left a black hole |
 | **two copies of one function** | `fibonacci_sphere` in both `matter.py` and `splat_appearance.py` | one gained `jitter`, the other did not — crash, and drift |
+| **invented a body** | drew a "star marker" 1.3 radii from a planet | it reads as **a moon**; nothing derived a moon. An exaggeration scales what exists — it cannot mint an object |
+| **a literal wearing a comment** | `"T_star_surface": 5772.0` under *"carried from the system"* | move the source; if the consumer does not move, it was typed. Reach for the PARENT, never the keyboard |
 
 **Economy is a rule.** A run whose outcome you already know is entropy — watts, heat, wall-clock,
 zero information. Kill it. The counter-rule is equally hard: **a number without its control is not
