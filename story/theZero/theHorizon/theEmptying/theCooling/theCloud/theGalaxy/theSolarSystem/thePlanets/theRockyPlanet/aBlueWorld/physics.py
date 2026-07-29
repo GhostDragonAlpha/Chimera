@@ -372,17 +372,13 @@ def emit(nums, t=1.0):
         a[:, 11] = GLOW
         parts.append(a)
 
-    # THE STAR AS A MARKER: true direction, declared-false distance. Its TRUE angular size from here
-    # is 0.25 degrees, which against this framing is 1.3% of the planet's radius -- so it is drawn at
-    # 0.018, near-honest, rather than the 0.055 that rendered a white square bigger than an ice cap.
-    # Kept close so it cannot hijack the framing.
-    n_s = 120
-    ds = fibonacci_sphere(n_s)
-    st = blank(n_s)
-    st[:, 0:3] = ds * (0.018 * MARK) + sun * 1.30
-    st[:, 21:24] = ds
-    paint(st, blackbody_rgb(float(nums.get("T_star_surface", 5772.0))), 1.0, 0.007, SOLID)
-    parts.append(st)
+    # NO STAR-BALL. It used to be drawn here as a "marker" at 1.3 planetary radii -- and at that
+    # distance it is not a star, it is a MOON. This story has never derived a moon, so putting a
+    # moon-shaped object in the frame is the render asserting a body that does not exist, which is
+    # the one thing this whole method exists to prevent. Its true angular size from the ground is a
+    # quarter of a degree at 28,000 radii: off-screen and sub-pixel at any framing that shows the
+    # planet. WHERE THE STAR IS, IS ALREADY BEING SAID -- by the terminator, by which limb is bright,
+    # by the length of the shadow. A light source is told by its light. Nothing replaces it.
     return np.concatenate(parts, axis=0)
 
 
