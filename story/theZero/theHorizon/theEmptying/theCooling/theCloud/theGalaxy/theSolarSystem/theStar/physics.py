@@ -135,9 +135,10 @@ def emit(nums, t=1.0):
 
 def layout(nums):
     """WHAT IS CONTAINED HERE. theStar is the LAW -- what a star is, and the least mass that can be
-    one. aStar is the star that actually formed in this system, so it sits at the centre of this
+    one. aYellowStar is the star that actually formed in this system -- named by the class its
+    own temperature puts it in (G, yellow), so the name states a derived fact, so it sits at the centre of this
     membrane's frame at full size: at this scale the membrane IS the star."""
-    return {"aStar": ((0.0, 0.0, 0.0), 1.0)}
+    return {"aYellowStar": ((0.0, 0.0, 0.0), 1.0)}
 
 
 def measure(nums):

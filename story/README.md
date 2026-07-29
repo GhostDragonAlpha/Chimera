@@ -53,6 +53,23 @@ against reality independently of any instance that grew from it.
 **This is the target shape for every concept**, all the way down: `theTerrain` / `aTerrain`,
 `theGround` / `aGround`, `theOcean` / `anOcean`, `theHuman` / `aHuman`.
 
+### An instance is named by its KIND, and the kind is derived
+
+Not `aStar`, `aStarB`, `aStarC` — **`aYellowStar`**. The descriptive word is the thing's
+**classification**, taken from the established taxonomy, and it is *computed*, never assigned:
+
+```
+T_surface = 5772 K   →  Harvard class G  →  "Yellow"  →  the folder is aYellowStar
+```
+
+`measure()` then checks the **folder name still matches the class its own physics produces**. Rename
+it wrongly and the check fails; change the star's mass enough to move it out of G and the name has
+to change with it. **The name is a claim, so it is tested like one.**
+
+Use the real taxonomy for each kind — spectral class for stars (O B A F G K M), composition for
+worlds (rocky / ice giant / gas giant), and so on. Two of a kind in one place get their own
+descriptors, not letters.
+
 **It also diagnoses the two orphans.** `aPlanet` and `theTerrain` are the only painted scenes left,
 and each is missing its other half — `aPlanet` is an instance with no law above it, `theTerrain` a
 law with no instance below it. That is precisely why nothing derives them and why both held wrong

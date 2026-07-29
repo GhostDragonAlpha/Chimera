@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aStar` | This system's own star. Its whole life is one standoff: gravity pulling in, |
+| `aYellowStar` | This system's own star. Its whole life is one standoff: gravity pulling in, |
 
 ## Hands down
 

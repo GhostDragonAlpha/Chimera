@@ -185,6 +185,16 @@ reality independently of any instance grown from it.
 
 Aim for both, everywhere: `theTerrain`/`aTerrain`, `theGround`/`aGround`, `theHuman`/`aHuman`.
 
+**An instance is named by its KIND, and the kind is DERIVED.** Not `aStar`, `aStarB` — **`aYellowStar`**:
+
+```
+T_surface = 5772 K  →  Harvard class G  →  "Yellow"  →  folder: aYellowStar
+```
+
+`measure()` checks the folder name still matches the class its own physics produces, so a wrong
+rename fails and a changed mass forces a rename. **The name is a claim; test it like one.** Use the
+real taxonomy per kind — spectral class for stars, composition for worlds — never letters.
+
 **It is also a diagnostic.** The only painted scenes left are `aPlanet` and `theTerrain` — each
 missing its other half (an instance with no law; a law with no instance). That is exactly why
 nothing derived them and why both carried wrong numbers for so long.

@@ -1,10 +1,15 @@
-# aStar
+# aYellowStar
 
 **In plain words —** This system's own star. Its whole life is one standoff: gravity pulling in,
 fusion pushing out, holding each other exactly still — and every number about it, from its colour to
 how long it lives, falls out of its mass alone.
 
 **the yellow hearth — the one this world orbits**
+
+**Its name is a derived fact.** Stars are classified by surface temperature (O B A F G K M), and
+this one balances at 5772 K, which is class **G — yellow**. It is not called that because anyone
+chose to; it is called that because that is what it *is*, and `measure()` checks the folder name
+still matches the class its physics produces.
 
 `theStar` said what a star *is*: a fall stopped by fire, and the smallest mass at which fire can
 light. **This is the star that actually formed here**, and it takes its mass from the system that

@@ -33,6 +33,23 @@ def surface_temperature(L, R):
     return (L / (4.0 * pi * R * R * SIGMA_SB)) ** 0.25
 
 
+# THE NAME IS DERIVED, NOT ASSIGNED. Stars are classified by surface temperature -- the Harvard
+# sequence O B A F G K M -- and the colour word IS that class. So a membrane's name states what the
+# physics found, and measure() checks that the folder is still called the right thing. Rename it
+# wrongly and the check fails; change the star's mass and the class (and the name) must change too.
+SPECTRAL = [(30000.0, "O", "Blue"), (10000.0, "B", "BlueWhite"), (7500.0, "A", "White"),
+            (6000.0, "F", "YellowWhite"), (5200.0, "G", "Yellow"), (3700.0, "K", "Orange"),
+            (0.0, "M", "Red")]
+
+
+def spectral_class(T):
+    """(letter, colour) from the surface temperature alone."""
+    for t_min, letter, colour in SPECTRAL:
+        if T >= t_min:
+            return letter, colour
+    return "M", "Red"
+
+
 def lifetime_years(M):
     """Fuel over burn rate: M/L ~ M^-2.5. A star twice as heavy lives less than a fifth as long."""
     return SUN_LIFETIME_YR * (M / M_SUN) / (luminosity(M) / L_SUN)
@@ -53,6 +70,9 @@ def derive(parent, free):
         "L": L,
         "L_solar": L / L_SUN,
         "T_surface": T,                                   # 5772 K -- forced by balance, not picked
+        "spectral_class": spectral_class(T)[0],           # G -- from the temperature alone
+        "colour": spectral_class(T)[1],                   # Yellow -- and this IS the membrane's name
+        "name": "a" + spectral_class(T)[1] + "Star",      # aYellowStar, derived rather than chosen
         "lifetime_yr": lifetime_years(M),
         "granules_across": 2.0 * R / (GRANULE_KM * 1e3),  # how many convection cells span the disk
         "granule_dT": GRANULE_DT,
@@ -116,6 +136,12 @@ def emit(nums, t=1.0):
 def measure(nums):
     """Facts: the surface temperature is what balance forces (5772 K for a solar mass), and the life
     is set by mass alone -- both derived, neither chosen."""
+    from pathlib import Path
+    folder = Path(__file__).resolve().parent.name
     return {"T_surface": nums["T_surface"],
+            "spectral_class": nums["spectral_class"],
+            # THE NAME MUST MATCH THE PHYSICS. The folder is called what the temperature says it is,
+            # so a wrong rename -- or a changed mass that moves the class -- fails here.
+            "name_matches_class": folder == nums["name"],
             "matches_sun": abs(nums["T_surface"] - T_SUN) < 60.0 if abs(nums["M_solar"] - 1) < 0.02 else None,
             "lifetime_gyr": nums["lifetime_yr"] / 1e9}
