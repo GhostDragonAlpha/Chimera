@@ -157,6 +157,7 @@ def slider_test(seed: Path) -> list:
         if not free:
             continue
         for name, spec in free.items():
+            local = spec.get("local")
             base, pert = {}, {}
             _walk(seed, None, base, base_acc := {})
             lo, hi = float(spec.get("lo", 0.5)), float(spec.get("hi", 2.0))
@@ -170,7 +171,7 @@ def slider_test(seed: Path) -> list:
                 a, b = base_acc.get(m.name), pert_acc.get(m.name)
                 if a is None or b is None:
                     continue
-                rows.append((folder.name, name, m.name, _changed(a, b), len(a)))
+                rows.append((folder.name, name, m.name, _changed(a, b), len(a), local))
     return rows
 
 
@@ -208,19 +209,27 @@ def main() -> int:
         if not rows:
             print("  no free dials found.")
         cur = None
-        for owner, dial, child, moved, total in rows:
+        for owner, dial, child, moved, total, local in rows:
             if (owner, dial) != cur:
                 cur = (owner, dial)
-                print(f"\n  {owner}.{dial}")
-            mark = "  " if moved else "<-- DID NOT MOVE"
-            if not moved and child != owner:
-                bad += 1
+                # A DECLARED-LOCAL DIAL IS NOT A FAILURE -- it is a written claim that this number
+                # has no business downstream, with the reason attached. A silent non-propagation is
+                # indistinguishable from a bug; a stated one can be argued with.
+                note = f"   [declared local: {local}]" if local else ""
+                print(f"\n  {owner}.{dial}{note}")
+            mark = ""
+            if not moved and not local:
+                mark = "<-- DID NOT MOVE"
+                if child != owner:
+                    bad += 1
             print(f"     {child:<22} {moved:>3}/{total:<3} numbers changed  {mark}")
         print()
         if bad:
             print(f"  {bad} membrane(s) did not respond to a dial above them.")
             print("  Either they are genuinely independent of it, or they are typing a value")
-            print("  they should be inheriting. Check the literals listed above.")
+            print("  they should be inheriting. Check the literals listed above. If a dial really")
+            print("  is local, say so in its FREE entry -- add  \"local\": \"<the reason>\"  -- so the")
+            print("  claim is written down and reviewable instead of being a silent absence.")
         else:
             print("  every descendant responded to every dial above it.")
     return 0

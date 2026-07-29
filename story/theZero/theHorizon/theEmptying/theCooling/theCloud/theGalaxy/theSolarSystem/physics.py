@@ -33,20 +33,63 @@ import clock as _clk
 
 
 FREE = {
-    # WHICH fragment of the parent cloud became this system. This is the number that decides the
-    # star's mass -- and therefore its class, its NAME, its colour, its life, the snow line, and
-    # where the rocky worlds sit. One slider, and the whole subtree re-derives.
-    "M_system": {"label": "system mass", "default": 1.9910e30,
-                 "lo": 2.0e29, "hi": 6.0e30, "unit": "kg", "log": True},
+    # WHICH FRAGMENT this system is -- said as a POSITION IN THE GALAXY'S OWN DISTRIBUTION, not as a
+    # mass in kilograms.
+    #
+    # It used to be a mass, and that was the last broken edge in the tree: `audit.py --slider` showed
+    # theGalaxy's dial moving NOTHING below it, because the system's mass did not come from the
+    # galaxy at all -- it was a free number with a typed default, and the galaxy->system edge carried
+    # nothing. A percentile fixes it, because the mass it maps to is the galaxy's answer: the
+    # characteristic mass comes from the Jeans mass of a cold core, and change the galaxy's core
+    # conditions and every system in it moves.
+    #
+    # The default is where the SUN sits in this galaxy's IMF: heavier than about 93% of stars. That
+    # is a fact, not a preference -- and it is why "an ordinary star" is already an unusual one.
+    "imf_percentile": {"label": "which fragment", "default": 0.933,
+                       "lo": 0.02, "hi": 0.9995, "unit": "of stars are lighter"},
 }
+
+
+def _imf_mass(p, m_lo, m_hi, m_char, slope_high, n=2400):
+    """Invert the galaxy's mass function: percentile -> fragment mass, in solar masses.
+
+    The SHAPE is the parent's -- its characteristic mass, its floor, its slope all arrive through
+    `numbers`. This only reads the distribution off; it does not decide what the distribution is.
+    (Restating the law here would be two authorities for one curve, which is how they drift.)"""
+    SLOPE_MID, SLOPE_LOW, M_BROWN = -1.3, -0.3, 0.08
+    xs, ws = [], []
+    for i in range(n):
+        m = m_lo * (m_hi / m_lo) ** (i / (n - 1.0))
+        if m >= m_char:
+            w = (m / m_char) ** slope_high
+        elif m >= M_BROWN:
+            w = (m / m_char) ** SLOPE_MID
+        else:
+            w = (M_BROWN / m_char) ** SLOPE_MID * (m / M_BROWN) ** SLOPE_LOW
+        xs.append(m); ws.append(w * m)
+    tot, run = sum(ws), 0.0
+    p = min(max(float(p), 1e-6), 1.0 - 1e-9)
+    for x, w in zip(xs, ws):
+        run += w
+        if run / tot >= p:
+            return x
+    return xs[-1]
 
 
 def derive(parent, free):
     if parent is None or not parent.get("collapsing"):
         raise ValueError("theSolarSystem requires a parent cloud that is collapsing")
-    # ONE fragment of the parent cloud becomes this system. Which fragment is the human's dial --
-    # the story follows a Sun-like one, so that a habitable world is on the table at all.
-    M_total = float(free.get("M_system", M_SUN / STAR_FRACTION))
+    if "m_char_solar" not in parent:
+        raise ValueError("theSolarSystem requires a parent GALAXY carrying its mass function")
+    # ONE fragment of the parent galaxy's clouds becomes this system, and its mass is DRAWN FROM THE
+    # DISTRIBUTION THE GALAXY DERIVED -- not chosen here. The galaxy walked the Jeans mass down eight
+    # orders of magnitude to where fragmentation stops, which is what fixes the characteristic
+    # stellar mass; this membrane only picks a position in that distribution.
+    p_imf = float(free.get("imf_percentile", 0.933))
+    m_char = float(parent["m_char_solar"])
+    m_lo, m_hi = float(parent["m_floor_solar"]), float(parent["m_max_solar"])
+    M_frag_solar = _imf_mass(p_imf, m_lo, m_hi, m_char, float(parent["imf_slope_high"]))
+    M_total = M_frag_solar * M_SUN / STAR_FRACTION
     M_star = STAR_FRACTION * M_total
     M_disk = M_total - M_star
     L = L_SUN * (M_star / M_SUN) ** 3.5                    # main-sequence mass-luminosity
@@ -70,6 +113,9 @@ def derive(parent, free):
         "M_total": M_total,
         "M_star": M_star,
         "M_star_solar": M_star / M_SUN,
+        "imf_percentile": p_imf,                           # where this system sits among all stars
+        "M_fragment_solar": M_frag_solar,                  # the draw, before the disk is split off
+        "m_char_solar": m_char,                            # carried: the galaxy's characteristic mass
         "M_disk": M_disk,
         "M_disk_solar": M_disk / M_SUN,
         "L": L,                                            # what lights everything outward

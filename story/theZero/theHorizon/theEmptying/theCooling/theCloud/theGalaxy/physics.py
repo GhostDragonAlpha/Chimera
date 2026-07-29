@@ -48,8 +48,118 @@ FREE = {
     # How many parent-sized clouds merged. Drag it and the galaxy's mass moves, which moves the
     # rotation curve, the dark ratio, and everything the system below inherits.
     "n_clouds": {"label": "clouds merged", "default": 1.7e5,
-                 "lo": 1.0e4, "hi": 1.0e6, "unit": "", "log": True},
+                 "lo": 1.0e4, "hi": 1.0e6, "unit": "", "log": True,
+                 # DECLARED LOCAL, with the reason, so the audit stops reporting it as a break.
+                 # A silent non-propagation is indistinguishable from a bug; a written claim is
+                 # reviewable. This one says: how many clouds merged sets how much GALAXY there is
+                 # -- its rotation curve, its dark ratio -- and has no bearing on how cold a core
+                 # can get, which is what fixes a star's mass. If that is wrong, argue with this
+                 # line rather than with the tool.
+                 "local": "sets the galaxy's mass, not its star-forming conditions"},
+    # HOW ENRICHED THIS GALAXY'S GAS IS -- and this is the dial that reaches all the way down to a
+    # star's mass. It is genuinely free: it depends on how many generations have already lived and
+    # died here, which is a fact about this galaxy's HISTORY, not about its physics. Nothing in the
+    # tree above can tell you it.
+    #
+    # (Honest note: `n_clouds` deliberately does NOT move the stellar mass. It sets how much galaxy
+    # there is -- the rotation curve, the dark ratio -- not how cold a core can get. Manufacturing a
+    # link would have been a nicer audit report and a worse model.)
+    "metallicity_zsun": {"label": "enrichment", "default": 1.0,
+                         "lo": 1.0e-5, "hi": 3.0, "unit": "x solar", "log": True},
 }
+
+
+
+# ── WHERE FRAGMENTATION STOPS, AND THEREFORE WHAT A STAR WEIGHS ─────────────────────────────────
+# The parent handed down clouds of 6e5 suns. Nothing has yet explained why the things that form
+# inside them weigh ONE sun rather than a hundred thousand. This is that step, and it is the edge
+# that used to be missing: without it the system's mass was a free-floating dial and NOTHING about
+# the galaxy reached the solar system at all.
+K_B = 1.380649e-23
+M_H = 1.6726219e-27
+MU_MOL = 2.33                # H2 plus helium, by number -- a cold molecular cloud
+
+T_PRIMORDIAL_K = 200.0       # metal-free gas can only cool through H2, and it is bad at it
+T_COOLED_K = 10.0            # with dust and CO in the mix a core reaches ~10 K and stops
+Z_CRIT = 1.0e-3              # critical metallicity for fragmentation (Bromm & Loeb 2003), in Z_sun
+
+
+def core_temperature(z_zsun):
+    """HOW COLD A CORE CAN GET, and therefore how heavy a star is.
+
+    Cooling is what lets a collapsing fragment stay cold, and cooling needs COOLANTS. Metal-free gas
+    has only molecular hydrogen, which is a poor radiator, so the first clouds sat near 200 K. Once
+    a few generations have made carbon, oxygen and dust, CO and grain emission take over and a core
+    settles at ~10 K.
+
+    THE PREDICTION NOBODY FITTED: M_J goes as T^1.5, so metal-free gas fragments at ~90x the mass.
+    That is why the FIRST STARS WERE HUNDREDS OF SOLAR MASSES -- a fact this law was not built from
+    and returns anyway."""
+    return T_COOLED_K + (T_PRIMORDIAL_K - T_COOLED_K) / (1.0 + z_zsun / Z_CRIT)
+N_CORE_CM3 = 1.0e5           # the density a core reaches before it goes opaque
+CORE_EFFICIENCY = 0.33       # MEASURED: a core loses ~2/3 of itself to outflow; the star gets a third
+M_OPACITY_FLOOR = 0.010      # solar masses -- Low & Lynden-Bell 1976, Rees 1976
+M_IMF_MAX = 150.0            # above this radiation pressure unbinds the envelope faster than it falls
+IMF_SLOPE_HIGH = -2.3        # Salpeter/Kroupa, above the characteristic mass
+IMF_SLOPE_MID = -1.3         # below it
+IMF_SLOPE_LOW = -0.3         # below the degeneracy limit: the brown-dwarf tail flattens
+M_BROWN = 0.08               # where the mid and low segments meet
+
+
+def jeans_mass(T, n_cm3, mu=MU_MOL):
+    """THE SAME LAW THE PARENT USED, at a different place on the ladder.
+
+        M_J = (5kT / G mu m_H)^{3/2} * (3 / 4 pi rho)^{1/2}
+
+    The point is what it does under collapse. While the gas can still radiate away the heat of its
+    own compression it stays COLD, so T is fixed and M_J falls as rho^-1/2: every hundredfold gain
+    in density cuts the fragment tenfold. A cloud therefore does not collapse -- it SHATTERS, again
+    and again, and the pieces get smaller all the way down."""
+    rho = n_cm3 * 1e6 * mu * M_H
+    return (5.0 * K_B * T / (G * mu * M_H)) ** 1.5 * (3.0 / (4.0 * pi * rho)) ** 0.5
+
+
+def imf_grid(m_lo, m_hi, m_char, n=2400):
+    """The initial mass function as a number-weighted CDF on a log grid.
+
+    Three segments, and the breaks are physical rather than fitted: the slope steepens above the
+    characteristic mass (which is the core Jeans mass), and flattens again below the degeneracy limit
+    where the objects are no longer stars. Kroupa 2001's exponents."""
+    xs, ws = [], []
+    for i in range(n):
+        m = m_lo * (m_hi / m_lo) ** (i / (n - 1.0))
+        if m >= m_char:
+            w = (m / m_char) ** IMF_SLOPE_HIGH
+        elif m >= M_BROWN:
+            w = (m / m_char) ** IMF_SLOPE_MID
+        else:
+            w = (M_BROWN / m_char) ** IMF_SLOPE_MID * (m / M_BROWN) ** IMF_SLOPE_LOW
+        xs.append(m)
+        ws.append(w * m)                     # dN/dlogM = M dN/dM, because the grid is logarithmic
+    tot, run, cdf = sum(ws), 0.0, []
+    for w in ws:
+        run += w
+        cdf.append(run / tot)
+    return xs, cdf
+
+
+def mass_at_percentile(p, m_lo, m_hi, m_char):
+    """WHICH FRAGMENT this story follows -- a position in a distribution the galaxy derived, not a
+    number somebody chose. p is number-weighted: p=0.5 is the median STAR."""
+    xs, cdf = imf_grid(m_lo, m_hi, m_char)
+    p = min(max(float(p), 1e-6), 1.0 - 1e-9)
+    for x, c in zip(xs, cdf):
+        if c >= p:
+            return x
+    return xs[-1]
+
+
+def percentile_of_mass(m, m_lo, m_hi, m_char):
+    xs, cdf = imf_grid(m_lo, m_hi, m_char)
+    for x, c in zip(xs, cdf):
+        if x >= m:
+            return c
+    return 1.0
 
 
 def derive(parent, free):
@@ -59,6 +169,15 @@ def derive(parent, free):
     n = float(free.get("n_clouds", N_CLOUDS))          # how many merged -- the human's dial
     M_stars = n * m_cloud
     M_dyn = enclosed_mass(R_DISK_KPC)                  # what the rotation curve says is really there
+
+    # THE CASCADE, run once. From the parent's own conditions down to a cold core, the SAME Jeans
+    # law walks eight orders of magnitude -- 1.2e8 suns at recombination to under one at core
+    # density -- and it stops there because the fragment goes opaque and can no longer stay cold.
+    # That is the whole answer to why a star weighs about a sun.
+    z = float(free.get("metallicity_zsun", 1.0))
+    t_core = core_temperature(z)
+    m_j_core = jeans_mass(t_core, N_CORE_CM3) / M_SUN
+    m_char = m_j_core * CORE_EFFICIENCY
     return {
         # ITS REAL SIZE: where the stellar disk fades out. Everything emits at radius ~1 locally, so this is
         # the only place the true scale is recorded -- and a human needs it to know what they see.
@@ -77,6 +196,20 @@ def derive(parent, free):
         "T_orbit_myr": orbital_period(R_SUN_KPC) / 3.1557e7 / 1e6,   # ~230 Myr: one galactic year
         "winding_turns": winding_turns(R_SUN_KPC),     # >> 1, so arms CANNOT be material
         "arms_are_waves": winding_turns(R_SUN_KPC) > 3.0,
+        # THE EDGE TO THE SYSTEM BELOW -- what was missing entirely. A solar system is ONE FRAGMENT
+        # of one of this galaxy's clouds, and its mass is not a free number: it is a draw from the
+        # distribution these conditions produce. Change the core temperature or density and every
+        # system in this galaxy changes mass with it.
+        "metallicity_zsun": z,
+        "T_core_K": t_core,
+        "n_core_cm3": N_CORE_CM3,
+        "M_jeans_core_solar": m_j_core,               # ~1.7 suns: where the shattering stops
+        "core_efficiency": CORE_EFFICIENCY,
+        "m_char_solar": m_char,                       # the IMF's characteristic mass
+        "m_floor_solar": M_OPACITY_FLOOR,             # the opacity limit: the smallest fragment possible
+        "m_max_solar": M_IMF_MAX,
+        "imf_slope_high": IMF_SLOPE_HIGH,
+        "sun_percentile": percentile_of_mass(1.0, M_OPACITY_FLOOR, M_IMF_MAX, m_char),
         "collapsing": True,
         "hydrogen_frac": parent["hydrogen_frac"],
         "helium_frac": parent["helium_frac"],

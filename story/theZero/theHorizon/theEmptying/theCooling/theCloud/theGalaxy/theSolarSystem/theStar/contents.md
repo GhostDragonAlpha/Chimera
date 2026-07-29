@@ -15,17 +15,17 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 6.957e+08 |
+| `extent_m` | 7.094e+08 |
 | `duration_s` | 9.467e+14 |
 | `M_min_kg` | 1.388e+29 |
 | `M_min_solar` | 0.0698 |
 | `T_max_at_min` | 4e+06 |
 | `T_ignite` | 4e+06 |
-| `M_star_solar` | 1 |
-| `T_max_if_never_ignited` | 1.392e+08 |
-| `T_surface` | 5772 |
-| `L` | 3.828e+26 |
-| `R` | 6.957e+08 |
+| `M_star_solar` | 1.025 |
+| `T_max_if_never_ignited` | 1.438e+08 |
+| `T_surface` | 5839 |
+| `L` | 4.169e+26 |
+| `R` | 7.094e+08 |
 | `burning` | True |
 | `held_up_by` | fusion |
 | `leftover_disk` | True |

@@ -13,19 +13,19 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 6.957e+08 |
-| `duration_s` | 3.156e+17 |
-| `M` | 1.989e+30 |
-| `M_solar` | 1 |
-| `R` | 6.957e+08 |
-| `R_solar` | 1 |
-| `L` | 3.828e+26 |
-| `L_solar` | 1 |
-| `T_surface` | 5772 |
+| `extent_m` | 7.094e+08 |
+| `duration_s` | 2.969e+17 |
+| `M` | 2.038e+30 |
+| `M_solar` | 1.025 |
+| `R` | 7.094e+08 |
+| `R_solar` | 1.02 |
+| `L` | 4.169e+26 |
+| `L_solar` | 1.089 |
+| `T_surface` | 5839 |
 | `spectral_class` | G |
 | `colour` | Yellow |
 | `name` | aYellowStar |
-| `lifetime_yr` | 1e+10 |
-| `granules_across` | 1391 |
+| `lifetime_yr` | 9.409e+09 |
+| `granules_across` | 1419 |
 | `granule_dT` | 250 |
 | `burning` | True |

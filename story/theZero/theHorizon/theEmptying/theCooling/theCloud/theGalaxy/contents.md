@@ -29,6 +29,16 @@
 | `T_orbit_myr` | 229 |
 | `winding_turns` | 16.54 |
 | `arms_are_waves` | True |
+| `metallicity_zsun` | 1 |
+| `T_core_K` | 10.19 |
+| `n_core_cm3` | 1e+05 |
+| `M_jeans_core_solar` | 1.75 |
+| `core_efficiency` | 0.33 |
+| `m_char_solar` | 0.5775 |
+| `m_floor_solar` | 0.01 |
+| `m_max_solar` | 150 |
+| `imf_slope_high` | -2.3 |
+| `sun_percentile` | 0.9312 |
 | `collapsing` | True |
 | `hydrogen_frac` | 0.75 |
 | `helium_frac` | 0.25 |

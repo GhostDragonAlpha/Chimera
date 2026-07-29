@@ -15,37 +15,37 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 5.283e+06 |
-| `duration_s` | 3.407e+07 |
-| `a_au` | 1.052 |
-| `M` | 2.985e+24 |
-| `M_earth` | 0.4998 |
-| `R` | 5.283e+06 |
-| `R_earth` | 0.8293 |
-| `g` | 7.138 |
-| `g_earth` | 0.7279 |
-| `v_escape` | 8685 |
-| `core_R` | 2.89e+06 |
+| `extent_m` | 5.256e+06 |
+| `duration_s` | 3.311e+07 |
+| `a_au` | 1.041 |
+| `M` | 2.929e+24 |
+| `M_earth` | 0.4904 |
+| `R` | 5.256e+06 |
+| `R_earth` | 0.825 |
+| `g` | 7.076 |
+| `g_earth` | 0.7216 |
+| `v_escape` | 8625 |
+| `core_R` | 2.875e+06 |
 | `core_frac` | 0.547 |
-| `rho_bulk` | 4833 |
-| `L` | 3.828e+26 |
-| `S` | 1229 |
-| `S_earth` | 0.9028 |
-| `T_bare` | 248.2 |
-| `T_exobase` | 960.8 |
+| `rho_bulk` | 4815 |
+| `L` | 4.169e+26 |
+| `S` | 1368 |
+| `S_earth` | 1.005 |
+| `T_bare` | 254.9 |
+| `T_exobase` | 1007 |
 | `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
-| `escape_ratios` | {'H2': 3.0850366425438356, 'He': 4.347182351036101, 'CH4': 8.701963249363656, 'H2O': 9.223430001655466, 'N2': 11.499305640578461, 'O2': 12.291080186711051, 'CO2': 14.414206752142837} |
+| `escape_ratios` | {'H2': 2.9929704160256954, 'He': 4.217450123701474, 'CH4': 8.442272032533301, 'H2O': 8.948176740771531, 'N2': 11.15613380809292, 'O2': 11.924279560417913, 'CO2': 13.984046019002296} |
 | `has_atmosphere` | True |
-| `P_surface_bar` | 0.5291 |
-| `column_rel` | 0.7269 |
-| `scale_height_m` | 9967 |
-| `year_s` | 3.407e+07 |
-| `year_days` | 394.3 |
+| `P_surface_bar` | 0.5199 |
+| `column_rel` | 0.7206 |
+| `scale_height_m` | 1.033e+04 |
+| `year_s` | 3.311e+07 |
+| `year_days` | 383.2 |
 | `day_s` | 8.64e+04 |
 | `day_hours` | 24 |
-| `days_per_year` | 394.3 |
-| `walk_run_ms` | 1.737 |
-| `leg_swing_s` | 2.162 |
+| `days_per_year` | 383.2 |
+| `walk_run_ms` | 1.729 |
+| `leg_swing_s` | 2.171 |
 | `leg_m` | 0.845 |
-| `T_star_surface` | 5772 |
-| `solid_outside_earths` | 53.16 |
+| `T_star_surface` | 5839 |
+| `solid_outside_earths` | 52.67 |

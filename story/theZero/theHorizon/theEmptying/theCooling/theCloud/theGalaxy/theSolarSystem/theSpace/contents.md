@@ -19,9 +19,9 @@
 | `thinner_than_air` | 1.465e+20 |
 | `coasts` | True |
 | `gravity_range` | infinite |
-| `v_orbit_1au` | 2.979e+04 |
-| `v_escape_1au` | 4.213e+04 |
+| `v_orbit_1au` | 3.015e+04 |
+| `v_escape_1au` | 4.264e+04 |
 | `light_time_1au_s` | 499 |
 | `light_time_30au_s` | 1.497e+04 |
 | `sky_is_dark` | True |
-| `M_star` | 1.989e+30 |
+| `M_star` | 2.038e+30 |
