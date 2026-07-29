@@ -121,7 +121,33 @@ def grow(folder: Path, parent: dict | None = None, depth: int = 0) -> None:
         grow(child, nums, depth + 1)
 
 
+def read(folder: Path, depth: int = 0, maxdepth: int = 99) -> None:
+    """Read the story at a chosen level of detail.
+
+    THE PLAIN-WORDS LINE IS NOT A SUMMARY OF THE CHAPTER -- AT THAT ZOOM IT *IS* THE CHAPTER.
+    Zoom in and it becomes the equations; zoom in again and it becomes its children, each of which
+    is again one sentence. So the same story can be read at any resolution and is complete at each
+    one -- which is LOD of MEANING, the same law the matter obeys: every level is the level below,
+    averaged."""
+    if depth > maxdepth:
+        return
+    if (folder / "story.md").exists():
+        pad = "   " * depth
+        print(f"{pad}{folder.name} — {_summary(folder)}.")
+        print()
+    for child in sorted(d for d in folder.iterdir()
+                        if d.is_dir() and not d.name.startswith((".", "_"))):
+        read(child, depth + 1, maxdepth)
+
+
 if __name__ == "__main__":
+    import sys
+    if "--read" in sys.argv:
+        d = int(sys.argv[sys.argv.index("--depth") + 1]) if "--depth" in sys.argv else 99
+        print(f"\nTHE STORY, read at depth {d}\n" + "=" * 72 + "\n")
+        for top in sorted(x for x in ROOT.iterdir() if x.is_dir() and not x.name.startswith((".", "_"))):
+            read(top, 0, d)
+        raise SystemExit(0)
     print("\nGROWING THE STORY\n" + "=" * 60)
     for top in sorted(d for d in ROOT.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         grow(top)
