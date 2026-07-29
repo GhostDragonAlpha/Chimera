@@ -172,6 +172,18 @@ def derive(parent, free):
         "column_rel": float(parent["column_rel"]),
         "solid_outside_earths": float(parent["solid_outside_earths"]),
         "day_s": day_s, "day_hours": float(parent["day_hours"]),
+        # THE TILT, CARRIED. Being what all your children can see is what a parent is FOR: the body
+        # fourteen membranes down needs to know which way the axis points, and a sibling cannot hand
+        # it over. No default -- if the parent has not got one, that is a broken chain, not a 23.44.
+        "obliquity_deg": float(parent["obliquity_deg"]),
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
+        "retrograde": bool(parent["retrograde"]),
+        "tropic_lat_deg": float(parent["tropic_lat_deg"]),
+        "polar_circle_lat_deg": float(parent["polar_circle_lat_deg"]),
+        "has_seasons": bool(parent["has_seasons"]),
+        "days_per_year": float(parent["days_per_year"]),
+        "year_s": float(parent["year_s"]),
+
         "year_s": float(parent["year_s"]), "days_per_year": float(parent["days_per_year"]),
         "scale_height_m": float(parent["scale_height_m"]),
         "T_star_surface": float(parent["T_star_surface"]),

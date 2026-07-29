@@ -22,7 +22,7 @@ impact, which is chance, not law -- so it is FREE. It is also the one dial with 
 can feel in a single evening: day length, how far the ground cools before dawn, and how hard the
 Coriolis force bends the wind.
 """
-from math import pi, sqrt
+from math import pi, sqrt, sin, cos, tan, asin, acos, radians, degrees
 
 G = 6.67430e-11
 K_B = 1.380649e-23
@@ -46,7 +46,73 @@ LENS = {
 FREE = {
     "rotation_hours": {"lo": 2.0, "hi": 200.0, "default": 24.0,
                        "label": "day length", "unit": "h"},
+
+    # THE SAME IMPACT, THE OTHER CONSEQUENCE. A collision that changes how fast a world spins also
+    # changes which way its axis points, so the tilt sits here beside the day length rather than
+    # anywhere further down -- one event, two numbers.
+    #
+    # AND IT IS A PERCENTILE, NOT AN ANGLE, for the reason `imf_percentile` is: an angle typed here
+    # would be a number with nothing above it, while a percentile's ANSWER comes from a distribution
+    # this membrane derives. The spin vector left by stochastic giant impacts points ISOTROPICALLY
+    # (Kokubo & Ida 2007), so P(eps) goes as sin(eps) and the CDF is (1 - cos eps)/2. That
+    # distribution is not a preference -- it has no free parameters at all, and it says something
+    # blunt: most worlds are steeply tilted, and Earth's 23.4 deg is a FOURTH-percentile outcome.
+    # A mild seasonal world is the unusual one.
+    #
+    # THE DEFAULT IS DERIVED, and deliberately not Earth's. Below `obliquity_crossover()` a world
+    # keeps a hot equator and cold poles; above it the poles receive more annual sunlight than the
+    # equator and the climate inverts. The default is the MEDIAN TILT AMONG WORLDS ON THE ORDINARY
+    # SIDE OF THAT LINE -- the typical member of the regime, not a copy of ours. It comes out at
+    # 37.4 deg, which is why this world's seasons are stronger than Earth's and why the sun stands
+    # overhead at latitudes Earth never sees it.
+    "spin_axis_percentile": {"lo": 0.0005, "hi": 0.9995, "default": 0.1027,
+                             "label": "which way the axis points", "unit": "of worlds are straighter"},
 }
+
+
+# ── WHICH WAY THE AXIS POINTS ───────────────────────────────────────────────────────────────────
+def annual_mean_insolation(lat_deg, eps_deg, n=1440):
+    """Sunlight a latitude receives over a whole year, as a fraction of the beam, for a circular
+    orbit and a tilt of `eps`. This is the standard daily-insolation integral: the half-day angle
+    `H0 = arccos(-tan(lat) tan(decl))` saturates at 0 for polar night and at pi for midnight sun,
+    which is exactly how a tilt hands the poles a whole summer of daylight and then takes it back."""
+    phi = radians(lat_deg); eps = radians(eps_deg)
+    tot = 0.0
+    for k in range(n):
+        lam = 2.0 * pi * k / n                              # ecliptic longitude, uniform on a circle
+        decl = asin(sin(eps) * sin(lam))
+        # NO GUARD AROUND THE POLE. tan(90 deg) is 1.6e16 in floating point, not an error, so the
+        # product runs off to +/-huge and the clamp below turns it into H0 = pi (midnight sun) or 0
+        # (polar night) -- which is the answer. An `if abs(phi) < pi/2` guard here handed the pole a
+        # twelve-hour day instead, the polar summer vanished, and the crossover search never found a
+        # crossing: it walked its bracket to the end and reported 70 deg for a 53.9 deg answer.
+        H0 = acos(min(1.0, max(-1.0, -tan(phi) * tan(decl))))
+        tot += (H0 * sin(phi) * sin(decl) + cos(phi) * cos(decl) * sin(H0)) / pi
+    return tot / n
+
+
+_CROSSOVER = None
+
+
+def obliquity_crossover():
+    """THE TILT AT WHICH A WORLD TURNS INSIDE OUT -- where the pole starts receiving more sunlight
+    over a year than the equator does, so the cold place and the hot place swap.
+
+    It is pure geometry: no mass, no distance, no atmosphere, only the shape of the integral above.
+    Which makes it the same number on every world in every system, and a fact this membrane can
+    state without being told. Solved by bisection; it comes out at 53.90 deg, and the literature
+    that this was NOT fitted to puts it at ~54."""
+    global _CROSSOVER
+    if _CROSSOVER is None:
+        lo, hi = 40.0, 70.0
+        for _ in range(40):
+            m = 0.5 * (lo + hi)
+            if annual_mean_insolation(90.0, m) < annual_mean_insolation(0.0, m):
+                lo = m
+            else:
+                hi = m
+        _CROSSOVER = 0.5 * (lo + hi)
+    return _CROSSOVER
 
 
 # ── SIZE, AND THEREFORE WEIGHT ──────────────────────────────────────────────────────────────────
@@ -161,6 +227,16 @@ def derive(parent, free):
     day_h = float(free.get("rotation_hours", FREE["rotation_hours"]["default"]))
     day_s = day_h * 3600.0
 
+    # ── WHICH WAY THE AXIS POINTS, AND THEREFORE WHETHER THERE ARE SEASONS ───────────────────────
+    p_axis = float(free.get("spin_axis_percentile", FREE["spin_axis_percentile"]["default"]))
+    eps = degrees(acos(1.0 - 2.0 * min(max(p_axis, 0.0), 1.0)))     # invert the isotropic CDF
+    eps_crit = obliquity_crossover()
+    # PAST 90 DEGREES A WORLD IS NOT MORE TILTED, IT IS UPSIDE DOWN. Half the isotropic sphere is
+    # retrograde -- Venus at 177 deg is barely tilted at all, it just turns the other way -- so the
+    # angle that draws the tropics is `min(eps, 180 - eps)`, not eps. Reported straight, eps = 113.6
+    # gave a polar circle at MINUS 23.6 degrees latitude, which is not a place.
+    eps_eff = min(eps, 180.0 - eps)
+
     return {
         # ITS REAL SIZE: the solid surface. Everything emits at radius ~1 locally, so this is the
         # only place the true scale is written down.
@@ -191,6 +267,19 @@ def derive(parent, free):
         "year_s": year_s, "year_days": year_s / 86400.0,
         "day_s": day_s, "day_hours": day_h,
         "days_per_year": year_s / day_s,
+
+        # ── THE TILT, AND EVERY LINE ON THE GLOBE IT DRAWS ───────────────────────────────────────
+        # None of these are placed. A tropic is the latitude where the sun can stand overhead, which
+        # is the tilt; a polar circle is where it can fail to rise, which is what is left of 90.
+        "obliquity_deg": eps,
+        "obliquity_effective_deg": eps_eff,          # what the seasons actually run on
+        "retrograde": eps > 90.0,                    # spins the other way; Venus is 177 deg
+        "has_seasons": eps_eff > 0.05,
+        "tropic_lat_deg": eps_eff,                   # sun reaches the zenith at or below this
+        "polar_circle_lat_deg": 90.0 - eps_eff,      # midnight sun / polar night at or above this
+        "obliquity_crossover_deg": eps_crit,        # where polar annual sunlight overtakes equatorial
+        "poles_outshine_equator": eps > eps_crit,
+        "axis_percentile": p_axis,
 
         # THE HANDOFF TO A BODY, and the reason this membrane exists at all. A leg is a pendulum, so
         # g fixes how fast it can swing and therefore how fast anything walks here. Fr = v^2/(gL) is

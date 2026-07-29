@@ -44,6 +44,15 @@
 | `day_s` | 8.64e+04 |
 | `day_hours` | 24 |
 | `days_per_year` | 383.2 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `retrograde` | False |
+| `has_seasons` | True |
+| `tropic_lat_deg` | 37.38 |
+| `polar_circle_lat_deg` | 52.62 |
+| `obliquity_crossover_deg` | 53.9 |
+| `poles_outshine_equator` | False |
+| `axis_percentile` | 0.1027 |
 | `walk_run_ms` | 1.729 |
 | `leg_swing_s` | 2.171 |
 | `leg_m` | 0.845 |

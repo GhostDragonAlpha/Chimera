@@ -81,6 +81,17 @@ FREE = {
     # steps earning goes flat. 09:00 is low enough to cast the valleys and high enough to see by.
     "start_hour": {"lo": 0.0, "hi": 24.0, "default": 9.0,
                    "label": "start hour", "unit": "h", "local": "where in its own day the story opens"},
+
+    # AND WHERE IN ITS YEAR. This dial did nothing until aBlueWorld got a tilt -- with no obliquity
+    # every day was the equinox and the date could only advance a calendar. Now it moves the sun.
+    # 0 is the northern spring equinox; a quarter of the way round is midsummer.
+    #
+    # The default is the SUMMER SOLSTICE, and that is not a preference either: it is the one day
+    # that shows the tilt exists. On an equinox a tilted world and a straight one are the same
+    # picture, so opening there would hide the thing this chapter just gained.
+    "start_year_frac": {"lo": 0.0, "hi": 1.0, "default": 0.25,
+                        "label": "where in the year", "unit": "of a year",
+                        "local": "which season the story opens in"},
 }
 
 
@@ -162,10 +173,42 @@ def derive(parent, free):
     # seasons appear here for free; until then this world has none, and the render must not imply it.
     day_s = float(parent["day_s"])
     lat = math.radians(float(parent["latitude_deg"]))
-    decl = 0.0                                   # no obliquity anywhere upstream -- see above
+    # THE EFFECTIVE TILT, not the raw angle: past 90 deg the world is upside down, not more tilted.
+    # Using the raw 113.6 deg here put tan(decl) the wrong side of the singularity and swapped the
+    # longest day with the shortest.
+    eps = math.radians(float(parent["obliquity_effective_deg"]))
+    yfrac = float(free.get("start_year_frac", FREE["start_year_frac"]["default"]))
+
+    # WHERE THE SUN IS TODAY. Declination is the tilt projected onto where the world has got to in
+    # its orbit -- sin(decl) = sin(tilt) * sin(longitude) -- so at the equinoxes it is zero and at
+    # the solstices it is the whole tilt. That single line is the entire mechanism of seasons.
+    # SNAP THE EPOCH TO A DAY BOUNDARY. This world's year is 383.21 days -- NOT a whole number, and
+    # that is not a rounding artefact, it is what an orbit and a spin with no common measure look
+    # like (ours is 365.24, which is why we have leap years). So `start_year_frac * year_s` lands at
+    # an arbitrary hour, and adding "09:00" on top of it opened the game at 04:16. A date is a WHOLE
+    # DAY plus an hour; anything else silently couples the season dial to the clock.
+    days_per_year = float(parent["days_per_year"])
+    start_day = int(round(yfrac * days_per_year)) % int(days_per_year)
+    yfrac_snapped = start_day / days_per_year
+    decl = math.asin(math.sin(eps) * math.sin(2.0 * math.pi * yfrac_snapped))
     hour_angle = math.radians(15.0 * (start_hour - 12.0) * (24.0 * 3600.0 / day_s))
     sun_alt = math.asin(math.sin(decl) * math.sin(lat)
                         + math.cos(decl) * math.cos(lat) * math.cos(hour_angle))
+
+    # HOW LONG TODAY IS. The half-day angle saturates: cos H0 = -tan(lat) tan(decl), clamped, which
+    # is polar night at one end and midnight sun at the other. Nobody writes those two cases in --
+    # they are what the clamp MEANS.
+    def _daylight(d):
+        return math.acos(min(1.0, max(-1.0, -math.tan(lat) * math.tan(d)))) / math.pi * (day_s / 3600.0)
+    daylight_h = _daylight(decl)
+    longest_h, shortest_h = _daylight(eps), _daylight(-eps)
+    # HOW HIGH NOON GETS. `90 - |lat - decl|` -- and the year's true maximum is NOT the solstice
+    # when the tilt exceeds the latitude: the sun passes straight overhead on the way there, when
+    # declination equals latitude, and has started back down by midsummer. Calling the solstice
+    # value "the highest" would have been wrong by 6.6 deg here for exactly that reason.
+    noon_at_summer = 90.0 - abs(math.degrees(lat) - math.degrees(eps))
+    noon_at_winter = 90.0 - abs(math.degrees(lat) + math.degrees(eps))
+    noon_highest = 90.0 if math.degrees(eps) >= abs(math.degrees(lat)) else noon_at_summer
 
     m = body_mass(h)
     com_h = COM_FRAC * h
@@ -200,9 +243,30 @@ def derive(parent, free):
         "start_hour": start_hour,
         "start_time_s": start_hour / 24.0 * day_s,      # seconds into this world's own day
         "day_s": day_s,
+        "start_year_frac": yfrac_snapped,
+        "start_day": start_day,
+        "days_per_year": days_per_year,
+        "year_s": float(parent["year_s"]),
+        "season_days": days_per_year / 4.0,
         "sun_declination_deg": math.degrees(decl),
         "sun_altitude_at_start_deg": math.degrees(sun_alt),
-        "has_seasons": False,           # nothing upstream derives an axial tilt. Stated, not hidden.
+
+        # ── WHAT THE TILT DOES TO A PERSON STANDING HERE ─────────────────────────────────────────
+        "obliquity_deg": math.degrees(eps),
+        "has_seasons": bool(parent["has_seasons"]),
+        "daylight_today_h": daylight_h,
+        "longest_day_h": longest_h,
+        "shortest_day_h": shortest_h,
+        "daylight_swing_h": longest_h - shortest_h,
+        "noon_sun_at_summer_solstice_deg": noon_at_summer,
+        "noon_sun_at_winter_solstice_deg": noon_at_winter,
+        "noon_sun_highest_deg": noon_highest,        # 90 exactly, where the sun clears the zenith
+        # THE PREDICTION THIS WAS NEVER FITTED TO. The sun can only stand overhead within the
+        # tropics, and the tropics ARE the tilt -- so whether it happens here is decided by a
+        # comparison nobody arranged, between a latitude aTerrain chose and an angle drawn from an
+        # impact distribution. On Earth (23.4 deg) a person at this latitude never sees it.
+        "sun_overhead_here": math.degrees(eps) >= math.degrees(lat),
+        "inside_polar_circle": math.degrees(lat) >= 90.0 - math.degrees(eps),
 
         "height_m": h,
         "mass_kg": m,

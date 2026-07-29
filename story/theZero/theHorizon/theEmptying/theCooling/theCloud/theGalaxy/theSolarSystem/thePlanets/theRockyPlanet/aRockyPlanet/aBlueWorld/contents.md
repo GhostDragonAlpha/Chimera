@@ -46,6 +46,13 @@
 | `S_earth` | 1.005 |
 | `days_per_year` | 383.2 |
 | `day_s` | 8.64e+04 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `retrograde` | False |
+| `tropic_lat_deg` | 37.38 |
+| `polar_circle_lat_deg` | 52.62 |
+| `has_seasons` | True |
+| `year_s` | 3.311e+07 |
 | `day_hours` | 24 |
 | `has_atmosphere` | True |
 | `P_surface_bar` | 0.5199 |

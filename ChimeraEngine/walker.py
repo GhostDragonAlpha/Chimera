@@ -157,10 +157,16 @@ class Walker:
         # It starts at the epoch theHuman declares -- 2076, 09:00 local -- because a game has to
         # begin somewhere and when is a human's call, not a planet's.
         self.day_s = float(h["day_s"])
+        self.year_s = float(h["year_s"])
+        self.days_per_year = float(h["days_per_year"])
         self.epoch_year = float(h["epoch_year"])
-        self.clock = float(h["start_time_s"])        # seconds into this world's own day
         self.lat = math.radians(float(h["latitude_deg"]))
-        self.decl = math.radians(float(h["sun_declination_deg"]))
+        self.eps = math.radians(float(h["obliquity_deg"]))
+        # ONE CLOCK, counted from this world's northern spring equinox -- so it carries the season
+        # AND the hour in a single number, and there is no second timeline to fall out of step.
+        # Whole days plus an hour: the year is 383.21 days, so a bare year-FRACTION lands at an
+        # arbitrary time of day and "09:00" came out as 04:16.
+        self.clock = float(h["start_day"]) * self.day_s + float(h["start_time_s"])
 
         self.x, self.y = 0.0, 0.0
         self.z = height_at(0.0, 0.0)
@@ -222,19 +228,39 @@ class Walker:
         """WHERE THE SUN IS, RIGHT NOW -- the standard solar-position triangle, run on this world's
         own day length and this membrane's latitude. Not a lighting setting: move the clock and it
         moves, because it is the same equation theHuman used to state the opening altitude."""
-        H = 2.0 * math.pi * (self.clock / self.day_s) - math.pi     # hour angle, 0 at local noon
-        sa = (math.sin(self.decl) * math.sin(self.lat)
-              + math.cos(self.decl) * math.cos(self.lat) * math.cos(H))
+        decl = self.declination
+        H = 2.0 * math.pi * ((self.clock % self.day_s) / self.day_s) - math.pi   # 0 at local noon
+        sa = (math.sin(decl) * math.sin(self.lat)
+              + math.cos(decl) * math.cos(self.lat) * math.cos(H))
         alt = math.asin(max(-1.0, min(1.0, sa)))
-        az = math.atan2(-math.cos(self.decl) * math.sin(H),
-                        math.sin(self.decl) * math.cos(self.lat)
-                        - math.cos(self.decl) * math.sin(self.lat) * math.cos(H))
+        az = math.atan2(-math.cos(decl) * math.sin(H),
+                        math.sin(decl) * math.cos(self.lat)
+                        - math.cos(decl) * math.sin(self.lat) * math.cos(H))
         ca = math.cos(alt)
         return (ca * math.sin(az), ca * math.cos(az), math.sin(alt)), alt
 
+    @property
+    def declination(self):
+        """WHERE THE SUN IS IN THE YEAR -- the tilt projected onto how far round the orbit this world
+        has got. Zero at the equinoxes, the whole tilt at the solstices. It is the entire mechanism
+        of seasons in one line, and it is live: the clock runs 1:1, so standing here long enough
+        genuinely moves it. (Long enough is a long time -- a season on this world is 96 days.)"""
+        return math.asin(math.sin(self.eps) * math.sin(2.0 * math.pi * (self.clock / self.year_s)))
+
+    def season(self):
+        """Which quarter of its own year, named from the declination rather than a calendar."""
+        f = (self.clock / self.year_s) % 1.0
+        return ("spring", "summer", "autumn", "winter")[int(f * 4) % 4]
+
+    def daylight_h(self):
+        """How long today is here. The clamp on the half-day angle is polar night at one end and
+        midnight sun at the other -- neither is written in, both are what the clamp means."""
+        x = -math.tan(self.lat) * math.tan(self.declination)
+        return math.acos(min(1.0, max(-1.0, x))) / math.pi * (self.day_s / 3600.0)
+
     def local_time(self):
-        """The clock as a person would read it: which day of the story, and what o'clock."""
-        day = int(self.clock // self.day_s)
+        """The clock as a person would read it: which day of this world's year, and what o'clock."""
+        day = int((self.clock % self.year_s) // self.day_s)
         f = (self.clock % self.day_s) / self.day_s * 24.0
         return day, int(f), int((f % 1.0) * 60)
 
@@ -247,7 +273,10 @@ class Walker:
                 "g": round(self.g, 2),
                 "walk": round(self.walk, 2), "run": round(self.run, 2),
                 "day": day, "hh": hh, "mm": mm, "year": int(self.epoch_year),
-                "sun_alt": round(math.degrees(self.sun[1]), 1)}
+                "sun_alt": round(math.degrees(self.sun[1]), 1),
+                "season": self.season(),
+                "decl": round(math.degrees(self.declination), 1),
+                "daylight": round(self.daylight_h(), 1)}
 
 
 # ── the ground you actually see, built around wherever the player is ─────────────────────────────

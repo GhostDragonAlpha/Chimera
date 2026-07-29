@@ -35,9 +35,11 @@ about a planet - it is a count from a convention, and this is the only chapter i
 anyone in it to keep a calendar. So the epoch is **free here, and it is a human decision**, declared
 rather than typed under a comment pretending it was inherited.
 
-**2076, at 09:00 local.** Fifty years on from the day this chapter was written: far enough that the
-world is not a documentary about the present, near enough that the person standing in it is
-recognisably us.
+**2076, day 96, at 09:00 local.** Fifty years on from the day this chapter was written: far enough
+that the world is not a documentary about the present, near enough that the person standing in it is
+recognisably us. Day 96 of 383 is this world's **summer solstice** - and that is not a preference
+either. On an equinox a tilted world and a straight one make the same picture, so opening there
+would hide the thing the chapter above just gained.
 
 The hour is not taste. `aTerrain`'s whole claim is a carved drainage network, and **a valley is only
 visible in raking light** - at local noon the sun stands at 59 degrees and the relief that 500
@@ -50,17 +52,58 @@ lie: the person is standing in it. So one second is one second, and the sun cros
 exactly the rate this planet's own rotation says it does. That is what the bottom rung of
 `theHumanClock` means: there is no gearing left to apply.
 
+## And now there are seasons
+
+That table used to end with **seasons: none**, written as an admission - nothing in the chain
+derived an axial tilt, so declination was zero, every day was the equinox, and the date could only
+advance a calendar. `theRockyPlanet` now derives one, and everything below it moved.
+
+**The tilt is not chosen; the distribution it is drawn from is.** A collision big enough to change
+how fast a world spins also changes which way its axis points, so the tilt sits beside the day
+length as the same event's other consequence. The spin vector that stochastic giant impacts leave
+points **isotropically** (Kokubo & Ida 2007), so `P(tilt)` goes as `sin(tilt)` - a distribution with
+no free parameters at all, which says something blunt: **most worlds are steeply tilted, and Earth's
+23.4 degrees is a fourth-percentile outcome.** A mild seasonal world is the strange one.
+
+And the default is not ours. Above **53.90 degrees** a world turns inside out - the poles receive
+more sunlight over a year than the equator, and the cold place and the hot place swap. That number
+is pure geometry, no mass and no distance in it, so this membrane can state it unprompted; the
+literature it was never fitted to puts the crossover at ~54. The tilt used here is the **median
+among worlds on the ordinary side of that line** - the typical member of the regime rather than a
+copy of ours - and it comes out at **37.38 degrees**.
+
 | | |
 |---|---|
-| sunrise | **06:00**, due east |
-| noon | 59.2 degrees - which is 90 minus the 30.77 latitude, exactly |
-| sunset | **18:00**, due west |
-| seasons | **none** |
+| tilt | **37.38 degrees** |
+| the tropics | **37.38 degrees** - and this terrain sits at 30.77 |
+| polar circles | 52.62 degrees |
+| longest day | **15.61 h** |
+| shortest day | **8.39 h** |
+| noon at midsummer | 83.4 degrees |
+| noon at midwinter | 21.8 degrees |
+| a season | 96 days |
 
-That last row is not a design choice, it is an admission: **no membrane in this chain derives an
-axial tilt.** With no obliquity there is no solar declination, so every day of the year is the
-equinox and the sun rises due east whatever the date. Put a tilt in `aBlueWorld` and the seasons
-appear here for free. Until then this world has none, and the render must not imply otherwise.
+**Read the second row again.** The sun can only stand directly overhead inside the tropics, and the
+tropics *are* the tilt. This terrain is at 30.77 degrees, and the tilt is 37.38 - so **the sun passes
+through the zenith here, twice a year, on days 61 and 130.** Nobody arranged that. `aTerrain` picked
+a latitude for reasons of its own and an impact distribution picked an angle, and the comparison
+between them decides a fact you can go outside and check. On Earth, at this latitude, it never
+happens.
+
+It has a second signature, and the render shows it: **noon is not highest at midsummer.** The sun
+crosses overhead on the way to the solstice and has started back down by the time it arrives, so
+midsummer noon is 83.4 degrees while the peak, weeks earlier, is 90. Calling the solstice value "the
+highest" would have been wrong by 6.6 degrees for exactly that reason.
+
+Everything else follows from one line - `sin(declination) = sin(tilt) x sin(where it has got to in
+its orbit)`. At the equinoxes that is zero and the day is **12.02 hours** with the sun rising due
+east at **89.8 degrees**; at midsummer the sunrise has swung to **45 degrees**, northeast, and at
+midwinter to **135**. None of those were fitted; they are the same equation read on different days.
+
+And it is visible rather than merely recorded. At 06:12 the sun is **20 degrees up in summer and 16
+degrees below the horizon in winter** - same clock, same hillside. Over a whole year the lit ground
+tracks `sin(sun altitude)` at **r = 0.9986**, which is Lambert's cosine law turning up in a renderer
+that was never told seasons exist. It only ever knew where the sun was.
 
 ## Standing is not a state, it is a process
 

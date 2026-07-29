@@ -41,6 +41,14 @@
 | `carved_why` | running water carves most of the land |
 | `name` | aRiverTerrain |
 | `day_s` | 8.64e+04 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `retrograde` | False |
+| `tropic_lat_deg` | 37.38 |
+| `polar_circle_lat_deg` | 52.62 |
+| `has_seasons` | True |
+| `days_per_year` | 383.2 |
+| `year_s` | 3.311e+07 |
 | `T_surface` | 279.2 |
 | `dT_equator_pole` | 45 |
 | `lapse_rate_K_per_km` | 4.647 |

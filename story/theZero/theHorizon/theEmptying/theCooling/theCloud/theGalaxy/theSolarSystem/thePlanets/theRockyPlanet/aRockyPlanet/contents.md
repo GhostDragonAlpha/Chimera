@@ -48,8 +48,14 @@
 | `solid_outside_earths` | 52.67 |
 | `day_s` | 8.64e+04 |
 | `day_hours` | 24 |
-| `year_s` | 3.311e+07 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `retrograde` | False |
+| `tropic_lat_deg` | 37.38 |
+| `polar_circle_lat_deg` | 52.62 |
+| `has_seasons` | True |
 | `days_per_year` | 383.2 |
+| `year_s` | 3.311e+07 |
 | `scale_height_m` | 1.033e+04 |
 | `T_star_surface` | 5839 |
 | `walk_run_ms` | 1.729 |

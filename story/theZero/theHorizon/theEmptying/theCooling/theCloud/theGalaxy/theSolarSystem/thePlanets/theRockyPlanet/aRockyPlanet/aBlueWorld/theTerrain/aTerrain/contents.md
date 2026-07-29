@@ -33,6 +33,14 @@
 | `T_surface` | 279.2 |
 | `lapse_rate_K_per_km` | 4.647 |
 | `day_s` | 8.64e+04 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `retrograde` | False |
+| `tropic_lat_deg` | 37.38 |
+| `polar_circle_lat_deg` | 52.62 |
+| `has_seasons` | True |
+| `days_per_year` | 383.2 |
+| `year_s` | 3.311e+07 |
 | `S_earth` | 1.005 |
 | `sea_level_m` | 3059 |
 | `walk_run_ms` | 1.729 |

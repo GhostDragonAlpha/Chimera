@@ -326,6 +326,18 @@ def derive(parent, free):
         "T_surface": float(parent["T_surface"]),
         "lapse_rate_K_per_km": float(parent["lapse_rate_K_per_km"]),
         "day_s": float(parent["day_s"]),
+        # THE TILT, CARRIED. Being what all your children can see is what a parent is FOR: the body
+        # fourteen membranes down needs to know which way the axis points, and a sibling cannot hand
+        # it over. No default -- if the parent has not got one, that is a broken chain, not a 23.44.
+        "obliquity_deg": float(parent["obliquity_deg"]),
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
+        "retrograde": bool(parent["retrograde"]),
+        "tropic_lat_deg": float(parent["tropic_lat_deg"]),
+        "polar_circle_lat_deg": float(parent["polar_circle_lat_deg"]),
+        "has_seasons": bool(parent["has_seasons"]),
+        "days_per_year": float(parent["days_per_year"]),
+        "year_s": float(parent["year_s"]),
+
         "S_earth": float(parent["S_earth"]),
         "sea_level_m": float(parent["sea_level_m"]),
         "walk_run_ms": float(parent["walk_run_ms"]),
