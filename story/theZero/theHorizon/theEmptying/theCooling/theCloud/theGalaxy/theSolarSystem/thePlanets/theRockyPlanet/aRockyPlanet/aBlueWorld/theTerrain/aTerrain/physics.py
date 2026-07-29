@@ -395,6 +395,22 @@ def emit(nums, t=1.0):
     return b
 
 
+def layout(nums):
+    """WHERE THE THINGS INSIDE THIS MEMBRANE SIT, in its frame (1.0 = half the patch, 6 km).
+
+    theGround is four metres of this landscape, so it goes in at 4/6000 -- and IT IS SUB-PIXEL HERE,
+    by a factor of about a thousand. That is not a reason to leave it out. The composition is what
+    makes the tree ONE OBJECT rather than a stack of separate pictures: zoom in and the ground is
+    already there, at the place on the hillside it belongs to, with the same stones the law derived.
+    The LOD budget cuts it to a handful of grains at this framing, which is exactly right -- a thing
+    occupying a thousandth of a pixel does not need 26,000 splats to say so."""
+    half_m = float(nums["patch_m"]) / 2.0
+    scale = 4.0 / half_m
+    # placed on the valley floor rather than at the origin: the flat ground near a channel is where
+    # a person would actually be standing, and this membrane knows where its channels are.
+    return {"theGround": ((0.18, -0.32, 0.0), scale)}
+
+
 def measure(nums):
     """Facts -- and the one that decides whether this is a landscape or a fractal in a hat."""
     return {

@@ -298,48 +298,12 @@ def emit(nums, t=1.0):
     b[:, 20] = 0.011
     b[:, 11] = SOLID
 
-    # THE GROUND IT IS STANDING ON, because a body in a void is not standing on anything -- and the
-    # parent membrane derived a surface that bears its weight.
-    # THE DISC IS KEPT SMALL ON PURPOSE. The viewer frames a membrane on its 99th-percentile radius,
-    # so a wide apron of ground becomes the subject and the person becomes a speck standing on it.
-    # Just enough to stand on.
-    rng = np.random.default_rng(31)
-    n_g = 9000
-    gp = blank(n_g)
-    r = 0.42 * np.sqrt(rng.random(n_g))
-    a = rng.random(n_g) * 2.0 * pi
-    gp[:, 0] = r * np.cos(a)
-    gp[:, 1] = r * np.sin(a)
-    # SEAT IT AT THE SOLE, EXACTLY. The foot is drawn horizontally from the ankle, so the ankle IS
-    # the sole height: leg - thigh - shank, then shifted down by the CoM like everything else.
-    # Getting this wrong by a few centimetres reads as a body hovering, and a body that does not
-    # touch the ground is not standing on it -- which is the whole claim of this membrane.
-    sole = (LEG_FRAC - THIGH_FRAC - SHANK_FRAC) - com_h
-    gp[:, 2] = sole + rng.normal(0.0, 0.003, n_g)
-    gp[:, 21:24] = np.array([0.0, 0.0, 1.0], np.float32)
-    paint(gp, (0.30, 0.22, 0.16), 0.9, 0.010, SOLID)
-    return np.concatenate([b, gp], axis=0)
-
-
-def measure(nums):
-    """Facts -- and the whole point is the EARTH column, because none of it was fitted."""
-    g_e, h_e = 9.80665, 1.78
-    m_e = body_mass(h_e)
-    return {
-        "mass_kg": nums["mass_kg"],
-        "cadence_steps_s": nums["cadence_steps_s"],
-        "walk_run_ms": nums["walk_run_ms"],
-        "stride_m": nums["stride_m"],
-        "jump_height_m": nums["jump_height_m"],
-        "ground_holds_it": nums["ground_holds_it"],
-        "bone_safety_factor": nums["bone_safety_factor"],
-        # THE SAME LAWS AT 9.81. Every one of these is something a person can check on themselves.
-        "earth_walk_run_is_2ms": abs(walk_run_speed(g_e, h_e) - 2.04) < 0.15,
-        "earth_free_swing_is_1p6s": abs(swing_period(g_e, h_e, m_e) - 1.61) < 0.12,
-        "earth_cadence_near_1p8": abs(2.0 * SWING_DRIVE / swing_period(g_e, h_e, m_e) - 1.8) < 0.2,
-        "earth_jump_is_0p27m": abs(jump_height(g_e) - 0.27) < 0.06,
-        "earth_fall_rate_3p2": abs(fall_rate(g_e, COM_FRAC * h_e) - 3.2) < 0.2,
-        "bone_safety_over_5": nums["bone_safety_factor"] > 5.0,
-        # AND THE MOON, which nobody fitted and everybody watched.
-        "moon_walk_run_is_0p83": abs(walk_run_speed(1.625, h_e) - 0.83) < 0.06,
-    }
+    # NO GROUND DRAWN HERE. It used to emit its own brown disc to stand on -- matter its PARENT
+    # had already derived, at 110 kPa with a fractal grain-size distribution, which this membrane
+    # then checked its own weight against and ignored when drawing. That is the star-marker moon in
+    # miniature, and it was written hours after that one was deleted for the same reason.
+    #
+    # theGround places this body now (see its layout()), so the surface underfoot is the real one.
+    # Rendered alone, this membrane is a body in the dark -- which is honest: on its own, that is
+    # all it is.
+    return b

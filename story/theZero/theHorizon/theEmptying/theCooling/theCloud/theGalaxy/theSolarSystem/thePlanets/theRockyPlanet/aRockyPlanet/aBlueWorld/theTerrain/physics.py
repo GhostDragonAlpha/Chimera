@@ -413,6 +413,27 @@ def emit(nums, t=1.0):
     return np.concatenate(parts, axis=0)
 
 
+def layout(nums):
+    """WHERE THE THINGS INSIDE THIS MEMBRANE SIT, in its frame (1.0 = the planet's radius).
+
+    aTerrain is a twelve-kilometre patch of this shell, so it goes in at 12,000/R -- about two parts
+    in a thousand, which at any framing showing the globe is well under a pixel. It is placed anyway,
+    for the same reason as every other seam: the tree is one object, and zooming is reading the same
+    derivation at a finer level rather than opening a different file.
+
+    It sits on the surface at the latitude the patch derived for itself -- the middle of the
+    temperate band, which is the only place on this world a person could stand outside."""
+    from math import radians, cos, sin
+    R = float(nums["extent_m"])
+    scale = 12000.0 / R
+    lat = radians(30.77)                     # aTerrain's own derived latitude
+    lon = radians(-40.0)
+    x = cos(lat) * cos(lon)
+    y = cos(lat) * sin(lon)
+    z = sin(lat)
+    return {"aTerrain": ((x, y, z), scale)}
+
+
 def measure(nums):
     """Facts, and the two places this law is checked against ground it has never seen."""
     # EARTH, through the same law: 29% land and a mean ocean depth of 3.7 km are the measured values.

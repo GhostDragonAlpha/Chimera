@@ -263,6 +263,28 @@ def emit(nums, t=1.0):
     return b
 
 
+def layout(nums):
+    """WHERE THE THINGS INSIDE THIS MEMBRANE SIT, in its frame (1.0 = two metres, half the patch).
+
+    A person stands ON this ground, so the body is placed here rather than drawn twice. Before this,
+    theHuman emitted its own little brown disc to stand on -- inventing matter its own parent had
+    already derived, which is the star-marker moon in miniature and was written a few hours after
+    that one was deleted for the same reason.
+
+    THE SCALE IS A UNIT CONVERSION AND NOTHING ELSE. The body is 1.78 m tall and emits at radius 1
+    in its own frame; this membrane's 1.0 is 2 m. So the body arrives at 1.78/2 = 0.89, and its feet
+    land on the surface because the surface is where this membrane put it."""
+    body_m = 1.78                                   # theHuman's own extent; it emits at radius ~1
+    half_m = float(nums["extent_m"]) / 2.0          # this membrane's 1.0
+    scale = body_m / half_m
+    # The body's frame is centred on its CENTRE OF MASS. Its SOLES sit 0.5377 of its height below
+    # that -- not 0.575, which is the CoM height above the FLOOR and puts the feet 6 cm in the air.
+    # The difference is the ankle: the foot is drawn horizontally from it, so the sole is the ankle,
+    # at (leg - thigh - shank) = 0.039 above the floor. 0.575 - 0.039 = 0.5377.
+    SOLE_BELOW_COM = 0.5377
+    return {"theHuman": ((0.0, 0.0, SOLE_BELOW_COM * scale), scale)}
+
+
 def measure(nums):
     """Facts, and the checks that matter -- one against Earth, one against a person."""
     # EARTH, through the same laws.

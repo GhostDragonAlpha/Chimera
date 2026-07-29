@@ -343,6 +343,19 @@ Four rules, each learned by breaking it:
   grains to say so. Use **`matter.grains_for(radius, extent)`**; do not eyeball it. (Measured: eleven
   worlds at a flat 900 grains each put 4,801 splats in a tile that allows 4,096. The law was written
   in a comment for the star six lines above the loop that broke it.)
+- **A SCALE STEP COMPOSES. AN ASPECT STEP MUST NOT.** `layout()` places a child that is *inside* you
+  at a *smaller* scale. It is the wrong tool for a child that is the SAME OBJECT seen differently.
+  `theRockyPlanet` → `aRockyPlanet` → `aBlueWorld` → `theTerrain` are one body four ways — the rock,
+  its interior, its climate, its surface — all at extent = R, scale 1.0. Composing those would draw
+  the same sphere four times, interpenetrating. The chain below them **is** a scale ladder
+  (`theTerrain` 5,256 km → `aTerrain` 12 km → `theGround` 4 m → `theHuman` 1.78 m) and every one of
+  those seams is wired. Ask which kind of step you are at before reaching for `layout()`.
+- **PLACE IT EVEN WHEN IT IS SUB-PIXEL.** A 12 km patch on a 5,256 km globe is two parts in a
+  thousand; a 4 m ground patch on that 12 km is another thousandth. Neither is visible at its
+  parent's framing, and both are placed anyway — because that is what makes the tree ONE OBJECT
+  instead of a stack of separate pictures. Zooming then reads the same derivation at a finer level
+  rather than opening a different file. The LOD budget cuts an invisible child to a handful of
+  grains, which is exactly right.
 - **Never duplicate a child.** `theSolarSystem` drew its own core *and* placed `theStar` — the same
   matter twice, and it was what overran the tile.
 - **A SIBLING'S NUMBER COMES THROUGH THE PARENT, OR NOT AT ALL — and the failure mode is a
