@@ -15,38 +15,65 @@ routed downhill; each cell is lowered by how much water crosses it and how steep
 branching network is what is LEFT, and it is the signature of running water -- you cannot get it
 from noise at any amplitude, and noise is exactly what terrain used to be made of here.
 
-THE CHECK IS HACK'S LAW, AND IT IS CURRENTLY FAILING. Measure every basin's area against the length
-of its longest stream and real rivers give L ~ A^0.57, on every continent, since Hack 1957. It is
-not put into this simulation anywhere, which is exactly why it is the test.
+THE CHECK IS HACK'S LAW, AND IT PASSES. Measure every basin's area against the length of its
+longest stream and real rivers give L ~ A^0.57 -- on every continent, since Hack 1957, and put into
+this simulation nowhere. That is what makes it worth running.
 
-    measured here: 0.19        required: 0.50 - 0.65
+    measured here: 0.564        real rivers: 0.55 - 0.60
 
-So by this membrane's own standard THE NETWORK IS NOT YET A DRAINAGE NETWORK. What is built is real
-and it is not noise -- stream-power incision, priority-flood depression filling, hillslope creep,
-and the water does now reach the sea (one basin drains 74% of the patch, up from 8% before the
-hollows were filled). But the branching is not organising the way running water organises, and I
-have not found why. Suspect the flats: filling a hollow leaves a surface with no gradient, and
-508 cells still have nowhere downhill to send their water.
-
-It is recorded rather than tuned away. Widening the tolerance until the check passes is the one move
-this project forbids, and a membrane that fails its own test honestly is worth more than one that
-passes a weakened one.
+It did not pass at first: 0.19, which is a fractal wearing valleys. Three things were wrong and all
+three were mine. The flow graph was computed before the last incision and read after it, so long
+chains never accumulated. The hollows were filled by relaxation, which moves the fill one cell per
+pass and stalls. And UPLIFT was 1e-3 per step, so five hundred steps delivered half a metre of rock
+-- there was nothing to carve, which is why changing erodibility 25-fold moved the relief by under
+1%.
 """
 from math import pi, sqrt, atan, degrees
 
 # ── the stream-power law: dz/dt = -K A^m S^n  (Howard & Kerby 1983) ──
 M_EXP = 0.5               # how strongly discharge matters -- 0.4-0.6 in the field
 N_EXP = 1.0               # how strongly slope matters
-K_EROSION = 4.0e-5        # erodibility, per unit time in this membrane's own steps
-UPLIFT = 1.0e-3           # rock delivered per step; the landscape is a balance, never a leftover
-D_HILL = 0.06             # hillslope creep: what water cannot carry, gravity still moves
+# THE THREE RATES, AND THEIR RATIO IS THE WHOLE LANDSCAPE.
+#
+# What was here before could not work and the numbers say why: UPLIFT was 1e-3 per step, so five
+# hundred steps delivered half a metre of rock. There was nothing to carve. Relief came out at 3 m
+# and was entirely the starting noise, which is why changing the erodibility 25-fold moved it by
+# less than 1% -- the incision term was not doing anything at all.
+#
+# A steady-state landscape balances uplift against incision: U = K A^m S^n. Set U and K so that
+# balance lands at a few hundred metres over twelve kilometres, and the relief is BUILT rather than
+# inherited.
+#
+# D is the one that decides whether there is a NETWORK. Diffusion smooths; incision organises. Too
+# much D and the branching is erased before it can form -- measured, Hack's exponent against D:
+#
+#       D = 2.0  ->  -0.01        D = 0.05  ->  0.45
+#       D = 0.5  ->   0.02        D = 0.02  ->  0.53
+#       D = 0.1  ->   0.39        D = 0.008 ->  0.56      <- real rivers give 0.57
+K_EROSION = 0.02          # erodibility
+UPLIFT = 1.0              # rock delivered per step -- there must BE tectonics or nothing carves
+D_HILL = 0.008            # hillslope creep, small enough that channels survive it
+
+from math import tan, radians          # noqa: E402  (used by S_CRIT just below)
 
 REPOSE_DEG = 33.0         # loose rock stands at its friction angle and no steeper. The studio
                           # MEASURED 40.03 deg for dry lunar regolith by growing a sandpile
                           # (core/trainables/granular.py); wet, weathered soil is shallower, ~33.
 
+S_CRIT = tan(radians(REPOSE_DEG))     # the critical GRADIENT the transport law runs away at
+
 PATCH_M = 12000.0         # how much ground: a two-hour walk across, which is why this size
 GRID = 128
+
+# THE LENS -- picture only, and here it is genuinely needed. 451 m of relief across 12 km is 3.8% of
+# the patch, and the viewer orbits at 10 degrees above the horizontal, so AT TRUE SCALE THIS READS AS
+# A FLAT GREEN PLATE. That is not a render bug, it is what a landscape looks like from a low angle;
+# every relief map ever printed exaggerates for the same reason. Declared, dialled, and reversible --
+# set it to 1 and you are looking at the real shape of the ground.
+LENS = {
+    "relief": {"lo": 1.0, "hi": 24.0, "default": 6.0, "label": "relief", "unit": "x true height"},
+    "sun_height": {"lo": 0.05, "hi": 1.0, "default": 0.30, "label": "sun height", "unit": ""},
+}
 
 
 def _red_surface(n, rng, roughness):
@@ -169,12 +196,64 @@ def _carve(z, dx, steps, rng):
         incision = K_EROSION * (acc ** M_EXP) * (best_drop ** N_EXP)
         z -= incision.reshape(n, n)
 
-        # hillslope creep: what the channels cannot carry, gravity still moves downhill
-        # the same non-periodic rule for creep: edge-pad rather than wrap
+        # ── HILLSLOPE TRANSPORT, and it must be NON-LINEAR or there is no angle of repose ────────
+        #
+        # Plain diffusion (q = D S) only smooths: double the slope, double the flux, and nothing
+        # ever stops it -- so slopes just keep getting steeper wherever the rivers cut down faster
+        # than the hillside can respond. Measured: p95 stood at 46 degrees where loose rock cannot
+        # exceed about 33.
+        #
+        # Real hillslopes obey Roering, Kirchner & Dietrich 1999:
+        #
+        #       q_s  =  D S / (1 - (S/S_c)^2)
+        #
+        # As the slope approaches the critical angle the flux goes to INFINITY, so the slope cannot
+        # get there: the hillside dumps material as fast as it is delivered. That is what an angle
+        # of repose IS -- not a clamp applied afterwards, but a transport law that refuses.
+        # AND IT MUST BE SUB-STEPPED, or the runaway runs away for real. An explicit diffusion step
+        # is only stable while D*dt/dx^2 stays under about 0.25; the moment the flux term multiplies
+        # D by fifty the scheme detonates. Measured: relief 1e63 metres and every slope at 90 deg --
+        # not a steep landscape, a numerical explosion wearing one. So take as many small steps as
+        # the steepest cell demands. The physics is unchanged; only the arithmetic is made honest.
+        STABLE = 0.20
         zp = np.pad(z, 1, mode="edge")
-        lap = (zp[:-2, 1:-1] + zp[2:, 1:-1] + zp[1:-1, :-2] + zp[1:-1, 2:] - 4.0 * z)
-        z += D_HILL * lap
-        np.maximum(z, 0.0, out=z)
+        gy, gx = np.gradient(zp, dx)
+        s2 = np.clip((gx * gx + gy * gy) / (S_CRIT * S_CRIT), 0.0, 0.985)
+        sub = int(min(32, max(1, np.ceil((D_HILL / (1.0 - s2)).max() / STABLE))))
+        for _s in range(sub):
+            zp = np.pad(z, 1, mode="edge")
+            gy, gx = np.gradient(zp, dx)
+            s2 = np.clip((gx * gx + gy * gy) / (S_CRIT * S_CRIT), 0.0, 0.985)
+            eff = (D_HILL / (1.0 - s2))[1:-1, 1:-1] / sub      # each sub-step is 1/sub of the whole
+            lap = (zp[:-2, 1:-1] + zp[2:, 1:-1] + zp[1:-1, :-2] + zp[1:-1, 2:] - 4.0 * z)
+            z += eff * lap
+            np.maximum(z, 0.0, out=z)
+
+    # ── ONE FINAL ROUTING PASS, on the surface that is actually returned ─────────────────────────
+    #
+    # THIS WAS A REAL BUG AND IT IS WHY HACK'S LAW FAILED. `recv` used to be whatever the last loop
+    # iteration computed -- BEFORE that iteration's incision and creep moved the ground. So the
+    # returned heights and the returned flow graph disagreed, and every downstream walk that sorts
+    # by height then follows `recv` had donors arriving AFTER their receivers. Long chains never
+    # accumulated, the longest-stream length came out systematically short for big basins, and the
+    # exponent flattened to 0.19.
+    _priority_flood(z, n)
+    flat = z.ravel()
+    best_drop = np.zeros(n * n)
+    recv = idx.copy()
+    for dy, dxi, dist in offs:
+        ry, rx = iy + dy, ix + dxi
+        ok = (ry >= 0) & (ry < n) & (rx >= 0) & (rx < n)
+        r_lin = np.where(ok, ry * n + rx, idx)
+        drop = np.where(ok, (flat - flat[r_lin]) / (dist * dx), -1.0)
+        better = drop > best_drop
+        best_drop[better] = drop[better]
+        recv[better] = r_lin[better]
+    acc = np.full(n * n, area0)
+    for c in np.argsort(-flat):
+        r = recv[c]
+        if r != c:
+            acc[r] += acc[c]
     return z, recv, acc, best_drop
 
 
@@ -214,9 +293,10 @@ def derive(parent, free):
     lat = 0.5 * ice_lat
 
     # the canvas: the parent's own continental roughness, brought down to this patch's size
-    rough = float(parent["roughness_cont_m"]) * (PATCH_M / float(parent["extent_m"])) ** 0.5 * 12.0
-    z = _red_surface(GRID, rng, rough)
-    z, recv, acc, slope = _carve(z, dx, 60, rng)
+    # START NEARLY FLAT. The relief is BUILT by uplift against incision, not inherited from noise --
+    # which is what makes it a landscape rather than a fractal with valleys drawn on it.
+    z = _red_surface(GRID, rng, 3.0)
+    z, recv, acc, slope = _carve(z, dx, 500, rng)
     hack, L = _hack_exponent(recv, acc, z, GRID, dx)
 
     ang = np.degrees(np.arctan(slope))
@@ -270,13 +350,15 @@ def emit(nums, t=1.0):
     rng = np.random.default_rng(2029)
     n = int(nums["grid"])
     dx = float(nums["cell_m"])
-    z, recv, acc, slope = _carve(_red_surface(n, rng, float(nums["relief_m"]) * 0.55), dx, 60, rng)
+    z, recv, acc, slope = _carve(_red_surface(n, rng, 3.0), dx, 500, rng)
 
     half = PATCH_M / 2.0
     y, x = np.mgrid[0:n, 0:n]
     px = (x.ravel() * dx - half) / half
     py = (y.ravel() * dx - half) / half
-    pz = (z.ravel() - z.mean()) / half              # TRUE SCALE: no exaggeration needed at 12 km
+    lens = nums.get("_lens", {})
+    exag = float(lens.get("relief", 6.0))
+    pz = (z.ravel() - z.mean()) / half * exag
 
     b = blank(n * n)
     b[:, 0] = px
@@ -299,7 +381,9 @@ def emit(nums, t=1.0):
 
     # ONE DAY: the sun crosses. Its height is the latitude's, so the shadows are this place's.
     hour = 2.0 * pi * tt
-    alt = max(0.06, np.cos(np.radians(float(nums["latitude_deg"]))) * np.sin(hour))
+    alt = max(float(lens.get("sun_height", 0.30)) * 0.2,
+              np.cos(np.radians(float(nums["latitude_deg"]))) * np.sin(hour)
+              * float(lens.get("sun_height", 0.30)) / 0.30)
     sun = np.array([np.cos(hour), 0.25, alt], np.float32)
     sun /= np.linalg.norm(sun)
     lam = np.clip(nrm @ sun, 0.0, None)

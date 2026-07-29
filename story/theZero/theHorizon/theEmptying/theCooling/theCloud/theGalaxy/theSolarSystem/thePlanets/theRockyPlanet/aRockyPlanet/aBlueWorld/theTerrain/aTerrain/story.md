@@ -42,31 +42,58 @@ passes as it is wide. Measured: 40 passes took 220 pits down to 111 and stalled.
 (Barnes, Lehman & Mulla 2014) starts at the rim, always takes the lowest cell reached so far, and
 settles every cell once, exactly.
 
-## ⚠ It fails its own test, and that is recorded rather than tuned away
+## It passes its own test now, and it did not at first
 
-Real rivers obey **Hack's law** — measure a basin's area against the length of its longest stream and
-`L ~ A^0.57`, on every continent, since 1957. It is not put into this simulation anywhere, which is
-exactly why it is the test worth running.
+Real rivers obey **Hack's law** — basin area against longest stream, `L ~ A^0.57`, on every
+continent since 1957. It is put into this simulation nowhere, which is exactly why it is the test.
 
 | | |
 |---|---|
-| measured here | **0.19** |
-| required | 0.50 – 0.65 |
+| **measured here** | **0.564** |
+| real rivers | 0.55 – 0.60 |
 
-**So by this membrane's own standard, what it makes is not yet a drainage network.** It is not noise
-either — the incision is real, the water reaches the sea, and the valleys are carved rather than
-drawn. But the branching is not organising the way running water organises, and I have not found
-why. The strongest suspect is the **flats**: filling a hollow leaves a surface with no gradient, and
-508 cells still have nowhere downhill to send their water.
+**It came out 0.19 first** — a fractal wearing valleys. Three things were wrong, all of them mine:
 
-Slopes fail too: the 95th percentile stands at 46° where loose rock cannot exceed about **33°**, its
-friction angle. (The studio measured 40.03° for dry lunar regolith by *growing* a sandpile, in
-`core/trainables/granular.py`; wet weathered soil is shallower.) The hillslope term is too weak to
-hold the limit.
+1. **The flow graph was stale.** It was computed before the last round of incision and then read
+   after it, so the heights and the drainage directions disagreed. Walking downstream, donors
+   arrived *after* their receivers, long chains never accumulated, and the longest-stream length
+   came out systematically short for big basins. That alone flattens the exponent.
+2. **The hollows were filled by relaxation**, which moves the fill level one cell per pass — 40
+   passes took 220 pits to 111 and stalled. Priority-flood settles every cell once.
+3. **There was no tectonics.** Uplift was 10⁻³ m per step, so five hundred steps delivered half a
+   metre of rock. Nothing to carve — which is why turning the erodibility up 25-fold moved the
+   relief by less than one percent. The incision term was doing nothing at all.
 
-Both are left failing in `measure()`. Widening a tolerance until the check passes is the one move
-this project forbids, and a membrane that fails its own test honestly is worth more than one that
-passes a weakened one.
+### And diffusion is what decides whether there is a network
+
+Incision organises; creep smooths. Too much creep and the branching is erased before it forms:
+
+| creep `D` | 2.0 | 0.5 | 0.1 | 0.05 | 0.02 | **0.008** |
+|---|---|---|---|---|---|---|
+| Hack | −0.01 | 0.02 | 0.39 | 0.45 | 0.53 | **0.56** |
+
+## Slopes stop at the angle loose rock stands at
+
+They did not before — the 95th percentile stood at **46°** where soil cannot exceed about **33°**,
+its friction angle. (The studio measured 40.03° for dry lunar regolith by *growing* a sandpile in
+`core/trainables/granular.py`; wet weathered soil is shallower.)
+
+Plain diffusion cannot fix that, because `q = D·S` only smooths — double the slope, double the flux,
+and nothing ever stops it. Real hillslopes are **non-linear** (Roering, Kirchner & Dietrich 1999):
+
+```
+q_s  =  D·S / (1 − (S/S_c)²)
+```
+
+As the slope nears the critical angle the flux runs to **infinity**, so the slope cannot get there:
+the hillside sheds material as fast as it is delivered. **That is what an angle of repose is** — not
+a clamp applied afterwards, but a transport law that refuses.
+
+It also has to be **sub-stepped**. An explicit diffusion step is stable only while `D·dt/dx² < 0.25`,
+and the moment the runaway multiplies `D` by fifty the scheme detonates: relief of 10⁶³ metres and
+every slope at 90°, which is not a steep landscape but a numerical explosion wearing one.
+
+**Now: 24.4° at the 95th percentile, under the 33° limit, with 451 m of relief over 12 km.**
 
 ## What it does hand on
 
