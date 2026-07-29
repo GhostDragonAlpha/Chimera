@@ -132,6 +132,23 @@ def derive(parent, free):
         "R_star": R_STAR_SUN * (M_star / M_SUN) ** 0.8,
         "T_star_surface": (L / (4.0 * pi * (R_STAR_SUN * (M_star / M_SUN) ** 0.8) ** 2
                                 * 5.670374419e-8)) ** 0.25,
+        # ── WHAT USED TO BE `theSpace`, WHICH WAS NEVER A MEMBRANE ─────────────────────────────
+        # The operator's correction: **space is not a thing you can see. It is the distance between
+        # things** -- an equation, not matter. A membrane has to EMIT; this one had nothing to emit,
+        # so it drew "five protons per cubic centimetre" as visible grains, which is the same lie as
+        # the star-marker moon: a body invented because the render wanted something there.
+        #
+        # Every number it held was a RELATION -- how far apart, how fast you must go, how long light
+        # takes -- and a relation between two things belongs to what CONTAINS them. So they live
+        # here, in the system, where both ends of every one of them already are.
+        "v_orbit_1au": sqrt(G * M_star / AU),               # 29.8 km/s: what a circle here costs
+        "v_escape_1au": sqrt(2.0 * G * M_star / AU),        # 42.1 km/s: what leaving costs
+        "light_time_1au_s": AU / 2.99792458e8,              # 499 s -- the star is always 8 min old
+        "light_time_edge_s": (DISK_EDGE_AU * AU) / 2.99792458e8,
+        "coasts": True,                                     # no drag out here: Newton's first law, visible
+        "gravity_range_infinite": True,                     # 1/r^2 never reaches zero; nothing shields it
+        "sky_is_dark": True,                                # the universe has an age; the light has not arrived
+
         "flattened": True,                                 # angular momentum did this, not a choice
         "kepler_exponent": 1.5,                            # T^2 ~ a^3 -- measured in bigbang.py at 1.50
         "T_at_1au_days": kepler_period(1.0, M_star) / 86400.0,

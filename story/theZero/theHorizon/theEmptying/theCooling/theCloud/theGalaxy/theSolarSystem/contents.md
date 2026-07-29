@@ -10,7 +10,6 @@
 | membrane | what it is |
 |---|---|
 | `thePlanets` | Near the star it is too warm for ice, so only rock survives and you get small worlds. Farther out ice survives too, and there is four times more of it — enough to build giants |
-| `theSpace` | Empty of stuff, completely full of pull. Nothing out there slows you down, and everything out there is tugging on you |
 | `theStar` | Squeeze gas hard enough and it catches fire and stops falling. Squeeze too little and it just goes cold and stiff instead — so there is a smallest possible star |
 
 ## Hands down
@@ -33,6 +32,13 @@
 | `L` | 4.169e+26 |
 | `R_star` | 7.094e+08 |
 | `T_star_surface` | 5839 |
+| `v_orbit_1au` | 3.015e+04 |
+| `v_escape_1au` | 4.264e+04 |
+| `light_time_1au_s` | 499 |
+| `light_time_edge_s` | 1.497e+04 |
+| `coasts` | True |
+| `gravity_range_infinite` | True |
+| `sky_is_dark` | True |
 | `flattened` | True |
 | `kepler_exponent` | 1.5 |
 | `T_at_1au_days` | 360.8 |

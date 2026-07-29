@@ -40,10 +40,22 @@ generates from the folders — and **the gap between the two lists is the work r
 |---|---|
 | **theStar** | the yellow hearth |
 | **thePlanets** | the worlds in orbit |
-| **theSpace** | the medium you fly: the dark, gravity, scale |
 | **theDensityClock** | time leans with mass and speed |
 
 They are **siblings**, not a chain. A star does not contain its planets; a system contains both —
 which is why each of them reads its numbers from *here*, and never from the one beside it.
 
 *(the contents are the human story's own: `Chimera/docs/THE_STORY.md`, `chimera-terms`)*
+
+## What is not here: `theSpace`
+
+There was a `theSpace` membrane. There is not one now, and the reason is a rule.
+
+**Space is not a thing you can see — it is the distance between things.** That is an equation, not
+matter, and a membrane has to EMIT. Having nothing to emit, it drew the interstellar medium's five
+protons per cubic centimetre as visible grains: a body invented because the render wanted something
+in the frame. Exactly the star-marker moon, one level up.
+
+Every number it held was a **relation** — how far apart, how fast a circle costs, how long light
+takes to cross — and a relation between two things belongs to whatever CONTAINS them. They are
+derived here now, where both ends of every one of them already are.
