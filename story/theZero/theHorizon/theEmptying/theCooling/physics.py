@@ -101,7 +101,7 @@ def emit(nums, t=1.0):
     scatter from. At the end, faint density contrast is visible: the one part in 100,000 that gravity
     will act on next."""
     import numpy as np
-    from matter import blank, fibonacci_sphere, paint, blackbody_rgb, GLOW
+    from matter import blank, fibonacci_sphere, paint, blackbody_rgb, surface_grain, GLOW
 
     n = 14000
     tt = float(t)
@@ -117,12 +117,23 @@ def emit(nums, t=1.0):
     rgb = blackbody_rgb(min(T, 4.0e4))
 
     opacity = 0.95 * (1.0 - tt) ** 2 + 0.05        # OPAQUE -> transparent, all at once near the end
-    paint(b, rgb, opacity, 0.055, GLOW)
+    # GRAIN SIZE FROM THE SPACING, and divided by GLOW's hidden 6x (see matter.py).
+    #
+    # This read 0.055, which the rasteriser turned into 0.33 -- TEN TIMES the distance between
+    # neighbouring grains at this count. Every pixel then accumulated ~100 overlapping splats and the
+    # whole sea saturated to a FLAT SALMON DISK with no structure in it: the expansion invisible, the
+    # density contrast invisible, a render lying about density. It also put 6,379 splats into one
+    # 32-px tile.
+    #
+    # A soft volume genuinely wants overlap -- that is what makes it read as gas rather than as
+    # beads -- so this asks for about twice the closing size, which is a field you can see through.
+    grain = 2.0 * surface_grain(n, radius=float(np.median(rad))) / 6.0
+    paint(b, rgb, opacity, grain, GLOW)
 
     if tt > 0.55:                                   # the density contrast, once there is light to see it by
         m = rng.random(n) < 0.06
         b[m, 19] = min(1.0, opacity * 3.5)
-        b[m, 20] = 0.075
+        b[m, 20] = grain * 1.4      # the contrast grains, slightly larger
     return b
 
 

@@ -15,7 +15,25 @@ _TILE_DIAG = _os.environ.get('CHIMERA_TILE_DIAG') == '1'
 # how full a tile must get before it is worth reporting, as a fraction of the cap
 _TILE_DIAG_AT = float(_os.environ.get('CHIMERA_TILE_DIAG_AT', '0.5'))
 TILE_SIZE = 32
-MAX_PER_TILE = 4096
+# HOW MANY SPLATS ONE 32-PX TILE MAY HOLD. Past this the far ones are evicted, and if the survivors
+# do not happen to cover the tile you get a hard-edged black RECTANGLE on the tile grid.
+#
+# RAISED 4096 -> 16384 (2026-07-29). A sweep of every membrane found SEVEN over the old cap --
+# theGalaxy and theSolarSystem at 221%, theCloud 211%, theHumanClock 170%, theCooling 156%,
+# theClock 155%, theDensityClock 101% -- and the cause is not too many grains, it is BIG ones: these
+# membranes draw soft fields whose splats reach 68-195 px, so a single one spans up to 144 tiles.
+# 4096 was chosen for scenes of small surface grains and was simply too low for a soft field.
+#
+# It is free on the live path: the CuPy binner allocates `tids` to the KEPT total, not to
+# n_tiles*MAX_PER_TILE, so nothing is preallocated against this number. (The numba fallback's
+# preallocation is sized off the particle count and does not read it either.)
+#
+# NOT EVERY OVERRUN IS FIXED HERE. thePlanets' was a real emit bug -- 900 grains packed into a
+# sub-pixel world -- and was fixed at the source with matter.grains_for(). Raising a cap is the
+# right answer only when the grains themselves are honest. Check with CHIMERA_TILE_DIAG=1 before
+# assuming which kind you have: if the splats in the hot tile are LARGE, it is this; if they are
+# small and thousands are centred inside one tile, it is the emit.
+MAX_PER_TILE = 16384
 PX, PY, PZ = 0, 1, 2
 VX, VY, VZ = 3, 4, 5
 AX, AY, AZ = 6, 7, 8

@@ -23,6 +23,27 @@ NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-fa
 SOLID = 3.0                     # opaque, isotropic grain -- matter you can see the surface of
 GLOW = 5.0                      # big soft blob -- light, plasma, a field
 
+# ⚠ THE SIZE YOU WRITE IS NOT ALWAYS THE SIZE THAT RENDERS.
+#
+# The rasteriser looks the type up in `gpu_pipeline._profile()` and multiplies your grain by it:
+#
+#     SOLID  ->  x1.0     what you asked for
+#     GLOW   ->  x6.0     SIX TIMES what you asked for
+#
+# So `paint(b, colour, alpha, 0.055, GLOW)` renders a 0.33 splat, and on theCooling that is a
+# 195-PIXEL radius -- one grain covering 144 tiles. It is why seven membranes were over the
+# rasteriser's per-tile cap while their emits looked completely reasonable.
+#
+# IT ALSO SILENTLY BREAKS THE TWO HELPERS BELOW. `surface_grain(n)` returns the exact size needed to
+# close a surface; paint that with GLOW and you get six times it. `grains_for()` budgets by projected
+# area and is computed from the size you asked for, not the size that lands. **If you use GLOW,
+# divide by 6 before handing the number to either helper, or work in SOLID.**
+#
+# This should probably not exist -- a membrane ought to state its own grain size and be believed.
+# It is documented rather than removed because deleting it changes the appearance of every glow
+# render in the tree at once, and that is a deliberate call, not a cleanup.
+TYPE_SIZE_MULTIPLIER = {SOLID: 1.0, GLOW: 6.0}
+
 
 def blank(n: int) -> np.ndarray:
     """n grains of nothing, ready to be given a place, a colour and a size."""
