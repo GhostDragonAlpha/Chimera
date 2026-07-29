@@ -211,7 +211,7 @@ class LiveViewer:
             if dazim or delev or zoom:
                 self._last_input = time.time()   # mark "moving" -> the render thread drops to the fast LOD
 
-    def stand(self, on: bool = True) -> dict:
+    def stand(self, on: bool = True, day=None, minute=None) -> dict:
         """Enter (or leave) the body. Standing up is EXPENSIVE -- aTerrain has to carve its
         drainage network before there is ground to stand on -- so it happens once, here, and
         never on the render thread's per-frame path."""
@@ -225,6 +225,12 @@ class LiveViewer:
             w = _wk.Walker()                 # spawns at the middle of the terrain, feet on the surface
             with self._lock:
                 self._walk = w
+                self._walk_dirty = True
+        if day is not None and minute is not None:
+            # the date and hour chosen BEFORE play -- same formula as /clock, applied at entry
+            with self._lock:
+                w = self._walk
+                w.clock = float(day) * w.day_s + (float(minute) / 1440.0) * w.day_s
                 self._walk_dirty = True
         return {"walking": True, **self._walk.readout()}
 
@@ -240,6 +246,28 @@ class LiveViewer:
             self._walk_in["mx"] += float(mx)
             self._walk_in["my"] += float(my)
             w = self._walk
+        return {"walking": True, **w.readout()}
+
+    def set_walk_rate(self, x):
+        """Gear the standing body's clock. Held on the walker itself so the sun, the seasons and
+        the readout all move together -- there is one clock, so there is one place to gear it."""
+        with self._lock:
+            if self._walk is None:
+                return {"walking": False}
+            self._walk.rate = max(0.0, float(x))
+            w = self._walk
+        return {"walking": True, **w.readout()}
+
+    def set_walk_clock(self, day, minute):
+        """Jump the standing body's clock to a chosen day and minute. Sets the dirty flag directly:
+        the render loop's own rebuild gate is 'has the sun moved 2 minutes', and a small hour-scrub
+        can sit under it -- a slider that sometimes does nothing teaches the user it never does."""
+        with self._lock:
+            if self._walk is None:
+                return {"walking": False}
+            w = self._walk
+            w.clock = float(day) * w.day_s + (float(minute) / 1440.0) * w.day_s
+            self._walk_dirty = True
         return {"walking": True, **w.readout()}
 
     def set_scene(self, term: str):
@@ -289,7 +317,9 @@ def handle(handler) -> bool:
         import json as _json
         on = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
         try:
-            r = get_viewer().stand(on)
+            day = _f(qs, "day") if "day" in qs else None
+            minute = _f(qs, "minute") if "minute" in qs else None
+            r = get_viewer().stand(on, day, minute)
         except Exception as e:
             import traceback; traceback.print_exc()
             r = {"walking": False, "error": str(e)}
@@ -302,6 +332,17 @@ def handle(handler) -> bool:
             jump=(qs.get("jump") or ["0"])[0] == "1",
             crouch=(qs.get("crouch") or ["0"])[0] == "1",
             mx=_f(qs, "mx"), my=_f(qs, "my"))
+        _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/rate":
+        import json as _json
+        r = get_viewer().set_walk_rate(_f(qs, "x"))
+        _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/clock":
+        # THE WALKER'S CLOCK, SCRUBBED. Day + minute-of-day rather than a bare fraction, because the
+        # year is 383.21 days: a fraction lands mid-day and drags the hour with it (the bug that
+        # opened the game at 04:16). Whole days and minutes keep the two dials orthogonal.
+        import json as _json
+        r = get_viewer().set_walk_clock(_f(qs, "day"), _f(qs, "minute"))
         _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
     if path == "/time":
         get_viewer().set_time(_f(qs, "t"))
@@ -617,14 +658,25 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       <div id=plain></div><div id=serial></div></div>
     <div id=dials>
       <h3>time</h3>
-      <p class=note>its movie, held still. t is this membrane's own beginning to its own settled end.</p>
-      <label>t <i id=tval>1.000</i></label>
-      <input type=range id=tslider min=0 max=1000 value=1000>
+      <div id=orbitclock>
+        <p class=note>its movie, held still. t is this membrane's own beginning to its own settled end.</p>
+        <label>t <i id=tval>1.000</i></label>
+        <input type=range id=tslider min=0 max=1000 value=1000>
+      </div>
+      <div id=walkclock style="display:none">
+        <p class=note>pick WHEN, then press play. once standing the clock runs at theHumanClock's
+        gear for a body -- exactly 1:1, a second is a second -- and these two scrub it live:
+        the day across the year for the seasons, the hour for the sun.</p>
+        <label>day of the year <i id=dayval></i></label>
+        <input type=range id=dayslider min=0 max=382 step=1 value=96>
+        <label>time of day <i id=hourval></i></label>
+        <input type=range id=hourslider min=0 max=1439 step=1 value=540>
+      </div>
       <div id=freebox></div>
       <div id=lensbox></div>
     </div>
     <div id=body>
-      <button id=standbtn>stand up in it</button>
+      <button id=standbtn>&#9654; play</button>
       <div id=walkhud></div>
     </div>
   </div>
@@ -655,7 +707,7 @@ TERMS.filter(t=>!INDEX[t]).forEach(t=>{
   d.innerHTML='<span class=dot></span><span class=nm>'+t+'</span>';
   d.onclick=()=>pick(t);d.dataset.name=t;treeEl.appendChild(d);});
 function pick(t){
-  if(typeof WALKING!=='undefined' && WALKING && t!==WALK_TERM) sitDown();
+  if(WALKING && t!=='theHuman') sitDown();   /* WALKING is `var` below: undefined here on first load, never a throw */
   term=t;
   fetch('/scene?term='+encodeURIComponent(t));
   document.querySelectorAll('.node').forEach(e=>e.classList.toggle('on',e.dataset.name===t));
@@ -698,10 +750,16 @@ function pick(t){
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));
     return '<span class=num>'+k+' <i>'+v+'</i></span>';}).join(' &nbsp; ');
 }
-pick(TERMS.includes('theSolarSystem')?'theSolarSystem':TERMS[0]);
 // ── TIME: scrub the membrane's own movie ──────────────────────────────────────────
+// DECLARED BEFORE THE FIRST pick() CALL, and that ordering is load-bearing: pick() reads `tval`,
+// and a `const` is in its temporal dead zone until this line RUNS -- so with the call above this
+// declaration, the initial pick() threw right there, the script died mid-file, and everything
+// below (this slider's oninput, the orbit drag handlers, the whole walk block) silently never
+// existed. The page LOOKED alive because pick's first lines -- set the term, fetch the scene --
+// run before the throw: scenes switched while the script was a corpse from here down.
 const tsl=document.getElementById('tslider'), tval=document.getElementById('tval');
 let tTimer=null;
+pick(TERMS.includes('theSolarSystem')?'theSolarSystem':TERMS[0]);
 function elapsed(frac){
   const n=INDEX[term]||{}, d=n.duration_s;
   if(typeof d!=='number'||d<=0) return '';
@@ -792,8 +850,10 @@ function flush(){if(pend.dazim||pend.delev||pend.zoom){
   fetch('/input?dazim='+pend.dazim.toFixed(4)+'&delev='+pend.delev.toFixed(4)+'&zoom='+pend.zoom.toFixed(4));
   pend={dazim:0,delev:0,zoom:0};}sending=false;}
 function queue(){if(!sending){sending=true;requestAnimationFrame(flush);}}
-function down(x,y){if(WALKING)return;drag=true;lx=x;ly=y;stage.classList.add('drag');}
-function move(x,y){if(!drag)return;pend.dazim+=-(x-lx)*0.006;pend.delev+=(y-ly)*0.006;lx=x;ly=y;queue();}
+function down(x,y){drag=true;lx=x;ly=y;stage.classList.add('drag');}
+function move(x,y){if(!drag)return;
+  if(WALKING){if(document.pointerLockElement!==stage){mdx+=x-lx;mdy+=y-ly;}lx=x;ly=y;return;}
+  pend.dazim+=-(x-lx)*0.006;pend.delev+=(y-ly)*0.006;lx=x;ly=y;queue();}
 function up(){drag=false;stage.classList.remove('drag');}
 stage.addEventListener('mousedown',e=>down(e.clientX,e.clientY));
 window.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
@@ -803,49 +863,81 @@ stage.addEventListener('touchmove',e=>{const t=e.touches[0];move(t.clientX,t.cli
 stage.addEventListener('touchend',up);
 stage.addEventListener('wheel',e=>{if(WALKING)return;e.preventDefault();pend.zoom+=(e.deltaY>0?0.06:-0.06);queue();},{passive:false});
 
-/* ══════════════════════════════════════════════════════════════════════════
+/* ==========================================================================
    THE BODY -- Call of Duty controls, driving numbers nothing here chose.
-   WASD, mouse look, shift sprint, space jump, ctrl crouch. Every SPEED comes
+   WASD, mouse look, shift sprint, space jump, ctrl/C crouch. Every SPEED comes
    from theHuman's derivation and this planet's g; the browser sends INTENT
    (-1..1 on two axes + four flags) and never a position. That is the project's
    own control law: command the process, never the final position.
-   ══════════════════════════════════════════════════════════════════════════ */
-const KEY={}, standbtn=document.getElementById('standbtn'),
-      walkhud=document.getElementById('walkhud'), hint=document.getElementById('hint');
-let WALKING=false, mdx=0, mdy=0, jumped=false;
-const WALK_TERM='theHuman';
+
+   EVERY TOP-LEVEL BINDING HERE IS `var`, DELIBERATELY. pick() runs at page
+   load, BEFORE this block, and its guard reads WALKING. A `let` in its
+   temporal dead zone THROWS even on typeof -- the one case where typeof is not
+   a safe probe -- and that single throw killed the initial pick(), halted the
+   script right there, and left the stand button with no click handler at all:
+   the button that "did nothing" was a button nothing was listening to. `var`
+   hoists as undefined, the early guard reads falsy, the page survives its own
+   load order.
+   ========================================================================== */
+var KEY={}, WALKING=false, mdx=0, mdy=0, jumped=false, clockDrag=false, clockTimer=null;
+var standbtn=document.getElementById('standbtn'),
+    walkhud=document.getElementById('walkhud'),
+    hint=document.getElementById('hint'),
+    orbitclock=document.getElementById('orbitclock'),
+    walkclock=document.getElementById('walkclock'),
+    dayslider=document.getElementById('dayslider'),
+    hourslider=document.getElementById('hourslider'),
+    dayval=document.getElementById('dayval'),
+    hourval=document.getElementById('hourval');
+var WALK_TERM='theHuman', LOOK=0.0022;
 
 function canStand(){ return term===WALK_TERM; }
-function showStand(){
-  standbtn.style.display = canStand()||WALKING ? '' : 'none';
-}
+function showStand(){ if(!standbtn) return;
+  var on = canStand()||WALKING;
+  standbtn.style.display = on ? '' : 'none';
+  /* the date+time pickers belong to play: visible from the moment play is possible, so WHEN is
+     chosen before you enter, and still live afterwards */
+  if(walkclock) walkclock.style.display = on ? '' : 'none'; }
 standbtn.onclick=()=>{ WALKING ? sitDown() : standUp(); };
 
-async function standUp(){
-  standbtn.textContent='carving the ground...'; standbtn.disabled=true;
-  const r=await fetch('/stand?on=1').then(x=>x.json()).catch(e=>({error:''+e}));
-  standbtn.disabled=false;
-  if(!r.walking){ standbtn.textContent='could not stand: '+(r.error||'?'); return; }
-  WALKING=true; standbtn.textContent='sit back down'; standbtn.classList.add('on');
+function lockMouse(){ try{ stage.requestPointerLock(); }catch(e){} }
+function enterWalkUI(){
+  WALKING=true; standbtn.textContent='\u23F9 stop'; standbtn.classList.add('on');
   walkhud.classList.add('on'); stage.classList.add('walking');
-  hint.textContent='WASD move · mouse look · shift run · space jump · ctrl crouch · esc to release';
-  stage.requestPointerLock();
-  paintWalk(r);
+  orbitclock.style.display='none';
+  /* the FREE dials regrow the world from its numbers -- but the ground underfoot is carved once
+     and cached, so while standing they would change the paperwork and not the planet. Honest UI:
+     hide what cannot act. */
+  document.getElementById('freebox').style.display='none';
+  document.getElementById('lensbox').style.display='none';
+  hint.textContent='WASD move · mouse or drag to look · shift run · space jump · ctrl/C crouch · esc frees the mouse';
 }
-async function sitDown(){
-  WALKING=false; document.exitPointerLock();
-  standbtn.textContent='stand up in it'; standbtn.classList.remove('on');
+function exitWalkUI(){
+  WALKING=false; try{ document.exitPointerLock(); }catch(e){}
+  standbtn.textContent='\u25B6 play'; standbtn.classList.remove('on');
   walkhud.classList.remove('on'); stage.classList.remove('walking');
+  orbitclock.style.display='';
+  document.getElementById('freebox').style.display='';
+  document.getElementById('lensbox').style.display='';
   hint.textContent='drag to orbit · scroll to zoom · it turns on its own';
-  await fetch('/stand?on=0');
   showStand();
 }
+async function standUp(){
+  standbtn.textContent='carving the ground...'; standbtn.disabled=true;
+  /* WHEN was chosen on the sliders before play -- send it with the entry */
+  const q='/stand?on=1&day='+(dayslider?dayslider.value:96)+'&minute='+(hourslider?hourslider.value:540);
+  const r=await fetch(q).then(x=>x.json()).catch(e=>({error:''+e}));
+  standbtn.disabled=false;
+  if(!r.walking){ standbtn.textContent='\u25B6 play';
+    walkhud.classList.add('on'); walkhud.textContent='could not stand: '+(r.error||'?'); return; }
+  enterWalkUI(); lockMouse(); paintWalk(r);
+}
+async function sitDown(){
+  exitWalkUI();
+  await fetch('/stand?on=0').catch(()=>{});
+}
 
-/* the mouse is only ours while it is LOCKED -- otherwise the page still orbits normally */
-document.addEventListener('pointerlockchange',()=>{
-  if(WALKING && document.pointerLockElement!==stage){ /* esc released it; still standing */ }
-});
-stage.addEventListener('click',()=>{ if(WALKING && document.pointerLockElement!==stage) stage.requestPointerLock(); });
+stage.addEventListener('click',()=>{ if(WALKING && document.pointerLockElement!==stage) lockMouse(); });
 window.addEventListener('mousemove',e=>{
   if(WALKING && document.pointerLockElement===stage){ mdx+=e.movementX; mdy+=e.movementY; }
 });
@@ -853,23 +945,55 @@ window.addEventListener('keydown',e=>{
   if(!WALKING) return;
   if(e.code==='Space'){ jumped=true; e.preventDefault(); }
   KEY[e.code]=true;
-  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft'].includes(e.code)) e.preventDefault();
+  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft','KeyC'].includes(e.code)) e.preventDefault();
 });
 window.addEventListener('keyup',e=>{ KEY[e.code]=false; });
 
+function pad2(n){ return String(n).padStart(2,'0'); }
 function paintWalk(r){
   if(!r||!r.walking) return;
   walkhud.innerHTML =
-    'x <i>'+r.x.toFixed(1)+'</i> m &nbsp; y <i>'+r.y.toFixed(1)+'</i> m<br>'+
-    'elevation <i>'+r.elev.toFixed(1)+'</i> m &nbsp; slope <i>'+r.slope.toFixed(1)+'</i>&deg;<br>'+
-    'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &nbsp; walk <i>'+r.walk.toFixed(2)+
-    '</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
+    '<i>'+r.year+'</i> &middot; day <i>'+r.day+'</i> of '+(r.dpy||383)+' &middot; <i>'+pad2(r.hh)+':'+pad2(r.mm)+'</i> &middot; <i>'+r.season+'</i><br>'+
+    'sun <i>'+r.sun_alt.toFixed(1)+'&deg;</i> &middot; daylight <i>'+r.daylight.toFixed(1)+'</i> h<br>'+
+    'x <i>'+r.x.toFixed(1)+'</i> &nbsp;y <i>'+r.y.toFixed(1)+'</i> &nbsp;elev <i>'+r.elev.toFixed(1)+'</i> m &nbsp;slope <i>'+r.slope.toFixed(1)+'&deg;</i><br>'+
+    'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &middot; walk <i>'+r.walk.toFixed(2)+'</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
+  if(!clockDrag){
+    if(dayslider){ dayslider.max=(r.dpy||383)-1; dayslider.value=r.day; }
+    if(hourslider) hourslider.value=r.hh*60+r.mm;
+    if(dayval) dayval.textContent=r.day;
+    if(hourval) hourval.textContent=pad2(r.hh)+':'+pad2(r.mm);
+  }
+}
+
+/* THE YEAR IN YOUR HANDS. The 1:1 clock is the honest speed, and at that speed a season is 96
+   days -- so the sliders exist to FOLD the year, not to fake it: they jump the same clock the sun
+   and the seasons are computed from, throttled so a drag is a sweep, not a flood. */
+function clockLabels(){
+  dayval.textContent=dayslider.value;
+  hourval.textContent=pad2(Math.floor(hourslider.value/60))+':'+pad2(hourslider.value%60);
+}
+function sendClock(){
+  if(clockTimer) return;
+  clockTimer=setTimeout(async()=>{ clockTimer=null;
+    const q='/clock?day='+dayslider.value+'&minute='+hourslider.value;
+    try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
+  }, 90);
+}
+if(dayslider){
+  [dayslider,hourslider].forEach(sl=>{
+    sl.addEventListener('pointerdown',()=>{clockDrag=true;});
+    sl.addEventListener('pointerup',()=>{clockDrag=false;});
+    sl.addEventListener('change',()=>{clockDrag=false;});
+    sl.addEventListener('input',()=>{ clockLabels(); if(WALKING) sendClock(); });
+  });
 }
 
 /* 30 Hz of INTENT. Deltas are consumed, never resent -- a dropped packet must not
    double a turn, and the sensitivity lives here because it is a preference, not a physics. */
 showStand();
-const LOOK=0.0022;
+/* ADOPT THE SERVER'S TRUTH ON LOAD: if a previous page stood up and closed, the stream is already
+   first-person -- a fresh page must join that state, not draw orbit UI over a walking world. */
+fetch('/walk').then(x=>x.json()).then(r=>{ if(r&&r.walking){ enterWalkUI(); paintWalk(r); } }).catch(()=>{});
 setInterval(async()=>{
   if(!WALKING) return;
   const fwd=(KEY['KeyW']?1:0)-(KEY['KeyS']?1:0),
@@ -878,7 +1002,7 @@ setInterval(async()=>{
   mdx=0; mdy=0;
   const j=jumped; jumped=false;
   const q='/walk?fwd='+fwd+'&strafe='+str+'&sprint='+(KEY['ShiftLeft']?1:0)+
-          '&jump='+(j?1:0)+'&crouch='+(KEY['ControlLeft']?1:0)+'&mx='+mx+'&my='+my;
+          '&jump='+(j?1:0)+'&crouch='+((KEY['ControlLeft']||KEY['KeyC'])?1:0)+'&mx='+mx+'&my='+my;
   try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
 },33);
 

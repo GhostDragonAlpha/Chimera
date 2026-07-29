@@ -55,6 +55,9 @@ def _load():
     ground = json.loads((_TERRAIN / "theGround" / "numbers.json").read_text())
     human = json.loads((_TERRAIN / "theGround" / "theHuman" / "numbers.json").read_text())
     planet = json.loads((_TERRAIN.parent.parent / "numbers.json").read_text())   # aBlueWorld: the air
+    # theHumanClock: the OTHER end of the ladder -- the band of durations a player can feel.
+    # The walker's clock rate is DEFINED against it, not asserted (see Walker.__init__).
+    hclock = json.loads((_STORY / "theZero/theHorizon/theClock/theHumanClock" / "numbers.json").read_text())
     n, dx = int(nums["grid"]), float(nums["cell_m"])
     rng = np.random.default_rng(2029)
     z, recv, acc, slope = mod._carve(mod._red_surface(n, rng, 3.0), dx, 500, rng)
@@ -67,7 +70,7 @@ def _load():
 
     _FIELD = (z, dx, float(nums["patch_m"]), acc.reshape(n, n), slope.reshape(n, n))
     _NUMS = {"terrain": nums, "ground": ground, "human": human,
-             "planet": planet, "ground_law": gmod}
+             "planet": planet, "human_clock": hclock, "ground_law": gmod}
     return _FIELD, _NUMS
 
 
@@ -167,6 +170,22 @@ class Walker:
         # Whole days plus an hour: the year is 383.21 days, so a bare year-FRACTION lands at an
         # arbitrary time of day and "09:00" came out as 04:16.
         self.clock = float(h["start_day"]) * self.day_s + float(h["start_time_s"])
+        # THE RATE IS theHumanClock'S ANSWER, NOT A SETTING. That membrane's whole claim is that a
+        # player can only feel events between band_lo (0.04 s) and band_hi (10 s), so every rhythm
+        # in the game must be GEARED into that band -- a star needs 176.9x. The rhythm of THIS
+        # membrane is one stride, and the chain that sets it runs through the solar system: the
+        # star's mass fixes g, g fixes the pendulum, the pendulum fixes the stride at 3.8 s --
+        # which is already INSIDE the band. A rhythm already in the band needs no gear, so play
+        # is exactly 1:1 -- derived, and it would stop being 1 if the chain above ever pushed the
+        # stride out of the band.
+        hc = nums["human_clock"]
+        stride_s = float(h["duration_s"])
+        if stride_s > float(hc["band_hi_s"]):
+            self.rate = stride_s / float(hc["band_hi_s"])      # too slow to feel: compress
+        elif stride_s < float(hc["band_lo_s"]):
+            self.rate = stride_s / float(hc["band_lo_s"])      # too fast to see: stretch
+        else:
+            self.rate = 1.0                                    # the stride lives in the band
 
         self.x, self.y = 0.0, 0.0
         self.z = height_at(0.0, 0.0)
@@ -217,7 +236,7 @@ class Walker:
         else:
             self.z = gz
         self.crouch += (( -0.35 if crouch else 0.0) - self.crouch) * min(1.0, 10.0 * dt)
-        self.clock += dt                    # 1:1. The only rung that needs no gearing.
+        self.clock += dt * self.rate        # rate 1 = a second is a second; >1 = the declared gear
 
     @property
     def eye_pos(self):
@@ -273,6 +292,8 @@ class Walker:
                 "g": round(self.g, 2),
                 "walk": round(self.walk, 2), "run": round(self.run, 2),
                 "day": day, "hh": hh, "mm": mm, "year": int(self.epoch_year),
+                "dpy": int(self.days_per_year),
+                "rate": self.rate,
                 "sun_alt": round(math.degrees(self.sun[1]), 1),
                 "season": self.season(),
                 "decl": round(math.degrees(self.declination), 1),
