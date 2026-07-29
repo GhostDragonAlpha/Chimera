@@ -133,6 +133,13 @@ def emit(nums, t=1.0):
     return np.concatenate([body, disk], axis=0)
 
 
+def layout(nums):
+    """WHAT IS CONTAINED HERE. theStar is the LAW -- what a star is, and the least mass that can be
+    one. aStar is the star that actually formed in this system, so it sits at the centre of this
+    membrane's frame at full size: at this scale the membrane IS the star."""
+    return {"aStar": ((0.0, 0.0, 0.0), 1.0)}
+
+
 def measure(nums):
     """What training must check -- facts, not preferences: the minimum stellar mass lands at the
     measured brown-dwarf limit, and this star is actually held up by fire rather than crowding."""

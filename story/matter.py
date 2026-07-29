@@ -29,13 +29,29 @@ def blank(n: int) -> np.ndarray:
     return np.zeros((n, NCOLS), dtype=np.float32)
 
 
-def fibonacci_sphere(n: int) -> np.ndarray:
-    """n unit vectors spread evenly over a sphere (the golden-angle spiral). Deterministic."""
+def fibonacci_sphere(n: int, jitter: float = 0.0, seed: int = 0) -> np.ndarray:
+    """n unit vectors spread evenly over a sphere (the golden-angle spiral). Deterministic.
+
+    JITTER BREAKS THE LATTICE. The golden-angle spiral is REGULAR, and a regular sampling pattern is
+    visible -- zoom in and its arms read as faint curved streaks, which is what makes a smooth
+    surface look like a crappy voxel calculation. This displaces each grain TANGENTIALLY (in the
+    surface, then renormalised back onto the shell) by a fraction of the mean spacing, turning the
+    spiral into blue noise. Tangential ON PURPOSE: radial jitter scatters grains in DEPTH and lets
+    the background speckle through between them, which is a worse artifact."""
     i = np.arange(n, dtype=np.float64)
     z = 1.0 - 2.0 * (i + 0.5) / n
     r = np.sqrt(np.clip(1.0 - z * z, 0.0, 1.0))
     th = np.pi * (1.0 + 5.0 ** 0.5) * i
-    return np.stack([r * np.cos(th), r * np.sin(th), z], axis=1)
+    d = np.stack([r * np.cos(th), r * np.sin(th), z], axis=1)
+    if jitter > 0.0:
+        rng = np.random.default_rng(seed)
+        spacing = 2.0 / np.sqrt(max(n, 1))
+        v = rng.normal(0.0, 1.0, (n, 3))
+        v -= (v * d).sum(1, keepdims=True) * d                   # into the TANGENT plane
+        v /= (np.linalg.norm(v, axis=1, keepdims=True) + 1e-12)
+        d = d + v * (jitter * spacing * rng.random((n, 1)) ** 0.5)
+        d /= (np.linalg.norm(d, axis=1, keepdims=True) + 1e-12)  # back onto the shell: no depth change
+    return d
 
 
 def paint(buf: np.ndarray, rgb, alpha: float, size: float, kind: float = SOLID) -> np.ndarray:

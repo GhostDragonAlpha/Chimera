@@ -1,0 +1,13 @@
+{
+  "M": 1.98892e+30,
+  "M_solar": 1.0,
+  "R": 695700000.0,
+  "R_solar": 1.0,
+  "L": 3.828e+26,
+  "L_solar": 1.0,
+  "T_surface": 5772.003429145849,
+  "lifetime_yr": 10000000000.0,
+  "granules_across": 1391.4,
+  "granule_dT": 250.0,
+  "burning": true
+}
