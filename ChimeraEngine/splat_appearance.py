@@ -571,7 +571,14 @@ def scene_cam_distance(term: str) -> float:
     # dict's camera for a membrane put the eye 462 units from a 1-unit object: a BLACK SCREEN.
     buf = membrane_buffer(term)                 # a membrane is orbited at ITS OWN measured extent
     if buf is not None:
-        return 2.8 * (float(np.linalg.norm(buf[:, PX:PZ + 1], axis=1).max()) or 1.0)
+        r = np.linalg.norm(buf[:, PX:PZ + 1], axis=1)
+        # A PERCENTILE, NOT THE MAXIMUM. The max is set by whatever single grain is furthest out, and
+        # a membrane that draws a distant marker -- the star a planet is lit by, sitting 3 radii off
+        # -- then frames the whole scene around that marker and leaves the planet 9 units away: a
+        # dot on a black screen. The 99th percentile is the body's real extent and ignores the
+        # handful of grains that are pointing at something else. Same lesson as reading a surface
+        # from a mean: one outlier must not stand in for a distribution.
+        return 2.8 * (float(np.percentile(r, 99.0)) or 1.0)
     cam = (COMPOSITIONS.get(term) or SCENES.get(term) or {}).get("cam")
     if cam:
         return float(np.linalg.norm(cam))

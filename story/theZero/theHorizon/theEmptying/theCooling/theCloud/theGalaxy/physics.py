@@ -44,6 +44,14 @@ def winding_turns(r_kpc, dr_kpc=5.0, v=V_FLAT, age_yr=1.0e10):
 import clock as _clk
 
 
+FREE = {
+    # How many parent-sized clouds merged. Drag it and the galaxy's mass moves, which moves the
+    # rotation curve, the dark ratio, and everything the system below inherits.
+    "n_clouds": {"label": "clouds merged", "default": 1.7e5,
+                 "lo": 1.0e4, "hi": 1.0e6, "unit": "", "log": True},
+}
+
+
 def derive(parent, free):
     if parent is None or not parent.get("collapsing"):
         raise ValueError("theGalaxy requires a parent cloud that is collapsing")

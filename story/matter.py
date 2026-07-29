@@ -29,6 +29,22 @@ def blank(n: int) -> np.ndarray:
     return np.zeros((n, NCOLS), dtype=np.float32)
 
 
+def surface_grain(n: int, radius: float = 1.0, cover: float = 0.58) -> float:
+    """HOW BIG A GRAIN HAS TO BE TO CLOSE A SURFACE. Not a taste setting -- arithmetic.
+
+    n grains spread over a sphere of radius r sit `sqrt(4*pi*r^2/n)` apart. A splat narrower than
+    about half that spacing leaves gaps, and because there is nothing behind a planet, the gaps are
+    BLACK: the ocean reads as loose grit floating in space instead of as water. Wider than the
+    spacing and the surface goes soft and every feature blurs.
+
+    So the grain is a CONSEQUENCE of how many you asked for, and computing it here means changing
+    the count can never silently reopen the holes. The same rule inverted is the reason a shell must
+    be sampled finely enough to be thinner than its own grains are wide -- an atmosphere drawn with
+    coarse splats renders as a halo the planet does not have."""
+    spacing = (4.0 * np.pi * radius * radius / max(n, 1)) ** 0.5
+    return float(cover * spacing)
+
+
 def fibonacci_sphere(n: int, jitter: float = 0.0, seed: int = 0) -> np.ndarray:
     """n unit vectors spread evenly over a sphere (the golden-angle spiral). Deterministic.
 

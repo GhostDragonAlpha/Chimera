@@ -130,6 +130,11 @@ def derive(parent, free):
         "r_rocky_au": 0.5 * (R_IN + r_snow),          # where the rocky world this story follows sits
         "T_star_surface": 5772.0,  # carried from the system's luminosity; the star is the CAUSE of the gradient
         "R_star": 6.957e8,
+        # CARRIED FOR THE CHILDREN, not used here: a world can only read its parent, and it needs the
+        # star's mass to know its own YEAR (T = 2*pi*sqrt(a^3/GM)) and the outer ice inventory to know
+        # where its water came from. A parent that withholds what its children need forces them to
+        # reach sideways, which is the one move the hierarchy forbids.
+        "M_star": float(parent["M_star"]),
         "worlds": worlds,                             # the planets themselves -- grown, not placed
         "n_worlds": len(worlds),
         "n_rocky": sum(1 for w in worlds if not w["icy"]),

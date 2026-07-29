@@ -31,6 +31,15 @@ def kepler_period(a_au, m_star):
 import clock as _clk
 
 
+FREE = {
+    # WHICH fragment of the parent cloud became this system. This is the number that decides the
+    # star's mass -- and therefore its class, its NAME, its colour, its life, the snow line, and
+    # where the rocky worlds sit. One slider, and the whole subtree re-derives.
+    "M_system": {"label": "system mass", "default": 1.9910e30,
+                 "lo": 2.0e29, "hi": 6.0e30, "unit": "kg", "log": True},
+}
+
+
 def derive(parent, free):
     if parent is None or not parent.get("collapsing"):
         raise ValueError("theSolarSystem requires a parent cloud that is collapsing")

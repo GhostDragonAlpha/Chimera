@@ -25,6 +25,14 @@ def crossing():
     return sqrt(HBAR * C / (2.0 * G))
 
 
+FREE = {
+    # THE HUMAN'S ONE DIAL AT THE SEED: how much is added to zero. Everything about the fence,
+    # and every scale below it, follows from this single number.
+    "M_added": {"label": "mass added to zero", "default": 1.539e-8,
+                "lo": 1.0e-9, "hi": 1.0e-6, "unit": "kg", "log": True},
+}
+
+
 def derive(parent, free):
     if parent is None or parent.get("allowed") != "addition":
         raise ValueError("theHorizon requires a parent that permits addition")

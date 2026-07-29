@@ -55,6 +55,11 @@ class LiveViewer:
         self._term = term
         self._pending = term
         self._loaded = None
+        # THE TIME AXIS, held rather than auto-played. A membrane's movie runs t = 0 -> 1 over its
+        # own real duration; scrubbing it is how you inspect a moment instead of watching it pass.
+        self._t = 1.0
+        self._loaded_t = None
+        self._reload = False
         # orbit state (spherical, aimed at the origin)
         self._azim = 0.0
         self._elev = 0.18
@@ -65,8 +70,11 @@ class LiveViewer:
         self._clients = 0                                          # active /stream connections
         self._running = True
         self._err = None
-        self._t = threading.Thread(target=self._loop, name="live-render", daemon=True)
-        self._t.start()
+        # NAMED IN FULL, deliberately: `_t` is the story's TIME axis. The thread that draws it is a
+        # different thing, and when both were called `_t` the render loop handed a Thread object to
+        # emit(t) and every frame came back blank.
+        self._thread = threading.Thread(target=self._loop, name="live-render", daemon=True)
+        self._thread.start()
 
     # ── the render thread (sole owner of the GPU) ──
     def _loop(self):
@@ -84,12 +92,19 @@ class LiveViewer:
                 now = time.time(); dt = min(0.1, now - last); last = now
                 if self._clients <= 0:                                  # nobody watching -> free the shared 4090 (LM Studio needs it)
                     time.sleep(0.1); continue
-                if self._pending != self._loaded:                       # (re)load the scene, on this thread
-                    buf = self._sa.scene_buffer(self._pending)
+                if (self._pending != self._loaded or self._t != self._loaded_t
+                        or self._reload):                                # (re)load, on this thread
+                    want_t = self._t
+                    buf = self._sa.membrane_buffer(self._pending, want_t)
+                    if buf is None:
+                        buf = self._sa.scene_buffer(self._pending)       # a painted scene has no time axis
                     if buf is not None:
                         pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
-                        self._radius = self._radius0 = self._sa.scene_cam_distance(self._pending)
+                        if self._pending != self._loaded:                # keep the framing while scrubbing
+                            self._radius = self._radius0 = self._sa.scene_cam_distance(self._pending)
                         self._loaded = self._pending
+                        self._loaded_t = want_t
+                        self._reload = False
                 # apply input + auto-spin, then place the camera on the orbit sphere aimed at origin
                 with self._lock:
                     self._azim += self._in["dazim"] + _AUTO_SPIN * dt
@@ -137,6 +152,14 @@ class LiveViewer:
         with self._lock:
             return self._latest
 
+    def set_time(self, t: float):
+        with self._lock:
+            self._t = max(0.0, min(1.0, float(t)))
+
+    def force_reload(self):
+        with self._lock:
+            self._reload = True
+
     def input(self, dazim=0.0, delev=0.0, zoom=0.0):
         with self._lock:
             self._in["dazim"] += dazim; self._in["delev"] += delev; self._in["zoom"] += zoom
@@ -183,6 +206,32 @@ def handle(handler) -> bool:
     if path == "/input":
         v = get_viewer()
         v.input(dazim=_f(qs, "dazim"), delev=_f(qs, "delev"), zoom=_f(qs, "zoom"))
+        _send(handler, 204, "text/plain", b""); return True
+    if path == "/time":
+        get_viewer().set_time(_f(qs, "t"))
+        _send(handler, 204, "text/plain", b""); return True
+    if path == "/free":
+        # THE HUMAN'S DIALS. Writing a free parameter regrows the membrane AND EVERYTHING BELOW IT,
+        # because that is what a free parameter IS: the one input a subtree's numbers are not
+        # determined by. Move it and the whole cascade re-derives -- which is the fastest way to see
+        # what a variable actually does.
+        import json as _json, subprocess, sys as _sys
+        term = (qs.get("term") or [""])[0]
+        name = (qs.get("name") or [""])[0]
+        try:
+            val = float((qs.get("value") or ["0"])[0])
+        except ValueError:
+            val = 0.0
+        import splat_appearance as _sa
+        folder = _sa._find_membrane(term)
+        if folder is not None and name:
+            tj = folder / "trained.json"
+            cur = _json.loads(tj.read_text()) if tj.exists() else {}
+            cur[name] = val
+            tj.write_text(_json.dumps(cur, indent=2))
+            subprocess.run([_sys.executable, str(_HERE.parent / "story" / "grow.py")],
+                           capture_output=True, cwd=str(_HERE.parent))
+            get_viewer().force_reload()
         _send(handler, 204, "text/plain", b""); return True
     if path == "/scene":
         term = (qs.get("term") or [""])[0]
@@ -295,6 +344,27 @@ def _tree_of(folder):
     node["membrane"] = (folder / "physics.py").exists()
     node["duration_s"] = node["numbers"].get("duration_s")
     node["extent_m"] = node["numbers"].get("extent_m")
+    # WHICH OF THIS MEMBRANE'S INPUTS ARE ACTUALLY FREE. Only these get sliders: a handle on a
+    # DERIVED number would let a human set a value the physics forbids, which is the one thing the
+    # whole method exists to prevent. The absence of a handle is itself the lesson -- that number
+    # belongs to the universe, not to you.
+    node["free"] = {}
+    py = folder / "physics.py"
+    if py.exists():
+        try:
+            import ast as _ast
+            tree = _ast.parse(py.read_text(encoding="utf-8", errors="replace"))
+            for st in tree.body:
+                if isinstance(st, _ast.Assign) and getattr(st.targets[0], "id", "") == "FREE":
+                    node["free"] = _ast.literal_eval(st.value)
+        except Exception:
+            pass
+    tj = folder / "trained.json"
+    if tj.exists():
+        try:
+            node["free_set"] = json.loads(tj.read_text())
+        except Exception:
+            node["free_set"] = {}
     for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         if (c / "story.md").exists():
             node["children"].append(_tree_of(c))
@@ -379,6 +449,15 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  footer .num{font:12px ui-monospace,Menlo,monospace;color:var(--dim);white-space:nowrap}
  footer .num i{color:var(--hot);font-style:normal}
  footer .hint{margin-left:auto;color:#4d587a;font-size:11px}
+ /* THE ONLY HANDLES IN THE GAME. Free parameters and time -- never a derived number. */
+ #dials{position:absolute;right:14px;top:14px;width:250px;background:#0b0e17dd;border:1px solid var(--line);
+        border-radius:10px;padding:11px 13px 13px;backdrop-filter:blur(3px)}
+ #dials h3{margin:0 0 3px;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--dim)}
+ #dials .note{margin:0 0 9px;font-size:10px;color:#4d587a;line-height:1.35}
+ #dials label{display:block;font-size:11px;color:#9fb0d0;margin:9px 0 2px}
+ #dials label i{float:right;font-style:normal;color:var(--hot);font-family:ui-monospace,Menlo,monospace}
+ #dials input[type=range]{width:100%;accent-color:#5f8ee0;height:16px}
+ #dials .free label i{color:#e8a05c}
 </style>
 <aside>
   <h1>Chimera</h1>
@@ -393,6 +472,13 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
     <img id=view src="/stream" alt="live render">
     <div id=hud><div><b id=nm></b><span id=tag class=tag></span></div>
       <div id=plain></div><div id=serial></div></div>
+    <div id=dials>
+      <h3>time</h3>
+      <p class=note>its movie, held still. t is this membrane's own beginning to its own settled end.</p>
+      <label>t <i id=tval>1.000</i></label>
+      <input type=range id=tslider min=0 max=1000 value=1000>
+      <div id=freebox></div>
+    </div>
   </div>
   <footer><div id=nums></div><div class=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
 </main>
@@ -456,11 +542,56 @@ function pick(t){
   document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ')
       +(dur?('   ·   its movie spans '+dur):'')+size;
   const nums=n.numbers||{};
+  paintFree();
+  tval.textContent=(tsl.value/1000).toFixed(3)+elapsed(tsl.value/1000);
   document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));
     return '<span class=num>'+k+' <i>'+v+'</i></span>';}).join(' &nbsp; ');
 }
 pick(TERMS.includes('theSolarSystem')?'theSolarSystem':TERMS[0]);
+// ── TIME: scrub the membrane's own movie ──────────────────────────────────────────
+const tsl=document.getElementById('tslider'), tval=document.getElementById('tval');
+let tTimer=null;
+function elapsed(frac){
+  const n=INDEX[term]||{}, d=n.duration_s;
+  if(typeof d!=='number'||d<=0) return '';
+  const v=d*frac, U=[[3.1557e16,'Gyr'],[3.1557e13,'Myr'],[3.1557e7,'yr'],[86400,'d'],[3600,'h'],[60,'min'],[1,'s']];
+  for(const [u,nm] of U){ if(v>=u) return '  =  '+(v/u).toPrecision(3)+' '+nm; }
+  return '  =  '+v.toExponential(2)+' s';
+}
+tsl.oninput=()=>{ const f=tsl.value/1000; tval.textContent=f.toFixed(3)+elapsed(f);
+  clearTimeout(tTimer); tTimer=setTimeout(()=>fetch('/time?t='+f.toFixed(4)),90); };
+
+// ── FREE PARAMETERS: the only other handles, and moving one re-derives the whole subtree ──
+function paintFree(){
+  const n=INDEX[term]||{}, F=n.free||{}, set=n.free_set||{}, box=document.getElementById('freebox');
+  const keys=Object.keys(F);
+  if(!keys.length){ box.innerHTML='<h3 style="margin-top:14px">no free dials</h3>'
+    +'<p class=note>every number here is derived from its parent. that is not a limitation &mdash; '
+    +'it is what makes them true.</p>'; return; }
+  let h='<h3 style="margin-top:14px">the human’s dials</h3>'
+       +'<p class=note>the only inputs this membrane is <i>not</i> determined by. move one and '
+       +'everything below re-derives.</p><div class=free>';
+  for(const k of keys){
+    const f=F[k], cur=(k in set)?set[k]:f.default;
+    const lo=Math.log10(f.lo), hi=Math.log10(f.hi), pos=Math.round(1000*(Math.log10(cur)-lo)/(hi-lo));
+    h+='<label>'+f.label+' <i id="fv_'+k+'">'+cur.toPrecision(4)+' '+(f.unit||'')+'</i></label>'
+      +'<input type=range data-k="'+k+'" data-lo="'+lo+'" data-hi="'+hi+'" min=0 max=1000 value="'+pos+'">';
+  }
+  box.innerHTML=h+'</div>';
+  box.querySelectorAll('input[type=range]').forEach(el=>{
+    let tm=null;
+    el.oninput=()=>{
+      const lo=+el.dataset.lo, hi=+el.dataset.hi, k=el.dataset.k;
+      const v=Math.pow(10, lo+(hi-lo)*el.value/1000);
+      document.getElementById('fv_'+k).textContent=v.toPrecision(4)+' '+((INDEX[term].free[k].unit)||'');
+      clearTimeout(tm); tm=setTimeout(()=>{
+        fetch('/free?term='+encodeURIComponent(term)+'&name='+encodeURIComponent(k)+'&value='+v)
+          .then(()=>setTimeout(()=>location.reload(),1400));
+      },420);
+    };
+  });
+}
 let drag=false,lx=0,ly=0,pend={dazim:0,delev:0,zoom:0},sending=false;
 const stage=document.getElementById('stage');
 function flush(){if(pend.dazim||pend.delev||pend.zoom){
