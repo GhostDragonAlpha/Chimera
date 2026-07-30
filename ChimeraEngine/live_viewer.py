@@ -135,13 +135,19 @@ class LiveViewer:
                         # an over-the-shoulder orbit: behind the facing, raised by the look pitch,
                         # aimed at the chest -- and never below the ground it is looking across.
                         f = (-math.sin(self._walk.yaw), math.cos(self._walk.yaw))
+                        r = (math.cos(self._walk.yaw), math.sin(self._walk.yaw))
                         e = max(-0.35, min(1.25, self._walk.pitch))
-                        # 3.2 m, chest-high: close enough that the body's 2 cm grains read as a
-                        # figure at this FOV, far enough that the whole stride stays in frame.
+                        # 3.2 m, chest-high -- and OFF THE AXIS OF THE STRIDE. The legs swing in
+                        # the sagittal plane (forward-up); a camera dead behind looks straight
+                        # down that plane and the entire gait projects to a vertical line -- the
+                        # "body all down the centre". 0.9 m to shoulder-side gives a three-quarter
+                        # view: ~16 degrees off-axis, enough for the swing to show while forward
+                        # stays forward.
                         D = 3.2
+                        SIDE = 1.15
                         pivot = (wx, wy, self._walk.z + 0.70 * self._walk.eye + self._walk.crouch)
-                        cx = wx - f[0] * D * math.cos(e)
-                        cy = wy - f[1] * D * math.cos(e)
+                        cx = wx - f[0] * D * math.cos(e) + r[0] * SIDE
+                        cy = wy - f[1] * D * math.cos(e) + r[1] * SIDE
                         cz = pivot[2] + D * math.sin(e)
                         cz = max(cz, _wk.height_at(cx, cy) + 0.4)
                         cam.position = np.array([cx, cy, cz], dtype=np.float32)

@@ -169,6 +169,15 @@ def derive(parent, free):
         "T_bare": float(parent["T_bare"]),
         "P_surface_bar": float(parent["P_surface_bar"]) if dynamo else 0.0,
         "has_atmosphere": bool(parent["has_atmosphere"]) and dynamo,
+        # ── THE AIR, CARRIED ─────────────────────────────────────────────────────────────────
+        # theRockyPlanet decided which gases this world could hold onto (Jeans escape: the ratio of
+        # escape speed to thermal speed, gas by gas) and what pressure they exert. A body fourteen
+        # membranes down has to know both -- whether it can breathe here is not a fact about a
+        # person, it is a fact about this planet -- and a sibling cannot hand it over. No defaults:
+        # a missing key here is a broken chain, not an Earth-like guess.
+        "gases_kept": list(parent["gases_kept"]),
+        "escape_ratios": dict(parent["escape_ratios"]),
+        "P_surface_bar": float(parent["P_surface_bar"]),
         "column_rel": float(parent["column_rel"]),
         "solid_outside_earths": float(parent["solid_outside_earths"]),
         "day_s": day_s, "day_hours": float(parent["day_hours"]),

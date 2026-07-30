@@ -76,7 +76,11 @@ def _static():
         "ground_law": _mod("theGround_phys", _TERRAIN / "theGround" / "physics.py"),
         # theHuman's law: the body itself. Third person does not build a figure -- it borrows the
         # membrane's own emit(), so the person you watch IS the chapter's stick figure, derived.
-        "human_law": _mod("theHuman_phys", _TERRAIN / "theGround" / "theHuman" / "physics.py"),
+        # aHUMAN, not theHuman: the parent draws a stick figure on purpose (it claims only the
+        # skeleton it derived); the INSTANCE knows a suit's outside and can draw a surface. Third
+        # person shows the person, so it borrows the instance's body.
+        "human_law": _mod("aHuman_phys", _TERRAIN / "theGround" / "theHuman" / "aHuman" / "physics.py"),
+        "suited": json.loads((_TERRAIN / "theGround" / "theHuman" / "aHuman" / "numbers.json").read_text()),
         # aBlueWorld's law, for temperature_at() -- ITS OWN DOCSTRING is the authority here:
         # "THE ONE LATITUDE PROFILE THIS STORY USES, and every membrane below must read it from
         # here... snow is a temperature, not a latitude." So the place picker asks the planet.
@@ -545,7 +549,7 @@ def body_buffer(w: Walker):
     two strides of ground, so t = dist / (2 * stride_m). A body that walks when the ground
     scrolls and freezes when it stops cannot drift out of step with its own motion."""
     st = _static()
-    hn = st["human"]
+    hn = st["suited"]                 # aHuman's numbers: the suit's shape as well as the body's
     height = float(hn["height_m"])
     cycle = 2.0 * float(hn["stride_m"])
     t = (w.dist / cycle) % 1.0
@@ -555,6 +559,16 @@ def body_buffer(w: Walker):
         _BODY_CACHE[q] = st["human_law"].emit(hn, q / 48.0).copy()
     b = _BODY_CACHE[q].copy()
 
+    # WHERE THE SOLES ARE IS MEASURED, NOT ASSUMED. Placing the body by adding com_height_m to the
+    # ground put the boots 50 mm UNDERGROUND: com_height is the BARE body's centre of mass, and a
+    # suited figure has thicker soles under it. So the offset is the mean lowest point over the whole
+    # gait cycle -- averaged rather than per-pose, because pinning every frame's lowest grain to the
+    # ground would flatten the CoM bob that makes it read as a walk instead of a glide.
+    if "sole" not in _BODY_CACHE:
+        lows = [st["human_law"].emit(hn, k / 12.0)[:, 2].min() for k in range(12)]
+        _BODY_CACHE["sole"] = float(sum(lows) / len(lows))
+    lift = -_BODY_CACHE["sole"]
+
     # local +X (emit's walking direction) -> the walker's facing (yaw 0 = +Y)
     a = w.yaw + math.pi / 2.0
     c, s = math.cos(a), math.sin(a)
@@ -563,11 +577,31 @@ def body_buffer(w: Walker):
     b[:, 1] = (x * s + y * c) * height + w.y
     # emit centres on the CoM; the walker's z is the SOLES. com_height_m up from the feet is the
     # same number both used, so the soles land exactly on the carved surface -- plus the crouch dip.
-    b[:, 2] = b[:, 2] * height + w.z + float(hn["com_height_m"]) + w.crouch
+    b[:, 2] = (b[:, 2] + lift) * height + w.z + w.crouch
     nx, ny = b[:, 21].copy(), b[:, 22].copy()
     b[:, 21] = nx * c - ny * s
     b[:, 22] = nx * s + ny * c
-    b[:, 20] *= height
+    # COVERAGE PER PART, not one factor for all. emit() draws every part with one 0.011 grain,
+    # which under-covers the limbs at 3 m (they smear) -- but a uniform blow-up was measured wrong
+    # too: it ballooned the head and fattened the trunk until the legs fused into one stalk. The
+    # honest rule is the clipmap's, applied per tube: a grain must close ITS OWN surface, so its
+    # size follows its part's radius. The head is the opposite case -- a densely-sampled sphere
+    # whose roundness survives only with SMALL grains. emit's part order is deterministic
+    # (per side: thigh, shank, foot, upper arm, forearm; then trunk, head), so the ranges are known.
+    if False:   # (was theHuman's 3120-grain stick figure; aHuman sizes its own surface)
+        seg = [(260, 0.032), (260, 0.030), (120, 0.028), (180, 0.026), (180, 0.024)]
+        sizes = np.empty(len(b), np.float32)
+        i = 0
+        for _rep in range(2):
+            for cnt, sz in seg:
+                sizes[i:i + cnt] = sz; i += cnt
+        sizes[i:i + 420] = 0.048; i += 420       # trunk: the widest tube
+        sizes[i:] = 0.020                         # head: keep the sphere a sphere
+        b[:, 20] = sizes * height
+    else:
+        # aHuman sizes its own grains to close its own surface (rings on tubes), so scaling to
+        # metres is all that is needed -- no re-guessing per part.
+        b[:, 20] *= height
 
     # RELIT UNDER THE REAL SKY -- same beam + airlight as the ground, so one sun serves the
     # whole picture. emit's own sun is a demo light for the membrane view and stays there.
@@ -579,8 +613,22 @@ def body_buffer(w: Walker):
     beam = max(0.0, math.sin(alt))
     sky = 0.09 + 0.16 * max(0.0, min(1.0, (math.degrees(alt) + 6.0) / 12.0))
     lam = np.clip(b[:, 21:24] @ sun, 0.0, None)
-    body_alb = np.array([0.52, 0.44, 0.38], np.float32)
-    b[:, 16:19] = lit(body_alb, S_rel * beam * lam + sky, e_ref=S_rel, tone=0.45)
+    # THE BODY'S OWN MATERIALS, if it published any (matter.AR..AB). aHuman derives three -- pale
+    # suit, dark visor, grey hardware -- and a single hard-coded albedo here erased all three.
+    import matter as _M
+    own = b[:, _M.AR:_M.AB + 1]
+    body_alb = own if float(np.abs(own).max()) > 1e-6 else np.array([0.52, 0.44, 0.38], np.float32)
+    # GROUND BOUNCE. A vertical surface standing on sunlit grass does not go black on its shaded
+    # side: half its sky is the BRIGHT GROUND. One bounce -- ground albedo ~0.22, view factor 0.5
+    # for a vertical face -- is 11% of the beam, and it is why the figure's back reads as a body
+    # in daylight instead of a silhouette. Same physics as the sky term, one reflection later.
+    bounce = 0.5 * 0.22 * S_rel * beam
+    b[:, 16:19] = lit(body_alb, S_rel * beam * lam + sky + bounce, e_ref=S_rel, tone=0.45)
+    # the visor keeps its specular: a curved dark surface with a bright sky in front of it
+    dark = own.mean(axis=1) < 0.15
+    if dark.any():
+        b[dark, 16:19] += (np.clip(lam[dark], 0.0, None)[:, None] ** 24 * 0.8).astype(np.float32)
+        np.clip(b[:, 16:19], 0.0, 1.0, out=b[:, 16:19])
     return b
 
 

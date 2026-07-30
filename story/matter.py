@@ -19,6 +19,11 @@ PX, PY, PZ = 0, 1, 2
 TYPE = 11
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-face-culls the far side
+# THE ALBEDO A GRAIN IS MADE OF, as opposed to the colour it currently shows. A membrane that will be
+# RELIT somewhere else (a body carried onto terrain, under that terrain's own sun) has to hand over
+# what it is made of, not what it looked like in its own scene -- otherwise the relighting flattens
+# every material into one. Optional: zero here means "no separate albedo, reuse the colour".
+AR, AG, AB = 24, 25, 26
 
 SOLID = 3.0                     # opaque, isotropic grain -- matter you can see the surface of
 GLOW = 5.0                      # big soft blob -- light, plasma, a field

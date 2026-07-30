@@ -95,6 +95,39 @@ FREE = {
 }
 
 
+# ── WHAT A BODY REQUIRES OF AN ATMOSPHERE ───────────────────────────────────────────────────────
+# Every one of these is a MEASUREMENT of human physiology, not a number copied from a sibling: they
+# would read the same in any story, which is what makes a literal legal here.
+ARMSTRONG_BAR = 0.0618     # water boils at 37 C -- below this, a pressure vessel or nothing
+PO2_MIN_BAR = 0.16         # alveolar O2 for sustained consciousness (~3,000 m equivalent)
+PO2_SEA_LEVEL_BAR = 0.213  # Earth: 1.013 bar x 20.95%
+O2_KG_PER_DAY = 0.84       # metabolic oxygen, one person, light work (NASA life-support figure)
+SCRUBBER_KG_PER_DAY = 0.9  # LiOH to take the CO2 back out again
+TANK_MASS_RATIO = 3.5      # composite pressure vessel: dry mass / stored gas mass at 300 bar
+GARMENT_KG = 8.0           # MEASURED: a sealed soft suit + helmet + harness, no pressure shell
+EXCURSION_H = 8.0          # a working day outside -- what the consumables are sized for
+T_COMFORT_C = 22.0         # skin-comfort setpoint the insulation has to defend
+
+
+def breathing_demand(P_bar):
+    """THE ONE COMPARISON THAT DECIDES WHAT A PERSON WEARS HERE.
+
+    Returns (o2_fraction_needed, needs_pressure_vessel). The fraction is what THIS air would have to
+    be to breathe unaided: pO2_min / P_total. Above 1.0 it is impossible at any composition -- even
+    pure oxygen would not do -- and below the Armstrong limit the air is irrelevant because the body
+    boils first."""
+    P = max(float(P_bar), 1e-9)
+    return PO2_MIN_BAR / P, P < ARMSTRONG_BAR
+
+
+def consumables_kg(hours):
+    """Air and scrubber for an excursion, plus the tank to hold them. Derived from metabolism and a
+    duration -- so a longer day outside is a heavier body, and the gait changes because of it."""
+    d = hours / 24.0
+    o2 = O2_KG_PER_DAY * d
+    return o2 * (1.0 + TANK_MASS_RATIO) + SCRUBBER_KG_PER_DAY * d
+
+
 def body_mass(h):
     """Mass from stature. Mass goes as height SQUARED, not cubed -- which is the empirical finding
     behind BMI, and the reason tall people are not as heavy as pure geometric scaling predicts."""
@@ -210,7 +243,24 @@ def derive(parent, free):
     noon_at_winter = 90.0 - abs(math.degrees(lat) + math.degrees(eps))
     noon_highest = 90.0 if math.degrees(eps) >= abs(math.degrees(lat)) else noon_at_summer
 
-    m = body_mass(h)
+    # ── CAN A BODY LIVE HERE, AND WHAT MUST IT WEAR ──────────────────────────────────────────
+    # The air arrives from the planet through theGround; nothing about it is decided here.
+    P_air = float(parent["P_surface_bar"])
+    gases = list(parent["gases_kept"])
+    o2_frac_needed, needs_vessel = breathing_demand(P_air)
+    o2_present = "O2" in gases                       # escape kept it; whether it is ABUNDANT is not derived
+    # BREATHABLE means: the gas exists, the pressure is survivable, and the fraction required is one
+    # an atmosphere could plausibly have. 30.8% is not implausible in principle -- but nothing in
+    # this chain derives a composition, and a body may not bet its life on an undeclared number.
+    # So the honest verdict is CARRY YOUR OWN, and the gap is written down rather than papered over.
+    breathable_unaided = False
+    suit_class = ("aPressurizedHuman" if needs_vessel else
+                  "aSealedHuman" if not breathable_unaided else "aBareHuman")
+
+    m_bare = body_mass(h)
+    m_consumables = consumables_kg(EXCURSION_H)
+    m_suit = GARMENT_KG + m_consumables              # no pressure shell: 0.52 bar needs none
+    m = m_bare + m_suit                              # THE GAIT IS COMPUTED ON THE SUITED MASS
     com_h = COM_FRAC * h
     leg_L = LEG_FRAC * h
     I_leg, m_leg, d_leg = leg_inertia(h, m)
@@ -267,6 +317,24 @@ def derive(parent, free):
         # impact distribution. On Earth (23.4 deg) a person at this latitude never sees it.
         "sun_overhead_here": math.degrees(eps) >= math.degrees(lat),
         "inside_polar_circle": math.degrees(lat) >= 90.0 - math.degrees(eps),
+
+        # ── THE AIR, AND WHAT IT DEMANDS ─────────────────────────────────────────────────────
+        "P_surface_bar": P_air,
+        "gases_kept": gases,
+        "o2_in_air": o2_present,
+        "o2_fraction_needed": o2_frac_needed,        # this air must be this rich to breathe unaided
+        "o2_fraction_earth": PO2_SEA_LEVEL_BAR / 1.013,
+        "richer_than_earth_by": (o2_frac_needed) / (PO2_SEA_LEVEL_BAR / 1.013),
+        "above_armstrong_limit": not needs_vessel,   # True = no pressure vessel required
+        "breathable_unaided": breathable_unaided,
+        "composition_is_derived": False,             # STATED GAP: nothing upstream derives fractions
+        "suit_class": suit_class,
+        "suit_needs_pressure_shell": needs_vessel,
+        "suit_mass_kg": m_suit,
+        "consumables_kg": m_consumables,
+        "excursion_hours": EXCURSION_H,
+        "suit_weight_N": m_suit * g,                 # what the legs actually carry, on THIS world
+        "bare_mass_kg": m_bare,
 
         "height_m": h,
         "mass_kg": m,

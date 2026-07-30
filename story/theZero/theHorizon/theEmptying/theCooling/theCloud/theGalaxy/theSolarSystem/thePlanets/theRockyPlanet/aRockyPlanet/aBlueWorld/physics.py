@@ -271,6 +271,10 @@ def derive(parent, free):
 
         "day_hours": float(parent["day_hours"]),
         "has_atmosphere": has_air,
+        # WHICH gases, carried on down. aBlueWorld derives its own SURFACE PRESSURE (the climate
+        # reworks the column), but not the composition -- that was settled by escape, upstream.
+        "gases_kept": list(parent["gases_kept"]),
+        "escape_ratios": dict(parent["escape_ratios"]),
         "P_surface_bar": P_bar,
         "scale_height_m": float(parent.get("scale_height_m", 0.0)),
         "T_star_surface": float(parent["T_star_surface"]),

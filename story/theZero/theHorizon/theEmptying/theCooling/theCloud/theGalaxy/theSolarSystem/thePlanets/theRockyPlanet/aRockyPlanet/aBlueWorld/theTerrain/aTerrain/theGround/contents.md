@@ -47,5 +47,7 @@
 | `tropic_lat_deg` | 37.38 |
 | `polar_circle_lat_deg` | 52.62 |
 | `has_seasons` | True |
+| `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
+| `P_surface_bar` | 0.5199 |
 | `days_per_year` | 383.2 |
 | `year_s` | 3.311e+07 |

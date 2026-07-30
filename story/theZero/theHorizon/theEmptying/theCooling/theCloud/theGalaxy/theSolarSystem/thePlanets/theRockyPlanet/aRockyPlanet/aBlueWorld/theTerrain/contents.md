@@ -47,13 +47,14 @@
 | `tropic_lat_deg` | 37.38 |
 | `polar_circle_lat_deg` | 52.62 |
 | `has_seasons` | True |
+| `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
+| `P_surface_bar` | 0.5199 |
 | `days_per_year` | 383.2 |
 | `year_s` | 3.311e+07 |
 | `T_surface` | 279.2 |
 | `dT_equator_pole` | 45 |
 | `lapse_rate_K_per_km` | 4.647 |
 | `S_earth` | 1.005 |
-| `P_surface_bar` | 0.5199 |
 | `scale_height_m` | 1.033e+04 |
 | `surface_rgb` | [0.09, 0.22, 0.42] |
 | `T_star_surface` | 5839 |

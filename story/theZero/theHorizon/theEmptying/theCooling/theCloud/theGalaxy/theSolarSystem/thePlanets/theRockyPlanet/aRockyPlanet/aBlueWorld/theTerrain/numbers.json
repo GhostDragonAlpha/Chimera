@@ -31,13 +31,20 @@
   "tropic_lat_deg": 37.38250904743713,
   "polar_circle_lat_deg": 52.61749095256287,
   "has_seasons": true,
+  "gases_kept": [
+    "CH4",
+    "H2O",
+    "N2",
+    "O2",
+    "CO2"
+  ],
+  "P_surface_bar": 0.5199302820248954,
   "days_per_year": 383.21118050163045,
   "year_s": 33109445.99534087,
   "T_surface": 279.1908308653023,
   "dT_equator_pole": 45.0,
   "lapse_rate_K_per_km": 4.64700560367494,
   "S_earth": 1.0048952107836961,
-  "P_surface_bar": 0.5199302820248954,
   "scale_height_m": 10327.743574986027,
   "surface_rgb": [
     0.09,

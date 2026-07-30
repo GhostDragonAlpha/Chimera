@@ -7,7 +7,9 @@
 
 ## Contains
 
-*nothing yet — this is a leaf of the story as written*
+| membrane | what it is |
+|---|---|
+| `aHuman` | The person you actually play. Not a body in the abstract — *this* body, on *this* |
 
 ## Hands down
 
@@ -37,12 +39,28 @@
 | `noon_sun_highest_deg` | 90 |
 | `sun_overhead_here` | True |
 | `inside_polar_circle` | False |
+| `P_surface_bar` | 0.5199 |
+| `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
+| `o2_in_air` | True |
+| `o2_fraction_needed` | 0.3077 |
+| `o2_fraction_earth` | 0.2103 |
+| `richer_than_earth_by` | 1.464 |
+| `above_armstrong_limit` | True |
+| `breathable_unaided` | False |
+| `composition_is_derived` | False |
+| `suit_class` | aSealedHuman |
+| `suit_needs_pressure_shell` | False |
+| `suit_mass_kg` | 9.56 |
+| `consumables_kg` | 1.56 |
+| `excursion_hours` | 8 |
+| `suit_weight_N` | 67.65 |
+| `bare_mass_kg` | 71.29 |
 | `height_m` | 1.78 |
-| `mass_kg` | 71.29 |
+| `mass_kg` | 80.85 |
 | `com_height_m` | 1.023 |
 | `leg_length_m` | 0.9434 |
-| `leg_inertia_kgm2` | 3.127 |
-| `leg_mass_kg` | 11.48 |
+| `leg_inertia_kgm2` | 3.546 |
+| `leg_mass_kg` | 13.02 |
 | `g` | 7.076 |
 | `fall_rate_rad_s` | 2.629 |
 | `time_to_fall_s` | 0.3803 |
@@ -56,15 +74,15 @@
 | `comfortable_speed_ms` | 1.005 |
 | `stride_m` | 0.6488 |
 | `jump_height_m` | 0.3674 |
-| `weight_N` | 504.4 |
+| `weight_N` | 572.1 |
 | `foot_area_m2` | 0.02649 |
-| `foot_pressure_kPa` | 19.04 |
+| `foot_pressure_kPa` | 21.6 |
 | `ground_bearing_kPa` | 110.4 |
 | `ground_holds_it` | True |
-| `ground_margin` | 5.794 |
-| `femur_stress_MPa` | 1.529 |
-| `femur_stress_running_MPa` | 4.586 |
-| `bone_safety_factor` | 32.71 |
+| `ground_margin` | 5.109 |
+| `femur_stress_MPa` | 1.734 |
+| `femur_stress_running_MPa` | 5.201 |
+| `bone_safety_factor` | 28.84 |
 | `T_surface` | 279.2 |
 | `latitude_deg` | 30.77 |
 | `S_earth` | 1.005 |

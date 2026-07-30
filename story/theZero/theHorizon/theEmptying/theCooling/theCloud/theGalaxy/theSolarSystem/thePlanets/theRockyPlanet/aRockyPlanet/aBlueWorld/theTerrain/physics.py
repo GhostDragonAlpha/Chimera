@@ -244,6 +244,9 @@ def derive(parent, free):
         "tropic_lat_deg": float(parent["tropic_lat_deg"]),
         "polar_circle_lat_deg": float(parent["polar_circle_lat_deg"]),
         "has_seasons": bool(parent["has_seasons"]),
+        # the air, still travelling: the body at the bottom of this chain needs it
+        "gases_kept": list(parent["gases_kept"]),
+        "P_surface_bar": float(parent["P_surface_bar"]),
         "days_per_year": float(parent["days_per_year"]),
         "year_s": float(parent["year_s"]),
 
