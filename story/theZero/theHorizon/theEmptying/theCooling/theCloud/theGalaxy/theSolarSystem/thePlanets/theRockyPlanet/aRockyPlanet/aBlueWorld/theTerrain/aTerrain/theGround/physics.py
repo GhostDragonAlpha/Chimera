@@ -352,6 +352,13 @@ def emit(nums, t=1.0):
     return b
 
 
+# FRAMING -- the membrane's declared camera setting (a LENS sibling: a picture dial, not a fact).
+# This patch's meaning is its STONES, and they are millimetres across: at the default 2.7x extent
+# they are sub-pixel and a dyad judges blur. 1.15x puts the camera at crouch height, close enough
+# that the grains the law sized are actually visible.
+FRAMING = {"dist": 1.15, "elev": 0.55}
+
+
 def layout(nums):
     """WHERE THE THINGS INSIDE THIS MEMBRANE SIT, in its frame (1.0 = two metres, half the patch).
 

@@ -370,10 +370,17 @@ def project_movie(term: str, out_dir) -> dict | None:
     if membrane is not None:
         # A MEMBRANE'S MOVIE: its own time, 0 -> 1, emitted by its own law in its own local units.
         # The camera is set by the membrane's OWN EXTENT -- a boundary supplies its own scale, so
-        # nothing here is hand-framed; the view is as far back as the matter is wide.
+        # nothing here is hand-framed; the view is as far back as the matter is wide. UNLESS the
+        # law declares a FRAMING: the same kind of statement as its LENS -- a camera setting, not
+        # a fact -- for membranes whose MEANING is smaller than their extent (a 4 m patch whose
+        # stones are millimetres: at 2.7x extent they are sub-pixel, and a dyad judging that frame
+        # judges blur). FRAMING = {"dist": x, "elev": y} multiplies extent; default 2.7 / 0.72.
+        law = _membrane_law(membrane)
+        framing = getattr(law, "FRAMING", None) or {}
         end_buf = membrane_buffer(term, 1.0)
         extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0
-        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+        cam_pos = (0.0, -float(framing.get("dist", 2.7)) * extent,
+                   float(framing.get("elev", 0.72)) * extent)
         cx, cy, cz = cam_pos
         cam = FirstPersonCamera(cam_pos, yaw=float(np.arctan2(-cy, -cx)),
                                 pitch=float(np.arctan2(-cz, float(np.hypot(cx, cy)))))
