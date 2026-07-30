@@ -200,18 +200,80 @@ scattering with the optical depth scaled by that pressure and coloured by one-ov
 fourth. **Nobody wrote that sunrise should be red.** It comes out red because at 06:00 the beam
 crosses 38 airmasses and the blue is scattered out of it before it arrives.
 
+## The sine is gone. 246 people walk here now.
+
+The hip angle was `swing·sin(φ)` with `swing = 0.42` rad, and this page used to call that out as
+*"the one amplitude here that is neither derived nor measured."* It is now read from
+**246 healthy adults aged 18–91**, walking at three self-selected speeds, every joint angle
+recorded at every percent of the gait cycle and grouped by sex and decade of age.
+
+**A better amplitude is not the point.** A sine could never have carried three things a real hip has:
+
+| | a sine | 246 adults |
+|---|---|---|
+| shape | symmetric by construction | **asymmetric** — steep through swing, slow through stance |
+| the knee | one peak, in swing | **two** — and the small one is an ~18° wave during *stance* |
+| the foot | a model with hand-placed phases | **falls out**, by geometry, from the other three |
+
+That stance-knee wave is the exact mechanism this page named as the reason the vault was too tall,
+with the note that *"the mechanism is named rather than the number scaled, because scaling it would
+be tuning the answer."* It arrived as data, and the number moved on its own:
+
+| | before | now | a real walk |
+|---|---:|---:|---:|
+| **vault, at Earth gravity** | 4.3% of stature | **2.36%** | ~2.5% |
+| hip path peaks at | push-off | **29% of the cycle** | mid-stance, ~30% |
+| duty factor | 0.60, chosen | **0.6027, measured** | 0.55–0.65 |
+| double support | 0% with a sine | **21.1%** | ~20% |
+
+**And speed became a dial.** The study measured three of them, so the Froude law derives a
+comfortable speed, that speed *selects the curve shape*, and walking faster really does reach
+further — because 246 people were measured reaching further. The vault runs 1.30% → 4.71% of stature
+across the range, monotonically, which is what every study of it reports and none of it is a gain.
+
+## Two errors of opposite sign, cancelling
+
+This page claimed the ankle torque was an unfitted check: `τ = 1.2·mg·0.10h` → **1.51 N·m/kg**
+against a literature peak of ~1.5. The same 246 adults measure **1.51 N·m/kg**. The result was right.
+
+The inputs were not. The measured peak ground reaction is **1.10** body weights, not 1.2 — and the
+product only landed because the forefoot lever is longer than 0.10 of stature. Worse, `1.2·g·0.10·h`
+gives 1.51 only at **this planet's 7.08 m/s²**; run it at Earth's 9.81 and it gives **2.09**, 39%
+above the measurement it was being congratulated for matching.
+
+**A check that passes for a compensating reason is not a check**, and nothing about it looked wrong
+from the inside. The torque is now the measurement.
+
+## The foot pivots on the ball, and that was worth 3.6 cm
+
+`ankle_height` rolled the foot about the **toe tip** — the whole 0.152 of stature. A real foot rolls
+over the metatarsal heads and the toes go along for the ride. Moving the pivot cut the two legs'
+disagreement about where the pelvis is from 5.73% of stature to 2.10%.
+
+**The lever was not chosen to do that.** It is what the measured ankle *moment* divided by the
+measured ground *reaction* independently says it must be — `r = τ/F` — **0.071 of stature**, from a
+different sheet of the same study. A kinematic check and a kinetic check on the same millimetre.
+
 ## What the gait still gets wrong
 
-- **There is no ankle.** The foot is a rigid segment, so it cannot roll heel → flat → toe, and a rigid
-  foot on a swinging leg must either dip or lift: that is the residual **1.6%** of contact-plane
-  travel, 2.8 cm of it. A real foot articulates and keeps the sole flat through stance.
-- **The vault is too tall.** The emergent rise is 4.3% of stature (7.6 cm) against a measured human
-  ~2.5% (4–5 cm), because a fully locked stance knee gives the purely geometric vault. Real walking
-  flattens it with a small stance-knee flexion wave, about 15° at mid-stance — "near straight" is not
-  "locked". Naming the mechanism rather than scaling the number down.
-- **The swing is still a sine.** The hip angle is `swing·sin(φ)` because that is what the pendulum
-  gives, but a real hip is driven and its trajectory is not sinusoidal. `swing = 0.42` rad is the one
-  amplitude here that is neither derived nor measured.
+- **In single support it is exact and in double support it is not.** One leg carrying everything
+  fixes the pelvis completely: sole error **0.000%**, contact plane **dead still**. With both feet
+  down, the two legs each demand a pelvis height from their own joint angles and disagree by
+  **2.02% of stature** — and the more heavily loaded foot is always the one nearly right (0.44% off
+  while bearing 0.97 body weights; the foot barely touching is the one 2% out).
+- **About 40% of that residual is the frontal plane, which this chapter does not have.** The pelvis
+  *lists* — measured obliquity 8.5° peak to peak at this speed — so the two hips are not at one
+  height, and a sagittal model puts them there by construction. At this body's hip width that is
+  **0.81% of stature** of the 2.02%. It is not fixable here; it is `theBalance`'s job.
+- **No segment length can close the rest.** Measured: the sensitivity of the disagreement to the
+  thigh fraction is 0.096 per unit, so closing 2% would take a change of 0.26 of stature — the whole
+  thigh. So this is not the unsourced-segment gap, and saying so is worth more than assuming it.
+- **Leg length is still the repo's 0.530 of stature, not the measured 0.5246.** They agree to 1.1%,
+  and the study's definition of "leg length" is not certainly the same as this chapter's, so it was
+  left alone rather than changed in the same pass as the gait. One change at a time.
+- **`stride_m` was a step length wearing a stride's name** — `speed/cadence` with cadence in *steps*.
+  Caught only because the measured stride was there to compare against, and 0.60 against 1.13 is not
+  a 47% error in a derivation, it is a factor of two in a label.
 
-*Contained in `theGround`. What it hands on: a body that can be stood up, and everything the planet
-underneath decides about how it moves.*
+*Contained in `theGround`. What it hands on: a body that can be stood up, a walk measured on 246
+people, and everything the planet underneath decides about how it moves.*

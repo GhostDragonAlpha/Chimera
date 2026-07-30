@@ -13,6 +13,7 @@
 | `research_references/human/ANSUR_II_MALE_Public.csv` (4,082 subjects) + `ANSUR_II_FEMALE_Public.csv` (1,986) | **93 direct anthropometric measurements per subject** (mm): stature, segment lengths, breadths, circumferences, sitting heights — the dimensional truth of human bodies | DOWNLOADED (mirror of the Penn State OPEN Design Lab release; US Gov work, public since 2017) |
 | `research_references/human/opensim/` — Rajagopal2016, Hamner2010, gait2392 (Thelen 2003 muscle), arm26 (.osim) | the measured musculoskeletal parameters myo_sim is built on: muscle origins/insertions, optimal fibre lengths, pennation, max isometric forces (162 muscle defs in Rajagopal alone) | DOWNLOADED (opensim-org/opensim-models, BSD) |
 | `research_references/human/mocap/` — 35_01_walk.bvh, 35_08_jog.bvh (CMU MoCap, subject 35) | **real human movement**: full-skeleton walk + jog trials at 120 Hz — the trainer's reference footage, not our own render's self-image | DOWNLOADED (CMU MoCap via the una-dinosauria BVH mirror; original: mocap.cs.cmu.edu, free with citation) |
+| `research_references/human/gait_osf/` → **`story/data/gait_normative.json`** (Van Criekinge et al. 2023, OSF doi [10.17605/OSF.IO/T72CW](https://doi.org/10.17605/OSF.IO/T72CW), CC BY 4.0) | **THE NORMATIVE GAIT: 246 healthy adults aged 18–91**, three self-selected speeds, joint angles / moments / powers / GRF at every percent of the cycle, plus spatiotemporal parameters — **grouped by sex and age decade**, and per-subject mass, stature and **leg length** | **INGESTED 2026-07-30** (`tools/ingest_gait_osf.py`; `--check` re-derives and diffs). Raw workbooks gitignored, the extracted table is committed |
 | `research_references/human/skin_optics_omlc_jacques.html` | **measured skin light model** (Jacques, OMLC): melanin absorption `μa.mel = 6.6×10¹¹·λ⁻³·³³ cm⁻¹`, melanin fractions by pigmentation class (1.3–43%), baseline + reduced-scattering power law — the body's measured reflection, per the operator's light rule | ARCHIVED |
 
 ## Tier 1 — PUBLIC, FETCHABLE (no license wall)
@@ -39,7 +40,12 @@
 - **Muscles + skeleton** (what pulls what): myo_sim (present, verified) backed by OpenSim numbers.
 - **Skin surface** (what the eye meets): SMPL when licensed; until then the verified myo_sim
   geometry is the visual truth, and the membranes say so.
-- **Motion** (how a real walk looks): CMU MoCap / AMASS for the trainer's references — the gait
-  dyad judges against real human footage, not our own render's self-image.
+- **Motion** (how a real walk looks): **the OSF normative set is now the walk itself**, not a
+  reference to compare against — `theHuman` reads its hip, knee, ankle and ground-reaction curves
+  directly, and derived walking speed selects the shape between the three measured conditions.
+  CMU MoCap / AMASS remain for movements it does not cover (jog, sit, reach).
+  **Retired by it:** `swing = 0.42 rad`, `DUTY = 0.60`, the three hand-placed rocker fractions, the
+  1.2-body-weight ground reaction, and the 0.10-of-stature forefoot lever. The lever is now derived
+  as `τ/F` from two of the study's own curves and comes out at **0.071**.
 - **Insides** (breath, blood, the loop): Visible Human cross-sections + the standard physiology
   numbers (already cited inside `theBreath`/`theSweep`).

@@ -64,6 +64,22 @@ Divide by the body mass and it is **1.51 N·m/kg**. **The measured peak ankle mo
 is ~1.5 N·m/kg.** Nothing here was tuned toward that — it is three inherited numbers multiplied
 together, and it lands on the literature to within 1%.
 
+> ### That check was wrong, and this is what it took to see it
+>
+> Two years of gait data later — 246 adults, joint moments at every percent of the cycle — the peak
+> plantarflexor moment measures **1.51 N·m/kg**. The *result* above is right to three figures.
+>
+> The *inputs* are not. The measured peak ground reaction is **1.10** body weights, not 1.2, and the
+> forefoot lever is **0.071** of stature, not 0.10. Two errors of opposite sign, cancelling.
+>
+> And the arithmetic never even belonged to Earth: `1.2·g·0.10·h` gives 1.51 only at **this planet's
+> 7.08 m/s²**. At Earth's 9.81 the same formula returns **2.09 N·m/kg** — 39% above the literature
+> value it was being congratulated for matching. The agreement was a coincidence of local gravity.
+>
+> **A check that passes for a compensating reason is not a check**, and from the inside it looked
+> exactly like one. The torque now comes from the measured curve. The paragraph above is left
+> standing because deleting it would delete the lesson.
+
 | | |
 |---|---|
 | push-off work | **55 J** per step |
@@ -112,17 +128,26 @@ it.** That is measured CoP behaviour, and it is what turns three rockers into on
 
 ## What is honestly still missing
 
-- **The vault is still too tall** — 4.7% of stature against a human ~2.5%. The remaining cause is a
+Three of the four entries that stood here have been closed, and by the same thing: the parent's gait
+stopped being a model and became 246 measured adults. They are kept, struck through, because what
+closed them is more useful than the fact that they are gone.
+
+- ~~**The vault is still too tall** — 4.7% of stature against a human ~2.5%. The remaining cause is a
   fully *locked* stance knee; real walking flattens the path with a stance-knee flexion wave of about
-  15° at mid-stance. "Near straight" is not "locked". The mechanism is named rather than the number
-  scaled, because scaling it would be tuning the answer.
-- **The peak of the hip path is at push-off, not mid-stance.** A real hip is highest in the middle of
-  stance; here 26° of plantarflexion lifts the ankle nearly 10% of stature and over-supports the end.
-  The plantarflexion range is measured, so the error is in treating the foot as rigid about a single
-  pitch rather than as a deforming arch.
+  15° at mid-stance.~~ **CLOSED.** The measured knee has that wave — **18.2° at 11% of the cycle** —
+  and the vault fell to **2.36%** at Earth gravity against the literature's 2.5%. The mechanism was
+  named here rather than the number scaled, and naming it is what let the data close it untouched.
+- ~~**The peak of the hip path is at push-off, not mid-stance.**~~ **CLOSED.** It peaks at **29% of
+  the cycle**. Two things fixed it: the pelvis now rides its legs weighted by the load each is
+  actually carrying (measured GRF) instead of by whichever is tallest, and the foot pivots on the
+  **ball** rather than the toe tip. The second was the diagnosis written above — *"treating the foot
+  as rigid about a single pitch"* — and it was worth 3.6 cm.
+- ~~**`swing = 0.42` rad is still the one number in this gait neither derived nor measured.**~~
+  **CLOSED.** There is no amplitude any more; there is a curve.
 - **No arch, no toes, no heel pad.** A foot stores and returns elastic energy in its plantar fascia
-  (~8–17% of the stride's work) and none of that is here.
-- **`swing = 0.42` rad is still the one number in this gait neither derived nor measured**, and the
-  vault, the CoP travel and the stride all inherit that.
+  (~8–17% of the stride's work) and none of that is here. **Still open.**
+- **New, and precisely located:** in double support the two legs disagree by **2.02% of stature**
+  about where the pelvis is. In single support the model is exact — sole error 0.000%. About 40% of
+  the residual is pelvic list, which is frontal-plane and belongs to `theBalance`.
 
 *Contained in `theHuman`. What it hands on: the reason a walk is cheap, and a sole that stays down.*

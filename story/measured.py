@@ -14,7 +14,7 @@ how many people, by what technique, and in what year. A membrane asks for a frac
 can cite. `compare()` puts the two independent sources side by side, and where they disagree it says
 so rather than picking.
 
-TWO SOURCES, DELIBERATELY:
+THREE SOURCES, DELIBERATELY:
 
   de LEVA (1996) -- adjustments to Zatsiorsky-Seluyanov's segment inertia parameters, J.Biomech 29,
       1223-1230. Zatsiorsky et al. measured 100 living young adults by GAMMA-RAY SCANNING; de Leva
@@ -27,12 +27,17 @@ TWO SOURCES, DELIBERATELY:
       elements. It is the body this studio has already trained a walk on: myobody_gait_meta.npy
       records STAND_Z = 0.9802 m and OMEGA0 = 3.1883 rad/s measured off it.
 
+  VAN CRIEKINGE et al. (2023) -- a normative 3D gait dataset of 246 healthy adults aged 18-91,
+      walking at three self-selected speeds on an instrumented treadmill: joint angles, moments,
+      powers, ground reaction force and spatiotemporal parameters, averaged over every valid stride
+      and grouped by sex and age decade. CC BY 4.0, OSF doi 10.17605/OSF.IO/T72CW. This is the
+      MOVEMENT source, and it retires `swing * sin(phase)`.
+
 WHAT IS STILL NOT SOURCED, and is written down here rather than hidden in a membrane:
 
-  GAIT TRAJECTORIES. Joint angles over the cycle -- the thing that would replace `swing * sin(phase)`
-      with a measured curve. The dataset exists and is licence-clean: 246 healthy adults aged 18-91,
-      three walking speeds, 3D joint angles, moments, powers, GRF and spatiotemporal parameters for
-      every step of both legs. CC BY 4.0, OSF, doi 10.17605/OSF.IO/T72CW. NOT YET INGESTED.
+  SEGMENT LENGTHS above the leg -- thigh/shank/foot splits and eye height as fractions of stature.
+      LEG LENGTH ITSELF IS NOW MEASURED (`leg_over_stature`, 246 adults); the rest are still typed.
+      ANSUR II is in the repo and can close them.
   RESPIRATORY AND THERMAL figures -- tidal volume, FRC, alveolar CO2 thresholds, metabolic heat.
       theBreath and theSweep carry these as literals. A physiology source is needed and none is here.
 """
@@ -264,20 +269,179 @@ def leg_mass_check(body_mass_kg: float, sex: str = "male") -> dict:
 
 
 # ════════════════════════════════════════════════════════════════════════════════════════════════
+#  SOURCE 3 -- 246 ADULTS WALKING
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+# Van Criekinge, Saeys, Truijen et al. (2023): a normative 3D gait dataset of 246 healthy adults
+# aged 18-91, at three self-selected speeds, CC BY 4.0, OSF doi 10.17605/OSF.IO/T72CW. Ingested by
+# `tools/ingest_gait_osf.py` into story/data/gait_normative.json; run it with --check to prove the
+# committed table still matches the spreadsheets it came from.
+#
+# WHAT THIS REPLACES. `swing * sin(phase)`, with swing = 0.42 rad. A sine is not a hip: it is
+# symmetric, it has one peak, and it puts a foot down for exactly half the cycle, which is why the
+# first walk here had no double support at all. A real hip curve is asymmetric, and the knee has TWO
+# flexion peaks -- one of them a 18-degree wave during STANCE, which is the mechanism theAnkle named
+# as the reason its vault was too tall.
+GAIT_JSON = _HERE / "data" / "gait_normative.json"
+_GAIT_CACHE = None
+
+# The twelve groups: six age decades, men and women. AGE AND SEX ARE DIALS HERE -- turn one and the
+# curve changes shape, because 246 people are not one person.
+GAIT_GROUPS = [f"{s}_{a}" for a in ("18-29", "30-39", "40-49", "50-59", "60-69", "70+")
+               for s in ("m", "w")]
+GAIT_SPEEDS = ("slow", "comf", "fast")
+
+
+def gait_data() -> dict:
+    """The whole table, loaded once. Raises if it is missing rather than returning empty defaults --
+    a membrane that silently walks on {} would walk on zeros and look like a corpse."""
+    global _GAIT_CACHE
+    if _GAIT_CACHE is None:
+        if not GAIT_JSON.exists():
+            raise FileNotFoundError(
+                f"{GAIT_JSON} is missing. Run: python tools/ingest_gait_osf.py")
+        import json
+        _GAIT_CACHE = json.loads(GAIT_JSON.read_text(encoding="utf8"))
+    return _GAIT_CACHE
+
+
+def gait_group(sex: str = "male", age: float = 30.0) -> str:
+    """Which measured group a body belongs to. A body has an age and a sex; this says whose data
+    describes it, instead of every caller quietly picking young men."""
+    s = "m" if str(sex).lower().startswith("m") else "w"
+    a = float(age)
+    band = ("18-29" if a < 30 else "30-39" if a < 40 else "40-49" if a < 50
+            else "50-59" if a < 60 else "60-69" if a < 70 else "70+")
+    return f"{s}_{band}"
+
+
+def gait_curve(param: str, speed: str = "comf", group: str = "m_18-29") -> dict:
+    """One measured curve: 100 samples of the gait cycle, mean and SD, in the source's own units.
+
+    SAMPLE 100 IS SAMPLE 1. Both are heel strike of the same leg -- the source counts the closing
+    event as well as the opening one, and measured they agree to 0.01 degrees against a typical
+    step of 0.08 to 1.4. So the curve has 99 distinct intervals, not 100, and anything that treats
+    it as 100 gets a stutter exactly at heel strike. This project has already paid for that mistake
+    once, in theSweep, where `% 1.0` snapped a transient back to its start. It is handled here, once,
+    so no membrane has to know."""
+    d = gait_data()
+    if speed not in d["speeds"]:
+        raise KeyError(f"speed {speed!r}; have {sorted(d['speeds'])}")
+    cs = d["speeds"][speed]["curves"]
+    if param not in cs:
+        raise KeyError(f"no measured curve {param!r}; have {sorted(cs)}")
+    if group not in cs[param]:
+        raise KeyError(f"no group {group!r}; have {GAIT_GROUPS}")
+    c = cs[param][group]
+    return {"mean": c["mean"], "sd": c["sd"], "unit": d["curve_units"][param],
+            "sign": d["curve_sign"][param], "param": param, "speed": speed, "group": group,
+            "source": d["source"], "closes_at_sample_100": True}
+
+
+def gait_sample(param: str, u: float, speed: str = "comf", group: str = "m_18-29") -> float:
+    """The measured value at phase u of the cycle, u = 0 at heel strike, wrapping at 1.
+
+    Linear between the measured samples. Nothing is smoothed or fitted: 246 people averaged over
+    every valid stride is already smoother than anything a curve fit would add, and a fit would be
+    this code's opinion laid over their measurement."""
+    m = gait_curve(param, speed, group)["mean"]
+    x = (float(u) % 1.0) * 99.0          # 99 intervals, because sample 100 closes onto sample 1
+    i = int(x)
+    f = x - i
+    a = m[i] if m[i] is not None else 0.0
+    b = m[i + 1] if i + 1 < 100 and m[i + 1] is not None else m[0]
+    return a + (b - a) * f
+
+
+def gait_scalar(name: str, speed: str = "comf", group: str = "m_18-29"):
+    """One spatiotemporal group value as (mean, SD): cadence, stride length, step width, stance
+    time, double-support time, foot clearance. Names are the source's, units included, e.g.
+    'R.Step.Width [m]'. `gait_scalars()` lists them."""
+    d = gait_data()
+    tab = d["speeds"][speed]["spatiotemporal"]
+    if name not in tab:
+        raise KeyError(f"no spatiotemporal parameter {name!r}; have {sorted(tab)}")
+    m, s = tab[name][group]
+    return m, s
+
+
+def gait_scalars(speed: str = "comf") -> list:
+    return sorted(gait_data()["speeds"][speed]["spatiotemporal"])
+
+
+def gait_duty(speed: str = "comf", group: str = "m_18-29") -> dict:
+    """DUTY FACTOR AND DOUBLE SUPPORT, measured, not asserted -- computed from the source's own
+    stance, stride and double-support times rather than typed as 0.60.
+
+    These two numbers are what separate a walk from a run and from a sled: duty is the fraction of
+    the cycle a foot is down, and double support is the overlap where both are. Without overlap
+    there is no walk, only two abutting hops."""
+    stance, _ = gait_scalar("R.Stance.Time [s]", speed, group)
+    stride, _ = gait_scalar("R.Stride.Time [s]", speed, group)
+    bip_r, _ = gait_scalar("R.Bipedal [s]", speed, group)
+    bip_l, _ = gait_scalar("L.Bipedal [s]", speed, group)
+    return {"duty": stance / stride,
+            "double_support_frac": (bip_r + bip_l) / stride,
+            "stance_s": stance, "stride_s": stride,
+            "source": gait_data()["source"]}
+
+
+def gait_walking_speed(speed: str = "comf", group: str = "m_18-29") -> float:
+    """How fast that condition actually was, in m/s. 'comfortable' is not a speed until measured."""
+    return gait_scalar("Walking.Speed [m/s]", speed, group)[0]
+
+
+def gait_sample_at_speed(param: str, u: float, v_ms: float, group: str = "m_18-29") -> float:
+    """THE SPEED DIAL. The measured curve at an arbitrary walking speed, interpolated between the
+    three conditions the study actually ran.
+
+    Three measured speeds make speed CONTINUOUS rather than a switch between animations: push the
+    stick further and the hip's real curve changes shape, because it was measured changing shape.
+    Outside the measured range it clamps -- extrapolating a body past the fastest walk anybody in
+    the study did would be inventing data, and this module exists so that nobody has to."""
+    pts = sorted((gait_walking_speed(s, group), s) for s in GAIT_SPEEDS)
+    v = float(v_ms)
+    if v <= pts[0][0]:
+        return gait_sample(param, u, pts[0][1], group)
+    if v >= pts[-1][0]:
+        return gait_sample(param, u, pts[-1][1], group)
+    for (v0, s0), (v1, s1) in zip(pts, pts[1:]):
+        if v0 <= v <= v1:
+            w = (v - v0) / max(v1 - v0, 1e-9)
+            return (gait_sample(param, u, s0, group) * (1.0 - w)
+                    + gait_sample(param, u, s1, group) * w)
+    return gait_sample(param, u, "comf", group)
+
+
+def leg_over_stature(sex: str = "male") -> tuple:
+    """LEG LENGTH AS A FRACTION OF STATURE, measured on the 246 -- (mean, SD, n).
+
+    This closes a hole that had nothing behind it: the story carried the fraction as a constant read
+    off one model. 246 people give 0.5246 +- 0.0167, and the SD is the point -- it is what makes a
+    long-legged or short-legged body a legal body rather than an error."""
+    d = gait_data()["cohort"]
+    key = {"male": "leg_over_stature_men", "female": "leg_over_stature_women"}.get(sex,
+                                                                                  "leg_over_stature")
+    m, s, n = d[key]
+    return m, s, n
+
+
+def gait_cohort() -> dict:
+    """Who was measured: 246 adults, 122 men and 124 women, 18 to 91, with mass, stature and leg
+    length. A curve without its cohort is an anonymous claim."""
+    return dict(gait_data()["cohort"])
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
 #  WHAT IS NOT SOURCED -- stated as data, so it can be queried rather than remembered
 # ════════════════════════════════════════════════════════════════════════════════════════════════
 UNSOURCED = [
-    {"what": "gait joint-angle trajectories over the cycle",
-     "used_by": "theHuman.SWING_AMP, theHuman.leg_cycle, theAnkle.foot_pitch",
-     "currently": "a sine and three hand-placed rocker fractions",
-     "available": "246 adults 18-91, 3 speeds, 3D angles/moments/powers/GRF, every step both legs",
-     "where": "OSF doi 10.17605/OSF.IO/T72CW, CC BY 4.0",
-     "status": "NOT INGESTED"},
-    {"what": "segment LENGTHS as fractions of stature",
-     "used_by": "theHuman.LEG_FRAC/THIGH_FRAC/SHANK_FRAC/EYE_FRAC, aHuman's limb radii",
+    {"what": "segment LENGTHS above the leg -- thigh/shank/foot splits, eye height",
+     "used_by": "theHuman.THIGH_FRAC/SHANK_FRAC/FOOT_LEN_FRAC/EYE_FRAC, aHuman's limb radii",
      "currently": "typed constants attributed to Dempster in comments",
-     "available": "ANSUR II (6,068 subjects, 93 measurements, public domain) or myo_sim geometry",
-     "where": "ANSUR II is US Army, released to the public domain",
+     "available": "ANSUR II (6,068 subjects, 93 measurements, public domain), IN THIS REPO at "
+                  "research_references/human/ANSUR_II_{MALE,FEMALE}_Public.csv",
+     "note": "LEG LENGTH as a fraction of stature is now MEASURED -- see leg_over_stature(): "
+             "0.5246 +- 0.0167 over 246 adults. These are the fractions still standing on nothing.",
      "status": "NOT INGESTED"},
     {"what": "respiratory and thermal physiology",
      "used_by": "theBreath (RQ, tidal, VE, pCO2 limits), theSweep (water output), aHuman (metabolic W)",

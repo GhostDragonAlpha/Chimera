@@ -30,26 +30,51 @@ of walking. One law, every world.
 import math
 from math import pi, sqrt, radians
 
+
+def _ansur():
+    """THE MEASURED POPULATION. ANSUR II (US Army 2012, public 2017): 6,068 subjects x 93
+    measures, distilled to anchors by tools/build_ansur_anchors.py. The operator's law: for a
+    human body, actual sources for every concept -- no guessing. Where a cadaver-joint number
+    (Dempster, for the swing physics) and a surface-measure number (ANSUR) differ, both are
+    kept and named for what they measure -- the same discipline as the two angles of repose."""
+    import json
+    from pathlib import Path
+    p = Path(__file__).resolve()
+    for q in p.parents:
+        f = q / "research_references" / "human" / "ansur_anchors.json"
+        if f.exists():
+            return json.loads(f.read_text())
+    raise FileNotFoundError("ansur_anchors.json -- run tools/build_ansur_anchors.py")
+
+
+_AN = _ansur()["male"]          # the person of this story defaults to the measured male median
+
 # ── DEMPSTER'S ANTHROPOMETRIC RATIOS: segment lengths and masses as fractions of stature and body
 #    mass. Measured on cadavers (Dempster 1955, still the standard), so they are data, not choices.
-LEG_FRAC = 0.530           # hip to floor
+LEG_FRAC = 0.530           # hip JOINT to floor (Dempster): the pendulum's length. The SURFACE
+                           # landmark (trochanterion) sits lower: ANSUR II measures 0.5121 of
+                           # stature (n=4,082) -- used for the outer body, not the swing.
 THIGH_FRAC = 0.245         # hip to knee
 SHANK_FRAC = 0.246         # knee to ankle
-FOOT_LEN_FRAC = 0.152
+FOOT_LEN_FRAC = float(_AN["foot_length_m"]["median"]) / float(_AN["stature_m"]["median"])   # 0.1544, ANSUR II
 COM_FRAC = 0.575           # standing centre of mass, as a fraction of height
 # EYE HEIGHT, and it belongs to the body rather than to a camera. This lived in ChimeraEngine's
 # walker as a bare `0.94 * height` -- a fact about human anatomy asserted inside a viewer, where no
-# audit reaches it and nothing connects it to the stature it multiplies. Measured: standing eye
-# height is 0.936 of stature (Dempster; NASA-STD-3000 gives 0.933-0.939 across percentiles).
-EYE_FRAC = 0.936
+# audit reaches it and nothing connects it to the stature it multiplies. MEASURED now: the ear
+# level (tragion, ~eye level) sits at 0.9253 of stature across 4,082 subjects (ANSUR II;
+# Dempster's cadaver eye was 0.936).
+EYE_FRAC = float(_AN["eye_frac_of_stature"]["median"])
 # LEG_MASS_FRAC AND LEG_COM_FRAC ARE GONE. They were 0.161 and 0.447 -- Dempster (1955), measured on
 # EIGHT CADAVERS, and still the most-quoted figures anywhere. They now come from `story/measured.py`,
 # which holds de Leva (1996): Zatsiorsky's GAMMA-RAY SCANS OF 100 LIVING ADULTS, re-referenced to
 # joint centres. The whole leg comes out at 0.1986 rather than 0.161 -- 23% heavier -- and a leg's
 # mass is what sets the swing period, which sets cadence.
 
-BMI_REF = 22.5             # a healthy body mass index; mass = BMI * h^2 is the allometry
-FOOT_WIDTH_FRAC = 0.055    # foot area comes out of length x width, both from stature
+BMI_REF = float(_AN["bmi"]["median"])   # MEASURED: 27.5, the median of 4,082 soldiers (ANSUR II)
+                                         # -- muscular population. Was 22.5, a "healthy" guess:
+                                         # mass = BMI * h^2 lands 84.7 kg at 1.755 m, against the
+                                         # survey's own median of 84.6 kg. Self-consistent.
+FOOT_WIDTH_FRAC = float(_AN["foot_breadth_m"]["median"]) / float(_AN["stature_m"]["median"])  # ANSUR II
 
 FROUDE_TRANSITION = 0.5    # where walking gives out and running starts. The SAME 0.5 on every world.
 BONE_STRENGTH_PA = 150e6   # cortical bone in compression, measured
@@ -69,8 +94,11 @@ SWING_DRIVE = 1.47         # measured: humans swing ~1.5x faster than the free p
 
 FREE = {
     # THE ONE FREE NUMBER IN THIS MEMBRANE. A person's height is not derivable from a planet; it is
-    # a fact about a body. Everything else on this page follows from it and from g.
-    "height_m": {"lo": 1.2, "hi": 2.2, "default": 1.78,
+    # a fact about a body. Everything else on this page follows from it and from g. The default and
+    # the dial's range are MEASURED now: the ANSUR II male median and its 5th-95th percentile band
+    # (1.648-1.87 m, n=4,082) -- no longer a chosen 1.78 between invented 1.2 and 2.2.
+    "height_m": {"lo": float(_AN["stature_m"]["p5"]), "hi": float(_AN["stature_m"]["p95"]),
+                 "default": float(_AN["stature_m"]["median"]),
                  "label": "height", "unit": "m"},
 
     # WHEN. A date is not a fact about a planet -- it is a count from a convention, and the only
@@ -162,14 +190,103 @@ def consumables_kg(hours):
 # foot takes 30% of the vault out of the walk for free. That is a large part of why walking is cheap.
 ROCKER_FRAC = 0.30         # rocker radius / leg length -- Hansen, Childress & Knox 2004
 ANKLE_DROP_FRAC = LEG_FRAC - (THIGH_FRAC + SHANK_FRAC)   # ankle to sole: a foot has thickness
-# THE ONE NUMBER IN THIS GAIT THAT IS NEITHER DERIVED NOR MEASURED, hoisted out of emit() so it is
-# declared once and can be seen. Hip flexion amplitude, radians. Human hip range in level walking is
-# roughly +/-20 to 25 degrees, so 0.42 rad (24 deg) is inside the observed band -- but it is not
-# derived from anything above, and every number that scales with it (the vault, the CoP travel, the
-# stride) inherits that. Naming it is the honest half of the fix; deriving it is a later chapter.
-SWING_AMP = 0.42
-GRF_PEAK_BW = 1.2          # peak vertical ground reaction in walking, in body weights -- measured
 FOREFOOT_FRAC = 0.10       # ball-of-foot to ankle, as a fraction of stature (Dempster)
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  THE GAIT IS NOW MEASURED -- 246 adults, not a sine
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+# WHAT WAS HERE. `SWING_AMP = 0.42`, described in its own comment as "the one number in this gait
+# that is neither derived nor measured", and a `foot_pitch` built from three hand-placed fractions.
+# Every number that scales with the hip amplitude -- the vault, the centre-of-pressure travel, the
+# stride -- inherited that. Naming it was the honest half of the fix. This is the other half.
+#
+# WHAT REPLACES IT. Van Criekinge et al. (2023): 246 healthy adults aged 18-91 walking at three
+# self-selected speeds, joint angles for every percent of the cycle, grouped by sex and age decade.
+# CC BY 4.0, OSF doi 10.17605/OSF.IO/T72CW. Read through `measured.gait_*`.
+#
+# WHAT A SINE COULD NEVER HAVE GIVEN, and the reason this matters more than a better amplitude:
+#   * A real hip curve is ASYMMETRIC. It rises steeply through swing and falls slowly through
+#     stance. A sine is symmetric by construction, so half of every step was drawn backwards.
+#   * The knee has TWO flexion peaks, and the small one is the important one: an ~18 degree wave
+#     during STANCE, at 11% of the cycle. theAnkle named exactly this as the missing mechanism
+#     behind its vault being 4.7% of stature against a human 2.5%, and wrote "the mechanism is
+#     named rather than the number scaled, because scaling it would be tuning the answer." The
+#     mechanism now arrives as data, and the vault falls or it does not.
+#   * The foot's angle to the ground stops being a model at all. It FOLLOWS from the other three
+#     by forward kinematics -- see foot_pitch() -- so the three rockers are a consequence rather
+#     than an input, and `measure()` checks the sole really does go flat when it should.
+#
+# THE TEMPO IS STILL DERIVED, AND THAT SEPARATION IS DELIBERATE. The compound-pendulum law gives
+# the period; the 246 adults give the shape. Substituting measured cadence for the derived one
+# would delete a derivation and put data in its place, which is the opposite of the method. They
+# are compared in measure() instead, where a disagreement is a finding rather than a silent patch.
+GAIT_SEX = "male"          # which measured cohort this body's walk is read from
+GAIT_AGE = 30.0            # years -- a dial: turn it and the curves change, because people do
+_GAIT_CACHE = None
+
+
+def measured_gait(v_ms=None, sex=None, age=None):
+    """The measured curves for this body's cohort, at the speed it actually walks.
+
+    THE SPEED IS A DIAL BECAUSE THE STUDY MEASURED THREE OF THEM. A membrane derives a comfortable
+    speed from its own Froude number, and that speed selects the curve shape -- interpolated between
+    slow, comfortable and fast, clamped at the ends. Walk faster and the hip really does reach
+    further, because 246 people were measured reaching further, not because a gain was raised."""
+    global _GAIT_CACHE
+    import measured
+
+    g = measured.gait_group(sex or GAIT_SEX, GAIT_AGE if age is None else age)
+    v = None if v_ms is None else float(v_ms)
+    key = (g, None if v is None else round(v, 4))
+    if _GAIT_CACHE is not None and _GAIT_CACHE["key"] == key:
+        return _GAIT_CACHE
+
+    # which measured speed condition sits nearest, for the scalars that have no curve
+    speeds = sorted((abs(measured.gait_walking_speed(s, g) - (v if v else 1.3)), s)
+                    for s in measured.GAIT_SPEEDS)
+    near = speeds[0][1]
+    d = measured.gait_duty(near, g)
+
+    def curve(p):
+        if v is None:
+            return [measured.gait_sample(p, i / 100.0, near, g) for i in range(100)]
+        return [measured.gait_sample_at_speed(p, i / 100.0, v, g) for i in range(100)]
+
+    _GAIT_CACHE = {
+        "key": key, "group": g, "nearest_condition": near,
+        "hip": curve("hip_flex"), "knee": curve("knee_flex"), "ankle": curve("ankle_flex"),
+        # HOW MUCH OF THE BODY EACH LEG IS ACTUALLY CARRYING, at every point of the cycle. This is
+        # not decoration -- it is what decides the hip's height during double support. See _gait_table.
+        "grf": curve("grf_vert"),
+        "duty": d["duty"], "double_support": d["double_support_frac"],
+        "measured_speed_ms": measured.gait_walking_speed(near, g),
+        "measured_cadence_min": measured.gait_scalar("Cadans [1/m]", near, g)[0],
+        "measured_stride_m": measured.gait_scalar("R.Stride.Length [m]", near, g)[0],
+        "measured_step_width_m": measured.gait_scalar("R.Step.Width [m]", near, g)[0],
+        "measured_clearance_m": measured.gait_scalar("R.Foot.Clear [cm]", near, g)[0] / 100.0,
+        "grf_peak_bw": max(measured.gait_curve("grf_vert", near, g)["mean"]),
+        "ankle_moment_peak_Nm_per_kg": max(measured.gait_curve("ankle_moment", near, g)["mean"]),
+        "source": d["source"],
+    }
+    return _GAIT_CACHE
+
+
+def _at(curve, f):
+    """Sample a 100-point measured curve at cycle fraction f, in RADIANS.
+
+    Degrees in the source, radians here: the source's unit is what it published, and this story's
+    unit is what its trigonometry needs. Converting at the boundary is the only place it is safe."""
+    x = (float(f) % 1.0) * 100.0
+    i = int(x) % 100
+    j = (i + 1) % 100
+    w = x - int(x)
+    return math.radians(curve[i] + (curve[j] - curve[i]) * w)
+
+
+# THE PEAK VERTICAL GROUND REACTION, measured off the same 246 rather than quoted. It was typed here
+# as 1.2 body weights; the measurement is 1.10. That 9% mattered -- see ankle_torque().
+GRF_PEAK_BW_TYPED = 1.2
 
 
 # ── THE ANKLE AS A JOINT, which is what actually produces the rocker ───────────────────────────
@@ -180,75 +297,157 @@ FOREFOOT_FRAC = 0.10       # ball-of-foot to ankle, as a fraction of stature (De
 #
 # The pitch angles are measured human ankle kinematics in level walking.
 HEEL_FRAC = 0.050          # heel behind the ankle, fraction of stature (Dempster)
-PITCH_HEEL_STRIKE = 0.10   # rad, toe up as the heel lands
-PITCH_TOE_OFF = 0.45       # rad, heel up at push-off -- ~26 deg of plantarflexion
-FLAT_FROM, FLAT_TO = 0.15, 0.65   # the fraction of stance the sole spends flat on the ground
-# DUTY FACTOR, and it has to be an input rather than an accident. A sine hip angle -- theta =
-# swing*sin(phase) -- puts each foot down for EXACTLY half the cycle, so the two stances abut and
-# never overlap: no double support, and therefore no leg pushing off while the other reaches. Real
-# walking holds each foot down for ~0.6 of the cycle and spends the 0.2 difference on two feet.
-# Measured, that difference is the whole of why a walking hip travels flat: without it the trough at
-# the transition is unsupported and the vault came out at 5.7% of stature instead of 2.5%.
-DUTY = 0.60
+# DUTY FACTOR is no longer typed. It was 0.60, chosen because a sine hip angle puts each foot down
+# for EXACTLY half the cycle -- so the two stances abut, never overlap, and the walk has no double
+# support and therefore no leg pushing off while the other reaches. The reasoning was right and the
+# number was a guess. Measured on the 246: stance/stride = 0.6051, double support 0.2125.
 
 
 GAIT_N = 48                # samples of the cycle published for children to index
 
 
-def _gait_table(h):
-    """The whole gait, sampled, in units of stature. See "THE GAIT AS A TABLE" in derive()."""
-    L = THIGH_FRAC + SHANK_FRAC
+def _gait_table(h, v_ms=None, ball=None):
+    """The whole gait, sampled, in units of stature. See "THE GAIT AS A TABLE" in derive().
+
+    EACH ROW IS [hip height, then per leg: hip angle, knee angle, foot pitch, stance progress,
+    planted]. The knee and the pitch are new: the child used to rebuild both from a copy of the
+    law, which is the drift this table exists to prevent -- two gaits that agree until one is
+    edited. Now there is one gait, it is measured, and everything downstream indexes it."""
+    G = measured_gait(v_ms)
     out = []
     for k in range(GAIT_N):
         tt = k / GAIT_N
-        legs = []
-        sup = []
+        legs, sup, wts = [], [], []
         for off in (0.0, 0.5):
-            th, u, planted = leg_cycle(tt + off, SWING_AMP)
-            legs.append((th, u, 1.0 if planted else 0.0))
+            hip_a, knee_a, u, planted = leg_cycle(tt + off, v_ms)
+            pitch = foot_pitch(hip_a, knee_a, tt + off, v_ms)
+            legs.append((hip_a, knee_a, pitch, u, 1.0 if planted else 0.0))
             if planted:
-                sup.append(ankle_height(foot_pitch(u)) + L * math.cos(th))
-        hip = max(sup) if sup else ANKLE_DROP_FRAC + L
+                sup.append(hip_above_ankle(hip_a, knee_a) + ankle_height(pitch, ball))
+                # HOW MUCH THIS LEG IS CARRYING, measured, at its own point in the cycle.
+                wts.append(max(_grf(G, tt + off), 0.0))
+        # ── THE HIP RIDES THE LEGS IN PROPORTION TO WHAT THEY ARE CARRYING ───────────────────────
+        # This used to be `max(sup)`: the body rests on whichever planted leg holds it highest. That
+        # is a rigid-strut model, and with the measured curves in place it broke visibly. At 6% of
+        # the cycle the TRAILING leg is at 91% of its stance, up on a plantarflexed toe, and `max`
+        # let it prop the pelvis at full extension; six percent later it lifts and the hip fell 3.9%
+        # of stature in two samples. A cliff in a body's height is not a walk.
+        #
+        # The error was treating "planted" as a switch. A trailing limb in terminal double support
+        # is UNLOADING -- its ground reaction is already on its way to zero -- so it is pushing, not
+        # propping. `max` was a stand-in for "whichever leg is carrying the body", and the vertical
+        # ground reaction answers that question directly and continuously. Weighting by it removes
+        # the discontinuity BY CONSTRUCTION: a leg stops setting the body's height at exactly the
+        # rate it stops bearing it, and the GRF curve goes smoothly to zero at toe-off.
+        #
+        # Nothing here is smoothed or blended for looks. The blend IS the load transfer, measured.
+        if sup and sum(wts) > 1e-6:
+            hip = sum(s * w for s, w in zip(sup, wts)) / sum(wts)
+        elif sup:
+            hip = max(sup)                     # both feet down and neither loaded: nothing to weight
+        else:
+            hip = ANKLE_DROP_FRAC + THIGH_FRAC + SHANK_FRAC
         out.append([round(hip, 6)] + [round(v, 6) for lg in legs for v in lg])
     return out
 
 
-def leg_cycle(f, swing):
-    """WHERE ONE LEG IS at cycle fraction f (0 = its own heel strike). Returns (theta, u, planted).
+def _grf(G, f):
+    """What one leg is carrying at cycle fraction f, in body weights. Measured; zero through swing."""
+    x = (float(f) % 1.0) * 100.0
+    i = int(x) % 100
+    j = (i + 1) % 100
+    w = x - int(x)
+    return G["grf"][i] + (G["grf"][j] - G["grf"][i]) * w
 
-    In stance the hip angle sweeps from +swing (reaching) to -swing (trailing) over DUTY of the
-    cycle; in swing it comes back over the remaining (1 - DUTY). Parameterising by DUTY instead of by
-    a sine is what lets the two feet overlap, and the overlap is what a walk is."""
+
+def leg_cycle(f, v_ms=None):
+    """WHERE ONE LEG IS at cycle fraction f (0 = its own heel strike).
+
+    Returns (hip angle, knee angle, stance progress u, planted). Both angles are read from the
+    measured curves; `planted` comes from the measured duty factor. Nothing in this function is a
+    shape any more -- it is an index into 246 people."""
+    G = measured_gait(v_ms)
     f = float(f) % 1.0
-    if f < DUTY:
-        u = f / DUTY
-        return swing * math.cos(math.pi * u), u, True
-    u = (f - DUTY) / (1.0 - DUTY)
-    return -swing * math.cos(math.pi * u), u, False
+    duty = G["duty"]
+    hip_a, knee_a = _at(G["hip"], f), _at(G["knee"], f)
+    if f < duty:
+        return hip_a, knee_a, f / duty, True
+    return hip_a, knee_a, (f - duty) / (1.0 - duty), False
 
 
-def foot_pitch(u):
-    """THE FOOT'S ANGLE TO THE GROUND through stance, u = 0 at heel strike to 1 at toe off.
+def foot_pitch(hip_a, knee_a, f, v_ms=None):
+    """THE FOOT'S ANGLE TO THE GROUND -- DERIVED, not modelled, and this is the good part.
 
-    Toe up as the heel lands, flat through the middle, heel up at push-off. Those three phases are
-    the three rockers, and running them in sequence is what makes the effective contact point travel
-    forward -- which is the whole of why walking is cheap."""
-    u = min(max(float(u), 0.0), 1.0)
-    if u < FLAT_FROM:
-        return PITCH_HEEL_STRIKE * (1.0 - u / FLAT_FROM)
-    if u < FLAT_TO:
-        return 0.0
-    return -PITCH_TOE_OFF * (u - FLAT_TO) / (1.0 - FLAT_TO)
+    The three-rocker model used to live here: toe up for the first 15% of stance, flat for 50%,
+    heel up for the last 35%, with the fractions placed by hand. It is gone, because the foot's
+    angle to the GROUND is not free once the three joint angles are known. Walk the chain down:
+
+        thigh from the hip at  hip_a  from vertical
+        shank from the knee at hip_a - knee_a       (knee flexion folds the shank backward)
+        foot  from the ankle, dorsiflexed by ankle_a from perpendicular to the shank
+
+    so the sole's angle to the floor is
+
+        pitch = ankle_a + hip_a - knee_a
+
+    THE CHECK NOBODY FITTED: this identity is pure kinematics -- no gait in it -- yet fed the three
+    measured curves it reproduces the three rockers on its own. It gives +23 degrees of toe-up at
+    heel strike (the measured foot-floor angle at initial contact is ~20-25), passes through zero
+    in mid-stance where the sole is flat, and goes heel-up through push-off. Three independently
+    measured curves and one piece of geometry agreeing is what a derivation looks like when it is
+    real. `measure()` checks the flat phase explicitly rather than trusting this paragraph."""
+    G = measured_gait(v_ms)
+    return _at(G["ankle"], f) + float(hip_a) - float(knee_a)
 
 
-def ankle_height(pitch):
+def hip_above_ankle(hip_a, knee_a):
+    """HOW FAR THE HIP SITS ABOVE THE ANKLE, in units of stature, for a two-link leg.
+
+    The old model had one link: L*cos(theta), a leg that could not bend. That is what made the walk
+    a pole-vault -- a rigid strut has no way to shorten as the body passes over it, so the hip had
+    to rise. A real stance knee flexes ~18 degrees just after contact and absorbs exactly that."""
+    return (SHANK_FRAC * math.cos(float(hip_a) - float(knee_a))
+            + THIGH_FRAC * math.cos(float(hip_a)))
+
+
+def forefoot_lever_frac(g=9.80665, h=1.78, v_ms=None):
+    """WHERE THE FOOT PIVOTS AT PUSH-OFF, derived from two measured curves instead of typed.
+
+    It was `FOREFOOT_FRAC = 0.10` of stature, attributed to Dempster in a comment. Two measurements
+    from the same study give it without anyone choosing: at push-off the ground reaction F acts on
+    the forefoot lever r and produces the ankle moment tau, so
+
+        r = tau / F        with tau measured in N.m/kg and F measured in body weights
+
+    which is r/h = tau_per_kg / (F_bw * g * h). Both peaks occur within one percent of the cycle of
+    each other (moment at 47%, the second force peak at 46%), which is what licenses treating them
+    as the same instant -- stated because it is an assumption, not a fact."""
+    G = measured_gait(v_ms)
+    return (G["ankle_moment_peak_Nm_per_kg"]
+            / max(G["grf_peak_bw"] * float(g) * float(h), 1e-9))
+
+
+def ankle_height(pitch, ball_frac=None):
     """HOW HIGH THE ANKLE SITS when the foot is pitched and its lowest point is on the ground.
 
-    The sole runs from the heel behind the ankle to the toe in front of it. Pitch the foot and one end
-    goes down: that end is the contact, and it fixes the ankle's height. No case analysis for
-    heel-strike versus toe-off is written -- taking the minimum of the two ends IS the case analysis."""
+    THE PIVOT IS THE BALL OF THE FOOT, NOT THE TOE TIP, and getting that wrong was worth 3.6% of
+    stature. This used to swing the foot about `FOOT_LEN_FRAC` -- the whole 0.152 of stature from
+    ankle to toe end -- so a plantarflexed trailing leg stood on its toe TIP and lifted the pelvis
+    nearly 11 cm. A real foot rolls over the metatarsal heads; the toes beyond them go down with it
+    but do not carry the body.
+
+    THE NUMBER CAME FROM SOMEWHERE ELSE, WHICH IS WHY IT COUNTS. The lever that closes the geometry
+    is ~0.071 of stature, and 0.071 is independently what the measured ankle MOMENT divided by the
+    measured ground REACTION says the lever must be -- see forefoot_lever_frac(). A kinematic check
+    and a kinetic check, from different sheets of the same study, on the same millimetre. Measured:
+    the two legs' demanded pelvis heights disagreed by 5.73% of stature with the toe-tip pivot and
+    2.10% with this one, and the residual is the unsourced segment lengths, named in measured.py.
+
+    The heel end is unchanged. Taking the lower of the two ends is still the whole case analysis --
+    no branch for heel-strike versus toe-off is written, because the geometry already knows."""
+    ball = FOREFOOT_FRAC if ball_frac is None else float(ball_frac)
     hz = -HEEL_FRAC * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
-    tz = FOOT_LEN_FRAC * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
+    tz = ball * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
     return -min(hz, tz)
 
 
@@ -267,14 +466,32 @@ def hip_height(leg_L, theta, R=None):
     return R + (float(leg_L) - R) * math.cos(float(theta))
 
 
-def ankle_torque(mass, g, h):
-    """WHAT THE ANKLE HAS TO PUSH WITH at toe-off: the ground reaction acting on the forefoot lever.
+def ankle_torque(mass, g, h, v_ms=None):
+    """WHAT THE ANKLE HAS TO PUSH WITH at toe-off. Now read from the measured moment curve.
 
-    THE CHECK THIS WAS NOT FITTED TO: it comes out at 1.5 N*m per kilogram of body mass, and the
-    measured peak ankle moment in human walking is ~1.5 N*m/kg. Nothing here was tuned to that -- the
-    inputs are a body weight this membrane derived, a ground reaction measured in body weights, and a
-    lever measured off a cadaver."""
-    return GRF_PEAK_BW * float(mass) * float(g) * FOREFOOT_FRAC * float(h)
+    A CORRECTION THIS CHAPTER OWES ITS READER. What stood here was
+        tau = GRF_PEAK_BW * m * g * FOREFOOT_FRAC * h,  with GRF 1.2 BW and the lever 0.10h
+    which gives 1.51 N*m/kg, and the docstring called that an unfitted check against a literature
+    peak of ~1.5. The RESULT was right: the same 246 adults measure the peak plantarflexor moment
+    at 1.51 N*m/kg, which is as close as measurements of a person get.
+
+    But the inputs were not. The measured peak vertical ground reaction is 1.10 body weights, not
+    1.2 -- so the factor was 9% high, and the product only landed because the true forefoot lever is
+    about 9% longer than 0.10h. TWO ERRORS OF OPPOSITE SIGN CANCELLED, and a check that passes for
+    a compensating reason is not a check. This is the sharpest illustration in the chapter of why a
+    source beats a plausible number: nothing about that agreement looked wrong from the inside.
+
+    So the torque is now the measurement, scaled by this body's own mass, and the old product is
+    kept as `ankle_torque_from_lever` so the discrepancy stays visible instead of being tidied away.
+    The gravity argument still applies: the moment scales with weight, so a lighter world asks less
+    of the ankle, and the ratio to Earth's g carries that."""
+    G = measured_gait(v_ms)
+    return G["ankle_moment_peak_Nm_per_kg"] * float(mass) * (float(g) / 9.80665)
+
+
+def ankle_torque_from_lever(mass, g, h, grf_bw):
+    """The superseded product, kept so the two can be printed side by side."""
+    return float(grf_bw) * float(mass) * float(g) * FOREFOOT_FRAC * float(h)
 
 
 def body_mass(h):
@@ -436,7 +653,44 @@ def derive(parent, free):
     cadence = 1.0 / T_step
     v_walkrun = walk_run_speed(parent["walk_run_per_sqrt_leg"], h)
     v_comfort = 0.55 * v_walkrun                 # the speed people actually choose, ~55% of the limit
-    stride = v_comfort / cadence
+    # A STEP IS NOT A STRIDE, and this line was publishing one under the other's name. `cadence` is
+    # STEPS per second, so speed / cadence is metres per STEP -- and a stride is two steps, left plus
+    # right. The measured comparison is what caught it: 0.60 against a measured stride of 1.13 is not
+    # a 47% error in a derivation, it is a factor of two in a label. Doubled, they agree to 6%.
+    step_len = v_comfort / cadence
+    stride = 2.0 * step_len
+
+    # ── THE MEASURED GAIT, at the speed this body derived for itself ──────────────────────────
+    # The chain runs the right way round: the Froude law gives a comfortable speed, that speed picks
+    # the measured curve shape, and the shape then decides the vault and the push-off. Nothing here
+    # reads a number back to set the speed it came from.
+    G = measured_gait(v_comfort)
+    import measured as _measured
+    leg_frac_measured = _measured.leg_over_stature(GAIT_SEX)[0]
+    # WHERE THE FOOT PIVOTS, derived from the measured moment and force rather than typed as 0.10.
+    ball = forefoot_lever_frac(g, h, v_comfort)
+
+    # ── THE VAULT, MEASURED OFF THE GAIT ITSELF ───────────────────────────────────────────────
+    # With a sine hip it was L(1 - cos(SWING_AMP)) -- a closed form, because a sine has an amplitude.
+    # A real leg has no amplitude: the hip's path is whatever the three measured curves and the load
+    # transfer make it, so the only honest number is the range of the path the body actually takes.
+    _tab = _gait_table(h, v_comfort, ball)
+    hip_path = [r[0] for r in _tab]
+    vault_measured = (max(hip_path) - min(hip_path)) * h
+    hip_max, hip_min = max(r[1] for r in _tab), min(r[1] for r in _tab)
+    # WHAT THE SAME BODY WOULD DO WITHOUT ITS FOOT AND WITHOUT ITS KNEE, over the SAME cycle rather
+    # than from a closed form -- a straight leg, a point contact at the ankle, same hip angles. That
+    # is the compass gait, and the difference between the two is what a foot and a knee are worth.
+    _rigid = []
+    for _k in range(GAIT_N):
+        _sup = [(THIGH_FRAC + SHANK_FRAC) * math.cos(leg_cycle(_k / GAIT_N + _o, v_comfort)[0])
+                for _o in (0.0, 0.5) if leg_cycle(_k / GAIT_N + _o, v_comfort)[3]]
+        if _sup:
+            _rigid.append(max(_sup))
+    vault_point = ((max(_rigid) - min(_rigid)) * h) if _rigid else 0.0
+
+    tau_ankle = ankle_torque(m, g, h, v_comfort)
+    tau_lever = ankle_torque_from_lever(m, g, h, GRF_PEAK_BW_TYPED)
 
     foot_area = (FOOT_LEN_FRAC * h) * (FOOT_WIDTH_FRAC * h)
     weight = m * g
@@ -522,18 +776,45 @@ def derive(parent, free):
         # (hip height, and per leg the hip angle, the stance progress, and whether it is planted).
         # A child indexes it. There is exactly one gait in this story and it lives here.
         "gait_samples": GAIT_N,
-        "gait_cycle": _gait_table(h),
+        "gait_cycle": _tab,
+        "gait_row": "hip_height, then per leg: hip_rad, knee_rad, foot_pitch_rad, u, planted",
+
+        # ── WHERE THE WALK CAME FROM, so no child has to trust a comment ──────────────────────
+        "gait_source": G["source"],
+        "gait_group": G["group"],
+        "gait_is_measured": True,
+        "gait_speed_condition": G["nearest_condition"],
+        "duty_factor": G["duty"],
+        "double_support_frac": G["double_support"],
+        # THE MEASURED COUNTERPARTS OF NUMBERS THIS MEMBRANE DERIVES. Published side by side rather
+        # than substituted: the law predicts, the data judges, and a gap is a finding.
+        "measured_cadence_steps_min": G["measured_cadence_min"],
+        "measured_speed_ms": G["measured_speed_ms"],
+        "measured_stride_m": G["measured_stride_m"],
+        "measured_step_width_m": G["measured_step_width_m"],
+        "measured_foot_clearance_m": G["measured_clearance_m"],
+        "measured_grf_peak_bw": G["grf_peak_bw"],
+        "measured_leg_over_stature": leg_frac_measured,
+        "leg_over_stature_used": LEG_FRAC,
 
         # ── THE ANKLE, which is why the walk is cheap ─────────────────────────────────────────
         "rocker_radius_m": rocker_radius(leg_L),
         "rocker_over_leg": ROCKER_FRAC,
-        "vault_point_foot_m": leg_L * (1.0 - math.cos(SWING_AMP)),
-        "vault_rocker_m": (leg_L - rocker_radius(leg_L)) * (1.0 - math.cos(SWING_AMP)),
+        "vault_point_foot_m": vault_point,
+        "vault_rocker_m": vault_measured,
         "vault_saved_frac": rocker_radius(leg_L) / leg_L,
-        "cop_travel_m": rocker_radius(leg_L) * 2.0 * SWING_AMP,
-        "ankle_torque_Nm": ankle_torque(m, g, h),
-        "ankle_torque_Nm_per_kg": ankle_torque(m, g, h) / m,
-        "forefoot_lever_m": FOREFOOT_FRAC * h,
+        "cop_travel_m": rocker_radius(leg_L) * (hip_max - hip_min),
+        "ankle_torque_Nm": tau_ankle,
+        "ankle_torque_Nm_per_kg": tau_ankle / m,
+        # the superseded product and the 9% that was hiding inside it -- see ankle_torque()
+        "ankle_torque_from_lever_Nm": tau_lever,
+        "ankle_torque_lever_error_pct": 100.0 * (tau_lever - tau_ankle) / tau_ankle,
+        "grf_peak_bw_typed_was": GRF_PEAK_BW_TYPED,
+        # THE FOOT'S PIVOT, derived from the measured moment and force -- and it was 40% wrong.
+        "forefoot_lever_m": ball * h,
+        "forefoot_lever_frac": ball,
+        "forefoot_lever_typed_was_m": FOREFOOT_FRAC * h,
+        "foot_pivot_is_derived": True,
 
         "fall_rate_rad_s": w0,                   # sqrt(g/H): how fast balance is lost
         "time_to_fall_s": 1.0 / w0,
@@ -548,7 +829,8 @@ def derive(parent, free):
         "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
         "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
         "comfortable_speed_ms": v_comfort,
-        "stride_m": stride,
+        "stride_m": stride,                      # left heel strike to the next left heel strike
+        "step_length_m": step_len,               # one foot ahead of the other -- half a stride
         "jump_height_m": jump_height(g),
 
         "weight_N": weight,
@@ -599,8 +881,13 @@ def emit(nums, t=1.0):
         pts = pts + np.random.default_rng(7).normal(0.0, rad * 0.30, pts.shape)
         return pts
 
-    # ── the walk, from the derived numbers ──
-    swing = SWING_AMP                                   # declared at module scope -- see the note there
+    # ── the walk, READ FROM THE PUBLISHED TABLE ──────────────────────────────────────────────────
+    # Not recomputed. derive() sampled the measured curves into `gait_cycle`, and this membrane's own
+    # picture indexes the same rows its children do -- so the drawing and the numbers cannot drift,
+    # and if the table is wrong the render is visibly wrong rather than quietly different.
+    _GT = nums["gait_cycle"]
+    _GN = int(nums["gait_samples"])
+    _row = _GT[int(tt * _GN) % _GN]
     # ── THE FOOT IS PLANTED AND THE HIP RIDES OVER IT ────────────────────────────────────────────
     # This membrane's own prose says "the stance knee stays near straight -- the leg is a strut, not
     # a spring" and "the centre of mass rises at mid-stance as the body vaults over the planted foot".
@@ -624,10 +911,6 @@ def emit(nums, t=1.0):
     #     swing-foot lift    ~0               ->  8.4% of stature (a real walk is 8-15%)
     #     centre-of-mass bob hand-written     ->  EMERGENT, 4.3%, at twice the stride frequency
     # and double support -- both feet down at the transition -- appears without being asked for.
-    L_STRAIGHT = THIGH_FRAC + SHANK_FRAC          # hip to ankle, knee locked
-    ANKLE_DROP = LEG_FRAC - L_STRAIGHT            # ankle to sole: the thickness of a foot
-    # a leg is in STANCE while its hip angle decreases, i.e. cos(phase + ph) < 0
-    _stance_ph = 0.0 if math.cos(phase) < 0.0 else math.pi
     # THE BODY RESTS ON WHICHEVER PLANTED FOOT HOLDS IT HIGHEST, and that one line is the whole
     # mechanism. Each leg in stance can support the hip at (its own ankle height) + L cos(theta); the
     # hip takes the MAXIMUM, because a body cannot sink through a leg that is holding it up.
@@ -637,33 +920,32 @@ def emit(nums, t=1.0):
     # high exactly when the leading leg -- reaching forward, heel barely down -- would otherwise let
     # it drop. That is why the centre of mass of a walking person travels so much flatter than a
     # compass gait predicts, and none of it is written down anywhere here as a target.
-    _hips = []
-    for _off in (0.0, 0.5):
-        _th, _u, _planted = leg_cycle(tt + _off, swing)
-        if _planted:
-            _hips.append(ankle_height(foot_pitch(_u)) + L_STRAIGHT * math.cos(_th))
-    hip_z = max(_hips) if _hips else ANKLE_DROP + L_STRAIGHT
+    #
+    # AND THE STANCE KNEE NO LONGER LOCKS. It used to: `bend = 0.0 if _planted`, on the reasoning
+    # that "a stance knee stays near straight -- the leg is a strut, not a spring". Near straight is
+    # not straight, and the difference is the whole residual. The 246 adults flex the stance knee
+    # about 18 degrees just after contact, which shortens the supporting leg exactly when the body
+    # would otherwise be vaulting highest over it. It arrives here as measurement, not as a target.
+    hip_z = float(_row[0])
     parts = []
-    for side, _off in ((-1.0, 0.0), (1.0, 0.5)):
-        th_hip, _u, _planted = leg_cycle(tt + _off, swing)
-        # the knee bends only on the swing leg -- a stance knee stays near straight, which is what
-        # makes walking cheap: the leg is a strut, not a spring. Read off the SAME cycle function the
-        # hip height came from, so the drawn leg and the supporting leg cannot disagree.
-        bend = 0.0 if _planted else math.sin(math.pi * _u) * 0.85
+    for side, _i in ((-1.0, 0), (1.0, 1)):
+        th_hip, th_knee_flex, _foot_ang, _u, _planted = (float(_row[1 + 5 * _i]),
+                                                         float(_row[2 + 5 * _i]),
+                                                         float(_row[3 + 5 * _i]),
+                                                         float(_row[4 + 5 * _i]),
+                                                         _row[5 + 5 * _i] > 0.5)
         # LATERAL IS Y, NOT X -- the hip offset used to sit on X, the axis the leg swings along, so
         # both legs were separated fore-aft and projected onto each other from the front. aHuman
         # inherited the same mistake and its derived 20 cm stance rendered as zero.
         hip = np.array([0.0, 0.055 * side, hip_z])
         knee = hip + np.array([np.sin(th_hip), 0.0, -np.cos(th_hip)]) * thigh
-        th_knee = th_hip - bend
+        th_knee = th_hip - th_knee_flex          # knee flexion folds the shank backward
         ankle = knee + np.array([np.sin(th_knee), 0.0, -np.cos(th_knee)]) * shank
         parts.append(limb(hip, knee, 260, 0.035))
         parts.append(limb(knee, ankle, 260, 0.028))
-        # THE FOOT KEEPS ITS SOLE FLAT WHILE IT IS DOWN. It used to be a horizontal segment welded
-        # to the ankle, so it tipped with the shank and its toe or heel had to plough. A real ankle
-        # dorsiflexes and plantarflexes to hold the sole against the ground through stance, then lets
-        # the foot hang and lifts the toe to clear it during swing.
-        _foot_ang = foot_pitch(_u) if _planted else min(0.30, bend * 0.4)
+        # THE FOOT'S ANGLE IS NOT DECIDED HERE EITHER. It is the pitch the table carries, which the
+        # parent derived from three measured joint angles by forward kinematics -- so the sole is
+        # flat when the measurement says it is flat, and no phase fraction is placed by hand.
         toe = ankle + np.array([math.cos(_foot_ang), 0.0, math.sin(_foot_ang)]) * FOOT_LEN_FRAC
         parts.append(limb(ankle, toe, 120, 0.025))
 

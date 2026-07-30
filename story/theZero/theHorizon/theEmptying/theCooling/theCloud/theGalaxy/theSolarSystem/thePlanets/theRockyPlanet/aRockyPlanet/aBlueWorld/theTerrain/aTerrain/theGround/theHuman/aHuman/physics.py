@@ -274,17 +274,21 @@ def emit(nums, t=1.0):
     splay = math.radians(float(nums["splay_deg"]))
 
     phase = 2.0 * math.pi * tt
-    swing = 0.42                                    # only for the arm amplitude below
     # ── THE POSE COMES FROM THE PARENT'S TABLE, indexed, not recomputed ───────────────────────
-    # theHuman publishes 48 samples of the cycle: hip height, and per leg the hip angle, the stance
-    # progress and whether the foot is planted. Reading it is how this membrane walks with exactly
-    # the parent's ankle, knee and vault without owning a second copy of any of them.
+    # theHuman publishes 48 samples of the cycle: hip height, and per leg the hip angle, the KNEE
+    # angle, the foot's pitch to the ground, the stance progress and whether the foot is planted.
+    # Reading it is how this membrane walks with exactly the parent's ankle, knee and vault without
+    # owning a second copy of any of them -- and the knee and the pitch are new here for exactly
+    # that reason. This membrane used to rebuild both: `bend = sin(pi*u) * 0.85` for the knee and a
+    # transcribed three-rocker formula for the boot. Both were copies of a law that has since been
+    # replaced by measurement, and copies do not get updated. Now there is one gait in this story,
+    # it belongs to the parent, it is 246 measured adults, and this membrane indexes it.
     GT = nums["gait_cycle"]
     N = int(nums["gait_samples"])
     _row = GT[int(tt * N) % N]
     hip_z = float(_row[0])
-    _legs = [(float(_row[1]), float(_row[2]), _row[3] > 0.5),
-             (float(_row[4]), float(_row[5]), _row[6] > 0.5)]
+    _legs = [(float(_row[1 + 5 * i]), float(_row[2 + 5 * i]), float(_row[3 + 5 * i]),
+              float(_row[4 + 5 * i]), _row[5 + 5 * i] > 0.5) for i in (0, 1)]
     pts, nrms, mats = [], [], []
 
     def add(pn, kind):
@@ -293,8 +297,7 @@ def emit(nums, t=1.0):
             pts.append(p); nrms.append(n); mats.append(np.full(len(p), kind))
 
     for side, _i in ((-1.0, 0), (1.0, 1)):
-        th_hip, _u, _planted = _legs[_i]
-        bend = 0.0 if _planted else math.sin(math.pi * _u) * 0.85
+        th_hip, bend, _fp, _u, _planted = _legs[_i]
         # LATERAL IS Y, NOT X. This is the bug that made the derived stance invisible: the hip
         # offset was written on the X axis -- the SAME axis the leg swings along -- so the two legs
         # were separated fore-aft instead of side to side, and from the front they projected exactly
@@ -314,16 +317,12 @@ def emit(nums, t=1.0):
         ankle = knee + np.array([math.sin(th_kn) * cs, sp * 0.25, -math.cos(th_kn) * cs]) * SHANK_FRAC
         add(_tube(hip, knee, r_th, r_sh * 1.15), 0)
         add(_tube(knee, ankle, r_sh * 1.15, r_sh), 0)
-        # the boot: wider than the leg, because a sole spreads load -- the parent's foot_pressure
-        # THE BOOT KEEPS ITS SOLE DOWN, pitching the way the parent's foot_pitch law says: toe up as
-        # the heel lands, flat through the middle, heel up at push-off. The pitch is rebuilt from the
-        # stance progress in the table rather than from a second copy of the law -- the same three
-        # numbers the parent used, so the boot cannot roll differently from the leg above it.
-        if _planted:
-            _fp = (0.10 * (1.0 - _u / 0.15) if _u < 0.15
-                   else 0.0 if _u < 0.65 else -0.45 * (_u - 0.65) / 0.35)
-        else:
-            _fp = min(0.30, bend * 0.4)
+        # the boot: wider than the leg, because a sole spreads load -- the parent's foot_pressure.
+        # THE BOOT'S PITCH IS READ, NOT REBUILT. It used to be a transcribed copy of the parent's
+        # three-rocker formula, with the three fractions retyped here -- so the boot rolled by one
+        # law while the leg above it moved by another, and they agreed only for as long as nobody
+        # edited either. The parent now derives the pitch from three measured joint angles and
+        # publishes it; the boot uses that number and cannot disagree with the leg it hangs from.
         toe = ankle + np.array([math.cos(_fp), 0.0, math.sin(_fp)]) * FOOT_LEN_FRAC
         # THE BOOT'S UNDERSIDE HAS TO LAND WHERE THE TABLE PUTS THE SOLE. Drawn as a fat tube hung
         # half its own radius below the ankle, the boot was 8.3% of stature thick against the 3.9%
