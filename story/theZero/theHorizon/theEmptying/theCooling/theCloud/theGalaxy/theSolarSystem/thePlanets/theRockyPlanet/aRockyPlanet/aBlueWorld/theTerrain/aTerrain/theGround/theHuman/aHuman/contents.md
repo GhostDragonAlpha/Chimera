@@ -7,7 +7,9 @@
 
 ## Contains
 
-*nothing yet — this is a leaf of the story as written*
+| membrane | what it is |
+|---|---|
+| `theBreath` | What the person in the suit is actually breathing. The parent established that |
 
 ## Hands down
 
@@ -43,8 +45,8 @@
 | `leg_length_m` | 0.9434 |
 | `com_height_m` | 1.023 |
 | `stride_m` | 0.6488 |
-| `mass_kg` | 80.85 |
-| `suit_mass_kg` | 9.56 |
+| `mass_kg` | 81.2 |
+| `suit_mass_kg` | 9.915 |
 | `g` | 7.076 |
 | `S_earth` | 1.005 |
 | `T_surface` | 279.2 |

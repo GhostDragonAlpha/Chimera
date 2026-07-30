@@ -102,7 +102,17 @@ ARMSTRONG_BAR = 0.0618     # water boils at 37 C -- below this, a pressure vesse
 PO2_MIN_BAR = 0.16         # alveolar O2 for sustained consciousness (~3,000 m equivalent)
 PO2_SEA_LEVEL_BAR = 0.213  # Earth: 1.013 bar x 20.95%
 O2_KG_PER_DAY = 0.84       # metabolic oxygen, one person, light work (NASA life-support figure)
-SCRUBBER_KG_PER_DAY = 0.9  # LiOH to take the CO2 back out again
+# THE SCRUBBER IS DERIVED FROM THE OXYGEN, NOT ALLOCATED BESIDE IT. This used to read
+# `SCRUBBER_KG_PER_DAY = 0.9` -- a plausible per-person-per-day figure sitting next to the oxygen as
+# though the two were independent. They are not: every litre of O2 a body burns comes back as CO2 by
+# the respiratory quotient, and binding CO2 is stoichiometric. theBreath, one membrane down, derived
+# the chemistry and CAUGHT THIS -- it needed 0.77 kg of LiOH for an eight-hour day where this line
+# had allocated 0.30 kg, a factor of 2.6. A child consuming its parent's numbers found an error in
+# them, which is the entire reason a child consumes numbers and never reasoning.
+RQ = 0.85                  # respiratory quotient: litres of CO2 out per litre of O2 in, mixed diet
+M_CO2_PER_M_O2 = 44.0 / 32.0     # ... and the mass ratio those litres carry
+LIOH_KG_PER_KG_CO2 = 2.0   # 2 LiOH + CO2 -> Li2CO3 + H2O; a packed bed achieves about half the ideal
+SCRUBBER_KG_PER_DAY = O2_KG_PER_DAY * RQ * M_CO2_PER_M_O2 * LIOH_KG_PER_KG_CO2
 TANK_MASS_RATIO = 3.5      # composite pressure vessel: dry mass / stored gas mass at 300 bar
 GARMENT_KG = 8.0           # MEASURED: a sealed soft suit + helmet + harness, no pressure shell
 EXCURSION_H = 8.0          # a working day outside -- what the consumables are sized for
@@ -122,7 +132,12 @@ def breathing_demand(P_bar):
 
 def consumables_kg(hours):
     """Air and scrubber for an excursion, plus the tank to hold them. Derived from metabolism and a
-    duration -- so a longer day outside is a heavier body, and the gait changes because of it."""
+    duration -- so a longer day outside is a heavier body, and the gait changes because of it.
+
+    THIS IS A NOMINAL ALLOCATION AT A DAY-AVERAGE METABOLIC RATE (0.84 kg of oxygen a day is about
+    142 W). `theBreath` sizes the same load at the rate the person is ACTUALLY working and is the
+    authority on an excursion; the two differ by exactly that difference in workload, which is a
+    real distinction rather than a disagreement."""
     d = hours / 24.0
     o2 = O2_KG_PER_DAY * d
     return o2 * (1.0 + TANK_MASS_RATIO) + SCRUBBER_KG_PER_DAY * d
