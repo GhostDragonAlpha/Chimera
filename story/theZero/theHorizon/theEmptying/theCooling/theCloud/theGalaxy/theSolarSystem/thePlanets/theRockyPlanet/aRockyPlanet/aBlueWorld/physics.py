@@ -392,6 +392,10 @@ def derive(parent, free):
         # temperature so the air is one object across both chapters.
         "scale_height_m": H_atm,
         "T_star_surface": float(parent["T_star_surface"]),
+        # WHAT THE STAR'S PULL IS MADE OF, carried for the children that need it (theOcean's
+        # tides): the orbit and the light. A parent is what both children can see.
+        "a_au": float(parent["a_au"]),
+        "L_star": float(parent["L"]),
         # the Froude LAW travels; the answer is computed by whatever has a leg
         "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
         "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),

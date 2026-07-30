@@ -51,6 +51,8 @@ PHYSICS_READING = {
                      "it -- pale blue-white on the brighter side, reddening to orange-red at the "
                      "day-night edge, dark on the far side, with wispy white cloud streaks; a glowing "
                      "ring of air, not a solid ball",
+    "theOcean": "a dark deep-blue water sphere or ocean world with a bright white sun glint on the "
+                "day side and white frozen polar regions; NO land, NO clouds -- open ocean alone",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 

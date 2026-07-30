@@ -75,6 +75,8 @@
   "P_surface_bar": 0.5199302820248954,
   "scale_height_m": 11312.068210151605,
   "T_star_surface": 5839.193528311371,
+  "a_au": 1.0410162724297256,
+  "L_star": 4.1687681474483326e+26,
   "walk_run_per_sqrt_leg": 1.8809734406992957,
   "swing_period_per_sqrt_leg": 2.362012584561864
 }

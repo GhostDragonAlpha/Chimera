@@ -10,6 +10,7 @@
 | membrane | what it is |
 |---|---|
 | `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — |
+| `theOcean` | An ocean is a liquid that gravity holds in a world's basins. Everything else |
 | `theTerrain` | The last chapter said how much water there is but refused to say where the coast |
 
 ## Hands down
@@ -74,5 +75,7 @@
 | `P_surface_bar` | 0.5199 |
 | `scale_height_m` | 1.131e+04 |
 | `T_star_surface` | 5839 |
+| `a_au` | 1.041 |
+| `L_star` | 4.169e+26 |
 | `walk_run_per_sqrt_leg` | 1.881 |
 | `swing_period_per_sqrt_leg` | 2.362 |
