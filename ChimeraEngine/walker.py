@@ -237,7 +237,10 @@ class Walker:
         self.walk = float(h["comfortable_speed_ms"])
         self.run = float(h["walk_run_ms"])
         self.jump_v = math.sqrt(2.0 * self.g * float(h["jump_height_m"]))
-        self.eye = 0.94 * float(h["height_m"])
+        # READ, NOT TYPED. This was `0.94 * height` -- human anatomy asserted inside a viewer, where
+        # no audit reaches it. theHuman derives it now, from a measured 0.936 of stature.
+        self.eye = float(h["eye_height_m"])
+        self.repose_deg = float(_static()["ground"]["repose_regolith_deg"])
         self.height_m = float(h["height_m"])
         self.patch = patch
 
@@ -317,11 +320,19 @@ class Walker:
         nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))
         ny = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.y + vy * dt))
 
-        # A SLOPE YOU CANNOT STAND ON IS A SLOPE YOU CANNOT WALK UP. The ground's own repose angle
-        # decides it -- the same number the hillslopes were built with, not a movement setting.
+        # A SLOPE YOU CANNOT STAND ON IS A SLOPE YOU CANNOT WALK UP, and the limit is the angle of
+        # repose of the stuff underfoot: past it, loose material slides and so do you.
+        #
+        # THIS USED TO BE A TYPED 38.0 under a comment claiming it was "the ground's own repose angle,
+        # the same number the hillslopes were built with". It was neither -- theGround derives 40.03
+        # for regolith and aTerrain 33.0 for loose rock, and 38 is not either of them. A literal
+        # wearing a comment, in a file no audit covers, which is exactly how one survives.
+        #
+        # It reads theGround's REGOLITH angle, because that is what a boot is standing in. The
+        # bedrock angle governs the hillside's shape, not a foot's grip on it.
         zx, zy = slope_at(nx, ny)
         grade = math.degrees(math.atan(math.hypot(zx, zy)))
-        if grade < 38.0 or not self.on_ground:
+        if grade < self.repose_deg or not self.on_ground:
             self.x, self.y = nx, ny
 
         # THE LEGS MOVE WHEN THE GROUND DOES. Distance is measured off the position that survived
@@ -429,7 +440,15 @@ class Walker:
 # Cost is logarithmic: each ring holds the same number of grains, and 8 rings reach 6 km from 0.9 m.
 _RING_N = 48            # half-width of every ring, in cells -- 8 rings * ~27k = the same budget
 _RING_LEVELS = 8        # doubling 8 times: 0.9 m underfoot to 115 m at the horizon
-_STEP0 = 0.90           # the finest spacing, ~half a stride
+# THE FINEST SPACING IN THE CLIPMAP, and it is a RENDER BUDGET -- said plainly, because the comment
+# here used to claim "~half a stride" and a stride is 0.649 m, so 0.90 is 1.4 strides, not half of
+# one. A false comment is a typed number's alibi and this file has no audit to catch either.
+#
+# What it actually buys, measured: 8 rings x 97x97 cells = ~58,000 grains reaching 6 km, with every
+# ring subtending ~1.9 degrees at its inner edge. Halving it doubles the near detail and doubles the
+# grain count for a horizon that does not move. Nothing derives it; it is chosen against a budget,
+# and if the budget changes this is the number to change.
+_STEP0 = 0.90
 
 
 def scene_around(w: Walker, t: float = None):

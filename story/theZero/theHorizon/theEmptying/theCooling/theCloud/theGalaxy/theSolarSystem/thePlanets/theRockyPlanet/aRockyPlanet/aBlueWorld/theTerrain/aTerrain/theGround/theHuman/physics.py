@@ -37,6 +37,11 @@ THIGH_FRAC = 0.245         # hip to knee
 SHANK_FRAC = 0.246         # knee to ankle
 FOOT_LEN_FRAC = 0.152
 COM_FRAC = 0.575           # standing centre of mass, as a fraction of height
+# EYE HEIGHT, and it belongs to the body rather than to a camera. This lived in ChimeraEngine's
+# walker as a bare `0.94 * height` -- a fact about human anatomy asserted inside a viewer, where no
+# audit reaches it and nothing connects it to the stature it multiplies. Measured: standing eye
+# height is 0.936 of stature (Dempster; NASA-STD-3000 gives 0.933-0.939 across percentiles).
+EYE_FRAC = 0.936
 LEG_MASS_FRAC = 0.161      # one whole leg, as a fraction of body mass
 LEG_COM_FRAC = 0.447       # the leg's own CoM, measured down the leg from the hip
 
@@ -487,6 +492,7 @@ def derive(parent, free):
         "height_m": h,
         "mass_kg": m,
         "com_height_m": com_h,
+        "eye_height_m": EYE_FRAC * h,          # what a first-person camera sits at, derived here
         "leg_length_m": leg_L,
         "leg_inertia_kgm2": I_leg,
         "leg_mass_kg": m_leg,

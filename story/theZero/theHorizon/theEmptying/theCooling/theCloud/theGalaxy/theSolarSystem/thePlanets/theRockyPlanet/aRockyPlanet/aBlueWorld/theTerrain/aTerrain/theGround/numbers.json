@@ -8,6 +8,8 @@
   "erosion_mm_kyr": 36.49317391212509,
   "production_mm_kyr": 77.0,
   "repose_deg": 40.03,
+  "repose_regolith_deg": 40.03,
+  "repose_bedrock_deg": 33.0,
   "fractal_D": 2.6,
   "d_median_mm": 0.35,
   "bulk_density": 1537.0000000000002,

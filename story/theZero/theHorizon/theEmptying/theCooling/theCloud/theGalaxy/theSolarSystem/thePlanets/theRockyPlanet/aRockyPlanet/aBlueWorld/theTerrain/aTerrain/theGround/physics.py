@@ -194,7 +194,20 @@ def derive(parent, free):
         "erosion_mm_kyr": erosion_rate(slope_mean),
         "production_mm_kyr": P0_MM_KYR,
 
-        "repose_deg": REPOSE_DRY_DEG,          # GROWN by this studio, not looked up
+        # ── TWO ANGLES OF REPOSE, AND THEY ARE NOT THE SAME QUESTION ─────────────────────────
+        # The parent returns `repose_deg` too, at 33 degrees, and this membrane used to overwrite it
+        # with 40.03 under the same key -- so a consumer reading `repose_deg` got whichever membrane
+        # it happened to be nearest, with no way to tell. They are different materials:
+        #   aTerrain's 33.0  -- LOOSE ROCK at its friction angle, which is what sets the gradient the
+        #                       hillslope transport law runs away at. A property of a mountainside.
+        #   this 40.03       -- DRY REGOLITH, and it was GROWN rather than looked up
+        #                       (core/trainables/granular.py, 40.03 +/- 1.55). A property of what a
+        #                       boot stands in.
+        # Both are correct about their own material. Only the shared key was wrong, so both now
+        # travel under names that say which is which.
+        "repose_deg": REPOSE_DRY_DEG,          # regolith -- what a foot is on. GROWN, not looked up
+        "repose_regolith_deg": REPOSE_DRY_DEG,
+        "repose_bedrock_deg": float(parent["repose_deg"]),   # carried: the parent's loose-rock angle
         "fractal_D": FRACTAL_D,
         "d_median_mm": 0.35,                   # solved below and overwritten
         "bulk_density": bulk_density(),

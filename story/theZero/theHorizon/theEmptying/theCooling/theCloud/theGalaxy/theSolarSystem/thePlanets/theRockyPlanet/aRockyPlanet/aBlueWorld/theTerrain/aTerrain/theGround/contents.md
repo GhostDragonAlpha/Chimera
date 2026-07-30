@@ -24,6 +24,8 @@
 | `erosion_mm_kyr` | 36.49 |
 | `production_mm_kyr` | 77 |
 | `repose_deg` | 40.03 |
+| `repose_regolith_deg` | 40.03 |
+| `repose_bedrock_deg` | 33 |
 | `fractal_D` | 2.6 |
 | `d_median_mm` | 0.35 |
 | `bulk_density` | 1537 |

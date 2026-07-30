@@ -48,6 +48,7 @@
   "height_m": 1.78,
   "mass_kg": 81.2035,
   "com_height_m": 1.0234999999999999,
+  "eye_height_m": 1.6660800000000002,
   "leg_length_m": 0.9434,
   "leg_inertia_kgm2": 3.5615120277899033,
   "leg_mass_kg": 13.073763500000002,
