@@ -652,11 +652,57 @@ to say so. (Measured: eleven worlds at a flat 900 grains each put 4,801 splats i
 | **two copies of one function** | `fibonacci_sphere` in both `matter.py` and `splat_appearance.py` | one gained `jitter`, the other did not — crash, and drift |
 | **invented a body** | drew a "star marker" 1.3 radii from a planet | it reads as **a moon**; nothing derived a moon. An exaggeration scales what exists — it cannot mint an object |
 | **a literal wearing a comment** | `"T_star_surface": 5772.0` under *"carried from the system"* | move the source; if the consumer does not move, it was typed. Reach for the PARENT, never the keyboard |
+| **a bug that hides where you test** | bilinear fractions swapped across axes | it cancels *exactly* at the patch centre — which is the spawn point. 5 km away it returned **13,414 m** on a field whose maximum is 451 |
+| **the movie ran backwards** | a fogged plate that *fogged up* over a chapter titled "clearing" | t=0 and t=1 both looked plausible. **Sample five values of `t`, not two** |
+| **the endpoint wrapped** | `tt = float(t) % 1.0` sends 1.0 → 0.0 | the canonical still export renders exactly `("begin",0.0)` and `("end",1.0)` — a wrapped end makes the two-frame check show **nothing happening** |
+| **a false comment** | *"the parent's own continental roughness"* above a line passing a hard `3.0` | **nothing checks a comment.** A false comment is a typed number's alibi |
+| **the instrument lied** | `audit.py` reported zero `get-default`s while six were live | it exempted 0 and 1 as *default values* — and those are the **worst**: `S_earth: 1.0` is a full Earth's insolation, `scale_height_m: 0.0` makes wind **infinite** |
+| **a grandparent read a grandchild** | `lat = 30.77072291868692` typed into `aBlueWorld` — `aTerrain`'s latitude | the inverse of the sibling failure, and it has the same tell. Pass the **law** down (`u = scale / sin(lat)`), let each child evaluate at its own place |
+| **an ancestor holding a descendant's number** | `LEG_M = 0.845` — a **human leg length inside a planet** | a planet hands down `g`; a body computes its own walk from its own length. *Still live in `theRockyPlanet`* |
+| **derived, then applied to the wrong axis** | a 20 cm stance written on **X**, the axis the leg swings along | the figure measured **0.37 m across the front and 0.97 m from the side.** A walking person is wider from the front |
+| **a simulation where the consequence belongs** | `bob = 0.018*cos(2*phase)` standing in for the centre-of-mass vault | it cannot be wrong, because it computes nothing. Once the hip rode the stance leg the real value was **4.3%** — the typed one was out by 2.4× |
+| **the prose was the spec, and it was right** | *"the stance knee stays near straight"* while the code bent the **stance** knee | both claims predated their truth by months. **Grep the story for a claim, then check the code does it** |
+| **geometry asked a question it cannot answer** | "where does the foot touch?" during flat-foot stance | **a flat foot has no lowest point.** The mark sat on the heel then *teleported* to the toe. Centre of pressure advances because the *body* does |
+| **my own threshold was the flaw** | a front/side silhouette test that flagged a *correct* figure | a walking person legitimately spans more fore-aft than across. **Test drawn value against DERIVED value**, never against a ratio you invented |
 
 **Economy is a rule.** A run whose outcome you already know is entropy — watts, heat, wall-clock,
 zero information. Kill it. The counter-rule is equally hard: **a number without its control is not
 evidence** — 0.7% survival looked like collapse until laid beside the baseline, where it was step
 zero of the same curve. The baseline adjudicates.
+
+### The three habits that caught every one of those
+
+1. **Measure the artifact, never the readout.** The walker's own HUD said elevation 176.0 m and it was
+   right; the *buffer* said grains at ±700 km. Read the array, not the summary. Every real defect
+   above was found this way and none were visible otherwise.
+2. **Sample the movie.** One frame cannot show motion, and a scene that silently failed to switch is
+   pixel-identical to one that worked. Five values of `t`, and check the **ends** specifically.
+3. **Then look at the picture.** After the numbers pass, render it and *look*. Two things only the eye
+   caught this build: a fused leg column, and a body reading as one pale tone because the relighting
+   hard-coded a single albedo over three derived materials.
+
+### When a child needs its parent's reasoning, publish a table
+
+The rule is numbers-not-reasoning. Restating a parent's function inside the child satisfies the letter
+and invites exactly the drift the rule exists to prevent — two copies that agree until one is edited.
+`theHuman` publishes **48 samples of its gait cycle** and `aHuman` indexes it: one gait, one place,
+cannot diverge. Prefer a published table to a restated law.
+
+### Repo hazards — 60 seconds that saves an hour
+
+- **A background automation commits the dirty tree mid-session.** It split one change of mine across
+  two commits (`chore: auto-flush working tree`). **`git add` by path**, never `-A`, especially with
+  other agents running.
+- **`live_viewer.py`'s page has a TDZ trap.** A `let`/`const` read before its declaration line *runs*
+  throws **even under `typeof`**, and it kills the whole script silently — the page still looks alive
+  because the lines before the throw execute. That page had been half-dead since before I arrived:
+  the tree switched scenes while the time slider, the drag handlers and everything below were a
+  corpse. New top-level state in that script goes in `var`, or above the first `pick()` call.
+- **The server caches code.** Restart `gallery.py` after editing it, or you will debug a stale page.
+- **`grow.py` refuses a chapter with no `story.md`.** Deliberate: the human writes the node.
+- **`cd story` persists** in the shell between commands; relative paths then resolve wrong.
+- **Two agents: split by FILE, not by task.** Name exactly which paths each may touch. Overlapping
+  `physics.py` edits produce a half-written tree that still passes `grow.py`.
 
 ---
 
