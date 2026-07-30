@@ -175,6 +175,12 @@ def derive(parent, free):
         # membranes down has to know both -- whether it can breathe here is not a fact about a
         # person, it is a fact about this planet -- and a sibling cannot hand it over. No defaults:
         # a missing key here is a broken chain, not an Earth-like guess.
+        # THE ORBIT, CARRIED. aBlueWorld reached for `a_au` and `L` and the chain stopped here -- a
+        # broken edge, and it failed LOUDLY because the consumer wrote `parent["a_au"]` with no
+        # default. That is the discipline working: a `.get(k, 1.0)` would have served a silent 1 AU
+        # and put the ocean on a world orbiting somewhere it does not orbit.
+        "a_au": float(parent["a_au"]),
+        "L": float(parent["L"]),
         "gases_kept": list(parent["gases_kept"]),
         "escape_ratios": dict(parent["escape_ratios"]),
         "P_surface_bar": float(parent["P_surface_bar"]),
