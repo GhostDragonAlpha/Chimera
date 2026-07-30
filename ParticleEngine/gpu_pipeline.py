@@ -48,14 +48,14 @@ NCOLS = 28
 # ═══════════════════════════════════════════════════════════════════
 #  SIM KERNELS
 # ═══════════════════════════════════════════════════════════════════
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_gravity(dp, gx, gy, gz, n):
     i = cuda.grid(1)
     if i >= n: return
     o = i * NCOLS
     dp[o + AX] += gx; dp[o + AY] += gy; dp[o + AZ] += gz
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_wind(dp, wx, wy, wz, strength, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -68,7 +68,7 @@ def _sim_wind(dp, wx, wy, wz, strength, n):
     dp[o + AY] += wy * strength * drag
     dp[o + AZ] += wz * strength * drag
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_boundary(dp, bx0, by0, bz0, bx1, by1, bz1, rest, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -86,7 +86,7 @@ def _sim_boundary(dp, bx0, by0, bz0, bx1, by1, bz1, rest, n):
             if v > 0: v = -v
             dp[o + VX + axis - PX] = v * rest
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_accumulate(dp, thresh, rate, dt, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -100,7 +100,7 @@ def _sim_accumulate(dp, thresh, rate, dt, n):
         if a < 0.0: a = 0.0
         dp[o + ALPHA] = a
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_integrate(dp, dt, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -116,7 +116,7 @@ def _sim_integrate(dp, dt, n):
     if life >= 0: dp[o + LIFE] = life - dt
 
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sim_attract(dp, ax, ay, az, strength, target_type, radius, n):
     """Attract particles of target_type toward (ax, ay, az) with inverse-square force."""
     i = cuda.grid(1)
@@ -150,7 +150,7 @@ _DISC_WIDE = 1.45
 _DISC_THIN = 0.10
 
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, cache=True)
 def _profile(tcode):
     if tcode == 0: return 0.3, 1, 0, 0.0    # dust: accum opacity, isotropic
     elif tcode == 1: return 0.5, 0, 1, 2.5  # sand: alpha, anisotropic
@@ -176,7 +176,7 @@ def _profile(tcode):
 # ═══════════════════════════════════════════════════════════════════
 #  PARTICLE → SPLAT
 # ═══════════════════════════════════════════════════════════════════
-@cuda.jit
+@cuda.jit(cache=True)
 def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr, scg, scb, sopa, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -253,7 +253,7 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
 # ═══════════════════════════════════════════════════════════════════
 #  PROJECTION
 # ═══════════════════════════════════════════════════════════════════
-@cuda.jit
+@cuda.jit(cache=True)
 def _clear_normals(dp, n):
     """Zero the normal columns so the back-face cull is a no-op (for paths that fill splats directly, not via _p2s)."""
     i = cuda.grid(1)
@@ -262,7 +262,7 @@ def _clear_normals(dp, n):
     dp[o + NX] = 0.0; dp[o + NY] = 0.0; dp[o + NZ] = 0.0
 
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _project(dp, wx, wy, wz, cw00, cw01, cw02, cw11, cw12, cw22,
              v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23,
              p00, p11, p22, p23, p32, fx, fy, width, height, n,
@@ -316,13 +316,13 @@ def _project(dp, wx, wy, wz, cw00, cw01, cw02, cw11, cw12, cw22,
 # ═══════════════════════════════════════════════════════════════════
 #  CULL + INVERSE + COMPACT + GATHER + TILES + COMPOSITE
 # ═══════════════════════════════════════════════════════════════════
-@cuda.jit
+@cuda.jit(cache=True)
 def _cull(sd, valid, n, far):
     i = cuda.grid(1)
     if i >= n: return
     if sd[i] > far: valid[i] = False
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _inv_radii(pc00, pc01, pc11, ic00, ic01, ic11, rad, n):
     i = cuda.grid(1)
     if i >= n: return
@@ -356,7 +356,7 @@ def _inv_radii(pc00, pc01, pc11, ic00, ic01, ic11, rad, n):
     if r > 5000: r = 5000
     rad[i] = r
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _compact(sx, sy, sd, sv, ic00, ic01, ic11, scr, scg, scb, sopa, srad,
              jx, jy, jd, jic00, jic01, jic11, jcr, jcg, jcb, jopa, jrad, pfx, n):
     i = cuda.grid(1)
@@ -368,7 +368,7 @@ def _compact(sx, sy, sd, sv, ic00, ic01, ic11, scr, scg, scb, sopa, srad,
         jcr[j] = scr[i]; jcg[j] = scg[i]; jcb[j] = scb[i]
         jopa[j] = sopa[i]; jrad[j] = srad[i]
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _gather(jx, jy, jic00, jic01, jic11, jcr, jcg, jcb, jopa, jrad,
             kx, ky, kic00, kic01, kic11, kcr, kcg, kcb, kopa, krad, sidx, n):
     i = cuda.grid(1)
@@ -379,7 +379,7 @@ def _gather(jx, jy, jic00, jic01, jic11, jcr, jcg, jcb, jopa, jrad,
     kcr[i] = jcr[j]; kcg[i] = jcg[j]; kcb[i] = jcb[j]
     kopa[i] = jopa[j]; krad[i] = jrad[j]
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _tiles_count(pos_x, pos_y, radii, tile_fill, tiles_x, tiles_y, tile_sz, n):
     """First pass: atomically count splats per tile."""
     i = cuda.grid(1)
@@ -393,7 +393,7 @@ def _tiles_count(pos_x, pos_y, radii, tile_fill, tiles_x, tiles_y, tile_sz, n):
             cuda.atomic.add(tile_fill, ty * tiles_x + tx, 1)
 
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _tiles_write(pos_x, pos_y, radii, tile_ids, tile_offsets, tile_fill, tiles_x, tiles_y, tile_sz, max_pt, n):
     """Second pass: write splat indices to tiles using computed offsets."""
     i = cuda.grid(1)
@@ -409,7 +409,7 @@ def _tiles_write(pos_x, pos_y, radii, tile_ids, tile_offsets, tile_fill, tiles_x
             if slot < max_pt:
                 tile_ids[tile_offsets[tid] + slot] = i
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _tile_offsets(tile_fill, tile_offsets, n_tiles, max_pt):
     i = cuda.grid(1)
     if i > 0: return
@@ -421,7 +421,7 @@ def _tile_offsets(tile_fill, tile_offsets, n_tiles, max_pt):
         acc += c
     tile_offsets[n_tiles] = acc
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _sort_tiles(tile_ids, tile_offsets, n_tiles):
     """Restore DEPTH ORDER inside each tile. `_tiles_write` fills slots via atomic.add, whose retirement
     order is nondeterministic -- so the CPU depth-sort was being scrambled and closed surfaces rendered
@@ -438,7 +438,7 @@ def _sort_tiles(tile_ids, tile_offsets, n_tiles):
         tile_ids[b + 1] = key
 
 
-@cuda.jit
+@cuda.jit(cache=True)
 def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
                tile_ids, tile_offsets, out,
                w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):

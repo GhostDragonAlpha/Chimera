@@ -309,10 +309,13 @@ def emit(nums, t=1.0):
     # over the sphere make blobs at the right size; the threshold is set so the AREA comes out at the
     # continental fraction the law was given.
     field = np.zeros(n)
+    gfield = np.zeros((n, 3))                      # tangential slope of the same field (for LIGHT, below)
     for k, amp in ((1.6, 1.0), (2.9, 0.55), (5.1, 0.30), (9.3, 0.16)):
         for _ in range(3):
             v = rng.normal(size=3); v /= np.linalg.norm(v)
-            field += amp * np.sin(k * (d @ v) + rng.uniform(0, 2 * pi))
+            ph = rng.uniform(0, 2 * pi)
+            field += amp * np.sin(k * (d @ v) + ph)
+            gfield += amp * k * np.cos(k * (d @ v) + ph)[:, None] * v[None, :]
     field = (field - field.mean()) / (field.std() + 1e-9)
     thresh = np.quantile(field, 1.0 - f_c)
     is_cont = field > thresh
@@ -324,15 +327,19 @@ def emit(nums, t=1.0):
     # Summing waves with amplitude ~ 1/k IS that spectrum, and it is the reason the result reads as
     # ground. Same two populations the sea level was solved against; only the texture is fixed.
     relief = np.zeros(n)
+    grel = np.zeros((n, 3))                        # d(relief)/d(direction) -- the same sum, differentiated
     norm = 0.0
     for octv in range(7):
         k = 2.2 * (1.9 ** octv)
         amp = 1.0 / k                                      # the 1/f law, not a taste setting
         for _ in range(4):
             v = rng.normal(size=3); v /= np.linalg.norm(v)
-            relief += amp * np.sin(k * (d @ v) + rng.uniform(0, 2 * pi))
+            ph = rng.uniform(0, 2 * pi)
+            relief += amp * np.sin(k * (d @ v) + ph)
+            grel += amp * k * np.cos(k * (d @ v) + ph)[:, None] * v[None, :]
             norm += amp * amp
     relief /= sqrt(norm) if norm > 0 else 1.0              # unit variance, so the roughness is exact
+    grel /= sqrt(norm) if norm > 0 else 1.0
     # The crust field also tilts the land: the interior of a block rides higher than its edges, which
     # is why mountains are inland and coasts are low. CENTRED, so it redistributes height instead of
     # raising the whole continent (uncentred it lifted every continent into permanent snow).
@@ -347,10 +354,24 @@ def emit(nums, t=1.0):
                     float(nums["h_seafloor_m"]))
     rough = np.where(is_cont, float(nums["roughness_cont_m"]), float(nums["roughness_ocean_m"]))
     h = base + rough * (0.80 * relief + 0.55 * np.clip(tilt, -2.2, 2.2) * is_cont)
+    # The SLOPE of that same height field (through the clip, approximately -- good enough for light,
+    # and it is the same numbers, not a second field): a hill is only visible because its two flanks
+    # face the sun differently, and the previous render lit this displaced surface with the normals
+    # of a PERFECT SPHERE -- the geometry had bumps and the light said it did not, which is why a
+    # blind eye read "smooth stylized globe" no matter how far the relief dial was turned.
+    dh = rough[:, None] * (0.80 * grel + 0.55 * gfield * is_cont[:, None])
 
     dry = h > sl
     r = 1.0 + (h - sl) / R * RELIEF_EXAGGERATION
     r = np.where(dry, r, 1.0)                              # the sea surface is FLAT: it is a level
+
+    # THE SURFACE NORMAL the light must actually use: for a radial graph r(d), n ~ d - grad_t(r).
+    # The lens exaggeration applies to the slope too -- the declared lie stays consistent between
+    # the geometry and its shading, so the picture remains honest about its own dial.
+    gt = dh - (np.einsum("ij,ij->i", dh, d))[:, None] * d  # tangential part of the height gradient
+    nrm = d - (RELIEF_EXAGGERATION / R) * gt
+    nrm /= np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12
+    nrm = np.where(dry[:, None], nrm, d)                   # the sea is lit flat because it IS flat
 
     b = blank(n)
     b[:, 0:3] = d * r[:, None]
@@ -400,7 +421,7 @@ def emit(nums, t=1.0):
     day = 2.0 * pi * tt - 1.15
     sun = np.array([np.sin(day), -np.cos(day), 0.22], np.float32)
     sun /= np.linalg.norm(sun)
-    cosang = np.clip(d @ sun, 0.0, None)
+    cosang = np.clip((nrm * sun[None, :]).sum(1), 0.0, None)   # light the REAL surface, bumps and all
     b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=TONE)
     # Water has no grain and rock does -- so the sea blends and the land does not.
     # Sea ice is a SOLID, so it gets rock's grain, not water's -- it is the ocean that has no
