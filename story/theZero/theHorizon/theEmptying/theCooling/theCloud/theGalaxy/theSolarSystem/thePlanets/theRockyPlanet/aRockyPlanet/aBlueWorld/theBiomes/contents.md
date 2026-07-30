@@ -21,6 +21,9 @@
 | `R` | 5.256e+06 |
 | `T_surface` | 279.2 |
 | `T_equator` | 294.2 |
+| `T_surface_C` | 6.041 |
+| `T_equator_C` | 21.04 |
+| `temperature_unit_note` | T_* are KELVIN; T_*_C are CELSIUS, which is what biome_at() takes |
 | `dT_equator_pole` | 45 |
 | `ice_line_lat_deg` | 43.14 |
 | `dry_belt_lat_deg` | 39.57 |
