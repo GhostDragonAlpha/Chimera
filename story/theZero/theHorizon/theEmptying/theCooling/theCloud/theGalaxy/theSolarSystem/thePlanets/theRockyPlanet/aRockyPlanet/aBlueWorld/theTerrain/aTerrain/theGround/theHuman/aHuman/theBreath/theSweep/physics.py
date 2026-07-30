@@ -211,14 +211,24 @@ def emit(nums, t=1.0):
     rng = np.random.default_rng(53)
     n = 5200
 
-    # the plate: a spherical cap, so it curves away at the edges like a real faceplate
+    # THE PLATE FACES THE CAMERA THAT WILL LOOK AT IT. A membrane is rendered from its own canonical
+    # viewpoint at (0, -2.7 extent, 0.72 extent) -- on -Y, looking toward +Y. This cap was built
+    # bulging along +X, because that is the direction aHuman walks and the visor faces forward on the
+    # BODY. Seen from its own membrane's camera that put the faceplate EDGE-ON: a 133-pixel sliver,
+    # vanishing entirely over an arc of the live orbit. The chapter's whole picture was invisible in
+    # its own framing.
+    #
+    # A membrane is drawn in its OWN local frame, and the frame's job is to present the subject. So
+    # the disc spans X-Z and bulges along -Y, straight at the viewer. Nothing about the physics moves;
+    # the plate is the same plate, turned to be looked at.
     u = rng.random(n)
     ang = rng.random(n) * 2.0 * math.pi
     rad = 0.5 * np.sqrt(u)
-    py = rad * np.cos(ang)
+    px = rad * np.cos(ang)
     pz = rad * np.sin(ang)
     R_cap = 0.95
-    px = np.sqrt(np.maximum(R_cap ** 2 - py ** 2 - pz ** 2, 0.0)) - math.sqrt(max(R_cap ** 2 - 0.25, 0.0))
+    py = -(np.sqrt(np.maximum(R_cap ** 2 - px ** 2 - pz ** 2, 0.0))
+           - math.sqrt(max(R_cap ** 2 - 0.25, 0.0)))
 
     # THE CLEARING FRONT. Inlet at the top (pz = +0.5), so the front sweeps downward; it is not a
     # hard line because the flow has a boundary layer -- the plate clears over a finger's width.
@@ -237,7 +247,7 @@ def emit(nums, t=1.0):
 
     b = blank(n)
     b[:, 0], b[:, 1], b[:, 2] = px, py, pz
-    nrm = np.stack([np.full(n, -1.0), py * 0.35, pz * 0.35], axis=1)
+    nrm = np.stack([px * 0.35, np.full(n, -1.0), pz * 0.35], axis=1)
     nrm /= np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12
     b[:, 21:24] = nrm
 

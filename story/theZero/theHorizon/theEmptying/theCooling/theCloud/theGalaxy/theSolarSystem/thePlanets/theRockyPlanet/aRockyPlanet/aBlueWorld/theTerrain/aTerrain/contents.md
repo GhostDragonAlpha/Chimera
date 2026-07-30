@@ -19,6 +19,7 @@
 | `duration_s` | 8.64e+04 |
 | `latitude_deg` | 30.77 |
 | `patch_m` | 1.2e+04 |
+| `ground_patch_m` | 4 |
 | `grid` | 128 |
 | `cell_m` | 93.75 |
 | `relief_m` | 451.4 |

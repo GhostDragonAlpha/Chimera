@@ -63,6 +63,7 @@ REPOSE_DEG = 33.0         # loose rock stands at its friction angle and no steep
 S_CRIT = tan(radians(REPOSE_DEG))     # the critical GRADIENT the transport law runs away at
 
 PATCH_M = 12000.0         # how much ground: a two-hour walk across, which is why this size
+GROUND_PATCH_M = 4.0      # NOT DERIVED -- see the note in derive(). Bracketed by 0.06 < x < 93.75.
 GRID = 128
 
 # THE LENS -- picture only, and here it is genuinely needed. 451 m of relief across 12 km is 3.8% of
@@ -333,6 +334,17 @@ def derive(parent, free):
 
         "latitude_deg": lat,
         "patch_m": PATCH_M,
+        # HOW BIG A SAMPLE OF GROUND THIS CONTAINS, declared here because how big a child is IS the
+        # parent's to say -- and because it was previously typed in TWO places with no link between
+        # them: theGround's own extent_m, and layout()'s `scale = 4.0 / half_m` twelve lines below.
+        # Change one and the composition silently scaled wrong.
+        #
+        # IT IS STILL NOT DERIVED, and moving it did not derive it. What is known BRACKETS without
+        # picking: it must fit inside one cell of this grid (93.75 m), since the law below reads a
+        # single slope as constant across it; and it must hold many of theGround's largest clasts
+        # (60 mm), so far above 0.06 m. 4 m sits in 0.06 < x < 93.75 -- and so would 3 m, and so
+        # would 20 m. One honest assertion in one place is the whole of what changed.
+        "ground_patch_m": GROUND_PATCH_M,
         "grid": GRID,
         "cell_m": dx,
         "relief_m": float(z.max() - z.min()),
@@ -445,11 +457,12 @@ def layout(nums):
     The LOD budget cuts it to a handful of grains at this framing, which is exactly right -- a thing
     occupying a thousandth of a pixel does not need 26,000 splats to say so."""
     half_m = float(nums["patch_m"]) / 2.0
-    # THE SAME 4.0 IS TYPED IN theGround's OWN derive() AS ITS extent_m, AND THE TWO ARE NOT LINKED.
-    # Neither one is derived (see the open-assertion note at theGround/physics.py `extent_m`); this
-    # line is flagged, not fixed, because changing where an ungrounded number LIVES does not ground it.
+    # READ FROM THE ONE PLACE IT IS DECLARED. This used to type 4.0 independently of theGround's own
+    # extent_m, so the two could drift apart and mis-scale the composition in silence. It is the same
+    # ungrounded number as before -- see the note at `ground_patch_m` in derive() -- but there is now
+    # exactly one of it.
     # If it moves there and not here, the child is placed at the wrong size and nothing complains.
-    scale = 4.0 / half_m
+    scale = float(nums["ground_patch_m"]) / half_m
     # placed on the valley floor rather than at the origin: the flat ground near a channel is where
     # a person would actually be standing, and this membrane knows where its channels are.
     return {"theGround": ((0.18, -0.32, 0.0), scale)}

@@ -3,6 +3,7 @@
   "duration_s": 86400.0,
   "latitude_deg": 30.77072291868692,
   "patch_m": 12000.0,
+  "ground_patch_m": 4.0,
   "grid": 128,
   "cell_m": 93.75,
   "relief_m": 451.38520169369104,

@@ -177,13 +177,14 @@ def derive(parent, free):
         # about 0.75 m, so four metres is five of them. Left corrected rather than restated, because
         # the honest description of 4.0 is that nobody derived it.)
         #
-        # AND IT IS ASSERTED TWICE. aTerrain's layout() independently types `scale = 4.0 / half_m` to
-        # place this membrane, with no link to this line. Change one and the composition silently
-        # scales wrong. The fix, when someone grounds this: aTerrain derives the patch size (it is the
-        # parent, and how big a child is IS the parent's to say), hands it down, and this reads
-        # parent["ground_patch_m"] with no default -- one assertion, inherited once, instead of the
-        # same guess typed in two files.
-        "extent_m": 4.0,
+        # IT WAS ASSERTED TWICE and now it is not. aTerrain declares `ground_patch_m` -- how big a
+        # child is IS the parent's to say -- and both this line and aTerrain's own layout() read that
+        # one number. Previously each typed its own 4.0 and changing either mis-scaled the
+        # composition in silence. NO DEFAULT: a missing key here is a broken chain, not a guess.
+        #
+        # The value is still nobody's derivation. Single-sourcing an assertion is not grounding it;
+        # it just means there is one thing to fix when someone does.
+        "extent_m": float(parent["ground_patch_m"]),
         # ITS OWN DURATION: one day, inherited -- soil does not move on any timescale a person sees.
         "duration_s": float(parent["day_s"]),
 
