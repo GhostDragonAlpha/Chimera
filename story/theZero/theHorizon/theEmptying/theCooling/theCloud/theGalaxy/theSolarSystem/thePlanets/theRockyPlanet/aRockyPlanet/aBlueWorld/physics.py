@@ -22,7 +22,7 @@ WHAT THIS MEMBRANE REFUSES TO DECIDE: where the coast is. A world with no relief
 way round. Land exists only because rock stands above sea level, and that is the CHILD's law -- so
 this one hands down the depth of the water and lets the terrain subtract the continents.
 """
-from math import pi, exp, sqrt, asin, degrees
+from math import pi, exp, sqrt, asin, sin, degrees, radians
 
 SIGMA_SB = 5.670374419e-8
 M_EARTH = 5.9722e24
@@ -63,6 +63,63 @@ def greenhouse_factor(tau):
 def bare_temperature(S, albedo):
     """Absorb what you do not reflect, radiate it away: (1-A)S/4 = sigma T^4."""
     return ((1.0 - albedo) * S / (4.0 * SIGMA_SB)) ** 0.25
+
+
+# ── THE AIR IN MOTION. These live here for exactly the reason temperature_at does: more than one
+# child needs them, and a sibling cannot hand a number to a sibling.
+BOUNDARY_FRACTION = 0.15     # surface wind as a fraction of the flow aloft -- friction in the
+                             # planetary boundary layer takes the rest. Measured on Earth at 10 m.
+HADLEY_HELD_HOU = 5.0 / 3.0  # the coefficient in Held & Hou's axisymmetric Hadley-cell scaling
+
+
+def thermal_wind(g, H, dT, T_mean, R, day_s, lat_deg):
+    """THE EQUATOR-POLE TEMPERATURE DIFFERENCE *IS* THE WIND.
+
+    A planet heated more at its equator than at its poles cannot sit still: the pressure surfaces
+    tilt, and on a rotating world the flow that balances that tilt runs ALONG the isotherms instead
+    of down the gradient. That is the thermal wind relation, and what it means here is that a wind
+    speed is not a weather fact to be invented -- it is a CONSEQUENCE of a temperature gradient, a
+    rotation rate and a scale height, all three of which this membrane already derived.
+
+    Returns (speed aloft, speed at the surface). The surface is slower because friction eats most of
+    it, which is why a ridge is windier than the field below it."""
+    Om = 2.0 * pi / max(float(day_s), 1e-9)
+    f = 2.0 * Om * sin(radians(abs(float(lat_deg))))
+    L = pi * float(R) / 2.0                          # equator to pole, along the surface
+    if f <= 1e-12:
+        return float("inf"), float("inf")            # geostrophy does not apply at the equator
+    u = float(g) * float(H) * float(dT) / (f * float(T_mean) * L)
+    return u, BOUNDARY_FRACTION * u
+
+
+def rossby_number(u, R, day_s, lat_deg):
+    """DOES ROTATION WIN? Below 1, flow is turned into bands before it can cross a hemisphere -- which
+    is why Earth has trade winds and jet streams rather than one enormous overturning. Above 1
+    rotation is a detail and you get a single cell, as on Venus with its 243-day day."""
+    Om = 2.0 * pi / max(float(day_s), 1e-9)
+    f = 2.0 * Om * sin(radians(max(abs(float(lat_deg)), 1.0)))
+    return float(u) / (f * float(R))
+
+
+def hadley_edge_deg(g, H, dT, T_mean, R, day_s):
+    """HOW FAR THE TROPICS REACH -- Held & Hou (1980), the axisymmetric limit.
+
+    Air rising at the equator conserves its angular momentum as it moves poleward, and it can only
+    get so far before the wind that would require exceeds what the pressure gradient can drive. That
+    distance IS the Hadley cell, and its descending edge is where the deserts are: Earth's
+    subtropical dry belt near 30 degrees is the Sahara, the Atacama and the Australian interior, all
+    one mechanism.
+
+    THE MODEL UNDERSTATES THE ABSOLUTE NUMBER -- it returns about 16 degrees for Earth against an
+    observed 30, because it ignores the eddies that widen the real thing. So it is used as a RATIO
+    against Earth run through the SAME formula, which is the honest way to use a model whose bias you
+    know: the bias divides out."""
+    Om = 2.0 * pi / max(float(day_s), 1e-9)
+    d_h = float(dT) / float(T_mean)
+    denom = 3.0 * (Om ** 2) * (float(R) ** 2)
+    if denom <= 0.0:
+        return 90.0
+    return min(90.0, degrees(sqrt(max(HADLEY_HELD_HOU * d_h * float(g) * float(H) / denom, 0.0))))
 
 
 def temperature_at(T_mean, sin_lat):
@@ -213,6 +270,31 @@ def derive(parent, free):
     # piece of this derivation, and a number nobody should have to re-run the code to see.
     T_no_thermostat = climate(S, tau_dry, tau_c0, 1.0)
 
+    # ── THE AIR IN MOTION, from the gradient this membrane just solved ────────────────────────────
+    # A WIND SPEED IS A FACT ABOUT A LATITUDE, and this membrane does not have one -- the terrain
+    # three levels down chooses that. Writing its latitude in here would be a grandparent reading a
+    # grandchild, which is the same inversion that once put a sibling's star temperature into
+    # thePlanets and froze the sunlight's colour forever.
+    #
+    # So what travels down is the SCALE: u(lat) = wind_scale / sin(lat). A child divides by the sine
+    # of its own latitude and gets its own wind. The value reported here is at 45 degrees, which is
+    # not a place in this story -- it is the reference mid-latitude, and it is labelled as one.
+    # THE SCALE HEIGHT AT THE TEMPERATURE THIS MEMBRANE SOLVED, not the one it inherited. The parent
+    # computed H = kT/(mg) at its BARE temperature, before any greenhouse; this membrane's fixed point
+    # is warmer, and H scales linearly with T. So the parent's value is rescaled by the temperature
+    # ratio -- one line, and it keeps the atmosphere the same object in both chapters instead of
+    # letting the wind run on a colder atmosphere than the climate does.
+    H_atm = float(parent["scale_height_m"]) * (T / float(parent["T_bare"]))
+    Om = 2.0 * pi / float(parent["day_s"])
+    g_here = float(parent["g"])
+    wind_scale = g_here * H_atm * DT_POLE / (2.0 * Om * T * (pi * R / 2.0))
+    wind_aloft_45, wind_surf_45 = thermal_wind(g_here, H_atm, DT_POLE, T, R,
+                                              float(parent["day_s"]), 45.0)
+    rossby = rossby_number(wind_aloft_45, R, float(parent["day_s"]), 45.0)
+    hadley = hadley_edge_deg(g_here, H_atm, DT_POLE, T, R, float(parent["day_s"]))
+    # Earth through the SAME formula, so the comparison is model-to-model rather than model-to-fact.
+    hadley_earth = hadley_edge_deg(9.80665, 8000.0, 40.0, 288.0, 6.371e6, 86400.0)
+
     return {
         # ITS REAL SIZE and ITS OWN DURATION: the same body and the same year as its parent -- a
         # climate is not a different object, it is what is happening to this one.
@@ -239,6 +321,25 @@ def derive(parent, free):
         # THE PROFILE ITSELF, handed down. A child that needs a temperature at a place must
         # use THIS one, never a second copy of it.
         "dT_equator_pole": DT_POLE,
+
+        # ── THE WIND ──────────────────────────────────────────────────────────────────────────
+        # THE LAW, for a child to evaluate at its own latitude:  u_aloft = wind_scale / sin(lat)
+        "wind_scale_ms": wind_scale,
+        "wind_boundary_fraction": BOUNDARY_FRACTION,
+        "atmosphere_scale_height_m": H_atm,
+        # one reported value, at a reference latitude that is deliberately NOT a place in this story
+        "wind_reference_lat_deg": 45.0,
+        "wind_geostrophic_ms": wind_aloft_45,
+        "wind_surface_ms": wind_surf_45,
+        "rossby_number": rossby,
+        "rotation_dominated": rossby < 1.0,
+        "banded_circulation": rossby < 1.0,
+        "hadley_edge_deg": hadley,
+        "hadley_edge_earth_deg": hadley_earth,
+        "hadley_wider_than_earth_by": hadley / max(hadley_earth, 1e-9),
+        # Earth's OBSERVED dry belt sits near 30 deg where this model puts its edge at 16.3, so the
+        # only honest way to place a desert here is to scale the observation by the model's own ratio.
+        "dry_belt_lat_deg": 30.0 * (hadley / max(hadley_earth, 1e-9)),
         "T_equator": temperature_at(T, 0.0),
         "T_pole": temperature_at(T, 1.0),
         "ocean_fraction": ocean_frac,
@@ -276,7 +377,11 @@ def derive(parent, free):
         "gases_kept": list(parent["gases_kept"]),
         "escape_ratios": dict(parent["escape_ratios"]),
         "P_surface_bar": P_bar,
-        "scale_height_m": float(parent.get("scale_height_m", 0.0)),
+        # NO DEFAULT. `parent.get("scale_height_m", 0.0)` would hand a zero-thickness atmosphere to
+        # every child the moment the parent stopped carrying it -- silently, and a zero scale height
+        # makes the wind infinite. This is the carried value, rescaled to this membrane's own
+        # temperature so the air is one object across both chapters.
+        "scale_height_m": H_atm,
         "T_star_surface": float(parent["T_star_surface"]),
         "walk_run_ms": float(parent["walk_run_ms"]),
     }
