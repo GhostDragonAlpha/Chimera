@@ -657,7 +657,18 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       height:100vh;display:grid;grid-template-columns:300px 1fr;grid-template-rows:100vh}
  aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px 0 40px}
  aside h1{font-size:15px;margin:0 16px 2px;font-weight:650}
- aside p.sub{margin:0 16px 14px;color:var(--dim);font-size:12px}
+ aside p.sub{margin:0 16px 10px;color:var(--dim);font-size:12px}
+ /* THE FILTER BAR, STICKY. The aside scrolls, and the deepest membrane (theBreath, depth 16) sits
+    well below the fold on a 1080p window -- a search box you have to scroll back up to reach is a
+    search box nobody uses. z-index because rows scroll UNDER it, not through it. */
+ .find{position:sticky;top:0;z-index:2;background:var(--panel);padding:2px 12px 8px;
+       border-bottom:1px solid var(--line);margin-bottom:6px}
+ .find input[type=text]{width:100%;background:#070a12;color:var(--ink);border:1px solid var(--line);
+       border-radius:6px;padding:5px 8px;font:12px system-ui;outline:none}
+ .find input[type=text]:focus{border-color:#41527d}
+ .find label{display:flex;align-items:center;gap:5px;margin-top:6px;color:var(--dim);
+             font-size:11px;cursor:pointer}
+ .find input[type=checkbox]{accent-color:#5f8ee0;margin:0}
  .node{padding:5px 10px 5px 0;cursor:pointer;border-left:2px solid transparent;display:flex;gap:7px;align-items:baseline}
  .node:hover{background:#121a2c}
  .node.on{background:#1b2942;border-left-color:#5f8ee0}
@@ -669,6 +680,10 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  .dot{width:6px;height:6px;border-radius:50%;background:var(--law);flex:none;margin-top:6px}
  .node.inst .dot{background:var(--inst)}
  .node.paint .dot{background:transparent;border:1px solid var(--paint)}
+ /* THE DISCLOSURE TRIANGLE, with its own hit box. A FIXED 12px width even when empty, so a leaf's
+    name lines up with its siblings' -- otherwise the indent stops meaning depth. */
+ .tw{flex:none;width:12px;color:#6b7899;font-size:9px;cursor:pointer;user-select:none;text-align:center}
+ .tw:hover{color:#fff}
  .kids{overflow:hidden}
  main{display:grid;grid-template-rows:1fr auto;min-width:0}
  #stage{position:relative;background:#04050b;overflow:hidden;touch-action:none;cursor:grab}
@@ -681,7 +696,12 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  .t-inst{color:var(--inst);border-color:#6e392f}
  .t-paint{color:var(--paint);border-color:#39415c}
  #plain{margin-top:8px;color:#b9c8e6;font-size:14px;max-width:640px;text-shadow:0 1px 8px #000}
- #serial{margin-top:6px;color:var(--dim);font:11px ui-monospace,Menlo,monospace}
+ /* THE BREADCRUMB. #hud above is pointer-events:none so a drag across the caption still orbits the
+    world; the serial is the one strip that must RECEIVE clicks, so it takes them back for itself. */
+ #serial{margin-top:6px;color:var(--dim);font:11px ui-monospace,Menlo,monospace;pointer-events:auto}
+ #serial a{color:#8ea3c8;text-decoration:none;border-bottom:1px dotted #39415c}
+ #serial a:hover{color:#fff;border-bottom-color:#8ea3c8}
+ #serial a.here{color:var(--ink);border-bottom-color:transparent}
  footer{border-top:1px solid var(--line);background:var(--panel);padding:10px 16px;display:flex;
         gap:26px;align-items:center;flex-wrap:wrap;min-height:52px}
  footer .num{font:12px ui-monospace,Menlo,monospace;color:var(--dim);white-space:nowrap}
@@ -710,10 +730,15 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
 </style>
 <aside>
   <h1>Chimera</h1>
-  <p class=sub>the story, as a hierarchy &mdash; click any membrane<br>
+  <p class=sub>the story, as a hierarchy &mdash; click a name to go there,
+     <span style="color:#8ea3c8">&#9654;</span> to open what it contains<br>
      <span style="color:#7fd18a">&#9679; the</span> = the law &nbsp;
      <span style="color:#e8705c">&#9679; a</span> = an instance &nbsp;
      <span style="color:#5c6683">&#9675;</span> = not built</p>
+  <div class=find>
+    <input id=q type=text placeholder="find a membrane" autocomplete=off spellcheck=false>
+    <label><input type=checkbox id=builtonly> built only &mdash; hide what has no physics</label>
+  </div>
   <div id=tree></div>
 </aside>
 <main>
@@ -758,29 +783,118 @@ let term=null, INDEX={}, PATH={};
 function index(n,trail){INDEX[n.name]=n;PATH[n.name]=trail.concat(n.name);
   (n.children||[]).forEach(c=>index(c,PATH[n.name]));}
 TREE.forEach(n=>index(n,[]));
-const treeEl=document.getElementById('tree');
+/* ── THE TREE, AS A TREE YOU CAN CLOSE ────────────────────────────────────────────────────────
+   MEASURED PROBLEM: story/ is one chain 17 membranes long (theZero -> theBreath) plus two side
+   branches -- 22 rows, deepest at depth 16. Drawn fully open at the old 15 px/level that put the
+   deepest name 250 px into a 300 px panel, so the hierarchy became unreadable exactly where it
+   matters most: at the bottom, where a human stands. Three pieces of STATE fix it -- a disclosure
+   triangle per parent, a filter, and "the path to whatever is picked is always open" -- and no new
+   machinery: still one row() and one pick().
+
+   EVERY BINDING HERE IS `var` AND DECLARED ABOVE THE FIRST pick() CALL, deliberately. pick() runs
+   at page load and now reaches OPEN/QUERY/VIS through paintTree(); a `let` still in its temporal
+   dead zone throws a ReferenceError that kills the rest of the script SILENTLY -- the failure
+   documented at the time slider below and again at the walk block, which twice cost the whole walk
+   UI. `var` hoists as undefined, so the worst case here is a falsy read, never a dead page. */
+var treeEl=document.getElementById('tree');
+var OPEN={}, QUERY='', BUILT_ONLY=false, OPEN_SAVED=null, VIS={};
+
+/* OPEN THE PATH, LEAVE THE REST SHUT. A term's ancestors are exactly the membranes whose numbers it
+   inherited, so the open branch IS its serial -- nothing else has to be open for it to read. */
+function openTo(t){ (PATH[t]||[]).forEach(function(a){ OPEN[a]=true; }); }
+
+/* WHAT SURVIVES THE FILTER, bottom-up in one pass, cached by name (INDEX is already keyed by name,
+   so uniqueness is an assumption this code inherits rather than adds). AN ANCESTOR OF A MATCH STAYS
+   VISIBLE: a hit shown without its parents is the flat list again, and the parents are the reason
+   the child's numbers are what they are. Same rule serves "built only" -- a folder with no
+   physics.py that CONTAINS one is kept, because deleting it would orphan a proven membrane. */
+function markVis(n){
+  var self=(!QUERY||n.name.toLowerCase().indexOf(QUERY)>=0)&&(!BUILT_ONLY||n.membrane);
+  var kid=false;
+  (n.children||[]).forEach(function(c){ if(markVis(c)) kid=true; });
+  VIS[n.name]=self||kid;
+  return VIS[n.name];
+}
+function markAll(){ VIS={}; TREE.forEach(markVis); }
+function openVis(n){ if(!VIS[n.name]) return; OPEN[n.name]=true; (n.children||[]).forEach(openVis); }
+
 function row(n,depth){
+  if(!VIS[n.name]) return;
+  const kids=(n.children||[]).filter(function(c){ return VIS[c.name]; });
+  const open=!!OPEN[n.name];
   const d=document.createElement('div');
-  d.className='node'+(n.membrane?(n.name[0]==='a'&&n.name[1]===n.name[1].toUpperCase()?' inst':''):' paint');
-  d.style.paddingLeft=(10+depth*15)+'px';
-  d.innerHTML='<span class=dot></span><span class=nm>'+n.name+'</span>';
+  d.className='node'+(n.membrane?(n.name[0]==='a'&&n.name[1]===n.name[1].toUpperCase()?' inst':''):' paint')
+             +(n.name===term?' on':'');
+  /* 10 px A LEVEL, not 15: at depth 16 the triangle+dot+gaps already spend 32 px, so 15 px/level
+     started the name at 250 px of a 300 px panel and clipped it; 10 px lands it at 192 px. */
+  d.style.paddingLeft=(6+depth*10)+'px';
+  d.innerHTML='<span class=tw>'+(kids.length?(open?'&#9660;':'&#9654;'):'')+'</span>'
+             +'<span class=dot></span><span class=nm>'+n.name+'</span>';
   d.onclick=()=>pick(n.name);
   d.dataset.name=n.name;
+  if(kids.length){
+    /* THE TRIANGLE IS NOT THE NAME, and stopPropagation is the whole of that distinction: opening a
+       branch must not switch the scene (pick() fires /scene, which reloads the GPU pipeline for a
+       different membrane), and clicking the name must still do exactly what it did before this
+       existed. Only this node's flag is touched -- one subtree, never a global expand. */
+    d.firstChild.onclick=function(e){ e.stopPropagation(); OPEN[n.name]=!open; paintTree(); };
+  }
   treeEl.appendChild(d);
-  (n.children||[]).forEach(c=>row(c,depth+1));
+  if(open) kids.forEach(function(c){ row(c,depth+1); });
 }
-TREE.forEach(n=>row(n,0));
-// terms that exist as scenes but have no folder (painted) get listed after the tree
-TERMS.filter(t=>!INDEX[t]).forEach(t=>{
-  const d=document.createElement('div');
-  d.className='node paint';d.style.paddingLeft='10px';
-  d.innerHTML='<span class=dot></span><span class=nm>'+t+'</span>';
-  d.onclick=()=>pick(t);d.dataset.name=t;treeEl.appendChild(d);});
+
+function paintTree(){
+  if(!treeEl) return;
+  markAll();
+  treeEl.innerHTML='';
+  TREE.forEach(function(n){ row(n,0); });
+  // terms that exist as scenes but have no folder (painted) get listed after the tree. Measured
+  // today that is exactly ONE of 23 scene terms -- aPlanet -- and it looked identical to the 22
+  // proven membranes above it; "built only" is what makes that one row's absence say so.
+  TERMS.filter(t=>!INDEX[t]).forEach(t=>{
+    if(QUERY&&t.toLowerCase().indexOf(QUERY)<0) return;
+    if(BUILT_ONLY&&KINDS[t]!=='membrane') return;
+    const d=document.createElement('div');
+    d.className='node paint'+(t===term?' on':'');d.style.paddingLeft='6px';
+    d.innerHTML='<span class=tw></span><span class=dot></span><span class=nm>'+t+'</span>';
+    d.onclick=()=>pick(t);d.dataset.name=t;treeEl.appendChild(d);});
+  /* KEEP THE PICKED ROW REACHABLE: a breadcrumb click can land 16 levels down, past the fold of a
+     panel only as tall as the window. block:'nearest' scrolls only when it actually has to. */
+  const cur=treeEl.querySelector('.node.on');
+  if(cur&&cur.scrollIntoView) cur.scrollIntoView({block:'nearest'});
+}
+
+/* A QUERY IS A DIFFERENT SHAPE OF TREE, so it BORROWS the arrangement instead of destroying it: the
+   human's expand state is copied on the first keystroke and handed back when the box empties. While
+   it is live every surviving branch holds a hit, so every surviving branch opens -- a hit sitting
+   inside a collapsed parent is not a search result. Triangles still work inside the filtered tree.
+
+   "BUILT ONLY" DOES NOT FORCE ANYTHING OPEN, and that asymmetry is the point: a search is aimed at
+   something specific and must reach it, while this is a MASK over the shape you already arranged.
+   Forced open it would redraw all 22 membranes to depth 17 -- the wall this whole block exists to
+   remove. Masked, it answers a different question honestly: today it removes exactly one row of the
+   eleven on screen, which is the page saying "everything else you are looking at is built." */
+function refilter(){
+  if(QUERY){
+    if(!OPEN_SAVED) OPEN_SAVED=Object.assign({},OPEN);
+    markAll(); TREE.forEach(openVis);
+  }else if(OPEN_SAVED){
+    OPEN=OPEN_SAVED; OPEN_SAVED=null; openTo(term);
+  }
+  paintTree();
+}
+var qEl=document.getElementById('q'), builtEl=document.getElementById('builtonly');
+if(qEl) qEl.addEventListener('input',function(){ QUERY=qEl.value.trim().toLowerCase(); refilter(); });
+if(builtEl) builtEl.addEventListener('change',function(){ BUILT_ONLY=builtEl.checked; refilter(); });
+paintTree();
 function pick(t){
   if(WALKING && t!=='theHuman') sitDown();   /* WALKING is `var` below: undefined here on first load, never a throw */
   term=t;
   fetch('/scene?term='+encodeURIComponent(t));
-  document.querySelectorAll('.node').forEach(e=>e.classList.toggle('on',e.dataset.name===t));
+  /* THE TREE FOLLOWS THE PICK, it does not merely highlight it: opening this term's ancestors is
+     what makes a jump from anywhere -- a breadcrumb, a search hit -- land somewhere legible. The
+     `on` class is applied by row() from `term`, so the highlight has one source of truth. */
+  openTo(t); paintTree();
   const n=INDEX[t]||{}, live=(KINDS[t]==='membrane');
   const inst=(t[0]==='a'&&t[1]===t[1].toUpperCase());
   document.getElementById('nm').textContent=t;
@@ -810,8 +924,21 @@ function pick(t){
   const e=n.extent_m;
   let size='';
   if(typeof e==='number'&&e>0) size='   ·   '+say(e,LEN)+' across, light takes '+say(e/C_,TIM);
-  document.getElementById('serial').textContent=(PATH[t]||[t]).join(' / ')
+  // THE SERIAL IS THE COMPRESSED STORY, so every step of it is a place you can GO. These are the
+  // membranes this one's numbers came through, in order, and clicking one walks back UP the
+  // derivation -- which is the question a person actually has in front of a picture ("where did that
+  // number come from?"). Same text as before, duration and size untouched: only the names became
+  // links, and the last one is marked `here` because you are already standing on it.
+  const trail=(PATH[t]||[t]), ser=document.getElementById('serial');
+  ser.innerHTML=trail.map((a,i)=>'<a href="#" data-go="'+a+'"'
+        +(i===trail.length-1?' class=here':'')+'>'+a+'</a>').join(' / ')
       +(dur?('   ·   its movie spans '+dur):'')+size;
+  ser.querySelectorAll('a[data-go]').forEach(a=>{
+    a.onclick=e=>{ e.preventDefault(); pick(a.dataset.go); };
+    /* the crumbs sit inside #stage, whose mousedown starts an orbit drag -- stop it here so
+       clicking an ancestor never also spins the world you are about to leave. */
+    a.onmousedown=e=>e.stopPropagation();
+  });
   const nums=n.numbers||{};
   paintFree();
   if(typeof showStand==='function') showStand();
@@ -1044,6 +1171,11 @@ window.addEventListener('mousemove',e=>{
   if(WALKING && document.pointerLockElement===stage){ mdx+=e.movementX; mdy+=e.movementY; }
 });
 window.addEventListener('keydown',e=>{
+  /* A TEXT BOX OWNS ITS OWN KEYS. This handler preventDefaults W/A/S/D, so typing "theHuman" into
+     the tree filter while the body is standing would steer the body AND swallow the letters. Focus
+     is the arbiter: the sliders are type=range and unaffected (they use arrows, which are not
+     bound here), and pointer-locked play never has a text box focused. */
+  if(e.target&&e.target.tagName==='INPUT'&&e.target.type==='text') return;
   if(!WALKING) return;
   if(e.code==='Space'){ jumped=true; e.preventDefault(); }
   if(e.code==='KeyV' && !KEY['KeyV']){ toggleView(); }
