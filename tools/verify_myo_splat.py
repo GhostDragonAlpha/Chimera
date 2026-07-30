@@ -145,20 +145,28 @@ def build_body_buffer(model, data, xml_path, total_grains=90000, seed=5):
     bone = np.array([0.85, 0.83, 0.78], np.float32)
     muscle = np.array([0.55, 0.12, 0.10], np.float32)
     joint = np.array([0.45, 0.30, 0.26], np.float32)
-    per = {3.0: bone, 5.0: muscle}                       # filled below by geom kind
-    # re-derive per-grain class from the entries order: meshes are bone, cylinders muscle,
-    # capsules muscle, spheres/ellipsoids joint
     import mujoco as _mj
     kinds = []
     for gi in range(model.ngeom):
         gt = model.geom_type[gi]
         if gt == _mj.mjtGeom.mjGEOM_PLANE:
             continue
+        if keep_body and model.geom_bodyid[gi] not in keep_body:
+            continue
         kinds.append(gt)
     counts = [len(o) for o in out]
     colmap = {7: bone, 5: muscle, 3: muscle, 2: joint, 4: joint}
     cols = np.concatenate([np.tile(colmap.get(k, bone), (c, 1)) for k, c in zip(kinds, counts)], axis=0)
-    buf[:, CR:CB + 1] = cols
+    # MEASURED LIGHT: the form is only legible if the light rakes it. The grains carry their own
+    # surface normals, so light them the membranes' way: albedo x irradiance, one sun + ambient,
+    # plus the Fresnel sheen every dielectric (skin included) shows at grazing angles.
+    import sys as _sys
+    _sys.path.insert(0, str(REPO / "story"))
+    from matter import lit as _lit
+    sun = np.array([0.55, -0.62, 0.56], np.float32)
+    sun = sun / np.linalg.norm(sun)
+    cosang = np.clip((buf[:, NX:NZ + 1] * sun[None, :]).sum(1), 0.0, None)
+    buf[:, CR:CB + 1] = _lit(cols, 1.0 * cosang + 0.06, e_ref=1.0, tone=0.45)
     buf[:, SIZE] = 0.006
     return buf
 

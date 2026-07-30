@@ -11,6 +11,9 @@
 |---|---|---|
 | `external/myo_sim` (**MyoSuite MyoSim**, Caggiano et al. 2022, arXiv:2205.13600, Apache 2.0) | the full musculoskeletal model: 26 bodies, 113 geoms, **290 muscles** with measured Hill parameters; legs from Rajagopal et al. 2016 (OpenSim), arms from Saul et al. 2015 | PRESENT. **Verified against our splat pipeline 2026-07-30** (`tools/verify_myo_splat.py`, A/B vs MuJoCo renderer: same body, blind-eye agrees) |
 | `research_references/human/ANSUR_II_MALE_Public.csv` (4,082 subjects) + `ANSUR_II_FEMALE_Public.csv` (1,986) | **93 direct anthropometric measurements per subject** (mm): stature, segment lengths, breadths, circumferences, sitting heights — the dimensional truth of human bodies | DOWNLOADED (mirror of the Penn State OPEN Design Lab release; US Gov work, public since 2017) |
+| `research_references/human/opensim/` — Rajagopal2016, Hamner2010, gait2392 (Thelen 2003 muscle), arm26 (.osim) | the measured musculoskeletal parameters myo_sim is built on: muscle origins/insertions, optimal fibre lengths, pennation, max isometric forces (162 muscle defs in Rajagopal alone) | DOWNLOADED (opensim-org/opensim-models, BSD) |
+| `research_references/human/mocap/` — 35_01_walk.bvh, 35_08_jog.bvh (CMU MoCap, subject 35) | **real human movement**: full-skeleton walk + jog trials at 120 Hz — the trainer's reference footage, not our own render's self-image | DOWNLOADED (CMU MoCap via the una-dinosauria BVH mirror; original: mocap.cs.cmu.edu, free with citation) |
+| `research_references/human/skin_optics_omlc_jacques.html` | **measured skin light model** (Jacques, OMLC): melanin absorption `μa.mel = 6.6×10¹¹·λ⁻³·³³ cm⁻¹`, melanin fractions by pigmentation class (1.3–43%), baseline + reduced-scattering power law — the body's measured reflection, per the operator's light rule | ARCHIVED |
 
 ## Tier 1 — PUBLIC, FETCHABLE (no license wall)
 
