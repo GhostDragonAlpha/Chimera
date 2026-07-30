@@ -56,6 +56,9 @@ PHYSICS_READING = {
     "theBiomes": "a globe wrapped in horizontal climate BANDS by latitude: white frozen poles, "
                  "dark green forest bands, tan-and-olive dry grassland belts, greener lush band "
                  "near the equator -- a banded climate map, striped not random",
+    "theGround": "a small human figure standing upright on a brown patch of stony ground that "
+                 "holds it, the patch textured like soil or gravel, floating against a dark "
+                 "background -- a person held by the ground",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 
