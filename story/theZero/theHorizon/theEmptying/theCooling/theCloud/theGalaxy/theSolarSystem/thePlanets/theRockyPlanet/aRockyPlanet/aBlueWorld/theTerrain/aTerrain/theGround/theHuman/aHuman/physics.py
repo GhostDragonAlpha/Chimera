@@ -171,6 +171,10 @@ def derive(parent, free):
         "leg_length_m": float(parent["leg_length_m"]),
         "com_height_m": float(parent["com_height_m"]),
         "stride_m": float(parent["stride_m"]),
+        # THE GAIT, CARRIED AS NUMBERS. This membrane does not know how to walk and must not learn:
+        # restating the parent's leg_cycle here would be two gaits that agree until one is edited.
+        "gait_cycle": [list(row) for row in parent["gait_cycle"]],
+        "gait_samples": int(parent["gait_samples"]),
         "mass_kg": float(parent["mass_kg"]),
         "suit_mass_kg": float(parent["suit_mass_kg"]),
         "g": float(parent["g"]),
@@ -270,35 +274,17 @@ def emit(nums, t=1.0):
     splay = math.radians(float(nums["splay_deg"]))
 
     phase = 2.0 * math.pi * tt
-    swing = 0.42                                    # hip flexion amplitude, the parent's number
-    # ── THE FOOT IS PLANTED AND THE HIP RIDES OVER IT ────────────────────────────────────────────
-    # This membrane's own prose says "the stance knee stays near straight -- the leg is a strut, not
-    # a spring" and "the centre of mass rises at mid-stance as the body vaults over the planted foot".
-    # The code did neither, in two ways that compounded:
-    #
-    #  1. THE KNEE BENT ON THE WRONG LEG. `bend = max(0, -cos(phase + ph))` is positive exactly when
-    #     the hip angle is DECREASING, which is the definition of stance -- so the stance knee folded
-    #     and the swing knee locked straight. A straight swing leg is a long leg, so its foot never
-    #     cleared the floor.
-    #  2. THE HIP WAS NAILED AT A CONSTANT HEIGHT, so nothing vaulted over anything, and the promised
-    #     centre-of-mass rise was supplied instead by a hand-added `0.018 * cos(2 * phase)` -- a
-    #     SIMULATION of the consequence sitting where the consequence should have been.
-    #
-    # Measured, the two together put BOTH feet 4.3% of stature off the ground at mid-stride and back
-    # down at the extremes: the contact plane bobbed twice a cycle, duty factor near 1.0 on both
-    # feet. By this project's own gait doctrine that is a SLED, NOT A GAIT.
-    #
-    # The fix is one line of physics: the stance foot is on the ground, so the hip height is whatever
-    # the stance leg's geometry puts it at. Everything else follows and nothing is added --
-    #     contact plane      4.3% of stature  ->  0.000, dead still
-    #     swing-foot lift    ~0               ->  8.4% of stature (a real walk is 8-15%)
-    #     centre-of-mass bob hand-written     ->  EMERGENT, 4.3%, at twice the stride frequency
-    # and double support -- both feet down at the transition -- appears without being asked for.
-    L_STRAIGHT = THIGH_FRAC + SHANK_FRAC          # hip to ankle, knee locked
-    ANKLE_DROP = leg - L_STRAIGHT            # ankle to sole: the thickness of a foot
-    # a leg is in STANCE while its hip angle decreases, i.e. cos(phase + ph) < 0
-    _stance_ph = 0.0 if math.cos(phase) < 0.0 else math.pi
-    hip_z = ANKLE_DROP + L_STRAIGHT * math.cos(swing * math.sin(phase + _stance_ph))
+    swing = 0.42                                    # only for the arm amplitude below
+    # ── THE POSE COMES FROM THE PARENT'S TABLE, indexed, not recomputed ───────────────────────
+    # theHuman publishes 48 samples of the cycle: hip height, and per leg the hip angle, the stance
+    # progress and whether the foot is planted. Reading it is how this membrane walks with exactly
+    # the parent's ankle, knee and vault without owning a second copy of any of them.
+    GT = nums["gait_cycle"]
+    N = int(nums["gait_samples"])
+    _row = GT[int(tt * N) % N]
+    hip_z = float(_row[0])
+    _legs = [(float(_row[1]), float(_row[2]), _row[3] > 0.5),
+             (float(_row[4]), float(_row[5]), _row[6] > 0.5)]
     pts, nrms, mats = [], [], []
 
     def add(pn, kind):
@@ -306,9 +292,9 @@ def emit(nums, t=1.0):
         if len(p):
             pts.append(p); nrms.append(n); mats.append(np.full(len(p), kind))
 
-    for side, ph in ((-1.0, 0.0), (1.0, math.pi)):
-        th_hip = swing * math.sin(phase + ph)
-        bend = max(0.0, math.cos(phase + ph)) * 0.85   # the SWING knee folds -- see the note above
+    for side, _i in ((-1.0, 0), (1.0, 1)):
+        th_hip, _u, _planted = _legs[_i]
+        bend = 0.0 if _planted else math.sin(math.pi * _u) * 0.85
         # LATERAL IS Y, NOT X. This is the bug that made the derived stance invisible: the hip
         # offset was written on the X axis -- the SAME axis the leg swings along -- so the two legs
         # were separated fore-aft instead of side to side, and from the front they projected exactly
@@ -329,11 +315,28 @@ def emit(nums, t=1.0):
         add(_tube(hip, knee, r_th, r_sh * 1.15), 0)
         add(_tube(knee, ankle, r_sh * 1.15, r_sh), 0)
         # the boot: wider than the leg, because a sole spreads load -- the parent's foot_pressure
-        toe = ankle + np.array([FOOT_LEN_FRAC, 0.0, 0.0])
-        add(_tube(ankle - np.array([0.0, 0.0, r_sh * 0.5]), toe, r_sh * 1.25, r_sh * 0.75), 2)
+        # THE BOOT KEEPS ITS SOLE DOWN, pitching the way the parent's foot_pitch law says: toe up as
+        # the heel lands, flat through the middle, heel up at push-off. The pitch is rebuilt from the
+        # stance progress in the table rather than from a second copy of the law -- the same three
+        # numbers the parent used, so the boot cannot roll differently from the leg above it.
+        if _planted:
+            _fp = (0.10 * (1.0 - _u / 0.15) if _u < 0.15
+                   else 0.0 if _u < 0.65 else -0.45 * (_u - 0.65) / 0.35)
+        else:
+            _fp = min(0.30, bend * 0.4)
+        toe = ankle + np.array([math.cos(_fp), 0.0, math.sin(_fp)]) * FOOT_LEN_FRAC
+        # THE BOOT'S UNDERSIDE HAS TO LAND WHERE THE TABLE PUTS THE SOLE. Drawn as a fat tube hung
+        # half its own radius below the ankle, the boot was 8.3% of stature thick against the 3.9%
+        # the parent's gait assumes -- so it ploughed, and duty factor fell to 0.44 against the
+        # parent's 0.58 on an identical pose. A suit thickens a boot outward, not downward: the axis
+        # is placed so the underside sits exactly at the ankle drop the gait was solved with.
+        _drop = leg - (THIGH_FRAC + SHANK_FRAC)         # ankle to sole, the parent's own figure
+        _r_boot = r_sh * 1.25
+        _lift = np.array([0.0, 0.0, -(_drop - _r_boot)])
+        add(_tube(ankle + _lift, toe + _lift, _r_boot, r_sh * 0.75), 2)
 
         sh = np.array([0.0, sh_half * side, hip_z + (0.82 - leg)])          # lateral is Y -- see the note above
-        th_s = -0.55 * swing * math.sin(phase + ph)
+        th_s = -0.55 * th_hip                          # counter to the leg on the same side
         elbow = sh + np.array([math.sin(th_s), 0.0, -math.cos(th_s)]) * UPPER_ARM_FRAC
         hand = elbow + np.array([math.sin(th_s * 1.4), 0.0, -math.cos(th_s * 1.4)]) * FOREARM_FRAC
         add(_tube(sh, elbow, r_ar * 1.1, r_fa * 1.1), 0)

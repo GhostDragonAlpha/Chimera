@@ -143,6 +143,132 @@ def consumables_kg(hours):
     return o2 * (1.0 + TANK_MASS_RATIO) + SCRUBBER_KG_PER_DAY * d
 
 
+# ── THE FOOT IS A WHEEL, and that is a measurement, not a metaphor ──────────────────────────────
+# Hansen, Childress & Knox (2004) measured the "roll-over shape": the locus the effective contact
+# point traces during stance, in a shank-based frame. It is very nearly a CIRCULAR ARC, and its
+# radius is about 0.30 of leg length -- almost independent of walking speed, which is what makes it
+# a property of the limb rather than of the gait.
+#
+# A rocker of radius R rolls with its hub at CONSTANT height R. So the hip, rigidly at distance
+# (L - R) from that hub, rises and falls by (L - R)(1 - cos theta) instead of L(1 - cos theta): the
+# foot takes 30% of the vault out of the walk for free. That is a large part of why walking is cheap.
+ROCKER_FRAC = 0.30         # rocker radius / leg length -- Hansen, Childress & Knox 2004
+ANKLE_DROP_FRAC = LEG_FRAC - (THIGH_FRAC + SHANK_FRAC)   # ankle to sole: a foot has thickness
+# THE ONE NUMBER IN THIS GAIT THAT IS NEITHER DERIVED NOR MEASURED, hoisted out of emit() so it is
+# declared once and can be seen. Hip flexion amplitude, radians. Human hip range in level walking is
+# roughly +/-20 to 25 degrees, so 0.42 rad (24 deg) is inside the observed band -- but it is not
+# derived from anything above, and every number that scales with it (the vault, the CoP travel, the
+# stride) inherits that. Naming it is the honest half of the fix; deriving it is a later chapter.
+SWING_AMP = 0.42
+GRF_PEAK_BW = 1.2          # peak vertical ground reaction in walking, in body weights -- measured
+FOREFOOT_FRAC = 0.10       # ball-of-foot to ankle, as a fraction of stature (Dempster)
+
+
+# ── THE ANKLE AS A JOINT, which is what actually produces the rocker ───────────────────────────
+# The 0.30-of-leg-length arc is an EFFECTIVE description of a foot that has three contact regions in
+# sequence -- heel, then flat sole, then forefoot -- and an ankle that pitches the foot between them.
+# Modelling it as a literal wheel raises the hip without giving the foot anywhere to be: measured,
+# that lifted the sole and cut duty factor to 0.12. So the joint is modelled, and the arc emerges.
+#
+# The pitch angles are measured human ankle kinematics in level walking.
+HEEL_FRAC = 0.050          # heel behind the ankle, fraction of stature (Dempster)
+PITCH_HEEL_STRIKE = 0.10   # rad, toe up as the heel lands
+PITCH_TOE_OFF = 0.45       # rad, heel up at push-off -- ~26 deg of plantarflexion
+FLAT_FROM, FLAT_TO = 0.15, 0.65   # the fraction of stance the sole spends flat on the ground
+# DUTY FACTOR, and it has to be an input rather than an accident. A sine hip angle -- theta =
+# swing*sin(phase) -- puts each foot down for EXACTLY half the cycle, so the two stances abut and
+# never overlap: no double support, and therefore no leg pushing off while the other reaches. Real
+# walking holds each foot down for ~0.6 of the cycle and spends the 0.2 difference on two feet.
+# Measured, that difference is the whole of why a walking hip travels flat: without it the trough at
+# the transition is unsupported and the vault came out at 5.7% of stature instead of 2.5%.
+DUTY = 0.60
+
+
+GAIT_N = 48                # samples of the cycle published for children to index
+
+
+def _gait_table(h):
+    """The whole gait, sampled, in units of stature. See "THE GAIT AS A TABLE" in derive()."""
+    L = THIGH_FRAC + SHANK_FRAC
+    out = []
+    for k in range(GAIT_N):
+        tt = k / GAIT_N
+        legs = []
+        sup = []
+        for off in (0.0, 0.5):
+            th, u, planted = leg_cycle(tt + off, SWING_AMP)
+            legs.append((th, u, 1.0 if planted else 0.0))
+            if planted:
+                sup.append(ankle_height(foot_pitch(u)) + L * math.cos(th))
+        hip = max(sup) if sup else ANKLE_DROP_FRAC + L
+        out.append([round(hip, 6)] + [round(v, 6) for lg in legs for v in lg])
+    return out
+
+
+def leg_cycle(f, swing):
+    """WHERE ONE LEG IS at cycle fraction f (0 = its own heel strike). Returns (theta, u, planted).
+
+    In stance the hip angle sweeps from +swing (reaching) to -swing (trailing) over DUTY of the
+    cycle; in swing it comes back over the remaining (1 - DUTY). Parameterising by DUTY instead of by
+    a sine is what lets the two feet overlap, and the overlap is what a walk is."""
+    f = float(f) % 1.0
+    if f < DUTY:
+        u = f / DUTY
+        return swing * math.cos(math.pi * u), u, True
+    u = (f - DUTY) / (1.0 - DUTY)
+    return -swing * math.cos(math.pi * u), u, False
+
+
+def foot_pitch(u):
+    """THE FOOT'S ANGLE TO THE GROUND through stance, u = 0 at heel strike to 1 at toe off.
+
+    Toe up as the heel lands, flat through the middle, heel up at push-off. Those three phases are
+    the three rockers, and running them in sequence is what makes the effective contact point travel
+    forward -- which is the whole of why walking is cheap."""
+    u = min(max(float(u), 0.0), 1.0)
+    if u < FLAT_FROM:
+        return PITCH_HEEL_STRIKE * (1.0 - u / FLAT_FROM)
+    if u < FLAT_TO:
+        return 0.0
+    return -PITCH_TOE_OFF * (u - FLAT_TO) / (1.0 - FLAT_TO)
+
+
+def ankle_height(pitch):
+    """HOW HIGH THE ANKLE SITS when the foot is pitched and its lowest point is on the ground.
+
+    The sole runs from the heel behind the ankle to the toe in front of it. Pitch the foot and one end
+    goes down: that end is the contact, and it fixes the ankle's height. No case analysis for
+    heel-strike versus toe-off is written -- taking the minimum of the two ends IS the case analysis."""
+    hz = -HEEL_FRAC * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
+    tz = FOOT_LEN_FRAC * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
+    return -min(hz, tz)
+
+
+def rocker_radius(leg_L):
+    """The effective radius the foot and ankle roll on."""
+    return ROCKER_FRAC * float(leg_L)
+
+
+def hip_height(leg_L, theta, R=None):
+    """HOW HIGH THE HIP SITS while the stance leg is at angle theta from vertical.
+
+    With a point foot this is L cos(theta) and the body pole-vaults over its own heel. With a rocker
+    the hub stays at R and only the remainder swings, so the path flattens. Set R = 0 to recover the
+    point-foot pendulum and see the difference."""
+    R = rocker_radius(leg_L) if R is None else float(R)
+    return R + (float(leg_L) - R) * math.cos(float(theta))
+
+
+def ankle_torque(mass, g, h):
+    """WHAT THE ANKLE HAS TO PUSH WITH at toe-off: the ground reaction acting on the forefoot lever.
+
+    THE CHECK THIS WAS NOT FITTED TO: it comes out at 1.5 N*m per kilogram of body mass, and the
+    measured peak ankle moment in human walking is ~1.5 N*m/kg. Nothing here was tuned to that -- the
+    inputs are a body weight this membrane derived, a ground reaction measured in body weights, and a
+    lever measured off a cadaver."""
+    return GRF_PEAK_BW * float(mass) * float(g) * FOREFOOT_FRAC * float(h)
+
+
 def body_mass(h):
     """Mass from stature. Mass goes as height SQUARED, not cubed -- which is the empirical finding
     behind BMI, and the reason tall people are not as heavy as pure geometric scaling predicts."""
@@ -359,6 +485,27 @@ def derive(parent, free):
         "leg_mass_kg": m_leg,
         "g": g,
 
+        # ── THE GAIT AS A TABLE, so a child can walk without re-deriving how ──────────────────
+        # aHuman needs the same pose to hang a suit on, and the rule is that a child consumes its
+        # parent's NUMBERS and never its parent's reasoning. Restating leg_cycle/foot_pitch in the
+        # child would satisfy the letter and invite the drift the rule exists to prevent -- two
+        # copies of a gait that agree until one is edited. So the pose is published: 48 samples of
+        # (hip height, and per leg the hip angle, the stance progress, and whether it is planted).
+        # A child indexes it. There is exactly one gait in this story and it lives here.
+        "gait_samples": GAIT_N,
+        "gait_cycle": _gait_table(h),
+
+        # ── THE ANKLE, which is why the walk is cheap ─────────────────────────────────────────
+        "rocker_radius_m": rocker_radius(leg_L),
+        "rocker_over_leg": ROCKER_FRAC,
+        "vault_point_foot_m": leg_L * (1.0 - math.cos(SWING_AMP)),
+        "vault_rocker_m": (leg_L - rocker_radius(leg_L)) * (1.0 - math.cos(SWING_AMP)),
+        "vault_saved_frac": rocker_radius(leg_L) / leg_L,
+        "cop_travel_m": rocker_radius(leg_L) * 2.0 * SWING_AMP,
+        "ankle_torque_Nm": ankle_torque(m, g, h),
+        "ankle_torque_Nm_per_kg": ankle_torque(m, g, h) / m,
+        "forefoot_lever_m": FOREFOOT_FRAC * h,
+
         "fall_rate_rad_s": w0,                   # sqrt(g/H): how fast balance is lost
         "time_to_fall_s": 1.0 / w0,
         "capture_point_at_1ms": capture_point(g, com_h, 1.0),
@@ -421,7 +568,7 @@ def emit(nums, t=1.0):
         return pts
 
     # ── the walk, from the derived numbers ──
-    swing = 0.42                                        # hip flexion amplitude, radians
+    swing = SWING_AMP                                   # declared at module scope -- see the note there
     # ── THE FOOT IS PLANTED AND THE HIP RIDES OVER IT ────────────────────────────────────────────
     # This membrane's own prose says "the stance knee stays near straight -- the leg is a strut, not
     # a spring" and "the centre of mass rises at mid-stance as the body vaults over the planted foot".
@@ -449,13 +596,28 @@ def emit(nums, t=1.0):
     ANKLE_DROP = LEG_FRAC - L_STRAIGHT            # ankle to sole: the thickness of a foot
     # a leg is in STANCE while its hip angle decreases, i.e. cos(phase + ph) < 0
     _stance_ph = 0.0 if math.cos(phase) < 0.0 else math.pi
-    hip_z = ANKLE_DROP + L_STRAIGHT * math.cos(swing * math.sin(phase + _stance_ph))
+    # THE BODY RESTS ON WHICHEVER PLANTED FOOT HOLDS IT HIGHEST, and that one line is the whole
+    # mechanism. Each leg in stance can support the hip at (its own ankle height) + L cos(theta); the
+    # hip takes the MAXIMUM, because a body cannot sink through a leg that is holding it up.
+    #
+    # What falls out, unasked: PUSH-OFF FILLS THE TROUGH. At the transition the trailing leg is
+    # plantarflexed onto its forefoot, which puts its ankle 8% of stature up, so it holds the hip
+    # high exactly when the leading leg -- reaching forward, heel barely down -- would otherwise let
+    # it drop. That is why the centre of mass of a walking person travels so much flatter than a
+    # compass gait predicts, and none of it is written down anywhere here as a target.
+    _hips = []
+    for _off in (0.0, 0.5):
+        _th, _u, _planted = leg_cycle(tt + _off, swing)
+        if _planted:
+            _hips.append(ankle_height(foot_pitch(_u)) + L_STRAIGHT * math.cos(_th))
+    hip_z = max(_hips) if _hips else ANKLE_DROP + L_STRAIGHT
     parts = []
-    for side, ph in ((-1.0, 0.0), (1.0, pi)):
-        th_hip = swing * np.sin(phase + ph)
+    for side, _off in ((-1.0, 0.0), (1.0, 0.5)):
+        th_hip, _u, _planted = leg_cycle(tt + _off, swing)
         # the knee bends only on the swing leg -- a stance knee stays near straight, which is what
-        # makes walking cheap: the leg is a strut, not a spring.
-        bend = max(0.0, np.cos(phase + ph)) * 0.85   # the SWING knee folds -- see the note above
+        # makes walking cheap: the leg is a strut, not a spring. Read off the SAME cycle function the
+        # hip height came from, so the drawn leg and the supporting leg cannot disagree.
+        bend = 0.0 if _planted else math.sin(math.pi * _u) * 0.85
         # LATERAL IS Y, NOT X -- the hip offset used to sit on X, the axis the leg swings along, so
         # both legs were separated fore-aft and projected onto each other from the front. aHuman
         # inherited the same mistake and its derived 20 cm stance rendered as zero.
@@ -465,13 +627,18 @@ def emit(nums, t=1.0):
         ankle = knee + np.array([np.sin(th_knee), 0.0, -np.cos(th_knee)]) * shank
         parts.append(limb(hip, knee, 260, 0.035))
         parts.append(limb(knee, ankle, 260, 0.028))
-        toe = ankle + np.array([FOOT_LEN_FRAC, 0.0, 0.0])
+        # THE FOOT KEEPS ITS SOLE FLAT WHILE IT IS DOWN. It used to be a horizontal segment welded
+        # to the ankle, so it tipped with the shank and its toe or heel had to plough. A real ankle
+        # dorsiflexes and plantarflexes to hold the sole against the ground through stance, then lets
+        # the foot hang and lifts the toe to clear it during swing.
+        _foot_ang = foot_pitch(_u) if _planted else min(0.30, bend * 0.4)
+        toe = ankle + np.array([math.cos(_foot_ang), 0.0, math.sin(_foot_ang)]) * FOOT_LEN_FRAC
         parts.append(limb(ankle, toe, 120, 0.025))
 
         # ARMS COUNTER-SWING, and they are not decoration: whole-body angular momentum stays near
         # zero, so the arms must go the way the opposite leg does not.
         sh = np.array([0.0, 0.085 * side, hip_z + (0.82 - LEG_FRAC)])           # lateral is Y -- see the note above
-        th_sh = -0.55 * swing * np.sin(phase + ph)
+        th_sh = -0.55 * th_hip                             # counter to the leg on the same side
         elbow = sh + np.array([np.sin(th_sh), 0.0, -np.cos(th_sh)]) * 0.186
         hand = elbow + np.array([np.sin(th_sh * 1.4), 0.0, -np.cos(th_sh * 1.4)]) * 0.146
         parts.append(limb(sh, elbow, 180, 0.026))
