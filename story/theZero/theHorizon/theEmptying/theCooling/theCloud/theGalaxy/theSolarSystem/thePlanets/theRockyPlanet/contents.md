@@ -53,8 +53,8 @@
 | `obliquity_crossover_deg` | 53.9 |
 | `poles_outshine_equator` | False |
 | `axis_percentile` | 0.1027 |
-| `walk_run_ms` | 1.729 |
-| `leg_swing_s` | 2.171 |
-| `leg_m` | 0.845 |
+| `walk_run_per_sqrt_leg` | 1.881 |
+| `swing_period_per_sqrt_leg` | 2.362 |
+| `froude_transition` | 0.5 |
 | `T_star_surface` | 5839 |
 | `solid_outside_earths` | 52.67 |

@@ -45,4 +45,5 @@
 | `year_s` | 3.311e+07 |
 | `S_earth` | 1.005 |
 | `sea_level_m` | 3059 |
-| `walk_run_ms` | 1.729 |
+| `walk_run_per_sqrt_leg` | 1.881 |
+| `swing_period_per_sqrt_leg` | 2.362 |

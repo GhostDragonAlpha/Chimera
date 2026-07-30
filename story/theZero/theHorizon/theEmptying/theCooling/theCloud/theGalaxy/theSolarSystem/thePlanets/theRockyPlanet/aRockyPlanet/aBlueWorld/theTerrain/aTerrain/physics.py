@@ -366,7 +366,9 @@ def derive(parent, free):
 
         "S_earth": float(parent["S_earth"]),
         "sea_level_m": float(parent["sea_level_m"]),
-        "walk_run_ms": float(parent["walk_run_ms"]),
+        # the Froude LAW travels; the answer is computed by whatever has a leg
+        "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
+        "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
         "P_surface_bar": float(parent["P_surface_bar"]),
     }
 

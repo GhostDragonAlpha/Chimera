@@ -36,7 +36,8 @@
 | `sinkage_mm` | 8.674e-16 |
 | `holds_a_person` | True |
 | `g` | 7.076 |
-| `walk_run_ms` | 1.729 |
+| `walk_run_per_sqrt_leg` | 1.881 |
+| `swing_period_per_sqrt_leg` | 2.362 |
 | `T_surface` | 279.2 |
 | `S_earth` | 1.005 |
 | `latitude_deg` | 30.77 |

@@ -83,6 +83,8 @@
 | `cadence_steps_s` | 1.549 |
 | `cadence_steps_min` | 92.92 |
 | `walk_run_ms` | 1.827 |
+| `walk_run_per_sqrt_leg` | 1.881 |
+| `swing_period_per_sqrt_leg` | 2.362 |
 | `comfortable_speed_ms` | 1.005 |
 | `stride_m` | 0.6488 |
 | `jump_height_m` | 0.3674 |

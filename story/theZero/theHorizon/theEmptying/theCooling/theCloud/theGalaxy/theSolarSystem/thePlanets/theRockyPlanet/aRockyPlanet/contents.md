@@ -60,4 +60,5 @@
 | `year_s` | 3.311e+07 |
 | `scale_height_m` | 1.033e+04 |
 | `T_star_surface` | 5839 |
-| `walk_run_ms` | 1.729 |
+| `walk_run_per_sqrt_leg` | 1.881 |
+| `swing_period_per_sqrt_leg` | 2.362 |

@@ -52,6 +52,7 @@
     0.42
   ],
   "T_star_surface": 5839.193528311371,
-  "walk_run_ms": 1.7290637976953436,
+  "walk_run_per_sqrt_leg": 1.8809734406992957,
+  "swing_period_per_sqrt_leg": 2.362012584561864,
   "has_atmosphere": true
 }

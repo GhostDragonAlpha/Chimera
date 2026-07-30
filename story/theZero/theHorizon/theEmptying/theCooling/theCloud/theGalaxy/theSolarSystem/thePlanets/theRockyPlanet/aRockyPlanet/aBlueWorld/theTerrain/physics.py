@@ -263,7 +263,9 @@ def derive(parent, free):
         "scale_height_m": float(parent["scale_height_m"]),
         "surface_rgb": list(parent.get("surface_rgb", [0.09, 0.22, 0.42])),
         "T_star_surface": float(parent["T_star_surface"]),
-        "walk_run_ms": float(parent["walk_run_ms"]),
+        # the Froude LAW travels; the answer is computed by whatever has a leg
+        "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
+        "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
         "has_atmosphere": bool(parent.get("has_atmosphere")),
     }
 

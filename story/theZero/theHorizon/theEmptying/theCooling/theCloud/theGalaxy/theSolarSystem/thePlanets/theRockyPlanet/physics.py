@@ -33,7 +33,19 @@ M_EARTH = 5.9722e24
 R_EARTH = 6.371e6
 
 EARTH_ALBEDO = 0.30            # what Earth actually returns to space -- the reference for the bare temperature
-LEG_M = 0.845                  # a person's leg, measured off this studio's own body. The handoff to walking.
+# THE PLANET OWNS THE LAW, NOT THE LEG. There used to be `LEG_M = 0.845` here -- a human leg length
+# asserted inside a PLANET, six membranes above the first body in the story -- and it was used to
+# publish a walk-run speed and a swing period as though a world could know how long a person's leg is.
+#
+# It is the sibling failure INVERTED: an ancestor holding a descendant's number. And it was not
+# harmless. theHuman derives its own leg from its own stature (0.9434 m) and computes 1.827 m/s, so
+# the planet's 1.729 was a SECOND ANSWER to one question, 5.4% out, carried down five membranes and
+# then silently overwritten by the body that actually has legs.
+#
+# What a planet legitimately knows is g, and therefore the COEFFICIENT of the Froude law. Publish
+# that: a child multiplies by the square root of ITS OWN length and gets its own answer. Same shape
+# as the wind's `u = wind_scale / sin(lat)` -- the law travels, the local value is computed locally.
+FROUDE_TRANSITION = 0.5        # Fr = v^2/(gL); walking gives out here, on every world and at every size
 
 # THE LENS -- picture-only dials, declared so the exaggerations are auditable and reversible.
 LENS = {
@@ -286,9 +298,11 @@ def derive(parent, free):
         # the Froude number: 0.5 is where walking gives out and running starts, and it is the SAME
         # 0.5 on every world -- which is what makes it a law instead of a fit. It is also why the
         # Apollo crews bunny-hopped: on the Moon that speed falls to 0.83 m/s.
-        "walk_run_ms": sqrt(0.5 * g * LEG_M),
-        "leg_swing_s": 2.0 * pi * sqrt(LEG_M / g),
-        "leg_m": LEG_M,
+        # ── THE FROUDE LAW, AS A COEFFICIENT. Multiply by sqrt(leg length in metres) for a speed;
+        # multiply by sqrt(leg length) for a pendulum period. A body supplies the length.
+        "walk_run_per_sqrt_leg": sqrt(FROUDE_TRANSITION * g),   # (m/s) per sqrt(m)
+        "swing_period_per_sqrt_leg": 2.0 * pi / sqrt(g),        # s per sqrt(m)
+        "froude_transition": FROUDE_TRANSITION,
 
         "T_star_surface": float(parent["T_star_surface"]),
         "solid_outside_earths": float(parent["solid_outside_earths"]),
@@ -420,7 +434,7 @@ def measure(nums):
         "g_ms2": nums["g"],
         "v_escape_kms": nums["v_escape"] / 1e3,
         "P_surface_bar": nums["P_surface_bar"],
-        "walk_run_ms": nums["walk_run_ms"],
+        "walk_run_per_sqrt_leg": nums["walk_run_per_sqrt_leg"],
         # THE LAW, TESTED ELSEWHERE.
         "earth_g_from_law": abs(g_e - 9.80665) < 0.3,     # 9.81 from M and the compression law alone
         "earth_loses_H2_He": ("H2" not in earth_keeps) and ("He" not in earth_keeps),
@@ -428,5 +442,8 @@ def measure(nums):
         "mars_keeps_CO2": "CO2" in mars_keeps,            # it does, and it is why Mars still has any air
         "mars_loses_more_than_earth": len(mars_keeps) < len(earth_keeps),
         # Froude closes on Earth: 2.0 m/s is the measured walk-run transition for a human leg.
-        "earth_walk_run_is_2ms": abs(sqrt(0.5 * 9.80665 * LEG_M) - 2.04) < 0.05,
+        # THE LAW CHECKED WITHOUT A LEG. At Earth's gravity the coefficient is sqrt(0.5*9.80665) =
+        # 2.2143 (m/s)/sqrt(m). That is a statement about the law and about g, and it needs no body --
+        # which is the point: a planet can validate the law it hands down without owning a leg.
+        "earth_froude_coeff_is_2p214": abs(sqrt(FROUDE_TRANSITION * 9.80665) - 2.2143) < 0.001,
     }

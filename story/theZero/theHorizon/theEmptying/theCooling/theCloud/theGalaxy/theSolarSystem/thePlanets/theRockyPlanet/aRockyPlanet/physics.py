@@ -196,7 +196,9 @@ def derive(parent, free):
         "year_s": float(parent["year_s"]), "days_per_year": float(parent["days_per_year"]),
         "scale_height_m": float(parent["scale_height_m"]),
         "T_star_surface": float(parent["T_star_surface"]),
-        "walk_run_ms": float(parent["walk_run_ms"]),
+        # the Froude LAW travels; the answer is computed by whatever has a leg
+        "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
+        "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
     }
 
 

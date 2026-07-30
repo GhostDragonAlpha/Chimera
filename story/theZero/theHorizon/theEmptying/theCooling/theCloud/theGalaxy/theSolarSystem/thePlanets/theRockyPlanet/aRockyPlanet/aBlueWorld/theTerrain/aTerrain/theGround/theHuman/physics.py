@@ -315,11 +315,18 @@ def swing_period(g, h, m):
     return 2.0 * pi * sqrt(I / (m_leg * g * d))
 
 
-def walk_run_speed(g, h):
-    """WHERE WALKING GIVES OUT. Fr = v^2/(gL); at Fr ~ 0.5 the stance leg would need centripetal
-    force greater than gravity can supply, so the gait must change. The SAME 0.5 everywhere, which is
-    what makes it a law rather than a fit."""
-    return sqrt(FROUDE_TRANSITION * g * LEG_FRAC * h)
+def walk_run_speed(coeff, h):
+    """WHERE WALKING GIVES OUT. Fr = v^2/(gL); at Fr ~ 0.5 the stance leg would need centripetal force
+    greater than gravity can supply, so the gait must change. The SAME 0.5 everywhere, which is what
+    makes it a law rather than a fit.
+
+    THE COEFFICIENT COMES FROM THE PLANET AND THE LENGTH FROM HERE. theRockyPlanet publishes
+    sqrt(0.5 g) because g is the only half of this it can honestly know; this membrane multiplies by
+    the square root of its own leg. The planet used to publish the whole speed from a typed 0.845 m
+    leg, six membranes above the first body in the story -- an ancestor holding a descendant's number,
+    and 5.4% away from what the body itself derives. Splitting it this way means there is exactly one
+    walk-run speed in the tree and its two factors come from the two places that own them."""
+    return float(coeff) * sqrt(LEG_FRAC * float(h))
 
 
 def jump_height(g):
@@ -410,7 +417,7 @@ def derive(parent, free):
     T_swing = swing_period(g, h, m)              # the FREE period of the leg as a pendulum
     T_step = 0.5 * T_swing / SWING_DRIVE         # one step is half a cycle, driven
     cadence = 1.0 / T_step
-    v_walkrun = walk_run_speed(g, h)
+    v_walkrun = walk_run_speed(parent["walk_run_per_sqrt_leg"], h)
     v_comfort = 0.55 * v_walkrun                 # the speed people actually choose, ~55% of the limit
     stride = v_comfort / cadence
 
@@ -515,6 +522,9 @@ def derive(parent, free):
         "cadence_steps_s": cadence,
         "cadence_steps_min": cadence * 60.0,
         "walk_run_ms": v_walkrun,
+        # the planet's coefficient, carried so a reader can check the multiplication themselves
+        "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
+        "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
         "comfortable_speed_ms": v_comfort,
         "stride_m": stride,
         "jump_height_m": jump_height(g),

@@ -51,9 +51,9 @@
   "obliquity_crossover_deg": 53.89631451974765,
   "poles_outshine_equator": false,
   "axis_percentile": 0.1027,
-  "walk_run_ms": 1.7290637976953436,
-  "leg_swing_s": 2.171253650529155,
-  "leg_m": 0.845,
+  "walk_run_per_sqrt_leg": 1.8809734406992957,
+  "swing_period_per_sqrt_leg": 2.362012584561864,
+  "froude_transition": 0.5,
   "T_star_surface": 5839.193528311371,
   "solid_outside_earths": 52.673884829377236
 }

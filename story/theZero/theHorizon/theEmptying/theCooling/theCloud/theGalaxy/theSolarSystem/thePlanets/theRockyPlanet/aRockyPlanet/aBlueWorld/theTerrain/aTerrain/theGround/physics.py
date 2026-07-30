@@ -210,7 +210,9 @@ def derive(parent, free):
 
         # carried down for a body
         "g": g,
-        "walk_run_ms": float(parent["walk_run_ms"]),
+        # the Froude LAW travels; the answer is computed by whatever has a leg
+        "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
+        "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),
         "T_surface": float(parent["T_surface"]),
         "S_earth": float(parent["S_earth"]),
         "latitude_deg": float(parent["latitude_deg"]),
