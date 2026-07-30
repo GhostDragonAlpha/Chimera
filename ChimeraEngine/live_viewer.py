@@ -784,12 +784,13 @@ function index(n,trail){INDEX[n.name]=n;PATH[n.name]=trail.concat(n.name);
   (n.children||[]).forEach(c=>index(c,PATH[n.name]));}
 TREE.forEach(n=>index(n,[]));
 /* ── THE TREE, AS A TREE YOU CAN CLOSE ────────────────────────────────────────────────────────
-   MEASURED PROBLEM: story/ is one chain 17 membranes long (theZero -> theBreath) plus two side
-   branches -- 22 rows, deepest at depth 16. Drawn fully open at the old 15 px/level that put the
-   deepest name 250 px into a 300 px panel, so the hierarchy became unreadable exactly where it
-   matters most: at the bottom, where a human stands. Three pieces of STATE fix it -- a disclosure
-   triangle per parent, a filter, and "the path to whatever is picked is always open" -- and no new
-   machinery: still one row() and one pick().
+   MEASURED PROBLEM (2026-07-29, and the count grows with every chapter): story/ is 23 membranes,
+   almost all of them ONE chain -- theZero -> ... -> theSweep sits at depth 17. Drawn fully open at
+   the old 15 px/level its paddingLeft was 265 px and its NAME started at 285 px of a 300 px panel:
+   past the scrollbar, invisible. The hierarchy was unreadable exactly where it matters most -- at
+   the bottom, where a human stands. Three pieces of STATE fix it: a disclosure triangle per parent,
+   a filter, and "the path to whatever is picked is always open". No new machinery -- still one
+   row() and one pick().
 
    EVERY BINDING HERE IS `var` AND DECLARED ABOVE THE FIRST pick() CALL, deliberately. pick() runs
    at page load and now reaches OPEN/QUERY/VIS through paintTree(); a `let` still in its temporal
@@ -825,8 +826,9 @@ function row(n,depth){
   const d=document.createElement('div');
   d.className='node'+(n.membrane?(n.name[0]==='a'&&n.name[1]===n.name[1].toUpperCase()?' inst':''):' paint')
              +(n.name===term?' on':'');
-  /* 10 px A LEVEL, not 15: at depth 16 the triangle+dot+gaps already spend 32 px, so 15 px/level
-     started the name at 250 px of a 300 px panel and clipped it; 10 px lands it at 192 px. */
+  /* 10 px A LEVEL, not 15. The triangle, dot and their two gaps spend a fixed 32 px before the name,
+     so at depth 17 the old 15 px started the name at 285 px of a 300 px panel; 10 px puts it at
+     208 px and leaves ~80 px, which is what "theSweep" needs at 13 px. */
   d.style.paddingLeft=(6+depth*10)+'px';
   d.innerHTML='<span class=tw>'+(kids.length?(open?'&#9660;':'&#9654;'):'')+'</span>'
              +'<span class=dot></span><span class=nm>'+n.name+'</span>';
@@ -849,7 +851,7 @@ function paintTree(){
   treeEl.innerHTML='';
   TREE.forEach(function(n){ row(n,0); });
   // terms that exist as scenes but have no folder (painted) get listed after the tree. Measured
-  // today that is exactly ONE of 23 scene terms -- aPlanet -- and it looked identical to the 22
+  // today that is exactly ONE of 24 scene terms -- aPlanet -- and it looked identical to the 23
   // proven membranes above it; "built only" is what makes that one row's absence say so.
   TERMS.filter(t=>!INDEX[t]).forEach(t=>{
     if(QUERY&&t.toLowerCase().indexOf(QUERY)<0) return;
@@ -871,9 +873,9 @@ function paintTree(){
 
    "BUILT ONLY" DOES NOT FORCE ANYTHING OPEN, and that asymmetry is the point: a search is aimed at
    something specific and must reach it, while this is a MASK over the shape you already arranged.
-   Forced open it would redraw all 22 membranes to depth 17 -- the wall this whole block exists to
-   remove. Masked, it answers a different question honestly: today it removes exactly one row of the
-   eleven on screen, which is the page saying "everything else you are looking at is built." */
+   Forced open it would redraw all 23 membranes down to depth 17 -- the wall this whole block exists
+   to remove. Masked, it answers a different question honestly: today it removes exactly one row of
+   the eleven on screen, which is the page saying "everything else you are looking at is built." */
 function refilter(){
   if(QUERY){
     if(!OPEN_SAVED) OPEN_SAVED=Object.assign({},OPEN);
