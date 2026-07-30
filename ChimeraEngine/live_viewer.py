@@ -100,14 +100,21 @@ class LiveViewer:
                 if self._clients <= 0:                                  # nobody watching -> free the shared 4090 (LM Studio needs it)
                     time.sleep(0.1); continue
                 if self._walk is not None:
-                    # ── STANDING IN IT ──────────────────────────────────────────────────────────
+                    # ── STANDING IN IT -- through THE STATE MACHINE (controller.py). The keys map
+                    # onto named states (walk, sidestep, steer, jump), and the states drive the
+                    # walker's process law. The mouse stays the look; the keyboard stays the feet.
+                    import controller as _ctl
+                    if getattr(self, "_controller", None) is None:
+                        self._controller = _ctl.Controller()
                     with self._lock:
                         wi = dict(self._walk_in)
                         self._walk_in["mx"] = self._walk_in["my"] = 0.0
                         self._walk_in["jump"] = False
                     self._walk.look(wi["mx"], wi["my"])
-                    self._walk.move(wi["fwd"], wi["strafe"], wi["sprint"],
-                                    wi["jump"], wi["crouch"], dt)
+                    keys = {"fwd": wi["fwd"] > 0, "back": wi["fwd"] < 0,
+                            "left": wi["strafe"] < 0, "right": wi["strafe"] > 0,
+                            "sprint": wi["sprint"], "crouch": wi["crouch"], "jump": wi["jump"]}
+                    _ctl.drive_walker(self._walk, self._controller, keys, dt)
                     # the ground is rebuilt around the player only when they have moved far enough
                     # to matter -- the near shell is 180 m across, so a stride does not need one.
                     # Rebuilt when the player has moved far enough to matter, OR when the sun has --
