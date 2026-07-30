@@ -57,8 +57,26 @@ REPOSE_DRY_DEG = 40.03    # GROWN, not looked up: core/trainables/granular.py, +
 PHI_BEARING_DEG = 35.0    # compacted sandy soil
 COHESION_PA = 2000.0      # damp soil holds itself together a little; dry sand is ~0
 
-FOOT_AREA_M2 = 0.030      # one human foot, flat: ~0.03 m^2
-BODY_MASS_KG = 82.04      # this studio's own measured body (docs/THE_MATHEMATICS_OF_WALKING.md)
+# ── THE REFERENCE PROBE, AND IT IS NOT THIS STORY'S PERSON ──────────────────────────────────────
+# These two used to be called FOOT_AREA_M2 and BODY_MASS_KG, and the membrane used them to publish
+# `foot_pressure_kPa` and `holds_a_person`. That is A PARENT INVENTING ITS CHILD'S BODY. theGround
+# sits ABOVE theHuman and must never read it -- correctly -- but the answer it reached for was
+# to type a person instead, and a typed person does not move.
+#
+# MEASURED, and this is the whole argument: theHuman derives 94.50 kg on 0.02764 m2 and gets
+# 24.19 kPa; these constants give 19.35. Twenty percent apart, and the gap is invisible because
+# both comfortably clear the 110 kPa the soil carries. Change the height at the top of the story
+# and theHuman's number moves while this one does not. That is the slider test failing.
+#
+# THE CLAIM WAS MIS-ASSIGNED, not the wiring. "This soil fails above X kPa" is a fact about soil --
+# true in an empty universe, which is what makes it this membrane's to state. "It holds a person"
+# is a fact about a person, and the membrane that HAS a person already answers it: theHuman
+# publishes ground_holds_it and ground_margin from its own derived mass and foot area.
+#
+# So these stay, renamed to say what they are: a standard bearing-test load, the geotechnical
+# equivalent of a test weight, used to quote a sinkage in the units engineers quote it in.
+PROBE_AREA_M2 = 0.030     # a standard foot-sized bearing plate
+PROBE_MASS_KG = 82.04     # a reference load -- NOT this story's body; theHuman derives that
 
 
 def erosion_rate(slope_deg):
@@ -125,7 +143,7 @@ def bearing_capacity(g, depth_m=0.05, phi_deg=PHI_BEARING_DEG, c=COHESION_PA):
     return c * nc + bulk_density() * g * depth_m * nq
 
 
-def sinkage(g, mass_kg=BODY_MASS_KG, foot_m2=FOOT_AREA_M2):
+def sinkage(g, mass_kg=PROBE_MASS_KG, foot_m2=PROBE_AREA_M2):
     """HOW FAR A FOOT GOES IN. Press until the ground's capacity matches the pressure under the foot.
     The capacity grows with depth, so there is always a depth at which it balances -- and on firm
     ground that depth is millimetres, which is why you do not think about it."""
@@ -152,7 +170,7 @@ def derive(parent, free):
     h_flat = soil_depth(2.0)
     q = bearing_capacity(g)
     sink = sinkage(g)
-    press = BODY_MASS_KG * g / FOOT_AREA_M2
+    press = PROBE_MASS_KG * g / PROBE_AREA_M2   # the REFERENCE load, not a person
 
     return {
         # ITS REAL SIZE: four metres. The scale at which "the ground" stops being a surface and
@@ -216,11 +234,22 @@ def derive(parent, free):
 
         "bearing_capacity_Pa": q,
         "bearing_capacity_kPa": q / 1e3,
-        "foot_pressure_Pa": press,
-        "foot_pressure_kPa": press / 1e3,
+        # WHAT THIS MEMBRANE IS ENTITLED TO SAY: the load above which this soil fails. That is a
+        # fact about the soil and it is true whether or not anyone ever stands on it.
+        "fails_above_kPa": q / 1e3,
+        # and what a STANDARD bearing-test load does to it, so the sinkage has units an engineer
+        # would recognise. Named `reference` throughout so it cannot be read as this story's body.
+        "reference_load_Pa": press,
+        "reference_load_kPa": press / 1e3,
+        "reference_load_kg": PROBE_MASS_KG,
+        "reference_plate_m2": PROBE_AREA_M2,
         "sinkage_m": sink,
         "sinkage_mm": sink * 1e3,
-        "holds_a_person": q > press,
+        "carries_reference_load": q > press,
+        # WHETHER IT HOLDS *THE PERSON* IS NOT THIS MEMBRANE'S QUESTION. theHuman has the body --
+        # its own derived mass, its own foot area, on this same bearing capacity -- and publishes
+        # ground_holds_it and ground_margin. A parent that answers it here has invented a child.
+        "who_answers_holds_a_person": "theHuman.ground_holds_it",
 
         # carried down for a body
         "g": g,
@@ -362,5 +391,5 @@ def measure(nums):
         # A firm soil carries 100-300 kPa; a person standing puts ~20 kPa through one foot.
         "earth_bearing_is_soil_like": 80.0 < q_e / 1e3 < 400.0,
         "earth_sinkage_under_20mm": sink_e < 0.020,
-        "holds_a_person": nums["holds_a_person"],
+        "carries_reference_load": nums["carries_reference_load"],
     }
