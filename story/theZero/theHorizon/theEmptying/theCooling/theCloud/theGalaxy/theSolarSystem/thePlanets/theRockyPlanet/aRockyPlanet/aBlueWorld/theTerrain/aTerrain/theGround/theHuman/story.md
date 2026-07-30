@@ -151,6 +151,31 @@ mid-stance as the body vaults over the planted foot, and the arms counter-swing 
 angular momentum stays near zero. None of it is animated: every part's phase is a function of the
 same `t`.
 
+**All of that was written before it was true.** The code bent the knee on the *stance* leg — the
+condition `-cos(phase + ph) > 0` is precisely the definition of stance — so the stance knee folded
+while the swing knee locked straight, and a straight swing leg is a *long* leg whose foot never left
+the floor. Worse, the hip was nailed at a fixed height, so nothing vaulted over anything and the
+promised centre-of-mass rise was supplied by a hand-written `0.018·cos(2φ)`: a **simulation of the
+consequence, sitting where the consequence should have been.**
+
+Measured, the two faults together lifted **both feet 4.2% of stature off the ground at mid-stride**
+and set them down at the extremes. Duty factor near 1.0 on both feet. By this project's own gait
+doctrine that is **a sled, not a gait** — and the page above was describing a walk.
+
+The repair is one line of physics: *the stance foot is on the ground, so the hip height is whatever
+the stance leg's geometry puts it at.* Nothing else is added.
+
+| | before | after | a real walk |
+|---|---:|---:|---|
+| contact plane travel | 4.2% | **1.6%** | 0 |
+| swing-foot clearance | ~0 | **9.7%** | 8–15% |
+| centre-of-mass rise | hand-written 1.8% | **emergent 4.3%** | ~2.5% |
+| **duty factor, each foot** | **~1.0 (a sled)** | **0.65** | 0.55–0.65 |
+
+And **double support falls out unasked** — both feet down through the transition, 30% of the cycle,
+which is what a slow walk has. The footfall diagram is now the alternating Hildebrand pattern instead
+of two solid bars.
+
 **And its movie is 1.3 seconds long.** Every other membrane in this story runs a film measured in
 years or aeons and has to be geared down to be seen at all. This one is inside the band a person can
 feel — the bottom of `theHumanClock`'s ladder, finally reached.
@@ -174,6 +199,19 @@ And the sky is not a backdrop. `aBlueWorld` derived half an atmosphere; this dra
 scattering with the optical depth scaled by that pressure and coloured by one-over-lambda-to-the-
 fourth. **Nobody wrote that sunrise should be red.** It comes out red because at 06:00 the beam
 crosses 38 airmasses and the blue is scattered out of it before it arrives.
+
+## What the gait still gets wrong
+
+- **There is no ankle.** The foot is a rigid segment, so it cannot roll heel → flat → toe, and a rigid
+  foot on a swinging leg must either dip or lift: that is the residual **1.6%** of contact-plane
+  travel, 2.8 cm of it. A real foot articulates and keeps the sole flat through stance.
+- **The vault is too tall.** The emergent rise is 4.3% of stature (7.6 cm) against a measured human
+  ~2.5% (4–5 cm), because a fully locked stance knee gives the purely geometric vault. Real walking
+  flattens it with a small stance-knee flexion wave, about 15° at mid-stance — "near straight" is not
+  "locked". Naming the mechanism rather than scaling the number down.
+- **The swing is still a sine.** The hip angle is `swing·sin(φ)` because that is what the pendulum
+  gives, but a real hip is driven and its trajectory is not sinusoidal. `swing = 0.42` rad is the one
+  amplitude here that is neither derived nor measured.
 
 *Contained in `theGround`. What it hands on: a body that can be stood up, and everything the planet
 underneath decides about how it moves.*

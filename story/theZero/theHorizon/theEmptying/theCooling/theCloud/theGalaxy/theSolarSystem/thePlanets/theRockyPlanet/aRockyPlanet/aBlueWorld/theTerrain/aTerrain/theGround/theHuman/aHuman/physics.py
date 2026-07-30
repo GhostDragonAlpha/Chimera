@@ -271,6 +271,34 @@ def emit(nums, t=1.0):
 
     phase = 2.0 * math.pi * tt
     swing = 0.42                                    # hip flexion amplitude, the parent's number
+    # ── THE FOOT IS PLANTED AND THE HIP RIDES OVER IT ────────────────────────────────────────────
+    # This membrane's own prose says "the stance knee stays near straight -- the leg is a strut, not
+    # a spring" and "the centre of mass rises at mid-stance as the body vaults over the planted foot".
+    # The code did neither, in two ways that compounded:
+    #
+    #  1. THE KNEE BENT ON THE WRONG LEG. `bend = max(0, -cos(phase + ph))` is positive exactly when
+    #     the hip angle is DECREASING, which is the definition of stance -- so the stance knee folded
+    #     and the swing knee locked straight. A straight swing leg is a long leg, so its foot never
+    #     cleared the floor.
+    #  2. THE HIP WAS NAILED AT A CONSTANT HEIGHT, so nothing vaulted over anything, and the promised
+    #     centre-of-mass rise was supplied instead by a hand-added `0.018 * cos(2 * phase)` -- a
+    #     SIMULATION of the consequence sitting where the consequence should have been.
+    #
+    # Measured, the two together put BOTH feet 4.3% of stature off the ground at mid-stride and back
+    # down at the extremes: the contact plane bobbed twice a cycle, duty factor near 1.0 on both
+    # feet. By this project's own gait doctrine that is a SLED, NOT A GAIT.
+    #
+    # The fix is one line of physics: the stance foot is on the ground, so the hip height is whatever
+    # the stance leg's geometry puts it at. Everything else follows and nothing is added --
+    #     contact plane      4.3% of stature  ->  0.000, dead still
+    #     swing-foot lift    ~0               ->  8.4% of stature (a real walk is 8-15%)
+    #     centre-of-mass bob hand-written     ->  EMERGENT, 4.3%, at twice the stride frequency
+    # and double support -- both feet down at the transition -- appears without being asked for.
+    L_STRAIGHT = THIGH_FRAC + SHANK_FRAC          # hip to ankle, knee locked
+    ANKLE_DROP = leg - L_STRAIGHT            # ankle to sole: the thickness of a foot
+    # a leg is in STANCE while its hip angle decreases, i.e. cos(phase + ph) < 0
+    _stance_ph = 0.0 if math.cos(phase) < 0.0 else math.pi
+    hip_z = ANKLE_DROP + L_STRAIGHT * math.cos(swing * math.sin(phase + _stance_ph))
     pts, nrms, mats = [], [], []
 
     def add(pn, kind):
@@ -280,7 +308,7 @@ def emit(nums, t=1.0):
 
     for side, ph in ((-1.0, 0.0), (1.0, math.pi)):
         th_hip = swing * math.sin(phase + ph)
-        bend = max(0.0, -math.cos(phase + ph)) * 0.85
+        bend = max(0.0, math.cos(phase + ph)) * 0.85   # the SWING knee folds -- see the note above
         # LATERAL IS Y, NOT X. This is the bug that made the derived stance invisible: the hip
         # offset was written on the X axis -- the SAME axis the leg swings along -- so the two legs
         # were separated fore-aft instead of side to side, and from the front they projected exactly
@@ -289,7 +317,7 @@ def emit(nums, t=1.0):
         # The tell is camera-independent and damning: the figure measured 0.37 m across from the
         # FRONT and 0.97 m from the SIDE. A walking person is wider from the front. Everything about
         # the clearance calculation above was correct; it was being applied to the wrong axis.
-        hip = np.array([0.0, hip_half * side, leg])
+        hip = np.array([0.0, hip_half * side, hip_z])
         # the femur carries the derived splay: it swings fore-aft in X-Z AND leans outward in Y, so
         # the knee sits further from the midline than the hip does and the two legs actually part.
         sp = math.sin(splay) * side
@@ -304,7 +332,7 @@ def emit(nums, t=1.0):
         toe = ankle + np.array([FOOT_LEN_FRAC, 0.0, 0.0])
         add(_tube(ankle - np.array([0.0, 0.0, r_sh * 0.5]), toe, r_sh * 1.25, r_sh * 0.75), 2)
 
-        sh = np.array([0.0, sh_half * side, 0.82])          # lateral is Y -- see the note above
+        sh = np.array([0.0, sh_half * side, hip_z + (0.82 - leg)])          # lateral is Y -- see the note above
         th_s = -0.55 * swing * math.sin(phase + ph)
         elbow = sh + np.array([math.sin(th_s), 0.0, -math.cos(th_s)]) * UPPER_ARM_FRAC
         hand = elbow + np.array([math.sin(th_s * 1.4), 0.0, -math.cos(th_s * 1.4)]) * FOREARM_FRAC
@@ -313,9 +341,9 @@ def emit(nums, t=1.0):
         add(_ball(hand, r_fa * 1.05, seed=21 + int(side)), 2)      # glove
 
     # trunk, riding the CoM. The bob is the inverted pendulum vaulting the planted foot.
-    bob = 0.018 * math.cos(2.0 * phase)
-    pelvis = np.array([0.0, 0.0, leg + bob])
-    chest = np.array([0.0, 0.0, 0.80 + bob])
+    # THE BOB IS READ OFF THE HIP now, not written -- see the note above.
+    pelvis = np.array([0.0, 0.0, hip_z])
+    chest = np.array([0.0, 0.0, hip_z + (0.80 - leg)])
     add(_tube(pelvis, chest, r_tr * 0.92, r_tr), 0)
     # THE REBREATHER, ON THE BACK. +X is the way they are walking, so -X is behind them -- and a
     # pack belongs behind a person for the same reason a rucksack does: it is the one place that is
@@ -323,13 +351,13 @@ def emit(nums, t=1.0):
     # eight-hour day. Drawn as an upright box, because a tank and a scrubber stack vertically.
     pack_x = -(r_tr + 0.055)
     for uy in (-0.042, 0.042):
-        add(_tube(np.array([pack_x, uy, 0.60 + bob]), np.array([pack_x, uy, 0.80 + bob]),
+        add(_tube(np.array([pack_x, uy, hip_z + (0.60 - leg)]), np.array([pack_x, uy, hip_z + (0.80 - leg)]),
                   0.050, 0.046), 2)
-    neck = np.array([0.0, 0.0, 0.855 + bob])
+    neck = np.array([0.0, 0.0, hip_z + (0.855 - leg)])
     add(_tube(chest, neck, r_tr * 0.55, r_hl * 0.62), 0)
 
     # THE HELMET. A sphere, and the front of it is a visor.
-    hc = np.array([0.0, 0.0, HELMET_Z + bob + r_hl * 0.35])
+    hc = np.array([0.0, 0.0, hip_z + (HELMET_Z - leg) + r_hl * 0.35])
     hp, hn = _ball(hc, r_hl, seed=11)
     face = hn[:, 0] > math.cos(VISOR_HALF_ANGLE)          # +X is the way they are walking
     pts.append(hp); nrms.append(hn); mats.append(np.where(face, 1, 0))

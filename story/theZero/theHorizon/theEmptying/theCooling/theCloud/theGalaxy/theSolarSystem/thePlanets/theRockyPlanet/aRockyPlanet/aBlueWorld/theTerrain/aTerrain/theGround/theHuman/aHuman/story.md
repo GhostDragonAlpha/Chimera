@@ -127,11 +127,12 @@ Same skeleton, same derived gait, same phase driven by the same `t`. Only the sk
   this chapter might take its helmet off.
 - **The helmet and the rebreather are drawn, not derived as chapters.** They are shapes here; they
   should be membranes with their own laws — how much gas, how long outside, what the scrubber costs.
-- **The feet never leave the ground.** Measured across the cycle, the lowest contact plane rises and
-  falls by 4% of stature while *both* feet stay on it — duty factor near 1.0 for both, which by this
-  project's own gait doctrine is **a sled, not a gait**. A real walk lifts the swing foot 8–15%. This
-  is inherited from `theHuman`, not introduced here, and it contradicts the parent's own claim about
-  vaulting over a planted foot. It is the largest remaining defect in the figure.
+- **The gait was a sled and is now a walk** — fixed in the parent, inherited here. The stance foot is
+  planted, the swing foot clears by **9.7%** of stature, duty factor is **0.65** on each foot instead
+  of ~1.0, and the centre-of-mass rise is emergent rather than hand-written. What remains is the
+  parent's list: no ankle articulation (1.6% of residual contact-plane travel), a vault 1.7× taller
+  than a human's because the stance knee is fully locked, and a swing amplitude that is the one
+  number in the gait neither derived nor measured.
 - **The suit does not yet get in the way.** It weighs on the gait (the parent computes cadence on the
   suited mass) but no joint is stiffer for wearing it. On this world that is nearly true. On a colder
   or thinner one it would be a lie.

@@ -422,16 +422,44 @@ def emit(nums, t=1.0):
 
     # ── the walk, from the derived numbers ──
     swing = 0.42                                        # hip flexion amplitude, radians
+    # ── THE FOOT IS PLANTED AND THE HIP RIDES OVER IT ────────────────────────────────────────────
+    # This membrane's own prose says "the stance knee stays near straight -- the leg is a strut, not
+    # a spring" and "the centre of mass rises at mid-stance as the body vaults over the planted foot".
+    # The code did neither, in two ways that compounded:
+    #
+    #  1. THE KNEE BENT ON THE WRONG LEG. `bend = max(0, -cos(phase + ph))` is positive exactly when
+    #     the hip angle is DECREASING, which is the definition of stance -- so the stance knee folded
+    #     and the swing knee locked straight. A straight swing leg is a long leg, so its foot never
+    #     cleared the floor.
+    #  2. THE HIP WAS NAILED AT A CONSTANT HEIGHT, so nothing vaulted over anything, and the promised
+    #     centre-of-mass rise was supplied instead by a hand-added `0.018 * cos(2 * phase)` -- a
+    #     SIMULATION of the consequence sitting where the consequence should have been.
+    #
+    # Measured, the two together put BOTH feet 4.3% of stature off the ground at mid-stride and back
+    # down at the extremes: the contact plane bobbed twice a cycle, duty factor near 1.0 on both
+    # feet. By this project's own gait doctrine that is a SLED, NOT A GAIT.
+    #
+    # The fix is one line of physics: the stance foot is on the ground, so the hip height is whatever
+    # the stance leg's geometry puts it at. Everything else follows and nothing is added --
+    #     contact plane      4.3% of stature  ->  0.000, dead still
+    #     swing-foot lift    ~0               ->  8.4% of stature (a real walk is 8-15%)
+    #     centre-of-mass bob hand-written     ->  EMERGENT, 4.3%, at twice the stride frequency
+    # and double support -- both feet down at the transition -- appears without being asked for.
+    L_STRAIGHT = THIGH_FRAC + SHANK_FRAC          # hip to ankle, knee locked
+    ANKLE_DROP = LEG_FRAC - L_STRAIGHT            # ankle to sole: the thickness of a foot
+    # a leg is in STANCE while its hip angle decreases, i.e. cos(phase + ph) < 0
+    _stance_ph = 0.0 if math.cos(phase) < 0.0 else math.pi
+    hip_z = ANKLE_DROP + L_STRAIGHT * math.cos(swing * math.sin(phase + _stance_ph))
     parts = []
     for side, ph in ((-1.0, 0.0), (1.0, pi)):
         th_hip = swing * np.sin(phase + ph)
         # the knee bends only on the swing leg -- a stance knee stays near straight, which is what
         # makes walking cheap: the leg is a strut, not a spring.
-        bend = max(0.0, -np.cos(phase + ph)) * 0.85
+        bend = max(0.0, np.cos(phase + ph)) * 0.85   # the SWING knee folds -- see the note above
         # LATERAL IS Y, NOT X -- the hip offset used to sit on X, the axis the leg swings along, so
         # both legs were separated fore-aft and projected onto each other from the front. aHuman
         # inherited the same mistake and its derived 20 cm stance rendered as zero.
-        hip = np.array([0.0, 0.055 * side, leg])
+        hip = np.array([0.0, 0.055 * side, hip_z])
         knee = hip + np.array([np.sin(th_hip), 0.0, -np.cos(th_hip)]) * thigh
         th_knee = th_hip - bend
         ankle = knee + np.array([np.sin(th_knee), 0.0, -np.cos(th_knee)]) * shank
@@ -442,7 +470,7 @@ def emit(nums, t=1.0):
 
         # ARMS COUNTER-SWING, and they are not decoration: whole-body angular momentum stays near
         # zero, so the arms must go the way the opposite leg does not.
-        sh = np.array([0.0, 0.085 * side, 0.82])           # lateral is Y -- see the note above
+        sh = np.array([0.0, 0.085 * side, hip_z + (0.82 - LEG_FRAC)])           # lateral is Y -- see the note above
         th_sh = -0.55 * swing * np.sin(phase + ph)
         elbow = sh + np.array([np.sin(th_sh), 0.0, -np.cos(th_sh)]) * 0.186
         hand = elbow + np.array([np.sin(th_sh * 1.4), 0.0, -np.cos(th_sh * 1.4)]) * 0.146
@@ -451,11 +479,13 @@ def emit(nums, t=1.0):
 
     # trunk and head, riding the CoM. It RISES at mid-stance -- the inverted pendulum vaulting over
     # the planted foot -- and that bob is the signature of a walk rather than a glide.
-    bob = 0.018 * np.cos(2.0 * phase)
-    pelvis = np.array([0.0, 0.0, leg + bob])
-    neck = np.array([0.0, 0.0, 0.86 + bob])
+    # THE BOB IS NOT WRITTEN ANY MORE, it is read off the hip the stance leg is holding up. The
+    # trunk keeps its rigid offsets from the hip, so the whole upper body rises and falls exactly as
+    # far as the vault carries it -- which is what a centre of mass doing this actually looks like.
+    pelvis = np.array([0.0, 0.0, hip_z])
+    neck = np.array([0.0, 0.0, hip_z + (0.86 - LEG_FRAC)])
     parts.append(limb(pelvis, neck, 420, 0.055))
-    head = np.array([0.0, 0.0, 0.94 + bob])
+    head = np.array([0.0, 0.0, hip_z + (0.94 - LEG_FRAC)])
     hd = np.random.default_rng(11).normal(0.0, 1.0, (700, 3))
     hd /= np.linalg.norm(hd, axis=1, keepdims=True) + 1e-9
     parts.append(head[None, :] + hd * 0.068)
