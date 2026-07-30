@@ -55,7 +55,7 @@
 | `dT_equator_pole` | 45 |
 | `lapse_rate_K_per_km` | 4.647 |
 | `S_earth` | 1.005 |
-| `scale_height_m` | 1.033e+04 |
+| `scale_height_m` | 1.131e+04 |
 | `surface_rgb` | [0.09, 0.22, 0.42] |
 | `T_star_surface` | 5839 |
 | `walk_run_ms` | 1.729 |

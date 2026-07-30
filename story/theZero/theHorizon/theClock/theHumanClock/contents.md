@@ -23,6 +23,6 @@
 | `hold_max_s` | 3 |
 | `band_lo_s` | 0.04 |
 | `band_hi_s` | 10 |
-| `band_decades` | 2.5 |
+| `band_decades` | 2.398 |
 | `gear_for_a_star` | 176.9 |
 | `planck_ticks_per_tap` | 2.04e+42 |

@@ -289,12 +289,35 @@ def derive(parent, free):
     # WHERE THIS PATCH IS. Not chosen: the parent solved an ice line, so the temperate band is
     # everything equatorward of it, and this sits in the middle of that band -- the one place on
     # this world where a person could stand outside.
-    ice_lat = 90.0 - float(parent.get("glaciated_fraction", 0.3)) * 90.0
+    # NO DEFAULT. This used to read `parent.get("glaciated_fraction", 0.3)`, which is the same
+    # failure as `parent.get("day_s", 86400.0)` one membrane up: the parent DOES carry this number
+    # (theTerrain derives it from aBlueWorld's ice_fraction), so the 0.3 never fired -- it just sat
+    # there waiting to serve a hard-coded ice line the moment the chain above stopped carrying one,
+    # silently, with the latitude of the only habitable patch on this world quietly frozen at 31.5
+    # degrees no matter what the climate did. If the parent MUST supply it, ask for it and let it
+    # break. A broken chain has to be loud.
+    ice_lat = 90.0 - float(parent["glaciated_fraction"]) * 90.0
     lat = 0.5 * ice_lat
 
-    # the canvas: the parent's own continental roughness, brought down to this patch's size
-    # START NEARLY FLAT. The relief is BUILT by uplift against incision, not inherited from noise --
-    # which is what makes it a landscape rather than a fractal with valleys drawn on it.
+    # THE CANVAS, AND IT IS DELIBERATELY *NOT* THE PARENT'S ROUGHNESS.
+    #
+    # This comment used to read "the parent's own continental roughness, brought down to this patch's
+    # size", directly above a hard-coded 3.0 -- a claim of inheritance the line beneath it contradicts
+    # and the code never performed. That is the same species as `T_star_surface: 5772.0` under a
+    # comment saying it was carried from the system: a false comment is a typed number's alibi, and
+    # neither the literal scan nor the assumption manifest can catch one, because 3.0 is an argument
+    # in a call rather than a returned key or a module constant.
+    #
+    # THE CODE IS THE RIGHT ONE; THE COMMENT WAS WRONG. Start nearly flat -- 3 m of seed texture on a
+    # 12 km patch. The relief is BUILT by uplift against incision, not inherited from noise, which is
+    # what makes this a landscape rather than a fractal with valleys drawn on it. Handing the parent's
+    # 1,302 m continental roughness in here would be handing over the answer: the patch would arrive
+    # pre-shaped and the stream-power law would have nothing left to do.
+    #
+    # HONEST CONSEQUENCE, so nobody discovers it as a surprise: because the shape is grown here rather
+    # than inherited, this patch's relief and slopes do NOT respond to theTerrain's continental_fraction
+    # dial. The audit's slider test reports exactly that (theGround 0/36 under that dial) and it is a
+    # real property of this design, not a broken read.
     z = _red_surface(GRID, rng, 3.0)
     z, recv, acc, slope = _carve(z, dx, 500, rng)
     hack, L = _hack_exponent(recv, acc, z, GRID, dx)
@@ -420,6 +443,10 @@ def layout(nums):
     The LOD budget cuts it to a handful of grains at this framing, which is exactly right -- a thing
     occupying a thousandth of a pixel does not need 26,000 splats to say so."""
     half_m = float(nums["patch_m"]) / 2.0
+    # THE SAME 4.0 IS TYPED IN theGround's OWN derive() AS ITS extent_m, AND THE TWO ARE NOT LINKED.
+    # Neither one is derived (see the open-assertion note at theGround/physics.py `extent_m`); this
+    # line is flagged, not fixed, because changing where an ungrounded number LIVES does not ground it.
+    # If it moves there and not here, the child is placed at the wrong size and nothing complains.
     scale = 4.0 / half_m
     # placed on the valley floor rather than at the origin: the flat ground near a channel is where
     # a person would actually be standing, and this membrane knows where its channels are.

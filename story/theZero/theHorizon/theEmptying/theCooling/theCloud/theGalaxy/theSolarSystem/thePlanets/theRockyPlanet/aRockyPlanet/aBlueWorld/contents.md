@@ -34,6 +34,19 @@
 | `ice_fraction` | 0.3162 |
 | `ice_line_lat_deg` | 43.14 |
 | `dT_equator_pole` | 45 |
+| `wind_scale_ms` | 10.74 |
+| `wind_boundary_fraction` | 0.15 |
+| `atmosphere_scale_height_m` | 1.131e+04 |
+| `wind_reference_lat_deg` | 45 |
+| `wind_geostrophic_ms` | 15.19 |
+| `wind_surface_ms` | 2.279 |
+| `rossby_number` | 0.02811 |
+| `rotation_dominated` | True |
+| `banded_circulation` | True |
+| `hadley_edge_deg` | 12.69 |
+| `hadley_edge_earth_deg` | 9.622 |
+| `hadley_wider_than_earth_by` | 1.319 |
+| `dry_belt_lat_deg` | 39.57 |
 | `T_equator` | 294.2 |
 | `T_pole` | 249.2 |
 | `ocean_fraction` | 0.6838 |
@@ -58,6 +71,6 @@
 | `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
 | `escape_ratios` | {'H2': 2.9929704160256954, 'He': 4.217450123701474, 'CH4': 8.442272032533301, 'H2O': 8.948176740771531, 'N2': 11.15613380809292, 'O2': 11.924279560417913, 'CO2': 13.984046019002296} |
 | `P_surface_bar` | 0.5199 |
-| `scale_height_m` | 1.033e+04 |
+| `scale_height_m` | 1.131e+04 |
 | `T_star_surface` | 5839 |
 | `walk_run_ms` | 1.729 |

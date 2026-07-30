@@ -9,7 +9,7 @@
   "hold_max_s": 3.0,
   "band_lo_s": 0.04,
   "band_hi_s": 10.0,
-  "band_decades": 2.5,
+  "band_decades": 2.3979400086720375,
   "gear_for_a_star": 176.89940205907038,
   "planck_ticks_per_tap": 2.040344493398328e+42
 }

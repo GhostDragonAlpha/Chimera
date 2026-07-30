@@ -155,8 +155,34 @@ def derive(parent, free):
     press = BODY_MASS_KG * g / FOOT_AREA_M2
 
     return {
-        # ITS REAL SIZE: four metres. Two paces. The scale at which "the ground" stops being a
-        # surface and becomes a material.
+        # ITS REAL SIZE: four metres. The scale at which "the ground" stops being a surface and
+        # becomes a material.
+        #
+        # ── OPEN ASSERTION. THIS NUMBER IS NOT DERIVED AND NOTHING IN THIS STORY DERIVES IT. ────────
+        #
+        # Every other number in this dict comes from a law: the soil depth from Heimsath's production
+        # function against erosion, the grain curve from fractal fragmentation, the bearing capacity
+        # from Terzaghi. This one is a FRAMING CHOICE wearing the same clothes, and it is written down
+        # here so that it stops looking like the others.
+        #
+        # What is actually known bounds it but does not pick it:
+        #   UPPER  it must fit inside ONE of the parent's terrain cells, because the whole law here
+        #          reads a single slope and treats it as constant. aTerrain's cell_m is 93.75 m.
+        #   LOWER  it must contain a representative sample of its own material, so many times the
+        #          largest clast it carries -- D_MAX_MM = 60 mm, i.e. well above ~0.06 m.
+        # 4 m sits inside 0.06 < x < 93.75 and so would 3 m and so would 20 m. The bracket is real;
+        # the value is not in it by derivation.
+        #
+        # (The prose used to gloss this as "two paces", which is also wrong arithmetic -- a pace is
+        # about 0.75 m, so four metres is five of them. Left corrected rather than restated, because
+        # the honest description of 4.0 is that nobody derived it.)
+        #
+        # AND IT IS ASSERTED TWICE. aTerrain's layout() independently types `scale = 4.0 / half_m` to
+        # place this membrane, with no link to this line. Change one and the composition silently
+        # scales wrong. The fix, when someone grounds this: aTerrain derives the patch size (it is the
+        # parent, and how big a child is IS the parent's to say), hands it down, and this reads
+        # parent["ground_patch_m"] with no default -- one assertion, inherited once, instead of the
+        # same guess typed in two files.
         "extent_m": 4.0,
         # ITS OWN DURATION: one day, inherited -- soil does not move on any timescale a person sees.
         "duration_s": float(parent["day_s"]),

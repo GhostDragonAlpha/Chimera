@@ -27,5 +27,5 @@
 | `t_dyn_cloud_myr` | 2.004 |
 | `t_light_sun_s` | 2.321 |
 | `sun_coherent` | True |
-| `orders_of_magnitude` | 60 |
+| `orders_of_magnitude` | 58.74 |
 | `law` | t_dyn ~ 1/sqrt(G rho) -- only the density appears |

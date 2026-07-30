@@ -19,7 +19,18 @@ def derive(parent, free):
         "duration_s": 0.0,
         "r": 0.0,
         "volume": 0.0,
-        "hair": 3,                       # mass, charge, angular momentum -- and nothing else
+        # THE NO-HAIR THEOREM, and it is a THEOREM, not a number anybody here chose. A stationary,
+        # asymptotically flat solution of Einstein-Maxwell is completely fixed by exactly three
+        # externally measurable quantities -- mass, electric charge, angular momentum -- and by
+        # nothing else whatever: Israel 1967/68, Carter 1971, Hawking 1972, Robinson 1975. Everything
+        # else that fell in is not hidden, it is GONE from the outside description.
+        #
+        # THIS LITERAL IS LEGAL BECAUSE IT IS TRUE IN AN EMPTY UNIVERSE. It is not inherited because
+        # theZero is the seed and has no parent to inherit from, and it is not a copy of anything a
+        # parent derives -- it is a count of degrees of freedom proved from the field equations, so it
+        # is the same 3 in any story anyone ever tells. It is also why the very next membrane can
+        # exist: three numbers is few enough that a horizon can be pinned by them.
+        "hair": 3,
         "forbidden": FORBIDDEN,
         "allowed": ALLOWED,
     }

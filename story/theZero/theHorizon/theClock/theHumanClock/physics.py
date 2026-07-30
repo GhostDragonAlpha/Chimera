@@ -7,7 +7,7 @@ A button is a DURATION and a stick is a MAGNITUDE; together they are an impulse.
 response time falls outside the band must be GEARED into it -- the physics being right is not
 sufficient, it has to be reachable.
 """
-from math import sqrt
+from math import sqrt, log10
 
 FRAME_S = 1.0 / 60.0            # one tick at 60 Hz: the finest grain that can be shown
 FUSION_S = 0.040                # below this, separate events are perceived as one
@@ -62,6 +62,19 @@ def derive(parent, free):
         # ITS OWN DURATION: one comfortable press -- the unit the player actually acts in.
         "duration_s": HOLD_MAX_S,
         # ITS REAL SIZE: a person. The only unit nobody has to imagine.
+        #
+        # A MEASURED LITERAL, AND IT IS LEGAL FOR THE SAME REASON THE SIX CONSTANTS ABOVE ARE: it is
+        # an anthropometric measurement of the species, not a number carried by any parent of this
+        # membrane. Mean adult stature, pooled across populations, is 1.70 m to three figures
+        # (NCD-RisC 2016, ~1,470 studies / 18.6M adults: 171.0 cm men, 159.5 cm women). theClock, its
+        # parent, carries only densities and ticks -- there is no body anywhere above this membrane to
+        # inherit a height from.
+        #
+        # HONEST ABOUT WHAT IT IS NOT: theHuman, fourteen membranes down the OTHER branch, derives a
+        # body 1.78 m tall from its own anthropometry, and this is not that number and must not be
+        # made into it. They are different claims -- a population mean here, one specific derived body
+        # there -- and this membrane cannot read that one anyway (it is not an ancestor). What this
+        # 1.7 is FOR is stating the scale of the band below in a unit a reader already owns.
         "extent_m": 1.7,
         "frame_s": FRAME_S,
         "fusion_s": FUSION_S,
@@ -71,7 +84,18 @@ def derive(parent, free):
         "hold_max_s": HOLD_MAX_S,
         "band_lo_s": band_lo,
         "band_hi_s": band_hi,
-        "band_decades": 2.5,                      # against the ladder's 60
+        # HOW NARROW THE BAND IS -- ARITHMETIC ON THE TWO MEASUREMENTS, not a stated number.
+        #
+        # This used to read `2.5`, and the two constants it is a statement about are ten lines above
+        # it: FUSION_S = 0.040 and SUSTAINED_S = 10.0, both measured facts about a nervous system.
+        # log10(10.0 / 0.040) = 2.398, so the typed 2.5 was 4% wide of the numbers in its own file --
+        # and, worse, it stood still. Retime the flicker-fusion threshold and band_lo_s moved while
+        # the width of the band did not, which is the typed-number failure inside a single membrane
+        # instead of across two.
+        #
+        # A decade IS log10 of a ratio, so there is nothing here to choose. The ends are this
+        # membrane's own two measurements; the width follows.
+        "band_decades": log10(band_hi / band_lo),
         "gear_for_a_star": gear_ratio(sun_dyn),   # a star's own tick is ~30 min: needs gearing
         "planck_ticks_per_tap": TAP_S / float(parent["t_planck_s"]),
     }
@@ -118,8 +142,15 @@ def emit(nums, t=1.0):
 
 
 def measure(nums):
-    """Facts: the band is narrow (about 2.5 decades against the ladder's 60), and a star's own tick
-    is far outside it -- so anything a player touches must be geared, never handed over raw."""
+    """Facts: the band is narrow -- under two and a half decades, against the whole ladder's span in
+    theClock's `orders_of_magnitude` -- and a star's own tick is far outside it, so anything a player
+    touches must be geared, never handed over raw.
+
+    THE SPAN IS NAMED BY ITS KEY AND NOT BY ITS VALUE, deliberately. This line used to say "against
+    the ladder's 60"; theClock now computes that span from its own two ends instead of stating it, so
+    a number copied into this sentence would have gone stale the moment it did. Prose drifts exactly
+    the way a typed literal drifts, and it cannot be caught by the audit -- so point at where the
+    number lives."""
     return {"band_decades": nums["band_decades"],
             "star_needs_gearing": nums["gear_for_a_star"] > 1.0,
             "gear_for_a_star": nums["gear_for_a_star"],

@@ -7,7 +7,7 @@ a cloud's collapse and a star's pulsation.
 
 The game is a state machine and a state machine must know WHAT CHANGES WHEN. These are the rates.
 """
-from math import pi, sqrt
+from math import pi, sqrt, log10
 
 G = 6.67430e-11
 C = 2.99792458e8
@@ -67,6 +67,10 @@ def derive(parent, free):
     earth = clock_of(5.9722e24, 6.371e6)
     galaxy_rho = (1.045e11 * M_SUN) / ((4.0 / 3.0) * pi * (15.0 * 3.0857e19) ** 3)
     cloud_rho = 1.103e-18                                       # theCloud's own number, kg/m^3
+    # THE TWO ENDS OF THE LADDER THIS MEMBRANE ACTUALLY BUILT: the fastest tick it was handed (t_P,
+    # from theHorizon) and the slowest one it derived itself (the galaxy's, from the same one
+    # formula). Named here so that the span reported below is arithmetic on them rather than a claim.
+    t_slowest = dynamical_time(galaxy_rho)
     return {
         # ITS REAL SIZE: its ceiling. Everything emits at radius ~1 locally, so this is
         # the only place the true scale is recorded -- and a human needs it to know what they see.
@@ -80,11 +84,24 @@ def derive(parent, free):
         "t_planck_s": t_P,                                      # the smallest tick there is
         "t_dyn_sun_s": sun["t_dyn_s"],                          # ~1 hour
         "t_dyn_earth_s": earth["t_dyn_s"],                      # ~1 hour too -- similar density!
-        "t_dyn_galaxy_myr": dynamical_time(galaxy_rho) / YEAR / 1e6,
+        "t_dyn_galaxy_myr": t_slowest / YEAR / 1e6,
         "t_dyn_cloud_myr": dynamical_time(cloud_rho) / YEAR / 1e6,
         "t_light_sun_s": sun["t_light_s"],
         "sun_coherent": sun["coherent"],
-        "orders_of_magnitude": 60.0,                            # Planck tick to a star's burn
+        # HOW WIDE THE LADDER IS -- COMPUTED from its own two ends, not stated.
+        #
+        # This used to read a flat `60.0` under the comment "Planck tick to a star's burn", and 60 is
+        # a round number for precisely that: a 10 Gyr stellar lifetime over t_P is 60.77 decades. But
+        # THIS MEMBRANE NEVER DERIVES A STAR'S LIFETIME and cannot reach the membrane that does --
+        # aYellowStar is not an ancestor of this one, and a membrane may only read its parent. So the
+        # 60 was a fact fetched from somewhere the chain does not run, and being typed it SAT STILL:
+        # move t_P and every clock on the ladder moved while the reported width of the ladder did not,
+        # which is the same standing-still that left the planets' sunlight at 5772 K forever.
+        #
+        # The span of a ladder is log10 of the ratio of its ends -- that is what a decade IS, so
+        # there is nothing to fit. The ends are the tick this membrane inherited and the slowest clock
+        # it derived, and the answer is 58.74 rather than 60. It now moves when either end moves.
+        "orders_of_magnitude": log10(t_slowest / t_P),
         "law": "t_dyn ~ 1/sqrt(G rho) -- only the density appears",
     }
 
