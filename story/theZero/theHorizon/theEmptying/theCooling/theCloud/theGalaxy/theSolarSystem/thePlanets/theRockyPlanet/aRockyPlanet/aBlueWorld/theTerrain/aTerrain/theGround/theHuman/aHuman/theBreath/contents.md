@@ -15,7 +15,7 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 0.3467 |
+| `extent_m` | 0.3434 |
 | `duration_s` | 3.833 |
 | `P_ambient_bar` | 0.5199 |
 | `P_loop_bar` | 0.5199 |
@@ -48,9 +48,9 @@
 | `breaths_per_min` | 15.65 |
 | `tidal_volume_l` | 0.7622 |
 | `minute_ventilation_l` | 11.93 |
-| `helmet_free_volume_l` | 12.01 |
-| `helmet_flushed_per_breath` | 0.06349 |
+| `helmet_free_volume_l` | 11.66 |
+| `helmet_flushed_per_breath` | 0.06535 |
 | `pco2_limit_bar` | 0.01 |
-| `r_helmet_inner_m` | 0.1734 |
+| `r_helmet_inner_m` | 0.1717 |
 | `S_earth` | 1.005 |
 | `T_air_C` | 6.041 |

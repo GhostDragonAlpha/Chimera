@@ -1,5 +1,5 @@
 {
-  "extent_m": 0.34674,
+  "extent_m": 0.343415,
   "duration_s": 3.8328453553367052,
   "P_ambient_bar": 0.5199302820248954,
   "P_loop_bar": 0.5199302820248954,
@@ -32,10 +32,10 @@
   "breaths_per_min": 15.654166666666665,
   "tidal_volume_l": 0.7622135649817311,
   "minute_ventilation_l": 11.931818181818182,
-  "helmet_free_volume_l": 12.005303573090208,
-  "helmet_flushed_per_breath": 0.06348973687681057,
+  "helmet_free_volume_l": 11.663236822380453,
+  "helmet_flushed_per_breath": 0.06535180384223427,
   "pco2_limit_bar": 0.01,
-  "r_helmet_inner_m": 0.17337,
+  "r_helmet_inner_m": 0.1717075,
   "S_earth": 1.0048952107836961,
   "T_air_C": 6.0408308653023255
 }

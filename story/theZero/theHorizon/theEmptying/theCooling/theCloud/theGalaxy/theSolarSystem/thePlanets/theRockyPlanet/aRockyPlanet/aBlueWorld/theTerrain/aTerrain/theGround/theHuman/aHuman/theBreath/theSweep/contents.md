@@ -14,7 +14,7 @@
 | number | value |
 |---|---|
 | `extent_m` | 0.309 |
-| `duration_s` | 13.63 |
+| `duration_s` | 13.24 |
 | `T_loop_C` | 22 |
 | `T_ambient_C` | 6.041 |
 | `T_visor_inner_C` | 13.36 |
@@ -38,11 +38,11 @@
 | `visor_leak_W` | 7.778 |
 | `visor_leak_fraction` | 0.04678 |
 | `insulation_should_be_mm` | 12.45 |
-| `fog_time_s` | 34.08 |
-| `transit_at_min_flow_s` | 34.08 |
-| `transit_s` | 13.63 |
+| `fog_time_s` | 33.11 |
+| `transit_at_min_flow_s` | 33.11 |
+| `transit_s` | 13.24 |
 | `identity_holds` | True |
 | `clears_faster_than_it_fogs_by` | 2.5 |
 | `S_earth` | 1.005 |
-| `helmet_free_volume_l` | 12.01 |
+| `helmet_free_volume_l` | 11.66 |
 | `P_loop_bar` | 0.5199 |

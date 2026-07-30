@@ -12,21 +12,24 @@ tall the person is.
 
 ## One free number, and the rest follows
 
-Height is not derivable from a planet — it is a fact about a body. Everything else on this page comes
-from that height and from `g`:
+Height is not derivable from a planet — it is a fact about a body. So it is *measured*, not
+chosen: **1.755 m, the median of 4,082 soldiers in the ANSUR II survey** (public, 2017 — the
+operator's law for this chapter: a human body needs actual sources for every concept). Everything
+else on this page comes from that height, from measured ratios, and from `g`:
 
 | | |
 |---|---|
-| mass | **71.3 kg** (`BMI · h²` — mass goes as height *squared*, not cubed) |
-| centre of mass | 1.02 m up |
-| leg | 0.94 m |
-| **how fast you fall over** | **2.63 rad/s** — 0.38 s to do something about it |
-| step time | 0.65 s |
-| **walk → run** | **1.83 m/s** |
-| stride | 0.65 m |
+| mass | **84.6 kg** (`BMI · h²` with the *measured* median BMI, 27.5 — the survey's own median mass is 84.6 kg; it agrees to the pound) |
+| centre of mass | 1.01 m up |
+| leg | 0.93 m |
+| **how fast you fall over** | **2.65 rad/s** — 0.38 s to do something about it |
+| step time | 0.59 s |
+| **walk → run** | **1.81 m/s** |
+| stride | 1.18 m (real gait data: 1.13 m — Van Criekinge 2023) |
 | **jump** | **0.37 m** |
-| femur, running | 4.6 MPa against 150 — **33× safety** |
-| foot on the ground | 19 kPa against the 110 the ground carries — **it holds, 5.8×** |
+| femur, running | 6.1 MPa against 150 — **25× safety** |
+| foot on the ground | 24 kPa against the 110 the ground carries — **it holds, 4.5×** |
+| eye | 1.62 m up (tragion ≈ eye level, *measured*: 0.9253 of stature, n=4,082) |
 
 ## When
 

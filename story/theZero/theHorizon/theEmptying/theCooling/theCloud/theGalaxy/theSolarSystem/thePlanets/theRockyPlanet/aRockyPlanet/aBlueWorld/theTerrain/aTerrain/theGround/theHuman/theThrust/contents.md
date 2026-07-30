@@ -13,7 +13,7 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 1.068 |
-| `duration_s` | 3.797 |
+| `extent_m` | 1.053 |
+| `duration_s` | 3.485 |
 | `stub` | True |
 | `declared_by` | Chimera/docs/THE_STORY.md |
