@@ -545,20 +545,39 @@ def membrane_buffer(term: str, t: float = 1.0, _depth: int = 0):
     if _depth > 4 or not hasattr(law, "layout"):
         return own
     import numpy as np
-    parts = [own]
-    for child, (centre, scale) in (law.layout(nums) or {}).items():
+    layout = law.layout(nums) or {}
+    # ONE OBJECT, ONE PICTURE. A child placed at the origin at full scale IS this object, one
+    # level down (aYellowStar inside theStar: "at this scale the membrane IS the star"). Drawing
+    # the parent's own emit as well is the duplicated-child failure -- the same matter twice --
+    # and scaling the child's clock by the duration ratio freezes it at its own first frame: a
+    # 30 Myr law movie against a 9.4 Gyr instance life held aYellowStar at t=0.003, a ~3000 K
+    # protostar cloud that swallowed the burning star and read as a ringed planet to the blind
+    # eye (dyad alignment 0.0, 2026-07-29). So at identity placement the child emits at the
+    # parent's OWN t and the parent's own grains are not drawn: the instance is the picture at
+    # this scale.
+    identity = set()
+    for _c, (_cen, _s) in layout.items():
+        try:
+            if abs(float(_s) - 1.0) < 1e-9 and float(np.linalg.norm(np.asarray(_cen, dtype=float))) < 1e-9:
+                identity.add(_c)
+        except Exception:
+            pass
+    parts = [] if identity else [own]
+    for child, (centre, scale) in layout.items():
         # THE CHILD'S OWN TIME, not the parent's. A child whose duration is shorter FINISHES EARLY
         # inside its parent's movie -- stars light while a galaxy is still assembling. So its t runs
         # faster by exactly the ratio of their durations and clamps once it is done. This is the one
         # place true relative rates are used, and it is the place they matter: it is what makes the
-        # nesting a single performance instead of eleven separate clips.
+        # nesting a single performance instead of eleven separate clips. An IDENTITY child is the
+        # exception: it is the same object at the same scale, so it shares the parent's clock.
         ct = t
-        pdur = float(nums.get("duration_s") or 0.0)
-        if pdur > 0.0:
-            cn = _child_numbers(child)
-            cdur = float((cn or {}).get("duration_s") or 0.0)
-            if cdur > 0.0:
-                ct = max(0.0, min(1.0, t * (pdur / cdur)))
+        if child not in identity:
+            pdur = float(nums.get("duration_s") or 0.0)
+            if pdur > 0.0:
+                cn = _child_numbers(child)
+                cdur = float((cn or {}).get("duration_s") or 0.0)
+                if cdur > 0.0:
+                    ct = max(0.0, min(1.0, t * (pdur / cdur)))
         cb = membrane_buffer(child, ct, _depth + 1)
         if cb is None:
             continue
@@ -573,7 +592,11 @@ def membrane_buffer(term: str, t: float = 1.0, _depth: int = 0):
             step = max(1, len(cb) // keep)
             cb = cb[::step]
         parts.append(_place(cb, centre, scale))
-    return np.concatenate(parts, axis=0) if len(parts) > 1 else own
+    # parts holds the identity child's buffer when a child replaced the parent's own matter --
+    # returning `own` here would resurrect the duplicate the identity rule exists to drop.
+    if not parts:
+        return own
+    return np.concatenate(parts, axis=0) if len(parts) > 1 else parts[0]
 
 
 def membrane_terms() -> list:
