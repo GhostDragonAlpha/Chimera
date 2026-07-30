@@ -1,6 +1,6 @@
 {
   "extent_m": 0.35956000000000005,
-  "duration_s": 2.2781307761296485,
+  "duration_s": 2.1058791375883015,
   "rocker_radius_m": 0.28302,
   "rocker_over_leg": 0.3,
   "vault_point_foot_m": 0.0819918937093684,
@@ -16,7 +16,7 @@
   "plantarflex_rad": 0.45,
   "push_off_effort": 1.0,
   "push_off_work_J": 55.23111781703676,
-  "push_off_power_W": 85.53301052784535,
+  "push_off_power_W": 92.52923407639543,
   "com_work_per_stride_J": 65.95823468690922,
   "ankle_work_share": 0.4557423294694013,
   "ankle_work_share_literature": 0.475,

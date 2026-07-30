@@ -1,0 +1,287 @@
+"""measured.py -- where a body's numbers come from, so no membrane has to invent one.
+
+THE PROBLEM THIS EXISTS FOR. Membranes were carrying anthropometry as module constants with comments
+saying "measured" -- `LEG_MASS_FRAC = 0.161`, `COM_FRAC = 0.575`, `EYE_FRAC = 0.936`. A comment is not
+a citation, and this project already has a name for that failure: a literal wearing a comment. It is
+the one class of defect no checker can catch, because nothing can read a comment and tell whether it
+is true.
+
+Worse, it is the wrong METHOD. The manual's own rule is TRAIN IT, DON'T HAND-TUNE IT: if a feature is
+DATA -- and anthropometry is data -- it is not to be reasoned out. It is to be measured.
+
+So this module holds the SOURCES and nothing else. It states, for every number, who measured it, on
+how many people, by what technique, and in what year. A membrane asks for a fraction and gets one it
+can cite. `compare()` puts the two independent sources side by side, and where they disagree it says
+so rather than picking.
+
+TWO SOURCES, DELIBERATELY:
+
+  de LEVA (1996) -- adjustments to Zatsiorsky-Seluyanov's segment inertia parameters, J.Biomech 29,
+      1223-1230. Zatsiorsky et al. measured 100 living young adults by GAMMA-RAY SCANNING; de Leva
+      re-referenced their landmarks to joint centres, which is what biomechanics actually uses.
+      This supersedes Dempster (1955), whose figures came from EIGHT CADAVERS and are still the ones
+      most often quoted -- including, until now, by this repo.
+
+  myo_sim -- the MyoSuite musculoskeletal model already vendored in this project. 60 rigid bodies
+      with mass AND full inertia tensors, 114 joints with measured range of motion, 550 muscle
+      elements. It is the body this studio has already trained a walk on: myobody_gait_meta.npy
+      records STAND_Z = 0.9802 m and OMEGA0 = 3.1883 rad/s measured off it.
+
+WHAT IS STILL NOT SOURCED, and is written down here rather than hidden in a membrane:
+
+  GAIT TRAJECTORIES. Joint angles over the cycle -- the thing that would replace `swing * sin(phase)`
+      with a measured curve. The dataset exists and is licence-clean: 246 healthy adults aged 18-91,
+      three walking speeds, 3D joint angles, moments, powers, GRF and spatiotemporal parameters for
+      every step of both legs. CC BY 4.0, OSF, doi 10.17605/OSF.IO/T72CW. NOT YET INGESTED.
+  RESPIRATORY AND THERMAL figures -- tidal volume, FRC, alveolar CO2 thresholds, metabolic heat.
+      theBreath and theSweep carry these as literals. A physiology source is needed and none is here.
+"""
+from __future__ import annotations
+
+import xml.etree.ElementTree as ET
+import re
+from pathlib import Path
+
+_HERE = Path(__file__).resolve().parent
+MYO = _HERE.parent / "vendor" / "myo_sim"
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  SOURCE 1 -- de LEVA (1996)
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+# Zatsiorsky, Seluyanov & Chugunova measured 100 living young adults (Caucasian, college-aged) by
+# gamma-ray scanning; de Leva adjusted the reference landmarks to joint centres. Journal of
+# Biomechanics 29(9):1223-1230, 1996.
+#
+# EVERY NUMBER BELOW IS A PUBLISHED TABLE VALUE. That is what makes it a legal literal: it is a
+# measurement of the world, reproducible from the paper, and it reads the same in any story.
+DE_LEVA = {
+    # segment: (mass fraction of body, CoM from proximal as fraction of segment length,
+    #           radii of gyration about the CoM as fractions of segment length: (x, y, z))
+    "head":      {"m": (0.0668, 0.0694), "com": (0.4841, 0.5002),
+                  "gyr": ((0.271, 0.295, 0.261), (0.303, 0.315, 0.261))},
+    "trunk":     {"m": (0.4257, 0.4346), "com": (0.4964, 0.5138),
+                  "gyr": ((0.307, 0.292, 0.147), (0.328, 0.306, 0.169))},
+    "upper_arm": {"m": (0.0255, 0.0271), "com": (0.5754, 0.5772),
+                  "gyr": ((0.278, 0.260, 0.148), (0.285, 0.269, 0.158))},
+    "forearm":   {"m": (0.0138, 0.0162), "com": (0.4559, 0.4574),
+                  "gyr": ((0.261, 0.257, 0.094), (0.276, 0.265, 0.121))},
+    "hand":      {"m": (0.0056, 0.0061), "com": (0.7474, 0.7900),
+                  "gyr": ((0.631, 0.454, 0.335), (0.628, 0.513, 0.401))},
+    "thigh":     {"m": (0.1478, 0.1416), "com": (0.3612, 0.4095),
+                  "gyr": ((0.369, 0.364, 0.162), (0.329, 0.329, 0.149))},
+    "shank":     {"m": (0.0481, 0.0433), "com": (0.4352, 0.4395),
+                  "gyr": ((0.267, 0.263, 0.092), (0.251, 0.246, 0.102))},
+    "foot":      {"m": (0.0129, 0.0137), "com": (0.4014, 0.4415),
+                  "gyr": ((0.299, 0.279, 0.139), (0.257, 0.245, 0.124))},
+}
+DE_LEVA_CITE = ("de Leva P (1996) Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. "
+                "J Biomech 29(9):1223-1230. Underlying data: gamma-ray scanning, 100 living adults.")
+_SEX = {"female": 0, "male": 1}
+
+
+def segment(name: str, sex: str = "male") -> dict:
+    """A segment's measured inertial parameters, with the citation attached to the answer.
+
+    Returning the source alongside the number is the point: a caller cannot use this and then write
+    a comment claiming it came from somewhere else, because the provenance travels with the value."""
+    i = _SEX[sex]
+    s = DE_LEVA[name]
+    return {"mass_frac": s["m"][i], "com_frac": s["com"][i], "gyration": s["gyr"][i],
+            "source": DE_LEVA_CITE, "sex": sex, "segment": name}
+
+
+def limb_mass_frac(*names, sex: str = "male") -> float:
+    """The mass of a limb, as the sum of the segments that make it. Spelled out rather than looked
+    up, because "one leg" is not a segment anybody measured -- it is thigh + shank + foot, and which
+    of those you include is exactly where two sources drift apart."""
+    return sum(DE_LEVA[n]["m"][_SEX[sex]] for n in names)
+
+
+def leg_inertia_about_hip(height_m, body_mass_kg, thigh_frac, shank_frac, foot_frac,
+                          sex: str = "male") -> dict:
+    """THE SWINGING LEG AS A REAL COMPOUND PENDULUM, composed from three measured segments.
+
+    theHuman approximated the whole leg as ONE rod: a single mass at a guessed 0.447 of the way down,
+    with a radius of gyration of "about 0.326 of its length". Both numbers were assertions, and the
+    mass they scaled was Dempster's 0.161 from eight cadavers.
+
+    de Leva measured each segment separately, so the composite can be built rather than guessed:
+
+        I_hip = SUM over segments of  m_i * (k_i^2 + d_i^2)
+
+    where d_i is each segment's own centre of mass measured from the HIP, and k_i its radius of
+    gyration about that centre. The parallel-axis theorem does the rest, and nothing is approximated
+    except the segment LENGTHS, which are still this repo's and are flagged in UNSOURCED.
+
+    This is what sets the swing period, which sets cadence, which is most of what a walk looks like."""
+    i = _SEX[sex]
+    Lt, Ls, Lf = (float(thigh_frac) * height_m, float(shank_frac) * height_m,
+                  float(foot_frac) * height_m)
+    parts = []
+    # thigh: CoM measured down the thigh from the hip
+    mt = DE_LEVA["thigh"]["m"][i] * body_mass_kg
+    dt = DE_LEVA["thigh"]["com"][i] * Lt
+    kt = DE_LEVA["thigh"]["gyr"][i][0] * Lt
+    parts.append(("thigh", mt, dt, kt))
+    # shank: its CoM is down the shank from the KNEE, so from the hip it is a thigh further
+    ms = DE_LEVA["shank"]["m"][i] * body_mass_kg
+    ds = Lt + DE_LEVA["shank"]["com"][i] * Ls
+    ks = DE_LEVA["shank"]["gyr"][i][0] * Ls
+    parts.append(("shank", ms, ds, ks))
+    # foot: hangs at the ankle, and lies roughly ACROSS the leg axis rather than along it, so its
+    # distance from the hip is the leg's length and not the leg plus the foot.
+    mf = DE_LEVA["foot"]["m"][i] * body_mass_kg
+    df = Lt + Ls
+    kf = DE_LEVA["foot"]["gyr"][i][0] * Lf
+    parts.append(("foot", mf, df, kf))
+
+    I = sum(m * (k * k + d * d) for _, m, d, k in parts)
+    m_leg = sum(m for _, m, _, _ in parts)
+    d_com = sum(m * d for _, m, d, _ in parts) / m_leg
+    return {"I_hip_kgm2": I, "leg_mass_kg": m_leg, "leg_com_from_hip_m": d_com,
+            "leg_mass_frac": m_leg / body_mass_kg,
+            "segments": [{"name": n, "mass_kg": m, "com_from_hip_m": d, "gyration_m": k}
+                         for n, m, d, k in parts],
+            "source": DE_LEVA_CITE,
+            "lengths_are_sourced": False}
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  SOURCE 2 -- the model already in this repo
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+_MYO_CACHE = None
+
+
+def myo_body(model: str = "leg/myolegs.xml") -> dict:
+    """One NAMED model's bodies, with mass and inertia, plus its joints and their measured ranges.
+
+    SCOPED TO ONE MODEL ON PURPOSE, and the first version was not. Scanning every XML under myo_sim
+    and keeping the first definition of each name returned femur_r = 6.257 kg, because the same body
+    name appears in several sub-models at different scalings. Read from `leg/myolegs.xml` it is
+    8.400 kg -- a 34% difference produced entirely by which file the walk happened to reach first.
+    A model is a body; mixing two of them is measuring a chimera, which is funny here and still wrong.
+
+    Returns {"segments": {...}, "joints": {...}, "total_mass_kg": float, "model": str}. The total is
+    what makes a fraction computable: an absolute mass means nothing without the body it belongs to."""
+    global _MYO_CACHE
+    if _MYO_CACHE is not None and _MYO_CACHE.get("model") == model:
+        return _MYO_CACHE
+    segs, joints = {}, {}
+    root_file = MYO / model
+    files = [root_file]
+    if root_file.exists():
+        try:
+            for inc in re.findall(r'<include file="([^"]+)"',
+                                  root_file.read_text(encoding="utf-8", errors="replace")):
+                q = (root_file.parent / inc).resolve()
+                if q.exists():
+                    files.append(q)
+        except OSError:
+            pass
+    if root_file.exists():
+        for p in files:
+            try:
+                root = ET.parse(p).getroot()
+            except Exception:
+                continue
+            for b in root.iter("body"):
+                nm = b.get("name")
+                inr = b.find("inertial")
+                if not nm or inr is None or not inr.get("mass"):
+                    continue
+                if nm in segs:
+                    continue                       # first definition wins; duplicates are includes
+                di = inr.get("diaginertia", "")
+                segs[nm] = {"mass": float(inr.get("mass")),
+                            "diaginertia": tuple(float(v) for v in di.split()) if di else None,
+                            "file": p.name}
+            for j in root.iter("joint"):
+                nm, rg = j.get("name"), j.get("range")
+                if nm and rg and nm not in joints:
+                    try:
+                        lo, hi = (float(v) for v in rg.split())
+                        joints[nm] = (lo, hi)
+                    except ValueError:
+                        continue
+    _MYO_CACHE = {"segments": segs, "joints": joints, "model": model,
+                  "total_mass_kg": sum(v["mass"] for v in segs.values()),
+                  "source": f"MyoSuite myo_sim, vendored at vendor/myo_sim, model {model}"}
+    return _MYO_CACHE
+
+
+def myo_mass(*names) -> float:
+    """Summed mass of named bodies in the model. Raises on a name that is not there rather than
+    returning zero, because a silent zero is how a limb goes missing."""
+    segs = myo_body()["segments"]
+    out = 0.0
+    for n in names:
+        if n not in segs:
+            raise KeyError(f"{n!r} is not a body in myo_sim; have e.g. {sorted(segs)[:6]}")
+        out += segs[n]["mass"]
+    return out
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  THE COMPARISON -- two independent measurements of one body
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+def compare(sex: str = "male") -> list:
+    """Put the published table beside the vendored model, as FRACTIONS of each one's own body.
+
+    THIS DOES NOT PICK A WINNER. Two independent measurements of the same quantity is the strongest
+    position available, and disagreement is information -- averaging it away throws that information
+    out. What this does is turn the disagreement into a number instead of an absence."""
+    b = myo_body()
+    tot = b["total_mass_kg"] or 1.0
+    segs = b["segments"]
+    pairs = (("thigh", ("femur_r",)), ("shank", ("tibia_r",)), ("foot", ("calcn_r",)))
+    rows = []
+    for name, myo_names in pairs:
+        if not all(n in segs for n in myo_names):
+            continue
+        mk = sum(segs[n]["mass"] for n in myo_names)
+        mf = mk / tot
+        df = DE_LEVA[name]["m"][_SEX[sex]]
+        rows.append({"segment": name, "myo_kg": mk, "myo_frac": mf, "de_leva_frac": df,
+                     "disagreement_pct": 100.0 * (df - mf) / mf,
+                     "myo_total_kg": tot})
+    return rows
+
+
+def leg_mass_check(body_mass_kg: float, sex: str = "male") -> dict:
+    """THE CHECK THAT CAUGHT theHuman. Its `LEG_MASS_FRAC = 0.161` is Dempster (1955), measured on
+    EIGHT CADAVERS and still the most-quoted figure anywhere. de Leva's living-subject data gives
+    thigh + shank + foot for a male as 0.1416 + 0.0433 + 0.0137. The difference is not rounding."""
+    dempster = 0.161
+    deleva = limb_mass_frac("thigh", "shank", "foot", sex=sex)
+    return {"dempster_1955_frac": dempster,
+            "de_leva_1996_frac": deleva,
+            "disagreement_pct": 100.0 * (deleva - dempster) / dempster,
+            "dempster_kg": dempster * body_mass_kg,
+            "de_leva_kg": deleva * body_mass_kg,
+            "why": ("Dempster measured 8 cadavers in 1955; Zatsiorsky measured 100 living adults by "
+                    "gamma-ray scan. A leg's mass sets the swing period, which sets cadence."),
+            "source": DE_LEVA_CITE}
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  WHAT IS NOT SOURCED -- stated as data, so it can be queried rather than remembered
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+UNSOURCED = [
+    {"what": "gait joint-angle trajectories over the cycle",
+     "used_by": "theHuman.SWING_AMP, theHuman.leg_cycle, theAnkle.foot_pitch",
+     "currently": "a sine and three hand-placed rocker fractions",
+     "available": "246 adults 18-91, 3 speeds, 3D angles/moments/powers/GRF, every step both legs",
+     "where": "OSF doi 10.17605/OSF.IO/T72CW, CC BY 4.0",
+     "status": "NOT INGESTED"},
+    {"what": "segment LENGTHS as fractions of stature",
+     "used_by": "theHuman.LEG_FRAC/THIGH_FRAC/SHANK_FRAC/EYE_FRAC, aHuman's limb radii",
+     "currently": "typed constants attributed to Dempster in comments",
+     "available": "ANSUR II (6,068 subjects, 93 measurements, public domain) or myo_sim geometry",
+     "where": "ANSUR II is US Army, released to the public domain",
+     "status": "NOT INGESTED"},
+    {"what": "respiratory and thermal physiology",
+     "used_by": "theBreath (RQ, tidal, VE, pCO2 limits), theSweep (water output), aHuman (metabolic W)",
+     "currently": "literals with citation-shaped comments",
+     "available": "NASA-STD-3001 / life-support handbooks give consumable rates with provenance",
+     "status": "NOT SOURCED"},
+]

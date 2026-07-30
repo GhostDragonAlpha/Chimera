@@ -14,7 +14,7 @@
 | number | value |
 |---|---|
 | `extent_m` | 0.3596 |
-| `duration_s` | 2.278 |
+| `duration_s` | 2.106 |
 | `rocker_radius_m` | 0.283 |
 | `rocker_over_leg` | 0.3 |
 | `vault_point_foot_m` | 0.08199 |
@@ -30,7 +30,7 @@
 | `plantarflex_rad` | 0.45 |
 | `push_off_effort` | 1 |
 | `push_off_work_J` | 55.23 |
-| `push_off_power_W` | 85.53 |
+| `push_off_power_W` | 92.53 |
 | `com_work_per_stride_J` | 65.96 |
 | `ankle_work_share` | 0.4557 |
 | `ankle_work_share_literature` | 0.475 |

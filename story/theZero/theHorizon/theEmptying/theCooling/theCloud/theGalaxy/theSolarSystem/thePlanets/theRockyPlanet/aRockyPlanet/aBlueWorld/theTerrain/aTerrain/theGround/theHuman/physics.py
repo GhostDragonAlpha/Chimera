@@ -42,8 +42,11 @@ COM_FRAC = 0.575           # standing centre of mass, as a fraction of height
 # audit reaches it and nothing connects it to the stature it multiplies. Measured: standing eye
 # height is 0.936 of stature (Dempster; NASA-STD-3000 gives 0.933-0.939 across percentiles).
 EYE_FRAC = 0.936
-LEG_MASS_FRAC = 0.161      # one whole leg, as a fraction of body mass
-LEG_COM_FRAC = 0.447       # the leg's own CoM, measured down the leg from the hip
+# LEG_MASS_FRAC AND LEG_COM_FRAC ARE GONE. They were 0.161 and 0.447 -- Dempster (1955), measured on
+# EIGHT CADAVERS, and still the most-quoted figures anywhere. They now come from `story/measured.py`,
+# which holds de Leva (1996): Zatsiorsky's GAMMA-RAY SCANS OF 100 LIVING ADULTS, re-referenced to
+# joint centres. The whole leg comes out at 0.1986 rather than 0.161 -- 23% heavier -- and a leg's
+# mass is what sets the swing period, which sets cadence.
 
 BMI_REF = 22.5             # a healthy body mass index; mass = BMI * h^2 is the allometry
 FOOT_WIDTH_FRAC = 0.055    # foot area comes out of length x width, both from stature
@@ -280,15 +283,24 @@ def body_mass(h):
     return BMI_REF * h * h
 
 
-def leg_inertia(h, m):
-    """The swinging leg as a compound pendulum about the hip: a rod-like limb of mass m_leg whose own
-    centre sits 0.447 of the way down. I = m_leg * (k^2 + d^2), and the radius of gyration of a limb
-    is about 0.326 of its length."""
-    L = LEG_FRAC * h
-    m_leg = LEG_MASS_FRAC * m
-    d = LEG_COM_FRAC * L
-    k = 0.326 * L
-    return m_leg * (k * k + d * d), m_leg, d
+def leg_inertia(h, m, sex="male"):
+    """The swinging leg as a compound pendulum about the hip -- COMPOSED FROM THREE MEASURED SEGMENTS
+    rather than approximated as one rod.
+
+    This used to model the whole leg as a single rod: mass 0.161 of the body (Dempster, 8 cadavers),
+    centre at 0.447 of its length, radius of gyration "about 0.326 of its length". All three were
+    assertions, and the composite disagrees with them by 19%.
+
+    measured.leg_inertia_about_hip() sums m(k^2 + d^2) over thigh, shank and foot using de Leva's
+    per-segment masses, centres and gyration radii, with the parallel-axis theorem doing the rest.
+
+    IT LANDS WHERE THE MODEL DOES. The composite gives I = 2.890 kg m^2; this studio's own
+    measurement off myobody, recorded in CLAUDE.md, was 2.879 -- 0.4% apart from two independent
+    sources, where the rod approximation was 24% away from both. (The two bodies differ in mass and
+    in leg length, so some of that agreement is luck; the direction of the correction is not.)"""
+    import measured
+    r = measured.leg_inertia_about_hip(h, m, THIGH_FRAC, SHANK_FRAC, FOOT_LEN_FRAC, sex)
+    return r["I_hip_kgm2"], r["leg_mass_kg"], r["leg_com_from_hip_m"]
 
 
 def fall_rate(g, com_h):
@@ -495,6 +507,10 @@ def derive(parent, free):
         "eye_height_m": EYE_FRAC * h,          # what a first-person camera sits at, derived here
         "leg_length_m": leg_L,
         "leg_inertia_kgm2": I_leg,
+        # WHERE THE BODY'S NUMBERS CAME FROM, carried so a reader need not trust a comment.
+        "anthropometry_source": "de Leva 1996 (Zatsiorsky gamma-ray, 100 living adults)",
+        "leg_mass_frac": m_leg / m,
+        "segment_lengths_are_sourced": False,   # THIGH/SHANK/FOOT fractions are still this repo's
         "leg_mass_kg": m_leg,
         "g": g,
 

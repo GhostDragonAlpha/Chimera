@@ -2,7 +2,7 @@
   "extent_m": 1.8764069415641838,
   "crown_local": 1.0254911192663372,
   "sole_local": -0.028670083859608897,
-  "duration_s": 3.7968846268827474,
+  "duration_s": 3.5097985626471693,
   "name": "aSealedHuman",
   "class_reason": "no pressure shell required -- above the Armstrong limit",
   "T_air_C": 6.0408308653023255,
@@ -33,7 +33,7 @@
   "height_m": 1.78,
   "leg_length_m": 0.9434,
   "com_height_m": 1.0234999999999999,
-  "stride_m": 0.6488485874303189,
+  "stride_m": 0.5997885275245438,
   "gait_cycle": [
     [
       0.532296,
