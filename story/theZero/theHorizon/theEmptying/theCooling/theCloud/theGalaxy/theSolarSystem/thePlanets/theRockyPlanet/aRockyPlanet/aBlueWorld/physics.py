@@ -245,7 +245,10 @@ def derive(parent, free):
 
     # The greenhouse this world's own air can produce. Earth's total depth of 0.835, split into the
     # non-condensing background and CO2's share, scaled by the column this world actually holds.
-    col = float(parent.get("column_rel", 1.0))
+    # NO DEFAULT. The 1.0 that used to sit here was DORMANT -- aRockyPlanet does carry 0.7206 -- but
+    # load-bearing: had it ever fired, the greenhouse depth would have jumped by 1/0.7206 = 1.39x and
+    # taken the whole climate with it, silently, with the fixed point still converging happily.
+    col = float(parent["column_rel"])
     tau_dry = EARTH_TAU * 0.75 * col if has_air else 0.0
     tau_c0 = EARTH_TAU * 0.25 * col if has_air else 0.0
     c_cap = 100.0 * (M / M_EARTH)                          # the carbon it has to work with
@@ -288,10 +291,15 @@ def derive(parent, free):
     Om = 2.0 * pi / float(parent["day_s"])
     g_here = float(parent["g"])
     wind_scale = g_here * H_atm * DT_POLE / (2.0 * Om * T * (pi * R / 2.0))
-    wind_aloft_45, wind_surf_45 = thermal_wind(g_here, H_atm, DT_POLE, T, R,
-                                              float(parent["day_s"]), 45.0)
-    rossby = rossby_number(wind_aloft_45, R, float(parent["day_s"]), 45.0)
+    # THE REFERENCE LATITUDE IS DERIVED, NOT PICKED. This reported a value at a typed 45 degrees,
+    # which the audit rightly flagged as a literal -- and 45 is not a place in this story. The Hadley
+    # edge IS a place this membrane derives, and it is the RIGHT place: a subtropical jet sits at the
+    # poleward edge of the Hadley cell, so reporting the wind there reports the fastest wind the
+    # world has rather than an arbitrary sample of it.
     hadley = hadley_edge_deg(g_here, H_atm, DT_POLE, T, R, float(parent["day_s"]))
+    wind_aloft_45, wind_surf_45 = thermal_wind(g_here, H_atm, DT_POLE, T, R,
+                                               float(parent["day_s"]), hadley)
+    rossby = rossby_number(wind_aloft_45, R, float(parent["day_s"]), hadley)
     # Earth through the SAME formula, so the comparison is model-to-model rather than model-to-fact.
     hadley_earth = hadley_edge_deg(9.80665, 8000.0, 40.0, 288.0, 6.371e6, 86400.0)
 
@@ -328,7 +336,7 @@ def derive(parent, free):
         "wind_boundary_fraction": BOUNDARY_FRACTION,
         "atmosphere_scale_height_m": H_atm,
         # one reported value, at a reference latitude that is deliberately NOT a place in this story
-        "wind_reference_lat_deg": 45.0,
+        "wind_reference_lat_deg": hadley,     # derived: the Hadley edge, where the jet is
         "wind_geostrophic_ms": wind_aloft_45,
         "wind_surface_ms": wind_surf_45,
         "rossby_number": rossby,
@@ -351,7 +359,8 @@ def derive(parent, free):
         # carried down so a surface can be stood on: relief needs gravity and a sea level.
         "g": float(parent["g"]),
         "R": R, "M": M,
-        "S_earth": float(parent.get("S_earth", 1.0)),
+        # NO DEFAULT. A 1.0 here is not "nothing" -- it is a full Earth's insolation, served silently.
+        "S_earth": float(parent["S_earth"]),
         "days_per_year": float(parent["days_per_year"]),
         # THE DAY, CARRIED. Dropping it here silently cost the terrain its spin: theTerrain asked
         # for `parent.get("day_s", 86400.0)`, got the default, and ran a 24-hour movie no matter

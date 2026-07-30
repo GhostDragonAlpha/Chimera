@@ -194,7 +194,12 @@ def derive(parent, free):
     # WHAT CARVES IT. Land above the parent's ice line is under ice; the rest gets rain, if there is
     # liquid water to rain. Land is spread evenly over latitude, so the glaciated share of the LAND
     # is the same as the glaciated share of the world.
-    glac = float(parent.get("ice_fraction", 0.0))
+    # NO DEFAULT. This was `parent.get("ice_fraction", 0.0)`, which the audit could not see because
+    # its get-default check exempted 0 and 1. A 0.0 here reports an ice-free world: carving_class
+    # would be pinned to "River" forever and the terrain's latitude -- derived as half the ice-line
+    # latitude -- would jump to 45 degrees. Dormant only for as long as the chain above keeps
+    # carrying ice.
+    glac = float(parent["ice_fraction"])
     has_liquid = parent.get("water_state") == "liquid"
     cls, why = carving_class(land, glac, has_liquid, bool(parent.get("has_atmosphere")))
 
@@ -253,8 +258,8 @@ def derive(parent, free):
         "T_surface": float(parent["T_surface"]),
         "dT_equator_pole": float(parent["dT_equator_pole"]),   # the parent's profile, carried not copied
         "lapse_rate_K_per_km": 0.66 * g / 1005.0 * 1e3,
-        "S_earth": float(parent.get("S_earth", 1.0)),
-        "P_surface_bar": float(parent.get("P_surface_bar", 1.0)),
+        "S_earth": float(parent["S_earth"]),
+        "P_surface_bar": float(parent["P_surface_bar"]),
         "scale_height_m": float(parent["scale_height_m"]),
         "surface_rgb": list(parent.get("surface_rgb", [0.09, 0.22, 0.42])),
         "T_star_surface": float(parent["T_star_surface"]),

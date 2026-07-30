@@ -111,7 +111,10 @@ def derive(parent, free):
 
     # AND WHAT THE PARENT ALLOCATED. theHuman sized the same load from a per-day figure rather than
     # from stoichiometry; this membrane can check it, because it derived the chemistry.
-    allocated = float(parent.get("suit_mass_kg", 0.0)) - 8.0     # garment is 8 kg; the rest is stores
+    # NO DEFAULT. A 0.0 here would report the parent as having allocated MINUS eight kilograms of
+    # stores, and then compute a negative endurance from it -- an audit of a number that was never
+    # there, which is worse than no audit. The 8 kg is aHuman's own garment mass; the rest is stores.
+    allocated = float(parent["suit_mass_kg"]) - 8.0
     shortfall_kg = consumables_kg - allocated
     endurance_on_allocation_h = (hours * allocated / consumables_kg) if consumables_kg > 0 else 0.0
 

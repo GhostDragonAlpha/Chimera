@@ -93,10 +93,23 @@ def typed_literals(folder: Path) -> list:
             src = node.func.value
             if not (isinstance(src, ast.Name) and src.id == "parent"):
                 continue
+            # NO 0-OR-1 EXEMPTION HERE, and the asymmetry with the literal scan above is deliberate.
+            #
+            # A bare 0 or 1 in a return dict is usually a flag or a trivially-true count, so the
+            # literal check skips it to stay readable. A 0 or 1 as a `parent.get()` DEFAULT is the
+            # opposite: it is the most dangerous value there is, because it reads as "nothing" while
+            # being physically loaded. `parent.get("S_earth", 1.0)` serves a full Earth's insolation.
+            # `parent.get("scale_height_m", 0.0)` makes the thermal wind INFINITE.
+            #
+            # This exemption made the instrument lie. With it in place the audit reported ZERO
+            # get-defaults while SEVEN were live in the tree -- including theTerrain's
+            # `parent.get('ice_fraction', 0.0)`, the direct upstream of the one just hardened in
+            # aTerrain, where a 0.0 would pin carving_class to "River" forever and move the terrain
+            # to 45 degrees latitude. A checker that says "clean" when it is not is worse than no
+            # checker, because it is trusted.
             k, d = node.args
             if isinstance(k, ast.Constant) and isinstance(d, ast.Constant) \
-                    and isinstance(d.value, (int, float)) and not isinstance(d.value, bool) \
-                    and d.value not in (0, 1):
+                    and isinstance(d.value, (int, float)) and not isinstance(d.value, bool):
                 found.append((k.value, d.value, node.lineno, "get-default"))
     return found
 

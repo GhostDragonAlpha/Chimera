@@ -37,10 +37,10 @@
 | `wind_scale_ms` | 10.74 |
 | `wind_boundary_fraction` | 0.15 |
 | `atmosphere_scale_height_m` | 1.131e+04 |
-| `wind_reference_lat_deg` | 45 |
-| `wind_geostrophic_ms` | 15.19 |
-| `wind_surface_ms` | 2.279 |
-| `rossby_number` | 0.02811 |
+| `wind_reference_lat_deg` | 12.69 |
+| `wind_geostrophic_ms` | 48.91 |
+| `wind_surface_ms` | 7.336 |
+| `rossby_number` | 0.2912 |
 | `rotation_dominated` | True |
 | `banded_circulation` | True |
 | `hadley_edge_deg` | 12.69 |
