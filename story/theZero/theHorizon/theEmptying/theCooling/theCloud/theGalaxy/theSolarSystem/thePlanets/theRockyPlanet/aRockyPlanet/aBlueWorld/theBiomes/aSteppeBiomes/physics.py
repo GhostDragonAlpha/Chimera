@@ -24,8 +24,22 @@ from pathlib import Path
 import sys
 
 _HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(_HERE.parent))                     # read the law's table beside it
-from physics import WHITTAKER, biome_at, npp_miami        # noqa: E402  (the law's own tools)
+
+
+def _parent_law():
+    """Load the LAW from the folder above -- by EXPLICIT PATH, never by module name: the shared
+    sys.modules cache holds whichever membrane's 'physics' was imported first this grow."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("law_parent_biomes", _HERE.parent / "physics.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+_LAW = _parent_law()
+WHITTAKER = _LAW.WHITTAKER
+biome_at = _LAW.biome_at
+npp_miami = _LAW.npp_miami
 
 # MEASURED LIGHT for the living bands (the story's own spectral playbook):
 RED_EDGE_NM = (700.0, 750.0)              # vegetation's sharp NIR rise -- the Red Edge, measured

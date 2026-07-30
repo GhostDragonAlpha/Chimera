@@ -11,6 +11,7 @@
 |---|---|
 | `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — |
 | `theBiomes` | A biome is the largest community of life a climate can hold. Give a world's |
+| `theInterior` | A rocky planet is shells: the heavy sank and the light floated, so it has an |
 | `theOcean` | An ocean is a liquid that gravity holds in a world's basins. Everything else |
 | `theTerrain` | The last chapter said how much water there is but refused to say where the coast |
 
@@ -78,5 +79,15 @@
 | `T_star_surface` | 5839 |
 | `a_au` | 1.041 |
 | `L_star` | 4.169e+26 |
+| `core_radius_frac` | 0.4202 |
+| `core_R_m` | 2.209e+06 |
+| `core_mass_frac` | 0.1541 |
+| `dynamo` | True |
+| `magnetised` | True |
+| `heat_flux_W_m2` | 0.06629 |
+| `total_heat_TW` | 23.01 |
+| `interior_class` | Magnetised |
+| `central_pressure_Pa` | 1.791e+11 |
+| `rho_bulk` | 4815 |
 | `walk_run_per_sqrt_leg` | 1.881 |
 | `swing_period_per_sqrt_leg` | 2.362 |

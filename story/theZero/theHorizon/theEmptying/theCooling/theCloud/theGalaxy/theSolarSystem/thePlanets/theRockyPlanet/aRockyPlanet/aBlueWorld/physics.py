@@ -396,6 +396,19 @@ def derive(parent, free):
         # tides): the orbit and the light. A parent is what both children can see.
         "a_au": float(parent["a_au"]),
         "L_star": float(parent["L"]),
+        # THE PLANET'S INSIDE, carried for theInterior (the operator's call 2026-07-30: the rocky
+        # planet and the blue world are one planet -- the numbers pass through, they are never
+        # derived twice).
+        "core_radius_frac": float(parent["core_radius_frac"]),
+        "core_R_m": float(parent["core_R_m"]),
+        "core_mass_frac": float(parent["core_mass_frac"]),
+        "dynamo": bool(parent["dynamo"]),
+        "magnetised": bool(parent["magnetised"]),
+        "heat_flux_W_m2": float(parent["heat_flux_W_m2"]),
+        "total_heat_TW": float(parent["total_heat_TW"]),
+        "interior_class": parent["interior_class"],
+        "central_pressure_Pa": float(parent["central_pressure_Pa"]),
+        "rho_bulk": float(parent["rho_bulk"]),
         # the Froude LAW travels; the answer is computed by whatever has a leg
         "walk_run_per_sqrt_leg": float(parent["walk_run_per_sqrt_leg"]),
         "swing_period_per_sqrt_leg": float(parent["swing_period_per_sqrt_leg"]),

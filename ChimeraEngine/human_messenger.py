@@ -59,6 +59,9 @@ PHYSICS_READING = {
     "theGround": "a small human figure standing upright on a brown patch of stony ground that "
                  "holds it, the patch textured like soil or gravel, floating against a dark "
                  "background -- a person held by the ground",
+    "theInterior": "a planet cut open like a diagram: a thin dark rocky crust, a thick red-orange "
+                   "glowing mantle, and a bright yellow-white molten metal core at the center -- "
+                   "a layered cutaway sphere with a glowing hot center, not a whole planet",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 

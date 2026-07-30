@@ -77,6 +77,16 @@
   "T_star_surface": 5839.193528311371,
   "a_au": 1.0410162724297256,
   "L_star": 4.1687681474483326e+26,
+  "core_radius_frac": 0.42017954286135073,
+  "core_R_m": 2208519.615722188,
+  "core_mass_frac": 0.15405297157904876,
+  "dynamo": true,
+  "magnetised": true,
+  "heat_flux_W_m2": 0.06629156823490526,
+  "total_heat_TW": 23.014464305468856,
+  "interior_class": "Magnetised",
+  "central_pressure_Pa": 179100299390.12994,
+  "rho_bulk": 4815.42510634755,
   "walk_run_per_sqrt_leg": 1.8809734406992957,
   "swing_period_per_sqrt_leg": 2.362012584561864
 }
