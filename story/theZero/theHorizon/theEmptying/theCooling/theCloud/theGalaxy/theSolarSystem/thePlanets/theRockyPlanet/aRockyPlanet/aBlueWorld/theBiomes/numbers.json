@@ -1,0 +1,22 @@
+{
+  "extent_m": 5256133.129858125,
+  "duration_s": 33109445.99534087,
+  "g": 7.076122169232295,
+  "R": 5256133.129858125,
+  "T_surface": 279.1908308653023,
+  "T_equator": 294.1908308653023,
+  "dT_equator_pole": 45.0,
+  "ice_line_lat_deg": 43.14082338524095,
+  "dry_belt_lat_deg": 39.56833447106672,
+  "hadley_edge_deg": 12.69048579656414,
+  "obliquity_deg": 37.38250904743713,
+  "ocean_fraction": 0.6837938426374871,
+  "S_earth": 1.0048952107836961,
+  "T_star_surface": 5839.193528311371,
+  "day_s": 86400.0,
+  "year_s": 33109445.99534087,
+  "days_per_year": 383.21118050163045,
+  "lapse_rate_K_per_km": 4.64700560367494,
+  "whittaker_cells": 12,
+  "has_life_band": true
+}

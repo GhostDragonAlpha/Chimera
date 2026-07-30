@@ -53,6 +53,9 @@ PHYSICS_READING = {
                      "ring of air, not a solid ball",
     "theOcean": "a dark deep-blue water sphere or ocean world with a bright white sun glint on the "
                 "day side and white frozen polar regions; NO land, NO clouds -- open ocean alone",
+    "theBiomes": "a globe wrapped in horizontal climate BANDS by latitude: white frozen poles, "
+                 "dark green forest bands, tan-and-olive dry grassland belts, greener lush band "
+                 "near the equator -- a banded climate map, striped not random",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 
