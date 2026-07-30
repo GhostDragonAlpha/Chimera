@@ -284,27 +284,36 @@ class Engine:
         t["status"] = "classified"; self._save()
         return f"S3 CLASSIFY: {assignments}.  Next: {self.next_action(name)}"
 
-    def render(self, name: str) -> str:
+    def render(self, name: str, reading: str = "", aligns: str = "") -> str:
         """Produce the term's APPEARANCE and let the HUMAN DYAD judge it. Rendering is physics: the
         engine renders the term as a Gaussian-splat MOVIE (beginning->end, `splat_appearance.py`; the
         matplotlib `appearance.py` is a placeholder fallback). Then the HUMAN side reads it -- a vision
         LLM looks at the settled frame BLIND and its reading is cross-referenced to the physics
         (`human_messenger.py`) -> an alignment. The physics (a NUMBER) and the human (a TERM) are two
         DIFFERENT systems; a monad (physics reading its own pixels) is not proof. No vision model = the
-        operator is summoned; the human disagreeing means the physics is wrong -- start over."""
+        operator is summoned; the human disagreeing means the physics is wrong -- start over.
+        THE OPERATOR'S OVERRIDE (their rule): pass your own `reading` (what YOU see) + `aligns`
+        ('yes'/'no' or 0-1) and the judgment is authoritative -- taste terminates at the operator,
+        and the proxy is their proxy, not their superior."""
         import human_messenger
         movie = self._appearance(name)
         if not movie:
             return (f"REFUSED (APPEARANCE): `{name}` has no scene yet -- no splat movie and no "
                     f"placeholder projector. Rendering is physics; author its scene before proving.")
         frame = movie["end"]                                # the SETTLED end state (the record + the gallery still)
-        dyad = human_messenger.dyad(name, [movie["begin"], frame])   # judge the MOVIE (the unfolding), not just the still
+        override = None
+        if str(reading).strip():
+            a = str(aligns).strip().lower()
+            val = True if a in ("", "yes", "y", "true", "1") else (False if a in ("no", "n", "false", "0") else a)
+            override = {"reading": reading.strip(), "aligns": val}
+        dyad = human_messenger.dyad(name, [movie["begin"], frame], human_override=override)   # judge the MOVIE (the unfolding), not just the still
         t = self._term(name); t["visual"] = frame; t["movie"] = movie; t["dyad"] = dyad
         t["status"] = "rendered"; self._save()
+        who = "OPERATOR (authoritative eye)" if override else "vision proxy"
         if not dyad.get("pass"):
             return (f"APPEARANCE for `{name}` rendered ({frame}), but the DYAD did not hold "
-                    f"[{dyad.get('verdict')}]:\n  {dyad.get('detail', '')}")
-        return (f"APPEARANCE for `{name}`: splat movie ({movie['begin']} -> {frame}); the DYAD HOLDS.\n"
+                    f"[{dyad.get('verdict')}] [{who}]:\n  {dyad.get('detail', '')}")
+        return (f"APPEARANCE for `{name}`: splat movie ({movie['begin']} -> {frame}); the DYAD HOLDS [{who}].\n"
                 f"  {dyad.get('detail', '')}\nNext: {self.next_action(name)}")
 
     def hear(self, name: str, reading: str = "", aligns: str = "") -> str:

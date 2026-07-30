@@ -62,14 +62,16 @@ def classify(term: str, assignments: dict[str, str]) -> str:
 
 
 @mcp.tool()
-def render(term: str) -> str:
+def render(term: str, reading: str = "", aligns: str = "") -> str:
     """Render the term's appearance and let the HUMAN DYAD judge it. The engine renders a Gaussian-
     splat MOVIE (beginning->end; splat_appearance.py, with matplotlib as a placeholder fallback), then
     the HUMAN side -- a SEPARATE vision LLM + the operator -- reads it BLIND and cross-references to the
     physics (human_messenger.py) -> an alignment 0-1. Physics is a NUMBER, the human is a TERM: two
     different systems, never a monad. No vision model = FAIL and the operator is SUMMONED via CAPCOM;
-    the human disagreeing means the render is wrong -- start over. Only the operator's own reading overrides."""
-    return ENG.render(term)
+    the human disagreeing means the render is wrong -- start over. Only the operator's own reading
+    overrides: pass YOUR reading + aligns ('yes'/'no' or 0-1) and it is authoritative -- the
+    operator is the human terminal; the proxy is their proxy, not their superior."""
+    return ENG.render(term, reading=reading, aligns=aligns)
 
 
 @mcp.tool()

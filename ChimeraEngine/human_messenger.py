@@ -47,6 +47,10 @@ PHYSICS_READING = {
     "theTerrain": "a spherical world's solid surface seen from space with rugged, uneven RELIEF: large "
                   "dark-blue low basins, green lowland, and tan-and-brown higher ground -- a bumpy "
                   "topographic globe of basins, plains and uplands, not a smooth flat ball",
+    "theAtmosphere": "a thin translucent glowing shell or bubble of air with NO solid planet inside "
+                     "it -- pale blue-white on the brighter side, reddening to orange-red at the "
+                     "day-night edge, dark on the far side, with wispy white cloud streaks; a glowing "
+                     "ring of air, not a solid ball",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 

@@ -9,6 +9,7 @@
 
 | membrane | what it is |
 |---|---|
+| `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — |
 | `theTerrain` | The last chapter said how much water there is but refused to say where the coast |
 
 ## Hands down
