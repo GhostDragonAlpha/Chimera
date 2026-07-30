@@ -41,6 +41,11 @@
 | `stance_width_m` | 0.2025 |
 | `shoulder_width_m` | 0.4506 |
 | `stance_forced_by_suit` | True |
+| `knee_half_m` | 0.1406 |
+| `splay_deg` | 5.18 |
+| `thigh_gap_at_hip_m` | 0.015 |
+| `thigh_gap_at_knee_m` | 0.09375 |
+| `legs_would_touch_without_splay` | True |
 | `height_m` | 1.78 |
 | `leg_length_m` | 0.9434 |
 | `com_height_m` | 1.023 |

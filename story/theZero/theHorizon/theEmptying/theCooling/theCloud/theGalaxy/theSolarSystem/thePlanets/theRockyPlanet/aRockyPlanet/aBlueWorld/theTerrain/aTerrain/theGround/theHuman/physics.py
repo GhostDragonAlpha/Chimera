@@ -428,8 +428,10 @@ def emit(nums, t=1.0):
         # the knee bends only on the swing leg -- a stance knee stays near straight, which is what
         # makes walking cheap: the leg is a strut, not a spring.
         bend = max(0.0, -np.cos(phase + ph)) * 0.85
-        hipx = 0.055 * side
-        hip = np.array([hipx, 0.0, leg])
+        # LATERAL IS Y, NOT X -- the hip offset used to sit on X, the axis the leg swings along, so
+        # both legs were separated fore-aft and projected onto each other from the front. aHuman
+        # inherited the same mistake and its derived 20 cm stance rendered as zero.
+        hip = np.array([0.0, 0.055 * side, leg])
         knee = hip + np.array([np.sin(th_hip), 0.0, -np.cos(th_hip)]) * thigh
         th_knee = th_hip - bend
         ankle = knee + np.array([np.sin(th_knee), 0.0, -np.cos(th_knee)]) * shank
@@ -440,7 +442,7 @@ def emit(nums, t=1.0):
 
         # ARMS COUNTER-SWING, and they are not decoration: whole-body angular momentum stays near
         # zero, so the arms must go the way the opposite leg does not.
-        sh = np.array([0.085 * side, 0.0, 0.82])
+        sh = np.array([0.0, 0.085 * side, 0.82])           # lateral is Y -- see the note above
         th_sh = -0.55 * swing * np.sin(phase + ph)
         elbow = sh + np.array([np.sin(th_sh), 0.0, -np.cos(th_sh)]) * 0.186
         hand = elbow + np.array([np.sin(th_sh * 1.4), 0.0, -np.cos(th_sh * 1.4)]) * 0.146

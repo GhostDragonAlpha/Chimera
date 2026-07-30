@@ -199,7 +199,15 @@ def emit(nums, t=1.0):
     """
     from matter import blank, GLOW, AR, AG, AB
 
-    tt = float(t) % 1.0
+    # CLAMPED, NOT WRAPPED. `% 1.0` sent t=1.0 back to 0.0, so the film's last frame was its FIRST:
+    # the plate converged smoothly to clear as t -> 1 and then snapped back to fully fogged at
+    # exactly 1.0, a 15x jump at a single point, with buffer(0) == buffer(1) bit for bit.
+    #
+    # That matters far beyond this chapter, because the canonical still export renders exactly
+    # ("begin", 0.0) and ("end", 1.0) -- so a wrapped endpoint makes the two-frame comparison show
+    # NOTHING HAPPENING, and any check resting on it is blind. A CYCLE should wrap; this is a
+    # one-shot transient and its end is an end.
+    tt = min(max(float(t), 0.0), 1.0)
     rng = np.random.default_rng(53)
     n = 5200
 

@@ -235,7 +235,12 @@ def emit(nums, t=1.0):
     height = np.clip(P[:, 2] / 0.5, -1.0, 1.0)
     s = np.clip((1.0 - height) * 0.5 + 0.25 * front, 0.0, 1.0)
     # gas advects along s with the cycle, so the pattern MOVES
-    travel = (s - tt * 1.6) % 1.0
+    # AN INTEGER NUMBER OF TRANSITS PER CYCLE, or the loop does not close. This advected the field
+    # by 1.6 transits per breath, so at t = 1 the pattern sat 0.6 of a transit away from where it
+    # started and the movie popped 1.5x at the seam. A cyclic movie must return to its own first
+    # frame; 2.0 makes it do so exactly, and two loop transits per breath is also what the parent's
+    # own volumes say happens.
+    travel = (s - tt * 2.0) % 1.0
 
     # the mouth: where CO2 enters, at the lower front
     mouth = np.array([0.34, 0.0, -0.12])

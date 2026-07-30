@@ -85,6 +85,32 @@ render as a fused stalk with a bar across it. So the separations are derived fro
 *That* is why a suited person stands bow-legged with their arms held out. It is a clearance
 calculation, not a mannerism.
 
+**And the first version of this claim was false in the picture.** The widths were derived correctly
+and then applied to the **wrong axis** — the hip offset was written along X, the same axis the leg
+swings on, so the two legs were separated *fore-aft* and from the front projected exactly onto each
+other. The tell was camera-independent and damning: the figure measured **0.37 m across from the
+front and 0.97 m from the side.** A walking person is wider from the front. Fixed; it is now 0.586 m
+across, which is the derived 0.451 m of shoulder plus two arm radii, agreeing to 2%.
+
+### The legs have to splay, because the hip cannot move
+
+Widening the stance ran into bone. A human hip puts its joints **0.055 of stature** apart — 9.8 cm
+here. A suited thigh is **9.4 cm in radius**. So two thighs, 18.8 cm of them, are trying to fit a
+19.6 cm gap: they clear by **eight millimetres**, and from the front that reads as one tapering
+column. A pelvis is not adjustable.
+
+So the femur angles outward instead — the only degree of freedom left. Ask for a real gap at the
+knee (one thigh radius) and the tilt that delivers it over the thigh's length is
+
+| | |
+|---|---|
+| gap at the hip | **1.5 cm** — effectively touching |
+| **splay of the femur** | **5.18°** |
+| gap at the knee | **9.4 cm** |
+
+**Five degrees, and it is why every photograph of a suited person walking shows them bow-legged.**
+Not imitated — it is what is left when the hip is bone and the suit is thick.
+
 ## The limbs are surfaces now, not smoke
 
 The parent draws a **stick figure on purpose**: it claims only what it knows, and what it knows is a
@@ -101,6 +127,11 @@ Same skeleton, same derived gait, same phase driven by the same `t`. Only the sk
   this chapter might take its helmet off.
 - **The helmet and the rebreather are drawn, not derived as chapters.** They are shapes here; they
   should be membranes with their own laws — how much gas, how long outside, what the scrubber costs.
+- **The feet never leave the ground.** Measured across the cycle, the lowest contact plane rises and
+  falls by 4% of stature while *both* feet stay on it — duty factor near 1.0 for both, which by this
+  project's own gait doctrine is **a sled, not a gait**. A real walk lifts the swing foot 8–15%. This
+  is inherited from `theHuman`, not introduced here, and it contradicts the parent's own claim about
+  vaulting over a planted foot. It is the largest remaining defect in the figure.
 - **The suit does not yet get in the way.** It weighs on the gait (the parent computes cadence on the
   suited mass) but no joint is stiffer for wearing it. On this world that is nearly true. On a colder
   or thinner one it would be a lie.

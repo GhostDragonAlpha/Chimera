@@ -105,6 +105,19 @@ def derive(parent, free):
     hip_half = max(0.055 * h, r_thigh * 1.08)
     shoulder_half = max(0.085 * h, r_trunk + r_arm * 0.92)
 
+    # ── AND THE LEGS HAVE TO SPLAY, because the hip cannot move ────────────────────────────────
+    # A human hip puts its joints 0.055 of stature apart -- 9.8 cm here. A suited THIGH is 9.4 cm in
+    # RADIUS. So the two thighs are 18.8 cm of meat trying to fit into a 19.6 cm gap: they clear by
+    # eight millimetres, and the hip is bone, so widening it is not on offer.
+    #
+    # A body cannot widen its pelvis, so it angles the femur outward instead -- and that is not a
+    # mannerism to be imitated, it is the only remaining degree of freedom. The angle follows from
+    # asking for a real gap at the knee (one thigh radius) and seeing what tilt delivers it over the
+    # thigh's length. It comes out near 5 degrees, and it is why every photograph of a suited person
+    # walking shows them bow-legged.
+    knee_half = r_thigh * 1.5
+    splay_rad = math.asin(min(0.95, max(0.0, (knee_half - hip_half) / (THIGH_FRAC * h))))
+
     # ITS REAL SIZE, FROM THE SAME CONSTRUCTION emit() DRAWS. Stating `h + 2d + clearance` was a
     # plausible-looking sum and it disagreed with the body by 5 cm -- the render contradicting the
     # number it sits on. These two lines are the helmet crown and the boot sole as emit places them,
@@ -147,6 +160,11 @@ def derive(parent, free):
         "stance_width_m": 2.0 * hip_half,
         "shoulder_width_m": 2.0 * shoulder_half,
         "stance_forced_by_suit": hip_half > 0.055 * h,      # True = the suit, not the skeleton, sets it
+        "knee_half_m": knee_half,
+        "splay_deg": math.degrees(splay_rad),
+        "thigh_gap_at_hip_m": 2.0 * hip_half - 2.0 * r_thigh,
+        "thigh_gap_at_knee_m": 2.0 * knee_half - 2.0 * r_thigh,
+        "legs_would_touch_without_splay": (2.0 * hip_half - 2.0 * r_thigh) < r_thigh,
 
         # carried on: the body, the world, the clock
         "height_m": h,
@@ -249,6 +267,7 @@ def emit(nums, t=1.0):
     r_hl = float(nums["r_helmet_m"]) / H
     hip_half = float(nums["hip_half_m"]) / H
     sh_half = float(nums["shoulder_half_m"]) / H
+    splay = math.radians(float(nums["splay_deg"]))
 
     phase = 2.0 * math.pi * tt
     swing = 0.42                                    # hip flexion amplitude, the parent's number
@@ -262,17 +281,30 @@ def emit(nums, t=1.0):
     for side, ph in ((-1.0, 0.0), (1.0, math.pi)):
         th_hip = swing * math.sin(phase + ph)
         bend = max(0.0, -math.cos(phase + ph)) * 0.85
-        hip = np.array([hip_half * side, 0.0, leg])
-        knee = hip + np.array([math.sin(th_hip), 0.0, -math.cos(th_hip)]) * THIGH_FRAC
+        # LATERAL IS Y, NOT X. This is the bug that made the derived stance invisible: the hip
+        # offset was written on the X axis -- the SAME axis the leg swings along -- so the two legs
+        # were separated fore-aft instead of side to side, and from the front they projected exactly
+        # onto each other into one tapering column. The numbers were right and unused.
+        #
+        # The tell is camera-independent and damning: the figure measured 0.37 m across from the
+        # FRONT and 0.97 m from the SIDE. A walking person is wider from the front. Everything about
+        # the clearance calculation above was correct; it was being applied to the wrong axis.
+        hip = np.array([0.0, hip_half * side, leg])
+        # the femur carries the derived splay: it swings fore-aft in X-Z AND leans outward in Y, so
+        # the knee sits further from the midline than the hip does and the two legs actually part.
+        sp = math.sin(splay) * side
+        cs = math.cos(splay)
+        knee = hip + np.array([math.sin(th_hip) * cs, sp, -math.cos(th_hip) * cs]) * THIGH_FRAC
         th_kn = th_hip - bend
-        ankle = knee + np.array([math.sin(th_kn), 0.0, -math.cos(th_kn)]) * SHANK_FRAC
+        # the shank comes back toward vertical -- a knee is not a hinge that keeps the tilt
+        ankle = knee + np.array([math.sin(th_kn) * cs, sp * 0.25, -math.cos(th_kn) * cs]) * SHANK_FRAC
         add(_tube(hip, knee, r_th, r_sh * 1.15), 0)
         add(_tube(knee, ankle, r_sh * 1.15, r_sh), 0)
         # the boot: wider than the leg, because a sole spreads load -- the parent's foot_pressure
         toe = ankle + np.array([FOOT_LEN_FRAC, 0.0, 0.0])
         add(_tube(ankle - np.array([0.0, 0.0, r_sh * 0.5]), toe, r_sh * 1.25, r_sh * 0.75), 2)
 
-        sh = np.array([sh_half * side, 0.0, 0.82])
+        sh = np.array([0.0, sh_half * side, 0.82])          # lateral is Y -- see the note above
         th_s = -0.55 * swing * math.sin(phase + ph)
         elbow = sh + np.array([math.sin(th_s), 0.0, -math.cos(th_s)]) * UPPER_ARM_FRAC
         hand = elbow + np.array([math.sin(th_s * 1.4), 0.0, -math.cos(th_s * 1.4)]) * FOREARM_FRAC
