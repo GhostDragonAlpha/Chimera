@@ -306,8 +306,11 @@ def emit(nums, t=1.0):
     weathered = (d_mm > 8.0) & (rng.random(n) < 0.55)
     albedo[weathered] = oxide
 
-    # ONE DAY: the sun crosses at this latitude's height. The shadows are the point.
-    hour = 2.0 * pi * tt
+    # ONE DAY: the sun crosses at this latitude's height. The shadows are the point. The +0.9
+    # phase starts the film mid-morning, sun ~45 degrees up: the day-movie's two ends (t=0, t=1)
+    # share that readable light instead of opening on the sunrise graze, where the patch renders
+    # nearly black and the whole point -- stones, texture, shadows -- is invisible to the eye.
+    hour = 2.0 * pi * tt + 0.9
     alt = np.cos(np.radians(float(nums.get("latitude_deg", 31.0)))) * np.sin(hour)
     sun = np.array([np.cos(hour), 0.30, max(alt, 0.04)], np.float32)
     sun /= np.linalg.norm(sun)
