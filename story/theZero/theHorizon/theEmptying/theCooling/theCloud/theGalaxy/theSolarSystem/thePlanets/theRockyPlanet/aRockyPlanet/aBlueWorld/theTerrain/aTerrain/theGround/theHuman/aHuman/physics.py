@@ -73,28 +73,22 @@ def insulation_thickness(T_air_C, Q_W, A_m2):
     return K_INSUL_W_MK * float(A_m2) * dT / float(Q_W)
 
 
-def _hull_genomes():
-    """THE MEASURED MATERIAL LIBRARY, loaded like the parent loads ANSUR: real scans (truck,
-    train, bicycle -- painted steel, chrome, glass, rubber), k-means genomes persisted by
-    Construction/space_materials.py. APPEARANCE genomes -- albedo distributions with the capture
-    light baked in, which is exactly what an albedo channel needs; no roughness lives here."""
-    import json
-    from pathlib import Path
-    p = Path(__file__).resolve()
-    for q in p.parents:
-        f = q / "story" / "data" / "hull_material_genomes.json"
-        if f.exists():
-            return json.loads(f.read_text())
-    raise FileNotFoundError("hull_material_genomes.json -- run Construction/space_materials.py")
+# THE MANUFACTURED SCANS -- the scans whose vocabulary a pressure garment is made of
+# (painted metal, glass, rubber, fabric). Ground/wall/vegetation genomes are not a suit.
+MANUFACTURED_SCANS = ("truck", "train", "bicycle", "nike", "plush")
 
 
 def _pick_materials(lib):
     """WHICH MEASURED GENOME IS WHICH PART, by the same reasons the typed albedos claimed:
     the suit is a thermal instrument (brightest opaque genome), the visor rejects light (darkest),
-    and hardware is what is neither (nearest mid-grey). Derived from the distributions, so re-running
-    the library re-picks honestly. The operator ratifies the mapping -- taste terminates with him."""
-    opaque = [g for g in lib["genomes"] if g["features"]["opacity"]["mean"] > 0.9]
-    lum = {g["id"]: sum(g["features"][c]["mean"] for c in "RGB") / 3.0 for g in opaque}
+    and hardware is what is neither (nearest mid-grey). 2026-07-31: now picked from the JOINT
+    element codebook (story/data/material_genomes.json -- ONE k-means over 16 real scans,
+    Construction/material_elements.py) restricted to the genomes the MANUFACTURED scans carry,
+    so re-running the extraction re-picks honestly. The operator ratifies the mapping --
+    taste terminates with him."""
+    from matter import pick_genomes, genome_lum
+    cands = pick_genomes(MANUFACTURED_SCANS)
+    lum = {g["id"]: genome_lum(g) for g in cands}
     suit = max(lum, key=lum.get)
     visor = min(lum, key=lum.get)
     hardware = min((i for i in lum if i not in (suit, visor)), key=lambda i: abs(lum[i] - 0.5))
@@ -169,8 +163,10 @@ def derive(parent, free):
     # ── THE MATERIALS, MEASURED RATHER THAN TYPED (F1, 2026-07-31) ─────────────────────────────
     # Three flat albedos used to live in emit() as literals with a reasoned comment each. The
     # reasons were sound; the numbers were picked. Now the same reasons pick among MEASURED
-    # distributions: the hull genomes recovered from real scans by the Construction/ pipeline.
-    _lib = _hull_genomes()
+    # distributions: the joint element codebook extracted from 16 real 3DGS scans by
+    # Construction/material_elements.py (the operator's rule: the game is made from the scans).
+    from matter import material_genomes
+    _lib = material_genomes()
     _picks, _lums = _pick_materials(_lib)
     _g = {g["id"]: g for g in _lib["genomes"]}
 
@@ -209,7 +205,7 @@ def derive(parent, free):
         "visor_material": _mat_albedo(_picks["visor"]),
         "hardware_material": _mat_albedo(_picks["hardware"]),
         "visor_transmission": VISOR_TRANSMIT,    # DECLARED, the operator's dial -- see the constant
-        "materials_source": "story/data/hull_material_genomes.json (real scans; Construction/space_materials.py)",
+        "materials_source": "story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py)",
         # THE SKIN, CARRIED DOWN: the face inside the helmet is the parent's derived skin, and
         # the walker's relight wraps light around it by the measured subsurface reach.
         "skin_albedo_rgb": [float(v) for v in parent["skin_albedo_rgb"]],

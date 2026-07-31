@@ -158,3 +158,70 @@ def blackbody_rgb(T: float) -> tuple:
         return (1.0, 0.35 + 0.6 * f, 0.1 + 0.85 * f)
     f = min(1.0, (t - 5800.0) / 20000.0)
     return (1.0 - 0.35 * f, 1.0 - 0.15 * f, 1.0)
+
+
+# ══ THE MEASURED MATERIAL ELEMENTS ═══════════════════════════════════════════════════════════════
+# THE OPERATOR'S RULE (2026-07-31, verbatim): the game is made from 3DGS objects -- "extract the
+# shape and texture data", "extract certain elements and then train them all together". The elements
+# are the genomes of `story/data/material_genomes.json`: ONE joint k-means codebook over 16 real
+# captured scans (Construction/material_elements.py), so genome #k means the same material wherever
+# it is read. A membrane NEVER types a material colour when a genome covers it; where no scan exists
+# (ice, open water -- none in the collection) the constant stays and is FLAGGED, never quietly kept.
+#
+# These are APPEARANCE genomes: capture lighting is baked into R,G,B (that is what an albedo channel
+# consumes here -- lit() re-lights them), and no roughness/metalness is recoverable from splat colour.
+
+_GENOME_LIB = None
+
+
+def material_genomes() -> dict:
+    """The joint element codebook, loaded once. Walks up for story/data/material_genomes.json the
+    way theHuman's side walks up for ANSUR -- measured data, one file, every membrane reads it."""
+    global _GENOME_LIB
+    if _GENOME_LIB is None:
+        import json
+        from pathlib import Path
+        p = Path(__file__).resolve()
+        for q in p.parents:
+            f = q / "story" / "data" / "material_genomes.json"
+            if f.exists():
+                _GENOME_LIB = json.loads(f.read_text())
+                break
+        else:
+            raise FileNotFoundError("material_genomes.json -- run Construction/material_elements.py")
+    return _GENOME_LIB
+
+
+def genome_share(g: dict, scans) -> float:
+    """How much of a genome is carried by the named scans (its dominant_source fractions, summed)."""
+    return float(sum(g.get("dominant_source", {}).get(s, 0.0) for s in scans))
+
+
+def genome_rgb(g: dict) -> tuple:
+    f = g["features"]
+    return (f["R"]["mean"], f["G"]["mean"], f["B"]["mean"])
+
+
+def genome_lum(g: dict) -> float:
+    return sum(genome_rgb(g)) / 3.0
+
+
+def sample_genome_rgb(g: dict, rng, n: int) -> np.ndarray:
+    """n albedos DRAWN FROM THE MEASURED DISTRIBUTION (per-channel normal on the genome's own
+    mean/std, clipped to its measured p10..p90) -- never the centroid repeated: a real material
+    is a population, and the mottle IS the measurement."""
+    f = g["features"]
+    out = np.empty((n, 3), dtype=np.float32)
+    for i, c in enumerate("RGB"):
+        m, s = f[c]["mean"], f[c]["std"]
+        out[:, i] = np.clip(rng.normal(m, max(s, 1e-4), n), f[c]["p10"], f[c]["p90"])
+    return out
+
+
+def pick_genomes(scans, min_share: float = 0.20, min_opacity: float = 0.85) -> list:
+    """The genomes a set of scans CARRIES, for a membrane to map onto its roles. Mechanical,
+    declared, and the operator ratifies the mapping -- taste terminates with him, never here."""
+    lib = material_genomes()
+    return [g for g in lib["genomes"]
+            if genome_share(g, scans) >= min_share
+            and g["features"]["opacity"]["mean"] >= min_opacity]

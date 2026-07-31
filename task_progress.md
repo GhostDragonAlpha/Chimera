@@ -66,3 +66,56 @@ NEXT (docs/HUMAN_FEATURE_MENU.md order): F1 remainder is the operator's dials ab
 B1 foot IK. For the material pipeline: lunar-regolith sample (NASA avenues in SOURCES.md §2,
 JS-shell obstacle recorded) would close the Earth-analog caveat the same way — download +
 harvester + trainer, zero new code.
+
+---
+
+## 2026-07-31 (later) — F1 re-ruled: the game is made FROM the 3DGS scans (operator directive)
+
+**The ruling (verbatim): "you actually have to use 3DS objects and then extract the shape and
+texture data" — "I want you to be able to extract certain elements and then train them all
+together. You have to decide what portion of the total that we have."** The ambientCG/Poly
+Haven 2D-texture track above (committed 5d31b5d) stays in git but is the deviation he
+rejected; it is not extended.
+
+DONE, verified:
+- **Joint element extraction** (`Construction/material_elements.py`, new): ONE GPU k-means
+  (K=32, 60 iters, chunked cdist) over the 16 real 3DGS scans in the collection, opaque
+  splats only (op>0.5), 400k/scan cap, features [log_size_rel, aniso, R,G,B, opacity,
+  greenness]. Scans: truck/train/bicycle/garden/stump/treehill/nike/plush .splat
+  (WorldModel/training_data/downloads/), garden_tree.ply, ChristmasTree.ply,
+  dyl/{kitchen,counter,playroom,room-7k,bonsai}.splat, dyl/drjohnson_7k.ply. Persisted:
+  `story/data/material_genomes.json` (per genome: fraction, n_splats, features
+  mean/std/p10/p90, dominant_source, per-scene raw log-size medians in scene_units).
+- **Two measured bugs fixed**: (1) raw log_size is in per-capture units (medians -6.5 plush
+  to -4.25 bonsai) — feature is now per-scene-median-normalized log_size_rel; (2)
+  bonsai_tree.ply measured DEGENERATE (scale fields placeholder, median exactly 1.0, raw
+  outliers to e^88 — caused inf cluster sizes in v1) → excluded.
+- **Exclusions, all documented in material_elements.py**: gen_tree_*/warp_gen_*/molds
+  (synthetic = monad), fx/*.splatv (fire, wrong format), inria/ source photos (already
+  encoded in the .splat), inria_models.zip (14.7GB, already extracted), objaverse (GLB
+  meshes, not Gaussians), duplicate captures, bonsai_tree (above).
+- **Shared loader in `story/matter.py`**: material_genomes() (cached walk-up),
+  genome_share/genome_rgb/genome_lum, sample_genome_rgb (per-channel normal on mean/std
+  clipped to p10/p90), pick_genomes(scans, min_share, min_opacity).
+- **Membranes wired to the joint codebook** (mapping rules mechanical + declared, operator
+  ratifies): aHuman suit=#29 (white paint, brightest manufactured), visor=#03 (near-black,
+  darkest), hardware=#00 (mid-grey, nearest-0.5 luminance); theGround quartz=#24 /
+  feldspar=#09 / oxide=#28 (SKY_LUM_CAP=0.75 excludes sky-through-canopy clusters;
+  red-dominance filter on oxide — without it the rule picked the LEAF genome); aTerrain
+  veg=#26 (leaf green, greenest), rock=#24 (lightest under cap). Water stays typed
+  [0.10,0.20,0.30] with explicit **NO-OPEN-WATER-SCAN flag — no water scan exists**.
+- **Grow clean** (twice + once after all wiring); gallery restarted (PID 99744); renders
+  verified by eye: Saved/Images/f1/gs_theGround.jpg (mottled pale-buff/umber stones, no flat
+  constants), gs_aTerrain.jpg (steppe in leaf-genome #26 greens + rock mottle), gs_aHuman.jpg
+  (white #29 suit, dark visor, buff boots/pack #00). Honest caveat recorded: genome RGBs
+  carry capture lighting baked in.
+
+**No-scan gaps flagged, not silently kept**: ice/snow (matter_library ice entry), open water,
+rust/oxide-bearing metal (the oxide role is filled by umber soil #28 — the reddest thing in
+the collection). `Chimera/docs/matter/matter_library.json` deliberately NOT re-flipped a
+second time — whether its sand/rock/metal/ice entries should point at genomes (and which) is
+the operator's call, presented in chat.
+
+NEXT: operator ratifies/overrides the mappings + rules on matter_library + rules whether to
+download more 3DGS captures first (snow/ice, desert/rust). Then B1 foot IK
+(docs/HUMAN_FEATURE_MENU.md).

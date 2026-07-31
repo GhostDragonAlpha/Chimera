@@ -280,6 +280,27 @@ def _hack_exponent(recv, acc, z, n, dx):
     return float(a), L
 
 
+# THE GROUND SCANS + SKY CAP -- the same two declared dials theGround keeps: the captures that
+# carry soil/stone/vegetation, and the luminance above which a ground-scan genome is the SKY
+# through canopy, not a surface. One codebook (story/data/material_genomes.json), one rule.
+GROUND_SCANS = ("garden", "stump", "treehill", "garden_tree", "christmas_tree")
+SKY_LUM_CAP = 0.75
+
+
+def _surface_genomes():
+    """WHICH MEASURED GENOME FILLS WHICH SURFACE ROLE (2026-07-31 -- the typed veg/rock literals
+    are gone): vegetation = the GREENEST ground-carried genome (max G over max(R,B) -- the leaf
+    material the garden/tree scans measured), bare rock = the lightest under the sky cap (the
+    pale stone the garden's pavers measured). WATER IS NOT HERE: no open-water scan exists in
+    the collection, so the channel colour below stays typed and FLAGGED, not quietly kept."""
+    from matter import pick_genomes, genome_lum
+    cands = [g for g in pick_genomes(GROUND_SCANS) if genome_lum(g) <= SKY_LUM_CAP]
+    veg = max(cands, key=lambda g: g["features"]["G"]["mean"]
+              - max(g["features"]["R"]["mean"], g["features"]["B"]["mean"]))
+    rock = max(cands, key=genome_lum)
+    return {"veg": veg, "rock": rock}
+
+
 def derive(parent, free):
     if parent is None or "carved_by" not in parent:
         raise ValueError("aTerrain requires theTerrain as its parent")
@@ -325,6 +346,15 @@ def derive(parent, free):
 
     ang = np.degrees(np.arctan(slope))
     channels = acc > 40 * dx * dx
+
+    from matter import genome_rgb as _grgb
+    _sg = _surface_genomes()
+    _surface_materials = {
+        "veg": {"genome_id": _sg["veg"]["id"], "rgb_mean": [float(c) for c in _grgb(_sg["veg"])]},
+        "rock": {"genome_id": _sg["rock"]["id"], "rgb_mean": [float(c) for c in _grgb(_sg["rock"])]},
+        "water": {"genome_id": None, "rgb_mean": [0.10, 0.20, 0.30],
+                  "flag": "TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept"},
+    }
     return {
         # ITS REAL SIZE: the patch. Twelve kilometres -- a couple of hours on foot, which is the
         # unit that matters once there is a person.
@@ -355,6 +385,12 @@ def derive(parent, free):
         "drainage_density_per_km": float(channels.sum() * dx / (PATCH_M / 1e3) ** 2 / 1e3),
         "hack_exponent": hack,
         "carved_by": parent["carved_by"],
+
+        # THE SURFACE THE RENDER MUST WEAR (measured): which genome fills each role, so the
+        # numbers record what the picture shows. water_material is TYPED and flagged -- no
+        # open-water scan is in the collection (the operator was told 2026-07-31).
+        "surface_materials": _surface_materials,
+        "surface_source": "story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py)",
 
         # carried for anything that stands here
         "g": float(parent["g"]),
@@ -426,9 +462,14 @@ def emit(nums, t=1.0):
     ang = np.degrees(np.arctan(slope))
     channel = acc > 40 * dx * dx
     steep = ang > float(nums["repose_deg"]) * 0.8
-    water = np.array([0.10, 0.20, 0.30], np.float32)
-    veg = np.array([0.20, 0.28, 0.14], np.float32)
-    rock = np.array([0.34, 0.31, 0.27], np.float32)
+    # SURFACE COLOUR, MEASURED (2026-07-31): the typed veg/rock literals are gone -- each cell
+    # DRAWS its albedo from its role genome's measured distribution. water stays typed and
+    # FLAGGED (no open-water scan in the collection -- see _surface_genomes' docstring).
+    from matter import sample_genome_rgb
+    _sg = _surface_genomes()
+    water = np.array([0.10, 0.20, 0.30], np.float32)          # TYPED, FLAGGED: NO WATER SCAN
+    veg = sample_genome_rgb(_sg["veg"], rng, n * n)
+    rock = sample_genome_rgb(_sg["rock"], rng, n * n)
     albedo = np.where(channel[:, None], water, np.where(steep[:, None], rock, veg))
 
     # ONE DAY: the sun crosses. Its height is the latitude's, so the shadows are this place's.

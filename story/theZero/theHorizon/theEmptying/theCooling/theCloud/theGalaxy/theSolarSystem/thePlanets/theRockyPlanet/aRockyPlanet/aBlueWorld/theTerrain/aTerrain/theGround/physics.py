@@ -158,6 +158,39 @@ def sinkage(g, mass_kg=PROBE_MASS_KG, foot_m2=PROBE_AREA_M2):
     return 0.5 * (lo + hi)
 
 
+# THE GROUND SCANS -- the captures that carry soil, stone and forest floor. Manufactured goods
+# and interiors are not the ground. (The joint codebook: story/data/material_genomes.json.)
+GROUND_SCANS = ("garden", "stump", "treehill", "garden_tree", "christmas_tree")
+
+# THE SKY CAP, DECLARED: the ground scans also carry THE SKY through canopy gaps (stump /
+# christmas_tree bright clusters, luminance >~0.8). A stone is not the sky, so mineral roles are
+# picked under this luminance cap. A picture dial, not a fact -- the operator can move it.
+SKY_LUM_CAP = 0.75
+
+
+def _mineral_genomes():
+    """WHICH MEASURED GENOME FILLS WHICH MINERAL ROLE (2026-07-31 -- the typed quartz/feldspar/
+    oxide literals are gone; the ROLES stay, the numbers are now measured). The rule is
+    mechanical and declared: quartz = lightest ground-carried genome under the sky cap,
+    feldspar = the next lightest, oxide = the reddest RED-DOMINANT genome left over (max R-B
+    among R>G and R>B, roles distinct -- without the dominance test the rule picks the LEAF
+    genome, whose R-B is large while its G is larger still; a green oxide is a bug, not a
+    material). HONEST GAP, flagged: these are temperate vegetated captures -- no rust/oxide-
+    bearing scan is in the collection, so the oxide role gets the reddest soil there IS
+    (a dark umber), not a haematite red."""
+    from matter import pick_genomes, genome_lum
+    cands = [g for g in pick_genomes(GROUND_SCANS) if genome_lum(g) <= SKY_LUM_CAP]
+    by_lum = sorted(cands, key=genome_lum, reverse=True)
+    quartz, feldspar = by_lum[0], by_lum[1]
+    taken = {quartz["id"], feldspar["id"]}
+    red = [g for g in cands
+           if g["id"] not in taken
+           and g["features"]["R"]["mean"] > g["features"]["G"]["mean"]
+           and g["features"]["R"]["mean"] > g["features"]["B"]["mean"]]
+    oxide = max(red, key=lambda g: g["features"]["R"]["mean"] - g["features"]["B"]["mean"])
+    return {"quartz": quartz, "feldspar": feldspar, "oxide": oxide}
+
+
 def derive(parent, free):
     if parent is None or "mean_slope_deg" not in parent:
         raise ValueError("theGround requires aTerrain as its parent")
@@ -171,6 +204,13 @@ def derive(parent, free):
     q = bearing_capacity(g)
     sink = sinkage(g)
     press = PROBE_MASS_KG * g / PROBE_AREA_M2   # the REFERENCE load, not a person
+
+    # THE MINERALS THE RENDER MUST WEAR (measured): which genome fills each mineral role, so the
+    # numbers record what the picture shows -- the same contract aHuman's suit_material keeps.
+    _roles = _mineral_genomes()
+    from matter import genome_rgb
+    mineral_materials = {role: {"genome_id": g["id"], "rgb_mean": [float(c) for c in genome_rgb(g)]}
+                         for role, g in _roles.items()}
 
     return {
         # ITS REAL SIZE: four metres. The scale at which "the ground" stops being a surface and
@@ -206,6 +246,10 @@ def derive(parent, free):
         # ITS OWN DURATION: one day, inherited -- soil does not move on any timescale a person sees.
         "duration_s": float(parent["day_s"]),
 
+        "mineral_materials": mineral_materials,
+        "minerals_source": ("story/data/material_genomes.json -- quartz/feldspar/oxide ROLES "
+                            "filled by measured ground-scan genomes; oxide is the reddest soil "
+                            "in the collection (no rust-bearing scan exists -- flagged)"),
         "soil_depth_m": h_mean,
         "soil_depth_flat_m": h_flat,
         "soil_depth_steep_m": h_steep,
@@ -291,7 +335,7 @@ def emit(nums, t=1.0):
     ROUGH; at noon the shadows vanish and the same ground reads as flat. That is worth seeing,
     because it is the whole reason a real landscape is legible at all."""
     import numpy as np
-    from matter import blank, paint, lit, SOLID
+    from matter import blank, paint, lit, SOLID, sample_genome_rgb
 
     rng = np.random.default_rng(4141)
     tt = float(t)
@@ -325,15 +369,19 @@ def emit(nums, t=1.0):
     nrm /= (np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12)
     b[:, 21:24] = nrm
 
-    # MINERAL COLOUR, and the big grains are more weathered because they have been exposed longer
-    quartz = np.array([0.62, 0.60, 0.56], np.float32)
-    feldspar = np.array([0.52, 0.45, 0.35], np.float32)
-    oxide = np.array([0.42, 0.24, 0.14], np.float32)
+    # MINERAL COLOUR, MEASURED (2026-07-31): the typed quartz/feldspar/oxide literals are gone.
+    # The same three ROLES are filled by the joint element codebook's ground genomes, and every
+    # stone DRAWS its albedo from its role genome's measured distribution -- the mottle is the
+    # measurement. The big grains are still the weathered ones (exposed longest -> the oxide role).
+    _roles = _mineral_genomes()
+    alb_q = sample_genome_rgb(_roles["quartz"], rng, n)
+    alb_f = sample_genome_rgb(_roles["feldspar"], rng, n)
+    alb_o = sample_genome_rgb(_roles["oxide"], rng, n)
     pick = rng.random(n)
-    albedo = np.where((pick < 0.35)[:, None], quartz,
-                      np.where((pick < 0.80)[:, None], feldspar, oxide))
+    albedo = np.where((pick < 0.35)[:, None], alb_q,
+                      np.where((pick < 0.80)[:, None], alb_f, alb_o))
     weathered = (d_mm > 8.0) & (rng.random(n) < 0.55)
-    albedo[weathered] = oxide
+    albedo[weathered] = alb_o[weathered]
 
     # ONE DAY: the sun crosses at this latitude's height. The shadows are the point. The +0.9
     # phase starts the film mid-morning, sun ~45 degrees up: the day-movie's two ends (t=0, t=1)

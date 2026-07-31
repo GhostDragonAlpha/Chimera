@@ -14,6 +14,34 @@
   "drainage_density_per_km": 0.90234375,
   "hack_exponent": 0.5642591031530728,
   "carved_by": "River",
+  "surface_materials": {
+    "veg": {
+      "genome_id": 26,
+      "rgb_mean": [
+        0.5253729224205017,
+        0.6056915521621704,
+        0.34528759121894836
+      ]
+    },
+    "rock": {
+      "genome_id": 24,
+      "rgb_mean": [
+        0.7100783586502075,
+        0.707780122756958,
+        0.6420968770980835
+      ]
+    },
+    "water": {
+      "genome_id": null,
+      "rgb_mean": [
+        0.1,
+        0.2,
+        0.3
+      ],
+      "flag": "TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept"
+    }
+  },
+  "surface_source": "story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py)",
   "g": 7.076122169232295,
   "T_surface": 279.1908308653023,
   "lapse_rate_K_per_km": 4.64700560367494,
