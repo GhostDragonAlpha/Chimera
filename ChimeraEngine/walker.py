@@ -292,7 +292,9 @@ class Walker:
         self.z = height_at(0.0, 0.0)
         self.vz = 0.0
         self.on_ground = True
-        self.yaw = 0.0                 # radians, 0 = +Y
+        self.yaw = 0.0                 # radians, 0 = +Y  (the CAMERA's facing)
+        self.body_yaw = 0.0            # the FIGURE's facing -- eased toward velocity when moving,
+                                       # back toward the camera at rest (velocity-facing, A1)
         self.pitch = 0.0
         self.crouch = 0.0
         self.dist = 0.0                # ground actually covered -- the gait phase reads THIS
@@ -323,6 +325,24 @@ class Walker:
         ox, oy = self.x, self.y
         nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))
         ny = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.y + vy * dt))
+
+        # THE BODY FACES WHERE IT GOES, not where the camera looks (the operator's 360-degree
+        # law: walking any direction, the figure must turn to walk THAT way). The camera is
+        # `yaw`; the body's own facing is `body_yaw`, eased toward the velocity heading while
+        # moving and back toward the camera when standing still -- the blend every third-person
+        # game does, stated once here. Before this, the figure's legs did a forward gait while
+        # it slid sideways (the operator measured it at 1% of a human).
+        mvx, mvy = vx, vy
+        if abs(mvx) + abs(mvy) > 1e-9:
+            # atan2 (0 = +X) -> the walker's yaw convention (0 = +Y): subtract pi/2
+            heading = math.atan2(mvy, mvx) - math.pi / 2.0
+            d_yaw = (heading - self.body_yaw + math.pi) % (2.0 * math.pi) - math.pi
+            rate = 10.0
+            self.body_yaw += max(-rate * dt, min(rate * dt, d_yaw))
+        else:
+            d_yaw = (self.yaw - self.body_yaw + math.pi) % (2.0 * math.pi) - math.pi
+            rate = 3.0
+            self.body_yaw += max(-rate * dt, min(rate * dt, d_yaw))
 
         # A SLOPE YOU CANNOT STAND ON IS A SLOPE YOU CANNOT WALK UP, and the limit is the angle of
         # repose of the stuff underfoot: past it, loose material slides and so do you.
@@ -592,8 +612,8 @@ def body_buffer(w: Walker):
         _BODY_CACHE["sole"] = float(sum(lows) / len(lows))
     lift = -_BODY_CACHE["sole"]
 
-    # local +X (emit's walking direction) -> the walker's facing (yaw 0 = +Y)
-    a = w.yaw + math.pi / 2.0
+    # local +X (emit's walking direction) -> the FIGURE's facing (body_yaw, velocity-facing A1)
+    a = w.body_yaw + math.pi / 2.0
     c, s = math.cos(a), math.sin(a)
     x, y = b[:, 0].copy(), b[:, 1].copy()
     b[:, 0] = (x * c - y * s) * height + w.x
