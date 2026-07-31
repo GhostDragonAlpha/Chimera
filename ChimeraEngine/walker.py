@@ -312,9 +312,13 @@ class Walker:
         # forward is +Y rotated by yaw; strafe is its right-hand normal
         vx = (fwd * -s + strafe * c) * speed
         vy = (fwd * c + strafe * s) * speed
-        if fwd or strafe:
-            m = math.hypot(vx, vy)
-            vx, vy = vx / m * speed, vy / m * speed
+        # THE STICK'S DEFLECTION IS THE SPEED (the operator's analog law). A full key press is
+        # magnitude 1 -- full speed, diagonals included; a thumbstick at half deflection is half
+        # speed. This used to normalize ANY nonzero input to full speed, which killed the analog.
+        mag = math.hypot(fwd, strafe)
+        if mag > 0.0:
+            scale = min(1.0, mag) / mag
+            vx, vy = vx * scale, vy * scale
 
         ox, oy = self.x, self.y
         nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))

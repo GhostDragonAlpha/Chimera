@@ -28,6 +28,7 @@ jump from muscle work / g), read out of the Walker, because the body and the gro
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 # the states, named
@@ -53,6 +54,7 @@ class Drive:
     sprint: bool = False
     crouch: bool = False
     jump: bool = False
+    angle: float = 0.0            # the step direction (rad, player frame) -- for HUD/animation
 
 
 class Controller:
@@ -120,4 +122,47 @@ def drive_walker(walker, controller: Controller, keys: dict, dt: float):
     if d.turn_rate:
         walker.look(d.turn_rate * dt, 0.0)
     walker.move(d.fwd, d.strafe, d.sprint, d.jump, d.crouch, dt)
+    return d
+
+
+def drive_walker_vector(walker, controller: Controller, fwd: float, strafe: float,
+                        sprint: bool, crouch: bool, jump: bool, dt: float,
+                        turn_l: bool = False, turn_r: bool = False):
+    """THE STICK'S ANGLE IS THE STEP DIRECTION; ITS DEFLECTION IS THE SPEED (the operator's
+    control law for analog). A thumbstick hands in a full 360-degree vector; the keyboard's
+    eight key combinations are just eight of those directions. Both arrive here as (fwd,
+    strafe) FLOATS -- magnitude scales the speed, direction is the pair -- and the facing
+    rotates it, because Walker.move() already integrates in the player's own frame (the
+    Call-of-Duty rule: W is wherever you look). The named states still resolve for the HUD
+    and the animation, from the dominant axis; the drive carries the full analog vector."""
+    mag = min(1.0, (fwd * fwd + strafe * strafe) ** 0.5)
+    if controller.jumping:
+        if walker.on_ground:
+            controller.jumping = False
+            controller.state = controller._return_state
+        else:
+            return Drive(state=JUMP)
+    if jump and walker.on_ground:
+        controller._return_state = controller.state
+        controller.jumping = True
+        controller.state = JUMP
+        return Drive(state=JUMP, jump=True)
+    if turn_l:
+        controller.state = TURN_L
+        walker.look(TURN_RATE * dt, 0.0)
+    elif turn_r:
+        controller.state = TURN_R
+        walker.look(-TURN_RATE * dt, 0.0)
+    elif mag > 0.05:
+        # the HUD's nearest named direction; the DRIVE below stays analog
+        if abs(fwd) >= abs(strafe):
+            controller.state = WALK_F if fwd > 0 else WALK_B
+        else:
+            controller.state = SIDESTEP_R if strafe > 0 else SIDESTEP_L
+    else:
+        controller.state = IDLE
+    d = Drive(state=controller.state, fwd=fwd * (BACKWARD_FACTOR if fwd < 0 else 1.0),
+              strafe=strafe, sprint=bool(sprint), crouch=bool(crouch))
+    d.angle = math.atan2(strafe, fwd) if mag > 0.05 else 0.0
+    walker.move(d.fwd, d.strafe, d.sprint, False, d.crouch, dt)
     return d

@@ -111,10 +111,9 @@ class LiveViewer:
                         self._walk_in["mx"] = self._walk_in["my"] = 0.0
                         self._walk_in["jump"] = False
                     self._walk.look(wi["mx"], wi["my"])
-                    keys = {"fwd": wi["fwd"] > 0, "back": wi["fwd"] < 0,
-                            "left": wi["strafe"] < 0, "right": wi["strafe"] > 0,
-                            "sprint": wi["sprint"], "crouch": wi["crouch"], "jump": wi["jump"]}
-                    _ctl.drive_walker(self._walk, self._controller, keys, dt)
+                    _ctl.drive_walker_vector(self._walk, self._controller,
+                                             wi["fwd"], wi["strafe"], wi["sprint"],
+                                             wi["crouch"], wi["jump"], dt)
                     # the ground is rebuilt around the player only when they have moved far enough
                     # to matter -- the near shell is 180 m across, so a stride does not need one.
                     # Rebuilt when the player has moved far enough to matter, OR when the sun has --
@@ -1245,14 +1244,37 @@ showStand();
 /* ADOPT THE SERVER'S TRUTH ON LOAD: if a previous page stood up and closed, the stream is already
    first-person -- a fresh page must join that state, not draw orbit UI over a walking world. */
 fetch('/walk').then(x=>x.json()).then(r=>{ if(r&&r.walking){ enterWalkUI(); paintWalk(r); } }).catch(()=>{});
+/* THE THUMBSTICK, with its 360 degrees (the operator's law: the stick's angle is the step
+   direction, its deflection the speed). Left stick: move vector, full analog. Right stick: look.
+   A/cross: jump. RB/R1: sprint. The keyboard's 8 combinations are eight of those directions --
+   whichever input has the bigger magnitude wins each tick. */
+function readPad(){
+  if(!navigator.getGamepads) return null;
+  for(const p of navigator.getGamepads()){
+    if(!p||!p.connected) continue;
+    const dz=v=>Math.abs(v)<0.12?0:v;
+    const lx=dz(p.axes[0]||0), ly=dz(p.axes[1]||0), rx=dz(p.axes[2]||0), ry=dz(p.axes[3]||0);
+    if(lx||ly||rx||ry||p.buttons.some(b=>b.pressed))
+      return {fwd:-ly, strafe:lx, mx:rx*LOOK*6, my:ry*LOOK*6,
+              jump:!!(p.buttons[0]&&p.buttons[0].pressed),
+              sprint:!!((p.buttons[5]&&p.buttons[5].pressed)||(p.buttons[7]&&p.buttons[7].value>0.5))};
+  }
+  return null;
+}
 setInterval(async()=>{
   if(!WALKING) return;
-  const fwd=(KEY['KeyW']?1:0)-(KEY['KeyS']?1:0),
-        str=(KEY['KeyD']?1:0)-(KEY['KeyA']?1:0),
-        mx=mdx*LOOK, my=mdy*LOOK;
-  mdx=0; mdy=0;
-  const j=jumped; jumped=false;
-  const q='/walk?fwd='+fwd+'&strafe='+str+'&sprint='+(KEY['ShiftLeft']?1:0)+
+  let fwd=(KEY['KeyW']?1:0)-(KEY['KeyS']?1:0),
+      str=(KEY['KeyD']?1:0)-(KEY['KeyA']?1:0),
+      mx=mdx*LOOK, my=mdy*LOOK,
+      sprint=!!KEY['ShiftLeft'], j=jumped;
+  mdx=0; mdy=0; jumped=false;
+  const pad=readPad();
+  if(pad){
+    if(Math.hypot(pad.fwd,pad.strafe)>Math.hypot(fwd,str)){ fwd=pad.fwd; str=pad.strafe; }
+    mx+=pad.mx; my+=pad.my;
+    sprint=sprint||pad.sprint; j=j||pad.jump;
+  }
+  const q='/walk?fwd='+fwd.toFixed(3)+'&strafe='+str.toFixed(3)+'&sprint='+(sprint?1:0)+
           '&jump='+(j?1:0)+'&crouch='+((KEY['ControlLeft']||KEY['KeyC'])?1:0)+'&mx='+mx+'&my='+my;
   try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
 },33);
