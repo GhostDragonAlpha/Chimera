@@ -14,6 +14,13 @@
   "total_heat_TW": 23.014464305468856,
   "central_pressure_Pa": 179100299390.12994,
   "rho_bulk": 4815.42510634755,
+  "crust_element_fraction": {
+    "Fe": 0.056,
+    "Cu": 6e-05,
+    "Ni": 0.0,
+    "Pb": 1.4e-05
+  },
+  "geothermal_gradient_K_km": 22.097189411635085,
   "day_s": 86400.0,
   "a_au": 1.0410162724297256,
   "S_earth": 1.0048952107836961,

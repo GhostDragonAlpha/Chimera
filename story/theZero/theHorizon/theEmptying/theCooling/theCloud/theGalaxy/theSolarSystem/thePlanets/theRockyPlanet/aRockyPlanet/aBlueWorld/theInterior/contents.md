@@ -10,6 +10,7 @@
 | membrane | what it is |
 |---|---|
 | `aActiveInterior` | The inside this planet actually has: a working engine. 23 terawatts leaving |
+| `theMining` | An ore is a concentration: the interior's elements sit in the crust at |
 
 ## Hands down
 
@@ -30,6 +31,8 @@
 | `total_heat_TW` | 23.01 |
 | `central_pressure_Pa` | 1.791e+11 |
 | `rho_bulk` | 4815 |
+| `crust_element_fraction` | {'Fe': 0.056, 'Cu': 6e-05, 'Ni': 0.0, 'Pb': 1.4e-05} |
+| `geothermal_gradient_K_km` | 22.1 |
 | `day_s` | 8.64e+04 |
 | `a_au` | 1.041 |
 | `S_earth` | 1.005 |

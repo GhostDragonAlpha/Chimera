@@ -62,6 +62,9 @@ PHYSICS_READING = {
     "theInterior": "a planet cut open like a diagram: a thin dark rocky crust, a thick red-orange "
                    "glowing mantle, and a bright yellow-white molten metal core at the center -- "
                    "a layered cutaway sphere with a glowing hot center, not a whole planet",
+    "theMining": "an open-pit mine seen from above: terraced benches stepping down in rings or a "
+                 "spiral to a darker ore floor, in grey-brown rock with a red-brown rusty bottom "
+                 "-- a big stepped hole in the ground",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
 }
 

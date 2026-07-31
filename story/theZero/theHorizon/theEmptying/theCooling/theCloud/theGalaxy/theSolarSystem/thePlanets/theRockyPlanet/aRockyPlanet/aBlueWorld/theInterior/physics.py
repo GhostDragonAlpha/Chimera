@@ -75,6 +75,10 @@ def derive(parent, free):
         "total_heat_TW": heat_TW,
         "central_pressure_Pa": float(parent["central_pressure_Pa"]),
         "rho_bulk": float(parent["rho_bulk"]),
+        # the law's own facts the children compute with: the crust's measured abundances and the
+        # surface gradient (heat flux over conductivity -- the interior's own number, at home here)
+        "crust_element_fraction": CRUST_ABUNDANCE,
+        "geothermal_gradient_K_km": float(parent["heat_flux_W_m2"]) / 3.0 * 1e3,
         "day_s": float(parent.get("day_s", 86400.0)),
         "a_au": float(parent["a_au"]),
         "S_earth": float(parent.get("S_earth", 1.0)),
