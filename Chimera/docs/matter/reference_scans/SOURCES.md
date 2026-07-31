@@ -1,5 +1,33 @@
 # Reference Scan Sources — Material Appearance Training
 
+> **2026-07-31 AMENDMENT — THE DOWNLOADS HAPPENED.** The operator gave the consent in
+> live chat, verbatim and three times: *"everything is a sample that you have to train —
+> you'll have to download the samples and then train."* That unblocked the gate this
+> file's whole status section below describes. All 9 tier-5a files were fetched and
+> byte-verified against the §2 ledger (every size matches to the byte, including the
+> previously flagged `rock_surface` 1k: **886,291 bytes**, now a raw measured number):
+>
+> - `ambientcg/rock/Rock026_1K-JPG.zip` (7,285,475) · `ambientcg/regolith/Ground037_1K-JPG.zip`
+>   (10,574,958) · `ambientcg/ice/Snow004_1K-JPG.zip` (6,369,066) ·
+>   `ambientcg/metal/Metal049A_1K-JPG.zip` (2,744,738) — all extracted
+> - `polyhaven/rock/dark_rock_diff_{1k,2k}.jpg` (533,128 / 2,159,653),
+>   `polyhaven/rock/rock_surface_diff_1k.jpg` (886,291),
+>   `polyhaven/ice/snow_01_diff_{1k,2k}.jpg` (356,249 / 1,331,975)
+>
+> Non-color PBR maps (Normal/Roughness/Displacement/AO/Metalness) were moved OUT of the
+> harvest corpus to `docs/matter/pbr_maps/<material>/` so `iter_corpus_images()` never
+> ingests them as "photo"s. `core/material_harvester.py` now tags each material's
+> exemplar on the REAL ambientCG Color map's center tile (REAL_EXEMPLAR_PHOTOS), and the
+> full pipeline ran on the real corpus: all 16 harvested regions per material are real
+> ambientCG photo regions (zero synthetic placeholders), KILL CRITERION regolith vs
+> brushed_metal PASS (ratio 6.25), the harder regolith vs rock pair PASS (4.76), Julesz
+> adversarial probe PASS. Reference descriptor JSONs (`<material>.json` here) are now
+> computed from real pixels in LINEAR space with domain-identical formulas, and carry
+> real `roughness_mean`/`roughness_var` from the ambientCG Roughness maps plus
+> per-channel hue means. The synthetic placeholder corpus remains as the zero-download
+> fallback. The §"STATUS" section below is kept verbatim as the historical record of
+> the gate; its verdict no longer holds.
+
 > **2026-07-18 (tb-0190) supersedes this file's original tb-0175 content.** The old
 > catalog (Quixel/Sketchfab/ScanTheWorld-first) never distinguished "clean CC0 download"
 > from "needs an account," never confirmed a single real byte size, and predates the

@@ -1,0 +1,39 @@
+{
+  "objective": "material_appearance",
+  "score": 0.8348458791585908,
+  "measures": {
+    "albedo_mean_luminance": 0.340286610146657,
+    "albedo_std_luminance": 0.06523722195261757,
+    "albedo_skew_luminance": -0.023071393912831945,
+    "albedo_kurt_luminance": -0.18606513292674354,
+    "albedo_mean_r": 0.33441824985059704,
+    "albedo_mean_g": 0.3649053223341074,
+    "albedo_mean_b": 0.22891341430883722,
+    "luma_variance": 0.004255895128095087,
+    "chroma_variance": 0.036753463603071246,
+    "luma_chroma_ratio": 1.1677807884415528,
+    "roughness_mean": 0.5099482005684877,
+    "roughness_var": 0.0005940140702531124,
+    "albedo_mottle_var": 0.03786384135052892,
+    "dist_albedo_mean_luminance": 0.06904540313053396,
+    "dist_albedo_std_luminance": 0.5017260861875463,
+    "dist_albedo_skew_luminance": 1.0555632927472895,
+    "dist_albedo_kurt_luminance": 0.034448991028671765,
+    "dist_albedo_mean_r": 0.05113901198534139,
+    "dist_albedo_mean_g": 0.14150045555687188,
+    "dist_albedo_mean_b": 0.2656257130207915,
+    "dist_luma_variance": 0.7516830752716221,
+    "dist_chroma_variance": 0.7844652738800779,
+    "dist_luma_chroma_ratio": 0.1637192229411364,
+    "dist_roughness_mean": 0.00021124758453299017,
+    "dist_roughness_var": 0.08874954502007089
+  },
+  "genome": {
+    "albedo_r": 0.334070265746798,
+    "albedo_g": 0.3645256144335348,
+    "albedo_b": 0.2286752149002779,
+    "albedo_mottle_var": 0.03786384135052892,
+    "roughness_mean": 0.5099482005684877,
+    "roughness_var": 0.0005940140702531124
+  }
+}

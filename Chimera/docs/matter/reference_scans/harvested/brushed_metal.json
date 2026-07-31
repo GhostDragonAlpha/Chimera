@@ -1,159 +1,159 @@
 {
   "material": "brushed_metal",
   "exemplar": {
-    "photo": "synthetic_placeholder/brushed_metal_01.png",
+    "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "note": "NO REFERENCE, NO VERDICT \u2014 this exemplar is a provisional-tag stand-in until a human supplies the reference tag; every result below inherits that provisionality.",
   "regions": [
     {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
       "yx": [
-        40,
-        40
-      ],
-      "distance": 0.7365363475054704,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        120,
-        0
-      ],
-      "distance": 0.8555690561439667,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        80,
-        280
-      ],
-      "distance": 1.146616476492923,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        280,
+        480,
         160
       ],
-      "distance": 1.2934224985687657,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.020045488536361976,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        160,
-        160
-      ],
-      "distance": 1.302203335586329,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        80,
-        120
-      ],
-      "distance": 1.3356217471301346,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        0,
-        200
-      ],
-      "distance": 1.3672640039997672,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        40,
-        80
-      ],
-      "distance": 1.378674154575478,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        160,
-        280
-      ],
-      "distance": 1.5075174629051056,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        40,
-        0
-      ],
-      "distance": 1.5264830491204906,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        0,
-        280
-      ],
-      "distance": 1.6410590707896084,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
-      "yx": [
-        40,
-        280
-      ],
-      "distance": 1.6805933633981105,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
       "yx": [
         280,
-        40
+        680
       ],
-      "distance": 1.7684960894599941,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.02037125461695977,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
       "yx": [
         160,
-        240
+        800
       ],
-      "distance": 1.7730108228252108,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.023240750115369784,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        40
+        480,
+        400
       ],
-      "distance": 1.8557630269304326,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.023878844745788864,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/brushed_metal_01.png",
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
       "yx": [
-        200,
-        200
+        720,
+        800
       ],
-      "distance": 1.8734032419045372,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.024901267848768813,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        320,
+        960
+      ],
+      "distance": 0.025009384788205826,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        480,
+        640
+      ],
+      "distance": 0.02529566721011794,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        880,
+        760
+      ],
+      "distance": 0.025474246245107298,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        760,
+        560
+      ],
+      "distance": 0.026276174569862018,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        40,
+        800
+      ],
+      "distance": 0.026367215151644342,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        240,
+        520
+      ],
+      "distance": 0.02654228083048766,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        240,
+        360
+      ],
+      "distance": 0.026803110848625918,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        800,
+        320
+      ],
+      "distance": 0.026936001429986766,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        840,
+        440
+      ],
+      "distance": 0.02791249233815701,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        960,
+        480
+      ],
+      "distance": 0.028106258242974035,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+      "yx": [
+        160,
+        720
+      ],
+      "distance": 0.02810892967210361,
+      "provenance": "photo"
     }
   ]
 }

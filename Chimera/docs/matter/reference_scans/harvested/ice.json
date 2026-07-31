@@ -1,159 +1,159 @@
 {
   "material": "ice",
   "exemplar": {
-    "photo": "synthetic_placeholder/ice_01.png",
+    "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "note": "NO REFERENCE, NO VERDICT \u2014 this exemplar is a provisional-tag stand-in until a human supplies the reference tag; every result below inherits that provisionality.",
   "regions": [
     {
-      "photo": "synthetic_placeholder/ice_01.png",
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
       "yx": [
-        40,
-        120
+        560,
+        960
       ],
-      "distance": 0.1517324280526773,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.044900706800637506,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/ice_01.png",
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
       "yx": [
-        160,
-        40
-      ],
-      "distance": 0.16294697297203423,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        240,
-        0
-      ],
-      "distance": 0.2476763067861101,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        120,
-        80
-      ],
-      "distance": 0.3601293191023323,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        80,
-        0
-      ],
-      "distance": 0.4023464650108601,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        280,
-        40
-      ],
-      "distance": 0.4029795148233821,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        240,
-        40
-      ],
-      "distance": 0.40576998792402813,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        240,
-        240
-      ],
-      "distance": 0.40608265849476155,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        160,
-        120
-      ],
-      "distance": 0.423931439130313,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        40,
-        240
-      ],
-      "distance": 0.4278886898772604,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        120,
-        200
-      ],
-      "distance": 0.432856687043387,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        80,
-        80
-      ],
-      "distance": 0.4353747783671773,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        120,
+        720,
         160
       ],
-      "distance": 0.44026923887658376,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.059563708955606344,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/ice_01.png",
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
       "yx": [
-        80,
+        520,
+        440
+      ],
+      "distance": 0.07045695159414729,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        640,
+        720
+      ],
+      "distance": 0.07363365573976739,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        760,
+        160
+      ],
+      "distance": 0.07615169595926728,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        640,
+        440
+      ],
+      "distance": 0.07852277690849284,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        560,
+        880
+      ],
+      "distance": 0.08520656418022447,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        600,
+        280
+      ],
+      "distance": 0.0852098906016913,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        360,
+        640
+      ],
+      "distance": 0.08610258410573778,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        600,
+        320
+      ],
+      "distance": 0.09117247222570257,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        960,
+        720
+      ],
+      "distance": 0.09126950464262308,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        640,
+        880
+      ],
+      "distance": 0.09308677949814455,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        480,
+        520
+      ],
+      "distance": 0.09423253982676243,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        320,
+        600
+      ],
+      "distance": 0.09648956141261432,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+      "yx": [
+        760,
         200
       ],
-      "distance": 0.4503174583654051,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.09674557197251767,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/ice_01.png",
+      "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        0
+        400,
+        400
       ],
-      "distance": 0.45164240243414616,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/ice_01.png",
-      "yx": [
-        160,
-        80
-      ],
-      "distance": 0.48516617905987774,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.09694271076784362,
+      "provenance": "photo"
     }
   ]
 }

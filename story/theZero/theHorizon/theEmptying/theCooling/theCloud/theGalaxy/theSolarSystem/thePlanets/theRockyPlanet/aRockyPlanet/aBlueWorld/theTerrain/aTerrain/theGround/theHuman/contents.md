@@ -16,7 +16,7 @@
 | `theGrip` | The story has Vance clamp to a sheer rock face and walk it like a floor. That is not a movement mode, it is a DIFFERENT CONTACT LAW: everything `theAnkle` derived assumes the support force opposes gravity, and here it opposes an arbitrary surface normal |
 | `theHand` | What the person can do to things. The manual's own control law lives here: COMMAND THE PROCESS, NOT THE POSITION — the hand closes until it cannot, and the OBJECT decides where the fingers land. One GRAB serves a pin and a bowling ball |
 | `theLoad` | A suit hopper full of ore is mass, and mass is already load-bearing in this tree — `theHuman` computes its cadence and foot pressure from the SUITED mass. Everything picked up should move those numbers, and right now nothing does |
-| `theSkin` | The suit's insulation is derived in `aHuman` and the body's heat is derived in `theSweep`, but nothing derives the surface between them — or what happens when something goes through it. The story's only injury is a laser graze and a coagulant |
+| `theSkin` | The suit's insulation is derived in `aHuman` and the body's heat is derived in `theSweep`, and now the surface between them is derived too: skin is a 60-micron melanin filter crossed twice, over blood-bearing collagen that diffuses light — red furthest, which is why a finger glows red against a torch. What happens when something goes THROUGH it is still open: the story's only injury is a laser graze and a coagulant |
 | `theStance` | Standing is one posture out of six the story uses, and the other five are missing. Each changes the contact patch, the centre of mass height, and therefore the whole balance problem `theHuman` solved once for standing |
 | `theThrust` | The story drifts Vance across a crater rim on jetpack in low gravity, and stands him in a depressurised hold in zero-G. Every locomotion law in this tree so far needs a foot on something. This one has none, and none of them apply |
 
@@ -64,6 +64,14 @@
 | `excursion_hours` | 8 |
 | `suit_weight_N` | 70.16 |
 | `bare_mass_kg` | 84.59 |
+| `melanin_fraction` | 0.135 |
+| `melanin_class` | moderate |
+| `skin_albedo_rgb` | [0.3318595067449445, 0.20134575735912405, 0.12327406515688077] |
+| `skin_bands_nm` | [615.0, 535.0, 465.0] |
+| `skin_sss_mfp_mm` | [0.36432813188367275, 0.24043726380671876, 0.1560017163632821] |
+| `skin_area_m2` | 2.007 |
+| `skin_blood_fraction` | 0.002 |
+| `skin_optics_source` | Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json) |
 | `height_m` | 1.755 |
 | `mass_kg` | 94.5 |
 | `com_height_m` | 1.009 |

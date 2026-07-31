@@ -2,37 +2,43 @@
   "material": "ice",
   "provenance": "provisional-tag",
   "source_provenance": [
-    "synthetic-placeholder"
+    "photo"
   ],
   "n_regions_pooled": 17,
   "descriptors": {
-    "albedo_mean_luminance": 0.7969536003460207,
-    "albedo_std_luminance": 0.043267488471939994,
-    "albedo_skew_luminance": -0.05881440760910632,
-    "albedo_kurt_luminance": -0.3408955947415877,
-    "luma_variance": 0.0018720755586694598,
-    "chroma_variance": 0.0028088963592686955,
-    "luma_chroma_ratio": 0.6664808198573946
+    "albedo_mean_luminance": 0.8495332523365076,
+    "albedo_std_luminance": 0.02806014139543882,
+    "albedo_skew_luminance": 0.5243401536919801,
+    "albedo_kurt_luminance": 0.9121598836233726,
+    "albedo_mean_r": 0.7955476639444844,
+    "albedo_mean_g": 0.8620929221045401,
+    "albedo_mean_b": 0.9264557503661561,
+    "luma_variance": 0.0007873715351320194,
+    "chroma_variance": 0.001142527353916203,
+    "luma_chroma_ratio": 0.9977111273851654,
+    "roughness_mean": 0.6142085991653737,
+    "roughness_var": 0.0044011940540008895
   },
   "pattern_descriptors": {
     "filter_bank_energies": [
-      67.04033234540154,
-      20.79520057229435,
-      67.65542063993566,
-      20.754973692052506,
-      337.21053000057447,
-      54.40167258767521,
-      340.70511223288145,
-      54.379256080178656,
-      1495.3198529411766,
-      648.0074211569394,
-      1524.137357823989,
-      641.2135943244485
+      80.50204422894646,
+      26.08393108143526,
+      80.37309444651885,
+      26.057905758128445,
+      399.0409563849954,
+      65.2829242033117,
+      399.4439481847426,
+      65.77960878259995,
+      1732.5581341911766,
+      731.5346823299633,
+      1733.066499597886,
+      731.8817246380975
     ],
-    "grain_length_px": 8.941176470588236,
+    "grain_length_px": 2.0,
     "periodicity": 0.0,
-    "anisotropy": 0.3221802145706539,
-    "roughness_proxy_from_texture_energy": 525.9796402083123
+    "anisotropy": 0.31462174563168754,
+    "roughness_proxy_from_texture_energy": 601.7831882229028
   },
-  "note": "descriptors above are COLOR MOMENTS ONLY, kept in this shape for compatibility with core.trainables.material_appearance.load_reference_descriptors(); pattern_descriptors is what actually IDENTIFIED these regions as material \u2014 color moments were never the retrieval basis (Julesz)."
+  "roughness_provenance": "pbr_maps/ice/Snow004_1K-JPG_Roughness.jpg",
+  "note": "descriptors above are COLOR MOMENTS ONLY, kept in this shape for compatibility with core.trainables.material_appearance.load_reference_descriptors(); pattern_descriptors is what actually IDENTIFIED these regions as material \u2014 color moments were never the retrieval basis (Julesz). Color statistics are LINEAR-space (sRGB jpgs converted via IEC 61966-2-1) with formulas identical to the domain's _compute_descriptor_vector; roughness_mean/roughness_var come from the real ambientCG Roughness map when roughness_provenance is set."
 }

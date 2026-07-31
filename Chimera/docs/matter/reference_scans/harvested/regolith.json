@@ -1,159 +1,159 @@
 {
   "material": "regolith",
   "exemplar": {
-    "photo": "synthetic_placeholder/regolith_01.png",
+    "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "note": "NO REFERENCE, NO VERDICT \u2014 this exemplar is a provisional-tag stand-in until a human supplies the reference tag; every result below inherits that provisionality.",
   "regions": [
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        440,
+        560
+      ],
+      "distance": 0.5847053648150962,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        480,
+        560
+      ],
+      "distance": 0.6624999545299126,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        680,
+        760
+      ],
+      "distance": 0.7020013803759005,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
         40,
-        80
+        680
       ],
-      "distance": 1.255940756105452,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.7111392745080267,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        40
+        680,
+        440
       ],
-      "distance": 1.3192511772769133,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.7138952840049451,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        400,
+        680
+      ],
+      "distance": 0.742797582581297,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        440,
+        880
+      ],
+      "distance": 0.7609795441927228,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037.png",
       "yx": [
         200,
-        0
-      ],
-      "distance": 1.380029343569371,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        0,
-        0
-      ],
-      "distance": 1.5519962201018833,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        120,
         280
       ],
-      "distance": 1.6220009931584545,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.7646349569804427,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        80,
-        160
-      ],
-      "distance": 1.6438223711873916,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
         120,
+        360
+      ],
+      "distance": 0.771673524110566,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        720,
+        760
+      ],
+      "distance": 0.7772790655589096,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        240,
+        640
+      ],
+      "distance": 0.779720733361258,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+      "yx": [
+        480,
         160
       ],
-      "distance": 1.7027307199056887,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.7906064900055318,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
-        280,
-        0
+        480,
+        600
       ],
-      "distance": 1.7248023219365747,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.8095021473918901,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
-        240,
-        40
+        720,
+        840
       ],
-      "distance": 1.7782804363892266,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.8192688041374989,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
-        40,
-        0
-      ],
-      "distance": 1.7875389540818836,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        240,
+        600,
         200
       ],
-      "distance": 1.7926782161869967,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.8390416758907301,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/regolith_01.png",
+      "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        240
+        480,
+        640
       ],
-      "distance": 1.8233705048821163,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        80,
-        280
-      ],
-      "distance": 1.8299572810394347,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        200,
-        120
-      ],
-      "distance": 1.8748364552076249,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        280,
-        80
-      ],
-      "distance": 1.8955502591890263,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/regolith_01.png",
-      "yx": [
-        200,
-        240
-      ],
-      "distance": 1.9737320599552255,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.847619835652122,
+      "provenance": "photo"
     }
   ]
 }

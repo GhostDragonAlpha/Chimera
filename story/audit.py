@@ -163,6 +163,125 @@ def asserted_constants(folder: Path) -> list:
     return used
 
 
+# ── CHECK 4 ─────────────────────────────────────────────────────────────────────────────────────
+# THE ENGINE HAS NO PARENT, so none of the checks above reach it -- they all walk membranes and read
+# derive(). Yet the engine is where the story's numbers become a game, and a number typed there is
+# exactly as false as one typed in a membrane. It is also HARDER to catch: there is no `parent` to
+# compare against, so "did this come from above?" has no mechanical answer.
+#
+# Three real defects lived in ChimeraEngine/walker.py behind that gap:
+#     a slope gate of 38.0 under a comment reading "the ground's own repose angle" -- and theGround
+#         derives 40.03 while aTerrain derives 33.0, so it was neither;
+#     an eye height of `0.94 * height`, human anatomy asserted inside a viewer;
+#     a clipmap step commented "~half a stride" when half a stride is 0.324 and the value was 0.90.
+#
+# So this check reports two things it can be CERTAIN of and judges neither.
+ENGINE_DIR = ROOT.parent / "ChimeraEngine"
+# floats that are structure rather than physics: identities, halves, percentages of nothing
+_STRUCTURAL = {0.0, 1.0, -1.0, 0.5, 2.0, 100.0, 1000.0, 360.0, 180.0, 60.0, 24.0}
+
+
+def engine_files() -> list:
+    """Engine modules that actually consume the story -- the ones where a typed number competes with
+    a derived one. A file that never opens numbers.json is not in scope; it has nothing to duplicate."""
+    out = []
+    if not ENGINE_DIR.is_dir():
+        return out
+    for py in sorted(ENGINE_DIR.glob("*.py")):
+        try:
+            src = py.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if "numbers.json" in src:
+            out.append(py)
+    return out
+
+
+def claims_provenance(comment: str, keys: set, names: set) -> str:
+    """Does this line's comment NAME something the story derives?
+
+    THIS IS THE HIGH-SIGNAL CHECK, and it is the one that would have caught the slope gate. A bare
+    number in engine code is usually fine -- a frame rate, a margin, an instrument setting. A bare
+    number whose own comment says "the ground's own repose angle" is CLAIMING to have come from the
+    story, and that claim is checkable against the story's published keys.
+
+    It cannot tell whether the claim is TRUE -- 38.0 and 40.03 are both just numbers. What it can do
+    is put every number that makes a claim in front of a human, which is a list short enough to read."""
+    low = comment.lower()
+    if not low:
+        return ""
+    for k in keys:
+        stem = k.rsplit("_", 1)[0] if "_" in k else k
+        if len(stem) >= 5 and stem.lower() in low:
+            return k
+    for n in names:
+        if len(n) >= 6 and n.lower() in low:
+            return n
+    return ""
+
+
+def engine_literals(py: pathlib.Path) -> list:
+    """Every float literal in the file, with the comment on its line.
+
+    THE COMMENT IS PRINTED BESIDE THE NUMBER ON PURPOSE. Nothing can check whether a comment is true --
+    that is the one failure in this project with no mechanical tell at all. What a tool CAN do is put
+    the claim and the number on the same row, so a human reading the report sees "0.90 # ~half a
+    stride" and can go and check that a stride is 0.649 m. That is how the false one was caught."""
+    try:
+        src = py.read_text(encoding="utf-8", errors="replace")
+        tree = ast.parse(src)
+    except (OSError, SyntaxError):
+        return []
+    lines = src.splitlines()
+    found = []
+    seen = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Constant):
+            continue
+        v = node.value
+        if not isinstance(v, float) or isinstance(v, bool):
+            continue          # ints are usually counts, indices and shapes -- too noisy to be useful
+        if v in _STRUCTURAL or (node.lineno, v) in seen:
+            continue
+        seen.add((node.lineno, v))
+        raw = lines[node.lineno - 1] if node.lineno <= len(lines) else ""
+        comment = raw.split("#", 1)[1].strip() if "#" in raw else ""
+        found.append((node.lineno, v, comment[:58]))
+    return sorted(found)
+
+
+def engine_reads(files: list) -> set:
+    """Every story key the engine names -- `d["k"]`, `d.get("k")`, or a bare "k" string. Deliberately
+    generous: a false POSITIVE here (thinking a key is read when it is not) only removes a row from
+    the report, and this check exists to raise questions, not to accuse."""
+    keys = set()
+    for py in files:
+        try:
+            tree = ast.parse(py.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, SyntaxError):
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                keys.add(node.value)
+    return keys
+
+
+def story_keys() -> dict:
+    """Every key the story publishes, and which membrane publishes it."""
+    import json
+    out = {}
+    for folder in membranes():
+        nj = folder / "numbers.json"
+        if not nj.is_file():
+            continue
+        try:
+            for k in json.loads(nj.read_text(encoding="utf-8")):
+                out.setdefault(k, []).append(folder.name)
+        except Exception:
+            continue
+    return out
+
+
 # ── CHECK 2 ─────────────────────────────────────────────────────────────────────────────────────
 def _free_of(folder: Path) -> dict:
     try:
@@ -242,8 +361,9 @@ def main() -> int:
     ap.add_argument("--typed", action="store_true")
     ap.add_argument("--slider", action="store_true")
     ap.add_argument("--assumes", action="store_true")
+    ap.add_argument("--engine", action="store_true")
     args = ap.parse_args()
-    both = not (args.typed or args.slider or args.assumes)
+    both = not (args.typed or args.slider or args.assumes or args.engine)
     seed = ROOT / "theZero"
     bad = 0
 
@@ -276,6 +396,35 @@ def main() -> int:
                 print(f"\n  {folder.name}")
                 for nm, val, line in a:
                     print(f"     line {line:>4}  {nm:<24} = {val!r}")
+        print()
+
+    if args.engine or both:
+        print("ENGINE AUDIT -- numbers typed where no parent can be checked against")
+        print("  The engine has no parent, so --typed cannot reach it. Three real defects lived")
+        print("  behind that gap in walker.py. This REPORTS and does not judge: of each literal ask")
+        print("  DOES THE STORY ALREADY DERIVE THIS? -- and read the comment beside it, because a")
+        print("  false comment is the one failure with no mechanical tell.")
+        files = engine_files()
+        if not files:
+            print("\n  (no engine file reads numbers.json)")
+        for py in files:
+            lits = engine_literals(py)
+            print(f"\n  {py.name}  -- {len(lits)} float literal(s)")
+            for line, val, comment in lits:
+                tail = f"   # {comment}" if comment else ""
+                print(f"     line {line:>4}  {val!r:<22}{tail}")
+        # keys the story offers that the engine never names
+        offered = story_keys()
+        named = engine_reads(files)
+        unread = sorted(k for k in offered if k not in named)
+        print(f"\n  STORY KEYS THE ENGINE NEVER NAMES -- {len(unread)} of {len(offered)}")
+        print("  Not a fault by itself: most of the story is not the engine's business. But an")
+        print("  unread key beside a bare literal is the signature of a typed number -- the slope")
+        print("  gate was 38.0 while `repose_deg` sat here unread.")
+        for k in unread[:40]:
+            print(f"     {k:<34} published by {', '.join(offered[k][:3])}")
+        if len(unread) > 40:
+            print(f"     ... and {len(unread) - 40} more")
         print()
 
     if args.slider or both:

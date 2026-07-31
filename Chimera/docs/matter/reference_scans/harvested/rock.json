@@ -1,159 +1,159 @@
 {
   "material": "rock",
   "exemplar": {
-    "photo": "synthetic_placeholder/rock_01.png",
+    "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "note": "NO REFERENCE, NO VERDICT \u2014 this exemplar is a provisional-tag stand-in until a human supplies the reference tag; every result below inherits that provisionality.",
   "regions": [
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        240
+        480,
+        840
       ],
-      "distance": 1.607197487959561,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.5353762038629472,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026.png",
       "yx": [
-        80,
-        80
+        360,
+        320
       ],
-      "distance": 2.0155019164660524,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.5663678705361694,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
-        120,
-        80
+        840,
+        40
       ],
-      "distance": 2.089958021303815,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.6317520540753261,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        120,
-        280
-      ],
-      "distance": 2.10021889994118,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        280,
-        0
-      ],
-      "distance": 2.122888767392122,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
         40,
-        280
+        560
       ],
-      "distance": 2.2624303498192644,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.6342218633974459,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
-        280,
-        160
+        680,
+        880
       ],
-      "distance": 2.3230137909210065,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.8108482692281905,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        160,
-        120
-      ],
-      "distance": 2.388556644576933,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        0,
-        240
-      ],
-      "distance": 2.5899790748800444,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        120,
-        200
-      ],
-      "distance": 2.661363024152247,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        200,
-        120
-      ],
-      "distance": 2.6687892489527942,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
         40,
-        240
-      ],
-      "distance": 2.6717865725564285,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        0,
-        280
-      ],
-      "distance": 2.705257827477353,
-      "provenance": "synthetic-placeholder"
-    },
-    {
-      "photo": "synthetic_placeholder/rock_01.png",
-      "yx": [
-        280,
         200
       ],
-      "distance": 2.8432499866587637,
-      "provenance": "synthetic-placeholder"
+      "distance": 0.9081906418006733,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        840,
+        480
+      ],
+      "distance": 0.9367645812657021,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        440,
+        680
+      ],
+      "distance": 1.0157017685099246,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
         240,
-        0
+        840
       ],
-      "distance": 2.9131685108061607,
-      "provenance": "synthetic-placeholder"
+      "distance": 1.0269566300684805,
+      "provenance": "photo"
     },
     {
-      "photo": "synthetic_placeholder/rock_01.png",
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
       "yx": [
-        160,
-        160
+        480,
+        680
       ],
-      "distance": 2.9227885186459286,
-      "provenance": "synthetic-placeholder"
+      "distance": 1.0274956278093121,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        560,
+        720
+      ],
+      "distance": 1.044688141455213,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        760,
+        840
+      ],
+      "distance": 1.0663154563112416,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        80,
+        520
+      ],
+      "distance": 1.0915000524745069,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        600,
+        800
+      ],
+      "distance": 1.1114909067666343,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        520,
+        120
+      ],
+      "distance": 1.1490585286276802,
+      "provenance": "photo"
+    },
+    {
+      "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+      "yx": [
+        600,
+        0
+      ],
+      "distance": 1.1503904195467614,
+      "provenance": "photo"
     }
   ]
 }

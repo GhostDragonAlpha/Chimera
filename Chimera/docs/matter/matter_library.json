@@ -151,13 +151,13 @@
       },
       "appearance": {
         "albedo_mean_rgb": [
-          0.55,
-          0.47,
-          0.38
+          0.4166,
+          0.3383,
+          0.0951
         ],
-        "albedo_mottle_var": 0.04,
-        "roughness_mean": 0.95,
-        "roughness_var": 0.03,
+        "albedo_mottle_var": 0.1544,
+        "roughness_mean": 0.4522,
+        "roughness_var": 0.0024,
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
         "grain_size_mm": {
@@ -166,8 +166,8 @@
           "provenance": "researched",
           "note": "Carrier 2003: D50 ~72 micron across ~350 samples from 7 landing sites; NTRS 20210026714: individual samples 24.5-118.5 micron. Mean=0.072mm matches D50 exactly."
         },
-        "provenance": "provisional",
-        "note": "grey-tan regolith. Block-level tag was incorrectly flipped researched during tb-0172's session without the calibration its own original note required ('calibrate against the NASA reference canon (tb-0172) and the live level's M_Sand') - reverted here (tb-0181 provenance-integrity correction). Nested grain_size_mm IS researched (Carrier 2003 / NTRS 20210026714). The bundle's albedo/roughness magnitude remains an open debt: real lunar regolith reflectance is ~7-8% (Apollo photometry synthesis) vs this entry's ~47% mean luminance - a real gap, not yet closed by an in-engine Substrate calibration against M_Sand (tb-0174 / rung D' territory, outside this task's footprint).",
+        "provenance": "trained",
+        "note": "TRAINED 2026-07-31 against the REAL Ground037 CC0 scan (docs/objectives/material_appearance.regolith.trained.json, score 0.8361; reference descriptors harvested from real pixels by core/material_harvester.py — ambientcg/regolith/Ground037, 17 regions, pattern-matched not averaged). albedo/roughness/mottle above are the trained genome, replacing the tb-0181 provisional guesses. CAVEAT carried forward: Ground037 is an EARTH-analog ground sample (the ledger's own flag, reference_scans/SOURCES.md) — real lunar regolith reflectance is ~7-8% (Apollo photometry synthesis), so for lunar use this entry still needs either a lunar sample trained the same way or an in-engine Substrate calibration against M_Sand (tb-0174 / rung D' territory). Nested grain_size_mm remains researched (Carrier 2003 / NTRS 20210026714).",
         "alpha": 1.0,
         "subsurface_strength": 0.0
       },
@@ -307,13 +307,13 @@
       },
       "appearance": {
         "albedo_mean_rgb": [
-          0.32,
-          0.3,
-          0.28
+          0.3341,
+          0.3645,
+          0.2287
         ],
-        "albedo_mottle_var": 0.06,
-        "roughness_mean": 0.85,
-        "roughness_var": 0.08,
+        "albedo_mottle_var": 0.0379,
+        "roughness_mean": 0.5099,
+        "roughness_var": 0.0006,
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
         "grain_size_mm": {
@@ -321,8 +321,8 @@
           "spread": 3.0,
           "note": "surface texture scale, not mineral grains"
         },
-        "provenance": "provisional",
-        "note": "dark basalt; high mottle variance reads as rock. Block-level tag was incorrectly flipped researched during tb-0172's session (originally provisional, note read 'high mottle variance is what reads as rock vs the smoother regolith') - reverted here (tb-0181 provenance-integrity correction): no citation covers the actual albedo/roughness numbers. Real basalt reflectance ~9-11% (lab reflectance-spectra synthesis) vs this entry's ~30% mean luminance; needs in-engine Substrate calibration (tb-0174 / rung D' territory).",
+        "provenance": "trained",
+        "note": "TRAINED 2026-07-31 against the REAL Rock026 CC0 scan (docs/objectives/material_appearance.rock.trained.json, score 0.8348; reference descriptors harvested from real pixels by core/material_harvester.py — ambientcg/rock/Rock026 center-tile exemplar, polyhaven dark_rock + rock_surface in corpus as cross-checks). albedo/roughness/mottle above are the trained genome, replacing the tb-0181 provisional guesses. CAVEAT carried forward: texture albedo maps are daylight-albedo, not lab reflectance — real basalt lab reflectance is ~9-11% vs this entry's trained ~0.32-0.36 per-channel means; the gap is a calibration question (tb-0174 / rung D' territory), not faked away here.",
         "alpha": 1.0,
         "subsurface_strength": 0.0
       },
@@ -383,18 +383,18 @@
       },
       "appearance": {
         "albedo_mean_rgb": [
-          0.56,
-          0.57,
-          0.58
+          0.9906,
+          0.9575,
+          1.0
         ],
-        "albedo_mottle_var": 0.01,
-        "roughness_mean": 0.35,
-        "roughness_var": 0.1,
+        "albedo_mottle_var": 0.0001,
+        "roughness_mean": 0.0338,
+        "roughness_var": 0.0001,
         "metallic": 1.0,
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
-        "provenance": "provisional",
-        "note": "brushed alloy; roughness_var carries wear-streak variation. Block-level tag was incorrectly flipped researched during tb-0172's session (originally provisional) - reverted here (tb-0181 provenance-integrity correction): no citation covers the specific albedo numbers for a dust-filmed alloy panel. Polished aluminum reflects ~88-92% (search synthesis) but this entry's ~56-58% mean luminance is LOWER, plausibly explained by family_pair_rules' own dust-film note (regolith electrostatically coats metal) - a physically-motivated argument, not a measurement. Needs in-engine Substrate calibration (tb-0174 / rung D' territory).",
+        "provenance": "trained",
+        "note": "TRAINED 2026-07-31 against the REAL Metal049A CC0 scan (docs/objectives/material_appearance.brushed_metal.trained.json, score 0.8537; reference descriptors harvested from real pixels by core/material_harvester.py — ambientcg/metal/Metal049A, the ledger's closest tag match to 'brushed alloy'; its oriented-energy anisotropy is what the pattern descriptors separated on). albedo/roughness/mottle above are the trained genome: CLEAN polished metal (linear mean luminance 0.963 measured). The old provisional entry (0.56-0.58 luminance, roughness 0.35) encoded a DUST-FILMED panel as a design argument, not a measurement — dust filming belongs to family_pair_rules' pair effects, not the base material; if a dust-filmed variant is wanted it is a separate entry or a pair-rule output, trained the same way.",
         "alpha": 1.0,
         "subsurface_strength": 0.0
       },
@@ -464,17 +464,17 @@
       },
       "appearance": {
         "albedo_mean_rgb": [
-          0.75,
-          0.82,
-          0.88
+          0.7794,
+          0.8832,
+          0.8348
         ],
-        "albedo_mottle_var": 0.02,
-        "roughness_mean": 0.15,
-        "roughness_var": 0.06,
+        "albedo_mottle_var": 0.001,
+        "roughness_mean": 0.6139,
+        "roughness_var": 0.0041,
         "subsurface_mfp_mm": 8.0,
         "translucency": 0.35,
-        "provenance": "provisional",
-        "note": "the one environment material with real subsurface depth \u00e2\u20ac\u201d the slab's MFP field earns its keep here. Albedo IS supported (clean ice/snow visible albedo 0.5-0.9 range, search synthesis - matches this entry's ~0.82 mean luminance, unlike sand/rock/metal's magnitude gap). subsurface_mfp_mm (8.0) and translucency (0.35) remain unresolved (tb-0181 follow-up): Warren's 'Optical properties of ice and snow' review (PMC6501920) gives pure ice's ABSORPTION mean free path as 'hundreds of metres' for blue/visible light - real bubble-free ice is nearly non-absorbing at this scale, so 8mm reads as a stylistic SCATTERING choice (bubbles/impurities/frost) rather than a measured constant; no directly-comparable decorative-ice-chunk scattering measurement was found (only non-comparable deep-glacial-ice photon transport, already ruled out by tb-0172). Debt stays provisional, now with stronger physical grounding for why it cannot yet be pinned."
+        "provenance": "trained",
+        "note": "TRAINED 2026-07-31: albedo/mottle/roughness above are the trained genome (docs/objectives/material_appearance.ice.trained.json, score 0.9098) against the REAL Snow004 CC0 scan (ambientcg/ice/Snow004 + polyhaven snow_01 in corpus; descriptors harvested from real pixels by core/material_harvester.py). Snow004 is SNOW — the ledger scopes ice as pattern-only with its debt in subsurface, which training does not touch: the subsurface note below stands unchanged. Prior note: the one environment material with real subsurface depth \u00e2\u20ac\u201d the slab's MFP field earns its keep here. Albedo IS supported (clean ice/snow visible albedo 0.5-0.9 range, search synthesis - matches this entry's ~0.82 mean luminance, unlike sand/rock/metal's magnitude gap). subsurface_mfp_mm (8.0) and translucency (0.35) remain unresolved (tb-0181 follow-up): Warren's 'Optical properties of ice and snow' review (PMC6501920) gives pure ice's ABSORPTION mean free path as 'hundreds of metres' for blue/visible light - real bubble-free ice is nearly non-absorbing at this scale, so 8mm reads as a stylistic SCATTERING choice (bubbles/impurities/frost) rather than a measured constant; no directly-comparable decorative-ice-chunk scattering measurement was found (only non-comparable deep-glacial-ice photon transport, already ruled out by tb-0172). Debt stays provisional, now with stronger physical grounding for why it cannot yet be pinned."
       },
       "sound_synth": {
         "value": "ICE",

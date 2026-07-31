@@ -24,6 +24,10 @@ NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-fa
 # what it is made of, not what it looked like in its own scene -- otherwise the relighting flattens
 # every material into one. Optional: zero here means "no separate albedo, reuse the colour".
 AR, AG, AB = 24, 25, 26
+# WHAT KIND OF MATTER the grain is, as a class id (0/1/2/...): optional, for a relight that shades
+# per material class (a visor is not shaded like a suit). The GPU pipeline never reads col 27 --
+# it is a story-side convention, like the albedo columns.
+MAT = 27
 
 SOLID = 3.0                     # opaque, isotropic grain -- matter you can see the surface of
 GLOW = 5.0                      # big soft blob -- light, plasma, a field

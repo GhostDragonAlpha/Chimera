@@ -41,6 +41,7 @@ names = ["truck", "train", "bicycle"]
 print(f"\nSPACE-GAME MATERIAL LIBRARY — {K} genomes across {len(SRC)} metal-bearing scans\n")
 print(f"{'id':4}{'%':>7}{'size':>8}{'aniso':>7}{'opacity':>9}{'colour':>22}   dominant source")
 print("-" * 72)
+genomes = []
 for k in np.argsort([-(lab == k).mean() for k in range(K)]):
     m = lab == k
     r = raw[m]; c = r[:, 2:5].mean(0)
@@ -48,3 +49,25 @@ for k in np.argsort([-(lab == k).mean() for k in range(K)]):
     dom = " ".join(f"{names[i]} {100*mix[i]:.0f}%" for i in np.argsort(-mix)[:2] if mix[i] > 0.12)
     print(f"#{k:<3}{100*m.mean():>6.1f}%{np.exp(r[:,0]).mean():>8.3f}{r[:,1].mean():>7.2f}{r[:,5].mean():>9.2f}"
           f"   [{c[0]:.2f} {c[1]:.2f} {c[2]:.2f}]{'':>4}   {dom}")
+    feat = {}
+    for j, fn in enumerate(["log_size", "aniso", "R", "G", "B", "opacity", "greenness"]):
+        feat[fn] = {"mean": float(r[:, j].mean()), "std": float(r[:, j].std()),
+                    "p10": float(np.percentile(r[:, j], 10)), "p90": float(np.percentile(r[:, j], 90))}
+    genomes.append({"id": int(k), "fraction": float(m.mean()), "n_splats": int(m.sum()),
+                    "features": feat,
+                    "dominant_source": {names[i]: float(mix[i]) for i in np.argsort(-mix) if mix[i] > 0.12}})
+
+# PERSIST, or the library evaporates at process exit (2026-07-31: it did). One codebook, one file --
+# the story's membranes read these as MEASURED material data, the same way theHuman reads ANSUR.
+import json, datetime
+out = {"source": "Construction/space_materials.py -- GPU k-means (K=%d) over opaque surface splats" % K,
+       "scans": {n: p for n, p in SRC},
+       "feature_names": ["log_size", "aniso", "R", "G", "B", "opacity", "greenness"],
+       "honesty": "APPEARANCE genomes: capture lighting is baked into R,G,B. Fine for diffuse "
+                  "albedo distributions; NOT PBR -- no roughness/metalness recoverable here "
+                  "(that is material_dna.py's job, proven on synthetic GT only).",
+       "written": str(datetime.date.today()),
+       "genomes": genomes}
+dst = Path(__file__).resolve().parents[1] / "story" / "data" / "hull_material_genomes.json"
+dst.write_text(json.dumps(out, indent=1))
+print(f"\npersisted {len(genomes)} genomes -> {dst}")

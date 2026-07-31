@@ -128,6 +128,16 @@ FREE = {
     "start_year_frac": {"lo": 0.0, "hi": 1.0, "default": 0.25,
                         "label": "where in the year", "unit": "of a year",
                         "local": "which season the story opens in"},
+
+    # AND WHO THE PERSON IS. Melanin is not derivable from a planet either; it is a fact about a
+    # body, and the second HUMAN-terminal dial here (the first is the calendar). What IS measured
+    # is the dial's range: Jacques' melanosome volume fractions by pigmentation class
+    # (light 1.3-6.3%, moderate 11-16%, dark 18-43%). What the dial changes is not a palette: it is
+    # how much light the epidermis eats before the dermis can return any -- the physics is in
+    # story/skin_optics.py, the choice is the operator's.
+    "melanin_fraction": {"lo": 0.013, "hi": 0.43, "default": 0.135,
+                         "label": "melanosome fraction", "unit": "of epidermis volume",
+                         "local": "pigmentation -- the operator's call, the measured range Jacques published"},
 }
 
 
@@ -700,6 +710,23 @@ def derive(parent, free):
     femur_stress = weight / FEMUR_AREA_M2        # standing, both legs share it -> one femur, half
     femur_stress_run = 3.0 * femur_stress        # running peaks near 3x body weight per leg
 
+    # ── THE SKIN THE BODY IS IN, measured optics rather than a picked tone ────────────────────
+    # The law is story/skin_optics.py (Jacques 1998 + Prahl's archived hemoglobin table): the
+    # epidermis is a melanin filter crossed twice, the dermis a blood-and-collagen diffuser. What
+    # this membrane publishes is the law's answer at the renderer's own three bands, so the face
+    # aHuman draws and the swatch theSkin draws are the SAME skin, derived once, here -- the parent
+    # carrying what both children need, the star-colour rule applied to a body.
+    import skin_optics as _skin
+    f_mel = float(free.get("melanin_fraction", FREE["melanin_fraction"]["default"]))
+    # the dial is continuous but the taxonomy is banded: take the class whose band is nearest
+    melanin_class = min(_skin.F_MEL_CLASSES,
+                        key=lambda c: 0.0 if _skin.F_MEL_CLASSES[c][0] <= f_mel <= _skin.F_MEL_CLASSES[c][1]
+                        else min(abs(f_mel - e) for e in _skin.F_MEL_CLASSES[c]))
+    # DuBois & DuBois 1916: body surface from mass and stature -- the number aHuman's thermal
+    # balance and theSkin's breach accounting both size themselves with. It was typed as 1.83 m2
+    # (the 70 kg "standard man"); THIS body is the ANSUR median, and the formula says otherwise.
+    skin_area = 0.007184 * (m_bare ** 0.425) * ((100.0 * h) ** 0.725)
+
     return {
         # ITS REAL SIZE: a person. The only unit nobody has to imagine.
         "extent_m": h,
@@ -754,6 +781,17 @@ def derive(parent, free):
         "excursion_hours": EXCURSION_H,
         "suit_weight_N": m_suit * g,                 # what the legs actually carry, on THIS world
         "bare_mass_kg": m_bare,
+
+        # ── THE SKIN, DERIVED ONCE FOR BOTH CHILDREN (aHuman's face, theSkin's swatch) ─────────
+        "melanin_fraction": f_mel,
+        "melanin_class": melanin_class,                  # the name is a claim, measured bands above
+        "skin_albedo_rgb": _skin.skin_albedo_rgb(f_mel), # at 615/535/465 nm -- the renderer's bands
+        "skin_bands_nm": list(_skin.BANDS_NM),
+        "skin_sss_mfp_mm": _skin.skin_sss_mfp_mm(),      # subsurface reach per band, for wrap light
+        "skin_area_m2": skin_area,                       # DuBois 1916 on the BARE mass and stature
+        "skin_blood_fraction": _skin.F_BLOOD_AVG,
+        "skin_optics_source": ("Jacques OMLC 1998 (archived) + Prahl hemoglobin table "
+                               "(research_references/human/hemoglobin_extinction_prahl.json)"),
 
         "height_m": h,
         "mass_kg": m,

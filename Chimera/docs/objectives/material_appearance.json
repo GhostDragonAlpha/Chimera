@@ -1,29 +1,27 @@
 {
-  "_provenance": "PBR material training against captured reality. The genome is one library entry's appearance params; the measure computes descriptor distances between emitted splat statistics and reference scan statistics. The loop never renders — statistics space only. Final witness is UE substrate.",
-  "maximize": [
-    "albedo_mean_luminance"
-  ],
+  "_provenance": "PBR material training against captured reality. The genome is one library entry's appearance params; the measure computes descriptor distances between emitted splat statistics and reference scan statistics. The loop never renders — statistics space only. Final witness is UE substrate. AMENDMENT 2026-07-31 (real samples downloaded, operator's train directive): (1) dist_albedo_mean_r/g/b added — luminance moments are hue-blind; without per-channel means the trainer could match every statistic with the WRONG COLOR. (2) 'maximize albedo_mean_luminance' REMOVED — a blind-era term that fought the dist wall (winner would pin at +15% brighter than the reference, guaranteed). (3) raw 'minimize albedo_mottle_var/roughness_var' REMOVED from the term list — they pushed variances to zero while dist_luma_variance/dist_roughness_var push them to the REAL measured values; their max-bounds stay below as guards (the gumball wall still stands).",
   "minimize": [
     "dist_albedo_mean_luminance",
     "dist_albedo_std_luminance",
     "dist_albedo_skew_luminance",
     "dist_albedo_kurt_luminance",
+    "dist_albedo_mean_r",
+    "dist_albedo_mean_g",
+    "dist_albedo_mean_b",
     "dist_luma_variance",
     "dist_chroma_variance",
     "dist_luma_chroma_ratio",
     "dist_roughness_mean",
-    "dist_roughness_var",
-    "albedo_mottle_var",
-    "roughness_var"
+    "dist_roughness_var"
   ],
   "constraints": [
     {"field": "dist_albedo_mean_luminance", "max": 0.15},
     {"field": "dist_albedo_std_luminance", "max": 0.40},
     {"field": "dist_roughness_mean", "max": 0.20},
-    {"field": "albedo_mean_luminance", "min": 0.05, "max": 0.90},
+    {"field": "albedo_mean_luminance", "min": 0.05, "max": 0.98},
     {"field": "albedo_std_luminance", "max": 0.30},
     {"field": "albedo_kurt_luminance", "min": -2.0, "max": 4.0},
-    {"field": "roughness_mean", "min": 0.05, "max": 0.95},
+    {"field": "roughness_mean", "min": 0.0, "max": 0.95},
     {"field": "roughness_var", "max": 0.15},
     {"field": "luma_variance", "max": 0.15},
     {"field": "albedo_mottle_var", "max": 0.12}
@@ -31,7 +29,7 @@
   "walls": {
     "dist_albedo_mean_luminance": "Mean luminance MUST converge to within 15% of the reference scan. Above 15% means the material is perceptually the wrong brightness — a training run that optimized against NOTHING (the pre-fix state). This IS the headline distance: if the mean is wrong, nothing else matters.",
     "dist_roughness_mean": "Mean roughness MUST converge to within 20% of the reference scan. A material that is perceptually too smooth or too rough breaks the PBR pipeline — specular response is wrong at every angle.",
-    "albedo_mean_luminance": "Mean luminance MUST stay in [0.05, 0.90]. <0.05 is vantablack — no PBR material reflects that little diffuse light. >0.90 is fresh snow — physically possible but outside the gamut of most scanned materials. Both extremes indicate the genome has escaped the search space.",
+    "albedo_mean_luminance": "Mean luminance MUST stay in [0.05, 0.98]. <0.05 is vantablack — no PBR material reflects that little diffuse light. The old 0.90 ceiling was a GUESS that the first real measurements falsified 2026-07-31: Metal049A's measured linear mean luminance is 0.963 (clean silver). 0.98 keeps the guard against genome escape while admitting what the reference actually measures.",
     "roughness_var": "Roughness variance MUST stay bounded. Above 0.15 means the material has a bimodal surface — half polished mirror, half sandpaper. That is not a BRDF; it is two materials stapled together.",
     "luma_variance": "Luminance variance across splats MUST stay bounded. Above 0.15 means the mottle is so extreme that individual particles read as distinct colors — a glitter effect, not a homogeneous material appearance. A pile of RGB gumballs is not regolith.",
     "albedo_mottle_var": "Per-particle albedo spread MUST stay bounded. Above 0.12 means grain-to-grain color variation exceeds what real granular materials exhibit — even mixed regolith has a narrow per-particle gamut."

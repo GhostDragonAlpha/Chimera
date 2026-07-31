@@ -13,6 +13,12 @@ to be is a fact about the temperature outside and the heat a body makes inside. 
 then literally the radius added to every limb -- so the astronaut's silhouette is a measurement, and
 if this world warmed up the suit would get thinner in the render without anyone redrawing it.
 
+AND ITS MATERIALS ARE MEASURED TOO (F1, 2026-07-31): suit, visor and hardware albedos are sampled
+from the hull material genomes (real scans, Construction/space_materials.py) instead of typed
+literals; the head the helmet was derived around is now drawn inside it, wearing the parent's
+measured skin (melanin filter over a blood-bearing dermis, story/skin_optics.py), showing through
+the visor by the one declared number left -- VISOR_TRANSMIT, the operator's dial.
+
 Contained in theHuman. It contains nothing yet: a helmet and a rebreather are the next chapters.
 """
 from __future__ import annotations
@@ -25,12 +31,16 @@ import numpy as np
 # any story, which is what makes them legal literals rather than borrowed numbers.
 Q_REST_W = 105.0            # metabolic heat, quiet standing (a person is a 100 W heater)
 Q_WALK_W = 350.0            # ... and walking, which is why you overheat in a coat
-SKIN_AREA_M2 = 1.83         # DuBois body surface at this stature and mass
 K_INSUL_W_MK = 0.040        # fibrous/aerogel batting, still air
 T_SKIN_C = 33.0             # comfortable mean skin temperature, not core
 HELMET_CLEAR_M = 0.055      # visor standoff: room to turn the head and for gas to sweep the faceplate
 HELMET_Z = 0.885            # neck top, in stature units -- emit() and derive() must agree on this
 VISOR_HALF_ANGLE = 1.05     # radians of the helmet given over to the faceplate (~120 deg of view)
+# THE ONE UNMEASURED NUMBER IN THE MATERIALS, DECLARED: how much light the visor passes. It is
+# dark because its job is rejecting light, but a face the story derived lives behind it, and how
+# visible that face is ends at a HUMAN terminal -- the operator rules with the render in hand.
+# Everything else about the materials is measured (hull genomes / skin optics).
+VISOR_TRANSMIT = 0.28
 
 # Dempster's segment fractions of stature -- the same measured anthropometry the parent used.
 THIGH_FRAC, SHANK_FRAC = 0.245, 0.246
@@ -48,7 +58,7 @@ FREE = {
 }
 
 
-def insulation_thickness(T_air_C, Q_W):
+def insulation_thickness(T_air_C, Q_W, A_m2):
     """HOW THICK THE SUIT HAS TO BE, from conduction alone: d = k A dT / Q.
 
     A body is a heater of known power inside a bag of known conductivity, and the outside air is at a
@@ -60,7 +70,35 @@ def insulation_thickness(T_air_C, Q_W):
     dT = max(T_SKIN_C - float(T_air_C), 0.0)
     if Q_W <= 0.0:
         return 0.0
-    return K_INSUL_W_MK * SKIN_AREA_M2 * dT / float(Q_W)
+    return K_INSUL_W_MK * float(A_m2) * dT / float(Q_W)
+
+
+def _hull_genomes():
+    """THE MEASURED MATERIAL LIBRARY, loaded like the parent loads ANSUR: real scans (truck,
+    train, bicycle -- painted steel, chrome, glass, rubber), k-means genomes persisted by
+    Construction/space_materials.py. APPEARANCE genomes -- albedo distributions with the capture
+    light baked in, which is exactly what an albedo channel needs; no roughness lives here."""
+    import json
+    from pathlib import Path
+    p = Path(__file__).resolve()
+    for q in p.parents:
+        f = q / "story" / "data" / "hull_material_genomes.json"
+        if f.exists():
+            return json.loads(f.read_text())
+    raise FileNotFoundError("hull_material_genomes.json -- run Construction/space_materials.py")
+
+
+def _pick_materials(lib):
+    """WHICH MEASURED GENOME IS WHICH PART, by the same reasons the typed albedos claimed:
+    the suit is a thermal instrument (brightest opaque genome), the visor rejects light (darkest),
+    and hardware is what is neither (nearest mid-grey). Derived from the distributions, so re-running
+    the library re-picks honestly. The operator ratifies the mapping -- taste terminates with him."""
+    opaque = [g for g in lib["genomes"] if g["features"]["opacity"]["mean"] > 0.9]
+    lum = {g["id"]: sum(g["features"][c]["mean"] for c in "RGB") / 3.0 for g in opaque}
+    suit = max(lum, key=lum.get)
+    visor = min(lum, key=lum.get)
+    hardware = min((i for i in lum if i not in (suit, visor)), key=lambda i: abs(lum[i] - 0.5))
+    return {"suit": suit, "visor": visor, "hardware": hardware}, lum
 
 
 def leg_local(parent):
@@ -78,7 +116,10 @@ def derive(parent, free):
     T_air_C = float(parent["T_surface"]) - 273.15
     # the heat this person is making, between the two measured endpoints
     Q = Q_REST_W + x * (Q_WALK_W - Q_REST_W)
-    d_insul = insulation_thickness(T_air_C, Q)
+    # THE BODY'S SURFACE AREA, READ FROM THE PARENT (DuBois on the ANSUR median: 2.01 m2) --
+    # it used to be typed here as 1.83, the 70 kg "standard man", and the suit was sized on him.
+    skin_area = float(parent["skin_area_m2"])
+    d_insul = insulation_thickness(T_air_C, Q, skin_area)
 
     # THE SUIT'S SHAPE, all of it downstream of that one thickness
     r_thigh = R_THIGH * h + d_insul
@@ -124,6 +165,22 @@ def derive(parent, free):
     # so the claim and the picture are the same arithmetic.
     top_local = HELMET_Z + 1.35 * (r_helmet / h)          # helmet centre sits 0.35r above neck top
     bottom_local = -(SHANK_FRAC + THIGH_FRAC - leg_local(parent)) - 1.75 * (r_shank / h)
+
+    # ── THE MATERIALS, MEASURED RATHER THAN TYPED (F1, 2026-07-31) ─────────────────────────────
+    # Three flat albedos used to live in emit() as literals with a reasoned comment each. The
+    # reasons were sound; the numbers were picked. Now the same reasons pick among MEASURED
+    # distributions: the hull genomes recovered from real scans by the Construction/ pipeline.
+    _lib = _hull_genomes()
+    _picks, _lums = _pick_materials(_lib)
+    _g = {g["id"]: g for g in _lib["genomes"]}
+
+    def _mat_albedo(gid):
+        f = _g[gid]["features"]
+        return {"mean": [f["R"]["mean"], f["G"]["mean"], f["B"]["mean"]],
+                "std": [f["R"]["std"], f["G"]["std"], f["B"]["std"]],
+                "genome_id": gid, "fraction_of_library": _g[gid]["fraction"],
+                "luminance": _lums[gid]}
+
     return {
         "extent_m": (top_local - bottom_local) * h,
         "crown_local": top_local,
@@ -147,6 +204,19 @@ def derive(parent, free):
         "insulation_mm": d_insul * 1000.0,
         "bulk_over_bare": bulk_frac,             # how much wider the suit makes them
 
+        # ── THE MATERIALS THE RENDER MUST WEAR (measured: hull genomes + the parent's skin) ────
+        "suit_material": _mat_albedo(_picks["suit"]),
+        "visor_material": _mat_albedo(_picks["visor"]),
+        "hardware_material": _mat_albedo(_picks["hardware"]),
+        "visor_transmission": VISOR_TRANSMIT,    # DECLARED, the operator's dial -- see the constant
+        "materials_source": "story/data/hull_material_genomes.json (real scans; Construction/space_materials.py)",
+        # THE SKIN, CARRIED DOWN: the face inside the helmet is the parent's derived skin, and
+        # the walker's relight wraps light around it by the measured subsurface reach.
+        "skin_albedo_rgb": [float(v) for v in parent["skin_albedo_rgb"]],
+        "skin_sss_mfp_mm": [float(v) for v in parent["skin_sss_mfp_mm"]],
+        "melanin_class": str(parent["melanin_class"]),
+        "skin_area_m2": skin_area,
+
         # ── THE SHAPE THE RENDER MUST DRAW ────────────────────────────────────────────────────
         "r_thigh_m": r_thigh,
         "r_shank_m": r_shank,
@@ -154,6 +224,7 @@ def derive(parent, free):
         "r_forearm_m": r_forearm,
         "r_trunk_m": r_trunk,
         "r_helmet_m": r_helmet,
+        "r_head_m": r_head_bare,                 # the bare head INSIDE the helmet -- emit draws it
         "helmet_clearance_m": HELMET_CLEAR_M,
         "hip_half_m": hip_half,
         "shoulder_half_m": shoulder_half,
@@ -255,7 +326,7 @@ def emit(nums, t=1.0):
     standoff -- and the faceplate is dark because a visor's job is to reject light, which is the
     only reason anything here is a different colour.
     """
-    from matter import blank, lit, SOLID, AR, AG, AB
+    from matter import blank, lit, SOLID, AR, AG, AB, MAT as MATCOL
 
     tt = float(t)
     h = 1.0
@@ -358,8 +429,16 @@ def emit(nums, t=1.0):
     neck = np.array([0.0, 0.0, hip_z + (0.855 - leg)])
     add(_tube(chest, neck, r_tr * 0.55, r_hl * 0.62), 0)
 
-    # THE HELMET. A sphere, and the front of it is a visor.
+    # THE HEAD, INSIDE THE HELMET. The helmet exists because the head does -- the bare head's
+    # radius is derived above, and the visor's standoff was sized for it -- so the head is drawn:
+    # a body the derivation produced, wearing the parent's measured skin. It shows only through
+    # the visor, and only as much as the visor transmits.
+    r_hd = float(nums["r_head_m"]) / H
     hc = np.array([0.0, 0.0, hip_z + (HELMET_Z - leg) + r_hl * 0.35])
+    hdp, hdn = _ball(hc, r_hd, seed=12)
+    pts.append(hdp); nrms.append(hdn); mats.append(np.full(len(hdp), 3))
+
+    # THE HELMET. A sphere, and the front of it is a visor.
     hp, hn = _ball(hc, r_hl, seed=11)
     face = hn[:, 0] > math.cos(VISOR_HALF_ANGLE)          # +X is the way they are walking
     pts.append(hp); nrms.append(hn); mats.append(np.where(face, 1, 0))
@@ -374,16 +453,23 @@ def emit(nums, t=1.0):
     b[:, 2] = P[:, 2] - com_h                            # centre the view on the centre of mass
     b[:, 21:24] = N
 
-    # ── COLOUR. Three materials, and each one is a reason rather than a preference ────────────
-    # SUIT: near-white. A suit is a thermal instrument and its outer layer is the last thing between
-    #   a body and the sky; high albedo is what keeps the sun from adding to a load the insulation
-    #   was sized without it. (This world is cold, so the coat is thick AND still pale.)
-    # VISOR: dark. Its entire job is to reject light, which is why it is the one dark surface here.
-    # HARDWARE: mid grey -- boots, gloves, the rebreather shell.
+    # ── COLOUR. Four materials, each one MEASURED now (F1) ────────────────────────────────────
+    # SUIT / VISOR / HARDWARE: albedo distributions recovered from real scans (the hull genomes,
+    #   picked in derive() by the same reasons the old literals claimed -- the suit is a thermal
+    #   instrument, the visor rejects light, hardware is neither). Sampled per grain with ONE
+    #   luminance jitter shared across channels, so the surface mottles instead of confetti-ing.
+    # SKIN (the head): the parent's measured skin -- a melanin filter over a blood-bearing dermis,
+    #   not a tone anyone picked.
+    rng = np.random.default_rng(7)                        # fixed: a pose renders the same every time
     alb = np.zeros((n, 3), np.float32)
-    alb[MAT == 0] = np.array([0.82, 0.82, 0.80], np.float32)
-    alb[MAT == 1] = np.array([0.07, 0.09, 0.11], np.float32)
-    alb[MAT == 2] = np.array([0.34, 0.35, 0.37], np.float32)
+    for kind, key in ((0, "suit_material"), (1, "visor_material"), (2, "hardware_material")):
+        sel = MAT == kind
+        m = nums[key]
+        jit = rng.normal(0.0, 1.0, (int(sel.sum()), 1)).astype(np.float32)
+        a = (np.array(m["mean"], np.float32)[None, :]
+             + jit * np.array(m["std"], np.float32)[None, :])
+        alb[sel] = np.clip(a, 0.0, 1.0)
+    alb[MAT == 3] = np.array(nums["skin_albedo_rgb"], np.float32)
 
     sun = np.array([0.55, -0.72, 0.42], np.float32)
     sun /= np.linalg.norm(sun)
@@ -399,7 +485,10 @@ def emit(nums, t=1.0):
     # under the real sun; without the albedo travelling too, that relight collapsed suit, visor and
     # hardware into one pale tone -- three derived materials erased by a single hard-coded colour.
     b[:, AR:AB + 1] = alb
+    b[:, MATCOL] = MAT.astype(np.float32)     # the material class travels: the relight shades per class
     b[:, 19] = 0.97
+    # the visor passes what it does not reject -- DECLARED transmission, the operator's dial
+    b[MAT == 1, 19] = 1.0 - float(nums["visor_transmission"])
     # a grain must close its own surface: the ring spacing is what sets it, not one global size
     b[:, 20] = GRAIN_LOCAL
     b[:, 11] = SOLID
@@ -415,12 +504,23 @@ def measure(nums):
         "class": nums["name"],
         # the thermal solution is a real balance: conduction through d at dT equals metabolism
         "insulation_mm": nums["insulation_mm"],
-        "conducted_W": (K_INSUL_W_MK * SKIN_AREA_M2 * nums["dT_defended_K"]
+        "conducted_W": (K_INSUL_W_MK * nums["skin_area_m2"] * nums["dT_defended_K"]
                         / max(nums["insulation_m"], 1e-9)),
         "metabolic_W": nums["metabolic_W"],
         "balance_closes": abs(
-            (K_INSUL_W_MK * SKIN_AREA_M2 * nums["dT_defended_K"]
+            (K_INSUL_W_MK * nums["skin_area_m2"] * nums["dT_defended_K"]
              / max(nums["insulation_m"], 1e-9)) - nums["metabolic_W"]) < 1e-6,
+        # THE MATERIALS, CHECKED: the mapping must reproduce the ordering the reasons demand
+        "suit_brighter_than_hardware": (nums["suit_material"]["luminance"]
+                                        > nums["hardware_material"]["luminance"]),
+        "hardware_brighter_than_visor": (nums["hardware_material"]["luminance"]
+                                         > nums["visor_material"]["luminance"]),
+        "three_distinct_genomes": len({nums["suit_material"]["genome_id"],
+                                       nums["visor_material"]["genome_id"],
+                                       nums["hardware_material"]["genome_id"]}) == 3,
+        # and the skin is skin: red returns most, blue least -- the melanin/hemoglobin signature
+        "skin_is_red_dominant": (nums["skin_albedo_rgb"][0] > nums["skin_albedo_rgb"][1]
+                                 > nums["skin_albedo_rgb"][2]),
         "suit_is_bulkier_than_bare": nums["bulk_over_bare"] > 0.0,
         "no_pressure_shell": not nums["breathable_unaided"] and nums["insulation_m"] > 0.0,
     }

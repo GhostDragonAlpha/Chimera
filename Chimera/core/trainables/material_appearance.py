@@ -41,9 +41,13 @@ GENOME_SCHEMA = {
     "albedo_r": {"min": 0.0, "max": 1.0, "init": 0.5},
     "albedo_g": {"min": 0.0, "max": 1.0, "init": 0.5},
     "albedo_b": {"min": 0.0, "max": 1.0, "init": 0.5},
-    "albedo_mottle_var": {"min": 0.001, "max": 0.2, "init": 0.04},
+    "albedo_mottle_var": {"min": 0.0001, "max": 0.2, "init": 0.04},
     "roughness_mean": {"min": 0.0, "max": 1.0, "init": 0.5},
-    "roughness_var": {"min": 0.001, "max": 0.2, "init": 0.03},
+    "roughness_var": {"min": 0.0001, "max": 0.2, "init": 0.03},
+    # min bounds lowered 0.001 -> 1e-4 (2026-07-31): the first REAL references
+    # falsified the old floors — Metal049A measures std_luminance 0.010 (needs
+    # mottle ~1.1e-4) and roughness_var ~0. A floor above the reference's own
+    # value makes the reference unreachable, which is training blind by another name.
 }
 
 
@@ -114,11 +118,21 @@ def _compute_descriptor_vector(genome: dict, n_samples: int = 5000) -> dict:
         "albedo_std_luminance": float(np.std(luminance)),
         "albedo_skew_luminance": float(_skewness(luminance)),
         "albedo_kurt_luminance": float(_kurtosis(luminance)),
+        # HUE (2026-07-31): luminance MOMENTS are hue-blind — without per-channel
+        # means the trainer can match every luminance/roughness statistic with the
+        # WRONG COLOR (a blue "regolith"). The real samples carry a measured hue;
+        # these three keys make it trainable.
+        "albedo_mean_r": float(np.mean(albedo_per_particle[:, 0])),
+        "albedo_mean_g": float(np.mean(albedo_per_particle[:, 1])),
+        "albedo_mean_b": float(np.mean(albedo_per_particle[:, 2])),
         "luma_variance": float(np.var(luminance)),
         "chroma_variance": float(np.mean([np.var(albedo_per_particle[:, i] / (np.mean(albedo_per_particle[:, i]) + 1e-6)) for i in range(3)])),
         "luma_chroma_ratio": float(np.var(luminance) / (np.mean([np.var(albedo_per_particle[:, i]) for i in range(3)]) + 1e-6)),
         "roughness_mean": rough_mean,
         "roughness_var": rough_var,
+        # reported raw so the objective's GUARD BANDS bind (the gumball wall):
+        # the genome field itself is the measured fact here.
+        "albedo_mottle_var": float(mottle_var),
     }
     
     return descriptors

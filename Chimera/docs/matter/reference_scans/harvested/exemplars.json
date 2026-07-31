@@ -1,38 +1,38 @@
 {
   "regolith": {
-    "photo": "synthetic_placeholder/regolith_01.png",
+    "photo": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "rock": {
-    "photo": "synthetic_placeholder/rock_01.png",
+    "photo": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "brushed_metal": {
-    "photo": "synthetic_placeholder/brushed_metal_01.png",
+    "photo": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   },
   "ice": {
-    "photo": "synthetic_placeholder/ice_01.png",
+    "photo": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
     "yx": [
-      120,
-      120
+      480,
+      480
     ],
     "tag_kind": "provisional-tag",
-    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+    "note": "REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), center tile \u2014 still a provisional-tag until the human's own tag supersedes"
   }
 }

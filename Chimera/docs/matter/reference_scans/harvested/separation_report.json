@@ -1,13 +1,13 @@
 {
-  "corpus_regions": 256,
+  "corpus_regions": 10409,
   "benchmark": {
-    "regions": 256,
-    "cpu_seconds": 1.652662992477417,
-    "cpu_regions_per_sec": 154.9015142017819,
-    "gpu_seconds": 0.04979562759399414,
-    "gpu_regions_per_sec": 5141.013626483065,
-    "speedup_x": 33.18891782933859,
-    "parity_mae": 0.00024453983793729556,
+    "regions": 10409,
+    "cpu_seconds": 104.14521765708923,
+    "cpu_regions_per_sec": 99.9469801318472,
+    "gpu_seconds": 0.6865358352661133,
+    "gpu_regions_per_sec": 15161.626626475061,
+    "speedup_x": 151.69669565277786,
+    "parity_mae": 0.00014732747378645283,
     "parity_ok": true
   },
   "harvested_sizes": {
@@ -19,38 +19,38 @@
   "separation_regolith_vs_metal": {
     "material_a": "regolith",
     "material_b": "brushed_metal",
-    "cross_distance": 6.467854511447376,
-    "within_a_mean_distance": 1.684782379385829,
-    "separation_ratio": 3.838985133478298,
+    "cross_distance": 4.717769107317964,
+    "within_a_mean_distance": 0.7548353511310532,
+    "separation_ratio": 6.250063797354941,
     "passes_kill_criterion": true
   },
   "separation_regolith_vs_rock": {
     "material_a": "regolith",
     "material_b": "rock",
-    "cross_distance": 5.697824984634259,
-    "within_a_mean_distance": 1.684782379385829,
-    "separation_ratio": 3.3819352878853173,
+    "cross_distance": 3.59081119292728,
+    "within_a_mean_distance": 0.7548353511310532,
+    "separation_ratio": 4.7570787229157885,
     "passes_kill_criterion": true
   },
   "julesz_probe": {
     "probe": "julesz_adversarial: brushed-metal pattern, 3-way color-matched (mean/std/chroma) to regolith",
     "achieved_color_match": {
       "mean_luma": {
-        "target": 126.14976625,
-        "fake": 126.13772295695043
+        "target": 149.77436125,
+        "fake": 149.7743612489881
       },
       "std_luma": {
-        "target": 49.159188029163076,
-        "fake": 49.126881296282114
+        "target": 25.685369640312718,
+        "fake": 25.68536963941641
       },
       "std_chroma": {
-        "target": 18.142081633349708,
-        "fake": 18.06960937721075
+        "target": 38.63724247716201,
+        "fake": 38.5747499278729
       }
     },
-    "color_only_distance": 0.016706087557968055,
-    "full_pattern_distance": 6.854113781990563,
-    "within_regolith_mean_distance": 1.684782379385829,
+    "color_only_distance": 0.011009813679460967,
+    "full_pattern_distance": 5.529945798704374,
+    "within_regolith_mean_distance": 0.7548353511310532,
     "passes_binding_constraint": true,
     "interpretation": "color_only_distance near zero (all three color moments matched) means a pure statistical-average matcher would wrongly call these the SAME material; full_pattern_distance staying at or above ordinary within-material spread is the proof that pattern, not averages, is doing the discrimination here."
   }

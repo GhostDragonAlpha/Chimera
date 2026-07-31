@@ -1,7 +1,7 @@
 {
-  "extent_m": 1.851612566564184,
-  "crown_local": 1.026213571107738,
-  "sole_local": -0.02883632437042953,
+  "extent_m": 1.8551744838055015,
+  "crown_local": 1.0270974215398267,
+  "sole_local": -0.029982056412025948,
   "duration_s": 3.485167854400507,
   "name": "aSealedHuman",
   "class_reason": "no pressure shell required -- above the Armstrong limit",
@@ -10,25 +10,85 @@
   "dT_defended_K": 26.959169134697675,
   "metabolic_W": 166.25,
   "exertion": 0.25,
-  "insulation_m": 0.011870142440059368,
-  "insulation_mm": 11.870142440059368,
-  "bulk_over_bare": 0.07685924915863374,
-  "r_thigh_m": 0.09260014244005937,
-  "r_shank_m": 0.06803014244005937,
-  "r_arm_m": 0.06101014244005937,
-  "r_forearm_m": 0.052235142440059376,
-  "r_trunk_m": 0.16631014244005937,
-  "r_helmet_m": 0.1835776424400594,
+  "insulation_m": 0.01301914800177465,
+  "insulation_mm": 13.01914800177465,
+  "bulk_over_bare": 0.08429906761055839,
+  "suit_material": {
+    "mean": [
+      0.9343910813331604,
+      0.9499736428260803,
+      0.9172794818878174
+    ],
+    "std": [
+      0.09892663359642029,
+      0.07921973615884781,
+      0.12183661758899689
+    ],
+    "genome_id": 0,
+    "fraction_of_library": 0.15831648913706145,
+    "luminance": 0.933881402015686
+  },
+  "visor_material": {
+    "mean": [
+      0.14991191029548645,
+      0.1612599641084671,
+      0.12788334488868713
+    ],
+    "std": [
+      0.10405641794204712,
+      0.1095869317650795,
+      0.10018050670623779
+    ],
+    "genome_id": 8,
+    "fraction_of_library": 0.20170803077198407,
+    "luminance": 0.14635173976421356
+  },
+  "hardware_material": {
+    "mean": [
+      0.4871339201927185,
+      0.5165191888809204,
+      0.4534706175327301
+    ],
+    "std": [
+      0.12219177186489105,
+      0.11786069720983505,
+      0.13164116442203522
+    ],
+    "genome_id": 2,
+    "fraction_of_library": 0.16174108079945607,
+    "luminance": 0.4857079088687897
+  },
+  "visor_transmission": 0.28,
+  "materials_source": "story/data/hull_material_genomes.json (real scans; Construction/space_materials.py)",
+  "skin_albedo_rgb": [
+    0.3318595067449445,
+    0.20134575735912405,
+    0.12327406515688077
+  ],
+  "skin_sss_mfp_mm": [
+    0.36432813188367275,
+    0.24043726380671876,
+    0.1560017163632821
+  ],
+  "melanin_class": "moderate",
+  "skin_area_m2": 2.007140265043732,
+  "r_thigh_m": 0.09374914800177465,
+  "r_shank_m": 0.06917914800177465,
+  "r_arm_m": 0.062159148001774654,
+  "r_forearm_m": 0.053384148001774656,
+  "r_trunk_m": 0.16745914800177464,
+  "r_helmet_m": 0.18472664800177466,
+  "r_head_m": 0.11670750000000002,
   "helmet_clearance_m": 0.055,
-  "hip_half_m": 0.10000815383526412,
-  "shoulder_half_m": 0.222439473484914,
-  "stance_width_m": 0.20001630767052825,
-  "shoulder_width_m": 0.444878946969828,
+  "hip_half_m": 0.10124907984191664,
+  "shoulder_half_m": 0.2246455641634073,
+  "stance_width_m": 0.20249815968383328,
+  "shoulder_width_m": 0.4492911283268146,
   "stance_forced_by_suit": true,
-  "knee_half_m": 0.13890021366008906,
-  "splay_deg": 5.189605642906563,
-  "thigh_gap_at_hip_m": 0.0148160227904095,
-  "thigh_gap_at_knee_m": 0.09260014244005937,
+  "knee_half_m": 0.140623722002662,
+  "splay_deg": 5.254179551802082,
+  "thigh_gap_at_hip_m": 0.01499986368028397,
+  "thigh_gap_at_knee_m": 0.09374914800177467,
   "legs_would_touch_without_splay": true,
   "height_m": 1.7550000000000001,
   "leg_length_m": 0.9301500000000001,

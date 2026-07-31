@@ -45,6 +45,26 @@
   "excursion_hours": 8.0,
   "suit_weight_N": 70.15621324685358,
   "bare_mass_kg": 84.58995486428081,
+  "melanin_fraction": 0.135,
+  "melanin_class": "moderate",
+  "skin_albedo_rgb": [
+    0.3318595067449445,
+    0.20134575735912405,
+    0.12327406515688077
+  ],
+  "skin_bands_nm": [
+    615.0,
+    535.0,
+    465.0
+  ],
+  "skin_sss_mfp_mm": [
+    0.36432813188367275,
+    0.24043726380671876,
+    0.1560017163632821
+  ],
+  "skin_area_m2": 2.007140265043732,
+  "skin_blood_fraction": 0.002,
+  "skin_optics_source": "Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json)",
   "height_m": 1.7550000000000001,
   "mass_kg": 94.50445486428082,
   "com_height_m": 1.009125,

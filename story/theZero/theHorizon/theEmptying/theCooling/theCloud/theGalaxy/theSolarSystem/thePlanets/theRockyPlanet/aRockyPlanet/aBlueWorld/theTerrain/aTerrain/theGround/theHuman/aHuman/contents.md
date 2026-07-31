@@ -15,9 +15,9 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 1.852 |
-| `crown_local` | 1.026 |
-| `sole_local` | -0.02884 |
+| `extent_m` | 1.855 |
+| `crown_local` | 1.027 |
+| `sole_local` | -0.02998 |
 | `duration_s` | 3.485 |
 | `name` | aSealedHuman |
 | `class_reason` | no pressure shell required -- above the Armstrong limit |
@@ -26,25 +26,35 @@
 | `dT_defended_K` | 26.96 |
 | `metabolic_W` | 166.2 |
 | `exertion` | 0.25 |
-| `insulation_m` | 0.01187 |
-| `insulation_mm` | 11.87 |
-| `bulk_over_bare` | 0.07686 |
-| `r_thigh_m` | 0.0926 |
-| `r_shank_m` | 0.06803 |
-| `r_arm_m` | 0.06101 |
-| `r_forearm_m` | 0.05224 |
-| `r_trunk_m` | 0.1663 |
-| `r_helmet_m` | 0.1836 |
+| `insulation_m` | 0.01302 |
+| `insulation_mm` | 13.02 |
+| `bulk_over_bare` | 0.0843 |
+| `suit_material` | {'mean': [0.9343910813331604, 0.9499736428260803, 0.9172794818878174], 'std': [0.09892663359642029, 0.07921973615884781, 0.12183661758899689], 'genome_id': 0, 'fraction_of_library': 0.15831648913706145, 'luminance': 0.933881402015686} |
+| `visor_material` | {'mean': [0.14991191029548645, 0.1612599641084671, 0.12788334488868713], 'std': [0.10405641794204712, 0.1095869317650795, 0.10018050670623779], 'genome_id': 8, 'fraction_of_library': 0.20170803077198407, 'luminance': 0.14635173976421356} |
+| `hardware_material` | {'mean': [0.4871339201927185, 0.5165191888809204, 0.4534706175327301], 'std': [0.12219177186489105, 0.11786069720983505, 0.13164116442203522], 'genome_id': 2, 'fraction_of_library': 0.16174108079945607, 'luminance': 0.4857079088687897} |
+| `visor_transmission` | 0.28 |
+| `materials_source` | story/data/hull_material_genomes.json (real scans; Construction/space_materials.py) |
+| `skin_albedo_rgb` | [0.3318595067449445, 0.20134575735912405, 0.12327406515688077] |
+| `skin_sss_mfp_mm` | [0.36432813188367275, 0.24043726380671876, 0.1560017163632821] |
+| `melanin_class` | moderate |
+| `skin_area_m2` | 2.007 |
+| `r_thigh_m` | 0.09375 |
+| `r_shank_m` | 0.06918 |
+| `r_arm_m` | 0.06216 |
+| `r_forearm_m` | 0.05338 |
+| `r_trunk_m` | 0.1675 |
+| `r_helmet_m` | 0.1847 |
+| `r_head_m` | 0.1167 |
 | `helmet_clearance_m` | 0.055 |
-| `hip_half_m` | 0.1 |
-| `shoulder_half_m` | 0.2224 |
-| `stance_width_m` | 0.2 |
-| `shoulder_width_m` | 0.4449 |
+| `hip_half_m` | 0.1012 |
+| `shoulder_half_m` | 0.2246 |
+| `stance_width_m` | 0.2025 |
+| `shoulder_width_m` | 0.4493 |
 | `stance_forced_by_suit` | True |
-| `knee_half_m` | 0.1389 |
-| `splay_deg` | 5.19 |
-| `thigh_gap_at_hip_m` | 0.01482 |
-| `thigh_gap_at_knee_m` | 0.0926 |
+| `knee_half_m` | 0.1406 |
+| `splay_deg` | 5.254 |
+| `thigh_gap_at_hip_m` | 0.015 |
+| `thigh_gap_at_knee_m` | 0.09375 |
 | `legs_would_touch_without_splay` | True |
 | `height_m` | 1.755 |
 | `leg_length_m` | 0.9302 |

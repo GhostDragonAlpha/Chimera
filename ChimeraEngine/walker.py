@@ -667,10 +667,26 @@ def body_buffer(w: Walker):
     # in daylight instead of a silhouette. Same physics as the sky term, one reflection later.
     bounce = 0.5 * 0.22 * S_rel * beam
     b[:, 16:19] = lit(body_alb, S_rel * beam * lam + sky + bounce, e_ref=S_rel, tone=0.45)
+    # PER-CLASS SHADING (F1): the body publishes its material class in matter.MAT.
+    cls = b[:, _M.MAT]
+    # THE FACE SITS BEHIND THE VISOR: it is lit only by what the visor transmits, and its light
+    # WRAPS -- a photon random-walks the skin's measured mean free path before forgetting its
+    # direction, so the terminator softens per colour and red reaches furthest. The wrap width
+    # is mfp against the head's own radius: derived, and honestly subtle at this scale.
+    skin = cls == 3.0
+    if skin.any():
+        T_vis = float(hn.get("visor_transmission", 1.0))
+        w = np.clip(np.array(hn.get("skin_sss_mfp_mm", [0.0, 0.0, 0.0]), np.float32)
+                    / (1000.0 * float(hn.get("r_head_m", 0.12))), 0.0, 1.0)
+        lam_s = np.clip(b[skin, 21:24] @ sun, -1.0, 1.0)
+        wrapped = np.clip((lam_s[:, None] + w[None, :]) / (1.0 + w[None, :]), 0.0, 1.0)
+        e_band = T_vis * (S_rel * beam * wrapped + (sky + bounce))
+        scale = np.clip(e_band / max(S_rel, 1e-30), 0.0, None) ** 0.45
+        b[skin, 16:19] = np.clip(body_alb[skin] * scale, 0.0, 1.0)
     # the visor keeps its specular: a curved dark surface with a bright sky in front of it
-    dark = own.mean(axis=1) < 0.15
-    if dark.any():
-        b[dark, 16:19] += (np.clip(lam[dark], 0.0, None)[:, None] ** 24 * 0.8).astype(np.float32)
+    visor = cls == 1.0
+    if visor.any():
+        b[visor, 16:19] += (np.clip(lam[visor], 0.0, None)[:, None] ** 24 * 0.8).astype(np.float32)
         np.clip(b[:, 16:19], 0.0, 1.0, out=b[:, 16:19])
     return b
 

@@ -55,6 +55,15 @@ human (or a Lead acting on the human's own go-ahead) drops real CC0 photos into
 imagery), this module ingests them with ZERO code changes and the KILL-criterion
 test below becomes a real-photo result instead of a synthetic-stand-in one.
 
+AMENDMENT 2026-07-31: that moment arrived. The operator gave the go-ahead in live
+chat ("download the samples and then train") and the real CC0 packs catalogued in
+SOURCES.md were downloaded (ambientCG Ground037/Rock026/Metal049A/Snow004 +
+Poly Haven dark_rock/rock_surface/snow_01). `main()` now tags each material's
+exemplar on the REAL photo's center tile (REAL_EXEMPLAR_PHOTOS) and only falls back
+to the synthetic placeholder when no real sample exists. Non-color PBR maps
+(Normal/Roughness/Displacement/AO/Metalness) live OUTSIDE this corpus under
+`docs/matter/pbr_maps/` so `iter_corpus_images` never ingests them as "photo"s.
+
 NO REFERENCE, NO VERDICT: exemplar tags minted by `tag_exemplar()` below are always
 `provisional-tag` — an admitted stand-in for the human's own tag, never presented as
 the human's verdict. A human-supplied tag supersedes on sight.
@@ -86,6 +95,18 @@ N_FILTERS = len(SCALES) * len(ORIENTATIONS_DEG)          # 12
 COLOR_WEIGHT = 0.1                          # color moments are LAST and MINOR — Julesz
 D_TOTAL = N_FILTERS + 3 + 3                 # 12 filters + {grain,periodicity,aniso} + 3 color = 18
 MATERIALS = ("regolith", "rock", "brushed_metal", "ice")
+
+# REAL CC0 SAMPLES (downloaded 2026-07-31, the operator's own go-ahead in live chat —
+# "everything is a sample that you have to train; you'll have to download the samples
+# and then train"). When the real photo for a material is present, its CENTER tile is
+# tagged as the exemplar instead of the synthetic placeholder; the placeholder path
+# below remains the fallback so the pipeline still runs end-to-end with zero downloads.
+REAL_EXEMPLAR_PHOTOS = {
+    "regolith": "ambientcg/regolith/Ground037_1K-JPG_Color.jpg",
+    "rock": "ambientcg/rock/Rock026_1K-JPG_Color.jpg",
+    "brushed_metal": "ambientcg/metal/Metal049A_1K-JPG_Color.jpg",
+    "ice": "ambientcg/ice/Snow004_1K-JPG_Color.jpg",
+}
 
 _WP = None
 _KERNEL = None
@@ -639,6 +660,25 @@ def _kurtosis(x: np.ndarray) -> float:
     return 0.0 if s < 1e-10 else float(np.mean(((x - m) / s) ** 4) - 3)
 
 
+def _srgb_to_linear(x: np.ndarray) -> np.ndarray:
+    """IEC 61966-2-1 piecewise. Albedo jpgs are sRGB-ENCODED; the domain's genome
+    albedo is LINEAR reflectance (what splat emission shades with). Comparing
+    without this conversion would train every material ~2x too bright."""
+    x = np.clip(x, 0.0, 1.0)
+    return np.where(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ** 2.4)
+
+
+# Real ambientCG Roughness maps (non-color data, linear by convention), moved out of
+# the photo corpus 2026-07-31 so iter_corpus_images never ingests them as "photo"s.
+PBR_DIR = ROOT / "docs" / "matter" / "pbr_maps"
+PBR_ROUGHNESS_MAPS = {
+    "regolith": "regolith/Ground037_1K-JPG_Roughness.jpg",
+    "rock": "rock/Rock026_1K-JPG_Roughness.jpg",
+    "brushed_metal": "metal/Metal049A_1K-JPG_Roughness.jpg",
+    "ice": "ice/Snow004_1K-JPG_Roughness.jpg",
+}
+
+
 def write_reference_descriptor_file(material: str, corpus_result: dict, harvested: dict) -> Path:
     """Writes docs/matter/reference_scans/<material>.json in the EXACT format
     `core.trainables.material_appearance.load_reference_descriptors()` already
@@ -657,19 +697,46 @@ def write_reference_descriptor_file(material: str, corpus_result: dict, harveste
     harvested_photo_yx.add((meta[ex_idx]["photo"], tuple(meta[ex_idx]["yx"])))
     idxs = [i for i, m in enumerate(meta) if (m["photo"], tuple(m["yx"])) in harvested_photo_yx]
 
-    pooled_luma = np.concatenate([_luma(regions_rgb[i]).ravel() for i in idxs])
     pooled_rgb = np.concatenate([regions_rgb[i].reshape(-1, 3).astype(np.float64) for i in idxs], axis=0)
-    chroma = pooled_rgb - pooled_luma[:, None]
+
+    # LINEAR-space pooled pixels, domain-IDENTICAL formulas (2026-07-31 fix): the
+    # domain's _compute_descriptor_vector defines what each key MEANS; an earlier
+    # version of this writer used a different chroma definition and sRGB values, so
+    # dist_chroma_variance / dist_luma_chroma_ratio compared two different formulas —
+    # a phantom distance the trainer would have chased. Now: same formulas, and the
+    # sRGB jpg values converted to linear before any statistic is taken.
+    lin = _srgb_to_linear(pooled_rgb / 255.0)
+    luma = 0.299 * lin[:, 0] + 0.587 * lin[:, 1] + 0.114 * lin[:, 2]
+    chan_var = [float(np.var(lin[:, i])) for i in range(3)]
+    chan_var_norm = [float(np.var(lin[:, i] / (np.mean(lin[:, i]) + 1e-6))) for i in range(3)]
 
     color_descriptors = {
-        "albedo_mean_luminance": float(np.mean(pooled_luma) / 255.0),
-        "albedo_std_luminance": float(np.std(pooled_luma) / 255.0),
-        "albedo_skew_luminance": _skewness(pooled_luma),
-        "albedo_kurt_luminance": _kurtosis(pooled_luma),
-        "luma_variance": float(np.var(pooled_luma) / (255.0 ** 2)),
-        "chroma_variance": float(np.var(chroma) / (255.0 ** 2)),
-        "luma_chroma_ratio": float(np.var(pooled_luma) / (np.var(chroma) + 1e-6)),
+        "albedo_mean_luminance": float(np.mean(luma)),
+        "albedo_std_luminance": float(np.std(luma)),
+        "albedo_skew_luminance": _skewness(luma),
+        "albedo_kurt_luminance": _kurtosis(luma),
+        # HUE — the measured per-channel means of the REAL sample (domain-identical
+        # keys; see the domain's own 2026-07-31 note on why hue must be trainable).
+        "albedo_mean_r": float(np.mean(lin[:, 0])),
+        "albedo_mean_g": float(np.mean(lin[:, 1])),
+        "albedo_mean_b": float(np.mean(lin[:, 2])),
+        "luma_variance": float(np.var(luma)),
+        "chroma_variance": float(np.mean(chan_var_norm)),
+        "luma_chroma_ratio": float(np.var(luma) / (np.mean(chan_var) + 1e-6)),
     }
+
+    # roughness_mean / roughness_var from the REAL Roughness PBR map (non-color,
+    # linear 0-1) — the objective minimizes dist_roughness_mean/dist_roughness_var;
+    # without these keys the loader silently trained roughness blind.
+    rough_provenance = None
+    rough_rel = PBR_ROUGHNESS_MAPS.get(material)
+    rough_path = (PBR_DIR / rough_rel) if rough_rel else None
+    if rough_path is not None and rough_path.exists():
+        from PIL import Image
+        rough = np.array(Image.open(rough_path).convert("L"), dtype=np.float64) / 255.0
+        color_descriptors["roughness_mean"] = float(np.mean(rough))
+        color_descriptors["roughness_var"] = float(np.var(rough))
+        rough_provenance = f"pbr_maps/{rough_rel}"
 
     mean_pattern = descriptors[idxs, :N_FILTERS + 3].mean(axis=0)   # filters + grain/periodicity/aniso
     pattern_descriptors = {
@@ -692,10 +759,15 @@ def write_reference_descriptor_file(material: str, corpus_result: dict, harveste
         "n_regions_pooled": len(idxs),
         "descriptors": color_descriptors,          # the exact shape tb-0175's loader reads
         "pattern_descriptors": pattern_descriptors,  # the PRIMARY, pattern-based evidence
+        "roughness_provenance": rough_provenance,  # real PBR map, or null when absent
         "note": ("descriptors above are COLOR MOMENTS ONLY, kept in this shape for "
                  "compatibility with core.trainables.material_appearance.load_reference_descriptors(); "
                  "pattern_descriptors is what actually IDENTIFIED these regions as "
-                 "material — color moments were never the retrieval basis (Julesz)."),
+                 "material — color moments were never the retrieval basis (Julesz). "
+                 "Color statistics are LINEAR-space (sRGB jpgs converted via IEC "
+                 "61966-2-1) with formulas identical to the domain's "
+                 "_compute_descriptor_vector; roughness_mean/roughness_var come from "
+                 "the real ambientCG Roughness map when roughness_provenance is set."),
     }
     out_path = CORPUS_DIR / f"{material}.json"
     out_path.write_text(json.dumps(payload, indent=2, default=_json_default), encoding="utf-8")
@@ -836,10 +908,23 @@ def main() -> int:
 
     print("tagging exemplars (provisional-tag) ...")
     for material in MATERIALS:
-        photo = f"synthetic_placeholder/{material}_01.png"
-        # center-ish tile — 320/40 = 8x8 grid, index (3,3)
-        tag_exemplar(material, photo, (3 * TILE, 3 * TILE), tag_kind="provisional-tag",
-                     note="tagged by sub-31/tb-0180 (agent), NOT the human — supersede on sight")
+        real_rel = REAL_EXEMPLAR_PHOTOS.get(material)
+        real_path = (CORPUS_DIR / real_rel) if real_rel else None
+        if real_path is not None and real_path.exists():
+            from PIL import Image
+            with Image.open(real_path) as im:
+                w, h = im.size
+            yx = ((h // 2) // TILE * TILE, (w // 2) // TILE * TILE)  # center tile, on the scan grid
+            tag_exemplar(material, real_rel, yx, tag_kind="provisional-tag",
+                         note="REAL CC0 sample (downloaded 2026-07-31, operator consent in live chat), "
+                              "center tile — still a provisional-tag until the human's own tag supersedes")
+            print(f"  {material}: REAL sample {real_rel} @ {list(yx)}")
+        else:
+            photo = f"synthetic_placeholder/{material}_01.png"
+            # center-ish tile — 320/40 = 8x8 grid, index (3,3)
+            tag_exemplar(material, photo, (3 * TILE, 3 * TILE), tag_kind="provisional-tag",
+                         note="tagged by sub-31/tb-0180 (agent), NOT the human — supersede on sight")
+            print(f"  {material}: synthetic placeholder (no real sample found)")
 
     print("harvesting ...")
     harvested = {}
