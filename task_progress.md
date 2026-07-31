@@ -119,3 +119,43 @@ the operator's call, presented in chat.
 NEXT: operator ratifies/overrides the mappings + rules on matter_library + rules whether to
 download more 3DGS captures first (snow/ice, desert/rust). Then B1 foot IK
 (docs/HUMAN_FEATURE_MENU.md).
+
+---
+
+## 2026-07-31 (evening) — the acquisition layer: research connects physics to training data
+
+**The ruling (verbatim): "tie together doing research so that you can connect the physics to
+the train... we only spend effort on one subject once and it can be used infinitely and be
+morphed onto other things... run a comb through the Internet and pick the ticks that we need —
+everything that we're making is just light and Physics."**
+
+DONE, verified:
+- **Enumerated the human subtree's physics needs** from the chapters themselves (8 membranes:
+  theBalance sway/COP; theEye vision functions; theGrip strength+friction; theHand closure;
+  theLoad carried mass; theStance 6 postures; theThrust EVA/partial-g; + built
+  Breath/Sweep/Ankle/Skin).
+- **Five-agent verified research sweep** (every URL fetched, license terms read): the complete
+  dataset map written to **`research_references/human/ACQUISITION_PLAN.md`** — membrane →
+  physics → training data → status, with Tier A (downloaded), Tier B (free but
+  registration-gated: SimTK load-carriage, SMPL), Tier C (NON-COMMERCIAL licenses: AMASS,
+  GRAB, MANO, InterHand2.6M, DexYCB — nothing derived may ship in a sold game), and honest
+  not-found gaps (raw Apollo gait kinematics, digitized dark adaptation, skin tribology DB,
+  commercial-clear hand mocap).
+- **~13 GB measured data downloaded, all verified** (zips tested, CSVs/XPT parsed):
+  CMU mocap complete (2,548 BVH / 113 subjects — crouch, crawl, jump, climb, sit, turns;
+  license allows commercial inclusion); refractiveindex.info n,k database (605 materials,
+  **CC0**, extracted); NASA EMU Data Book + CR-1726 reduced-g handbook + TN D-7883 Apollo
+  metabolic + EVA ops 2012; CVRL CIE 1924/1951/1931 + cone fundamentals; Navarro 2009 eye;
+  skin IR emissivity 0.98±0.01; Hecht 1937 dark adaptation (PMC); NHANES grip raw trials
+  (8,291 rows readable); Mathiowetz norms; Zhang & Mak skin μ / Elkington rubber-granite /
+  Carré gloves; OMLC water + fat spectra; MacLean 2021 4-gravity-level GRF+mocap (334 MB);
+  HBEDB 1,930 balance trials + dos Santos dual-plate (7.4 GB); loaded CMJ / squat / Bosco
+  jump force plates; MoveSmart CC0 (walk/jog/run + drops at 1000 Hz).
+- SOURCES.md extended (Tier 0 additions + Tier 2 commercial warning); .gitignore covers the
+  raw stores (extracted `story/data/*.json` tables remain the committed artifacts, per the
+  gait_osf pattern). Small canonical measured functions (CVRL CSVs, KBs) are committed.
+
+NOT done (next sessions, in menu order): extraction pipelines that distill each store to
+`story/data/*.json` (like ingest_gait_osf.py did); the membranes consume those, not the raw
+zips. Operator decisions open: SimTK/SMPL clicks (Tier B), the Tier C commercial question,
+F1 mapping ratifications from the previous block, B1 foot IK next on the menu.

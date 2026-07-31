@@ -198,3 +198,16 @@ story/**/__pycache__/
 # `tools/ingest_gait_osf.py` re-fetches on demand. The EXTRACTED table it produces,
 # story/data/gait_normative.json, IS committed: that is what the membranes read.
 research_references/human/gait_osf/
+
+# Human acquisition sweep 2026-07-31 (see research_references/human/ACQUISITION_PLAN.md):
+# bulk raw downloads stay out of git; only extracted story/data/*.json tables get committed.
+# Small canonical measured functions (CVRL CSVs, KBs) ARE committed -- the membranes read them.
+research_references/human/mocap/cmu_full/
+research_references/human/balance/
+research_references/human/jump/
+research_references/human/partial_g/
+research_references/human/eva/
+research_references/human/grip/
+research_references/human/skin_friction/
+research_references/optics/refractiveindex.info-database/
+research_references/optics/*.zip
