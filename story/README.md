@@ -226,3 +226,19 @@ and improved, never subtracted.
 
 Next: gravity has no threshold and never switches off, and it has just been handed matter that is
 neutral and one part in 100,000 uneven.
+
+---
+
+## AND EVERY NUMBER DECLARES ITS UNIT (2026-07-31)
+
+A chapter is PROVEN, VISUAL and LEARNED — and now also **BINDABLE**. Every number a membrane
+publishes states its unit, either in the key name (`extent_m`, `duration_s`, `foot_pressure_kPa`)
+or in `story/data/units.json`. A number nothing can read the unit of is a number nothing can safely
+connect to, and that is exactly how 294.19 **Kelvin** ended up in a **Celsius** table and rendered
+a temperate world as hot desert, poles included.
+
+    python story/folding.py audit     # before you call a chapter done
+
+It needs no setup and no signatures: it reads the unit off the key and asks what that unit
+*forbids*. Full method — folds, bonds, regimes, and why protein folding is the right metaphor
+rather than a decorative one — in `docs/THE_FOLDING.md`.

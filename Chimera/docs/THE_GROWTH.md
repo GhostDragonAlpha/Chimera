@@ -92,7 +92,8 @@ A child is legal in exactly two ways, and one gate makes both honest:
 |---|---|
 | `research_references/PHYSICS_OF_EVERYTHING.md` | humanity's complete physics tree, ~110 sourced rows, minus the forbidden branches |
 | `research_references/PHYSICS_SOFTWARE_MATH.md` | the simulator's-eye view: the math every engine encompasses (math isn't copyrightable; code is) |
-| `research_references/MEMBRANE_PHYSICS_MAP.md` | for each membrane: which physics rows apply and why |
+| `research_references/MEMBRANE_PHYSICS_MAP.md` | for each membrane: which physics rows apply and why (prose; the machine-checkable version is below) |
+| **`docs/THE_FOLDING.md`** | **a serial that says what it can CONNECT to.** The catalog rows as an index (`story/data/physics_catalog.json`, 158 rows), every number's unit (`story/data/units.json`, 86%), and the fold/bond/regime checks that make ruling 4 a test instead of a sentence. `python story/folding.py audit` |
 | `research_references/human/ACQUISITION_PLAN.md` | the measured-data side: what to download once per subject, tiers and licenses |
 | `research_references/human/PHYSICS_OF_THE_HUMAN.md` | the human's 45 physics rows with sources and proof status |
 | `research_references/human/MUSCLE_INVENTORY.md` | every muscle that moves the body: what it does, why it exists |
@@ -106,6 +107,9 @@ inherits the whole answer by reading, without a single token of re-explanation.
 ## THE BUILDER'S CREED (2026-07-31, in the operator's direction)
 
 - Download once, train once, prove once — reuse infinitely, morph onto everything.
+- **Every number declares its unit** — in its key name, or in `story/data/units.json`. A number
+  nothing can read the unit of is a number nothing can safely bind, and that is how a Kelvin
+  ended up in a Celsius table and rendered a planet as desert.
 - Appearance comes from scans; law comes from papers; taste comes from the operator.
 - A child is a recipe re-seeded or measured genomes mixed — and nothing counts until
   `prove` crosses the boundary.

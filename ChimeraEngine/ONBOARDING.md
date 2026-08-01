@@ -21,7 +21,7 @@ follow a task board. A stray "Unreal" keyword in an old doc is not a signal — 
 **Read these, in order:** `Chimera/docs/THE_WORKFLOW.md` (the whole method) · `CLAUDE.md` (the manual:
 goal, key paths, hardware traps, conventions) · **`Chimera/docs/THE_GROWTH.md` (what the game IS:
 the 2026-07-31 rulings — physics is the code, appearance from 3DGS scans only, the recipe/children
-doctrine, the D0–D4 detail standard, the corpus map)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
+doctrine, the D0–D4 detail standard, the corpus map)** · **`docs/THE_FOLDING.md` (units, folds, bonds, regimes: what a law may connect to, and `python story/folding.py audit` before you call anything done)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
 dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) ·
 `Chimera/docs/EXPERIMENTAL_METHOD.md` (before debugging anything). Then the rest of THIS file.
 
