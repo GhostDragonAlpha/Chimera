@@ -156,6 +156,23 @@
    "leg_work_total_per_mass": "J/kg",
    "peak_power_per_mass": "W/kg",
    "mean_power_per_mass": "W/kg"
+  },
+  "theZero": {
+   "r": "m",
+   "volume": "m3"
+  },
+  "theHorizon": {
+   "A": "m2"
+  },
+  "theClock": {
+   "orders_of_magnitude": "ratio"
+  },
+  "theEmptying": {
+   "S": "J/K",
+   "bits": "ratio",
+   "t_evap": "s",
+   "extent": "m",
+   "quanta": "ratio"
   }
  },
  "notes": {
@@ -170,7 +187,8 @@
   "theEye": "Photometry enters the tree at theEye and had no representation before it: lux, candela per square metre, trolands, lumens per watt, arcminutes, arcseconds, cycles per degree, pixels per degree and steradians are all declared here. They sit in `global` rather than under a membrane because a key like `acuity_arcmin` is arcminutes no matter who publishes it -- and because `folding.py membrane <name>` calls undeclared(nums) WITHOUT the membrane, so a by_membrane declaration is invisible to the one report a chapter author actually reads.",
   "nm_reads_as_newton_metre": "CAUTION, found while writing theEye: SUFFIX_UNITS is matched case-insensitively on a second pass, so ANY key ending `_nm` (nanometres) matches `_Nm` and is read as a NEWTON-METRE. That is a misfold of exactly the kind this system exists to catch, and it is invisible because both spellings look right. theEye avoids it by publishing `photopic_peak_wavelength` rather than `photopic_peak_nm`; the collision itself is still live in folding.py for anyone who types a wavelength the obvious way.",
   "hz": "theStance publishes three sway frequencies in HERTZ because that is how postural sway is measured and reported everywhere, and there is no `_hz` suffix rule. They are declared here as 1/s, which is the same unit spelled the table's way, and each is ALSO published as a period in seconds so the chapter does not depend on this file to be readable.",
-  "renames_owed": "aHuman.dT_defended_K -> dT_defended_dK  (it is a SPAN: 33.0 degC skin minus 6.04 degC air. As an absolute Kelvin it reads 246 degrees below absolute zero.) theHuman.cadence_steps_s -> cadence_steps_per_s  (it is exactly 1/step_time_s, dimension T^-1, published under a name meaning T^1). Both are read by other membranes under the current names -- theLoad consumes cadence_steps_s -- so the rename needs its consumers moved in the same commit. Overridden now so the machine-readable truth is right today."
+  "renames_owed": "aHuman.dT_defended_K -> dT_defended_dK  (it is a SPAN: 33.0 degC skin minus 6.04 degC air. As an absolute Kelvin it reads 246 degrees below absolute zero.) theHuman.cadence_steps_s -> cadence_steps_per_s  (it is exactly 1/step_time_s, dimension T^-1, published under a name meaning T^1). Both are read by other membranes under the current names -- theLoad consumes cadence_steps_s -- so the rename needs its consumers moved in the same commit. Overridden now so the machine-readable truth is right today.",
+  "root_blindness_2026_08_01": "THE AUDIT CANNOT FAIL WHAT IT CANNOT READ. A root-first re-audit under the 2026-08-01 rules found 9 of the 34 numbers in theZero/theHorizon/theClock/theEmptying carried no readable unit -- 26% of the seed of the entire story -- including theZero.r and theZero.volume, the first two numbers there are. `folding.py audit` had been reporting 0 impossible and 0 inconsistent over them, which was true and meaningless: it reads the unit off the key name, found none, and skipped them silently. A clean audit over 74% coverage is not a clean audit. Units declared here rather than by renaming, so no consumer moves; the renames are still owed."
  },
  "overrides": {
   "_note": "Keys whose NAME states the wrong unit. An override is not a convenience -- it is a correction, and every entry here is a rename that is owed. Listed in renames_owed.",
