@@ -648,6 +648,12 @@ to say so. (Measured: eleven worlds at a flat 900 grains each put 4,801 splats i
 | **skipped a level** | `theCloud → theSolarSystem` with no galaxy between | check `HIERARCHIES.md`; a cloud does not become a system on its own |
 | **unreachable physics** | a law parented inside one place | `theShip` could not reach `theDensityClock` — a membrane reads only its PARENT |
 | **not mass-conserving** | a growth rule that hands out more than exists | 101 Earth masses from a disk holding 56 |
+| **no control** (2026-08-01) | reporting a genome measured only on the thing you care about | run the SAME instrument on the clay you SENT -- three of four features came back identical, i.e. they were the fitter's signature, not the material's |
+| **measured at the wrong scale** | "the octaves made it *less* detailed" | the finest one is **0.6 px** at that framing; an instrument that cannot resolve an effect returns a wrong number, never "cannot see" |
+| **self-normalised threshold** | a growth rule meant to *measure* complexity | a detailed take and flat clay both reached **5,619 splats, identical to the digit** -- a quantile of your own population reports nothing about it |
+| **the data was the artifact** | blaming new code for a visible cross-hatch | the **canvas** measured 27.8× directional, the new code 1.1× -- and the artifact had been quietly biasing the spectral slope to 2.54 where the law gives 2.95 |
+| **name, not definition** | joining a codebook by matching feature names | `aniso` read **2.25** against a real range of 0.296-0.996 -- a dimensionless quantity on the wrong interval, which no unit check can ever see |
+| **one constraint applied per-part** | capping each octave at the repose limit | five capped octaves sum to well past repose, because **slopes add** -- a whole-surface constraint goes on the whole surface |
 | **duplicated a child** | parent draws its own version *and* places the child | the same matter twice; it overran a tile and left a black hole |
 | **two copies of one function** | `fibonacci_sphere` in both `matter.py` and `splat_appearance.py` | one gained `jitter`, the other did not — crash, and drift |
 | **invented a body** | drew a "star marker" 1.3 radii from a planet | it reads as **a moon**; nothing derived a moon. An exaggeration scales what exists — it cannot mint an object |
@@ -706,6 +712,26 @@ cannot diverge. Prefer a published table to a restated law.
 
 ---
 
+## 10b. The one habit that caught all six
+
+Before you report a number, **name the thing that would have to be true for it to be an artifact,
+then go and measure that.** Six times out of six in one day it was cheaper than the retraction.
+
+The cheapest version of the habit, and this project hands it to you free: `emit()` produces the
+membrane's own matter from its own numbers, so a render of it is a subject whose answer you know
+**by construction**. Push that through whatever is measuring the real thing. If the two come back
+the same, you were measuring the instrument.
+
+> A measurement without a control is not a weak measurement. It is not a measurement.
+
+And its mirror, for when a result comes back NEGATIVE: an instrument that cannot resolve an effect
+does not refuse — it returns a number, often in the wrong direction. Count how many pixels, samples
+or bins the effect occupies before you believe a null.
+
+Rules 11–16 of `Chimera/docs/EXPERIMENTAL_METHOD.md` carry all six with the numbers.
+
+---
+
 ## 11. Working with Alan
 
 - He speaks in bursts and corrects hard. **The correction is the signal** — take it literally, not
@@ -757,7 +783,7 @@ cannot diverge. Prefer a published table to a restated law.
 | `docs/THE_WORKFLOW.md` | the method end to end: the verb (PROVE), the gates, the doc map |
 | `docs/THE_METHOD_AS_A_STORY.md` | every law Alan gave, placed at the membrane that forced it |
 | `docs/THE_ORDER.md` | what runs, in what sequence, and what is currently broken |
-| `Chimera/docs/EXPERIMENTAL_METHOD.md` | ten rules for diagnosing a live system without fooling yourself |
+| `Chimera/docs/EXPERIMENTAL_METHOD.md` | **sixteen** rules for diagnosing a live system without fooling yourself — 11-16 are the control/scale/self-normalisation set (2026-08-01) |
 | `python -m core.terms <word>` | the terminology index — 73 terms, used **literally** |
 
 ### Where the story is going

@@ -243,6 +243,31 @@ not a witness).
 
 ---
 
+## 7b · The six rules that decide whether a result is real (2026-08-01)
+
+The gates above stop you calling a term proven without evidence. These stop the evidence itself from
+being an artifact -- all six earned in one day, each having **reversed a conclusion already written
+down**. Full account: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11-16.
+
+1. **Run the instrument on something whose answer you already know.** Not a held-out sample -- a
+   thing you MADE. `emit()` hands you one free: the membrane's own matter, rendered.
+   *A measurement without a control is not a weak measurement; it is not a measurement.*
+2. **Measure at the scale the thing lives at.** An instrument that cannot resolve an effect returns
+   a number in the wrong direction, never "cannot see". Count the pixels first.
+3. **Never threshold on a quantile of the thing you are measuring.** A rule defined in terms of its
+   own population cannot report anything about that population.
+4. **Suspect the data's construction, not only the probe.** A correct instrument reads a correct
+   number off a subject that is lying.
+5. **Matching names is not matching definitions.** `folding.py` binds published units; it cannot see
+   a formula computing something else under a name it knows. Their file is the authority.
+6. **Derive the shape, let physics set the level** -- and when the two disagree, publish the
+   disagreement rather than reconciling it.
+
+**The habit all six share:** before reporting, name what would have to be true for the result to be
+an artifact, then measure that. Six times out of six it was cheaper than the retraction.
+
+---
+
 ## 8 · The reading order (the doc map)
 
 | Read | For | When |

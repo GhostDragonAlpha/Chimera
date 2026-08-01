@@ -23,7 +23,7 @@ goal, key paths, hardware traps, conventions) · **`Chimera/docs/THE_GROWTH.md` 
 the 2026-07-31 rulings — physics is the code, appearance from 3DGS scans only, the recipe/children
 doctrine, the D0–D4 detail standard, the corpus map)** · **`docs/THE_FOLDING.md` (units, folds, bonds, regimes: what a law may connect to, and `python story/folding.py audit` before you call anything done)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
 dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) ·
-`Chimera/docs/EXPERIMENTAL_METHOD.md` (before debugging anything). Then the rest of THIS file.
+`Chimera/docs/EXPERIMENTAL_METHOD.md` (**before debugging OR reporting anything** — the sixteen rules for not fooling yourself; rules 11-16 are the 2026-08-01 set on controls, scale, self-normalisation and name-vs-definition, summarised at the end of THIS file). Then the rest of THIS file.
 
 ---
 
@@ -108,6 +108,49 @@ orient → next → frame → question × N → classify → render(splat movie)
 (the operator's `decide`), or (d) the human eye is dark and the operator hasn't overridden. "Which
 term?" is never legal — `next` answered it. And as head of the dragon, "which technical approach?" is
 not a stop either — you decide, execute, and show the result for the human's judgment.
+
+---
+
+---
+
+## The six rules that decide whether your result is real (2026-08-01)
+
+Everything above tells you HOW to build. This tells you how to know you did. Six rules, all earned
+in a single day, each of which **reversed a conclusion that had already been written down**. Full
+account with the numbers: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11–16.
+
+**1. RUN THE INSTRUMENT ON SOMETHING WHOSE ANSWER YOU ALREADY KNOW.** Not a held-out sample — a
+thing you MADE, so you know the answer by construction. A GPU splat fit read a generated video's
+`log_size`/`aniso`/`opacity` as landing inside the range real 3DGS scans occupy; the same fit run on
+**the clay we had sent the generator** returned the same numbers to 6.9%. Three of four features
+were the fitter's own signature. Only colour carried information.
+
+> A measurement without a control is not a weak measurement. It is not a measurement.
+
+**2. MEASURE AT THE SCALE THE THING LIVES AT.** An instrument that cannot resolve an effect does not
+report "cannot see" — it reports a number, often in the wrong direction. Terrain octaves measured at
+whole-patch framing are 0.6 px wide and read as a *loss* of detail; framed to resolve them, the same
+test reversed. Count how many pixels the effect occupies before believing a null.
+
+**3. NEVER THRESHOLD ON A QUANTILE OF THE THING YOU ARE MEASURING.** A top-12% rule grew a detailed
+take and flat clay to *5,619 splats, identical to the digit*. Self-normalisation discards a degree of
+freedom — check it is not the one you came to measure.
+
+**4. SUSPECT THE DATA'S CONSTRUCTION, NOT ONLY THE PROBE.** A correct instrument reads a correct
+number off a subject that is lying. A cross-hatch blamed on new code was measured at 27.8×
+directional in the *canvas*; the new code was 1.1×, i.e. innocent. A comment claiming one process
+cleans up after another is a hypothesis, not a fact.
+
+**5. MATCHING NAMES IS NOT MATCHING DEFINITIONS.** `folding.py` checks published units; it cannot see
+a formula in code computing a different quantity under the same name. When you join a codebook,
+**their file is the authority** — open it and match the formula line by line.
+
+**6. DERIVE THE SHAPE, LET PHYSICS SET THE LEVEL.** A power law gives you a shape; a physical
+constraint the membrane already enforces gives you the level. **When the two disagree, that
+disagreement is the finding** — publish it rather than reconciling it.
+
+**The habit all six share:** before reporting a result, name the thing that would have to be true for
+it to be an artifact, then go and measure that. Six times out of six it was cheaper than the retraction.
 
 ---
 

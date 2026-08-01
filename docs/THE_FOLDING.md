@@ -105,6 +105,31 @@ catalog exists so that nothing in it is a guess.
 docking is exact — units match or they do not. A fuzzy matcher would reintroduce the silent-default
 failure that made this project's own witnesses report three phantom defects in one afternoon.
 
+**It cannot see a FORMULA, only a published number.** This is its largest blind spot and it was
+measured on 2026-08-01. `audit` reads the unit off a key name and asks what that unit forbids -- so it
+catches a Kelvin below absolute zero and a fraction above one. It cannot catch a line of code that
+computes a *differently defined quantity* and publishes it under a name the catalog already knows.
+
+Four of those hid in one afternoon, all written by matching `Construction/material_elements.py` on
+name rather than on formula:
+
+| feature | the codebook's definition | what was written |
+|---|---|---|
+| `aniso` | `1 - min/max` -> **[0,1)** | `max/min` -> [1,inf) |
+| `log_size` | log median axis, relative to the capture's own median | log geometric mean, over the image diagonal |
+| `greenness` | `G - max(R,B)` | `G - (R+B)/2` -- reads magenta as green |
+| opacity cut | **> 0.5** (*"haze is not a material"*) | > 0.05 |
+
+Every one is DIMENSIONLESS, so no fold, bond or regime check could ever have fired. `aniso` read
+**2.25** against a real-scan range of 0.296-0.996 and presented as a spectacular finding -- a
+generated take falling far outside anything real -- when it was a unit-free quantity on the wrong
+interval. This is the same species as the dead-term signature below: a wrong number under a formula
+that still looks alive.
+
+    THE RULE THE AUDIT CANNOT ENFORCE FOR YOU: when you join someone else's codebook,
+    THEIR FILE IS THE AUTHORITY. Open it, read the formula, match it line by line.
+    A shared name is a coincidence until you have checked.
+
 ---
 
 ## Where it stands

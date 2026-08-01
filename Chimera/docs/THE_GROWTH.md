@@ -104,6 +104,29 @@ inherits the whole answer by reading, without a single token of re-explanation.
 
 ---
 
+
+## THE RULING OF 2026-08-01 — the control
+
+**Nothing above is true until an instrument that can be fooled has been checked against one that
+cannot.** Add to the creed, ahead of everything else in it:
+
+- **Before reporting a number, push a KNOWN subject through the whole instrument.** Not a held-out
+  sample -- a thing you MADE, whose answer you know by construction. `emit()` gives you one for
+  free: the membrane's own matter, rendered. Three already-written conclusions were reversed by this
+  in a single day (a material genome that was the fitter's signature; a detail gain that was render
+  grain; a cross-hatch blamed on new code that came from the twenty-one-plane-wave canvas).
+- **Measure at the scale the thing lives at.** An instrument that cannot resolve an effect returns a
+  number in the wrong direction, not a refusal. Count the pixels the effect occupies first.
+- **Never threshold on a quantile of the thing you are measuring** -- a rule defined in terms of its
+  own population reports nothing about that population. Use an outside reference.
+- **A shared name is not a shared definition.** `folding.py` binds published *units*; it cannot see a
+  formula computing a different quantity under the same name. Their file is the authority.
+- **Derive the shape, let physics set the level** -- and when the two disagree, publish the
+  disagreement. `aTerrain`'s spectrum wanted 20x more sub-grid relief than the friction angle allows,
+  and that gap IS the threshold-hillslope result.
+
+Full account, with every number and every reversal: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11-16.
+
 ## THE BUILDER'S CREED (2026-07-31, in the operator's direction)
 
 - Download once, train once, prove once — reuse infinitely, morph onto everything.

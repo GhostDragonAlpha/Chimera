@@ -1,9 +1,15 @@
 # THE EXPERIMENTAL METHOD
 
 > How this studio finds out what is true about a running system.
-> Worked example throughout: the 2026-07-23 GLM-5.2 session, where **every single
-> conclusion I reached by reasoning was wrong, and every conclusion that held came
-> from a measurement.**
+>
+> **Rules 1-10** come from the 2026-07-23 GLM-5.2 session, where *every single conclusion reached by
+> reasoning was wrong, and every conclusion that held came from a measurement.* They are about not
+> fooling yourself while DEBUGGING.
+>
+> **Rules 11-16** come from the 2026-08-01 material-genome and terrain session, where six separate
+> results were written down as true and then **reversed by a control**. They are about not fooling
+> yourself while REPORTING — a harder problem, because a wrong debugging conclusion announces itself
+> the next time you run the thing, and a wrong measurement does not announce itself at all.
 >
 > *(The GLM-5.2 model itself was removed the same day as a liability — see
 > `pi-servers/README.md`. It is kept here only as a debugging example; the lesson is
@@ -184,6 +190,173 @@ model of the system.** They are watching the machine; you are watching your assu
 
 ---
 
+## RULE 11 — RUN THE INSTRUMENT ON SOMETHING WHOSE ANSWER YOU ALREADY KNOW
+
+Rule 6 says keep a control. This is the sharper form, and it is the most productive single rule in
+this document: **push a KNOWN subject through the WHOLE instrument, end to end, and see what it
+says.** Not a held-out sample, not a second condition — a thing whose answer you know because you
+made it.
+
+The 2026-08-01 material work had one to hand and nearly did not use it. To read a material genome
+out of a generated video, the take was fitted with Gaussian splats on the GPU, and its `log_size`,
+`aniso` and `opacity` distributions came back squarely inside the range real 3DGS scans occupy.
+That is a publishable-looking result. Then the same fit was run on **the clay we had sent the
+generator** — one flat grey, rendered by our own engine from geometry we derived:
+
+| feature | generated take | the clay control | |
+|---|---|---|---|
+| `log_size` | −0.024 | −0.039 | identical |
+| `aniso` | 0.447 | 0.419 | 6.9% |
+| `opacity` | 0.802 | 0.806 | 0.5% |
+| `R`/`G`/`B` | .667/.635/.629 | .888/.887/.870 | **−0.22 to −0.25** |
+
+Three of the four were the FITTER'S signature, not the material's — a fixed-N fit pins mean splat
+area at `area/N` by conservation, so they were decided before the first optimiser step. Only colour
+carried information. Without the control, three invented numbers enter the codebook and every
+genome built on them is wrong in a way nothing downstream can detect.
+
+**It kept working all day.** The same control later showed that an apparent detail improvement was
+render grain (Rule 12), and a third run showed that a visible cross-hatch came from the canvas
+rather than from the new code blamed for it (Rule 14).
+
+    A measurement without a control is not a weak measurement. It is not a measurement.
+
+**The best control is a thing you built**, because then you know the answer by construction rather
+than by another measurement that could be wrong in the same way.
+
+---
+
+## RULE 12 — MEASURE AT THE SCALE THE THING LIVES AT
+
+A measurement taken at the wrong scale reports the ABSENCE of whatever it cannot resolve, and it
+reports it as confidently as a real null.
+
+`aTerrain` gained five octaves of relief reaching down to ~3 m. Measured on a 480p render of the
+whole 12 km patch, the surface came back *less* complex than before. The arithmetic says why: the
+finest drawn octave is 23.4 m, the patch spans ~300 px at that framing, so that octave projects to
+**0.6 px**. The instrument was structurally blind to exactly the thing that had been added — and it
+did not return "cannot see", it returned a number, in the wrong direction.
+
+Framed so the octaves were several pixels across, the same test reversed: 1.36× raw and **1.31×
+after a denoise**, against 0.90× at the wide framing.
+
+    Before believing a null, compute how many PIXELS (or samples, or bins) the effect occupies
+    in your instrument. If the answer is under one, you measured your framing.
+
+This is LOD applied to measurement rather than to rendering, and it is the same doctrine: a membrane
+is examined at its own scale, by an instrument that resolves it.
+
+---
+
+## RULE 13 — A THRESHOLD DEFINED IN TERMS OF THE POPULATION IT MEASURES CANNOT REPORT ANYTHING ABOUT THAT POPULATION
+
+Adaptive densification was added to the splat fitter so that the final splat count would become a
+MEASUREMENT of surface complexity rather than an echo of a command-line flag. Two growth rules were
+written before one worked, and both failed the same way:
+
+| rule | result |
+|---|---|
+| grow the top 12% by positional gradient (a quantile) | take and clay both reached **5,619 splats — identical to the digit** |
+| grow above 2× the MEDIAN gradient (meant to read the tail) | both finished at **0.253 splats/px — ratio 0.999** |
+| grow where the RESIDUAL exceeds an absolute 2% | **1.398×** — content-driven at last |
+
+A quantile is 12% of a population whether that population is straining or idle. A multiple of the
+median looks different but is not: gradient-magnitude distributions have nearly the same *shape*
+whatever the image contains — they differ in scale, not in skew — so the fraction clearing 2× its
+own median is a property of the distribution FAMILY, not of the picture.
+
+The residual works because it is an outside reference: *"these pixels are still wrong by more than
+2%"* is true or false regardless of how any other splat is doing, and it terminates on its own.
+
+    Self-normalisation is the enemy of measurement. Every normalisation buys robustness by
+    DISCARDING a degree of freedom — check that it is not the one you came to measure.
+
+The same trap in a different coat: `log_size` in a material genome is defined relative to its own
+capture's median, so a take treated as ONE element reports ~0 **by construction**, and will read
+"inside the reference range" no matter what it contains.
+
+---
+
+## RULE 14 — SUSPECT THE INSTRUMENT'S CONSTRUCTION, NOT ONLY ITS READING
+
+Rule 4 says watch what the machine does rather than what it reports. This is one level deeper: the
+DATA can carry an artifact of how it was built, and then a correct instrument reads a correct number
+off a subject that is lying.
+
+After the octaves went in, `aTerrain` rendered with a diagonal cross-hatch. The new code was the
+obvious suspect and was rebuilt in Fourier space to remove any periodicity. The cross-hatch stayed.
+Measured, as the ratio of most- to least-favoured direction in each field's power spectrum
+(1.0 = isotropic):
+
+| field | directional ratio |
+|---|---|
+| `_red_surface` canvas — 3 plane waves × 7 octaves | **27.8×** |
+| the same after 500 steps of erosion | **8.2×** |
+| the new detail field (Fourier noise) | **1.1×** |
+
+The new code was innocent. Twenty-one plane waves is an interference pattern, not a spectrum — and
+erosion, which the docstring asserted would destroy it, only halves it twice, because incision
+follows the ground it is handed. **A comment claiming one process cleans up after another is a
+hypothesis, not a fact.**
+
+The sting is in what it had been doing to a measurement nobody doubted: directional spikes drag a
+RADIAL average off the true slope, so the membrane's spectral exponent had been reading **2.54**
+when the underlying law gives **2.95 ± 0.08**. The fit was correct; the field was an artifact. And
+nothing downstream could have caught it, because a plausible number under a correct formula is
+invisible to reading — the same species as the `* 0.0` dead terms in `docs/THE_FOLDING.md`.
+
+---
+
+## RULE 15 — MATCHING NAMES IS NOT MATCHING DEFINITIONS
+
+`story/folding.py` checks that published numbers carry compatible units. It cannot see a FORMULA in
+code that computes a differently-defined quantity under the same name, and that is where four
+defects hid in one afternoon. Joining an existing codebook meant matching
+`Construction/material_elements.py`, and every one of these was written from the name alone:
+
+| feature | the codebook's definition | what had been written |
+|---|---|---|
+| `aniso` | `1 − min/max` → **[0,1)** | `max/min` → [1,∞) |
+| `log_size` | log of the median axis, relative to the capture's own median | log of the geometric mean, over the image diagonal |
+| `greenness` | `G − max(R,B)` | `G − ½(R+B)` — reads magenta as green |
+| opacity cut | **> 0.5** — *"haze is not a material"* | > 0.05 |
+
+The `aniso` error is the instructive one: it read **2.25** against a reference range of 0.296–0.996
+and looked like a spectacular finding — a generated take falling far outside anything real. It was
+a unit-free quantity on the wrong interval, and no dimensional check can ever see that.
+
+    When you join someone else's codebook, THEIR FILE IS THE AUTHORITY. Open it, read the
+    formula, and match it line by line. A shared name is a coincidence until you have checked.
+
+---
+
+## RULE 16 — DERIVE THE SHAPE, LET PHYSICS SET THE LEVEL — AND WHEN THEY DISAGREE, THAT IS THE FINDING
+
+Continuing `aTerrain`'s spectrum below its grid needed two things: how fast amplitude falls per
+octave, and how tall the whole ladder stands. They come from different places, and trying to take
+both from one place is what manufactures a fudge factor.
+
+- **The SHAPE is derived.** For a 2D field with PSD ~ k^−β the octave variance goes as k^(2−β), so
+  amplitude goes as k^(1−β/2) — and β is MEASURED off the membrane's own eroded surface. Notably not
+  the canvas's own falloff: erosion steepens the spectrum it was handed, so inheriting the canvas's
+  number would under-produce at every octave.
+- **The LEVEL comes from a physical constraint the membrane already enforces.** β < 3 means slope
+  grows without bound as wavelength falls, so the spectrum *cannot* set the level. The friction angle
+  can, and `slopes_below_repose` was already published and already checked. Bisection finds the
+  largest level at which that existing test still passes.
+
+**The two disagreed by a factor of twenty, and the disagreement is the result**: the level lands at
+0.051, meaning the spectrum wants ~20× more sub-grid relief than the ground can physically stand.
+That is not a clamp chosen to look right — it is the threshold-hillslope regime every talus cone and
+scree slope sits in, and it was arrived at because two independent derivations were allowed to
+contradict each other in public.
+
+A related trap caught the same day: the first version capped each octave at its own repose limit
+independently. Five octaves each at the limit sum to well past it, because **slopes add**. A
+constraint on the whole surface must be applied to the whole surface.
+
+---
+
 ## THE CHECKLIST
 
 1. What does the human **wait for**? Measure that, not a proxy.
@@ -196,3 +369,9 @@ model of the system.** They are watching the machine; you are watching your assu
 8. Do the arithmetic, then **verify its assumptions**.
 9. **Grep the tool's source** for env vars and flags.
 10. When the operator says it looks wrong — **go measure it.**
+11. Push a **known subject** through the whole instrument. No control, no measurement.
+12. Count how many **pixels/samples** the effect occupies before believing a null.
+13. Never threshold on a **quantile of the thing you are measuring** — use an outside reference.
+14. Ask whether the **data carries an artifact of how it was built**, not only whether the probe is sound.
+15. When joining a codebook, **read their formula** — a shared name is a coincidence until checked.
+16. **Derive the shape, let physics set the level** — and publish it when the two disagree.

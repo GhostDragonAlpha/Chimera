@@ -265,7 +265,15 @@ material painted on a surface.** Isolate one thing → make variations → place
   rollout loop.
 - **The exploit is the product** — a degenerate winner is the optimiser auditing your spec.
   Iterate the objective, never the artifact.
-- **Measure the thing, not a proxy** (`docs/EXPERIMENTAL_METHOD.md`).
+- **Measure the thing, not a proxy** (`Chimera/docs/EXPERIMENTAL_METHOD.md`).
+- **A measurement without a CONTROL is not a measurement** (2026-08-01). Push a KNOWN subject --
+  one you MADE, whose answer you know by construction -- through the whole instrument before you
+  report anything. Three already-written conclusions were reversed by this in one day. Corollaries:
+  *measure at the scale the thing lives at* (an unresolvable effect returns a wrong number, not a
+  refusal); *never threshold on a quantile of what you are measuring*; *suspect the data's
+  construction, not only the probe*; *a shared name is not a shared definition*; and *derive the
+  shape, let physics set the level -- when the two disagree, that IS the finding*.
+  Rules 11-16 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
 - **DERIVE it before you TRAIN it** (2026-07-28). Trace every membrane's variables and show the
   equations CLOSE before a run — else it is guess-and-check on a 2-hour loop (= training the RULES).
   A real derivation predicts what it was never fitted to. `docs/THE_MATHEMATICS_OF_WALKING.md`.

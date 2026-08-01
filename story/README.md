@@ -242,3 +242,42 @@ a temperate world as hot desert, poles included.
 It needs no setup and no signatures: it reads the unit off the key and asks what that unit
 *forbids*. Full method — folds, bonds, regimes, and why protein folding is the right metaphor
 rather than a decorative one — in `docs/THE_FOLDING.md`.
+
+---
+
+## AND EVERY CLAIM CARRIES A CONTROL (2026-08-01)
+
+A chapter is PROVEN, VISUAL, LEARNED and BINDABLE — and none of those survive an instrument that is
+reading itself. **PROVEN has a fourth requirement, and it is the cheapest one on the list:
+before reporting a number, run the identical instrument on something whose answer you already
+know.** Not a held-out sample. A thing you MADE.
+
+This chapter's own machinery hands you the perfect control for free. `emit()` produces the
+membrane's matter from its own numbers, so a render of it is a subject whose answer is known **by
+construction**. Push that through whatever is measuring the real thing and see what comes back.
+
+It reversed three already-written conclusions in one day:
+
+| what was believed | what the control said |
+|---|---|
+| a generated take's splat statistics land inside the range real scans occupy | **the clay we sent it** returns the same numbers to 6.9% — three of four features were the FITTER, only colour was material |
+| adding octaves raised `aTerrain`'s surface detail 1.118 → 0.963 | under a denoise the gain *evaporated* (1.116× → 0.895×) — it was render grain |
+| the cross-hatch came from the new octave code | the **canvas** measured 27.8× directional, the new code 1.1× — innocent |
+
+Three corollaries, each of which cost its own hour:
+
+- **Measure at the scale the thing lives at.** An instrument that cannot resolve an effect does not
+  say "cannot see" — it returns a number, often in the wrong direction. `aTerrain`'s finest drawn
+  octave is 0.6 px at whole-patch framing. This is LOD applied to measurement: a membrane is judged
+  at its own scale, by an instrument that resolves it, exactly as it is *rendered* at its own scale.
+- **Never threshold on a quantile of what you are measuring.** A top-12% growth rule grew a detailed
+  take and flat clay to *5,619 splats, identical to the digit*. Every normalisation buys robustness
+  by discarding a degree of freedom — check it is not the one you came for.
+- **A shared name is not a shared definition.** `folding.py` reads units off published numbers; it
+  cannot see a formula in code computing something else under the same name. Four features were
+  written from the name alone and one of them, `aniso`, read 2.25 against a real range of
+  0.296–0.996 — a spectacular finding that was a quantity on the wrong interval.
+
+> A measurement without a control is not a weak measurement. It is not a measurement.
+
+The sixteen rules in full, with every number: `Chimera/docs/EXPERIMENTAL_METHOD.md`.
