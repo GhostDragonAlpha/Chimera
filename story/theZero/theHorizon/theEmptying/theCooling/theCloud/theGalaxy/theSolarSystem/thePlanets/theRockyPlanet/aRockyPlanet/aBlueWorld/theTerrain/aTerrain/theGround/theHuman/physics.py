@@ -386,7 +386,7 @@ def _gait_table(h, v_ms=None, ball=None, curves=None):
             pitch = foot_pitch(hip_a, knee_a, tt + off, v_ms, Gl)
             legs.append((hip_a, knee_a, pitch, u, 1.0 if planted else 0.0))
             if planted:
-                sup.append(hip_above_ankle(hip_a, knee_a) + ankle_height(pitch, ball))
+                sup.append(hip_above_ankle(hip_a, knee_a) + ankle_height(pitch, LEG_FRAC))
                 # HOW MUCH THIS LEG IS CARRYING, measured, at its own point in the cycle.
                 wts.append(max(_grf(G, tt + off), 0.0))
         # ── THE HIP RIDES THE LEGS IN PROPORTION TO WHAT THEY ARE CARRYING ───────────────────────
@@ -534,7 +534,7 @@ def forefoot_lever_frac(g=None, h=1.78, v_ms=None):   # g accepted and IGNORED -
             / max(G["grf_peak_bw"] * G_MEASURE * float(h), 1e-9))
 
 
-def ankle_height(pitch, ball_frac=None):
+def _ankle_height_flat(pitch, ball_frac=None):
     """HOW HIGH THE ANKLE SITS when the foot is pitched and its lowest point is on the ground.
 
     THE PIVOT IS THE BALL OF THE FOOT, NOT THE TOE TIP, and getting that wrong was worth 3.6% of
@@ -550,12 +550,61 @@ def ankle_height(pitch, ball_frac=None):
     the two legs' demanded pelvis heights disagreed by 5.73% of stature with the toe-tip pivot and
     2.10% with this one, and the residual is the unsourced segment lengths, named in measured.py.
 
-    The heel end is unchanged. Taking the lower of the two ends is still the whole case analysis --
-    no branch for heel-strike versus toe-off is written, because the geometry already knows."""
+    AND IT IS STILL A FLAT PLATE, WHICH IS THE NEXT THING WRONG WITH IT. Two points and a straight
+    sole between them means the pivot JUMPS from heel to ball and stays there, so through terminal
+    stance -- where the foot pitches ~49 degrees nose-down -- the ankle is held as low as the ball,
+    and the toe tip 3 cm in front of it goes underground. No MTP hinge fixes that, because the
+    error is in the ankle's height, not in the toes. Kept below as `_ankle_height_flat` for the
+    comparison; `ankle_height` now rolls."""
     ball = FOREFOOT_FRAC if ball_frac is None else float(ball_frac)
     hz = -HEEL_FRAC * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
     tz = ball * math.sin(pitch) - ANKLE_DROP_FRAC * math.cos(pitch)
     return -min(hz, tz)
+
+
+def ankle_height(pitch, leg_L=None, ball_frac=None):
+    """THE ROLL-OVER: the sole is an ARC, and the contact point migrates because of its shape.
+
+    Hansen, Childress & Knox 2004 measured what the ankle-foot system does in single support and
+    found it behaves like a ROLLING WHEEL: express the centre of pressure in shank coordinates and
+    it traces a circular arc of radius ~0.30 of leg length -- and that radius barely moves with
+    walking speed, with shoes, or under load. ROCKER_FRAC has carried that number, and its citation,
+    since this membrane was written. Nothing used it for the contact geometry.
+
+    THE WHOLE LAW IS TWO LINES. Put the arc's centre in the foot frame at (R - drop) above the
+    ankle, so that a flat foot touches at the sole. Rolling on level ground holds that centre at
+    height R for the whole of stance, so
+
+        ankle_z   = R - (R - drop) * cos(pitch)
+        contact_x = -(R - drop) * sin(pitch)        <- the CoP, and nothing schedules it
+
+    THE MIGRATION IS NOT PUT IN, IT FALLS OUT. At the toe-off pitch of -49 degrees the contact lands
+    0.091 of stature ahead of the ankle -- past the ball at 0.072, reaching toward the tip at 0.104
+    -- purely because the shank rotated. That is the roll-over, and it is what the two-point foot
+    could never do: a flat sole has two candidate pivots and jumps between them, an arc has a
+    continuum and slides along it.
+
+    AND PENETRATION BECOMES UNREPRESENTABLE. An arc rolling on a plane touches at exactly ONE point;
+    every other point of the sole is R - sqrt(R^2 - dx^2) ABOVE the ground, by construction. The
+    buried toe was never a toe problem. It was a foot that had corners."""
+    R = ROCKER_FRAC * (LEG_FRAC if leg_L is None else float(leg_L))
+    return R - (R - ANKLE_DROP_FRAC) * math.cos(pitch)
+
+
+def rollover_contact(pitch, leg_L=None):
+    """Where the centre of pressure IS, as a lever ahead of the ankle. Negative is behind (heel)."""
+    R = ROCKER_FRAC * (LEG_FRAC if leg_L is None else float(leg_L))
+    return -(R - ANKLE_DROP_FRAC) * math.sin(pitch)
+
+
+def sole_point_z(offset, pitch, leg_L=None):
+    """How high a point of the sole sits, `offset` ahead of the ankle, while the arc rolls.
+
+    On the arc this is exact and never negative. Past the toe tip the foot is not an arc any more,
+    and that is the MTP's business, not this function's."""
+    R = ROCKER_FRAC * (LEG_FRAC if leg_L is None else float(leg_L))
+    dx = float(offset) - rollover_contact(pitch, leg_L)
+    return R - math.sqrt(max(R * R - dx * dx, 0.0))
 
 
 def rocker_radius(leg_L):

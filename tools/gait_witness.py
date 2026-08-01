@@ -109,16 +109,36 @@ def _toe_conform(ball_z, pitch, seg, planted):
     return ball_z + seg * math.sin(a), a - pitch
 
 
-def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop):
+def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop, R=None):
     """THE LOWEST POINT OF THE SOLE, rebuilt from the pose rather than read from the table.
 
-    Walk the chain: hip down the thigh to the knee, knee down the shank to the ankle, then the foot
-    hung off the ankle and pitched. The sole's ends are the heel behind and the toe in front, both
-    `drop` below the ankle before rotation. Whichever ends up lower is the contact."""
+    Walk the chain: hip down the thigh to the knee, knee down the shank to the ankle, then the foot.
+
+    THE FOOT IS AN ARC NOW, NOT A PLATE. theHuman rolls over a rocker of radius ROCKER_FRAC * leg
+    (Hansen, Childress & Knox 2004), so its ankle sits at R - (R - drop)*cos(pitch) above the
+    contact and the contact point migrates on its own. Grading that against the old two-point foot
+    is grading it against a foot it does not have -- which this file's own comment warned about one
+    paragraph up, and which it then did: the first run after the roll-over went in reported 0.55%
+    penetration and a travelling contact plane that were entirely the instrument's.
+
+    The law is REWRITTEN here from theHuman's published account and driven by published numbers
+    (rocker_over_leg, ankle_drop_frac). A witness that imported the membrane would be one system
+    measuring itself."""
     ankle_z = hip_z - thigh * math.cos(hip_a) - shank * math.cos(hip_a - knee_a)
+    if R:
+        return ankle_z - (R - (R - drop) * math.cos(pitch))
     hz = ankle_z - heel * math.sin(pitch) - drop * math.cos(pitch)
     tz = ankle_z + toe * math.sin(pitch) - drop * math.cos(pitch)
     return min(hz, tz)
+
+
+def _arc_z(offset, pitch, drop, R):
+    """How high a point of the sole rides above the contact, `offset` ahead of the ankle.
+
+    On a rolling arc this cannot be negative: the arc touches at one point and everything else is
+    R - sqrt(R^2 - dx^2) above it. Penetration is not merely absent, it is unrepresentable."""
+    dx = float(offset) + (R - drop) * math.sin(pitch)
+    return R - math.sqrt(max(R * R - dx * dx, 0.0))
 
 
 def witness(name: str) -> dict:
@@ -158,6 +178,8 @@ def witness(name: str) -> dict:
     # A foot has two ends and this witness was watching one of them.
     tip = _inherited(p, "toe_lever_frac")
     mtp_lim = _inherited(p, "mtp_range_sim_rad")
+    rock = _inherited(p, "rocker_over_leg")
+    R = (rock * leg) if rock else None
     if toe is None:
         return {"name": name,
                 "error": "no forefoot_lever_frac anywhere in this membrane's chain -- a body that "
@@ -184,16 +206,21 @@ def witness(name: str) -> dict:
     for hip_z, legs in rows:
         planted = [i for i, lg in enumerate(legs) if lg[4]]
         for i, (ha, ka, pi_, u, pl) in enumerate(legs):
-            z = _sole_z(hip_z, ha, ka, pi_, thigh, shank, heel, toe, drop)
+            z = _sole_z(hip_z, ha, ka, pi_, thigh, shank, heel, toe, drop, R)
             if pl:
                 duty[i] += 1
                 (single if len(planted) == 1 else dbl).append(z)
             else:
                 clear[i].append(z)
             if tip is not None:
-                az = hip_z - thigh*math.cos(ha) - shank*math.cos(ha-ka)
-                bz = az + toe*math.sin(pi_) - drop*math.cos(pi_)
-                tz, mtp = _toe_conform(bz, pi_, tip - toe, pl)
+                if R:
+                    # the tip rides on the arc, measured from wherever the contact actually is
+                    tz = z + _arc_z(tip, pi_, drop, R)
+                    mtp = 0.0
+                else:
+                    az = hip_z - thigh*math.cos(ha) - shank*math.cos(ha-ka)
+                    bz = az + toe*math.sin(pi_) - drop*math.cos(pi_)
+                    tz, mtp = _toe_conform(bz, pi_, tip - toe, pl)
                 mtp_demand = max(mtp_demand, mtp)
                 if not pl:
                     tips[i].append(tz)
