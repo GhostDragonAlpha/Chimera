@@ -291,6 +291,8 @@ class Walker:
         self.x, self.y = 0.0, 0.0
         self.z = height_at(0.0, 0.0)
         self.vz = 0.0
+        self.vx, self.vy = 0.0, 0.0     # the last commanded horizontal velocity -- the gait's
+                                        # direction picker (A3) reads this, not the keys
         self.on_ground = True
         self.yaw = 0.0                 # radians, 0 = +Y  (the CAMERA's facing)
         self.body_yaw = 0.0            # the FIGURE's facing -- eased toward velocity when moving,
@@ -321,6 +323,7 @@ class Walker:
         if mag > 0.0:
             scale = min(1.0, mag) / mag
             vx, vy = vx * scale, vy * scale
+        self.vx, self.vy = vx, vy       # the gait direction picker (A3) reads the COMMAND
 
         ox, oy = self.x, self.y
         nx = max(-self.patch / 2 + 4, min(self.patch / 2 - 4, self.x + vx * dt))
@@ -590,13 +593,44 @@ def body_buffer(w: Walker):
     soles on the carved ground -- and relights it under the walker's real sky.
 
     The phase is DISTANCE, not time: one emit() movie is one gait cycle, and a cycle covers
-    two strides of ground, so t = dist / (2 * stride_m). A body that walks when the ground
-    scrolls and freezes when it stops cannot drift out of step with its own motion."""
+    two strides of ground, so the phase advances by dist / (2 * stride_m) -- the ACTIVE
+    direction's stride (A3). A body that walks when the ground scrolls and freezes when it
+    stops cannot drift out of step with its own motion."""
     st = _static()
     hn = st["suited"]                 # aHuman's numbers: the suit's shape as well as the body's
     height = float(hn["height_m"])
-    cycle = 2.0 * float(hn["stride_m"])
-    t = (w.dist / cycle) % 1.0
+
+    # THE GAIT FOR THE DIRECTION THE BODY IS ACTUALLY MOVING (A3). body_yaw is the figure's
+    # facing (A1 eases it toward the velocity); theta is where the velocity sits relative to
+    # that facing, and the measured table for that sector is the pose -- so a reversal shows the
+    # measured toe-first backpedal while the body is still turning, and a slew shows the
+    # cross-step, instead of the forward gait rotated. theta > 0 is velocity to the LEFT of
+    # facing (the yaw convention turns +Y toward -X), so that sector reads the left-sidestep
+    # table, whose LEADING leg is the left one. The pose still maps onto body_yaw (A1's turn
+    # animation is untouched), and B1's IK plants the soles regardless.
+    cycles = hn.get("gait_cycles") or {}
+    strides = hn.get("gait_dir_stride_m") or {}
+    key = "forward"
+    if cycles and abs(w.vx) + abs(w.vy) > 1e-6:
+        heading = math.atan2(w.vy, w.vx) - math.pi / 2.0
+        theta = (heading - w.body_yaw + math.pi) % (2.0 * math.pi) - math.pi
+        if abs(theta) > math.radians(120.0):
+            key = "backward"
+        elif abs(theta) > math.radians(60.0):
+            key = "left" if theta > 0.0 else "right"
+    tab = cycles.get(key)
+
+    # THE PHASE IS STILL DISTANCE, but over the ACTIVE direction's own measured stride -- a
+    # backpedal's stride is shorter, and a fixed stride would make its feet skate. One
+    # accumulator, advanced per frame, so switching tables does not jump the legs mid-cycle.
+    stride_active = float(strides.get(key, hn["stride_m"]))
+    if "phase" not in _BODY_CACHE:
+        _BODY_CACHE["phase"] = 0.0
+        _BODY_CACHE["dist"] = w.dist
+    dd = w.dist - _BODY_CACHE["dist"]
+    _BODY_CACHE["dist"] = w.dist
+    _BODY_CACHE["phase"] = (_BODY_CACHE["phase"] + dd / (2.0 * stride_active)) % 1.0
+    t = _BODY_CACHE["phase"]
 
     # WHERE THE SOLES ARE IS MEASURED, NOT ASSUMED. Placing the body by adding com_height_m to the
     # ground put the boots 50 mm UNDERGROUND: com_height is the BARE body's centre of mass, and a
@@ -626,7 +660,7 @@ def body_buffer(w: Walker):
     # the knee absorbs the difference (aHuman/physics.py, the two-bone solve). The 48-pose cache
     # was a body walking a flat virtual floor; the terrain conform lives in the body's own
     # membrane now, and the phase still quantizes inside emit (the parent's 48-row table).
-    b = st["human_law"].emit(hn, t, ground=_ground)
+    b = st["human_law"].emit(hn, t, ground=_ground, cycle=tab)
     x, y = b[:, 0].copy(), b[:, 1].copy()
     b[:, 0] = (x * c - y * s) * height + w.x
     b[:, 1] = (x * s + y * c) * height + w.y
