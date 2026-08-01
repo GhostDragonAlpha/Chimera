@@ -5,6 +5,10 @@
 > other things; everything we make is just light and physics.** This file is the complete
 > map for the human — complete enough that any future game draws from it untouched.
 >
+> Companion document: **`research_references/PHYSICS_SOFTWARE_MATH.md`** — the math side.
+> This plan is the measured-data side; that one catalogs every physics concept the
+> simulators encompass, with canonical sources (math is not copyrightable; code is).
+>
 > The pattern per membrane: **physics law** (a published measured model) ← **training data**
 > (measured instances, downloaded once) → **extraction** (distilled to `story/data/*.json`,
 > committed; raw downloads gitignored) → **proof through the engine**. A membrane never
