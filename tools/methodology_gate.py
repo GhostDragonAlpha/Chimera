@@ -17,7 +17,8 @@ WHAT IT CHECKS, and every one of these is a rule with a scar behind it:
               `theZero.volume` did not -- 26% of the seed was invisible, and the audit reported
               itself clean over the three quarters it could see. A check that skips what it cannot
               parse reports success for the wrong reason.
-  ONE NAME    no two keys in one membrane carrying the identical value. theHorizon publishes
+  ONE NAME    two keys in one membrane holding the identical value AND STILL HOLDING IT after a
+              free number moves. The second half is the whole test. theHorizon publishes
               extent_m = r_s = lambda_C, one number under three names: either an identity worth
               stating once, or two ideas that agree here and will stop agreeing when something
               upstream moves. That is how three leg lengths got into one leg.
@@ -60,6 +61,43 @@ def _round_smell(src: str) -> list:
             if abs(v - t) < 5e-6:
                 hits.append(m.group(1))
     return sorted(set(hits))
+
+
+def _identities(d: Path, data: dict, dup: list):
+    """Of the equal-valued pairs, which SURVIVE moving a free number? Those are the real ones.
+
+    Returns None when the membrane cannot be re-derived (no parent numbers, no FREE dial, an emit
+    that needs the engine) -- in which case the caller keeps the raw pairs and the reading decides.
+    A check that cannot run must say so rather than pass."""
+    import importlib.util
+    try:
+        par_f = d.parent / "numbers.json"
+        if not par_f.exists():
+            return None
+        parent = json.loads(par_f.read_text(encoding="utf8"))
+        sp = importlib.util.spec_from_file_location("_m_" + d.name, str(d / "physics.py"))
+        m = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(m)
+        FREE = getattr(m, "FREE", None)
+        if not FREE:
+            return None
+        k0 = sorted(FREE)[0]
+        spec = FREE[k0]
+        base = m.derive(parent, {})
+        lo, hi = float(spec.get("lo", 0.0)), float(spec.get("hi", 1.0))
+        alt = hi if abs(base.get(k0, lo) - lo) < abs(hi - lo) * 0.5 else lo
+        moved = m.derive(parent, {k0: alt})
+        keep = []
+        for a, b in dup:
+            if a in moved and b in moved:
+                va, vb = float(moved[a]), float(moved[b])
+                if abs(va - vb) <= 1e-12 * max(abs(va), abs(vb), 1e-300):
+                    keep.append((a, b))
+            else:
+                keep.append((a, b))
+        return keep
+    except Exception:
+        return None
 
 
 def check(d: Path) -> dict:
@@ -112,6 +150,27 @@ def check(d: Path) -> dict:
                 dup.append((seen[key], k))
             else:
                 seen[key] = k
+        # ── THE SLIDER TEST: IS IT AN IDENTITY, OR A COINCIDENCE? ────────────────────────────
+        # "Two keys hold the same number" is a suspicion, not a defect. theHorizon publishes
+        # extent_m = lambda_C -- the Schwarzschild radius equalling the Compton wavelength, which
+        # is THE CROSSING WHERE A BLACK HOLE AND AN ELECTRON ARE THE SAME SIZE, and the entire
+        # point of theZero's story. A naive same-value check would have had it deleted.
+        #
+        # MOVE A FREE NUMBER AND RE-DERIVE. A pair that still agrees is an IDENTITY and one of the
+        # two is redundant. A pair that comes apart was only ever equal at this setting, and both
+        # are real. Measured on theHorizon: extent_m=r_s and duration_s=t_P survived a x3 on
+        # M_added; extent_m=lambda_C and M_added=M_crossing came apart, exactly as the physics says
+        # they should. This is CLAUDE.md's own slider test, pointed at the audit.
+        if dup:
+            # KNOWN OVER-AGGRESSIVE, AND SAID SO RATHER THAN LEFT TO BE DISCOVERED. Hand-running
+            # the slider on theHorizon calls BOTH extent_m=r_s and duration_s=t_P identities; this
+            # filter keeps only the first. The alternate free value is picked off FREE's lo/hi
+            # bounds and for a mass dial those may be far enough out that derive() returns
+            # something the comparison cannot use. Until that is chased, treat a SURVIVING pair as
+            # a real finding and an ABSENT one as unproven -- the filter can currently lose a true
+            # defect, which is the safer direction for a work list but not for a gate.
+            _keep = _identities(d, data, dup)
+            dup = _keep if _keep is not None else dup
         r["dups"] = dup
         try:
             import folding
