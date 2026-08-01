@@ -17,6 +17,9 @@
 >
 > Companions: `PHYSICS_SOFTWARE_MATH.md` (the simulator's-eye view), human detail in
 > `human/PHYSICS_OF_THE_HUMAN.md`, measured data in `human/ACQUISITION_PLAN.md`.
+> Application: **`MEMBRANE_PHYSICS_MAP.md`** — for each membrane in the story tree, which
+> rows of this tree apply and why. The natural world runs ALL of physics; each membrane is
+> an intersection, not a subset of one branch.
 
 ---
 
