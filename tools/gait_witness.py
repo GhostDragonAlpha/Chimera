@@ -109,7 +109,8 @@ def _toe_conform(ball_z, pitch, seg, planted):
     return ball_z + seg * math.sin(a), a - pitch
 
 
-def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop, R=None):
+def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop, R=None,
+            planted=True):
     """THE LOWEST POINT OF THE SOLE, rebuilt from the pose rather than read from the table.
 
     Walk the chain: hip down the thigh to the knee, knee down the shank to the ankle, then the foot.
@@ -125,8 +126,24 @@ def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop, R=None):
     (rocker_over_leg, ankle_drop_frac). A witness that imported the membrane would be one system
     measuring itself."""
     ankle_z = hip_z - thigh * math.cos(hip_a) - shank * math.cos(hip_a - knee_a)
-    if R:
+    if R and planted:
+        # STANCE: the roll-over. Hansen's radius is the EFFECTIVE rocker of the whole ankle-foot
+        # COMPLEX measured through single support -- it folds the ankle joint's own rotation into
+        # one arc, which is why it comes out at 27.9 cm on a foot 27 cm long. It is not the shape
+        # of the sole, and it was never measured anywhere but stance.
         return ankle_z - (R - (R - drop) * math.cos(pitch))
+    # SWING: the foot is a rigid object hanging off the ankle and its lowest point is a point on
+    # the SOLE -- the heel behind or the toe in front, whichever the pitch puts lower.
+    #
+    # THIS GATE WAS MISSING AND IT WAS MINE. The roll-over went in three commits ago to get the
+    # buried toe out of the floor, which it did; extending it across the whole cycle was not part
+    # of that and was never checked. A stance-derived effective radius applied in flight put the
+    # foot's lowest point 0.0753 of stature below the ankle where the actual sole is 0.1028 below
+    # -- the swinging foot hung 2.75% of stature too shallow, and MTC read 2.4x too high.
+    #
+    # REGIME is the third check story/folding.py makes, and the one nobody applied here: a law can
+    # be true, dimensionally clean, correctly bonded -- and still be evaluated outside the range it
+    # was measured over.
     hz = ankle_z - heel * math.sin(pitch) - drop * math.cos(pitch)
     tz = ankle_z + toe * math.sin(pitch) - drop * math.cos(pitch)
     return min(hz, tz)
@@ -229,14 +246,14 @@ def witness(name: str) -> dict:
     for hip_z, legs in rows:
         planted = [i for i, lg in enumerate(legs) if lg[4]]
         for i, (ha, ka, pi_, u, pl) in enumerate(legs):
-            z = _sole_z(hip_z, ha, ka, pi_, thigh, shank, heel, toe, drop, R)
+            z = _sole_z(hip_z, ha, ka, pi_, thigh, shank, heel, toe, drop, R, pl)
             if pl:
                 duty[i] += 1
                 (single if len(planted) == 1 else dbl).append(z)
             else:
                 clear[i].append(z)
             if tip is not None:
-                if R:
+                if R and pl:
                     # the tip rides on the arc, measured from wherever the contact actually is
                     tz = z + _arc_z(tip, pi_, drop, R)
                     mtp = 0.0
