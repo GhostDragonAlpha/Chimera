@@ -267,6 +267,10 @@ NEXT (exact):
    for senses :1235. Launch background, --seconds 28800.
 2. Morning gate: `C:/Python314/python.exe tools/policy_gait_eval.py --policy
    ChimeraEngine/output/myobody_walk_directional_policy.pt` -- sustained 10 s on the WORST
-   of 5 seeds (last baseline ~90% survival, worst seed falls ~3 s).
+   of 5 seeds (last baseline ~90% survival, worst seed falls ~3 s). NOTE: policy_gait_eval.py
+   hardcodes the 102-dim obs; the directional policy is 106-dim (4-command one-hot appended,
+   layout in ChimeraEngine/output/myobody_walk_directional_meta.npy). The eval must append a
+   command (evaluate per direction: forward first as the regression check, then the three new
+   ones) before this gate can run. Trainer committed as 07e519b.
 3. Then A5+G1 motion matching, C1+C3 (autonomic responses live here now), B2 (owns the
    steep-slope directional plough residuals AND the swing-plough residual from B1).
