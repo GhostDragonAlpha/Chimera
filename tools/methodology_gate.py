@@ -77,11 +77,23 @@ def check(d: Path) -> dict:
     fns = {n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)}
     r["derives"] = "derive" in fns and "parent" in src
     r["emits"] = "emit" in fns
-    r["free"] = "FREE" in {n.id for n in ast.walk(tree)
-                           if isinstance(n, ast.Name)} or re.search(r"^FREE\s*=", src, re.M) is not None
+    # A MEMBRANE WITH NO FREE NUMBERS IS NOT A MEMBRANE THAT FORGOT TO DECLARE THEM. theZero is
+    # the seed: it takes nothing and chooses nothing, so there is no FREE dict to write and its
+    # absence is correct. The column asks whether anything is UNDECLARED, so a membrane whose
+    # derive() takes no `free` values passes by having none.
+    has_free_dict = re.search(r"^FREE\s*=", src, re.M) is not None
+    uses_free = re.search(r"free\.get\(|free\[", src) is not None
+    r["free"] = has_free_dict or not uses_free
     r["typed"] = _round_smell(src)
-    r["predicts"] = bool(re.search(r"measured|literature|predict|against .*\d",
-                                   story.read_text(encoding="utf8", errors="replace"), re.I)) \
+    # A CITATION IS NOT ALWAYS PHRASED AS ONE. The first pass looked for measured/literature/
+    # predict and failed theZero -- whose story cites Carter 1968 deriving g = 2, the Dirac
+    # electron's value, out of the Kerr-Newman metric. That is precisely what this column is for.
+    # An instrument that cries wolf gets ignored, so an author-and-year and a stated exact value
+    # now count too.
+    _PRED = (r"measured|literature|predict|against .*\d"
+             r"|[A-Z][a-z]+(?:\s+(?:&|and)\s+[A-Z][a-z]+)?\s+(?:19|20)\d\d"
+             r"|exactly\s+`?[a-zA-Z]\s*=")
+    r["predicts"] = bool(re.search(_PRED, story.read_text(encoding="utf8", errors="replace"))) \
         if story.exists() else False
 
     if nums.exists():

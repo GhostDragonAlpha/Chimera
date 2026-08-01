@@ -17,8 +17,15 @@ def derive(parent, free):
         "extent_m": 0.0,
         # ITS OWN DURATION: a point has no duration. t=1 in emit() means this much real time.
         "duration_s": 0.0,
-        "r": 0.0,
-        "volume": 0.0,
+        # `r` AND `volume` USED TO BE HERE, both 0.0, and both are gone. They said what extent_m
+        # already says -- that this is a point -- under two more names, and nothing consumed
+        # either: theHorizon reads exactly one thing from this membrane, `allowed`. They were also
+        # the only two numbers at the root of the whole story carrying no readable unit, so
+        # folding.py skipped them silently and reported itself clean over the rest.
+        #
+        # ONE QUANTITY, ONE NAME. Three keys for one fact is how three leg lengths got into one
+        # leg further down this tree, and it costs a day to find. A point has an extent, the extent
+        # is zero, and the extent is called extent_m.
         # THE NO-HAIR THEOREM, and it is a THEOREM, not a number anybody here chose. A stationary,
         # asymptotically flat solution of Einstein-Maxwell is completely fixed by exactly three
         # externally measurable quantities -- mass, electric charge, angular momentum -- and by
