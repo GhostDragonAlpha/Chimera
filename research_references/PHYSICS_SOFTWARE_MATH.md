@@ -14,6 +14,16 @@
 > physics do I need?", the answer is a row here, with the source to derive from. The verbs in
 > `Chimera/docs/THE_STORY.md` (theThrust, theDig, theBalance, theGrow, theScan, theNavigate,
 > theShoot, theMelee, theEVA) and the human menu (A/B/C/F/G items) map onto these rows.
+>
+> **The operator's sharpening (2026-07-31): "we don't need the code, we just need the physics
+> — because the physics IS the code in my development methodology."** Consequence: no row in
+> this catalog terminates in a library call or a ported implementation. Each row's terminal
+> form is a membrane — `story.md` + `physics.py` + `numbers.json` — whose physics.py derives
+> the row's equation from first principles and the measured inputs, then proves it through
+> the engine (orient → frame → question → classify → render → dyad → prove). MuJoCo and the
+> other engines named here are computing substrates and witnesses, not sources: we hand them
+> our measured parameters, we never adopt their internals as our law. A law that lives in
+> someone else's code is a law we do not hold.
 
 ---
 
