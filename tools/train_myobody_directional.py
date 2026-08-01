@@ -31,8 +31,8 @@ WHAT CHANGED vs train_myobody_mocap.py (only these):
      command columns seeded ~1e-3) is kept for anyone starting over.
   6. checkpoint to ChimeraEngine/output/myobody_walk_directional_policy.pt -- a NEW artifact.
      myobody_walk_mocap_policy.pt and myobody_walk_policy.pt are NEVER written (asserted).
-     ROUND 2 NOTE: the round-1 result is preserved at
-     output/myobody_walk_directional_r1_policy.pt (a manual cp, not written by this script).
+     PRESERVED BRAINS (manual cp, never written by this script): round 1 at
+     output/myobody_walk_directional_r1_policy.pt, round 2 at ..._r2_policy.pt.
 
 ROUND 2 (after the morning gate): the gate diagnosed left as FREEZING -- the policy survives
 by standing still because ALIVE_BONUS pays regardless of movement -- and right/backward as
@@ -43,6 +43,17 @@ moving-but-falling. Two levers, nothing else touched:
      inside the reward bracket multiplied by `alive`, so a fallen env never accumulates it.
   b) more samples on the weak directions (the falls lever): the P_CMD rebalance above, plus
      warm-starting from the round-1 brain instead of the forward-only mocap policy.
+
+ROUND 3 (after the round-2 gate): the freeze is dead -- all four directions translate with
+real gait; the ONLY remaining failure mode is falling while moving (worst-seed survival
+forward 8.9 s, backward 3.7, left 1.3, right 7.0 against the 10 s gate). Two changes:
+  a) THE HORIZON BUG: episodes were 150 x 20 x 0.001 s = 3.0 s, so the policy had never
+     practiced surviving as long as the gate demands -- and round 2 fell at 3.7-9.4 s,
+     exactly past the practiced horizon. T=150 -> 750 (15.0 s episodes). Throughput drops
+     ~5x (round 2: 511 iters/8h -> expect ~100/8h); accepted.
+  b) FALL PENALTY: a fall was priced only as the end of the alive-bonus stream; now the
+     terminal transition also pays FALL_PEN once (outside the alive bracket, into the GAE
+     delta at the step alive goes 0 -- see the reward line). Everything else untouched.
 
 UNCHANGED: the curriculum ramp (track term off until iter RAMP_START, then linear over
 RAMP_LEN), ALIVE_BONUS, the parking-exploit guard (velocity term x2 weight so it dominates
@@ -71,7 +82,13 @@ OUT_META = HERE / 'output' / 'myobody_walk_directional_meta.npy'
 # HARD GUARD: this script must never clobber the forward-only policies it warm-starts from.
 assert OUT_PT.name not in ('myobody_walk_mocap_policy.pt', 'myobody_walk_policy.pt')
 
-T = 150
+# THE HORIZON BUG, found in round 3: T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3.0 s
+# episode, but the morning gate demands 10 s of sustained balance -- the policy had NEVER
+# practiced surviving as long as it was judged on, and round 2 fell at 3.7-9.4 s, i.e.
+# exactly past the practiced horizon. T=750 -> 15.0 s episodes. THROUGHPUT COST: iteration
+# wall-clock scales ~linearly with T (round 2: 511 iters/8h at T=150 -> expect ~100/8h here);
+# accepted, because an iter now teaches the thing the gate measures.
+T = 750
 CONTROL_EVERY = 20
 HID = 256
 GAMMA = 0.99
@@ -84,6 +101,14 @@ ENT = 0.004
 VCOEF = 0.5
 ALIVE_BONUS = 0.8        # same damping as the mocap trainer: survival must out-pay a sprint
 FALL_FRAC = 0.6
+# THE FALL PENALTY (round 3, THE lever for the only remaining failure mode -- falling while
+# moving): until now a fall was priced only implicitly, as the end of the alive-bonus stream.
+# This is an explicit one-time terminal cost applied at the step alive goes 0. Scale: ~1.5x
+# a typical per-step reward (~1.3). The BIG price of a fall is still the forfeited stream
+# (with the 15 s horizon, falling at 1.3 s gives up ~13.7 s x 0.8 of alive bonus); FALL_PEN
+# is the sharp LOCAL signal that lands exactly on the terminal transition instead of being
+# smeared across the episode by the value function.
+FALL_PEN = 2.0
 EFFORT = 0.01
 W_TRACK = 1.0                     # weight of the mocap envelope matching term
 SIGMA_DEG = 15.0                  # tolerance band, degrees
@@ -255,10 +280,11 @@ def main() -> int:
     print(f'\nPPO FINE-TUNE: mocap policy + DIRECTIONAL commands '
           f'(one-hot {CMDS}, P={P_CMD}; speeds_m_s={[round(float(s), 3) for s in speed_m_s]}, '
           f'track w={W_TRACK} ramped in after iter {RAMP_START}, sigma={SIGMA_DEG} deg, '
-          f'stag w={STAG_W} below {STAG_FRAC:.0%} target, ema {STAG_TAU_S}s)\n' + '=' * 74)
+          f'stag w={STAG_W} below {STAG_FRAC:.0%} target, ema {STAG_TAU_S}s, '
+          f'fall pen={FALL_PEN}, episode {T * mjm.opt.timestep * CONTROL_EVERY:.1f}s)\n' + '=' * 74)
     print(f'  {W} envs x {T} steps   wall-clock budget {budget:.0f}s   -> {out}')
-    print(f"  {'iter':>4}{'reward':>9}{'cmdv':>7}{'track':>8}{'stag':>7}{'surv%':>7}{'sec':>7}"
-          f"{'total':>8}   per-cmd mean speed along command, m/s")
+    print(f"  {'iter':>4}{'reward':>9}{'cmdv':>7}{'track':>8}{'stag':>7}{'fall%':>7}{'surv%':>7}"
+          f"{'sec':>7}{'total':>8}   per-cmd mean speed along command, m/s")
 
     def quat_fwd(q):
         w, x, y, z = q[:, 0], q[:, 1], q[:, 2], q[:, 3]
@@ -333,6 +359,7 @@ def main() -> int:
         fwd_sum = torch.zeros(W, device=dev)        # projected speed along cmd_dir, m/s
         track_sum = torch.zeros(W, device=dev)
         stag_sum = torch.zeros(W, device=dev)       # stagnation penalty applied, reward units
+        fall_sum = torch.zeros(W, device=dev)       # fall events (<=1 per env per episode)
         dt_ctrl = mjm.opt.timestep * CONTROL_EVERY
         # THE STAGNATION EMA, seeded AT the per-env target speed: a fresh episode is
         # presumed innocent, and the ~0.5 s EMA must first sag below STAG_FRAC * target
@@ -358,7 +385,11 @@ def main() -> int:
                 # standing still with good joint shapes, so the velocity term keeps its x2
                 # weight (1.2 vs 0.5 * w_track) and must dominate the reward.
                 upr = torch.clamp(torch.abs((torch.nan_to_num(qpos[:, 3:7]) * quat_key).sum(1)), 0, 1)
+                was_alive = alive
                 alive = alive * (torch.nan_to_num(qpos[:, 2]) > FALL_Z).float()
+                # newly_fallen is 1 exactly at the transition step, 0 before and after --
+                # the penalty is one-time, not per-step-dead.
+                newly_fallen = was_alive * (1.0 - alive)
                 effort = raw.clamp(0.0, 1.0).pow(2).mean(1)
                 phase01 = (phase0 + t * dt_ctrl / stride_env) % 1.0
                 ang = joint_angles(head0)
@@ -373,12 +404,18 @@ def main() -> int:
                 stag = STAG_W * (speed_ema < STAG_FRAC * tgt_speed).float()
                 obs_b[t] = o; act_b[t] = raw; lp_b[t] = lp; val_b[t] = v
                 w_track = W_TRACK * min(1.0, max(0.0, (it - RAMP_START) / RAMP_LEN))
+                # THE FALL PENALTY sits OUTSIDE the alive-multiplied bracket: inside, it would
+                # be zeroed by the very fall it prices. It enters the PPO advantage through
+                # the GAE delta at the terminal step, where mask=0 also blocks the bootstrap
+                # -- so the terminal return is exactly (-FALL_PEN - v), and the cost
+                # propagates back with gamma*lam decay like any terminal reward.
                 rew_b[t] = (1.2 * vtrack * upr + ALIVE_BONUS - EFFORT * effort
-                            + 0.5 * w_track * track - stag) * alive
+                            + 0.5 * w_track * track - stag) * alive - FALL_PEN * newly_fallen
                 alive_b[t] = alive
                 fwd_sum += fwd * alive
                 track_sum += track * alive
                 stag_sum += stag * alive
+                fall_sum += newly_fallen
             _, _, last_v = ac(observe(cmd1h))
 
         adv = torch.zeros(T, W, device=dev); gae = torch.zeros(W, device=dev)
@@ -417,6 +454,7 @@ def main() -> int:
         mean_cmdv = (fwd_sum / T).mean().item()             # m/s along the commanded direction
         mean_track = (track_sum / T).mean().item()
         mean_stag = (stag_sum / T).mean().item()            # mean penalty; should die as envs move
+        fall_pct = 100.0 * fall_sum.mean().item()           # % of envs that fell this episode
         surv = 100.0 * alive_b[-1].mean().item()
         per_cmd = []
         for ci in range(CMD_DIM):
@@ -425,14 +463,15 @@ def main() -> int:
                 per_cmd.append(f'{CMDS[ci][:4]}={(fwd_sum[msk] / T).mean().item():.3f}(n={int(msk.sum())})')
         el = time.perf_counter() - t_all
         print(f'  {it:4d}{rew_b.mean().item():9.4f}{mean_cmdv:7.3f}{mean_track:8.3f}{mean_stag:7.3f}'
-              f'{surv:7.1f}{time.perf_counter()-ti:7.1f}{el:8.0f}   ' + ' '.join(per_cmd), flush=True)
+              f'{fall_pct:7.1f}{surv:7.1f}{time.perf_counter()-ti:7.1f}{el:8.0f}   '
+              + ' '.join(per_cmd), flush=True)
         torch.save(ac.state_dict(), out)
         np.save(OUT_META, dict(OBS=OBS, HID=HID, ACT=ACT, CMD_DIM=CMD_DIM, CMDS=CMDS,
                                OBS_LAYOUT='[quat(4), angvel(3), linvel(3), qpos(nj), qvel(nj), '
                                           'cmd_onehot(4: forward,backward,left,right)]',
                                STAND_Z=STAND_Z,
-                               NOTE='round 2: warm-started from the round-1 directional policy with '
-                                    'stagnation penalty + rebalanced command sampling; '
+                               NOTE='round 3: warm-started from the round-2 directional policy with '
+                                    'fall penalty + 15 s episode horizon (T=750); '
                                     'see tools/train_myobody_directional.py'))
         it += 1
 
