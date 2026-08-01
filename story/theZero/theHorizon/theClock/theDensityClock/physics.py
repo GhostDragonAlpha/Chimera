@@ -50,9 +50,9 @@ def gps_drift_us_per_day():
 
 
 def derive(parent, free):
-    if parent is None or "r_s" not in parent:
+    if parent is None or "extent_m" not in parent:
         raise ValueError("theDensityClock requires theHorizon as its parent -- its ceiling is r_s")
-    r_s = float(parent["r_s"])
+    r_s = float(parent["extent_m"])   # the contract name for the horizon radius
     grav, kin, net = gps_drift_us_per_day()
     return {
         # ITS REAL SIZE: its ceiling -- where the clock stops. Everything emits at radius ~1 locally, so this is

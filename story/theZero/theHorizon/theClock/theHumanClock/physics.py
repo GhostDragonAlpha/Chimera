@@ -52,7 +52,7 @@ def gear_ratio(response_s):
 
 
 def derive(parent, free):
-    if parent is None or "t_planck_s" not in parent:
+    if parent is None or "duration_s" not in parent:
         raise ValueError("theHumanClock requires theClock as its parent")
     band_lo, band_hi = FUSION_S, SUSTAINED_S
     # How far the human band sits from the clocks this story has already derived -- i.e. how much
@@ -97,7 +97,7 @@ def derive(parent, free):
         # membrane's own two measurements; the width follows.
         "band_decades": log10(band_hi / band_lo),
         "gear_for_a_star": gear_ratio(sun_dyn),   # a star's own tick is ~30 min: needs gearing
-        "planck_ticks_per_tap": TAP_S / float(parent["t_planck_s"]),
+        "planck_ticks_per_tap": TAP_S / float(parent["duration_s"])   # theClock's duration IS the Planck tick,
     }
 
 

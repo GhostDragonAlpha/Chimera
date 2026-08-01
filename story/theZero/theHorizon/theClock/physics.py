@@ -59,9 +59,9 @@ def clock_of(M, R):
 
 
 def derive(parent, free):
-    if parent is None or "t_P" not in parent:
+    if parent is None or "duration_s" not in parent:
         raise ValueError("theClock requires theHorizon as its parent -- it made the first tick")
-    t_P = float(parent["t_P"])
+    t_P = float(parent["duration_s"])   # the parent's duration IS the Planck time
     # THE SAME FORMULA, at the densities this story has already derived. Nothing here is looked up.
     sun = clock_of(M_SUN, R_SUN)
     earth = clock_of(5.9722e24, 6.371e6)
@@ -74,14 +74,16 @@ def derive(parent, free):
     return {
         # ITS REAL SIZE: its ceiling. Everything emits at radius ~1 locally, so this is
         # the only place the true scale is recorded -- and a human needs it to know what they see.
-        "extent_m": float(parent["r_s"]),
+        "extent_m": float(parent["extent_m"]),
         # ITS OWN DURATION: the law itself is instantaneous; it is the tick. t=1 in emit() means this much real time.
         "duration_s": t_P,
         # PASSED THROUGH, because a child may only read its parent: theDensityClock lives inside
         # this membrane now and its ceiling is still the horizon's radius.
-        "r_s": float(parent["r_s"]),
+        # `r_s` no longer republished: extent_m above is the same number under the contract
+        # name, and theDensityClock now reads that.
         "l_P": float(parent["l_P"]),
-        "t_planck_s": t_P,                                      # the smallest tick there is
+        # `t_planck_s` RETIRED: duration_s above IS the Planck time, and publishing it twice
+        # means a child can read either. theHumanClock now reads duration_s.
         "t_dyn_sun_s": sun["t_dyn_s"],                          # ~1 hour
         "t_dyn_earth_s": earth["t_dyn_s"],                      # ~1 hour too -- similar density!
         "t_dyn_galaxy_myr": t_slowest / YEAR / 1e6,

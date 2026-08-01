@@ -18,9 +18,7 @@
 |---|---|
 | `extent_m` | 2.286e-35 |
 | `duration_s` | 5.391e-44 |
-| `r_s` | 2.286e-35 |
 | `l_P` | 1.616e-35 |
-| `t_planck_s` | 5.391e-44 |
 | `t_dyn_sun_s` | 1769 |
 | `t_dyn_earth_s` | 894.6 |
 | `t_dyn_galaxy_myr` | 94.1 |

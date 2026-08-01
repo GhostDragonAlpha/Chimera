@@ -22,15 +22,15 @@ def derive(parent, free):
     return {
         # ITS REAL SIZE: the space the fence drew. Everything emits at radius ~1 locally, so this is
         # the only place the true scale is recorded -- and a human needs it to know what they see.
-        "extent_m": parent["r_s"],
+        "extent_m": parent["extent_m"],   # the contract name; theHorizon retired r_s
         # ITS OWN DURATION: the runaway that empties it -- lifetime ~ M^3. t=1 in emit() means this much real time.
         "duration_s": t_evap,
         "S": S,
         "bits": bits,
         "T": T,
-        "t_evap": t_evap,
-        "extent": parent["r_s"],                        # the space the fence drew
-        "quanta": bits,                                 # what is spread across it, one cell at a time
+        # `t_evap` RETIRED: duration_s above IS the evaporation time.
+        # `extent` RETIRED: extent_m above, with its unit stated.
+        # `quanta` RETIRED: bits above -- one count, one name.
     }
 
 
@@ -69,4 +69,4 @@ def emit(nums, t=1.0):
 def measure(nums):
     """What training must check: the sea is HOT and the emptying RUNS AWAY (finishes), rather than
     leaking forever. Both are facts about the numbers, not preferences."""
-    return {"is_hot": nums["T"] > 0.0, "finishes": nums["t_evap"] > 0.0}
+    return {"is_hot": nums["T"] > 0.0, "finishes": nums["duration_s"] > 0.0}

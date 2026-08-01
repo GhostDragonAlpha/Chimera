@@ -19,3 +19,24 @@ That crossing sets the universe's first units: `l_P = √(ħG/c³) = 1.616×10�
 quantum and the forbidden division returns — so **zero is not approachable, it is fenced**, and the
 fence is the smallest legal membrane. Every membrane after this is that same fence redrawn at a
 larger radius.
+
+## What it predicted that it was never given
+
+Three constants went in — ħ, G, c — and nothing else. No length was chosen and none was fitted.
+
+| derived here | CODATA 2018 | |
+|---|---|---|
+| Planck length `l_P` = 1.6162550e-35 m | 1.616255e-35 m | agrees to every digit CODATA publishes |
+| Planck time `t_P` = 5.3912465e-44 s | 5.391247e-44 s | same |
+
+That agreement is not a check of arithmetic — the same three constants would give the same
+answer to anyone. It is the check that **this membrane's scale was not selected**: the first
+length and the first tick in the whole story are forced by the constants the seed handed up,
+and if either had been chosen to make something later come out right, it would not land on a
+number measured independently in a laboratory.
+
+And one thing the membrane says that a coincidence would not survive: `extent_m` equals
+`lambda_C` here, the Schwarzschild radius equal to the Compton wavelength — the crossing where
+a black hole and an electron are the same size. Move `M_added` off the crossing and the two
+come apart immediately. It is an identity of the *setting*, not of the quantities, which is
+exactly why both are still published.

@@ -171,7 +171,13 @@ def check(d: Path) -> dict:
         for k, v in vals.items():
             if v == 0:
                 continue
-            key = round(float(v), 12)
+            # EXACT FLOAT IDENTITY, NOT ABSOLUTE ROUNDING. This was round(v, 12), which sends
+            # 2.29e-35 and 5.39e-44 both to 0.0 -- so every number smaller than a picounit landed
+            # in one bucket and the gate INVENTED pairs at the top of the tree, where every
+            # quantity is Planck-scale. It reported extent_m = duration_s on theClock, which is
+            # 2.29e-35 against 5.39e-44. Two keys hold the same number when their floats are the
+            # same number; there is no tolerance to choose and choosing one was the whole defect.
+            key = repr(float(v))
             if key in seen:
                 dup.append((seen[key], k))
             else:

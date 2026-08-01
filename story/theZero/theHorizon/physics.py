@@ -57,11 +57,18 @@ def derive(parent, free):
         # ITS OWN DURATION: the first tick it made. t=1 in emit() means this much real time.
         "duration_s": t_P,
         "M_added": M,
-        "r_s": schwarzschild(M),
+        # `r_s` IS GONE. It was schwarzschild(M) computed a second time, which is exactly what
+        # extent_m above already is -- and a child could read either, so the two would drift the
+        # first time one was recomputed and the other was not. That is how LEG_FRAC, leg_length_m
+        # and a segment sum became three different legs 3.11 cm apart further down this tree.
+        # THE CONTRACT NAME IS THE PUBLISHED ONE; the physics name stays a local variable.
+        # lambda_C SURVIVES, and the distinction is the whole point: it EQUALS extent_m here only
+        # because M sits at the crossing. Move the dial and they come apart -- that is the
+        # black-hole-and-electron coincidence this story is fastened to, not a duplicate.
         "lambda_C": compton(M),
         "M_crossing": crossing(),
         "l_P": l_P,
-        "t_P": t_P,
+        # `t_P` likewise: duration_s above IS the Planck time. One quantity, one name.
         "m_P": m_P,
         "A": 4.0 * pi * schwarzschild(M) ** 2,
     }
