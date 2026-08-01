@@ -77,11 +77,24 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "Construction"))
 
 
-def subject_frames(video, n, tol=0.22, pad=12, black_bg=True):
+def subject_frames(video, n, tol=0.22, pad=12, black_bg=True, bg="auto", masks_png=None,
+                   frame_size=None):
     """The subject, cropped out of each sampled frame, with everything else set to black.
 
     Cropping matters as much as masking: fitting a few thousand Gaussians to a frame that is 90%
-    empty spends nearly all of them on nothing, and their scales then describe the void."""
+    empty spends nearly all of them on nothing, and their scales then describe the void.
+
+    THE BACKDROP IS MEASURED, NOT ASSUMED (bg="auto"). The first version knew two backdrops -- the
+    black void capture mode renders, and the 0.5 grey our clay sits on -- and both were hardcoded.
+    That is fine until a take arrives on neither, which is what every probe made before capture
+    mode existed looks like: probe_aTerrain sits on a mid grey that is neither 0.5 nor black, and
+    both hardcoded rules mask the entire frame as subject. `auto` takes the median colour of the
+    frame's outer border and calls everything far from it subject.
+
+    THIS IS THE SAME MECHANISM THAT FAILED ONCE, so it is bounded rather than trusted: a
+    border-colour mask scored 0.13 on a take with a lit environment, because it grabbed the wall.
+    It is safe here only because the backdrop is a flat uncluttered plate, and `masks_png` exists
+    so that claim is looked at instead of asserted."""
     import cv2
     import numpy as np
 
@@ -94,12 +107,38 @@ def subject_frames(video, n, tol=0.22, pad=12, black_bg=True):
         frames.append(f[:, :, ::-1])
     cap.release()
     pick = [frames[int(i * (len(frames) - 1) / max(n - 1, 1))] for i in range(n)]
-    out = []
+    # MATCH THE RESOLUTION, or "it needed more splats" is partly "it had more pixels". The clay we
+    # send is rendered at our own size and the take comes back at whatever the generator produced:
+    # for probe_aTerrain that is 480x480 against 640x640, so the generated frame carries 1.78x the
+    # pixels for the same object. Splats-per-pixel normalisation handles subject AREA but not
+    # sampling RATE -- a finer grid genuinely resolves detail a coarser one cannot -- so both sides
+    # are brought to a common frame size before anything is measured.
+    if frame_size:
+        pick = [cv2.resize(f, (frame_size, frame_size), interpolation=cv2.INTER_AREA)
+                for f in pick]
+    out, shots = [], []
     for img in pick:
         a = np.asarray(img, np.float32) / 255.0
-        # the take sits on capture mode's black void; the clay control sits on known 0.5 grey
-        m = ((a.max(axis=2) > tol) if black_bg
-             else (np.abs(a.mean(axis=2) - 0.5) > 0.02)).astype(np.uint8)
+        if bg == "auto":
+            b = 6
+            border = np.concatenate([a[:b].reshape(-1, 3), a[-b:].reshape(-1, 3),
+                                     a[:, :b].reshape(-1, 3), a[:, -b:].reshape(-1, 3)])
+            bgc = np.median(border, axis=0)
+            m = (np.abs(a - bgc[None, None, :]).max(axis=2) > 0.10).astype(np.uint8)
+        elif black_bg:
+            m = (a.max(axis=2) > tol).astype(np.uint8)
+        else:
+            m = (np.abs(a.mean(axis=2) - 0.5) > 0.02).astype(np.uint8)
+        m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+        # FILL THE INTERIOR, or the genome comes back too bright. A colour-distance mask punches
+        # holes wherever the SUBJECT happens to match the backdrop -- on probe_aTerrain that is
+        # every shadowed slope that lands within 0.10 of the grey plate, which is precisely the
+        # darkest surface the material has. Dropping it is not a small hole in a picture, it is a
+        # systematic bias in every colour statistic downstream. The subject is solid, so background
+        # is only background where it CONNECTS TO THE FRAME BORDER; anything enclosed is interior.
+        nb, blab = cv2.connectedComponents((1 - m).astype(np.uint8), 8)
+        edge = set(np.unique(np.concatenate([blab[0], blab[-1], blab[:, 0], blab[:, -1]])))
+        m = np.isin(blab, list(edge - {0}), invert=True).astype(np.uint8) if nb > 1 else m
         k, lab, st, _ = cv2.connectedComponentsWithStats(m, 8)
         if k > 1:
             m = (lab == (1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA])))).astype(np.uint8)
@@ -110,6 +149,16 @@ def subject_frames(video, n, tol=0.22, pad=12, black_bg=True):
         x0, x1 = max(0, xs.min() - pad), min(a.shape[1], xs.max() + pad)
         crop = a[y0:y1, x0:x1] * m[y0:y1, x0:x1, None]
         out.append((crop, m[y0:y1, x0:x1].astype(bool)))
+        if masks_png:
+            v = a.copy(); v[m == 0] *= 0.18            # dim what the mask rejected
+            shots.append((np.concatenate([a, v], axis=1) * 255).astype(np.uint8))
+    if masks_png and shots:
+        from PIL import Image
+        h = sum(x.shape[0] for x in shots); w = max(x.shape[1] for x in shots)
+        can = np.zeros((h, w, 3), np.uint8); y = 0
+        for x_ in shots:
+            can[y:y+x_.shape[0], :x_.shape[1]] = x_; y += x_.shape[0]
+        Image.fromarray(can).save(masks_png)
     return out
 
 
@@ -140,6 +189,9 @@ def main():
     ap.add_argument("--iters", type=int, default=600)
     ap.add_argument("--elements", type=int, default=5)
     ap.add_argument("--video", default="generated.mp4")
+    ap.add_argument("--bg", default="auto", choices=("auto", "black", "grey"),
+                    help="how to find the subject. auto measures the frame border's median colour "
+                         "-- use it for any take not made in capture mode's black void.")
     ap.add_argument("--control", default="clay.mp4",
                     help="THE CONTROL, and the only reason this file can be believed. The clay was "
                          "rendered by OUR OWN splat engine, so fitting it the same way says what a "
@@ -149,12 +201,22 @@ def main():
     a = ap.parse_args()
     take = Path(a.take_dir)
 
+    import cv2 as _cv
+    def _side(v):
+        c = _cv.VideoCapture(str(take / v)); ok, f = c.read(); c.release()
+        return min(f.shape[:2]) if ok else None
+    sides = [x for x in (_side(a.video), _side(a.control)) if x]
+    FRAME = min(sides) if len(sides) == 2 and len(set(sides)) > 1 else None
+    if FRAME:
+        print(f"resolutions differ {sorted(set(sides))} -> both resampled to {FRAME}x{FRAME}")
+
     free, total = (x / 2 ** 30 for x in torch.cuda.mem_get_info())
     print(f"GPU {torch.cuda.get_device_name(0)}   {free:.1f} of {total:.1f} GiB free")
     print(f"fitting {a.splats} splats x {a.frames} frames, {a.iters} iters each")
 
     def run(video, black_bg, tag):
-      views = subject_frames(take / video, a.frames, black_bg=black_bg)
+      views = subject_frames(take / video, a.frames, black_bg=black_bg, bg=a.bg,
+                             masks_png=take / f"mask_{tag}.png", frame_size=FRAME)
       allp = {"log_size": [], "aniso": [], "R": [], "G": [], "B": [], "opacity": [], "greenness": []}
       dens_hist = []
       for i, (crop, mask) in enumerate(views):
@@ -304,8 +366,8 @@ def main():
         # resolve a difference cannot report one, and averaging it in only dilutes the result
         # toward 1. Both points below are fine enough to resolve the subject.
         dens = [0.20, 0.60]
-        gv = subject_frames(take / a.video, 1, black_bg=True)[0]
-        cv_ = subject_frames(take / a.control, 1, black_bg=False)[0]
+        gv = subject_frames(take / a.video, 1, black_bg=True, bg=a.bg, frame_size=FRAME)[0]
+        cv_ = subject_frames(take / a.control, 1, black_bg=False, bg=a.bg, frame_size=FRAME)[0]
         cost = {}
         for tag, (crop, mask) in (("generated", gv), ("clay", cv_)):
             px = int(mask.sum())
