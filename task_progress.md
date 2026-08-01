@@ -274,3 +274,32 @@ NEXT (exact):
    ones) before this gate can run. Trainer committed as 07e519b.
 3. Then A5+G1 motion matching, C1+C3 (autonomic responses live here now), B2 (owns the
    steep-slope directional plough residuals AND the swing-plough residual from B1).
+
+---
+
+## 2026-08-01 (morning) — G2 round 1 gate: FORWARD passes stronger than ever; the three new directions fail in two distinct ways
+
+Training: 553 PPO iters / 8 h (task bash-1f0161yq), warm-started from the mocap policy.
+Eval: tools/policy_gait_eval_directional.py (monkey-patches policy_gait_eval's rollout:
++4-dim one-hot obs, distance measured ALONG the command). Gate = worst of 5 seeds sustains 10 s.
+
+| cmd | seeds (s) | worst | gate | note |
+|---|---|---|---|---|
+| forward | 10,10,10,10,10 | 10.0 | PASS | BEATS the old forward-only policy (worst 2.6 s same harness) |
+| backward | 10,10,2.3,9.8,10 | 2.3 | FAIL | translates, one seed falls |
+| left | 10,10,10,10,5.6 | 5.6 | FAIL | FREEZES: 0.06-0.28 m in 10 s, duty 0.58-0.79 = parked |
+| right | 1.3,6.9,8.2,7.2,2.7 | 1.3 | FAIL | translates 1.8-2.5 m but every seed falls |
+
+Baseline (old mocap policy, forward, same harness): 7.4,10,10,10,2.6 -- worst 2.6 s.
+So round 1 IMPROVED forward survival while adding three imperfect directions. The
+asymmetry is reproducible: left survives by not moving (parking local optimum -- the one
+seed that attempted the crossing gait fell at 5.6 s); right attempts and falls. Eval
+speeds run below training-log speeds (CPU MuJoCo vs mujoco-warp); within-harness only.
+
+NEXT (round 2, exact):
+1. Trainer round 2 -- warm-start from myobody_walk_directional_policy.pt (keep the skills),
+   rebalance command sampling toward the weak directions, add a STAGNATION penalty
+   (|v_along| << target while alive under a movement command -- kills the left parking
+   optimum the alive bonus pays for). Right/backward need stability: more iters + tracking.
+2. Relaunch 8 h, re-gate all four commands with the same harness.
+3. Menu after G2 clears: A5+G1, C1+C3 (autonomic), B2.
