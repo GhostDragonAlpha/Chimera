@@ -81,8 +81,8 @@ def derive(parent, free):
         "tap_s": TAP_S,
         "reaction_s": REACTION_S,
         "hold_min_s": HOLD_MIN_S,
-        "hold_max_s": HOLD_MAX_S,
-        "band_lo_s": band_lo,
+        # `hold_max_s` RETIRED: duration_s above IS the longest hold -- one quantity, one name.
+        # `band_lo_s` RETIRED: fusion_s above is the band's low edge, and says what it IS.
         "band_hi_s": band_hi,
         # HOW NARROW THE BAND IS -- ARITHMETIC ON THE TWO MEASUREMENTS, not a stated number.
         #

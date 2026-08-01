@@ -72,7 +72,7 @@ def derive(parent, free):
         "duration_s": 3.8e5 * 3.1557e7,
         "T_start": parent["T"],
         "T_nuclei": T_nuclei,                       # ~1e9 K: nuclei survive
-        "T_atoms": T_atoms,                         # ~3700 K: atoms survive -> transparency
+        # `T_atoms` RETIRED: T_end above is the same temperature -- the one atoms formed at, 3760 K, and it is the name theCloud already reads.
         "T_end": T_atoms,
         # DERIVED, not assumed: how many times weaker than the bond the typical photon must be
         "delay_factor": E_HYDROGEN / (KB * T_atoms),

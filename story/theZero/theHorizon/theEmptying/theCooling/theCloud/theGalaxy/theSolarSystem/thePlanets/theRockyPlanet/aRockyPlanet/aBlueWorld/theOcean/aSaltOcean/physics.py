@@ -78,7 +78,7 @@ def _water_rgb(absorb, backscatter_460, scale=1.0):
 
 def derive(parent, free):
     """This water, from the law's handed-down state."""
-    g = float(parent["g"]); R = float(parent["R"])
+    g = float(parent["g"]); R = float(parent["extent_m"])
     M_w = float(parent["M_water"])
     f_oc = float(parent["ocean_fraction"])
     T = float(parent["T_surface"])

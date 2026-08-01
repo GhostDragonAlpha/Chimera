@@ -295,13 +295,17 @@
    "gps_gravitational_us_day": "d",
    "gps_kinematic_us_day": "d",
    "gps_net_us_day": "d",
-   "gps_error_km_day": "d"
+   "gps_error_km_day": "d",
+   "rate_at_2rs": "1/s"
   },
   "theCooling": {
    "T_start": "K",
    "T_nuclei": "K",
    "T_atoms": "K",
-   "T_end": "K"
+   "T_end": "K",
+   "delta_rho_over_rho": "ratio",
+   "eta": "ratio",
+   "n_gamma_per_K3": "ratio"
   },
   "theStar": {
    "M_min_solar": "ratio",
@@ -314,6 +318,11 @@
    "L_solar": "ratio",
    "granules_across": "count",
    "granule_dT": "dK"
+  },
+  "theHumanClock": {
+   "band_decades": "ratio",
+   "gear_for_a_star": "ratio",
+   "planck_ticks_per_tap": "count"
   }
  },
  "notes": {

@@ -238,7 +238,7 @@ def derive(parent, free):
     if parent is None or "P_surface_bar" not in parent:
         raise ValueError("aBlueWorld requires theRockyPlanet as its parent")
     M = float(parent["M"])
-    R = float(parent["R"])
+    R = float(parent["extent_m"])
     S = float(parent["S"])
     P_bar = float(parent["P_surface_bar"])
     has_air = bool(parent.get("has_atmosphere"))
@@ -358,7 +358,9 @@ def derive(parent, free):
 
         # carried down so a surface can be stood on: relief needs gravity and a sea level.
         "g": float(parent["g"]),
-        "R": R, "M": M,
+        "M": M,
+        # `R` RETIRED: extent_m above is the same number under the contract name every
+        # child and the composer already read. One quantity, one name.
         # NO DEFAULT. A 1.0 here is not "nothing" -- it is a full Earth's insolation, served silently.
         "S_earth": float(parent["S_earth"]),
         "days_per_year": float(parent["days_per_year"]),

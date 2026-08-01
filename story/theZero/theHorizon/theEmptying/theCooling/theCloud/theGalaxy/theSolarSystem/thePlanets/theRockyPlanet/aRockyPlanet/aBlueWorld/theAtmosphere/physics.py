@@ -39,7 +39,7 @@ def derive(parent, free):
     """The law, stated against this world: does air exist here at all, and which gases make the cut?
     Everything the instance needs is handed down through this membrane -- the instance reads ONE
     parent, and this is it."""
-    g = float(parent["g"]); R = float(parent["R"])
+    g = float(parent["g"]); R = float(parent["extent_m"])
     escapes = parent.get("escape_ratios", {})
     kept = parent.get("gases_kept", [])
 

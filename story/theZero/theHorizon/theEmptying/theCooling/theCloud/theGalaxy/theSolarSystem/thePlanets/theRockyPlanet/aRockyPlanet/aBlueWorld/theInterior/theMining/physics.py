@@ -45,7 +45,7 @@ def derive(parent, free):
         "extent_m": 500.0,                    # a mine is hundreds of metres across -- the membrane's
                                               # own scale, not the planet's
         "duration_s": 20.0 * 365.25 * 86400.0,  # a mine's life is decades -- the pit deepening
-        "g": float(parent["g"]), "R": float(parent["R"]),
+        "g": float(parent["g"]), "R": float(parent["extent_m"]),
         "crust_element_fraction": abund,
         "ore_grade_iron": min(abund["Fe"] * ENRICHMENT["Fe"], 0.65),
         "ore_grade_copper": abund["Cu"] * ENRICHMENT["Cu"],

@@ -163,7 +163,7 @@ def derive(parent, free):
         raise ValueError("theTerrain requires aBlueWorld as its parent")
     free = free or {}
     g = float(parent["g"])
-    R = float(parent["R"])
+    R = float(parent["extent_m"])
     area = 4.0 * pi * R * R
     f_c = float(free.get("continental_fraction", FREE["continental_fraction"]["default"]))
     f_c = max(0.0, min(0.95, f_c))

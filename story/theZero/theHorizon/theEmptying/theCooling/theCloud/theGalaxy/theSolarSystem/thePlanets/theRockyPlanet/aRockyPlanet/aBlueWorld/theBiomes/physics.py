@@ -67,9 +67,9 @@ def derive(parent, free):
     """The law, stated against this world: which axes the bands hang on, and the table that maps
     climate to life. Everything the instance needs is handed down through this membrane."""
     return {
-        "extent_m": float(parent["R"]),
+        "extent_m": float(parent["extent_m"]),
         "duration_s": float(parent.get("year_s", 3.1557e7)),   # the movie is ONE YEAR (seasons)
-        "g": float(parent["g"]), "R": float(parent["R"]),
+        "g": float(parent["g"]), "R": float(parent["extent_m"]),
         # the climate axes, handed to the instance
         "T_surface": float(parent["T_surface"]),
         "T_equator": float(parent.get("T_equator", parent["T_surface"])),

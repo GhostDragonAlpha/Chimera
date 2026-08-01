@@ -117,7 +117,7 @@ def derive(parent, free):
     if parent is None or "rho_bulk" not in parent:
         raise ValueError("aRockyPlanet requires theRockyPlanet as its parent")
     M = float(parent["M"])
-    R = float(parent["R"])
+    R = float(parent["extent_m"])
     rho = float(parent["rho_bulk"])
     day_s = float(parent["day_s"])
 

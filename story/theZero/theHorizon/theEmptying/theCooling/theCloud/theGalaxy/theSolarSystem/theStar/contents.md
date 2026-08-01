@@ -25,7 +25,6 @@
 | `T_max_if_never_ignited` | 1.438e+08 |
 | `T_surface` | 5839 |
 | `L` | 4.169e+26 |
-| `R` | 7.094e+08 |
 | `burning` | True |
 | `held_up_by` | fusion |
 | `leftover_disk` | True |

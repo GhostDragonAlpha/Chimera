@@ -259,7 +259,9 @@ def derive(parent, free):
 
         "a_au": a_au,
         "M": M, "M_earth": M / M_EARTH,
-        "R": R, "R_earth": R / R_EARTH,
+        "R_earth": R / R_EARTH,
+        # `R` RETIRED: extent_m above is the same number under the contract name every
+        # child and the composer already read. One quantity, one name.
         "g": g, "g_earth": g / 9.80665,
         "v_escape": v_esc,
         "core_R": core_radius(R), "core_frac": 0.547,

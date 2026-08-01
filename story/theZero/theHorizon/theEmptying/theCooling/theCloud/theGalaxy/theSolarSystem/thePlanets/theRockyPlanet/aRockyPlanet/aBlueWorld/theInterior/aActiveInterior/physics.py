@@ -60,7 +60,7 @@ LENS = {
 
 def derive(parent, free):
     """This inside, from the law's handed-down facts."""
-    g = float(parent["g"]); R = float(parent["R"])
+    g = float(parent["g"]); R = float(parent["extent_m"])
     core_R = float(parent["core_R_m"])
     core_mf = float(parent["core_mass_frac"])
     M = float(parent["M"])

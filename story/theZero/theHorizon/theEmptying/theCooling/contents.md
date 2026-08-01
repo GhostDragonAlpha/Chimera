@@ -19,7 +19,6 @@
 | `duration_s` | 1.199e+13 |
 | `T_start` | 7.972e+30 |
 | `T_nuclei` | 1.214e+09 |
-| `T_atoms` | 3760 |
 | `T_end` | 3760 |
 | `delay_factor` | 41.97 |
 | `hydrogen_frac` | 0.75 |

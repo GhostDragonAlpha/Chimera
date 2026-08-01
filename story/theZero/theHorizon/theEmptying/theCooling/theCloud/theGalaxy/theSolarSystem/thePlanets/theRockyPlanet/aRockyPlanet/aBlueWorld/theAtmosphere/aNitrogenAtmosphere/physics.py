@@ -109,7 +109,7 @@ def _sun_rgb(tau_zenith_rgb, T_star: float, airmass: float = 1.0):
 
 def derive(parent, free):
     """This air, from the law's handed-down state."""
-    g = float(parent["g"]); R = float(parent["R"])
+    g = float(parent["g"]); R = float(parent["extent_m"])
     P = float(parent["P_surface_bar"]) * 1e5              # Pa
     H = float(parent["scale_height_m"])
     T = float(parent["T_surface"])

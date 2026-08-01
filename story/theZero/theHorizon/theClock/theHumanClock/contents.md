@@ -20,8 +20,6 @@
 | `tap_s` | 0.11 |
 | `reaction_s` | 0.25 |
 | `hold_min_s` | 0.2 |
-| `hold_max_s` | 3 |
-| `band_lo_s` | 0.04 |
 | `band_hi_s` | 10 |
 | `band_decades` | 2.398 |
 | `gear_for_a_star` | 176.9 |

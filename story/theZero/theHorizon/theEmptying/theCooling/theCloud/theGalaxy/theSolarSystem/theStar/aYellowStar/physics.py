@@ -70,7 +70,8 @@ def derive(parent, free):
         "duration_s": lifetime_years(M) * 3.1557e7,
         "M": M,
         "M_solar": M / M_SUN,
-        "R": R,
+        # `R` RETIRED: extent_m above is the same number under the contract name every
+        # child and the composer already read. One quantity, one name.
         "R_solar": R / R_SUN,
         "L": L,
         "L_solar": L / L_SUN,

@@ -97,7 +97,8 @@ def derive(parent, free):
         "T_max_if_never_ignited": max_temperature(M),
         "T_surface": T_surface,
         "L": L,
-        "R": R,
+        # `R` RETIRED: extent_m above is the same number under the contract name every
+        # child and the composer already read. One quantity, one name.
         "burning": max_temperature(M) > T_IGNITE,
         "held_up_by": "fusion" if max_temperature(M) > T_IGNITE else "degeneracy",
         "leftover_disk": True,                    # angular momentum: what missed cannot vanish

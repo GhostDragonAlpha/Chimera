@@ -15,7 +15,6 @@
 |---|---|
 | `extent_m` | 2.286e-35 |
 | `duration_s` | 7.624e-44 |
-| `r_s` | 2.286e-35 |
 | `ceiling_is_the_horizon` | True |
 | `rate_at_2rs` | 0 |
 | `gps_gravitational_us_day` | 45.72 |

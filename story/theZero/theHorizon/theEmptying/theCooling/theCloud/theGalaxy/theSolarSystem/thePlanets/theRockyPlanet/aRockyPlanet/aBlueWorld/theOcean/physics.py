@@ -50,9 +50,9 @@ def derive(parent, free):
     water_state = parent.get("water_state", "unknown")
     liquid = water_state == "liquid" and FREEZE_PURE - 3.0 < T < 355.0
     return {
-        "extent_m": float(parent["R"]),
+        "extent_m": float(parent["extent_m"]),
         "duration_s": float(parent.get("day_s", 86400.0)),
-        "g": float(parent["g"]), "R": float(parent["R"]),
+        "g": float(parent["g"]), "R": float(parent["extent_m"]),
         # the raw state of this world's water, handed to the instance
         "M_water": float(parent["M_water"]),
         "ocean_fraction": float(parent["ocean_fraction"]),

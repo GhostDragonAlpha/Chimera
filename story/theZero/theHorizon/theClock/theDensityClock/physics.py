@@ -60,7 +60,7 @@ def derive(parent, free):
         "extent_m": r_s,
         # ITS OWN DURATION: light crossing its own ceiling. t=1 in emit() means this much real time.
         "duration_s": r_s / 2.99792458e8,
-        "r_s": r_s,                                   # the ceiling: at r = r_s the clock STOPS
+        # `r_s` RETIRED: extent_m above is the same number under the contract name.
         "ceiling_is_the_horizon": True,
         "rate_at_2rs": gravitational_rate(0.5 * r_s * C * C / G / 2.0 * 2.0, 2.0 * r_s) if r_s > 0 else 0.0,
         "gps_gravitational_us_day": grav,             # +45.7

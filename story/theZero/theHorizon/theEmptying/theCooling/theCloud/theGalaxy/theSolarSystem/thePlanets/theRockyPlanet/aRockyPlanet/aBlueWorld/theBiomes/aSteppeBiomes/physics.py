@@ -74,7 +74,7 @@ def _rain_profile(lat_deg: float, hadley_edge: float, dry_belt: float, mean_mm_d
 
 def derive(parent, free):
     """These bands, from the law's handed-down climate."""
-    R = float(parent["R"]); g = float(parent["g"])
+    R = float(parent["extent_m"]); g = float(parent["g"])
     T_mean_C = float(parent["T_surface"]) - 273.15
     dT = float(parent["dT_equator_pole"])
     obliq = float(parent["obliquity_deg"])

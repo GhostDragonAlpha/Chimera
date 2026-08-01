@@ -60,10 +60,10 @@ def derive(parent, free):
     convecting = True                       # the planet's own solution says it convects (dynamo needs it)
     cls = interior_class(has_dynamo, convecting, heat_TW, M_mantle)
     return {
-        "extent_m": float(parent["R"]),
+        "extent_m": float(parent["extent_m"]),
         "duration_s": 4.5e9 * 3.1557e7,     # the cooling span -- Earth's own age as the reference;
                                             # this system's age is NOT yet derived in the story (said so)
-        "g": float(parent["g"]), "R": float(parent["R"]),
+        "g": float(parent["g"]), "R": float(parent["extent_m"]),
         "M": M,
         "core_radius_frac": float(parent["core_radius_frac"]),
         "core_R_m": float(parent["core_R_m"]),

@@ -1,7 +1,6 @@
 {
   "extent_m": 2.2857297750934068e-35,
   "duration_s": 7.624373842965078e-44,
-  "r_s": 2.2857297750934068e-35,
   "ceiling_is_the_horizon": true,
   "rate_at_2rs": 0.0,
   "gps_gravitational_us_day": 45.71875595513805,

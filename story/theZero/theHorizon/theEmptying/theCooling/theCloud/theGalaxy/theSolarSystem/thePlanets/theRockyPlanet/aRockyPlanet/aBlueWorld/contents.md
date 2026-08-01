@@ -58,7 +58,6 @@
 | `surface_rgb` | [0.09, 0.22, 0.42] |
 | `name` | aBlueWorld |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `M` | 2.929e+24 |
 | `S_earth` | 1.005 |
 | `days_per_year` | 383.2 |
