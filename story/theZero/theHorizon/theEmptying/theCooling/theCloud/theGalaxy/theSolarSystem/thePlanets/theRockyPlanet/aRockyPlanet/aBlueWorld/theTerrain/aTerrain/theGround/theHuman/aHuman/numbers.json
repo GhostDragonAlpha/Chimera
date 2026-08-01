@@ -721,6 +721,9 @@
     ]
   ],
   "gait_samples": 48,
+  "heel_lever_frac": 0.05,
+  "forefoot_lever_frac": 0.10006917094427285,
+  "ankle_drop_frac": 0.039000000000000035,
   "mass_kg": 94.50445486428082,
   "suit_mass_kg": 9.9145,
   "g": 7.076122169232295,

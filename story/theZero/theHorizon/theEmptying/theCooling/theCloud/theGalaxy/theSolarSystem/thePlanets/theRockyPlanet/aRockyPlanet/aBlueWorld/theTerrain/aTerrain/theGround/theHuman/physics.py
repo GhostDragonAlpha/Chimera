@@ -853,6 +853,12 @@ def derive(parent, free):
         "forefoot_lever_frac": ball,
         "forefoot_lever_typed_was_m": FOREFOOT_FRAC * h,
         "foot_pivot_is_derived": True,
+        # THE REST OF THE CONTACT LAW, published so a child can draw a foot that agrees with the
+        # gait table: the heel's lever behind the ankle (where initial contact lands), and the
+        # ankle's height above the sole plane it pivots over. The table's hip heights were solved
+        # against exactly these -- a boot built from them cannot disagree with the hip it serves.
+        "heel_lever_frac": HEEL_FRAC,
+        "ankle_drop_frac": ANKLE_DROP_FRAC,
 
         "fall_rate_rad_s": w0,                   # sqrt(g/H): how fast balance is lost
         "time_to_fall_s": 1.0 / w0,

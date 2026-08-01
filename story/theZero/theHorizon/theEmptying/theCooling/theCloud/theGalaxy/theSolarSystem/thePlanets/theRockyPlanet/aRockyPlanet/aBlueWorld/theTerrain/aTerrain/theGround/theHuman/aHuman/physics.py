@@ -242,6 +242,13 @@ def derive(parent, free):
         # restating the parent's leg_cycle here would be two gaits that agree until one is edited.
         "gait_cycle": [list(row) for row in parent["gait_cycle"]],
         "gait_samples": int(parent["gait_samples"]),
+        # THE FOOT'S CONTACT GEOMETRY, CARRIED AS NUMBERS: the heel lever behind the ankle and
+        # the ball pivot ahead of it are what the parent's hip-height table was solved against.
+        # emit() draws the boot to the same law, so the hip it must not touch and the sole it
+        # places are the same arithmetic (B1).
+        "heel_lever_frac": float(parent["heel_lever_frac"]),
+        "forefoot_lever_frac": float(parent["forefoot_lever_frac"]),
+        "ankle_drop_frac": float(parent["ankle_drop_frac"]),
         "mass_kg": float(parent["mass_kg"]),
         "suit_mass_kg": float(parent["suit_mass_kg"]),
         "g": float(parent["g"]),
@@ -313,7 +320,7 @@ def _ball(c, r, n=None, seed=0):
     return np.asarray(c, float)[None, :] + d * r, d
 
 
-def emit(nums, t=1.0):
+def emit(nums, t=1.0, ground=None):
     """The suited body, in its own local units (1.0 = standing height), walking along +X.
 
     THE POSE IS THE PARENT'S PHYSICS; THE SKIN IS THIS MEMBRANE'S THERMAL SOLUTION. Every limb is
@@ -321,6 +328,11 @@ def emit(nums, t=1.0):
     bulk is a temperature reading. The helmet is the head plus that same insulation plus the visor
     standoff -- and the faceplate is dark because a visor's job is to reject light, which is the
     only reason anything here is a different colour.
+
+    `ground(lx, ly) -> local z` (B1, optional): the carved terrain under the body, in this same
+    pre-CoM local frame. When it is given, every PLANTED foot is placed on it -- two-bone solve,
+    the knee absorbs the difference, the hip keeps the parent's measured bob. When it is not
+    given the pose is the parent's flat table exactly as before (the membrane's own demo view).
     """
     from matter import blank, lit, SOLID, AR, AG, AB, MAT as MATCOL
 
@@ -339,6 +351,11 @@ def emit(nums, t=1.0):
     hip_half = float(nums["hip_half_m"]) / H
     sh_half = float(nums["shoulder_half_m"]) / H
     splay = math.radians(float(nums["splay_deg"]))
+    # THE CONTACT GEOMETRY, READ FROM THE PARENT: the heel lever behind the ankle and the ball
+    # pivot ahead of it. The gait table's hip heights were solved against exactly these, so a
+    # boot drawn and placed to the same law agrees with the hip it hangs from by construction.
+    heel_lev = float(nums["heel_lever_frac"])
+    ball_lev = float(nums["forefoot_lever_frac"])
 
     phase = 2.0 * math.pi * tt
     # ── THE POSE COMES FROM THE PARENT'S TABLE, indexed, not recomputed ───────────────────────
@@ -382,6 +399,55 @@ def emit(nums, t=1.0):
         th_kn = th_hip - bend
         # the shank comes back toward vertical -- a knee is not a hinge that keeps the tilt
         ankle = knee + np.array([math.sin(th_kn) * cs, sp * 0.25, -math.cos(th_kn) * cs]) * SHANK_FRAC
+        # ── THE SOLE LANDS ON THE CARVED TERRAIN (B1) ─────────────────────────────────────────
+        # Until now both boots were posed against a FLAT virtual floor at the walker's z: on any
+        # slope the downhill boot ploughed through the ground while the uphill one floated. A
+        # planted foot is not POSED, it is PLACED -- the terrain decides where the sole is, and
+        # the KNEE absorbs the difference, because the hip is the parent's measured bob and the
+        # CoM is nobody's to flatten. Two-bone analytic solve (law of cosines -- the standard
+        # IK row of PHYSICS_SOFTWARE_MATH), clamped to the knee's measured range; what the leg
+        # cannot reach, the sole honestly does not touch. Swing feet are the parent's pose --
+        # the spec is about LANDING, and a foot in the air is not on any terrain.
+        if ground is not None and _planted:
+            drop = leg - (THIGH_FRAC + SHANK_FRAC)          # ankle-to-sole, the parent's figure
+            # the boot's pitch is measured RELATIVE TO THE GROUND -- on a slope the ground
+            # itself is pitched, so the sole reads the tilt under its two contact levers and
+            # adds it, and the parent's rocker law survives on terrain.
+            g_heel = float(ground(ankle[0] - math.cos(_fp) * heel_lev, ankle[1]))
+            g_ball = float(ground(ankle[0] + math.cos(_fp) * ball_lev, ankle[1]))
+            span = (heel_lev + ball_lev) * math.cos(_fp)
+            if span > 1e-6:
+                _fp = _fp + math.atan2(g_ball - g_heel, span)
+            # THE CONTACT LAW IS THE PARENT'S OWN -- the same one the gait table's hip heights
+            # were solved with (ankle_height in theHuman): the ankle sits drop*cos(p) above the
+            # sole plane, plus a lever's rise over whichever of the heel (behind the ankle) or
+            # the ball (ahead of it) is the low end. Pinning the HEEL through the whole stance
+            # was the first B1 draft's bug: at push-off the heel must RISE and the ball carries
+            # the body, or the toes go through the floor. The case analysis is the parent's --
+            # the lower lever carries; no branch is written, the geometry already knows.
+            cp, sp_ = math.cos(_fp), math.sin(_fp)
+            hz = -heel_lev * sp_ - drop * cp                 # heel contact, relative to the ankle
+            tz = ball_lev * sp_ - drop * cp                  # ball contact, relative to the ankle
+            cx = ankle[0] + (-heel_lev * cp if hz < tz else ball_lev * cp)
+            dz = (float(ground(cx, ankle[1])) - min(hz, tz)) - ankle[2]
+            if abs(dz) > 1e-4:
+                target = ankle + np.array([0.0, 0.0, dz])
+                B_MIN, B_MAX = 0.035, 2.4      # the knee: 2 deg off straight .. 137 deg folded
+                d_lo = math.sqrt(THIGH_FRAC**2 + SHANK_FRAC**2 + 2.0 * THIGH_FRAC * SHANK_FRAC * math.cos(B_MAX))
+                d_hi = math.sqrt(THIGH_FRAC**2 + SHANK_FRAC**2 + 2.0 * THIGH_FRAC * SHANK_FRAC * math.cos(B_MIN))
+                v = target - hip
+                d_raw = float(np.linalg.norm(v))
+                d = min(max(d_raw, d_lo), d_hi)
+                u = v / (d_raw + 1e-12)
+                ankle = hip + u * d
+                # the knee stays on ITS OWN side of the hip->ankle line -- the bend direction
+                # it already had; how MUCH it bends is the terrain's business, not which way.
+                alpha = math.acos(min(1.0, max(-1.0,
+                    (THIGH_FRAC**2 + d * d - SHANK_FRAC**2) / (2.0 * THIGH_FRAC * d))))
+                perp = knee - hip - float(np.dot(knee - hip, u)) * u
+                n_perp = float(np.linalg.norm(perp))
+                if n_perp > 1e-9:
+                    knee = hip + THIGH_FRAC * (math.cos(alpha) * u + math.sin(alpha) * perp / n_perp)
         add(_tube(hip, knee, r_th, r_sh * 1.15), 0)
         add(_tube(knee, ankle, r_sh * 1.15, r_sh), 0)
         # the boot: wider than the leg, because a sole spreads load -- the parent's foot_pressure.
@@ -390,7 +456,6 @@ def emit(nums, t=1.0):
         # law while the leg above it moved by another, and they agreed only for as long as nobody
         # edited either. The parent now derives the pitch from three measured joint angles and
         # publishes it; the boot uses that number and cannot disagree with the leg it hangs from.
-        toe = ankle + np.array([math.cos(_fp), 0.0, math.sin(_fp)]) * FOOT_LEN_FRAC
         # THE BOOT'S UNDERSIDE HAS TO LAND WHERE THE TABLE PUTS THE SOLE. Drawn as a fat tube hung
         # half its own radius below the ankle, the boot was 8.3% of stature thick against the 3.9%
         # the parent's gait assumes -- so it ploughed, and duty factor fell to 0.44 against the
@@ -398,8 +463,29 @@ def emit(nums, t=1.0):
         # is placed so the underside sits exactly at the ankle drop the gait was solved with.
         _drop = leg - (THIGH_FRAC + SHANK_FRAC)         # ankle to sole, the parent's own figure
         _r_boot = r_sh * 1.25
-        _lift = np.array([0.0, 0.0, -(_drop - _r_boot)])
-        add(_tube(ankle + _lift, toe + _lift, _r_boot, r_sh * 0.75), 2)
+        # the axis drop is measured along the foot's NORMAL, as the parent's contact law writes
+        # it (drop*cos(p)): a vertical _lift leaves the lowest grain drop*(1-cos p) BELOW the
+        # sole plane the IK placed -- 17.6 mm of plough at 42 deg of ground-relative pitch.
+        _lift = np.array([0.0, 0.0, _r_boot - _drop * math.cos(_fp)])
+        # AND THE BOOT HAS THE SHAPE THE CONTACT LAW ASSUMES (B1). The heel reaches BEHIND the
+        # ankle by the parent's heel lever -- that is where initial contact lands -- and the
+        # rigid part ends at the BALL, because the measured foot segment (mocap ankle->toe
+        # marker) is the metatarsal heads, which is where push-off pivots. The toes beyond the
+        # ball are their own segment: kept rigid with the foot they would be driven through the
+        # floor at push-off, where a real forefoot flexes at the MTP joint and stays on the
+        # ground. On terrain the toe reads the tilt under its own span; in the air (or on the
+        # membrane's own flat demo view) it stays rigid with the foot, as measured.
+        _d = np.array([math.cos(_fp), 0.0, math.sin(_fp)])
+        heel_p = ankle - _d * heel_lev
+        ball_p = ankle + _d * ball_lev
+        toe_p = ankle + _d * FOOT_LEN_FRAC
+        if ground is not None and _planted:
+            _tp = math.atan2(float(ground(toe_p[0], toe_p[1])) - float(ground(ball_p[0], ball_p[1])),
+                             max((FOOT_LEN_FRAC - ball_lev) * math.cos(_fp), 1e-6))
+            if _tp > _fp:
+                toe_p = ball_p + np.array([math.cos(_tp), 0.0, math.sin(_tp)]) * (FOOT_LEN_FRAC - ball_lev)
+        add(_tube(heel_p + _lift, ball_p + _lift, _r_boot, r_sh * 0.9), 2)
+        add(_tube(ball_p + _lift, toe_p + _lift, r_sh * 0.9, r_sh * 0.75), 2)
 
         sh = np.array([0.0, sh_half * side, hip_z + (0.82 - leg)])          # lateral is Y -- see the note above
         th_s = -0.55 * th_hip                          # counter to the leg on the same side

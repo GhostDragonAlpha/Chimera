@@ -733,6 +733,8 @@
   "forefoot_lever_frac": 0.10006917094427285,
   "forefoot_lever_typed_was_m": 0.17550000000000002,
   "foot_pivot_is_derived": true,
+  "heel_lever_frac": 0.05,
+  "ankle_drop_frac": 0.039000000000000035,
   "fall_rate_rad_s": 2.6480438864112523,
   "time_to_fall_s": 0.3776372457917398,
   "capture_point_at_1ms": 0.3776372457917398,

@@ -159,3 +159,53 @@ NOT done (next sessions, in menu order): extraction pipelines that distill each 
 `story/data/*.json` (like ingest_gait_osf.py did); the membranes consume those, not the raw
 zips. Operator decisions open: SimTK/SMPL clicks (Tier B), the Tier C commercial question,
 F1 mapping ratifications from the previous block, B1 foot IK next on the menu.
+
+---
+
+## 2026-07-31 (night) — B1 foot IK: the sole is PLACED, and it lands by the parent's own contact law
+
+**Menu item B1: "soles land ON the carved terrain, never through it" (`height_at()` per foot).**
+
+DONE, verified (two committed probes):
+- **aHuman emit grew `ground=` (aHuman/physics.py).** When the walker hands it the carved
+  field, every PLANTED foot is placed by a two-bone analytic solve (law of cosines, knee
+  clamped to [2 deg, 137 deg]); the hip keeps the parent's measured bob (upper body verified
+  bit-identical with/without terrain). The first draft pinned the HEEL all stance -- wrong:
+  the gait table's hip heights were solved with theHuman's `ankle_height` contact law (heel
+  lever 0.050 behind the ankle at strike, BALL pivot 0.100 ahead at push-off), so the IK now
+  targets that same law, and the parent publishes `heel_lever_frac` / `ankle_drop_frac` so the
+  child consumes numbers, never reasoning. The boot is redrawn to match: heel lever, rigid
+  capsule to the ball, and a TOE segment that bends at the MTP joint to the terrain (a rigid
+  toe went 42 mm through the floor at push-off). Axis drop is along the foot NORMAL
+  (`drop*cos p`) -- a vertical lift was 17.6 mm of plough at 42 deg ground-relative pitch.
+- **walker.py `body_buffer` emits per frame with a `_ground(lx,ly)` closure** (local ->
+  world -> `height_at` -> back), replacing the 48-pose flat-floor cache. 5 ms/pose,
+  ~200 poses/s.
+- **Verification, signed (float = landing shortfall, plough = the forbidden one):**
+  - `tools/probe_foot_ik.py` (synthetic uniform slopes): plough 0.0/0.8/5.0/12.8 mm at
+    0/10/20/30 deg (old pose: 42/24/83/192 mm THROUGH). Float at 0 deg p50 +3.6 mm, worst
+    +37.9 mm -- exactly the parent's NAMED double-support residual (2.1% of stature, see
+    ankle_height's docstring); the reach clamp surfaces it, it invents nothing.
+  - `tools/probe_walker_ik.py` (the SHIPPING path: Walker + body_buffer on the real carved
+    field, per-leg, min-err contact metric): planted on 8-20 deg grades p50 +21 mm,
+    worst plough -35 mm at 20.5 deg (a bump under mid-boot; grains don't deform). Synthetic
+    DOWNHILL runs reproduce the same medians (p50 +17..+22 mm at 8-20 deg), so the walker
+    transform adds zero error -- the float is the FLAT-gait table's reach limit on steep
+    ground, which is what A3+G2 (slope/directional gaits, CMU DB already downloaded) exists
+    to fix at the source. Swing boots plough up to -112 mm through rising ground at 20 deg --
+    NOT B1's spec (landing); named residual for B2/A3.
+  - Metric note that matters: the contact is the MIN over grains of (grain z - terrain under
+    THAT grain), not the lowest-altitude grain -- a rigid toe over downhill-falling ground is
+    correct rigid-boot geometry, not a misplaced contact.
+- Render check: gallery restarted, third-person walk on the 14 deg spawn slope captured to
+  `Saved/Images/b1/` (figure walks, no gross clip/float at renderer resolution; the numbers
+  above are the precision instrument). `tools/walk_demo.py`: PASS (all states).
+
+Files: aHuman/physics.py (emit ground=, contact-law IK, heel/ball/toe boot), theHuman/
+physics.py (publishes heel_lever_frac + ankle_drop_frac), walker.py (per-frame ground emit),
+both numbers.json regrown (grow.py clean), tools/probe_foot_ik.py, tools/probe_walker_ik.py.
+
+NEXT (menu order): A3+G2 directional gaits -- the CMU full DB (2,548 BVH) has slope/turn
+trials; the downhill reach floats above are the motivating measurement. Then A5+G1 motion
+matching, C1+C3, B2 (owns the swing-plough residual). Parallel standing: extraction pipelines
+distilling the 13 GB acquisition sweep into committed story/data/*.json.

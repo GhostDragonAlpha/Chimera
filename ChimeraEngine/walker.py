@@ -580,7 +580,8 @@ def scene_around(w: Walker, t: float = None):
     return np.concatenate(parts, axis=0)
 
 
-_BODY_CACHE = {}     # quantised gait phase -> theHuman's local-frame body (emit is deterministic)
+_BODY_CACHE = {}     # only "sole" now (the mean-cycle sole offset); the posed body emits per
+                     # frame WITH the terrain (B1), so a per-phase cache would be a flat-floor body
 
 
 def body_buffer(w: Walker):
@@ -597,11 +598,6 @@ def body_buffer(w: Walker):
     cycle = 2.0 * float(hn["stride_m"])
     t = (w.dist / cycle) % 1.0
 
-    q = int(t * 48) % 48                       # 48 poses over a 1.3 m cycle = 27 mm per pose
-    if q not in _BODY_CACHE:
-        _BODY_CACHE[q] = st["human_law"].emit(hn, q / 48.0).copy()
-    b = _BODY_CACHE[q].copy()
-
     # WHERE THE SOLES ARE IS MEASURED, NOT ASSUMED. Placing the body by adding com_height_m to the
     # ground put the boots 50 mm UNDERGROUND: com_height is the BARE body's centre of mass, and a
     # suited figure has thicker soles under it. So the offset is the mean lowest point over the whole
@@ -611,10 +607,26 @@ def body_buffer(w: Walker):
         lows = [st["human_law"].emit(hn, k / 12.0)[:, 2].min() for k in range(12)]
         _BODY_CACHE["sole"] = float(sum(lows) / len(lows))
     lift = -_BODY_CACHE["sole"]
+    com_h = float(hn["com_height_m"]) / height
 
     # local +X (emit's walking direction) -> the FIGURE's facing (body_yaw, velocity-facing A1)
     a = w.body_yaw + math.pi / 2.0
     c, s = math.cos(a), math.sin(a)
+    wx0, wy0, wz0, wc0 = w.x, w.y, w.z, w.crouch
+
+    def _ground(lx, ly):
+        # emit's pre-CoM local frame -> world (the same transform the grains get below) -> the
+        # carved field -> back to local. The foot and the floor it lands on are the SAME surface
+        # by construction: this closure reads height_at(), the walker's own ground truth.
+        gx = (lx * c - ly * s) * height + wx0
+        gy = (lx * s + ly * c) * height + wy0
+        return (height_at(gx, gy) - wz0 - wc0) / height + com_h - lift
+
+    # B1: emit WITH the terrain every frame, so a planted sole is PLACED on the carved ground and
+    # the knee absorbs the difference (aHuman/physics.py, the two-bone solve). The 48-pose cache
+    # was a body walking a flat virtual floor; the terrain conform lives in the body's own
+    # membrane now, and the phase still quantizes inside emit (the parent's 48-row table).
+    b = st["human_law"].emit(hn, t, ground=_ground)
     x, y = b[:, 0].copy(), b[:, 1].copy()
     b[:, 0] = (x * c - y * s) * height + w.x
     b[:, 1] = (x * s + y * c) * height + w.y
