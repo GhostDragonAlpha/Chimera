@@ -307,6 +307,53 @@ GRF_PEAK_BW_TYPED = 1.2
 #
 # The pitch angles are measured human ankle kinematics in level walking.
 HEEL_FRAC = 0.050          # heel behind the ankle, fraction of stature (Dempster)
+
+# ── THE TOE JOINT (metatarsophalangeal), and why its LIMIT is not what sets the foot ──────────
+# The foot was one rigid plate from ankle to toe tip, and at toe-off -- where it pitches about 49
+# degrees nose-down -- that drove the tip 1.79% of stature THROUGH the floor. A real forefoot does
+# not do this: the toes hinge at the MTP, so they stay flat on the ground while the shank rotates
+# over them, and the foot leaves the ground toe-last.
+#
+# THE ANGLE IS AN OUTPUT, NOT A SETTING. It would be easy, and wrong, to pick an MTP limit that
+# makes the clearance come out at the literature's 1.19% -- 55 degrees does exactly that, which is
+# the reason not to choose it that way. So the law here is CONTACT, in the operator's own form:
+# the toes extend until the ground stops them (`toe_conform` below), and how much extension the
+# gait DEMANDED is measured and published rather than assumed.
+#
+# TWO BOUNDS TO CHECK THAT DEMAND AGAINST, and they disagree, which is worth stating plainly:
+#   MTP_RANGE_SIM  0.5236 rad (30 deg) -- vendor/myo_sim/leg/assets/myolegs_chain.xml, joint
+#                  `mtp_angle_r`. This is the body this project adopted, but the joint is vestigial
+#                  in the OpenSim gait2392 lineage it comes from and is normally WELDED, so it is a
+#                  modelling convenience rather than a measurement of a toe.
+#   clinical functional requirement for terminal stance is roughly 55-70 deg of hallux
+#                  dorsiflexion, passive range higher again. NOT cited here as a number because
+#                  this project has no source file for it -- named so the gap is visible.
+# The measured demand lands at ~37.5 deg: past the sim model's welded range, comfortably inside
+# real anatomy. That is a fact about our geometry, and it is published as one.
+MTP_RANGE_SIM = 0.5235988      # rad, myo_sim `mtp_angle_r` range -- the adopted body's number
+
+
+def toe_conform(ball_z, foot_pitch, toe_seg, planted, mtp_limit=None):
+    """WHERE THE TOE TIP ACTUALLY IS, once the toes are allowed to hinge.
+
+    A CONTACT LAW, not a pose: the toes rotate about the ball until the GROUND stops them, and the
+    ground decides where they land. That is the same rule the hand closes by. In the air nothing
+    stops them, so they ride rigid with the foot -- a swinging foot does not splay its toes.
+
+    Returns (tip_z, mtp_angle_demanded). The angle is what the caller publishes, because the point
+    of the exercise is to find out what the gait asks for, not to tell it."""
+    rigid = ball_z + toe_seg * math.sin(foot_pitch)
+    if not planted or rigid >= 0.0 or toe_seg <= 1e-9:
+        return rigid, 0.0
+    # the segment angle that puts the tip exactly on the ground; asin bounded because a ball higher
+    # than the toe is long cannot be reached by any rotation -- then the toes are simply straight
+    need = max(-1.0, min(1.0, -ball_z / toe_seg))
+    seg = math.asin(need)
+    mtp = seg - foot_pitch
+    if mtp_limit is not None and mtp > mtp_limit:
+        mtp = mtp_limit
+        seg = foot_pitch + mtp
+    return ball_z + toe_seg * math.sin(seg), mtp
 # DUTY FACTOR is no longer typed. It was 0.60, chosen because a sine hip angle puts each foot down
 # for EXACTLY half the cycle -- so the two stances abut, never overlap, and the walk has no double
 # support and therefore no leg pushing off while the other reaches. The reasoning was right and the
@@ -790,6 +837,21 @@ def derive(parent, free):
     # (the 70 kg "standard man"); THIS body is the ANSUR median, and the formula says otherwise.
     skin_area = 0.007184 * (m_bare ** 0.425) * ((100.0 * h) ** 0.725)
 
+
+    # WHAT THE TOE JOINT WAS ASKED FOR, measured off the cycle this membrane just built. The toes
+    # conform to the ground wherever the foot is planted; the rotation that takes is the demand.
+    _drop = LEG_FRAC - (THIGH_FRAC + SHANK_FRAC)
+    _tseg = (FOOT_LEN_FRAC - HEEL_FRAC) - ball
+    _mtp_demand = 0.0
+    for _r in _tab:
+        _hz = float(_r[0])
+        for _i in (0, 1):
+            _ha, _ka, _pi = float(_r[1+5*_i]), float(_r[2+5*_i]), float(_r[3+5*_i])
+            _pl = float(_r[5+5*_i]) > 0.5
+            _az = _hz - THIGH_FRAC*math.cos(_ha) - SHANK_FRAC*math.cos(_ha-_ka)
+            _bz = _az + ball*math.sin(_pi) - _drop*math.cos(_pi)
+            _, _m = toe_conform(_bz, _pi, _tseg, _pl)
+            _mtp_demand = max(_mtp_demand, _m)
     return {
         # ITS REAL SIZE: a person. The only unit nobody has to imagine.
         "extent_m": h,
@@ -931,6 +993,13 @@ def derive(parent, free):
         # types 0.152 for itself has a foot that stops responding when this one is remeasured.
         "foot_length_frac": FOOT_LEN_FRAC,
         "toe_lever_frac": FOOT_LEN_FRAC - HEEL_FRAC,
+        # THE TOE JOINT: the bound we can cite, and what this gait actually ASKED FOR. The demand
+        # is measured off the cycle above by letting the toes conform to the ground and recording
+        # the rotation that took -- an output, never an input. See toe_conform().
+        "mtp_range_sim_rad": MTP_RANGE_SIM,
+        "mtp_demand_max_rad": _mtp_demand,
+        "mtp_demand_max_deg": math.degrees(_mtp_demand),
+        "mtp_demand_within_sim_range": bool(_mtp_demand <= MTP_RANGE_SIM),
 
         "fall_rate_rad_s": w0,                   # sqrt(g/H): how fast balance is lost
         "time_to_fall_s": 1.0 / w0,

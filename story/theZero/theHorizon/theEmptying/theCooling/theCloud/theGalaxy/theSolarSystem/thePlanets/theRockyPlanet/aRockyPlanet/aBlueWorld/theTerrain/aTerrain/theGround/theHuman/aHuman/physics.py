@@ -496,11 +496,26 @@ def emit(nums, t=1.0, ground=None, cycle=None):
         heel_p = ankle - _d * heel_lev
         ball_p = ankle + _d * ball_lev
         toe_p = ankle + _d * toe_lev
-        if ground is not None and _planted:
-            _tp = math.atan2(float(ground(toe_p[0], toe_p[1])) - float(ground(ball_p[0], ball_p[1])),
-                             max((toe_lev - ball_lev) * math.cos(_fp), 1e-6))
-            if _tp > _fp:
-                toe_p = ball_p + np.array([math.cos(_tp), 0.0, math.sin(_tp)]) * (toe_lev - ball_lev)
+        # ── THE TOES HINGE AT THE MTP, ON ANY FLOOR ──────────────────────────────────────────
+        # This used to fire only `if ground is not None` -- so the toe bent on terrain and stayed
+        # rigid on the membrane's own flat view, which is the view everything is judged in. At
+        # toe-off the foot pitches ~49 degrees nose-down and a rigid tip went 1.79% of stature
+        # through the floor: a boot buried to the laces in the picture the operator actually looks
+        # at. The floor being flat is not a reason for the toes not to be on it.
+        #
+        # THE LAW IS CONTACT AND THE ANGLE IS ITS OUTPUT: rotate the toe segment about the ball
+        # until the tip reaches the ground and no further -- the ground decides where it lands,
+        # exactly as the hand closes until the object stops it. theHuman publishes what this
+        # demands of the joint (mtp_demand_max_deg = 48.6) so the cost is visible rather than
+        # buried in a render.
+        if _planted:
+            _Lt = toe_lev - ball_lev
+            _floor = (float(ground(toe_p[0], toe_p[1])) if ground is not None
+                      else min(heel_p[2], ball_p[2]))
+            if toe_p[2] < _floor and _Lt > 1e-9:
+                _need = max(-1.0, min(1.0, (_floor - ball_p[2]) / _Lt))
+                _tp = math.asin(_need)
+                toe_p = ball_p + np.array([math.cos(_tp), 0.0, math.sin(_tp)]) * _Lt
         add(_tube(heel_p + _lift, ball_p + _lift, _r_boot, r_sh * 0.9), 2)
         add(_tube(ball_p + _lift, toe_p + _lift, r_sh * 0.9, r_sh * 0.75), 2)
 

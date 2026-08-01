@@ -96,6 +96,19 @@ def _inherited(path, key):
         d = d.parent
 
 
+def _toe_conform(ball_z, pitch, seg, planted):
+    """The toe tip once the toes are allowed to hinge -- the membrane's own law, restated here.
+
+    A witness may not import the membrane it judges (that would be one system twice), so the law is
+    rewritten from theHuman's published account of it and driven entirely by published numbers."""
+    rigid = ball_z + seg * math.sin(pitch)
+    if not planted or rigid >= 0.0 or seg <= 1e-9:
+        return rigid, 0.0
+    need = max(-1.0, min(1.0, -ball_z / seg))
+    a = math.asin(need)
+    return ball_z + seg * math.sin(a), a - pitch
+
+
 def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop):
     """THE LOWEST POINT OF THE SOLE, rebuilt from the pose rather than read from the table.
 
@@ -137,6 +150,14 @@ def witness(name: str) -> dict:
     # theHuman's foot. If nothing in the chain publishes one there is no answer to inherit and the
     # witness says so instead of inventing one. A fallback is an assumption wearing a hat.
     toe = _inherited(p, "forefoot_lever_frac")
+    # THE BALL IS THE CONTACT POINT; THE TIP IS A DIFFERENT QUESTION AND WAS NEVER ASKED.
+    # `toe` above is the BALL -- correct for sole penetration and the contact plane, because the
+    # ball is the pivot the moment/force derivation identified and the toes cannot carry the body.
+    # But nothing was checking that the drawn toe stays out of the ground, and it did not: at
+    # toe-off the tip sat 1.79% of stature under, while this file reported +0.64% and passed.
+    # A foot has two ends and this witness was watching one of them.
+    tip = _inherited(p, "toe_lever_frac")
+    mtp_lim = _inherited(p, "mtp_range_sim_rad")
     if toe is None:
         return {"name": name,
                 "error": "no forefoot_lever_frac anywhere in this membrane's chain -- a body that "
@@ -159,6 +180,7 @@ def witness(name: str) -> dict:
     #
     # Averaging the two into one number would hide an exact result behind a known-approximate one.
     single, dbl, clear = [], [], [[], []]
+    tips, mtp_demand = [[], []], 0.0
     for hip_z, legs in rows:
         planted = [i for i, lg in enumerate(legs) if lg[4]]
         for i, (ha, ka, pi_, u, pl) in enumerate(legs):
@@ -168,6 +190,13 @@ def witness(name: str) -> dict:
                 (single if len(planted) == 1 else dbl).append(z)
             else:
                 clear[i].append(z)
+            if tip is not None:
+                az = hip_z - thigh*math.cos(ha) - shank*math.cos(ha-ka)
+                bz = az + toe*math.sin(pi_) - drop*math.cos(pi_)
+                tz, mtp = _toe_conform(bz, pi_, tip - toe, pl)
+                mtp_demand = max(mtp_demand, mtp)
+                if not pl:
+                    tips[i].append(tz)
         if len(planted) == 2:
             both += 1
 
@@ -191,6 +220,9 @@ def witness(name: str) -> dict:
            "sole_error_frac": sole_err, "sole_error_double_support_frac": dbl_err,
            "contact_plane_travel_frac": plane_travel,
            "clearance_frac": clr, "clearance_min_frac": clr_min,
+           "tip_clearance_min_frac": [min(t) if t else float("nan") for t in tips],
+           "mtp_demand_deg": math.degrees(mtp_demand),
+           "mtp_range_sim_deg": (math.degrees(mtp_lim) if mtp_lim else float("nan")),
            "vault_frac": vault, "vault_m": vault * h,
            "hip_peak_at_cycle": peak_at, "asymmetry": asym,
            "measured": {k: nums[k] for k in
@@ -224,6 +256,10 @@ def witness(name: str) -> dict:
             fails.append(f"swing foot {i} clears only {c*100:.2f}% of stature -- it drags")
     if min(clr_min) < -0.002:
         fails.append(f"swing foot goes {abs(min(clr_min))*100:.2f}% of stature BELOW the floor")
+    _tips = [min(t) for t in tips if t]
+    if _tips and min(_tips) < -0.002:
+        fails.append(f"TOE TIP goes {abs(min(_tips))*100:.2f}% of stature below the floor -- the "
+                     f"ball clears but the drawn foot does not")
     if not (HUMAN["vault_frac"][0] <= vault <= HUMAN["vault_frac"][1]):
         fails.append(f"vault {vault*100:.2f}% of stature outside human "
                      f"{HUMAN['vault_frac'][0]*100:.1f}-{HUMAN['vault_frac'][1]*100:.1f}%")
@@ -259,6 +295,11 @@ def main(argv) -> int:
               f"  (two legs, one pelvis: the residual is the unsourced segment lengths)")
         print(f"  contact plane    {r['contact_plane_travel_frac']*100:.3f}% of stature   "
               f"(must not move)")
+        _t = [t for t in r.get("tip_clearance_min_frac", []) if t == t]
+        if _t:
+            print(f"  toe tip          lowest {min(_t)*100:+.2f}% of stature   "
+                  f"MTP demanded {r['mtp_demand_deg']:.1f} deg "
+                  f"(myo_sim joint range {r['mtp_range_sim_deg']:.0f} deg)")
         print(f"  swing clearance  peak {r['clearance_frac'][0]*100:.2f}% / "
               f"{r['clearance_frac'][1]*100:.2f}%, lowest {min(r['clearance_min_frac'])*100:.2f}% "
               f"of stature"

@@ -121,6 +121,10 @@
 | `ankle_drop_frac` | 0.039 |
 | `foot_length_frac` | 0.1544 |
 | `toe_lever_frac` | 0.1044 |
+| `mtp_range_sim_rad` | 0.5236 |
+| `mtp_demand_max_rad` | 0.8489 |
+| `mtp_demand_max_deg` | 48.64 |
+| `mtp_demand_within_sim_range` | False |
 | `fall_rate_rad_s` | 2.648 |
 | `time_to_fall_s` | 0.3776 |
 | `capture_point_at_1ms` | 0.3776 |
