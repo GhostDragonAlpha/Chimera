@@ -10,6 +10,10 @@
 > reimplement from the paper and cite it. This is the same clean-room route the acquisition
 > plan uses for data (ACQUISITION_PLAN.md): measure or derive, never copy.
 >
+> Master tree: **`PHYSICS_OF_EVERYTHING.md`** (same directory) — humanity's complete
+> physics, sourced the same way, minus the forbidden branches. This file is the
+> simulator's-eye view; that one is the whole forest.
+>
 > Purpose: this is the complete periodic table of game physics. When a membrane asks "what
 > physics do I need?", the answer is a row here, with the source to derive from. The verbs in
 > `Chimera/docs/THE_STORY.md` (theThrust, theDig, theBalance, theGrow, theScan, theNavigate,
