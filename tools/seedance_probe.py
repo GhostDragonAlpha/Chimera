@@ -76,10 +76,17 @@ PROMPT = (
 # OWN RESPONSE and nothing else. A key light baked into the sample is a light that can never be
 # moved again, and a cast shadow is a piece of the floor pretending to be part of the object.
 #
-# So a capture take asks for: flat ambient only, no key, no shadow, no ground, black void. That is
-# the standard condition for a relightable material capture and it happens to solve the measurement
-# problem too -- a black void segments exactly, where the last take's floor and shadow defeated
-# three different masks.
+# So a capture take asks for: flat ambient only, no key, no shadow, and a PURE BLACK MATTE FLOOR.
+#
+# NOT "no floor" -- that was the first version and it threw away something real. WHERE AN OBJECT
+# TOUCHES THE GROUND IS PHYSICAL INFORMATION: it is the support polygon, the contact plane, the
+# line theGround and theBalance both reason about. A figure floating in a void has had its contact
+# deleted. What must go is not the floor but the floor's INTERFERENCE -- its colour, its bounce
+# light, its cast shadow. A black matte floor contributes none of those and still stops the feet.
+#
+# It also solves the measurement problem, which is how the black void got here in the first place:
+# the previous take's grey floor and cast shadow defeated three different masks, and a black one
+# segments exactly while keeping the contact.
 #
 # NOTE THE ASYMMETRY, because it is easy to get backwards: the clay we SEND stays SHADED. A
 # generator reads three-dimensional form from shading, so flat-lit input would hand it only a
@@ -89,9 +96,10 @@ CAPTURE_PROMPT = (
     "clay model: keep its silhouette, proportions, scale in frame and camera path unchanged, and "
     "do not add, remove or reshape anything. Render only the object's own surface as {material}. "
     "LIGHTING: flat uniform ambient light from all directions, no key light, no directional light, "
-    "no cast shadow, no contact shadow, no ground plane, no floor, no horizon. The background is "
-    "PURE BLACK and completely empty. The object floats with nothing touching it. Photoreal "
-    "material detail, no text, no added objects, no lens flare, no depth of field."
+    "no cast shadow, no sun, no lamp. The background is PURE BLACK and completely empty, and the "
+    "object stands on a PURE BLACK matte floor that reflects no light onto it. Keep the object's "
+    "contact with the floor visible where it touches. No horizon, no walls, no set, no other "
+    "objects. Photoreal material detail, no text, no lens flare, no depth of field."
 )
 
 
