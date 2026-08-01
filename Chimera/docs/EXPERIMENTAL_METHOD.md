@@ -6,6 +6,10 @@
 > reasoning was wrong, and every conclusion that held came from a measurement.* They are about not
 > fooling yourself while DEBUGGING.
 >
+> **Rules 17-20** come from the same 2026-08-01 session, later in the day, and are about DIRECTION:
+> where to look when everything you can see is already correct. Rule 20 is the operator's, and it
+> reframes the other three.
+>
 > **Rules 11-16** come from the 2026-08-01 material-genome and terrain session, where six separate
 > results were written down as true and then **reversed by a control**. They are about not fooling
 > yourself while REPORTING — a harder problem, because a wrong debugging conclusion announces itself
@@ -357,6 +361,120 @@ constraint on the whole surface must be applied to the whole surface.
 
 ---
 
+## RULE 17 — BACKTRACE: DEBUG UP THE CHAIN, NOT FORWARD FROM THE SYMPTOM
+
+The operator's method, and it is better than the one it replaced. **Forward debugging finds the
+place an error became VISIBLE. Backtracing finds the place it ENTERED.** In a hierarchy where every
+child consumes its parent's numbers, those are rarely the same membrane, and the first is where you
+will waste the day.
+
+MEASURED, on 2026-08-01. A foot passed through the floor. Six hypotheses were tested against the
+foot and every one was eliminated:
+
+| interrogated | verdict |
+|---|---|
+| segment lengths | sourced from ANSUR II — clearance unmoved |
+| pelvis height | at geometric maximum, 0.5124 against a 0.5123 ceiling |
+| ankle sign | flipping it does not reorder the profile |
+| half-cycle offset | all three curves sampled at one `f` |
+| knee amplitude | 63.8° at 71%, dead centre of the literature band |
+| knee phase | correct; the sweep found a lever with no defect behind it |
+
+Every input verified clean and the output was still wrong, because **the foot was faithfully
+executing an instruction handed to it from four membranes up.** One backtrace step found what six
+forward investigations walked past: `aBlueWorld` mass → `g = 7.076` → Froude → comfortable speed
+falls 15% → the model selects the *slow* condition **from a dataset recorded on Earth**. The −49°
+toe-off it could not accommodate is an Earth push-off, worn by a body in 0.72 g.
+
+    WHEN EVERY INPUT VERIFIES AND THE OUTPUT IS STILL WRONG, STOP INTERROGATING THE MEMBRANE.
+    Walk UP. Ask what it was handed, and whether that was true where it now stands.
+
+The project already had the shape of this and had not applied it to numbers: `core/why.py` describes
+the reverse question (*"this simtest was bogus, WHAT DID IT CONVICT?"*) and `story.py path` prints a
+serial forward. Missing is the same walk backward over VALUES — given a suspect number, enumerate
+the ancestors it depends on and check each one's regime.
+
+---
+
+## RULE 18 — ONE QUANTITY, ONE LANDMARK
+
+Two measurements of "the same" body part, taken to different landmarks, are different numbers. They
+are also dimensionally identical, so no fold, bond or regime check can tell them apart, and they
+will sit in one model disagreeing until something downstream cannot close.
+
+Found the same day, in one leg:
+
+    0.5123   thigh + shank + ankle_drop     ANSUR II, TROCHANTERION
+    0.5300   LEG_FRAC                       Dempster, hip JOINT
+    0.5243   leg_over_stature()             the 246 adults the gait curves come from
+
+**3.11 cm apart, in a leg that has one length.** The trochanterion is a bump you can feel on the
+femur; the hip joint centre sits medial and superior to it. Ingesting ANSUR's segments raw put a
+third length into a model that already had two, so every foot number computed after it stood on a
+skeleton 3 cm shorter than the leg it hung from.
+
+**The fix is not to pick one source — it is to give each source what it actually measured.** ANSUR
+measured 6,068 people and is authoritative for the PROPORTIONS. `leg_over_stature()` measured the
+same 246 the walk curves came from and is authoritative for the TOTAL. Scaling the splits onto that
+total keeps both and invents neither. The vault moved 2.36% → 2.43% against a literature ~2.5%
+unprompted: the pelvis path had been computed on a pendulum that disagreed with its own bones.
+
+---
+
+## RULE 19 — THE INSTRUMENT MUST MOVE WITH THE MEMBRANE, AND IT MUST NOT KEEP ITS OWN COPY
+
+A witness that TYPES any part of the body's geometry is a second, private copy of that geometry,
+and it drifts the moment the real one is measured. Then it grades the new body against the old one
+and reports a defect that is entirely its own.
+
+This happened **four times in a single day**, which is what promotes it from an incident to a rule:
+
+| the witness held | what happened |
+|---|---|
+| `forefoot_lever_frac` default `0.152` | three membranes took the stale toe-tip value and were convicted of a 5.39% penetration and a travelling contact plane that were the instrument's — *predicted verbatim by the comment sitting directly above the bug* |
+| `thigh, shank = 0.245, 0.246` | the moment the body's segments were measured, it graded the new skeleton against Dempster and reported 1.78% penetration |
+| the flat two-point foot | after the roll-over went in, it reported 0.55% penetration and a sled |
+| the rocker, ungated | applied in swing where it was never measured, hiding a real toe penetration behind a shallower fictitious one |
+
+**THE RULE: a witness reads PUBLISHED numbers and refuses when they are absent.** Not a default — a
+refusal. A fallback is an assumption wearing a hat, and the path is the membrane chain, so the
+lookup walks UP it. A body that publishes a gait cycle must publish the skeleton it was drawn with,
+or the cycle cannot be judged.
+
+And its converse, which is the harder half: **a witness may not import the membrane it judges.**
+That is one system measuring itself — a monad. Restate the law from the membrane's published
+account and drive it entirely from published values.
+
+---
+
+## RULE 20 — IN A GROWN WORLD, AN AUTHORED PHENOTYPE IS THE DEFECT
+
+The last thing 2026-08-01 established, and it reframes the other three. This engine grows things: a
+seed, laws, and numbers trained against measurable targets. **The walker was the one thing still
+being AUTHORED** — its gait read out of a table of 246 Earth-dwelling adults — while everything
+around it was derived.
+
+That is why no amount of geometry could seat it. A −49° toe-off is not a bug; it is an **Earth
+phenotype in a 0.72 g world**, and correcting the foot to accommodate it only moves the mismatch
+somewhere new. The body has to be grown where it lives.
+
+**WHICH TURNS THE MEASURED DATASET FROM THE ANSWER INTO THE CONTROL, and that is the good part.**
+Evolve a body at 9.80665 and it must reproduce the dataset's cadence, duty factor, double support
+and MTC — none of which it was fitted to. That is the proof the engine works. Only then set g to
+the world's own value and let it run again. The precedent is already in this repo: the Froude law
+predicted the Moon's walk→run transition at 0.83 m/s, *which is why Apollo astronauts bunny-hopped*
+— a fact nobody put in.
+
+    THE WITNESS IS NOT A TEST. IT IS THE FITNESS FUNCTION.
+
+`gait_witness` already refuses a buried foot, a travelling contact plane, a duty factor outside the
+walk band, a wrong vault. Those were never acceptance criteria for an authored gait — they are
+selection pressure for a grown one. Which is also why the geometry work still matters: **you cannot
+select for a gait you cannot measure honestly**, and that morning the witness was passing a foot
+buried in the floor.
+
+---
+
 ## THE CHECKLIST
 
 1. What does the human **wait for**? Measure that, not a proxy.
@@ -375,3 +493,12 @@ constraint on the whole surface must be applied to the whole surface.
 14. Ask whether the **data carries an artifact of how it was built**, not only whether the probe is sound.
 15. When joining a codebook, **read their formula** — a shared name is a coincidence until checked.
 16. **Derive the shape, let physics set the level** — and publish it when the two disagree.
+17. **Backtrace.** When every input verifies and the output is still wrong, stop interrogating the
+    membrane and walk UP the chain — forward debugging finds where an error became visible, not
+    where it entered.
+18. **One quantity, one landmark.** Two measurements of the same part to different landmarks are
+    different numbers, dimensionally identical, and invisible to every check.
+19. **The instrument must move with the membrane** — read published numbers, refuse when they are
+    absent, and never import the thing you judge.
+20. **In a grown world, an authored phenotype is the defect.** The witness is the fitness function,
+    and the measured dataset is the CONTROL, not the answer.
