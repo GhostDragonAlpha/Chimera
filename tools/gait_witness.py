@@ -37,6 +37,7 @@ RUN:  python tools/gait_witness.py                     (every membrane that publ
 from __future__ import annotations
 
 import json
+import pathlib
 import math
 import sys
 from pathlib import Path
@@ -73,6 +74,28 @@ def _rows(nums):
     return out
 
 
+def _inherited(path, key):
+    """Read a number from this membrane, or from the nearest ancestor that publishes it.
+
+    THE PATH IS THE SERIAL IS THE CHAIN. A child consumes its parent's numbers, so a geometry the
+    parent established is the child's geometry too -- walking up the directory tree IS walking up
+    the membrane hierarchy. Returns None when no ancestor has it, so the caller can refuse rather
+    than substitute."""
+    d = pathlib.Path(path).parent
+    while True:
+        f = d / "numbers.json"
+        if f.exists():
+            try:
+                v = json.loads(f.read_text(encoding="utf8")).get(key)
+            except Exception:
+                v = None
+            if v is not None:
+                return float(v)
+        if d.parent == d or d.name == "story":
+            return None
+        d = d.parent
+
+
 def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop):
     """THE LOWEST POINT OF THE SOLE, rebuilt from the pose rather than read from the table.
 
@@ -103,7 +126,22 @@ def witness(name: str) -> dict:
     # lever it does not use would test this file's opinion rather than the body's geometry -- and
     # since the pivot moved from the toe tip to the ball, a witness holding the old value would
     # report a penetration that is entirely its own.
-    toe = float(nums.get("forefoot_lever_frac", 0.152))
+    #
+    # THAT IS EXACTLY WHAT IT DID. This line used to read `nums.get("forefoot_lever_frac", 0.152)`
+    # -- and 0.152 is the stale toe-tip value the paragraph above warns about. theAnkle, theBalance
+    # and theStance publish a gait_cycle but not the geometry it is drawn with, so all three
+    # silently took the default and were convicted of a 5.39% penetration that was the witness's
+    # own, precisely as predicted, by the comment sitting directly above the bug.
+    #
+    # THE PATH IS THE MEMBRANE CHAIN, so the lookup walks UP it: a descendant of theHuman wears
+    # theHuman's foot. If nothing in the chain publishes one there is no answer to inherit and the
+    # witness says so instead of inventing one. A fallback is an assumption wearing a hat.
+    toe = _inherited(p, "forefoot_lever_frac")
+    if toe is None:
+        return {"name": name,
+                "error": "no forefoot_lever_frac anywhere in this membrane's chain -- a body that "
+                         "publishes a gait cycle must publish the foot geometry it was drawn with, "
+                         "or the cycle cannot be judged"}
     drop = leg - (thigh + shank)
 
     N = len(rows)

@@ -452,7 +452,7 @@ def hip_above_ankle(hip_a, knee_a):
             + THIGH_FRAC * math.cos(float(hip_a)))
 
 
-def forefoot_lever_frac(g=9.80665, h=1.78, v_ms=None):
+def forefoot_lever_frac(g=None, h=1.78, v_ms=None):   # g accepted and IGNORED -- see below
     """WHERE THE FOOT PIVOTS AT PUSH-OFF, derived from two measured curves instead of typed.
 
     It was `FOREFOOT_FRAC = 0.10` of stature, attributed to Dempster in a comment. Two measurements
@@ -463,10 +463,28 @@ def forefoot_lever_frac(g=9.80665, h=1.78, v_ms=None):
 
     which is r/h = tau_per_kg / (F_bw * g * h). Both peaks occur within one percent of the cycle of
     each other (moment at 47%, the second force peak at 46%), which is what licenses treating them
-    as the same instant -- stated because it is an assumption, not a fact."""
+    as the same instant -- stated because it is an assumption, not a fact.
+
+    THE g IN THAT FORMULA IS THE ONE THE MEASUREMENT WAS TAKEN IN, NOT THIS WORLD'S, and getting
+    that wrong put the toe through the floor. Both tau and F come from Van Criekinge 2023, recorded
+    on Earth: tau in N.m/kg and F in BODY WEIGHTS, and a body weight is only a force once you say
+    which gravity. Dividing an Earth-measured moment by a LOCAL weight is mixing two worlds. On
+    aBlueWorld (g = 7.08) it inflated the lever by 9.807/7.076 = 1.386x -- 0.0755 became 0.1047 --
+    and a foot 4 cm too long drove the swing toe 1.5% of stature underground.
+
+    THE SLIDER TEST NAMES IT IN ONE LINE: move g at the top of the world and the foot got LONGER.
+    The ball of the foot is an anatomical length; it does not know what planet it is on. What DOES
+    scale with local gravity is the force the foot exerts, and that is handled where it belongs
+    (see the ankle-moment line further down, which multiplies by g/9.80665 rather than dividing).
+
+    Neither check in this project could have caught it: both quantities are m/s^2, so fold, bond
+    and regime all pass. It is the same species as the four material misfolds of 2026-08-01 -- one
+    symbol, two meanings -- and the only thing that finds it is asking what the number is FOR."""
+    G_MEASURE = 9.80665          # the gravity Van Criekinge's subjects walked in. A constant of the
+                                 # DATASET, not of the world -- do not wire this to the parent's g.
     G = measured_gait(v_ms)
     return (G["ankle_moment_peak_Nm_per_kg"]
-            / max(G["grf_peak_bw"] * float(g) * float(h), 1e-9))
+            / max(G["grf_peak_bw"] * G_MEASURE * float(h), 1e-9))
 
 
 def ankle_height(pitch, ball_frac=None):
@@ -710,7 +728,8 @@ def derive(parent, free):
     import measured as _measured
     leg_frac_measured = _measured.leg_over_stature(GAIT_SEX)[0]
     # WHERE THE FOOT PIVOTS, derived from the measured moment and force rather than typed as 0.10.
-    ball = forefoot_lever_frac(g, h, v_comfort)
+    # g is NOT passed: the lever is anatomy, and the measurement's own gravity is inside
+    ball = forefoot_lever_frac(h=h, v_ms=v_comfort)
 
     # ── THE VAULT, MEASURED OFF THE GAIT ITSELF ───────────────────────────────────────────────
     # With a sine hip it was L(1 - cos(SWING_AMP)) -- a closed form, because a sine has an amplitude.
@@ -905,6 +924,13 @@ def derive(parent, free):
         # against exactly these -- a boot built from them cannot disagree with the hip it serves.
         "heel_lever_frac": HEEL_FRAC,
         "ankle_drop_frac": ANKLE_DROP_FRAC,
+        # THE WHOLE FOOT, HEEL TO TOE, published because a child was typing its own copy of it.
+        # ANSUR II measures this directly and the levers above are cut FROM it: the toe tip sits
+        # (foot_length_frac - heel_lever_frac) ahead of the ankle, and the ball -- a different
+        # quantity, derived from the moment and the force -- sits nearer than that. A child that
+        # types 0.152 for itself has a foot that stops responding when this one is remeasured.
+        "foot_length_frac": FOOT_LEN_FRAC,
+        "toe_lever_frac": FOOT_LEN_FRAC - HEEL_FRAC,
 
         "fall_rate_rad_s": w0,                   # sqrt(g/H): how fast balance is lost
         "time_to_fall_s": 1.0 / w0,

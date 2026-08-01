@@ -45,26 +45,26 @@
 | `topple_time_s` | 0.3871 |
 | `topple_time_unloaded_s` | 0.3776 |
 | `topple_time_ratio` | 1.025 |
-| `lean_limit_rad` | 0.1642 |
-| `lean_limit_deg` | 9.406 |
-| `lean_limit_unloaded_deg` | 9.872 |
-| `lean_limit_over_unloaded_ratio` | 0.9528 |
-| `shove_limit_ms` | 0.4537 |
-| `shove_limit_unloaded_ms` | 0.4651 |
+| `lean_limit_rad` | 0.119 |
+| `lean_limit_deg` | 6.817 |
+| `lean_limit_unloaded_deg` | 7.158 |
+| `lean_limit_over_unloaded_ratio` | 0.9524 |
+| `shove_limit_ms` | 0.3274 |
+| `shove_limit_unloaded_ms` | 0.3356 |
 | `shove_limit_over_unloaded_ratio` | 0.9757 |
-| `ankle_demand_ratio` | 1.707 |
-| `ankle_demand_unloaded_ratio` | 1.346 |
+| `ankle_demand_ratio` | 1.232 |
+| `ankle_demand_unloaded_ratio` | 0.9709 |
 | `ankle_demand_growth_ratio` | 1.269 |
-| `geometry_cost_ratio` | 0.04722 |
+| `geometry_cost_ratio` | 0.04763 |
 | `mass_cost_ratio` | 0.2685 |
-| `mass_beats_geometry_by_ratio` | 5.687 |
+| `mass_beats_geometry_by_ratio` | 5.637 |
 | `capture_step_m` | 0.3862 |
 | `capture_step_unloaded_m` | 0.3768 |
 | `step_length_m` | 0.5914 |
 | `catch_in_one_step` | True |
-| `toe_lever_m` | 0.1756 |
+| `toe_lever_m` | 0.1267 |
 | `heel_lever_m` | 0.08775 |
-| `g_where_ankle_demand_is_one_m_s2` | 4.146 |
+| `g_where_ankle_demand_is_one_m_s2` | 5.746 |
 | `ankle_has_reserve_at_the_toe` | False |
 | `metabolic_W` | 327.4 |
 | `metabolic_suit_only_W` | 260.6 |
@@ -110,14 +110,14 @@
 | `earth_speed_ms` | 1.175 |
 | `earth_knee_cargo_kg` | 10.62 |
 | `earth_sustainable_cargo_kg` | 19.5 |
-| `earth_shove_limit_ms` | 0.5341 |
-| `earth_ankle_demand_ratio` | 2.365 |
+| `earth_shove_limit_ms` | 0.3854 |
+| `earth_ankle_demand_ratio` | 1.707 |
 | `earth_foot_pressure_kPa` | 42.53 |
 | `earth_within_sustainable` | False |
 | `earth_cost_ratio` | 1.424 |
-| `gravity_ladder` | [[1.62, 0.6193, 0.4774, 117.66, 0.2171, 0.3908, 7.026, 0.02125], [3.71, 0.3991, 0.7225, 185.06, 0.3285, 0.8949, 16.09, 0.02125], [7.0761, 0.2849, 0.9978, 327.43, 0.4537, 1.7068, 30.689, 0.02125], [9.8066, 0.2428, 1.1746, 466.33, 0.5341, 2.3654, 42.531, 0.02125]] |
+| `gravity_ladder` | [[1.62, 0.6193, 0.4774, 117.66, 0.1567, 0.282, 7.026, 0.02125], [3.71, 0.3991, 0.7225, 185.06, 0.2371, 0.6457, 16.09, 0.02125], [7.0761, 0.2849, 0.9978, 327.43, 0.3274, 1.2316, 30.689, 0.02125], [9.8066, 0.2428, 1.1746, 466.33, 0.3854, 1.7068, 42.531, 0.02125]] |
 | `gravity_ladder_row` | g_m_s2, knee_fraction, speed_ms, metabolic_W, shove_limit_ms, ankle_demand_ratio, foot_pressure_kPa, sink_per_step_m |
-| `load_ladder` | [[0.0, 0.0, 0.1172, 260.6, 1.7111, 1.00913, 0.0, 0.4651, 1.3455, 24.192], [0.1, 8.46, 0.2172, 278.6, 1.9037, 1.02891, 0.645, 0.4606, 1.4659, 26.358], [0.2, 16.92, 0.3172, 300.6, 2.1251, 1.0457, 1.292, 0.4568, 1.5864, 28.523], [0.3, 25.38, 0.4172, 327.4, 2.3754, 1.06011, 1.941, 0.4537, 1.7068, 30.689], [0.4, 33.84, 0.5172, 359.7, 2.6546, 1.07263, 2.591, 0.4511, 1.8273, 32.854], [0.5, 42.29, 0.6172, 398.3, 2.9626, 1.0836, 3.242, 0.4488, 1.9477, 35.02], [0.6, 50.75, 0.7172, 443.8, 3.2995, 1.09329, 3.894, 0.4468, 2.0681, 37.185]] |
+| `load_ladder` | [[0.0, 0.0, 0.1172, 260.6, 1.7111, 1.00913, 0.0, 0.3356, 0.9709, 24.192], [0.1, 8.46, 0.2172, 278.6, 1.9037, 1.02891, 0.645, 0.3323, 1.0578, 26.358], [0.2, 16.92, 0.3172, 300.6, 2.1251, 1.0457, 1.292, 0.3296, 1.1447, 28.523], [0.3, 25.38, 0.4172, 327.4, 2.3754, 1.06011, 1.941, 0.3274, 1.2316, 30.689], [0.4, 33.84, 0.5172, 359.7, 2.6546, 1.07263, 2.591, 0.3255, 1.3185, 32.854], [0.5, 42.29, 0.6172, 398.3, 2.9626, 1.0836, 3.242, 0.3238, 1.4054, 35.02], [0.6, 50.75, 0.7172, 443.8, 3.2995, 1.09329, 3.894, 0.3224, 1.4923, 37.185]] |
 | `load_ladder_row` | cargo_fraction, cargo_kg, carried_fraction, metabolic_W, cost_per_kg_carried_W, com_height_m, lean_deg, shove_limit_ms, ankle_demand_ratio, foot_pressure_kPa |
 | `apollo_measured_W` | 272.2 |
 | `apollo_measured_lo_W` | 228.3 |

@@ -253,6 +253,12 @@ def derive(parent, free):
         # places are the same arithmetic (B1).
         "heel_lever_frac": float(parent["heel_lever_frac"]),
         "forefoot_lever_frac": float(parent["forefoot_lever_frac"]),
+        # AND THE TOE, CARRIED RATHER THAN TYPED. emit() drew the boot to `ankle + FOOT_LEN_FRAC`,
+        # a module constant of 0.152 -- but 0.152 is ANSUR II's WHOLE FOOT, heel to toe, and using
+        # it as a lever FROM THE ANKLE added the heel's 0.050 on top: a 35.5 cm boot on a body whose
+        # foot is 26.7 cm, 33% too long. Same misfold as the witness's stale default and the same
+        # one that put g in the forefoot lever -- a length asked to be a lever.
+        "toe_lever_frac": float(parent["toe_lever_frac"]),
         "ankle_drop_frac": float(parent["ankle_drop_frac"]),
         "mass_kg": float(parent["mass_kg"]),
         "suit_mass_kg": float(parent["suit_mass_kg"]),
@@ -365,6 +371,8 @@ def emit(nums, t=1.0, ground=None, cycle=None):
     # boot drawn and placed to the same law agrees with the hip it hangs from by construction.
     heel_lev = float(nums["heel_lever_frac"])
     ball_lev = float(nums["forefoot_lever_frac"])
+    # the TOE TIP, ahead of the ankle -- not the whole foot length, which includes the heel behind it
+    toe_lev = float(nums["toe_lever_frac"])
 
     phase = 2.0 * math.pi * tt
     # ── THE POSE COMES FROM THE PARENT'S TABLE, indexed, not recomputed ───────────────────────
@@ -487,12 +495,12 @@ def emit(nums, t=1.0, ground=None, cycle=None):
         _d = np.array([math.cos(_fp), 0.0, math.sin(_fp)])
         heel_p = ankle - _d * heel_lev
         ball_p = ankle + _d * ball_lev
-        toe_p = ankle + _d * FOOT_LEN_FRAC
+        toe_p = ankle + _d * toe_lev
         if ground is not None and _planted:
             _tp = math.atan2(float(ground(toe_p[0], toe_p[1])) - float(ground(ball_p[0], ball_p[1])),
-                             max((FOOT_LEN_FRAC - ball_lev) * math.cos(_fp), 1e-6))
+                             max((toe_lev - ball_lev) * math.cos(_fp), 1e-6))
             if _tp > _fp:
-                toe_p = ball_p + np.array([math.cos(_tp), 0.0, math.sin(_tp)]) * (FOOT_LEN_FRAC - ball_lev)
+                toe_p = ball_p + np.array([math.cos(_tp), 0.0, math.sin(_tp)]) * (toe_lev - ball_lev)
         add(_tube(heel_p + _lift, ball_p + _lift, _r_boot, r_sh * 0.9), 2)
         add(_tube(ball_p + _lift, toe_p + _lift, r_sh * 0.9, r_sh * 0.75), 2)
 
