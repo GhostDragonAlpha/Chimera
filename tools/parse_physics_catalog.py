@@ -39,6 +39,12 @@ SOURCES = [
      "humanity's physics tree, minus the forbidden branches"),
     ("H", ROOT / "research_references" / "human" / "PHYSICS_OF_THE_HUMAN.md",
      "the human body's own physics"),
+    # THE MATHEMATICS, and it was never indexed at all. 97 rows across 12 sections -- the
+    # simulator's-eye view: what every physics engine, renderer and solver actually computes.
+    # `MEMBRANE_PHYSICS_MAP.md` already cites it as `S§n`, so the prefix matches what the prose
+    # map has been pointing at all along.
+    ("S", ROOT / "research_references" / "PHYSICS_SOFTWARE_MATH.md",
+     "the math every simulator encompasses -- equations are facts, code is not"),
 ]
 
 # Sections that are prose rather than catalogue -- they carry no rows to bind.
@@ -61,6 +67,8 @@ def _cells(line: str) -> list:
 # up rather than silently shifting everything one to the left.
 COLUMN_ALIASES = {
     "physics": "name", "law / equation": "equation", "law/equation": "equation",
+    "concept": "name", "the math": "equation", "chimera consumer": "relevance",
+    "canonical source": "source",
     "equation": "equation", "official source": "source", "source": "source",
     "chimera relevance": "relevance", "relevance": "relevance",
     "membrane": "membrane", "status": "status", "proof": "proof",

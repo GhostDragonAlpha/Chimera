@@ -160,6 +160,39 @@ UNITS = {
     "lx":     (_d(J=1, L=-2), 1.0, 0.0),
     "lm/W":   (_d(J=1, M=-1, L=-2, T=3), 1.0, 0.0),
     "deg/s":  (_Z, 0.017453292519943295, 0.0),
+    # ── ELECTRICAL. Seven rows of electromagnetism and five of quantum were unbindable for want
+    # of a volt. The tree has no electrical membrane today, so most will dock nowhere -- but a row
+    # that cannot be STATED is different from a row with nothing to attach to, and only the second
+    # is honest bookkeeping.
+    "V":      (_d(M=1, L=2, T=-3, I=-1), 1.0, 0.0),
+    "A":      (_d(I=1), 1.0, 0.0),
+    "C":      (_d(I=1, T=1), 1.0, 0.0),
+    "ohm":    (_d(M=1, L=2, T=-3, I=-2), 1.0, 0.0),
+    "Wb":     (_d(M=1, L=2, T=-2, I=-1), 1.0, 0.0),
+    "F":      (_d(M=-1, L=-2, T=4, I=2), 1.0, 0.0),
+    "S":      (_d(M=-1, L=-2, T=3, I=2), 1.0, 0.0),
+    "V/m":    (_d(M=1, L=1, T=-3, I=-1), 1.0, 0.0),
+    "mV":     (_d(M=1, L=2, T=-3, I=-1), 1e-3, 0.0),
+    # ── AMOUNT. The N dimension was reserved in DIMS and no unit ever used it, so the whole of
+    # chemistry could not be written down.
+    "mol":    (_d(N=1), 1.0, 0.0),
+    "J/mol":  (_d(M=1, L=2, T=-2, N=-1), 1.0, 0.0),
+    "J/molK": (_d(M=1, L=2, T=-2, N=-1, Th=-1), 1.0, 0.0),
+    "kg/mol": (_d(M=1, N=-1), 1.0, 0.0),
+    "mol/m3": (_d(N=1, L=-3), 1.0, 0.0),
+    "mol/s":  (_d(N=1, T=-1), 1.0, 0.0),
+    # ── PARTICLE ENERGIES, and the two radiation units. Sv and Gy share L2T-2 with N.m/kg exactly,
+    # which is why an agent refused to borrow one for the other -- they are named separately here
+    # so a dose can be STATED without pretending it is a specific torque.
+    "eV":     (_d(M=1, L=2, T=-2), 1.602176634e-19, 0.0),
+    "MeV":    (_d(M=1, L=2, T=-2), 1.602176634e-13, 0.0),
+    "Gy":     (_d(L=2, T=-2), 1.0, 0.0),
+    "Sv":     (_d(L=2, T=-2), 1.0, 0.0),
+    "Bq":     (_d(T=-1), 1.0, 0.0),
+    "Pa/m":   (_d(M=1, L=-2, T=-2), 1.0, 0.0),      # a pressure gradient -- Darcy needs one
+    "Pa.m0.5":(_d(M=1, L=-0.5, T=-2), 1.0, 0.0),    # fracture toughness K_IC, a half-integer again
+    "Pa/K":   (_d(M=1, L=-1, T=-2, Th=-1), 1.0, 0.0),  # Clausius-Clapeyron slope
+    "J/kg":   (_d(L=2, T=-2), 1.0, 0.0),               # specific latent heat
     # HALF-INTEGER DIMENSIONS ARE REAL. A planet publishes the Froude COEFFICIENT -- a speed per
     # root-length -- so a body with a leg can finish the multiplication. Its dimension is
     # L^0.5 T^-1, and refusing to represent that would mean the two most-published unread keys in
@@ -200,6 +233,9 @@ SUFFIX_UNITS = [
     ("_W_m2K", "W/m2K"), ("_W_mK", "W/mK"), ("_Pas", "Pa.s"), ("_W_kg", "W/kg"),
     ("_km_s", "km/s"), ("_cm_yr", "cm/yr"), ("_g_kg", "g/kg"), ("_kg_m2", "kg/m2"),
     ("_cd_m2", "cd/m2"), ("_lm_per_W", "lm/W"), ("_deg_s", "deg/s"), ("_W_m3", "W/m3"),
+    ("_J_mol", "J/mol"), ("_J_molK", "J/molK"), ("_kg_mol", "kg/mol"), ("_mol_m3", "mol/m3"),
+    ("_mV", "mV"), ("_eV", "eV"), ("_MeV", "MeV"), ("_Sv", "Sv"), ("_Gy", "Gy"), ("_Bq", "Bq"),
+    ("_V_m", "V/m"), ("_ohm", "ohm"), ("_Wb", "Wb"),
     ("_rad_s2", "rad/s2"), ("_per_m", "1/m"), ("_lx", "lx"), ("_l", "litre"),
     # _nm IS A WAVELENGTH, and it was reading as NEWTON-METRES. `_nm` was absent from this table,
     # so the exact pass missed it and the case-INSENSITIVE fallback matched `_Nm`. Every wavelength
@@ -312,6 +348,13 @@ def fold_of(consumes, produces) -> str:
     return "f" + hashlib.sha1(key.encode()).hexdigest()[:8]
 
 
+def fold_of_shapes(shapes_in, shapes_out) -> str:
+    """The same idea for a method: a stable id for its DATA SHAPE, prefixed `s` so a shape fold can
+    never be mistaken for a dimensional one."""
+    key = ";".join(sorted(shapes_in)) + "->" + ";".join(sorted(shapes_out))
+    return "s" + hashlib.sha1(key.encode()).hexdigest()[:8]
+
+
 def dim_code(unit: str) -> str:
     """A dimension written so a person can read it: M1L2T-2, or `1` for dimensionless.
 
@@ -325,6 +368,51 @@ def dim_code(unit: str) -> str:
         return "?"
     out = "".join(f"{n}{e:g}" for n, e in zip(DIMS, d) if e)
     return out or "1"
+
+
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  MATHEMATICS BINDS BY SHAPE, NOT BY DIMENSION
+#
+#  A Kalman filter does not care whether it is filtering metres or kelvin. A k-d tree does not care
+#  what it indexes. Marching cubes does not care what the field means. MATHEMATICS IS DIMENSIONLESS
+#  BY CONSTRUCTION -- that is what makes it mathematics rather than physics -- so the dimensional
+#  serial cannot describe it, and forcing one would be the same species of error as typing a unit
+#  nobody measured.
+#
+#  What a method DOES have is a shape of data it takes and a shape it returns. That is its binding
+#  site, and it gives the same payoff the dimensional fold gives a law: TWO METHODS WITH THE SAME
+#  SHAPE SERIAL ARE INTERCHANGEABLE. Semi-implicit Euler and RK4 both take (state, step) and give a
+#  state, so either can sit in that socket -- which is a fact worth being able to look up, because
+#  it is exactly the question "can I swap this integrator" asks.
+SHAPES = (
+    "scalar",      # one number
+    "vector",      # a fixed-length tuple of numbers -- a position, a velocity
+    "matrix",      # a 2-D array, usually an operator
+    "state",       # a system's full configuration: q and qdot, or a filter's mean and covariance
+    "field",       # values sampled over a grid -- a heightfield, a density, a temperature
+    "mesh",        # vertices and faces
+    "cloud",       # unordered points, optionally with attributes -- a splat buffer is one
+    "graph",       # nodes and edges: a kinematic tree, a contact graph
+    "series",      # values over time
+    "dist",        # a probability distribution or a population of samples
+    "spectrum",    # values over wavelength or frequency
+    "image",       # a 2-D raster with channels
+    "step",        # a timestep or an iteration count -- the thing that advances a solver
+)
+
+
+def shape_serial(sig) -> str:
+    """THE SERIAL FOR A METHOD: what shape of data goes in, what comes out.
+
+        state + step -> state          any integrator. Euler and RK4 share this socket.
+        field -> mesh                  marching cubes, dual contouring -- interchangeable.
+        cloud -> image                 a rasteriser.
+
+    Same rule as the dimensional serial: derived, never stored, and a shared one means the two
+    rows SUBSTITUTE for each other."""
+    ins = " + ".join(sorted(sig.shapes_in)) or "-"
+    outs = " + ".join(sorted(sig.shapes_out)) or "-"
+    return f"{ins} -> {outs}"
 
 
 def serial(sig) -> str:
@@ -397,7 +485,15 @@ class Signature:
     unit is what makes the bond checkable. `regime` maps a symbol to (lo, hi) in that unit."""
 
     def __init__(self, consumes: dict, produces: dict, regime: dict = None, note: str = "",
-                 keys: dict = None):
+                 keys: dict = None, shapes_in=None, shapes_out=None):
+        # SHAPES are for the mathematics rows, which have no dimensions to sign. A row carries one
+        # kind or the other; a few carry both, because some rows ARE a physics law expressed as an
+        # algorithm (Newton-Euler produces torques AND takes a state).
+        self.shapes_in = tuple(shapes_in or ())
+        self.shapes_out = tuple(shapes_out or ())
+        for sh in self.shapes_in + self.shapes_out:
+            if sh not in SHAPES:
+                raise ValueError(f"unknown data shape {sh!r}; have {SHAPES}")
         self.consumes = dict(consumes)
         self.produces = dict(produces)
         self.regime = dict(regime or {})
@@ -412,12 +508,21 @@ class Signature:
 
     @property
     def fold(self):
+        if not self.consumes and not self.produces and (self.shapes_in or self.shapes_out):
+            return fold_of_shapes(self.shapes_in, self.shapes_out)
         return fold_of(self.consumes, self.produces)
 
     @property
     def serial(self):
-        """The readable form of the fold -- see serial() above."""
+        """The readable form of the fold -- see serial() above. A mathematics row with no
+        dimensional side reports its SHAPE serial instead, because that is the socket it has."""
+        if not self.consumes and not self.produces and (self.shapes_in or self.shapes_out):
+            return shape_serial(self)
         return serial(self)
+
+    @property
+    def is_method(self):
+        return bool(self.shapes_in or self.shapes_out) and not self.consumes
 
     def as_dict(self):
         return {"consumes": self.consumes, "produces": self.produces,
@@ -550,9 +655,10 @@ def rows_with_signatures() -> dict:
                           f"the in-code one wins")
                     continue
                 try:
-                    out[rid] = Signature(d["consumes"], d["produces"],
+                    out[rid] = Signature(d.get("consumes", {}), d.get("produces", {}),
                                          {k: tuple(v) for k, v in (d.get("regime") or {}).items()},
-                                         d.get("note", ""), d.get("keys"))
+                                         d.get("note", ""), d.get("keys"),
+                                         d.get("shapes_in"), d.get("shapes_out"))
                 except Exception as e:
                     print(f"  WARNING: {rid} in {f.name} is malformed ({e}); skipped")
     return out

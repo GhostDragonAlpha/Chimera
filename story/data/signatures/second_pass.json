@@ -1,0 +1,60 @@
+{
+ "_source": "Claude Opus 5, 2026-08-01. A second pass over rows the first wave left because a UNIT was missing, not because the physics was unclear. Every id was read out of physics_catalog.json by matching name+equation; none typed from memory. Rows whose catalog entry carries no equation at all are still skipped -- the first wave was right that declaring those is inference, not declaration.",
+
+ "E2.07": {
+  "consumes": {"rho": "kg/m3", "v": "m/s", "L": "m", "mu": "Pa.s"},
+  "produces": {"Re": "1"},
+  "keys": {"rho": "density", "v": "speed", "L": "length", "mu": "viscosity"},
+  "regime": {"Re": [0.0, 1e9]},
+  "note": "Re = rho.v.L/mu. Skipped in the first pass for want of a viscosity unit; the equation was never in doubt. The regime spans creeping flow to the fully turbulent -- outside it the number is not a Reynolds number, it is an arithmetic slip."
+ },
+
+ "E2.08": {
+  "consumes": {"nu": "m2/s", "x": "m", "v": "m/s"},
+  "produces": {"delta": "m"},
+  "keys": {"nu": "kinematic", "x": "length", "v": "speed"},
+  "note": "delta ~ sqrt(nu.x/v), the row's own scaling. Only the boundary-layer half is declared: the drag half needs rho, A and C_D, none of which appear in the row's equation column, and inventing them would be reading the name rather than the law."
+ },
+
+ "E2.10": {
+  "consumes": {"gamma": "N/m", "R": "m"},
+  "produces": {"dP": "Pa"},
+  "keys": {"gamma": "surface_tension", "R": "radius"},
+  "note": "Young-Laplace dP = gamma(1/R1 + 1/R2). Blocked only by N/m. This is the law behind a wet grain holding a soil together and behind a droplet on a visor -- neither membrane publishes a surface tension yet, so it docks nowhere and that is a gap in what they publish, not in the law."
+ },
+
+ "E2.12": {
+  "consumes": {"k": "m2", "mu": "Pa.s", "gradP": "Pa/m"},
+  "produces": {"q": "m/s"},
+  "keys": {"k": "permeability", "mu": "viscosity", "gradP": "pressure_gradient"},
+  "note": "Darcy q = -(k/mu).grad P, in the row's own stated form rather than the hydraulic-conductivity rewrite -- the first wave skipped it precisely because choosing between the two formulations is inference. Water moving through theGround's soil is this law; theGround publishes a porosity but no permeability."
+ },
+
+ "E2.03": {
+  "consumes": {"K_IC": "Pa.m0.5", "sigma": "Pa"},
+  "produces": {"a_crit": "m"},
+  "keys": {"K_IC": "toughness", "sigma": "stress"},
+  "note": "Griffith: a crack runs when the energy released beats the surface it makes, so a_crit ~ (K_IC/sigma)^2/pi. Its unit is a half-integer power of length -- the second time this tree has needed one, after the Froude coefficients. THE_GROWTH names DEFORMATION as the true frontier and fracture is where that starts, so this row is declared ahead of anything that can bind it."
+ },
+
+ "E9.05": {
+  "consumes": {"R": "m", "rho_primary": "kg/m3", "rho_moon": "kg/m3"},
+  "produces": {"d_roche": "m"},
+  "keys": {"R": "radius", "rho_primary": "density", "rho_moon": "density"},
+  "note": "The ROCHE half only: d = 2.44 R (rho_M/rho_m)^(1/3). The first wave skipped the whole row because the tidal half needs a raising body this tree cannot name -- but the Roche limit is fully stated by the row's own equation and needs nothing external. Declaring the half that closes surfaces the half that does not."
+ },
+
+ "E10.07": {
+  "consumes": {"sigma": "Pa"},
+  "produces": {"strain_rate": "1/s"},
+  "keys": {"sigma": "stress", "strain_rate": "strain_rate"},
+  "note": "Glen's flow law: strain rate goes as stress cubed, which is why ice creeps rather than shatters. aBlueWorld derives an ice fraction of 0.316 and theOcean now draws caps at the derived ice line; neither publishes a stress, so the ice in this world is currently a colour rather than a material."
+ },
+
+ "E5.04": {
+  "consumes": {"P": "W", "efficacy": "lm/W"},
+  "produces": {"flux": "lm"},
+  "keys": {"P": "power", "efficacy": "efficacy"},
+  "note": "V(lambda)-weighted luminous flux from radiant power. The one OPTICS row the first wave could not state, because the table had no photometric unit at all -- cd, lm, lx and lm/W now exist. theEye publishes a luminous efficacy; what nothing yet publishes is a radiant power to weight."
+ }
+}
