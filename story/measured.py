@@ -377,7 +377,27 @@ def gait_sample(param: str, u: float, speed: str = "comf", group: str = "m_18-29
 def gait_scalar(name: str, speed: str = "comf", group: str = "m_18-29"):
     """One spatiotemporal group value as (mean, SD): cadence, stride length, step width, stance
     time, double-support time, foot clearance. Names are the source's, units included, e.g.
-    'R.Step.Width [m]'. `gait_scalars()` lists them."""
+    'R.Step.Width [m]'. `gait_scalars()` lists them.
+
+    ONE CORRECTION TO THE SOURCE, MEASURED FROM THE SOURCE'S OWN DATA (2026-08-01).
+    Description_parameters.docx defines `R.Foot.Clear [cm]` as "the MAXIMUM distance between right
+    toe marker and the ground during swing phase", and says it twice, once per leg. THE DATA SAYS
+    OTHERWISE, and the data wins. Across the three self-selected speeds:
+
+        R.Stride.Length   +42.2%          R.Foot.Clear   +2.1%
+        R.Step.Length     +43.9%          R.Step.Width   +0.3%
+        Cadence           +30.3%
+
+    A maximum toe height is a kinematic consequence of swing excursion and must scale with the
+    stride. This does not move -- it sits with STEP WIDTH, the other regulated speed-invariant
+    safety parameter, which is exactly the company minimum toe clearance keeps and nowhere near
+    where a peak belongs. Its magnitude agrees too: 2.08-2.13 cm is textbook MTC, while a 2 cm
+    MAXIMUM swing clearance is physically impossible -- you would catch your foot every stride.
+
+    SO `Foot.Clear` IS MINIMUM TOE CLEARANCE and must be compared against a swing-phase LOCAL
+    minimum (tools/gait_witness.py does). Comparing it against a global swing minimum instead is
+    what sent three investigations after the body -- the smallest clearance in swing is always
+    zero, at toe-off, because that is what leaving the ground means."""
     d = gait_data()
     tab = d["speeds"][speed]["spatiotemporal"]
     if name not in tab:
