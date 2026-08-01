@@ -75,6 +75,12 @@ UNITS = {
     # temperature -- SAME FOLD, DIFFERENT BOND
     "K":      (_d(Th=1), 1.0, 0.0),
     "degC":   (_d(Th=1), 1.0, 273.15),
+    # A TEMPERATURE DIFFERENCE IS NOT A TEMPERATURE, and this is a third misfold class the audit
+    # would otherwise miss. `dT_equator_pole = 45` is 45 K OF DIFFERENCE -- which is also 45 degC
+    # of difference, because a span has no zero point to disagree about. Bond a delta into an
+    # absolute socket and you get a 45 K planet; bond an absolute into a delta socket and you get
+    # a 279 K gradient. Same dimension, and neither offset is right, so it gets its own unit.
+    "dK":     (_d(Th=1), 1.0, float("nan")),
     # angle (dimensionless but not interchangeable in practice, so tracked by name)
     "rad":    (_Z, 1.0, 0.0),          "deg": (_Z, 0.017453292519943295, 0.0),
     # derived
@@ -96,6 +102,34 @@ UNITS = {
     "rad/s":  (_d(T=-1), 1.0, 0.0),
     "K/km":   (_d(Th=1, L=-1), 1e-3, 0.0),
     "m2":     (_d(L=2), 1.0, 0.0),
+    "h":      (_d(T=1), 3600.0, 0.0),
+    "GPa":    (_d(M=1, L=-1, T=-2), 1e9, 0.0),
+    "litre":  (_d(L=3), 1e-3, 0.0),
+    "Msun":   (_d(M=1), 1.98892e30, 0.0),
+    "Rsun":   (_d(L=1), 6.957e8, 0.0),
+    "Lsun":   (_d(M=1, L=2, T=-3), 3.828e26, 0.0),
+    "min":    (_d(T=1), 60.0, 0.0),
+    "day":    (_d(T=1), 86400.0, 0.0),
+    "Myr":    (_d(T=1), 3.15576e13, 0.0),
+    "kyr":    (_d(T=1), 3.15576e10, 0.0),
+    "kpc":    (_d(L=1), 3.0856775814913673e19, 0.0),
+    "1/min":  (_d(T=-1), 1.0 / 60.0, 0.0),
+    "litre/min": (_d(L=3, T=-1), 1e-3 / 60.0, 0.0),
+    "kWh/kg": (_d(L=2, T=-2), 3.6e6 / 1000.0, 0.0),
+    "mm/kyr": (_d(L=1, T=-1), 1e-3 / 3.15576e10, 0.0),
+    "pct":    (_Z, 0.01, 0.0),
+    "MPa":    (_d(M=1, L=-1, T=-2), 1e6, 0.0),
+    "uT":     (_d(M=1, T=-2, I=-1), 1e-6, 0.0),
+    "T_mag":  (_d(M=1, T=-2, I=-1), 1.0, 0.0),
+    "A.m2":   (_d(I=1, L=2), 1.0, 0.0),
+    "J/kgK":  (_d(L=2, T=-2, Th=-1), 1.0, 0.0),
+    "Zsun":   (_Z, 1.0, 0.0),
+    # HALF-INTEGER DIMENSIONS ARE REAL. A planet publishes the Froude COEFFICIENT -- a speed per
+    # root-length -- so a body with a leg can finish the multiplication. Its dimension is
+    # L^0.5 T^-1, and refusing to represent that would mean the two most-published unread keys in
+    # the tree stay unread for a formatting reason. Exponents are numbers, not integers.
+    "m0.5/s": (_d(L=0.5, T=-1), 1.0, 0.0),
+    "s/m0.5": (_d(L=-0.5, T=1), 1.0, 0.0),
     "m3":     (_d(L=3), 1.0, 0.0),
 }
 
@@ -114,15 +148,65 @@ SUFFIX_UNITS = [
     ("_kg", "kg"), ("_s", "s"), ("_yr", "yr"), ("_deg", "deg"), ("_rad", "rad"),
     ("_C", "degC"), ("_K", "K"), ("_m", "m"),
     ("_frac", "frac"), ("_fraction", "frac"), ("_ratio", "ratio"),
+    # a second pass over what the first left unread -- each covers real keys in this tree
+    ("_energy_kwh_t", "kWh/kg"), ("_kwh_t", "kWh/kg"),
+    ("_per_sqrt_leg", None),          # resolved by name in units.json: speed vs period coefficient
+    ("_l_min", "litre/min"), ("_steps_min", "1/min"), ("_per_min", "1/min"),
+    ("_mm_kyr", "mm/kyr"), ("_kpc", "kpc"), ("_myr", "Myr"), ("_kyr", "kyr"),
+    ("_day_h", "h"), ("_h", "h"), ("_days", "day"), ("_min", "min"),
+    ("_pct", "pct"), ("_percentile", "pct"),
+    # dimensionless by construction -- a factor, a margin, an exponent, a count, an albedo
+    ("_factor", "1"), ("_margin", "ratio"), ("_exponent", "1"), ("_count", "count"),
+    ("_albedo", "frac"), ("_efficiency", "frac"), ("_slope", "1"), ("_index", "1"),
+    ("_MPa", "MPa"), ("_uT", "uT"), ("_Am2", "A.m2"), ("_J_kgK", "J/kgK"), ("_zsun", "Zsun"),
 ]
 
+# CASE. `dynamic_pressure_pa` and `P_surface_Pa` are the same unit spelled two ways, and a
+# case-sensitive table reads one and not the other. That is a naming inconsistency in the tree
+# rather than a physics problem, so it is absorbed here and REPORTED rather than left to hide.
+_SUFFIX_CI = [(suf.lower(), suf, u) for suf, u in SUFFIX_UNITS]
 
-def unit_of_key(key: str):
-    """The unit a membrane's own key name declares, or None if it declares none."""
+
+DECLARED = _HERE / "data" / "units.json"
+_DECL = None
+
+
+def declared_units() -> dict:
+    """The units stated in story/data/units.json for keys whose names do not carry one.
+
+    DECLARED, NOT RENAMED, and not guessed. `g`, `R`, `M`, `T` are universal physics symbols that
+    read worse with a suffix, and renaming a published key breaks every child that reads it by
+    name. Anything absent from that file stays unread ON PURPOSE -- a guessed unit is worse than a
+    missing one, because it makes a bad bond look legal."""
+    global _DECL
+    if _DECL is None:
+        _DECL = json.loads(DECLARED.read_text(encoding="utf8")) if DECLARED.exists() else {}
+    return _DECL
+
+
+def unit_of_key(key: str, membrane: str = None):
+    """The unit of a published number. Precedence: the key's own suffix, then a per-membrane
+    declaration, then a global one, then None.
+
+    The SUFFIX WINS because a name that carries its unit cannot drift out of step with a table
+    somewhere else -- the declaration file exists to cover what the convention has not reached,
+    not to override it."""
     for suf, u in SUFFIX_UNITS:
         if key.endswith(suf):
-            return u
-    return None
+            if u is not None:
+                return u
+            break          # the suffix is real but ambiguous -- let the declaration decide
+    else:
+        kl = key.lower()
+        for sl, _suf, u in _SUFFIX_CI:
+            if u is not None and kl.endswith(sl):
+                return u
+    d = declared_units()
+    if membrane:
+        bym = d.get("by_membrane", {}).get(membrane, {})
+        if key in bym:
+            return bym[key]
+    return d.get("global", {}).get(key)
 
 
 def dim_of(unit: str):
@@ -169,7 +253,11 @@ def bond(need_unit: str, have_unit: str):
         return ABSENT, f"unknown unit {need_unit if a is None else have_unit!r}"
     if a[0] != b[0]:
         return MISFOLD, f"different dimension: {need_unit} is not {have_unit}"
-    if a[2] != b[2]:
+    import math as _m
+    if _m.isnan(a[2]) != _m.isnan(b[2]):
+        return MISFOLD, (f"a temperature DIFFERENCE and a temperature are not the same thing: "
+                         f"{have_unit} into {need_unit}")
+    if not _m.isnan(a[2]) and a[2] != b[2]:
         return MISFOLD, (f"same dimension, different ZERO POINT: {have_unit} into {need_unit} "
                          f"is off by {abs(a[2] - b[2])} -- this is theBiomes' bug")
     if a[1] != b[1]:
@@ -227,7 +315,7 @@ class Signature:
                 f"{'+'.join(self.consumes)} -> {'+'.join(self.produces)}>")
 
 
-def surface(numbers: dict) -> dict:
+def surface(numbers: dict, membrane: str = None) -> dict:
     """A MEMBRANE'S BINDING SURFACE: every number it publishes whose key declares a unit.
 
     This is the complementary face -- what is available to bind against. Keys whose names carry no
@@ -236,16 +324,16 @@ def surface(numbers: dict) -> dict:
     out = {}
     for k, v in numbers.items():
         if isinstance(v, (int, float)) and not isinstance(v, bool):
-            u = unit_of_key(k)
+            u = unit_of_key(k, membrane)
             if u:
                 out[k] = u
     return out
 
 
-def undeclared(numbers: dict) -> list:
+def undeclared(numbers: dict, membrane: str = None) -> list:
     return sorted(k for k, v in numbers.items()
                   if isinstance(v, (int, float)) and not isinstance(v, bool)
-                  and unit_of_key(k) is None)
+                  and unit_of_key(k, membrane) is None)
 
 
 def dock(sig: Signature, numbers: dict) -> dict:
@@ -432,7 +520,7 @@ def report() -> int:
     tot = und = 0
     worst = []
     for name, nums in mems.items():
-        u = undeclared(nums)
+        u = undeclared(nums, name)
         n = sum(1 for k, v in nums.items()
                 if isinstance(v, (int, float)) and not isinstance(v, bool))
         tot += n
@@ -453,7 +541,7 @@ def show_membrane(name: str) -> int:
         print(f"no membrane {name!r}")
         return 1
     nums = mems[name]
-    surf = surface(nums)
+    surf = surface(nums, name)
     print(f"{name}: {len(surf)} numbers on its binding surface\n")
     print("laws that dock here:")
     any_ = False
@@ -533,7 +621,7 @@ def audit(verbose: bool = True) -> dict:
         for k, v in nums.items():
             if not isinstance(v, (int, float)) or isinstance(v, bool):
                 continue
-            u = unit_of_key(k)
+            u = unit_of_key(k, name)
             if u is None or u not in FORBIDDEN:
                 continue
             lo, hi, why = FORBIDDEN[u]
@@ -546,6 +634,7 @@ def audit(verbose: bool = True) -> dict:
             if not isinstance(v, (int, float)) or isinstance(v, bool):
                 continue
             st, u = _stem(k)
+            u = u or unit_of_key(k, name)
             if st and u:
                 by_stem.setdefault(st, []).append((k, u, float(v)))
         for st, entries in by_stem.items():
