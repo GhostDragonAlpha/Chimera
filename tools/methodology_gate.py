@@ -33,6 +33,32 @@ WHAT IT DOES NOT CHECK, said plainly so the score is not mistaken for a verdict:
 physics is right. A membrane can pass every line here and still be an Earth gait on a 0.72 g world.
 These are the conditions under which a membrane can be JUDGED, not the judgement.
 
+THE ONE-NAME COLUMN'S ANSWER, MEASURED 2026-08-01: it is not 36 defects, it is ONE DECISION
+made 45 times. Counting every flagged pair across the tree:
+
+    31  extent_m   = <domain name>     R, r_s, l_P, ...
+    14  duration_s = <domain name>     year_s, day_s, t_P, ...
+    10  obliquity_deg = obliquity_effective_deg = tropic_lat_deg
+
+Every membrane publishes its own size twice -- once under the universal contract name that
+chain_witness and the composer read, and once under the name its own equations use. That is a
+design choice, not sloppiness: the contract name faces out, the physics name faces in. But a
+child can then read EITHER, and the moment one is recomputed and the other is not they drift,
+which is exactly how LEG_FRAC, leg_length_m and the segment sum became three different legs.
+
+    THE FIX IS ONE DECISION, NOT FORTY-TWO EDITS: the contract name is the PUBLISHED number and
+    the domain name is a LOCAL VARIABLE. Then the consumers move -- theClock reading
+    parent["r_s"] is the first of them, and that rename must travel with its children.
+
+A NOTE ON THIS FILE'S OWN HISTORY, since it is a witness and rule 19 applies to it. The dup
+column has now been wrong twice: it first accused twenty innocent membranes over a FREE dict a
+seed cannot have, and a later attempt to filter identities from coincidences by perturbing a
+free number INVENTED pairs on membranes whose derive returns degenerate values off-default
+(theClock went 1 -> 4, including an extent_m=duration_s that is false in its own numbers.json).
+That attempt is reverted. The slider test IS the right discriminator -- run by hand on
+theHorizon it correctly keeps the black-hole/electron crossing and drops the redundancies --
+but it needs a re-derive that is checked for sanity before its output is trusted.
+
 RUN:  python tools/methodology_gate.py            (every membrane, tree order)
       python tools/methodology_gate.py --fails    (only what fails, which is the work list)
 """
