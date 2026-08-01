@@ -284,6 +284,28 @@ def leg_mass_check(body_mass_kg: float, sex: str = "male") -> dict:
 GAIT_JSON = _HERE / "data" / "gait_normative.json"
 _GAIT_CACHE = None
 
+# THE DIRECTIONS THE TREADMILL NEVER MEASURED. The OSF dataset is 246 adults walking FORWARD; a body
+# also backs up and sidesteps, and those gaits are different shapes (a trailing leg CROSSES in a
+# sidestep). CMU MoCap walked them in a hallway; tools/ingest_gait_cmu_directional.py distils the
+# trials into story/data/gait_directional.json. Forward is deliberately NOT in it: one subject does
+# not outrank 246.
+DIRECTIONAL_JSON = _HERE / "data" / "gait_directional.json"
+_DIR_CACHE = None
+
+
+def gait_directional() -> dict:
+    """The CMU-measured directional gaits (backward, sidestep left/right), loaded once.
+
+    Same rule as gait_data(): raise if missing rather than walk on zeros."""
+    global _DIR_CACHE
+    if _DIR_CACHE is None:
+        if not DIRECTIONAL_JSON.exists():
+            raise FileNotFoundError(
+                f"{DIRECTIONAL_JSON} is missing. Run: python tools/ingest_gait_cmu_directional.py")
+        import json
+        _DIR_CACHE = json.loads(DIRECTIONAL_JSON.read_text(encoding="utf8"))
+    return _DIR_CACHE
+
 # The twelve groups: six age decades, men and women. AGE AND SEX ARE DIALS HERE -- turn one and the
 # curve changes shape, because 246 people are not one person.
 GAIT_GROUPS = [f"{s}_{a}" for a in ("18-29", "30-39", "40-49", "50-59", "60-69", "70+")

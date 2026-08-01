@@ -476,9 +476,124 @@ def show_membrane(name: str) -> int:
     return 0
 
 
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+#  THE AUDIT -- misfolds found without a single signature
+#
+#  Docking needs a declared signature per law, and there are 148 rows without one. But two whole
+#  classes of misfold need no signature at all, because the membranes already declare their units
+#  in their key names. Both are pure consequences of the unit having a MEANING:
+#
+#    IMPOSSIBLE      a value its own declared unit forbids. A Kelvin below zero, a fraction above
+#                    one, a negative mass. Not "unlikely" -- forbidden by what the unit IS.
+#    INCONSISTENT    the same quantity published twice in two units that do not agree under
+#                    conversion. `foot_pressure_Pa` and `foot_pressure_kPa` must differ by exactly
+#                    1000, or one of them is stale and something downstream is reading the wrong one.
+#
+#  This is the sharp end of the operator's idea: a serial that carries its unit lets a machine find
+#  contradictions nobody has looked for.
+# ════════════════════════════════════════════════════════════════════════════════════════════════
+
+# What each unit FORBIDS. Not taste, not a plausible band -- the values the unit cannot hold.
+FORBIDDEN = {
+    "K":     (0.0, None, "a temperature below absolute zero"),
+    "degC":  (-273.15, None, "a temperature below absolute zero"),
+    "kg":    (0.0, None, "negative mass"),
+    "m2":    (0.0, None, "negative area"),
+    "m3":    (0.0, None, "negative volume"),
+    "kg/m3": (0.0, None, "negative density"),
+    "s":     (0.0, None, "negative duration"),
+    "yr":    (0.0, None, "negative duration"),
+    "frac":  (0.0, 1.0, "a fraction outside 0..1"),
+    "Pa":    (0.0, None, "negative absolute pressure"),
+    "kPa":   (0.0, None, "negative absolute pressure"),
+    "bar":   (0.0, None, "negative absolute pressure"),
+    "deg":   (-360.0, 360.0, "an angle outside one turn"),
+    "kg.m2": (0.0, None, "negative moment of inertia"),
+}
+
+# Key pairs that are the SAME quantity in two units. The stem is what is left after the suffix.
+_PAIRABLE = ("Pa", "kPa", "bar", "m", "km", "mm", "s", "yr", "kg", "K", "C", "TW", "W",
+             "deg", "rad", "frac", "m2", "au")
+
+
+def _stem(key: str):
+    for suf, unit in SUFFIX_UNITS:
+        if key.endswith(suf):
+            return key[: -len(suf)], unit
+    return None, None
+
+
+def audit(verbose: bool = True) -> dict:
+    """Every published number, checked against what its own declared unit permits."""
+    mems = membranes()
+    impossible, inconsistent = [], []
+
+    for name, nums in sorted(mems.items()):
+        # -- 1. values their unit forbids
+        for k, v in nums.items():
+            if not isinstance(v, (int, float)) or isinstance(v, bool):
+                continue
+            u = unit_of_key(k)
+            if u is None or u not in FORBIDDEN:
+                continue
+            lo, hi, why = FORBIDDEN[u]
+            if (lo is not None and v < lo) or (hi is not None and v > hi):
+                impossible.append((name, k, v, u, why))
+
+        # -- 2. the same stem published in two units that must agree
+        by_stem = {}
+        for k, v in nums.items():
+            if not isinstance(v, (int, float)) or isinstance(v, bool):
+                continue
+            st, u = _stem(k)
+            if st and u:
+                by_stem.setdefault(st, []).append((k, u, float(v)))
+        for st, entries in by_stem.items():
+            if len(entries) < 2:
+                continue
+            for i in range(len(entries)):
+                for j in range(i + 1, len(entries)):
+                    (ka, ua, va), (kb, ub, vb) = entries[i], entries[j]
+                    if ua == ub or dim_of(ua) != dim_of(ub):
+                        continue
+                    A, B = UNITS.get(ua), UNITS.get(ub)
+                    if not A or not B:
+                        continue
+                    # convert b into a's unit and compare
+                    si_b = vb * B[1] + B[2]
+                    pred = (si_b - A[2]) / A[1]
+                    if abs(va) + abs(pred) < 1e-12:
+                        continue
+                    rel = abs(va - pred) / max(abs(va), abs(pred), 1e-12)
+                    if rel > 1e-6:
+                        inconsistent.append((name, ka, va, ua, kb, vb, ub, pred, rel))
+
+    if verbose:
+        print("=" * 92)
+        print("MISFOLD AUDIT -- no signatures needed; the key names already declare the units")
+        print("=" * 92)
+        print(f"\nIMPOSSIBLE VALUES  ({len(impossible)})  -- a value its own unit forbids")
+        for name, k, v, u, why in impossible:
+            print(f"   {name:<20} {k:<32} = {v:<14.6g} [{u}]  {why}")
+        if not impossible:
+            print("   none")
+        print(f"\nINCONSISTENT PAIRS ({len(inconsistent)})  -- one quantity, two units, no agreement")
+        for name, ka, va, ua, kb, vb, ub, pred, rel in inconsistent:
+            print(f"   {name}")
+            print(f"      {ka:<30} = {va:<16.8g} [{ua}]")
+            print(f"      {kb:<30} = {vb:<16.8g} [{ub}]  -> {pred:.8g} {ua}"
+                  f"   ({rel*100:.1f}% apart)")
+        if not inconsistent:
+            print("   none")
+    return {"impossible": impossible, "inconsistent": inconsistent}
+
+
 if __name__ == "__main__":
     import sys
     a = sys.argv[1:]
+    if a and a[0] == "audit":
+        r = audit()
+        sys.exit(1 if (r["impossible"] or r["inconsistent"]) else 0)
     if a and a[0] == "membrane" and len(a) > 1:
         sys.exit(show_membrane(a[1]))
     sys.exit(report())

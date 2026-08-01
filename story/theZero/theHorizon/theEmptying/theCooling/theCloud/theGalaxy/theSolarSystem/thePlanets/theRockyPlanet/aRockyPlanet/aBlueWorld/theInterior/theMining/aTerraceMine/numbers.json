@@ -29,7 +29,7 @@
   "concentration_ratio": 1.984126984126984,
   "smelt_energy_kwh_t": 372.708,
   "refine_energy_kwh_t": 102.816,
-  "slag_fraction": 1.15,
+  "slag_fraction": 0.55,
   "metal_yield_fraction": 0.25704,
   "co2_per_t_metal": 1.9,
   "geothermal_limit_m": 1763.082553575074,

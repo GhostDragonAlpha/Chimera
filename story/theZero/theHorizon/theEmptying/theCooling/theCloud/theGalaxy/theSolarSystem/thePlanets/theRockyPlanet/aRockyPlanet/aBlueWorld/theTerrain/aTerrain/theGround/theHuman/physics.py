@@ -316,21 +316,27 @@ HEEL_FRAC = 0.050          # heel behind the ankle, fraction of stature (Dempste
 GAIT_N = 48                # samples of the cycle published for children to index
 
 
-def _gait_table(h, v_ms=None, ball=None):
+def _gait_table(h, v_ms=None, ball=None, curves=None):
     """The whole gait, sampled, in units of stature. See "THE GAIT AS A TABLE" in derive().
 
     EACH ROW IS [hip height, then per leg: hip angle, knee angle, foot pitch, stance progress,
     planted]. The knee and the pitch are new: the child used to rebuild both from a copy of the
     law, which is the drift this table exists to prevent -- two gaits that agree until one is
-    edited. Now there is one gait, it is measured, and everything downstream indexes it."""
-    G = measured_gait(v_ms)
+    edited. Now there is one gait, it is measured, and everything downstream indexes it.
+
+    `curves` overrides the curve set: None is the forward walk (246 adults, measured_gait);
+    directional_curves(name) hands in a CMU-measured direction (A3). When that direction's legs
+    are NOT the same curve -- a sidestep's trailing leg crosses -- the dict carries "legs" and
+    each leg reads its own."""
+    G = curves if curves is not None else measured_gait(v_ms)
     out = []
     for k in range(GAIT_N):
         tt = k / GAIT_N
         legs, sup, wts = [], [], []
-        for off in (0.0, 0.5):
-            hip_a, knee_a, u, planted = leg_cycle(tt + off, v_ms)
-            pitch = foot_pitch(hip_a, knee_a, tt + off, v_ms)
+        for li, off in enumerate((0.0, 0.5)):
+            Gl = G["legs"][li] if "legs" in G else G
+            hip_a, knee_a, u, planted = leg_cycle(tt + off, v_ms, Gl)
+            pitch = foot_pitch(hip_a, knee_a, tt + off, v_ms, Gl)
             legs.append((hip_a, knee_a, pitch, u, 1.0 if planted else 0.0))
             if planted:
                 sup.append(hip_above_ankle(hip_a, knee_a) + ankle_height(pitch, ball))
@@ -370,13 +376,39 @@ def _grf(G, f):
     return G["grf"][i] + (G["grf"][j] - G["grf"][i]) * w
 
 
-def leg_cycle(f, v_ms=None):
+def directional_curves(name, grf):
+    """One measured DIRECTION as the curves dict _gait_table consumes (A3).
+
+    The forward walk in this story is 246 adults on an instrumented treadmill; the other directions
+    are CMU MoCap trials -- a hallway, no force plates -- distilled to story/data/gait_directional.json
+    by tools/ingest_gait_cmu_directional.py. So the LOAD curve (how much of the body each leg carries
+    through the cycle) stays the treadmill's, handed in as `grf`; what each direction brings is its
+    own hip/knee/ankle shapes and its own duty factor, measured off the trials. A sidestep's legs are
+    NOT the same curve -- the trailing one crosses -- so those arrive per leg ("legs"), the leading
+    leg first."""
+    import measured as _m
+    d = _m.gait_directional()["directions"][name]
+    if d.get("symmetric", True):
+        return {"hip": d["hip_deg"], "knee": d["knee_deg"], "ankle": d["ankle_deg"],
+                "duty": d["duty"], "grf": grf}
+    return {"grf": grf,
+            "legs": [{"hip": d["lead"]["hip_deg"], "knee": d["lead"]["knee_deg"],
+                      "ankle": d["lead"]["ankle_deg"], "duty": d["lead"]["duty"]},
+                     {"hip": d["trail"]["hip_deg"], "knee": d["trail"]["knee_deg"],
+                      "ankle": d["trail"]["ankle_deg"], "duty": d["trail"]["duty"]}]}
+
+
+def leg_cycle(f, v_ms=None, G=None):
     """WHERE ONE LEG IS at cycle fraction f (0 = its own heel strike).
 
     Returns (hip angle, knee angle, stance progress u, planted). Both angles are read from the
     measured curves; `planted` comes from the measured duty factor. Nothing in this function is a
-    shape any more -- it is an index into 246 people."""
-    G = measured_gait(v_ms)
+    shape any more -- it is an index into 246 people.
+
+    `G` overrides the curve set: the forward walk leaves it None (246 adults on a treadmill);
+    a DIRECTION hands in its own CMU-measured curves (see directional_curves) -- same law,
+    different measurement."""
+    G = G if G is not None else measured_gait(v_ms)
     f = float(f) % 1.0
     duty = G["duty"]
     hip_a, knee_a = _at(G["hip"], f), _at(G["knee"], f)
@@ -385,7 +417,7 @@ def leg_cycle(f, v_ms=None):
     return hip_a, knee_a, (f - duty) / (1.0 - duty), False
 
 
-def foot_pitch(hip_a, knee_a, f, v_ms=None):
+def foot_pitch(hip_a, knee_a, f, v_ms=None, G=None):
     """THE FOOT'S ANGLE TO THE GROUND -- DERIVED, not modelled, and this is the good part.
 
     The three-rocker model used to live here: toe up for the first 15% of stance, flat for 50%,
@@ -406,7 +438,7 @@ def foot_pitch(hip_a, knee_a, f, v_ms=None):
     in mid-stance where the sole is flat, and goes heel-up through push-off. Three independently
     measured curves and one piece of geometry agreeing is what a derivation looks like when it is
     real. `measure()` checks the flat phase explicitly rather than trusting this paragraph."""
-    G = measured_gait(v_ms)
+    G = G if G is not None else measured_gait(v_ms)
     return _at(G["ankle"], f) + float(hip_a) - float(knee_a)
 
 
@@ -685,6 +717,18 @@ def derive(parent, free):
     # A real leg has no amplitude: the hip's path is whatever the three measured curves and the load
     # transfer make it, so the only honest number is the range of the path the body actually takes.
     _tab = _gait_table(h, v_comfort, ball)
+    # ── THE OTHER DIRECTIONS A BODY WALKS, measured too (A3) ──────────────────────────────────
+    # Backward and sidestep are not the forward gait played in reverse or rotated: the shapes are
+    # their own measurements (CMU trials, story/data/gait_directional.json), built into tables by
+    # the SAME law above, so the hip's height, the boot's pitch and the child's IK agree with them
+    # by construction. A sidestep's stride is shorter -- published per direction so the walker's
+    # phase (distance / stride) does not make a backpedal's feet skate.
+    gait_cycles = {"forward": _tab}
+    gait_dir_stride = {"forward": stride}
+    for _dn in ("backward", "left", "right"):
+        gait_cycles[_dn] = _gait_table(h, v_comfort, ball,
+                                       curves=directional_curves(_dn, G["grf"]))
+        gait_dir_stride[_dn] = float(_measured.gait_directional()["directions"][_dn]["stride_m"])
     hip_path = [r[0] for r in _tab]
     vault_measured = (max(hip_path) - min(hip_path)) * h
     hip_max, hip_min = max(r[1] for r in _tab), min(r[1] for r in _tab)
@@ -815,6 +859,8 @@ def derive(parent, free):
         # A child indexes it. There is exactly one gait in this story and it lives here.
         "gait_samples": GAIT_N,
         "gait_cycle": _tab,
+        "gait_cycles": gait_cycles,               # A3: forward/backward/left/right, same law
+        "gait_dir_stride_m": gait_dir_stride,     # each direction's OWN measured stride
         "gait_row": "hip_height, then per leg: hip_rad, knee_rad, foot_pitch_rad, u, planted",
 
         # ── WHERE THE WALK CAME FROM, so no child has to trust a comment ──────────────────────

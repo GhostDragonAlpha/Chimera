@@ -241,6 +241,11 @@ def derive(parent, free):
         # THE GAIT, CARRIED AS NUMBERS. This membrane does not know how to walk and must not learn:
         # restating the parent's leg_cycle here would be two gaits that agree until one is edited.
         "gait_cycle": [list(row) for row in parent["gait_cycle"]],
+        # ...in EVERY measured direction (A3): the walker picks the table by where the body is
+        # actually going, and each direction's own stride sets the phase so feet do not skate.
+        "gait_cycles": {k: [list(row) for row in v]
+                        for k, v in parent["gait_cycles"].items()},
+        "gait_dir_stride_m": dict(parent["gait_dir_stride_m"]),
         "gait_samples": int(parent["gait_samples"]),
         # THE FOOT'S CONTACT GEOMETRY, CARRIED AS NUMBERS: the heel lever behind the ankle and
         # the ball pivot ahead of it are what the parent's hip-height table was solved against.
@@ -320,7 +325,7 @@ def _ball(c, r, n=None, seed=0):
     return np.asarray(c, float)[None, :] + d * r, d
 
 
-def emit(nums, t=1.0, ground=None):
+def emit(nums, t=1.0, ground=None, cycle=None):
     """The suited body, in its own local units (1.0 = standing height), walking along +X.
 
     THE POSE IS THE PARENT'S PHYSICS; THE SKIN IS THIS MEMBRANE'S THERMAL SOLUTION. Every limb is
@@ -333,6 +338,10 @@ def emit(nums, t=1.0, ground=None):
     pre-CoM local frame. When it is given, every PLANTED foot is placed on it -- two-bone solve,
     the knee absorbs the difference, the hip keeps the parent's measured bob. When it is not
     given the pose is the parent's flat table exactly as before (the membrane's own demo view).
+
+    `cycle` (A3, optional): the 48-row gait table to pose from, in the parent's row format --
+    the walker hands in the table for the direction the body is actually moving (the parent's
+    `gait_cycles`); None is the forward `gait_cycle`, exactly as before.
     """
     from matter import blank, lit, SOLID, AR, AG, AB, MAT as MATCOL
 
@@ -367,7 +376,7 @@ def emit(nums, t=1.0, ground=None):
     # transcribed three-rocker formula for the boot. Both were copies of a law that has since been
     # replaced by measurement, and copies do not get updated. Now there is one gait in this story,
     # it belongs to the parent, it is 246 measured adults, and this membrane indexes it.
-    GT = nums["gait_cycle"]
+    GT = cycle if cycle is not None else nums["gait_cycle"]
     N = int(nums["gait_samples"])
     _row = GT[int(tt * N) % N]
     hip_z = float(_row[0])

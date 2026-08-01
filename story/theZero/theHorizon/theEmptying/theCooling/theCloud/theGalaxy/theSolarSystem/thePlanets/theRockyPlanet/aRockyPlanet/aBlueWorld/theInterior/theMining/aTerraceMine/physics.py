@@ -39,6 +39,10 @@ BOND_WI = 15.0           # Bond work index, iron ore (13-17, measured)
 SMELT_KWH_T_FE = 1450.0  # kWh per tonne pig iron, blast furnace (measured band 1300-1600)
 REFINE_KWH_T_FE = 400.0  # to steel (band 300-500)
 CO2_T_PER_T_STEEL = 1.9  # tonnes CO2 per tonne steel (measured band 1.4-2.3)
+FLUX_T_PER_T_CONC = 0.15 # limestone flux per tonne of concentrate, to make the gangue flow
+                         # (measured blast-furnace band 0.10-0.25). It was previously a bare
+                         # "+ 0.15" stranded at the end of a dead expression, where nothing could
+                         # say what it was; named, it is a legal literal.
 WORK_ROCK_LIMIT_C = 45.0 # wet-bulb workable limit with cooling (measured: deep gold ~ 45-50)
 
 FREE = {}
@@ -100,7 +104,22 @@ def derive(parent, free):
     metal_per_capita = 2000.0            # kg steel-equivalent lifetime use (measured, ~2 t/person)
     years_of_ore = 200.0                 # banded-iron class at current rates (band 100-400)
     tailings = concentration_ratio - 1.0
-    slag = 1.0 - metal_yield / max(fe_grade, 1e-9) * 0.0 + 0.15
+    # ── SLAG, and this line was DEAD ────────────────────────────────────────────────────────────
+    # It read:  slag = 1.0 - metal_yield / max(fe_grade, 1e-9) * 0.0 + 0.15
+    # The `* 0.0` annihilates the only physics in it, so the whole expression collapses to the
+    # constant 1.15 -- and 1.15 is not a fraction. Nobody noticed, because a plausible-looking
+    # number sitting under a plausible-looking derivation is invisible; it took `folding.py audit`
+    # reading the `_fraction` suffix off the key name and asking what that unit forbids.
+    #
+    # WHAT IT SHOULD BE. Smelting a concentrate separates it into metal and everything else. The
+    # gangue is whatever is not metal -- (1 - grade) -- and the flux added to make that gangue
+    # flow becomes slag too. So slag per tonne of concentrate is
+    #
+    #     slag = (1 - concentrate_grade) + flux
+    #
+    # which for this ore's 60% concentrate is 0.40 of gangue plus the flux: a legal fraction that
+    # MOVES when the grade moves, which the constant never did.
+    slag = (1.0 - concentrate_grade) + FLUX_T_PER_T_CONC
     co2_per_t = CO2_T_PER_T_STEEL
     subsidence = 0.0                     # a terrace does not subside; shafts do
     rehab_cost = 0.05                    # of revenue, measured band 3-8%

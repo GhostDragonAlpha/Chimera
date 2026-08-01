@@ -29,7 +29,6 @@ hn = json.loads((TERR / "theGround/theHuman/aHuman/numbers.json").read_text())
 
 H = float(hn["height_m"])
 com_h = float(hn["com_height_m"]) / H
-GT = hn["gait_cycle"]
 N = int(hn["gait_samples"])
 
 # the flat sole plane in emit's pre-CoM frame (the walker's own definition of `lift`)
@@ -38,7 +37,7 @@ lift = -float(sum(lows) / len(lows))
 base = com_h - lift
 
 
-def sole_errors(emit_fn, slope_tan):
+def sole_errors(emit_fn, slope_tan, GT):
     """worst float (sole ABOVE terrain) and worst plough (sole THROUGH it) over the cycle,
     per planted leg, in LOCAL units. The spec is asymmetric: soles land ON the terrain
     (float is a landing shortfall, capped by the leg's reach) and NEVER through it."""
@@ -76,9 +75,25 @@ print(f"leg reach check: thigh+shank = 0.491 of stature = {0.491 * H:.3f} m")
 print(f"{'slope':>6} | {'old: float/plough':>22} | {'B1: float/plough':>22}")
 for deg in (0, 10, 20, 30):
     s = math.tan(math.radians(deg))                # slope in local units per local x (unitless)
-    of, op = sole_errors(lambda t: law.emit(hn, t), s)
-    nf, np_ = sole_errors(lambda t: law.emit(hn, t, ground=lambda lx, ly: base + math.tan(math.radians(deg)) * lx), s)
+    of, op = sole_errors(lambda t: law.emit(hn, t), s, hn["gait_cycle"])
+    nf, np_ = sole_errors(lambda t: law.emit(hn, t, ground=lambda lx, ly: base + math.tan(math.radians(deg)) * lx), s, hn["gait_cycle"])
     print(f"{deg:>5}° | {of*H*1000:>9.1f}/{op*H*1000:>9.1f} mm | {nf*H*1000:>9.1f}/{np_*H*1000:>9.1f} mm")
+
+# A3: every DIRECTIONAL table gets the same terrain conform -- the IK reads the rows generically,
+# so backward and sidestep soles must land just as forward ones do. Slopes run along local +X,
+# the walking direction of whichever table is playing.
+if "gait_cycles" in hn:
+    print("\nA3 directional tables, B1 conform (float/plough, mm):")
+    print(f"{'table':>10}" + "".join(f"{deg:>10}°" for deg in (0, 10, 20, 30)))
+    for key, GT in hn["gait_cycles"].items():
+        row = []
+        for deg in (0, 10, 20, 30):
+            s = math.tan(math.radians(deg))
+            nf, np_ = sole_errors(
+                lambda t, GT=GT, s=s: law.emit(
+                    hn, t, ground=lambda lx, ly: base + s * lx, cycle=GT), s, GT)
+            row.append(f"{nf * H * 1000:>4.0f}/{np_ * H * 1000:<4.0f}")
+        print(f"{key:>10}" + "".join(f"{r:>11}" for r in row))
 
 # perf: emit with terrain must be per-frame affordable
 t0 = time.perf_counter()

@@ -209,3 +209,64 @@ NEXT (menu order): A3+G2 directional gaits -- the CMU full DB (2,548 BVH) has sl
 trials; the downhill reach floats above are the motivating measurement. Then A5+G1 motion
 matching, C1+C3, B2 (owns the swing-plough residual). Parallel standing: extraction pipelines
 distilling the 13 GB acquisition sweep into committed story/data/*.json.
+
+---
+
+## 2026-07-31 (late night) — A3 directional gaits: the body backs up and sidesteps with MEASURED tables, not a rotated forward walk
+
+**Menu item A3 (the A3 half of A3+G2): directional gait tables from the CMU MoCap DB.**
+
+DONE, verified:
+- **tools/ingest_gait_cmu_directional.py (new).** Reuses the mocap_gait.py parser/FK; cuts
+  trials into steady runs by hip velocity (min 1.0 s, trim 0.2 s, >30% of p95), classifies by
+  MEASURED facing (f_face = up x (RightUpLeg - LeftUpLeg)): backward along < -0.5, sidestep
+  |along| <= 0.5 & |right_dot| > 0.7. Rejects > 1.5 m/s (jog -- 141_31 runs 2.3 m/s) and
+  < 0.25. Foot pitch is atan2(z, |f|) NOT asin (asin explodes +/-12 deg near vertical at
+  toe-off); a mid-stance foot-flat calibration removes the ~19 deg ankle-joint-height
+  constant. `--validate-forward` PASSES against the committed OSF forward table (duty 0.619
+  vs 0.621; stance |diff| hip 4.3 deg, knee 17.3 deg = the known subject-35 skeleton offset,
+  pitch 5.0 deg).
+- **story/data/gait_directional.json:** backward 37 cycles (duty 0.666, stride 0.925 m,
+  0.6 m/s); sidestep left/right per-leg LEAD/TRAIL (17 cycles, duty ~0.62, strides
+  0.576/0.597 m; lead hip +19 vs trail -17 = the cross-step). Forward deliberately absent.
+- **research_references/human/mocap_directional_reference.json:** the RL copy (hip
+  trunk-relative + asin ankle) so G2's tracking term measures the foot the way the policy
+  measures its own.
+- **Wiring:** measured.py `gait_directional()` (raises if missing); theHuman `_gait_table`
+  grew per-leg curves + `directional_curves()` (CMU has no force plates -- the forward OSF
+  GRF stays the load model, documented); derive publishes `gait_cycles` {forward, backward,
+  left, right} + `gait_dir_stride_m`. aHuman `emit(nums, t=1.0, ground=None, cycle=None)`.
+  walker.py picks the table by theta = velocity-heading - body_yaw (>120 backward, 60-120
+  left/right, theta > 0 = left), and the phase accumulator advances over the ACTIVE
+  direction's own stride so the feet do not skate. NOTE: walker.py was swept into the
+  auto-flush commit a86ffc5 by the parallel session -- content verified intact, history not
+  rewritten.
+- **Verification:** probe_foot_ik.py A3 section -- forward unchanged (plough
+  0/0.8/5/12.8 mm at 0/10/20/30 deg); all directional tables clean on flat, <= 18 mm at
+  10 deg; backward ploughs 113 mm at 30 deg = knee-flexion reach reserve, physical, owned by
+  B2. probe_walker_ik.py matches the B1 baseline EXACTLY (no regression). walk_demo.py PASS.
+  Visual: Saved/Images/a3/gait_tables.png (per-table strips: backward reach-behind/flat
+  strike, sidestep cross-step visible) + gallery captures (forward / backpedal_turn /
+  after_flip / sidestep_turn). The exact mid-turn table identity is not provable from stills
+  (0.18 s timing + curl latency); the probes + strips carry the proof.
+
+OPERATOR INPUTS recorded: (1) the human muscle/nervous system has AUTONOMIC responses
+(reflexes, pupil, heart, sweating, piloerection) -- this lands in C1+C3 physiology; (2) the
+serials-that-say-what-they-bind-to scheme (protein-folding metaphor) is being implemented
+IN THIS TREE by the parallel session (commit 80d0e98, story/folding.py) -- do not touch
+their files.
+
+NEXT (exact):
+1. G2 (the overnight GPU job): `C:/Python314/python.exe tools/train_myobody_directional.py`
+   -- NEW script, NEW checkpoint ChimeraEngine/output/myobody_walk_directional_policy.pt
+   (never clobber the forward policy). obs += command (sin/cos of direction), per-env
+   sampled command, velocity reward projected on the commanded direction (backward measured
+   0.6 m/s), track term reads the matching direction's envelope (sidestep lead/trail per
+   leg). Warm-start from the mocap policy; curriculum ramps as before.
+   FIRST: confirm LM Studio :1234 UNLOADED (operator's standing rule) and check nvidia-smi
+   for senses :1235. Launch background, --seconds 28800.
+2. Morning gate: `C:/Python314/python.exe tools/policy_gait_eval.py --policy
+   ChimeraEngine/output/myobody_walk_directional_policy.pt` -- sustained 10 s on the WORST
+   of 5 seeds (last baseline ~90% survival, worst seed falls ~3 s).
+3. Then A5+G1 motion matching, C1+C3 (autonomic responses live here now), B2 (owns the
+   steep-slope directional plough residuals AND the swing-plough residual from B1).
