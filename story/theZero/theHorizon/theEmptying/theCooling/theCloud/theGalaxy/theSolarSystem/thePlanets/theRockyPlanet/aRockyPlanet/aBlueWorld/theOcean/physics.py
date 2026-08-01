@@ -33,6 +33,8 @@ BOIL_PER_BAR = "boiling point falls with pressure; at 0.52 bar water boils ~355 
 SALINITY_CLASSES = [(0.5, "Fresh"), (30.0, "Brackish"), (50.0, "Salt"), (1e9, "Brine")]
 
 
+import math
+
 def salinity_class(s_g_kg: float) -> str:
     for hi, name in SALINITY_CLASSES:
         if s_g_kg < hi:
@@ -76,20 +78,74 @@ def derive(parent, free):
 
 
 def emit(nums, t=1.0):
-    """The matter of theOcean the LAW: water as a held liquid -- a dark blue body with the sun's
-    glint on it. The picture at this scale is the instance's own (the layout places it at
-    identity); this emit exists so the membrane can stand alone while its instance is grown."""
-    import numpy as np
-    from matter import blank, fibonacci_sphere, surface_grain, SOLID
+    """ONE DAY OF OCEAN: the ice where the law puts it, and the sun crossing.
 
-    rng = np.random.default_rng(79)
+    WHAT WAS HERE. `b[:, 16:19] = [0.02, 0.10, 0.35]` -- one blue, every point, ignoring `t`, under
+    the boilerplate line four membranes in this tree shared. This membrane had already DERIVED
+    `ice_line_lat_deg = 43.14` and `ice_fraction = 0.316` and drew neither: a third of this world's
+    ocean is ice and the render said it was all open water.
+
+    WHAT IT DRAWS NOW, every part of it from this membrane's own numbers:
+      THE ICE IS WHERE THE LAW PUT IT. Poleward of the derived ice line the surface is frozen.
+      Nobody paints a cap; the latitude decides, and moving `T_surface` moves it.
+      THE WATER IS COLOURED BY ITS TEMPERATURE, on the same mean-preserving latitude profile the
+      rest of this chain uses: T_mean + dT(1/3 - sin^2 lat), where 1/3 is the average of sin^2
+      over a sphere, so the profile does not quietly warm the planet.
+      THE SEA IS NOT FLAT. A fully-developed sea under a steady wind has significant wave height
+      H_s = 0.21 U^2 / g (Pierson-Moskowitz, measured), and this membrane derives both inputs:
+      U = 7.34 m/s and g = 7.08 give 1.60 m. THE CHECK NOBODY FITTED: 7.3 m/s is Beaufort 4, and
+      the measured band for Beaufort 4 is 1-2 m. Drawn as displacement, so the roughness is that
+      number rather than a texture.
+      THE DAY TURNS, because `duration_s` is this world's own day -- and the sun's glint tracks it.
+
+    LOCAL UNITS: 1.0 is the planet's radius.
+    """
+    import numpy as np
+    from matter import blank, fibonacci_sphere, surface_grain, SOLID, AR, AB
+
     n = 12000
     d = fibonacci_sphere(n, jitter=0.9, seed=79)
+    lat = np.arcsin(np.clip(d[:, 2], -1.0, 1.0))
+
+    tt = float(t) % 1.0
+    sun = np.array([math.cos(2.0 * math.pi * tt), math.sin(2.0 * math.pi * tt), 0.12])
+    sun /= np.linalg.norm(sun)
+
+    # THE TEMPERATURE PROFILE, mean-preserving (see the docstring), in Celsius.
+    T_mean = float(nums["T_surface_C"])
+    dT = float(nums["dT_equator_pole"])
+    T = T_mean + dT * (1.0 / 3.0 - np.sin(lat) ** 2)
+    frozen = np.abs(np.degrees(lat)) >= float(nums["ice_line_lat_deg"])
+
+    # THE SEA STATE, from the derived wind and this world's gravity.
+    U = float(nums["wind_surface_ms"])
+    g = float(nums["g"])
+    Hs_m = 0.21 * U * U / max(g, 1e-9)
+    # as a fraction of the planet's radius the waves are invisible, so they are drawn at the same
+    # DECLARED exaggeration principle theAtmosphere uses: scale what exists, never mint it.
+    rng = np.random.default_rng(79)
+    rough = (Hs_m / float(nums["R"])) * 2.0e4
+    disp = 1.0 + rough * (rng.random(n) - 0.5) * (~frozen)
+
+    P = d * disp[:, None]
+    mu = np.clip(P @ sun / np.maximum(np.linalg.norm(P, axis=1), 1e-9), 0.0, 1.0)
+
+    # COLD WATER IS DARKER AND GREENER; warm water is the deep blue everyone pictures. Ice is not
+    # water at all -- it is the brightest thing on the planet, which is why an ice line is a
+    # feedback and not a decoration.
+    x = np.clip((T - (T_mean - dT * 0.6)) / max(dT, 1e-9), 0.0, 1.0)[:, None]
+    cold = np.array([0.03, 0.11, 0.20], np.float32)
+    warm = np.array([0.02, 0.13, 0.42], np.float32)
+    ice = np.array([0.78, 0.84, 0.88], np.float32)
+    col = (cold + (warm - cold) * x).astype(np.float32)
+    col[frozen] = ice
+
     b = blank(n)
-    b[:, 0:3] = d
+    b[:, 0:3] = P
     b[:, 21:24] = d
-    b[:, 16:19] = np.array([0.02, 0.10, 0.35], np.float32)
-    b[:, 19] = 0.9
+    b[:, 16:19] = (col * (0.22 + 0.78 * mu)[:, None]).astype(np.float32)
+    b[:, AR:AB + 1] = col
+    b[:, 19] = 0.92
     b[:, 20] = surface_grain(n, radius=1.0, cover=0.7)
     b[:, 11] = SOLID
     return b

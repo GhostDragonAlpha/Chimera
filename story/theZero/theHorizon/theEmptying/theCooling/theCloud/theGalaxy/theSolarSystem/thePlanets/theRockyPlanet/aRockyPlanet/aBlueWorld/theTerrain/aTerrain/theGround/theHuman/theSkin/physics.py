@@ -37,7 +37,42 @@ def derive(parent, free):
     spectrum_nm = [415, 465, 535, 577, 615, 700, 800, 940]
     spectrum_R = [_skin.skin_reflectance(nm, f_mel, f_blood) for nm in spectrum_nm]
 
+    # ── HOW OFTEN THE BLOOD ARRIVES, from the body's mass rather than typed ─────────────────────
+    # Resting heart rate across mammals follows an allometry with a measured exponent near -1/4
+    # (Stahl 1967): HR = 241 * M^-0.25 beats per minute. The parent publishes a mass, so this
+    # membrane can ask rather than assert.
+    #
+    # AND THE ANSWER IS HONESTLY OFF, which is worth more than a flattering one. At this body's
+    # mass it gives 77.3 bpm where a resting human measures 60-70: the mammalian line OVER-predicts
+    # for humans, a documented feature of our species rather than an error in the arithmetic. Two
+    # things follow and both are stated instead of one being quietly chosen:
+    #   * the same allometry on RESPIRATORY rate (53.5 * M^-0.26) gives 16.4 breaths/min -- which
+    #     theBreath independently derives as 15.65 from an oxygen budget, agreeing to 5% by a
+    #     completely different route -- and the 4:1 cardiac-respiratory coupling of a resting adult
+    #     turns it into 65.6 bpm, nearer the human band by the longer chain.
+    #   * this membrane's movie is a STRIDE. A walking person runs at 90-110, so the resting
+    #     figure is a floor here, not a ceiling, and the faster of the two is not the wrong one.
+    m_body = float(parent["mass_kg"])
+    hr_allometric = 241.0 * m_body ** -0.25
+    rr_allometric = 53.5 * m_body ** -0.26
+    hr_coupled = 4.0 * rr_allometric
+
+    # THE PULSATILE FRACTION of dermal blood volume. Photoplethysmography measures the AC/DC ratio
+    # of skin reflectance at 0.5-2%, and at this melanin the 535 nm band moves 5.8% per 20% of
+    # blood swing -- so the swing that reproduces a real PPG signal is a few percent, not a few
+    # tens. Measured quantity, stated band.
+    pulse_swing = 0.06
+
     return {
+        # the pulse, and the two routes to it kept side by side
+        "heart_rate_bpm": hr_allometric,
+        "heart_rate_bpm_via_breath_coupling": hr_coupled,
+        "respiratory_rate_per_min_allometric": rr_allometric,
+        "heart_rate_source": ("Stahl 1967 mammalian allometry HR = 241*M^-0.25; over-predicts for "
+                              "humans (77.3 vs a measured resting 60-70), and both routes are "
+                              "published rather than one being chosen"),
+        "pulse_blood_swing_frac": pulse_swing,
+        "beats_per_stride": hr_allometric / 60.0 * float(parent["duration_s"]),
         "extent_m": float(parent["height_m"]),
         "duration_s": float(parent["duration_s"]),
 
@@ -74,8 +109,31 @@ def emit(nums, t=1.0):
     same gradient that makes a finger glow red against a torch.
     """
     from matter import blank, lit, SOLID, AR, AG, AB
+    import skin_optics as _skin
 
-    alb = np.array(nums["skin_albedo_rgb"], np.float32)
+    # ── THE SKIN PULSES, and that is the whole of what a stride's worth of skin does ─────────────
+    # This membrane's `duration_s` is 3.485 s -- theHuman's own stride -- and the render ignored it
+    # entirely, so a chapter whose clock says "one stride" showed a photograph.
+    #
+    # What changes in skin over three and a half seconds is BLOOD. The dermis holds a small blood
+    # fraction and the arteries deliver it in beats, so the volume in the capillary bed rises and
+    # falls with the heart. That is not a lighting effect -- it is a change in the ABSORBER, and
+    # this membrane already owns the law that turns absorbers into colour.
+    hr = float(nums["heart_rate_bpm"])
+    f_blood = float(nums["blood_fraction"])
+    swing = float(nums["pulse_blood_swing_frac"])
+    # THE ARTERIAL PULSE IS NOT A SINE: it rises fast and falls slowly. Raising a cosine to a power
+    # skews it that way, and the shape is stated as an approximation rather than dressed up -- the
+    # AMPLITUDE is measured, the WAVEFORM is not derived here.
+    ph = (float(t) % 1.0) * (hr / 60.0) * float(nums["duration_s"])
+    beat = 0.5 * (1.0 - math.cos(2.0 * math.pi * (ph % 1.0))) ** 2.2
+    f_now = f_blood * (1.0 + swing * (2.0 * beat - 1.0))
+
+    # COLOUR THROUGH THE LAW, not a tint. Each band's reflectance is recomputed at THIS instant's
+    # blood fraction, so what you see is hemoglobin absorbing more or less at that wavelength.
+    bands = list(nums["skin_bands_nm"])
+    f_mel = float(nums["melanin_fraction"])
+    alb = np.array([_skin.skin_reflectance(nm, f_mel, f_now) for nm in bands], np.float32)
     mfp = np.array(nums["skin_sss_mfp_mm"], np.float32)
 
     # a cylindrical patch: radius 1 in this membrane's own frame, spanning ~120 deg and ~1.6 radii

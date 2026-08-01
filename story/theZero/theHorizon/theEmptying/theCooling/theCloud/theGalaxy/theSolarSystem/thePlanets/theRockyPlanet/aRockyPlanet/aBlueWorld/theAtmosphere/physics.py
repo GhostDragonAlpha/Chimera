@@ -24,6 +24,8 @@ The INSTANCE of this law here is `aNitrogenAtmosphere` -- named by the class its
 molecule puts it in (29.0 g/mol -> N2). The classification of an atmosphere is its dominant
 gas, computed from the scale height, never assigned.
 """
+import math
+
 from math import pi, sqrt, log
 
 K_B = 1.380649e-23
@@ -75,23 +77,93 @@ def derive(parent, free):
 
 
 def emit(nums, t=1.0):
-    """The matter of theAtmosphere the LAW: air as held gas -- a soft, edgeless glow hugging a
-    world. The picture at this scale is the instance's own (the layout places it at identity):
-    this emit exists so the membrane can stand alone while its instance is being grown."""
+    """ONE DAY OF AIR: the terminator crossing, and the sky reddening where the path is long.
+
+    WHAT WAS HERE, and one number in it was a lie about this membrane's own physics. The old emit
+    scattered points to `z = -log(u) * 0.05` and called 0.05 the scale height -- but this membrane
+    DERIVES `scale_height_m = 11312` on a radius of 5,256,133, which is 0.00215 of a radius.
+    The drawn air was 23 TIMES THICKER than the law twelve lines above it. Dimensionally perfect,
+    unit-perfect, and wrong by more than an order of magnitude: the class of error that only a
+    RANGE can see, which is why folding.py carries regimes. It also ignored `t` entirely, under the
+    boilerplate line four membranes in this tree shared, while declaring a movie 86,400 s long.
+
+    WHAT IT DRAWS NOW.
+      THE THICKNESS IS THE DERIVED ONE. H/R = 0.00215, so a planet's air really is a skin -- and
+      to keep a skin visible the shell is drawn at a DECLARED exaggeration, published as
+      `render_exaggeration`, which SCALES SOMETHING THAT EXISTS rather than minting a shell that
+      does not. The density law is untouched: exp(-z/H) at the true H.
+      THE DAY TURNS. The sun goes round once, because `duration_s` is this world's own day, and
+      the lit crescent goes with it.
+      THE COLOUR IS RAYLEIGH. Scattering goes as lambda^-4, so blue is thrown sideways out of the
+      beam and what survives a long slant path is red. That single exponent gives a blue sky
+      overhead and a red limb at the terminator with nothing else added -- and the reddening is
+      strongest exactly where the day is ending, which is sunset, arriving unasked.
+
+    LOCAL UNITS: 1.0 is the planet's radius.
+    """
     import numpy as np
-    from matter import blank, fibonacci_sphere, surface_grain, GLOW
+    from matter import blank, fibonacci_sphere, surface_grain, GLOW, AR, AB
+
+    RAYLEIGH_TAU_550 = 0.0973    # Earth's measured Rayleigh optical depth at 550 nm, zenith
+    EXPOSURE = 7.0               # LENS: how far the shutter is opened. Not a fact about the air.
+    H_over_R = float(nums["scale_height_m"]) / float(nums["R"])
+    EXAGGERATION = 12.0                 # DECLARED. See the docstring: it scales what exists.
+    H = H_over_R * EXAGGERATION
+
+    tt = float(t) % 1.0
+    sun = np.array([math.cos(2.0 * math.pi * tt), math.sin(2.0 * math.pi * tt), 0.12],
+                   dtype=np.float64)
+    sun /= np.linalg.norm(sun)
 
     rng = np.random.default_rng(73)
     n = 12000
     d = fibonacci_sphere(n, jitter=0.9, seed=73)
     u = np.clip(rng.random(n), 1e-6, 1.0)
-    z = -np.log(u) * 0.05                      # edgeless: density falls off with height
+    z = -np.log(u) * H                              # exponential atmosphere, at the derived H
+    P = d * (1.0 + z)[:, None]
+    dens = np.exp(-z / max(H, 1e-9))
+
+    # HOW MUCH AIR THE LIGHT CROSSED. Straight down it is one scale height; at a grazing angle it
+    # is many, and that ratio is the airmass. Cheap and honest: 1/max(cos, floor).
+    mu = P @ sun / np.maximum(np.linalg.norm(P, axis=1), 1e-9)
+    lit_frac = np.clip(mu, 0.0, 1.0)
+    airmass = 1.0 / np.clip(mu, 0.06, 1.0)
+
+    # RAYLEIGH: optical depth goes as lambda^-4, so each band is extinguished by its own amount
+    # over that path. Nothing here is a palette -- it is one exponent applied at three wavelengths.
+    lam = np.array([615.0, 535.0, 465.0], np.float32)          # the render's R, G, B
+    tau0 = RAYLEIGH_TAU_550 * (550.0 / lam) ** 4                # optical depth at zenith, per band
+    trans = np.exp(-tau0[None, :] * airmass[:, None])           # what survives to the eye
+    scattered = 1.0 - trans                                     # what the sky glows with
+    # EXPOSURE, and it is a LENS not a fact. A bare atmospheric shell with no planet under it is
+    # genuinely almost invisible -- tau of 0.1 at zenith means the sky scatters about a tenth of
+    # what passes through it, which is why Earth's limb from orbit is a thin blue line and not a
+    # glowing ball. The first render of this was physically right and visually nothing. So the
+    # BRIGHTNESS is opened up and the RATIO BETWEEN BANDS -- which is the whole of the physics --
+    # is left alone: lambda^-4 still decides the colour, exposure only decides how much of it
+    # reaches the eye. Changing this number cannot change what colour the sky is.
+    scattered = np.clip(scattered * EXPOSURE, 0.0, 1.0)
+
+    # AND THE OTHER HALF, which the first version of this claimed and did not draw.  is
+    # the light SCATTERED toward the eye, and at a grazing path every band saturates, so a shell
+    # drawn from scattering alone goes WHITE at the limb -- which is what the render showed while
+    # the docstring promised a red one. A sunset is not scattered light; it is the DIRECT BEAM,
+    # surviving a long path, with its blue taken out of it. That is  itself -- the same
+    # lambda^-4 read the other way round -- and it is what a low sun looks like.
+    #
+    # So both terms are drawn, weighted by how grazing the sightline is. The reddening is not a
+    # colour anyone chose; it is what is LEFT after blue has been scattered away over 16 airmasses.
+    graze = np.clip(1.0 - mu, 0.0, 1.0) ** 3
+    col_rgb = scattered * (1.0 - graze)[:, None] + trans * EXPOSURE * 0.55 * graze[:, None]
+    scattered = np.clip(col_rgb, 0.0, 1.0)
+
     b = blank(n)
-    b[:, 0:3] = d * (1.0 + z)[:, None]
-    dens = np.exp(-z / 0.05)
-    b[:, 16:19] = np.array([0.45, 0.62, 1.0], np.float32)[None, :] * (0.3 + 0.7 * dens)[:, None]
-    b[:, 19] = (0.10 * dens).astype(np.float32)
-    b[:, 20] = surface_grain(n, radius=1.03, cover=1.2)
+    b[:, 0:3] = P
+    col = (scattered * (0.25 + 0.75 * lit_frac)[:, None]).astype(np.float32)
+    b[:, 16:19] = col
+    b[:, AR:AB + 1] = col
+    b[:, 19] = np.clip(0.55 * dens * (0.16 + 0.84 * lit_frac), 0.0, 1.0).astype(np.float32)
+    b[:, 20] = surface_grain(n, radius=1.0 + H, cover=1.2)
     b[:, 11] = GLOW
     return b
 
