@@ -9,8 +9,9 @@ is rerun with a movement COMMAND in the obs and per-command speed/envelope targe
 WHAT CHANGED vs train_myobody_mocap.py (only these):
   1. OBS += 4: one-hot command over [forward, backward, left, right], sampled per env per
      episode (this trainer resets every env each iteration, so the resample point is the
-     iteration reset). Sampling is majority-forward -- P_CMD = [0.5, 1/6, 1/6, 1/6] -- so the
-     already-trained forward skill keeps half the gradient signal and does not collapse.
+     iteration reset). ROUND 2: P_CMD rebalanced [0.5, 1/6 x3] -> [0.34, 0.22 x3] -- round 1
+     passed the forward gate 5/5 but failed the other three directions, so mass moves to the
+     weak ones while forward keeps a plurality (see P_CMD below).
   2. The velocity term projects qvel[0:2] onto the COMMANDED direction (cmd_dir, built by
      rotating the frozen spawn heading head0 by 0/180/+90/-90 deg) and scales by that
      direction's MEASURED target speed: forward 1.285 m/s (mocap_walk_reference.json),
@@ -24,11 +25,24 @@ WHAT CHANGED vs train_myobody_mocap.py (only these):
   4. The phase clock runs at each command's own stride time: forward uses the reference
      stride_time_s (1.127 s); the directional file carries no stride time, so it is derived
      as stride_m / speed_m_s (backward 1.541 s, left 0.913 s, right 0.911 s).
-  5. warm-start from output/myobody_walk_mocap_policy.pt with a PARTIAL load: every tensor
-     whose shape matches is copied; body.0.weight grew by the 4 command columns, which are
-     seeded with ~1e-3 noise (a command the net has never seen must start as a near-no-op).
+  5. warm-start, two shapes: ROUND 2 defaults --init to the round-1 directional checkpoint
+     (same 106-dim architecture -> FULL LOAD, every tensor shape-matches); the round-1 path
+     (init from the 102-dim mocap policy -> PARTIAL LOAD, body.0.weight grows by the 4
+     command columns seeded ~1e-3) is kept for anyone starting over.
   6. checkpoint to ChimeraEngine/output/myobody_walk_directional_policy.pt -- a NEW artifact.
      myobody_walk_mocap_policy.pt and myobody_walk_policy.pt are NEVER written (asserted).
+     ROUND 2 NOTE: the round-1 result is preserved at
+     output/myobody_walk_directional_r1_policy.pt (a manual cp, not written by this script).
+
+ROUND 2 (after the morning gate): the gate diagnosed left as FREEZING -- the policy survives
+by standing still because ALIVE_BONUS pays regardless of movement -- and right/backward as
+moving-but-falling. Two levers, nothing else touched:
+  a) STAGNATION PENALTY (the freeze lever): alive AND smoothed commanded-direction speed
+     below STAG_FRAC * target costs STAG_W per step. The smoother is a ~0.5 s EMA seeded at
+     target, so acceleration out of reset is never punished (see STAG_* below). It sits
+     inside the reward bracket multiplied by `alive`, so a fallen env never accumulates it.
+  b) more samples on the weak directions (the falls lever): the P_CMD rebalance above, plus
+     warm-starting from the round-1 brain instead of the forward-only mocap policy.
 
 UNCHANGED: the curriculum ramp (track term off until iter RAMP_START, then linear over
 RAMP_LEN), ALIVE_BONUS, the parking-exploit guard (velocity term x2 weight so it dominates
@@ -78,11 +92,25 @@ SIGMA_DEG = 15.0                  # tolerance band, degrees
 RAMP_START = 8
 RAMP_LEN = 16
 
-# THE COMMAND ENCODING: one-hot over 4 directions, in this fixed order. Majority-forward
-# sampling keeps the trained skill dominant; the other three split the remainder evenly.
+# THE COMMAND ENCODING: one-hot over 4 directions, in this fixed order.
+# ROUND 2 REBALANCE: round 1 ([0.5, 1/6 x3]) passed the forward gate 5/5 but failed the other
+# three (left froze, right/backward fell), so probability mass moves to the weak directions.
+# Forward keeps a plurality (0.34) so the solid skill still gets a third of the gradient
+# signal; the three failing directions get 0.22 each -- more rollouts, more advantage signal.
 CMDS = ('forward', 'backward', 'left', 'right')
 CMD_DIM = len(CMDS)
-P_CMD = (0.5, 1.0 / 6.0, 1.0 / 6.0, 1.0 / 6.0)
+P_CMD = (0.34, 0.22, 0.22, 0.22)
+
+# THE STAGNATION PENALTY (round 2, the left-freeze diagnosis): the eval showed the policy
+# surviving by standing still -- ALIVE_BONUS pays regardless of movement, and the parking
+# guard only weights the velocity term, it does not punish immobility. Per control step, an
+# env that is ALIVE and whose smoothed commanded-direction speed is below
+# STAG_FRAC * target pays STAG_W. The smoother is an EMA with ~0.5 s time constant, so the
+# first steps of acceleration (and normal gait speed ripple) are not punished -- a fresh
+# episode starts with the EMA seeded AT target, and it has to sag below the threshold first.
+STAG_W = 0.3                      # comparable to the track term's 0.5 * W_TRACK
+STAG_FRAC = 0.1                   # penalty region: EMA speed < 10% of the command's target
+STAG_TAU_S = 0.5                  # EMA time constant, seconds
 
 BODIES = {'hip_r': 'femur_r', 'knee_r': 'tibia_r', 'ankle_r': 'talus_r', 'toe_r': 'toes_r',
           'hip_l': 'femur_l', 'knee_l': 'tibia_l', 'ankle_l': 'talus_l', 'toe_l': 'toes_l',
@@ -149,7 +177,7 @@ def main() -> int:
     envs = int(sys.argv[sys.argv.index('--envs') + 1]) if '--envs' in sys.argv else 1024
     budget = float(sys.argv[sys.argv.index('--seconds') + 1]) if '--seconds' in sys.argv else 840.0
     init = Path(sys.argv[sys.argv.index('--init') + 1]) if '--init' in sys.argv \
-        else HERE / 'output' / 'myobody_walk_mocap_policy.pt'
+        else HERE / 'output' / 'myobody_walk_directional_policy.pt'   # round 2: own round-1 result
     out = Path(sys.argv[sys.argv.index('--out') + 1]) if '--out' in sys.argv else OUT_PT
     assert out.name not in ('myobody_walk_mocap_policy.pt', 'myobody_walk_policy.pt'), \
         f'refusing to overwrite the forward-only policy: {out}'
@@ -192,9 +220,12 @@ def main() -> int:
     ACT = nu
     ac = build_ac(OBS, ACT, torch)
 
-    # PARTIAL WARM-START: the obs grew by CMD_DIM, so body.0.weight cannot load wholesale.
-    # Copy every tensor that shape-matches; for body.0.weight keep the trained columns and
-    # seed the 4 new command columns with ~1e-3 noise (near-no-op for unseen inputs).
+    # WARM-START, two shapes:
+    #  a) FULL LOAD (round 2 default): init from a same-architecture 106-dim directional
+    #     checkpoint -- every tensor shape-matches, nothing is grown.
+    #  b) PARTIAL LOAD (round 1 path, kept): init from the 102-dim mocap policy -- every
+    #     matching tensor is copied; body.0.weight grew by CMD_DIM, so the trained columns
+    #     are kept and the 4 new command columns are seeded with ~1e-3 noise.
     sd_new = ac.state_dict()
     sd_old = torch.load(init, map_location=dev)
     loaded, grown, skipped = [], [], []
@@ -210,7 +241,11 @@ def main() -> int:
         else:
             skipped.append(f'{k} {tuple(v.shape)} vs {tuple(sd_new[k].shape)}')
     ac.load_state_dict(sd_new)
-    print(f'  warm-start from {init}: {len(loaded)} tensors copied verbatim')
+    if not grown and not skipped and len(loaded) == len(sd_new):
+        print(f'  FULL LOAD (round N warm start) from {init}: '
+              f'all {len(loaded)} tensors shape-matched, nothing grown')
+    else:
+        print(f'  warm-start from {init}: {len(loaded)} tensors copied verbatim')
     for g in grown:
         print(f'    GROWN {g}')
     for s in skipped:
@@ -219,10 +254,11 @@ def main() -> int:
 
     print(f'\nPPO FINE-TUNE: mocap policy + DIRECTIONAL commands '
           f'(one-hot {CMDS}, P={P_CMD}; speeds_m_s={[round(float(s), 3) for s in speed_m_s]}, '
-          f'track w={W_TRACK} ramped in after iter {RAMP_START}, sigma={SIGMA_DEG} deg)\n' + '=' * 74)
+          f'track w={W_TRACK} ramped in after iter {RAMP_START}, sigma={SIGMA_DEG} deg, '
+          f'stag w={STAG_W} below {STAG_FRAC:.0%} target, ema {STAG_TAU_S}s)\n' + '=' * 74)
     print(f'  {W} envs x {T} steps   wall-clock budget {budget:.0f}s   -> {out}')
-    print(f"  {'iter':>4}{'reward':>9}{'cmdv':>7}{'track':>8}{'surv%':>7}{'sec':>7}{'total':>8}"
-          f"   per-cmd mean speed along command, m/s")
+    print(f"  {'iter':>4}{'reward':>9}{'cmdv':>7}{'track':>8}{'stag':>7}{'surv%':>7}{'sec':>7}"
+          f"{'total':>8}   per-cmd mean speed along command, m/s")
 
     def quat_fwd(q):
         w, x, y, z = q[:, 0], q[:, 1], q[:, 2], q[:, 3]
@@ -296,7 +332,13 @@ def main() -> int:
         alive = torch.ones(W, device=dev)
         fwd_sum = torch.zeros(W, device=dev)        # projected speed along cmd_dir, m/s
         track_sum = torch.zeros(W, device=dev)
+        stag_sum = torch.zeros(W, device=dev)       # stagnation penalty applied, reward units
         dt_ctrl = mjm.opt.timestep * CONTROL_EVERY
+        # THE STAGNATION EMA, seeded AT the per-env target speed: a fresh episode is
+        # presumed innocent, and the ~0.5 s EMA must first sag below STAG_FRAC * target
+        # before the penalty bites -- so the first steps of acceleration are never punished.
+        ema_alpha = 1.0 - np.exp(-dt_ctrl / STAG_TAU_S)
+        speed_ema = tgt_speed.clone()
 
         with torch.no_grad():
             for t in range(T):
@@ -324,12 +366,19 @@ def main() -> int:
                 ra = ref_all[cmd, idx]                      # (W,6) this command's envelopes
                 terr = (ang - ra) / SIGMA_DEG
                 track = torch.exp(-terr.pow(2)).mean(1)
+                # THE STAGNATION PENALTY: alive AND smoothed speed far below target. It is
+                # multiplied by `alive` INSIDE the bracket like every other term, so a fallen
+                # env stops accumulating it the moment it falls (the whole bracket zeroes).
+                speed_ema = speed_ema + ema_alpha * (fwd - speed_ema)
+                stag = STAG_W * (speed_ema < STAG_FRAC * tgt_speed).float()
                 obs_b[t] = o; act_b[t] = raw; lp_b[t] = lp; val_b[t] = v
                 w_track = W_TRACK * min(1.0, max(0.0, (it - RAMP_START) / RAMP_LEN))
-                rew_b[t] = (1.2 * vtrack * upr + ALIVE_BONUS - EFFORT * effort + 0.5 * w_track * track) * alive
+                rew_b[t] = (1.2 * vtrack * upr + ALIVE_BONUS - EFFORT * effort
+                            + 0.5 * w_track * track - stag) * alive
                 alive_b[t] = alive
                 fwd_sum += fwd * alive
                 track_sum += track * alive
+                stag_sum += stag * alive
             _, _, last_v = ac(observe(cmd1h))
 
         adv = torch.zeros(T, W, device=dev); gae = torch.zeros(W, device=dev)
@@ -367,6 +416,7 @@ def main() -> int:
 
         mean_cmdv = (fwd_sum / T).mean().item()             # m/s along the commanded direction
         mean_track = (track_sum / T).mean().item()
+        mean_stag = (stag_sum / T).mean().item()            # mean penalty; should die as envs move
         surv = 100.0 * alive_b[-1].mean().item()
         per_cmd = []
         for ci in range(CMD_DIM):
@@ -374,14 +424,15 @@ def main() -> int:
             if msk.any():
                 per_cmd.append(f'{CMDS[ci][:4]}={(fwd_sum[msk] / T).mean().item():.3f}(n={int(msk.sum())})')
         el = time.perf_counter() - t_all
-        print(f'  {it:4d}{rew_b.mean().item():9.4f}{mean_cmdv:7.3f}{mean_track:8.3f}{surv:7.1f}'
-              f'{time.perf_counter()-ti:7.1f}{el:8.0f}   ' + ' '.join(per_cmd), flush=True)
+        print(f'  {it:4d}{rew_b.mean().item():9.4f}{mean_cmdv:7.3f}{mean_track:8.3f}{mean_stag:7.3f}'
+              f'{surv:7.1f}{time.perf_counter()-ti:7.1f}{el:8.0f}   ' + ' '.join(per_cmd), flush=True)
         torch.save(ac.state_dict(), out)
         np.save(OUT_META, dict(OBS=OBS, HID=HID, ACT=ACT, CMD_DIM=CMD_DIM, CMDS=CMDS,
                                OBS_LAYOUT='[quat(4), angvel(3), linvel(3), qpos(nj), qvel(nj), '
                                           'cmd_onehot(4: forward,backward,left,right)]',
                                STAND_Z=STAND_Z,
-                               NOTE='direction-conditioned fine-tune from myobody_walk_mocap_policy.pt; '
+                               NOTE='round 2: warm-started from the round-1 directional policy with '
+                                    'stagnation penalty + rebalanced command sampling; '
                                     'see tools/train_myobody_directional.py'))
         it += 1
 
