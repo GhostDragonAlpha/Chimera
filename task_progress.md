@@ -303,3 +303,30 @@ NEXT (round 2, exact):
    optimum the alive bonus pays for). Right/backward need stability: more iters + tracking.
 2. Relaunch 8 h, re-gate all four commands with the same harness.
 3. Menu after G2 clears: A5+G1, C1+C3 (autonomic), B2.
+
+---
+
+## 2026-08-01 — G2 round 2: the freeze is DEAD; every direction translates; the constraint is now BALANCE UNDER MOTION
+
+511 iters / 8 h (task bash-903jowky), warm-started from round 1. Training-log final:
+stag 0.007 (dead), forw 0.60 / back 0.43 / left 0.13 / righ 0.40 m/s.
+Gate (same harness, worst of 5 seeds x 10 s):
+
+| cmd | R1 worst | R2 seeds | R2 worst | what changed |
+|---|---|---|---|---|
+| forward | 10.0 PASS | 10,10,10,10,8.9 | 8.9 FAIL | mild regression -- seed fell at 8.9 s walking its FASTEST (0.29 m/s) |
+| backward | 2.3 | 3.7,9.4,4.1,7.2,9.0 | 3.7 FAIL | transformed: 0.45-0.57 m/s = 75-96% of target, nearest any direction to its reference; falls while fast |
+| left | 5.6 (frozen) | 1.3,8.0,7.5,1.5,10 | 1.3 FAIL | freeze DEAD: 1.0-1.9 m every seed (4-100x the old band), duty 0.17-0.52, two seeds >= 85% of target; falls while stepping |
+| right | 1.3 | 10,10,10,10,7.0 | 7.0 FAIL | flipped: stable but slow (~20% target), wrong-way gone |
+
+Gate score 1/4 -> 0/4 but the diagnosis is strictly better: R1 pathologies (parked left,
+wrong-way right) are gone; all four directions step for real. Balance under motion is the
+binding constraint everywhere.
+
+NEXT (round 3, exact):
+1. Warm-start from round 2. Add a FALL PENALTY (death costs, e.g. -2 at termination) --
+   the one failure mode left is falling, and nothing in the reward prices it. Check the
+   episode horizon vs the 10 s gate first: if T x CONTROL_EVERY x dt < ~12 s, raise T so
+   training practices longer balance than the gate demands.
+2. Keep the stagnation penalty (it worked) and P_CMD.
+3. Relaunch 8 h, re-gate all four. Watch forward (marginal regression, do not revert yet).

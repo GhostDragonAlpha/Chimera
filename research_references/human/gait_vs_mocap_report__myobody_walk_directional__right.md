@@ -3,7 +3,7 @@
 **Policy:** `output/myobody_walk_directional_policy.pt` (PPO, 290-muscle MyoSuite myobody; recovered rollout contract)
 **Reference:** CMU MoCap subject 35 walk, 120 Hz — see `mocap_walk_reference.json`
 **Method:** 5 randomized starts x 10 s, WORST-of-N scoring (project rule), contact dyad
-(MuJoCo truth vs geometric proxy, 96.3% agreement at 0.2 cm).
+(MuJoCo truth vs geometric proxy, 92.5% agreement at 0.2 cm).
 
 ## Reference (real human, measured)
 
@@ -19,12 +19,12 @@
 
 | metric | value |
 |---|---|
-| classification | NOT A GAIT — periodicity 0.30: there is no repeating cycle here. This is thrashing that happens to travel. |
-| periodicity | 0.30 (walk needs >= ~0.6) |
-| duty factor | 0.41 (human 0.55-0.65) |
-| survival | 1.3 - 8.2 s of 10 s |
-| forward distance | -1.13 - 2.51 m |
-| cadence | 81.08108108108108 steps/min |
+| classification | NOT A GAIT — periodicity 0.12: there is no repeating cycle here. This is thrashing that happens to travel. |
+| periodicity | 0.12 (walk needs >= ~0.6) |
+| duty factor | 0.42 (human 0.55-0.65) |
+| survival | 7.0 - 10.0 s of 10 s |
+| forward distance | 1.14 - 1.36 m |
+| cadence | 117.52577319587627 steps/min |
 
 ## Verdict
 
