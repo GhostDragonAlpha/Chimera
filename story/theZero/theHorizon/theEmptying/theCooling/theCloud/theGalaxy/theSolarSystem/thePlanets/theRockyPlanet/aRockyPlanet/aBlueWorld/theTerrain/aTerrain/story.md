@@ -132,3 +132,28 @@ some scale, terrain stops being spectrum-limited and becomes friction-limited.
 Five octaves reach from 46.9 m down to 2.9 m, where **theGround** takes over at four metres across.
 A membrane resolves to its child's extent and stops; asking this one for a pebble is asking the
 wrong membrane.
+
+### And then the canvas turned out to be twenty-one sine waves
+
+The octaves went in and the close render came back wearing a diagonal cross-hatch. The obvious
+suspect was the new code, so it was rebuilt in Fourier space — and the pattern stayed. Measuring
+instead of guessing, as the ratio of most- to least-favoured direction in each field's power
+spectrum, where 1.0 means no preferred axis:
+
+| field | directional ratio |
+|---|---|
+| `_red_surface` canvas, 3 waves × 7 octaves | **27.8×** |
+| the same after 500 steps of erosion | **8.2×** |
+| the new detail field, Fourier noise | **1.1×** |
+
+The new code was innocent. The cross-hatch was the *canvas* — twenty-one plane waves is an
+interference pattern, not a spectrum — and erosion, which was supposed to destroy it, only halves
+it twice, because incision follows the ground it is handed. So the canvas was rebuilt the same way
+the octaves were.
+
+Two things fell out that were not the point of the change. The measured spectral slope moved from
+2.54 to **2.95 ± 0.08** — not because the terrain got better, but because a radial average is
+dragged off the true slope by directional spikes, so the instrument had been reading the artifact.
+And Hack's exponent, this membrane's own acceptance test, stayed inside its seed spread: **0.573 ±
+0.026** over five seeds, against real rivers' 0.55–0.60. The landscape is a different draw now; the
+law it obeys is the same one.

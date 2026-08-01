@@ -19,11 +19,11 @@
 | `duration_s` | 8.64e+04 |
 | `mineral_materials` | {'quartz': {'genome_id': 24, 'rgb_mean': [0.7100783586502075, 0.707780122756958, 0.6420968770980835]}, 'feldspar': {'genome_id': 9, 'rgb_mean': [0.6007148623466492, 0.5874956250190735, 0.45696356892585754]}, 'oxide': {'genome_id': 28, 'rgb_mean': [0.3465217053890228, 0.3319152891635895, 0.2344687581062317]}} |
 | `minerals_source` | story/data/material_genomes.json -- quartz/feldspar/oxide ROLES filled by measured ground-scan genomes; oxide is the reddest soil in the collection (no rust-bearing scan exists -- flagged) |
-| `soil_depth_m` | 0.2863 |
+| `soil_depth_m` | 0.302 |
 | `soil_depth_flat_m` | 1.459 |
 | `soil_depth_steep_m` | 0 |
 | `bare_rock_above_deg` | 32.88 |
-| `erosion_mm_kyr` | 43.44 |
+| `erosion_mm_kyr` | 42.09 |
 | `production_mm_kyr` | 77 |
 | `repose_deg` | 40.03 |
 | `repose_regolith_deg` | 40.03 |

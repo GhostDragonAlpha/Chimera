@@ -19,7 +19,11 @@ THE CHECK IS HACK'S LAW, AND IT PASSES. Measure every basin's area against the l
 longest stream and real rivers give L ~ A^0.57 -- on every continent, since Hack 1957, and put into
 this simulation nowhere. That is what makes it worth running.
 
-    measured here: 0.564        real rivers: 0.55 - 0.60
+    measured here: 0.573 +/- 0.026 over five seeds        real rivers: 0.55 - 0.60
+
+One draw is not a measurement. Across seeds 2029/7/101/555/9001 the exponent runs 0.548 to 0.604,
+so the literature band sits inside this membrane's own spread rather than beside it, and any single
+number quoted from one seed is a draw from that distribution.
 
 It did not pass at first: 0.19, which is a fractal wearing valleys. Three things were wrong and all
 three were mine. The flow graph was computed before the last incision and read after it, so long
@@ -93,21 +97,29 @@ LENS = {
 def _red_surface(n, rng, roughness):
     """The starting ground: a red-spectrum surface, power ~ 1/k.
 
-    Real topography is not white noise -- a hill's neighbour is nearly as high as it is. Summing
-    waves with amplitude 1/k IS that spectrum, and it is the same law the parent uses at planet
-    scale. This is only the CANVAS; the shape that matters gets carved into it."""
+    Real topography is not white noise -- a hill's neighbour is nearly as high as it is. A 1/k
+    spectrum IS that statement, and it is the same law the parent uses at planet scale. This is only
+    the CANVAS; the shape that matters gets carved into it.
+
+    IT USED TO BE TWENTY-ONE SINE WAVES, AND YOU COULD SEE THEM. Seven octaves of three plane waves
+    each is not a spectrum, it is an interference pattern, and every render of this patch wore a
+    diagonal cross-hatch because of it. MEASURED, as the ratio of most- to least-favoured direction
+    in the power spectrum (1.0 is isotropic):
+
+        the 3-wave canvas   27.8x        after 500 steps of erosion   8.2x
+
+    Erosion was supposed to destroy it and does not -- it only halves it twice, because incision
+    follows the ground it is handed. Built in Fourier space instead, every direction gets its own
+    random phase at the amplitude the law asks for and the same measurement gives 1.1x. Same
+    spectrum, same seed, same determinism, no preferred axis."""
     import numpy as np
-    y, x = np.mgrid[0:n, 0:n] / float(n)
-    z = np.zeros((n, n))
-    norm = 0.0
-    for octv in range(7):
-        k = 2.0 * pi * (2.0 ** octv)
-        amp = 1.0 / (2.0 ** octv)
-        for _ in range(3):
-            th = rng.uniform(0, 2 * pi)
-            z += amp * np.sin(k * (np.cos(th) * x + np.sin(th) * y) + rng.uniform(0, 2 * pi))
-            norm += amp * amp
-    return z / sqrt(norm) * roughness
+    f = np.fft.fftfreq(n, d=1.0 / n)
+    kk = np.hypot(*np.meshgrid(f, f, indexing="ij"))
+    kk[0, 0] = 1.0                                   # the mean is set below, not by the spectrum
+    amp = 1.0 / kk                                   # power ~ 1/k^2 in amplitude = the red canvas
+    amp[0, 0] = 0.0
+    z = np.fft.ifft2(amp * np.exp(1j * rng.uniform(0, 2 * pi, size=(n, n)))).real
+    return z / (z.std() + 1e-12) * roughness
 
 
 def _bilinear(a, n):
@@ -133,7 +145,14 @@ def _spectral_beta(z, dx, lo=4, hi_frac=3):
 
     So beta is not a knob. It is read off the eroded surface this membrane already built, which
     means the octaves added below the grid are a CONTINUATION of what erosion produced rather than
-    decoration laid on top. Measured here: beta = 2.54.
+    decoration laid on top. Measured here: beta = 2.95 +/- 0.08 over five seeds.
+
+    IT USED TO READ 2.54, AND THAT WAS THE CANVAS'S ARTIFACT TALKING. While _red_surface was built
+    from twenty-one plane waves its power spectrum had directional spikes, which drag a RADIAL
+    average away from the true slope. Rebuilding the canvas in Fourier space moved the measured
+    beta to 2.95 and cost nothing else -- Hack's exponent stayed inside its own seed spread. So the
+    number did not change because the terrain changed; it changed because the instrument stopped
+    reading its own artifact.
 
     NOT THE SAME NUMBER AS THE IMAGE SPECTRUM, and the distinction is worth stating because the two
     were briefly conflated. Comparing this membrane's clay RENDER against a generated reference
@@ -247,18 +266,38 @@ def _detail_level(z, detail, dx, repose_deg, lo=0.0, hi=1.0, iters=24):
 
 
 def _detail_field(n, amps, lams, patch_m, rng):
-    """The octaves themselves: the same summed-wave construction the canvas uses, continued.
+    """The octaves themselves: band-limited noise, synthesised in Fourier space.
 
-    Deterministic by seed, like everything else here -- same seed, same world, forever."""
+    NOT A SUM OF SINE WAVES, AND THE PICTURE IS WHY. The first version copied _red_surface's
+    construction -- three plane waves per octave -- and the close render came back wearing a regular
+    diagonal cross-hatch. Three waves is not noise, it is an interference pattern, and you can see
+    it. The canvas gets away with it because five hundred steps of erosion run afterwards and
+    destroy the periodicity; these octaves are never eroded, so nothing hides it.
+
+    Building in Fourier space fixes it at the root rather than by adding more waves. Give every
+    frequency in the octave's band a random phase and an amplitude of one, transform back, and the
+    result is a genuinely stochastic Gaussian field -- every direction represented, no preferred
+    axis, no repeat -- with exactly the band it was asked for. It is also faster: one FFT an octave
+    at 512^2 against thousands of full-grid sine evaluations.
+
+    Each band is normalised to unit variance and then scaled by its DERIVED amplitude, so the
+    spectrum the octave ladder specifies is what the field actually carries."""
     import numpy as np
-    y, x = np.mgrid[0:n, 0:n] / float(n)
+    if not amps:
+        return np.zeros((n, n))
+    f = np.fft.fftfreq(n, d=patch_m / n)             # cycles per metre
+    kk = np.hypot(*np.meshgrid(f, f, indexing="ij"))
     d = np.zeros((n, n))
     for amp, lam in zip(amps, lams):
-        k = 2.0 * pi * (patch_m / lam)
-        for _ in range(3):
-            th = rng.uniform(0, 2 * pi)
-            d += (amp / sqrt(3.0)) * np.sin(
-                k * (np.cos(th) * x + np.sin(th) * y) + rng.uniform(0, 2 * pi))
+        band = (kk >= 1.0 / (2.0 * lam)) & (kk < 1.0 / lam)
+        if not band.any():
+            continue
+        ph = rng.uniform(0, 2 * pi, size=(n, n))
+        F = np.where(band, np.exp(1j * ph), 0.0)
+        g = np.fft.ifft2(F).real
+        sd = g.std()
+        if sd > 1e-12:
+            d += amp * g / sd
     return d
 
 

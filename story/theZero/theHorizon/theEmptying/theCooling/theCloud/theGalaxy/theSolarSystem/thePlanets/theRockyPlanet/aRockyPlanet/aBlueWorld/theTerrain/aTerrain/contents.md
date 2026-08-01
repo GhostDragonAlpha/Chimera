@@ -22,25 +22,25 @@
 | `ground_patch_m` | 4 |
 | `grid` | 128 |
 | `cell_m` | 93.75 |
-| `relief_m` | 451.4 |
-| `spectral_beta` | 2.545 |
+| `relief_m` | 477.3 |
+| `spectral_beta` | 3.003 |
 | `spectral_beta_source` | measured from this membrane's own eroded surface (_spectral_beta) |
-| `octave_amplitude_ratio` | 0.8279 |
+| `octave_amplitude_ratio` | 0.7064 |
 | `detail_octaves` | 5 |
 | `detail_floor_m` | 2.93 |
-| `detail_relief_m` | 3.552 |
-| `detail_amplitudes_m` | [0.5001905091992005, 0.4141255979080568, 0.3428693821425664, 0.28387381462211747, 0.23502927594335324] |
-| `detail_level` | 0.05117 |
+| `detail_relief_m` | 3.496 |
+| `detail_amplitudes_m` | [0.6226995319601657, 0.4399056803445579, 0.3107710824677281, 0.21954402958042693, 0.15509673725648732] |
+| `detail_level` | 0.07559 |
 | `detail_level_set_by` | bisection against repose_deg on the TOTAL surface |
 | `friction_limited` | True |
-| `mean_slope_deg` | 20.04 |
+| `mean_slope_deg` | 19.46 |
 | `p95_slope_deg` | 33 |
-| `mean_slope_deg_grid_only` | 17.04 |
-| `p95_slope_deg_grid_only` | 24.44 |
+| `mean_slope_deg_grid_only` | 17.11 |
+| `p95_slope_deg_grid_only` | 23.94 |
 | `repose_deg` | 33 |
 | `slopes_below_repose` | True |
-| `drainage_density_per_km` | 0.9023 |
-| `hack_exponent` | 0.5643 |
+| `drainage_density_per_km` | 0.7969 |
+| `hack_exponent` | 0.5479 |
 | `carved_by` | River |
 | `surface_materials` | {'veg': {'genome_id': 26, 'rgb_mean': [0.5253729224205017, 0.6056915521621704, 0.34528759121894836]}, 'rock': {'genome_id': 24, 'rgb_mean': [0.7100783586502075, 0.707780122756958, 0.6420968770980835]}, 'water': {'genome_id': None, 'rgb_mean': [0.1, 0.2, 0.3], 'flag': 'TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept'}} |
 | `surface_source` | story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py) |
