@@ -60,7 +60,7 @@
 | `mass_beats_geometry_by_ratio` | 5.637 |
 | `capture_step_m` | 0.3862 |
 | `capture_step_unloaded_m` | 0.3768 |
-| `step_length_m` | 0.5914 |
+| `step_length_m` | 0.5785 |
 | `catch_in_one_step` | True |
 | `toe_lever_m` | 0.1267 |
 | `heel_lever_m` | 0.08775 |
@@ -103,8 +103,8 @@
 | `sink_cargo_kg` | 336.6 |
 | `settle_cargo_kg` | 49.19 |
 | `ground_bites` | True |
-| `sink_per_step_m` | 0.02125 |
-| `sink_loose_sand_m` | 0.1169 |
+| `sink_per_step_m` | 0.02079 |
+| `sink_loose_sand_m` | 0.1143 |
 | `foot_area_m2` | 0.02764 |
 | `earth_metabolic_W` | 466.3 |
 | `earth_speed_ms` | 1.175 |
@@ -115,7 +115,7 @@
 | `earth_foot_pressure_kPa` | 42.53 |
 | `earth_within_sustainable` | False |
 | `earth_cost_ratio` | 1.424 |
-| `gravity_ladder` | [[1.62, 0.6193, 0.4774, 117.66, 0.1567, 0.282, 7.026, 0.02125], [3.71, 0.3991, 0.7225, 185.06, 0.2371, 0.6457, 16.09, 0.02125], [7.0761, 0.2849, 0.9978, 327.43, 0.3274, 1.2316, 30.689, 0.02125], [9.8066, 0.2428, 1.1746, 466.33, 0.3854, 1.7068, 42.531, 0.02125]] |
+| `gravity_ladder` | [[1.62, 0.6193, 0.4774, 117.66, 0.1567, 0.282, 7.026, 0.02079], [3.71, 0.3991, 0.7225, 185.06, 0.2371, 0.6457, 16.09, 0.02079], [7.0761, 0.2849, 0.9978, 327.43, 0.3274, 1.2316, 30.689, 0.02079], [9.8066, 0.2428, 1.1746, 466.33, 0.3854, 1.7068, 42.531, 0.02079]] |
 | `gravity_ladder_row` | g_m_s2, knee_fraction, speed_ms, metabolic_W, shove_limit_ms, ankle_demand_ratio, foot_pressure_kPa, sink_per_step_m |
 | `load_ladder` | [[0.0, 0.0, 0.1172, 260.6, 1.7111, 1.00913, 0.0, 0.3356, 0.9709, 24.192], [0.1, 8.46, 0.2172, 278.6, 1.9037, 1.02891, 0.645, 0.3323, 1.0578, 26.358], [0.2, 16.92, 0.3172, 300.6, 2.1251, 1.0457, 1.292, 0.3296, 1.1447, 28.523], [0.3, 25.38, 0.4172, 327.4, 2.3754, 1.06011, 1.941, 0.3274, 1.2316, 30.689], [0.4, 33.84, 0.5172, 359.7, 2.6546, 1.07263, 2.591, 0.3255, 1.3185, 32.854], [0.5, 42.29, 0.6172, 398.3, 2.9626, 1.0836, 3.242, 0.3238, 1.4054, 35.02], [0.6, 50.75, 0.7172, 443.8, 3.2995, 1.09329, 3.894, 0.3224, 1.4923, 37.185]] |
 | `load_ladder_row` | cargo_fraction, cargo_kg, carried_fraction, metabolic_W, cost_per_kg_carried_W, com_height_m, lean_deg, shove_limit_ms, ankle_demand_ratio, foot_pressure_kPa |

@@ -471,3 +471,43 @@ UNSOURCED = [
      "available": "NASA-STD-3001 / life-support handbooks give consumable rates with provenance",
      "status": "NOT SOURCED"},
 ]
+
+
+def segment_fractions(sex="M"):
+    """THIGH, SHANK AND ANKLE DROP AS FRACTIONS OF STATURE -- measured, not Dempster's eight cadavers.
+
+    UNSOURCED has listed these since it was written: "segment LENGTHS above the leg -- thigh/shank/
+    foot splits ... typed constants attributed to Dempster in comments ... NOT INGESTED", with the
+    remedy named in the same entry and already in this repo. This ingests it.
+
+    THREE ANSUR II LANDMARKS AND TWO SUBTRACTIONS. trochanterion (the hip), lateral femoral
+    epicondyle (the knee), lateral malleolus (the ankle), all heights above the floor:
+
+        thigh = trochanterion - epicondyle        shank = epicondyle - malleolus
+        ankle drop = malleolus                    (a foot has thickness)
+
+    AND THEY CLOSE, WHICH IS THE POINT. thigh + shank + drop = trochanterion height exactly, because
+    they are differences of the same measured heights on the same 6,068 people rather than three
+    fractions gathered from different places and hoped to be compatible. Dempster's do not close:
+    0.245 + 0.246 = 0.491 against a leg the same document calls 0.530, and the 0.039 left over was
+    named "ankle drop" to absorb the difference.
+
+    MEASURED (medians): thigh 0.2325 M / 0.2331 F, against Dempster's 0.245 -- a 5% shorter thigh.
+    That is not a small correction to a decorative number: the swinging foot's height above the
+    ground is a small difference between large lengths, so the whole segment error lands on it."""
+    import csv as _csv, statistics as _st
+    import os
+    _d = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                      "..", "research_references", "human")
+    f = os.path.join(_d, "ANSUR_II_%s_Public.csv"
+                     % ("MALE" if str(sex).upper().startswith("M") else "FEMALE"))
+    rows = list(_csv.DictReader(open(f, encoding="latin-1")))
+
+    def med(c):
+        return _st.median([float(r[c]) for r in rows if r.get(c) not in (None, "", ".")])
+
+    S, tr, ep, ma = med("stature"), med("trochanterionheight"),         med("lateralfemoralepicondyleheight"), med("lateralmalleolusheight")
+    return {"thigh_frac": (tr - ep) / S, "shank_frac": (ep - ma) / S,
+            "ankle_drop_frac": ma / S, "hip_height_frac": tr / S,
+            "n": len(rows), "source": "ANSUR II medians (trochanterion / lateral femoral "
+                                      "epicondyle / lateral malleolus heights)"}

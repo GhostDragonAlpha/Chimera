@@ -153,8 +153,16 @@ def witness(name: str) -> dict:
     # geometry, in units of stature, as the membrane itself uses them
     h = float(nums.get("height_m", 1.0))
     leg = float(nums.get("leg_length_m", 0.53 * h)) / h
-    thigh, shank = 0.245, 0.246          # theHuman's own fractions
-    heel = 0.050
+    # THE SEGMENTS, READ FROM THE MEMBRANE. These were typed here as 0.245/0.246 -- a second copy
+    # of Dempster sitting inside the instrument -- and the moment theHuman's were measured from
+    # ANSUR II the witness went on grading the new skeleton against the old one and reported 1.78%
+    # penetration that was entirely its own. Same failure as the stale 0.152 default, same week.
+    thigh = _inherited(p, "thigh_frac")
+    shank = _inherited(p, "shank_frac")
+    if thigh is None or shank is None:
+        return {"name": name, "error": "publishes no thigh_frac/shank_frac -- a body that publishes "
+                                       "a gait cycle must publish the skeleton it was drawn with"}
+    heel = _inherited(p, "heel_lever_frac") or 0.050
     # THE PIVOT THE MEMBRANE ACTUALLY USES, read from what it published. Grading a foot against a
     # lever it does not use would test this file's opinion rather than the body's geometry -- and
     # since the pivot moved from the toe tip to the ball, a witness holding the old value would
@@ -185,7 +193,9 @@ def witness(name: str) -> dict:
                 "error": "no forefoot_lever_frac anywhere in this membrane's chain -- a body that "
                          "publishes a gait cycle must publish the foot geometry it was drawn with, "
                          "or the cycle cannot be judged"}
-    drop = leg - (thigh + shank)
+    drop = _inherited(p, "ankle_drop_frac")
+    if drop is None:
+        drop = leg - (thigh + shank)
 
     N = len(rows)
     duty = [0, 0]

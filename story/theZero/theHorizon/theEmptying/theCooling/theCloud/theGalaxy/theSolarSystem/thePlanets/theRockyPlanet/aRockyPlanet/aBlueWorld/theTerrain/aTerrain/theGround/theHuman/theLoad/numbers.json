@@ -46,7 +46,7 @@
   "mass_beats_geometry_by_ratio": 5.637273498558881,
   "capture_step_m": 0.3861895801091655,
   "capture_step_unloaded_m": 0.3767876588158608,
-  "step_length_m": 0.5913821633221136,
+  "step_length_m": 0.5784540335544585,
   "catch_in_one_step": true,
   "toe_lever_m": 0.12672201481667458,
   "heel_lever_m": 0.08775000000000001,
@@ -89,8 +89,8 @@
   "sink_cargo_kg": 336.5783412845721,
   "settle_cargo_kg": 49.18981051867017,
   "ground_bites": true,
-  "sink_per_step_m": 0.02124972555571891,
-  "sink_loose_sand_m": 0.11687349055645403,
+  "sink_per_step_m": 0.02078518802559094,
+  "sink_loose_sand_m": 0.1143185341407502,
   "foot_area_m2": 0.027642000000000003,
   "earth_metabolic_W": 466.3284402155148,
   "earth_speed_ms": 1.174585200824902,
@@ -110,7 +110,7 @@
       0.1567,
       0.282,
       7.026,
-      0.02125
+      0.02079
     ],
     [
       3.71,
@@ -120,7 +120,7 @@
       0.2371,
       0.6457,
       16.09,
-      0.02125
+      0.02079
     ],
     [
       7.0761,
@@ -130,7 +130,7 @@
       0.3274,
       1.2316,
       30.689,
-      0.02125
+      0.02079
     ],
     [
       9.8066,
@@ -140,7 +140,7 @@
       0.3854,
       1.7068,
       42.531,
-      0.02125
+      0.02079
     ]
   ],
   "gravity_ladder_row": "g_m_s2, knee_fraction, speed_ms, metabolic_W, shove_limit_ms, ankle_demand_ratio, foot_pressure_kPa, sink_per_step_m",

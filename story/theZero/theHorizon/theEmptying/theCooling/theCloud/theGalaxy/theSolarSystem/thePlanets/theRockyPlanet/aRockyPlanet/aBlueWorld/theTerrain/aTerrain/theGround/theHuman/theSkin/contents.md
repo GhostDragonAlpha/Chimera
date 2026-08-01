@@ -18,9 +18,9 @@
 | `respiratory_rate_per_min_allometric` | 16.4 |
 | `heart_rate_source` | Stahl 1967 mammalian allometry HR = 241*M^-0.25; over-predicts for humans (77.3 vs a measured resting 60-70), and both routes are published rather than one being chosen |
 | `pulse_blood_swing_frac` | 0.06 |
-| `beats_per_stride` | 4.49 |
+| `beats_per_stride` | 4.392 |
 | `extent_m` | 1.755 |
-| `duration_s` | 3.485 |
+| `duration_s` | 3.409 |
 | `epidermis_m` | 6e-05 |
 | `epidermis_over_stature` | 3.419e-05 |
 | `melanin_fraction` | 0.135 |

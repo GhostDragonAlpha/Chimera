@@ -54,8 +54,25 @@ _AN = _ansur()["male"]          # the person of this story defaults to the measu
 LEG_FRAC = 0.530           # hip JOINT to floor (Dempster): the pendulum's length. The SURFACE
                            # landmark (trochanterion) sits lower: ANSUR II measures 0.5121 of
                            # stature (n=4,082) -- used for the outer body, not the swing.
-THIGH_FRAC = 0.245         # hip to knee
-SHANK_FRAC = 0.246         # knee to ankle
+# ── THE SEGMENTS, MEASURED (2026-08-01) ──────────────────────────────────────────────────────
+# These were 0.245 and 0.246, attributed to Dempster (1955) -- eight cadavers -- and measured.py's
+# UNSOURCED list has carried them as a named debt since it was written, with the remedy sitting in
+# this repo. Now read from ANSUR II's own landmarks over 4,082 adults: trochanterion minus lateral
+# femoral epicondyle is the thigh, epicondyle minus lateral malleolus is the shank, and the
+# malleolus height IS the ankle drop.
+#
+# AND THEY CLOSE, WHICH DEMPSTER'S NEVER DID. thigh + shank + drop = trochanterion height exactly,
+# because all three are differences of the same heights on the same people. Dempster's 0.245 +
+# 0.246 = 0.491 against a leg the same file called 0.530, and the 0.039 left over was christened
+# "ankle drop" to absorb a discrepancy nobody had measured.
+#
+# THE THIGH IS 5% SHORTER than the cadaver figure, and that is not cosmetic: the swinging foot's
+# height above the ground is a small difference between large lengths, so the entire segment error
+# lands on it.
+import measured as _m_seg                                   # noqa: E402
+_SEG = _m_seg.segment_fractions("male")                     # must match GAIT_SEX; asserted below
+THIGH_FRAC = _SEG["thigh_frac"]        # 0.2325, ANSUR II n=4082
+SHANK_FRAC = _SEG["shank_frac"]        # 0.2382, ANSUR II n=4082
 FOOT_LEN_FRAC = float(_AN["foot_length_m"]["median"]) / float(_AN["stature_m"]["median"])   # 0.1544, ANSUR II
 COM_FRAC = 0.575           # standing centre of mass, as a fraction of height
 # EYE HEIGHT, and it belongs to the body rather than to a camera. This lived in ChimeraEngine's
@@ -199,7 +216,11 @@ def consumables_kg(hours):
 # (L - R) from that hub, rises and falls by (L - R)(1 - cos theta) instead of L(1 - cos theta): the
 # foot takes 30% of the vault out of the walk for free. That is a large part of why walking is cheap.
 ROCKER_FRAC = 0.30         # rocker radius / leg length -- Hansen, Childress & Knox 2004
-ANKLE_DROP_FRAC = LEG_FRAC - (THIGH_FRAC + SHANK_FRAC)   # ankle to sole: a foot has thickness
+# THE ANKLE DROP IS NOW MEASURED TOO, not a remainder. It used to be LEG_FRAC minus the two
+# segments -- a subtraction that silently absorbed whatever the three numbers disagreed by. ANSUR
+# II measures the lateral malleolus height directly, and the three MEASURED values close on the
+# trochanterion height by construction.
+ANKLE_DROP_FRAC = _SEG["ankle_drop_frac"]                # 0.0416, ANSUR II lateral malleolus
 FOREFOOT_FRAC = 0.10       # ball-of-foot to ankle, as a fraction of stature (Dempster)
 
 
@@ -232,6 +253,8 @@ FOREFOOT_FRAC = 0.10       # ball-of-foot to ankle, as a fraction of stature (De
 # would delete a derivation and put data in its place, which is the opposite of the method. They
 # are compared in measure() instead, where a disagreement is a finding rather than a silent patch.
 GAIT_SEX = "male"          # which measured cohort this body's walk is read from
+assert GAIT_SEX.lower().startswith("m"), (
+    "the segment fractions above were read for the male cohort -- change both together")
 GAIT_AGE = 30.0            # years -- a dial: turn it and the curves change, because people do
 _GAIT_CACHE = None
 
@@ -1033,6 +1056,14 @@ def derive(parent, free):
         # gait table: the heel's lever behind the ankle (where initial contact lands), and the
         # ankle's height above the sole plane it pivots over. The table's hip heights were solved
         # against exactly these -- a boot built from them cannot disagree with the hip it serves.
+        # THE SEGMENTS THIS BODY IS ACTUALLY BUILT FROM, published because they used to be TYPED
+        # in the witness as well as here, and the two copies drifted the moment one was measured.
+        # A body that publishes a gait cycle must publish the skeleton it was drawn with.
+        "thigh_frac": THIGH_FRAC,
+        "shank_frac": SHANK_FRAC,
+        "segment_source": _SEG["source"],
+        "segment_n": _SEG["n"],
+        "segment_lengths_are_sourced": True,
         "heel_lever_frac": HEEL_FRAC,
         "ankle_drop_frac": ANKLE_DROP_FRAC,
         # THE WHOLE FOOT, HEEL TO TOE, published because a child was typing its own copy of it.
