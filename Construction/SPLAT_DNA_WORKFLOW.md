@@ -42,7 +42,14 @@ Recognized genomes get **serial numbers** — a **codebook**. The scene then com
 | **Hull material library** (space game) | 10 opaque surface genomes from truck/train/bicycle; **splat SHAPE separates smooth panel from rough corrosion** at equal brightness | `space_materials.py` |
 | **Corpus farmed** (2026-07-22/23) | **35 GB, license-clean**: 28 splat scans + 39 INRIA trained models (13 scenes) + **489 CC objects across 20 categories** + 4D emissive FX + **611 camera poses** | `objaverse_fetch.py` |
 
+| **Splat DEMAND from a generated video** (2026-08-01) | at matched starting density the take asks for **1.398×** the primitives flat clay does; growth is content-driven because the threshold is an absolute residual, not a quantile | `tools/splat_genome.py` + `gsplat_fit.py` |
+| **Surface complexity from a generated video** | **1.71×** the fitting cost of flat clay at equal splats/px; survives a bilateral denoise (1.655 → 1.565) that strips 2.3× more HF energy from the take, so it is edge-preserved surface and not codec grain | `tools/splat_genome.py` |
+
 **REFUTED — tested, did not work (recorded, not buried):**
+
+| **Per-splat SHAPE features from a generated video** (2026-08-01) | `log_size`, `aniso`, `opacity` fitted from a generated take match **the clay we sent it** to within 6–7% — and the clay is one known flat grey rendered by our own engine, so those numbers are the FITTER'S signature, not the material's. Fixed N pins mean splat area at area/N by conservation. **Adaptive densification was then built and did not rescue them** (7.5% / 6.5% / 6.0% against a 15% bar): a single 2D fit has no photometric consistency across views to force a splat to be the size of the thing it represents. Per-splat distributions need a real multi-view 3DGS scan. | `tools/splat_genome.py` |
+| **Quantile-based densification** | grew every image at the same rate — take and clay both landed on **5,619 splats, identical to the digit**. A threshold defined in terms of the population it measures cannot report anything about that population. | `gsplat_fit.py` history |
+| **Median-multiple densification** | meant to read the gradient distribution's tail instead of a fixed fraction; at matched starting density both sides finished at **0.253 splats/px, ratio 0.999** — gradient magnitude distributions have nearly the same *shape* whatever the content, differing in scale not skew. | `gsplat_fit.py` history |
 - **Spatial voting (membranes)** — smoothing each splat's genome vote across its neighbourhood moved identify **82.5% → 82.8%**: flat. Diagnosis: the bark/ground confusion is **genuine material-DNA overlap, not spatial noise**, so no amount of spatial smoothing can repair it. The real lever is *richer features* (rung 9.6 — grain/orientation coherence separated bark 0.53 from ground 0.39 and was never actually in the classifier). `spatial_vote.py`
 
 **DESIGNED — coherent, not yet built:**
@@ -150,7 +157,7 @@ They share the DNA vocabulary: the photo pipeline's **patches** are a hand-cut a
 | `space_materials.py` | Hull material library from the metal-bearing scans | **PROVEN** — 10 surface genomes |
 | `spatial_vote.py` | Neighbourhood smoothing of genome votes | **REFUTED** — 82.5% → 82.8%, flat. Kept as the record of a dead end (see §2). |
 | `objaverse_fetch.py` | Pull CC objects by LVIS category from Objaverse | PROVEN — 489 objects |
-| `gsplat_fit.py` | Splat fitting | PROVEN |
+| `gsplat_fit.py` | Splat fitting, **with adaptive density control (2026-08-01)** — prunes the invisible, splits the large, clones the small, growing on an ABSOLUTE residual threshold so the population stops when the surface is resolved. Adam moments carried across the resize. `densify=False` restores the old fixed-N behaviour. | PROVEN — error 0.01009 → 0.00843 |
 | `export_web.py` | Honest probe: how much of a scan is actually plant? Isolates foliage by colour, traces the largest connected green mass | PROVEN — a *measurement*, not an exporter (despite the name) |
 | `web_export.py` | Writes `web/object.json` for the browser viewer | PROVEN |
 

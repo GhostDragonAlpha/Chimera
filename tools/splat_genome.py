@@ -28,15 +28,35 @@ detail accumulates many small splats and flat surfaces keep few large ones. THAT
 size distribution a material property in the real codebook. Without densification, these numbers
 describe the --splats flag.
 
-    log_size, aniso, opacity from a generated video: NOT RECOVERABLE.
-    They need a real 3DGS scan, or a fitter with adaptive densification.
+DENSIFICATION WAS THEN BUILT, AND IT DID NOT RESCUE THEM (2026-08-01). gsplat_fit now grows the
+population where the residual says the surface is unresolved. It is a real improvement -- error
+down ~25%, and the reconstructions are visibly better -- but measured against the same clay control
+the three features still do not separate:
 
-WHAT IS RECOVERABLE, and it is the question those three features were being asked in the first
-place: HOW COMPLEX IS THE SURFACE. At a budget set PER SUBJECT PIXEL, the generated take costs
-1.57-1.78x the fitting error of flat clay, and that survives a bilateral denoise (1.655 -> 1.565)
-which strips 2.3x more high-frequency energy from the take than from the clay. So it is
-edge-preserved surface detail, not codec grain. One measured scalar, with a control, in place of
-three features that were the fitter's own signature.
+    log_size sd  0.3804 vs 0.4113   7.5%  |  aniso  0.5001 vs 0.4694  6.5%
+    opacity      0.7793 vs 0.8286   6.0%  |  bar for "material, not fitter": 15%
+
+So the honest verdict stands, now with the obvious remedy tried and measured rather than assumed:
+
+    log_size, aniso, opacity from a generated video: NOT RECOVERABLE.
+    Per-splat distributions need a real multi-view 3DGS scan. Adaptive densification is
+    necessary but not sufficient -- a single 2D fit has no photometric consistency across
+    views to force a splat to be the size of the thing it represents.
+
+WHAT DENSIFICATION DID DELIVER is a measurement that did not exist before: SPLAT DEMAND. Because
+growth stops when a splat's residual falls under an absolute threshold, a resolved surface stops
+asking and a complicated one keeps going -- so the final splat count per subject pixel is a
+property of the surface. At matched starting density the take asks for 1.398x the primitives flat
+clay does.
+
+AND THE FIXED-N MEASURE IT SITS BESIDE: SURFACE COMPLEXITY. At a budget set PER SUBJECT PIXEL, the
+take costs 1.71x the fitting error of flat clay, and that survives a bilateral denoise
+(1.655 -> 1.565) which strips 2.3x more high-frequency energy from the take than from the clay. So
+it is edge-preserved surface detail, not codec grain.
+
+    THE TWO ARE NOT THE SAME NUMBER AND BOTH ARE KEPT. surface_complexity asks "how wrong are you
+    at a fixed budget" (densify=False, deliberately). splat_demand asks "how much budget did you
+    need". A surface can be expensive in one sense and cheap in the other.
 
 MASK FIRST, OR HARVEST THE BACKDROP. The fit is run on the SUBJECT ONLY: splats that land on a
 black void would come back as a large, dark, low-opacity element and enter the codebook as a
@@ -108,7 +128,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("take_dir")
     ap.add_argument("--frames", type=int, default=3)
-    ap.add_argument("--splats", type=int, default=12000)
+    ap.add_argument("--splats", type=int, default=12000,
+                    help="ignored when --density is set (the default), which is the fair way")
+    ap.add_argument("--density", type=float, default=0.12,
+                    help="STARTING splats per subject pixel. Set per-pixel rather than as a flat N "
+                         "because the take and the clay are framed differently -- at a flat N the "
+                         "clay got 1.62x the splats per pixel and any comparison measured the "
+                         "framing. With densification on this is a starting point, not a budget.")
+    ap.add_argument("--no-densify", action="store_true",
+                    help="fixed-N fitting, the old behaviour, for comparison")
     ap.add_argument("--iters", type=int, default=600)
     ap.add_argument("--elements", type=int, default=5)
     ap.add_argument("--video", default="generated.mp4")
@@ -128,11 +156,19 @@ def main():
     def run(video, black_bg, tag):
       views = subject_frames(take / video, a.frames, black_bg=black_bg)
       allp = {"log_size": [], "aniso": [], "R": [], "G": [], "B": [], "opacity": [], "greenness": []}
+      dens_hist = []
       for i, (crop, mask) in enumerate(views):
           H, W, _ = crop.shape
           tgt = torch.tensor(crop, device=G.DEV)
           print(f"\nview {i}: {W}x{H}")
-          P, recon, _ = G.fit(tgt, N=a.splats, iters=a.iters, K=11)
+          px = int(mask.sum())
+          N0 = int(round(a.density * px)) if a.density else a.splats
+          P, recon, _ = G.fit(tgt, N=N0, iters=a.iters, K=11,
+                              densify=not a.no_densify, budget=6 * N0, verbose=False)
+          dens_hist.append((px, N0, P["n_splats"]))
+          print(f"  {px:,} subject px   {N0:,} -> {P['n_splats']:,} splats "
+                f"({P['n_splats']/px:.3f}/px)"
+                + ("   [BUDGET CAP BOUND]" if P.get("budget_bound") else ""))
 
           mu = P["mu"].cpu().numpy()
           sc = P["scale"].cpu().numpy()
@@ -182,7 +218,9 @@ def main():
 
       if not allp["R"]:
           return None
-      return {k: np.concatenate(v) for k, v in allp.items()}
+      out = {k: np.concatenate(v) for k, v in allp.items()}
+      out["_density"] = float(np.mean([n / px for px, _, n in dens_hist])) if dens_hist else 0.0
+      return out
 
     print("\n=== THE TAKE THAT CAME BACK " + "=" * 50)
     F = run(a.video, True, "gen")
@@ -199,6 +237,19 @@ def main():
     hdr = f"\n{'feature':<12} {'mean':>10} {'std':>10} {'p10':>10} {'p90':>10}"
     print(hdr + (f" | {'CLAY mean':>10} {'delta':>9}" if C else ""))
     genome, clay_g = {}, {}
+    # SPLAT DEMAND -- how many primitives the surface asked for, per pixel, at a matched start.
+    # This is the number densification exists to produce: growth stops when the residual under a
+    # splat falls under an absolute threshold, so a resolved surface stops asking and a complicated
+    # one keeps going. The clay is the zero point.
+    if C is not None and C.get("_density"):
+        dg, dc = F["_density"], C["_density"]
+        genome["splat_demand"] = {"value": dg / max(dc, 1e-9), "generated_per_px": dg,
+                                  "clay_per_px": dc, "unit": "x flat-clay splat density"}
+        print(f"\nSPLAT DEMAND   generated {dg:.3f}/px   clay {dc:.3f}/px   "
+              f"ratio {dg/max(dc,1e-9):.3f}" +
+              ("   THE SURFACE ASKED FOR MORE PRIMITIVES THAN FLAT CLAY."
+               if dg/max(dc,1e-9) > 1.1 else "   no more than flat clay."))
+
     for k in ("log_size", "aniso", "R", "G", "B", "opacity", "greenness"):
         st = stats(F[k])
         genome[k] = st
@@ -219,11 +270,16 @@ def main():
     # generated take shares with it is the fitter talking; only the difference is the material.
     if C:
         print()
-        for k in ("aniso", "opacity"):
-            rel = abs(genome[k]["mean"] - clay_g[k]["mean"]) / max(abs(clay_g[k]["mean"]), 1e-9)
-            print(f"   {k:<9} generated {genome[k]['mean']:.4f}   clay {clay_g[k]['mean']:.4f}   "
-                  f"differ by {rel * 100:5.1f}%   "
-                  f"{'THE MATERIAL SPEAKS' if rel > 0.15 else 'THIS IS THE FITTER, NOT THE MATERIAL'}")
+        # log_size is compared by SPREAD, not by mean. Both sides subtract their own capture's
+        # median, so the mean is near zero on both by construction and says nothing; the width of
+        # the distribution is what a mix of fine and coarse grain actually looks like.
+        for k, lbl, gv, cvv in (
+                ("log_size", "log_size sd", genome["log_size"]["std"], clay_g["log_size"]["std"]),
+                ("aniso", "aniso", genome["aniso"]["mean"], clay_g["aniso"]["mean"]),
+                ("opacity", "opacity", genome["opacity"]["mean"], clay_g["opacity"]["mean"])):
+            rel = abs(gv - cvv) / max(abs(cvv), 1e-9)
+            print(f"   {lbl:<12} generated {gv:.4f}   clay {cvv:.4f}   differ by {rel * 100:5.1f}%"
+                  f"   {'MATERIAL' if rel > 0.15 else 'still mostly the fitter'}")
 
     # ── WHAT A FIXED-N FIT CAN STILL MEASURE ──────────────────────────────────────────────────
     # The three shape features are dead (see the docstring), but the question underneath them is
@@ -257,7 +313,11 @@ def main():
             errs = []
             for d in dens:
                 torch.manual_seed(0)
-                _, recon, _ = G.fit(tgt, N=max(64, int(round(d * px))), iters=400, K=11)
+                # densify=False ON PURPOSE. This measure is defined as fitting cost at EQUAL
+                # splats per pixel; letting the population grow lets each side buy its way out of
+                # its own error and there is no longer a fixed budget to compare at.
+                _, recon, _ = G.fit(tgt, N=max(64, int(round(d * px))), iters=400, K=11,
+                                    densify=False, verbose=False)
                 errs.append(float(np.abs((recon - tgt).cpu().numpy())[mask].mean()))
             cost[tag] = (px, errs)
             print(f"   {tag:<10} {px:>7,} px   " +
