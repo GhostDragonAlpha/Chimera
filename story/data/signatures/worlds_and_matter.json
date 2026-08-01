@@ -1,0 +1,139 @@
+{
+  "_source": "Declared 2026-07-31 against story/data/physics_catalog.json (158 rows). Branches 9-14: ASTROPHYSICS & COSMOLOGY, GEOPHYSICS & PLANETARY SCIENCE, MATERIALS SCIENCE, CHEMISTRY'S PHYSICS, BIOPHYSICS, INFORMATION & COMPUTATION. Every row id below was READ OUT OF THE CATALOG by matching name+equation, never typed from memory. Every consumes/produces pair was read off the membrane's own physics.py where one exists (aYellowStar, aRockyPlanet, aActiveInterior, aBlueWorld, aSaltOcean), so these are transcriptions rather than guesses. Rows whose variables were not clear from the equation and source, or whose unit is missing from folding.UNITS, are LEFT OUT and listed in the hand-back report rather than invented.",
+
+  "E9.01": {
+    "consumes": {"M_star": "kg", "R_star": "m"},
+    "produces": {"P_c": "Pa"},
+    "keys": {"M_star": "M_star", "R_star": "R_star"},
+    "regime": {"P_c": [1e13, 1e19]},
+    "note": "Stellar structure: hydrostatic equilibrium dP/dr = -G M rho / r^2 integrates to a central pressure P_c ~ (3/8pi) G M^2 / R^4. The regime is what a star's middle actually holds up -- the Sun is 2.3e16 Pa, a 0.1 Msun dwarf ~1e18, a hot massive star ~1e15 (same mass law, far bigger R). NOTE THE SHARED FOLD: aRockyPlanet's central_pressure() is this identical expression on a planet's M and R, which is what a domain family means -- one law, two scales, and neither membrane had to know about the other."
+  },
+
+  "E9.02": {
+    "consumes": {"M_star": "Msun"},
+    "produces": {"L": "Lsun", "R_star": "Rsun", "T_eff": "K"},
+    "keys": {"M_star": "M_star_solar"},
+    "regime": {"M_star": [0.08, 100.0], "L": [1e-4, 1e6], "T_eff": [2000.0, 60000.0]},
+    "note": "Hertzsprung-Russell: the main sequence is one parameter deep. aYellowStar reads exactly this one number -- parent['M_star_solar'] -- and hands back L (empirical L ~ M^3.5), R, and then T from L = 4 pi R^2 sigma T^4, which is where the spectral class and the colour and the membrane's own NAME come from. The regime is the main sequence itself: below 0.08 Msun hydrogen never ignites (it is a brown dwarf, not a star) and above ~100 Msun radiation pressure tears the envelope off. The key is pinned to the fully-suffixed M_star_solar ON PURPOSE: the same quantity is also published as M_star in kg, and folding's regime check compares the raw published number without converting, so a loose 'M_star' fragment would flag a kg value as out of range."
+  },
+
+  "E9.03": {
+    "consumes": {"T_eff": "K"},
+    "produces": {"lambda_peak": "m"},
+    "keys": {"T_eff": "T_star_surface"},
+    "regime": {"T_eff": [2000.0, 60000.0], "lambda_peak": [4e-8, 2e-6]},
+    "note": "Blackbody stars: the Planck spectrum has one parameter, so its peak is Wien's lambda_max = 2.898e-3 / T. This is deliberately keyed to T_star_surface rather than T_surface -- every membrane from the planet down carries the STAR's temperature under that name to get its light right (sky colour, sunlight colour, ocean colour, the vegetation red edge), while T_surface on those same membranes is the ~279 K GROUND. Binding a stellar spectrum to a planet's surface temperature is the misfold this key name prevents. lambda_peak's range is Wien over the main sequence: 48 nm for an O star, 1.4 um for an M dwarf."
+  },
+
+  "E9.04": {
+    "consumes": {"M_star": "kg", "a": "au"},
+    "produces": {"v_orbit": "m/s", "T_period": "s"},
+    "keys": {"M_star": "M_star", "a": "a_au"},
+    "regime": {"a": [0.01, 1000.0]},
+    "note": "Orbital mechanics: vis-viva v^2 = GM(2/r - 1/a), and Kepler T^2 = 4 pi^2 a^3 / GM. THIS DOCKS NOWHERE AND THAT IS THE FINDING: theSolarSystem and thePlanets publish M_star but no semi-major axis (they publish v_orbit_1au and T_at_1au_days, with the distance baked into the KEY NAME instead of being a number); theRockyPlanet, aRockyPlanet, aBlueWorld, theOcean and theInterior publish a_au but never carry the star's mass down. aSaltOcean shows the cost -- it needs M_star for the tide, cannot reach it, and reconstructs it from parent['L_star'] by inverting L ~ M^3.5. The regime is the range of a real planetary orbit: 0.01 au is inside the Roche/sublimation edge, 1000 au is past where a disk holds together."
+  },
+
+  "E9.06": {
+    "consumes": {"rho_bulk": "kg/m3"},
+    "produces": {"core_radius_frac": "frac", "core_mass_frac": "frac"},
+    "keys": {"rho_bulk": "rho_bulk"},
+    "regime": {"rho_bulk": [3000.0, 8000.0], "core_radius_frac": [0.0, 1.0]},
+    "note": "Planetary formation, differentiation half: nobody places the core. A molten body SORTS ITSELF, so the only thing that decides where the iron/silicate boundary sits is how much iron there was -- which the bulk density already states: rho_bulk = f*rho_iron + (1-f)*rho_silicate. This is aRockyPlanet's core_radius_fraction() verbatim. The regime is the measured range of rocky worlds: the Moon 3344, Mars 3933, Venus 5243, Earth 5514, Mercury 5427 kg/m3, with a compressed super-Earth approaching 8000. Below 3000 it is an ice body and this two-density model does not describe it."
+  },
+
+  "E9.07": {
+    "consumes": {"one_plus_z": "1"},
+    "produces": {"T_cmb": "K"},
+    "keys": {"one_plus_z": "one_plus_z"},
+    "regime": {"one_plus_z": [1.0, null], "T_cmb": [2.725, null]},
+    "note": "Cosmology: the background cools as T = T_0 (1+z) with T_0 = 2.725 K MEASURED (Penzias & Wilson 1965). theCloud publishes one_plus_z = 1379.6 and T = 3760 K, and 2.725 x 1379.6 = 3759 -- the relation is already there and closes. It does not dock because `one_plus_z` carries no unit: it has no suffix and no entry in story/data/units.json, so it is not on any binding surface. One line of units.json ('one_plus_z': '1') turns this into a live check. The regime is exact rather than approximate: z >= 0 means 1+z >= 1, and the CMB can never be colder than it is today."
+  },
+
+  "E10.01": {
+    "consumes": {"v_p": "m/s", "v_s": "m/s"},
+    "produces": {"R_core": "m"},
+    "keys": {"v_p": "seismic_p_speed", "v_s": "seismic_s_speed"},
+    "regime": {"v_p": [3000.0, 14000.0], "v_s": [0.0, 8000.0]},
+    "note": "Seismic waves: the interior was READ, not assumed -- Oldham 1906 found the core because S waves (which need shear) stop at it and P waves do not, and Gutenberg 1914 put its depth at 2900 km from the shadow zone. So the velocities are the input and the structure is the output. IT DOES NOT DOCK, FOR A REASON WORTH FIXING: aActiveInterior publishes seismic_p_speed_km_s and seismic_s_speed_km_s, and folding's suffix table reads a trailing '_s' as SECONDS, so a wave speed is currently read as a duration. v_s's lower bound is 0 on purpose: a liquid outer core carries no shear wave at all, which is the whole observation."
+  },
+
+  "E10.02": {
+    "consumes": {"core_R": "m", "Q_heat": "TW"},
+    "produces": {"dipole": "A.m2", "B_surface": "uT"},
+    "keys": {"core_R": "core_R_m", "Q_heat": "total_heat_TW"},
+    "regime": {"B_surface": [1.0, 1000.0]},
+    "note": "Dynamo theory: a rotating convecting conductor makes a field, and the modern scaling (Christensen & Aubert) says its strength is set by the convected heat flux and the size of the shell doing the convecting, not by the rotation rate. aActiveInterior implements exactly that -- dipole = DIPOLE_EARTH (core_R/core_R_earth)^3 (heat_TW/47)^(1/3), then B_pole = (mu0/4pi) 2M/R^3. The regime is what a planetary dynamo actually produces at the surface: Earth 25-65 uT, Jupiter ~420 uT (the strongest measured), and below ~1 uT the field no longer stands the stellar wind off the atmosphere."
+  },
+
+  "E10.03": {
+    "consumes": {"eta": "Pa.s", "d_mantle": "km", "T_cmb": "K", "T_mantle": "K"},
+    "produces": {"Ra": "1"},
+    "keys": {"eta": "viscosity_mantle", "d_mantle": "mantle_thickness", "T_cmb": "T_cmb", "T_mantle": "T_mantle_mean"},
+    "regime": {"eta": [1e17, 1e24], "Ra": [1000.0, 1e10]},
+    "note": "Mantle convection: Ra = g alpha dT d^3 / (kappa nu) decides whether a planet's interior stirs or merely conducts, and plates are what stirring looks like from the surface. aActiveInterior computes exactly this and gets 2.26e7 against its own published ra_critical = 1100. The viscosity regime is the measurement that makes the mantle strange: 1e19-1e21 Pa.s in the upper mantle and ~1e22 below (postglacial rebound and geoid inversions), against 1e-3 for water -- a solid that flows. Ra's lower bound is the onset of convection itself; a world under it has no plates and no plate speed to publish. This row was unbindable an hour ago: `Pa.s` was not in folding.UNITS and `viscosity_mantle_Pas` read as nothing. THE PRODUCED SIDE STILL CANNOT BE CHECKED -- `rayleigh_mantle` and `ra_critical` are dimensionless and declare no unit, so they are not on any binding surface."
+  },
+
+  "E10.05": {
+    "consumes": {"t_crust": "km", "rho_crust": "kg/m3", "rho_mantle": "kg/m3"},
+    "produces": {"h_iso": "m"},
+    "keys": {"t_crust": "crust_thickness", "rho_crust": "rho_crust", "rho_mantle": "rho_mantle"},
+    "regime": {"rho_crust": [2200.0, 3200.0], "rho_mantle": [3000.0, 5500.0]},
+    "note": "Isostasy (Airy 1855): crust floats, so a mountain of height h needs a root, and h = t (rho_mantle - rho_crust)/rho_mantle. IT DOES NOT DOCK, AND THE REASON IS ONE STRING: aActiveInterior publishes crust_thickness_km as a number but keeps its densities inside density_profile = 'bulk 4815; crust 2700/2900, mantle ~4200, core ~8000' -- prose in a value, where no check can reach them. Publishing rho_crust_kg_m3 and rho_mantle_kg_m3 makes this law live and gives theTerrain's max_relief_m and crust_step_m something to be checked against. The regimes are the measured endmembers: continental granite 2700 and oceanic basalt 2900 for crust; compressed peridotite 3300-4500 for mantle."
+  },
+
+  "E10.06": {
+    "consumes": {"A_drainage": "m2", "S_slope": "deg"},
+    "produces": {"E_erosion": "mm/kyr"},
+    "keys": {"A_drainage": "drainage_area", "S_slope": "slope_deg"},
+    "regime": {"S_slope": [0.0, 90.0], "E_erosion": [0.1, 20000.0]},
+    "note": "Stream power (Whipple & Tucker 1999): E = K A^m S^n -- erosion is set by how much water arrives (the contributing DRAINAGE AREA) and how steeply it falls. IT DOES NOT DOCK because no membrane publishes a drainage area: theTerrain publishes area_m2 (the whole planet's surface, which would be a spectacular misfold if this law were keyed loosely to 'area'), and aTerrain publishes drainage_density_per_km, whose value is a reciprocal length but whose name ends in '_km' so folding reads it as a length. theGround already publishes the answer -- erosion_mm_kyr = 36.5 against production_mm_kyr = 77 -- with no legal input to check it against. The regime spans the measured range of landscape lowering: ~0.1 mm/kyr on a craton to ~10 mm/yr in the Himalaya. THE SLOPE KEY IS '_deg' AND NOT 'slope' FOR A MEASURED REASON: the loose fragment bound theGalaxy's imf_slope_high = -2.3 (a power-law EXPONENT), converted it as dimensionless-to-degrees into -131.8 deg and convicted the galaxy of a negative hillslope."
+  },
+
+  "E10.09": {
+    "consumes": {"day": "s", "lat_ref": "deg", "dT": "dK"},
+    "produces": {"f_coriolis": "1/s", "v_geostrophic": "m/s"},
+    "keys": {"day": "day_s", "lat_ref": "wind_reference_lat_deg", "dT": "dT_equator_pole"},
+    "regime": {"dT": [0.0, 150.0], "v_geostrophic": [1.0, 200.0]},
+    "note": "Atmospheric circulation: f = 2 Omega sin(phi) from the day length, the Hadley cell from the pole-to-equator heating contrast, and the thermal wind in geostrophic balance on top of both. aBlueWorld derives the Hadley edge first and then evaluates the jet AT that latitude, which is why lat_ref is keyed to its wind_reference_lat_deg -- the one key in this tree that names the latitude a geostrophic wind was actually solved at. dT is a SPAN (dK), never an absolute temperature: 45 K of equator-to-pole difference is also 45 degC of difference, and bonding it into an absolute socket would give a 45 K planet. Its regime is bounded below by 0 because a span cannot be negative, and above by 150 K because an atmosphere transporting no heat at all is not an atmosphere (Earth 45 K, Mars ~80 K). The jet range is measured: Earth's runs 25-80 m/s."
+  },
+
+  "E10.10": {
+    "consumes": {"wind": "m/s", "day": "s", "ocean": "frac"},
+    "produces": {"v_surface": "m/s", "D_ekman": "m"},
+    "keys": {"wind": "wind_surface", "day": "day_s", "ocean": "ocean_fraction"},
+    "regime": {"wind": [0.0, 100.0], "v_surface": [0.0, 2.5]},
+    "note": "Ocean circulation, Ekman half (Ekman 1905): the wind drags the surface, the planet's spin turns the drag to the right, and the transport integrates to 90 degrees off the wind over the Ekman depth. aSaltOcean implements it as surface_current = 0.03 * wind with an Ekman depth of 50 m -- and CANNOT BE CHECKED, because it does not republish the wind it consumed. This law docks to the three membranes that publish both a surface wind and an ocean fraction (aBlueWorld, theAtmosphere, theOcean); the membrane that actually solves it is the one it misses. The regimes are measured: a surface current runs ~3% of the wind speed, and the Gulf Stream, the fastest wind-driven current on Earth, peaks near 2.5 m/s. The thermohaline half of this row is not declared here -- aSaltOcean's density_surface_kg_m3 is a linear fit in salinity, and salinity_g_kg is read by the suffix table as kilograms."
+  },
+
+  "E11.02": {
+    "consumes": {"sigma": "MPa", "sigma_ult": "MPa"},
+    "produces": {"n_safety": "ratio"},
+    "keys": {"sigma": "stress_MPa", "sigma_ult": "ultimate_strength"},
+    "regime": {"n_safety": [1.0, null]},
+    "note": "Mechanical properties: a member is described by the elastic branch of its stress-strain curve only while the applied stress stays under the ultimate stress, and the ratio of the two IS the safety factor. IT DOES NOT DOCK, AND THE GAP IS EXACTLY ONE NUMBER: theHuman publishes femur_stress_MPa (and femur_stress_running_MPa) and it publishes bone_safety_factor, but never the ultimate strength it divided by -- so the quotient is stated and neither the numerator's partner nor the division can be checked. The regime is what makes this the elastic law and not a fracture law: at n < 1 the member has already yielded and nothing here describes it any more."
+  },
+
+  "E11.04": {
+    "consumes": {"q": "W/m2", "k": "W/mK"},
+    "produces": {"dTdz": "K/km"},
+    "keys": {"q": "heat_flux", "k": "thermal_conductivity"},
+    "regime": {"k": [0.01, 500.0], "dTdz": [0.1, 200.0]},
+    "note": "Thermal properties, conduction half: Fourier's q = -k dT/dz is what turns a planet's heat flux into the gradient a mine walks down into. THIS IS THE NEAREST MISS IN THE FILE -- theInterior publishes BOTH ENDS of the law already (heat_flux_W_m2 = 0.0663 and geothermal_gradient_K_km = 22.1) and aActiveInterior's code divides one by the other through a conductivity of 3.0 W/mK that it never publishes. One key, thermal_conductivity_W_mK, closes it. The regime is the span of real materials: air 0.026, ice 2.2, crustal rock 2-4, steel 45, copper 400. The Dulong-Petit/Debye half of this row is NOT declared: a molar heat capacity needs kg/mol, which folding.UNITS does not carry, and aNitrogenAtmosphere's mean_molar_mass = 29.0 declares no unit either. NOTE the sibling misread this exposed: aRockyPlanet's heat_flux_mW_m2 ends in '_m2' and is read as an AREA, so the milliwatt spelling of the same number is invisible."
+  },
+
+  "E13.01": {
+    "consumes": {"S_insolation": "W/m2", "eta": "frac"},
+    "produces": {"NPP": "W/m2"},
+    "keys": {"S_insolation": "insolation", "eta": "photosynthetic_efficiency"},
+    "regime": {"eta": [0.0, 0.06], "NPP": [0.0, 100.0]},
+    "note": "Photosynthesis energetics: 8 photons per O2 sets a hard ceiling of 4-6% of incident PAR converted to chemical energy, and no plant on this planet or any other beats it. The efficiency regime is that ceiling, stated by the catalog row itself -- which makes it the sharpest regime in this file, because a productivity model that needs 10% has broken thermodynamics rather than agronomy. IT DOES NOT DOCK: theRockyPlanet publishes its stellar constant as bare `S` = 1367.8 with no suffix and no units.json entry, so the one number in this tree that IS an insolation is invisible to every light-driven law. aSteppeBiomes publishes productivity_g_c_m2_yr (read by the suffix table as YEARS) and biomass_density_kg_m2 (read as AREA), so neither end of this law is currently legible."
+  },
+
+  "E13.02": {
+    "consumes": {"M_body": "kg"},
+    "produces": {"B_metabolic": "W"},
+    "keys": {"M_body": "mass_kg"},
+    "regime": {"M_body": [1e-15, 200000.0]},
+    "note": "Kleiber's law: metabolic rate goes as M^(3/4), not M^1 -- measured, not derived, and it holds across the 21 decades the catalog row cites, from a bacterium to a blue whale (~1.5e5 kg). The regime is that span, and it is what refuses a 'body mass' that is really a planet or a gram. theHuman publishes both ends of this law already (mass_kg and metabolic_W), which makes it the one row in BIOPHYSICS that can be checked today. The 3/4 exponent is the claim: a doubling of mass buys only 1.68x the fuel burn, which is why a big animal is slow and a small one must eat constantly."
+  }
+}

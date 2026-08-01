@@ -1,0 +1,105 @@
+{
+  "_source": "Declared 2026-07-31 against story/data/physics_catalog.json (158 rows, 23 branches) for the three branches CLASSICAL MECHANICS (E1.*), CONTINUUM MECHANICS (E2.*) and THERMODYNAMICS & STATISTICAL MECHANICS (E3.*). Every row id was LOOKED UP in that file by name+equation, never typed from memory. E1.01, E1.05, E2.11, E3.02 and E3.07 already carry seed signatures in story/folding.py and are deliberately not repeated here. Every signature below encodes a relation the row's OWN equation states or that follows from it by exact algebra -- no approximations, no half-rows. Rows whose equation cannot be signed are listed in _skipped with the reason, and rows blocked on a unit the table does not carry are listed in _units_missing.",
+
+  "E1.03": {
+    "consumes": {"T_kin": "J", "V": "J"},
+    "produces": {"L": "J"},
+    "keys": {"T_kin": "kinetic", "V": "potential"},
+    "note": "Lagrangian mechanics, and the ONLY part of the row that has a unit signature: L = T - V, written in the row itself. The Euler-Lagrange equation d/dt(dL/dq') - dL/dq = 0 is over GENERALIZED coordinates q, which carry no fixed dimension (a q may be a metre or a radian), so it cannot be signed. Nothing in this tree publishes a kinetic or potential energy yet, so this socket is empty and correct rather than empty and wrong."
+  },
+
+  "E1.06": {
+    "consumes": {"omega_n": "rad/s", "zeta": "ratio"},
+    "produces": {"T_damped": "s"},
+    "keys": {"omega_n": "natural_frequency", "zeta": "damping"},
+    "regime": {"zeta": [0.0, 10.0]},
+    "note": "The exact solution of the row's own ODE x'' + 2*zeta*omega*x' + omega^2*x = f: the damped period T = 2*pi/(omega_n*sqrt(1-zeta^2)). REGIME: a passive structure's damping ratio is non-negative -- a negative zeta is an oscillation that grows without bound, which is not a suspension or a sway, it is a runaway; beyond about 10 the thing is a dashpot and has no period at all. Do NOT bind omega_n to theHuman's fall_rate_rad_s: that is an inverted pendulum's DIVERGENCE rate (H3.03), not an oscillation frequency, and the two differ by a sign under the square root."
+  },
+
+  "E1.07": {
+    "consumes": {"c": "m/s", "lam": "m"},
+    "produces": {"f": "1/s"},
+    "keys": {"c": "wave_speed", "lam": "wavelength"},
+    "note": "The dispersion relation of the row's own wave equation d2u/dt2 = c^2 * grad^2 u: a sinusoidal mode satisfies c = f*lam exactly. The speed c itself comes from tension over linear density, which needs kg/m -- not in the unit table -- so c is CONSUMED here rather than produced. Deliberately NOT bound to sound_speed_ms or sound_speed_water_ms: those are compressional waves in a fluid (E2.05 / acoustics), not waves on a string or a membrane, and this row's relevance is cables and surfaces."
+  },
+
+  "E1.09": {
+    "consumes": {"I": "kg.m2", "omega": "rad/s", "tau": "N.m"},
+    "produces": {"Omega_p": "rad/s"},
+    "keys": {"I": "inertia", "omega": "spin_rate", "tau": "torque"},
+    "note": "Gyroscopic precession, exactly as the row writes it: tau = dL/dt = Omega x L with L = I*omega, so for a torque perpendicular to the spin axis the precession rate is Omega_p = tau/(I*omega). The perpendicular case is the one the cross product is quoted for; an oblique torque gives Omega_p = tau/(I*omega*sin(theta)). A spin rate is required, which is why a limb (inertia + torque, no spin) correctly fails to dock: a leg does not precess."
+  },
+
+  "E2.01": {
+    "consumes": {"rho": "kg/m3", "g": "m/s2", "h": "m"},
+    "produces": {"sigma": "Pa"},
+    "keys": {"rho": "density", "g": "g", "h": "depth"},
+    "regime": {"rho": [0.01, 30000.0]},
+    "note": "The vertical component of the row's own equilibrium equation div(sigma) + f = 0 with the body force f = rho*g: integrating once down a column gives the lithostatic/hydrostatic stress sigma = rho*g*h. Exact, no approximation. THE KEY FRAGMENT IS 'density' AND NOT 'rho' ON PURPOSE: 'rho' would match rho_bulk, the planet's MEAN density, and multiplying a whole planet's mean density by an ocean depth is precisely the plausible-looking misfold this system exists to catch. 'density' reaches the MATERIAL densities (density_deep_kg_m3, surface_density_kg_m3). REGIME: a continuum solid or fluid runs from thin air (~0.01) to the densest metals (~22600 for osmium); 1e-18 is an interstellar cloud and has no stress column."
+  },
+
+  "E2.02": {
+    "consumes": {"E": "GPa", "eps": "ratio"},
+    "produces": {"sigma": "MPa"},
+    "keys": {"E": "modulus", "eps": "strain"},
+    "note": "Hooke's law as the row states it, sigma = C:eps, in the isotropic uniaxial case sigma = E*eps with E the Young's modulus the row names. NO REGIME DECLARED, on purpose: the physical band is real (about 1 kPa for soft tissue to 1220 GPa for diamond) but a modulus may be published in Pa, MPa or GPa, and folding.dock compares a bound key's RAW value against the regime without converting it into the socket's unit -- so a band stated in GPa would falsely convict a key published in Pa. A regime that misfires on a unit conversion is worse than no regime. Nothing in this tree publishes a modulus or a strain yet."
+  },
+
+  "E2.06": {
+    "consumes": {"rho": "kg/m3", "v": "m/s"},
+    "produces": {"q": "Pa"},
+    "keys": {"rho": "density", "v": "wind"},
+    "regime": {"rho": [0.0001, 20000.0], "v": [0.0, 600.0]},
+    "note": "The dynamic-pressure term of the row's own equation P + 0.5*rho*v^2 + rho*g*h = const. THIS LAW IS ALREADY IMPLEMENTED IN THE TREE and the numbers check: aNitrogenAtmosphere publishes surface_density_kg_m3 0.6495 and wind_surface_ms 7.336, and 0.5*0.6495*7.336^2 = 17.48 Pa = its published dynamic_pressure_pa. The flow-speed fragment is 'wind' rather than 'speed' because 'speed' also matches sound_speed_ms, and the dynamic pressure of the speed of sound is not a thing this world contains. REGIME: rho spans a gas to a liquid metal; v is a planetary wind, and 600 m/s is Neptune's equatorial jet, the fastest measured wind in the solar system."
+  },
+
+  "E3.05": {
+    "consumes": {"q": "W/m2"},
+    "produces": {"gradT": "K/km"},
+    "keys": {"q": "heat_flux"},
+    "regime": {"q": [0.0001, 1000000.0]},
+    "note": "Fourier's law q = -k*grad(T), rearranged in the direction this tree actually runs it: theInterior publishes heat_flux_W_m2 0.0663 and geothermal_gradient_K_km 22.10, whose ratio is k = 3.0 W/(m.K) -- mantle rock. The conductivity k is the MATERIAL's constant and belongs to E11.04 (Thermal properties), and W/(m.K) is not in the unit table, so k is not a consumed symbol here. REGIME: from a cold world's interior flux (Earth's is 0.087 W/m2) to an engineered heat-exchanger wall (theSweep's visor leaks 7.78 W through 0.075 m2 = 104 W/m2)."
+  },
+
+  "E3.08": {
+    "consumes": {"T_h": "K", "T_c": "K"},
+    "produces": {"eta": "frac"},
+    "keys": {"T_h": "T_hot", "T_c": "T_cold"},
+    "regime": {"T_h": [1.0, 100000.0], "T_c": [1.0, 100000.0], "eta": [0.0, 1.0]},
+    "note": "The Carnot limit exactly as the row writes it, eta = 1 - Tc/Th. THE SOCKETS ARE IN KELVIN AND THAT IS THE WHOLE POINT: a Carnot efficiency computed from Celsius is theBiomes' bug wearing an engineer's hat, and it is a classic real-world one -- theSweep's cooling loop publishes T_loop_C 22.0 and T_ambient_C 6.04, and 1 - 6.04/22.0 would read 0.725 where the true limit is 0.054, a factor of 13. Because degC and K share a fold but never bond, that substitution is refused rather than computed. Key fragments are T_hot/T_cold and NOT 't_h'/'t_c': 't_c' is a substring of both T_cmb_K and T_core_K, which are both HOT reservoirs, so the short form would make exactly one wrong bond look legal. Nothing publishes a named hot/cold reservoir pair yet."
+  },
+
+  "_skipped": {
+    "E1.02": "Energy & momentum conservation | symmetries <-> conservation (Noether). A statement about symmetry, not a formula: it has no fixed unit signature. Any instance I could pick (0.5*m*v^2 = m*g*h, or p = m*v) is a choice the row does not make, and momentum's unit kg.m/s is not in the table anyway.",
+    "E1.04": "Hamiltonian mechanics | q' = dH/dp, p' = -dH/dq. Generalized coordinates and conjugate momenta carry no fixed dimension, so Hamilton's equations have no unit signature. H = T + V would be signable but the row does not write it -- E1.03 was declared only because the row writes L = T - V explicitly.",
+    "E1.08": "Chaos & sensitivity | Lyapunov exponents; three-body has no closed form. An epistemic row: a Lyapunov exponent is a measured property of a trajectory, not a law consuming published numbers, and the row's own text says there is no closed form to sign.",
+    "E2.03": "Fracture mechanics | Griffith; K_IC toughness. Needs Pa.m^0.5 (fracture toughness) or J/m2 (surface energy). Neither is in folding.UNITS.",
+    "E2.04": "Fatigue & creep | S-N curves; time-dependent strain. An S-N curve is a MEASURED curve per material, not a closed-form law; the Basquin fit's exponent and coefficient are material constants the row does not state.",
+    "E2.05": "Navier-Stokes. Needs dynamic viscosity Pa.s (aActiveInterior publishes viscosity_mantle_Pas = 1e21, which nothing can currently read). The one term of it that IS signable without a viscosity is the dynamic pressure, and that belongs to E2.06, which states it.",
+    "E2.07": "Reynolds number | Re = rho*v*L/mu. Needs Pa.s or m2/s. Two of the four variables are unreadable, so the row is left unbound rather than guessed.",
+    "E2.08": "Boundary layers & drag | delta ~ sqrt(nu*x/v); C_D from shape. The boundary-layer half needs kinematic viscosity m2/s. The drag half (F = 0.5*C_D*rho*A*v^2) is fully signable in existing units, but rho, A and v appear nowhere in the row's equation column -- signing it would be inferring which relation the row means. DECLARABLE ON REQUEST if the caller accepts the drag equation as the row's intent.",
+    "E2.09": "Turbulence | Kolmogorov -5/3 spectrum. Needs the dissipation rate W/kg (m2/s3) and the spectrum's own m3/s2. Neither is in the table.",
+    "E2.10": "Surface tension & capillarity | Young-Laplace dP = gamma*(1/R1 + 1/R2). Needs N/m (surface tension). Not in the table.",
+    "E2.12": "Porous flow | Darcy q = -(k/mu)*grad(P). Needs Pa.s. The hydraulic-conductivity form (q = -K*grad(h), K in m/s) is signable, but it is a different formulation from the one the row states.",
+    "E3.01": "Four laws. A bundle of four statements: the first law dU = Q - W is signable in J, but 'entropy rises', 'T -> 0 limits' and 'T defined by equilibrium' have no unit signature at all, and signing a quarter of a row attaches the serial to something narrower than the row.",
+    "E3.03": "Entropy & information | S = k ln W; S = -k sum p ln p. Needs J/K (thermodynamic entropy) and a bit (information entropy); neither is in the table. The Shannon half is also E14.01's row, which belongs to another branch.",
+    "E3.04": "Phase transitions | Clausius-Clapeyron dP/dT = L/(T*dV). Needs specific volume m3/kg, which is not in the table. The INTEGRATED saturation curve (pressure -> boiling temperature) is already implemented in this tree -- theOcean publishes P_surface_bar 0.52 and boil_bracket_K 355.0, which is water's boiling point at that pressure -- but reaching it needs the ideal-gas and constant-latent-heat approximations the row does not state, and a single-symbol P_surface socket would bind to all ten membranes that publish a surface pressure, which is a site not doing its job. THE STRONGEST DECLARABLE-NEXT ROW IN THESE THREE BRANCHES.",
+    "E3.06": "Convection | Nu = f(Re, Pr) -- measured correlations. The row's own 'f' is an empirical correlation with no closed form. Needs W/(m2.K) for the engineering form Q = h*A*dT (theSweep publishes U_visor_W_m2K = 6.498, which nothing can read). The free-convection Rayleigh number that this tree does use (aActiveInterior's rayleigh_mantle) belongs to E10.03, Rayleigh-Benard, not here.",
+    "E3.09": "Non-equilibrium (small) | Onsager reciprocal relations. A symmetry statement about a transport matrix (L_ij = L_ji), not a law with consumed and produced quantities."
+  },
+
+  "_units_missing": {
+    "what": "Units these three branches need that folding.UNITS does not carry. folding.py was NOT edited -- another agent may be in it. Each is named by a row that is unbound because of it, and two of them are already published by a membrane and unreadable today.",
+    "Pa.s": "dynamic viscosity. Blocks E2.05, E2.07, E2.12. ALREADY PUBLISHED AND UNREAD: aActiveInterior.viscosity_mantle_Pas = 1e21.",
+    "m2/s": "kinematic viscosity. Blocks E2.07, E2.08.",
+    "N/m": "surface tension (and linear mass density kg/m for E1.07's wave speed). Blocks E2.10.",
+    "Pa.m0.5": "fracture toughness K_IC. Blocks E2.03.",
+    "J/m2": "surface energy (Griffith). Blocks E2.03.",
+    "m3/kg": "specific volume. Blocks E3.04.",
+    "J/K": "thermodynamic entropy. Blocks E3.03. ALREADY PUBLISHED AND UNREAD: theEmptying.S = 8.67e-23, deliberately left undeclared in units.json.",
+    "W/mK": "thermal conductivity. Would let E3.05 consume k instead of hiding it in a note; it is E11.04's quantity.",
+    "W/m2K": "heat transfer coefficient. Blocks E3.06. ALREADY PUBLISHED AND UNREAD: theSweep.U_visor_W_m2K = 6.498.",
+    "W/kg": "specific dissipation rate. Blocks E2.09.",
+    "kg.m/s": "momentum. Would let E1.02 produce a momentum if the row were ever narrowed to p = m*v."
+  }
+}

@@ -14,7 +14,7 @@
   "ANYTHING NOT IN HERE STAYS UNDECLARED ON PURPOSE. A guessed unit is worse than a missing one:",
   "it makes a bad bond look legal. `folding.py audit` reports what is still unread."
  ],
- "precedence": "a key's own suffix wins; then by_membrane; then global; then undeclared",
+ "precedence": "an explicit override; then the key's own suffix; then by_membrane; then global",
  "global": {
   "g": "m/s2",
   "R": "m",
@@ -98,7 +98,65 @@
   "m_max_solar": "Msun",
   "M_jeans_before_solar": "Msun",
   "M_jeans_solar": "Msun",
-  "c_s_before": "m/s"
+  "c_s_before": "m/s",
+  "bulk_density": "kg/m3",
+  "rho_deep": "kg/m3",
+  "rho_solid": "kg/m3",
+  "retinal_scale_micron_per_degree": "um/deg",
+  "photopic_peak_wavelength": "nm",
+  "scotopic_peak_wavelength": "nm",
+  "wien_peak_wavelength": "nm",
+  "wien_peak_wavelength_at_solar_reference": "nm",
+  "luminous_efficacy_lumen_per_watt": "lm/W",
+  "efficacy_at_solar_reference_lumen_per_watt": "lm/W",
+  "illuminance_top_of_atmosphere_lux": "lx",
+  "daylight_illuminance_lux": "lx",
+  "daylight_direct_lux": "lx",
+  "daylight_diffuse_lux": "lx",
+  "adapting_luminance_nit": "cd/m2",
+  "luminance_min_nit": "cd/m2",
+  "luminance_max_nit": "cd/m2",
+  "retinal_illuminance_td": "td",
+  "pupil_area_mm2": "mm2",
+  "acuity_arcmin": "arcmin",
+  "acuity_at_albedo_005_arcmin": "arcmin",
+  "acuity_at_albedo_080_arcmin": "arcmin",
+  "cone_spacing_arcmin": "arcmin",
+  "stereoacuity_arcsec": "arcsec",
+  "diffraction_cutoff_cycles_per_degree": "cyc/deg",
+  "cone_nyquist_cycles_per_degree": "cyc/deg",
+  "render_pixels_per_degree": "px/deg",
+  "saccade_peak_velocity_degrees_per_second": "deg/s",
+  "field_solid_angle_sr": "sr",
+  "fovea_solid_angle_sr": "sr",
+  "foveola_solid_angle_sr": "sr",
+  "blind_spot_solid_angle_sr": "sr",
+  "luminance_range_log10": "decade",
+  "instantaneous_range_log10": "decade",
+  "pupil_range_log10": "decade",
+  "saccadic_suppression_log10": "decade",
+  "optical_depth": "1",
+  "airmass": "1",
+  "snellen_denominator": "1",
+  "ipd_stature_pearson_r": "1",
+  "ipd_sample_size": "count",
+  "fixation_drift_arcmin": "arcmin",
+  "fixation_tremor_arcmin": "arcmin",
+  "tremor_frequency_hz": "Hz"
+ },
+ "by_membrane": {
+  "theStance": {
+   "sway_freq_fore_aft_hz": "1/s",
+   "sway_freq_lateral_hz": "1/s",
+   "pendulum_freq_hz": "1/s"
+  },
+  "theThrust": {
+   "muscle_work_per_mass": "J/kg",
+   "leg_work_per_mass": "J/kg",
+   "leg_work_total_per_mass": "J/kg",
+   "peak_power_per_mass": "W/kg",
+   "mean_power_per_mass": "W/kg"
+  }
  },
  "notes": {
   "dK": "greenhouse_K and dT_* are SPANS, not temperatures. 45 dK is 45 K of difference and also 45 degC of difference, because a span has no zero point. Bonding a span into an absolute socket gives a 45 K planet; the reverse gives a 279 K gradient. Both are misfolds and neither is visible to a dimension check.",
@@ -106,6 +164,19 @@
   "L": "luminosity in watts. Ambiguous against length in other contexts, which is exactly why it is declared rather than left to be read.",
   "left_undeclared": "S in theEmptying, A in theHorizon, and r/volume/hair in theZero are not confidently readable from their names and are deliberately left unread rather than guessed -- a guessed unit makes a bad bond look legal, which is worse than a missing one.",
   "half_integer": "walk_run_per_sqrt_leg and swing_period_per_sqrt_leg are a planet's Froude COEFFICIENTS -- a speed per root-length and a period per root-length. Their dimensions are L^0.5 T^-1 and L^-0.5 T. The units table now carries fractional exponents rather than leaving the two most-published unread keys in the tree unread for a formatting reason.",
-  "case": "`dynamic_pressure_pa` and `P_surface_Pa` are the same unit spelled two ways. folding.py absorbs the case difference so neither hides, but the inconsistency is real and belongs to the tree, not to the reader."
+  "case": "`dynamic_pressure_pa` and `P_surface_Pa` are the same unit spelled two ways. folding.py absorbs the case difference so neither hides, but the inconsistency is real and belongs to the tree, not to the reader.",
+  "found_by_signatures": "theGround publishes `bulk_density` with no unit, so the one membrane the vertical-stress law E2.01 was built for could not be bound to it. Surfaced by an agent trying to declare continuum mechanics -- a signature failing to dock is a real report about what a membrane publishes, not just a formatting problem.",
+  "per_mass": "theThrust publishes specific work and specific power -- J/kg and W/kg. Neither can be declared by a key suffix: `_per_kg` is not in SUFFIX_UNITS and any name ending `_kg` is read as a MASS, which is exactly the misfold this file exists to prevent. So they are declared here instead. folding.py's UNITS table does not yet hold J/kg or W/kg, so the audit reads the declaration and skips them rather than checking them -- a stated unit nothing can check is still better than a key silently claiming to be kilograms.",
+  "theEye": "Photometry enters the tree at theEye and had no representation before it: lux, candela per square metre, trolands, lumens per watt, arcminutes, arcseconds, cycles per degree, pixels per degree and steradians are all declared here. They sit in `global` rather than under a membrane because a key like `acuity_arcmin` is arcminutes no matter who publishes it -- and because `folding.py membrane <name>` calls undeclared(nums) WITHOUT the membrane, so a by_membrane declaration is invisible to the one report a chapter author actually reads.",
+  "nm_reads_as_newton_metre": "CAUTION, found while writing theEye: SUFFIX_UNITS is matched case-insensitively on a second pass, so ANY key ending `_nm` (nanometres) matches `_Nm` and is read as a NEWTON-METRE. That is a misfold of exactly the kind this system exists to catch, and it is invisible because both spellings look right. theEye avoids it by publishing `photopic_peak_wavelength` rather than `photopic_peak_nm`; the collision itself is still live in folding.py for anyone who types a wavelength the obvious way.",
+  "hz": "theStance publishes three sway frequencies in HERTZ because that is how postural sway is measured and reported everywhere, and there is no `_hz` suffix rule. They are declared here as 1/s, which is the same unit spelled the table's way, and each is ALSO published as a period in seconds so the chapter does not depend on this file to be readable.",
+  "renames_owed": "aHuman.dT_defended_K -> dT_defended_dK  (it is a SPAN: 33.0 degC skin minus 6.04 degC air. As an absolute Kelvin it reads 246 degrees below absolute zero.) theHuman.cadence_steps_s -> cadence_steps_per_s  (it is exactly 1/step_time_s, dimension T^-1, published under a name meaning T^1). Both are read by other membranes under the current names -- theLoad consumes cadence_steps_s -- so the rename needs its consumers moved in the same commit. Overridden now so the machine-readable truth is right today."
+ },
+ "overrides": {
+  "_note": "Keys whose NAME states the wrong unit. An override is not a convenience -- it is a correction, and every entry here is a rename that is owed. Listed in renames_owed.",
+  "_any": {
+   "dT_defended_K": "dK",
+   "cadence_steps_s": "1/s"
+  }
  }
 }

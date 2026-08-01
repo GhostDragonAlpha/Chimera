@@ -11,14 +11,14 @@
 |---|---|
 | `aHuman` | The person you actually play. Not a body in the abstract — *this* body, on *this* |
 | `theAnkle` | The joint that makes walking cheap, and the only one that touches the ground |
-| `theBalance` | Every motion in the gait so far is sagittal — fore-aft and up. A real walking body also moves SIDEWAYS over each stance foot, because if it did not it would fall. That missing axis is most of what makes a figure look alive rather than railed |
-| `theEye` | What the person can see. This is the only unbuilt port that changes what the SCREEN shows — right now the camera is a free-floating lens that owes nothing to the body it sits inside, so a derived visor, a derived sun altitude and a polar night all render identically |
-| `theGrip` | The story has Vance clamp to a sheer rock face and walk it like a floor. That is not a movement mode, it is a DIFFERENT CONTACT LAW: everything `theAnkle` derived assumes the support force opposes gravity, and here it opposes an arbitrary surface normal |
+| `theBalance` | Everything above this walks forwards. Seen from the side a body is never falling |
+| `theEye` | Everything above this chapter derived a world. This one derives the hole the |
+| `theGrip` | The hand does not aim its fingers at a place. It **closes until it cannot**, and |
 | `theHand` | What the person can do to things. The manual's own control law lives here: COMMAND THE PROCESS, NOT THE POSITION — the hand closes until it cannot, and the OBJECT decides where the fingers land. One GRAB serves a pin and a bowling ball |
-| `theLoad` | A suit hopper full of ore is mass, and mass is already load-bearing in this tree — `theHuman` computes its cadence and foot pressure from the SUITED mass. Everything picked up should move those numbers, and right now nothing does |
+| `theLoad` | A body with something on its back is a **different body**: heavier, higher |
 | `theSkin` | The suit's insulation is derived in `aHuman` and the body's heat is derived in `theSweep`, and now the surface between them is derived too: skin is a 60-micron melanin filter crossed twice, over blood-bearing collagen that diffuses light — red furthest, which is why a finger glows red against a torch. What happens when something goes THROUGH it is still open: the story's only injury is a laser graze and a coagulant |
-| `theStance` | Standing is one posture out of six the story uses, and the other five are missing. Each changes the contact patch, the centre of mass height, and therefore the whole balance problem `theHuman` solved once for standing |
-| `theThrust` | The story drifts Vance across a crater rim on jetpack in low gravity, and stands him in a depressurised hold in zero-G. Every locomotion law in this tree so far needs a foot on something. This one has none, and none of them apply |
+| `theStance` | Standing still is not a thing a body is, it is a thing a body keeps doing. The |
+| `theThrust` | The body as an engine. Every time a person jumps, starts, stops, climbs or |
 
 ## Hands down
 

@@ -22,7 +22,9 @@
    "equation": "F = dp/dt; action-reaction",
    "source": "Newton, *Principia* 1687; any university text",
    "relevance": "everything",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + M1 -> M1L1T-2",
+   "fold": "fec7199bc"
   },
   {
    "id": "E1.02",
@@ -40,7 +42,9 @@
    "equation": "d/dt(∂L/∂q̇) − ∂L/∂q = 0, L = T−V",
    "source": "Lagrange 1788; Goldstein, *Classical Mechanics*",
    "relevance": "joints, constraints",
-   "signature": null
+   "signature": null,
+   "serial": "M1L2T-2 + M1L2T-2 -> M1L2T-2",
+   "fold": "fe72702a4"
   },
   {
    "id": "E1.04",
@@ -58,7 +62,9 @@
    "equation": "Euler equations; inertia tensor I",
    "source": "Goldstein ch. 5; Featherstone 2008",
    "relevance": "ships, limbs, stones",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> M1L2",
+   "fold": "f7588543f"
   },
   {
    "id": "E1.06",
@@ -67,7 +73,9 @@
    "equation": "ẍ + 2ζωẋ + ω²x = f — resonance, Q factor, damping",
    "source": "standard texts; Den Hartog, *Mechanical Vibrations*",
    "relevance": "suspension, sway, structures",
-   "signature": null
+   "signature": null,
+   "serial": "1 + T-1 -> T1",
+   "fold": "f30dc00e8"
   },
   {
    "id": "E1.07",
@@ -76,7 +84,9 @@
    "equation": "∂²u/∂t² = c²∇²u",
    "source": "standard texts",
    "relevance": "cables, surfaces",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1T-1 -> T-1",
+   "fold": "faf229142"
   },
   {
    "id": "E1.08",
@@ -94,7 +104,9 @@
    "equation": "τ = dL/dt = Ω×L",
    "source": "Goldstein",
    "relevance": "ship attitude, flywheels",
-   "signature": null
+   "signature": null,
+   "serial": "M1L2 + M1L2T-2 + T-1 -> T-1",
+   "fold": "f795692cd"
   },
   {
    "id": "E2.01",
@@ -103,7 +115,9 @@
    "equation": "σᵢⱼ, εᵢⱼ; equilibrium ∇·σ + f = 0",
    "source": "Landau & Lifshitz vol. 7, *Theory of Elasticity*",
    "relevance": "structures, rock",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1T-2 + M1L-3 -> M1L-1T-2",
+   "fold": "f70b9bd07"
   },
   {
    "id": "E2.02",
@@ -112,7 +126,9 @@
    "equation": "σ = C:ε — Young's modulus, Poisson ratio",
    "source": "L&L vol. 7; measured moduli per material",
    "relevance": "theGround rock, hulls",
-   "signature": null
+   "signature": null,
+   "serial": "1 + M1L-1T-2 -> M1L-1T-2",
+   "fold": "fe735e493"
   },
   {
    "id": "E2.03",
@@ -148,7 +164,9 @@
    "equation": "P + ½ρv² + ρgh = const; circulation → lift",
    "source": "Bernoulli 1738; Anderson, *Aerodynamics*",
    "relevance": "wings, flight",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-1 + M1L-3 -> M1L-1T-2",
+   "fold": "f99b74582"
   },
   {
    "id": "E2.07",
@@ -193,7 +211,9 @@
    "equation": "μ(I) law; Hertz-Mindlin contacts",
    "source": "GDR MiDi 2004; Cundall & Strack 1979",
    "relevance": "theDig, regolith",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + M1L-3 -> M1L-1T-2",
+   "fold": "fa9769ac5"
   },
   {
    "id": "E2.12",
@@ -220,7 +240,9 @@
    "equation": "PV = nRT; kinetic theory P = ⅓nmc̄²",
    "source": "Maxwell-Boltzmann 1860s",
    "relevance": "theAtmosphere (proven)",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + Th1 -> L1",
+   "fold": "fa957d8aa"
   },
   {
    "id": "E3.03",
@@ -247,7 +269,9 @@
    "equation": "q = −k∇T; Fourier's law",
    "source": "Fourier 1822",
    "relevance": "theSweep, planets",
-   "signature": null
+   "signature": null,
+   "serial": "M1T-3 -> L-1Th1",
+   "fold": "f86be2cc7"
   },
   {
    "id": "E3.06",
@@ -265,7 +289,9 @@
    "equation": "Stefan-Boltzmann P = εσT⁴; Planck spectrum B(λ,T)",
    "source": "Planck 1900; Stefan 1879",
    "relevance": "**proven** (blackbody_rgb)",
-   "signature": null
+   "signature": null,
+   "serial": "Th1 -> M1T-3",
+   "fold": "fe4ea42f4"
   },
   {
    "id": "E3.08",
@@ -274,7 +300,9 @@
    "equation": "Carnot limit η = 1−Tc/Th; refrigeration COP",
    "source": "Carnot 1824",
    "relevance": "life support, reactors",
-   "signature": null
+   "signature": null,
+   "serial": "Th1 + Th1 -> 1",
+   "fold": "f79c06b98"
   },
   {
    "id": "E3.09",
@@ -292,7 +320,9 @@
    "equation": "∇·E=ρ/ε₀, ∇×B=μ₀J+μ₀ε₀∂E/∂t, etc.",
    "source": "Maxwell 1865; Griffiths or Jackson",
    "relevance": "all electronics, light",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L2I1 -> M1T-2I-1",
+   "fold": "fb9bf759f"
   },
   {
    "id": "E4.02",
@@ -319,7 +349,9 @@
    "equation": "c = 1/√(ε₀μ₀); Poynting S = E×B/μ₀",
    "source": "Maxwell 1865",
    "relevance": "radio, radar, light",
-   "signature": null
+   "signature": null,
+   "serial": "L1 -> T1",
+   "fold": "f2b7aa55f"
   },
   {
    "id": "E4.05",
@@ -373,7 +405,9 @@
    "equation": "Snell n₁sinθ₁=n₂sinθ₂; thin lens 1/f=1/s+1/s′",
    "source": "Snell 1621; Hecht, *Optics*",
    "relevance": "theEye, visors, cameras",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 + 1 -> 1",
+   "fold": "fa3f3f398"
   },
   {
    "id": "E5.02",
@@ -382,7 +416,9 @@
    "equation": "interference, diffraction limit θ ≈ 1.22λ/D (Rayleigh criterion)",
    "source": "Young 1801; Rayleigh 1879",
    "relevance": "sensor resolution",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1 -> 1",
+   "fold": "fe3083f3e"
   },
   {
    "id": "E5.03",
@@ -391,7 +427,9 @@
    "equation": "Malus I = I₀cos²θ; Fresnel reflection coefficients",
    "source": "Fresnel 1821",
    "relevance": "glare, visor filters",
-   "signature": null
+   "signature": null,
+   "serial": "1 -> 1",
+   "fold": "f84d97466"
   },
   {
    "id": "E5.04",
@@ -409,7 +447,9 @@
    "equation": "Rayleigh λ⁻⁴; Mie; Henyey-Greenstein phase",
    "source": "Rayleigh 1871; Mie 1908",
    "relevance": "theAtmosphere",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1L-3 -> 1",
+   "fold": "f315efdf5"
   },
   {
    "id": "E5.06",
@@ -427,7 +467,9 @@
    "equation": "complex ñ = n + ik per material",
    "source": "measured: refractiveindex.info (in repo, CC0)",
    "relevance": "all surfaces",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L1 -> L1",
+   "fold": "f88bf9ce6"
   },
   {
    "id": "E6.01",
@@ -436,7 +478,9 @@
    "equation": "Lorentz γ = 1/√(1−v²/c²); time dilation; E = γmc²",
    "source": "Einstein 1905",
    "relevance": "high-speed flight, honest limits",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-1 -> 1",
+   "fold": "f7b794a30"
   },
   {
    "id": "E6.02",
@@ -445,7 +489,9 @@
    "equation": "E = mc²",
    "source": "Einstein 1905",
    "relevance": "fusion/fission energy",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> M1L2T-2",
+   "fold": "f9a403922"
   },
   {
    "id": "E6.03",
@@ -463,7 +509,9 @@
    "equation": "r_s = 2GM/c²; gravitational time dilation",
    "source": "Schwarzschild 1916",
    "relevance": "black holes (theBlackHole is declared!)",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> L1",
+   "fold": "fe65669f2"
   },
   {
    "id": "E6.05",
@@ -472,7 +520,9 @@
    "equation": "light bends 4GM/c²b",
    "source": "Einstein 1915; Eddington 1919 measured",
    "relevance": "deep-space rendering",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> 1",
+   "fold": "f11df4910"
   },
   {
    "id": "E7.01",
@@ -517,7 +567,9 @@
    "equation": "E_photon = hν; threshold work function",
    "source": "Einstein 1905; Millikan 1916 measured",
    "relevance": "sensors, solar panels",
-   "signature": null
+   "signature": null,
+   "serial": "T-1 -> M1L2T-2",
+   "fold": "f67c30470"
   },
   {
    "id": "E7.06",
@@ -553,7 +605,9 @@
    "equation": "N = N₀e^(−λt); half-life t½ = ln2/λ",
    "source": "Rutherford 1900",
    "relevance": "RTG power, dating rocks",
-   "signature": null
+   "signature": null,
+   "serial": "T1 + T1 -> 1",
+   "fold": "f515fced3"
   },
   {
    "id": "E8.02",
@@ -571,7 +625,9 @@
    "equation": "mass defect → energy via E=mc²; curve peaks at iron",
    "source": "Bethe & Bacher 1936",
    "relevance": "why stars fuse, why iron is ash",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> M1L2T-2",
+   "fold": "f9a403922"
   },
   {
    "id": "E8.04",
@@ -580,7 +636,9 @@
    "equation": "p-p chain, CNO cycle; Gamow tunneling factor",
    "source": "Bethe 1939 (Nobel lecture)",
    "relevance": "**theStar**",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> Th1",
+   "fold": "f5f7b500f"
   },
   {
    "id": "E8.05",
@@ -616,7 +674,9 @@
    "equation": "hydrostatic equilibrium dP/dr = −GMρ/r²; energy transport",
    "source": "Eddington 1926; Kippenhahn & Weigert",
    "relevance": "theStar (proven law)",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> M1L-1T-2",
+   "fold": "f523be0e9"
   },
   {
    "id": "E9.02",
@@ -625,7 +685,9 @@
    "equation": "L = 4πR²σT⁴; main sequence L ∝ M^3.5",
    "source": "Hertzsprung 1905/Russell 1913",
    "relevance": "**aYellowStar (proven)**",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> L1 + M1L2T-3 + Th1",
+   "fold": "fa92d8eab"
   },
   {
    "id": "E9.03",
@@ -634,7 +696,9 @@
    "equation": "Planck spectrum per T_eff",
    "source": "Planck 1900",
    "relevance": "star color (proven)",
-   "signature": null
+   "signature": null,
+   "serial": "Th1 -> L1",
+   "fold": "faf0d25dc"
   },
   {
    "id": "E9.04",
@@ -643,7 +707,9 @@
    "equation": "(full table in PHYSICS_SOFTWARE_MATH.md §5: vis-viva, Kepler, Lambert, patched conics)",
    "source": "Bate/Mueller/White; Vallado",
    "relevance": "theSolarSystem (proven)",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> L1T-1 + T1",
+   "fold": "f29681591"
   },
   {
    "id": "E9.05",
@@ -661,7 +727,9 @@
    "equation": "accretion, differentiation by density",
    "source": "Safronov 1969",
    "relevance": "thePlanets",
-   "signature": null
+   "signature": null,
+   "serial": "M1L-3 -> 1 + 1",
+   "fold": "f17bfbbc3"
   },
   {
    "id": "E9.07",
@@ -670,7 +738,9 @@
    "equation": "Hubble expansion v = H₀d; CMB 2.725 K",
    "source": "Hubble 1929; Penzias & Wilson 1965 measured",
    "relevance": "deep background",
-   "signature": null
+   "signature": null,
+   "serial": "1 -> Th1",
+   "fold": "f0d752d8b"
   },
   {
    "id": "E9.08",
@@ -688,7 +758,9 @@
    "equation": "P/S velocities → interior structure",
    "source": "Oldham 1906; Gutenberg 1914",
    "relevance": "aActiveInterior",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-1 + L1T-1 -> L1",
+   "fold": "fb424bba2"
   },
   {
    "id": "E10.02",
@@ -697,7 +769,9 @@
    "equation": "rotating convecting conductor → magnetic field",
    "source": "Elsasser 1946; Glatzmaier-Roberts 1995",
    "relevance": "magnetospheres",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1L2T-3 -> L2I1 + M1T-2I-1",
+   "fold": "f3f71844f"
   },
   {
    "id": "E10.03",
@@ -706,7 +780,9 @@
    "equation": "Rayleigh-Bénard convection; plates drift cm/yr",
    "source": "Wegener 1912; Hess 1962",
    "relevance": "terrain evolution",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1L-1T-1 + Th1 + Th1 -> 1",
+   "fold": "f4a0e38ca"
   },
   {
    "id": "E10.04",
@@ -724,7 +800,9 @@
    "equation": "crust floats: compensation depth",
    "source": "Airy 1855/Pratt 1855",
    "relevance": "mountain heights",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1L-3 + M1L-3 -> L1",
+   "fold": "f3b9e9981"
   },
   {
    "id": "E10.06",
@@ -733,7 +811,9 @@
    "equation": "stream power E = KA^mS^n; thermal talus",
    "source": "Whipple & Tucker 1999",
    "relevance": "aTerrain aging",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L2 -> L1T-1",
+   "fold": "fb1762a7a"
   },
   {
    "id": "E10.07",
@@ -760,7 +840,9 @@
    "equation": "Coriolis f = 2Ωsinφ; Hadley cells; geostrophic balance",
    "source": "Coriolis 1835; Hadley 1735",
    "relevance": "theAtmosphere weather",
-   "signature": null
+   "signature": null,
+   "serial": "1 + T1 + Th1 -> L1T-1 + T-1",
+   "fold": "fc68eefff"
   },
   {
    "id": "E10.10",
@@ -769,7 +851,9 @@
    "equation": "thermohaline; Ekman transport",
    "source": "Ekman 1905",
    "relevance": "theOcean",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L1T-1 + T1 -> L1 + L1T-1",
+   "fold": "f0cce0473"
   },
   {
    "id": "E11.01",
@@ -787,7 +871,9 @@
    "equation": "stress-strain: elastic, yield, ultimate, ductile vs brittle",
    "source": "Ashby & Jones, *Engineering Materials*",
    "relevance": "every built thing",
-   "signature": null
+   "signature": null,
+   "serial": "M1L-1T-2 + M1L-1T-2 -> 1",
+   "fold": "f2c42571a"
   },
   {
    "id": "E11.03",
@@ -805,7 +891,9 @@
    "equation": "conductivity, heat capacity (Dulong-Petit, Debye T³)",
    "source": "Debye 1912",
    "relevance": "suit insulation, engines",
-   "signature": null
+   "signature": null,
+   "serial": "M1L1T-3Th-1 + M1T-3 -> L-1Th1",
+   "fold": "f7b687ebd"
   },
   {
    "id": "E11.05",
@@ -886,7 +974,9 @@
    "equation": "8 photons → 1 O₂; ~4–6% efficiency ceiling",
    "source": "Hill & Bendall 1960; standard plant physiology",
    "relevance": "theGrow, alien biomes",
-   "signature": null
+   "signature": null,
+   "serial": "1 + M1T-3 -> M1T-3",
+   "fold": "ff2fbf112"
   },
   {
    "id": "E13.02",
@@ -895,7 +985,9 @@
    "equation": "Kleiber's law B ∝ M^3/4 across 21 decades",
    "source": "Kleiber 1932 measured",
    "relevance": "creature design from law",
-   "signature": null
+   "signature": null,
+   "serial": "M1 -> M1L2T-3",
+   "fold": "f07c69518"
   },
   {
    "id": "E13.03",
@@ -981,7 +1073,9 @@
    "membrane": "theHuman",
    "status": "**PROVEN**",
    "catalog_ref": "1.1",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> L1 + L1 + M1",
+   "fold": "f422e28dc"
   },
   {
    "id": "H1.02",
@@ -995,7 +1089,9 @@
    "membrane": "theHuman",
    "status": "derived, in tree",
    "catalog_ref": "1.2",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> M1L2",
+   "fold": "f7588543f"
   },
   {
    "id": "H1.03",
@@ -1009,7 +1105,9 @@
    "membrane": "myobody / theAnkle",
    "status": "in myobody",
    "catalog_ref": "1.3",
-   "signature": null
+   "signature": null,
+   "serial": "1 -> 1 + 1",
+   "fold": "fe0a7e3f8"
   },
   {
    "id": "H1.04",
@@ -1023,7 +1121,9 @@
    "membrane": "all moving membranes",
    "status": "running (MuJoCo substrate)",
    "catalog_ref": "1.4",
-   "signature": null
+   "signature": null,
+   "serial": "M1 + M1L2 -> M1L1T-2 + M1L2T-2",
+   "fold": "fe262997d"
   },
   {
    "id": "H1.05",
@@ -1037,7 +1137,9 @@
    "membrane": "theAnkle, theGround, B1",
    "status": "partial",
    "catalog_ref": "1.5",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L2 + M1L-1T-2 -> 1 + M1L1T-2",
+   "fold": "f2d2c7b26"
   },
   {
    "id": "H2.01",
@@ -1051,7 +1153,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.1",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 + M1L1T-2 -> M1L1T-2",
+   "fold": "f4514a3f6"
   },
   {
    "id": "H2.02",
@@ -1065,7 +1169,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.2",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 -> 1 + 1",
+   "fold": "f8343b61d"
   },
   {
    "id": "H2.03",
@@ -1079,7 +1185,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.3",
-   "signature": null
+   "signature": null,
+   "serial": "1 -> 1",
+   "fold": "f84d97466"
   },
   {
    "id": "H2.04",
@@ -1093,7 +1201,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.4",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 + T1 -> T-1",
+   "fold": "f9a0b6c72"
   },
   {
    "id": "H2.05",
@@ -1107,7 +1217,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.5",
-   "signature": null
+   "signature": null,
+   "serial": "L2 + M1L-1T-2 -> 1 + L1 + M1L1T-2",
+   "fold": "f5988aed6"
   },
   {
    "id": "H2.06",
@@ -1121,7 +1233,9 @@
    "membrane": "myobody",
    "status": "running",
    "catalog_ref": "2.6",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + M1 -> M1L2T-2",
+   "fold": "f3504a6c7"
   },
   {
    "id": "H3.01",
@@ -1135,7 +1249,9 @@
    "membrane": "theHuman gait",
    "status": "**PROVEN**",
    "catalog_ref": "3.1",
-   "signature": null
+   "signature": null,
+   "serial": "1 + T-1 + T1 -> 1 + L1",
+   "fold": "faa985479"
   },
   {
    "id": "H3.02",
@@ -1149,7 +1265,9 @@
    "membrane": "theAnkle",
    "status": "**PROVEN**",
    "catalog_ref": "3.2",
-   "signature": null
+   "signature": null,
+   "serial": "M1L1T-2 + M1L2T-2 -> L1 + M1L1T-2",
+   "fold": "ff5d80c55"
   },
   {
    "id": "H3.03",
@@ -1163,7 +1281,9 @@
    "membrane": "theHuman gait",
    "status": "derived in tree",
    "catalog_ref": "3.3",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1T-2 -> T-1",
+   "fold": "f549f75ed"
   },
   {
    "id": "H3.04",
@@ -1177,7 +1297,9 @@
    "membrane": "theBalance",
    "status": "stub — data ready",
    "catalog_ref": "3.4",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1 -> L1",
+   "fold": "f8ee5c7e9"
   },
   {
    "id": "H3.05",
@@ -1205,7 +1327,9 @@
    "membrane": "theThrust (ground)",
    "status": "stub — data ready",
    "catalog_ref": "3.6",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + T1 -> L1 + M1L1T-2 + M1L1T-2",
+   "fold": "f32fe8e24"
   },
   {
    "id": "H3.07",
@@ -1219,7 +1343,9 @@
    "membrane": "theThrust, theEVA",
    "status": "stub — data ready",
    "catalog_ref": "3.7",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1T-1 + L1T-2 -> 1",
+   "fold": "f7dcbeed8"
   },
   {
    "id": "H3.08",
@@ -1233,7 +1359,9 @@
    "membrane": "theSweep, theLoad",
    "status": "partial",
    "catalog_ref": "3.8",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L1T-1 + M1 + M1 -> M1L2T-3",
+   "fold": "fe920b531"
   },
   {
    "id": "H4.01",
@@ -1247,7 +1375,9 @@
    "membrane": "theSweep",
    "status": "**PROVEN** (built)",
    "catalog_ref": "4.1",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 + T1 -> M1L2T-3",
+   "fold": "f0b5baf60"
   },
   {
    "id": "H4.02",
@@ -1261,7 +1391,9 @@
    "membrane": "theSweep",
    "status": "built, deepen",
    "catalog_ref": "4.2",
-   "signature": null
+   "signature": null,
+   "serial": "L3T-1 + M1 -> 1 + M1L2T-3",
+   "fold": "f7fad1d60"
   },
   {
    "id": "H4.03",
@@ -1289,7 +1421,9 @@
    "membrane": "theBreath",
    "status": "**PROVEN** (built)",
    "catalog_ref": "4.4",
-   "signature": null
+   "signature": null,
+   "serial": "L3 + T-1 -> L3T-1 + L3T-1",
+   "fold": "f38a75371"
   },
   {
    "id": "H4.05",
@@ -1303,7 +1437,9 @@
    "membrane": "theBreath/C1",
    "status": "open",
    "catalog_ref": "4.5",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L3T-1 -> L3T-1",
+   "fold": "f931d9bdc"
   },
   {
    "id": "H4.06",
@@ -1317,7 +1453,9 @@
    "membrane": "theBreath",
    "status": "open",
    "catalog_ref": "4.6",
-   "signature": null
+   "signature": null,
+   "serial": "M1L-1T-2 -> 1",
+   "fold": "f07a5d9a3"
   },
   {
    "id": "H4.07",
@@ -1331,7 +1469,9 @@
    "membrane": "theBreath",
    "status": "**PROVEN** (built)",
    "catalog_ref": "4.7",
-   "signature": null
+   "signature": null,
+   "serial": "1 + M1L-1T-2 -> M1L-1T-2",
+   "fold": "fe735e493"
   },
   {
    "id": "H5.01",
@@ -1359,7 +1499,9 @@
    "membrane": "theSweep/C3",
    "status": "open",
    "catalog_ref": "5.2",
-   "signature": null
+   "signature": null,
+   "serial": "L2 + M1L2T-3 + Th1 -> L1",
+   "fold": "f87ad660e"
   },
   {
    "id": "H5.03",
@@ -1373,7 +1515,9 @@
    "membrane": "theSweep",
    "status": "built",
    "catalog_ref": "5.3",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L2 + Th1 -> M1L2T-3",
+   "fold": "f36e45905"
   },
   {
    "id": "H5.04",
@@ -1387,7 +1531,9 @@
    "membrane": "aHuman suit, theSweep",
    "status": "partial",
    "catalog_ref": "5.4",
-   "signature": null
+   "signature": null,
+   "serial": "L2 + M1L2T-3 + Th1 -> 1 + L1",
+   "fold": "f464412c7"
   },
   {
    "id": "H6.01",
@@ -1429,7 +1575,9 @@
    "membrane": "theEye",
    "status": "data ready — stub",
    "catalog_ref": "6.3",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1 -> L1 + L1",
+   "fold": "f2e19a447"
   },
   {
    "id": "H6.04",
@@ -1471,7 +1619,9 @@
    "membrane": "theEye",
    "status": "open",
    "catalog_ref": "6.6",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 + 1 -> 1 + 1",
+   "fold": "f5264df53"
   },
   {
    "id": "H7.01",
@@ -1485,7 +1635,9 @@
    "membrane": "theSkin",
    "status": "**PROVEN**",
    "catalog_ref": "7.1",
-   "signature": null
+   "signature": null,
+   "serial": "1 + L1 -> 1",
+   "fold": "f582e381d"
   },
   {
    "id": "H7.02",
@@ -1499,7 +1651,9 @@
    "membrane": "theSkin",
    "status": "**PROVEN**",
    "catalog_ref": "7.2",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 -> 1",
+   "fold": "fb4ca2581"
   },
   {
    "id": "H7.03",
@@ -1541,7 +1695,9 @@
    "membrane": "theGrip",
    "status": "data ready",
    "catalog_ref": "7.5",
-   "signature": null
+   "signature": null,
+   "serial": "1 + M1L1T-2 -> M1L1T-2",
+   "fold": "f02a65f7e"
   },
   {
    "id": "H7.06",
@@ -1555,7 +1711,9 @@
    "membrane": "theSkin",
    "status": "**PROVEN**",
    "catalog_ref": "7.6",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 -> L2",
+   "fold": "f0c29291d"
   },
   {
    "id": "H8.01",
@@ -1569,7 +1727,9 @@
    "membrane": "theGrip",
    "status": "data ready — stub",
    "catalog_ref": "8.1",
-   "signature": null
+   "signature": null,
+   "serial": "M1L1T-2 + T1 -> 1 + M1L1T-2",
+   "fold": "fde433abd"
   },
   {
    "id": "H8.02",
@@ -1583,7 +1743,9 @@
    "membrane": "theGrip",
    "status": "data ready — stub",
    "catalog_ref": "8.2",
-   "signature": null
+   "signature": null,
+   "serial": "1 + 1 + M1L1T-2 -> 1 + M1L1T-2",
+   "fold": "fcac09923"
   },
   {
    "id": "H8.03",
@@ -1611,7 +1773,9 @@
    "membrane": "theLoad",
    "status": "stub",
    "catalog_ref": "8.4",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + M1 + M1 -> L1 + M1L2T-3",
+   "fold": "f95f15c49"
   },
   {
    "id": "H8.05",
@@ -1625,7 +1789,9 @@
    "membrane": "theStance",
    "status": "stub — data ready",
    "catalog_ref": "8.5",
-   "signature": null
+   "signature": null,
+   "serial": "L1 + L1 -> L1 + L1 + L1",
+   "fold": "fe74efd4f"
   },
   {
    "id": "H9.01",
@@ -1667,7 +1833,9 @@
    "membrane": "aHuman, theEVA, theLoad",
    "status": "data ready",
    "catalog_ref": "9.3",
-   "signature": null
+   "signature": null,
+   "serial": "L1T-2 + M1 -> M1L-1T-2 + M1L1T-2",
+   "fold": "f998f3dc7"
   },
   {
    "id": "H9.04",
@@ -1681,7 +1849,9 @@
    "membrane": "aHuman class",
    "status": "open — for future games",
    "catalog_ref": "9.4",
-   "signature": null
+   "signature": null,
+   "serial": "T1 -> L1 + M1 + T-1",
+   "fold": "f0b611865"
   },
   {
    "id": "H9.05",

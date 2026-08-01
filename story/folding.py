@@ -42,6 +42,7 @@ a silent default standing in for a missing declaration.
 from __future__ import annotations
 
 import hashlib
+import math
 import json
 import re
 from pathlib import Path
@@ -115,7 +116,12 @@ UNITS = {
     "kpc":    (_d(L=1), 3.0856775814913673e19, 0.0),
     "1/min":  (_d(T=-1), 1.0 / 60.0, 0.0),
     "litre/min": (_d(L=3, T=-1), 1e-3 / 60.0, 0.0),
-    "kWh/kg": (_d(L=2, T=-2), 3.6e6 / 1000.0, 0.0),
+    # PER TONNE, and the name said per kilogram. The SCALE was right for the keys it serves
+    # (`_kwh_t`, Bond work index) and the LABEL was wrong by 1000x -- so anything reading the name
+    # to decide what to multiply by would have been out by three orders. Caught by an agent doing
+    # arithmetic on the table rather than trusting it, which is the whole method applied to the
+    # checker itself.
+    "kWh/t":  (_d(L=2, T=-2), 3.6e6 / 1000.0, 0.0),
     "mm/kyr": (_d(L=1, T=-1), 1e-3 / 3.15576e10, 0.0),
     "pct":    (_Z, 0.01, 0.0),
     "MPa":    (_d(M=1, L=-1, T=-2), 1e6, 0.0),
@@ -124,6 +130,36 @@ UNITS = {
     "A.m2":   (_d(I=1, L=2), 1.0, 0.0),
     "J/kgK":  (_d(L=2, T=-2, Th=-1), 1.0, 0.0),
     "Zsun":   (_Z, 1.0, 0.0),
+    # published in this tree and unreadable until now -- the gap a signature agent surfaced by
+    # trying to declare continuum mechanics and finding viscosity alone blocked three rows.
+    "Pa.s":   (_d(M=1, L=-1, T=-1), 1.0, 0.0),
+    "m2/s":   (_d(L=2, T=-1), 1.0, 0.0),
+    "N/m":    (_d(M=1, T=-2), 1.0, 0.0),
+    "J/m2":   (_d(M=1, T=-2), 1.0, 0.0),
+    "m3/kg":  (_d(M=-1, L=3), 1.0, 0.0),
+    "J/K":    (_d(M=1, L=2, T=-2, Th=-1), 1.0, 0.0),
+    "W/mK":   (_d(M=1, L=1, T=-3, Th=-1), 1.0, 0.0),
+    "W/m2K":  (_d(M=1, T=-3, Th=-1), 1.0, 0.0),
+    "W/kg":   (_d(L=2, T=-3), 1.0, 0.0),
+    "kg.m/s": (_d(M=1, L=1, T=-1), 1.0, 0.0),
+    # the units behind the misread keys -- real speeds and areal densities the tree publishes
+    "km/s":   (_d(L=1, T=-1), 1e3, 0.0),
+    "cm/yr":  (_d(L=1, T=-1), 0.01 / 3.15576e7, 0.0),
+    "g/kg":   (_Z, 1e-3, 0.0),
+    "kg/m2":  (_d(M=1, L=-2), 1.0, 0.0),
+    "mW/m2":  (_d(M=1, T=-3), 1e-3, 0.0),
+    "1/km":   (_d(L=-1), 1e-3, 0.0),
+    "K/km_":  (_d(Th=1, L=-1), 1e-3, 0.0),
+    "nm":     (_d(L=1), 1e-9, 0.0),          # WAVELENGTH. See the _nm note below -- it was a torque.
+    "1/m":    (_d(L=-1), 1.0, 0.0),          # absorption coefficient; blocked 3 human rows
+    "W/m3":   (_d(M=1, L=-1, T=-3), 1.0, 0.0),
+    "rad/s2": (_d(T=-2), 1.0, 0.0),
+    "cd/m2":  (_d(J=1, L=-2), 1.0, 0.0),     # luminance -- blocked four of the six eye rows
+    "cd":     (_d(J=1), 1.0, 0.0),
+    "lm":     (_d(J=1), 1.0, 0.0),
+    "lx":     (_d(J=1, L=-2), 1.0, 0.0),
+    "lm/W":   (_d(J=1, M=-1, L=-2, T=3), 1.0, 0.0),
+    "deg/s":  (_Z, 0.017453292519943295, 0.0),
     # HALF-INTEGER DIMENSIONS ARE REAL. A planet publishes the Froude COEFFICIENT -- a speed per
     # root-length -- so a body with a leg can finish the multiplication. Its dimension is
     # L^0.5 T^-1, and refusing to represent that would mean the two most-published unread keys in
@@ -149,7 +185,7 @@ SUFFIX_UNITS = [
     ("_C", "degC"), ("_K", "K"), ("_m", "m"),
     ("_frac", "frac"), ("_fraction", "frac"), ("_ratio", "ratio"),
     # a second pass over what the first left unread -- each covers real keys in this tree
-    ("_energy_kwh_t", "kWh/kg"), ("_kwh_t", "kWh/kg"),
+    ("_energy_kwh_t", "kWh/t"), ("_kwh_t", "kWh/t"),
     ("_per_sqrt_leg", None),          # resolved by name in units.json: speed vs period coefficient
     ("_l_min", "litre/min"), ("_steps_min", "1/min"), ("_per_min", "1/min"),
     ("_mm_kyr", "mm/kyr"), ("_kpc", "kpc"), ("_myr", "Myr"), ("_kyr", "kyr"),
@@ -159,11 +195,36 @@ SUFFIX_UNITS = [
     ("_factor", "1"), ("_margin", "ratio"), ("_exponent", "1"), ("_count", "count"),
     ("_albedo", "frac"), ("_efficiency", "frac"), ("_slope", "1"), ("_index", "1"),
     ("_MPa", "MPa"), ("_uT", "uT"), ("_Am2", "A.m2"), ("_J_kgK", "J/kgK"), ("_zsun", "Zsun"),
+    # NOTE the ORDER: these must precede the bare "_m2" rule, which would otherwise read
+    # `U_visor_W_m2K` as an AREA. First match wins, so the longer suffix has to come first.
+    ("_W_m2K", "W/m2K"), ("_W_mK", "W/mK"), ("_Pas", "Pa.s"), ("_W_kg", "W/kg"),
+    ("_km_s", "km/s"), ("_cm_yr", "cm/yr"), ("_g_kg", "g/kg"), ("_kg_m2", "kg/m2"),
+    ("_cd_m2", "cd/m2"), ("_lm_per_W", "lm/W"), ("_deg_s", "deg/s"), ("_W_m3", "W/m3"),
+    ("_rad_s2", "rad/s2"), ("_per_m", "1/m"), ("_lx", "lx"), ("_l", "litre"),
+    # _nm IS A WAVELENGTH, and it was reading as NEWTON-METRES. `_nm` was absent from this table,
+    # so the exact pass missed it and the case-INSENSITIVE fallback matched `_Nm`. Every wavelength
+    # in theSkin and theEye -- spectrum_nm, skin_bands_nm -- was on the binding surface typed as a
+    # TORQUE. Same dimension as nothing it could meet, so it never misfolded loudly; it was simply
+    # wrong and silent. Declared exactly, and the fallback is now guarded (below).
+    ("_nm", "nm"),
+    ("_mW_m2", "mW/m2"), ("_per_km", "1/km"), ("_K_per_km", "K/km"),
+    ("_m2_s", "m2/s"), ("_N_m", "N/m"), ("_J_K", "J/K"),
 ]
 
 # CASE. `dynamic_pressure_pa` and `P_surface_Pa` are the same unit spelled two ways, and a
 # case-sensitive table reads one and not the other. That is a naming inconsistency in the tree
 # rather than a physics problem, so it is absorbed here and REPORTED rather than left to hide.
+# LONGEST SUFFIX WINS, ALWAYS -- and this is a rule, not an ordering of the list above.
+#
+# Matching was first-in-list-wins, so any compound unit ending in a shorter unit's name was read as
+# the shorter one: `seismic_p_speed_km_s` came back as SECONDS, `plate_speed_cm_yr` as YEARS,
+# `column_mass_kg_m2` as an AREA, `U_visor_W_m2K` as an area again. That is worse than an
+# undeclared key, because a bond can SUCCEED against a wrong unit -- six real speeds in this tree
+# were on the binding surface wearing the wrong dimension.
+#
+# Hand-ordering the list fixed whichever ones somebody happened to notice. Sorting by length fixes
+# the class, and keeps fixing it for suffixes added later by people who never read this comment.
+SUFFIX_UNITS = sorted(SUFFIX_UNITS, key=lambda su: -len(su[0]))
 _SUFFIX_CI = [(suf.lower(), suf, u) for suf, u in SUFFIX_UNITS]
 
 
@@ -185,12 +246,28 @@ def declared_units() -> dict:
 
 
 def unit_of_key(key: str, membrane: str = None):
-    """The unit of a published number. Precedence: the key's own suffix, then a per-membrane
-    declaration, then a global one, then None.
+    """The unit of a published number. Precedence:
+         1. an explicit OVERRIDE in units.json  -- for keys whose own name is WRONG
+         2. the key's own suffix
+         3. a per-membrane declaration, then a global one
+         4. None -- undeclared, and reported
 
-    The SUFFIX WINS because a name that carries its unit cannot drift out of step with a table
-    somewhere else -- the declaration file exists to cover what the convention has not reached,
-    not to override it."""
+    THE SUFFIX USUALLY WINS, because a name carrying its unit cannot drift out of step with a table
+    somewhere else. But a suffix is a PATTERN MATCH on a name, and a name can simply be wrong:
+
+        aHuman.dT_defended_K = 26.96   is a SPAN (33.0 degC - 6.04 degC), not a temperature.
+                                       Read as absolute Kelvin it is 246 degrees below absolute zero.
+        theHuman.cadence_steps_s = 1.687  is a RATE -- exactly 1/step_time_s -- so its dimension is
+                                       T^-1 and its name says T^1.
+
+    Both are consumed by other membranes under those names, so renaming them mid-flight would break
+    live code. An explicit override states the truth NOW; the rename is owed and is recorded in
+    units.json under `renames_owed` so it does not quietly become permanent."""
+    d0 = declared_units().get("overrides", {})
+    if membrane and key in d0.get(membrane, {}):
+        return d0[membrane][key]
+    if key in d0.get("_any", {}):
+        return d0["_any"][key]
     for suf, u in SUFFIX_UNITS:
         if key.endswith(suf):
             if u is not None:
@@ -198,8 +275,10 @@ def unit_of_key(key: str, membrane: str = None):
             break          # the suffix is real but ambiguous -- let the declaration decide
     else:
         kl = key.lower()
-        for sl, _suf, u in _SUFFIX_CI:
-            if u is not None and kl.endswith(sl):
+        for sl, suf, u in _SUFFIX_CI:
+            # single-letter units are case-BEARING: N and n, K and k, T and t are different things,
+            # and folding them together typed a sample count as a force.
+            if u is not None and len(suf.lstrip("_")) > 1 and kl.endswith(sl):
                 return u
     d = declared_units()
     if membrane:
@@ -231,6 +310,36 @@ def fold_of(consumes, produces) -> str:
         return ";".join(sorted(out))
     key = side(consumes) + "->" + side(produces)
     return "f" + hashlib.sha1(key.encode()).hexdigest()[:8]
+
+
+def dim_code(unit: str) -> str:
+    """A dimension written so a person can read it: M1L2T-2, or `1` for dimensionless.
+
+    THE SERIAL HAS TO SAY SOMETHING. `f7588543f` is a perfectly good index and a useless label --
+    you cannot look at it and know what it plugs into, which was the whole point of the operator's
+    idea. A material's serial identifies a material; a law's serial should identify a SOCKET.
+    So the readable form is the dimensional signature spelled out, and the hash is kept beside it
+    as the short alias for exact comparison."""
+    d = dim_of(unit)
+    if d is None:
+        return "?"
+    out = "".join(f"{n}{e:g}" for n, e in zip(DIMS, d) if e)
+    return out or "1"
+
+
+def serial(sig) -> str:
+    """THE SERIAL: what this law takes, and what it gives back, in dimensions.
+
+        M1 + L1 -> M1L2          an inertia: a mass and a length become a moment of inertia
+        Th1 -> M1T-3             a temperature becomes a flux -- Stefan-Boltzmann's socket
+
+    Two laws with the same serial are the same SOCKET and substitute for each other; that is the
+    protein domain family, and it is why the serial is dimensional rather than exact. It is derived
+    from the signature every time, never stored as an editable field -- a serial you can type is a
+    serial that can disagree with the thing it labels."""
+    ins = " + ".join(sorted(dim_code(u) for u in sig.consumes.values())) or "-"
+    outs = " + ".join(sorted(dim_code(u) for u in sig.produces.values())) or "-"
+    return f"{ins} -> {outs}"
 
 
 # ── BONDING. Three outcomes, and the middle one is the interesting one.
@@ -305,6 +414,11 @@ class Signature:
     def fold(self):
         return fold_of(self.consumes, self.produces)
 
+    @property
+    def serial(self):
+        """The readable form of the fold -- see serial() above."""
+        return serial(self)
+
     def as_dict(self):
         return {"consumes": self.consumes, "produces": self.produces,
                 "regime": {k: list(v) for k, v in self.regime.items()},
@@ -361,7 +475,8 @@ def dock(sig: Signature, numbers: dict) -> dict:
             # is there something of the right DIMENSION that would misfold? name it -- that is a
             # far more useful failure than "not found".
             near = [(k, bond(need, u)[1]) for k, u in surf.items()
-                    if dim_of(u) == dim_of(need) and bond(need, u)[0] == MISFOLD]
+                    if want in k.lower()
+                    and dim_of(u) == dim_of(need) and bond(need, u)[0] == MISFOLD]
             verdicts[sym] = {"state": MISFOLD if near else ABSENT,
                              "need": need,
                              "why": near[0][1] if near else f"nothing published in {need}",
@@ -372,9 +487,21 @@ def dock(sig: Signature, numbers: dict) -> dict:
         _s, key, state, why = cands[0]
         v = {"state": state, "need": need, "key": key, "why": why,
              "alternatives": [c[1] for c in cands[1:4]]}
-        lo, hi = self_regime = sig.regime.get(sym, (None, None))
+        lo, hi = sig.regime.get(sym, (None, None))
         if lo is not None or hi is not None:
-            good, msg = in_regime(numbers[key], lo, hi)
+            # THE REGIME IS STATED IN THE SOCKET'S UNIT, so the value has to arrive in that unit.
+            # This compared the RAW published number: a socket wanting Pa with a band of 1e4..1e7
+            # would convict a perfectly good key published in kPa, and pass a bad one published in
+            # bar. Converting first is the difference between a range check and a units accident.
+            A, B = UNITS.get(need), UNITS.get(surf[key])
+            # `val`, NOT `v` -- `v` is the verdict dict two lines down, and shadowing it made this
+            # raise TypeError for EVERY signature carrying a consumed regime. Introduced while
+            # fixing the raw-value bug above and caught within the hour by an agent whose own work
+            # it blocked. Two defects in four lines, both about a name meaning the wrong thing.
+            val = float(numbers[key])
+            if A and B and not (math.isnan(A[2]) or math.isnan(B[2])):
+                val = ((val * B[1] + B[2]) - A[2]) / A[1]
+            good, msg = in_regime(val, lo, hi)
             v["regime"] = msg
             if not good:
                 v["state"] = MISFOLD
@@ -390,10 +517,45 @@ def catalog() -> dict:
     return json.loads(CATALOG.read_text(encoding="utf8"))
 
 
+SIG_DIR = _HERE / "data" / "signatures"
+
+
 def rows_with_signatures() -> dict:
     """The declared signatures, keyed by catalog row id. Everything not in here is UNBOUND, and
-    that count is the honest measure of how far the physics tree actually reaches the code."""
-    return dict(SIGNATURES)
+    that count is the honest measure of how far the physics tree actually reaches the code.
+
+    TWO SOURCES, AND THE SPLIT IS ABOUT WRITERS RATHER THAN PHYSICS. The dict below in this file
+    holds the seed set. `story/data/signatures/*.json` holds the rest, ONE FILE PER BRANCH, so that
+    several people (or agents) can declare signatures for different branches at once without
+    writing to the same file. A single shared dict is a conflict waiting to happen, and a merge
+    conflict inside a physics declaration is how a signature ends up attached to the wrong row --
+    which is a misfold, committed by the tooling instead of by the physics.
+
+    Each JSON file is  {"E2.11": {"consumes": {...}, "produces": {...}, "regime": {...},
+                                  "keys": {...}, "note": "..."} , ...}
+    In-code entries win on a clash, and the clash is REPORTED rather than silently resolved."""
+    out = dict(SIGNATURES)
+    if SIG_DIR.exists():
+        for f in sorted(SIG_DIR.glob("*.json")):
+            try:
+                blob = json.loads(f.read_text(encoding="utf8"))
+            except Exception as e:
+                print(f"  WARNING: {f.name} will not parse ({e}); skipped")
+                continue
+            for rid, d in blob.items():
+                if rid.startswith("_"):
+                    continue          # allow "_note"-style keys in the file
+                if rid in out:
+                    print(f"  WARNING: {rid} declared both in folding.py and {f.name}; "
+                          f"the in-code one wins")
+                    continue
+                try:
+                    out[rid] = Signature(d["consumes"], d["produces"],
+                                         {k: tuple(v) for k, v in (d.get("regime") or {}).items()},
+                                         d.get("note", ""), d.get("keys"))
+                except Exception as e:
+                    print(f"  WARNING: {rid} in {f.name} is malformed ({e}); skipped")
+    return out
 
 
 # ════════════════════════════════════════════════════════════════════════════════════════════════
@@ -599,6 +761,27 @@ FORBIDDEN = {
     "kg.m2": (0.0, None, "negative moment of inertia"),
 }
 
+# ── KIND. Dimensions are not enough to say two quantities are comparable.
+#
+# An ANGLE is dimensionless. So is a RATIO. So the pair check compared theLoad's `lean_limit_rad`
+# (0.164 rad) against its `lean_limit_ratio` (0.953) -- two different quantities that happen to
+# share a stem and a dimension -- and convicted a membrane whose own angle pair agrees to zero.
+# A false conviction is worse than a missed one here: it teaches people to ignore the audit.
+#
+# So units carry a KIND, and only same-kind quantities are compared. Angles are their own kind
+# precisely because being dimensionless does not make them numbers.
+KIND = {
+    "rad": "angle", "deg": "angle", "deg/s": "angle_rate",
+    "frac": "number", "ratio": "number", "pct": "number", "1": "number", "count": "number",
+    "Zsun": "number",
+}
+
+
+def kind_of(unit: str) -> str:
+    """What sort of thing a unit measures, where the dimension alone cannot say."""
+    return KIND.get(unit, "dimensional")
+
+
 # Key pairs that are the SAME quantity in two units. The stem is what is left after the suffix.
 _PAIRABLE = ("Pa", "kPa", "bar", "m", "km", "mm", "s", "yr", "kg", "K", "C", "TW", "W",
              "deg", "rad", "frac", "m2", "au")
@@ -645,6 +828,8 @@ def audit(verbose: bool = True) -> dict:
                     (ka, ua, va), (kb, ub, vb) = entries[i], entries[j]
                     if ua == ub or dim_of(ua) != dim_of(ub):
                         continue
+                    if kind_of(ua) != kind_of(ub):
+                        continue        # an angle is not a ratio, however dimensionless both are
                     A, B = UNITS.get(ua), UNITS.get(ub)
                     if not A or not B:
                         continue
@@ -677,9 +862,63 @@ def audit(verbose: bool = True) -> dict:
     return {"impossible": impossible, "inconsistent": inconsistent}
 
 
+def show_serial(query: str) -> int:
+    """WHAT CONNECTS TO THIS. Give it a row id (H3.07), a fold (f7588543f), or a serial fragment
+    (M1L2), and it answers the question the operator's idea was for: what is this, what is
+    interchangeable with it, and what can it plug into."""
+    sigs = rows_with_signatures()
+    cat = catalog()
+    byid = {r["id"]: r for r in cat["rows"]}
+    mems = membranes()
+    q = query.strip().lower()
+
+    hits = [rid for rid, s in sigs.items()
+            if q == rid.lower() or q == s.fold.lower() or q in s.serial.lower()]
+    if not hits:
+        print(f"nothing matches {query!r} -- try a row id, a fold, or a dimension like M1L2")
+        return 1
+
+    for rid in sorted(hits):
+        sg = sigs[rid]
+        row = byid.get(rid, {})
+        print("")
+        print(f"{rid}  {row.get('name','?')}")
+        print(f"   serial   {sg.serial}")
+        print(f"   fold     {sg.fold}")
+        print(f"   takes    " + ", ".join(f"{k} [{v}]" for k, v in sg.consumes.items()))
+        print(f"   gives    " + ", ".join(f"{k} [{v}]" for k, v in sg.produces.items()))
+        same = [r for r in sigs if r != rid and sigs[r].fold == sg.fold]
+        if same:
+            print(f"   SAME SOCKET, so these substitute for it:")
+            for r in sorted(same):
+                print(f"      {r}  {byid.get(r,{}).get('name','?')}")
+        docks = sorted(n for n, nums in mems.items() if dock(sg, nums)["binds"])
+        print(f"   CONNECTS TO  {', '.join(docks) if docks else '(nothing yet)'}")
+    return 0
+
+
+def write_serials() -> int:
+    """Stamp every declared law's serial into the catalog, so a row carries its own label."""
+    cat = catalog()
+    sigs = rows_with_signatures()
+    n = 0
+    for r in cat["rows"]:
+        sg = sigs.get(r["id"])
+        if sg:
+            r["serial"] = sg.serial
+            r["fold"] = sg.fold
+            n += 1
+    CATALOG.write_text(json.dumps(cat, ensure_ascii=False, indent=1), encoding="utf8")
+    print(f"stamped {n} serials into {CATALOG.name}")
+    return 0
+
 if __name__ == "__main__":
     import sys
     a = sys.argv[1:]
+    if a and a[0] == "serial" and len(a) > 1:
+        sys.exit(show_serial(a[1]))
+    if a and a[0] == "stamp":
+        sys.exit(write_serials())
     if a and a[0] == "audit":
         r = audit()
         sys.exit(1 if (r["impossible"] or r["inconsistent"]) else 0)
