@@ -1,0 +1,12 @@
+{
+ "membrane": "aHuman",
+ "control": "aTerrain",
+ "grid": 96,
+ "matched_iou": 0.4524183299693504,
+ "control_iou": 0.09857575315486176,
+ "occupancy": {
+  "source": 2.509901258680556,
+  "generated": 1.8821433738425926,
+  "control": 11.735817238136574
+ }
+}

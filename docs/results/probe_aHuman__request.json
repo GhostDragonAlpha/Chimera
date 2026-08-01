@@ -1,0 +1,10 @@
+{
+ "prompt": "Use the geometry, camera motion and framing of @Video1 exactly. @Video1 is an untextured grey clay model: keep its silhouette, proportions and camera path unchanged, and do not add, remove or reshape anything. Replace only the SURFACE, rendering it as a white spacesuit with fabric joints and a dark visor under soft even daylight against a plain uncluttered backdrop. Photoreal, no text, no added objects.",
+ "video_urls": [
+  "https://v3b.fal.media/files/b/0aa49848/htt0nQ_e2tzk_H1SASgzx_clay.mp4"
+ ],
+ "resolution": "480p",
+ "duration": "4",
+ "generate_audio": false,
+ "seed": 7
+}

@@ -1,0 +1,10 @@
+{
+ "prompt": "Use the geometry, camera motion and framing of @Video1 exactly. @Video1 is an untextured grey clay model: keep its silhouette, proportions, scale in frame and camera path unchanged, and do not add, remove or reshape anything. Render only the object's own surface as a white spacesuit with fabric joints and a dark visor. LIGHTING: flat uniform ambient light from all directions, no key light, no directional light, no cast shadow, no contact shadow, no ground plane, no floor, no horizon. The background is PURE BLACK and completely empty. The object floats with nothing touching it. Photoreal material detail, no text, no added objects, no lens flare, no depth of field.",
+ "video_urls": [
+  "https://v3b.fal.media/files/b/0aa498a4/GLIOqDGX4wHpff1YX5hNd_clay.mp4"
+ ],
+ "resolution": "480p",
+ "duration": "4",
+ "generate_audio": false,
+ "seed": 7
+}

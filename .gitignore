@@ -211,3 +211,8 @@ research_references/human/grip/
 research_references/human/skin_friction/
 research_references/optics/refractiveindex.info-database/
 research_references/optics/*.zip
+
+# Generated takes and their clay references -- regenerated on demand by tools/seedance_probe.py,
+# and the mp4s are outputs of a paid API rather than source. The JSON they produce (score, hull,
+# material) IS the result and is committed alongside the tools.
+clay_exports/
