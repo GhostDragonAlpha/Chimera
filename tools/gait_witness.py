@@ -132,6 +132,19 @@ def _sole_z(hip_z, hip_a, knee_a, pitch, thigh, shank, heel, toe, drop, R=None):
     return min(hz, tz)
 
 
+def _local_min(seq):
+    """The lowest STRICT local minimum of a sequence, or None if it has none.
+
+    Endpoints are excluded on purpose: in a swing-phase clearance trace they are the moments the
+    foot leaves and meets the ground, which are zero by definition and are not the MTC event."""
+    best = None
+    for i in range(1, len(seq) - 1):
+        if seq[i] < seq[i - 1] and seq[i] < seq[i + 1]:
+            if best is None or seq[i] < best:
+                best = seq[i]
+    return best
+
+
 def _arc_z(offset, pitch, drop, R):
     """How high a point of the sole rides above the contact, `offset` ahead of the ankle.
 
@@ -246,6 +259,25 @@ def witness(name: str) -> dict:
     # things, and the dataset's "foot clearance" is the second one, so they must not be compared.
     clr = [max(c) if c else 0.0 for c in clear]
     clr_min = [min(c) if c else 0.0 for c in clear]
+    # MINIMUM TOE CLEARANCE IS A LOCAL MINIMUM, NOT THE SMALLEST VALUE IN SWING.
+    #
+    # This file compared min(whole swing) against the dataset's `R.Foot.Clear [cm]` and reported
+    # 0.05% of stature against a measured 1.19% -- a 23x discrepancy that sent two investigations
+    # after the body. It was the instrument. The smallest clearance in swing is ALWAYS at toe-off
+    # or heel-strike, because a foot leaving or reaching the ground is at zero height by definition
+    # -- ours came in at 62% of the cycle, the instant of departure. MTC is the pinch in the MIDDLE,
+    # where the swinging foot passes the stance foot, and comparing a departure to a mid-swing
+    # margin is comparing two different events.
+    #
+    # THE LOCAL MINIMUM DEFINES ITSELF, WHICH IS WHY IT IS USED INSTEAD OF A WINDOW. A window would
+    # have to be chosen, and the answer moves with it: this body reads 1.26% at a 65% cut, 1.7% at
+    # 68% and 0.7% at 63%. A number that depends that strongly on where the boundary is drawn is a
+    # number the analyst picked. A strict local minimum is a property of the trajectory.
+    #
+    # AND WHEN THERE ISN'T ONE, THAT IS THE FINDING. A monotonic rise to a peak and back means the
+    # foot never pinches -- there is no MTC event to compare, and the honest report is that it is
+    # absent rather than a substituted global minimum.
+    mtc = [_local_min(c) for c in clear]
     vault = max(hips) - min(hips)
     asym = abs(duty_f[0] - duty_f[1]) / max(sum(duty_f) / 2, 1e-9)
 
@@ -257,6 +289,7 @@ def witness(name: str) -> dict:
            "sole_error_frac": sole_err, "sole_error_double_support_frac": dbl_err,
            "contact_plane_travel_frac": plane_travel,
            "clearance_frac": clr, "clearance_min_frac": clr_min,
+           "mtc_frac": mtc,
            "tip_clearance_min_frac": [min(t) if t else float("nan") for t in tips],
            "mtp_demand_deg": math.degrees(mtp_demand),
            "mtp_range_sim_deg": (math.degrees(mtp_lim) if mtp_lim else float("nan")),
@@ -337,11 +370,19 @@ def main(argv) -> int:
             print(f"  toe tip          lowest {min(_t)*100:+.2f}% of stature   "
                   f"MTP demanded {r['mtp_demand_deg']:.1f} deg "
                   f"(myo_sim joint range {r['mtp_range_sim_deg']:.0f} deg)")
+        _m = [x for x in r.get("mtc_frac", []) if x is not None]
+        if "measured_foot_clearance_m" in m:
+            _tgt = m["measured_foot_clearance_m"] / r["height_m"] * 100
+            if _m:
+                print(f"  MTC              {min(_m)*100:.2f}% of stature (swing-phase LOCAL minimum)"
+                      f"   measured {_tgt:.2f}%")
+            else:
+                print(f"  MTC              NO LOCAL MINIMUM IN SWING -- the foot never pinches, so "
+                      f"there is no MTC event to compare against the measured {_tgt:.2f}%")
         print(f"  swing clearance  peak {r['clearance_frac'][0]*100:.2f}% / "
               f"{r['clearance_frac'][1]*100:.2f}%, lowest {min(r['clearance_min_frac'])*100:.2f}% "
               f"of stature"
-              + (f"   measured MTC {m['measured_foot_clearance_m']/r['height_m']*100:.2f}%"
-                 if "measured_foot_clearance_m" in m else ""))
+              + "   (at toe-off/heel-strike, zero by definition -- not the MTC)")
         print(f"  vault            {r['vault_frac']*100:.2f}% of stature "
               f"({r['vault_m']*100:.1f} cm)   human ~2.5%")
         print(f"  hip peaks at     {r['hip_peak_at_cycle']*100:.0f}% of the cycle   "
