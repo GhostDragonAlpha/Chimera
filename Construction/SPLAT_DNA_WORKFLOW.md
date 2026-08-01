@@ -289,3 +289,48 @@ Downloads live in `/WorldModel/training_data/downloads/` and are **gitignored** 
 - 10 surface genomes: **#0** smooth bright panel (large **flat** splats), **#2** mid-grey steel, **#8** dark paint/rubber, **#1/#4** rough corroded (**blobby**, aniso 0.57–0.61), **#9** fine trim detail.
 - **Splat SHAPE carries material identity** — #0 and #1 share brightness but differ flat-vs-blobby.
 - **HONEST LIMIT:** these are *appearance* genomes (capture lighting baked in), **not** full PBR. Converting them needs the inverse recovery — for which bicycle's 194 poses are now the first real target.
+
+---
+
+## FAL.AI — how we "scan" things that do not exist
+
+This project sources APPEARANCE from measurement, and cannot measure what has never existed: this
+world's rock, a suit nobody sewed, a creature nobody caught. fal.ai runs a video model that
+textures **our own geometry**, which turns it into a synthetic capture rig.
+
+    a chapter's emit()  ->  clay_export  ->  fal.ai (Seedance)  ->  harvest / splat_genome
+                                                                          |
+                                                back into the chapter's own numbers
+
+**IT IS NOT ALLOWED TO INVENT THE SCENE.** We supply geometry and camera; it supplies appearance
+only — and appearance is already the one thing sourced from measurement rather than derived, so
+nothing is conceded. It is also checkable: reconstruct from the generated views and compare against
+the chapter's own emit. Two independent messengers, which is a dyad.
+
+**WHAT IT GIVES, MEASURED:** colour (ΔRGB −0.22…−0.25 on a suit, −0.45…−0.51 on terrain),
+`surface_complexity` 1.71×, `splat_demand` 1.398×.
+
+**WHAT IT CANNOT, AND WHY THAT IS FINE:** geometry comes back wrong (hull IoU 0.45, a body 25% less
+voluminous) — and **a material genome contains no positions.** Every feature is a distribution. We
+already have the geometry; deriving it is the whole project.
+
+**REFUTED — DO NOT RE-ATTEMPT:** `log_size`, `aniso`, `opacity` from a generated take match *the
+clay we sent it* to within 6–7%. They are the fitter's signature, not the material's. Adaptive
+densification was built and did not rescue them.
+
+**MONEY AND THE TRAPS, each one paid for:** nothing spends without `--yes`; `FAL_KEY` lives in the
+environment, never in a file. Discover for FREE first — `fal.ai/api/models?keywords=…` and
+`openapi/queue/openapi.json?endpoint_id=…` — because seven paid calls were burned probing an
+endpoint with invented field names. **fal ignores unknown fields rather than rejecting them**, so a
+misspelling returns 200 and a charge. **A 422 is not proof an endpoint is live:** one validated
+inputs and then returned a canned example (seed 0, 0.6 s) for any prompt, so check the returned
+seed and duration against what you asked for.
+
+**CAPTURE SETTINGS, every one measured against a control:** 480p beats 720p for frame-to-frame
+consistency (2.62% vs 4.30% drift, clay floor 2.51%) — more resolution bought less agreement. Black
+floor, ambient only, no shadows, because our renderer programs its own light and a baked one is
+permanent. Keep the floor contact visible; it is information.
+
+**AND THE CLAY IS THE FREE CONTROL.** We rendered it, so we know its answer by construction. Run
+every measurement on the take AND on what we sent. Three conclusions were reversed by that in one
+day. Full account: `docs/FAL_AI.md`.

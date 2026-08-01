@@ -22,7 +22,7 @@ follow a task board. A stray "Unreal" keyword in an old doc is not a signal — 
 goal, key paths, hardware traps, conventions) · **`Chimera/docs/THE_GROWTH.md` (what the game IS:
 the 2026-07-31 rulings — physics is the code, appearance from 3DGS scans only, the recipe/children
 doctrine, the D0–D4 detail standard, the corpus map)** · **`docs/THE_FOLDING.md` (units, folds, bonds, regimes: what a law may connect to, and `python story/folding.py audit` before you call anything done)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
-dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) ·
+dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) · **`docs/FAL_AI.md` (the SYNTHETIC capture rig: how fal.ai/Seedance textures our own clay so we can "scan" what does not exist — what it can give (colour, surface complexity), what it provably cannot (geometry, per-splat shape), what it costs, and the traps that were paid for)** ·
 `Chimera/docs/EXPERIMENTAL_METHOD.md` (**before debugging OR reporting anything** — the sixteen rules for not fooling yourself; rules 11-16 are the 2026-08-01 set on controls, scale, self-normalisation and name-vs-definition, summarised at the end of THIS file). Then the rest of THIS file.
 
 ---
