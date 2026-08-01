@@ -716,6 +716,10 @@ cannot diverge. Prefer a published table to a restated law.
 
 ---
 
+| **the tree was the only order** (2026-08-01) | a path says what CONTAINS what; the story is told in TIME | `theStar` and `thePlanets` are siblings and not simultaneous. `python story/timeline.py` derives the epoch from published `duration_s` and stamps BOTH numbers.json and story.md -- two orderings that disagree means the readable one loses silently |
+| **believed the witness over the generator** | `chain_witness` said 42/0/0 while `grow.py` was dying | a witness reading PUBLISHED numbers walks the last good file on disk. Order: generator exits clean -> witness -> then believe it |
+| **trusted the gate** | a tool written to catch 42 membranes made **four of its own bugs in a day** | it demanded a FREE dict of a *seed*, failed a story citing Carter 1968, and keyed duplicates on `round(v,12)` so 2.29e-35 and 5.39e-44 both became 0.0 and it INVENTED pairs. Check a column by hand on one known case before trusting it across forty |
+
 ## 10b. The one habit that caught all six
 
 Before you report a number, **name the thing that would have to be true for it to be an artifact,

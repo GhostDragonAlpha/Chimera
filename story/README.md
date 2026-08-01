@@ -281,3 +281,41 @@ Three corollaries, each of which cost its own hour:
 > A measurement without a control is not a weak measurement. It is not a measurement.
 
 The sixteen rules in full, with every number: `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+
+---
+
+## AND EVERY CHAPTER KNOWS WHEN IT IS (2026-08-01)
+
+A chapter's folder path says what **contains** it. The story is told in **time**, and those two
+part company the moment the tree branches: `theStar` and `thePlanets` are siblings in the folder
+tree and are not simultaneous. Nothing written anywhere said which came first.
+
+    A HIERARCHY SAYS WHAT CONTAINS WHAT. A TIMELINE SAYS WHAT FOLLOWS WHAT.
+
+So the serial is now **derived from time**, not from the tree. Every chapter already publishes
+`duration_s` — its own span, and those are real, `theCooling`'s 1.199e13 s *is* the 380,000 years
+to recombination. Summing down the path from the seed gives the seed's own seconds at which each
+chapter's process completes, and it is monotonic down every branch by construction, because a child
+cannot finish before the parent it lives inside.
+
+    python story/timeline.py            # the story, in the order it happens
+    python story/timeline.py --write    # publish timeline_serial + t_since_seed_s
+
+**AND THE STORY CARRIES THE SAME NUMBER.** Every `story.md` is stamped with its chapter, its epoch
+and its span. If only the numbers knew the order, there would be two orderings — and the one a
+human reads would be the one that quietly went wrong.
+
+**It found what was out of order the first time it ran**, which is the whole reason to have it:
+
+- `theHumanClock` lands at **3 seconds after the seed**, sorting before recombination. Humans do
+  not exist three seconds after the Big Bang. It is the first chapter whose containment and
+  chronology genuinely disagree — it sits under `theClock` because it *is* a clock, while what it
+  describes happens thirteen billion years later.
+- **Nine hand-written chapter numbers disagreed with the derived order, and two pairs collided** —
+  `theSolarSystem` and `theStar` both claimed chapter 6. They were paragraph counts written as the
+  story was composed, drifting each time a chapter was inserted between two others, with nothing to
+  notice, **because a number in prose has no consumer.**
+
+Honest limit: this sums process spans, not the waiting between them, so the epoch is exact as an
+ORDERING and approximate as an absolute time. When a chapter publishes the interval it waits before
+starting, the same sum becomes a real clock without changing shape.

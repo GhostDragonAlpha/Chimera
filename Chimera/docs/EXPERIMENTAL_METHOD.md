@@ -475,6 +475,106 @@ buried in the floor.
 
 ---
 
+## RULE 21 — THE SERIAL IS THE PLACE IN TIME, NOT THE PLACE IN THE TREE
+
+The operator's, and it fixes something that costs order every time it is missing. A membrane's
+address is its PATH, and a path encodes **containment** — what is inside what. The story is told in
+**time**. Those agree all the way down a spine and stop agreeing the instant the tree branches:
+`theStar` and `thePlanets` are siblings in the tree and are not simultaneous, and until 2026-08-01
+nothing written anywhere said which came first.
+
+    A HIERARCHY SAYS WHAT CONTAINS WHAT. A TIMELINE SAYS WHAT FOLLOWS WHAT.
+    The fourth dimension is the second one, and it is not free with the first.
+
+**DERIVE THE EPOCH, DO NOT DECLARE IT.** Every membrane already publishes `duration_s` — its own
+span — and those are real: `theCooling`'s 1.199e13 s *is* the 380,000 years to recombination.
+Summing down the path from the seed gives the seed's own seconds at which each process completes:
+
+    t_end(m) = t_end(parent) + duration_s(m)
+
+Monotonic down every branch by construction, because a child cannot finish before the parent it
+lives inside. Nothing chosen, nothing invented. `python story/timeline.py --write`.
+
+**AND THE STORY CARRIES THE SAME NUMBER.** Both `numbers.json` and `story.md` are stamped, because
+otherwise there are two orderings and they disagree — and the human-readable one loses silently.
+A story that does not know its own place in the story is decoration.
+
+**IT FINDS WHAT IS OUT OF ORDER, WHICH IS THE POINT.** On its first run: `theHumanClock` landed at
+3 seconds after the seed, sorting before recombination — the first membrane whose containment and
+chronology genuinely disagree, sitting under `theClock` because it *is* a clock while what it
+describes happens thirteen billion years later. And nine hand-written chapter numbers disagreed
+with the derived order, **two pairs of them colliding** (`theSolarSystem`/`theStar` both claiming
+chapter 6). Those were paragraph counts that drifted every time a membrane was inserted between two
+others, with nothing to notice, **because a number in prose has no consumer**.
+
+State the limit where the tool can see it: this sums process spans, not the waiting between them,
+so the epoch is exact as an ORDERING and approximate as an absolute time.
+
+---
+
+## RULE 22 — CHECK THE GENERATOR BEFORE YOU BELIEVE THE WITNESS
+
+A witness that reads published numbers **cannot see a generator that failed to publish**. It walks
+the last good file on disk and reports everything green.
+
+This cost twice in one afternoon. `story/grow.py` was dying on a retired key while `chain_witness`
+reported *"42 working, 0 stubs, 0 broken"* — because the witness was reading `numbers.json` files
+written before the change. The second time, `grow` was piped to `/dev/null` and the failure was
+invisible entirely.
+
+    THE ORDER IS: generator exits clean -> witness passes -> THEN the result is believed.
+    Never discard the generator's output. A green witness over stale data is worse than a
+    red one, because it is quiet.
+
+---
+
+## RULE 23 — AN INSTRUMENT NEEDS AN INSTRUMENT
+
+`tools/methodology_gate.py` was written to catch the failures of forty-two membranes and made
+**four of its own inside a day**, every one of which would have sent someone after an innocent
+membrane:
+
+| the gate's bug | what it did |
+|---|---|
+| required a `FREE` dict of a **seed** | accused 20 innocent membranes; a seed chooses nothing, so there is nothing to declare |
+| grepped for `measured\|literature\|predict` | failed a story citing **Carter 1968, g = 2** out of the Kerr–Newman metric |
+| keyed duplicates on `round(v, 12)` | sent `2.29e-35` **and** `5.39e-44` both to `0.0`, so at the top of the tree, where everything is Planck-scale, it **invented** pairs |
+| filtered identities by jumping a dial to a `FREE` bound | dropped a true identity, then in another form invented pairs on membranes whose `derive` degenerates off-default |
+
+The pattern: **a check applied outside the shape it was written for** — the same species as every
+membrane defect in this document. There is no exemption for tools.
+
+    Any column a gate reports must be checkable BY HAND on one known case before it is trusted
+    across forty. Run the slider on one membrane yourself; if the tool disagrees with you, the
+    tool is wrong until proven otherwise.
+
+---
+
+## THE REMAKE PROCEDURE — how to go back over everything without reading it all
+
+Written down because "go back over everything" is where a session evaporates, and because the
+context that starts it will not be the context that finishes it.
+
+1. **PROGRAM THE GATE FIRST.** Forty-two careful reads, each hoping to notice what twenty-three
+   rules say to look for, is the forward-debugging trap at tree scale. `tools/methodology_gate.py`
+   scores every membrane on form / derives / emits / free / units / one-name / typed / predicts.
+   The reading then goes only where it points.
+2. **WORK IN TIMELINE ORDER** (`python story/timeline.py`), not in the order things look broken.
+   Rule 17: a defect at the root poisons everything below it, and the symptom surfaces far from
+   where it entered.
+3. **ONE MEMBRANE AT A TIME, AND EACH RENAME TRAVELS WITH ITS CONSUMERS IN ONE COMMIT.** Grep for
+   `parent["<key>"]` before retiring anything. A rename that lands without its readers breaks the
+   tree eight membranes downstream, and the witness will not tell you.
+4. **AFTER EVERY CHANGE:** `story/grow.py` exits clean → `chain_witness` → `folding.py audit` →
+   the gate. In that order, every time (rule 22).
+5. **WHEN A MEMBRANE FAILS A COLUMN, SUSPECT THE COLUMN ONCE** before suspecting the membrane
+   (rule 23). Two of `theZero`'s four failures were the gate's.
+6. **A SYSTEMATIC PATTERN IS ONE DECISION, NOT N EDITS.** 45 flagged pairs across the tree were a
+   single choice — every membrane publishing its size under both the contract name and its own
+   physics name. Count the pattern before fixing instances.
+
+---
+
 ## THE CHECKLIST
 
 1. What does the human **wait for**? Measure that, not a proxy.
@@ -502,3 +602,10 @@ buried in the floor.
     absent, and never import the thing you judge.
 20. **In a grown world, an authored phenotype is the defect.** The witness is the fitness function,
     and the measured dataset is the CONTROL, not the answer.
+21. **The serial is the place in TIME, not in the tree.** Containment and chronology part company
+    the moment the tree branches; derive the epoch from published durations and stamp the STORY
+    with it too, or the two orderings disagree and the readable one loses silently.
+22. **Check the generator before you believe the witness.** A witness reading published numbers
+    cannot see a generator that failed to publish; it reads the last good file and reports green.
+23. **An instrument needs an instrument.** The gate written to catch 42 membranes made four of its
+    own bugs in a day. Check any column by hand on one known case before trusting it across forty.
