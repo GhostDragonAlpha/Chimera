@@ -1,5 +1,12 @@
 # theStance
 
+> **chapter 31** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **6.18301 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Standing still is not a thing a body is, it is a thing a body keeps doing. The
 feet mark out a patch of ground, the body falls very slowly in one direction or another inside it,
 and something catches it before it runs out of patch. How much patch there is, how fast it is

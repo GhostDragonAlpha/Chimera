@@ -1,5 +1,12 @@
 # theHuman
 
+> **chapter 22** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.44867 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A person, standing on that ground. Everything above this chapter exists so this
 one can stand up: the seed emptied, the sea cooled, a cloud shattered until its pieces were the size
 of stars, one of them lit, a rock swept up the leftovers, its core stayed warm enough to keep the

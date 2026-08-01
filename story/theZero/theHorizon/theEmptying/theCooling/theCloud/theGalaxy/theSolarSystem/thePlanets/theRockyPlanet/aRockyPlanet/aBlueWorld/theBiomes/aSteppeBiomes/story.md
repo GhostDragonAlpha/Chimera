@@ -1,5 +1,12 @@
 # aSteppeBiomes
 
+> **chapter 36** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.31094e+07 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A cold, dry world wearing mostly grass: a wide steppe belt around the
 mid-latitudes, woodland and savanna nearer the equator, ice past 63°, and a frost line that
 breathes 19 degrees poleward and back through the year.

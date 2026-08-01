@@ -1,5 +1,12 @@
 # theStar
 
+> **chapter 10** of the story  ·  **t = 3.54816e+15 s** since theZero  ·  lasts **9.4671e+14 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Squeeze gas hard enough and it catches fire and stops falling. Squeeze too little and it just goes cold and stiff instead — so there is a smallest possible star.
 
 *Chapter 6.*

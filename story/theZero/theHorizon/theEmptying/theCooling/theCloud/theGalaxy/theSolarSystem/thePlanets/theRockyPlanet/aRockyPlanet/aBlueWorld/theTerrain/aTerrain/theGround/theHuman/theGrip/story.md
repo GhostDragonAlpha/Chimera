@@ -1,5 +1,12 @@
 # theGrip
 
+> **chapter 23** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **0.644 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The hand does not aim its fingers at a place. It **closes until it cannot**, and
 whatever it ran into decides where the fingers stopped and how hard they now have to squeeze. So there
 is one GRAB, and a pin and a bowling ball are the *same command* with different answers.

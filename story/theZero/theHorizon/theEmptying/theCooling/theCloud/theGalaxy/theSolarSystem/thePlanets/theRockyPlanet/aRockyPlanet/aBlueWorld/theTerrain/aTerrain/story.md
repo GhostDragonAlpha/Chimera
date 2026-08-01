@@ -1,5 +1,12 @@
 # aTerrain
 
+> **chapter 20** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **86400 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** One place on that world, twelve kilometres across — about two hours on foot.
 The parent worked in continents; this is the scale where you can see a hill. Nothing here draws a
 river: the ground starts as rough noise, water is sent downhill, and every patch is worn down by how

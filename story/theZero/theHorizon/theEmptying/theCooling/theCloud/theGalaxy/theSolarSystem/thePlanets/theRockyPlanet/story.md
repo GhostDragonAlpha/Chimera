@@ -1,5 +1,12 @@
 # theRockyPlanet
 
+> **chapter 12** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.31094e+07 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Once you know how much rock a world is made of and how far it sits from its
 star, you no longer get to decide anything about it. Its size, its weight, how hard it is to leave,
 and even *which gases it is able to hold on to* all follow. This chapter works out the body. What the

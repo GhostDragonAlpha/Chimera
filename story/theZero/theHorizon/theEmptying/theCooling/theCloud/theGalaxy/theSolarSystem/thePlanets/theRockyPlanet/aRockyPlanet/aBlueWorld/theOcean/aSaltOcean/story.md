@@ -1,5 +1,12 @@
 # aSaltOcean
 
+> **chapter 19** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **86400 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The water that actually fills this world's basins: 2,861 metres of it on
 average, dark navy where it is deep, frozen past 43° latitude, with waves a metre and a half tall
 and a tide that never changes — 21 centimetres from the star alone, twice a day, forever.

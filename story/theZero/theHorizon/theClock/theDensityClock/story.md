@@ -1,5 +1,12 @@
 # theDensityClock
 
+> **chapter 03** of the story  ·  **t = 1.84069e-43 s** since theZero  ·  lasts **7.62437e-44 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you.
 
 **time leans with mass and speed**

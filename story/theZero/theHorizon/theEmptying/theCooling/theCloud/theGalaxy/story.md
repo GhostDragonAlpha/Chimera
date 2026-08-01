@@ -1,5 +1,12 @@
 # theGalaxy
 
+> **chapter 08** of the story  ·  **t = 2.41211e+15 s** since theZero  ·  lasts **2.33681e+15 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The clumps of gas keep falling into each other and pile up into one enormous
 spinning island of stars. It has to spin, because it cannot fall straight in — and that spin is what
 makes the spiral arms, which are not solid things but traffic jams that stars drift through.

@@ -1,5 +1,12 @@
 # aTerraceMine
 
+> **chapter 39** of the story  ·  **t = 1.47764e+17 s** since theZero  ·  lasts **6.31152e+08 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A stepped hole in the steppe: benches spiralling down five hundred metres
 to iron-red ore, because a slope you cannot stand on is a slope you cannot cut — and the first
 metal this world pulls out of the ground is iron.

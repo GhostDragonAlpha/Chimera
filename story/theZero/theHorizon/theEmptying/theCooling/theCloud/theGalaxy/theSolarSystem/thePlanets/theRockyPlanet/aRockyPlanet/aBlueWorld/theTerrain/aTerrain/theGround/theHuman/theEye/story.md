@@ -1,5 +1,12 @@
 # theEye
 
+> **chapter 30** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.52941 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Everything above this chapter derived a world. This one derives the hole the
 world has to fit through. An eye is a two-millimetre aperture, and a two-millimetre aperture cannot
 be argued with — diffraction puts a hard floor under how fine a detail can survive the trip to the

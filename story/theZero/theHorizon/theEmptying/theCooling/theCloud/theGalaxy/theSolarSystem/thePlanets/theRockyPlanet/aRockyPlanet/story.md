@@ -1,5 +1,12 @@
 # aRockyPlanet
 
+> **chapter 13** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.31094e+07 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** This is the same world as the last chapter, seen from the inside. Because it was
 once molten, it sorted itself: the iron sank and made a core, the lighter rock floated on top. How
 big that core is, how hard it is squeezed, how far out of round the spin pushes the whole thing, and

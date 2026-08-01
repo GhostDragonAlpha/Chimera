@@ -1,5 +1,12 @@
 # theMining
 
+> **chapter 38** of the story  ·  **t = 1.47764e+17 s** since theZero  ·  lasts **6.31152e+08 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** An ore is a concentration: the interior's elements sit in the crust at
 trace fractions, and a mine is the place geology piled them up past the grade where taking them
 pays. Everything else — the method, the energy, the deepest hole — is that fact meeting physics.

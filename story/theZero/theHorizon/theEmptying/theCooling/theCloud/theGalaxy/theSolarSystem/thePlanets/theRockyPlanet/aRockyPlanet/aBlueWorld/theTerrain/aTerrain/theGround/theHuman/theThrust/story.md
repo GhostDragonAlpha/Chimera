@@ -1,5 +1,12 @@
 # theThrust
 
+> **chapter 26** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **1.5718 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The body as an engine. Every time a person jumps, starts, stops, climbs or
 shoves, they are turning muscle work into momentum against this planet's gravity — and the floor has
 to be able to take it. It cannot always take it.

@@ -1,5 +1,12 @@
 # theSkin
 
+> **chapter 29** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.44867 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The suit's insulation is derived in `aHuman` and the body's heat is derived in `theSweep`, and now the surface between them is derived too: skin is a 60-micron melanin filter crossed twice, over blood-bearing collagen that diffuses light — red furthest, which is why a finger glows red against a torch. What happens when something goes THROUGH it is still open: the story's only injury is a laser graze and a coagulant.
 
 *Optics and area built 2026-07-31 (F1).* The light model is `story/skin_optics.py` — Jacques'

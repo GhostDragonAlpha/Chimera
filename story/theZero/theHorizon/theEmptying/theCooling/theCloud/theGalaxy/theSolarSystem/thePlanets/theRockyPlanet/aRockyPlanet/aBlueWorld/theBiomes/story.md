@@ -1,5 +1,12 @@
 # theBiomes
 
+> **chapter 35** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.31094e+07 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A biome is the largest community of life a climate can hold. Give a world's
 temperature and its rain, and the bands are forced — because life has requirements that do not
 negotiate: warmth enough to grow, water enough to drink, light enough to eat.

@@ -1,5 +1,12 @@
 # theAnkle
 
+> **chapter 25** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **2.0692 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The joint that makes walking cheap, and the only one that touches the ground.
 The parent's gait was a **sled**: both feet 4.2% of stature off the floor at mid-stride, duty factor
 near 1.0 on each, no double support. Two faults caused it, and the second is this chapter — the knee

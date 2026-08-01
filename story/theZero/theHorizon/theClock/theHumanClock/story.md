@@ -1,5 +1,12 @@
 # theHumanClock
 
+> **chapter 05** of the story  ·  **t = 3 s** since theZero  ·  lasts **3 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A person can only produce and notice events inside a narrow band of speeds —
 roughly a twenty-fifth of a second to about ten seconds. Everything the player controls has to be
 geared into that band, or they cannot feel it: too fast and a tap overshoots, too slow and the

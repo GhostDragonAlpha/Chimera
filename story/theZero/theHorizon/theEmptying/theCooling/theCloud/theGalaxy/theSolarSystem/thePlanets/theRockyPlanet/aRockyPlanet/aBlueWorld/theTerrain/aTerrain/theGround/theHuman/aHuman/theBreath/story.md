@@ -1,5 +1,12 @@
 # theBreath
 
+> **chapter 32** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.83285 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** What the person in the suit is actually breathing. The parent established that
 this air cannot be trusted and that no pressure shell is needed; it never said what goes in the
 helmet instead. This does — and it turns out **the oxygen is not the problem.**

@@ -1,5 +1,12 @@
 # theZero
 
+> **chapter 00** of the story  ·  **t = 0 s** since theZero  ·  lasts **0 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A black hole and an electron turn out to be the same kind of thing: a point described by just three numbers. You cannot divide by that point — but you can add to it, and everything else is what got added.
 
 *Paragraph 1.*

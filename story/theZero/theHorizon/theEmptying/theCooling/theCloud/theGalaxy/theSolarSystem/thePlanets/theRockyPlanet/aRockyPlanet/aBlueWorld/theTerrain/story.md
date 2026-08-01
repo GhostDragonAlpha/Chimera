@@ -1,5 +1,12 @@
 # theTerrain
 
+> **chapter 17** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **86400 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The last chapter said how much water there is but refused to say where the coast
 is, because on a perfectly smooth world there isn't one — the sea just goes all the way round. Land
 exists only because some rock stands higher than the water reaches. This chapter works out how high

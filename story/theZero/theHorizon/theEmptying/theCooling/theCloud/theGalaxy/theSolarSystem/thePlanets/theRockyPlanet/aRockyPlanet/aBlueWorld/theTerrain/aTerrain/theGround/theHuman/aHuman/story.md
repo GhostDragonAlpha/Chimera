@@ -1,5 +1,12 @@
 # aHuman
 
+> **chapter 27** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.44867 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The person you actually play. Not a body in the abstract — *this* body, on *this*
 world, wearing what this world requires. Fifteen membranes of physics arrive here as three plain
 sentences: **you cannot breathe the air, you do not need a pressure shell, and it is cold.** What

@@ -1,5 +1,12 @@
 # theHorizon
 
+> **chapter 01** of the story  ·  **t = 5.39125e-44 s** since theZero  ·  lasts **5.39125e-44 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Put mass at a point and you get a distance for free. That distance is a fence around the point, and nothing in the universe is allowed to be smaller than it.
 
 *Paragraph 2.*

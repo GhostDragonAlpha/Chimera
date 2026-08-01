@@ -1,5 +1,12 @@
 # theBalance
 
+> **chapter 28** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.44867 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Everything above this walks forwards. Seen from the side a body is never falling
 sideways, which is why the side view is comfortable and why it is only half the story. This chapter
 is the other half: the sway, the step width, and the fact that a pelvis is a **bar between two hips**

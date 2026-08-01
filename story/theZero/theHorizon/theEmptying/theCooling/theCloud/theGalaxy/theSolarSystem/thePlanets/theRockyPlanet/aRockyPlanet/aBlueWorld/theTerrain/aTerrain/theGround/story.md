@@ -1,5 +1,12 @@
 # theGround
 
+> **chapter 21** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **86400 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Four metres across. The parent gave the *shape* of the land over twelve
 kilometres, and never said what any of it is made of — but a shape cannot be stood on. This chapter
 answers the only question a body actually asks of a planet: **will it hold me, and how far do I

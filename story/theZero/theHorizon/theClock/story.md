@@ -1,5 +1,12 @@
 # theClock
 
+> **chapter 02** of the story  ·  **t = 1.07825e-43 s** since theZero  ·  lasts **5.39125e-44 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Everything that gravity holds together ticks, and how fast it ticks depends on
 only one thing: how densely it is packed. A star, a planet and a galaxy run on the same formula —
 they just have wildly different densities, so a star's tick is an hour and a galaxy's is a hundred

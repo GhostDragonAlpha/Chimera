@@ -1,5 +1,12 @@
 # theLoad
 
+> **chapter 34** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **28800 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A body with something on its back is a **different body**: heavier, higher
 centred, leaning forward, and burning a third more fuel to go the same distance at the same speed.
 Nothing about that is designed. One added mass, at one added height, at one added distance behind the

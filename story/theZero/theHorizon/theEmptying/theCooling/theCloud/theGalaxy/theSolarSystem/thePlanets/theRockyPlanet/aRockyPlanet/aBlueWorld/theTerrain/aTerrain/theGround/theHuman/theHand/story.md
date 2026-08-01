@@ -1,5 +1,12 @@
 # theHand
 
+> **chapter 24** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **0.594644 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** What the person can do to things. The manual's own control law lives here: COMMAND THE PROCESS, NOT THE POSITION — the hand closes until it cannot, and the OBJECT decides where the fingers land. One GRAB serves a pin and a bowling ball.
 
 *Declared, not built.* This chapter exists because `Chimera/docs/THE_STORY.md` needs it — the verbs

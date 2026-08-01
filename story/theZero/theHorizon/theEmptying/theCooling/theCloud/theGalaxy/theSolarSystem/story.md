@@ -1,5 +1,12 @@
 # theSolarSystem
 
+> **chapter 09** of the story  ·  **t = 2.60145e+15 s** since theZero  ·  lasts **1.89342e+14 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A spinning cloud cannot fall straight in. It falls freely along its axis and gets held out sideways, so it flattens into a disc with almost everything piled in the middle.
 
 *Chapter 6.* — **the setting you fly**

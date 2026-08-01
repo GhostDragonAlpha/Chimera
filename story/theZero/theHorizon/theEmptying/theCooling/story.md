@@ -1,5 +1,12 @@
 # theCooling
 
+> **chapter 06** of the story  ·  **t = 1.19917e+13 s** since theZero  ·  lasts **1.19917e+13 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** As the universe spreads out it cools, and every time it gets cold enough, one more kind of thing is allowed to stay in one piece instead of being smashed apart.
 
 *Chapter 4.*

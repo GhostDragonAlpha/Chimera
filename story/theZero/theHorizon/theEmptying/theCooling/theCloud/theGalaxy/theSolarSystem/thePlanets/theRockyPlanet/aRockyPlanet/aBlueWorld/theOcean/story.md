@@ -1,5 +1,12 @@
 # theOcean
 
+> **chapter 16** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **86400 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** An ocean is a liquid that gravity holds in a world's basins. Everything else
 about every ocean — its depth, its colour, its currents, its tides — is that one fact's
 consequences chasing it down.

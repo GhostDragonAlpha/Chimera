@@ -1,5 +1,12 @@
 # aYellowStar
 
+> **chapter 41** of the story  ·  **t = 3.0047e+17 s** since theZero  ·  lasts **2.96921e+17 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** This system's own star. Its whole life is one standoff: gravity pulling in,
 fusion pushing out, holding each other exactly still — and every number about it, from its colour to
 how long it lives, falls out of its mass alone.

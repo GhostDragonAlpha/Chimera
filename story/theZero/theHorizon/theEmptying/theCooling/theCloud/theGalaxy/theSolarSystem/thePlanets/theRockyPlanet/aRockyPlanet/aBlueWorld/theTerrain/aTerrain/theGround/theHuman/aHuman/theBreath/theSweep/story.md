@@ -1,5 +1,12 @@
 # theSweep
 
+> **chapter 33** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **13.2437 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The draught across the inside of the faceplate. The parent proved a fan has to
 exist and then refused to size it; this sizes it. And the answer is decided not by the lungs but by
 **the one part of the suit that cannot be insulated, because you have to see through it.**

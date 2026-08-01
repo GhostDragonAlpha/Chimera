@@ -1,5 +1,12 @@
 # theInterior
 
+> **chapter 37** of the story  ·  **t = 1.47764e+17 s** since theZero  ·  lasts **1.42006e+17 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** A rocky planet is shells: the heavy sank and the light floated, so it has an
 iron heart wrapped in rock wrapped in a thin skin. Everything else — the heat, the stirring, the
 magnetic field, the volcanoes — is that one fact's engine running.

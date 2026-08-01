@@ -1,5 +1,12 @@
 # aBlueWorld
 
+> **chapter 14** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.31094e+07 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** This is the weather, worked out for the world the last chapter built. It turns
 out to be an ice-age Earth: an average of about **−0.5 °C**, ice reaching down from both poles to
 about **35° latitude**, and liquid ocean across the middle third. That liquid water is why it is

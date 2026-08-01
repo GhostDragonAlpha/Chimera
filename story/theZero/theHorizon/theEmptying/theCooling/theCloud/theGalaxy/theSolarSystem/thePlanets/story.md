@@ -1,5 +1,12 @@
 # theDisk
 
+> **chapter 11** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **3.1557e+15 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** Near the star it is too warm for ice, so only rock survives and you get small worlds. Farther out ice survives too, and there is four times more of it — enough to build giants.
 
 *Chapter 7.*

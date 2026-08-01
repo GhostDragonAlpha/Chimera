@@ -1,5 +1,12 @@
 # aActiveInterior
 
+> **chapter 40** of the story  ·  **t = 2.8977e+17 s** since theZero  ·  lasts **1.42006e+17 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** The inside this planet actually has: a working engine. 23 terawatts leaving
 through rock that creeps two centimetres a year, an iron heart a third of the way to the centre
 freezing slowly and powering a magnetic field that holds the star's wind five and a half planet-

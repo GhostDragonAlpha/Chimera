@@ -1,5 +1,12 @@
 # theCloud
 
+> **chapter 07** of the story  ·  **t = 7.52992e+13 s** since theZero  ·  lasts **6.33075e+13 s**
+>
+> *The serial is the place in TIME, not in the folder tree. A path says what contains
+> what; this says what follows what. Both are published — `timeline_serial` in
+> numbers.json and here — so the story and its numbers cannot disagree about when.*
+
+
 **In plain words —** While light was still shoving matter around, nothing could clump. The moment matter turned neutral, light let go — and gravity finally had something to pull on.
 
 *Chapter 5.*
