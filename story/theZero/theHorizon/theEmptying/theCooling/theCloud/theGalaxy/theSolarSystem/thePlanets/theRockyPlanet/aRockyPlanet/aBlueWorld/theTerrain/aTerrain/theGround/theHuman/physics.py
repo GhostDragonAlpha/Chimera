@@ -51,7 +51,7 @@ _AN = _ansur()["male"]          # the person of this story defaults to the measu
 
 # ── DEMPSTER'S ANTHROPOMETRIC RATIOS: segment lengths and masses as fractions of stature and body
 #    mass. Measured on cadavers (Dempster 1955, still the standard), so they are data, not choices.
-LEG_FRAC = 0.530           # hip JOINT to floor (Dempster): the pendulum's length. The SURFACE
+# LEG_FRAC is set below, from the measurement, not typed here.
                            # landmark (trochanterion) sits lower: ANSUR II measures 0.5121 of
                            # stature (n=4,082) -- used for the outer body, not the swing.
 # ── THE SEGMENTS, MEASURED (2026-08-01) ──────────────────────────────────────────────────────
@@ -70,7 +70,12 @@ LEG_FRAC = 0.530           # hip JOINT to floor (Dempster): the pendulum's lengt
 # height above the ground is a small difference between large lengths, so the entire segment error
 # lands on it.
 import measured as _m_seg                                   # noqa: E402
-_SEG = _m_seg.segment_fractions("male")                     # must match GAIT_SEX; asserted below
+# ONE LEG LENGTH FOR THE WHOLE BODY. LEG_FRAC was 0.530 (Dempster, hip joint) while the segments
+# summed to ANSUR's 0.5123 (trochanterion) and the gait dataset measured 0.5243 on its own subjects
+# -- three lengths, 3.11 cm apart, in a leg that has one. The measured one wins and the ANSUR
+# proportions are scaled onto it; see segment_fractions().
+LEG_FRAC = _m_seg.leg_over_stature("male")[0]
+_SEG = _m_seg.segment_fractions("male", total=LEG_FRAC)     # must match GAIT_SEX; asserted below
 THIGH_FRAC = _SEG["thigh_frac"]        # 0.2325, ANSUR II n=4082
 SHANK_FRAC = _SEG["shank_frac"]        # 0.2382, ANSUR II n=4082
 FOOT_LEN_FRAC = float(_AN["foot_length_m"]["median"]) / float(_AN["stature_m"]["median"])   # 0.1544, ANSUR II

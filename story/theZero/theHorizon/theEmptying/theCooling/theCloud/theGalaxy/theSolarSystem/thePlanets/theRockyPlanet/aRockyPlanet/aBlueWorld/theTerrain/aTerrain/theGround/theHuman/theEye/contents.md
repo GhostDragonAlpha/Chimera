@@ -98,8 +98,8 @@
 | `cone_adapt_s` | 300 |
 | `rod_cone_break_s` | 420 |
 | `rod_adapt_s` | 2100 |
-| `dark_adapt_strides_count` | 616 |
-| `dark_adapt_walk_m` | 712.7 |
+| `dark_adapt_strides_count` | 608.9 |
+| `dark_adapt_walk_m` | 708.8 |
 | `pupil_latency_s` | 0.22 |
 | `pupil_constrict_s` | 1 |
 | `pupil_dilate_s` | 5 |

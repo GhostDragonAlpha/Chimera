@@ -493,7 +493,7 @@ UNSOURCED = [
 ]
 
 
-def segment_fractions(sex="M"):
+def segment_fractions(sex="M", total=None):
     """THIGH, SHANK AND ANKLE DROP AS FRACTIONS OF STATURE -- measured, not Dempster's eight cadavers.
 
     UNSOURCED has listed these since it was written: "segment LENGTHS above the leg -- thigh/shank/
@@ -527,6 +527,29 @@ def segment_fractions(sex="M"):
         return _st.median([float(r[c]) for r in rows if r.get(c) not in (None, "", ".")])
 
     S, tr, ep, ma = med("stature"), med("trochanterionheight"),         med("lateralfemoralepicondyleheight"), med("lateralmalleolusheight")
+    # ── ONE LEG LENGTH, AND EACH SOURCE GIVES WHAT IT MEASURED BEST ──────────────────────────
+    # ANSUR's landmark is the TROCHANTERION -- a bump you can feel on the femur. The HIP JOINT
+    # CENTRE sits medial and superior to it, so trochanterion height is NOT hip-joint height, and
+    # ingesting these raw put a third leg length into a model that already had two:
+    #
+    #     0.5123  thigh + shank + drop      (ANSUR, trochanterion)
+    #     0.5300  LEG_FRAC                  (Dempster, hip JOINT)
+    #     0.5243  leg_over_stature()        (the 246 the gait curves come from)
+    #
+    # 3.11 cm apart, in a body whose foot was missing its ground by 4.12 cm. The bones did not add
+    # up to the leg they hang from, and no amount of work on the ankle or the toe could fix that.
+    #
+    # SO EACH SOURCE CONTRIBUTES ITS OWN STRENGTH. ANSUR measured 6,068 people and is authoritative
+    # for the PROPORTIONS -- how the leg divides. leg_over_stature() measured the same 246 adults
+    # the walk curves were recorded on and is authoritative for the TOTAL. Scaling the splits onto
+    # that total keeps both and invents neither, and it absorbs the trochanterion-to-joint offset
+    # in the only direction anatomy allows: upward.
+    if total is not None:
+        k = float(total) / ((tr - ma) / S + ma / S)
+        return {"thigh_frac": (tr - ep) / S * k, "shank_frac": (ep - ma) / S * k,
+                "ankle_drop_frac": ma / S * k, "hip_height_frac": float(total),
+                "scaled_to": float(total), "raw_trochanterion_frac": tr / S,
+                "n": len(rows), "source": "ANSUR II proportions scaled onto the measured leg length"}
     return {"thigh_frac": (tr - ep) / S, "shank_frac": (ep - ma) / S,
             "ankle_drop_frac": ma / S, "hip_height_frac": tr / S,
             "n": len(rows), "source": "ANSUR II medians (trochanterion / lateral femoral "
