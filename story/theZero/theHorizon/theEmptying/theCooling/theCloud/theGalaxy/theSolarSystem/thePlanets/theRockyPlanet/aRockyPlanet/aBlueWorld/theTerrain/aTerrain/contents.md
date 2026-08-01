@@ -23,8 +23,20 @@
 | `grid` | 128 |
 | `cell_m` | 93.75 |
 | `relief_m` | 451.4 |
-| `mean_slope_deg` | 17.04 |
-| `p95_slope_deg` | 24.44 |
+| `spectral_beta` | 2.545 |
+| `spectral_beta_source` | measured from this membrane's own eroded surface (_spectral_beta) |
+| `octave_amplitude_ratio` | 0.8279 |
+| `detail_octaves` | 5 |
+| `detail_floor_m` | 2.93 |
+| `detail_relief_m` | 3.552 |
+| `detail_amplitudes_m` | [0.5001905091992005, 0.4141255979080568, 0.3428693821425664, 0.28387381462211747, 0.23502927594335324] |
+| `detail_level` | 0.05117 |
+| `detail_level_set_by` | bisection against repose_deg on the TOTAL surface |
+| `friction_limited` | True |
+| `mean_slope_deg` | 20.04 |
+| `p95_slope_deg` | 33 |
+| `mean_slope_deg_grid_only` | 17.04 |
+| `p95_slope_deg_grid_only` | 24.44 |
 | `repose_deg` | 33 |
 | `slopes_below_repose` | True |
 | `drainage_density_per_km` | 0.9023 |

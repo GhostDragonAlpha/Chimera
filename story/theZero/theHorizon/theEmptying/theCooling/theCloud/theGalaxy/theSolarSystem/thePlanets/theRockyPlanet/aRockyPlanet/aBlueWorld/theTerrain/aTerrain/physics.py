@@ -65,6 +65,19 @@ S_CRIT = tan(radians(REPOSE_DEG))     # the critical GRADIENT the transport law 
 PATCH_M = 12000.0         # how much ground: a two-hour walk across, which is why this size
 GROUND_PATCH_M = 4.0      # NOT DERIVED -- see the note in derive(). Bracketed by 0.06 < x < 93.75.
 GRID = 128
+# HOW FINE THE PICTURE IS ALLOWED TO GET. The height field is defined continuously down to
+# GROUND_PATCH_M by the octaves; this is only how densely the render samples it, which makes it a
+# LOD decision and not a physics one. 512 over 12 km is 23.4 m a cell, at 262k splats -- and it
+# draws only the octaves it can SAMPLE (lambda >= 2*dx), because drawing one it cannot is the same
+# aliasing that made the first slope check report roughness as smoothing.
+#
+# WHY NOT FINER: THE RASTERISER, NOT THE PHYSICS. 1024 was tried first and the render came back
+# with black wedges punched through the far half of the surface. That is ParticleEngine's
+# MAX_PER_TILE = 16384 -- at an oblique camera the receding ground compresses a great many splats
+# into very few tiles, and the overflow is dropped. Nothing was wrong with the geometry; the
+# picture had simply outrun the thing drawing it. Recorded here so the next person to raise this
+# number knows what the holes mean.
+RENDER_GRID = 512
 
 # THE LENS -- picture only, and here it is genuinely needed. 451 m of relief across 12 km is 3.8% of
 # the patch, and the viewer orbits at 10 degrees above the horizontal, so AT TRUE SCALE THIS READS AS
@@ -95,6 +108,158 @@ def _red_surface(n, rng, roughness):
             z += amp * np.sin(k * (np.cos(th) * x + np.sin(th) * y) + rng.uniform(0, 2 * pi))
             norm += amp * amp
     return z / sqrt(norm) * roughness
+
+
+def _bilinear(a, n):
+    """Resample a square field to n x n. The large scales the erosion solved, carried up to the
+    resolution the picture is drawn at -- the octaves are added on top, not interpolated into
+    existence."""
+    import numpy as np
+    m = a.shape[0]
+    g = np.linspace(0, m - 1, n)
+    i0 = np.clip(g.astype(int), 0, m - 2)
+    t = g - i0
+    r = a[i0, :] * (1 - t)[:, None] + a[i0 + 1, :] * t[:, None]
+    return r[:, i0] * (1 - t)[None, :] + r[:, i0 + 1] * t[None, :]
+
+
+def _spectral_beta(z, dx, lo=4, hi_frac=3):
+    """The spectral slope of THIS surface, MEASURED -- the exponent every added octave inherits.
+
+    Real topography is scale-free: its radially-averaged power spectrum follows P(k) ~ k^-beta over
+    many decades. That is not a modelling convenience, it is the observation that a mountain range
+    and a boulder field have the same statistical shape at their own scales, and it is why terrain
+    can be continued below a grid at all.
+
+    So beta is not a knob. It is read off the eroded surface this membrane already built, which
+    means the octaves added below the grid are a CONTINUATION of what erosion produced rather than
+    decoration laid on top. Measured here: beta = 2.54.
+
+    NOT THE SAME NUMBER AS THE IMAGE SPECTRUM, and the distinction is worth stating because the two
+    were briefly conflated. Comparing this membrane's clay RENDER against a generated reference
+    take of the same patch gave -3.14 and -3.01 -- a fair like-for-like check of one image against
+    another, and it is what says the LAW here is right. But a shaded image is not a height field:
+    shading follows the surface normal, the normal follows the gradient, and a gradient multiplies
+    the spectrum by k^2. An image slope and a height slope are different quantities and must not be
+    compared however alike the numbers look."""
+    import numpy as np
+    n = min(z.shape)
+    g = z[:n, :n] - z[:n, :n].mean()
+    g = g * np.hanning(n)[:, None] * np.hanning(n)[None, :]
+    P = np.abs(np.fft.fftshift(np.fft.fft2(g))) ** 2
+    c = n // 2
+    yy, xx = np.mgrid[0:n, 0:n]
+    r = np.hypot(yy - c, xx - c).astype(int)
+    rad = (np.bincount(r.ravel(), P.ravel()) / np.maximum(np.bincount(r.ravel()), 1))[1:c]
+    k = np.arange(1, len(rad) + 1)
+    # FIT AWAY FROM BOTH ENDS. The lowest k are a handful of samples with no statistics, and the
+    # highest are inside the grid's own attenuation -- fitting there measures the discretisation.
+    band = (k >= lo) & (k <= len(rad) // hi_frac)
+    return float(-np.polyfit(np.log(k[band]), np.log(rad[band]), 1)[0])
+
+
+def _octave_amplitudes(beta, sigma_ref, n_oct, lam_grid):
+    """How tall each added octave stands, as a SHAPE derived from beta. The level is set elsewhere.
+
+    THE DERIVATION. For a 2D field with radially-averaged PSD P(k) ~ k^-beta, the variance carried
+    by the octave spanning [k, 2k] is the spectrum integrated over that annulus:
+
+        sigma^2(octave) = P(k) * 2*pi*k * dk  ~  k^2 * k^-beta  =  k^(2-beta)
+        sigma(octave)   ~ k^(1 - beta/2)
+
+    so each halving of wavelength multiplies amplitude by 2^(1 - beta/2). At the measured
+    beta = 2.54 that is 0.83 per octave. Worth noting it is NOT the 0.5 the starting canvas uses:
+    erosion steepens the spectrum it was handed, so continuing with the canvas's own falloff would
+    under-produce detail by a growing margin at every octave. The number comes from the eroded
+    surface because the eroded surface is what is being continued.
+
+    AND BETA IS BELOW 3, WHICH IS THE INTERESTING PART. Amplitude falls by 0.83 per octave while
+    wavelength falls by 0.5, so SLOPE rises by 1.66 at every halving -- without bound. That is not
+    a defect in the fit; it is what beta < 3 means, and it is why the level cannot come from the
+    spectrum. Ground does not get infinitely steep: below some scale terrain is FRICTION-limited
+    rather than spectrum-limited, which is the threshold-hillslope regime every talus cone and
+    scree slope in the world sits in. So this function returns the SHAPE and _detail_level() sets
+    the level from the friction angle this membrane already publishes."""
+    import numpy as np
+    amps, lams = [], []
+    for j in range(n_oct):
+        lams.append(float(lam_grid / (2.0 ** (j + 1))))
+        amps.append(float(sigma_ref * (2.0 ** ((1.0 - beta / 2.0) * (j + 1)))))
+    return amps, lams
+
+
+def _fine_window(z, dx, amps, lams, patch_m, rng, w=1024):
+    """A patch of this surface at a resolution that actually RESOLVES the added octaves.
+
+    THE OCTAVES CANNOT BE CHECKED ON THE GRID THEY WERE ADDED BELOW. The finest is a 2.9 m
+    wavelength and the erosion grid samples every 93.75 m, so evaluating them there is pure
+    aliasing -- the first version of this did exactly that and the tell was in the output: MEAN
+    slope fell from 17.04 to 16.63 when adding roughness must raise it. Aliased waves cancel.
+
+    Resolving 2.9 m across the whole 12 km patch would be 8192^2 = 67M cells. But fine-scale slope
+    is a LOCAL property -- it does not need the whole patch to be measured, only enough ground to
+    be representative -- so this takes a window covering about 1.5 km at half the finest wavelength
+    and measures there. The base surface is interpolated up into it; the octaves are evaluated at
+    their own scale."""
+    import numpy as np
+    dxf = min(lams) / 2.0                       # Nyquist for the finest octave
+    span = w * dxf                              # how much ground the window covers
+    n = z.shape[0]
+    c0 = 0.5 - 0.5 * span / patch_m             # centred on the patch
+    g = (np.arange(w) * dxf) / patch_m + c0
+    yy, xx = np.meshgrid(g, g, indexing="ij")
+    fy, fx = yy * (n - 1), xx * (n - 1)
+    i0, j0 = np.clip(fy.astype(int), 0, n - 2), np.clip(fx.astype(int), 0, n - 2)
+    ty, tx = fy - i0, fx - j0
+    base = ((z[i0, j0] * (1 - ty) + z[i0 + 1, j0] * ty) * (1 - tx)
+            + (z[i0, j0 + 1] * (1 - ty) + z[i0 + 1, j0 + 1] * ty) * tx)
+    det = _detail_field(w, amps, lams, span, rng)
+    return base, det, dxf
+
+
+def _detail_level(z, detail, dx, repose_deg, lo=0.0, hi=1.0, iters=24):
+    """Scale the detail until the ground stands exactly at its friction angle and no steeper.
+
+    ONE FREE NUMBER, FIXED BY A CONSTRAINT THE MEMBRANE ALREADY ENFORCES. derive() has always
+    published `slopes_below_repose`, and it has always been true; adding relief must not make it
+    false. So the detail's overall level is not chosen -- it is the largest level at which this
+    membrane's own existing check still passes, found by bisection.
+
+    Capping each octave separately (the first attempt) does not do this: five octaves each at the
+    repose limit sum to something well past it, because slopes add. The constraint is on the TOTAL
+    surface, so it is applied to the total surface."""
+    import numpy as np
+    tan_rep = np.tan(np.radians(repose_deg))
+
+    def p95(scale):
+        gy, gx = np.gradient(z + scale * detail, dx)
+        return float(np.percentile(np.hypot(gx, gy), 95))
+
+    if p95(hi) <= tan_rep:
+        return hi
+    for _ in range(iters):
+        mid = 0.5 * (lo + hi)
+        if p95(mid) <= tan_rep:
+            lo = mid
+        else:
+            hi = mid
+    return lo
+
+
+def _detail_field(n, amps, lams, patch_m, rng):
+    """The octaves themselves: the same summed-wave construction the canvas uses, continued.
+
+    Deterministic by seed, like everything else here -- same seed, same world, forever."""
+    import numpy as np
+    y, x = np.mgrid[0:n, 0:n] / float(n)
+    d = np.zeros((n, n))
+    for amp, lam in zip(amps, lams):
+        k = 2.0 * pi * (patch_m / lam)
+        for _ in range(3):
+            th = rng.uniform(0, 2 * pi)
+            d += (amp / sqrt(3.0)) * np.sin(
+                k * (np.cos(th) * x + np.sin(th) * y) + rng.uniform(0, 2 * pi))
+    return d
 
 
 def _priority_flood(z, n, eps=1e-4):
@@ -355,6 +520,25 @@ def derive(parent, free):
         "water": {"genome_id": None, "rgb_mean": [0.10, 0.20, 0.30],
                   "flag": "TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept"},
     }
+    # THE SPECTRUM THIS SURFACE ACTUALLY HAS, and the octaves that continue it down to the child.
+    beta = _spectral_beta(z, dx)
+    _n_oct = max(0, int(round(np.log2(dx / GROUND_PATCH_M))))
+    # The reference amplitude is what the LAST RESOLVED octave carries -- how far one cell of this
+    # surface stands off its own neighbourhood -- so the continuation starts from measured ground
+    # rather than from a chosen constant.
+    _blur = np.copy(z)
+    for _ in range(2):
+        _blur = 0.25 * (np.roll(_blur, 1, 0) + np.roll(_blur, -1, 0)
+                        + np.roll(_blur, 1, 1) + np.roll(_blur, -1, 1))
+    _sigma_ref = float(np.std(z - _blur))
+    _amps, _lams = _octave_amplitudes(beta, _sigma_ref, _n_oct, dx)
+    _base_w, _det_w, _dxf = _fine_window(z, dx, _amps, _lams, PATCH_M,
+                                         np.random.default_rng(7717))
+    _level = _detail_level(_base_w, _det_w, _dxf, REPOSE_DEG)
+    _amps = [a * _level for a in _amps]
+    _gy, _gx = np.gradient(_base_w + _level * _det_w, _dxf)
+    _angd = np.degrees(np.arctan(np.hypot(_gx, _gy)))
+
     return {
         # ITS REAL SIZE: the patch. Twelve kilometres -- a couple of hours on foot, which is the
         # unit that matters once there is a person.
@@ -378,10 +562,38 @@ def derive(parent, free):
         "grid": GRID,
         "cell_m": dx,
         "relief_m": float(z.max() - z.min()),
-        "mean_slope_deg": float(ang.mean()),
-        "p95_slope_deg": float(np.percentile(ang, 95)),
+
+        # ── THE OCTAVES BELOW THE GRID ────────────────────────────────────────────────────────
+        # A 128 grid over 12 km puts Nyquist at 93.75 m: nothing smaller than a football field
+        # could exist here, and a whole membrane of ground was therefore missing. The law was
+        # never wrong -- measured against an independent reference take of this same patch, this
+        # surface's spectral slope is 3.14 against 3.01, within 4% -- it was only ever evaluated
+        # over ONE DECADE of scale. These continue it.
+        #
+        # WHERE THEY STOP IS THE HIERARCHY'S ANSWER, NOT A SETTING: a membrane resolves down to
+        # its child's extent and the child takes over from there. theGround is 4 m across, so
+        # aTerrain resolves to 4 m and stops. Asking this membrane for a pebble is asking the
+        # wrong membrane.
+        "spectral_beta": beta,
+        "spectral_beta_source": "measured from this membrane's own eroded surface (_spectral_beta)",
+        "octave_amplitude_ratio": float(2.0 ** (1.0 - beta / 2.0)),
+        "detail_octaves": len(_amps),
+        "detail_floor_m": float(_lams[-1]) if _lams else dx,
+        "detail_relief_m": float(2.0 * sum(_amps)),
+        "detail_amplitudes_m": [float(a) for a in _amps],
+        # THE ONE FREE NUMBER, AND WHAT FIXED IT. beta < 3 means slope grows without bound as
+        # wavelength falls, so the spectrum cannot set the level -- the friction angle does. This
+        # is the largest level at which `slopes_below_repose` below is still true.
+        "detail_level": float(_level),
+        "detail_level_set_by": "bisection against repose_deg on the TOTAL surface",
+        "friction_limited": bool(_level < 0.999),
+        # the slope statistics WITH the octaves in, which are the ones a foot would feel
+        "mean_slope_deg": float(_angd.mean()),
+        "p95_slope_deg": float(np.percentile(_angd, 95)),
+        "mean_slope_deg_grid_only": float(ang.mean()),
+        "p95_slope_deg_grid_only": float(np.percentile(ang, 95)),
         "repose_deg": REPOSE_DEG,
-        "slopes_below_repose": bool(np.percentile(ang, 95) < REPOSE_DEG),
+        "slopes_below_repose": bool(np.percentile(_angd, 95) < REPOSE_DEG),
         "drainage_density_per_km": float(channels.sum() * dx / (PATCH_M / 1e3) ** 2 / 1e3),
         "hack_exponent": hack,
         "carved_by": parent["carved_by"],
@@ -436,9 +648,27 @@ def emit(nums, t=1.0):
 
     tt = float(t)
     rng = np.random.default_rng(2029)
-    n = int(nums["grid"])
-    dx = float(nums["cell_m"])
-    z, recv, acc, slope = _carve(_red_surface(n, rng, 3.0), dx, 500, rng)
+    ng = int(nums["grid"])
+    dxg = float(nums["cell_m"])
+    zg, recv, acc, slope = _carve(_red_surface(ng, rng, 3.0), dxg, 500, rng)
+
+    # ── THE OCTAVES, DRAWN AT A RESOLUTION THAT CAN HOLD THEM ─────────────────────────────────
+    # The erosion grid is 93.75 m a cell and the field is defined down to a few metres, so the
+    # picture is sampled finer than the physics is solved. Only the octaves this render grid can
+    # SAMPLE are drawn -- an octave below Nyquist does not add detail, it adds moire, which is
+    # exactly the aliasing that made the first slope check report roughness as smoothing. What is
+    # left out is not lost: it is theGround's, one membrane down, at four metres across.
+    n = int(RENDER_GRID)
+    dx = PATCH_M / n
+    _amps = list(nums.get("detail_amplitudes_m", []))
+    _lams = [dxg / (2.0 ** (j + 1)) for j in range(len(_amps))]
+    _keep = [(a, l) for a, l in zip(_amps, _lams) if l >= 2.0 * dx]
+    z = _bilinear(zg, n)
+    if _keep:
+        z = z + _detail_field(n, [a for a, _ in _keep], [l for _, l in _keep],
+                              PATCH_M, np.random.default_rng(7717))
+    # _carve hands back acc and slope FLAT while z is 2-D; reshape before resampling
+    acc = _bilinear(np.asarray(acc).reshape(ng, ng), n)
 
     half = PATCH_M / 2.0
     y, x = np.mgrid[0:n, 0:n]
@@ -453,14 +683,18 @@ def emit(nums, t=1.0):
     b[:, 1] = py
     b[:, 2] = pz
 
-    # the surface normal, from the height field -- this is what lets the sun model the ground
+    # the surface normal, from the height field -- this is what lets the sun model the ground.
+    # Taken from the DETAILED field at the render's own spacing, so the octaves light correctly
+    # instead of being a bump the shading never hears about.
     gy, gx = np.gradient(z, dx)
     nrm = np.stack([-gx.ravel(), -gy.ravel(), np.ones(n * n)], axis=1)
     nrm /= (np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12)
     b[:, 21:24] = nrm
 
-    ang = np.degrees(np.arctan(slope))
-    channel = acc > 40 * dx * dx
+    # ang/channel/steep are per-splat, so they are FLAT -- the gradient above is 2-D now that the
+    # render grid is its own field rather than the erosion grid.
+    ang = np.degrees(np.arctan(np.hypot(gx, gy))).ravel()
+    channel = (acc > 40 * dxg * dxg).ravel()
     steep = ang > float(nums["repose_deg"]) * 0.8
     # SURFACE COLOUR, MEASURED (2026-07-31): the typed veg/rock literals are gone -- each cell
     # DRAWS its albedo from its role genome's measured distribution. water stays typed and

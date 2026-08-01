@@ -102,3 +102,33 @@ exaggeration, which makes this the first membrane in the whole story that can sa
 (31°, the middle of the temperate band the climate solved for). And the gravity to stand in.
 
 *Contained in `theTerrain`. What it hands on: ground, at the size of a walk.*
+
+## The octaves below the grid  (2026-08-01)
+
+A 128 grid over twelve kilometres puts Nyquist at 93.75 m. Nothing smaller than a football field
+could exist here — not by choice, by construction — and that one number explained everything the
+patch was accused of. It rendered as a tabletop diorama because at 93.75 m a cell it *was* one.
+
+The law was never wrong. Measured against a generated reference take of this same patch, the clay
+render's spectral slope is −3.14 against the take's −3.01: within four percent. What was wrong is
+that a scale-free law was being evaluated over one decade of scale.
+
+So the spectrum is continued below the grid, and every part of the continuation is measured rather
+than picked:
+
+- **β comes off this membrane's own eroded surface** — 2.54 — so the octaves continue what erosion
+  produced instead of decorating it.
+- **The falloff follows from β.** Amplitude per octave goes as k^(1−β/2), which is 0.83 here. Not
+  the 0.5 the starting canvas uses: erosion steepens the spectrum it was handed.
+- **The level comes from the friction angle**, because β < 3 means slope grows without bound as
+  wavelength falls and the spectrum therefore *cannot* set it. Bisection finds the largest level at
+  which `slopes_below_repose` — a check this membrane has always published — is still true.
+
+That last one turned out to be the finding. The level lands at **0.051**: the spectrum wants about
+twenty times more sub-grid relief than the ground can physically stand, and the friction angle cuts
+it back. That is not a fudge, it is the threshold-hillslope regime every talus cone sits in — below
+some scale, terrain stops being spectrum-limited and becomes friction-limited.
+
+Five octaves reach from 46.9 m down to 2.9 m, where **theGround** takes over at four metres across.
+A membrane resolves to its child's extent and stops; asking this one for a pebble is asking the
+wrong membrane.
