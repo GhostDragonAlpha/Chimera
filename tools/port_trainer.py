@@ -103,7 +103,7 @@ def port_muscles(m, d, mujoco, joint_names, thresh=1e-4):
 
 
 def evaluate_worst(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, n_seeds=4,
-                   frames=0, jnames=()):
+                   frames=0, jnames=(), holders=()):
     """SCORE FROM N RANDOMISED STARTS AND KEEP THE WORST. The project's own standard.
 
     THE DEFECT THIS FIXES, and it invalidated six commits of reported figures. `evaluate` scored
@@ -123,7 +123,8 @@ def evaluate_worst(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, n_seed
     runs = []
     for s in range(n_seeds):
         sc, tr, pics = _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs,
-                                     seed=s, frames=(frames if s == 0 else 0), jnames=jnames)
+                                     seed=s, frames=(frames if s == 0 else 0), jnames=jnames,
+                                     holders=holders)
         runs.append((sc, tr, pics))
     scores = [r[0] for r in runs]
     i = int(np.argmin(scores))
@@ -141,8 +142,43 @@ def evaluate_worst(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, n_seed
     return float(min(scores)), worst[1], pics, float(robust)
 
 
+def load_holders(m, d, mujoco, exclude):
+    """The OTHER ports, loaded from their saved theta and RUN, not frozen.
+
+    THE DEFECT THIS FIXES. `base = np.full(m.nu, 0.05)` froze every non-port muscle at 5%. For a
+    LEG port that is harmless -- the trunk is dead weight either way. For the TRUNK port it meant
+    THE LEGS WERE LIMP, so 208 muscles were asked to stabilise a body with no strut under it, and
+    every candidate returned free-fall (0.44 s vs a 0.4066 s time-to-fall, spread 0.00).
+
+        PORT ISOLATION IS NOT SYMMETRIC. A strut can be tested without a stabiliser.
+        A STABILISER CANNOT BE TESTED WITHOUT A STRUT.
+
+    That is not a harness inconvenience -- it is what the theory MEANS. So the holders run their
+    own closed-loop law on their own muscles, from the theta that measured 36%. That 36% is the
+    CONTROL: anything the trunk adds is attributable, because nothing else changed.
+    """
+    out = []
+    for name, joints in PORTS.items():
+        if name in exclude or name == "foot":       # foot is the ankle's alias, same muscles
+            continue
+        f = OUTDIR / f"port_{name}_theta.npy"
+        if not f.exists():
+            continue
+        idx, _ = port_muscles(m, d, mujoco, joints)
+        th = np.load(f)
+        if th.size != 3 * len(idx):                 # a stale theta is worse than none
+            print(f"  SKIP holder {name}: theta {th.size} vs 3x{len(idx)} muscles -- stale")
+            continue
+        qa = [int(m.jnt_qposadr[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn)])
+              for jn in joints if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn) >= 0]
+        va = [int(m.jnt_dofadr[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn)])
+              for jn in joints if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn) >= 0]
+        out.append(dict(name=name, mus=idx, qadr=qa, vadr=va, th=th, n=len(idx)))
+    return out
+
+
 def _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, seed=0,
-                  frames=0, jnames=()):
+                  frames=0, jnames=(), holders=()):
     """Load the port and see whether it holds, from ONE randomised start."""
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
@@ -169,6 +205,7 @@ def _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, seed=0,
     n_m = len(mus)
     a0, kp, kd = theta[:n_m], theta[n_m:2 * n_m], theta[2 * n_m:]
     ctrl = base_ctrl.copy()
+    hq0 = [np.array([float(d.qpos[a]) for a in h["qadr"]]) for h in holders]
     vadr = [int(m.jnt_dofadr[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn)])
             for jn in jnames if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn) >= 0]
     steps = int(secs / m.opt.timestep)
@@ -183,6 +220,14 @@ def _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, seed=0,
             err = float(np.mean(q0 - q))
             rate = float(np.mean(qd))
             ctrl[mus] = np.clip(a0 + kp * err - kd * rate, 0.0, 1.0)
+            # THE HOLDERS RUN TOO -- same law, their own muscles, their own saved theta.
+            for h, q0h in zip(holders, hq0):
+                nh = h["n"]
+                ha0, hkp, hkd = h["th"][:nh], h["th"][nh:2 * nh], h["th"][2 * nh:]
+                qh = np.array([float(d.qpos[a]) for a in h["qadr"]])
+                qdh = np.array([float(d.qvel[a]) for a in h["vadr"]])
+                ctrl[h["mus"]] = np.clip(ha0 + hkp * float(np.mean(q0h - qh))
+                                         - hkd * float(np.mean(qdh)), 0.0, 1.0)
         d.ctrl[:] = ctrl
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
@@ -302,6 +347,10 @@ def main() -> int:
     qadr = [int(m.jnt_qposadr[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn)])
             for jn in PORTS[port] if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn) >= 0]
     base = np.full(m.nu, 0.05)
+    holders = load_holders(m, d, mujoco, exclude={port})
+    if holders:
+        print("  HOLDING: " + ", ".join(f"{h['name']}({h['n']})" for h in holders)
+              + "  -- their own closed-loop law, from the theta that measured 36%")
 
     print(f"\nPORT {port.upper()} — {len(mus)} of {m.nu} muscles actuate it "
           f"(moment arm)  WORST-OF-{n_seeds}  g = {g:.4f}")
@@ -324,13 +373,15 @@ def main() -> int:
         cand = rng.normal(mu, sd, size=(pop, 3 * n_m))
         cand[:, :n_m] = np.clip(cand[:, :n_m], 0.0, 1.0)
         sc = np.array([evaluate_worst(m, d, mujoco, jids, mus, qadr, base, c, secs,
-                                      n_seeds=n_seeds, jnames=PORTS[port])[0] for c in cand])
+                                      n_seeds=n_seeds, jnames=PORTS[port],
+                                      holders=holders)[0] for c in cand])
         o = np.argsort(-sc)
         el = cand[o[:max(3, pop // 5)]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best = cand[o[0]]
         s, tr, pics, robust = evaluate_worst(m, d, mujoco, jids, mus, qadr, base, best, secs,
-                                             n_seeds=n_seeds, frames=6, jnames=PORTS[port])
+                                             n_seeds=n_seeds, frames=6, jnames=PORTS[port],
+                                             holders=holders)
         drift = max(tr["dq"]) if tr["dq"] else 999.0
         past = max(tr["out"]) if tr["out"] else 999.0
         hist.append((turn, float(sc[o[0]])))
