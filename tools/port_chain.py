@@ -12,7 +12,7 @@ is touched. You do not train the tree. You train the connection.
 WHAT FLOWS, AND WHY IT IS CHECKABLE. A branch carries FORCE, and Newton makes the check exact at
 every instant -- standing, falling, or mid-stride:
 
-    sum(forces on everything above joint J)  =  m_above * a_com_above
+    force through the joint  =  m_above * a_com_above     (cacc is gravity-offset)
 
 So for each branch we take the free body ABOVE it, add up its mass, read its measured centre-of-
 mass acceleration out of the simulator, and ask whether the force the branch is actually carrying
@@ -120,7 +120,15 @@ def prove_chain(settle=0.0):
         hi_name, body = CHAIN[k]
         ids = bodies_above(m, mujoco, body)
         mass, com_z, acc_z = free_body_above(m, d, ids)
-        need = mass * (g + acc_z)                     # Newton: what the branch MUST carry
+        # NEWTON, IN MUJOCO'S CONVENTION -- and the convention is the whole correction.
+        # `cacc` is ALREADY gravity-offset: a body in free fall reads 0, a body at rest on the
+        # ground reads +g. So `mass * (g + acc_z)` -- which is what this line said for one commit
+        # -- COUNTS GRAVITY TWICE and demanded double the weight of every branch.
+        # The control caught it: a settled body reads a_com ~ +7.076, and mass * a_com =
+        # 82.041 * 7.076 = 580.5 N, which is its weight exactly. That is the known case rule 24
+        # says to check by hand before trusting a column across five branches. I published the
+        # column first and checked afterwards; this is the correction.
+        need = mass * acc_z
         if lo_name == "GROUND":
             have = ground_force(m, d, mujoco)         # measured contact force
             src = "measured contact"
