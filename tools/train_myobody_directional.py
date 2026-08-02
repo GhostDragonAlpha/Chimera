@@ -474,10 +474,16 @@ def main() -> int:
         # Write to a temporary file, flush it to the platter, THEN rename. os.replace is atomic on
         # every platform this runs on, so the checkpoint on disk is always a whole one -- either
         # the previous round or the new one, never half of either.
+        # fsync needs a WRITABLE handle -- 'rb' raises EBADF on Windows, which killed this run
+        # once already. 'rb+' opens for update without truncating what torch.save just wrote.
         _tmp = str(out) + '.tmp'
         torch.save(ac.state_dict(), _tmp)
-        with open(_tmp, 'rb') as _f:
-            os.fsync(_f.fileno())
+        try:
+            with open(_tmp, 'rb+') as _f:
+                _f.flush()
+                os.fsync(_f.fileno())
+        except OSError:
+            pass          # durability is a bonus; the ATOMIC RENAME below is the actual guarantee
         os.replace(_tmp, out)
         # AND THE CURVE GOES TO DISK, not only to stdout. The line printed above is the only direct
         # proof this run is LEARNING rather than coasting -- gpu_gate says so explicitly, because
