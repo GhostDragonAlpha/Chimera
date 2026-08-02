@@ -95,11 +95,58 @@ def port_muscles(m, d, mujoco, joint_names, thresh=1e-4):
     return idx, dofs
 
 
-def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0, jnames=()):
-    """Load the port and see whether it holds. Returns (score, trace, pics)."""
+def evaluate_worst(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, n_seeds=4,
+                   frames=0, jnames=()):
+    """SCORE FROM N RANDOMISED STARTS AND KEEP THE WORST. The project's own standard.
+
+    THE DEFECT THIS FIXES, and it invalidated six commits of reported figures. `evaluate` scored
+    each candidate from ONE seed, so `best` was the luckiest draw of the population, not the best
+    policy. Measured: the hip's best rattled -0.512/-0.524/-0.520/-0.372/-0.524 across five turns
+    -- a 3.14 s spike at turn 3 that never reappeared in the eight turns after it. I reported that
+    spike as "the hip reached 63%".
+
+        "26%", "46%", "63%" WERE ALL READINGS OF A COIN.
+
+    CLAUDE.md: *score every genome from N randomized starts and keep the WORST (robustness =
+    worst/mean; a real limit cycle is ~1.0, a fraud is ~0). It costs Nx compute -- that is what
+    the GPU is for.* The port trainer used one. It costs 4x here and it is not optional.
+
+    Returns (worst_score, trace_of_worst, pics_of_worst, robustness).
+    """
+    runs = []
+    for s in range(n_seeds):
+        sc, tr, pics = _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs,
+                                     seed=s, frames=(frames if s == 0 else 0), jnames=jnames)
+        runs.append((sc, tr, pics))
+    scores = [r[0] for r in runs]
+    i = int(np.argmin(scores))
+    worst = runs[i]
+    mean = float(np.mean(scores))
+    # ROBUSTNESS, AND THE OBVIOUS FORMULA IS WRONG HERE. CLAUDE.md defines it as worst/mean,
+    # which assumes POSITIVE scores. These are negative (survived_fraction - 1), so worse-than-mean
+    # gives a ratio ABOVE 1 -- the first run printed 1.08 and read like 8% better when it is 8%
+    # WORSE. A ratio of two negative numbers inverts the ordering it was meant to express.
+    # Stated as a spread instead: 0 = every seed identical, larger = more luck in the result.
+    robust = abs(min(scores) - mean) / max(abs(mean), 1e-9)
+    # the picture must be of the WORST run, not the first -- a filmstrip of the lucky seed is
+    # exactly the monad this whole fix exists to remove
+    pics = worst[2] if worst[2] else (runs[0][2] if frames else [])
+    return float(min(scores)), worst[1], pics, float(robust)
+
+
+def _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, seed=0,
+                  frames=0, jnames=()):
+    """Load the port and see whether it holds, from ONE randomised start."""
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)
+    if seed:
+        # the randomisation the worst-of-N is over: a small perturbation of the starting pose,
+        # the same 0.03 rad the gait evaluators use
+        rng_s = np.random.default_rng(seed)
+        for adr, c, h, _ in jids:
+            d.qpos[adr] = float(np.clip(d.qpos[adr] + rng_s.normal(0, 0.03), c - h, c + h))
+        mujoco.mj_forward(m, d)
     stand_z = float(m.key_qpos[0][2])
     q0 = np.array([float(d.qpos[a]) for a in qadr])
     lim = {a: (c - h, c + h) for a, c, h, _ in jids}
@@ -221,6 +268,7 @@ def main() -> int:
     turns = int(a[a.index("--turns") + 1]) if "--turns" in a else 4
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 20
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 5.0
+    n_seeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 4
     if port not in PORTS:
         raise SystemExit(f"unknown port {port}; have {list(PORTS)}")
     OUTDIR.mkdir(parents=True, exist_ok=True)
@@ -236,7 +284,7 @@ def main() -> int:
     base = np.full(m.nu, 0.05)
 
     print(f"\nPORT {port.upper()} — {len(mus)} of {m.nu} muscles actuate it "
-          f"(found by moment arm, not by name)   g = {g:.4f}")
+          f"(moment arm)  WORST-OF-{n_seeds}  g = {g:.4f}")
     print(f"{'turn':>5}{'best':>10}{'mean':>10}{'worst drift':>14}{'past stop':>12}  verdict")
     n_m = len(mus)
     mu = np.concatenate([np.full(n_m, 0.10), np.zeros(n_m), np.zeros(n_m)])
@@ -255,20 +303,20 @@ def main() -> int:
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, 3 * n_m))
         cand[:, :n_m] = np.clip(cand[:, :n_m], 0.0, 1.0)
-        sc = np.array([evaluate(m, d, mujoco, jids, mus, qadr, base, c, secs,
-                                jnames=PORTS[port])[0] for c in cand])
+        sc = np.array([evaluate_worst(m, d, mujoco, jids, mus, qadr, base, c, secs,
+                                      n_seeds=n_seeds, jnames=PORTS[port])[0] for c in cand])
         o = np.argsort(-sc)
         el = cand[o[:max(3, pop // 5)]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best = cand[o[0]]
-        s, tr, pics = evaluate(m, d, mujoco, jids, mus, qadr, base, best, secs, frames=6,
-                               jnames=PORTS[port])
+        s, tr, pics, robust = evaluate_worst(m, d, mujoco, jids, mus, qadr, base, best, secs,
+                                             n_seeds=n_seeds, frames=6, jnames=PORTS[port])
         drift = max(tr["dq"]) if tr["dq"] else 999.0
         past = max(tr["out"]) if tr["out"] else 999.0
         hist.append((turn, float(sc[o[0]])))
         ok = drift < 8.6 and past <= 0.01
-        print(f"{turn:>5}{sc[o[0]]:>10.3f}{sc.mean():>10.3f}{drift:>12.1f}deg{past:>10.1f}deg  "
-              f"{'PROVEN' if ok else 'not yet'}")
+        print(f"{turn:>5}{sc[o[0]]:>10.3f}{sc.mean():>10.3f}{drift:>12.1f}deg{past:>9.1f}deg"
+              f"{robust:>8.2f}  {'PROVEN' if ok else 'not yet'}")
         draw(port, turn, tr, pics, hist, OUTDIR / f"port_{port}_turn{turn:02d}.png", len(mus))
     np.save(OUTDIR / f"port_{port}_theta.npy", best)
     print(f"\nPICTURES: {OUTDIR}/port_{port}_turn*.png")
