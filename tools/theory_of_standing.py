@@ -26,13 +26,19 @@ each one is a QUESTION with a published number behind it -- not a list somebody 
                      theStance publishes it. MEASURED: yes, 4.8 mm fore / 40.4 mm lateral inside.
   R2 A LOAD PATH     every joint between the CoM and the ground carries its share without
                      buckling. That is the port chain, and it is what we have been training.
-  R3 A STABILISER    the CoM wanders, so something must push it back FASTER THAN IT FALLS.
+  R3 A FAST LOOP     the CoM wanders, so something must COMMAND a correction faster than it falls.
                      theStance publishes `time_to_fall_s` = 0.4066 s -- the deadline. A controller
                      slower than that cannot stand, no matter how strong the ports are.
 
-R3 IS THE ONE NOBODY HAS BEEN TESTING, and it is checkable right now without training anything:
-compare the control interval against the fall time. If the loop is too slow the ports will never
-be enough, and every hour spent on them is spent on the wrong requirement.
+  R4 A FAST PLANT    ...and the PORT must be able to RESPOND in that time. R3 is about the
+                     controller; R4 is about the mechanism it commands. They are different
+                     requirements and R3 being met says nothing about R4.
+
+R3 WAS FREE TO CHECK AND CAME BACK MET (20 ms interval, 20 corrections per 0.4066 s fall). R4 CAME
+BACK VIOLATED, and it was invisible until the knee was trained at population 40 and its drift
+plotted: a damped oscillation with a ~0.6 s period, 1.5x the fall time. The loop can command in
+time; the knee cannot MOVE in time. That distinction is R4, and it is why strong ports were never
+going to be enough on their own.
 
     python tools/theory_of_standing.py
 """
@@ -82,13 +88,24 @@ def theory():
         "OPEN",
         "GROUND->FOOT proven at rest (+0.7%). HIP carries 0.9 s of 5 s. KNEE/ANKLE/FOOT untrained"))
     rows.append((
-        "R3  A STABILISER", f"can the loop correct faster than the body falls ({t_fall:.4f} s)?",
+        "R3  A FAST LOOP", f"can the loop COMMAND faster than the body falls ({t_fall:.4f} s)?",
         "MET" if n_corr >= 10 else ("MARGINAL" if n_corr >= 4 else "VIOLATED"),
         f"control interval {dt_ctrl*1000:.0f} ms -> {n_corr:.1f} corrections per fall time"))
+    # R4 -- NAMED 2026-08-02 by the knee's own picture at population 40. The drift is a clean
+    # DAMPED OSCILLATION: 0 -> 43 deg at 0.2 s -> 13 at 0.5 -> 37 at 0.8 -> 11 at 1.3. Peaks decay
+    # 43->37, troughs 13->11. Period ~0.6 s, lightly damped, converging. The knee is not collapsing
+    # and not fighting itself -- IT IS RINGING, and it converges too slowly to matter.
+    T_port = 0.60
     rows.append((
-        "R4  ??? ", "what does the theory not yet name?",
+        "R4  A FAST PLANT", f"can the PORT settle faster than the body falls ({t_fall:.4f} s)?",
+        "VIOLATED",
+        f"knee rings at ~{T_port:.2f} s period, {T_port/t_fall:.2f}x the fall time -- it cannot "
+        f"complete one oscillation before the body is down"))
+    rows.append((
+        "R5  ??? ", "what does the theory STILL not name?",
         "UNKNOWN",
-        "this row is the honest one: R1-R3 are necessary. Nothing here proves they are SUFFICIENT"))
+        "R4 replaced the old blank row. This one is its successor: R1-R4 are necessary, and "
+        "nothing yet shows they are sufficient"))
     return rows, dict(g=g, t_fall=t_fall, dt_ctrl=dt_ctrl, n_corr=n_corr,
                       omega=float(S["fall_rate_rad_s"]), com_h=float(S["com_height_m"]))
 
