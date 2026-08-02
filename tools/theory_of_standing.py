@@ -86,7 +86,8 @@ def theory():
     rows.append((
         "R2  A LOAD PATH", "does every joint carry its share without buckling?",
         "OPEN",
-        "GROUND->FOOT proven at rest (+0.7%). HIP carries 0.9 s of 5 s. KNEE/ANKLE/FOOT untrained"))
+        "CLOSED-LOOP, pop 60 x 3 turns: hip 1.30 s (was 0.92 open-loop over 8 turns, +41% in 3/8 "
+        "the turns), knee 1.14 s, distal 0.66 s and MOVING (was FLAT). Best 1.30 s of 5.00 = 26%"))
     rows.append((
         "R3  A FAST LOOP", f"can the loop COMMAND faster than the body falls ({t_fall:.4f} s)?",
         "MET" if n_corr >= 10 else ("MARGINAL" if n_corr >= 4 else "VIOLATED"),
