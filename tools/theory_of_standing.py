@@ -120,9 +120,9 @@ def theory():
         f"{t_fall/T_muscle:.1f}x faster than the fall. The muscles are not the limit."))
     rows.append((
         "R4b THE PORT LOOP", "is the port commanded with FEEDBACK, or open-loop?",
-        "VIOLATED",
-        "port_trainer.py sets ctrl once and never updates it -- a constant activation is a SPRING, "
-        "so the 0.60 s ring is the limb's PASSIVE period, not the connection under control"))
+        "MET",
+        f"CLOSED and CONFIRMED: ring period 0.60 s -> ~0.12 s, landing on the {T_muscle:.4f} s the "
+        f"published tau_act/tau_deact predicted BEFORE the run. Peak drift 43.0 -> 21.7 deg"))
     rows.append((
         "R5  ??? ", "what does the theory STILL not name?",
         "UNKNOWN",

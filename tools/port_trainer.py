@@ -95,7 +95,7 @@ def port_muscles(m, d, mujoco, joint_names, thresh=1e-4):
     return idx, dofs
 
 
-def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
+def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0, jnames=()):
     """Load the port and see whether it holds. Returns (score, trace, pics)."""
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
@@ -103,14 +103,32 @@ def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
     stand_z = float(m.key_qpos[0][2])
     q0 = np.array([float(d.qpos[a]) for a in qadr])
     lim = {a: (c - h, c + h) for a, c, h, _ in jids}
+    # THE LOOP IS CLOSED. This was `ctrl[mus] = theta` set ONCE before the loop and never
+    # updated -- a constant activation for five seconds, which is a SPRING, which is why the knee
+    # rang at the limb's 0.60 s passive period while the published muscle dynamics (tau_act 0.010,
+    # tau_deact 0.040 -> 0.126 s) say it can respond 3.2x faster than the body falls. I measured a
+    # plant's settling time from a system whose loop I had never closed.
+    #
+    # theta is now three bands per muscle: a0 (baseline) + kp * (q0 - q) + kd * (-qdot). The port
+    # commands from the JOINT'S OWN STATE, every control step. Nothing else about the reward, the
+    # bar or the muscle selection changed -- only whether the connection is allowed to respond.
+    n_m = len(mus)
+    a0, kp, kd = theta[:n_m], theta[n_m:2 * n_m], theta[2 * n_m:]
     ctrl = base_ctrl.copy()
-    ctrl[mus] = np.clip(theta, 0.0, 1.0)
+    vadr = [int(m.jnt_dofadr[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn)])
+            for jn in jnames if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jn) >= 0]
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
     tr = {"t": [], "dq": [], "out": [], "z": []}
     pics, tot, n = [], 0.0, 0
     for k in range(steps):
+        if k % 20 == 0:                       # the same 20 ms interval R3 measured
+            q = np.array([float(d.qpos[a]) for a in qadr])
+            qd = np.array([float(d.qvel[a]) for a in vadr])
+            err = float(np.mean(q0 - q))
+            rate = float(np.mean(qd))
+            ctrl[mus] = np.clip(a0 + kp * err - kd * rate, 0.0, 1.0)
         d.ctrl[:] = ctrl
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
@@ -220,18 +238,22 @@ def main() -> int:
     print(f"\nPORT {port.upper()} — {len(mus)} of {m.nu} muscles actuate it "
           f"(found by moment arm, not by name)   g = {g:.4f}")
     print(f"{'turn':>5}{'best':>10}{'mean':>10}{'worst drift':>14}{'past stop':>12}  verdict")
-    mu = np.full(len(mus), 0.10)
-    sd = np.full(len(mus), 0.25)
+    n_m = len(mus)
+    mu = np.concatenate([np.full(n_m, 0.10), np.zeros(n_m), np.zeros(n_m)])
+    sd = np.concatenate([np.full(n_m, 0.25), np.full(n_m, 0.8), np.full(n_m, 0.3)])
     rng = np.random.default_rng(0)
     hist, best = [], mu.copy()
     for turn in range(turns):
-        cand = np.clip(rng.normal(mu, sd, size=(pop, len(mus))), 0.0, 1.0)
-        sc = np.array([evaluate(m, d, mujoco, jids, mus, qadr, base, c, secs)[0] for c in cand])
+        cand = rng.normal(mu, sd, size=(pop, 3 * n_m))
+        cand[:, :n_m] = np.clip(cand[:, :n_m], 0.0, 1.0)
+        sc = np.array([evaluate(m, d, mujoco, jids, mus, qadr, base, c, secs,
+                                jnames=PORTS[port])[0] for c in cand])
         o = np.argsort(-sc)
         el = cand[o[:max(3, pop // 5)]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best = cand[o[0]]
-        s, tr, pics = evaluate(m, d, mujoco, jids, mus, qadr, base, best, secs, frames=6)
+        s, tr, pics = evaluate(m, d, mujoco, jids, mus, qadr, base, best, secs, frames=6,
+                               jnames=PORTS[port])
         drift = max(tr["dq"]) if tr["dq"] else 999.0
         past = max(tr["out"]) if tr["out"] else 999.0
         hist.append((turn, float(sc[o[0]])))
