@@ -216,3 +216,8 @@ research_references/optics/*.zip
 # and the mp4s are outputs of a paid API rather than source. The JSON they produce (score, hull,
 # material) IS the result and is committed alongside the tools.
 clay_exports/
+
+# Scratch. `.tmp/` is a throwaway scratch dir (a saved HTML page, debug dumps); nothing in it is
+# source and nothing reads it. Kept out of the tree so `git status` stays a true signal --
+# a repo whose status is never clean is a repo where a real stray file is invisible.
+.tmp/

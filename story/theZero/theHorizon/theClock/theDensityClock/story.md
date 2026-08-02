@@ -1,5 +1,9 @@
 # theDensityClock
 
+<!-- CHIMERA-LAW -->
+> *Derive before you train — [THE LAW](../../../../../docs/THE_LAW.md). Every number below is derived from the parent's or measured; none is chosen.*
+<!-- CHIMERA-LAW -->
+
 > **chapter 03** of the story  ·  **t = 1.84069e-43 s** since theZero  ·  lasts **7.62437e-44 s**
 >
 > *The serial is the place in TIME, not in the folder tree. A path says what contains

@@ -1,5 +1,14 @@
 # contact — the foot meets the ground (the finger touches the finger)   [derivation CLOSED]
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../../../../../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 **Claim:** The deepest membrane: a foot pressing the ground. The ground's own repose
 angle becomes the friction cone the foot lives inside; the center of pressure must stay
 under the foot; in walking a foot is ALWAYS down (no flight). This same primitive is a

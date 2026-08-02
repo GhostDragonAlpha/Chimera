@@ -1,5 +1,9 @@
 # aTerraceMine
 
+<!-- CHIMERA-LAW -->
+> *Derive before you train — [THE LAW](../../../../../../../../../../../../../../../docs/THE_LAW.md). Every number below is derived from the parent's or measured; none is chosen.*
+<!-- CHIMERA-LAW -->
+
 > **chapter 39** of the story  ·  **t = 1.47764e+17 s** since theZero  ·  lasts **6.31152e+08 s**
 >
 > *The serial is the place in TIME, not in the folder tree. A path says what contains

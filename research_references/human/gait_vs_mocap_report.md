@@ -1,7 +1,16 @@
-# Myobody walk policy vs CMU mocap (35_01 walk) — A/B report
+# Myobody walk policy vs CMU mocap (35_01 walk) ï¿½ A/B report
+
+<!-- CHIMERA-LAW -->
+> **RULE 1 â€” DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers â€” if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** Â· full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> Â· enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
 
 **Policy:** `myobody_walk_policy.pt` (PPO, 290-muscle MyoSuite myobody; recovered rollout contract)
-**Reference:** CMU MoCap subject 35 walk, 120 Hz — see `mocap_walk_reference.json`
+**Reference:** CMU MoCap subject 35 walk, 120 Hz ï¿½ see `mocap_walk_reference.json`
 **Method:** 5 randomized starts x 10 s, WORST-of-N scoring (project rule), contact dyad
 (MuJoCo truth vs geometric proxy, 98.2% agreement at 0.2 cm).
 
@@ -19,7 +28,7 @@
 
 | metric | value |
 |---|---|
-| classification | RUN / TROT — a real flight phase (9%), duty 0.34. |
+| classification | RUN / TROT ï¿½ a real flight phase (9%), duty 0.34. |
 | periodicity | 0.34 (walk needs >= ~0.6) |
 | duty factor | 0.34 (human 0.55-0.65) |
 | survival | 1.2 - 1.7 s of 10 s |
@@ -28,6 +37,6 @@
 
 ## Verdict
 
-GAP IS LARGE — the policy does not sustain a measurable gait.
+GAP IS LARGE ï¿½ the policy does not sustain a measurable gait.
 
 Per-seed detail and angle phase errors: `gait_vs_mocap_report.json`.

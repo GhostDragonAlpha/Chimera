@@ -1,5 +1,14 @@
 # Sample-Source Bake-Off: Multiple Avenues, Per-Material Optimal References (tb-0188)
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > The human's frame correction on the Lead, 2026-07-18, verbatim: *"the research now
 > involves sampling and where we get our samples from — we must have multiple avenues
 > to explore the optimal source or sources."* This supersedes tb-0175's single-avenue

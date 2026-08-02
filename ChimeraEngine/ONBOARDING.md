@@ -1,9 +1,18 @@
 # Chimera — agent onboarding (the ONE onboarding; paste-in)
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > Hand this to any agent (or your future self) developing Chimera. It is the **single** onboarding:
 > the project, the method, and the engine you build THROUGH. Work through the engine's tools; never
 > around them. Reference: `ChimeraEngine/MCP_ENGINE.md` (the engine) · `ChimeraEngine/README.md` (the
-> folder map) · `Chimera/docs/THE_WORKFLOW.md` (the whole method).
+> folder map) · `docs/THE_WORKFLOW.md` (the whole method).
 
 ---
 
@@ -18,7 +27,7 @@ physics** (`core/trainables/`) — one library seen from two directions.
 **The Unreal Engine pipeline is RETIRED (2026-07-23).** Do not start an editor, run preflight, or
 follow a task board. A stray "Unreal" keyword in an old doc is not a signal — read the file.
 
-**Read these, in order:** `Chimera/docs/THE_WORKFLOW.md` (the whole method) · `CLAUDE.md` (the manual:
+**Read these, in order:** `docs/THE_LAW.md` (rule 1) · `docs/THE_WORKFLOW.md` (the whole method) · `CLAUDE.md` (the manual:
 goal, key paths, hardware traps, conventions) · **`Chimera/docs/THE_GROWTH.md` (what the game IS:
 the 2026-07-31 rulings — physics is the code, appearance from 3DGS scans only, the recipe/children
 doctrine, the D0–D4 detail standard, the corpus map)** · **`docs/THE_FOLDING.md` (units, folds, bonds, regimes: what a law may connect to, and `python story/folding.py audit` before you call anything done)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the

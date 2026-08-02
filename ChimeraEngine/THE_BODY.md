@@ -1,5 +1,14 @@
 # THE BODY — first-person movement with real physics
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > **⚠ STATUS BANNER (2026-07-28) — read before the body of this doc.** The *design intent* below (Call-of-Duty states with real physics; don't-go-backwards; contact-first; the three budgets) is all CURRENT and load-bearing. But the **muscle implementation** described from §7 on — the hand-built moment-arm paths in `body.py`, "the muscle paths are a download, not a derivation" — has been **SUPERSEDED**. That hand-built body had one flexor+extensor per joint and, proven by a passive test, **cannot stand** (it lacks biarticular muscles, per-joint redundancy, and the postural chain). The project now uses **MyoSuite's validated musculoskeletal models** (`vendor/myo_sim/`): **myoLegs (80 muscles)** and the full **myobody (290 muscles, legs+torso+arms+spine)**, which batch on `mujoco_warp`. What is now PROVEN on the real body: **it stands** (full body, 77% survival, arms settled by rewarding "be still" not a pose target). What is IN PROGRESS: **walking** — a real gait, not travel, measured by periodicity (the `gait_myobody.py` witness convicted the first attempt at periodicity 0.24). The METHOD also changed: **derive the mathematics first** (`docs/THE_MATHEMATICS_OF_WALKING.md`), and drive the 290 muscles through **~16 measured synergies** (`synergy.py`), not raw per-muscle. See CLAUDE.md "How work gets done" and `docs/THE_MATHEMATICS_OF_WALKING.md` for the current state. Everything below is kept for its design reasoning, not its muscle mechanics.
 >
 > **The operator, 2026-07-26:** *"In normal video games the player doesn't fall down unless that's

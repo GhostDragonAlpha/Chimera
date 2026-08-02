@@ -1,5 +1,14 @@
 # Matter Library — Research Sources (tb-0172, continued tb-0181)
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 Cached citations for the `provisional` -> `researched` upgrades applied to
 `docs/matter/matter_library.json`. Access date for every source below: **2026-07-18**
 (live WebSearch/WebFetch). Two sessions on record: the original tb-0172 pass

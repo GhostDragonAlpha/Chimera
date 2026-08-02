@@ -1,518 +1,500 @@
-# THE WORKFLOW — the system as it actually is
+# THE WORKFLOW — the one sequence
 
-> Reconstructed 2026-07-23 by reading the repo **chronologically** (git add dates, not
-> filesystem mtimes — a `git checkout` had stamped everything with today).
-> The newest layer is the working one; everything older either feeds it or is retired.
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
 
-**THE ONE SENTENCE: everything in the world is a Gaussian splat, every material is a
-*trained composition* of splat types, and every genome comes either from measuring reality
-or from growing it under physics.**
+> **Consolidated 2026-08-02 by reading every workflow document in the repository and putting each
+> idea on one list first** — `docs/THE_PIECES.md`, 116 pieces with their provenance and status.
+> Nothing here is new invention; it is the pieces that were already written down, in the order they
+> actually run, with the joins that were missing.
+>
+> **What the gathering found.** This repo held **two workflows that were never joined.** The
+> FORMULA (2026-07-24, `PROVE(X)` through S0–S7, sealed) and the CHAPTER (2026-07-28, membranes in
+> `story/`). The second superseded the first in practice while the first stayed labelled canonical —
+> which is the repo's own named drift pattern: *a new thing added beside the old thing instead of
+> replacing it.* This document is the join.
+>
+> **And the join is where Rule 1's failure lived.** The formula's S4 read
+> `MEASURE(TRAIN(PROGRAM(V)))`. There is no DERIVE in that line. A reward was programmed, weights
+> were trained, the result was measured — every gate satisfied — while the target speed came from
+> another planet. **The missing stage is now S4, and everything after it moved down one.**
 
 ---
 
-## 0. The build order — what was made when
+## THE WHOLE THING ON ONE PAGE
 
-| Date | Layer | What landed |
+```
+  ┌─ THE DAY ───────────────────────────────────────────────────────────────┐
+  │                                                                          │
+  │   ORIENT ── read the state, never guess it                              │
+  │      ▼                                                                   │
+  │   NEXT ──── the operator names ONE camelCase term, or the six           │
+  │      │      directions name it. You never pick it yourself.              │
+  │      ▼                                                                   │
+  │   ┌─ THE MEMBRANE — PROVE(X) ────────────────────────────────────┐      │
+  │   │  S0  FRAME      one claim · the/a · check for a missing level │      │
+  │   │  S1  QUESTION   variables are BORN of questions               │      │
+  │   │  S2  SATURATE   measured — Chao2 + a dry tail, curve rendered │      │
+  │   │  S3  CLASSIFY   PHYSICS · FREE · LENS · HUMAN                 │      │
+  │   │  S4  DERIVE  ◄── the equations close, from the PARENT only    │      │
+  │   │  S5  TRAIN      only the genuinely free numbers               │      │
+  │   │  S6  EMIT       the same numbers become matter, local units   │      │
+  │   │  S7  DYAD       a NUMBER vs a blind eye's TERM                │      │
+  │   │  S8  RECOMPOSE  the parent is proven BY its children          │      │
+  │   └───────────────────────────────────────────────────────────────┘      │
+  │      ▼                                                                   │
+  │   CHECK ─── grow → witness → folding → gate → timeline → slider         │
+  │      ▼      in that order, every time                                    │
+  │   COMMIT ── branch + SHA, the numbers and their comparisons in the msg   │
+  │                                                                          │
+  └──────────────────────────────────┬───────────────────────────────────────┘
+                                     ▼
+                        THE NIGHT ── the day's failures become rules
+```
+
+Two terminals, and only two: **PHYSICS** (a fact true in an empty universe) and **THE HUMAN**
+(taste). An LLM is never one — its answer is always another claim, so the walk recurses past it.
+
+---
+
+## 0 · WHO DOES WHAT
+
+| | **THE HUMAN** | **THE AGENT** |
 |---|---|---|
-| **07-20** | the periodic table | `element_catalog.py` → 69,718 trainable variables → `trainables/generated/*` (solar_system, shelter, trade_ui …) |
-| **07-21** | **the splat world** | `splat_types.py`, `splat_level.py`, `train_splat_compositions.py`, `rebuild_world.py` + all of `WorldModel/` (SplatVAE, cellular, universe, infinite, nanite) |
-| **07-22** | **genomes from reality + taste** | all of `Construction/` (scan → genome) and `taste.py` / `preference*.py` |
-| **07-23** | consolidation | local-model docs, experimental method, this file |
-| **07-23** | **AUTOMATED WORKFLOW** *(RETIRED 07-24)* | ~~`sequential_orchestrator.py` - continuous sequential agent pipeline~~ — retired 2026-07-24: orchestrator deleted, launcher pointed at deleted files, nothing imported the agents, and its documentation_agent corrupted task_progress.md. The canonical to-do list is now `Chimera/docs/THE_BACKLOG.md`.
-| **07-23** | **THE COMPOSITION SIDE** | `progeny.py` (children/placement/verbs), `membrane_shapes.py` (containers), `render_world.py` (GPU render), and the link that made trained compositions reach the world builder |
+| writes | `story.md` — what a membrane IS | `physics.py` — the law reaching it from its parent |
+| produces | the **NODES**: which membranes exist, how deep we go | the **EDGES**: the numbers and the matter |
+| owns | **DECIDE** (taste) and **ENOUGH** (is it deep enough) | the hierarchy, the formula, and **every technical decision** |
+| is | one of the two terminals | never a terminal |
 
-**Read backwards from 07-22 and the system explains itself.** The last two days added the
-two ends the middle was missing: *where genomes come from* (measured reality) and *who
-decides which of the physics-feasible ones is good* (the operator).
-
----
-
-## 1. THE SPINE
-
-```
-        ┌──────────────── two ways to obtain a genome ────────────────┐
-        │                                                             │
-  MEASURED                                                       GROWN
-  Construction/                                            core/trainables/
-  real scan → isolate → morphology-DNA                     physics objective →
-  + material-DNA → serial number                           trainer → measured facts
-        │                                                             │
-        └──────────────────────────┬──────────────────────────────────┘
-                                   ▼
-                         THE MATTER LIBRARY
-                  typed bricks: muscle bone skin wood stone water
-                  each carrying only what the game reads
-                                   ▼
-                   train_splat_compositions.py          ← TRAINED, not authored
-        "which combination of splat types reproduces this material's optics?"
-                                   ▼
-                          splat_types.py
-              the catalog of emittable shapes (covariance space)
-                                   ▼
-                          splat_level.py
-     ground = Cellular Potts → surface voxels → splats · resources · shelter
-     (matter-assembled) · NPCs (matter-grown bodies) · beacon · sun
-                                   ▼
-                    trainer.train() → top_k feasible
-                                   ▼
-                     preference_select.py  ← THE ATTUNE-BACK
-              re-rank the physics-feasible shortlist by operator taste
-                                   ▼
-                          rebuild_world.py
-                        ONE COMMAND, whole world
-                                   ▼
-                          render_world.py
-              GPU rasteriser, anisotropic footprints + shading
-                                   ▼
-                             SEE IT
-```
-
-**And the object path, added 07-23** — because a game is instances, not surfaces:
-
-```
-   one isolated object  ──▶  GENOME (mean + p10..p90 = the variation space)
-                                   │
-                    ┌──────────────┴──────────────┐
-              spawn_children                  recombine(A, B)
-              asexual: clone+noise            sexual: 2 parents,
-              h² undefined                    independent assortment
-                                   ▼
-                          build_child(form=)
-             tuft / clump / shard  — HOW THE PIECES FIT, not what they are
-                                   ▼
-                    place(...)   or   scatter(height_fn=...)
-              explicit transforms      author any terrain, dress it
-                                   ▼
-                     pose(verb='wind'|'grow'|'settle')
-                 rooted: bases stay planted, tips move most
-                                   ▼
-                             render_world
-```
+**You are the head of the dragon.** You do not ask which wrench to pick up. There are exactly four
+legal stops: the term is proven · a real blocker (name the cause) · a taste decision · the eye is
+dark and no blind reader is possible. **"Which term?"** is never legal — `next` answered it.
+**"Which approach?"** is never legal — that is your half.
 
 ---
 
-## 2. The stages, with the file that does each
+## 1 · ORIENT — read the state, never guess it
 
-### Stage 1 — obtain a genome
-
-**A. MEASURED (`Construction/`, 07-22)** — from a real 3DGS scan.
-`ksplat_io` decode → `decompose_scene` (RANSAC planes, then blob clustering, PCA signature
-per element) → `gpu_render_torch` + `multiview_sam_lift` (render, segment with SAM 2,
-back-project, vote) → `morphology_signatures` (shape-DNA) → `material_dna` (inverse
-rendering) / `take_dna_full` (splat-configuration distributions) → `codebook` (serial
-number). Full status per stage: `Construction/SPLAT_DNA_WORKFLOW.md`.
-
-**B. GROWN (`core/trainables/`, 07-18 → 07-20)** — from a physics objective.
-The domain reports **facts**; the objective says which facts are good; `trainer.py` runs
-26k–37k evals/sec with no LLM in the loop. Trained rungs, each against reality's own
-numbers: `granular` (sand, 40.03° emergent repose), `bigbang` (Kepler slope 1.50 at
-r²=1.000 measured from grown orbits), `planet` (oceans, atmospheres, a habitable zone
-nobody placed), `material_appearance`, `tree_appearance`, `creature`, `walker`, `brain`.
-
-> **Both paths produce the same thing** — a typed brick with measured properties and a
-> serial number. Extraction and generation are one library seen from two directions.
-
-### Stage 2 — the matter library (`core/matter.py`, 650 lines)
-
-Differential adhesion (Cellular Potts) self-sorts scrambled typed bricks into layered
-structure. `limb.py` uses a skeleton as a frozen axis and lets adhesion wrap flesh around
-it. `matter_gpu.py` runs the same shaker at **6.3 B site-updates/sec** — use it, never the
-CPU loop, at scale.
-
-### Stage 3 — TRAIN the splat composition (`train_splat_compositions.py`, 07-21)
-
-**This is the hinge, and it is trained rather than authored.**
-
-```
-genome  : per material, [type_mask (7 bits), weights (7 floats), scales (7 floats)]
-measure : render the splat cloud, compare against the library's optical targets
+```bash
+python story/grow.py --read --depth 2     # the universe in three sentences
+python story/timeline.py                  # the story in the order it happens
+python tools/methodology_gate.py          # all 42 membranes, 8 columns
 ```
 
-Each material *discovers* which combination of splat types — surface, fiber, point, shell —
-reproduces its optics. Nobody hand-picks "bark is fibers."
-
-### Stage 4 — emit the world (`splat_types.py` + `splat_level.py`, 07-21)
-
-Everything is a splat: ground from the Cellular Potts grid, resources as clusters with
-material properties, shelter matter-assembled, NPCs matter-grown, beacon, sun. The GPU
-rasterizer reads the **full 3×3 anisotropic covariance**, so new shapes need no kernel
-change.
-
-### Stage 5 — the operator decides (`preference*.py` + `taste.py`, 07-22)
-
-Physics narrows to what is *feasible*; it cannot say what is *good*.
-`trainer.train()` returns `top_k` (every hard gate passed) → `preference_select.py`
-re-ranks by a Bradley-Terry model over the **physics measure vector** → `taste.py` supplies
-the human-authored Will as the prior.
-
-> **NO REFERENCE, NO VERDICT.** The machine never decides what is good on its own. A
-> human — or an objective a human authored — supplies the reference; the machine attunes
-> and reports how close it got.
-
-### Stage 6 — one command (`rebuild_world.py`, 07-21)
-
-GPU terrain growth (Cellular Potts at 256³) → matter shelter growth → splat emission for
-all elements → GLB export → render.
-
-Its last two steps used to import into UE5. That is **replaced** (07-23): `rebuild_world`
-now calls `render_world.show()`. The old `import_to_ue5()` built a UE Python script as a
-string, ran `telemetry_probe`, printed "command written", and executed nothing — it never
-worked.
-
-### Stage 7 — SEE IT (`render_world.py`, 07-23)
-
-`render_orbit(splats)` — the soft-Gaussian scatter rasteriser, made reusable from the
-hardcoded `Construction/gpu_render_torch.py`. Projects each splat's **3×3 covariance to a
-screen-space ellipse** (anisotropic footprints — before this every splat drew the same
-round dot, so `surface 63% + cloud 29% + beam 8%` rendered identically to `surface 100%`
-and the whole composition pipeline was invisible), applies **Lambert shading** from the
-splats' normals, orbits N cameras, writes a montage. 6 views of 118k splats in ~1.5 s on
-the 4090. **The operator must be able to see the output** (`EXPERIMENTAL_METHOD.md`).
-
-### Stage 8 — OBJECTS, not surfaces (`progeny.py` + `membrane_shapes.py`, 07-23)
-
-The correction that reframed the back half: **a game is instances of objects, not a
-material painted on a surface.** Isolate one thing → make variations → place them.
-
-- **`membrane_shapes.py`** — sphere / plane / cylinder / box / dome, `displace()` for
-  relief, `clothe()` to dress a shape in a material's trained composition. Built because
-  terrain had no CONTAINER: 300 random blobs left 22% of columns carrying matter across a
-  2,000-unit spread — the physics ran correctly and produced noise because the objective
-  was underdetermined. **A membrane is a boundary, and a boundary is what makes a result
-  attributable** (the Membrane Programming principle, applied to geometry).
-- **`progeny.py`** — the genetics. A genome is stored as mean + p10..p90; **that range is
-  the variation space children are sampled from.**
-  - `spawn_children(parent)` — asexual, clone + noise. h² undefined from one specimen.
-  - `recombine(A, B)` — sexual. Independent assortment per **linkage group**, **pleiotropy**
-    (R/G/B share one luminance factor — independent draws made rainbow confetti), **mutation**
-    as a separate low-rate process, and **liability-scale** sampling (logit/log) so bounded
-    traits never clip. Measured after: 0/10 saturated-white, 0/10 zero-size.
-  - `merge_specimens(...)` — combines N scans of one KIND into a class genome and computes
-    **heritability** h² = V_between / (V_between + V_within) by the law of total variance.
-    **This is why two scans of a thing is the minimum useful sample** — with one you cannot
-    separate "this individual is like this" from "the class varies like this".
-  - `build_child(form='tuft'|'clump'|'shard')` — the archetype is **how the pieces fit**,
-    not what they are made of.
-  - `place(children, positions)` — explicit hand placement. `scatter(height_fn=...)` — dress
-    an authored heightmap (the operator's own example: get grass working, then apply it to
-    any terrain).
-  - `pose(verb='wind'|'grow'|'settle')` — the VERB. Rooted, so bases stay planted and tips
-    move most. **Plasticity**: one genotype expressed differently by environment, not
-    inherited.
+Piece #109 of the inventory, and it governs this whole document: **a claim about INTENT does not
+rot; a claim about STATE rots by construction.** So nothing here copies a command's output — it
+points at the command. A copy is a snapshot, and a snapshot is a lie with a start date.
 
 ---
 
-## 3. What still points at Unreal
+## 2 · NEXT — which membrane, and you do not choose it
 
-| Where | What | Status |
-|---|---|---|
-| `rebuild_world.py` steps 5–6 | MCP import → UE5, level save | **DONE (07-23)** — now calls `render_world.show()` |
-| `ParticleEngine/` | Python particle sim **plus** a UE render bridge | **DO NOT DELETE.** `Construction/backend_3d.py` and `WorldModel/train.py` both import it (`tree_trainer.TreeParams`). The simulation is current; only the bridge is dead. |
-| `core/bake_to_ue5.py`, `system_to_ue5.py` | UE staging | dead |
-| `Chimera/docs/THE_MATTER_MODEL.md` §5 | "what maps to which UE5 technology" | dead section, **the rest of the document is the live concept** |
+**Setting-first, from the seed down.** Jumping to a mid-tree scene is this project's founding
+failure and it has been repeated since. `lushEden` was proved three membranes deep with no bubble
+around it; a walker was built six membranes deep with nothing proven beneath it.
 
----
+When the operator has not named one, the question *"what next?"* has a designed answer rather than
+a "whatever is broken" answer — **the six directions from the anchor**:
 
-## 4. Honest gaps
-
-1. ~~Extraction and generation are not yet joined.~~ **WIRED 2026-07-23.**
-   `Construction/export_genome.py` writes measured splat-configuration distributions to
-   `Chimera/docs/matter/recovered_genomes.json`; `train_splat_compositions.py` now prefers
-   a recovered genome over the 40Q keyword constraints (`measure_recovered()`), emitting
-   the composition's splats and comparing **covariance-eigenvalue features against the
-   scan's own numbers**. Proof it works: the one measured cluster with LOW anisotropy
-   (0.52, rough corrosion) trained to `surface 63% + cloud 29%` — reaching for the only
-   isotropic emitter — while the 0.95–0.99 clusters trained to `beam 78–90%`. Nobody
-   encoded that. **Remaining:** only one scan (truck, 8 clusters) is exported, and naming
-   `cluster_07` "corroded steel" is still manual.
-2. **TWO SCANS OF EACH KIND — COMPLETED 2026-07-23.** `merge_specimens()` and `heritability()` are written and waiting. With a single specimen h² is undefined, so every child is a rearrangement of one individual. Two grass tufts, two rocks, two bolts, and between-specimen variation becomes measurable.
-
-   **STATUS: VALIDATED WITH 5 MATERIALS.** Processed bonsai vegetative, stump wood, bicycle metallic, plush fabric, and truck metallic — all with heritability estimates (color h² > 0.72 in plants/fabric, size h² < 0.08). Children rendered successfully on RTX 4090 (~500ms each). The pipeline is operational end-to-end: scan → cluster matching → specimen merging → heritability estimation → child generation → visual rendering.
-
-   **NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
-3. ~~The arrangement dimension has no search in it.~~ **CLOSED 2026-07-23.**
-   `build_child` had three hand-written branches, so a driven section returned
-   `{'clump': 1147}` — every object a clump, the section reading as gravel however varied
-   its genomes. `core/trainables/arrangement.py` is now a continuous 10-gene space with
-   the trainer's contract; tuft/clump/shard are POINTS in it, not branches.
-   `Construction/arrangement_dna.py` measures the same statistics from real scans so it
-   trains against measurement rather than taste. **Remaining: the objective JSON, and the
-   gap it must close — real material clusters at 4.7–8.2, the old forms reached only
-   1.3–1.5.**
-4. **The splat-type catalog has a ceiling.** `beam` caps at aniso 0.95 but real material
-   measured 0.994 — you cannot emit what the vocabulary cannot express. Needs a more
-   extreme emitter + finer scale control. Measurable target.
-5. **No emissive, fluid or atmospheric genome.** `energy`, `fluid` and `atmospheric` ports
-   return **zero** admissible candidates — the library cannot express anything that flows
-   through those interfaces. Lasers, engine glow, water. Reported by the system itself
-   rather than remembered.
-6. **Colour and opacity are recovered but unused in composition matching** — only
-   anisotropy and size-CV are compared. The RGB/opacity distributions sit in
-   `recovered_genomes.json` doing nothing.
-5. **No training logs.** Nine VAE checkpoints (713 MB) with no record of what produced them.
-6. **Relighting is unsolved.** Structural DNA (size/shape/angle) is lighting-clean; colour
-   DNA carries baked capture light.
-7. **Patch encoding unimplemented** — caps SplatVAE at ~100K splats; real captures are millions.
-
----
-
-## 5. The rules that govern all of it
-
-- **TRAIN it, don't hand-tune it.** DATA gets evolved; the LLM writes the constraints and
-  never turns the crank. ~30,000 evals/sec vs ~20 edits/hour.
-- **One rollout is a coin toss.** Score N randomised restarts and keep the WORST.
-- **GPU for the population, CPU for development.** Nothing reads back from the GPU inside a
-  rollout loop.
-- **The exploit is the product** — a degenerate winner is the optimiser auditing your spec.
-  Iterate the objective, never the artifact.
-- **Measure the thing, not a proxy** (`Chimera/docs/EXPERIMENTAL_METHOD.md`).
-- **A measurement without a CONTROL is not a measurement** (2026-08-01). Push a KNOWN subject --
-  one you MADE, whose answer you know by construction -- through the whole instrument before you
-  report anything. Three already-written conclusions were reversed by this in one day. Corollaries:
-  *measure at the scale the thing lives at* (an unresolvable effect returns a wrong number, not a
-  refusal); *never threshold on a quantile of what you are measuring*; *suspect the data's
-  construction, not only the probe*; *a shared name is not a shared definition*; and *derive the
-  shape, let physics set the level -- when the two disagree, that IS the finding*.
-  Rules 12-17 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
-- **BACKTRACE: debug UP the chain, not forward from the symptom** (2026-08-01, the operator's).
-  Forward debugging finds where an error became VISIBLE; backtracing finds where it ENTERED. Six
-  hypotheses were eliminated against a foot whose instruction came from four membranes up.
-  Corollaries: *one quantity, one landmark* (three leg lengths, 3.11 cm apart, all dimensionally
-  identical); *the instrument must move with the membrane and keep no copy of it* (four witness
-  self-inflictions in one day); and *in a grown world an authored phenotype is the defect* -- the
-  witness is the FITNESS FUNCTION and the measured dataset is the CONTROL, not the answer.
-  Rules 18-21.
-- **DERIVE it before you TRAIN it** (2026-07-28). Trace every membrane's variables and show the
-  equations CLOSE before a run — else it is guess-and-check on a 2-hour loop (= training the RULES).
-  A real derivation predicts what it was never fitted to. `docs/THE_MATHEMATICS_OF_WALKING.md`.
-- **One change at a time** — three coupled changes is a three-body problem with no attributable
-  solution. And watch the second variable you changed by accident (an action-space swap silently
-  rescales exploration noise).
-- **Command the PROCESS and its stop condition, never the final position** — positions are OUTPUTS;
-  in rewards, reward the outcome (grasped/balanced/still), not a target pose. `docs/CONTROLLER_MAP.md`.
-- **The work-gate judges LEARNING, not heat** — temperature is a readout; a coasting run has neither
-  heat nor a learning curve (`ChimeraEngine/gpu_gate.py`).
-- **Verify your own MEASUREMENT, not just the claim** — before reporting a result that contradicts a
-  prior one, suspect the instrument first.
-- **Build in one of six directions, from the player outward** — §6 below. Without a
-  priority rule the pipeline yields unrelated assets instead of a place.
-
-
----
-
-## 6. WHAT TO BUILD NEXT — the six directions
-
-Everything above says *how* the world gets made. This says **what to make next**, and it
-exists because the pipeline can make anything: without a priority rule an agent produces a
-pile of unrelated assets instead of a place. **Six directions is the constraint that
-focuses it.**
-
-### The anchor and the timeline
-
-Development follows the **player's timeline from t=0** — the first thing they ever see.
-There is **no main menu screen**; the menu is written into the environment, because the
-world can be the menu. From the player's position (**the anchor**) there are exactly six
-directions, and each is a work bucket:
-
-| Direction | The question it asks |
+| direction | the question it asks |
 |---|---|
 | **DOWN** | what are they standing on? |
 | **FORWARD** | what draws them onward? |
 | **UP** | sky, ceiling, the scale of the place |
 | **LEFT / RIGHT / BACK** | what holds the world together around them? |
 
-**Work one direction at a time. Build nothing that no direction asked for.** Each direction
-names concrete pipeline work — which genome to recover (Stage 1), which objects to breed
-(Stage 8), where to `place()` them, which `pose()` verb they carry. The six directions do
-not replace the stages; they aim them.
+**Work one direction at a time. Build nothing that no direction asked for.** Detail is budgeted by
+*perceived* distance — arm's reach, personal, social, horizon — not by travel: **distance travelled
+is not a consideration**, and in a space game most of the space is void, and void is correct. When
+all six are filled, **MIGRATE**: move the anchor, six fresh directions open. The universe expands
+because the current one is *saturated*, not because someone decided to add more.
 
-### How far out — proxemics, not travel
-
-Detail is budgeted by **perceived** distance, in the bands humans actually read (Hall,
-1966): arm's reach, personal, social, horizon. A thing at arm's reach must **hold up**; a
-thing on the horizon must only **read correctly**. This is the LOD-of-meaning ladder
-already in `CLAUDE.md`, anchored to a body instead of a number.
-
-> **DISTANCE TRAVELLED IS NOT A CONSIDERATION.** Work is **anchor-local**. You never budget
-> by how far the player will move, and the space *between* anchors is not a development
-> target — in a space game most of it is void, and **void is correct**. Crossing a million
-> kilometres costs nothing to build.
-
-### When all six are filled: MIGRATE
-
-Move the anchor to new ground; six fresh directions open. The universe expands because the
-current one is **saturated**, not because someone decided to add more — an organism fills
-its niche and disperses. This is the same range-expansion logic as the genetics in Stage 8.
-
-### The frame, not the compass
-
-Four cardinal directions presuppose a horizon. **In space there is none**, so the player's
-own orientation is the only reference — you are not adding two directions to a plane, you
-are losing the plane. The machinery already exists: **`core/terrarium.py:264` is a 3D
-turtle** carrying `H, L, U` (heading/left/up), and its yaw/pitch/roll commands *are* the
-six. Papert's term is **body-syntonic**: reason as the body, not in absolute coordinates.
-
-### The rule that must not bend
-
-Six directions govern **traversal and authoring**. World state is stored in **absolute
-coordinates**. `CLAUDE.md` promises *same seed, same world, forever* — that holds only if
-the camera's frame never leaks into what is **saved**. Egocentric for attention and
-building; allocentric for persistence.
-
-### It transcends scales — and that is the payoff
-
-Because work is **anchor-local** and travel distance is never budgeted, **the rule is
-scale-invariant**. A frame does not care how large anything is. The same six questions are
-asked, unchanged, at every rung:
-
-| Anchor | DOWN | FORWARD | UP |
-|---|---|---|---|
-| standing on regolith | grain under the boot | the ridge line | sky, weather |
-| a ship's cockpit | the deck plate | the viewport | the overhead console |
-| orbit | the planet below | the terminator | the star field |
-| interstellar | the ecliptic | the next system | the galactic plane |
-
-This is the **compositional ladder** (`CLAUDE.md`) given a work order — sand → cloud → star
-→ system → planet → climate → matter under boots are *scales*, and the six directions apply
-identically at each. It is also why `core/terrarium.py`'s turtle is the right primitive:
-its yaw/pitch/roll commands are the same whether the step is a bark fibre or a light-year.
-**Same method, any magnitude. Migration between scales is just another anchor move.**
-
-### Why this produces emergence
-
-You are not designing a world from above. You are growing it **outward from one person's
-experience**, and every new piece must relate to what is already placed around it. The
-constraint is what makes the parts cohere into a place rather than a collection.
+It is scale-invariant, which is the payoff — the same six questions at regolith, cockpit, orbit and
+interstellar. And they are not a metaphor: **the six directions are the PORTS of a cell**, typed by
+what flows through them, so an unfilled port is somewhere the world is not finished and
+`work_queue()` is the world's to-do list **enumerated rather than authored**.
 
 ---
 
-## 7. THE ARCHITECTURE — one primitive, one motion, one address
+## 3 · THE MEMBRANE — `PROVE(X)`
 
-Everything below was worked out 2026-07-23 with the operator and then built. It replaces
-a set of separate systems with one construct seen at different sizes.
+The verb is **PROVE**, never "build". "Build" is the old-programming verb — press the button, trust
+the output — and it lets an agent make a thing and declare it done, which is the one failure this
+studio exists to kill. **"Prove" forces the definition to be reduced:** you cannot prove what you
+cannot first state precisely.
 
-### 7.1 A membrane is a boundary, and a boundary is a SCALE
+### S0 · FRAME
+
+`⊢ atomic(X)` — one claim, else SPLIT. Then three questions that are cheap now and expensive later:
+
+- **Is this a LAW or an INSTANCE?** `theX` says what any X must satisfy; `aX` is the one that formed
+  here. If you are an instance you **do not know your own name yet** — it is derived (S4).
+- **Is a level missing?** `story/HIERARCHIES.md` holds the real paths. A cloud does not become a
+  system on its own. **Say so and stop; do not skip it and do not invent one.**
+- **Who is this for?** The demographic decides which human terminal you aim at. It is a DECIDE.
+
+### S1 · QUESTION — variables are BORN, never declared
+
+Ask *"what must be true for X?"* recursively. Each question forks three ways: **you know it** →
+answer · **it is physical** → run the measurement → answer · **you cannot answer honestly** → that
+question **is a research request wearing a question mark**, and research is *generative* — its
+answer hands you questions you could not have asked before.
+
+> **The failure this stage exists to kill, in the operator's words:** *"you failed the workflow
+> because you determined yourself these variables."* Asked to prove *"Eden is lush"*, the agent
+> shattered it into `{land_fraction, warmth, wetness}` — three climate drivers invented in one head
+> — trained them and declared it done. Those are not the constituents of a lush Eden. Where are the
+> trees as populations, the understory, the canopy, fauna, birdsong, streams, loam, dappled light?
+> **Three knobs cannot make it. They can only make the weather over it.**
+
+`⊢ born_of_question(V)` — else **REJECT the variable.** Inventing one in your head is already a
+failure, not a shortcut to be audited later.
+
+**WHAT TO ASK — 22 categories in four groups.** This stage stayed orphaned for months partly
+because nobody wrote down *which* questions, and they had been written down: recovered from
+`WORKFLOW.md` (THE FOUNDRY), where they were buried under a retired UE pipeline.
+
+| group | asks | the categories |
+|---|---|---|
+| **NODE** (13) | *what IS this?* | physics · world · foundation · performance · economy · narrative · UX · save_load · audio · accessibility · testing · shipping · platform |
+| **EDGE** (5) | *how does it RELATE?* | depends_on · proves · derived_from · conflicts · requires |
+| **MIRROR** (4) | *why does it EXIST?* | vision · tradeoff · evidence · **terminal** |
+| **META** (5) | *where does it FIT?* | depth · breadth · parent · priority · dependency |
+
+Two of those groups do work nothing else in this method does. **MIRROR's `terminal`** forces you to
+name, per variable, whether it bottoms out at PHYSICS or THE HUMAN — which is S3 asked early enough
+to be cheap. **META's `depth`** is what says *"this needs a deeper zoom"* — and a membrane whose
+META answers demand more zoom is a membrane that should have children, which is the tree deciding
+its own shape rather than an author deciding it.
+
+**The council's shape:** `Frame → 10Q → Answer → 10Q → Answer → Saturate → Spec`. Two rounds before
+you are allowed to think you are done, because the second round's questions are the ones the first
+round's answers made askable.
+
+> **THE RHYTHM, and it is the whole operating posture:** ask a concrete question about the current
+> state → answer it **with evidence**, not with recall → ask the next question based on what you
+> learned → repeat. **Never stop at "task done." A task is just one answer.** The session ends when
+> the human stops you, not when you have checked a box.
+
+### S2 · SATURATE — DRY is measured, never asserted
+
+Stopping because you *feel* done is how you get completeness 0.53 and a chapter of one-offs. Two
+signals, **both** required:
+
+- **Chao2 completeness** — estimates unseen variables from the one-off discoveries. Many singletons
+  ⇒ many unseen ⇒ not done.
+- **A dry tail** — the last *K* questions each added **zero** new variables. Sustained, not a lucky
+  gap.
+
+`completeness ≥ C_min AND dry_tail ≥ K ⇒ SATURATED`, and **the curve is rendered every run**, so DRY
+is a witnessed measurement. A hand-declared set scores completeness 0.50, dry tail 0, and is refused.
+
+    core/saturation.py       # the gate. The operator still calls ENOUGH — but on the curve.
+
+### S3 · CLASSIFY — every variable goes to exactly one of four places
+
+| | what it is | where it lives | who settles it |
+|---|---|---|---|
+| **PHYSICS** | derivable from the parent | `derive()` | S4 |
+| **FREE** | genuinely open — the law fixes the form, not this number | a `FREE` dict | S5 |
+| **LENS** | a declared exaggeration | a `LENS` dict | nobody — it is a lie you can turn off |
+| **HUMAN** | taste | the operator's DECIDE | the operator |
+
+**The one test that places anything: try to write its `measure()` first.** Can't? You are missing
+the substrate — **PROGRAM that first.** *You cannot train inside a physics that does not exist yet.*
+
+**Never merge FREE and LENS.** A FREE dial changes what the world IS and re-derives the subtree; a
+LENS dial changes only the picture. One is a fact you may choose; the other is a lie you may see
+through.
+
+### S4 · DERIVE — the stage that was missing
+
+> **This is RULE 1, and it is a stage rather than a warning because a warning did not hold.** On
+> 2026-08-02 a walker that would not walk was met with a four-variant parameter sweep. It looked
+> like this project's own method — one variable each, run in parallel, controls, a fair comparison.
+> **Every variant was asking the body for a speed it physically cannot walk at.**
+>
+>     this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m
+>     theHuman derives its own comfortable speed:    0.9924 m/s
+>     the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH
+>
+> Froude settles it in one line — `Fr = v²/(gL)`, and equal Fr means a dynamically similar gait.
+> 1.285 m/s is Fr 0.183 on Earth and **Fr 0.254 here**, 39% higher and heading for the walk→run
+> transition. So the velocity term demanded a running-ward gait while the tracking term demanded
+> Earth *walking* envelopes. **The crouch was the only stable point in a contradictory reward.**
+
+**The rules of this stage:**
+
+1. **Read ONLY your parent's `numbers.json`.** That is the entire set of things you may inherit.
+   Not a sibling's, not a grandparent's, not a child's.
+2. **If what you need is not there, it belongs to your parent and your parent should derive it** —
+   being what both children can see is what a parent is FOR. **Never type it.** The failure mode is
+   a literal under a comment claiming inheritance (`"T_star_surface": 5772.0`), and the disguised
+   form is `parent.get("k", 86400.0)`, which reads as defensive programming and serves a typed value
+   the instant the parent stops carrying `k`. **`.get` cannot fail.**
+3. **Show the equations CLOSE.** Trace every variable to a parent number, a measured constant, or a
+   law. A chain with a gap in it is not a derivation with a caveat; it is not a derivation.
+4. **A derived instance now knows its name.** `T = 5772 K → Harvard G → "Yellow" → aYellowStar`, and
+   `measure()` checks the folder name still matches the class the physics produces. **The name is a
+   claim, so it is tested like one.**
+5. **The test that it is real and not a story: it predicts a fact it was never fitted to.** η + mₑ +
+   13.6 eV → **3760 K** against a literature ~3700. `σ/(ρg)` contains no geology and says a
+   low-gravity world carries a taller mountain — shown Earth, it returned Mars.
+
+```bash
+python tools/training_gate.py --target-speed X --stride-s Y   # refuses another planet's numbers
+python story/audit.py --typed                                 # numbers that did not come from the parent
+```
+
+**THE TELL, before you run variants: ask what QUESTION each one answers. If the answer is "which
+number is best", stop.** That is a search where a derivation belongs.
+
+### S5 · TRAIN — and only the genuinely free numbers
+
+Everything S4 could not reach is what S5 is for, and nothing else. **Program the rules, train the
+numbers.** The LLM writes the constraints and never turns the crank — ~20 edits/hour against
+~30,000 evals/sec, six orders of magnitude.
+
+- **Write the domain** (`core/trainables/<f>.py` — `seed`/`mutate`/`measure`, reporting **FACTS**,
+  never opinions), then **the objective** (`docs/objectives/<f>.json` — what GOOD means, in physics
+  not taste, with at least one `maximize` term or you get a satisficer).
+- **Diagnose the TIER before you fix.** A `measure()` reported 47% of land as ice+tundra; the
+  tempting fix was to train the thresholds down. Wrong — the bands were in the right places and a
+  `lat^1.15` curve was freezing the mid-latitudes. A **LAW** bug. Fixing the law took the mismatch
+  0.655 → 0.512; *then* training the residual took it to 0.180. **Do not train away a broken law.**
+- **The exploit is the product.** A degenerate winner is the optimiser auditing your spec at 35 kHz
+  and finding the hole you would have defended in review. **Iterate the objective, never the
+  artifact.**
+- **One rollout is a coin toss.** Score N randomized restarts and keep the **WORST**.
+- **You cannot train CODE** — ~6 min/eval against 1.5 ms.
+
+### S6 · EMIT — the same numbers become matter
+
+`emit()` lives in the **same file** as `derive()` and reads the **same numbers**, so appearance
+cannot drift from physics: there is nothing to cross-check because they are one thing.
+
+- **NO AESTHETIC PASSES.** A colour is a measurement. `theCooling` ends salmon because 3760 K *is*
+  salmon.
+- **`emit()` is READ-ONLY.** It may not mint an object. A "star marker" drawn beside a planet is
+  **a moon**, and no moon was derived. **A light source is told by its light** — the terminator, the
+  lit limb, the shadow already said where the star was.
+- **Local units.** A horizon is 2.3e-35 m and a planet is 6.4e6 m; in metres one of them is
+  float-precision dust. Emit at radius ~1 in your own frame, **grain size included**.
+- **A chapter is a MOVIE, not a picture.** Sample five values of `t`, and check the ends
+  specifically — one frame cannot show motion, and a scene that silently failed to switch is
+  pixel-identical to one that worked.
+
+### S7 · DYAD — a NUMBER against a blind eye's TERM
+
+**A membrane is real only where its inside and its outside agree, and the two must be measured by
+DIFFERENT SYSTEMS.**
+
+- **PHYSICS (you) → a NUMBER.** Deterministic, from the law.
+- **AN EYE → a TERM.** Something LOOKS at the render, **blind to the number**, and says what it sees.
+- **CROSS-REFERENCE → an alignment 0→1.** Above threshold the dyad holds; below it, **the render is
+  wrong — fix the physics, never the tolerance.**
+
+Two *different kinds* of output are what make the sides independent. **Identical outputs are the
+tell of a false dyad, not proof.**
+
+> **A MONAD IS NEVER PROOF**, and it is the most common failure here because it feels like
+> diligence: you render something and look at it yourself · you measure pixels off your own picture
+> and call it convergence · you script the `Engine` from a driver instead of calling the tool.
+
+Three tiers of eye, and the operator chooses: **LM Studio's vision model** (truly independent
+weights) · **a blind spawned instance** (structurally blind — declare the correlated priors) ·
+**Alan** (the terminal, ends any dispute). **Tier 0 — the agent that built the thing judging it — is
+never acceptable.**
+
+```bash
+python ChimeraEngine/gallery.py 8765
+curl -s "http://127.0.0.1:8765/frame?term=aBlueWorld" -o frame.jpg   # then LOOK at it
+```
+
+`/live?blind=1` is the same picture with the *"physics expects…"* caption withheld — **shown the
+answer, an eye confirms instead of observes.**
+
+**Why a dyad at all? Because that is how a MIND verifies itself.** You answer your own questions
+constantly, which looks impossible under *"you cannot measure a system with itself"* — until you
+notice your head was never one system. A monad cannot check itself; a dyad can. The method is
+cognition externalized, where the agreement cannot be faked.
+
+### S8 · RECOMPOSE — the parent is proven BY its children
+
+`⊢ recompose({V}) ⊨ X`, else back to S1. A parent is **made of** its children: `layout(nums)`
+returns `{child: (centre, scale)}` in your frame, each child is grown, emitted in **its own** local
+units, and placed. The parent supplies only **where** and **how big**; the child always supplies its
+own appearance.
+
+Four rules, each learned by breaking it:
+
+- **Convert units at the seam** — or better, move the number to the parent that owns it. Two
+  authorities for one number is how they drift apart.
+- **LOD every placed child by its size** (`matter.grains_for`). Eleven worlds at a flat 900 grains
+  each put 4,801 splats into a tile that allows 4,096, and the cap evicted *the parent's* grains —
+  a hard-edged black rectangle on the 32-px grid.
+- **A SCALE step composes; an ASPECT step must not.** `theRockyPlanet → aRockyPlanet → aBlueWorld →
+  theTerrain` is one body four ways, all at extent = R. Composing those draws the same sphere four
+  times, interpenetrating.
+- **Never duplicate a child**, and **place it even when it is sub-pixel** — that is what makes the
+  tree ONE OBJECT rather than a stack of separate pictures.
+
+---
+
+## 4 · CHECK — in this order, every time
+
+**The order is not a preference.** A witness that reads published numbers cannot see a generator
+that failed to publish; it walks the last good file on disk and reports green. `grow.py` was dying
+while `chain_witness` reported *"42 working, 0 broken."*
+
+```bash
+python story/grow.py                  # 1. the GENERATOR must exit clean. Never pipe it to /dev/null
+python tools/chain_witness.py         # 2. every membrane derives, emits, moves, closes
+python story/folding.py audit         # 3. units: what a law may connect to
+python tools/methodology_gate.py      # 4. form / derives / emits / free / units / one-name / typed / predicts
+python story/timeline.py --write      # 5. containment vs chronology — AND RE-STAMP
+python tools/slider.py                # 6. move a free number — whatever does not move is TYPED
+```
+
+**Step 5 must come after step 1, and it is not a preference either.** `grow.py` and
+`timeline.py --write` are **two writers to one file**: `grow` rebuilds every `numbers.json` from
+`derive()`, which does not know about `timeline_serial`, so **every `grow.py` run silently strips
+the timeline stamps off all 42 membranes.** Nothing complains — the numbers are still correct, the
+witness still passes, the gate still scores 42/42, and the story's chapter order has quietly lost
+its consumer. Measured while consolidating these documents, on the very run that produced them.
+
+**When a membrane fails a column, suspect the COLUMN once before suspecting the membrane.** The
+gate written to catch forty-two membranes made **four of its own bugs in a day**, every one of them
+a check applied outside the shape it was written for. There is no exemption for tools.
+
+**And a systematic pattern is ONE decision, not N edits.** Forty-five flagged pairs across the tree
+were a single choice. Count the pattern before fixing instances.
+
+---
+
+## 5 · WHEN IT IS WRONG — backtrace, do not debug forward
+
+**Forward debugging finds where an error became VISIBLE. Backtracing finds where it ENTERED.** In a
+hierarchy where every child consumes its parent's numbers, those are rarely the same membrane.
+
+A foot went through the floor. Six hypotheses were tested against the foot — segment lengths, pelvis
+height, ankle sign, half-cycle offset, knee amplitude, knee phase — and every one was eliminated
+clean. **The foot was faithfully executing an instruction handed to it from four membranes up:**
+`aBlueWorld` mass → `g = 7.076` → Froude → comfortable speed falls 15% → the model reads the *slow*
+condition from a dataset recorded on Earth.
+
+    WHEN EVERY INPUT VERIFIES AND THE OUTPUT IS STILL WRONG, STOP INTERROGATING THE MEMBRANE.
+    WALK UP. Ask what it was handed, and whether that was true where it now stands.
+
+**And find the zero.** `HIERARCHY × PHYSICS × HUMAN` is a product, not a sum — so when something is
+wrong you do not argue quality, you find which factor is at zero. A terrain with 39 traced variables
+rendered from noise is *physics = 0*. A walker six membranes deep with nothing proven beneath it is
+*hierarchy = 0*.
+
+The full diagnostic set — 24 rules, each with the failure that earned it and the number that proved
+it — is **`Chimera/docs/EXPERIMENTAL_METHOD.md`**. Read it before debugging **or reporting**
+anything.
+
+---
+
+## 6 · THE NIGHT — the day's failures become rules
+
+Every one of those 24 rules was written **by hand, after a failure, by whichever context happened to
+notice.** That is the weakest link in this whole method, and the repo already measured why:
+
+> Of 31 heuristics, the **18 that became mechanism are alive**; the **13 that stayed prose
+> degenerated into the same auto-generated sentence with the nouns swapped.**
+> **You cannot fix that by writing better prose. You can only make it executable, make it a
+> pointer, or delete it.**
+
+So the day ends by converting what it learned into something that runs:
+
+1. **Capture surprises live** — a correction, a dead end, an expectation violated. They are the raw
+   material and they are gone by morning otherwise.
+2. **Distil at most two** into candidate rules. More than two per night is not learning, it is
+   note-taking.
+3. **Make each one executable, a pointer, or delete it.** A rule nothing checks is prose. Rule 1
+   became `tools/training_gate.py` the same night it was earned, which is why it is a rule and not
+   a paragraph.
+
+---
+
+## 7 · THE ARCHITECTURE — one primitive, one motion, one address
+
+**A membrane is a boundary, and a boundary is a SCALE.**
 
     time ⊃ universe ⊃ system ⊃ planet ⊃ ground ⊃ section ⊃ cell ⊃ object ⊃ material ⊃ …
 
-These are not different constructs. **The membrane IS the hierarchy** — each nested one is
-the next scale finer, and crossing one inward is exactly what "finer" means. Being a
-boundary supplies, for free, at every level:
+These are not different constructs — the membrane IS the hierarchy, and crossing one inward is
+exactly what "finer" means. Being a boundary supplies, free, at every level: **a frame** (up is the
+local normal — a global +Z is wrong on a sphere), **a unit** (a coordinate cannot exceed its own
+membrane's extent, so precision stops being a problem rather than being managed), **an identity**
+(the serial attaches here; an address is the path of membranes crossed), **inside/outside**, and
+**LOD** (`depth()` IS the level of detail).
 
-| | |
-|---|---|
-| **a frame** | up is the membrane's LOCAL NORMAL. A global +Z is wrong on a sphere, in a cave, on a hull. |
-| **a unit** | coordinates are LOCAL, so they can never exceed the membrane's own extent |
-| **an identity** | the serial attaches here — an address is the PATH of membranes crossed |
-| **inside / outside** | soil vs air, hull vs void. A thing may SPAN one — roots in, trunk out |
-| **LOD** | `depth()` IS the level of detail. Approach decompresses, retreat coalesces |
+**TIME is the outermost membrane.** Past is inside (settled), future is outside (unformed), the
+present is the boundary surface, and nothing contains it. So *"same seed, same world, forever"* is a
+claim about time, and history is **derivable rather than stored**.
 
-**Precision stops being a problem rather than being managed.** A coordinate inside a
-membrane cannot exceed that membrane's extent, so there is no far-from-origin case at any
-scale, and the large number only appears if someone asks for world coordinates.
-Verified: rock-local `[0.05 0.02 0.01]` → world `[1.5e11, 0.22, 0.01]`.
+**Everything is TWO ENDS AND A DIAL** — a verb, a morph, heritability, LOD, growth, and **the story,
+which is simply the outermost dial.** What a story dial has that the others do not is **GATES**: a
+player is held until something *measurable* is true, then released. The condition reads world state;
+it is never a flag someone sets, for the same reason acceptance conditions are not self-reported.
 
-`core/membranes.py`. Not `core/membrane.py`, which seals a git worktree — same idea (no
-inside/outside means no individual, nothing for selection to act on) applied to space
-rather than to work.
-
-### 7.2 TIME is the outermost membrane
-
-The 4th dimension contains every spatial one. It passes the same tests: **past is inside**
-(settled, determinate), **future is outside** (unformed), **the present is the boundary
-surface**, and its normal is the arrow of time. Nothing contains it, and you cannot cross
-back out — which is what makes it *ultimate*.
-
-Consequences: temporal LOD is the same coalesce/fracture mechanism as spatial; *"same
-seed, same world, forever"* is a claim about time, so history is **derivable rather than
-stored**; and the address is 4D — `T+000123 / U / P-earth / G / S+00384+00896 / C…`.
-
-### 7.3 Everything is TWO ENDS AND A DIAL
-
-| | the two ends | the dial |
-|---|---|---|
-| a verb | at_rest → fully_bent | wind speed |
-| a morph | genome A → genome B | blend |
-| heritability | specimen A → specimen B | what varies between them |
-| LOD | near → far | distance |
-| growth | seed → mature | time |
-| **the story** | first frame → end state | progression |
-
-*You do not describe an axis; you exhibit its two ends* (`Construction/scene.py`, DESIGN §3).
-So **the game is not built with the mechanism — the game IS the mechanism**, and the story
-is simply the outermost dial. A verb whose two ends do not differ is refused at definition
-time: that is one state written twice.
-
-**GATES** are the only thing a story dial has that the others do not. A player is held at a
-checkpoint until something *measurable* is true, then released — open-world included, since
-grinding reputation to upgrade a gun is a 0..1 dial with a gate on it. The condition reads
-world state; it is never a flag someone sets, for the same reason acceptance conditions are
-not self-reported.
-
-### 7.4 The six directions are the PORTS of a cell
-
-Not an analogy. A direction is a face you can attach through; an unfilled port is somewhere
-the world is not finished; **`work_queue()` is therefore the world's to-do list, enumerated
-rather than authored.** Ports are typed by WHAT FLOWS — structural, gravitational, energy,
-fluid, atmospheric, substrate — so composition is checkable: *"structural cannot carry
-energy — nothing flows through that joint."* Three conditions to mate, all physical: same
-kind, ports FACING each other, matched size.
-
-A cell is human-scale (**1.83 m**, a person and their arm span). Earth's surface holds
-**1.52 × 10¹⁴** of them.
-
-### 7.5 The loop, closed
-
-    open stud  →  propose()  →  candidates, RECOMBINED not selected  →  place()  →  filled
-
-`core/bricks.py`. Candidates are **bred** from the library, so what is offered includes
-matter that does not exist yet but could — the reason genomes are stored as distributions.
-Ranked by measurable facts only (heritable first); **taste never enters here**, that is
-`preference_select`. An empty result is a RESULT: `energy`/`fluid`/`atmospheric` studs
-return zero candidates because nothing in the library flows through them, which is the
-vocabulary gap made visible instead of papered over.
-
-**Measured, driving a whole section:** 4,761 cells scanned, 581 occupied (12.2%), **1,147
-bricks in 0.19 s = 6,037 bricks/sec**, 57,350 splats. Same section twice → byte-identical
-geometry; the neighbour → different content. Content derives from coordinates, so a section
-is regenerated rather than stored.
-
-### 7.6 Development order = play order
-
-You build **along the story dial from t = 0**. First frame, first gate, next gate — and at
-each position ask the six directions. The world gets made in the order it is experienced,
-and **nothing gets made that no position asked for.** That is the answer to how one person
-builds a world: you don't. You build a corridor of experience and let the machine fill the
-six directions around each step of it.
+**And a hierarchy says what CONTAINS what; a timeline says what FOLLOWS what.** Those agree down a
+spine and part company the instant the tree branches — `theStar` and `thePlanets` are siblings and
+are not simultaneous. Derive the epoch from published durations (`t_end = t_end(parent) +
+duration_s`), never declare it, and **stamp the story with the same number** — otherwise there are
+two orderings and the human-readable one loses silently.
 
 ---
 
-## Before you train anything: derive the target, then let the gate check it
+## 8 · THE MAP — what to read, and when
 
-`python tools/training_gate.py --target-speed X --stride-s Y`
+| read | for | when |
+|---|---|---|
+| **`docs/THE_LAW.md`** | Rule 1, alone, in one page | first, always |
+| **this file** | the whole method as one sequence | before touching anything |
+| `story/README.md` | how the game is built — chapters, the two authors | before writing a chapter |
+| `story/ONBOARDING.md` | the procedure, the viewer, and the 45-row failure catalogue | before your first membrane |
+| `story/LANGUAGE.md` | the grammar — four verbs, articles, units, the visibility model | when writing `physics.py` |
+| `Chimera/docs/EXPERIMENTAL_METHOD.md` | 24 rules for not fooling yourself | before debugging **or reporting** |
+| `Chimera/docs/THE_GROWTH.md` | what the game IS — the five rulings, the corpus, D0–D4 | to know the standard |
+| `docs/THE_FOLDING.md` | units, folds, bonds, regimes | before calling a chapter done |
+| `docs/FAL_AI.md` | the synthetic capture rig, its costs and its traps | before spending money |
+| `docs/THE_PIPELINE.md` | where a genome comes from and what it becomes — scan → genome → matter → world → render | when working the splat pipeline |
+| `docs/THE_PIECES.md` | **the full inventory — 116 pieces, with what is orphaned** | when you think something is missing |
+| `CLAUDE.md` | paths, hardware traps, conventions | for anything operational |
 
-A walker that would not walk was met, on 2026-08-02, with a four-variant parameter sweep. It looked
-like method — one variable each, run in parallel, fair comparison. **Every variant was asking the
-body for a speed it physically cannot walk at.**
+**A doc marked DESIGN is not a description of something that exists.** Check the banner.
 
-    this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m
-    the body derives its own comfortable speed:    0.9924 m/s
-    the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH
+---
 
-Froude settles it. `Fr = v^2/(gL)`, and equal Fr is a dynamically similar gait: 1.285 m/s is
-Fr 0.183 on Earth and **Fr 0.254 here** — 39% higher, heading toward the walk-run transition. The
-velocity term demanded a running-ward gait while the tracking term demanded Earth *walking*
-envelopes. **The crouch was the only stable point in a contradictory reward.**
+## 9 · THE HONEST BOUNDS — they belong to the method, not against it
 
-The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this world's stride is
-1.327 s and the gait was being clocked 18% too fast.
+- **Completeness of the world is unprovable.** Saturation measures completeness *within the
+  questions you asked*; a lens you never ground leaves a region unsampled that no estimator on your
+  samples can price. That last call is the operator's **ENOUGH**.
+- **Nine pieces are orphaned** — written down, load-bearing, and done by nothing. S1/S2 (questions
+  and saturation), S8's gate, the why-chain and the coin for membranes, the night phase, the six
+  directions, the demographic, live surprise capture, and `work_queue()`. They are listed with their
+  sources in `docs/THE_PIECES.md` §14, and they are the honest backlog of this method.
+- **The genome pipeline is a separate document** because it is a separate concern:
+  `docs/THE_PIPELINE.md` (the spine, stage by stage, with its own honest gaps — the splat-type
+  catalog's anisotropy ceiling, no emissive/fluid/atmospheric genome, unused colour and opacity in
+  composition matching, unsolved relighting), plus `Construction/SPLAT_DNA_WORKFLOW.md` (scan →
+  genome in detail) and `WorldModel/ML_PIPELINE.md` (the generative half).
+- **An LLM is never a terminal**, so no amount of this document makes a claim true. Only the
+  measurement and the human do.
 
-**A sweep cannot find this.** Four variants asking an impossible question rank four failures.
+---
 
-    THE TELL: before running variants, ask what QUESTION each one answers. If the answer is
-    "which number is best", stop -- that is a search where a derivation belongs. Sweeping is
-    for genuinely FREE numbers, and a target Froude-derived from measured gravity is not free.
-
-The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
-sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
-`Chimera/docs/EXPERIMENTAL_METHOD.md`.
+That is the workflow. It maps its own territory, digs only where it must, **derives before it
+trains**, measures its own completeness, stops at two floors, and leaves the human exactly two
+levers: **decide the taste**, and **call when it is deep enough.**

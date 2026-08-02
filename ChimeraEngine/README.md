@@ -1,5 +1,14 @@
 # ChimeraEngine
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > **What this folder is — read this first.** One name used to mean four things, so "what is
 > ChimeraEngine" had no answer. It now means ONE thing: the **MCP workflow engine** — the AI's
 > Unreal, the workflow made into tooling. Three other systems live here as **tenants**, each sealed
@@ -30,7 +39,7 @@ beginning→end), not a diagram. `convergence.py` (physics reading its own pixel
 replaced. The agent is the physics and owns rendering; the human (operator + vision) judges taste.
 
 Read next: **`MCP_ENGINE.md`** (how it works) · **`ONBOARDING.md`** (paste-in for a new agent) ·
-**`THE_TERMS.md`** (the term list). The method it enforces: `../Chimera/docs/THE_WORKFLOW.md`.
+**`THE_TERMS.md`** (the term list). The method it enforces: `../docs/THE_WORKFLOW.md`.
 Run `python -m ChimeraEngine` to print the engine's viewport (current term, gates, next move).
 
 ## The three tenants (each its own membrane)

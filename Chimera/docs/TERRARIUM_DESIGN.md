@@ -1,5 +1,14 @@
 # The Terrarium — a growing organism, sealed in glass
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > **STATUS (2026-07-14): STAGES 0 AND 1 ARE BUILT, TESTED, AND PASSED.**
 > `core/terrarium.py` · `core/evolve.py` · `core/trainables/creature.py` · 16/16 tests.
 > Built entirely inside a membrane; the studio saw nothing until the tests were green.

@@ -1,5 +1,14 @@
 # THE LANGUAGE — the syntax of the hierarchy
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 **In plain words —** The folder tree is not storage, it is a language. A path is a sentence, a
 membrane is a noun, and the four functions are its only verbs. Most of this grammar we invented
 without noticing; this writes it down so it can be checked.

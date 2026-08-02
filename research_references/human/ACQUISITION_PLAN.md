@@ -1,5 +1,14 @@
 # HUMAN ACQUISITION PLAN — every membrane, its physics, its training data
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > Built 2026-07-31 on the operator's ruling: **research must connect the physics to the
 > training data; effort is spent on a subject ONCE and then reused infinitely, morphed onto
 > other things; everything we make is just light and physics.** This file is the complete

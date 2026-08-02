@@ -1,5 +1,9 @@
 # theLoad
 
+<!-- CHIMERA-LAW -->
+> *Derive before you train — [THE LAW](../../../../../../../../../../../../../../../../../docs/THE_LAW.md). Every number below is derived from the parent's or measured; none is chosen.*
+<!-- CHIMERA-LAW -->
+
 > **chapter 34** of the story  ·  **t = 5.75715e+15 s** since theZero  ·  lasts **28800 s**
 >
 > *The serial is the place in TIME, not in the folder tree. A path says what contains

@@ -1,5 +1,14 @@
 # HUMAN DATA — the measured source base
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > Built 2026-07-30 on the operator's steer: "for a human body it's so complicated we're going to
 > need actual sources for all the concepts — I don't like all this guessing." Every body concept
 > derives from one of these, or says why it can't. Scope note (the operator): realistic human

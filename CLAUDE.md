@@ -1,5 +1,14 @@
 # Chimera — Project Manual
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
 >
 > **A product, not a sum** — any factor at zero takes the whole result to zero, and the other two
@@ -65,14 +74,23 @@
    read "recombination" or "membrane" or "heritability" as a figure of speech and you will
    write the wrong code. Look a word up before assuming it means what it means elsewhere.
    `--list` for all of them, `--search X` to find related ones.
-1. **`docs/THE_WORKFLOW.md`** — THE METHOD, end to end: the verb (PROVE), the protocol (one
-   camelCase term at a time, guided setting-first down a hierarchy of membranes), the formula
-   (S0–S7 gates + measured saturation), the LINE (program/train/decide), and the doc map. Read
-   this first; it points to every other doc that matters. **The workflow is now ENFORCED as
-   tooling — the Chimera Engine MCP server (`ChimeraEngine/MCP_ENGINE.md`; agent onboarding
-   `ChimeraEngine/ONBOARDING.md`): `prove` runs the gates and refuses until they pass.**
-2. `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object genome. Status marked `PROVEN` /
-   `DESIGNED` / `FRONTIER` per stage, full file inventory in §7.5.
+1. **`docs/THE_WORKFLOW.md`** — THE METHOD, as ONE sequence (consolidated 2026-08-02 from every
+   workflow document in the repo). `ORIENT → NEXT → PROVE(X) → CHECK → COMMIT`, where `PROVE` is
+   **S0 FRAME · S1 QUESTION · S2 SATURATE · S3 CLASSIFY · S4 DERIVE · S5 TRAIN · S6 EMIT ·
+   S7 DYAD · S8 RECOMPOSE**. **S4 is new and it is why:** the old formula read
+   `MEASURE(TRAIN(PROGRAM(V)))` with no DERIVE in it, and a four-variant parameter sweep went
+   straight through that hole. Read this first; it points to every other doc that matters.
+   **ENFORCED as tooling** — the Chimera Engine MCP server (`ChimeraEngine/MCP_ENGINE.md`; agent
+   onboarding `ChimeraEngine/ONBOARDING.md`): `prove` runs the gates and refuses until they pass.
+1b. **`docs/THE_PIECES.md`** — the INVENTORY the consolidation was built from: **124 pieces**, each
+   with its source and its status, and **§14 names the nine that are written down, load-bearing,
+   and done by nothing** (S1/S2 saturation, S8's gate, the why-chain and the coin for membranes,
+   the night phase, the six directions, the demographic, live surprise capture, `work_queue()`).
+   Read it when you think something is missing — it is the proof the consolidation lost nothing,
+   and it is the honest backlog of the method. Superseded docs are in `docs/archive/`.
+2. `docs/THE_PIPELINE.md` — where a genome comes from and what it becomes (the splat spine, stage
+   by stage, with its own honest gaps). Then `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object
+   genome, status marked `PROVEN` / `DESIGNED` / `FRONTIER` per stage, file inventory in §7.5.
 3. `WorldModel/ML_PIPELINE.md` — the generative half. SplatVAE, three training paths,
    hierarchical LOD, infinite world, cellular rules, physics universe.
 4. `Chimera/docs/EXPERIMENTAL_METHOD.md` — **sixteen** rules for diagnosing a live system without

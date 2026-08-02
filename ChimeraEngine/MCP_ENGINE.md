@@ -1,5 +1,14 @@
 # The Chimera Engine (MCP) — the workflow as forcing tooling
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > **The AI's Unreal.** Built 2026-07-25. The Chimera *development* engine: an environment the agent
 > works THROUGH, whose structure IS the PROVE workflow. Where Unreal keeps a human in the
 > game-making workflow (the editor only affords valid moves), this keeps the AI in the method.
@@ -137,6 +146,6 @@ as the gate.)
 
 ## The method it enforces
 
-`Chimera/docs/THE_WORKFLOW.md` (the map) · `THE_FORMULA.md` (S0–S7) · `THE_STORY.md` (the seed) ·
+`docs/THE_WORKFLOW.md` (the one sequence) · `THE_FORMULA.md` (S0–S7) · `THE_STORY.md` (the seed) ·
 `THE_LINE.md` (program/train/decide). The engine is those documents made un-skippable.
 Agent onboarding: `ChimeraEngine/ONBOARDING.md`.

@@ -1,5 +1,14 @@
 # aPlanet — one (m, a, e) triple becomes a world with gravity and a climate
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 **Claim:** A single planet triple handed down from aSolarSystem becomes a world with
 a surface gravity, an atmosphere it can or cannot keep, oceans or ice, and a
 temperature gradient from core to surface — and the habitable band is not placed, it

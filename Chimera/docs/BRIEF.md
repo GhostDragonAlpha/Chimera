@@ -1,5 +1,14 @@
 # DYAD BRIEF
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 Two-agent conversation system active.
 ### RESULT 2026-07-19 10:19:10 UTC
 **Outcome:** Ran fractal_zoom_sweep.py (tests/ version). No WinError 2 occurred — the test runs cleanly through all zoom levels. However, performance fails at close range (5m/1m): 540ms render time vs 16.6ms budget. At 50km, LOD reduces to 1 splat visible (over-aggressive merge). No resolve_assets() function exists in bake.py — the dyad's function reference was hallucinated. The actual code has no relative/temp path issues; Path(__file__).resolve() is already used throughout.

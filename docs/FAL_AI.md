@@ -1,5 +1,14 @@
 # FAL.AI — the synthetic capture rig
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > **What it is for, in one line:** this project sources APPEARANCE from measurement and cannot
 > measure things that do not exist. fal.ai runs a video model that will texture our own geometry,
 > which makes it a **scan rig for objects nobody can photograph** — this world's rock, a suit

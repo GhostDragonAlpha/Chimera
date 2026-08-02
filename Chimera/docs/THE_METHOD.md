@@ -1,5 +1,14 @@
 # THE METHOD — how anything gets proven
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 > The complete inquiry method, solidified 2026-07-24 from the conversation that built it.
 > Companion to `docs/THE_LINE.md` (PROGRAM/TRAIN/HUMAN) and `docs/OBJECTIVE_DESIGN.md`.
 > This is the one that governs *requests*: what to ask for, and what "done" means.

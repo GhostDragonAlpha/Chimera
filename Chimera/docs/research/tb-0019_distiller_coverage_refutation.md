@@ -1,5 +1,14 @@
 # tb-0019 — Pain verdict: distiller token-coverage false-suppression
 
+<!-- CHIMERA-LAW -->
+> **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
+> not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
+> equations close. If you are choosing a number, you broke the chain and substituted taste for a
+> law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
+> **[docs/THE_LAW.md](../../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
+> · enforced by `python tools/training_gate.py`
+<!-- CHIMERA-LAW -->
+
 **Pain** (`phase_da55128aec6d109a:P1`, aged 6d): *"Distiller token-coverage will
 false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large —
 watch for repeat failures that never re-stage."*
