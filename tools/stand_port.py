@@ -64,15 +64,28 @@ def derive_stand_port() -> dict:
                            "time_to_fall_s", "weight_N", "g", "mass_kg", "hip_separation_m"))
     H = read("theHuman", ("leg_length_m", "thigh_frac", "shank_frac", "height_m", "ankle_drop_frac"))
     pelvis = float(S["hip_to_ankle_m"]) + float(S["ankle_height_m"])
+    # THE MASS COMES FROM THE BODY, NOT FROM THE LEDGER -- found by tools/port_chain.py.
+    # theHuman publishes mass_kg = 94.504 (668.7 N) because it wears a 9.9 kg suit and 1.9 kg of
+    # consumables. `myobody.xml` wears neither: it is 82.041 kg (580.5 N). This port was deriving
+    # a target weight 15.2% heavier than the body it is meant to stand up -- ONE QUANTITY, TWO
+    # LANDMARKS (rule 19), dimensionally identical and invisible to fold, bond and regime.
+    # theHuman keeps the SUITED mass, which is correct for a person on this world. The port takes
+    # the mass of the thing actually in the simulator, because that is what has to be held up.
+    import mujoco as _mj
+    _m, _g = load_body(MYOBODY, _mj)
+    sim_mass = float(sum(_m.body_mass))
     port = {
         "IN  g_m_s2": float(S["g"]),
-        "IN  mass_kg": float(S["mass_kg"]),
+
         "IN  height_m": float(H["height_m"]),
         "OUT pelvis_target_m": pelvis,
         "OUT com_target_m": float(S["com_height_m"]),
         "OUT bos_half_lat_m": float(S["together_half_width_m"]),
         "OUT bos_half_fore_m": float(S["together_half_length_m"]),
-        "OUT weight_N": float(S["weight_N"]),
+        "OUT weight_N": sim_mass * float(S["g"]),        # the SIMULATED body's weight
+        "IN  sim_mass_kg": sim_mass,
+        "CHK ledger_mass_kg": float(S["mass_kg"]),
+        "CHK suit_gap_pct": 100.0 * (float(S["mass_kg"]) / sim_mass - 1.0),
         "OUT fall_rate_rad_s": float(S["fall_rate_rad_s"]),
         "OUT time_to_fall_s": float(S["time_to_fall_s"]),
         "CHK leg_length_m": float(H["leg_length_m"]),

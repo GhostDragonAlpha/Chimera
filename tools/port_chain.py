@@ -133,18 +133,29 @@ def prove_chain(settle=0.0):
             have = ground_force(m, d, mujoco)         # measured contact force
             src = "measured contact"
         else:
-            # THE FORCE ACTUALLY IN THE JOINT, read from MuJoCo rather than propagated. The first
-            # version carried the ground force upward and subtracted segment weights, so every
-            # branch reported the SAME number -- a chain of arithmetic wearing five measurements'
-            # clothes. cfrc_int is the interaction force between a body and its parent: the
-            # truth in the branch, measured at the branch.
-            bid = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, body)
-            have = -float(d.cfrc_int[bid][5])
-            src = "cfrc_int (measured at the joint)"
+            # AN INTERNAL BRANCH CANNOT BE INDEPENDENTLY CHECKED FROM KINEMATICS, and finding
+            # that out is worth more than the four numbers it removes.
+            #
+            # Split the body at a joint into subtree S and complement C. Newton gives
+            #     F_joint + F_ext(S) = m_S a_S        and       -F_joint + F_ext(C) = m_C a_C
+            # Add them and the whole-body law comes back. THEY ARE ONE EQUATION, NOT TWO -- so
+            # computing the joint force "from below" and "from above" is a definition restating
+            # itself. There is no second messenger, and a monad is never proof.
+            #
+            # GROUND -> FOOT is different in kind: the contact force is produced by the CONTACT
+            # SOLVER and the acceleration by the integrator. Two mechanisms, one number, and they
+            # must agree. That is why row 1 is evidence and these are not -- a deeper reason than
+            # the cfrc_int sign error it replaced, and one no amount of fixing that would reach.
+            #
+            # (Measured, for the record: cfrc_int[5] reproduced the hand-computed subtree force on
+            # NO joint at rest -- toes 2.1 vs -8.0 N, tibia 37.5 vs 21.0, pelvis 271.4 vs -50.0.)
+            have = float("nan")
+            src = "NOT INDEPENDENTLY CHECKABLE (see above)"
         rows.append(dict(
             branch=f"{lo_name} -> {hi_name}", mass=mass, com_z=com_z, acc_z=acc_z,
             need=need, have=have, src=src,
-            resid_pct=100.0 * (have - need) / max(abs(need), 1e-9),
+            resid_pct=(float("nan") if have != have
+                       else 100.0 * (have - need) / max(abs(need), 1e-9)),
             mass_below_next=0.0))
     # the mass each branch drops off before the next one (the segment between the two joints)
     for i in range(len(rows) - 1):
@@ -164,8 +175,9 @@ def draw(rows, g, total, path, ledger_mass):
     ys = [0.0] + [r["com_z"] for r in rows]
     names = ["GROUND"] + [r["branch"].split("->")[1].strip() for r in rows]
     for i, r in enumerate(rows):
-        ok = abs(r["resid_pct"]) <= 5.0
-        col = "#1a7f37" if ok else "#c0392b"
+        nan = r["resid_pct"] != r["resid_pct"]
+        ok = (not nan) and abs(r["resid_pct"]) <= 5.0
+        col = "#999999" if nan else ("#1a7f37" if ok else "#c0392b")
         ax.annotate("", xy=(0, ys[i + 1]), xytext=(0, ys[i]),
                     arrowprops=dict(arrowstyle="-|>", lw=1.6 if ok else 1.6,
                                     color=col, ls="-" if ok else (0, (3, 3)),
@@ -217,7 +229,11 @@ def main() -> int:
           f"{'resid':>9}   verdict")
     first_open = None
     for r in rows:
-        ok = abs(r["resid_pct"]) <= 5.0
+        ok = r["resid_pct"] == r["resid_pct"] and abs(r["resid_pct"]) <= 5.0
+        if r["resid_pct"] != r["resid_pct"]:
+            print(f"{r['branch']:<18}{r['mass']:>10.2f}kg{r['acc_z']:>12.2f}{r['need']:>10.1f}N"
+                  f"{'--':>10}  {'--':>7}   NOT CHECKABLE (one equation, not two)")
+            continue
         if not ok and first_open is None:
             first_open = r["branch"]
         print(f"{r['branch']:<18}{r['mass']:>10.2f}kg{r['acc_z']:>12.2f}{r['need']:>10.1f}N"
