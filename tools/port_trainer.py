@@ -199,7 +199,19 @@ def _evaluate_one(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, seed=0,
             drift = float(np.abs(q - q0).max())
             out = max(0.0, max(max(lim[a][0] - float(d.qpos[a]),
                                    float(d.qpos[a]) - lim[a][1]) for a in qadr))
-            hold = float(np.exp(-(drift / 0.15) ** 2))       # 0.15 rad ~ 8.6 deg of give
+            # THE HOLD BAND, MEASURED AGAINST A HUMAN AT LAST. This was 0.15 rad (8.6 deg),
+            # derived from a round number in radians and NEVER checked -- and it was the pass/fail
+            # bar on every port in this session.
+            #
+            #   quiet standing body-angle range, healthy adults:  0.025 - 0.041 rad (1.4 - 2.3 deg)
+            #   my band:                                          0.150 rad (8.6 deg)
+            #   -> 3.7x to 6x TOO LOOSE
+            #
+            # A port could have passed at 8 deg while swaying four times what a standing human
+            # does. Set to the upper edge of the measured human range, so the bar is what a body
+            # actually achieves rather than what looked reasonable in radians.
+            #   Sway range: Loram & Lakie / quiet-stance literature, 0.025-0.041 rad across subjects.
+            hold = float(np.exp(-(drift / 0.041) ** 2))
             inside = float(np.exp(-(out / 0.05) ** 2))
             quiet = 1.0 - 0.1 * float(np.mean(ctrl[mus]))
             tot += hold * inside * quiet
@@ -243,7 +255,8 @@ def draw(port, turn, tr, pics, hist, path, nmus):
         ax.set_title(f"{port} port — turn {turn}, {len(pics)} frames under load", fontsize=10)
     ax = fig.add_subplot(gs[1, 0])
     ax.plot(tr["t"], tr["dq"], color="#c0392b", lw=1.9)
-    ax.axhline(8.6, color="#1a7f37", ls="--", lw=1.4, label="the hold band (8.6 deg)")
+    ax.axhline(2.3, color="#1a7f37", ls="--", lw=1.4,
+               label="the hold band, 2.3 deg = measured human quiet-stance sway")
     ax.set_xlabel("s"); ax.set_ylabel("deg"); ax.legend(fontsize=7)
     ax.set_title("THE PORT: how far the joint drifted from where the load found it", fontsize=9)
     ax = fig.add_subplot(gs[1, 1])
@@ -256,7 +269,7 @@ def draw(port, turn, tr, pics, hist, path, nmus):
     ax.set_xlabel("turn"); ax.set_ylabel("best score"); ax.set_title("what moved", fontsize=9)
     worst = max(tr["dq"]) if tr["dq"] else 0.0
     fig.suptitle(f"PORT {port.upper()} — {nmus} muscles found by moment arm   "
-                 f"worst drift {worst:.1f} deg   PROVEN = < 8.6 deg for 5 s, never past a stop",
+                 f"worst drift {worst:.1f} deg   PROVEN = < 2.3 deg for 5 s, never past a stop",
                  fontsize=11)
     fig.savefig(path, dpi=100, bbox_inches="tight"); plt.close(fig)
 
@@ -314,7 +327,7 @@ def main() -> int:
         drift = max(tr["dq"]) if tr["dq"] else 999.0
         past = max(tr["out"]) if tr["out"] else 999.0
         hist.append((turn, float(sc[o[0]])))
-        ok = drift < 8.6 and past <= 0.01
+        ok = drift < 2.3 and past <= 0.01
         print(f"{turn:>5}{sc[o[0]]:>10.3f}{sc.mean():>10.3f}{drift:>12.1f}deg{past:>9.1f}deg"
               f"{robust:>8.2f}  {'PROVEN' if ok else 'not yet'}")
         draw(port, turn, tr, pics, hist, OUTDIR / f"port_{port}_turn{turn:02d}.png", len(mus))
