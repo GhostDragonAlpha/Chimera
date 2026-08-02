@@ -400,8 +400,9 @@ the alive bonus instead.
 
 > **THE CROUCH WAS THE ONLY STABLE POINT IN A CONTRADICTORY REWARD.**
 
-The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this world's stride is
-1.327 s and the gait was being run **18% too fast**.
+The stride clock was wrong too, by **3.9%** -- not the 18% first published. `theHuman` derives
+**1.1730 s** for itself; the 1.3267 s once quoted here was a Froude-transported Earth number,
+which is the move this very rule forbids.
 
 **No sweep can find that.** Four variants asking an impossible question rank four failures, and the
 winner is whichever fails most gracefully — which then gets believed.

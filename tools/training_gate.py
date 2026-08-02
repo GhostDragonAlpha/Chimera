@@ -32,8 +32,11 @@ WHAT THIS GATE CHECKS, before a single GPU-hour is spent:
 
   1. EVERY TARGET SPEED IS FROUDE-CONSISTENT with the world the body stands in. A speed measured
      on Earth must be scaled by sqrt(g_here/g_earth) or it is asking for a different gait.
-  2. EVERY STRIDE TIME scales as sqrt(L/g). A pendulum swings slower where gravity is weaker;
-     an Earth stride clock runs the gait ~18% too fast here.
+  2. EVERY STRIDE TIME AGREES WITH THE ONE THE BODY DERIVES FOR ITSELF (2 x its published
+     step_time_s). NOT with a Froude transport of an Earth stride -- that is second-best, and
+     for one day this gate demanded it and refused the correct answer. See the note at the
+     stride check for the full account; it is the same defect this file exists to catch,
+     committed by this file.
   3. THE TARGET AGREES WITH WHAT THE BODY PUBLISHES. theHuman derives comfortable_speed_ms for
      itself. A trainer that ignores it is training against a body other than the one it has.
 
@@ -93,14 +96,35 @@ def check(target_speed=None, stride_s=None, verbose=True):
             print(f"  target {target_speed:.4f} m/s -> Fr = {fr_here:.4f} here, "
                   f"{fr_earth:.4f} if this were Earth")
 
-    if stride_s is not None and own > 0:
-        # T ~ sqrt(L/g): the same stride takes LONGER where gravity is weaker
-        want_T = stride_s / scale
-        if abs(stride_s - want_T) / want_T > TOL:
+    if stride_s is not None:
+        # WHAT THIS USED TO DO, AND WHY IT WAS THE SAME BUG IT HUNTS. It computed
+        #     want_T = stride_s / scale        and then compared stride_s against want_T
+        # -- the input against a transform of ITSELF. That comparison can only pass when
+        # scale == 1, which is to say ON EARTH: the gate written to refuse Earth numbers was
+        # unpassable on every world except Earth, and it REFUSED theHuman's own correctly
+        # derived 1.1730 s while demanding a 1.3809 s that no membrane publishes.
+        #
+        # The root assumption was that whatever it was handed must be an Earth measurement in
+        # need of transport. That is the instrument keeping its own private copy of the body --
+        # rule 20 -- and it drifts the instant the body derives something better. A transported
+        # Earth number is second-best by construction: the membrane already did the derivation,
+        # from a compound pendulum with a measured swing drive, and the honest check is against
+        # what it PUBLISHED.
+        if "step_time_s" not in b:
             fails.append(
-                f"STRIDE TIME {stride_s:.4f} s is an Earth clock. A pendulum of this leg at "
-                f"{g:.3f} m/s2 swings in {want_T:.4f} s -- the gait is being run "
-                f"{(want_T/stride_s - 1)*100:.0f}% too fast.")
+                "STRIDE TIME cannot be checked: theHuman publishes no step_time_s, so there is "
+                "nothing to compare against. A fallback here would be this gate inventing the "
+                "cadence it exists to police. Fix the membrane, not the gate.")
+        else:
+            own_T = 2.0 * float(b["step_time_s"])   # the membrane's own rule: a stride is two steps
+            if abs(stride_s - own_T) / own_T > TOL:
+                fails.append(
+                    f"STRIDE TIME {stride_s:.4f} s disagrees with the {own_T:.4f} s this body "
+                    f"derives for itself (2 x step_time_s, from the leg as a compound pendulum "
+                    f"at {g:.3f} m/s2). It is being clocked "
+                    f"{(own_T/stride_s - 1)*100:+.0f}% wrong. If {stride_s:.4f} came from an "
+                    f"Earth dataset, Froude transport gives {stride_s/scale:.4f} s -- which is "
+                    f"still second-best, because the membrane already derived the real one.")
 
     print()
     if fails:

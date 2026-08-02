@@ -124,6 +124,198 @@ RAMP_LEN = 16
 # Forward keeps a plurality (0.34) so the solid skill still gets a third of the gradient
 # signal; the three failing directions get 0.22 each -- more rollouts, more advantage signal.
 CMDS = ('forward', 'backward', 'left', 'right')
+
+# ══════════════════════════════════════════════════════════════════════════════════════════════
+# THE DERIVATION HEAD — read the world before you look at a single weight
+#
+# This block exists because on 2026-08-02 this trainer was asking a body in 7.076 m/s^2 to walk at
+# 1.285 m/s, a speed measured on Earth, and a four-variant parameter sweep was run to find out why
+# it would not. Every variant asked the same impossible question. RULE 1, and it is a STAGE now
+# rather than a warning: DERIVE IT BEFORE YOU TRAIN IT (docs/THE_LAW.md, docs/THE_WORKFLOW.md S4).
+#
+# The order below is not decorative. Gravity is read from the parent membrane FIRST, the targets
+# are derived from it SECOND, and only what is left over is allowed anywhere near an optimiser.
+# ══════════════════════════════════════════════════════════════════════════════════════════════
+
+G_EARTH = 9.80665           # CODATA standard gravity. Not this world's -- kept ONLY as the label
+                            # on the mocap datasets, which were recorded in it.
+LEDGER_MEMBRANE = 'theHuman'
+LEDGER_REQUIRED = ('g', 'leg_length_m', 'comfortable_speed_ms', 'step_time_s')
+
+
+class DerivationFailed(RuntimeError):
+    """Raised when the world will not say what it is.
+
+    THERE IS NO FALLBACK BRANCH IN THIS FILE, and its absence is the feature. A default is an
+    assumption wearing a hat: the moment the ledger stops carrying `g`, a fallback serves 9.80665
+    silently, forever, and every number downstream is an Earth number in a 0.722 g world with a
+    comment claiming otherwise. Silence is better than a lie; an exception is better than silence.
+    """
+
+
+def read_ledger() -> dict:
+    """Reach UP into the parent membrane and read what this world published about itself.
+
+    `theHuman`'s `numbers.json` is written by `story/grow.py` from `derive(parent, free)`, and its
+    `g` arrives down an unbroken chain from `aBlueWorld`'s mass -- which is itself derived, all the
+    way back to the constants that fence `theZero`. We do not compute it here and we do not choose
+    it. We read it. A membrane may read only its parent, and for this trainer the body IS the parent.
+    """
+    hits = [p for p in (ROOT / 'story').rglob('numbers.json')
+            if p.parent.name == LEDGER_MEMBRANE]
+    if not hits:
+        raise DerivationFailed(
+            f'Derivation failed: no {LEDGER_MEMBRANE}/numbers.json anywhere under story/. '
+            f'The ledger does not exist, so this world has not said what its gravity is. '
+            f'Run `python story/grow.py` and try again. Refusing to assume Earth.')
+    led = json.loads(hits[0].read_text(encoding='utf8'))
+    missing = [k for k in LEDGER_REQUIRED if k not in led]
+    if missing:
+        raise DerivationFailed(
+            f'Derivation failed: {LEDGER_MEMBRANE} publishes no {missing}. '
+            f'These are not optional inputs with sensible defaults -- they are the world. '
+            f'The number belongs to the membrane; if it is absent the membrane must derive it. '
+            f'Refusing to assume Earth.')
+    return led
+
+
+LEDGER = read_ledger()
+GRAVITY = float(LEDGER['g'])                     # m/s^2, THIS world, read and never guessed
+LEG_L = float(LEDGER['leg_length_m'])            # m, anatomy -- a fact about the body, not the world
+
+# THE TWO INVARIANTS, both taken from the body's own published gait rather than invented.
+#
+# Fr_WALK -- the dimensionless Froude number a human chooses to walk at. `Fr = v^2/(gL)`, and equal
+# Fr means a DYNAMICALLY SIMILAR gait, so this number is a property of walking itself and crosses
+# worlds unchanged. It is what makes one law walk on every planet.
+#
+# K_PENDULUM -- the leg's swing constant. A leg is a compound pendulum, `T = 2*pi*sqrt(I/(m*g*d))`,
+# so at fixed anatomy `T * sqrt(g)` is constant. NOTE THE SIGN, because the brief got it backwards
+# and a sign error here is the whole bug wearing different clothes: a period goes as g^(-1/2), so
+# WEAKER GRAVITY MAKES THE STRIDE LONGER, not shorter. Speed falls and stride time RISES.
+FR_WALK = float(LEDGER['comfortable_speed_ms']) ** 2 / (GRAVITY * LEG_L)
+STRIDE_S_LEDGER = 2.0 * float(LEDGER['step_time_s'])   # the membrane's own rule: a stride is 2 steps
+K_PENDULUM = STRIDE_S_LEDGER * GRAVITY ** 0.5
+
+
+def prove_kinematics(g: float) -> tuple[float, float]:
+    """THE EXECUTABLE LAW. Gravity in; the gait's two locked numbers out.
+
+        v(g)  = sqrt(Fr_walk * g * L)      Froude   -- speed  goes as  g^(+1/2)
+        T(g)  = K_pendulum / sqrt(g)       pendulum -- stride goes as  g^(-1/2)
+
+    This is a function and not a paragraph on purpose. Of 31 heuristics in this repo, the 18 that
+    became mechanism are alive and the 13 that stayed prose degenerated into the same sentence with
+    the nouns swapped. A law you can call cannot rot; a law you can only read already has.
+
+    IT PREDICTS WHAT IT WAS NEVER FITTED TO, which is the only test that separates a derivation
+    from a story: evaluated at Earth's gravity it returns a walk it has never seen, and the CMU
+    mocap dataset is standing there to be compared against (see `check_kinematics`).
+    """
+    if not (g > 0.0):
+        raise DerivationFailed(f'Derivation failed: gravity must be positive, got {g!r}.')
+    return (FR_WALK * g * LEG_L) ** 0.5, K_PENDULUM / g ** 0.5
+
+
+# The four commands. FORWARD is the body's own derivation, read from the ledger. The other three
+# have NO derivation in the membrane -- only Earth measurements -- so they are transported by the
+# same two laws, and that asymmetry is a DEBT rather than a design: `theHuman` should derive a
+# backward and a sidestep gait the way it derives the forward one. Declared here so it is visible.
+_FROUDE = (GRAVITY / G_EARTH) ** 0.5
+
+
+def derive_targets(ref_fwd: dict, ref_dir: dict) -> tuple[list, list, dict]:
+    """Every per-command speed and stride time, on this world. Nothing here is chosen."""
+    v_fwd, t_fwd = prove_kinematics(GRAVITY)
+    speeds, strides, earth = [v_fwd], [t_fwd], {}
+    earth['forward'] = (float(ref_fwd['speed_m_s']), float(ref_fwd['stride_time_s']))
+    for c in CMDS[1:]:
+        v_e = float(ref_dir[c]['speed_m_s'])
+        t_e = float(ref_dir[c]['stride_m']) / v_e
+        earth[c] = (v_e, t_e)
+        speeds.append(v_e * _FROUDE)        # v  ~ sqrt(g)
+        strides.append(t_e / _FROUDE)       # T  ~ 1/sqrt(g)
+    return speeds, strides, earth
+
+
+def check_kinematics() -> dict:
+    """Two independent checks on the law, run before the console block is printed.
+
+    CONSISTENCY -- at the ledger's own gravity the law must return the ledger's own numbers. This
+    one cannot fail by construction (the invariants were read from those numbers), so it proves
+    only that nothing has been transcribed wrong. It is the cheap half.
+
+    PREDICTION -- at EARTH's gravity the law returns a walk it was never shown, and the CMU dataset
+    is right there. This is the half that can actually fail, and IT DOES: see the self-critique.
+    A disagreement that is published is a finding; one that is quietly reconciled is a fudge.
+    """
+    v_here, t_here = prove_kinematics(GRAVITY)
+    v_earth, t_earth = prove_kinematics(G_EARTH)
+    ref = json.loads(REF_FWD.read_text())
+    return {
+        'consistency': (v_here - float(LEDGER['comfortable_speed_ms']),
+                        t_here - STRIDE_S_LEDGER),
+        'prediction': (v_earth, t_earth, float(ref['speed_m_s']), float(ref['stride_time_s'])),
+    }
+
+
+def confirm_targets(speeds, strides, earth, assume_yes: bool = False) -> None:
+    """Print what was read, what was derived, and what it replaces -- then ASK THE HUMAN.
+
+    The human is one of the two terminals and owns taste, so a derivation this load-bearing is
+    shown before a single GPU-hour is spent rather than after. `--yes` exists for unattended runs
+    and it is the operator's choice to pass it, not this module's choice to skip the question.
+    """
+    print()
+    print('=' * 94)
+    print('  THE DERIVATION -- READ FROM THE PARENT MEMBRANE, NOT ASSUMED')
+    print('=' * 94)
+    print(f'  ledger        {LEDGER_MEMBRANE}/numbers.json   (written by story/grow.py)')
+    print(f'  GRAVITY       {GRAVITY:.6f} m/s^2      ({GRAVITY / G_EARTH:.4f} of Earth,'
+          f' derived from aBlueWorld mass)')
+    print(f'  leg length    {LEG_L:.6f} m           (anatomy, ANSUR II proportions)')
+    print(f'  Fr_walk       {FR_WALK:.6f}             dimensionless -- the gait invariant')
+    print(f'  K_pendulum    {K_PENDULUM:.6f}             the leg\'s swing constant')
+    print('-' * 94)
+    print(f'  {"command":<10}{"speed NOW":>12}{"was (Earth)":>14}{"":4}'
+          f'{"stride NOW":>12}{"was (Earth)":>14}   source')
+    for i, c in enumerate(CMDS):
+        ve, te = earth[c]
+        src = 'DERIVED by theHuman' if i == 0 else 'Earth, Froude-transported (debt)'
+        print(f'  {c:<10}{speeds[i]:>10.4f} m/s{ve:>12.4f}    {strides[i]:>10.4f} s'
+              f'{te:>12.4f}     {src}')
+    print('-' * 94)
+    chk = check_kinematics()
+    dv, dt = chk['consistency']
+    ve, te, mv, mt = chk['prediction']
+    print(f'  CONSISTENCY   at g={GRAVITY:.4f} the law reproduces the ledger to '
+          f'{abs(dv):.2e} m/s and {abs(dt):.2e} s')
+    print(f'  PREDICTION    at g={G_EARTH:.5f} (never fitted) the law says '
+          f'{ve:.4f} m/s / {te:.4f} s')
+    print(f'                the CMU mocap dataset says      '
+          f'{mv:.4f} m/s / {mt:.4f} s'
+          f'   -> {100 * (ve / mv - 1):+.1f}% / {100 * (te / mt - 1):+.1f}%')
+    print(f'                THIS GAP IS PUBLISHED, NOT RECONCILED. It says theHuman\'s swing drive')
+    print(f'                is ~10% fast against the only Earth walk we can check it on.')
+    print('=' * 94)
+    print('  These two columns are IMMUTABLE. The optimiser may move joint stiffness, friction and')
+    print('  actuator response. It may never move the speed or the stride: those are the world.')
+    print('=' * 94)
+    if assume_yes:
+        print('  --yes given: proceeding without asking.\n')
+        return
+    try:
+        ans = input('  Do these match the law as written in the repo?  [y/N] ').strip().lower()
+    except EOFError:
+        raise DerivationFailed(
+            'Derivation failed: no operator present to confirm the derivation, and no --yes given. '
+            'Refusing to spend GPU hours on targets nobody has looked at.')
+    if ans not in ('y', 'yes'):
+        raise DerivationFailed(
+            'Stopped at the human terminal: the operator did not confirm the derived targets. '
+            'The human is the arbiter -- if these numbers contradict the law, the physics is '
+            'wrong and the fix is upstream in the membrane, not in this file.')
+    print()
 CMD_DIM = len(CMDS)
 P_CMD = (0.34, 0.22, 0.22, 0.22)
 
@@ -246,14 +438,22 @@ def main() -> int:
 
     ref_fwd = json.loads(REF_FWD.read_text())
     ref_dir = json.loads(REF_DIR.read_text())
-    # PER-COMMAND targets, all measured: speeds straight from the two reference files;
-    # stride time for the phase clock (forward carries it, the rest are stride_m / speed_m_s).
-    speed_m_s = torch.tensor([float(ref_fwd['speed_m_s'])] +
-                             [float(ref_dir[c]['speed_m_s']) for c in CMDS[1:]],
-                             dtype=torch.float32, device=dev)
-    stride_s = torch.tensor([float(ref_fwd['stride_time_s'])] +
-                            [float(ref_dir[c]['stride_m']) / float(ref_dir[c]['speed_m_s'])
-                             for c in CMDS[1:]], dtype=torch.float32, device=dev)
+
+    # ── S4 DERIVE, before anything else in this routine ───────────────────────────────────────
+    # These four lines used to read the two mocap files straight through: `speed_m_s` was
+    # 1.285 m/s and `stride_s` was 1.127 s, both recorded on Earth, and both handed to a body
+    # standing in 7.076 m/s^2. That is the defect Rule 1 exists for, and no reward-shaping
+    # variant can reach past it -- the crouch was the only stable point in a contradictory
+    # reward. The references are still READ, but only as the Earth column of the comparison.
+    _speeds, _strides, _earth = derive_targets(ref_fwd, ref_dir)
+    confirm_targets(_speeds, _strides, _earth, assume_yes=('--yes' in sys.argv))
+
+    # IMMUTABLE. Not initial values, not priors, not something a scheduler anneals -- these are
+    # what this world permits, and the only honest way to change them is to change the world.
+    speed_m_s = torch.tensor(_speeds, dtype=torch.float32, device=dev)
+    stride_s = torch.tensor(_strides, dtype=torch.float32, device=dev)
+    speed_m_s.requires_grad_(False)
+    stride_s.requires_grad_(False)
     ref_all = build_ref_table(ref_fwd, ref_dir, dev, torch)
     p_cmd = torch.tensor(P_CMD, dtype=torch.float32, device=dev)
 

@@ -32,8 +32,10 @@ the alive bonus instead.
 
 > ### THE CROUCH WAS THE ONLY STABLE POINT IN A CONTRADICTORY REWARD.
 
-The stride clock had the same disease: a pendulum goes as `sqrt(L/g)`, so this world's stride is
-1.327 s and the gait was being run **18% too fast**.
+The stride clock was wrong too, but by **3.9%, not the 18%** first published here: `theHuman`
+derives its own stride of **1.1730 s** from the leg as a compound pendulum, and the 1.3267 s once
+quoted was Earth's 1.127 s Froude-transported -- the forbidden move, made by the gate meant to
+forbid it. Read the body's published cadence, never a transported one.
 
 **No sweep can find that.** Four variants asking an impossible question rank four failures, and the
 winner is whichever fails most gracefully — which then gets believed and reported as progress.
@@ -67,10 +69,10 @@ trainer as it stood on 2026-08-02, it refuses and names both defects with the co
 
 ## The rest of the method
 
-The full set — 24 rules, each with the failure that earned it — is
+The full set — 25 rules, each with the failure that earned it — is
 **`Chimera/docs/EXPERIMENTAL_METHOD.md`**. Rules 2–11 are about not fooling yourself while
 *debugging*; 12–17 while *reporting*; 18–21 about *direction* (where to look when everything you
-can see is already correct); 22–24 about *order* and about instruments that need instruments.
+can see is already correct); 22–25 about *order*, about instruments that need instruments, and about the difference between a number you transported and one you derived.
 
 Two other gates run beside this one:
 

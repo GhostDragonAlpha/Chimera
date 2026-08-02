@@ -191,8 +191,9 @@ Fr 0.183 on Earth and **Fr 0.254 here** — 39% higher, heading toward the walk-
 velocity term demanded a running-ward gait while the tracking term demanded Earth *walking*
 envelopes. **The crouch was the only stable point in a contradictory reward.**
 
-The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this world's stride is
-1.327 s and the gait was being clocked 18% too fast.
+The stride clock was wrong too, by **3.9%** -- not the 18% first published. `theHuman` derives
+**1.1730 s** for itself; the 1.3267 s once quoted here was a Froude-transported Earth number,
+which is the move this very rule forbids.
 
 **A sweep cannot find this.** Four variants asking an impossible question rank four failures.
 

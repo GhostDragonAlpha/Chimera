@@ -59,8 +59,12 @@ best answer was to satisfy neither and collect the alive bonus.
 
 > THE CROUCH WAS THE ONLY STABLE POINT IN A CONTRADICTORY REWARD.
 
-The stride clock had the same disease: a pendulum goes as sqrt(L/g), so this world's stride is
-1.327 s and the trainer was running the gait 18% too fast.
+The stride clock was wrong too, though NOT by the number first published here. A pendulum goes
+as sqrt(L/g) -- but the honest comparison is against what `theHuman` DERIVES for itself, not
+against a transported Earth stride. The body publishes `step_time_s`, so its stride is **1.1730 s**
+and the trainer's 1.127 s was **3.9% fast** -- not the 18% this rule claimed for a day. The 1.3267 s
+figure was Earth's 1.127 s divided by sqrt(g/g_E), i.e. the very move this rule forbids, committed
+by the gate written to enforce it. See RULE 25.
 
 **A sweep could never have found this.** Four variants all asking for an impossible speed rank four
 flavours of the same failure, and the winner would have been whichever failed most gracefully.
@@ -602,6 +606,49 @@ membrane defect in this document. There is no exemption for tools.
 
 ---
 
+## RULE 25 — A TRANSPORTED NUMBER IS NOT A DERIVED NUMBER, AND THE GATE THAT DEMANDED ONE COULD ONLY PASS ON EARTH
+
+Found 2026-08-02, in the self-critique of the trainer rewrite that rule 1 forced. It is rule 1's
+own failure mode one level in, committed by the tool written to enforce rule 1.
+
+**There are THREE grades of number, not two,** and only the first two were named:
+
+    1.2850 m/s   an EARTH measurement, used raw           <- what rule 1 caught
+    1.0915 m/s   the same measurement, Froude-TRANSPORTED <- what the gate demanded
+    0.9924 m/s   what theHuman DERIVES for itself          <- what the membrane published all along
+
+Transport is a real improvement and it is still second-best. `theHuman` derives its comfortable
+speed from a Froude law and its cadence from the leg as a compound pendulum with a measured swing
+drive; both were sitting in `numbers.json`. **A transported number carries the reference world's
+anatomy inside it. A derived one does not.**
+
+**AND THE CHECK WAS A TAUTOLOGY.** `training_gate.py` computed
+
+    want_T = stride_s / scale        then asked whether  |stride_s - want_T| / want_T > TOL
+
+— the input against a transform of **itself**. That can only pass when `scale == 1`, which is to
+say **on Earth**. The gate written to refuse Earth numbers was unpassable on every world except
+Earth, and it refused `theHuman`'s correct 1.1730 s while demanding a 1.3809 s no membrane
+publishes. It is rule 20 exactly — *the instrument kept its own private copy of the body* — and
+rule 24 exactly — *an instrument needs an instrument*.
+
+**IT PUBLISHED A WRONG NUMBER FOR A DAY, INTO SIX DOCUMENTS.** Rule 1 claimed the gait was clocked
+*"18% too fast"*. Against the body's own derived stride the error is **3.9%**. The 18% was the
+tautology's output, and the real defect in that sweep was **entirely in the speed** (1.29x), not in
+the clock. A number with no consumer drifts; a wrong number *with* six consumers propagates.
+
+    THE TEST: ask what your check compares against. If the answer is "a transform of the thing
+    being checked", it is a tautology, and it will pass or fail as a property of the transform
+    rather than of the subject. The reference must come from OUTSIDE -- which is rule 14 again,
+    in the time domain instead of the pixel domain.
+
+**Enforced:** the stride check now reads `2 x theHuman.step_time_s` and **refuses when it is
+absent** rather than falling back — because a gate inventing the cadence it polices is the whole
+disease. `python tools/training_gate.py --target-speed 0.9924 --stride-s 1.1730` passes; the raw
+Earth pair and the transported pair are both refused.
+
+---
+
 ## THE REMAKE PROCEDURE — how to go back over everything without reading it all
 
 Written down because "go back over everything" is where a session evaporates, and because the
@@ -662,3 +709,8 @@ context that starts it will not be the context that finishes it.
     cannot see a generator that failed to publish; it reads the last good file and reports green.
 24. **An instrument needs an instrument.** The gate written to catch 42 membranes made four of its
     own bugs in a day. Check any column by hand on one known case before trusting it across forty.
+25. **A transported number is not a derived number.** Three grades, not two: an Earth measurement
+    raw, the same one Froude-transported, and the one the membrane DERIVED. Transport still carries
+    the reference world's anatomy. And ask what your check compares against — `training_gate`
+    compared a stride to a transform of itself, a tautology that could only pass on Earth, and it
+    published "18% too fast" into six documents when the real error was 3.9%.
