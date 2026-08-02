@@ -123,8 +123,16 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
         if k % 20 == 0:
             z = float(d.qpos[2])
             com = d.subtree_com[0]
-            foot = 0.5 * (d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "calcn_r")] +
-                          d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "calcn_l")])
+            # THE FOOT CENTRE IS THE FOOT POLYGON, NOT THE HEELS. This was the mean of calcn_r
+            # and calcn_l -- the HEEL midpoint -- and the CoM was then plotted against it and read
+            # as "position within the base of support". Measured 2026-08-02: against heels alone
+            # the CoM reads ~15 cm forward and OUTSIDE the box; against heels AND toes it is
+            # 4.8 mm forward and comfortably inside. I read a real trace off a wrongly-centred
+            # axis and concluded the body starts outside its base. It does not.
+            #
+            # A PLOT'S ORIGIN IS A MEASUREMENT LIKE ANY OTHER, and this one was undeclared.
+            _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
+            foot = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
             dx, dy = float(com[0] - foot[0]), float(com[1] - foot[1])
             if z < 0.5 * tgt:
                 fell = True
