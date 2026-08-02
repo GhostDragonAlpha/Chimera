@@ -262,7 +262,7 @@ def main():
     m = mujoco.MjModel.from_xml_path(str(MYOBODY))
     d = mujoco.MjData(m)
     ac = build_ac(OBS, ACT, HID, torch)
-    ac.load_state_dict(torch.load(ppath, map_location='cpu'))
+    ac.load_state_dict(torch.load(ppath, map_location='cpu', weights_only=False))
     ac.eval()
 
     print(f'\nPOLICY GAIT vs MOCAP — {pol_name}, {N} starts x {secs:.0f}s\n' + '=' * 74)

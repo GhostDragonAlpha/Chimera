@@ -67,6 +67,7 @@ from __future__ import annotations
 
 import json
 import sys
+import os
 import time
 from pathlib import Path
 
@@ -465,7 +466,26 @@ def main() -> int:
         print(f'  {it:4d}{rew_b.mean().item():9.4f}{mean_cmdv:7.3f}{mean_track:8.3f}{mean_stag:7.3f}'
               f'{fall_pct:7.1f}{surv:7.1f}{time.perf_counter()-ti:7.1f}{el:8.0f}   '
               + ' '.join(per_cmd), flush=True)
-        torch.save(ac.state_dict(), out)
+        # ── ATOMIC CHECKPOINT WRITE ─────────────────────────────────────────────────────────
+        # A power fluctuation on 2026-08-01 caught torch.save MID-WRITE and left a truncated tar:
+        # the round-3 policy failed to load with KeyError('storages') and five and a half hours of
+        # training were gone. Rounds 1 and 2 survived only because nothing was writing them.
+        #
+        # Write to a temporary file, flush it to the platter, THEN rename. os.replace is atomic on
+        # every platform this runs on, so the checkpoint on disk is always a whole one -- either
+        # the previous round or the new one, never half of either.
+        _tmp = str(out) + '.tmp'
+        torch.save(ac.state_dict(), _tmp)
+        with open(_tmp, 'rb') as _f:
+            os.fsync(_f.fileno())
+        os.replace(_tmp, out)
+        # AND THE CURVE GOES TO DISK, not only to stdout. The line printed above is the only direct
+        # proof this run is LEARNING rather than coasting -- gpu_gate says so explicitly, because
+        # heat and activity can both be faked. It was going to a terminal nobody was capturing, so
+        # after the crash there was no way to tell whether round 3 had been improving.
+        with open(str(out).replace('.pt', '.curve.tsv'), 'a', encoding='utf8') as _c:
+            _row = [it, rew_b.mean().item(), mean_cmdv, mean_track, fall_pct, surv]
+            _c.write("\t".join(str(x) for x in _row) + "\n")
         np.save(OUT_META, dict(OBS=OBS, HID=HID, ACT=ACT, CMD_DIM=CMD_DIM, CMDS=CMDS,
                                OBS_LAYOUT='[quat(4), angvel(3), linvel(3), qpos(nj), qvel(nj), '
                                           'cmd_onehot(4: forward,backward,left,right)]',
