@@ -56,9 +56,15 @@ the load path from torso to ground cannot be drawn until it is.
 
 ---
 
-## THE CHAIN THAT EXISTS
+## THE CHAIN THAT EXISTS — AND THE ROOT IS THE GROUND
 
-    GROUND → FOOT → ANKLE → KNEE → HIP → PELVIS ⟂ (the body ends)
+**The human is not the root. `theGround` is `theHuman`'s PARENT in the membrane tree**, and the
+load path runs the same direction: a body stands because its mass finds the ground, not because
+the ground finds the body. So the chain is built from the ground up, and every port is proven in
+that order — which is why `GROUND → FOOT` was proven first and everything above it is still open.
+
+    GROUND → FOOT → ANKLE → KNEE → HIP → PELVIS ⟂⟂ sacrum → lumbar×5 → torso → neck → head
+                                              (the sacroiliac seam — NOT YET MEASURED)
 
 | link | port | actuators | status |
 |---|---|---|---|
@@ -108,15 +114,34 @@ slow"*) was wrong, and was reversed two commits later by reading a number alread
 
 ---
 
-## AND THE SCOPE BOUNDARY IS A REAL RESULT, NOT AN EXCUSE
+## THE REAL BOUNDARY, AND WHAT IT MEANS FOR BUILDING UPWARD
 
-The chain above the pelvis matters for standing — arms counter-rotate, the trunk carries most of
-the mass, the head stabilises the gaze. **None of it is in this body**, so:
+**47 kg of upper body exists and is untouched.** Every port trained so far — hip, knee, distal —
+is a LEG port, and together they are 35 kg of an 82 kg body. **The 47 kg they have to carry has
+never been in any reward, any measurement, or any picture.**
 
-- Any R5 that turns out to be *"standing needs the trunk"* is **unreachable with myoBody as
-  loaded**. It would need a different model, and that is a decision, not a training run.
-- Conversely: if these three leg ports ever close R2 and the body still falls, **the missing trunk
-  is the first suspect**, and it will have been predicted here rather than discovered by surprise.
+That reframes R2 rather than closing it. "Does the load path carry?" has been asked of the legs
+while the thing they carry sat unexamined:
 
-That is what a scope boundary written down in advance buys. The alternative is an agent spending a
-week training a shoulder port on a body with no shoulder.
+| segment | mass | in a port yet? |
+|---|---|---|
+| torso | 18.619 kg | **no** |
+| head + neck | 8.958 kg | **no** |
+| sacrum | 7.486 kg | **no** |
+| lumbar ×5 | 8.659 kg | **no** — and five segments means five joints, i.e. a SPINE PORT |
+| pelvis | 10.960 kg | it is the port's far end, never its subject |
+| both legs | 27.348 kg | hip 50, knee 26, distal 22 muscles |
+
+**THE SPINE IS A PORT AND IT HAS NEVER BEEN TRAINED.** Five lumbar segments carrying 35 kg of
+torso, head and neck above them. A stack of five joints under a third of the body's mass is not a
+passive strut, and nothing in this project has asked whether it holds.
+
+**WHAT IS GENUINELY ABSENT: ARMS AND HANDS.** Two links, not six. They matter for standing —
+arms counter-rotate against trunk sway — and adding them is a MODEL decision, not a training run.
+
+**AND THE FIRST THING TO MEASURE, BEFORE ANY OF IT:** the sacroiliac seam. Sacrum and pelvis are
+siblings in this tree. If the torso's weight does not descend to the legs through a joint, then
+every leg port has been carrying 35 kg while the reward believed it carried 82 — and R2's 32% is
+a measurement of a body carrying less than half of itself.
+
+    THAT IS THE NEXT MEASUREMENT. Not a training run: one reading of how sacrum attaches.
