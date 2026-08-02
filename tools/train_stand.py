@@ -54,6 +54,32 @@ def joint_ids(m, mujoco):
     return out
 
 
+def seat_in_limits(m, d, mujoco, jids):
+    """Project the keyframe into the body's OWN declared joint ranges. Measured, not invented.
+
+    THE DEFECT THIS FIXES, found 2026-08-02 by measuring the keyframe instead of theorising about
+    the reward. At `mj_resetDataKeyframe` -- no control, no load, nothing applied -- the pose is
+    ALREADY OUTSIDE the limits the same file declares:
+
+        hip_flexion_l   -40.4 deg  against  -30..+120   -> 10.4 deg BEYOND the extension stop
+        knee_angle_l     -3.6 deg  against    0..+120   -> hyperextended
+        knee_angle_r     -1.3 deg  against    0..+120   -> hyperextended
+        jmax = 1.139
+
+    Every run in this project has started in violation of the body's own constraints. The joints
+    term was not too sharp; it was correctly reporting that the body begins broken, and no policy
+    could reach a state where the term is not near-zero. THE REWARD WAS NEVER THE DEFECT.
+
+    This is not tuning a tolerance until a check passes -- the forbidden move. It changes nothing
+    about the limits and nothing about the reward. It enforces a constraint `myobody.xml` already
+    declares and its own keyframe violates, which is the narrowest possible correction: the pose
+    moves by 10.4 deg at one hip and under 4 deg at two knees, and every other joint is untouched.
+    """
+    for adr, c, h, _ in jids:
+        d.qpos[adr] = float(np.clip(d.qpos[adr], c - h, c + h))
+    mujoco.mj_forward(m, d)
+
+
 def joint_frac(d, jids):
     """How close the worst joint is to its limit. 0 = mid-range, 1 = at the stop.
 
@@ -77,6 +103,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
+    seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
     tgt = P["OUT pelvis_target_m"]
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
