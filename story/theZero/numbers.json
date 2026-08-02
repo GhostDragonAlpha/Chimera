@@ -1,10 +1,7 @@
 {
- "extent_m": 0.0,
- "duration_s": 0.0,
- "hair": 3,
- "forbidden": "division",
- "allowed": "addition",
- "timeline_serial": 0,
- "t_since_seed_s": 0.0,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "extent_m": 0.0,
+  "duration_s": 0.0,
+  "hair": 3,
+  "forbidden": "division",
+  "allowed": "addition"
 }

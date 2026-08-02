@@ -358,7 +358,12 @@ HEEL_FRAC = 0.050          # heel behind the ankle, fraction of stature (Dempste
 #                  this project has no source file for it -- named so the gap is visible.
 # The measured demand lands at ~37.5 deg: past the sim model's welded range, comfortably inside
 # real anatomy. That is a fact about our geometry, and it is published as one.
-MTP_RANGE_SIM = 0.5235988      # rad, myo_sim `mtp_angle_r` range -- the adopted body's number
+# WRITTEN AS THE DEGREES THE SOURCE STATES, not as its decimal shadow. The XML says
+# range="-0.523599 0.523599" and 0.523599 is pi/6 -- a round radian, which is the signature of a
+# number somebody chose rather than measured. Here it is chosen: it is a MODELLING range in a
+# lineage where the joint is usually welded, and saying `radians(30.0)` makes that visible where
+# 0.5235988 hid it behind six decimals.
+MTP_RANGE_SIM = math.radians(30.0)     # myo_sim `mtp_angle_r` range -- the adopted body's number
 
 
 def toe_conform(ball_z, foot_pitch, toe_seg, planted, mtp_limit=None):

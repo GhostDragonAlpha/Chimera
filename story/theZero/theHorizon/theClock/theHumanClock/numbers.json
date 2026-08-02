@@ -1,16 +1,13 @@
 {
- "duration_s": 3.0,
- "extent_m": 1.7,
- "frame_s": 0.016666666666666666,
- "fusion_s": 0.04,
- "tap_s": 0.11,
- "reaction_s": 0.25,
- "hold_min_s": 0.2,
- "band_hi_s": 10.0,
- "band_decades": 2.3979400086720375,
- "gear_for_a_star": 176.89940205907038,
- "planck_ticks_per_tap": 2.040344493398328e+42,
- "timeline_serial": 5,
- "t_since_seed_s": 3.0,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "duration_s": 3.0,
+  "extent_m": 1.7,
+  "frame_s": 0.016666666666666666,
+  "fusion_s": 0.04,
+  "tap_s": 0.11,
+  "reaction_s": 0.25,
+  "hold_min_s": 0.2,
+  "band_hi_s": 10.0,
+  "band_decades": 2.3979400086720375,
+  "gear_for_a_star": 176.89940205907038,
+  "planck_ticks_per_tap": 2.040344493398328e+42
 }

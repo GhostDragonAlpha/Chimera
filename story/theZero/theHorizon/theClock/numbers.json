@@ -1,16 +1,13 @@
 {
- "extent_m": 2.2857297750934068e-35,
- "duration_s": 5.391246446661944e-44,
- "l_P": 1.61625502392855e-35,
- "t_dyn_sun_s": 1768.994020590704,
- "t_dyn_earth_s": 894.6357595706211,
- "t_dyn_galaxy_myr": 94.10375302381088,
- "t_dyn_cloud_myr": 2.0043531672259625,
- "t_light_sun_s": 2.3206054102935436,
- "sun_coherent": true,
- "orders_of_magnitude": 58.741013469119835,
- "law": "t_dyn ~ 1/sqrt(G rho) -- only the density appears",
- "timeline_serial": 2,
- "t_since_seed_s": 1.0782492893323887e-43,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "extent_m": 2.2857297750934068e-35,
+  "duration_s": 5.391246446661944e-44,
+  "l_P": 1.61625502392855e-35,
+  "t_dyn_sun_s": 1768.994020590704,
+  "t_dyn_earth_s": 894.6357595706211,
+  "t_dyn_galaxy_myr": 94.10375302381088,
+  "t_dyn_cloud_myr": 2.0043531672259625,
+  "t_light_sun_s": 2.3206054102935436,
+  "sun_coherent": true,
+  "orders_of_magnitude": 58.741013469119835,
+  "law": "t_dyn ~ 1/sqrt(G rho) -- only the density appears"
 }

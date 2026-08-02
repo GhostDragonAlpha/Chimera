@@ -1,22 +1,19 @@
 {
- "extent_m": 500.0,
- "duration_s": 631152000.0,
- "g": 7.076122169232295,
- "R": 5256133.129858125,
- "crust_element_fraction": {
-  "Fe": 0.056,
-  "Cu": 6e-05,
-  "Ni": 0.0,
-  "Pb": 1.4e-05
- },
- "ore_grade_iron": 0.3024,
- "ore_grade_copper": 0.006,
- "geothermal_gradient_K_km": 22.097189411635085,
- "T_surface": 279.1908308653023,
- "S_earth": 1.0048952107836961,
- "day_s": 86400.0,
- "stripping_pit_limit": 8.0,
- "timeline_serial": 38,
- "t_since_seed_s": 1.4776365516751866e+17,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "extent_m": 500.0,
+  "duration_s": 631152000.0,
+  "g": 7.076122169232295,
+  "R": 5256133.129858125,
+  "crust_element_fraction": {
+    "Fe": 0.056,
+    "Cu": 6e-05,
+    "Ni": 0.0,
+    "Pb": 1.4e-05
+  },
+  "ore_grade_iron": 0.3024,
+  "ore_grade_copper": 0.006,
+  "geothermal_gradient_K_km": 22.097189411635085,
+  "T_surface": 279.1908308653023,
+  "S_earth": 1.0048952107836961,
+  "day_s": 86400.0,
+  "stripping_pit_limit": 8.0
 }

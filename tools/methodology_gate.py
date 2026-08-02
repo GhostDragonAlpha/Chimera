@@ -82,12 +82,22 @@ TYPED = [0.785398, 1.570796, 0.523599, 0.261799, 3.141593]
 
 
 def _round_smell(src: str) -> list:
+    """Round radians appearing as LITERALS IN CODE -- not in comments or docstrings.
+
+    The first version regexed the raw text and flagged theHuman for `0.523599`, which appears
+    there only inside a comment QUOTING the source XML's `range="-0.523599 0.523599"`. Documenting
+    a number is the opposite of typing one, and a gate that punishes the citation teaches people to
+    delete their citations. The AST sees only what the interpreter sees."""
     hits = []
-    for m in re.finditer(r"(?<![\w.])(\d+\.\d{4,})(?![\w])", src):
-        v = float(m.group(1))
-        for t in TYPED:
-            if abs(v - t) < 5e-6:
-                hits.append(m.group(1))
+    try:
+        tree = ast.parse(src)
+    except SyntaxError:
+        return hits
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, float):
+            for t in TYPED:
+                if abs(node.value - t) < 5e-6:
+                    hits.append(repr(node.value))
     return sorted(set(hits))
 
 

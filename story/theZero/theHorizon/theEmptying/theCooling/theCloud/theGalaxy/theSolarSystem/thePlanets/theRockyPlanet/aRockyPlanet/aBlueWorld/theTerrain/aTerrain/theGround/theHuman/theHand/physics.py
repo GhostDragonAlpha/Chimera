@@ -861,13 +861,13 @@ def emit(nums, t=1.0):
     for d in ("middle", "ring", "little"):
         for js in LK[d]["joints"]:
             for jn in js:
-                pose_end.setdefault(jn, 1.5708 if jn.endswith("_flexion") else 0.0)
+                pose_end.setdefault(jn, math.radians(90.0) if jn.endswith("_flexion") else 0.0)
     pose_open = {}
     for d in ("index", "middle", "ring", "little"):
         for js in LK[d]["joints"]:
             for jn in js:
                 if jn.endswith("_abduction"):
-                    pose_open[jn] = FAN[d] * 0.2618           # the model's own abduction range
+                    pose_open[jn] = FAN[d] * math.radians(15.0)   # the model's own abduction range
 
     def rot(axis, q):
         a = np.asarray(axis, float)
