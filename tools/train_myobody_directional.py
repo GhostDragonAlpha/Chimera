@@ -433,14 +433,39 @@ def main() -> int:
         N = bo.shape[0]
         ent_coef = ENT * max(0.0, 1.0 - it / 30.0)
 
-        for _ in range(EPOCHS):
+        # ── KL EARLY STOP, AND IT IS HERE BECAUSE A RUN DESTROYED ITSELF WITHOUT IT ──────────
+        # 2026-08-01, measured: survival 41.4% -> 33.5% over five iterations, then 19.5% -> 2.0%
+        # -> 0.1% over three. The policy did not decay, it was DESTROYED by a single update, and
+        # then spent fifteen iterations crawling back to 2.4%.
+        #
+        # Gradient clipping was already here and did not prevent it, because the two guards stop
+        # different things. Clipping bounds how far one STEP moves the weights; it says nothing
+        # about how far FIVE EPOCHS over the same batch move the POLICY. Once the new policy is
+        # far from the one that collected the data, every importance ratio is meaningless -- the
+        # clip saturates, the gradient points somewhere unrelated to the objective, and the update
+        # is noise applied with confidence.
+        #
+        # So measure the distance directly and stop when it is too far. approx_kl is Schulman's
+        # low-variance estimator; 0.02 is the standard target. This does not slow learning down --
+        # it declines to take the steps that were never learning in the first place.
+        KL_TARGET = 0.02
+        _stopped = False
+        for _ep in range(EPOCHS):
+            if _stopped:
+                break
             idxp = torch.randperm(N, device=dev)
             for s in range(0, N, MINIBATCH):
                 mb = idxp[s:s + MINIBATCH]
                 mean, std, v = ac(bo[mb])
                 dist = torch.distributions.Normal(mean, std)
                 lp = dist.log_prob(ba[mb]).sum(-1)
-                ratio = (lp - blp[mb]).exp()
+                _logr = lp - blp[mb]
+                with torch.no_grad():
+                    _kl = ((_logr.exp() - 1.0) - _logr).mean().item()
+                if _kl > 1.5 * KL_TARGET:
+                    _stopped = True
+                    break
+                ratio = _logr.exp()
                 a_mb = badv[mb]
                 s1 = ratio * a_mb
                 s2 = torch.clamp(ratio, 1 - CLIP, 1 + CLIP) * a_mb
@@ -490,7 +515,8 @@ def main() -> int:
         # heat and activity can both be faked. It was going to a terminal nobody was capturing, so
         # after the crash there was no way to tell whether round 3 had been improving.
         with open(str(out).replace('.pt', '.curve.tsv'), 'a', encoding='utf8') as _c:
-            _row = [it, rew_b.mean().item(), mean_cmdv, mean_track, fall_pct, surv]
+            _row = [it, rew_b.mean().item(), mean_cmdv, mean_track, fall_pct, surv,
+                    round(_kl, 5), int(_stopped)]
             _c.write("\t".join(str(x) for x in _row) + "\n")
         np.save(OUT_META, dict(OBS=OBS, HID=HID, ACT=ACT, CMD_DIM=CMD_DIM, CMDS=CMDS,
                                OBS_LAYOUT='[quat(4), angvel(3), linvel(3), qpos(nj), qvel(nj), '
