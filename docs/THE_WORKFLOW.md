@@ -484,3 +484,35 @@ each position ask the six directions. The world gets made in the order it is exp
 and **nothing gets made that no position asked for.** That is the answer to how one person
 builds a world: you don't. You build a corridor of experience and let the machine fill the
 six directions around each step of it.
+
+---
+
+## Before you train anything: derive the target, then let the gate check it
+
+`python tools/training_gate.py --target-speed X --stride-s Y`
+
+A walker that would not walk was met, on 2026-08-02, with a four-variant parameter sweep. It looked
+like method — one variable each, run in parallel, fair comparison. **Every variant was asking the
+body for a speed it physically cannot walk at.**
+
+    this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m
+    the body derives its own comfortable speed:    0.9924 m/s
+    the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH
+
+Froude settles it. `Fr = v^2/(gL)`, and equal Fr is a dynamically similar gait: 1.285 m/s is
+Fr 0.183 on Earth and **Fr 0.254 here** — 39% higher, heading toward the walk-run transition. The
+velocity term demanded a running-ward gait while the tracking term demanded Earth *walking*
+envelopes. **The crouch was the only stable point in a contradictory reward.**
+
+The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this world's stride is
+1.327 s and the gait was being clocked 18% too fast.
+
+**A sweep cannot find this.** Four variants asking an impossible question rank four failures.
+
+    THE TELL: before running variants, ask what QUESTION each one answers. If the answer is
+    "which number is best", stop -- that is a search where a derivation belongs. Sweeping is
+    for genuinely FREE numbers, and a target Froude-derived from measured gravity is not free.
+
+The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
+sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 24 of
+`Chimera/docs/EXPERIMENTAL_METHOD.md`.

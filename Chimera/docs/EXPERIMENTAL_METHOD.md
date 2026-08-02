@@ -575,6 +575,49 @@ context that starts it will not be the context that finishes it.
 
 ---
 
+## RULE 24 — A PARAMETER SWEEP IS AN ADMISSION THE DERIVATION WAS NOT DONE
+
+CLAUDE.md has carried the operator's words since 2026-07-28: *"You have to know it works because
+it's proven mathematically first before you start training."* On 2026-08-02 that correction was
+needed a second time, and the shape of the relapse is worth keeping because it looked like rigour.
+
+A walker would not walk. The response was a **four-variant parameter sweep** — alive bonus,
+stagnation floor, penalty weight, effort cost — run in parallel, on the reasoning that measuring
+four guesses beats making one. It even sounded like the project's own method: one variable per
+variant, controls, a fair comparison.
+
+**Every variant was asking the body for a speed it physically cannot walk at.**
+
+    this world     g = 7.076 m/s^2 (0.722 Earth),  leg 0.9201 m
+    the body derives its own comfortable speed:    0.9924 m/s
+    the trainer was targeting:                     1.285  m/s   <- MEASURED ON EARTH
+
+Froude settles it: `Fr = v^2/(gL)`, and equal Fr means dynamically similar gait. Earth walking at
+1.285 m/s is Fr = 0.183; demanding 1.285 m/s at 7.076 m/s^2 is Fr = 0.254 — 39% higher, heading
+toward the walk→run transition. So the velocity term demanded a running-ward gait while the
+tracking term demanded Earth *walking* envelopes. The two pulled against each other, and the body's
+best answer was to satisfy neither and collect the alive bonus.
+
+> THE CROUCH WAS THE ONLY STABLE POINT IN A CONTRADICTORY REWARD.
+
+The stride clock had the same disease: a pendulum goes as sqrt(L/g), so this world's stride is
+1.327 s and the trainer was running the gait 18% too fast.
+
+**A sweep could never have found this.** Four variants all asking for an impossible speed rank four
+flavours of the same failure, and the winner would have been whichever failed most gracefully.
+
+    THE TELL: if you are about to run variants, ask what QUESTION each one answers. If the
+    answer is "which number is best", stop — that is a search where a derivation belongs.
+    Sweeping is legitimate only for numbers that are genuinely FREE, and a target speed
+    derived by Froude from measured gravity is not free.
+
+**ENFORCED, not merely written down:** `python tools/training_gate.py --target-speed X --stride-s Y`
+refuses a run whose targets are not Froude-consistent with the world the body stands in. It checks
+three things — speeds scaled by sqrt(g/g_E), strides by sqrt(g_E/g), and agreement with what the
+body itself publishes — and it refuses the trainer as it stood on 2026-08-02.
+
+---
+
 ## THE CHECKLIST
 
 1. What does the human **wait for**? Measure that, not a proxy.
@@ -607,5 +650,7 @@ context that starts it will not be the context that finishes it.
     with it too, or the two orderings disagree and the readable one loses silently.
 22. **Check the generator before you believe the witness.** A witness reading published numbers
     cannot see a generator that failed to publish; it reads the last good file and reports green.
+24. **A parameter sweep is an admission the derivation was not done.** Ask what QUESTION each
+    variant answers; if it is "which number is best", stop. `tools/training_gate.py` enforces it.
 23. **An instrument needs an instrument.** The gate written to catch 42 membranes made four of its
     own bugs in a day. Check any column by hand on one known case before trusting it across forty.
