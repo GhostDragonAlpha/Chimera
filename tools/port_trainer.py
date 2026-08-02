@@ -41,10 +41,27 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 
 # Which joints belong to which port. Both sides: a connection that holds on one leg only is not
 # a connection this body can stand on.
+# THERE ARE THREE PORTS IN THE LEG, NOT FOUR -- and the moment-arm method found that, not I.
+# `ankle` and `foot` were trained separately and returned IDENTICAL numbers to three decimals
+# across four turns (-0.880, -0.888, -0.884, -0.880, best AND mean). Identical outputs are this
+# project's signature of one system wearing two names, so it was checked rather than explained:
+#
+#     ankle vs foot   IDENTICAL MUSCLE SETS, all 22
+#     hip   vs ankle  overlap 0 / 72
+#     knee  vs ankle  overlap 4 / 44
+#
+# It is an anatomical fact, not a bug. Every muscle crossing the ankle also crosses the subtalar
+# and MTP joints -- the shank muscles run one tendon past all three rows to the toes. There is no
+# activation that turns the toe without turning the ankle, so "train the foot after the ankle" is
+# not a sequence this body can perform. One actuator group, three joint rows, ONE PORT.
+#
+# Kept as separate keys because the JOINTS differ and are all graded; `foot` is an alias that
+# trains the same muscles against a different subset of stops.
 PORTS = {
     "hip":   ("hip_flexion_r", "hip_flexion_l", "hip_adduction_r", "hip_adduction_l"),
     "knee":  ("knee_angle_r", "knee_angle_l"),
-    "ankle": ("ankle_angle_r", "ankle_angle_l"),
+    "ankle": ("ankle_angle_r", "ankle_angle_l", "subtalar_angle_r", "subtalar_angle_l",
+              "mtp_angle_r", "mtp_angle_l"),      # the distal port, all three rows at once
     "foot":  ("subtalar_angle_r", "subtalar_angle_l", "mtp_angle_r", "mtp_angle_l"),
 }
 
