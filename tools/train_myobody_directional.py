@@ -14,17 +14,19 @@ WHAT CHANGED vs train_myobody_mocap.py (only these):
      weak ones while forward keeps a plurality (see P_CMD below).
   2. The velocity term projects qvel[0:2] onto the COMMANDED direction (cmd_dir, built by
      rotating the frozen spawn heading head0 by 0/180/+90/-90 deg) and scales by that
-     direction's MEASURED target speed: forward 1.285 m/s (mocap_walk_reference.json),
-     backward 0.6, left 0.631, right 0.655 (mocap_directional_reference.json). Backward
-     motion therefore pays positive, exactly like forward does for the forward command.
+     direction's DERIVED target speed. (SUPERSEDED 2026-08-02: these used to be the raw
+     Earth mocap speeds -- forward 1.285 m/s, backward 0.6, left 0.631, right 0.655 -- handed
+     to a body in 7.076 m/s^2. Forward is now theHuman's own 0.9924 m/s; the other three are
+     Froude-transported until the membrane derives them. See THE DERIVATION HEAD below.)
   3. The tracking term reads the matching direction's envelopes. Forward/backward use the
      same curve for both legs; a sidestep uses the LEAD envelope for the leg on the side of
      travel and the TRAIL envelope for the crossing leg (command "left" -> left leg leads).
      All four directions are pre-baked into one (4, 101, 6) table REF_ALL and gathered per
      env, so the per-step cost is unchanged.
-  4. The phase clock runs at each command's own stride time: forward uses the reference
-     stride_time_s (1.127 s); the directional file carries no stride time, so it is derived
-     as stride_m / speed_m_s (backward 1.541 s, left 0.913 s, right 0.911 s).
+  4. The phase clock runs at each command's own stride time, DERIVED for this world: forward
+     1.1730 s (2 x theHuman's step_time_s, the leg as a compound pendulum at g=7.076); the
+     other three are their Earth stride_m/speed_m_s transported by sqrt(g_E/g).
+     (SUPERSEDED: forward was the Earth reference 1.127 s.)
   5. warm-start, two shapes: ROUND 2 defaults --init to the round-1 directional checkpoint
      (same 106-dim architecture -> FULL LOAD, every tensor shape-matches); the round-1 path
      (init from the 102-dim mocap policy -> PARTIAL LOAD, body.0.weight grows by the 4
@@ -72,6 +74,9 @@ import time
 from pathlib import Path
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from world import load_body   # the ONE place gravity is set (tools/world.py)
 
 ROOT = Path(__file__).resolve().parent.parent
 HERE = ROOT / 'ChimeraEngine'
@@ -448,6 +453,13 @@ def main() -> int:
     _speeds, _strides, _earth = derive_targets(ref_fwd, ref_dir)
     confirm_targets(_speeds, _strides, _earth, assume_yes=('--yes' in sys.argv))
 
+    # --dry-run: the physics assertion block and nothing else. No optimiser is constructed, no
+    # model is loaded, no checkpoint can be written. Pre-flight step 2 -- look at the numbers
+    # before spending a GPU-hour on them, which is the whole of rule 1 expressed as a flag.
+    if '--dry-run' in sys.argv:
+        print('  --dry-run: derivation shown, optimiser NOT constructed. Exiting.\n')
+        return 0
+
     # IMMUTABLE. Not initial values, not priors, not something a scheduler anneals -- these are
     # what this world permits, and the only honest way to change them is to change the world.
     speed_m_s = torch.tensor(_speeds, dtype=torch.float32, device=dev)
@@ -457,7 +469,11 @@ def main() -> int:
     ref_all = build_ref_table(ref_fwd, ref_dir, dev, torch)
     p_cmd = torch.tensor(P_CMD, dtype=torch.float32, device=dev)
 
-    mjm = mujoco.MjModel.from_xml_path(str(MYOBODY))
+    # THE WORLD THE BODY STANDS IN -- see tools/world.py. The XML declares no gravity, so
+    # MuJoCo's default -9.81 applied and every run to date simulated this walker ON EARTH.
+    mjm, _g_world = load_body(MYOBODY, mujoco)
+    assert abs(_g_world - GRAVITY) < 1e-12, 'the world and the derivation disagree about g'
+
     mjd = mujoco.MjData(mjm)
     nq, nv, nu = mjm.nq, mjm.nv, mjm.nu
     nj = nq - 7

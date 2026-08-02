@@ -16,6 +16,11 @@ from pathlib import Path
 
 import numpy as np
 
+import sys as _sys
+from pathlib import Path as _P
+_sys.path.insert(0, str(_P(__file__).resolve().parent))
+from world import load_body
+
 ROOT = Path(__file__).resolve().parent.parent
 HERE = ROOT / 'ChimeraEngine'
 sys.path.insert(0, str(ROOT))
@@ -55,7 +60,8 @@ def main() -> int:
     meta = np.load(HERE / 'myobody_walk_meta.npy', allow_pickle=True).item()
     OBS, HID, ACT = int(meta['OBS']), int(meta['HID']), int(meta['ACT'])
     torch.manual_seed(0)
-    m = mujoco.MjModel.from_xml_path(str(MYOBODY))
+    # rule 20: the instrument must stand in the same world as the thing it judges.
+    m, _g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
     ac = build_ac(OBS, ACT, HID, torch)
     ac.load_state_dict(torch.load(HERE / 'myobody_walk_policy.pt', map_location='cpu'))

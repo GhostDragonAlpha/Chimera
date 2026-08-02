@@ -23,6 +23,11 @@ from pathlib import Path
 
 import numpy as np
 
+import sys as _sys
+from pathlib import Path as _P
+_sys.path.insert(0, str(_P(__file__).resolve().parent))
+from world import load_body
+
 ROOT = Path(__file__).resolve().parent.parent
 HERE = ROOT / 'ChimeraEngine'
 MYOBODY = ROOT / 'external' / 'myo_sim' / 'body' / 'myobody.xml'
@@ -132,7 +137,15 @@ def angles_from_positions(bp, fwd2):
     return out
 
 
-def rollout(m, d, ac, torch, mujoco, secs, seed):
+def rollout(m, d, ac, torch, mujoco, secs, seed, obs_dim=None, cmd=0):
+    """obs_dim/cmd added 2026-08-02 by the pre-flight.
+
+    This evaluator was written for the FORWARD-ONLY policy and assembles a 102-dim observation.
+    The directional checkpoint takes 106: the same 102 plus a one-hot over
+    [forward, backward, left, right]. Judged with the wrong obs width it simply raised -- which is
+    the good failure -- but the shape of the defect is rule 20's: THE INSTRUMENT DID NOT MOVE WITH
+    THE THING IT JUDGES. A 4-wide zero pad would have run and quietly evaluated a policy with no
+    command at all, so the one-hot is set explicitly and defaults to forward."""
     links, geoms, floor = foot_sets(m, mujoco)
     nj = m.nq - 7
     mujoco.mj_resetDataKeyframe(m, d, 0)
@@ -151,8 +164,17 @@ def rollout(m, d, ac, torch, mujoco, secs, seed):
     fell_at = None
     with torch.no_grad():
         for k in range(0, steps, CONTROL_EVERY):
-            ob = torch.tensor(np.nan_to_num(np.concatenate(
-                [d.qpos[3:7], d.qvel[3:6], d.qvel[0:3], d.qpos[7:], d.qvel[6:]])),
+            _v = np.concatenate([d.qpos[3:7], d.qvel[3:6], d.qvel[0:3], d.qpos[7:], d.qvel[6:]])
+            if obs_dim is not None and obs_dim > _v.size:
+                extra = obs_dim - _v.size
+                if extra != 4:
+                    raise SystemExit(
+                        f'obs width {_v.size} vs policy {obs_dim}: the gap is {extra}, not the '
+                        f'4-wide command one-hot this evaluator knows about. Refusing to pad a '
+                        f'shape it does not understand -- that is how an instrument invents data.')
+                oh = np.zeros(4); oh[cmd] = 1.0
+                _v = np.concatenate([_v, oh])
+            ob = torch.tensor(np.nan_to_num(_v),
                 dtype=torch.float32).unsqueeze(0).clamp(-20, 20)
             mean, std, _v = ac(ob)
             a = mean + std * torch.randn_like(std)
@@ -259,14 +281,15 @@ def main():
     OBS, HID, ACT = int(meta['OBS']), int(meta['HID']), int(meta['ACT'])
     G = load_gait()
     torch.manual_seed(0)
-    m = mujoco.MjModel.from_xml_path(str(MYOBODY))
+    # rule 20: the instrument must stand in the same world as the thing it judges.
+    m, _g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
     ac = build_ac(OBS, ACT, HID, torch)
     ac.load_state_dict(torch.load(ppath, map_location='cpu', weights_only=False))
     ac.eval()
 
     print(f'\nPOLICY GAIT vs MOCAP — {pol_name}, {N} starts x {secs:.0f}s\n' + '=' * 74)
-    runs = [rollout(m, d, ac, torch, mujoco, secs, s) for s in range(N)]
+    runs = [rollout(m, d, ac, torch, mujoco, secs, s, obs_dim=OBS) for s in range(N)]
 
     # contact dyad calibration (same sweep as the recovered witness)
     T_all = np.concatenate([r['truth'] for r in runs])
