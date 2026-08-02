@@ -86,7 +86,8 @@ def theory():
     rows.append((
         "R2  A LOAD PATH", "does every joint carry its share without buckling?",
         "OPEN",
-        "CLOSED-LOOP: hip 2.30 s over 9 turns, MONOTONIC AND ACCELERATING, not plateaued. Knee "
+        "CLOSED-LOOP: hip best 3.14 s (63%) ONCE at turn 3 of 12 and never reproduced -- a "
+        "single-seed coin toss. Its MEAN is the honest signal and still climbs (-.708 -> -.575). Knee "
         "1.20 s at true parity (pop 120) vs 1.30 s open-loop in 2x the turns -- level. Distal "
         "0.66 s and moving (was FLAT). Best 2.30 s of 5.00 = 46%, up from 26%"))
     rows.append((

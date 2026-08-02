@@ -241,6 +241,15 @@ def main() -> int:
     n_m = len(mus)
     mu = np.concatenate([np.full(n_m, 0.10), np.zeros(n_m), np.zeros(n_m)])
     sd = np.concatenate([np.full(n_m, 0.25), np.full(n_m, 0.8), np.full(n_m, 0.3)])
+    # --resume: CONTINUE the search instead of restarting it. Without this, "run more turns" reruns
+    # the SAME turns from the same seed and the same initial mean -- nine more turns of the nine
+    # already done, which would have looked like a plateau and been an artifact of the harness.
+    # The saved theta is the previous best; sd is narrowed to a local search around it.
+    prev = OUTDIR / f"port_{port}_theta.npy"
+    if "--resume" in a and prev.exists():
+        mu = np.load(prev)
+        sd = np.concatenate([np.full(n_m, 0.08), np.full(n_m, 0.30), np.full(n_m, 0.12)])
+        print(f"  RESUMED from {prev.name} -- continuing the search, not restarting it")
     rng = np.random.default_rng(0)
     hist, best = [], mu.copy()
     for turn in range(turns):
