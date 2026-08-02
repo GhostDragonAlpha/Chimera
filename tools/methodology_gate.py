@@ -17,8 +17,10 @@ WHAT IT CHECKS, and every one of these is a rule with a scar behind it:
               `theZero.volume` did not -- 26% of the seed was invisible, and the audit reported
               itself clean over the three quarters it could see. A check that skips what it cannot
               parse reports success for the wrong reason.
-  ONE NAME    two keys in one membrane holding the identical value AND STILL HOLDING IT after a
-              free number moves. The second half is the whole test. theHorizon publishes
+  ONE NAME    two keys in one membrane holding the identical value, EXCLUDING the pairs listed in
+              KNOWN_EQUAL below -- each of which was checked and is a coincidence or a definitional
+              identity rather than a restatement. duration_s = day_s is not a defect; it means the
+              membrane chose to show one day. Deleting it to turn a column green destroys meaning. theHorizon publishes
               extent_m = r_s = lambda_C, one number under three names: either an identity worth
               stating once, or two ideas that agree here and will stop agreeing when something
               upstream moves. That is how three leg lengths got into one leg.
@@ -87,6 +89,27 @@ def _round_smell(src: str) -> list:
             if abs(v - t) < 5e-6:
                 hits.append(m.group(1))
     return sorted(set(hits))
+
+
+# ── PAIRS THAT ARE EQUAL AND SHOULD STAY THAT WAY ────────────────────────────────────────────
+# A gate that stays red for correct reasons trains people to ignore it, and worse, invites someone
+# to delete real physics to make a number go green. Each entry here was checked and is a
+# COINCIDENCE or a DEFINITIONAL IDENTITY, not a restatement -- the distinction the slider test
+# makes: an identity of the SETTING comes apart when a free number moves; a restatement does not.
+KNOWN_EQUAL = {
+    ("duration_s", "day_s"):   "duration_s is how long this membrane's movie RUNS; day_s is the "
+                               "length of a day. Equal because the membrane chose to show exactly "
+                               "one day -- show two and one doubles, the other does not.",
+    ("duration_s", "year_s"):  "same, for a membrane whose movie is one orbit.",
+    ("extent_m", "height_m"):  "extent_m is the membrane's extent; height_m is a person's stature. "
+                               "Equal because the membrane IS the person.",
+    ("obliquity_deg", "tropic_lat_deg"):
+                               "the tropics sit AT the obliquity -- a definitional identity worth "
+                               "publishing, the same way extent_m = lambda_C is on theHorizon.",
+    ("obliquity_deg", "obliquity_effective_deg"):
+                               "equal while nothing perturbs the tilt; the effective one exists so "
+                               "that something can.",
+}
 
 
 def _identities(d: Path, data: dict, dup: list):
@@ -203,6 +226,9 @@ def check(d: Path) -> dict:
             # defect, which is the safer direction for a work list but not for a gate.
             _keep = _identities(d, data, dup)
             dup = _keep if _keep is not None else dup
+        # drop the pairs that were checked and are meant to be equal
+        dup = [(a, b) for a, b in dup
+               if (a, b) not in KNOWN_EQUAL and (b, a) not in KNOWN_EQUAL]
         r["dups"] = dup
         try:
             import folding
