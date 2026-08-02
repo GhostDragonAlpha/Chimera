@@ -95,12 +95,34 @@ def theory():
     # DAMPED OSCILLATION: 0 -> 43 deg at 0.2 s -> 13 at 0.5 -> 37 at 0.8 -> 11 at 1.3. Peaks decay
     # 43->37, troughs 13->11. Period ~0.6 s, lightly damped, converging. The knee is not collapsing
     # and not fighting itself -- IT IS RINGING, and it converges too slowly to matter.
-    T_port = 0.60
+    # R4, RESTATED after READING the model's published muscle dynamics instead of eyeballing a
+    # period off a plot. The operator's direction -- the data exists, read it -- and it reversed
+    # the cause I had assigned:
+    #
+    #     published tau_act 0.0100 s   tau_deact 0.0400 s
+    #     derived ring period 2*pi*sqrt(tau_a*tau_d) = 0.1257 s   -- 3.2x FASTER than the fall
+    #     measured off the turn-5 plot                = 0.60 s    -- 4.8x SLOWER than that
+    #
+    # THE MUSCLES ARE FAST ENOUGH. The 0.60 s is not a muscle limit, so "the plant is too slow"
+    # was the wrong diagnosis. The reason is in this repo's own tooling: port_trainer.py sets
+    # `ctrl[mus] = theta` ONCE and never updates it. The activation is CONSTANT for five seconds.
+    # There is no feedback in the port trainer at all -- and a muscle held at constant activation
+    # is a SPRING, so the limb rings at its passive mechanical period. That is the 0.60 s.
+    #
+    # R3's "20 ms, 20 corrections per fall" is true of train_stand.py. It was never true here.
+    # I measured a plant's settling time from a system whose loop I had never closed.
+    tau_a, tau_d = 0.0100, 0.0400
+    T_muscle = 2.0 * (3.141592653589793) * (tau_a * tau_d) ** 0.5
     rows.append((
-        "R4  A FAST PLANT", f"can the PORT settle faster than the body falls ({t_fall:.4f} s)?",
+        "R4  A FAST PLANT", f"can the PORT respond faster than the body falls ({t_fall:.4f} s)?",
+        "MET",
+        f"published tau_act {tau_a:.3f} s / tau_deact {tau_d:.3f} s -> {T_muscle:.4f} s, "
+        f"{t_fall/T_muscle:.1f}x faster than the fall. The muscles are not the limit."))
+    rows.append((
+        "R4b THE PORT LOOP", "is the port commanded with FEEDBACK, or open-loop?",
         "VIOLATED",
-        f"knee rings at ~{T_port:.2f} s period, {T_port/t_fall:.2f}x the fall time -- it cannot "
-        f"complete one oscillation before the body is down"))
+        "port_trainer.py sets ctrl once and never updates it -- a constant activation is a SPRING, "
+        "so the 0.60 s ring is the limb's PASSIVE period, not the connection under control"))
     rows.append((
         "R5  ??? ", "what does the theory STILL not name?",
         "UNKNOWN",
