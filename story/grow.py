@@ -151,4 +151,13 @@ if __name__ == "__main__":
     print("\nGROWING THE STORY\n" + "=" * 60)
     for top in sorted(d for d in ROOT.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         grow(top)
+
+    # THE EPOCH IS PART OF GROWING, not a separate errand. `derive()` knows nothing about the
+    # timeline, so writing numbers.json from it alone STRIPS timeline_serial and t_since_seed_s off
+    # every membrane -- silently, because the numbers stay right and every witness still passes.
+    # It can only be stamped after the whole tree exists (it sums duration_s down each path), so it
+    # belongs here, at the tail, rather than inside grow(). One writer, one pass.
+    import timeline as _timeline
+    n = _timeline.stamp()
+    print(f"\nstamped the epoch into {n} membranes (timeline_serial + t_since_seed_s)")
     print()

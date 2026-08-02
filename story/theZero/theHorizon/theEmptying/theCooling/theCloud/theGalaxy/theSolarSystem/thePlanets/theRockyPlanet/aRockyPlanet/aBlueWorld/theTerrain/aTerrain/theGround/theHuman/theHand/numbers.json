@@ -1,545 +1,545 @@
 {
- "extent_m": 0.19358474918918359,
- "duration_s": 0.594644285918916,
- "hand_length_m": 0.19358474918918359,
- "hand_breadth_m": 0.08846276983901949,
- "hand_circumference_m": 0.21272784840547002,
- "hand_thickness_m": 0.031361719624639274,
- "palm_length_to_crease_m": 0.11668121868937092,
- "hand_over_stature_ratio": 0.11030470039269719,
- "hand_over_stature_median_ratio": 0.10995970063327576,
- "hand_over_stature_sd_ratio": 0.0042126776594615814,
- "hand_over_stature_p5_ratio": 0.10338885697874785,
- "hand_over_stature_p95_ratio": 0.11722054380664652,
- "hand_over_stature_cv_pct": 3.8271846314021642,
- "breadth_over_stature_ratio": 0.05024848150193263,
- "circumference_over_stature_ratio": 0.12083333333333333,
- "palm_over_hand_ratio": 0.6027397260273972,
- "breadth_over_length_ratio": 0.45685279187817257,
- "ansur_subject_count": 4082,
- "anthropometry_source": "ANSUR II, US Army Anthropometric Survey 2012 (public release 2017), 4,082 male subjects x 93 measures, public domain; research_references/human/ANSUR_II_MALE_Public.csv",
- "slab_bias_ratio": 1.0743724765913232,
- "thickness_rectangle_m": 0.01790115436371552,
- "hand_size_draw_frac": 0.5,
- "wrist_to_mcp_m": 0.09064869787271639,
- "knuckle_span_m": 0.05019844871616959,
- "linkage_m": {
-  "thumb": {
-   "root_m": [
-    0.029446121420696626,
-    -0.027820664387770148,
-    -0.011652814748360215
-   ],
-   "bones_m": [
-    [
-     0.01834476131551801,
-     -0.03246466850988641,
-     -0.014119907194368406
-    ],
-    [
-     0.015565252025288006,
-     -0.028795716246782812,
-     -0.011229217532529204
-    ]
-   ],
-   "tip_m": [
-    0.011118037160920006,
-    -0.02223607432184001,
-    -0.008894429728736004
-   ],
-   "joints": [
-    [
-     "cmc_abduction",
-     "cmc_flexion"
-    ],
-    [
-     "mp_flexion"
-    ],
-    [
-     "ip_flexion"
-    ]
-   ],
-   "axes": [
-    [
-     [
-      -0.04239899057782176,
-      -0.66528585215587,
-      0.7453838343559777
-     ],
-     [
-      0.49555701495937987,
-      0.7317360220889156,
-      0.467959014126279
-     ]
-    ],
-    [
-     [
-      -0.08429499542560574,
-      -0.20348798895741932,
-      0.9754419470661809
-     ]
-    ],
-    [
-     [
-      -0.050102005752161505,
-      -0.4796230550650465,
-      0.876043100577638
-     ]
-    ]
-   ],
-   "radii_m": [
-    0.01089758758886472,
-    0.008333449332661254
-   ]
+  "extent_m": 0.19358474918918359,
+  "duration_s": 0.594644285918916,
+  "hand_length_m": 0.19358474918918359,
+  "hand_breadth_m": 0.08846276983901949,
+  "hand_circumference_m": 0.21272784840547002,
+  "hand_thickness_m": 0.031361719624639274,
+  "palm_length_to_crease_m": 0.11668121868937092,
+  "hand_over_stature_ratio": 0.11030470039269719,
+  "hand_over_stature_median_ratio": 0.10995970063327576,
+  "hand_over_stature_sd_ratio": 0.0042126776594615814,
+  "hand_over_stature_p5_ratio": 0.10338885697874785,
+  "hand_over_stature_p95_ratio": 0.11722054380664652,
+  "hand_over_stature_cv_pct": 3.8271846314021642,
+  "breadth_over_stature_ratio": 0.05024848150193263,
+  "circumference_over_stature_ratio": 0.12083333333333333,
+  "palm_over_hand_ratio": 0.6027397260273972,
+  "breadth_over_length_ratio": 0.45685279187817257,
+  "ansur_subject_count": 4082,
+  "anthropometry_source": "ANSUR II, US Army Anthropometric Survey 2012 (public release 2017), 4,082 male subjects x 93 measures, public domain; research_references/human/ANSUR_II_MALE_Public.csv",
+  "slab_bias_ratio": 1.0743724765913232,
+  "thickness_rectangle_m": 0.01790115436371552,
+  "hand_size_draw_frac": 0.5,
+  "wrist_to_mcp_m": 0.09064869787271639,
+  "knuckle_span_m": 0.05019844871616959,
+  "linkage_m": {
+    "thumb": {
+      "root_m": [
+        0.029446121420696626,
+        -0.027820664387770148,
+        -0.011652814748360215
+      ],
+      "bones_m": [
+        [
+          0.01834476131551801,
+          -0.03246466850988641,
+          -0.014119907194368406
+        ],
+        [
+          0.015565252025288006,
+          -0.028795716246782812,
+          -0.011229217532529204
+        ]
+      ],
+      "tip_m": [
+        0.011118037160920006,
+        -0.02223607432184001,
+        -0.008894429728736004
+      ],
+      "joints": [
+        [
+          "cmc_abduction",
+          "cmc_flexion"
+        ],
+        [
+          "mp_flexion"
+        ],
+        [
+          "ip_flexion"
+        ]
+      ],
+      "axes": [
+        [
+          [
+            -0.04239899057782176,
+            -0.66528585215587,
+            0.7453838343559777
+          ],
+          [
+            0.49555701495937987,
+            0.7317360220889156,
+            0.467959014126279
+          ]
+        ],
+        [
+          [
+            -0.08429499542560574,
+            -0.20348798895741932,
+            0.9754419470661809
+          ]
+        ],
+        [
+          [
+            -0.050102005752161505,
+            -0.4796230550650465,
+            0.876043100577638
+          ]
+        ]
+      ],
+      "radii_m": [
+        0.01089758758886472,
+        0.008333449332661254
+      ]
+    },
+    "index": {
+      "root_m": [
+        0.02465758281548839,
+        -0.08996382129501641,
+        0.012206492998973906
+      ],
+      "bones_m": [
+        [
+          0.008349645907850924,
+          -0.04588747477426513,
+          0.008145074024089996
+        ],
+        [
+          0.0037056417857346375,
+          -0.027670570886097708,
+          0.0013564005336322404
+        ]
+      ],
+      "tip_m": [
+        0.002223607432184001,
+        -0.020012466889656008,
+        -0.0
+      ],
+      "joints": [
+        [
+          "mcp2_flexion",
+          "mcp2_abduction"
+        ],
+        [
+          "pm2_flexion"
+        ],
+        [
+          "md2_flexion"
+        ]
+      ],
+      "axes": [
+        [
+          [
+            0.9950125359914347,
+            0.09974995348316616,
+            0.0
+          ],
+          [
+            -0.05499898007863053,
+            0.08589896888623946,
+            0.994784639675639
+          ]
+        ],
+        [
+          [
+            0.975170276468341,
+            0.09983342830355166,
+            -0.19767705604297942
+          ]
+        ],
+        [
+          [
+            0.9950041652843545,
+            0.09983341658375151,
+            0.0
+          ]
+        ]
+      ],
+      "radii_m": [
+        0.011538622152915583,
+        0.010256553024813852,
+        0.008974483896712121
+      ]
+    },
+    "middle": {
+      "root_m": [
+        0.005235483699077232,
+        -0.08959247885384175,
+        0.012765730268168341
+      ],
+      "bones_m": [
+        [
+          0.0018344761315518007,
+          -0.04915395409214343,
+          0.006926537151253164
+        ],
+        [
+          0.0015176120724655804,
+          -0.03229456254132434,
+          0.0021724644612437687
+        ]
+      ],
+      "tip_m": [
+        0.002223607432184001,
+        -0.021124270605748008,
+        -0.0011118037160920006
+      ],
+      "joints": [
+        [
+          "mcp3_flexion",
+          "mcp3_abduction"
+        ],
+        [
+          "pm3_flexion"
+        ],
+        [
+          "md3_flexion"
+        ]
+      ],
+      "axes": [
+        [
+          [
+            0.9800666589123603,
+            0.0,
+            0.19866893085825738
+          ],
+          [
+            -0.19866893085825738,
+            0.0,
+            0.9800666589123603
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "radii_m": [
+        0.011538622152915583,
+        0.010256553024813852,
+        0.008974483896712121
+      ]
+    },
+    "ring": {
+      "root_m": [
+        -0.010989067929853331,
+        -0.08812378614488407,
+        0.006300591659093465
+      ],
+      "bones_m": [
+        [
+          -0.003922443510372578,
+          -0.04475565859128348,
+          0.0014953759981437406
+        ],
+        [
+          -0.0025760492101851652,
+          -0.0275605023182046,
+          0.0006259454921597962
+        ]
+      ],
+      "tip_m": [
+        -0.0011118037160920006,
+        -0.020012466889656008,
+        0.0011118037160920006
+      ],
+      "joints": [
+        [
+          "mcp4_flexion",
+          "mcp4_abduction"
+        ],
+        [
+          "pm4_flexion"
+        ],
+        [
+          "md4_flexion"
+        ]
+      ],
+      "axes": [
+        [
+          [
+            0.9004469005163807,
+            0.0,
+            0.4349659519438768
+          ],
+          [
+            -0.4349659519438768,
+            0.0,
+            0.9004469005163807
+          ]
+        ],
+        [
+          [
+            0.9210611176908945,
+            0.0,
+            0.389418049758868
+          ]
+        ],
+        [
+          [
+            0.8253359582957751,
+            0.0,
+            0.5646419714686419
+          ]
+        ]
+      ],
+      "radii_m": [
+        0.01089758758886472,
+        0.009615518460762987,
+        0.008718070071091774
+      ]
+    },
+    "little": {
+      "root_m": [
+        -0.0216812842675101,
+        -0.0791248468668355,
+        -0.003765679186403638
+      ],
+      "bones_m": [
+        [
+          -0.00586921181724967,
+          -0.03953907555537981,
+          -0.003200882898628869
+        ],
+        [
+          -0.0031919884689001333,
+          -0.022988765437634295,
+          -0.0024937757351943574
+        ]
+      ],
+      "tip_m": [
+        -0.0011118037160920006,
+        -0.01890066317356401,
+        -0.0033354111482760017
+      ],
+      "joints": [
+        [
+          "mcp5_flexion",
+          "mcp5_abduction"
+        ],
+        [
+          "pm5_flexion"
+        ],
+        [
+          "md5_flexion"
+        ]
+      ],
+      "axes": [
+        [
+          [
+            0.8253359582957751,
+            0.0,
+            0.5646419714686419
+          ],
+          [
+            -0.5646419714686419,
+            0.0,
+            0.8253359582957751
+          ]
+        ],
+        [
+          [
+            0.8253359582957751,
+            0.0,
+            0.5646419714686419
+          ]
+        ],
+        [
+          [
+            0.6431121484444494,
+            -0.22680405235137102,
+            0.7314141688265008
+          ]
+        ]
+      ],
+      "radii_m": [
+        0.010256553024813852,
+        0.008974483896712121,
+        0.00769241476861039
+      ]
+    }
   },
-  "index": {
-   "root_m": [
-    0.02465758281548839,
-    -0.08996382129501641,
-    0.012206492998973906
-   ],
-   "bones_m": [
-    [
-     0.008349645907850924,
-     -0.04588747477426513,
-     0.008145074024089996
+  "crease_to_mcp_offset_m": 0.02603252081665454,
+  "crease_offset_over_hand_ratio": 0.13447609342001351,
+  "finger_length_at_crease_m": 0.07690353049981266,
+  "finger_length_at_joint_m": 0.10334663519134538,
+  "finger_understated_by_crease_pct": 25.58680758456581,
+  "model_scale_length_ratio": 1.1118037160920005,
+  "model_scale_width_ratio": 1.2820691281017316,
+  "model_breadth_over_length_ratio": 0.3962835746703254,
+  "skeleton_source": "MyoSuite myo_sim MyoHand_v0.1.7, vendored at vendor/myo_sim (Apache 2.0); Caggiano et al. 2022. Used for GEOMETRY ONLY -- its body masses are round modelling numbers, not measurements.",
+  "model_rotations_in_hand_count": 0,
+  "phalanx_lengths_m": {
+    "thumb": [
+      0.034606,
+      0.026404
     ],
-    [
-     0.0037056417857346375,
-     -0.027670570886097708,
-     0.0013564005336322404
+    "index": [
+      0.047347,
+      0.027951,
+      0.020136
+    ],
+    "middle": [
+      0.049673,
+      0.032403,
+      0.02127
+    ],
+    "ring": [
+      0.044952,
+      0.027688,
+      0.020074
+    ],
+    "little": [
+      0.0401,
+      0.023343,
+      0.019225
     ]
-   ],
-   "tip_m": [
-    0.002223607432184001,
-    -0.020012466889656008,
-    -0.0
-   ],
-   "joints": [
-    [
-     "mcp2_flexion",
-     "mcp2_abduction"
-    ],
-    [
-     "pm2_flexion"
-    ],
-    [
-     "md2_flexion"
-    ]
-   ],
-   "axes": [
-    [
-     [
-      0.9950125359914347,
-      0.09974995348316616,
-      0.0
-     ],
-     [
-      -0.05499898007863053,
-      0.08589896888623946,
-      0.994784639675639
-     ]
-    ],
-    [
-     [
-      0.975170276468341,
-      0.09983342830355166,
-      -0.19767705604297942
-     ]
-    ],
-    [
-     [
-      0.9950041652843545,
-      0.09983341658375151,
-      0.0
-     ]
-    ]
-   ],
-   "radii_m": [
-    0.011538622152915583,
-    0.010256553024813852,
-    0.008974483896712121
-   ]
   },
-  "middle": {
-   "root_m": [
-    0.005235483699077232,
-    -0.08959247885384175,
-    0.012765730268168341
-   ],
-   "bones_m": [
-    [
-     0.0018344761315518007,
-     -0.04915395409214343,
-     0.006926537151253164
+  "phalanx_radii_m": {
+    "thumb": [
+      0.010898,
+      0.008333
     ],
-    [
-     0.0015176120724655804,
-     -0.03229456254132434,
-     0.0021724644612437687
+    "index": [
+      0.011539,
+      0.010257,
+      0.008974
+    ],
+    "middle": [
+      0.011539,
+      0.010257,
+      0.008974
+    ],
+    "ring": [
+      0.010898,
+      0.009616,
+      0.008718
+    ],
+    "little": [
+      0.010257,
+      0.008974,
+      0.007692
     ]
-   ],
-   "tip_m": [
-    0.002223607432184001,
-    -0.021124270605748008,
-    -0.0011118037160920006
-   ],
-   "joints": [
-    [
-     "mcp3_flexion",
-     "mcp3_abduction"
-    ],
-    [
-     "pm3_flexion"
-    ],
-    [
-     "md3_flexion"
-    ]
-   ],
-   "axes": [
-    [
-     [
-      0.9800666589123603,
-      0.0,
-      0.19866893085825738
-     ],
-     [
-      -0.19866893085825738,
-      0.0,
-      0.9800666589123603
-     ]
-    ],
-    [
-     [
-      1.0,
-      0.0,
-      0.0
-     ]
-    ],
-    [
-     [
-      1.0,
-      0.0,
-      0.0
-     ]
-    ]
-   ],
-   "radii_m": [
-    0.011538622152915583,
-    0.010256553024813852,
-    0.008974483896712121
-   ]
   },
-  "ring": {
-   "root_m": [
-    -0.010989067929853331,
-    -0.08812378614488407,
-    0.006300591659093465
-   ],
-   "bones_m": [
-    [
-     -0.003922443510372578,
-     -0.04475565859128348,
-     0.0014953759981437406
-    ],
-    [
-     -0.0025760492101851652,
-     -0.0275605023182046,
-     0.0006259454921597962
-    ]
-   ],
-   "tip_m": [
-    -0.0011118037160920006,
-    -0.020012466889656008,
-    0.0011118037160920006
-   ],
-   "joints": [
-    [
-     "mcp4_flexion",
-     "mcp4_abduction"
-    ],
-    [
-     "pm4_flexion"
-    ],
-    [
-     "md4_flexion"
-    ]
-   ],
-   "axes": [
-    [
-     [
-      0.9004469005163807,
-      0.0,
-      0.4349659519438768
-     ],
-     [
-      -0.4349659519438768,
-      0.0,
-      0.9004469005163807
-     ]
-    ],
-    [
-     [
-      0.9210611176908945,
-      0.0,
-      0.389418049758868
-     ]
-    ],
-    [
-     [
-      0.8253359582957751,
-      0.0,
-      0.5646419714686419
-     ]
-    ]
-   ],
-   "radii_m": [
-    0.01089758758886472,
-    0.009615518460762987,
-    0.008718070071091774
-   ]
+  "digit_length_m": {
+    "thumb": 0.06100973712061786,
+    "index": 0.09543294785697565,
+    "middle": 0.10334663519134538,
+    "ring": 0.09271393911174083,
+    "little": 0.0826680565596497
   },
-  "little": {
-   "root_m": [
-    -0.0216812842675101,
-    -0.0791248468668355,
-    -0.003765679186403638
-   ],
-   "bones_m": [
-    [
-     -0.00586921181724967,
-     -0.03953907555537981,
-     -0.003200882898628869
-    ],
-    [
-     -0.0031919884689001333,
-     -0.022988765437634295,
-     -0.0024937757351943574
-    ]
-   ],
-   "tip_m": [
-    -0.0011118037160920006,
-    -0.01890066317356401,
-    -0.0033354111482760017
-   ],
-   "joints": [
-    [
-     "mcp5_flexion",
-     "mcp5_abduction"
-    ],
-    [
-     "pm5_flexion"
-    ],
-    [
-     "md5_flexion"
-    ]
-   ],
-   "axes": [
-    [
-     [
-      0.8253359582957751,
-      0.0,
-      0.5646419714686419
-     ],
-     [
-      -0.5646419714686419,
-      0.0,
-      0.8253359582957751
-     ]
-    ],
-    [
-     [
-      0.8253359582957751,
-      0.0,
-      0.5646419714686419
-     ]
-    ],
-    [
-     [
-      0.6431121484444494,
-      -0.22680405235137102,
-      0.7314141688265008
-     ]
-    ]
-   ],
-   "radii_m": [
-    0.010256553024813852,
-    0.008974483896712121,
-    0.00769241476861039
-   ]
-  }
- },
- "crease_to_mcp_offset_m": 0.02603252081665454,
- "crease_offset_over_hand_ratio": 0.13447609342001351,
- "finger_length_at_crease_m": 0.07690353049981266,
- "finger_length_at_joint_m": 0.10334663519134538,
- "finger_understated_by_crease_pct": 25.58680758456581,
- "model_scale_length_ratio": 1.1118037160920005,
- "model_scale_width_ratio": 1.2820691281017316,
- "model_breadth_over_length_ratio": 0.3962835746703254,
- "skeleton_source": "MyoSuite myo_sim MyoHand_v0.1.7, vendored at vendor/myo_sim (Apache 2.0); Caggiano et al. 2022. Used for GEOMETRY ONLY -- its body masses are round modelling numbers, not measurements.",
- "model_rotations_in_hand_count": 0,
- "phalanx_lengths_m": {
-  "thumb": [
-   0.034606,
-   0.026404
+  "phalanx_taper_ratio": [
+    0.6523222759569123,
+    0.6564202541538852
   ],
-  "index": [
-   0.047347,
-   0.027951,
-   0.020136
+  "bone_count": 27,
+  "carpal_count": 8,
+  "metacarpal_count": 5,
+  "phalanx_count": 14,
+  "dof_count": 22,
+  "dof_wrist_count": 2,
+  "dof_thumb_count": 4,
+  "dof_finger_count": 16,
+  "rom_total_rad": 29.114515,
+  "rom_mean_rad": 1.3233870454545456,
+  "synergy_dims_cited_count": 2,
+  "synergy_variance_cited_frac": 0.8,
+  "coupling_source": "Santello, Flanders & Soechting 1998, J Neurosci 18(23):10105-10115 -- two postural synergies span >80% of static hand-posture variance. QUOTED: the paper is not in this repo and nothing here measured it.",
+  "fingertip_reach_m": 0.19334428714039853,
+  "reach_over_hand_ratio": 0.9987578461124018,
+  "workspace_m3": 0.0009922825125835803,
+  "workspace_hull_m3": 0.0017619490468517643,
+  "workspace_grain_m": 0.006049523412161987,
+  "workspace_over_hand_cubed_ratio": 0.13677978515625,
+  "workspace_bracket_ratio": 1.7756526236305659,
+  "workspace_samples_count": 60000,
+  "aperture_max_m": 0.1910166212436639,
+  "aperture_min_m": 0.0006949337143046284,
+  "aperture_spread_m": 0.19170877506531964,
+  "aperture_over_hand_ratio": 0.9903092876286932,
+  "thumb_reach_m": 0.14300798461809067,
+  "thumb_reach_over_hand_ratio": 0.7387358002997125,
+  "opposition_gap_m": {
+    "index": 0.0006949337143046284,
+    "middle": 0.001798336668654522,
+    "ring": 0.0011476790566109193,
+    "little": 0.002575366045334172
+  },
+  "enclosable_cylinder_m": 0.06579251137046976,
+  "moment_arm_mcp_m": 0.01084223881863142,
+  "moment_arm_pip_m": 0.007748017020262789,
+  "moment_arm_dip_m": 0.0034157700927975173,
+  "moment_arm_index_m": [
+    0.008645746798592795,
+    0.008796944214759597,
+    0.005554627291163055
   ],
-  "middle": [
-   0.049673,
-   0.032403,
-   0.02127
+  "moment_arm_model_mcp_m": 0.008456828560160988,
+  "moment_arm_model_pip_m": 0.006043369152593766,
+  "moment_arm_model_dip_m": 0.002664263586047817,
+  "moment_arm_skin_bound_m": 0.011057846229877436,
+  "moment_arm_inside_bound_ratio": 0.9805018620476507,
+  "tip_lever_pip_m": 0.05367316719808495,
+  "tip_lever_dip_m": 0.02127005750204848,
+  "tendon_per_tip_pip_ratio": 6.927342448747553,
+  "tendon_per_tip_dip_ratio": 6.227016726593649,
+  "binding_joint": "mcp",
+  "tendon_per_tip_ratio": 9.531853791465412,
+  "hand_mass_kg": 0.5208708339150115,
+  "both_hands_mass_kg": 1.041741667830023,
+  "hand_mass_frac": 0.0061,
+  "hand_mass_scale_ratio": 1.0094420955129193,
+  "hand_volume_m3": 0.00035418828299805464,
+  "hand_density_kg_m3": 1470.6043619118602,
+  "tissue_density_kg_m3": 1050.0,
+  "hand_volume_expected_m3": 0.0004960674608714395,
+  "volume_shortfall_pct": 28.600782970958495,
+  "hand_com_from_wrist_m": 0.07436378741487656,
+  "hand_com_over_length_ratio": 0.3841407328126011,
+  "hand_inertia_wrist_kgm2": 0.004104857435466614,
+  "hand_inertia_com_kgm2": 0.0012244558506185861,
+  "hand_gyration_m": 0.04848490459897956,
+  "hand_gyration_over_length_ratio": 0.25045828662668546,
+  "rod_bound_ratio": 0.2886751345948129,
+  "de_leva_gyration_ratio": 0.628,
+  "de_leva_com_ratio": 0.79,
+  "mass_source": "de Leva P (1996) Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. J Biomech 29(9):1223-1230. Underlying data: gamma-ray scanning, 100 living adults.",
+  "finger_mass_kg": 0.04724821293040575,
+  "finger_com_from_mcp_m": 0.04473831829182995,
+  "finger_inertia_mcp_kgm2": 0.0001339723352322889,
+  "finger_swing_period_s": 0.594644285918916,
+  "finger_swing_rate_per_min": 100.90065846219436,
+  "height_m": 1.7550000000000001,
+  "g": 7.076122169232295,
+  "S_earth": 1.0048952107836961,
+  "skin_albedo_rgb": [
+    0.3318595067449445,
+    0.20134575735912405,
+    0.12327406515688077
   ],
-  "ring": [
-   0.044952,
-   0.027688,
-   0.020074
-  ],
-  "little": [
-   0.0401,
-   0.023343,
-   0.019225
-  ]
- },
- "phalanx_radii_m": {
-  "thumb": [
-   0.010898,
-   0.008333
-  ],
-  "index": [
-   0.011539,
-   0.010257,
-   0.008974
-  ],
-  "middle": [
-   0.011539,
-   0.010257,
-   0.008974
-  ],
-  "ring": [
-   0.010898,
-   0.009616,
-   0.008718
-  ],
-  "little": [
-   0.010257,
-   0.008974,
-   0.007692
-  ]
- },
- "digit_length_m": {
-  "thumb": 0.06100973712061786,
-  "index": 0.09543294785697565,
-  "middle": 0.10334663519134538,
-  "ring": 0.09271393911174083,
-  "little": 0.0826680565596497
- },
- "phalanx_taper_ratio": [
-  0.6523222759569123,
-  0.6564202541538852
- ],
- "bone_count": 27,
- "carpal_count": 8,
- "metacarpal_count": 5,
- "phalanx_count": 14,
- "dof_count": 22,
- "dof_wrist_count": 2,
- "dof_thumb_count": 4,
- "dof_finger_count": 16,
- "rom_total_rad": 29.114515,
- "rom_mean_rad": 1.3233870454545456,
- "synergy_dims_cited_count": 2,
- "synergy_variance_cited_frac": 0.8,
- "coupling_source": "Santello, Flanders & Soechting 1998, J Neurosci 18(23):10105-10115 -- two postural synergies span >80% of static hand-posture variance. QUOTED: the paper is not in this repo and nothing here measured it.",
- "fingertip_reach_m": 0.19334428714039853,
- "reach_over_hand_ratio": 0.9987578461124018,
- "workspace_m3": 0.0009922825125835803,
- "workspace_hull_m3": 0.0017619490468517643,
- "workspace_grain_m": 0.006049523412161987,
- "workspace_over_hand_cubed_ratio": 0.13677978515625,
- "workspace_bracket_ratio": 1.7756526236305659,
- "workspace_samples_count": 60000,
- "aperture_max_m": 0.1910166212436639,
- "aperture_min_m": 0.0006949337143046284,
- "aperture_spread_m": 0.19170877506531964,
- "aperture_over_hand_ratio": 0.9903092876286932,
- "thumb_reach_m": 0.14300798461809067,
- "thumb_reach_over_hand_ratio": 0.7387358002997125,
- "opposition_gap_m": {
-  "index": 0.0006949337143046284,
-  "middle": 0.001798336668654522,
-  "ring": 0.0011476790566109193,
-  "little": 0.002575366045334172
- },
- "enclosable_cylinder_m": 0.06579251137046976,
- "moment_arm_mcp_m": 0.01084223881863142,
- "moment_arm_pip_m": 0.007748017020262789,
- "moment_arm_dip_m": 0.0034157700927975173,
- "moment_arm_index_m": [
-  0.008645746798592795,
-  0.008796944214759597,
-  0.005554627291163055
- ],
- "moment_arm_model_mcp_m": 0.008456828560160988,
- "moment_arm_model_pip_m": 0.006043369152593766,
- "moment_arm_model_dip_m": 0.002664263586047817,
- "moment_arm_skin_bound_m": 0.011057846229877436,
- "moment_arm_inside_bound_ratio": 0.9805018620476507,
- "tip_lever_pip_m": 0.05367316719808495,
- "tip_lever_dip_m": 0.02127005750204848,
- "tendon_per_tip_pip_ratio": 6.927342448747553,
- "tendon_per_tip_dip_ratio": 6.227016726593649,
- "binding_joint": "mcp",
- "tendon_per_tip_ratio": 9.531853791465412,
- "hand_mass_kg": 0.5208708339150115,
- "both_hands_mass_kg": 1.041741667830023,
- "hand_mass_frac": 0.0061,
- "hand_mass_scale_ratio": 1.0094420955129193,
- "hand_volume_m3": 0.00035418828299805464,
- "hand_density_kg_m3": 1470.6043619118602,
- "tissue_density_kg_m3": 1050.0,
- "hand_volume_expected_m3": 0.0004960674608714395,
- "volume_shortfall_pct": 28.600782970958495,
- "hand_com_from_wrist_m": 0.07436378741487656,
- "hand_com_over_length_ratio": 0.3841407328126011,
- "hand_inertia_wrist_kgm2": 0.004104857435466614,
- "hand_inertia_com_kgm2": 0.0012244558506185861,
- "hand_gyration_m": 0.04848490459897956,
- "hand_gyration_over_length_ratio": 0.25045828662668546,
- "rod_bound_ratio": 0.2886751345948129,
- "de_leva_gyration_ratio": 0.628,
- "de_leva_com_ratio": 0.79,
- "mass_source": "de Leva P (1996) Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. J Biomech 29(9):1223-1230. Underlying data: gamma-ray scanning, 100 living adults.",
- "finger_mass_kg": 0.04724821293040575,
- "finger_com_from_mcp_m": 0.04473831829182995,
- "finger_inertia_mcp_kgm2": 0.0001339723352322889,
- "finger_swing_period_s": 0.594644285918916,
- "finger_swing_rate_per_min": 100.90065846219436,
- "height_m": 1.7550000000000001,
- "g": 7.076122169232295,
- "S_earth": 1.0048952107836961,
- "skin_albedo_rgb": [
-  0.3318595067449445,
-  0.20134575735912405,
-  0.12327406515688077
- ],
- "thumb_opposition_rad": {
-  "cmc_abduction": -0.00438248919644435,
-  "cmc_flexion": -0.1496483666703804,
-  "mp_flexion": -0.648846893331158,
-  "ip_flexion": -0.6026969949774116
- },
- "index_at_opposition_rad": {
-  "mcp2_flexion": 0.549681167999843,
-  "mcp2_abduction": -0.054311452704174784,
-  "pm2_flexion": 1.4123768297521762,
-  "md2_flexion": 0.5077032904102957
- },
- "timeline_serial": 24,
- "t_since_seed_s": 5757154536625856.0,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "thumb_opposition_rad": {
+    "cmc_abduction": -0.00438248919644435,
+    "cmc_flexion": -0.1496483666703804,
+    "mp_flexion": -0.648846893331158,
+    "ip_flexion": -0.6026969949774116
+  },
+  "index_at_opposition_rad": {
+    "mcp2_flexion": 0.549681167999843,
+    "mcp2_abduction": -0.054311452704174784,
+    "pm2_flexion": 1.4123768297521762,
+    "md2_flexion": 0.5077032904102957
+  },
+  "timeline_serial": 24,
+  "t_since_seed_s": 5757154536625856.0,
+  "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

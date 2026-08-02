@@ -1,56 +1,56 @@
 {
- "heart_rate_bpm": 77.29545753673742,
- "heart_rate_bpm_via_breath_coupling": 65.58374014420585,
- "respiratory_rate_per_min_allometric": 16.395935036051462,
- "heart_rate_source": "Stahl 1967 mammalian allometry HR = 241*M^-0.25; over-predicts for humans (77.3 vs a measured resting 60-70), and both routes are published rather than one being chosen",
- "pulse_blood_swing_frac": 0.06,
- "beats_per_stride": 4.442781121541778,
- "extent_m": 1.7550000000000001,
- "duration_s": 3.44867442133726,
- "epidermis_m": 6e-05,
- "epidermis_over_stature": 3.4188034188034184e-05,
- "melanin_fraction": 0.135,
- "melanin_class": "moderate",
- "blood_fraction": 0.002,
- "skin_albedo_rgb": [
-  0.3318595067449445,
-  0.20134575735912405,
-  0.12327406515688077
- ],
- "skin_bands_nm": [
-  615.0,
-  535.0,
-  465.0
- ],
- "skin_sss_mfp_mm": [
-  0.36432813188367275,
-  0.24043726380671876,
-  0.1560017163632821
- ],
- "skin_area_m2": 2.007140265043732,
- "spectrum_nm": [
-  415,
-  465,
-  535,
-  577,
-  615,
-  700,
-  800,
-  940
- ],
- "spectrum_reflectance": [
-  0.041918986455505854,
-  0.12327406515688077,
-  0.20134575735912405,
-  0.23517655009288374,
-  0.3318595067449445,
-  0.39439563888168183,
-  0.41865195440369807,
-  0.41588906158445593
- ],
- "sss_red_over_blue": 2.335411047883984,
- "optics_source": "Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json)",
- "timeline_serial": 29,
- "t_since_seed_s": 5757154536625858.0,
- "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+  "heart_rate_bpm": 77.29545753673742,
+  "heart_rate_bpm_via_breath_coupling": 65.58374014420585,
+  "respiratory_rate_per_min_allometric": 16.395935036051462,
+  "heart_rate_source": "Stahl 1967 mammalian allometry HR = 241*M^-0.25; over-predicts for humans (77.3 vs a measured resting 60-70), and both routes are published rather than one being chosen",
+  "pulse_blood_swing_frac": 0.06,
+  "beats_per_stride": 4.442781121541778,
+  "extent_m": 1.7550000000000001,
+  "duration_s": 3.44867442133726,
+  "epidermis_m": 6e-05,
+  "epidermis_over_stature": 3.4188034188034184e-05,
+  "melanin_fraction": 0.135,
+  "melanin_class": "moderate",
+  "blood_fraction": 0.002,
+  "skin_albedo_rgb": [
+    0.3318595067449445,
+    0.20134575735912405,
+    0.12327406515688077
+  ],
+  "skin_bands_nm": [
+    615.0,
+    535.0,
+    465.0
+  ],
+  "skin_sss_mfp_mm": [
+    0.36432813188367275,
+    0.24043726380671876,
+    0.1560017163632821
+  ],
+  "skin_area_m2": 2.007140265043732,
+  "spectrum_nm": [
+    415,
+    465,
+    535,
+    577,
+    615,
+    700,
+    800,
+    940
+  ],
+  "spectrum_reflectance": [
+    0.041918986455505854,
+    0.12327406515688077,
+    0.20134575735912405,
+    0.23517655009288374,
+    0.3318595067449445,
+    0.39439563888168183,
+    0.41865195440369807,
+    0.41588906158445593
+  ],
+  "sss_red_over_blue": 2.335411047883984,
+  "optics_source": "Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json)",
+  "timeline_serial": 29,
+  "t_since_seed_s": 5757154536625858.0,
+  "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

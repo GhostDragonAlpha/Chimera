@@ -81,6 +81,35 @@ def timeline():
     return rows
 
 
+NOTE = ("sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an "
+        "absolute epoch, because the story publishes process spans and not yet the waiting "
+        "between them")
+
+
+def stamp(rows=None) -> int:
+    """Publish the epoch into every numbers.json. Called by `--write` AND by grow.py's own tail.
+
+    WHY grow.py CALLS THIS. `grow` rebuilds each numbers.json from `derive()`, which knows nothing
+    about the timeline, so for a while every `python story/grow.py` silently STRIPPED these two keys
+    off all 42 membranes -- and nothing complained. The numbers stayed right, chain_witness passed,
+    the methodology gate scored 42/42, and the story's chapter order quietly lost its consumer.
+    Two writers to one file, and the generator wins (`docs/THE_ORDER.md`'s one-writer rule).
+
+    `indent=2` MATTERS: grow writes at indent 2, and this used to write at indent 1, so a re-stamp
+    that changed no value still rewrote all 42 files and showed up as a diff. A formatting
+    disagreement between two writers is a permanently dirty tree, which is how a real stray change
+    becomes invisible.
+    """
+    rows = rows if rows is not None else timeline()
+    for r in rows:
+        d = json.loads(r["file"].read_text(encoding="utf8"))
+        d["timeline_serial"] = r["serial"]
+        d["t_since_seed_s"] = r["t_end_s"]
+        d["t_since_seed_note"] = NOTE
+        r["file"].write_text(json.dumps(d, indent=2), encoding="utf8")
+    return len(rows)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--write", action="store_true",
@@ -96,17 +125,7 @@ def main() -> int:
               f"{'  ' * (r['depth'] - 1)}{r['name']}")
 
     if a.write:
-        n = 0
-        for r in rows:
-            d = json.loads(r["file"].read_text(encoding="utf8"))
-            d["timeline_serial"] = r["serial"]
-            d["t_since_seed_s"] = r["t_end_s"]
-            d["t_since_seed_note"] = ("sum of duration_s down the path from theZero: exact as an "
-                                      "ORDERING, approximate as an absolute epoch, because the "
-                                      "story publishes process spans and not yet the waiting "
-                                      "between them")
-            r["file"].write_text(json.dumps(d, indent=1), encoding="utf8")
-            n += 1
+        n = stamp()
         print(f"\npublished timeline_serial + t_since_seed_s into {n} membranes")
     else:
         print("\n(--write to publish these into numbers.json)")
