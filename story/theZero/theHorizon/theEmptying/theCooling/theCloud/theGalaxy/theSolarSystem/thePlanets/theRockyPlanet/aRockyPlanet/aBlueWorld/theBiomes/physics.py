@@ -69,8 +69,7 @@ def derive(parent, free):
     return {
         "extent_m": float(parent["extent_m"]),
         "duration_s": float(parent.get("year_s", 3.1557e7)),   # the movie is ONE YEAR (seasons)
-        "g": float(parent["g"]), "R": float(parent["extent_m"]),
-        # the climate axes, handed to the instance
+        "g": float(parent["g"]),         # the climate axes, handed to the instance
         "T_surface": float(parent["T_surface"]),
         "T_equator": float(parent.get("T_equator", parent["T_surface"])),
         # THE SAME TWO NUMBERS IN THE UNIT THIS MEMBRANE'S OWN TABLE READS. The pair above are

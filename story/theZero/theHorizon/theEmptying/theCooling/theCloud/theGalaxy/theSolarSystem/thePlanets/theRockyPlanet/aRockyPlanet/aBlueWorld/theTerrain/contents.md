@@ -18,7 +18,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 8.64e+04 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `area_m2` | 3.472e+14 |
 | `max_relief_m` | 1.047e+04 |
 | `continental_fraction` | 0.4 |

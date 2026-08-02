@@ -212,7 +212,7 @@ def derive(parent, free):
         # exactly the rhythm a person standing on the ground would recognise.
         "duration_s": float(parent["day_s"]),
 
-        "g": g, "R": R, "area_m2": area,
+        "g": g, "area_m2": area,
         "max_relief_m": h_max,
         "continental_fraction": f_c,
         "h_continent_m": h_cont,

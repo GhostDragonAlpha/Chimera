@@ -54,8 +54,7 @@ def derive(parent, free):
     return {
         "extent_m": R,
         "duration_s": float(parent.get("day_s", 86400.0)),
-        "g": g, "R": R,
-        # the raw state of this world's air, handed to the instance
+        "g": g,         # the raw state of this world's air, handed to the instance
         "P_surface_bar": float(parent["P_surface_bar"]),
         "scale_height_m": float(parent["scale_height_m"]),
         "T_surface": float(parent["T_surface"]),
@@ -106,7 +105,7 @@ def emit(nums, t=1.0):
 
     RAYLEIGH_TAU_550 = 0.0973    # Earth's measured Rayleigh optical depth at 550 nm, zenith
     EXPOSURE = 7.0               # LENS: how far the shutter is opened. Not a fact about the air.
-    H_over_R = float(nums["scale_height_m"]) / float(nums["R"])
+    H_over_R = float(nums["scale_height_m"]) / float(nums["extent_m"])
     EXAGGERATION = 12.0                 # DECLARED. See the docstring: it scales what exists.
     H = H_over_R * EXAGGERATION
 

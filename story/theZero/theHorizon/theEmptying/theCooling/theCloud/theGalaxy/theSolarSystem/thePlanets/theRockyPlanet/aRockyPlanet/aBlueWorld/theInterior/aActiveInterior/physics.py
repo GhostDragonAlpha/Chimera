@@ -138,8 +138,7 @@ def derive(parent, free):
     return {
         "extent_m": R,
         "duration_s": float(parent["duration_s"]),
-        "g": g, "R": R,
-        "crust_thickness_km": crust_km,
+        "g": g,         "crust_thickness_km": crust_km,
         "crust_oceanic_km": crust_oceanic_km,
         "mantle_thickness_km": mantle_km,
         "mohorovicic_depth_km": moho_km,

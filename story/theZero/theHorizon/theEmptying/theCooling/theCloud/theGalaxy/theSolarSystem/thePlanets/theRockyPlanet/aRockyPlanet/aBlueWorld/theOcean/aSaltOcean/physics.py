@@ -143,8 +143,7 @@ def derive(parent, free):
     return {
         "extent_m": R,
         "duration_s": day_s,
-        "g": g, "R": R,
-        "M_water": M_w,
+        "g": g,         "M_water": M_w,
         "ocean_fraction": f_oc,
         "ocean_volume_m3": volume,
         "mean_ocean_depth_m": mean_depth,

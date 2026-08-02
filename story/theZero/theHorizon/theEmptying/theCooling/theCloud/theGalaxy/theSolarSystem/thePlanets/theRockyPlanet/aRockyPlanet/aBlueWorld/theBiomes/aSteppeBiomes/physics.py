@@ -152,8 +152,7 @@ def derive(parent, free):
     return {
         "extent_m": R,
         "duration_s": year_s,                              # the movie is ONE YEAR -- the seasons
-        "g": g, "R": R,
-        # the climate axes, carried for emit() -- nothing typed there
+        "g": g,         # the climate axes, carried for emit() -- nothing typed there
         "T_mean_C": T_mean_C,
         "dT_equator_pole": dT,
         "hadley_edge_deg": hadley_edge,

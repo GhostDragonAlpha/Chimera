@@ -16,7 +16,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 1.42e+17 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `crust_thickness_km` | 30 |
 | `crust_oceanic_km` | 7 |
 | `mantle_thickness_km` | 3018 |

@@ -18,7 +18,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 8.64e+04 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `M_water` | 6.791e+20 |
 | `ocean_fraction` | 0.6838 |
 | `T_surface` | 279.2 |

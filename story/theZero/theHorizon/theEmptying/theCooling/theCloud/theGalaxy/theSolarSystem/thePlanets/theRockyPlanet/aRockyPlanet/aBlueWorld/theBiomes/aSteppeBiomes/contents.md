@@ -16,7 +16,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 3.311e+07 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `T_mean_C` | 6.041 |
 | `dT_equator_pole` | 45 |
 | `hadley_edge_deg` | 12.69 |

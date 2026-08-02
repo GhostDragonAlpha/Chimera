@@ -195,8 +195,7 @@ def derive(parent, free):
     return {
         "extent_m": R,
         "duration_s": day_s,
-        "g": g, "R": R,
-        "P_surface_bar": P / 1e5,
+        "g": g,         "P_surface_bar": P / 1e5,
         "scale_height_m": H,
         "mean_molar_mass": mean_molar_mass,
         "c_p_J_kgK": c_p,

@@ -163,7 +163,7 @@ def derive(parent, free):
         "interior_class": "Magnetised" if dynamo else "Dead",
 
         # carried down: the climate below needs everything the parent gave it, plus the shield
-        "M": M, "R": R, "g": float(parent["g"]),
+        "M": M, "g": float(parent["g"]),
         "rho_bulk": rho,
         "S": float(parent["S"]), "S_earth": float(parent["S_earth"]),
         "T_bare": float(parent["T_bare"]),

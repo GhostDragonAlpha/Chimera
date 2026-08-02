@@ -36,7 +36,6 @@
 | `strip_time_gyr` | None |
 | `interior_class` | Magnetised |
 | `M` | 2.929e+24 |
-| `R` | 5.256e+06 |
 | `g` | 7.076 |
 | `rho_bulk` | 4815 |
 | `S` | 1368 |

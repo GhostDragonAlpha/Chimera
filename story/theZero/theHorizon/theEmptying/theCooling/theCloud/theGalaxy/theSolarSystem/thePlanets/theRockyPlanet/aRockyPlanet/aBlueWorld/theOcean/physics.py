@@ -52,8 +52,7 @@ def derive(parent, free):
     return {
         "extent_m": float(parent["extent_m"]),
         "duration_s": float(parent.get("day_s", 86400.0)),
-        "g": float(parent["g"]), "R": float(parent["extent_m"]),
-        # the raw state of this world's water, handed to the instance
+        "g": float(parent["g"]),         # the raw state of this world's water, handed to the instance
         "M_water": float(parent["M_water"]),
         "ocean_fraction": float(parent["ocean_fraction"]),
         "T_surface": T,
@@ -124,7 +123,7 @@ def emit(nums, t=1.0):
     # as a fraction of the planet's radius the waves are invisible, so they are drawn at the same
     # DECLARED exaggeration principle theAtmosphere uses: scale what exists, never mint it.
     rng = np.random.default_rng(79)
-    rough = (Hs_m / float(nums["R"])) * 2.0e4
+    rough = (Hs_m / float(nums["extent_m"])) * 2.0e4
     disp = 1.0 + rough * (rng.random(n) - 0.5) * (~frozen)
 
     P = d * disp[:, None]

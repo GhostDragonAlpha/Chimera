@@ -18,7 +18,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 8.64e+04 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `P_surface_bar` | 0.5199 |
 | `scale_height_m` | 1.131e+04 |
 | `T_surface` | 279.2 |

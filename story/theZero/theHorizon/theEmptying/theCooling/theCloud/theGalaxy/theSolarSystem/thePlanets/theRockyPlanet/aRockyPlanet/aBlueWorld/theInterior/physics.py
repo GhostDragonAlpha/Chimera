@@ -63,8 +63,7 @@ def derive(parent, free):
         "extent_m": float(parent["extent_m"]),
         "duration_s": 4.5e9 * 3.1557e7,     # the cooling span -- Earth's own age as the reference;
                                             # this system's age is NOT yet derived in the story (said so)
-        "g": float(parent["g"]), "R": float(parent["extent_m"]),
-        "M": M,
+        "g": float(parent["g"]),         "M": M,
         "core_radius_frac": float(parent["core_radius_frac"]),
         "core_R_m": float(parent["core_R_m"]),
         "core_mass_frac": core_mf,

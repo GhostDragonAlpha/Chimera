@@ -18,7 +18,6 @@
 | `extent_m` | 5.256e+06 |
 | `duration_s` | 3.311e+07 |
 | `g` | 7.076 |
-| `R` | 5.256e+06 |
 | `T_surface` | 279.2 |
 | `T_equator` | 294.2 |
 | `T_surface_C` | 6.041 |
