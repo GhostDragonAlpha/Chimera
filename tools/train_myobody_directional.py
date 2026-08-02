@@ -134,8 +134,24 @@ P_CMD = (0.34, 0.22, 0.22, 0.22)
 # STAG_FRAC * target pays STAG_W. The smoother is an EMA with ~0.5 s time constant, so the
 # first steps of acceleration (and normal gait speed ripple) are not punished -- a fresh
 # episode starts with the EMA seeded AT target, and it has to sag below the threshold first.
-STAG_W = 0.3                      # comparable to the track term's 0.5 * W_TRACK
-STAG_FRAC = 0.1                   # penalty region: EMA speed < 10% of the command's target
+# ROUND 6 -- THE PARKING EXPLOIT, MEASURED AND PRICED. Round 4's policy walked at 0.17-0.29 m/s
+# against a 1.285 m/s target and would not go faster, and the render showed why: it holds a
+# crouch and shuffles. The arithmetic was the whole story.
+#
+#   stagnation floor = STAG_FRAC * target = 0.10 * 1.285 = 0.13 m/s
+#   the policy sat at 0.19 m/s -- ABOVE the floor, so the penalty never fired
+#   velocity paid 1.2 * (0.19/1.285) = 0.18 per step
+#   ALIVE_BONUS paid 0.8 per step, unconditionally, for not falling
+#
+# Standing still paid 4.4x what moving paid. The policy was not failing to learn; it found the
+# optimum and sat in it. A crouched shuffle clears a 10% bar forever.
+#
+# So the bar moves to where walking actually begins and the penalty is priced against the alive
+# bonus rather than against the track term. At 0.19 m/s the penalty now fires and costs 1.0
+# against an alive bonus of 0.8 -- parking is NET NEGATIVE. At 0.7 m/s it does not fire and the
+# step pays ~1.45. For the first time there is a gradient from shuffle to walk.
+STAG_W = 1.0                      # priced against ALIVE_BONUS (0.8), not against the track term
+STAG_FRAC = 0.45                  # below 45% of target is not walking, it is parking
 STAG_TAU_S = 0.5                  # EMA time constant, seconds
 
 BODIES = {'hip_r': 'femur_r', 'knee_r': 'tibia_r', 'ankle_r': 'talus_r', 'toe_r': 'toes_r',
@@ -202,6 +218,24 @@ def main() -> int:
 
     envs = int(sys.argv[sys.argv.index('--envs') + 1]) if '--envs' in sys.argv else 1024
     budget = float(sys.argv[sys.argv.index('--seconds') + 1]) if '--seconds' in sys.argv else 840.0
+
+    # ── THE REWARD TERMS, OVERRIDABLE, SO VARIANTS CAN RUN SIDE BY SIDE ──────────────────────
+    # The parking exploit was found by reading arithmetic, and the FIX was chosen by the same
+    # reading -- which is a guess wearing a derivation's clothes until something measures it.
+    # The box has 24.5 GiB of VRAM and a run takes ~5, so three or four variants fit at once and
+    # the question stops being "is this the right price" and becomes "which price wins".
+    #
+    # ONE VARIABLE PER VARIANT. Three simultaneous changes have no attributable outcome: if it
+    # works you cannot say why, and if it fails you know less than when you started.
+    global ALIVE_BONUS, STAG_FRAC, STAG_W, EFFORT
+    def _argf(flag, cur):
+        return float(sys.argv[sys.argv.index(flag) + 1]) if flag in sys.argv else cur
+    ALIVE_BONUS = _argf('--alive', ALIVE_BONUS)
+    STAG_FRAC = _argf('--stag-frac', STAG_FRAC)
+    STAG_W = _argf('--stag-w', STAG_W)
+    EFFORT = _argf('--effort', EFFORT)
+    print(f'  REWARD  alive={ALIVE_BONUS}  stag_frac={STAG_FRAC}  stag_w={STAG_W}  '
+          f'effort={EFFORT}', flush=True)
     init = Path(sys.argv[sys.argv.index('--init') + 1]) if '--init' in sys.argv \
         else HERE / 'output' / 'myobody_walk_directional_policy.pt'   # round 2: own round-1 result
     out = Path(sys.argv[sys.argv.index('--out') + 1]) if '--out' in sys.argv else OUT_PT
