@@ -30,7 +30,7 @@
 ## THE WHOLE THING ON ONE PAGE
 
 ```
-  ┌─ THE DAY ───────────────────────────────────────────────────────────────┐
+  ┌─ THE DAY — and it is a LOOP OF TURNS, not a pipeline (§0) ──────────────┐
   │                                                                          │
   │   ORIENT ── read the state, never guess it                              │
   │      ▼                                                                   │
@@ -51,8 +51,13 @@
   │      ▼                                                                   │
   │   CHECK ─── grow → witness → folding → gate → timeline → slider         │
   │      ▼      in that order, every time                                    │
+  │   LOOK ──── a SECOND system reads the turn's output. This is where a     │
+  │      │      correction can happen, and the only place it ever has.       │
+  │      ▼                                                                   │
   │   COMMIT ── branch + SHA, the numbers and their comparisons in the msg   │
-  │                                                                          │
+  │      │                                                                   │
+  │      └───► NEXT TURN.  How many turns does your plan have? One is a      │
+  │            monad, however long you run it.                               │
   └──────────────────────────────────┬───────────────────────────────────────┘
                                      ▼
                         THE NIGHT ── the day's failures become rules
@@ -63,7 +68,55 @@ Two terminals, and only two: **PHYSICS** (a fact true in an empty universe) and 
 
 ---
 
-## 0 · WHO DOES WHAT
+## 0 · THE DYAD IS THE DRIVER, NOT A GATE — the concept this document was missing
+
+> **Added 2026-08-02, after the consolidation shipped without it.** The first version of this file
+> put the dyad at **S7**: a checkpoint near the end of proving one membrane, where a number meets a
+> blind eye's term and they must agree. That is *a* use of the dyad. It is not what the dyad **is**,
+> and building the method around the smaller reading produced a monad with a checklist.
+>
+> `Chimera/core/dyad.py`, first line: **"THE DRIVER. Two minds that drive development, turn by
+> turn."**
+
+    drive()  ->  execute  ->  report()  ->  drive()  ->  ...     until the human stops it
+
+**The loop is the method. The stages are what happens inside one turn.** S0–S8 is not a pipeline you
+run once from end to end; it is the shape of a single turn, and the turns are where the work
+actually lives — because a correction can only happen *between* turns, and a correction is the only
+thing that ever changed anything here.
+
+**THE TEST, and it is brutal: how many turns does your plan contain?** A six-hour batch job contains
+**one**. It satisfies every stage of this document — targets derived, gravity read, gate passed,
+envelope Froude-matched — and it cannot be corrected, because nothing looks at it until it is over.
+Measured on 2026-08-02: a run reported `surv% = 92.8` while the body crouched at 13% of its target
+speed. **The number designed to report success reported success.** Six hours of that is not six
+hours of training; it is six hours of one unchallenged claim compounding, with a loss curve as its
+alibi.
+
+    A MONAD RUNNING LONGER IS STILL A MONAD. IT IS JUST A MONAD YOU HAVE INVESTED IN.
+
+**Every real finding in this project came from a turn ending and someone looking:** `-9.81` on the
+third line of a rollout, a knee 92.1% out of phase, an ankle demanding 15° of Earth push-off, a
+witness holding its own stale copy of a leg. Not one came from a converging curve.
+
+**So the cadence is the design decision, and it is made BEFORE the work, not after:**
+
+- **Every turn ends in something a second system can read** — a picture, a number a different
+  instrument produced, a measure with a derived pass/fail. A turn that ends in "it is still running"
+  is not a turn.
+- **Prefer more turns to longer turns.** If a plan cannot be cut into turns, that is the finding:
+  the thing being built has no observable intermediate, which means it also has no observable
+  failure.
+- **The two minds must stay de-coupled** — that is what every seam in this engine is for (blind
+  reading, a separate process, `via='mcp'`, "an LLM is never a terminal"). Two coupled systems
+  agreeing is **bimanual interference**, not proof.
+- **The human is one of the two minds.** Attention, correction and insight are not overhead around
+  the method; they *are* the method's second half. `core/council.py` (FAST proposes, DEEP
+  pressure-tests) is the same shape when the operator is away — it is not a substitute for them.
+
+---
+
+## 0b · WHO DOES WHAT
 
 | | **THE HUMAN** | **THE AGENT** |
 |---|---|---|
