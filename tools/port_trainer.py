@@ -126,11 +126,28 @@ def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
             tr["out"].append(np.degrees(out)); tr["z"].append(float(d.qpos[2]))
     if ren is not None:
         ren.close()
-    # AND THE SCORE MUST PAY FOR THE TIME IT DID NOT SURVIVE UNDER LOAD, or falling early is
-    # still free: an average over three samples of a standing body would otherwise beat an
-    # average over 250 samples of one that wobbled honestly.
-    frac = n / max(steps // 20, 1)
-    return float(tot / max(n, 1)) * frac, tr, pics
+    # SURVIVAL IS A PRECONDITION, NOT A DIVISOR -- and that distinction is the whole fix.
+    #
+    # This was `mean(hold) * frac_survived`. Eight turns later every column said progress: mean
+    # monotonic, drift inside the 8.6 deg band three turns running. Then the picture: THE X-AXIS
+    # ENDED AT 0.42 s of a 5.0 s rollout, and the filmstrip said "1 frames under load".
+    #
+    #     "WORST DRIFT 8.1 DEG" WAS THE DRIFT OVER 0.42 SECONDS.
+    #
+    # max(drift) IS NOT COMPARABLE ACROSS EPISODES OF DIFFERENT LENGTH: a short window has fewer
+    # chances to exceed a bar. The drift never shrank -- the measurement window did. Having closed
+    # the "lie on the floor and farm the hold term" exploit last turn by gating on load, the
+    # optimiser simply moved to LEAVING the loaded state faster, and a multiplicative frac was
+    # not enough to make that unprofitable. Two exploits, two turns, both found by looking.
+    #
+    # A weight lets a short episode BUY its way past the bar. A precondition does not. So the
+    # score is the mean hold ONLY if the port carried for the whole episode; short of that it is
+    # the survived fraction alone, which is strictly worse than any full-length run and orders
+    # candidates by how long they carried -- the thing actually being asked for.
+    full = steps // 20
+    if n < full:
+        return float(n) / max(full, 1) - 1.0, tr, pics       # always < 0; a full run is always > 0
+    return float(tot / max(n, 1)), tr, pics
 
 
 def draw(port, turn, tr, pics, hist, path, nmus):
