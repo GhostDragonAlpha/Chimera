@@ -32,6 +32,37 @@ from stand_port import derive_stand_port, stand_reward
 MYOBODY = ROOT / "external" / "myo_sim" / "body" / "myobody.xml"
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 
+# THE PRIMARY LEG JOINTS. The model also carries `knee_angle_*_beta_*`, `*_translation*` and
+# `*_rotation*` -- the coupled DOFs of the knee's four-bar mechanism, driven by knee_angle, not
+# independently actuated. Grading the body on those would be grading it on the consequences of a
+# joint it already has, twice. One quantity, one landmark (rule 19).
+PRIMARY = ("hip_flexion", "hip_adduction", "hip_rotation", "knee_angle",
+           "ankle_angle", "subtalar_angle", "mtp_angle")
+
+
+def joint_ids(m, mujoco):
+    """Every primary leg joint and its published range, read from the model. No defaults."""
+    out = []
+    for j in range(m.njnt):
+        n = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, j) or ""
+        base = n.rsplit("_", 1)[0] if n.endswith(("_r", "_l")) else n
+        if base in PRIMARY and m.jnt_limited[j]:
+            lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+            out.append((int(m.jnt_qposadr[j]), 0.5 * (lo + hi), max(0.5 * (hi - lo), 1e-6), n))
+    if not out:
+        raise SystemExit("no primary leg joints found -- refusing to grade joints on nothing.")
+    return out
+
+
+def joint_frac(d, jids):
+    """How close the worst joint is to its limit. 0 = mid-range, 1 = at the stop.
+
+    THIS WAS HARDCODED 0.0 FOR THE FIRST THREE TURNS, so the `joints` factor of stand_reward was
+    exp(0) = 1.0 always: a term in a derived reward silently doing nothing, and the body was free
+    to fling a limb to its stop at no cost. Named in the previous commit rather than found later.
+    """
+    return max(abs(float(d.qpos[adr]) - c) / h for adr, c, h, _ in jids)
+
 
 def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     """One life under a candidate. Returns (score, trace, pics).
@@ -42,6 +73,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     fall rate that makes the second one urgent.
     """
     nu = m.nu
+    jids = joint_ids(m, mujoco)
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
@@ -49,7 +81,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
-    tr = {"t": [], "z": [], "comx": [], "comy": [], "r": []}
+    tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": []}
     pics, tot, n, fell = [], 0.0, 0, False
     for k in range(steps):
         if k % 20 == 0:
@@ -69,10 +101,11 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
             dx, dy = float(com[0] - foot[0]), float(com[1] - foot[1])
             if z < 0.5 * tgt:
                 fell = True
-            r, _ = stand_reward(z, (dx, dy), 0.0, False, float(np.abs(d.ctrl).mean()), P)
+            jf = joint_frac(d, jids)
+            r, _ = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["z"].append(z)
-            tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r)
+            tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r); tr["jf"].append(jf)
         if fell:
             break
     if ren is not None:
@@ -108,6 +141,10 @@ def draw_turn(turn, P, tr, pics, hist, path):
     ax.plot([h[0] for h in hist], [h[1] for h in hist], "o-", color="#2471a3")
     ax.set_xlabel("turn"); ax.set_ylabel("best score")
     ax.set_title("what moved, turn by turn", fontsize=9)
+    if tr.get("jf"):
+        ax2 = ax.twinx(); ax2.plot(tr["t"], tr["jf"], color="#8e44ad", lw=1.0, alpha=0.55)
+        ax2.set_ylabel("worst joint, frac of range", color="#8e44ad", fontsize=7)
+        ax2.axhline(0.8, color="#8e44ad", ls=":", lw=1.0)
     hi = min(tr["z"]) if tr["z"] else 0.0
     fig.suptitle(f"STAND PORT — training turn {turn}   pelvis peak {hi:.3f} m / target {tgt:.3f} m "
                  f"= {100*hi/tgt:.0f}%", fontsize=11.5)
@@ -135,7 +172,7 @@ def main() -> int:
 
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
           f"g {g:.4f}, {nu} muscles, {dim}-dim search")
-    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}  verdict")
+    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}  verdict")
     best_theta = mu.copy()
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
@@ -157,7 +194,8 @@ def main() -> int:
         ok = frac >= 90.0 and survived >= 4.99
         hist.append((turn, float(scores[order[0]])))
         print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
-              f"{frac:>12.0f}%{survived:>8.2f}s  {'PROVEN' if ok else 'not yet'}")
+              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}  "
+              f"{'PROVEN' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"stand_turn_{turn:02d}.png")
     np.save(OUTDIR / "stand_theta.npy", best_theta)
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")
