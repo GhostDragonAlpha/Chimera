@@ -63,6 +63,13 @@ PORTS = {
     "ankle": ("ankle_angle_r", "ankle_angle_l", "subtalar_angle_r", "subtalar_angle_l",
               "mtp_angle_r", "mtp_angle_l"),      # the distal port, all three rows at once
     "foot":  ("subtalar_angle_r", "subtalar_angle_l", "mtp_angle_r", "mtp_angle_l"),
+    # THE TRUNK PORT -- the theory's test, earned by the legs plateauing at 36% of the bar.
+    # Five lumbar levels, each with flexion/extension, lateral bending and axial rotation, plus
+    # the torso's own three. 162 of the body's 290 muscles cross these; 210 of 290 (72%) had
+    # never been in any port. You do not put 162 actuators on a passive column.
+    "trunk": ("flex_extension", "axial_rotation", "lat_bending",
+              "L1_L2_FE", "L1_L2_LB", "L1_L2_AR", "L2_L3_FE", "L2_L3_LB", "L2_L3_AR",
+              "L3_L4_FE", "L3_L4_LB", "L3_L4_AR", "L4_L5_FE", "L4_L5_LB", "L4_L5_AR"),
 }
 
 

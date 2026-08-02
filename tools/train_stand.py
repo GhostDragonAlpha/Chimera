@@ -37,7 +37,13 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 # independently actuated. Grading the body on those would be grading it on the consequences of a
 # joint it already has, twice. One quantity, one landmark (rule 19).
 PRIMARY = ("hip_flexion", "hip_adduction", "hip_rotation", "knee_angle",
-           "ankle_angle", "subtalar_angle", "mtp_angle")
+           "ankle_angle", "subtalar_angle", "mtp_angle",
+           # THE TRUNK, added when the legs plateaued at 36%. Its joints were never in the
+           # PRIMARY list, so `joint_frac` never graded them and `seat_in_limits` never seated
+           # them: 47 kg of body above the pelvis, ungraded and unseated, for this entire session.
+           "flex_extension", "axial_rotation", "lat_bending",
+           "L1_L2_FE", "L1_L2_LB", "L1_L2_AR", "L2_L3_FE", "L2_L3_LB", "L2_L3_AR",
+           "L3_L4_FE", "L3_L4_LB", "L3_L4_AR", "L4_L5_FE", "L4_L5_LB", "L4_L5_AR")
 
 
 def joint_ids(m, mujoco):
