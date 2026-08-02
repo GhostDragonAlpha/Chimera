@@ -19,20 +19,40 @@ mark where the body we have stops existing.
 > Write them all. Derive every variable. Calculate every torque, every moment arm, every
 > activation."*
 
-The chain is right. **Six of its eleven links do not exist in this body**, and writing their
-physics would be writing fiction with the confidence of a derivation. Measured from the model,
-2026-08-02:
+The chain is right, and **two of its eleven links are missing — not six.**
 
-    bodies in myobody.xml                        26
-    primary limited joints ABOVE the pelvis      NONE
-    the pelvis's children                        femur_r, femur_l  — and nothing else
+> **CORRECTION, same day.** The first version of this file said *"There is no spine. No ribs. No
+> shoulders. No arms. No hands."* **That was false, and it was false because of how I looked.**
+> I walked the kinematic tree DOWNWARD FROM THE PELVIS and reported what I found. The sacrum is a
+> **SIBLING** of the pelvis — both hang off `Full Body` — so the entire upper body was structurally
+> invisible to that traversal. It reported "NONE" where the honest answer was "I did not look there."
+>
+> The mass said so and I did not listen: the chain I printed summed to ~35 kg of an 82 kg body.
+> **A 47 kg discrepancy is not a rounding error; it is a missing half.**
 
-**There is no spine. No ribs. No shoulders. No arms. No hands.** myoBody as loaded is a pelvis and
-two legs. The pelvis is the root of the kinematic tree; above it there is nothing to derive a port
-from, because there is no joint.
+**WHAT THE BODY ACTUALLY HAS**, all 26 bodies, read with their parents rather than walked from one:
 
-That is not a defect in the body — it is a **scope boundary**, and it belongs in the story rather
-than being discovered later by an agent trying to train a shoulder that isn't there.
+    Full Body (massless root)
+      ├─ sacrum 7.486
+      │    └─ lumbar5 1.824 → lumbar4 1.799 → lumbar3 1.670 → lumbar2 1.689 → lumbar1 1.677
+      │         └─ torso 18.619  →  neck 1.403  →  head 7.555
+      │         └─ Abdomen 0.010
+      └─ pelvis 10.960
+           ├─ femur_r 8.400 → tibia_r 3.800 → talus_r 0.021 → calcn_r 1.140 → toes_r 0.285
+           └─ femur_l 8.400 → tibia_l 3.800 → talus_l 0.021 → calcn_l 1.140 → toes_l 0.285
+                                                              (+ patella_r/l 0.028 each)
+
+**There IS a spine — five lumbar segments. There IS a torso, a neck and a head.** 47 kg of upper
+body that the first version of this file declared absent.
+
+**WHAT IS GENUINELY MISSING: ARMS AND HANDS.** No humerus, radius, ulna or hand anywhere in the
+26. That is the real boundary, and it is five links narrower than the one I claimed.
+
+**AND ONE STRUCTURAL FACT THAT NEEDS CHECKING BEFORE ANY LOAD PATH IS DRAWN THROUGH IT:** in this
+tree the sacrum and the pelvis are SIBLINGS, not parent and child. Physically the spine's weight
+must reach the legs through the sacroiliac joint; in the model's parent tree it does not descend
+that way. Whether that is a weld, a constraint, or a genuine break is **not yet measured**, and
+the load path from torso to ground cannot be drawn until it is.
 
 ---
 
