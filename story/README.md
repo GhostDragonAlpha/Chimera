@@ -364,3 +364,48 @@ permanent. Keep the floor contact visible; it is information.
 **AND THE CLAY IS THE FREE CONTROL.** We rendered it, so we know its answer by construction. Run
 every measurement on the take AND on what we sent. Three conclusions were reversed by that in one
 day. Full account: `docs/FAL_AI.md`.
+
+---
+
+## AND YOU DERIVE THE TARGET BEFORE YOU TRAIN ANYTHING (2026-08-02)
+
+A chapter is PROVEN, VISUAL, LEARNED, BINDABLE, and CONTROLLED. **LEARNED has a precondition that
+was violated the first day it mattered: you must know what the number should be before you go
+looking for it.**
+
+A walker would not walk. The response was a **four-variant parameter sweep** — alive bonus,
+stagnation floor, penalty weight, effort cost — run in parallel. One variable each, controls, a
+fair comparison. It wore this project's own method as a costume.
+
+**Every variant was asking the body for a speed it physically cannot walk at.**
+
+    this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m
+    theHuman derives its own comfortable speed:    0.9924 m/s
+    the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH
+
+Froude settles it in one line. `Fr = v^2/(gL)`, and equal Fr means a dynamically similar gait:
+1.285 m/s is Fr 0.183 on Earth and **Fr 0.254 here** — 39% higher, heading toward the walk→run
+transition. So the velocity term demanded a running-ward gait while the tracking term demanded
+Earth *walking* envelopes. The body could satisfy neither, so it satisfied neither and collected
+the alive bonus instead.
+
+> **THE CROUCH WAS THE ONLY STABLE POINT IN A CONTRADICTORY REWARD.**
+
+The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this world's stride is
+1.327 s and the gait was being run **18% too fast**.
+
+**No sweep can find that.** Four variants asking an impossible question rank four failures, and the
+winner is whichever fails most gracefully — which then gets believed.
+
+    THE TELL: before running variants, ask what QUESTION each one answers. If the answer is
+    "which number is best", stop. That is a search where a derivation belongs. Sweeping is
+    for genuinely FREE numbers, and a target speed Froude-derived from measured gravity is
+    not free -- the chapter already published it.
+
+**Enforced, not merely written here:**
+
+    python tools/training_gate.py --target-speed X --stride-s Y
+
+It refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
+sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1
+of `Chimera/docs/EXPERIMENTAL_METHOD.md`.

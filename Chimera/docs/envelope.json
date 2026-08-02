@@ -318,6 +318,14 @@
    "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
    "evidence": "walk of ProceduralGenerated",
    "status": "pending"
+  },
+  {
+   "ts": "2026-08-02T07:15:11",
+   "direction": "loosen",
+   "axis": "generated_loc",
+   "proposal": "raise max 31000 -> 37200: emergence gauge 1/wk is BELOW floor 2 and every systemic wall has headroom \u2014 the container is too tight for anything to emerge",
+   "evidence": "engine-sourced SurpriseMoments, last 7d \u2014 the emergence gauge",
+   "status": "pending"
   }
  ]
 }

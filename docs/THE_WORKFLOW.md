@@ -273,7 +273,7 @@ material painted on a surface.** Isolate one thing → make variations → place
   refusal); *never threshold on a quantile of what you are measuring*; *suspect the data's
   construction, not only the probe*; *a shared name is not a shared definition*; and *derive the
   shape, let physics set the level -- when the two disagree, that IS the finding*.
-  Rules 11-16 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+  Rules 12-17 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
 - **BACKTRACE: debug UP the chain, not forward from the symptom** (2026-08-01, the operator's).
   Forward debugging finds where an error became VISIBLE; backtracing finds where it ENTERED. Six
   hypotheses were eliminated against a foot whose instruction came from four membranes up.
@@ -281,7 +281,7 @@ material painted on a surface.** Isolate one thing → make variations → place
   identical); *the instrument must move with the membrane and keep no copy of it* (four witness
   self-inflictions in one day); and *in a grown world an authored phenotype is the defect* -- the
   witness is the FITNESS FUNCTION and the measured dataset is the CONTROL, not the answer.
-  Rules 17-20.
+  Rules 18-21.
 - **DERIVE it before you TRAIN it** (2026-07-28). Trace every membrane's variables and show the
   equations CLOSE before a run — else it is guess-and-check on a 2-hour loop (= training the RULES).
   A real derivation predicts what it was never fitted to. `docs/THE_MATHEMATICS_OF_WALKING.md`.
@@ -514,5 +514,5 @@ The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this w
     for genuinely FREE numbers, and a target Froude-derived from measured gravity is not free.
 
 The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
-sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 24 of
+sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
 `Chimera/docs/EXPERIMENTAL_METHOD.md`.

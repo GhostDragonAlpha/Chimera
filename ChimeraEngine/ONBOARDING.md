@@ -23,7 +23,7 @@ goal, key paths, hardware traps, conventions) · **`Chimera/docs/THE_GROWTH.md` 
 the 2026-07-31 rulings — physics is the code, appearance from 3DGS scans only, the recipe/children
 doctrine, the D0–D4 detail standard, the corpus map)** · **`docs/THE_FOLDING.md` (units, folds, bonds, regimes: what a law may connect to, and `python story/folding.py audit` before you call anything done)** · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
 dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) · **`docs/FAL_AI.md` (the SYNTHETIC capture rig: how fal.ai/Seedance textures our own clay so we can "scan" what does not exist — what it can give (colour, surface complexity), what it provably cannot (geometry, per-splat shape), what it costs, and the traps that were paid for)** ·
-`Chimera/docs/EXPERIMENTAL_METHOD.md` (**before debugging OR reporting anything** — the sixteen rules for not fooling yourself; rules 11-16 are the 2026-08-01 set on controls, scale, self-normalisation and name-vs-definition, summarised at the end of THIS file). Then the rest of THIS file.
+`Chimera/docs/EXPERIMENTAL_METHOD.md` (**before debugging OR reporting anything** — the sixteen rules for not fooling yourself; rules 12-17 are the 2026-08-01 set on controls, scale, self-normalisation and name-vs-definition, summarised at the end of THIS file). Then the rest of THIS file.
 
 ---
 
@@ -117,7 +117,7 @@ not a stop either — you decide, execute, and show the result for the human's j
 
 Everything above tells you HOW to build. This tells you how to know you did. Six rules, all earned
 in a single day, each of which **reversed a conclusion that had already been written down**. Full
-account with the numbers: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11–16.
+account with the numbers: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 12–17.
 
 **1. RUN THE INSTRUMENT ON SOMETHING WHOSE ANSWER YOU ALREADY KNOW.** Not a held-out sample — a
 thing you MADE, so you know the answer by construction. A GPU splat fit read a generated video's
@@ -192,5 +192,5 @@ The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this w
     for genuinely FREE numbers, and a target Froude-derived from measured gravity is not free.
 
 The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
-sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 24 of
+sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
 `Chimera/docs/EXPERIMENTAL_METHOD.md`.

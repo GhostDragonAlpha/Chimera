@@ -101163,6 +101163,25 @@
       "links": [],
       "recorded_by": "dream_loop.py",
       "run_id": "run_97e33a56a578"
+    },
+    {
+      "id": "surprise_e27259a1e48e0170",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-08-02T07:15:16.452396",
+      "context": "rep atom atom_6fca5cb0478c (Malcolm_Envelope) flipped green->red",
+      "expectation": "the atom's constraint would keep holding",
+      "reality": "bloodhound bisect names the commit: a8106d4 the wave: seven empty chapters filled, 85 laws given serials that say what they connect to",
+      "lesson_hint": "guilty commit identified mechanically; fix or revert with provenance",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: a8106d4 the wave: seven empty chapters fille'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_d3750920af43"
     }
   ],
   "edges": [

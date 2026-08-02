@@ -90,7 +90,7 @@ without a real multi-view 3DGS scan.
 Run every measurement on the generated take AND on the clay we sent, through the same instrument.
 Three conclusions were reversed by this in one day — a material genome that was the fitter's
 signature, a detail gain that was render grain, and a cross-hatch blamed on new code that came from
-the canvas. See rules 11–16 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+the canvas. See rules 12–17 of `Chimera/docs/EXPERIMENTAL_METHOD.md`.
 
     A measurement without a control is not a weak measurement. It is not a measurement.
 

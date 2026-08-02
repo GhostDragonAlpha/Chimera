@@ -125,7 +125,7 @@ cannot.** Add to the creed, ahead of everything else in it:
   disagreement. `aTerrain`'s spectrum wanted 20x more sub-grid relief than the friction angle allows,
   and that gap IS the threshold-hillslope result.
 
-Full account, with every number and every reversal: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11-16.
+Full account, with every number and every reversal: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 12-17.
 
 ## THE BUILDER'S CREED (2026-07-31, in the operator's direction)
 

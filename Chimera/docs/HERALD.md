@@ -1,8 +1,8 @@
-# The Herald — 2026-07-31
+# The Herald — 2026-08-02
 
-**Progress:** the nightly checks ran; trust is accumulating quietly, nothing graduated yet.
+**Good news:** 73 feature(s) are a few clean nights away from earning full trust (ADotCharacter, AErisaidActor, audio_visual_sync/report_telemetry).
 **Watch:** 8 feature(s) failed some checks recently (Any position-dependent beat against chimeradefault, Substrate_Engine, Substrate_Terrain); they are on the work board with evidence attached.
-**The queue:** 12 task(s) open for agents; 170 old worries await a confirm-or-refute verdict.
+**The queue:** 18 task(s) open for agents; 170 old worries await a confirm-or-refute verdict.
 **The container proposes:** tighten the 'generated_loc' limit — it waits for a yes/no (edit docs/envelope.json, status field).
 **Needs you today:** rule on the container proposal above
 

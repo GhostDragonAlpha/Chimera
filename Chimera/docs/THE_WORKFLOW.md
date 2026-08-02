@@ -247,7 +247,7 @@ not a witness).
 
 The gates above stop you calling a term proven without evidence. These stop the evidence itself from
 being an artifact -- all six earned in one day, each having **reversed a conclusion already written
-down**. Full account: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 11-16.
+down**. Full account: `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 12-17.
 
 1. **Run the instrument on something whose answer you already know.** Not a held-out sample -- a
    thing you MADE. `emit()` hands you one free: the membrane's own matter, rendered.

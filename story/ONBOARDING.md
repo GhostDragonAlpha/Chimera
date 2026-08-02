@@ -736,7 +736,7 @@ And its mirror, for when a result comes back NEGATIVE: an instrument that cannot
 does not refuse — it returns a number, often in the wrong direction. Count how many pixels, samples
 or bins the effect occupies before you believe a null.
 
-Rules 11–16 of `Chimera/docs/EXPERIMENTAL_METHOD.md` carry all six with the numbers.
+Rules 12–16 of `Chimera/docs/EXPERIMENTAL_METHOD.md` carry all six with the numbers.
 
 ---
 
@@ -890,5 +890,5 @@ The stride clock was wrong the same way: a pendulum goes as sqrt(L/g), so this w
     for genuinely FREE numbers, and a target Froude-derived from measured gravity is not free.
 
 The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
-sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 24 of
+sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
 `Chimera/docs/EXPERIMENTAL_METHOD.md`.
