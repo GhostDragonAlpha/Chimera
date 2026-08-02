@@ -37,8 +37,11 @@
   │   NEXT ──── the operator names ONE camelCase term, or the six           │
   │      │      directions name it. You never pick it yourself.              │
   │      ▼                                                                   │
+  │   THEORY ── STATE it: claim, prediction, FALSIFIER. No falsifier,       │
+  │      │      no build. A description survives any result (§0).            │
+  │      ▼                                                                   │
   │   ┌─ THE MEMBRANE — PROVE(X) ────────────────────────────────────┐      │
-  │   │  S0  FRAME      one claim · the/a · check for a missing level │      │
+  │   │  S0  FRAME      one claim · the/a · what would REFUTE this?   │      │
   │   │  S1  QUESTION   variables are BORN of questions               │      │
   │   │  S2  SATURATE   measured — Chao2 + a dry tail, curve rendered │      │
   │   │  S3  CLASSIFY   PHYSICS · FREE · LENS · HUMAN                 │      │
@@ -68,7 +71,76 @@ Two terminals, and only two: **PHYSICS** (a fact true in an empty universe) and 
 
 ---
 
-## 0 · THE DYAD IS THE DRIVER, NOT A GATE — the concept this document was missing
+## 0 · THE THEORY METHODOLOGY — every membrane is a theory
+
+> **The operator, 2026-08-02:** *"Every membrane is a theory. Every port is a theory. Every
+> connection is a theory. The game itself is a theory."*
+
+This is the frame S0–S8 was missing, and its absence is why the stages kept executing correctly
+toward ends nobody had stated. **A membrane is not a thing you build and then check. It is a CLAIM
+about how the world works, and building it is the experiment.**
+
+**A theory that is not written down before the work is not a theory — it is a description written
+afterwards, and a description cannot be wrong.** That is the whole difference:
+
+    A DESCRIPTION SURVIVES ANY RESULT. A THEORY CAN LOSE.
+
+### The three parts. A membrane may not be built without all three.
+
+| part | what it is | the test that it is real |
+|---|---|---|
+| **STATEMENT** | what this membrane claims is true, in one sentence, in plain words | someone could disagree with it |
+| **PREDICTION** | a number or behaviour it implies **that you have not measured yet** | it could come out otherwise |
+| **FALSIFIER** | what result would kill it — named **before** the run | you would accept that result as a loss |
+
+**The falsifier is the part that gets skipped, and skipping it is how six months of work becomes
+unfalsifiable.** If you cannot say in advance what would prove you wrong, you are not going to
+notice when it happens — you will find a reason the result still fits, and every reason will be
+individually reasonable.
+
+### It is fractal, and that is what makes the game one object
+
+    the game        is a theory   (hierarchy x physics x human = a 4D experience)
+      a membrane    is a theory   (theCooling: atoms are permitted at 3760 K)
+        a port      is a theory   (the hip carries its share without buckling)
+          a number  is a theory   (leg_length = 0.9201 m, and two routes must agree)
+
+Each level's PREDICTION is the level below's TEST. `theCooling` predicted 3760 K and the
+literature said ~3700 — **the membrane was the experiment and the number was the result.** That is
+not a metaphor for how this is built; it is the build.
+
+### Where it changes the day
+
+- **S0 FRAME gains a fourth question:** *what does this membrane CLAIM, and what would refute it?*
+  A membrane with no falsifier does not proceed to S1.
+- **A failed prediction is a RESULT, not a setback.** It names the missing row, and a named row is
+  worth more than a passed test. R4 was named by a knee's ring period disagreeing with a fall time.
+- **A confirmed prediction that could not have failed is worth NOTHING.** Check the falsifier was
+  reachable before celebrating the pass.
+
+### The worked example, written in this form on the day the method was named
+
+> **THEORY — STANDING.** A human stands by continuously falling and catching itself, and the
+> catching is done by the TRUNK. The legs are the strut (a static problem, solved: `GROUND→FOOT`
+> closes at +0.7%); the trunk is the stabiliser.
+>
+> **PREDICTION.** A trunk port buys more survival than further leg training does. The legs sit at
+> 32% / 24% / 13% and have returned diminishing, coin-toss gains for six commits.
+>
+> **FALSIFIERS, named before the run:** the sacroiliac seam turns out to be no joint (the trunk
+> cannot reach the legs — dead on arrival) · the trunk muscles have near-zero moment arms at the
+> standing pose (postural in name only) · **the legs alone reach 5 s under deeper search** (the
+> strut was the answer and the theory is wrong).
+>
+> **THE EVIDENCE THAT PROMPTED IT, and it is a number nobody chose:** 290 muscles in the body,
+> **80 in a trained port, 210 in none — 72%.** 162 of them cross the trunk across five lumbar
+> levels in flexion/extension, lateral bending and axial rotation. **You do not put 162 actuators
+> on a passive column.** Every result reported before this was 28% of the body's actuators, and it
+> was never the human standing. It was the legs.
+
+---
+
+## 0b · THE DYAD IS THE DRIVER, NOT A GATE — the concept this document was missing
 
 > **Added 2026-08-02, after the consolidation shipped without it.** The first version of this file
 > put the dyad at **S7**: a checkpoint near the end of proving one membrane, where a number meets a
@@ -116,7 +188,7 @@ witness holding its own stale copy of a leg. Not one came from a converging curv
 
 ---
 
-## 0b · WHO DOES WHAT
+## 0c · WHO DOES WHAT
 
 | | **THE HUMAN** | **THE AGENT** |
 |---|---|---|
