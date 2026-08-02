@@ -36,3 +36,17 @@ every region above `M_J` stopped ringing and started falling.
 The sea breaks into clouds: about a million solar masses each, neutral hydrogen and helium, getting
 denser and hotter as they fall. What is handed on is a bound, collapsing cloud — and a cloud that
 cannot stop falling has only one place to go.
+
+## What it predicted that it was never given
+
+`M_jeans_solar` = **607,000 solar masses** — the smallest cloud that can collapse under its own
+gravity, once the gas has gone neutral and its sound speed has collapsed with it.
+
+    literature: the Jeans mass at recombination is ~10^5 - 10^6 solar masses
+
+That is the **globular cluster** mass scale, and it is one of the oldest results in structure
+formation. Nothing here was aimed at it: the inputs are the parent's recombination temperature and
+the density at that epoch, and the sound speed falls by a factor of **26,700** the moment the
+electrons are captured — because a neutral gas cannot hold pressure the way a plasma can. The mass
+that gravity can beat jumps by the cube of that, and it lands on the size of the first bound
+objects anyone has ever counted.

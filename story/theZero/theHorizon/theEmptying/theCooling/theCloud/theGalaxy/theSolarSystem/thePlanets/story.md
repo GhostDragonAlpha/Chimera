@@ -40,3 +40,14 @@ it** — and the line's position is set by nothing but the brightness of the sta
 star's luminosity and the whole layout moves with it.
 
 What is handed on is a rocky world, close in, made of what could condense where it formed.
+
+## What it predicted that it was never given
+
+`snow_line_au` = **2.80 AU** — where water ice can first survive.
+
+    the Solar System's snow line sits at ~2.7 AU, the inner edge of the asteroid belt
+
+The membrane was given a star's luminosity and the temperature ice condenses at, and nothing else.
+It was not told where our own asteroid belt is. That the line falls just inside Jupiter is the
+reason the inner planets are rock and the outer ones are gas, and this chapter derives the boundary
+rather than placing it.

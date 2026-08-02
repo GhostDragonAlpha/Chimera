@@ -27,3 +27,17 @@ Everything that was forbidden to exist at zero is now legally outside it: quanti
 across exactly the extent the horizon defined, one Planck cell at a time. Paragraph 1 was the point;
 paragraph 2 was its fence; paragraph 3 is the fence emptying itself into the space it drew — and
 what it hands onward is a hot dense sea of quanta with a size, a temperature, and a clock.
+
+## What it predicted that it was never given
+
+`T` = **7.972e30 K** — the temperature of the horizon that is evaporating.
+
+    Hawking:  T = hbar c^3 / (8 pi G M k_B)
+
+For this membrane's mass — the crossing mass, m_P/sqrt(2), which the *parent* fixed and this one
+merely inherited — that formula gives 7.97e30 K. Nothing here was tuned to reach it; the mass came
+from a coincidence between two lengths one chapter earlier, and the temperature followed.
+
+And `bits` = **9.06**: the Bekenstein–Hawking entropy of that horizon, in bits. A horizon one
+Planck area across holds of order ten bits, which is why the next chapter has anything at all to
+say — three numbers is few enough to write down, and a handful of bits is few enough to lose.

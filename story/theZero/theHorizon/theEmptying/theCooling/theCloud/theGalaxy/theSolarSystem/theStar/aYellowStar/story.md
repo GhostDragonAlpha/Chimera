@@ -53,3 +53,15 @@ lifetime ∝ M / M^3.5 = M^-2.5        →  ~10 billion years for this one
 
 *Contained in `theStar`. What it hands on: a luminosity that lights everything outward, a surface
 temperature that sets its colour, and a lifetime that bounds every story told beneath it.*
+
+## What it predicted that it was never given
+
+`lifetime_yr` = **9.41 billion years** — how long this star can burn hydrogen in its core.
+
+    the Sun's main-sequence lifetime is ~10 billion years
+
+And `T_surface` = **5839 K** against the Sun's measured **5772 K** — 1.2% out, for a star this
+story grew from a collapsing fragment rather than copied from a table. The mass came out at 1.025
+solar masses, so a slightly heavier star burning slightly hotter and living slightly less long is
+exactly the direction the physics demands: luminosity climbs as roughly the cube of mass, so more
+fuel is spent faster than it is gained.

@@ -59,3 +59,14 @@ and the ratios between scales — a day inside a year inside a lifetime — beco
 | **theDensityClock** | how fast time itself runs: deeper and faster are slower, and the ceiling is the horizon |
 
 *What it hands on: a duration for every membrane below, derived from that membrane's own density.*
+
+## What it predicted that it was never given
+
+`t_light_sun_s` = **2.3206 s** — how long light takes to cross the Sun.
+
+    measured solar radius 6.957e8 m / c  =  2.3206 s        agrees to every digit published here
+
+Nothing about the Sun was fitted: the membrane was handed the Planck tick and asked to lay out the
+scales a clock can run at, and one of the rungs it lands on is a real star's crossing time. The
+same ladder gives the Sun's dynamical time as 1769 s and the Earth's as 895 s — free-fall times
+that depend only on mean density, so a body's *size* never enters them.

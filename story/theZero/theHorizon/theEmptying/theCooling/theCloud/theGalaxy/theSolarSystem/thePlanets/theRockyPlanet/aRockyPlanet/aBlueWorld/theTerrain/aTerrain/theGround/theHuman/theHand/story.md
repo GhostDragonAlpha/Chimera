@@ -45,3 +45,17 @@ which is the honest form of an empty chapter.
 - one hand or two -- does a braced rifle need both, and does that lock out the torch?
 
 *Contained in `theHuman`. Hands on: nothing yet.*
+
+## What it predicted that it was never given
+
+`hand_over_stature_ratio` = **0.1103** — hand length as a fraction of standing height.
+
+    ANSUR II, 6,068 adults, median 0.10996          this chapter derives 0.11030
+
+Drillis & Contini's classical figure for the same ratio is 0.108. The hand here is not measured
+from a hand: it is derived from the body the story already grew, and it lands inside a spread
+measured on six thousand people, 0.3% from their median.
+
+The spread is the sharper claim. This ratio's coefficient of variation across those adults is
+**3.83%** — hands vary less, proportionally, than almost anything else about a person, which is why
+one number can stand for a hand at all, and why a glove size predicts a grip.

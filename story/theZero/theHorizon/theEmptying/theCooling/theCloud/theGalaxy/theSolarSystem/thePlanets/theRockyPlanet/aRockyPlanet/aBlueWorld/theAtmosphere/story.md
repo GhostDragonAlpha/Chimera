@@ -54,3 +54,16 @@ lapse rate, its sky's colours, its clouds, its top edge, its class and therefore
 
 *Contained in `aBlueWorld`, sibling to `theTerrain`. Contains `aNitrogenAtmosphere` — the air that
 actually formed here.*
+
+## What it predicted that it was never given
+
+`scale_height_m` = **11,312 m** — the height over which this air thins by a factor of e.
+
+    H = RT / (M_air g)  =  8.314 x 279.2 / (0.0288 x 7.076)  =  11,390 m      0.7% from the
+    published value, and the difference is the membrane's own mean molar mass rather than my
+    round 28.8 g/mol.
+
+The comparison that matters is against a world we can stand on: **Earth's scale height is 8,500 m**.
+This atmosphere is a third deeper, and every term says why — the surface is slightly cooler, which
+would thin it, and gravity is 0.72 g, which more than makes up the difference. A planet that pulls
+less holds its air further out.

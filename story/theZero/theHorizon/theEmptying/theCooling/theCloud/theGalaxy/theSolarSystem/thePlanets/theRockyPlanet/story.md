@@ -93,3 +93,19 @@ up. It is 0.88 with the leg the body actually derives.)*
 
 *Contained in `thePlanets`. What it hands on: a mass, a radius, a gravity, and the list of gases the
 world was able to keep.*
+
+## What it predicted that it was never given
+
+`a_au` = **1.04 AU** — where the rocky world that can hold liquid water actually sits.
+
+    Earth is at 1.00 AU around a 1.00-solar-mass star.
+    This world is at 1.04 AU around a 1.02-solar-mass star.
+
+The membrane was handed a luminosity and asked where water is stable. It was never told where Earth
+is, and it lands within 4% of it — which is the check, because the habitable distance scales as the
+square root of luminosity and the star this story grew is slightly brighter than ours.
+
+**Not a prediction, and worth saying so:** `R_earth` follows from `R ~ M^0.27`, which is an
+*input* — the empirical mass-radius relation for iron/silicate worlds, put in deliberately. It
+matching to seven digits means the formula was applied, not that anything was foreseen. A number
+that agrees exactly is usually a number that was fitted.
