@@ -66,7 +66,6 @@
 | `residual_closed_frac` | 0.338 |
 | `list_source` | Van Criekinge T, Saeys W, Truijen S, et al. A full-body motion capture gait dataset of 246 healthy adults aged 18-91 (2023). OSF, CC BY 4.0, doi 10.17605/OSF.IO/T72CW. Three self-selected speeds on a CAREN instrumented treadmill; group means and SD by sex and age decade, averaged over every valid stride. |
 | `supported_weight_N` | 535.9 |
-| `abductor_moment_arm_m` | 0.04115 |
 | `body_moment_arm_m` | 0.1006 |
 | `abductor_force_N` | 1310 |
 | `hip_contact_force_N` | 1845 |

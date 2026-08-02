@@ -283,8 +283,8 @@ class Walker:
         stride_s = float(h["duration_s"])
         if stride_s > float(hc["band_hi_s"]):
             self.rate = stride_s / float(hc["band_hi_s"])      # too slow to feel: compress
-        elif stride_s < float(hc["band_lo_s"]):
-            self.rate = stride_s / float(hc["band_lo_s"])      # too fast to see: stretch
+        elif stride_s < float(hc["fusion_s"]):
+            self.rate = stride_s / float(hc["fusion_s"])      # too fast to see: stretch
         else:
             self.rate = 1.0                                    # the stride lives in the band
 

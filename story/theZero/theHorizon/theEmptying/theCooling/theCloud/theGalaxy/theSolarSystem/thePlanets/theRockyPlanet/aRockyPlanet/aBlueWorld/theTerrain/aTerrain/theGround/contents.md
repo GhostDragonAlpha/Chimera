@@ -34,7 +34,6 @@
 | `porosity` | 0.42 |
 | `bearing_capacity_Pa` | 1.104e+05 |
 | `bearing_capacity_kPa` | 110.4 |
-| `fails_above_kPa` | 110.4 |
 | `reference_load_Pa` | 1.935e+04 |
 | `reference_load_kPa` | 19.35 |
 | `reference_load_kg` | 82.04 |

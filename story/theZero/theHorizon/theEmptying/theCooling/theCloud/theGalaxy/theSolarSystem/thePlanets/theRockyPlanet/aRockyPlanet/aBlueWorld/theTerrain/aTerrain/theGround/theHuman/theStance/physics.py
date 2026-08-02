@@ -456,7 +456,7 @@ def derive(parent, free):
         # Hof's rule for a recovery step: the foot must land at or beyond the XcoM, so the base is
         # not the feet you have but the feet you can REACH. One step forward extends it by a stride's
         # half -- and that is why a body can absorb far more when it is allowed to move.
-        "step_reach_m": step_len,
+        # `step_reach_m` RETIRED: step_length_m above is the same distance -- the reach a step covers IS its length, and step_length_m is the name the gait literature and two consumers already use.
         "push_velocity_with_step_ms": (0.5 * f_len + step_len) * w0,
         "push_energy_with_step_J": 0.5 * m * ((0.5 * f_len + step_len) * w0) ** 2,
         "step_time_s": step_t,

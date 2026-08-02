@@ -735,10 +735,10 @@ def derive(parent, free):
         "moment_arm_model_dip_m": a3["dip"] / s_wid,
         "moment_arm_skin_bound_m": arm_bound,
         "moment_arm_inside_bound_ratio": a3["mcp"] / arm_bound,
-        "tip_lever_mcp_m": l_prox,
+        # `tip_lever_mcp_m` RETIRED: a second name for the number directly above it -- one quantity, one name.
         "tip_lever_pip_m": l_mid,
         "tip_lever_dip_m": l_dist,
-        "tendon_per_tip_mcp_ratio": ratio["mcp"],
+        # `tendon_per_tip_mcp_ratio` RETIRED: a second name for the number directly above it -- one quantity, one name.
         "tendon_per_tip_pip_ratio": ratio["pip"],
         "tendon_per_tip_dip_ratio": ratio["dip"],
         "binding_joint": binding,

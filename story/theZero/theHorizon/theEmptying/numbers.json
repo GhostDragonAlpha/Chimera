@@ -1,7 +1,10 @@
 {
-  "extent_m": 2.2857297750934068e-35,
-  "duration_s": 3.065942637220003e-40,
-  "S": 8.674873511172191e-23,
-  "bits": 9.06472028365439,
-  "T": 7.972211857952828e+30
+ "extent_m": 2.2857297750934068e-35,
+ "duration_s": 3.065942637220003e-40,
+ "S": 8.674873511172191e-23,
+ "bits": 9.06472028365439,
+ "T": 7.972211857952828e+30,
+ "timeline_serial": 4,
+ "t_since_seed_s": 3.066481761864669e-40,
+ "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

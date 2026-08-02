@@ -280,7 +280,7 @@ def derive(parent, free):
         "bearing_capacity_kPa": q / 1e3,
         # WHAT THIS MEMBRANE IS ENTITLED TO SAY: the load above which this soil fails. That is a
         # fact about the soil and it is true whether or not anyone ever stands on it.
-        "fails_above_kPa": q / 1e3,
+        # `fails_above_kPa` RETIRED: a second name for the number directly above it -- one quantity, one name.
         # and what a STANDARD bearing-test load does to it, so the sinkage has units an engineer
         # would recognise. Named `reference` throughout so it cannot be read as this story's body.
         "reference_load_Pa": press,

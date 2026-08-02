@@ -40,7 +40,6 @@
 | `dT_equator_pole` | 45 |
 | `wind_scale_ms` | 10.74 |
 | `wind_boundary_fraction` | 0.15 |
-| `atmosphere_scale_height_m` | 1.131e+04 |
 | `wind_reference_lat_deg` | 12.69 |
 | `wind_geostrophic_ms` | 48.91 |
 | `wind_surface_ms` | 7.336 |

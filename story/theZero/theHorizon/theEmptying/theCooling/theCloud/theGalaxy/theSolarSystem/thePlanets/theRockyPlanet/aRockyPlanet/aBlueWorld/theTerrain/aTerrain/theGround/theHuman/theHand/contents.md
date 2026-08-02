@@ -90,10 +90,8 @@
 | `moment_arm_model_dip_m` | 0.002664 |
 | `moment_arm_skin_bound_m` | 0.01106 |
 | `moment_arm_inside_bound_ratio` | 0.9805 |
-| `tip_lever_mcp_m` | 0.1033 |
 | `tip_lever_pip_m` | 0.05367 |
 | `tip_lever_dip_m` | 0.02127 |
-| `tendon_per_tip_mcp_ratio` | 9.532 |
 | `tendon_per_tip_pip_ratio` | 6.927 |
 | `tendon_per_tip_dip_ratio` | 6.227 |
 | `binding_joint` | mcp |

@@ -334,7 +334,7 @@ def derive(parent, free):
         # THE LAW, for a child to evaluate at its own latitude:  u_aloft = wind_scale / sin(lat)
         "wind_scale_ms": wind_scale,
         "wind_boundary_fraction": BOUNDARY_FRACTION,
-        "atmosphere_scale_height_m": H_atm,
+        # `atmosphere_scale_height_m` RETIRED: scale_height_m above is the same height under the plainer name.
         # one reported value, at a reference latitude that is deliberately NOT a place in this story
         "wind_reference_lat_deg": hadley,     # derived: the Hadley edge, where the jet is
         "wind_geostrophic_ms": wind_aloft_45,

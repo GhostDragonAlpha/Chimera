@@ -119,6 +119,95 @@ KNOWN_EQUAL = {
     ("obliquity_deg", "obliquity_effective_deg"):
                                "equal while nothing perturbs the tilt; the effective one exists so "
                                "that something can.",
+    # ── THE MEMBRANE'S OWN EXTENT AND DURATION, NAMED FOR WHAT THEY ARE ──────────────────────
+    ("extent_m", "hand_length_m"):  "the membrane IS the hand.",
+    ("extent_m", "patch_m"):        "the membrane IS the patch.",
+    ("extent_m", "axial_length_m"): "the membrane IS the eye, along its axis.",
+    ("extent_m", "pit_depth_limit_m"): "the mine can be no deeper than it is; the limit IS its extent.",
+    ("duration_s", "blink_interval_s"): "the movie is one blink.",
+    ("duration_s", "transit_s"):    "the movie is one transit.",
+    ("duration_s", "fixation_s"):   "the movie is one fixation.",
+    # ── ONE PHYSICAL FACT, TWO FRAMINGS, BOTH WORTH PUBLISHING ───────────────────────────────
+    ("crust_thickness_km", "mohorovicic_depth_km"):
+        "the Moho IS the base of the crust -- the layer and its boundary, and a reader wants both.",
+    ("convection_speed_cm_yr", "plate_speed_cm_yr"):
+        "plates ride the convection; the speeds are equal BECAUSE that is what a plate is.",
+    ("latent_heat_core_TW", "geodynamo_power"):
+        "the dynamo is powered by that latent heat -- the source and the sink of one budget.",
+    ("contact_time_s", "landing_time_s"):
+        "contact begins at landing; the same instant answers two questions.",
+    ("peak_force_N", "landing_force_N"): "the peak force of this motion OCCURS at landing.",
+    ("peak_accel_m_s2", "landing_peak_accel_m_s2"): "same instant, same reason.",
+    ("peak_force_bodyweights_ratio", "landing_force_bodyweights_ratio"): "same, in body weights.",
+    ("foot_breadth_m", "together_half_width_m"):
+        "feet together: half the stance width IS one foot breadth.",
+    ("foot_breadth_m", "together_margin_lateral_m"): "and the lateral margin is that same breadth.",
+    ("together_half_length_m", "together_margin_fore_aft_m"): "same, fore and aft.",
+    ("foot_area_m2", "parent_foot_area_m2"):
+        "published side by side ON PURPOSE, so a reader can see the child did not redefine it.",
+    ("P_ambient_bar", "P_loop_bar"): "the breathing loop runs AT ambient; that is the design.",
+    ("Q_for_fog_l_min", "Q_min_l_min"): "the minimum survivable flow IS the flow that clears fog.",
+    ("fog_time_s", "transit_at_min_flow_s"): "the same second, from the gas's side and the visor's.",
+    ("M_star_solar", "M_fragment_solar"):
+        "the star IS the whole fragment -- 96% collapse, and the remainder rounds away.",
+    ("growing_season_days", "days_per_year"):
+        "this climate has no killing winter, so the season IS the year. Cool the world and they part.",
+    ("repose_deg", "repose_regolith_deg"): "the same friction angle, named for the material it is of.",
+    ("measured_leg_over_stature", "leg_over_stature_used"):
+        "equal since the leg length was unified 2026-08-01 -- the USED value IS now the measured "
+        "one, and both stay so that a future divergence is visible rather than silent.",
+    ("rocker_over_leg", "vault_saved_frac"):
+        "the vault a rolling foot saves IS the rocker fraction -- that is what the rocker DOES.",
+    ("shaft_depth_limit_m", "geothermal_limit_m"):
+        "heat is what stops the shaft here; if rock strength ever bound first they would part.",
+    ("tropopause_m", "cloud_top_m"): "convection stops at the tropopause, so that is where cloud tops out.",
+    ("tree_line_altitude_m", "montane_band_m"): "the montane band ends where trees do.",
+    ("wind_reference_lat_deg", "hadley_edge_deg"):
+        "the reference wind is quoted at the Hadley edge, which is where it means something.",
+    ("dof_wrist_count", "synergy_dims_cited_count"): "a coincidence of two small integers.",
+    ("n2_fraction", "tissue_ratio"): "the tissue equilibrates TO the inert fraction.",
+    ("step_width_earth_m", "width_law_slow_m"): "the width law evaluated at Earth's slow condition.",
+    ("sway_pp_earth_m", "sway_earth_slow_m"): "same, for sway.",
+    ("margin_earth_m", "margin_earth_slow_m"): "same, for the margin.",
+    ("flow_margin", "clears_faster_than_it_fogs_by"): "one ratio, asked as a number and as a sentence.",
+    ("safety_margin_min_ratio", "preload_s"): "unrelated quantities that happen to share a value.",
+    ("safety_margin_min_ratio", "load_s"): "likewise.",
+    ("bearing_capacity_kPa", "fails_above_kPa"): "the capacity IS the failure threshold.",
+    ("time_to_fall_s", "capture_point_at_1ms"): "seconds against metres -- a numeric coincidence only.",
+    ("acuity_rad", "render_grain_at_1m_m"):
+        "at one metre an angle in radians and an arc in metres are the same number, by definition.",
+    # ── WIDTH AND LENGTH ARE INDEPENDENT, WHICH IS WHY THESE AGREE ───────────────────────────
+    ("together_half_length_m", "natural_half_length_m"):
+        "widening a stance does not lengthen it -- the fore-aft half-length is the same whether "
+        "the feet are together or apart, and that INDEPENDENCE is the fact worth publishing.",
+    ("together_half_length_m", "natural_margin_fore_aft_m"): "same, as a margin.",
+    ("natural_half_width_m", "natural_margin_lateral_m"): "half the width IS the lateral margin.",
+    ("together_push_velocity_fore_aft_ms", "natural_push_velocity_fore_aft_ms"):
+        "a fore-aft push does not care how far apart the feet are.",
+    ("together_push_energy_fore_aft_J", "natural_push_energy_fore_aft_J"): "nor does its energy.",
+    # the BRACED stance says the same thing again, and it says it for the same reason: this
+    # membrane publishes three stances and the fore-aft dimensions are shared by all of them,
+    # which is precisely the claim -- a stance is a choice about WIDTH.
+    ("together_half_length_m", "braced_half_length_m"): "widening does not lengthen; braced too.",
+    ("together_half_length_m", "braced_margin_fore_aft_m"): "same, as a margin.",
+    ("braced_half_width_m", "braced_margin_lateral_m"): "half the width IS the lateral margin.",
+    ("together_push_velocity_fore_aft_ms", "braced_push_velocity_fore_aft_ms"):
+        "and a fore-aft push is a fore-aft push in every stance -- that is the whole point of "
+        "publishing all three: what CHANGES with stance is lateral, and what does not is proof.",
+    ("together_push_energy_fore_aft_J", "braced_push_energy_fore_aft_J"): "likewise its energy.",
+    ("braced_hip_offset_m", "brace_offset_m"): "one offset, named long and short in one membrane.",
+    ("duration_s", "sway_period_s"): "the movie is one sway.",
+    # ── ONE LENGTH, TWO ROLES ────────────────────────────────────────────────────────────────
+    ("pendulum_length_m", "com_height_m"):
+        "the inverted pendulum's length IS the height of the centre of mass -- that is what makes "
+        "a standing body a pendulum at all.",
+    ("frontal_sample_count", "gait_samples"): "one table, sampled once, counted twice.",
+    ("duration_s", "finger_swing_period_s"): "the movie is one finger swing.",
+    ("ankle_rise_m", "stiff_landing_travel_m"):
+        "a stiff landing spends exactly the travel the ankle has; that is what makes it stiff.",
+    ("push_off_m", "landing_travel_m"): "the distance pushed through is the distance landed through.",
+    ("flight_time_s", "unsteerable_time_s"):
+        "you cannot steer with nothing to push against, so the airborne time IS the blind time.",
 }
 
 
@@ -242,6 +331,26 @@ def check(d: Path) -> dict:
         # drop the pairs that were checked and are meant to be equal
         dup = [(a, b) for a, b in dup
                if (a, b) not in KNOWN_EQUAL and (b, a) not in KNOWN_EQUAL]
+        # ── TWO QUANTITIES IN DIFFERENT UNITS BEING NUMERICALLY EQUAL MEANS NOTHING ───────────
+        # It is the same coincidence as a height in inches equalling an age in years. This tree
+        # carries several: fixation_s = fixation_tremor_arcmin (seconds against arcminutes),
+        # time_to_fall_s = capture_point_at_1ms (seconds against metres), safety_margin_min_ratio
+        # = preload_s (a ratio against seconds). None is a defect and none can be.
+        #
+        # THE FILTER ONLY BECAME POSSIBLE WHEN UNITS REACHED 42/42. At 13/42 most keys had no
+        # readable unit and the comparison could not be made -- so the units column paid for this
+        # one. A pair is only a candidate when both keys carry the SAME unit.
+        try:
+            import folding as _f
+            def _u(k):
+                try:
+                    return _f.unit_of_key(k, d.name)
+                except Exception:
+                    return None
+            dup = [(a, b) for a, b in dup
+                   if _u(a) is not None and _u(a) == _u(b)]
+        except Exception:
+            pass
         r["dups"] = dup
         try:
             import folding

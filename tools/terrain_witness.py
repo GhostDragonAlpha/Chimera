@@ -106,7 +106,7 @@ def main() -> int:
                      "answer a question that belongs to theHuman")
     owner = ground.get("who_answers_holds_a_person")
     if owner:
-        print(f"               theGround fails above {ground['fails_above_kPa']:.1f} kPa and defers "
+        print(f"               theGround fails above {ground['bearing_capacity_kPa']:.1f} kPa and defers "
               f"the person to {owner}")
     sink = ground.get("sinkage_mm")
     if sink is not None:

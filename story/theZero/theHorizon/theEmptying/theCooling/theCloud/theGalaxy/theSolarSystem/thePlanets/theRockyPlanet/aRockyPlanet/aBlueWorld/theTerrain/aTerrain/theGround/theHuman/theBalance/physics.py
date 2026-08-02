@@ -489,7 +489,7 @@ def derive(parent, free):
 
         # ── the abductor, and the hip it loads ───────────────────────────────────────────────
         "supported_weight_N": A["supported_N"],
-        "abductor_moment_arm_m": A["lever_arm_m"],
+        # `abductor_moment_arm_m` RETIRED: abductor_lever_m above is the same length -- a lever IS a moment arm.
         "body_moment_arm_m": A["com_arm_m"],
         "abductor_force_N": A["abductor_N"],
         "hip_contact_force_N": A["contact_N"],

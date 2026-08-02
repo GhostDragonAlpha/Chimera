@@ -1,78 +1,80 @@
 {
-  "extent_m": 4.0,
-  "duration_s": 86400.0,
-  "mineral_materials": {
-    "quartz": {
-      "genome_id": 24,
-      "rgb_mean": [
-        0.7100783586502075,
-        0.707780122756958,
-        0.6420968770980835
-      ]
-    },
-    "feldspar": {
-      "genome_id": 9,
-      "rgb_mean": [
-        0.6007148623466492,
-        0.5874956250190735,
-        0.45696356892585754
-      ]
-    },
-    "oxide": {
-      "genome_id": 28,
-      "rgb_mean": [
-        0.3465217053890228,
-        0.3319152891635895,
-        0.2344687581062317
-      ]
-    }
+ "extent_m": 4.0,
+ "duration_s": 86400.0,
+ "mineral_materials": {
+  "quartz": {
+   "genome_id": 24,
+   "rgb_mean": [
+    0.7100783586502075,
+    0.707780122756958,
+    0.6420968770980835
+   ]
   },
-  "minerals_source": "story/data/material_genomes.json -- quartz/feldspar/oxide ROLES filled by measured ground-scan genomes; oxide is the reddest soil in the collection (no rust-bearing scan exists -- flagged)",
-  "soil_depth_m": 0.3020427861327167,
-  "soil_depth_flat_m": 1.4592706669343665,
-  "soil_depth_steep_m": 0.0,
-  "bare_rock_above_deg": 32.88397184274365,
-  "erosion_mm_kyr": 42.08619804757875,
-  "production_mm_kyr": 77.0,
-  "repose_deg": 40.03,
-  "repose_regolith_deg": 40.03,
-  "repose_bedrock_deg": 33.0,
-  "fractal_D": 2.6,
-  "d_median_mm": 0.35,
-  "bulk_density": 1537.0000000000002,
-  "porosity": 0.42,
-  "bearing_capacity_Pa": 110353.61155500847,
-  "bearing_capacity_kPa": 110.35361155500847,
-  "fails_above_kPa": 110.35361155500847,
-  "reference_load_Pa": 19350.835425460584,
-  "reference_load_kPa": 19.350835425460584,
-  "reference_load_kg": 82.04,
-  "reference_plate_m2": 0.03,
-  "sinkage_m": 8.673617379884035e-19,
-  "sinkage_mm": 8.673617379884035e-16,
-  "carries_reference_load": true,
-  "who_answers_holds_a_person": "theHuman.ground_holds_it",
-  "g": 7.076122169232295,
-  "walk_run_per_sqrt_leg": 1.8809734406992957,
-  "swing_period_per_sqrt_leg": 2.362012584561864,
-  "T_surface": 279.1908308653023,
-  "S_earth": 1.0048952107836961,
-  "latitude_deg": 30.77072291868692,
-  "day_s": 86400.0,
-  "obliquity_deg": 37.38250904743713,
-  "obliquity_effective_deg": 37.38250904743713,
-  "retrograde": false,
-  "tropic_lat_deg": 37.38250904743713,
-  "polar_circle_lat_deg": 52.61749095256287,
-  "has_seasons": true,
-  "gases_kept": [
-    "CH4",
-    "H2O",
-    "N2",
-    "O2",
-    "CO2"
-  ],
-  "P_surface_bar": 0.5199302820248954,
-  "days_per_year": 383.21118050163045,
-  "year_s": 33109445.99534087
+  "feldspar": {
+   "genome_id": 9,
+   "rgb_mean": [
+    0.6007148623466492,
+    0.5874956250190735,
+    0.45696356892585754
+   ]
+  },
+  "oxide": {
+   "genome_id": 28,
+   "rgb_mean": [
+    0.3465217053890228,
+    0.3319152891635895,
+    0.2344687581062317
+   ]
+  }
+ },
+ "minerals_source": "story/data/material_genomes.json -- quartz/feldspar/oxide ROLES filled by measured ground-scan genomes; oxide is the reddest soil in the collection (no rust-bearing scan exists -- flagged)",
+ "soil_depth_m": 0.3020427861327167,
+ "soil_depth_flat_m": 1.4592706669343665,
+ "soil_depth_steep_m": 0.0,
+ "bare_rock_above_deg": 32.88397184274365,
+ "erosion_mm_kyr": 42.08619804757875,
+ "production_mm_kyr": 77.0,
+ "repose_deg": 40.03,
+ "repose_regolith_deg": 40.03,
+ "repose_bedrock_deg": 33.0,
+ "fractal_D": 2.6,
+ "d_median_mm": 0.35,
+ "bulk_density": 1537.0000000000002,
+ "porosity": 0.42,
+ "bearing_capacity_Pa": 110353.61155500847,
+ "bearing_capacity_kPa": 110.35361155500847,
+ "reference_load_Pa": 19350.835425460584,
+ "reference_load_kPa": 19.350835425460584,
+ "reference_load_kg": 82.04,
+ "reference_plate_m2": 0.03,
+ "sinkage_m": 8.673617379884035e-19,
+ "sinkage_mm": 8.673617379884035e-16,
+ "carries_reference_load": true,
+ "who_answers_holds_a_person": "theHuman.ground_holds_it",
+ "g": 7.076122169232295,
+ "walk_run_per_sqrt_leg": 1.8809734406992957,
+ "swing_period_per_sqrt_leg": 2.362012584561864,
+ "T_surface": 279.1908308653023,
+ "S_earth": 1.0048952107836961,
+ "latitude_deg": 30.77072291868692,
+ "day_s": 86400.0,
+ "obliquity_deg": 37.38250904743713,
+ "obliquity_effective_deg": 37.38250904743713,
+ "retrograde": false,
+ "tropic_lat_deg": 37.38250904743713,
+ "polar_circle_lat_deg": 52.61749095256287,
+ "has_seasons": true,
+ "gases_kept": [
+  "CH4",
+  "H2O",
+  "N2",
+  "O2",
+  "CO2"
+ ],
+ "P_surface_bar": 0.5199302820248954,
+ "days_per_year": 383.21118050163045,
+ "year_s": 33109445.99534087,
+ "timeline_serial": 21,
+ "t_since_seed_s": 5757154536625852.0,
+ "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

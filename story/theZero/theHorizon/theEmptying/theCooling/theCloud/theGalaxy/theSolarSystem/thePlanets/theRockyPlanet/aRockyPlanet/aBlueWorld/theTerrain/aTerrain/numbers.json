@@ -1,87 +1,90 @@
 {
-  "extent_m": 12000.0,
-  "duration_s": 86400.0,
-  "latitude_deg": 30.77072291868692,
-  "patch_m": 12000.0,
-  "ground_patch_m": 4.0,
-  "grid": 128,
-  "cell_m": 93.75,
-  "relief_m": 477.255312659279,
-  "spectral_beta": 3.00268392893884,
-  "spectral_beta_source": "measured from this membrane's own eroded surface (_spectral_beta)",
-  "octave_amplitude_ratio": 0.7064493511980008,
-  "detail_octaves": 5,
-  "detail_floor_m": 2.9296875,
-  "detail_relief_m": 3.496034123218732,
-  "detail_amplitudes_m": [
-    0.6226995319601657,
-    0.4399056803445579,
-    0.3107710824677281,
-    0.21954402958042693,
-    0.15509673725648732
-  ],
-  "detail_level": 0.07558751106262207,
-  "detail_level_set_by": "bisection against repose_deg on the TOTAL surface",
-  "friction_limited": true,
-  "mean_slope_deg": 19.462273580534045,
-  "p95_slope_deg": 32.99999427679346,
-  "mean_slope_deg_grid_only": 17.11009178131397,
-  "p95_slope_deg_grid_only": 23.937010907625023,
-  "repose_deg": 33.0,
-  "slopes_below_repose": true,
-  "drainage_density_per_km": 0.796875,
-  "hack_exponent": 0.5479379861106365,
-  "carved_by": "River",
-  "surface_materials": {
-    "veg": {
-      "genome_id": 26,
-      "rgb_mean": [
-        0.5253729224205017,
-        0.6056915521621704,
-        0.34528759121894836
-      ]
-    },
-    "rock": {
-      "genome_id": 24,
-      "rgb_mean": [
-        0.7100783586502075,
-        0.707780122756958,
-        0.6420968770980835
-      ]
-    },
-    "water": {
-      "genome_id": null,
-      "rgb_mean": [
-        0.1,
-        0.2,
-        0.3
-      ],
-      "flag": "TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept"
-    }
+ "extent_m": 12000.0,
+ "duration_s": 86400.0,
+ "latitude_deg": 30.77072291868692,
+ "patch_m": 12000.0,
+ "ground_patch_m": 4.0,
+ "grid": 128,
+ "cell_m": 93.75,
+ "relief_m": 477.255312659279,
+ "spectral_beta": 3.00268392893884,
+ "spectral_beta_source": "measured from this membrane's own eroded surface (_spectral_beta)",
+ "octave_amplitude_ratio": 0.7064493511980008,
+ "detail_octaves": 5,
+ "detail_floor_m": 2.9296875,
+ "detail_relief_m": 3.496034123218732,
+ "detail_amplitudes_m": [
+  0.6226995319601657,
+  0.4399056803445579,
+  0.3107710824677281,
+  0.21954402958042693,
+  0.15509673725648732
+ ],
+ "detail_level": 0.07558751106262207,
+ "detail_level_set_by": "bisection against repose_deg on the TOTAL surface",
+ "friction_limited": true,
+ "mean_slope_deg": 19.462273580534045,
+ "p95_slope_deg": 32.99999427679346,
+ "mean_slope_deg_grid_only": 17.11009178131397,
+ "p95_slope_deg_grid_only": 23.937010907625023,
+ "repose_deg": 33.0,
+ "slopes_below_repose": true,
+ "drainage_density_per_km": 0.796875,
+ "hack_exponent": 0.5479379861106365,
+ "carved_by": "River",
+ "surface_materials": {
+  "veg": {
+   "genome_id": 26,
+   "rgb_mean": [
+    0.5253729224205017,
+    0.6056915521621704,
+    0.34528759121894836
+   ]
   },
-  "surface_source": "story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py)",
-  "g": 7.076122169232295,
-  "T_surface": 279.1908308653023,
-  "lapse_rate_K_per_km": 4.64700560367494,
-  "day_s": 86400.0,
-  "obliquity_deg": 37.38250904743713,
-  "obliquity_effective_deg": 37.38250904743713,
-  "retrograde": false,
-  "tropic_lat_deg": 37.38250904743713,
-  "polar_circle_lat_deg": 52.61749095256287,
-  "has_seasons": true,
-  "gases_kept": [
-    "CH4",
-    "H2O",
-    "N2",
-    "O2",
-    "CO2"
-  ],
-  "P_surface_bar": 0.5199302820248954,
-  "days_per_year": 383.21118050163045,
-  "year_s": 33109445.99534087,
-  "S_earth": 1.0048952107836961,
-  "sea_level_m": 3058.8679003080533,
-  "walk_run_per_sqrt_leg": 1.8809734406992957,
-  "swing_period_per_sqrt_leg": 2.362012584561864
+  "rock": {
+   "genome_id": 24,
+   "rgb_mean": [
+    0.7100783586502075,
+    0.707780122756958,
+    0.6420968770980835
+   ]
+  },
+  "water": {
+   "genome_id": null,
+   "rgb_mean": [
+    0.1,
+    0.2,
+    0.3
+   ],
+   "flag": "TYPED -- NO OPEN-WATER SCAN in the collection; flagged, not quietly kept"
+  }
+ },
+ "surface_source": "story/data/material_genomes.json (16 real 3DGS scans; Construction/material_elements.py)",
+ "g": 7.076122169232295,
+ "T_surface": 279.1908308653023,
+ "lapse_rate_K_per_km": 4.64700560367494,
+ "day_s": 86400.0,
+ "obliquity_deg": 37.38250904743713,
+ "obliquity_effective_deg": 37.38250904743713,
+ "retrograde": false,
+ "tropic_lat_deg": 37.38250904743713,
+ "polar_circle_lat_deg": 52.61749095256287,
+ "has_seasons": true,
+ "gases_kept": [
+  "CH4",
+  "H2O",
+  "N2",
+  "O2",
+  "CO2"
+ ],
+ "P_surface_bar": 0.5199302820248954,
+ "days_per_year": 383.21118050163045,
+ "year_s": 33109445.99534087,
+ "S_earth": 1.0048952107836961,
+ "sea_level_m": 3058.8679003080533,
+ "walk_run_per_sqrt_leg": 1.8809734406992957,
+ "swing_period_per_sqrt_leg": 2.362012584561864,
+ "timeline_serial": 20,
+ "t_since_seed_s": 5757154536539452.0,
+ "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

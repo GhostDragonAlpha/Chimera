@@ -97,7 +97,6 @@
 | `braced_over_together_margin` | 3.855 |
 | `braced_step_delay_s` | 0.1123 |
 | `braced_step_delay_ratio` | 0.1915 |
-| `step_reach_m` | 0.582 |
 | `push_velocity_with_step_ms` | 1.765 |
 | `push_energy_with_step_J` | 147.1 |
 | `step_time_s` | 0.5865 |
