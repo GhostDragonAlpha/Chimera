@@ -83,6 +83,7 @@ def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)
+    stand_z = float(m.key_qpos[0][2])
     q0 = np.array([float(d.qpos[a]) for a in qadr])
     lim = {a: (c - h, c + h) for a, c, h, _ in jids}
     ctrl = base_ctrl.copy()
@@ -98,6 +99,20 @@ def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
         if k % 20 == 0:
+            # THE PORT MUST BE LOADED FOR THE MEASUREMENT TO MEAN ANYTHING.
+            # Turn 2's picture: violent 35 deg oscillation for 1.5 s, then FLAT at 11 deg for the
+            # remaining 3.5 s -- and the filmstrip shows why. The body is LYING ON THE FLOOR. A hip
+            # on the ground carries nothing, so "it held steady" is a measurement of a corpse.
+            #
+            # Worse, it was an EXPLOIT: the hold term rewards not moving, so A CANDIDATE THAT FALLS
+            # FASTER SCORED BETTER -- 70% of the rollout spent flat on the floor at low drift. The
+            # optimiser found it immediately, which is what an optimiser is for (the exploit is the
+            # product; iterate the objective, never the artifact).
+            #
+            # Same species as the ground branch closing at +0.7% while carrying a heap: technically
+            # correct, about a body that is not doing the thing.
+            if float(d.qpos[2]) < 0.75 * stand_z:
+                break                      # unloaded from here on; stop scoring, do not reward it
             q = np.array([float(d.qpos[a]) for a in qadr])
             drift = float(np.abs(q - q0).max())
             out = max(0.0, max(max(lim[a][0] - float(d.qpos[a]),
@@ -111,7 +126,11 @@ def evaluate(m, d, mujoco, jids, mus, qadr, base_ctrl, theta, secs, frames=0):
             tr["out"].append(np.degrees(out)); tr["z"].append(float(d.qpos[2]))
     if ren is not None:
         ren.close()
-    return float(tot / max(n, 1)), tr, pics
+    # AND THE SCORE MUST PAY FOR THE TIME IT DID NOT SURVIVE UNDER LOAD, or falling early is
+    # still free: an average over three samples of a standing body would otherwise beat an
+    # average over 250 samples of one that wobbled honestly.
+    frac = n / max(steps // 20, 1)
+    return float(tot / max(n, 1)) * frac, tr, pics
 
 
 def draw(port, turn, tr, pics, hist, path, nmus):
