@@ -191,8 +191,11 @@ def check(d: Path) -> dict:
         vals = {k: v for k, v in data.items()
                 if isinstance(v, (int, float)) and not isinstance(v, bool)}
         seen, dup = {}, []
+        # BOOKKEEPING KEYS ARE NOT PHYSICS AND MUST NOT COLLIDE WITH IT. timeline_serial is a small
+        # integer I added, and thePlanets has n_worlds = 11 with a serial of 11 -- a meaningless
+        # coincidence that the column would otherwise report as a defect forever.
         for k, v in vals.items():
-            if v == 0:
+            if v == 0 or k in ("timeline_serial", "t_since_seed_s"):
                 continue
             # EXACT FLOAT IDENTITY, NOT ABSOLUTE ROUNDING. This was round(v, 12), which sends
             # 2.29e-35 and 5.39e-44 both to 0.0 -- so every number smaller than a picounit landed
