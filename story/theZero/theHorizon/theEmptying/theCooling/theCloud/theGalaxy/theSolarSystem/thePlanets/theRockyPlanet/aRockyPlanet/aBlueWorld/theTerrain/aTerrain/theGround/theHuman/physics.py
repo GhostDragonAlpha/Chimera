@@ -264,6 +264,35 @@ GAIT_AGE = 30.0            # years -- a dial: turn it and the curves change, bec
 _GAIT_CACHE = None
 
 
+# ── THE SEAM BETWEEN THIS WORLD AND AN EARTH DATASET ──────────────────────────────────────────
+G_EARTH = 9.80665          # the gravity Van Criekinge's 246 adults were measured in
+
+def similar_earth_speed(v_ms, g):
+    """The EARTH speed whose gait is dynamically similar to walking at `v_ms` under `g`.
+
+    THE DEFECT THIS EXISTS TO FIX, found 2026-08-02 and named in rule 18 the day before without
+    being repaired. `measured_gait()` selects and interpolates the measured curves by comparing a
+    speed in m/s against the study's speeds in m/s -- but the study happened on Earth and this body
+    does not. Comparing raw m/s across two gravities is comparing two different gaits.
+
+        this body walks at 0.9924 m/s, Fr = 0.1513
+        matching m/s     picks the study's SLOW condition   (0.9098 m/s, Fr = 0.0917)
+        matching FROUDE  picks between SLOW and COMFORTABLE (the similar Earth speed is 1.1683)
+
+    Froude is the whole of it: `Fr = v^2/(gL)`, and equal Fr means dynamically similar motion --
+    so the DIMENSIONLESS joint-angle trajectories transfer unchanged, which is exactly what a
+    tracking envelope needs. There IS a law connecting joint angles across gravities; it is this
+    one, and the membrane had been applying it to the speed and then forgetting it at the table.
+
+        Fr_here = v^2/(g L) = v_earth^2/(g_E L)   =>   v_earth = v * sqrt(g_E / g)
+
+    Note what it does NOT do: it does not rescale the curves. It picks WHICH measured curve, out
+    of three the study actually ran, and lets the existing interpolator blend them. Nothing is
+    invented; a different row is read.
+    """
+    return float(v_ms) * math.sqrt(G_EARTH / float(g))
+
+
 def measured_gait(v_ms=None, sex=None, age=None):
     """The measured curves for this body's cohort, at the speed it actually walks.
 
@@ -853,18 +882,22 @@ def derive(parent, free):
     # The chain runs the right way round: the Froude law gives a comfortable speed, that speed picks
     # the measured curve shape, and the shape then decides the vault and the push-off. Nothing here
     # reads a number back to set the speed it came from.
-    G = measured_gait(v_comfort)
+    # SELECT THE MEASURED CURVE AT THE MATCHING FROUDE NUMBER, not the matching m/s. The study is
+    # an Earth measurement; converting at this seam is the only place it is safe (the same rule the
+    # composition seams follow). Everything downstream of here consumes an EARTH-equivalent speed.
+    v_similar = similar_earth_speed(v_comfort, g)
+    G = measured_gait(v_similar)
     import measured as _measured
     leg_frac_measured = _measured.leg_over_stature(GAIT_SEX)[0]
     # WHERE THE FOOT PIVOTS, derived from the measured moment and force rather than typed as 0.10.
     # g is NOT passed: the lever is anatomy, and the measurement's own gravity is inside
-    ball = forefoot_lever_frac(h=h, v_ms=v_comfort)
+    ball = forefoot_lever_frac(h=h, v_ms=v_similar)
 
     # ── THE VAULT, MEASURED OFF THE GAIT ITSELF ───────────────────────────────────────────────
     # With a sine hip it was L(1 - cos(SWING_AMP)) -- a closed form, because a sine has an amplitude.
     # A real leg has no amplitude: the hip's path is whatever the three measured curves and the load
     # transfer make it, so the only honest number is the range of the path the body actually takes.
-    _tab = _gait_table(h, v_comfort, ball)
+    _tab = _gait_table(h, v_similar, ball)
     # ── THE OTHER DIRECTIONS A BODY WALKS, measured too (A3) ──────────────────────────────────
     # Backward and sidestep are not the forward gait played in reverse or rotated: the shapes are
     # their own measurements (CMU trials, story/data/gait_directional.json), built into tables by
@@ -874,7 +907,7 @@ def derive(parent, free):
     gait_cycles = {"forward": _tab}
     gait_dir_stride = {"forward": stride}
     for _dn in ("backward", "left", "right"):
-        gait_cycles[_dn] = _gait_table(h, v_comfort, ball,
+        gait_cycles[_dn] = _gait_table(h, v_similar, ball,
                                        curves=directional_curves(_dn, G["grf"]))
         gait_dir_stride[_dn] = float(_measured.gait_directional()["directions"][_dn]["stride_m"])
     hip_path = [r[0] for r in _tab]
@@ -1031,6 +1064,20 @@ def derive(parent, free):
         "gait_group": G["group"],
         "gait_is_measured": True,
         "gait_speed_condition": G["nearest_condition"],
+        # THE TRACKING ENVELOPE, PUBLISHED SO NOBODY HAS TO IMPORT THIS MEMBRANE TO GET IT.
+        # Rule 20: an instrument may not import the thing it judges -- that is a monad. The
+        # trainer had been reading a DIFFERENT file (CMU 35_01, 1.285 m/s on Earth = Fr 0.1830)
+        # while this body walks at Fr 0.1513, so its tracking term asked for a gait 21% away in
+        # Froude from the one its velocity term demanded. These three curves are the study's own,
+        # selected and interpolated at the DYNAMICALLY SIMILAR Earth speed, in degrees, 101
+        # samples with sample 101 closing onto sample 1.
+        "gait_envelope_deg": {
+            "hip": list(G["hip"]) + [G["hip"][0]],
+            "knee": list(G["knee"]) + [G["knee"][0]],
+            "ankle": list(G["ankle"]) + [G["ankle"][0]],
+        },
+        "gait_envelope_samples": 101,
+        "v_similar_earth_ms": v_similar,   # the Earth speed this body's gait is similar TO
         "duty_factor": G["duty"],
         "double_support_frac": G["double_support"],
         # THE MEASURED COUNTERPARTS OF NUMBERS THIS MEMBRANE DERIVES. Published side by side rather

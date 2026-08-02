@@ -444,6 +444,43 @@ def main() -> int:
     ref_fwd = json.loads(REF_FWD.read_text())
     ref_dir = json.loads(REF_DIR.read_text())
 
+    # ── THE TRACKING ENVELOPE COMES FROM THE MEMBRANE, NOT FROM AN EARTH FILE ────────────────
+    # The velocity term was fixed at S4 and the tracking term was left reading CMU 35_01: a walk
+    # at 1.285 m/s on Earth, Fr = 0.1830, while this body walks at Fr = 0.1513. Two terms, two
+    # different gaits, 21% apart in Froude -- rule 1's contradiction one layer down.
+    #
+    # THE LAW THAT CONNECTS THEM EXISTS, and the claim that it does not was wrong: DYNAMIC
+    # SIMILARITY. Equal Froude means geometrically similar motion, and a joint angle is
+    # dimensionless, so the trajectories transfer UNCHANGED between worlds at equal Fr. What was
+    # missing was not a law but a lookup -- theHuman was selecting its measured curve by matching
+    # m/s against a study run on Earth, which picked the SLOW condition (Fr 0.0917) for a body
+    # walking at Fr 0.1513. It now matches Froude and publishes the result.
+    #
+    # We READ that publication rather than importing the membrane (rule 20: an instrument may not
+    # import the thing it judges). No fallback: if it is absent the membrane must publish it.
+    if 'gait_envelope_deg' not in LEDGER:
+        raise DerivationFailed(
+            'Derivation failed: theHuman publishes no gait_envelope_deg. The tracking term would '
+            'fall back to an Earth walk at a different Froude number, which is the defect this '
+            'exists to remove. Run `python story/grow.py`. Refusing to assume Earth.')
+    _env = LEDGER['gait_envelope_deg']
+    # keep the file's shape -- build_ref_table reads envelopes_deg[j]['mean'] -- so the swap is
+    # a swap of DATA, not of structure. `close_curve` then closes 100 -> 101 as it always did.
+    _was = {k: (min(ref_fwd['envelopes_deg'][k]['mean']), max(ref_fwd['envelopes_deg'][k]['mean']))
+            for k in ('hip', 'knee', 'ankle')}
+    ref_fwd = dict(ref_fwd)
+    ref_fwd['envelopes_deg'] = {
+        k: {'mean': list(_env[k])[:100], 'std': ref_fwd['envelopes_deg'][k].get('std'),
+            'n_cycles': ref_fwd['envelopes_deg'][k].get('n_cycles'),
+            'source': 'theHuman.gait_envelope_deg (Froude-matched)'}
+        for k in ('hip', 'knee', 'ankle')}
+    print('  ENVELOPE      forward tracking curves <- theHuman.gait_envelope_deg '
+          f'(Fr-matched, similar Earth speed {LEDGER["v_similar_earth_ms"]:.4f} m/s)')
+    for _k in ('hip', 'knee', 'ankle'):
+        _lo, _hi = min(_env[_k]), max(_env[_k])
+        print(f'                {_k:6} {_lo:+7.1f}..{_hi:+7.1f} deg   '
+              f'(CMU 35_01 was {_was[_k][0]:+7.1f}..{_was[_k][1]:+7.1f})')
+
     # ── S4 DERIVE, before anything else in this routine ───────────────────────────────────────
     # These four lines used to read the two mocap files straight through: `speed_m_s` was
     # 1.285 m/s and `stride_s` was 1.127 s, both recorded on Earth, and both handed to a body
