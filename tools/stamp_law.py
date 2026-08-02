@@ -26,12 +26,18 @@ ROOT = Path(__file__).resolve().parent.parent
 MARK = "<!-- CHIMERA-LAW -->"
 
 BANNER = f"""{MARK}
+> **RULE 0 — EVERY MEMBRANE IS A THEORY. STATE IT BEFORE YOU BUILD IT.** Three parts, all three
+> required: a **STATEMENT** someone could disagree with · a **PREDICTION** you have not measured
+> yet · a **FALSIFIER** named *before* the run. **A description survives any result; a theory can
+> lose.** No falsifier, no build.
+>
 > **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
 > not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
-> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
-> · enforced by `python tools/training_gate.py`
+>
+> **[docs/THE_LAW.md](../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
+> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 {MARK}
 """
 
@@ -79,12 +85,22 @@ def targets():
     return out
 
 
-def stamp(p: Path, apply: bool) -> str:
+def stamp(p: Path, apply: bool, restamp: bool = False) -> str:
     txt = p.read_text(encoding="utf8", errors="replace")
     if p.name in GENERATED:
         return "generated"
     if MARK in txt:
-        return "already"
+        if not restamp:
+            return "already"
+        # REPLACE the block between the markers. A banner that can only be ADDED is a banner that
+        # can never be corrected -- and the rule it carries changed today.
+        a = txt.index(MARK)
+        b = txt.index(MARK, a + len(MARK)) + len(MARK)
+        banner = BANNER.replace("../docs/THE_LAW.md", rel_link(p)).rstrip()
+        new = txt[:a] + banner + txt[b:]
+        if apply:
+            p.write_text(new, encoding="utf8")
+        return "restamped"
     if p.resolve() == (ROOT / "docs/THE_LAW.md").resolve():
         return "the law itself"
 
@@ -115,11 +131,13 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--restamp", action="store_true",
+                    help="replace existing banners -- use when the rule itself changes")
     a = ap.parse_args()
 
     counts, missing = {}, []
     for p in targets():
-        r = stamp(p, a.apply and not a.check)
+        r = stamp(p, a.apply and not a.check, restamp=a.restamp)
         counts[r] = counts.get(r, 0) + 1
         if r == "stamped" and a.check:
             missing.append(p.relative_to(ROOT).as_posix())

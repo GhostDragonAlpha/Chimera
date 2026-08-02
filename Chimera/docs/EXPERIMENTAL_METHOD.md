@@ -1,12 +1,18 @@
 # THE EXPERIMENTAL METHOD
 
 <!-- CHIMERA-LAW -->
+> **RULE 0 — EVERY MEMBRANE IS A THEORY. STATE IT BEFORE YOU BUILD IT.** Three parts, all three
+> required: a **STATEMENT** someone could disagree with · a **PREDICTION** you have not measured
+> yet · a **FALSIFIER** named *before* the run. **A description survives any result; a theory can
+> lose.** No falsifier, no build.
+>
 > **RULE 1 — DERIVE IT BEFORE YOU TRAIN IT.** A parameter sweep is an admission the derivation was
 > not done. Before any run, any sweep, any "let's try N variants": trace the variables and show the
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
-> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · full method: `Chimera/docs/EXPERIMENTAL_METHOD.md`
-> · enforced by `python tools/training_gate.py`
+>
+> **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
+> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > How this studio finds out what is true about a running system.
@@ -649,6 +655,33 @@ Earth pair and the transported pair are both refused.
 
 ---
 
+## RULE 26 — A CLAIM WITHOUT A FALSIFIER IS A DESCRIPTION, AND A DESCRIPTION CANNOT BE WRONG
+
+Named 2026-08-02, after a day in which FOUR confident diagnoses were stated and then reversed:
+*the plant is too slow* (the muscles were 3.2x faster than the fall) · *the CoM starts outside the
+base* (it was 4.8 mm inside; the plot's origin was the heel midpoint) · *the stance selection is
+the defect* (the CoM was inside all three) · *the body ends at the pelvis* (47 kg of spine, torso,
+neck and head, invisible to a traversal that walked downward from the pelvis).
+
+**Every one of them was stated without naming what would refute it.** That is the common cause, and
+it is not carelessness -- each was a reasonable reading of a real measurement. The failure is
+structural:
+
+    IF YOU CANNOT SAY IN ADVANCE WHAT WOULD PROVE YOU WRONG, YOU WILL NOT NOTICE WHEN IT HAPPENS.
+    You will find a reason the result still fits, and every reason will be individually reasonable.
+
+So a claim is not admissible until it carries three parts: a STATEMENT someone could disagree with,
+a PREDICTION not yet measured, and a FALSIFIER named BEFORE the run. Rule 0, and it sits above
+rule 1 because you cannot derive your way to something you have not claimed.
+
+**AND THE CONVERSE IS THE HALF THAT GETS FORGOTTEN: a confirmed prediction that COULD NOT have
+failed is worth nothing.** Before believing a pass, check the falsifier was reachable. `GROUND ->
+FOOT` closing at +0.7% was real evidence because the contact solver and the integrator could have
+disagreed. `mean(hold)` improving while every episode ended in 0.42 s was not, because a shorter
+window cannot exceed a max-based bar.
+
+---
+
 ## THE REMAKE PROCEDURE — how to go back over everything without reading it all
 
 Written down because "go back over everything" is where a session evaporates, and because the
@@ -714,3 +747,7 @@ context that starts it will not be the context that finishes it.
     the reference world's anatomy. And ask what your check compares against — `training_gate`
     compared a stride to a transform of itself, a tautology that could only pass on Earth, and it
     published "18% too fast" into six documents when the real error was 3.9%.
+26. **A claim without a falsifier is a description, and a description cannot be wrong.** State the
+    theory, the prediction and what would kill it BEFORE the run -- four confident diagnoses were
+    reversed in one day and not one had named its own refutation. And check the falsifier was
+    REACHABLE before believing a pass.

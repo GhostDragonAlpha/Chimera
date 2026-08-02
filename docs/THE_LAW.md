@@ -7,6 +7,38 @@
 
 ---
 
+## RULE 0 — EVERY MEMBRANE IS A THEORY. STATE IT BEFORE YOU BUILD IT.
+
+The operator, 2026-08-02: *"Every membrane is a theory. Every port is a theory. Every connection is
+a theory. The game itself is a theory."*
+
+**A membrane is not a thing you build and then check. It is a CLAIM about how the world works, and
+building it is the experiment.** Three parts, and all three are required before a line is written:
+
+| part | what it is | the test that it is real |
+|---|---|---|
+| **STATEMENT** | what it claims, one sentence, plain words | someone could disagree with it |
+| **PREDICTION** | a number it implies **that you have not measured** | it could come out otherwise |
+| **FALSIFIER** | what would kill it, named **before** the run | you would accept that as a loss |
+
+    A DESCRIPTION SURVIVES ANY RESULT. A THEORY CAN LOSE.
+
+**The falsifier is the part that gets skipped**, and skipping it is how work becomes unfalsifiable.
+If you cannot say in advance what would prove you wrong, you will not notice when it happens — you
+will find a reason the result still fits, and every reason will be individually reasonable. Four
+confident diagnoses were reversed on the day this rule was written, and every one of them had been
+stated without a falsifier.
+
+**It is fractal, and that is what makes the game one object:** the game is a theory, a membrane is
+a theory, a port is a theory, a number is a theory. Each level's PREDICTION is the level below's
+TEST — `theCooling` predicted **3760 K** and the literature said ~3700, so the membrane *was* the
+experiment and the number *was* the result.
+
+**Rule 0 comes before Rule 1** because you cannot derive your way to something you have not claimed.
+Full method, with the worked example: `docs/THE_WORKFLOW.md` §0.
+
+---
+
 ## RULE 1 — A PARAMETER SWEEP IS AN ADMISSION THE DERIVATION WAS NOT DONE
 
 The operator's words, from 2026-07-28 and again on 2026-08-02:
