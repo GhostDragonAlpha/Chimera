@@ -70,7 +70,7 @@ def _potts_color_pass(
         J: wp.array2d(dtype=wp.float32),
         offs: wp.array(dtype=wp.vec3i),
         targets: wp.array(dtype=wp.int32),
-        color: wp.vec3i, temp: float, lam: float,
+        color: wp.vec3i, temp: float, lam: wp.array(dtype=wp.float32),
         frozen: int, seed: int, n_off: int):
     z, y, x = wp.tid()
     nz = lattice.shape[0]
@@ -123,11 +123,11 @@ def _potts_color_pass(
     if old != MEDIUM:
         a = float(area[old])
         t = float(targets[old])
-        dH += lam * ((a - 1.0 - t) * (a - 1.0 - t) - (a - t) * (a - t))
+        dH += lam[old] * ((a - 1.0 - t) * (a - 1.0 - t) - (a - t) * (a - t))
     if new != MEDIUM:
         a = float(area[new])
         t = float(targets[new])
-        dH += lam * ((a + 1.0 - t) * (a + 1.0 - t) - (a - t) * (a - t))
+        dH += lam[new] * ((a + 1.0 - t) * (a + 1.0 - t) - (a - t) * (a - t))
 
     u = wp.randf(state)
     if dH <= 0.0 or u < wp.exp(-dH / temp):
@@ -186,7 +186,7 @@ def _energy_fold(
         area: wp.array(dtype=wp.int32),
         targets: wp.array(dtype=wp.int32),
         trace: wp.array(dtype=wp.float32),
-        slot: int, lam: float, n_types: int):
+        slot: int, lam: wp.array(dtype=wp.float32), n_types: int):
     """One thread: trace[slot] = half the pair sum (each interface counted twice) + area."""
     nz = partials.shape[1]
     h = float(0.0)
@@ -196,7 +196,7 @@ def _energy_fold(
     for t in range(1, n_types):          # t = 0 is MEDIUM, the unconstrained reservoir
         a = float(area[t])
         tg = float(targets[t])
-        h += lam * (a - tg) * (a - tg)
+        h += lam[t] * (a - tg) * (a - tg)
     trace[slot] = h
 
 
@@ -204,8 +204,8 @@ class Lattice:
     """A persistent on-device lattice. Nothing reads back until step() returns the trace
     or close() returns the grid; the pass loop never crosses the bus."""
     __slots__ = ("lat", "Jd", "offs", "tgtd", "aread", "colors", "frozen",
-                 "temp", "lam", "seed", "n_types", "shape", "dev", "pass_count",
-                 "wcritd", "rlogd", "ruptures")
+                 "temp", "lam", "lamd", "seed", "n_types", "shape", "dev",
+                 "pass_count", "wcritd", "rlogd", "ruptures")
 
     @property
     def sweeps_done(self):
@@ -299,7 +299,17 @@ def open_lattice(grid, shape, targets, J, temp=12.0, lam=0.9, seed=0, frozen_typ
                      dtype=np.int32)
     h.aread = wp.array(area0, dtype=wp.int32, device=h.dev)
     h.frozen = frozen_type if frozen_type is not None else _FROZEN_NONE
-    h.temp, h.lam, h.seed = float(temp), float(lam), int(seed)
+    h.temp, h.seed = float(temp), int(seed)
+    # lam: scalar (uniform, the rung-1 protocol) or {type: value} (per-tissue,
+    # Phase 5's derived bulk moduli). Always a device array for the kernels.
+    h.lam = lam
+    lam_arr = np.zeros(h.n_types, dtype=np.float32)
+    if isinstance(lam, dict):
+        for t, v in lam.items():
+            lam_arr[t] = np.float32(v)
+    else:
+        lam_arr[:] = np.float32(lam)
+    h.lamd = wp.array(lam_arr, dtype=wp.float32, device=h.dev)
     h.colors = [wp.vec3i(cz, cy, cx)
                 for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
     h.pass_count = 0
@@ -330,7 +340,7 @@ def step(handle, n_passes, trace=False):
         col = h.colors[p % 8]
         wp.launch(_potts_color_pass, dim=h.shape,
                   inputs=[h.lat, h.aread, h.Jd, h.offs, h.tgtd, col,
-                          h.temp, h.lam, h.frozen, h.seed * 131 + p, len(_OFF18)],
+                          h.temp, h.lamd, h.frozen, h.seed * 131 + p, len(_OFF18)],
                   device=h.dev)
         # No fold: the counts are LIVE -- each flip claims its marginal atomically and
         # rolls it back on rejection, the CPU model's serial semantics in scheduling
@@ -341,7 +351,7 @@ def step(handle, n_passes, trace=False):
                       inputs=[h.lat, h.Jd, h.offs, partials, i, len(_OFF18)],
                       device=h.dev)
             wp.launch(_energy_fold, dim=1,
-                      inputs=[partials, h.aread, h.tgtd, trace_d, i, h.lam, h.n_types],
+                      inputs=[partials, h.aread, h.tgtd, trace_d, i, h.lamd, h.n_types],
                       device=h.dev)
         h.pass_count += 1
         # THE RUPTURE PASS (Phase 3): one per completed sweep, after the flips.

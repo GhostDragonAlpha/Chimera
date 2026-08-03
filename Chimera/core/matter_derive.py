@@ -180,7 +180,38 @@ if __name__ == "__main__":
                     help="Phase 4 control: sand/rock/medium instead of the tissue scramble")
     ap.add_argument("--fracture", action="store_true",
                     help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
+    ap.add_argument("--lambda", dest="lam_derived", action="store_true",
+                    help="Phase 5: per-tissue lambda derived from measured bulk moduli")
     a_ns = ap.parse_args()
+
+    if a_ns.lam_derived:
+        from core.matter import metrics_3d
+        # PHASE 5: lambda_t = K_t * ell^3 / (2 * T_t * E0). Every input measured or
+        # already derived: K_soft = 2.3 GPa (water-like soft tissue), K_bone = 13.9 GPa
+        # (cortical, E=17 GPa nu=0.3), E0 = liquidity anchor at temp=12, ell = 10 um.
+        K_PA = {BONE: 13.9e9, MUSCLE: 2.3e9, SKIN: 2.3e9, TENDON: 2.3e9}
+        E0 = SIGMA_GEO_MN_M * 1e-3 * ELL_M**2 / TEMP          # J, liquidity anchor
+        grid, shape, targets = _scramble(a_ns.n)
+        lam = {t: K_PA[t] * ELL_M**3 / (2.0 * targets[t] * E0)
+               for t in (BONE, MUSCLE, SKIN)}
+        print("PHASE 5 — THE LAMBDA MEMBRANE: derived per-tissue lambda "
+              + ", ".join(f"{NAMES[t]} {lam[t]:.0f}" for t in (BONE, MUSCLE, SKIN))
+              + f"  (E0 = {E0:.3e} J; rung-1's hand value: 0.9)")
+        J4 = derive_J(anchor="liquidity")[np.ix_([0, 1, 2, 3], [0, 1, 2, 3])]
+        h = open_lattice(grid, shape, targets, J4, temp=TEMP, lam=lam, seed=0)
+        tr = step(h, 8 * a_ns.sweeps, trace=True)
+        final = close(h)
+        sw = tr.reshape(a_ns.sweeps, 8).mean(axis=1)
+        r = metrics_3d(final, shape)["radius"]
+        drift = {t: int((final == t).sum()) - targets[t] for t in (BONE, MUSCLE, SKIN)}
+        sorted_ = r[BONE] < r[MUSCLE] < r[SKIN]
+        print(f"  H {sw[0]:.1f} -> {sw[-1]:.1f} (drop {sw[0] - sw[-1]:.1f}), "
+              f"tau_sort = {tau_sort(sw):.0f}")
+        print(f"  radii: bone {r[BONE]:.1f} muscle {r[MUSCLE]:.1f} skin {r[SKIN]:.1f} "
+              f"-> sorted {sorted_}")
+        print(f"  count drift: {drift}  (targets frozen = mapping's freeze prediction)")
+        print(f"PHASE 5 VERDICT: {'mapping SURVIVES (sorted despite derived lambda)' if sorted_ else 'mapping DEAD — froze, as predicted' if abs(sw[0] - sw[-1]) < 0.01 * sw[0] else 'UNEXPECTED: moved but did not sort — publish'}")
+        raise SystemExit(0)
 
     if a_ns.fracture:
         from core.matter import metrics_3d

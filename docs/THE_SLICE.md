@@ -138,8 +138,15 @@ falsifier: fracture needs a measured K_IC (sand never fractures), rupture needs
 void-connectivity (cracks advance from surfaces), plucking is erosion not fracture
 (13 sand deaths, 0.16%, mechanism named). Stable: burial persists, ruptures decay
 7,293 → 5, zero bulk violations. Measured en route: λ/temp is load-bearing for
-life-and-death — λ's derivation is now the sharpest open debt. Next: λ's derivation,
-remaining Phase 4 families, or tissue K_IC research — on the operator's word.
+life-and-death — λ's derivation is now the sharpest open debt. **Phase 5 DONE
+(2026-08-03): the λ membrane ran — mapping DEAD as predicted.** Derived per-tissue
+λ (395 soft / 2,375 bone, from measured bulk moduli) freezes the lattice: no sort,
+counts frozen ±0.3%, H rises as λD² dominates — the per-type area term is mass
+conservation, NOT bulk elasticity. Published: rung-1's 0.9 = K_eff 5.3 MPa (the
+shaker is foam-like, measured); tissue-real incompressibility needs deficit-paired
+swaps (named, unbuilt). The kernel now takes per-tissue λ arrays; default scalar
+path unchanged, both instrument tests pass. Next: remaining Phase 4 families or
+the operator's pick.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/
