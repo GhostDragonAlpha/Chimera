@@ -50,19 +50,29 @@ SIGMA_CORTEX_MN_M = 0.32   # Foty & Steinberg 2005: zero-cadherin intercept
 ELL_M = 10e-6              # one lattice site = one cell
 TEMP = 12.0                # the rung-1 protocol's temperature; E0 derives FROM it
 
+# THE TWO ANCHORS for kT_eff (the ONE kinetic freedom; THE_LIVING_MATTER Phase 2/2b):
+#   cortex    — Phase 2: the PASSIVE floor (Foty & Steinberg 2005 intercept).
+#               F3 FIRED on it: structure yes, kinetics no (tau ratio 0.07).
+#   liquidity — Phase 2b: kT_eff = sigma_geo*ell^2, the geometric mean of the four
+#               measured tensions (7.66 mN/m): a liquid is liquid because its
+#               fluctuation energy per contact ~ its bond energy per contact.
+SIGMA_GEO_MN_M = float(np.prod(list({
+    "bone": 20.1, "tendon": 12.6, "muscle": 8.5, "skin": 1.6}.values())) ** 0.25)
+_ANCHOR_SIGMA = {"cortex": SIGMA_CORTEX_MN_M, "liquidity": SIGMA_GEO_MN_M}
+
 _TYPE_INDEX = {"bone": BONE, "muscle": MUSCLE, "skin": SKIN, "tendon": TENDON}
 
 
-def alpha(temp: float = TEMP) -> float:
-    """The lattice constant, J^-1 m^2: kT_eff = sigma_cortex*ell^2 ; E0 = kT_eff/temp."""
-    kT_eff = SIGMA_CORTEX_MN_M * 1e-3 * ELL_M**2     # J, the fluctuation energy
-    E0 = kT_eff / temp                               # J, the model energy unit
-    return ELL_M**2 / E0                             # J^-1 m^2
+def alpha(temp: float = TEMP, anchor: str = "cortex") -> float:
+    """The lattice constant, J^-1 m^2: kT_eff = sigma_anchor*ell^2 ; E0 = kT_eff/temp."""
+    kT_eff = _ANCHOR_SIGMA[anchor] * 1e-3 * ELL_M**2  # J, the fluctuation energy
+    E0 = kT_eff / temp                                # J, the model energy unit
+    return ELL_M**2 / E0                              # J^-1 m^2
 
 
-def derive_J(temp: float = TEMP) -> np.ndarray:
+def derive_J(temp: float = TEMP, anchor: str = "cortex") -> np.ndarray:
     """The derived 5x5 J (MEDIUM/BONE/MUSCLE/SKIN/TENDON), in lattice units."""
-    a = alpha(temp)
+    a = alpha(temp, anchor)
     J = np.zeros((5, 5), dtype=np.float64)
     tissues = list(SIGMA_MN_M)
     for t in tissues:
@@ -113,22 +123,25 @@ if __name__ == "__main__":
     import argparse
     from core.matter_gpu import open_lattice, step, close, parity_report
 
-    ap = argparse.ArgumentParser(description="THE LIVING MATTER Phase 2 control run")
+    ap = argparse.ArgumentParser(description="THE LIVING MATTER Phase 2/2b control run")
     ap.add_argument("--n", type=int, default=96)
     ap.add_argument("--sweeps", type=int, default=200)
+    ap.add_argument("--anchor", choices=sorted(_ANCHOR_SIGMA), default="liquidity",
+                    help="kT_eff anchor: cortex (Phase 2, F3 fired) or liquidity (Phase 2b)")
     a_ns = ap.parse_args()
 
-    J5 = derive_J()
+    J5 = derive_J(anchor=a_ns.anchor)
     J4 = J5[np.ix_([MEDIUM, BONE, MUSCLE, SKIN], [MEDIUM, BONE, MUSCLE, SKIN])]
 
-    print("THE DERIVED J (lattice units; alpha = %.4e J^-1 m^2 = %.3f per mN/m)"
-          % (alpha(), alpha() * 1e-3))
+    print("THE DERIVED J [%s anchor] (lattice units; alpha = %.4e J^-1 m^2 = %.3f per mN/m)"
+          % (a_ns.anchor, alpha(anchor=a_ns.anchor), alpha(anchor=a_ns.anchor) * 1e-3))
     order = [MEDIUM, BONE, MUSCLE, SKIN, TENDON]
     print("           " + "  ".join(f"{NAMES[t]:>8}" for t in order))
     for i in order:
         print(f"  {NAMES[i]:>8} " + "  ".join(f"{J5[i, j]:8.2f}" for j in order))
     g = gamma_cpm(J5)
-    print("gamma_CPM vs MEDIUM (lattice units; = 37.5 x measured mN/m):")
+    print("gamma_CPM vs MEDIUM (lattice units; = %.3f x measured mN/m):"
+          % (alpha(anchor=a_ns.anchor) * 1e-3))
     for t in (BONE, TENDON, MUSCLE, SKIN):
         print(f"  {NAMES[t]:>8} {g[t, MEDIUM]:8.2f}   (measured "
               f"{SIGMA_MN_M[NAMES[t]]:5.2f} mN/m)")

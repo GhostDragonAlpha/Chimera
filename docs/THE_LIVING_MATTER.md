@@ -24,8 +24,12 @@
 > plateaus, parity restored) · PHASE 2 DONE: F1 PASS, F2 PASS, F3 FIRED — the ratio
 > structure of the derived J reproduces the anatomy from measured tissue tensions
 > (Foty 1996), the cortical-floor scale does not reproduce rung-1's kinetics (τ ratio
-> 0.07, direction opposite to the prediction — published, Rule 17). Next: Phase 2b —
-> the liquidity anchor (kT_eff ~ γ·ℓ²), stated when built.**
+> 0.07, direction opposite to the prediction — published, Rule 17) · **PHASE 2b DONE:
+> F1/F2/F3 ALL PASS — the liquidity anchor (kT_eff = σ̄·ℓ², σ̄ = 7.66 mN/m geometric
+> mean) closes the theory with zero fitted numbers (τ ratio 0.60).** Open debts:
+> interfacial pairs are Girifalco-Good defaults, λ underived (own membrane), type
+> mapping tested on ordering only. Next: Phase 3 (fracture) or Phase 4 (world
+> materials), on the operator's word.**
 
 ---
 
@@ -286,6 +290,72 @@ The 5×5 derived J (lattice units, α = 37.5 per mN/m) is computed by
 diagonals [0, 753.8, 318.8, 60.0, 472.5], off-diagonals B–M 628.4, B–S 795.3,
 B–T 645.8, M–S 291.5, M–T 410.7, S–T 462.0. γ_CPM against medium reproduces the
 measured tensions by construction (753.8 = 37.5 × 20.1, etc.).
+
+**Phase 2b — THE LIQUIDITY ANCHOR (membrane stated 2026-08-03, before the run).**
+
+**STATEMENT.** The one kinetic freedom closes without a fit. Phase 2's cortical
+anchor died because it anchored the fluctuation energy to the PASSIVE floor — but
+Foty's aggregates round up, sort, and envelop in hours: they are LIQUIDS, and a
+liquid is liquid precisely because its fluctuation energy per contact is comparable
+to its bond energy per contact. So: **kT_eff = σ̄·ℓ²**, where σ̄ is the geometric
+mean of the four measured tissue tensions — (20.1·12.6·8.5·1.6)^¼ = **7.66 mN/m** —
+the scale-invariant midpoint of the measured cohesion spectrum (the tensions span
+12.6×; the geometric mean is the only central value that does not pick a tissue).
+Someone can disagree: the geometric mean may not be the operating point — the
+self-consistency could live at the median tissue, or outside the spectrum entirely.
+F3 judges.
+
+With temp = 12: E₀ = σ̄·ℓ²/12 = 6.38×10⁻¹⁴ J, **α = 1.566 per mN/m** — and the
+derived J lands at 1.5–3× rung-1's scale everywhere (J(B,MED) 47.2 vs 16;
+J(M,MED) 20.0 vs 11; J(S,MED) 3.8 vs 5). Which is the closure statement this phase
+exists to test: **rung-1's hand-fit was sitting at ~1.5× the liquidity anchor all
+along** (its implied kT_eff = 1.13×10⁻¹² J vs the anchor's 7.66×10⁻¹³ J — a factor
+of 1.5, inside F3's band). If the anchor is right, the theory's claim — "J is fixed
+by measurements up to ONE scale constant" — closes with ZERO fitted numbers: ratios
+from Foty 1996, interfacial default from Girifalco-Good, scale from the liquidity
+condition, every input a measurement or a named assumption.
+
+**PREDICTION (not yet measured).** F1 still passes (anatomy is ratio-structure,
+scale-invariant — the Phase-2 run already proved the structure sorts), and **F3
+PASSES: τ_sort(derived-liquidity) lands within [0.5, 2]× τ_sort(rung-1).** The
+derived J/temp ratios (0.3–3.9 against medium) bracket rung-1's (0.4–1.3) closely
+enough that the kinetics should be the same kind, not the Phase-2 quench.
+
+**FALSIFIER.** F3 fires again (τ ratio outside [0.5, 2]), or F1 breaks at the new
+scale. Either kills the liquidity anchor: the scale is then NOT the geometric-mean
+liquidity point, the disagreement is published per Rule 17, and the kinetic freedom
+goes to the operator's third open ruling (derive vs train) as an honest unresolved.
+
+*VERDICT (2026-08-03, all numbers measured;
+`cd Chimera && python -m core.matter_derive --anchor liquidity`).*
+**F1 PASS · F2 PASS · F3 PASS — the theory closes with zero fitted numbers.**
+
+- **F1 — PASS.** The liquidity-scaled derived J sorts the scramble: bone 12.8 <
+  muscle 21.2 < skin 26.8; the uniform contrast does not (26.0/17.3/19.6).
+- **F2 — PASS (analytic, unchanged).** The measured ordering is the burial order.
+- **F3 — PASS.** τ_sort(derived-liquidity) = 28 sweeps, τ_sort(rung-1) = 47;
+  ratio **0.60**, inside [0.5, 2]. The derived system is mildly faster than rung-1,
+  not identical — recorded, within the band the theory named.
+- **The closure.** Ratios from Foty 1996, interfacial default from Girifalco-Good,
+  scale from the liquidity condition (σ̄ = 7.66 mN/m, the geometric mean — and note
+  it lands within 11% of the heart/muscle value, so the anchor and the mapping agree
+  on where the center of the spectrum is). Rung-1's hand-fit sat at 1.5× this anchor
+  all along. The 15 free numbers of the 5×5 symmetric J are now: 4 measured tensions
+  + 6 Girifalco-Good pair defaults + 4 diagonals by the exact algebra + 1 liquidity
+  scale. Nothing was swept; nothing was fitted.
+- **What remains honestly open.** (1) The type mapping is an assumption that passed
+  its judge (F2) on ordering — it has NOT been tested on absolute envelopment
+  behavior pair-by-pair. (2) The six interfacial pairs are Girifalco-Good defaults,
+  not measurements — the day Foty-1994-class numbers are on disk, they replace the
+  default and the matrix is recomputed. (3) λ = 0.9 is still underived (bulk modulus
+  over E₀ — its own membrane, with `grown_arrangement.py`'s soft-λ tissue drain as
+  its control case). (4) temp = 12 is the protocol's; E₀ derives from it, so the
+  one constant serves both as required — but the degeneracy the theory named is
+  real: γ/temp ratios are what the lattice reads.
+
+The 5×5 derived J at the liquidity scale (lattice units, α = 1.566 per mN/m):
+MED row [0, 47.23, 19.97, 3.76, 29.61], diagonals [0, 31.48, 13.31, 2.51, 19.74],
+off-diagonals B–M 26.25, B–S 33.22, B–T 26.98, M–S 12.18, M–T 17.16, S–T 19.30.
 
 **Phase 2-prerequisite — THE PARALLEL AREA UPDATE (a membrane, stated before the build).**
 

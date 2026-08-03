@@ -121,8 +121,14 @@ default; α via the cortical-floor anchor, `Chimera/core/matter_derive.py`) — 
 ordering = burial order, analytic), **F3 FIRED** (τ_sort ratio 0.07, direction
 opposite to the prediction — the cortical-floor scale reproduces rung-1's structure,
 not its kinetics; rung-1's hand-fit implicitly assumed active fluctuations ~35× the
-passive floor — published per Rule 17). Next: Phase 2b — the liquidity anchor
-(kT_eff ~ γ·ℓ²), stated when built.
+passive floor — published per Rule 17). **Phase 2b DONE (2026-08-03): F1/F2/F3 ALL
+PASS** — the liquidity anchor (kT_eff = σ̄·ℓ², σ̄ = 7.66 mN/m the geometric mean of
+the four Foty tensions) closes the theory with ZERO fitted numbers: derived J sorts
+(12.8/21.2/26.8, uniform does not), τ_sort ratio 0.60 inside [0.5, 2], and rung-1's
+hand-fit turns out to have sat at 1.5× the derived anchor all along. Open debts
+recorded: interfacial pairs are Girifalco-Good defaults, λ underived (own membrane),
+type mapping tested on ordering only. Next: Phase 3 (fracture) or Phase 4 (world
+materials), on the operator's word.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/
