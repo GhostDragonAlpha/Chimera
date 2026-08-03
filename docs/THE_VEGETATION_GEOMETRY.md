@@ -105,3 +105,36 @@ is the more honest geometry: a blade IS 0.35 m long, and drawing three dots was
 never a physical claim at all. The cost is 1140 splats against a terrain of
 millions. The membrane's ledger entry closes here, FIRED, with its evidence
 published — which is what a falsifier is FOR.
+
+---
+
+## VERDICT 2 (2026-08-04, the successor membrane): **FIRED. Normals are not the gap either.**
+
+Built as stated above: per-blade horizontal cylinder normals, golden-angle
+azimuth, Rodrigues-tilted with the bend. Measured at the same rig
+(`ChimeraEngine/output/tuft_normals.jpg`, native-res crop): the patch went
+**DARKER than the ground and nearly vanished** — physically predictable in
+hindsight (at sun_alt 52.5 deg the beam's horizontal component is 0.61 and an
+azimuth-averaged horizontal normal harvests far less of it than an up normal's
+0.79), and measured regardless. The renderer HONOURS the normals (brightness
+moved, a lot) — so the lighting pipeline sees the tuft, and legibility still
+does not follow. The prediction ("separates as a shaded object") is not met;
+the falsifier fired. The code reverted to up-lit normals — the MEASURED more
+legible of the two — with the provenance row saying so.
+
+Two surface membranes eliminated by measurement in one day. What remains of the
+falsifier's hunt, in its written order:
+
+1. ~~geometry (grain contiguity)~~ FIRED — the patch got solid, not legible.
+2. ~~lighting (normal claim)~~ FIRED — brightness moved, legibility did not.
+3. exposure — a GLOBAL dial shared with the ground (THE HUMAN); not movable for
+   one object without moving the world's photograph. Not the object-level fix.
+4. **the splat -> screen-pixel mapping — unverified, and now the prime suspect.**
+   The stone at the same rig and the same 0.35 m extent reads as a shaded ball
+   with surface detail; the tuft's 1140 splats merge into a 70 px blob with no
+   internal structure at ANY brightness. If `b[:,20]` (splat size) is clamped,
+   rescaled, or LOD-merged in the renderer, then every object-level membrane is
+   arguing over a dial that is not wired to the screen. **Next: read the
+   renderer's projection path (`matter.py` / the splat kernel) and MEASURE the
+   mapping — one blade of known width at a known distance, predicted pixel
+   width vs rendered.** Instrument first, membrane after; that is rule 0.

@@ -72,6 +72,12 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
                                     above: a blade reads as a LINE when its grain spacing
                                     <= the splat's own width (docs/THE_VEGETATION_
                                     GEOMETRY.md, 2026-08-04). 3 dots measured a smudge.
+      blade normal = up             MEASURED (not derived) -- the cylinder claim (horizontal
+                                    normals, Rodrigues-tilted with the bend) was built and
+                                    fired 2026-08-04: at sun_alt 52.5 deg side-lit blades
+                                    went DARKER than the ground. Up-lit measured more
+                                    legible; neither normal claim is the legibility gap
+                                    (docs/THE_VEGETATION_GEOMETRY.md, verdict 2).
 
     PILE
       400 grains                    THE HUMAN -- design placeholder count.
@@ -357,7 +363,10 @@ class Tuft:
             b[sl, 0] = self._bx + f * _BLADE_L * st * dx
             b[sl, 1] = self._by + f * _BLADE_L * st * dy
             b[sl, 2] = gz + f * _BLADE_L * ct
-        b[:, 21:24] = (0.0, 0.0, 1.0)
+        b[:, 21:24] = (0.0, 0.0, 1.0)            # up-lit: MEASURED the more legible of the two
+        # normal claims (docs/THE_VEGETATION_GEOMETRY.md -- the cylinder/horizontal-normal
+        # membrane fired 2026-08-04: at sun_alt 52.5 deg side-lit blades went DARKER than
+        # the ground and less legible; neither normal claim is the gap)
         b[:, 20] = _BLADE_W
         b[:, 11] = SOLID
         _shade(b, _TUFT_ALB, w)
