@@ -11,12 +11,16 @@
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
 >
+> **RULE 0 IS ENFORCED AT S-1 VALIDATE** — every port tested alone, and `port_test()` REFUSES to
+> register a test that names no falsifier. The model it feeds: `docs/THE_COMPILER.md` — ports →
+> primitives → programs → parser → runtime → calibration.
+>
 > **[docs/THE_LAW.md](../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > **Consolidated 2026-08-02 by reading every workflow document in the repository and putting each
-> idea on one list first** — `docs/THE_PIECES.md`, 116 pieces with their provenance and status.
+> idea on one list first** — `docs/THE_PIECES.md`, 154 pieces with their provenance and status (§16 is the port ledger).
 > Nothing here is new invention; it is the pieces that were already written down, in the order they
 > actually run, with the joins that were missing.
 >
@@ -47,6 +51,10 @@
   │      │      no build. A description survives any result (§0).            │
   │      ▼                                                                   │
   │   ┌─ THE MEMBRANE — PROVE(X) ────────────────────────────────────┐      │
+  │   │ S-1  VALIDATE ◄─ each PORT alone, against a KNOWN answer      │      │
+  │   │                  statement · prediction · falsifier           │      │
+  │   │                  registration REFUSES a test with no falsifier│      │
+  │   │                  the COUNT is asserted, never assumed         │      │
   │   │  S0  FRAME      one claim · the/a · what would REFUTE this?   │      │
   │   │  S1  QUESTION   variables are BORN of questions               │      │
   │   │  S2  SATURATE   measured — Chao2 + a dry tail, curve rendered │      │
@@ -259,6 +267,45 @@ The verb is **PROVE**, never "build". "Build" is the old-programming verb — pr
 the output — and it lets an agent make a thing and declare it done, which is the one failure this
 studio exists to kill. **"Prove" forces the definition to be reduced:** you cannot prove what you
 cannot first state precisely.
+
+### S-1 · VALIDATE — every port alone, against a known answer
+
+**Added 2026-08-02, and it is numbered −1 because it comes before framing: you cannot frame a claim
+about a composition whose parts have never been tested.** A PORT is one instruction — a mass falls,
+a muscle makes force, a spindle reports length, a ligament resists. S-1 tests each one *by itself*
+against an answer known independently of the simulator.
+
+    a port that has not been tested ALONE cannot be ruled out when a composition built on it fails.
+
+Three things are enforced as code, not as advice (`tools/port_registry.py`):
+
+| enforcement | why it exists |
+|---|---|
+| **no falsifier, no registration** | Rule 0 at the level where it is cheapest to apply. `port_test()` raises on a missing STATEMENT or FALSIFIER — a claim without a named refutation is a description, and a description cannot be wrong. |
+| **the COUNT is asserted** | `expect(12)` refuses to run a partial set. Not a smaller suite — an *untested instruction that a composition will later be blamed for*. |
+| **duplicate names refused** | two instructions cannot share a name, and a silent overwrite hides one of them. |
+
+**THE COUNT IS ASSERTED BECAUSE IT ALREADY FAILED SILENTLY.** `port_tests_more.py` imported the
+registry from `port_tests.py`, which was running as `__main__` — so it got a *second copy of the
+module with its own empty dict*. Ports 5–12 registered into a dictionary nobody read, and the
+harness printed **`4/4 ports validated`**: a clean, confident success with two-thirds of the
+instruction set missing. Nothing in the output said so. **The harness built to catch silent
+successes silently succeeded.** The registry now lives in a module that is imported by everything
+and run by nothing, and the count is an assertion.
+
+**A PORT'S PREDICTION MUST MATCH THE THING BEING RUN.** Port 1 predicted free fall from
+`½gt²` and measured **0.2% off** — which is exactly `g·dt²·n(n+1)/2`, the semi-implicit Euler
+term. The port was correct and the *falsifier* was mis-specified. The fix is to predict the
+**discrete** sum the integrator actually computes and print the continuous value beside it —
+**never to widen the tolerance until the truth fits.**
+
+**THE LAYER ABOVE.** A PRIMITIVE composes validated ports and must clear two further guards: it
+must **name** the ports it composes (and every one must already be registered), and it must
+**ABLATE** — the test runs twice, once composed and once with one port's contribution removed, and
+passes only if the second one *fails*. Without an ablation a primitive is a port wearing a longer
+name. Where the ablation is "open the loop", the open-loop control gets the closed loop's **own
+mean drive**, or the comparison changes two things at once. Full specification:
+**[`docs/THE_COMPILER.md`](THE_COMPILER.md)**.
 
 ### S0 · FRAME
 
@@ -600,7 +647,8 @@ two orderings and the human-readable one loses silently.
 | `docs/THE_FOLDING.md` | units, folds, bonds, regimes | before calling a chapter done |
 | `docs/FAL_AI.md` | the synthetic capture rig, its costs and its traps | before spending money |
 | `docs/THE_PIPELINE.md` | where a genome comes from and what it becomes — scan → genome → matter → world → render | when working the splat pipeline |
-| `docs/THE_PIECES.md` | **the full inventory — 116 pieces, with what is orphaned** | when you think something is missing |
+| `docs/THE_COMPILER.md` | **the operating model** — ports → primitives → programs → parser → runtime → calibration, and passive tissue as a universal port | before building anything at any layer |
+| `docs/THE_PIECES.md` | **the full inventory — 154 pieces, with what is orphaned**; §16 is the port ledger | when you think something is missing |
 | `CLAUDE.md` | paths, hardware traps, conventions | for anything operational |
 
 **A doc marked DESIGN is not a description of something that exists.** Check the banner.

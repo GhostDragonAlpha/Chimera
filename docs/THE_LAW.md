@@ -101,10 +101,18 @@ trainer as it stood on 2026-08-02, it refuses and names both defects with the co
 
 ## The rest of the method
 
-The full set — 25 rules, each with the failure that earned it — is
+The full set — **26 rules**, each with the failure that earned it — is
 **`Chimera/docs/EXPERIMENTAL_METHOD.md`**. Rules 2–11 are about not fooling yourself while
 *debugging*; 12–17 while *reporting*; 18–21 about *direction* (where to look when everything you
-can see is already correct); 22–25 about *order*, about instruments that need instruments, and about the difference between a number you transported and one you derived.
+can see is already correct); 22–26 about *order*, about instruments that need instruments, about
+the difference between a number you transported and one you derived, and about the fact that a
+claim without a falsifier is a description.
+
+**Rule 0 is applied at the smallest scale by `S-1 VALIDATE`** — every port tested alone against a
+known answer, with `port_test()` *refusing to register* a test that names no falsifier. That is
+Rule 0 as code rather than as a paragraph, and it is the cheapest place it can possibly be applied.
+The layer it feeds is specified in **[`docs/THE_COMPILER.md`](THE_COMPILER.md)**: ports → primitives
+→ programs → parser → runtime → calibration.
 
 Two other gates run beside this one:
 

@@ -36,8 +36,12 @@ BANNER = f"""{MARK}
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
 >
+> **RULE 0 IS ENFORCED AT S-1 VALIDATE** — every port tested alone, and `port_test()` REFUSES to
+> register a test that names no falsifier. The model it feeds: `docs/THE_COMPILER.md` — ports →
+> primitives → programs → parser → runtime → calibration.
+>
 > **[docs/THE_LAW.md](../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 {MARK}
 """
 
@@ -98,8 +102,15 @@ def stamp(p: Path, apply: bool, restamp: bool = False) -> str:
         b = txt.index(MARK, a + len(MARK)) + len(MARK)
         banner = BANNER.replace("../docs/THE_LAW.md", rel_link(p)).rstrip()
         new = txt[:a] + banner + txt[b:]
-        if apply:
-            p.write_text(new, encoding="utf8")
+        if new == txt:
+            return "already"
+        if not apply:
+            # REPORT WHAT WAS DONE, NEVER WHAT WAS CONSIDERED. This returned "restamped" whether or
+            # not it wrote, so `--restamp` without `--apply` printed a confident **173 restamped**
+            # and changed nothing -- caught only because `git status` showed five modified files.
+            # A dry run that is indistinguishable from a real one is worse than no dry run.
+            return "WOULD restamp (dry run -- add --apply)"
+        p.write_text(new, encoding="utf8")
         return "restamped"
     if p.resolve() == (ROOT / "docs/THE_LAW.md").resolve():
         return "the law itself"

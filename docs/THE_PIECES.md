@@ -11,8 +11,12 @@
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
 >
+> **RULE 0 IS ENFORCED AT S-1 VALIDATE** — every port tested alone, and `port_test()` REFUSES to
+> register a test that names no falsifier. The model it feeds: `docs/THE_COMPILER.md` — ports →
+> primitives → programs → parser → runtime → calibration.
+>
 > **[docs/THE_LAW.md](../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > **Why this file exists.** Consolidating documentation is rewriting the workflow, silently, by
@@ -341,6 +345,88 @@ principle that variables must be discovered, but the actual list of what to ask.
 this is the other half of the same cost — **a live idea gets buried inside a dead document and
 becomes invisible.** The Foundry's question set was not superseded by anything. It was never
 carried across when the UE pipeline was retired, and S1 has been orphaned ever since.
+
+---
+
+## 16 · THE PORT LEDGER — the instruction set, and what is actually validated
+
+**Added 2026-08-02.** The compiler framing (`docs/THE_COMPILER.md`) is the operating model, and it
+makes the ledger's job concrete: **a layer is only as true as the layer below it has been measured
+to be.** This section is that measurement. Everything here has a falsifier that was named before
+the run.
+
+### Layer 1 — PORTS · **12 / 12 validated**
+
+| # | port | measured |
+|---|---|---|
+| 125 | RIGID_BODY | 0.00000% against the DISCRETE integrator (the continuous form is 1.769 mm out) |
+| 126 | CONTACT | 29.6404 N predicted, 29.6404 measured |
+| 127 | HILL_MUSCLE | ratio 1.984 vs 2.000; `t63` 15.0 ms vs `tau_act` 15.0 ms |
+| 128 | SPINDLE | length-vs-integral drift 0.0000% |
+| 129 | JOINT_LIMIT | 0.860° overshoot under 400 N·m — **was 3.566° before passive tissue** |
+| 130 | PASSIVE_FORCE | 1.84 / 1.92 / 225.89 N·m at 10/50/90% of range — **was identically 0.00000** |
+| 131 | TENDON_ELASTICITY | 0.221 N at zero activation over 100.6 mm |
+| 132 | FORCE_VELOCITY | `f_v` = 0.8324 shortening |
+| 133 | GTO | monotone: 2.2 / 147 / 293 / 438 / 584 N |
+| 134 | OTOLITH | `g·sin` and `g·cos` both 0.0000% off |
+| 135 | PLANTAR_PRESSURE | 71.65 N loaded, 0.000000 lifted |
+| 136 | PHASE_OSCILLATOR | 2.6e-12 rad coupled vs π uncoupled |
+
+**PORTS 5 AND 6 WERE ONE FINDING, NOT TWO FAILURES: the body had no ligaments.** With no passive
+tissue the hard constraint carried the entire end-range load. Passive tissue was derived and
+installed the same day (`tools/world.py::derive_ligaments` — 10 ligaments derived, **2 refused by
+name** because the gap fell inside the gait envelope's own sample grain), and both ports closed.
+
+> **This entry supersedes the snapshot "ten validated, two failing."** The two failures were the
+> instruction that was missing, and it is no longer missing.
+
+### Layer 2 — PRIMITIVES · **4 / 7 validated**, all 12 ports covered
+
+| # | primitive | status |
+|---|---|---|
+| 137 | END_STOP · joint_limit + passive_force + tendon_elasticity | **PASS** — 0.860° vs 3.574° ablated |
+| 138 | DAMPING · hill_muscle + force_velocity | **PASS** — −28.54 J absorbed; 1.1% left at 1/100 speed |
+| 139 | LOAD_RELIEF · hill_muscle + gto | **PASS** — 2440 N vs 4896 N, 50.2% relieved |
+| 140 | RHYTHM_DRIVE · phase_oscillator + hill_muscle | **PASS** — correlation −0.689, swing 81.5° vs 6.2° |
+| 141 | STIFFNESS · hill_muscle + spindle | **UNMEASURED** — the leg swings under the probe |
+| 142 | WEIGHT_TRANSFER · rigid_body + contact + plantar_pressure | **UNMEASURED** — feet carry 177 N of 580 |
+| 143 | UPRIGHT · hill_muscle + otolith | **UNMEASURED** — the spine folds at four joints in series |
+
+**141–143 share one cause and are recorded as UNMEASURED rather than rescoped to something they
+would pass:** each probes a joint while the body collapses around it. They need a stronger
+isolation than a pelvis harness, not different physics. **Compositions do not proceed on them.**
+
+### Layers 3–6 — **NOT BUILT**
+
+| # | layer | status |
+|---|---|---|
+| 144 | PROGRAMS — actions as programs in the port instruction set (`docs/CONTROLLER_MAP.md`) | DESIGNED |
+| 145 | PARSER — intent → program, ~12 buttons over one input-agnostic formula layer | **DELIBERATELY LAST** — the only layer that cannot be wrong in an interesting way |
+| 146 | RUNTIME — `dx/dt = f(x,u,p,w)`; `w` from `tools/world.py` and nowhere else | LIVE |
+| 147 | CALIBRATION — `p` splits DERIVED / INGESTED / TRAINED, never chosen | LIVE (`tools/training_gate.py`) |
+
+### The universal passive-tissue framework — **SPECIFIED, ZERO PORTS VALIDATED**
+
+| # | the piece | status |
+|---|---|---|
+| 148 | **Passive tissue is universal** — ligament : human :: cellulose : grass :: crystal lattice : rock :: rebar : wall. The same equations, tests and ledger for every object with structure. | **SPECIFIED** |
+| 149 | Passive ports for plant · rock · tree · building · vehicle · fabric · terrain (`docs/THE_COMPILER.md`) | **SPECIFIED — no falsifier has been run on any of them** |
+| 150 | **The tolerances in that table are CHOSEN.** "within 5%" / "within 10%" are round numbers with no source. A tolerance must come from the measurement's own grain — the way the knee-extension ligament was refused because a 1.84° gap fell inside a 4.16° sample step. **A falsifier chosen to be comfortable is a falsifier chosen to be survivable.** | **OPEN** |
+| 151 | **`k`, `c`, `E`, `μ`, `σ_max` are FREE NUMBERS and Rule 1 applies to every one.** Writing `F = kx + cv` programs the FORM — legitimate, and exactly "program the rules". It says nothing about `k`. | **OPEN** |
+
+**The worked precedent for all of 148–151 is the human ligament**, and it cost four wrong
+arithmetics that each returned a plausible number (antagonists counted as helping, 6× too stiff ·
+the sign of `moment` read alone when muscle force is negative · peak *isometric* force where the
+muscle makes 719 N of a nominal 2212 · evaluated at the limit where the hamstrings are spent).
+**Expect the same four when a tree trunk or a wall is derived.**
+
+### The outstanding data, named
+
+| # | what is missing | blocks |
+|---|---|---|
+| 152 | measured human passive moment–angle curves | the ligament level is currently an **upper bound** (sized to hold maximum voluntary contraction; real curves are softer and exponential, because reflex withdrawal shares the job) |
+| 153 | muscle via-points as bone-length fractions (ISB) | moment arms away from the measured poses |
+| 154 | sensor noise floors | what a reflex loop can actually resolve |
 
 ---
 

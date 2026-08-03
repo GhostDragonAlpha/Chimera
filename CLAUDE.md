@@ -11,8 +11,12 @@
 > equations close. If you are choosing a number, you broke the chain and substituted taste for a
 > law. Ask what QUESTION each variant answers — if the answer is "which number is best", STOP.
 >
+> **RULE 0 IS ENFORCED AT S-1 VALIDATE** — every port tested alone, and `port_test()` REFUSES to
+> register a test that names no falsifier. The model it feeds: `docs/THE_COMPILER.md` — ports →
+> primitives → programs → parser → runtime → calibration.
+>
 > **[docs/THE_LAW.md](docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 25 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
@@ -61,7 +65,29 @@
 > generated from a learned latent (`WorldModel/`) are the same library from two directions.
 > The Unreal Engine 5 pipeline is retired (2026-07-23); everything below is engine-agnostic.
 
-## NEW AGENT? START HERE
+## NEW AGENT? START HERE — READ THESE FIVE, IN THIS ORDER
+
+**The order is not a suggestion.** Each one is unreadable without the one before it: you cannot
+judge a method without the law it serves, cannot place a measurement without the specification it
+belongs to, and cannot trust the ledger without knowing what "validated" was made to mean.
+
+| # | document | what it gives you |
+|---|---|---|
+| 1 | **[`docs/THE_LAW.md`](docs/THE_LAW.md)** | **RULE 0** — statement · prediction · falsifier, before any build. **RULE 1** — derive it before you train it. |
+| 2 | **[`docs/THE_WORKFLOW.md`](docs/THE_WORKFLOW.md)** | the method as one sequence, **now beginning at S-1 VALIDATE** — every port tested alone before anything is framed. |
+| 3 | **[`docs/THE_COMPILER.md`](docs/THE_COMPILER.md)** | **the operating model.** ports → primitives → programs → parser → runtime → calibration, and `dx/dt = f(x,u,p,w)` where `f` is PROGRAMMED and `p` is never chosen. Includes **passive tissue is universal** — the same ports for grass, rock, tree, wall, hull. |
+| 4 | **[`docs/THE_PIECES.md`](docs/THE_PIECES.md)** | **the ledger.** 154 pieces with provenance and status; §16 is the port ledger — what is validated, what is unmeasured, what is merely specified. |
+| 5 | **[`story/README.md`](story/README.md)** | the game: chapters, proven/visual/learned, the two authors. |
+
+**WHERE IT STANDS (2026-08-02): 12/12 ports validated · 4/7 primitives · layers 3–6 not built ·
+the universal object framework SPECIFIED with zero ports validated.** The ledger is the ledger; do
+not cite the specification as proof.
+
+```bash
+python tools/port_tests.py && python tools/primitive_tests.py
+```
+
+---
 
 **-1. `story/README.md` — HOW THE GAME IS BUILT.** Chapters, proven/visual/learned, the two
    authors (human = nodes, physics = edges). Everything below is the machinery that serves it.
@@ -88,7 +114,7 @@
    straight through that hole. Read this first; it points to every other doc that matters.
    **ENFORCED as tooling** — the Chimera Engine MCP server (`ChimeraEngine/MCP_ENGINE.md`; agent
    onboarding `ChimeraEngine/ONBOARDING.md`): `prove` runs the gates and refuses until they pass.
-1b. **`docs/THE_PIECES.md`** — the INVENTORY the consolidation was built from: **124 pieces**, each
+1b. **`docs/THE_PIECES.md`** — the INVENTORY the consolidation was built from: **154 pieces**, each
    with its source and its status, and **§14 names the nine that are written down, load-bearing,
    and done by nothing** (S1/S2 saturation, S8's gate, the why-chain and the coin for membranes,
    the night phase, the six directions, the demographic, live surprise capture, `work_queue()`).
