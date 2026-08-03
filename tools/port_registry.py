@@ -44,6 +44,54 @@ def port_test(name, statement, falsifier):
     return deco
 
 
+PRIMITIVES = {}
+
+
+def primitive_test(name, ports, statement, falsifier):
+    """Register a PRIMITIVE -- a composition of validated ports that does something none of them
+    does alone.
+
+    TWO GUARDS BEYOND THE PORT'S. A primitive must NAME the ports it composes, and every named one
+    must already be registered: you cannot declare a composition over an instruction that does not
+    exist. And it must ABLATE -- the test has to show the primitive FAILING when one port's
+    contribution is removed. Without an ablation a primitive is a port wearing a longer name, and
+    the whole layer would be relabelling rather than composing. Port 12 already worked this way
+    (coupled converges, uncoupled does not); this makes it the rule instead of one test's trick.
+    """
+    if not statement or not falsifier:
+        raise ValueError(f"primitive {name!r} needs a STATEMENT and a FALSIFIER (Rule 0).")
+    if not ports:
+        raise ValueError(f"primitive {name!r} names no ports. A composition of nothing is a port; "
+                         f"register it as one or name what it is built from.")
+    missing = [p for p in ports if p not in TESTS]
+    if missing:
+        raise ValueError(f"primitive {name!r} composes {missing}, which are not registered ports. "
+                         f"Import the port tests first -- a primitive over an unvalidated "
+                         f"instruction is exactly the thing this layer exists to prevent.")
+    if name in PRIMITIVES:
+        raise ValueError(f"primitive {name!r} registered twice -- a silent overwrite hides one.")
+
+    def deco(fn):
+        PRIMITIVES[name] = dict(fn=fn, statement=statement, falsifier=falsifier, name=name,
+                                ports=list(ports))
+        return fn
+    return deco
+
+
+def expect_primitives(n: int) -> None:
+    if len(PRIMITIVES) != n:
+        raise SystemExit(
+            f"REFUSING TO RUN: {len(PRIMITIVES)} primitives registered, expected {n}.\n"
+            f"  registered: {sorted(PRIMITIVES)}")
+
+
+def port_coverage() -> dict:
+    """Which validated ports no primitive rests on. An instruction nothing composes is either
+    unnecessary or a layer that was never built -- and the difference should be visible."""
+    used = {p for v in PRIMITIVES.values() for p in v["ports"]}
+    return {"used": sorted(used), "unused": sorted(set(TESTS) - used)}
+
+
 def expect(n: int) -> None:
     """Refuse to run a partial instruction set.
 
