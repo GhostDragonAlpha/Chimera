@@ -1,0 +1,146 @@
+# THE WALK PROGRAM — walking composed over the stand port
+
+> Membrane stated 2026-08-04 in `tools/walk_port.py`'s docstring, before the build. This is the
+> verdict. **F4 FIRED.** Falsifier 3 fired by its own letter, and the run says precisely what is
+> missing, which is the whole point of naming it in advance.
+
+---
+
+## RULE 0 — the theory, as stated before anything was built
+
+**STATEMENT.** Walking is not a new controller. It is the STAND port's own formula plus ONE
+phase-oscillator term, ω = 2π/(2·`step_time_s`) read from theHuman and never chosen. No joint
+angle is commanded anywhere: the parser sends a button, the button's formula sends muscle
+activations, and the gait is what the body DOES.
+
+**PREDICTION.** speed within 25% of `comfortable_speed_ms` = 0.9924 m/s · periodicity ≥ 0.60 ·
+pelvis ≥ 80% of the stand target for the whole run · AND the ablation (oscillator amplitudes
+forced to zero) travels under 20% of that speed.
+
+**FALSIFIER.** 1. speed reached but periodicity < 0.60 (it *arrives* without walking).
+2. the ablation travels too (the rhythm is decorative). 3. **the body cannot reach 50% of the
+derived speed at any trained setting — the composition is insufficient.**
+
+---
+
+## THE VERDICT: FIRED on falsifier 3
+
+`python tools/f4_walk.py` — exit 1. Judged at 6 s; trained at 8 s (train past what you judge —
+the rule the stand port earned hours earlier).
+
+| # | measured | bar | verdict |
+|---|---|---|---|
+| 1 TRAVEL | **+0.158 m/s = 16%** of derived | 75–125% | FAIL |
+| 2 PERIODICITY | **0.13**, period 0.88 s vs derived stride 1.17 s | ≥ 0.60 | FAIL |
+| 3 UPRIGHT | pelvis MIN 50% of target, **held 2.98 of 6.0 s** | ≥ 80%, full run | FAIL |
+| 4 ABLATION | oscillator off: **−0.012 m/s = −1%** | < 20% | **PASS** |
+
+**Falsifier 3 fires: 16% sustained, and the best any trained setting reached while still
+upright was ~51% for 2.3 s before falling.** Said plainly rather than patched with a
+joint-angle target, which is what the falsifier existed to prevent.
+
+## BUT THE MECHANISM WORKS — and the picture says so where the verdict line cannot
+
+`ChimeraEngine/output/ports/f4_walk.png`. **The body walks for about 2.5 seconds and then falls.**
+
+- **UPRIGHT** — the pelvis holds **0.92–0.98 m, at or ABOVE the 0.9201 m stand target**, from
+  t=0 to t≈2.5 s. It is not crouching to move.
+- **TRAVEL** — flat to t≈1.4 s, then climbing steadily to ~0.5 m by t=3.0 s: **≈0.31 m/s in that
+  segment**, and still accelerating when the body goes down. The ablation trace is flat at zero
+  underneath it for the full 6 s.
+- **FOOTFALL** — R and L visibly ALTERNATE, ~0.9–1.0 s per cycle against the derived 1.17 s stride.
+- **DUTY** — R/L 0.68/0.55 against theHuman's published **0.60**. Neither was trained toward;
+  duty is an output here.
+
+**THE BINDING FAILURE IS DURATION, NOT MECHANISM.** Every ingredient of a gait is present and
+measurable; none of it survives past ~3 s.
+
+**AN HONEST CAVEAT ON NUMBER 2, which does not excuse it.** `_periodicity` searches lags
+0.15–2.0 s, and the run truncates at 3.0 s when the body falls — about 2.5 cycles of a 1.17 s
+stride. An autocorrelation cannot resolve a period it sees twice. So 0.13 is a *fell-over*
+reading as much as an arrhythmia reading, and the two are not separable until the body stays up.
+The failure is still the failure: it fell.
+
+---
+
+## THE DEFECT FOUND AND FIXED EN ROUTE — the port's conclusion is not the port
+
+The first implementation set `phi_r = omega*t`, `phi_l = omega*t + pi`. Two things were wrong
+with that, and the second is fatal:
+
+1. **It asserted the `phase_oscillator` port's RESULT instead of running the port.** Port 12
+   proves that *coupling* — `dφ/dt = ω + ε·sin(φ_other − φ − π)` — converges to antiphase while
+   the uncoupled control does not. Hardcoding antiphase means the validated mechanism is absent
+   and only its output is imitated.
+2. **It was an open-loop clock.** `ω·t` cannot know whether a foot is loaded, so it commands a
+   swing while that leg is still carrying the body. This is a direct violation of the control
+   law this project already states — *command the PROCESS and its STOP CONDITION; every atom is
+   `apply effort → stop when a sensor says stop`.* A clock has no sensor, therefore no stop.
+
+Replaced by `WalkOscillator`: port 12's coupling law, plus **contact entrainment** — a rising
+edge on a foot's plantar sensor is stance onset, and that leg's phase is *pulled* toward 0
+(pulled, not snapped, so one noisy contact cannot restart the gait). ε and κ are free numbers,
+trained; ω and the antiphase target remain derived.
+
+**MEASURED, open-loop → closed-loop, same 30 turns × pop 32 × 8 s:**
+
+| | open-loop clock | contact-entrained |
+|---|---:|---:|
+| best score | −4.005 | **−3.674** |
+| held before falling | ~3.7 s plateau | **4.5–5.3 s** |
+| periodicity | 0.26–0.36 | **0.40–0.49** |
+| duty R/L | 0.64 / **0.14** | 0.74 / **0.60** |
+
+The duty row is the one that matters: open-loop, the left foot was on the ground **14%** of the
+time — the body was standing on its right leg and waving the left. Closed-loop, the legs share
+the load. **The sensory stop condition is what made two legs into a pair.**
+
+## A HYPOTHESIS THAT WAS MEASURED AND REFUTED, recorded so nobody re-derives it
+
+The collapse looked like a missing frontal plane: `OSC_JOINTS` are all sagittal (hip flexion,
+knee, ankle), and `stand_port.draw_bones`' own docstring predicts exactly this failure — *"ONE
+centre of mass is carried by TWO hips 0.162 m apart… a body that cannot decide which leg is
+carrying it is a body that falls over — which is exactly what the walker does at 3.12 s."* Mine
+fell at 3.7 s. The story fit perfectly.
+
+**It is wrong.** Measured lateral CoM excursion over 4 s: **1669 mm peak-to-peak against the
+~106 mm a step needs — 1582% of requirement.** The body is not failing to shift weight
+laterally; it is falling sideways, and the excursion is a *consequence* of the fall. Adding a
+hip-adduction oscillator term would have been a fix aimed at a symptom that does not exist.
+
+## WHAT IS ACTUALLY MISSING — the next membrane's question
+
+The body stands (F3 PASS, 102.3% of target, 5 s), and it walks for 2.5 s. What it cannot do is
+*keep* walking. Two candidates, and the honest position is that neither has been measured yet:
+
+1. **The stand θ is frozen and was trained to stand STILL.** Its feedback is pelvis height and
+   pitch — it has no term for a moving base, and F3 already showed it holds position by hanging
+   on joint stops (`subtalar` 60.8%, `mtp` 97.6% of phase 1 past their limits). A posture that
+   braces against its own stops is exactly the posture that cannot absorb a step.
+2. **There is no swing-terminating stop condition.** Contact entrains the phase, but nothing
+   ends a swing when the foot arrives — the same defect one level down.
+
+**Rung 1's leftover is a prerequisite here, not a coincidence.** The joints holding this body up
+are the ones with no derived ligament (subtalar, mtp, hip rotation/adduction — theHuman
+publishes three sagittal envelopes and nothing else). Standing on stops is survivable; walking
+on them is not, because a stop is a rigid constraint and a step needs compliance. **The passive
+tissue membrane named at the end of `docs/THE_TRUNK_TISSUE.md` is very likely the missing rung
+under this one** — which is a prediction, and it is written down before that work is done so it
+can be wrong.
+
+## WHAT LANDED, and stands on its own
+
+- `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
+  **0.000000** — theHuman's `step_length/step_time` reproduces its published comfortable speed
+  exactly, checked rather than assumed), the measured muscle groups (L/R symmetric: 18/22 hip,
+  12/10 knee, 3/8 ankle), `WalkOscillator`, and the MOVE formula.
+- **MOVE IS NO LONGER A REFUSAL.** `tools/parser.py` registered it as *"no trained formula — its
+  atoms are M3 (STEP+PLANT+BALANCE)"*. F4 runs with `parser driver: MOVE`, composed so STAND
+  lives *inside* MOVE's formula rather than beside it (the parser's EXCLUSIVE rule would
+  otherwise give STAND the parse and MOVE would silently never run).
+- `tools/train_walk.py` — CEM over **8 free numbers with the 870-number stand θ FROZEN**. That
+  freeze is what makes "composed over standing" a fact about the file rather than a claim in a
+  document: if walking required re-training the postural policy, the composition would be a
+  fiction and this file could not hide it.
+- `tools/f4_walk.py` — the harness, with the ablation as *the same code path* (`gain=0.0` inside
+  `walk_formula`), so it cannot drift away from the thing it ablates.
