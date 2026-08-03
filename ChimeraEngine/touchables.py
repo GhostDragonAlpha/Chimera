@@ -45,7 +45,11 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
       drop offset 0.3 m             THE HUMAN -- render placement, "at the feet" but visible.
 
     TUFT
-      60 blades, 0.4 m disk         THE HUMAN -- design placeholder density/size of a tuft.
+      13 blades, 0.4 m disk         DERIVED (was 60, a design placeholder) -- splat_ruler's
+                                    measured footprint and disk projection: 13 blades x 19
+                                    grains = coverage ~1 at the probe rig; 60 painted 4.7x
+                                    over and blobbed (THE_VEGETATION_GEOMETRY.md, membrane 4).
+                                    The aggregate spring is count-invariant -- physics unmoved.
       blade height 0.35 m           THE HUMAN -- design placeholder.
       blade diameter 1.6 mm         PHYSICS -- Kosmalla et al. 2025 (Earth Surf. Dynam. 13, 791):
                                     marram grass green-leaf outer diameter 1.57-1.63 mm, mean taken.
@@ -139,7 +143,14 @@ _RHO_TISSUE = 1000.0         # kg/m^3 -- fresh tissue ~ water (stated assumption
 
 # -- design placeholders (THE HUMAN; the operator moves them) ------------------------------------
 _STONE_D = 0.35
-_TUFT_BLADES = 60
+_TUFT_BLADES = 13            # DERIVED 2026-08-04 (docs/THE_VEGETATION_GEOMETRY.md, membrane 4):
+                             # was 60, a design placeholder. tools/splat_ruler.py measured one
+                             # grain's footprint (2.4-2.7x s = ~17.3 px2) and the disk's
+                             # projection (~4,200 px) at the probe rig: 60 blades x 19 grains
+                             # painted it 4.7x over -- a saturated blob no shape survives.
+                             # 4200 / (19 x 17.3) = 12.8 -> 13 blades at coverage ~1. The
+                             # aggregate spring is count-INVARIANT (k = N*k_blade / N*m_blade),
+                             # so this moves the render row only; the physics is untouched.
 _TUFT_DISK_R = 0.2           # the 0.4 m disk
 _BLADE_L = 0.35
 _BLADE_W = 0.02            # display width of a blade -- render row (THE HUMAN): 12.5x the

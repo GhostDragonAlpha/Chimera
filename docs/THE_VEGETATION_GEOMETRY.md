@@ -228,3 +228,24 @@ separated stalks with ground between them — vegetation, not a patch.
 then no geometry at this camera distance draws grass, and the terminal is THE
 HUMAN: legibility-at-5-m is texture (per-blade value jitter) and taste, not
 physics — and the doc will say the walk reached its terminal honestly.
+
+---
+
+## VERDICT 4 (2026-08-04): **PASS. The tuft reads as stalks.**
+
+`ChimeraEngine/output/tuft_cov1.jpg` (native-res crop): **separated vertical
+stalks with ground visible between them** — the prediction, verbatim. Three
+membranes fired (contiguity, normals, tube) while the real variable hid behind
+them all; the splat ruler measured it (projection honest, footprint 2.4–2.7x s,
+coverage 4.7x), and one derived number — 13 blades — turned a saturated blob
+into vegetation. The chain, whole: description → falsifier → instrument →
+derivation → pass. Nothing in the final state was chosen: 19 grains (contiguity
+at the splat's own width), zero normal (a line has no tangent plane), 13 blades
+(coverage from the measured mapping), spring unchanged (count-invariant).
+
+Named remainder: the tuft is still DIM (the patch reads dark-green against
+dark-green ground). Exposure is the world's global dial, shared with the
+ground — THE HUMAN's, not a membrane's. If the operator opens the lens, the
+stalks brighten with the world, which is the honest way for a photograph to
+work. The physics membrane closes here; the slice's "vegetation reads as
+vegetation" gap is closed at the render row, pending the operator's eye.
