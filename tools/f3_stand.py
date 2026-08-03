@@ -176,10 +176,32 @@ def run() -> int:
     # through the parser, zero pose-scripted frames -- "stand up" carries theStance's own
     # definition (the CoM over the base of support; outside it the body IS a falling
     # pendulum). THE PORT'S FULL CONTRACT (stand_port.py's printed PROVEN line) adds: joints
-    # off their limits -- which the current policy breaks at the lumbar, where NO LIGAMENT
-    # ACTS (world.py names it: "left alone, no ligament -- not this change's to move").
+    # off their limits.
+    #
+    # 2026-08-04, AFTER THE TRUNK MEMBRANE: the lumbar is no longer what breaks that term.
+    # It went from SUSTAINED 1.14-1.34 (peak 1.56) to a 1.12 TRANSIENT over 6.4% of phase 1.
+    # What breaks it now is subtalar / mtp / hip_rotation / the knee's extension side -- and
+    # those are not an oversight, they are the joints for which THIS WORLD PUBLISHES NO
+    # ENVELOPE. theHuman's `gait_envelope_deg` carries hip, knee and ankle: three sagittal
+    # curves. The trunk closed by going to the literature for its edge (Pearcy & Tibrewal's
+    # 5 deg); the foot and the hip's off-sagittal axes need the same, and that is a DIFFERENT
+    # membrane with its own Rule 0 -- named here rather than quietly folded into this one.
     ok_f3 = ok1 and ok_com and ok2
     ok = ok_f3 and ok_joints
+    # WHY does each over-the-stop joint have no ligament holding it? ASK THE DERIVATION, do not
+    # infer it here. A first version of this line said "this world publishes no envelope for
+    # knee_angle_l" -- which is false: theHuman publishes a knee envelope and world.py emits a
+    # knee FLEXION ligament; what it refused was the EXTENSION side, because the gap there
+    # (1.84 deg) is under the envelope's own grain (4.16 deg). Two different absences with two
+    # different fixes, and a harness that guesses at the reason will send the next rung at the
+    # wrong one. `derive_ligaments` already returns its refusals with their reasons.
+    from world import derive_ligaments
+    _emit, _refused = derive_ligaments(m, mujoco)
+    have_lig = {e["joint"] for e in _emit}
+    why_not = {}
+    for _jn, _sd, _wy in _refused:
+        why_not.setdefault(_jn, []).append(f"{_sd}: {_wy}")
+    offenders = [n for n in names if peak[n] >= 1.0]
 
     print("\nF3 -- STAND THROUGH THE PARSER, ZERO POSE-SCRIPTED FRAMES")
     print("=" * 74)
@@ -214,12 +236,28 @@ def run() -> int:
     print("=" * 74)
     print(f"  F3 VERDICT (the slice's letter): {'PASS' if ok_f3 else 'FAIL'}")
     print(f"  PORT CONTRACT (stand_port's full PROVEN line, incl. joints off limits): "
-          f"{'PASS' if ok else 'FAIL -- OPEN DEBT: the lumbar arches past its declared stop'}")
+          + ("PASS" if ok else f"FAIL -- OPEN DEBT at {len(offenders)} joint(s), worst {jworst} "
+                               f"{jmax:.2f}"))
     if not ok_joints:
-        print("           the trunk tissue membrane (docs/THE_TRUNK_TISSUE.md, 2026-08-04) derives")
-        print("           the lumbar extension ligaments; if this still fails, the debt is the")
-        print("           POLICY's -- retrain in the new world -- or the ligament's, per the")
-        print("           membrane's three named falsifiers.")
+        print(f"\n  WHY EACH OVER-THE-STOP JOINT IS NOT HELD -- from derive_ligaments' own refusals,"
+              f"\n  not inferred here. This is the next membrane's work list:")
+        for n in sorted(offenders, key=lambda n: -peak[n]):
+            if n in lum:
+                print(f"    {n:22} HAS a derived ligament (trunk membrane); peak {peak[n]:.2f} "
+                      f"is {over[n]:.1f}% transient")
+            elif n in have_lig and n in why_not:
+                print(f"    {n:22} ligament on one side only -- {'; '.join(why_not[n])}")
+            elif n in have_lig:
+                print(f"    {n:22} HAS a derived ligament and still goes over")
+            elif n in why_not:
+                print(f"    {n:22} REFUSED -- {'; '.join(why_not[n])}")
+            else:
+                print(f"    {n:22} never reached the derivation: theHuman's gait_envelope_deg "
+                      f"publishes no curve for this joint")
+        print("  theHuman publishes three sagittal curves (hip, knee, ankle). The trunk closed its")
+        print("  own joints by taking the edge from the LITERATURE instead (Pearcy & Tibrewal).")
+        print("  The foot and the hip's off-sagittal axes want that same move -- and that is a")
+        print("  SEPARATE membrane, which needs its own RULE 0 stated before anyone builds it.")
 
     # ---- THE PICTURE: a turn you have not looked at did not end ------------
     import matplotlib

@@ -211,3 +211,107 @@ of phase 1, `knee_angle_r` 1.05x over 95.2%, `hip_rotation_l` 1.03x over 84.4%,
 outside this membrane's scope, plus the CoM excursion (the policy's balance, not
 the tissue's stiffness). The trunk membrane's own ledger entry closes here; what
 F3 still owes is written down in `docs/THE_SLICE.md` rung 3.
+
+---
+
+# AMENDMENT — 2026-08-04, later the same day
+
+The verdict above stands, was reached against the **v4 (5 s) theta**, and two of its
+sentences are superseded below. Everything here was measured with the same harness.
+
+## 1. THE CoM EXCURSION WAS NOT THE POLICY'S BALANCE. IT WAS THE TRAINING HORIZON.
+
+Above, the 2.56-box excursion is attributed to "the policy's balance, not the tissue's
+stiffness". That attribution is **replaced by a demonstrated cause.** `train_stand` ran at
+`secs=5.0` and `f3_stand` judges the pelvis minimum over 5.0 s — the reward integrates over
+*exactly* the judged window. An optimiser is then mathematically indifferent to everything at
+5.0+ε, so a body that topples at 4.98 s and a body that stands scores the same. The measured
+signature is unmistakable: the excursion peaked at **t=4.68–4.98 s**, as the window closed.
+
+Retrained at **`secs=8.0` and judged unchanged at 5.0 s** — the bar untouched, the judged
+window made an interior point of the optimised one — the same harness returns:
+
+| | v4 theta (trained 5 s) | v5 theta (trained 8 s) |
+|---|---:|---:|
+| pelvis MIN | 92.1% | **102.3%** of target |
+| CoM excursion, peak | 2.56 boxes | **0.80** |
+| CoM outside the box | 6.4% of phase 1 | **0.0%** |
+| **F3, the slice's letter** | FAIL | **PASS** |
+
+**`f3_stand.py` now exits PASS.** The falsifier verdicts are unchanged in direction: lumbar
+peak 1.12 over **6.4%** of phase 1 (transient, F1 does not fire), pelvis far above 90% (F2 does
+not fire), stiffnesses unchanged (F3 does not fire — the world was not touched, only the policy).
+
+**The rule this earns: train past what you judge.** A policy meets the bar and not one step
+further, and the failure mode looks exactly like bad balance.
+
+## 2. THREE OF THOSE JOINTS DO NOT HAVE PRE-EXISTING LIGAMENTS. NOTHING HOLDS THEM AT ALL.
+
+The sentence "leg joints with pre-existing ligaments" is **wrong, and the correction is the
+work list.** `f3_stand` now asks `derive_ligaments` for its own refusals instead of inferring
+them, and prints the reason per joint:
+
+| joint | peak | over its stop | what actually holds it |
+|---|---:|---:|---|
+| subtalar_angle_r | 1.16 | 60.8% | **nothing** — theHuman publishes no envelope for this joint |
+| mtp_angle_l | 1.13 | 97.6% | **nothing** — no envelope |
+| L4_L5_FE | 1.12 | 6.4% | this membrane's ligament; transient |
+| knee_angle_r / _l | 1.06 / 1.04 | 96% / 98% | ligament on the FLEXION side only; ext REFUSED, gap 1.84° under the envelope's own 4.16° grain |
+| hip_rotation_l | 1.02 | 81.6% | **nothing** — no envelope |
+| hip_adduction_l | 1.05 | 91.6% | **nothing** — no envelope |
+
+`theHuman.gait_envelope_deg` carries **three curves: hip, knee, ankle** — all sagittal. That is
+the entire reason `derive_ligaments` reaches those three joints and refuses every other, and it
+is why the prediction was wrong to promise the port contract: the trunk was never the only
+unheld joint, only the loudest. Silencing it made the next four legible.
+
+**THE BODY IS STANDING ON ITS STOPS.** The joints trace sits pinned at ~1.0 for the whole run.
+A joint limit is a hard constraint the solver enforces, so an unheld DOF is *free structure* —
+and a CEM policy maximising a scalar will find it and hang on it. Constrain extension, it finds
+lateral bending; constrain the trunk, it finds the subtalar and the toe. **The optimiser is
+auditing the tissue inventory and reporting which anatomy is still missing** — the trainer doc's
+"the exploit is the product", applied to passive structure instead of objectives.
+
+## 3. FALSIFIER 3 HAS A SHARPER READING, AND IT PASSES THAT ONE TOO
+
+The order-of-magnitude bar is loose. A tighter check was available and was not used above.
+`k = tau_max/gap` makes the ligament produce exactly *maximal voluntary contraction* at the
+stop; Miller separately measured real passive tissue resisting **30–70% of MVC** at end range.
+Scaling each derived level by that independently measured ratio:
+
+| level | derived | × 30–70% | Miller's measured band |
+|---|---:|---:|---:|
+| L1_L2 | 14.5 N·m/deg | 4.3 – 10.1 | 6 – 11 |
+| L2_L3 | 15.1 | 4.5 – 10.6 | 6 – 11 |
+| L3_L4 | 17.7 | 5.3 – 12.4 | 6 – 11 |
+| L4_L5 | 31.9 | 9.6 – 22.3 | 6 – 11 |
+
+Every level overlaps. The derivation consumed **neither** number — it used myobody's muscle
+geometry and Pearcy & Tibrewal's kinematic envelope — so three measurements close from
+different directions. **HONEST BOUND ON THE BOUND:** the ratio and the band are both Miller's,
+from one paper (bench moment-angle curves vs a comparison against McNeill 1980's separately
+measured MVC), so this is corroboration across measurements, not across laboratories. It is
+not independent replication and is not claimed as such.
+
+## 4. THE INSTRUMENT, AND A BUG THAT WAS INSIDE THE FIX
+
+`jmax = 1.17` named no joint and integrated no time — it could not tell "the lumbar is arched
+for five seconds" from "the toe grazes its stop once", which is the exact distinction falsifier 1
+turns on. `f3_stand` now reports, for every graded joint, its **peak and the fraction of phase 1
+spent at or past its stop**, with the joint named; the CoM gets the same treatment. **The bars
+were not moved** — relaxing a falsifier to pass it is the one forbidden move — only made legible.
+
+The first version of the lumbar readout carried this same defect *inside the fix*: it computed
+"worst lumbar" by filtering to samples where a lumbar joint happened to be the worst joint
+**overall**, which is blind to a lumbar at 1.08 sitting under an mtp at 1.10. It answers a
+different question and always understates. Recorded because it is the species this project keeps
+paying for — a wrong number under a plausible formula, invisible to reading.
+
+## NEXT — and it is not this membrane
+
+The trunk closes at a 6.4% transient and F3 passes. The port contract's remaining debt is a
+**separate membrane**: passive structure for the joints this world publishes no envelope for
+(subtalar, mtp, hip rotation and adduction) plus the knee's refused extension side. It needs its
+own RULE 0 — statement, prediction, falsifier — stated before anything is built, and its
+envelopes must come from the literature the same way this one's did. **Named here and left
+open, not folded into this membrane's verdict.**

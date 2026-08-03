@@ -316,6 +316,35 @@ own edge cases) and the stand policy's balance. Original cause, for the record:
 alone 13 (out of range, no ligament)" — for want of a published lumbar envelope;
 Miller 1986 supplied it.
 
+**AMENDED LATER THE SAME DAY (v5 theta) — two of the sentences above are superseded;
+full account `docs/THE_TRUNK_TISSUE.md` §AMENDMENT.**
+
+*(a) The CoM excursion was not the policy's balance — it was the training horizon.*
+`train_stand` optimised over exactly the 5.0 s `f3_stand` judges, so the reward is
+indifferent to everything at 5.0+ε and marginal stability scores identically to real
+stability. The tell was already in the number: the excursion peaked at **t = 4.68–4.98 s**,
+as the window closed. Retrained at **8.0 s and judged unchanged at 5.0 s** — the bar
+untouched, the judged window made an interior point — the same harness returns pelvis MIN
+**102.3%** of target (was 92.1%), CoM excursion peak **0.80** (was 2.56), **0.0%** of
+phase 1 outside the box (was 6.4%). **THE RULE: train past what you judge**; a policy meets
+the bar and not one step further, and that failure looks exactly like bad balance.
+
+*(b) Three of those joints do not have ligaments at all.* "The leg derivation's own edge
+cases" is wrong. `f3_stand` now asks `derive_ligaments` for its own refusals instead of
+inferring them: `subtalar_angle_r` (1.16, 60.8%), `mtp_angle_l` (1.13, 97.6%),
+`hip_rotation_l` (1.02, 81.6%) and `hip_adduction_l` (1.05, 91.6%) **never reached the
+derivation** — `theHuman.gait_envelope_deg` publishes three sagittal curves, hip/knee/ankle,
+and nothing else. Only the knee is an edge case (flexion ligament emitted; extension REFUSED,
+gap 1.84° under the envelope's own 4.16° grain). **The body is standing on its stops:** an
+unheld DOF is free structure the solver enforces for nothing, and a CEM policy will find it
+and hang on it — constrain the trunk and it moves to the subtalar and the toe. The residual
+debt is therefore a **separate membrane** (passive structure for the joints this world
+publishes no envelope for), needing its own RULE 0 before it is built — not a leftover of
+this one.
+
+**F3 with the v5 theta: `python tools/f3_stand.py` exits 0, PASS by the slice's letter,
+pelvis MIN 102.3%, CoM inside the base of support for 100% of phase 1.**
+
 **Next rung, fixed by this firing:** re-record with position-closed-loop drive,
 capture VIDEO for the blind read, fix exposure and object legibility, then read
 again. The bar does not move.
