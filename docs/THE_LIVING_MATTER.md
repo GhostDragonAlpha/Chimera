@@ -19,9 +19,10 @@
 > · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
-> Drafted 2026-08-03. Status: **THEORY, UNRUN.** Nothing in this file has been executed.
-> The instrument it needs (per-pass energy readout) does not exist yet — that is Phase 1,
-> and building the instrument before the run is the method, not a delay.
+> Drafted 2026-08-03. Status: **PHASE 1 DONE — the instrument exists, is exact, and its
+> falsifier fired: the GPU port's parallel area update does not converge at rung-1
+> parameters (see Phase 1 below). Phase 2 now has a prerequisite membrane: derive the
+> parallel area update.**
 
 ---
 
@@ -149,18 +150,28 @@ grain size are already researched in the library, and the sand/rock/medium predi
 
 **Phase 0 — THE THEORY.** This file. Operator rules on it before anything is built.
 
-**Phase 1 — THE INSTRUMENT.** The shaker has no energy readout; you cannot measure a
-relaxation you cannot see. Add to `Chimera/core/matter_gpu.py`:
-- per-pass Hamiltonian evaluation on-device (interface energy + area term), folded
-  into the existing pass structure — zero CPU↔GPU syncs inside the sweep loop, one
-  readback of the energy TRACE at the end (the readback discipline is already the
-  code's own rule, `matter_gpu.py:128-138, 184-185`);
-- a persistent lattice: `open_lattice(...) → handle`, `step(handle, n_passes) →
-  energy_trace`, `close(handle) → grid`. The kernels are already per-color-pass; this
-  is a host-wrapper change, not a rewrite.
-- Falsifier for the phase itself: energy trace of the rung-1 control is non-monotone
-  or does not plateau — then the Hamiltonian we think we are running is not the one
-  in the kernel.
+**Phase 1 — THE INSTRUMENT.** ✅ DONE (2026-08-03) — and its falsifier fired on first use,
+which is the instrument working, not the phase failing. Built in `Chimera/core/matter_gpu.py`:
+per-pass on-device Hamiltonian (`_energy_partial`/`_energy_fold`, interface + area term, the
+flip kernel's own conventions, zero syncs in the pass loop, one readback of the trace) and
+the persistent lattice (`open_lattice/step/close`). Under test:
+`Chimera/tests/test_matter_gpu_energy.py` — the trace matches the CPU-computed Hamiltonian
+of the same grid to 0.0000%, and the λ=0 trace is monotone (0 of 238 sign flips).
+
+**THE VERDICT THE PHASE EXISTS TO PRODUCE.** The rung-1 control's trace is non-monotone and
+never plateaus (n=48, n=64, n=96; temp=12, λ=0.9). The cause is measured, not guessed:
+the interface dynamics minimize exactly (λ=0: H falls 1.13M → 226k, monotone), the believed
+area counts track the true counts exactly, and the CPU serial model with identical J/temp/λ
+holds areas to 0.5% with H falling 1.16M → 711k. The divergence is the PARALLEL AREA UPDATE:
+pass-start counts mean every flipping cell in a color pass acts on the same stale deficit,
+the restoring kick at a ~800-cell deficit is ~1600× the interface scale, and each pass slams
+the populations past target — a bang-bang controller with unit delay (skin drained 14% at
+n=48/30 sweeps while its believed restoring force was maximal). **Consequence, published per
+Rule 17:** `parity_report`'s SORTED check is False at n=96/90 sweeps even for differential J —
+the GPU port currently does not reproduce the CPU model's sort, and the docstring's "standard
+parallel-Potts, converges" claim is falsified. **Phase 2 has a prerequisite membrane: derive
+the parallel area update** (per-pass marginal scaling, or sublattice-frequent count folds),
+falsifier already written — the trace of the rung-1 control must plateau.
 
 **Phase 2 — THE CONTROL.** Research the tissue surface tensions; derive the 5×5 J for
 bone/muscle/skin/tendon/medium through the mapping above; run the rung-1 scramble;

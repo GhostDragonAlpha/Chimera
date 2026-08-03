@@ -23,7 +23,15 @@ THREE THINGS A NAIVE PORT DROPS (each restored here, each load-bearing):
      into 8 colors by (x&1,y&1,z&1): two cells of one color differ by an even offset
      on every axis, so no two are within Chebyshev distance 1 -> no 18- (or 26-)
      neighbor pair ever flips in the same pass. Interface energy is therefore EXACT;
-     only the area term uses pass-start counts (standard parallel-Potts, converges).
+     only the area term uses pass-start counts -- which was labelled "standard
+     parallel-Potts, converges" until the energy trace (Phase 1, below) MEASURED it:
+     at temp=12, lam=0.9 the pass-start counts overshoot -- every cell in a pass acts
+     on the same stale deficit, the restoring kick slams the populations past target,
+     and the trace oscillates +/-600-800 cells per sweep without ever plateauing
+     (n=48/64/96, 2026-08-03). The CPU serial model with identical J/temp/lam holds
+     areas to 0.5% and H falls. The flip dynamics are clean (lam=0: 0 of 238 trace
+     sign flips, monotone). The parallel area update needs its own derivation --
+     docs/THE_LIVING_MATTER.md, Phase 1 verdict.
 
 Correctness is asserted by CONTRAST, same as the CPU model: parity_report() runs the
 GPU sort and a uniform-J control on the same scrambled start and reports tissue radii
@@ -138,51 +146,162 @@ def _fold_area(area_ro: wp.array(dtype=wp.int32), area_delta: wp.array(dtype=wp.
     area_delta[i] = 0
 
 
+# ------------------------------------------------------------------------------------------------
+# THE ENERGY READOUT (THE_LIVING_MATTER Phase 1). The shaker had no way to see the quantity it
+# minimises: you cannot measure a relaxation you cannot see, and `sweeps = 160/90/70/26` was
+# whoever-set-it-last because no trace had ever existed to read tau_sort off of.
+#
+# H = sum_<i,j> J[tau(i),tau(j)] + lam * sum_{t != MEDIUM} (area_t - target_t)^2
+#
+# counted EXACTLY as the flip kernel counts dH: 18-connectivity, out-of-bounds neighbour =
+# MEDIUM, medium an unconstrained reservoir (no area term). The per-site pair sum is halved
+# at the fold. Partials go per z-slice (float atomics -- order-dependent ROUNDING only, an
+# instrument noise floor of ~1e-4 relative, not a scheduling dependency: no thread reads what
+# another writes). Launched AFTER _fold_area, so the trace is the post-pass state. Optional
+# per step() call: assemble_3d_gpu does not pay for it, the instrument does.
+# ------------------------------------------------------------------------------------------------
+@wp.kernel
+def _energy_partial(
+        lattice: wp.array3d(dtype=wp.int32),
+        J: wp.array2d(dtype=wp.float32),
+        offs: wp.array(dtype=wp.vec3i),
+        partials: wp.array2d(dtype=wp.float32),   # [pass_slot, z] <- interface pair sum
+        slot: int, n_off: int):
+    z, y, x = wp.tid()
+    nz = lattice.shape[0]
+    ny = lattice.shape[1]
+    nx = lattice.shape[2]
+    old = lattice[z, y, x]
+    h = float(0.0)
+    for i in range(n_off):
+        oi = offs[i]
+        zz = z + oi[0]
+        yy = y + oi[1]
+        xx = x + oi[2]
+        nb = MEDIUM
+        if _in_bounds(zz, yy, xx, nz, ny, nx):
+            nb = lattice[zz, yy, xx]
+        h += J[old, nb]
+    wp.atomic_add(partials, slot, z, h)
+
+
+@wp.kernel
+def _energy_fold(
+        partials: wp.array2d(dtype=wp.float32),
+        area_ro: wp.array(dtype=wp.int32),
+        targets: wp.array(dtype=wp.int32),
+        trace: wp.array(dtype=wp.float32),
+        slot: int, lam: float, n_types: int):
+    """One thread: trace[slot] = half the pair sum (each interface counted twice) + area."""
+    nz = partials.shape[1]
+    h = float(0.0)
+    for z in range(nz):
+        h += partials[slot, z]
+    h *= 0.5
+    for t in range(1, n_types):          # t = 0 is MEDIUM, the unconstrained reservoir
+        a = float(area_ro[t])
+        tg = float(targets[t])
+        h += lam * (a - tg) * (a - tg)
+    trace[slot] = h
+
+
+class Lattice:
+    """A persistent on-device lattice. Nothing reads back until step() returns the trace
+    or close() returns the grid; the pass loop never crosses the bus."""
+    __slots__ = ("lat", "Jd", "offs", "tgtd", "aread", "delta", "colors", "frozen",
+                 "temp", "lam", "seed", "n_types", "shape", "dev", "pass_count")
+
+    @property
+    def sweeps_done(self):
+        return self.pass_count // 8
+
+
+def open_lattice(grid, shape, targets, J, temp=12.0, lam=0.9, seed=0, frozen_type=None):
+    """Open a persistent lattice on the GPU and return its handle. Same physics and same
+    seed stream as assemble_3d_gpu (pass p uses seed*131 + p), so a growth run can now be
+    PAUSED, measured, and RESUMED instead of re-run from scratch to be seen."""
+    h = Lattice()
+    h.dev = wp.get_device()
+    h.n_types = J.shape[0]
+    h.shape = tuple(int(s) for s in shape)
+    h.lat = wp.array(grid.astype(np.int32), dtype=wp.int32, device=h.dev)
+    h.Jd = wp.array(np.ascontiguousarray(J, dtype=np.float32),
+                    dtype=wp.float32, device=h.dev)
+    h.offs = wp.array([wp.vec3i(int(d[0]), int(d[1]), int(d[2])) for d in _OFF18],
+                      dtype=wp.vec3i, device=h.dev)
+    tgt = np.zeros(h.n_types, dtype=np.int32)
+    for t, v in targets.items():
+        tgt[t] = int(v)
+    h.tgtd = wp.array(tgt, dtype=wp.int32, device=h.dev)
+    area0 = np.array([int((grid == t).sum()) for t in range(h.n_types)],
+                     dtype=np.int32)
+    h.aread = wp.array(area0, dtype=wp.int32, device=h.dev)
+    h.delta = wp.zeros(h.n_types, dtype=wp.int32, device=h.dev)
+    h.frozen = frozen_type if frozen_type is not None else _FROZEN_NONE
+    h.temp, h.lam, h.seed = float(temp), float(lam), int(seed)
+    h.colors = [wp.vec3i(cz, cy, cx)
+                for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
+    h.pass_count = 0
+    return h
+
+
+def step(handle, n_passes, trace=False):
+    """Run n_passes colour passes (8 = one sweep). With trace=True, evaluate the full
+    Hamiltonian on-device after every pass and return the trace as an (n_passes,) array --
+    ONE readback, at the end. With trace=False return None and pay nothing for it."""
+    h = handle
+    partials = trace_d = None
+    if trace:
+        partials = wp.zeros((int(n_passes), h.shape[0]), dtype=wp.float32, device=h.dev)
+        trace_d = wp.zeros(int(n_passes), dtype=wp.float32, device=h.dev)
+    for i in range(int(n_passes)):
+        p = h.pass_count
+        col = h.colors[p % 8]
+        wp.launch(_potts_color_pass, dim=h.shape,
+                  inputs=[h.lat, h.aread, h.delta, h.Jd, h.offs, h.tgtd, col,
+                          h.temp, h.lam, h.frozen, h.seed * 131 + p, len(_OFF18)],
+                  device=h.dev)
+        # Fold between colour passes, so the next colour sees counts that are current
+        # AND frozen for its own duration. No two same-colour cells are adjacent at
+        # 18-connectivity, so within a pass every thread's inputs are untouched by the
+        # others -- which is what makes the result independent of scheduling order.
+        wp.launch(_fold_area, dim=h.n_types, inputs=[h.aread, h.delta], device=h.dev)
+        if trace:
+            wp.launch(_energy_partial, dim=h.shape,
+                      inputs=[h.lat, h.Jd, h.offs, partials, i, len(_OFF18)],
+                      device=h.dev)
+            wp.launch(_energy_fold, dim=1,
+                      inputs=[partials, h.aread, h.tgtd, trace_d, i, h.lam, h.n_types],
+                      device=h.dev)
+        h.pass_count += 1
+    if trace:
+        wp.synchronize_device(h.dev)
+        return trace_d.numpy()
+    return None
+
+
+def close(handle):
+    """One sync, one readback: the settled int16 grid. The handle is dead after this."""
+    wp.synchronize_device(handle.dev)
+    return handle.lat.numpy().astype(np.int16)
+
+
 def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
                     temp=12.0, lam=0.9, seed=0, frozen_type=None):
     """GPU drop-in for core.matter.assemble_3d. Returns the settled int16 grid.
 
     targets: {type: target_cell_count}. J: (n_types, n_types) float. frozen_type:
     a scaffold type that never changes or spawns (bone axis / terrain negative space).
+
+    THE ACCUMULATOR stays separate from the counts every thread reads: passing one array
+    for both is why the volume constraint raced -- and why `aread` was never updated, so
+    all sweeps compared against the INITIAL counts and a tissue could drain away without
+    the constraint ever objecting.
     """
-    dev = wp.get_device()
-    n_types = J.shape[0]
-    lat = wp.array(grid.astype(np.int32), dtype=wp.int32, device=dev)
-    Jd = wp.array(np.ascontiguousarray(J, dtype=np.float32),
-                  dtype=wp.float32, device=dev)
-    offs = wp.array([wp.vec3i(int(d[0]), int(d[1]), int(d[2])) for d in _OFF18],
-                    dtype=wp.vec3i, device=dev)
-    tgt = np.zeros(n_types, dtype=np.int32)
-    for t, v in targets.items():
-        tgt[t] = int(v)
-    tgtd = wp.array(tgt, dtype=wp.int32, device=dev)
-    area0 = np.array([int((grid == t).sum()) for t in range(n_types)],
-                     dtype=np.int32)
-    aread = wp.array(area0, dtype=wp.int32, device=dev)
-    frozen = frozen_type if frozen_type is not None else _FROZEN_NONE
-
-    # THE ACCUMULATOR, separate from the counts every thread reads. The previous version
-    # passed one array for both, which is why the volume constraint raced -- and why `aread`
-    # was never updated at all, so all 26 sweeps compared against the INITIAL counts. That
-    # second bug is why a tissue could drain away without the constraint ever objecting.
-    delta = wp.zeros(n_types, dtype=wp.int32, device=dev)
-
-    colors = [wp.vec3i(cz, cy, cx)
-              for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
-    for s in range(sweeps):
-        for ci, col in enumerate(colors):
-            wp.launch(_potts_color_pass, dim=shape,
-                      inputs=[lat, aread, delta, Jd, offs, tgtd, col,
-                              float(temp), float(lam), int(frozen),
-                              seed * 131 + s * 8 + ci, len(_OFF18)],
-                      device=dev)
-            # Fold between colour passes, so the next colour sees counts that are current
-            # AND frozen for its own duration. No two same-colour cells are adjacent at
-            # 18-connectivity, so within a pass every thread's inputs are untouched by the
-            # others -- which is what makes the result independent of scheduling order.
-            wp.launch(_fold_area, dim=n_types, inputs=[aread, delta], device=dev)
-    wp.synchronize_device(dev)
-    return lat.numpy().astype(np.int16)
+    h = open_lattice(grid, shape, targets, J, temp=temp, lam=lam, seed=seed,
+                     frozen_type=frozen_type)
+    step(h, 8 * int(sweeps), trace=False)
+    return close(h)
 
 
 def parity_report(scramble, shape, targets, J_diff, J_unif, frozen_type=None,
@@ -246,3 +365,27 @@ if __name__ == "__main__":
     d = rep["differential"]
     ok = d[BONE] < d[MUSCLE] < d[SKIN]
     print(f"  SORTED (bone core < muscle < skin shell): {ok}")
+
+    # PHASE 1 FALSIFIER (docs/THE_LIVING_MATTER.md): the rung-1 control's energy trace
+    # must be monotone-up-to-noise and it must PLATEAU. A non-monotone or non-settling
+    # trace means the Hamiltonian we think we are running is not the one in the kernel.
+    # Criteria, named before the run: per-sweep means (8 passes each); MONOTONE = after
+    # the first 10% of sweeps no sweep mean rises by more than 1% of the total drop;
+    # PLATEAU = the mean of the last 10% of sweeps differs from the previous 10% by less
+    # than 2% of the total drop.
+    h = open_lattice(grid, shape, targets, J_PROVEN_DIFFERENTIAL, seed=0)
+    tr = step(h, 8 * a.sweeps, trace=True)
+    close(h)
+    sw = tr.reshape(a.sweeps, 8).mean(axis=1)
+    drop = float(sw[0] - sw[-1])
+    k = max(1, a.sweeps // 10)
+    rises = [float(sw[i] - sw[i - 1]) for i in range(k + 1, a.sweeps)]
+    worst_rise = max(rises) if rises else 0.0
+    tail = float(sw[-k:].mean() - sw[-2 * k:-k].mean())
+    mono = worst_rise <= 0.01 * abs(drop)
+    plateau = abs(tail) <= 0.02 * abs(drop)
+    print(f"  ENERGY TRACE: H {sw[0]:.1f} -> {sw[-1]:.1f} (drop {drop:.1f}); "
+          f"worst post-warmup rise {worst_rise:.3f} ({100*worst_rise/max(abs(drop),1e-9):.3f}% "
+          f"of drop), tail drift {tail:.3f} ({100*abs(tail)/max(abs(drop),1e-9):.3f}%)")
+    print(f"  PHASE 1: monotone {mono}, plateau {plateau} -> "
+          f"{'PASS' if (mono and plateau) else 'FAIL -- the kernel is not running the Hamiltonian we think it is'}")

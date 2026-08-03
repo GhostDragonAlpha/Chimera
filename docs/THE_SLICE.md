@@ -62,7 +62,7 @@ reading has ever been taken.
 | PARSER | ~12 buttons, two bindings, one formula layer — designed | not built |
 | RUNTIME | `w` from `tools/world.py`, no fallback | not built |
 | CALIBRATION | DERIVED / INGESTED / TRAINED, `training_gate.py` enforces Froude | gate exists, layer not assembled |
-| THE WORLD ANSWERS | THE_LIVING_MATTER: theory written, Phase 1 (energy-trace instrument) next | J hand-tuned today |
+| THE WORLD ANSWERS | THE_LIVING_MATTER Phase 1 ✅ (energy trace, exact to 0.00%, under test) — falsifier fired: GPU parallel area update does not converge | Phase 2 prerequisite: derive the parallel area update |
 
 **The first reading's three red mechanism primitives are GREEN, and each was an instrument
 fault with a different name** (the full evidence lives in `tools/primitive_tests.py` at each
@@ -102,10 +102,14 @@ bound, and the ankle-height control (480.1/157.7 N, 67.1% apart, one direction A
 proves the bound is set by toe/heel capsule geometry and the tipping moment, never by the
 cone alone. Full evidence in `tools/action_tests.py` at `_slip`, `a_push`, `a_pull`.
 
-**Phase B — LIVING_MATTER Phase 1, in parallel.** The energy-trace instrument in
+**Phase B — LIVING_MATTER.** ✅ Phase 1 DONE (2026-08-03): the energy-trace instrument in
 `Chimera/core/matter_gpu.py` (per-pass Hamiltonian, one readback, persistent
-`open_lattice/step/close`). It is small, it has its own falsifier (the rung-1 trace must
-plateau), and everything in the world-answers track waits on it.
+`open_lattice/step/close`), exact to 0.0000% against the CPU Hamiltonian and under test
+(`Chimera/tests/test_matter_gpu_energy.py`). Its falsifier fired on first use: the GPU
+port's parallel area update overshoots and never plateaus — the flip dynamics are clean
+(λ=0 monotone), the fault is the pass-start area counts. Next: Phase 2's prerequisite
+membrane — derive the parallel area update; its falsifier is already written (the rung-1
+trace must plateau).
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/
