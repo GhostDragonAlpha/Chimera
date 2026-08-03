@@ -26,10 +26,13 @@
 > (Foty 1996), the cortical-floor scale does not reproduce rung-1's kinetics (τ ratio
 > 0.07, direction opposite to the prediction — published, Rule 17) · **PHASE 2b DONE:
 > F1/F2/F3 ALL PASS — the liquidity anchor (kT_eff = σ̄·ℓ², σ̄ = 7.66 mN/m geometric
-> mean) closes the theory with zero fitted numbers (τ ratio 0.60).** Open debts:
-> interfacial pairs are Girifalco-Good defaults, λ underived (own membrane), type
-> mapping tested on ordering only. Next: Phase 3 (fracture) or Phase 4 (world
-> materials), on the operator's word.**
+> mean) closes the theory with zero fitted numbers (τ ratio 0.60) · **PHASE 4 FIRST
+> CONTROL DONE: sand/rock/medium sorts with rock burial under the derived world J
+> (γ_sand = c·d = 36 mN/m, γ_rock = K_IC²/2E = 36.9 J/m² — every input researched),
+> uniform control's orientation random across runs.** Open debts: interfacial pairs
+> are Girifalco-Good defaults, λ underived (own membrane), tissue type mapping tested
+> on ordering only. Next: Phase 3 (fracture) or the rest of Phase 4 (remaining world
+> families), on the operator's word.**
 
 ---
 
@@ -425,6 +428,72 @@ order instead of seeded rng order: one seed no longer gives bit-identical grids.
 CPU model's order is rng-driven (`matter.py:425`), so this is the same KIND of
 nondeterminism without the seed. Every quantity this theory measures — plateau H,
 σ_a, radius ordering, τ_sort — is order-independent.
+
+**Phase 4 (first control) — THE WORLD: sand/rock/medium (membrane stated 2026-08-03, before the run).**
+
+**STATEMENT.** The mapping that closed for tissue closes for the world with the same
+algebra and no new freedoms. Every input is already researched in the library, or
+cited below:
+
+- **γ_sand = c·d = 0.5 kPa × 0.072 mm = 36 mN/m.** The granular surface-energy
+  derivation: pulling apart a unit area of cohesive granular bed costs the cohesive
+  stress (Mitchell 1972, library `cohesion_kpa`) working over one grain diameter
+  (Carrier 2003 D50, library `grain_size_mm`) of separation. Someone can disagree:
+  the work could act over a fraction of a grain, or several — the derivation claims
+  one diameter is the scale, and the sort is the judge.
+- **γ_rock = K_IC²/(2E) = (2.4 MPa√m)²/(2×78 GPa) = 36.9 J/m².** Griffith: the
+  fracture surface energy from the measured basalt fracture toughness (K_IC 1.8–3.0
+  MPa√m — Whittaker et al. 1992 / Zhang et al. 1998 / Demkowicz 2012 compilation)
+  and the library's Young's modulus (Quaglio et al. 2020). Factor 2: a crack creates
+  two surfaces.
+- **ℓ = 0.072 mm** — one lattice site is one sand grain (the flowing phase sets the
+  lattice constant, as the cell did for tissue).
+- **The scale, same anchor as Phase 2b:** kT_eff = σ̄·ℓ² with σ̄ the geometric mean,
+  √(36 mN/m × 36.9 J/m²) = 1.15 J/m² → α = 10.4 J⁻¹·m².
+
+**The honest structural observation (stated, not hidden).** γ_rock/γ_sand ≈ 1000×.
+No single temperature keeps both phases liquid — the geometric-mean anchor puts rock
+at J/temp ~ 32–48 (the quench regime, Phase 2's cold world) and sand at J/temp ~
+0.03–0.05 (hot, near-gas). That is not a defect of the derivation; it is the physics
+of a 1000× cohesion spread, and it makes the anatomy prediction STRONGER, not
+weaker: the spreading coefficient for sand between rock and medium is analytic —
+S = γ(r,MED) − γ(s,MED) − γ(s,r) = 576 − 0.56 − 552 = +23 (lattice units) > 0 — so
+sand must wet the rock core completely. What the spread costs is sand's SHARPNESS:
+hot sand will envelop diffusely, not as a crisp shell.
+
+**PREDICTION (not yet measured).** The theory's P2: a three-material scramble of
+sand/rock/medium (n=96, temp=12, λ=0.9, targets = initial counts — the rung-1
+protocol unchanged) sorts with **rock burial** (rock mean radius < sand mean radius)
+under the derived J, and does NOT sort under the uniform contrast. Rock forms its
+core fast (quench); sand envelops diffusely.
+
+**FALSIFIER.** The sort inverts (sand core / rock shell) or fails to layer under the
+derived J — then the granular γ = c·d derivation, or the Griffith docking of rock,
+is wrong, and the disagreement is published per Rule 17. The trace is recorded for
+the ledger but carries no τ bar this run: Phase 2/2b already taught that τ off the H
+trace compares quench rates when the two regimes differ, and here they differ by
+design.
+
+*VERDICT (2026-08-03, all numbers measured; `cd Chimera && python -m core.matter_derive --world`).*
+**PASS — and the contrast is honest.** Three runs (scheduling-nondeterministic, so
+each is an independent draw):
+
+| run | derived J: rock / sand radius | uniform: rock / sand |
+|---|---|---|
+| 1 | **16.1** / 23.3 | 18.5 / 23.1 (rock in) |
+| 2 | **16.5** / 23.3 | 20.8 / 21.3 (tied) |
+| 3 | **16.0** / 23.1 | 21.8 / 19.5 (sand in) |
+
+The derived J buries rock every time (gap ≈ 7.1, consistent). The uniform control's
+interior phase flips run to run — rock, tie, sand — which is exactly what a
+symmetric J must do: the phases coarsen (uniform γ(sand,rock) = 4 ≠ 0, so the
+control separates), but the ORIENTATION is random symmetry-breaking. The machine
+does not manufacture the predicted ordering on its own; the derivation does. The
+granular γ = c·d docking for sand and the Griffith K_IC²/2E docking for rock
+survive their first control. Trace for the ledger: H 4.27×10⁸ → 2.51×10⁸ over 200
+sweeps (no τ bar — the quench regime was the design, and Phase 2 already taught
+what τ reads there). The spreading coefficient S = +23.25 predicted complete
+wetting analytically; the burial is the wetting, seen from the radius side.
 
 **Phase 3 — FRACTURE AND DEATH (Griffith, E2.03).** Add `J/m2` and `Pa.m0.5` to
 `folding.UNITS` (the mechanics.json `_units_missing` entry names exactly these);

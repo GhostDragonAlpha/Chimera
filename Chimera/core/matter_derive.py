@@ -93,6 +93,54 @@ def gamma_cpm(J: np.ndarray) -> np.ndarray:
     return J - 0.5 * (d[:, None] + d[None, :])
 
 
+# ------------------------------------------------------------------------------------------------
+# THE WORLD (Phase 4 first control): sand/rock/medium. Every input researched, in the
+# library or cited in docs/THE_LIVING_MATTER.md "Phase 4 (first control)":
+#   gamma_sand = c*d = 0.5 kPa x 0.072 mm   (Mitchell 1972 cohesion x Carrier 2003 D50)
+#   gamma_rock = K_IC^2/(2E) = (2.4 MPa*m^0.5)^2/(2*78 GPa)   (Griffith; basalt K_IC
+#              1.8-3.0 — Whittaker 1992 / Zhang 1998 / Demkowicz 2012; E = Quaglio 2020)
+#   ell = one sand grain (the flowing phase sets the lattice constant, as the cell did)
+#   scale = the SAME liquidity anchor as Phase 2b (geometric mean), no new freedom.
+# ------------------------------------------------------------------------------------------------
+WSAND, WROCK = 1, 2                     # world-lattice type ids (MEDIUM = 0)
+WORLD_NAMES = {MEDIUM: "medium", WSAND: "sand", WROCK: "rock"}
+GAMMA_SAND_J_M2 = 0.5e3 * 0.072e-3                    # c·d = 0.036 J/m^2
+GAMMA_ROCK_J_M2 = (2.4e6) ** 2 / (2.0 * 78e9)         # K_IC^2/2E = 36.9 J/m^2
+ELL_WORLD_M = 0.072e-3                                # one site = one sand grain
+
+
+def derive_world_J(temp: float = TEMP) -> np.ndarray:
+    """The derived 3x3 world J (MEDIUM/SAND/ROCK), same algebra as the tissue J.
+    alpha = temp / sigma_geo (the liquidity anchor makes ell cancel: kT_eff =
+    sigma_geo*ell^2, E0 = kT_eff/temp, alpha = ell^2/E0 = temp/sigma_geo — the
+    degeneracy THE_LIVING_MATTER names: the lattice reads only gamma/temp)."""
+    gammas = [(WSAND, GAMMA_SAND_J_M2), (WROCK, GAMMA_ROCK_J_M2)]
+    a = temp / math.sqrt(GAMMA_SAND_J_M2 * GAMMA_ROCK_J_M2)
+    J = np.zeros((3, 3), dtype=np.float64)
+    for i, g in gammas:
+        J[i, i] = a * g
+        J[i, MEDIUM] = J[MEDIUM, i] = 1.5 * a * g
+    for p in range(len(gammas)):
+        for q in range(p + 1, len(gammas)):
+            (i, gi), (j, gj) = gammas[p], gammas[q]
+            g_ab = (math.sqrt(gi) - math.sqrt(gj)) ** 2        # Girifalco-Good default
+            J[i, j] = J[j, i] = a * g_ab + 0.5 * (J[i, i] + J[j, j])
+    return J
+
+
+def _world_scramble(n: int = 96, seed: int = 0):
+    """The rung-1 blob protocol, world materials: sand/rock scrambled in the core third."""
+    shape = (n, n, n)
+    rng = np.random.RandomState(seed)
+    grid = np.zeros(shape, dtype=np.int16)
+    c, r = n // 2, n // 3
+    zz, yy, xx = np.mgrid[0:n, 0:n, 0:n]
+    blob = (zz - c) ** 2 + (yy - c) ** 2 + (xx - c) ** 2 < r * r
+    grid[blob] = rng.choice((WSAND, WROCK), size=int(blob.sum()))
+    targets = {t: int((grid == t).sum()) for t in (WSAND, WROCK)}
+    return grid, shape, targets
+
+
 def tau_sort(sw: np.ndarray) -> float:
     """Sweeps for the per-sweep mean H to fall (1 - 1/e) of the total drop,
     the drop measured from sweep 0 to the last-10% plateau mean."""
@@ -128,7 +176,43 @@ if __name__ == "__main__":
     ap.add_argument("--sweeps", type=int, default=200)
     ap.add_argument("--anchor", choices=sorted(_ANCHOR_SIGMA), default="liquidity",
                     help="kT_eff anchor: cortex (Phase 2, F3 fired) or liquidity (Phase 2b)")
+    ap.add_argument("--world", action="store_true",
+                    help="Phase 4 control: sand/rock/medium instead of the tissue scramble")
     a_ns = ap.parse_args()
+
+    if a_ns.world:
+        Jw = derive_world_J()
+        print("THE DERIVED WORLD J (lattice units; gammas: sand %.4f J/m^2 = c*d, "
+              "rock %.2f J/m^2 = K_IC^2/2E)" % (GAMMA_SAND_J_M2, GAMMA_ROCK_J_M2))
+        print("           " + "  ".join(f"{WORLD_NAMES[t]:>8}" for t in (MEDIUM, WSAND, WROCK)))
+        for i in (MEDIUM, WSAND, WROCK):
+            print(f"  {WORLD_NAMES[i]:>8} " + "  ".join(f"{Jw[i, j]:8.2f}" for j in (MEDIUM, WSAND, WROCK)))
+        gw = gamma_cpm(Jw)
+        spread = gw[WROCK, MEDIUM] - gw[WSAND, MEDIUM] - gw[WSAND, WROCK]
+        print(f"spreading coefficient S(sand over rock) = {spread:.2f} "
+              f"(>0: sand must wet the rock core)")
+        grid, shape, targets = _world_scramble(a_ns.n)
+        J_unif = np.full_like(Jw, 8.0)
+        np.fill_diagonal(J_unif, 4.0)
+        J_unif[MEDIUM, MEDIUM] = 0.0
+        rep = parity_report(grid, shape, targets, Jw, J_unif,
+                            sweeps=a_ns.sweeps, seed=0)
+        d = rep["differential"]
+        buried = d[WROCK] < d[WSAND]
+        for label in ("differential", "uniform"):
+            r = rep[label]
+            print(f"  {label:<13} mean radius  " +
+                  "  ".join(f"{WORLD_NAMES[t]}:{r[t]:.1f}" for t in (WSAND, WROCK)))
+        print(f"WORLD VERDICT: rock burial under derived J: {'PASS' if buried else 'FAIL — FIRED'}"
+              f"  ({rep['seconds']:.1f}s)")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=0.9, seed=0)
+        tr = step(h, 8 * a_ns.sweeps, trace=True)
+        close(h)
+        sw = tr.reshape(a_ns.sweeps, 8).mean(axis=1)
+        print(f"  trace: H {sw[0]:.1f} -> {sw[-1]:.1f} "
+              f"(ledger record; no tau bar this run — quench regime by design)")
+        raise SystemExit(0 if buried else 1)
+
 
     J5 = derive_J(anchor=a_ns.anchor)
     J4 = J5[np.ix_([MEDIUM, BONE, MUSCLE, SKIN], [MEDIUM, BONE, MUSCLE, SKIN])]
