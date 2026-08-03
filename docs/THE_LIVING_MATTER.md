@@ -57,9 +57,12 @@
 > equilibrium, solvent. One condition reconciles all three runs, zero fitted
 > numbers.**
 > Open debts: interfacial pairs are Girifalco-Good
-> defaults, tissue type mapping tested on ordering only, tissue K_IC unresearched.
-> Next: metal via per-type λ or frozen_type skeleton (both named, operator's
-> call), tissue K_IC, or the operator's pick.**
+> defaults, tissue type mapping tested on ordering only.
+> TISSUE K_IC RESEARCHED (Phase 3d): bone Griffith-legal (124–735 J/m²),
+> muscle/skin docked at measured tearing energies (apparent), tendon's band
+> open. Next: metal via per-type λ or frozen_type skeleton (both named,
+> operator's call), the tissue-scramble rupture run (3d's prediction), or
+> the operator's pick.**
 
 ---
 
@@ -559,8 +562,9 @@ temp changes is the ESCAPE rate (accepted flips let a misplaced cell move home
 before the rupture pass catches it) — so brittleness becomes a dynamical, measured
 property instead of a parameter. γ_f per material: rock = 36.9 J/m² (basalt K_IC,
 researched); sand = its decohesion energy c·d = 36 mN/m (a granular material has no
-fracture toughness — it comes apart at its own surface energy); tissue values await
-their research task and are NOT guessed here.
+fracture toughness — it comes apart at its own surface energy); tissue values are
+researched in Phase 3d below: bone Griffith-legal, muscle/skin at their measured
+tearing energies, tendon open.
 
 **PREDICTIONS (not yet measured).** World scramble (Phase 4's sand/rock/medium,
 200 sweeps, λ=0.9), rupture pass after each sweep:
@@ -676,7 +680,8 @@ erosion, and erosion is real physics the membrane conflated with fracture.
 
 1. **FRACTURE** needs fracture toughness: only materials with a measured K_IC can
    rupture (rock: γ_f = K_IC²/2E = 36.9 J/m²; sand: no K_IC exists → un-fracturable;
-   tissue: awaits its research task). Criterion: carried tissue–tissue tension >
+   tissue: Phase 3d — bone 124–735 J/m² Griffith-legal, muscle 2,500 and skin
+   20,000 J/m² apparent, tendon open). Criterion: carried tissue–tissue tension >
    n_same·α·γ_f — the void cannot pull, so tissue–medium surface energy never
    counts as stress, and perfect bulk (carried = 0) never nucleates.
 2. **VOID-CONNECTIVITY**: rupture creates a void, so only void-touching cells can
@@ -704,6 +709,65 @@ falsifier firing on real behavior. The λ/temp confound from Phase 3's first run
 (hot = weak area constraint = more death) stands as the measured proof that λ's
 derivation is load-bearing for life-and-death questions — the next membrane after
 the operator picks the rung.
+
+**Phase 3d — TISSUE K_IC: THE RESEARCH THE FRACTURE RULE WAS WAITING FOR (closed 2026-08-03).**
+
+Clause 1 of the 3c-final rule reserves rupture for materials with a measured
+fracture toughness, and left the four tissue types docked at nothing. The
+research is now done, and the honest finding is that "tissue K_IC" is TWO
+different physical objects the membrane must not conflate:
+
+**BONE — Griffith-legal.** Human cortical bone has a measured crack-initiation
+toughness K₀ = 2.03–2.06 MPa√m (Nalla, Kinney & Ritchie 2003, hydrated,
+longitudinal) rising on an R-curve to ~5+ MPa√m with crack extension — bone
+toughens AS it cracks (crack deflection, microcracking, collagen bridging).
+With E ≈ 17 GPa (human cortical, longitudinal):
+
+```
+γ_init   = K₀²/(2E) = (2.05 MPa√m)²/(2·17 GPa) ≈ 124 J/m²
+γ_growth = (5 MPa√m)²/(2·17 GPa)               ≈ 735 J/m²
+```
+
+The R-curve means bone has no single γ_f: 124 J/m² for nucleation questions,
+up to ~735 for propagation. Stated as a band, not a point — using the growth
+value for nucleation would overstate the crack-start cost 6×.
+
+**MUSCLE and SKIN — no K_IC exists; the measured quantity is TEARING ENERGY.**
+Like sand, soft tissue is not a Griffith material — but unlike sand it does
+not rearrange either: it TEARS, and the tearing energy is measured:
+
+```
+muscle:  2.49 kJ/m²  (Taylor et al. 2012, porcine, apparent tearing energy)
+skin:   ~20   kJ/m²  (Vincent, Structural Biomaterials, Springer compilation)
+tendon:   band OPEN — the compilations imply high but no defensible single
+          number survives; tendon stays un-fracturable in the shaker until
+          its band closes. Not guessed (rule 20).
+```
+
+**The honesty the metal row already taught.** Tearing energy is APPARENT —
+true surface energy plus the viscoelastic and plastic dissipation of the
+process zone, typically 10–100× the Griffith term for soft matter. Docking
+γ_f = tearing energy is therefore a modeling claim, not a measurement:
+someone can disagree — the dissipation belongs to the bulk, not the surface,
+and a membrane that counts it as surface energy will over-resist rupture
+wherever the process zone is wide. The claim is docked because the 3c-final
+criterion only needs THE ENERGY A CRACK COSTS, and on that question the
+tearing energy is the measured answer.
+
+**The ordering that falls out:** skin (20,000) ≫ muscle (2,500) > bone
+(124–735) J/m². The skeleton is the most FRACTURABLE tissue in the body and
+the envelope the least — which is the anatomy: bones break while skin
+stretches. The derived rule reproduces it with zero fitted numbers.
+
+**PREDICTION (not yet measured).** A tissue scramble (bone/muscle/skin, the
+rung-1 protocol, rupture pass per sweep, 3c-final clauses) under these γ_f
+dies in the derived order: misplaced BONE inclusions rupture first, muscle
+second, skin last — skin's misplaced cells survive where bone's cannot.
+
+**FALSIFIER.** The scramble's rupture ordering inverts (skin dies before
+bone) — then the apparent-energy docking is wrong, the dissipation is not
+countable as surface energy, and soft tissue needs its own clause, published
+per Rule 17.
 
 **Phase 5 — THE λ MEMBRANE (stated 2026-08-03, before the run).**
 
