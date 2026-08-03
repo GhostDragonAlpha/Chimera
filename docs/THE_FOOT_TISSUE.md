@@ -104,3 +104,28 @@ to the knees alone.
    lands outside falsifier 3's band, the edge, not the band, is what moves,
    and the doc records which.)
 3. Re-judge with `tools/f3_stand.py` (no retrain); record the verdict here.
+
+---
+
+## THE MODEL'S DECLARED RANGES — read 2026-08-04, before the build
+
+From `external/myo_sim/leg/assets/myolegs_chain.xml` (r/l symmetric):
+
+| joint | declared range | literature edge | gap |
+|---|---|---|---|
+| `subtalar_angle` | ±20.0° | ±9° | **11.0° each end** |
+| `hip_rotation` | ±40.0° | ±8° | **32.0° each end** (wide — falsifier 3 watches this one) |
+| `hip_adduction` | +30.0° / −50.0° | +9° / −5° | **21.0° / 45.0°** (which end is adduction is an axis-convention question — the build confirms it against `_derive_side`, not this table) |
+| `mtp_angle` | ±30.0° | 65° dorsiflexion | **NONE — REFUSED, and the refusal is a finding** |
+
+**The MTP refusal, stated plainly.** The published gait envelope needs ~60–65°
+of MTP dorsiflexion at push-off; the model's declared stop is ±30°. The
+literature edge falls OUTSIDE the model's declared range — the exact mirror of
+the refusal the membrane named ("edge inside the range, no gap"). The
+construction cannot run: a ligament derived as `gap = |limit − edge|` would
+engage PAST the stop the physics already enforces. What the port contract
+measured (`mtp_angle_l 1.10×` over stop) is therefore not missing tissue — it
+is THE MODEL'S STOP CONTRADICTING PUBLISHED GAIT. The fix is a model-range
+amendment (widen the MTP range toward the measured 65–110° passive band,
+THEN derive the ligament across the new gap), which is a different membrane
+touching the model itself, and is queued as such. Rule 20: not patched here.
