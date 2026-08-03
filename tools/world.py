@@ -268,11 +268,47 @@ def _tissue_xml(xml_path, emit) -> "Path":
     return dst
 
 
-def load_body(xml_path, mujoco=None, tissue=True, verbose=False):
+def _pivot_xml(xml_path, body, anchor) -> "Path":
+    """Write the body + one `<connect>` equality as a sibling file: a BALL JOINT TO THE WORLD.
+
+    A pendulum needs its pivot INSIDE the solver. A kinematic pin (restoring qpos each step)
+    only projects the position afterwards -- the constraint force that turns gravity into
+    torque about the pivot never enters the dynamics, and the "pendulum" reads 0.42 rad/s of
+    brace sway against a 2.76 prediction. The connect equality makes the solver supply that
+    force. `anchor` is in the body's LOCAL frame; the world-side point is wherever that point
+    sits at qpos0, which is exactly where a pivot belongs.
+    """
+    import hashlib
+    import os
+
+    src = Path(xml_path)
+    block = ("  <!-- PIVOT. A ball joint to the world for the inverted-pendulum measurement;\n"
+             "       injected by tools/world.py -- do not edit the file, edit the call. -->\n"
+             "  <equality>\n"
+             f'    <connect body1="{body}" body2="world" '
+             f'anchor="{anchor[0]:.6f} {anchor[1]:.6f} {anchor[2]:.6f}"/>\n'
+             "  </equality>\n")
+    text = src.read_text(encoding="utf8")
+    i = text.rfind("</mujoco>")
+    if i < 0:
+        raise WorldUnknown(f"{src} has no </mujoco> to insert a pivot before")
+    out = text[:i] + block + text[i:]
+    dst = src.with_name(f"_pivot_{hashlib.sha1(out.encode('utf8')).hexdigest()[:8]}.xml")
+    if not dst.exists():
+        tmp = dst.with_suffix(f".tmp{os.getpid()}")
+        tmp.write_text(out, encoding="utf8")
+        os.replace(tmp, dst)
+    return dst
+
+
+def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
     """Load an MJCF and put it in this world, with its passive tissue. Returns `(model, g)`.
 
     Prints what it changed, because a silent world change is how the original defect survived:
     nothing in the logs ever said which gravity a run had used, so nothing could contradict it.
+
+    `pivot=(body_name, anchor_local)` injects a ball-joint-to-the-world equality constraint at
+    that point on that body -- the inverted-pendulum instrument. See `_pivot_xml`.
     """
     if mujoco is None:
         import mujoco  # local import: this module is useful without it (see `gravity()`)
@@ -291,7 +327,8 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False):
     if tissue:
         emit, refused = derive_ligaments(m, mujoco)
         if emit:
-            m = mujoco.MjModel.from_xml_path(str(_tissue_xml(xml_path, emit)))
+            xml_path = _tissue_xml(xml_path, emit)
+            m = mujoco.MjModel.from_xml_path(str(xml_path))
             if verbose:
                 for e in emit:
                     import math
@@ -299,6 +336,10 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False):
                           f"{math.degrees(e['gap']):5.2f} deg = {e['k']:9.1f} N.m/rad")
                 for jn, side, why in refused:
                     print(f"[tissue] REFUSED {jn}/{side}: {why}")
+    if pivot is not None:
+        xml_path = _pivot_xml(xml_path, pivot[0], pivot[1])
+        m = mujoco.MjModel.from_xml_path(str(xml_path))
+        print(f"[world] pivot: ball joint to world at {pivot[0]} {pivot[1]}")
     # SEATED AFTER THE TISSUE RELOAD, and the order is load-bearing. It ran BEFORE first:
     # it clamped key_qpos on the model that the tissue reload then THREW AWAY, and printed
     # a confident 'seated 1' while changing nothing -- the plantar sensor read back

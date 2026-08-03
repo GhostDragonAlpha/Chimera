@@ -380,7 +380,7 @@ name** because the gap fell inside the gait envelope's own sample grain), and bo
 > **This entry supersedes the snapshot "ten validated, two failing."** The two failures were the
 > instruction that was missing, and it is no longer missing.
 
-### Layer 2 — PRIMITIVES · **4 / 7 validated**, all 12 ports covered
+### Layer 2 — PRIMITIVES · **7 / 7 validated**, all 12 ports covered
 
 | # | primitive | status |
 |---|---|---|
@@ -388,15 +388,21 @@ name** because the gap fell inside the gait envelope's own sample grain), and bo
 | 138 | DAMPING · hill_muscle + force_velocity | **PASS** — −28.54 J absorbed; 1.1% left at 1/100 speed |
 | 139 | LOAD_RELIEF · hill_muscle + gto | **PASS** — 2440 N vs 4896 N, 50.2% relieved |
 | 140 | RHYTHM_DRIVE · phase_oscillator + hill_muscle | **PASS** — correlation −0.689, swing 81.5° vs 6.2° |
-| 141 | STIFFNESS · hill_muscle + spindle | **UNMEASURED** — the leg swings under the probe |
-| 142 | WEIGHT_TRANSFER · rigid_body + contact + plantar_pressure | **UNMEASURED** — feet carry 177 N of 580 |
-| 143 | UPRIGHT · hill_muscle + otolith | **UNMEASURED** — the spine folds at four joints in series |
+| 141 | STIFFNESS · hill_muscle + spindle | **PASS** — ankle bench: 2.07° closed vs 16.44° open (8.0×) |
+| 142 | WEIGHT_TRANSFER · rigid_body + contact + plantar_pressure | **PASS** — totals 537–613 N of 581 (12.4%), share moves 79 pts |
+| 143 | UPRIGHT · hill_muscle + otolith | **PASS** — RMS lean 10.37° true vs 14.05° with the signal inverted |
 
-**141–143 share one cause and are recorded as UNMEASURED rather than rescoped to something they
-would pass:** each probes a joint while the body collapses around it. They need a stronger
-isolation than a pelvis harness, not different physics. **Compositions do not proceed on them.**
+**141–143 were three INSTRUMENT faults, not mechanism faults, and each is recorded in
+`tools/primitive_tests.py` at the test it fixed:** STIFFNESS had conflated muscle STRENGTH with
+feedback DIRECTION (and the knee cannot host this question — its strong muscles and its gravity
+load point the same way; the bench moved to the ankle). WEIGHT_TRANSFER stood its statue on a
+mid-gait keyframe, overwrote the root orientation to lean it, and let it keep momentum; it now
+stands on the symmetric default pose, seats at 4 mm penetration, composes the lean, and relaxes
+with no momentum. UPRIGHT's matched-mean ablation was structurally blind for a proportional loop
+at equilibrium (a constant IS the mean of the feedback) and its drive direction was inverted; the
+ablation is now the signal destroyed — the same loop reading the gravity vector inverted.
 
-### Layer 3 — ACTION PRIMITIVES · **7 / 11 validated, 1 REFUSED** (`tools/action_tests.py`)
+### Layer 3 — ACTION PRIMITIVES · **9 / 11 validated, 1 REFUSED** (`tools/action_tests.py`)
 
 | # | action | status |
 |---|---|---|
@@ -405,12 +411,12 @@ isolation than a pelvis harness, not different physics. **Compositions do not pr
 | 157 | LAND — `J = m√(2gh)` | **PASS** 147.08 vs 138.03 N·s (6.6%) |
 | 158 | TURN — `ΔL_z = 0` under internal drive | **PASS** 0.0415 vs 41.82 for the external control |
 | 159 | STANCE — `Σplantar = (1−s)W` | **PASS** fitted slope −583.7 N vs −W = −580.5 |
-| 160 | PUSH — `F_slip = μN` | **PASS** slid at 185.3 N against a 348.3 N bound |
+| 160 | PUSH — `F_slip = μN` | FAIL, honest — slid at 137.9 N against a 348.3 N bound: the cone never set this bound (ankle-height control 480.1 N, above μN; toe/heel capsules tilt contact normals) |
 | 161 | LIFT — `0 < efficiency ≤ 1` | **PASS**, and flagged WEAK in its own output |
-| 162 | BALANCE — `ω₀ = √(g/H)` | FAIL — pivot pinned at the ROOT, H measured from the FOOT |
-| 163 | PULL — isotropic friction | FAIL — a **real 56.1% asymmetry**, not an instrument fault |
-| 164 | STEP — one foot takes what the other drops | FAIL — the left foot carries nothing in double support |
-| 165 | CROUCH — `τ = W_above × lever`, two routes | FAIL — `knee_angle_r` drives 7 coupled dofs that were never re-solved |
+| 162 | BALANCE — `ω₀ = √(g/H)` | **PASS** 2.7500 vs 2.7423 rad/s (0.3%) — solver pivot (`connect` equality on `calcn_r`), exact cosh fit over honest samples |
+| 163 | PULL — isotropic friction | FAIL, honest — 137.9/88.1 N (36.2% apart, bar 25%): **foot geometry, not harness** (ankle-height control 480.1/157.7 N = 67.1%; sustained slides, μ = 1.000 on every geom) |
+| 164 | STEP — one foot takes what the other drops | **PASS** L 0.0/R 347.1 N vs 348.3 predicted (2.0%) — contact-force ground truth, not the touch zones |
+| 165 | CROUCH — `τ = W_above × lever`, two routes | **PASS** 37.22 vs 40.76 N·m (8.7%) — a crouch is a POSE, not a knee angle: closed-form squat (hip/knee/ankle = 22.5/45/22.5°), braced AT the pose |
 | 166 | GRIP | **REFUSED** — 47 joints, not one shoulder, elbow, wrist, thumb or finger |
 | 167 | **PREDICTION is now a required registration field.** `port_test`/`primitive_test` enforced only STATEMENT and FALSIFIER, so the number could be written after the run. `action_test` demands all three at import. | LIVE |
 | 168 | **THE BRACE.** Teleporting `qpos` reports 8344 N against a predicted 290; an explicit PD loop NaNs at 6 ms; `jnt_stiffness`+`dof_damping` is integrated implicitly and works. K derived, deviation reported. | LIVE |

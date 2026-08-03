@@ -119,7 +119,7 @@ your physics predicts.
 
 ## 1. The formula. Everything else is commentary.
 
-> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
+> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video game experience
 
 **A product, not a sum.** Any factor at zero takes the whole result to zero and the other two cannot
 compensate.

@@ -19,7 +19,7 @@
 > · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
-> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video experience
+> # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video game experience
 >
 > **A product, not a sum.** Any factor at zero takes the whole result to zero, and no amount of the
 > other two makes up for it.

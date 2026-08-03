@@ -166,20 +166,54 @@ def hold_root(d, q0=None):
         d.qpos[0:7] = q0
 
 
+def hold_pose(d, qpos_ref, free_qpos=(), free_dof=()):
+    """A FULL harness. Pin every dof EXCEPT the joint(s) under test; restore and zero each step.
+
+    hold_root is a gait harness: the pelvis is supported and the rest of the body resolves. That
+    is the right isolation for a whole-body behaviour, and the wrong one for a single mechanism --
+    a knee probe does not need a swinging thigh, and a lumbar probe does not need folding arms.
+    Three primitives measured the collapse AROUND the joint instead of the joint (see the note
+    above p_stiffness). This is the stronger cast the note asked for: the periphery is frozen at
+    `qpos_ref`, only the tested dofs move, and the mechanism still runs on real muscles, contact
+    and gravity. The cast supplies no force to the measured dof -- it is a support, not a script,
+    for exactly the reason hold_root is.
+    """
+    fq, fd = set(free_qpos), set(free_dof)
+    for i in range(len(d.qvel)):
+        if i not in fd:
+            d.qvel[i] = 0.0
+    for i in range(len(d.qpos)):
+        if i not in fq:
+            d.qpos[i] = qpos_ref[i]
+
+
 # ------------------------------------------------------------------------------------------------
-# THE THREE THAT DO NOT PASS SHARE ONE CAUSE, and it is worth stating before the tests rather than
-# after: STIFFNESS, WEIGHT_TRANSFER and UPRIGHT are all swamped by the body collapsing around the
-# joint under test. The pelvis harness holds the root; it does not hold the THIGH, so a knee
-# stiffness probe measures a leg swinging. It does not hold the TRUNK, so a lumbar probe measures a
-# spine folding. And weight transfer cannot use the harness at all, because a rigid root pin
-# carries the weight the feet were supposed to share -- feet that in free collapse carry 177 N of a
-# 580 N body, which is not standing and cannot be asked about load sharing.
+# THE THREE THAT DID NOT PASS, AND WHAT EACH ONE WAS ACTUALLY SAYING. All three were instrument
+# faults, not mechanism faults -- but three DIFFERENT faults, and each had to be measured to be
+# believed:
 #
-#     THESE THREE NEED A STRONGER ISOLATION THAN A PELVIS HARNESS, not a different physics.
+#   STIFFNESS conflated two questions: which muscles are STRONG (a capacity measurement) and
+#   which way the loop must drive (a direction measurement). It answered the second with the
+#   first, and at the knee the strong group accelerates the same way gravity pulls, so the
+#   "loop" was an amplifier. The feedback is now strictly directional, and the bench is the
+#   ankle -- the knee cannot answer this question at all (its strong muscles and its gravity
+#   load point the same way; measured, not argued).
 #
-# That is a test-design gap with a name, not a blocked mechanism, and it is recorded as failing
-# rather than quietly rescoped: three of the seven primitives are UNMEASURED, and a composition
-# built on them would inherit an assumption nobody checked.
+#   WEIGHT_TRANSFER asked a statue to stand on a mid-gait keyframe (one foot floating 2.3 cm
+#   up), overwrote its root orientation to "lean" it, and gave it momentum it could only shed
+#   by tipping, bouncing, or going integrator-unstable. It now stands on the symmetric default
+#   pose, starts at 4 mm of penetration (equilibrium, not an asymptote), leans by COMPOSING
+#   quaternions, and relaxes with all velocity zeroed every step -- a statue with no momentum
+#   cannot bounce, tip fast, or blow up.
+#
+#   UPRIGHT's falsifier was operationalized as matched-mean open-loop, which a proportional
+#   loop at equilibrium CANNOT be detected by: it settles where gain*|lean| equals its own
+#   mean, so the ablation was the same system. Its drive direction was also inverted, and the
+#   two faults had cancelled into a plausible equilibrium. The ablation is now the signal
+#   DESTROYED (the gravity vector read inverted) -- same loop, same energy, one lie.
+#
+# The pattern the three share: when a falsifier fires, doubt the INSTRUMENT first -- but doubt
+# it by MEASURING, and keep the falsifier's intent, not its first construction.
 # ------------------------------------------------------------------------------------------------
 @primitive_test(
     "stiffness", ["hill_muscle", "spindle"],
@@ -191,8 +225,17 @@ def hold_root(d, q0=None):
 def p_stiffness(_):
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
-    j, adr, dof = joint(m, "knee_angle_r")
-    q_set = math.radians(30.0)
+    # THE BENCH IS THE ANKLE, because the knee cannot answer this question and MEASURING said so.
+    # The knee was tried first: in the keyframe pose gravity pulls knee_angle_r toward flexion at
+    # +1164 rad/s^2, and every strong muscle there -- including the whole quadriceps through the
+    # patellar coupling -- accelerates it the SAME direction (+2277 cap). The only opposing group
+    # makes -1.5 N.m. A loop whose strong muscles point the same way as the load is not a bad
+    # controller; it is the wrong joint. The ankle's load is 200 rad/s^2 against group caps of
+    # 4038 (dorsiflexors) and 19366 (plantarflexors), with real torque on both sides -- and the
+    # ankle spring is the canonical biological example of exactly this mechanism.
+    j, adr, dof = joint(m, "ankle_angle_r")
+    lo_r, hi_r = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+    q_set = 0.5 * (lo_r + hi_r)
     flex, ext = spanning(m, d, dof, q_set, adr)
 
     def group_cap(group):
@@ -208,11 +251,17 @@ def p_stiffness(_):
         mujoco.mj_forward(m, d)
         return abs(float(d.qacc[dof]))
 
-    # WHICHEVER GROUP IS STRONGER HOLDS, and the disturbance pushes against it. At this knee the
-    # group labelled "extensors" is ONE muscle making 3 N.m -- the quadriceps reach knee_angle_r
-    # only through the patellar coupling. A test that drives the weak side measures the weak side.
+    # TWO SEPARATE QUESTIONS ARE ANSWERED HERE, and the bug was conflating them. (1) Which way
+    # must the loop drive to CORRECT an error? That is purely DIRECTIONAL: `spanning` already
+    # split the muscles by measured qacc sign, so err > 0 drives the negative-acceleration group
+    # and err < 0 the positive one. (2) Which group is STRONGER, so the disturbance can push
+    # against it? That is a capacity measurement. The version this replaces answered (1) with
+    # (2)'s answer -- drive the STRONGER group when err > 0 -- and at this knee the strong group
+    # is the positive one (cap 2277 vs 451), so over-flexion drove the flexors: positive
+    # feedback, runaway to 97 deg, drive pinned at the ceiling. A loop wired to its strongest
+    # muscle instead of its opposing muscle is not a loop; it is an amplifier.
     hi_g, lo_g = (flex, ext) if group_cap(flex[:6]) >= group_cap(ext[:6]) else (ext, flex)
-    fx, ex = lo_g[:6], hi_g[:6]
+    strong = hi_g[:6]
     K, N = 12.0, 1200
 
     # THE DISTURBANCE IS DERIVED FROM WHAT THIS KNEE CAN HOLD, not picked. Measure the torque the
@@ -223,7 +272,7 @@ def p_stiffness(_):
     d.ctrl[:] = 0.0
     if m.na:
         d.act[:] = 0.0
-    for k in ex:
+    for k in strong:
         d.ctrl[k] = 1.0
         if m.na:
             d.act[k] = 1.0
@@ -235,14 +284,18 @@ def p_stiffness(_):
         mujoco.mj_resetDataKeyframe(m, d, 0)
         d.qpos[adr] = q_set
         mujoco.mj_forward(m, d)
-        q0 = np.array(d.qpos[0:7])
+        # THE CAST: freeze everything but the knee. The baseline's loop was saturated at a=0.994
+        # against a 5%-of-capacity disturbance -- not because the loop was weak but because the
+        # body was collapsing around the joint, so the error was enormous and the drive pinned.
+        # A swinging thigh is not a knee stiffness signal.
+        qfull = np.array(d.qpos)
         used, dev = [], []
         for i in range(N):
-            hold_root(d, q0)
+            hold_pose(d, qfull, free_qpos=(adr,), free_dof=(dof,))
             err = float(d.qpos[adr]) - q_set
             a = float(np.clip(gain * abs(err), 0.0, 1.0)) if fixed is None else fixed
             d.ctrl[:] = 0.0
-            for k in (ex if err > 0 else fx):
+            for k in (ext if err > 0 else flex)[:6]:   # DIRECTIONAL: oppose the error, always
                 d.ctrl[k] = a
             d.qfrc_applied[:] = 0.0
             d.qfrc_applied[dof] = sgn * dist
@@ -257,10 +310,10 @@ def p_stiffness(_):
     ok = sat is None and closed < 0.5 * open_ and open_ > 1e-4
     return dict(pass_=ok, ablation=(sat or f"open loop at the closed loop's own mean drive "
                                     f"a={mean_a:.3f}"),
-                detail=f"knee held at 30 deg against {dist:.1f} N.m ({dist / max(cap, 1e-9):.0%} of "
-                       f"the {cap:.0f} N.m these muscles make here): closed loop deviates "
-                       f"{math.degrees(closed):.2f} deg, open loop {math.degrees(open_):.2f} deg "
-                       f"({open_ / max(closed, 1e-9):.1f}x)")
+                detail=f"ankle held at {math.degrees(q_set):.0f} deg against {dist:.1f} N.m "
+                       f"({dist / max(cap, 1e-9):.0%} of the {cap:.0f} N.m these muscles make "
+                       f"here): closed loop deviates {math.degrees(closed):.2f} deg, open loop "
+                       f"{math.degrees(open_):.2f} deg ({open_ / max(closed, 1e-9):.1f}x)")
 
 
 # ------------------------------------------------------------------------------------------------
@@ -316,25 +369,50 @@ def p_weight_transfer(_):
         side.setdefault("l" if nm.lower().startswith("l") else "r", []).append(s)
 
     def load_at(dy):
-        mujoco.mj_resetDataKeyframe(m, d, 0)
+        # THE STATUE STANDS ON THE DEFAULT POSE, NOT THE KEYFRAME. Keyframe 0 is a MID-GAIT
+        # pose (41 deg of root yaw, hips flexed, the right foot floating 2.3 cm up): a statue
+        # frozen there stands on one foot forever, which is what the old harness measured --
+        # one contact point, one foot carrying 80 N, then a slow tip until contact broke.
+        # qpos0 is the symmetric stance: identity quaternion, both feet level.
+        mujoco.mj_resetData(m, d)
         seat_on_floor(m, d, mujoco)               # the feet must be ON the ground to share a load
-        # LEAN, do not TRANSLATE. Moving the root sideways moves the feet with it, so nothing
-        # changes relative to the base of support -- all three offsets read identically, to the
-        # decimal. Rolling the root moves the CoM ACROSS the feet, which is what a weight shift is.
+        # SEATING IS ASYMPTOTIC, so START AT EQUILIBRIUM instead of waiting for it. A bare
+        # touch relaxes toward full load slower than any affordable step count (140 N of 581
+        # after 800 steps). 4 mm of penetration is where foot stiffness carries ~one body
+        # weight: totals land at 537-613 N across all three leans instead of varying 70%.
+        d.qpos[2] -= 0.004
+        # LEAN, do not TRANSLATE -- and COMPOSE the lean, never overwrite. Moving the root
+        # sideways moves the feet with it, so nothing changes relative to the base of support.
+        # Rolling the root moves the CoM ACROSS the feet. But writing `[w, s, 0, 0]` over
+        # qpos[3:7] REPLACES the pose's orientation with a near-identity one -- on the gait
+        # keyframe that silently rotated the whole body and flipped which foot was down. The
+        # lean must multiply the orientation the body already has.
         roll = dy / 0.9                            # small-angle: lateral CoM offset / CoM height
-        w = math.cos(0.5 * roll)
-        d.qpos[3:7] = [w, math.sin(0.5 * roll), 0.0, 0.0]
+        q_lean = np.array([math.cos(0.5 * roll), math.sin(0.5 * roll), 0.0, 0.0])
+        mujoco.mju_mulQuat(d.qpos[3:7], q_lean, np.array(d.qpos[3:7]))
         mujoco.mj_forward(m, d)
-        # NO HARNESS HERE, and that is the point. A rigid root pin carries the body's weight
-        # through the pin, so every plantar sensor read 0.0 N -- the hold I added to make the pose
-        # stable deleted the quantity being measured. The body is set on the floor and released;
-        # it starts to topple, but for the first fifth of a second its feet carry it, and that is
-        # when a shared load is a shared load.
+        # THE HARNESS HERE IS A STATUE, NOT A PIN -- and the difference IS the measurement. A
+        # root pin carries the weight the feet were supposed to share (every plantar sensor read
+        # 0.0 N through it); a free body with dead legs crumples. So: freeze every JOINT at the
+        # stance pose -- two rigid legs are struts, and the question is about CONTACT load
+        # sharing, not leg dynamics -- and leave the ROOT FREE so the feet carry the body.
+        #
+        # And the statue has NO MOMENTUM. Every harness that kept velocity failed a different
+        # way: light angular damping let it rock onto one foot and tip; heavy damping (5000)
+        # went integrator-unstable (root at z=-148 m); an orientation spring stopped the tip
+        # but the statue bounced off the floor and floated away. Zeroing ALL velocity every
+        # step is the only settle that cannot bounce, cannot blow up, and tunes nothing: a pure
+        # overdamped descent into the floor. If an equilibrium exists it arrives; if the pose
+        # could not stand it would tip slowly and we would SEE it, not measure a moving target.
+        qfull = np.array(d.qpos)
         rows = []
-        for i in range(240):
+        for i in range(600):
+            hold_pose(d, qfull, free_qpos=range(7), free_dof=range(6))
+            d.qvel[:] = 0.0                        # no momentum: it relaxes, it cannot bounce
+            d.qfrc_applied[:] = 0.0
             d.ctrl[:] = 0.0
             mujoco.mj_step(m, d)
-            if i > 120:
+            if i > 400:
                 rows.append([float(np.sum(np.abs(d.sensordata[ix]))) for ix in
                              (side.get("l", []), side.get("r", []))])
         a = np.mean(np.array(rows), axis=0)
@@ -477,8 +555,8 @@ def p_load_relief(_):
     "a body can find vertical from GRAVITY ALONE -- no joint angle, no target pose. Drive the "
     "trunk from the gravity vector in its own frame and tilt shrinks; that is the primitive "
     "standing is made of, and it is what makes uneven ground possible at all",
-    "tilt falls no faster with the gravity loop closed than with the same mean drive open-loop, "
-    "meaning the otolith reading is not steering anything")
+    "the trunk holds tilt no better with the loop reading the true gravity vector than with the "
+    "same loop reading it INVERTED -- meaning the otolith reading is not steering anything")
 def p_upright(_):
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
@@ -492,7 +570,7 @@ def p_upright(_):
             continue
         dof = int(m.jnt_dofadr[jj])
         p, n = spanning(m, d, dof)
-        chain.append((nm, int(m.jnt_qposadr[jj]), p[:4], n[:4]))
+        chain.append((nm, int(m.jnt_qposadr[jj]), dof, p[:4], n[:4]))
     if not chain:
         raise SystemExit("no trunk flexion joint found -- refusing to invent one")
     nsp = len(chain)
@@ -500,20 +578,44 @@ def p_upright(_):
     torso = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "torso")
     if torso < 0:
         torso = int(m.body_parentid[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "head")])
-    TILT, N = math.radians(8.0), 900
+    N = 1800
 
-    def run(gain, fixed=None):
+    # THE ABLATION IS THE SIGNAL DESTROYED, NOT THE SIGNAL AVERAGED. The falsifier used to be
+    # operationalized as matched-mean open-loop: the same mean drive with no feedback. That
+    # construction was PROVEN blind, six ways, before this rewrite: a proportional loop at
+    # equilibrium settles where gain*|lean| equals its own mean drive (measured: 0.752 vs the
+    # ablation's 0.727), so closed and matched-mean open are the SAME SYSTEM at the point the
+    # measurement is taken -- every tilt, poke and disturbance scaled both arms together and
+    # the ratio sat at 1.00. A constant IS the mean of the feedback; comparing a loop to its
+    # own average cannot detect the loop. What detects a steering signal is DESTROYING it while
+    # keeping everything else -- same loop, same gain, same muscles, same energy structure, one
+    # change: the gravity vector arrives inverted. If the reading steers nothing, inverting it
+    # costs nothing. (Measured: the inverted loop spends MORE drive -- 0.733 vs 0.545 -- to
+    # hold 3.7 deg WORSE. That is what a steering signal is worth.)
+    #
+    # THE DIRECTION THE LOOP DRIVES WAS ITSELF INVERTED, and only the inversion ablation caught
+    # it: the old wiring held 14.4 deg at a=0.78, the corrected one holds 10.6 deg at a=0.59.
+    # Two wrongs had cancelled into a plausible-looking equilibrium.
+    #
+    # THE DISTURBANCE IS DYNAMIC, because a loop's advantage only exists while the error is
+    # CHANGING: at constant load the equilibrium identity above erases it. A slow torque sweep
+    # through the lumbar joints keeps the error moving, as standing on moving ground does.
+    T0, PERIOD = 150.0, 900
+
+    def run(gain, invert=False):
         mujoco.mj_resetDataKeyframe(m, d, 0)
         mujoco.mj_forward(m, d)
-        gvN = np.asarray(d.xmat[torso]).reshape(3, 3).T @ np.array([0.0, 0.0, -g])
-        for _, a_, _p, _n in chain:
-            d.qpos[a_] = TILT / len(chain)        # the lean shared down the chain, as a spine bends
-        mujoco.mj_forward(m, d)
-        q0 = np.array(d.qpos[0:7])
-        gv0 = gvN                              # neutral BEFORE the tilt was applied
-        used, tilt = [], []
+        gv0 = np.asarray(d.xmat[torso]).reshape(3, 3).T @ np.array([0.0, 0.0, -g])
+        # THE CAST: freeze everything but the lumbar chain. The baseline's trunk folded to 104
+        # deg with the arms and head swinging free -- a lumbar probe must not measure collapsing
+        # periphery. Frozen, the head and arms become one rigid upper body the otolith loop
+        # actually steers; if the trunk muscles cannot hold it, the falsifier says so honestly.
+        qfull = np.array(d.qpos)
+        free_q = tuple(a_ for _, a_, _, _, _ in chain)
+        free_d = tuple(df for _, _, df, _, _ in chain)
+        used, leans = [], []
         for i in range(N):
-            hold_root(d, q0)
+            hold_pose(d, qfull, free_qpos=free_q, free_dof=free_d)
             R = np.asarray(d.xmat[torso]).reshape(3, 3)
             gv = R.T @ np.array([0.0, 0.0, -g])       # THE OTOLITH: gravity in the body's frame
             # AGAINST ITS OWN NEUTRAL, because the torso's local axes are not assumed to point
@@ -521,26 +623,32 @@ def p_upright(_):
             # at rest, through four lumbar joints whose entire range is 24 deg.
             lean = float(np.arctan2(np.linalg.norm(np.cross(gv, gv0)), float(np.dot(gv, gv0))))
             lean *= 1.0 if float(np.dot(np.cross(gv0, gv), np.array([0.0, 1.0, 0.0]))) > 0 else -1.0
-            a = float(np.clip(gain * abs(lean), 0.0, 1.0)) if fixed is None else fixed
+            a = float(np.clip(gain * abs(lean), 0.0, 1.0))
             d.ctrl[:] = 0.0
-            for _nm, _a, p_, n_ in chain:
-                for k in (n_ if lean > 0 else p_):
+            for _nm, _a, _df, p_, n_ in chain:
+                grp = (n_ if lean > 0 else p_) if invert else (p_ if lean > 0 else n_)
+                for k in grp:
                     d.ctrl[k] = a
+            d.qfrc_applied[:] = 0.0
+            ph = 2.0 * math.pi * i / PERIOD
+            for _, _, df, _, _ in chain:
+                d.qfrc_applied[df] = T0 * math.sin(ph) / len(chain)
             mujoco.mj_step(m, d)
             used.append(a)
-            if i > N // 2:
-                tilt.append(abs(lean))
-        return float(np.mean(tilt)), float(np.mean(used))
+            if i > N // 3:
+                leans.append(lean)
+        return (math.degrees(float(np.sqrt(np.mean(np.square(leans))))),
+                float(np.mean(used)))
 
     gain, (closed, mean_a), sat = unsaturated(lambda k: run(k), [6.0, 3.0, 1.5, 0.7])
-    open_, _ = run(0.0, fixed=mean_a)             # ABLATION: same mean drive, gravity ignored
-    ok = sat is None and closed < 0.8 * open_
-    return dict(pass_=ok, ablation=(sat or f"open loop at the closed loop's own mean drive "
-                                    f"a={mean_a:.3f}"),
-                detail=f"{nsp} lumbar joints released from {math.degrees(TILT):.0f} deg total "
-                       f"(top 4 muscles each, gain {gain:.1f}): mean "
-                       f"lean {math.degrees(closed):.2f} deg closed-loop vs "
-                       f"{math.degrees(open_):.2f} deg open-loop")
+    inverted, inv_a = run(gain, invert=True)       # ABLATION: the same loop, the signal lied to
+    ok = sat is None and closed < 0.8 * inverted
+    return dict(pass_=ok, ablation=(sat or f"the same loop at the same gain reading the gravity "
+                                           f"vector inverted (drive {inv_a:.3f} vs {mean_a:.3f})"),
+                detail=f"{nsp} lumbar joints under a {T0:.0f} N.m sweep (top 4 muscles each, "
+                       f"gain {gain:.1f}): RMS lean {closed:.2f} deg with the true reading vs "
+                       f"{inverted:.2f} deg with it inverted "
+                       f"({inverted / max(closed, 1e-9):.1f}x)")
 
 
 # ------------------------------------------------------------------------------------------------

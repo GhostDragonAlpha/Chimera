@@ -20,6 +20,8 @@
 <!-- CHIMERA-LAW -->
 
 > **This file POINTS. It does not duplicate.** Rewritten 2026-07-16, from 408 lines.
+> Amended 2026-08-03 (operator delegation): the retired task-board session shape removed —
+> one contradiction, found the way this file predicted, fixed by pointing.
 >
 > It used to carry its own copy of The Contract, the Feature Ledger, the project
 > structure, and the pipeline — all of which `CLAUDE.md` also carried. Three copies of a
@@ -39,45 +41,38 @@
 
 ## READ THESE, IN THIS ORDER
 
-**New agent? Paste `ChimeraEngine/ONBOARDING.md` into your session.** It gets you into the rhythm: you are the PHYSICS (you own rendering + the workflow), the HUMAN side is the operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a term, aligned). You build THROUGH the engine.
+**New agent? Paste `ChimeraEngine/ONBOARDING.md` into your session.** It is the single
+onboarding: you are the PHYSICS (you own rendering + the workflow), the HUMAN side is the
+operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a term, aligned).
+You build THROUGH the engine.
 
-| # | Doc | What it OWNS |
-|---|---|---|
-| 1 | **`CLAUDE.md`** | **THE CONSTITUTION.** The Contract, the gates, Key Paths, conventions, troubleshooting, the full operational infrastructure (task board, sleepwalker, trainer, automation). If a rule is anywhere, it is here. **Read this first every session.** |
-| 2 | **`SUCCESSOR_RUNBOOK.md`** | **RECIPES, not principles.** Copy-paste exactly. Read this instead of improvising if you are a less capable model or unsure. |
-| 3 | **`WORKFLOW.md`** | **THE FOUNDRY — the dialectical design engine.** The 7-gate internal council, question categories, DESIGN→BUILD cycle, MCP construction. This is HOW you design a feature from scratch when the helm says "build toward the seed." It operates WITHIN the infrastructure described by CLAUDE.md. |
-| 5 | **`docs/FARMING_SEASONS.md`** | **THE FARM.** Spring (design) → Summer (build) → Fall (verify) → Winter (reflect). Discrete, repeatable batch processes. Any agent can run any batch. |
+Then the reading list `CLAUDE.md` owns — `docs/THE_LAW.md` → `docs/THE_WORKFLOW.md` →
+`docs/THE_COMPILER.md` → `docs/THE_PIECES.md` → `story/README.md` — then `CLAUDE.md` itself
+for Key Paths, hardware traps, and conventions. **The rule index is `docs/THE_LAW.md`'s
+last section** — every rule, one line, with its enforcer and its canonical home.
 
-**The live state is in none of them.** It is printed by code that reads the actual store:
+> **Retired (2026-07-23): the Unreal Engine pipeline and its task-board session shape.**
+> `SUCCESSOR_RUNBOOK.md`, `docs/FARMING_SEASONS.md`, `task_progress.md`, and the
+> `core.preflight` / `core.task_board` / `core.postflight` / `core.circadian` loop that used
+> to be prescribed here were removed from this file 2026-08-03. The modules still exist
+> under `Chimera/core/`, and the GATES (research, witness, why, training) remain live
+> machinery cited by `Chimera/docs/THE_FORMULA.md` — but the session is no longer entered
+> through them. `WORKFLOW.md` (the foundry) no longer exists; `docs/THE_WORKFLOW.md` is the
+> method.
 
-```powershell
-cd E:\PythonChimera\Chimera
-python -m core.preflight          # graph health, GPA, board, Will, pains — opens with CAPCOM
-python -m core.capcom brief       # the operator channel: unread signals. Reply: capcom tell "..."
-python -m core.helm targets       # the ranked seed-vs-reality gap: what to build NEXT
+## THE SESSION
+
+The day is `docs/THE_WORKFLOW.md`'s loop: **ORIENT → NEXT → PROVE(X) → CHECK → COMMIT**.
+The live state is printed by code that reads the actual store:
+
+```bash
+python story/grow.py --read --depth 2    # the tree as it stands
+python story/timeline.py                 # containment vs chronology
+python tools/methodology_gate.py         # every membrane against the workflow
 ```
 
----
-
-## THE SESSION, IN FOUR LINES
-
-```powershell
-python -m core.circadian tick --run                     # runs the night IFF due; else a no-op
-python -m core.preflight                                # DAWN
-python -m core.task_board claim --agent <your-id>       # THE single entry. Prints your work packet.
-# ... do the ONE thing it gave you, inside the footprint it declared ...
-python -m core.task_board done --agent <id> --id tb-N --result "<verbatim evidence>"
-python -m core.postflight --phase "..." --result "<UBT verbatim>" --researched "..."
-# Update task_progress.md with session block + NEXT list before committing
-```
-
-`task_board done` and `postflight` both REFUSE things. **That is the system working, not
-breaking.** What each refusal wants is in `CLAUDE.md`; what to DO about it is in
-`SUCCESSOR_RUNBOOK.md`.
-
-**The handoff log is `task_progress.md`** — always read it after preflight and write your
-session block + NEXT list before committing. The NEXT list invariant: exact commands or a
-named feature node + skip-condition per item. An item without a recipe is a wish.
+Through the engine (MCP — `ChimeraEngine/MCP_ENGINE.md`): `orient` first, every time;
+`next` hands you the term — you do not pick it.
 
 ---
 
@@ -99,27 +94,22 @@ Agent(subagent_type: "mode-research", prompt: "Research: <your query here>")
 It queries the DNA graph first (`g.query("pathway", ...)`, `g.query("feature", ...)`) and
 stops if the answer already exists. Mode definition: `.roo/modes/research-agent.md`.
 
-**Research is not optional and postflight enforces it** (`core/research_gate.py`): cite
-`--researched "<sources>"` or record a reasoned `--research-waiver`. It covers
-TECHNICAL/INFRASTRUCTURE decisions, not just game assets. **A "Build toward the seed"
-task cannot waive it at all** — that task's premise is that the thing does NOT exist, so
-nothing in this repo can supply the answer, which is exactly why the task exists.
+**Research is not optional** — it is an S4 enforcer (`Chimera/docs/THE_FORMULA.md`;
+`Chimera/core/research_gate.py`). It covers TECHNICAL/INFRASTRUCTURE decisions, not just
+game assets. **A "Build toward the seed" task cannot waive it at all** — that task's
+premise is that the thing does NOT exist, so nothing in this repo can supply the answer,
+which is exactly why the task exists.
 
 ### Subagent delegation
 
-The Orchestrator compiles a context package (DSL block + graph context + reference
-images + campus sources + required endpoints) and delegates. A subagent has full
-authority to try 5+ parameter combinations before reporting blocked, and records every
-attempt as a `pathway_attempt`. Unknown MCP action → try combos → record all → spawn
-research → move on. When solved: record the pathway so the next agent inherits it.
-
-**`blocked` is a verdict that must be EARNED**, and bare `blocked` is forbidden — give a
-cause and evidence (`task_board block --reason "..."`), or run `core/solver.py`. But note
-the boundary this file used to get wrong: it said *"never ask for human help"* full stop.
-**The human is one of the two legal terminals.** Taste bottoms out in them and nowhere
-else — it is EARNED (`core/trainables/attunement.py: HUMAN_TEST_BAR`), never requested to
-dodge work. Refusing to ask about a MEASURABLE thing is right; refusing to ask about
-FUN is just guessing.
+A subagent has full authority to try 5+ parameter combinations before reporting blocked,
+and records every attempt so the next agent inherits the pathway instead of re-paying for
+it. **`blocked` is a verdict that must be EARNED** — bare `blocked` is forbidden; give a
+cause and evidence, or run `core/solver.py`. But note the boundary this file used to get
+wrong: it said *"never ask for human help"* full stop. **The human is one of the two legal
+terminals.** Taste bottoms out in them and nowhere else — it is EARNED
+(`core/trainables/attunement.py: HUMAN_TEST_BAR`), never requested to dodge work. Refusing
+to ask about a MEASURABLE thing is right; refusing to ask about FUN is just guessing.
 
 ---
 

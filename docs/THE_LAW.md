@@ -119,3 +119,76 @@ Two other gates run beside this one:
     python story/folding.py audit          # units: what a law may connect to
     python tools/methodology_gate.py       # every membrane against the workflow
     python tools/slider.py                 # move a free number; whatever does not move is typed
+
+---
+
+## THE INDEX OF EVERY RULE (added 2026-08-03, operator delegation)
+
+One fact, one home: every rule's FULL text lives in exactly one file (the pointer), and this
+index is the map — organized by what each rule protects. Numbers are stable forever: rules
+are appended, never renumbered, and a new rule is added to this index in the same commit.
+LAW 0 and LAW 1 above ARE EM-26 and EM-01, kept at the front because they decide whether the
+other twenty-four are being applied to a real question at all.
+
+**Truth of claims**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| LAW 0 ≡ EM-26 | a claim without a falsifier is a description, and a description cannot be wrong | `port_test()` at S-1 VALIDATE | EM-26 |
+| EM-8 | record the negative results; a ledger of wins is a lie of omission | prose | EM-8 |
+| EM-16 | matching names is not matching definitions — joining a codebook, THEIR file is the authority | prose | EM-16 |
+
+**Derivation — Law 1's family**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| LAW 1 ≡ EM-1 | a parameter sweep is an admission the derivation was not done | `tools/training_gate.py` | EM-1 |
+| EM-25 | a transported number is not a derived number | `tools/training_gate.py` | EM-25 |
+| EM-9 | arithmetic before action — but verify the model behind the arithmetic | prose | EM-9 |
+| EM-17 | derive the shape, let physics set the level; when they disagree, the disagreement IS the finding | prose | EM-17 |
+
+**Measurement hygiene (not fooling yourself)**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| EM-2 | measure the thing, not a proxy for the thing | prose | EM-2 |
+| EM-3 | benchmark in the state the system will actually be in | prose | EM-3 |
+| EM-4 | distrust any probe that can read a cache | prose | EM-4 |
+| EM-5 | watch what the machine is doing, not what it reports | prose | EM-5 |
+| EM-6 | capture stderr before you diagnose | prose | EM-6 |
+| EM-7 | one variable at a time, and keep the control | prose | EM-7 |
+| EM-10 | read the tool's own source and changelog | prose | EM-10 |
+| EM-12 | run the instrument on something whose answer you already know | the clay control; `emit()` is a free known subject | EM-12 |
+| EM-13 | measure at the scale the thing lives at — count the pixels the effect occupies | prose | EM-13 |
+| EM-14 | a threshold defined in terms of the population it measures reports nothing | prose | EM-14 |
+| EM-15 | suspect the instrument's construction, not only its reading | prose | EM-15 |
+| EM-24 | an instrument needs an instrument | the contrast proofs (`parity_report`, differential-vs-uniform) | EM-24 |
+
+**Direction — where to look when everything you can see is correct**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| EM-18 | backtrace: debug UP the chain, not forward from the symptom | prose | EM-18 |
+| EM-19 | one quantity, one landmark | prose | EM-19 |
+| EM-20 | the instrument must move with the membrane, and must not keep its own copy | the witness gates | EM-20 |
+| EM-23 | check the generator before you believe the witness | CHECK order: `grow.py` before `chain_witness.py` | EM-23 |
+
+**Grown-world doctrine**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| EM-21 | in a grown world, an authored phenotype is the defect | prose | EM-21 |
+| EM-22 | the serial is the place in time, not the place in the tree | `story/timeline.py` | EM-22 |
+
+**The human terminal**
+
+| rule | one line | enforced by | full text |
+|---|---|---|---|
+| EM-11 | the operator's observations outrank your model | the operator | EM-11 |
+| THE DYAD | physics produces a NUMBER, the human a TERM; an LLM is never a terminal | `ChimeraEngine/human_messenger.py`, the engine's `prove` gate | `ChimeraEngine/ONBOARDING.md` |
+
+**The operator's rulings** — `Chimera/docs/THE_GROWTH.md` (2026-07-31, + the 2026-08-01
+control ruling): everything is a sample you train · research connects physics to training
+data (download the measured data FIRST) · the physics is the code · the natural world is all
+of the known · the standard of definition is measured capture (D0–D4) · nothing is true
+until the instrument has been run on a known subject.

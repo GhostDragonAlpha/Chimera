@@ -166,6 +166,32 @@ def plantar(m, d):
     return l, r
 
 
+def foot_load(m, d):
+    """GROUND TRUTH per foot: world-frame vertical contact force, grouped by geom side.
+
+    The touch sensors are ZONES, not feet: a contact counts only if its point falls inside the
+    sensor site's ellipsoid, and this model's `r_foot`/`l_foot` zones do not cover the heel.
+    In double support the loaded contacts happen to sit in-zone and sensors match contact force
+    to the Newton; with one hip flexed 35 deg the stance leg's heel contacts (`r_foot_col1/3`,
+    114.6 N) move out of zone and the sensors read 232.5 N of a real 347.1 N. A test of LOAD
+    TRANSFER must read the transfer; the sensor reading stays in the report, because the
+    under-coverage is a fact about the plantar_pressure port the runtime will read.
+    """
+    l = r = 0.0
+    for c in range(d.ncon):
+        g1 = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_GEOM, int(d.contact[c].geom[0])) or ""
+        g2 = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_GEOM, int(d.contact[c].geom[1])) or ""
+        foot = g1 if "floor" in g2.lower() else g2
+        f = np.zeros(6)
+        mujoco.mj_contactForce(m, d, c, f)
+        fz = float((np.asarray(d.contact[c].frame).reshape(3, 3).T @ f[:3])[2])
+        if foot.startswith("l"):
+            l += fz
+        elif foot.startswith("r"):
+            r += fz
+    return l, r
+
+
 def angmom_z(m, d):
     mujoco.mj_subtreeVel(m, d)
     return float(d.subtree_angmom[1][2])
@@ -300,41 +326,66 @@ def a_swing(_):
     "the measured divergence rate differs from sqrt(g/H) by more than 20%, which would mean the "
     "0.4066 s time-to-fall every control-rate argument rests on is not this body's number")
 def a_balance(_):
-    m, g = load_body(MYOBODY, mujoco)
+    # THE PIVOT MUST BE INSIDE THE SOLVER. Two cheaper pivots were measured and rejected. A
+    # kinematic pin (restoring root qpos each step) projects the position afterwards but the
+    # constraint never enters the dynamics, so gravity never becomes torque about the pivot --
+    # the "divergence" read 0.4186 rad/s of brace sway against a 2.76 prediction. A root
+    # position servoed to hold a foot point fixed does the same thing one level up, plus an
+    # energy-injecting projection (648% off). The pivot force IS the physics, so the pivot is a
+    # `<connect>` equality -- a ball joint to the world at the foot -- injected by tools/world.py
+    # (the one module that owns model-building), and the brace supplies in-solver rigidity.
+    m, g = load_body(MYOBODY, mujoco, pivot=("calcn_r", (0.0, 0.0, -0.04)))
     d = mujoco.MjData(m)
-    mujoco.mj_resetDataKeyframe(m, d, 0)
-    seat_on_floor(m, d, mujoco)
+    mujoco.mj_resetData(m, d)         # qpos0: the equality's world anchor is taken from here
     mujoco.mj_forward(m, d)
     q0 = np.array(d.qpos)
-    brace(m, d, q0, g)          # rigid: this tests the PENDULUM, not the spine
-    foot = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, 'calcn_r')
-    pivot = np.array(d.xpos[foot])
+    brace(m, d, q0, g)                # rigid: this tests the PENDULUM, not the spine
+    for _ in range(400):              # let the brace take up its static sag before measuring
+        d.ctrl[:] = 0.0
+        mujoco.mj_step(m, d)
+    foot = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "calcn_r")
+    Rf = np.asarray(d.xmat[foot]).reshape(3, 3)
+    anchor_w = np.array(d.xpos[foot]) + Rf @ np.array([0.0, 0.0, -0.04])
     com0 = np.array(d.subtree_com[1])
-    H = float(np.linalg.norm(com0 - pivot))
+    H = float(np.linalg.norm(com0 - anchor_w))
+    x0 = float(np.linalg.norm(com0[:2] - anchor_w[:2]))
     w_pred = math.sqrt(g / H)
 
-    # THE PIVOT IS PINNED. Leaving contact to supply it lets the body slide and bounce rather
-    # than rotate, and the fit then reads 15.46 rad/s off a transient -- 457% out. An inverted
-    # pendulum is a body turning about a FIXED point; pinning it is what makes the measurement
-    # the same experiment as the prediction.
-    d.qvel[:] = 0.0
-    d.qvel[4] = 0.05
-    ts, xs = [], []
+    ts, xs, honest = [], [], []
     for i in range(2500):
         d.ctrl[:] = 0.0
-        d.qpos[0:3] = q0[0:3]
-        d.qvel[0:3] = 0.0
         mujoco.mj_step(m, d)
+        drift = float(np.linalg.norm((np.array(d.xpos[foot]) + Rf @ np.array([0.0, 0.0, -0.04]))
+                                     - anchor_w))
         ts.append(d.time)
-        xs.append(abs(float(d.subtree_com[1][0] - com0[0])))
-    ts, xs = np.array(ts), np.array(xs)
-    sel = (xs > 2e-3) & (xs < 0.35 * H)
-    w_got = float(np.polyfit(ts[sel], np.log(xs[sel]), 1)[0]) if sel.sum() > 30 else float('nan')
+        xs.append(float(np.linalg.norm(d.subtree_com[1][:2] - anchor_w[:2])))
+        # FIT ONLY WHILE THE INSTRUMENT IS HONEST: the equality is a soft constraint and the
+        # toppling load stretches it (50 mm by the end), and once the falling body reaches the
+        # floor the contact adds a second pivot. Both end the experiment, not the physics.
+        honest.append(d.ncon == 0 and drift < 0.002)
+    ts, xs, honest = np.array(ts), np.array(xs), np.array(honest)
+
+    # FIT THE SOLUTION, NOT ITS LOGARITHM. log(x0 cosh wt) is not linear in t until wt >> 1,
+    # and a log-linear fit over the early window reads 0.76 rad/s on data the exact fit reads
+    # 2.56 from. The model is known -- x0 cosh(wt) + A sinh(wt) -- so the fit is one number.
+    sel = honest & (xs < 0.35 * H)
+    T, X = ts[sel], xs[sel]
+    w_got = float("nan")
+    if sel.sum() > 30:
+        best = None
+        for w in np.arange(1.0, 5.0, 0.005):
+            C = x0 * np.cosh(w * T)
+            Sn = np.sinh(w * T)
+            A = float(np.sum((X - C) * Sn) / np.sum(Sn * Sn))
+            sse = float(np.sum((X - C - A * Sn) ** 2))
+            if best is None or sse < best[1]:
+                best = (float(w), sse)
+        w_got = best[0]
     err = abs(w_got - w_pred) / w_pred
     return dict(pass_=err < 0.20, got=f'omega0 = {w_got:.4f} rad/s',
-                detail=f'CoM {H:.4f} m from the pinned pivot -> predicted sqrt(g/H) = '
-                       f'{w_pred:.4f} rad/s (time to fall {1/w_pred:.4f} s); measured '
-                       f'divergence {w_got:.4f} rad/s over {int(sel.sum())} samples '
+                detail=f'CoM {H:.4f} m over the solver pivot (x0 {1000*x0:.0f} mm) -> predicted '
+                       f'sqrt(g/H) = {w_pred:.4f} rad/s (time to fall {1/w_pred:.4f} s); exact-fit '
+                       f'divergence {w_got:.4f} rad/s over {int(sel.sum())} honest samples '
                        f'({100*err:.1f}% off)')
 
 
@@ -389,7 +440,12 @@ def a_lift(_):
 def _slip(m, d, g, sign):
     """Ramp a horizontal force at the trunk until the feet slide. Returns (F_slip, mu*N)."""
     M, W, _ = body_facts(m, d, g)
-    mujoco.mj_resetDataKeyframe(m, d, 0)
+    # SYMMETRIC STANCE, not the keyframe. The keyframe is MID-GAIT -- 41 deg of yaw, right
+    # foot 2.3 cm up, left toes penetrating -- so a "standing push/pull" measured from it is
+    # a gait pose's number, and its sagittal axis is not even world x. STEP, CROUCH and
+    # BALANCE all moved to mj_resetData for the same reason: qpos0 is a symmetric stance,
+    # identity quat, both feet level, sagittal = x.
+    mujoco.mj_resetData(m, d)
     seat_on_floor(m, d, mujoco)
     mujoco.mj_forward(m, d)
     q0 = np.array(d.qpos)
@@ -432,9 +488,23 @@ def a_push(_):
     d = mujoco.MjData(m)
     F, bound, mu, N, slipped = _slip(m, d, g, +1.0)
     err = abs(F - bound) / bound
+    # WHY THIS FAILS HONESTLY (2026-08). From the symmetric stance the body slides at
+    # 137.9 N against a 348.3 N cone bound (60.4% off, bar 50%) -- far BELOW mu x N, the
+    # falsifier's own case. Three controls named the cause, none of them the friction
+    # parameters (every geom reads mu_slide = 1.000): (1) the ramp applied at ANKLE height
+    # slides at 480.1 N -- ABOVE mu x N -- so the tipping moment at pelvis height is part of
+    # the bound, and the capsule contact geometry can hold more than the cone by tilting
+    # contact normals; (2) every event is a SUSTAINED slide with < 0.2 deg of foot pitch,
+    # so the 2 cm criterion is not confusing rolling for sliding; (3) the same directional
+    # gap at both heights (137.9/88.1 N pelvis, 480.1/157.7 N ankles) is anatomy -- toe and
+    # heel capsules are not the same shape. The bound was never the cone's alone.
     return dict(pass_=slipped and err < 0.50, got=f"slip at {F:.1f} N",
                 detail=f"mu {mu:.2f}, feet loaded {N:.1f} N -> Coulomb bound {bound:.1f} N; "
-                       + (f"slid at {F:.1f} N ({100*err:.1f}% off)" if slipped else
+                       + (f"slid at {F:.1f} N ({100*err:.1f}% off). CAUSE: the cone never "
+                          f"set this bound -- ankle-height control slides at 480.1 N (above "
+                          f"mu x N) and the toe/heel capsules tilt contact normals; the "
+                          f"tipping moment at pelvis height does the rest"
+                          if slipped else
                           f"NEVER SLID up to {F:.1f} N -- no threshold was observed, so there "
                           f"is nothing here to compare with the bound"))
 
@@ -454,10 +524,22 @@ def a_pull(_):
     asym = abs(Fp - Fm) / max(Fp, Fm, 1e-9)
     # BOTH MUST ACTUALLY SLIP. When neither did, the two runs ended at the same RAMP CEILING
     # and the symmetry test reported 0.0% asymmetry -- a pass that compared two non-events.
+    #
+    # THE ASYMMETRY IS ANATOMY, AND THE FALSIFIER SAYS SO BY DESIGN. From the symmetric
+    # stance: push 137.9 N, pull 88.1 N -- 36.2% apart (bar 25%). The keyframe was cleared
+    # first (its yawed mid-gait pose gave 185.3/81.4 N -- same gap, wrong instrument), and
+    # the ankle-height control, which removes the tipping moment entirely, widens the gap
+    # rather than closing it: 480.1/157.7 N, 67.1% apart. All four events are SUSTAINED
+    # slides (checked +1000 steps) with < 0.2 deg of foot pitch -- sliding, not rolling --
+    # and every geom reads mu_slide = 1.000. What differs is the SHAPE under the load: toe
+    # capsules and heel capsules present different curvature to the slide direction, and the
+    # contact normals tilt accordingly. Coulomb is isotropic; a foot is not.
     return dict(pass_=sp and sm and asym < 0.25, got=f"push {Fp:.1f} N / pull {Fm:.1f} N",
                 detail=f"push {Fp:.1f} N ({'slid' if sp else 'NEVER SLID'}), pull {Fm:.1f} N "
                        f"({'slid' if sm else 'NEVER SLID'}) against one Coulomb bound of "
-                       f"{bound:.1f} N -- asymmetry {100*asym:.1f}%"
+                       f"{bound:.1f} N -- asymmetry {100*asym:.1f}%. CAUSE: foot geometry, "
+                       f"verified by the ankle-height control (480.1/157.7 N, 67.1%) -- the "
+                       f"bound is directional because feet are"
                        + ("" if (sp and sm) else "  [VACUOUS: two ramp ceilings are equal "
                           "whether or not friction is isotropic]"))
 
@@ -577,13 +659,18 @@ def a_step(_):
     S = 0.40
     j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, "hip_flexion_l")
     adr = int(m.jnt_qposadr[j])
-    mujoco.mj_resetDataKeyframe(m, d, 0)
+    # STAND ON THE DEFAULT POSE, not the gait keyframe. Keyframe 0 is mid-stride (the right
+    # foot 2.3 cm up, and its left toes PENETRATE at rest, so seat_on_floor searched UP and
+    # raised the body clear of the floor): from there the settle loaded one foot only, and the
+    # test scored the absence of a load as a clean unload. qpos0 is the symmetric stance --
+    # double support is genuinely shared (172.7/167.6 N of a predicted 348.3).
+    mujoco.mj_resetData(m, d)
     seat_on_floor(m, d, mujoco)
     mujoco.mj_forward(m, d)
     q0 = np.array(d.qpos)
     K = brace(m, d, q0, g)
     settle(m, d, 1200, lambda i: harness(m, d, q0, S, W))
-    l0, r0 = plantar(m, d)
+    l0, r0 = foot_load(m, d)
     # WALK THE BRACE'S SET POINT, do not write qpos. Teleporting the leg upward drives it
     # through the floor and the contact solver answers with force that is not a load.
     for i in range(1600):
@@ -591,19 +678,21 @@ def a_step(_):
         m.qpos_spring[adr] = q0[adr] + math.radians(min(35.0, 35.0 * i / 600.0))
         d.ctrl[:] = 0.0
         mujoco.mj_step(m, d)
-    l1, r1 = plantar(m, d)
+    l1, r1 = foot_load(m, d)
+    s1l, s1r = plantar(m, d)
     tot0, tot1 = l0 + r0, l1 + r1
     lifted_clean = l1 < max(0.05 * tot1, 1.0)
     kept = abs(tot1 - tot0) / max(tot0, 1e-9)
-    # BOTH FEET MUST CARRY LOAD FIRST. The previous run passed with L already at 0.0 N in
-    # 'double support' -- lifting a foot that was carrying nothing transfers nothing, and the
-    # test scored the absence of a load as a clean unload. A vacuous pass, like PULL's.
+    # BOTH FEET MUST CARRY LOAD FIRST, and the transfer is judged on CONTACT FORCE, not on the
+    # touch sensors: the sensors' zones miss the stance heel (see foot_load) and report 232.5 N
+    # of the 347.1 N the foot truly carries -- a coverage fact, recorded, not a transfer.
     shared = min(l0, r0) > 0.10 * tot0
     ok = shared and lifted_clean and kept < 0.30 and tot1 > 1.0
     return dict(pass_=ok, got=f"L {l1:.1f} / R {r1:.1f} N",
                 detail=f"double support L {l0:.1f}/R {r0:.1f} (total {tot0:.1f}) -> left lifted: "
                        f"L {l1:.1f}/R {r1:.1f} (total {tot1:.1f}, {100*kept:.1f}% change) against "
-                       f"a predicted {(1-S)*W:.1f} N on one foot"
+                       f"a predicted {(1-S)*W:.1f} N on one foot; touch sensors read "
+                       f"{s1l:.1f}/{s1r:.1f} N in single support (their zones miss the stance heel)"
                        + ("" if shared else "  [VACUOUS: the lifted foot was already carrying "
                           "nothing in double support, so nothing was transferred]"))
 
@@ -662,20 +751,48 @@ def a_turn(_):
 def a_crouch(_):
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
-    j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, "knee_angle_r")
-    adr, dof = int(m.jnt_qposadr[j]), int(m.jnt_dofadr[j])
+    name2j = lambda n: mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, n)
     M, W, _ = body_facts(m, d, g)
-    mujoco.mj_resetDataKeyframe(m, d, 0)
-    seat_on_floor(m, d, mujoco)
-    d.qpos[adr] = math.radians(45.0)
+
+    # A CROUCH IS NOT A KNEE ANGLE, IT IS A POSE. Four harnesses failed before this one, and
+    # each failure named a different way to get it wrong:
+    #   mj_inverse at a freshly-written 45 deg: 0.60 N.m -- not in equilibrium yet.
+    #   mj_inverse at a held pose: 5100.8 N.m -- qfrc_inverse carries the brace spring itself.
+    #   knee set to 45 with its coupled dofs left stale: 5100 N.m of spring fight -- the
+    #     OpenSim patellar mechanism's 7 equality-coupled dofs were posing a knee against its
+    #     own coupling, not against a crouch.
+    #   knees walked to 45 with everything else braced at STANDING: topples (98 deg tilt) --
+    #     feet planted + ankles and hips braced + knees 45 is a geometrically impossible
+    #     closed chain. An xy lock hides the same fact by carrying the moment invisibly
+    #     (route A read 40.34 of a real 105.30 N.m).
+    # The pose a body actually takes: thigh and shank here are 0.405/0.400 m, near-equal, so
+    # the pelvis-over-ankle squat at 45 deg of knee is closed-form -- hip flexion = ankle
+    # dorsiflexion = 22.5 deg (verified empirically: hip +22.5 moves the knee +x, ankle +22.5
+    # keeps the foot flat under it; the sagittal axis is x, forward is +x). Brace AT that
+    # pose: no fight, nothing to topple, and the root goes free with only a weak safety
+    # tether whose (tiny) moment is counted in route B.
+    HIP, KNEE, ANKLE = math.radians(22.5), math.radians(45.0), math.radians(22.5)
+    mujoco.mj_resetData(m, d)          # qpos0: symmetric stance, identity quat, feet level
+    for side in ("r", "l"):
+        d.qpos[int(m.jnt_qposadr[name2j(f"hip_flexion_{side}")])] = HIP
+        d.qpos[int(m.jnt_qposadr[name2j(f"knee_angle_{side}")])] = KNEE
+        d.qpos[int(m.jnt_qposadr[name2j(f"ankle_angle_{side}")])] = ANKLE
     mujoco.mj_forward(m, d)
+    seat_on_floor(m, d, mujoco)        # drops the root until the squat's feet touch
+    coupled = [mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj) for jj in range(m.njnt)
+               if 'knee_angle_r_' in (mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj) or '')
+               or 'knee_angle_l_' in (mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj) or '')]
     q0 = np.array(d.qpos)
-    brace(m, d, q0, g)
-    # REACH EQUILIBRIUM FIRST. Inverse dynamics at a pose the body is not actually holding
-    # returns the torque for that instant, with the ground not yet carrying its share -- it
-    # read 0.60 N.m against a 54.17 N.m static requirement, which is what 'not in equilibrium'
-    # looks like when you mistake it for a disagreement between two routes.
-    settle(m, d, 1500, lambda i: harness(m, d, q0, 0.0, W))
+    K = brace(m, d, q0, g, free=tuple(coupled))   # coupled dofs FREE: the equality solver
+                                                  # poses them, not the spring
+    KX = 500.0                         # weak safety tether; its moment is counted in route B
+    x0 = np.array(d.qpos[0:2])
+
+    def tether(_):
+        d.xfrc_applied[:] = 0.0
+        d.xfrc_applied[1][0:2] = -KX * (np.array(d.xpos[1][0:2]) - x0)
+
+    settle(m, d, 3000, tether)
     d.qvel[:] = 0.0
     d.qacc[:] = 0.0
     d.ctrl[:] = 0.0
@@ -683,38 +800,38 @@ def a_crouch(_):
         d.act[:] = 0.0
     mujoco.mj_forward(m, d)
 
-    # ROUTE A -- what the ORTHOSIS is actually supplying. tau = K x (q - q_spring), read off a
-    # brace that is visibly holding the crouch. This replaces mj_inverse, which returned
-    # 5100.8 N.m because qfrc_inverse carries the brace spring itself -- asking the simulator
-    # for the torque needed to hold a pose it is already being held in double-counts the hold.
-    K = W * 0.9201 / math.radians(BRACE_TOL_DEG)
-    tau_inv = abs(K * (float(d.qpos[adr]) - float(m.qpos_spring[adr])))
-    # WHY THIS IS NOT 60 N.m. Writing knee_angle_r = 45 deg does NOT pose the knee: this is an
-    # OpenSim patellar mechanism whose translations and rotations are driven from that angle by
-    # EQUALITY CONSTRAINTS, and they were left where the keyframe put them. The configuration
-    # is internally inconsistent, so the constraint solver fights the brace and the brace wins
-    # by 5100 N.m. The number is real; it is the torque needed to hold a knee against its own
-    # coupling, which is not the torque needed to hold a crouch. Posing this joint requires
-    # solving the coupled dofs, which nothing here does yet.
-    coupled = [mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj)
-               for jj in range(m.njnt)
-               if 'knee_angle_r_' in (mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj) or '')]
+    # ROUTE A -- what the ORTHOSIS supplies at each knee: K x (q - q_spring), off a brace
+    # visibly holding the squat (knees read 45.07/45.07 deg, root tilt 2.33 deg).
+    j_r, j_l = name2j("knee_angle_r"), name2j("knee_angle_l")
+    adr_r, adr_l = int(m.jnt_qposadr[j_r]), int(m.jnt_qposadr[j_l])
+    tau_A_r = abs(K * (float(d.qpos[adr_r]) - float(m.qpos_spring[adr_r])))
+    tau_A_l = abs(K * (float(d.qpos[adr_l]) - float(m.qpos_spring[adr_l])))
+    tau_A = 0.5 * (tau_A_r + tau_A_l)
 
-    # ROUTE B -- the weight above the knee, times its lever. Independent geometry.
-    fem = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "femur_r")
-    M_above = float(np.sum(m.body_mass)) - float(m.body_subtreemass[fem])
-    knee = np.array(d.xanchor[j])
-    com = np.array(d.subtree_com[1])
-    lever = abs(float(com[0] - knee[0]))
-    tau_geo = M_above * g * lever
-    err = abs(tau_inv - tau_geo) / max(tau_geo, 1e-9)
-    return dict(pass_=err < 0.25, got=f"{tau_inv:.2f} vs {tau_geo:.2f} N.m",
-                detail=f"knee held at 45 deg: the brace supplies {tau_inv:.2f} N.m, geometry "
-                       f"{M_above:.2f} kg x g x {1000*lever:.1f} mm lever = {tau_geo:.2f} N.m "
-                       f"({100*err:.1f}% apart). CAUSE: knee_angle_r drives {len(coupled)} "
-                       f"coupled dofs by equality constraint and they were not re-solved, so "
-                       f"the brace is holding the knee against its own coupling, not against "
-                       f"the crouch")
+    # ROUTE B -- the free body above the two knee cuts (the joint force passes through the
+    # anchor, no lever; only the spring torque remains): M_above g x lever / 2 per knee,
+    # plus the tether's counted share. M_above excludes the tibia subtrees -- the femur is
+    # ABOVE the cut, which an earlier draft of this route got wrong (and it also took the
+    # lever from the whole-body CoM, which includes the legs below the cut).
+    name2b = lambda n: mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)
+    tib_r, tib_l = name2b("tibia_r"), name2b("tibia_l")
+    m_r, m_l = float(m.body_subtreemass[tib_r]), float(m.body_subtreemass[tib_l])
+    M_above = M - m_r - m_l
+    com_t = np.array(d.subtree_com[1])
+    com_above = (M * com_t - m_r * np.array(d.subtree_com[tib_r])
+                 - m_l * np.array(d.subtree_com[tib_l])) / M_above
+    knee_mid = 0.5 * (np.array(d.xanchor[j_r]) + np.array(d.xanchor[j_l]))
+    F_x = -KX * (float(d.xpos[1][0]) - x0[0])
+    M_tether = F_x * float(d.xpos[1][2] - knee_mid[2])
+    lever = float(com_above[0] - knee_mid[0])
+    M_grav = M_above * g * lever
+    tau_B = abs(M_grav + M_tether) / 2.0
+    err = abs(tau_A - tau_B) / max(tau_B, 1e-9)
+    return dict(pass_=err < 0.25, got=f"{tau_A:.2f} vs {tau_B:.2f} N.m",
+                detail=f"real squat held (hip/knee/ankle = 22.5/45/22.5 deg): brace supplies "
+                       f"{tau_A:.2f} N.m per knee (r {tau_A_r:.2f}, l {tau_A_l:.2f}), statics "
+                       f"{M_above:.2f} kg x g x {1000*lever:.1f} mm lever / 2 + tether "
+                       f"{M_tether:.2f} = {tau_B:.2f} N.m ({100*err:.1f}% apart)")
 
 
 # ------------------------------------------------------------------------------------------------
