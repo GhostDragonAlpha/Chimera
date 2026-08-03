@@ -247,6 +247,48 @@ live loop over HTTP).* **PASS — the world answers, and every number has a home
   spawn spots, blade count, kick factors), no hidden literals.
 - `python tools/walk_demo.py` still PASS (no regression).
 
+**Phase E, rung 3 — THE RECORDED SESSION AND THE BLIND READ (2026-08-03).**
+
+A scripted play session was recorded over the live server (9 frames + drive log,
+`ChimeraEngine/output/slice_session_20260803/`): stand → walk (0.99 m/s exact) →
+to the stone → through the pile (footprint 1.08 m, HUD-proven) → jump → first
+person. The blind read — a fresh vision agent given the frames with zero context,
+the dyad's advisory instrument — captioned the set: *"a primitive white mannequin
+stands, and possibly walks and carries things, in a nearly empty dark 3D landscape
+of green hills and blue sky — with the actions mostly implied by faint pale
+patches on the ground rather than anything clearly depicted."*
+
+**F1 — PASS.** Everything on the HUD traces: g/walk/run from theHuman, sun/season/
+daylight from the planet's own laws, the touch line's mass/μ/grain/repose numbers
+from theGround + citations, and `touchables.py`'s provenance table has no hidden
+literal. (`python -m core.why` walk remains to be run as the formal check.)
+
+**F2 — FIRED, and the causes are measured, not argued:**
+1. **The instrument was STILLS; the charter's instrument is a MOVIE.** Gait is
+   temporal — no still can show "walking". The session recorder captured JPEGs;
+   the dyad's own protocol (render → movie → blind read) was not used.
+2. **The carry never happened in this recording.** The scripted drive overshot
+   the stone (HTTP steering without position feedback), so beats 4–6 show a body
+   near a stone, not carrying it. The blind read honestly reported nothing
+   carried. Recorder fault, recorded.
+3. **Legibility is the real physics gap the read measured:** the scene is dim
+   (tone 0.45 at sun_alt 52.5° reads as twilight), the 0.35 m stone and the
+   0.84 m pile are faint patches at 3.2 m camera distance, the tuft was never in
+   frame. Objects sized for touching are not sized for SEEING. Per F2's own rule
+   the fix is the presentation physics — exposure, object scale, and reading
+   video — never the tolerance.
+
+**F3 — OPEN, stated honestly.** The playable loop's body is the aHuman emit figure
+driven by the Walker (derived-kinematics mover + the measured 48-pose gait table,
+terrain-conformed by the two-bone IK). The measured-gait playback is data, not a
+pose-scripted frame in F3's sense, but F3 was written for the musculoskeletal
+body standing on the parser — which exists as a separate artifact (the trained
+stand policy) and has not been driven through the slice parser. Not judged yet.
+
+**Next rung, fixed by this firing:** re-record with position-closed-loop drive,
+capture VIDEO for the blind read, fix exposure and object legibility, then read
+again. The bar does not move.
+
 ## EXPLICITLY NOT IN THE SLICE
 
 Vehicles, buildings, NPCs, combat, economy, biomes evolving, the whole universe. The seed
