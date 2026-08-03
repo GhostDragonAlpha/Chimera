@@ -23,10 +23,12 @@ projection of the keyframe into the body's OWN declared joint ranges, at reset o
 this file ever writes `d.qpos`. Every subsequent state is `mj_step` under muscle control and
 gravity. The harness is the proof; there is no flag to trust.
 
-THE PARSER HERE IS v1, honestly labelled: `BUTTONS = {"stand": ...}` -- one button, toggled on
-and off by phase, and the button's formula produces the control. The full Phase D parser (a
-grammar over button state) comes later; rung 3 requires the *path* (button -> formula -> muscles)
-to be load-bearing, and Phase 2 exists precisely to test that it is.
+THE PARSER HERE IS THE REAL ONE (2026-08-04): `tools/parser.py`, the Phase D grammar of
+docs/THE_PARSER.md -- button state -> formula layer -> muscles, with the stand port as a
+registered formula and every other verb a named refusal. v1 was `BUTTONS = {"stand": ...}`,
+one hard-wired lambda; the membrane's falsifier 1 proved the grammar carries the identical
+signal (bit-identical over a 135-sample sweep), and Phase 2 exists precisely to test that
+the button is load-bearing -- through the grammar now, not around it.
 
     python tools/f3_stand.py          # run the falsifier; exit 0 PASS, 1 FAIL
 """
@@ -42,19 +44,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body
 from stand_port import derive_stand_port, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac_named
+from parser import Parser, default_registry
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 THETA = OUTDIR / "stand_theta.npy"
 CTRL_EVERY = 20                 # 40 ms at the model's 0.002 s timestep -- evaluate()'s cadence
 PHASE1_SECS = 5.0               # the slice's bar: five full seconds upright
 PHASE2_MAX = 3.0                # release; the body must slump well inside this
-
-
-def stand_formula(theta, tgt, z, pitch, nu):
-    """THE BUTTON'S CONTENT: the inverted pendulum written down, per `train_stand.evaluate`.
-    baseline activation + proportional feedback on pelvis-height error and pitch. Nothing else."""
-    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
-    return np.clip(a0 + kh * (tgt - z) + kp * pitch, 0.0, 1.0)
 
 
 def run() -> int:
@@ -70,10 +66,10 @@ def run() -> int:
     tgt = P["OUT pelvis_target_m"]
     hw, hl = P["OUT bos_half_lat_m"], P["OUT bos_half_fore_m"]
 
-    # THE PARSER, v1: a button is a name bound to a formula. Phase decides the button's state;
-    # the formula decides the muscles. Nothing below reads or writes qpos except the one-time
-    # seat at reset.
-    BUTTONS = {"stand": lambda z, pitch: stand_formula(theta, tgt, z, pitch, nu)}
+    # THE PARSER (tools/parser.py, docs/THE_PARSER.md): the stand port is a REGISTERED
+    # FORMULA; the phase toggles the button's STATE; the parse produces the control.
+    # Nothing below reads or writes qpos except the one-time seat at reset.
+    PARSER = Parser(default_registry(theta, tgt, nu))
 
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
@@ -95,7 +91,9 @@ def run() -> int:
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            d.ctrl[:] = BUTTONS["stand"](z, pitch) if stand_on else 0.0
+            PARSER.set_verb("STAND", stand_on)
+            u, _trace = PARSER.command({"z": z, "pitch": pitch})
+            d.ctrl[:] = u if u is not None else 0.0
         mujoco.mj_step(m, d)
         if k in grab:
             ren.update_scene(d); pics.append(ren.render().copy())
