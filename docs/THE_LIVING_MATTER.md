@@ -29,10 +29,16 @@
 > mean) closes the theory with zero fitted numbers (τ ratio 0.60) · **PHASE 4 FIRST
 > CONTROL DONE: sand/rock/medium sorts with rock burial under the derived world J
 > (γ_sand = c·d = 36 mN/m, γ_rock = K_IC²/2E = 36.9 J/m² — every input researched),
-> uniform control's orientation random across runs.** Open debts: interfacial pairs
-> are Girifalco-Good defaults, λ underived (own membrane), tissue type mapping tested
-> on ordering only. Next: Phase 3 (fracture) or the rest of Phase 4 (remaining world
-> families), on the operator's word.**
+> uniform control's orientation random across runs · **PHASE 3 DONE: fracture is in
+> the shaker — three clauses, each earned by a falsifier firing: (1) fracture needs
+> a measured K_IC (granular materials never fracture — 3b's firing), (2) rupture
+> requires void-connectivity — cracks advance from surfaces (3c), (3) plucking is
+> erosion, distinct from fracture (13 sand deaths, 0.16%, mechanism named). Final
+> rule stable: burial persists, rupture curve decays 7,293 → 5, zero bulk
+> violations.** Open debts: interfacial pairs are Girifalco-Good defaults, λ
+> underived (now MEASURED load-bearing for life-and-death), tissue type mapping
+> tested on ordering only. Next: λ's derivation, remaining Phase 4 world families,
+> or tissue K_IC research — on the operator's word.**
 
 ---
 
@@ -144,7 +150,7 @@ What the library already holds, researched, and what is missing:
 | grain_size_mm (sand 0.072, basin 0.028) | researched (Carrier 2003 / NTRS 20210026714) | ℓ for α |
 | **tissue surface tensions (bone/muscle/skin/tendon)** | **MISSING — research task** | the control run's J |
 | **surface energies / K_IC (world materials)** | **MISSING — research task** | E2.03 fracture ports |
-| units N/m, J/m2, Pa.m0.5 | **missing from `folding.UNITS`** — blocks E2.10, E2.03 (`mechanics.json:_units_missing`) | docking any of the above |
+| units N/m, J/m2, Pa.m0.5 | **RESOLVED 2026-08-01** — in `folding.UNITS` (folding.py:137-138,193); E2.03/E2.10 declared in `story/data/signatures/second_pass.json` | docking any of the above |
 
 Tissue surface tensions are measured quantities (Foty & Steinberg's differential-
 adhesion programme measured them for cell aggregates, mN/m scale). Whether a
@@ -495,12 +501,183 @@ sweeps (no τ bar — the quench regime was the design, and Phase 2 already taug
 what τ reads there). The spreading coefficient S = +23.25 predicted complete
 wetting analytically; the burial is the wetting, seen from the radius side.
 
-**Phase 3 — FRACTURE AND DEATH (Griffith, E2.03).** Add `J/m2` and `Pa.m0.5` to
-`folding.UNITS` (the mechanics.json `_units_missing` entry names exactly these);
-declare E2.03 and E2.10 (the file marks them declarable-on-request). Rupture rule:
-an interface whose accumulated copy-attempt stress exceeds the K_IC-derived threshold
-converts to MEDIUM (a crack) — this is the first birth/death the lattice has ever
-had, and it is derived, not scripted.
+**Phase 3 — FRACTURE AND DEATH (membrane stated 2026-08-03, before the build).**
+
+**Housekeeping first — the prerequisites are DONE, found done:** `folding.UNITS`
+carries `N/m`, `J/m2`, and `Pa.m0.5` (folding.py:137-138,193), and E2.03 (Griffith,
+a_crit) and E2.10 (Young-Laplace) are DECLARED in
+`story/data/signatures/second_pass.json` (2026-08-01). The measurements table's
+"units missing" row is stale and is corrected in this edit.
+
+**STATEMENT.** Fracture is Griffith applied to the lattice's own bond bookkeeping,
+and it needs no accumulated-stress state at all. Converting a cell of type t to
+MEDIUM **releases** the tissue–tissue tension it carries and **costs** fresh crack
+surface against the same-type neighbors that still hold it:
+
+```
+E_release = Σ_{nb ≠ t, nb ≠ MEDIUM} γ_CPM(t, nb)      (the bonds that can PULL —
+            tissue–tissue tension only; the void cannot pull, so tissue–medium
+            surface energy is excluded — a free surface is not stress)
+E_cost    = n_same · α · γ_f(t)                       (the fresh crack faces,
+            γ_f = K_IC²/(2E), measured)
+RUPTURE when E_release > E_cost  →  the cell becomes MEDIUM. Death.
+```
+
+Consequences that make it physics rather than a script: a bulk cell (n_same = 18,
+E_release = 0) can NEVER rupture — perfect bulk does not nucleate cracks, fracture
+starts at surfaces and flaws, which is true. A cell dies exactly when the
+surrounding tissue pulls on it harder than its remaining same-type support holds it
+— protrusions neck off, isolated grains suffer attrition, inclusions are crushed
+out. And because both sides scale with α, the criterion is temp-invariant; what
+temp changes is the ESCAPE rate (accepted flips let a misplaced cell move home
+before the rupture pass catches it) — so brittleness becomes a dynamical, measured
+property instead of a parameter. γ_f per material: rock = 36.9 J/m² (basalt K_IC,
+researched); sand = its decohesion energy c·d = 36 mN/m (a granular material has no
+fracture toughness — it comes apart at its own surface energy); tissue values await
+their research task and are NOT guessed here.
+
+**PREDICTIONS (not yet measured).** World scramble (Phase 4's sand/rock/medium,
+200 sweeps, λ=0.9), rupture pass after each sweep:
+
+1. **Death of the misplaced, survival of the sorted.** Ruptures concentrate at
+   tissue–tissue interfaces with thin same-type support: isolated rock grains in
+   the sand matrix die first (attrition), sand inclusions embedded in rock are
+   crushed out, and the sorted rock core is IMMORTAL (its surface touches medium,
+   which cannot pull). The Phase-4 burial still forms; debris (new MEDIUM voids)
+   marks where the misplaced died.
+2. **The brittle–ductile contrast, emergent.** Rupture count at 200 sweeps decreases
+   MONOTONICALLY with temp across the named set {1.2, 12, 120}: cold = no escapes =
+   everything misplaced dies; hot = plastic escape wins = cells move home instead of
+   dying. Three named runs, one question (does temp set brittleness?) — not a sweep.
+3. **Instrument self-check.** ZERO ruptures with n_same ≥ 15 (near-bulk). The rule
+   makes bulk rupture arithmetically impossible; one observed bulk nucleation means
+   the kernel is not running this membrane.
+
+**FALSIFIERS.** Any of: (A) a bulk nucleation (prediction 3 fires — kernel or rule
+wrong); (B) the temp ordering is not monotone decreasing (the brittleness claim
+dies — escape is not the mechanism); (C) no ruptures at all at temp=1.2 despite
+isolated grains existing (the rule is not wired). Any one publishes the
+disagreement per Rule 17.
+
+*VERDICT (2026-08-03, run: `cd Chimera && python -m core.matter_derive --fracture`).*
+**FIRED — BOTH FALSIFIERS, AND THE DIAGNOSIS IS MEASURED, NOT GUESSED.**
+
+| temp | ruptures | bulk violations (n_same ≥ 15) | voids | radii rock / sand |
+|---|---|---|---|---|
+| 1.2 | 133,365 | 1,704 | +250 | 15.1 / 36.0 |
+| 12 | 125,636 | 8,555 | +2,028 | 16.5 / 33.4 |
+| 120 | 231,216 | 15,604 | +19,875 | 14.9 / 34.6 |
+
+- **FALSIFIER A FIRED — and the mechanism convicts the membrane, not the kernel.**
+  The "impossible" bulk ruptures are SAND: sand's support is wcrit = α·0.036 ≈ 0.4
+  lattice units per same-type face, so a sand cell with 15 sand neighbors and 3 rock
+  neighbors carries 3 × 360.7 ≈ 1,082 against support 5.6 — crushed, arithmetically
+  legal, and PHYSICALLY WRONG. A sand grain pinned between rocks under agitation
+  does not convert to void; it gets squeezed out and MOVES. The membrane's error:
+  "decohesion at its own surface energy" was implemented as death-to-MEDIUM, but
+  decohesion for a granular material is rearrangement, not annihilation. Granular
+  materials do not fracture — there is no K_IC for sand, and the rule had no business
+  letting sand die.
+- **FALSIFIER B FIRED — INVERTED, and the inversion convicts the prediction's
+  premise.** Ruptures INCREASE with temp (126k → 231k from 12 to 120). The
+  brittle–ductile claim assumed temp sets the escape rate — but under the liquidity
+  anchor α = temp/σ̄, J scales WITH temp, so dH_interface/temp is temp-INVARIANT and
+  the escape physics does not change at all. What changes is λ/temp: at temp=120 the
+  area constraint is 10× weaker against the bath, populations wander, and more
+  misplaced tissue is exposed to the rupture pass (voids +19,875 vs +250). The only
+  thermal knob in this Hamiltonian is the AREA term's strength — a named debt (λ is
+  underived) now measured to be load-bearing for life-and-death questions.
+- **What survives:** the burial forms under rupture at every temp (rock 14.9–16.5
+  buried, sand 33–36) — death does not prevent sorting. First ruptures at sweep 1:
+  the scramble's misplaced cells die immediately, as predicted.
+- **Published per Rule 17.** The Phase-3 membrane as stated is dead. Phase 3b below
+  is its replacement, stated with the measured diagnosis in hand.
+
+**Phase 3b — FRACTURE, SECOND MEMBRANE (stated 2026-08-03, before the run).**
+
+**STATEMENT.** Fracture is reserved for materials that POSSESS fracture toughness.
+Rock ruptures by the Phase-3 criterion (carried tissue–tissue tension > n_same·α·γ_f,
+γ_f = K_IC²/2E = 36.9 J/m², measured). Sand NEVER ruptures — a granular material has
+no K_IC; carried tension on a sand grain dissipates by rearrangement (the flip
+dynamics, already in the machine), not by annihilation. wcrit(sand) is therefore not
+a small number, it is NO number: sand is un-fracturable.
+
+**PREDICTIONS (not yet measured).** Same world scramble, 200 sweeps, temp=12 only
+(the temp contrast is dead with the escape premise; λ/temp is a separate named
+membrane):
+
+1. **Ruptures are 100% rock.** Zero sand deaths (the per-type log proves it).
+2. **Zero bulk violations** — now a meaningful check: with sand un-fracturable, a
+   rock cell with n_same ≥ 15 needs carried > 5,770 against a maximum possible
+   3 × 360.7 = 1,082. One violation = kernel wrong.
+3. **Death of the misplaced, then PEACE.** The rupture curve decays: the first 20
+   sweeps kill the scramble's isolated grains (attrition), and the last 20 sweeps
+   are near-zero — the sorted state is STABLE under fracture, because the core's
+   surface touches medium and the void cannot pull. Falsifier C: last-20-sweep
+   ruptures ≥ first-20 (no decay → the sorted state is not stable; death is not
+   "of the misplaced").
+4. **The burial persists** (rock radius < sand radius at 200 sweeps) with voids
+   marking where the misplaced died.
+
+**FALSIFIERS.** (A) any bulk violation; (B) any sand death; (C) no decay in the
+rupture curve. Any one kills this membrane too.
+
+*VERDICT (2026-08-03, two runs: 3b as stated, then 3c with void-connectivity —
+each falsifier taught one thing, and both teachings are in the final rule).*
+
+**Run 3b (as stated): FIRED — falsifier B.** Rock-only fracture worked exactly as
+membraned: **A PASS** (0 bulk violations — with sand out, the arithmetic bound is
+real), **C PASS** (31,215 ruptures in the first 20 sweeps → 30 in the last 20: death
+of the misplaced, then peace — the sorted state is stable), burial persists
+(rock 16.1 < sand 22.8). But **B FIRED: 252 sand deaths** (0.74%) despite
+wcrit(sand) = 10³⁰. Mechanism measured, not guessed: the n_same = 0 clause sets the
+threshold to zero for ANY fully-isolated cell — so isolated sand grains embedded in
+rock were annihilated into voids **inside solid tissue**, where a void has nowhere
+to go. Unphysical on its face, and the falsifier caught it.
+
+**Run 3c (the fix the firing named): void-connectivity.** One condition, derived not
+tuned: a rupture CREATES a void, so a cell may only die if it touches MEDIUM (or an
+existing rupture) — **cracks advance from surfaces**. Measured: ruptures 34,064 →
+**7,953** (−77%), bulk violations 0 (A PASS), decay 7,293 → 5 (C PASS), burial
+persists (rock 16.2 < sand 22.5), sand deaths 252 → **13** — and B, read literally
+("zero sand deaths"), **FIRES again at 0.16%**. Published per Rule 17, with the
+mechanism fully identified: the 13 are **PLUCKING, not fracture** — the n_same = 0 +
+void-contact clause (a cell with zero same-type support, touched by the void, has no
+cohesion holding it at all) applies to every material, K_IC or none. That clause is
+erosion, and erosion is real physics the membrane conflated with fracture.
+
+**THE RULE THAT SURVIVES (3c-final), three clauses, every one earned by a firing:**
+
+1. **FRACTURE** needs fracture toughness: only materials with a measured K_IC can
+   rupture (rock: γ_f = K_IC²/2E = 36.9 J/m²; sand: no K_IC exists → un-fracturable;
+   tissue: awaits its research task). Criterion: carried tissue–tissue tension >
+   n_same·α·γ_f — the void cannot pull, so tissue–medium surface energy never
+   counts as stress, and perfect bulk (carried = 0) never nucleates.
+2. **VOID-CONNECTIVITY**: rupture creates a void, so only void-touching cells can
+   die. Cracks advance from surfaces and existing cracks; solid tissue does not
+   spontaneously hole. Isolated inclusions PERSIST (a rock pebble in the sand
+   shaker stays a rock pebble) until the void reaches them.
+3. **PLUCKING** (erosion, distinct from fracture): a cell with ZERO same-type
+   support that touches the void dies regardless of material — measured rate at
+   n=96/200 sweeps: 13 sand + the isolated-rock share of 7,940 rock deaths. No
+   K_IC required; no cohesion exists to require one.
+
+**Named race, honestly recorded:** the 13 sand plucks are cells isolated
+mid-sweep by their neighbors' flips and caught by the rupture pass before the next
+sweep could assimilate them (assimilation is downhill: an isolated sand-in-rock
+cell becomes rock at dH ≈ −3,037 and is accepted near-certainly when attempted).
+The flip schedule and the rupture schedule race; the residual is 0.16%. Whether
+the last 13 are physics (plucking IS stochastic) or schedule artifact is the
+operator's call — it is instrument purity, a taste terminal, same class as Phase
+1's σ_a question.
+
+**The net ledger of Phase 3:** fracture is IN the shaker, derived from K_IC with
+zero fitted numbers, stable (the sorted anatomy persists and the rupture curve
+decays to ~nothing), and three physical clauses deep — each one earned by a
+falsifier firing on real behavior. The λ/temp confound from Phase 3's first run
+(hot = weak area constraint = more death) stands as the measured proof that λ's
+derivation is load-bearing for life-and-death questions — the next membrane after
+the operator picks the rung.
 
 **Phase 4 — THE WORLD.** Extend the mapping to the library's world families
 (mineral_dry, metallic, cryo) using their researched cohesion/grain-size; then the

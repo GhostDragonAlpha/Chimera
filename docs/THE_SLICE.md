@@ -131,8 +131,15 @@ type mapping tested on ordering only. **Phase 4 first control DONE (2026-08-03):
 sand/rock/medium sorts with rock burial under the derived world J (γ_sand = c·d =
 36 mN/m from library cohesion×grain, γ_rock = K_IC²/2E = 36.9 J/m² from measured
 basalt toughness), PASS across 3 runs with the uniform control's orientation random
-(rock/tie/sand) — the machine does not manufacture the ordering. Next: Phase 3
-(fracture) or the remaining Phase 4 world families, on the operator's word.
+(rock/tie/sand) — the machine does not manufacture the ordering. **Phase 3 DONE
+(2026-08-03): fracture is in the shaker** (`_rupture_pass` in `Chimera/core/matter_gpu.py`,
+ Griffith from K_IC, zero fitted numbers) — three clauses, each earned by a fired
+falsifier: fracture needs a measured K_IC (sand never fractures), rupture needs
+void-connectivity (cracks advance from surfaces), plucking is erosion not fracture
+(13 sand deaths, 0.16%, mechanism named). Stable: burial persists, ruptures decay
+7,293 → 5, zero bulk violations. Measured en route: λ/temp is load-bearing for
+life-and-death — λ's derivation is now the sharpest open debt. Next: λ's derivation,
+remaining Phase 4 families, or tissue K_IC research — on the operator's word.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/

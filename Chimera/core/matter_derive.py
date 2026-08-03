@@ -178,7 +178,49 @@ if __name__ == "__main__":
                     help="kT_eff anchor: cortex (Phase 2, F3 fired) or liquidity (Phase 2b)")
     ap.add_argument("--world", action="store_true",
                     help="Phase 4 control: sand/rock/medium instead of the tissue scramble")
+    ap.add_argument("--fracture", action="store_true",
+                    help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
     a_ns = ap.parse_args()
+
+    if a_ns.fracture:
+        from core.matter import metrics_3d
+        sig_geo = math.sqrt(GAMMA_SAND_J_M2 * GAMMA_ROCK_J_M2)
+        a = TEMP / sig_geo
+        # PHASE 3b: fracture is reserved for materials that POSSESS fracture toughness.
+        # Rock: wcrit = alpha * gamma_f (basalt K_IC). Sand: NO number — a granular
+        # material has no K_IC; carried tension dissipates by rearrangement (the flip
+        # dynamics), never by annihilation. 1e30 = un-fracturable.
+        wcrit = {WSAND: 1e30, WROCK: a * GAMMA_ROCK_J_M2}
+        print("PHASE 3b/3c — FRACTURE + VOID-CONNECTIVITY: rock ruptures from "
+              f"void-connected surfaces (wcrit/face {wcrit[WROCK]:.1f}), "
+              f"sand un-fracturable; temp={TEMP}")
+        grid, shape, targets = _world_scramble(a_ns.n)
+        h = open_lattice(grid, shape, targets, derive_world_J(TEMP),
+                         temp=TEMP, lam=0.9, seed=0, rupture_wcrit=wcrit)
+        step(h, 8 * a_ns.sweeps, trace=False)
+        rup = h.ruptures[:a_ns.sweeps]
+        final = close(h)
+        counts, viol = rup[:, 0], int(rup[:, 1].sum())
+        sand_dead, rock_dead = int(rup[:, 2 + WSAND].sum()), int(rup[:, 2 + WROCK].sum())
+        total = int(counts.sum())
+        first20, last20 = int(counts[:20].sum()), int(counts[-20:].sum())
+        r = metrics_3d(final, shape)["radius"]
+        voids = int((final == MEDIUM).sum()) - int((grid == MEDIUM).sum())
+        buried = r.get(WROCK, 1e9) < r.get(WSAND, -1e9)
+        print(f"  ruptures {total} (rock {rock_dead}, sand {sand_dead}), "
+              f"bulk violations {viol}, voids {voids:+d}")
+        print(f"  decay: first-20-sweeps {first20} vs last-20 {last20}")
+        print(f"  radii: rock {r.get(WROCK, float('nan')):.1f} < "
+              f"sand {r.get(WSAND, float('nan')):.1f}: {buried}")
+        fA = viol == 0
+        fB = sand_dead == 0
+        fC = last20 < first20
+        print(f"  FALSIFIER A (bulk violations = 0): {'PASS' if fA else 'FAIL — FIRED'}")
+        print(f"  FALSIFIER B (sand deaths = 0): {'PASS' if fB else 'FAIL — FIRED'}")
+        print(f"  FALSIFIER C (rupture curve decays): {'PASS' if fC else 'FAIL — FIRED'}")
+        verdict = fA and fB and fC and buried
+        print(f"PHASE 3b VERDICT: {'PASS' if verdict else 'FIRED'}")
+        raise SystemExit(0 if verdict else 1)
 
     if a_ns.world:
         Jw = derive_world_J()

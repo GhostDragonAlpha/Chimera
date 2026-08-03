@@ -204,17 +204,84 @@ class Lattice:
     """A persistent on-device lattice. Nothing reads back until step() returns the trace
     or close() returns the grid; the pass loop never crosses the bus."""
     __slots__ = ("lat", "Jd", "offs", "tgtd", "aread", "colors", "frozen",
-                 "temp", "lam", "seed", "n_types", "shape", "dev", "pass_count")
+                 "temp", "lam", "seed", "n_types", "shape", "dev", "pass_count",
+                 "wcritd", "rlogd", "ruptures")
 
     @property
     def sweeps_done(self):
         return self.pass_count // 8
 
 
-def open_lattice(grid, shape, targets, J, temp=12.0, lam=0.9, seed=0, frozen_type=None):
+# ------------------------------------------------------------------------------------------------
+# THE RUPTURE PASS (THE_LIVING_MATTER Phase 3). Griffith on the lattice's own bookkeeping,
+# STATELESS: converting a cell to MEDIUM releases the tissue-tissue tension it carries and
+# costs fresh crack surface against its remaining same-type support:
+#     E_release = sum over unlike TISSUE neighbours of gamma_CPM(t,nb)   (the void cannot pull)
+#     E_cost    = n_same * wcrit[t]        (wcrit = alpha * gamma_f, gamma_f = K_IC^2/2E)
+# Rupture when E_release > E_cost. Bulk cells (E_release = 0) never rupture: fracture starts
+# at surfaces and flaws, never in perfect bulk -- which is true, and is the instrument's
+# self-check (rlog slot pair records any n_same >= 15 rupture as a violation).
+# ------------------------------------------------------------------------------------------------
+@wp.kernel
+def _rupture_pass(
+        lattice: wp.array3d(dtype=wp.int32),
+        area: wp.array(dtype=wp.int32),
+        J: wp.array2d(dtype=wp.float32),
+        offs: wp.array(dtype=wp.vec3i),
+        wcrit: wp.array(dtype=wp.float32),
+        rlog: wp.array2d(dtype=wp.int32),     # [slot,0]=ruptures, [slot,1]=bulk violations,
+                                              # [slot,2+t]=deaths of type t (Phase 3b per-type)
+        slot: int, frozen: int, n_off: int):
+    z, y, x = wp.tid()
+    nz = lattice.shape[0]
+    ny = lattice.shape[1]
+    nx = lattice.shape[2]
+    if z == 0 or y == 0 or x == 0 or z == nz - 1 or y == ny - 1 or x == nx - 1:
+        return
+    t = lattice[z, y, x]
+    if t == MEDIUM or t == frozen:
+        return
+    carried = float(0.0)
+    n_same = int(0)
+    touches_medium = wp.bool(False)
+    for i in range(n_off):
+        oi = offs[i]
+        zz = z + oi[0]
+        yy = y + oi[1]
+        xx = x + oi[2]
+        nb = MEDIUM
+        if _in_bounds(zz, yy, xx, nz, ny, nx):
+            nb = lattice[zz, yy, xx]
+        if nb == t:
+            n_same += 1
+        elif nb != MEDIUM:
+            carried += J[t, nb] - 0.5 * (J[t, t] + J[nb, nb])
+        else:
+            touches_medium = True
+    # VOID-CONNECTIVITY (Phase 3c): a rupture creates a void, and a void inside solid
+    # tissue has nowhere to go. Cracks advance from surfaces -- the cell must touch
+    # MEDIUM (or an existing rupture) to die. Isolated inclusions PERSIST (a rock
+    # pebble in the sand shaker stays a rock pebble) unless the void reaches them.
+    if not touches_medium:
+        return
+    if carried > wcrit[t] * float(n_same):
+        lattice[z, y, x] = MEDIUM
+        wp.atomic_add(area, t, -1)
+        wp.atomic_add(rlog, slot, 0, 1)
+        wp.atomic_add(rlog, slot, 2 + t, 1)
+        if n_same >= 15:
+            wp.atomic_add(rlog, slot, 1, 1)
+
+
+def open_lattice(grid, shape, targets, J, temp=12.0, lam=0.9, seed=0, frozen_type=None,
+                 rupture_wcrit=None):
     """Open a persistent lattice on the GPU and return its handle. Same physics and same
     seed stream as assemble_3d_gpu (pass p uses seed*131 + p), so a growth run can now be
-    PAUSED, measured, and RESUMED instead of re-run from scratch to be seen."""
+    PAUSED, measured, and RESUMED instead of re-run from scratch to be seen.
+
+    rupture_wcrit: None (default — the rupture pass does not exist, zero behavior
+    change) or {type: wcrit_per_face} in lattice units (alpha * gamma_f, Phase 3),
+    enabling the rupture pass after every completed sweep."""
     h = Lattice()
     h.dev = wp.get_device()
     h.n_types = J.shape[0]
@@ -236,6 +303,16 @@ def open_lattice(grid, shape, targets, J, temp=12.0, lam=0.9, seed=0, frozen_typ
     h.colors = [wp.vec3i(cz, cy, cx)
                 for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
     h.pass_count = 0
+    if rupture_wcrit is None:
+        h.wcritd = None
+        h.rlogd = None
+    else:
+        wc = np.zeros(h.n_types, dtype=np.float32)
+        for t, v in rupture_wcrit.items():
+            wc[t] = np.float32(v)
+        h.wcritd = wp.array(wc, dtype=wp.float32, device=h.dev)
+        h.rlogd = wp.zeros((4096, 8), dtype=wp.int32, device=h.dev)
+    h.ruptures = None
     return h
 
 
@@ -267,9 +344,20 @@ def step(handle, n_passes, trace=False):
                       inputs=[partials, h.aread, h.tgtd, trace_d, i, h.lam, h.n_types],
                       device=h.dev)
         h.pass_count += 1
-    if trace:
+        # THE RUPTURE PASS (Phase 3): one per completed sweep, after the flips.
+        if h.rlogd is not None and h.pass_count % 8 == 0:
+            slot = h.pass_count // 8 - 1
+            if slot < h.rlogd.shape[0]:
+                wp.launch(_rupture_pass, dim=h.shape,
+                          inputs=[h.lat, h.aread, h.Jd, h.offs, h.wcritd,
+                                  h.rlogd, slot, h.frozen, len(_OFF18)],
+                          device=h.dev)
+    if trace or h.rlogd is not None:
         wp.synchronize_device(h.dev)
-        return trace_d.numpy()
+        if h.rlogd is not None:
+            h.ruptures = h.rlogd.numpy()
+        if trace:
+            return trace_d.numpy()
     return None
 
 
