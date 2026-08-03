@@ -62,7 +62,7 @@ reading has ever been taken.
 | PARSER | ~12 buttons, two bindings, one formula layer — designed | not built |
 | RUNTIME | `w` from `tools/world.py`, no fallback | not built |
 | CALIBRATION | DERIVED / INGESTED / TRAINED, `training_gate.py` enforces Froude | gate exists, layer not assembled |
-| THE WORLD ANSWERS | THE_LIVING_MATTER Phase 1 ✅ (energy trace, exact to 0.00%, under test) — falsifier fired: GPU parallel area update does not converge | Phase 2 prerequisite: derive the parallel area update |
+| THE WORLD ANSWERS | THE_LIVING_MATTER Phase 1 ✅ (energy trace, exact, under test) + parallel area update ✅ (read-live/commit-on-accept; H falls and plateaus, parity restored) | Phase 2: the control run — research tissue surface tensions, derive the 5×5 J |
 
 **The first reading's three red mechanism primitives are GREEN, and each was an instrument
 fault with a different name** (the full evidence lives in `tools/primitive_tests.py` at each
@@ -105,11 +105,15 @@ cone alone. Full evidence in `tools/action_tests.py` at `_slip`, `a_push`, `a_pu
 **Phase B — LIVING_MATTER.** ✅ Phase 1 DONE (2026-08-03): the energy-trace instrument in
 `Chimera/core/matter_gpu.py` (per-pass Hamiltonian, one readback, persistent
 `open_lattice/step/close`), exact to 0.0000% against the CPU Hamiltonian and under test
-(`Chimera/tests/test_matter_gpu_energy.py`). Its falsifier fired on first use: the GPU
-port's parallel area update overshoots and never plateaus — the flip dynamics are clean
-(λ=0 monotone), the fault is the pass-start area counts. Next: Phase 2's prerequisite
-membrane — derive the parallel area update; its falsifier is already written (the rung-1
-trace must plateau).
+(`Chimera/tests/test_matter_gpu_energy.py`). Its falsifier fired on first use (parallel
+area update overshoots) and the prerequisite membrane is RESOLVED the same day: the
+marginal is a plain read of the live count, committed only on acceptance — H falls
+8.87M → 6.51M and plateaus, parity sorts (differential 17.2/18.1/24.1, uniform not),
+areas hold at the CPU's own offset. Two predictions missed and are recorded, not
+reconciled: σ_a is 100–152 cells vs the 2.58 serial scale (cohort-correlated wander —
+the deterministic z-slab route remains named if the operator wants the last 50×), and
+the 1% monotonicity bar was underived — the trace's own thermal scale is 1.51% and the
+check now derives its bar from the trace. Next: Phase 2 — the control run.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/
