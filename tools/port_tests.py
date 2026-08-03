@@ -34,16 +34,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body, gravity
 
-MYOBODY = ROOT / "external" / "myo_sim" / "body" / "myobody.xml"
-TESTS = {}
-
-
-def port_test(name, statement, falsifier):
-    """Register a port test. All three parts required -- no falsifier, no test."""
-    def deco(fn):
-        TESTS[name] = dict(fn=fn, statement=statement, falsifier=falsifier, name=name)
-        return fn
-    return deco
+# THE REGISTRY LIVES IN ITS OWN MODULE, and that is not tidiness. When it lived HERE, this file
+# ran as `__main__` while port_tests_more did `from port_tests import port_test` -- importing a
+# SECOND copy with its own empty registry. Ports 5-12 registered into a dict nobody read and the
+# harness printed "4/4 ports validated": a clean success with two-thirds of the instruction set
+# missing. A shared registry must not live in a module that is also an entry point.
+from port_registry import TESTS, MYOBODY, port_test, expect
 
 
 # ── PORT 1: RIGID BODY ────────────────────────────────────────────────────────────────────────
@@ -228,6 +224,8 @@ def t_spindle(mujoco):
 
 def main() -> int:
     import mujoco
+    import port_tests_more  # noqa: F401 -- registers ports 5-12 into the shared registry
+    expect(12)              # a partial suite is a REFUSAL, not a smaller number
     a = sys.argv
     only = a[a.index("--port") + 1] if "--port" in a else None
     names = [only] if only else list(TESTS)
