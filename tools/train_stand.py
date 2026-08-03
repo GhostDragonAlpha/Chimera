@@ -96,6 +96,20 @@ def joint_frac(d, jids):
     return max(abs(float(d.qpos[adr]) - c) / h for adr, c, h, _ in jids)
 
 
+def joint_frac_named(d, jids):
+    """The same number, and WHICH JOINT IT IS. Returns `(frac, name)`.
+
+    `joint_frac` maxes over 30-odd joints and returns a scalar -- and a scalar that moves for
+    reasons you cannot attribute is the shape of measurement this project keeps getting caught
+    by (rule 19, one quantity one landmark). With the trunk ligaments in, `jmax` alone cannot
+    distinguish the trunk membrane's falsifier 1 (the LUMBAR still goes through its stop, the
+    derived structure is insufficient) from a completely different joint taking the load. The
+    name was always in `jids`; it was being thrown away at the `max()`.
+    """
+    return max(((abs(float(d.qpos[adr]) - c) / h, n) for adr, c, h, n in jids),
+               key=lambda p: p[0])
+
+
 def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     """One life under a candidate. Returns (score, trace, pics).
 
@@ -218,6 +232,7 @@ def main() -> int:
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     hist = []
+    best_ever = (-np.inf, mu.copy())     # the SAVE is the session's best, not the last turn's
 
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
           f"g {g:.4f}, {nu} muscles, {dim}-dim search")
@@ -242,11 +257,18 @@ def main() -> int:
         survived = len(tr["t"]) * 0.02
         ok = frac >= 90.0 and survived >= 4.99
         hist.append((turn, float(scores[order[0]])))
+        if float(scores[order[0]]) > best_ever[0]:
+            # The last version saved the LAST turn's winner: a session whose best came at turn 12
+            # of 14 wrote turn 13's worse theta over it, and the harness downstream then graded a
+            # body the training had already beaten. An instrument reporting the wrong candidate is
+            # the same species as the peak-vs-minimum bar.
+            best_ever = (float(scores[order[0]]), cand[order[0]].copy())
         print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
               f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}  "
               f"{'PROVEN' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"stand_turn_{turn:02d}.png")
-    np.save(OUTDIR / "stand_theta.npy", best_theta)
+    np.save(OUTDIR / "stand_theta.npy", best_ever[1])
+    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")
     print("A TURN YOU HAVE NOT LOOKED AT DID NOT END.")
     return 0

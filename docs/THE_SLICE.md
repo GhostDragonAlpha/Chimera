@@ -294,17 +294,27 @@ button is load-bearing, not a replayed checkpoint. The stand policy itself was r
 this session: CEM warm-started twice (`--init`, added to `tools/train_stand.py`), 24
 turns × pop 48 at the full 5 s horizon.
 
-**The named debt (the port's full contract, honestly failed):** `stand_port.py`'s printed
-PROVEN line adds "joints off their limits", and the policy arches the lumbar past its
-declared stop — worst joint **1.56×** range transient, **1.14–1.34× sustained at
-L4_L5_FE** (≈ 3–5° past a soft stop), with knees/subtalar grazing at 1.01–1.03×. The cause
-is named, not theorised: `tools/world.py`'s passive-tissue derivation covers hip/knee/
-ankle and *refuses* the trunk — "left alone 13 (out of range, no ligament)" — because
-theHuman publishes no lumbar motion envelope to derive a slack band from. **Next rung,
-fixed by this firing:** the TRUNK PASSIVE-TISSUE port (lumbar ligaments), which needs
-published lumbar passive moment-angle data; a chosen stiffness would be rule 1. This was
-F3's predecessor paragraph ("exists as a separate artifact… not driven through the slice
-parser") resolved: the artifact now stands through the parser.
+**The named debt — RE-MEASURED 2026-08-04 after the trunk membrane
+(`docs/THE_TRUNK_TISSUE.md`):** `stand_port.py`'s printed PROVEN line adds "joints
+off their limits", and the port contract still FAILS — but the offender changed.
+The trunk tissue membrane derived lumbar FE+LB ligaments from Miller 1986 /
+Pearcy & Tibrewal 1984 (20 ligaments; v4 CEM retrain, 16×48 warm-started in the
+verified 20-ligament world) and the measured result: the lumbar went from
+**sustained 1.14–1.34× (peak 1.56×) at L4_L5_FE** to a **transient graze, peak
+1.12×, over its stop 6.0% of phase 1** — inside t = 4.68–4.98 s, the same window
+as the CoM wobble, i.e. a balance signature, not a posture. The membrane's three
+pre-named falsifiers all hold: no sustained lumbar violation, standing reachable
+(pelvis MIN 92.1%), stiffness inside Miller's band. **The remaining sustained
+over-stop joints are leg joints, not lumbar:** `mtp_angle_l` 1.11× over 97.6% of
+phase 1, `knee_angle_r` 1.05× over 95.2%, `hip_rotation_l` 1.03× over 84.4%,
+`subtalar_angle_r` 1.10× over 28.0% — plus the CoM excursion (2.56× the BoS box,
+the policy's balance, not the tissue's stiffness). The trunk membrane's ledger
+entry is closed; the port contract's residual debt is re-allocated and named:
+leg-joint ligament envelopes (mtp/knee/hip-rotation/subtalar, the leg derivation's
+own edge cases) and the stand policy's balance. Original cause, for the record:
+`tools/world.py`'s passive-tissue derivation used to *refuse* the trunk — "left
+alone 13 (out of range, no ligament)" — for want of a published lumbar envelope;
+Miller 1986 supplied it.
 
 **Next rung, fixed by this firing:** re-record with position-closed-loop drive,
 capture VIDEO for the blind read, fix exposure and object legibility, then read

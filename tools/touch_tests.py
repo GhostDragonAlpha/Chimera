@@ -229,7 +229,9 @@ def main() -> int:
                 and isinstance(objs[2], T.Pile),
                 "stone at (3, 5), tuft at (-3.5, 8), pile at (4, 12)")
     buf = T.touchables_buffer(objs, w)
-    ok &= check("touchables_buffer concatenates", buf.shape[0] == 40 + 180 + 400,
+    # 160 (stone, densified 2026-08-04 -- tools/stone_legibility.py's before/after) + 180
+    # (tuft blades) + 400 (pile grains). The count is the render row; the physics is elsewhere.
+    ok &= check("touchables_buffer concatenates", buf.shape[0] == 160 + 180 + 400,
                 f"{buf.shape[0]} splats")
     ok &= check("F1: the provenance table exists in the module header",
                 "PROVENANCE TABLE" in (T.__doc__ or ""), "grep PROVENANCE in touchables.py")

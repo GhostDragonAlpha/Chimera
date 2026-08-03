@@ -264,7 +264,13 @@ class Stone:
 
     def buffer(self, w):
         from matter import blank, SOLID, surface_grain, fibonacci_sphere
-        n = 40
+        # n=40 -> 160, 2026-08-04, measured by tools/stone_legibility.py: at the blind read's
+        # 3.2 m camera distance 40 splats read as a ~15 px faint smudge (stone_before.jpg) --
+        # sparse dots, not a rock. RENDER ROW ONLY: the physics (mass, friction, impulse) is
+        # untouched, and surface_grain rescales the splat size with n, so the sphere's SIZE
+        # does not change -- only its solidity. THE HUMAN dial, legibility, F2's own rule
+        # (fix the presentation physics, never the tolerance).
+        n = 160
         d = fibonacci_sphere(n)
         b = blank(n)
         b[:, 0] = self.x + d[:, 0] * self.r
