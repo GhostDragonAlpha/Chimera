@@ -25,9 +25,11 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
       diameter 0.35 m               THE HUMAN -- design placeholder ("a stone you can shove"); the
                                     operator moves it. (theGround's fractal_D governs the terrain
                                     grain sizes, not this set piece.)
-      basalt density 2,900 kg/m^3   PHYSICS -- Quaglio et al. 2020, cited in
-                                    docs/THE_LIVING_MATTER.md Phase 4 (the ledger's rock density).
-      stone mass 65.1 kg            PHYSICS -- derived: rho_basalt x (4/3) pi r^3.
+      quartzite density 2,650 kg/m^3 PHYSICS -- Schoen 2011, "Physical Properties of Rocks"
+                                    (quartzite 2.6-2.7 g/cm^3); the stone IS quartzite now --
+                                    its albedo and its mass must be the same rock (F1 fired on
+                                    the quartz-look/basalt-mass mismatch, 2026-08-03).
+      stone mass 59.5 kg            PHYSICS -- derived: rho_quartzite x (4/3) pi r^3.
       friction mu = 0.841           PHYSICS -- derived: tan(theGround.repose_regolith_deg 40.03),
                                     stone-on-regolith Coulomb friction = the slope loose regolith
                                     holds. Read from theGround/numbers.json, never typed.
@@ -74,8 +76,10 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
                                     own median grain).
       grain solid density 2,650     PHYSICS -- derived: bulk_density 1537 / (1 - porosity 0.42),
                                     theGround/numbers.json.
-      display clod 0.04 m           THE HUMAN -- render size: a 0.35 mm grain is a sub-pixel dot;
+      display clod 0.06 m           THE HUMAN -- render size: a 0.35 mm grain is a sub-pixel dot;
                                     each splat shows a CLOD, the physics still counts 400 grains.
+                                    (Raised from 0.04 after the rung-3 blind read: at 3.2 m camera
+                                    distance 4 cm clods merged into a faint patch, not a pile.)
       kick factors 0.6 / 0.4        THE HUMAN -- feel rows, per the brief: a kicked grain gets
                                     0.6 x the player's velocity plus 0.4 m/s up.
       kick radius 0.5 m             THE HUMAN -- how close a boot passes to scatter grains.
@@ -87,9 +91,19 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
       gravity g                     PHYSICS -- walker.g, the planet's own GM/R^2, fifteen membranes up.
       sun / sky / bounce lighting   PHYSICS -- the exact beam + airlight + ground-bounce formula of
                                     walker.body_buffer, reused so one sun serves every object.
-      rock albedo (0.34,0.31,0.27)  THE HUMAN -- render: walker.py's bare-rock palette, matched so
-                                    the stone reads as the same rock the terrain shows.
-      veg albedo (0.20,0.27,0.14)   THE HUMAN -- render: walker.py's vegetation palette.
+      exposure x2.0                 THE HUMAN -- walker._EXPOSURE, the camera's lens compensation
+                                    (taste, same status as lit()'s tone), shared with the ground so
+                                    object and terrain sit in the same photograph.
+      stone albedo = quartz         PHYSICS -- theGround/numbers.json mineral_materials.quartz
+                      rgb_mean                rgb_mean (0.710, 0.708, 0.642), material-genome scan:
+                                    a quartzite stone in this ground's own mineral table, read live
+                                    like the pile's mean. (The bare-rock palette this replaced is
+                                    exposed BEDROCK -- a different claim than a loose stone.)
+      veg albedo (0.20,0.27,0.14)   THE HUMAN -- render: walker.py's vegetation palette (a spatial
+                                    mean of blades + soil; kept here for reference).
+      tuft albedo (0.24,0.36,0.16)  THE HUMAN -- render: a dense tuft is PURE blade, not the
+                                    ground's mean, so the blades sit toward the palette's green
+                                    end; at palette-parity the tuft measured invisible (rung-3).
       pile albedo (0.55,0.54,0.44)  PHYSICS -- mean of theGround's measured mineral albedos
                                     (quartz/feldspar/oxide rgb_mean, material-genome scans).
       spawn positions               THE HUMAN -- level design placeholders, the operator's to move.
@@ -106,7 +120,7 @@ import numpy as np
 import walker as _wk          # height_at / _static / _load -- the carved ground is the truth
 
 # -- the three measured/cited numbers this file cannot re-derive at runtime ----------------------
-_RHO_BASALT = 2900.0         # kg/m^3 -- Quaglio et al. 2020 (see provenance table)
+_RHO_QUARTZITE = 2650.0      # kg/m^3 -- Schoen 2011, quartzite 2.6-2.7 g/cm^3 (see provenance)
 _BLADE_E = 1.416e9           # Pa -- Kosmalla et al. 2025, geometric mean of the 1050-1910 MPa range
 _BLADE_D = 1.6e-3            # m  -- Kosmalla et al. 2025, green-leaf outer diameter, mean
 _RHO_TISSUE = 1000.0         # kg/m^3 -- fresh tissue ~ water (stated assumption)
@@ -123,10 +137,18 @@ _KICK_V = 0.6                # of the player's velocity, handed to a kicked grai
 _KICK_UP = 0.4               # m/s up
 _KICK_R = 0.5
 _SETTLE = 0.01               # m/s -- the membrane's settle criterion
-_CLOD = 0.04                 # display size of one grain-splat (a clod, not a grain)
+_CLOD = 0.06                 # display size of one grain-splat (a clod, not a grain) -- THE HUMAN.
+                             # Raised 0.04 -> 0.06 after the rung-3 blind read: at the 3.2 m
+                             # third-person camera distance, 4 cm clods merged into a faint mush.
+                             # Display only; the physics still counts 400 grains of d50 0.35 mm.
 
-_ROCK_ALB = np.array([0.34, 0.31, 0.27], np.float32)
 _VEG_ALB = np.array([0.20, 0.27, 0.14], np.float32)
+# THE TUFT IS NOT THE GROUND'S MEAN. walker.py's veg palette is a spatial MEAN -- blades plus the
+# soil between them, averaged at the 0.9 m grain. A dense tuft is PURE blade, and drawn at
+# palette-parity it has zero contrast against its own mean: the rung-3 record and the 2026-08-03
+# probe both measured it invisible. So the blades sit slightly toward the palette's high (green)
+# end. THE HUMAN render row -- the physics (E, I, k, damping) is untouched.
+_TUFT_ALB = np.array([0.24, 0.36, 0.16], np.float32)
 
 
 def _ground_nums():
@@ -157,23 +179,31 @@ def _shade(b, albedo, w):
     from matter import lit
     S_rel, sun, beam, sky, bounce = _sun_light(w)
     lam = np.clip(b[:, 21:24] @ sun, 0.0, None)
-    b[:, 16:19] = lit(albedo, S_rel * beam * lam + sky + bounce, e_ref=S_rel, tone=0.45)
+    # one sun, one lens: the camera's exposure compensation (walker's THE HUMAN dial) admits the
+    # same light here as on the ground the object rests on -- physics untouched, the lens opened.
+    b[:, 16:19] = lit(albedo, _wk._EXPOSURE * (S_rel * beam * lam + sky + bounce),
+                      e_ref=S_rel, tone=0.45)
     b[:, 19] = 0.95
 
 
 class Stone:
-    """RIGID. A basalt sphere: shoved by momentum (m_body/m_stone along the contact normal),
+    """RIGID. A quartzite sphere: shoved by momentum (m_body/m_stone along the contact normal),
     stopped by Coulomb friction at the regolith's own repose tangent. Carriable within arm's reach."""
 
     def __init__(self, x, y):
         gnd, hum = _ground_nums()
         self.r = _STONE_D / 2.0
-        self.mass = _RHO_BASALT * (4.0 / 3.0) * math.pi * self.r ** 3
+        self.mass = _RHO_QUARTZITE * (4.0 / 3.0) * math.pi * self.r ** 3
         self.mu = _mu_repose()
         self.repose_deg = float(gnd["repose_regolith_deg"])
         self.m_body = float(hum["mass_kg"])
         self.reach = 0.44 * float(hum["height_m"])          # ANSUR functional reach
         self.waist = float(hum["com_height_m"])
+        # THE STONE'S COLOUR IS THIS GROUND'S OWN MINERAL. theGround's mineral table carries
+        # measured rgb_means (material-genome scans); a stone lying in this regolith reads as
+        # quartzite -- pale quartz -- not the terrain's bare-rock palette (that palette is for
+        # exposed bedrock faces, a different claim). Read live, like the pile's albedo mean.
+        self._alb = np.array(gnd["mineral_materials"]["quartz"]["rgb_mean"], np.float32)
         self.x, self.y = float(x), float(y)
         self.z = _wk.height_at(self.x, self.y) + self.r
         self.vx = self.vy = 0.0
@@ -243,12 +273,12 @@ class Stone:
         b[:, 21:24] = d
         b[:, 20] = surface_grain(n, self.r)
         b[:, 11] = SOLID
-        _shade(b, _ROCK_ALB, w)
+        _shade(b, self._alb, w)
         return b
 
     def probe(self, w) -> str:
         state = "carried" if self.carried else f"{math.hypot(self.vx, self.vy):.2f} m/s"
-        return (f"the stone -- {self.mass:.1f} kg of basalt (Quaglio 2020), "
+        return (f"the stone -- {self.mass:.1f} kg of quartzite (Schoen 2011), "
                 f"mu {self.mu:.2f} = tan({self.repose_deg:.2f} deg repose) -- {state}")
 
 
@@ -310,7 +340,7 @@ class Tuft:
         b[:, 21:24] = (0.0, 0.0, 1.0)
         b[:, 20] = 0.02                              # display width of a blade -- render row
         b[:, 11] = SOLID
-        _shade(b, _VEG_ALB, w)
+        _shade(b, _TUFT_ALB, w)
         return b
 
     def probe(self, w) -> str:

@@ -477,6 +477,18 @@ _RING_LEVELS = 8        # doubling 8 times: 0.9 m underfoot to 115 m at the hori
 # and if the budget changes this is the number to change.
 _STEP0 = 0.90
 
+# ── EXPOSURE: A LENS ACT, NOT A PHYSICS EDIT ─────────────────────────────────────────────────────
+# The planet is Earth-bright (S_earth = 1.005, measured) -- the first recorded session still read
+# as "nearly empty dark landscape" (docs/THE_SLICE.md, Phase E rung 3, F2 fired). The dimness is
+# not the world's light; it is how much of that light the camera admits. So this is the camera's
+# EXPOSURE COMPENSATION: the one human dial, exactly the legal status of lit()'s `tone` -- THE
+# HUMAN (taste), said plainly and never buried. The physics is untouched: albedo, beam, sky,
+# ground-bounce and S_rel are all still derived; the LENS opens two stops (x2 on irradiance) on
+# the way to the tone curve. One constant serves every lit() in this file, because one sun serves
+# the whole picture -- ground, body, skin-wrap -- and the touchables' _shade reads it too, so the
+# objects sit in the same photograph as the ground they rest on.
+_EXPOSURE = 2.0         # THE HUMAN -- taste row; the operator's to move. Physics: unchanged.
+
 
 def scene_around(w: Walker, t: float = None):
     """The buffer to render from inside: fine underfoot, coarse to the horizon, no seam between.
@@ -569,7 +581,7 @@ def scene_around(w: Walker, t: float = None):
         alb = veg * (1.0 - bare) + rock * bare
 
         lam = np.clip(nrm @ sun, 0.0, None)
-        b[:, 16:19] = lit(alb, S_rel * beam * lam + sky, e_ref=S_rel, tone=0.45)
+        b[:, 16:19] = lit(alb, _EXPOSURE * (S_rel * beam * lam + sky), e_ref=S_rel, tone=0.45)
         b[:, 19] = 0.95
         # A GRAIN MUST BE BIGGER THAN ITS GAP. On a square lattice of pitch `step`, the farthest a
         # point can be from the nearest grain centre is the half-diagonal, 0.707 * step -- so at 0.8
@@ -712,7 +724,7 @@ def body_buffer(w: Walker):
     # for a vertical face -- is 11% of the beam, and it is why the figure's back reads as a body
     # in daylight instead of a silhouette. Same physics as the sky term, one reflection later.
     bounce = 0.5 * 0.22 * S_rel * beam
-    b[:, 16:19] = lit(body_alb, S_rel * beam * lam + sky + bounce, e_ref=S_rel, tone=0.45)
+    b[:, 16:19] = lit(body_alb, _EXPOSURE * (S_rel * beam * lam + sky + bounce), e_ref=S_rel, tone=0.45)
     # PER-CLASS SHADING (F1): the body publishes its material class in matter.MAT.
     cls = b[:, _M.MAT]
     # THE FACE SITS BEHIND THE VISOR: it is lit only by what the visor transmits, and its light
@@ -727,7 +739,9 @@ def body_buffer(w: Walker):
         lam_s = np.clip(b[skin, 21:24] @ sun, -1.0, 1.0)
         wrapped = np.clip((lam_s[:, None] + w[None, :]) / (1.0 + w[None, :]), 0.0, 1.0)
         e_band = T_vis * (S_rel * beam * wrapped + (sky + bounce))
-        scale = np.clip(e_band / max(S_rel, 1e-30), 0.0, None) ** 0.45
+        # the same lens as everything above: the skin-wrap is a lit() by hand, so the exposure
+        # compensation (THE HUMAN dial, declared at _EXPOSURE) multiplies its irradiance too
+        scale = np.clip(_EXPOSURE * e_band / max(S_rel, 1e-30), 0.0, None) ** 0.45
         b[skin, 16:19] = np.clip(body_alb[skin] * scale, 0.0, 1.0)
     # the visor keeps its specular: a curved dark surface with a bright sky in front of it
     visor = cls == 1.0

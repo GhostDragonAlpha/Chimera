@@ -289,6 +289,45 @@ stand policy) and has not been driven through the slice parser. Not judged yet.
 capture VIDEO for the blind read, fix exposure and object legibility, then read
 again. The bar does not move.
 
+**Phase E, rung 4 — THE RE-READ (2026-08-03).** The three rung-3 causes, fixed and
+measured:
+
+1. **Exposure was presentation, not physics** (S_earth = 1.005 — the planet is
+   Earth-bright; the frame was the lens). `_EXPOSURE = 2.0` in `walker.py` — the
+   camera's two-stop compensation, the ONE human dial, same legal status as
+   `lit()`'s tone; ground, body, skin-wrap and touchables all sit in the same
+   photograph.
+2. **The real F2 cause, measured en route:** the ground's lattice-closing
+   0.95 m splats form a picket fence ~0.47 m tall — a chest-height camera cannot
+   see ANY ground object past ~1 m over it (probe: stone, pile, tuft all
+   invisible from chest height, all visible from above). Rung-3's "faint
+   patches" were occlusion, not size. The recorder looks down (+0.55 pitch).
+3. **Legibility:** the stone is now honest quartzite end-to-end — the
+   quartz-look/basalt-mass mismatch was an F1 lie and is fixed (albedo from
+   theGround's quartz, ρ 2,650 kg/m³ Schön 2011, 59.5 kg; probe and tests tell
+   the same rock). Pile clods 6 cm; tuft brightened (it had zero contrast at
+   palette parity).
+4. **The recorder is closed-loop** (`tools/slice_record.py`): a goto() servo on
+   the walker's own readout, pick-up closed on the OUTCOME (stone.carried), 121
+   frames + per-beat contact sheets. The carry is on tape this time.
+
+The blind read of the contact sheets (fresh vision agent, zero context):
+*"A white humanoid character walks continuously across a flat green terrain —
+legs alternating in a continuous walk cycle — while pale matter appears at its
+hands and feet: something carried near the right hand, a mound approached and
+passed, a splash at the feet that fades behind it."* Against rung-3's "mannequin
+stands, possibly walks, in an empty dark landscape": **walking is now read
+unambiguously, and the three touches read as interactions** (carry, mound,
+footprint). What is NOT read yet: the carried matter does not read as a STONE
+(it reads as a speckled cluster), and "living world" is not named — the terrain
+is still a flat green plane with ambiguous dark streaks.
+
+**F2 status: converging, not converged — the final call is THE HUMAN's** (the
+dyad's rule: the operator is the authoritative ear; the agent read is the
+advisory second opinion). The named remaining gap is fidelity of matter, not
+physics: the stone needs a denser sphere to read as rock; the world needs the
+vegetation its albedo already claims. Both are addition, not redesign.
+
 ## EXPLICITLY NOT IN THE SLICE
 
 Vehicles, buildings, NPCs, combat, economy, biomes evolving, the whole universe. The seed
