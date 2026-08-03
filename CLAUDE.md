@@ -79,12 +79,13 @@ belongs to, and cannot trust the ledger without knowing what "validated" was mad
 | 4 | **[`docs/THE_PIECES.md`](docs/THE_PIECES.md)** | **the ledger.** 154 pieces with provenance and status; §16 is the port ledger — what is validated, what is unmeasured, what is merely specified. |
 | 5 | **[`story/README.md`](story/README.md)** | the game: chapters, proven/visual/learned, the two authors. |
 
-**WHERE IT STANDS (2026-08-02): 12/12 ports validated · 4/7 primitives · layers 3–6 not built ·
-the universal object framework SPECIFIED with zero ports validated.** The ledger is the ledger; do
+**WHERE IT STANDS (2026-08-02): 12/12 ports · 4/7 mechanism primitives · 7/11 action primitives
+(1 REFUSED as absent structure) · parser/runtime/calibration not built · the universal object
+framework SPECIFIED with zero ports validated.** The ledger is the ledger; do
 not cite the specification as proof.
 
 ```bash
-python tools/port_tests.py && python tools/primitive_tests.py
+python tools/port_tests.py && python tools/primitive_tests.py && python tools/action_tests.py
 ```
 
 ---
@@ -114,7 +115,7 @@ python tools/port_tests.py && python tools/primitive_tests.py
    straight through that hole. Read this first; it points to every other doc that matters.
    **ENFORCED as tooling** — the Chimera Engine MCP server (`ChimeraEngine/MCP_ENGINE.md`; agent
    onboarding `ChimeraEngine/ONBOARDING.md`): `prove` runs the gates and refuses until they pass.
-1b. **`docs/THE_PIECES.md`** — the INVENTORY the consolidation was built from: **154 pieces**, each
+1b. **`docs/THE_PIECES.md`** — the INVENTORY the consolidation was built from: **169 pieces**, each
    with its source and its status, and **§14 names the nine that are written down, load-bearing,
    and done by nothing** (S1/S2 saturation, S8's gate, the why-chain and the coin for membranes,
    the night phase, the six directions, the demographic, live surprise capture, `work_queue()`).

@@ -184,22 +184,69 @@ different physics. **Compositions do not proceed on them.**
 
 ---
 
-## LAYER 3 · PROGRAMS — actions
+## LAYER 3 · PROGRAMS — the action primitives
 
-An action is a **program in the port instruction set**: STEP, PLANT, REACH, GRIP, BRACE, STAND,
-WALK. `docs/CONTROLLER_MAP.md` holds the catalogue — ~14 shared atoms over ~50 formulas.
+**Twelve, named by the operator 2026-08-02, and tested: `tools/action_tests.py`.**
+An action is a **program in the port instruction set**, and `action_test()` enforces the part of
+Rule 0 the other registries let slip: **PREDICTION is a required registration argument**, declared
+at import, which is necessarily before the test can have run. A prediction written after the
+measurement is a description.
+
+| | prediction (closed form, computed before the run) | measured | |
+|---|---|---|---|
+| **SWING** | `T = 2π√(I/(m g d))` — the leg as a compound pendulum | 1.7093 s vs 1.7929 predicted, **4.7%** | PASS |
+| **THROW** | `R = v² sin(2θ)/g` | 5.0089 m vs 5.0102, **0.03%** | PASS |
+| **LAND** | `J = m√(2gh)` — impulse, needing no stiffness | 147.08 vs 138.03 N·s, **6.6%** | PASS |
+| **TURN** | `ΔL_z = 0` under internal drive | 0.0415 vs **41.82** for the external-torque control | PASS |
+| **STANCE** | `Σplantar = (1−s)W` across three harness settings | fitted slope **−583.7 N** vs −W = −580.5 | PASS |
+| **PUSH** | `F_slip = μN` | slid at 185.3 N against a 348.3 N bound | PASS |
+| **LIFT** | `0 < mgΔh / W_muscle ≤ 1` | 0.0337 — **and flagged WEAK in its own output** | PASS |
+| **BALANCE** | `ω₀ = √(g/H)` | 0.4186 vs 2.7623 — pivot pinned at the ROOT, `H` measured from the FOOT | FAIL |
+| **PULL** | `F_slip(pull) = F_slip(push)` | 81.4 vs 185.3 N — a **real 56.1% asymmetry** | FAIL |
+| **STEP** | one foot takes what the other drops | the left foot carries nothing in double support | FAIL |
+| **CROUCH** | `τ_knee = W_above × lever`, two routes | 5100.81 vs 59.64 N·m — see below | FAIL |
+| **GRIP** | — | **REFUSED**: 47 joints, not one shoulder, elbow, wrist, thumb or finger | REFUSED |
+
+**A REFUSAL IS NOT A FAILURE OF THE BODY.** It is an absent structure, and the test stays
+registered so the gap is *counted* rather than forgotten.
+
+**CROUCH names the sharpest structural finding:** writing `knee_angle_r = 45°` does **not pose the
+knee.** It drives seven coupled dofs by equality constraint, and they were left where the keyframe
+put them — so the brace is holding the knee against its own coupling. The 5100 N·m is real; it is
+simply not a crouch.
+
+### THE BRACE — an instrument, declared, and three attempts of which one is physics
+
+| attempt | what happened |
+|---|---|
+| restore `qpos` every step | **teleportation.** A stable pose reporting **8344 N** of plantar load against a predicted 290, because the contact solver answers a teleport with whatever force that takes. Stable, repeatable, 28× wrong. |
+| `qfrc_applied` + PD | a real force, but **explicit** — NaN at t = 0.006 s. Shrinking gains until it survives is a sweep standing in for a derivation. |
+| `jnt_stiffness` + `dof_damping` | the model's own passive spring, integrated **implicitly**, stable exactly where the explicit force is not. **This one.** |
+
+`K` is derived — stiff enough that this body's largest static moment deflects the joint under a
+degree — and the brace **reports what it actually held to** rather than assuming it.
+
+### Four vacuous or misattributed passes, which mattered more than the failures
+
+- **PULL passed at 0.0% asymmetry** because push and pull both ran to the same *ramp ceiling*
+  without ever sliding, and two identical non-events are identical whether or not friction is
+  isotropic. The harness was holding the root's x,y: a pinned body cannot slide however hard it is
+  pushed. Released, both slip — and the **real 56.1% asymmetry the vacuous version had hidden**
+  appears.
+- **STEP passed with the lifted foot already at 0.0 N.** Lifting a foot that carries nothing
+  transfers nothing; the test scored an absence as a clean unload.
+- **STANCE reported a 20.89° brace slip** that was not slip: 13 joints of this keyframe start
+  outside their own published range, and a spring whose set point is past the limit can never
+  reach it.
+- **SWING returned `nan` over 0 cycles** — a teleported pendulum has no period.
 
 **COMMAND THE PROCESS AND ITS STOP CONDITION, NEVER THE FINAL POSITION.** A hand does not aim its
 fingers at coordinates; it *closes until it cannot*, and the object decides where they land. So one
 GRIP serves a pin and a bowling ball: the object parameterises the **result**, not the command.
 **Positions are OUTPUTS.** Every atom is `apply effort → stop when a sensor says stop`, which is a
-state-machine transition — which is why muscles and reflexes are the right substrate, and why a
-reward must never target a pose.
+state-machine transition — and why a reward must never target a pose.
 
-**STAND IS NOT A PORT. IT IS A STATE** — the operator, and it is what separates layer 3 from layer 1.
-You train the ports; you *measure* the state.
-
----
+**STAND IS NOT A PORT. IT IS A STATE** — the operator. You train the ports; you *measure* the state.
 
 ## LAYER 4 · PARSER — intent to program
 

@@ -396,11 +396,30 @@ name** because the gap fell inside the gait envelope's own sample grain), and bo
 would pass:** each probes a joint while the body collapses around it. They need a stronger
 isolation than a pelvis harness, not different physics. **Compositions do not proceed on them.**
 
-### Layers 3–6 — **NOT BUILT**
+### Layer 3 — ACTION PRIMITIVES · **7 / 11 validated, 1 REFUSED** (`tools/action_tests.py`)
+
+| # | action | status |
+|---|---|---|
+| 155 | SWING — `T = 2π√(I/(m g d))` | **PASS** 1.7093 s vs 1.7929 predicted (4.7%) |
+| 156 | THROW — `R = v² sin(2θ)/g` | **PASS** 5.0089 m vs 5.0102 (0.03%) |
+| 157 | LAND — `J = m√(2gh)` | **PASS** 147.08 vs 138.03 N·s (6.6%) |
+| 158 | TURN — `ΔL_z = 0` under internal drive | **PASS** 0.0415 vs 41.82 for the external control |
+| 159 | STANCE — `Σplantar = (1−s)W` | **PASS** fitted slope −583.7 N vs −W = −580.5 |
+| 160 | PUSH — `F_slip = μN` | **PASS** slid at 185.3 N against a 348.3 N bound |
+| 161 | LIFT — `0 < efficiency ≤ 1` | **PASS**, and flagged WEAK in its own output |
+| 162 | BALANCE — `ω₀ = √(g/H)` | FAIL — pivot pinned at the ROOT, H measured from the FOOT |
+| 163 | PULL — isotropic friction | FAIL — a **real 56.1% asymmetry**, not an instrument fault |
+| 164 | STEP — one foot takes what the other drops | FAIL — the left foot carries nothing in double support |
+| 165 | CROUCH — `τ = W_above × lever`, two routes | FAIL — `knee_angle_r` drives 7 coupled dofs that were never re-solved |
+| 166 | GRIP | **REFUSED** — 47 joints, not one shoulder, elbow, wrist, thumb or finger |
+| 167 | **PREDICTION is now a required registration field.** `port_test`/`primitive_test` enforced only STATEMENT and FALSIFIER, so the number could be written after the run. `action_test` demands all three at import. | LIVE |
+| 168 | **THE BRACE.** Teleporting `qpos` reports 8344 N against a predicted 290; an explicit PD loop NaNs at 6 ms; `jnt_stiffness`+`dof_damping` is integrated implicitly and works. K derived, deviation reported. | LIVE |
+| 169 | **Four vacuous passes caught** — PULL comparing two ramp ceilings, STEP unloading a foot that carried nothing, STANCE blaming the keyframe's defect on its brace, SWING timing a teleported pendulum. | LIVE (as the lesson) |
+
+### Layers 4–6
 
 | # | layer | status |
 |---|---|---|
-| 144 | PROGRAMS — actions as programs in the port instruction set (`docs/CONTROLLER_MAP.md`) | DESIGNED |
 | 145 | PARSER — intent → program, ~12 buttons over one input-agnostic formula layer | **DELIBERATELY LAST** — the only layer that cannot be wrong in an interesting way |
 | 146 | RUNTIME — `dx/dt = f(x,u,p,w)`; `w` from `tools/world.py` and nowhere else | LIVE |
 | 147 | CALIBRATION — `p` splits DERIVED / INGESTED / TRAINED, never chosen | LIVE (`tools/training_gate.py`) |
