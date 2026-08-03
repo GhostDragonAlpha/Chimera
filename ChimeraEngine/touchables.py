@@ -66,6 +66,12 @@ PROVENANCE TABLE -- every constant in this file, one line each, PHYSICS or THE H
                                     friction in a tuft is what a single-blade damping measurement
                                     would not cover; the membrane's spec is the authority here.
       theta_max 60 deg              THE HUMAN -- how far a body flattens a tuft, by eye.
+      blade display width 0.02 m    THE HUMAN -- render row: 12.5x the measured blade,
+                                    legibility, not physics (as the pile's clod).
+      grains per blade = 19         PHYSICS (derived) -- ceil(L/w)+1 over the two rows
+                                    above: a blade reads as a LINE when its grain spacing
+                                    <= the splat's own width (docs/THE_VEGETATION_
+                                    GEOMETRY.md, 2026-08-04). 3 dots measured a smudge.
 
     PILE
       400 grains                    THE HUMAN -- design placeholder count.
@@ -130,6 +136,12 @@ _STONE_D = 0.35
 _TUFT_BLADES = 60
 _TUFT_DISK_R = 0.2           # the 0.4 m disk
 _BLADE_L = 0.35
+_BLADE_W = 0.02            # display width of a blade -- render row (THE HUMAN): 12.5x the
+                           # measured 1.6 mm (Kosmalla 2025); legibility, not physics.
+_GRAINS_PER_BLADE = math.ceil(_BLADE_L / _BLADE_W) + 1   # = 19. DERIVED (docs/
+                           # THE_VEGETATION_GEOMETRY.md): a blade reads as a LINE when its
+                           # grain spacing <= the splat's own width (0.0194 <= 0.02 m);
+                           # 3 hand-placed dots measured a smudge at 3.2 m (rung 3).
 _THETA_MAX = math.radians(60.0)
 _PILE_GRAINS = 400
 _PILE_R = 1.0
@@ -334,17 +346,19 @@ class Tuft:
     def buffer(self, w):
         from matter import blank, SOLID
         n = _TUFT_BLADES
-        b = blank(3 * n)
+        g = _GRAINS_PER_BLADE
+        b = blank(g * n)
         gz = _wk.heights_at(self._bx, self._by)
         st, ct = math.sin(self.theta), math.cos(self.theta)
         dx, dy = self.bend_dir
-        for k, f in enumerate((0.15, 0.55, 1.0)):    # three grains up each bent blade
+        for k in range(g):                     # the blade is a LINE: spacing <= splat width
+            f = k / (g - 1)
             sl = slice(k * n, (k + 1) * n)
             b[sl, 0] = self._bx + f * _BLADE_L * st * dx
             b[sl, 1] = self._by + f * _BLADE_L * st * dy
             b[sl, 2] = gz + f * _BLADE_L * ct
         b[:, 21:24] = (0.0, 0.0, 1.0)
-        b[:, 20] = 0.02                              # display width of a blade -- render row
+        b[:, 20] = _BLADE_W
         b[:, 11] = SOLID
         _shade(b, _TUFT_ALB, w)
         return b
