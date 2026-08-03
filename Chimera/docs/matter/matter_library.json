@@ -590,6 +590,11 @@
           "provenance": "researched",
           "note": "ICRP Publication 110: soft tissue density tables."
         },
+        "surface_tension_mn_m": {
+          "mean": 1.6,
+          "provenance": "researched",
+          "note": "MAPPING ASSUMPTION (docs/THE_LIVING_MATTER.md Phase 2): skin <- chick neural retina aggregate, sigma = 1.6 dyne/cm = mN/m, Foty, Pfleger, Forgacs & Steinberg 1996 (Development 122:1611-1620, parallel-plate compression). Neural retina is the universal ENVELOPER of the measured hierarchy — the lowest measured tissue tension, as rung-1's skin is the lowest. F2 is the mapping's judge."
+        },
         "stiffness_class": {
           "value": "elastic_membrane",
           "provenance": "design"
@@ -668,6 +673,11 @@
           "spread": 30,
           "provenance": "researched",
           "note": "ICRP + Ward et al. 2005: skeletal muscle density."
+        },
+        "surface_tension_mn_m": {
+          "mean": 8.5,
+          "provenance": "researched",
+          "note": "MAPPING ASSUMPTION (docs/THE_LIVING_MATTER.md Phase 2): muscle <- chick embryonic heart aggregate, sigma = 8.5 dyne/cm = mN/m, Foty et al. 1996 (Development 122:1611-1620). Heart IS muscle — the one-to-one case of the mapping."
         },
         "stiffness_class": {
           "value": "contractile",
@@ -753,6 +763,11 @@
           "provenance": "researched",
           "note": "Biomechanics reviews: cortical bone modulus 16-22 GPa (lumbar spine region); direct microspecimen measurements 20.7 GPa (ultrasonic) / 18.6 GPa (mechanical). Mean=18 centers the band; spread widened to reflect wider clinical range."
         },
+        "surface_tension_mn_m": {
+          "mean": 20.1,
+          "provenance": "researched",
+          "note": "MAPPING ASSUMPTION (docs/THE_LIVING_MATTER.md Phase 2): bone <- chick limb bud mesoderm aggregate, sigma = 20.1 dyne/cm = mN/m, Foty et al. 1996 (Development 122:1611-1620). Limb bud mesenchyme is the skeletal/muscle/tendon precursor and the DEEPEST tissue of the measured hierarchy, as rung-1's bone is deepest."
+        },
         "tear_threshold_class": {
           "value": "brittle_fracture",
           "provenance": "design"
@@ -837,6 +852,11 @@
         "stiffness_class": {
           "value": "fibrous_tension",
           "provenance": "design"
+        },
+        "surface_tension_mn_m": {
+          "mean": 12.6,
+          "provenance": "researched",
+          "note": "MAPPING ASSUMPTION (docs/THE_LIVING_MATTER.md Phase 2): tendon <- chick retinal pigmented epithelium aggregate, sigma = 12.6 dyne/cm = mN/m, Foty et al. 1996 (Development 122:1611-1620). The second-deepest measured tissue — exactly where rung-1's tendon sits (gamma 13.5, between bone 15 and muscle 9)."
         }
       },
       "appearance": {

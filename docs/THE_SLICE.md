@@ -113,7 +113,16 @@ areas hold at the CPU's own offset. Two predictions missed and are recorded, not
 reconciled: σ_a is 100–152 cells vs the 2.58 serial scale (cohort-correlated wander —
 the deterministic z-slab route remains named if the operator wants the last 50×), and
 the 1% monotonicity bar was underived — the trace's own thermal scale is 1.51% and the
-check now derives its bar from the trace. Next: Phase 2 — the control run.
+check now derives its bar from the trace. **Phase 2 DONE (2026-08-03):** the 5×5 J is
+DERIVED from measured tissue surface tensions (Foty 1996: limb bud 20.1 / pigmented
+epithelium 12.6 / heart 8.5 / neural retina 1.6 mN/m; Girifalco-Good interfacial
+default; α via the cortical-floor anchor, `Chimera/core/matter_derive.py`) — F1 PASS
+(derived J sorts the scramble 15.0/17.1/23.3, uniform does not), F2 PASS (literature
+ordering = burial order, analytic), **F3 FIRED** (τ_sort ratio 0.07, direction
+opposite to the prediction — the cortical-floor scale reproduces rung-1's structure,
+not its kinetics; rung-1's hand-fit implicitly assumed active fluctuations ~35× the
+passive floor — published per Rule 17). Next: Phase 2b — the liquidity anchor
+(kT_eff ~ γ·ℓ²), stated when built.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/
