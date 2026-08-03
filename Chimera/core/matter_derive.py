@@ -162,6 +162,26 @@ def _world_scramble(n: int = 96, seed: int = 0, types: tuple = (WSAND, WROCK)):
     return grid, shape, targets
 
 
+def _world_seed_scramble(n: int = 96, seed: int = 0, seed_r: int = 12,
+                         seed_off: int = 14):
+    """The nucleation protocol (Phase 4 nucleation membrane): TWO compact metal
+    seeds (radius seed_r, centred seed_off OFF the z axis — core-position is not
+    baked in), the rest of the blob scrambled over the other four materials."""
+    shape = (n, n, n)
+    rng = np.random.RandomState(seed)
+    grid = np.zeros(shape, dtype=np.int16)
+    c, r = n // 2, n // 3
+    zz, yy, xx = np.mgrid[0:n, 0:n, 0:n]
+    blob = (zz - c) ** 2 + (yy - c) ** 2 + (xx - c) ** 2 < r * r
+    others = (WROCK, WICE, WSAND, WBASIN)
+    grid[blob] = rng.choice(others, size=int(blob.sum()))
+    seeds = ((zz - c) ** 2 + (yy - (c - seed_off)) ** 2 + (xx - c) ** 2 < seed_r ** 2) | \
+            ((zz - c) ** 2 + (yy - (c + seed_off)) ** 2 + (xx - c) ** 2 < seed_r ** 2)
+    grid[seeds] = WMETAL
+    targets = {t: int((grid == t).sum()) for t in (WMETAL,) + others}
+    return grid, shape, targets
+
+
 def tau_sort(sw: np.ndarray) -> float:
     """Sweeps for the per-sweep mean H to fall (1 - 1/e) of the total drop,
     the drop measured from sweep 0 to the last-10% plateau mean."""
@@ -202,6 +222,9 @@ if __name__ == "__main__":
     ap.add_argument("--world-full", action="store_true",
                     help="Phase 4 full families: sand/rock/ice/metal/basin scramble, "
                          "derived 6x6 J, radius-ordering verdict")
+    ap.add_argument("--world-seed", action="store_true",
+                    help="Phase 4 nucleation: compact metal seeds in the 4-material "
+                         "scramble — survival and compactness verdict")
     ap.add_argument("--fracture", action="store_true",
                     help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
     ap.add_argument("--lambda", dest="lam_derived", action="store_true",
@@ -358,6 +381,65 @@ if __name__ == "__main__":
         verdict = decades_ok and not uniform_sorted
         print(f"PHASE 4 (FULL FAMILIES) VERDICT: {'PASS' if verdict else 'FIRED'} "
               f"({'full ordering' if full_ok else 'decades only'}; {rep['seconds']:.1f}s)")
+        raise SystemExit(0 if verdict else 1)
+
+    if a_ns.world_seed:
+        mats = (WMETAL, WROCK, WICE, WSAND, WBASIN)
+        Jw = build_world_J(WORLD_MATS)
+        grid, shape, targets = _world_seed_scramble(a_ns.n)
+        n0 = targets[WMETAL]
+        m0 = np.nonzero(grid == WMETAL)
+        cy, cx = m0[1].mean(), m0[2].mean()
+        r0 = float(np.sqrt((m0[1] - cy) ** 2 + (m0[2] - cx) ** 2).mean())
+        print("PHASE 4 (NUCLEATION) — METAL ALLOWED TO EXIST")
+        print(f"  two seeds r=12 at y +/- 14 off-axis: {n0} metal cells, "
+              f"initial radius {r0:.1f}; derived 6x6 J, temp={TEMP}")
+        # The derived kinetics, printed from the J the run uses (never hand-copied):
+        J = Jw
+        dH_corner = 3 * (J[WSAND, WSAND] - J[WMETAL, WMETAL])
+        dH_face = 5 * (J[WSAND, WMETAL] - J[WMETAL, WMETAL]) + \
+                  (J[WSAND, WSAND] - J[WSAND, WMETAL])
+        print(f"  kinetics: corner dH {dH_corner:.0f} (erodes) | "
+              f"face dH +{dH_face:.0f} (frozen) | crevice dH {-dH_face:.0f} (fills)")
+        J_unif = np.full_like(Jw, 8.0)
+        np.fill_diagonal(J_unif, 4.0)
+        J_unif[MEDIUM, MEDIUM] = 0.0
+        rep = parity_report(grid, shape, targets, Jw, J_unif,
+                            sweeps=a_ns.sweeps, seed=0, types=mats)
+        for label in ("differential", "uniform"):
+            r, ar = rep[label], rep[label + "_area"]
+            print(f"  {label:<13} radius " +
+                  "  ".join(f"{WORLD_NAMES[t]}:{r[t]:.1f}" for t in mats) +
+                  f"  | metal {ar[WMETAL]}/{n0}")
+        d, u = rep["differential"], rep["uniform"]
+        surv = rep["differential_area"][WMETAL] / n0
+        surv_u = rep["uniform_area"][WMETAL] / n0
+        r_metal, r_metal_u = d[WMETAL], u[WMETAL]
+        inflate = abs(r_metal - r0) / r0
+        inflate_u = abs(r_metal_u - r0) / r0
+        clean = (WROCK, WICE, WSAND)
+        ordering_ok = all(d[clean[k]] < d[clean[k + 1]] for k in range(2))
+        fA = surv >= 0.50
+        fB = inflate <= 0.20
+        fC = ordering_ok
+        fD = inflate_u >= 0.20      # uniform must NOT keep the seeds compact
+        print(f"  falsifier A (survival >= 50%): {surv:.3f} "
+              f"{'PASS' if fA else 'FAIL -- FIRED'}  (dispersion kept 0.008)")
+        print(f"  falsifier B (compact, inflation <= 20%): {inflate:.3f} "
+              f"{'PASS' if fB else 'FAIL -- FIRED'}")
+        print(f"  falsifier C (rock < ice < sand): "
+              f"{'PASS' if fC else 'FAIL -- FIRED'}")
+        print(f"  falsifier D (uniform disperses, inflation >= 20%): {inflate_u:.3f} "
+              f"{'PASS' if fD else 'FAIL -- FIRED'}  (uniform survival {surv_u:.3f})")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=0.9, seed=0)
+        tr = step(h, 8 * a_ns.sweeps, trace=True)
+        final = close(h)
+        sw = tr.reshape(a_ns.sweeps, 8).mean(axis=1)
+        drift = {WORLD_NAMES[t]: int((final == t).sum()) - targets[t] for t in mats}
+        print(f"  trace: H {sw[0]:.1f} -> {sw[-1]:.1f}; count drift {drift}")
+        verdict = fA and fB and fC and fD
+        print(f"PHASE 4 (NUCLEATION) VERDICT: {'PASS' if verdict else 'FIRED'} "
+              f"({rep['seconds']:.1f}s)")
         raise SystemExit(0 if verdict else 1)
 
     J5 = derive_J(anchor=a_ns.anchor)

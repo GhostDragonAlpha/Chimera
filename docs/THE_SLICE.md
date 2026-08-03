@@ -155,8 +155,18 @@ nucleus, so annihilation (ΔH ≈ −326,000/site) beats aggregation. The surviv
 ordered perfectly (rock 14.5 < ice 15.7 < sand 30.2; uniform control random),
 sand/basin inversion recorded as the pre-named Girifalco-Good precision limit.
 Instrument paid en route: `metrics_3d` now takes `types` (metal's id 4 collided
-with TENDON). Named route: nucleation-seeded metal — a new membrane. Next: that
-membrane, tissue K_IC, or the operator's pick.
+with TENDON). **Phase 4 nucleation DONE (2026-08-03): FIRED — question closed.**
+Seeded metal (two r=12 compact seeds, 14,246 cells) evaporated exactly as the
+dispersion did — and the post-mortem derivation is the law: the machine runs
+18-connectivity (the membrane wrongly derived 6), so a flat face erodes iff
+13×(J_ab−J_aa) < 5×(J_ab−J_bb) — always true for extreme-γ metal. Survival
+belongs to the λ jail, not the face: a type lives iff its erosion drive <
+2λ×population. Metal's drive (37,676) exceeds any jail its population can raise
+(25,642) at any seed size this lattice holds — metal has no stable finite phase
+in the shaker; rock's 4% bleed is the same condition, solvent. Three runs, one
+equation, zero fitted numbers. Named routes for metal: per-type λ ≥ 1.4, or a
+frozen_type skeleton (structure not tissue) — both new membranes, operator's
+call. Next: tissue K_IC, or the operator's pick.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/

@@ -410,6 +410,8 @@ def parity_report(scramble, shape, targets, J_diff, J_unif, frozen_type=None,
     site_attempts = 2 * sweeps * int(np.prod(shape))
     return {"differential": metrics_3d(diff, shape, types=types)["radius"],
             "uniform": metrics_3d(unif, shape, types=types)["radius"],
+            "differential_area": metrics_3d(diff, shape, types=types)["area"],
+            "uniform_area": metrics_3d(unif, shape, types=types)["area"],
             "seconds": dt,
             "site_updates_per_sec": site_attempts / dt,
             "grids_shape": shape}

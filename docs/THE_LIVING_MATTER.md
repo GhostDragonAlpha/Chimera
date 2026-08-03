@@ -47,11 +47,19 @@
 > dispersion of a γ/σ_geo ≈ 3,000 material is below critical nucleus; ΔH ≈
 > −326,000 per isolated site). Every surviving decade pair ordered (rock 14.5 <
 > ice 15.7 < sand 30.2), uniform control did not order, sand/basin inversion
-> recorded as the pre-named GG-precision limit. Named route: nucleation-seeded
-> metal (a new membrane).**
+> recorded as the pre-named GG-precision limit. · **PHASE 4 NUCLEATION DONE: FIRED
+> — and the firing closed the question. Seeded metal evaporated too (0/14,246):
+> the membrane's kinetics were derived for 6-connectivity, the machine runs 18,
+> and at 18 every free face of a high-γ material erodes (13×(J_ab−J_aa) <
+> 5×(J_ab−J_bb)). The derived law: a type survives iff its face-erosion drive <
+> 2λ×population — metal's 37,676 exceeds its jail's 25,642 at any seed size, so
+> metal has NO stable finite phase in this shaker; rock's 4% bleed is the same
+> equilibrium, solvent. One condition reconciles all three runs, zero fitted
+> numbers.**
 > Open debts: interfacial pairs are Girifalco-Good
 > defaults, tissue type mapping tested on ordering only, tissue K_IC unresearched.
-> Next: the nucleation membrane, tissue K_IC, or the operator's pick.**
+> Next: metal via per-type λ or frozen_type skeleton (both named, operator's
+> call), tissue K_IC, or the operator's pick.**
 
 ---
 
@@ -876,6 +884,112 @@ Measured at 200 sweeps (differential / uniform):
    explicit list gets exactly those radii and no tendon block — a tissue
    instrument pointed at a world grid would return lies. The first run of this
    phase died on exactly that lie (KeyError: 4), which is why it is written down.
+
+**Phase 4 (nucleation) — METAL ALLOWED TO EXIST (membrane stated 2026-08-03,
+before the run).** The named route out of the full-families firing, run as its own
+theory with its own falsifiers. Nothing below is reconciled after the fact — the
+kinetics are derived from the printed 6×6 J *now*.
+
+**STATEMENT.** Extreme γ cuts both ways: the same J that made dispersed metal the
+most soluble thing in the world makes BULK metal the most stable phase in the
+lattice. The full-families run falsified "dispersed metal freezes"; this membrane
+claims the complement — seeded metal persists, and the ordering of the other four
+materials is undisturbed by its presence.
+
+**THE DERIVED KINETICS (Rule 1 — trace the variables before the run).** From the
+printed J (lattice units): J(4,4) = 36,268.7 · J(4,0) = 54,403.1 · J(4,1) =
+54,227.1 · J(1,1) = 0.2. A metal site with k metal neighbours, proposed flip to
+sand:
+
+- **Corner (k = 3):** ΔH = 3×(J(1,1) − J(4,4)) = −108,806 → certain death.
+  Corners ERODE.
+- **Flat face (k = 5):** ΔH = 5×(J(1,4) − J(4,4)) + (J(1,1) − J(1,4)) = +35,565 →
+  e^(−2,964) — frozen. Faces PERSIST.
+- **Crevice (a sand site with 5 metal neighbours):** ΔH = 5×(J(4,4) − J(1,4)) +
+  (J(1,4) − J(1,1)) = −35,565 → certain conversion. Crevices FILL.
+
+So a compact seed cannot be invaded through a flat face, loses its corners, fills
+its crevices: it FACETS and stops. It does not migrate (every positional move
+crosses a frozen face), so this membrane makes NO claim about metal finding the
+core — only about metal existing.
+
+**THE PROTOCOL.** Two compact metal seeds (r = 12, centres 28 apart, offset ±14
+OFF the z axis so their cylindrical radius ≈ 14 — inside the blob, not at its
+centre; core-position is earned, not baked in). The rest of the blob scrambles
+over rock/ice/sand/basin as before. Same derived 6×6 J, same anchor, temp = 12,
+200 sweeps, uniform contrast on the same seeded start.
+
+**PREDICTION.** Under the derived J at 200 sweeps: (1) metal SURVIVES — ≥ 60% of
+the seeded cells remain (the dispersion run kept 0.8%); (2) metal stays COMPACT —
+mean cylindrical radius within ±20% of the seeds' initial ≈ 14 (faceting, not
+dispersal); (3) the four scrambled materials still sort rock < ice < sand; (4)
+under the uniform contrast the same seeds DISPERSE — radius inflates toward
+scramble level (≥ 18).
+
+**FALSIFIER.** Any one of: (A) metal survival < 50% under the derived J — the
+bulk-stability claim is dead; (B) metal radius inflation > 20% under the derived
+J — it disperses anyway; (C) a decade-pair inversion among rock/ice/sand; (D) the
+uniform control ALSO keeps the seeds compact (< 20% inflation) — survival would
+be a protocol artifact, not J-driven. The sand↔basin GG-precision exception of
+the full-families membrane carries over unchanged.
+
+*VERDICT (2026-08-03, run: `cd Chimera && python -m core.matter_derive --world-seed`,
+200 sweeps, 96³, two r=12 seeds, 14,246 metal cells).* **FIRED — A, B and D all
+fired, and the post-mortem derivation is the prize: the membrane's own kinetics
+were derived for the WRONG NEIGHBOURHOOD. The machine runs 18-connectivity; the
+membrane derived 6. Published as the error it is.**
+
+Measured:
+
+- **Metal extinct again: 0 / 14,246.** Not slowed, not faceted — eaten. The
+  seeded protocol changed nothing, and now we know exactly why (below).
+- **Falsifier C PASS:** rock 13.9 < ice 18.3 < sand 31.2 — the ordering is
+  undisturbed while the machine eats the metal. (basin 35.9, GG band.)
+- **Falsifier D fired honestly:** the uniform control kept the seeds (14,230 /
+  14,246, inflation 8%) — with J = 8/4 the face stability is +32 (cohesion
+  symmetric), so seeds simply sit there; 200 sweeps is not dispersal timescale.
+  The control could not judge J-drivenness on this protocol. Recorded, not
+  reconciled.
+
+**The correct kinetics (derived after the firing, from the same J, checked
+against the kernel's 18-neighbourhood — `matter_gpu.py:111`):**
+
+A flat-face cell of type a against material b carries 13 same-type and 5 b-type
+contacts (6-connectivity would say 5 and 1 — the membrane's error). It erodes
+iff `13×(J_ab − J_aa) < 5×(J_ab − J_bb)` — interface-avoidance against five
+expensive contacts beats loyalty to thirteen cheap ones. For metal-on-sand:
+233k < 271k → **the face ALWAYS erodes, irreversibly, layer by layer.** There is
+no frozen face at any compactness; "faceting" never happens.
+
+So survival is not the face's question at all — it is the λ jail's. Eroding a
+cell from a type running deficit D costs the area marginal λ(2D−1), so the
+jail's maximum restoring force is ~2λ×target. **A type survives iff its
+face-erosion drive < 2λ×(its population).** The numbers, both runs:
+
+- metal: drive 37,676 vs jail max 0.9×2×14,246 = 25,642 → **extinct at ANY seed
+  size this lattice can hold.** The dispersion and the seed are one mechanism,
+  two protocols — the corrected condition predicts both extinctions.
+- rock: drive ~326 vs jail ~55k → lives; it paid 1,161 cells (4%) before the
+  deficit's restoring force (~2,090) swamped the drive. The −1,161 bleed in the
+  full-families run is this equilibrium, now derived.
+
+**What survives, published per Rule 17:**
+
+1. **Metal has no stable finite phase in this shaker, period.** Not dispersed,
+   not seeded: its erosion drive exceeds the largest jail its population can
+   raise. The machine can only represent metal as an extinction event — and now
+   the extinction is an equation, not a surprise.
+2. **The survival condition `drive < 2λ×population` is the derived law** that
+   reconciles three runs (dispersion, seed, rock's 4% bleed) with zero fitted
+   numbers.
+3. **The neighbourhood error is the ledger's entry:** a membrane's derivation
+   must use the machine's actual connectivity (18), not the textbook's (6). The
+   instrument did not lie; the derivation did.
+4. **Named routes if metal must exist (operator's call, new membranes):** raise
+   λ for metal alone until 2λ_m×T_m > 37,676 (λ_m ≥ 1.4 — but Phase 5 measured
+   what derived λ does to dynamics), or give metal a frozen_type skeleton
+   (structure, not tissue — the kernel already supports it). Neither is
+   smuggled into this verdict.
 
 **Phase 4 — THE WORLD.** Extend the mapping to the library's world families
 (mineral_dry, metallic, cryo) using their researched cohesion/grain-size; then the
