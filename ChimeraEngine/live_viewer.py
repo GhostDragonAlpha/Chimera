@@ -114,6 +114,14 @@ class LiveViewer:
                     _ctl.drive_walker_vector(self._walk, self._controller,
                                              wi["fwd"], wi["strafe"], wi["sprint"],
                                              wi["crouch"], wi["jump"], dt)
+                    # THE WORLD ANSWERS (Phase E, rung 2 -- TOUCH). The three passive classes take
+                    # the player's commanded velocity at contact; their own equations decide the
+                    # rest. If any of them visibly changed, the frame must show it.
+                    touch_moved = False
+                    if getattr(self, "_touch", None):
+                        import touchables as _to
+                        for ob in self._touch:
+                            touch_moved = ob.step(self._walk, dt) or touch_moved
                     # the ground is rebuilt around the player only when they have moved far enough
                     # to matter -- the near shell is 180 m across, so a stride does not need one.
                     # Rebuilt when the player has moved far enough to matter, OR when the sun has --
@@ -121,14 +129,27 @@ class LiveViewer:
                     # Standing still must not freeze the light; it is a real sky on a real rotation.
                     import walker as _wk
                     sun_moved = abs(self._walk.clock - getattr(self, "_walk_clock", -1e18)) > 120.0
+                    rebuilt = False
                     if self._walk_dirty or self._walk_moved() > 12.0 or sun_moved:
                         self._ground_np = np.ascontiguousarray(_wk.scene_around(self._walk),
                                                                dtype=np.float32)
                         if self._view != "third":
-                            pipe.upload(self._ground_np)
+                            buf = self._ground_np
+                            if getattr(self, "_touch", None):
+                                buf = np.concatenate(
+                                    [buf, _to.touchables_buffer(self._touch, self._walk)], axis=0)
+                            pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
                         self._walk_anchor = (self._walk.x, self._walk.y)
                         self._walk_clock = self._walk.clock
                         self._walk_dirty = False
+                        rebuilt = True
+                    # A TOUCHABLE MOVES ONLY WHEN THE PLAYER IS NEXT TO IT -- metres, always far
+                    # inside the 12 m ground-rebuild threshold, so the cached ground is the right
+                    # ground; only the objects' own splats join it anew.
+                    if touch_moved and not rebuilt and self._view != "third":
+                        pipe.upload(np.ascontiguousarray(np.concatenate(
+                            [self._ground_np, _to.touchables_buffer(self._touch, self._walk)],
+                            axis=0), dtype=np.float32))
                     wx, wy = self._walk.x, self._walk.y
                     if self._view == "third":
                         # THE BODY CHANGES EVERY FRAME (the gait phase is the distance walked), so
@@ -136,8 +157,11 @@ class LiveViewer:
                         # the body is ~2,900 grains from a 48-pose cache -- the upload is the cost,
                         # and it is the same ~7 MB the rebuild path already pays.
                         body = _wk.body_buffer(self._walk)
+                        layers = [self._ground_np, body]
+                        if getattr(self, "_touch", None):
+                            layers.append(_to.touchables_buffer(self._touch, self._walk))
                         pipe.upload(np.ascontiguousarray(
-                            np.concatenate([self._ground_np, body], axis=0), dtype=np.float32))
+                            np.concatenate(layers, axis=0), dtype=np.float32))
                         # an over-the-shoulder orbit: behind the facing, raised by the look pitch,
                         # aimed at the chest -- and never below the ground it is looking across.
                         f = (-math.sin(self._walk.yaw), math.cos(self._walk.yaw))
@@ -259,6 +283,7 @@ class LiveViewer:
         if not on:
             with self._lock:
                 self._walk = None
+                self._touch = None
                 self._reload = True          # the orbit view must reload its own buffer
             return {"walking": False}
         import walker as _wk
@@ -272,8 +297,12 @@ class LiveViewer:
         if self._walk is None:
             w = _wk.Walker(lat, lon)         # spawns at the middle of that place's patch
             w._place_key = want
+            import touchables as _to
             with self._lock:
                 self._walk = w
+                # THE WORLD ANSWERS (Phase E, rung 2): the three passive classes spawn with the
+                # body, placed near spawn as design placeholders -- the operator's to move.
+                self._touch = _to.spawn()
                 self._walk_dirty = True
         if day is not None and minute is not None:
             # the date and hour chosen BEFORE play -- same formula as /clock, applied at entry
@@ -283,7 +312,8 @@ class LiveViewer:
                 self._walk_dirty = True
         return {"walking": True, **self._walk.readout()}
 
-    def walk_input(self, fwd=0.0, strafe=0.0, sprint=False, jump=False, crouch=False, mx=0.0, my=0.0):
+    def walk_input(self, fwd=0.0, strafe=0.0, sprint=False, jump=False, crouch=False, mx=0.0, my=0.0,
+                   use=False):
         with self._lock:
             if self._walk is None:
                 return {"walking": False}
@@ -295,7 +325,15 @@ class LiveViewer:
             self._walk_in["mx"] += float(mx)
             self._walk_in["my"] += float(my)
             w = self._walk
-        return {"walking": True, "view": self._view, **w.readout()}
+            touch = ""
+            if getattr(self, "_touch", None):
+                import touchables as _to
+                if use:                                  # E: GRAB -- the object in reach answers
+                    for ob in self._touch:
+                        ob.interact(w)
+                    self._walk_dirty = True              # the pickup/drop must be visible at once
+                touch = _to.hud_line(self._touch, w)
+        return {"walking": True, "view": self._view, "touch": touch, **w.readout()}
 
     def set_view(self, mode):
         """First person or third. Switching INTO third forces one upload on the next tick even if
@@ -390,6 +428,7 @@ def handle(handler) -> bool:
             sprint=(qs.get("sprint") or ["0"])[0] == "1",
             jump=(qs.get("jump") or ["0"])[0] == "1",
             crouch=(qs.get("crouch") or ["0"])[0] == "1",
+            use=(qs.get("use") or ["0"])[0] == "1",
             mx=_f(qs, "mx"), my=_f(qs, "my"))
         _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
     if path == "/view":
@@ -1084,7 +1123,7 @@ stage.addEventListener('wheel',e=>{if(WALKING)return;e.preventDefault();pend.zoo
    hoists as undefined, the early guard reads falsy, the page survives its own
    load order.
    ========================================================================== */
-var KEY={}, WALKING=false, mdx=0, mdy=0, jumped=false, clockDrag=false, clockTimer=null;
+var KEY={}, WALKING=false, mdx=0, mdy=0, jumped=false, used=false, clockDrag=false, clockTimer=null;
 var standbtn=document.getElementById('standbtn'),
     walkhud=document.getElementById('walkhud'),
     hint=document.getElementById('hint'),
@@ -1186,9 +1225,11 @@ window.addEventListener('keydown',e=>{
   if(e.target&&e.target.tagName==='INPUT'&&e.target.type==='text') return;
   if(!WALKING) return;
   if(e.code==='Space'){ jumped=true; e.preventDefault(); }
+  /* E IS EDGE-TRIGGERED LIKE SPACE: one press, one use=1 -- GRAB is a toggle, not a hold. */
+  if(e.code==='KeyE' && !KEY['KeyE']){ used=true; }
   if(e.code==='KeyV' && !KEY['KeyV']){ toggleView(); }
   KEY[e.code]=true;
-  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft','KeyC','KeyV'].includes(e.code)) e.preventDefault();
+  if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ControlLeft','KeyC','KeyV','KeyE'].includes(e.code)) e.preventDefault();
 });
 var VIEW='first';
 async function toggleView(){
@@ -1205,7 +1246,8 @@ function paintWalk(r){
     'sun <i>'+r.sun_alt.toFixed(1)+'&deg;</i> &middot; daylight <i>'+r.daylight.toFixed(1)+'</i> h &middot; '+
       fmtLat(r.lat)+' '+fmtLon(r.lon)+' &middot; <i>'+r.T_C.toFixed(0)+'&deg;C</i>'+(r.snow?' &middot; snow':'')+'<br>'+
     'x <i>'+r.x.toFixed(1)+'</i> &nbsp;y <i>'+r.y.toFixed(1)+'</i> &nbsp;elev <i>'+r.elev.toFixed(1)+'</i> m &nbsp;slope <i>'+r.slope.toFixed(1)+'&deg;</i><br>'+
-    'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &middot; walk <i>'+r.walk.toFixed(2)+'</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s';
+    'g <i>'+r.g.toFixed(2)+'</i> m/s&sup2; &middot; walk <i>'+r.walk.toFixed(2)+'</i> &middot; run <i>'+r.run.toFixed(2)+'</i> m/s'+
+    (r.touch?'<br>'+r.touch:'');
   if(typeof r.view==='string') VIEW=r.view;
   if(!clockDrag){
     if(dayslider){ dayslider.max=(r.dpy||383)-1; dayslider.value=r.day; }
@@ -1266,8 +1308,8 @@ setInterval(async()=>{
   let fwd=(KEY['KeyW']?1:0)-(KEY['KeyS']?1:0),
       str=(KEY['KeyD']?1:0)-(KEY['KeyA']?1:0),
       mx=mdx*LOOK, my=mdy*LOOK,
-      sprint=!!KEY['ShiftLeft'], j=jumped;
-  mdx=0; mdy=0; jumped=false;
+      sprint=!!KEY['ShiftLeft'], j=jumped, u=used;
+  mdx=0; mdy=0; jumped=false; used=false;
   const pad=readPad();
   if(pad){
     if(Math.hypot(pad.fwd,pad.strafe)>Math.hypot(fwd,str)){ fwd=pad.fwd; str=pad.strafe; }
@@ -1275,7 +1317,7 @@ setInterval(async()=>{
     sprint=sprint||pad.sprint; j=j||pad.jump;
   }
   const q='/walk?fwd='+fwd.toFixed(3)+'&strafe='+str.toFixed(3)+'&sprint='+(sprint?1:0)+
-          '&jump='+(j?1:0)+'&crouch='+((KEY['ControlLeft']||KEY['KeyC'])?1:0)+'&mx='+mx+'&my='+my;
+          '&jump='+(j?1:0)+'&crouch='+((KEY['ControlLeft']||KEY['KeyC'])?1:0)+'&use='+(u?1:0)+'&mx='+mx+'&my='+my;
   try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
 },33);
 

@@ -183,6 +183,70 @@ feet from aBlueWorld's membranes; three passive object classes (the living-matte
 set: one grown lattice, one rigid, one granular) placed by the story. The slice session is
 recorded, the blind read is taken, F1–F3 are judged.
 
+**Phase E, rung 1 — the loop BOOTS AND PLAYS (measured 2026-08-03, smoke run):**
+`python ChimeraEngine/gallery.py 8791` → `http://127.0.0.1:8791/live` — the playable loop
+is already real and every seam answered: /stand returned the membrane readout (g 7.08,
+walk 0.99, run 1.8 m/s — Froude), /walk?fwd=1 for 6 s moved the body y 0.0 → 6.0 m (the
+derived walk speed, exact), the MJPEG stream carries live frames, and the third-person
+frame shows theHuman's own suited figure standing on the carved terrain under the
+Rayleigh sky (`ChimeraEngine/output/slice_smoke_third.jpg`). Keyboard WASD + mouse-look
+bind in the page (browser keydown/keyup → /walk). One trap measured en route: the render
+thread idles with zero clients, so HTTP-driven walks only integrate while a client holds
+/stream — the browser never hits this, a curl script always does. **The gap to the slice
+as stated: nothing to TOUCH yet — the three passive classes and GRAB (E) are unbuilt;
+the recorded session and blind read (F1–F3) have never been taken.**
+
+**Phase E, rung 2 — TOUCH (membrane stated 2026-08-03, before the build).**
+
+**STATEMENT.** Three passive classes suffice to make the world tangible: a RIGID
+stone (contact impulse + Coulomb friction), a GROWN tuft (damped spring — the
+passive-tissue port, grass-sized), a GRANULAR pile (kicked grains, repose-limited
+settle). Each is driven by the player's commanded velocity at contact — the process
+principle: the object decides where it ends up, the touch only hands it energy.
+Every number traces to theGround's numbers.json (stone size from the fractal
+distribution, friction from the repose angle, pile repose from regolith) or a cited
+measurement (rock density; stem stiffness). Placement near spawn is level design —
+THE HUMAN's placeholder, the operator's to move.
+
+**PREDICTION.** Walking into each class produces its own signature, measurable in a
+headless test: (1) the stone's post-contact speed scales with m_body/m_stone and it
+stops within the μ-derived braking distance; (2) the tuft deflects away from the
+player and recovers to rest in < 2 s, never diverging; (3) the pile keeps a
+permanent footprint and every kicked grain settles (max grain speed < 1 cm/s at
+3 s after contact). GRAB (E) picks the stone up inside arm's reach and drops it at
+the feet — carried mass is reported by the HUD.
+
+**FALSIFIER.** Any class violating its own equation (stone brakes long or never
+stops; tuft oscillates unbounded or never returns; a grain still moving after
+settle time), OR any constant in the objects' code tracing to neither a
+numbers.json nor a named citation (F1 applied to the new file: a provenance table
+in its header, each row PHYSICS or THE HUMAN).
+
+*VERDICT (2026-08-03: headless `python tools/touch_tests.py` — 19/19 PASS, then the
+live loop over HTTP).* **PASS — the world answers, and every number has a home.**
+
+- **Stone (rigid):** impulse measured 1.4516 × v_cmd = m_body/m_stone exactly
+  (65.1 kg of basalt, Quaglio 2020); stops after 0.140 m against the μ-derived
+  0.151 m (μ = tan 40.03° = 0.84, theGround's repose); same law from another side
+  at another speed; player never blocked.
+- **Tuft (grown):** bends 52.1° away from the player (alignment 1.000), recovers
+  to < 2° within 2 s, never diverges. Stiffness derived from a measured grass:
+  Kosmalla et al. 2025 (Earth Surface Dynamics 13, 791) — marram grass E
+  1050–1910 MPa, geometric mean 1416 MPa, blade Ø 1.6 mm, cantilever scaling →
+  k 45.3 s⁻² (ω_n 6.73 rad/s).
+- **Pile (granular):** a walk-through kicks 395 of 400 grains (cone height =
+  base × tan(40.03°), derived); the footprint is permanent; all grains settled
+  (< 1 cm/s) at 3 s.
+- **GRAB (E):** reach = 0.44 × stature (ANSUR) = 0.772 m; pick-up → carried at the
+  body's derived CoM height → walked 5.5 m → dropped 0.30 m from the feet; the HUD
+  names the carried mass. Verified live over HTTP: walk to it, "E: pick up the
+  stone (65.1 kg)" → carried → walked → "E: put down the stone" → dropped, the
+  affordance flipping on the real server.
+- **F1:** the provenance table is in `ChimeraEngine/touchables.py`'s header —
+  every constant PHYSICS (numbers.json or citation) or THE HUMAN (design rows:
+  spawn spots, blade count, kick factors), no hidden literals.
+- `python tools/walk_demo.py` still PASS (no regression).
+
 ## EXPLICITLY NOT IN THE SLICE
 
 Vehicles, buildings, NPCs, combat, economy, biomes evolving, the whole universe. The seed
