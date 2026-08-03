@@ -20,7 +20,7 @@
 <!-- CHIMERA-LAW -->
 
 > **Consolidated 2026-08-02 by reading every workflow document in the repository and putting each
-> idea on one list first** — `docs/THE_PIECES.md`, 169 pieces with their provenance and status (§16 is the port ledger).
+> idea on one list first** — `docs/THE_PIECES.md`, 174 pieces with their provenance and status (§16 is the port ledger).
 > Nothing here is new invention; it is the pieces that were already written down, in the order they
 > actually run, with the joins that were missing.
 >
@@ -648,7 +648,7 @@ two orderings and the human-readable one loses silently.
 | `docs/FAL_AI.md` | the synthetic capture rig, its costs and its traps | before spending money |
 | `docs/THE_PIPELINE.md` | where a genome comes from and what it becomes — scan → genome → matter → world → render | when working the splat pipeline |
 | `docs/THE_COMPILER.md` | **the operating model** — ports → primitives → programs → parser → runtime → calibration, and passive tissue as a universal port | before building anything at any layer |
-| `docs/THE_PIECES.md` | **the full inventory — 169 pieces, with what is orphaned**; §16 is the port ledger | when you think something is missing |
+| `docs/THE_PIECES.md` | **the full inventory — 174 pieces, with what is orphaned**; §16 is the port ledger | when you think something is missing |
 | `CLAUDE.md` | paths, hardware traps, conventions | for anything operational |
 
 **A doc marked DESIGN is not a description of something that exists.** Check the banner.

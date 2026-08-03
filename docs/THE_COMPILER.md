@@ -248,6 +248,46 @@ state-machine transition — and why a reward must never target a pose.
 
 **STAND IS NOT A PORT. IT IS A STATE** — the operator. You train the ports; you *measure* the state.
 
+## HOW A MOTION IS REPRESENTED — one finding from outside, and what it is worth
+
+**NVIDIA ARDY, SIGGRAPH 2026 — read 2026-08-03 for extractable physics and there is NONE.** The
+paper says so in its own words: the model is *"purely kinematic… lacks awareness of physical
+dynamics."* Its loss is four L1/L2 terms with no energy, momentum or dynamics prior. Nothing in it
+would have saved one port test, and it is **not adopted** — its motion is 630 hours of Earth mocap
+with no gravity input, which is the authored-phenotype defect this project already named. Replayed
+on this body an Earth walk lands at **Fr 0.2536 against the 0.1513 `theHuman` derives for itself**.
+
+What is worth keeping is one **representational** result, and it is an empirical finding we could
+not have got by reasoning:
+
+> **HORIZONTAL IS RELATIVE; VERTICAL IS NOT.** ARDY keeps the root explicit and global for
+> constraint work, but when it *decodes* it converts the root to `(psi_dot, p_x_dot, p_z_dot, p_y)`
+> — heading rate, planar velocities, and **height kept ABSOLUTE**. Their stated reason is measured,
+> not argued: it mitigates foot skating.
+
+**VERIFIED** (quoted from the paper): the representation and the reason. **INFERRED** (ours, and
+marked as such): *why* it works. Height is measured against gravity and the ground sits at a fixed
+place, so height is an absolute; heading and planar position are frame-arbitrary. Mixing the two
+the wrong way round is what makes feet slide.
+
+That is `core/membranes.py`'s law arriving from the other direction — *a boundary supplies its own
+frame, and up is its normal.* We had the principle; this is a measured consequence of getting it
+wrong, which is the part we did not have. **It bears on `emit()` frames and on any future motion
+representation, and it has NOT been tested here.**
+
+**TWO INDEPENDENT CONFIRMATIONS, worth recording because they came from strangers:**
+
+- **Their `L_consist = ||J_hat - FK(theta_hat)||` is `dyadAnalysis`.** They predict joint positions
+  and joint rotations separately and force forward kinematics on the rotations to reproduce the
+  positions — two independent routes to one number, required to agree. Same shape as
+  `stand_port.py`'s closure (+0.0000%) and CROUCH's two-route torque check.
+- **Their hybrid representation is our synergy result.** Root explicit *because it must be
+  addressable* (you cannot inpaint a latent); body compressed because it need only be right. That
+  is 290 muscles → 8 dims for 91% of movement, stated as a rule with its reason.
+
+**STILL UNREAD:** `MotionCorrection/`, a C++ foot-skating post-process under Apache-2.0. Its README
+does not name the algorithm and it is the one place in that repo a real solver might live.
+
 ## LAYER 4 · PARSER — intent to program
 
 ~12 buttons, bound twice (keyboard+mouse PRIMARY, gamepad port) over **one input-agnostic formula

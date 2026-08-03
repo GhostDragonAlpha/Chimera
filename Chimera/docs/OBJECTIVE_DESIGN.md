@@ -148,6 +148,37 @@ wrong. Divide each band-error by its band width.
 
 ---
 
+## THE GATED-SUM TRAP — normalise by the GATE'S OWN MASS
+
+**Found outside this repo, 2026-08-03, in NVIDIA's ARDY (SIGGRAPH 2026, code Apache-2.0).** We did
+not write this rule and it closes a hole `objective_lint.py` does not currently look for.
+
+When a penalty is **gated by a quantity the optimiser also controls**, summing over the gate is not
+enough — the cheapest way to minimise the sum is to **turn the gate off**. Their foot-skating term:
+
+    L_skate = SUM_{j in feet} c_j * ||Jdot_j||  /  SUM_{j in feet} c_j
+
+`c_j` is the *predicted* contact label and `Jdot_j` is the foot's velocity: a foot in contact must
+not move, which is Coulomb's no-slip condition written as a differentiable residual. **The
+denominator is the whole rule.** Without it, the optimiser drives the loss to zero by predicting
+that no foot is ever in contact, and the resulting motion skates freely while scoring perfectly.
+Dividing by the contact mass makes the term a *mean over the contacting set*, so switching the gate
+off buys nothing.
+
+    IF A PENALTY IS GATED, THE OPTIMISER OWNS THE GATE. NORMALISE BY IT.
+
+**This is rule 3's shape (a satisficer) crossed with the normalisation rule above**, and it is not
+covered by either: rule 3 catches a term that can be *satisfied*, the normalisation rule catches
+terms at *different scales*, and neither catches a term that can be **made not to apply**. The tell
+is a summand of the form `gate * error` where `gate` is anything the genome or policy influences —
+a contact label, a phase, an "is-active" flag, a visibility mask, a distance cutoff.
+
+**STATUS: RECORDED, NOT ADOPTED.** No objective in `docs/objectives/` currently uses a gated sum, so
+nothing here is fixed by it yet. It is written down before it is needed because the failure it
+describes is one we would otherwise pay for. `objective_lint.py` does not check it.
+
+---
+
 ## The efficiency claim, made concrete
 
 Each rule above is **one retrain cycle** you do not spend. This session spent four

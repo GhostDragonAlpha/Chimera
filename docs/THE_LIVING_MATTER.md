@@ -21,8 +21,11 @@
 
 > Drafted 2026-08-03. Status: **PHASE 1 DONE (instrument exact, falsifier fired) ·
 > PHASE-2-PREREQUISITE DONE (parallel area update derived and measured: H falls and
-> plateaus, parity restored). Next: Phase 2 — the control run (research tissue surface
-> tensions, derive the 5×5 J, read τ_sort).**
+> plateaus, parity restored) · PHASE 2 DONE: F1 PASS, F2 PASS, F3 FIRED — the ratio
+> structure of the derived J reproduces the anatomy from measured tissue tensions
+> (Foty 1996), the cortical-floor scale does not reproduce rung-1's kinetics (τ ratio
+> 0.07, direction opposite to the prediction — published, Rule 17). Next: Phase 2b —
+> the liquidity anchor (kT_eff ~ γ·ℓ²), stated when built.**
 
 ---
 
@@ -176,6 +179,113 @@ H falls and plateaus, parity sorts, areas hold at the CPU's offset.
 bone/muscle/skin/tendon/medium through the mapping above; run the rung-1 scramble;
 read τ_sort and the anatomy off the trace. F1, F2, F3 all live here. This is the run
 the theory can lose.
+
+**THE DERIVATION (membrane stated 2026-08-03, before the run; code: `Chimera/core/matter_derive.py`).**
+
+*THE MEASUREMENTS (research first, derive second):*
+
+- Foty, Pfleger, Forgacs & Steinberg 1996, *Development* 122:1611–1620 — chick
+  embryonic tissue surface tensions by parallel-plate compression, dyne/cm (= mN/m):
+  **limb bud mesoderm 20.1 · retinal pigmented epithelium 12.6 · heart 8.5 ·
+  liver 4.6 · neural retina 1.6.** Mutual envelopment follows the tension order
+  exactly (every lower-tension tissue envelops every higher one).
+- Foty & Steinberg 2005, *Dev. Biol.* 278:255 — aggregate surface tension is a direct
+  linear function of cadherin expression (R²=0.9965) with a **zero-cadherin intercept
+  of 0.32 mN/m**: the adhesion-independent cortical floor.
+- Tissue–tissue **interfacial** tensions: NOT systematically measured (stated outright
+  by Pajic-Lijaković et al. 2023, *Soft Matter* review). A named gap — the
+  Girifalco-Good default below carries it, stated as an assumption.
+
+*THE TYPE MAPPING (an assumption someone can disagree with; F2 is its judge):*
+
+- **BONE ← limb bud mesoderm (20.1)** — the mesenchymal core of the limb, the deepest
+  tissue in both the measured hierarchy and rung-1.
+- **MUSCLE ← heart (8.5)** — heart is muscle; the one-to-one case.
+- **SKIN ← neural retina (1.6)** — the universal enveloper, the lowest measured
+  tension, as rung-1's skin is the lowest.
+- **TENDON ← retinal pigmented epithelium (12.6)** — the second-deepest measured
+  tissue, exactly where rung-1's tendon sits (γ=13.5, between bone 15 and muscle 9).
+
+**F2's VERDICT IS ANALYTIC (no run needed).** The measured ordering
+bone(20.1) > tendon(12.6) > muscle(8.5) > skin(1.6) reproduces rung-1's burial order
+15 > 13.5 > 9 > 2 in rank and nearly in ratio (bone/muscle 2.36 vs 1.67; tendon/muscle
+1.48 vs 1.50; skin/muscle 0.19 vs 0.22). **F2 PASSES before the run** — reality's
+ordering is rung-1's ordering.
+
+*THE INTERFACIAL DEFAULT.* For pairs never measured, Girifalco-Good:
+`γ_ab = (√σ_a − √σ_b)²` (work of adhesion W_ab = 2√(σ_a·σ_b), the standard estimate
+for mutually wetting phases — and these tissues wet each other completely; their
+envelopment is total). Stated as an assumption, replaceable the day Foty-1994-class
+interfacial numbers are on disk.
+
+*THE SCALE (the one kinetic freedom; F3 guards it).*
+
+- ℓ = 10 µm — one lattice site is one cell.
+- kT_eff = σ_cortex·ℓ², with σ_cortex = 0.32 mN/m the measured adhesion-independent
+  tension floor. The statement: a cell's fluctuation energy over one contact area
+  equals its non-adhesive cortical tension over that area. kT_eff = 3.2×10⁻¹⁴ J.
+- temp = 12 → E₀ = kT_eff/12 = 2.67×10⁻¹⁵ J → **α = ℓ²/E₀ = 3.75×10⁴ J⁻¹·m²**
+  (37.5 lattice units per mN/m). One constant serves α and temp both, as the theory
+  requires.
+
+*THE DERIVED J.* `J(a,a) = α·σ_a` · `J(a,MED) = α·σ_a + J(a,a)/2` ·
+`J(a,b) = α·γ_ab^GG + (J(a,a)+J(b,b))/2`. Numbers printed by `matter_derive.py` at
+run time — computed, never hand-copied. λ = 0.9 unchanged: the area physics is the
+same protocol, and λ's own derivation (bulk modulus over E₀) is a named later
+membrane, not smuggled into this one.
+
+*PREDICTIONS (before the run):*
+
+1. **F1 holds.** The derived J sorts the rung-1 scramble bone < muscle < skin, the
+   uniform control does not. The engulfment inequality holds analytically:
+   γ_BS = 10.36 ≥ γ_BM + γ_MS = 5.18 mN/m — muscle fully wets bone away from skin.
+2. **F3 fires.** The derived J/temp ratios are 5–94 against rung-1's 0.17–1.33 — the
+   derived system runs ~50× colder. Uphill moves are Boltzmann-forbidden, so sorting
+   must proceed on strictly-downhill marginals: predict τ_sort(derived) > 2×
+   τ_sort(rung-1). The disagreement to publish (Rule 17): kT_eff is NOT the passive
+   cortical floor — living-cell rearrangement rides active fluctuations ~35× larger
+   (rung-1's hand-fit implicitly assumed kT_eff = 12·(8.5×10⁻¹³/9) = 1.1×10⁻¹² J).
+   The ratio structure survives; the cortical anchor does not. If instead τ_sort
+   lands within 2×, the anchor stands and rung-1's scale is explained, not fitted.
+
+*VERDICT (2026-08-03, all numbers measured; `cd Chimera && python -m core.matter_derive`).*
+**F1 PASS · F2 PASS · F3 FIRED.**
+
+- **F1 — PASS.** The derived J sorts the rung-1 scramble: bone 15.0 < muscle 17.1 <
+  skin 23.3 (uniform contrast: 24.1/18.8/20.0, unordered). The anatomy the theory
+  promised from measured tensions alone is the anatomy the lattice grows.
+- **F2 — PASS (analytic).** Measured ordering bone(20.1) > tendon(12.6) > muscle(8.5)
+  > skin(1.6) = rung-1's burial order, in rank and near-ratio.
+- **F3 — FIRED.** τ_sort(derived) = 3 sweeps, τ_sort(rung-1) = 46; ratio 0.07,
+  outside [0.5, 2]. **And the membrane's prediction missed the DIRECTION** — recorded,
+  not reconciled (Rule 17). The cold system was predicted to sort slower; it sorts
+  ~15× faster. The physics of the miss: at J/temp ~ 5–94 every downhill flip removes
+  hundreds of lattice units, so the quench anneal crashes H to (1−1/e) of its drop in
+  3 sweeps; rung-1's warm dynamics (J/temp ~ 0.2–1.3) relaxes the same FRACTION
+  (23.5% vs 27.2% total drop — nearly equal) over 46 sweeps of small Boltzmann
+  acceptances. The scale constant is therefore not a scale constant: the
+  cortical-anchored α reproduces rung-1's STRUCTURE but not its KINETICS, exactly the
+  condition F3 exists to catch. The published disagreement: rung-1's hand-fit
+  implicitly assumed kT_eff = 12·(8.5×10⁻¹³/9) = 1.1×10⁻¹² J ≈ **35× the passive
+  cortical floor** — living-cell rearrangement rides active fluctuations, not the
+  adhesion-independent baseline. Named instrument caveat, honest about what τ measured:
+  in the cold system the (1−1/e) point of the H trace is the quench crash, not the
+  coarsening tail, so F3's comparison is partly quench-rate vs coarsening-rate — the
+  falsifier fired on its own terms, and the reading is published with it.
+- **What survives and what dies.** The derivation's content — J's RATIO structure
+  projected from measured tissue tensions through the exact CPM algebra with the
+  Girifalco-Good interfacial default — reproduces the anatomy from literature data
+  alone (F1+F2). What dies is the cortical floor as kT_eff. The next membrane
+  (Phase 2b, stated when built): the self-consistent LIQUIDITY anchor,
+  kT_eff ~ γ·ℓ² — an aggregate is liquid precisely because its fluctuation energy is
+  comparable to its bond energy — which places the derived scale at α ≈ 1.4 per mN/m,
+  rung-1's own neighborhood, and must then pass F3 or die the same way.
+
+The 5×5 derived J (lattice units, α = 37.5 per mN/m) is computed by
+`matter_derive.py` at run time: MED row [0, 1130.6, 478.1, 90.0, 708.8],
+diagonals [0, 753.8, 318.8, 60.0, 472.5], off-diagonals B–M 628.4, B–S 795.3,
+B–T 645.8, M–S 291.5, M–T 410.7, S–T 462.0. γ_CPM against medium reproduces the
+measured tensions by construction (753.8 = 37.5 × 20.1, etc.).
 
 **Phase 2-prerequisite — THE PARALLEL AREA UPDATE (a membrane, stated before the build).**
 

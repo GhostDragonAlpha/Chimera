@@ -445,6 +445,29 @@ the sign of `moment` read alone when muscle force is negative · peak *isometric
 muscle makes 719 N of a nominal 2212 · evaluated at the limit where the hamstrings are spent).
 **Expect the same four when a tree trunk or a wall is derived.**
 
+### 17 · READ FROM OUTSIDE — what a foreign project was worth, and what it was not
+
+**NVIDIA ARDY, SIGGRAPH 2026 (code Apache-2.0, weights NVIDIA Open Model Agreement), read
+2026-08-03.** Evaluated for extractable physics. **There is none** — the paper states the model is
+*"purely kinematic… lacks awareness of physical dynamics"*, and its loss carries no energy,
+momentum or dynamics prior. **NOT ADOPTED as a motion source**: 630 h of Earth mocap with no
+gravity input is the authored-phenotype defect already named at piece 92, and an Earth walk
+replayed on this body is **Fr 0.2536 against the 0.1513 `theHuman` derives for itself.**
+
+| # | the piece | status | home |
+|---|---|---|---|
+| 170 | **THE GATED-SUM TRAP.** A penalty gated by a quantity the optimiser controls is minimised by turning the GATE off, not the error. `SUM c*err / SUM c` — the denominator is the rule. Not caught by rule 3 (satisficer) or by the normalisation rule; neither sees a term that can be made *not to apply*. | **RECORDED, NOT ADOPTED** — no current objective uses a gated sum; `objective_lint.py` does not check it | `Chimera/docs/OBJECTIVE_DESIGN.md` |
+| 171 | **HORIZONTAL IS RELATIVE; VERTICAL IS NOT.** Decode the root as `(psi_dot, p_x_dot, p_z_dot, p_y)` — heading rate and planar velocities relative, **height absolute**. Measured to reduce foot skating. Height is referenced to gravity and the ground is at a fixed place; heading and planar position are frame-arbitrary. | **VERIFIED** as their result; the *why* is **INFERRED** and **UNTESTED HERE** | `docs/THE_COMPILER.md` |
+| 172 | **Their `L_consist = \|\|J - FK(theta)\|\|` is dyadAnalysis** — two independent routes to one number, forced to agree. Independent confirmation that the dyad is the right instrument. | CONFIRMATION | `docs/THE_COMPILER.md` |
+| 173 | **Their hybrid representation is the synergy result** — keep EXPLICIT whatever must be addressable (you cannot inpaint a latent), compress the rest. States with its reason what we measured as 290 muscles → 8 dims for 91%. | CONFIRMATION | `docs/THE_COMPILER.md` |
+| 174 | **`MotionCorrection/` UNREAD** — a C++ foot-skating post-process, Apache-2.0, algorithm not named in its README. The one place in that repo a real solver might live. | **OPEN** | — |
+
+**THE GENERAL LESSON, and it is the reason this section exists:** a kinematic motion model has no
+physics to give a physics project, and the check that settles it takes one line — *does it take
+gravity as an input?* What a foreign project IS worth is its **objective-design scars** and its
+**representational choices**, because those are measured consequences someone else already paid
+for. Read for the losses and the frames, not for the model.
+
 ### The outstanding data, named
 
 | # | what is missing | blocks |
