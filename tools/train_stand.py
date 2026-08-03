@@ -198,6 +198,7 @@ def main() -> int:
     turns = int(a[a.index("--turns") + 1]) if "--turns" in a else 5
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 24
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 1.2
+    init = a[a.index("--init") + 1] if "--init" in a else None
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     P = derive_stand_port()
@@ -207,6 +208,13 @@ def main() -> int:
     dim = 3 * nu
     mu = np.concatenate([np.full(nu, 0.15), np.zeros(nu), np.zeros(nu)])
     sd = np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6), np.full(nu, 0.6)])
+    if init:
+        # WARM START: continue from a saved theta instead of re-paying for the search from zero.
+        # The spread is halved -- the question is now "what is near the best known", not "what
+        # is anywhere" (same derivation, finer measurement).
+        mu = np.load(init)
+        sd = 0.5 * sd
+        print(f"warm start from {init}")
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     hist = []

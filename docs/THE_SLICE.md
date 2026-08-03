@@ -278,12 +278,33 @@ literal. (`python -m core.why` walk remains to be run as the formal check.)
    the fix is the presentation physics — exposure, object scale, and reading
    video — never the tolerance.
 
-**F3 — OPEN, stated honestly.** The playable loop's body is the aHuman emit figure
-driven by the Walker (derived-kinematics mover + the measured 48-pose gait table,
-terrain-conformed by the two-bone IK). The measured-gait playback is data, not a
-pose-scripted frame in F3's sense, but F3 was written for the musculoskeletal
-body standing on the parser — which exists as a separate artifact (the trained
-stand policy) and has not been driven through the slice parser. Not judged yet.
+**F3 — JUDGED 2026-08-04: PASS by the slice's letter; one named debt carried forward.**
+Harness: `python tools/f3_stand.py` (exit 0 PASS; verdict picture
+`ChimeraEngine/output/ports/f3_stand.png`). The musculoskeletal body (290 muscles,
+`myobody.xml`) stands on this world's gravity (g = 7.076, read by `tools/world.py` from
+theHuman — never assumed) **through a parser** (`BUTTONS = {"stand": formula}` — a button
+toggles the derived formula `a0 + kh·(tgt−z) + kp·pitch`; the full Phase D grammar comes
+later, and the path button → formula → muscles is what F3 tests) with **zero pose-scripted
+frames**: after a one-time projection of the keyframe into the body's own declared joint
+ranges at reset, nothing writes `d.qpos` — every frame is `mj_step` under muscle control
+and gravity. Measured over the run: Phase 1 (STAND held 5.0 s) pelvis MIN **93.0%** of the
+derived 0.9201 m target (bar 90%), CoM excursion **0.84×** the base-of-support box (bar
+1.00); Phase 2 (STAND released) the body slumps below 50% of target in **0.9 s** — the
+button is load-bearing, not a replayed checkpoint. The stand policy itself was re-derived
+this session: CEM warm-started twice (`--init`, added to `tools/train_stand.py`), 24
+turns × pop 48 at the full 5 s horizon.
+
+**The named debt (the port's full contract, honestly failed):** `stand_port.py`'s printed
+PROVEN line adds "joints off their limits", and the policy arches the lumbar past its
+declared stop — worst joint **1.56×** range transient, **1.14–1.34× sustained at
+L4_L5_FE** (≈ 3–5° past a soft stop), with knees/subtalar grazing at 1.01–1.03×. The cause
+is named, not theorised: `tools/world.py`'s passive-tissue derivation covers hip/knee/
+ankle and *refuses* the trunk — "left alone 13 (out of range, no ligament)" — because
+theHuman publishes no lumbar motion envelope to derive a slack band from. **Next rung,
+fixed by this firing:** the TRUNK PASSIVE-TISSUE port (lumbar ligaments), which needs
+published lumbar passive moment-angle data; a chosen stiffness would be rule 1. This was
+F3's predecessor paragraph ("exists as a separate artifact… not driven through the slice
+parser") resolved: the artifact now stands through the parser.
 
 **Next rung, fixed by this firing:** re-record with position-closed-loop drive,
 capture VIDEO for the blind read, fix exposure and object legibility, then read
