@@ -138,3 +138,93 @@ falsifier's hunt, in its written order:
    renderer's projection path (`matter.py` / the splat kernel) and MEASURE the
    mapping — one blade of known width at a known distance, predicted pixel
    width vs rendered.** Instrument first, membrane after; that is rule 0.
+
+---
+
+## THE RENDERER READ (2026-08-04): the gap was the SHAPE, and both fired membranes were doomed
+
+The renderer was read (`ParticleEngine/gpu_pipeline.py::_p2s`, lines 176-250), and
+it answers both failures mechanically:
+
+**A splat with a normal is a tangent DISC, not a ball** — covariance
+`s^2 * _DISC_WIDE` (1.45) across the tangent plane, `s^2 * _DISC_THIN` (0.10)
+along the normal (the construction is for 2-D shells: constant screen coverage
+from sub-camera point to limb). A splat with a ZERO normal falls back to the
+isotropic ball. And `s = SIZE * sm * base_scale` with `sm = 1.0` (SOLID) and
+`base_scale = 0.5` in the live path — the display halving every membrane's
+stated grain size, named here, not this membrane's to move.
+
+So the tuft's blades, normal up, s = 0.02 x 0.5 = 0.01 m:
+
+- each grain is a HORIZONTAL disc: 0.012 m across the ground, **0.0032 m along
+  the blade** (sqrt(0.10) x 0.01) — against a grain spacing of 0.0194 m.
+  **84% of every blade is undrawn no matter how many grains it has.** Membrane
+  1's contiguity derivation (spacing <= w) was computed against the disc's
+  WIDE axis; the renderer draws the THIN axis along a vertical blade. Doomed.
+- viewed obliquely from the third-person camera, horizontal discs foreshorten
+  toward edge-on. More doomed.
+- membrane 2's horizontal normals put the disc's wide axis along the blade
+  (connected at last) — and the back-face cull, which the same normal drives,
+  discarded the half of the blades facing away, while the baked lighting went
+  dark. Doomed the other way.
+
+**A blade is a 1-D line. A line has no tangent plane. The disc construction
+cannot draw it; the ball chain can.**
+
+### MEMBRANE 3 (stated 2026-08-04, before the build)
+
+**STATEMENT.** With the blades' normals ZEROED after `_shade` (lighting stays
+baked from the up-claim — the shade runs host-side before upload), every blade
+grain renders as an isotropic ball of s = 0.01 m: a chain of balls is a TUBE,
+contiguous along the blade from every viewpoint, un-cullable (grass has no back
+face), lit as grass.
+
+**PREDICTION.** `python tools/stone_legibility.py tube tuft` at the blind read's
+rig shows vertical stalk structure in the after frame, judgeable by eye.
+
+**FALSIFIER.** If the tube is drawn and the frame STILL shows no vertical
+structure, the shape chain is exhausted and the remaining suspect is the scale
+chain (`base_scale = 0.5` applied invisibly to every SIZE; the LOD upscale
+path's 1.67x magnification): the next artifact is the splat->screen-pixel
+INSTRUMENT — one blade of known width at a known distance, predicted pixel
+width vs rendered — not another object-level membrane.
+
+---
+
+## VERDICT 3 (2026-08-04): **FIRED on its prediction — and the instrument it named found the real answer.**
+
+The tube frame (`tuft_tube.jpg`) restored the solid bright patch but showed no
+stalk structure: FIRED, as written. Then the instrument the falsifier named was
+built (`tools/splat_ruler.py` — a known tube, a known 1.000 m bar, one known
+grain, at a known 5.0 m, through the real pipeline):
+
+- **The projection is HONEST.** Bar: 191 px measured vs 187.1 px predicted (2%,
+  footprint bleed at the ends). No hidden magnification in the settled path.
+- **The footprint factor is 2.4–2.7x s.** One SIZE-0.02 ball paints 5 px
+  (base_scale 0.5) to 9 px (base_scale 1.0) at 5 m — 0.027 m and 0.048 m.
+- **The tuft is 4.7x OVER-COVERED, and that is the blob.** 1140 grains x ~17 px²
+  a grain = ~19,800 px of paint onto the disk's ~4,200 px projection: every
+  pixel accumulates ~5 semi-transparent splats into one saturated mass.
+  Internal structure cannot survive 5x coverage no matter what shape the grains
+  are — which is why all three shape membranes fired. **The gap was never the
+  shape; it was the ARITHMETIC of coverage.** A falsifier chain that ends in a
+  number is doing its job.
+
+### MEMBRANE 4 (stated 2026-08-04, before the build)
+
+**STATEMENT.** A tuft reads as stalks when its projected coverage — grains x
+grain footprint / projected disk area — sits near 1, not 4.7. With the blade
+held at 19 grains (the line is proven) the lever is blade count, and the count
+derives from the measured mapping: at the probe rig the disk projects to
+~4,200 px and one grain paints ~17.3 px², so
+`n_blades = 4200 / (19 x 17.3) = 12.8 -> 13 blades`. The 60-blade density was a
+design placeholder (THE HUMAN, provenance table); this replaces a placeholder
+with a derivation from a measured constant.
+
+**PREDICTION.** 13 blades x 19 grains at coverage ~1.0: the probe frame shows
+separated stalks with ground between them — vegetation, not a patch.
+
+**FALSIFIER.** If the frame at coverage ~1 is STILL a blob or STILL unreadable,
+then no geometry at this camera distance draws grass, and the terminal is THE
+HUMAN: legibility-at-5-m is texture (per-blade value jitter) and taste, not
+physics — and the doc will say the walk reached its terminal honestly.
