@@ -78,6 +78,51 @@ def primitive_test(name, ports, statement, falsifier):
     return deco
 
 
+ACTIONS = {}
+
+
+def action_test(name, rests_on, statement, prediction, falsifier):
+    """Register an ACTION PRIMITIVE -- one thing the body DOES, as a program over validated ports.
+
+    RULE 0 HAS THREE PARTS AND THIS REGISTRY ONLY ENFORCED TWO. `port_test` and `primitive_test`
+    demand a STATEMENT and a FALSIFIER and let the PREDICTION live wherever the test author felt
+    like putting it -- which means the number could be written after the run and nobody would know.
+    A prediction produced after the measurement is a description, and the whole of Rule 0 is that a
+    description survives any result. It is a required field here.
+
+        THE PREDICTION IS DECLARED AT REGISTRATION, WHICH IS BEFORE THE TEST CAN HAVE RUN.
+
+    `rests_on` names ports and mechanism primitives; every name must already be registered.
+    """
+    if not statement or not prediction or not falsifier:
+        missing = [n for n, v in (("STATEMENT", statement), ("PREDICTION", prediction),
+                                  ("FALSIFIER", falsifier)) if not v]
+        raise ValueError(f"action {name!r} is missing {' and '.join(missing)}. Rule 0 has three "
+                         f"parts and all three are required before the test may exist.")
+    if not rests_on:
+        raise ValueError(f"action {name!r} rests on nothing. An action is a PROGRAM over an "
+                         f"instruction set; name the instructions.")
+    unknown = [p for p in rests_on if p not in TESTS and p not in PRIMITIVES]
+    if unknown:
+        raise ValueError(f"action {name!r} rests on {unknown}, which are neither validated ports "
+                         f"nor registered primitives. Import them first.")
+    if name in ACTIONS:
+        raise ValueError(f"action {name!r} registered twice -- a silent overwrite hides one.")
+
+    def deco(fn):
+        ACTIONS[name] = dict(fn=fn, statement=statement, prediction=prediction,
+                             falsifier=falsifier, name=name, rests_on=list(rests_on))
+        return fn
+    return deco
+
+
+def expect_actions(n: int) -> None:
+    if len(ACTIONS) != n:
+        raise SystemExit(
+            f"REFUSING TO RUN: {len(ACTIONS)} actions registered, expected {n}.\n"
+            f"  registered: {sorted(ACTIONS)}")
+
+
 def expect_primitives(n: int) -> None:
     if len(PRIMITIVES) != n:
         raise SystemExit(
