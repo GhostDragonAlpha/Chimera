@@ -59,8 +59,217 @@ def gravity() -> float:
     return g
 
 
-def load_body(xml_path, mujoco=None):
-    """Load an MJCF and put it in this world. Returns `(model, g)`.
+# ---------------------------------------------------------------------------------------------
+# PASSIVE TISSUE -- the ligaments, 2026-08-02, added because port test 6 measured their absence.
+#
+# `qfrc_passive` was identically 0.00000 N.m at 10%, 50% and 90% of the knee's range with every
+# actuator silent. The body had no ligaments, so the hard constraint carried the whole end-range
+# load and deflected 3.566 deg past a stop it is documented to enforce (port test 5). Both
+# failures are ONE missing instruction, not two broken ones.
+#
+# THE DERIVATION, because rule 1 forbids choosing either number.
+#
+#   HOW STRONG.  A ligament that could be overpowered by the muscles crossing its own joint would
+#   let every maximal contraction drive that joint through its own stop, which is a dislocation.
+#   Bodies do not routinely dislocate themselves. So the ligament's strength is set by what the
+#   actuators on the same joint can produce, and the model already knows it. That sentence took
+#   four wrong arithmetics to write down, each of which returned a plausible number:
+#
+#     - `sum |moment * F_max|` added the ANTAGONISTS as though they helped. A ligament at the
+#       extension stop is loaded by the extensors; the flexors pull away from it. 6x too stiff.
+#     - the signed version read the sign of `moment` alone. Muscle force is NEGATIVE in MuJoCo --
+#       a muscle pulls, it never pushes -- so the torque is `moment * force` and the sign of the
+#       moment says the opposite of what it looks like.
+#     - `F_max` from gainprm is peak ISOMETRIC force, which a muscle at an extreme joint angle is
+#       nowhere near: 2212 N nominal against 719 N actually produced. Sizing a structure for a
+#       load that never arrives. The model's own `actuator_force` carries the force-length curve.
+#     - evaluated AT THE LIMIT it read ~0 for the knee, because at 120 deg the hamstrings are
+#       fully shortened and make no force -- which is why you cannot actively flex your knee past
+#       about 120 deg. True physiology, wrong number: the ligament still has to CATCH what was
+#       launched from mid-band. The bound is the MAX OVER THE BAND.
+#
+#   And it is measured from `qpos0`, not the keyframe. Off the keyframe the left and right knee
+#   came out 294 vs 504 N.m/rad on an anatomically symmetric body -- biarticular muscles reading a
+#   stored asymmetric pose. A ligament is a property of a joint and must not depend on what the
+#   rest of the body happens to be doing. L == R is now a CHECK; they agree to 0.6%.
+#
+#   HONEST BOUND: this sizes the ligament to hold MAXIMUM VOLUNTARY CONTRACTION at the stop, which
+#   is an UPPER bound. Real passive moment-angle curves are softer and exponential rather than
+#   linear, because reflex withdrawal shares the job -- the GTO, which is port 9. Measured human
+#   passive moment-angle curves are the outstanding data item here, alongside ISB via-points and
+#   the sensor noise floors.
+#
+#   WHERE IT GOES TAUT.  A ligament is slack through the motion the body actually performs; that
+#   is what "range of motion" means. The parent publishes that motion: `theHuman.gait_envelope_deg`
+#   is 101 samples of hip, knee and ankle through one cycle. The deadband is the envelope; the
+#   ligament engages between the envelope's edge and the joint's own published limit.
+#
+#   k = tau_max / gap.  Nothing here is selected.
+#
+# AND WHERE IT REFUSES.  As `gap -> 0`, `k -> infinity`, and an infinitely stiff ligament is not a
+# ligament -- it is a constraint, which the model already has. The honest floor is the envelope's
+# own grain: the largest step between consecutive samples. A gap narrower than one sample step is
+# not a small gap, it is a gap the instrument cannot see, and the difference matters -- walking
+# takes the knee to 1.84 deg against a 0 deg extension stop, which does not mean the extension
+# ligament engages over 1.84 deg. It means this dataset cannot say. So that side gets NO ligament
+# and gets NAMED, rather than a plausible number nobody could check.
+# ---------------------------------------------------------------------------------------------
+
+# model joint -> the envelope key that reports its motion. Signs are NOT assumed to agree; the
+# derivation asserts the envelope lies inside the joint's own range and raises if it does not.
+LIGAMENT_JOINTS = {
+    "hip_flexion_r": "hip", "hip_flexion_l": "hip",
+    "knee_angle_r": "knee", "knee_angle_l": "knee",
+    "ankle_angle_r": "ankle", "ankle_angle_l": "ankle",
+}
+
+
+def _ledger() -> dict:
+    hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == LEDGER_MEMBRANE]
+    if not hits:
+        raise WorldUnknown(f"no {LEDGER_MEMBRANE}/numbers.json under story/ -- run "
+                           f"`python story/grow.py`. Refusing to assume Earth.")
+    return json.loads(hits[0].read_text(encoding="utf8"))
+
+
+def derive_ligaments(m, mujoco) -> tuple[list, list]:
+    """Derive every ligament this world's published data can support. Returns `(emit, refused)`.
+
+    Each emitted entry is a dict with the two numbers and the arithmetic that produced them, so
+    the caller can print the derivation rather than assert it.
+    """
+    import math
+    import numpy as np
+
+    led = _ledger()
+    env = led.get("gait_envelope_deg")
+    if not isinstance(env, dict):
+        raise WorldUnknown(
+            f"{LEDGER_MEMBRANE} publishes no `gait_envelope_deg` -- without the motion the body "
+            f"actually performs there is nothing to derive a slack range from, and a chosen "
+            f"deadband is a fitted ligament. Refusing.")
+
+    d = mujoco.MjData(m)
+    emit, refused = [], []
+    for jname, ekey in LIGAMENT_JOINTS.items():
+        j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jname)
+        if j < 0 or ekey not in env:
+            refused.append((jname, "both", "no published envelope for this joint"))
+            continue
+        adr, dof = int(m.jnt_qposadr[j]), int(m.jnt_dofadr[j])
+        lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+        samples = [math.radians(float(x)) for x in env[ekey]]
+        e_lo, e_hi = min(samples), max(samples)
+
+        # THE SIGN CHECK. If the dataset's convention disagreed with the model's, the envelope
+        # would fall outside the joint's own range -- and a flipped ligament would resist the
+        # motion it is supposed to permit. Dimensionally invisible; caught only by asking.
+        if e_lo < lo - 1e-9 or e_hi > hi + 1e-9:
+            raise WorldUnknown(
+                f"{jname}: published envelope [{math.degrees(e_lo):+.2f}, {math.degrees(e_hi):+.2f}]"
+                f" deg falls outside the model's range [{math.degrees(lo):+.2f}, "
+                f"{math.degrees(hi):+.2f}] deg. The two sign conventions disagree; a ligament "
+                f"derived across them would resist normal motion. Refusing.")
+
+        grain = max(abs(samples[i + 1] - samples[i]) for i in range(len(samples) - 1))
+
+        for side, limit, edge in (("flex", hi, e_hi), ("ext", lo, e_lo)):
+            gap = abs(limit - edge)
+            if gap <= grain:
+                refused.append((jname, side,
+                                f"gap {math.degrees(gap):.2f} deg <= envelope grain "
+                                f"{math.degrees(grain):.2f} deg -- unresolvable, not small"))
+                continue
+
+            # tau_max is the MAX OVER THE BAND, not the value at the limit. Measured at the limit
+            # the knee reads ~0, because at 120 deg the hamstrings are fully shortened and make no
+            # force -- which is why you cannot actively flex your knee past about 120 deg. That is
+            # real physiology and it is the wrong number: the ligament still has to CATCH what was
+            # launched at it from mid-band, where the flexors are strong. A structure is sized by
+            # the largest load it can meet, not by the load present at the instant it is met.
+            #
+            # SIGNED, and the sign is the whole point. A ligament at the extension stop is loaded
+            # by the EXTENSORS; the flexors pull away from it. `sum |moment * F_max|` added the
+            # antagonists as though they helped and came out ~6x too stiff.
+            #
+            # AND ACTIVATION IS `act`, NOT `ctrl`. `ctrl` is excitation; the force reads `act`,
+            # which is a state with 15 ms dynamics (port test 3 measured it). A pass that sets
+            # ctrl and calls mj_forward changes nothing about the force -- it silently reports the
+            # keyframe's activation. Same species as the dense-reshape bug: a wrong index that
+            # RAISES costs an hour, a wrong index that returns a plausible number costs a diagnosis.
+            want = 1.0 if side == "flex" else -1.0
+            n_samp = max(2, int(gap / grain) + 1)
+            tau = 0.0
+            for i in range(n_samp + 1):
+                # FROM qpos0, NOT THE KEYFRAME. A ligament is a property of a joint; it must not
+                # depend on what the rest of the body happens to be doing in one stored pose. Off
+                # the keyframe the left and right knee ligaments came out 294 vs 504 N.m/rad on a
+                # body that is anatomically symmetric -- biarticular muscles reading the keyframe's
+                # asymmetric hips. qpos0 is the model's own reference configuration and is
+                # symmetric by construction, so L == R becomes a CHECK rather than a hope.
+                mujoco.mj_resetData(m, d)
+                d.qpos[adr] = edge + (limit - edge) * i / n_samp
+                d.qvel[:] = 0.0
+                d.ctrl[:] = 1.0
+                if m.na:
+                    d.act[:] = 1.0                      # the muscles at full drive, actually
+                mujoco.mj_forward(m, d)
+                flat = np.asarray(d.actuator_moment).ravel()
+                s = 0.0
+                for k in range(m.nu):
+                    n0, a0 = int(d.moment_rownnz[k]), int(d.moment_rowadr[k])
+                    for e in range(n0):
+                        if int(d.moment_colind[a0 + e]) == dof:
+                            t = float(flat[a0 + e]) * float(d.actuator_force[k]) * want
+                            if t > 0.0:                 # only what drives INTO this limit
+                                s += t
+                tau = max(tau, s)
+            if not (tau > 0.0):
+                refused.append((jname, side, "no muscle spans this joint -- nothing to out-resist"))
+                continue
+
+            pad = 10.0  # rad, far outside any joint range: makes each ligament one-directional
+            band = (edge, hi + pad) if side == "ext" else (lo - pad, edge)
+            emit.append(dict(joint=jname, side=side, name=f"lig_{jname}_{side}",
+                             k=tau / gap, tau=tau, gap=gap, edge=edge, limit=limit,
+                             band=band, grain=grain))
+    return emit, refused
+
+
+def _tissue_xml(xml_path, emit) -> "Path":
+    """Write the body + its ligaments as a sibling file, so every relative path still resolves.
+
+    Content-hashed and written once: `load_body` is called from parallel trainer workers, and two
+    of them racing on one filename is a corrupt model that would be blamed on the physics.
+    """
+    import hashlib
+    import os
+
+    src = Path(xml_path)
+    rows = "\n".join(
+        f'    <fixed name="{e["name"]}" springlength="{e["band"][0]:.9f} {e["band"][1]:.9f}" '
+        f'stiffness="{e["k"]:.6f}">\n'
+        f'      <joint joint="{e["joint"]}" coef="1"/>\n'
+        f'    </fixed>' for e in emit)
+    block = ("  <!-- PASSIVE TISSUE. Derived by tools/world.py from theHuman's published gait\n"
+             "       envelope and this model's own peak muscle torque. Generated -- do not edit;\n"
+             "       edit the derivation. -->\n"
+             f"  <tendon>\n{rows}\n  </tendon>\n")
+    text = src.read_text(encoding="utf8")
+    i = text.rfind("</mujoco>")
+    if i < 0:
+        raise WorldUnknown(f"{src} has no </mujoco> to insert passive tissue before")
+    out = text[:i] + block + text[i:]
+    dst = src.with_name(f"_tissue_{hashlib.sha1(out.encode('utf8')).hexdigest()[:8]}.xml")
+    if not dst.exists():
+        tmp = dst.with_suffix(f".tmp{os.getpid()}")
+        tmp.write_text(out, encoding="utf8")
+        os.replace(tmp, dst)
+    return dst
+
+
+def load_body(xml_path, mujoco=None, tissue=True, verbose=False):
+    """Load an MJCF and put it in this world, with its passive tissue. Returns `(model, g)`.
 
     Prints what it changed, because a silent world change is how the original defect survived:
     nothing in the logs ever said which gravity a run had used, so nothing could contradict it.
@@ -69,6 +278,69 @@ def load_body(xml_path, mujoco=None):
         import mujoco  # local import: this module is useful without it (see `gravity()`)
     g = gravity()
     m = mujoco.MjModel.from_xml_path(str(xml_path))
+
+    # SEAT THE KEYFRAME INSIDE THE BODY'S OWN LIMITS. myobody's keyframe starts hip_flexion_l at
+    # -40.39 deg against a published range of [-30, +120], and both knees a few degrees
+    # hyperextended. With no passive tissue the constraint solver absorbed that silently, which is
+    # why it survived unnoticed; a ligament is a spring, and a spring held past its engagement
+    # point PUSHES -- 689.57 N.m on that hip at t=0, which threw the body into a tangle and made
+    # the foot sensors read 4.4 N while three metres in the air. The sensor was fine.
+    #
+    # A pose outside the joint's own range is not a pose the body can hold. Clamping to the
+    # PUBLISHED range and nothing else: the limit is the body's number, not a margin I picked.
+    if tissue:
+        emit, refused = derive_ligaments(m, mujoco)
+        if emit:
+            m = mujoco.MjModel.from_xml_path(str(_tissue_xml(xml_path, emit)))
+            if verbose:
+                for e in emit:
+                    import math
+                    print(f"[tissue] {e['name']:28} k = {e['tau']:7.1f} N.m / "
+                          f"{math.degrees(e['gap']):5.2f} deg = {e['k']:9.1f} N.m/rad")
+                for jn, side, why in refused:
+                    print(f"[tissue] REFUSED {jn}/{side}: {why}")
+    # SEATED AFTER THE TISSUE RELOAD, and the order is load-bearing. It ran BEFORE first:
+    # it clamped key_qpos on the model that the tissue reload then THREW AWAY, and printed
+    # a confident 'seated 1' while changing nothing -- the plantar sensor read back
+    # identical to four decimals, which is what caught it. A fix applied to an object that
+    # is about to be replaced is the same silent-success species as the double registry.
+    # ONLY THE JOINTS THIS CHANGE PUT A LIGAMENT ON. A first pass clamped every out-of-range
+    # keyframe joint and moved 16 of them -- including `knee_angle_r_rotation2`,
+    # `knee_angle_r_translation1` and four more, which are the OpenSim knee's COUPLED degrees of
+    # freedom, driven from `knee_angle_r` by equality constraints. They are not free, their
+    # published ranges are nominal, and clamping them independently puts the knee in a
+    # configuration inconsistent with its own coupling. Fixing what this change broke is repair;
+    # clamping those is meddling, and it would have been invisible under a summary line.
+    #
+    # The lumbar joints are genuinely out of range too. No ligament acts there, so they are NAMED
+    # and left alone rather than quietly moved by an unrelated commit.
+    seated, noted = [], []
+    for k in range(m.nkey):
+        for j in range(m.njnt):
+            if not m.jnt_limited[j] or m.jnt_type[j] not in (2, 3):   # slide, hinge
+                continue
+            a = int(m.jnt_qposadr[j])
+            lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+            q = float(m.key_qpos[k][a])
+            if lo <= q <= hi:
+                continue
+            nm = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, j) or f"j{j}"
+            if nm in LIGAMENT_JOINTS:
+                m.key_qpos[k][a] = min(max(q, lo), hi)
+                seated.append((nm, q, float(m.key_qpos[k][a])))
+            else:
+                noted.append(nm)
+    if seated or noted:
+        import math as _math
+        print(f"[world] keyframe: seated {len(seated)}, left alone {len(noted)} "
+              f"(out of range, no ligament -- not this change's to move)")
+        if verbose:
+            for nm, was, now in seated:
+                print(f"[world]   seated {nm:18} {_math.degrees(was):+8.2f} -> "
+                      f"{_math.degrees(now):+8.2f} deg")
+            for nm in noted:
+                print(f"[world]   noted  {nm}")
+
     before = float(m.opt.gravity[2])
     m.opt.gravity[2] = -g
     if abs(before + g) > 1e-9:
@@ -79,4 +351,7 @@ def load_body(xml_path, mujoco=None):
 
 
 if __name__ == "__main__":
+    import mujoco as _mj
     print(f"this world's gravity: {gravity():.6f} m/s^2")
+    _m, _g = load_body(ROOT / "external" / "myo_sim" / "body" / "myobody.xml", _mj, verbose=True)
+    print(f"tendons in the loaded model: {_m.ntendon}")

@@ -87,14 +87,25 @@ def t_passive_force(mujoco):
     d = mujoco.MjData(m)
     j, adr, dof, _, _ = _muscle_at(m, d, mujoco, "knee_angle_r")
     lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+    # READ BOTH ARRAYS. `qfrc_passive` carries joint springs, dampers and TENDON springs; MuJoCo
+    # files a MUSCLE's passive force under `qfrc_actuator`. Reading only the first, this test could
+    # not have seen tissue the body already had -- it happened to be right that myobody has no
+    # ligament, but it was right for a reason it could not check. The measured muscle passive term
+    # is 1.8 / -1.9 / 3.2 N.m and non-monotone, where a knee gives tens of N.m rising to the stop.
+    #
+    # `act` is zeroed as well as `ctrl` because ctrl is EXCITATION and the force reads `act`, a
+    # state with 15 ms dynamics (port 3). This keyframe happens to store act = 0 so it changes
+    # nothing here -- it is a guard against the day a test forwards once on a LOADED pose.
     out = []
     for frac in (0.1, 0.5, 0.9):
         mujoco.mj_resetDataKeyframe(m, d, 0)
         d.ctrl[:] = 0.0
+        if m.na:
+            d.act[:] = 0.0
         d.qpos[adr] = lo + frac * (hi - lo)
         d.qvel[:] = 0.0
         mujoco.mj_forward(m, d)
-        out.append(abs(float(d.qfrc_passive[dof])))
+        out.append(abs(float(d.qfrc_passive[dof]) + float(d.qfrc_actuator[dof])))
     grows = out[2] > out[0] and max(out) > 1e-9
     return dict(pass_=grows, pred=0.0, got=out[2],
                 detail=f"knee passive force at 10/50/90% of range: {out[0]:.5f} / {out[1]:.5f} / "
