@@ -452,11 +452,20 @@ def assemble_3d(grid, shape, targets, J, connectivity=18, sweeps=90, temp=12.0,
     return np.array(L, dtype=np.int16).reshape(shape)
 
 
-def metrics_3d(grid, shape) -> dict:
+def metrics_3d(grid, shape, types=None) -> dict:
     """Facts about a 3D limb. Cylindrical radius per tissue about the long (z) axis, the
     limb's aspect ratio, and — for the typed connector — how the tendon sits: what
     fraction of its neighbours are bone-or-muscle (it should be bonded to both), and its
-    exposure to skin-or-medium (it should avoid them)."""
+    exposure to skin-or-medium (it should avoid them).
+    types=None (default): the historical tissue-limb mode — radii for BONE/MUSCLE/SKIN
+    plus the tendon block. An explicit `types` (world lattices, whose ids collide with
+    the tissue ids: metal = 4 = TENDON) gets radii for exactly those ids and NO tendon
+    block — a tissue instrument pointed at a world grid would return lies."""
+    if types is None:
+        types = (BONE, MUSCLE, SKIN)
+        tendon_mode = True
+    else:
+        tendon_mode = False
     strides = (shape[1] * shape[2], shape[2], 1)
     off = _nd_offsets(strides, 6)
     L = grid.ravel()
@@ -465,12 +474,14 @@ def metrics_3d(grid, shape) -> dict:
     cy, cx = yy.mean(), xx.mean()
     out = {"radius": {}, "area": {},
            "z_len": float(zz.max() - zz.min() + 1), "cyl_r": 0.0}
-    for t in (BONE, MUSCLE, SKIN):
+    for t in types:
         m = np.nonzero(grid == t)
         out["radius"][t] = float(np.sqrt((m[1] - cy) ** 2 + (m[2] - cx) ** 2).mean())
         out["area"][t] = int((grid == t).sum())
     out["cyl_r"] = float(np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2).mean())
 
+    if not tendon_mode:
+        return out
     ten = np.nonzero(grid.ravel() == TENDON)[0]
     good = bad = total = 0
     for s in ten:

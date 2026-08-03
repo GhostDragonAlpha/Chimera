@@ -145,8 +145,18 @@ counts frozen ±0.3%, H rises as λD² dominates — the per-type area term is m
 conservation, NOT bulk elasticity. Published: rung-1's 0.9 = K_eff 5.3 MPa (the
 shaker is foam-like, measured); tissue-real incompressibility needs deficit-paired
 swaps (named, unbuilt). The kernel now takes per-tissue λ arrays; default scalar
-path unchanged, both instrument tests pass. Next: remaining Phase 4 families or
-the operator's pick.
+path unchanged, both instrument tests pass. **Phase 4 full families DONE
+(2026-08-03): FIRED — the interesting way.** All five world materials derived into
+one 6×6 J (metal 6,094 ≫ rock 36.92 > ice 0.735 > sand 0.036 > basin 0.0056 J/m² —
+every number measured or Griffith-derived, σ_geo = 2.016 J/m², no new freedom).
+Metal did not freeze as the pre-run quench caveat predicted — it EVAPORATED: a
+single-grain dispersion of a γ/σ_geo ≈ 3,000 material is below any critical
+nucleus, so annihilation (ΔH ≈ −326,000/site) beats aggregation. The survivors
+ordered perfectly (rock 14.5 < ice 15.7 < sand 30.2; uniform control random),
+sand/basin inversion recorded as the pre-named Girifalco-Good precision limit.
+Instrument paid en route: `metrics_3d` now takes `types` (metal's id 4 collided
+with TENDON). Named route: nucleation-seeded metal — a new membrane. Next: that
+membrane, tissue K_IC, or the operator's pick.
 
 **Phase C — PROGRAMS.** Build order is the controller map's, because the story picks the
 buttons: BALANCE (STAND as a state, not a pose) → STEP/PLANT/SHIFT/RECOVER (MOVE) → LAUNCH/

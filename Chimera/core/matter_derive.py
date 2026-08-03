@@ -102,42 +102,63 @@ def gamma_cpm(J: np.ndarray) -> np.ndarray:
 #   ell = one sand grain (the flowing phase sets the lattice constant, as the cell did)
 #   scale = the SAME liquidity anchor as Phase 2b (geometric mean), no new freedom.
 # ------------------------------------------------------------------------------------------------
-WSAND, WROCK = 1, 2                     # world-lattice type ids (MEDIUM = 0)
-WORLD_NAMES = {MEDIUM: "medium", WSAND: "sand", WROCK: "rock"}
+WSAND, WROCK, WICE, WMETAL, WBASIN = 1, 2, 3, 4, 5     # world-lattice ids (MEDIUM = 0)
+WORLD_NAMES = {MEDIUM: "medium", WSAND: "sand", WROCK: "rock",
+               WICE: "ice", WMETAL: "metal", WBASIN: "basin"}
 GAMMA_SAND_J_M2 = 0.5e3 * 0.072e-3                    # c·d = 0.036 J/m^2
 GAMMA_ROCK_J_M2 = (2.4e6) ** 2 / (2.0 * 78e9)         # K_IC^2/2E = 36.9 J/m^2
 ELL_WORLD_M = 0.072e-3                                # one site = one sand grain
 
+# PHASE 4 (full families): the five world materials with measured or Griffith-derived
+# surface energies — every number cited in THE_LIVING_MATTER.md "Phase 4 (full
+# families)". Metal's 6,094 J/m^2 is a ductile TEARING energy (plastic work included);
+# the mapping is told the truth about which number it is eating.
+GAMMA_ICE_J_M2 = (115e3) ** 2 / (2.0 * 9e9)           # K_IC 115 kPa*m^0.5 -> 0.735 J/m^2
+GAMMA_METAL_J_M2 = (29e6) ** 2 / (2.0 * 69e9)         # K_IC 29 MPa*m^0.5 -> 6094 J/m^2
+GAMMA_BASIN_J_M2 = 0.2e3 * 0.028e-3                   # c·d = 0.0056 J/m^2
+WORLD_MATS = {WSAND: GAMMA_SAND_J_M2, WROCK: GAMMA_ROCK_J_M2, WICE: GAMMA_ICE_J_M2,
+              WMETAL: GAMMA_METAL_J_M2, WBASIN: GAMMA_BASIN_J_M2}
 
-def derive_world_J(temp: float = TEMP) -> np.ndarray:
-    """The derived 3x3 world J (MEDIUM/SAND/ROCK), same algebra as the tissue J.
+
+def build_world_J(gammas: dict, temp: float = TEMP) -> np.ndarray:
+    """The derived world J (MEDIUM + the given materials), same algebra as the tissue J.
     alpha = temp / sigma_geo (the liquidity anchor makes ell cancel: kT_eff =
     sigma_geo*ell^2, E0 = kT_eff/temp, alpha = ell^2/E0 = temp/sigma_geo — the
     degeneracy THE_LIVING_MATTER names: the lattice reads only gamma/temp)."""
-    gammas = [(WSAND, GAMMA_SAND_J_M2), (WROCK, GAMMA_ROCK_J_M2)]
-    a = temp / math.sqrt(GAMMA_SAND_J_M2 * GAMMA_ROCK_J_M2)
-    J = np.zeros((3, 3), dtype=np.float64)
-    for i, g in gammas:
+    items = sorted(gammas.items())
+    sig_geo = float(np.prod([g for _, g in items])) ** (1.0 / len(items))
+    a = temp / sig_geo
+    n = max(gammas) + 1
+    J = np.zeros((n, n), dtype=np.float64)
+    for i, g in items:
         J[i, i] = a * g
         J[i, MEDIUM] = J[MEDIUM, i] = 1.5 * a * g
-    for p in range(len(gammas)):
-        for q in range(p + 1, len(gammas)):
-            (i, gi), (j, gj) = gammas[p], gammas[q]
+    for p in range(len(items)):
+        for q in range(p + 1, len(items)):
+            (i, gi), (j, gj) = items[p], items[q]
             g_ab = (math.sqrt(gi) - math.sqrt(gj)) ** 2        # Girifalco-Good default
             J[i, j] = J[j, i] = a * g_ab + 0.5 * (J[i, i] + J[j, j])
     return J
 
 
-def _world_scramble(n: int = 96, seed: int = 0):
-    """The rung-1 blob protocol, world materials: sand/rock scrambled in the core third."""
+def derive_world_J(temp: float = TEMP) -> np.ndarray:
+    """The derived 3x3 world J (MEDIUM/SAND/ROCK) — the Phase 4 first control, kept
+    identical to within one float rounding of the geometric-mean computation
+    (measured: max rel. diff ~1e-19 vs the pre-refactor path)."""
+    return build_world_J({WSAND: GAMMA_SAND_J_M2, WROCK: GAMMA_ROCK_J_M2}, temp)
+
+
+def _world_scramble(n: int = 96, seed: int = 0, types: tuple = (WSAND, WROCK)):
+    """The rung-1 blob protocol, world materials: the given types scrambled in the
+    core third."""
     shape = (n, n, n)
     rng = np.random.RandomState(seed)
     grid = np.zeros(shape, dtype=np.int16)
     c, r = n // 2, n // 3
     zz, yy, xx = np.mgrid[0:n, 0:n, 0:n]
     blob = (zz - c) ** 2 + (yy - c) ** 2 + (xx - c) ** 2 < r * r
-    grid[blob] = rng.choice((WSAND, WROCK), size=int(blob.sum()))
-    targets = {t: int((grid == t).sum()) for t in (WSAND, WROCK)}
+    grid[blob] = rng.choice(types, size=int(blob.sum()))
+    targets = {t: int((grid == t).sum()) for t in types}
     return grid, shape, targets
 
 
@@ -178,6 +199,9 @@ if __name__ == "__main__":
                     help="kT_eff anchor: cortex (Phase 2, F3 fired) or liquidity (Phase 2b)")
     ap.add_argument("--world", action="store_true",
                     help="Phase 4 control: sand/rock/medium instead of the tissue scramble")
+    ap.add_argument("--world-full", action="store_true",
+                    help="Phase 4 full families: sand/rock/ice/metal/basin scramble, "
+                         "derived 6x6 J, radius-ordering verdict")
     ap.add_argument("--fracture", action="store_true",
                     help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
     ap.add_argument("--lambda", dest="lam_derived", action="store_true",
@@ -269,7 +293,7 @@ if __name__ == "__main__":
         np.fill_diagonal(J_unif, 4.0)
         J_unif[MEDIUM, MEDIUM] = 0.0
         rep = parity_report(grid, shape, targets, Jw, J_unif,
-                            sweeps=a_ns.sweeps, seed=0)
+                            sweeps=a_ns.sweeps, seed=0, types=(WSAND, WROCK))
         d = rep["differential"]
         buried = d[WROCK] < d[WSAND]
         for label in ("differential", "uniform"):
@@ -286,6 +310,55 @@ if __name__ == "__main__":
               f"(ledger record; no tau bar this run — quench regime by design)")
         raise SystemExit(0 if buried else 1)
 
+    if a_ns.world_full:
+        mats = (WMETAL, WROCK, WICE, WSAND, WBASIN)     # expected burial order
+        Jw = build_world_J(WORLD_MATS)
+        sig_geo = float(np.prod(list(WORLD_MATS.values()))) ** (1.0 / len(WORLD_MATS))
+        print("PHASE 4 (FULL FAMILIES) — THE WORLD, ALL FAMILIES")
+        print(f"  gammas (J/m^2): " + "  ".join(
+            f"{WORLD_NAMES[t]} {WORLD_MATS[t]:.4g}" for t in mats))
+        print(f"  sigma_geo = {sig_geo:.3f} J/m^2, alpha = temp/sigma_geo = "
+              f"{TEMP / sig_geo:.3f} J^-1 m^2 at temp={TEMP}")
+        print(f"  quench caveat: metal J/temp = {Jw[WMETAL, WMETAL] / TEMP:.0f} "
+              f"-- prediction is on RADIUS ORDERING only")
+        order = (MEDIUM,) + tuple(sorted(mats))
+        print("  THE DERIVED 6x6 WORLD J (lattice units):")
+        print("           " + "  ".join(f"{WORLD_NAMES[t]:>8}" for t in order))
+        for i in order:
+            print(f"  {WORLD_NAMES[i]:>8} " +
+                  "  ".join(f"{Jw[i, j]:8.1f}" for j in order))
+        grid, shape, targets = _world_scramble(a_ns.n, types=mats)
+        J_unif = np.full_like(Jw, 8.0)
+        np.fill_diagonal(J_unif, 4.0)
+        J_unif[MEDIUM, MEDIUM] = 0.0
+        rep = parity_report(grid, shape, targets, Jw, J_unif,
+                            sweeps=a_ns.sweeps, seed=0, types=mats)
+        for label in ("differential", "uniform"):
+            r = rep[label]
+            print(f"  {label:<13} mean radius  " +
+                  "  ".join(f"{WORLD_NAMES[t]}:{r[t]:.1f}" for t in mats))
+        d, u = rep["differential"], rep["uniform"]
+        # The falsifier's four clean decades: metal/rock/ice/sand each >= 10x apart.
+        clean = (WMETAL, WROCK, WICE, WSAND)
+        decades_ok = all(d[clean[k]] < d[clean[k + 1]] for k in range(3))
+        full_ok = decades_ok and d[WSAND] < d[WBASIN]
+        uniform_sorted = all(u[mats[k]] < u[mats[k + 1]] for k in range(4))
+        print(f"  falsifier A (decade pairs metal<rock<ice<sand): "
+              f"{'PASS' if decades_ok else 'FAIL -- FIRED'}")
+        print(f"  full ordering incl. basin (sand<basin, 6.4x -- GG-precision band): "
+              f"{'ordered' if d[WSAND] < d[WBASIN] else 'INVERTED -- GG-precision limit, recorded'}")
+        print(f"  falsifier B (uniform does NOT order): "
+              f"{'PASS' if not uniform_sorted else 'FAIL -- FIRED'}")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=0.9, seed=0)
+        tr = step(h, 8 * a_ns.sweeps, trace=True)
+        final = close(h)
+        sw = tr.reshape(a_ns.sweeps, 8).mean(axis=1)
+        drift = {WORLD_NAMES[t]: int((final == t).sum()) - targets[t] for t in mats}
+        print(f"  trace: H {sw[0]:.1f} -> {sw[-1]:.1f}; count drift {drift}")
+        verdict = decades_ok and not uniform_sorted
+        print(f"PHASE 4 (FULL FAMILIES) VERDICT: {'PASS' if verdict else 'FIRED'} "
+              f"({'full ordering' if full_ok else 'decades only'}; {rep['seconds']:.1f}s)")
+        raise SystemExit(0 if verdict else 1)
 
     J5 = derive_J(anchor=a_ns.anchor)
     J4 = J5[np.ix_([MEDIUM, BONE, MUSCLE, SKIN], [MEDIUM, BONE, MUSCLE, SKIN])]

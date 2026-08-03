@@ -40,9 +40,18 @@
 > counts frozen ±0.3%, H rises as the λD² term dominates). Published: per-type λ
 > is mass conservation, not elasticity; rung-1's 0.9 = K_eff 5.3 MPa measured —
 > the shaker's operating point is foam-like; tissue-real K needs deficit-paired
-> swaps (named, unbuilt).** Open debts: interfacial pairs are Girifalco-Good
+> swaps (named, unbuilt).** · **PHASE 4 FULL FAMILIES DONE: FIRED — the interesting
+> way. All five world materials derived (metal 6,094 ≫ rock 36.92 > ice 0.735 >
+> sand 0.036 > basin 0.0056 J/m², σ_geo = 2.016, zero fitted numbers). Metal did
+> not freeze as the quench caveat predicted — it EVAPORATED (single-grain
+> dispersion of a γ/σ_geo ≈ 3,000 material is below critical nucleus; ΔH ≈
+> −326,000 per isolated site). Every surviving decade pair ordered (rock 14.5 <
+> ice 15.7 < sand 30.2), uniform control did not order, sand/basin inversion
+> recorded as the pre-named GG-precision limit. Named route: nucleation-seeded
+> metal (a new membrane).**
+> Open debts: interfacial pairs are Girifalco-Good
 > defaults, tissue type mapping tested on ordering only, tissue K_IC unresearched.
-> Next: remaining Phase 4 world families or the operator's pick.**
+> Next: the nucleation membrane, tissue K_IC, or the operator's pick.**
 
 ---
 
@@ -765,6 +774,108 @@ at 200 sweeps:
    by construction, the corridor the freeze never opened), or accept the foam
    regime as the machine's documented operating point. Both are the operator's
    call; neither is smuggled into this verdict.
+
+**Phase 4 (full families) — THE WORLD, ALL FAMILIES (membrane stated 2026-08-03,
+before the run).**
+
+**STATEMENT.** The mapping closes for every world material the story has named with
+a physical referent — sand, rock, ice, metal, basin — with the SAME algebra and the
+SAME anchor as the tissue J and the sand/rock control. Every surface energy is
+measured or Griffith-derived; the liquidity anchor recomputes as the five-way
+geometric mean; no new freedom enters:
+
+- **sand** γ = c·d = 0.5 kPa × 0.072 mm = **0.036 J/m²** (Mitchell 1972 cohesion ×
+  Carrier 2003 D50 — the Phase 4 first control's value, unchanged).
+- **rock** γ = K_IC²/(2E) = (2.4 MPa√m)²/(2×78 GPa) = **36.92 J/m²** (basalt K_IC
+  1.8–3.0 — Whittaker 1992 / Zhang 1998 / Demkowicz 2012; E — Quaglio 2020).
+- **ice** γ = K_IC²/(2E) = (115 kPa√m)²/(2×9 GPa) = **0.735 J/m²** (freshwater ice
+  K_IC 100–130 kPa√m — Dempsey's 50–130 band, atmospheric 111, Timco & Frederking
+  ~100–108; 115 is mid-band; E = 9 GPa library).
+- **metal** γ = K_IC²/(2E) = (29 MPa√m)²/(2×69 GPa) = **6,094 J/m²** (Al 6061-T6
+  K_IC ≈ 29 MPa√m literature consensus, Hellier measured 26.8; E = 69 GPa library).
+  Honest note: for a ductile alloy this is a TEARING energy — it includes plastic
+  work, so it overstates the surface term by orders. The mapping is told the truth
+  about which number it is eating.
+- **basin** γ = c·d = 0.2 kPa × 0.028 mm = **0.0056 J/m²** (soft-sediment cohesion ×
+  fine-grain diameter — the basin family, weakest measured).
+
+Ordering: metal 6,094 ≫ rock 36.92 > ice 0.735 > sand 0.036 > basin 0.0056 —
+spread 1.1×10⁶. Liquidity anchor: σ_geo = (6094×36.92×0.735×0.036×0.0056)^(1/5)
+≈ **2.05 J/m²**, so α = temp/σ_geo ≈ 5.85 J⁻¹m² at temp = 12.
+
+**The quench caveat, named before the run.** Metal's J/temp = γ/σ_geo ≈ 3,000 —
+far past the glass transition. It will not sort; it will freeze where the scramble
+left it, aggregating downhill and carrying scramble memory in its core shape. The
+prediction is therefore on the RADIUS ORDERING only, not on metal's core being
+compact.
+
+**PREDICTION.** A five-material scramble (equal counts, the rung-1 blob protocol)
+under the derived 6×6 J, 200 sweeps, sorts by mean radius
+**metal < rock < ice < sand < basin**. The uniform contrast's final orientation is
+random — it does not systematically order.
+
+**FALSIFIER.** Any inversion in the radius ordering under the derived J between
+materials separated by ≥ one decade (metal/rock/ice/sand are each ≥10× apart — a
+clean four-way ordering), OR the uniform control systematically ordering. The one
+named exception, stated in advance: sand↔basin sit 6.4× apart, inside the
+Girifalco-Good default's known factor-~2 error band on interfacial tensions — an
+inversion THERE is a GG-precision limit, recorded as such, not reconciled into a
+pass.
+
+**Deliberately excluded:** `interior` — the design-material family has no natural
+referent, so no measured γ exists; including it would be choosing a number, which
+is Rule 1's definition of breaking the chain. It waits for its own membrane.
+
+*VERDICT (2026-08-03, run: `cd Chimera && python -m core.matter_derive --world-full`,
+200 sweeps, 96³, run twice — the first died on an instrument lie, the second is the
+one of record).* **FIRED — and the firing is the most interesting measurement the
+shaker has produced: metal did not freeze as the quench caveat predicted, it
+EVAPORATED.** (The run's computed anchor: σ_geo = 2.016 J/m², α = 5.951 J⁻¹m² —
+the membrane's ≈2.05 / ≈5.85 estimates, confirmed.)
+
+Measured at 200 sweeps (differential / uniform):
+
+- **metal: radius nan — EXTINCT.** Count drift −27,229 of ~27,451 (0.8% survived
+  in the trace run; zero in the parity run — scheduling noise over an extinction).
+  The caveat predicted glass-freeze; the lattice did the opposite. Mechanism,
+  derived after the fact and checked against the J: an ISOLATED metal site pays
+  ~54,403 per contact against its neighbours; annihilating it recovers all six —
+  ΔH ≈ −326,000, certain death, λ = 0.9 is a rounding error against it. Freeze
+  protects only BULK metal (self-contact 36,269 < interface 54,403, so a formed
+  aggregate's interior is stable). A single-grain dispersion of a γ/σ_geo ≈ 3,000
+  material is below any critical nucleus: it does not anneal, it dissolves. That
+  is real nucleation physics — supersaturated monatomic "vapour" has no stable
+  phase — measured here, not reconciled.
+- **The survivors ORDERED.** rock 14.5 < ice 15.7 < sand 30.2 — every surviving
+  decade pair correct. The chain broke only at metal, by extinction, not inversion.
+- **sand/basin INVERTED** (30.2 vs 27.3) — the pre-named GG-precision exception.
+  Recorded, per the membrane's own clause; not counted for or against.
+- **Uniform control: NOT ordered** (22.0 / 19.3 / 16.9 / 19.2 / 23.8) — falsifier B
+  PASS. The survivors' ordering is J-driven, not a protocol artifact.
+- **H 12.6×10⁹ → 7.3×10⁸** — the trace of the machine eating the metal. Rock also
+  bled (−1,185 cells, 4.3%) but held the core; ice/sand/basin counts stable.
+
+**What survives, published per Rule 17:**
+
+1. **The mapping's ORDERING is right wherever a stable phase exists.** Three of
+   three surviving decade pairs ordered; the uniform control did not.
+2. **Dispersion is a phase state, and this lattice knows it.** The same γ that
+   would make bulk metal the deepest core makes single-grain metal the most
+   soluble thing in the world. The quench caveat was wrong about WHICH way
+   extreme J/temp manifests — recorded as the caveat's own falsification, not
+   edited after the fact.
+3. **The named route (a new membrane, the operator's call, not smuggled):** a
+   nucleation-seeded protocol — start metal as a bulk SEED, not a dispersion —
+   asks the question the scramble couldn't: does the mapping hold metal as the
+   core when metal is allowed to exist? Statement/prediction/falsifier before
+   that run, as always.
+4. **Instrument debt paid en route:** `metrics_3d` hardcoded (BONE, MUSCLE, SKIN) —
+   on a five-material world lattice metal (id 4) collided with TENDON and the
+   radius dict simply had no key for it. It now takes `types`; default keeps the
+   historical tissue-limb behavior byte-for-byte (tendon block included), an
+   explicit list gets exactly those radii and no tendon block — a tissue
+   instrument pointed at a world grid would return lies. The first run of this
+   phase died on exactly that lie (KeyError: 4), which is why it is written down.
 
 **Phase 4 — THE WORLD.** Extend the mapping to the library's world families
 (mineral_dry, metallic, cryo) using their researched cohesion/grain-size; then the
