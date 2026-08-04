@@ -190,11 +190,31 @@ def main() -> int:
         fit = np.array([r[0] for r in res])                 # TRAIN on the mean
         ranks = np.empty(pop); ranks[np.argsort(fit)] = np.arange(pop)
         adv = ranks / (pop - 1) - 0.5                       # -0.5 .. +0.5, scale-free
+        # SCORED BEFORE THE STEP, and the order is the whole point: `mu` is about to be replaced
+        # on the next line, and at generation 0 of a WARM START that pre-step mu IS the loaded
+        # policy. Scoring after the update would evaluate the mean the gradient just produced
+        # and never once look at the thing the run was seeded with -- which is the same defect
+        # this fix exists to close, moved two lines later.
+        mu_fit = float(score(mu, TRAIN_DIRS, 1000, 'mean')[0])
+        mu_prev = mu.copy()
         mu = mu + (LR / (pop * sigma)) * (pert.T @ adv)
         order = np.argsort(-fit)
+        # THE INCUMBENT IS SCORED, BUT IT IS NOT PUT IN THE POPULATION -- and the difference
+        # matters here in a way it does not for the CEM trainers (tools/elitism_audit.py, swept
+        # 2026-08-04). CEM replaces mu with an elite mean, so inserting mu as candidate 0 is
+        # free. THIS IS MIRRORED-SAMPLING ES: `pert` must stay exactly antithetic (+eps, -eps)
+        # or the first-order noise no longer cancels and the rank-normalised gradient picks up a
+        # bias -- which is the whole reason the comment above says the elite-mean version was a
+        # random walk. So mu is evaluated OUTSIDE the population and folded only into the
+        # best-ever bookkeeping. The correctness property is preserved (the best known policy
+        # cannot be lost by looking for a better one) and the gradient estimate is untouched.
+        # Cost: one extra score() per generation, 1/pop of the turn. (The call itself is a few
+        # lines up, before the gradient step -- see the note there for why the order matters.)
         sigma = max(0.04, sigma * (0.97 if fit[order[0]] > best_ever else 1.01))
         if fit[order[0]] > best_ever:
             best_ever, best_theta = float(fit[order[0]]), cand[order[0]].copy()
+        if mu_fit > best_ever:
+            best_ever, best_theta = float(mu_fit), mu_prev.copy()
         _, w, m, rob = res[order[0]]
         print(f'  {g:4d}{fit[order[0]]:9.3f}{w:9.3f}{m:9.3f}{rob:8.3f}{sigma:8.3f}'
               f'{time.perf_counter()-tg:7.1f}')

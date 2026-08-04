@@ -192,6 +192,14 @@ def main() -> int:
           f"{'dutyR':>7}{'dutyL':>7}{'held':>7}  verdict")
     for turn in range(turns):
         cand = np.clip(rng.normal(mu, sd, size=(pop, N_FREE)), 0.0, 1.0)
+        # THE INCUMBENT IS ALWAYS A CANDIDATE (train_stand.py's correctness fix, swept here by
+        # tools/elitism_audit.py 2026-08-04 -- this file and port_trainer.py were the two that
+        # never got it). Without this line CEM scores only PERTURBED samples and never the mean,
+        # so a warm start can end strictly WORSE than not training at all. MEASURED at this
+        # file's own dimensionality: the loss is sd^2 * N_FREE, which at N_FREE = 6 is small --
+        # but "small at this size" is not a reason to omit a correctness property, and N_FREE
+        # grows every time the port gains a number.
+        cand[0] = np.clip(mu, 0.0, 1.0)
         scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs)[0]
                            for c in cand])
         order = np.argsort(-scores)

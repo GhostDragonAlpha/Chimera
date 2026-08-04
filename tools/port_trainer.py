@@ -371,6 +371,13 @@ def main() -> int:
     hist, best = [], mu.copy()
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, 3 * n_m))
+        # THE INCUMBENT IS ALWAYS A CANDIDATE (train_stand.py's correctness fix, swept here by
+        # tools/elitism_audit.py 2026-08-04). This trainer RESUMES from a saved theta -- see the
+        # `RESUMED from ... continuing the search, not restarting it` branch above -- which is
+        # exactly the case the omission destroys: without this line the search never scores the
+        # thing it resumed from, and turn 0 lands sd^2 * 3*n_m below it on a noiseless objective.
+        # The port trainers run 22 to 624 numbers, so the cost here is real, not theoretical.
+        cand[0] = mu
         cand[:, :n_m] = np.clip(cand[:, :n_m], 0.0, 1.0)
         sc = np.array([evaluate_worst(m, d, mujoco, jids, mus, qadr, base, c, secs,
                                       n_seeds=n_seeds, jnames=PORTS[port],

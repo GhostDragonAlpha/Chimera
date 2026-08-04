@@ -1,0 +1,119 @@
+{
+ "searches": [
+  {
+   "file": "tools/port_trainer.py",
+   "line": 373,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, 3 * n_m",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "tools/train_carry.py",
+   "line": 355,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, dim",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "tools/train_return.py",
+   "line": 293,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, dim",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "tools/train_stand.py",
+   "line": 344,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, dim",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "tools/train_step.py",
+   "line": 194,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, N_FREE",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "tools/train_walk.py",
+   "line": 225,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "pop, N_FREE",
+   "family": "CEM",
+   "has_incumbent": true
+  },
+  {
+   "file": "ChimeraEngine/train_transition.py",
+   "line": 188,
+   "cand": "cand",
+   "mu": "mu",
+   "dim_expr": "(ES, mirrored)",
+   "family": "ES",
+   "has_incumbent": true
+  }
+ ],
+ "missing": [],
+ "demonstration": [
+  {
+   "dim": 6,
+   "without": -0.007865510209870212,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 12,
+   "without": -0.025551217503944058,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 66,
+   "without": -0.25832980521166987,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 290,
+   "without": -1.3705009721149781,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 870,
+   "without": -4.4478109298762005,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 1160,
+   "without": -6.00870081741378,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  },
+  {
+   "dim": 1450,
+   "without": -7.577524233194541,
+   "with_": 0.0,
+   "incumbent": 0.0,
+   "worse_than_incumbent": true
+  }
+ ]
+}
