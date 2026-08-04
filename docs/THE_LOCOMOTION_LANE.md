@@ -743,12 +743,71 @@ bit-identical:
 sits within 0.03 of the incumbent instead of 0.6 below it. Thirty turns under the old rule
 produced a bit-identical file.
 
+### THE VERDICT: the search wall is open, and opening it bought ~1%
+
+Full 30 turns, guard + derived step + relative floor, same init/budget/seeds/RNG as the arm that
+returned bit-identical. The search converged properly — best −3.637 at turn 8, and by turn 20
+`best`, `mean` and `elmean` had all met at −3.650, which is what a healthy CEM looks like.
+
+**The search-membrane prediction HOLDS.** The saved theta is **not** bit-identical:
+‖Δθ‖ = 6.76e-4 over 1160 numbers, max |Δ| = 1.67e-4 — precisely the scale the landscape said the
+basin is. Where 2,160 evaluations produced an identical file, the same budget now moves.
+
+**And the honest gate says the movement is nearly worthless.** Judged at 10 seeds × 20 s, with
+the train/test split declared:
+
+| | incumbent | derived arm | Δ |
+|---|---:|---:|---:|
+| median, all 10 seeds | 7.01 s | **7.46 s** | **+6.4%** |
+| median, **held-out** seeds 3–9 | 6.82 s | **6.90 s** | **+1.2%** |
+| median, trained seeds 0–2 | 7.70 s | 7.98 s | +3.6% |
+| min | 6.30 s | 6.30 s | 0 |
+| spread | 2.78 s | 3.96 s | wider |
+| train/test gap | +0.88 s | **+1.08 s** | wider |
+
+> **The trainer's own score improved by 0.227 and held-out survival improved by 0.08 s.** Most of
+> the visible gain is fitting to the three seeds the search selected on — the gap *grew* — the
+> worst seed did not move at all, and the spread got wider. Against task 1's bar of **> 8 s**,
+> this is 6.90 s.
+
+**PROMOTION: NONE.** `stand_theta.npy` keeps the incumbent; `stand_theta_derived.npy` holds the
+result for the record. A +1.2% held-out median inside a 3.96 s spread is not a better policy, it
+is a sample. (The same call rung 9 made, on the same grounds.)
+
+### What this closes, and what it hands to the next membrane
+
+Three candidate explanations for "the stand cannot be improved" existed at the start of the lane.
+Two are now eliminated **by measurement rather than by argument**:
+
+1. ~~the reward is saturated~~ — real, measured, repaired; **no effect on the stand** (7.01 → 7.01
+   warm, 4.95 → 5.06 cold).
+2. ~~the search cannot move~~ — real, measured, repaired in three places; the search now moves and
+   converges; **+1.2% held-out**.
+3. **the policy class or the objective is the limit** — the only one left standing, and it is now
+   the *only* one left standing, which is worth more than either repair.
+
+The stand formula is a **static linear feedback** — `a0 + kh·(tgt−z) + kp·pitch + kr·roll`, one
+gain per muscle per channel, no state, no memory, no phase. A body that must not fall for 20 s on
+a 3-D inverted pendulum may simply not be expressible in it; and the trainer's score integrates
+height × support × joints, which is not survival and was never shown to predict it. **Both are
+testable and neither has been tested.** That is the next Rule 0, and it is a *policy-class*
+membrane, not a reward one and not a search one.
+
 ---
 
-**THE ONE OPEN THING THAT BLOCKS THE REST.** `train_stand`'s warm-started CEM cannot improve on
-its own start at 1160 dimensions — 2,160 evaluations, zero improvements, a bit-identical file
-back. `cand[0] = mu` guarantees the incumbent survives; nothing guarantees the *distribution*
-does, and the elite mean walks off the incumbent on turn 0. Until that is fixed, **no warm-start
-experiment in this repo can test anything**, because the answer is "the incumbent was preserved"
-whatever the change was. `agent_logs/elitism_audit.json` checks `has_incumbent` and would pass
-all six trainers. That is the next Rule 0 to write, and it is a SEARCH membrane, not a reward one.
+**THE ONE OPEN THING THAT BLOCKED THE REST — NOW OPENED, AND IT WAS NOT THE ANSWER.**
+`train_stand`'s warm-started CEM could not improve on its own start at 1160 dimensions — 2,160
+evaluations, zero improvements, a bit-identical file back. Three defects, all measured: the
+elite mean walking the centre downhill on turn 0, a step four decades too large for the
+incumbent's basin, and a spread floor written in the wrong units. All three are repaired and the
+search now moves and converges.
+
+**It bought +1.2% on held-out survival.** So the wall was real, blocking, and *not what was
+limiting the stand* — which is exactly the kind of thing only a repair can tell you. Two of the
+three candidate explanations are now eliminated by measurement, and the third — **the policy
+class and the objective** — is the only one left. See "THE VERDICT" above; that is the next
+Rule 0, and it is a POLICY-CLASS membrane, not a reward one and not a search one.
+
+*(`agent_logs/elitism_audit.json` checks `has_incumbent` and would still pass all six trainers.
+It cannot see any of the three defects found here — an audit of a search that reads its code and
+not its trajectory is an audit of the wrong thing.)*
