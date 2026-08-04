@@ -899,3 +899,61 @@ clause — recorded as written:
   holding a tissue-less stop past jf 1.2 at no cost reopens the two-sided
   form. The run-13 retrain (48x32, warm from stand_theta, secs 4.0) is in
   flight on the repriced score; its elites' jmax column is the check.
+
+---
+
+**RUN 13 — v11 VERDICT (2026-08-04): F6 FAIL on phases 1 and 3, and the
+first PASS on the one that matters: THE BODY STANDS THROUGH THE CARRY.
+The dark score was the wall, and the wall is down. The release is the
+next membrane — the trainer's episode ends at the drop and it shows.**
+
+The retrain (48x32, warm from stand_theta, repriced score, fixed handoff
+event) turned the 0.022 incumbent into a **0.656** best, PROVEN on 33 of
+48 turns (pelvis >= 80%, full 4.00 s, load >= 80% through the feet,
+stone-floor <= 20%). The saved best's own picture: pelvis flat at
+0.91-0.92 through the whole carry, plantar ~1000 N sustained, and the CoM
+trace does exactly what the v11 verdict said the gradient pointed at —
+it starts +0.13 m forward and **pulls back to the ankle** as the weight
+arrives. The lean-back was learned, not assumed. Dark-score falsifier 2
+does not fire: the saved best's carry-window fling audit reads
+knee_angle_l peak 1.017, knee_angle_r 1.009, mtp_angle_l 1.008, **zero
+samples past jf 1.2** — every stop approached is the tissue-bearing set,
+at tissue-engagement depth. The one-sided joints term priced exactly what
+it was meant to price.
+
+Then f6 judged the saved best:
+
+1. **THE LOAD IS FELT — FAIL (+302.6 of +421 N).** The delta is 72% of
+   the weight against an 80% bar. Two candidate causes, both named, not
+   yet separated: (a) windowed-mean noise — the pre-grab baseline read
+   654.9 N against a static body weight of 580.6 N (+74 N of bob in the
+   mean), while the carry window reads 44 N under statics, so up to
+   ~118 N of the shortfall could be the instrument's windows, not the
+   load path; (b) a real shortfall. v12 must separate them — the cheap
+   decisive version is the quasi-static check: a motionless hold must
+   read exactly wb+wl or the windows are lying.
+2. **THE BODY STANDS — PASS (pelvis MIN 0.9073 m through the carry).**
+   The run-12 buckle is trained away. This is the milestone's sentence:
+   the body picks up 73% of its own weight and stands with it.
+3. **DROPPING IS FELT — FAIL, and the cause is measured, not guessed.**
+   The carry holds ~0.94 m to t=3.9; the weld releases at t=4.0; the
+   plantar sum decays to ZERO by t=4.7 and the pelvis follows to the
+   floor by t=5.3. The trainer's episode is 4.0 s with the weld engaged
+   the entire time — **no candidate ever lived a release**. The lean-back
+   is baked into the policy's open-loop terms (there is no load channel
+   in the observations — z, pitch, roll only), so when 421 N vanishes in
+   one timestep the compensation has nothing to react with. It is v8's
+   20 ms killer run in reverse: the arrival was tapered for exactly this
+   reason; the release was not. The fix is the episode, not a tweak:
+   train the full cycle — weld OFF at T_DROP inside every candidate's
+   life, with the load factor's expectation dropping to wb on the same
+   step (the trainer's `expect` currently charges for the stone forever
+   once snapped — a second instrument debt, minor but real).
+
+**What run 13 settles.** The dark score was the last instrument wall
+between the fixed event and a trained carry; it fell. The pick-up, the
+catch, and the hold are PROVEN physics. What remains for the port is the
+release — v12, THE SET-DOWN — plus the phase-1 instrument separation.
+M8's sentence "pick up the stone, feel its weight through the body's own
+load path" is true on camera for the first time; the port closes when
+the body can also put it down.
