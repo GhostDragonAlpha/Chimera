@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "thePlayer": "a single small warm glowing sphere of light held at the "
+                 "center of a vast dark field scattered with faint distant "
+                 "points -- one presence alone in the dark, before anything "
+                 "acts",
     "theEVA": "a large grey panelled hull on the left and a white suited figure "
               "floating free of it in a starfield, connected by one thin golden "
               "tether line, with two faint blue jets behind the figure -- a "
