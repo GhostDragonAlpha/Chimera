@@ -170,12 +170,18 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
 
 def run() -> int:
     import mujoco
-    if not WALK_THETA.exists():
-        raise SystemExit(f"no {WALK_THETA} -- run `python tools/train_walk.py` first. Refusing to "
-                         f"judge a walk that was never trained (rule 20).")
     if not STAND_THETA.exists():
         raise SystemExit(f"no {STAND_THETA} -- walking is composed over standing. Refusing.")
-    theta_stand, theta_walk = np.load(STAND_THETA), np.load(WALK_THETA)
+    # --theta NAMES THE POLICY TO JUDGE. It was WALK_THETA hardcoded, so an A/B of three
+    # trained arms could only be judged by copying files over each other -- which is how a
+    # comparison silently becomes three readings of one arm.
+    _wt = Path(sys.argv[sys.argv.index("--theta") + 1]) if "--theta" in sys.argv else WALK_THETA
+    if not _wt.is_absolute():
+        _wt = OUTDIR / _wt.name
+    if not _wt.exists():
+        raise SystemExit(f"no {_wt} -- refusing to judge a walk that was never trained (rule 20).")
+    theta_stand, theta_walk = np.load(STAND_THETA), np.load(_wt)
+    print(f"\n  judging: {_wt.name}")
     P, S = derive_walk_port(), derive_stand_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
@@ -207,8 +213,14 @@ def run() -> int:
     # oscillator gained eps and kappa, and then it silently reported 6 for an 8-number search.
     # An instrument that recomputes a fact instead of reading it will disagree with the thing
     # it measures the moment the thing changes.
-    print(f"  free numbers trained: {N_FREE} ({theta_walk.size} on disk)  |  stand theta FROZEN "
-          f"({theta_stand.size} numbers, reused unchanged)")
+    # THE COUNT IS READ FROM THE THETA, not from the clock's constant. This printed `{N_FREE}`
+    # = 6 while judging an 8-number entrained policy -- the shape guard accepted it correctly and
+    # the line beneath still said six. Exactly the species this file was already amended for:
+    # "an instrument that recomputes a fact instead of reading it will disagree with the thing
+    # it measures the moment the thing changes."
+    print(f"  free numbers trained: {theta_walk.size} "
+          f"({'ENTRAINED: 3 amps + 3 offsets + eps + kappa' if entrained else 'CLOCK: 3 amps + 3 offsets'})"
+          f"  |  stand theta FROZEN ({theta_stand.size} numbers, reused unchanged)")
     # THE SHAPE GUARD NOW KNOWS TWO LEGAL WIDTHS, and says which plant it inferred. N_FREE is
     # the clock; N_FREE + 2 adds eps and kappa and MEANS the entrained oscillator. Inferring the
     # plant from the theta's own width is what stops the 2026-08-03 defect recurring by

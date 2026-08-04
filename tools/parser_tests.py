@@ -41,22 +41,60 @@ def main() -> int:
     if not THETA.exists():
         raise SystemExit(f"no {THETA} -- run tools/train_stand.py first (rule 20).")
     theta = np.load(THETA)
-    nu = theta.size // 3
+    # nu COMES FROM THE MODEL, NOT FROM DIVIDING THE CHECKPOINT BY AN ASSUMED BLOCK COUNT.
+    # This line was `nu = theta.size // 3`, and it broke silently the moment the stand formula
+    # gained its fourth block (kr, the roll term, 2026-08-04): a 1160-number theta divided by 3
+    # gives nu = 386 against a body with 290 actuators, so `a0` was 386 long, `kp` was 388, and
+    # falsifier 1 died on a broadcast error instead of measuring anything. IT HAS BEEN
+    # UN-RUNNABLE EVER SINCE -- the parser's headline claim, that the grammar carries the
+    # identical signal, has gone unchecked across every commit that touched the formula.
+    #
+    # A block count inferred from a checkpoint's LENGTH is a second landmark for a quantity the
+    # model already owns (rule 19). The number of muscles is a property of the body; the number
+    # of blocks is then just theta.size / nu, and both are read rather than assumed.
+    import mujoco
+    from world import load_body
+    from stand_port import MYOBODY
+    _m, _g = load_body(MYOBODY, mujoco)
+    nu = int(_m.nu)
+    if theta.size % nu:
+        raise SystemExit(f"stand_theta holds {theta.size} numbers, which is not a whole number "
+                         f"of {nu}-muscle blocks. Refusing to guess the policy's shape.")
+    blocks = theta.size // nu
     ok = True
 
-    # -- FALSIFIER 1: bit-identity with v1 over a sweep -------------------------------------
-    # v1's lambda, reconstructed verbatim from tools/f3_stand.py lines 53-57.
-    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
-    v1 = lambda z, pitch: np.clip(a0 + kh * (TGT - z) + kp * pitch, 0.0, 1.0)
+    # -- FALSIFIER 1: bit-identity with the formula the parser CLAIMS to carry ---------------
+    # Reconstructed from tools/parser.py's `stand_formula_fn`, which is what the claim is ABOUT.
+    # The roll term is included when the theta carries one, because a reference that omits a
+    # block the parser applies does not test the parser -- it tests the reference.
+    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
+    kr = theta[3 * nu:4 * nu] if blocks >= 4 else np.zeros(nu)
+    ref = lambda z, pitch, roll: np.clip(
+        a0 + kh * (TGT - z) + kp * pitch + kr * roll, 0.0, 1.0)
     par = P.Parser(P.default_registry(theta, TGT, nu))
     par.set_verb("STAND", True)
-    worst = 0.0
+    worst, n_s = 0.0, 0
+    for z in np.linspace(0.4, 1.1, 15):
+        for pitch in np.linspace(-0.35, 0.35, 9):
+            for roll in ((0.0,) if blocks < 4 else (-0.2, 0.0, 0.2)):
+                u2, _ = par.command({"z": float(z), "pitch": float(pitch), "roll": float(roll)})
+                worst = max(worst, float(np.max(np.abs(u2 - ref(z, pitch, roll)))))
+                n_s += 1
+    ok &= check(f"falsifier 1: parser stand == the {blocks}-block formula, bit-identical",
+                worst == 0.0, f"max |diff| over {n_s} samples = {worst:.3e}")
+
+    # -- FALSIFIER 1b: AND it still reduces to v1 when roll is absent ------------------------
+    # The original falsifier's meaning, preserved: with no roll in the obs the grammar must
+    # produce v1's inline lambda exactly, so the roll block cannot have silently changed what
+    # every pre-2026-08-04 result was measured on.
+    v1 = lambda z, pitch: np.clip(a0 + kh * (TGT - z) + kp * pitch, 0.0, 1.0)
+    worst1 = 0.0
     for z in np.linspace(0.4, 1.1, 15):
         for pitch in np.linspace(-0.35, 0.35, 9):
             u2, _ = par.command({"z": float(z), "pitch": float(pitch)})
-            worst = max(worst, float(np.max(np.abs(u2 - v1(z, pitch)))))
-    ok &= check("falsifier 1: parser stand == v1 stand, bit-identical",
-                worst == 0.0, f"max |diff| over 135 samples = {worst:.3e}")
+            worst1 = max(worst1, float(np.max(np.abs(u2 - v1(z, pitch)))))
+    ok &= check("falsifier 1b: with no roll in the obs, the parser == v1 exactly",
+                worst1 == 0.0, f"max |diff| over 135 samples = {worst1:.3e}")
 
     # -- FALSIFIER 2: both bindings are data over the identical verb set --------------------
     kb_verbs = set(P.BIND_KEYBOARD.values())

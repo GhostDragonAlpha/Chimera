@@ -1,0 +1,39 @@
+########## walk_theta_mult ##########
+  judging: walk_theta_mult.npy
+  free numbers trained: 6 (6 on disk)  |  stand theta FROZEN (1160 numbers, reused unchanged)
+  1. TRAVEL       +0.5310 m/s = 54% of derived (bar 75-125%)  ->  FAIL
+  2. PERIODICITY  0.54 (bar >= 0.60), period 0.14 s vs derived stride 1.17 s  ->  FAIL
+  3. UPRIGHT      pelvis MIN 0.4024 m = 44% of target (bar 80%), held 1.62/6.0 s  ->  FAIL
+     duty R/L 0.24/0.55 (theHuman publishes 0.60)
+  4. ABLATION     oscillator OFF (gain=0, same code path): -0.0361 m/s = -4% of derived
+     bar: must stay under 20%  ->  PASS -- the rhythm is doing the work
+  5. JOINTS       worst 1.10 of range at L4_L5_FE  -- THROUGH ITS STOP
+  6. THE FALL     LATERAL at t=1.62 s, confidence 0.48   (CoM peak: fore 6.18, lat 11.85 of the base the feet make)
+  F4 VERDICT: FAIL
+  FIRED: 1 TRAVEL, 2 PERIODICITY, 3 UPRIGHT
+########## walk_theta_sub ##########
+  judging: walk_theta_sub.npy
+  free numbers trained: 6 (6 on disk)  |  stand theta FROZEN (1160 numbers, reused unchanged)
+  1. TRAVEL       +0.1236 m/s = 12% of derived (bar 75-125%)  ->  FAIL
+  2. PERIODICITY  0.49 (bar >= 0.60), period 0.14 s vs derived stride 1.17 s  ->  FAIL
+  3. UPRIGHT      pelvis MIN 0.4384 m = 48% of target (bar 80%), held 2.60/6.0 s  ->  FAIL
+     duty R/L 0.64/0.71 (theHuman publishes 0.60)
+  4. ABLATION     oscillator OFF (gain=0, same code path): -0.0361 m/s = -4% of derived
+     bar: must stay under 20%  ->  PASS -- the rhythm is doing the work
+  5. JOINTS       worst 1.19 of range at L4_L5_FE  -- THROUGH ITS STOP
+  6. THE FALL     FORWARD at t=2.60 s, confidence 0.79   (CoM peak: fore 14.03, lat 2.98 of the base the feet make)
+  F4 VERDICT: FAIL
+  FIRED: 1 TRAVEL, 2 PERIODICITY, 3 UPRIGHT
+########## walk_theta_entrained ##########
+  judging: walk_theta_entrained.npy
+  free numbers trained: 6 (8 on disk)  |  stand theta FROZEN (1160 numbers, reused unchanged)
+  1. TRAVEL       +0.3495 m/s = 35% of derived (bar 75-125%)  ->  FAIL
+  2. PERIODICITY  0.59 (bar >= 0.60), period 0.14 s vs derived stride 1.17 s  ->  FAIL
+  3. UPRIGHT      pelvis MIN 0.4216 m = 46% of target (bar 80%), held 2.06/6.0 s  ->  FAIL
+     duty R/L 0.84/0.73 (theHuman publishes 0.60)
+  4. ABLATION     oscillator OFF (gain=0, same code path): -0.0361 m/s = -4% of derived
+     bar: must stay under 20%  ->  PASS -- the rhythm is doing the work
+  5. JOINTS       worst 1.28 of range at L4_L5_FE  -- THROUGH ITS STOP
+  6. THE FALL     FORWARD at t=2.06 s, confidence 0.63   (CoM peak: fore 23.82, lat 8.71 of the base the feet make)
+  F4 VERDICT: FAIL
+  FIRED: 1 TRAVEL, 2 PERIODICITY, 3 UPRIGHT
