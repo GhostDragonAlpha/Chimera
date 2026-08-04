@@ -298,3 +298,15 @@ not "the stand holds ≥ 8 s" alone, but "the stand holds ≥ 8 s AND
 theStance has named the stance" — a walk composed over a stand whose
 balance landmark is unsettled would inherit the ambiguity. The swing
 catch-up question waits on both.
+
+**Measured the same day, and it hardens that condition:** re-judging the
+saved step theta against the RETRAINED stand (f5, same bars) reads WORSE
+— held 2.80 s (was 5.30), travel −13% (backward), upright 46%; judges
+4/5/6 still PASS. The step machine's 7 numbers were tuned against the
+pre-repair 870; swapping the foundation underneath them degrades the
+composition exactly as the trunk membrane's ligament/policy mismatch did
+(the policy tuned against a lumbar free to hinge, fighting the spring
+that wasn't there when it learned). Consequence: the walk's numbers are
+theta-PAIR-specific, and re-judging or re-training the walk against a
+foundation that is still moving buys numbers that expire on arrival.
+The walk retrains once, against the settled stand — not before.
