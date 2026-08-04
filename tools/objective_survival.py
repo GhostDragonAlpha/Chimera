@@ -256,11 +256,43 @@ def main() -> int:
     print(f"  -> MEDIAN WITHIN-RUNG r = {r_within:.3f}"
           + ("   (too few draws per rung to say -- raise --n)" if not within else ""))
     corr["OBJECTIVE"]["within_rung_median"] = r_within
+
+    # ── AND THE MEDIAN HIDES THE ONLY THING THAT MATTERS: THE CORRELATION IS REGIME-DEPENDENT.
+    # Measured at n=200: r is 0.996-1.000 on every rung where the policies are BROKEN, and
+    # -0.28 / -0.07 on the two rungs nearest the incumbent. A median over ten rungs is dominated
+    # by the eight full of wreckage and reports 0.998 for an objective that is uninformative
+    # exactly where a warm-started search lives. Splitting the regimes is not slicing until
+    # something appears -- the split is at the incumbent's own basin edge, which
+    # `search_landscape.py` measured independently before this run existed.
+    near = [r for r in rows if r["scale"] <= 3e-5]
+    far = [r for r in rows if r["scale"] >= 3e-4]
+    r_near = _pearson([r["objective"] for r in near], [r["survival"] for r in near]) \
+        if len(near) >= 8 else float("nan")
+    r_far = _pearson([r["objective"] for r in far], [r["survival"] for r in far]) \
+        if len(far) >= 8 else float("nan")
+    corr["OBJECTIVE"]["r_near_incumbent"] = r_near
+    corr["OBJECTIVE"]["r_broken"] = r_far
+    print(f"  -> BY REGIME: near the incumbent (scales <= 3e-5, n={len(near)}) r = {r_near:.3f}"
+          f"   |   broken policies (scales >= 3e-4, n={len(far)}) r = {r_far:.3f}")
+    print(f"     The objective ranks WRECKAGE perfectly and says nothing about which of two "
+          f"WORKING policies")
+    print(f"     survives longer -- and that second comparison is the only one a search makes "
+          f"once it is near a")
+    print(f"     good solution. This is why repairing the search moved the objective 0.227 and "
+          f"survival 0.08 s.")
     print("-" * 104)
+    # THE VERDICT READS THE NEAR-INCUMBENT REGIME, not the pooled number. The task's bar was
+    # written as "r > 0.7 means the proxy works"; on the pooled population that passes at 0.990,
+    # and it passes because of a POPULATION CHOICE -- 140 of 200 policies are wreckage -- rather
+    # than because of a property of the objective. Both are printed; the bar is applied where
+    # the search actually operates.
     r_obj = corr["OBJECTIVE"]["pearson"]
-    fires = not (np.isfinite(r_obj) and r_obj > 0.7)
-    print(f"  FALSIFIER (the objective correlates with survival at Pearson r > 0.7): "
-          + (f"FIRES -- r = {r_obj:.3f}.\n    The proxy does not measure what it claims. Every "
+    r_judge = r_near if np.isfinite(r_near) else r_obj
+    fires = not (np.isfinite(r_judge) and r_judge > 0.7)
+    print(f"  FALSIFIER (r > 0.7 WHERE THE SEARCH OPERATES, near the incumbent): "
+          + (f"FIRES -- r = {r_judge:.3f} there, against {r_obj:.3f} pooled.\n    The pooled "
+             f"number passes the bar and passes it on a population that is 70% wreckage.\n"
+             f"    The proxy does not measure what it claims. Every "
              f"training run in this lane optimised a number\n    whose name is wrong, and NO "
              f"policy class can be ranked by it -- comparisons must be judged on\n    held-out "
              f"survival directly."

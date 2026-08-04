@@ -1,0 +1,93 @@
+{
+ "source": "objective_survival.json",
+ "n": 200,
+ "matrix": {
+  "height": {
+   "height": 1.0,
+   "support": 0.40468640424263735,
+   "joints": -0.47201648390759876,
+   "effort": -0.04880783516908298,
+   "survival": 0.32975185206691365
+  },
+  "support": {
+   "height": 0.40468640424263735,
+   "support": 1.0,
+   "joints": -0.35616994959635917,
+   "effort": -0.5470810853986173,
+   "survival": 0.9495602005882641
+  },
+  "joints": {
+   "height": -0.47201648390759876,
+   "support": -0.35616994959635917,
+   "joints": 1.0,
+   "effort": -0.13006076830575022,
+   "survival": -0.37423289318334
+  },
+  "effort": {
+   "height": -0.04880783516908297,
+   "support": -0.5470810853986173,
+   "joints": -0.1300607683057502,
+   "effort": 1.0,
+   "survival": -0.5247473204928139
+  }
+ },
+ "matrix_within_rung": {
+  "height": {
+   "height": 1.0,
+   "support": 0.3111648238183907,
+   "joints": -0.9432019293437328,
+   "effort": 0.9240160864618079,
+   "survival": -0.04178951212967667
+  },
+  "support": {
+   "height": 0.31116482381839067,
+   "support": 1.0,
+   "joints": -0.3353189883644968,
+   "effort": 0.10862954101615824,
+   "survival": 0.8906403173533626
+  },
+  "joints": {
+   "height": -0.9432019293437328,
+   "support": -0.3353189883644968,
+   "joints": 1.0,
+   "effort": -0.9586992651351105,
+   "survival": -0.057162875364014674
+  },
+  "effort": {
+   "height": 0.9240160864618079,
+   "support": 0.10862954101615824,
+   "joints": -0.9586992651351105,
+   "effort": 1.0,
+   "survival": -0.2512537672705276
+  }
+ },
+ "anti_pairs": [
+  {
+   "a": "height",
+   "b": "joints",
+   "r": -0.47201648390759876
+  },
+  {
+   "a": "support",
+   "b": "joints",
+   "r": -0.35616994959635917
+  },
+  {
+   "a": "support",
+   "b": "effort",
+   "r": -0.5470810853986173
+  }
+ ],
+ "best_objective_idx": 11,
+ "best_survival_idx": 46,
+ "best_objective": {
+  "objective": -3.653675287638892,
+  "survival": 6.72
+ },
+ "best_survival": {
+  "objective": -3.8774021074970824,
+  "survival": 7.48
+ },
+ "best_survivor_objective_rank": 53,
+ "falsifier_fires": false
+}

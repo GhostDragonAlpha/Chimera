@@ -153,6 +153,48 @@ fall bar at 4.95 s: **1.10 s of toppling after the outcome is decided.**
 Each is written as a claim someone could disagree with, because that is what makes it a
 membrane rather than a backlog item.
 
+> ## ANSWERED 2026-08-04 — Q1 and Q5 are closed, and both answers are bad
+>
+> **Q1. The objective ranks wreckage and cannot rank policies.** 200 policies on a scale ladder
+> around the incumbent, objective = the trainer's own `score_theta`, survival = held-out median:
+>
+> | regime | n | Pearson r |
+> |---|---:|---:|
+> | **broken policies** (scale ≥ 3e-4) | 140 | **1.000** |
+> | **near the incumbent** (scale ≤ 3e-5) | 40 | **−0.162** |
+> | pooled | 200 | 0.990 |
+>
+> The pooled 0.990 passes the stated bar **and passes it because 70% of the population is
+> wreckage.** Where a warm-started search actually lives the correlation is *negative*. **The
+> objective can tell a broken policy from a working one and cannot tell two working policies
+> apart — which is the only comparison a search makes near a good solution.** This is exactly
+> why repairing the search moved the objective 0.227 and held-out survival 0.08 s.
+>
+> **And the components fight each other.** Within-rung (scale held constant, so the ladder
+> cannot manufacture it):
+>
+> | | height | support | joints | effort | **survival** |
+> |---|---:|---:|---:|---:|---:|
+> | height | 1.000 | 0.311 | **−0.943** | 0.924 | **−0.042** |
+> | support | 0.311 | 1.000 | −0.335 | 0.109 | **+0.891** |
+> | joints | −0.943 | −0.335 | 1.000 | −0.959 | **−0.057** |
+>
+> **`support` is the only component that predicts survival.** `height` and `joints` are almost
+> perfectly anti-correlated (−0.943) and *neither* relates to survival. The objective MULTIPLIES
+> all three: one informative factor times two mutually-exclusive uninformative ones. The
+> optimiser has been asked for something the body cannot deliver, in exchange for something the
+> bar does not measure.
+>
+> **Pareto:** the best-objective policy survives 6.72 s; the best survivor lasts 7.48 s and sits
+> at the **26th percentile** of the objective's own ranking.
+>
+> **Q5. The policy does not transfer.** Held-out survival at Earth gravity vs this world's:
+> **6.82 s → 1.60 s, ratio 0.23**, identically for all three thetas — inside the task's OVERFIT
+> band. And the mechanism is already on record: ablating `a0` gives **1.62 s**. *The body at the
+> wrong gravity performs like a body with no baseline activation at all*, because `a0` is a
+> constant activation producing a fixed force to balance a fixed weight. **A constant baseline
+> IS a memorised gravity** — an arithmetic identity, not a metaphor.
+
 **Q1. Does the objective predict survival at all?**
 It is a *proxy*, and no one has plotted it against the thing it proxies. The one datum available
 is discouraging: a 0.227 improvement in objective bought 0.08 s of held-out survival. If the
@@ -195,10 +237,26 @@ space would be ~64 numbers instead of 1160, and the A/B already run on the walk 
 
 ## 6. THE RULE FOR WHAT COMES NEXT
 
-**No policy-class experiment is interpretable until Q1 is answered.** If the objective does not
-predict survival, then "policy class A beats policy class B on the objective" is a statement
-about the proxy and not about standing, and the whole comparison has to be judged on held-out
-survival directly — which is affordable and should probably be the rule regardless.
+**Q1 IS ANSWERED AND THE ANSWER IS BINDING: no policy-class experiment may be ranked by the
+objective.** Near the incumbent the objective's correlation with survival is **−0.162**, so
+*"policy class A beats policy class B on the objective"* is a statement about a number that does
+not track standing in the regime where the comparison happens. **Every policy-class comparison is
+judged on held-out survival directly.** That is affordable — it is what `stand_survival` already
+does — and it is now mandatory rather than preferable.
+
+**Three consequences that follow immediately, none of which needs another measurement:**
+
+1. **`height` and `joints` should not both be multiplied.** They are anti-correlated at −0.943
+   within-rung and neither predicts survival. A product of them is a constraint the body cannot
+   satisfy, priced against a goal neither serves. `support` — the only component that tracks
+   survival (+0.891) — is being multiplied by their conflict.
+2. **`a0` is a memorised gravity, and any policy class that keeps a constant baseline inherits
+   that.** A phase basis or a time window added *on top of* `a0` will still collapse at a
+   different `g`. If transfer is wanted, the baseline has to become a function of something the
+   body can sense.
+3. **The missing derivative outranks the missing phase.** The policy is P-only on an inverted
+   pendulum; the measured fall is one overshoot (exit −14° backward, arrival +15° forward). Add
+   rate feedback before adding an oscillator, or a phase result cannot be attributed.
 
 **And every comparison is on held-out seeds.** The judge scores seeds 0–9; the trainer selects on
 0–2. The gap is +0.88 s on the incumbent and grew to +1.08 s under a better search. A policy-class
