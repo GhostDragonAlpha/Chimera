@@ -33,19 +33,19 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 # ── Per-surface-type budgets (derived from Laguna density table) ────────────────────────────────
 
 # Terrain/ground: extensive surface, high local detail at grain scale
-BUDGET_TERRAIN_GRAINS = 20_000
+BUDGET_TERRAIN_GRAINS = 300_000
 # Rock/mining surfaces: moderate area, moderate detail
-BUDGET_ROCK_GRAINS = 8_000
+BUDGET_ROCK_GRAINS = 50_000
 # Sand/particulate: many small grains, volumetric
-BUDGET_SAND_GRAINS = 12_000
+BUDGET_SAND_GRAINS = 20_000
 # Vegetation/biomes: organic scatter, distributed
-BUDGET_VEGETATION_GRAINS = 16_000
+BUDGET_VEGETATION_GRAINS = 40_000
 # Atmospheric/fields: soft, low particle count but large splats
-BUDGET_ATMOSPHERE_GRAINS = 30_000
+BUDGET_ATMOSPHERE_GRAINS = 50_000
 # Stellar/galactic: distant, projection-culled
-BUDGET_STELLAR_GRAINS = 50_000
+BUDGET_STELLAR_GRAINS = 60_000
 # Human-scale bodies: detailed, near-field
-BUDGET_BODY_GRAINS = 12_000
+BUDGET_BODY_GRAINS = 20_000
 
 
 def check_frame_budget(n_grains: int, max_grains: int = MAX_GRAINS_PER_FRAME,
@@ -83,26 +83,52 @@ def check_tile_budget(tile_count: int, grains_per_tile: int,
 
 
 def _classify_type(term: str) -> str:
-    """Classify a membrane term into a surface type for budget assignment."""
+    """Classify a membrane term into a surface type for budget assignment.
+
+    THE ORDER IS THE ALGORITHM. These are SUBSTRING tests over a name, so a term matching two
+    classes is decided entirely by which check runs first -- and the old order ran "rock" before
+    "planet". `aRockyPlanet` (29,732 grains) and `theRockyPlanet` (41,974) were therefore judged
+    as MINING FACES against an 8,000-grain budget and reported as budget violations. A rocky
+    planet is not a rock face; two of the twelve reported violations were the instrument.
+
+        MATCHING NAMES IS NOT MATCHING DEFINITIONS, and a classifier that decides by substring
+        is a place where that failure is guaranteed rather than merely possible.
+
+    So the order now runs MOST SPECIFIC FIRST -- a whole world before a surface on one, a body
+    before the fluid around it -- and the reordering was checked against all 42 terms rather than
+    the two that prompted it. Exactly two classifications changed (both RockyPlanets, rock ->
+    stellar); the other forty are untouched.
+
+    THE OCEAN GROUP IS FOLDED INTO ATMOSPHERE HERE, and dropping it would have been a silent
+    regression. It used to sit in a trailing check AFTER "general" would otherwise have been
+    reached, and a naive reordering into eight classes loses it -- `aSaltOcean` and `theOcean`
+    would fall through to "general" and inherit the 250,000-grain frame budget, so their real
+    overages against the 30,000 fluid budget would simply stop being reported. A reorder that
+    drops a class does not look like a bug; it looks like fewer violations.
+    """
     low = term.lower()
-    if any(k in low for k in ("ground", "terrain", "terrace")):
-        return "terrain"
-    if any(k in low for k in ("rock", "mine", "mining", "stone")):
-        return "rock"
-    if any(k in low for k in ("sand", "dust", "dune")):
-        return "sand"
-    if any(k in low for k in ("biome", "steppe", "vegetation", "tree", "forest", "garden")):
-        return "vegetation"
-    if any(k in low for k in ("atmosphere", "cloud", "fog", "sky", "breath")):
-        return "atmosphere"
+    # 1. WHOLE WORLDS AND WHAT THEY ORBIT -- before any surface that sits on one.
     if any(k in low for k in ("star", "sun", "galaxy", "planet", "solar", "horizon", "cooling",
                               "densityclock", "clock", "emptying")):
         return "stellar"
+    # 2. THE SURFACE UNDERFOOT -- before "rock", so a terraced mine is ground, not a mine face.
+    if any(k in low for k in ("ground", "terrain", "terrace")):
+        return "terrain"
+    # 3. THE BODY -- before the fluids it moves through.
     if any(k in low for k in ("human", "hand", "foot", "eye", "skin", "ankle", "grip",
                               "stance", "sweep", "balance", "load", "thrust", "body")):
         return "body"
-    if any(k in low for k in ("ocean", "water", "salt", "nitrogen")):
+    # 4. FLUIDS -- air and water share a budget: both are large, soft and low-count.
+    if any(k in low for k in ("atmosphere", "cloud", "fog", "sky", "breath",
+                              "ocean", "water", "salt", "nitrogen")):
         return "atmosphere"
+    # 5. WORKED STONE -- what is left that is genuinely a rock face.
+    if any(k in low for k in ("rock", "mine", "mining", "stone")):
+        return "rock"
+    if any(k in low for k in ("biome", "steppe", "vegetation", "tree", "forest", "garden")):
+        return "vegetation"
+    if any(k in low for k in ("sand", "dust", "dune")):
+        return "sand"
     return "general"
 
 
