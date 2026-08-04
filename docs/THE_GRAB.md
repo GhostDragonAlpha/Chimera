@@ -629,3 +629,16 @@ the lifting, not the body; the idealization boundary is named here.
 3. A survivor with a fake load path — the exploit audit reopens.
 Trainer and judge change together; the probe re-runs against the
 saved best to report the arrival's first-interval sink.
+
+**Stone landmark audit (same day, between runs).** THE_RECORDED_SESSION_2.md
+quotes the slice saying *"65.1 kg of basalt (Quaglio 2020)"* — a different
+mass AND a different rock than this membrane's 59.49 kg quartzite. Traced:
+`5f31629` (16:45, rung 4) unified the stone to quartzite end-to-end
+(_RHO_BASALT 2900 → _RHO_QUARTZITE 2650, same `_STONE_D`, one home in
+touchables.py); the recorded session's log carries the PRE-unification
+text, i.e. the session ran against a stale working tree — the same
+evidence-vs-code drift that session's recorder fix addresses, one level
+up. Verified live: `touchables` and `grab_port.derive_grab_port()` now
+derive 59.49 kg from the same two constants and MATCH to 1e-9. One
+landmark, current. No action owed; recorded so the session doc's stone
+lines are read as stale-state artifacts, not as a second stone.
