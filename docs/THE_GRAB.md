@@ -642,3 +642,23 @@ up. Verified live: `touchables` and `grab_port.derive_grab_port()` now
 derive 59.49 kg from the same two constants and MATCH to 1e-9. One
 landmark, current. No action owed; recorded so the session doc's stone
 lines are read as stale-state artifacts, not as a second stone.
+
+**v9 addendum — the instrument's sign inversion (caught mid-run 11, fixed
+before the run was believed).** Run 11's first launch was killed at turn
+~8: turn 7's PNG showed the best carry behavior this membrane has produced
+(pelvis MIN 87%, full 4.0 s survival, calm) while the score column read
+NEGATIVE and climbing (−0.00040 → −0.00026). Measured cause: the trainer
+priced each step with `stand_reward`'s scalar, which is
+`r_h·r_s·r_j − 3.0·fell − 0.01·effort`. Under load the signed effort term
+makes every survivor's mean reward slightly negative, and v5's
+multiplicative score `(tot/n)·((k+1)/steps)` then ranks instant death
+(score ≈ 0) ABOVE any survivor — the same exploit family as run 5's
+born-carry, this time authored by the instrument itself. It had not bitten
+yet (no instant-death candidates in the pool; the search was still
+improving), but an instrument whose ordering inverts under load is not an
+instrument. Fix, before relaunch: the trainer prices ONLY the three
+gaussians (each in [0,1]); the effort coefficient is a chosen constant
+(out by v5's own rule) and the fell term is already priced by the
+survival fraction. Smoke (1×4, warm from the frontal stand): score ≥ 0,
+full-window hold at 101%. Run 11 relaunched on the fixed score; all turn
+numbers from the killed launch are discarded, none cited as evidence.

@@ -118,7 +118,14 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             if z < 0.5 * tgt:
                 fell = True
             jf = joint_frac(d, jids)
-            r, _ = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
+            # v9 addendum: price ONLY the three gaussians (all in [0,1]). The signed
+            # -0.01*effort term in stand_reward's scalar makes mean_r negative under
+            # load, and v5's multiplicative score then ranks instant death (~0) above
+            # any survivor (~-0.0003) -- measured run 11, turn 7: pelvis MIN 87%,
+            # full 4.0 s survival, score -0.00026. Effort's 0.01 is a chosen constant
+            # (out per v5: no constant chosen); the fell term is already priced by frac.
+            _, parts = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
+            r = parts["height"] * parts["support"] * parts["joints"]
             # THE LOAD FACTOR: the loophole-closer. Airborne prices 0; the floor-rest
             # crouch prices the fraction the feet actually carry; only a true carry ~= 1.
             cr, cl = foot_contact(m, d, mujoco)
