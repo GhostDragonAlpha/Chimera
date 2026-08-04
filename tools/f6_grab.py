@@ -13,8 +13,9 @@ THE THREE PHASES, each a stated prediction:
                             own noise -- measured as a DELTA, so the zones' heel blind spot
                             (action_tests: the zones miss the stance heel) cancels.
     2. THE BODY STANDS      pelvis >= 80% of target through the carry. CONFOUND, stated: the
-                            32-ligament world's UNLOADED stand falls at 6.24 s (c95131f). This
-                            phase runs 3.0 s so the read is the load's, not the foundation's.
+                            32-ligament world's UNLOADED stand fell at 6.24 s (c95131f); the
+                            retrained theta holds 7.00 s (d15128e). This phase runs 3.0 s so
+                            the read is the load's, not the foundation's.
                             Falsifier 2 (cannot stand at ANY trained setting) is NOT judged
                             until the stand repair lands -- THE_GRAB's NEXT item 2 said so.
     3. DROPPING IS FELT     weld released at t=4.0 s; the sum must return to the unloaded
@@ -148,7 +149,7 @@ def run() -> int:
           f"{'PASS' if ok_load else 'FAIL -- the weld is decorative and the load is fake (falsifier 1)'}")
     print(f"  2. THE BODY STANDS    pelvis MIN {min(z_carry):.4f} m = "
           f"{100 * min(z_carry) / tgt:.0f}% of target through the 3.0 s carry  ->  "
-          f"{'PASS' if ok_stand else 'FAIL'}  (confound stated: the UNLOADED stand falls at 6.24 s)")
+          f"{'PASS' if ok_stand else 'FAIL'}  (confound stated: the UNLOADED stand holds 7.00 s retrained)")
     print(f"  3. DROPPING IS FELT   sum {loaded:.1f} -> {unloaded:.1f} N on release "
           f"(residual {delta_off:+.1f} N), stone rests at z {stone_rest:.3f} m "
           f"(radius {P['OUT stone_radius_m']:.3f})  ->  "
