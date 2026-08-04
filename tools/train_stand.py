@@ -421,6 +421,22 @@ def main() -> int:
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     step_report = None
+    # THE SPREAD FLOOR, AND IT WAS AN ABSOLUTE NUMBER STANDING IN FOR A RELATIVE ONE.
+    # The update has always read `sd = el.std(0) + 1e-3`. The `1e-3` is there to stop the
+    # sampler degenerating to a point, and it was invisible for as long as `sd` happened to be
+    # O(0.1) -- a thousandth of the spread, which is what it was meant to be. MEASURED the
+    # moment the step was derived (2026-08-04): a derived sd of 7.5e-6 on the a0 block is
+    # swamped 133x by a 1e-3 floor, so turn 0 searched the basin, found -3.808 against the
+    # incumbent's -3.864, and every turn after it was thrown straight back to a scale the
+    # landscape measures at 0% improvement. The trace says it plainly -- best frozen at -3.808
+    # while the population mean sat at -4.3.
+    #
+    # ONE QUANTITY, TWO LANDMARKS (rule 19), in units: the floor is a FRACTION OF A SPREAD and
+    # was written as a spread. It is expressed as the fraction it always was -- and only on the
+    # derived path, so every run already made keeps the absolute floor it was made with and
+    # remains a control. Assigned AFTER the derivation below, because a floor taken from the
+    # spread the derivation REPLACES is the same defect one step removed.
+    sd_floor = 1e-3
     if derive_step_flag:
         if not init:
             raise SystemExit("--derive-step needs --init: it measures the basin around a KNOWN "
@@ -439,6 +455,10 @@ def main() -> int:
                   f"is the refusal.\n     The basin is narrower than 1e-5 x the cold sd, and "
                   f"that is a finding about the policy,\n     not a step to trust.")
         print(f"     warm sd was 0.5 x cold; it is now {step_report['chosen'] or 1e-5:g} x that")
+        sd_floor = 1e-3 * sd.copy()      # the same thousandth, now of the spread actually used
+        print(f"     spread floor follows it: {float(np.min(sd_floor)):.3g}.."
+              f"{float(np.max(sd_floor)):.3g} (was a flat 1e-3, which would swamp this step "
+              f"{1e-3/max(float(np.min(sd)), 1e-30):.0f}x)")
     hist = []
     best_ever = (-np.inf, mu.copy())     # the SAVE is the session's best, not the last turn's
 
@@ -507,7 +527,7 @@ def main() -> int:
         else:
             em_score, moved = float("nan"), True
             mu = el_mean
-        sd = el.std(0) + 1e-3
+        sd = el.std(0) + sd_floor
         best_theta = cand[order[0]]
         s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6,
                                             joints=joints)
