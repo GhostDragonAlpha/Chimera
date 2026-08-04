@@ -45,7 +45,8 @@ from world import load_body                                              # noqa:
 from stand_port import derive_stand_port, MYOBODY                        # noqa: E402
 from train_stand import joint_ids, seat_in_limits                        # noqa: E402
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,          # noqa: E402
-                       snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME)
+                       snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME,
+                       ramp_stone_weight, RAMP_S)
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from parser import Parser, default_registry, Formula, OVERLAY            # noqa: E402
 
@@ -101,13 +102,21 @@ def run() -> int:
     ren = mujoco.Renderer(m, height=240, width=320)
     tr = {k: [] for k in ("t", "z", "sum", "sz", "weld")}
     pics, dropped, grabbed = [], False, False
+    grab_k = None                 # the sim step of the event; the v9 ramp counts from it
     for k in range(steps):
         t = k * m.opt.timestep
+        if grabbed:
+            # v9: the weight ARRIVES over RAMP_S from the grab step -- trainer and judge
+            # drive the same event (the run-4/5 lesson), and the bars judge the carry
+            # AFTER arrival completes (windows below).
+            ramp_stone_weight(m, d, mujoco,
+                              min(1.0, (k - grab_k + 1) / int(RAMP_S / m.opt.timestep)))
         if k % CTRL_EVERY == 0:
             if not grabbed and t >= T_GRAB:
                 snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
                 PARSER.set_verb("GRAB", True)        # the formula then engages the weld SATISFIED
                 grabbed = True
+                grab_k = k
             if not dropped and t >= T_DROP:
                 PARSER.set_verb("GRAB", False)
                 d.eq_active[eq] = 0        # the harness owns the RELEASE (grab_port, stated)
@@ -136,11 +145,14 @@ def run() -> int:
 
     tt = np.array(tr["t"]); sums = np.array(tr["sum"])
     pre = sums[(tt >= T_GRAB - 0.6) & (tt < T_GRAB - 0.1)]
-    post = sums[(tt >= T_GRAB + 0.2) & (tt < T_GRAB + 0.9)]
+    # v9: the load window starts AFTER the arrival completes (T_GRAB + RAMP_S + 0.1);
+    # the bar itself (+-20% of weight_N) does not move -- only the landmark of WHEN the
+    # carry is judged, because the weight is no longer teleported.
+    post = sums[(tt >= T_GRAB + RAMP_S + 0.1) & (tt < T_GRAB + RAMP_S + 0.8)]
     end = sums[tt >= SECS - 0.5]
     base, loaded, unloaded = float(np.mean(pre)), float(np.mean(post)), float(np.mean(end))
     delta_on, delta_off = loaded - base, unloaded - base
-    z_carry = [z for t, z in zip(tr["t"], tr["z"]) if T_GRAB + 0.2 <= t < T_DROP]
+    z_carry = [z for t, z in zip(tr["t"], tr["z"]) if T_GRAB + RAMP_S + 0.1 <= t < T_DROP]
     stone_rest = float(tr["sz"][-1])
 
     ok_load = abs(delta_on - W) <= LOAD_TOL * W

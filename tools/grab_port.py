@@ -151,6 +151,34 @@ def snap_stone_to_carry(m, d, mujoco):
     mujoco.mj_forward(m, d)
 
 
+RAMP_S = 0.5   # v9: the weight's ARRIVAL time at the event. v8 measured the zero-time
+               # arrival killing the catch (14 cm sink in one 20 ms control interval, the
+               # reactive law structurally unable to answer inside it); no human pick-up
+               # is instantaneous. The weld engages satisfied exactly as v4 wrote it; the
+               # stone's MASS then arrives over this window -- a boundary-condition
+               # refinement, explicitly not a trajectory and not a pose script.
+
+
+def ramp_stone_weight(m, d, mujoco, frac, _full={}):
+    """v9: scale the stone to `frac` of its full mass (inertia scales with it).
+
+    Called once per sim step from the snap until frac reaches 1. The full mass/inertia
+    are captured on first call per model; mj_setConst refreshes the derived quantities
+    (subtree masses, composite inertias) so the solver sees a consistent world at every
+    step. frac never reaches exactly 0 -- the first step's share is 1/ramp_steps of full,
+    which keeps the welded body's mass strictly positive for the solver.
+    """
+    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)
+    key = id(m)
+    if key not in _full:
+        _full[key] = (float(m.body_mass[body]), m.body_inertia[body].copy())
+    m0, i0 = _full[key]
+    f = max(float(frac), 1e-3)
+    m.body_mass[body] = m0 * f
+    m.body_inertia[body] = i0 * f
+    mujoco.mj_setConst(m, d)
+
+
 def spawn_stone(m, d, mujoco, port):
     """Write the stone's freejoint qpos ONCE, at reset -- the spawn, not a pose script.
 

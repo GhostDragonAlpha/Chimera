@@ -568,3 +568,64 @@ law; f6's obs gains roll; the parser already prices a 4-block theta
 transparently (1f24f74). A 3-block checkpoint still runs unchanged
 (kr = 0) — but v8 REFUSES an 870 init: mixing foundations is the
 theta-pair lesson, and the warm start is the frontal stand alone.
+
+**Run 10 — VERDICT: falsifier 1 fires, and the mechanism is measured
+to the millisecond.** No survivor in the 4-block class either — best
+held 2.64 s, nobody past the window. But the frontal channel was not
+nothing: the UNTUNED frontal stand routes **107%** of body+stone
+through its feet at turn 0 (the sagittal class never showed a full
+load path untrained), the launch arcs are gone from every picture,
+and the pelvis holds its 0.85–1.0 m band calmly for ~2 s before a
+slow buckle (jmax ~2.0, vs the sagittal 3.2–4.2). The collapse is
+not a topple and not a balance loss. The saturation probe (.tmp,
+one rollout of the saved best) names the killer:
+
+| t | pelvis | saturated (u ≥ 1.0) |
+|---|---|---|
+| 1.00 (the snap) | 0.889 m | 0.0% |
+| **1.02 (first control step after)** | **0.752 m** | **35.9%** |
+| 1.10–1.70 | 0.67–0.85 m, wobbling | 31–36% sustained |
+| 1.80 | 0.733 m, buckling | 47.9% |
+
+**14 cm in one 20 ms control interval.** The 421 N arrives
+instantaneously; muscle activation dynamics cannot answer inside one
+interval; the reactive law (no anticipation, demand 0.225 at the
+event, no ramp) begins its catch from a crouch it never chose, and
+from there a third of the muscle set sits at its ceiling until the
+buckle. The catch does not fail in the HOLD — it fails in the
+event's first 20 ms. And that implicates the snap itself: no human
+experiences an instantaneous load. A real pick-up ramps weight onto
+the body over ~0.5–1.0 s as the lift progresses — M8b's territory.
+The satisfied snap removed the solver artifact but kept an
+idealization: weight arrival in zero time.
+
+## AMENDMENT — v9: THE RAMPED ARRIVAL (stated before the run)
+
+**STATEMENT.** The snap is the membrane's idealization of the
+pick-up, and v8's measurement shows the idealization, not the load,
+is what kills: the event must model weight ARRIVAL, not weight
+TELEPORTATION. v9: at T_SNAP the weld engages satisfied exactly as
+v4 wrote it, and the stone's mass then arrives linearly over 0.5 s
+(25 control intervals) — a boundary-condition refinement at the
+event, the same discipline as the snap, explicitly not a trajectory
+and not a scripted pose. The reactive law can track a 2.38
+kg-per-control-interval arrival; it provably cannot track 59.49 kg
+in one. (The interval share was first written 0.84 kg — an
+arithmetic slip, corrected here BEFORE the run: 59.49 kg / 25
+intervals = 2.38 kg.)
+
+**PREDICTION.** With the ramped arrival, the 4-block search produces
+a survivor inside 48×32 with load ≥ 80%, stone-floor ≤ 20%, pelvis
+≥ 80% — the sustained 72.5% hold that v8's calm 2 s already suggests
+is in the body.
+
+**FALSIFIERS.** 1. No survivor with the ramp either — then the
+buckle is sustained strength at 72.5% after all, the saturation
+sustained at ~31% is the honest measure of a body at its limit, and
+THE HUMAN's dial returns with full numbers (the catch skill being
+trainable no longer helps: the HOLD is what fails). 2. Survivors
+only appear if the ramp exceeds 1.0 s — the event model is doing
+the lifting, not the body; the idealization boundary is named here.
+3. A survivor with a fake load path — the exploit audit reopens.
+Trainer and judge change together; the probe re-runs against the
+saved best to report the arrival's first-interval sink.
