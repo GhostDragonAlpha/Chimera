@@ -589,6 +589,37 @@ trained under the multiplicative score reaches ≥50% of derived speed AND holds
 is the only variant that can both seek speed and correct mid-stride. If that fails too, the
 composition needs structure no one on this ladder has yet named.
 
+## HYPOTHESIS SIX, MINE, AND IT IS ALSO DEAD: entrainment does not rescue duration
+
+The prediction written one section above — *"an entrained oscillator trained under the
+multiplicative score reaches ≥50% of derived speed AND holds ≥5 s"* — was run. 30 turns × pop 32
+× 8 s, entrained oscillator + swing interlock + multiplicative score, 8 free numbers:
+
+| variant | speed | held | periodicity |
+|---|---:|---:|---:|
+| clock + multiplicative | 62% of derived | 1.44 s | 0.41 |
+| **entrained + interlock + multiplicative** | **45%** | **1.54 s** | **0.50** |
+| *what I predicted* | *≥50%* | *≥5 s* | — |
+
+**Refuted on both clauses.** Entrainment did what it was built to do — periodicity rose 0.41 →
+0.50, score rose 0.0114 → 0.0196, and the search converged to a plateau so tight that turns
+19–29 agree to three decimals — **and duration did not move at all.** 1.44 s → 1.54 s.
+
+**SIX HYPOTHESES, SIX MEASUREMENTS, SIX DEAD.** Frontal plane, pinned pitch, the mtp, the
+re-seating, the ligaments, the score's form, and now sensory entrainment. Every one was a good
+story. The only things that have survived contact with a number on this membrane are the two
+*negative* structural results — that upright and travel are exchanged, and that the exchange
+belongs to the plant rather than the objective.
+
+**WHAT IS LEFT, and it is the thing this session never got back.** The stand port itself holds
+**7.00 s standing perfectly still**, down from >8 s before the foot membrane landed, and two
+retrains totalling 84 turns could not recover it. A walking body has strictly less margin than a
+standing one. **Every walk variant here dies at 1.4–1.5 s against a foundation that dies at 7.0 s
+doing nothing** — and no re-weighting, entrainment, or interlock reached past that. The next
+question is not about the walk program at all: *why does this body now fall at 7 s when standing
+still, and what does it take to get that back?* Until it is answered, every walk number on this
+page is measured against a foundation that is itself unwell.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
