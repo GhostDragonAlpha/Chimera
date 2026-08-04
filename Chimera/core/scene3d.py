@@ -74,12 +74,12 @@ def _biome_rgb(onion, garden):
     return np.array(PALETTE.get(garden[2], (70, 120, 60)), float)
 
 
-def _tree_world(bones):
-    """Orient the real 3D bones upright, scale to TREE_H_M, base on the ground at the origin."""
+def _tree_world(bones, height_m=TREE_H_M):
+    """Orient the real 3D bones upright, scale to height_m, base on the ground at the origin."""
     from core.eden import _project
     up, h, umin, umax, hmin, hmax = _project(bones)
     third = [i for i in range(3) if i not in (up, h)][0]
-    s = TREE_H_M / max(umax - umin, 1e-9)
+    s = height_m / max(umax - umin, 1e-9)
     P = np.array([b.p0 for b in bones] + [b.p1 for b in bones])
     tmid = (P[:, third].min() + P[:, third].max()) / 2
 
@@ -92,7 +92,7 @@ def _scene(onion, garden, bones):
     return _biome_rgb(onion, garden), _terrain(onion, garden), _tree_world(bones)
 
 
-def render_frame(cam, V, base, tw, bones, w, h):
+def render_frame(cam, V, base, tw, bones, w, h, extra_trees=None):
     from PIL import Image, ImageDraw
     img = Image.fromarray(_sky(w, h, cam))
     d = ImageDraw.Draw(img, 'RGBA')
@@ -123,30 +123,50 @@ def render_frame(cam, V, base, tw, bones, w, h):
         d.ellipse([shad[0] - rx, shad[1] - ry, shad[0] + rx, shad[1] + ry], fill=(22, 42, 22, 95))
 
     prims = []                                  # the Tree: real bones, true perspective
-    for b in bones:
-        s0, s1 = cam.project(tw(b.p0))[0], cam.project(tw(b.p1))[0]
-        if s0[2] <= 0.3 and s1[2] <= 0.3:
-            continue
-        depth = (s0[2] + s1[2]) / 2
-        wpx = max(1, int(b.r0 * TREE_H_M * cam.foc / max(depth, 0.5) * 0.9))
-        shade = min(b.depth, 6)
-        prims.append((depth, 'line', (float(s0[0]), float(s0[1]), float(s1[0]), float(s1[1])),
-                      (90 - shade * 8, 60 - shade * 5, 34), wpx))
     rng = np.random.default_rng(1)
-    tips = [b for b in bones if b.depth >= 5]
-    for b in tips:
-        s1 = cam.project(tw(b.p1))[0]
-        if s1[2] <= 0.3:
-            continue
-        rad = max(3, int(0.55 * cam.foc / max(s1[2], 0.5)))
-        g = int(rng.integers(95, 150))
-        prims.append((s1[2] + 0.3, 'leaf', (float(s1[0]), float(s1[1])), (int(g * 0.4), g, int(g * 0.35)), rad))
-    for b in (rng.choice(tips, size=min(10, len(tips)), replace=False) if tips else []):
-        s1 = cam.project(tw(b.p1))[0]
-        if s1[2] <= 0.3:
-            continue
-        rad = max(2, int(0.16 * cam.foc / max(s1[2], 0.5)))
-        prims.append((s1[2] - 0.2, 'fruit', (float(s1[0]), float(s1[1])), (198, 42, 46), rad))
+
+    def tree_prims(tw_i, bones_i, off=(0.0, 0.0, 0.0), fruit=True):
+        """One grown tree's prims at a world offset -- the stand is the same L-system, many times."""
+        ox, oy, oz = off
+        for b in bones_i:
+            p0 = np.array(tw_i(b.p0)) + (ox, oy, oz)
+            p1 = np.array(tw_i(b.p1)) + (ox, oy, oz)
+            s0, s1 = cam.project(p0)[0], cam.project(p1)[0]
+            if s0[2] <= 0.3 and s1[2] <= 0.3:
+                continue
+            depth = (s0[2] + s1[2]) / 2
+            wpx = max(1, int(b.r0 * TREE_H_M * cam.foc / max(depth, 0.5) * 0.9))
+            shade = min(b.depth, 6)
+            prims.append((depth, 'line', (float(s0[0]), float(s0[1]), float(s1[0]), float(s1[1])),
+                          (90 - shade * 8, 60 - shade * 5, 34), wpx))
+        tips = [b for b in bones_i if b.depth >= 5]
+        for b in tips:
+            s1 = cam.project(np.array(tw_i(b.p1)) + (ox, oy, oz))[0]
+            if s1[2] <= 0.3:
+                continue
+            rad = max(3, int(0.55 * cam.foc / max(s1[2], 0.5)))
+            g = int(rng.integers(95, 150))
+            prims.append((s1[2] + 0.3, 'leaf', (float(s1[0]), float(s1[1])),
+                          (int(g * 0.4), g, int(g * 0.35)), rad))
+        if fruit:
+            for b in (rng.choice(tips, size=min(10, len(tips)), replace=False) if tips else []):
+                s1 = cam.project(np.array(tw_i(b.p1)) + (ox, oy, oz))[0]
+                if s1[2] <= 0.3:
+                    continue
+                rad = max(2, int(0.16 * cam.foc / max(s1[2], 0.5)))
+                prims.append((s1[2] - 0.2, 'fruit', (float(s1[0]), float(s1[1])), (198, 42, 46), rad))
+
+    tree_prims(tw, bones)                           # the Tree of Knowledge, prominent, at the origin
+    for tw_i, bones_i, x, y, z in (extra_trees or []):   # THE STAND: the garden's biome IS a forest
+        tree_prims(tw_i, bones_i, (x, y, z), fruit=False)
+    # depth fog on the vegetation, the same haze the terrain already wears: the frame's far
+    # trees melt into the distance, which is how a stand reads as a forest and not a lineup.
+    fogged = []
+    for depth, kind, geo, col, size in prims:
+        fog = float(np.clip((depth - 40) / 320.0, 0, 0.82))
+        col = tuple(np.clip(np.array(col, float) * (1 - fog) + HAZE * fog, 0, 255).astype(int))
+        fogged.append((depth, kind, geo, col, size))
+    prims = fogged
     for depth, kind, geo, col, size in sorted(prims, key=lambda p: -p[0]):
         if kind == 'line':
             d.line(geo, fill=col + (255,), width=size)
@@ -156,15 +176,48 @@ def render_frame(cam, V, base, tw, bones, w, h):
     return img
 
 
-def render(onion, garden, bones, path='Saved/SplatEmit/eden_scene3d.png', w=1000, h=680):
+def _terrain_z(V, x, y):
+    """The ground's real elevation at an (east, north) offset -- nearest node of the sampled grid."""
+    es, nn = V[0, :, 0], V[:, 0, 1]
+    j = int(np.argmin(np.abs(es - x)))
+    i = int(np.argmin(np.abs(nn - y)))
+    return float(V[i, j, 2])
+
+
+def grow_stand(n=11, seed=12):
+    """THE STAND (the dyad's FAIL_RESTART, 0.25: one specimen on empty ground cannot read as
+    'a garden FULL of vegetation' -- and the garden's biome IS a forest). The same terrarium
+    L-system grown at varied genomes: a stand of trees, not a puppet copied N times. Returns
+    [(tw_i, bones_i, x, y)] on golden-angle spiral offsets, biased ahead of the camera."""
+    from core.terrarium import Genome, grow
+    rng = np.random.default_rng(seed)
+    stand = []
+    for k in range(n):
+        a = k * 2.399963                            # golden angle: uniform, unsynchronized spacing
+        r = 9.0 + 6.0 * k
+        x, y = r * np.cos(a), 8.0 + r * np.sin(a)
+        g = Genome(depth=6, angle=float(26 + rng.uniform(0, 14)), length=1.0, decay=0.86,
+                   radius=0.13, radius_decay=0.74)
+        tb = grow(g, seed=11 + k)
+        stand.append((_tree_world(tb, height_m=float(rng.uniform(7, 13))), tb, float(x), float(y)))
+    return stand
+
+
+def render(onion, garden, bones, path='Saved/SplatEmit/eden_scene3d.png', w=1000, h=680,
+           stand=True):
     from pathlib import Path
     from PIL import ImageDraw
     base, V, tw = _scene(onion, garden, bones)
-    cam = Camera(eye=(0.0, -13.0, 1.7), target=(0.0, 0.0, 5.5), fov_deg=58, w=w, h=h)
-    img = render_frame(cam, V, base, tw, bones, w, h)
+    extra = None
+    if stand:
+        extra = [(tw_i, tb, x, y, _terrain_z(V, x, y)) for tw_i, tb, x, y in grow_stand()]
+    cam = Camera(eye=(0.0, -22.0, 2.2), target=(0.0, 6.0, 5.0), fov_deg=58, w=w, h=h)
+    img = render_frame(cam, V, base, tw, bones, w, h, extra_trees=extra)
     d = ImageDraw.Draw(img, 'RGBA')
     d.text((22, 20), "EDEN  -  a scene the engine rendered, standing in the world", fill=(255, 250, 235, 255))
-    d.text((22, 38), f"real onion elevation - {garden[2]} - {len(bones)} bones", fill=(235, 240, 228, 230))
+    d.text((22, 38), f"real onion elevation - {garden[2]} - {len(bones)} bones"
+                     + (f" + a stand of {len(extra)} grown trees" if extra else ""),
+           fill=(235, 240, 228, 230))
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     img.convert('RGB').save(path)
     return path

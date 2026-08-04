@@ -56,6 +56,10 @@ SCENES = {
                                    ((0.24, 0.42, 0.85), 30.0),   # cold blue
                                    ((0.90, 0.95, 1.00), 30.0)]},  # frozen white (coldest)
     "theSolarSystem": {"kind": "system", "cam": (0.0, -400.0, 230.0)},
+    # THE STAND (the dyad's FAIL_RESTART, 0.25/0.20): one specimen tree cannot read as "a garden
+    # FULL of vegetation" -- and the garden's biome IS a forest. So the scene is the stand:
+    # a green field carrying many grown trees, the Tree of Knowledge prominent among them.
+    "theGarden":      {"kind": "garden", "radius": 170.0, "cam": (0.0, -240.0, 28.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -327,6 +331,92 @@ def _row_buffers(spec: dict, term: str):
     return end, begin
 
 
+def _dots(center, radius, n, color, rng):
+    """A tiny solid ball of one colour (fruit, berries) -- _solid_sphere's 500-grain floor
+    is a tree's worth of grains for a plum."""
+    import numpy as np
+    d = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    b[:, PX:PZ + 1] = np.asarray(center, np.float32) + d * radius
+    b[:, TYPE] = 3.0
+    b[:, ALPHA] = 0.8; b[:, SIZE] = 2.0
+    b[:, CR], b[:, CG], b[:, CB] = color
+    return b
+
+
+def _garden_tree(center, trunk_h, trunk_r, rng, fruit=False, growth=1.0):
+    """One grown tree as splats: a brown trunk column, a canopy of green blobs around its top,
+    and -- only on the Tree of Knowledge -- red fruit. `growth` scales the whole tree about its
+    base: the movie's begin frame is the stand as sprouts."""
+    import numpy as np
+    cx, cy, cz = center
+    h = trunk_h * growth
+    parts = []
+    n_t = max(40, int(64 * trunk_h / 50.0))
+    z = rng.random(n_t) * h
+    th = rng.random(n_t) * 2.0 * np.pi
+    rr = trunk_r * np.sqrt(rng.random(n_t))
+    b = np.zeros((n_t, NCOLS), dtype=np.float32)
+    b[:, PX] = cx + rr * np.cos(th)
+    b[:, PY] = cy + rr * np.sin(th)
+    b[:, PZ] = cz + z
+    b[:, TYPE] = 3.0; b[:, ALPHA] = 0.7; b[:, SIZE] = 3.5
+    b[:, CR], b[:, CG], b[:, CB] = 0.30, 0.19, 0.09          # bark brown
+    parts.append(b)
+    blob_centers = []
+    for _ in range(4):                                       # the canopy: 4 blobs about the top
+        off = np.array([rng.uniform(-0.32, 0.32) * h, rng.uniform(-0.32, 0.32) * h,
+                        rng.uniform(-0.02, 0.16) * h])
+        rad = h * rng.uniform(0.26, 0.36)
+        if rad < 1.0:
+            continue
+        g = float(rng.uniform(0.38, 0.54))
+        bc = np.array([cx + off[0], cy + off[1], cz + h + off[2]])
+        blob_centers.append((bc, rad))
+        parts.append(_solid_sphere(bc, rad, (0.10, g, 0.08), rng))
+    if fruit:
+        for bc, rad in blob_centers:
+            for _ in range(3):
+                foff = rng.uniform(-0.7, 0.7, 3) * rad
+                parts.append(_dots(bc + foff, 1.8, 40, (0.82, 0.10, 0.10), rng))
+    return parts
+
+
+def _garden_buffers(spec: dict, term: str):
+    """theGarden: a green field carrying a STAND of grown trees, the Tree of Knowledge prominent
+    (with fruit). begin = the field with the stand as sprouts; end = the grown garden -- the
+    movie is the vegetation layer GROWING, which is what a garden does."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 120.0))
+
+    # ── GROUND: a green field, patchy (meadows are not one green) ──
+    n_g = 9000
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.05 * gx + 1.3) * np.sin(0.06 * gy + 0.4)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.5
+    gnd[:, CR] = 0.07 + 0.05 * patch
+    gnd[:, CG] = 0.28 + 0.14 * patch
+    gnd[:, CB] = 0.06 + 0.04 * patch
+
+    def stand(growth):
+        parts = [gnd]
+        parts += _garden_tree((0.0, 0.0, 0.0), 64.0, 2.8, rng, fruit=True, growth=growth)
+        for k in range(12):                                   # the stand: golden-angle spiral, varied heights
+            a = k * 2.399963
+            r = 18.0 + 11.0 * k
+            x, y = r * np.cos(a), 12.0 + r * np.sin(a)
+            parts += _garden_tree((x, y, 0.0), float(rng.uniform(28, 50)), 2.0, rng, growth=growth)
+        return np.concatenate(parts, axis=0)
+
+    return stand(1.0), stand(0.35)
+
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -414,7 +504,7 @@ def project_movie(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -662,7 +752,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
