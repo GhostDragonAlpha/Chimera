@@ -471,6 +471,44 @@ every instant against both bars at once. **That predicts the wall is in the rewa
 STRUCTURE, not its shape or its terms** — and the way to test it is a per-STRIDE score rather
 than a per-sample one. Written down before it is measured, so it can be wrong like the others.
 
+## THE MECHANISM OF THE EXCHANGE, measured: the reward wants the traveler, the PENALTY picks the stander
+
+The per-stride hypothesis above was tested and **the test was inconclusive by its own
+construction** — 14 of 15 sampled candidates fall within 2 s, and a per-stride score needs
+several surviving strides before it can differ meaningfully from a per-sample one. The rankings
+did differ, but over a population that all failed immediately, so nothing is concluded. Recorded
+as a test that could not answer its question rather than as weak support.
+
+**What the same table did show is better than what it was built to test.** Two candidates, same
+world, same frozen stand θ:
+
+| candidate | speed | held | per-sample reward |
+|---|---:|---:|---:|
+| cand 8 — the traveler | **+0.502 m/s = 51% of derived** | **1.10 s** | 0.128 |
+| cand 14 — what training saved | +0.041 m/s = 4% | **5.60 s** | 0.00028 |
+
+**The reward ranks the traveler 450× above the survivor. The trainer saved the survivor.**
+
+Because `score_walk` is `mean_reward × periodicity − 3.0·fell − 2.0·(1−frac)`, and the reward's
+entire achievable range is ~0.1 while the fell penalty alone is **3.0** — thirty times the whole
+signal. Any candidate that falls is ranked below any candidate that does not, *regardless of
+what it did while upright*. So the search cannot climb toward walking through the region where
+walking lives: an inverted-pendulum gait's first strides are exactly when a body is most likely
+to go down, and every one of those attempts is scored below standing still.
+
+**Falsifier 3's 50% bar has in fact been reached — for 1.10 s.** cand 8's 51% is the number the
+membrane asked for; it simply cannot hold it. That does not un-fire the falsifier (the letter
+says *sustained*), but it relocates the problem precisely: **not "the body cannot go that fast"
+but "nothing in the score survives long enough to be selected for."**
+
+**This is the objective-design failure this studio has a document for** (`docs/OBJECTIVE_DESIGN.md`,
+`core/objective_lint.py`): a penalty three orders of magnitude larger than the reward is not a
+penalty, it is a lexicographic ordering — *survive first, and only then, invisibly, walk*. The
+next membrane's question is whether the fell penalty should be a term at all, or whether
+survival should gate the score rather than be subtracted from it. **Not answered here, and not
+patched here** — changing a penalty because it makes the number better is the move this ladder
+exists to forbid; it needs its own RULE 0.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
