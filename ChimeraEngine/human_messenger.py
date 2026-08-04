@@ -150,6 +150,10 @@ PHYSICS_READING = {
                   "trail of yellow light to a grey oval object, against a dark "
                   "starry background -- matter moving along the light from the "
                   "irregular object into the oval",
+    "theDescent": "a series of concentric squares in various colors -- blue, green, "
+                  "yellow -- against a starry black background, nested smaller "
+                  "and smaller toward a warm glowing center: a tunnel of scales "
+                  "with light at its end",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

@@ -93,6 +93,7 @@ SCENES = {
     "theWarpDrive":    {"kind": "warp_drive", "radius": 170.0, "cam": (0.0, -125.0, 55.0)},
     "theShipView":     {"kind": "ship_view", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theSalvage":      {"kind": "salvage", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
+    "theDescent":      {"kind": "descent", "radius": 170.0, "cam": (30.0, -80.0, 35.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2053,6 +2054,83 @@ def _salvage_buffers(spec: dict, term: str):
     end = np.concatenate([stars, wreck, hull] + scene(True), axis=0)
     return end, begin
 
+def _descent_buffers(spec: dict, term: str):
+    """theDescent: the crossing of the scales of the world -- the membrane onion
+    traversed. A tunnel of NESTED square frames receding along the view axis,
+    each one a scale of the world (orbit, sky, cloud, field, ground), and the
+    vessel descending through them toward the bright ground-glow at the far end.
+    The claim is SCALE AS PLACE: each frame is one world-resolution, and the
+    journey passes through every one. begin = vessel at the outermost frame;
+    end = vessel at the innermost, at the ground."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # starfield
+    n_st = 1200
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 170.0 * (0.9 + 0.8 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.25 + 0.2 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.87, 0.92
+
+    # the nested frames: squares in XZ planes at receding depths (+Y), shrinking
+    N_FRAMES = 8
+    frame_cols = [(0.45, 0.65, 1.0), (0.40, 0.75, 0.95), (0.40, 0.85, 0.80),
+                  (0.45, 0.90, 0.60), (0.60, 0.90, 0.45), (0.80, 0.85, 0.40),
+                  (0.90, 0.75, 0.40), (0.95, 0.65, 0.45)]
+    frames = []
+    for k in range(N_FRAMES):
+        depth = 20.0 + 22.0 * k
+        half = 55.0 * (0.82 ** k)
+        n_e = 160
+        t = np.linspace(0.0, 1.0, n_e)
+        fr = np.zeros((4 * n_e, NCOLS), dtype=np.float32)
+        # four edges of the square in the XZ plane
+        edges = [
+            (-half + 2 * half * t, -half), (-half + 2 * half * t, half),
+            (-half, -half + 2 * half * t), (half, -half + 2 * half * t),
+        ]
+        for e, (ex, ez) in enumerate(edges):
+            sl = slice(e * n_e, (e + 1) * n_e)
+            fr[sl, PX] = ex
+            fr[sl, PZ] = ez
+            fr[sl, PY] = depth
+        fr[:, TYPE] = 3.0; fr[:, ALPHA] = 0.55; fr[:, SIZE] = 1.4
+        fr[:, CR], fr[:, CG], fr[:, CB] = frame_cols[k]
+        frames.append(fr)
+
+    # the ground: a warm glow at the far end of the tunnel
+    ground = _dots((0.0, 20.0 + 22.0 * (N_FRAMES - 1) + 14.0, 0.0), 8.0, 80,
+                   (1.0, 0.85, 0.55), rng)
+    ground_halo = _halo((0.0, 20.0 + 22.0 * (N_FRAMES - 1) + 14.0, 0.0), 14.0,
+                        (1.0, 0.85, 0.55), rng, alpha=0.14, size=2.0)
+
+    # the vessel: a small bright diamond descending the tunnel's axis
+    def vessel(depth, lit):
+        n_v = 90
+        v = np.zeros((n_v, NCOLS), dtype=np.float32)
+        th = rng.random(n_v) * 2.0 * np.pi
+        rr = 3.2 * np.sqrt(rng.random(n_v))
+        v[:, PX] = rr * np.cos(th)
+        v[:, PZ] = rr * np.sin(th)
+        v[:, PY] = depth
+        v[:, TYPE] = 3.0; v[:, ALPHA] = 0.9 if lit else 0.55; v[:, SIZE] = 1.8
+        v[:, CR], v[:, CG], v[:, CB] = 0.95, 0.95, 0.98
+        return v
+
+    begin = np.concatenate([stars] + frames + [ground, ground_halo,
+                                               vessel(20.0, False)], axis=0)
+    end = np.concatenate([stars] + frames + [ground, ground_halo,
+                                             vessel(20.0 + 22.0 * (N_FRAMES - 1), True)], axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2140,7 +2218,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2388,7 +2466,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
