@@ -159,6 +159,38 @@ fold at 61% and falling). The number and the video come from one rollout; they a
 are the blind read's WATCH shape — numbered, in order — at
 `ChimeraEngine/output/ports/stand_on_camera/`.
 
+## MEMBRANE: THE STAND, IN THE PLACE (2026-08-04, Kimi) — the two rigs composed
+
+**STATEMENT.** The musculoskeletal body can stand *inside the carved ground* — the same splat
+scene the session records — without new physics: the stand rollout runs on its own flat plane
+exactly as `f3_stand.py` judges it, and the body's MuJoCo geoms are emitted as splats (mesh
+vertices and capsule chains, the tuft's zero-normal tube trick for shape, `touchables._shade`'s
+one sun for light) into the walker's ground+touchables buffer. The physics is unchanged; only
+the render composes the two rigs, and the doc says so on the tin.
+
+**PREDICTION.** `tools/stand_in_world.py` renders the two-phase rollout composited onto the
+carved ground near spawn, from the session's third-person camera: the frames show the
+musculoskeletal body standing on the terrain with the stone, tuft, and pile in the scene,
+holding upright through phase 1, then folding after release — readable as *a figure standing in
+the place*, not in the vendor's white room.
+
+**FALSIFIER.** The composited body renders garbled or unrecognizable (geom→splat does not carry
+this body), or the frames show it down during phase 1 (the composition broke something — it
+should be impossible: rendering is read-only on the sim). Either fires and the bridge claim is
+wrong.
+
+**PREDICTION HOLDS, falsifier does not fire** (2026-08-04): `tools/stand_in_world.py` rendered 30
+frames of the two-phase rollout composited onto the carved ground at (1.5, 3.0), from the
+session's third-person camera. Read by eye: the musculoskeletal figure stands on the terrain
+with the stone right of frame and the pile cone behind (frame_10, t=2.50 s, pelvis 104%),
+holding its measured −16° stand pitch, then folds forward after the release (frame_29, t=7.25 s,
+61% and falling — the slump, unmistakable). Phase 1 pelvis MIN 102.9%, phase 2 slump in 2.30 s —
+identical to `stand_on_camera.py`'s numbers, as they must be: same rollout, two renderers.
+Frames at `ChimeraEngine/output/ports/stand_in_world/`. One honest note: the body renders in its
+geom colours (pale), not MuJoCo red — the red muscles in the vendor renderer are a *tendon
+rendering* feature, not geom albedo, so the splat body's pallor is the model's own claim, not a
+defect introduced here.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
