@@ -1386,3 +1386,112 @@ LIPM against what spanning() measures the muscles can produce.
 **FALSIFIER 2 -- the sense games the reward.** If training passes from
 state 0 but the two-stage audit fails, the policy learned the reset,
 not the return; the handoff becomes the membrane.
+
+---
+
+**RUNS 21+22 — v16 VERDICT (2026-08-04): FALSIFIER 1 FIRES A THIRD TIME.
+The GRAVICEPTOR channel was explored (kx/ky std 0.30 over 48 turns) and
+converged to ~zero mean; the wall stands at 1.20 s -- invariant across
+FOUR membranes and seven campaigns (position 1.16 s, rates 1.20 s, sway
+1.20 s, neighborhood 1.24 s). The score curve is the picture of a clean
+optimization finding its class ceiling: smooth climb, saturate, flat.**
+
+The chain of relocations is now complete: not the event (the taper is
+acquitted -- the collapse starts 0.5 s AFTER the handoff), not the load
+sense (v13 inert), not the rate sense (v15 inert), not the sway sense
+(v16 inert), not the pose (measured at its collision wall), and NOT the
+physics (the release instant is capturable -- XCoM 10 cm inside the
+BoS). A static, decoupled, scalar-channel law simply does not realize
+the capture the physics permits -- and the capture literature's own
+answer for a drift the in-place strategy cannot arrest is THE STEP,
+which is the walk lane's wall exactly (Claude's ninth hypothesis:
+transitions must be TRAINED, never appended).
+
+**But the fourth relocation names a design defect, not a policy one.**
+v12's set-down releases the stone AT CARRY HEIGHT -- the giver snatches
+59.49 kg out of mid-air at 0.40 m forward, and the body must recover
+from the full lean-back with nothing to push against. Nobody sets down
+a stone that way. The physical set-down is a LOWERING: the body squats
+WITH the load (the weld rides the torso; the stone descends with it),
+the giver takes the weight AT THE BOTTOM, and the release state is a
+SQUAT -- which is inside the stand policy's PROVEN basin, because F3's
+own keyframe is a seated pose the policy stands up from at every reset.
+v12 optimized the event for instrument cleanliness (the arrival's 0.5 s
+number reversed) and priced the body a mid-air snatch no human
+attempts. The wall at 1.2 s is the price of that design.
+
+## v17 -- THE LOWERING (set the stone down; do not snatch it)
+
+**STATEMENT.** The set-down's unrecoverable post-release state is an
+artifact of releasing at carry height. If the descent is part of the
+event -- the welded stone descends with the torso along a derived path
+to its rest height (0.175 m), the giver's taper runs AT THE BOTTOM, and
+the weld releases there -- then the post-release state is a deep squat
+with quiet CoM, inside the F3-proven stand basin (the keyframe is
+seated; standing up from it is the policy's most-practiced motion),
+and THE RETURN IS THE STAND ITSELF -- no new channels, no new policy,
+the parser's own grammar (GRAB overlay releases, STAND resumes).
+
+**PREDICTION.** With the descent added to the event (a derived
+constant-velocity lowering of the weld target from CARRY_RELPOS to rest
+over the same 0.5 s the arrival used, the taper coincident with the
+descent's end), the PROVEN carry theta rides the descent, and the
+F3-PROVEN STAND theta -- untrained, zero new numbers -- holds the bar
+for 3.0 s after the bottom release. Zero training. If the stand must
+be re-taught to stand up from a squat it was literally seeded in, the
+basin claim was wrong and that is measurable at turn 0.
+
+**FALSIFIER 1 -- the loaded descent itself destabilizes.** If the carry
+theta cannot ride the descent (the squat under 421 N breaks the carry
+before the bottom), then the descent joins the pick-up as M8b's second
+motion to TRAIN (a descent curriculum over the descent path's states --
+v14's own method, now with a target basin that exists).
+
+**FALSIFIER 2 -- the squat is NOT in the basin.** If the stand theta
+falls from the bottom-release state, the seated keyframe was not the
+basin evidence it read as; measure the state against the keyframe
+(joint by joint) and the difference names the real gap.
+
+**What is NOT in this membrane.** No new formula blocks, no new
+channels, no retraining by default (the PREDICTION is zero-shot), no
+changed bars. The descent path's endpoint is the stone's measured rest
+height; its duration is the arrival's own 0.5 s. Zero chosen numbers.
+
+---
+
+**RUN 22 + THE ZERO-SHOT (2026-08-04): v16 closes (neighborhood sway
+0/3, best 1.32 s -- the 1.2 s wall invariant across all four
+observability membranes), and v17's zero-shot prediction is REFUTED
+with its mechanism named, which redesigns the event.**
+
+The zero-shot probe ran the full cycle: the carry theta rides a target
+ramp (tgt - 0.628 m, the derived descent depth: stone z 0.803 at carry,
+rest 0.175), the taper concurrent, weld release at the ramp's end, the
+F3-proven stand theta after. What the table showed:
+
+1. **The target-verb does not actuate a descent.** Over the 0.5 s LOWER
+   window the pelvis moved 0.003 m. The carry theta's kh block is
+   mixed-sign per muscle (mean -0.025, std 1.27) -- trained to HOLD at
+   one operating point, not to track a moving target; lowering the
+   target ACTIVATES the negative-kh muscles and the two signs cancel.
+   The verb exists in the grammar, but this policy's gains make it a
+   no-op. The descent must be TRAINED -- v17's falsifier 1 route is the
+   build.
+2. **Release-on-timer is wrong physics.** The weld released at the
+   ramp's end with the stone still at 0.81 m -- it free-fell 0.63 m to
+   the floor, the mid-air snatch again, delayed. The real event is
+   CONTACT-TRIGGERED: the body squats the full 421 N down (a loaded
+   squat -- the descent is trained under load), the stone LANDS, the
+   giver's taper runs on floor contact over the arrival's own 0.5 s,
+   the weld releases at the taper's end. The release state is then a
+   deep squat, unloaded, quiet -- the basin F3's seated keyframe proves.
+
+**v17's build, settled by the zero-shot's two lessons:** LOWER phase in
+the full-cycle trainer -- tgt_now ramps 0.9201 -> (tgt - depth) over
+LOWER_S = 0.5 s with body_frac = 1.0 THROUGHOUT (the loaded squat; the
+giver does not help until the floor does); the height gaussian tracks
+tgt_now (stand_reward with the target swapped -- the target is the
+verb, the reward prices the verb); on stone-floor CONTACT (measured,
+not timed) the taper runs and the weld releases; tgt ramps home; the
+return needs no training IF falsifier 2 stays quiet. The campaign is
+run 23.
