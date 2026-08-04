@@ -314,6 +314,52 @@ phantom torque at t=0, the 689 N·m defect one level subtler."* This sweep reach
 conclusion from the opposite direction — by measuring what the body *does* rather than what the
 spring holds — and lands on the same value. Two agents, two methods, one number.
 
+## CORRECTION — "the ligaments' own dynamics" is ALSO wrong. Every new group is load-bearing.
+
+The section above concludes the regression is "attributable to the ligaments' own dynamics, not
+the pose change." **A bisect refutes that too.** Dropping ligament groups (by patching only
+`derive_ligaments`, so every other line of `load_body` — seating included — runs unchanged) and
+measuring survival with the same θ:
+
+| world | tendons | survived |
+|---|---:|---:|
+| **all 32 ligaments (current)** | 322 | **6.24 s** |
+| minus subtalar (4) | 318 | 2.62 s |
+| minus hip_rotation (4) | 318 | 2.06 s |
+| minus hip_adduction (4) | 318 | 2.00 s |
+| minus all 12 new | 310 | 2.44 s |
+
+**Removing tissue makes it far worse. Every new group is load-bearing.** The ligaments are not
+the regression; they are holding the body up.
+
+**AND THAT LAST ROW IS NOT THE OLD WORLD**, which is the point worth keeping. It reads 2.44 s
+where the *real* 20-ligament world gave >8 s this morning on this same θ — because `load_body`'s
+off-sagittal deadband still seats `hip_rotation` to −8° whether or not the ligament exists. So
+that row is *the new seat without its spring*: a joint parked at a ligament's engagement edge
+with no ligament there. **Seat and tissue are COUPLED and were introduced together; neither is
+separable, and a bisect that moves only one of them is measuring a world that never existed.**
+
+The honest statement, with all three hypotheses dead: the world changed as one coupled unit
+(tissue + seat), each piece is load-bearing, and the old θ is simply **mismatched to the
+combination**. Nothing is broken. The policy is stale, and it is stale in a way no single-factor
+story explains.
+
+## FOUR PLAUSIBLE CAUSES, FOUR MEASUREMENTS, FOUR DEAD — the pattern is the finding
+
+1. *"No frontal-plane weight shift"* — refuted: lateral CoM excursion **1582% of requirement**.
+   The body was falling sideways, not failing to shift.
+2. *"The frozen stand θ pins pitch and forbids the forward lean"* — refuted: pitch runs
+   **−18° to −27° mean, reaching −85°**. Nothing was being pinned.
+3. *"Grading on the mtp blinded the reward"* — refuted: worst joint **1.233 with the mtp and
+   1.233 without**. The lumbar was the offender all along.
+4. *"The re-seating broke it"* / *"the ligaments broke it"* — both refuted above, in opposite
+   directions, by the sweep and the bisect.
+
+Every one of these was a *good* story that fit the symptom, and every one was wrong. This
+membrane has produced more plausible causal narratives than any other on this ladder, and the
+only thing that has ever settled one is a number. **Recorded as the finding, because the next
+agent here will generate a fifth story and it will also feel right.**
+
 ## WHAT THIS MEANS FOR THE ORDER OF WORK
 
 The stand port must be re-established in the 32-ligament world before the walk means anything —
