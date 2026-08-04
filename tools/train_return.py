@@ -190,6 +190,7 @@ def main() -> int:
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 32
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else SECS
     init = a[a.index("--init") + 1] if "--init" in a else str(STAND_THETA)
+    out = Path(a[a.index("--out") + 1]) if "--out" in a else RETURN_THETA
     OUTDIR.mkdir(parents=True, exist_ok=True)
     if not Path(init).exists():
         raise SystemExit(f"no {init} -- the return is composed over standing. Refusing.")
@@ -211,11 +212,19 @@ def main() -> int:
     # FULLPHYSICS layout is [time, qpos, qvel, act], so pelvis z sits at st[1 + 2].
     keep = [i for i, st in enumerate(states_all)
             if float(st[1 + 2]) >= 0.5 * P["OUT pelvis_target_m"]]
+    if "--only" in a:
+        # THE SPECIALIST VARIANT (v14 addendum): the real cycle is DETERMINISTIC -- the
+        # recovery only ever faces the ONE state the carry policy produces at the release
+        # and its immediate neighborhood. --only 0,1,2 restricts the curriculum to those
+        # recorded states (indices into the STANDING set). Not an exploit: the two-stage
+        # full-cycle audit is the judge, and it produces exactly these states.
+        only = [int(x) for x in a[a.index("--only") + 1].split(",")]
+        keep = [keep[i] for i in only if i < len(keep)]
     states = states_all[keep]
     print(f"curriculum: {len(states)} of {len(states_all)} states are above the fell line "
           f"(t = {['%.2f' % times[i] for i in keep]})")
-    if len(states) < 3:
-        raise SystemExit("fewer than 3 standing states -- the curriculum is empty. Refusing.")
+    if len(states) < 1:
+        raise SystemExit("the curriculum is empty. Refusing.")
 
     nu = m.nu
     dim = 4 * nu                  # the stand formula's own four blocks -- NOTHING ADDED
@@ -270,8 +279,8 @@ def main() -> int:
               f"{held_min:>12.3f}m{frac:>12.0f}%{survived:>7.2f}s{worst_j:>7.2f}"
               f"  {'PROVEN(trio)' if ok else 'not yet'}")
         draw_turn(turn, P, per_state, traces, pics, hist, OUTDIR / f"return_turn_{turn:02d}.png", idxs)
-    np.save(RETURN_THETA, best_ever[1])
-    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}) to {RETURN_THETA}")
+    np.save(out, best_ever[1])
+    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}) to {out}")
 
     # THE PREDICTION'S FIRST CLAUSE, JUDGED: the session's best from EVERY state.
     rows = judge_all(m, d, mujoco, best_ever[1], P, states, spec, eq, jids, secs=secs)

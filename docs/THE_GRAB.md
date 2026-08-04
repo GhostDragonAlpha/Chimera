@@ -1220,3 +1220,30 @@ collector (states already exist in the recorded runs), a
 `--from-states` training mode (random snapshot per candidate, warm
 from stand theta), and the two-stage full-cycle audit (carry theta →
 release → recovery theta). Zero chosen terms.
+
+---
+
+**RUN 16 — v14 FIRST VERDICT (2026-08-04): the 10-state curriculum plateaus,
+and the measurement underneath it is exact.** The snapshot restore is
+bit-faithful (replay of state 0 under its own generating policy matches the
+recorded collapse to the millimeter at every 0.1 s -- the states are the
+real trajectory, not a corrupted copy). The control numbers the debt
+precisely: the F3-proven stand falls from ALL TEN standing states
+(0/10; even from the release instant itself -- pelvis 0.920, nearly
+motionless -- it holds ~1.0 s, rises to 0.937, then sinks through the
+bar). 48x32 CEM warm from the stand theta never beat the incumbent
+(0.088): per-state scores [0.116, 0.006, 0.000] on the fixed trio show
+the deep states (falling at 1.3 m/s past 0.7 m) are unrecoverable by
+physics, not policy, and their zero scores compress the landscape.
+
+**The addendum the picture named.** The real cycle is DETERMINISTIC --
+the recovery only ever faces the ONE state the carry policy produces at
+the release, plus its immediate neighborhood. A specialist trained on
+state 0 alone is not a reset exploit; it is the operating point, and
+the two-stage full-cycle audit (carry theta to the release, return
+theta after) is its judge. `--only` built into train_return.py; runs
+17 (state 0) and 18 (states 0,1,2) in flight. If even the state-0
+specialist plateaus below the bar, falsifier 1 fires on the shallowest
+possible state and the CARRY EQUILIBRIUM becomes the membrane -- a
+nearer collision-free CARRY_RELPOS moves the post-release state toward
+the stand basin instead of asking the policy to span the gap.
