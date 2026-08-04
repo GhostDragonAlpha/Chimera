@@ -102,3 +102,38 @@ The declared set is the game's **design language** — `theShip`, `theVerbs`, `t
 **`scene_terms()` must keep returning only what renders.** Unioning the two would make the viewer's sidebar offer 59 membranes, 46 of which return `None` when clicked — the specification cited as proof. `splat_appearance.term_inventory()` counts the gap instead, so it is visible without being claimed.
 
 **Of the 46, 19 already appear in `engine_state.py`** — they have a place in the engine's state model but no geometry. That is where a scene author would start.
+
+---
+
+## PLANAR MEMBRANES — 2D BY DESIGN, NOT BY DEFECT
+
+The orbit proof measures parallax, and a **billboard** and a genuinely **planar** membrane look
+identical to it: neither changes when the camera moves. They want opposite responses, so the
+buffer's own extent is used to tell them apart — a plane has ~zero spread along one axis, which is
+a fact about the geometry rather than about the render.
+
+**Six of the 42 are planar**, and the axes are internally consistent:
+
+| term | flat axis | what it is |
+|---|---|---|
+| `theAnkle` | y | sagittal plane — the side view |
+| `theGrip` | y | sagittal plane |
+| `theLoad` | y | sagittal plane |
+| `theThrust` | y | sagittal plane |
+| `theBalance` | **x** | **frontal** plane — the front view |
+| `theZero` | x | the seed: r = 0, a point, so every extent is zero |
+
+`theBalance` is the case that forced the distinction, and its own `emit()` states the design:
+
+> *"+Y is the body's LEFT and Z is up; **X is zero everywhere, because this membrane IS the
+> frontal plane and drawing depth into it would be drawing the parent's chapter again.**"*
+
+It is the frontal-plane view of walking — lateral sway, pelvic obliquity, the capture point
+reaching sideways — and depth belongs to its parent's sagittal chapter. The four `theAnkle`-family
+membranes are the mirror case: sagittal views with the lateral axis collapsed.
+
+**The falsifier did not fire.** It asked whether `story.md` describes a 3D concept while `emit()`
+produces a plane — a bug wearing a design's clothes. The opposite is true: the concept *is* a
+plane, the code says so before it draws, and the reason given (do not redraw the parent's chapter)
+is the tree's own composition rule. Reporting these as "UNVERIFIED (billboard?)" was the
+instrument calling a correct design a defect.

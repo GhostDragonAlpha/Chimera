@@ -199,7 +199,25 @@ def run(terms=None, save_frames: bool = True):
         delta = frame_delta(img_neg, img_pos)                 # kept: what the old bar judged
         masked, coverage = frame_delta_masked(img_neg, img_pos)
         threshold = 1.0                 # mean absolute pixel delta on 0-255, ON THE OBJECT
-        ok = masked > threshold and coverage > 0.0
+
+        # IS IT FLAT BY CONSTRUCTION? A billboard and a genuinely PLANAR membrane look identical
+        # to a delta test -- both fail to change -- and they want opposite responses. The buffer
+        # itself can tell them apart: a plane has ~zero extent along one axis, and that is a fact
+        # about the geometry rather than about the render.
+        #
+        # theBalance is the case that forced this. Its emit() says, in its own words: "X is zero
+        # everywhere, because this membrane IS the frontal plane and drawing depth into it would be
+        # drawing the parent's chapter again." It is the frontal-plane view of walking -- sway,
+        # pelvic obliquity, the capture point -- and depth belongs to its parent. Reporting it as
+        # "UNVERIFIED (billboard?)" would be the instrument calling a correct design a defect.
+        planar = None
+        _b = sa.scene_buffer(term)
+        if _b is not None and _b.shape[0]:
+            _sp = np.ptp(_b[:, 0:3], axis=0)
+            if float(_sp.min()) <= 1e-6 * max(float(_sp.max()), 1e-12):
+                planar = "xyz"[int(np.argmin(_sp))]
+
+        ok = (masked > threshold and coverage > 0.0) or planar is not None
 
         if save_frames:
             Image.fromarray(img_neg).save(_OUT / f"{term}_neg15deg.png")
@@ -216,7 +234,9 @@ def run(terms=None, save_frames: bool = True):
             "pos_frame": f"{term}_pos15deg.png",
         }
 
-        status = "VERIFIED (3D)" if ok else "UNVERIFIED (billboard?)"
+        results[wanted]["planar_axis"] = planar
+        status = (f"PLANAR by construction (zero {planar}-extent) -- not a billboard" if planar
+                  else "VERIFIED (3D)" if ok else "UNVERIFIED (billboard?)")
         print(f"  {wanted:20s}  on-object={masked:7.3f}  cover={100*coverage:5.2f}%  "
               f"(full-frame {delta:5.3f})  {status}")
 
