@@ -273,3 +273,28 @@ Consequences for this membrane's numbers:
   board must show f3 red on the CoM term until the stand is repaired. The
   stand repair owns the foundation; the walk continuation runs meanwhile,
   and its falls are read against the 6.24 s ceiling, not against zero.
+
+## CONFOUND UPDATE (commits `d15128e` / `cef7d31`, same day): the ceiling rose, the red softened
+
+The other agent's repair landed in two halves, both measured:
+
+1. **A 60-turn protected retrain found a genuinely better stand** — score
+   −3.438 → −3.098, survival **6.24 → 7.00 s**, pelvis 101.9 → 102.4%.
+   The ceiling this membrane's falls are read against is now **7.00 s**,
+   not 6.24. The walk's v2 falls (4.2–5.3 s) sit further under it; the
+   confound's shape is unchanged and its argument stands.
+2. **The CoM regression was partly an instrument, not the body.** F3
+   scores the CoM against theStance's published `together_*` box; judged
+   against the polygon the feet actually make, the CoM NEVER leaves the
+   base of support (0.0% of phase 1). The body is stable in the only
+   sense the term has; what it does not do is stand in the feet-together
+   stance `stand_port.py:83` selected with no stated reason. WHICH stance
+   the port means is theStance's question (THE HUMAN terminal), not a
+   harness's — the bar was not moved by either agent, correctly.
+
+Nothing in the v2 verdict above changes: falsifier 3 unfired, judges
+4/5/6 pass, M3 open. What changes is the REOPEN condition's precision:
+not "the stand holds ≥ 8 s" alone, but "the stand holds ≥ 8 s AND
+theStance has named the stance" — a walk composed over a stand whose
+balance landmark is unsettled would inherit the ambiguity. The swing
+catch-up question waits on both.
