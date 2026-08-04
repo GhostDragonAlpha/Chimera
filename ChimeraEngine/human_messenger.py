@@ -103,6 +103,10 @@ PHYSICS_READING = {
                "bright node at the center of the network against a dark background -- a "
                "world unfolded from a single origin, every colored node a world attached "
                "to the one central seed",
+    "theDeterminism": "two identical networks side by side against a dark background -- "
+                      "the same pattern of threads and colored nodes twice, mirror twins "
+                      "with every detail matching: one world unfolded twice from the same "
+                      "seed, bit-identical, NOT two different worlds",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

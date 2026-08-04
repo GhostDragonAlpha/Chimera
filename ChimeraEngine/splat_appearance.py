@@ -82,6 +82,7 @@ SCENES = {
     "theOrbitalFarm":  {"kind": "orbital_farm", "radius": 230.0, "cam": (0.0, -180.0, 120.0)},
     "theSpace":        {"kind": "space", "radius": 300.0, "cam": (0.0, -40.0, 20.0)},
     "theSeed":         {"kind": "seed", "radius": 180.0, "cam": (0.0, -150.0, 90.0)},
+    "theDeterminism":  {"kind": "determinism", "radius": 200.0, "cam": (0.0, -170.0, 100.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1197,6 +1198,50 @@ def _seed_buffers(spec: dict, term: str):
     end = np.concatenate([seed_pt, glow] + unfold(1.0), axis=0)      # the world, unfolded
     return end, begin
 
+def _determinism_buffers(spec: dict, term: str):
+    """theDeterminism: same seed -> same world, bit-identical. TWO unfolds side by side,
+    built by the SAME rng sequence run twice: every thread, every world, every colour in
+    the left twin has its exact counterpart in the right twin. The membrane made visible
+    is the TWINS: not two similar worlds -- one world, twice. begin = both mid-unfold
+    (identical), end = both complete (identical)."""
+    import numpy as np
+    R = float(spec.get("radius", 200.0))
+
+    def one_unfold(origin, seed_no, scale):
+        """One seed's unfold, built from a FRESH generator seeded with seed_no -- so two
+        calls with the same seed_no emit bit-identical structure. That IS the claim."""
+        rng = np.random.default_rng(seed_no)
+        ox, oy, oz = origin
+        parts = []
+        parts.append(_solid_sphere((ox, oy, oz), 6.0 * scale, (1.0, 0.95, 0.80), rng, gain=0.9))
+        n_main = 6
+        for k in range(n_main):
+            a = k * 2.0 * np.pi / n_main + 0.4
+            elev = float(rng.uniform(-0.35, 0.35))
+            L = float(rng.uniform(48.0, 68.0)) * scale
+            ts = np.linspace(5.0 * scale, L, 30)
+            wander = np.cumsum(rng.normal(0.0, 0.06, len(ts)))
+            fx = ox + ts * np.cos(a + wander * 0.3)
+            fy = oy + ts * np.sin(a + wander * 0.3)
+            fz = oz + ts * elev * 0.6 + rng.normal(0.0, 0.8, len(ts))
+            th = np.zeros((len(ts), NCOLS), dtype=np.float32)
+            th[:, PX], th[:, PY], th[:, PZ] = fx, fy, fz
+            th[:, TYPE] = 3.0; th[:, ALPHA] = 0.5; th[:, SIZE] = 1.4
+            th[:, CR], th[:, CG], th[:, CB] = 0.72, 0.60, 0.38
+            parts.append(th)
+            wc = [(0.62, 0.45, 0.34), (0.34, 0.55, 0.82), (0.70, 0.62, 0.42),
+                  (0.45, 0.72, 0.50), (0.78, 0.55, 0.62), (0.55, 0.65, 0.85)][k]
+            parts.append(_solid_sphere((fx[-1], fy[-1], fz[-1]),
+                                       float(rng.uniform(3.5, 5.5)) * scale, wc, rng, gain=0.75))
+        return parts
+
+    left = (-70.0, 0.0, 0.0)
+    right = (70.0, 0.0, 0.0)
+
+    begin = np.concatenate(one_unfold(left, 7, 0.35) + one_unfold(right, 7, 0.35), axis=0)
+    end = np.concatenate(one_unfold(left, 7, 1.0) + one_unfold(right, 7, 1.0), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1284,7 +1329,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1532,7 +1577,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
