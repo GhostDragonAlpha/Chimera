@@ -284,8 +284,10 @@ class Stone:
         self.z = _wk.height_at(self.x, self.y) + self.r
         self.vx = self.vy = 0.0
         self.carried = False
-        # FACETS membrane: the rock's shape, once -- 640 directions, lumps + 7 facet planes.
-        # n=40 -> 160 -> 640, 2026-08-04 (INK membrane): measured against smudge, never identity.
+        # FACETS membrane: the rock's shape, once -- lumps + 5 facet planes.
+        # n=40 -> 160 -> 640 (INK) -> 72 (CHUNK) -> BACK TO 640: CHUNK's falsifier fired
+        # (72 tiles read "nebula" at derived grain, "glowing circle" at 1.72x grain, both 0.2)
+        # and 640 dots were the best of the three in context. The SHAPE stays regardless.
         self._n = 640
         self._dirs, self._rad, self._nrm = _rock_shape(self._n, self.r)
 
@@ -361,7 +363,7 @@ class Stone:
         b[:, 1] = self.y + self._dirs[:, 1] * self._rad
         b[:, 2] = self.z + self._dirs[:, 2] * self._rad
         b[:, 21:24] = self._nrm
-        b[:, 20] = surface_grain(n, self.r) * 1.15   # FACETS it.2: a flat reads continuous
+        b[:, 20] = surface_grain(n, self.r)   # derived closure; CHUNK's 0.073 died with it
         b[:, 11] = SOLID
         _shade(b, self._alb, w)
         return b

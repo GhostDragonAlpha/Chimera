@@ -346,6 +346,38 @@ grains; 640 dots blur to "texture" at the eye's effective resolution, ~60–80 c
 a solid faceted body) and TONE (the whiteness is one exposure dial and one measured albedo —
 THE HUMAN's row, both of them).
 
+## MEMBRANE: CHUNK (2026-08-04, Kimi) — the dot grain IS the texture the eye reads
+
+**STATEMENT.** At the eye's effective resolution, 640 splats of ~4 px do not read as a surface
+— they read as a TEXTURE ("composed of small dots", every reading), and the brain groups dot
+centres into a smooth envelope, which is why every geometry attempt read "spherical". A surface
+of ~72 splats of ~13–20 px cannot blur the same way: each splat is a visible tile, tiles on a
+facet are coplanar and same-lit, so the facet reads as a flat plane of colour and the body as
+solid. The pile already proved the direction — its 6 cm clods out-read its 0.35 mm grains at
+every distance; CHUNK is the same law applied to the stone, and `surface_grain` sizes the tiles
+by derivation (close the surface with n tiles), not by choice.
+
+**PREDICTION.** The stone at n = 72 (same `_rock_shape`, grain from `surface_grain(72, r)` ≈
+3× the 640-dot grain): the eye reads the isolated probe AND `stone_close` without the words
+"dots"/"pixelated", with align ≥ 0.50 against "a grey rock, seen up close".
+
+**FALSIFIER.** The eye still reports dots/pixelation, or align < 0.35 — then the splat medium
+cannot carry rock identity at ANY grain at session scale, the bound closes over CHUNK too, and
+the only remaining row is TONE (THE HUMAN's exposure + the measured albedo).
+
+**FALSIFIER FIRES** (2026-08-04): 72 tiles read "nebula / cluster of light points" (0.25) at
+the derived grain and "glowing circle" (0.2) at the derived-for-scatter 0.073 grain — splat_ruler
+re-measured for the derivation (bright core = 2.4× s), and it did not matter. The bound now
+closes over THREE membranes in one day: density (INK: 160→640, "dots"), grain (CHUNK: 72/0.042→
+0.073, "nebula"→"glow"), geometry (FACETS: lumps+planes, "sphere" at every cut). **At session
+scale the splat medium renders a small pale body as an ethereal glowing abstraction, and every
+reading keys on the same two words: white and glowing.** That is not a geometry, density, or
+grain claim — it is the tone mapping: quartz albedo through lit()+tone at exposure 2.0 clips
+toward white with a hot centre, and a hot-centred pale blob reads as a light source, never as
+rock. The one remaining row is **TONE**, and it is THE HUMAN's twice over (the exposure dial is
+theirs; the albedo is theGround's measured quartz). The stone reverts to 640 dots + the FACETS
+shape — the best of the measured set in context.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
