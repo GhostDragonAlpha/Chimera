@@ -72,6 +72,8 @@ PHYSICS_READING = {
     "theTree": "a single tree with a brown branching trunk and a spreading green leafy crown "
                "standing on a patch of green ground -- ONE tree alone, NOT a forest, NOT "
                "several trees",
+    "theTreeForm": "a stylized tree with a brown trunk and visible brown branches carrying "
+                   "green foliage, against a dark black background",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "

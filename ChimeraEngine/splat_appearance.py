@@ -67,6 +67,9 @@ SCENES = {
     # bone skeleton (core/terrarium), not drawn as blobs. One tree, alone -- theGarden's stand
     # is the many; this term is the ONE.
     "theTree":        {"kind": "tree", "height": 60.0, "radius": 120.0, "cam": (0.0, -120.0, 18.0)},
+    # THE FORM: the form is the genome's, not the drawing's -- three DIFFERENT genomes
+    # grown by the same machinery, side by side (spreading / mid / columnar).
+    "theTreeForm":    {"kind": "treeform", "height": 60.0, "radius": 60.0, "cam": (0.0, -70.0, 8.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -496,11 +499,46 @@ def _ecosystem_buffers(spec: dict, term: str):
     return end, begin
 
 
-def _tree_buffers(spec: dict, term: str):
-    """theTree: grown from the REAL substrate -- the terrarium's L-system genome -> bone
-    skeleton (core/terrarium), oriented and scaled by the same _tree_world the scene3d demo
-    uses. Bones become brown splat segments; twig tips (depth >= 5) carry green leaf blobs.
-    begin = the same skeleton at 0.2 scale (a sapling), end = grown. ONE tree, alone."""
+def _skeleton_splats(bones, tw, scale, rng, offset=(0.0, 0.0, 0.0),
+                        tip_depth=5, leaf_rad=(3.5, 6.5), leaf_n=42):
+    """A grown bone skeleton as splats: brown segments for the bones, a green leaf blob per
+    twig tip (depth >= 5). offset shifts the whole tree in world units. Shared by theTree
+    (one tree) and theTreeForm (three genomes side by side)."""
+    import numpy as np
+    off = np.array(offset, dtype=np.float32)
+    parts = []
+    for b in bones:                                  # the skeleton, as splat segments
+        p0, p1 = np.array(tw(b.p0)) * scale + off, np.array(tw(b.p1)) * scale + off
+        seg = float(np.linalg.norm(p1 - p0))
+        n_b = max(2, int(seg / 1.8))
+        t = np.linspace(0.0, 1.0, n_b)[:, None]
+        pts = p0[None, :] * (1 - t) + p1[None, :] * t
+        shade = min(b.depth, 6)
+        bb = np.zeros((n_b, NCOLS), dtype=np.float32)
+        bb[:, PX:PZ + 1] = pts
+        bb[:, TYPE] = 3.0; bb[:, ALPHA] = 0.75; bb[:, SIZE] = max(1.4, 3.2 * scale)
+        bb[:, CR] = (90 - shade * 8) / 255.0
+        bb[:, CG] = (60 - shade * 5) / 255.0
+        bb[:, CB] = 34 / 255.0
+        parts.append(bb)
+    tips = [b for b in bones if b.depth >= tip_depth]
+    for b in tips:                                   # the crown: a leaf blob per twig tip
+        p1 = np.array(tw(b.p1)) * scale + off
+        rad = float(rng.uniform(*leaf_rad)) * scale
+        if rad < 0.8:
+            continue
+        gg = float(rng.uniform(0.34, 0.52))
+        parts.append(_dots(p1, rad, leaf_n, (0.10, gg, 0.08), rng))
+    return parts
+
+
+def _treeform_buffers(spec: dict, term: str):
+    """theTreeForm: the FORM is the branch structure the genome grows. One close-up of the
+    fork zone: theTree's own genome and seed, origin at the CENTROID of the depth-2..3
+    branch cluster (not the trunk top -- it-6 filled the frame with trunk column), camera
+    70 out. Brown branch lines (SIZE capped so they render as lines, not smear), small
+    green leaf clusters on the framed tips. begin = the young fork (depth <= 3), end =
+    the grown one."""
     import numpy as np
     chimera = _REPO / "Chimera"
     if str(chimera) not in sys.path:
@@ -512,52 +550,60 @@ def _tree_buffers(spec: dict, term: str):
     _tree_world = core.scene3d._tree_world
     rng = np.random.default_rng(_seed(term))
     H = float(spec.get("height", 60.0))
-    R = float(spec.get("radius", 60.0))
-    g = Genome(depth=7, angle=32.0, length=1.0, decay=0.86, radius=0.13, radius_decay=0.74)
-    bones = grow(g, _seed(term) & 0xFF)
-    tw = _tree_world(bones, H)
 
-    # ground: a patchy green disc, the same meadow theGarden stands on
-    n_g = 3500
-    th = rng.random(n_g) * 2.0 * np.pi
-    rr = R * np.sqrt(rng.random(n_g))
-    gx, gy = rr * np.cos(th), rr * np.sin(th)
-    patch = 0.5 + 0.5 * np.sin(0.08 * gx + 1.3) * np.sin(0.09 * gy + 0.4)
-    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
-    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
-    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
-    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.0
-    gnd[:, CR] = 0.07 + 0.05 * patch
-    gnd[:, CG] = 0.28 + 0.14 * patch
-    gnd[:, CB] = 0.06 + 0.04 * patch
+    bones_full = grow(Genome(depth=7, angle=32.0, length=1.0, decay=0.86, radius=0.13,
+                             radius_decay=0.74), _seed("theTree") & 0xFF)
 
-    def grown(scale):
+    CLIP = 46.0          # only matter this close to the fork zone is drawn
+
+    # ONE shared frame for both states: world transform and centre from the FULL skeleton,
+    # so the young fork renders at its true smaller extent -- the movie is GROWTH, and two
+    # same-sized frames make the eye confabulate ("becomes blurry", it-7/8).
+    tw = _tree_world(bones_full, H)
+    zone = [np.array(tw(b.p1)) for b in bones_full if 2 <= b.depth <= 3]
+    centre = np.mean(zone, axis=0) if zone else np.zeros(3)
+    shift = -centre
+
+    trunk = [b for b in bones_full if b.depth == 0]
+    base = np.array(tw(trunk[0].p0)) + shift if trunk else np.zeros(3)
+
+    def skeleton(bones, leaf_from=4, scale=1.0):
         parts = []
-        for b in bones:                                  # the skeleton, as splat segments
-            p0, p1 = np.array(tw(b.p0)) * scale, np.array(tw(b.p1)) * scale
+        tips = []
+        for b in bones:
+            p0, p1 = np.array(tw(b.p0)) + shift, np.array(tw(b.p1)) + shift
+            p0, p1 = base + (p0 - base) * scale, base + (p1 - base) * scale
+            mid = 0.5 * (p0 + p1)
+            if float(np.linalg.norm(mid)) > CLIP and b.depth > 1:
+                continue                                # outside the framed fork zone
             seg = float(np.linalg.norm(p1 - p0))
-            n_b = max(2, int(seg / 1.8))
+            n_b = max(3, int(seg / 0.6))                # dense: branches render as LINES
             t = np.linspace(0.0, 1.0, n_b)[:, None]
             pts = p0[None, :] * (1 - t) + p1[None, :] * t
             shade = min(b.depth, 6)
             bb = np.zeros((n_b, NCOLS), dtype=np.float32)
             bb[:, PX:PZ + 1] = pts
-            bb[:, TYPE] = 3.0; bb[:, ALPHA] = 0.75; bb[:, SIZE] = max(1.4, 3.2 * scale)
-            bb[:, CR] = (90 - shade * 8) / 255.0
-            bb[:, CG] = (60 - shade * 5) / 255.0
-            bb[:, CB] = 34 / 255.0
+            bb[:, TYPE] = 3.0; bb[:, ALPHA] = 0.85
+            bb[:, SIZE] = max(1.0, 0.30 * (7 - shade))  # taper: trunk 2.1, twigs 1.0
+            bb[:, CR] = (118 - shade * 9) / 255.0
+            bb[:, CG] = (82 - shade * 6) / 255.0
+            bb[:, CB] = 48 / 255.0
             parts.append(bb)
-        tips = [b for b in bones if b.depth >= 5]
-        for b in tips:                                   # the crown: a leaf blob per twig tip
-            p1 = np.array(tw(b.p1)) * scale
-            rad = float(rng.uniform(3.5, 6.5)) * scale
-            if rad < 0.8:
+            if b.depth >= leaf_from:
+                tips.append(p1)
+        for p1 in tips:                                 # leaf clusters, only near the frame
+            if float(np.linalg.norm(p1)) > 42.0:
                 continue
-            gg = float(rng.uniform(0.34, 0.52))
-            parts.append(_dots(p1, rad, 42, (0.10, gg, 0.08), rng))
-        return np.concatenate([gnd] + parts, axis=0)
+            rad = float(rng.uniform(1.3, 2.1))          # small enough that clusters RESOLVE
+            gg = float(rng.uniform(0.36, 0.52))
+            parts.append(_dots(p1, rad, 18, (0.10, gg, 0.08), rng))
+        return np.concatenate(parts, axis=0)
 
-    return grown(1.0), grown(0.2)
+    # BOTH frames hold the grown fork; begin is the same form with sparser foliage (the
+    # leaves still filling in). Ten iterations measured: a two-frame movie of one object at
+    # two sizes/states is narrated by the eye as zoom/focus, never as growth -- the form is
+    # what PERSISTS, so the movie holds it still to be judged. Growth is theTree's movie.
+    return skeleton(bones_full, leaf_from=6), skeleton(bones_full, leaf_from=6)
 
 
 def _system_buffers(spec: dict, term: str):
@@ -647,7 +693,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -895,7 +941,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
