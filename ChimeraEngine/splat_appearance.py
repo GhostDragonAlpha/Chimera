@@ -96,6 +96,7 @@ SCENES = {
     "theDescent":      {"kind": "descent", "radius": 170.0, "cam": (30.0, -80.0, 35.0)},
     "theStanding":     {"kind": "standing", "radius": 120.0, "cam": (0.0, -85.0, 22.0)},
     "theBlackHole":    {"kind": "black_hole", "radius": 140.0, "cam": (0.0, -110.0, 0.0)},
+    "theVerbs":        {"kind": "verbs", "radius": 130.0, "cam": (0.0, -95.0, 30.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2300,6 +2301,103 @@ def _black_hole_buffers(spec: dict, term: str):
     end = np.concatenate([stars] + scene(True), axis=0)
     return end, begin
 
+def _verbs_buffers(spec: dict, term: str):
+    """theVerbs: the acts that change the world. A verb IS a change, so the two
+    frames must DIFFER in the world, not in brightness. begin: the stone rests
+    at the OLD place beside a reaching figure, the arc only a faint thread of
+    intent. end: the stone is GONE from the old place -- a dim ghost remains
+    where it was -- and the same stone sits lit at the NEW place, the arc
+    burning along the path it travelled, the figure's arm fully extended. The
+    claim is not the figure and not the stone but the CHANGE: same object, two
+    places, one arc of action between them."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # ground hint: a sparse dark slab
+    n_g = 800
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 60.0 * np.sqrt(rng.random(n_g))
+    ground = np.zeros((n_g, NCOLS), dtype=np.float32)
+    ground[:, PX] = rr * np.cos(th)
+    ground[:, PY] = rr * np.sin(th)
+    ground[:, PZ] = rng.normal(0.0, 0.7, n_g) - 0.5
+    ground[:, TYPE] = 3.0; ground[:, ALPHA] = 0.25; ground[:, SIZE] = 2.4
+    ground[:, CR], ground[:, CG], ground[:, CB] = 0.38, 0.40, 0.38
+
+    # the figure: a full upright form on the left
+    FX = -28.0
+    fig = []
+    body_c = (0.80, 0.78, 0.72)
+    n_b = 160
+    t = np.linspace(0.0, 1.0, n_b)
+    torso = np.zeros((n_b, NCOLS), dtype=np.float32)
+    torso[:, PX] = FX + rng.normal(0.0, 0.4, n_b)
+    torso[:, PZ] = 6.0 + 8.0 * t
+    torso[:, TYPE] = 3.0; torso[:, ALPHA] = 0.8; torso[:, SIZE] = 1.6
+    torso[:, CR], torso[:, CG], torso[:, CB] = body_c
+    fig.append(torso)
+    for lx in (-2.0, 2.0):                                          # legs
+        n_l = 90
+        tl = np.linspace(0.0, 1.0, n_l)
+        leg = np.zeros((n_l, NCOLS), dtype=np.float32)
+        leg[:, PX] = FX + lx + rng.normal(0.0, 0.3, n_l)
+        leg[:, PZ] = 0.5 + 5.5 * tl
+        leg[:, TYPE] = 3.0; leg[:, ALPHA] = 0.8; leg[:, SIZE] = 1.4
+        leg[:, CR], leg[:, CG], leg[:, CB] = body_c
+        fig.append(leg)
+    fig.append(_dots((FX, 0.0, 16.5), 2.4, 36, body_c, rng))      # head
+
+    def arm(reach):                                                # the reaching arm
+        n_a = 110
+        t = np.linspace(0.0, 1.0, n_a)
+        a = np.zeros((n_a, NCOLS), dtype=np.float32)
+        a[:, PX] = FX + reach * t
+        a[:, PZ] = 13.5 + 2.0 * t + rng.normal(0.0, 0.3, n_a)
+        a[:, TYPE] = 3.0; a[:, ALPHA] = 0.8; a[:, SIZE] = 1.4
+        a[:, CR], a[:, CG], a[:, CB] = body_c
+        return a
+
+    OLD = (18.0, 0.0, 2.0)
+    NEW = (34.0, 0.0, 14.0)
+
+    # the stone arrived: lit at the NEW place in the end frame
+    stone_new = _dots(NEW, 4.0, 60, (0.75, 0.72, 0.66), rng)
+    stone_new[:, ALPHA] = 0.90
+
+    # the arc of action: a curve from the old place to the new --
+    # a faint thread in begin, burning in end
+    n_arc = 220
+    t = np.linspace(0.0, 1.0, n_arc)
+    arc = np.zeros((n_arc, NCOLS), dtype=np.float32)
+    arc[:, PX] = OLD[0] + (NEW[0] - OLD[0]) * t
+    arc[:, PZ] = OLD[2] + (NEW[2] - OLD[2]) * t + 6.0 * np.sin(t * np.pi)
+    arc[:, TYPE] = 3.0; arc[:, SIZE] = 1.5
+    arc[:, CR], arc[:, CG], arc[:, CB] = 0.55, 0.90, 1.00
+    arc_dim = arc.copy(); arc_dim[:, ALPHA] = 0.18
+    arc_lit = arc.copy(); arc_lit[:, ALPHA] = 0.90
+
+    # the TRAIL: the stone shown at each station of its travel, brightening
+    # along the arc -- displacement written into a single frame, so the act is
+    # visible even to an eye that only averages the movie. BOTH frames carry
+    # the trail (theSalvage lesson: the eye averages the movie; a structure
+    # present in only one frame is a structure it never sees): begin holds it
+    # faint -- the path as potential -- end holds it burning, the stone arrived.
+    def trail(alpha_gain):
+        parts = []
+        for tt, al in ((0.0, 0.45), (0.33, 0.60), (0.66, 0.75)):
+            pos = (OLD[0] + (NEW[0] - OLD[0]) * tt, 0.0,
+                   OLD[2] + (NEW[2] - OLD[2]) * tt + 6.0 * np.sin(tt * np.pi))
+            st = _dots(pos, 4.0, 60, (0.75, 0.72, 0.66), rng)
+            st[:, ALPHA] = al * alpha_gain
+            parts.append(st)
+        return parts
+
+    begin = np.concatenate([ground] + fig + [arm(5.0)] + trail(0.45) + [arc_dim], axis=0)
+    end = np.concatenate([ground] + fig + [arm(12.0)] + trail(1.0) + [stone_new, arc_lit,
+                                           _halo(NEW, 7.0, (0.80, 0.90, 1.0), rng,
+                                                 alpha=0.13, size=1.8)], axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2387,7 +2485,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2635,7 +2733,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

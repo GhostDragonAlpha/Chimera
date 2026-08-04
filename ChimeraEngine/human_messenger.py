@@ -162,6 +162,11 @@ PHYSICS_READING = {
                     "orange ring and a white halo, set against a backdrop of "
                     "numerous small white dots representing stars in space -- "
                     "the center is total darkness, a hole that no light escapes",
+    "theVerbs": "a pale stylized human figure with an outstretched arm on the "
+                "left, facing a rising curved path of repeated pale round forms "
+                "that brighten along the curve and end in one bright glowing "
+                "circle, against a dark rough backdrop -- the same object shown "
+                "at each station of its travel, an act of moving made visible",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
