@@ -76,6 +76,9 @@ PHYSICS_READING = {
                    "green foliage, against a dark black background",
     "theFruit": "a tree with green leaves and round orange-red fruit hanging below the "
                 "branches, against a dark background",
+    "thePlanting": "a grid of small green dots -- young seedlings -- in straight rows and "
+                   "columns at even spacing on a dark ground: a deliberate planted pattern, "
+                   "NOT random scatter; the field starts bare and the seedlings appear",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "

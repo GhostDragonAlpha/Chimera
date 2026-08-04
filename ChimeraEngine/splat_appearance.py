@@ -73,6 +73,9 @@ SCENES = {
     # THE FRUIT: the same tree (its genome, its seed) bearing fruit at its twig tips;
     # the movie is the ripening -- small green -> full red, the tree itself unchanged.
     "theFruit":       {"kind": "fruit", "height": 60.0, "radius": 60.0, "cam": (0.0, -70.0, 8.0)},
+    # THE PLANTING: seeds placed by a hand, in rows -- the intent visible as pattern.
+    # Elevated camera: the ROWS are the salient read, so the field is seen from above.
+    "thePlanting":    {"kind": "planting", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -675,6 +678,67 @@ def _fruit_buffers(spec: dict, term: str):
     return with_fruit(RIPE, 1.0), with_fruit(UNRIPE, 0.7)
 
 
+def _planting_buffers(spec: dict, term: str):
+    """thePlanting: the hand's geometry made visible. A tilled brown field with furrow
+    lines, and green sprouts at REGULAR grid points along the furrows -- rows, where
+    chance would scatter. Germination is 92%: a real stand has gaps. begin = the field
+    tilled and sown but not yet emerged (bare rows), end = the seedlings up."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 110.0))
+
+    # tilled soil: a brown patchy disc, darker and rougher than the meadow scenes
+    n_g = 4200
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.11 * gx + 0.7) * np.sin(0.09 * gy + 2.1)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.6; gnd[:, SIZE] = 3.0
+    gnd[:, CR] = 0.22 + 0.07 * patch
+    gnd[:, CG] = 0.14 + 0.05 * patch
+    gnd[:, CB] = 0.07 + 0.03 * patch
+
+    # furrows: raised darker-brown lines along x, 9 rows spaced 12 units
+    rows_y = [(-48.0 + 12.0 * k) for k in range(9)]
+    furrows = []
+    for y in rows_y:
+        xs = np.linspace(-54.0, 54.0, 90)
+        fb = np.zeros((len(xs), NCOLS), dtype=np.float32)
+        fb[:, PX] = xs
+        fb[:, PY] = y + rng.normal(0.0, 0.5, len(xs))
+        fb[:, PZ] = 0.4
+        fb[:, TYPE] = 3.0; fb[:, ALPHA] = 0.7; fb[:, SIZE] = 2.6
+        fb[:, CR], fb[:, CG], fb[:, CB] = 0.30, 0.19, 0.09
+        furrows.append(fb)
+
+    # the sprouts: one green tuft per grid point, germination 92%, slight hand jitter
+    def seedlings(scale):
+        parts = []
+        for y in rows_y:
+            for x in np.linspace(-50.0, 50.0, 11):
+                if rng.random() > 0.94:
+                    continue                            # the seed that did not come up
+                cx = x + float(rng.uniform(-0.6, 0.6))   # it-1: jitter broke the row read
+                cy = y + float(rng.uniform(-0.6, 0.6))
+                gg = float(rng.uniform(0.44, 0.58))
+                parts.append(_dots((cx, cy, 0.8 * scale), 1.8 * scale, 18,
+                                   (0.12, gg, 0.09), rng))
+                stem = np.zeros((3, NCOLS), dtype=np.float32)   # a short upright stem
+                stem[:, PX], stem[:, PY] = cx, cy
+                stem[:, PZ] = np.linspace(0.0, 2.2 * scale, 3)
+                stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.8; stem[:, SIZE] = 1.4
+                stem[:, CR], stem[:, CG], stem[:, CB] = 0.14, 0.40, 0.10
+                parts.append(stem)
+        return parts
+
+    end = np.concatenate([gnd] + furrows + seedlings(1.0), axis=0)
+    begin = np.concatenate([gnd] + furrows, axis=0)      # tilled and sown, not yet up
+    return end, begin
+
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -762,7 +826,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1010,7 +1074,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
