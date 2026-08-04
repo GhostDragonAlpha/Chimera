@@ -74,6 +74,8 @@ PHYSICS_READING = {
                "several trees",
     "theTreeForm": "a stylized tree with a brown trunk and visible brown branches carrying "
                    "green foliage, against a dark black background",
+    "theFruit": "a tree with green leaves and round orange-red fruit hanging below the "
+                "branches, against a dark background",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
@@ -83,7 +85,9 @@ _SEE_PROMPT = ("Look at this image and describe what you actually see in one or 
 _WATCH_PROMPT = ("These images are frames from a short video, in order (first to last). Describe what you "
                  "see across the sequence in one or two short sentences: the main colors, the shapes, what "
                  "it depicts, and how it changes from first frame to last. Describe ONLY what is visually "
-                 "present. Do NOT mention numbers, temperatures, or measurements.")
+                 "present. If the frames look nearly the same, say the scene stays the same -- do NOT "
+                 "invent changes, blur, focus shifts, or fading that are not clearly visible. Do NOT "
+                 "mention numbers, temperatures, or measurements.")
 
 
 def see(png: str, timeout: int = 300) -> str | None:

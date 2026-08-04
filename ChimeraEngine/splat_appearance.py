@@ -70,6 +70,9 @@ SCENES = {
     # THE FORM: the form is the genome's, not the drawing's -- three DIFFERENT genomes
     # grown by the same machinery, side by side (spreading / mid / columnar).
     "theTreeForm":    {"kind": "treeform", "height": 60.0, "radius": 60.0, "cam": (0.0, -70.0, 8.0)},
+    # THE FRUIT: the same tree (its genome, its seed) bearing fruit at its twig tips;
+    # the movie is the ripening -- small green -> full red, the tree itself unchanged.
+    "theFruit":       {"kind": "fruit", "height": 60.0, "radius": 60.0, "cam": (0.0, -70.0, 8.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -606,6 +609,72 @@ def _treeform_buffers(spec: dict, term: str):
     return skeleton(bones_full, leaf_from=6), skeleton(bones_full, leaf_from=6)
 
 
+def _fruit_buffers(spec: dict, term: str):
+    """theFruit: theTree's own genome and seed, bearing FRUIT -- as a crown CLOSE-UP.
+    Three full-tree iterations failed on scale (0.000 / 0.250 / 0.250): at 120 units a
+    3-unit fruit is a sub-blob speck, and clustered fruit merges into a red band. The
+    fork close-up framing that proved theTreeForm (origin at the depth-2..3 centroid,
+    camera 70 out) is where objects resolve. The tree is the shared _skeleton_splats
+    look with SPARSE distinct leaf clusters (theTreeForm's), and a greedy-separated set
+    of big red fruit spheres HANGING BELOW twig tips at the crown's edge, where they
+    silhouette against the dark. begin = unripe (small, green), end = ripe (full, red)."""
+    import numpy as np
+    chimera = _REPO / "Chimera"
+    if str(chimera) not in sys.path:
+        sys.path.insert(0, str(chimera))
+    from core.terrarium import Genome, grow
+    import importlib
+    import core.scene3d
+    importlib.reload(core.scene3d)          # the long-lived server caches it; disk is the truth
+    _tree_world = core.scene3d._tree_world
+    rng = np.random.default_rng(_seed(term))
+    H = float(spec.get("height", 60.0))
+
+    bones = grow(Genome(depth=7, angle=32.0, length=1.0, decay=0.86, radius=0.13,
+                        radius_decay=0.74), _seed("theTree") & 0xFF)
+    tw = _tree_world(bones, H)
+    zone = [np.array(tw(b.p1)) for b in bones if 2 <= b.depth <= 3]
+    centre = np.mean(zone, axis=0) if zone else np.zeros(3)
+    shift = -centre
+
+    CLIP = 46.0
+    # it-4: the un-clipped skeleton smeared brown behind the fruit ("green and orange
+    # circles on a brown mass", 0.250). Clip far branches (keep the trunk), fuller leaves.
+    bones_c = [b for b in bones
+               if b.depth <= 1
+               or float(np.linalg.norm(0.5 * (np.array(tw(b.p0)) + np.array(tw(b.p1))) + shift)) <= CLIP]
+    tree = _skeleton_splats(bones_c, tw, 1.0, rng, offset=shift,
+                            tip_depth=4, leaf_rad=(2.4, 3.4), leaf_n=28)
+
+    # the fruit: ALL of it at the crown's LOWER RIM, silhouetted against the dark. it-4/5
+    # showed only the fruit hanging clear of the crown reads as fruit (2 of 9); fruit inside
+    # the silhouette blends into the leaves. So fruit tips come from the LOW half of the
+    # framed zone and hang 4-6 units down, separated, each resolving on black.
+    tips = [b for b in bones_c if b.depth >= 5]
+    order = rng.permutation(len(tips))
+    fruits = []
+    for i in order:
+        tip = np.array(tw(tips[i].p1)) + shift
+        if float(np.linalg.norm(tip)) > CLIP or tip[2] > 0.0:
+            continue                                    # the LOW rim only: fruit must hang on black
+        pos = tip + np.array([float(rng.uniform(-1.2, 1.2)), float(rng.uniform(-1.2, 1.2)),
+                              -float(rng.uniform(6.0, 8.0))])
+        if all(float(np.linalg.norm(pos - f[0])) >= 7.5 for f in fruits):
+            fruits.append((pos, float(rng.uniform(3.0, 3.8))))   # it-9's best modal params
+        if len(fruits) >= 12:
+            break
+
+    def with_fruit(color, scale):
+        parts = list(tree)
+        for pos, rad in fruits:
+            parts.append(_dots(pos, rad * scale, 40, color, rng))
+        return np.concatenate(parts, axis=0)
+
+    UNRIPE = (0.22, 0.42, 0.13)     # green on green: unripe fruit hides, that is the truth
+    RIPE = (0.85, 0.05, 0.04)       # bright red: it-6's fruit was visible but not SALIENT
+    return with_fruit(RIPE, 1.0), with_fruit(UNRIPE, 0.7)
+
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -693,7 +762,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -941,7 +1010,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
