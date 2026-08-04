@@ -226,6 +226,7 @@ SUFFIX_UNITS = [
     ("_pct", "pct"), ("_percentile", "pct"),
     # dimensionless by construction -- a factor, a margin, an exponent, a count, an albedo
     ("_factor", "1"), ("_margin", "ratio"), ("_exponent", "1"), ("_count", "count"),
+    ("_samples", "count"),        # a sample count: gait_samples=48, gait_envelope_samples=101
     ("_albedo", "frac"), ("_efficiency", "frac"), ("_slope", "1"), ("_index", "1"),
     ("_MPa", "MPa"), ("_uT", "uT"), ("_Am2", "A.m2"), ("_J_kgK", "J/kgK"), ("_zsun", "Zsun"),
     # NOTE the ORDER: these must precede the bare "_m2" rule, which would otherwise read

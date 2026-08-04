@@ -168,6 +168,10 @@ KNOWN_EQUAL = {
     ("n2_fraction", "tissue_ratio"): "the tissue equilibrates TO the inert fraction.",
     ("step_width_earth_m", "width_law_slow_m"): "the width law evaluated at Earth's slow condition.",
     ("sway_pp_earth_m", "sway_earth_slow_m"): "same, for sway.",
+    ("sway_pp_earth_m", "sway_earth_comf_m"):
+        "the sway at the parent's CHOSEN gait_speed_condition vs the comf-pinned trend row -- "
+        "they coincide only while the choice is comf (it is today) and come apart under the speed "
+        "dial; both are real quantities, and a slider cannot move a string dial.",
     ("margin_earth_m", "margin_earth_slow_m"): "same, for the margin.",
     ("flow_margin", "clears_faster_than_it_fogs_by"): "one ratio, asked as a number and as a sentence.",
     ("safety_margin_min_ratio", "preload_s"): "unrelated quantities that happen to share a value.",
