@@ -152,6 +152,26 @@ def main() -> int:
         labels[r["label"]] = labels.get(r["label"], 0) + 1
     print(f"  SURVIVAL   min {surv.min():.2f} s   median {float(np.median(surv)):.2f} s   "
           f"max {surv.max():.2f} s   SPREAD {spread:.3f} s")
+    # ── THE TRAIN/TEST SPLIT, and the judge should be the one to say it ────────────────────
+    # `train_stand --seeds N` scores the WORST of seeds 0..N-1, and this judge measures seeds
+    # 0..nseeds-1. The overlap is not a bug -- seed 0 is the unperturbed start and belongs in
+    # any judgment -- but a median taken across it mixes seeds the policy was SELECTED on with
+    # seeds it has never seen, and those answer different questions. Declared by the caller,
+    # never inferred: a judge that guessed how many seeds a trainer used would be inventing the
+    # very fact that makes its number mean something (rule 20).
+    trained = int(a[a.index("--trained-seeds") + 1]) if "--trained-seeds" in a else 0
+    if 0 < trained < nseeds:
+        held = surv[trained:]
+        print(f"  HELD OUT   seeds {trained}..{nseeds-1} were NOT scored during training: "
+              f"median {float(np.median(held)):.2f} s   min {held.min():.2f} s   "
+              f"max {held.max():.2f} s")
+        print(f"             seeds 0..{trained-1} (trained on): "
+              f"median {float(np.median(surv[:trained])):.2f} s")
+        print(f"             -> the gap is {float(np.median(surv[:trained]) - np.median(held)):+.2f} s. "
+              f"A large positive gap is a policy fitted to its own starts.")
+    elif trained >= nseeds:
+        print(f"  HELD OUT   NONE -- every seed judged here was scored during training "
+              f"({trained} >= {nseeds}). This number cannot distinguish a policy from a fit.")
     print(f"  FELL       {n_fell}/{nseeds} within {secs:.0f} s      labels: "
           + ", ".join(f"{k} x{v}" for k, v in sorted(labels.items())))
     zmins = np.array([r["pct_target_min"] for r in rows])
@@ -179,6 +199,11 @@ def main() -> int:
         survival_min_s=float(surv.min()), survival_median_s=float(np.median(surv)),
         survival_max_s=float(surv.max()), survival_spread_s=spread,
         deterministic=bool(determ), n_fell=n_fell, labels=labels, rows=rows,
+        trained_seeds=trained,
+        survival_median_heldout_s=(float(np.median(surv[trained:]))
+                                   if 0 < trained < nseeds else None),
+        survival_median_trained_s=(float(np.median(surv[:trained]))
+                                   if 0 < trained < nseeds else None),
         pelvis_trace_t=traces[0]["t"], pelvis_traces=[t["z"] for t in traces]), indent=1),
         encoding="utf8")
     print(f"  JSON: {out}")
