@@ -60,6 +60,9 @@ SCENES = {
     # FULL of vegetation" -- and the garden's biome IS a forest. So the scene is the stand:
     # a green field carrying many grown trees, the Tree of Knowledge prominent among them.
     "theGarden":      {"kind": "garden", "radius": 170.0, "cam": (0.0, -240.0, 28.0)},
+    # THE WEB: the same garden (same seed, same place) with its animals arrived -- the
+    # community assembling: plants first, then the grazers and the birds.
+    "theEcosystem":   {"kind": "ecosystem", "radius": 170.0, "cam": (0.0, -240.0, 28.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -417,6 +420,78 @@ def _garden_buffers(spec: dict, term: str):
     return stand(1.0), stand(0.35)
 
 
+def _blob_scaled(center, radii, n, color, alpha=0.65, size=2.2):
+    """An ellipsoid of splats (a body, a head) -- _solid_sphere stretched per axis."""
+    import numpy as np
+    d = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    c = np.asarray(center, np.float32)
+    b[:, PX] = c[0] + d[:, 0] * radii[0]
+    b[:, PY] = c[1] + d[:, 1] * radii[1]
+    b[:, PZ] = c[2] + d[:, 2] * radii[2]
+    b[:, TYPE] = 3.0; b[:, ALPHA] = alpha; b[:, SIZE] = size
+    b[:, CR], b[:, CG], b[:, CB] = color
+    return b
+
+
+def _grazer(center, length, rng, color):
+    """A quadruped herbivore as splats: a horizontal body ellipsoid, a head blob forward and
+    up, four leg columns. The trophic web made visible -- the garden's herbivore_biomass."""
+    import numpy as np
+    cx, cy, cz = center
+    leg_h = 0.42 * length
+    parts = []
+    parts.append(_blob_scaled((cx, cy, cz + leg_h + 0.18 * length),
+                              (0.50 * length, 0.20 * length, 0.22 * length),
+                              220, color))                                    # body
+    parts.append(_blob_scaled((cx + 0.58 * length, cy, cz + leg_h + 0.34 * length),
+                              (0.16 * length, 0.11 * length, 0.15 * length),
+                              90, color))                                     # head
+    for sx in (-0.32, 0.32):
+        for sy in (-0.10, 0.10):
+            n_l = 26
+            b = np.zeros((n_l, NCOLS), dtype=np.float32)
+            b[:, PX] = cx + sx * length + rng.normal(0, 0.012 * length, n_l)
+            b[:, PY] = cy + sy * length + rng.normal(0, 0.012 * length, n_l)
+            b[:, PZ] = cz + rng.random(n_l) * leg_h
+            b[:, TYPE] = 3.0; b[:, ALPHA] = 0.7; b[:, SIZE] = 1.6
+            b[:, CR], b[:, CG], b[:, CB] = color
+            parts.append(b)                                                   # a leg
+    return parts
+
+
+def _ecosystem_buffers(spec: dict, term: str):
+    """theEcosystem: the web INHABITING the garden. The vegetation is theGarden's own scene,
+    same seed -- the same place, one rung down the tree. begin = the community YOUNG (saplings
+    and half-grown grazers), end = the community grown. The movie is the whole web maturing
+    together. (The blind eye anchored on the begin frame and read an empty-forest -> forest
+    lighting change, never seeing the animals that only existed at the end -- a young
+    ecosystem has young ANIMALS, not none.)"""
+    import numpy as np
+    stand_end, stand_begin = _garden_buffers(spec, "theGarden")   # the SAME garden (its seed)
+    rng = np.random.default_rng(_seed(term))
+
+    def animals(scale):
+        out = []
+        for k in range(5):                                        # the herd: the OPEN foreground,
+            x = -55.0 + 27.0 * k + float(rng.uniform(-6, 6))      # between camera and stand,
+            y = float(rng.uniform(-95.0, -55.0))                  # where nothing hides them
+            length = float(rng.uniform(16.0, 21.0)) * scale
+            shade = float(rng.uniform(0.85, 1.15))
+            out += _grazer((x, y, 0.0), length, rng,
+                           (0.62 * shade, 0.48 * shade, 0.28 * shade))
+        return out
+
+    birds = []
+    for k in range(5):                                            # the birds: dark flecks above the canopy
+        birds.append(_dots((float(rng.uniform(-90, 90)), float(rng.uniform(-20, 100)),
+                            float(rng.uniform(55, 85))), 1.1, 18, (0.16, 0.15, 0.14), rng))
+
+    end = np.concatenate([stand_end] + animals(1.0) + birds, axis=0)
+    begin = np.concatenate([stand_begin] + animals(0.7), axis=0)
+    return end, begin
+
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -504,7 +579,7 @@ def project_movie(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -752,7 +827,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

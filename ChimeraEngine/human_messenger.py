@@ -66,6 +66,9 @@ PHYSICS_READING = {
                  "spiral to a darker ore floor, in grey-brown rock with a red-brown rusty bottom "
                  "-- a big stepped hole in the ground",
     "theGarden": "a lush green garden or forest full of vegetation, with a prominent tree",
+    "theEcosystem": "a green grassy field with trees AND several grazing animals -- deer-like "
+                    "herbivores standing among the trees, a living wildlife scene with creatures "
+                    "in it, NOT empty land and NOT plants alone",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
