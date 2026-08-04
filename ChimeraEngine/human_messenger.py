@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theInput": "four small key-like blocks in a row, each connected by a thin "
+                "line to a vertical fader bar above it; three are dim grey and "
+                "one glows warm gold with its fader lit most of the way up -- "
+                "one key pressed, one dial turned",
     "thePlayer": "a single small warm glowing sphere of light held at the "
                  "center of a vast dark field scattered with faint distant "
                  "points -- one presence alone in the dark, before anything "

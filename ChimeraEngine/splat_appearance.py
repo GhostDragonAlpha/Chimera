@@ -105,6 +105,7 @@ SCENES = {
     "theMelee":        {"kind": "melee", "radius": 120.0, "cam": (0.0, -85.0, 28.0)},
     "theEVA":          {"kind": "eva", "radius": 160.0, "cam": (-10.0, -120.0, 30.0)},
     "thePlayer":       {"kind": "player", "radius": 150.0, "cam": (0.0, -90.0, 18.0)},
+    "theInput":        {"kind": "input", "radius": 120.0, "cam": (0.0, -85.0, 25.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2925,6 +2926,65 @@ def _player_buffers(spec: dict, term: str):
     settled = np.concatenate([field, dot, halo], axis=0)
     return settled, settled.copy()
 
+def _input_buffers(spec: dict, term: str):
+    """theInput: keystrokes -> verb dials. A row of key-caps below, a row of
+    fader dials above, and a thin thread from each key to its dial -- the
+    MAPPING is the picture. One key sits pressed (lowered, warm) and its
+    thread burns: its dial stands lit to a level. The others rest, their
+    dials dark. An input is not the key and not the verb but the connection
+    between them. Both frames settled."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    parts = []
+    keys = [(-36.0, 0.0), (-12.0, 0.0), (12.0, 0.0), (36.0, 0.0)]
+    fills = [0.0, 0.0, 0.75, 0.0]            # one key held, one dial lit
+    PRESSED = 2
+
+    for i, (kx, ky) in enumerate(keys):
+        down = (i == PRESSED)
+        kz = -14.0 if down else -12.0        # the pressed key sits lower
+        cap_c = (1.00, 0.85, 0.55) if down else (0.45, 0.50, 0.58)
+        # key-cap: a small cube of dots
+        n_k = 60
+        cap = np.zeros((n_k, NCOLS), dtype=np.float32)
+        cap[:, PX] = kx + rng.uniform(-3.0, 3.0, n_k)
+        cap[:, PY] = ky + rng.uniform(-3.0, 3.0, n_k)
+        cap[:, PZ] = kz + rng.uniform(-0.6, 0.6, n_k)
+        cap[:, TYPE] = 3.0; cap[:, ALPHA] = 0.75; cap[:, SIZE] = 1.5
+        cap[:, CR], cap[:, CG], cap[:, CB] = cap_c
+        parts.append(cap)
+
+        # the dial: a vertical fader of dots above the key, lit up to its fill
+        n_d = 120
+        td = np.linspace(0.0, 1.0, n_d)
+        dial = np.zeros((n_d, NCOLS), dtype=np.float32)
+        dial[:, PX] = kx + rng.normal(0.0, 0.4, n_d)
+        dial[:, PZ] = 2.0 + 22.0 * td
+        dial[:, TYPE] = 3.0; dial[:, SIZE] = 1.3
+        lit = td <= fills[i]
+        dial[:, ALPHA] = np.where(lit, 0.90, 0.25).astype(np.float32)
+        dial[:, CR] = np.where(lit, 1.00, 0.40)
+        dial[:, CG] = np.where(lit, 0.85, 0.44)
+        dial[:, CB] = np.where(lit, 0.50, 0.50)
+        parts.append(dial)
+
+        # the thread key -> dial; the pressed key's thread burns
+        n_t = 60
+        tt = np.linspace(0.0, 1.0, n_t)
+        th_ = np.zeros((n_t, NCOLS), dtype=np.float32)
+        th_[:, PX] = kx + rng.normal(0.0, 0.2, n_t)
+        th_[:, PZ] = kz + 1.5 + (2.0 - kz - 1.5) * tt
+        th_[:, TYPE] = 3.0
+        th_[:, ALPHA] = 0.85 if down else 0.30
+        th_[:, SIZE] = 0.9
+        th_[:, CR], th_[:, CG], th_[:, CB] = ((1.00, 0.80, 0.40) if down
+                                              else (0.45, 0.50, 0.58))
+        parts.append(th_)
+
+    settled = np.concatenate(parts, axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -3012,7 +3072,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -3260,7 +3320,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
