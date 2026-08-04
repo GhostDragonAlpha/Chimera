@@ -197,7 +197,25 @@ def scene_buffer(term: str) -> np.ndarray | None:
 
 
 def invalidate(term: str | None = None):
-    """Clear caches so the next call re-imports and re-emits. None = clear all."""
+    """Clear caches so the next call re-imports and re-emits. None = clear all.
+
+    RETURNS WHAT IT DROPPED, so a caller can tell a real clear from a no-op. `/invalidate` used to
+    be able to answer 200 OK having cleared nothing at all -- a term that was never cached, or a
+    misspelled name -- and the operator would then watch an unchanged render and conclude the
+    endpoint was broken rather than that they had asked for the wrong term.
+
+    I NEARLY ADDED A SECOND COPY OF THIS FUNCTION, and the near-miss is worth recording: a
+    duplicate `invalidate` defined earlier in the file would have been silently SHADOWED by this
+    one (Python keeps the last definition), so the tests would have passed while exercising code
+    nobody had read. And this version is the better one -- it also clears `_MODULES` and
+    `_discover._membranes`, which a fresh implementation forgot. Look for the function before
+    writing it; a shadowed duplicate fails in exactly the way that leaves no evidence.
+    """
+    dropped = {"cleared": term or "all",
+               "buffers": len(_CACHE) if term is None else int(term in _CACHE),
+               "timed": len(_TCACHE) if term is None else sum(1 for k in _TCACHE if k[0] == term),
+               "modules": len(_MODULES) if term is None else int(term in _MODULES),
+               "numbers": len(_NUMBERS) if term is None else int(term in _NUMBERS)}
     if term is None:
         _CACHE.clear()
         _TCACHE.clear()
@@ -214,6 +232,7 @@ def invalidate(term: str | None = None):
         _MODULES.pop(term, None)
         _NUMBERS.pop(term, None)
         _CAM_DIST.pop(term, None)
+    return dropped
 
 
 def term_numbers(term: str) -> dict:

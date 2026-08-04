@@ -135,16 +135,24 @@ def frame_delta_masked(img_a: np.ndarray, img_b: np.ndarray) -> tuple[float, flo
     return float(np.abs(a - b)[m].mean()), float(m.mean())
 
 
-def run():
-    """Run the orbit proof for all 5 terms."""
+def run(terms=None, save_frames: bool = True):
+    """Run the orbit proof. `terms=None` uses PROOF_TERMS; `--all` passes every renderable term.
+
+    THE FIVE ARE A SPOT CHECK AND THE FORTY-TWO ARE THE CLAIM. A proof over a hand-picked five
+    says nothing about the thirty-seven nobody looked at -- and the camera bug this file carried
+    means none of them has ever been tested against a frame that actually contained the object.
+    """
     _OUT.mkdir(parents=True, exist_ok=True)
     results: dict[str, dict] = {}
+    if terms is None:
+        terms = PROOF_TERMS
+    PROOF = list(terms)
 
-    print(f"Orbit proof -- {len(PROOF_TERMS)} terms, +/-15 deg yaw parallax test")
+    print(f"Orbit proof -- {len(PROOF)} terms, +/-15 deg yaw parallax test")
     print(f"{'=' * 60}")
 
     all_ok = True
-    for wanted in PROOF_TERMS:
+    for wanted in PROOF:
         term = wanted                       # no proxying: the proof renders the term it names
         available = term in sa.scene_terms()
         if not available:
@@ -193,9 +201,9 @@ def run():
         threshold = 1.0                 # mean absolute pixel delta on 0-255, ON THE OBJECT
         ok = masked > threshold and coverage > 0.0
 
-        # Save both frames for visual inspection
-        Image.fromarray(img_neg).save(_OUT / f"{term}_neg15deg.png")
-        Image.fromarray(img_pos).save(_OUT / f"{term}_pos15deg.png")
+        if save_frames:
+            Image.fromarray(img_neg).save(_OUT / f"{term}_neg15deg.png")
+            Image.fromarray(img_pos).save(_OUT / f"{term}_pos15deg.png")
 
         results[wanted] = {
             "parallax_verified": ok,
@@ -218,6 +226,22 @@ def run():
     print(f"\n{'=' * 60}")
     print(f"Result: {'ALL TRUE 3D' if all_ok else 'SOME UNVERIFIED -- parallax missing'}")
 
+    # THE SUMMARY IS SORTED BY COVERAGE, because the falsifier is conditional on it: a term with
+    # 0.4% coverage failing the delta bar is a term barely on screen, and a term with 30% coverage
+    # failing it is a billboard. Sorting puts the ones the falsifier actually indicts at the top.
+    rows = sorted(((k, v) for k, v in results.items() if "frame_delta_on_object" in v),
+                  key=lambda kv: -kv[1].get("object_coverage_frac", 0.0))
+    suspect = [k for k, v in rows
+               if v.get("object_coverage_frac", 0) > 0.05
+               and v.get("frame_delta_on_object", 0) < 1.0]
+    print(f"\n  POTENTIAL BILLBOARDS (coverage > 5% and on-object delta < 1.0): "
+          f"{suspect if suspect else 'none'}")
+    (_OUT / "summary.json").write_text(json.dumps(
+        {"n_terms": len(PROOF), "verified": sum(1 for v in results.values()
+                                                if v.get("parallax_verified")),
+         "potential_billboards": suspect,
+         "by_coverage": [{"term": k, **v} for k, v in rows]}, indent=2))
+
     (_OUT / "orbit_proof.json").write_text(json.dumps({
         "results": results,
         "all_verified": all_ok,
@@ -230,5 +254,7 @@ def run():
 
 
 if __name__ == "__main__":
-    ok, _ = run()
+    import splat_appearance as _sa2
+    _all = "--all" in sys.argv
+    ok, _ = run(_sa2.scene_terms() if _all else None, save_frames=not _all)
     raise SystemExit(0 if ok else 1)

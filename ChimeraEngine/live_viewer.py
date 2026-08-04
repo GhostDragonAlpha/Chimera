@@ -250,6 +250,7 @@ class LiveViewer:
                     buf = self._sa.membrane_buffer(self._pending, want_t)
                     if buf is None:
                         buf = self._sa.scene_buffer(self._pending)       # a painted scene has no time axis
+                    self._density_check(self._pending, buf)
                     if buf is not None:
                         # ── THE MIP PYRAMID IS BUILT ONCE PER LOAD, NOT ONCE PER FRAME ───────────
                         # `LOD.build_mips` clusters on the sphere; running it every frame would
@@ -371,6 +372,31 @@ class LiveViewer:
             import traceback
             self._err = f"{e}\n{traceback.format_exc()}"
             print(f"[live_viewer] render thread died: {self._err}")
+
+    def _density_check(self, term: str, buf) -> None:
+        """Warn to the TERMINAL when a loaded membrane is below its derived density floor.
+
+        The floor is enforced on the UE transport path (`ParticleEngine/bridge`), and the viewer
+        has its own upload path that never crossed it -- so the one surface a person actually
+        LOOKS at was the one surface nobody checked. Purely informational: it never blocks a
+        render, because a thin membrane is still the truth about that membrane.
+
+        AN EMPTY BUFFER ALWAYS WARNS, whatever its class. `density_enforce` answers "is this above
+        the floor for its surface type", and for a term that classifies as `general` there IS no
+        floor -- so a buffer of ZERO grains would return True and say nothing. Nothing rendering
+        at all is the loudest fact available about a membrane and it must not depend on whether
+        the name happened to contain the word "sand".
+        """
+        n = 0 if buf is None else int(getattr(buf, "shape", [0])[0])
+        if n == 0:
+            print(f"[DENSITY] {term}: buffer is EMPTY ({'None' if buf is None else '0 grains'}) "
+                  f"-- nothing will render", flush=True)
+            return
+        try:
+            from ParticleEngine.bridge import density_enforce
+        except Exception:
+            return
+        density_enforce(term, n)          # prints to stderr with the floor and the surface type
 
     def _note_frame(self, grains: int, ms: float):
         """Record one rendered frame: its grain count and how long the render took.
@@ -684,6 +710,20 @@ def handle(handler) -> bool:
             v._paused = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
         _send(handler, 200, "application/json",
               json.dumps({"paused": v._paused, "t": v._t, "ticks": v._ticks}).encode()); return True
+    if path == "/invalidate" or path == "/reload":
+        # THE CACHES ARE KEYED ON THE TERM ALONE and nothing in the key mentions the numbers the
+        # buffer was emitted from, so after `story/grow.py` the viewer keeps serving the buffer
+        # built from the PREVIOUS numbers. The operator moves a slider, the world does not move,
+        # and the slider looks broken. A stale render is a wrong answer that looks finished.
+        import splat_appearance as _sa
+        t = (qs.get("term") or [""])[0] if path == "/invalidate" else ""
+        dropped = _sa.invalidate(t or None)
+        v = get_viewer()
+        with v._lock:
+            v._reload = True                 # the render thread re-emits on its next tick
+            if not t:
+                v._loaded = None             # a full clear must not trust the loaded marker either
+        _send(handler, 200, "application/json", json.dumps(dropped).encode()); return True
     if path == "/stats":
         _send(handler, 200, "application/json",
               json.dumps(get_viewer().stats()).encode()); return True

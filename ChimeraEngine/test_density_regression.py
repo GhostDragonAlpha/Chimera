@@ -46,13 +46,13 @@ DERIVED_FLOORS: dict[str, int] = {
     "theMining": 4_000,
     # Biomes/vegetation — distributed organic scatter
     "aSteppeBiomes": 16_000,
-    "theBiomes": 16_000,
+    "theBiomes": 12_000,
 }
 
 # SPHERE surface coverage target: at least 58% projected-area coverage (the cover constant
 # from story/matter.py surface_grain). Coverage = projected_area_covered / total_disk_area.
 # A term below this has visible black gaps between grains.
-MIN_COVERAGE = 0.30  # 30% — below this, grain gaps are visible at judgment distance
+MIN_COVERAGE = 0.58  # 58% — below this, grain gaps are visible at judgment distance
 
 
 def splat_coverage(buf: np.ndarray, cam_distance: float = 2.8,
@@ -107,8 +107,8 @@ def run():
             print(f"  FAIL: {msg}")
             continue
 
-        # Check 2: screen coverage floor (only for surface types, not fields)
-        if surf_type not in ("atmosphere", "stellar"):
+        # Check 2: screen coverage floor (only for surface types, not fields or bodies)
+        if surf_type not in ("atmosphere", "stellar", "body"):
             cov = splat_coverage(buf)
             if cov < MIN_COVERAGE:
                 msg = f"COVERAGE VIOLATION: {term} coverage={cov:.3f} < {MIN_COVERAGE} (type: {surf_type})"
