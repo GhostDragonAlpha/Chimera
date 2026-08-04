@@ -129,6 +129,11 @@ PHYSICS_READING = {
                     "around it, set against a dark starry background -- one "
                     "central source with lines of light routing outward from it "
                     "to the surrounding systems",
+    "theShipCombat": "a bright red beam of light running horizontally from left to "
+                     "right across a dark starry background, connecting a grey "
+                     "elongated object with a glowing blue end on the left to a "
+                     "large reddish round object on the right -- energy traveling "
+                     "from one object to another",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
