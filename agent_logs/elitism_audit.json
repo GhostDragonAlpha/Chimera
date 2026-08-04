@@ -29,7 +29,7 @@
   },
   {
    "file": "tools/train_stand.py",
-   "line": 344,
+   "line": 484,
    "cand": "cand",
    "mu": "mu",
    "dim_expr": "pop, dim",
@@ -38,7 +38,7 @@
   },
   {
    "file": "tools/train_step.py",
-   "line": 194,
+   "line": 200,
    "cand": "cand",
    "mu": "mu",
    "dim_expr": "pop, N_FREE",
@@ -47,7 +47,7 @@
   },
   {
    "file": "tools/train_walk.py",
-   "line": 286,
+   "line": 359,
    "cand": "cand",
    "mu": "mu",
    "dim_expr": "pop, n_free",
@@ -114,6 +114,98 @@
    "with_": 0.0,
    "incumbent": 0.0,
    "worse_than_incumbent": true
+  }
+ ],
+ "trajectories": [
+  {
+   "log": "train_stand_coldhinge.log",
+   "guarded": false,
+   "turns": 30,
+   "best_turn0": -4.652,
+   "best_min": -4.665,
+   "best_max": -3.542,
+   "elite_below_incumbent_turns": 0,
+   "flags": [
+    "ELITE_MEAN_DESTROYED"
+   ]
+  },
+  {
+   "log": "train_stand_coldretired.log",
+   "guarded": false,
+   "turns": 30,
+   "best_turn0": -4.671,
+   "best_min": -4.738,
+   "best_max": -4.114,
+   "elite_below_incumbent_turns": 0,
+   "flags": [
+    "ELITE_MEAN_DESTROYED"
+   ]
+  },
+  {
+   "log": "train_stand_derived.log",
+   "guarded": true,
+   "turns": 30,
+   "best_turn0": -3.757,
+   "best_min": -3.757,
+   "best_max": -3.637,
+   "elite_below_incumbent_turns": 15,
+   "flags": []
+  },
+  {
+   "log": "train_stand_guard.log",
+   "guarded": true,
+   "turns": 30,
+   "best_turn0": -3.864,
+   "best_min": -3.864,
+   "best_max": -3.864,
+   "elite_below_incumbent_turns": 30,
+   "flags": []
+  },
+  {
+   "log": "train_stand_hinge.log",
+   "guarded": false,
+   "turns": 30,
+   "best_turn0": -3.864,
+   "best_min": -4.392,
+   "best_max": -3.864,
+   "elite_below_incumbent_turns": 0,
+   "flags": [
+    "ELITE_MEAN_DESTROYED"
+   ]
+  },
+  {
+   "log": "train_stand_norollB.log",
+   "guarded": false,
+   "turns": 40,
+   "best_turn0": -4.728,
+   "best_min": -4.728,
+   "best_max": -4.057,
+   "elite_below_incumbent_turns": 0,
+   "flags": []
+  },
+  {
+   "log": "train_stand_retiredctl.log",
+   "guarded": false,
+   "turns": 30,
+   "best_turn0": -3.907,
+   "best_min": -4.415,
+   "best_max": -3.907,
+   "elite_below_incumbent_turns": 0,
+   "flags": [
+    "ELITE_MEAN_DESTROYED"
+   ]
+  },
+  {
+   "log": "train_stand_rollA.log",
+   "guarded": false,
+   "turns": 40,
+   "best_turn0": -4.671,
+   "best_min": -4.738,
+   "best_max": -4.114,
+   "elite_below_incumbent_turns": 0,
+   "flags": [
+    "ELITE_MEAN_DESTROYED"
+   ]
   }
  ]
 }

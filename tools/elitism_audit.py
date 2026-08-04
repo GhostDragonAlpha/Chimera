@@ -131,6 +131,94 @@ def demonstrate(d, sd=0.075, pop=24, trials=200, seed=0):
     return float(np.mean(wo)), float(np.mean(wi)), 0.0
 
 
+def trajectories(logdir):
+    """READ WHAT THE SEARCH ACTUALLY DID, not what its source code says it would do.
+
+    THE DEFECT THIS ADDS (2026-08-04). The scan above answers "is `cand[0] = mu` present" and
+    the demonstration answers "does its absence cost anything in principle". Both passed while
+    THREE real search defects sat in `train_stand` and cost 2,160 evaluations: the elite mean
+    walking the centre downhill, a step four decades too large for the incumbent's basin, and a
+    spread floor in the wrong units. **An audit that reads a search's CODE and not its
+    TRAJECTORY is an audit of the wrong thing** -- every one of those three is invisible to a
+    static scan and every one is written plainly in the per-turn log.
+
+    TWO FLAGS, and they are different claims:
+
+      ELITE_MEAN_DESTROYED -- the search's CENTRE actually moved to a worse point.
+          The proof is available even in logs without an elite-mean column, because
+          `cand[0] = mu` means `best_t >= score(mu_t)` by construction. So if some turn's best
+          falls below turn 0's -- and at a warm start turn 0's best IS the incumbent's score --
+          then `score(mu_t) <= best_t < score(mu_0)` and the centre is provably worse. That is a
+          proof from the log, not a heuristic about it.
+
+      INCUMBENT_REGRESSED -- the centre's own score decreased at some turn. Reconstructed
+          exactly where the log carries `elmean` and `mu`: the centre becomes the elite mean
+          when the turn says `moved` and is unchanged when it says `HELD`, so the whole
+          trajectory of `score(mu)` is recoverable.
+
+    A THIRD READING, informational rather than a flag: ELITE_MEAN_BELOW_INCUMBENT counts turns
+    where the elite mean scored below the incumbent. That is a property of the LANDSCAPE, not a
+    failure -- a guarded run shows it on every turn and takes no damage. Conflating it with the
+    damage is how a correct fix gets reported as a fault.
+    """
+    import re
+    out = []
+    for path in sorted(Path(logdir).glob("train_stand*.log")):
+        txt = path.read_text(errors="replace")
+        guarded = "ELITE-MEAN GUARD: ON" in txt
+        turns = []
+        for ln in txt.splitlines():
+            # guarded rows carry elmean + moved/HELD; unguarded rows do not
+            mg = re.match(r"\s*(\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+|n/a)"
+                          r"\s+(moved|HELD|free)\b", ln)
+            if mg:
+                turns.append(dict(turn=int(mg.group(1)), best=float(mg.group(2)),
+                                  elmean=(None if mg.group(4) == "n/a" else float(mg.group(4))),
+                                  moved=mg.group(5)))
+                continue
+            mu_ = re.match(r"\s*(\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+[\d.]+m", ln)
+            if mu_:
+                turns.append(dict(turn=int(mu_.group(1)), best=float(mu_.group(2)),
+                                  elmean=None, moved=None))
+        if len(turns) < 2:
+            continue
+        best = [t["best"] for t in turns]
+        destroyed = min(best) < best[0] - 1e-9
+        # THE CENTRE'S OWN TRAJECTORY, and its FIRST value is not in the log.
+        # `best_t` is the best CANDIDATE of turn t, and `score(mu_t)` is the incumbent's --
+        # equal only when the incumbent happens to be the top candidate. Seeding the centre with
+        # `best[0]` therefore reads a regression into every run where a sample beat the warm
+        # start on turn 0: `train_stand_derived` opened at best -3.757 with an incumbent of
+        # -3.864, and the reconstruction called the guard's correct move to -3.808 a regression.
+        # MY OWN INSTRUMENT, WRONG IN EXACTLY THE WAY THIS FILE AUDITS FOR -- one quantity, two
+        # landmarks (rule 19).
+        #
+        # The reconstruction is EXACT from the first `moved` onward: a move sets the centre to
+        # that turn's elite mean, and a hold leaves it. So the trajectory starts there, and
+        # `score(mu_0)` is left unknown rather than guessed. That costs one transition of
+        # coverage and buys a flag that cannot fire on a working search.
+        centre, regressed, below = [], False, 0
+        for t in turns:
+            if t["elmean"] is not None and t["elmean"] < t["best"] - 1e-9:
+                below += 1
+            if t["moved"] == "moved" and t["elmean"] is not None:
+                centre.append(t["elmean"])
+            elif t["moved"] == "HELD" and centre:
+                centre.append(centre[-1])
+        for i in range(1, len(centre)):
+            if centre[i] < centre[i - 1] - 1e-9:
+                regressed = True
+        flags = []
+        if destroyed:
+            flags.append("ELITE_MEAN_DESTROYED")
+        if regressed and any(t["moved"] for t in turns):
+            flags.append("INCUMBENT_REGRESSED")
+        out.append(dict(log=path.name, guarded=guarded, turns=len(turns),
+                        best_turn0=best[0], best_min=min(best), best_max=max(best),
+                        elite_below_incumbent_turns=below, flags=flags))
+    return out
+
+
 def main() -> int:
     rows = scan()
     print("\nELITISM AUDIT -- does every search evaluate its own incumbent?")
@@ -168,6 +256,23 @@ def main() -> int:
     print("  destroyed on the first turn. SAME BUG, TWO ORDERS OF MAGNITUDE APART IN CONSEQUENCE,")
     print("  which is why 'is this line important' has no answer that is not a dimensionality.")
 
+    # ── THE TRAJECTORY AUDIT: what the searches actually did ────────────────────────────────
+    traj = trajectories(ROOT / "agent_logs")
+    print("\n  WHAT THE SEARCHES ACTUALLY DID -- read from the per-turn logs, not the source.")
+    print(f"\n{'log':34}{'guard':7}{'turns':>6}{'best@0':>9}{'best min':>10}"
+          f"{'el<inc':>8}  flags")
+    for t in traj:
+        print(f"{t['log']:34}{('ON' if t['guarded'] else 'off'):7}{t['turns']:>6}"
+              f"{t['best_turn0']:>9.3f}{t['best_min']:>10.3f}"
+              f"{t['elite_below_incumbent_turns']:>8}  "
+              + (", ".join(t["flags"]) if t["flags"] else "-- clean"))
+    print("\n  ELITE_MEAN_DESTROYED is a PROOF from the log, not a heuristic: `cand[0] = mu`")
+    print("  means best_t >= score(mu_t), so a best below turn 0's puts the centre provably")
+    print("  below the warm start it began from. `el<inc` counts turns where the elite mean")
+    print("  scored under the incumbent -- a property of the LANDSCAPE, not a fault: a guarded")
+    print("  run shows it on every turn and takes no damage. Conflating the two would report a")
+    print("  correct fix as a failure.")
+
     print("\n" + "=" * 96)
     print(f"  FALSIFIER (does the omission actually cost anything?): "
           + ("DOES NOT FIRE -- the no-incumbent arm never lands below the warm start, so the "
@@ -179,7 +284,8 @@ def main() -> int:
         print(f"    MISSING: {tag}")
     out = ROOT / "agent_logs" / "elitism_audit.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(dict(searches=rows, missing=missing, demonstration=demo), indent=1),
+    out.write_text(json.dumps(dict(searches=rows, missing=missing, demonstration=demo,
+                    trajectories=traj), indent=1),
                    encoding="utf8")
     print(f"  JSON: {out}")
     return 1 if missing else 0
