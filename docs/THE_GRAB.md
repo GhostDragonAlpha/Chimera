@@ -456,3 +456,57 @@ numbers). 2. D = 0.30 yields a full true carry — the limit is above
 46%, closer to the run-9 point than this prediction says; the band
 narrows to 46–72%. 3. BOTH carry — then run 9's verdict was about
 the search at 72.5%, not the body, and the correction is published.
+
+**Dial runs D=0.25 / D=0.30 — VERDICTS: prediction failed at BOTH
+points; falsifier 1 fires; and the flatness of the curve names the
+real wall.** The patch reached the physics (headers: 21.68 kg /
+153 N, 37.46 kg / 265 N; the turn-title's hardcoded 59.49 kg is
+cosmetic, train_carry.py:193, noted for the record). Neither run
+produced a survivor: D=0.25 best held 3.04 s with a 79%-load
+candidate falling at 1.94 s (jmax 1.85, the honest attempt); D=0.30
+best held 3.60 s with 78%-load at 2.08 s. v6's prediction is dead at
+both points, falsifier 1 fires, and the three-point curve says WHERE
+it points:
+
+| dial D | mass | % of lifting body | best held | best load | survivors |
+|---|---|---|---|---|---|
+| 0.25 m | 21.68 kg | 26.4% | 3.04 s | 79% (fell 1.94 s) | 0 / 48×32 |
+| 0.30 m | 37.46 kg | 45.7% | 3.60 s | 78% (fell 2.08 s) | 0 / 48×32 |
+| 0.35 m | 59.49 kg | 72.5% | 3.02 s | 32% (fell 3.02 s) | 0 / 48×32 |
+
+**Survival is FLAT across a 2.7× mass range** (3.04 / 3.60 / 3.02 s),
+and load-routing does not track mass either (79% at 26%, 78% at 46%,
+32% at 72%). If strength were binding, 26% would survive dramatically
+longer than 72%. It does not. The d=0.25 pictures show the body
+routing the FULL 733 N (body + stone) through its feet for ~0.9 s
+and then losing the rebalanced posture — the binding constraint is
+not the stone's weight but the body's response to ANY sustained
+off-axis torso load arriving at t=1.0. Falsifier 1's second clause,
+not its first: the wall is the catch, not the mass.
+
+## AMENDMENT — v7: THE DECISIVE POINT (stated before the run)
+
+**STATEMENT.** A flat survival curve over 26–72% of body mass cannot
+be a strength curve. Two candidates remain for the wall: (i) the snap
+EVENT — the weld's engagement itself, or the policy's complete lack
+of training for any sudden CoM shift, regardless of magnitude; (ii)
+the carry foundation — the 870-dim sagittal theta every run here
+warm-started from, tuned in the 72.5% world. One more dial point
+separates "small load still kills" from "the event kills": D = 0.15 m
+is 4.68 kg = 33.1 N = **5.7%** of the lifting body — a load the
+trained stand should shrug off if load is the question at all.
+
+**PREDICTION.** At 5.7%, survivors appear with load ≥ 80% and
+stone-floor ≤ 20% inside 48×32 — the flat curve bends at the low
+end, the wall is load after all, and the dial's feasible band opens
+below ~10%.
+
+**FALSIFIERS.** 1. No survivor at 5.7% either — the curve is flat to
+the floor, load is exonerated across 5.7–72.5%, and the wall is the
+SNAP EVENT or the FOUNDATION, named with numbers. The dial question is
+then REPLACED: no stone size saves the carry; the catch must be
+trained against the frontal stand (rung 9's 9.08 s foundation), and
+M8a's finding to THE HUMAN changes from "how big a stone" to "the
+body must learn to catch before the dial matters". 2. Survivors
+appear but the load path is fake (weld-hang reprised at small mass) —
+the exploit audit reopens at this mass, named here.
