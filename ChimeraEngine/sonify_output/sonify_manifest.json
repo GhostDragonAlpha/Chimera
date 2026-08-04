@@ -1,0 +1,259 @@
+{
+  "terms": {
+    "aActiveInterior": {
+      "centroid_hz": 67.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aActiveInterior.wav"
+    },
+    "aBlueWorld": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aBlueWorld.wav"
+    },
+    "aHuman": {
+      "centroid_hz": 555.2,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aHuman.wav"
+    },
+    "aNitrogenAtmosphere": {
+      "centroid_hz": 215.5,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aNitrogenAtmosphere.wav"
+    },
+    "aRockyPlanet": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aRockyPlanet.wav"
+    },
+    "aSaltOcean": {
+      "centroid_hz": 398.2,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aSaltOcean.wav"
+    },
+    "aSteppeBiomes": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aSteppeBiomes.wav"
+    },
+    "aTerraceMine": {
+      "centroid_hz": 2704.0,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aTerraceMine.wav"
+    },
+    "aTerrain": {
+      "centroid_hz": 2706.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aTerrain.wav"
+    },
+    "aYellowStar": {
+      "centroid_hz": 611.4,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "aYellowStar.wav"
+    },
+    "theAnkle": {
+      "centroid_hz": 528.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theAnkle.wav"
+    },
+    "theAtmosphere": {
+      "centroid_hz": 215.5,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theAtmosphere.wav"
+    },
+    "theBalance": {
+      "centroid_hz": 551.0,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theBalance.wav"
+    },
+    "theBiomes": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theBiomes.wav"
+    },
+    "theBreath": {
+      "centroid_hz": 10292.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theBreath.wav"
+    },
+    "theClock": {
+      "centroid_hz": 2825.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theClock.wav"
+    },
+    "theCloud": {
+      "centroid_hz": 290.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theCloud.wav"
+    },
+    "theCooling": {
+      "centroid_hz": 67.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theCooling.wav"
+    },
+    "theDensityClock": {
+      "centroid_hz": 2825.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theDensityClock.wav"
+    },
+    "theEmptying": {
+      "centroid_hz": 2825.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theEmptying.wav"
+    },
+    "theEye": {
+      "centroid_hz": 625.6,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theEye.wav"
+    },
+    "theGalaxy": {
+      "centroid_hz": 67.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theGalaxy.wav"
+    },
+    "theGrip": {
+      "centroid_hz": 531.7,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theGrip.wav"
+    },
+    "theGround": {
+      "centroid_hz": 2739.3,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theGround.wav"
+    },
+    "theHand": {
+      "centroid_hz": 553.1,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theHand.wav"
+    },
+    "theHorizon": {
+      "centroid_hz": 2825.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theHorizon.wav"
+    },
+    "theHuman": {
+      "centroid_hz": 583.3,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theHuman.wav"
+    },
+    "theHumanClock": {
+      "centroid_hz": 2825.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theHumanClock.wav"
+    },
+    "theInterior": {
+      "centroid_hz": 67.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theInterior.wav"
+    },
+    "theLoad": {
+      "centroid_hz": 583.3,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theLoad.wav"
+    },
+    "theMining": {
+      "centroid_hz": 2682.3,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theMining.wav"
+    },
+    "theOcean": {
+      "centroid_hz": 215.5,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theOcean.wav"
+    },
+    "thePlanets": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "thePlanets.wav"
+    },
+    "theRockyPlanet": {
+      "centroid_hz": 143.9,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theRockyPlanet.wav"
+    },
+    "theSkin": {
+      "centroid_hz": 793.1,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theSkin.wav"
+    },
+    "theSolarSystem": {
+      "centroid_hz": 67.8,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theSolarSystem.wav"
+    },
+    "theStance": {
+      "centroid_hz": 531.0,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theStance.wav"
+    },
+    "theStar": {
+      "centroid_hz": 611.4,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theStar.wav"
+    },
+    "theSweep": {
+      "centroid_hz": 888.1,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theSweep.wav"
+    },
+    "theTerrain": {
+      "centroid_hz": 2733.0,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theTerrain.wav"
+    },
+    "theThrust": {
+      "centroid_hz": 527.6,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theThrust.wav"
+    },
+    "theZero": {
+      "centroid_hz": 1203.7,
+      "duration_s": 4.0,
+      "peak": 0.9,
+      "file": "theZero.wav"
+    }
+  },
+  "sample_rate": 44100,
+  "duration_s": 4.0,
+  "noise_floor_hz": 20.0
+}
