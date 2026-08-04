@@ -34,7 +34,8 @@ from world import load_body                                              # noqa:
 from stand_port import MYOBODY                                           # noqa: E402
 from train_stand import joint_ids, seat_in_limits, CTRL_EVERY            # noqa: E402
 from walk_port import (derive_walk_port, muscle_groups, walk_formula,    # noqa: E402
-                       walk_reward, score_walk, N_FREE, OSC_JOINTS, WalkOscillator)
+                       walk_reward, score_walk, score_walk_mult, N_FREE, OSC_JOINTS,
+                       WalkOscillator)
 from chimera_gait import _periodicity                                    # noqa: E402
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
@@ -74,7 +75,8 @@ def foot_contact(m, d, mujoco):
             float(sum(d.sensordata[a] for a in ix["l"])))
 
 
-def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0):
+def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
+             score_mode="sub"):
     """One life under a candidate. Returns (score, trace, pics).
 
     `gain=0.0` is THE ABLATION: the oscillator amplitudes are multiplied out and the body is left
@@ -93,6 +95,7 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
     tr = {k: [] for k in ("t", "x", "z", "vx", "cr", "cl", "sup", "r")}
     pics, tot, n, fell = [], 0.0, 0, False
+    tot_rvz = 0.0
     x0 = float(d.qpos[0])
     # THE TRAINER DRIVES WHAT THE JUDGE DRIVES: the clock phase (omega*t), exactly as f4's
     # parser path does -- no entrainment state, no swing gate, because the judge has neither.
@@ -117,6 +120,14 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
             if z < 0.5 * tgt:
                 fell = True
             r = walk_reward(float(d.qvel[0]), z, False, P)
+            # THE SAME TWO FACTORS, WITHOUT THE FALL PENALTY -- what the multiplicative score
+            # needs. Computed here rather than recovered from `r` because `r` has the penalty
+            # folded in and un-adding it would be reconstructing an input from an output.
+            _vt = P["OUT target_speed_ms"]
+            _rv = float(np.clip(float(d.qvel[0]) / _vt, 0.0, 1.0))
+            _rz = float(np.exp(-((z - P["OUT pelvis_target_m"])
+                                 / (0.10 * P["OUT pelvis_target_m"])) ** 2))
+            tot_rvz += _rv * _rz
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["x"].append(float(d.qpos[0]))
             tr["z"].append(z); tr["vx"].append(float(d.qvel[0]))
@@ -135,8 +146,14 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     elapsed = max(tr["t"][-1], 1e-9) if tr["t"] else 1e-9
     speed = (float(tr["x"][-1]) - x0) / elapsed if tr["x"] else 0.0
     frac = (k + 1) / steps
-    sc = score_walk(tot / max(n, 1), per, frac) - (3.0 if fell else 0.0)
+    # THE SCORING RULE IS A PARAMETER, so the A/B runs ONE trainer against two rules rather
+    # than two trainers that could drift apart. `sub` is the existing rule, bit-identical.
+    if score_mode == "mult":
+        sc = score_walk_mult(tot_rvz / max(n, 1), per, frac)
+    else:
+        sc = score_walk(tot / max(n, 1), per, frac) - (3.0 if fell else 0.0)
     tr["speed"], tr["periodicity"], tr["period_s"], tr["fell"] = speed, per, period, fell
+    tr["mean_rvz"] = tot_rvz / max(n, 1)
     tr["duty_r"] = float(np.mean([c > 0 for c in tr["cr"]])) if tr["cr"] else 0.0
     tr["duty_l"] = float(np.mean([c > 0 for c in tr["cl"]])) if tr["cl"] else 0.0
     return float(sc), tr, pics
@@ -188,6 +205,10 @@ def main() -> int:
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 24
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 8.0
     init = a[a.index("--init") + 1] if "--init" in a else None
+    score_mode = a[a.index("--score") + 1] if "--score" in a else "sub"
+    out_name = a[a.index("--out") + 1] if "--out" in a else WALK_THETA.name
+    if score_mode not in ("sub", "mult"):
+        raise SystemExit("--score must be sub (the existing rule) or mult. Refusing.")
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     if not STAND_THETA.exists():
@@ -217,6 +238,16 @@ def main() -> int:
 
     print(f"\nTRAINING THE WALK PORT -- {N_FREE} free numbers "
           f"(omega {P['OUT omega_rad_s']:.4f} rad/s and the antiphase are DERIVED, not searched)")
+    print(f"  SCORE RULE: {score_mode}"
+          + ("  (reward x periodicity x survived, every factor in [0,1] -- nothing is "
+             "purchasable by giving up)" if score_mode == "mult"
+             else "  (mean_r x periodicity - 2*(1-frac_run) - 3*fell -- the existing rule)"))
+    print(f"  SCORE RULE: {score_mode}"
+          + ("  (reward x periodicity x survived, every factor in [0,1] -- nothing is "
+             "purchasable by giving up)" if score_mode == "mult"
+             else "  (mean_r x periodicity - 2*(1-frac_run) - 3*fell -- the existing rule)"))
+    print(f"  Fr {P['CHK froude_target']:.4f} of the walk-run transition {P['CHK froude_transition_lit']}"
+          f"  ({100*P['CHK froude_target']/P['CHK froude_transition_lit']:.0f}% -- a walk)")
     print(f"  target {P['OUT target_speed_ms']:.4f} m/s, stride {P['OUT stride_s']:.4f} s, "
           f"duty {P['OUT duty_factor']:.4f}, g {g:.4f}, stand theta FROZEN ({theta_stand.size} numbers)")
     print(f"{'turn':>5}{'best':>9}{'mean':>9}{'speed':>9}{'% tgt':>7}{'period':>8}"
@@ -226,12 +257,13 @@ def main() -> int:
         cand[0] = mu            # THE INCUMBENT IS ALWAYS A CANDIDATE -- see train_stand.py, where
                                 # its absence lost a policy that stood at 101.9% of target.
         cand[:, :nj] = np.clip(cand[:, :nj], 0.0, 1.0)          # an amplitude is an activation
-        scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs)[0]
-                           for c in cand])
+        scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs,
+                                    score_mode=score_mode)[0] for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
-        s, tr, pics = evaluate(m, d, mujoco, theta_stand, cand[order[0]], groups, P, secs, frames=6)
+        s, tr, pics = evaluate(m, d, mujoco, theta_stand, cand[order[0]], groups, P, secs,
+                               frames=6, score_mode=score_mode)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]
@@ -241,10 +273,18 @@ def main() -> int:
         print(f"{turn:>5}{scores[order[0]]:>9.3f}{scores.mean():>9.3f}{tr['speed']:>9.3f}"
               f"{pct:>6.0f}%{tr['periodicity']:>8.2f}{tr['duty_r']:>7.2f}{tr['duty_l']:>7.2f}"
               f"{held:>6.1f}s  {'WALKS' if ok else 'not yet'}")
-        draw_turn(turn, P, tr, pics, hist, OUTDIR / f"walk_turn_{turn:02d}.png")
-    np.save(WALK_THETA, best_ever[1])
-    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's -> {WALK_THETA}")
-    print(f"PICTURES: {OUTDIR}/walk_turn_*.png")
+        draw_turn(turn, P, tr, pics, hist,
+                  OUTDIR / f"{Path(out_name).stem}_turn_{turn:02d}.png")
+    np.save(OUTDIR / out_name, best_ever[1])
+    # PRINT THE PATH IT ACTUALLY WROTE. This said `-> {WALK_THETA}` whatever `--out` was, so a
+    # smoke run into `_smokew.npy` announced that it had written the trained walk policy. Nothing
+    # was harmed -- the save was correct and only the sentence was wrong -- which is precisely
+    # the danger: the file on disk and the line in the log disagreed, and the log is what a
+    # reader believes. Same species as the trainer that saved the last turn's theta while
+    # printing the session's best.
+    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's "
+          f"-> {OUTDIR / out_name}   [score rule: {score_mode}]")
+    print(f"PICTURES: {OUTDIR}/{Path(out_name).stem}_turn_*.png")
     print("A TURN YOU HAVE NOT LOOKED AT DID NOT END.")
     return 0
 

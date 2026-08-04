@@ -539,6 +539,38 @@ def score_walk(mean_r, periodicity, frac_run):
     return float(mean_r * max(0.0, periodicity) - 2.0 * (1.0 - frac_run))
 
 
+def score_walk_mult(mean_rvz, periodicity, frac_run):
+    """THE MULTIPLICATIVE SCORE: reward x periodicity x survived, every factor in [0,1].
+
+    RULE 0 for the A/B this exists to run, stated before it:
+
+        STATEMENT   `score_walk`'s subtractive terms make standing still a LOCAL OPTIMUM. A body
+                    that does not move scores mean_r ~ r_z (near 1, it is upright) times
+                    periodicity ~ 0, minus nothing -- and a body that travels and falls at 1.4 s
+                    pays -3 for the fall AND -2*(1 - 0.18) for the short run, about -4.6. So the
+                    search can improve its score by REFUSING TO TRY, and a penalty large enough
+                    to dominate the signal is a penalty that selects inaction.
+                    Multiplying instead makes every factor a GATE: a body that does not travel
+                    scores zero however upright it is, and a body that falls immediately scores
+                    zero however fast it was going. Nothing is purchasable by giving up.
+
+        PREDICTION  Over an equal budget the multiplicative arm reaches a HIGHER fraction of the
+                    derived speed than the subtractive arm, and a LOWER held time -- it selects
+                    travellers where the other selects standers.
+
+        FALSIFIER   If NEITHER arm clears 50% of derived speed AND >= 5 s held, the exchange is
+                    not in the reward at all -- it is in the plant, and no scoring rule reaches
+                    it. Report that and stop tuning the score (this is the walk port's own
+                    falsifier 3, which already fired once for the single-oscillator clock).
+
+    `mean_rvz` is the mean of r_v * r_z with NO fall penalty in it -- the penalty is what the
+    multiplication replaces, and leaving it inside would make the product negative and every
+    reasoning about "a factor in [0,1]" false.
+    """
+    return float(max(0.0, min(1.0, mean_rvz)) * max(0.0, min(1.0, periodicity))
+                 * max(0.0, min(1.0, frac_run)))
+
+
 if __name__ == "__main__":
     import mujoco
     P = derive_walk_port()

@@ -168,7 +168,11 @@ def main() -> int:
              f"number about it (F3 included) is one sample of a distribution."))
 
     LOGDIR.mkdir(parents=True, exist_ok=True)
-    out = LOGDIR / "stand_survival.json"
+    # NAMED AFTER THE THETA UNLESS TOLD OTHERWISE. Three arms judged in one session all wrote
+    # `stand_survival.json`, so each overwrote the last and the A/B had one surviving row --
+    # the same collision the trainer's per-turn pictures had, one directory over.
+    out = Path(a[a.index("--json") + 1]) if "--json" in a \
+        else LOGDIR / f"stand_survival_{tpath.stem}.json"
     out.write_text(json.dumps(dict(
         theta=str(tpath.name), theta_size=int(theta.size), secs=secs, seeds=nseeds,
         nudge=NUDGE, g=g, pelvis_target_m=tgt, control_tick_s=tick,
