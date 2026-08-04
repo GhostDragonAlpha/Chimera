@@ -170,3 +170,37 @@ That is the trunk's own history repeating — FE ligament in, old policy,
 body stands → the ligaments are ligaments and the membrane's no-retrain
 prediction was the error; it falls → the tissue is a wall and falsifier 2
 stands as fired.
+
+---
+
+## VERDICT (2026-08-04, retrain + re-judge): the ligaments are ligaments
+
+**The retrain recovered the stand.** 24 + 48 turns (warm-started, 5.0 s
+horizon — the judge's own window), and from turn 11 of the continuation the
+population produces PROVEN candidates (pelvis 84–103% of target, held the
+full 5.0 s). f3 re-judged: **pelvis MIN 101.9% — the body STANDS with the
+off-sagittal tissue in.** Falsifier 2 does NOT stand: the tissue is not a
+wall. The membrane's no-retrain prediction was the error, recorded — the
+trunk's own history exactly (new passive structure ⇒ the old policy fights
+springs it never trained against; the retrain is not a formality).
+
+**Prediction 1 PASSES:** the off-sagittal joints are GONE from the port
+contract's over-stop debt list (subtalar, hip_rotation, hip_adduction all
+held inside their stops through phase 1). The debt-count prediction missed
+honestly: it said "the knees alone"; the actual remaining debts are the
+knees (grain question, named at the top), the MTPs (refused by design — the
+model-range membrane queued above), and L4_L5_FE (peak 1.23, over 7.2% of
+phase 1 — TRANSIENT, and the trunk membrane's own falsifier 1 passes on its
+own terms). The stand's two remaining slice-letter bars (CoM peak 1.65, a
+t=1.7–2.5 s transient; the L4_L5 transient) are the STAND PORT's polish in a
+harder world, not this membrane's falsifiers — the trainer's reward does not
+yet price CoM-in-box or over-stop, which is the train-what-you-judge lesson
+applied one rung down, and is named as the stand port's next debt rather
+than swept here.
+
+**The membrane CLOSES.** Built: 12 ligaments, derived, L/R symmetric,
+falsifier 3 clear. Taught: the sign table (measured adduction inversion),
+the off-sagittal deadband seating (falsifier 2's first firing), the
+no-retrain error (falsifier 2's resolution). Named and queued: the MTP
+model-range membrane, the knee-grain instrumentation question, the
+stand-polish reward debt.
