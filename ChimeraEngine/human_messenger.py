@@ -124,6 +124,11 @@ PHYSICS_READING = {
                  "curved line of glowing dots that arcs across a dark starfield -- "
                  "one vessel traveling along a visible curving path, motion made "
                  "visible, NOT a stationary object, NOT a planet",
+    "theShipPower": "a bright glowing central sphere encircled by a prominent "
+                    "glowing ring, with blue and red glowing lines and elements "
+                    "around it, set against a dark starry background -- one "
+                    "central source with lines of light routing outward from it "
+                    "to the surrounding systems",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

@@ -87,6 +87,7 @@ SCENES = {
     "theTruth":        {"kind": "truth", "radius": 180.0, "cam": (0.0, -165.0, 75.0)},
     "theShip":         {"kind": "ship", "radius": 130.0, "cam": (0.0, -100.0, 30.0)},
     "theFlight":       {"kind": "flight", "radius": 160.0, "cam": (0.0, -120.0, 50.0)},
+    "theShipPower":    {"kind": "ship_power", "radius": 110.0, "cam": (0.0, -82.0, 28.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1552,6 +1553,96 @@ def _flight_buffers(spec: dict, term: str):
     end = np.concatenate([stars, hull, nose] + scene(True), axis=0)
     return end, begin
 
+def _ship_power_buffers(spec: dict, term: str):
+    """theShipPower: ONE source of energy routed to every system aboard. The ship
+    drawn dim as context; at its center a blazing reactor core; from that ONE core
+    three glowing conduits branch: blue aft to the engines (drive), red forward to
+    the weapon node (attack), cyan outward to a shield ring around the hull
+    (barrier). Count the sources: one. Count the branches: every system. The claim
+    is ROUTING -- one origin, many destinations. begin = core dim, conduits dark;
+    end = core blazing and every bus lit."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # starfield, sparse -- context only
+    n_st = 1500
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 150.0 * (0.9 + 0.8 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.25 + 0.2 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.87, 0.92
+
+    # the hull, DIM -- the vessel as context, not the subject
+    a, b = 34.0, 7.0
+    n_h = 1500
+    hu = rng.random(n_h) * 2.0 - 1.0
+    hp = rng.random(n_h) * 2.0 * np.pi
+    hsxz = np.sqrt(np.maximum(0.0, 1.0 - hu * hu))
+    hull = np.zeros((n_h, NCOLS), dtype=np.float32)
+    hull[:, PX] = a * hu
+    hull[:, PY] = b * hsxz * np.cos(hp)
+    hull[:, PZ] = b * hsxz * np.sin(hp)
+    hull[:, TYPE] = 3.0; hull[:, ALPHA] = 0.16; hull[:, SIZE] = 1.4
+    hull[:, CR], hull[:, CG], hull[:, CB] = 0.42, 0.44, 0.48
+
+    def conduit(target, color, n=240):
+        """a glowing bus line from the core to a system node"""
+        t = np.linspace(0.0, 1.0, n)
+        c = np.zeros((n, NCOLS), dtype=np.float32)
+        c[:, PX] = target[0] * t
+        c[:, PY] = target[1] * t
+        c[:, PZ] = target[2] * t
+        c[:, TYPE] = 3.0; c[:, SIZE] = 2.2
+        c[:, CR], c[:, CG], c[:, CB] = color
+        return c
+
+    # the shield ring: a faint circle around the hull (the barrier system)
+    n_r = 400
+    ra = np.linspace(0.0, 2.0 * np.pi, n_r)
+    ring = np.zeros((n_r, NCOLS), dtype=np.float32)
+    ring[:, PX] = 11.0 * np.sin(ra)
+    ring[:, PY] = 13.5 * np.cos(ra)
+    ring[:, PZ] = 13.5 * np.sin(ra)
+    ring[:, TYPE] = 3.0; ring[:, SIZE] = 1.9
+    ring[:, CR], ring[:, CG], ring[:, CB] = 0.40, 0.90, 0.85
+
+    def scene(lit):
+        parts = []
+        # the ONE core
+        core_c = (1.0, 0.88, 0.60) if lit else (0.35, 0.30, 0.22)
+        parts.append(_dots((0.0, 0.0, 0.0), 5.5, 80, core_c, rng))
+        if lit:
+            parts.append(_halo((0.0, 0.0, 0.0), 10.0, (1.0, 0.88, 0.55),
+                               rng, alpha=0.20, size=2.2))
+        ca = 0.80 if lit else 0.14
+        # drive bus: aft to the engines
+        cb = conduit((-a * 0.98, 0.0, 0.0), (0.45, 0.72, 1.0)); cb[:, ALPHA] = ca
+        parts.append(cb)
+        eng_c = (0.55, 0.80, 1.0) if lit else (0.16, 0.20, 0.26)
+        parts.append(_dots((-a * 0.98, 0.0, 0.0), 3.4, 36, eng_c, rng))
+        # attack bus: forward and up to the weapon node
+        ca2 = conduit((a * 0.75, 0.0, b * 1.1), (1.0, 0.35, 0.25)); ca2[:, ALPHA] = ca
+        parts.append(ca2)
+        wea_c = (1.0, 0.40, 0.30) if lit else (0.26, 0.14, 0.12)
+        parts.append(_dots((a * 0.75, 0.0, b * 1.1), 3.2, 34, wea_c, rng))
+        # barrier bus: out to the shield ring
+        cb3 = conduit((0.0, 16.0, 0.0), (0.40, 0.90, 0.85)); cb3[:, ALPHA] = ca
+        parts.append(cb3)
+        rg = ring.copy(); rg[:, ALPHA] = 0.70 if lit else 0.12
+        parts.append(rg)
+        return parts
+
+    begin = np.concatenate([stars, hull] + scene(False), axis=0)
+    end = np.concatenate([stars, hull] + scene(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1639,7 +1730,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1887,7 +1978,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
