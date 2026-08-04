@@ -115,6 +115,11 @@ PHYSICS_READING = {
                 "grey surface below, against a dark background -- every sphere "
                 "anchored to the bedrock by its own chain, nothing floating free: "
                 "every fact reaching physics, NO unanchored objects",
+    "theShip": "one elongated grey object against a starry black background, much "
+               "longer than it is wide, with a bright blue glowing flare at one end "
+               "trailing a faint blue plume behind it and a small warm yellow-orange "
+               "light at the other end: a vessel under thrust, elongated NOT round, "
+               "NOT a planet or moon",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
