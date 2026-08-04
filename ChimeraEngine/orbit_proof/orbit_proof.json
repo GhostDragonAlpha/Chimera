@@ -1,0 +1,58 @@
+{
+  "results": {
+    "theStar": {
+      "parallax_verified": true,
+      "term_used": "theStar",
+      "frame_delta_on_object": 11.227,
+      "frame_delta_full_frame": 0.772,
+      "object_coverage_frac": 0.0686,
+      "threshold": 1.0,
+      "neg_frame": "theStar_neg15deg.png",
+      "pos_frame": "theStar_pos15deg.png"
+    },
+    "aBlueWorld": {
+      "parallax_verified": true,
+      "term_used": "aBlueWorld",
+      "frame_delta_on_object": 1.639,
+      "frame_delta_full_frame": 0.434,
+      "object_coverage_frac": 0.2627,
+      "threshold": 1.0,
+      "neg_frame": "aBlueWorld_neg15deg.png",
+      "pos_frame": "aBlueWorld_pos15deg.png"
+    },
+    "thePlanets": {
+      "parallax_verified": true,
+      "term_used": "thePlanets",
+      "frame_delta_on_object": 4.802,
+      "frame_delta_full_frame": 0.319,
+      "object_coverage_frac": 0.0658,
+      "threshold": 1.0,
+      "neg_frame": "thePlanets_neg15deg.png",
+      "pos_frame": "thePlanets_pos15deg.png"
+    },
+    "theStance": {
+      "parallax_verified": true,
+      "term_used": "theStance",
+      "frame_delta_on_object": 52.024,
+      "frame_delta_full_frame": 1.52,
+      "object_coverage_frac": 0.0292,
+      "threshold": 1.0,
+      "neg_frame": "theStance_neg15deg.png",
+      "pos_frame": "theStance_pos15deg.png"
+    },
+    "theHorizon": {
+      "parallax_verified": true,
+      "term_used": "theHorizon",
+      "frame_delta_on_object": 1.708,
+      "frame_delta_full_frame": 0.503,
+      "object_coverage_frac": 0.2941,
+      "threshold": 1.0,
+      "neg_frame": "theHorizon_neg15deg.png",
+      "pos_frame": "theHorizon_pos15deg.png"
+    }
+  },
+  "all_verified": true,
+  "yaw_delta_deg": 15.0,
+  "fov": 1.047,
+  "resolution": "640x480"
+}
