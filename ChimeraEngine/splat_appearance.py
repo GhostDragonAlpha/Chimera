@@ -92,6 +92,7 @@ SCENES = {
     "theShields":      {"kind": "shields", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theWarpDrive":    {"kind": "warp_drive", "radius": 170.0, "cam": (0.0, -125.0, 55.0)},
     "theShipView":     {"kind": "ship_view", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
+    "theSalvage":      {"kind": "salvage", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1966,6 +1967,92 @@ def _ship_view_buffers(spec: dict, term: str):
     end = np.concatenate([stars, hull] + scene(True), axis=0)
     return end, begin
 
+def _salvage_buffers(spec: dict, term: str):
+    """theSalvage: matter drawn from a wreck INTO the vessel. A broken debris
+    cluster on the left; the ship on the right; and between them a tractor beam
+    with a stream of fragments strung along it, traveling wreck -> hull. The
+    claim is matter IN TRANSIT one way: count the fragments on the beam, they all
+    leave the wreck and they all arrive at the vessel. begin = debris sitting on
+    the wreck, beam dark; end = the beam lit and the fragments mid-stream."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # starfield
+    n_st = 1400
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 150.0 * (0.9 + 0.8 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.26 + 0.2 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.87, 0.92
+
+    # the wreck: a jagged cluster of broken chunks, left
+    WX = -48.0
+    n_w = 700
+    wreck = np.zeros((n_w, NCOLS), dtype=np.float32)
+    wreck[:, PX] = WX + rng.normal(0.0, 9.0, n_w)
+    wreck[:, PY] = rng.normal(0.0, 5.0, n_w)
+    wreck[:, PZ] = rng.normal(0.0, 5.0, n_w)
+    wreck[:, TYPE] = 3.0; wreck[:, ALPHA] = 0.70; wreck[:, SIZE] = 1.8
+    wreck[:, CR] = 0.45 + 0.15 * rng.random(n_w)
+    wreck[:, CG] = 0.42 + 0.12 * rng.random(n_w)
+    wreck[:, CB] = 0.40 + 0.10 * rng.random(n_w)
+
+    # the vessel, right, compact
+    a, b = 20.0, 4.4
+    SX = 46.0
+    n_h = 1200
+    hu = rng.random(n_h) * 2.0 - 1.0
+    hp = rng.random(n_h) * 2.0 * np.pi
+    hsxz = np.sqrt(np.maximum(0.0, 1.0 - hu * hu))
+    hull = np.zeros((n_h, NCOLS), dtype=np.float32)
+    hull[:, PX] = SX + a * hu
+    hull[:, PY] = b * hsxz * np.cos(hp)
+    hull[:, PZ] = b * hsxz * np.sin(hp)
+    hull[:, TYPE] = 3.0; hull[:, ALPHA] = 0.80; hull[:, SIZE] = 1.6
+    shade = 0.55 + 0.25 * rng.random(n_h)
+    hull[:, CR] = 0.62 * shade + 0.10
+    hull[:, CG] = 0.64 * shade + 0.10
+    hull[:, CB] = 0.68 * shade + 0.12
+
+    # the tractor beam: an amber line from the wreck to the hull
+    n_b = 200
+    tb = np.linspace(0.0, 1.0, n_b)
+    beam = np.zeros((n_b, NCOLS), dtype=np.float32)
+    beam[:, PX] = WX + 6.0 + (SX - a - 2.0 - WX - 6.0) * tb
+    beam[:, PY] = 0.0
+    beam[:, PZ] = 0.0
+    beam[:, TYPE] = 3.0; beam[:, SIZE] = 1.3
+    beam[:, CR], beam[:, CG], beam[:, CB] = 1.0, 0.75, 0.30
+
+    # the fragments: bright chunks strung ALONG the beam, wreck -> hull
+    n_f = 60
+    tf = np.linspace(0.05, 0.95, n_f)
+    frag = np.zeros((n_f, NCOLS), dtype=np.float32)
+    frag[:, PX] = WX + 6.0 + (SX - a - 2.0 - WX - 6.0) * tf
+    frag[:, PY] = rng.normal(0.0, 1.2, n_f)
+    frag[:, PZ] = rng.normal(0.0, 1.2, n_f)
+    frag[:, TYPE] = 3.0; frag[:, SIZE] = 2.2
+    frag[:, CR], frag[:, CG], frag[:, CB] = 0.95, 0.85, 0.55
+
+    def scene(lit):
+        parts = []
+        bm = beam.copy(); bm[:, ALPHA] = 0.75 if lit else 0.38
+        parts.append(bm)
+        fr = frag.copy(); fr[:, ALPHA] = 0.90 if lit else 0.45
+        parts.append(fr)
+        return parts
+
+    begin = np.concatenate([stars, wreck, hull] + scene(False), axis=0)
+    end = np.concatenate([stars, wreck, hull] + scene(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2053,7 +2140,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2301,7 +2388,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
