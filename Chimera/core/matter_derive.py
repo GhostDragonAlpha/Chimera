@@ -239,6 +239,10 @@ if __name__ == "__main__":
     ap.add_argument("--frozen-metal", dest="frozen_metal", action="store_true",
                     help="Phase 7: the runaway autopsy (drive vs deficit, lam_m=2.8 "
                          "erosion dissected in chunks) + the frozen_type skeleton")
+    ap.add_argument("--swap", dest="swap", action="store_true",
+                    help="Phase 8: deficit-paired swaps at the derived per-tissue "
+                         "lambda that froze Phase 5 — cold gate, swap-only arm, "
+                         "mixed arm")
     a_ns = ap.parse_args()
 
     if a_ns.lam_derived:
@@ -606,6 +610,69 @@ if __name__ == "__main__":
         print(f"PHASE 7 VERDICT: {'PASS' if verdict else 'FIRED'} "
               f"(autopsy {'runaway' if fA else 'NOT-runaway'}, "
               f"skeleton {'holds' if fB1 and fB2 and fB3 else 'leaks'})")
+        raise SystemExit(0 if verdict else 1)
+
+    if a_ns.swap:
+        from core.matter import metrics_3d
+        from core.matter_gpu import step_swaps, step_mixed
+        # PHASE 8 — THE SWAP (membrane stated in docs/THE_LIVING_MATTER.md BEFORE
+        # the build). Phase 5's exact protocol — tissue scramble, derived per-tissue
+        # lambda — plus the swap move. Gate first, then two arms.
+        K_PA = {BONE: 13.9e9, MUSCLE: 2.3e9, SKIN: 2.3e9, TENDON: 2.3e9}
+        E0 = SIGMA_GEO_MN_M * 1e-3 * ELL_M**2 / TEMP
+        grid, shape, targets = _scramble(a_ns.n)
+        lam = {t: K_PA[t] * ELL_M**3 / (2.0 * targets[t] * E0)
+               for t in (BONE, MUSCLE, SKIN)}
+        print("PHASE 8 — THE SWAP: derived per-tissue lambda "
+              + ", ".join(f"{NAMES[t]} {lam[t]:.0f}" for t in (BONE, MUSCLE, SKIN))
+              + "  (the values that froze Phase 5)")
+        J4 = derive_J(anchor="liquidity")[np.ix_([0, 1, 2, 3], [0, 1, 2, 3])]
+
+        # ── THE GPU GATE (before any physics): cold-monotone. At temp 0.01,
+        # uphill accepts are e^{-10} or rarer; a correct kernel's H can only
+        # fall. Read-race corruption would inject frequent uphill accepts.
+        hg = open_lattice(grid.copy(), shape, targets, J4, temp=0.01, lam=lam, seed=0)
+        tg = step_swaps(hg, 20, trace=True)
+        close(hg)
+        swg = tg.reshape(20, 12).mean(axis=1)
+        rises = [float(swg[k + 1] - swg[k]) for k in range(19)]
+        gate = all(r <= 1.0 for r in rises)
+        print(f"  GATE (cold-monotone, temp=0.01, swap-only): max per-sweep rise "
+              f"{max(rises):.4f}  {'PASS' if gate else 'FAIL -- KERNEL NOT TRUSTED, ABORT'}")
+        if not gate:
+            raise SystemExit(1)
+
+        # ── ARM 1: swap-only (falsifier 3's instrument: if THIS sorts at the
+        # derived lambda, swaps carry the dynamics, full stop).
+        # ── ARM 2: mixed (1:1 copy+swap, the membrane's deliverable).
+        arms = {}
+        for label in ("swap-only", "mixed"):
+            h = open_lattice(grid.copy(), shape, targets, J4, temp=TEMP, lam=lam, seed=0)
+            tr = step_swaps(h, a_ns.sweeps, trace=True) if label == "swap-only" \
+                else step_mixed(h, a_ns.sweeps, trace=True)
+            final = close(h)
+            n_pass = 12 if label == "swap-only" else 20
+            sw = tr.reshape(a_ns.sweeps, n_pass).mean(axis=1)
+            r = metrics_3d(final, shape)["radius"]
+            drift = {t: int((final == t).sum()) - targets[t] for t in (BONE, MUSCLE, SKIN)}
+            sorted_ = r[BONE] < r[MUSCLE] < r[SKIN]
+            arms[label] = (sorted_, drift, sw, r)
+            print(f"  {label:<9} radii: bone {r[BONE]:.1f} muscle {r[MUSCLE]:.1f} "
+                  f"skin {r[SKIN]:.1f} -> sorted {sorted_}; drift {drift}; "
+                  f"H {sw[0]:.1f} -> {sw[-1]:.1f}")
+        sorted_so, drift_so, _, _ = arms["swap-only"]
+        sorted_mx, drift_mx, _, _ = arms["mixed"]
+        f1 = sorted_mx
+        f2 = all(abs(v) <= 0.01 * targets[t] for t, v in drift_mx.items())
+        f3 = sorted_so
+        print(f"  falsifier 1 (mixed SORTS where Phase 5 froze): "
+              f"{'PASS' if f1 else 'FAIL -- FIRED (the freeze is not move-set)'}")
+        print(f"  falsifier 2 (counts hold within 1%): "
+              f"{'PASS' if f2 else 'FAIL -- FIRED (the swap leaks area)'}")
+        print(f"  falsifier 3 (swap-ONLY sorts too -> swaps carry it): "
+              f"{'PASS' if f3 else 'FAIL -- FIRED (the swap is decoration)'}")
+        verdict = f1 and f2 and f3
+        print(f"PHASE 8 VERDICT: {'PASS' if verdict else 'FIRED'}")
         raise SystemExit(0 if verdict else 1)
 
     J5 = derive_J(anchor=a_ns.anchor)

@@ -141,6 +141,83 @@ def _potts_color_pass(
 
 
 # ------------------------------------------------------------------------------------------------
+# THE SWAP MOVE (THE_LIVING_MATTER Phase 8, membrane stated before the build).
+# Kawasaki exchange: two adjacent cells of different type trade types. Both areas are
+# identically unchanged -- NO lambda term, NO atomics; dH is interface-only over the
+# union of the two neighbourhoods, the mutual edge dropping out (J symmetric).
+# THE SCHEDULE WIDENS: a thread writes itself AND its partner, and at 18-connectivity a
+# same-colour thread two over along the swap axis could read that partner -- so the
+# colouring is (axis%3) along the swap axis, 12 colours per orientation. Conflict-free
+# by the 8-colour argument extended one unit.
+
+
+@wp.kernel
+def _potts_swap_pass(
+        lattice: wp.array3d(dtype=wp.int32),
+        J: wp.array2d(dtype=wp.float32),
+        offs: wp.array(dtype=wp.vec3i),
+        color: wp.vec3i, axis: int, temp: float,
+        frozen: int, seed: int, n_off: int):
+    z, y, x = wp.tid()
+    nz = lattice.shape[0]
+    ny = lattice.shape[1]
+    nx = lattice.shape[2]
+    if axis == 0:
+        if (z & 1) != color[0] or (y & 1) != color[1] or (x % 3) != color[2]:
+            return
+    elif axis == 1:
+        if (z & 1) != color[0] or (y % 3) != color[1] or (x & 1) != color[2]:
+            return
+    else:
+        if (z % 3) != color[0] or (y & 1) != color[1] or (x & 1) != color[2]:
+            return
+    # interior only, and the partner must be interior too (the CPU reference's rule)
+    if z == 0 or y == 0 or x == 0 or z == nz - 1 or y == ny - 1 or x == nx - 1:
+        return
+    qz = z
+    qy = y
+    qx = x + 1
+    if axis == 1:
+        qx = x
+        qy = y + 1
+    elif axis == 2:
+        qx = x
+        qz = z + 1
+    if qz == nz - 1 or qy == ny - 1 or qx == nx - 1:
+        return
+    ts = lattice[z, y, x]
+    tq = lattice[qz, qy, qx]
+    if ts == tq or ts == frozen or tq == frozen:
+        return
+
+    dH = float(0.0)
+    for i in range(n_off):
+        oi = offs[i]
+        zz = z + oi[0]
+        yy = y + oi[1]
+        xx = x + oi[2]
+        if not (zz == qz and yy == qy and xx == qx):    # the mutual edge drops out
+            nb = MEDIUM
+            if _in_bounds(zz, yy, xx, nz, ny, nx):
+                nb = lattice[zz, yy, xx]
+            dH += J[tq, nb] - J[ts, nb]
+        zz2 = qz + oi[0]
+        yy2 = qy + oi[1]
+        xx2 = qx + oi[2]
+        if not (zz2 == z and yy2 == y and xx2 == x):
+            nb2 = MEDIUM
+            if _in_bounds(zz2, yy2, xx2, nz, ny, nx):
+                nb2 = lattice[zz2, yy2, xx2]
+            dH += J[ts, nb2] - J[tq, nb2]
+
+    state = wp.rand_init(seed, z * ny * nx + y * nx + x)
+    u = wp.randf(state)
+    if dH <= 0.0 or u < wp.exp(-dH / temp):
+        lattice[z, y, x] = tq
+        lattice[qz, qy, qx] = ts
+
+
+# ------------------------------------------------------------------------------------------------
 # THE ENERGY READOUT (THE_LIVING_MATTER Phase 1). The shaker had no way to see the quantity it
 # minimises: you cannot measure a relaxation you cannot see, and `sweeps = 160/90/70/26` was
 # whoever-set-it-last because no trace had ever existed to read tau_sort off of.
@@ -382,6 +459,91 @@ def snapshot(handle):
     Phase 7's erosion autopsy steps in chunks and dissects each frame."""
     wp.synchronize_device(handle.dev)
     return handle.lat.numpy().astype(np.int16)
+
+
+# Phase 8's 12-colour schedules, one per swap orientation (the kernel comment above).
+_SWAP_COLORS = {
+    0: [wp.vec3i(cz, cy, cx) for cz in (0, 1) for cy in (0, 1) for cx in (0, 1, 2)],
+    1: [wp.vec3i(cz, cy, cx) for cz in (0, 1) for cy in (0, 1, 2) for cx in (0, 1)],
+    2: [wp.vec3i(cz, cy, cx) for cz in (0, 1, 2) for cy in (0, 1) for cx in (0, 1)],
+}
+
+
+def _trace_launch(h, partials, trace_d, i):
+    wp.launch(_energy_partial, dim=h.shape,
+              inputs=[h.lat, h.Jd, h.offs, partials, i, len(_OFF18)],
+              device=h.dev)
+    wp.launch(_energy_fold, dim=1,
+              inputs=[partials, h.aread, h.tgtd, trace_d, i, h.lamd, h.n_types],
+              device=h.dev)
+
+
+def step_swaps(handle, n_sweeps, trace=False):
+    """Swap-only stepping (pure Kawasaki): one sweep = 12 passes of _potts_swap_pass,
+    the orientation cycling x -> y -> z by sweep. Areas can NEVER change in this
+    mode -- the lambda jail is vacuous and mass conservation is exact by
+    construction. trace as in step()."""
+    h = handle
+    n_passes = int(n_sweeps) * 12
+    partials = trace_d = None
+    if trace:
+        partials = wp.zeros((n_passes, h.shape[0]), dtype=wp.float32, device=h.dev)
+        trace_d = wp.zeros(n_passes, dtype=wp.float32, device=h.dev)
+    i = 0
+    for sw in range(int(n_sweeps)):
+        axis = sw % 3
+        for col in _SWAP_COLORS[axis]:
+            p = h.pass_count
+            wp.launch(_potts_swap_pass, dim=h.shape,
+                      inputs=[h.lat, h.Jd, h.offs, col, axis, h.temp, h.frozen,
+                              h.seed * 131 + p, len(_OFF18)], device=h.dev)
+            if trace:
+                _trace_launch(h, partials, trace_d, i)
+            h.pass_count += 1
+            i += 1
+    if trace:
+        wp.synchronize_device(h.dev)
+        return trace_d.numpy()
+    return None
+
+
+def step_mixed(handle, n_sweeps, trace=False):
+    """Phase 8's interleave: one sweep = one copy sweep (8 passes, the copy channel
+    carries the population jail) + one swap sweep (12 passes, orientation cycling;
+    the swap carries interface dynamics at any lambda). trace as in step()."""
+    h = handle
+    n_passes = int(n_sweeps) * 20
+    partials = trace_d = None
+    if trace:
+        partials = wp.zeros((n_passes, h.shape[0]), dtype=wp.float32, device=h.dev)
+        trace_d = wp.zeros(n_passes, dtype=wp.float32, device=h.dev)
+    i = 0
+    for sw in range(int(n_sweeps)):
+        for _ in range(8):
+            p = h.pass_count
+            col = h.colors[p % 8]
+            wp.launch(_potts_color_pass, dim=h.shape,
+                      inputs=[h.lat, h.aread, h.Jd, h.offs, h.tgtd, col,
+                              h.temp, h.lamd, h.frozen, h.seed * 131 + p, len(_OFF18)],
+                      device=h.dev)
+            if trace:
+                _trace_launch(h, partials, trace_d, i)
+            h.pass_count += 1
+            i += 1
+        axis = sw % 3
+        for col in _SWAP_COLORS[axis]:
+            p = h.pass_count
+            wp.launch(_potts_swap_pass, dim=h.shape,
+                      inputs=[h.lat, h.Jd, h.offs, col, axis, h.temp, h.frozen,
+                              h.seed * 131 + p, len(_OFF18)], device=h.dev)
+            if trace:
+                _trace_launch(h, partials, trace_d, i)
+            h.pass_count += 1
+            i += 1
+    if trace:
+        wp.synchronize_device(h.dev)
+        return trace_d.numpy()
+    return None
 
 
 def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
