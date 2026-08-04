@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-08-03T07:15:09+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-08-04T07:15:16+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -29,3 +29,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0019 | open | 0.6 | Pain verdict: Observation queue holds 14 system-finalized fe | docs/research/** |  |
 | tb-0020 | open | 0.6 | Pain verdict: Observation queue still holds 14 system-finali | docs/research/** |  |
 | tb-0021 | open | 0.6 | Pain verdict: Niagara system status unknown - if NS_SandDust | docs/research/** |  |
+| tb-0022 | open | 0.6 | Pain verdict: Niagara system may not exist (creating from sc | docs/research/** |  |
+| tb-0023 | open | 0.6 | Pain verdict: Audit workflow consolidation step had script f | docs/research/** |  |
+| tb-0024 | open | 0.6 | Pain verdict: Tier-1 organs (scholar/muse/visionkeeper) are  | docs/research/** |  |

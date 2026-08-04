@@ -1,0 +1,50 @@
+{
+ "theta": "stand_theta.npy",
+ "seeds": 10,
+ "g": 7.076122169232295,
+ "stone_mass_kg": 59.491,
+ "stone_weight_N": 420.96558396979844,
+ "t_grab": 2.0,
+ "t_release": 5.0,
+ "ramp_s": 0.5,
+ "secs": 8.0,
+ "control_pelvis_m": 0.9599224513951242,
+ "control_jitter_m": 5.12003674014716e-05,
+ "control_survival_median_s": 7.01,
+ "k_eff_N_per_m": 14254.55840295988,
+ "predicted_sag_m": 0.029531997559628875,
+ "measured_sag_median_m": 0.0025718519482290647,
+ "measured_sag_per_seed": [
+  0.002571362674200217,
+  0.0025449110575184175,
+  0.0025723412222579123,
+  0.002577910020255647,
+  0.0025723903957505234,
+  0.002603451409217472,
+  0.002525386748959968,
+  0.0026026942128005714,
+  0.0025556179091410502,
+  0.0025706999203611858
+ ],
+ "recovery_median_m": NaN,
+ "weld_load_median": 0.8855864736366241,
+ "loaded_survival_median_s": 3.44,
+ "mass_response_N": [
+  105.24139599244961,
+  210.48279198489922,
+  315.72418797734883,
+  420.96558396979844
+ ],
+ "mass_response_sag_m": [
+  0.00260119479867138,
+  0.004725307232226972,
+  0.003288052576448819,
+  0.002571362674200217
+ ],
+ "linear_r2": 0.038202144000868854,
+ "k_from_curve_N_per_m": NaN,
+ "falsifier_fires": false,
+ "linear_holds": false,
+ "prediction_holds": false,
+ "survival_shortens": true
+}

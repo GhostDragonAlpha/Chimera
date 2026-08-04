@@ -75,6 +75,10 @@ class LiveViewer:
         self._view = "first"              # 'first' = through the eyes; 'third' = watching the body
         self._last_input = 0.0     # wall-time of the last drag/zoom -> drives the moving-vs-settled LOD
         self._clients = 0                                          # active /stream connections
+        # ── PAUSE / STEP / SCRUB (Task 9) ──
+        self._paused = False       # True = time is FROZEN (the render thread keeps producing the same frame)
+        self._step_requested = False  # True -> advance ONE tick then re-freeze
+        self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
         self._running = True
         self._err = None
         # NAMED IN FULL, deliberately: `_t` is the story's TIME axis. The thread that draws it is a
@@ -507,6 +511,29 @@ def handle(handler) -> bool:
         _send(handler, 204, "text/plain", b""); return True
     if path == "/stream":
         _stream(handler); return True
+    # ── PAUSE / STEP / SCRUB (Task 9) ────────────────────────────────────────────────────────
+    if path == "/pause":
+        v = get_viewer()
+        with v._lock:
+            v._paused = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
+        _send(handler, 200, "application/json",
+              json.dumps({"paused": v._paused, "t": v._t}).encode()); return True
+    if path == "/step":
+        v = get_viewer()
+        with v._lock:
+            v._step_requested = True
+            v._paused = True
+        _send(handler, 204, "text/plain", b""); return True
+    if path == "/scrub":
+        # SCRUB the membrane's own timeline: t from 0 to 1, driving the 4th dimension.
+        # `/scrub?term=theCooling&t=0.5` loads theCooling at halfway through its movie.
+        v = get_viewer()
+        term = (qs.get("term") or [""])[0]
+        t = _f(qs, "t")
+        if term and term in v._sa.scene_terms():
+            v.set_scene(term)
+        v.set_time(t)
+        _send(handler, 204, "text/plain", b""); return True
     if path == "/frame":
         # ONE REQUEST = ONE PICTURE. It is a web server; you ask it for the page.
         # `/frame?term=theCooling` sets the scene, waits for the renderer to actually produce that

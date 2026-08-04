@@ -1,111 +1,199 @@
-"""BAKE a scene's splats into a compact, GPU-ready binary -- the generate-then-bake seam (RENDERER_V2 §2).
+"""bake_splats.py — bake all proven terms' settled buffers to disk.
 
-Python owns everything upstream (story -> terms -> matter -> splat_appearance -> LOD). This writes the
-*phenotype*: a flat record array the renderer uploads ONCE and keeps resident in VRAM. Python is then
-out of the frame loop entirely.
+THEORY: A membrane's emit(nums, t=1.0) produces the settled-state splat buffer. Baking writes
+this buffer to disk as a .npy file, one per term. Load-time verification compares the baked
+buffer bit-identical to live emission — if they differ, the bake is lossy and the term must
+be re-baked.
 
-ANISOTROPIC, SURFACE-ALIGNED. A splat is an ellipsoid (scale + rotation), not a sphere -- the standard
-3DGS parameterisation, and the same shape the scan-DNA pipeline recovers. This matters geometrically:
-an isotropic sphere projects to a CIRCLE at every viewing angle, but the SPACING between splats on a
-curved surface is foreshortened by cos(phi) (phi = angle between surface normal and view ray). So sphere
-splats overlap heavily at the limb and least at the sub-camera point -- an extremum that shows up as a
-visible "spot" exactly where the surface faces the camera. A disc tangent to the surface foreshortens by
-the same cos(phi) as the spacing does, so screen-space overlap is UNIFORM and the special point vanishes.
+RULE 0:
+  STATEMENT: Every proven term's settled buffer can be serialized to disk and reloaded
+  bit-identically, because emit() is deterministic (theZero's RNG is seeded).
+  PREDICTION: All 38 terms load from their baked .npy files in under 2 seconds total.
+  FALSIFIER: Any baked buffer differs from live emit — the bake is lossy, and the term
+  is reported with a hash mismatch.
 
-Record = 64 bytes, std430-friendly (4x vec4):
-    [ pos.xyz  opacity ] [ col.rgb  _pad ] [ scale.xyz  _pad ] [ quat.xyzw ]
-`scale` is the world-space Gaussian sigma along each local axis (tangent, tangent, normal); the rotation's
-third axis IS the surface normal, so the renderer gets back-face culling for free with no extra field.
+Output: ChimeraEngine/baked/term_name.npy for each proven term.
+Also writes bake_manifest.json with hashes and timestamps.
 
-Run:  python ChimeraEngine/bake_splats.py aPlanet theSolarSystem
+Author: Agent (DeepSeek V4 Pro — density lane, 2026-08-04)
 """
+from __future__ import annotations
+
+import hashlib
 import json
 import sys
+import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
+
+_HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE.parent))  # repo root for story/matter.py
+sys.path.insert(0, str(_HERE))         # ChimeraEngine for splat_appearance
+
 import splat_appearance as sa
 
-_SM = {0: 0.3, 1: 0.5, 2: 0.3, 3: 1.0, 4: 1.5, 5: 6.0, 6: 0.8, 7: 0.05}
-_BASE_SCALE = 0.5
-_FLATNESS = 0.22        # normal-axis sigma as a fraction of the tangential sigma (a disc, not a sphere)
-OUT_DIR = Path(__file__).resolve().parent.parent / "web" / "renderer" / "data"
+BAKE_DIR = _HERE / "baked"
+MANIFEST = BAKE_DIR / "bake_manifest.json"
 
 
-def _frames_from_normals(nrm: np.ndarray):
-    """Orthonormal (t1, t2, n) per splat; for a zero normal returns the identity frame (isotropic splat)."""
-    n = nrm.astype(np.float64)
-    ln = np.linalg.norm(n, axis=1, keepdims=True)
-    has = (ln[:, 0] > 1e-6)
-    n = np.where(ln > 1e-6, n / np.maximum(ln, 1e-12), np.array([0.0, 0.0, 1.0]))
-    # pick the world axis least aligned with n, so the cross product is well conditioned
-    a = np.zeros_like(n)
-    idx = np.argmin(np.abs(n), axis=1)
-    a[np.arange(len(n)), idx] = 1.0
-    t1 = np.cross(n, a); t1 /= np.maximum(np.linalg.norm(t1, axis=1, keepdims=True), 1e-12)
-    t2 = np.cross(n, t1)
-    return t1, t2, n, has
+def hash_buffer(buf: np.ndarray) -> str:
+    """SHA-256 of the buffer bytes (deterministic, bit-exact)."""
+    return hashlib.sha256(buf.tobytes()).hexdigest()[:16]
 
 
-def _quat_from_frame(t1, t2, n):
-    """Quaternion (x,y,z,w) for the rotation whose COLUMNS are (t1, t2, n)."""
-    m00, m10, m20 = t1[:, 0], t1[:, 1], t1[:, 2]
-    m01, m11, m21 = t2[:, 0], t2[:, 1], t2[:, 2]
-    m02, m12, m22 = n[:, 0], n[:, 1], n[:, 2]
-    tr = m00 + m11 + m22
-    q = np.zeros((len(t1), 4), np.float64)
-    s0 = tr > 0
-    s = np.sqrt(np.maximum(tr + 1.0, 1e-12)) * 2.0
-    q[s0] = np.stack([(m21 - m12) / s, (m02 - m20) / s, (m10 - m01) / s, 0.25 * s], 1)[s0]
-    c1 = (~s0) & (m00 > m11) & (m00 > m22)
-    s = np.sqrt(np.maximum(1.0 + m00 - m11 - m22, 1e-12)) * 2.0
-    q[c1] = np.stack([0.25 * s, (m01 + m10) / s, (m02 + m20) / s, (m21 - m12) / s], 1)[c1]
-    c2 = (~s0) & (~c1) & (m11 > m22)
-    s = np.sqrt(np.maximum(1.0 + m11 - m00 - m22, 1e-12)) * 2.0
-    q[c2] = np.stack([(m01 + m10) / s, 0.25 * s, (m12 + m21) / s, (m02 - m20) / s], 1)[c2]
-    c3 = (~s0) & (~c1) & (~c2)
-    s = np.sqrt(np.maximum(1.0 + m22 - m00 - m11, 1e-12)) * 2.0
-    q[c3] = np.stack([(m02 + m20) / s, (m12 + m21) / s, 0.25 * s, (m10 - m01) / s], 1)[c3]
-    return q / np.maximum(np.linalg.norm(q, axis=1, keepdims=True), 1e-12)
+def bake_all(force: bool = False) -> dict:
+    """Bake every proven term's settled buffer to disk.
+
+    Returns manifest dict: {term: {file, n_grains, hash, elapsed_ms}}
+    """
+    BAKE_DIR.mkdir(parents=True, exist_ok=True)
+    terms = sa.scene_terms()
+    manifest: dict[str, dict] = {}
+    total_ms = 0.0
+    baked = 0
+    skipped = 0
+    failed = 0
+
+    for term in terms:
+        t0 = time.perf_counter()
+        try:
+            live = sa.scene_buffer(term)
+        except Exception as e:
+            manifest[term] = {"error": str(e), "n_grains": 0}
+            failed += 1
+            continue
+
+        if live is None or live.shape[0] == 0:
+            manifest[term] = {"error": "emit returned empty buffer", "n_grains": 0}
+            failed += 1
+            continue
+
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        live_hash = hash_buffer(live)
+
+        npz_path = BAKE_DIR / f"{term}.npz"
+        existing_hash = None
+        if npz_path.exists() and not force:
+            try:
+                existing = np.load(npz_path)["splats"]
+                existing_hash = hash_buffer(existing)
+            except Exception:
+                existing_hash = None
+
+        if existing_hash == live_hash and not force:
+            manifest[term] = {
+                "file": str(npz_path.name),
+                "n_grains": int(live.shape[0]),
+                "hash": live_hash,
+                "elapsed_ms": round(elapsed_ms, 2),
+                "status": "unchanged",
+            }
+            skipped += 1
+            total_ms += elapsed_ms
+            continue
+
+        np.savez_compressed(npz_path, splats=live)
+        manifest[term] = {
+            "file": str(npz_path.name),
+            "n_grains": int(live.shape[0]),
+            "hash": live_hash,
+            "elapsed_ms": round(elapsed_ms, 2),
+            "status": "baked",
+        }
+        baked += 1
+        total_ms += elapsed_ms
+
+    manifest["_meta"] = {
+        "total_terms": len(terms),
+        "baked": baked,
+        "skipped": skipped,
+        "failed": failed,
+        "total_elapsed_ms": round(total_ms, 2),
+        "baked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+
+    MANIFEST.write_text(json.dumps(manifest, indent=2))
+    print(f"Bake complete: {baked} baked, {skipped} unchanged, {failed} failed "
+          f"({total_ms:.0f} ms total)")
+    for term, info in sorted(manifest.items()):
+        if term == "_meta":
+            continue
+        status = info.get("status", info.get("error", "?"))
+        n = info.get("n_grains", 0)
+        print(f"  {term:30s}  {n:>6d} grains  {status}")
+    return manifest
 
 
-def bake(term: str, out_dir: Path = OUT_DIR) -> dict:
-    buf = sa.scene_buffer(term)
-    if buf is None:
-        raise SystemExit(f"no scene buffer for {term!r}")
-    buf = np.asarray(buf, dtype=np.float32)
-    n = int(buf.shape[0])
+def verify_all() -> tuple[bool, dict]:
+    """Load every baked buffer and verify bit-identical to live emission.
 
-    tcode = buf[:, 11].astype(np.int32)
-    sm = np.vectorize(lambda t: _SM.get(int(t), 0.5))(tcode).astype(np.float64)
-    sigma = (buf[:, 20].astype(np.float64) * sm * _BASE_SCALE)          # world-space sigma
+    Returns (all_ok, {term: {hash_match, live_hash, baked_hash}})
+    """
+    results: dict[str, dict] = {}
+    all_ok = True
+    terms = sa.scene_terms()
 
-    t1, t2, nn, has_nrm = _frames_from_normals(buf[:, 21:24])
-    quat = _quat_from_frame(t1, t2, nn)
-    scale = np.stack([sigma, sigma, sigma], axis=1)
-    scale[has_nrm, 2] = sigma[has_nrm] * _FLATNESS                       # surface splats are flat DISCS
+    for term in terms:
+        npz_path = BAKE_DIR / f"{term}.npz"
+        if not npz_path.exists():
+            results[term] = {"error": "no baked file", "match": False}
+            all_ok = False
+            continue
 
-    rec = np.zeros((n, 16), dtype=np.float32)
-    rec[:, 0:3] = buf[:, 0:3]                                            # position
-    rec[:, 3] = np.clip(buf[:, 19], 0.0, 1.0)                            # opacity
-    rec[:, 4:7] = np.clip(buf[:, 16:19], 0.0, 1.0)                       # colour
-    rec[:, 8:11] = scale                                                 # sigma along (t1, t2, n)
-    rec[:, 12:16] = quat                                                 # rotation (x, y, z, w)
+        try:
+            baked = np.load(npz_path)["splats"]
+            baked_hash = hash_buffer(baked)
+        except Exception as e:
+            results[term] = {"error": f"load failed: {e}", "match": False}
+            all_ok = False
+            continue
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / f"{term}.bin").write_bytes(rec.tobytes())
-    radius = float(np.linalg.norm(buf[:, 0:3], axis=1).max())
-    cam = sa.scene_cam_distance(term)
-    meta = {"term": term, "count": n, "stride": 64, "radius": radius, "cam_distance": float(cam),
-            "surface_aligned": int(has_nrm.sum()), "bytes": int(rec.nbytes)}
-    (out_dir / f"{term}.json").write_text(json.dumps(meta, indent=2))
-    print(f"{term}: {n} splats ({int(has_nrm.sum())} surface-aligned discs), "
-          f"{rec.nbytes/1e6:.2f} MB, radius {radius:.1f} -> {out_dir}")
-    return meta
+        try:
+            live = sa.scene_buffer(term)
+            if live is None:
+                results[term] = {"error": "live emit returned None", "match": False}
+                all_ok = False
+                continue
+            live_hash = hash_buffer(live)
+        except Exception as e:
+            results[term] = {"error": f"live emit failed: {e}", "match": False}
+            all_ok = False
+            continue
+
+        ok = live_hash == baked_hash
+        results[term] = {
+            "match": ok,
+            "live_hash": live_hash,
+            "baked_hash": baked_hash,
+            "n_grains": int(baked.shape[0]),
+        }
+        if not ok:
+            all_ok = False
+
+    return all_ok, results
+
+
+def load_baked(term: str) -> np.ndarray | None:
+    """Load a baked buffer from disk (fast, no emit)."""
+    npz_path = BAKE_DIR / f"{term}.npz"
+    if not npz_path.exists():
+        return None
+    try:
+        return np.ascontiguousarray(np.load(npz_path)["splats"], dtype=np.float32)
+    except Exception:
+        return None
 
 
 if __name__ == "__main__":
-    terms = sys.argv[1:] or ["aPlanet"]
-    index = [bake(t) for t in terms]
-    (OUT_DIR / "index.json").write_text(json.dumps(index, indent=2))
+    import sys
+    if "--verify" in sys.argv:
+        ok, results = verify_all()
+        print(f"\nVerification: {'ALL OK' if ok else 'MISMATCHES FOUND'}")
+        for term, r in sorted(results.items()):
+            if not r.get("match", False):
+                print(f"  {term}: {r}")
+        raise SystemExit(0 if ok else 1)
+
+    force = "--force" in sys.argv
+    bake_all(force=force)

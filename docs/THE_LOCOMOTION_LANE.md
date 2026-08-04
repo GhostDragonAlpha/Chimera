@@ -280,10 +280,13 @@ Four arms, identical budgets (30 turns × 24 pop × 8.0 s, worst-of-3), judged F
 | **entrained + mult** | **56%** | **0.39** | 0.000 s | 1.52 s | FAIL |
 | mult + cadence | 52% | 0.19 | 1.160 s | 1.78 s | FAIL |
 | mult (control) | 51% | 0.17 | 0.570 s | 1.76 s | FAIL |
-| sub | *(below)* | | | | |
+| sub | 7% | 0.11 | 1.205 s | **2.86 s** | FAIL |
 
 **The ranking changed** — entrained went from last (35%) to first (56%) and now leads
-periodicity by more than 2×. The prediction holds and the falsifier does not fire.
+periodicity by more than 2×. The prediction holds and the falsifier does not fire. (`sub`
+collapses from 12% to 7% travel while holding the longest of the four at 2.86 s, which is the
+subtractive rule doing exactly what `score_walk_mult`'s own Rule 0 said it does: standing still
+is a local optimum when the penalties dominate the signal.)
 
 **BUT THE CAUSE IS NOT TASK 1, AND SAYING SO IS THE POINT.** The stand θ came back
 bit-identical, so the joints repair changed *nothing* about the walk — it cannot have moved this
@@ -431,4 +434,112 @@ from, by definition, and a body that recovers has not fallen out of anything.
 
 ---
 
-*(task 10 is conditional on locomotion stalling; see the closing note)*
+## TASK 10 — THE GRAB LOAD PATH · falsifier **does NOT fire**, and two of three clauses fail
+
+Task 10 was conditional on locomotion stalling. **It has stalled**: every walk arm fails every
+bar, and no stand search improves on its own warm start. So the load path is live.
+
+**PREDICTION.** (a) sag LINEAR in carried mass, r² ≥ 0.90; (b) `k_eff` calibrated on a known
+vertical PELVIS force predicts the welded stone's sag out of sample within 2×; (c) 10-seed
+median stand survival is shorter loaded than unloaded.
+**FALSIFIER.** No measurable load effect → the load path is decorative.
+
+The stone is **59.49 kg → 420.97 N, 72.5% of the 82.04 kg body.** Grab at 2.0 s over the port's
+own 0.5 s arrival window, release at 5.0 s, 10 seeds.
+
+### The falsifier does NOT fire — the load path is real
+
+| | value |
+|---|---:|
+| unloaded pelvis, settled window | 0.95992 m |
+| unloaded seed-to-seed jitter | **0.05 mm** |
+| loaded sag vs that control | **2.57 mm** (min 2.53, max 2.60) |
+| ratio to the jitter | **50×** |
+| weld load over the carry | **+0.886** of the stone's weight |
+| survival, unloaded → loaded | **7.01 s → 3.44 s** |
+
+The body feels 89% of the stone's weight through the weld, sags 50× its own jitter, and loses
+half its stand. **Clause (c) holds.** Nothing decorative about it.
+
+### And clauses (a) and (b) both fail, for one coherent reason
+
+**The calibration is clean and the stone is not:**
+
+| pelvis force N | sag mm | k N/m |
+|---:|---:|---:|
+| 105.24 | 5.53 | 19,037 |
+| 210.48 | 14.77 | 14,255 |
+| 420.97 | 39.77 | 10,586 |
+
+| carried stone kg | weight N | sag mm | weld load |
+|---:|---:|---:|---:|
+| 14.87 | 105.24 | 2.60 | 0.937 |
+| 29.75 | 210.48 | 4.73 | 0.823 |
+| 44.62 | 315.72 | 3.29 | 0.934 |
+| 59.49 | 420.97 | 2.57 | 0.886 |
+
+> **A vertical force at the pelvis sags the body in proportion to itself. A stone of the same
+> weight, welded to the torso, does not.** The sag is FLAT across a 4× mass range — r² **0.038**,
+> slope faintly *negative* — and `k_eff` over-predicts the stone's sag by **11×** (29.53 mm
+> predicted, 2.57 mm measured, 0.09×).
+
+**PUBLISHED, NOT RECONCILED (rule 17).** The two failures are one fact: **the stone's load is
+not a vertical load.** It hangs 0.40 m forward of the torso, so it arrives as a PITCHING MOMENT,
+and the body answers it in the channel that has a moment to give — `kp·pitch` — not in the
+height channel the sag measures. Pelvis sag is therefore the wrong observable for carried mass;
+it reports the small vertical residual and says nothing about the load that is actually
+toppling the body. That is why survival halves while the sag barely moves.
+
+**And the calibration refutes the derivation's own premise on the way past.** `k` falls
+19,037 → 14,255 → 10,586 N/m as the probe grows: the stand's height channel is a **softening**
+spring, not the proportional one the statement assumed. `dz = W/k_eff` was never going to hold
+even in the direction it was calibrated.
+
+### Two instrument defects had to be fixed before any of this could be said
+
+1. **The window ran past the fall.** At full mass the body falls *during* the carry (0/10 seeds
+   reach the release), so a mean over `[grab+ramp, release]` averaged a collapse and called it a
+   sag — the first run reported 109.86 mm, which is the body going down, not a spring. The
+   measurement now takes the first 0.20 s after arrival and returns `nan` rather than a number
+   when the body was not there for it.
+2. **`mj_setConst` overwrote the state.** It recomputes model constants *for the qpos0
+   configuration* and uses `d` as scratch. Called after the keyframe reset, the stone spawn and
+   `seat_in_limits`, it silently threw all three away and started the body from qpos0 —
+   unseated, outside its own joint limits. **Caught by a control, not by reading:**
+   `mass_scale=1.0` — the *same* mass the unscaled path uses — survived 1.64 s where
+   `mass_scale=None` survived 3.44 s. Identical physics, different survival, so the difference
+   was in the call. Every mass-response row was `nan` until it was moved before the reset.
+
+---
+
+## THE LANE'S CLOSING NOTE
+
+**Ten tasks; four falsifiers fired, four predictions held, and the falsifiers were the
+informative half.**
+
+| task | verdict |
+|---|---|
+| 1 joints penalty | statement CONFIRMED, prediction **FIRES** — and the wall is the search, not the reward |
+| 3 multi-seed judging | **FIRES** — both judges' windows are shorter than the divergence timescale |
+| 6 MTP re-measure | **FIRES**, and the naming it obliges is answered: `a0`, by two agreeing messengers |
+| 2 stride-not-shuffle | premise was an instrument artifact; prediction holds on the *control* too, and the term is exploitable |
+| 5 entrained oscillator | **FIRES** — 0.39 and 1.52 s against 0.60 and 3 s. The measured bound. |
+| 9 three walk arms | ranking CHANGED (entrained 35% → 56%) — but the cause is the periodicity repair, not task 1 |
+| 4 backward fall | **HOLDS** 9/10 posterior, −14.1° exit pitch |
+| 7 theta-shape guard | **HOLDS** — trips on a 3-block theta, and falsifier 1 runs again after being dead |
+| 8 stance pick | the unjustified pick is **CORRECT** to 0.5 mm |
+| 10 GRAB load path | falsifier does NOT fire; (a) and (b) fail on one coherent fact — the load is a moment, not a weight |
+
+**WHAT THE LANE ACTUALLY FOUND.** Not one of the ten tasks moved the body. Six of them moved an
+*instrument*, and three of those instruments had already produced published claims: a survival
+figure that was the luckiest of ten, a periodicity that rewarded a body falling over once, and a
+cadence that was a search window's floor. **The locomotion work has been reading broken gauges,
+and the gauges all read optimistic.**
+
+**THE ONE OPEN THING THAT BLOCKS THE REST.** `train_stand`'s warm-started CEM cannot improve on
+its own start at 1160 dimensions — 2,160 evaluations, zero improvements, a bit-identical file
+back. `cand[0] = mu` guarantees the incumbent survives; nothing guarantees the *distribution*
+does, and the elite mean walks off the incumbent on turn 0. Until that is fixed, **no warm-start
+experiment in this repo can test anything**, because the answer is "the incumbent was preserved"
+whatever the change was. `agent_logs/elitism_audit.json` checks `has_incumbent` and would pass
+all six trainers. That is the next Rule 0 to write, and it is a SEARCH membrane, not a reward one.

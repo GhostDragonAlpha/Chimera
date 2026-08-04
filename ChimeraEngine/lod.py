@@ -92,3 +92,49 @@ def select(levels: list[np.ndarray], r_px: float, p: dict | None = None) -> np.n
         if lvl.shape[0] >= want:
             return lvl
     return levels[-1]
+
+
+# ── LOD SWITCHING (near/far, Task 2) ──────────────────────────────────────────────────────────────
+
+# Judgment distance: 720p, the standard for "can you read the detail at normal viewing distance"
+_JUDGMENT_H = 720
+_JUDGMENT_FOV = 1.047  # 60 degrees in radians — the viewer's default
+
+
+def lod_switch(buf: np.ndarray, cam_distance: float, height_px: int = _JUDGMENT_H,
+               fov: float = _JUDGMENT_FOV, p: dict | None = None) -> np.ndarray:
+    """THE LOD SWITCH — near/far density switching keyed to screen-space size.
+
+    STATEMENT: A body whose projected radius selects a coarse mip level already looks correct at that
+    level — the mip was built by SPATIALLY-AVERAGING the base. Switching to it saves grains with no
+    visible pop because the coarse level's grain size is set by the law (β * 2R/√N) so it tiles the
+    same coverage. The transition IS the mip boundary.
+
+    PREDICTION: Frame budget holds (perf-guard) at max density near, min far — no visible pop in a
+    recorded orbit because mip levels are built from the same base and grain size is continuous.
+
+    FALSIFIER: LOD switch visible as a pop in a recorded orbit — the coarse level's grain size
+    differs from the fine level's by more than one pixel at the switch distance.
+
+    Returns the LOD-selected buffer. If no mips were precomputed, returns the buffer unchanged.
+    """
+    radius = body_radius(buf)
+    r_px = projected_radius_px(radius, cam_distance, height_px, fov)
+    p = p or params()
+    levels = build_mips(buf, radius, p)
+    if len(levels) <= 1:
+        return buf  # no mips to switch between
+    return select(levels, r_px, p)
+
+
+def near_far(buf: np.ndarray, cam_distance: float, height_px: int = _JUDGMENT_H,
+             fov: float = _JUDGMENT_FOV, p: dict | None = None) -> tuple[np.ndarray, int]:
+    """Return (buffer, n_grains) for the LOD level at this distance."""
+    p = p or params()
+    radius = body_radius(buf)
+    r_px = projected_radius_px(radius, cam_distance, height_px, fov)
+    levels = build_mips(buf, radius, p)
+    if len(levels) <= 1:
+        return buf, buf.shape[0]
+    lvl = select(levels, r_px, p)
+    return lvl, lvl.shape[0]

@@ -1,8 +1,8 @@
-# The Herald — 2026-08-03
+# The Herald — 2026-08-04
 
-**Good news:** 73 feature(s) are a few clean nights away from earning full trust (ADotCharacter, AErisaidActor, audio_visual_sync/report_telemetry).
+**Good news:** 12 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/AI, subsystem/Combat and more.
 **Watch:** 8 feature(s) failed some checks recently (Any position-dependent beat against chimeradefault, Substrate_Engine, Substrate_Terrain); they are on the work board with evidence attached.
-**The queue:** 21 task(s) open for agents; 170 old worries await a confirm-or-refute verdict.
+**The queue:** 24 task(s) open for agents; 170 old worries await a confirm-or-refute verdict.
 **The container proposes:** tighten the 'generated_loc' limit — it waits for a yes/no (edit docs/envelope.json, status field).
 **Needs you today:** rule on the container proposal above
 
