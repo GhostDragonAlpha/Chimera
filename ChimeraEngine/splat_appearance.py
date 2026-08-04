@@ -106,6 +106,7 @@ SCENES = {
     "theEVA":          {"kind": "eva", "radius": 160.0, "cam": (-10.0, -120.0, 30.0)},
     "thePlayer":       {"kind": "player", "radius": 150.0, "cam": (0.0, -90.0, 18.0)},
     "theInput":        {"kind": "input", "radius": 120.0, "cam": (0.0, -85.0, 25.0)},
+    "theState":        {"kind": "state", "radius": 120.0, "cam": (0.0, -70.0, 75.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2985,6 +2986,49 @@ def _input_buffers(spec: dict, term: str):
     settled = np.concatenate(parts, axis=0)
     return settled, settled.copy()
 
+def _state_buffers(spec: dict, term: str):
+    """theState: what ticks. The world between frames is a field of cells,
+    each holding one value, all stepping by one rule together -- Conway's
+    grid IS the appearance of state. A 21x21 lattice lies flat: most cells
+    rest dark, a few burn -- and the burning ones are a GLIDER, the pattern
+    whose whole nature is to move while staying itself. That is state: not
+    the cells, not the rule, but the pattern that persists through the
+    ticks. Both frames settled."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    N = 21                                  # cells per side
+    CELL = 4.0                              # world units per cell
+    GLIDER = {(1, 0), (2, 1), (0, 2), (1, 2), (2, 2)}   # the walker
+
+    lit, dark = [], []
+    for i in range(N):
+        for j in range(N):
+            cx = (i - N // 2) * CELL
+            cy = (j - N // 2) * CELL
+            alive = (i - N // 2 + 2, j - N // 2 + 2) in GLIDER or                     (i - N // 2, j - N // 2) in GLIDER
+            (lit if alive else dark).append((cx, cy))
+
+    def cells(pos, n_per, alpha, size, color):
+        n = len(pos) * n_per
+        a = np.zeros((n, NCOLS), dtype=np.float32)
+        row = 0
+        for (cx, cy) in pos:
+            for _ in range(n_per):
+                a[row, PX] = cx + rng.uniform(-1.4, 1.4)
+                a[row, PY] = cy + rng.uniform(-1.4, 1.4)
+                a[row, PZ] = rng.normal(0.0, 0.2)
+                row += 1
+        a[:, TYPE] = 3.0; a[:, ALPHA] = alpha; a[:, SIZE] = size
+        a[:, CR], a[:, CG], a[:, CB] = color
+        return a
+
+    dark_g = cells(dark, 6, 0.30, 1.6, (0.30, 0.36, 0.48))
+    lit_g = cells(lit, 26, 0.95, 2.0, (1.00, 0.85, 0.45))
+
+    settled = np.concatenate([dark_g, lit_g], axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -3072,7 +3116,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers, "state": _state_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -3320,7 +3364,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers, "eva": _eva_buffers, "player": _player_buffers, "input": _input_buffers, "state": _state_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theState": "a flat square grid of many small dark blue-grey cells seen "
+                "from above at an angle, with a small cluster of glowing "
+                "golden cells forming a compact pattern near the center -- a "
+                "game-of-life lattice, one pattern alive among resting cells",
     "theInput": "four small key-like blocks in a row, each connected by a thin "
                 "line to a vertical fader bar above it; three are dim grey and "
                 "one glows warm gold with its fader lit most of the way up -- "
