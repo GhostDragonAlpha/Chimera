@@ -102,6 +102,7 @@ SCENES = {
     "theScan":         {"kind": "scan", "radius": 130.0, "cam": (0.0, -105.0, 30.0)},
     "theNavigate":     {"kind": "navigate", "radius": 150.0, "cam": (0.0, -130.0, 55.0)},
     "theShoot":        {"kind": "shoot", "radius": 140.0, "cam": (0.0, -110.0, 30.0)},
+    "theMelee":        {"kind": "melee", "radius": 120.0, "cam": (0.0, -85.0, 28.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2746,6 +2747,87 @@ def _shoot_buffers(spec: dict, term: str):
     settled = np.concatenate([field, hull, bolt, target, impact], axis=0)
     return settled, settled.copy()
 
+def _figure(fx, body_c, rng, lean=0.0, arm=None):
+    """A compact upright figure of dots (shared by melee's two bodies): torso,
+    legs, head; optional arm as (reach_x, reach_z) endpoint and lean in x."""
+    import numpy as np
+    parts = []
+    n_b = 140
+    t = np.linspace(0.0, 1.0, n_b)
+    torso = np.zeros((n_b, NCOLS), dtype=np.float32)
+    torso[:, PX] = fx + lean * t + rng.normal(0.0, 0.4, n_b)
+    torso[:, PZ] = 6.0 + 8.0 * t
+    torso[:, TYPE] = 3.0; torso[:, ALPHA] = 0.8; torso[:, SIZE] = 1.6
+    torso[:, CR], torso[:, CG], torso[:, CB] = body_c
+    parts.append(torso)
+    for lx in (-2.0, 2.0):
+        n_l = 80
+        tl = np.linspace(0.0, 1.0, n_l)
+        leg = np.zeros((n_l, NCOLS), dtype=np.float32)
+        leg[:, PX] = fx + lx + rng.normal(0.0, 0.3, n_l)
+        leg[:, PZ] = 0.5 + 5.5 * tl
+        leg[:, TYPE] = 3.0; leg[:, ALPHA] = 0.8; leg[:, SIZE] = 1.4
+        leg[:, CR], leg[:, CG], leg[:, CB] = body_c
+        parts.append(leg)
+    parts.append(_dots((fx + lean, 0.0, 16.5), 2.4, 36, body_c, rng))
+    if arm is not None:
+        ax, az = arm
+        n_a = 100
+        ta = np.linspace(0.0, 1.0, n_a)
+        a = np.zeros((n_a, NCOLS), dtype=np.float32)
+        a[:, PX] = fx + (ax - fx) * ta
+        a[:, PZ] = 13.5 + (az - 13.5) * ta + rng.normal(0.0, 0.25, n_a)
+        a[:, TYPE] = 3.0; a[:, ALPHA] = 0.8; a[:, SIZE] = 1.4
+        a[:, CR], a[:, CG], a[:, CB] = body_c
+        parts.append(a)
+    return parts
+
+
+def _melee_buffers(spec: dict, term: str):
+    """theMelee: the close-quarters strike. Two bodies inside arm's reach --
+    the striker leaning IN, its arm's whole swing written as a bright arc of
+    stations through the air (the theVerbs lesson: the eye averages the
+    movie, so the swing lives in one settled frame), ending at the contact
+    FLASH on the other's guard. No weapons, no distance: this is the verb
+    where the weapon is the body. Both frames at full strength."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # dark ground
+    n_g = 900
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 55.0 * np.sqrt(rng.random(n_g))
+    ground = np.zeros((n_g, NCOLS), dtype=np.float32)
+    ground[:, PX] = rr * np.cos(th)
+    ground[:, PY] = rr * np.sin(th)
+    ground[:, PZ] = rng.normal(0.0, 0.7, n_g) - 0.5
+    ground[:, TYPE] = 3.0; ground[:, ALPHA] = 0.25; ground[:, SIZE] = 2.4
+    ground[:, CR], ground[:, CG], ground[:, CB] = 0.36, 0.38, 0.36
+
+    striker = _figure(-14.0, (0.82, 0.80, 0.74), rng, lean=4.0, arm=(6.0, 11.0))
+    defender = _figure(14.0, (0.55, 0.58, 0.62), rng, lean=1.5, arm=(8.0, 12.0))
+
+    # the swing: an arc of bright stations from high-behind the striker's
+    # shoulder to the contact point on the defender's arm
+    n_s = 160
+    ts = np.linspace(0.0, 1.0, n_s)
+    swing = np.zeros((n_s, NCOLS), dtype=np.float32)
+    swing[:, PX] = -18.0 + 26.0 * ts
+    swing[:, PZ] = 17.0 - 6.0 * ts + 3.0 * np.sin(ts * np.pi)
+    swing[:, TYPE] = 3.0
+    swing[:, ALPHA] = (0.35 + 0.55 * ts).astype(np.float32)
+    swing[:, SIZE] = 1.3
+    swing[:, CR], swing[:, CG], swing[:, CB] = 1.00, 0.80, 0.40
+
+    # the contact flash where the arc lands
+    flash_pos = (8.0, 0.0, 11.5)
+    flash = _dots(flash_pos, 2.6, 50, (1.0, 0.85, 0.45), rng)
+    flash[:, ALPHA] = 0.95
+    flash_halo = _halo(flash_pos, 5.0, (1.0, 0.80, 0.40), rng, alpha=0.16, size=1.7)
+
+    settled = np.concatenate([ground] + striker + defender + [swing, flash, flash_halo], axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2833,7 +2915,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -3081,7 +3163,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers, "navigate": _navigate_buffers, "shoot": _shoot_buffers, "melee": _melee_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
