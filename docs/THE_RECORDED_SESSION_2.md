@@ -293,6 +293,20 @@ expected terms: mean align over those six ≥ 0.50, against the whole-sheet obje
 renders themselves do not carry material identity, which sends the work to GEOMETRY (the
 stone's sphere) and SHADING (the tuft's up-normals) with no instrument excuses left.
 
+**FALSIFIER FIRES** (2026-08-04, `blind_read/20260804_061925`): cropped mean **0.336** over the
+seven scored frames, under the 0.35 floor — and the readings are decisive in content, not just
+number. With omission impossible (the eye described the object every time): `stone_close` is
+"a white **spherical** object with a dotted texture" (0.0) — the eye names the geometry at
+point-blank range; `tuft_close` is "an **underwater** view" (0.0) — the tuft's green glow reads
+as water, not blades; the pile inverts (`pile_close` "bubbles" 0.2, `pile_session` "sandy
+surface" 0.85 — its identity survives range, not proximity); `tuft_session` 0.85 ("walking on
+grass" — the GROUND carries grass-ness, the tuft does not). The instrument is cleared; the
+renders themselves lack identity. The next rungs are exactly the two the membrane named:
+**GEOMETRY** (the stone's fibonacci sphere — a ball at any ink, any crop) and **SHADING** (the
+tuft's green-on-green glow — water, not blades). Instrument note: two stale `*_before.jpg`
+frames in `session_legibility/` were read harmlessly (no expected terms); the directory needs a
+clean rule if it feeds future reads.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
