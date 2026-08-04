@@ -582,6 +582,24 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     if _TILE_DIAG:
         _pt = per_tile.get(); _hot = int(_pt.max())
         if _hot > max_pt * _TILE_DIAG_AT:
+            # THE HOTTEST FIVE, not just the hottest one. A single maximum cannot tell a scene
+            # with one pathological tile from a scene that is uniformly close to the cap, and
+            # those want opposite fixes -- the first is a splat too large, the second is a
+            # density too high everywhere. It also shows WHERE they are, so "concentrated at the
+            # object's centre" becomes something you can read rather than assume.
+            _top = _pt.argsort()[::-1][:5]
+            for _r, _t in enumerate(_top):
+                _t = int(_t)
+                if _pt[_t] <= 0:
+                    break
+                print("[tile-diag]   #%d TILE (%4d,%4d): %6d/%d (%5.1f%%)"
+                      % (_r + 1, (_t % tiles_x) * tile_sz, (_t // tiles_x) * tile_sz,
+                         int(_pt[_t]), max_pt, 100.0 * _pt[_t] / max_pt), flush=True)
+            if int((_pt > max_pt).sum()):
+                print("[tile-diag]   *** %d TILE(S) OVER CAP %d -- the far splats in them are "
+                      "EVICTED, and if the survivors do not cover the tile you get a hard-edged "
+                      "black rectangle on the tile grid. Raise MAX_PER_TILE or shrink the splats."
+                      % (int((_pt > max_pt).sum()), max_pt), flush=True)
             _i = int(_pt.argmax())
             print("[tile-diag] busiest tile %d (px x=%d..%d y=%d..%d) holds %d of %d allowed; "
                   "%d tiles over cap; total expansions %d for %d splats"

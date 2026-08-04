@@ -121,7 +121,32 @@ def grow(folder: Path, parent: dict | None = None, depth: int = 0) -> None:
         grow(child, nums, depth + 1)
 
     if depth == 0:
+        _invalidate_viewer()
         _density_guard()
+
+
+def _invalidate_viewer() -> None:
+    """Tell a running live viewer that its cached buffers are now stale.
+
+    A grow rewrites numbers.json; the viewer's caches are keyed on the term alone and do not know
+    that. Without this the operator changes a free number, the world does not move, and the honest
+    conclusion available to them is that the control does nothing.
+
+    BEST EFFORT AND SILENT WHEN NOBODY IS LISTENING: growing from a prompt with no viewer running
+    is the normal case, and a connection error there is not news. Half a second is the whole budget
+    -- a grow must never wait on a UI that may not exist.
+    """
+    import os
+    if os.environ.get("CHIMERA_SKIP_VIEWER_INVALIDATE", "").strip() not in ("", "0", "false"):
+        return
+    try:
+        import urllib.request
+        port = os.environ.get("CHIMERA_VIEWER_PORT", "8080")
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/reload", timeout=0.5) as r:
+            r.read()
+        print("[viewer] caches invalidated")
+    except Exception:
+        pass                                  # no viewer running -- the normal case
 
 
 def _density_guard() -> None:
