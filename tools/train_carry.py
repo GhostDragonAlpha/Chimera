@@ -39,7 +39,7 @@ from world import load_body
 from stand_port import derive_stand_port, stand_reward, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac
 from grab_port import (derive_grab_port, stone_xml, spawn_stone, snap_stone_to_carry,
-                       support_stone_weight, RAMP_S, CARRY_RELPOS, STONE_BODY, WELD_NAME)
+                       support_stone_weight, RAMP_S, T_DROP, CARRY_RELPOS, STONE_BODY, WELD_NAME)
 from train_walk import foot_contact
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
@@ -92,14 +92,27 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": [], "sum": [], "sfc": []}
     pics, tot, n, fell = [], 0.0, 0, False
     ramp_steps = int(RAMP_S / m.opt.timestep)
+    drop_k = int(T_DROP / m.opt.timestep)       # v12: the set-down begins here
+    release_k = drop_k + ramp_steps             # the weld releases only AFTER the handoff
+    body_frac = 0.0                             # the share of the stone the BODY carries
     for k in range(steps):
         if k == snap_k:
             snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
             d.eq_active[eq] = 1                 # the weld engages SATISFIED -- no artifact
-        if k >= snap_k:
+        if snap_k <= k < drop_k:
             # v10: the stone keeps FULL mass+inertia always (v9's ~0-inertia hole closed);
             # the GIVER's hands taper off over RAMP_S -- a force, not a mass rewrite
-            support_stone_weight(m, d, mujoco, min(1.0, (k - snap_k + 1) / ramp_steps))
+            body_frac = min(1.0, (k - snap_k + 1) / ramp_steps)
+            support_stone_weight(m, d, mujoco, body_frac)
+        elif drop_k <= k < release_k:
+            # v12 (THE SET-DOWN): the hands take the weight BACK over the same RAMP_S --
+            # the arrival's number in reverse, 2.38 kg per control interval
+            body_frac = 1.0 - min(1.0, (k - drop_k + 1) / ramp_steps)
+            support_stone_weight(m, d, mujoco, body_frac)
+        elif k == release_k:
+            d.eq_active[eq] = 0                 # the giver HAS it -- zero residual
+            support_stone_weight(m, d, mujoco, 1.0)   # support zero: the stone free-falls
+            body_frac = 0.0
         if k % 20 == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
@@ -147,12 +160,16 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             # crouch prices the fraction the feet actually carry; only a true carry ~= 1.
             cr, cl = foot_contact(m, d, mujoco)
             psum = cr + cl
-            expect = wb + (wl if k >= snap_k else 0.0)
+            expect = wb + body_frac * wl       # v12: what the body ACTUALLY carries this
+                                               # step -- the set-down's taper, and wb alone
+                                               # after the release (the stone is the giver's)
             lf = min(max(psum / expect, 0.0), 1.0)
             sfc = 0.0
-            if k >= snap_k:
-                # v3: the stone-floor interface must read ZERO in the carry -- the
+            if snap_k <= k < release_k:
+                # v3: the stone-floor interface must read ZERO while WELDED -- the
                 # weld-hang measured 2026-08-04 routes the body's weight through it.
+                # v12: scoped to the welded window -- after the release the stone is
+                # SUPPOSED to land; a landed stone is not a load-path cheat.
                 sg, floors = evaluate._sg, evaluate._floors
                 f6 = np.zeros(6)
                 for ci in range(d.ncon):
@@ -235,7 +252,8 @@ def main() -> int:
     a = sys.argv
     turns = int(a[a.index("--turns") + 1]) if "--turns" in a else 24
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 32
-    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 4.0   # 1.0 s pre-snap + f6's 3.0 s carry window
+    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 6.0   # v12: f6's own horizon --
+                                               # 1.0 pre + carry + the set-down + the stand after
     init = a[a.index("--init") + 1] if "--init" in a else str(STAND_THETA)
     OUTDIR.mkdir(parents=True, exist_ok=True)
     if not Path(init).exists():
@@ -282,8 +300,8 @@ def main() -> int:
         held = min(tr["z"]) if tr["z"] else 0.0
         frac = 100 * held / P["OUT pelvis_target_m"]
         survived = len(tr["t"]) * 0.02
-        carry = [s for t, s in zip(tr["t"], tr["sum"]) if t >= T_SNAP + RAMP_S + 0.1]
-        sfl = [s for t, s in zip(tr["t"], tr["sfc"]) if t >= T_SNAP + RAMP_S + 0.1]
+        carry = [s for t, s in zip(tr["t"], tr["sum"]) if T_SNAP + RAMP_S + 0.1 <= t < T_DROP]
+        sfl = [s for t, s in zip(tr["t"], tr["sfc"]) if T_SNAP + RAMP_S + 0.1 <= t < T_DROP]
         ld = 100 * (float(np.mean(carry)) if carry else 0.0) / (evaluate._wb + evaluate._wl)
         sf = 100 * (float(np.mean(sfl)) if sfl else 0.0) / evaluate._wl
         ok = frac >= 80.0 and survived >= secs - 0.01 and ld >= 80.0 and sf <= 20.0

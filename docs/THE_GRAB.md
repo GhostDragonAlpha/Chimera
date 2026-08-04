@@ -957,3 +957,56 @@ release — v12, THE SET-DOWN — plus the phase-1 instrument separation.
 M8's sentence "pick up the stone, feel its weight through the body's own
 load path" is true on camera for the first time; the port closes when
 the body can also put it down.
+
+---
+
+**v12 — THE SET-DOWN (stated 2026-08-04, before the build).**
+
+**STATEMENT.** Run 13 measured the release killing the carry: the
+trainer's 4.0 s episode ends exactly at the drop with the weld engaged
+throughout, so no candidate ever lived a release, and the policy's
+lean-back — baked into open-loop terms, with no load channel in the
+observations (z, pitch, roll only) — is pure liability when 421 N
+vanishes in one timestep. It is v8's 20 ms killer run in reverse, and it
+has v8's answer: the physical event is a SET-DOWN, the handoff in
+reverse. At T_DROP the giver's hands take the weight back — the support
+ramps 0 to full over the same derived 0.5 s, the body's load vanishing
+at 2.38 kg per control interval, the arrival's number kept — and ONLY
+THEN does the weld release, with zero residual, the stone free-falling
+from the carry pose to rest. The episode becomes the full cycle: stand,
+pick up, carry, set down, stand — f6's own 6.0 s horizon, the weld
+releasing at T_DROP + RAMP_S inside every candidate's life. Three
+instrument debts close with the same build: the load factor's
+expectation must track what the body actually carries through the
+set-down (`wb + body_frac * wl`, not "the stone forever once snapped");
+the stone-floor anti-exploit check must scope to the welded window (a
+landed stone is not a load-path cheat — after the release it is
+SUPPOSED to be on the floor); and f6's phase-3 window must start after
+the handoff completes (T_DROP + RAMP_S + 0.1), same event, trainer and
+judge changing together — the run-4/5 lesson.
+
+**PREDICTION.** Warm-started from run 13's carry best, the full-cycle
+retrain passes f6 phase 3 — plantar returns to baseline ±20% after the
+handoff, the body still standing at t = 6.0 — WITHOUT giving back phase
+2 (pelvis >= 80% through the carry). One policy class spans both states
+because the re-balance is the catch's feedback run backward through the
+same taper.
+
+**FALSIFIERS (named before the run).**
+
+1. **The full-cycle retrain still falls after the release** — the
+   z/pitch/roll policy class cannot represent both loaded and unloaded
+   posture, and the observation needs a load channel (the weld's own
+   constraint force, which the body physically has through its hands).
+   Named, not built, unless this fires.
+2. **The stone does not rest at 0.175 ± 0.05 after the handoff** (it
+   hovers, or the release throws it) — the event model is wrong, not
+   the policy.
+3. **Phase 2 regresses below 0.80 in the full-cycle run** — the cycle
+   traded the carry away; one policy class does not span both states.
+
+**The phase-1 question, carried from run 13 and answered in run 14's
+verdict, not by a build:** the +302.6/+421 N shortfall splits into
+windowed-mean noise vs a real deficit by the quasi-static check — a
+motionless hold must read exactly wb + wl, or f6's windows are lying.
+Measured on run 14's own trace; no code changes for it.

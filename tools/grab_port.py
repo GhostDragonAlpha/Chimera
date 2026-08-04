@@ -177,6 +177,10 @@ RAMP_S = 0.5   # v9: the weight's ARRIVAL time at the event. v8 measured the zer
                # is instantaneous. The weld engages satisfied exactly as v4 wrote it; the
                # stone's MASS then arrives over this window -- a boundary-condition
                # refinement, explicitly not a trajectory and not a pose script.
+T_DROP = 4.0   # v12 (THE SET-DOWN): the giver's hands take the weight back starting here,
+               # over the same RAMP_S; the weld releases at T_DROP + RAMP_S with zero
+               # residual. f6 owns the judge's clock (T_GRAB, SECS); the PORT owns this one
+               # because trainer and judge must drive the same event (the run-4/5 lesson).
 
 
 def ramp_stone_weight(m, d, mujoco, frac, _full={}):

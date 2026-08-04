@@ -46,7 +46,7 @@ from stand_port import derive_stand_port, MYOBODY                        # noqa:
 from train_stand import joint_ids, seat_in_limits                        # noqa: E402
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,          # noqa: E402
                        snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME,
-                       support_stone_weight, RAMP_S)
+                       support_stone_weight, RAMP_S, T_DROP)               # noqa: E402
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from parser import Parser, default_registry, Formula, OVERLAY            # noqa: E402
 
@@ -54,8 +54,7 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 CARRY_THETA = OUTDIR / "carry_theta.npy"
 T_GRAB = 1.0                    # the weld engages here (held from t=0; inside reach by design)
-T_DROP = 4.0                    # the weld releases here
-SECS = 6.0
+SECS = 6.0                      # T_DROP lives in grab_port (v12): trainer and judge, one event
 UPRIGHT_FRAC = 0.80
 LOAD_TOL = 0.20                 # the delta must land within 20% of weight_N (zones' blind spot
                                 # cancels in the delta; 20% is the membrane's own tolerance shape)
@@ -105,14 +104,25 @@ def run() -> int:
     tr = {k: [] for k in ("t", "z", "sum", "sz", "weld")}
     pics, dropped, grabbed = [], False, False
     grab_k = None                 # the sim step of the event; the v9 ramp counts from it
+    drop_k = int(T_DROP / m.opt.timestep)           # v12: the set-down BEGINS here
+    ramp_steps = int(RAMP_S / m.opt.timestep)
+    release_k = drop_k + ramp_steps                 # the weld releases AFTER the handoff
     for k in range(steps):
         t = k * m.opt.timestep
         if grabbed:
-            # v10: the stone keeps FULL mass+inertia always (v9's ~0-inertia hole closed);
-            # the GIVER's hands taper off over RAMP_S -- trainer and judge drive the same
-            # event (the run-4/5 lesson), and the bars judge the carry AFTER arrival.
-            support_stone_weight(m, d, mujoco,
-                                 min(1.0, (k - grab_k + 1) / int(RAMP_S / m.opt.timestep)))
+            # v10/v12: FULL mass+inertia always; the giver's hands taper off over RAMP_S
+            # on arrival (v10) and take the weight BACK over the same RAMP_S on the
+            # set-down (v12) -- trainer and judge drive the same event (run-4/5 lesson),
+            # and the bars judge the carry AFTER arrival completes (windows below).
+            if k < drop_k:
+                support_stone_weight(m, d, mujoco,
+                                     min(1.0, (k - grab_k + 1) / ramp_steps))
+            elif k < release_k:
+                support_stone_weight(m, d, mujoco,
+                                     1.0 - min(1.0, (k - drop_k + 1) / ramp_steps))
+            elif k == release_k:
+                d.eq_active[eq] = 0               # the giver HAS it -- zero residual
+                support_stone_weight(m, d, mujoco, 1.0)   # support zero: free fall to rest
         if k % CTRL_EVERY == 0:
             if not grabbed and t >= T_GRAB:
                 snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
@@ -120,8 +130,9 @@ def run() -> int:
                 grabbed = True
                 grab_k = k
             if not dropped and t >= T_DROP:
+                # v12: the INTENTION to release starts the set-down; the weld itself
+                # releases at release_k, after the handoff (the step loop owns it).
                 PARSER.set_verb("GRAB", False)
-                d.eq_active[eq] = 0        # the harness owns the RELEASE (grab_port, stated)
                 dropped = True
             z = float(d.qpos[2])
             q = d.qpos[3:7]
