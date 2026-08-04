@@ -42,6 +42,7 @@ from stand_port import derive_stand_port, stand_reward, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,
                        CARRY_RELPOS, STONE_BODY, WELD_NAME)
+from train_walk import foot_contact
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
@@ -82,6 +83,15 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     """
     nu = m.nu
     jids = joint_ids(m, mujoco)
+    if not hasattr(evaluate, "_wb"):
+        # THE LOAD PATH, PRICED (THE_GRAB v2): the feet must carry what the world holds.
+        # Derived from the model -- total mass minus the stone, times the world's own g;
+        # the stone's weight from the same model. No chosen constant: the conservation law.
+        sb = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)
+        gm = float(np.linalg.norm(m.opt.gravity))
+        evaluate._wb = float(m.body_mass.sum() - m.body_mass[sb]) * gm
+        evaluate._wl = float(m.body_mass[sb]) * gm
+    wb, wl = evaluate._wb, evaluate._wl
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
@@ -92,7 +102,7 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
-    tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": []}
+    tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": [], "sum": []}
     pics, tot, n, fell = [], 0.0, 0, False
     for k in range(steps):
         if k == snap_k:
@@ -116,9 +126,16 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
                 fell = True
             jf = joint_frac(d, jids)
             r, _ = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
+            # THE LOAD FACTOR: the loophole-closer. Airborne prices 0; the floor-rest
+            # crouch prices the fraction the feet actually carry; only a true carry ~= 1.
+            cr, cl = foot_contact(m, d, mujoco)
+            psum = cr + cl
+            expect = wb + (wl if k >= snap_k else 0.0)
+            r *= min(max(psum / expect, 0.0), 1.0)
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["z"].append(z)
             tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r); tr["jf"].append(jf)
+            tr["sum"].append(psum)
         if fell:
             break
     if ren is not None:
@@ -141,8 +158,16 @@ def draw_turn(turn, P, tr, pics, hist, path):
     ax.plot(tr["t"], tr["z"], color="#c0392b", lw=1.9, label="pelvis")
     ax.axhline(tgt, color="#1a7f37", lw=2.2, label=f"derived target {tgt:.4f} m")
     ax.axhline(0.8 * tgt, color="#1a7f37", ls="--", lw=1.3, label="80% — f6's carry bar")
-    ax.set_xlabel("s"); ax.set_ylabel("m"); ax.legend(fontsize=7)
-    ax.set_title("THE CARRY: pelvis height", fontsize=9)
+    ax.set_xlabel("s"); ax.set_ylabel("m"); ax.legend(fontsize=7, loc="upper right")
+    ax.set_title("THE CARRY: pelvis height + THE LOAD PATH", fontsize=9)
+    if tr.get("sum"):
+        ax2 = ax.twinx()
+        ax2.plot(tr["t"], tr["sum"], color="#7f8c8d", lw=1.0, alpha=0.7, label="plantar N")
+        for y, c, lbl in ((evaluate._wb, "#b7950b", "body"), (evaluate._wb + evaluate._wl, "#1a7f37", "body+stone")):
+            ax2.axhline(y, color=c, ls=":", lw=1.0)
+            ax2.text(tr["t"][-1], y, f" {lbl}", color=c, fontsize=6, va="bottom")
+        ax2.set_ylabel("plantar sum (N)", color="#7f8c8d", fontsize=7)
+        ax2.set_ylim(0, 1.3 * (evaluate._wb + evaluate._wl))
     ax = fig.add_subplot(gs[1, 1])
     hw, hl = P["OUT bos_half_lat_m"], P["OUT bos_half_fore_m"]
     ax.add_patch(matplotlib.patches.Rectangle((-hw, -hl), 2 * hw, 2 * hl, alpha=0.18,
@@ -197,7 +222,7 @@ def main() -> int:
     print(f"\nTRAINING THE CARRY PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, g {g:.4f}, "
           f"stone {G['OUT stone_mass_kg']:.2f} kg on the floor, SNAP at {T_SNAP:.1f} s, "
           f"horizon {secs:.1f} s = 1.0 pre + f6's window")
-    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}  verdict")
+    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}{'load':>8}  verdict")
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
         cand[0] = mu                            # the incumbent is always a candidate (train_stand)
@@ -211,13 +236,15 @@ def main() -> int:
         held = min(tr["z"]) if tr["z"] else 0.0
         frac = 100 * held / P["OUT pelvis_target_m"]
         survived = len(tr["t"]) * 0.02
-        ok = frac >= 80.0 and survived >= secs - 0.01     # f6's bar, f6's horizon
+        carry = [s for t, s in zip(tr["t"], tr["sum"]) if t >= T_SNAP + 0.2]
+        ld = 100 * (float(np.mean(carry)) if carry else 0.0) / (evaluate._wb + evaluate._wl)
+        ok = frac >= 80.0 and survived >= secs - 0.01 and ld >= 80.0   # f6's bars, all three
         hist.append((turn, float(scores[order[0]])))
         if float(scores[order[0]]) > best_ever[0]:
             best_ever = (float(scores[order[0]]), cand[order[0]].copy())
         print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
-              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}  "
-              f"{'PROVEN' if ok else 'not yet'}")
+              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
+              f"{ld:>7.0f}%  {'PROVEN' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"carry_turn_{turn:02d}.png")
     np.save(CARRY_THETA, best_ever[1])
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}) to {CARRY_THETA}")

@@ -182,3 +182,47 @@ theta (backed up to `carry_theta.crouch.bak.npy`): it knows the hold;
 the catch is the new lesson. Smoke test: the crouch theta survives the
 snap + 0.5 s at 80% pelvis MIN — the catch is not instantly fatal,
 which means the gradient into it exists. 48×32 running.
+
+**Run 5 — VERDICT: the search found the LOOPHOLE, not the carry. The
+crouch-hold is a floor-rest, measured by f6's own phase 1.** Nine
+full-window survivors (score ≈ −0.003, pelvis 51–59%), and f6 on the
+saved one reads: plantar sum BELOW baseline through the carry, stone z
+= 0.175 m (its radius) from t≈2.3 s on. **The "carried" stone is
+sitting on the floor.** The weld is active and the constraint force is
+~0: crouch deep enough and the carry pose IS the floor, the floor bears
+the 421 N, and the hold is free. Falsifier 1's exact shape — "the weld
+is decorative and the load is fake" — produced by the optimizer, not by
+a broken weld. Nothing in `stand_reward` prices the load path, so the
+search routed around the load: the exploit is the product, again. (Also
+measured, same f6: a 22 kN snap spike and an airborne arc — the snap
+impulse is priced nowhere either. And a launch mistake, published per
+rule 17: run 5 warm-started from STAND theta, not the crouch — a
+missing `--init` — which cost nothing, the crouch was a dead end, but
+the record says what ran.)
+
+## AMENDMENT — v2: PRICE THE LOAD PATH (stated before the run)
+
+**STATEMENT.** A carry is a conservation law, not a pose: welded or
+not, body + stone are borne by the feet, and the plantar sum is the
+ledger that cannot be faked — the stone resting on the floor shows up
+there instantly. Training without that term grades the pose and invites
+the floor-rest. The fix is to price falsifier 1's OWN quantity in the
+search: post-snap, reward ×= clip(plantar_sum / (W_body + W), 0, 1),
+W_body = (total model mass − stone) × g — derived from the model, no
+chosen constant, the multiplicative form `stand_reward` already uses
+(and the form the other agent's M3 score work just vindicated). Going
+airborne prices as zero (sum = 0 in flight); floor-resting prices as
+~0.3–0.7; only a true carry prices ≈ 1.
+
+**PREDICTION.** With the load path priced, survivors stop floor-resting:
+the plantar sum through the carry reads ≈ baseline + 421 N, and f6's
+phase 1 passes (delta within 20% of weight_N) — phases 2 and 3's bars
+unmoved.
+
+**FALSIFIERS.** 1. Survivors still floor-rest — the loophole is
+elsewhere, published. 2. NO survivor emerges at all with the term
+priced — the standing catch-and-carry is beyond this body's strength at
+any of 48×32 settings, falsifier 2's numbers arrive, and the finding
+becomes the stone (73% of model mass, THE HUMAN's dial). 3. The sum
+rises but phases 2/3 collapse — the posture and the load trade against
+each other, published as the measurement.
