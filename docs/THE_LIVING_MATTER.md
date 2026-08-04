@@ -60,9 +60,10 @@
 > defaults, tissue type mapping tested on ordering only.
 > TISSUE K_IC RESEARCHED (Phase 3d): bone Griffith-legal (124–735 J/m²),
 > muscle/skin docked at measured tearing energies (apparent), tendon's band
-> open. Next: metal via per-type λ or frozen_type skeleton (both named,
-> operator's call), the tissue-scramble rupture run (3d's prediction), or
-> the operator's pick.**
+> open. Next: metal via frozen_type skeleton ONLY — Phase 6 closed the
+> per-type λ route (0/14,246 at λ_m = 1.4 AND 2.8; the survival law's form
+> is dead, the runaway-drive post-mortem stated), the tissue-scramble
+> rupture run (3d's prediction), or the operator's pick.**
 
 ---
 
@@ -1103,6 +1104,53 @@ preserved.
    recorded equilibria (rock's bleed ≫ 4%) or the rock < ice < sand ordering
    inverts. The jail is then not type-local; per-type λ leaks through the shared
    interface dynamics.
+
+*VERDICT (2026-08-04, runs: `cd Chimera && python -m core.matter_derive
+--metal-jail` and `--metal-jail --lam-m 2.8`, 200 sweeps, 96³, the exact
+nucleation protocol).* **FIRED — falsifier 1 at BOTH points. The law's FORM is
+dead: `drive < 2λ×population` is not the survival condition. Per-type λ cannot
+jail metal at any tested strength; the frozen_type skeleton is the only named
+route left.**
+
+Measured:
+
+- **λ_m = 1.4 (jail 39,889, margin +5.9%): metal 0/14,246.** The differential
+  arm ate the seeds exactly as at uniform λ = 0.9. The uniform control kept
+  them (14,236/14,246) — the extinction is J-driven, not protocol.
+- **λ_m = 2.8 (jail 79,778, margin +112%): metal 0/14,246.** The pre-named
+  diagnostic, and it is the decisive one: doubling the predicted-sufficient
+  jail changed NOTHING. Not a softer coefficient — the functional form is
+  wrong. Falsifier 2's noise band is moot: extinction at +112% margin kills
+  the constants and the form together.
+- **Falsifier 3 PASS at both points:** rock < ice < sand preserved (14.0 <
+  20.5 < 28.2 at 1.4; 14.1 < 17.2 < 34.2 at 2.8), rock's bleed −1,158/−1,173
+  vs the recorded −1,161 equilibrium, other drifts ≤ ±215. **The per-type λ
+  knob IS type-local** — that clause of the machinery survives and is now
+  measured, even though it cannot jail metal.
+- Trace sanity: H falls 5.33e9 → 3.50e8 (1.4) / 6.34e8 (2.8); the machine
+  minimizes; the extinction is the minimized state.
+
+**The post-mortem hypothesis (stated, not yet tested).** The law treated the
+drive as a constant, and the membrane's own caveat named the hole: erosion is
+layer-by-layer from the surface, so as the seed shrinks its surface-per-cell
+RISES and the per-cell drive grows with it — a runaway a static inequality
+cannot jail at any finite λ. The equilibrium reading of the dead law predicted
+erosion should stop at deficit D* = drive/2λ (13,456 at 1.4, 6,728 at 2.8 —
+53% survival at 2.8, above the bar); measured 0 at both, consistent with a
+drive that grows as D grows. This mechanism is a claim to be tested by the
+frozen_type membrane's design run, not by another λ point — the λ question is
+CLOSED by the two extinctions above.
+
+**What survives, published per Rule 17:**
+
+1. **`drive < 2λ×population` is dead as a survival law.** It reconciled three
+   runs at one λ and failed its first extrapolation twice. The three-run
+   reconciliation is now recorded as coincidence of operating point, not law.
+2. **Per-type λ is a measured type-local population jail** (leak checks pass
+   at 1.4 and 2.8) — useful machinery, wrong tool for metal.
+3. **Metal's only named route is the frozen_type skeleton** (structure, not
+   tissue — `open_lattice(frozen_type=...)`, already in the kernel). Its
+   membrane owes the runaway-drive test above.
 
 ---
 

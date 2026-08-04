@@ -227,10 +227,15 @@ if __name__ == "__main__":
                          "scramble — survival and compactness verdict")
     ap.add_argument("--fracture", action="store_true",
                     help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
+    ap.add_argument("--lambda", dest="lam_derived", action="store_true",
+                    help="Phase 5: per-tissue lambda derived from measured bulk moduli")
     ap.add_argument("--metal-jail", dest="metal_jail", action="store_true",
                     help="Phase 6: the nucleation protocol with per-type lambda — "
                          "metal jailed at 1.4 (2*1.4*T > drive 37,676), all other "
                          "families at rung-1's 0.9")
+    ap.add_argument("--lam-m", dest="lam_m", type=float, default=1.4,
+                    help="Phase 6's metal lambda (default 1.4; 2.8 is the membrane's "
+                         "ONE pre-named diagnostic if falsifier 1 fires)")
     a_ns = ap.parse_args()
 
     if a_ns.lam_derived:
@@ -458,7 +463,7 @@ if __name__ == "__main__":
         r0 = float(np.sqrt((m0[1] - cy) ** 2 + (m0[2] - cx) ** 2).mean())
         DRIVE_METAL = 37_676    # the derived face-erosion drive (ledger, Phase 4
                                 # nucleation post-mortem, 18-connectivity check)
-        lam_m = 1.4
+        lam_m = a_ns.lam_m
         lam = {t: 0.9 for t in mats}
         lam[WMETAL] = lam_m
         jail = 2.0 * lam_m * n0
