@@ -33,7 +33,14 @@ sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 # quartzite density (Schoen 2011); this port reads them. world.py owns gravity (theHuman).
 from world import gravity                                          # noqa: E402
 
-CARRY_RELPOS = (0.45, 0.15, -0.15)     # the stated weld pose in the torso frame (see module doc)
+# The torso frame, MEASURED 2026-08-04 with the body standing (probe in the run-12 verdict,
+# THE_GRAB.md): local X points DOWN (world [-0.26,-0.11,-0.96]), local Y points LEFT, local Z
+# points FORWARD (world [0.96,-0.09,-0.25]). The v10 pose (0.45, 0.15, -0.15) read X as forward
+# and materialized the stone 0.115 m INSIDE femur_l -- the contact solver's expulsion of a
+# 59.49 kg stone was the f6 launch, falsifier 1. The corrected pose keeps the original intent
+# (two-arm front carry, ~0.4 m out) in the frame the torso actually HAS, and is measured
+# collision-free over the full 1.0-2.0 s sway envelope (never touches any body geom).
+CARRY_RELPOS = (0.10, 0.00, 0.40)      # 0.10 m down, centred, 0.40 m forward of the torso
 STONE_BODY = "stone"
 WELD_NAME = "stone_carry"
 
@@ -103,8 +110,14 @@ def stone_xml(xml_path, port) -> "Path":
              f'    <geom type="sphere" size="{r:.4f}" mass="{mass:.3f}"/>\n'
              "  </body>\n")
     cx, cy, cz = CARRY_RELPOS
+    # body1=torso, body2=stone: MuJoCo's weld relpose is the pose of body2 IN BODY1's frame,
+    # so the constraint below reads exactly "the stone held at CARRY_RELPOS in the torso
+    # frame" -- the same landmark the snap writes. MEASURED 2026-08-04 (run 12): the v10
+    # order body1=stone/body2=torso INVERTED it -- the solver's target was 2x the carry
+    # offset away (0.82 m constant violation), which is what launched body and stone at
+    # full inertia. The weld had never once engaged satisfied before this fix.
     weld = ("  <equality>\n"
-            f'    <weld name="{WELD_NAME}" body1="{STONE_BODY}" body2="torso" active="false"\n'
+            f'    <weld name="{WELD_NAME}" body1="torso" body2="{STONE_BODY}" active="false"\n'
             f'          relpose="{cx:.4f} {cy:.4f} {cz:.4f} 1 0 0 0"/>\n'
             "  </equality>\n")
     text = src.read_text(encoding="utf8")
@@ -134,6 +147,13 @@ def snap_stone_to_carry(m, d, mujoco):
     same way at the event boundary as spawn_stone computes the floor spawn at the reset:
     one qpos write, explicitly NOT a trajectory and NOT a pose-scripted frame. The weld
     then engages SATISFIED, and what arrives is 421 N of stone -- the physics under test.
+
+    Run-12 addendum (2026-08-04): "engages SATISFIED" was CLAIMED here from v4 and was
+    never true until run 12 -- the weld's body1/body2 order inverted the relpose (0.82 m
+    phantom violation, measured), and the carry pose itself read the torso frame as
+    X-forward when its X points DOWN. Both fixed in grab_port (see the weld comment and
+    CARRY_RELPOS). The event probe now holds the pelvis 0.951 -> 0.966 m through the
+    whole taper with zero plantar spike.
     """
     import numpy as np
     torso = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "torso")
@@ -177,6 +197,19 @@ def ramp_stone_weight(m, d, mujoco, frac, _full={}):
     m.body_mass[body] = m0 * f
     m.body_inertia[body] = i0 * f
     mujoco.mj_setConst(m, d)
+
+
+def support_stone_weight(m, d, mujoco, frac):
+    """v10 (THE HANDOFF, THE_GRAB.md): the giver's hands. The stone keeps FULL mass
+    and inertia at every instant; an upward boundary force carries (1 - frac) of its
+    weight, tapered to zero over the arrival window. The body feels frac * W growing
+    -- v9's 0.5 s arrival kept, the ~0-inertia hole closed. xfrc_applied persists
+    until rewritten, so callers set it every step during the taper and write frac 1
+    (zero support) once when the arrival completes and at every reset."""
+    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)
+    w = float(m.body_mass[body]) * abs(float(m.opt.gravity[2]))
+    d.xfrc_applied[body] = [0.0, 0.0, (1.0 - min(max(float(frac), 0.0), 1.0)) * w,
+                            0.0, 0.0, 0.0]
 
 
 def spawn_stone(m, d, mujoco, port):

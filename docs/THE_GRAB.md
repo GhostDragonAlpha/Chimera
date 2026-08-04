@@ -712,6 +712,41 @@ was no survivor with the ramp, but what failed is the EVENT MODEL, not
 the body's sustained strength — the dial question does not return to THE
 HUMAN on this evidence.
 
+**v10 — THE HANDOFF (stated 2026-08-04, before the build).**
+
+**STATEMENT.** v9's prediction was right and its mechanism was wrong. The
+arrival must be spread over ~0.5 s (v8 measured the 20 ms killer), but
+spreading it through mass+inertia routes through ~0 inertia and lands in
+the solver's degenerate constraint (run 11: the suspension, plantar 0/0,
+nothing falling). The event the membrane always meant is a HANDOFF: the
+stone at FULL mass and FULL inertia at every instant, with the giver's
+hands supporting (1 − frac)·W of its weight, tapered to zero over the
+arrival window. The body feels frac·W growing at 2.38 kg per control
+interval — v9's number, kept — and the solver never sees a degenerate
+body. The support is a boundary force at the event (`xfrc_applied`), the
+same discipline as the snap's one write; no trajectory, no pose script,
+and no chosen constants beyond the membrane's already-stated 0.5 s.
+
+**PREDICTION (not yet measured).** The frontal STAND policy — NO retrain
+— catches and holds the tapered stone: f6 phase 1, the plantar delta
+lands within 20% of 421 N measured after arrival completes; phase 2,
+pelvis ≥ 80% of target through the carry window (under the repaired
+clean-window guard); phase 3, the drop returns to the unloaded band and
+the stone rests at its radius.
+
+**FALSIFIERS (named before the run).**
+
+1. **The suspension or the explosion reappears at full inertia** —
+   plantar 0 with the pelvis up, or QACC instability — the degeneracy
+   was never the inertia; the weld event itself is broken and the next
+   membrane goes after the weld.
+2. **The load path is real and the body still buckles** (the delta
+   lands, then the sink and the buckle, as v8) — the catch genuinely
+   exceeds the reactive law at 72.5% of body weight, and the pick-up
+   becomes M8b's motion to build, with these numbers as its brief.
+3. **A pass with a fake load path** (delta right but stone-floor
+   nonzero, or any suspension) — the exploit audit reopens.
+
 **v10's question, named before anything is built:** the arrival must not
 pass through ~0 inertia. The physical event is a load TRANSFER: the
 stone at full mass, gripped while it rests on the floor, the floor
@@ -727,3 +762,69 @@ load the joints gaussian zeroes the signal for every candidate, so the
 search cannot rank a true carry against a suspension even though the
 load factor prices them correctly — the reward's form, third time, is
 the wall.
+
+---
+
+**RUN 12 — v10 VERDICT (2026-08-04): F6 FAIL, falsifier 2 fires. The weld
+event was broken twice underneath every prior run; fixing it is this run's
+payload. The no-retrain prediction is refuted — the catch becomes M8b's
+brief, with numbers.**
+
+The v10 build (support taper, full inertia) was tested as stated: the
+frontal stand policy, no retrain, against f6. Falsifier 1 fired on the
+first run — and the post-mortem found the weld event broken in **two
+independent ways that had been there since v4**, invisible at ~0 inertia:
+
+1. **The carry pose was written in the wrong frame.** `CARRY_RELPOS`
+   (0.45, 0.15, −0.15) read the torso frame as X-forward. Measured with
+   the body standing (pelvis 0.951): torso local X points DOWN
+   ([−0.26, −0.11, −0.96]), Y points LEFT, Z points FORWARD. The stated
+   pose materialized the 59.49 kg stone **0.115 m inside femur_l**
+   (solver's own contact pass). The expulsion was the f6 launch: pelvis
+   0.95 → 1.55 m, stone z to 1.75, two 4 kN plantar spikes. A real-contact
+   clearance sweep over the 1.0–2.0 s sway envelope found
+   **(0.10, 0.00, 0.40)** — 0.10 m down, centred, 0.40 m forward — never
+   touches any body geom. That is the carry pose now, same intent, the
+   frame the torso actually has.
+2. **The weld's relpose was INVERTED, and had never once been satisfied.**
+   MuJoCo's weld relpose is the pose of body2 in body1's frame; the XML
+   had `body1=stone body2=torso relpose=CARRY_RELPOS` — stone-in-torso
+   where torso-in-stone was required. Measured after the snap:
+   torso-in-stone = (−0.0997, 0.0009, −0.4002) against a stored target of
+   (+0.1, 0, +0.4) — a **0.82 m constant violation**, twice the carry
+   offset, at every carry in every run since v4. The snap's docstring
+   claimed the weld "engages SATISFIED"; it never did. With v9's ~0-mass
+   stone the phantom yank had nothing to move; at full inertia it threw
+   the system. Fixed by swapping to `body1=torso body2=stone`, which makes
+   the constraint read exactly what the snap writes.
+
+With both repaired, the event probe is clean: no launch, pelvis 0.951 →
+0.966 m through the whole 0.5 s taper, the load arriving at 2.38 kg per
+control interval as stated. (One grazing stone/femur_r contact, −2 mm,
+appears only under full load — the stone resting against the thigh, which
+is how a person carries a heavy rock. Physical, kept.)
+
+Then the stated test ran: stand_theta, no retrain, f6. **FAIL — and the
+failure is physics, not artifact.** The plantar delta lands: 642.7 → 1100 N
+peak (+457 N ≈ the stone's 421 N weight). The body **catches** the load and
+holds it for ~1.0 s (pelvis 0.99 m to t≈2.0), then pitches slowly forward
+and buckles by t≈2.8. Phase bars read: (1) +181 N in the window vs +421 N
+required — FAIL; (2) pelvis MIN 0.186 m — FAIL; (3) drop FAIL with the
+body already down. **Falsifier 2 fires, cleanly, as written:** the load
+path is real and the body buckles — the catch exceeds the reactive law at
+73% of body weight held 0.40 m in front. The no-retrain prediction is
+refuted.
+
+**What run 12 settles.** (a) The weld event is now physically true for the
+first time — every carry number before this run was measured against a
+0.82 m phantom, which reframes but does not invalidate the exploit classes
+runs 1–10 priced (they priced trainer/judge asymmetries, not the weld).
+(b) F3's unloaded stand is untouched — no ligament, no policy, no landmark
+moved; only the stone's event changed. (c) The catch is now a TRAINING
+problem exactly as the membrane routed: a 421 N load at a 0.40 m lever
+(~170 N·m pitch moment at the torso) must be met by a policy that can
+anticipate it. The frozen frontal stand holds it one second and falls —
+that number is M8b's brief. (d) The dark score is now the binding
+instrument debt: the retrain cannot rank candidates until the joints
+gaussian stops zeroing the reward under load (run 11, third appearance).
+The dark-score membrane is stated next, before any retrain runs.

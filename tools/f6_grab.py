@@ -46,7 +46,7 @@ from stand_port import derive_stand_port, MYOBODY                        # noqa:
 from train_stand import joint_ids, seat_in_limits                        # noqa: E402
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,          # noqa: E402
                        snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME,
-                       ramp_stone_weight, RAMP_S)
+                       support_stone_weight, RAMP_S)
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from parser import Parser, default_registry, Formula, OVERLAY            # noqa: E402
 
@@ -72,6 +72,8 @@ def run() -> int:
     # use is printed -- an instrument that will not say which policy it graded is the
     # species this project keeps getting caught by.
     theta_path = CARRY_THETA if CARRY_THETA.exists() else STAND_THETA
+    if len(sys.argv) > 1:
+        theta_path = Path(sys.argv[1])   # e.g. the frontal stand_theta, NO retrain (v10's test)
     theta = np.load(theta_path)
     P, S = derive_grab_port(), derive_stand_port()
     path = stone_xml(MYOBODY, P)
@@ -106,11 +108,11 @@ def run() -> int:
     for k in range(steps):
         t = k * m.opt.timestep
         if grabbed:
-            # v9: the weight ARRIVES over RAMP_S from the grab step -- trainer and judge
-            # drive the same event (the run-4/5 lesson), and the bars judge the carry
-            # AFTER arrival completes (windows below).
-            ramp_stone_weight(m, d, mujoco,
-                              min(1.0, (k - grab_k + 1) / int(RAMP_S / m.opt.timestep)))
+            # v10: the stone keeps FULL mass+inertia always (v9's ~0-inertia hole closed);
+            # the GIVER's hands taper off over RAMP_S -- trainer and judge drive the same
+            # event (the run-4/5 lesson), and the bars judge the carry AFTER arrival.
+            support_stone_weight(m, d, mujoco,
+                                 min(1.0, (k - grab_k + 1) / int(RAMP_S / m.opt.timestep)))
         if k % CTRL_EVERY == 0:
             if not grabbed and t >= T_GRAB:
                 snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event

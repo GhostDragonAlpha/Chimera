@@ -39,7 +39,7 @@ from world import load_body
 from stand_port import derive_stand_port, stand_reward, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac
 from grab_port import (derive_grab_port, stone_xml, spawn_stone, snap_stone_to_carry,
-                       ramp_stone_weight, RAMP_S, CARRY_RELPOS, STONE_BODY, WELD_NAME)
+                       support_stone_weight, RAMP_S, CARRY_RELPOS, STONE_BODY, WELD_NAME)
 from train_walk import foot_contact
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
@@ -82,8 +82,8 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
     spawn_stone(m, d, mujoco, G)            # the stone ON THE FLOOR (part of the reset)
-    ramp_stone_weight(m, d, mujoco, 1.0)    # v9: a previous candidate may have fallen
-                                            # mid-arrival; the world resets at FULL mass
+    support_stone_weight(m, d, mujoco, 1.0) # v10: mass never scales; a previous candidate
+                                            # may have fallen mid-taper -- support resets to ZERO
     snap_k = int(T_SNAP / m.opt.timestep)
     tgt = P["OUT pelvis_target_m"]
     steps = int(secs / m.opt.timestep)
@@ -97,8 +97,9 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
             d.eq_active[eq] = 1                 # the weld engages SATISFIED -- no artifact
         if k >= snap_k:
-            # v9: the weight ARRIVES over RAMP_S -- 0.119 kg per sim step, never a teleport
-            ramp_stone_weight(m, d, mujoco, min(1.0, (k - snap_k + 1) / ramp_steps))
+            # v10: the stone keeps FULL mass+inertia always (v9's ~0-inertia hole closed);
+            # the GIVER's hands taper off over RAMP_S -- a force, not a mass rewrite
+            support_stone_weight(m, d, mujoco, min(1.0, (k - snap_k + 1) / ramp_steps))
         if k % 20 == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
