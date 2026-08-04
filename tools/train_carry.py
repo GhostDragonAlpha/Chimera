@@ -12,6 +12,13 @@ carry window (T_GRAB+0.2 .. T_DROP). This trains at EXACTLY that horizon -- secs
 a proxy. train_stand's own docstring records being burned by a 1.0 s proxy satisfying a 5 s
 requirement; the carry does not repeat it.
 
+v17 (THE LOWERING, THE_GRAB.md): the set-down is a LOWERING, not a mid-air snatch -- the
+body squats the FULL stone down (tgt_now ramps the derived depth over the arrival's own
+0.5 s), the giver's taper is CONTACT-TRIGGERED (the floor has it, measured from the
+solver's pairs -- never timed), the weld releases at the taper's end into the squat (the
+seated-keyframe basin), and the target ramps home. The reward prices the verb (the height
+gaussian tracks tgt_now); the fell line and the sfc anti-exploit track it too.
+
 THE EVENT IS THE SATISFIED SNAP (v4, THE_GRAB.md): at t=T_SNAP the stone is written ONCE to
 the weld-satisfied pose (the pick-up -- a boundary condition at the event, the same discipline
 as the spawn at the reset) and the weld engages with ZERO violation. The earlier versions are
@@ -74,6 +81,7 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
         # here in the carry is the load escaping -- floor-rest AND weld-hang both show it.
         evaluate._sg = int(m.body_geomadr[sb])
         evaluate._floors = {int(gi) for gi in range(m.ngeom) if int(m.geom_bodyid[gi]) == 0}
+        evaluate._sb = sb
     wb, wl = evaluate._wb, evaluate._wl
     # v8 (THE GRAB.md): the 4-block policy class. kr is zeros for a 3-block theta, so old
     # checkpoints run unchanged; the roll convention is parser.py's (1f24f74) exactly.
@@ -92,12 +100,17 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
-    tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": [], "sum": [], "sfc": []}
+    tr = {"t": [], "z": [], "tgt": [], "comx": [], "comy": [], "r": [], "jf": [], "sum": [], "sfc": []}
     pics, tot, n, fell = [], 0.0, 0, False
     ramp_steps = int(RAMP_S / m.opt.timestep)
-    drop_k = int(T_DROP / m.opt.timestep)       # v12: the set-down begins here
-    release_k = drop_k + ramp_steps             # the weld releases only AFTER the handoff
+    drop_k = int(T_DROP / m.opt.timestep)       # v17: THE LOWERING begins here
+    lower_steps = int(RAMP_S / m.opt.timestep)  # v17: the arrival's own 0.5 s, downward
+    rest_z = float(m.geom_size[evaluate._sg][0])  # v17: the stone's rest height, DERIVED
+                                                 # (a sphere's centre on the floor)
     body_frac = 0.0                             # the share of the stone the BODY carries
+    depth = None                                # the descent, measured at the event
+    contact_k = None                            # the floor HAS it -- measured, not timed
+    release_k = None
     for k in range(steps):
         if k == snap_k:
             snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
@@ -107,23 +120,53 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             # the GIVER's hands taper off over RAMP_S -- a force, not a mass rewrite
             body_frac = min(1.0, (k - snap_k + 1) / ramp_steps)
             support_stone_weight(m, d, mujoco, body_frac)
-        elif drop_k <= k < release_k:
-            # v12 (THE SET-DOWN): the hands take the weight BACK over the same RAMP_S --
-            # the arrival's number in reverse, 2.38 kg per control interval
-            body_frac = 1.0 - min(1.0, (k - drop_k + 1) / ramp_steps)
+        elif k == drop_k:
+            # v17 (THE LOWERING, THE_GRAB.md): the LOADED squat -- the body carries the
+            # FULL stone down; the giver does not help until the floor does
+            body_frac = 1.0
+            support_stone_weight(m, d, mujoco, 1.0)
+            depth = float(d.xpos[evaluate._sb][2]) - rest_z
+        if contact_k is not None and release_k is None:
+            # v17: the giver's hands take the weight AS THE STONE LANDS -- contact-
+            # triggered, the arrival's own number at the bottom; the weld releases only
+            # AFTER the handoff completes, into the squat (the seated-keyframe basin)
+            prog = min(1.0, (k - contact_k + 1) / ramp_steps)
+            body_frac = 1.0 - prog
             support_stone_weight(m, d, mujoco, body_frac)
-        elif k == release_k:
-            d.eq_active[eq] = 0                 # the giver HAS it -- zero residual
-            support_stone_weight(m, d, mujoco, 1.0)   # support zero: the stone free-falls
-            body_frac = 0.0
+            if prog >= 1.0:
+                d.eq_active[eq] = 0
+                support_stone_weight(m, d, mujoco, 1.0)   # support zero: the stone rests
+                release_k = k
+                body_frac = 0.0
+        # v17: the target is the verb -- down the descent, home after the release
+        if depth is None:
+            tgt_now = tgt
+        elif release_k is None:
+            tgt_now = tgt - depth * min(1.0, (k - drop_k) / lower_steps)
+        else:
+            tgt_now = tgt - depth + depth * min(1.0, (k - release_k) / ramp_steps)
         if k % 20 == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u = a0 + kh * (tgt - z) + kp * pitch + kr * roll + kw * weld_load(m, d, mujoco)
+            u = a0 + kh * (tgt_now - z) + kp * pitch + kr * roll + kw * weld_load(m, d, mujoco)
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
         mujoco.mj_step(m, d)
+        if depth is not None and contact_k is None:
+            # v17: the floor HAS it -- the release event is CONTACT-TRIGGERED, measured
+            # from the solver's own stone-floor pairs, never timed (the zero-shot's
+            # lesson: on a timer the stone free-fell 0.63 m, the snatch delayed)
+            sg, floors = evaluate._sg, evaluate._floors
+            f6v = np.zeros(6)
+            s_now = 0.0
+            for ci in range(d.ncon):
+                c = d.contact[ci]
+                if (c.geom1 == sg and c.geom2 in floors) or (c.geom2 == sg and c.geom1 in floors):
+                    mujoco.mj_contactForce(m, d, ci, f6v)
+                    s_now += abs(float(f6v[0]))
+            if s_now > 0.05 * wl:
+                contact_k = k
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
         if k % 20 == 0:
@@ -139,7 +182,10 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
                 # NaN reward would poison the whole score. Break before it lands.
                 fell = True
                 break
-            if z < 0.5 * tgt:
+            if z < 0.5 * tgt_now:
+                # v17: the fell line tracks the verb -- the LOADED squat's bottom (0.29 m)
+                # is the event working, not a fall; 0.5 of the CURRENT target, the same
+                # derived proportion the stand trainer uses
                 fell = True
             jf = joint_frac(d, jids)
             # v9 addendum: price ONLY the three gaussians (all in [0,1]). The signed
@@ -148,7 +194,11 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             # any survivor (~-0.0003) -- measured run 11, turn 7: pelvis MIN 87%,
             # full 4.0 s survival, score -0.00026. Effort's 0.01 is a chosen constant
             # (out per v5: no constant chosen); the fell term is already priced by frac.
-            _, parts = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
+            # v17: the reward prices the verb -- the height gaussian tracks tgt_now
+            # (the descending target), not the fixed stand target; stand_reward's form
+            # is untouched, only its landmark follows the event
+            P_now = dict(P); P_now["OUT pelvis_target_m"] = tgt_now
+            _, parts = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P_now)
             # v11 (THE DARK SCORE, THE_GRAB.md): the joints gaussian's 0.8 center predates
             # ligaments -- "keep off the stop" was the only protection when stops had no
             # tissue. Under load the body settles ONTO the tissue (knee_angle_l jf 1.02
@@ -168,11 +218,12 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
                                                # after the release (the stone is the giver's)
             lf = min(max(psum / expect, 0.0), 1.0)
             sfc = 0.0
-            if snap_k <= k < release_k:
+            if snap_k <= k < drop_k:
                 # v3: the stone-floor interface must read ZERO while WELDED -- the
                 # weld-hang measured 2026-08-04 routes the body's weight through it.
-                # v12: scoped to the welded window -- after the release the stone is
-                # SUPPOSED to land; a landed stone is not a load-path cheat.
+                # v17: scoped to the CARRY window only -- during the LOWERING the floor
+                # contact is the verb completing, and after the release the stone is
+                # SUPPOSED to rest; a landed stone is not a load-path cheat.
                 sg, floors = evaluate._sg, evaluate._floors
                 f6 = np.zeros(6)
                 for ci in range(d.ncon):
@@ -184,6 +235,7 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             r *= lf
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["z"].append(z)
+            tr["tgt"].append(tgt_now)
             tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r); tr["jf"].append(jf)
             tr["sum"].append(psum); tr["sfc"].append(sfc)
         if fell:
@@ -213,6 +265,9 @@ def draw_turn(turn, P, tr, pics, hist, path):
     tgt = P["OUT pelvis_target_m"]
     ax = fig.add_subplot(gs[1, 0])
     ax.plot(tr["t"], tr["z"], color="#c0392b", lw=1.9, label="pelvis")
+    if tr.get("tgt"):
+        # v17: the moving target -- the verb the reward prices (the descent + the return)
+        ax.plot(tr["t"], tr["tgt"], color="#7f8c8d", lw=1.4, ls="-.", label="the verb (tgt_now)")
     ax.axhline(tgt, color="#1a7f37", lw=2.2, label=f"derived target {tgt:.4f} m")
     ax.axhline(0.8 * tgt, color="#1a7f37", ls="--", lw=1.3, label="80% — f6's carry bar")
     ax.set_xlabel("s"); ax.set_ylabel("m"); ax.legend(fontsize=7, loc="upper right")
@@ -255,9 +310,10 @@ def main() -> int:
     a = sys.argv
     turns = int(a[a.index("--turns") + 1]) if "--turns" in a else 24
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 32
-    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 6.0   # v12: f6's own horizon --
-                                               # 1.0 pre + carry + the set-down + the stand after
+    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 7.0   # v17: f6's window plus
+                                               # the LOWERING + the squat-release + the return
     init = a[a.index("--init") + 1] if "--init" in a else str(STAND_THETA)
+    out = Path(a[a.index("--out") + 1]) if "--out" in a else CARRY_THETA
     OUTDIR.mkdir(parents=True, exist_ok=True)
     if not Path(init).exists():
         raise SystemExit(f"no {init} -- carrying is composed over standing. Refusing.")
@@ -293,7 +349,7 @@ def main() -> int:
 
     print(f"\nTRAINING THE CARRY PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, g {g:.4f}, "
           f"stone {G['OUT stone_mass_kg']:.2f} kg on the floor, SNAP at {T_SNAP:.1f} s, "
-          f"horizon {secs:.1f} s = 1.0 pre + f6's window")
+          f"horizon {secs:.1f} s = 1.0 pre + carry + THE LOWERING + the squat-release + the return")
     print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}{'load':>8}{'s-f':>8}  verdict")
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
@@ -306,7 +362,10 @@ def main() -> int:
         best_theta = cand[order[0]]
         s, tr, pics = evaluate(m, d, mujoco, best_theta, P, G, secs, eq, frames=6)
         held = min(tr["z"]) if tr["z"] else 0.0
-        frac = 100 * held / P["OUT pelvis_target_m"]
+        # v17: the verdict tracks the verb -- pelvis against the CURRENT target (the
+        # descent's bottom is the event working, not a fall); the fixed-target MIN is
+        # still printed beside it
+        frac = 100 * min(zz / tt for zz, tt in zip(tr["z"], tr["tgt"])) if tr["z"] else 0.0
         survived = len(tr["t"]) * 0.02
         carry = [s for t, s in zip(tr["t"], tr["sum"]) if T_SNAP + RAMP_S + 0.1 <= t < T_DROP]
         sfl = [s for t, s in zip(tr["t"], tr["sfc"]) if T_SNAP + RAMP_S + 0.1 <= t < T_DROP]
@@ -320,8 +379,8 @@ def main() -> int:
               f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
               f"{ld:>7.0f}%{sf:>7.0f}%  {'PROVEN' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"carry_turn_{turn:02d}.png")
-    np.save(CARRY_THETA, best_ever[1])
-    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}) to {CARRY_THETA}")
+    np.save(out, best_ever[1])
+    print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}) to {out}")
     print(f"\nPICTURES: {OUTDIR}/carry_turn_*.png")
     print("A TURN YOU HAVE NOT LOOKED AT DID NOT END.")
     return 0
