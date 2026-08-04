@@ -436,6 +436,41 @@ that can see past the fell penalty, or the new tissue genuinely made standing ha
 stand port's own derivation needs revisiting. **That is the next question, and it is not
 answered here.**
 
+---
+
+# THE CEILING, MEASURED — upright and travel are exchanged, not accumulated
+
+Walk retrained over the repaired stand θ (survival 6.24 → 7.00 s), 40 turns × pop 32 × 8 s,
+judged by `f4_walk`:
+
+| | over the old stand θ | over the repaired stand θ |
+|---|---:|---:|
+| held | 2.98 / 6.0 s | **5.58 / 6.0 s** |
+| duty R/L | 0.68 / 0.55 | 0.82 / 0.74 |
+| periodicity | 0.13 | 0.36 |
+| **travel** | 16% of derived | **4%** |
+| ablation | −1% (PASS) | −1% (PASS) |
+
+**Stability nearly doubled and travel collapsed.** Across every run in this membrane's history
+the same exchange appears: the search finds bodies that travel and fall, or bodies that stand
+and freeze, and never one that does both. That is an independent replication of the other
+agent's ledger finding — *"travelers-that-fall (34%, down at 2.24 s) or standers-that-freeze
+(95% held, −15%); the binding constraint is UPRIGHT vs TRAVEL, not the reward's width."* Two
+searches, two agents, two reward shapes, same wall.
+
+**F4 remains FIRED on falsifier 3.** The ablation has passed in every single run — the rhythm is
+always doing the work — so the composition is real; what it cannot do is produce both terms at
+once.
+
+**WHAT THE EXCHANGE MEANS, stated as a hypothesis and NOT as a finding**, because this membrane
+has killed four of those already: an inverted-pendulum walk gets its forward speed by *falling*
+and catching itself, so upright and travel are not independent goods that a product reward can
+ask for simultaneously — the body must be allowed to lose height within a step and regain it.
+A per-sample product of two Gaussians cannot express "lose it here, regain it there"; it scores
+every instant against both bars at once. **That predicts the wall is in the reward's TIME
+STRUCTURE, not its shape or its terms** — and the way to test it is a per-STRIDE score rather
+than a per-sample one. Written down before it is measured, so it can be wrong like the others.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
