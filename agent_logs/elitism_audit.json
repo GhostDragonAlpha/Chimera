@@ -47,10 +47,10 @@
   },
   {
    "file": "tools/train_walk.py",
-   "line": 225,
+   "line": 286,
    "cand": "cand",
    "mu": "mu",
-   "dim_expr": "pop, N_FREE",
+   "dim_expr": "pop, n_free",
    "family": "CEM",
    "has_incumbent": true
   },
