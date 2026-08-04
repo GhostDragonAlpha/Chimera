@@ -397,6 +397,35 @@ stance is grading it against itself, and the term would then be unfalsifiable by
 The right fix is to establish which stance the port is actually meant to hold, and that is a
 question for `theStance`, not for this harness.
 
+## CORRECTION TO THE ABOVE, and the resolution: 1.90x was a RESET-ONLY number
+
+The 1.90× lateral disagreement is measured **at reset**, in the twisted keyframe pose. Measured
+*over phase 1*, the polygon's mean half-width is **0.1073 m against the published 0.1020 —
+1.05×.** The stance normalises within the first samples. The table above is not wrong, but it is
+a snapshot of the worst instant quoted as if it described the run, which is the same
+peak-vs-sustained error this document has now caught three times in three different places.
+
+With both landmarks measured every sample and printed side by side:
+
+| CoM judged against | peak | outside the support |
+|---|---:|---:|
+| `theStance.together_*` (published, nominal) | **1.65** | 16.8% of phase 1 |
+| the polygon the feet actually make | **0.76** | **0.0%** of phase 1 |
+
+**The body never leaves the base of support its own feet make.** It is physically stable in the
+only sense that word has — the CoM projects inside the contact hull at every instant. What it is
+*not* doing is standing in the feet-together stance the port's published numbers describe.
+
+**Both are true and they answer different questions**, which is why `f3_stand` now prints both
+and `ok_com` still reads the published box. The bar is unmoved. But the open question is now
+sharp and small: **`stand_port.py:83` selects `together_half_width_m` out of three stances
+`theStance` publishes (`together_` 0.1020, `natural_` 0.1565, `braced_` 0.3932) with no comment
+and no stated reason**, in a function where every other line names the membrane it came from.
+F3's own falsifier says "the base of support **the feet make**". Those are two different
+instruments and the port never said which one it meant.
+
+That is a one-line decision with a real consequence, and it belongs to `theStance`.
+
 ## WHAT THIS MEANS FOR THE ORDER OF WORK
 
 The stand port must be re-established in the 32-ligament world before the walk means anything —

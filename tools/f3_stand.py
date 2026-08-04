@@ -76,7 +76,7 @@ def run() -> int:
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # one-time, at reset: the keyframe's own violation
 
-    tr = {"t": [], "z": [], "comx": [], "comy": [], "jf": [], "jn": [], "all": [], "phase": []}
+    tr = {"t": [], "z": [], "comx": [], "comy": [], "jf": [], "jn": [], "all": [], "polx": [], "poly": [], "phase": []}
     ren = mujoco.Renderer(m, height=240, width=320)
     pics, grab = [], {}
     steps = int((PHASE1_SECS + PHASE2_MAX) / m.opt.timestep)
@@ -107,6 +107,18 @@ def run() -> int:
             tr["z"].append(z)
             tr["comx"].append(float(com[0] - foot[0]))
             tr["comy"].append(float(com[1] - foot[1]))
+            # THE BASE OF SUPPORT THE FEET ACTUALLY MAKE -- reported ALONGSIDE the published
+            # box, never instead of it. F3's falsifier is written "the CoM stays inside the
+            # base of support THE FEET MAKE", and this is that sentence measured: the convex
+            # extent of the four contact bodies, this pose, this instant. The published box is
+            # `theStance.together_*`, which describes a DIFFERENT stance (feet together) --
+            # measured 1.90x narrower laterally than the polygon this body actually stands on.
+            # Two landmarks for one quantity (rule 19), so both are printed and NEITHER bar is
+            # moved; which one F3 should read is a question for theStance, not for this harness.
+            _px = [float(_b(n)[0]) for n in ("calcn_r", "calcn_l", "toes_r", "toes_l")]
+            _py = [float(_b(n)[1]) for n in ("calcn_r", "calcn_l", "toes_r", "toes_l")]
+            tr["polx"].append(max(1e-9, 0.5 * (max(_px) - min(_px))))
+            tr["poly"].append(max(1e-9, 0.5 * (max(_py) - min(_py))))
             _jf, _jn = joint_frac_named(d, jids)
             tr["jf"].append(_jf)
             tr["jn"].append(_jn)
@@ -132,6 +144,15 @@ def run() -> int:
     held = min(z1) if z1 else 0.0
     held_frac = 100.0 * held / tgt
     p1_secs = len(p1) * CTRL_EVERY * m.opt.timestep
+    # THE SAME CoM, AGAINST THE POLYGON THE FEET ACTUALLY MAKE. Reported, never substituted:
+    # `ok_com` below still reads the published box, because relaxing a falsifier to pass it is
+    # the one forbidden move. This exists so the DISAGREEMENT is visible (rule 17) instead of
+    # one landmark quietly standing in for the other.
+    pol_series = [max(abs(tr["comx"][i]) / tr["polx"][i], abs(tr["comy"][i]) / tr["poly"][i])
+                  for i in p1]
+    pol_out = max(pol_series) if pol_series else 99.0
+    pol_over = 100.0 * sum(1 for v in pol_series if v > 1.0) / max(len(pol_series), 1)
+    pol_w = float(np.mean([tr["poly"][i] for i in p1])) if p1 else 0.0
     com_series = [max(abs(tr["comx"][i]) / hl, abs(tr["comy"][i]) / hw) for i in p1]
     com_out = max(com_series) if com_series else 99.0
     # PEAK AND SUSTAINED, for the same reason the joints get both. The keyframe is a POSE, not
@@ -210,6 +231,15 @@ def run() -> int:
           f"{held_frac:.1f}% of target  ->  {'PASS' if ok1 else 'FAIL'}")
     print(f"           CoM excursion PEAK {com_out:.2f} of BoS box (must be <= 1.00)  ->  "
           f"{'PASS' if ok_com else 'FAIL'}")
+    print(f"           SAME CoM vs the polygon THE FEET MAKE (F3's own words): peak "
+          f"{pol_out:.2f}, outside {pol_over:.1f}% of phase 1")
+    print(f"             the two landmarks disagree: theStance publishes together_half_width "
+          f"{hw:.4f} m,")
+    print(f"             the feet make {pol_w:.4f} m ({pol_w/max(hw,1e-9):.2f}x). theStance also "
+          f"publishes")
+    print(f"             natural_ and braced_ widths -- stand_port picks together_ with no stated "
+          f"reason.")
+    print(f"             THE BAR BELOW IS UNMOVED; which one F3 should read is theStance's call.")
     print(f"           CoM outside the box {com_over:.1f}% of phase 1, peak at t={com_t:.2f}s"
           + (f", outside during t={min(com_win):.2f}..{max(com_win):.2f}s" if com_win else "")
           + (" -- a settle off the keyframe, not the stand"
