@@ -228,6 +228,40 @@ def _shade(b, albedo, w):
     b[:, 19] = 0.95
 
 
+def _rock_shape(n, r, seed=5):
+    """FACETS membrane (docs/THE_RECORDED_SESSION_2.md): a fractured rock, not a sphere.
+
+    fibonacci directions; low-frequency lumps (3 fixed sinusoidal modes); then the radius
+    clamped by 7 facet planes at 0.72-0.92 r, every splat on a cut wearing the PLANE's normal
+    so the facet reads in flat light. Deterministic from one seed -- the same rock in every
+    frame, every session. Returns (dirs, radii, normals). Render row only: the physics sphere
+    (contact, roll, carry) is untouched."""
+    from matter import fibonacci_sphere
+    rng = np.random.default_rng(seed)
+    d = fibonacci_sphere(n)
+    k = rng.normal(size=(3, 3))
+    k /= np.linalg.norm(k, axis=1, keepdims=True)
+    lump = (1.0 + 0.18 * np.sin(3.0 * (d @ k[0]))
+                + 0.12 * np.sin(4.0 * (d @ k[1]) + 1.7)
+                + 0.08 * np.sin(5.0 * (d @ k[2]) + 0.6))
+    rad = r * lump
+    normals = d.copy()
+    u = rng.normal(size=(5, 3))
+    u /= np.linalg.norm(u, axis=1, keepdims=True)
+    # iteration 2, measurement-guided (eye read iteration 1 as "spherical", align 0.0): shallow
+    # cuts (0.72-0.92 r) never reached the silhouette -- the perceived surface is the dot
+    # envelope, and only DEEP planes put straight chords in it. 7 planes -> 5 (larger flats),
+    # h 0.55-0.75 r (the cut bites the hull), grain x1.15 so a flat reads continuous.
+    h = r * rng.uniform(0.55, 0.75, size=5)
+    for j in range(5):
+        cos = d @ u[j]
+        plane_r = np.where(cos > 1e-6, h[j] / np.maximum(cos, 1e-9), np.inf)
+        m = plane_r < rad
+        rad[m] = plane_r[m]
+        normals[m] = u[j]
+    return d, rad, normals
+
+
 class Stone:
     """RIGID. A quartzite sphere: shoved by momentum (m_body/m_stone along the contact normal),
     stopped by Coulomb friction at the regolith's own repose tangent. Carriable within arm's reach."""
@@ -250,6 +284,10 @@ class Stone:
         self.z = _wk.height_at(self.x, self.y) + self.r
         self.vx = self.vy = 0.0
         self.carried = False
+        # FACETS membrane: the rock's shape, once -- 640 directions, lumps + 7 facet planes.
+        # n=40 -> 160 -> 640, 2026-08-04 (INK membrane): measured against smudge, never identity.
+        self._n = 640
+        self._dirs, self._rad, self._nrm = _rock_shape(self._n, self.r)
 
     def step(self, w, dt):
         """One tick. Returns True if anything visibly changed (the viewer re-uploads on it)."""
@@ -305,7 +343,7 @@ class Stone:
         return False
 
     def buffer(self, w):
-        from matter import blank, SOLID, surface_grain, fibonacci_sphere
+        from matter import blank, SOLID, surface_grain
         # n=40 -> 160, 2026-08-04, measured by tools/stone_legibility.py: at the blind read's
         # 3.2 m camera distance 40 splats read as a ~15 px faint smudge (stone_before.jpg) --
         # sparse dots, not a rock. RENDER ROW ONLY: the physics (mass, friction, impulse) is
@@ -315,14 +353,15 @@ class Stone:
         # 160 -> 640, same day, INK membrane (docs/THE_RECORDED_SESSION_2.md): the LIVE blind
         # read scored the stone beats 0.2-0.25 ("a ball", "a backpack") -- 160 was measured
         # against a smudge, never against material identity. Same render-row status.
-        n = 640
-        d = fibonacci_sphere(n)
+        # FACETS membrane, same day: identity is GEOMETRY. The cached rock shape -- lumps + 7
+        # facet planes, plane normals on cut splats (flat shading; the facet reads in light).
+        n = self._n
         b = blank(n)
-        b[:, 0] = self.x + d[:, 0] * self.r
-        b[:, 1] = self.y + d[:, 1] * self.r
-        b[:, 2] = self.z + d[:, 2] * self.r
-        b[:, 21:24] = d
-        b[:, 20] = surface_grain(n, self.r)
+        b[:, 0] = self.x + self._dirs[:, 0] * self._rad
+        b[:, 1] = self.y + self._dirs[:, 1] * self._rad
+        b[:, 2] = self.z + self._dirs[:, 2] * self._rad
+        b[:, 21:24] = self._nrm
+        b[:, 20] = surface_grain(n, self.r) * 1.15   # FACETS it.2: a flat reads continuous
         b[:, 11] = SOLID
         _shade(b, self._alb, w)
         return b

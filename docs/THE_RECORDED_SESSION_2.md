@@ -307,6 +307,45 @@ tuft's green-on-green glow — water, not blades). Instrument note: two stale `*
 frames in `session_legibility/` were read harmlessly (no expected terms); the directory needs a
 clean rule if it feeds future reads.
 
+## MEMBRANE: FACETS (2026-08-04, Kimi) — the stone's geometry, not its ink
+
+**STATEMENT.** A rock's identity to a reader is its SILHOUETTE and its FLAT SHADED PLANES, not
+its point density: the CROP read proved 640 well-lit splats on a fibonacci sphere still read
+"spherical" at point-blank, so identity must come from geometry. A fractured rock is a lumpy
+convex body cut by planes — radially: low-frequency lumps, then the radius clamped by a few
+facet planes, every splat on a cut wearing the PLANE's normal (flat shading, the facet made
+visible in light). This is a render row: the physics keeps its sphere (contact, roll, carry
+are already a sphere model, unchanged), and the shape is deterministic from one seed — the
+same rock in every frame, every session.
+
+**PREDICTION.** `_rock_shape()` replaces the bare fibonacci directions in `Stone.buffer`
+(3 sinusoidal lump modes, 7 facet planes at 0.72–0.92 r, plane normals on cut splats);
+re-rendered, the eye reads `stone_close` at align ≥ 0.50 against "a grey rock sitting on green
+ground, seen up close" AND its reading carries an angular word (rock/angular/faceted/flat) with
+no "spher"/"ball".
+
+**FALSIFIER.** The eye still says sphere/ball/smooth at point-blank, or align < 0.35 — then
+silhouette and flat shading do not buy identity either, and the residual gap is micro-texture
+beyond what a splat surface can carry. That would be a finding, not a failure: it bounds what
+the splat medium can claim.
+
+**FALSIFIER FIRES** (2026-08-04): three eye reads, two shape iterations, two cameras — every
+one "spherical", align 0.0. Iteration 1 (7 shallow planes, 0.72–0.92 r): cuts never reached the
+silhouette; the perceived surface is the dot ENVELOPE. Iteration 2 (5 deep planes, 0.55–0.75 r,
+grain ×1.15 — measured need: only deep planes put chords in the hull): my eye sees a loaf with
+a flat base in the isolated 1.2 m probe (`facets_probe.jpg`), the eye still reads "white,
+pixelated sphere… a planet". **Silhouette and flat shading do not buy rock identity in the
+splat medium at this scale** — the eye keys on two things no geometry row moves: the DOT
+TEXTURE ("composed of small dots" in every reading) and the WHITENESS (quartz albedo through
+lit()+tone at exposure 2.0 renders near-white, and a white regular body reads as a ball, a
+planet, a golf ball — never a rock). The shape stays (harmless render row, truer than a perfect
+sphere; deterministic seed). The published bound: **identity at session scale does not live in
+geometry; the medium's dot grain and tone decide it.** The two theories that remain, named for
+the next membranes: CHUNK (fewer, larger angular splats — the pile's clods already out-read its
+grains; 640 dots blur to "texture" at the eye's effective resolution, ~60–80 chunks may read as
+a solid faceted body) and TONE (the whiteness is one exposure dial and one measured albedo —
+THE HUMAN's row, both of them).
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
