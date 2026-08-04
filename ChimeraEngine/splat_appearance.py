@@ -86,6 +86,7 @@ SCENES = {
     "theLaws":         {"kind": "laws", "radius": 180.0, "cam": (0.0, -170.0, 110.0)},
     "theTruth":        {"kind": "truth", "radius": 180.0, "cam": (0.0, -165.0, 75.0)},
     "theShip":         {"kind": "ship", "radius": 130.0, "cam": (0.0, -100.0, 30.0)},
+    "theFlight":       {"kind": "flight", "radius": 160.0, "cam": (0.0, -120.0, 50.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1450,6 +1451,107 @@ def _ship_buffers(spec: dict, term: str):
     end = np.concatenate([stars, hull, nose, fins] + scene(True, True), axis=0)
     return end, begin
 
+def _flight_buffers(spec: dict, term: str):
+    """theFlight: the vessel's controlled motion through space. The ship itself
+    (slender hull, nose, fins, engines) riding at the HEAD of a long curved line of
+    glowing waypoints that arcs across the starfield -- the trajectory made visible,
+    the vessel at its front. The claim is MOTION ALONG A PATH: one ship, one arc,
+    ship at the head of it. begin = the path dim and short, ship cold; end = the
+    full arc lit and the ship burning along it."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # the starfield: the medium being crossed
+    n_st = 2200
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 160.0 * (0.9 + 0.8 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.30 + 0.25 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    tint = rng.random(n_st)
+    stars[:, CR] = 0.80 + 0.15 * tint
+    stars[:, CG] = 0.82 + 0.12 * tint
+    stars[:, CB] = 0.90 + 0.08 * (1.0 - tint)
+
+    # the ship at the head of the arc, nose +X (compact proven silhouette)
+    a, b = 24.0, 5.0
+    SHIP_X, SHIP_Z = 48.0, 10.0
+    n_h = 1600
+    hu = rng.random(n_h) * 2.0 - 1.0
+    hp = rng.random(n_h) * 2.0 * np.pi
+    hsxz = np.sqrt(np.maximum(0.0, 1.0 - hu * hu))
+    hull = np.zeros((n_h, NCOLS), dtype=np.float32)
+    hull[:, PX] = SHIP_X + a * hu
+    hull[:, PY] = b * hsxz * np.cos(hp)
+    hull[:, PZ] = SHIP_Z + b * hsxz * np.sin(hp)
+    hull[:, TYPE] = 3.0; hull[:, ALPHA] = 0.80; hull[:, SIZE] = 1.5
+    shade = 0.55 + 0.25 * rng.random(n_h)
+    hull[:, CR] = 0.62 * shade + 0.10
+    hull[:, CG] = 0.64 * shade + 0.10
+    hull[:, CB] = 0.68 * shade + 0.12
+
+    n_n = 250
+    tn = rng.random(n_n)
+    an = rng.random(n_n) * 2.0 * np.pi
+    nose = np.zeros((n_n, NCOLS), dtype=np.float32)
+    nose[:, PX] = SHIP_X + a + 8.0 * tn
+    rn = b * (1.0 - tn) * 0.95
+    nose[:, PY] = rn * np.cos(an)
+    nose[:, PZ] = SHIP_Z + rn * np.sin(an)
+    nose[:, TYPE] = 3.0; nose[:, ALPHA] = 0.85; nose[:, SIZE] = 1.4
+    nose[:, CR], nose[:, CG], nose[:, CB] = 0.70, 0.72, 0.76
+
+    # the trajectory: a long arc of glowing waypoints sweeping in from far left,
+    # curving down then up to the ship's tail -- the path the vessel is flying
+    n_w = 700
+    tw = np.linspace(0.0, 1.0, n_w)
+    path = np.zeros((n_w, NCOLS), dtype=np.float32)
+    path[:, PX] = -110.0 + (SHIP_X - a + 110.0) * tw
+    path[:, PZ] = -35.0 + (SHIP_Z + 35.0) * tw + 18.0 * np.sin(tw * np.pi)
+    path[:, PY] = 0.0
+    path[:, TYPE] = 3.0; path[:, SIZE] = 1.5
+
+    def scene(lit):
+        parts = []
+        pa = 0.75 if lit else 0.16
+        pth = path.copy()
+        pth[:, ALPHA] = pa
+        # the arc brightens toward the ship -- direction of travel in the glow
+        pth[:, CR] = 0.35 + 0.35 * tw
+        pth[:, CG] = 0.70 + 0.20 * tw
+        pth[:, CB] = 1.00
+        parts.append(pth)
+        # the engines + plume at the tail when burning
+        eng_c = (0.55, 0.80, 1.00) if lit else (0.18, 0.24, 0.30)
+        for dy in (-2.4, 0.0, 2.4):
+            parts.append(_dots((SHIP_X - a * 0.99, dy, SHIP_Z), 2.2, 26, eng_c, rng))
+        if lit:
+            parts.append(_halo((SHIP_X - a * 0.99, 0.0, SHIP_Z), 5.0,
+                               (0.55, 0.80, 1.0), rng, alpha=0.15, size=1.8))
+            n_p = 700
+            tp = rng.random(n_p)
+            plume = np.zeros((n_p, NCOLS), dtype=np.float32)
+            plume[:, PX] = SHIP_X - a - 34.0 * tp
+            spread = 1.2 + 4.0 * tp
+            plume[:, PY] = rng.normal(0.0, spread, n_p)
+            plume[:, PZ] = SHIP_Z + rng.normal(0.0, spread, n_p)
+            plume[:, TYPE] = 3.0
+            plume[:, ALPHA] = 0.5 * (1.0 - tp) + 0.04
+            plume[:, SIZE] = 1.5
+            plume[:, CR], plume[:, CG], plume[:, CB] = 0.50, 0.72, 1.00
+            parts.append(plume)
+        return parts
+
+    begin = np.concatenate([stars, hull, nose] + scene(False), axis=0)
+    end = np.concatenate([stars, hull, nose] + scene(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1537,7 +1639,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1785,7 +1887,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

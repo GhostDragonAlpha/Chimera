@@ -120,6 +120,10 @@ PHYSICS_READING = {
                "trailing a faint blue plume behind it and a small warm yellow-orange "
                "light at the other end: a vessel under thrust, elongated NOT round, "
                "NOT a planet or moon",
+    "theFlight": "a spaceship with a blue exhaust trail flying at the head of a long "
+                 "curved line of glowing dots that arcs across a dark starfield -- "
+                 "one vessel traveling along a visible curving path, motion made "
+                 "visible, NOT a stationary object, NOT a planet",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
