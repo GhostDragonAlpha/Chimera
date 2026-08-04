@@ -80,3 +80,43 @@ plantar sum it already measures, reports:
 2. Build in a world where the stand retrain has closed (the off-sagittal
    tissue question owns the world hash until f3's verdict lands).
 3. Judge through the extended f3 harness; record here.
+
+---
+
+## BUILD RECORD (2026-08-04) — and the arithmetic, corrected BEFORE the run
+
+The stone is the slice's own: D = 0.35 m (marked THE HUMAN design dial),
+quartzite 2650 kg/m³ (Schoen 2011). Measured through
+`tools/grab_port.py`: **59.49 kg = 421.0 N in this world's g = 63% of the
+94.5 kg body** — the prediction above said "5–10% more mass," and it was a
+guess. Corrected here before any verdict; the falsifiers do not move.
+
+Built: `tools/grab_port.py` (derive / stone_xml / spawn_stone /
+grab_formula_fn — weld `stone_carry` to the `torso` body, born inactive,
+relpose stated at (0.45, 0.15, −0.15) — waist, ahead-right, where the
+slice's kinematic carry puts it), `tools/f6_grab.py` (three phases: load
+felt / body stands / dropping felt). GRAB leaves the parser's Refusal
+list as an OVERLAY formula: held + inside the derived reach (0.772 m,
+ANSUR) → the weld engages. The formula owns the grab; the harness owns
+the release (the parser never calls formulas for unheld verbs).
+
+**Run 1** (harness bug, fixed): GRAB held from t=0 → the formula engaged
+at the FIRST parse, snapping 421 N onto a body still settling from the
+spawn. The "fall before GRAB" was the early weld. Held from T_GRAB=1.0 s
+now; the pre-phase is a true baseline.
+
+**Run 2** (the measurement): unloaded baseline plantar sum 733.7 N
+(sane: 669 N static + dynamics). Weld at 1.0 s → the body is down
+INSTANTLY: pelvis 4% of target, plantar sum 0.0 N through the carry. The
+load is real — it destroyed the posture, which is the strongest possible
+"felt"; the delta metric reads −733 N only because the feet left the
+load path entirely. **This is falsifier 2's shape at the CURRENT
+setting**, and the membrane's own prescription applies: the retrain is
+the answer and is run. The CoM arithmetic says it is not a formality:
+the stone at 0.45 m ahead puts the combined CoM ~0.23 m ahead of the
+body origin — at the edge of the support zone. A carry REQUIRES a
+lean-back the unloaded theta never learned. NEXT: `train_carry.py` — the
+stand formula's 870 numbers re-searched with the weld ACTIVE from the
+spawn (warm start from stand_theta; the loaded stand is a separate
+artifact, carry_theta.npy). f6's phase 2 then judges the carry policy;
+phase 1 and 3's bars do not move.
