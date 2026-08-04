@@ -134,7 +134,14 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             break
     if ren is not None:
         ren.close()
-    score = tot / max(n, 1) - (3.0 if fell else 0.0) - 2.0 * (1.0 - (k + 1) / steps)
+    # v5: the multiplicative score. Every factor is dimensionless and lives in
+    # [0,1] -- mean reward x survived fraction -- so no constant is chosen and
+    # no penalty cliff can outrank a load-bearing near-miss. Measured trigger
+    # (run 8): a 65%-load carrier falling at 3.7 s scored -3.11, ranked BELOW
+    # zero-load survivors at 0.000 -- the additive -3/-2 cliff again, the exact
+    # form defect Claude measured on the walk (docs/THE_STEP.md). Falls price
+    # themselves through (k+1)/steps; no fell term is needed at all.
+    score = (tot / max(n, 1)) * ((k + 1) / steps)
     return float(score), tr, pics
 
 

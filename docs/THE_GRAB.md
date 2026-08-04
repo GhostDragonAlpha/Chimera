@@ -314,3 +314,50 @@ the finding (the stone's D, THE HUMAN's dial) goes to the operator
 with full numbers. 2. A survivor that still is not a carry — a fourth
 path, named here. 3. The carry holds but under the pelvis bar —
 published as the posture/strength trade, bar unmoved.
+
+**Run 8 — VERDICT: the artifact is gone, the gradient is LIVE, and the
+penalty cliff is measured ranking carriers BELOW hangers.** The
+satisfied snap did exactly what it was written to do: from turn 2 on,
+nearly every candidate survives the full 4.00 s — no 22 kN spike, no
+airborne phase, no pelvis arc. The mean climbs monotonically −3.85 →
+−3.05 across 47 turns, the first LIVE gradient since the membrane
+opened. The best candidate's pelvis MIN rises 56% → 72–74% and
+holding. Load readings 0–67% (typically 20–45%); stone-floor 0–200%
+(typically 50–100% — the stone is still floor-supported). No true
+carry yet. **But the run measured the score defect a third time, and
+this time in its sharpest form:** turns 4/5 produced candidates
+carrying 65–67% of the stone's weight that fell at 3.7–3.8 s and
+scored −3.11 — ranked BELOW zero-load survivors at 0.000. The search
+was shown the real thing and was built to prefer nothing. Same wall
+as run 7, named on the walk by Claude's score-form ablation
+(subtractive picks standers at 4% speed, multiplicative picks
+travelers at 62%), and the fix is the same shape with no constants to
+choose.
+
+## AMENDMENT — v5: THE MULTIPLICATIVE SCORE (stated before the run)
+
+**STATEMENT.** The additive penalty structure is the third appearance
+of the same defect: `mean_r − 3·fell − 2·(1−frac)` mixes a reward
+whose whole range is ~0.5 with penalties of 3 and 2, so the fall
+cliff dominates absolutely and a 0-by-loophole outranks every real
+attempt. If the score is `mean_r × frac` — both factors dimensionless
+in [0,1], multiplied, the same form `stand_reward` already uses —
+there is no scale to get wrong, no constant chosen, and a fall prices
+itself through the fraction it survived. Precedent: the walk's
+multiplicative ablation made travelers outrank standers; here it must
+make carriers outrank hangers.
+
+**PREDICTION.** A 65%-load candidate that falls at 3.7 s (mean_r > 0,
+frac ≈ 0.9) now scores above any zero-load survivor (mean_r = 0 →
+score 0), so the gradient points INTO the load-bearing region for the
+first time: load readings climb past 80% with stone-floor under 20%
+in the survivors.
+
+**FALSIFIERS.** 1. The ranking does not invert — hangers still beat
+carriers — and the score's form was not the wall; named here. 2. No
+survivor at all across 48×32 with the multiplicative score — v3's
+falsifier 2 finally fires CLEAN: the standing carry of 73% of model
+mass at a 0.45 m lever is beyond this body, and the finding (the
+stone's D = 0.35 m, THE HUMAN's dial) goes to the operator with full
+numbers. 3. A carry that holds under the pelvis bar — the
+posture/strength trade, published as-is, bar unmoved.
