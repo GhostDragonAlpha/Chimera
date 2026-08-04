@@ -662,3 +662,68 @@ gaussians (each in [0,1]); the effort coefficient is a chosen constant
 survival fraction. Smoke (1×4, warm from the frontal stand): score ≥ 0,
 full-window hold at 101%. Run 11 relaunched on the fixed score; all turn
 numbers from the killed launch are discarded, none cited as evidence.
+
+**RUN 11 VERDICT (v9, THE RAMPED ARRIVAL, 48×32 warm from the frontal
+stand): F6 FAIL — falsifier 3 fired (gravity is cheated in the carry
+path), and the ramp itself is the hole.** The membrane asked whether the
+body could catch a weight that ARRIVES over 0.5 s instead of teleporting
+in 20 ms. The measured answer: the arrival as implemented never reaches
+the body at all.
+
+Measured, in order:
+
+- **f6 on the saved best: plantar 679.2 → 0.0 N at the weld** (delta
+  −679 N against the +421 N bar). QACC instability at t = 1.307, the
+  pelvis trace spikes through the floor (visible in f6's own plot), and
+  by the phase-2 window (t ≥ 1.6) the solver has settled into a
+  non-physical SUSPENSION: pelvis ~0.99 m, plantar 0, stone-floor 0 —
+  nothing touches the ground, and nothing falls. Phase 3 fails the same
+  way (0.0 → 0.0 N on release).
+- **The trainer's own evaluate on the same theta** (`.tmp/run11_probe.py`):
+  no explosion — but the same suspension: plantar 0.0 N AND stone-floor
+  0.0 N for the entire 3.0 s post-snap, pelvis floating at 0.93–1.00 m.
+  A static body with zero contact force anywhere is not a carry; it is
+  the solver holding a degenerate constraint. The trainer/judge
+  divergence (dip-and-suspend in evaluate, spike-through-floor in f6)
+  is a matter of degree inside the same degenerate regime.
+- **The mechanism, stated as the measured shape it is:** the ramp scales
+  the stone's mass AND INERTIA from ~0.12 kg while the weld is already
+  engaged. A near-massless body welded to an 82 kg torso is a
+  numerically degenerate constraint; the solver can hold the welded
+  system suspended (or blow it up) instead of transmitting weight. The
+  weight-arrival idea was aimed at the 20 ms killer; it routed the
+  arrival through ~0 inertia and found the solver's hole instead.
+- **The exploit instruments worked; the search did not.** The trainer's
+  load column read 0% for all 48 turns — every candidate priced ~0
+  (saved best: 0.000712), the weld-hang correctly priced at nothing. But
+  with the joints gaussian crushing every candidate's r to ~1e-4 under
+  load, the score had no gradient and CEM's elites were noise. The dark
+  reward, third appearance (Claude's stand-reward, the walk's, now the
+  carry's).
+- **Instrument repairs landed with this verdict:** f6's phase-2 window
+  now refuses a non-finite or non-positive carry trace (the old `min()`
+  skipped NaN silently — it printed 0.9915 m while its own plot showed
+  the body at −10 m); the trainer's evaluate treats a non-finite pelvis
+  as a fall and breaks before the NaN can poison the score.
+
+The v9 falsifiers read: (3) fired — the fake load path survivor exists
+and is the run's saved best. (1) fires in form but not in meaning: there
+was no survivor with the ramp, but what failed is the EVENT MODEL, not
+the body's sustained strength — the dial question does not return to THE
+HUMAN on this evidence.
+
+**v10's question, named before anything is built:** the arrival must not
+pass through ~0 inertia. The physical event is a load TRANSFER: the
+stone at full mass, gripped while it rests on the floor, the floor
+contact sharing the load and unloading as the body rises — the contact
+mediates the arrival, nothing teleports, nothing goes massless. That is
+v8's event, and its killer was the first control interval, which is a
+POLICY problem (no anticipation of a load the body can feel building
+through its own hands), not an event problem. Whether the answer is a
+braced-anticipation phase in the formula (the body pre-tensions before
+the weld, the way a person does) or a soft-constraint engagement is a
+derivation, not a pick. And the dark score needs its own membrane: under
+load the joints gaussian zeroes the signal for every candidate, so the
+search cannot rank a true carry against a suspension even though the
+load factor prices them correctly — the reward's form, third time, is
+the wall.

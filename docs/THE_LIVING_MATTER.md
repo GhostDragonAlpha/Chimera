@@ -60,11 +60,12 @@
 > defaults, tissue type mapping tested on ordering only.
 > TISSUE K_IC RESEARCHED (Phase 3d): bone Griffith-legal (124–735 J/m²),
 > muscle/skin docked at measured tearing energies (apparent), tendon's band
-> open. Next: metal EXISTS as frozen structure (Phase 7: 14,246/14,246 held
-> exactly, runaway drive measured 88k→397k — the λ question closed for good;
-> the skeleton's geometric leak sized: ice/sand gap collapse real, inversion
-> sign is noise), deficit-paired swaps (tissue-real K, named, unbuilt), the
-> tissue-scramble rupture run (3d's prediction), or the operator's pick.**
+> open. Next: deficit-paired swaps are PAID (Phase 8 closes PASS at 800
+> sweeps: swaps sort at the measured bulk-modulus λ, the copy-channel
+> jail holds, its λD² noise measured as a transient, τ_sort between 200
+> and 800 sweeps at n=96); metal EXISTS as frozen structure (Phase 7).
+> Remaining: the tissue-scramble rupture run (3d's prediction), or the
+> operator's pick.**
 
 ---
 
@@ -1351,6 +1352,23 @@ the copy channel as a rare-events jail, its ratio derived, not chosen 1:1.
 3. **The swap kernel is trusted** (cold-monotone gate; CPU reference
    `assemble_3d_swaps` reproduced the freeze and the corridor at small n:
    5 copy accepts vs 3,039 swap accepts, areas exact).
+
+*FOLLOW-UP VERDICT (2026-08-04, the pre-named τ measurement: same run at
+800 sweeps, `python -m core.matter_derive --swap --sweeps 800`).* **PASS —
+all three falsifiers, and the 200-sweep firing is read as the bar's
+optimism, exactly the branch the follow-up named.** Both arms sorted at
+the derived λ: swap-only bone 18.4 < muscle 18.9 < skin 20.8; mixed
+IDENTICALLY 18.4 < 18.9 < 20.8. The mixed arm's drift is exactly {0,0,0}
+and its H FELL 26.7M → 21.5M — against the 200-sweep run's rise to
+64.9M. The copy channel's λD² noise is a TRANSIENT: at 200 sweeps it
+dominates the trace; by 800 the jail has relaxed the deficits and the
+two arms sit on the same fixed point (radii agree to 0.1, H to 0.03%).
+τ_sort for this lattice at this λ lives between 200 and 800 sweeps; the
+membrane's 200-sweep bar was set inside the transient. **Phase 8 closes
+PASS: deficit-paired swaps carry interface dynamics at the measured
+bulk-modulus λ, the copy channel's jail holds the populations, and the
+two together are tissue-real K in the machine — the last named debt of
+this ledger, paid.**
 
 ---
 

@@ -156,7 +156,12 @@ def run() -> int:
     stone_rest = float(tr["sz"][-1])
 
     ok_load = abs(delta_on - W) <= LOAD_TOL * W
-    ok_stand = min(z_carry) >= UPRIGHT_FRAC * tgt if z_carry else False
+    # v9 run-11 repair: a window containing a NON-FINITE or through-floor sample is not
+    # a pass -- min() SKIPS NaN silently (comparisons are False), so an exploded sim
+    # printed 0.9915 m while its own trace showed the body at -10 m. The species this
+    # project keeps paying for: a number that moves for reasons you cannot attribute.
+    carry_clean = bool(z_carry) and all(np.isfinite(z_carry)) and min(z_carry) > 0.0
+    ok_stand = carry_clean and min(z_carry) >= UPRIGHT_FRAC * tgt
     ok_drop = abs(delta_off) <= LOAD_TOL * W and abs(stone_rest - P["OUT stone_radius_m"]) < 0.05
 
     print("\nF6 -- THE BODY FEELS THE STONE (M8a, the carried load)")
@@ -169,9 +174,10 @@ def run() -> int:
     print(f"  1. THE LOAD IS FELT   plantar sum {base:.1f} -> {loaded:.1f} N at the weld "
           f"(delta {delta_on:+.1f} N vs weight {W:.1f} N, tol {100 * LOAD_TOL:.0f}%)  ->  "
           f"{'PASS' if ok_load else 'FAIL -- the weld is decorative and the load is fake (falsifier 1)'}")
-    print(f"  2. THE BODY STANDS    pelvis MIN {min(z_carry):.4f} m = "
-          f"{100 * min(z_carry) / tgt:.0f}% of target through the 3.0 s carry  ->  "
-          f"{'PASS' if ok_stand else 'FAIL'}  (confound stated: the UNLOADED stand holds 7.00 s retrained)")
+    z_show = min(z_carry) if carry_clean else float("nan")
+    print(f"  2. THE BODY STANDS    pelvis MIN {z_show:.4f} m "
+          f"{'' if carry_clean else '(window NOT CLEAN -- sim exploded/NaN; the old min() would have skipped it silently) '}"
+          f"->  {'PASS' if ok_stand else 'FAIL'}  (confound stated: the UNLOADED stand holds 7.00 s retrained)")
     print(f"  3. DROPPING IS FELT   sum {loaded:.1f} -> {unloaded:.1f} N on release "
           f"(residual {delta_off:+.1f} N), stone rests at z {stone_rest:.3f} m "
           f"(radius {P['OUT stone_radius_m']:.3f})  ->  "

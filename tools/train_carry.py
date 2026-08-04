@@ -115,6 +115,13 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             _b = lambda nm: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, nm)]
             foot = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
             dx, dy = float(com[0] - foot[0]), float(com[1] - foot[1])
+            if not np.isfinite(z):
+                # v9 run-11 repair: a NaN pelvis is a FALL, not a sample. Comparisons
+                # against NaN are False, so an exploded candidate used to walk past
+                # the fell check and collect "held 4.00 s" on a dead body -- and a
+                # NaN reward would poison the whole score. Break before it lands.
+                fell = True
+                break
             if z < 0.5 * tgt:
                 fell = True
             jf = joint_frac(d, jids)
