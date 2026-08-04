@@ -1331,3 +1331,58 @@ the grammar's own answer, not a monolith.
 rates are the time-derivatives of z, pitch, roll -- the formula's own
 channels), no changed bars, no re-derivation of the pose (measured at
 its wall above), no score changes. Zero chosen terms.
+
+---
+
+**RUNS 19+20 — v15 VERDICT (2026-08-04): the SPINDLE channels are INERT
+(1.20 s / 1.02 s vs 1.16 s / 1.24 s position-only -- the rates of z,
+pitch, roll add nothing), and the capture measurement relocates the
+deficit a FOURTH time, to the exact quantity the policy cannot see.**
+
+Before accepting v15's falsifier-1 letter ("authority, not sensing"),
+the authority question was quantified with the published criterion
+(Hof 2008: XCoM = x + v/w0, w0 = sqrt(g/l); CoM velocity kinematic via
+mj_comVel, stone excluded): **at the release instant the extrapolated
+CoM is INSIDE the actual base of support -- XCoM-x -0.180 m against a
+0.283 m half-extent, 10 cm of margin.** Capturable without a step. The
+state is recoverable by the physics; five converged searches (runs
+16-20, two policy classes) cannot recover it. So it is not authority.
+
+What the policy lacks is not rate but POSITION OF THE CoM ITSELF. The
+formula senses (z, pitch, roll) -- pelvis height and orientation. The
+reward prices (dx, dy) -- CoM over the foot centre. At state 0 the
+height is AT target and rising (0.920 -> 0.938) while the CoM drifts
+backward past the margin: the policy literally sees nothing wrong until
+the drift is 0.3 m/s, and pitch encodes the lean only through a
+configuration-dependent mapping (3.6 deg at state 0 -- a crouch with
+flexed knees reads near-zero pitch while its CoM sits 4.5 cm back).
+Third time in this membrane chain: the missing channel is exactly the
+quantity the reward prices and the formula lacks (v13 the load, v16 the
+sway). Observability is the recurring deficit species.
+
+## v16 -- THE GRAVICEPTOR (the CoM-over-support channel)
+
+**STATEMENT.** The stand grammar's sensed set is incomplete: it lacks
+(dx, dy) = body-CoM minus foot-centre -- the quantities stand_reward's
+support gaussian prices, the ankle-strategy literature's own variable
+(Horak & Nashner 1986), and a real biological sense (graviceptive /
+vestibulospinal sway estimate). Adding kx*dx + ky*dy -- two blocks, no
+rates (v15 measured them inert), the body-only CoM (the stone is the
+giver's after the release; subtree_com including it prices a landmark
+the body no longer carries -- rule 19, the reward's dx/dy switch to
+body-only under the same flag) -- makes the capturable state-0
+recoverable.
+
+**PREDICTION.** A 6-block theta (a0|kh|kp|kr|kx|ky, zero-padded from
+the stand theta), trained from state 0, holds F3's bar for 3.0 s from
+state 0 and passes the two-stage full-cycle audit.
+
+**FALSIFIER 1 -- THEN it is authority, quantified.** If the sway
+channel also plateaus below the bar from a state the capture criterion
+proves capturable, the deficit is the muscle set's realizable wrench,
+and the next measurement is the required ankle/hip moment from the
+LIPM against what spanning() measures the muscles can produce.
+
+**FALSIFIER 2 -- the sense games the reward.** If training passes from
+state 0 but the two-stage audit fails, the policy learned the reset,
+not the return; the handoff becomes the membrane.

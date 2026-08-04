@@ -12,6 +12,9 @@ The policy class is the stand formula (a0 | kh | kp | kr) -- NOTHING ADDED by de
 With --rates (v15, THE SPINDLE): the three rate blocks (z-dot, pitch-rate, roll-rate --
 the time-derivatives of the SAME sensed quantities) join the search; a 4-block init is
 zero-padded onto them, which preserves the incumbent's behavior exactly.
+With --sway (v16, THE GRAVICEPTOR): the two CoM-over-support blocks (kx*dx, ky*dy -- the
+quantities the reward's support gaussian prices, body-only CoM) join instead, and the
+reward prices the same body-only landmark (rule 19).
 
 Warm start from stand_theta.npy. Output: return_theta.npy, the session's best, never the
 last turn's. Every turn ends in a picture.
@@ -58,6 +61,10 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
     nu = m.nu
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
     kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+    # v16 (THE GRAVICEPTOR, THE_GRAB.md): the CoM-over-support channel -- the quantity
+    # stand_reward's support gaussian prices. Zeros for a 4-block checkpoint.
+    kx = theta[4 * nu:5 * nu] if theta.size == 6 * nu else np.zeros(nu)
+    ky = theta[5 * nu:6 * nu] if theta.size == 6 * nu else np.zeros(nu)
     # v15 (THE SPINDLE, THE_GRAB.md): the rates of the SAME three sensed quantities --
     # zeros for a 4-block checkpoint, so the position-only incumbent runs unchanged
     kv = theta[4 * nu:5 * nu] if theta.size >= 7 * nu else np.zeros(nu)
@@ -75,6 +82,13 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
     steps = int(secs / m.opt.timestep)
     per_state, traces, all_pics = [], [], []
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
+    _b = lambda nm: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, nm)]
+    if theta.size == 6 * nu:
+        # v16: the body-only CoM landmark (the stone is the giver's after the release --
+        # subtree_com includes it and prices a landmark the body no longer carries)
+        _masses = m.body_mass.copy()
+        _masses[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)] = 0.0
+        _M = float(_masses.sum())
     for si in idxs:
         _restore(m, d, mujoco, states[si], spec, eq)
         grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
@@ -89,6 +103,12 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
                 roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                         1 - 2 * (q[1] ** 2 + q[2] ** 2)))
                 u = a0 + kh * (tgt - z) + kp * pitch + kr * roll
+                if theta.size == 6 * nu:
+                    # the GRAVICEPTOR channels: body-CoM over the foot centre -- the
+                    # quantities the reward's support gaussian prices, sensed directly
+                    com6 = (d.xipos * _masses[:, None]).sum(0) / _M
+                    foot6 = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
+                    u = u + kx * float(com6[0] - foot6[0]) + ky * float(com6[1] - foot6[1])
                 if theta.size >= 7 * nu:
                     # the SPINDLE channels: z-dot from the free joint, and the body's
                     # world-frame angular velocity projected on the roll (x) / pitch (y)
@@ -106,8 +126,11 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
                 if not np.isfinite(z):
                     fell = True
                     break
-                com = d.subtree_com[0]
-                _b = lambda nm: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, nm)]
+                if theta.size == 6 * nu:
+                    # v16: the reward prices the SAME body-only landmark the policy senses
+                    com = (d.xipos * _masses[:, None]).sum(0) / _M
+                else:
+                    com = d.subtree_com[0]
                 foot = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
                 dx, dy = float(com[0] - foot[0]), float(com[1] - foot[1])
                 if z < 0.5 * tgt:
@@ -238,13 +261,13 @@ def main() -> int:
         raise SystemExit("the curriculum is empty. Refusing.")
 
     nu = m.nu
-    dim = 7 * nu if "--rates" in a else 4 * nu   # v15: the SPINDLE blocks join the search
+    dim = 7 * nu if "--rates" in a else 6 * nu if "--sway" in a else 4 * nu
     mu = np.load(init)
-    if mu.size == 4 * nu and dim == 7 * nu:
-        # v15's STATED pad (v13's precedent): the rate blocks are new; zeros reproduce the
-        # incumbent's behavior EXACTLY (every rate term vanishes) -- verified at turn 0
-        mu = np.concatenate([mu, np.zeros(3 * nu)])
-        print(f"rate blocks zero-padded ({4 * nu} -> {dim}): the incumbent's behavior is preserved")
+    if mu.size == 4 * nu and dim > 4 * nu:
+        # STATED pad (v13's precedent): the new blocks are zeros; the incumbent's behavior
+        # is preserved EXACTLY (every new term vanishes) -- verified at turn 0
+        mu = np.concatenate([mu, np.zeros(dim - 4 * nu)])
+        print(f"new blocks zero-padded ({4 * nu} -> {dim}): the incumbent's behavior is preserved")
     if mu.size != dim:
         raise SystemExit(f"{init} is {mu.size} numbers, the search is {dim} -- refusing to "
                          f"pad or truncate a foundation (the theta-pair lesson, THE_GRAB v8).")
