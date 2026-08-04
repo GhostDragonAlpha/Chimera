@@ -87,21 +87,18 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     tr = {k: [] for k in ("t", "x", "z", "vx", "cr", "cl", "sup", "r")}
     pics, tot, n, fell = [], 0.0, 0, False
     x0 = float(d.qpos[0])
-    nj = len(OSC_JOINTS)
-    # THE OSCILLATOR IS STATE, and it is entrained by the feet -- not a clock read off d.time.
-    # eps and kappa are the last two free numbers; omega is derived and is not among them.
-    osc = WalkOscillator(omega, eps=float(theta_walk[2 * nj]), kappa=float(theta_walk[2 * nj + 1]))
-    dt_ctrl = CTRL_EVERY * m.opt.timestep
+    # THE TRAINER DRIVES WHAT THE JUDGE DRIVES: the clock phase (omega*t), exactly as f4's
+    # parser path does -- no entrainment state, no swing gate, because the judge has neither.
+    # The entrained WalkOscillator + interlock trained here for one session and was never
+    # judged: numbers the judge cannot use are dead at judgment (walk_port LEDGER 2026-08-03).
     for k in range(steps):
         if k % CTRL_EVERY == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            cr_now, cl_now = foot_contact(m, d, mujoco)
-            ph = osc.step(dt_ctrl, cr_now, cl_now)
             d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
-                                     omega * d.time, nu, tgt, gain=gain, phases=ph)
+                                     omega * d.time, nu, tgt, gain=gain)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
@@ -197,10 +194,11 @@ def main() -> int:
     # start at 0 with spread 1.0 rad. Those are STARTING POINTS for a search, not settings -- the
     # elite mean replaces them on turn 0 and nothing downstream reads them.
     nj = len(OSC_JOINTS)
-    # amplitudes | phase offsets | eps (leg-leg coupling) | kappa (foot-load entrainment).
-    # eps starts at port 12's own validated 2.0; kappa starts at 4.0. Both are searched.
-    mu = np.concatenate([np.full(nj, 0.20), np.zeros(nj), [2.0, 4.0]])
-    sd = np.concatenate([np.full(nj, 0.15), np.full(nj, 1.0), [1.5, 3.0]])
+    # amplitudes | phase offsets -- SIX numbers, and only six. The entrainment gains
+    # (eps, kappa) are out of the search: the judge drives the clock, so the trainer
+    # trains the clock (walk_port LEDGER 2026-08-03).
+    mu = np.concatenate([np.full(nj, 0.20), np.zeros(nj)])
+    sd = np.concatenate([np.full(nj, 0.15), np.full(nj, 1.0)])
     if init:
         mu = np.load(init); sd = 0.5 * sd
         print(f"warm start from {init}")
@@ -217,10 +215,6 @@ def main() -> int:
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, N_FREE))
         cand[:, :nj] = np.clip(cand[:, :nj], 0.0, 1.0)          # an amplitude is an activation
-        # eps and kappa are RATES and may not be negative: a negative coupling drives the legs
-        # toward IN-phase (both feet swinging together), which is not a slower walk, it is a
-        # hop -- a different gait the derived stride and duty do not describe.
-        cand[:, 2 * nj:] = np.clip(cand[:, 2 * nj:], 0.0, None)
         scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs)[0]
                            for c in cand])
         order = np.argsort(-scores)

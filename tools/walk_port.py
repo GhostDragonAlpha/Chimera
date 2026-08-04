@@ -37,6 +37,32 @@ stride; coupled pairs converge to antiphase, the uncoupled control does not), th
 primitive (one oscillator alternates both hips THROUGH THE MUSCLES, L/R correlation -0.871
 against a constant-drive ablation at +0.841), the STEP/STANCE/BALANCE action primitives, and the
 STAND port itself. So a failure here names a rung instead of a hyper-parameter.
+
+LEDGER, 2026-08-03 evening -- three thetas judged through the ONE parser path, and what they
+convicted (every number from `tools/f4_walk.py`, same harness, same world):
+
+    theta                    reward        travel   periodicity  upright        duty R/L
+    kimi24 (shaped, warm)    clip-linear   -15%     0.36         49%, 5.24 s    0.91/0.95
+    claude30 (Gaussian, 30t) Gaussian      +34%     0.21         47%, 2.24 s    0.65/0.60
+    regressed (Gaussian)     Gaussian      -12%     0.46         49%, 5.86 s    0.91/0.90
+
+1. THE SHAPED-REWARD AMENDMENT'S FALSIFIER FIRED. The clip-linear r_v retrain did not
+   recover >= 32% travel (it reached -15%); the speed term's SHAPE was not the binding
+   constraint. Published per rule 17. The tradeoff it exposed instead: the search finds
+   travelers-that-fall (34%, down at 2.24 s) or standers-that-freeze (95% held, -15%)
+   -- the binding constraint is UPRIGHT vs TRAVEL, not the reward's width.
+2. THE COMPOSITION WALKS-ISH. claude30's +34% with duty 0.65/0.60 against theHuman's
+   published 0.60 is the best gait ever put through the parser, and it came through the
+   CLOCK path -- Rule 0's own statement (clock phase, antiphase, derived omega). The
+   ablation stays PASS throughout: the rhythm is doing the work in every row.
+3. THE STRUCTURAL FINDING: the trainer drove the ENTRAINED oscillator (WalkOscillator,
+   eps/kappa, foot-contact state) while the judge drives the CLOCK (`move_formula_fn`,
+   phase = omega*t). Two of the eight trained numbers were dead at judgment and the
+   entrained gait was never judged at all -- "train past what you judge", one level
+   deeper. THE DECISION: the trainer now trains the judge's plant exactly (clock phase,
+   N_FREE back to 6). `WalkOscillator` stays in this file as a DEFERRED robustness
+   layer -- its cost is a parser obs amendment (foot contact into `obs`), to be earned
+   by its own membrane only if the clock composition plateaus below falsifier 3's 50%.
 """
 from __future__ import annotations
 
@@ -59,10 +85,11 @@ GROUPS_CACHE = OUTDIR / "walk_muscle_groups.json"
 # added because a leg that swings from the hip alone drags its foot. Each is measured for
 # direction, never assumed -- see `muscle_groups`.
 OSC_JOINTS = ("hip_flexion", "knee_angle", "ankle_angle")
-# one amplitude + one phase offset per joint, PLUS the oscillator's two sensory gains
-# (eps = coupling between the legs, kappa = entrainment to foot load). omega and the antiphase
-# TARGET are derived and are not in here -- see WalkOscillator.
-N_FREE = 2 * len(OSC_JOINTS) + 2
+# one amplitude + one phase offset per joint. omega and the antiphase TARGET are derived and
+# are not in here. (eps/kappa -- the entrainment gains -- were searched for one session and
+# never judged: the trainer drove WalkOscillator while f4 drives the clock. N_FREE is back to
+# 6 so the search and the judgment are the same plant -- see the module LEDGER.)
+N_FREE = 2 * len(OSC_JOINTS)
 
 
 def derive_walk_port() -> dict:
@@ -213,9 +240,31 @@ class WalkOscillator:
     def phase(self, side):
         return self.phi[side]
 
+    def swing_allowed(self, side, load_r, load_l):
+        """THE SWING'S STOP CONDITION, and it is DERIVED, not chosen.
+
+        `theHuman` publishes `duty_factor` = 0.6027. A duty factor above 0.5 is not a preference
+        or a style -- it is what makes the gait a WALK rather than a run: each foot is down 60%
+        of its cycle, the two overlap, and DOUBLE SUPPORT EXISTS. The arithmetic is forced:
+        two feet at 60% each over one cycle is 120% of a cycle's worth of contact, so at every
+        instant at least one foot is down. **Both feet are never airborne in a walk.**
+
+        The open-loop program had no such interlock, and the measured failure is exactly the one
+        it forbids: the body left the ground and fell at 2.5-4 s. So a leg may not enter swing
+        while the OTHER leg is unloaded -- effort applied until a sensor says stop, which is the
+        control law this project states, one level below where `WalkOscillator` applies it.
+
+        Returns a GATE in [0,1] rather than a boolean: a hard switch would chatter at every
+        contact flicker and inject a step function into the muscle drive. The gate is the
+        contralateral load's own state, and the caller multiplies the swing half of the drive
+        by it.
+        """
+        other = load_l if side == "r" else load_r
+        return 1.0 if other > 0.0 else 0.0
+
 
 def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain=1.0,
-                 phases=None):
+                 phases=None, swing_gate=None):
     """THE BUTTON'S CONTENT: the stand formula, plus one oscillator, and nothing else.
 
     `theta_walk` = [A_hip, A_knee, A_ankle, ph_hip, ph_knee, ph_ankle] -- amplitudes and
@@ -244,6 +293,13 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
             continue                                   # the ABLATION path, exactly
         for side in ("r", "l"):
             s = math.sin(ph[side] + float(offs[i]))
+            # THE SWING GATE, applied to the SWING HALF ONLY. `s > 0` is the flexion (lift and
+            # reach) half of this joint's cycle; `s < 0` drives the extensors, which is stance
+            # and support. Gating BOTH would tell a foot in double support to stop supporting --
+            # the interlock would cause the fall it exists to prevent. Only the lift is
+            # forbidden while the other foot is off the ground.
+            if s > 0.0 and swing_gate is not None:
+                s *= float(swing_gate[side])
             flex, ext = groups[f"{base}_{side}"]
             u[flex] = np.clip(u[flex] + a * s, 0.0, 1.0)
             u[ext] = np.clip(u[ext] - a * s, 0.0, 1.0)
@@ -267,7 +323,8 @@ def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0):
     """
     def fn(obs, value):
         return walk_formula(theta_stand, theta_walk, groups, obs["z"], obs["pitch"],
-                            P["OUT omega_rad_s"] * obs["t"], nu, tgt, gain=gain * float(value))
+                            P["OUT omega_rad_s"] * obs["t"], nu, tgt, gain=gain * float(value),
+                            phases=obs.get("phases"), swing_gate=obs.get("swing_gate"))
     return fn
 
 
