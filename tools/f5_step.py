@@ -81,8 +81,14 @@ def run_one(m, d, mujoco, P, theta_stand, theta_step, groups, tgt, nu, gain,
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            # ROLL, supplied because the frozen stand theta was TRAINED with its frontal channel
+            # live (2026-08-04). Composing over it with roll absent composes over a policy that
+            # never existed -- and the harness that omitted it was the one f5 crashed in.
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             cr, cl = foot_contact(m, d, mujoco)
-            u, trace = PARSER.command({"z": z, "pitch": pitch, "t": float(d.time),
+            u, trace = PARSER.command({"z": z, "pitch": pitch, "roll": roll,
+                                       "t": float(d.time),
                                        "cr": sensor_gain * cr, "cl": sensor_gain * cl})
             driver = trace.driver
             if u is not None:

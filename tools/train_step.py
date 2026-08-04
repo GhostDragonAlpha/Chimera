@@ -71,10 +71,16 @@ def evaluate(m, d, mujoco, theta_stand, theta_step, groups, P, secs, frames=0, g
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            # ROLL: THE TRAINER DRIVES WHAT THE JUDGE DRIVES. f5_step now supplies it, and a
+            # number optimised against a plant the judge does not run is dead at judgment --
+            # the walk port paid for that exact mistake on 2026-08-03 and it is written into
+            # its LEDGER. One line here is the whole cost of not repeating it.
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             cr, cl = foot_contact(m, d, mujoco)
             state, phase = machine.step(float(d.time), cr, cl)
             d.ctrl[:] = step_formula(theta_stand, theta_step, groups, z, pitch, nu, tgt,
-                                     state, phase, gain=gain)
+                                     state, phase, gain=gain, roll=roll)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())

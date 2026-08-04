@@ -181,11 +181,12 @@ class StepMachine:
         return dict(self.state), phase
 
 
-def step_formula(theta_stand, theta_step, groups, z, pitch, nu, tgt, state, phase, gain=1.0):
+def step_formula(theta_stand, theta_step, groups, z, pitch, nu, tgt, state, phase, gain=1.0,
+                 roll=0.0):
     """THE BUTTON'S CONTENT, v2: the stand formula, plus swing effort where the machine says SWING.
 
-    The stand theta is FROZEN -- composition, not retraining: the 870 numbers that hold the body
-    up are reused unchanged and the six swing efforts are the entire difference between standing
+    The stand theta is FROZEN -- composition, not retraining: the numbers that hold the body up
+    are reused unchanged and the six swing efforts are the entire difference between standing
     and walking. A stance leg gets the stand formula ALONE (no push-off term in v1: if no travel
     results, that is a measured finding, not a patch opportunity).
 
@@ -193,9 +194,28 @@ def step_formula(theta_stand, theta_step, groups, z, pitch, nu, tgt, state, phas
     flexors +A and its extensors -A (lift and carry); late swing drives flexors -B and extensors
     +B (reach and prepare to plant). A co-contracting pair with the same sign stiffens the joint
     instead of moving it -- the "flailing while rigid" failure the stand port already paid for.
+
+    THE STAND HALF IS THE PARSER'S, NOT A COPY OF IT (2026-08-04). This function used to write
+    the arithmetic out again, ending in an OPEN SLICE `theta_stand[2 * nu:]` -- correct for a
+    3-block theta, and 580 numbers wide the moment the stand formula gained its roll block. It
+    had been crashing `f5_step` outright with a broadcast error ever since:
+
+        ValueError: operands could not be broadcast together with shapes (290,) (580,)
+
+    The same species as `parser_tests`' `nu = theta.size // 3`, in a file the shape guard could
+    not reach BECAUSE it reimplemented the formula instead of calling it. So it calls it now:
+    `parser.stand_formula_fn` is the one home for that arithmetic, it reads the declared block
+    contract, and a fourth block cannot break a consumer that never sliced. Two copies of a
+    formula agree until one is edited; three is how a session ends up judging three plants.
+
+    ROLL IS THREADED THROUGH, and that is a fix rather than a flourish: the frozen theta was
+    TRAINED with its roll channel live, so composing over it with roll absent composes over a
+    policy that never existed. `stand_formula_fn` defaults it to 0.0, so a caller that has no
+    roll to give still reproduces the pre-roll behaviour exactly.
     """
-    u = np.clip(theta_stand[:nu] + theta_stand[nu:2 * nu] * (tgt - z)
-                + theta_stand[2 * nu:] * pitch, 0.0, 1.0)
+    from parser import stand_formula_fn
+    u = stand_formula_fn(theta_stand, tgt, nu)(
+        {"z": z, "pitch": pitch, "roll": roll}, 1.0)
     nj = len(OSC_JOINTS)
     for side in ("r", "l"):
         if state[side] != "swing":
@@ -246,8 +266,12 @@ def move_formula_fn(theta_stand, theta_step, groups, tgt, nu, P, gain=1.0):
     def fn(obs, value):
         state, phase = machine.step(obs["t"], float(obs.get("cr", 0.0)),
                                     float(obs.get("cl", 0.0)))
+        # `roll` is passed THROUGH the obs the same way every other sense is, and defaults to
+        # 0.0 when the harness has none to give -- so a harness written before the stand gained
+        # its frontal channel keeps working and one written after composes over the real policy.
         return step_formula(theta_stand, theta_step, groups, obs["z"], obs["pitch"], nu, tgt,
-                            state, phase, gain=gain * float(value))
+                            state, phase, gain=gain * float(value),
+                            roll=float(obs.get("roll", 0.0)))
     fn.machine = machine      # the harness may inspect state; it may not write it
     return fn
 

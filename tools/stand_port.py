@@ -80,6 +80,23 @@ def derive_stand_port() -> dict:
         "IN  height_m": float(H["height_m"]),
         "OUT pelvis_target_m": pelvis,
         "OUT com_target_m": float(S["com_height_m"]),
+        # WHY `together_` AND NOT `natural_` OR `braced_` -- MEASURED 2026-08-04, not preferred.
+        # theStance publishes three stance widths and this line picked one with no stated
+        # reason for two sessions; `f3_stand` printed the disagreement every run as an open
+        # question. `tools/stance_choice.py` closed it: one set of ten 20 s rollouts scored five
+        # ways (the stance is a JUDGING landmark -- it changes nothing in the plant, so survival
+        # is identical across every candidate by construction and cannot discriminate between
+        # them). The CONTACT POLYGON this body actually stands on -- the convex hull of the
+        # points carrying load, which is what a base of support IS -- measures a half-width of
+        # 0.1015 m against together_half_width_m's 0.1020 m:
+        #
+        #     measured 0.1015  |  together 0.1020  |  natural 0.1565  |  braced 0.3932
+        #
+        # A GAP OF 0.5 mm, well inside theStance's own grain (one foot breadth, 0.1020 m -- the
+        # number every stance width it publishes is built from). So `together_` IS the
+        # measurement rather than a description of some other posture, and every one of the five
+        # landmarks returns the same in/out verdict on every seed: nothing measurable was ever
+        # at stake between them. The pick was right; it is now READ instead of merely chosen.
         "OUT bos_half_lat_m": float(S["together_half_width_m"]),
         "OUT bos_half_fore_m": float(S["together_half_length_m"]),
         "OUT weight_N": sim_mass * float(S["g"]),        # the SIMULATED body's weight

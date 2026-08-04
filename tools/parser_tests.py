@@ -94,6 +94,37 @@ def main() -> int:
         _live, _lwhy = False, str(e)
     ok &= check("falsifier 0b: the guard accepts the real checkpoint", _live, _lwhy)
 
+    # -- FALSIFIER 0c: NO CONSUMER REIMPLEMENTS THE STAND FORMULA -----------------------------
+    # The guard above protects the CHECKPOINT. It cannot protect a consumer that never asks it:
+    # `step_port.step_formula` wrote the arithmetic out again and ended in an OPEN SLICE
+    # `theta_stand[2 * nu:]`, correct at three blocks and 580 numbers wide at four. It had been
+    # crashing `f5_step` outright with a broadcast error since the roll block landed, in a file
+    # the shape guard could not reach BECAUSE it reimplemented the formula instead of calling
+    # it. Two copies of a formula agree until one is edited.
+    #
+    # So the sweep asks the question directly: with no swing active, does the step port's stand
+    # half equal the parser's, bit for bit? A consumer that slices its own way will disagree the
+    # moment a block is added, and will say so HERE rather than in a harness six files away.
+    try:
+        import step_port as SP
+        _sp_reg = P.default_registry(theta, TGT, nu)
+        _idle = {"r": "stance", "l": "stance"}         # no swing -> the stand formula alone
+        _w = 0.0
+        for z in np.linspace(0.4, 1.1, 9):
+            for pitch in np.linspace(-0.35, 0.35, 5):
+                for roll in (-0.2, 0.0, 0.2):
+                    a = SP.step_formula(theta, np.zeros(64), {}, float(z), float(pitch), nu,
+                                        TGT, _idle, {"r": 0.0, "l": 0.0}, gain=0.0,
+                                        roll=float(roll))
+                    b = _sp_reg["STAND"].command({"z": float(z), "pitch": float(pitch),
+                                                  "roll": float(roll)}, 1.0)
+                    _w = max(_w, float(np.max(np.abs(a - b))))
+        ok &= check("falsifier 0c: step_port's stand half == the parser's, bit-identical",
+                    _w == 0.0, f"max |diff| over 135 samples = {_w:.3e}")
+    except Exception as e:                              # a CRASH is the failure, not an excuse
+        ok &= check("falsifier 0c: step_port's stand half == the parser's, bit-identical",
+                    False, f"{type(e).__name__}: {e}")
+
     # -- FALSIFIER 1: bit-identity with the formula the parser CLAIMS to carry ---------------
     # Reconstructed from tools/parser.py's `stand_formula_fn`, which is what the claim is ABOUT.
     # The roll term is included when the theta carries one, because a reference that omits a

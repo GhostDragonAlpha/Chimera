@@ -4,6 +4,26 @@
 > with real contact: pick up the stone, feel its weight_N through the body's
 > own load path. That's the first moment the player touches the ledger."
 
+> **TWO CORRECTIONS THAT APPLY TO THIS WHOLE DOCUMENT (2026-08-04, the
+> locomotion lane — `docs/THE_LOCOMOTION_LANE.md`). Read them before the
+> numbers below.**
+>
+> 1. **`9.08 s` IS SEED 0, THE LUCKIEST OF TEN.** Every stand-survival figure
+>    quoted here is one rollout. Ten 1e-6-nudged starts give **median 7.01 s**,
+>    min 6.30, spread 2.78 — the headline overstates by 29.5%. Read `9.08` as
+>    `7.01` throughout. Full amendment at the M8 finding below.
+> 2. **THE LOAD PATH IS REAL, AND PELVIS SAG IS THE WRONG OBSERVABLE FOR IT.**
+>    Measured (`tools/grab_load_path.py`): the body feels **+0.886** of the
+>    stone's weight through the weld and survival halves, **7.01 → 3.44 s** — so
+>    M8's *"feel its weight_N through the body's own load path"* is met. But the
+>    sag is **flat in carried mass** (2.60 / 4.73 / 3.29 / 2.57 mm across a 4×
+>    range, r² 0.038) while a pure vertical force at the pelvis of the same
+>    magnitudes sags it 5.53 / 14.77 / 39.77 mm. **The stone hangs 0.40 m
+>    forward, so it arrives as a PITCHING MOMENT, not a weight** — the body
+>    answers it in `kp·pitch`, not in the height channel. Anything in this
+>    document reasoning about the carry as a vertical load is reasoning about
+>    the smaller half of it.
+
 ---
 
 ## THE MEASURED PREMISE, BEFORE ANY THEORY

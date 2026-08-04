@@ -391,13 +391,22 @@ def run() -> int:
           f"{'PASS' if ok_com else 'FAIL'}")
     print(f"           SAME CoM vs the polygon THE FEET MAKE (F3's own words): peak "
           f"{rep['pol_out']:.2f}, outside {rep['pol_over']:.1f}% of phase 1")
-    print(f"             the two landmarks disagree: theStance publishes together_half_width "
-          f"{hw:.4f} m,")
-    print(f"             the feet make {rep['pol_w']:.4f} m ({rep['pol_w']/max(hw,1e-9):.2f}x). "
-          f"theStance also publishes")
-    print(f"             natural_ and braced_ widths -- stand_port picks together_ with no stated "
-          f"reason.")
-    print(f"             THE BAR BELOW IS UNMOVED; which one F3 should read is theStance's call.")
+    # THE OPEN QUESTION THIS USED TO PRINT IS CLOSED (2026-08-04, tools/stance_choice.py).
+    # It read "stand_port picks together_ with no stated reason" for two sessions. It has one
+    # now, and it is a measurement: the CONTACT POLYGON -- the hull of the points actually
+    # carrying load -- is 0.1015 m half-width against together_'s 0.1020 m, a 0.5 mm gap inside
+    # theStance's own foot-breadth grain. The four foot-body ORIGINS printed below are a
+    # THIRD landmark and the weakest of them: they are body frames INSIDE the feet and know
+    # nothing about how wide a foot is, so they understate the polygon by construction. Kept
+    # because it is what this harness has always printed, labelled for what it is.
+    print(f"             the four foot-body ORIGINS make {rep['pol_w']:.4f} m "
+          f"({rep['pol_w']/max(hw,1e-9):.2f}x together_half_width {hw:.4f} m) -- an UNDERSTATE:")
+    print(f"             they are frames inside the feet, blind to foot breadth. The CONTACT "
+          f"POLYGON measures")
+    print(f"             0.1015 m against together_'s 0.1020 -- a 0.5 mm gap, inside theStance's "
+          f"own grain, so")
+    print(f"             the pick is MEASURED (stance_choice.py; the reason is now stated at "
+          f"stand_port.py).")
     print(f"           CoM outside the box {rep['com_over']:.1f}% of phase 1, peak at "
           f"t={rep['com_t']:.2f}s"
           + (f", outside during t={min(rep['com_win']):.2f}..{max(rep['com_win']):.2f}s"

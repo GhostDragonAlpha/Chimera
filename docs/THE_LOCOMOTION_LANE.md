@@ -527,14 +527,69 @@ informative half.**
 | 9 three walk arms | ranking CHANGED (entrained 35% → 56%) — but the cause is the periodicity repair, not task 1 |
 | 4 backward fall | **HOLDS** 9/10 posterior, −14.1° exit pitch |
 | 7 theta-shape guard | **HOLDS** — trips on a 3-block theta, and falsifier 1 runs again after being dead |
-| 8 stance pick | the unjustified pick is **CORRECT** to 0.5 mm |
+| 8 stance pick | the unjustified pick is **CORRECT** to 0.5 mm — reason now stated at `stand_port.py` |
 | 10 GRAB load path | falsifier does NOT fire; (a) and (b) fail on one coherent fact — the load is a moment, not a weight |
 
-**WHAT THE LANE ACTUALLY FOUND.** Not one of the ten tasks moved the body. Six of them moved an
-*instrument*, and three of those instruments had already produced published claims: a survival
+**WHAT THE LANE ACTUALLY FOUND.** Not one of the ten tasks moved the body. **Seven of them moved
+an instrument**, and three of those instruments had already produced published claims: a survival
 figure that was the luckiest of ten, a periodicity that rewarded a body falling over once, and a
 cadence that was a search window's floor. **The locomotion work has been reading broken gauges,
 and the gauges all read optimistic.**
+
+The seventh was found by the cheapest check in the lane — re-running the neighbours of every
+shared instrument that changed — and it had been crashing two harnesses for a day. *An
+instrument needs an instrument* (rule 24), and so does a guard: task 7's shape check is correct
+and could not have caught it, because the broken file never asked.
+
+### A seventh instrument, found while checking the other six did not break their neighbours
+
+`_periodicity`, `stand_reward` and `parser` are all shared, so after the lane's changes every
+consumer was re-run. `port_tests` 17/17, `primitive_tests` 7/7, `action_tests` 8/11 + 1 refused,
+`parser_tests` PASS — and **`f5_step` crashed outright**:
+
+```
+ValueError: operands could not be broadcast together with shapes (290,) (580,)
+    step_port.py:197  theta_stand[2 * nu:] * pitch
+```
+
+**Pre-existing, and untouched by this lane** (`git log` on `step_port.py`/`f5_step.py` predates
+it). `step_port.step_formula` **reimplemented the stand formula** and ended in an OPEN SLICE:
+correct at three blocks, 580 numbers wide the moment the roll block landed. Both `f5_step` and
+`train_step` have been dead since — **the same species as `parser_tests`' `nu = theta.size // 3`,
+in a file task 7's shape guard could not reach precisely BECAUSE it reimplemented the formula
+instead of calling it.** A guard on the checkpoint cannot protect a consumer that never asks it.
+
+Fixed by deleting the copy, not by patching the slice: `step_formula` now calls
+`parser.stand_formula_fn`, the one home for that arithmetic. `roll` is threaded through
+`step_formula`, `f5_step` and `train_step` — the frozen theta was *trained* with its frontal
+channel live, so composing over it with roll absent composes over a policy that never existed,
+and the trainer must drive what the judge drives. **And the sweep gained falsifier 0c**: the step
+port's stand half must equal the parser's bit-for-bit over 135 samples, so the next consumer that
+slices its own way says so in `parser_tests` instead of in a harness six files away.
+
+`f5_step` runs again and FAILS its bars honestly (travel 20%, periodicity 0.13 at period 1.16 s
+against a derived stride of 1.17 s, upright 47%). **Carried caveat, named not fixed:**
+`step_theta.npy` on disk was trained through the crashing path, i.e. against a 3-block stand,
+and is now judged against a 4-block one — a stale artifact, and retraining the step port is a
+different membrane's work.
+
+### A misattribution in this lane's own history, recorded rather than rewritten
+
+Commit `47e9f50` ("Locomotion lane, tasks 4/6/7/8…") was staged with `git add -A tools/` while a
+**concurrent Matter lane** was mid-edit in the same directory. It therefore carries 1,069 lines
+that are **not this lane's work** and that its message does not mention:
+
+| file | lines | whose |
+|---|---:|---|
+| `tools/port_tests_matter.py` | 687 | Matter lane |
+| `tools/matter_data.py` | 377 | Matter lane |
+| `tools/port_tests.py` | 5 | Matter lane |
+
+The commit is pushed and this project commits only forward, so it is **not rewritten** — it is
+named here, which is the only thing that makes the history answerable to *"which change did
+what"*. The same run also produced a transient `18/19 ports` reading, which was that lane's
+half-written `SUSPENSION` port and not a regression; it reads **19/19** now. Subsequent commits
+in this lane stage by explicit path.
 
 **THE ONE OPEN THING THAT BLOCKS THE REST.** `train_stand`'s warm-started CEM cannot improve on
 its own start at 1160 dimensions — 2,160 evaluations, zero improvements, a bit-identical file
