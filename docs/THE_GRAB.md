@@ -1495,3 +1495,58 @@ verb, the reward prices the verb); on stone-floor CONTACT (measured,
 not timed) the taper runs and the weld releases; tgt ramps home; the
 return needs no training IF falsifier 2 stays quiet. The campaign is
 run 23.
+
+---
+
+**RUNS 23+24 — v17 VERDICT (2026-08-04): the LOWERING works as an EVENT
+and fails as a STATE, and the verdict carries a correction: the
+"seated-keyframe basin" was a MISREADING. The wall stands, relocated a
+sixth time, and it is the walk wall exactly.**
+
+What the event machinery proved (runs 23/24, best 0.387/0.386): the
+descent is learnable, the contact-trigger fires cleanly (floor contact
+at 5.51 s, taper, weld release at 6.01), and the stone rests at EXACTLY
+0.175 m. The mid-air snatch is dead as a design.
+
+What the search actually built: not a squat but THE TILT. The candidate
+keeps the pelvis at 0.91 through the descent window (the height
+gaussian prices pelvis height, so staying tall is free reward) and
+swings the welded stone down by folding the TORSO forward (0.40 m of
+lever arm does the lowering). The release state is a forward fold at
+pelvis 0.21-0.50, CoM past the toes; the body then sinks to the floor
+(17.3% post-release). The reward priced the pelvis, not the descent's
+shape, and the search found the gap -- the exchange again, Claude's
+upright-vs-travel in a third costume.
+
+**THE CORRECTION.** v17's basin premise read "the keyframe is seated"
+as a SITTING pose. It is not: the seating procedure seats JOINTS into
+ligament engagement edges (world.py's own log line), and the keyframe's
+pelvis is ~0.98 m -- a STANDING pose. The stand policy has never stood
+up from a squat in its life. Measured the hard way: the release state's
+joint angles sit a mean 0.44 of half-range from the keyframe (near!),
+but the free-joint root is 0.77 m below it (another posture entirely).
+The basin is a region around STANDING; a deep squat is as foreign to
+the stand policy as the lean-back was. Falsifier 2 fired on a premise
+the membrane wrote wrong -- recorded so the next membrane does not
+inherit it.
+
+**What eleven campaigns (runs 14-24, six membranes) settle.** Every
+route to a good set-down lands on the same wall: the release state must
+be REACHED (a loaded transition: squat-under-421 N, or
+fold-and-unfold) or RECOVERED FROM (an unloaded transition:
+lean-back-to-stand, squat-to-stand). Both are TRANSITIONS. This is the
+walk wall (THE_STEP's ninth hypothesis: postural policy and transition
+must be trained TOGETHER, at scale, never appended) measured from the
+carry side. The set-down is not a grab problem; it is the second
+transit of the same border.
+
+**M8 STATUS, honestly.** The milestone's letter is PROVEN: real-contact
+grasp of a passive object, its 421 N felt through the body's own load
+path, the carry held standing (F6 phase 2), the lean-back learned on
+camera. The set-down debt is PUBLISHED, characterized to its root
+(transitions, shared with M3), and joins the walk wall as the same
+deficit -- it closes when the walk closes, through the joint-training
+campaign the walk lane has named, not through another grab-side
+membrane. This lane's membranes stop here until the transition
+foundation exists; the ledger holds the full chain for the agent that
+picks it up.
