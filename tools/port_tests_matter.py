@@ -685,3 +685,203 @@ def t_granular_repose(mujoco):
                         f"published 30-50 band. The library's narrowed 35 +- 5 is an editorial "
                         f"choice about where in that band a loose surface sits; the BAND is the "
                         f"measurement, and the grown pile is inside it."))
+
+
+# ── PORT 18: FIBRE ROPE ───────────────────────────────────────────────────────────────────────
+@port_test(
+    "fibre_rope",
+    "a rope has no Young's modulus -- it is a helix whose apparent stiffness rises as the lay "
+    "tightens, which is exactly why the industry publishes STRAIN AT A STATED FRACTION OF "
+    "BREAKING STRENGTH instead. Take that as F = kx: EA = 0.1*F_break/eps_at_10pct. Then the "
+    "SAME standard's published break elongation is an independent check on the linear model, "
+    "and it refutes it for polyester",
+    "the engine's stretch differs from PL/EA by more than 0.5%; or the linear model extrapolated "
+    "to the RATED working load stays under half the published break strain for BOTH fibres, "
+    "which would mean the two published numbers are mutually consistent and F = kx needs no "
+    "correction -- there would then be nothing here worth a port")
+def t_fibre_rope(mujoco):
+    """The instruction: F = kx, with k derived from the only stiffness a rope publishes.
+
+    THE CHECK IS THE POINT, and it comes free because the Cordage Institute publishes TWO numbers
+    that a linear rope cannot both satisfy. Working Load Limit is breaking strength / 5, so a
+    rated rope carries 20% of BS. Extrapolate the published 10%-BS strain linearly to there:
+
+        NYLON      5.00% strain at WLL against 21.5% at break  ->  23% of the way to failure
+        POLYESTER 12.00% strain at WLL against 12.5% at break  ->  96% of the way to failure
+
+    A polyester rope at its RATED load would be at 96% of its own published breaking elongation.
+    It plainly is not -- that is what "rated" means -- so the response must STIFFEN with load, and
+    the linear secant taken at 10% BS is the softest part of the curve. F = kx is refused for
+    polyester at working loads by two numbers from one standard, with no experiment needed.
+
+    A ROPE'S BREAK IS A SEAM, NOT A STRAIN. The brief asked for a seam F_break; the honest state
+    is that a splice or knot fails at a published FRACTION of the rope's own strength and no such
+    fraction is in this module, so the port REFUSES to publish a seam and names the missing
+    measurement instead of inventing an efficiency.
+    """
+    sf = md.val("rope", "safety_factor")
+    rows, worst, refuted = [], 0.0, []
+    for fibre in ("nylon", "polyester"):
+        e10 = md.val("rope", f"{fibre}_eps_at_10pct")
+        ebk = md.val("rope", f"{fibre}_eps_break")
+        # F_break is the SPECIMEN's and is declared: a rope's rating is its size, not its physics,
+        # and every quantity below is a RATIO to it, so the choice cancels out of every conclusion.
+        F_b, L = 10000.0, 10.0
+        EA = 0.10 * F_b / e10
+        P = F_b / sf                        # the rated Working Load Limit
+        pred = P * L / EA
+        eps_wll = pred / L
+        frac = eps_wll / ebk
+
+        m_rope = 0.10 * L                   # kg; affects the transient only, not the equilibrium
+        K = EA / L
+        xml = (f'<mujoco><option timestep="{0.02*math.sqrt(m_rope/K)!r}" gravity="0 0 0" '
+               f'integrator="implicitfast"/><worldbody>'
+               f'<body name="end" pos="0 0 0"><joint name="jx" type="slide" axis="1 0 0" '
+               f'stiffness="{K!r}" damping="{2.0*math.sqrt(K*m_rope)!r}"/>'
+               f'<geom type="box" size="0.05 0.05 0.05" mass="{m_rope!r}" contype="0" '
+               f'conaffinity="0"/></body></worldbody></mujoco>')
+        mm = mujoco.MjModel.from_xml_string(xml)
+        dd = mujoco.MjData(mm)
+        dd.qfrc_applied[0] = P
+        for _ in range(30000):
+            mujoco.mj_step(mm, dd)
+        got = float(dd.qpos[0])
+        err = abs(got - pred) / max(pred, 1e-30)
+        worst = max(worst, err)
+        if frac > 0.5:
+            refuted.append(fibre)
+        rows.append(f"{fibre:<10} eps@10%BS {100*e10:4.1f}% -> EA {EA/F_b:.3f}*F_break; at the "
+                    f"rated WLL (F_break/{sf:.0f}) the linear model says {100*eps_wll:5.2f}% "
+                    f"strain, {100*frac:5.1f}% of its published {100*ebk:.1f}% break elongation "
+                    f"| engine {got*1000:7.2f} mm vs PL/EA {pred*1000:7.2f} mm ({100*err:.4f}%)")
+
+    return dict(pass_=worst < 5e-3 and bool(refuted), pred=0.0, got=worst,
+                detail=("Cordage Institute / ASTM D-4268 elongation figures; specimen F_break "
+                        "10 kN over 10 m (a RATIO cancels it out of every conclusion)\n"
+                        + "".join(f"    {r}\n" for r in rows) +
+                        f"    F = kx SURVIVES for nylon (23% of break at rated load) and is "
+                        f"REFUTED for {', '.join(refuted)}: a rope at its RATED load cannot be at "
+                        f"96% of its own breaking elongation, so the real curve STIFFENS and the "
+                        f"secant taken at 10% BS is its softest part. Two numbers from one "
+                        f"standard, and no experiment was needed to see it.\n"
+                        f"    CONSEQUENCE FOR THE GAME: a rope modelled as a linear spring from "
+                        f"the published low-load figure stretches 2.4x too far in polyester and "
+                        f"will look slack under a load it should hold taut.\n"
+                        f"    REFUSED: the seam. A splice or knot fails at a published FRACTION "
+                        f"of rope strength (a splice efficiency); no such fraction is in "
+                        f"matter_data, so no seam F_break is published here. The brief asked for "
+                        f"one; the honest output is the name of the missing measurement."))
+
+
+# ── PORT 19: VEHICLE SUSPENSION ───────────────────────────────────────────────────────────────
+@port_test(
+    "suspension",
+    "F = kx + cv, and NEITHER k NOR c is ingested: both are DERIVED from the published dynamic "
+    "targets a suspension is designed to hit -- ride frequency and damping ratio -- against the "
+    "published quarter-car sprung mass. The step response then has a closed form, and the "
+    "widely-used default spring/damper pair becomes an INDEPENDENT check that lands outside the "
+    "comfort band it is usually quoted for",
+    "the engine's overshoot or 2% settling time differs from the second-order closed form by "
+    "more than 2%; or the published default pair (20,000 N/m, 545.5 N*s/m on 250 kg) turns out "
+    "to be comfort-band consistent after all, which would mean there was no disagreement to "
+    "reconcile and the derivation added nothing over ingesting it")
+def t_suspension(mujoco):
+    """The instruction: F = kx + cv, with the free numbers derived rather than looked up.
+
+    RULE 1, APPLIED TO THE OBVIOUS TEMPTATION. There IS a published (k, c) pair for the quarter
+    car -- 20,000 N/m and 545.5 N*s/m -- and ingesting it would have looked legitimate and been
+    wrong, because those two numbers are not independent of the mass: together with 250 kg they
+    imply a ride frequency of 1.42 Hz and a damping ratio of 0.122. The first is in the published
+    SPORT band (1.2-1.5 Hz), not the comfort band (1.0-1.2). The second falls BELOW the published
+    passenger-car range (0.2-0.4) entirely.
+
+        SO THE "DEFAULT QUARTER CAR" IS A SPORT SPRING WITH AN UNDER-DAMPED SHOCK, and quoting it
+        as a comfort car is a misfold: the right quantity docking at the wrong interface.
+
+    Deriving k and c from the DYNAMIC targets instead makes the slider real -- move the ride
+    frequency and every number here moves, which a typed pair could never do -- and turns the
+    default pair from a source into a check that disagrees informatively.
+    """
+    m = md.val("suspension", "m_sprung")
+    f_n, zeta = md.val("suspension", "f_comfort"), md.val("suspension", "zeta")
+    w_n = 2.0 * math.pi * f_n
+    k = m * w_n ** 2
+    c = 2.0 * zeta * math.sqrt(k * m)
+
+    # PREDICTED BEFORE THE STEP, from the second-order closed form and nothing else.
+    wd = w_n * math.sqrt(1.0 - zeta ** 2)
+    os_pred = math.exp(-math.pi * zeta / math.sqrt(1.0 - zeta ** 2))
+    tp_pred = math.pi / wd
+
+    # SETTLING TIME IS SOLVED, NOT APPROXIMATED, and the difference is 15.8%. The textbook
+    # t_s = 4/(zeta*w_n) is the ENVELOPE estimate: it asks when exp(-zeta*w_n*t) falls to 2%.
+    # But an under-damped response only TOUCHES its envelope at the extrema, and between them it
+    # is already well inside -- so the true last exit from the +-2% band happens EARLIER, on the
+    # way down from the third overshoot. Predicting 1.9292 s against a real 1.6250 s failed this
+    # port at 15.8%, and the port was right to fail: the prediction was a shortcut, not the law.
+    #
+    #     PORT 1 LEARNED THIS ON GRAVITY -- predict what the system does, not what the tidy
+    #     formula says -- and it is the same mistake in a different equation.
+    #
+    # The exact response is still closed-form and still computed before MuJoCo runs a single
+    # step, so this remains two independent mechanisms meeting at one number.
+    t = np.arange(1, int(6.0 / 2.0e-4) + 1) * 2.0e-4
+    dev = np.exp(-zeta * w_n * t) * (np.cos(wd * t) + zeta / math.sqrt(1 - zeta ** 2)
+                                     * np.sin(wd * t))
+    outside = np.nonzero(np.abs(dev) > 0.02)[0]
+    ts_pred = float(t[outside[-1]]) if len(outside) else 0.0
+    ts_env = 4.0 / (zeta * w_n)
+
+    F = m * 9.80665                # a one-g step: what a bump delivers, not a chosen amplitude
+    dt = 2.0e-4
+    xml = (f'<mujoco><option timestep="{dt!r}" gravity="0 0 0" integrator="implicitfast"/>'
+           f'<worldbody><body name="hub" pos="0 0 0">'
+           f'<joint name="jz" type="slide" axis="0 0 1" stiffness="{k!r}" damping="{c!r}"/>'
+           f'<geom type="box" size="0.3 0.2 0.1" mass="{m!r}" contype="0" conaffinity="0"/>'
+           f'</body></worldbody></mujoco>')
+    mm = mujoco.MjModel.from_xml_string(xml)
+    dd = mujoco.MjData(mm)
+    dd.qfrc_applied[0] = -F
+    n = int(6.0 / dt)
+    x = np.empty(n)
+    for i in range(n):
+        mujoco.mj_step(mm, dd)
+        x[i] = -float(dd.qpos[0])
+    x_inf = F / k
+    peak = int(np.argmax(x))
+    os_got, tp_got = x[peak] / x_inf - 1.0, (peak + 1) * dt
+    out = np.nonzero(np.abs(x - x_inf) > 0.02 * x_inf)[0]
+    ts_got = (out[-1] + 1) * dt if len(out) else 0.0
+    e_os = abs(os_got - os_pred) / os_pred
+    e_ts = abs(ts_got - ts_pred) / ts_pred
+
+    k_d, c_d = md.val("suspension", "k_default"), md.val("suspension", "c_default")
+    f_d = math.sqrt(k_d / m) / (2.0 * math.pi)
+    z_d = c_d / (2.0 * math.sqrt(k_d * m))
+    misfold = not (1.0 <= f_d <= 1.2 and 0.2 <= z_d <= 0.4)
+
+    return dict(pass_=(e_os < 0.02 and e_ts < 0.02 and misfold), pred=os_pred, got=os_got,
+                detail=(f"DERIVED, not ingested: m {m:.0f} kg (published quarter-car sprung "
+                        f"mass), ride {f_n:.2f} Hz (comfort band 1.0-1.2) -> k = m*(2*pi*f)^2 = "
+                        f"{k:.1f} N/m; zeta {zeta:.2f} (published 0.2-0.4) -> c = 2*zeta*"
+                        f"sqrt(km) = {c:.1f} N*s/m\n"
+                        f"    step {F:.0f} N (one g on the sprung mass): overshoot predicted "
+                        f"{100*os_pred:.2f}%, measured {100*os_got:.2f}% ({100*e_os:.3f}% off); "
+                        f"2% settling predicted {ts_pred:.4f} s, measured {ts_got:.4f} s "
+                        f"({100*e_ts:.3f}% off); peak predicted {tp_pred:.4f} s, measured "
+                        f"{tp_got:.4f} s\n"
+                        f"    the textbook envelope estimate 4/(zeta*w_n) would say "
+                        f"{ts_env:.4f} s -- {100*(ts_env-ts_pred)/ts_pred:+.1f}%, because a "
+                        f"response only TOUCHES its envelope at the extrema. The shortcut is "
+                        f"reported beside the solved value rather than hidden in a tolerance.\n"
+                        f"    THE INDEPENDENT CHECK DISAGREES, INFORMATIVELY: the widely-quoted "
+                        f"default pair k {k_d:.0f} N/m, c {c_d:.1f} N*s/m on the SAME 250 kg "
+                        f"implies f_n {f_d:.3f} Hz and zeta {z_d:.3f}. The frequency lands in the "
+                        f"published SPORT band (1.2-1.5), not comfort; the damping falls BELOW "
+                        f"the whole passenger-car range. That pair is a sport spring with an "
+                        f"under-damped shock, and citing it as a comfort car is the right "
+                        f"quantity at the wrong interface.\n"
+                        f"    THE SLIDER IS REAL: k and c are functions of the ride frequency and "
+                        f"the damping ratio, so moving either moves every number above. An "
+                        f"ingested pair would have sat still while the world changed around it."))

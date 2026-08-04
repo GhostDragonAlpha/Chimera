@@ -79,10 +79,12 @@ belongs to, and cannot trust the ledger without knowing what "validated" was mad
 | 4 | **[`docs/THE_PIECES.md`](docs/THE_PIECES.md)** | **the ledger.** 174 pieces with provenance and status; §16 is the port ledger — what is validated, what is unmeasured, what is merely specified. |
 | 5 | **[`story/README.md`](story/README.md)** | the game: chapters, proven/visual/learned, the two authors. |
 
-**WHERE IT STANDS (2026-08-02): 12/12 ports · 4/7 mechanism primitives · 7/11 action primitives
-(1 REFUSED as absent structure) · parser/runtime/calibration not built · the universal object
-framework SPECIFIED with zero ports validated.** The ledger is the ledger; do
-not cite the specification as proof.
+**WHERE IT STANDS (2026-08-04): 19/19 ports (12 human + 7 non-human matter) · 7/7 mechanism
+primitives · 8/11 action primitives (1 REFUSED as absent structure) · parser/runtime/calibration
+not built · the universal object framework now has ONE validated port each for plant, rock, tree,
+terrain, fabric, vehicle and granular — and BUILDING still has zero.** One port per object is a
+beginning, not a passive-tissue model. The ledger is the ledger; do not cite the specification as
+proof.
 
 ```bash
 python tools/port_tests.py && python tools/primitive_tests.py && python tools/action_tests.py

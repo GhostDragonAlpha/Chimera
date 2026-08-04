@@ -372,26 +372,57 @@ Every one of these is a *gameplay* consequence of a *passive* number, not a scri
 6. **Build the object** by composing validated ports.
 7. **Test the object** in the world.
 
-## HONEST STATUS — this section is SPECIFIED, not VALIDATED
+## HONEST STATUS — SEVEN OF THE EIGHT ROWS ARE STILL SPECIFIED ONLY
 
-> **A DESCRIPTION SURVIVES ANY RESULT. A THEORY CAN LOSE.** The table above is a *design*, and
-> saying so is the whole of Rule 0. As of 2026-08-02 the only passive ports with a measured
-> falsifier are the human's: **12/12 ports and 4/7 primitives.** Grass, rock, tree, building,
-> vehicle, fabric and terrain have **zero validated ports**. Nothing above may be cited as proven.
+> **A DESCRIPTION SURVIVES ANY RESULT. A THEORY CAN LOSE.** The table above began as a *design*,
+> and saying so was the whole of Rule 0. **As of 2026-08-04 seven of its objects have ONE
+> validated port each** (`tools/port_tests_matter.py`, run by the same harness as the human's):
+>
+> | object | port | what it validated | what it REFUSED |
+> |---|---|---|---|
+> | **Plant** | `grass_blade` | a lamina is a DISTRIBUTED beam; a lumped root spring is exact under a pure moment and **3× too stiff under a tip force**, and a foot is a tip force | damping `c` — Vincent publishes a dynamic modulus proving the blade is viscoelastic but no loss factor |
+> | **Rock** | `rock_fracture` | σ = Eε to σ_t; E/σ_t/K_IC are OVER-DETERMINED and the flaw they imply is **8.72 mm** (vesicle, not grain). UCS/σ_t = 18.3 against Griffith's 8 | the library's 2 mm "grain size" as a Griffith flaw — its own note says it is surface texture |
+> | **Tree** | `tree_trunk` | orthotropic wood: G_LR/E_L = 0.086 is **4.47× below isotropic**; the shear share is exact at three slendernesses; trunks always fail in bending | a trunk diameter — no chapter grows a wood, so the claim is stated in L/d |
+> | **Terrain** | `terrain_footprint` | a stiffness and a strength from two literatures land on the same millimetre (3.84 vs 3.12 mm) | a footprint DEPTH — unresolvable across cohesion's own ±0.4 kPa, which spans 54 mm to zero |
+> | **Fabric/rope** | `fibre_rope` | EA from published strain-at-10%-BS; the same standard's break elongation **refutes F = kx for polyester** (96% of break at its RATED load) | the seam — a splice efficiency is not published in `matter_data` |
+> | **Vehicle** | `suspension` | k and c DERIVED from ride frequency and damping ratio, not ingested; overshoot and settling exact to 0.02% | the quoted default (k, c) pair as a comfort car — it implies 1.42 Hz and ζ 0.122 |
+> | *(granular)* | `granular_repose` | θ_r = atan(μ) is **BRACKETED, not reached**: spheres 0.0° < 35.0° < boxes 66.2° at identical friction | a repose angle from a rigid-body engine at all |
+>
+> **19/19 ports and 7/7 primitives.** **Building has zero validated ports** and nothing in its row
+> may be cited. One port per object is a beginning, not a passive-tissue model: each row above
+> names several ports and exactly one of them has a measured falsifier.
+>
+> **The terrain port convicted a live membrane.** theGround publishes `sinkage_m = 8.674e-19` —
+> 4.4×10¹⁵ times smaller than its own soil's elastic settlement — traced to a typed
+> `COHESION_PA = 2000` where the world's library publishes 500 ± 400. **The soil is decorative and
+> one typed constant is why.** Unfixed here: it is theGround's membrane, not the port's.
 
-**Two things must happen before any of them is built, and neither is optional:**
+**Two things had to happen before any of them was built, and both did:**
 
-- **THE TOLERANCES ARE CHOSEN AND THEREFORE NOT YET LAW.** "within 5%" and "within 10%" are round
-  numbers with no source. A tolerance must come from the *measurement's own grain* — the way the
-  ligament derivation refused a knee-extension ligament because the 1.84° gap fell inside the gait
-  envelope's 4.16° sample step. **A gap narrower than the instrument's resolution is not a small
-  gap; it is a gap the data cannot resolve**, and a tolerance chosen to be comfortable is a
-  falsifier chosen to be survivable.
+- **THE TOLERANCES WERE CHOSEN AND WERE THEREFORE NOT LAW — and one of them turned out to be
+  unmeetable.** "within 5%" and "within 10%" are round numbers with no source, and a tolerance
+  chosen to be comfortable is a falsifier chosen to be survivable. Where a constant carries a
+  published spread, the spread now sets the bar. **The rock port found the reverse case:** the
+  brief asked fracture to land within 20% of the derived load, but basalt's tensile strength is
+  published as 14.5 ± 3.3 MPa — **the literature's own spread is 22.8%**, so a model reproducing
+  basalt perfectly would fail that bar one time in three. A tolerance can be too *tight* for the
+  data as easily as too loose, and both are the same defect: a number with no source.
 - **`k`, `c`, `E`, `μ`, `σ_max` ARE FREE NUMBERS AND RULE 1 APPLIES TO ALL OF THEM.** Writing
   `F = kx + cv` programs the FORM, which is legitimate and is exactly "program the rules". It says
   nothing about `k`. Each must be DERIVED from a parent, INGESTED from a citable measurement, or
   TRAINED — and where the data cannot support one, **the honest output is a refusal with a name**,
-  not a plausible constant.
+  not a plausible constant. `tools/matter_data.py` holds the ingested half: 43 constants, each
+  with its citation, `cite()` raising rather than defaulting, and the world's own materials library
+  read *through* rather than copied. **Four of the seven ports refuse something by name.**
+
+**AND THE FOUR WRONG ARITHMETICS ARRIVED ON SCHEDULE**, exactly as the ligament precedent below
+predicted — but they were INSTRUMENT defects, not derivation defects, and every one returned a
+plausible number first: MuJoCo applies `xfrc_applied` at a body's centre of mass, so a tip load
+acted half a segment short and read as a 3.10% "discretisation"; one fixed timestep served grass
+and basalt, and a basalt rod returned **0.000 µm of stretch with |qvel| exactly 0** — a perfectly
+rigid rock, reported without complaint; a convergence test watched *z* while an axial pull moved
+in *x*; and `abs(qvel).max()` on a freejoint compared **rad/s against a m/s bound**, refusing a run
+that was in fact correct. **Expect these to be the shape of the next four, too.**
 
 **THE WORKED PRECEDENT** is the human ligament, `tools/world.py::derive_ligaments`:
 
