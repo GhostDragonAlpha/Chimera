@@ -1167,3 +1167,56 @@ curriculum cannot find a policy covering both basins, then the two
 basins are disjoint in this muscle set and the membrane after that asks
 whether the carry equilibrium itself must change (a closer carry pose,
 measured collision-free — CARRY_RELPOS has a second, nearer solution).
+
+---
+
+## v14 — THE RETURN (recovery curriculum over real post-release states)
+
+**STATEMENT.** The post-release fall is not a policy deficit and not an
+event deficit — it is a TRAINING-DATA deficit: every proven policy is a
+static postural law, and no training run has ever presented the
+post-release state as a START. End-to-end cycle training cannot fix
+this because its candidates reach the post-release state already
+committed to their own approach trajectory (and usually already
+falling), so the gradient at the state itself is noise. Training the
+recovery FROM the real post-release states — resetting each candidate
+to a recorded snapshot and asking it to stand from there — is the
+missing data, and a policy recovered that way holds F3's bar from
+those states.
+
+**PREDICTION.** A 4-block theta warm-started from the F3-passing stand
+theta, trained against snapshots drawn from the full-cycle runs at
+release + {0.0, 0.3, 0.5, 0.7} s (12+ distinct states: qpos, qvel,
+ctrl, eq_active, xfrc_applied), holds F3's bar (pelvis ≥ 80% of
+0.9201 m, joints within stops) for ≥ 3.0 s from EVERY snapshot in the
+training set — and, the audit that makes it real rather than a reset
+exploit, completes the FULL CYCLE end-to-end under f6_grab with phase
+3 PASS when the recovery takes control at the release.
+
+**FALSIFIER 1 — the basins are disjoint.** If the curriculum plateaus
+below the bar on states its own candidates were reset into (a falsifier
+that cannot blame reachability), then no policy in this muscle set
+covers both the carry equilibrium and the unloaded stand from the
+post-release state. The question v14's own verdict named fires: the
+CARRY EQUILIBRIUM is the membrane — a nearer collision-free
+CARRY_RELPOS (the run-12 clearance probe found candidates) moves the
+post-release state toward the stand basin instead of asking the policy
+to span the gap.
+
+**FALSIFIER 2 — the reset is the exploit.** If the curriculum-trained
+policy passes from snapshots but the full-cycle run (carry policy until
+release, recovery after) still falls, the recovery only works from
+states it has memorized and the prediction's second clause dies. The
+verdict is then: the recovery is real but the HANDOFF is the membrane —
+the carry policy must arrive at the release in a state inside the
+recovery's basin, and the carry score needs its end-of-episode state
+priced against the recovery's entry set. That prices a state, not a
+term.
+
+**What is NOT in this membrane.** No new formula terms (the stand
+grammar suffices — the swap test showed even IT nearly holds: 0.937 at
++0.3 s), no new channels, no changed bars. The build is: a snapshot
+collector (states already exist in the recorded runs), a
+`--from-states` training mode (random snapshot per candidate, warm
+from stand theta), and the two-stage full-cycle audit (carry theta →
+release → recovery theta). Zero chosen terms.
