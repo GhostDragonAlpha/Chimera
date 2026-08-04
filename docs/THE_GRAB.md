@@ -828,3 +828,74 @@ that number is M8b's brief. (d) The dark score is now the binding
 instrument debt: the retrain cannot rank candidates until the joints
 gaussian stops zeroing the reward under load (run 11, third appearance).
 The dark-score membrane is stated next, before any retrain runs.
+
+---
+
+**v11 — THE DARK SCORE (stated 2026-08-04, before the reprice; the third
+appearance of the pattern, and the first time it is measured to the joint).**
+
+**STATEMENT.** The carry score is dark in the FIXED world — measured: 100%
+of the incumbent's post-arrival samples score r < 1e-3, incumbent total
+0.0008 — and the mechanism is not the weld (run 11's guess, now dead) and
+not a model-range artifact (Claude's mtp, which tallies only 3 of 30
+samples). It is the **joints gaussian's center**. The term
+`exp(-((jf - 0.8) / 0.1)^2)` was derived for the UNLOADED stand, when the
+stops had no tissue: "keep 20% off the stop" was the only protection the
+body had. The stops are now ligament-engagement edges (the trunk/foot/hip
+membranes), and the body under a 421 N carry load does what a loaded body
+does — it settles ONTO the tissue: `knee_angle_l` sits at jf 1.014–1.028,
+sustained, for the whole carry (measured, worst-joint tally 21/30 samples).
+At that point on the gaussian's tail, a 1.3% difference in where the loaded
+knee settles against its ligament — variation the policy does not control —
+swings the multiplied reward 3x, while the excursion the term exists to
+punish (a fling to jf 1.3+) prices ~0 identically for every candidate.
+Signal-to-noise is inverted: the term prices uncontrollable variation
+loudly and its own purpose silently. **The fix moves the center to the
+stop itself — one-sided: 1.0 for jf <= 1.0, then the same 0.1 width
+beyond.** 1.0 is not a chosen number; it is the physical landmark the
+ligaments were derived from. 0.8 was the chosen one, and its reason
+(no tissue) no longer exists. At-the-stop is now the tissue's job, and
+the tissue prices it physically; the reward must price only what the
+tissue cannot — excursions PAST the stop.
+
+**PREDICTION.** With the one-sided term, the incumbent's fixed-world trace
+scores at least two orders of magnitude above its current 0.0008 (the
+height/support/load factors carry real signal — measured span 1e-18 to
+1e-3 in the SAME trace — and the joints factor stops multiplying it by
+noise), and a candidate that collapses at the snap scores strictly below
+one that catches and holds, by a margin CEM can rank (not tail noise).
+
+**FALSIFIERS (named before the build).**
+
+1. **The reprice does not restore ranking** — the incumbent's score stays
+   ~1e-3 or the collapse candidate ranks at/above the holder — the
+   darkness was not the center, and the term's whole form is re-derived
+   (per-joint ligament torque as the price), not patched again.
+2. **The fling exploit reopens** — any elite in the retrain holds a joint
+   past jf 1.2 on a tissue-less stop at no visible score cost — the
+   one-sided form is wrong and the two-sided gaussian returns, centered
+   at the stop.
+
+**v11 VERDICT (interim, 2026-08-04 — the reprice, measured before the retrain).**
+
+The prediction holds in its ranking clause and is refuted in its magnitude
+clause — recorded as written:
+
+- **Ranking: RESTORED.** The incumbent (catches, holds ~1 s, buckles) scores
+  0.0219 against a collapse-at-the-snap control's 0.00055 — a 40x
+  separation, rankable by CEM. Falsifier 1 does not fire.
+- **Magnitude: 27x, not the predicted 100x.** The reprice exposed a SECOND
+  crusher the joints term was hiding: the support gaussian prices the
+  combined body+stone CoM over the feet, and a 421 N stone welded 0.40 m
+  forward moves the system CoM ~0.2 m ahead of the base — support ~1e-4
+  even at pelvis 0.969 m. That is not darkness; it is the lean-back
+  gradient, real signal with a physical direction (a candidate that leans
+  back prices higher). The score is no longer dark — it is low because the
+  incumbent genuinely does not lean back. The membrane's two-crusher
+  reading: joints was noise priced as signal (fixed); support is signal
+  that looks like darkness only because the frozen policy has no answer
+  for it yet (the retrain's job).
+- **Falsifier 2 (fling reopen) is the retrain's to test** — any elite
+  holding a tissue-less stop past jf 1.2 at no cost reopens the two-sided
+  form. The run-13 retrain (48x32, warm from stand_theta, secs 4.0) is in
+  flight on the repriced score; its elites' jmax column is the check.

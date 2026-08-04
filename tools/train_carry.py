@@ -133,7 +133,16 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             # full 4.0 s survival, score -0.00026. Effort's 0.01 is a chosen constant
             # (out per v5: no constant chosen); the fell term is already priced by frac.
             _, parts = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
-            r = parts["height"] * parts["support"] * parts["joints"]
+            # v11 (THE DARK SCORE, THE_GRAB.md): the joints gaussian's 0.8 center predates
+            # ligaments -- "keep off the stop" was the only protection when stops had no
+            # tissue. Under load the body settles ONTO the tissue (knee_angle_l jf 1.02
+            # sustained, measured 21/30 samples) and the gaussian's tail prices that
+            # uncontrollable 1.3% variation 3x while flings price ~0 for every candidate.
+            # One-sided at the stop: free to 1.0 (the tissue's job, priced physically by
+            # the ligaments), the same derived 0.1 width beyond. stand_reward is
+            # UNTOUCHED -- f3's judge keeps its form; this is the carry trainer's price.
+            r_joints = float(np.exp(-((max(jf - 1.0, 0.0) / 0.1) ** 2)))
+            r = parts["height"] * parts["support"] * r_joints
             # THE LOAD FACTOR: the loophole-closer. Airborne prices 0; the floor-rest
             # crouch prices the fraction the feet actually carry; only a true carry ~= 1.
             cr, cl = foot_contact(m, d, mujoco)
