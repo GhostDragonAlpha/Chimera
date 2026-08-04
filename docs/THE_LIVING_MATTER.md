@@ -1302,6 +1302,56 @@ rotations, 12 colours per orientation, 3 orientations — conflict-free by the
 the CPU serial reference (`core.matter.assemble_3d_swaps`, built first):
 energy-trace parity on a small lattice, Phase 1's discipline.
 
+*VERDICT (2026-08-04, run: `cd Chimera && python -m core.matter_derive
+--swap`, n = 96, 200 sweeps, derived λ = bone 2,375 / muscle 395 / skin 395 —
+the exact values that froze Phase 5).* **FIRED — falsifier 1. And the firing
+splits the membrane's claim cleanly in two: the corridor EXISTS (falsifier 3
+passes decisively), but the copy channel at derived λ is not a passive jail —
+it actively pumps (falsifier 1 fires).**
+
+Measured:
+
+- **The GPU gate PASS** (cold-monotone: at temp 0.01, swap-only, H fell
+  every one of 20 sweeps, max rise −12,742 — the kernel computes ΔH
+  correctly and the widened schedule does not race).
+- **Swap-only arm: SORTED.** bone 18.5 < muscle 18.8 < skin 20.1, drift
+  exactly {0, 0, 0} (structural — swaps cannot leak area), H 26.5M → 22.0M.
+  **The corridor is real: pure Kawasaki exchange sorts at the λ that froze
+  every copy move.** The margins are thin (0.3–1.3 lattice units at 200
+  sweeps — the sort has barely begun).
+- **Mixed arm: NOT sorted.** bone 21.7 > muscle 20.8 < skin 27.2, drift
+  +86/−168/+181 (within the 1% band — falsifier 2 PASSES), and **H ROSE
+  26.7M → 64.9M** — Phase 5's exact signature: the copy channel at derived
+  λ random-walks the counts by ±tens-to-hundreds, and λD² (2,375 × 168² ≈
+  67M) swallows the Hamiltonian. The jail holds populations (1% band) but
+  the noise it injects is the same order as the whole interface energy.
+- **Falsifier 1 FIRED as stated:** the membrane predicted mixed sorts at
+  200 sweeps; it did not. Whether this is physics (the copy channel's kicks
+  actively disrupt the budding sort) or horizon (200 sweeps is simply too
+  few at n = 96 — swap-only's thin margins say the sort is slow for
+  everyone) is NOT decided by this run.
+
+**The named follow-up (stated now, before it runs):** measure τ_sort for
+both arms at 4× the horizon (800 sweeps). If mixed sorts at some horizon,
+the corridor works WITH the jail active and falsifier 1's firing was the
+bar's optimism, not the mechanism. If mixed never sorts while swap-only's
+margins widen, the copy channel at derived λ actively fights the interface
+dynamics — and the honest deliverable becomes swap-dominant stepping with
+the copy channel as a rare-events jail, its ratio derived, not chosen 1:1.
+
+**What survives, published per Rule 17:**
+
+1. **Tissue-real K is now possible in this machine: run swaps.** Pure
+   Kawasaki exchange at the measured bulk-modulus λ sorts, with mass
+   conservation exact by construction — the debt Phase 5 named is paid in
+   its minimal form.
+2. **The 1:1 interleave is refuted** at derived λ: the copy channel is not
+   a passive jail there; its λD² noise is the same order as the interface
+   physics.
+3. **The swap kernel is trusted** (cold-monotone gate; CPU reference
+   `assemble_3d_swaps` reproduced the freeze and the corridor at small n:
+   5 copy accepts vs 3,039 swap accepts, areas exact).
+
 ---
 
 ## DEBTS FOUND EN ROUTE (housekeeping, not part of the theory)
