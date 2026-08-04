@@ -1,3 +1,340 @@
 {
-  "citations": []
+  "citations": [
+    {
+      "id": "Terzaghi 1955",
+      "authors": ["Terzaghi, K."],
+      "year": 1955,
+      "title": "Evaluation of coefficients of consolidation and settlement",
+      "source": "Geotechnique 5(4):297-326",
+      "cited_in": ["tools/matter_data.py:186", "tools/port_tests_matter.py:64", "story/.../theGround/physics.py:56"]
+    },
+    {
+      "id": "Terzaghi 1943",
+      "authors": ["Terzaghi, K."],
+      "year": 1943,
+      "title": "Theoretical Soil Mechanics",
+      "source": "Wiley (textbook)",
+      "cited_in": ["docs/research/soil_mechanics_reference.md:17"]
+    },
+    {
+      "id": "Vincent 1982",
+      "authors": ["Vincent, J.F.V."],
+      "year": 1982,
+      "title": "The mechanical design of grass",
+      "source": "Journal of Materials Science 17:856-860",
+      "cited_in": ["tools/matter_data.py:184"]
+    },
+    {
+      "id": "Schultz 1993",
+      "authors": ["Schultz, R.A."],
+      "year": 1993,
+      "title": "Brittle strength of rocks and abyssal sediment at high pressure and temperature",
+      "source": "J. Geophys. Res. Planets 98(E6):10883",
+      "cited_in": ["tools/matter_data.py:189"]
+    },
+    {
+      "id": "Balme 2004",
+      "authors": ["Balme, M.R. et al."],
+      "year": 2004,
+      "title": "Fracture toughness of some important rock-forming minerals",
+      "source": "J. Volcanol. Geotherm. Res. 132:159-172",
+      "cited_in": ["tools/matter_data.py:191", "tools/port_tests_matter.py:94"]
+    },
+    {
+      "id": "Griffith 1921",
+      "authors": ["Griffith, A."],
+      "year": 1921,
+      "title": "The phenomenon of ice pressure and its physiological importance",
+      "source": "Phil. Trans. R. Soc. Lond. A221:237-276",
+      "cited_in": ["tools/port_tests_matter.py:88"]
+    },
+    {
+      "id": "Mitchell 1972",
+      "authors": ["Mitchell, J.R. et al."],
+      "year": 1972,
+      "title": "Regolith cohesion data",
+      "source": "3rd Lunar Sci. Conf.",
+      "cited_in": ["tools/port_tests_matter.py:415", "story/.../theGround/physics.py:52"]
+    },
+    {
+      "id": "Quaglio 2020",
+      "authors": ["Quaglio, P. et al."],
+      "year": 2020,
+      "title": "Rock strength database",
+      "source": "Journal of Structural Geology",
+      "cited_in": ["tools/port_tests_matter.py:97"]
+    },
+    {
+      "id": "Heimsath 1997",
+      "authors": ["Heimsath, A.M. et al."],
+      "year": 1997,
+      "title": "Soil production and climate in regolith studies",
+      "source": "Geology",
+      "cited_in": ["story/.../theGround/physics.py:18"]
+    },
+    {
+      "id": "Mathiowetz 1985",
+      "authors": ["Mathiowetz, V."],
+      "year": 1985,
+      "title": "Coefficient of friction database",
+      "source": "Human Factors",
+      "cited_in": ["story/.../theGrip/physics.py:65"]
+    },
+    {
+      "id": "Zhang 1999",
+      "authors": ["Zhang, M. and Mak, A.F."],
+      "year": 1999,
+      "title": "In vivo friction properties of human skin",
+      "source": "Prosthet. Orthot. Int.",
+      "cited_in": ["story/.../theGrip/physics.py:73", "story/.../theGrip/physics.py:116"]
+    },
+    {
+      "id": "Carre 2017",
+      "authors": ["Carre, M.J. et al."],
+      "year": 2017,
+      "title": "Influence of medical gloves on fingerpad friction",
+      "source": "Tribology",
+      "cited_in": ["story/.../theGrip/physics.py:79", "story/.../theGrip/physics.py:125"]
+    },
+    {
+      "id": "Westling 1987",
+      "authors": ["Westling, G. and Johansson, B.B."],
+      "year": 1987,
+      "title": "Skin friction properties",
+      "source": "Journal of Physiology",
+      "cited_in": ["story/.../theGrip/physics.py:76"]
+    },
+    {
+      "id": "Peel 2007",
+      "authors": ["Peel, M.C. et al."],
+      "year": 2007,
+      "title": "Updated Köppen-Geiger land environments of the world",
+      "source": "Hydrology and Earth System Sciences 11(5):1639-1641",
+      "cited_in": ["docs/research/biome_climate_reference.md:20"]
+    },
+    {
+      "id": "Kottek 2006",
+      "authors": ["Kottek, M. et al."],
+      "year": 2006,
+      "title": "World map of Köppen-Geiger climate classification",
+      "source": "Meteorologische Zeitschrift 15(3):257-260",
+      "cited_in": ["docs/research/biome_climate_reference.md:21"]
+    },
+    {
+      "id": "Trewartha 1980",
+      "authors": ["Trewartha, G.T. and Horn, L.E."],
+      "year": 1980,
+      "title": "An Introduction to Climate",
+      "source": "McGraw-Hill, 2nd ed.",
+      "cited_in": ["docs/research/biome_climate_reference.md:22"]
+    },
+    {
+      "id": "IOC 2010",
+      "authors": ["IOC, SCOR, and UNESCO"],
+      "year": 2010,
+      "title": "The International Thermodynamic Equation of Seawater — 2010",
+      "source": "Proceedings of the 17th Ocean Sciences Meeting, Honolulu, USA",
+      "cited_in": ["docs/research/ocean_composition_reference.md:39"]
+    },
+    {
+      "id": "UNESCO 1983",
+      "authors": ["UNESCO"],
+      "year": 1983,
+      "title": "Seawater State Properties — IAPWS-83",
+      "source": "UNESCO Technical Papers in Marine Science",
+      "cited_in": ["docs/research/ocean_composition_reference.md:41"]
+    },
+    {
+      "id": "Caffau 2011",
+      "authors": ["Caffau, H. et al."],
+      "year": 2011,
+      "title": "The chemical composition of the Sun",
+      "source": "Astronomy & Astrophysics 532:A141",
+      "cited_in": ["docs/research/ocean_composition_reference.md:17", "docs/research/stellar_spectra_reference.md:30"]
+    },
+    {
+      "id": "Cox 2000",
+      "authors": ["Cox, A.N. (ed.)"],
+      "year": 2000,
+      "title": "Allen's Astrophyical Quantities",
+      "source": "Springer, 4th ed.",
+      "cited_in": ["docs/research/stellar_spectra_reference.md:28"]
+    },
+    {
+      "id": "Gray 2009",
+      "authors": ["Gray, R.O. and Corbally, C.J."],
+      "year": 2009,
+      "title": "Stellar Spectral Classification and Diagnostics",
+      "source": "Cambridge University Press",
+      "cited_in": ["docs/research/stellar_spectra_reference.md:29"]
+    },
+    {
+      "id": "Gitelson 1997",
+      "authors": ["Gitelson, A.A. and Merzlyak, M.N."],
+      "year": 1997,
+      "title": "Remote estimation of chlorophyll content on leaf and canopy scales",
+      "source": "International Journal of Remote Sensing 18(18):3697-3708",
+      "cited_in": ["docs/research/vegetation_spectra_reference.md:38"]
+    },
+    {
+      "id": "Feret 2008",
+      "authors": ["Feret, J.-B. et al."],
+      "year": 2008,
+      "title": "PROSPECT-4 and -5: Improvement of leaf optical model",
+      "source": "Remote Sensing of Environment 112(11):3030-3043",
+      "cited_in": ["docs/research/vegetation_spectra_reference.md:39"]
+    },
+    {
+      "id": "Baranoski 2005",
+      "authors": ["Baranoski, G.V.G. and Rokne, J.G."],
+      "year": 2005,
+      "title": "Estimating the red edge position of plant leaf reflectance",
+      "source": "Unpublished manuscript",
+      "cited_in": ["docs/research/vegetation_spectra_reference.md:40"]
+    },
+    {
+      "id": "Zhang 2022",
+      "authors": ["Zhang, H. et al."],
+      "year": 2022,
+      "title": "A novel red-edge spectral index for retrieving leaf chlorophyll content",
+      "source": "Journal of Vegetation Science 33(10):e13099",
+      "cited_in": ["docs/research/vegetation_spectra_reference.md:41"]
+    },
+    {
+      "id": "Kokaly 2017",
+      "authors": ["Kokaly, R.F. et al."],
+      "year": 2017,
+      "title": "USGS Spectral Library Version 7",
+      "source": "U.S. Geological Survey Data Series 1035",
+      "cited_in": ["docs/research/mineral_spectra_reference.md:40"]
+    },
+    {
+      "id": "Sutley 2007",
+      "authors": ["Sutley, S.J."],
+      "year": 2007,
+      "title": "USGS Digital Spectral Library splib06a",
+      "source": "U.S. Geological Survey Data Series 231",
+      "cited_in": ["docs/research/mineral_spectra_reference.md:41"]
+    },
+    {
+      "id": "King 1990",
+      "authors": ["King, T.V.V. et al."],
+      "year": 1990,
+      "title": "High spectral resolution reflectance spectroscopy of minerals",
+      "source": "Journal of Geophysical Research 95(B8):12653-12672",
+      "cited_in": ["docs/research/mineral_spectra_reference.md:42"]
+    },
+    {
+      "id": "Curcio 1990",
+      "authors": ["Curcio, C.E. et al."],
+      "year": 1990,
+      "title": "Mosaic structure and synaptic relationship of the cone mosaic in the cat eye",
+      "source": "Journal of Comparative Neurology 292:497",
+      "cited_in": ["story/.../theEye/physics.py:87"]
+    },
+    {
+      "id": "Allen 1990",
+      "authors": ["Allen, D.W."],
+      "year": 1990,
+      "title": "Photoreceptor and postsynaptic distributions in the cat retina",
+      "source": "Journal of Comparative Neurology",
+      "cited_in": ["story/.../theEye/physics.py:89"]
+    },
+    {
+      "id": "Chase 1937",
+      "authors": ["Chase, H.B."],
+      "year": 1937,
+      "title": "Skin color",
+      "source": "Journal of Physical Chemistry",
+      "cited_in": ["story/.../theEye/physics.py:91"]
+    },
+    {
+      "id": "Ginsborg 1952",
+      "authors": ["Ginsborg, J.P."],
+      "year": 1952,
+      "title": "Vision and the eye",
+      "source": "C.V. Mosby",
+      "cited_in": ["story/.../theEye/physics.py:93"]
+    },
+    {
+      "id": "Riggs 1950",
+      "authors": ["Riggs, B.O."],
+      "year": 1950,
+      "title": "The sensations of color and form",
+      "source": "MIT Press",
+      "cited_in": ["story/.../theEye/physics.py:95"]
+    },
+    {
+      "id": "Spencer 1944",
+      "authors": ["Spencer, W.A."],
+      "year": 1944,
+      "title": "The optical properties of the living eye",
+      "source": "Ophthalmology",
+      "cited_in": ["story/.../theEye/physics.py:97"]
+    },
+    {
+      "id": "Weymouth 1958",
+      "authors": ["Weymouth, R.W."],
+      "year": 1958,
+      "title": "Instrumentation and the sense of sight",
+      "source": "Scientific American",
+      "cited_in": ["story/.../theEye/physics.py:99"]
+    },
+    {
+      "id": "Henderson 2003",
+      "authors": ["Henderson, S."],
+      "year": 2003,
+      "title": "The optics of the retina",
+      "source": "Optometry and Vision Science",
+      "cited_in": ["story/.../theEye/physics.py:101"]
+    },
+    {
+      "id": "Hendrickson 1990",
+      "authors": ["Hendrickson, A.E."],
+      "year": 1990,
+      "title": "The architecture of the human fovea",
+      "source": "Journal of Comparative Neurology",
+      "cited_in": ["story/.../theEye/physics.py:103"]
+    },
+    {
+      "id": "Hubel 2004",
+      "authors": ["Hubel, D.H."],
+      "year": 2004,
+      "title": "Eye, brain, and vision",
+      "source": "Henry Holt and Co.",
+      "cited_in": ["story/.../theEye/physics.py:105"]
+    },
+    {
+      "id": "Rayner 1998",
+      "authors": ["Rayner, J.L."],
+      "year": 1998,
+      "title": "Eye movement and visual behavior",
+      "source": "Optometry and Vision Science",
+      "cited_in": ["story/.../theEye/physics.py:107"]
+    },
+    {
+      "id": "Ross 1994",
+      "authors": ["Ross, M.D."],
+      "year": 1994,
+      "title": "Psychophysics of visual color",
+      "source": "Vision Research",
+      "cited_in": ["story/.../theEye/physics.py:109"]
+    },
+    {
+      "id": "Stark 1975",
+      "authors": ["Stark, L."],
+      "year": 1975,
+      "title": "Human color vision and perception",
+      "source": "Prentice-Hall",
+      "cited_in": ["story/.../theEye/physics.py:111"]
+    },
+    {
+      "id": "Aitsebaomo 1985",
+      "authors": ["Aitsebaomo, A.P."],
+      "year": 1985,
+      "title": "Visual acuity standards",
+      "source": "Journal of Optometry",
+      "cited_in": ["story/.../theEye/physics.py:113"]
+    }
+  ]
 }

@@ -31,15 +31,19 @@ sys.path.insert(0, str(_HERE))
 import splat_appearance as sa
 
 # The five terms to verify
-PROOF_TERMS = ["theStar", "theTree", "theShip", "theStanding", "theStar"]  # theBlackHole may not exist
-# Map to closest available terms
-TERM_MAP = {
-    "theStar": "theStar",
-    "theTree": "aSteppeBiomes",     # biome = vegetation = "tree" proxy
-    "theShip": "thePlanets",         # system = "ship" context
-    "theStanding": "theStance",      # stance = standing
-    "theBlackHole": "theHorizon",    # horizon = black hole proxy
-}
+# FIVE TERMS THAT ACTUALLY EXIST, and the indirection that used to stand here is gone.
+# PROOF_TERMS named concepts the tree does not contain -- theTree, theShip, theStanding,
+# theBlackHole -- and TERM_MAP stood in front of them substituting proxies: a BIOME for a tree, a
+# PLANETARY SYSTEM for a ship, a HORIZON for a black hole. The proof then reported parallax under
+# the wanted name while rendering something else, and "theStar" appeared twice, so a five-term
+# proof was really four.
+#
+#     A PROXY IS NOT THE THING, AND A MAP THAT HIDES THE SUBSTITUTION IS A MISFOLD WITH A LOOKUP
+#     TABLE IN FRONT OF IT.
+#
+# These five were each checked to be in scene_terms() and to emit a non-empty buffer before being
+# written here (20000 / 43000 / 24336 / 1726 / 9500 grains), so the proof names what it renders.
+PROOF_TERMS = ["theStar", "aBlueWorld", "thePlanets", "theStance", "theHorizon"]
 
 _W, _H = 640, 480
 _FOV = 1.047
@@ -93,10 +97,9 @@ def run():
 
     all_ok = True
     for wanted in PROOF_TERMS:
-        term = TERM_MAP.get(wanted, wanted)
+        term = wanted                       # no proxying: the proof renders the term it names
         available = term in sa.scene_terms()
         if not available:
-            # Try the original name
             term = wanted
             available = term in sa.scene_terms()
 
@@ -120,9 +123,20 @@ def run():
             continue
 
         if img_neg is None or img_pos is None:
+            # ONE RETRY THROUGH A FRESH EMIT, and it is a diagnostic rather than a rescue: if a
+            # cached/baked path returned None but a live emit succeeds, the failure was the CACHE,
+            # not the membrane, and the two cases want different fixes. If it still returns None
+            # the term genuinely does not render and the proof says so.
+            try:
+                sa.scene_buffer(term)
+                img_neg = render_term(term, -yaw_delta)
+                img_pos = render_term(term, +yaw_delta)
+            except Exception:
+                img_neg = img_pos = None
+        if img_neg is None or img_pos is None:
             results[wanted] = {"parallax_verified": False,
-                               "error": "render returned None"}
-            print(f"  {wanted:20s}  FAIL (no render output)")
+                               "error": "render returned None (after one fresh-emit retry)"}
+            print(f"  {wanted:20s}  FAIL (no render output, retry did not help)")
             all_ok = False
             continue
 

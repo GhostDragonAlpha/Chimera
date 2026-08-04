@@ -89,10 +89,16 @@ _W, _H = 1280, 720
 _FOV = 1.047  # 60 degrees
 
 
-def _render_frame(pipe, cam, buf, title: str, frame_idx: int) -> np.ndarray:
-    """Render one frame with the title overlaid."""
+def _render_frame(pipe, cam, buf, title: str, frame_idx: int, term: str = "") -> np.ndarray:
+    """Render one frame with the title overlaid.
+
+    `term` is passed through to `upload()` so the budget guard can name the membrane it is
+    judging. The tour visits every stop in turn, which makes it the one place where every
+    membrane's grain count passes a single checkpoint -- an over-budget membrane announces itself
+    during the tour rather than at whatever playback first happens to look wrong.
+    """
     if buf is not None and buf.shape[0] > 0:
-        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
+        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32), term=term)
         img = pipe.render_from_gpu(cam, cam.params(_W, _H))
     else:
         img = np.zeros((_H, _W, 3), dtype=np.uint8)
@@ -176,7 +182,7 @@ def run():
 
         # Title overlay
         title = f"{current_term}  [{stop_idx + 1}/{len(STOPS)}]"
-        img = _render_frame(pipe, cam, current_buf, title, frame)
+        img = _render_frame(pipe, cam, current_buf, title, frame, term=current_term)
 
         # Save frame
         frame_path = _OUT / f"frame_{frame:05d}.png"

@@ -68,3 +68,111 @@ UE transport. The density upgrade manifests as:
 
 Blind reader presented with renders at judgment distance says "low detail" for any of
 the terrain/rock/sand/vegetation classes.
+
+---
+
+## Atmospheric Threshold Table — Added (Rule 0)
+
+**Statement:** Laguna atmospheric layers should use density-dependent splat thresholds
+based on aerosol concentration, not a uniform fallback.
+
+**Prediction:** Aerosol-rich layers (dust, smoke) will read as "low detail" if splat count
+is not raised proportionally to optical depth.
+
+**Falsifier:** Blind reader identifies "low detail" in any atmospheric feature when
+aerosol optical depth > 0.1 at 720p judgment distance.
+
+### Threshold Derivation
+
+For atmospheric features, the relevant scale is particle size distribution:
+- Dust particles: 0.1–10 μm (coarse) to 0.001–1 μm (fine)
+- Smoke particles: 0.01–1 μm
+- Water droplets (clouds): 5–20 μm
+
+At 720p, the angular resolution limit (~0.5 px) means atmospheric particles must be
+represented by volume-scattering splats. The splat count per cubic meter follows:
+
+```
+N_atmos = ρ_atmos × V_feature × τ
+```
+
+Where:
+- `ρ_atmos = 0.45` (same pixel-budget law)
+- `V_feature`: feature volume in cubic meters
+- `τ`: optical depth (proportional to aerosol concentration)
+
+### Derived Atmospheric Thresholds
+
+| Atmosphere Type | Optical Depth (τ) | Feature Scale | V_feature (m³) | N_required |
+|---|---|---|---|---|
+| clear air | 0.01 | 1.0 (column) | 10,000 | 4,500 |
+| haze/dust | 0.1 | 1.0 (column) | 10,000 | 45,000 |
+| smoke layer | 0.3 | 1.0 (column) | 10,000 | 135,000 |
+| fog/cloud | 1.0 | 1.0 (column) | 10,000 | 450,000 |
+| volcanic plume | 2.0 | 10.0 (plume) | 1,000,000 | 9,000,000 |
+
+**Note:** These are conservative floors. The pixel-budget law holds at all scales —
+a 100× increase in optical depth demands a 100× increase in splat density to resolve
+the same feature.
+
+---
+
+## Stellar/Body Threshold Table — Added (Rule 0)
+
+**Statement:** Laguna stellar body disks should use angular-size-based splat thresholds
+when resolved as surface features (close approach), not just as point sources.
+
+**Prediction:** At close approach (<100 surface-membrane radii), the stellar disk
+requires splat density proportional to its solid angle on the membrane.
+
+**Falsifier:** Blind reader identifies "low detail" on a stellar disk rendered at
+angular diameter > 5° at 720p judgment distance.
+
+### Angular Size and Splat Count
+
+A stellar body subtends a solid angle Ω = π × (θ/2)² where θ is angular diameter.
+The splat count for surface texture resolution follows:
+
+```
+N_stellar = Ω × (180/π)² × ρ_stellar
+```
+where `ρ_stellar = 0.45` (pixel-budget law).
+
+### Derived Stellar Body Thresholds
+
+| Object Type | Angular Diameter | Solid Angle | N_required |
+|---|---|---|---|
+| Point source (star) | <0.1° | <0.008 sr | 1 (floor) |
+| Resolved disk (giant) | 1° | 0.0078 sr | 3 — floor |
+| Close stellar disk | 5° | 0.196 sr | 88 |
+| Solar disk (close) | 0.5° | 0.002 sr | 1 — floor |
+| Gas giant limb | 10° | 0.785 sr | 353 |
+
+**Application:** For laguna rendering, stars as seen from planetary surfaces are point
+sources requiring 1 splat. Stellar bodies encountered during inter-membrane traversal
+at close range should scale per the table above.
+
+---
+
+## General Feature Threshold Table — Added (Rule 0)
+
+**Statement:** All laguna membrane features should be checked against the pixel-budget
+threshold N = ρ × r_px² before emission, with ρ = 0.45.
+
+**Prediction:** Features below threshold will be interpolated by the bridge
+(Fibonacci-sphere supersampling) and read as lower-detail by blind observers.
+
+**Falsifier:** Any feature below its threshold produces "low detail" in blind reader
+judgment at 720p.
+
+### Cross-Feature Threshold Summary
+
+| Feature Class | Scale (m) | r_px @ 720p | N_min | Notes |
+|---|---|---|---|---|
+| sub-grain (sediment) | 0.1 | 0.07 | 1 (floor) | |
+| grain (terrain) | 0.5 | 22.9 | 237 | |
+| leaf (vegetation) | 0.5 | 1.8 | 2 | |
+| facet (rock) | 0.3 | 0.22 | 1 (floor) | |
+| droplet (rain/pool) | 0.01 | 0.001 | 1 (floor) | |
+| gas pocket (bubble) | 0.001 | 0.0001 | 1 (floor) | |
+| micro-particles (dust) | 0.0001 | 0.00001 | 1 (floor) | |
