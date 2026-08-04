@@ -1,6 +1,6 @@
 {
   "n_terms": 42,
-  "verified": 40,
+  "verified": 42,
   "potential_billboards": [],
   "by_coverage": [
     {
@@ -12,7 +12,8 @@
       "object_coverage_frac": 0.4384,
       "threshold": 1.0,
       "neg_frame": "aYellowStar_neg15deg.png",
-      "pos_frame": "aYellowStar_pos15deg.png"
+      "pos_frame": "aYellowStar_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theBreath",
@@ -23,7 +24,8 @@
       "object_coverage_frac": 0.3133,
       "threshold": 1.0,
       "neg_frame": "theBreath_neg15deg.png",
-      "pos_frame": "theBreath_pos15deg.png"
+      "pos_frame": "theBreath_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theEmptying",
@@ -34,7 +36,8 @@
       "object_coverage_frac": 0.3106,
       "threshold": 1.0,
       "neg_frame": "theEmptying_neg15deg.png",
-      "pos_frame": "theEmptying_pos15deg.png"
+      "pos_frame": "theEmptying_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theHorizon",
@@ -45,7 +48,8 @@
       "object_coverage_frac": 0.2941,
       "threshold": 1.0,
       "neg_frame": "theHorizon_neg15deg.png",
-      "pos_frame": "theHorizon_pos15deg.png"
+      "pos_frame": "theHorizon_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theBiomes",
@@ -56,7 +60,8 @@
       "object_coverage_frac": 0.2836,
       "threshold": 1.0,
       "neg_frame": "theBiomes_neg15deg.png",
-      "pos_frame": "theBiomes_pos15deg.png"
+      "pos_frame": "theBiomes_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aActiveInterior",
@@ -67,7 +72,8 @@
       "object_coverage_frac": 0.2809,
       "threshold": 1.0,
       "neg_frame": "aActiveInterior_neg15deg.png",
-      "pos_frame": "aActiveInterior_pos15deg.png"
+      "pos_frame": "aActiveInterior_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theOcean",
@@ -78,7 +84,8 @@
       "object_coverage_frac": 0.2804,
       "threshold": 1.0,
       "neg_frame": "theOcean_neg15deg.png",
-      "pos_frame": "theOcean_pos15deg.png"
+      "pos_frame": "theOcean_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aSteppeBiomes",
@@ -89,7 +96,8 @@
       "object_coverage_frac": 0.2777,
       "threshold": 1.0,
       "neg_frame": "aSteppeBiomes_neg15deg.png",
-      "pos_frame": "aSteppeBiomes_pos15deg.png"
+      "pos_frame": "aSteppeBiomes_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aSaltOcean",
@@ -100,7 +108,8 @@
       "object_coverage_frac": 0.2766,
       "threshold": 1.0,
       "neg_frame": "aSaltOcean_neg15deg.png",
-      "pos_frame": "aSaltOcean_pos15deg.png"
+      "pos_frame": "aSaltOcean_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theCooling",
@@ -111,7 +120,8 @@
       "object_coverage_frac": 0.2674,
       "threshold": 1.0,
       "neg_frame": "theCooling_neg15deg.png",
-      "pos_frame": "theCooling_pos15deg.png"
+      "pos_frame": "theCooling_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theInterior",
@@ -122,7 +132,8 @@
       "object_coverage_frac": 0.2633,
       "threshold": 1.0,
       "neg_frame": "theInterior_neg15deg.png",
-      "pos_frame": "theInterior_pos15deg.png"
+      "pos_frame": "theInterior_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aBlueWorld",
@@ -133,7 +144,8 @@
       "object_coverage_frac": 0.2627,
       "threshold": 1.0,
       "neg_frame": "aBlueWorld_neg15deg.png",
-      "pos_frame": "aBlueWorld_pos15deg.png"
+      "pos_frame": "aBlueWorld_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theTerrain",
@@ -144,7 +156,8 @@
       "object_coverage_frac": 0.2619,
       "threshold": 1.0,
       "neg_frame": "theTerrain_neg15deg.png",
-      "pos_frame": "theTerrain_pos15deg.png"
+      "pos_frame": "theTerrain_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theRockyPlanet",
@@ -155,7 +168,8 @@
       "object_coverage_frac": 0.2605,
       "threshold": 1.0,
       "neg_frame": "theRockyPlanet_neg15deg.png",
-      "pos_frame": "theRockyPlanet_pos15deg.png"
+      "pos_frame": "theRockyPlanet_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theSkin",
@@ -166,7 +180,8 @@
       "object_coverage_frac": 0.2444,
       "threshold": 1.0,
       "neg_frame": "theSkin_neg15deg.png",
-      "pos_frame": "theSkin_pos15deg.png"
+      "pos_frame": "theSkin_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theEye",
@@ -177,7 +192,8 @@
       "object_coverage_frac": 0.2094,
       "threshold": 1.0,
       "neg_frame": "theEye_neg15deg.png",
-      "pos_frame": "theEye_pos15deg.png"
+      "pos_frame": "theEye_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aNitrogenAtmosphere",
@@ -188,7 +204,8 @@
       "object_coverage_frac": 0.1982,
       "threshold": 1.0,
       "neg_frame": "aNitrogenAtmosphere_neg15deg.png",
-      "pos_frame": "aNitrogenAtmosphere_pos15deg.png"
+      "pos_frame": "aNitrogenAtmosphere_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theAtmosphere",
@@ -199,7 +216,8 @@
       "object_coverage_frac": 0.1928,
       "threshold": 1.0,
       "neg_frame": "theAtmosphere_neg15deg.png",
-      "pos_frame": "theAtmosphere_pos15deg.png"
+      "pos_frame": "theAtmosphere_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theMining",
@@ -210,7 +228,8 @@
       "object_coverage_frac": 0.1217,
       "threshold": 1.0,
       "neg_frame": "theMining_neg15deg.png",
-      "pos_frame": "theMining_pos15deg.png"
+      "pos_frame": "theMining_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theClock",
@@ -221,7 +240,8 @@
       "object_coverage_frac": 0.1045,
       "threshold": 1.0,
       "neg_frame": "theClock_neg15deg.png",
-      "pos_frame": "theClock_pos15deg.png"
+      "pos_frame": "theClock_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theSweep",
@@ -232,7 +252,8 @@
       "object_coverage_frac": 0.0904,
       "threshold": 1.0,
       "neg_frame": "theSweep_neg15deg.png",
-      "pos_frame": "theSweep_pos15deg.png"
+      "pos_frame": "theSweep_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theCloud",
@@ -243,7 +264,8 @@
       "object_coverage_frac": 0.0817,
       "threshold": 1.0,
       "neg_frame": "theCloud_neg15deg.png",
-      "pos_frame": "theCloud_pos15deg.png"
+      "pos_frame": "theCloud_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aTerrain",
@@ -254,7 +276,8 @@
       "object_coverage_frac": 0.073,
       "threshold": 1.0,
       "neg_frame": "aTerrain_neg15deg.png",
-      "pos_frame": "aTerrain_pos15deg.png"
+      "pos_frame": "aTerrain_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aRockyPlanet",
@@ -265,7 +288,8 @@
       "object_coverage_frac": 0.0706,
       "threshold": 1.0,
       "neg_frame": "aRockyPlanet_neg15deg.png",
-      "pos_frame": "aRockyPlanet_pos15deg.png"
+      "pos_frame": "aRockyPlanet_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aHuman",
@@ -276,7 +300,8 @@
       "object_coverage_frac": 0.0694,
       "threshold": 1.0,
       "neg_frame": "aHuman_neg15deg.png",
-      "pos_frame": "aHuman_pos15deg.png"
+      "pos_frame": "aHuman_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theStar",
@@ -287,7 +312,8 @@
       "object_coverage_frac": 0.0686,
       "threshold": 1.0,
       "neg_frame": "theStar_neg15deg.png",
-      "pos_frame": "theStar_pos15deg.png"
+      "pos_frame": "theStar_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "thePlanets",
@@ -298,7 +324,8 @@
       "object_coverage_frac": 0.0658,
       "threshold": 1.0,
       "neg_frame": "thePlanets_neg15deg.png",
-      "pos_frame": "thePlanets_pos15deg.png"
+      "pos_frame": "thePlanets_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "aTerraceMine",
@@ -309,7 +336,8 @@
       "object_coverage_frac": 0.0656,
       "threshold": 1.0,
       "neg_frame": "aTerraceMine_neg15deg.png",
-      "pos_frame": "aTerraceMine_pos15deg.png"
+      "pos_frame": "aTerraceMine_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theGalaxy",
@@ -320,7 +348,8 @@
       "object_coverage_frac": 0.0621,
       "threshold": 1.0,
       "neg_frame": "theGalaxy_neg15deg.png",
-      "pos_frame": "theGalaxy_pos15deg.png"
+      "pos_frame": "theGalaxy_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theDensityClock",
@@ -331,7 +360,8 @@
       "object_coverage_frac": 0.0611,
       "threshold": 1.0,
       "neg_frame": "theDensityClock_neg15deg.png",
-      "pos_frame": "theDensityClock_pos15deg.png"
+      "pos_frame": "theDensityClock_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theSolarSystem",
@@ -342,7 +372,8 @@
       "object_coverage_frac": 0.0577,
       "threshold": 1.0,
       "neg_frame": "theSolarSystem_neg15deg.png",
-      "pos_frame": "theSolarSystem_pos15deg.png"
+      "pos_frame": "theSolarSystem_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theGround",
@@ -353,7 +384,8 @@
       "object_coverage_frac": 0.0436,
       "threshold": 1.0,
       "neg_frame": "theGround_neg15deg.png",
-      "pos_frame": "theGround_pos15deg.png"
+      "pos_frame": "theGround_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theHuman",
@@ -364,7 +396,8 @@
       "object_coverage_frac": 0.0402,
       "threshold": 1.0,
       "neg_frame": "theHuman_neg15deg.png",
-      "pos_frame": "theHuman_pos15deg.png"
+      "pos_frame": "theHuman_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theHand",
@@ -375,7 +408,8 @@
       "object_coverage_frac": 0.0333,
       "threshold": 1.0,
       "neg_frame": "theHand_neg15deg.png",
-      "pos_frame": "theHand_pos15deg.png"
+      "pos_frame": "theHand_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theGrip",
@@ -386,7 +420,8 @@
       "object_coverage_frac": 0.03,
       "threshold": 1.0,
       "neg_frame": "theGrip_neg15deg.png",
-      "pos_frame": "theGrip_pos15deg.png"
+      "pos_frame": "theGrip_pos15deg.png",
+      "planar_axis": "y"
     },
     {
       "term": "theStance",
@@ -397,7 +432,8 @@
       "object_coverage_frac": 0.0292,
       "threshold": 1.0,
       "neg_frame": "theStance_neg15deg.png",
-      "pos_frame": "theStance_pos15deg.png"
+      "pos_frame": "theStance_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theAnkle",
@@ -408,7 +444,8 @@
       "object_coverage_frac": 0.0166,
       "threshold": 1.0,
       "neg_frame": "theAnkle_neg15deg.png",
-      "pos_frame": "theAnkle_pos15deg.png"
+      "pos_frame": "theAnkle_pos15deg.png",
+      "planar_axis": "y"
     },
     {
       "term": "theHumanClock",
@@ -419,7 +456,8 @@
       "object_coverage_frac": 0.0136,
       "threshold": 1.0,
       "neg_frame": "theHumanClock_neg15deg.png",
-      "pos_frame": "theHumanClock_pos15deg.png"
+      "pos_frame": "theHumanClock_pos15deg.png",
+      "planar_axis": null
     },
     {
       "term": "theThrust",
@@ -430,7 +468,8 @@
       "object_coverage_frac": 0.013,
       "threshold": 1.0,
       "neg_frame": "theThrust_neg15deg.png",
-      "pos_frame": "theThrust_pos15deg.png"
+      "pos_frame": "theThrust_pos15deg.png",
+      "planar_axis": "y"
     },
     {
       "term": "theLoad",
@@ -441,29 +480,32 @@
       "object_coverage_frac": 0.0114,
       "threshold": 1.0,
       "neg_frame": "theLoad_neg15deg.png",
-      "pos_frame": "theLoad_pos15deg.png"
+      "pos_frame": "theLoad_pos15deg.png",
+      "planar_axis": "y"
     },
     {
       "term": "theZero",
-      "parallax_verified": false,
+      "parallax_verified": true,
       "term_used": "theZero",
       "frame_delta_on_object": 0.0,
       "frame_delta_full_frame": 0.0,
       "object_coverage_frac": 0.0009,
       "threshold": 1.0,
       "neg_frame": "theZero_neg15deg.png",
-      "pos_frame": "theZero_pos15deg.png"
+      "pos_frame": "theZero_pos15deg.png",
+      "planar_axis": "x"
     },
     {
       "term": "theBalance",
-      "parallax_verified": false,
+      "parallax_verified": true,
       "term_used": "theBalance",
       "frame_delta_on_object": 0.0,
       "frame_delta_full_frame": 0.0,
       "object_coverage_frac": 0.0,
       "threshold": 1.0,
       "neg_frame": "theBalance_neg15deg.png",
-      "pos_frame": "theBalance_pos15deg.png"
+      "pos_frame": "theBalance_pos15deg.png",
+      "planar_axis": "x"
     }
   ]
 }
