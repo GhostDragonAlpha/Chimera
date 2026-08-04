@@ -79,6 +79,7 @@ SCENES = {
     "theFarming":     {"kind": "farming", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
     "thePlanetaryFarm": {"kind": "planetary_farm", "radius": 190.0, "cam": (0.0, -140.0, 130.0)},
     "theLunarFarm":    {"kind": "lunar_farm", "radius": 190.0, "cam": (0.0, -160.0, 120.0)},
+    "theOrbitalFarm":  {"kind": "orbital_farm", "radius": 230.0, "cam": (0.0, -180.0, 120.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1007,6 +1008,91 @@ def _lunar_farm_buffers(spec: dict, term: str):
     end = np.concatenate([gnd, shell, deck] + lamps + mature(), axis=0)
     return end, begin
 
+def _orbital_farm_buffers(spec: dict, term: str):
+    """theOrbitalFarm: cultivation carried in a SPINNING RING in open space. The membrane's
+    claim: a ring of life against the dark -- the crop band rides the ring (spin is its
+    gravity), hub and spokes hold it, the planet turns far below, stars behind. No soil,
+    no sky: green carried in a torus of metal. begin = the band newly sown, end = the
+    band mature with grain ripened gold."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    RING_R = 90.0
+
+    # stars: a far shell of faint white points -- the dark the ring hangs in
+    n_st = 1500
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 380.0
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0; stars[:, ALPHA] = 0.5; stars[:, SIZE] = 1.2
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.88, 0.95
+
+    # the ring hull: a grey torus band
+    n_r = 3600
+    a = rng.random(n_r) * 2.0 * np.pi
+    b = rng.random(n_r) * 2.0 * np.pi
+    tube = 9.0
+    ring = np.zeros((n_r, NCOLS), dtype=np.float32)
+    ring[:, PX] = (RING_R + tube * np.cos(b)) * np.cos(a)
+    ring[:, PY] = (RING_R + tube * np.cos(b)) * np.sin(a)
+    ring[:, PZ] = tube * np.sin(b)
+    ring[:, TYPE] = 3.0; ring[:, ALPHA] = 0.5; ring[:, SIZE] = 2.2
+    ring[:, CR], ring[:, CG], ring[:, CB] = 0.42, 0.45, 0.50
+
+    # hub + spokes
+    hub = _dots((0.0, 0.0, 0.0), 8.0, 200, (0.50, 0.53, 0.58), rng)
+    spokes = []
+    for k in range(4):
+        aa = k * np.pi / 2.0
+        ts = np.linspace(8.0, RING_R - tube, 40)
+        sp = np.zeros((len(ts), NCOLS), dtype=np.float32)
+        sp[:, PX] = ts * np.cos(aa)
+        sp[:, PY] = ts * np.sin(aa)
+        sp[:, PZ] = 0.0
+        sp[:, TYPE] = 3.0; sp[:, ALPHA] = 0.5; sp[:, SIZE] = 1.8
+        sp[:, CR], sp[:, CG], sp[:, CB] = 0.45, 0.48, 0.53
+        spokes.append(sp)
+
+    # the planet far below
+    planet = _solid_sphere((40.0, 80.0, -230.0), 42.0, (0.30, 0.48, 0.72), rng, gain=0.7)
+
+    # the crop band: crops rooted along the ring's inner rim, facing the hub
+    n_crop = 240
+    angs = np.linspace(0.0, 2.0 * np.pi, n_crop, endpoint=False)
+
+    def band(mature):
+        parts = []
+        for aa in angs:
+            if rng.random() > (0.98 if mature else 0.75):
+                continue
+            cx = (RING_R - tube - 1.5) * np.cos(aa)
+            cy = (RING_R - tube - 1.5) * np.sin(aa)
+            if not mature:
+                gg = float(rng.uniform(0.40, 0.55))
+                parts.append(_dots((cx, cy, 2.0), 1.6, 10, (0.12, gg, 0.09), rng))
+            else:
+                h = float(rng.uniform(4.5, 6.5))
+                stem = np.zeros((4, NCOLS), dtype=np.float32)
+                stem[:, PX], stem[:, PY] = cx, cy
+                stem[:, PZ] = np.linspace(1.0, 1.0 + h, 4)
+                stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.85; stem[:, SIZE] = 1.5
+                stem[:, CR], stem[:, CG], stem[:, CB] = 0.16, 0.44, 0.12
+                parts.append(stem)
+                gg = float(rng.uniform(0.42, 0.56))
+                parts.append(_dots((cx, cy, 1.0 + h * 0.6), 1.8, 10, (0.13, gg, 0.10), rng))
+                ripe = rng.random() < 0.7
+                head = (0.78, 0.62, 0.16) if ripe else (0.20, gg, 0.12)
+                parts.append(_dots((cx, cy, 1.0 + h + 0.6), 1.2, 8, head, rng))
+        return parts
+
+    begin = np.concatenate([stars, ring, hub, planet] + spokes + band(False), axis=0)
+    end = np.concatenate([stars, ring, hub, planet] + spokes + band(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1094,7 +1180,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1342,7 +1428,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

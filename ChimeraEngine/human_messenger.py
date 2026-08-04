@@ -91,6 +91,10 @@ PHYSICS_READING = {
                     "with a green grid pattern at its center -- a sealed farm dome on a "
                     "barren grey world, the circle is the dome and the grid is the crop "
                     "growing INSIDE, NOT open ground",
+    "theOrbitalFarm": "a large ring structure of green and yellow segments against a dark "
+                      "starry background with a blue planet below -- a spinning farm ring "
+                      "in orbit, the crop band growing along the ring, NOT on a world's "
+                      "surface",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
