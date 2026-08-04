@@ -213,6 +213,12 @@ exactly the instrument defect this project keeps paying for; (2) any outgoing pr
 answer — a number, a beat name, or the words stone/rock/grass/pile — which the prompt log makes
 checkable.
 
+**CLAUSE 1 FIRED AND HELD, write path verified** (2026-08-04): with the eye dark the driver
+exits 2, loud, and writes nothing. The full loop (13 items: master + 10 beat sheets SEE,
+both stand sequences WATCH, align per item, `readings.json` + `verdict.md` written) was then
+exercised end-to-end against a stub senses server so the operator's one live run is not the
+first execution of the write path; the stub readings were destroyed and never enter the record.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
