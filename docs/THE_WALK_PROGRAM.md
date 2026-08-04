@@ -509,6 +509,40 @@ survival should gate the score rather than be subtracted from it. **Not answered
 patched here** — changing a penalty because it makes the number better is the move this ladder
 exists to forbid; it needs its own RULE 0.
 
+## THE SCORE'S FORM WAS THE PROBLEM — stated as RULE 0 first, then measured
+
+**STATEMENT.** The walk score is lexicographic by accident, not by design.
+`score = reward × periodicity − 3.0·fell − 2.0·(1−frac)` mixes a reward whose entire achievable
+range is ~0.1 with a penalty of 3.0. If every factor is instead dimensionless in [0,1] and
+**multiplied** — `reward × periodicity × frac_run`, the same form `stand_reward` already uses —
+there is no scale to get wrong, both gradients survive, and **no constant is chosen** (the 3.0
+and the 2.0 both disappear).
+
+**PREDICTION.** The multiplicative score ranks cand 8 (51% of derived speed, 1.10 s) above
+cand 14 (4%, 5.60 s), reversing the current score.
+
+**FALSIFIER.** It fails to reverse them, or it ranks a body that never moves above one that
+walks — in which case the form was not the problem.
+
+**MEASURED, 15 candidates, same world, same frozen stand θ:**
+
+| score | its top pick | speed | held |
+|---|---|---:|---:|
+| current | cand 3 | **−0.007 m/s = −1%** | 7.62 s |
+| multiplicative | cand 8 | **+0.502 m/s = 51% of derived** | 1.10 s |
+
+**The current score's favourite body is standing still** — −0.007 m/s — and it is preferred over
+one walking at 51% of the derived speed. The multiplicative score's full ordering is 8 (51%),
+6 (49%), 13 (42%), 11 (40%), 1 (24%) …: it ranks by *how much the body walks*, and it places
+cand 3 thirteenth of fifteen. **The falsifier does not fire.**
+
+**WHAT THIS IS AND IS NOT.** It is a demonstration that the score's FORM, not its terms, was
+selecting for immobility — a ranking result over a fixed candidate set. It is **not** yet a
+demonstration that training under it produces a sustained walk; that needs a run, and it is
+running. And it is deliberately **not applied to `walk_port.py`**: changing a score because it
+makes the number better is the move this ladder exists to forbid, so the evidence is published
+first and the change is the other agent's to accept or refuse in the file it owns.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
