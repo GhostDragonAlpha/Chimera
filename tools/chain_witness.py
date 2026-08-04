@@ -196,13 +196,33 @@ def main(argv) -> int:
             anc = set(human.parts)
             folders = [f for f in folders if f.name in anc]
 
-    ok = stub = bad = 0
+    ok = stub = bad = held = 0
     rows = []
     for f in folders:
         r = check(f)
+        # A SELF-DECLARED PLACEHOLDER IS NOT A BROKEN MEMBRANE, and conflating them costs the
+        # metric its meaning. A membrane that publishes `placeholder: true` is saying, in its own
+        # numbers.json, that it draws and does not yet derive -- so of course it does not move
+        # through its own time, and this witness is RIGHT to notice. What it must not do is report
+        # it in the same bucket as a chapter that was supposed to work and does not.
+        #
+        #     "NOT BUILT YET" AND "BUILT WRONG" DEMAND OPPOSITE RESPONSES, and a count that merges
+        #     them tells you to go fix something that was never claimed to be finished.
+        #
+        # It is counted and named rather than skipped -- the same treatment `action_tests` gives a
+        # refusal. Five announced placeholders should read as five open gaps in the ledger, which
+        # is exactly what docs/TERM_INVENTORY.md already says they are.
+        try:
+            import json as _j
+            _n = _j.loads((f / "numbers.json").read_text(encoding="utf8"))
+            r["placeholder"] = bool(_n.get("placeholder"))
+        except Exception:
+            r["placeholder"] = False
         rows.append(r)
         if r.get("stub"):
             stub += 1
+        elif r.get("placeholder"):
+            held += 1
         elif r["fails"]:
             bad += 1
         else:
@@ -222,19 +242,26 @@ def main(argv) -> int:
         rc = f"{r['reach_local']:.3g}" if "reach_local" in r else "-"
         mv = ("-" if r.get("moves") is None
               else "yes" if r["moves"] == float("inf") else f"{r['moves']:.3g}")
-        state = "ok" if not r["fails"] else "BROKEN"
+        state = ("PLACEHOLDER (draws, does not derive -- an open gap, not a defect)"
+                 if r.get("placeholder") else "ok" if not r["fails"] else "BROKEN")
         if not r["fails"] and r.get("closes") == 0.0:
             state = "ok  cyclic"
         print(f"{nm:<{W}} {sp:>9} {ex:>12} {rc:>9} {mv:>10}  {state}")
         for note in r["notes"]:
             print(f"{'':<26} note: {note}")
-        for fl in r["fails"]:
-            print(f"{'':<26} BROKEN: {fl}")
+        if not r.get("placeholder"):
+            for fl in r["fails"]:
+                print(f"{'':<26} BROKEN: {fl}")
         if "trace" in r:
             for line in r["trace"].strip().splitlines()[-4:]:
                 print(f"{'':<30} {line}")
     print("-" * 92)
-    print(f"{ok} working, {stub} stubs, {bad} broken   ({len(folders)} membranes)")
+    print(f"{ok} working, {stub} stubs, {held} placeholders, {bad} broken   "
+          f"({len(folders)} membranes)")
+    if held:
+        print(f"{'':<4}the {held} placeholder(s) publish `placeholder: true` and are OPEN GAPS -- "
+              f"see docs/TERM_INVENTORY.md. They are not counted as broken and are not counted as "
+              f"working.")
     return 1 if bad else 0
 
 
