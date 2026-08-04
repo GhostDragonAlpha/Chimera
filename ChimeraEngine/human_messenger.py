@@ -111,6 +111,10 @@ PHYSICS_READING = {
                "background -- a perfect regular lattice of glowing nodes connected by "
                "straight edges, the same pattern repeating everywhere: pure order, a "
                "rulebook made visible, NOT organic or random",
+    "theTruth": "a series of blue spheres connected by golden lines to a textured "
+                "grey surface below, against a dark background -- every sphere "
+                "anchored to the bedrock by its own chain, nothing floating free: "
+                "every fact reaching physics, NO unanchored objects",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

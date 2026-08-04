@@ -84,6 +84,7 @@ SCENES = {
     "theSeed":         {"kind": "seed", "radius": 180.0, "cam": (0.0, -150.0, 90.0)},
     "theDeterminism":  {"kind": "determinism", "radius": 200.0, "cam": (0.0, -170.0, 100.0)},
     "theLaws":         {"kind": "laws", "radius": 180.0, "cam": (0.0, -170.0, 110.0)},
+    "theTruth":        {"kind": "truth", "radius": 180.0, "cam": (0.0, -165.0, 75.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1286,6 +1287,61 @@ def _laws_buffers(spec: dict, term: str):
     end = np.concatenate([nodes] + edges(True), axis=0)      # the rulebook, bound
     return end, begin
 
+def _truth_buffers(spec: dict, term: str):
+    """theTruth: every fact reaches physics. A bedrock slab below; glowing facts above;
+    and EVERY fact hangs on a chain that runs down to the rock -- nothing floats free,
+    nothing is asserted without its anchor. The membrane made visible: count the chains,
+    count the facts -- they are the same number. begin = the facts dim and the chains
+    half-drawn; end = every fact lit and every chain taut to bedrock."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 180.0))
+    BED_Z = -42.0
+
+    # the bedrock: a dense stone slab -- physics, the terminal every chain ends at
+    n_b = 3800
+    th = rng.random(n_b) * 2.0 * np.pi
+    rr = 95.0 * np.sqrt(rng.random(n_b))
+    bed = np.zeros((n_b, NCOLS), dtype=np.float32)
+    bed[:, PX], bed[:, PY] = rr * np.cos(th), rr * np.sin(th)
+    bed[:, PZ] = BED_Z + rng.normal(0.0, 1.2, n_b)
+    bed[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    bed[:, TYPE] = 3.0; bed[:, ALPHA] = 0.65; bed[:, SIZE] = 2.8
+    bed[:, CR], bed[:, CG], bed[:, CB] = 0.48, 0.46, 0.44
+
+    # the facts: glowing nodes at scattered positions ABOVE the rock
+    n_f = 12
+    fa = rng.random(n_f) * 2.0 * np.pi
+    fr = rng.uniform(15.0, 80.0, n_f)
+    fx, fy = fr * np.cos(fa), fr * np.sin(fa)
+    fz = rng.uniform(-5.0, 45.0, n_f)
+
+    def scene(lit, chain_alpha):
+        parts = []
+        for k in range(n_f):
+            # the chain: a straight run of links from the fact down to the rock
+            n_links = 26
+            ts = np.linspace(0.0, 1.0, n_links)
+            ch = np.zeros((n_links, NCOLS), dtype=np.float32)
+            ch[:, PX] = fx[k] * (1.0 - ts) + fx[k] * ts * 0.92
+            ch[:, PY] = fy[k] * (1.0 - ts) + fy[k] * ts * 0.92
+            ch[:, PZ] = fz[k] + (BED_Z - fz[k]) * ts
+            ch[:, TYPE] = 3.0; ch[:, ALPHA] = chain_alpha; ch[:, SIZE] = 1.3
+            ch[:, CR], ch[:, CG], ch[:, CB] = 0.85, 0.75, 0.50
+            parts.append(ch)
+            # the fact itself
+            if lit:
+                parts.append(_dots((fx[k], fy[k], fz[k]), 3.4, 22,
+                                   (0.45, 0.85, 1.00), rng))
+            else:
+                parts.append(_dots((fx[k], fy[k], fz[k]), 3.4, 22,
+                                   (0.20, 0.30, 0.36), rng))
+        return parts
+
+    begin = np.concatenate([bed] + scene(False, 0.18), axis=0)
+    end = np.concatenate([bed] + scene(True, 0.70), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1373,7 +1429,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1621,7 +1677,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
