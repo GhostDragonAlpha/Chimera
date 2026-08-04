@@ -22,9 +22,13 @@ THE THREE PHASES, each a stated prediction:
                             band and the stone must fall ballistically to rest (a_throw's
                             gravity, already PROVEN) -- falsifier 3.
 
-ZERO POSE-SCRIPTED FRAMES after reset. `spawn_stone` writes qpos AT the reset (the spawn is
-part of the reset, same discipline as seat_in_limits); every frame after is mj_step under
-muscle control and this world's gravity.
+ZERO POSE-SCRIPTED FRAMES after reset, with ONE stated exception: THE PICK-UP (v4,
+docs/THE_GRAB.md). At T_GRAB the stone's qpos is written ONCE to the weld-satisfied pose
+-- a boundary condition at the event, the same discipline as `spawn_stone` at the reset --
+and the weld engages SATISFIED. The earlier floor-snap was measured to be a 22 kN solver
+artifact (52x the stone's weight; every candidate thrown airborne): the catch of an
+artifact is M8b's pick-up motion, not this membrane's carried load. Every frame after the
+event is mj_step under muscle control and this world's gravity.
 
     python tools/f6_grab.py           # exit 0 PASS, 1 FAIL
 """
@@ -41,7 +45,7 @@ from world import load_body                                              # noqa:
 from stand_port import derive_stand_port, MYOBODY                        # noqa: E402
 from train_stand import joint_ids, seat_in_limits                        # noqa: E402
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,          # noqa: E402
-                       grab_formula_fn, STONE_BODY, WELD_NAME)
+                       snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME)
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from parser import Parser, default_registry, Formula, OVERLAY            # noqa: E402
 
@@ -101,7 +105,8 @@ def run() -> int:
         t = k * m.opt.timestep
         if k % CTRL_EVERY == 0:
             if not grabbed and t >= T_GRAB:
-                PARSER.set_verb("GRAB", True)
+                snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
+                PARSER.set_verb("GRAB", True)        # the formula then engages the weld SATISFIED
                 grabbed = True
             if not dropped and t >= T_DROP:
                 PARSER.set_verb("GRAB", False)

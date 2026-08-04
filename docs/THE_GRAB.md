@@ -265,3 +265,52 @@ the standing catch-and-carry of 73% of model mass on a 0.45 m lever is
 beyond this body, falsifier 2 fires with full numbers, and the finding
 goes to THE HUMAN's dial. 3. Survivors carry but under the 80% pelvis
 bar — the posture/strength trade measured and published as-is.
+
+**Run 7 — VERDICT: the complete law priced, and the exploits reprice to
+~0 AND STILL DOMINATE. The score form is the wall.** Eight survivors,
+all load 0–5% AND stone-floor 160–204% — both conservation terms zero,
+reward ≈ 0, score ≈ 0 — and 0 beats every real attempt behind the
+additive −3 fall penalty. Fallers' scores are IDENTICAL to run 6's
+(turn 0: −3.260 both runs) because with both factors at 0 the score is
+pure penalty: the search has NO gradient toward the true-carry region,
+which sits behind the fall wall. But v3's falsifier 2 ("no survivor →
+the body is too weak") does NOT fire, because a confound stands in
+front of it, and it is measured: **the snap itself**. Every candidate,
+including the proven stand theta, goes AIRBORNE at t=1.0 — the f6
+trace shows a 22 kN plantar spike (52× the stone's weight) and a
+pelvis arc to 1.4 m. No human lift produces 52×. That impulse is not
+physics; it is MuJoCo's constraint solver correcting a 0.6 m weld
+violation in a handful of timesteps — an artifact of engaging the
+weld with the stone on the floor, far from its relpose. And the catch
+of that artifact is not this membrane's question: M8a is THE CARRIED
+LOAD (can the body hold it); the pick-up MOTION is M8b's arm. Run 5's
+amendment conflated them by "matching the judge's event" — the judge's
+event was the artifact.
+
+## AMENDMENT — v4: THE SATISFIED SNAP (stated before the run)
+
+**STATEMENT.** The pick-up event the membrane states ("the pick-up
+snap is the event; the LOAD after it is the physics") is an instant
+ATTACHMENT, not an instant TELEPORT-CORRECTION. A real attachment
+engages where the thing is held. v4: at T_GRAB the stone's freejoint
+qpos is written ONCE to the weld-satisfied pose — the pick-up, a
+boundary condition at the event, the same discipline as spawn_stone at
+the reset, explicitly NOT a trajectory and NOT a pose-scripted frame —
+and the weld engages SATISFIED. Zero violation, zero artifact impulse;
+the 421 N that arrives is the stone's weight, which is the physics
+under test. TRAINER AND JUDGE MOVE TOGETHER (the run-4/5 lesson: they
+must judge the same event). The bars do not move: phase 1 delta within
+20% of weight_N, phase 2 pelvis ≥ 80%, phase 3 ballistic drop.
+
+**PREDICTION.** With the artifact removed, the search's gradient
+reaches the true-carry region: a survivor emerges with load ≈ 100%,
+stone-floor ≈ 0, pelvis ≥ 80% — or it does not, and nothing now
+stands between that result and the body.
+
+**FALSIFIERS.** 1. No survivor across 48×32 with the satisfied snap
+and the complete law — v3's falsifier 2 fires CLEAN: the standing
+carry of 73% of model mass at a 0.45 m lever is beyond this body, and
+the finding (the stone's D, THE HUMAN's dial) goes to the operator
+with full numbers. 2. A survivor that still is not a carry — a fourth
+path, named here. 3. The carry holds but under the pelvis bar —
+published as the posture/strength trade, bar unmoved.

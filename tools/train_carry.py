@@ -12,15 +12,13 @@ carry window (T_GRAB+0.2 .. T_DROP). This trains at EXACTLY that horizon -- secs
 a proxy. train_stand's own docstring records being burned by a 1.0 s proxy satisfying a 5 s
 requirement; the carry does not repeat it.
 
-THE EVENT IS THE SNAP, measured 2026-08-04: the first version of this trainer welded from the
-spawn (stone born AT the carry pose) and the search found a crouch-hold -- 3.0 s survivors at
-50-57% pelvis, the atlas-stone strategy. f6 then knocked that same theta flat in one frame:
-f6's stone starts ON THE FLOOR and the weld engages at t=1.0, and the snap's impulse is the
-event the membrane states ("the pick-up snap is the event; the LOAD after it is the physics").
-A policy trained born-carrying never felt the snap. This trainer now matches the judge EXACTLY:
-stone spawned on the floor, weld INACTIVE, snap at t=T_SNAP, and the policy must catch 421 N
-arriving as an impulse -- then hold 3.0 s. Warm start from the crouch-hold theta (it knows the
-hold; the catch is the new lesson).
+THE EVENT IS THE SATISFIED SNAP (v4, THE_GRAB.md): at t=T_SNAP the stone is written ONCE to
+the weld-satisfied pose (the pick-up -- a boundary condition at the event, the same discipline
+as the spawn at the reset) and the weld engages with ZERO violation. The earlier versions are
+the ledger's own record: born-carry (trained a different event than the judge), floor-snap
+(measured a 22 kN solver-artifact spike -- 52x the stone's weight -- throwing every candidate
+airborne; the catch of an artifact is M8b's pick-up motion, not this membrane's carried load).
+What arrives at the body now is 421 N of stone weight: the physics under test.
 
 Warm start from stand_theta.npy (incumbent always a candidate -- the correctness fix from
 train_stand, MEASURED 2026-08-04). Output: carry_theta.npy, the session's best, never the
@@ -40,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body
 from stand_port import derive_stand_port, stand_reward, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac
-from grab_port import (derive_grab_port, stone_xml, spawn_stone,
+from grab_port import (derive_grab_port, stone_xml, spawn_stone, snap_stone_to_carry,
                        CARRY_RELPOS, STONE_BODY, WELD_NAME)
 from train_walk import foot_contact
 
@@ -48,29 +46,6 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 CARRY_THETA = OUTDIR / "carry_theta.npy"
 T_SNAP = 1.0                    # the weld engages here -- f6's T_GRAB, the judged event
-
-
-def spawn_carried(m, d, mujoco):
-    """Write the stone's freejoint qpos AT the weld's target pose, once, at reset.
-
-    The weld's relpose is the stone's pose in the TORSO frame (stated in grab_port). With
-    the weld active from the spawn, placing the stone anywhere else buys a constraint
-    transient as the first physics -- a fall the training would then have to unlearn, paid
-    for by every candidate. Compute the target from the torso's frame at the seated
-    keyframe and write it. Same rule as spawn_stone: a spawn is a reset, not a script.
-    """
-    torso = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "torso")
-    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)
-    if torso < 0 or body < 0:
-        raise SystemExit("no torso / no stone -- run stone_xml first (rule 20).")
-    rot = np.zeros(9)
-    mujoco.mju_quat2Mat(rot, np.array(d.xquat[torso], dtype=np.float64))
-    world = np.array(d.xpos[torso], dtype=np.float64) + rot.reshape(3, 3) @ np.array(CARRY_RELPOS)
-    wq = np.zeros(4)
-    mujoco.mju_mulQuat(wq, np.array(d.xquat[torso], dtype=np.float64), np.array([1.0, 0, 0, 0]))
-    a = int(m.jnt_qposadr[int(m.body_jntadr[body])])
-    d.qpos[a:a + 7] = np.concatenate([world, wq])
-    mujoco.mj_forward(m, d)
 
 
 def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
@@ -111,7 +86,8 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
     pics, tot, n, fell = [], 0.0, 0, False
     for k in range(steps):
         if k == snap_k:
-            d.eq_active[eq] = 1             # THE SNAP -- the judged event, trained not faked
+            snap_stone_to_carry(m, d, mujoco)   # THE PICK-UP (v4): one write, the event
+            d.eq_active[eq] = 1                 # the weld engages SATISFIED -- no artifact
         if k % 20 == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]

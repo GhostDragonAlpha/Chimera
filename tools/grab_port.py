@@ -106,6 +106,35 @@ def stone_xml(xml_path, port) -> "Path":
     return dst
 
 
+def snap_stone_to_carry(m, d, mujoco):
+    """THE PICK-UP (THE_GRAB v4): write the stone ONCE to the weld-satisfied pose.
+
+    The membrane's event is an instant ATTACHMENT, not a teleport-correction: engaging the
+    weld with the stone 0.6 m from its relpose target makes MuJoCo's solver correct the
+    violation in a handful of timesteps -- measured 2026-08-04 as a 22 kN plantar spike
+    (52x the stone's weight) and an airborne pelvis arc. That impulse is a solver artifact,
+    not physics, and it is not the load under test. The pick-up writes the stone to the
+    pose the weld holds it in (the torso frame, the stated carry relpose), computed the
+    same way at the event boundary as spawn_stone computes the floor spawn at the reset:
+    one qpos write, explicitly NOT a trajectory and NOT a pose-scripted frame. The weld
+    then engages SATISFIED, and what arrives is 421 N of stone -- the physics under test.
+    """
+    import numpy as np
+    torso = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "torso")
+    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)
+    if torso < 0 or body < 0:
+        raise SystemExit("no torso / no stone -- run stone_xml first (rule 20).")
+    rot = np.zeros(9)
+    mujoco.mju_quat2Mat(rot, np.array(d.xquat[torso], dtype=np.float64))
+    world = np.array(d.xpos[torso], dtype=np.float64) + rot.reshape(3, 3) @ np.array(CARRY_RELPOS)
+    wq = np.zeros(4)
+    mujoco.mju_mulQuat(wq, np.array(d.xquat[torso], dtype=np.float64), np.array([1.0, 0, 0, 0]))
+    a = int(m.jnt_qposadr[int(m.body_jntadr[body])])
+    d.qpos[a:a + 7] = np.concatenate([world, wq])
+    d.qvel[a:a + 6] = 0.0          # the pick-up is an event, not a throw: arrive at rest
+    mujoco.mj_forward(m, d)
+
+
 def spawn_stone(m, d, mujoco, port):
     """Write the stone's freejoint qpos ONCE, at reset -- the spawn, not a pose script.
 
