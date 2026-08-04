@@ -95,3 +95,34 @@ lying about what drives it.
    already carries. The trainer drives THE SAME machine (train what you
    judge — the lesson this project paid for twice in one day).
 3. Train the swing efforts; judge. Record here, either way.
+
+---
+
+## BUILD RECORD (2026-08-04, built as stated — new files, the first theory untouched)
+
+- `tools/step_port.py` — `StepMachine` (transitions are sensor events only:
+  swing enters on the contralateral foot's PLANT edge, stance on the own
+  foot's; the interlock is the door's shape, not a check), `step_formula`
+  (stand frozen + 6 swing efforts), `move_formula_fn` (the machine lives in
+  the parser formula's closure — obs gains `cr`/`cl`, no grammar change).
+  The swing window is DERIVED: (1 − 0.6027) × 1.1730 = **0.4660 s**.
+- `tools/train_step.py` — CEM over the 6 efforts, driving THE SAME machine
+  and formula the judge drives. Trains 8 s, judged 6 s.
+- `tools/f5_step.py` — f4's four bars unmoved + judge five (sensor ablation)
+  + judge six (duty ≥ 0.50 each foot, falsifier 1's shape). Zero-theta
+  sanity: the body simply STANDS (pelvis 85%, travel −0%, both ablations
+  trivially collapsed) — the machine does not destabilize the stand.
+
+**CLOSURE FINDING, measured at build time** (`python tools/step_port.py`):
+the duty-derived swing window is 0.4660 s; the leg's passive pendulum
+half-period, computed from the model's own inertia tensors (`a_swing`'s
+prediction half), is **0.8963 s — 92% longer**. The finding: a human swing
+is not ballistic. The leg is driven through its swing at roughly twice its
+passive rate by muscle effort — which is exactly what the six trained
+efforts are FOR. If swing were pendular, the efforts would be noise on a
+motion the body already owned. The window stays duty-derived (the sensors
+own the cadence; the window only splits the effort profile into
+early/late); the pendulum number is the cross-check, and the cross-check
+says: swing is work, not falling.
+
+Verdict: _pending the training run._
