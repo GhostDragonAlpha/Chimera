@@ -142,6 +142,10 @@ PHYSICS_READING = {
                     "against a dark background, winding around an elongated object "
                     "at the center -- a vessel at the center of space folded into "
                     "a spiral around it",
+    "theShipView": "a gray oval object and a bright white glowing dot connected by "
+                   "green beams of light, against a dark background of numerous "
+                   "small white stars -- the beams fan out from the dot and land "
+                   "on the oval, one vantage looking at the vessel",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
