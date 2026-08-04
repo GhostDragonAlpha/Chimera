@@ -95,6 +95,7 @@ SCENES = {
     "theSalvage":      {"kind": "salvage", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theDescent":      {"kind": "descent", "radius": 170.0, "cam": (30.0, -80.0, 35.0)},
     "theStanding":     {"kind": "standing", "radius": 120.0, "cam": (0.0, -85.0, 22.0)},
+    "theBlackHole":    {"kind": "black_hole", "radius": 140.0, "cam": (0.0, -110.0, 0.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2216,6 +2217,89 @@ def _standing_buffers(spec: dict, term: str):
     end = np.concatenate([ground] + figure(True), axis=0)
     return end, begin
 
+def _black_hole_buffers(spec: dict, term: str):
+    """theBlackHole: the mass from which no light escapes. A perfect dark DISK in
+    the middle of the starfield -- not a black object but an ABSENCE, a hole
+    where the stars stop -- wrapped in a fierce thin ring of light (the photon
+    ring) and an orange accretion band tilted across it. The background stars
+    near the edge are pushed OUTWARD, bent around the shadow: light itself
+    going around the hole because it cannot come out. begin = the ring dim,
+    the disk faint; end = the ring burning, the disk bright."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    SHADOW = 18.0          # the radius of the absence (screen space, XZ plane)
+
+    # the starfield with the hole carved out: stars inside the shadow are
+    # pushed to just outside it -- lensing as a bright rim of displaced sky
+    n_st = 3000
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 160.0 * (0.35 + 0.9 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    px = st_r * sxz * np.cos(phi)
+    py = st_r * sxz * np.sin(phi)
+    pz = st_r * u
+    # screen-space radius in the XZ plane; push the shadowed ones out
+    rs = np.sqrt(px * px + pz * pz)
+    inside = rs < SHADOW
+    # the hole EATS the sky behind it: anything deep inside the shadow is gone
+    # entirely (no light escapes); the edge band is lensed just outside
+    eaten = rs < SHADOW * 0.92
+    lensed = inside & ~eaten
+    push = np.where(lensed, SHADOW + (SHADOW - rs) * 0.25 + 1.5, rs)
+    scale = push / np.maximum(rs, 1e-6)
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = px * scale
+    stars[:, PY] = py
+    stars[:, PZ] = pz * scale
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.28 + 0.22 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.87, 0.92
+    # the displaced sky gathers bright at the shadow's edge
+    stars[lensed, ALPHA] = 0.75
+    stars[lensed, SIZE] = 1.5
+    stars = stars[~eaten]
+
+    # the photon ring: a fierce thin circle at the shadow's edge
+    n_r = 600
+    ra = np.linspace(0.0, 2.0 * np.pi, n_r)
+    ring = np.zeros((n_r, NCOLS), dtype=np.float32)
+    ring[:, PX] = SHADOW * 1.06 * np.cos(ra)
+    ring[:, PZ] = SHADOW * 1.06 * np.sin(ra)
+    ring[:, PY] = rng.normal(0.0, 0.6, n_r)
+    ring[:, TYPE] = 3.0; ring[:, SIZE] = 1.6
+    ring[:, CR], ring[:, CG], ring[:, CB] = 1.0, 0.92, 0.75
+
+    # the accretion band: an orange tilted ellipse of hot matter
+    n_d = 900
+    da = rng.random(n_d) * 2.0 * np.pi
+    dr = SHADOW * (1.25 + 0.55 * rng.random(n_d))
+    disk = np.zeros((n_d, NCOLS), dtype=np.float32)
+    dx = dr * np.cos(da)
+    dz = dr * np.sin(da)
+    disk[:, PX] = dx
+    disk[:, PZ] = dz * 0.30                      # tilted: squashed in Z
+    disk[:, PY] = rng.normal(0.0, 1.2, n_d)
+    disk[:, TYPE] = 3.0; disk[:, SIZE] = 1.6
+    heat = 1.0 - (dr / SHADOW - 1.25) / 0.55     # hotter nearer the hole
+    disk[:, CR] = 1.0
+    disk[:, CG] = 0.45 + 0.45 * heat
+    disk[:, CB] = 0.15 + 0.35 * heat
+
+    def scene(lit):
+        parts = []
+        rg = ring.copy(); rg[:, ALPHA] = 0.85 if lit else 0.25
+        parts.append(rg)
+        dk = disk.copy(); dk[:, ALPHA] = 0.70 if lit else 0.22
+        parts.append(dk)
+        return parts
+
+    begin = np.concatenate([stars] + scene(False), axis=0)
+    end = np.concatenate([stars] + scene(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2303,7 +2387,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2551,7 +2635,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

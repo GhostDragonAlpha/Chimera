@@ -158,6 +158,10 @@ PHYSICS_READING = {
                    "textured surface against a dark background, the surface "
                    "beneath its feet lit by the contact -- a body standing on "
                    "real ground, witnessed by the light where it touches",
+    "theBlackHole": "a cosmic scene with a black central object surrounded by an "
+                    "orange ring and a white halo, set against a backdrop of "
+                    "numerous small white dots representing stars in space -- "
+                    "the center is total darkness, a hole that no light escapes",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
