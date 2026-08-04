@@ -63,6 +63,16 @@ convicted (every number from `tools/f4_walk.py`, same harness, same world):
    N_FREE back to 6). `WalkOscillator` stays in this file as a DEFERRED robustness
    layer -- its cost is a parser obs amendment (foot contact into `obs`), to be earned
    by its own membrane only if the clock composition plateaus below falsifier 3's 50%.
+
+LEDGER, second entry (same evening) -- the judge-consistent trainer's first 24 turns,
+warm-started from claude30's traveler. f4 on the session best: travel +10%, periodicity
+0.41, held 5.92/6.0 s (from 2.24), duty R/L 0.84/0.69 (from 0.65/0.60's asymmetry,
+converging on the published 0.60), ablation PASS. THE FALL IS BEING TRAINED OUT, SLOWLY:
+held climbs 2.5 -> 5.9 s across the run, best score -4.37 -> -3.49 with no plateau, the
+footfall trace shows real alternation for the first time. VERDICT: still FAIL x3 -- but
+the question "can the fall be trained out without losing the travel" is UNANSWERED, not
+answered: the trajectory is alive, so the rung is MORE TURNS, not more structure.
+Falsifier 3 (50% unreachable at ANY setting) does not fire while the curve is moving.
 """
 from __future__ import annotations
 
