@@ -218,6 +218,69 @@ def stand_formula_fn(theta, tgt, nu):
     return fn
 
 
+# ── THE STAND CHECKPOINT'S SHAPE, DECLARED BY THE FORMULA THAT CONSUMES IT ────────────────────
+# Every block `stand_formula_fn` applies, in the order it applies them. DECLARED, never inferred:
+# a block count divided out of a checkpoint's length is a second landmark for a quantity the model
+# already owns (rule 19), and that exact substitution is what made `parser_tests` falsifier 1
+# silently un-runnable -- `nu = theta.size // 3` gives 386 for a 1160-number theta against a body
+# with 290 actuators, so the reference formula's slices were the wrong width and the check died on
+# a broadcast error instead of measuring anything. It had been dead across every commit that
+# touched the formula since the roll block landed.
+STAND_BLOCKS = ("a0", "kh", "kp", "kr", "kw")
+# WHAT A *STAND* CHECKPOINT MUST CARRY. `kw` (the tendon-organ load term) is the CARRY formula's
+# fifth block and is trained by `train_carry`, not by `train_stand`, so a stand checkpoint that
+# carried five blocks would be claiming a sense it was never trained with. Two shapes, two
+# contracts, both named here rather than left to `theta.size >=` to imply.
+STAND_CHECKPOINT_BLOCKS = 4
+
+
+def check_theta_shape(theta, nu, expect=STAND_CHECKPOINT_BLOCKS, where="", allow_short=False):
+    """REFUSE a checkpoint whose block count is not the one the parser formula applies.
+
+    `nu` MUST come from the model (`m.nu`), never from dividing the checkpoint by an assumed
+    block count -- see `STAND_BLOCKS` above for what that substitution already cost.
+
+    WHY THIS IS LOUD RATHER THAN FORGIVING. `stand_formula_fn` is deliberately tolerant at LOAD:
+    a 3-block theta gets `kr = zeros` and reproduces the pre-roll formula bit-identically, which
+    is what lets an old checkpoint be re-judged without silently acquiring a term it was never
+    trained with. That tolerance is correct for READING a historical artifact and wrong for
+    WRITING a new one -- a trainer that saves a short theta is minting a checkpoint that every
+    future consumer will quietly zero-fill, and nothing downstream will ever say so. So the
+    guard sits at the SAVE, where the artifact is created, and refuses.
+
+    `allow_short=True` is for the reader that genuinely wants the historical artifact; it does
+    not silence the finding, it PRINTS which terms are being zero-filled and by whose authority.
+    """
+    tag = f" [{where}]" if where else ""
+    if nu <= 0:
+        raise SystemExit(f"check_theta_shape{tag}: nu = {nu}. The muscle count comes from the "
+                         f"model; refusing to check a shape against nothing (rule 20).")
+    if theta.size % nu:
+        raise SystemExit(
+            f"check_theta_shape{tag}: theta holds {theta.size} numbers, which is not a whole "
+            f"number of {nu}-muscle blocks ({theta.size / nu:.4f} blocks). Refusing to guess "
+            f"the policy's shape.")
+    blocks = theta.size // nu
+    if blocks > len(STAND_BLOCKS):
+        raise SystemExit(
+            f"check_theta_shape{tag}: theta holds {blocks} blocks of {nu}; the stand formula "
+            f"declares only {len(STAND_BLOCKS)} ({', '.join(STAND_BLOCKS)}). The extra "
+            f"{blocks - len(STAND_BLOCKS)} block(s) would be silently ignored. Refusing.")
+    if blocks == expect:
+        return blocks
+    missing = ", ".join(STAND_BLOCKS[blocks:expect]) or "(none)"
+    msg = (f"check_theta_shape{tag}: theta holds {blocks} blocks of {nu} = {theta.size} "
+           f"numbers; the parser formula applies {expect} "
+           f"({', '.join(STAND_BLOCKS[:expect])}). The terms {missing} would be ZERO-FILLED.")
+    if allow_short and blocks < expect:
+        print(f"  [theta-shape]{tag} {msg}\n"
+              f"  [theta-shape] allowed explicitly by the caller -- this is a historical "
+              f"checkpoint being read, not a new one being written.")
+        return blocks
+    raise SystemExit(msg + " Refusing to write a checkpoint that every future consumer will "
+                           "quietly complete for it.")
+
+
 def default_registry(theta=None, tgt=None, nu=None):
     """The v2 registry: `STAND` live (given its trained theta), every map verb a named
     refusal pointing at the milestone that trains its atoms. Registration ORDER is the

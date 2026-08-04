@@ -444,6 +444,15 @@ def main() -> int:
     saved = best_ever[1]
     if saved.size == 3 * nu:
         saved = np.concatenate([saved, np.zeros(nu)])
+    # THE SHAPE GUARD, AT THE SAVE (2026-08-04). The pad above is the trainer's own intent and
+    # the check below is the parser's -- two parties, and the artifact only leaves if they
+    # agree. Without it the pad was the ONLY thing standing between a 3-block winner and a
+    # checkpoint every consumer would silently zero-fill, and a pad is a line of code that can
+    # be edited; a refusal from the module that CONSUMES the file cannot be edited by accident
+    # from here. `parser_tests` runs the same function against the theta on disk, so the sweep
+    # and the writer check one contract.
+    from parser import check_theta_shape
+    check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
     np.save(OUTDIR / out_name, saved)
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")

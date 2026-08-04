@@ -32,7 +32,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body                                              # noqa: E402
 from stand_port import MYOBODY                                           # noqa: E402
-from train_stand import joint_ids, seat_in_limits, CTRL_EVERY            # noqa: E402
+from train_stand import (joint_ids, seat_in_limits, CTRL_EVERY,         # noqa: E402
+                         NUDGE)
 from walk_port import (derive_walk_port, muscle_groups, walk_formula,    # noqa: E402
                        walk_reward, score_walk, score_walk_mult, N_FREE, OSC_JOINTS,
                        WalkOscillator, footfall_interval_s, cadence_factor,
@@ -76,8 +77,41 @@ def foot_contact(m, d, mujoco):
             float(sum(d.sensordata[a] for a in ix["l"])))
 
 
+def score_theta(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, seeds=1, frames=0,
+                score_mode="sub", entrained=False, cadence=False):
+    """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
+    worst one. Returns `(score, trace, pics, per_seed_scores)`.
+
+    THE RULE IS ALREADY IN CLAUDE.md AND WAS NOT IN THIS TRAINER: score every genome from N
+    randomized starts and keep the WORST, because one rollout from one initial condition is a
+    coin toss. `train_stand.score_theta` gained this on 2026-08-04 and the walk trainer did not,
+    so the walk was still selecting initial conditions while the stand had stopped.
+
+    `seeds=1` REPRODUCES THE OLD BEHAVIOUR EXACTLY -- seed 0, unperturbed, one rollout -- so
+    this is an option the caller opens, not a silent change to every past number. Same shape,
+    same words, same defaults as the stand trainer's: one landmark for one idea.
+    """
+    if seeds <= 1:
+        s, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
+                               frames=frames, score_mode=score_mode, entrained=entrained,
+                               cadence=cadence, seed=0)
+        return s, tr, pics, [s]
+    runs = [evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
+                     score_mode=score_mode, entrained=entrained, cadence=cadence, seed=i)
+            for i in range(seeds)]
+    scores = [r[0] for r in runs]
+    w = int(np.argmin(scores))
+    if frames:
+        _, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
+                               frames=frames, score_mode=score_mode, entrained=entrained,
+                               cadence=cadence, seed=w)
+    else:
+        tr, pics = runs[w][1], runs[w][2]
+    return float(scores[w]), tr, pics, [float(s) for s in scores]
+
+
 def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
-             score_mode="sub", entrained=False, cadence=False):
+             score_mode="sub", entrained=False, cadence=False, seed=0):
     """One life under a candidate. Returns (score, trace, pics).
 
     `cadence=True` multiplies `walk_port.cadence_factor` into the multiplicative score -- the
@@ -94,6 +128,11 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
+    if seed:
+        # Applied AFTER the seat, and by the trainer's own NUDGE -- one perturbation, one
+        # landmark. f4_walk and stand_survival nudge by the same amount from the same constant.
+        d.qpos[:] = d.qpos + np.random.default_rng(seed).normal(0.0, NUDGE, size=d.qpos.shape)
+        mujoco.mj_forward(m, d)
     tgt = P["OUT pelvis_target_m"]
     omega = P["OUT omega_rad_s"]
     steps = int(secs / m.opt.timestep)
@@ -250,6 +289,7 @@ def main() -> int:
     entrained = "--entrained" in a
     out_name = a[a.index("--out") + 1] if "--out" in a else WALK_THETA.name
     cadence = "--cadence" in a
+    seeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 1
     if score_mode not in ("sub", "mult"):
         raise SystemExit("--score must be sub (the existing rule) or mult. Refusing.")
     if cadence and score_mode != "mult":
@@ -305,6 +345,9 @@ def main() -> int:
           f"  ({100*P['CHK froude_target']/P['CHK froude_transition_lit']:.0f}% -- a walk)")
     print(f"  target {P['OUT target_speed_ms']:.4f} m/s, stride {P['OUT stride_s']:.4f} s, "
           f"duty {P['OUT duty_factor']:.4f}, g {g:.4f}, stand theta FROZEN ({theta_stand.size} numbers)")
+    print(f"  SCORING: WORST of {seeds} randomized start(s)"
+          + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
+             else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
     print(f"  CADENCE TERM: "
           + (f"ON -- footfall interval vs {CADENCE_FLOOR_FRAC:.2f} x step_time = "
              f"{CADENCE_FLOOR_FRAC*P['IN  step_time_s']:.4f} s (stride, not shuffle)"
@@ -320,16 +363,17 @@ def main() -> int:
         if entrained:
             cand[:, N_FREE:] = np.clip(cand[:, N_FREE:], 0.0, None)   # a negative coupling gain
                                                                        # pushes toward IN-phase
-        scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs,
-                                    score_mode=score_mode, entrained=entrained,
-                                    cadence=cadence)[0]
+        scores = np.array([score_theta(m, d, mujoco, theta_stand, c, groups, P, secs,
+                                       seeds=seeds, score_mode=score_mode,
+                                       entrained=entrained, cadence=cadence)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
-        s, tr, pics = evaluate(m, d, mujoco, theta_stand, cand[order[0]], groups, P, secs,
-                               frames=6, score_mode=score_mode, entrained=entrained,
-                               cadence=cadence)
+        s, tr, pics, per_seed = score_theta(m, d, mujoco, theta_stand, cand[order[0]], groups,
+                                            P, secs, seeds=seeds, frames=6,
+                                            score_mode=score_mode, entrained=entrained,
+                                            cadence=cadence)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]

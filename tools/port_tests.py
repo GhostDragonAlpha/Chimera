@@ -224,8 +224,9 @@ def t_spindle(mujoco):
 
 def main() -> int:
     import mujoco
-    import port_tests_more  # noqa: F401 -- registers ports 5-12 into the shared registry
-    expect(12)              # a partial suite is a REFUSAL, not a smaller number
+    import port_tests_more    # noqa: F401 -- registers ports 5-12 into the shared registry
+    import port_tests_matter  # noqa: F401 -- registers the non-human passive ports, 13 onward
+    expect(17)                # a partial suite is a REFUSAL, not a smaller number
     a = sys.argv
     only = a[a.index("--port") + 1] if "--port" in a else None
     names = [only] if only else list(TESTS)

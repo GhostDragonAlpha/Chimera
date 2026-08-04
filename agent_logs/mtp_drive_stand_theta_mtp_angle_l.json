@@ -1,0 +1,62 @@
+{
+ "theta": "stand_theta.npy",
+ "joint": "mtp_angle_l",
+ "secs": 5.0,
+ "range_deg": [
+  -30.000012857270395,
+  30.000012857270395
+ ],
+ "crossing_muscles": [
+  "edl_l",
+  "ehl_l",
+  "fdl_l",
+  "fhl_l"
+ ],
+ "baseline_peak": 1.0968996880458612,
+ "baseline_over_pct": 97.6,
+ "torque_actuator_mean": -1.1296533702660208,
+ "torque_passive_mean": 0.0503617651250022,
+ "torque_constraint_mean": 1.0298374065574907,
+ "activation_contribution": {
+  "a0": 0.20232514394622297,
+  "kh": 0.02667290260523472,
+  "kp": 0.07640578783852074,
+  "kr": 0.023921423943441853
+ },
+ "ablation": {
+  "a0": {
+   "peak": 1.0318648695587347,
+   "over": 31.70731707317073,
+   "held": 1.62,
+   "d_over": -65.89268292682927
+  },
+  "kh": {
+   "peak": 1.0927320012695618,
+   "over": 93.33333333333333,
+   "held": 2.08,
+   "d_over": -4.266666666666666
+  },
+  "kp": {
+   "peak": 1.0681635444737874,
+   "over": 82.8125,
+   "held": 1.26,
+   "d_over": -14.787499999999994
+  },
+  "kr": {
+   "peak": 1.098983159613673,
+   "over": 74.35897435897436,
+   "held": 2.32,
+   "d_over": -23.24102564102563
+  }
+ },
+ "drops": {
+  "a0": 65.89268292682927,
+  "kh": 4.266666666666666,
+  "kp": 14.787499999999994,
+  "kr": 23.24102564102563
+ },
+ "dominant_by_ablation": "a0",
+ "dominant_by_ledger": "a0",
+ "messengers_agree": true,
+ "falsifier_fires": false
+}

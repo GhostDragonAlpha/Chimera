@@ -63,6 +63,37 @@ def main() -> int:
     blocks = theta.size // nu
     ok = True
 
+    # -- FALSIFIER 0: THE SHAPE GUARD, wired into the sweep -----------------------------------
+    # RULE 0 for it, stated before it was built (2026-08-04):
+    #
+    #   STATEMENT   Falsifier 1 below was silently un-runnable from the moment the stand formula
+    #               gained its fourth block, because it inferred `nu` from the checkpoint's
+    #               length. Reading `nu` from the model fixes THIS file; nothing stops the same
+    #               drift recurring at the WRITER, where a short theta becomes a checkpoint every
+    #               consumer quietly zero-fills. A shape contract that only the reader enforces
+    #               is a contract with one party.
+    #   PREDICTION  `parser.check_theta_shape` refuses a 3-block theta against the parser's
+    #               declared 4, and accepts the real on-disk checkpoint unchanged.
+    #   FALSIFIER   If a 3-block theta passes the guard, the guard is decorative and this test
+    #               is the one that says so.
+    #
+    # The guard is exercised on a SYNTHETIC 3-block theta, never by writing a bad file: an
+    # instrument that has to create the defect on disk to detect it is one crash away from
+    # leaving it there.
+    _short = np.zeros(3 * nu)
+    try:
+        P.check_theta_shape(_short, nu, where="parser_tests synthetic 3-block")
+        _tripped, _why = False, "it PASSED -- the guard is decorative"
+    except SystemExit as e:
+        _tripped, _why = True, str(e).split(".")[0]
+    ok &= check("falsifier 0: the shape guard trips on a 3-block theta", _tripped, _why)
+    try:
+        _b = P.check_theta_shape(theta, nu, where="parser_tests on-disk stand_theta")
+        _live, _lwhy = True, f"{_b} blocks x {nu} = {theta.size}, the declared contract"
+    except SystemExit as e:
+        _live, _lwhy = False, str(e)
+    ok &= check("falsifier 0b: the guard accepts the real checkpoint", _live, _lwhy)
+
     # -- FALSIFIER 1: bit-identity with the formula the parser CLAIMS to carry ---------------
     # Reconstructed from tools/parser.py's `stand_formula_fn`, which is what the claim is ABOUT.
     # The roll term is included when the theta carries one, because a reference that omits a
