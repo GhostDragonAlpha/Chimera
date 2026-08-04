@@ -638,7 +638,59 @@ point worse than the mean of the whole population. That is the wall, printed.
 `scores[0]` and is read rather than re-run. `sd` still comes from the elite: the spread is a
 different quantity from the centre, and freezing it too would stop the search refining. The
 guard is behind `--elite-guard`, **off by default**, so every arm already run remains a valid
-control; it becomes the default when it is proven, not when it is written.
+control; it becomes the default when it is proven, not when it is written. Verified off: a fresh
+unguarded run reproduces `train_stand_hinge.log`'s turns 0–1 **to every digit**.
+
+### And the guard alone was not enough — there is a SECOND wall, and it is four decades wide
+
+Fourteen turns of the guarded run: `HELD` 14/14, `best` pinned at the incumbent's −3.864.
+The centre no longer collapses **and the search still finds nothing**, which separates two
+hypotheses that had been one. `tools/search_landscape.py` measures which:
+
+| scale × the trainer's own sd | best | median | **% beating the incumbent** | ‖Δθ‖ |
+|---:|---:|---:|---:|---:|
+| 0 *(control)* | −3.8641 | −3.8641 | 0.0% | 0.000 |
+| **0.0001** | **−3.6905** | −3.8391 | **70.0%** | 0.001 |
+| 0.0003 | −3.6997 | −3.9427 | 10.0% | 0.003 |
+| 0.001 | −3.9042 | −4.0485 | 0.0% | 0.009 |
+| 0.01 | −3.9844 | −4.2277 | 0.0% | 0.089 |
+| 0.1 | −4.2563 | −4.4255 | 0.0% | 0.893 |
+| **1 ← the trainer's** | −4.2059 | −4.6003 | **0.0%** | 8.971 |
+
+The scale-0 control returns −3.8641, the incumbent's score to the digit, so the instrument is
+sound. And then:
+
+> **THE INCUMBENT'S BASIN IS ABOUT 10⁴× NARROWER THAN THE STEP THE TRAINER TAKES.** At its own
+> scale the population contains nothing better than its start — **0 of 10** — which is why 2,160
+> evaluations found nothing and why no update rule could have helped. **Improvements are easy
+> where the step fits:** 70% of samples beat the incumbent at 1e-4×, best −3.6905 against
+> −3.8641 *in one generation*.
+
+**THE FIX IS DERIVED, NOT CHOSEN — rule 1 applied to the search itself.** `--derive-step`
+measures the basin around its own warm start before training and sets `sd` from it. Nothing is
+picked: the **ladder** is powers of ten, a measurement grid stated in the open; the **criterion**
+is the search's *own* elite fraction (`elite/pop` = 4/24 = 0.17) — a step is useful exactly when
+at least the fraction of samples the search will KEEP are improvements, so no free number appears
+anywhere; and when no rung meets it the smallest is used **with a refusal printed**, never an
+extrapolation off the end of a measured curve. It refuses without `--init`, because a cold search
+has no incumbent to measure around.
+
+**Two independent instruments agree** (a dyad): the standalone landscape and the in-trainer
+derivation both read 0% at 1e-3 and above, ~70% at 1e-4 and 100% at 1e-5, and both land on 1e-4.
+
+```
+  DERIVING THE STEP ... (criterion: >= the search's own elite fraction 4/24 = 0.17)
+     x1            0% beat the incumbent
+     x0.1          0% beat the incumbent
+     x0.01         0% beat the incumbent
+     x0.001        0% beat the incumbent
+     x0.0001      67% beat the incumbent   <- CHOSEN
+     x1e-05      100% beat the incumbent
+```
+
+**First effect:** with the guard *and* the derived step, turn 0 opens at **−3.757** — better than
+the incumbent — holding 7.20 s against 6.56 s. The same budget from the same init previously
+returned a bit-identical file.
 
 ---
 

@@ -494,10 +494,25 @@ def t_terrain_footprint(mujoco):
 
     p_e = float(human["mass_kg"]) * 9.80665 / float(human["foot_area_m2"])
     d_earth = depth(c_m, 9.80665, p_e)
-    decorative = float(ground["sinkage_m"])
+
+    # THE CONVICTION BECAME A REGRESSION GUARD, and that transition is the point of writing a port
+    # rather than a bug report. This test originally found theGround publishing sinkage 8.674e-19 m
+    # and traced it to a typed COHESION_PA = 2000. The membrane now READS its cohesion from the
+    # library, so the defect is gone -- and a witness that keeps reporting a repaired defect as
+    # live is the stale-copy failure this project convicted four times in one day.
+    #
+    #     SO THE PORT NOW CHECKS THE FIX INSTEAD OF THE BUG. Re-type the cohesion and the first
+    #     check fires; break the chain and the second one does.
+    c_pub = ground.get("bearing_cohesion_Pa")
+    c_matches = c_pub is not None and abs(float(c_pub) - c_m) < 1e-6
+    # AND THE TWO DERIVATIONS ARE COMPARED. theHuman inverts its parent's published coefficients;
+    # this port derives the same depth from the library and Terzaghi directly. They share no code.
+    h_depth = human.get("footprint_depth_m")
+    agrees = h_depth is not None and abs(float(h_depth) - d_mean) <= 1e-4 * max(d_mean, 1e-9)
+    probe_below = not bool(ground.get("reference_load_dents_it", True))
 
     return dict(pass_=(err < 5e-3 and rebound < 1e-3 * pred and d_mean > 0.0
-                       and 0.1 < d_mean / pred < 10.0),
+                       and 0.1 < d_mean / pred < 10.0 and c_matches and agrees),
                 pred=pred, got=got,
                 detail=(f"theHuman publishes {float(human['weight_N']):.1f} N on "
                         f"{float(human['foot_area_m2'])*1e4:.1f} cm^2 = {p/1e3:.2f} kPa; "
@@ -521,12 +536,22 @@ def t_terrain_footprint(mujoco):
                         f"at all. A gap inside the instrument's grain is not a small gap. The "
                         f"ELASTIC branch carries no cohesion and IS resolvable, and that is the "
                         f"half this port validates.\n"
-                        f"    CONVICTION: theGround publishes sinkage {decorative:.3e} m -- "
-                        f"{pred/max(decorative,1e-300):.1e}x smaller than its own soil's elastic "
-                        f"settlement. Traced to a typed COHESION_PA = 2000 Pa where the world's "
-                        f"library publishes {c_m:.0f} +- {c_sd:.0f} Pa. The soil model is "
-                        f"decorative, and one typed constant four times the researched mean is "
-                        f"why.\n"
+                        f"    REGRESSION GUARD (this test's own former conviction, now the fix it "
+                        f"checks): theGround published sinkage 8.674e-19 m -- 4.4e15x smaller "
+                        f"than its own soil's elastic settlement -- from a typed COHESION_PA = "
+                        f"2000 Pa. It now READS {c_pub} Pa from the library "
+                        f"({'MATCHES' if c_matches else 'MISMATCH -- THE DEFECT IS BACK'}), and "
+                        f"theHuman derives its own print by inverting the two coefficients its "
+                        f"parent publishes: {1000*float(h_depth or 0):.4f} mm against this port's "
+                        f"independent {1000*d_mean:.4f} mm "
+                        f"({'agree' if agrees else 'DISAGREE -- two derivations of one number'}). "
+                        f"They share no code.\n"
+                        f"    AND THE REFERENCE PLATE STILL READS ~0, CORRECTLY: at "
+                        f"{float(ground['reference_load_Pa'])/1e3:.1f} kPa it is "
+                        f"{'BELOW' if probe_below else 'above'} the {c_m*Nc/1e3:.1f} kPa this soil "
+                        f"holds at zero depth, so it does not dent it -- a fact about the PLATE. "
+                        f"The person clears the same threshold and sinks. A zero here no longer "
+                        f"means the soil is decorative, and the membrane now says which it is.\n"
                         f"    PREDICTS WHAT IT WAS NOT FITTED TO: the same person on the same "
                         f"soil at EARTH gravity leaves {d_earth*1000:.1f} mm -- "
                         f"{d_earth/max(d_mean,1e-12):.1f}x deeper for only {9.80665/g:.2f}x the "

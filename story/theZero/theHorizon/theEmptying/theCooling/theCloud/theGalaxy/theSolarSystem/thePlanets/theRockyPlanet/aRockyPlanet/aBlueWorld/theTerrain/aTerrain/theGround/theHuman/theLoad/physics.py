@@ -495,8 +495,19 @@ def derive(parent, free):
 
     # ── 6. WHAT THE GROUND SAYS ─────────────────────────────────────────────────────────────────
     p_foot = M_tot * g / A_foot
-    sink_cargo = q_bear * A_foot / g - M_suited                          # ultimate: it punches in
-    settle_cargo = (q_bear / BEARING_SAFETY_FACTOR) * A_foot / g - M_suited   # allowable: it prints
+    # A CARGO CAPACITY IS A MASS AND A MASS CANNOT BE NEGATIVE, and the day theGround stopped
+    # typing its cohesion this line started publishing -40.90 kg. The arithmetic was never wrong:
+    # it is a HEADROOM, and a headroom is signed. Under the true (weaker) soil the suited body
+    # alone already exceeds the allowable bearing pressure, so the cargo it may add before the
+    # ground prints is ZERO and the interesting fact is by how much it is already over.
+    #
+    #     THE MISFOLD WAS THE NAME, NOT THE NUMBER -- a signed headroom docking at an interface
+    #     whose unit forbids a negative. `story/folding.py audit` caught it the moment the ground
+    #     became honest, which is what that audit is for.
+    sink_head = q_bear * A_foot / g - M_suited                          # ultimate: it punches in
+    settle_head = (q_bear / BEARING_SAFETY_FACTOR) * A_foot / g - M_suited   # allowable: it prints
+    sink_cargo, settle_cargo = max(0.0, sink_head), max(0.0, settle_head)
+    sink_over_kg, settle_over_kg = max(0.0, -sink_head), max(0.0, -settle_head)
     z_step = sinkage_per_step(eta, v, g, cadence)
     z_sand = sinkage_per_step(TERRAIN["loose sand"], v, g, cadence)
 
@@ -703,6 +714,11 @@ def derive(parent, free):
         "ground_margin_ratio": q_bear / max(p_foot, 1e-9),
         "sink_cargo_kg": sink_cargo,
         "settle_cargo_kg": settle_cargo,
+        # AND THE OTHER SIDE OF ZERO, said as its own fact rather than as a negative mass.
+        "settle_exceeded_unloaded": settle_over_kg > 0.0,
+        "settle_over_by_kg": settle_over_kg,
+        "sink_exceeded_unloaded": sink_over_kg > 0.0,
+        "sink_over_by_kg": sink_over_kg,
         "ground_bites": bool(settle_cargo <= sus_cargo),
         "sink_per_step_m": z_step,
         "sink_loose_sand_m": z_sand,

@@ -32,14 +32,21 @@
 | `d_median_mm` | 0.35 |
 | `bulk_density` | 1537 |
 | `porosity` | 0.42 |
-| `bearing_capacity_Pa` | 1.104e+05 |
-| `bearing_capacity_kPa` | 110.4 |
+| `bearing_capacity_Pa` | 4.117e+04 |
+| `bearing_capacity_kPa` | 41.17 |
+| `bearing_zero_depth_Pa` | 2.306e+04 |
+| `bearing_zero_depth_kPa` | 23.06 |
+| `bearing_depth_coeff_Pa_per_m` | 3.621e+05 |
+| `bearing_cohesion_Pa` | 500 |
+| `bearing_cohesion_source` | Mitchell et al. 1972 (3rd Lunar Sci. Conf.) via Chimera/docs/matter/matter_library.json sand.cohesion_kpa -- READ, never typed. The 2000 Pa that used to sit here was 4x the researched mean and made every footprint exactly zero. |
 | `reference_load_Pa` | 1.935e+04 |
 | `reference_load_kPa` | 19.35 |
 | `reference_load_kg` | 82.04 |
 | `reference_plate_m2` | 0.03 |
 | `sinkage_m` | 8.674e-19 |
 | `sinkage_mm` | 8.674e-16 |
+| `reference_load_dents_it` | False |
+| `reference_load_vs_threshold` | 0.8391 |
 | `carries_reference_load` | True |
 | `who_answers_holds_a_person` | theHuman.ground_holds_it |
 | `g` | 7.076 |

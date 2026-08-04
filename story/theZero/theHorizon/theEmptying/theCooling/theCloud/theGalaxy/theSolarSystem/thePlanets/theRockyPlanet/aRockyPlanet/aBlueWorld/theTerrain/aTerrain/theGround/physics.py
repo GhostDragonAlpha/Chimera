@@ -55,7 +55,55 @@ REPOSE_DRY_DEG = 40.03    # GROWN, not looked up: core/trainables/granular.py, +
 # the friction of a denser packing. Using the repose angle here gave 413 kPa -- three times what a
 # real soil carries -- because Terzaghi's factors climb steeply with the angle.
 PHI_BEARING_DEG = 35.0    # compacted sandy soil
-COHESION_PA = 2000.0      # damp soil holds itself together a little; dry sand is ~0
+
+
+def _library_cohesion_pa():
+    """COHESION IS READ, NOT TYPED, and this is the correction to the defect that made every
+    footprint in this world exactly zero.
+
+    IT USED TO SAY `COHESION_PA = 2000.0  # damp soil holds itself together a little`. That single
+    constant sets the bearing capacity AT ZERO DEPTH -- c * Nc = 92 kPa, which is 3.8x the pressure
+    under a person -- so `sinkage()` balanced before it began, its bisection collapsed onto its own
+    floor, and the membrane published `sinkage_m = 8.674e-19`: 0.87 attometres, a thousand times
+    smaller than a proton. Nothing in this world could dent the ground, and nothing said so.
+
+        THE WORLD'S OWN LIBRARY PUBLISHES 0.5 +- 0.4 kPa for this regolith (Mitchell et al. 1972,
+        3rd Lunar Sci. Conf., via Chimera/docs/matter/matter_library.json). The typed value was
+        FOUR TIMES the researched mean and twice the top of the published band.
+
+    Found by `tools/port_tests_matter.py::terrain_footprint`, which derived the print depth from
+    Terzaghi and from Terzaghi's own subgrade modulus -- two literatures, 3.12 mm and 3.84 mm --
+    and then read what this membrane publishes. Same species as the g = 7.076 defect: a wrong
+    number under a formula that still looks alive.
+
+    THE COMPACTION ARGUMENT IS REFUSED RATHER THAN APPLIED. This membrane already argues, correctly,
+    that a footing's FRICTION angle is not a heap's repose angle because a footing is compacted. The
+    same argument would raise cohesion above the loose-soil value -- but cohesion's density
+    dependence is not published in the library, and a correction with no source is the thing that
+    was just removed. The loose value is used and the missing measurement is named.
+
+    READ THROUGH, NEVER COPIED: change the library and this world's footprints change with it,
+    which is the slider test. A copy here would be a stale copy, which this studio has convicted
+    four times in one day.
+    """
+    import json
+    from pathlib import Path
+    lib = Path(__file__).resolve()
+    while lib.name != "story" and lib.parent != lib:
+        lib = lib.parent
+    p = lib.parent / "Chimera" / "docs" / "matter" / "matter_library.json"
+    if not p.exists():
+        raise RuntimeError(
+            f"the materials library is missing at {p}. Cohesion is READ from it and there is no "
+            f"fallback: a typed cohesion is exactly the defect this function replaced.")
+    ent = json.loads(p.read_text(encoding="utf8"))["materials"]["sand"]["physical"]["cohesion_kpa"]
+    if ent.get("provenance") != "researched":
+        raise RuntimeError(f"library sand.cohesion_kpa is provenance {ent.get('provenance')!r}, "
+                           f"not 'researched' -- a design value may not be cited as a measurement.")
+    return float(ent["mean"]) * 1e3
+
+
+COHESION_PA = _library_cohesion_pa()   # 500 Pa: Mitchell et al. 1972, read through the library
 
 # ── THE REFERENCE PROBE, AND IT IS NOT THIS STORY'S PERSON ──────────────────────────────────────
 # These two used to be called FOOT_AREA_M2 and BODY_MASS_KG, and the membrane used them to publish
@@ -137,10 +185,40 @@ def bearing_capacity(g, depth_m=0.05, phi_deg=PHI_BEARING_DEG, c=COHESION_PA):
     N_c and N_q come from the friction angle alone. It is the same PROPERTY as the repose angle --
     grains resisting grains -- but not the same NUMBER: a heap is loose and a footing is compacted,
     so the bearing angle is the lower one."""
+    nc, nq = bearing_factors(phi_deg)
+    return c * nc + bulk_density() * g * depth_m * nq
+
+
+def bearing_factors(phi_deg=PHI_BEARING_DEG):
+    """Terzaghi's Nc and Nq from the friction angle alone. Split out so the two HALVES of the
+    capacity can be published separately -- see `bearing_split` for why that matters."""
     phi = radians(phi_deg)
     nq = exp(pi * tan(phi)) * tan(radians(45.0) + phi / 2.0) ** 2
-    nc = (nq - 1.0) / tan(phi)
-    return c * nc + bulk_density() * g * depth_m * nq
+    return (nq - 1.0) / tan(phi), nq
+
+
+def bearing_split(g):
+    """THE TWO COEFFICIENTS A CHILD NEEDS TO DERIVE ITS OWN FOOTPRINT, and publishing them is the
+    difference between a parent that carries and a parent that invents.
+
+        q(D) = c*Nc  +  (rho*g*Nq) * D
+               ^^^^^     ^^^^^^^^^^
+               zero-depth capacity   how fast capacity grows with depth
+
+    Below `c*Nc` NOTHING dents this soil at any depth; above it, a body sinks until the second term
+    makes up the difference: D = (p - c*Nc) / (rho*g*Nq). That inversion needs a PRESSURE, and a
+    pressure needs a body -- which this membrane does not have and must never type. So it publishes
+    the soil's two numbers and lets whoever has a foot do the arithmetic. Being what every child can
+    see is what a parent is FOR.
+
+    AND THE FIRST TERM DOES NOT SCALE WITH GRAVITY. `c*Nc` is cohesion, which does not care about g,
+    while both the applied pressure (m*g/A) and the depth term (rho*g*Nq) do. So a low-gravity world
+    sits NEARER the threshold at which prints stop existing, and a body that leaves 20.9 mm on Earth
+    leaves 3.1 mm here -- 6.7x shallower for 1.39x less gravity. That is a prediction of this split,
+    not a tuning of it.
+    """
+    nc, nq = bearing_factors()
+    return COHESION_PA * nc, bulk_density() * g * nq
 
 
 def sinkage(g, mass_kg=PROBE_MASS_KG, foot_m2=PROBE_AREA_M2):
@@ -202,6 +280,7 @@ def derive(parent, free):
     h_steep = soil_depth(slope_steep)
     h_flat = soil_depth(2.0)
     q = bearing_capacity(g)
+    q0, qd = bearing_split(g)
     sink = sinkage(g)
     press = PROBE_MASS_KG * g / PROBE_AREA_M2   # the REFERENCE load, not a person
 
@@ -278,6 +357,17 @@ def derive(parent, free):
 
         "bearing_capacity_Pa": q,
         "bearing_capacity_kPa": q / 1e3,
+        # THE LAW, NOT JUST ITS VALUE AT ONE DEPTH. A child with a foot inverts these two for its
+        # own print: D = (p - bearing_zero_depth_Pa) / bearing_depth_coeff_Pa_per_m, and below the
+        # first number nothing dents this soil at any depth. theHuman does exactly that.
+        "bearing_zero_depth_Pa": q0,
+        "bearing_zero_depth_kPa": q0 / 1e3,
+        "bearing_depth_coeff_Pa_per_m": qd,
+        "bearing_cohesion_Pa": COHESION_PA,
+        "bearing_cohesion_source": ("Mitchell et al. 1972 (3rd Lunar Sci. Conf.) via "
+                                    "Chimera/docs/matter/matter_library.json sand.cohesion_kpa -- "
+                                    "READ, never typed. The 2000 Pa that used to sit here was 4x "
+                                    "the researched mean and made every footprint exactly zero."),
         # WHAT THIS MEMBRANE IS ENTITLED TO SAY: the load above which this soil fails. That is a
         # fact about the soil and it is true whether or not anyone ever stands on it.
         # `fails_above_kPa` RETIRED: a second name for the number directly above it -- one quantity, one name.
@@ -289,6 +379,14 @@ def derive(parent, free):
         "reference_plate_m2": PROBE_AREA_M2,
         "sinkage_m": sink,
         "sinkage_mm": sink * 1e3,
+        # AND WHY IT IS ZERO, SAID OUT LOUD -- because a zero here used to mean a bug and must
+        # never again be mistaken for one. The reference plate carries 19.4 kPa, which is BELOW the
+        # 23.1 kPa this soil holds at zero depth, so it does not dent it. That is a fact about the
+        # PLATE, not about the soil: theHuman's foot carries 24.2 kPa, clears the same threshold,
+        # and sinks 3.1 mm. A reader who sees `sinkage_mm ~ 0` should be able to tell instantly
+        # which of the two situations they are in.
+        "reference_load_dents_it": press > q0,
+        "reference_load_vs_threshold": press / q0,
         "carries_reference_load": q > press,
         # WHETHER IT HOLDS *THE PERSON* IS NOT THIS MEMBRANE'S QUESTION. theHuman has the body --
         # its own derived mass, its own foot area, on this same bearing capacity -- and publishes

@@ -932,6 +932,31 @@ def derive(parent, free):
     foot_press = weight / foot_area              # standing on one foot
     ground_holds = float(parent["bearing_capacity_Pa"])
 
+    # ── DOES IT LEAVE A MARK? ────────────────────────────────────────────────────────────────────
+    # theGround publishes the SOIL's two Terzaghi coefficients and refuses to invert them, because
+    # inverting needs a pressure and a pressure needs a body -- which theGround does not have and
+    # must never type. This membrane has the body, so the arithmetic is its own:
+    #
+    #     q(D) = q0 + qd*D        ->        D = (foot_pressure - q0) / qd,  zero if p <= q0
+    #
+    # Below q0 = c*Nc nothing dents this soil at any depth. Above it the foot sinks until the
+    # depth term makes up the difference. The print is PLASTIC -- it does not come back.
+    #
+    # THIS IS THE OTHER HALF OF A DEFECT FOUND BY tools/port_tests_matter.py::terrain_footprint:
+    # theGround typed its cohesion at 4x the researched mean, which put q0 at 92 kPa -- 3.8x the
+    # pressure under this body -- so the world published a sinkage of 8.674e-19 m and nothing could
+    # ever leave a footprint. The cohesion is now read from the library; this is the consumer.
+    q0 = float(parent["bearing_zero_depth_Pa"])
+    qd = float(parent["bearing_depth_coeff_Pa_per_m"])
+    print_depth = max(0.0, (foot_press - q0) / qd)
+    # THE PRINT ON EARTH, AS A CONTROL, and it is the number that proves the law was not fitted:
+    # q0 is COHESION and does not scale with gravity, while both the applied pressure and the depth
+    # term do. So the ratio is nothing like the gravity ratio -- 6.7x deeper for 1.39x the g -- and
+    # a low-gravity world sits nearer the threshold where prints stop existing altogether.
+    press_earth = m * 9.80665 / foot_area
+    qd_earth = qd * 9.80665 / g
+    print_earth = max(0.0, (press_earth - q0) / qd_earth)
+
     femur_stress = weight / FEMUR_AREA_M2        # standing, both legs share it -> one femur, half
     femur_stress_run = 3.0 * femur_stress        # running peaks near 3x body weight per leg
 
@@ -1161,6 +1186,11 @@ def derive(parent, free):
         "ground_bearing_kPa": ground_holds / 1e3,
         "ground_holds_it": ground_holds > foot_press,
         "ground_margin": ground_holds / foot_press,
+        "footprint_depth_m": print_depth,
+        "footprint_depth_mm": print_depth * 1e3,
+        "leaves_a_print": print_depth > 0.0,
+        "footprint_depth_earth_mm": print_earth * 1e3,
+        "footprint_deeper_on_earth_by": print_earth / print_depth if print_depth > 0 else 0.0,
         "femur_stress_MPa": femur_stress / 1e6,
         "femur_stress_running_MPa": femur_stress_run / 1e6,
         "bone_safety_factor": BONE_STRENGTH_PA / femur_stress_run,

@@ -150,9 +150,14 @@
 | `weight_N` | 668.7 |
 | `foot_area_m2` | 0.02764 |
 | `foot_pressure_kPa` | 24.19 |
-| `ground_bearing_kPa` | 110.4 |
+| `ground_bearing_kPa` | 41.17 |
 | `ground_holds_it` | True |
-| `ground_margin` | 4.562 |
+| `ground_margin` | 1.702 |
+| `footprint_depth_m` | 0.003122 |
+| `footprint_depth_mm` | 3.122 |
+| `leaves_a_print` | True |
+| `footprint_depth_earth_mm` | 20.85 |
+| `footprint_deeper_on_earth_by` | 6.68 |
 | `femur_stress_MPa` | 2.026 |
 | `femur_stress_running_MPa` | 6.079 |
 | `bone_safety_factor` | 24.67 |

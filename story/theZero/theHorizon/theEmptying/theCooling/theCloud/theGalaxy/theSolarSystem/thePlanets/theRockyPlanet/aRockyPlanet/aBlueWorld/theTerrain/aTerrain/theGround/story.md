@@ -78,9 +78,28 @@ between grains plus whatever sticks them together.
 
 | | |
 |---|---|
-| the ground carries | **110 kPa** |
-| one foot, standing | **19 kPa** |
-| sinkage | **under 1 mm** |
+| the ground carries | **41 kPa** at 5 cm down |
+| …and at the surface | **23 kPa** — below this, nothing dents it at all |
+| the standard bearing plate | **19 kPa** — under the threshold, so it leaves no mark |
+| a person's foot | **24 kPa** — over it, and sinks **3.1 mm** |
+
+**Cohesion is read, not typed, and for a long time it was typed.** This table used to say
+**110 kPa** and *"sinkage under 1 mm"*, and the second number was not under 1 mm — it was
+**0.00000000000000000087 mm**, a thousand times smaller than a proton. Nothing in this world
+could leave a footprint, and nothing said so. One constant did it: a hand-written
+`COHESION_PA = 2000` under the comment *"damp soil holds itself together a little"*, where this
+world's own materials library publishes **0.5 ± 0.4 kPa** for this regolith (Mitchell et al. 1972).
+Four times the researched mean, and it set the surface capacity to 92 kPa — nearly four times the
+pressure under a person, so the equation balanced before it began.
+
+It is read through the library now. **A person leaves a 3.1 mm print, and a jump punches in
+however softly it is landed** — which is what walking on dry sand actually feels like.
+
+**And the print is shallower here than it would be on Earth by more than gravity explains.** The
+same body on the same soil leaves **20.9 mm** at Earth's gravity and **3.1 mm** here — 6.7× for a
+gravity ratio of 1.39×. Cohesion does not scale with *g* while the load does, so a low-gravity
+world sits nearer the threshold at which prints stop existing. Nothing was fitted to produce that;
+it falls out of which term carries the *g*.
 
 **The friction angle is not the repose angle**, and that distinction cost a fix. Loose material
 poured into a heap settles at **40.03°** — this studio's own number, *grown* from a stochastic

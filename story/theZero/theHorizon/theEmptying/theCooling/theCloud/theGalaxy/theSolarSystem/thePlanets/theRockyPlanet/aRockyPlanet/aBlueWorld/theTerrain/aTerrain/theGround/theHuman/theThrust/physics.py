@@ -412,8 +412,21 @@ def derive(parent, free):
             else:
                 hi_g = mid
         give_needed = hi_g
+        give_suffices = True
     else:
-        give_needed = float("inf")
+        # NO AMOUNT OF GIVE IS ENOUGH, and `inf` was the honest answer to the wrong question.
+        # A FRACTION LIVES IN 0..1; publishing infinity under a `_frac` name is a quantity docking
+        # at an interface whose unit forbids its value -- the same misfold `story/folding.py audit`
+        # caught in theLoad the day theGround stopped typing its cohesion. The soft-landing limit
+        # is give = 1.0, so that is what the fraction says, and the SHORTFALL is published beside
+        # it as a dimensionless ratio, which has no such bound.
+        #
+        # It is not an error state. On this world's real regolith -- 41.2 kPa, not the 110.4 kPa a
+        # typed cohesion used to claim -- a landing from this body's own jump punches in HOWEVER
+        # softly it is taken. That is a fact about the soil, and now it is one the numbers can say.
+        give_needed = 1.0
+        give_suffices = False
+    over_ratio = landing_peak_pressure(1.0) / max(bearing, 1e-9)
 
     # WHEN THE HEEL LEAVES, AND WHEN IT COMES BACK DOWN. Derived, not chosen: the ankle owns the
     # last s_ankle of the push-off's distance and the first s_ankle of the landing's, and the
@@ -538,6 +551,8 @@ def derive(parent, free):
         "landing_margin": bearing / p_landing,
         "landing_ground_holds": p_landing <= bearing,
         "landing_give_required_frac": give_needed,
+        "landing_give_suffices": give_suffices,
+        "landing_softest_overpressure_ratio": over_ratio,
         "landing_travel_required_m": s_ankle + give_needed * s_knee,
         "stiff_toe_landing_pressure_kPa": p_stiff / 1e3,
         "stiff_toe_landing_overload_ratio": p_stiff / bearing,
