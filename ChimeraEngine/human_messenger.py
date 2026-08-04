@@ -167,6 +167,11 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theNavigate": "a blue sphere surrounded by two pale concentric orbit rings "
+                   "against stars, with a bright golden elliptical arc leaving "
+                   "the inner ring and rising to touch the outer one, a glowing "
+                   "craft at the arc's top and a small red target where the arc "
+                   "meets the outer ring -- a transfer orbit reaching its target",
     "theScan": "a thin white beam of light striking a grey sphere on the left "
                "and fanning out into colored bands spreading to the right, "
                "red through violet, some bands bright and some dim -- light "
