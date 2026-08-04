@@ -2364,15 +2364,18 @@ def _verbs_buffers(spec: dict, term: str):
     stone_new = _dots(NEW, 4.0, 60, (0.75, 0.72, 0.66), rng)
     stone_new[:, ALPHA] = 0.90
 
-    # the arc of action: a curve from the old place to the new --
-    # a faint thread in begin, burning in end
+    # the arc of action: a curve from the old place to the new.
+    # it-10: the proxy's STABLE reading across nine runs is "two shapes, one
+    # white one blue" -- the blue arc splits the scene into two objects and the
+    # verb (one thing travelling) dies in the parse. So the arc wears the
+    # stone's own cream, one object-family: something moved, here is its path.
     n_arc = 220
     t = np.linspace(0.0, 1.0, n_arc)
     arc = np.zeros((n_arc, NCOLS), dtype=np.float32)
     arc[:, PX] = OLD[0] + (NEW[0] - OLD[0]) * t
     arc[:, PZ] = OLD[2] + (NEW[2] - OLD[2]) * t + 6.0 * np.sin(t * np.pi)
     arc[:, TYPE] = 3.0; arc[:, SIZE] = 1.5
-    arc[:, CR], arc[:, CG], arc[:, CB] = 0.55, 0.90, 1.00
+    arc[:, CR], arc[:, CG], arc[:, CB] = 0.82, 0.80, 0.74
     arc_dim = arc.copy(); arc_dim[:, ALPHA] = 0.18
     arc_lit = arc.copy(); arc_lit[:, ALPHA] = 0.90
 
