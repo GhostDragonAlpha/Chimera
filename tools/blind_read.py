@@ -58,6 +58,14 @@ EXPECTED = {
                        "and collapsing",
     "stand_in_world": "a humanoid figure standing upright on green terrain with a rock nearby, "
                       "then folding forward and collapsing",
+    # CROP membrane -- the per-object frames of output/session_legibility/
+    "stone_close":   "a grey rock sitting on green ground, seen up close",
+    "stone_session": "a figure near a grey rock on green ground",
+    "stone_carried": "a figure carrying a grey rock",
+    "pile_close":    "a pile of sand or gravel on green ground, seen up close",
+    "pile_session":  "a figure near a pile of sand or gravel on green ground",
+    "tuft_close":    "blades of grass growing on green ground, seen up close",
+    "tuft_session":  "a figure standing in blades of grass on green ground",
 }
 
 # Falsifier clause 2: the outgoing prompts must not leak the answer. These words appearing in a
@@ -81,11 +89,17 @@ def main() -> int:
     out = OUT_ROOT / time.strftime("%Y%m%d_%H%M%S")
     out.mkdir(parents=True)
 
-    items = [("sheet_master", "see", [str(SESSION / "sheet_master.jpg")])]
-    for sheet in sorted(SESSION.glob("sheet_beat*.jpg")):
-        items.append((sheet.stem.replace("sheet_", ""), "see", [str(sheet)]))
-    items.append(("stand_on_camera", "watch", _frames(STAND_ON_CAMERA)))
-    items.append(("stand_in_world", "watch", _frames(STAND_IN_WORLD)))
+    if "--crops" in sys.argv:
+        # CROP membrane: per-object frames the object FILLS, so omission is impossible and what
+        # remains is the render's own identity claim. Same eye, prompt, and expected terms.
+        leg = ROOT / "ChimeraEngine" / "output" / "session_legibility"
+        items = [(p.stem, "see", [str(p)]) for p in sorted(leg.glob("*.jpg"))]
+    else:
+        items = [("sheet_master", "see", [str(SESSION / "sheet_master.jpg")])]
+        for sheet in sorted(SESSION.glob("sheet_beat*.jpg")):
+            items.append((sheet.stem.replace("sheet_", ""), "see", [str(sheet)]))
+        items.append(("stand_on_camera", "watch", _frames(STAND_ON_CAMERA)))
+        items.append(("stand_in_world", "watch", _frames(STAND_IN_WORLD)))
 
     readings = []
     for key, mode, frames in items:

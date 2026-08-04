@@ -276,6 +276,23 @@ dead, and the run measured two things beyond itself:
    `stand_in_world`'s 30-frame WATCH post 400ed on LM Studio a second time — a hard instrument
    limit, recorded.
 
+## MEMBRANE: CROP (2026-08-04, Kimi) — the instrument before the verdict
+
+**STATEMENT.** The whole-sheet read's noise floor (±0.3 per beat, measured in INK) is an
+OMISSION artifact, not reader error: the SEE prompt asks for one or two sentences about a
+12-tile sheet dominated by the figure, so the eye spends them on the figure and never mentions
+the object — and omission scores 0 exactly like misreading. Feed the eye a frame the object
+FILLS and omission becomes impossible; what remains is the render's own identity claim.
+
+**PREDICTION.** `python tools/blind_read.py --crops` reads `output/session_legibility/`'s
+per-object frames (stone_close, stone_session, pile_close, pile_session, tuft_close,
+tuft_session — same session the whole-sheet read scored on) with the same eye, prompt, and
+expected terms: mean align over those six ≥ 0.50, against the whole-sheet object-beat 0.271.
+
+**FALSIFIER.** Cropped mean < 0.35 — then the instrument was never the constraint and the
+renders themselves do not carry material identity, which sends the work to GEOMETRY (the
+stone's sphere) and SHADING (the tuft's up-normals) with no instrument excuses left.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
