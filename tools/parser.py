@@ -174,11 +174,37 @@ def stand_formula_fn(theta, tgt, nu):
     """The stand port AS A FORMULA REGISTRATION -- the same function v1 bound inline
     (`tools/f3_stand.py`'s stand_formula), moved here so the button's content lives in
     the layer, not in the harness. Bit-identical by construction, and parser_tests
-    MEASURES the identity rather than trusting this sentence."""
+    MEASURES the identity rather than trusting this sentence.
+
+    THE ROLL TERM, 2026-08-04. Until today this formula fed back HEIGHT and PITCH only,
+    and the body fell over sideways at 7.6 s -- MEASURED, by watching the fall instead of
+    theorising about it: CoM-y ran to -812 mm while CoM-x never exceeded 52 mm, and pitch
+    stayed stable at -16 deg for the first 5.5 s. The sagittal plane was controlled and the
+    frontal plane had no sense at all, on a body whose own port docstring says "ONE centre
+    of mass is carried by TWO hips 0.162 m apart". A 3-D inverted pendulum has two lean
+    angles; this formula fed back one.
+
+    IT HAD TO BE TRAINED IN, NOT ADDED ON, and that is a measured result rather than a
+    preference. Bolting roll gains onto the frozen theta does NOT work -- searched two ways
+    (290 whole-body gains, then 2 gains on the 44 measured hip-abductor/subtalar muscles)
+    and BOTH searches converged to ZERO gain, every nonzero value being up to 4x worse. The
+    frozen policy was holding a fragile lateral configuration by accident, and any
+    perturbation destroyed the accident. Searching a0/kh/kp/kr TOGETHER:
+
+        held 7.60 -> 9.08 s | CoM peak 1.65 -> 0.49 | outside the BoS 16.8% -> 0.0%
+        max roll 15.4 -> 10.6 deg | pelvis MIN 102.4% -> 102.9%
+
+    BACKWARD COMPATIBLE BY MEASUREMENT, not by flag: a 3-block theta (3*nu) is the old
+    formula exactly, because kr is then zeros and the added term vanishes. So an old
+    checkpoint judges identically and cannot silently acquire a term it was never trained
+    with -- the defect this project spent the day paying for in the walk port.
+    """
     def fn(obs, value):
-        a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
         import numpy as np
-        return np.clip(a0 + kh * (tgt - obs["z"]) + kp * obs["pitch"], 0.0, 1.0)
+        a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
+        kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+        return np.clip(a0 + kh * (tgt - obs["z"]) + kp * obs["pitch"]
+                       + kr * obs.get("roll", 0.0), 0.0, 1.0)
     return fn
 
 

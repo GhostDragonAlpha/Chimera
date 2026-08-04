@@ -120,7 +120,13 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     """
     nu = m.nu
     jids = joint_ids(m, mujoco)
-    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
+    # FOUR BLOCKS: baseline, height gain, pitch gain, ROLL gain. The roll block is new
+    # (2026-08-04) and the trainer gained it in the SAME commit as the parser formula --
+    # the lesson this session paid for twice, in the walk port: a number optimised against
+    # a plant the judge does not run is dead at judgment. A 3-block theta still works and
+    # is bit-identical to the old formula, because kr is then zeros.
+    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
+    kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
@@ -135,7 +141,9 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u = a0 + kh * (tgt - z) + kp * pitch
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                     1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            u = a0 + kh * (tgt - z) + kp * pitch + kr * roll
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
@@ -219,14 +227,17 @@ def main() -> int:
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
     nu = m.nu
-    dim = 3 * nu
-    mu = np.concatenate([np.full(nu, 0.15), np.zeros(nu), np.zeros(nu)])
-    sd = np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6), np.full(nu, 0.6)])
+    dim = 4 * nu        # a0 | kh | kp | kr -- the roll block, 2026-08-04
+    mu = np.concatenate([np.full(nu, 0.15), np.zeros(nu), np.zeros(nu), np.zeros(nu)])
+    sd = np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6), np.full(nu, 0.6),
+                         np.full(nu, 0.6)])
     if init:
         # WARM START: continue from a saved theta instead of re-paying for the search from zero.
         # The spread is halved -- the question is now "what is near the best known", not "what
         # is anywhere" (same derivation, finer measurement).
         mu = np.load(init)
+        if mu.size == 3 * nu:      # an old 3-block checkpoint: adopt it with kr = 0, so the
+            mu = np.concatenate([mu, np.zeros(nu)])   # warm start is the old policy exactly
         sd = 0.5 * sd
         print(f"warm start from {init}")
     elite = max(3, pop // 5)

@@ -713,6 +713,47 @@ afterward.* Freezing a0/kh/kp and searching kr asks a new term to repair a polic
 already committed to the configuration the term would change. That is a joint search over
 ~1160 dimensions and it is the honest next experiment. **Written down, not run.**
 
+## HYPOTHESIS NINE SURVIVES — the roll term had to be TRAINED IN, and F3 is restored
+
+The eighth hypothesis died naming the ninth: *the postural policy must be trained WITH the
+frontal term, never given one afterward.* Searched a0/kh/kp/**kr** together, 45 turns × pop 32,
+judged over 12 s:
+
+| | held | score |
+|---|---:|---:|
+| control (kr = 0, the trained θ) | 7.60 s | 0.00259 |
+| **jointly trained with roll** | **9.08 s** | **0.00386** |
+
+**+19% survival, +49% score — the first positive result on this problem after eight
+refutations.** And it does what bolting a roll term on could not: the same two searches that
+converged to *zero* gain against a frozen policy now find a use for one, because the policy is
+free to re-commit the lateral configuration it was previously holding by accident.
+
+**IT RESTORES F3.** Judged through the real parser, 5 s phase 1:
+
+| | before | after |
+|---|---:|---:|
+| CoM excursion peak | **1.65 FAIL** | **0.49 PASS** |
+| CoM outside the box | 16.8% of phase 1 | **0.0%** |
+| pelvis MIN | 102.4% | 102.9% |
+| max roll | 15.4° | 10.6° |
+| **`f3_stand` exit** | **1** | **0** |
+
+**AND IT DISSOLVES THE FIFTH HYPOTHESIS RATHER THAN ANSWERING IT.** The two base-of-support
+landmarks now AGREE: `theStance` publishes 0.1020 m, the feet make **0.0961 m — 0.94×**, down
+from 1.90×. The twisted, splayed, 22-cm-apart stance was not an instrument disagreement needing
+a decision about which stance the port meant. **It was the body splaying to catch itself from a
+topple it could not sense.** Give it frontal control and it stands in the stance `theStance`
+already describes. The open question about `stand_port.py:83` is therefore *smaller* than it
+looked — but it is still unanswered, because the port still selects `together_` without saying so.
+
+**WHAT CHANGED IN THE CODE, and both halves in one commit.** `parser.py`'s `stand_formula_fn`
+gains `+ kr·roll`; `train_stand.evaluate` gains the same block and searches 4·nu; `f3_stand`
+supplies `roll` in `obs`. **The trainer and the judge changed together** — the defect this
+session paid for twice in the walk port (numbers optimised against a plant the judge never ran)
+is not repeated here. A 3-block θ remains bit-identical to the old formula because `kr` is then
+zeros, so no old checkpoint silently acquires a term it was never trained with.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`

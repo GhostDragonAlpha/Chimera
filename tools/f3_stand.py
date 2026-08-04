@@ -92,8 +92,13 @@ def run() -> int:
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            # ROLL, the frontal-plane lean. Supplied because the stand formula now feeds it
+            # back: the body's fall was MEASURED to be lateral (CoM-y to -812 mm while CoM-x
+            # stayed under 52 mm), and a 3-D inverted pendulum has two lean angles.
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             PARSER.set_verb("STAND", stand_on)
-            u, _trace = PARSER.command({"z": z, "pitch": pitch})
+            u, _trace = PARSER.command({"z": z, "pitch": pitch, "roll": roll})
             d.ctrl[:] = u if u is not None else 0.0
         mujoco.mj_step(m, d)
         if k in grab:
