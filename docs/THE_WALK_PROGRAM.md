@@ -360,6 +360,43 @@ membrane has produced more plausible causal narratives than any other on this la
 only thing that has ever settled one is a number. **Recorded as the finding, because the next
 agent here will generate a fifth story and it will also feel right.**
 
+## THE FIFTH HYPOTHESIS, AND IT SURVIVES: the CoM term is judged against the wrong landmark
+
+A 60-turn protected retrain found a genuinely better θ (score −3.438 → −3.098, survival
+6.24 → 7.00 s, pelvis 101.9 → 102.4%). **F3's CoM reading did not move: 1.65 peak, outside
+16.8% of phase 1, the same window to ±0.02 s.** A policy change that leaves a measurement
+identical means the measurement is not about the policy.
+
+`f3_stand` computes the CoM relative to the mean of `calcn_r/l` + `toes_r/l`, then scores it
+against `theStance`'s published `bos_half_lat_m` / `bos_half_fore_m`. Measured at reset:
+
+| | actual foot polygon | theStance publishes | ratio |
+|---|---:|---:|---:|
+| lateral half-extent | 0.1939 m | 0.1020 m | **1.90×** |
+| fore/aft half-extent | 0.1109 m | 0.1355 m | 0.82× |
+
+**And the stance is not symmetric.** `calcn_r` (+0.175, +0.059), `calcn_l` (−0.046, −0.165),
+`toes_r` (+0.108, **+0.223**), `toes_l` (−0.041, +0.013): the heels are 22 cm apart fore/aft and
+the right foot is splayed laterally. The body is standing **twisted and split**, and the
+published box describes feet *together* — a different stance entirely.
+
+**THE BAR IS NOT MOVED AND THIS IS NOT A PASS.** Two things are now separable and both are real:
+
+1. *The instrument is comparing a measured CoM to a nominal box that does not describe this
+   body's base of support.* At 1.90× lateral disagreement the 1.65 reading cannot be taken at
+   face value in either direction — the CoM may be inside the real polygon or outside it, and
+   this measurement does not say which. Published as the disagreement it is (rule 17), not
+   reconciled by picking whichever number passes.
+2. *The body genuinely stands in a twisted, split stance.* That is a finding about the keyframe
+   and the seating, not about the policy, and it is the more interesting half: a stand port whose
+   feet are 22 cm apart fore/aft is not standing the way `theStance` describes standing.
+
+**What this does NOT license:** swapping the published box for the measured polygon so the term
+passes. The measured polygon is *this pose's* footprint — grading a body against its own current
+stance is grading it against itself, and the term would then be unfalsifiable by construction.
+The right fix is to establish which stance the port is actually meant to hold, and that is a
+question for `theStance`, not for this harness.
+
 ## WHAT THIS MEANS FOR THE ORDER OF WORK
 
 The stand port must be re-established in the 32-ligament world before the walk means anything —
