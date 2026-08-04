@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theEVA": "a large grey panelled hull on the left and a white suited figure "
+              "floating free of it in a starfield, connected by one thin golden "
+              "tether line, with two faint blue jets behind the figure -- a "
+              "spacewalk: nothing under the boots, held only by the tether",
     "theMelee": "two humanoid figures standing close together on dark ground, "
                 "the pale one leaning forward with its arm extended, a glowing "
                 "golden arc sweeping from behind it into a bright flash against "
