@@ -99,6 +99,11 @@ PHYSICS_READING = {
                 "with a few larger circular objects -- distant planets -- suspended among "
                 "the stars: deep empty space, the dark medium itself, NO ground or "
                 "horizon anywhere",
+    "theDensityClock": "a circular pattern of blue particles against a black background, "
+                       "darker with a hint of red at the center -- a field of clocks "
+                       "around a mass: time runs fast far out and slow near the middle, "
+                       "the dark center is where time stops: time leaning with depth, "
+                       "NOT the same everywhere",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
