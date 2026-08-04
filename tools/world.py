@@ -146,6 +146,26 @@ LUMBAR_GRAIN_DEG = 1.0           # 3-D radiography resolution: a gap under this 
 LUMBAR_LB_JOINTS = ("lat_bending", "L1_L2_LB", "L2_L3_LB", "L3_L4_LB", "L4_L5_LB")
 LUMBAR_LAT_EDGE_DEG = 5.0        # the published in-vivo lateral-tilt envelope edge, each way
 
+# THE FOOT & HIP, 2026-08-04 -- docs/THE_FOOT_TISSUE.md: the off-sagittal joints the gait
+# envelope does not publish. Edges from the literature (the membrane's research section);
+# signs MEASURED from the actuator moments, never assumed: hip_adduction's POSITIVE side is
+# loaded by glmed/glmin/tfl (the ABductors) -- the model's + end is abduction, which INVERTS
+# the membrane table's first-principles guess (the table flagged itself; the measurement
+# wins). Subtalar + is eversion (peroneals), hip_rotation + is external (piri/glmax).
+OFFSAG_JOINTS = ("subtalar_angle_r", "subtalar_angle_l",
+                 "hip_rotation_r", "hip_rotation_l",
+                 "hip_adduction_r", "hip_adduction_l")
+OFFSAG_EDGES = {     # joint base -> (edge at the model's lo end, edge at the hi end), deg
+    "subtalar_angle": (-9.0, 9.0),   # Mann 6-8 deg gait; Campbell fluoroscopy peak 8.7
+    "hip_rotation": (-8.0, 8.0),     # Kadaba via Lewis 2017; Winter's caveat carried
+    "hip_adduction": (-9.0, 5.0),    # lo = ADDuction (Goetschius peak 8.8), hi = ABduction
+}
+OFFSAG_GRAIN_DEG = 1.0               # goniometry/fluoroscopy resolution, same as the trunk
+# MTP IS REFUSED AT THE MEMBRANE, not here: the model's +-30 deg stop sits INSIDE the
+# published 60-65 deg gait dorsiflexion envelope -- the stop contradicts gait, and a
+# ligament cannot be derived across a stop that is wrong. The model-range amendment is
+# its own membrane. The refused list below names it so nothing looks forgotten.
+
 
 def _ledger() -> dict:
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == LEDGER_MEMBRANE]
@@ -311,6 +331,33 @@ def derive_ligaments(m, mujoco) -> tuple[list, list]:
             entry, why = _derive_side(m, d, mujoco, jname, adr, dof, lo, hi,
                                       side, limit, edge, grain)
             (emit.append(entry) if entry else refused.append((jname, side, why)))
+
+    # THE FOOT & HIP, off-sagittal, per docs/THE_FOOT_TISSUE.md. Both directions where the
+    # model's stop clears the literature edge; refused and named where it does not.
+    ograin = math.radians(OFFSAG_GRAIN_DEG)
+    for base, (e_lo_deg, e_hi_deg) in OFFSAG_EDGES.items():
+        for sfx in ("_r", "_l"):
+            jname = base + sfx
+            j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jname)
+            if j < 0:
+                refused.append((jname, "both", "joint not in this model"))
+                continue
+            adr, dof = int(m.jnt_qposadr[j]), int(m.jnt_dofadr[j])
+            lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+            for side, limit, edge in (("flex", hi, math.radians(e_hi_deg)),
+                                      ("ext", lo, math.radians(e_lo_deg))):
+                if (side == "flex" and limit <= edge) or (side == "ext" and limit >= edge):
+                    refused.append((jname, side,
+                                    f"model's stop {math.degrees(limit):+.1f} deg sits inside "
+                                    f"the performed envelope -- no gap"))
+                    continue
+                entry, why = _derive_side(m, d, mujoco, jname, adr, dof, lo, hi,
+                                          side, limit, edge, ograin)
+                (emit.append(entry) if entry else refused.append((jname, side, why)))
+    refused.append(("mtp_angle_r/l", "both",
+                    "model's +-30 deg stop sits INSIDE the published 60-65 deg gait "
+                    "dorsiflexion envelope -- the stop contradicts gait, not the tissue; "
+                    "the model-range amendment is its own membrane (docs/THE_FOOT_TISSUE.md)"))
     return emit, refused
 
 
@@ -446,11 +493,33 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
             if lo <= q <= hi:
                 continue
             nm = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, j) or f"j{j}"
-            if nm in LIGAMENT_JOINTS or nm in LUMBAR_FE_JOINTS or nm in LUMBAR_LB_JOINTS:
+            if (nm in LIGAMENT_JOINTS or nm in LUMBAR_FE_JOINTS or nm in LUMBAR_LB_JOINTS
+                    or nm in OFFSAG_JOINTS):
                 m.key_qpos[k][a] = min(max(q, lo), hi)
                 seated.append((nm, q, float(m.key_qpos[k][a])))
             else:
                 noted.append(nm)
+    # THE OFF-SAGITTAL DEADBAND, 2026-08-04 -- the foot membrane's falsifier 2 fired and
+    # taught this: a keyframe INSIDE the range but PAST a ligament's engagement edge starts
+    # the body with the spring taut, and the range-clamp above never sees it. Measured:
+    # the keyframe's hip_rotation_r sits at -35.18 deg against the -8 deg literature edge --
+    # 113 N.m of phantom torque at t=0, the 689 N.m defect one level subtler. A gait frame's
+    # transverse rotation frozen into a stand is not a pose the body can hold NEUTRALLY, so
+    # the off-sagittal joints are seated to their published edges (zero deflection there).
+    import math as _math2
+    for k in range(m.nkey):
+        for j in range(m.njnt):
+            nm = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, j) or ""
+            base = nm[:-2] if nm.endswith(("_r", "_l")) else nm
+            if base not in OFFSAG_EDGES:
+                continue
+            a = int(m.jnt_qposadr[j])
+            e_lo, e_hi = (_math2.radians(x) for x in OFFSAG_EDGES[base])
+            q = float(m.key_qpos[k][a])
+            if e_lo <= q <= e_hi:
+                continue
+            m.key_qpos[k][a] = min(max(q, e_lo), e_hi)
+            seated.append((nm, q, float(m.key_qpos[k][a])))
     if seated or noted:
         import math as _math
         print(f"[world] keyframe: seated {len(seated)}, left alone {len(noted)} "

@@ -129,3 +129,44 @@ is THE MODEL'S STOP CONTRADICTING PUBLISHED GAIT. The fix is a model-range
 amendment (widen the MTP range toward the measured 65–110° passive band,
 THEN derive the ligament across the new gap), which is a different membrane
 touching the model itself, and is queued as such. Rule 20: not patched here.
+
+---
+
+## THE BUILD AND WHAT IT TAUGHT (2026-08-04)
+
+**The sign table corrected by measurement.** Before deriving, the actuator
+moments were read (`d.actuator_moment`, never assumed): hip_adduction's
+POSITIVE side is loaded by glmed/glmin/tfl — the model's + end is ABduction,
+inverting the table above's first-principles guess (the table flagged itself;
+the measurement wins). Edges as built: lo = adduction −9°, hi = abduction
++5°. Subtalar + is eversion (peroneals), hip_rotation + is external
+(piri/glmax) — symmetric edges, so the sign only matters for the record.
+
+**The derivation** (`tools/world.py` OFFSAG block, trunk construction
+unchanged): twelve ligaments, L/R symmetric to the tenth —
+
+| joint | side | k (N·m/rad) | k (N·m/deg) |
+|---|---|---|---|
+| subtalar | eversion+ / inversion− | 333 / 243 | 5.8 / 4.2 |
+| hip_rotation | external+ / internal− | 59 / 239 | 1.0 / 4.2 |
+| hip_adduction | abduction+ / adduction− | 694 / 444 | 12.1 / 7.7 |
+
+**Falsifier 3 does not fire:** every derived stiffness sits in the published
+passive-stiffness band for its joint (1–12 N·m/deg, the same band as the
+lumbar's measured 6–11).
+
+**Falsifier 2 FIRED, and it taught an instrument defect first.** The
+no-retrain re-judge FELL at t = 1.76 s. Diagnosis, measured not argued: the
+keyframe carries `hip_rotation_r` at **−35.18°** — 27° past the −8° edge, a
+gait frame's transverse rotation frozen into a stand — which is ~113 N·m of
+taut spring at t = 0, the 689 N·m trap one level subtler (inside range, so
+the range-clamp never saw it). Fix: off-sagittal keyframe joints are seated
+to their published edges in `world.py`. The re-judge STILL fell (t = 2.10 s)
+with the seating verified clean (−8.00° exactly). The regression is real:
+the policy trained with those DOF free cannot stand against the new springs.
+That is the trunk's own history repeating — FE ligament in, old policy,
+19.3% — and its cure is the same: **retrain the stand with the tissue in**
+(running as this is written). Two outcomes, both verdicts: the retrained
+body stands → the ligaments are ligaments and the membrane's no-retrain
+prediction was the error; it falls → the tissue is a wall and falsifier 2
+stands as fired.
