@@ -57,8 +57,18 @@ UPRIGHT_FRAC = 0.80
 ABLATION_BAR = 0.20
 
 
-def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0):
-    """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path."""
+def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0,
+            entrained=False):
+    """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path.
+
+    `entrained=True` supplies the WalkOscillator's live per-leg phase and the swing interlock
+    THROUGH THE PARSER'S OBS -- which is the amendment walk_port's LEDGER named as the cost of
+    this variant ("its cost is a parser obs amendment, foot contact into `obs`"). It is here
+    because the ledger's own lesson from 2026-08-03 was that the trainer drove the entrained
+    oscillator while the judge drove the clock, so two of eight trained numbers were dead at
+    judgment and the entrained gait was NEVER JUDGED AT ALL. Training a variant the judge cannot
+    run is not a test of the variant; it is a test of nothing.
+    """
     reg = default_registry(theta_stand, tgt, nu)
     # MOVE was a named Refusal ("no trained formula -- its atoms are M3"). This is the formula.
     reg["MOVE"] = Formula("MOVE", move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P,
@@ -83,13 +93,26 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
                           "comx", "comy", "polx", "poly")}
     pics, fell_t, x0, driver = [], None, float(d.qpos[0]), None
     _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
+    from walk_port import WalkOscillator                                  # noqa: E402
+    osc = WalkOscillator(P["OUT omega_rad_s"],
+                         eps=float(theta_walk[6]) if theta_walk.size > 6 else 2.0,
+                         kappa=float(theta_walk[7]) if theta_walk.size > 7 else 4.0)         if entrained else None
+    ctrl_dt = CTRL_EVERY * m.opt.timestep
     for k in range(steps):
         if k % CTRL_EVERY == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u, trace = PARSER.command({"z": z, "pitch": pitch, "t": float(d.time)})
+            obs = {"z": z, "pitch": pitch, "t": float(d.time)}
+            if osc is not None:
+                # THE ENTRAINED PLANT, SUPPLIED THROUGH THE PARSER'S OBS -- not around it. The
+                # formula reads `obs.get("phases")` and `obs.get("swing_gate")`; it already did,
+                # and nothing was ever putting them there.
+                _cr, _cl = foot_contact(m, d, mujoco)
+                obs["phases"] = osc.step(ctrl_dt, _cr, _cl)
+                obs["swing_gate"] = {s_: osc.swing_allowed(s_, _cr, _cl) for s_ in ("r", "l")}
+            u, trace = PARSER.command(obs)
             driver = trace.driver
             if u is not None:
                 d.ctrl[:] = u
@@ -160,8 +183,11 @@ def run() -> int:
     tgt, nu = S["OUT pelvis_target_m"], m.nu
     vt = P["OUT target_speed_ms"]
 
-    live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8)
-    abl = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0)
+    entrained = "--entrained" in sys.argv or theta_walk.size == N_FREE + 2
+    live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
+                   entrained=entrained)
+    abl = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
+                  entrained=entrained)
 
     pct = 100.0 * live["speed"] / vt
     abl_pct = 100.0 * abl["speed"] / vt
@@ -183,9 +209,14 @@ def run() -> int:
     # it measures the moment the thing changes.
     print(f"  free numbers trained: {N_FREE} ({theta_walk.size} on disk)  |  stand theta FROZEN "
           f"({theta_stand.size} numbers, reused unchanged)")
-    if theta_walk.size != N_FREE:
-        raise SystemExit(f"walk_theta.npy holds {theta_walk.size} numbers, the port declares "
-                         f"{N_FREE}. Refusing to judge a walk against a theta of the wrong shape.")
+    # THE SHAPE GUARD NOW KNOWS TWO LEGAL WIDTHS, and says which plant it inferred. N_FREE is
+    # the clock; N_FREE + 2 adds eps and kappa and MEANS the entrained oscillator. Inferring the
+    # plant from the theta's own width is what stops the 2026-08-03 defect recurring by
+    # accident: an 8-number theta can no longer be judged on a 6-number plant in silence.
+    if theta_walk.size not in (N_FREE, N_FREE + 2):
+        raise SystemExit(f"walk_theta holds {theta_walk.size} numbers; the port declares "
+                         f"{N_FREE} (clock) or {N_FREE + 2} (entrained: +eps, +kappa). "
+                         f"Refusing to judge a walk against a theta of the wrong shape.")
     print("-" * 78)
     print(f"  1. TRAVEL       {live['speed']:+.4f} m/s = {pct:.0f}% of derived "
           f"(bar {100*(1-SPEED_TOL):.0f}-{100*(1+SPEED_TOL):.0f}%)  ->  "

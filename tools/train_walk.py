@@ -76,7 +76,7 @@ def foot_contact(m, d, mujoco):
 
 
 def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
-             score_mode="sub"):
+             score_mode="sub", entrained=False):
     """One life under a candidate. Returns (score, trace, pics).
 
     `gain=0.0` is THE ABLATION: the oscillator amplitudes are multiplied out and the body is left
@@ -97,6 +97,18 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     pics, tot, n, fell = [], 0.0, 0, False
     tot_rvz = 0.0
     x0 = float(d.qpos[0])
+    # THE ENTRAINED VARIANT (task 6). `theta_walk` gains two numbers -- eps (coupling toward
+    # antiphase, port 12's own law) and kappa (contact entrainment, the sensory stop) -- and the
+    # open-loop clock is replaced by WalkOscillator's live per-leg phase plus the swing interlock.
+    # EIGHT free numbers, not the twelve the task named: 3 amplitudes + 3 intra-limb offsets +
+    # eps + kappa. Reaching twelve would mean per-SIDE amplitudes and offsets, and this body is
+    # bilaterally symmetric -- an asymmetric oscillator is not extra structure, it is a licence
+    # to limp, and the antiphase it would be free to break is DERIVED and not searchable. The
+    # count is reported rather than padded.
+    osc = WalkOscillator(omega, eps=float(theta_walk[6]) if theta_walk.size > 6 else 2.0,
+                         kappa=float(theta_walk[7]) if theta_walk.size > 7 else 4.0) \
+        if entrained else None
+    ctrl_dt = CTRL_EVERY * m.opt.timestep
     # THE TRAINER DRIVES WHAT THE JUDGE DRIVES: the clock phase (omega*t), exactly as f4's
     # parser path does -- no entrainment state, no swing gate, because the judge has neither.
     # The entrained WalkOscillator + interlock trained here for one session and was never
@@ -109,8 +121,19 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
-                                     omega * d.time, nu, tgt, gain=gain, roll=roll)
+            if osc is not None:
+                # THE FEET ARE READ BEFORE THE PHASE IS ADVANCED. That order is the whole point
+                # of entrainment: the phase is corrected by what the sensors say NOW, so reading
+                # contact after stepping the oscillator would entrain it on last tick's world.
+                _cr, _cl = foot_contact(m, d, mujoco)
+                ph = osc.step(ctrl_dt, _cr, _cl)
+                gate = {s: osc.swing_allowed(s, _cr, _cl) for s in ("r", "l")}
+                d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
+                                         0.0, nu, tgt, gain=gain, roll=roll,
+                                         phases=ph, swing_gate=gate)
+            else:
+                d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
+                                         omega * d.time, nu, tgt, gain=gain, roll=roll)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
@@ -206,6 +229,7 @@ def main() -> int:
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 8.0
     init = a[a.index("--init") + 1] if "--init" in a else None
     score_mode = a[a.index("--score") + 1] if "--score" in a else "sub"
+    entrained = "--entrained" in a
     out_name = a[a.index("--out") + 1] if "--out" in a else WALK_THETA.name
     if score_mode not in ("sub", "mult"):
         raise SystemExit("--score must be sub (the existing rule) or mult. Refusing.")
@@ -224,11 +248,18 @@ def main() -> int:
     # start at 0 with spread 1.0 rad. Those are STARTING POINTS for a search, not settings -- the
     # elite mean replaces them on turn 0 and nothing downstream reads them.
     nj = len(OSC_JOINTS)
+    # EIGHT numbers entrained (amps | offsets | eps | kappa), six on the clock. eps and kappa
+    # start at WalkOscillator's own defaults with a spread wide enough to reach zero coupling,
+    # so the search can turn entrainment OFF if it does not help -- a variant that cannot be
+    # switched off by its own search is a variant nobody can refute.
+    n_free = N_FREE + 2 if entrained else N_FREE
     # amplitudes | phase offsets -- SIX numbers, and only six. The entrainment gains
     # (eps, kappa) are out of the search: the judge drives the clock, so the trainer
     # trains the clock (walk_port LEDGER 2026-08-03).
-    mu = np.concatenate([np.full(nj, 0.20), np.zeros(nj)])
-    sd = np.concatenate([np.full(nj, 0.15), np.full(nj, 1.0)])
+    mu = np.concatenate([np.full(nj, 0.20), np.zeros(nj)]
+                        + ([np.array([2.0, 4.0])] if entrained else []))
+    sd = np.concatenate([np.full(nj, 0.15), np.full(nj, 1.0)]
+                        + ([np.array([1.5, 3.0])] if entrained else []))
     if init:
         mu = np.load(init); sd = 0.5 * sd
         print(f"warm start from {init}")
@@ -236,12 +267,11 @@ def main() -> int:
     rng = np.random.default_rng(0)
     hist, best_ever = [], (-np.inf, mu.copy())
 
-    print(f"\nTRAINING THE WALK PORT -- {N_FREE} free numbers "
+    print(f"\nTRAINING THE WALK PORT -- {n_free} free numbers "
           f"(omega {P['OUT omega_rad_s']:.4f} rad/s and the antiphase are DERIVED, not searched)")
-    print(f"  SCORE RULE: {score_mode}"
-          + ("  (reward x periodicity x survived, every factor in [0,1] -- nothing is "
-             "purchasable by giving up)" if score_mode == "mult"
-             else "  (mean_r x periodicity - 2*(1-frac_run) - 3*fell -- the existing rule)"))
+    print("  PLANT: " + ("ENTRAINED (WalkOscillator: coupling eps + contact kappa + swing "
+                         "interlock) -- the judge must run this too, or the numbers are dead"
+                         if entrained else "CLOCK (phase = omega*t, open loop)"))
     print(f"  SCORE RULE: {score_mode}"
           + ("  (reward x periodicity x survived, every factor in [0,1] -- nothing is "
              "purchasable by giving up)" if score_mode == "mult"
@@ -253,17 +283,21 @@ def main() -> int:
     print(f"{'turn':>5}{'best':>9}{'mean':>9}{'speed':>9}{'% tgt':>7}{'period':>8}"
           f"{'dutyR':>7}{'dutyL':>7}{'held':>7}  verdict")
     for turn in range(turns):
-        cand = rng.normal(mu, sd, size=(pop, N_FREE))
+        cand = rng.normal(mu, sd, size=(pop, n_free))
         cand[0] = mu            # THE INCUMBENT IS ALWAYS A CANDIDATE -- see train_stand.py, where
                                 # its absence lost a policy that stood at 101.9% of target.
         cand[:, :nj] = np.clip(cand[:, :nj], 0.0, 1.0)          # an amplitude is an activation
+        if entrained:
+            cand[:, N_FREE:] = np.clip(cand[:, N_FREE:], 0.0, None)   # a negative coupling gain
+                                                                       # pushes toward IN-phase
         scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs,
-                                    score_mode=score_mode)[0] for c in cand])
+                                    score_mode=score_mode, entrained=entrained)[0]
+                           for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         s, tr, pics = evaluate(m, d, mujoco, theta_stand, cand[order[0]], groups, P, secs,
-                               frames=6, score_mode=score_mode)
+                               frames=6, score_mode=score_mode, entrained=entrained)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]
