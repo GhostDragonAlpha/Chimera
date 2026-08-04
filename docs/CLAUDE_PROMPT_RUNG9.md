@@ -83,6 +83,35 @@ Against the prompt's PREDICTION — *survival > 7.60 s, pelvis ≥ 90%, learned 
 measurably nonzero* — all three hold: 9.08 s, 102.9%, and **100% of the 290 roll gains are
 nonzero** (`mean(|kr| > 1e-6) = 1.0`). The falsifier did not fire.
 
+> ### AMENDMENT, 2026-08-04 — **EVERY SURVIVAL NUMBER IN THE TABLE ABOVE IS SEED 0, AND SEED 0 IS THE LUCKIEST OF TEN**
+>
+> `tools/stand_survival.py` measured the same incumbent `stand_theta.npy` over ten starts
+> perturbed by 1e-6 — 73,000× below the finest angle `theHuman` publishes:
+>
+> | | seed 0 (what this table reports) | median of 10 | min | spread |
+> |---|---:|---:|---:|---:|
+> | survival, 20 s window | **9.08 s** | **7.01 s** | 6.30 s | 2.78 s |
+>
+> **The unperturbed start is the best of the ten**, so `9.08 s` overstates this policy by 29.5%.
+> The number is not withdrawn and the run is not re-judged here — it is relabelled as what it
+> is, one sample of a distribution. `f3_stand.py` and `f4_walk.py` now judge over ten seeds by
+> default and headline the median with the min and the spread beside it.
+>
+> **What multi-seed judging did NOT buy, measured rather than assumed.** Task 3's own falsifier
+> — *median-of-10 within 5% of seed 0* — **FIRES on both judges**: F3's worst deviation is 0.0%
+> and F4's is 0.1%. The reason is a censoring the single-seed harness could not show: F3's
+> phase 1 closes at **5.0 s** and this body does not reach the fall bar until ~7 s, so all ten
+> seeds report `5.00 s` because the *window* ended; F4's walk falls at **1.62 s**, far earlier
+> still. **The divergence is real and its timescale is longer than either judge's window** —
+> which means F3's and F4's headline numbers were never the ones the coin toss was inflating,
+> and `stand_survival.py`'s 20 s number was. Recorded per rule 17 rather than averaged away.
+>
+> **And the cold A/B reverses under the median.** Judged at ten seeds, the cold roll arm
+> (`stand_theta_roll_A`) holds **4.95 s** median and the cold no-roll control
+> (`stand_theta_noroll_B`) holds **5.67 s** — the roll arm is the *worse* of the two, where
+> single-rollout numbers had it ahead. Neither cold arm approaches the warm incumbent's 7.01 s,
+> so the promotion decision below is unchanged; the *ranking between the cold arms* is not.
+
 **But that run was WARM, and the prompt asks for COLD** — *"the hypothesis is about the search
 shaping the whole policy, so cold is the honest test."* A warm run inherits a policy already
 shaped without a frontal channel, so it cannot distinguish *"the search shapes the whole policy

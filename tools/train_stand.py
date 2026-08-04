@@ -114,6 +114,18 @@ def joint_frac(d, jids):
     return max(abs(float(d.qpos[adr]) - c) / h for adr, c, h, _ in jids)
 
 
+def joint_fracs(d, jids):
+    """EVERY graded joint's fraction of its range, in `jids` order. No max, nothing thrown away.
+
+    `joint_frac` above returns the max of exactly this vector. The max is the right number for a
+    HEADLINE ("how bad is the worst joint") and the wrong number for a REWARD: it reports nothing
+    about the other 28 joints, so a candidate that pulls five of them off their stops scores
+    identically to one that does not. `stand_port.joints_factor` consumes this vector; the
+    derivation of why a sum and not a max is in that docstring.
+    """
+    return np.array([abs(float(d.qpos[adr]) - c) / h for adr, c, h, _ in jids], dtype=float)
+
+
 def joint_frac_named(d, jids):
     """The same number, and WHICH JOINT IT IS. Returns `(frac, name)`.
 
@@ -128,8 +140,16 @@ def joint_frac_named(d, jids):
                key=lambda p: p[0])
 
 
-def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
+def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     """One life under a candidate. Returns (score, trace, pics).
+
+    `joints` selects the JOINTS TERM'S SHAPE and exists so the change to it has a control:
+    "hinge" is the derived per-joint sum (`stand_port.joints_factor`), "retired" is the
+    max-then-gaussian it replaced (`stand_port.retired_joints_factor`). Everything else about
+    the two arms -- budget, warm start, seeds, window, RNG stream, plant -- is identical, so the
+    shape is the single variable. Three coupled changes is a three-body problem with no
+    attributable answer (CLAUDE.md); this is the same discipline `--blocks 3|4` bought for the
+    roll term one commit earlier.
 
     theta = [a0 (nu), k_h (nu), k_p (nu)] -- a baseline activation plus proportional feedback on
     pelvis HEIGHT ERROR and PITCH. Those two are not chosen: they are what an inverted pendulum
@@ -201,8 +221,11 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
             dx, dy = float(com[0] - foot[0]), float(com[1] - foot[1])
             if z < 0.5 * tgt:
                 fell = True
-            jf = joint_frac(d, jids)
-            r, _ = stand_reward(z, (dx, dy), jf, False, float(np.abs(d.ctrl).mean()), P)
+            fr = joint_fracs(d, jids)                    # every graded joint, not the worst one
+            jf = float(fr.max())                         # the HEADLINE, still the max: it is what
+                                                         # the picture and the log column report
+            r, _ = stand_reward(z, (dx, dy), fr, False, float(np.abs(d.ctrl).mean()), P,
+                                joints_form=joints)
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["z"].append(z)
             tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r); tr["jf"].append(jf)
@@ -214,7 +237,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     return float(score), tr, pics
 
 
-def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0):
+def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge"):
     """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
     worst one. Returns `(score, trace, pics, per_seed_scores)`.
 
@@ -232,15 +255,15 @@ def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0):
     worst-seed score is an instrument showing you a different rollout from the one it graded.
     """
     if seeds <= 1:
-        s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames)
+        s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames, joints=joints)
         return s, tr, pics, [s]
-    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i) for i in range(seeds)]
+    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i, joints=joints) for i in range(seeds)]
     scores = [r[0] for r in runs]
     w = int(np.argmin(scores))
     # the worst seed is re-run WITH frames only when frames are asked for, so the common path
     # (scoring a population) never pays for a renderer it will not look at
     if frames:
-        _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames)
+        _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames, joints=joints)
     else:
         tr, pics = runs[w][1], runs[w][2]
     return float(scores[w]), tr, pics, [float(s) for s in scores]
@@ -305,6 +328,16 @@ def main() -> int:
     blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else 4
     if blocks not in (3, 4):
         raise SystemExit("--blocks must be 3 (no roll term) or 4 (with it). Refusing.")
+    # THE JOINTS TERM'S SHAPE, and its control. "hinge" = the derived per-joint sum; "retired" =
+    # the max-then-gaussian, executable so the A/B has an arm that is the old reward exactly.
+    # Measured before the change (tools/joints_gradient.py): the retired form sees ONE joint per
+    # sample of the 29 graded, at a slope of ~1e-5, so it is a term in a derived reward that is
+    # doing nothing -- the same species of defect as `joint_frac` returning a hardcoded 0.0 for
+    # this trainer's first three turns, found the same way and named the same way.
+    joints = a[a.index("--joints") + 1] if "--joints" in a else "hinge"
+    if joints not in ("hinge", "retired"):
+        raise SystemExit("--joints must be 'hinge' (derived) or 'retired' (the control). "
+                         "A third shape is a sweep where a derivation belongs (rule 1). Refusing.")
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     P = derive_stand_port()
@@ -333,6 +366,10 @@ def main() -> int:
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
           f"g {g:.4f}, {nu} muscles, {dim}-dim search "
           f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})")
+    print(f"  joints term: {joints.upper()}"
+          + ("  (per-joint hinge summed over every graded joint -- the derived form)"
+             if joints == "hinge" else
+             "  -- THE CONTROL ARM: max-then-gaussian, the retired form exactly"))
     print(f"  scoring: WORST of {seeds} randomized start(s) x {secs:.1f} s"
           + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
              else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
@@ -351,12 +388,14 @@ def main() -> int:
         # policy cannot be lost by looking for a better one), and it costs one evaluation.
         cand[0] = mu
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
-        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds)[0] for c in cand])
+        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds, joints=joints)[0]
+                           for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best_theta = cand[order[0]]
-        s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6)
+        s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6,
+                                            joints=joints)
         # THE BAR IS THE MINIMUM OVER THE FULL FIVE SECONDS, NOT THE PEAK OVER ONE.
         # The first version printed PROVEN on turn 0 because the KEYFRAME starts at 0.98 m: the
         # "peak" was the starting height, and a 1.0 s rollout satisfied a 5 s requirement. That is

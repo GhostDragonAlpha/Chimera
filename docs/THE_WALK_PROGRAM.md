@@ -724,6 +724,17 @@ judged over 12 s:
 | control (kr = 0, the trained θ) | 7.60 s | 0.00259 |
 | **jointly trained with roll** | **9.08 s** | **0.00386** |
 
+> **AMENDMENT 2026-08-04 — both rows are SEED 0, and seed 0 is the luckiest of ten.**
+> `tools/stand_survival.py` over ten 1e-6-nudged starts puts the jointly-trained θ at
+> **median 7.01 s** (min 6.30, max 9.08, spread 2.78 s): the `9.08 s` in the row above is the
+> top of that distribution reported as its centre, overstating by 29.5%. The `+19%` is
+> therefore a comparison of one lucky sample against one unmeasured one, and this table can no
+> longer carry it. The finding that the ROLL TERM IS ONLY TRAINABLE JOINTLY is untouched — it
+> rests on the search choosing zero when the term is bolted on, which is a fact about the
+> search and not about a survival time. `f3_stand.py`/`f4_walk.py` now judge over ten seeds.
+> See `docs/CLAUDE_PROMPT_RUNG9.md`'s amendment for the full table and for what multi-seed
+> judging did NOT buy (both judges' windows are shorter than the divergence timescale).
+
 **+19% survival, +49% score — the first positive result on this problem after eight
 refutations.** And it does what bolting a roll term on could not: the same two searches that
 converged to *zero* gain against a frozen policy now find a use for one, because the policy is

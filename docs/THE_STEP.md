@@ -314,7 +314,19 @@ The walk retrains once, against the settled stand — not before.
 **The settled-stand precondition is MET (2026-08-04, commit `1f24f74`,
 Claude's rung 9).** The frontal retrain — hypothesis nine, the roll
 term trained IN from scratch rather than grafted — holds **9.08 s** at
-the 12 s horizon (was 7.60), pelvis 102.9%, and F3 exit 0. The second
+the 12 s horizon (was 7.60), pelvis 102.9%, and F3 exit 0.
+
+> **AMENDMENT 2026-08-04 — `9.08 s` IS SEED 0, THE LUCKIEST OF TEN.**
+> Ten starts nudged by 1e-6 give **median 7.01 s**, min 6.30, spread
+> 2.78 s (`agent_logs/stand_survival_stand_theta.json`), so the
+> headline overstates by 29.5%. **The precondition still holds and is
+> not being withdrawn** — it was written on `pelvis 102.9%` and
+> `F3 exit 0`, and both survive the ten-seed judge unchanged (102.9%
+> on every seed, F3 PASS 10/10 on the median). Only the *survival
+> figure* is relabelled. Judges now headline the median: see
+> `docs/CLAUDE_PROMPT_RUNG9.md`'s amendment.
+
+The second
 clause resolves itself rather than being ruled on: with frontal
 control the feet make a 0.0961 m half-width against theStance's
 published 0.1020 (0.94×, down from 1.90×) — the splay was the body

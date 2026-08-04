@@ -35,7 +35,8 @@ from stand_port import MYOBODY                                           # noqa:
 from train_stand import joint_ids, seat_in_limits, CTRL_EVERY            # noqa: E402
 from walk_port import (derive_walk_port, muscle_groups, walk_formula,    # noqa: E402
                        walk_reward, score_walk, score_walk_mult, N_FREE, OSC_JOINTS,
-                       WalkOscillator)
+                       WalkOscillator, footfall_interval_s, cadence_factor,
+                       CADENCE_FLOOR_FRAC)
 from chimera_gait import _periodicity                                    # noqa: E402
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
@@ -76,8 +77,13 @@ def foot_contact(m, d, mujoco):
 
 
 def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
-             score_mode="sub", entrained=False):
+             score_mode="sub", entrained=False, cadence=False):
     """One life under a candidate. Returns (score, trace, pics).
+
+    `cadence=True` multiplies `walk_port.cadence_factor` into the multiplicative score -- the
+    stride-not-shuffle term. It is a parameter here rather than a second trainer so the arm and
+    its control differ in exactly one thing, and `cadence=False` reproduces the old score
+    bit-for-bit (the factor defaults to 1.0 in `score_walk_mult`).
 
     `gain=0.0` is THE ABLATION: the oscillator amplitudes are multiplied out and the body is left
     with the stand formula alone, every other number identical. It is a parameter of this function
@@ -169,12 +175,24 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     elapsed = max(tr["t"][-1], 1e-9) if tr["t"] else 1e-9
     speed = (float(tr["x"][-1]) - x0) / elapsed if tr["x"] else 0.0
     frac = (k + 1) / steps
+    # THE FOOTFALL INTERVAL, measured from the feet's own touchdown EVENTS -- always computed
+    # and always reported, whether or not it is scored. A quantity you only measure when you
+    # are optimising it cannot tell you what the arm that does NOT optimise it was doing.
+    interval = footfall_interval_s(tr["cr"], tr["cl"], dt_s)
+    cad = cadence_factor(interval, P)
     # THE SCORING RULE IS A PARAMETER, so the A/B runs ONE trainer against two rules rather
     # than two trainers that could drift apart. `sub` is the existing rule, bit-identical.
     if score_mode == "mult":
-        sc = score_walk_mult(tot_rvz / max(n, 1), per, frac)
+        sc = score_walk_mult(tot_rvz / max(n, 1), per, frac, cadence=(cad if cadence else 1.0))
     else:
+        # NO CADENCE TERM ON THE SUBTRACTIVE RULE, and this refuses rather than improvises.
+        # `score_walk` is negative almost everywhere (-3 fall, -2 duration), so multiplying it
+        # by a factor in [0,1] makes a bad score BETTER -- a penalty that rewards the thing it
+        # penalises. The subtractive composition would need a WEIGHT instead, and a weight is a
+        # number nothing derives. `main()` refuses the combination up front; this branch is the
+        # same refusal where the arithmetic is.
         sc = score_walk(tot / max(n, 1), per, frac) - (3.0 if fell else 0.0)
+    tr["footfall_interval_s"], tr["cadence_factor"] = interval, cad
     tr["speed"], tr["periodicity"], tr["period_s"], tr["fell"] = speed, per, period, fell
     tr["mean_rvz"] = tot_rvz / max(n, 1)
     tr["duty_r"] = float(np.mean([c > 0 for c in tr["cr"]])) if tr["cr"] else 0.0
@@ -231,8 +249,15 @@ def main() -> int:
     score_mode = a[a.index("--score") + 1] if "--score" in a else "sub"
     entrained = "--entrained" in a
     out_name = a[a.index("--out") + 1] if "--out" in a else WALK_THETA.name
+    cadence = "--cadence" in a
     if score_mode not in ("sub", "mult"):
         raise SystemExit("--score must be sub (the existing rule) or mult. Refusing.")
+    if cadence and score_mode != "mult":
+        raise SystemExit(
+            "--cadence needs --score mult. The subtractive rule is negative almost everywhere, "
+            "so multiplying a cadence factor in [0,1] into it makes a WORSE gait score BETTER; "
+            "composing it subtractively would need a weight, and no membrane publishes one. "
+            "Refusing to invent a constant (rule 1).")
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     if not STAND_THETA.exists():
@@ -280,8 +305,13 @@ def main() -> int:
           f"  ({100*P['CHK froude_target']/P['CHK froude_transition_lit']:.0f}% -- a walk)")
     print(f"  target {P['OUT target_speed_ms']:.4f} m/s, stride {P['OUT stride_s']:.4f} s, "
           f"duty {P['OUT duty_factor']:.4f}, g {g:.4f}, stand theta FROZEN ({theta_stand.size} numbers)")
+    print(f"  CADENCE TERM: "
+          + (f"ON -- footfall interval vs {CADENCE_FLOOR_FRAC:.2f} x step_time = "
+             f"{CADENCE_FLOOR_FRAC*P['IN  step_time_s']:.4f} s (stride, not shuffle)"
+             if cadence else
+             "off -- the control arm; the interval is still MEASURED and printed"))
     print(f"{'turn':>5}{'best':>9}{'mean':>9}{'speed':>9}{'% tgt':>7}{'period':>8}"
-          f"{'dutyR':>7}{'dutyL':>7}{'held':>7}  verdict")
+          f"{'foot dt':>9}{'cad':>6}{'dutyR':>7}{'dutyL':>7}{'held':>7}  verdict")
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, n_free))
         cand[0] = mu            # THE INCUMBENT IS ALWAYS A CANDIDATE -- see train_stand.py, where
@@ -291,13 +321,15 @@ def main() -> int:
             cand[:, N_FREE:] = np.clip(cand[:, N_FREE:], 0.0, None)   # a negative coupling gain
                                                                        # pushes toward IN-phase
         scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs,
-                                    score_mode=score_mode, entrained=entrained)[0]
+                                    score_mode=score_mode, entrained=entrained,
+                                    cadence=cadence)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         s, tr, pics = evaluate(m, d, mujoco, theta_stand, cand[order[0]], groups, P, secs,
-                               frames=6, score_mode=score_mode, entrained=entrained)
+                               frames=6, score_mode=score_mode, entrained=entrained,
+                               cadence=cadence)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]
@@ -305,7 +337,8 @@ def main() -> int:
         if float(scores[order[0]]) > best_ever[0]:
             best_ever = (float(scores[order[0]]), cand[order[0]].copy())
         print(f"{turn:>5}{scores[order[0]]:>9.3f}{scores.mean():>9.3f}{tr['speed']:>9.3f}"
-              f"{pct:>6.0f}%{tr['periodicity']:>8.2f}{tr['duty_r']:>7.2f}{tr['duty_l']:>7.2f}"
+              f"{pct:>6.0f}%{tr['periodicity']:>8.2f}{tr['footfall_interval_s']:>8.3f}s"
+              f"{tr['cadence_factor']:>6.2f}{tr['duty_r']:>7.2f}{tr['duty_l']:>7.2f}"
               f"{held:>6.1f}s  {'WALKS' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist,
                   OUTDIR / f"{Path(out_name).stem}_turn_{turn:02d}.png")

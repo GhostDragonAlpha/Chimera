@@ -99,8 +99,70 @@ def derive_stand_port() -> dict:
     return port
 
 
+# ── THE JOINTS TERM: where the passive tissue starts taking the load ──────────────────────────
+# Both constants predate this file's current form and NEITHER is moved here. 0.8 is where the
+# term goes cold (f3_stand.py draws it as "reward goes cold"); 0.1 is its width. This change is
+# to the SHAPE ONLY, so that the shape is the single variable and the constants are the control.
+JOINT_COLD = 0.8
+JOINT_WIDTH = 0.1
+
+
+def joints_factor(fracs):
+    """How much of the body's weight is hanging on its own stops. 1.0 = none of it.
+
+    THE DERIVATION, and it is why this replaced a max-then-gaussian on 2026-08-04.
+
+    A joint past its declared range is resting on capsule and ligament: the body is being held
+    by its PASSIVE tissue instead of by muscle. Strain energy is EXTENSIVE -- two joints on their
+    stops store the sum of what each stores alone -- so the aggregate over joints is a SUM. The
+    old form took `max()` over 29 graded joints, which is not an approximation of a sum; it is a
+    projection that discards 28 of the 29 and reports nothing at all about them.
+
+    That projection was invisible because of the SECOND defect, which is the shape. A gaussian in
+    the overshoot is flat at BOTH ends: quadratically flat at the threshold (`1 - (e/w)^2`), and
+    exponentially flat past it. With L4_L5_FE measured at 1.18 the overshoot is 3.8 widths and
+    the factor is 5.4e-7 with a slope to match -- so a factor that MULTIPLIES height and support
+    annihilated both, and every candidate in the population scored the same ~0. Measured by
+    `tools/joints_gradient.py` before the change; the same tool is the after.
+
+    The hinge sum keeps the two constants and fixes both properties:
+
+        E   = SUM_j max(0, f_j - JOINT_COLD)          extensive, over every graded joint
+        r_j = 1 / (1 + E / JOINT_WIDTH)               bounded (0, 1], never reaching 0
+
+    * r_j is EXACTLY 1.0 when every joint is inside 0.8 -- identical to the retired form there,
+      so nothing changes for a body that is not on its stops.
+    * d r_j / d f_j = -(1/w) r_j^2 for EVERY joint past the threshold, at the same magnitude for
+      each: 29 joints carry gradient where one did, and the one that did carried ~1e-5 of it.
+    * It never reaches zero, so a body deep in its stops still earns credit for standing at the
+      right height -- which is the whole point of a multiplicative reward and was being lost.
+
+    NOTE THE N-DEPENDENCE, because a sum has one and a max does not: adding graded joints to
+    `train_stand.PRIMARY` raises E for the same posture. That is correct for an extensive
+    quantity -- more tissue loaded IS more load -- but it means the number is only comparable
+    across runs that grade the same joint set. Named here rather than found later.
+
+    Accepts a vector (every graded joint, the fix) or a scalar (one joint, for the carry and
+    return trainers, which price the joints term themselves and only ever hand this one number).
+    """
+    e = np.maximum(0.0, np.atleast_1d(np.asarray(fracs, dtype=float)) - JOINT_COLD)
+    return float(1.0 / (1.0 + float(e.sum()) / JOINT_WIDTH))
+
+
+def retired_joints_factor(fracs):
+    """The max-then-gaussian this replaced, kept EXECUTABLE so the A/B has a control.
+
+    It lives here, beside its replacement, and not as a copy inside the trainer and another copy
+    inside `joints_gradient.py`. Two copies of a retired formula is the same species as three
+    copies of `CTRL_EVERY` (tools/timestep_audit.py): they agree until one is edited, and then
+    the control arm and the instrument that judges it are measuring two different retirements.
+    """
+    f = np.atleast_1d(np.asarray(fracs, dtype=float))
+    return float(np.exp(-((max(0.0, float(f.max()) - JOINT_COLD) / JOINT_WIDTH) ** 2)))
+
+
 # ── THE REWARD, derived from the port and from nothing else ───────────────────────────────────
-def stand_reward(pelvis_z, com_xy, joint_frac_of_range, fell, effort, P):
+def stand_reward(pelvis_z, com_xy, joint_fracs, fell, effort, P, joints_form="hinge"):
     """A single number, and every term traceable to a published one.
 
     height  -- the pelvis at its DERIVED target. Not "high", not "0.9 of something": 0.9201 m,
@@ -108,15 +170,27 @@ def stand_reward(pelvis_z, com_xy, joint_frac_of_range, fell, effort, P):
     support -- the CoM inside the base of support the FEET actually make. Outside it the body is
                a falling inverted pendulum by definition, so this is not a preference.
     joints  -- neither locked straight nor collapsed. A knee at its limit is a strut, not a leg.
+               `joint_fracs` is EVERY graded joint's fraction of its range, not the worst one --
+               see `joints_factor` for why the max was throwing 28 of 29 joints away.
     still   -- the operator's control law: command the PROCESS and its stop condition, never a
                pose. So this rewards the OUTCOME (be still) and never a target angle.
+
+    `joints_form` is the A/B's one variable and nothing else: "hinge" is the derived form,
+    "retired" is the max-then-gaussian, executable so the control arm runs the identical code
+    path with the identical constants. It is not a tuning knob and there is no third value.
     """
     z_err = abs(pelvis_z - P["OUT pelvis_target_m"]) / P["OUT pelvis_target_m"]
     r_h = float(np.exp(-(z_err / 0.05) ** 2))
     mx = abs(com_xy[0]) / P["OUT bos_half_fore_m"]
     my = abs(com_xy[1]) / P["OUT bos_half_lat_m"]
     r_s = float(np.exp(-max(mx, my) ** 2))
-    r_j = float(np.exp(-(max(0.0, joint_frac_of_range - 0.8) / 0.1) ** 2))
+    if joints_form == "hinge":
+        r_j = joints_factor(joint_fracs)
+    elif joints_form == "retired":
+        r_j = retired_joints_factor(joint_fracs)
+    else:
+        raise ValueError(f"joints_form must be 'hinge' or 'retired', not {joints_form!r}. "
+                         f"A third shape would be a sweep where a derivation belongs (rule 1).")
     return r_h * r_s * r_j - (3.0 if fell else 0.0) - 0.01 * effort, dict(
         height=r_h, support=r_s, joints=r_j, fell=fell)
 

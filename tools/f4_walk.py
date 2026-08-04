@@ -23,10 +23,22 @@ amplitudes out inside `walk_formula` itself -- it is not a second harness that c
 from the thing it ablates. A body that travels just as far with the oscillator off was falling
 forward, and the rhythm proved nothing.
 
+TEN SEEDS, NOT ONE (2026-08-04), for the reason F3 carries the same amendment: a 1e-6 nudge --
+73,000x below the finest angle this world publishes -- moves the stand policy's survival from
+6.30 s to 9.08 s, so a single rollout is one sample of a distribution reported as the answer.
+Walking is composed over standing and inherits that sensitivity whole.
+
+    THE HEADLINE IS THE MEDIAN OF TEN, WITH THE MIN AND THE SPREAD BESIDE IT.
+
+The ablation is run on the SAME seeds, because an ablation judged on one start against a live
+arm judged on another is two experiments wearing one name.
+
 ZERO POSE-SCRIPTED FRAMES, BY CONSTRUCTION. After `seat_in_limits` at reset, nothing here writes
 `d.qpos`. Every frame is `mj_step` under muscle control and this world's gravity.
 
-    python tools/f4_walk.py           # exit 0 PASS, 1 FAIL
+    python tools/f4_walk.py                    # 10 seeds; exit 0 PASS, 1 FAIL
+    python tools/f4_walk.py --seeds 1          # the retired single-rollout behaviour, exactly
+    python tools/f4_walk.py --theta <path>     # judge a named arm
 """
 from __future__ import annotations
 
@@ -39,10 +51,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body                                              # noqa: E402
 from stand_port import derive_stand_port, MYOBODY                        # noqa: E402
-from train_stand import joint_ids, seat_in_limits, joint_frac_named      # noqa: E402
+from train_stand import (joint_ids, seat_in_limits, joint_frac_named,   # noqa: E402
+                         NUDGE)
 from classify_fall import classify_trace                                 # noqa: E402
 from walk_port import (derive_walk_port, muscle_groups, move_formula_fn,  # noqa: E402
-                       N_FREE)
+                       N_FREE, footfall_interval_s, cadence_factor,
+                       CADENCE_FLOOR_FRAC)
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from chimera_gait import _periodicity                                    # noqa: E402
 from parser import Parser, default_registry, Formula, EXCLUSIVE          # noqa: E402
@@ -55,11 +69,17 @@ SPEED_TOL = 0.25              # the prediction's own 25%
 PERIODICITY_BAR = 0.60
 UPRIGHT_FRAC = 0.80
 ABLATION_BAR = 0.20
+SEEDS = 10                    # the headline is the median of these
 
 
 def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0,
-            entrained=False):
+            entrained=False, seed=0):
     """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path.
+
+    `seed = 0` is the UNPERTURBED control; every other seed nudges qpos by `NUDGE` after the
+    seat, exactly as `train_stand.evaluate` and `stand_survival.py` do. One perturbation, one
+    landmark (rule 19) -- three instruments nudging by three amounts would make every
+    disagreement between them the instruments' rather than the body's.
 
     `entrained=True` supplies the WalkOscillator's live per-leg phase and the swing interlock
     THROUGH THE PARSER'S OBS -- which is the amendment walk_port's LEDGER named as the cost of
@@ -80,6 +100,9 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)
+    if seed:
+        d.qpos[:] = d.qpos + np.random.default_rng(seed).normal(0.0, NUDGE, size=d.qpos.shape)
+        mujoco.mj_forward(m, d)
     steps = int(SECS / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
@@ -156,7 +179,14 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     nsamp = max(len(tr["all"]), 1)
     peak = {n: max((s[n] for s in tr["all"]), default=0.0) for n in names}
     over = {n: 100.0 * sum(1 for s in tr["all"] if s[n] >= 1.0) / nsamp for n in names}
-    return dict(speed=(float(tr["x"][-1]) - x0) / elapsed if tr["x"] else 0.0,
+    # THE JUDGE MEASURES WHAT THE TRAINER OPTIMISES. `train_walk --cadence` scores this exact
+    # function; if the judge did not compute it, the trained number would be dead at judgment --
+    # the walk port's own 2026-08-03 lesson (the entrained oscillator trained for a session and
+    # was never judged at all). Measured on every arm, scored on none of them here.
+    _interval = footfall_interval_s(tr["cr"], tr["cl"], dt_s)
+    return dict(seed=seed,
+                speed=(float(tr["x"][-1]) - x0) / elapsed if tr["x"] else 0.0,
+                footfall_interval_s=_interval, cadence_factor=cadence_factor(_interval, P),
                 periodicity=per, period_s=period, fell_t=fell_t, driver=driver,
                 z_min=min(tr["z"]) if tr["z"] else 0.0, held=elapsed,
                 duty_r=float(np.mean([c > 0 for c in tr["cr"]])) if tr["cr"] else 0.0,
@@ -190,18 +220,51 @@ def run() -> int:
     vt = P["OUT target_speed_ms"]
 
     entrained = "--entrained" in sys.argv or theta_walk.size == N_FREE + 2
-    live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
-                   entrained=entrained)
-    abl = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
-                  entrained=entrained)
+    nseeds = int(sys.argv[sys.argv.index("--seeds") + 1]) if "--seeds" in sys.argv else SEEDS
 
-    pct = 100.0 * live["speed"] / vt
-    abl_pct = 100.0 * abl["speed"] / vt
-    ok_travel = abs(live["speed"] - vt) <= SPEED_TOL * vt
-    ok_cycle = live["periodicity"] >= PERIODICITY_BAR
-    ok_up = live["z_min"] >= UPRIGHT_FRAC * tgt and live["fell_t"] is None
-    ok_abl = abs(abl["speed"]) < ABLATION_BAR * vt
+    # TEN SEEDS FOR BOTH ARMS, THE SAME TEN. The ablation is the walk's control, and a control
+    # run from a different initial condition than the thing it controls is not a control.
+    lives = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0,
+                     entrained=entrained, seed=s) for s in range(nseeds)]
+    abls = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
+                    entrained=entrained, seed=s) for s in range(nseeds)]
+
+    def med(rows, key):
+        return float(np.median([r[key] for r in rows]))
+
+    # THE REPRESENTATIVE IS A REAL SEED, never an average of ten -- an averaged trace is a body
+    # nothing ever simulated, and the picture has to be a rollout that happened. Chosen on
+    # PERIODICITY because that is falsifier 1, the one this project has already been caught by.
+    per_all = np.array([r["periodicity"] for r in lives])
+    med_per = float(np.median(per_all))
+    rep_i = int(np.argmin(np.abs(per_all - med_per)))
+    live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
+                   entrained=entrained, seed=lives[rep_i]["seed"])
+    abl = abls[rep_i]
+
+    spd_all = np.array([r["speed"] for r in lives])
+    zmin_all = np.array([r["z_min"] for r in lives])
+    abl_all = np.array([r["speed"] for r in abls])
+    med_spd, med_zmin, med_abl = float(np.median(spd_all)), float(np.median(zmin_all)), \
+        float(np.median(abl_all))
+    int_all = np.array([r["footfall_interval_s"] for r in lives])
+    med_int = float(np.median(int_all))
+
+    pct = 100.0 * med_spd / vt
+    abl_pct = 100.0 * med_abl / vt
+    # THE BARS READ THE MEDIAN OF TEN. Not the best seed, not seed 0: the bars are claims about
+    # the POLICY, and a claim about a policy cannot be settled by one initial condition.
+    ok_travel = abs(med_spd - vt) <= SPEED_TOL * vt
+    ok_cycle = med_per >= PERIODICITY_BAR
+    ok_up = med_zmin >= UPRIGHT_FRAC * tgt and sum(1 for r in lives
+                                                   if r["fell_t"] is None) > nseeds // 2
+    ok_abl = abs(med_abl) < ABLATION_BAR * vt
     ok = ok_travel and ok_cycle and ok_up and ok_abl
+    n_pass = dict(
+        travel=sum(1 for r in lives if abs(r["speed"] - vt) <= SPEED_TOL * vt),
+        cycle=sum(1 for r in lives if r["periodicity"] >= PERIODICITY_BAR),
+        upright=sum(1 for r in lives if r["z_min"] >= UPRIGHT_FRAC * tgt and r["fell_t"] is None),
+        ablation=sum(1 for r in abls if abs(r["speed"]) < ABLATION_BAR * vt))
 
     print("\nF4 -- THE BODY WALKS THROUGH THE PARSER")
     print("=" * 78)
@@ -230,21 +293,65 @@ def run() -> int:
                          f"{N_FREE} (clock) or {N_FREE + 2} (entrained: +eps, +kappa). "
                          f"Refusing to judge a walk against a theta of the wrong shape.")
     print("-" * 78)
-    print(f"  1. TRAVEL       {live['speed']:+.4f} m/s = {pct:.0f}% of derived "
+    print(f"  JUDGED OVER {nseeds} SEEDS -- nudge {NUDGE:g} on qpos, seed 0 UNPERTURBED. Every "
+          f"bar below reads the MEDIAN;")
+    print(f"  the min and the spread are printed with it, because one rollout is a coin toss.")
+    print(f"{'seed':>5}{'speed':>10}{'period.':>9}{'period s':>10}{'foot dt':>9}"
+          f"{'pelvis MIN':>12}{'held':>8}{'ablation':>10}  fall")
+    for r, ab in zip(lives, abls):
+        mark = " <- median" if r["seed"] == live["seed"] else ""
+        _lab = (r["fall"]["label"] if r["fall"] is not None else "?") if r["fell_t"] else "-"
+        print(f"{r['seed']:>5}{r['speed']:>+10.4f}{r['periodicity']:>9.2f}{r['period_s']:>10.2f}"
+              f"{r['footfall_interval_s']:>8.3f}s{r['z_min']:>11.4f}m{r['held']:>7.2f}s"
+              f"{ab['speed']:>+10.4f}  {_lab}{mark}")
+    print(f"  {'':>3}  median  {med_spd:>+8.4f}{med_per:>9.2f}{'':>10}{med_zmin:>11.4f}m"
+          f"{'':>8}{med_abl:>+10.4f}")
+    print(f"  {'':>3}  spread  {spd_all.max()-spd_all.min():>8.4f}"
+          f"{per_all.max()-per_all.min():>9.2f}{'':>10}"
+          f"{zmin_all.max()-zmin_all.min():>11.4f}m{'':>8}"
+          f"{abl_all.max()-abl_all.min():>10.4f}")
+    print("-" * 78)
+    print(f"  1. TRAVEL       median {med_spd:+.4f} m/s = {pct:.0f}% of derived "
           f"(bar {100*(1-SPEED_TOL):.0f}-{100*(1+SPEED_TOL):.0f}%)  ->  "
-          f"{'PASS' if ok_travel else 'FAIL'}")
-    print(f"  2. PERIODICITY  {live['periodicity']:.2f} (bar >= {PERIODICITY_BAR:.2f}), "
-          f"period {live['period_s']:.2f} s vs derived stride {P['OUT stride_s']:.2f} s  ->  "
-          f"{'PASS' if ok_cycle else 'FAIL'}")
-    print(f"  3. UPRIGHT      pelvis MIN {live['z_min']:.4f} m = "
-          f"{100*live['z_min']/tgt:.0f}% of target (bar {100*UPRIGHT_FRAC:.0f}%), held "
-          f"{live['held']:.2f}/{SECS:.1f} s  ->  {'PASS' if ok_up else 'FAIL'}")
+          f"{'PASS' if ok_travel else 'FAIL'}   [{n_pass['travel']}/{nseeds} seeds]")
+    print(f"  2. PERIODICITY  median {med_per:.2f} (bar >= {PERIODICITY_BAR:.2f}), min "
+          f"{per_all.min():.2f}, period {live['period_s']:.2f} s vs derived stride "
+          f"{P['OUT stride_s']:.2f} s  ->  {'PASS' if ok_cycle else 'FAIL'}   "
+          f"[{n_pass['cycle']}/{nseeds} seeds]")
+    # THE CADENCE, MEASURED ON EVERY ARM AND SCORED ON NONE HERE. Reported beside periodicity
+    # because the two answer different questions and were being conflated: periodicity asks IS
+    # THERE A CYCLE, the interval asks HOW LONG IS A STEP. A body can shuffle rhythmically.
+    print(f"  2b. CADENCE     median footfall interval {med_int:.3f} s vs theHuman's step_time "
+          f"{P['IN  step_time_s']:.4f} s ({100*med_int/P['IN  step_time_s']:.0f}%), floor "
+          f"{CADENCE_FLOOR_FRAC:.2f} -> {'stride' if med_int >= CADENCE_FLOOR_FRAC*P['IN  step_time_s'] else 'SHUFFLE'}"
+          + ("   (no touchdown pair -- nothing to measure)" if med_int <= 0 else ""))
+    print(f"  3. UPRIGHT      median pelvis MIN {med_zmin:.4f} m = "
+          f"{100*med_zmin/tgt:.0f}% of target (bar {100*UPRIGHT_FRAC:.0f}%), held "
+          f"{live['held']:.2f}/{SECS:.1f} s  ->  {'PASS' if ok_up else 'FAIL'}   "
+          f"[{n_pass['upright']}/{nseeds} seeds]")
     print(f"     duty R/L {live['duty_r']:.2f}/{live['duty_l']:.2f} "
           f"(theHuman publishes {P['OUT duty_factor']:.2f})")
-    print(f"  4. ABLATION     oscillator OFF (gain=0, same code path): "
-          f"{abl['speed']:+.4f} m/s = {abl_pct:.0f}% of derived")
+    print(f"  4. ABLATION     oscillator OFF (gain=0, same code path, same {nseeds} seeds): "
+          f"median {med_abl:+.4f} m/s = {abl_pct:.0f}% of derived")
     print(f"     bar: must stay under {100*ABLATION_BAR:.0f}%  ->  "
-          f"{'PASS -- the rhythm is doing the work' if ok_abl else 'FAIL -- it travels without the oscillator; the rhythm is decorative'}")
+          f"{'PASS -- the rhythm is doing the work' if ok_abl else 'FAIL -- it travels without the oscillator; the rhythm is decorative'}"
+          f"   [{n_pass['ablation']}/{nseeds} seeds]")
+    if nseeds > 1:
+        # SEED 0 vs THE MEDIAN, per bar. Task 3's falsifier, and it is checked on the walk's own
+        # quantities rather than inherited from the stand's.
+        print(f"  SEED 0 vs MEDIAN, per bar:")
+        devs = []
+        for label, vals in (("speed", spd_all), ("periodicity", per_all),
+                            ("pelvis min", zmin_all)):
+            s0, md = float(vals[0]), float(np.median(vals))
+            dev = 100.0 * (md - s0) / max(abs(s0), 1e-9)
+            devs.append(abs(dev))
+            print(f"    {label:14} seed 0 {s0:8.4f}   median {md:8.4f}   "
+                  f"single-rollout is {(-dev):+6.1f}%")
+        print(f"    task-3 falsifier (median within 5% of seed 0 on every bar): "
+              + (f"FIRES -- worst deviation {max(devs):.1f}%; seed 0 was already the answer."
+                 if max(devs) <= 5.0 else
+                 f"does not fire -- worst deviation {max(devs):.1f}%."))
     # ── WHICH JOINTS, AND WHICH WAY IT WENT DOWN (ported from f3_stand.py, 2026-08-04) ──────
     # F4 used to return a bare scalar per falsifier. A walk that fails now NAMES its offenders,
     # because "periodicity 0.22" tells you the gait is not a gait and nothing about what to fix.
@@ -282,6 +389,36 @@ def run() -> int:
             print("    the ablation travelled too -- the body is falling forward and the")
             print("    oscillator proved nothing (a primitive whose ablation passes proved nothing).")
 
+    # ---- THE LEDGER: the headline triple per bar, machine-readable ---------
+    # Named after the arm. Three walk arms judged in one session all wrote one file once
+    # (stand_survival.py's own note, one directory over), and the A/B had one surviving row.
+    import json
+    LOGDIR = ROOT / "agent_logs"
+    LOGDIR.mkdir(parents=True, exist_ok=True)
+    _out = LOGDIR / f"f4_walk_{_wt.stem}.json"
+    _out.write_text(json.dumps(dict(
+        theta=_wt.name, entrained=bool(entrained), seeds=nseeds, nudge=NUDGE, g=g,
+        target_speed_ms=vt, stride_s=P["OUT stride_s"],
+        speed_median=med_spd, speed_min=float(spd_all.min()), speed_max=float(spd_all.max()),
+        speed_per_seed=[float(v) for v in spd_all],
+        periodicity_median=med_per, periodicity_min=float(per_all.min()),
+        periodicity_per_seed=[float(v) for v in per_all],
+        footfall_interval_median_s=med_int,
+        footfall_interval_per_seed=[float(v) for v in int_all],
+        cadence_floor_s=CADENCE_FLOOR_FRAC * P["IN  step_time_s"],
+        cadence_factor_median=float(np.median([r["cadence_factor"] for r in lives])),
+        period_s_median=float(np.median([r["period_s"] for r in lives])),
+        z_min_median=med_zmin, z_min_min=float(zmin_all.min()),
+        held_median=float(np.median([r["held"] for r in lives])),
+        held_min=float(min(r["held"] for r in lives)),
+        ablation_median=med_abl, ablation_per_seed=[float(v) for v in abl_all],
+        duty_r_median=float(np.median([r["duty_r"] for r in lives])),
+        duty_l_median=float(np.median([r["duty_l"] for r in lives])),
+        seeds_passing=n_pass, median_seed=int(live["seed"]),
+        verdict=bool(ok), verdict_travel=bool(ok_travel), verdict_cycle=bool(ok_cycle),
+        verdict_upright=bool(ok_up), verdict_ablation=bool(ok_abl)), indent=1), encoding="utf8")
+    print(f"  JSON: {_out}")
+
     # ---- THE PICTURE ------------------------------------------------------
     import matplotlib
     matplotlib.use("Agg")
@@ -294,32 +431,42 @@ def run() -> int:
         ax.set_title("eight frames: MOVE held, walking on muscle control", fontsize=10)
     t = live["tr"]["t"]
     ax = fig.add_subplot(gs[1, 0])
-    ax.plot(t, live["tr"]["x"], color="#c0392b", lw=2.0, label="walked")
+    # EVERY SEED, the median in full colour. A single trace is what this plot used to show, and
+    # the spread it hid is the thing multi-seed judging exists to surface.
+    for r in lives:
+        ax.plot(r["tr"]["t"], r["tr"]["x"], color="#c0392b", lw=0.8, alpha=0.30)
+    ax.plot(t, live["tr"]["x"], color="#c0392b", lw=2.0, label=f"walked (median seed {live['seed']})")
+    for ab in abls:
+        ax.plot(ab["tr"]["t"], ab["tr"]["x"], color="#7f8c8d", lw=0.7, alpha=0.30)
     ax.plot(abl["tr"]["t"], abl["tr"]["x"], color="#7f8c8d", lw=1.6, ls="-.",
             label="ABLATION (oscillator off)")
     ax.plot(t, [vt * s for s in t], color="#1a7f37", ls="--", lw=1.4, label=f"derived {vt:.3f} m/s")
     ax.set_xlabel("s"); ax.set_ylabel("m"); ax.legend(fontsize=7)
-    ax.set_title(f"TRAVEL -- {live['speed']:.3f} m/s ({pct:.0f}%) vs ablation "
-                 f"{abl['speed']:.3f} ({abl_pct:.0f}%)", fontsize=9)
+    ax.set_title(f"TRAVEL -- median {med_spd:.3f} m/s ({pct:.0f}%) vs ablation "
+                 f"{med_abl:.3f} ({abl_pct:.0f}%)", fontsize=9)
     ax = fig.add_subplot(gs[1, 1])
     ax.step(t, [c > 0 for c in live["tr"]["cr"]], color="#c0392b", lw=1.4, where="post", label="R")
     ax.step(t, [1.3 if c > 0 else 0.3 for c in live["tr"]["cl"]], color="#2471a3", lw=1.4,
             where="post", label="L")
     ax.set_ylim(-0.3, 1.9); ax.set_xlabel("s"); ax.legend(fontsize=7)
-    ax.set_title(f"FOOTFALL -- periodicity {live['periodicity']:.2f} "
-                 f"(bar {PERIODICITY_BAR:.2f}), period {live['period_s']:.2f} s", fontsize=9)
+    ax.set_title(f"FOOTFALL, median seed -- periodicity {live['periodicity']:.2f} "
+                 f"(median of {nseeds}: {med_per:.2f}, bar {PERIODICITY_BAR:.2f}), period "
+                 f"{live['period_s']:.2f} s", fontsize=8.5)
     ax = fig.add_subplot(gs[1, 2])
+    for r in lives:
+        ax.plot(r["tr"]["t"], r["tr"]["z"], color="#8e44ad", lw=0.8, alpha=0.30)
     ax.plot(t, live["tr"]["z"], color="#8e44ad", lw=1.6)
     ax.axhline(tgt, color="#1a7f37", lw=2.0, label=f"stand target {tgt:.3f} m")
     ax.axhline(UPRIGHT_FRAC * tgt, color="#1a7f37", ls="--", lw=1.2,
                label=f"{100*UPRIGHT_FRAC:.0f}% -- the bar")
     ax.set_xlabel("s"); ax.set_ylabel("m"); ax.legend(fontsize=7)
-    ax.set_title(f"UPRIGHT -- pelvis MIN {100*live['z_min']/tgt:.0f}% of target", fontsize=9)
-    fig.suptitle(f"F4 -- WALK THROUGH THE PARSER   g={g:.3f} m/s2   "
-                 f"{'PASS' if ok else 'FAIL'}   speed {pct:.0f}%  periodicity "
-                 f"{live['periodicity']:.2f}  ablation {abl_pct:.0f}%", fontsize=12)
+    ax.set_title(f"UPRIGHT, all {nseeds} -- median pelvis MIN {100*med_zmin/tgt:.0f}% of target",
+                 fontsize=9)
+    fig.suptitle(f"F4 -- WALK THROUGH THE PARSER   {_wt.name}   g={g:.3f} m/s2   "
+                 f"median of {nseeds}: {'PASS' if ok else 'FAIL'}   speed {pct:.0f}%  "
+                 f"periodicity {med_per:.2f}  ablation {abl_pct:.0f}%", fontsize=12)
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    png = OUTDIR / "f4_walk.png"
+    png = OUTDIR / f"f4_walk_{_wt.stem}.png"
     fig.savefig(png, dpi=100, bbox_inches="tight"); plt.close(fig)
     print(f"  PICTURE: {png}")
     return 0 if ok else 1

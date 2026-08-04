@@ -532,6 +532,18 @@ the same v3 term). **The M8 finding to THE HUMAN is REPLACED.** The
 question is not how big a stone the body can hold; no stone size gets
 held. The question is why a body that stands 9.08 s cannot absorb ANY
 sudden off-axis torso load — and that is physics, not a dial: the
+
+> **AMENDMENT 2026-08-04 — read `9.08 s` as `7.01 s` everywhere in this
+> document.** That figure is seed 0 of a ten-seed distribution and seed
+> 0 is the LUCKIEST of the ten: median 7.01 s, min 6.30, spread 2.78 s
+> over 1e-6 nudges (`agent_logs/stand_survival_stand_theta.json`), so
+> it overstates by 29.5%. **The carry findings above are unaffected** —
+> they turn on collapses that happen 1–2 s after the snap, an order
+> inside the spread, and the question "why can a body that stands for
+> seconds not absorb an off-axis load" is asked at 7 s exactly as at 9.
+> Judges now headline the median of ten; see
+> `docs/CLAUDE_PROMPT_RUNG9.md`'s amendment.
+
 catch is a skill the policy was never trained with, and every run so
 far searched a sagittal-only policy class (870 numbers, no roll
 channel) inherited from before rung 9.

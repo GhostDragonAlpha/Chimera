@@ -528,6 +528,57 @@ def walk_reward(v_fore, z, fell, P):
     return r_v * r_z - (3.0 if fell else 0.0)
 
 
+# ── THE CADENCE: is it taking STRIDES, or shuffling? ──────────────────────────────────────────
+# The one constant, and it is the operator's bar rather than a fitted one: a footfall interval
+# below 60% of the DERIVED step time is a shuffle, not a step. Everything else here is read.
+CADENCE_FLOOR_FRAC = 0.60
+
+
+def footfall_interval_s(contact_r, contact_l, dt):
+    """Mean time between successive TOUCHDOWNS of the same foot. The step period, measured.
+
+    WHY THIS AND NOT `_periodicity`'s PERIOD (2026-08-04, `tools/footfall_spectrum.py`). The
+    autocorrelation's period is a SPECTRAL estimate and it needs a cycle to exist before it can
+    say anything: for a body that falls over once, the support signal decays monotonically, there
+    is no peak, and `_periodicity` now correctly returns `(0.0, 0.0)`. A reward term built on
+    that number therefore has NO GRADIENT for exactly the population that needs one -- every
+    candidate that has not yet found a rhythm scores identically zero, which is the same
+    saturation the stand port's joints term was just repaired for.
+
+    A touchdown is an EVENT and events can be counted from two of them. This measure degrades
+    gracefully: one touchdown per foot gives no interval and returns 0.0 (honest -- nothing was
+    measured), two gives one interval, and it rises smoothly as the steps spread out. It is also
+    the quantity the bar is actually written in: theHuman publishes `step_time_s`, the time
+    between one foot's touchdown and the other's, and this is that clock read off the feet.
+
+    ONE-SIDED BY CONSTRUCTION, and the other side is somebody else's job. This says nothing about
+    a body that steps too SLOWLY -- one step every three seconds scores a perfect interval here.
+    That loophole is closed by the factors beside it: a non-repeating gait scores periodicity 0,
+    and a body going nowhere scores r_v 0. Naming the hole rather than plugging it twice.
+    """
+    ints = []
+    for c in (contact_r, contact_l):
+        downs = [bool(v > 0) for v in c]
+        td = [i for i in range(1, len(downs)) if downs[i] and not downs[i - 1]]
+        ints += [(td[j + 1] - td[j]) * dt for j in range(len(td) - 1)]
+    return float(np.mean(ints)) if ints else 0.0
+
+
+def cadence_factor(interval_s, P):
+    """The measured footfall interval against the DERIVED floor, as a factor in [0, 1].
+
+    `bar = CADENCE_FLOOR_FRAC * step_time_s` = 0.60 * 0.5865 = 0.3519 s. The shape is
+    `clip(interval/bar, 0, 1)` -- the same shape `walk_reward`'s speed term was rebuilt into on
+    2026-08-03, and for the same reason stated there: a gaussian is numerically flat at the
+    bottom, so a population that has not yet reached the bar feels nothing and the term selects
+    on something else. A clipped ratio has gradient at every interval above zero.
+
+    No width is chosen and no second constant appears: the floor fraction is the whole term.
+    """
+    bar = CADENCE_FLOOR_FRAC * float(P["IN  step_time_s"])
+    return float(np.clip(interval_s / bar, 0.0, 1.0))
+
+
 def score_walk(mean_r, periodicity, frac_run):
     """The rollout's single number: the mean reward, GATED ON THERE BEING A CYCLE.
 
@@ -539,8 +590,12 @@ def score_walk(mean_r, periodicity, frac_run):
     return float(mean_r * max(0.0, periodicity) - 2.0 * (1.0 - frac_run))
 
 
-def score_walk_mult(mean_rvz, periodicity, frac_run):
-    """THE MULTIPLICATIVE SCORE: reward x periodicity x survived, every factor in [0,1].
+def score_walk_mult(mean_rvz, periodicity, frac_run, cadence=1.0):
+    """THE MULTIPLICATIVE SCORE: reward x periodicity x survived x cadence, all in [0,1].
+
+    `cadence` DEFAULTS TO 1.0 so that omitting it reproduces the pre-2026-08-04 score exactly.
+    That is not politeness; it is what lets the cadence arm have a control that is the old rule
+    bit-for-bit rather than a re-implementation of it.
 
     RULE 0 for the A/B this exists to run, stated before it:
 
@@ -566,9 +621,29 @@ def score_walk_mult(mean_rvz, periodicity, frac_run):
     `mean_rvz` is the mean of r_v * r_z with NO fall penalty in it -- the penalty is what the
     multiplication replaces, and leaving it inside would make the product negative and every
     reasoning about "a factor in [0,1]" false.
+
+    THE CADENCE FACTOR, added 2026-08-04. RULE 0 for it, stated before the run:
+
+        STATEMENT   Nothing in this score distinguishes a STRIDE from a SHUFFLE. Every trained
+                    arm puts its feet down far faster than theHuman's derived step time and
+                    scores unpenalised for it, because `r_v` prices distance, `r_z` prices
+                    height, `periodicity` prices repetition, and a fast enough shuffle can be
+                    repetitive, upright and moving. The missing quantity is the step's DURATION,
+                    and theHuman publishes it: `step_time_s` = 0.5865 s.
+
+        PREDICTION  With `cadence` multiplied in, the trained arm's measured footfall interval
+                    exceeds 0.4 s (theHuman's own step time is 0.5865; the floor this term
+                    defends is 0.3519).
+
+        FALSIFIER   If the interval stays under 0.3 s at an equal budget, the shuffle is not in
+                    the score -- it is in the PLANT (torque limits, muscle rise times, the
+                    stance the body can hold). Record that and STOP TUNING THE SCORE: the walk
+                    port's falsifier 3 becomes the live question, exactly as it did when
+                    `score_walk`'s subtractive rule was blamed and the plant turned out to be
+                    the constraint.
     """
     return float(max(0.0, min(1.0, mean_rvz)) * max(0.0, min(1.0, periodicity))
-                 * max(0.0, min(1.0, frac_run)))
+                 * max(0.0, min(1.0, frac_run)) * max(0.0, min(1.0, cadence)))
 
 
 if __name__ == "__main__":

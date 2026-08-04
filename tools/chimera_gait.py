@@ -167,7 +167,30 @@ def _periodicity(sig: np.ndarray, dt: float, lo=0.15, hi=2.0) -> tuple:
     within a plausible stride window IS the answer: ~1.0 is a metronome, ~0.0 is a
     seizure. Returns (strength 0..1, period seconds).
 
-    This is the measure that catches the impostor no other measure can see."""
+    This is the measure that catches the impostor no other measure can see.
+
+    A PEAK MUST BE A PEAK (2026-08-04, `tools/footfall_spectrum.py`). THE DEFECT THIS FIXES,
+    measured rather than reasoned about: every walk arm reported `period_s = 0.140 s`, and
+    `max(2, int(0.15/0.02)) * 0.02` is **0.140 s exactly** -- the window's own floor. Plotting
+    the autocorrelation showed why: for a body that falls over ONCE, the support signal is a
+    single 2 -> 1 -> 0 transition, whose autocorrelation DECAYS MONOTONICALLY out of lag 0 with
+    no peak anywhere. `argmax` over a decaying function always returns the leftmost admissible
+    lag, and its VALUE there is high because a short lag on a slow ramp is well correlated. So
+    the measure was returning **strength 0.579 and "a 0.14 s cadence" for a body with no rhythm
+    at all** -- and 0.579 is close enough to the 0.60 bar to read as "nearly walking".
+
+        A monotone decay is not a slow rhythm. It is the absence of one.
+
+    The fix asks the autocorrelation for a LOCAL INTERIOR MAXIMUM: `ac[k] >= ac[k-1]` and
+    `ac[k] >= ac[k+1]`. A metronome has one; a fall does not. Nothing else moves -- not `lo`,
+    not `hi`, not the strength definition -- because relaxing or tightening a bar to change a
+    verdict is the one forbidden move, and this changes no bar. It changes what the number MEANS
+    from "the correlation at the shortest lag we allow" to "the height of an actual peak".
+
+    NUMBERS THIS RETIRES, so the change cannot go silent: `walk_theta_mult` periodicity
+    0.54 -> 0.00, and the entrained arm's 0.59 was the same artifact and was never 0.01 short
+    of anything. Consumers: `f4_walk`, `f5_step`, `train_walk`, `train_step`, `analyze`.
+    """
     x = sig.astype(np.float64)
     x -= x.mean()
     n = len(x)
@@ -180,8 +203,23 @@ def _periodicity(sig: np.ndarray, dt: float, lo=0.15, hi=2.0) -> tuple:
     klo, khi = max(2, int(lo / dt)), min(n - 1, int(hi / dt))
     if khi <= klo:
         return 0.0, 0.0
-    k = klo + int(np.argmax(ac[klo:khi]))
-    return float(max(0.0, ac[k])), float(k * dt)
+    # EVERY INTERIOR LOCAL MAXIMUM in the window, then the tallest of them. `khi` is clamped to
+    # n-1 above, so `k + 1` is always a valid index and the interior test never runs off the end.
+    peaks = [k for k in range(klo, khi)
+             if ac[k] >= ac[k - 1] and ac[k] >= ac[min(k + 1, len(ac) - 1)]]
+    if not peaks:
+        # NO PEAK, SO NO CYCLE -- and the period is reported as 0.0 rather than as the window's
+        # edge. A number that names the instrument's construction instead of the body's is worse
+        # than no number, because it reads like a measurement (CLAUDE.md, the cross-hatch).
+        return 0.0, 0.0
+    k = max(peaks, key=lambda i: ac[i])
+    if ac[k] <= 0.0:
+        # A PEAK IN NEGATIVE TERRITORY IS NOT A CYCLE. Returning `(0.0, k*dt)` would print
+        # "strength 0.00, period 0.88 s" -- a period for a rhythm the same line says does not
+        # exist, which reads as "nearly there at 0.88 s" to anyone scanning the column. The
+        # strength and the period have to agree about whether there is anything to report.
+        return 0.0, 0.0
+    return float(ac[k]), float(k * dt)
 
 
 def analyze(tr: dict, foot_lo=0.03, sled_hi=0.92) -> dict:

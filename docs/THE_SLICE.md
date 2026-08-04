@@ -280,7 +280,14 @@ literal. (`python -m core.why` walk remains to be run as the formal check.)
 
 **F3 — JUDGED 2026-08-04: PASS by the slice's letter; one named debt carried forward.**
 Harness: `python tools/f3_stand.py` (exit 0 PASS; verdict picture
-`ChimeraEngine/output/ports/f3_stand.png`). The musculoskeletal body (290 muscles,
+`ChimeraEngine/output/ports/f3_stand_<theta>.png`, named after the arm since three arms
+judged in one session used to overwrite one file). **JUDGED OVER TEN SEEDS since 2026-08-04**
+— nudge 1e-6, headline is the MEDIAN with the min and spread beside it, because one rollout
+from one initial condition is a coin toss. The verdict is unchanged: PASS on 10/10 seeds,
+pelvis 102.9% on every one. What the ten seeds DID change is elsewhere — every *survival*
+number this project published for the stand was seed 0, the luckiest of ten
+(9.08 s reported, 7.01 s median); see `docs/CLAUDE_PROMPT_RUNG9.md`'s amendment.
+The musculoskeletal body (290 muscles,
 `myobody.xml`) stands on this world's gravity (g = 7.076, read by `tools/world.py` from
 theHuman — never assumed) **through a parser** (`BUTTONS = {"stand": formula}` — a button
 toggles the derived formula `a0 + kh·(tgt−z) + kp·pitch`; the full Phase D grammar comes
