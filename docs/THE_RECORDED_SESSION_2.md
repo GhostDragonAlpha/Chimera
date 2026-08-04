@@ -191,6 +191,28 @@ geom colours (pale), not MuJoCo red — the red muscles in the vendor renderer a
 rendering* feature, not geom albedo, so the splat body's pallor is the model's own claim, not a
 defect introduced here.
 
+## MEMBRANE: THE BLIND READ, AS A DRIVER (2026-08-04, Kimi) — one command when the eye is live
+
+**STATEMENT.** The blind read of this session is a driver, not a person. Every piece of evidence
+the eye must judge is already on disk in the eye's two native shapes — SEE (the master sheet and
+the ten beat sheets) and WATCH (the numbered stand_on_camera and stand_in_world frame
+sequences) — and `ChimeraEngine/human_messenger.py` already defines the reading protocol: blind
+prompts that forbid numbers, plus `align()` as the cross-reference against the recorder's ground
+truth. One command can therefore deliver the whole session to the eye blind and record every
+reading verbatim; the signature stays with THE HUMAN.
+
+**PREDICTION.** `python tools/blind_read.py`, run with the senses server live, writes
+`ChimeraEngine/output/blind_read/<timestamp>/readings.json` + `verdict.md`: one entry per sheet
+(SEE) and per frame sequence (WATCH), each with the reading verbatim, the expected term from the
+recorder's ground truth, and the align score — and the exact prompts sent, logged, so the blind
+condition is auditable.
+
+**FALSIFIER.** Two clauses, the first testable before the server exists: (1) the eye is dark and
+the driver exits LOUD without writing a verdict — a driver that silently passes with no eye is
+exactly the instrument defect this project keeps paying for; (2) any outgoing prompt leaks the
+answer — a number, a beat name, or the words stone/rock/grass/pile — which the prompt log makes
+checkable.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
