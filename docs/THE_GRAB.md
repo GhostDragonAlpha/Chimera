@@ -510,3 +510,61 @@ M8a's finding to THE HUMAN changes from "how big a stone" to "the
 body must learn to catch before the dial matters". 2. Survivors
 appear but the load path is fake (weld-hang reprised at small mass) —
 the exploit audit reopens at this mass, named here.
+
+**D=0.15 run — VERDICT: falsifier 1 FIRES. The curve is flat to the
+floor; load is exonerated.** At 5.7% of the lifting body (4.68 kg,
+33 N): zero survivors across 48×32, best held 2.68 s — SHORTER than
+at 72.5%, the direction the warm-start incumbent (tuned in the heavy
+world) predicts and the opposite of what a strength limit predicts.
+The full four-point curve:
+
+| dial D | mass | % of lifting body | best held | survivors |
+|---|---|---|---|---|
+| 0.15 m | 4.68 kg | 5.7% | 2.68 s | 0 / 48×32 |
+| 0.25 m | 21.68 kg | 26.4% | 3.04 s | 0 / 48×32 |
+| 0.30 m | 37.46 kg | 45.7% | 3.60 s | 0 / 48×32 |
+| 0.35 m | 59.49 kg | 72.5% | 3.02 s | 0 / 48×32 |
+
+Plus one new exploit signature at small mass: stone-floor contact
+forces to **1682%** of the stone's weight — the weld dragging the
+light stone across the floor (the grind, exploit class six, priced by
+the same v3 term). **The M8 finding to THE HUMAN is REPLACED.** The
+question is not how big a stone the body can hold; no stone size gets
+held. The question is why a body that stands 9.08 s cannot absorb ANY
+sudden off-axis torso load — and that is physics, not a dial: the
+catch is a skill the policy was never trained with, and every run so
+far searched a sagittal-only policy class (870 numbers, no roll
+channel) inherited from before rung 9.
+
+## AMENDMENT — v8: THE FRONTAL CATCH (stated before the run)
+
+**STATEMENT.** Rung 9 proved the roll channel is trainable only when
+the search shapes the policy around it (warm 9.08 s, cold pending).
+The carry has been failing on exactly that missing channel: every
+collapse — at every mass — is the body losing the rebalanced posture
+~1–2 s after the snap, and the rebalanced posture is a frontal-plane
+problem (the weld sits at (0.45, 0.15, −0.15) in the torso frame —
+0.15 m off the sagittal midline). A carry search in the 4-block
+policy class (a0/kh/kp/kr, 1160 numbers, warm from the frontal stand
+itself) will find catches the 870-class search provably cannot
+contain.
+
+**PREDICTION.** Against the slice's own stone (59.49 kg, the dial
+unmoved — the mass is exonerated, so the test runs on the real
+target): a survivor emerges inside 48×32 with load ≥ 80%,
+stone-floor ≤ 20%, pelvis ≥ 80% through f6's window — the first true
+carry.
+
+**FALSIFIERS.** 1. No survivor in the 4-block class either — the
+frontal channel was not the carry's wall; the remaining candidate is
+the snap EVENT as a policy-shock no feedforward formula absorbs
+(named with numbers, and the membrane turns to training the catch as
+its own port, the way standing got its own). 2. A survivor with a
+fake load path (grind/hang reprised) — the exploit audit reopens.
+3. The carry holds but under the pelvis bar — the posture trade,
+published as-is, bar unmoved. TRAINER AND JUDGE CHANGE TOGETHER (the
+run-4/5 lesson): train_carry searches 4*nu with roll feedback in the
+law; f6's obs gains roll; the parser already prices a 4-block theta
+transparently (1f24f74). A 3-block checkpoint still runs unchanged
+(kr = 0) — but v8 REFUSES an 870 init: mixing foundations is the
+theta-pair lesson, and the warm start is the frontal stand alone.

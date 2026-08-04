@@ -74,7 +74,10 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
         evaluate._sg = int(m.body_geomadr[sb])
         evaluate._floors = {int(gi) for gi in range(m.ngeom) if int(m.geom_bodyid[gi]) == 0}
     wb, wl = evaluate._wb, evaluate._wl
-    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:]
+    # v8 (THE GRAB.md): the 4-block policy class. kr is zeros for a 3-block theta, so old
+    # checkpoints run unchanged; the roll convention is parser.py's (1f24f74) exactly.
+    a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
+    kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
@@ -94,7 +97,8 @@ def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u = a0 + kh * (tgt - z) + kp * pitch
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            u = a0 + kh * (tgt - z) + kp * pitch + kr * roll
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
@@ -218,10 +222,14 @@ def main() -> int:
     if eq < 0:
         raise SystemExit(f"no equality {WELD_NAME!r} -- refusing to train a carry with no weld.")
     nu = m.nu
-    dim = 3 * nu
+    dim = 4 * nu                  # v8: the 4-block policy class (a0 | kh | kp | kr)
     mu = np.load(init)
-    sd = 0.5 * np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6), np.full(nu, 0.6)])
-    print(f"warm start from {init} (the stand's 870 numbers; the world adds {G['OUT weight_N']:.0f} N)")
+    if mu.size != dim:
+        raise SystemExit(f"{init} is {mu.size} numbers, the search is {dim} -- refusing to "
+                         f"pad or truncate a foundation (the theta-pair lesson, THE_GRAB v8).")
+    sd = 0.5 * np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6),
+                               np.full(nu, 0.6), np.full(nu, 0.6)])
+    print(f"warm start from {init} ({dim} numbers; the world adds {G['OUT weight_N']:.0f} N)")
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     hist = []

@@ -116,7 +116,12 @@ def run() -> int:
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u, trace = PARSER.command({"z": z, "pitch": pitch, "t": float(d.time)})
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            # roll in obs (THE_GRAB v8): the parser prices a 4-block theta's kr term;
+            # without it the judge would grade the frontal carry with its roll channel
+            # deaf -- trainer and judge change together, the run-4/5 lesson.
+            u, trace = PARSER.command({"z": z, "pitch": pitch, "roll": roll, "t": float(d.time)})
             if u is not None:
                 d.ctrl[:] = u
         mujoco.mj_step(m, d)
