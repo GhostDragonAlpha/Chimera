@@ -83,6 +83,7 @@ SCENES = {
     "theSpace":        {"kind": "space", "radius": 300.0, "cam": (0.0, -40.0, 20.0)},
     "theSeed":         {"kind": "seed", "radius": 180.0, "cam": (0.0, -150.0, 90.0)},
     "theDeterminism":  {"kind": "determinism", "radius": 200.0, "cam": (0.0, -170.0, 100.0)},
+    "theLaws":         {"kind": "laws", "radius": 180.0, "cam": (0.0, -170.0, 110.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1242,6 +1243,49 @@ def _determinism_buffers(spec: dict, term: str):
     end = np.concatenate(one_unfold(left, 7, 1.0) + one_unfold(right, 7, 1.0), axis=0)
     return end, begin
 
+def _laws_buffers(spec: dict, term: str):
+    """theLaws: the trained physics the seed runs under. Where theSeed's web is organic
+    and wandering, the LAWS are order: a perfect lattice -- every node at its measured
+    place, every edge the same length, the same rule repeated everywhere with no
+    exception. begin = the lattice faint, only the rule-points lit; end = the lattice
+    fully bound, every edge drawn: the rules connecting into the one grid everything
+    runs on."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 180.0))
+    SP = 26.0
+    N = 4                       # nodes per axis: a (2N+1)^3 lattice
+
+    # the rule-points: a perfect cubic lattice of glowing nodes
+    coords = np.arange(-N, N + 1) * SP
+    pts = np.array([(x, y, z) for x in coords for y in coords for z in coords])
+    nodes = np.zeros((len(pts), NCOLS), dtype=np.float32)
+    nodes[:, PX], nodes[:, PY], nodes[:, PZ] = pts[:, 0], pts[:, 1], pts[:, 2]
+    nodes[:, TYPE] = 3.0; nodes[:, ALPHA] = 0.85; nodes[:, SIZE] = 2.4
+    nodes[:, CR], nodes[:, CG], nodes[:, CB] = 0.40, 0.78, 0.92
+
+    def edges(bright):
+        """the bindings: axis edges between lattice neighbours, all one length."""
+        out = []
+        for i, a1 in enumerate(pts):
+            for axis in range(3):
+                b1 = a1.copy(); b1[axis] += SP
+                if abs(b1[axis]) > N * SP:
+                    continue
+                seg = np.zeros((8, NCOLS), dtype=np.float32)
+                ts = np.linspace(0.0, 1.0, 8)[:, None]
+                seg[:, PX:PZ + 1] = a1 * (1.0 - ts) + b1 * ts
+                seg[:, TYPE] = 3.0
+                seg[:, ALPHA] = 0.55 if bright else 0.10
+                seg[:, SIZE] = 1.1
+                seg[:, CR], seg[:, CG], seg[:, CB] = 0.30, 0.60, 0.78
+                out.append(seg)
+        return out
+
+    begin = np.concatenate([nodes] + edges(False), axis=0)   # the rules, not yet bound
+    end = np.concatenate([nodes] + edges(True), axis=0)      # the rulebook, bound
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1329,7 +1373,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1577,7 +1621,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

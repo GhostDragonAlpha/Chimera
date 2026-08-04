@@ -107,6 +107,10 @@ PHYSICS_READING = {
                       "the same pattern of threads and colored nodes twice, mirror twins "
                       "with every detail matching: one world unfolded twice from the same "
                       "seed, bit-identical, NOT two different worlds",
+    "theLaws": "blue dots forming an intricate geometric pattern against a dark "
+               "background -- a perfect regular lattice of glowing nodes connected by "
+               "straight edges, the same pattern repeating everywhere: pure order, a "
+               "rulebook made visible, NOT organic or random",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
