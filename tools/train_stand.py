@@ -338,6 +338,11 @@ def main() -> int:
     if joints not in ("hinge", "retired"):
         raise SystemExit("--joints must be 'hinge' (derived) or 'retired' (the control). "
                          "A third shape is a sweep where a derivation belongs (rule 1). Refusing.")
+    # THE ELITE-MEAN GUARD, off by default so every existing invocation reproduces its history
+    # bit-for-bit and the arms already run remain valid controls. It becomes the default when
+    # it is PROVEN, not when it is written -- the same sequence `--blocks` and `--joints`
+    # followed. See the Rule 0 beside the guard itself.
+    elite_guard = "--elite-guard" in a
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     P = derive_stand_port()
@@ -373,9 +378,13 @@ def main() -> int:
     print(f"  scoring: WORST of {seeds} randomized start(s) x {secs:.1f} s"
           + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
              else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
+    print(f"  ELITE-MEAN GUARD: "
+          + ("ON -- the search centre may not move downhill (one extra eval per turn)"
+             if elite_guard else
+             "off -- the centre follows the elite mean wherever it goes (the historical rule)"))
     print(f"  saving to {out_name}")
-    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}"
-          f"{'jmax':>7}{'seedspr':>9}  verdict")
+    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'elmean':>10}{'mu':>7}{'pelvis MIN':>13}"
+          f"{'% of target':>13}{'held':>8}{'jmax':>7}{'seedspr':>9}  verdict")
     best_theta = mu.copy()
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
@@ -392,7 +401,39 @@ def main() -> int:
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
-        mu, sd = el.mean(0), el.std(0) + 1e-3
+        # ── THE ELITE-MEAN GUARD (2026-08-04). CEM's centre may not move DOWNHILL. ────────────
+        # RULE 0, stated before it was built:
+        #
+        #   STATEMENT   `cand[0] = mu` guarantees the best policy cannot be LOST. It does not
+        #               guarantee the search can still FIND anything, and those are different
+        #               properties. When `mu` is the best point and every sample is worse -- the
+        #               normal case at 1160 dimensions with sd 0.075 -- the elite is `{mu, three
+        #               worse samples}` and `el.mean(0)` moves the centre three-quarters of the
+        #               way toward the worse ones. The distribution the search draws from is
+        #               destroyed on turn 0 and never recovers, so `best_ever` saves the warm
+        #               start and the run reports "no improvement" whatever was changed.
+        #               MEASURED: two 30-turn warm A/B arms, 2,160 evaluations each, ZERO turns
+        #               beating turn 0, both saving a theta bit-identical to their init.
+        #   PREDICTION  With the centre refused permission to move downhill, the same budget from
+        #               the same init produces a theta that is NOT bit-identical to it.
+        #   FALSIFIER   Still bit-identical after the same budget -> the elite mean was not the
+        #               wall; the sampling distribution at this dimensionality cannot produce an
+        #               improvement at all, and the answer is a different SEARCH, not a guard.
+        #
+        # NO NEW CONSTANT. The elite mean is scored (one extra evaluation per turn, the same
+        # price `cand[0] = mu` already pays) and adopted only if it beats the incumbent's own
+        # score. `scores[0]` IS the incumbent's, because `cand[0] = mu` -- read, never re-run.
+        # `sd` comes from the elite either way: the spread is a different quantity from the
+        # centre, and freezing it too would stop the search refining.
+        el_mean = el.mean(0)
+        if elite_guard:
+            em_score = score_theta(m, d, mujoco, el_mean, P, secs, seeds, joints=joints)[0]
+            moved = em_score > scores[0]
+            mu = el_mean if moved else mu
+        else:
+            em_score, moved = float("nan"), True
+            mu = el_mean
+        sd = el.std(0) + 1e-3
         best_theta = cand[order[0]]
         s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6,
                                             joints=joints)
@@ -427,8 +468,15 @@ def main() -> int:
             # body the training had already beaten. An instrument reporting the wrong candidate is
             # the same species as the peak-vs-minimum bar.
             best_ever = (float(scores[order[0]]), cand[order[0]].copy())
-        print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
-              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
+        # `elmean` is the elite mean's own score and `mu` says whether the centre was allowed to
+        # move to it. Printed every turn because the whole warm-start failure was invisible: the
+        # log showed a best score that never improved and said nothing about WHY, and the answer
+        # was that the centre had already left the incumbent on turn 0.
+        em_txt = f"{em_score:>10.3f}" if np.isfinite(em_score) else f"{'n/a':>10}"
+        mv_txt = ("moved" if moved else "HELD") if elite_guard else "free"
+        print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{em_txt}{mv_txt:>7}"
+              f"{held:>12.3f}m{frac:>12.0f}%{survived:>7.2f}s"
+              f"{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
               f"{rb_txt:>9}  {'PROVEN' if ok else 'not yet'}")
         # THE PICTURE IS NAMED AFTER THE ARM. Two arms of an A/B run concurrently -- that is the
         # point of an A/B -- and both used to write `stand_turn_NN.png`, so each turn's picture

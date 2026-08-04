@@ -601,6 +601,47 @@ CLAUDE.md already records the behaviour (*"the repo auto-flushes+pushes dirty fi
 of it is that an explanatory message loses its diff, and the durable home for the reasoning is
 therefore **here**, not the commit log. Nothing is missing from master; only the pairing is.
 
+## THE SEARCH MEMBRANE — the wall the lane found, now stated as a theory
+
+The lane's closing note named one open thing. This is its Rule 0, stated before the build.
+
+**STATEMENT.** `cand[0] = mu` guarantees the best policy cannot be **lost**. It does not
+guarantee the search can still **find** anything, and those are different properties. When `mu`
+is the best point and every sample is worse — the normal case at 1160 dimensions with
+`sd = 0.075` — the elite is `{mu, three worse samples}` and `el.mean(0)` moves the centre
+three-quarters of the way toward the worse ones. The distribution the search draws from is
+destroyed on turn 0 and never recovers, so `best_ever` saves the warm start and the run reports
+"no improvement" *whatever was changed*.
+
+**PREDICTION.** With the centre refused permission to move downhill, the same budget from the
+same init produces a theta that is **not** bit-identical to it.
+
+**FALSIFIER.** Still bit-identical after the same budget → the elite mean was not the wall; the
+sampling distribution at this dimensionality cannot produce an improvement at all, and the
+answer is a different **search**, not a guard.
+
+**The mechanism is now observed rather than deduced.** Turn 0 of the guarded run, against the
+identical init, budget, seeds, window, RNG and joints form as the arm that returned
+bit-identical:
+
+```
+ turn      best      mean    elmean     mu   pelvis MIN  % of target    held   jmax
+    0    -3.864    -4.498    -4.504   HELD       0.410m          45%   6.56s   1.18
+```
+
+`best` is the incumbent (`cand[0] = mu`) at **−3.864**; the elite mean scores **−4.504**. The
+unguarded rule would have moved the search's centre **0.64 downhill on its first turn**, to a
+point worse than the mean of the whole population. That is the wall, printed.
+
+**No new constant.** The elite mean is scored — one extra evaluation per turn, the same price
+`cand[0] = mu` already pays — and adopted only if it beats the incumbent's own score, which is
+`scores[0]` and is read rather than re-run. `sd` still comes from the elite: the spread is a
+different quantity from the centre, and freezing it too would stop the search refining. The
+guard is behind `--elite-guard`, **off by default**, so every arm already run remains a valid
+control; it becomes the default when it is proven, not when it is written.
+
+---
+
 **THE ONE OPEN THING THAT BLOCKS THE REST.** `train_stand`'s warm-started CEM cannot improve on
 its own start at 1160 dimensions — 2,160 evaluations, zero improvements, a bit-identical file
 back. `cand[0] = mu` guarantees the incumbent survives; nothing guarantees the *distribution*
