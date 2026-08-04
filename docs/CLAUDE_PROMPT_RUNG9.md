@@ -114,3 +114,37 @@ way, with the numbers.
 **A 1160-dimensional cold CEM is a hard search and may simply fail to converge in the turns
 given.** That outcome is not evidence for either reading and will be reported as inconclusive
 rather than as a refutation — the honest third result.
+
+## THE COLD VERDICT — INCONCLUSIVE by the criterion registered above, not a refutation
+
+70 turns × pop 32 × 8 s, from scratch, 4·nu = 1160 dimensions, incumbent elitism kept, written
+only to `stand_theta_frontal.npy`:
+
+| | held @ 12 s | pelvis MIN | mean \|kr\| | kr nonzero |
+|---|---:|---:|---:|---:|
+| **WARM** (incumbent, on disk) | **9.08 s** | 47.9% | 0.2181 | 100% |
+| **COLD** (from scratch) | **5.56 s** | 47.7% | **0.3846** | 100% |
+
+**Cold loses, and the pre-registered reading applies: INCONCLUSIVE.** The RULE 0 above says, in
+advance, that a 1160-dimensional cold CEM may simply fail to converge in the turns given and that
+this "is not evidence for either reading." It didn't converge: **2240 evaluations over 1160
+dimensions is 1.9 evals per dimension.** Calling that a refutation of the ninth hypothesis would
+be reading a search budget as a physical result — the same move as reading a fell-penalty
+saturation as an arrhythmia.
+
+**AND ONE NUMBER MAKES IT INFORMATIVE ANYWAY.** The cold search's roll gains came out **larger**
+than the warm run's — mean |kr| 0.3846 against 0.2181, 100% nonzero in both. A from-scratch
+search that found the frontal channel useless would have driven it toward zero, exactly as both
+*graft* searches did against the frozen θ. It did the opposite: **given the channel from the
+first generation, the search leans on it harder.** That is weak positive evidence for the
+statement and it is not strong enough to promote anything.
+
+**PROMOTION: NONE.** `stand_theta.npy` keeps the warm 4-block incumbent (9.08 s, F3 exit 0).
+`stand_theta_frontal.npy` holds the cold result for the record. Guardrail 1 is satisfied — the
+on-disk artifact changed only for the policy that `f3_stand` judged better, and the earlier
+violation is recorded above rather than erased.
+
+**WHAT WOULD SETTLE IT:** the same cold run at ~20–50 evals/dim (roughly 700–1800 turns at this
+population, or a larger population on the GPU path). Named, not run — and worth saying plainly
+that it may not be worth the compute, since the warm policy already passes F3 and the open
+blocker is the walk, not the stand.
