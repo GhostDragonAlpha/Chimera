@@ -381,3 +381,43 @@ multiplicative form prices these correctly without a new constant:
 launchers sit far from the pelvis target most of the rollout, so
 mean_r ≈ 0 and they join the hangers at the bottom of the ranking,
 below any candidate whose plantar path actually carries the stone.
+
+**Run 9 — VERDICT: the ranking inverted, the search found the real
+thing once, and NOBODY survives the window. Falsifier 2 FIRES
+CLEAN.** The multiplicative score did what it was written to do:
+hangers and launchers both price to exactly 0.000, and the single
+turn whose candidate put the load path through its feet — turn 20,
+plantar spikes to ~1200 N post-snap, load 32%, stone-floor 28%, held
+3.02 s — took the session's best at 0.001 and was saved. The form is
+honest now; a candidate can only score by actually carrying. And
+across all 48×32 candidates, warm-started from run 8's best, **not
+one survives the 4.00 s window**: held-times cluster 2.0–2.9 s, which
+is 1.0–1.9 s after the 421 N arrives. jmax sits 3.2–4.2 throughout —
+the collapse is through the joints' stops. f6 against the saved best:
+plantar 619.8 → 0.0 N at the weld (the body is on the ground, not
+filtering the load), pelvis MIN 21% — FAIL on all three phases, bars
+unmoved. **Cleanliness of the falsifier:** the one standing confound
+is the unloaded stand's 7.0 s ceiling (the foot-ligament regression,
+Claude's rung 9 in flight). It does not reach: the carry horizon is
+4.0 s, the unloaded body is solid through it (~100% pelvis to 5 s),
+and every fall lands 1.0–1.9 s after the snap — the load is the
+killer, attributable, no proxy in the way. **The finding, for THE
+HUMAN's dial:** the stone is D = 0.35 m quartzite, 59.49 kg = 421 N
+at g 7.08 — **63% of the 94.5 kg theHuman publishes, 73% of the 82.0
+kg the model masses** (the mass discrepancy stays on record,
+unreconciled). The catch pose puts it on a 0.45 m lever → ~206 N·m
+at the hip, the edge of published human maximal voluntary hip
+extension, asked of a body whose postural policy was never trained
+for it. The dial, all three settings legal: **(a)** shrink the stone
+— D ≈ 0.25 m is ~21.6 kg, 23–26% of body mass, a load a trained
+stand can plausibly hold; **(b)** keep the stone and let M8b's arm be
+the story of a lift that fails — the body straining and going down is
+a true read of the ledger; **(c)** leave the stone and revisit after
+the stand ceiling rises (rung 9's frontal retrain). The choice is
+taste about what the world should ask of the body — THE HUMAN's
+terminal, named as such. M8a's instrument half is complete either
+way: five exploit classes (born-carry, crouch, floor-rest, weld-hang,
+launch-and-crash) each found, priced, and closed; the load path, the
+stone-floor interface, the snap, and the score form all honest. What
+remains open on the rung is M8b — the pick-up MOTION, the arm — and
+it starts from whatever the dial says.
