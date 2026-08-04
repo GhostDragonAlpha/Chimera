@@ -128,6 +128,79 @@ tissue membrane named at the end of `docs/THE_TRUNK_TISSUE.md` is very likely th
 under this one** — which is a prediction, and it is written down before that work is done so it
 can be wrong.
 
+---
+
+# AMENDMENT — two agents in one lane, and the defect that found
+
+Written after `tools/walk_port.py` and `tools/train_walk.py` were taken over mid-run by the
+other agent working this list (Kimi Code CLI). Recorded rather than argued, because the finding
+it made is correct and the evidence it deferred is measured and would otherwise be lost.
+
+## THE DEFECT IT FOUND IN THIS WORK, and it is real
+
+> *"the trainer drove the ENTRAINED oscillator while the judge drives the CLOCK. Two of the
+> eight trained numbers were dead at judgment and the entrained gait was never judged at all."*
+
+**Correct.** When `WalkOscillator` was added to `train_walk.evaluate`, `move_formula_fn` — the
+path `f4_walk` reaches through the parser — still computed `phase = omega*t`. So `eps` and
+`kappa` were optimised against a plant the judge did not run. It is *"train past what you
+judge"* one level deeper than where that rule was earned this morning, and it is the same
+species as every other defect on this page: **a number that is alive in one instrument and dead
+in the other, with nothing raising.**
+
+Its resolution — make the trainer drive the judge's plant exactly, revert to the clock, and
+defer entrainment to its own membrane with its cost stated — is the correct call and stands.
+This document does not re-litigate it.
+
+## THE EVIDENCE THE DEFERRAL SHOULD CARRY WITH IT
+
+The deferral is recorded without the number that motivates it, so it is recorded here. Same 30
+turns × pop 32 × 8 s, same world, same frozen stand θ — only the phase source differs:
+
+| | open-loop clock | contact-entrained |
+|---|---:|---:|
+| best score | −4.005 | **−3.674** |
+| held before falling | ~3.7 s plateau | **4.5–5.3 s** |
+| periodicity | 0.26–0.36 | **0.40–0.49** |
+| duty R/L | 0.64 / **0.14** | 0.74 / **0.60** |
+
+**The duty row is the whole argument.** Open-loop, the left foot was on the ground **14%** of
+the time: the body stood on its right leg and waved the left. Entrained, the legs share the
+load and duty lands on theHuman's published 0.60 without being trained toward it. That is not a
+robustness nicety — it is the difference between two legs and a leg plus a pendulum.
+
+**AND THE CAVEAT THAT CUTS THE OTHER WAY, stated so this table cannot be quoted as a verdict:**
+those entrained numbers were produced by the trainer alone. By the defect above, *no entrained
+gait has ever been judged.* The table is evidence that entrainment moves the mechanism metrics;
+it is **not** evidence that an entrained walk passes F4, because that measurement does not exist
+yet. Whoever takes the deferred membrane has to make it.
+
+## A MEASUREMENT MADE AND THROWN AWAY, recorded so it is not re-quoted
+
+After the takeover, the 8-number entrained θ was evaluated through the rewritten (clock)
+`train_walk.evaluate` and returned −34% travel, held 2.24 s. **That number is meaningless** —
+it is a θ trained on one plant scored on another, with two of its numbers silently ignored: the
+same mismatch, running in the opposite direction. It is written down only because a plausible
+number with no valid comparison behind it is exactly the kind of thing that survives into a
+later summary as though it meant something.
+
+## THE SWING INTERLOCK, unjudged and derived
+
+A second structure was built and never judged before the lane changed hands, so it is specified
+here rather than claimed. `theHuman` publishes `duty_factor = 0.6027`. A duty above 0.5 is not a
+preference — it is what makes a gait a WALK rather than a run: two feet at 60% each is 120% of a
+cycle's contact, so at every instant at least one foot is down and **both feet are never
+airborne.** The measured failure is exactly the one that arithmetic forbids: the body leaves the
+ground and falls at 2.5–4 s.
+
+So: *a leg may not enter swing while the contralateral leg is unloaded* — effort applied until a
+sensor says stop, the control law one level below where `WalkOscillator` applies it. Gated on the
+**swing half only** (`s > 0`); gating the stance half too would tell a foot in double support to
+stop supporting, and the interlock would cause the fall it exists to prevent.
+
+Early signal only, and it is not a result: the interlock reached −3.797 in **4 turns** where the
+entrained-only version needed 19 to reach −3.674. It was never carried to a judgment.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
