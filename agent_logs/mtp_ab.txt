@@ -1,0 +1,97 @@
+########## ARM 1: mtp +/-30 (model default) ##########
+[world] keyframe: seated 9, left alone 10 (out of range, no ligament -- not this change's to move)
+[world] gravity -9.81000 -> -7.076122 m/s^2  (0.7216 of Earth, from theHuman)
+[world] keyframe: seated 9, left alone 10 (out of range, no ligament -- not this change's to move)
+[world] gravity -9.81000 -> -7.076122 m/s^2  (0.7216 of Earth, from theHuman)
+
+F3 -- STAND THROUGH THE PARSER, ZERO POSE-SCRIPTED FRAMES
+==========================================================================
+  world: g = 7.0761 m/s2 (theHuman, via load_body -- never assumed)
+  target pelvis 0.9201 m (hip_to_ankle + ankle_height, theStance/theHuman)
+  PHASE 1 (stand ON, 5.0 s): pelvis MIN 0.9469 m = 102.9% of target  ->  PASS
+           CoM excursion PEAK 0.49 of BoS box (must be <= 1.00)  ->  PASS
+           SAME CoM vs the polygon THE FEET MAKE (F3's own words): peak 0.41, outside 0.0% of phase 1
+             the two landmarks disagree: theStance publishes together_half_width 0.1020 m,
+             the feet make 0.0961 m (0.94x). theStance also publishes
+             natural_ and braced_ widths -- stand_port picks together_ with no stated reason.
+             THE BAR BELOW IS UNMOVED; which one F3 should read is theStance's call.
+           CoM outside the box 0.0% of phase 1, peak at t=2.04s
+           worst joint 1.18 of range at L4_L5_FE (must be < 1.00)  ->  FAIL
+           SOME joint is over its stop for 98% of phase 1. Per joint, peak and % of phase 1 spent at/past the stop:
+             L4_L5_FE               peak 1.18   over   8.4% of phase 1  <- LUMBAR, the trunk membrane's ligament
+             mtp_angle_l            peak 1.10   over  97.6% of phase 1
+             knee_angle_r           peak 1.06   over  98.0% of phase 1
+             knee_angle_l           peak 1.03   over  98.0% of phase 1
+             L1_L2_FE               peak 1.00   over   0.0% of phase 1  <- LUMBAR, the trunk membrane's ligament
+             L3_L4_AR               peak 1.00   over   0.0% of phase 1
+           TRUNK MEMBRANE, falsifier 1: worst lumbar peak 1.18, sustained over its stop 8.4% of phase 1
+             -> transient only, not sustained
+  PHASE 2 (stand OFF): slumped to <50% of target in 2.30 s  ->  PASS
+  qpos writes after reset: 0 (by construction -- the harness contains no write)
+==========================================================================
+  F3 VERDICT (the slice's letter): PASS
+  PORT CONTRACT (stand_port's full PROVEN line, incl. joints off limits): FAIL -- OPEN DEBT at 4 joint(s), worst L4_L5_FE 1.18
+
+  WHY EACH OVER-THE-STOP JOINT IS NOT HELD -- from derive_ligaments' own refusals,
+  not inferred here. This is the next membrane's work list:
+    L4_L5_FE               HAS a derived ligament (trunk membrane); peak 1.18 is 8.4% transient
+    mtp_angle_l            never reached the derivation: theHuman's gait_envelope_deg publishes no curve for this joint
+    knee_angle_r           ligament on one side only -- ext: gap 1.84 deg <= envelope grain 4.16 deg -- unresolvable, not small
+    knee_angle_l           ligament on one side only -- ext: gap 1.84 deg <= envelope grain 4.16 deg -- unresolvable, not small
+  theHuman publishes three sagittal curves (hip, knee, ankle). The trunk closed its
+  own joints by taking the edge from the LITERATURE instead (Pearcy & Tibrewal).
+  The foot and the hip's off-sagittal axes want that same move -- and that is a
+  SEPARATE membrane, which needs its own RULE 0 stated before anyone builds it.
+  PICTURE: E:\PythonChimera\ChimeraEngine\output\ports\f3_stand.png
+
+########## ARM 2: mtp dorsiflexion 65 deg (published) ##########
+[world] keyframe: seated 9, left alone 10 (out of range, no ligament -- not this change's to move)
+[world] gravity -9.81000 -> -7.076122 m/s^2  (0.7216 of Earth, from theHuman)
+[world] mtp mtp_angle_r    [-30.0,+30.0] -> [-30.0,+65.0] deg (CHIMERA_MTP_DEG -- published hallux dorsiflexion)
+[world] mtp mtp_angle_l    [-30.0,+30.0] -> [-65.0,+30.0] deg (CHIMERA_MTP_DEG -- published hallux dorsiflexion)
+[world] keyframe: seated 9, left alone 10 (out of range, no ligament -- not this change's to move)
+[world] gravity -9.81000 -> -7.076122 m/s^2  (0.7216 of Earth, from theHuman)
+[world] mtp mtp_angle_r    [-30.0,+30.0] -> [-30.0,+65.0] deg (CHIMERA_MTP_DEG -- published hallux dorsiflexion)
+[world] mtp mtp_angle_l    [-30.0,+30.0] -> [-65.0,+30.0] deg (CHIMERA_MTP_DEG -- published hallux dorsiflexion)
+
+F3 -- STAND THROUGH THE PARSER, ZERO POSE-SCRIPTED FRAMES
+==========================================================================
+  world: g = 7.0761 m/s2 (theHuman, via load_body -- never assumed)
+  target pelvis 0.9201 m (hip_to_ankle + ankle_height, theStance/theHuman)
+  PHASE 1 (stand ON, 5.0 s): pelvis MIN 0.0593 m = 6.4% of target  ->  FAIL
+           CoM excursion PEAK 7.00 of BoS box (must be <= 1.00)  ->  FAIL
+           SAME CoM vs the polygon THE FEET MAKE (F3's own words): peak 99.26, outside 73.6% of phase 1
+             the two landmarks disagree: theStance publishes together_half_width 0.1020 m,
+             the feet make 0.0975 m (0.96x). theStance also publishes
+             natural_ and braced_ widths -- stand_port picks together_ with no stated reason.
+             THE BAR BELOW IS UNMOVED; which one F3 should read is theStance's call.
+           CoM outside the box 72.4% of phase 1, peak at t=2.52s, outside during t=1.38..4.98s
+           worst joint 1.17 of range at L4_L5_FE (must be < 1.00)  ->  FAIL
+           SOME joint is over its stop for 98% of phase 1. Per joint, peak and % of phase 1 spent at/past the stop:
+             L4_L5_FE               peak 1.17   over   8.8% of phase 1  <- LUMBAR, the trunk membrane's ligament
+             mtp_angle_r            peak 1.07   over   5.6% of phase 1
+             knee_angle_r           peak 1.06   over  45.6% of phase 1
+             knee_angle_l           peak 1.03   over  41.2% of phase 1
+             mtp_angle_l            peak 1.02   over  95.2% of phase 1
+             L1_L2_FE               peak 1.00   over   0.0% of phase 1  <- LUMBAR, the trunk membrane's ligament
+           TRUNK MEMBRANE, falsifier 1: worst lumbar peak 1.17, sustained over its stop 8.8% of phase 1
+             -> transient only, not sustained
+           body fell during phase 1 at t=2.62 s
+  PHASE 2 (stand OFF): slumped to <50% of target in 0.00 s  ->  PASS
+  qpos writes after reset: 0 (by construction -- the harness contains no write)
+==========================================================================
+  F3 VERDICT (the slice's letter): FAIL
+  PORT CONTRACT (stand_port's full PROVEN line, incl. joints off limits): FAIL -- OPEN DEBT at 5 joint(s), worst L4_L5_FE 1.17
+
+  WHY EACH OVER-THE-STOP JOINT IS NOT HELD -- from derive_ligaments' own refusals,
+  not inferred here. This is the next membrane's work list:
+    L4_L5_FE               HAS a derived ligament (trunk membrane); peak 1.17 is 8.8% transient
+    mtp_angle_r            never reached the derivation: theHuman's gait_envelope_deg publishes no curve for this joint
+    knee_angle_r           ligament on one side only -- ext: gap 1.84 deg <= envelope grain 4.16 deg -- unresolvable, not small
+    knee_angle_l           ligament on one side only -- ext: gap 1.84 deg <= envelope grain 4.16 deg -- unresolvable, not small
+    mtp_angle_l            never reached the derivation: theHuman's gait_envelope_deg publishes no curve for this joint
+  theHuman publishes three sagittal curves (hip, knee, ankle). The trunk closed its
+  own joints by taking the edge from the LITERATURE instead (Pearcy & Tibrewal).
+  The foot and the hip's off-sagittal axes want that same move -- and that is a
+  SEPARATE membrane, which needs its own RULE 0 stated before anyone builds it.
+  PICTURE: E:\PythonChimera\ChimeraEngine\output\ports\f3_stand.png

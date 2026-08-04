@@ -30,6 +30,7 @@ exactly the thing that produced the bug.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -361,6 +362,77 @@ def derive_ligaments(m, mujoco) -> tuple[list, list]:
     return emit, refused
 
 
+# ── THE MTP ENVELOPE ──────────────────────────────────────────────────────────────────────────
+# RULE 0, stated before the change:
+#
+#   STATEMENT   myobody declares the metatarsophalangeal joint at +/-30 deg. Human walking
+#               demands 60-65 deg of HALLUX DORSIFLEXION at terminal stance -- the toes bend up
+#               as the heel rises and the body rolls over the forefoot. A joint whose model range
+#               is half what the motion needs sits at its stop, and `stand_reward`'s joints term
+#               is exp(-((jf-0.8)/0.1)^2), which is ~0 for any jf >= 1.0. The term is a FACTOR,
+#               so a permanently-pinned MTP multiplies the whole reward toward zero and the
+#               search sees no gradient from anything else it does.
+#
+#   PREDICTION  Widened to the published envelope, F3's per-joint table shows mtp_angle_l falling
+#               from "over its stop 97.6% of phase 1" to near zero, jmax drops, and the joints
+#               factor r_j rises measurably on the SAME saved theta.
+#
+#   FALSIFIER   If F3's verdict and r_j do not change, the MTP was not the binding constraint --
+#               revert and report it. (This is the task's own stated falsifier and it is a real
+#               one: three other joints are also over their stops, and if they dominate the max
+#               then freeing the MTP moves nothing.)
+#
+# WHICH SIDE OF THE RANGE, and this is where a naive fix would have proved nothing. The two MTP
+# joints have MIRRORED AXES in the model -- r is `0.580954 0 -0.813936`, l is `-0.580954 0
+# -0.813936` -- so one physical direction is +theta on the right and -theta on the left. MEASURED
+# over a 5 s stand on the saved theta, 2026-08-04:
+#
+#     mtp_angle_r   mean +17.16 deg, max +29.88   -> pinned at its UPPER stop
+#     mtp_angle_l   mean -29.87 deg, min -32.91   -> pinned at its LOWER stop, 2.9 deg PAST it
+#
+# Two independent routes -- the model's own axis signs, and where the body actually drives each
+# joint -- agree on the same answer. Widening symmetrically would have added 35 deg of
+# PLANTARflexion nobody asked for; widening one side only would have freed one foot and left the
+# other pinned, and the run would have read as a refutation of a change that was never made.
+#
+# 65 deg is the envelope's upper edge from the clinical gait literature (hallux dorsiflexion
+# required for normal walking, commonly given as 60-65 deg); the plantarflexion side is left at
+# the model's own 30 deg, which is inside the published 30-40 deg. Taken from the literature
+# exactly as the trunk membrane took its ligament edge, because theHuman's `gait_envelope_deg`
+# publishes hip, knee and ankle only -- it has no curve for the toe.
+MTP_DORSIFLEX_DEG = 65.0
+MTP_SIDE_SIGN = {"mtp_angle_r": +1.0, "mtp_angle_l": -1.0}   # measured above, not assumed
+
+
+def _widen_mtp(m, mujoco, deg) -> list:
+    """Set the MTP joints' dorsiflexion limit on the LOADED MODEL. Returns what it changed.
+
+    NOT AN XML REWRITE, and the first version was -- it regex'd `myobody.xml` and refused,
+    correctly, with "no <joint name=mtp_angle_r ... range=...>". The MTP joints are declared four
+    include levels down in `leg/assets/myolegs_chain.xml`; myobody.xml only includes it. Rewriting
+    an included file means rewriting the include tree, and MJCF has no attribute-override
+    mechanism to do it from the parent. `m.jnt_range` is writable on the loaded model and is the
+    same quantity the solver reads, so the change is applied there -- one line, no generated
+    files, and nothing vendored is touched.
+
+    The refusal that sent me here is kept in spirit: this raises if a joint is absent rather than
+    reporting a widening that did not happen.
+    """
+    import math
+    rad, changed = math.radians(float(deg)), []
+    for jname, sign in MTP_SIDE_SIGN.items():
+        j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, jname)
+        if j < 0:
+            raise WorldUnknown(f"no joint {jname!r} in this model. Refusing to report an MTP "
+                               f"widening that did not happen (rule 20).")
+        before = (float(m.jnt_range[j][0]), float(m.jnt_range[j][1]))
+        lo, hi = (before[0], rad) if sign > 0 else (-rad, before[1])
+        m.jnt_range[j] = (lo, hi)
+        changed.append((jname, math.degrees(before[0]), math.degrees(before[1]),
+                        math.degrees(lo), math.degrees(hi)))
+    return changed
+
+
 def _tissue_xml(xml_path, emit) -> "Path":
     """Write the body + its ligaments as a sibling file, so every relative path still resolves.
 
@@ -438,6 +510,12 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
     if mujoco is None:
         import mujoco  # local import: this module is useful without it (see `gravity()`)
     g = gravity()
+    # THE MTP WIDENING, opt-in via the environment so the A/B changes ONE thing. Every harness
+    # (f3_stand, f4_walk, the trainers) calls `load_body` with no extra argument, so an env
+    # switch is what lets the identical judge run against two worlds -- add a parameter instead
+    # and the arms would differ by a call-site edit as well as by the world. Absent or 0 = the
+    # model's own +/-30 deg, untouched.
+    _mtp = os.environ.get("CHIMERA_MTP_DEG", "").strip()
     m = mujoco.MjModel.from_xml_path(str(xml_path))
 
     # SEAT THE KEYFRAME INSIDE THE BODY'S OWN LIMITS. myobody's keyframe starts hip_flexion_l at
@@ -537,6 +615,15 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
         print(f"[world] gravity {before:+.5f} -> {-g:+.6f} m/s^2  "
               f"({g / 9.80665:.4f} of Earth, from {LEDGER_MEMBRANE})")
     assert abs(float(m.opt.gravity[2]) + g) < 1e-12, "gravity did not take"
+    # THE MTP WIDENING, applied LAST and on the final model. Order is load-bearing for the same
+    # reason the keyframe seat is: everything above may reload the model (tissue, pivot), and a
+    # range set on a model that is then thrown away is a change that prints and does not happen
+    # -- the defect `seat_in_limits` already paid for once ("it clamped key_qpos on the model
+    # that the tissue reload then THREW AWAY, and printed a confident 'seated 1'").
+    if _mtp and float(_mtp) > 0:
+        for nm, b0, b1, a0, a1 in _widen_mtp(m, mujoco, float(_mtp)):
+            print(f"[world] mtp {nm:14} [{b0:+.1f},{b1:+.1f}] -> [{a0:+.1f},{a1:+.1f}] deg "
+                  f"(CHIMERA_MTP_DEG -- published hallux dorsiflexion)")
     return m, g
 
 
