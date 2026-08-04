@@ -76,6 +76,7 @@ SCENES = {
     # THE PLANTING: seeds placed by a hand, in rows -- the intent visible as pattern.
     # Elevated camera: the ROWS are the salient read, so the field is seen from above.
     "thePlanting":    {"kind": "planting", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
+    "theFarming":     {"kind": "farming", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -739,6 +740,87 @@ def _planting_buffers(spec: dict, term: str):
     return end, begin
 
 
+def _farming_buffers(spec: dict, term: str):
+    """theFarming: tending carried to maturity. The same hand geometry as thePlanting
+    (rows, not scatter), but the crop has been tended to harvest: taller stalks with
+    leaf tufts, and grain heads ripened gold -- growth that REACHED harvest because
+    water, light, and nutrients were worked, not left to chance. begin = the young
+    tended stand (green rows), end = the mature crop at harvest."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 110.0))
+
+    # tilled soil: same brown patchy ground as thePlanting
+    n_g = 4200
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.11 * gx + 0.7) * np.sin(0.09 * gy + 2.1)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.6; gnd[:, SIZE] = 3.0
+    gnd[:, CR] = 0.22 + 0.07 * patch
+    gnd[:, CG] = 0.14 + 0.05 * patch
+    gnd[:, CB] = 0.07 + 0.03 * patch
+
+    # furrows: 9 rows spaced 12 units
+    rows_y = [(-48.0 + 12.0 * k) for k in range(9)]
+    furrows = []
+    for y in rows_y:
+        xs = np.linspace(-54.0, 54.0, 90)
+        fb = np.zeros((len(xs), NCOLS), dtype=np.float32)
+        fb[:, PX] = xs
+        fb[:, PY] = y + rng.normal(0.0, 0.5, len(xs))
+        fb[:, PZ] = 0.4
+        fb[:, TYPE] = 3.0; fb[:, ALPHA] = 0.7; fb[:, SIZE] = 2.6
+        fb[:, CR], fb[:, CG], fb[:, CB] = 0.30, 0.19, 0.09
+        furrows.append(fb)
+
+    spots = []
+    for y in rows_y:
+        for x in np.linspace(-50.0, 50.0, 11):
+            if rng.random() > 0.96:
+                continue                            # the plant that did not make it
+            spots.append((x + float(rng.uniform(-0.5, 0.5)),
+                          y + float(rng.uniform(-0.5, 0.5))))
+
+    def young():
+        parts = []
+        for cx, cy in spots:
+            gg = float(rng.uniform(0.44, 0.58))
+            parts.append(_dots((cx, cy, 1.0), 2.0, 18, (0.12, gg, 0.09), rng))
+            stem = np.zeros((3, NCOLS), dtype=np.float32)
+            stem[:, PX], stem[:, PY] = cx, cy
+            stem[:, PZ] = np.linspace(0.0, 2.6, 3)
+            stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.8; stem[:, SIZE] = 1.4
+            stem[:, CR], stem[:, CG], stem[:, CB] = 0.14, 0.40, 0.10
+            parts.append(stem)
+        return parts
+
+    def mature():
+        parts = []
+        for cx, cy in spots:
+            h = float(rng.uniform(9.0, 13.0))         # tended: tall and nearly uniform
+            stem = np.zeros((7, NCOLS), dtype=np.float32)
+            stem[:, PX], stem[:, PY] = cx, cy
+            stem[:, PZ] = np.linspace(0.0, h, 7)
+            stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.85; stem[:, SIZE] = 1.8
+            stem[:, CR], stem[:, CG], stem[:, CB] = 0.16, 0.42, 0.12
+            parts.append(stem)
+            gg = float(rng.uniform(0.40, 0.55))       # leaf tufts along the stalk
+            parts.append(_dots((cx, cy, h * 0.55), 2.6, 16, (0.13, gg, 0.10), rng))
+            parts.append(_dots((cx, cy, h * 0.80), 2.2, 14, (0.13, gg, 0.10), rng))
+            # the grain head: gold where the crop ripened to harvest
+            ripe = rng.random() < 0.75
+            head = (0.78, 0.62, 0.16) if ripe else (0.20, gg, 0.12)
+            parts.append(_dots((cx, cy, h + 0.8), 1.6, 12, head, rng))
+        return parts
+
+    begin = np.concatenate([gnd] + furrows + young(), axis=0)
+    end = np.concatenate([gnd] + furrows + mature(), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -826,7 +908,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1074,7 +1156,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

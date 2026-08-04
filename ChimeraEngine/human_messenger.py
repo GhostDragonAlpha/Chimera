@@ -79,6 +79,10 @@ PHYSICS_READING = {
     "thePlanting": "a grid of small green dots -- young seedlings -- in straight rows and "
                    "columns at even spacing on a dark ground: a deliberate planted pattern, "
                    "NOT random scatter; the field starts bare and the seedlings appear",
+    "theFarming": "a grid of green dots in straight rows and columns with yellow-gold "
+                  "dots among them -- a tended crop field whose green plants ripened to "
+                  "golden grain heads at harvest -- on a dark textured ground: deliberate "
+                  "tended growth, NOT wild random scatter",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
