@@ -676,6 +676,43 @@ negative: *upright and travel are exchanged*, and *the exchange lives in the pla
 positive result is the fall's direction — and it points at frontal-plane structure that no port,
 primitive, or program on this ladder has yet built.
 
+## HYPOTHESIS EIGHT: the frontal MUSCLES do not fix it either -- and the optimum is ZERO
+
+Hypothesis seven's failure suggested the wrong *form* of frontal feedback: a proportional
+per-muscle gain is not what lateral balance is made of. So the frontal-plane muscles were
+measured the same way the sagittal ones were (`spanning`, activate each alone, read which way
+the joint accelerates) and driven reciprocally with the roll signal -- **two free numbers, not
+290**: one hip-abductor gain, one subtalar gain.
+
+| joint | flexors | extensors |
+|---|---:|---:|
+| hip_adduction_r / _l | 21 | 19 |
+| subtalar_angle_r / _l | 5 | 6 |
+
+44 distinct frontal-plane muscles of 290. 20 turns x pop 24, judged over 12 s:
+
+| | held |
+|---|---:|
+| control (no frontal drive) | **7.60 s** |
+| best frontal drive found | **7.60 s**, at gains **0.000 / 0.000** |
+
+**THE SEARCH CHOSE ZERO.** Every nonzero gain it tried was worse by a factor of nearly four --
+turns 1-19 sat at 1.92-2.08 s with gains around hip 0.68 / subtalar 6.78, and the only thing
+that ever beat them was the incumbent with no frontal drive at all.
+
+**THAT IS THE MOST INFORMATIVE RESULT ON THIS PAGE.** It is not "frontal feedback does not
+help"; it is *any* frontal drive, in either form, applied to **this frozen theta**, is strictly
+harmful. Which says the frozen policy is not a sagittal controller missing a lateral one -- it
+is a policy whose baseline activations already hold a specific, fragile lateral configuration,
+balancing sideways by accident rather than by control. Perturbing the abductors at all destroys
+the accident, and the accident is worth 5.5 seconds.
+
+**So the eighth hypothesis dies and names the ninth**, which this session did not have the
+budget to run: *the postural policy must be TRAINED with the frontal term, never given one
+afterward.* Freezing a0/kh/kp and searching kr asks a new term to repair a policy that has
+already committed to the configuration the term would change. That is a joint search over
+~1160 dimensions and it is the honest next experiment. **Written down, not run.**
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
