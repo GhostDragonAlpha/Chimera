@@ -53,6 +53,13 @@ pixels, and pixels are what the pipeline actually pays for.
     THE FRAME COST IS DRIVEN BY SCREEN COVERAGE, NOT BY GRAIN COUNT.
     `MAX_GRAINS_PER_FRAME` budgets a quantity that does not determine the thing being budgeted.
 
+> ### ⚠ THE FIRST HALF OF THAT SENTENCE IS WRONG — see **PART TWO** below.
+> The 35-row sweep puts **coverage at R² = 0.115 and grain count at R² = 0.481**: grains beat
+> coverage by ΔR² = 0.37, the opposite of what is claimed here. The conclusion above was drawn
+> from **two data points** and it did not survive the fuller measurement. What actually predicts
+> the cost is **tile expansions** — the `(splat, tile)` pairs the binner processes — at R² = 0.998.
+> The *second* half of the sentence stands: a grain count is still the wrong unit.
+
 ## WHY `MAX_GRAINS_PER_FRAME` WAS **NOT** REPLACED WITH A NEW NUMBER
 
 The obvious move is to re-derive the cap from these numbers. It cannot be done honestly, and the
@@ -96,3 +103,87 @@ printed. To re-run, bench `pipe.render_from_gpu` over 12 frames per case, discar
 the camera with the aim-at-origin formula — the `atan2(-pos[1], pos[0])` form found in
 `orbit_proof.py` and `demo.py` points away from the object at most angles and will silently time
 an empty frame.
+
+---
+
+# PART TWO — THE FULL SWEEP, AND WHICH QUANTITY ACTUALLY PREDICTS THE COST
+
+**2026-08-04, second pass.** Part One measured one body at three zoom levels and concluded that
+*"the frame cost is driven by screen coverage, not by grain count."* **That conclusion was formed
+from two data points and the full sweep refutes it.** This is the correction.
+
+`ChimeraEngine/benchmark_pipeline.py` — heaviest term per surface class × 5 zoom levels,
+5 renders each with 2 discarded as warm-up. **35 rows**, in `docs/pipeline_benchmark.csv`.
+
+## FOUR MODELS, ONE SET OF ROWS
+
+| model | R² | |
+|---|---:|---|
+| `render_ms ~ a·coverage + b` | **0.115** | the hypothesis from Part One |
+| `render_ms ~ a·grains + b` | **0.481** | what `MAX_GRAINS_PER_FRAME` assumes |
+| `render_ms ~ a·(grains × coverage) + b` | **0.850** | better, but see below |
+| `render_ms ~ a·(tile expansions) + b` | **0.998** | and it is a *mechanism* |
+
+**The falsifier fired as written:** both named models are below R² = 0.5, so the pipeline has no
+simple cost predictor in either of the terms that were proposed. And the ordering is the opposite
+of Part One's claim — **grain count beats coverage by ΔR² = 0.37.**
+
+## WHAT DOES PREDICT IT: TILE EXPANSIONS
+
+A **tile expansion** is one `(splat, tile)` pair. The binner and the sorter process exactly these,
+so this is not a curve fitted to a shape — it is a count of the work being done. The pipeline
+already computes it; `CHIMERA_TILE_DIAG=1` prints it as `total expansions`.
+
+| scene | grains | coverage | **expansions** | ms |
+|---|---:|---:|---:|---:|
+| aBlueWorld 0.5× | 43,000 | 95.9% | 417,732 | 30.94 |
+| aTerrain 0.5× | 262,144 | 23.5% | 774,065 | 24.29 |
+| **theMining 0.25×** | **8,157** | 52.3% | **1,307,982** | **49.32** |
+| aTerrain 0.25× | 262,144 | 74.4% | 12,834,678 | 359.24 |
+
+**The row that kills both simple models is theMining.** It has the *fewest* grains in the table
+and unremarkable coverage, and it costs more than aBlueWorld's 43,000 splats at 96% coverage. Its
+expansion count is 1.3 million, because at 0.25× zoom its splats are enormous and each lands in
+hundreds of tiles.
+
+    A FEW HUGE SPLATS COST MORE THAN MANY SMALL ONES,
+    and neither a grain count nor a coverage fraction can see the difference.
+
+    render_ms = 2.7013e-05 × expansions + 12.39        R² = 0.998
+
+At `MAX_RENDER_MS = 200` that gives **≈ 6.9 million expansions**, now in `perf_guard` as
+`MAX_TILE_EXPANSIONS` with `check_work_budget()`.
+
+## HONEST LIMITS
+
+- **n = 4 for the expansion fit**, and its R² is inflated by the single 359 ms point. The
+  mid-range residuals are **+37%** and **−23%**. It is the best of the four models and the only
+  one with a mechanism behind it, and it is still a four-point fit. The cap is an order of
+  magnitude, not a threshold.
+- **Drop the one outlier and nothing predicts well**: coverage 0.41, grains 0.08,
+  grains×coverage 0.28. In the ordinary regime — everything under 100 ms — the frame cost is
+  dominated by fixed per-frame work that none of these terms names.
+- `check_work_budget()` is **not** wired into `upload()`, because the expansion count does not
+  exist until the frame has been binned — by which point the work is already done. It is for the
+  diagnostic path and for offline renders that can afford to look afterwards.
+
+## `MAX_GRAINS_PER_FRAME` STAYS, AND STAYS LABELLED
+
+Coverage did **not** beat grains, so it does not replace it. Grains explain under half the
+variance, so the constant is not promoted either. It remains a coarse sanity net with its
+measurement recorded beside it, and `MAX_RENDER_MS` remains the wall that means something.
+
+## LOD, RE-MEASURED ACROSS THE SWEEP
+
+LOD's value shows up clearly here in a way Part One's single body could not show — at 2× and 5×
+zoom every class drops to the 16,384 or 4,096 mip, and aTerrain falls from 262,144 to 4,096:
+
+| aTerrain | grains | ms |
+|---|---:|---:|
+| 0.25× | 262,144 | 341.33 |
+| 1.00× | 65,536 | 18.03 |
+| 5.00× | 4,096 | 8.98 |
+
+The 341 ms frame is the only measurement in the whole sweep that breaches `MAX_RENDER_MS`, and it
+is the one case where LOD is *not* engaged — at 0.25× the body fills the frame and correctly
+selects its base level. **The worst frame in the registry is the one LOD is right not to help.**

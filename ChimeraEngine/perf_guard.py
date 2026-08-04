@@ -43,6 +43,50 @@ MAX_GRAINS_PER_FRAME = 250_000
 # Desired frame time budget at 60 fps simulation (not render) target
 MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 
+# ── WHAT ACTUALLY PREDICTS A FRAME'S COST (measured 2026-08-04, 35-row sweep) ────────────────────
+# Four candidate predictors were fitted against the SAME rows. Neither of the two that had been
+# proposed works, and one of them was my own hypothesis from a two-point sample:
+#
+#     coverage fraction            R^2 = 0.11      (the "coverage is the real driver" claim)
+#     grain count                  R^2 = 0.48      (what MAX_GRAINS_PER_FRAME assumes)
+#     grains x coverage            R^2 = 0.85      (better, but carried by one outlier)
+#     TILE EXPANSIONS              R^2 = 0.998     (n=4, and it is a MECHANISM)
+#
+# A tile expansion is one (splat, tile) pair: the binner and the sorter process exactly these, so
+# this is not a curve fitted to a shape, it is a count of the work being done. The pipeline
+# already computes it -- `CHIMERA_TILE_DIAG=1` prints "total expansions".
+#
+# THE CASE THAT KILLS BOTH SIMPLE MODELS: theMining at 0.25x zoom has only 8,157 splats and 52%
+# coverage, and costs 49 ms -- more than aBlueWorld's 43,000 splats at 96% coverage (28 ms).
+# Neither its grain count nor its coverage is remarkable. Its EXPANSION count is 1.3 MILLION,
+# because at that zoom its splats are enormous and each one lands in hundreds of tiles.
+#
+#     A FEW HUGE SPLATS COST MORE THAN MANY SMALL ONES, and grain count cannot see the difference.
+#
+# HONEST LIMIT: n = 4 for the expansion fit and its R^2 is inflated by one extreme point; the
+# mid-range residuals are +37% and -23%. It is the best of the four and the only one with a
+# mechanism behind it, and it is still a 4-point fit. Treat the cap below as an order of magnitude.
+MAX_TILE_EXPANSIONS = 6_900_000     # (MAX_RENDER_MS - 12.39) / 2.7013e-5, from the fit above
+
+
+def check_work_budget(expansions: int, max_expansions: int = MAX_TILE_EXPANSIONS):
+    """Assert the per-frame (splat, tile) pair count stays within budget.
+
+    This is the budget that MEANS something. `check_frame_budget` counts grains, which the
+    measurement shows explains under half the variance in frame time; this counts the pairs the
+    tile binner and sorter actually process, which explains nearly all of it.
+
+    It is not wired into `upload()` because the count does not exist until the frame has been
+    binned -- by then the work is done. It is for the diagnostic path and for anything that
+    renders offline and can afford to look afterwards.
+    """
+    if expansions > max_expansions:
+        raise PerfBudgetError(
+            f"Frame work budget exceeded: {expansions:,} tile expansions > {max_expansions:,} "
+            f"max (~{MAX_RENDER_MS} ms). This is usually a few OVERSIZED splats, not too many "
+            f"of them -- check the per-splat radius before reducing the count."
+        )
+
 
 # ── Per-surface-type budgets (derived from Laguna density table) ────────────────────────────────
 
