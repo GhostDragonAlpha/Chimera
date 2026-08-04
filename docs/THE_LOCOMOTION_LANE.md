@@ -641,11 +641,24 @@ guard is behind `--elite-guard`, **off by default**, so every arm already run re
 control; it becomes the default when it is proven, not when it is written. Verified off: a fresh
 unguarded run reproduces `train_stand_hinge.log`'s turns 0–1 **to every digit**.
 
-### And the guard alone was not enough — there is a SECOND wall, and it is four decades wide
+### The guard's own falsifier FIRES — and it fires into the right answer
 
-Fourteen turns of the guarded run: `HELD` 14/14, `best` pinned at the incumbent's −3.864.
-The centre no longer collapses **and the search still finds nothing**, which separates two
-hypotheses that had been one. `tools/search_landscape.py` measures which:
+Thirty turns, guard on, identical everything else: **`HELD` 30/30, `best` never once left
+−3.864, and the saved theta is bit-identical to the incumbent again.** The prediction — *"a theta
+that is not bit-identical"* — fails, so the falsifier fires exactly as written:
+
+> *the elite mean was not the wall; the sampling distribution at this dimensionality cannot
+> produce an improvement at all, and the answer is a different **search**, not a guard.*
+
+That is not a dead end, it is a **disambiguation**. The guard is still correct and still
+necessary — the unguarded arm's centre fell to −4.383 on turn 1 and never returned, while the
+guarded arm's stayed on the best point it knew — but *necessary is not sufficient*, and the
+falsifier is what made the two separable instead of one vague "the search is bad".
+
+### The SECOND wall, and it is four decades wide
+
+The centre no longer collapses **and the search still finds nothing**, so the population itself
+must be the problem. `tools/search_landscape.py` measures whether it is:
 
 | scale × the trainer's own sd | best | median | **% beating the incumbent** | ‖Δθ‖ |
 |---:|---:|---:|---:|---:|
@@ -688,9 +701,47 @@ derivation both read 0% at 1e-3 and above, ~70% at 1e-4 and 100% at 1e-5, and bo
      x1e-05      100% beat the incumbent
 ```
 
-**First effect:** with the guard *and* the derived step, turn 0 opens at **−3.757** — better than
-the incumbent — holding 7.20 s against 6.56 s. The same budget from the same init previously
-returned a bit-identical file.
+### A THIRD defect, found by the fix it broke — and it is the lane's own family again
+
+With the step derived, turn 0 searched the basin and found −3.808 against the incumbent's
+−3.864 — **and every turn after it was thrown straight back to a scale the landscape measures at
+0% improvement.** The trace said so plainly: `best` frozen at −3.808 while the population mean
+sat at −4.3.
+
+The cause is one term of the update: **`sd = el.std(0) + 1e-3`**. That `1e-3` exists to stop the
+sampler degenerating to a point, and it was invisible for as long as `sd` happened to be O(0.1) —
+*a thousandth of the spread*, which is what it was meant to be. Against a derived step of 7.5e-6:
+
+| | a0 block | gain blocks |
+|---|---:|---:|
+| derived sd | 7.5e-06 | 3.0e-05 |
+| the flat `1e-3` floor is | **133×** larger | **33×** larger |
+
+> **ONE QUANTITY, TWO LANDMARKS, IN UNITS (rule 19): the floor is a FRACTION OF A SPREAD and was
+> written as a spread.** It now reads `1e-3 * sd` — the same thousandth it always was, of the
+> spread actually in use — and is assigned *after* the derivation, because a floor taken from the
+> spread the derivation replaces is the same defect one step removed. Only on the derived path,
+> so every run already made keeps the absolute floor it was made with and stays a control.
+
+**That is the third defect of this family in this lane**, after the joints penalty's gaussian and
+`_periodicity`'s window floor: *a constant that was correct at the scale it was written for and
+silently wrong at another.* None of the three was a wrong idea; all three were right numbers in
+the wrong units or the wrong regime, which is precisely why reading the code never found them and
+measuring always did.
+
+**Effect, with all three in place** — same init, same budget, same seeds as the arm that returned
+bit-identical:
+
+```
+ turn      best      mean    elmean     mu   pelvis MIN   held
+    0    -3.757    -3.868    -3.808  moved      0.423m   7.20s
+    1    -3.670    -3.852    -3.763  moved      0.457m   7.72s
+    2    -3.706    -3.833    -3.817   HELD      0.436m   7.50s
+```
+
+**−3.864 → −3.670 in two turns**, holding 7.72 s against 6.56 s, and the population *mean* now
+sits within 0.03 of the incumbent instead of 0.6 below it. Thirty turns under the old rule
+produced a bit-identical file.
 
 ---
 
