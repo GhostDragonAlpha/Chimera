@@ -543,6 +543,52 @@ running. And it is deliberately **not applied to `walk_port.py`**: changing a sc
 makes the number better is the move this ladder exists to forbid, so the evidence is published
 first and the change is the other agent's to accept or refuse in the file it owns.
 
+## AND THEN THE TRAINING RUN REFUTED THE HOPE: the form picks the END of the exchange, not the exchange
+
+30 turns × pop 32 × 8 s under the multiplicative score, everything else identical:
+
+| trained under | speed reached | held |
+|---|---:|---:|
+| current (subtractive) score | 4% of derived | **5.6 s** |
+| **multiplicative score** | **56–62% of derived** | **1.42–1.48 s** |
+
+**62% of the derived speed — above falsifier 3's 50% bar — for 1.44 seconds.** The search moved
+straight to the other end of the exchange and sat there for 30 turns (turns 14–29 all read
+56–62% at 1.42–1.48 s; it is a plateau, not a transient).
+
+**The ranking falsifier did not fire and the deeper question still answers NO.** The score's form
+*was* selecting for immobility, and fixing it *did* let the search find speed — but it did not
+produce a sustained walk. `frac_run` is in the product precisely to value duration, and the
+fast-fallers still win because their per-sample reward is an order of magnitude higher than any
+survivor's. **The exchange is not an artifact of the objective. It survives both forms of it.**
+
+**THIS RELOCATES THE PROBLEM OUT OF THE OBJECTIVE AND BACK INTO THE PLANT.** Two scores, opposite
+biases, same wall:
+
+- subtractive → the search finds **standers** (4%, 5.6 s)
+- multiplicative → the search finds **travellers** (62%, 1.44 s)
+- neither finds a **walker**
+
+That is not a statement about rewards. It says the composition *as built* — a frozen postural θ
+plus an **open-loop** oscillator — occupies a space in which speed and duration are genuinely
+exclusive, and no re-weighting of the score reaches between them. A body that walks fast and
+stays up has to *correct within the stride*, and nothing in this program can: the clock does not
+know where the feet are.
+
+**WHICH EARNS THE DEFERRED MEMBRANE, and by its own stated criterion.** `walk_port.py`'s ledger
+defers contact entrainment "to be earned by its own membrane only if the clock composition
+plateaus below falsifier 3's 50%." The clock composition **plateaued at 62% for 1.44 s** — above
+that bar on speed, nowhere near it on duration. The criterion as written is about speed alone
+and this run steps around it, so it does not automatically trigger. But the thing the criterion
+was *for* — evidence that the clock has hit its ceiling — is now measured from two directions,
+and the only structure named anywhere in this document that acts *within* a stride is the
+sensory stop condition that was built, measured (duty 0.14 → 0.60) and never judged.
+
+**Stated as a prediction so it can be wrong, like the five before it:** an entrained oscillator
+trained under the multiplicative score reaches ≥50% of derived speed AND holds ≥5 s — because it
+is the only variant that can both seek speed and correct mid-stride. If that fails too, the
+composition needs structure no one on this ladder has yet named.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
