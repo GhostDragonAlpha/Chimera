@@ -591,6 +591,16 @@ what"*. The same run also produced a transient `18/19 ports` reading, which was 
 half-written `SUSPENSION` port and not a regression; it reads **19/19** now. Subsequent commits
 in this lane stage by explicit path.
 
+**And the seventh instrument's code and its reasoning landed in two different commits.** The
+repo's auto-flush automation (`chore: auto-flush working tree to remote [skip ci]`, `5d6f9ad`)
+swept the working tree — `step_port.py`, `f5_step.py`, `train_step.py`, `parser_tests.py`,
+`stand_port.py`, `f3_stand.py` and both docs, exactly the eight files and nothing foreign —
+*before* the authored commit landed. So `git log -- tools/step_port.py` shows a chore message,
+and the account of **why** that open slice was deleted is in `29c6f7c` and in this document.
+CLAUDE.md already records the behaviour (*"the repo auto-flushes+pushes dirty files"*); the cost
+of it is that an explanatory message loses its diff, and the durable home for the reasoning is
+therefore **here**, not the commit log. Nothing is missing from master; only the pairing is.
+
 **THE ONE OPEN THING THAT BLOCKS THE REST.** `train_stand`'s warm-started CEM cannot improve on
 its own start at 1160 dimensions — 2,160 evaluations, zero improvements, a bit-identical file
 back. `cand[0] = mu` guarantees the incumbent survives; nothing guarantees the *distribution*
