@@ -452,6 +452,93 @@ def assemble_3d(grid, shape, targets, J, connectivity=18, sweeps=90, temp=12.0,
     return np.array(L, dtype=np.int16).reshape(shape)
 
 
+def assemble_3d_swaps(grid, shape, targets, J, connectivity=18, sweeps=90,
+                      temp=12.0, lam=0.9, seed=0, frozen_type=None):
+    """Phase 8's CPU serial reference (docs/THE_LIVING_MATTER.md, stated before the
+    build): the copy move of assemble_3d — verbatim, lambda and all — ALTERNATED
+    sweep-by-sweep with the deficit-paired SWAP move (Kawasaki exchange).
+
+    A swap exchanges the types of two adjacent interior cells of different type.
+    Both areas are identically unchanged, so NO lambda term enters: dH is
+    interface-only, over the union of the two neighbourhoods, the mutual edge
+    dropping out (J symmetric). This is the corridor the Phase 5 freeze never
+    opened — interface dynamics at any lambda, populations jailed by the copy
+    channel alone. Even sweeps copy, odd sweeps swap; both cells of a swap must
+    be interior (the flat-list neighbour walk cannot poke outside the grid).
+
+    Returns (grid, stats): stats logs attempts/acceptances per move type —
+    falsifier 3's instrument (which move carried the dynamics)."""
+    strides = (shape[1] * shape[2], shape[2], 1)
+    off = _nd_offsets(strides, connectivity)
+    L = grid.ravel().astype(np.int16).tolist()
+    Jl = J.tolist()
+    area = {t: int((grid == t).sum()) for t in targets}
+    frz = frozen_type if frozen_type is not None else -999
+
+    idx = np.arange(len(L)).reshape(shape)
+    interior = idx[1:-1, 1:-1, 1:-1].ravel()
+    is_int = np.zeros(len(L), dtype=bool)
+    is_int[interior] = True
+    if frozen_type is not None:
+        interior = interior[grid.ravel()[interior] != frozen_type]
+    rng = np.random.RandomState(seed + 101)
+    attempts = sweeps * len(interior)
+    sites = interior[rng.randint(0, len(interior), size=attempts)]
+    ks = rng.randint(0, len(off), size=attempts)
+    us = rng.random_sample(size=attempts)
+    stats = {"copy_attempts": 0, "copy_accepts": 0,
+             "swap_attempts": 0, "swap_accepts": 0}
+
+    for i in range(attempts):
+        s = int(sites[i])
+        if (i // len(interior)) % 2 == 0:               # even sweep: the copy move
+            stats["copy_attempts"] += 1
+            old = L[s]
+            new = L[s + off[ks[i]]]
+            if new == old or new == frz:
+                continue
+            Jn, Jo = Jl[new], Jl[old]
+            dH = 0.0
+            for d in off:
+                nb = L[s + d]
+                dH += Jn[nb] - Jo[nb]
+            if old != MEDIUM:
+                a = area[old]
+                dH += lam * ((a - 1 - targets[old]) ** 2 - (a - targets[old]) ** 2)
+            if new != MEDIUM:
+                a = area[new]
+                dH += lam * ((a + 1 - targets[new]) ** 2 - (a - targets[new]) ** 2)
+            if dH <= 0.0 or us[i] < math.exp(-dH / temp):
+                L[s] = new
+                stats["copy_accepts"] += 1
+                if old != MEDIUM:
+                    area[old] -= 1
+                if new != MEDIUM:
+                    area[new] += 1
+        else:                                           # odd sweep: the swap move
+            stats["swap_attempts"] += 1
+            q = s + off[ks[i]]
+            if not is_int[q]:
+                continue
+            ts, tq = L[s], L[q]
+            if ts == tq or ts == frz or tq == frz:
+                continue
+            Js, Jq = Jl[ts], Jl[tq]
+            dH = 0.0
+            for d in off:
+                if s + d != q:
+                    nb = L[s + d]
+                    dH += Jq[nb] - Js[nb]
+            for d in off:
+                if q + d != s:
+                    nb = L[q + d]
+                    dH += Js[nb] - Jq[nb]
+            if dH <= 0.0 or us[i] < math.exp(-dH / temp):
+                L[s], L[q] = tq, ts
+                stats["swap_accepts"] += 1
+    return np.array(L, dtype=np.int16).reshape(shape), stats
+
+
 def metrics_3d(grid, shape, types=None) -> dict:
     """Facts about a 3D limb. Cylindrical radius per tissue about the long (z) axis, the
     limb's aspect ratio, and — for the typed connector — how the tendon sits: what

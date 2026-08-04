@@ -1261,6 +1261,47 @@ did without a skeleton in the core.
    inversion at 3%, instrument noise unmeasured. Whether frozen metal is
    compatible with a sorted world around it is the open clause.
 
+**Phase 8 — THE SWAP (deficit-paired, volume-neutral; stated 2026-08-04,
+before the build).** The last named debt: tissue-real K.
+
+**STATEMENT.** Phase 5's freeze is a MOVE-SET problem, not a physics problem.
+Every copy attempt changes two areas, so at the derived per-tissue λ (bone
+2,375 / muscle 395 / skin 395) each attempt costs λ_a + λ_b ≈ 67–233 kT and
+the lattice jails — that much Phase 5 measured. The corridor it named but did
+not build: a deficit-paired SWAP — two adjacent cells of different type
+exchange types — leaves both areas identically unchanged (dH_area ≡ 0 at ANY
+λ), so interface dynamics can run while the copy channel, alone, carries the
+population jail. Kawasaki exchange is the textbook form; the claim here is
+specific and disagreeable: with swap sweeps interleaved 1:1 alongside copy
+sweeps at the SAME derived λ that froze Phase 5, the tissue scramble sorts —
+real incompressibility and real sorting, together, for the first time in this
+machine.
+
+**PREDICTION (not yet measured).** Phase 5's exact protocol (tissue scramble,
+n = 96, 200 sweeps, temp = 12, derived per-tissue λ) plus interleaved swap
+sweeps: bone < muscle < skin radius ordering returns; counts hold within
+±1% (the copy-channel jail still works); and the acceptance instrument shows
+SWAPS carrying the dynamics (copy acceptances ≈ 0, as Phase 5 measured).
+
+**FALSIFIERS (named before the run).**
+
+1. **No sort** — the freeze is not move-set; something deeper jails the
+   interface term at this J/temp scale. Publish what.
+2. **Sort, but counts drift beyond ±1%** — the swap leaks area; a bug
+   wearing physics' clothes. (Areas are exact on the CPU reference and
+   live-atomic on the GPU; a leak cannot hide.)
+3. **Sort carried by COPY acceptances, not swaps** — the swap is decoration;
+   the corridor claim is false even with sorting returned.
+
+**The GPU gate, before any physics:** a swap touches two adjacent cells, so
+the 8-colour schedule races (a thread writes its partner, which a
+same-colour thread two lattice units over can read at 18-connectivity). The
+schedule widens along the swap axis — (z%2, y%2, x%3) for +x swaps and its
+rotations, 12 colours per orientation, 3 orientations — conflict-free by the
+8-colour argument extended one unit. The kernel earns its keep only against
+the CPU serial reference (`core.matter.assemble_3d_swaps`, built first):
+energy-trace parity on a small lattice, Phase 1's discipline.
+
 ---
 
 ## DEBTS FOUND EN ROUTE (housekeeping, not part of the theory)
