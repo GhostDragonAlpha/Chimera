@@ -89,6 +89,7 @@ SCENES = {
     "theFlight":       {"kind": "flight", "radius": 160.0, "cam": (0.0, -120.0, 50.0)},
     "theShipPower":    {"kind": "ship_power", "radius": 110.0, "cam": (0.0, -82.0, 28.0)},
     "theShipCombat":   {"kind": "ship_combat", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
+    "theShields":      {"kind": "shields", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1727,6 +1728,89 @@ def _ship_combat_buffers(spec: dict, term: str):
     end = np.concatenate([stars, hull, target] + scene(True), axis=0)
     return end, begin
 
+def _shields_buffers(spec: dict, term: str):
+    """theShields: a barrier of energy that SURROUNDS the vessel. The ship at the
+    center; enclosing it completely a glowing cyan bubble-shell -- and an incoming
+    red bolt that STOPS at the shell's surface with a small flash, never reaching
+    the hull. The claim is the envelope: one vessel entirely inside one barrier,
+    and the incoming energy ending at the boundary. begin = shell dark, bolt
+    absent; end = shell lit, bolt stopped at its face."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # starfield
+    n_st = 1800
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = 150.0 * (0.9 + 0.8 * rng.random(n_st))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.28 + 0.22 * rng.random(n_st)
+    stars[:, SIZE] = 0.8 + 1.0 * rng.random(n_st)
+    stars[:, CR], stars[:, CG], stars[:, CB] = 0.85, 0.87, 0.92
+
+    # the ship at the center of its bubble
+    a, b = 26.0, 5.2
+    n_h = 1400
+    hu = rng.random(n_h) * 2.0 - 1.0
+    hp = rng.random(n_h) * 2.0 * np.pi
+    hsxz = np.sqrt(np.maximum(0.0, 1.0 - hu * hu))
+    hull = np.zeros((n_h, NCOLS), dtype=np.float32)
+    hull[:, PX] = a * hu
+    hull[:, PY] = b * hsxz * np.cos(hp)
+    hull[:, PZ] = b * hsxz * np.sin(hp)
+    hull[:, TYPE] = 3.0; hull[:, ALPHA] = 0.80; hull[:, SIZE] = 1.6
+    shade = 0.55 + 0.25 * rng.random(n_h)
+    hull[:, CR] = 0.62 * shade + 0.10
+    hull[:, CG] = 0.64 * shade + 0.10
+    hull[:, CB] = 0.68 * shade + 0.12
+
+    # the barrier: an ellipsoidal shell enclosing the hull with clear standoff
+    n_s = 2600
+    su = rng.random(n_s) * 2.0 - 1.0
+    sp = rng.random(n_s) * 2.0 * np.pi
+    ssxz = np.sqrt(np.maximum(0.0, 1.0 - su * su))
+    SA, SB = 40.0, 16.0
+    shell = np.zeros((n_s, NCOLS), dtype=np.float32)
+    shell[:, PX] = SA * su
+    shell[:, PY] = SB * ssxz * np.cos(sp)
+    shell[:, PZ] = SB * ssxz * np.sin(sp)
+    shell[:, TYPE] = 3.0; shell[:, SIZE] = 1.5
+    shell[:, CR], shell[:, CG], shell[:, CB] = 0.35, 0.85, 0.95
+
+    # the incoming bolt: a red streak from the right that ENDS at the shell face
+    n_b = 160
+    tb = np.linspace(0.0, 1.0, n_b)
+    bolt = np.zeros((n_b, NCOLS), dtype=np.float32)
+    bolt[:, PX] = 80.0 + (SA + 1.0 - 80.0) * tb       # stops AT the shell, not past it
+    bolt[:, PZ] = 4.0 - 4.0 * tb
+    bolt[:, PY] = 0.0
+    bolt[:, TYPE] = 3.0; bolt[:, SIZE] = 1.4
+    bolt[:, CR], bolt[:, CG], bolt[:, CB] = 1.0, 0.30, 0.15
+
+    def scene(lit):
+        parts = []
+        sh = shell.copy()
+        sh[:, ALPHA] = 0.55 if lit else 0.10
+        parts.append(sh)
+        bt = bolt.copy()
+        bt[:, ALPHA] = 0.80 if lit else 0.0
+        parts.append(bt)
+        if lit:
+            # the impact flash ON the shell surface -- energy stopped at the boundary
+            parts.append(_dots((SA + 1.0, 0.0, 0.0), 3.0, 50, (1.0, 0.80, 0.45), rng))
+            parts.append(_halo((SA + 1.0, 0.0, 0.0), 6.5, (1.0, 0.75, 0.45),
+                               rng, alpha=0.16, size=1.9))
+        return parts
+
+    begin = np.concatenate([stars, hull] + scene(False), axis=0)
+    end = np.concatenate([stars, hull] + scene(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1814,7 +1898,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2062,7 +2146,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

@@ -134,6 +134,10 @@ PHYSICS_READING = {
                      "elongated object with a glowing blue end on the left to a "
                      "large reddish round object on the right -- energy traveling "
                      "from one object to another",
+    "theShields": "a celestial body surrounded by a glowing blue aura, against a "
+                  "backdrop of numerous small white stars, with a red object "
+                  "resembling a comet touching the aura at one side -- a body "
+                  "enclosed in a shell of light with energy stopped at its edge",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
