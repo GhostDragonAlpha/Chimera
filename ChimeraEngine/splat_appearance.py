@@ -90,6 +90,7 @@ SCENES = {
     "theShipPower":    {"kind": "ship_power", "radius": 110.0, "cam": (0.0, -82.0, 28.0)},
     "theShipCombat":   {"kind": "ship_combat", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theShields":      {"kind": "shields", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
+    "theWarpDrive":    {"kind": "warp_drive", "radius": 170.0, "cam": (0.0, -125.0, 55.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1811,6 +1812,78 @@ def _shields_buffers(spec: dict, term: str):
     end = np.concatenate([stars, hull] + scene(True), axis=0)
     return end, begin
 
+def _warp_drive_buffers(spec: dict, term: str):
+    """theWarpDrive: the warp drive folds SPACE -- so the thing that changes is not
+    the ship but the medium around it. The vessel sits at the center; around it the
+    space itself is drawn as a WHIRLPOOL: three great spiral arms of stars winding
+    inward to the vessel, the whole field swirling into one point. begin = a flat
+    uniform starfield, no arms; end = the spiral wound tight around the ship.
+    The claim: space itself bent around one point."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # the vessel at the throat
+    a, b = 20.0, 4.2
+    n_h = 1100
+    hu = rng.random(n_h) * 2.0 - 1.0
+    hp = rng.random(n_h) * 2.0 * np.pi
+    hsxz = np.sqrt(np.maximum(0.0, 1.0 - hu * hu))
+    hull = np.zeros((n_h, NCOLS), dtype=np.float32)
+    hull[:, PX] = a * hu
+    hull[:, PY] = b * hsxz * np.cos(hp)
+    hull[:, PZ] = b * hsxz * np.sin(hp)
+    hull[:, TYPE] = 3.0; hull[:, ALPHA] = 0.85; hull[:, SIZE] = 1.7
+    shade = 0.55 + 0.25 * rng.random(n_h)
+    hull[:, CR] = 0.62 * shade + 0.10
+    hull[:, CG] = 0.64 * shade + 0.10
+    hull[:, CB] = 0.68 * shade + 0.12
+
+    # a sparse background -- the medium at rest
+    n_bg = 1200
+    u = rng.random(n_bg) * 2.0 - 1.0
+    phi = rng.random(n_bg) * 2.0 * np.pi
+    st_r = 170.0 * (0.85 + 0.6 * rng.random(n_bg))
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    bg = np.zeros((n_bg, NCOLS), dtype=np.float32)
+    bg[:, PX] = st_r * sxz * np.cos(phi)
+    bg[:, PY] = st_r * sxz * np.sin(phi)
+    bg[:, PZ] = st_r * u
+    bg[:, TYPE] = 3.0
+    bg[:, ALPHA] = 0.25 + 0.2 * rng.random(n_bg)
+    bg[:, SIZE] = 0.8 + 1.0 * rng.random(n_bg)
+    bg[:, CR], bg[:, CG], bg[:, CB] = 0.85, 0.87, 0.92
+
+    # the whirlpool: three logarithmic spiral arms winding into the vessel,
+    # drawn in the XZ plane facing the camera
+    def arm(phase, wound, n=700):
+        t = np.linspace(0.0, 1.0, n)
+        ang = phase + wound * (1.0 - t) * 2.2 * np.pi
+        rr = 12.0 + 100.0 * t
+        d = np.zeros((n, NCOLS), dtype=np.float32)
+        d[:, PX] = rr * np.cos(ang)
+        d[:, PZ] = rr * np.sin(ang) * 0.8
+        d[:, PY] = rng.normal(0.0, 1.5, n)
+        d[:, TYPE] = 3.0
+        d[:, SIZE] = 1.3 + 0.8 * (1.0 - t)
+        d[:, CR] = 0.55 + 0.3 * (1.0 - t)
+        d[:, CG] = 0.70 + 0.2 * (1.0 - t)
+        d[:, CB] = 1.00
+        return d
+
+    def scene(wound, alpha):
+        parts = []
+        for k in range(3):
+            ar = arm(k * 2.0 * np.pi / 3.0, wound)
+            ar[:, ALPHA] = alpha * (0.5 + 0.5 * np.linspace(0.0, 1.0, ar.shape[0]))
+            parts.append(ar)
+        return parts
+
+    # begin: arms barely wound, nearly invisible -- flat space
+    begin = np.concatenate([bg, hull] + scene(0.15, 0.06), axis=0)
+    # end: arms wound three full turns, bright -- space folded to a point
+    end = np.concatenate([bg, hull] + scene(3.0, 0.80), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1898,7 +1971,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2146,7 +2219,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

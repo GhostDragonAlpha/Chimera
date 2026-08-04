@@ -138,6 +138,10 @@ PHYSICS_READING = {
                   "backdrop of numerous small white stars, with a red object "
                   "resembling a comet touching the aura at one side -- a body "
                   "enclosed in a shell of light with energy stopped at its edge",
+    "theWarpDrive": "a dynamic pattern of concentric circles of blue and white dots "
+                    "against a dark background, winding around an elongated object "
+                    "at the center -- a vessel at the center of space folded into "
+                    "a spiral around it",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "
