@@ -60,3 +60,57 @@ promotion of the new policy (if it beats 7.60 s cleanly) or a Rule 17 publicatio
 the dead hypothesis. Kimi's M8a work (carry) runs against stand_theta.npy and is
 unaffected until f3 promotes — the theta artifact is the interface, per the
 carry_theta discipline both agents already follow.
+
+---
+
+# THE ANSWER — Claude Code, 2026-08-04
+
+## What was already run before this prompt arrived, and what it does not cover
+
+The ninth hypothesis was run **warm** and is committed as `1f24f74` (which Kimi's `f4e1acb`
+accepted: *"the settled-stand precondition is MET"*). Its result, judged by `f3_stand`:
+
+| | control (kr = 0) | jointly trained with roll |
+|---|---:|---:|
+| survival @ 12 s horizon | 7.60 s | **9.08 s** |
+| CoM excursion peak | 1.65 **FAIL** | **0.49 PASS** |
+| CoM outside the BoS | 16.8% of phase 1 | **0.0%** |
+| pelvis MIN | 102.4% | **102.9%** |
+| max roll | 15.4° | 10.6° |
+| `f3_stand` exit | 1 | **0** |
+
+Against the prompt's PREDICTION — *survival > 7.60 s, pelvis ≥ 90%, learned roll gain
+measurably nonzero* — all three hold: 9.08 s, 102.9%, and **100% of the 290 roll gains are
+nonzero** (`mean(|kr| > 1e-6) = 1.0`). The falsifier did not fire.
+
+**But that run was WARM, and the prompt asks for COLD** — *"the hypothesis is about the search
+shaping the whole policy, so cold is the honest test."* A warm run inherits a policy already
+shaped without a frontal channel, so it cannot distinguish *"the search shapes the whole policy
+around roll"* from *"roll repairs a policy shaped without it."* The cold run below is that
+distinction.
+
+**GUARDRAIL 1 WAS VIOLATED AND IS NOW REPAIRED.** The warm run overwrote
+`ChimeraEngine/output/ports/stand_theta.npy` before this prompt existed. It was backed up and
+restored; the cold run writes only `stand_theta_frontal.npy`, and the incumbent on disk is
+untouched. Recorded rather than quietly fixed, because Kimi's M8a carry work runs against that
+artifact and had the foundation changed under it mid-flight.
+
+## RULE 0 for the COLD run — stated before the verdict, per the prompt
+
+**STATEMENT.** If lateral balance is trainable *only* when the search shapes the whole policy
+around it, then a **from-scratch** search over `a0 | kh | kp | kr` (4·nu = 1160 dimensions, no
+warm start, incumbent elitism retained) finds a policy that beats the warm result's 9.08 s — the
+frontal channel being present from the first generation should be worth more than the same
+channel added to a policy already committed elsewhere.
+
+**PREDICTION.** Cold survival ≥ 9.08 s at the 8 s training horizon, and the learned `kr` is
+nonzero on a majority of muscles.
+
+**FALSIFIER.** Cold survival lands *below* the warm 9.08 s, or `kr` converges toward zero — in
+which case the hypothesis is narrower than stated: roll is a **repair channel** for a policy
+shaped without it, not a term the search organises a policy around. Published per Rule 17 either
+way, with the numbers.
+
+**A 1160-dimensional cold CEM is a hard search and may simply fail to converge in the turns
+given.** That outcome is not evidence for either reading and will be reported as inconclusive
+rather than as a refutation — the honest third result.

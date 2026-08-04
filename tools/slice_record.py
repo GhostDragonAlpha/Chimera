@@ -110,7 +110,16 @@ class Recorder:
     its frames land in frames/beatNN_tTT.jpg and its last frame is the beat's HERO."""
 
     def __init__(self, root: Path):
-        self.dir = root / f"slice_session_{datetime.now():%Y%m%d}"
+        # DATE ALONE COLLIDES, AND THE COLLISION IS SILENT AND DESTRUCTIVE. Two runs on the
+        # same day wrote the same directory, and the second overwrote the first frame for
+        # frame -- the path is gitignored, so nothing was recoverable. MEASURED 2026-08-04:
+        # a re-record destroyed the session the rung-4 blind read was taken from. A recording
+        # is evidence; an instrument that overwrites evidence without saying so is the same
+        # species as a witness that keeps a stale copy. Seconds make the name unique, and an
+        # existing directory is never entered.
+        self.dir = root / f"slice_session_{datetime.now():%Y%m%d_%H%M%S}"
+        if self.dir.exists():
+            raise SystemExit(f"{self.dir} already exists -- refusing to overwrite a recording.")
         self.frames = self.dir / "frames"
         self.frames.mkdir(parents=True, exist_ok=True)
         # a re-run on the same day must not inherit stale beats from the last run (a shorter new
