@@ -12,11 +12,15 @@ carry window (T_GRAB+0.2 .. T_DROP). This trains at EXACTLY that horizon -- secs
 a proxy. train_stand's own docstring records being burned by a 1.0 s proxy satisfying a 5 s
 requirement; the carry does not repeat it.
 
-THE SPAWN IS THE WELD'S TARGET, not the floor. spawn_stone puts the stone on the floor for
-the GRAB event's sake; here the weld is already on, so the stone is written AT the pose the
-weld will hold it in (the torso frame at the keyframe, rotated by the stated carry relpose).
-Zero constraint transient, zero qpos writes after the reset -- the spawn IS part of the
-reset, same discipline as seat_in_limits and spawn_stone.
+THE EVENT IS THE SNAP, measured 2026-08-04: the first version of this trainer welded from the
+spawn (stone born AT the carry pose) and the search found a crouch-hold -- 3.0 s survivors at
+50-57% pelvis, the atlas-stone strategy. f6 then knocked that same theta flat in one frame:
+f6's stone starts ON THE FLOOR and the weld engages at t=1.0, and the snap's impulse is the
+event the membrane states ("the pick-up snap is the event; the LOAD after it is the physics").
+A policy trained born-carrying never felt the snap. This trainer now matches the judge EXACTLY:
+stone spawned on the floor, weld INACTIVE, snap at t=T_SNAP, and the policy must catch 421 N
+arriving as an impulse -- then hold 3.0 s. Warm start from the crouch-hold theta (it knows the
+hold; the catch is the new lesson).
 
 Warm start from stand_theta.npy (incumbent always a candidate -- the correctness fix from
 train_stand, MEASURED 2026-08-04). Output: carry_theta.npy, the session's best, never the
@@ -36,11 +40,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body
 from stand_port import derive_stand_port, stand_reward, MYOBODY
 from train_stand import joint_ids, seat_in_limits, joint_frac
-from grab_port import derive_grab_port, stone_xml, CARRY_RELPOS, STONE_BODY, WELD_NAME
+from grab_port import (derive_grab_port, stone_xml, spawn_stone,
+                       CARRY_RELPOS, STONE_BODY, WELD_NAME)
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 CARRY_THETA = OUTDIR / "carry_theta.npy"
+T_SNAP = 1.0                    # the weld engages here -- f6's T_GRAB, the judged event
 
 
 def spawn_carried(m, d, mujoco):
@@ -66,13 +72,13 @@ def spawn_carried(m, d, mujoco):
     mujoco.mj_forward(m, d)
 
 
-def evaluate(m, d, mujoco, theta, P, secs, eq, frames=0):
-    """One carried life under a candidate. The weld is ON from the reset -- see module doc.
+def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
+    """One carried life under a candidate, THE SNAP INCLUDED -- see module doc.
 
-    theta, the reward, the seating, the bar: train_stand's, unchanged. What changed is the
-    world the rollout happens in: 421 N rides at the stated carry pose from t=0, and the
-    reward's CoM-over-the-foot-polygon term now prices the lean-back for free -- the body's
-    own subtree CoM must stay in the box WHILE the stone pulls it forward-right.
+    theta, the reward, the seating, the bar: train_stand's, unchanged. The world: the stone
+    spawns on the floor, the weld is INACTIVE, and at t = T_SNAP the weld engages exactly as
+    f6's GRAB does -- 421 N arrives as an impulse the policy must catch, then hold. Training
+    the catch, not the born-carry: f6 knocked the born-carry theta flat in one frame.
     """
     nu = m.nu
     jids = joint_ids(m, mujoco)
@@ -80,8 +86,8 @@ def evaluate(m, d, mujoco, theta, P, secs, eq, frames=0):
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
-    spawn_carried(m, d, mujoco)             # the stone AT the weld's target (part of the reset)
-    d.eq_active[eq] = 1                     # the weld is ON from t=0 -- this is the carry
+    spawn_stone(m, d, mujoco, G)            # the stone ON THE FLOOR (part of the reset)
+    snap_k = int(T_SNAP / m.opt.timestep)
     tgt = P["OUT pelvis_target_m"]
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
@@ -89,6 +95,8 @@ def evaluate(m, d, mujoco, theta, P, secs, eq, frames=0):
     tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": []}
     pics, tot, n, fell = [], 0.0, 0, False
     for k in range(steps):
+        if k == snap_k:
+            d.eq_active[eq] = 1             # THE SNAP -- the judged event, trained not faked
         if k % 20 == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
@@ -153,7 +161,7 @@ def draw_turn(turn, P, tr, pics, hist, path):
         ax2.axhline(0.8, color="#8e44ad", ls=":", lw=1.0)
     hi = min(tr["z"]) if tr["z"] else 0.0
     fig.suptitle(f"CARRY PORT — training turn {turn}   pelvis MIN {hi:.3f} m / target {tgt:.3f} m "
-                 f"= {100*hi/tgt:.0f}%   (59.49 kg stone welded ON from the spawn)", fontsize=11.5)
+                 f"= {100*hi/tgt:.0f}%   (59.49 kg stone, the SNAP at {T_SNAP:.1f} s)", fontsize=11.5)
     fig.savefig(path, dpi=100, bbox_inches="tight"); plt.close(fig)
 
 
@@ -162,7 +170,7 @@ def main() -> int:
     a = sys.argv
     turns = int(a[a.index("--turns") + 1]) if "--turns" in a else 24
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 32
-    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 3.0   # f6's carry window
+    secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 4.0   # 1.0 s pre-snap + f6's 3.0 s carry window
     init = a[a.index("--init") + 1] if "--init" in a else str(STAND_THETA)
     OUTDIR.mkdir(parents=True, exist_ok=True)
     if not Path(init).exists():
@@ -187,18 +195,19 @@ def main() -> int:
     best_ever = (-np.inf, mu.copy())
 
     print(f"\nTRAINING THE CARRY PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, g {g:.4f}, "
-          f"stone {G['OUT stone_mass_kg']:.2f} kg ON from the spawn, horizon {secs:.1f} s = f6's window")
+          f"stone {G['OUT stone_mass_kg']:.2f} kg on the floor, SNAP at {T_SNAP:.1f} s, "
+          f"horizon {secs:.1f} s = 1.0 pre + f6's window")
     print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}  verdict")
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
         cand[0] = mu                            # the incumbent is always a candidate (train_stand)
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
-        scores = np.array([evaluate(m, d, mujoco, c, P, secs, eq)[0] for c in cand])
+        scores = np.array([evaluate(m, d, mujoco, c, P, G, secs, eq)[0] for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best_theta = cand[order[0]]
-        s, tr, pics = evaluate(m, d, mujoco, best_theta, P, secs, eq, frames=6)
+        s, tr, pics = evaluate(m, d, mujoco, best_theta, P, G, secs, eq, frames=6)
         held = min(tr["z"]) if tr["z"] else 0.0
         frac = 100 * held / P["OUT pelvis_target_m"]
         survived = len(tr["t"]) * 0.02

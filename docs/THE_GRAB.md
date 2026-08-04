@@ -157,3 +157,28 @@ best runs now. If the continuation plateaus with no candidate holding
 is the stone itself: 73% of model mass at a 0.45 m lever is a dial
 (THE HUMAN's D = 0.35 m) sitting past the edge of the published human
 hip moment — and only THE HUMAN moves that dial.
+
+**Run 4 — the 48-turn continuation VERDICT: the search found the CROUCH,
+and the crouch exposed the trainer's own mismatch.** Steady climb all
+48 turns (best −3.737 → −3.06 band, mean −4.56 → −3.66, held 1.92 →
+2.94 s), and six turns (23/24/32/40/43/47) produced FULL-WINDOW
+survivors (score ≈ −0.004, held 3.00 s) — at 50–57% pelvis. The
+pictures show the atlas-stone strategy: drop, stabilize the combined
+CoM inside the polygon in a deep crouch, hold. The mean was STILL
+CLIMBING at turn 47. But f6 knocked the crouch theta flat in ONE FRAME
+(pelvis 16%, plantar sum 0 from the weld): the trainer welded from the
+spawn with the stone born AT the carry pose, while f6's stone starts
+on the FLOOR and the weld engages at t=1.0. The snap's impulse is the
+membrane's own stated event ("the pick-up snap is the event; the LOAD
+after it is the physics"), and the born-carry policy never felt it.
+**The trainer was training a different event than the judge judges —
+the same proxy-for-target species train_stand's docstring records.**
+
+**Run 5 — trainer amended to match the judged event EXACTLY** (stated
+before the run): stone spawned on the floor, weld INACTIVE, snap at
+t=1.0 s, horizon 4.0 s (1.0 pre + f6's 3.0 window). Nothing else moved
+— same 870 numbers, same reward, same bar. Warm start from the crouch
+theta (backed up to `carry_theta.crouch.bak.npy`): it knows the hold;
+the catch is the new lesson. Smoke test: the crouch theta survives the
+snap + 0.5 s at 80% pelvis MIN — the catch is not instantly fatal,
+which means the gradient into it exists. 48×32 running.
