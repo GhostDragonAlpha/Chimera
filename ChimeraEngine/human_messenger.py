@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "thePersistence": "two identical green hilly ridges with small trees, "
+                      "mirror copies on the left and right, with a glowing "
+                      "golden sphere at the center connected to both by thin "
+                      "golden lines -- one seed growing the same world twice",
     "theState": "a flat square grid of many small dark blue-grey cells seen "
                 "from above at an angle, with a small cluster of glowing "
                 "golden cells forming a compact pattern near the center -- a "
