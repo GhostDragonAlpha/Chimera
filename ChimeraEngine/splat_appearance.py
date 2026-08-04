@@ -80,6 +80,7 @@ SCENES = {
     "thePlanetaryFarm": {"kind": "planetary_farm", "radius": 190.0, "cam": (0.0, -140.0, 130.0)},
     "theLunarFarm":    {"kind": "lunar_farm", "radius": 190.0, "cam": (0.0, -160.0, 120.0)},
     "theOrbitalFarm":  {"kind": "orbital_farm", "radius": 230.0, "cam": (0.0, -180.0, 120.0)},
+    "theSpace":        {"kind": "space", "radius": 300.0, "cam": (0.0, -40.0, 20.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1093,6 +1094,49 @@ def _orbital_farm_buffers(spec: dict, term: str):
     end = np.concatenate([stars, ring, hub, planet] + spokes + band(True), axis=0)
     return end, begin
 
+def _space_buffers(spec: dict, term: str):
+    """theSpace: the dark medium itself. Not a system, not a world -- the VOID the ship
+    flies through: a deep starfield, a few small bodies suspended in the black at very
+    different depths, one distant star glaring. No ground, no horizon, nothing to stand
+    on -- the membrane's claim is the dark WITH depth in it. begin = end: space does not
+    become; the camera's drift is the only motion."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 300.0))
+
+    # the starfield: a dense shell at varied depths -- the texture of the medium
+    n_st = 5200
+    u = rng.random(n_st) * 2.0 - 1.0
+    phi = rng.random(n_st) * 2.0 * np.pi
+    st_r = R * (0.8 + 0.7 * rng.random(n_st))        # depth layering, not one shell
+    sxz = np.sqrt(np.maximum(0.0, 1.0 - u * u))
+    stars = np.zeros((n_st, NCOLS), dtype=np.float32)
+    stars[:, PX] = st_r * sxz * np.cos(phi)
+    stars[:, PY] = st_r * sxz * np.sin(phi)
+    stars[:, PZ] = st_r * u
+    stars[:, TYPE] = 3.0
+    stars[:, ALPHA] = 0.35 + 0.3 * rng.random(n_st)
+    stars[:, SIZE] = 0.9 + 1.1 * rng.random(n_st)
+    tint = rng.random(n_st)
+    stars[:, CR] = 0.80 + 0.15 * tint
+    stars[:, CG] = 0.82 + 0.12 * tint
+    stars[:, CB] = 0.90 + 0.08 * (1.0 - tint)
+
+    # a few bodies suspended in the dark, small and far -- scale, not system
+    bodies = [
+        _solid_sphere((-120.0, 150.0, -60.0), 14.0, (0.55, 0.42, 0.33), rng, gain=0.7),
+        _solid_sphere((60.0, 170.0, 80.0), 9.0, (0.36, 0.50, 0.66), rng, gain=0.7),
+        _solid_sphere((30.0, 140.0, -100.0), 6.0, (0.62, 0.62, 0.60), rng, gain=0.7),
+    ]
+
+    # the distant star: a small fierce glare, not the center of anything
+    star = _solid_sphere((180.0, 230.0, 120.0), 8.0, (1.0, 0.95, 0.82), rng, gain=0.9)
+    glare = _halo((180.0, 230.0, 120.0), 16.0, (1.0, 0.9, 0.7), rng, alpha=0.10, size=2.0)
+
+    end = np.concatenate([stars] + bodies + [star, glare], axis=0)
+    begin = end.copy()
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1180,7 +1224,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1428,7 +1472,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

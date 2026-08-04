@@ -95,6 +95,9 @@ PHYSICS_READING = {
                       "starry background with a blue planet below -- a spinning farm ring "
                       "in orbit, the crop band growing along the ring, NOT on a world's "
                       "surface",
+    "theSpace": "a vast dark starry expanse with a few small distant spheres suspended in "
+                "the black at different depths: deep empty space, the dark medium itself, "
+                "NO ground, NO horizon, NO surface anywhere",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
