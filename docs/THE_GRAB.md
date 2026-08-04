@@ -226,3 +226,42 @@ any of 48×32 settings, falsifier 2's numbers arrive, and the finding
 becomes the stone (73% of model mass, THE HUMAN's dial). 3. The sum
 rises but phases 2/3 collapse — the posture and the load trade against
 each other, published as the measurement.
+
+**Run 6 — VERDICT: v2's falsifier 1 CONFIRMED, and the loophole is now
+measured to the Newton.** Seven full-window survivors, load column
+0–5% — the term did not move the strategy. Probed steady state on the
+saved survivor (t=3.98 s): pelvis 0.552 (above the 0.46 fall line),
+stone z = 0.175 (floor), weld constraint force |F| = 580 N, **plantar
+sum 0.0 N — the feet carry NOTHING**. The body is not resting the
+stone on the floor; it is HANGING from the floor-anchored stone by the
+weld, feet in the air. The loophole stack is now fully mapped: run 5's
+floor-rest let the floor bear the STONE; run 6's weld-hang lets the
+anchored stone bear the BODY. Same root — the stone on the floor is an
+anchor and the weld to it is a lifeline. And the same score-form
+defect the other agent named on M3 the same day: reward×load_factor
+prices the hang at ~0, and 0 beats any real-carry attempt that risks
+the additive −3 fall penalty.
+
+## AMENDMENT — v3: COMPLETE THE CONSERVATION LAW (stated before the run)
+
+**STATEMENT.** A carry has exactly two load paths and the world has no
+third: everything through the feet (v2's term), and NOTHING through
+the stone-floor interface. v2 priced the first; the hang routes the
+second. v3 adds the second conservation term: post-snap,
+reward ×= clip(1 − F_stonefloor / W_stone, 0, 1) — the stone's weight
+scale, derived, no chosen constant. With both terms, floor-rest prices
+0, the weld-hang prices 0 (term 1), and ONLY a true carry — stone
+floating, feet bearing body+stone — prices ≈ 1. There is no fourth
+state: the world contains floor, stone, body, and nothing else.
+
+**PREDICTION.** Survivors now show plantar ≈ body+stone AND stone-floor
+contact ≈ 0 through the carry — f6's phases 1 and 3 pass, phase 2
+judged on its own bar.
+
+**FALSIFIERS.** 1. A survivor emerges with both terms priced that is
+STILL not a carry — a fourth load path exists and it will be named in
+this doc. 2. No survivor at all across 48×32 with the complete law —
+the standing catch-and-carry of 73% of model mass on a 0.45 m lever is
+beyond this body, falsifier 2 fires with full numbers, and the finding
+goes to THE HUMAN's dial. 3. Survivors carry but under the 80% pelvis
+bar — the posture/strength trade measured and published as-is.
