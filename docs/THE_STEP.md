@@ -207,7 +207,49 @@ budget is. A converged search answers the question; a climbing one has not
 finished answering. The prediction (≥ 50% AND upright) stands UNMOVED, and
 the run continues: warm start from the session-best, 48 turns.
 
-Verdict: _pending the continuation._
+## VERDICT, v2 CONTINUATION (2026-08-04): converged, UNJUDGEABLE — blocked underneath by the stand
+
+48-turn warm-start continuation from run 1's best. The population mean,
+climbing at turn 24, went flat: best score −3.815 → **−3.640** (turn 39),
+then a −3.6…−3.9 plateau for the final ~20 turns — the same exhaustion
+signature v1 showed at its end. The search has finished answering.
+
+`f5_step.py` on the continuation-best theta (`step_theta.npy`, 7 numbers;
+P_push grew 0.2121 → **0.2853**, still recruited — falsifier 1 dead again):
+
+| judge | result | verdict |
+|-------|--------|---------|
+| 1 TRAVEL | +0.193 m/s = 19% of derived (bar 75–125%) | FAIL |
+| 2 PERIODICITY | 0.27, period 0.14 s vs stride 1.17 s | FAIL |
+| 3 UPRIGHT | pelvis MIN 0.4385 m = 48%, held 5.30/6.0 s | FAIL |
+| 4 EFFORT ABLATION | swing efforts off → −0% | PASS |
+| 5 SENSOR ABLATION | contact obs zeroed → −0% | PASS — the sensors ARE the mechanism |
+| 6 DUTY | R/L 0.79/0.71 (bar ≥ 0.50) | PASS |
+
+**The picture is the finding** (`f5_step.png`): the body marches in place,
+pelvis pinned at ~0.95 m — ABOVE the stand target — for 4.5 s. Travel
+begins at t ≈ 4 s. The body falls at t = 5.3 s. **The fall and the
+propulsion are the same event**: stationary, the machine is safe; the
+moment forward motion starts, the posture dies. Falsifier 2's shape
+(travel rises, upright dies → the deficit is catch-up, not propulsion),
+with one correction from the confound section above: held 5.30 s sits
+0.94 s under the stand's own 6.24 s ceiling. Every fall this membrane has
+recorded — v1's topples, run 1's 4.6 s, this 5.3 s — is bounded by a
+foundation that cannot stand unperturbed for 8 s.
+
+**Ledger entry.** Falsifier 3 (the atoms do not compose) is NOT fired in
+full: judges 4/5/6 keep passing — STEP + PLANT + STAND compose as
+sensors, and the machine never became a clock. What fails is
+travel+upright+periodicity, and the binding constraint is measurably the
+foundation, not the composition: the walk's falls arrive at the stand's
+ceiling minus march perturbation. **M3 stays OPEN, blocked underneath by
+the stand regression (the other agent owns the repair; commits
+`c95131f`/`611d045`).** Walking cannot be judged until the stand holds
+≥ 8 s unperturbed. When it does, this membrane reopens at the question
+the data already named: **swing catch-up timing** — the measured swings
+run ~1.0 s against the derived 0.466 s window (the closure debt from the
+pendulum measurement: swing is muscle-driven work, and its timing is the
+next derivation, not a dial).
 
 ---
 
