@@ -154,6 +154,10 @@ PHYSICS_READING = {
                   "yellow -- against a starry black background, nested smaller "
                   "and smaller toward a warm glowing center: a tunnel of scales "
                   "with light at its end",
+    "theStanding": "a glowing yellow figure standing upright on a large grey "
+                   "textured surface against a dark background, the surface "
+                   "beneath its feet lit by the contact -- a body standing on "
+                   "real ground, witnessed by the light where it touches",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

@@ -94,6 +94,7 @@ SCENES = {
     "theShipView":     {"kind": "ship_view", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theSalvage":      {"kind": "salvage", "radius": 150.0, "cam": (0.0, -115.0, 42.0)},
     "theDescent":      {"kind": "descent", "radius": 170.0, "cam": (30.0, -80.0, 35.0)},
+    "theStanding":     {"kind": "standing", "radius": 120.0, "cam": (0.0, -85.0, 22.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2131,6 +2132,90 @@ def _descent_buffers(spec: dict, term: str):
                                              vessel(20.0 + 22.0 * (N_FRAMES - 1), True)], axis=0)
     return end, begin
 
+def _standing_buffers(spec: dict, term: str):
+    """theStanding: the body held against the ground by contact. A small upright
+    figure -- head, spine, two legs -- standing on a wide flat ground slab,
+    and exactly where the feet meet the slab a bright CONTACT GLOW: the witness.
+    A thin vertical line of light runs from the crown straight down to the
+    contact -- gravity's plumb line ending on the ground, not past it. The claim:
+    upright, touching, and the touch itself lit. begin = figure dim, contact
+    dark; end = figure lit and the contact burning."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # the ground: a wide stone slab
+    n_g = 2600
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 55.0 * np.sqrt(rng.random(n_g))
+    ground = np.zeros((n_g, NCOLS), dtype=np.float32)
+    ground[:, PX] = rr * np.cos(th)
+    ground[:, PY] = rr * np.sin(th)
+    ground[:, PZ] = rng.normal(0.0, 0.8, n_g)
+    ground[:, TYPE] = 3.0; ground[:, ALPHA] = 0.60; ground[:, SIZE] = 2.4
+    ground[:, CR], ground[:, CG], ground[:, CB] = 0.42, 0.44, 0.42
+
+    def figure(lit):
+        parts = []
+        body_c = (0.85, 0.80, 0.70) if lit else (0.30, 0.29, 0.27)
+        # arms: two columns angled out from the shoulders -- the humanoid T
+        for sx in (-1.0, 1.0):
+            n_a = 90
+            t = np.linspace(0.0, 1.0, n_a)
+            arm = np.zeros((n_a, NCOLS), dtype=np.float32)
+            arm[:, PX] = sx * (1.0 + 5.5 * t) + rng.normal(0.0, 0.3, n_a)
+            arm[:, PY] = rng.normal(0.0, 0.3, n_a)
+            arm[:, PZ] = 15.0 - 3.5 * t
+            arm[:, TYPE] = 3.0; arm[:, ALPHA] = 0.85; arm[:, SIZE] = 1.4
+            arm[:, CR], arm[:, CG], arm[:, CB] = body_c
+            parts.append(arm)
+        # legs: two columns from the slab to the hips
+        for lx in (-2.4, 2.4):
+            n_l = 120
+            t = np.linspace(0.0, 1.0, n_l)
+            leg = np.zeros((n_l, NCOLS), dtype=np.float32)
+            leg[:, PX] = lx + rng.normal(0.0, 0.35, n_l)
+            leg[:, PY] = rng.normal(0.0, 0.35, n_l)
+            leg[:, PZ] = 0.5 + 8.0 * t
+            leg[:, TYPE] = 3.0; leg[:, ALPHA] = 0.85; leg[:, SIZE] = 1.5
+            leg[:, CR], leg[:, CG], leg[:, CB] = body_c
+            parts.append(leg)
+        # spine: hips to shoulders
+        n_s = 140
+        t = np.linspace(0.0, 1.0, n_s)
+        spine = np.zeros((n_s, NCOLS), dtype=np.float32)
+        spine[:, PX] = rng.normal(0.0, 0.4, n_s)
+        spine[:, PY] = rng.normal(0.0, 0.4, n_s)
+        spine[:, PZ] = 8.5 + 7.0 * t
+        spine[:, TYPE] = 3.0; spine[:, ALPHA] = 0.85; spine[:, SIZE] = 1.6
+        spine[:, CR], spine[:, CG], spine[:, CB] = body_c
+        parts.append(spine)
+        # head
+        parts.append(_dots((0.0, 0.0, 18.0), 2.6, 40, body_c, rng))
+        # the plumb line: crown to contact, gravity made visible
+        n_p = 90
+        t = np.linspace(0.0, 1.0, n_p)
+        plumb = np.zeros((n_p, NCOLS), dtype=np.float32)
+        plumb[:, PX] = 0.0
+        plumb[:, PY] = 0.0
+        plumb[:, PZ] = 20.5 - 20.0 * t
+        plumb[:, TYPE] = 3.0
+        plumb[:, ALPHA] = 0.50 if lit else 0.18
+        plumb[:, SIZE] = 1.1
+        plumb[:, CR], plumb[:, CG], plumb[:, CB] = 0.60, 0.80, 1.00
+        parts.append(plumb)
+        # the CONTACT: a bright patch where the feet meet the slab -- the witness
+        cc = (1.0, 0.85, 0.45) if lit else (0.30, 0.27, 0.20)
+        for lx in (-2.4, 2.4):
+            parts.append(_dots((lx, 0.0, 0.6), 1.8, 30, cc, rng))
+        if lit:
+            parts.append(_halo((0.0, 0.0, 0.6), 5.5, (1.0, 0.85, 0.45),
+                               rng, alpha=0.15, size=1.8))
+        return parts
+
+    begin = np.concatenate([ground] + figure(False), axis=0)
+    end = np.concatenate([ground] + figure(True), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2218,7 +2303,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2466,7 +2551,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
