@@ -208,3 +208,26 @@ finished answering. The prediction (≥ 50% AND upright) stands UNMOVED, and
 the run continues: warm start from the session-best, 48 turns.
 
 Verdict: _pending the continuation._
+
+---
+
+## CONFOUND, MEASURED BY THE OTHER AGENT (commits `c95131f` / `ee6f59c`, 2026-08-04)
+
+The 32-ligament world this walk trains over has a CEILING the walk did not
+make: **the unperturbed STAND falls at 6.24 s** (same theta, 8 s horizon,
+pelvis MIN 46.2%), and F3 by the slice's letter has regressed PASS → FAIL
+on the CoM term (excursion 0.80 → 1.65; outside the box 16.8% of phase 1)
+— the off-sagittal ligaments fixed their own falsifier and broke the
+neighbour port, the exact composition failure the ladder exists to catch.
+Consequences for this membrane's numbers:
+
+- Every "fell at ~4.3–4.6 s" in the v2 table is bounded above by the
+  stand's own 6.24 s, minus the march's perturbation. The walk's falls are
+  NOT cleanly attributable to the walk until the foundation holds.
+- The 8 s training horizon sits past the foundation's fall: the −3.0
+  penalty saturates and the search discriminates on fall-time, not posture
+  (the other agent's diagnosis, verbatim, because it is correct).
+- M1's "F3 VERDICT PASS" is hereby REGRESSED in the ledger: the milestone
+  board must show f3 red on the CoM term until the stand is repaired. The
+  stand repair owns the foundation; the walk continuation runs meanwhile,
+  and its falls are read against the 6.24 s ceiling, not against zero.
