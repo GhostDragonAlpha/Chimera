@@ -754,6 +754,21 @@ session paid for twice in the walk port (numbers optimised against a plant the j
 is not repeated here. A 3-block θ remains bit-identical to the old formula because `kr` is then
 zeros, so no old checkpoint silently acquires a term it was never trained with.
 
+### …and it does NOT unblock the walk
+
+Stated immediately so nobody infers it. The walk was retrained over the roll-controlled stand
+(30 turns × pop 32 × 8 s) and judged: **travel −23%, periodicity 0.35, upright 44%, held 3.10 s
+— F4 still FAILS.** The ablation still passes at −4%, as it has in every run.
+
+So the frontal term fixes **standing** and not **walking**, and the two failures were not one
+failure after all. The stand's lateral topple at 7.6 s and the walk's 1.5-second ceiling looked
+like the same problem — they are not. That is the tenth hypothesis dead, and it was mine too.
+
+`walk_port.walk_formula` and `train_walk.evaluate` were nonetheless corrected in the same commit,
+because the stand θ is now 4·nu and the old line `theta_stand[2 * nu:] * pitch` would have taken
+**kp and kr together** and multiplied 2·nu numbers by one pitch angle — a silent broadcast defect,
+not a raise. Walking is composed over standing, so it inherits the roll block explicitly.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`

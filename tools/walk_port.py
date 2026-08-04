@@ -296,7 +296,7 @@ class WalkOscillator:
 
 
 def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain=1.0,
-                 phases=None, swing_gate=None):
+                 phases=None, swing_gate=None, roll=0.0):
     """THE BUTTON'S CONTENT: the stand formula, plus one oscillator, and nothing else.
 
     `theta_walk` = [A_hip, A_knee, A_ankle, ph_hip, ph_knee, ph_ankle] -- amplitudes and
@@ -313,7 +313,16 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
     is an OUTPUT, decided by the body, the ground and gravity.
     """
     u = np.clip(theta_stand[:nu] + theta_stand[nu:2 * nu] * (tgt - z)
-                + theta_stand[2 * nu:] * pitch, 0.0, 1.0)
+                + theta_stand[2 * nu:3 * nu] * pitch
+                # THE STAND PORT GAINED A ROLL BLOCK (2026-08-04, parser.py + train_stand.py):
+                # its theta is now 4*nu, and `theta_stand[2*nu:]` -- what this line used to say --
+                # would take kp AND kr together and multiply 2*nu numbers by one pitch. It would
+                # not raise; it would broadcast-fail or silently drive the wrong muscles. Sliced
+                # explicitly, and roll is fed back the same way the stand port feeds it back,
+                # because walking is composed over standing and must inherit what standing
+                # learned. A 3-block theta still works: kr is then zeros.
+                + (theta_stand[3 * nu:4 * nu] * roll if theta_stand.size >= 4 * nu else 0.0),
+                0.0, 1.0)
     amps, offs = theta_walk[:len(OSC_JOINTS)], theta_walk[len(OSC_JOINTS):2 * len(OSC_JOINTS)]
     # `phases` is the WalkOscillator's live per-leg phase, entrained by the feet. If it is
     # absent this falls back to the open-loop clock -- kept ONLY so the measured failure above
@@ -356,7 +365,8 @@ def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0):
     def fn(obs, value):
         return walk_formula(theta_stand, theta_walk, groups, obs["z"], obs["pitch"],
                             P["OUT omega_rad_s"] * obs["t"], nu, tgt, gain=gain * float(value),
-                            phases=obs.get("phases"), swing_gate=obs.get("swing_gate"))
+                            phases=obs.get("phases"), swing_gate=obs.get("swing_gate"),
+                            roll=obs.get("roll", 0.0))
     return fn
 
 

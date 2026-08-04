@@ -102,8 +102,10 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                     1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
-                                     omega * d.time, nu, tgt, gain=gain)
+                                     omega * d.time, nu, tgt, gain=gain, roll=roll)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
