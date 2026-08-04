@@ -227,8 +227,10 @@ if __name__ == "__main__":
                          "scramble — survival and compactness verdict")
     ap.add_argument("--fracture", action="store_true",
                     help="Phase 3: rupture pass on the world scramble, temps {1.2, 12, 120}")
-    ap.add_argument("--lambda", dest="lam_derived", action="store_true",
-                    help="Phase 5: per-tissue lambda derived from measured bulk moduli")
+    ap.add_argument("--metal-jail", dest="metal_jail", action="store_true",
+                    help="Phase 6: the nucleation protocol with per-type lambda — "
+                         "metal jailed at 1.4 (2*1.4*T > drive 37,676), all other "
+                         "families at rung-1's 0.9")
     a_ns = ap.parse_args()
 
     if a_ns.lam_derived:
@@ -439,6 +441,67 @@ if __name__ == "__main__":
         print(f"  trace: H {sw[0]:.1f} -> {sw[-1]:.1f}; count drift {drift}")
         verdict = fA and fB and fC and fD
         print(f"PHASE 4 (NUCLEATION) VERDICT: {'PASS' if verdict else 'FIRED'} "
+              f"({rep['seconds']:.1f}s)")
+        raise SystemExit(0 if verdict else 1)
+
+    if a_ns.metal_jail:
+        # PHASE 6 — THE METAL JAIL (membrane stated in docs/THE_LIVING_MATTER.md
+        # BEFORE this run). The nucleation protocol UNCHANGED except per-type lam:
+        # metal at 1.4 (jail 2*1.4*T_m > the derived drive 37,676), every other
+        # family at rung-1's 0.9. Tests the survival law's lambda-linearity.
+        mats = (WMETAL, WROCK, WICE, WSAND, WBASIN)
+        Jw = build_world_J(WORLD_MATS)
+        grid, shape, targets = _world_seed_scramble(a_ns.n)
+        n0 = targets[WMETAL]
+        m0 = np.nonzero(grid == WMETAL)
+        cy, cx = m0[1].mean(), m0[2].mean()
+        r0 = float(np.sqrt((m0[1] - cy) ** 2 + (m0[2] - cx) ** 2).mean())
+        DRIVE_METAL = 37_676    # the derived face-erosion drive (ledger, Phase 4
+                                # nucleation post-mortem, 18-connectivity check)
+        lam_m = 1.4
+        lam = {t: 0.9 for t in mats}
+        lam[WMETAL] = lam_m
+        jail = 2.0 * lam_m * n0
+        print("PHASE 6 — THE METAL JAIL: per-type lambda, metal jailed alone")
+        print(f"  the law, live: jail 2*{lam_m}*{n0} = {jail:,.0f} vs drive "
+              f"{DRIVE_METAL:,} -> margin {jail / DRIVE_METAL - 1.0:+.1%} "
+              f"(law predicts {'SURVIVAL' if jail > DRIVE_METAL else 'EXTINCTION'})")
+        print(f"  protocol UNCHANGED from --world-seed: two r=12 seeds, {n0} metal "
+              f"cells, temp={TEMP}, lam others 0.9")
+        J_unif = np.full_like(Jw, 8.0)
+        np.fill_diagonal(J_unif, 4.0)
+        J_unif[MEDIUM, MEDIUM] = 0.0
+        rep = parity_report(grid, shape, targets, Jw, J_unif,
+                            sweeps=a_ns.sweeps, seed=0, types=mats, lam=lam)
+        for label in ("differential", "uniform"):
+            r, ar = rep[label], rep[label + "_area"]
+            print(f"  {label:<13} radius " +
+                  "  ".join(f"{WORLD_NAMES[t]}:{r[t]:.1f}" for t in mats) +
+                  f"  | metal {ar[WMETAL]}/{n0}")
+        d = rep["differential"]
+        surv = rep["differential_area"][WMETAL] / n0
+        r_metal = d[WMETAL]
+        inflate = abs(r_metal - r0) / r0
+        clean = (WROCK, WICE, WSAND)
+        ordering_ok = all(d[clean[k]] < d[clean[k + 1]] for k in range(2))
+        fA = surv >= 0.50
+        fB = not (0.45 <= surv <= 0.55)
+        fC = ordering_ok
+        print(f"  falsifier 1 (survival >= 50% at lam_m=1.4): {surv:.3f} "
+              f"{'PASS' if fA else 'FAIL -- FIRED'}  (uniform-lambda runs: 0.008, 0.000)")
+        print(f"  falsifier 2 (margin is signal, not noise -- outside 0.45-0.55): "
+              f"{'PASS' if fB else 'FAIL -- FIRED'}")
+        print(f"  falsifier 3 (no leak: rock < ice < sand preserved): "
+              f"{'PASS' if fC else 'FAIL -- FIRED'}")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=lam, seed=0)
+        tr = step(h, 8 * a_ns.sweeps, trace=True)
+        final = close(h)
+        sw = tr.reshape(a_ns.sweeps, 8).mean(axis=1)
+        drift = {WORLD_NAMES[t]: int((final == t).sum()) - targets[t] for t in mats}
+        print(f"  trace: H {sw[0]:.1f} -> {sw[-1]:.1f}; count drift {drift} "
+              f"(leak check: rock's recorded equilibrium bleed is ~-4%)")
+        verdict = fA and fB and fC
+        print(f"PHASE 6 (METAL JAIL) VERDICT: {'PASS' if verdict else 'FIRED'} "
               f"({rep['seconds']:.1f}s)")
         raise SystemExit(0 if verdict else 1)
 

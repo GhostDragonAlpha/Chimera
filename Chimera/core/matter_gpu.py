@@ -391,7 +391,7 @@ def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
 
 
 def parity_report(scramble, shape, targets, J_diff, J_unif, frozen_type=None,
-                  sweeps=90, seed=0, types=None):
+                  sweeps=90, seed=0, types=None, lam=0.9):
     """The CONTRAST: same scrambled start, differential J must sort, uniform must
     not. Returns per-tissue mean cylindrical radius for both. GPU-timed. `types`
     names which ids get radii (default the tissue set; world lattices pass theirs —
@@ -403,9 +403,11 @@ def parity_report(scramble, shape, targets, J_diff, J_unif, frozen_type=None,
         types = (BONE, MUSCLE, SKIN)
     t0 = time.perf_counter()
     diff = assemble_3d_gpu(scramble.copy(), shape, targets, J_diff,
-                           sweeps=sweeps, seed=seed, frozen_type=frozen_type)
+                           sweeps=sweeps, seed=seed, frozen_type=frozen_type,
+                           lam=lam)
     unif = assemble_3d_gpu(scramble.copy(), shape, targets, J_unif,
-                           sweeps=sweeps, seed=seed, frozen_type=frozen_type)
+                           sweeps=sweeps, seed=seed, frozen_type=frozen_type,
+                           lam=lam)
     dt = time.perf_counter() - t0
     site_attempts = 2 * sweeps * int(np.prod(shape))
     return {"differential": metrics_3d(diff, shape, types=types)["radius"],

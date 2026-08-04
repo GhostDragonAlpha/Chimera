@@ -1066,6 +1066,44 @@ cannot represent it — medium is the only reservoir), and any coupling of the s
 tree's `numbers.json` into the shaker. Both are later membranes with their own
 theories. This one is scoped to lose cleanly.
 
+**Phase 6 — THE METAL JAIL (stated 2026-08-04, before the run; the operator's call
+made: per-type λ — M7's "metal via per-type λ ≥ 1.4 or a frozen_type skeleton,"
+λ route chosen first since the kernel already carries it).**
+
+**STATEMENT.** The survival law derived from three extinction runs — a type survives
+iff its face-erosion drive < 2λ×(its population) — is a REVERSIBLE law, not a
+post-hoc fit over one operating point. Metal's numbers: drive 37,676; population
+14,246 (n=96 seed protocol); jail at λ = 0.9: 25,642 → extinct, measured twice
+(dispersion kept 0.008; seed 0/14,246). Raising metal's λ ALONE to 1.4 raises its
+jail to 2×1.4×14,246 = 39,889 > 37,676, while every other family keeps λ = 0.9 and
+its recorded equilibrium. If the law is real, the seeded metal phase survives the
+exact protocol that killed it. Per-type λ here is jail strength (mass conservation),
+NOT bulk modulus — Phase 5's verdict is untouched; this membrane tests population
+pinning only. Someone can disagree: the law was derived at ONE λ; its λ-linearity
+is the unmeasured clause, and the drive may itself shift as the seed compacts (its
+surface stops being all-free-face).
+
+**PREDICTION (not yet measured).** The `--world-seed` protocol, unchanged except
+`lam = {metal 1.4, sand/rock/ice/basin 0.9}`: metal survival ≥ 50% (the protocol's
+own falsifier-A bar — it returned 0.008 dispersed and 0.000 seeded at uniform
+λ = 0.9), seed compactness inflation ≤ 20%, and rock < ice < sand ordering
+preserved.
+
+**FALSIFIERS (named before the run).**
+
+1. **Survival < 50% at λ_m = 1.4** — the law's λ-linearity fails at its first
+   extrapolation, and the reconciliation of three runs collapses with it. One named
+   diagnostic follows, not a sweep: λ_m = 2.8 (2× threshold). If 2.8 rescues, the
+   FORM survives and the coefficient 2 is wrong; if 2.8 fails too, the form is dead
+   and frozen_type skeleton is the only metal route.
+2. **Margin is noise** — survival at 1.4 lands at the bar (0.45–0.55), i.e. the
+   derived 5.9% jail margin (39,889 vs 37,676) does not separate life from death;
+   the law's constants are softer than published.
+3. **Leak** — raising metal's λ disturbs the other families: count drift beyond
+   recorded equilibria (rock's bleed ≫ 4%) or the rock < ice < sand ordering
+   inverts. The jail is then not type-local; per-type λ leaks through the shared
+   interface dynamics.
+
 ---
 
 ## DEBTS FOUND EN ROUTE (housekeeping, not part of the theory)
