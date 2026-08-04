@@ -269,6 +269,58 @@ def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge")
     return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
+def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k=6):
+    """MEASURE the step this policy's own landscape supports, instead of halving a cold guess.
+
+    RULE 1 APPLIED TO THE SEARCH ITSELF. `train_stand`'s warm start set `sd = 0.5 * sd` -- half
+    of the COLD spread, a number that describes a space in which the incumbent does not yet
+    exist. `tools/search_landscape.py` measured what that costs on the real policy:
+
+        scale x the trainer's warm sd   |  % of samples that BEAT the incumbent
+        -------------------------------|--------------------------------------
+        0.0001                          |  70%
+        0.0003                          |  10%
+        0.001 .. 1.0                    |   0%
+
+    The incumbent sits in a basin about FOUR ORDERS OF MAGNITUDE narrower than the step the
+    trainer takes, so at its own scale the population contains nothing better -- 0 of 10 -- and
+    NO update rule can rescue a population with nothing good in it. The elite-mean guard fixes
+    the centre being destroyed; this fixes there being nothing to move toward.
+
+    NOTHING IS CHOSEN HERE, and that is the whole point:
+
+    * the LADDER is powers of ten, a measurement grid stated in the open, not a search for a
+      best value -- the same distinction `grab_load_path`'s mass curve draws;
+    * the CRITERION is the search's OWN elite fraction (`elite/pop`). A step is useful exactly
+      when at least the fraction of samples the search will KEEP are improvements; asking for
+      more than that is asking for a property the algorithm does not use. No free number
+      appears anywhere in it;
+    * the OUTPUT is the largest ladder rung meeting that criterion, and if none does the
+      smallest rung is returned WITH A REFUSAL PRINTED, never an extrapolation off the end of a
+      measured curve.
+
+    Returns `(sd_scaled, report)`. Costs `len(ladder) * k` evaluations, once.
+    """
+    ladder = (1.0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5)
+    inc = score_theta(m, d, mujoco, mu, P, secs, seeds, joints=joints)[0]
+    report = []
+    chosen = None
+    for s in ladder:
+        hits = 0
+        for _ in range(k):
+            cand = mu + rng.normal(0.0, 1.0, size=mu.shape) * sd * s
+            cand[:m.nu] = np.clip(cand[:m.nu], 0.0, 1.0)
+            if score_theta(m, d, mujoco, cand, P, secs, seeds, joints=joints)[0] > inc:
+                hits += 1
+        frac = hits / k
+        report.append((s, frac))
+        if chosen is None and frac >= elite_frac:
+            chosen = s          # the ladder descends, so the FIRST hit is the LARGEST rung
+    return (sd * (chosen if chosen is not None else ladder[-1]),
+            dict(incumbent=float(inc), ladder=report, chosen=chosen,
+                 elite_frac=float(elite_frac), refused=chosen is None))
+
+
 def draw_turn(turn, P, tr, pics, hist, path):
     import matplotlib
     matplotlib.use("Agg")
@@ -343,6 +395,9 @@ def main() -> int:
     # it is PROVEN, not when it is written -- the same sequence `--blocks` and `--joints`
     # followed. See the Rule 0 beside the guard itself.
     elite_guard = "--elite-guard" in a
+    # DERIVE THE STEP instead of halving the cold spread. Off by default for the same reason
+    # the guard is: every arm already run stays a valid control until this is proven.
+    derive_step_flag = "--derive-step" in a
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     P = derive_stand_port()
@@ -365,6 +420,25 @@ def main() -> int:
         print(f"warm start from {init}")
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
+    step_report = None
+    if derive_step_flag:
+        if not init:
+            raise SystemExit("--derive-step needs --init: it measures the basin around a KNOWN "
+                             "policy, and a cold search has no incumbent to measure around. "
+                             "Refusing to measure a landscape that has no centre (rule 20).")
+        print(f"  DERIVING THE STEP from this policy's own landscape "
+              f"(criterion: >= the search's own elite fraction {elite}/{pop} = "
+              f"{elite/pop:.2f} of samples must beat the incumbent)")
+        sd, step_report = derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints,
+                                      elite / pop, rng)
+        for s, frac in step_report["ladder"]:
+            print(f"     x{s:<8g} {100*frac:>5.0f}% beat the incumbent"
+                  + ("   <- CHOSEN" if s == step_report["chosen"] else ""))
+        if step_report["refused"]:
+            print(f"     NO RUNG MET THE CRITERION -- the smallest tried is used and this line "
+                  f"is the refusal.\n     The basin is narrower than 1e-5 x the cold sd, and "
+                  f"that is a finding about the policy,\n     not a step to trust.")
+        print(f"     warm sd was 0.5 x cold; it is now {step_report['chosen'] or 1e-5:g} x that")
     hist = []
     best_ever = (-np.inf, mu.copy())     # the SAVE is the session's best, not the last turn's
 
