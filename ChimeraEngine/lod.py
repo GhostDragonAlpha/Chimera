@@ -50,6 +50,32 @@ def projected_radius_px(radius_world: float, cam_distance: float, height_px: int
 _MIP_LEVELS = [1, 4, 16, 64, 256, 1024, 4096, 16384]     # + the base itself as the finest level
 
 
+def _mip_levels_for(n_base: int) -> list[int]:
+    """The ladder, EXTENDED to reach this body. A fixed top rung is a pop waiting for a big body.
+
+    THE POP FALSIFIER FIRED HERE, and only on the largest membrane. `_MIP_LEVELS` stopped at a
+    hard-coded 16,384, so the gap between the top mip and the base was whatever the base happened
+    to be:
+
+        theStar         20,000 / 16,384 =  1.22x    fine
+        theRockyPlanet  41,974 / 16,384 =  2.56x    fine
+        aBlueWorld      43,000 / 16,384 =  2.62x    fine
+        aTerrain       262,144 / 16,384 = 16.00x    POP -- twice the 8x bar
+
+    Every rung of the ladder is a factor of 4, so the LAST step should be too. It was 16x for
+    aTerrain because the ladder simply ran out below it, and the defect was invisible on every
+    other term precisely because their bases happen to sit near 16,384. A constant chosen when the
+    biggest body was small becomes a discontinuity when a bigger one arrives.
+
+    Extending by 4 until the ladder covers the base keeps the worst step at 4x for ANY size, and
+    costs one extra mip level only for bodies that need it.
+    """
+    out = list(_MIP_LEVELS)
+    while out[-1] * 4 < n_base:
+        out.append(out[-1] * 4)
+    return out
+
+
 def build_mips(base: np.ndarray, radius_world: float, p: dict | None = None) -> list[np.ndarray]:
     """Precompute LOD levels for a body. Coarse levels use SPATIALLY-AVERAGED colours (nearest-representative
     clustering on the sphere); finer levels (> ~a few k) just subsample -- their detail is already sub-pixel
@@ -59,7 +85,7 @@ def build_mips(base: np.ndarray, radius_world: float, p: dict | None = None) -> 
     n_base = base.shape[0]
     dirs = base[:, 0:3] / (np.linalg.norm(base[:, 0:3], axis=1, keepdims=True) + 1e-9)
     levels = []
-    for N in _MIP_LEVELS:
+    for N in _mip_levels_for(n_base):
         if N >= n_base:
             break
         idx = np.linspace(0, n_base - 1, N).astype(np.int64)
@@ -138,3 +164,75 @@ def near_far(buf: np.ndarray, cam_distance: float, height_px: int = _JUDGMENT_H,
         return buf, buf.shape[0]
     lvl = select(levels, r_px, p)
     return lvl, lvl.shape[0]
+
+
+# ── THE POP PROBE (the falsifier lod_switch named and nobody had run) ──────────────────────────
+
+def pop_probe(buf: np.ndarray, radius0: float, n: int = 180, height_px: int = 1080,
+              fov: float = _JUDGMENT_FOV, p: dict | None = None) -> dict:
+    """Sweep the camera through the viewer's whole zoom range and look for a POP.
+
+    WHAT A 360 DEGREE ORBIT CANNOT TEST, and this is the first thing the probe had to settle:
+    `select()` reads only `r_px`, and `r_px` reads only the DISTANCE. Azimuth does not enter it.
+    So spinning the camera around a body at constant radius cannot change the level no matter how
+    many frames it takes -- a 180-frame orbit would report one constant number and "no pop" would
+    be true by construction rather than by measurement. That is a description, and a description
+    survives any result.
+
+        THE AXIS THAT MOVES LOD IS ZOOM, NOT YAW. So the sweep runs the RADIUS across exactly the
+        band the viewer permits (`_radius0 * 0.45` to `_radius0 * 2.5`, its own clamps), which is
+        the full set of distances a user can actually reach.
+
+    The orbit is still run, as a CONTROL: the level must be perfectly flat across 360 degrees. If
+    it is not, something depends on azimuth that should not.
+
+    Returns the per-frame levels for both sweeps and the largest single-step ratio.
+    """
+    p = p or params()
+    R = body_radius(buf)
+    levels = build_mips(buf, R, p)
+    if len(levels) <= 1:
+        return {"levels": [buf.shape[0]], "orbit": [], "zoom": [], "max_step_ratio": 1.0,
+                "note": "no mips -- nothing to switch between"}
+
+    orbit = [select(levels, projected_radius_px(R, 2.8 * R, height_px, fov), p).shape[0]
+             for _ in range(n)]                       # yaw does not enter r_px; this must be flat
+
+    zoom, dists = [], []
+    for i in range(n):
+        f = 0.45 + (2.5 - 0.45) * i / (n - 1)         # the viewer's own zoom clamps
+        d = 2.8 * R * f
+        dists.append(d)
+        zoom.append(select(levels, projected_radius_px(R, d, height_px, fov), p).shape[0])
+
+    steps = [(i, zoom[i - 1], zoom[i], max(zoom[i - 1], zoom[i]) / max(min(zoom[i - 1], zoom[i]), 1))
+             for i in range(1, n) if zoom[i] != zoom[i - 1]]
+    worst = max((s[3] for s in steps), default=1.0)
+    return {"levels": [l.shape[0] for l in levels], "orbit": orbit, "zoom": zoom,
+            "dists": dists, "switches": steps, "max_step_ratio": worst,
+            "orbit_flat": len(set(orbit)) == 1}
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    from pathlib import Path as _P
+    _sys.path.insert(0, str(_P(__file__).resolve().parent))
+    import splat_appearance as _sa
+
+    term = _sys.argv[1] if len(_sys.argv) > 1 else "aBlueWorld"
+    b = _sa.scene_buffer(term)
+    if b is None:
+        raise SystemExit(f"{term} does not emit")
+    r = pop_probe(b, 2.8 * body_radius(b))
+    print(f"LOD POP PROBE -- {term}, {b.shape[0]} grains")
+    print(f"  mip levels      {r['levels']}")
+    print(f"  360 orbit       flat={r['orbit_flat']}  (levels seen: {sorted(set(r['orbit']))})")
+    print(f"  zoom sweep      0.45x .. 2.50x of default framing, 180 steps")
+    print(f"  levels visited  {sorted(set(r['zoom']), reverse=True)}")
+    print(f"  switches        {len(r['switches'])}")
+    for i, a, c, ratio in r["switches"]:
+        print(f"    frame {i:>4d}:  {a:>6d} -> {c:<6d}  ratio {ratio:.2f}x")
+    ok = r["max_step_ratio"] <= 8.0 and r["orbit_flat"]
+    print(f"  WORST STEP      {r['max_step_ratio']:.2f}x   "
+          f"{'PASS (no pop: <= 8x)' if ok else 'FIRED'}")
+    raise SystemExit(0 if ok else 1)

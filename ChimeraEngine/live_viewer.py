@@ -85,6 +85,8 @@ class LiveViewer:
         self._lod_base = None      # the full-detail buffer the pyramid was built from
         self._lod_levels = None    # coarse -> fine mip levels, rebuilt only on load
         self._lod_n = None         # grain count currently on the GPU (None = nothing uploaded)
+        self._grains = 0           # grains in the last rendered frame (read off the pipeline)
+        self._ms_hist = []         # last 30 render times, ms -- the rolling fps
         self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
         self._running = True
         self._err = None
@@ -350,13 +352,64 @@ class LiveViewer:
                 # Nearly FLAT -- the cost is per-SPLAT work (project, bin, sort), not pixels. So the
                 # switch traded a visible pop for 25 ms. Deleted.
                 params = params_hi
+                t_r0 = time.time()
                 img = pipe.render_from_gpu(cam, params)
                 self._publish(img)
+                # ── THE FRAME BUDGET, MEASURED WHERE IT IS SPENT ────────────────────────────────
+                # The grain count is read off `pipe._n` rather than bookkept at each upload site.
+                # There are four of those and one of them is the LOD switch, which uploads a
+                # DIFFERENT count from the one the reload branch put there -- a hand-maintained
+                # counter would have gone stale exactly when LOD started working, and a HUD that
+                # reports a stale count is worse than no HUD.
+                #
+                # RENDER TIME IS TIMED AROUND THE RENDER, not the whole iteration: the loop also
+                # sleeps to cap 60 fps, and including that would report the CAP as the cost and
+                # hide the moment the render itself stopped fitting inside it.
+                self._note_frame(int(getattr(pipe, "_n", 0)), (time.time() - t_r0) * 1000.0)
                 time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
         except Exception as e:                                          # a dead render thread must be visible, not silent
             import traceback
             self._err = f"{e}\n{traceback.format_exc()}"
             print(f"[live_viewer] render thread died: {self._err}")
+
+    def _note_frame(self, grains: int, ms: float):
+        """Record one rendered frame: its grain count and how long the render took.
+
+        THE FPS IS A ROLLING MEAN OVER THE LAST 30 RENDERS, not an instantaneous 1/dt. A single
+        frame's time is dominated by whatever else the shared 4090 was doing that millisecond --
+        this box runs LM Studio on the same card -- so an instantaneous figure flickers between
+        4 and 12 fps on a scene that is not changing. Thirty frames is ~4 seconds at the rates
+        this renders at: long enough to be stable, short enough to move when the scene does.
+        """
+        with self._lock:
+            self._grains = grains
+            self._ms_hist.append(float(ms))
+            if len(self._ms_hist) > 30:
+                del self._ms_hist[:-30]
+
+    def stats(self) -> dict:
+        """The frame budget as a number, for the footer and for /stats.
+
+        `budget_pct` is against MAX_GRAINS_PER_FRAME, which perf_guard derives; it is imported
+        rather than copied so the HUD cannot disagree with the guard that raises.
+        """
+        try:
+            from perf_guard import MAX_GRAINS_PER_FRAME as _CAP, MAX_RENDER_MS as _MS
+        except Exception:
+            _CAP, _MS = 250_000, 200
+        with self._lock:
+            hist = list(self._ms_hist)
+            g = int(self._grains)
+        ms = sum(hist) / len(hist) if hist else 0.0
+        return {"fps": round(1000.0 / ms, 2) if ms > 1e-9 else 0.0,
+                "render_ms": round(ms, 2),
+                "grains": g,
+                "grain_cap": int(_CAP),
+                "budget_pct": round(100.0 * g / max(_CAP, 1), 1),
+                "over_budget": bool(g > _CAP),
+                "render_ms_cap": int(_MS),
+                "over_time": bool(ms > _MS),
+                "term": self._loaded or ""}
 
     def _publish(self, img):
         from PIL import Image
@@ -631,6 +684,9 @@ def handle(handler) -> bool:
             v._paused = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
         _send(handler, 200, "application/json",
               json.dumps({"paused": v._paused, "t": v._t, "ticks": v._ticks}).encode()); return True
+    if path == "/stats":
+        _send(handler, 200, "application/json",
+              json.dumps(get_viewer().stats()).encode()); return True
     if path == "/step":
         v = get_viewer()
         with v._lock:
@@ -965,7 +1021,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       <div id=walkhud></div>
     </div>
   </div>
-  <footer><div id=nums></div><div class=hint id=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
+  <footer><div id=nums></div><div class=num id=budget></div><div class=hint id=hint>drag to orbit &middot; scroll to zoom &middot; it turns on its own</div></footer>
 </main>
 <script>
 const TREE=__TREE__, READINGS=__READINGS__, KINDS=__KINDS__, TERMS=__TERMS__;
@@ -1079,6 +1135,25 @@ var qEl=document.getElementById('q'), builtEl=document.getElementById('builtonly
 if(qEl) qEl.addEventListener('input',function(){ QUERY=qEl.value.trim().toLowerCase(); refilter(); });
 if(builtEl) builtEl.addEventListener('change',function(){ BUILT_ONLY=builtEl.checked; refilter(); });
 paintTree();
+/* THE FRAME BUDGET, IN THE FOOTER. The page already shows what the membrane IS; this shows what
+   it COSTS. Polled at 1 Hz rather than per frame: the number it reads is a 30-frame rolling mean,
+   so asking faster than the mean can move only spends requests on the same answer. */
+(function budgetHUD(){
+  const el=document.getElementById('budget');
+  if(!el) return;
+  const tick=()=>fetch('/stats').then(r=>r.json()).then(s=>{
+    const g=(s.grains||0).toLocaleString(), cap=(s.grain_cap||0).toLocaleString();
+    /* BOTH WALLS ARE SHOWN, because a scene can be inside the grain cap and still too slow --
+       grains and milliseconds are different budgets and only one of them is what a viewer feels. */
+    const over=s.over_budget||s.over_time;
+    const what=s.over_budget?'BUDGET OVER':(s.over_time?'TOO SLOW':'OK');
+    el.innerHTML='fps: <i>'+(s.fps||0).toFixed(1)+'</i> &middot; '+(s.render_ms||0).toFixed(0)+' ms'+
+                 ' &middot; grains: <i>'+g+'</i> / '+cap+' ('+(s.budget_pct||0).toFixed(1)+'%)'+
+                 ' &middot; budget: <i>'+what+'</i>';
+    el.style.color = over ? '#ff5555' : '';
+  }).catch(()=>{});
+  tick(); setInterval(tick,1000);
+})();
 function pick(t){
   if(WALKING && t!=='theHuman') sitDown();   /* WALKING is `var` below: undefined here on first load, never a throw */
   term=t;
