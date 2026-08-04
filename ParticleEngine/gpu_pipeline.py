@@ -646,8 +646,35 @@ class FullGPUPipeline:
         self._to = cuda.device_array(max(20000, self._a), dtype=np.int32)
         self._tids = cuda.device_array(max_tile_entries, dtype=np.int32)
 
-    def upload(self, data):
-        n = len(data); self._grow(n); self._n = n
+    def upload(self, data, term=""):
+        n = len(data)
+        # ── THE BUDGET GUARD, and it is deliberately NON-FATAL here ──────────────────────────────
+        # `ChimeraEngine/perf_guard.py` declares the frame and per-surface budgets and raises
+        # PerfBudgetError; nothing called it, so an over-budget scene turned into black tiles at
+        # playback instead of an error at upload. It is wired at the one place every buffer must
+        # pass through.
+        #
+        # IT WARNS RATHER THAN RAISES, and that is a decision worth stating. This pipeline is the
+        # render path for the live viewer, the demo tour and the witnesses; a raise here would take
+        # the whole session down over a membrane that is merely dense. The guard's job is to make
+        # the overage IMPOSSIBLE TO MISS, not to be the thing that decides the session ends.
+        #
+        # AND IT IS OPT-IN BY `term`. Without a term there is no surface class to check against and
+        # a frame-budget check alone would fire on legitimate composites (the live viewer uploads
+        # ground + body + touchables as one buffer). A caller that wants the check names itself.
+        if term:
+            try:
+                from ChimeraEngine.perf_guard import (check_frame_budget, check_surface_budget,
+                                                      PerfBudgetError)
+            except Exception:                     # perf_guard absent -> render, do not crash
+                pass
+            else:
+                for chk in (lambda: check_frame_budget(n), lambda: check_surface_budget(term, n)):
+                    try:
+                        chk()
+                    except PerfBudgetError as e:
+                        print(f"[GPU BUDGET] {e}")
+        self._grow(n); self._n = n
         self._dp[:n*NCOLS] = cuda.to_device(data.ravel().astype(np.float32))[:n*NCOLS]
 
     def step_particles(self, dt, cvars):

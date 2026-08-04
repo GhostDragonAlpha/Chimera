@@ -33,6 +33,50 @@ class BridgeConfig:
     send_props: bool = False         # Control var values (larger payload)
 
 
+# ── THE DENSITY FLOOR ────────────────────────────────────────────────────────────────────────────
+# `docs/research/laguna_density.md` derives a MINIMUM splat count per surface class from each
+# membrane's extent and the 720p judgment distance. Nothing enforced it, so a buffer that had
+# silently lost its detail -- the way `_tree_buffers` did -- crossed the bridge to UE without a
+# word, and the first thing to notice was a human saying "low detail" at a render.
+#
+# A FLOOR IS NOT A BUDGET, and they pull in opposite directions. `perf_guard` caps how many grains
+# a surface may spend (too many is a dropped frame); this is the other wall (too few is a surface
+# you cannot read). A buffer must clear both, and a warning that names which wall it hit is the
+# difference between "low detail" and something actionable.
+DENSITY_FLOORS = {           # docs/research/laguna_density.md, "Per-Membrane Density Requirements"
+    "terrain": 4_000,
+    "rock": 4_000,
+    "sand": 2_000,
+    "vegetation": 16_000,
+}
+
+
+def density_enforce(term: str, n_grains: int) -> bool:
+    """Warn LOUDLY if `term`'s buffer is below its derived floor. Returns True if it passes.
+
+    THE CLASSIFIER IS IMPORTED, NOT REPRODUCED. `perf_guard._classify_type` already maps a
+    membrane name onto a surface class, and a second copy here would be a stale copy the moment
+    either moved -- the defect this studio convicted four times in one day. It matters more than
+    usual because that classifier is known to be WRONG for one family: it substring-matches "rock"
+    before it checks "planet", so `aRockyPlanet` and `theRockyPlanet` are judged as mining faces.
+    One shared classifier means that gets fixed once.
+    """
+    try:
+        import sys as _s
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).resolve().parents[2] / "ChimeraEngine"))
+        from perf_guard import _classify_type
+    except Exception:
+        return True                       # no classifier -> no claim; never block the bridge
+    kind = _classify_type(term)
+    floor = DENSITY_FLOORS.get(kind)
+    if floor is None or n_grains >= floor:
+        return True
+    print(f"[DENSITY] {term}: {n_grains} grains < {floor} floor ({kind})",
+          file=__import__("sys").stderr, flush=True)
+    return False
+
+
 class UEBridge:
     """
     Bridges particle state from Python simulation to Unreal Engine.
@@ -67,10 +111,14 @@ class UEBridge:
             print(f"[ParticleBridge] MCP init failed: {e}. Falling back to 'none' mode.")
             self.config.mode = "none"
 
-    def send(self, state: ParticleState):
+    def send(self, state: ParticleState, term: str = ""):
         """
         Send a snapshot of particle state to UE for rendering.
         Called once per frame (or every N frames depending on config).
+
+        `term` names the membrane this buffer belongs to. It is optional and defaults to "" --
+        without it there is no surface class to judge the count against, and the density floor is
+        skipped rather than guessed. A caller that wants the check names itself.
         """
         self._frame_count += 1
 
@@ -83,6 +131,9 @@ class UEBridge:
         payload = self._build_payload(state)
         if payload is None:
             return
+        if term:
+            payload["term"] = term
+            density_enforce(term, int(payload.get("sent_count", 0)))
 
         if self.config.mode == "mcp" and self._mcp_client:
             self._send_mcp(payload)

@@ -78,6 +78,12 @@ class LiveViewer:
         # ── PAUSE / STEP / SCRUB (Task 9) ──
         self._paused = False       # True = time is FROZEN (the render thread keeps producing the same frame)
         self._step_requested = False  # True -> advance ONE tick then re-freeze
+        self._ticks = 0            # granted render ticks -- the observable /step is measured against
+        # LOD state, declared here rather than conjured by getattr in the loop: a reader should be
+        # able to see every field the render thread owns without running it.
+        self._lod_base = None      # the full-detail buffer the pyramid was built from
+        self._lod_levels = None    # coarse -> fine mip levels, rebuilt only on load
+        self._lod_n = None         # grain count currently on the GPU (None = nothing uploaded)
         self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
         self._running = True
         self._err = None
@@ -92,6 +98,7 @@ class LiveViewer:
         try:
             from ParticleEngine.gpu_pipeline import FullGPUPipeline
             from ParticleEngine.camera import FirstPersonCamera
+            import lod as LOD
             import numpy as np
             from PIL import Image
             pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
@@ -103,6 +110,42 @@ class LiveViewer:
                 now = time.time(); dt = min(0.1, now - last); last = now
                 if self._clients <= 0:                                  # nobody watching -> free the shared 4090 (LM Studio needs it)
                     time.sleep(0.1); continue
+
+                # ── TIME IS DRIVABLE ─────────────────────────────────────────────────────────────
+                # /pause, /step and /scrub have existed in handle() for a while and set flags the
+                # render thread never read, so pausing did nothing. Frozen means: publish the same
+                # frame and do no work -- the MJPEG stream holds on its last frame because nothing
+                # new is produced.
+                #
+                # THE STEP IS CONSUMED HERE, NOT AT THE END OF THE ITERATION, and that is the whole
+                # correctness argument. This loop has THREE exits -- the walk branch ends with its
+                # own `continue`, so does the `self._loaded is None` guard, and the orbit path falls
+                # through to the 60 fps cap. A re-freeze written at "the end" sits on ONE of them,
+                # so a step taken in walk mode would advance forever and the falsifier (`/step
+                # advances more than one frame`) would fire on the mode nobody tested.
+                #
+                # Consuming the request and re-arming the pause in the SAME locked block makes the
+                # invariant hold on every path: whatever this iteration does afterwards, exactly one
+                # tick has been granted.
+                #
+                # AND THE SLEEP IS OUTSIDE THE LOCK. Sleeping while holding it would block /pause,
+                # /step and /scrub for 50 ms per iteration -- the controls would fight the loop they
+                # are trying to drive.
+                # `_ticks` EXISTS SO THE FALSIFIER CAN BE MEASURED. The claim is "/step advances
+                # EXACTLY one frame"; nothing in this loop counted frames, so the claim could only
+                # be eyeballed against an MJPEG stream -- and an unmeasurable claim is a
+                # description, which survives any result. One monotonic counter, incremented once
+                # per GRANTED tick, turns it into an arithmetic check: ticks after == ticks before
+                # + 1, or the port fired.
+                with self._lock:
+                    frozen = self._paused and not self._step_requested
+                    if not frozen:
+                        if self._step_requested:
+                            self._step_requested = False
+                            self._paused = True      # one tick is granted; we are paused again
+                        self._ticks += 1
+                if frozen:
+                    time.sleep(0.05); continue
                 if self._walk is not None:
                     # ── STANDING IN IT -- through THE STATE MACHINE (controller.py). The keys map
                     # onto named states (walk, sidestep, steer, jump), and the states drive the
@@ -205,7 +248,35 @@ class LiveViewer:
                     if buf is None:
                         buf = self._sa.scene_buffer(self._pending)       # a painted scene has no time axis
                     if buf is not None:
-                        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
+                        # ── THE MIP PYRAMID IS BUILT ONCE PER LOAD, NOT ONCE PER FRAME ───────────
+                        # `LOD.build_mips` clusters on the sphere; running it every frame would
+                        # cost more than the grains it saves. It belongs HERE, in the reload
+                        # branch, which fires on a term change, a `t` change or a forced reload --
+                        # never on a mere camera move.
+                        #
+                        # AND THAT IS WHY SELECTION CANNOT ALSO LIVE HERE. Selecting the level at
+                        # load time would freeze LOD at whatever radius the camera happened to have
+                        # when the term was loaded, so zooming in would never restore detail and the
+                        # membrane's own prediction -- "at 0.5x zoom it switches to the full base
+                        # count" -- could not come true. Build here, SELECT below, every frame,
+                        # against the radius the camera actually has.
+                        self._lod_base = buf
+                        try:
+                            self._lod_levels = LOD.build_mips(buf, LOD.body_radius(buf)) \
+                                if buf.shape[0] > 64 else None
+                        except Exception:
+                            self._lod_levels = None      # LOD is an optimisation, never a blocker
+                        self._lod_n = None               # force the first selection to upload
+                        # THE TERM IS `_pending`, NOT `_loaded`. `_pending != _loaded` is the
+                        # condition that triggered this reload, so `_loaded` still names the
+                        # membrane being REPLACED -- tagging the buffer with it would report a
+                        # budget overage against the wrong membrane, and the report would look
+                        # entirely plausible. The walk-mode uploads below stay untagged on purpose:
+                        # they are composites (ground + body + touchables) belonging to no single
+                        # membrane, and a per-surface budget has nothing to say about a composite.
+                        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32),
+                                    term=self._pending or "")
+                        self._lod_n = buf.shape[0]
                         if self._pending != self._loaded:                # keep the framing while scrubbing
                             self._radius = self._radius0 = self._sa.scene_cam_distance(self._pending)
                         self._loaded = self._pending
@@ -226,6 +297,41 @@ class LiveViewer:
                 cam.position = np.array(pos, dtype=np.float32)
                 cam.yaw = math.atan2(fy, fx)
                 cam.pitch = math.atan2(fz, math.hypot(fx, fy))
+
+                # ── THE LOD SWITCH, KEYED TO THE RADIUS THE CAMERA ACTUALLY HAS ─────────────────
+                # `lod_switch()` existed and nothing called it, so every body rendered at its base
+                # count at every distance. Selection is cheap -- a walk over the precomputed levels
+                # -- so it runs every frame; the UPLOAD only happens when the chosen level CHANGES.
+                # That is what makes this a switch rather than a re-upload loop: crossing a mip
+                # boundary costs one upload, and staying inside one costs nothing.
+                # THE DISTANCE MUST BE IN THE BUFFER'S OWN UNITS, and feeding it `self._radius`
+                # would have been a silent catastrophe. `membrane_buffer`'s docstring says it
+                # plainly -- "the buffer is in the membrane's own local units (radius ~1)" -- while
+                # `scene_cam_distance` returns `extent_m * 2.8`, WORLD METRES. Measured: aBlueWorld
+                # has body_radius 1.03 against a camera distance of 1.47e7, seven orders apart. Fed
+                # to projected_radius_px that gives r_px = 0.0000655, so `select` returns the
+                # COARSEST mip and EVERY body in the game collapses to ONE SPLAT -- with no
+                # exception raised, because dividing by a large number is perfectly legal.
+                #
+                #     A FOLD/BOND MISFOLD: the right two quantities at an interface where their
+                #     units do not agree. It would have looked like LOD working.
+                #
+                # The zoom is a RATIO (`_radius / _radius0`) and a ratio is unit-free, so the
+                # local-space distance is the viewer's own default framing -- 2.8 body radii --
+                # scaled by it. Nothing here converts between the two spaces, because the
+                # conversion is exactly the thing that is broken; it stays inside one of them.
+                lv = self._lod_levels
+                if lv:
+                    R_local = LOD.body_radius(self._lod_base)
+                    zoom = r / max(self._radius0, 1e-30)
+                    d_local = 2.8 * R_local * zoom
+                    r_px = LOD.projected_radius_px(R_local, d_local, _H, cam.fov)
+                    sel = LOD.select(lv, r_px)
+                    if sel.shape[0] != self._lod_n:
+                        pipe.upload(np.ascontiguousarray(sel, dtype=np.float32),
+                                    term=self._loaded or "")
+                        self._lod_n = sel.shape[0]
+
                 if self._loaded is None:
                     time.sleep(0.05); continue
                 # ONE RESOLUTION, ALWAYS. This used to drop to 1152x648 whenever you touched the
@@ -517,13 +623,18 @@ def handle(handler) -> bool:
         with v._lock:
             v._paused = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
         _send(handler, 200, "application/json",
-              json.dumps({"paused": v._paused, "t": v._t}).encode()); return True
+              json.dumps({"paused": v._paused, "t": v._t, "ticks": v._ticks}).encode()); return True
     if path == "/step":
         v = get_viewer()
         with v._lock:
             v._step_requested = True
             v._paused = True
-        _send(handler, 204, "text/plain", b""); return True
+            n0 = v._ticks
+        # THE TICK COUNT IS RETURNED so a caller can check the claim instead of trusting it:
+        # poll /pause afterwards and `ticks` must be exactly n0 + 1. A 204 with no body left
+        # "/step advances exactly one frame" as something only an eye could judge.
+        _send(handler, 200, "application/json",
+              json.dumps({"stepped_from": n0}).encode()); return True
     if path == "/scrub":
         # SCRUB the membrane's own timeline: t from 0 to 1, driving the 4th dimension.
         # `/scrub?term=theCooling&t=0.5` loads theCooling at halfway through its movie.
