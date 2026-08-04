@@ -183,4 +183,28 @@ propulsion; the swing-timing question reopens with data. 3. Carried from
 v1: sensor ablation must still collapse travel, or the machine became a
 clock in disguise.
 
-Verdict: _pending the v2 run._
+## VERDICT, v2 RUN 1 (2026-08-04): mechanism RECRUITED, gradient LIVE, budget extended
+
+24×32 CEM. `f5_step.py` on the session-best (score −3.815, turn 17): travel
+10%, periodicity 0.43, upright 48% (held 4.60 s) — FAIL on 1/2/3; judges
+4/5/6 PASS again. Read against this amendment's three falsifiers:
+
+1. **Push-off rejected?** NO — P_push converged to **0.2121**, recruited at
+   the same magnitude as the swing efforts (B_hip 0.2289, A_ankle 0.2497).
+   Falsifier 1 does not fire: the search wants the mechanism.
+2. **Travel rises, upright dies?** NEITHER CLEANLY — the shape changed
+   instead: survival jumped (held 2.4 s → **4.1–4.6 s every turn**, pelvis
+   0.9–1.0 m through it) while travel stayed 10–29%. The body now MARCHES —
+   real alternating support, duty 0.88/0.61 — where v1 could only topple or
+   freeze. The push-off bought balance, not yet speed.
+3. **Sensor ablation clean?** YES — zeroed obs collapses travel (−0%). The
+   machine is still the sensors.
+
+**The decisive observation: the population mean was STILL CLIMBING at turn
+24** (−4.48 → −4.05, monotonic in the last decile) where v1 had plateaued
+identically for 16 turns. v1's theory was exhausted; v2's is not — its
+budget is. A converged search answers the question; a climbing one has not
+finished answering. The prediction (≥ 50% AND upright) stands UNMOVED, and
+the run continues: warm start from the session-best, 48 turns.
+
+Verdict: _pending the continuation._
