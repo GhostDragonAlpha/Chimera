@@ -46,6 +46,8 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 CARRY_THETA = OUTDIR / "carry_theta.npy"
 T_SNAP = 1.0                    # the weld engages here -- f6's T_GRAB, the judged event
+_STONE_LABEL = "59.49 kg"       # set from G in main() -- the dial-pricing runs measured the
+                                # hardcoded title misinforming every picture (2026-08-04)
 
 
 def evaluate(m, d, mujoco, theta, P, G, secs, eq, frames=0):
@@ -190,7 +192,7 @@ def draw_turn(turn, P, tr, pics, hist, path):
         ax2.axhline(0.8, color="#8e44ad", ls=":", lw=1.0)
     hi = min(tr["z"]) if tr["z"] else 0.0
     fig.suptitle(f"CARRY PORT — training turn {turn}   pelvis MIN {hi:.3f} m / target {tgt:.3f} m "
-                 f"= {100*hi/tgt:.0f}%   (59.49 kg stone, the SNAP at {T_SNAP:.1f} s)", fontsize=11.5)
+                 f"= {100*hi/tgt:.0f}%   ({_STONE_LABEL} stone, the SNAP at {T_SNAP:.1f} s)", fontsize=11.5)
     fig.savefig(path, dpi=100, bbox_inches="tight"); plt.close(fig)
 
 
@@ -207,6 +209,8 @@ def main() -> int:
 
     P = derive_stand_port()
     G = derive_grab_port()
+    global _STONE_LABEL
+    _STONE_LABEL = f"{G['OUT stone_mass_kg']:.2f} kg"
     path = stone_xml(MYOBODY, G)
     m, g = load_body(path, mujoco)
     d = mujoco.MjData(m)
