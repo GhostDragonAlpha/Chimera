@@ -78,6 +78,7 @@ SCENES = {
     "thePlanting":    {"kind": "planting", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
     "theFarming":     {"kind": "farming", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
     "thePlanetaryFarm": {"kind": "planetary_farm", "radius": 190.0, "cam": (0.0, -140.0, 130.0)},
+    "theLunarFarm":    {"kind": "lunar_farm", "radius": 190.0, "cam": (0.0, -160.0, 120.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -910,6 +911,102 @@ def _planetary_farm_buffers(spec: dict, term: str):
     end = np.concatenate([gnd, tilled] + wild + mature(), axis=0)
     return end, begin
 
+def _lunar_farm_buffers(spec: dict, term: str):
+    """theLunarFarm: cultivation under a SEALED dome on an airless world. Outside:
+    barren grey regolith, no life, no air. Inside the shell: crop rows in trays under
+    lamp glow, ripening to gold -- the membrane's claim is the BOUNDARY: life inside,
+    sterility outside, the dome the only thing between them. begin = young stand,
+    end = mature at harvest."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 190.0))
+    DOME_R = 58.0
+
+    # barren regolith: grey, lifeless, cratered-looking patchiness
+    n_g = 7000
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.08 * gx + 0.7) * np.sin(0.07 * gy + 2.1)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.0
+    grey = 0.30 + 0.08 * patch
+    gnd[:, CR], gnd[:, CG], gnd[:, CB] = grey, grey, grey * 1.04
+
+    # the dome shell: a faint translucent hemisphere over the farm
+    n_s = 1800
+    u = rng.random(n_s)
+    v = rng.random(n_s)
+    phi = 2.0 * np.pi * u
+    cth = np.sqrt(1.0 - v)                       # hemisphere: cos(theta) in [0,1]
+    sth = np.sqrt(np.maximum(0.0, 1.0 - cth * cth))
+    shell = np.zeros((n_s, NCOLS), dtype=np.float32)
+    shell[:, PX] = DOME_R * sth * np.cos(phi)
+    shell[:, PY] = DOME_R * sth * np.sin(phi)
+    shell[:, PZ] = DOME_R * cth
+    shell[:, TYPE] = 3.0; shell[:, ALPHA] = 0.16; shell[:, SIZE] = 2.2
+    shell[:, CR], shell[:, CG], shell[:, CB] = 0.75, 0.82, 0.92
+
+    # tray floor inside the dome: flat dark deck, not native soil
+    n_t = 1200
+    tx = rng.uniform(-42.0, 42.0, n_t)
+    ty = rng.uniform(-36.0, 36.0, n_t)
+    deck = np.zeros((n_t, NCOLS), dtype=np.float32)
+    deck[:, PX], deck[:, PY], deck[:, PZ] = tx, ty, 0.4
+    deck[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    deck[:, TYPE] = 3.0; deck[:, ALPHA] = 0.5; deck[:, SIZE] = 2.6
+    deck[:, CR], deck[:, CG], deck[:, CB] = 0.16, 0.16, 0.18
+
+    # lamp glow: a warm bright line above each crop row
+    rows_y = [(-30.0 + 10.0 * k) for k in range(7)]
+    lamps = []
+    for y in rows_y:
+        xs = np.linspace(-38.0, 38.0, 26)
+        lb = np.zeros((len(xs), NCOLS), dtype=np.float32)
+        lb[:, PX], lb[:, PY], lb[:, PZ] = xs, y, 22.0
+        lb[:, TYPE] = 3.0; lb[:, ALPHA] = 0.5; lb[:, SIZE] = 2.0
+        lb[:, CR], lb[:, CG], lb[:, CB] = 0.95, 0.88, 0.66
+        lamps.append(lb)
+
+    # the crop: rows in trays under the lamps
+    spots = []
+    for y in rows_y:
+        for x in np.linspace(-38.0, 38.0, 13):
+            if rng.random() > 0.96:
+                continue
+            spots.append((x + float(rng.uniform(-0.4, 0.4)),
+                          y + float(rng.uniform(-0.4, 0.4))))
+
+    def young():
+        parts = []
+        for cx, cy in spots:
+            gg = float(rng.uniform(0.44, 0.58))
+            parts.append(_dots((cx, cy, 1.2), 1.8, 14, (0.12, gg, 0.09), rng))
+        return parts
+
+    def mature():
+        parts = []
+        for cx, cy in spots:
+            h = float(rng.uniform(8.0, 11.0))
+            stem = np.zeros((6, NCOLS), dtype=np.float32)
+            stem[:, PX], stem[:, PY] = cx, cy
+            stem[:, PZ] = np.linspace(0.6, 0.6 + h, 6)
+            stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.85; stem[:, SIZE] = 1.6
+            stem[:, CR], stem[:, CG], stem[:, CB] = 0.16, 0.42, 0.12
+            parts.append(stem)
+            gg = float(rng.uniform(0.40, 0.55))
+            parts.append(_dots((cx, cy, 0.6 + h * 0.6), 2.2, 12, (0.13, gg, 0.10), rng))
+            ripe = rng.random() < 0.75
+            head = (0.78, 0.62, 0.16) if ripe else (0.20, gg, 0.12)
+            parts.append(_dots((cx, cy, 0.6 + h + 0.7), 1.4, 10, head, rng))
+        return parts
+
+    begin = np.concatenate([gnd, shell, deck] + lamps + young(), axis=0)
+    end = np.concatenate([gnd, shell, deck] + lamps + mature(), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -997,7 +1094,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1245,7 +1342,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

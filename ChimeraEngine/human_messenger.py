@@ -87,6 +87,10 @@ PHYSICS_READING = {
                         "textured surface, with scattered green dots outside the grid: "
                         "the ordered grid is a tended farm crop field rooted in a world's "
                         "own open terrain, NOT wild scatter",
+    "theLunarFarm": "a circular object with a textured surface against a dark background, "
+                    "with a green grid pattern at its center -- a sealed farm dome on a "
+                    "barren grey world, the circle is the dome and the grid is the crop "
+                    "growing INSIDE, NOT open ground",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
