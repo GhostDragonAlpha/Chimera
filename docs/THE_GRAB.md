@@ -421,3 +421,38 @@ launch-and-crash) each found, priced, and closed; the load path, the
 stone-floor interface, the snap, and the score form all honest. What
 remains open on the rung is M8b — the pick-up MOTION, the arm — and
 it starts from whatever the dial says.
+
+## AMENDMENT — v6: PRICE THE DIAL (stated before the runs)
+
+**First, a correction this amendment pays for.** Every load fraction
+this membrane has published was priced against theHuman's SUITED
+94.504 kg — the same two-landmarks defect stand_port already fixed
+once (rule 19). The lifting body is myobody.xml's 82.041 kg; the suit
+and consumables lift nothing. grab_port now prices against the
+simulated mass (ledger mass kept as CHK), and the record corrects:
+the D = 0.35 m stone is **72.5% of the body that lifts**, not 63%.
+f6's header prints the corrected basis from here.
+
+**STATEMENT.** THE HUMAN's dial is priced by measurement, not chosen
+blind. The run-9 falsifier fixed one point on the dial's curve: 72.5%
+of body mass at a 0.45 m lever is beyond this body. Two more points
+bound the feasible band: D = 0.25 m (21.68 kg = 153.4 N = **26.4%**
+of the lifting body — a load a trained stand can plausibly hold) and
+D = 0.30 m (37.46 kg = 265.0 N = **45.7%** — the boundary region).
+The measurements run in parallel against train_carry's own machinery,
+outputs isolated, the dial's home (touchables.py) untouched: the runs
+price the settings; they do not choose one.
+
+**PREDICTION.** D = 0.25 produces a survivor with load ≥ 80%,
+stone-floor ≤ 20%, pelvis ≥ 80% inside 48×32 warm from the run-9
+best — the body's true-carry region opens at 26%. D = 0.30 produces
+real load with survivors under the pelvis bar, or no survivor — the
+limit sits between 46% and 72%.
+
+**FALSIFIERS.** 1. D = 0.25 also yields no survivor — the limit is
+below 26%, and either the dial's (a) setting shrinks further or the
+stand ceiling itself is the wall (rung 9's question, named with
+numbers). 2. D = 0.30 yields a full true carry — the limit is above
+46%, closer to the run-9 point than this prediction says; the band
+narrows to 46–72%. 3. BOTH carry — then run 9's verdict was about
+the search at 72.5%, not the body, and the correction is published.

@@ -38,6 +38,21 @@ STONE_BODY = "stone"
 WELD_NAME = "stone_carry"
 
 
+def _sim_mass() -> float:
+    """The mass of the body that LIFTS, not the ledger's -- stand_port's landmark fix.
+
+    theHuman's 94.504 kg wears a 9.9 kg suit and 1.9 kg of consumables that myobody.xml
+    does not (the stand_port comment, and port_chain's first-run finding). The stone is
+    priced against the body that has to hold it: the simulated 82.041 kg. Pricing it
+    against the suited ledger mass understates every load by 15% -- ONE QUANTITY, TWO
+    LANDMARKS (rule 19), the same defect stand_port already fixed once.
+    """
+    import mujoco as _mj
+    from stand_port import MYOBODY
+    from world import load_body
+    return float(sum(load_body(MYOBODY, _mj)[0].body_mass))
+
+
 def derive_grab_port() -> dict:
     """The slice's stone and theHuman's frame in; the carried load out. Nothing chosen."""
     from touchables import _RHO_QUARTZITE, _STONE_D                  # the slice's own numbers
@@ -56,8 +71,9 @@ def derive_grab_port() -> dict:
         "OUT stone_radius_m": r,
         "OUT stone_mass_kg": mass,
         "OUT weight_N": mass * g,
-        "OUT body_mass_kg": float(H["mass_kg"]),
-        "OUT load_frac_of_body": mass / float(H["mass_kg"]),
+        "OUT body_mass_kg": _sim_mass(),
+        "CHK ledger_mass_kg": float(H["mass_kg"]),                   # the SUITED mass, for the record
+        "OUT load_frac_of_body": mass / _sim_mass(),
         "OUT reach_m": 0.44 * float(H["height_m"]),                  # ANSUR, as touchables reads it
     }
     return port
