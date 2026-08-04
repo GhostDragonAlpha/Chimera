@@ -1152,6 +1152,44 @@ CLOSED by the two extinctions above.
    tissue — `open_lattice(frozen_type=...)`, already in the kernel). Its
    membrane owes the runaway-drive test above.
 
+**Phase 7 — THE RUNAWAY AUTOPSY + THE FROZEN METAL (stated 2026-08-04, before
+the run).** Two statements, two small runs, one question each: WHY did the λ
+law fail, and CAN metal exist at all.
+
+**STATEMENT A (the autopsy).** Phase 6's post-mortem hypothesis is the
+mechanism: erosion proceeds layer-by-layer from the surface, so as the seed
+shrinks its surface-per-cell RISES and the per-cell erosion drive grows with
+the deficit — a runaway no static λ can jail at any strength. The alternative,
+named now so the run can kill it: the law's form is fine and the ledger's
+drive constant (37,676) was simply understated — in which case the measured
+drive will be FLAT as the deficit grows and per-type λ reopens at a recomputed
+point.
+
+**PREDICTION A (not yet measured).** Instrumenting the λ_m = 2.8 erosion (the
+strongest jail that still went extinct): the mean per-cell interface gain
+among boundary metal cells — computed from the live J as −min over neighbour
+types b of Σ_nb (J[b,τ_nb] − J[metal,τ_nb]), no constants — RISES as the
+population falls. The bar: the second half of the erosion (by cells lost)
+runs ≥ 25% hotter than the first half.
+
+**FALSIFIER A.** The drive is flat or falls as the deficit grows → the
+runaway is dead, Phase 6's extinctions are a constants error, and per-type λ
+reopens at a recomputed point.
+
+**STATEMENT B (the skeleton).** Metal can exist in this machine as STRUCTURE,
+not tissue: `frozen_type=WMETAL` persists by construction — the same frozen
+mechanism the bone axis and terrain already run (`matter_gpu.py:14-15`) — and
+the living families sort around the skeleton undisturbed. This is the M7
+deliverable: metal in the world, as the machine's native scaffold type.
+
+**PREDICTION B (not yet measured).** 200 sweeps, frozen metal: 14,246/14,246
+held exactly; rock < ice < sand preserved; rock's bleed inside its recorded
+~4% equilibrium band.
+
+**FALSIFIER B.** The skeleton leaks — the ordering inverts or rock's bleed
+leaves its recorded band → metal cannot exist even as structure without
+changing the world.
+
 ---
 
 ## DEBTS FOUND EN ROUTE (housekeeping, not part of the theory)

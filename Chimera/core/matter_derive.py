@@ -236,6 +236,9 @@ if __name__ == "__main__":
     ap.add_argument("--lam-m", dest="lam_m", type=float, default=1.4,
                     help="Phase 6's metal lambda (default 1.4; 2.8 is the membrane's "
                          "ONE pre-named diagnostic if falsifier 1 fires)")
+    ap.add_argument("--frozen-metal", dest="frozen_metal", action="store_true",
+                    help="Phase 7: the runaway autopsy (drive vs deficit, lam_m=2.8 "
+                         "erosion dissected in chunks) + the frozen_type skeleton")
     a_ns = ap.parse_args()
 
     if a_ns.lam_derived:
@@ -508,6 +511,101 @@ if __name__ == "__main__":
         verdict = fA and fB and fC
         print(f"PHASE 6 (METAL JAIL) VERDICT: {'PASS' if verdict else 'FIRED'} "
               f"({rep['seconds']:.1f}s)")
+        raise SystemExit(0 if verdict else 1)
+
+    if a_ns.frozen_metal:
+        from core.matter import metrics_3d
+        from core.matter_gpu import snapshot
+        # PHASE 7 (membrane stated in docs/THE_LIVING_MATTER.md BEFORE this run):
+        # A — the runaway autopsy: dissect the lam_m=2.8 erosion frame by frame
+        #     and measure the per-cell drive against the deficit, no constants.
+        # B — the frozen_type skeleton: metal as structure, the M7 deliverable.
+        mats = (WMETAL, WROCK, WICE, WSAND, WBASIN)
+        Jw = build_world_J(WORLD_MATS)
+        grid, shape, targets = _world_seed_scramble(a_ns.n)
+        n0 = targets[WMETAL]
+        OFF18 = [(dz, dy, dx)
+                 for dz in (-1, 0, 1) for dy in (-1, 0, 1) for dx in (-1, 0, 1)
+                 if (abs(dz) + abs(dy) + abs(dx)) in (1, 2)]
+        CAND = (MEDIUM, WROCK, WICE, WSAND, WBASIN)
+
+        def drive_stats(g):
+            """Per boundary metal cell: -min over flip targets b of the interface
+            dH = sum_nb (J[b,nb] - J[metal,nb]). Positive = eroding is downhill."""
+            metal = g == WMETAL
+            nonmetal_nb = np.zeros(g.shape, dtype=bool)
+            dH = {b: np.zeros(g.shape, dtype=np.float64) for b in CAND}
+            for dz, dy, dx in OFF18:
+                nb = np.roll(g, (dz, dy, dx), axis=(0, 1, 2))
+                nonmetal_nb |= nb != WMETAL
+                for b in CAND:
+                    dH[b] += Jw[b, nb] - Jw[WMETAL, nb]
+            boundary = metal & nonmetal_nb
+            if not boundary.any():
+                return None
+            gain = -np.minimum.reduce([dH[b] for b in CAND])[boundary]
+            return float(gain.mean()), float(np.median(gain)), int(boundary.sum())
+
+        # ── A: THE RUNAWAY AUTOPSY ──────────────────────────────────────────
+        lam = {t: 0.9 for t in mats}
+        lam[WMETAL] = 2.8     # the strongest jail Phase 6 killed
+        print("PHASE 7A — THE RUNAWAY AUTOPSY: per-cell drive vs deficit, "
+              "lam_m=2.8, 10-sweep frames")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=lam, seed=0)
+        series = [(0, n0) + drive_stats(grid.copy())]
+        for chunk in range(a_ns.sweeps // 10):
+            step(h, 8 * 10, trace=False)
+            g = snapshot(h)
+            pop = int((g == WMETAL).sum())
+            st = drive_stats(g)
+            series.append((chunk + 1, pop) + (st if st else (float("nan"),) * 3))
+            if pop == 0:
+                break
+        close(h)
+        lost = [n0 - s[1] for s in series]
+        total_lost = max(lost)
+        first = [s[2] for s, L in zip(series, lost)
+                 if L <= total_lost / 2 and not math.isnan(s[2])]
+        second = [s[2] for s, L in zip(series, lost)
+                  if L > total_lost / 2 and not math.isnan(s[2])]
+        for s in series:
+            print(f"  sweep {s[0]*10:>4}: metal {s[1]:>6}  lost {n0 - s[1]:>6}  "
+                  f"drive mean {s[2]:>10.1f}  median {s[3]:>10.1f}  boundary {s[4]}")
+        ratio = (float(np.mean(second)) / float(np.mean(first))) if first and second else float("nan")
+        fA = ratio >= 1.25
+        print(f"  drive, first half of erosion {np.mean(first):.1f} vs second half "
+              f"{np.mean(second):.1f} -> ratio {ratio:.2f}")
+        print(f"  falsifier A (runaway: second half >= 25% hotter): "
+              f"{'PASS' if fA else 'FAIL -- FIRED (flat/falling drive: constants error, lambda reopens)'}")
+
+        # ── B: THE FROZEN METAL ─────────────────────────────────────────────
+        print("PHASE 7B — THE FROZEN METAL: frozen_type=WMETAL, everything else "
+              "at the rung-1 protocol")
+        h = open_lattice(grid.copy(), shape, targets, Jw, temp=TEMP, lam=0.9,
+                         seed=0, frozen_type=WMETAL)
+        step(h, 8 * a_ns.sweeps, trace=False)
+        final = close(h)
+        kept = int((final == WMETAL).sum())
+        r = metrics_3d(final, shape, types=mats)["radius"]
+        drift = {WORLD_NAMES[t]: int((final == t).sum()) - targets[t]
+                 for t in mats if t != WMETAL}
+        clean = (WROCK, WICE, WSAND)
+        ordering_ok = all(r[clean[k]] < r[clean[k + 1]] for k in range(2))
+        rock_bleed = -drift[WORLD_NAMES[WROCK]] / targets[WROCK]
+        fB1 = kept == n0
+        fB2 = ordering_ok
+        fB3 = 0.0 <= rock_bleed <= 0.08    # recorded equilibrium ~4%, doubled band
+        print(f"  metal held: {kept}/{n0}  radii: " +
+              "  ".join(f"{WORLD_NAMES[t]}:{r[t]:.1f}" for t in mats))
+        print(f"  drift (living families): {drift}; rock bleed {rock_bleed:.3f} "
+              f"(recorded equilibrium ~0.04)")
+        print(f"  falsifier B1 (skeleton persists exactly): {'PASS' if fB1 else 'FAIL -- FIRED'}")
+        print(f"  falsifier B2 (rock < ice < sand around the skeleton): {'PASS' if fB2 else 'FAIL -- FIRED'}")
+        print(f"  falsifier B3 (rock bleed inside 2x its recorded band): {'PASS' if fB3 else 'FAIL -- FIRED'}")
+        verdict = fA and fB1 and fB2 and fB3
+        print(f"PHASE 7 VERDICT: {'PASS' if verdict else 'FIRED'} "
+              f"(autopsy {'runaway' if fA else 'NOT-runaway'}, "
+              f"skeleton {'holds' if fB1 and fB2 and fB3 else 'leaks'})")
         raise SystemExit(0 if verdict else 1)
 
     J5 = derive_J(anchor=a_ns.anchor)

@@ -377,6 +377,13 @@ def close(handle):
     return handle.lat.numpy().astype(np.int16)
 
 
+def snapshot(handle):
+    """Readback WITHOUT closing: the live int16 grid, the handle stays resumable.
+    Phase 7's erosion autopsy steps in chunks and dissects each frame."""
+    wp.synchronize_device(handle.dev)
+    return handle.lat.numpy().astype(np.int16)
+
+
 def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
                     temp=12.0, lam=0.9, seed=0, frozen_type=None):
     """GPU drop-in for core.matter.assemble_3d. Returns the settled int16 grid.
