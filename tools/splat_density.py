@@ -167,13 +167,11 @@ def main(argv=None) -> int:
     import touchables as to
     import walker as wk
 
-    class _W:                       # the object buffers need a walker only for lighting/position
-        x = y = z = 0.0
-        yaw = 0.0
-        clock = 12 * 3600.0
-    w = _W()
-    for attr in ("vx", "vy", "vz"):
-        setattr(w, attr, 0.0)
+    # A REAL WALKER, NOT A STUB. The first version passed a hand-made object with x/y/z/yaw/clock
+    # and it raised on `w.sun` -- an object's buffer is SHADED by the world's own sun, so the
+    # thing being measured genuinely depends on the walker. Faking the walker would have meant
+    # faking the light, and this project has already paid for a baked light once.
+    w = wk.Walker()
 
     rows = []
     objs = to.spawn()
@@ -197,18 +195,29 @@ def main(argv=None) -> int:
         d_px = 2.0 * float(np.median(rad))
         feat_m, why = feature.get(name, (s_m, "no published feature -- splat size used"))
         feat_px = FOCAL * feat_m / a.dist
-        # THE CHEAPEST DENSITY: cover the silhouette with splats no larger than the finest
-        # feature. Any bigger and the feature cannot resolve; any fewer and the object has holes.
-        n_min = sil / (math.pi / 4.0 * max(feat_px, 1e-9) ** 2)
+        # TWO BOUNDS, AND THE FIRST VERSION COLLAPSED THEM INTO ONE AND GOT NONSENSE ("the stone
+        # needs 5 splats"). Sizing a splat AT the feature does not show the feature -- it replaces
+        # it with one blob. The bounds are independent and both must hold:
+        #
+        #   A RESOLUTION (Nyquist): to read a feature you need two samples across it, so the
+        #     splat diameter must be <= feature/2. If it is not, NO COUNT HELPS.
+        #   B SOLIDITY (random coverage): n discs of area `ad` scattered over silhouette `A` leave
+        #     an uncovered fraction exp(-n*ad/A). Inverting gives the count for a target hole
+        #     fraction: n = (A/ad) * ln(1/h). The model is CHECKED below against the holes this
+        #     scene actually has, rather than asserted.
+        d_max = feat_px / 2.0
+        a_max = math.pi / 4.0 * max(d_max, 1e-9) ** 2
+        cov_eff = n * (math.pi / 4.0 * d_px ** 2) / max(sil, 1e-9)
+        cov_from_holes = math.log(1.0 / max(holefrac, 1e-9)) if holefrac > 0 else float("inf")
         rows.append(dict(name=name, n=n, s_m=s_m, d_px=d_px, sil=sil, cov=cov,
                          over=painted / max(cov, 1e-9), hole=holefrac,
                          per_px=n / max(sil, 1e-9), feat_m=feat_m, feat_px=feat_px,
-                         n_min=n_min, why=why))
+                         d_max=d_max, a_max=a_max, cov_eff=cov_eff,
+                         cov_from_holes=cov_from_holes, why=why))
 
     if a.terrain:
-        print("  [terrain] carving the ground around the origin (this is the slow one)...")
-        gw = wk.Walker() if hasattr(wk, "Walker") else w
-        buf = np.asarray(wk.scene_around(gw), dtype=np.float32)
+        print("  [terrain] building the ground around the walker (this is the slow one)...")
+        buf = np.asarray(wk.scene_around(w), dtype=np.float32)
         n = len(buf)
         s_m = float(np.median(buf[:, 20])) * BASE_SCALE
         # THE GROUND IS NOT AN OBJECT: it has no silhouette, so its density is per square metre of
@@ -221,7 +230,8 @@ def main(argv=None) -> int:
                          d_px=FOCAL * s_m * factor / a.dist, sil=float("nan"),
                          cov=float("nan"), over=float("nan"), hole=float("nan"),
                          per_px=per_m2 / px_per_m2, feat_m=float("nan"),
-                         feat_px=float("nan"), n_min=float("nan"),
+                         feat_px=float("nan"), d_max=float("nan"), a_max=float("nan"),
+                         cov_eff=float("nan"), cov_from_holes=float("nan"),
                          why=f"ground: {per_m2:.1f} splats/m^2 over {ext:.0f} m^2"))
 
     print(f"\n  {'object':<9} {'splats':>7} {'size':>8} {'on-screen':>10} {'silhouette':>11} "
@@ -236,28 +246,51 @@ def main(argv=None) -> int:
         print(f"  {r['name']:<9} {r['n']:>7d} {r['s_m']:>8.4f} {r['d_px']:>10.2f} {sil} "
               f"{r['per_px']:>9.4f} {ov} {ho}")
 
-    print("\n  THE CHEAPEST DENSITY THAT MAKES EACH OBJECT LEGIBLE")
-    print("  Derived, not chosen: cover the silhouette with splats no larger than the object's")
-    print("  own finest published feature. Bigger and the feature cannot resolve; fewer and the")
-    print("  object has holes. n_min = silhouette_px2 / (pi/4 * feature_px^2).")
+    # THE COVERAGE MODEL, CHECKED BEFORE IT IS USED. exp(-coverage) = hole fraction is the random
+    # -placement result; these splats are NOT randomly placed (they sit on a surface, more evenly
+    # than Poisson), so the model should read the holes as LARGER than they are. Printing both
+    # tells the reader how much to trust the counts below instead of asking them to assume.
+    print("\n  COVERAGE MODEL CHECK (before it is used to derive anything)")
+    print("  Random placement predicts hole fraction = exp(-coverage). Real splats sit on a")
+    print("  surface, so they cover more evenly and the model should OVERSTATE the holes.")
     print("  " + "-" * 104)
     for r in rows:
-        if r["n_min"] != r["n_min"]:
+        if r["cov_eff"] != r["cov_eff"]:
+            continue
+        pred_h = math.exp(-r["cov_eff"])
+        print(f"  {r['name']:<9} coverage {r['cov_eff']:5.2f} -> model predicts "
+              f"{100*pred_h:5.1f}% holes, measured {100*r['hole']:5.1f}%  "
+              f"({'model conservative, as expected' if pred_h >= r['hole'] else 'MODEL UNDER-READS -- treat the counts below as a floor'})")
+
+    print("\n  THE CHEAPEST DENSITY THAT MAKES EACH OBJECT LEGIBLE -- two bounds, both binding")
+    print("  A RESOLUTION (Nyquist): splat diameter <= feature/2. Violate it and NO count helps.")
+    print("  B SOLIDITY: n = (silhouette / splat_area) * ln(1/h) for a target hole fraction h.")
+    print("  h is THE HUMAN's dial (touchables.py calls legibility a render row, not physics);")
+    print("  the formula is given so the operator can move it. h = 1% is shown as the example.")
+    print("  " + "-" * 104)
+    H_TARGET = 0.01
+    for r in rows:
+        if r["d_max"] != r["d_max"]:
             print(f"  {r['name']:<9} {r['why']}")
             continue
-        verdict = ("SPENDING MORE THAN IT NEEDS" if r["n"] > 1.25 * r["n_min"]
-                   else "UNDER-SPENT" if r["n"] < 0.8 * r["n_min"] else "about right")
+        n_need = r["sil"] / r["a_max"] * math.log(1.0 / H_TARGET)
         print(f"  {r['name']:<9} feature {r['feat_m']*1000:7.1f} mm = {r['feat_px']:6.2f} px "
               f"({r['why']})")
-        print(f"  {'':<9}   needs {r['n_min']:8.0f} splats at <= {r['feat_px']:.2f} px each; "
-              f"spends {r['n']:d} at {r['d_px']:.2f} px  ->  {verdict}")
-        if r["d_px"] > r["feat_px"]:
-            print(f"  {'':<9}   *** ITS SPLATS ARE {r['d_px']/r['feat_px']:.2f}x THE FEATURE. No "
-                  f"count fixes this -- the feature cannot resolve at any density until the "
-                  f"splat is smaller than the thing it must show.")
-    print("\n  Read the two together: OVERDRAW says how much of what it spends lands on top of")
-    print("  itself, and the last line says whether the splat is even small enough to carry the")
-    print("  detail being asked for. A blob and a sieve both read as 'low detail'; these separate")
+        print(f"  {'':<9}   A: needs splats <= {r['d_max']:6.2f} px; has {r['d_px']:6.2f} px "
+              f"-> {'PASS' if r['d_px'] <= r['d_max'] else 'FAIL'}")
+        print(f"  {'':<9}   B: at that size, {n_need:8.0f} splats for {100*H_TARGET:.0f}% holes; "
+              f"spends {r['n']:d} at {100*r['hole']:.1f}% holes")
+        if r["d_px"] > r["d_max"]:
+            print(f"  {'':<9}   *** ITS SPLATS ARE {r['d_px']/r['d_max']:.2f}x THE NYQUIST LIMIT. "
+                  f"No count fixes this: the feature cannot resolve until the splat is smaller "
+                  f"than half the thing it must show. SHRINK FIRST, then count.")
+        elif r["n"] > 1.3 * n_need:
+            print(f"  {'':<9}   -> spends {r['n']/n_need:.1f}x what solidity needs at overdraw "
+                  f"{r['over']:.1f}x. The surplus buys nothing; spending it on SMALLER splats "
+                  f"buys resolution.")
+    print("\n  Read the two together. OVERDRAW says how much of what an object spends lands on")
+    print("  top of itself; bound A says whether its splat is even small enough to carry the")
+    print("  detail asked of it. A blob and a sieve both read as 'low detail' and these separate")
     print("  them. This tool changes nothing -- the scene edits belong to whoever owns the scene.")
     return 0
 
