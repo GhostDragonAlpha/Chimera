@@ -219,6 +219,20 @@ both stand sequences WATCH, align per item, `readings.json` + `verdict.md` writt
 exercised end-to-end against a stub senses server so the operator's one live run is not the
 first execution of the write path; the stub readings were destroyed and never enter the record.
 
+**THE FIRST LIVE READ** (2026-08-04, `output/blind_read/20260804_054003`, qwen2.5-omni-7b on
+LM Studio :1234 via `CHIMERA_SENSES_URL`): the independent eye's verdict is **F2, confirmed by
+a reader who built none of it.** Locomotion reads (beat08 walk+jump 0.85, beat00 standing 0.6);
+the OBJECTS do not read as their materials — the stone is "a ball", "a backpack", "an object",
+the tuft is "small piles of white material", the pile is "sand or dirt / white powder"
+(object beats 0.2–0.25). The residual named in the re-record verdict — present, not yet
+legible — is now measured by the dyad's own eye, not just asserted by its builder. Instrument
+notes: (1) the eye reads the CONTACT SHEETS, so it judges tiles of ~200 px, a harder bar than
+the hero frames; (2) LM Studio :1234 refused the 30-frame stand_in_world post (HTTP 400); the
+first 15 frames (the hold) read as "a humanoid figure standing on a green surface, a small
+patterned sphere to the right" — the stand and the stone both present — so its align (0.2)
+covers the hold alone, the collapse being outside the truncated window. The signature, as
+always, is THE HUMAN's.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
