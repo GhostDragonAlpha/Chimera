@@ -73,6 +73,28 @@ footfall trace shows real alternation for the first time. VERDICT: still FAIL x3
 the question "can the fall be trained out without losing the travel" is UNANSWERED, not
 answered: the trajectory is alive, so the rung is MORE TURNS, not more structure.
 Falsifier 3 (50% unreachable at ANY setting) does not fire while the curve is moving.
+
+LEDGER, third entry (same evening) -- AND NOW IT FIRES. The continuation (32 more turns,
+same trainer, warm-started from run 1's best) is flat: best score went BACKWARD
+(-3.49 -> -3.66), held oscillates 3.3-5.3 s with no trend, travel +/-26% around zero,
+every turn's best still falls. f4 on the session best: +12% travel, held 5.26/6.0 s,
+periodicity 0.22, upright 46% MIN, ablation PASS. The totals, honestly: 56
+judge-consistent turns plus 30 entrained plus 24 shaped-reward -- over 3,000 rollouts
+across three plant/reward configurations -- and no trained setting has ever put travel
+>= 34% and upright together in one body. FALSIFIER 3 FIRES on the single-oscillator
+clock composition: STAND + one rhythm, six numbers, is insufficient. Walking needs
+structure this program does not have -- said plainly, per the membrane's own text,
+rather than patched with a joint-angle target.
+
+THE EXITS, both named before this entry was written:
+  1. THE MILESTONE'S OWN WORDS: MOVE as STEP + PLANT + STAND. This program was never
+     that composition -- it was STAND + rhythm. The atoms exist and pass their harness
+     (`tools/action_tests.py`: a_stance, a_swing, a_balance; STANCE is a conservation
+     law, BALANCE an inverted-pendulum derivation). The next membrane composes them.
+  2. THE DEFERRED ENTRAINMENT MEMBRANE (WalkOscillator through a parser obs amendment,
+     evidence preserved in commit 7a819fe). Queued BEHIND the STEP composition: the
+     milestone's composition is the cheaper theory to kill, and killing or passing it
+     tells us whether entrainment is even the missing structure.
 """
 from __future__ import annotations
 
