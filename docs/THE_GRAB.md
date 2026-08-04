@@ -1010,3 +1010,56 @@ verdict, not by a build:** the +302.6/+421 N shortfall splits into
 windowed-mean noise vs a real deficit by the quasi-static check — a
 motionless hold must read exactly wb + wl, or f6's windows are lying.
 Measured on run 14's own trace; no code changes for it.
+
+---
+
+**RUN 14 — v12 VERDICT (2026-08-04): FALSIFIER 1 FIRES. 48 full-cycle turns
+never beat the warm start (0.558 plateau): the release is not learnable from
+z/pitch/roll alone, and the membrane's named consequence is taken — the
+policy needs the load channel the body physically has. Phase 1 is measured
+to be INSTRUMENT, not load path.**
+
+The full-cycle retrain (48x32, warm from run 13's best, 6.0 s episode, the
+set-down at 4.0–4.5 s inside every candidate's life) saved its own turn-0
+incumbent: the population mean climbed 0.054 → 0.230 toward it and no
+elite ever passed it. The incumbent's own trace names the mechanism
+precisely: the carry holds pelvis 0.90–0.95 m with plantar ~1000 N through
+t = 4.3 — then, the handoff completing at 4.5, the body is on the floor by
+5.3 s. The set-down taper gives it 0.5 s of graceful unload and it still
+cannot use it: the lean-back is baked into open-loop terms, the
+observations carry no load channel, and the compensation has nothing to
+follow as the load leaves. This is falsifier 1 as written — the deficit is
+OBSERVABILITY, and the answer is the channel the body physically has: the
+Golgi tendon organs report muscle tension, and the load through the hands
+is the most direct signal in the carry. v13 — THE TENDON ORGAN — is stated
+next: u = a0 + kh(tgt−z) + kp·pitch + kr·roll + kw·F, F the weld's measured
+constraint force normalized by the stone's own weight (a derived scale, not
+a chosen one), so the compensation scales WITH the felt load — present
+under load, gone when the load leaves, reactive instead of baked.
+
+**The phase-1 question, answered by measurement (no build, as the membrane
+said).** Quasi-static split on the saved best — windows where the pelvis
+moves < 1 cm in 0.1 s, where statics admits no noise:
+
+| window | motionless plantar | statics | gap |
+|---|---:|---:|---:|
+| pre-grab (0.3–0.9 s) | 619.3 N | wb = 580.5 N | +38.8 N |
+| carry (1.6–3.9 s) | 970.4 N | wb+wl = 1001.5 N | −31.1 N |
+
+The quasi-static delta is **+351.1 N = 83.4% of the weight — INSIDE the
+±20% bar.** The windowed +302.6 N that failed phase 1 was the instrument:
+the baseline window reads +38.8 N high, the carry window −31.1 N low, and
+the two windows' compositions differ. The feet carry the stone; f6's
+phase-1 metric needs the motionless-window delta, and that repair lands
+with the v13 build (the bar itself does not move).
+
+**What run 14 settles.** The event cycle is now physically complete
+(pick-up, arrival, carry, set-down, release-to-rest — the stone lands at
+0.175 m exactly) and the instruments are honest about it (expect tracks
+body_frac, the sfc audit is scoped to the welded window, phase 1's noise
+is measured and named). What remains is exactly one thing: the policy
+cannot feel the load. Falsifiers 2 (stone rest) and 3 (carry regression)
+did not fire — the stone rests at its radius and the carry held through
+every turn. The plateau is the lesson Claude's walk lane taught from the
+other side: a term added after training is a liability; the channel must
+be trained WITH the policy. v13 trains it.
