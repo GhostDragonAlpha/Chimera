@@ -12,7 +12,7 @@
   "burning": true,
   "held_up_by": "fusion",
   "leftover_disk": true,
-  "timeline_serial": 10,
+  "timeline_serial": 14,
   "t_since_seed_s": 3548164437038314.5,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

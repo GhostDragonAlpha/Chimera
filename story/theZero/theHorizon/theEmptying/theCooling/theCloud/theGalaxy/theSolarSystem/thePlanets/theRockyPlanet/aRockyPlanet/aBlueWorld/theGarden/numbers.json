@@ -1,0 +1,12 @@
+{
+  "extent_m": 1576839.9389574374,
+  "duration_s": 33109445.99534087,
+  "placeholder": true,
+  "placeholder_reason": "declared in terms_data.py, no law written yet",
+  "parent_substituted": "aPlanet -> aBlueWorld (the lush place is on the habitable world)",
+  "n_grains": 3000,
+  "g": 7.076122169232295,
+  "timeline_serial": 40,
+  "t_since_seed_s": 5757154569476098.0,
+  "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+}

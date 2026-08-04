@@ -77,7 +77,7 @@
   "days_per_year": 383.21118050163045,
   "biome_class": "Steppe",
   "name": "aSteppeBiomes",
-  "timeline_serial": 36,
+  "timeline_serial": 41,
   "t_since_seed_s": 5757154602585544.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

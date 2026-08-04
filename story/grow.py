@@ -121,8 +121,33 @@ def grow(folder: Path, parent: dict | None = None, depth: int = 0) -> None:
         grow(child, nums, depth + 1)
 
     if depth == 0:
+        _invalidate_local()
         _invalidate_viewer()
         _density_guard()
+
+
+def _invalidate_local() -> None:
+    """Clear splat_appearance's caches IN THIS PROCESS, if it is loaded here at all.
+
+    `_invalidate_viewer()` handles the other process -- the running viewer, over HTTP. This handles
+    the case where something imported BOTH this module and the engine and then grew the tree: the
+    caches in its own memory are now built from numbers.json files that no longer exist.
+
+    IT CHECKS sys.modules RATHER THAN IMPORTING. A plain `import splat_appearance` here would drag
+    the whole engine -- numpy, the membrane discovery walk, every numbers.json -- into `grow.py`,
+    which currently depends on none of it. A grow run from a prompt would start paying for a
+    renderer it never uses. If the module is not loaded, there is no cache to clear and nothing to
+    do; that is not a failure, it is the normal case.
+    """
+    import sys as _sys
+    sa = _sys.modules.get("splat_appearance") or _sys.modules.get("ChimeraEngine.splat_appearance")
+    if sa is None or not hasattr(sa, "invalidate"):
+        return
+    try:
+        dropped = sa.invalidate(None)
+        print(f"[caches] splat_appearance cleared in-process: {dropped}")
+    except Exception as e:
+        print(f"[caches] in-process clear failed: {e}")
 
 
 def _invalidate_viewer() -> None:

@@ -96,7 +96,7 @@
   "n_worlds": 11,
   "n_rocky": 8,
   "n_icy": 3,
-  "timeline_serial": 11,
+  "timeline_serial": 15,
   "t_since_seed_s": 5757154437038314.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

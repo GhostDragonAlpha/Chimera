@@ -3602,7 +3602,7 @@
   "T_surface": 279.1908308653023,
   "latitude_deg": 30.77072291868692,
   "S_earth": 1.0048952107836961,
-  "timeline_serial": 22,
+  "timeline_serial": 26,
   "t_since_seed_s": 5757154536625855.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

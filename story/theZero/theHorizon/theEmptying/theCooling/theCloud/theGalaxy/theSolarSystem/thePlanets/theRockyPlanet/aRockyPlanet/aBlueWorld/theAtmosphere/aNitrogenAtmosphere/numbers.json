@@ -82,7 +82,7 @@
     "CO2": 13.984046019002296
   },
   "has_atmosphere": true,
-  "timeline_serial": 18,
+  "timeline_serial": 22,
   "t_since_seed_s": 5757154536539452.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

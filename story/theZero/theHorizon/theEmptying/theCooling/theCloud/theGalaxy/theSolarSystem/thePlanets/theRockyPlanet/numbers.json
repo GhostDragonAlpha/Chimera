@@ -55,7 +55,7 @@
   "froude_transition": 0.5,
   "T_star_surface": 5839.193528311371,
   "solid_outside_earths": 52.673884829377236,
-  "timeline_serial": 12,
+  "timeline_serial": 16,
   "t_since_seed_s": 5757154470147760.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

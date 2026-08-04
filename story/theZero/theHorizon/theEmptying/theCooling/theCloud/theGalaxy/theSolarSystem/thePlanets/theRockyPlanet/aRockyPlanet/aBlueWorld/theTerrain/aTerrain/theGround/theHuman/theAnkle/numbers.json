@@ -651,7 +651,7 @@
     ]
   ],
   "gait_samples": 48,
-  "timeline_serial": 25,
+  "timeline_serial": 29,
   "t_since_seed_s": 5757154536625857.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

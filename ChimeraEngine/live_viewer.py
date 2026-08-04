@@ -85,6 +85,8 @@ class LiveViewer:
         self._lod_base = None      # the full-detail buffer the pyramid was built from
         self._lod_levels = None    # coarse -> fine mip levels, rebuilt only on load
         self._lod_n = None         # grain count currently on the GPU (None = nothing uploaded)
+        self._lod_level = None     # which mip rung is active (len-1 == the base, full detail)
+        self._lod_levels_n = None  # how many rungs this body's pyramid has
         self._grains = 0           # grains in the last rendered frame (read off the pipeline)
         self._ms_hist = []         # last 30 render times, ms -- the rolling fps
         self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
@@ -331,6 +333,14 @@ class LiveViewer:
                     d_local = 2.8 * R_local * zoom
                     r_px = LOD.projected_radius_px(R_local, d_local, _H, cam.fov)
                     sel = LOD.select(lv, r_px)
+                    # THE LEVEL INDEX, NOT JUST THE COUNT. A count alone cannot say whether LOD is
+                    # doing anything: "43000" reads identically whether the base was selected or
+                    # the switch was never called. The index says WHICH rung, and `len(lv)-1` is
+                    # always the base, so `lod_level == base_level` is the readable form of "full
+                    # detail" without having to compare two grain counts.
+                    self._lod_level = next((i for i, l in enumerate(lv)
+                                            if l.shape[0] == sel.shape[0]), len(lv) - 1)
+                    self._lod_levels_n = len(lv)
                     if sel.shape[0] != self._lod_n:
                         pipe.upload(np.ascontiguousarray(sel, dtype=np.float32),
                                     term=self._loaded or "")
@@ -435,7 +445,12 @@ class LiveViewer:
                 "over_budget": bool(g > _CAP),
                 "render_ms_cap": int(_MS),
                 "over_time": bool(ms > _MS),
-                "term": self._loaded or ""}
+                "term": self._loaded or "",
+                # LOD, so a caller can see WHICH rung is active rather than infer it from a count.
+                "lod_level": self._lod_level,
+                "lod_levels": self._lod_levels_n,
+                "lod_count": self._lod_n,
+                "base_count": (None if self._lod_base is None else int(self._lod_base.shape[0]))}
 
     def _publish(self, img):
         from PIL import Image

@@ -1,0 +1,12 @@
+{
+  "extent_m": 1346380836300.0,
+  "duration_s": 189342000000000.0,
+  "placeholder": true,
+  "placeholder_reason": "declared in terms_data.py, no law written yet",
+  "parent_substituted": "theShip -> theSolarSystem (theShip is itself a placeholder; a stub may not be another stub's parent, or the tree grows on nothing)",
+  "n_grains": 1800,
+  "g": 0.0,
+  "timeline_serial": 11,
+  "t_since_seed_s": 2790796437038314.5,
+  "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
+}

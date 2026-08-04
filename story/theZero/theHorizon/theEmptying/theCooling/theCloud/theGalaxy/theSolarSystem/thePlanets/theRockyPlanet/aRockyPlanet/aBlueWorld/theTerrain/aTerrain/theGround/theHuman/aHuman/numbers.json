@@ -3248,7 +3248,7 @@
   "P_surface_bar": 0.5199302820248954,
   "o2_fraction_needed": 0.307733566463703,
   "breathable_unaided": false,
-  "timeline_serial": 27,
+  "timeline_serial": 31,
   "t_since_seed_s": 5757154536625858.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

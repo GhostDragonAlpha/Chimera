@@ -84,7 +84,7 @@
   "sea_level_m": 3058.8679003080533,
   "walk_run_per_sqrt_leg": 1.8809734406992957,
   "swing_period_per_sqrt_leg": 2.362012584561864,
-  "timeline_serial": 20,
+  "timeline_serial": 24,
   "t_since_seed_s": 5757154536539452.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

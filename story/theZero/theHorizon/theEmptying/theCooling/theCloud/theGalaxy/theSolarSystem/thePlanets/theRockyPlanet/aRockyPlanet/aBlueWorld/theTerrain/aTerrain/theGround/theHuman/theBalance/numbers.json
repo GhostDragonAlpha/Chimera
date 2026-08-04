@@ -938,7 +938,7 @@
   "com_height_m": 1.009125,
   "leg_length_m": 0.9201465000000001,
   "S_earth": 1.0048952107836961,
-  "timeline_serial": 28,
+  "timeline_serial": 32,
   "t_since_seed_s": 5757154536625858.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

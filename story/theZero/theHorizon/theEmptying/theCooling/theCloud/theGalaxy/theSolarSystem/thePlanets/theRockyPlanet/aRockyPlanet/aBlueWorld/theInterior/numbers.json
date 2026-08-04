@@ -26,7 +26,7 @@
   "T_surface": 279.1908308653023,
   "interior_class_of_this_world": "Active",
   "ra_critical": 1100.0,
-  "timeline_serial": 37,
+  "timeline_serial": 42,
   "t_since_seed_s": 1.4776365453636666e+17,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

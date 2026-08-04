@@ -191,7 +191,8 @@ def near_far(buf: np.ndarray, cam_distance: float, height_px: int = _JUDGMENT_H,
 # ── THE POP PROBE (the falsifier lod_switch named and nobody had run) ──────────────────────────
 
 def pop_probe(buf: np.ndarray, radius0: float, n: int = 180, height_px: int = 1080,
-              fov: float = _JUDGMENT_FOV, p: dict | None = None) -> dict:
+              fov: float = _JUDGMENT_FOV, p: dict | None = None,
+              zoom_lo: float = 0.45, zoom_hi: float = 2.5, log_steps: bool = False) -> dict:
     """Sweep the camera through the viewer's whole zoom range and look for a POP.
 
     WHAT A 360 DEGREE ORBIT CANNOT TEST, and this is the first thing the probe had to settle:
@@ -222,7 +223,14 @@ def pop_probe(buf: np.ndarray, radius0: float, n: int = 180, height_px: int = 10
 
     zoom, dists = [], []
     for i in range(n):
-        f = 0.45 + (2.5 - 0.45) * i / (n - 1)         # the viewer's own zoom clamps
+        # LINEAR OVER THE VIEWER'S CLAMPS, LOG OVER A WIDE SWEEP. Across 0.1x..10x -- a hundredfold
+        # range -- linear steps would spend 90% of their samples in the far half and stride through
+        # the near half in a handful of jumps, which is exactly where an unseen multi-rung jump
+        # would hide. Log steps sample every decade equally.
+        if log_steps:
+            f = zoom_lo * (zoom_hi / zoom_lo) ** (i / (n - 1))
+        else:
+            f = zoom_lo + (zoom_hi - zoom_lo) * i / (n - 1)
         d = 2.8 * R * f
         dists.append(d)
         zoom.append(select(levels, projected_radius_px(R, d, height_px, fov), p).shape[0])

@@ -539,7 +539,7 @@
     "pm2_flexion": 1.4123768297521762,
     "md2_flexion": 0.5077032904102957
   },
-  "timeline_serial": 24,
+  "timeline_serial": 28,
   "t_since_seed_s": 5757154536625856.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

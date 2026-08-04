@@ -21,7 +21,7 @@
   "freeze_bracket_K": 270.15,
   "boil_bracket_K": 355.0,
   "has_ocean": true,
-  "timeline_serial": 16,
+  "timeline_serial": 20,
   "t_since_seed_s": 5757154536453052.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

@@ -137,3 +137,34 @@ produces a plane — a bug wearing a design's clothes. The opposite is true: the
 plane, the code says so before it draws, and the reason given (do not redraw the parent's chapter)
 is the tree's own composition rule. Reporting these as "UNVERIFIED (billboard?)" was the
 instrument calling a correct design a defect.
+
+---
+
+## AMENDMENT — FIVE PLACEHOLDERS ADDED (and they are still gaps)
+
+`theSeed`, `theShip`, `theDescent`, `theGarden`, `theFlight` now have `story/` chapters that
+**draw but do not derive**. The counts move:
+
+| | before | after |
+|---|---:|---:|
+| renderable | 42 | **47** |
+| declared but not renderable | 46 | **41** |
+| in both | 13 | **18** |
+
+**Do not read the five as closed.** Each publishes `placeholder: true` in its own `numbers.json`
+and says so in its `story.md`. What they claim is only that their **extent** tracks their parent's
+published `extent_m` by one declared factor — the slider test, and nothing else. They claim nothing
+about what the term *is*: no material, no law reaching them from the parent, no prediction they
+were not fitted to.
+
+    A PLACEHOLDER THAT ANNOUNCES ITSELF IS HONEST.
+    ONE THAT DOES NOT IS THE SPECIFICATION CITED AS PROOF.
+
+**The parents are substituted, and declared.** `terms_data.py` names `theStory` and `aPlanet` as
+parents; neither is a node of the grown tree. Each stub is placed under the nearest real ancestor
+and the substitution is written into its own `story.md` rather than made silently. `theFlight`'s
+declared parent is `theShip` — itself a placeholder — so it is parented to `theSolarSystem`
+instead: **a stub may not be another stub's parent, or the tree grows on nothing.**
+
+The honest gap is therefore still **46**: 41 with no code at all, plus these 5 with geometry and
+no law.
