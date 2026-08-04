@@ -286,7 +286,7 @@ def render_all() -> dict:
             "peak": round(float(np.abs(signal).max()), 4),
             "file": str(path.name),
         }
-        print(f"  {term:30s}  centroid={cent:7.1f} Hz  → {path.name}")
+        print(f"  {term:30s}  centroid={cent:7.1f} Hz  -> {path.name}")
 
     # ── Verify: theStar and theHorizon (proxy for black hole cold) differ measurably ──
     star_cent = results.get("theStar", {}).get("centroid_hz", 0)
