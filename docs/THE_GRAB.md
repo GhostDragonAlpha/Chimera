@@ -361,3 +361,23 @@ mass at a 0.45 m lever is beyond this body, and the finding (the
 stone's D = 0.35 m, THE HUMAN's dial) goes to the operator with full
 numbers. 3. A carry that holds under the pelvis bar — the
 posture/strength trade, published as-is, bar unmoved.
+
+**Run 8 — PICTURE ADDENDUM (the same day, before run 9 overwrote the
+turns).** The log-based verdict above overstated one line, and the
+pictures correct it. "Pelvis MIN of best rising 56% → 72–74% and
+holding" read as a deepening crouch. The turn-41 and turn-47 PNGs say
+otherwise: the final bests are **launch-and-crash arcs** — the pelvis
+leaves 0.92 m at the snap, peaks near **3.0–3.1 m** (absurd for a
+standing lift; at g = 7.08 m/s² an Earth-sized muscle set can throw
+body + stone airborne), then crashes, and the quoted MIN is the
+*crash bottom* (0.684 m at turn 41, 0.550 m at turn 47), not a held
+posture. The best-score panel oscillates 0 ↔ −3.2 turn by turn:
+hangers and launchers tie at ≈ 0 under the additive score, and the
+search bounced between them. The "live gradient" was the mix
+shifting, not a carry forming. The instrument lesson is the one this
+project keeps paying for: **a scalar MIN over a whole rollout cannot
+distinguish a crouch from a crash** — one quantity, one landmark. v5's
+multiplicative form prices these correctly without a new constant:
+launchers sit far from the pelvis target most of the rollout, so
+mean_r ≈ 0 and they join the hangers at the bottom of the ranking,
+below any candidate whose plantar path actually carries the stone.
