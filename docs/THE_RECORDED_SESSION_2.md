@@ -132,12 +132,40 @@ angular size; the next legibility step on it is the blade display-width dial (0.
 close-up silhouette reads spiky (`stone_close.jpg`: 160 normal-discs); at session range it reads
 as a rock, so the normals stay. Both are recorded here so the next read judges them knowingly.
 
+## MEMBRANE: THE STAND, ON CAMERA (2026-08-04, Kimi) — the bridge named below, built
+
+**STATEMENT.** The musculoskeletal stand can be witnessed as a VIDEO record without touching the
+Walker session: `f3_stand.py`'s own rollout already drives the proven `stand_theta` through the
+real parser and renders frames via `mujoco.Renderer`; a denser frame grab over the same two
+phases, saved as a numbered sequence (the shape the blind read's WATCH prompt consumes), IS the
+stand on camera. The video and the number come from the same rollout, so they cannot disagree
+silently.
+
+**PREDICTION.** `tools/stand_on_camera.py` renders the two-phase rollout (5 s STAND on, then
+released) to ~28 frames at 640×480. The sequence shows the musculoskeletal body upright and
+un-arched through the hold, then visibly slumping after the button releases — the same verdict
+`f3_stand.py`'s numbers give (phase 1 PASS, phase 2 slump), in pixels.
+
+**FALSIFIER.** The frames show the body falling or hunched during phase 1 — then the on-camera
+claim is false no matter what the numbers say — or they render empty/garbled, meaning the
+renderer does not carry this body and the bridge claim is wrong.
+
+**PREDICTION HOLDS, falsifier does not fire** (2026-08-04): `tools/stand_on_camera.py` rendered 30
+frames over the same two-phase rollout `f3_stand.py` judges — same proven `stand_theta`, same real
+parser, same construction — at 640×480 with the pelvis percentage printed on every frame. Read by
+eye: the body stands visibly upright through the hold (phase 1 pelvis MIN 102.9% of target), then
+folds forward after the button releases (slump to the bar in 2.30 s; the last frames show the
+fold at 61% and falling). The number and the video come from one rollout; they agree. The frames
+are the blind read's WATCH shape — numbered, in order — at
+`ChimeraEngine/output/ports/stand_on_camera/`.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
 - **F2 — STILL FIRED**, and now with the cleanest evidence yet: a closed-loop recorder, all beats
   landed, physics reporting correctly, and a frame a blind reader would describe as an empty field.
-- **F3 — PASS**, by `tools/f3_stand.py` (exit 0). *Not yet on this tape:* the session is driven by
-  the Walker mover, so the musculoskeletal stand is proven in its own harness and has never been
-  recorded. Goal rung 9 asks for it **on camera**; that bridge is unbuilt and is named here rather
-  than glossed.
+- **F3 — PASS**, by `tools/f3_stand.py` (exit 0), **and now on camera**: the musculoskeletal stand
+  is recorded in `tools/stand_on_camera.py`'s 30-frame two-phase video (upright hold, then the
+  release slump) — the bridge named above, built 2026-08-04. What is still not on tape is the
+  stand *inside the Walker session* (the mover and the musculoskeletal body remain two rigs);
+  that composition is the next bridge, named here rather than glossed.
