@@ -475,7 +475,12 @@ _RING_LEVELS = 8        # doubling 8 times: 0.9 m underfoot to 115 m at the hori
 # ring subtending ~1.9 degrees at its inner edge. Halving it doubles the near detail and doubles the
 # grain count for a horizon that does not move. Nothing derives it; it is chosen against a budget,
 # and if the budget changes this is the number to change.
-_STEP0 = 0.90
+# THE BUDGET CHANGED (2026-08-04, INK membrane, docs/THE_RECORDED_SESSION_2.md): THE HUMAN ruled
+# the terrain itself low-detail, so 0.90 -> 0.45. Measured after the move: near detail x2, grain
+# COUNT UNCHANGED (~58k -- same 97x97 cells, finer spacing), horizon reach HALVED (~3 km). For a
+# session that lives within metres of spawn that is the right trade; a horizon walk wants it back.
+# Render row only -- shape and grain laws are aTerrain's and theGround's.
+_STEP0 = 0.45
 
 # ── EXPOSURE: A LENS ACT, NOT A PHYSICS EDIT ─────────────────────────────────────────────────────
 # The planet is Earth-bright (S_earth = 1.005, measured) -- the first recorded session still read

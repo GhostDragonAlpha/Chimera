@@ -233,6 +233,49 @@ patterned sphere to the right" — the stand and the stone both present — so i
 covers the hold alone, the collapse being outside the truncated window. The signature, as
 always, is THE HUMAN's.
 
+## MEMBRANE: INK (2026-08-04, Kimi) — THE HUMAN's ruling, stated as a theory
+
+**STATEMENT (THE HUMAN's ruling, given the theory's shape).** The object beats' low align is a
+splat-DENSITY deficit, not a wrong-albedo or wrong-geometry one: the objects do not carry
+enough ink at the session camera to read as their materials. Measured supports: the pile fills
+its cone by volume, so only ~a third of its 400 clods sit on the visible surface — ~10%
+coverage of a 4.1 m² cone, which is why the eye read "scattered white powder"; the stone's 160
+surface splats were measured against a 40-splat smudge, never against material identity; the
+tuft's 13 blades were derived against OVERPAINT at the probe rig, a nearer camera than the
+session's. The physics rows do not move: the stone's n and the pile's clods are display-only
+already, the tuft's aggregate spring is exactly count-invariant, and `_STEP0`'s own comment
+names it a render budget — "if the budget changes this is the number to change." THE HUMAN
+changed the budget.
+
+**PREDICTION.** Densify — stone 160→640 surface splats (surface_grain rescales, size unmoved),
+pile 4 display splats per grain (physics still counts 400), tuft 13→40 blades (count-invariant
+spring), ground `_STEP0` 0.90→0.45 (near detail ×2, the sanctioned dial) — then re-record the
+session and re-read it with the SAME eye, prompts, and expected terms: the object beats
+(beat01–beat07) mean align rises from 0.22 to ≥ 0.50, with no physics number anywhere changed.
+
+**FALSIFIER.** Mean object-beat align stays < 0.35 after the density step — then splat count
+was not the binding constraint, the dials go back, and the gap is something else (angular size,
+shading, or the sheet instrument itself).
+
+**FALSIFIER FIRES** (2026-08-04, `blind_read/20260804_060556` vs `..._054003`, judged by
+`tools/ink_ab.py`): object-beat mean 0.229 → 0.271, under the 0.35 floor. **Splat count was
+not the binding constraint for material identity.** The dials STAY regardless — they are THE
+HUMAN's taste rows and the world is visibly denser by eye (the pile now reads as a mound with
+scatter, the stone as a solid textured body) — but the theory that density buys identity is
+dead, and the run measured two things beyond itself:
+
+1. **The instrument's noise floor is ±0.3 per beat.** beat00 (the unchanged stand beat) swung
+   0.60 → 0.25 on identical content; beat07's 0.25 → 0.85 "gain" is the scorer crediting the
+   background pile's "mounds" against the tuft's expected term. Omission scores 0 the same as
+   misreading: the SEE prompt asks for one or two sentences about a 12-tile sheet and the eye
+   spends them on the figure. Any future legibility membrane must first shrink this floor —
+   per-object crops, not whole sheets — or its deltas will be noise.
+2. **The remaining gap is named, not guessed:** the stone reads as a *ball* because it IS a
+   fibonacci sphere — identity there is GEOMETRY (facets, fracture), not ink; the tuft's gap is
+   vertical-blade shading against a sunlit slope (the residual already recorded); and
+   `stand_in_world`'s 30-frame WATCH post 400ed on LM Studio a second time — a hard instrument
+   limit, recorded.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.

@@ -33,6 +33,8 @@ import senses  # noqa: E402  (the unified Omni perception layer; needs ChimeraEn
 import human_messenger  # noqa: E402
 
 SESSION = ROOT / "ChimeraEngine" / "output" / "slice_session_20260804_040936"
+if len(sys.argv) > 1:                    # re-reads after a render change point at the NEW session
+    SESSION = Path(sys.argv[1]).resolve()
 STAND_ON_CAMERA = ROOT / "ChimeraEngine" / "output" / "ports" / "stand_on_camera"
 STAND_IN_WORLD = ROOT / "ChimeraEngine" / "output" / "ports" / "stand_in_world"
 OUT_ROOT = ROOT / "ChimeraEngine" / "output" / "blind_read"

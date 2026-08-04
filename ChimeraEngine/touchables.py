@@ -144,17 +144,19 @@ _RHO_TISSUE = 1000.0         # kg/m^3 -- fresh tissue ~ water (stated assumption
 # -- design placeholders (THE HUMAN; the operator moves them) ------------------------------------
 _STONE_D = 0.35
 _TUFT_BLADES = 13            # DERIVED 2026-08-04 (docs/THE_VEGETATION_GEOMETRY.md, membrane 4):
-                             # was 60, a design placeholder. tools/splat_ruler.py measured one
-                             # grain's footprint (2.4-2.7x s = ~17.3 px2) and the disk's
-                             # projection (~4,200 px) at the probe rig: 60 blades x 19 grains
-                             # painted it 4.7x over -- a saturated blob no shape survives.
-                             # 4200 / (19 x 17.3) = 12.8 -> 13 blades at coverage ~1. The
-                             # aggregate spring is count-INVARIANT (k = N*k_blade / N*m_blade),
-                             # so this moves the render row only; the physics is untouched.
+                             # 4200 px disk / (19 grains x 17.3 px2) = 12.8 -> 13 at coverage ~1.
+                             # INK tried 40 same-day: OVERPAINT confirmed by eye (tuft_close a flat
+                             # green rectangle -- the saturated blob the derivation predicted).
+                             # 13 stands; the range fix is the WIDTH dial below, not the count.
+                             # The aggregate spring is count-INVARIANT: physics untouched either way.
 _TUFT_DISK_R = 0.2           # the 0.4 m disk
 _BLADE_L = 0.35
-_BLADE_W = 0.02            # display width of a blade -- render row (THE HUMAN): 12.5x the
-                           # measured 1.6 mm (Kosmalla 2025); legibility, not physics.
+_BLADE_W = 0.035           # display width of a blade -- render row (THE HUMAN): 12.5x the
+                           # measured 1.6 mm (Kosmalla 2025) was legibility, not physics.
+                           # INK (2026-08-04): 0.02 -> 0.035. The named residual was angular size --
+                           # a dot at 4-8 m -- and the derivation's other legal move is stroke
+                           # width: 13 lines stay separated, each carries ~1.75x the ink, and the
+                           # tube claim holds (grain spacing 0.035 = the splat width exactly).
 _GRAINS_PER_BLADE = math.ceil(_BLADE_L / _BLADE_W) + 1   # = 19. DERIVED (docs/
                            # THE_VEGETATION_GEOMETRY.md): a blade reads as a LINE when its
                            # grain spacing <= the splat's own width (0.0194 <= 0.02 m);
@@ -170,6 +172,11 @@ _CLOD = 0.06                 # display size of one grain-splat (a clod, not a gr
                              # Raised 0.04 -> 0.06 after the rung-3 blind read: at the 3.2 m
                              # third-person camera distance, 4 cm clods merged into a faint mush.
                              # Display only; the physics still counts 400 grains of d50 0.35 mm.
+_PILE_DISPLAY = 4            # display splats per grain -- INK membrane (docs/THE_RECORDED_SESSION_2.md,
+                             # 2026-08-04): the cone is filled by VOLUME, so only ~a third of the 400
+                             # clods sit on the visible surface (~10% coverage of a 4.1 m2 cone) and
+                             # the live blind read scored the pile beats 0.2 ("white powder"). Each
+                             # grain's copies ride it through the kick, so physics is untouched.
 
 _VEG_ALB = np.array([0.20, 0.27, 0.14], np.float32)
 # THE TUFT IS NOT THE GROUND'S MEAN. walker.py's veg palette is a spatial MEAN -- blades plus the
@@ -305,7 +312,10 @@ class Stone:
         # untouched, and surface_grain rescales the splat size with n, so the sphere's SIZE
         # does not change -- only its solidity. THE HUMAN dial, legibility, F2's own rule
         # (fix the presentation physics, never the tolerance).
-        n = 160
+        # 160 -> 640, same day, INK membrane (docs/THE_RECORDED_SESSION_2.md): the LIVE blind
+        # read scored the stone beats 0.2-0.25 ("a ball", "a backpack") -- 160 was measured
+        # against a smudge, never against material identity. Same render-row status.
+        n = 640
         d = fibonacci_sphere(n)
         b = blank(n)
         b[:, 0] = self.x + d[:, 0] * self.r
@@ -429,6 +439,10 @@ class Pile:
         self.vy = np.zeros(n)
         self.vz = np.zeros(n)
         self.home = np.stack([self.px, self.py, self.pz], axis=1).copy()
+        # display jitter: _PILE_DISPLAY fixed offsets per grain, half a clod across, one seed --
+        # the copies ride their grain through kick and settle, so the pile never shimmers.
+        jrng = np.random.default_rng(11)
+        self._jit = (jrng.random((n, _PILE_DISPLAY, 3), dtype=np.float32) - 0.5) * _CLOD
         # the pile's colour is theGround's own measured minerals, averaged
         mins = gnd["mineral_materials"]
         self._alb = np.mean([mins[m]["rgb_mean"] for m in mins], axis=0).astype(np.float32)
@@ -490,8 +504,10 @@ class Pile:
     def buffer(self, w):
         from matter import blank, SOLID
         n = _PILE_GRAINS
-        b = blank(n)
-        b[:, 0], b[:, 1], b[:, 2] = self.px, self.py, self.pz
+        d = _PILE_DISPLAY
+        b = blank(n * d)
+        pos = np.stack([self.px, self.py, self.pz], axis=1)          # (n, 3)
+        b[:, 0:3] = (pos[:, None, :] + self._jit).reshape(n * d, 3)  # copies ride their grain
         b[:, 21:24] = (0.0, 0.0, 1.0)
         b[:, 20] = _CLOD
         b[:, 11] = SOLID
