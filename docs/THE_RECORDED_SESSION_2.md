@@ -388,3 +388,41 @@ shape — the best of the measured set in context.
   release slump) — the bridge named above, built 2026-08-04. What is still not on tape is the
   stand *inside the Walker session* (the mover and the musculoskeletal body remain two rigs);
   that composition is the next bridge, named here rather than glossed.
+
+## MEMBRANE 8 — BLADE-AZIMUTH (the tuft's uniform lambert)
+
+**STATEMENT.** The tuft's "underwater view" reading (CROP, membrane 3) is a lighting-geometry
+defect, not tone: every blade splat wears the UP normal (the FLAT-GROUND lambert, sin(alt) =
+0.793 at the session's 52.5 deg sun), so 60 blades render with one identical brightness — a
+uniform saturated green plane has no depth cue and reads as water. A blade is a vertical
+cylinder: it is lit by the HORIZONTAL beam component, and only its sun-facing side. A tuft is
+blades at all azimuths — a statistical mixture of lit sides (lam = cos(alt) = 0.609), shaded
+sides (lam = 0, sky+bounce only), and the spread between. The mixture is the texture that reads
+as grass. Measured before building: flat ground 0.793, cylinder sun-side 0.609, cylinder mean
+(2/pi·cos(alt)) 0.388 — the mixture is DARKER on average than flat ground, and real grass under
+a high sun is exactly that: a field of mixed lit and shaded blades, never a uniform bright
+plane. Physics, not taste: the geometry of a cylinder under a sun is not a dial.
+
+**PREDICTION.** With per-blade horizontal normals at golden-angle azimuths (deterministic,
+uniform over [0, 2pi), the same sampling the blade FEET use), the eye reads `tuft_close` and
+`tuft_session` with align ≥ 0.50 against "blades of grass in a field", and the words
+"underwater"/"water" do not appear.
+
+**FALSIFIER.** The eye still reports water/underwater, or align < 0.35 — then the green glow is
+albedo/tone (THE HUMAN's _TUFT_ALB row + the exposure dial), the cylinder theory is dead, and
+this membrane publishes the bound and stops.
+
+**FALSIFIER FIRES** (2026-08-04): built as stated (per-blade horizontal normals, golden-angle
+azimuths). Measured before believing: flat ground lam 0.793, cylinder sun-side 0.609, cylinder
+mean 0.388 — the mixture is real and visible in the frames (lit strokes AND dark strokes; the
+trample trail behind the walker now reads as flattened grass). But the eye: `tuft_close` "a
+serene UNDERWATER scene" 0.0, `tuft_session` 0.0. The cylinder theory is dead — lighting
+geometry is not the defect. And the fired reading contains its own attribution: `tuft_close` is
+a frame dominated by the GROUND, and the eye reads the whole frame as water. The "underwater"
+is the world's saturated green field itself — albedo through lit()+tone at exposure 2.0 —
+which is THE HUMAN's row twice over (_TUFT_ALB/theGround's grass albedo + the exposure dial),
+the same TONE bound the CHUNK membrane published for the stone. The cylinder normals STAY
+(truer physics — a blade is a cylinder — at a fired-but-equal reading: both shadings read 0.0;
+the trample trail is a real legibility gain). What remains for vegetation identity is exactly
+what remains for the stone: **TONE, THE HUMAN's dial.** This membrane publishes the bound and
+stops.

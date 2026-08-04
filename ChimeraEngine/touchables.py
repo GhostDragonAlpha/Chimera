@@ -431,7 +431,15 @@ class Tuft:
             b[sl, 0] = self._bx + f * _BLADE_L * st * dx
             b[sl, 1] = self._by + f * _BLADE_L * st * dy
             b[sl, 2] = gz + f * _BLADE_L * ct
-        b[:, 21:24] = (0.0, 0.0, 1.0)            # the LIGHTING claim: blades lit as grass
+        # the LIGHTING claim (membrane 8, BLADE-AZIMUTH): a blade is a vertical CYLINDER, lit
+        # by the horizontal beam, only on its sun-facing side; a tuft is blades at all
+        # azimuths -- a statistical mixture of lit and shaded sides, which is the texture
+        # that reads as grass. Flat-ground up-normals give 60 identical brightnesses = a
+        # uniform green plane = "underwater" (membrane 3's fired reading). Golden-angle
+        # azimuths, the same sampling the blade feet use -- deterministic, uniform.
+        az = (np.arange(n) + 0.5) * math.pi * (3.0 - 5.0 ** 0.5)
+        nrm = np.tile(np.stack([np.cos(az), np.sin(az), np.zeros(n)], axis=1), (g, 1))
+        b[:, 21:24] = nrm
         b[:, 20] = _BLADE_W
         b[:, 11] = SOLID
         _shade(b, _TUFT_ALB, w)
