@@ -99,6 +99,7 @@ SCENES = {
     "theVerbs":        {"kind": "verbs", "radius": 130.0, "cam": (0.0, -95.0, 30.0)},
     "theDig":          {"kind": "dig", "radius": 130.0, "cam": (6.0, -90.0, 45.0)},
     "theGrow":         {"kind": "grow", "radius": 130.0, "cam": (0.0, -110.0, 35.0)},
+    "theScan":         {"kind": "scan", "radius": 130.0, "cam": (0.0, -105.0, 30.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2568,6 +2569,64 @@ def _grow_buffers(spec: dict, term: str):
     settled = np.concatenate([soil, curve] + shoots, axis=0)
     return settled, settled.copy()
 
+def _scan_buffers(spec: dict, term: str):
+    """theScan: read composition, SPECTRAL. A pale beam strikes a stone; the
+    stone answers in its colors -- the light fans out into bands, one per
+    wavelength, and the bands are NOT equally bright: the dim ones are the
+    wavelengths the stone's matter drank. The pattern of bright and dim IS
+    the reading -- a spectral fingerprint, composition made visible. The fan
+    is one phenomenon (dispersion), not two objects. Both frames settled at
+    full strength."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # sparse dark ground for depth
+    n_g = 700
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 65.0 * np.sqrt(rng.random(n_g))
+    soil = np.zeros((n_g, NCOLS), dtype=np.float32)
+    soil[:, PX] = rr * np.cos(th)
+    soil[:, PY] = rr * np.sin(th)
+    soil[:, PZ] = rng.normal(0.0, 0.7, n_g) - 0.5
+    soil[:, TYPE] = 3.0; soil[:, ALPHA] = 0.22; soil[:, SIZE] = 2.2
+    soil[:, CR], soil[:, CG], soil[:, CB] = 0.30, 0.32, 0.32
+
+    STONE = (-18.0, 0.0, 8.0)
+    stone = _dots(STONE, 5.0, 80, (0.62, 0.62, 0.66), rng)
+    stone[:, ALPHA] = 0.85
+
+    # the incoming beam: a thin white thread from the far left to the stone
+    n_b = 120
+    tb = np.linspace(0.0, 1.0, n_b)
+    beam = np.zeros((n_b, NCOLS), dtype=np.float32)
+    beam[:, PX] = -60.0 + (STONE[0] + 60.0) * tb
+    beam[:, PZ] = 8.0 + rng.normal(0.0, 0.15, n_b)
+    beam[:, TYPE] = 3.0; beam[:, ALPHA] = 0.75; beam[:, SIZE] = 1.0
+    beam[:, CR], beam[:, CG], beam[:, CB] = 0.95, 0.95, 0.95
+
+    # the fan: seven bands spreading from the stone, red -> violet; two are
+    # DRANK by the stone (dim) -- the absorption lines, the composition's
+    # signature written in missing light
+    bands = [(1.00, 0.25, 0.20, 0.85), (1.00, 0.60, 0.15, 0.85),
+             (0.95, 0.95, 0.25, 0.30), (0.30, 0.90, 0.30, 0.85),
+             (0.25, 0.65, 1.00, 0.30), (0.45, 0.35, 0.95, 0.85),
+             (0.75, 0.30, 0.95, 0.85)]
+    fan = []
+    n_f = 90
+    for i, (cr, cg, cb, al) in enumerate(bands):
+        ang = np.radians(-18.0 + 6.0 * i)          # spread upward in a fan
+        tf = np.linspace(0.0, 1.0, n_f)
+        bd = np.zeros((n_f, NCOLS), dtype=np.float32)
+        dist = 12.0 + 42.0 * tf
+        bd[:, PX] = STONE[0] + dist * np.cos(np.radians(8.0))
+        bd[:, PZ] = STONE[2] + dist * np.sin(ang) + 4.0 * tf
+        bd[:, TYPE] = 3.0; bd[:, ALPHA] = al; bd[:, SIZE] = 1.3
+        bd[:, CR], bd[:, CG], bd[:, CB] = cr, cg, cb
+        fan.append(bd)
+
+    settled = np.concatenate([soil, stone, beam] + fan, axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2655,7 +2714,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2903,7 +2962,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers, "scan": _scan_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer

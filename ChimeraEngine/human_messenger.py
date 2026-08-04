@@ -167,6 +167,11 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theScan": "a thin white beam of light striking a grey sphere on the left "
+               "and fanning out into colored bands spreading to the right, "
+               "red through violet, some bands bright and some dim -- light "
+               "split into its colors, the object's composition read in the "
+               "pattern of bright and dim",
     "theGrow": "a glowing green S-shaped curve rising from lower left to upper "
                "right over dark ground, with a row of green blades beneath it "
                "growing taller along the same curve -- life rising slowly, "
