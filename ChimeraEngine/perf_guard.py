@@ -24,7 +24,21 @@ class PerfBudgetError(RuntimeError):
 
 # MAX_PER_TILE is the cap in gpu_pipeline.py (16384 as of 2026-07-29)
 MAX_GRAINS_PER_TILE = 16384
-# Derived from 7.8 fps at 1920x1080 full pipeline — measured in live_viewer.py
+# MEASURED 2026-08-04 AND THE DERIVATION WAS WRONG BY 3.6x -- see docs/MEASURED_RENDER_BUDGETS.md.
+# This said "derived from 7.8 fps at 1920x1080", which implies 128.2 ms for 250,000 grains. The
+# real figure at exactly 250,000 grains is 35.23 +- 2.10 ms: 3.64x faster.
+#
+# WORSE FOR THIS CONSTANT: grain count barely drives frame time at all. 4,096 grains cost 18.83 ms
+# and 262,144 cost 36.50 -- a 64x increase in grains for 1.94x the time -- while the SAME 43,000
+# grains cost 28.19 ms at default framing and 45.23 ms zoomed in 2x. Identical geometry, identical
+# count, 60% more time. The cost is SCREEN COVERAGE, and this constant budgets a quantity that
+# does not determine the thing being budgeted.
+#
+# THE VALUE IS DELIBERATELY UNCHANGED. Re-deriving it from these numbers gives 2.6 MILLION if you
+# fit the grain-dominated cases and 190,000 if you fit the coverage-dominated one -- a 14x spread,
+# which is the model being wrong rather than the measurement being noisy. Replacing one unmeasured
+# number with a better-dressed unmeasured number is the move this studio has a rule against.
+# MAX_RENDER_MS below is the wall that means something; nothing in the registry is within 4x of it.
 MAX_GRAINS_PER_FRAME = 250_000
 # Desired frame time budget at 60 fps simulation (not render) target
 MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
