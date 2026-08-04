@@ -83,6 +83,10 @@ PHYSICS_READING = {
                   "dots among them -- a tended crop field whose green plants ripened to "
                   "golden grain heads at harvest -- on a dark textured ground: deliberate "
                   "tended growth, NOT wild random scatter",
+    "thePlanetaryFarm": "a grid-like pattern of orange and green spheres on a dark "
+                        "textured surface, with scattered green dots outside the grid: "
+                        "the ordered grid is a tended farm crop field rooted in a world's "
+                        "own open terrain, NOT wild scatter",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "

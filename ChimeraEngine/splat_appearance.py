@@ -77,6 +77,7 @@ SCENES = {
     # Elevated camera: the ROWS are the salient read, so the field is seen from above.
     "thePlanting":    {"kind": "planting", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
     "theFarming":     {"kind": "farming", "radius": 150.0, "cam": (0.0, -70.0, 110.0)},
+    "thePlanetaryFarm": {"kind": "planetary_farm", "radius": 190.0, "cam": (0.0, -140.0, 130.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -821,6 +822,94 @@ def _farming_buffers(spec: dict, term: str):
     end = np.concatenate([gnd] + furrows + mature(), axis=0)
     return end, begin
 
+def _planetary_farm_buffers(spec: dict, term: str):
+    """thePlanetaryFarm: cultivation rooted in a world's OWN open surface. The crop rows
+    ride the world's rolling terrain (not a flat tray, not a dome floor), and the tended
+    patch sits AMID wild ground -- the hand's rows against chance's scatter, both on the
+    same native soil, under open sky (no shell). begin = the young stand, end = mature
+    with grain heads ripened gold."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 260.0))
+
+    def hz(x, y):                                   # the world's own rolling ground
+        return 6.0 * np.sin(0.045 * x + 0.5) + 4.0 * np.cos(0.055 * y + 1.7)
+
+    # native ground: a wide rolling sheet, green-grey wild colour, patchier than tilled
+    n_g = 9000
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.06 * gx + 0.7) * np.sin(0.05 * gy + 2.1)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY] = gx, gy
+    gnd[:, PZ] = hz(gx, gy)
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.2
+    gnd[:, CR] = 0.20 + 0.06 * patch
+    gnd[:, CG] = 0.22 + 0.07 * patch
+    gnd[:, CB] = 0.12 + 0.04 * patch
+
+    # the tilled patch: browner soil INSIDE the field boundary only
+    n_t = 2200
+    tx = rng.uniform(-70.0, 70.0, n_t)
+    ty = rng.uniform(-60.0, 60.0, n_t)
+    tilled = np.zeros((n_t, NCOLS), dtype=np.float32)
+    tilled[:, PX], tilled[:, PY] = tx, ty
+    tilled[:, PZ] = hz(tx, ty) + 0.3
+    tilled[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    tilled[:, TYPE] = 3.0; tilled[:, ALPHA] = 0.6; tilled[:, SIZE] = 3.0
+    tilled[:, CR], tilled[:, CG], tilled[:, CB] = 0.27, 0.17, 0.08
+
+    # wild vegetation: scattered tufts OUTSIDE the field -- chance's scatter
+    wild = []
+    for k in range(60):
+        a = rng.random() * 2.0 * np.pi
+        r = float(rng.uniform(85.0, 165.0))
+        wx, wy = r * np.cos(a), r * np.sin(a)
+        wz = float(hz(wx, wy))
+        gg = float(rng.uniform(0.30, 0.45))
+        wild.append(_dots((wx, wy, wz + 1.2), 2.4, 12, (0.14, gg, 0.11), rng))
+
+    # the crop: rows riding the terrain, the hand's geometry against the wild scatter
+    rows_y = [(-48.0 + 12.0 * k) for k in range(9)]
+    spots = []
+    for y in rows_y:
+        for x in np.linspace(-60.0, 60.0, 13):
+            if rng.random() > 0.96:
+                continue
+            cx = x + float(rng.uniform(-0.5, 0.5))
+            cy = y + float(rng.uniform(-0.5, 0.5))
+            spots.append((cx, cy, float(hz(cx, cy))))
+
+    def young():
+        parts = []
+        for cx, cy, cz in spots:
+            gg = float(rng.uniform(0.44, 0.58))
+            parts.append(_dots((cx, cy, cz + 1.0), 2.0, 16, (0.12, gg, 0.09), rng))
+        return parts
+
+    def mature():
+        parts = []
+        for cx, cy, cz in spots:
+            h = float(rng.uniform(9.0, 13.0))
+            stem = np.zeros((7, NCOLS), dtype=np.float32)
+            stem[:, PX], stem[:, PY] = cx, cy
+            stem[:, PZ] = np.linspace(cz, cz + h, 7)
+            stem[:, TYPE] = 3.0; stem[:, ALPHA] = 0.85; stem[:, SIZE] = 1.8
+            stem[:, CR], stem[:, CG], stem[:, CB] = 0.16, 0.42, 0.12
+            parts.append(stem)
+            gg = float(rng.uniform(0.40, 0.55))
+            parts.append(_dots((cx, cy, cz + h * 0.6), 2.5, 14, (0.13, gg, 0.10), rng))
+            ripe = rng.random() < 0.75
+            head = (0.78, 0.62, 0.16) if ripe else (0.20, gg, 0.12)
+            parts.append(_dots((cx, cy, cz + h + 0.8), 1.6, 12, head, rng))
+        return parts
+
+    begin = np.concatenate([gnd, tilled] + wild + young(), axis=0)
+    end = np.concatenate([gnd, tilled] + wild + mature(), axis=0)
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -908,7 +997,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1156,7 +1245,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
