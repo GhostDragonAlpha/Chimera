@@ -60,10 +60,11 @@
 > defaults, tissue type mapping tested on ordering only.
 > TISSUE K_IC RESEARCHED (Phase 3d): bone Griffith-legal (124–735 J/m²),
 > muscle/skin docked at measured tearing energies (apparent), tendon's band
-> open. Next: metal via frozen_type skeleton ONLY — Phase 6 closed the
-> per-type λ route (0/14,246 at λ_m = 1.4 AND 2.8; the survival law's form
-> is dead, the runaway-drive post-mortem stated), the tissue-scramble
-> rupture run (3d's prediction), or the operator's pick.**
+> open. Next: metal EXISTS as frozen structure (Phase 7: 14,246/14,246 held
+> exactly, runaway drive measured 88k→397k — the λ question closed for good;
+> the skeleton's geometric leak sized: ice/sand gap collapse real, inversion
+> sign is noise), deficit-paired swaps (tissue-real K, named, unbuilt), the
+> tissue-scramble rupture run (3d's prediction), or the operator's pick.**
 
 ---
 
