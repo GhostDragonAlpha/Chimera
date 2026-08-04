@@ -198,13 +198,23 @@ def stand_formula_fn(theta, tgt, nu):
     formula exactly, because kr is then zeros and the added term vanishes. So an old
     checkpoint judges identically and cannot silently acquire a term it was never trained
     with -- the defect this project spent the day paying for in the walk port.
+
+    THE LOAD TERM, 2026-08-04 (v13, THE TENDON ORGAN -- docs/THE_GRAB.md). Run 14 measured
+    that the release is unlearnable from z/pitch/roll alone: the carry's lean-back bakes
+    into open-loop terms, and when 421 N leaves in the set-down the compensation has
+    nothing to follow (48-turn plateau at the warm start). The body HAS this sense --
+    the Golgi tendon organ reports tension; the weld's measured constraint force is the
+    most direct signal in the carry. kw * obs["F"], F in units of the stone's weight,
+    from grab_port.weld_load. Same compatibility rule as kr: a 4-block theta gets kw of
+    zeros, the term vanishes, and every existing checkpoint judges bit-identically.
     """
     def fn(obs, value):
         import numpy as np
         a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
         kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+        kw = theta[4 * nu:5 * nu] if theta.size >= 5 * nu else np.zeros(nu)
         return np.clip(a0 + kh * (tgt - obs["z"]) + kp * obs["pitch"]
-                       + kr * obs.get("roll", 0.0), 0.0, 1.0)
+                       + kr * obs.get("roll", 0.0) + kw * obs.get("F", 0.0), 0.0, 1.0)
     return fn
 
 

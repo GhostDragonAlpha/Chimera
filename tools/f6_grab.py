@@ -46,7 +46,7 @@ from stand_port import derive_stand_port, MYOBODY                        # noqa:
 from train_stand import joint_ids, seat_in_limits                        # noqa: E402
 from grab_port import (derive_grab_port, stone_xml, spawn_stone,          # noqa: E402
                        snap_stone_to_carry, grab_formula_fn, STONE_BODY, WELD_NAME,
-                       support_stone_weight, RAMP_S, T_DROP)               # noqa: E402
+                       support_stone_weight, weld_load, RAMP_S, T_DROP)   # noqa: E402
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
 from parser import Parser, default_registry, Formula, OVERLAY            # noqa: E402
 
@@ -143,7 +143,9 @@ def run() -> int:
             # roll in obs (THE_GRAB v8): the parser prices a 4-block theta's kr term;
             # without it the judge would grade the frontal carry with its roll channel
             # deaf -- trainer and judge change together, the run-4/5 lesson.
-            u, trace = PARSER.command({"z": z, "pitch": pitch, "roll": roll, "t": float(d.time)})
+            u, trace = PARSER.command({"z": z, "pitch": pitch, "roll": roll,
+                                       "F": weld_load(m, d, mujoco),   # v13: the tendon
+                                       "t": float(d.time)})            # organ's channel
             if u is not None:
                 d.ctrl[:] = u
         mujoco.mj_step(m, d)
@@ -165,10 +167,24 @@ def run() -> int:
     end = sums[tt >= SECS - 0.5]
     base, loaded, unloaded = float(np.mean(pre)), float(np.mean(post)), float(np.mean(end))
     delta_on, delta_off = loaded - base, unloaded - base
+    # v13 (run 14 measured it): windowed means of a bobbing signal misread the delta by
+    # window composition (+38.8 N high baseline, -31.1 N low carry). The quasi-static
+    # delta -- MOTIONLESS samples only, where statics admits no noise -- is the physical
+    # one; judged when both sides have enough still samples, printed either way.
+    zs = np.array(tr["z"])
+    still = np.abs(zs - np.roll(zs, 5)) < 0.01
+    still[:5] = False
+    pre_q = sums[still & (tt >= T_GRAB - 0.6) & (tt < T_GRAB - 0.1)]
+    post_q = sums[still & (tt >= T_GRAB + RAMP_S + 0.1) & (tt < T_DROP)]
+    if len(pre_q) >= 3 and len(post_q) >= 3:
+        delta_qs = float(np.mean(post_q)) - float(np.mean(pre_q))
+        delta_judged, metric = delta_qs, f"quasi-static ({len(pre_q)}+{len(post_q)} still)"
+    else:
+        delta_qs, delta_judged, metric = None, delta_on, "windowed (never still)"
     z_carry = [z for t, z in zip(tr["t"], tr["z"]) if T_GRAB + RAMP_S + 0.1 <= t < T_DROP]
     stone_rest = float(tr["sz"][-1])
 
-    ok_load = abs(delta_on - W) <= LOAD_TOL * W
+    ok_load = abs(delta_judged - W) <= LOAD_TOL * W
     # v9 run-11 repair: a window containing a NON-FINITE or through-floor sample is not
     # a pass -- min() SKIPS NaN silently (comparisons are False), so an exploded sim
     # printed 0.9915 m while its own trace showed the body at -10 m. The species this
@@ -184,8 +200,10 @@ def run() -> int:
     print(f"  weld: {WELD_NAME} -> torso at the stated carry pose; reach {P['OUT reach_m']:.3f} m")
     print(f"  policy: {theta_path.name}")
     print("-" * 78)
+    qs_show = f"{delta_qs:+.1f}" if delta_qs is not None else "n/a"
     print(f"  1. THE LOAD IS FELT   plantar sum {base:.1f} -> {loaded:.1f} N at the weld "
-          f"(delta {delta_on:+.1f} N vs weight {W:.1f} N, tol {100 * LOAD_TOL:.0f}%)  ->  "
+          f"(windowed {delta_on:+.1f} N, QUASI-STATIC {qs_show} N vs weight {W:.1f} N, "
+          f"tol {100 * LOAD_TOL:.0f}%, judged: {metric})  ->  "
           f"{'PASS' if ok_load else 'FAIL -- the weld is decorative and the load is fake (falsifier 1)'}")
     z_show = min(z_carry) if carry_clean else float("nan")
     print(f"  2. THE BODY STANDS    pelvis MIN {z_show:.4f} m "
@@ -228,7 +246,7 @@ def run() -> int:
     ax.set_xlabel("s"); ax.set_ylabel("pelvis (m)"); ax.legend(fontsize=7, loc="lower left")
     ax.set_title("BODY + STONE", fontsize=9)
     fig.suptitle(f"F6 -- THE CARRIED LOAD   g={g:.3f} m/s2   "
-                 f"{'PASS' if ok else 'FAIL'}   delta {delta_on:+.0f}/{W:.0f} N   "
+                 f"{'PASS' if ok else 'FAIL'}   delta {delta_judged:+.0f}/{W:.0f} N ({metric})  "
                  f"pelvis {100 * min(z_carry) / tgt:.0f}%", fontsize=12)
     OUTDIR.mkdir(parents=True, exist_ok=True)
     png = OUTDIR / "f6_grab.png"

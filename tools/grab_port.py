@@ -216,6 +216,32 @@ def support_stone_weight(m, d, mujoco, frac):
                             0.0, 0.0, 0.0]
 
 
+def weld_load(m, d, mujoco):
+    """v13 (THE TENDON ORGAN, THE_GRAB.md): the load the body feels through the weld,
+    in units of the stone's weight. The Golgi channel -- the load through the hands is
+    the most direct signal in the carry, and the body HAS it; run 14 measured that a
+    policy without it cannot survive the release. Read from the solver's OWN equality
+    rows (efc_force at the weld's efc rows): the measured constraint force, catch
+    transients included. Explicitly NOT the harness's body_frac -- the harness's
+    knowledge is not the body's sense. Normalized by the stone's weight: a derived
+    scale, not a chosen one. Positive when the weld holds the stone UP (measured in the
+    run-15 smoke: efc row z reads -1.04 wl at the steady carry -- the solver's force is
+    the correction direction -- so the sign is flipped HERE, one home, never at the
+    call sites). Returns 0.0 when the weld is inactive or unsolved."""
+    eq = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_EQUALITY, WELD_NAME)
+    if eq < 0 or not int(d.eq_active[eq]):
+        return 0.0
+    rows = [i for i in range(d.nefc)
+            if int(d.efc_type[i]) == int(mujoco.mjtConstraint.mjCNSTR_EQUALITY)
+            and int(d.efc_id[i]) == eq]
+    if len(rows) < 3:
+        return 0.0
+    fz = float(d.efc_force[rows[2]])   # the weld's rows are its 6 (measured contiguous);
+    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, STONE_BODY)  # z is the third
+    wl = float(m.body_mass[body]) * abs(float(m.opt.gravity[2]))
+    return -fz / wl
+
+
 def spawn_stone(m, d, mujoco, port):
     """Write the stone's freejoint qpos ONCE, at reset -- the spawn, not a pose script.
 

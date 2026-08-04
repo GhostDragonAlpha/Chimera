@@ -1063,3 +1063,50 @@ did not fire — the stone rests at its radius and the carry held through
 every turn. The plateau is the lesson Claude's walk lane taught from the
 other side: a term added after training is a liability; the channel must
 be trained WITH the policy. v13 trains it.
+
+---
+
+**v13 — THE TENDON ORGAN (stated 2026-08-04, before the build; run 14's
+falsifier 1 fired, and this is the consequence the membrane named).**
+
+**STATEMENT.** Run 14 measured that the release is unlearnable from
+z/pitch/roll alone: the lean-back is baked into open-loop terms because
+the policy cannot feel the load it compensates for. The body CAN — the
+Golgi tendon organs report muscle tension, and the load through the
+hands is the most direct signal in the entire carry. The policy class
+gains exactly that channel and no more: u = a0 + kh(tgt−z) + kp·pitch +
+kr·roll + **kw·F**, where F is the weld's MEASURED constraint force —
+the solver's own equality rows (efc_force at the weld's efc rows),
+catch transients included — normalized by the stone's weight (a derived
+scale, not a chosen one). Explicitly NOT the harness's body_frac: the
+harness's knowledge is not the body's sense. The kw block is nu new
+numbers, zero-initialized on the run-13 best — the pad is stated, and a
+zero kw reproduces the incumbent's behavior exactly (the theta-pair
+lesson was about SILENT padding; this one is the membrane's own
+protocol and behavior-preserving). The compensation becomes reactive:
+present under load, gone when the load leaves. Trainer and judge change
+together: f6 passes the same F through the parser's obs; the parser's
+stand formula takes the kw block as OPTIONAL (4-block thetas behave
+exactly as before — the walk lane and F3 are untouched). f6's phase-1
+metric gains the quasi-static delta alongside the windowed one (run 14
+measured the windowed one understates by window composition; the bar,
+±20%, does not move) and judges on the quasi-static.
+
+**PREDICTION.** Warm-started from the run-13 best, the 5-block retrain
+(48x32, 6.0 s full cycle) passes f6 phase 3 — the body still standing at
+t = 6.0, plantar back at baseline ±20% — WITHOUT giving back phase 2,
+because kw has a signal to follow down the set-down taper and the search
+starts one gradient step from a proven carry.
+
+**FALSIFIERS (named before the run).**
+
+1. **The 5-block retrain still falls after the release** — the deficit
+   is not observability but AUTHORITY: the muscles cannot re-balance
+   within the set-down's 0.5 s, and that number must then be RE-DERIVED
+   against the body's measured force-bandwidth, not re-chosen.
+2. **The channel feeds an exploit** — an elite that keeps F near zero
+   while "carrying" (driving the weld's measured force down instead of
+   bearing the load) — the load-factor audit on the elites catches it,
+   and the channel's form is re-derived.
+3. **Phase 2 regresses below 0.80** — the fifth block traded the carry
+   away; one policy class does not span the cycle even with the sense.
