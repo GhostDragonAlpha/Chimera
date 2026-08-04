@@ -1,0 +1,439 @@
+{
+ "rows": [
+  {
+   "file": "tools/collect_release_states.py",
+   "line": 84,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/f3_stand.py",
+   "line": 51,
+   "name": "CTRL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [
+    {
+     "claim": "20 ms",
+     "where": "same line",
+     "ok": true,
+     "measured": "20.0 ms",
+     "about": "cadence",
+     "clause": "20 ms"
+    },
+    {
+     "claim": "0.001 s",
+     "where": "same line",
+     "ok": true,
+     "measured": "0.0010 s",
+     "about": "dt",
+     "clause": "the timestep is 0.001 s MEASURED"
+    },
+    {
+     "claim": "50 Hz",
+     "where": "comment L52",
+     "ok": true,
+     "measured": "50.0 Hz",
+     "about": "cadence",
+     "clause": "50 Hz"
+    }
+   ],
+   "dropped": []
+  },
+  {
+   "file": "tools/policy_gait_eval.py",
+   "line": 38,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/port_trainer.py",
+   "line": 217,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [
+    {
+     "claim": "20 ms",
+     "where": "same line",
+     "ok": true,
+     "measured": "20.0 ms",
+     "about": "cadence",
+     "clause": "the same 20 ms interval R3 measured"
+    }
+   ],
+   "dropped": []
+  },
+  {
+   "file": "tools/port_trainer.py",
+   "line": 235,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": [
+    {
+     "unit": "s",
+     "val": 1.5,
+     "where": "comment L237",
+     "raw": "1.5 s",
+     "subject": "unattributed",
+     "clause": "violent 35 deg oscillation for 1.5 s"
+    },
+    {
+     "unit": "s",
+     "val": 3.5,
+     "where": "comment L238",
+     "raw": "3.5 s",
+     "subject": "span",
+     "clause": "remaining 3.5 s"
+    }
+   ]
+  },
+  {
+   "file": "tools/render_policy_walk_frames.py",
+   "line": 29,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/theory_of_standing.py",
+   "line": 55,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_carry.py",
+   "line": 148,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_carry.py",
+   "line": 172,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_myobody_directional.py",
+   "line": 98,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [
+    {
+     "claim": "0.001 s",
+     "where": "docstring L91",
+     "ok": true,
+     "measured": "0.0010 s",
+     "about": "dt",
+     "clause": "T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3"
+    }
+   ],
+   "dropped": [
+    {
+     "unit": "s",
+     "val": 3.0,
+     "where": "docstring L91",
+     "raw": "3.0 s",
+     "subject": "unattributed",
+     "clause": "001 s = a 3.0 s"
+    }
+   ]
+  },
+  {
+   "file": "tools/train_myobody_mocap.py",
+   "line": 37,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_return.py",
+   "line": 98,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_return.py",
+   "line": 124,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_stand.py",
+   "line": 140,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_stand.py",
+   "line": 151,
+   "name": "gate `k % 20`",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "tools/train_walk.py",
+   "line": 48,
+   "name": "CTRL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "claims": [
+    {
+     "claim": "50 Hz",
+     "where": "comment L44",
+     "ok": true,
+     "measured": "50.0 Hz",
+     "about": "cadence",
+     "clause": "-- so the parser's cadence is 50 Hz"
+    },
+    {
+     "claim": "20 ms",
+     "where": "comment L43",
+     "ok": true,
+     "measured": "20.0 ms",
+     "about": "cadence",
+     "clause": "20 ms"
+    },
+    {
+     "claim": "0.001 s",
+     "where": "comment L43",
+     "ok": true,
+     "measured": "0.0010 s",
+     "about": "dt",
+     "clause": "myobody's timestep is 0.001 s"
+    }
+   ],
+   "dropped": [
+    {
+     "unit": "Hz",
+     "val": 25.0,
+     "where": "comment L44",
+     "raw": "25 Hz",
+     "subject": "negated",
+     "clause": "not the 25 Hz every docstring in"
+    }
+   ]
+  },
+  {
+   "file": "tools/walk_dyad.py",
+   "line": 50,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/output/_recovered_gait_myobody.py",
+   "line": 33,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/output/_recovered_render_myobody_walk.py",
+   "line": 19,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/output/_recovered_train_myobody_walk.py",
+   "line": 25,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/play_myolegs.py",
+   "line": 31,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/leg/myolegs.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/render_myolegs.py",
+   "line": 20,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/leg/myolegs.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/render_myolegs_walk.py",
+   "line": 23,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.001,
+   "period_ms": 20.0,
+   "hz": 50.0,
+   "provenance": "external/myo_sim/leg/myolegs.xml (loaded, m.opt.timestep)",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "ChimeraEngine/train_transition.py",
+   "line": 47,
+   "name": "CONTROL_EVERY",
+   "n": 20,
+   "dt": 0.0005,
+   "period_ms": 10.0,
+   "hz": 100.0,
+   "provenance": "module-level DT = 5e-4",
+   "claims": [
+    {
+     "claim": "100 Hz",
+     "where": "same line",
+     "ok": true,
+     "measured": "100.0 Hz",
+     "about": "cadence",
+     "clause": "still 100 Hz neural drive"
+    }
+   ],
+   "dropped": []
+  },
+  {
+   "file": "Chimera/core/trainables/bigbang.py",
+   "line": 97,
+   "name": "MERGE_EVERY",
+   "n": 4,
+   "dt": 0.0045,
+   "period_ms": 18.0,
+   "hz": 55.55555555555556,
+   "provenance": "module-level DT = 0.0045",
+   "claims": [],
+   "dropped": []
+  },
+  {
+   "file": "Chimera/core/trainables/bigbang.py",
+   "line": 100,
+   "name": "SAMPLE_EVERY",
+   "n": 8,
+   "dt": 0.0045,
+   "period_ms": 36.0,
+   "hz": 27.77777777777778,
+   "provenance": "module-level DT = 0.0045",
+   "claims": [],
+   "dropped": []
+  }
+ ],
+ "unresolved": [
+  [
+   "tools/chimera_gait.py",
+   "no DT, no .xml, no model import -- UNRESOLVED",
+   [
+    2
+   ]
+  ]
+ ],
+ "mismatches": [],
+ "control_convicted": []
+}
