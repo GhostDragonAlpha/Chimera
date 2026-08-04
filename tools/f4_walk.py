@@ -39,7 +39,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body                                              # noqa: E402
 from stand_port import derive_stand_port, MYOBODY                        # noqa: E402
-from train_stand import joint_ids, seat_in_limits                        # noqa: E402
+from train_stand import joint_ids, seat_in_limits, joint_frac_named      # noqa: E402
+from classify_fall import classify_trace                                 # noqa: E402
 from walk_port import (derive_walk_port, muscle_groups, move_formula_fn,  # noqa: E402
                        N_FREE)
 from train_walk import foot_contact, CTRL_EVERY                          # noqa: E402
@@ -72,8 +73,16 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     steps = int(SECS / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
-    tr = {k: [] for k in ("t", "x", "z", "cr", "cl", "sup")}
+    # `all` / `jf` / `jn` carry the PER-JOINT diagnostic ported from f3_stand.py (2026-08-04).
+    # comx/comy/polx/poly carry the CoM against the polygon the feet make, so classify_fall can
+    # label the failure. Both exist for the same reason: F4 used to return a bare scalar per
+    # falsifier, and a scalar that moves for reasons you cannot attribute is the shape of
+    # measurement this project keeps getting caught by. A walk that fails now names the joints
+    # it failed at and which way it went down.
+    tr = {k: [] for k in ("t", "x", "z", "cr", "cl", "sup", "jf", "jn", "all",
+                          "comx", "comy", "polx", "poly")}
     pics, fell_t, x0, driver = [], None, float(d.qpos[0]), None
+    _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
     for k in range(steps):
         if k % CTRL_EVERY == 0:
             z = float(d.qpos[2])
@@ -93,6 +102,21 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
             tr["t"].append(k * m.opt.timestep); tr["x"].append(float(d.qpos[0]))
             tr["z"].append(z); tr["cr"].append(cr); tr["cl"].append(cl)
             tr["sup"].append((1.0 if cr > 0 else 0.0) + (1.0 if cl > 0 else 0.0))
+            _jf, _jn = joint_frac_named(d, jids)
+            tr["jf"].append(_jf); tr["jn"].append(_jn)
+            # EVERY joint, every sample -- not just the worst. f3_stand.py's own note: recording
+            # only the argmax and then asking "how bad was joint X" by filtering the samples
+            # where X happened to be worst overall answers a different question and always
+            # understates. A joint at 1.08 under another at 1.10 is invisible to it.
+            tr["all"].append({n: abs(float(d.qpos[adr]) - c) / h for adr, c, h, n in jids})
+            com = d.subtree_com[0]
+            foot = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
+            _px = [float(_b(n)[0]) for n in ("calcn_r", "calcn_l", "toes_r", "toes_l")]
+            _py = [float(_b(n)[1]) for n in ("calcn_r", "calcn_l", "toes_r", "toes_l")]
+            tr["comx"].append(float(com[0] - foot[0]))
+            tr["comy"].append(float(com[1] - foot[1]))
+            tr["polx"].append(max(1e-9, 0.5 * (max(_px) - min(_px))))
+            tr["poly"].append(max(1e-9, 0.5 * (max(_py) - min(_py))))
             if z < 0.5 * tgt and fell_t is None:
                 fell_t = k * m.opt.timestep
                 break
@@ -101,11 +125,23 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     dt_s = CTRL_EVERY * m.opt.timestep
     per, period = _periodicity(np.array(tr["sup"]), dt_s) if len(tr["sup"]) > 16 else (0.0, 0.0)
     elapsed = max(tr["t"][-1], 1e-9) if tr["t"] else 1e-9
+    # PER-JOINT PEAK AND TIME-OVER-STOP, the diagnostic f3_stand.py already carries. `over` is
+    # the one the ligament membranes are written in: a peak says a joint touched its stop, the
+    # FRACTION says whether anything caught it. A ligament that engages late still shows a peak;
+    # what says it CAUGHT the joint is the joint coming back inside.
+    names = sorted(tr["all"][0]) if tr["all"] else []
+    nsamp = max(len(tr["all"]), 1)
+    peak = {n: max((s[n] for s in tr["all"]), default=0.0) for n in names}
+    over = {n: 100.0 * sum(1 for s in tr["all"] if s[n] >= 1.0) / nsamp for n in names}
     return dict(speed=(float(tr["x"][-1]) - x0) / elapsed if tr["x"] else 0.0,
                 periodicity=per, period_s=period, fell_t=fell_t, driver=driver,
                 z_min=min(tr["z"]) if tr["z"] else 0.0, held=elapsed,
                 duty_r=float(np.mean([c > 0 for c in tr["cr"]])) if tr["cr"] else 0.0,
                 duty_l=float(np.mean([c > 0 for c in tr["cl"]])) if tr["cl"] else 0.0,
+                jmax=max(tr["jf"]) if tr["jf"] else 0.0,
+                jworst=(max(zip(tr["jf"], tr["jn"]))[1] if tr["jf"] else "?"),
+                peak=peak, over=over,
+                fall=classify_trace(tr, tgt) if tr["t"] else None,
                 tr=tr, pics=pics)
 
 
@@ -166,6 +202,29 @@ def run() -> int:
           f"{abl['speed']:+.4f} m/s = {abl_pct:.0f}% of derived")
     print(f"     bar: must stay under {100*ABLATION_BAR:.0f}%  ->  "
           f"{'PASS -- the rhythm is doing the work' if ok_abl else 'FAIL -- it travels without the oscillator; the rhythm is decorative'}")
+    # ── WHICH JOINTS, AND WHICH WAY IT WENT DOWN (ported from f3_stand.py, 2026-08-04) ──────
+    # F4 used to return a bare scalar per falsifier. A walk that fails now NAMES its offenders,
+    # because "periodicity 0.22" tells you the gait is not a gait and nothing about what to fix.
+    print(f"  5. JOINTS       worst {live['jmax']:.2f} of range at {live['jworst']}"
+          + ("  (< 1.00, none through a stop)" if live['jmax'] < 1.0 else "  -- THROUGH ITS STOP"))
+    _off = sorted(((n, v) for n, v in live["peak"].items() if v >= 0.90), key=lambda p: -p[1])
+    if _off:
+        print(f"     per joint, peak and % of the run spent at/past the stop:")
+        for _n, _v in _off[:6]:
+            print(f"       {_n:22} peak {_v:.2f}   over {live['over'][_n]:5.1f}% of the run")
+    else:
+        print(f"     no joint reached 0.90 of its range")
+    if live["fall"] is not None:
+        _f = live["fall"]
+        print(f"  6. THE FALL     {_f['label'].upper()}"
+              + (f" at t={_f['t_fall']:.2f} s, confidence {_f['confidence']:.2f}"
+                 if _f['t_fall'] is not None else " -- did not fall")
+              + f"   (CoM peak: fore {_f.get('peak_fore_frac', 0):.2f}, "
+                f"lat {_f.get('peak_lat_frac', 0):.2f} of the base the feet make)")
+        if _f["confidence"] < 0.35 and _f["t_fall"] is not None:
+            print(f"     LOW CONFIDENCE -- both axes left the base together, so this is a "
+                  f"diagonal/tumbling fall, not a clean {_f['label']} one. Reported as the "
+                  f"weak separation it is rather than as a label that reads clean.")
     print(f"  qpos writes after reset: 0 (by construction -- the harness contains no write)")
     print("=" * 78)
     print(f"  F4 VERDICT: {'PASS -- the body walks' if ok else 'FAIL'}")

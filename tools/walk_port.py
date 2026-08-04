@@ -124,19 +124,52 @@ OSC_JOINTS = ("hip_flexion", "knee_angle", "ankle_angle")
 N_FREE = 2 * len(OSC_JOINTS)
 
 
+# ── THE FROUDE CONSTANTS, from the literature, cited ──────────────────────────────────────────
+# Fr = v^2 / (g * L_leg) is DIMENSIONLESS, so two bodies at equal Fr walk dynamically similar
+# gaits whatever their size or gravity. That is the only reason one law can walk on every world,
+# and it is why these two numbers are allowed to be constants: they are not settings for this
+# body, they are properties of legged walking that this body inherits.
+#
+# TAKEN FROM THE LITERATURE, exactly as the trunk membrane took its ligament edge from Pearcy &
+# Tibrewal rather than inventing one. R. McN. Alexander, *Principles of Animal Locomotion* and
+# the 1984 Physiological Reviews survey: bipeds prefer to walk near Fr ~ 0.25, and the walk-run
+# transition falls near Fr ~ 0.5. CLAUDE.md already records this law predicting a fact it was
+# never fitted to -- on the Moon the transition drops to 0.83 m/s, which is why Apollo crews
+# bunny-hopped.
+FR_PREFERRED = 0.25        # Alexander: preferred walking speed, bipeds
+FR_TRANSITION = 0.50       # Alexander: walk -> run transition
+
+
+def froude(v, g, leg_length_m):
+    """v^2 / (g * L). The whole of dynamic similarity, and it is three symbols."""
+    return float(v) ** 2 / (float(g) * float(leg_length_m))
+
+
+def speed_at_froude(fr, g, leg_length_m):
+    """The inverse: what speed IS this Froude number, on this world, for this leg."""
+    return math.sqrt(float(fr) * float(g) * float(leg_length_m))
+
+
 def derive_walk_port() -> dict:
     """Gravity, stride and speed in; the oscillator's DERIVED constants out. Nothing chosen.
 
     Every line names the membrane it came from. omega in particular is NOT a free number: it is
     theHuman's published step time, doubled into a stride, inverted. If it were searched, the
     search would be answering "which cadence is best" -- which is rule 1's exact tell.
+
+    THE FROUDE NUMBER WAS ABSENT FROM THIS PORT UNTIL 2026-08-04, and its absence is a real gap
+    rather than a missing decoration. Without it the port cannot answer the one question that
+    decides whether its target is even a WALK -- Fr < 0.5 -- and it cannot transport this gait to
+    another gravity, which is the whole reason the project chose Froude as its scaling law. It is
+    computed here and CHECKED; see the `CHK froude_*` keys and `main()`'s report.
     """
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == "theHuman"]
     if not hits:
         raise SystemExit("theHuman publishes nothing -- run `python story/grow.py`. Refusing to "
                          "invent the gait this port is meant to produce (rule 20).")
     L = json.loads(hits[0].read_text(encoding="utf8"))
-    need = ("g", "comfortable_speed_ms", "step_time_s", "duty_factor", "step_length_m")
+    need = ("g", "comfortable_speed_ms", "step_time_s", "duty_factor", "step_length_m",
+            "leg_length_m")      # leg_length: Froude's own length scale, read never assumed
     missing = [k for k in need if k not in L]
     if missing:
         raise SystemExit(f"theHuman publishes no {missing}. A default here would be this port "
@@ -160,7 +193,35 @@ def derive_walk_port() -> dict:
         # ledger entry announces itself.
         "CHK speed_closure_pct": 100.0 * (float(L["step_length_m"]) / float(L["step_time_s"])
                                           / float(L["comfortable_speed_ms"]) - 1.0),
+        # ── DYNAMIC SIMILARITY, measured against this world's own g and leg ──────────────
+        # The target speed still COMES FROM THE PARENT. That is deliberate and it is the rule
+        # this project paid for twice: a sibling's number comes through the parent, and a port
+        # that mints its own speed is `thePlanets` typing `T_star_surface` under a comment
+        # claiming it was carried from the system. What the port owes is the CHECK -- is the
+        # number the parent handed me a walk at all? -- and that check is Froude.
+        "IN  leg_length_m": float(L["leg_length_m"]),
+        "CHK froude_target": froude(L["comfortable_speed_ms"], L["g"], L["leg_length_m"]),
+        "CHK froude_preferred_lit": FR_PREFERRED,
+        "CHK froude_transition_lit": FR_TRANSITION,
+        "OUT transition_speed_ms": speed_at_froude(FR_TRANSITION, L["g"], L["leg_length_m"]),
+        "OUT preferred_speed_ms": speed_at_froude(FR_PREFERRED, L["g"], L["leg_length_m"]),
+        # step length is FORCED once the speed and the step time are fixed -- v * t, not a
+        # separate number anybody gets to choose. Published beside theHuman's own so the two
+        # cannot silently diverge (`CHK speed_closure_pct` above is the same closure, stated
+        # the other way round).
+        "OUT step_length_derived_m": float(L["comfortable_speed_ms"]) * float(L["step_time_s"]),
     }
+    # THE BAND CHECK, and it is the one thing Froude is FOR. A target at or above Fr 0.5 is not
+    # a walk, and every duty-factor and double-support assumption in this port would be false of
+    # it. Refusing here rather than discovering it in a footfall diagram six hours later.
+    if port["CHK froude_target"] >= FR_TRANSITION:
+        raise SystemExit(
+            f"theHuman's comfortable_speed_ms {float(L['comfortable_speed_ms']):.4f} m/s is "
+            f"Fr = {port['CHK froude_target']:.4f} on this world (g {float(L['g']):.4f}, leg "
+            f"{float(L['leg_length_m']):.4f} m), at or past the walk-run transition Fr "
+            f"{FR_TRANSITION}. This port derives a WALK -- duty factor > 0.5, double support "
+            f"always -- and none of that is true of a run. Refusing to train a walk at a "
+            f"running speed.")
     if abs(port["CHK speed_closure_pct"]) > 1.0:
         raise SystemExit(
             f"theHuman's step_length/step_time = "
@@ -169,6 +230,63 @@ def derive_walk_port() -> dict:
             f"{port['CHK speed_closure_pct']:+.2f}%. Refusing to derive a walk from a ledger "
             f"that contradicts itself.")
     return port
+
+
+def swing_pendulum(m, d, mujoco, side="r", knee_deg=0.0):
+    """The swing leg as a COMPOUND PENDULUM, measured off this body. Returns (M, d_com, I, T).
+
+    `docs/THE_MATHEMATICS_OF_WALKING.md` states the swing phase sets CADENCE via
+    T = 2*pi*sqrt(I / (M g d)), and this measures the three constants from the model rather than
+    quoting them: leg mass, hip-to-leg-CoM distance, and the leg's inertia about the hip's
+    medio-lateral axis (parallel-axis, each segment's world inertia tensor rotated into place).
+
+    THE MEASUREMENT AGREES WITH THE DOC AND THE MODEL DISAGREES WITH THE LEDGER, 2026-08-04:
+
+        I_hip measured 2.9011 kg.m2   vs THE_MATHEMATICS_OF_WALKING's 2.879   (+0.8%, agrees)
+        M 13.6744 kg, d 0.3742 m, T 1.7784 s  ->  half period 0.8892 s
+        theHuman publishes step_time_s = 0.5865 s                             (1.516x, DISAGREES)
+
+    AND THE OBVIOUS RESCUE FAILS. A swinging human leg flexes its knee, which cuts I; so the
+    free-swing period was re-measured across the knee's whole range, and the gap does not close:
+
+        knee   0 deg  T/2 0.8892 s  1.516x        knee  60 deg  T/2 0.8221 s  1.402x
+        knee  30 deg  T/2 0.8820 s  1.504x        knee  90 deg  T/2 0.7348 s  1.253x
+
+    At the swing peak the published gait envelope actually reaches (~60 deg) it is still 40% too
+    slow, and even at a physically absurd 90 deg it is 25% too slow. SO THE FREE PENDULUM IS NOT
+    WHERE THIS BODY'S STEP TIME COMES FROM, and `step_length` is NOT built on it. That is the
+    honest reading: human swing is not ballistic -- the hip flexors drive it, so the pendulum
+    gives a NATURAL frequency that walking runs ABOVE, not the cadence itself. Published as a
+    disagreement rather than fitted away (rule 17), and left here because the next membrane that
+    wants a driven-swing model needs these three constants and should not re-measure them.
+    """
+    def bid(n):
+        i = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)
+        if i < 0:
+            raise SystemExit(f"no body {n!r} -- refusing to measure a pendulum on a leg this "
+                             f"model does not have (rule 20).")
+        return i
+    seg = [f"{b}_{side}" for b in ("femur", "patella", "tibia", "talus", "calcn", "toes")]
+    seg = [s for s in seg if mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, s) >= 0]
+    mujoco.mj_resetDataKeyframe(m, d, 0)
+    if knee_deg:
+        kj = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, f"knee_angle_{side}")
+        d.qpos[int(m.jnt_qposadr[kj])] = math.radians(knee_deg)
+    mujoco.mj_forward(m, d)
+    hip = np.array(d.xpos[bid(f"femur_{side}")], dtype=float)
+    M = sum(float(m.body_mass[bid(s)]) for s in seg)
+    com = sum(float(m.body_mass[bid(s)]) * np.array(d.xipos[bid(s)], dtype=float)
+              for s in seg) / M
+    dcom = float(np.linalg.norm(com - hip))
+    I = 0.0
+    for s in seg:
+        i = bid(s)
+        R = np.array(d.ximat[i], dtype=float).reshape(3, 3)
+        Iw = R @ np.diag(np.array(m.body_inertia[i], dtype=float)) @ R.T
+        r = np.array(d.xipos[i], dtype=float) - hip
+        I += float(Iw[1, 1]) + float(m.body_mass[i]) * (r[0] ** 2 + r[2] ** 2)
+    gz = abs(float(m.opt.gravity[2]))
+    return M, dcom, I, 2.0 * math.pi * math.sqrt(I / (M * gz * dcom))
 
 
 def muscle_groups(m, d, mujoco, verbose=False) -> dict:
@@ -430,6 +548,42 @@ if __name__ == "__main__":
         print(f"  {k:26} {v:.6f}" if isinstance(v, float) else f"  {k:26} {v}")
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
+
+    print("\nDYNAMIC SIMILARITY -- is the target this port was handed even a WALK?")
+    print("=" * 78)
+    fr = P["CHK froude_target"]
+    print(f"  Fr = v^2/(g L) = {P['OUT target_speed_ms']:.4f}^2 / ({P['IN  g_m_s2']:.4f} * "
+          f"{P['IN  leg_length_m']:.4f}) = {fr:.4f}")
+    print(f"  the literature's bands (Alexander): preferred walk Fr ~ {FR_PREFERRED}, "
+          f"walk->run Fr ~ {FR_TRANSITION}")
+    print(f"    Fr {FR_TRANSITION} on THIS world = {P['OUT transition_speed_ms']:.4f} m/s   "
+          f"-> the target is {100*fr/FR_TRANSITION:.0f}% of the transition  "
+          f"{'WALK, comfortably' if fr < 0.5 * FR_TRANSITION else 'WALK' if fr < FR_TRANSITION else 'NOT A WALK'}")
+    print(f"    Fr {FR_PREFERRED} on THIS world = {P['OUT preferred_speed_ms']:.4f} m/s   "
+          f"-> the target is {100*(P['OUT target_speed_ms']/P['OUT preferred_speed_ms']-1):+.1f}% "
+          f"against the literature's preferred walk")
+    print(f"  THE DISAGREEMENT, published rather than resolved here (rule 17): theHuman's")
+    print(f"  comfortable_speed_ms sits at Fr {fr:.4f}, where the literature's preferred biped")
+    print(f"  walk is {FR_PREFERRED}. Both are walks -- the band check passes -- but this world's")
+    print(f"  person is walking DELIBERATELY SLOWLY for its gravity, and whether that is right is")
+    print(f"  theHuman's call, not this port's. A port that overwrote its parent's speed here")
+    print(f"  would be `thePlanets` typing T_star_surface under a comment claiming it was carried.")
+
+    M, dc, I, T = swing_pendulum(m, d, mujoco)
+    print(f"\nTHE SWING PENDULUM -- measured off this body, and REFUTED as the step-time source")
+    print("=" * 78)
+    print(f"  leg mass {M:.4f} kg, hip->CoM {dc:.4f} m, I_hip {I:.4f} kg.m2 "
+          f"(THE_MATHEMATICS_OF_WALKING says 2.879 -- agrees to {100*abs(I/2.879-1):.1f}%)")
+    print(f"  T = 2*pi*sqrt(I/(M g d)) = {T:.4f} s  ->  half period {T/2:.4f} s")
+    print(f"  theHuman publishes step_time_s = {P['IN  step_time_s']:.4f} s  ->  "
+          f"{(T/2)/P['IN  step_time_s']:.3f}x TOO SLOW")
+    print(f"  and flexing the knee does not rescue it:", end=" ")
+    for kd in (30, 60, 90):
+        _, _, _, Tk = swing_pendulum(m, d, mujoco, knee_deg=kd)
+        print(f"{kd}deg {(Tk/2)/P['IN  step_time_s']:.3f}x", end="  ")
+    print(f"\n  VERDICT: the free pendulum is a NATURAL FREQUENCY this body walks ABOVE, not its")
+    print(f"  cadence. Swing is driven, not ballistic. step_length is NOT built on it.")
+
     print("\nTHE MUSCLES THE OSCILLATOR REACHES -- measured one at a time, never inferred")
     gr = muscle_groups(m, d, mujoco, verbose=True)
     print(f"\n  {len(gr)} joints grouped, {N_FREE} free numbers to train "

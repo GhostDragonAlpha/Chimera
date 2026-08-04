@@ -391,7 +391,14 @@ def main() -> int:
         print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
               f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
               f"{rb_txt:>9}  {'PROVEN' if ok else 'not yet'}")
-        draw_turn(turn, P, tr, pics, hist, OUTDIR / f"stand_turn_{turn:02d}.png")
+        # THE PICTURE IS NAMED AFTER THE ARM. Two arms of an A/B run concurrently -- that is the
+        # point of an A/B -- and both used to write `stand_turn_NN.png`, so each turn's picture
+        # was whichever process got there last. The numbers in the two logs stayed independent
+        # and correct, which is exactly what makes this the dangerous kind: the evidence you
+        # LOOK at silently belongs to the other arm while the evidence you compute does not.
+        # "A turn you have not looked at did not end" is worth nothing if the turn you looked
+        # at was someone else's.
+        draw_turn(turn, P, tr, pics, hist, OUTDIR / f"{Path(out_name).stem}_turn_{turn:02d}.png")
     # SAVED AT 4*nu WHATEVER THE ARM. A 3-block winner is padded with an explicit zero roll
     # block, so both arms hand the judge the identical shape and `walk_formula`/`parser` need no
     # branch. The zeros are the without-roll policy exactly -- kr * roll = 0 for every roll.
