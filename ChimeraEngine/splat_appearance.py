@@ -95,6 +95,47 @@ def membrane_terms() -> list[str]:
     return scene_terms()
 
 
+def term_inventory() -> dict:
+    """What the engine DECLARES against what it can RENDER -- the gap, counted.
+
+    WHY THIS EXISTS RATHER THAN A BIGGER `scene_terms()`. The engine's `terms_data.TERMS` declares
+    59 terms; this module can render 42. The obvious move is to make the tree show all 59, and it
+    is the wrong one: the extra terms have NO buffer function anywhere in the engine, so a sidebar
+    listing them would offer membranes that return None when clicked.
+
+        A TREE THAT LISTS WHAT IT CANNOT DRAW IS THE SPECIFICATION CITED AS PROOF.
+
+    MEASURED, and the shape is not what a "17 missing terms" reading expects:
+
+        59 declared . 42 renderable . 46 declared-but-not-renderable . 29 renderable-but-undeclared
+
+    Only THIRTEEN terms are in both lists. These are two nearly-disjoint vocabularies -- the
+    declared set is the game's design language (theShip, theVerbs, theMeaning), the renderable set
+    is the grown story tree (aBlueWorld, theCooling, theSweep). Neither is wrong; they are simply
+    not the same list, and the honest response is to say so rather than to union them.
+
+    `scene_terms()` keeps returning only what renders, so nothing lies. This counts the rest, so
+    nothing is forgotten -- the same treatment `action_tests` gives a refusal.
+    """
+    render = set(scene_terms())
+    try:
+        import terms_data as _td
+        declared = {t[0] if isinstance(t, (tuple, list)) else str(t) for t in _td.TERMS}
+    except Exception:
+        declared = set()
+    return {
+        "declared": sorted(declared),
+        "renderable": sorted(render),
+        "declared_not_renderable": sorted(declared - render),
+        "renderable_not_declared": sorted(render - declared),
+        "in_both": sorted(declared & render),
+        "counts": {"declared": len(declared), "renderable": len(render),
+                   "declared_not_renderable": len(declared - render),
+                   "renderable_not_declared": len(render - declared),
+                   "in_both": len(declared & render)},
+    }
+
+
 def scene_cam_distance(term: str) -> float:
     """Derived camera distance for a term (its extent * 2.8, the viewer's rule)."""
     if term in _CAM_DIST:

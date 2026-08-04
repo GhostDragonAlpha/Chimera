@@ -1,17 +1,17 @@
-"""orbit_proof.py — verify scene_buffer volumes are true 3D (parallax, not billboarded).
+"""orbit_proof.py -- verify scene_buffer volumes are true 3D (parallax, not billboarded).
 
 STATEMENT: The five proven terms (theStar, theTree, theShip, theStanding, theBlackHole) are
-true 3D volumes, not flat paintings. When the camera orbits by ±15° yaw, the rendered image
-changes in a way consistent with 3D parallax — a billboard would maintain identical pixel
+true 3D volumes, not flat paintings. When the camera orbits by +/-15 deg yaw, the rendered image
+changes in a way consistent with 3D parallax -- a billboard would maintain identical pixel
 positions, but a 3D volume shows displacement.
 
-PREDICTION: Frame pairs at ±15° yaw for each of the 5 terms will show measurable per-pixel
+PREDICTION: Frame pairs at +/-15 deg yaw for each of the 5 terms will show measurable per-pixel
 differences (mean absolute frame delta > 1.0 on the 0-255 scale), demonstrating parallax.
 
-FALSIFIER: Any term's ±15° frame pair has delta < 1.0 — the volume is a billboard (or the
+FALSIFIER: Any term's +/-15 deg frame pair has delta < 1.0 -- the volume is a billboard (or the
 term lacks a working emit).
 
-Author: Agent (DeepSeek V4 Pro — density lane, 2026-08-04)
+Author: Agent (DeepSeek V4 Pro -- density lane, 2026-08-04)
 """
 from __future__ import annotations
 
@@ -73,18 +73,66 @@ def render_term(term: str, yaw_offset: float = 0.0) -> np.ndarray | None:
     ce = math.cos(0.18)
     pos = (dist * ce * math.sin(yaw), -dist * ce * math.cos(yaw), dist * math.sin(0.18))
     cam.position = np.array(pos, dtype=np.float32)
-    cam.yaw = math.atan2(-pos[1], pos[0])
-    cam.pitch = 0.18
+
+    # AIM AT THE ORIGIN, by the formula live_viewer already uses for exactly this orbit. What was
+    # here -- `yaw = atan2(-pos[1], pos[0])`, `pitch = +0.18` -- pointed the camera AWAY from the
+    # object: at pos (3.47, -0.93, 0.65) it yawed to +0.26 rad, into +x, when the origin lies at
+    # 2.88 rad behind it; and it pitched UP while sitting ABOVE the target. Two sign errors.
+    #
+    #     THE PROOF WAS RENDERING EMPTY SPACE AND CALLING IT A BILLBOARD. Every term returned
+    #     delta = 0.000 -- not "no parallax" but two BIT-IDENTICAL frames of pure background
+    #     (max pixel 10, which is bg 0.04 * 255). A false negative that condemns working geometry
+    #     is worse than no proof: it would have sent someone to fix emit() functions that were
+    #     never broken.
+    #
+    # A delta of EXACTLY zero should always have been read as an instrument failure rather than a
+    # physics one -- two genuinely different camera positions cannot produce identical bytes.
+    n = math.sqrt(pos[0] ** 2 + pos[1] ** 2 + pos[2] ** 2) or 1.0
+    fx, fy, fz = -pos[0] / n, -pos[1] / n, -pos[2] / n
+    cam.yaw = math.atan2(fy, fx)
+    cam.pitch = math.atan2(fz, math.hypot(fx, fy))
 
     pipe.upload(np.ascontiguousarray(buf, dtype=np.float32))
     return pipe.render_from_gpu(cam, cam.params(_W, _H))
 
 
+_BG255 = np.array([0.015, 0.015, 0.04], dtype=np.float32) * 255.0   # the pipeline's own bg
+
+
 def frame_delta(img_a: np.ndarray, img_b: np.ndarray) -> float:
-    """Mean absolute per-pixel difference between two uint8 frames."""
+    """Mean absolute per-pixel difference over the WHOLE frame. Kept, and kept honest.
+
+    THIS NUMBER CANNOT ANSWER THE QUESTION IT WAS BEING ASKED. Averaged over 640x480, it is
+    diluted by every background pixel -- which contributes exactly 0 -- so it measures
+    `coverage x parallax`, a product of two things, and a 1.0 threshold on it convicts a small
+    object of being a billboard. Measured:
+
+        theStance   coverage  2.92%   masked 52.024   full 1.520  -> PASSED
+        aBlueWorld  coverage 26.27%   masked  1.639   full 0.434  -> FAILED
+
+    The one that passed has the SMALLEST coverage in the set. The metric does not even rank by
+    the thing diluting it. It is reported below because it is what the original threshold was set
+    against, and dropping it would hide the change rather than show it.
+    """
+    return float(np.abs(img_a.astype(np.float32) - img_b.astype(np.float32)).mean())
+
+
+def frame_delta_masked(img_a: np.ndarray, img_b: np.ndarray) -> tuple[float, float]:
+    """Mean absolute difference over the pixels the OBJECT occupies, plus its coverage.
+
+    A billboard and a volume differ in what happens to the object's own pixels when the camera
+    moves; the background has no opinion. Measure at the scale the thing lives at -- the same rule
+    that caught 0.6 px octaves being read as detail LOST.
+
+    The mask is "brighter than the background in EITHER frame", so a pixel the object moves OFF
+    still counts: vacating a pixel is exactly as much evidence of parallax as filling one.
+    """
     a = img_a.astype(np.float32)
     b = img_b.astype(np.float32)
-    return float(np.abs(a - b).mean())
+    m = ((a > _BG255 + 2.0).any(-1)) | ((b > _BG255 + 2.0).any(-1))
+    if not m.any():
+        return 0.0, 0.0
+    return float(np.abs(a - b)[m].mean()), float(m.mean())
 
 
 def run():
@@ -92,7 +140,7 @@ def run():
     _OUT.mkdir(parents=True, exist_ok=True)
     results: dict[str, dict] = {}
 
-    print(f"Orbit proof — {len(PROOF_TERMS)} terms, ±15° yaw parallax test")
+    print(f"Orbit proof -- {len(PROOF_TERMS)} terms, +/-15 deg yaw parallax test")
     print(f"{'=' * 60}")
 
     all_ok = True
@@ -140,9 +188,10 @@ def run():
             all_ok = False
             continue
 
-        delta = frame_delta(img_neg, img_pos)
-        threshold = 1.0  # mean absolute pixel delta on 0-255 — below this = billboard
-        ok = delta > threshold
+        delta = frame_delta(img_neg, img_pos)                 # kept: what the old bar judged
+        masked, coverage = frame_delta_masked(img_neg, img_pos)
+        threshold = 1.0                 # mean absolute pixel delta on 0-255, ON THE OBJECT
+        ok = masked > threshold and coverage > 0.0
 
         # Save both frames for visual inspection
         Image.fromarray(img_neg).save(_OUT / f"{term}_neg15deg.png")
@@ -151,20 +200,23 @@ def run():
         results[wanted] = {
             "parallax_verified": ok,
             "term_used": term,
-            "frame_delta": round(delta, 3),
+            "frame_delta_on_object": round(masked, 3),      # the one the verdict rests on
+            "frame_delta_full_frame": round(delta, 3),      # the old metric, for audit
+            "object_coverage_frac": round(coverage, 4),
             "threshold": threshold,
             "neg_frame": f"{term}_neg15deg.png",
             "pos_frame": f"{term}_pos15deg.png",
         }
 
         status = "VERIFIED (3D)" if ok else "UNVERIFIED (billboard?)"
-        print(f"  {wanted:20s}  delta={delta:6.3f}  {status}  → {term}")
+        print(f"  {wanted:20s}  on-object={masked:7.3f}  cover={100*coverage:5.2f}%  "
+              f"(full-frame {delta:5.3f})  {status}")
 
         if not ok:
             all_ok = False
 
     print(f"\n{'=' * 60}")
-    print(f"Result: {'ALL TRUE 3D' if all_ok else 'SOME UNVERIFIED — parallax missing'}")
+    print(f"Result: {'ALL TRUE 3D' if all_ok else 'SOME UNVERIFIED -- parallax missing'}")
 
     (_OUT / "orbit_proof.json").write_text(json.dumps({
         "results": results,

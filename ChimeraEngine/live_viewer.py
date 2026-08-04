@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import io
 import math
+import os as _os
 import sys
 import threading
 import time
@@ -586,8 +587,14 @@ def handle(handler) -> bool:
             cur = _json.loads(tj.read_text()) if tj.exists() else {}
             cur[name] = val
             tj.write_text(_json.dumps(cur, indent=2))
+            # THE DENSITY GUARD IS SKIPPED ON THIS PATH, deliberately. `grow.py` now runs it at the
+            # end of a full grow, and it re-emits all 42 terms in a fresh process: 27 seconds. This
+            # endpoint is a SLIDER -- the operator moves a free number and expects the world to
+            # move with it -- so paying 27 s per nudge would make the one interactive control in
+            # the world unusable. The guard belongs on a deliberate grow, not on every twitch.
+            _env = dict(_os.environ, CHIMERA_SKIP_DENSITY_GUARD="1")
             subprocess.run([_sys.executable, str(_HERE.parent / "story" / "grow.py")],
-                           capture_output=True, cwd=str(_HERE.parent))
+                           capture_output=True, cwd=str(_HERE.parent), env=_env)
             get_viewer().force_reload()
         _send(handler, 204, "text/plain", b""); return True
     if path == "/lens":

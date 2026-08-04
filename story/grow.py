@@ -120,6 +120,50 @@ def grow(folder: Path, parent: dict | None = None, depth: int = 0) -> None:
     for child in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         grow(child, nums, depth + 1)
 
+    if depth == 0:
+        _density_guard()
+
+
+def _density_guard() -> None:
+    """After a full grow, ask whether any membrane's detail silently rotted.
+
+    WHY IT IS HERE. `ChimeraEngine/test_density_regression.py` checks every term against the floor
+    its surface class derives, and nothing called it -- so a membrane could lose its detail the way
+    `_tree_buffers` did and the first thing to notice would be a human squinting at a render. A
+    guard nobody runs is a guard that does not exist.
+
+    WHY IT CAN BE SWITCHED OFF, and the number is the argument: the guard re-emits all 42 terms in
+    a fresh process and takes 27 SECONDS. `grow.py` is not only run by a person at a prompt -- the
+    live viewer's `/free` endpoint runs it synchronously every time the operator moves a slider,
+    then reloads the scene. Wiring 27 s into that path would make the world's one interactive
+    control unusable, and a guard that makes people avoid growing is worse than no guard.
+    So: on by default, off for callers who say so.
+
+        CHIMERA_SKIP_DENSITY_GUARD=1 python story/grow.py
+
+    IT REPORTS AND DOES NOT RAISE. A density regression is a fact about detail, not a reason the
+    world failed to derive; the numbers this grow just produced are correct either way.
+    """
+    import os
+    if os.environ.get("CHIMERA_SKIP_DENSITY_GUARD", "").strip() not in ("", "0", "false"):
+        return
+    import subprocess, sys as _sys
+    root = Path(__file__).resolve().parent.parent
+    guard = root / "ChimeraEngine" / "test_density_regression.py"
+    if not guard.exists():
+        return
+    try:
+        r = subprocess.run([_sys.executable, str(guard)], capture_output=True, text=True,
+                           cwd=str(root), timeout=600)
+    except Exception as e:                          # a guard that breaks the grow is not a guard
+        print(f"\n[DENSITY GUARD] could not run: {e}")
+        return
+    if r.returncode != 0:
+        print("\n[DENSITY GUARD] regression detected after grow:")
+        print((r.stdout or "")[-2000:])
+    else:
+        print("\n[DENSITY GUARD] every term is at or above its derived floor.")
+
 
 def read(folder: Path, depth: int = 0, maxdepth: int = 99) -> None:
     """Read the story at a chosen level of detail.
