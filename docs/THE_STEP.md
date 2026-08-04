@@ -125,4 +125,62 @@ own the cadence; the window only splits the effort profile into
 early/late); the pendulum number is the cross-check, and the cross-check
 says: swing is work, not falling.
 
-Verdict: _pending the training run._
+## VERDICT (2026-08-04): v1 FAILS — falsifier 3's shape, and the mechanism is MEASURED
+
+Session: 24×32 CEM, 792 rollouts. Score plateaued identically for the last
+16 turns (variance collapsed to the 1e-3 floor — converged, not stalled).
+`f5_step.py` on the session-best theta: travel −4%, periodicity 0.18,
+upright 47% (fall at 3.52 s) — FAIL on 1/2/3. **Judges 4, 5, 6 PASS**: the
+efforts do work, the sensors are the mechanism (zeroed obs → the body
+stands; falsifier 2 does NOT fire), no hopping.
+
+Two candidates, one verdict:
+
+- **Best-score theta** (−4.115): marches in place — the machine visibly
+  STEPS (footfall alternates at ~0.2 s, duty 0.66/0.75), sensors drive real
+  transitions, pelvis holds 3.2 s. Travel −4%. The score priced survival
+  over motion and selected standing.
+- **Best-travel candidate** (turn 7, 52%): accelerates forward and falls at
+  2.4 s. The travel curve is *accelerating into the fall* — the signature
+  of toppling, not walking.
+
+No trained setting held 50% of derived speed AND upright in one body.
+**The mechanism, measured not inferred: v1 gives the stance leg the stand
+formula ALONE, so the composition has no propulsion source. Without
+push-off, forward motion can only come from falling forward** — and the two
+candidates are the two ways that plays out: topple (travel exists, upright
+dies) or march in place (upright survives, no travel). This is not "the
+atoms don't compose" in the deep sense — it is the composition missing the
+stance leg's content, which v1 omitted by design ("no push-off term in v1:
+if no travel results, that is a measured finding"). Travel resulted. The
+finding is published here per Rule 17.
+
+---
+
+## AMENDMENT — v2: THE PUSH-OFF (stated before the build)
+
+**STATEMENT.** Propulsion is not toppling. In human gait the body's forward
+work comes from the STANCE leg — terminal-stance ankle plantarflexion
+during single support — not from the swing, and not from falling. v2 adds
+exactly that, in the machine's own vocabulary: while the contralateral leg
+is in LATE swing (its phase ≥ half the derived window — the machine's own
+single-support second half, no clock, no new state), the stance leg's
+measured plantarflexors (`muscle_groups`' ext for `ankle_angle`) are driven
+reciprocally. ONE new trained number (the push-off amplitude; seven total).
+Someone can disagree: push-off could be hip-first, or early-stance — the
+published record (Perry 1992, gait analysis: ~80% of propulsive work at the
+ankle in terminal stance) says ankle, late; the falsifiers below decide.
+
+**PREDICTION.** The same trainer, the same judge, bars unmoved: travel
+≥ 50% of derived speed AND upright (pelvis ≥ 80% of target, no fall) in one
+body — the bar v1 could not clear — because propulsion now has a source
+that is not toppling.
+
+**FALSIFIERS.** 1. The search converges the push-off amplitude to ~0 and
+nothing changes — the mechanism is not ankle push-off; published. 2. Travel
+rises but upright still dies past ~2.5 s — the deficit is catch-up, not
+propulsion; the swing-timing question reopens with data. 3. Carried from
+v1: sensor ablation must still collapse travel, or the machine became a
+clock in disguise.
+
+Verdict: _pending the v2 run._
