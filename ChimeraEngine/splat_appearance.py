@@ -2392,11 +2392,14 @@ def _verbs_buffers(spec: dict, term: str):
             parts.append(st)
         return parts
 
-    begin = np.concatenate([ground] + fig + [arm(5.0)] + trail(0.45) + [arc_dim], axis=0)
-    end = np.concatenate([ground] + fig + [arm(12.0)] + trail(1.0) + [stone_new, arc_lit,
+    # theSalvage lesson, applied to the end: the eye averages the movie and
+    # CANNOT see change -- two different frames read as "two shapes" and the
+    # claim dies between them. So BOTH frames hold the completed trace at full
+    # strength: the trail is the fossil of the act, fully legible in one still.
+    settled = np.concatenate([ground] + fig + [arm(12.0)] + trail(1.0) + [stone_new, arc_lit,
                                            _halo(NEW, 7.0, (0.80, 0.90, 1.0), rng,
                                                  alpha=0.13, size=1.8)], axis=0)
-    return end, begin
+    return settled, settled.copy()
 
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
