@@ -30,6 +30,7 @@ sys.path.insert(0, str(_HERE.parent))
 sys.path.insert(0, str(_HERE))
 
 import splat_appearance as sa
+import lod as LOD
 from ParticleEngine.gpu_pipeline import FullGPUPipeline
 from ParticleEngine.camera import FirstPersonCamera
 
@@ -127,6 +128,31 @@ def _render_frame(pipe, cam, buf, title: str, frame_idx: int, term: str = "") ->
     return np.array(pil)
 
 
+def _aim_at_origin(cam, pos) -> None:
+    """Point the camera AT the thing it is orbiting. The tour was not doing this.
+
+    It used `yaw = atan2(-pos[1], pos[0])` with a fixed `pitch = +0.18`. That expression is
+    correct only where pos[0] == 0 -- the top of the orbit -- and wrong everywhere else, and the
+    pitch is upward while the camera sits ABOVE the body. MEASURED on aBlueWorld, mean frame
+    brightness around one orbit (5.333 IS the bare background):
+
+           0 deg   11.942        45 deg    5.333   EMPTY
+          90 deg    5.333 EMPTY 135 deg    5.333   EMPTY
+         180 deg    8.285
+
+    So the tour rendered the object at the two ends of each stop's arc and pointed at empty space
+    through the middle of it. Same defect as orbit_proof.py's, in a second file: an aiming
+    expression that happens to be right at one point of a sweep and is never checked at another.
+
+    This is live_viewer's own formula, which is right at every angle by construction: the look
+    direction is -pos normalised, and yaw/pitch are read off it.
+    """
+    n = math.sqrt(pos[0] ** 2 + pos[1] ** 2 + pos[2] ** 2) or 1.0
+    fx, fy, fz = -pos[0] / n, -pos[1] / n, -pos[2] / n
+    cam.yaw = math.atan2(fy, fx)
+    cam.pitch = math.atan2(fz, math.hypot(fx, fy))
+
+
 def run():
     """Execute the 3-minute demo tour."""
     _OUT.mkdir(parents=True, exist_ok=True)
@@ -155,6 +181,14 @@ def run():
 
             # Load buffer
             current_buf = sa.scene_buffer(current_term)
+            # MIPS ARE BUILT ONCE PER STOP, not once per frame. build_mips clusters on the sphere;
+            # at 30 fps x 4.5 s per stop that would be 135 rebuilds of an identical pyramid.
+            mips = None
+            if LOD.should_lod(current_buf):
+                try:
+                    mips = LOD.build_mips(current_buf, LOD.body_radius(current_buf))
+                except Exception:
+                    mips = None                      # LOD is an optimisation, never a blocker
             if current_buf is not None:
                 # Orbit the camera around the body
                 radius = float(np.linalg.norm(current_buf[:, 0:3], axis=1).max()) or 1.0
@@ -164,8 +198,7 @@ def run():
                 pos = (dist * ce * math.sin(angle), -dist * ce * math.cos(angle),
                        dist * math.sin(0.18))
                 cam.position = np.array(pos, dtype=np.float32)
-                cam.yaw = math.atan2(-pos[1], pos[0])
-                cam.pitch = 0.18
+                _aim_at_origin(cam, pos)
 
         # Auto-orbit: rotate slowly around each body
         if current_buf is not None:
@@ -178,11 +211,30 @@ def run():
             pos = (dist * ce * math.sin(angle), -dist * ce * math.cos(angle),
                    dist * math.sin(0.18))
             cam.position = np.array(pos, dtype=np.float32)
-            cam.yaw = math.atan2(-pos[1], pos[0])
+            _aim_at_origin(cam, pos)
+
+        # ── LOD, SELECTED AGAINST THIS FRAME'S OWN DISTANCE ────────────────────────────────
+        # The demo's `dist` is derived from the buffer's OWN radius, so unlike the live viewer it
+        # is already in the buffer's units and needs no conversion -- the misfold that collapsed
+        # every body to one splat cannot happen on this path.
+        draw_buf = current_buf
+        if mips and len(mips) > 1 and current_buf is not None:
+            r_px = LOD.projected_radius_px(LOD.body_radius(current_buf), dist, _H, _FOV)
+            draw_buf = LOD.select(mips, r_px)
 
         # Title overlay
         title = f"{current_term}  [{stop_idx + 1}/{len(STOPS)}]"
-        img = _render_frame(pipe, cam, current_buf, title, frame, term=current_term)
+        _t0 = time.perf_counter()
+        img = _render_frame(pipe, cam, draw_buf, title, frame, term=current_term)
+        _ms = (time.perf_counter() - _t0) * 1000.0
+        # ONE LINE PER FRAME, and it prints the BASE count beside the drawn one: a single number
+        # cannot show that LOD did anything, and "43000" looks identical whether the switch ran or
+        # was never called.
+        _nb = 0 if current_buf is None else int(current_buf.shape[0])
+        _nd = 0 if draw_buf is None else int(draw_buf.shape[0])
+        print(f"  f{frame:<5d} {current_term:<22s} base={_nb:>7d} drawn={_nd:>7d} "
+              f"lod={'base' if _nd == _nb else f'mip/{_nb / max(_nd, 1):.0f}x'} "
+              f"{_ms:6.1f} ms {1000.0 / max(_ms, 1e-6):5.1f} fps", flush=True)
 
         # Save frame
         frame_path = _OUT / f"frame_{frame:05d}.png"
@@ -217,4 +269,17 @@ def run():
 
 
 if __name__ == "__main__":
+    # `--smoke N` runs the tour over the first N stops instead of all 38, so the wiring can be
+    # exercised in seconds rather than in the three minutes the full tour costs. It changes the
+    # ROUTE, never the render path: every frame still goes through the same LOD selection, the
+    # same budget-guarded upload and the same camera, so a smoke pass that works is evidence
+    # about the real tour rather than about a special case built to pass.
+    if "--smoke" in sys.argv:
+        _n = int(sys.argv[sys.argv.index("--smoke") + 1])
+        STOPS = STOPS[:_n]
+        FRAMES_PER_STOP = int(FPS * 0.5)
+        SETTLE_FRAMES = 0
+        TOTAL_FRAMES = FRAMES_PER_STOP * len(STOPS)
+        TOTAL_DURATION = TOTAL_FRAMES // FPS
+        print(f"[smoke] {len(STOPS)} stops, {TOTAL_FRAMES} frames")
     run()

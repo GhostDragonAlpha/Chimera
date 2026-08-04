@@ -41,6 +41,28 @@ def body_radius(buf: np.ndarray) -> float:
     return float(np.linalg.norm(buf[:, 0:3], axis=1).max()) if buf.shape[0] else 1.0
 
 
+def should_lod(buf) -> bool:
+    """Is this body something LOD can reason about at all?
+
+    TWO REFUSALS, and the second was found by running the demo. A body needs enough grains to have
+    mip levels (below ~64 the pyramid is the base), and it needs EXTENT -- because every quantity
+    in the law is a projected SIZE, and a body of zero radius projects to zero pixels no matter
+    where the camera is.
+
+        theZero  n=4000  body_radius=0
+
+    theZero is the seed: r = 0, a point. Feeding it to the law is not wrong so much as
+    meaningless -- r_px comes out 0, lod_count returns its n_min floor, and a 4,000-grain membrane
+    is drawn with ONE splat. The law answered a question that has no answer, and it answered
+    plausibly, which is the dangerous kind. A zero-extent body is refused here rather than
+    silently reduced to its floor.
+    """
+    try:
+        return buf is not None and buf.shape[0] > 64 and body_radius(buf) > 1e-9
+    except Exception:
+        return False
+
+
 def projected_radius_px(radius_world: float, cam_distance: float, height_px: int, fov: float) -> float:
     focal = height_px / (2.0 * math.tan(fov / 2.0))
     return radius_world * focal / max(1e-6, cam_distance)

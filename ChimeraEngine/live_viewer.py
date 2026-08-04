@@ -266,7 +266,7 @@ class LiveViewer:
                         self._lod_base = buf
                         try:
                             self._lod_levels = LOD.build_mips(buf, LOD.body_radius(buf)) \
-                                if buf.shape[0] > 64 else None
+                                if LOD.should_lod(buf) else None
                         except Exception:
                             self._lod_levels = None      # LOD is an optimisation, never a blocker
                         self._lod_n = None               # force the first selection to upload
