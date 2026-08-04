@@ -37,6 +37,9 @@ def _load_module(folder: Path) -> object | None:
     if not py.exists():
         return None
     try:
+        # Ensure story/ is in sys.path for imports like 'from matter import ...'
+        if str(_STORY) not in sys.path:
+            sys.path.insert(0, str(_STORY))
         spec = importlib.util.spec_from_file_location(f"membrane_{folder.name}", py)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)

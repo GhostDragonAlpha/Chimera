@@ -1,0 +1,304 @@
+{
+  "aActiveInterior": {
+    "file": "aActiveInterior.npz",
+    "n_grains": 38765,
+    "hash": "e9dae13288be9741",
+    "elapsed_ms": 53.01,
+    "status": "baked"
+  },
+  "aBlueWorld": {
+    "file": "aBlueWorld.npz",
+    "n_grains": 43000,
+    "hash": "97decdecf8fa28a3",
+    "elapsed_ms": 12.46,
+    "status": "baked"
+  },
+  "aHuman": {
+    "file": "aHuman.npz",
+    "n_grains": 16745,
+    "hash": "57d470216f67789b",
+    "elapsed_ms": 5.58,
+    "status": "baked"
+  },
+  "aNitrogenAtmosphere": {
+    "file": "aNitrogenAtmosphere.npz",
+    "n_grains": 30500,
+    "hash": "21d0e303280b86aa",
+    "elapsed_ms": 12.45,
+    "status": "baked"
+  },
+  "aRockyPlanet": {
+    "file": "aRockyPlanet.npz",
+    "n_grains": 29732,
+    "hash": "7fec1d0a396b881d",
+    "elapsed_ms": 8.93,
+    "status": "baked"
+  },
+  "aSaltOcean": {
+    "file": "aSaltOcean.npz",
+    "n_grains": 34000,
+    "hash": "6547391e64586d8e",
+    "elapsed_ms": 12.43,
+    "status": "baked"
+  },
+  "aSteppeBiomes": {
+    "file": "aSteppeBiomes.npz",
+    "n_grains": 34000,
+    "hash": "ef1ffe21df79a532",
+    "elapsed_ms": 10.5,
+    "status": "baked"
+  },
+  "aTerraceMine": {
+    "file": "aTerraceMine.npz",
+    "n_grains": 36000,
+    "hash": "d2365c687f6efbd3",
+    "elapsed_ms": 7.09,
+    "status": "baked"
+  },
+  "aTerrain": {
+    "file": "aTerrain.npz",
+    "n_grains": 262144,
+    "hash": "6bed1bff5d59a363",
+    "elapsed_ms": 19941.81,
+    "status": "baked"
+  },
+  "aYellowStar": {
+    "file": "aYellowStar.npz",
+    "n_grains": 31000,
+    "hash": "41c9d7c7474ff706",
+    "elapsed_ms": 146.96,
+    "status": "baked"
+  },
+  "theAnkle": {
+    "file": "theAnkle.npz",
+    "n_grains": 1541,
+    "hash": "06ac8821aa120057",
+    "elapsed_ms": 1.67,
+    "status": "baked"
+  },
+  "theAtmosphere": {
+    "file": "theAtmosphere.npz",
+    "n_grains": 12000,
+    "hash": "cce64d2f39cb5895",
+    "elapsed_ms": 6.02,
+    "status": "baked"
+  },
+  "theBalance": {
+    "file": "theBalance.npz",
+    "n_grains": 1826,
+    "hash": "f63f11175ecfbac5",
+    "elapsed_ms": 1.59,
+    "status": "baked"
+  },
+  "theBiomes": {
+    "file": "theBiomes.npz",
+    "n_grains": 12000,
+    "hash": "809ad4215934374c",
+    "elapsed_ms": 17.81,
+    "status": "baked"
+  },
+  "theBreath": {
+    "file": "theBreath.npz",
+    "n_grains": 4200,
+    "hash": "02dd567a9b1c9bbf",
+    "elapsed_ms": 1.97,
+    "status": "baked"
+  },
+  "theClock": {
+    "file": "theClock.npz",
+    "n_grains": 18200,
+    "hash": "3e39e04c0cd78887",
+    "elapsed_ms": 3.25,
+    "status": "baked"
+  },
+  "theCloud": {
+    "file": "theCloud.npz",
+    "n_grains": 16000,
+    "hash": "2b063dbcc0fd37d8",
+    "elapsed_ms": 2.86,
+    "status": "baked"
+  },
+  "theCooling": {
+    "file": "theCooling.npz",
+    "n_grains": 14000,
+    "hash": "201930fb636eac34",
+    "elapsed_ms": 19.75,
+    "status": "baked"
+  },
+  "theDensityClock": {
+    "file": "theDensityClock.npz",
+    "n_grains": 22000,
+    "hash": "3f651ea79ae14313",
+    "elapsed_ms": 4.09,
+    "status": "baked"
+  },
+  "theEmptying": {
+    "file": "theEmptying.npz",
+    "n_grains": 12000,
+    "hash": "ef16329a57d7d9f3",
+    "elapsed_ms": 1.98,
+    "status": "baked"
+  },
+  "theEye": {
+    "file": "theEye.npz",
+    "n_grains": 3294,
+    "hash": "5a6df6b64d8e8194",
+    "elapsed_ms": 8.35,
+    "status": "baked"
+  },
+  "theGalaxy": {
+    "file": "theGalaxy.npz",
+    "n_grains": 35000,
+    "hash": "397ecf672b14f0f2",
+    "elapsed_ms": 126.51,
+    "status": "baked"
+  },
+  "theGrip": {
+    "file": "theGrip.npz",
+    "n_grains": 4280,
+    "hash": "88d1379632486c47",
+    "elapsed_ms": 4.24,
+    "status": "baked"
+  },
+  "theGround": {
+    "file": "theGround.npz",
+    "n_grains": 26000,
+    "hash": "8195c13371ca77f6",
+    "elapsed_ms": 11.89,
+    "status": "baked"
+  },
+  "theHand": {
+    "file": "theHand.npz",
+    "n_grains": 2956,
+    "hash": "a725e2d537a97e24",
+    "elapsed_ms": 10.91,
+    "status": "baked"
+  },
+  "theHorizon": {
+    "file": "theHorizon.npz",
+    "n_grains": 9500,
+    "hash": "f0a6bbfd48793bbf",
+    "elapsed_ms": 1.76,
+    "status": "baked"
+  },
+  "theHuman": {
+    "file": "theHuman.npz",
+    "n_grains": 3120,
+    "hash": "bfdff80bd0de6980",
+    "elapsed_ms": 2.12,
+    "status": "baked"
+  },
+  "theHumanClock": {
+    "file": "theHumanClock.npz",
+    "n_grains": 17000,
+    "hash": "9dfa8bab276775d0",
+    "elapsed_ms": 2.35,
+    "status": "baked"
+  },
+  "theInterior": {
+    "file": "theInterior.npz",
+    "n_grains": 6996,
+    "hash": "765facae75cbd07c",
+    "elapsed_ms": 3.53,
+    "status": "baked"
+  },
+  "theLoad": {
+    "file": "theLoad.npz",
+    "n_grains": 4414,
+    "hash": "71e633c2120b7769",
+    "elapsed_ms": 2.69,
+    "status": "baked"
+  },
+  "theMining": {
+    "file": "theMining.npz",
+    "n_grains": 9000,
+    "hash": "bb605f475bc7d109",
+    "elapsed_ms": 1.87,
+    "status": "baked"
+  },
+  "theOcean": {
+    "file": "theOcean.npz",
+    "n_grains": 12000,
+    "hash": "5dcd594026f37c39",
+    "elapsed_ms": 5.18,
+    "status": "baked"
+  },
+  "thePlanets": {
+    "file": "thePlanets.npz",
+    "n_grains": 24336,
+    "hash": "e00ad1d2c0ff0929",
+    "elapsed_ms": 6.41,
+    "status": "baked"
+  },
+  "theRockyPlanet": {
+    "file": "theRockyPlanet.npz",
+    "n_grains": 41974,
+    "hash": "9934f26b48099fac",
+    "elapsed_ms": 15.63,
+    "status": "baked"
+  },
+  "theSkin": {
+    "file": "theSkin.npz",
+    "n_grains": 1040,
+    "hash": "7410dcba8ecef31a",
+    "elapsed_ms": 2.7,
+    "status": "baked"
+  },
+  "theSolarSystem": {
+    "file": "theSolarSystem.npz",
+    "n_grains": 20000,
+    "hash": "2ce9da13d357ca3a",
+    "elapsed_ms": 4.9,
+    "status": "baked"
+  },
+  "theStance": {
+    "file": "theStance.npz",
+    "n_grains": 1726,
+    "hash": "2fa6601c6b3e6ade",
+    "elapsed_ms": 1.28,
+    "status": "baked"
+  },
+  "theStar": {
+    "file": "theStar.npz",
+    "n_grains": 20000,
+    "hash": "d50c745083c7c7d7",
+    "elapsed_ms": 3.46,
+    "status": "baked"
+  },
+  "theSweep": {
+    "file": "theSweep.npz",
+    "n_grains": 5200,
+    "hash": "a7936d3f4516f831",
+    "elapsed_ms": 1.66,
+    "status": "baked"
+  },
+  "theTerrain": {
+    "file": "theTerrain.npz",
+    "n_grains": 55000,
+    "hash": "0b0e907e908f92f8",
+    "elapsed_ms": 127.98,
+    "status": "baked"
+  },
+  "theThrust": {
+    "file": "theThrust.npz",
+    "n_grains": 2501,
+    "hash": "4d4135eb77549e88",
+    "elapsed_ms": 1.9,
+    "status": "baked"
+  },
+  "theZero": {
+    "file": "theZero.npz",
+    "n_grains": 4000,
+    "hash": "2d9aaa456e836f3c",
+    "elapsed_ms": 0.69,
+    "status": "baked"
+  },
+  "_meta": {
+    "total_terms": 42,
+    "baked": 42,
+    "skipped": 0,
+    "failed": 0,
+    "total_elapsed_ms": 20620.22,
+    "baked_at_utc": "2026-08-04T20:25:32Z"
+  }
+}
