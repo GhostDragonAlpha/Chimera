@@ -63,6 +63,10 @@ SCENES = {
     # THE WEB: the same garden (same seed, same place) with its animals arrived -- the
     # community assembling: plants first, then the grazers and the birds.
     "theEcosystem":   {"kind": "ecosystem", "radius": 170.0, "cam": (0.0, -240.0, 28.0)},
+    # THE RECURSION: a tree IS the terrarium's L-system, so the scene is grown from the real
+    # bone skeleton (core/terrarium), not drawn as blobs. One tree, alone -- theGarden's stand
+    # is the many; this term is the ONE.
+    "theTree":        {"kind": "tree", "height": 60.0, "radius": 120.0, "cam": (0.0, -120.0, 18.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -492,6 +496,70 @@ def _ecosystem_buffers(spec: dict, term: str):
     return end, begin
 
 
+def _tree_buffers(spec: dict, term: str):
+    """theTree: grown from the REAL substrate -- the terrarium's L-system genome -> bone
+    skeleton (core/terrarium), oriented and scaled by the same _tree_world the scene3d demo
+    uses. Bones become brown splat segments; twig tips (depth >= 5) carry green leaf blobs.
+    begin = the same skeleton at 0.2 scale (a sapling), end = grown. ONE tree, alone."""
+    import numpy as np
+    chimera = _REPO / "Chimera"
+    if str(chimera) not in sys.path:
+        sys.path.insert(0, str(chimera))
+    from core.terrarium import Genome, grow
+    import importlib
+    import core.scene3d
+    importlib.reload(core.scene3d)          # the long-lived server caches it; disk is the truth
+    _tree_world = core.scene3d._tree_world
+    rng = np.random.default_rng(_seed(term))
+    H = float(spec.get("height", 60.0))
+    R = float(spec.get("radius", 60.0))
+    g = Genome(depth=7, angle=32.0, length=1.0, decay=0.86, radius=0.13, radius_decay=0.74)
+    bones = grow(g, _seed(term) & 0xFF)
+    tw = _tree_world(bones, H)
+
+    # ground: a patchy green disc, the same meadow theGarden stands on
+    n_g = 3500
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.08 * gx + 1.3) * np.sin(0.09 * gy + 0.4)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.0
+    gnd[:, CR] = 0.07 + 0.05 * patch
+    gnd[:, CG] = 0.28 + 0.14 * patch
+    gnd[:, CB] = 0.06 + 0.04 * patch
+
+    def grown(scale):
+        parts = []
+        for b in bones:                                  # the skeleton, as splat segments
+            p0, p1 = np.array(tw(b.p0)) * scale, np.array(tw(b.p1)) * scale
+            seg = float(np.linalg.norm(p1 - p0))
+            n_b = max(2, int(seg / 1.8))
+            t = np.linspace(0.0, 1.0, n_b)[:, None]
+            pts = p0[None, :] * (1 - t) + p1[None, :] * t
+            shade = min(b.depth, 6)
+            bb = np.zeros((n_b, NCOLS), dtype=np.float32)
+            bb[:, PX:PZ + 1] = pts
+            bb[:, TYPE] = 3.0; bb[:, ALPHA] = 0.75; bb[:, SIZE] = max(1.4, 3.2 * scale)
+            bb[:, CR] = (90 - shade * 8) / 255.0
+            bb[:, CG] = (60 - shade * 5) / 255.0
+            bb[:, CB] = 34 / 255.0
+            parts.append(bb)
+        tips = [b for b in bones if b.depth >= 5]
+        for b in tips:                                   # the crown: a leaf blob per twig tip
+            p1 = np.array(tw(b.p1)) * scale
+            rad = float(rng.uniform(3.5, 6.5)) * scale
+            if rad < 0.8:
+                continue
+            gg = float(rng.uniform(0.34, 0.52))
+            parts.append(_dots(p1, rad, 42, (0.10, gg, 0.08), rng))
+        return np.concatenate([gnd] + parts, axis=0)
+
+    return grown(1.0), grown(0.2)
+
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -512,7 +580,7 @@ def _system_buffers(spec: dict, term: str):
     return end, begin
 
 
-def project_movie(term: str, out_dir) -> dict | None:
+def _project_movie_impl(term: str, out_dir) -> dict | None:
     """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene.
 
     A term with a COMPOSITION renders from its PROVEN children (appearance from decomposition) -- that is
@@ -579,7 +647,7 @@ def project_movie(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -827,7 +895,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
@@ -945,3 +1013,18 @@ if __name__ == "__main__":
     for k, v in (m or {}).items():
         arr = np.asarray(Image.open(v))
         print(f"  {k}: {v}  max_rgb={int(arr.max())}")
+
+
+def project_movie(term: str, out_dir) -> dict | None:
+    """The render the engine calls. Rendering is physics: when it fails inside the long-lived
+    MCP server its stdout is invisible, so the traceback goes to a file an agent can read."""
+    try:
+        return _project_movie_impl(term, out_dir)
+    except Exception:
+        import traceback
+        try:
+            (_REPO / ".tmp").mkdir(exist_ok=True)
+            (_REPO / ".tmp" / "splat_error.log").write_text(traceback.format_exc())
+        except Exception:
+            pass
+        raise

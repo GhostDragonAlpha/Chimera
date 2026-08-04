@@ -69,6 +69,9 @@ PHYSICS_READING = {
     "theEcosystem": "a green grassy field with trees AND several grazing animals -- deer-like "
                     "herbivores standing among the trees, a living wildlife scene with creatures "
                     "in it, NOT empty land and NOT plants alone",
+    "theTree": "a single tree with a brown branching trunk and a spreading green leafy crown "
+               "standing on a patch of green ground -- ONE tree alone, NOT a forest, NOT "
+               "several trees",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "
