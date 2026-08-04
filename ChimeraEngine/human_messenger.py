@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theDig": "a wide dark earthy ground with a narrow trench cut into it and "
+              "a mound of pale freshly-dug grains heaped beside the opening, a "
+              "few loose grains scattered nearby -- the ground opened, its "
+              "matter piled beside the hole",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

@@ -97,6 +97,7 @@ SCENES = {
     "theStanding":     {"kind": "standing", "radius": 120.0, "cam": (0.0, -85.0, 22.0)},
     "theBlackHole":    {"kind": "black_hole", "radius": 140.0, "cam": (0.0, -110.0, 0.0)},
     "theVerbs":        {"kind": "verbs", "radius": 130.0, "cam": (0.0, -95.0, 30.0)},
+    "theDig":          {"kind": "dig", "radius": 130.0, "cam": (6.0, -90.0, 45.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -557,6 +558,47 @@ def _skeleton_splats(bones, tw, scale, rng, offset=(0.0, 0.0, 0.0),
         gg = float(rng.uniform(0.34, 0.52))
         parts.append(_dots(p1, rad, leaf_n, (0.10, gg, 0.08), rng))
     return parts
+
+
+def _tree_buffers(spec: dict, term: str):
+    """theTree: one tree grown from the REAL substrate -- the terrarium's L-system genome
+    -> bone skeleton (core/terrarium), drawn through the shared _skeleton_splats (one
+    implementation: theTree is one tree alone; theTreeForm is three genomes side by
+    side). begin = the same skeleton at 0.2 scale (a sapling), end = grown."""
+    import numpy as np
+    chimera = _REPO / "Chimera"
+    if str(chimera) not in sys.path:
+        sys.path.insert(0, str(chimera))
+    from core.terrarium import Genome, grow
+    import importlib
+    import core.scene3d
+    importlib.reload(core.scene3d)          # the long-lived server caches it; disk is the truth
+    _tree_world = core.scene3d._tree_world
+    rng = np.random.default_rng(_seed(term))
+    H = float(spec.get("height", 60.0))
+    R = float(spec.get("radius", 60.0))
+    g = Genome(depth=7, angle=32.0, length=1.0, decay=0.86, radius=0.13, radius_decay=0.74)
+    bones = grow(g, _seed(term) & 0xFF)
+    tw = _tree_world(bones, H)
+
+    # ground: a patchy green disc, the same meadow theGarden stands on
+    n_g = 3500
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = R * np.sqrt(rng.random(n_g))
+    gx, gy = rr * np.cos(th), rr * np.sin(th)
+    patch = 0.5 + 0.5 * np.sin(0.08 * gx + 1.3) * np.sin(0.09 * gy + 0.4)
+    gnd = np.zeros((n_g, NCOLS), dtype=np.float32)
+    gnd[:, PX], gnd[:, PY], gnd[:, PZ] = gx, gy, 0.0
+    gnd[:, NX:NZ + 1] = (0.0, 0.0, 1.0)
+    gnd[:, TYPE] = 3.0; gnd[:, ALPHA] = 0.55; gnd[:, SIZE] = 3.0
+    gnd[:, CR] = 0.07 + 0.05 * patch
+    gnd[:, CG] = 0.28 + 0.14 * patch
+    gnd[:, CB] = 0.06 + 0.04 * patch
+
+    def grown(scale):
+        return np.concatenate([gnd] + _skeleton_splats(bones, tw, scale, rng), axis=0)
+
+    return grown(1.0), grown(0.2)
 
 
 def _treeform_buffers(spec: dict, term: str):
@@ -2404,6 +2446,74 @@ def _verbs_buffers(spec: dict, term: str):
                                                  alpha=0.13, size=1.8)], axis=0)
     return settled, settled.copy()
 
+def _dig_buffers(spec: dict, term: str):
+    """theDig: into the ground, grain physics. The claim made legible in ONE
+    settled frame: a dark soil bed with a wedge TRENCH opened in it -- the
+    walls slumped at the angle loose grain holds -- and the displaced earth
+    heaped BESIDE the opening as a bright fresh pile, a few loose grains
+    scattered on its slope. Matter is neither created nor destroyed in the
+    scene: the pile is the trench. One palette family, both frames at full
+    strength (the theVerbs ledger: a second colour becomes a second object;
+    a structure in one frame only is a structure the eye never sees)."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    soil_c = (0.34, 0.28, 0.21)
+    fresh_c = (0.50, 0.40, 0.28)
+
+    # the soil bed: a slab, WITHHELD from the trench wedge so the opening is
+    # real emptiness, not a painted line. Trench runs along Y at x ~ +6,
+    # wider at the surface (z high), pinching to a point at depth -- the
+    # wedge a shovel leaves.
+    n_g = 1600
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 62.0 * np.sqrt(rng.random(n_g))
+    gx = rr * np.cos(th)
+    gy = rr * np.sin(th)
+    gz = rng.normal(0.0, 0.8, n_g) - 0.5
+    half_w = np.clip((gz + 6.0) * 0.55, 0.0, None)      # wedge: wider nearer surface
+    in_trench = (np.abs(gx - 6.0) < half_w) & (np.abs(gy) < 26.0)
+    keep = ~in_trench
+    soil = np.zeros((keep.sum(), NCOLS), dtype=np.float32)
+    soil[:, PX], soil[:, PY], soil[:, PZ] = gx[keep], gy[keep], gz[keep]
+    soil[:, TYPE] = 3.0; soil[:, ALPHA] = 0.30; soil[:, SIZE] = 2.2
+    soil[:, CR], soil[:, CG], soil[:, CB] = soil_c
+
+    # the trench floor: darker, deeper -- the bottom of the cut
+    n_f = 120
+    tf = np.linspace(-24.0, 24.0, n_f)
+    floor = np.zeros((n_f, NCOLS), dtype=np.float32)
+    floor[:, PX] = 6.0 + rng.normal(0.0, 0.8, n_f)
+    floor[:, PY] = tf
+    floor[:, PZ] = -6.0 + rng.normal(0.0, 0.4, n_f)
+    floor[:, TYPE] = 3.0; floor[:, ALPHA] = 0.35; floor[:, SIZE] = 2.0
+    floor[:, CR], floor[:, CG], floor[:, CB] = 0.20, 0.16, 0.12
+
+    # the displaced pile: a cone of fresh grain beside the cut -- radius
+    # shrinking with height, the angle of repose written as its silhouette
+    n_p = 700
+    hp = rng.random(n_p) * 9.0
+    rp = (1.0 - hp / 9.0) * 10.0
+    ap = rng.random(n_p) * 2.0 * np.pi
+    pile = np.zeros((n_p, NCOLS), dtype=np.float32)
+    pile[:, PX] = 24.0 + rp * np.cos(ap) * np.sqrt(rng.random(n_p))
+    pile[:, PY] = 2.0 + rp * np.sin(ap) * np.sqrt(rng.random(n_p))
+    pile[:, PZ] = hp * 0.9 + rng.normal(0.0, 0.3, n_p)
+    pile[:, TYPE] = 3.0; pile[:, ALPHA] = 0.55; pile[:, SIZE] = 1.8
+    pile[:, CR], pile[:, CG], pile[:, CB] = fresh_c
+
+    # loose grains scattered on the slope and around the cut's lip
+    n_l = 90
+    loose = np.zeros((n_l, NCOLS), dtype=np.float32)
+    loose[:, PX] = rng.uniform(8.0, 36.0, n_l)
+    loose[:, PY] = rng.uniform(-18.0, 20.0, n_l)
+    loose[:, PZ] = rng.uniform(0.0, 2.5, n_l)
+    loose[:, TYPE] = 3.0; loose[:, ALPHA] = 0.6; loose[:, SIZE] = 1.2
+    loose[:, CR], loose[:, CG], loose[:, CB] = fresh_c
+
+    settled = np.concatenate([soil, floor, pile, loose], axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2491,7 +2601,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2739,7 +2849,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
