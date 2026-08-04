@@ -201,6 +201,97 @@ stop supporting, and the interlock would cause the fall it exists to prevent.
 Early signal only, and it is not a result: the interlock reached −3.797 in **4 turns** where the
 entrained-only version needed 19 to reach −3.674. It was never carried to a judgment.
 
+---
+
+# THE FOOT MEMBRANE LANDED, AND IT REGRESSED THE STAND PORT (2026-08-04, later)
+
+**A membrane closed its own falsifier and broke a neighbour's.** This is the composition failure
+the ladder exists to catch, and neither agent could see it alone: the foot/hip membrane was built
+and validated against its own bars, and the regression is only visible from the port above it.
+
+## What the ligaments fixed — exactly what they were derived to fix
+
+The world went from **20 ligaments to 32** (subtalar 333/243, hip_rotation 59/239, hip_adduction
+694/444 N·m/rad, both sides). Against F3's offender list before and after:
+
+| joint | before | after |
+|---|---|---|
+| subtalar_angle_r | 1.16, over 60.8% of phase 1 | **gone from the list** |
+| hip_rotation_l | 1.02, over 81.6% | **gone** |
+| hip_adduction_l | 1.05, over 91.6% | **gone** |
+
+The derivation did its job. Nothing below is an argument against it.
+
+## What it cost, measured
+
+**`f3_stand` regressed from PASS to FAIL.** Pelvis is untouched (101.9% of target) — the failure
+is the CoM term, which had been *fixed* that morning:
+
+| | 20-ligament world | 32-ligament world |
+|---|---:|---:|
+| CoM excursion, peak | **0.80** | **1.65** |
+| CoM outside the BoS box | **0.0%** of phase 1 | **16.8%** (t=1.70–2.52 s) |
+| F3, the slice's letter | **PASS** | **FAIL** |
+
+And the cause underneath it — survival, measured on the same θ at four horizons:
+
+| training horizon | survived | pelvis MIN | score |
+|---|---:|---:|---:|
+| 5.0 s | 4.98 s | 101.9% | **+0.003** |
+| 6.0 s | 5.98 s | 85.0% | +0.002 |
+| 8.0 s | **6.24 s** | 46.2% | **−3.438** |
+| 12.0 s | 6.24 s | 46.2% | −3.958 |
+
+**The body now falls at 6.24 s.** It used to hold past 8. So the 8 s training horizon — correct
+by the "train past what you judge" rule — puts *every* candidate past the fall, the −3.0 penalty
+saturates, and the search can discriminate only on fall-time, never on posture. Two retrains
+(24 and 20 turns) found nothing better than the incumbent. The walk training over the same
+foundation plateaued at −3.673 for the same reason: **walking is composed over standing, and
+standing regressed.**
+
+## TWO CLAIMS I MADE AND THE MEASUREMENT KILLED — recorded, not quietly dropped
+
+1. **"Grading the policy on the mtp is what blinded the reward."** The mtp is pinned at 1.11
+   permanently and its model stop contradicts the published envelope, so excluding it from the
+   graded set looked like the principled fix. **Measured: worst joint 1.233 with the mtp and
+   1.233 without it** — the actual worst joint is the LUMBAR. The edit would have changed
+   nothing and I would have believed it did.
+2. **"The reward has gone dark."** Overstated. `stand_reward` is evaluated per sample, so
+   `r_joints` is ~1.8e-2 at jf≈1.0, attenuated but not zero. The score is dominated by the
+   **fell penalty**, not by a saturated joints term. The distinction matters: the first story
+   says fix the reward, the second says the body genuinely cannot stand as long as it used to.
+
+## THE SEARCH DEFECT THIS EXPOSED, and it is fixed
+
+`train_stand`/`train_walk` warm-start by setting `mu` to a known-good θ and then scoring only
+`rng.normal(mu, sd)` samples — **the mean itself was never evaluated.** At 870 dimensions every
+sample is far from mu, so a warm start could end strictly WORSE than not training at all. It
+did: seeded with the θ that stands at 101.9%, a 24-turn warm start opened at 48% and never
+recovered, and it overwrote the good θ on disk.
+
+`cand[0] = mu` now carries the incumbent into every generation. This is not a tuning knob — it
+is a correctness property of the search (*the best known policy cannot be lost by looking for a
+better one*), and it costs one evaluation per turn. With it, the 20-turn retrain returned the
+incumbent unchanged instead of a ruin.
+
+## A STALE COMMENT THAT WAS A WRONG NUMBER
+
+`CTRL_EVERY = 20  # 40 ms at the model's 0.002 s timestep` in both `f3_stand.py` and
+`train_walk.py`. **Measured `m.opt.timestep` = 0.001** — the control cadence is 50 Hz, not the
+25 Hz every docstring asserted. Nothing computed from it was wrong (every consumer multiplies by
+`m.opt.timestep` rather than a literal), which is exactly why it survived: a wrong number under a
+formula that still reads plausibly is invisible until someone prints it.
+
+## WHAT THIS MEANS FOR THE ORDER OF WORK
+
+The stand port must be re-established in the 32-ligament world before the walk means anything —
+walking is composed over standing by construction, so a stale foundation makes every walk number
+unattributable. **And the retrain cannot simply be re-run harder:** 44 turns across two attempts
+found nothing better than a θ that falls at 6.24 s. Either the postural policy needs a search
+that can see past the fell penalty, or the new tissue genuinely made standing harder and the
+stand port's own derivation needs revisiting. **That is the next question, and it is not
+answered here.**
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`

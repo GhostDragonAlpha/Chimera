@@ -40,7 +40,12 @@ from chimera_gait import _periodicity                                    # noqa:
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 WALK_THETA = OUTDIR / "walk_theta.npy"
-CTRL_EVERY = 20                     # 40 ms at the model's 0.002 s timestep -- the parser's cadence
+# 20 ms: myobody's timestep is 0.001 s, MEASURED (`m.opt.timestep`), not the 0.002 this comment
+# claimed until 2026-08-04 -- so the parser's cadence is 50 Hz, not the 25 Hz every docstring in
+# this pair of files asserted. Nothing computed from it was wrong (every consumer multiplies by
+# `m.opt.timestep` rather than a literal), which is exactly why it survived: a wrong number under
+# a formula that still reads plausibly is invisible until someone prints the timestep.
+CTRL_EVERY = 20
 
 
 def foot_contact(m, d, mujoco):
@@ -214,6 +219,8 @@ def main() -> int:
           f"{'dutyR':>7}{'dutyL':>7}{'held':>7}  verdict")
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, N_FREE))
+        cand[0] = mu            # THE INCUMBENT IS ALWAYS A CANDIDATE -- see train_stand.py, where
+                                # its absence lost a policy that stood at 101.9% of target.
         cand[:, :nj] = np.clip(cand[:, :nj], 0.0, 1.0)          # an amplitude is an activation
         scores = np.array([evaluate(m, d, mujoco, theta_stand, c, groups, P, secs)[0]
                            for c in cand])

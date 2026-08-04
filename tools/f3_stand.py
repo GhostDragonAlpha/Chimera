@@ -48,7 +48,8 @@ from parser import Parser, default_registry
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 THETA = OUTDIR / "stand_theta.npy"
-CTRL_EVERY = 20                 # 40 ms at the model's 0.002 s timestep -- evaluate()'s cadence
+CTRL_EVERY = 20                 # 20 ms: the timestep is 0.001 s MEASURED, not the 0.002 this
+                                # comment claimed until 2026-08-04. evaluate()'s cadence, 50 Hz.
 PHASE1_SECS = 5.0               # the slice's bar: five full seconds upright
 PHASE2_MAX = 3.0                # release; the body must slump well inside this
 

@@ -240,6 +240,14 @@ def main() -> int:
     best_theta = mu.copy()
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
+        # THE INCUMBENT IS ALWAYS A CANDIDATE. Without this line CEM scores only PERTURBED
+        # samples and never the mean itself, so a warm start can end strictly WORSE than not
+        # training at all -- and did, MEASURED 2026-08-04: seeded with the theta that stands at
+        # 101.9% of target, turn 0 of a 24-turn warm start opened at 48% and never recovered,
+        # because at 870 dimensions every sample of `normal(mu, 0.075)` is a long way from mu.
+        # This is not a tuning knob; it is a correctness property of the search (the best known
+        # policy cannot be lost by looking for a better one), and it costs one evaluation.
+        cand[0] = mu
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
         scores = np.array([evaluate(m, d, mujoco, c, P, secs)[0] for c in cand])
         order = np.argsort(-scores)
