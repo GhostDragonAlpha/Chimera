@@ -159,9 +159,26 @@
    "base_source": "measured foot polygon"
   }
  ],
- "trained_seeds": 3,
+ "headline_survival_s": 6.9,
+ "trained_seed_ids": [
+  0,
+  1,
+  2
+ ],
+ "held_out_seed_ids": [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
  "survival_median_heldout_s": 6.9,
  "survival_median_trained_s": 7.98,
+ "train_test_gap_s": 1.08,
+ "train_test_gap_frac": 0.1565217391304348,
+ "overtainted": false,
  "pelvis_trace_t": [
   0.0,
   0.02,

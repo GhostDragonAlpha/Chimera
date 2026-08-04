@@ -119,6 +119,10 @@ def main() -> int:
           f"({theta.size} numbers = {theta.size // nu} blocks x {nu})")
     print(f"  world g {g:.4f} m/s2, target pelvis {tgt:.4f} m, fall bar {0.5*tgt:.4f} m (50%)")
     print(f"  nudge {NUDGE:g} on every qpos for seeds 1..{nseeds-1}; seed 0 is UNPERTURBED")
+    _hos_dbg = a[a.index("--held-out-seeds") + 1] if "--held-out-seeds" in a else \
+        ("(from --trained-seeds)" if "--trained-seeds" in a else "0,1,2 (DEFAULT, declared)")
+    print(f"  training seeds assumed: {_hos_dbg} -- the headline excludes them. "
+          f"Say --held-out-seeds to correct it.")
     print("=" * 104)
     print(f"{'seed':>5}{'survived':>11}{'z_min':>9}{'z_end':>9}{'%tgt_min':>10}"
           f"{'fore_pk':>9}{'lat_pk':>8}{'label':>11}{'conf':>7}  t_fall")
@@ -150,28 +154,60 @@ def main() -> int:
     labels = {}
     for r in rows:
         labels[r["label"]] = labels.get(r["label"], 0) + 1
-    print(f"  SURVIVAL   min {surv.min():.2f} s   median {float(np.median(surv)):.2f} s   "
-          f"max {surv.max():.2f} s   SPREAD {spread:.3f} s")
-    # ── THE TRAIN/TEST SPLIT, and the judge should be the one to say it ────────────────────
+    # ── THE TRAIN/TEST SPLIT, ON BY DEFAULT, AND THE HELD-OUT NUMBER IS THE HEADLINE ───────
     # `train_stand --seeds N` scores the WORST of seeds 0..N-1, and this judge measures seeds
     # 0..nseeds-1. The overlap is not a bug -- seed 0 is the unperturbed start and belongs in
     # any judgment -- but a median taken across it mixes seeds the policy was SELECTED on with
-    # seeds it has never seen, and those answer different questions. Declared by the caller,
-    # never inferred: a judge that guessed how many seeds a trainer used would be inventing the
-    # very fact that makes its number mean something (rule 20).
-    trained = int(a[a.index("--trained-seeds") + 1]) if "--trained-seeds" in a else 0
-    if 0 < trained < nseeds:
-        held = surv[trained:]
-        print(f"  HELD OUT   seeds {trained}..{nseeds-1} were NOT scored during training: "
-              f"median {float(np.median(held)):.2f} s   min {held.min():.2f} s   "
-              f"max {held.max():.2f} s")
-        print(f"             seeds 0..{trained-1} (trained on): "
-              f"median {float(np.median(surv[:trained])):.2f} s")
-        print(f"             -> the gap is {float(np.median(surv[:trained]) - np.median(held)):+.2f} s. "
-              f"A large positive gap is a policy fitted to its own starts.")
-    elif trained >= nseeds:
-        print(f"  HELD OUT   NONE -- every seed judged here was scored during training "
-              f"({trained} >= {nseeds}). This number cannot distinguish a policy from a fit.")
+    # seeds it has never seen, and those answer different questions (rule 19). MEASURED on the
+    # incumbent: all-10 median 7.01 s, trained seeds 7.70 s, held-out seeds 6.82 s -- so the
+    # all-10 number that replaced the 9.08 s single rollout is ITSELF inflated ~13%.
+    #
+    # DEFAULT "0,1,2" because that is what every arm in this lane trained on. It is a DECLARED
+    # default, not an inferred fact: a judge that read the trainer's seed count out of the
+    # theta would be inventing the very thing that makes its number mean something (rule 20),
+    # so when the default is wrong for a checkpoint the caller says so and the header prints
+    # what was assumed either way. `--held-out-seeds none` turns the split off entirely.
+    hos = a[a.index("--held-out-seeds") + 1] if "--held-out-seeds" in a else (
+        ",".join(str(i) for i in range(int(a[a.index("--trained-seeds") + 1])))
+        if "--trained-seeds" in a else "0,1,2")     # the retired spelling, still honoured
+    if hos.strip().lower() in ("none", "off", ""):
+        trained_ids = []
+    else:
+        trained_ids = sorted({int(v) for v in hos.split(",") if v.strip() != ""})
+    held_ids = [i for i in range(nseeds) if i not in trained_ids]
+    seen_ids = [i for i in range(nseeds) if i in trained_ids]
+    med_all = float(np.median(surv))
+    if held_ids and seen_ids:
+        held, seen = surv[held_ids], surv[seen_ids]
+        med_held, med_seen = float(np.median(held)), float(np.median(seen))
+        gap = med_seen - med_held
+        # OVERTAINTED: the gap is a large fraction of the number it is contaminating. 0.30 is
+        # the operator's bar, stated as theirs and not derived here.
+        tainted = med_held > 0 and gap > 0.30 * med_held
+        print(f"  SURVIVAL   HELD-OUT MEDIAN {med_held:.2f} s   <- THE HEADLINE "
+              f"(seeds {','.join(map(str, held_ids))}, never scored during training)")
+        print(f"             held-out min {held.min():.2f} s   max {held.max():.2f} s   "
+              f"spread {float(held.max()-held.min()):.3f} s")
+        print(f"             trained-on seeds {','.join(map(str, seen_ids))}: "
+              f"median {med_seen:.2f} s   ->  TRAIN/TEST GAP {gap:+.2f} s "
+              f"({100*gap/max(med_held,1e-9):+.0f}% of the held-out median)")
+        print(f"             all {nseeds} seeds together: median {med_all:.2f} s "
+              f"-- reported for continuity with older logs, NOT the headline")
+        if tainted:
+            print(f"  ** OVERTAINTED ** the train/test gap is {100*gap/med_held:.0f}% of the "
+                  f"held-out median (bar 30%).")
+            print(f"     This policy is fitted to the {len(seen_ids)} starts it was selected on. "
+                  f"Rank it on {med_held:.2f} s, never on {med_all:.2f} s.")
+    else:
+        med_held, med_seen, gap, tainted = med_all, None, None, False
+        print(f"  SURVIVAL   min {surv.min():.2f} s   median {med_all:.2f} s   "
+              f"max {surv.max():.2f} s   SPREAD {spread:.3f} s")
+        print(f"             NO SPLIT: "
+              + ("--held-out-seeds none was passed, so every seed counts toward the headline "
+                 "and it cannot distinguish a policy from a fit."
+                 if not trained_ids else
+                 f"the declared training seeds {sorted(trained_ids)} cover every seed judged "
+                 f"here. Nothing is held out."))
     print(f"  FELL       {n_fell}/{nseeds} within {secs:.0f} s      labels: "
           + ", ".join(f"{k} x{v}" for k, v in sorted(labels.items())))
     zmins = np.array([r["pct_target_min"] for r in rows])
@@ -199,11 +235,14 @@ def main() -> int:
         survival_min_s=float(surv.min()), survival_median_s=float(np.median(surv)),
         survival_max_s=float(surv.max()), survival_spread_s=spread,
         deterministic=bool(determ), n_fell=n_fell, labels=labels, rows=rows,
-        trained_seeds=trained,
-        survival_median_heldout_s=(float(np.median(surv[trained:]))
-                                   if 0 < trained < nseeds else None),
-        survival_median_trained_s=(float(np.median(surv[:trained]))
-                                   if 0 < trained < nseeds else None),
+        # THE HEADLINE FIELD IS THE HELD-OUT ONE. `survival_median_s` above is kept for
+        # continuity with every log already written; anything ranking policies reads this.
+        headline_survival_s=med_held,
+        trained_seed_ids=trained_ids, held_out_seed_ids=held_ids,
+        survival_median_heldout_s=(med_held if seen_ids and held_ids else None),
+        survival_median_trained_s=med_seen, train_test_gap_s=gap,
+        train_test_gap_frac=(gap / med_held if (gap is not None and med_held > 0) else None),
+        overtainted=bool(tainted),
         pelvis_trace_t=traces[0]["t"], pelvis_traces=[t["z"] for t in traces]), indent=1),
         encoding="utf8")
     print(f"  JSON: {out}")
