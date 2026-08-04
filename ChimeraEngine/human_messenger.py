@@ -99,6 +99,10 @@ PHYSICS_READING = {
                 "with a few larger circular objects -- distant planets -- suspended among "
                 "the stars: deep empty space, the dark medium itself, NO ground or "
                 "horizon anywhere",
+    "theSeed": "small dots connected by lines to larger circular nodes, with one large "
+               "bright node at the center of the network against a dark background -- a "
+               "world unfolded from a single origin, every colored node a world attached "
+               "to the one central seed",
     "theDensityClock": "a circular pattern of blue particles against a black background, "
                        "darker with a hint of red at the center -- a field of clocks "
                        "around a mass: time runs fast far out and slow near the middle, "

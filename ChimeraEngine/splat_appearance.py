@@ -81,6 +81,7 @@ SCENES = {
     "theLunarFarm":    {"kind": "lunar_farm", "radius": 190.0, "cam": (0.0, -160.0, 120.0)},
     "theOrbitalFarm":  {"kind": "orbital_farm", "radius": 230.0, "cam": (0.0, -180.0, 120.0)},
     "theSpace":        {"kind": "space", "radius": 300.0, "cam": (0.0, -40.0, 20.0)},
+    "theSeed":         {"kind": "seed", "radius": 180.0, "cam": (0.0, -150.0, 90.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -1137,6 +1138,65 @@ def _space_buffers(spec: dict, term: str):
     begin = end.copy()
     return end, begin
 
+def _seed_buffers(spec: dict, term: str):
+    """theSeed: the number the world unfolds from. ONE bright point in the dark, and
+    everything that exists radiating out of it -- branching filaments (the unfolding)
+    with small worlds at their tips. Nothing here has a separate origin: every thread
+    traces back to the one point. begin = the seed alone, not yet unfolded; end = the
+    world it became, still attached to its number."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec.get("radius", 180.0))
+
+    # the seed: one fierce bright point at the origin
+    seed_pt = _solid_sphere((0.0, 0.0, 0.0), 9.0, (1.0, 0.97, 0.85), rng, gain=1.0)
+    glow = _halo((0.0, 0.0, 0.0), 20.0, (1.0, 0.92, 0.70), rng, alpha=0.16, size=2.8)
+
+    def unfold(scale):
+        """the branching unfold: filaments out of the origin, worlds at their tips."""
+        parts = []
+        n_main = 8
+        for k in range(n_main):
+            a = k * 2.0 * np.pi / n_main + 0.3
+            elev = float(rng.uniform(-0.45, 0.45))
+            L = float(rng.uniform(85.0, 120.0)) * scale
+            # the main thread: a slightly wandering line of splats
+            ts = np.linspace(6.0, L, 46)
+            wander = np.cumsum(rng.normal(0.0, 0.06, len(ts)))
+            fx = ts * np.cos(a + wander * 0.3)
+            fy = ts * np.sin(a + wander * 0.3)
+            fz = ts * elev * 0.6 + rng.normal(0.0, 1.2, len(ts))
+            th = np.zeros((len(ts), NCOLS), dtype=np.float32)
+            th[:, PX], th[:, PY], th[:, PZ] = fx, fy, fz
+            th[:, TYPE] = 3.0; th[:, ALPHA] = 0.45; th[:, SIZE] = 1.4
+            th[:, CR], th[:, CG], th[:, CB] = 0.75, 0.62, 0.38   # warm thread
+            parts.append(th)
+            # a world at the tip: its colour is its own, its ORIGIN is not
+            wc = [(0.62, 0.45, 0.34), (0.34, 0.55, 0.82), (0.70, 0.62, 0.42),
+                  (0.45, 0.72, 0.50), (0.78, 0.55, 0.62), (0.55, 0.65, 0.85),
+                  (0.72, 0.70, 0.55), (0.50, 0.58, 0.75)][k]
+            parts.append(_solid_sphere((fx[-1], fy[-1], fz[-1]),
+                                       float(rng.uniform(5.0, 8.0)) * scale, wc, rng, gain=0.75))
+            # one sub-branch off the middle: the unfold branches, it does not just spray
+            mid = len(ts) // 2
+            ba = a + float(rng.uniform(0.5, 0.9)) * (1 if k % 2 else -1)
+            bs = np.linspace(0.0, 34.0 * scale, 18)
+            bx = fx[mid] + bs * np.cos(ba)
+            by = fy[mid] + bs * np.sin(ba)
+            bz = fz[mid] + bs * elev * 0.4
+            bb = np.zeros((len(bs), NCOLS), dtype=np.float32)
+            bb[:, PX], bb[:, PY], bb[:, PZ] = bx, by, bz
+            bb[:, TYPE] = 3.0; bb[:, ALPHA] = 0.4; bb[:, SIZE] = 1.2
+            bb[:, CR], bb[:, CG], bb[:, CB] = 0.70, 0.58, 0.36
+            parts.append(bb)
+            parts.append(_solid_sphere((bx[-1], by[-1], bz[-1]),
+                                       float(rng.uniform(2.5, 4.0)) * scale, wc, rng, gain=0.7))
+        return parts
+
+    begin = np.concatenate([seed_pt, glow] + unfold(0.12), axis=0)   # the seed, barely begun
+    end = np.concatenate([seed_pt, glow] + unfold(1.0), axis=0)      # the world, unfolded
+    return end, begin
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -1224,7 +1284,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -1472,7 +1532,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
