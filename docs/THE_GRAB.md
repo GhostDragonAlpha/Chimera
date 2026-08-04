@@ -1247,3 +1247,87 @@ specialist plateaus below the bar, falsifier 1 fires on the shallowest
 possible state and the CARRY EQUILIBRIUM becomes the membrane -- a
 nearer collision-free CARRY_RELPOS moves the post-release state toward
 the stand basin instead of asking the policy to span the gap.
+
+---
+
+**RUNS 17+18 — v14 SECOND VERDICT (2026-08-04): FALSIFIER 1 FIRES on the
+shallowest possible state, and its named fallback is REFUTED by
+measurement. The pose cannot move; the policy class must.**
+
+- **The specialists plateau.** State-0 alone: 48 turns converged
+  (best == mean from turn ~25) at held 1.16 s of the 3.0 s bar, pelvis
+  MIN 48% -- trained on the ONE state the deterministic cycle produces,
+  warm from the F3-proven stand, and still falling. States {0,1,2}:
+  converged at 0.94 s. The 10-state run's plateau was not the deep
+  states poisoning the signal: the deficit survives at the operating
+  point itself. (Instrument note: both runs drew return_turn_*.png to
+  one directory; run 18 overwrote run 17's pictures mid-flight --
+  namespace by --out next time. The numbers are untouched.)
+- **The fall, forensically.** From state 0 under the stand theta: the
+  CoM starts 4.5 cm behind the foot centre and drifts to -31.6 cm in
+  1.0 s -- far outside any base of support (half-length 13.6 cm) --
+  while roll runs 0 -> -50 deg. The carried equilibrium's lean-back,
+  unopposed once the 421 N leaves, sits the body down backward with a
+  lateral runaway on top. Both planes move; neither is static-recoverable
+  from that configuration.
+- **The named fallback is measured dead.** Falsifier 1 said ask whether
+  a NEARER collision-free CARRY_RELPOS exists. The run-12 clearance
+  method, swept in the current frame: 0.35/0.30/0.25/0.20 m forward all
+  penetrate the pelvis (worst -0.19 m at 0.20); lower penetrates the
+  femurs; torso-centre-height at 0.30 still penetrates 3.3 cm. The
+  0.40 m carry is the ONLY collision-free sagittal pose at this stone's
+  size. Physics priced the stone; the pose is already at its wall.
+
+**What runs 16-18 settle.** The deficit is neither reachability (the
+curriculum reset INTO the states), nor the operating point (the
+specialist had exactly it), nor movable by the pose. What remains is
+the formula's own shape: u = a0 + kh*(tgt-z) + kp*pitch + kr*roll is a
+STATIC law -- position feedback only, zero rate terms -- and the
+post-release state is DYNAMICALLY unstable (backward drift 0.3 m/s at
+handoff, roll accelerating). Claude's lane settled the same sentence
+for walking: static postural laws do not do transitions. The set-down
+is a transition.
+
+**v15 -- THE SPINDLE -- is named.** The rate sense the formula lacks is
+not a hack: the muscle spindle (Ia afferent, stretch-rate feedback) is
+the most replicated sensorimotor circuit in physiology, and it is the
+same legitimacy class as v13's Golgi tendon organ (the load channel
+that was DERIVED, not tuned). The formula gains the rates of exactly
+the quantities it already senses -- z-dot, pitch-rate, roll-rate --
+nothing else. RULE 0 below.
+
+## v15 -- THE SPINDLE (rate feedback on the stand grammar's own channels)
+
+**STATEMENT.** The post-release state is recoverable by the stand
+grammar plus rate feedback -- u = a0 + kh*(tgt-z) + kp*pitch + kr*roll
++ kv*zdot + kpv*pitch_rate + krv*roll_rate, the rates of the SAME three
+sensed quantities -- where the position-only law provably falls (runs
+16-18). Standing balance in the literature is a rate-dependent reflex
+(spindle Ia feedback, ~40-50 ms loop), not a static map; the formula
+without its rates is half the reflex.
+
+**PREDICTION.** A 7-block theta (the four position blocks + three rate
+blocks, zero-padded onto the stand theta so the incumbent's behavior is
+preserved exactly), trained from state 0, holds F3's bar (pelvis >= 80%
+of 0.9201 m) for 3.0 s from state 0, AND passes the two-stage
+full-cycle audit (carry theta to the release, return theta after;
+stone rests 0.175 +/- 0.05 m).
+
+**FALSIFIER 1 -- authority, not sensing.** If the rate-augmented search
+also plateaus below the bar from state 0, then no policy of ANY sensing
+class in this muscle set recovers that configuration: the carried lean
+at this stone mass is physically unrecoverable after release, and the
+milestone's own stone (59.49 kg -- the ledger's derived object) becomes
+the question. That would be a finding about the WORLD, not the policy.
+
+**FALSIFIER 2 -- the static stand trades away.** If the rate terms pass
+from state 0 but F3 from the keyframe regresses (rate gains
+destabilize quiet standing), then recovery and standing are DIFFERENT
+policies and the parser's overlay grammar (the GRAB precedent: a verb
+layered on STAND) gets a RETURN overlay for the post-release window --
+the grammar's own answer, not a monolith.
+
+**What is NOT in this membrane.** No new SENSED quantities (the three
+rates are the time-derivatives of z, pitch, roll -- the formula's own
+channels), no changed bars, no re-derivation of the pose (measured at
+its wall above), no score changes. Zero chosen terms.

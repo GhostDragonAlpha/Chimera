@@ -8,13 +8,10 @@ recorded states: each candidate is reset into snapshots drawn from release_state
 (collect_release_states.py -- the actual full-cycle trajectory, muscle activations
 included) and asked to STAND from there for 3.0 s, F3's own bar.
 
-The policy class is the stand formula (a0 | kh | kp | kr) -- NOTHING ADDED. The swap test
-showed even the F3-proven stand theta nearly holds from the release (0.937 at +0.3 s) and
-then sinks; if the grammar's own answer cannot be made to cover these states, the falsifier
-says the basins are disjoint and the carry equilibrium is the next membrane. No chosen
-terms: the reward is the carry trainer's three gaussians at expect = body weight alone
-(the stone is the giver's after the release), the score is mean reward x survived
-fraction, the incumbent is always a candidate.
+The policy class is the stand formula (a0 | kh | kp | kr) -- NOTHING ADDED by default.
+With --rates (v15, THE SPINDLE): the three rate blocks (z-dot, pitch-rate, roll-rate --
+the time-derivatives of the SAME sensed quantities) join the search; a 4-block init is
+zero-padded onto them, which preserves the incumbent's behavior exactly.
 
 Warm start from stand_theta.npy. Output: return_theta.npy, the session's best, never the
 last turn's. Every turn ends in a picture.
@@ -61,6 +58,11 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
     nu = m.nu
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
     kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+    # v15 (THE SPINDLE, THE_GRAB.md): the rates of the SAME three sensed quantities --
+    # zeros for a 4-block checkpoint, so the position-only incumbent runs unchanged
+    kv = theta[4 * nu:5 * nu] if theta.size >= 7 * nu else np.zeros(nu)
+    kpv = theta[5 * nu:6 * nu] if theta.size >= 7 * nu else np.zeros(nu)
+    krv = theta[6 * nu:7 * nu] if theta.size >= 7 * nu else np.zeros(nu)
     wb = _carry_eval._wb if hasattr(_carry_eval, "_wb") else None
     if wb is None:
         # derive the one landmark exactly as train_carry does (body mass x the world's g)
@@ -86,7 +88,16 @@ def evaluate(m, d, mujoco, theta, P, states, spec, eq, jids, rng, secs=SECS, fra
                                          1 - 2 * (q[1] ** 2 + q[2] ** 2)))
                 roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                         1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-                d.ctrl[:] = np.clip(a0 + kh * (tgt - z) + kp * pitch + kr * roll, 0.0, 1.0)
+                u = a0 + kh * (tgt - z) + kp * pitch + kr * roll
+                if theta.size >= 7 * nu:
+                    # the SPINDLE channels: z-dot from the free joint, and the body's
+                    # world-frame angular velocity projected on the roll (x) / pitch (y)
+                    # axes -- the rates of roll and pitch themselves, not new quantities
+                    rot = np.zeros(9)
+                    mujoco.mju_quat2Mat(rot, np.array(q, dtype=np.float64))
+                    om = rot.reshape(3, 3) @ np.array(d.qvel[3:6])
+                    u = u + kv * float(d.qvel[2]) + kpv * float(om[1]) + krv * float(om[0])
+                d.ctrl[:] = np.clip(u, 0.0, 1.0)
             mujoco.mj_step(m, d)
             if k in grab and ren is not None:
                 ren.update_scene(d); pics.append(ren.render().copy())
@@ -227,13 +238,17 @@ def main() -> int:
         raise SystemExit("the curriculum is empty. Refusing.")
 
     nu = m.nu
-    dim = 4 * nu                  # the stand formula's own four blocks -- NOTHING ADDED
+    dim = 7 * nu if "--rates" in a else 4 * nu   # v15: the SPINDLE blocks join the search
     mu = np.load(init)
+    if mu.size == 4 * nu and dim == 7 * nu:
+        # v15's STATED pad (v13's precedent): the rate blocks are new; zeros reproduce the
+        # incumbent's behavior EXACTLY (every rate term vanishes) -- verified at turn 0
+        mu = np.concatenate([mu, np.zeros(3 * nu)])
+        print(f"rate blocks zero-padded ({4 * nu} -> {dim}): the incumbent's behavior is preserved")
     if mu.size != dim:
         raise SystemExit(f"{init} is {mu.size} numbers, the search is {dim} -- refusing to "
                          f"pad or truncate a foundation (the theta-pair lesson, THE_GRAB v8).")
-    sd = 0.5 * np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6),
-                               np.full(nu, 0.6), np.full(nu, 0.6)])
+    sd = 0.5 * np.concatenate([np.full(nu, 0.15)] + [np.full(nu, 0.6)] * (dim // nu - 1))
     print(f"warm start from {init} ({dim} numbers) over {len(states)} REAL post-release states")
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
