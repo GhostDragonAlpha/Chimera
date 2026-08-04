@@ -1110,3 +1110,60 @@ starts one gradient step from a proven carry.
    and the channel's form is re-derived.
 3. **Phase 2 regresses below 0.80** — the fifth block traded the carry
    away; one policy class does not span the cycle even with the sense.
+
+---
+
+**RUN 15 — v13 VERDICT (2026-08-04): FALSIFIER 1 FIRES A SECOND TIME, and
+the follow-up measurements relocate the deficit for the third time. It is
+not the event (the taper works — the body is fine half a second AFTER the
+handoff), not the policy's baked lean (the F3-proven stand falls from the
+same state), not an impact (the stone never touches the body). The
+post-release STATE is outside every proven policy's recovery basin. The
+set-down is a TRANSITION, and both policies are static postural laws.**
+
+The 5-block retrain (48x32, kw zero-padded onto the run-13 best, full
+cycle) saved the incumbent again: 0.558, never beaten, best-per-turn
+0.532. The channel was explored (sd 0.3/dim on kw) and did not move the
+plateau. Then three cheap measurements cut deeper than another retrain:
+
+1. **THE SWAP TEST.** At the release instant, control handed to the
+   F3-passing stand theta — the body's own proven unloaded policy, the
+   parser's own grammar answer (GRAB overlay releases, STAND resumes).
+   **It falls too:** pelvis 0.920 at the release, 0.899 at t = 5.0, then
+   a smooth 0.6 s sink to 0.156. If the deficit were the carry policy's
+   baked lean, the stand policy would have caught it. It did not.
+2. **THE STONE IS INNOCENT.** Tracked through the release: it falls
+   cleanly 0.2 m in front, lands at t ≈ 5.0, rests at 0.17 m, and its
+   only body contact in the whole window is the known femur graze DURING
+   the carry. No impact, no trip, no foot strike.
+3. **THE TIMING ACQUITS THE TAPER.** The collapse begins ~0.5 s after
+   the handoff completes, from a clean state (pelvis 0.899, plantar
+   533 N). The set-down transient itself is survived — the body even
+   rises 0.920 → 0.937 under the stand policy for 0.3 s before the sink.
+   The 0.5 s handoff is not too fast. Authority within the transient is
+   not the wall.
+
+**What run 15 settles.** The deficit is the STATE, not the event and not
+a policy: the carry's equilibrium (lean-back, knees on tissue, pelvis
+~0.90, the configuration 421 N at 0.40 m requires) lies outside the
+recovery basin of the unloaded stand, and the carry policy's own
+unloaded basin was never trained (its 1.5 s of post-release per episode
+are spent falling, so the gradient there is noise). Physically: at the
+release the body must move its CoM from the carried equilibrium back to
+the unloaded one — a MOTION, the same species as the walk's weight
+shift, and Claude's lane has measured for weeks that static postural
+laws do not do transitions. Run 12's falsifier-2 routing said it: the
+pick-up is M8b's motion to build. The set-down is the second half of the
+same sentence.
+
+**v14 — THE RETURN — is named, and its protocol is measurement-first:**
+collect the post-release states (snapshots at release + 0.3/0.5/0.7 s
+from the full-cycle runs — the states exist, recorded), and train the
+recovery FROM them — a recovery curriculum over real states, warm from
+the stand theta, judged by F3 from those states. The alternative (price
+distance-to-stand-pose at the release instant inside the carry score)
+adds a chosen term; the curriculum adds none. If even the recovery
+curriculum cannot find a policy covering both basins, then the two
+basins are disjoint in this muscle set and the membrane after that asks
+whether the carry equilibrium itself must change (a closer carry pose,
+measured collision-free — CARRY_RELPOS has a second, nearer solution).
