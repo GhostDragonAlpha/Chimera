@@ -1190,6 +1190,76 @@ held exactly; rock < ice < sand preserved; rock's bleed inside its recorded
 leaves its recorded band → metal cannot exist even as structure without
 changing the world.
 
+*VERDICT (2026-08-04, run: `cd Chimera && python -m core.matter_derive
+--frozen-metal`, 200 sweeps, 96³).* **FIRED overall — and the two halves
+could not have split more cleanly: the autopsy PASSES decisively (the
+runaway is REAL and measured), the skeleton's leak check FIRES on the
+geometry (B2).**
+
+**7A — the runaway, measured (falsifier A PASS).** Per-cell drive vs deficit
+at λ_m = 2.8, 10-sweep frames:
+
+| sweep | metal left | drive mean | drive median | boundary cells |
+|---:|---:|---:|---:|---:|
+| 0 | 14,246 | 87,881 | 96,833 | 4,164 |
+| 10 | 3,637 | 114,845 | 77,702 | 1,894 |
+| 20 | 83 | 396,530 | 386,126 | 83 |
+| 30 | 0 | — | — | 0 |
+
+Second half of the erosion runs **2.91× hotter** than the first (bar: 1.25×).
+Two clauses land together:
+
+1. **The runaway is real** — the drive per remaining cell QUADRUPLES as the
+   seed is eaten, exactly the surface-per-cell mechanism the post-mortem
+   named.
+2. **The ledger's 37,676 was ALSO understated** — the measured initial drive
+   (87,881 mean) is 2.3× the derived constant. So extinction was certain from
+   the first flip at any λ: survival needs per-cell drive < 2λD at some
+   reachable deficit D < T, and at frame 0 the drive already exceeds the
+   largest jail 2λT can raise at λ_m = 2.8 (79,778). Phase 6's double
+   extinction was overdetermined — wrong constant AND growing drive. The λ
+   question is closed for good: no static jail stops a drive that starts
+   above the jail and quadruples.
+
+**7B — the skeleton (B1, B3 PASS; B2 FIRED).** Frozen metal holds
+**14,246/14,246 exactly** for 200 sweeps — metal exists in the machine, as
+structure, by the same frozen mechanism the bone axis and terrain run. The
+living families' populations are undisturbed (rock bleed 3.8% vs the recorded
+4% equilibrium; ice/sand/basin drifts ≤ ±13). **But the geometry leaks:**
+rock 15.1 < ice 22.8, sand 22.1 — ice and sand INVERTED against the recorded
+ordering (Phase 6: 20.5 < 28.2), a 3% margin. The frozen seeds are excluded
+volume the sort must flow around, and the ice/sand boundary paid for it.
+Caveat recorded with the firing: the margin is 3%, and this machine's
+run-to-run variance on radius metrics (acceptance order = hardware
+scheduling, seed is not bit-identical) is UNMEASURED for this protocol — the
+inversion may be leak, noise, or both. A seed pair to size the instrument's
+own noise runs next; the firing stands either way, its reading may change.
+
+*Caveat resolved (same day, `.tmp/frozen_var.py`, seeds 0–2 × frozen/unfrozen,
+the exact 7B protocol).* The leak is REAL and systematic; the inversion's
+SIGN is scheduling noise. Unfrozen arm: ice/sand gap +15.3/+15.4/+17.6 —
+wide and stable. Frozen arm: +10.6/+6.7/+0.0 — the skeleton collapses the
+gap by ~12 lattice units on every seed, and at that narrowness the machine's
+own scheduling variance (±~5, the same protocol re-run at seed 0 gave −0.7
+and +10.6) can flip the sign. So B2's firing reads: **the frozen seeds bend
+the sort measurably (the ice/sand boundary is displaced, rock pushed out
+14→15, sand's outer shell compressed), and whether ice ends up inside or
+outside sand on a given run is the noise on that bend.** The world still
+sorts rock < ice < sand in the mean; it does not sort them as cleanly as it
+did without a skeleton in the core.
+
+**What survives, published per Rule 17:**
+
+1. **Metal's extinction is a runaway with a wrong constant underneath:**
+   drive(0) ≈ 88k, quadrupling to ≈ 397k at extinction; no per-type λ can
+   jail it. The question Phase 4 opened is closed with a mechanism, not a
+   mystery.
+2. **Metal exists as frozen structure** (14,246/14,246, populations of the
+   living families untouched) — the M7 deliverable in its minimal form.
+3. **The skeleton's geometric leak is recorded with its caveat:** ice/sand
+   inversion at 3%, instrument noise unmeasured. Whether frozen metal is
+   compatible with a sorted world around it is the open clause.
+
 ---
 
 ## DEBTS FOUND EN ROUTE (housekeeping, not part of the theory)
