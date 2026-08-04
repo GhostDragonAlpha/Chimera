@@ -102,6 +102,26 @@ def use(v):
     return stone.carried, r.get("touch", "")
 
 
+def standoff(v, tx, ty, dist, timeout_s=40.0, capture=None):
+    """The HERO geometry for an object beat: stop `dist` short of the target along the approach
+    line and FACE it, so the object sits between the camera and the body instead of under the
+    body's own legs. Measured (docs/THE_RECORDED_SESSION_2.md, ABSENT-OR-ILLEGIBLE): beats that
+    goto() the object's own position put it at the feet, where the chest-aimed camera behind and
+    above occludes it with the walker. The physics beats still close in -- this is only where the
+    picture is taken from."""
+    w = v._walk
+    dx, dy = tx - w.x, ty - w.y
+    d = math.hypot(dx, dy)
+    if d > dist:
+        if not goto(v, tx - dx / d * dist, ty - dy / d * dist, timeout_s, capture=capture):
+            return False
+    w = v._walk                                             # face the object for the hero
+    dyaw = (w.yaw - math.atan2(-(tx - w.x), ty - w.y) + math.pi) % (2.0 * math.pi) - math.pi
+    v.walk_input(mx=dyaw)
+    time.sleep(1.0)                                         # let the turn and one frame land
+    return True
+
+
 # ── the record ───────────────────────────────────────────────────────────────────────────────────
 
 class Recorder:
@@ -202,9 +222,10 @@ def main() -> int:
         rec.start_beat("stood")
         rec.snap(v, hero=True)
 
-        # beat 01 -- to the stone (3, 5)
+        # beat 01 -- to the stone (3, 5): the HERO from 2.5 m out, facing it -- the stone between
+        # camera and body, not under the body's legs (the ABSENT-OR-ILLEGIBLE measurement).
         rec.start_beat("to the stone")
-        if not goto(v, 3.0, 5.0, 40.0, capture=rec.capture_fn(v)):
+        if not standoff(v, 3.0, 5.0, 2.5, capture=rec.capture_fn(v)):
             failures.append("beat01: never reached the stone")
         rec.snap(v, hero=True)
 
@@ -234,9 +255,10 @@ def main() -> int:
         if carried:
             failures.append("beat04: stone still carried after the drop press")
 
-        # beat 05 -- into the pile (4, 12): the approach shows the cone ahead
+        # beat 05 -- toward the pile (4, 12): the HERO from 3 m out, facing it -- the repose cone
+        # whole in frame, ahead of the body (the ABSENT-OR-ILLEGIBLE measurement).
         rec.start_beat("to the pile")
-        if not goto(v, 4.0, 12.0, 60.0, arrive=0.3, capture=rec.capture_fn(v)):
+        if not standoff(v, 4.0, 12.0, 3.0, timeout_s=60.0, capture=rec.capture_fn(v)):
             failures.append("beat05: never reached the pile")
         rec.snap(v, hero=True)
 
@@ -253,11 +275,16 @@ def main() -> int:
 
         # beat 07 -- stand IN the tuft (-3.5, 8): the disk is 0.2 m, so arrive inside it; the
         # aggregate spring flattens away from the body (theta_max 60 deg) while we hold there.
+        # The HERO is the approach from 2.5 m -- the tuft itself, ahead of the body; the in-disk
+        # snap stays as the bend's physics evidence (the body occludes what it stands in).
         rec.start_beat("in the tuft")
-        if not goto(v, -3.5, 8.0, 60.0, arrive=0.12, capture=rec.capture_fn(v)):
+        if not standoff(v, -3.5, 8.0, 2.5, timeout_s=60.0, capture=rec.capture_fn(v)):
             failures.append("beat07: never reached the tuft")
-        time.sleep(0.6)                                     # let the bend reach its target
         rec.snap(v, hero=True)
+        if not goto(v, -3.5, 8.0, 30.0, arrive=0.12, capture=rec.capture_fn(v)):
+            failures.append("beat07: never entered the tuft")
+        time.sleep(0.6)                                     # let the bend reach its target
+        rec.snap(v)
 
         # beat 08 -- walk away and JUMP mid-walk: the jump is latched by the viewer, one press.
         rec.start_beat("walk + jump")

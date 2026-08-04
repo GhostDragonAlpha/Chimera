@@ -177,7 +177,13 @@ _VEG_ALB = np.array([0.20, 0.27, 0.14], np.float32)
 # palette-parity it has zero contrast against its own mean: the rung-3 record and the 2026-08-03
 # probe both measured it invisible. So the blades sit slightly toward the palette's high (green)
 # end. THE HUMAN render row -- the physics (E, I, k, damping) is untouched.
-_TUFT_ALB = np.array([0.24, 0.36, 0.16], np.float32)
+_TUFT_ALB = np.array([0.28, 0.45, 0.18], np.float32)
+# SECOND STEP ON THE SAME DIAL (2026-08-04, docs/THE_RECORDED_SESSION_2.md, ABSENT-OR-ILLEGIBLE):
+# at the session camera the blades measured DARKER than the sunlit slope behind them even at 2 m
+# (session_legibility.py tuft_close) -- they are shaded with an up-normal (lam = sun_z, the
+# minimum) while the ground's slope normals tilt toward the sun, so equal albedo reads unequal.
+# A vertical blade against a sun-facing hillside is exactly the case albedo must carry. Same
+# step size as rung 3's (+0.04/+0.09/+0.02), before/after frames in output/session_legibility/.
 
 
 def _ground_nums():

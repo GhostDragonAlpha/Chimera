@@ -59,6 +59,79 @@ Fixed: the name now carries seconds, and an existing directory is **refused**, n
 recording is evidence, and an instrument that overwrites evidence without saying so is the same
 species as a witness keeping a stale copy — the failure this project has a rule for.
 
+## MEMBRANE: ABSENT OR ILLEGIBLE — the fork that decides the fix (2026-08-04, Kimi)
+
+The disagreement above names two suspect classes and settles neither. This membrane settles it.
+
+**STATEMENT.** The touchables are IN the session scene's uploaded buffer — the third-person path
+concatenates `touchables_buffer` every frame (`live_viewer.py:160-164`), and the same code drew a
+legible stone in the isolated probe. The hero-frame absence is therefore **camera-object geometry
+and splat presentation at that geometry**, not absence. My own M5/M6 "PASS" frames are on record
+as weak evidence: re-read with fresh eyes, `stone_after.jpg` is a faint smudge and `tuft_cov1.jpg`
+a faint streak — the isolated probes were judged generously, at the wrong camera, against no
+occluding body.
+
+**PREDICTION.** `tools/session_legibility.py` renders the session scene (ground + body +
+touchables, the same buffers, the same exposure, the same sun) from two cameras per object:
+a close diagnostic camera (2 m, aimed) will show stone, pile, and tuft clearly, and the session's
+own beat camera (the `live_viewer` third-person formula, walker at the beat position, body in
+frame) will reproduce the hero-frame absence — including testing whether the carried stone at
+waist height is occluded by the head from the behind-above camera.
+
+**FALSIFIER.** If a close-up ALSO shows nothing, the objects are absent from the buffer — a
+spawn/upload defect, a different class, and this membrane is wrong. If the session-camera renders
+show the objects clearly, the defect is in the recorder's capture path, not the scene — also a
+different class. Either fires this membrane and reroutes the fix.
+
+### VERDICT (2026-08-04, measured by `tools/session_legibility.py`, seven frames read by eye)
+
+**Neither falsifier clause fires. The membrane's STATEMENT holds, with three measured parts:**
+
+1. **ABSENT is refuted.** All three classes are in the uploaded buffer and render at the session
+   camera: `stone_carried.jpg` (the stone at the waist, clearly an object), `pile_session.jpg`
+   (grains around the feet), `tuft_session.jpg` (blades at the legs). The 22:41 session's own
+   contact sheets corroborate independently: `sheet_beat03` shows the carried stone in every tile;
+   `sheet_beat06` shows pile grains and the dropped stone.
+
+2. **The dominant defect is BEAT GEOMETRY.** The beats `goto()` the object's own position, so the
+   walker stands ON its subject; the chest-aimed camera 3.2 m behind and above then occludes the
+   object with the walker's own legs (`stone_session.jpg`: the stone is inside the legs;
+   `tuft_session.jpg`: same). The isolated probes looked AT the object; the session stood ON it.
+   That is the whole disagreement between the two instruments, and it reconciles both.
+
+3. **The secondary defect is TUFT CONTRAST.** Even at 2 m the blades measured DARKER than the
+   sunlit slope behind them: they shade with an up-normal (`lam = sun_z`, the minimum) while the
+   ground's slope normals tilt toward the sun. Fixed by a second step on the established
+   legibility dial (`_TUFT_ALB` → (0.28, 0.45, 0.18), same step size as rung 3's; before/after
+   frames `tuft_close_before.jpg` / `tuft_close.jpg`): blades now read as bright-green strokes.
+
+**The instrument defect that contaminated both reads:** the hero frames `01..09_*.jpg` in
+`slice_session_20260803/` are from **16:16** — before the n=160 stone, ball-chain tuft, and
+0.06 clod fixes (18:12–18:27) — while `session_log.json` and `sheet_beat*.jpg` are from the
+**22:41** re-record. Both the "grey slab / no vegetation" read above and my own earlier
+corroboration of it judged the stale heroes against the new log. The seconds-named directories
+landed at 22:53, after that session — so its heroes overwrote the older run's in place.
+
+**The fixes, per the fork:** standoff heroes in the recorder (beats 01/05/07 now take the picture
+from 2.5–3 m out, facing the object; the physics beats still close in — `tools/slice_record.py`
+`standoff()`), the tuft dial step, and a full re-record as the evidence (this session's directory,
+`slice_session_20260804_*`).
+
+### RE-RECORD VERDICT (`slice_session_20260804_040936`, all beats landed, sheets read by eye)
+
+Every object beat's subject is now on camera. The master sheet: the stone reads ahead of the
+walker on approach (hero[1]) and carried at the waist (hero[2], hero[3]); the dropped stone reads
+at the feet (hero[4]) and on the ground in later beats (hero[6], hero[7]); the pile's repose cone
+reads whole from the standoff (hero[5]) and in the background of the entire tuft beat; the tuft
+reads at its standoff (hero[7]).
+
+**Residual, measured and named:** the tuft is the weakest object — a 0.4 m disk of 0.35 m blades
+is a dot at the 4–8 m approach distances (beat07 sheet: present, not yet grass). No albedo fixes
+angular size; the next legibility step on it is the blade display-width dial (0.02 m, already
+12.5× measured) or more blades — THE HUMAN's render row, the operator's to move. The stone's
+close-up silhouette reads spiky (`stone_close.jpg`: 160 normal-discs); at session range it reads
+as a rock, so the normals stay. Both are recorded here so the next read judges them knowingly.
+
 ## STATUS
 
 - **F1 — PASS.** Every published number on the touch line traces to its membrane.
