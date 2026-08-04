@@ -167,6 +167,10 @@ PHYSICS_READING = {
                 "that brighten along the curve and end in one bright glowing "
                 "circle, against a dark rough backdrop -- the same object shown "
                 "at each station of its travel, an act of moving made visible",
+    "theGrow": "a glowing green S-shaped curve rising from lower left to upper "
+               "right over dark ground, with a row of green blades beneath it "
+               "growing taller along the same curve -- life rising slowly, "
+               "surging, then leveling off as the energy is spent",
     "theDig": "a wide dark earthy ground with a narrow trench cut into it and "
               "a mound of pale freshly-dug grains heaped beside the opening, a "
               "few loose grains scattered nearby -- the ground opened, its "

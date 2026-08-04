@@ -98,6 +98,7 @@ SCENES = {
     "theBlackHole":    {"kind": "black_hole", "radius": 140.0, "cam": (0.0, -110.0, 0.0)},
     "theVerbs":        {"kind": "verbs", "radius": 130.0, "cam": (0.0, -95.0, 30.0)},
     "theDig":          {"kind": "dig", "radius": 130.0, "cam": (6.0, -90.0, 45.0)},
+    "theGrow":         {"kind": "grow", "radius": 130.0, "cam": (0.0, -110.0, 35.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -2514,6 +2515,59 @@ def _dig_buffers(spec: dict, term: str):
     settled = np.concatenate([soil, floor, pile, loose], axis=0)
     return settled, settled.copy()
 
+def _grow_buffers(spec: dict, term: str):
+    """theGrow: life from energy, LOGISTIC. The equation is the picture: an
+    S-curve of light -- N(t) = K / (1 + ((K-N0)/N0) e^{-rt}) -- drawn as a
+    rising band of glowing dots, and beneath it a row of green shoots whose
+    HEIGHTS follow the same numbers: sparse and tiny at the left (the slow
+    start), dense and surging in the middle (the explosion), level at the
+    right (the plateau, when the energy that feeds growth is spent). The
+    curve is not decoration: shoot i stands at t_i and reaches N(t_i). One
+    palette family (living green), both frames at full strength."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    K, N0, r = 40.0, 1.2, 0.075          # carrying capacity, seed, rate
+    def logistic(t):
+        return K / (1.0 + ((K - N0) / N0) * np.exp(-r * t))
+
+    # dark soil for the shoots to stand on
+    n_g = 900
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 60.0 * np.sqrt(rng.random(n_g))
+    soil = np.zeros((n_g, NCOLS), dtype=np.float32)
+    soil[:, PX] = rr * np.cos(th)
+    soil[:, PY] = rr * np.sin(th)
+    soil[:, PZ] = rng.normal(0.0, 0.7, n_g) - 0.5
+    soil[:, TYPE] = 3.0; soil[:, ALPHA] = 0.25; soil[:, SIZE] = 2.2
+    soil[:, CR], soil[:, CG], soil[:, CB] = 0.30, 0.30, 0.24
+
+    # the S-curve: the logistic itself, a band of pale-green light
+    n_c = 260
+    tc = np.linspace(0.0, 100.0, n_c)
+    curve = np.zeros((n_c, NCOLS), dtype=np.float32)
+    curve[:, PX] = -50.0 + tc                              # time runs left -> right
+    curve[:, PZ] = 2.0 + logistic(tc)
+    curve[:, TYPE] = 3.0; curve[:, ALPHA] = 0.80; curve[:, SIZE] = 1.4
+    curve[:, CR], curve[:, CG], curve[:, CB] = 0.65, 1.00, 0.60
+
+    # the shoots: one per station, height = the logistic's value there --
+    # a blade of green dots from the soil to N(t_i)
+    shoots = []
+    for t_i in np.linspace(4.0, 96.0, 14):
+        h = float(logistic(t_i))
+        n_s = max(3, int(h / 1.6))
+        tz = np.linspace(0.0, 1.0, n_s)
+        bl = np.zeros((n_s, NCOLS), dtype=np.float32)
+        bl[:, PX] = -50.0 + t_i + rng.normal(0.0, 0.25, n_s)
+        bl[:, PZ] = 0.5 + h * tz
+        bl[:, TYPE] = 3.0; bl[:, ALPHA] = 0.75; bl[:, SIZE] = 1.5
+        bl[:, CR], bl[:, CG], bl[:, CB] = 0.30, 0.75, 0.28
+        shoots.append(bl)
+
+    settled = np.concatenate([soil, curve] + shoots, axis=0)
+    return settled, settled.copy()
+
 def _system_buffers(spec: dict, term: str):
     """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
     import numpy as np
@@ -2601,7 +2655,7 @@ def _project_movie_impl(term: str, out_dir) -> dict | None:
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
         return {"begin": str(begin_png), "end": str(end_png)}
 
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
@@ -2849,7 +2903,7 @@ def scene_buffer(term: str):
     spec = SCENES.get(term)
     if not spec:
         return None
-    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers}
+    _BUILDERS = {"planet": _planet_buffers, "terrain": _terrain_buffers, "row": _row_buffers, "system": _system_buffers, "garden": _garden_buffers, "ecosystem": _ecosystem_buffers, "tree": _tree_buffers, "treeform": _treeform_buffers, "fruit": _fruit_buffers, "planting": _planting_buffers, "farming": _farming_buffers, "planetary_farm": _planetary_farm_buffers, "lunar_farm": _lunar_farm_buffers, "orbital_farm": _orbital_farm_buffers, "space": _space_buffers, "seed": _seed_buffers, "determinism": _determinism_buffers, "laws": _laws_buffers, "truth": _truth_buffers, "ship": _ship_buffers, "flight": _flight_buffers, "ship_power": _ship_power_buffers, "ship_combat": _ship_combat_buffers, "shields": _shields_buffers, "warp_drive": _warp_drive_buffers, "ship_view": _ship_view_buffers, "salvage": _salvage_buffers, "descent": _descent_buffers, "standing": _standing_buffers, "black_hole": _black_hole_buffers, "verbs": _verbs_buffers, "dig": _dig_buffers, "grow": _grow_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
     if builder:
         return builder(spec, term)[0]                            # the settled END buffer
