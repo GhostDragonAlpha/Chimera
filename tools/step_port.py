@@ -19,13 +19,27 @@ THE INTERLOCK IS THE DOOR, NOT A CHECK. The only way into swing is the CONTRALAT
 contact rising edge. A leg therefore cannot swing while the other foot is airborne -- duty
 factor > 0.5 (theHuman publishes 0.6027) is the mechanism's output, not a rule bolted on.
 
-THE ONLY TRAINED NUMBERS ARE SIX SWING EFFORTS: an A (early-swing, flexion) and a B (late-swing,
-extension) amplitude for hip, knee, ankle. The switch from A to B happens at half of the DERIVED
-swing window -- (1 - duty_factor) * stride, theHuman's own numbers, closure-checked here against
-the compound pendulum `a_swing` validated. Cadence, antiphase and the interlock are derived and
-are NOT in the search (rule 1: a searched cadence is the question "which number is best").
+THE TRAINED NUMBERS ARE SEVEN: an A (early-swing, flexion) and a B (late-swing, extension)
+amplitude for hip, knee, ankle, plus P_push -- the terminal-stance ankle push-off, added by the
+v2 amendment after v1's measured verdict (see the LEDGER). The switch from A to B happens at
+half of the DERIVED swing window -- (1 - duty_factor) * stride, theHuman's own numbers,
+closure-checked here against the compound pendulum `a_swing` validated. Cadence, antiphase and
+the interlock are derived and are NOT in the search (rule 1: a searched cadence is the question
+"which number is best").
 
 LEDGER -- this module's own record, newest last. Each entry states what was measured.
+
+    2026-08-04  v1 (six swing efforts, stance = stand formula alone) TRAINED AND JUDGED.
+                24x32 CEM, plateau identical for the final 16 turns. f5: travel -4%,
+                periodicity 0.18, upright 47% -- judges 4/5/6 PASS (the sensors ARE the
+                mechanism; falsifier 2 does not fire). The mechanism, measured: with no stance
+                propulsion, forward motion can only come from falling forward -- the
+                best-travel candidate (52%) accelerates into its 2.4 s fall; the best-score
+                candidate marches in place. Published in docs/THE_STEP.md per Rule 17.
+    2026-08-04  v2 amendment (stated before the build): ONE new number, P_push -- ankle
+                plantarflexors (the measured ext group; action_tests.py:770 prices positive
+                ankle_angle as dorsiflexion) driven while the contralateral leg is in LATE
+                swing, the machine's own single-support second half. No clock, no new state.
 """
 from __future__ import annotations
 
@@ -41,10 +55,12 @@ from world import load_body                                   # noqa: E402
 from stand_port import derive_stand_port, MYOBODY             # noqa: E402
 from walk_port import derive_walk_port, muscle_groups, OSC_JOINTS  # noqa: E402
 
-# SIX FREE NUMBERS, and only six: [A_hip, A_knee, A_ankle, B_hip, B_knee, B_ankle].
-# A is early-swing flexion effort, B is late-swing extension (reach-and-prepare-to-plant).
-# Everything else -- the window, the antiphase, the interlock -- is derived below.
-N_FREE = 2 * len(OSC_JOINTS)
+# v2 (THE_STEP.md amendment, 2026-08-04): SEVEN free numbers --
+# [A_hip, A_knee, A_ankle, B_hip, B_knee, B_ankle, P_push]. A is early-swing flexion effort,
+# B is late-swing extension (reach-and-prepare-to-plant), P_push is the terminal-stance ankle
+# push-off: v1's measured verdict was that stance-without-propulsion can only topple or march
+# in place. Everything else -- the window, the antiphase and the interlock -- is derived below.
+N_FREE = 2 * len(OSC_JOINTS) + 1
 
 
 def derive_step_port() -> dict:
@@ -196,6 +212,22 @@ def step_formula(theta_stand, theta_step, groups, z, pitch, nu, tgt, state, phas
             else:
                 u[flex] = np.clip(u[flex] - a, 0.0, 1.0)
                 u[ext] = np.clip(u[ext] + a, 0.0, 1.0)
+    # v2 -- THE PUSH-OFF (docs/THE_STEP.md amendment, stated before the build). While the OTHER
+    # leg is in LATE swing (phase >= 0.5 of the derived window -- the machine's own single-
+    # support second half; no clock, no new state), THIS leg is in terminal stance, and that is
+    # where human propulsion lives: the ankle's plantarflexors. DIRECTION DERIVED, not chosen:
+    # action_tests.py:770's squat closure prices positive ankle_angle as DORSIflexion (hip +22.5
+    # moves the knee +x, ankle +22.5 follows), so plantarflexion is the joint's negative
+    # direction -- the group `muscle_groups` measured as ext. Driven reciprocally, as the swing
+    # efforts are. v1's verdict is why this term exists: with stance held by the stand formula
+    # alone, forward motion could only come from falling forward.
+    p = gain * float(theta_step[2 * nj])
+    if p > 0.0:
+        for side, other in (("r", "l"), ("l", "r")):
+            if state[side] == "stance" and state[other] == "swing" and phase[other] >= 0.5:
+                flex, ext = groups[f"ankle_angle_{side}"]
+                u[flex] = np.clip(u[flex] - p, 0.0, 1.0)
+                u[ext] = np.clip(u[ext] + p, 0.0, 1.0)
     return u
 
 

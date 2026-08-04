@@ -1,9 +1,12 @@
-"""train_step.py -- TRAIN THE STEP PORT'S SIX SWING EFFORTS, and only those six.
+"""train_step.py -- TRAIN THE STEP PORT'S SEVEN EFFORTS, and only those seven.
 
 The stand port's theta is LOADED AND FROZEN, exactly as in train_walk: the 870 numbers that hold
-the body up are not re-searched, and the 6 that swing the legs are the entire difference. The
-machine, the window, the antiphase and the interlock are DERIVED (`step_port.derive_step_port`)
-and are NOT in the search.
+the body up are not re-searched, and the 7 that swing the legs and push off are the entire
+difference. The machine, the window, the antiphase and the interlock are DERIVED
+(`step_port.derive_step_port`) and are NOT in the search.
+
+v2 (docs/THE_STEP.md amendment): the seventh number is P_push, the terminal-stance ankle
+push-off -- added after v1's measured verdict (no stance propulsion -> travel is toppling).
 
 TRAIN WHAT YOU JUDGE -- the lesson this project paid for twice in one day (walk_port LEDGER
 2026-08-03, 7376a54): the trainer drives THE SAME `StepMachine` through THE SAME `step_formula`
@@ -168,9 +171,10 @@ def main() -> int:
     d = mujoco.MjData(m)
     groups = muscle_groups(m, d, mujoco)
 
-    # SIX NUMBERS WIDE, all amplitudes (an amplitude is an activation: clipped to [0,1]).
-    # Starts at 0.20 with spread 0.15 -- STARTING POINTS for a search, not settings; the elite
-    # mean replaces them on turn 0 and nothing downstream reads them.
+    # SEVEN NUMBERS WIDE (v2: six swing efforts + P_push), all amplitudes (an amplitude is an
+    # activation: clipped to [0,1]). Starts at 0.20 with spread 0.15 -- STARTING POINTS for a
+    # search, not settings; the elite mean replaces them on turn 0 and nothing downstream reads
+    # them.
     mu = np.full(N_FREE, 0.20)
     sd = np.full(N_FREE, 0.15)
     if init:
