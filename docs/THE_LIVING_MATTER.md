@@ -60,12 +60,17 @@
 > defaults, tissue type mapping tested on ordering only.
 > TISSUE K_IC RESEARCHED (Phase 3d): bone Griffith-legal (124–735 J/m²),
 > muscle/skin docked at measured tearing energies (apparent), tendon's band
-> open. Next: deficit-paired swaps are PAID (Phase 8 closes PASS at 800
-> sweeps: swaps sort at the measured bulk-modulus λ, the copy-channel
-> jail holds, its λD² noise measured as a transient, τ_sort between 200
-> and 800 sweeps at n=96); metal EXISTS as frozen structure (Phase 7).
-> Remaining: the tissue-scramble rupture run (3d's prediction), or the
-> operator's pick.**
+> open. Deficit-paired swaps are PAID IN THEIR MINIMAL FORM ONLY (Phase 8
+> repeat, 5 seeds: swap-only sorts **5/5**, bit-deterministic, drift exactly
+> zero — the corridor is real; the 1:1 mixed interleave sorts **3/5** and is
+> nondeterministic, because the copy kernel atomically updates a shared area
+> accumulator while the swap kernel never touches it. The 800-sweep PASS was
+> one draw of a 60% coin, and every "passing" mixed run is one where the copy
+> channel did nothing. **The closure is withdrawn; the debt is open at a
+> RATE.**); metal EXISTS as frozen structure (Phase 7, re-run 2026-08-04:
+> B1/B2/B3 all PASS — B2's original firing was the scheduling noise its own
+> caveat named). Remaining: swap-dominant stepping with a DERIVED copy ratio,
+> the tissue-scramble rupture run (3d's prediction), or the operator's pick.**
 
 ---
 
@@ -1369,6 +1374,58 @@ PASS: deficit-paired swaps carry interface dynamics at the measured
 bulk-modulus λ, the copy channel's jail holds the populations, and the
 two together are tissue-real K in the machine — the last named debt of
 this ledger, paid.**
+
+*REPEAT VERDICT (2026-08-04, `python tools/phase8_repeat.py --runs 5 --sweeps 800`,
+5 seeds per arm, the same derived λ and the same frozen kernels — `matter_gpu.py`
+last moved at 8ec593e, BEFORE either verdict above).* **THE CLOSURE IS WITHDRAWN.
+The 800-sweep PASS is a REAL draw, not a transcription error and not a bug — but
+it is one draw from a 60% coin, and the debt is open at a RATE rather than closed
+at a verdict.**
+
+| arm | sorted | final H | drift |
+|---|---|---|---|
+| swap-only | **5/5** | 21.53M … 21.55M (spread **1.00×**) | `[0,0,0]` every seed |
+| mixed | **3/5** | 21.53M … 97.12M (spread **4.51×**) | `[0,0,0]` or ±100s |
+
+**THE SWAP ARM IS BIT-DETERMINISTIC AND THE MIXED ARM IS NOT**, and the kernels say
+why without ambiguity: `_potts_swap_pass` is not even passed the area array — a swap
+is volume-neutral, so it never touches the population counters — while
+`_potts_color_pass` does an **atomic read-modify-write on the shared per-type area
+accumulator**. Every copy thread's ΔH therefore depends on the order the other
+threads' atomics land, and that order is the GPU's to choose. Two runs of the
+identical documented command gave mixed H → 42.9M and → 344.0M.
+
+**The tell, and it is the whole diagnosis:** every mixed run that SORTS reports
+radii, drift and H *identical to swap-only* — `18.4 / 18.9 / 20.9`, drift exactly
+`[0,0,0]`, H → 21.53M. Drift of exactly zero is structurally the swap channel's
+signature; a copy channel that had accepted anything could not produce it. **A
+"passing" mixed run is a run in which the copy channel did nothing.** When it does
+act, H ends 4× higher and the sort fails. So the 800-sweep PASS did not measure the
+interleave working — it measured the interleave being absent.
+
+**The gate never covered this path.** The cold-monotone gate that earned the swap
+kernel its keep was run `swap-only` (see the driver: `step_swaps(hg, 20)`), and the
+interleaved schedule — copy passes and swap passes alternating over the same
+lattice — was never gated at all. Phase 8's own membrane predicted the race risk and
+widened the schedule *along the swap axis*; it did not ask what happens when the
+8-colour copy schedule and the 12-colour swap schedule alternate.
+
+**What survives, per Rule 17, and it is the valuable half:**
+
+1. **Tissue-real K via pure Kawasaki exchange is REAL and REPRODUCIBLE.** Swap-only
+   sorts 5/5 at the measured bulk-modulus λ with mass conservation exact by
+   construction and a final-H spread of 1.00×. Falsifier 3 passes decisively. The
+   corridor Phase 5 named is open.
+2. **The 1:1 interleave is refuted at a 60% sort rate**, not at 100% and not at 0%.
+   Falsifier 1 fires. The honest deliverable remains the one Phase 8 itself named:
+   swap-dominant stepping with the copy channel as a rare-events jail, its ratio
+   derived rather than chosen 1:1.
+3. **ONE ROLLOUT IS A COIN TOSS applies to the shaker, not only to a gait.** Both
+   the 200-sweep FIRED and the 800-sweep PASS were single runs of an
+   order-dependent process. The rule this studio earned on a walker with
+   periodicity 0.25 — score N restarts and keep the WORST — was never applied here.
+   `tools/phase8_repeat.py` applies it; any future verdict on the mixed arm must
+   report a rate.
 
 ---
 
