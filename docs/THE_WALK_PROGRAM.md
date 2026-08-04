@@ -282,6 +282,38 @@ incumbent unchanged instead of a ruin.
 `m.opt.timestep` rather than a literal), which is exactly why it survived: a wrong number under a
 formula that still reads plausibly is invisible until someone prints it.
 
+## THE SEATING WAS NOT THE CAUSE — measured, and it corroborates the other agent independently
+
+The foot commit changed **two** things: it added ligaments AND it moved the keyframe, seating
+`hip_rotation_r` from **−35.18° to −8.00°**. A 27° change to the starting pose is a large enough
+perturbation to explain a survival regression on its own, and the stand θ was fitted to the old
+pose — so "one change at a time" says separate them before blaming the tissue.
+
+Survival with the current θ, sweeping only the `hip_rotation_r` start (its legal range is
+[−40°, +40°], so every value below is a pose the body may legally hold):
+
+| start | survived | pelvis MIN |
+|---:|---:|---:|
+| **−8.0° (the new seat)** | **6.24 s** | 46.2% |
+| −12.0° | 3.76 s | 47.0% |
+| −16.0° | 3.10 s | 45.2% |
+| −20.0° | 2.76 s | 46.3% |
+| −24.0° | 2.60 s | 48.2% |
+| −28.0° | 2.50 s | 44.7% |
+| −30.0° | 2.46 s | 49.0% |
+
+**The re-seating HELPED.** Survival is best exactly at the new seat and degrades monotonically
+toward the old pose. The hypothesis is refuted: the regression is attributable to the ligaments'
+own dynamics, not to the pose change bundled with them.
+
+**AND IT INDEPENDENTLY CORROBORATES THE OTHER AGENT.** That −8° seat is not a range clamp — the
+keyframe's −35.18° is *inside* [−40°, +40°], so the range-clamp never saw it. It is the foot
+membrane's **off-sagittal deadband**, added when its own falsifier 2 fired: *"a keyframe inside
+the range but PAST a ligament's engagement edge starts the body with the spring taut… 113 N·m of
+phantom torque at t=0, the 689 N·m defect one level subtler."* This sweep reaches the same
+conclusion from the opposite direction — by measuring what the body *does* rather than what the
+spring holds — and lands on the same value. Two agents, two methods, one number.
+
 ## WHAT THIS MEANS FOR THE ORDER OF WORK
 
 The stand port must be re-established in the 32-ligament world before the walk means anything —
