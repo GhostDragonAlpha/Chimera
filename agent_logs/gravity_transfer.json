@@ -1,0 +1,66 @@
+{
+ "g_home": 7.076122169232295,
+ "g_new": 9.81,
+ "seeds": 10,
+ "held_out_seeds": [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "secs": 20.0,
+ "rows": [
+  {
+   "theta": "stand_theta",
+   "home_s": 6.82,
+   "new_s": 1.6,
+   "ratio": 0.23460410557184752,
+   "verdict": "OVERFIT (<0.3)",
+   "per_seed_new": [
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6
+   ]
+  },
+  {
+   "theta": "stand_theta_derived",
+   "home_s": 6.9,
+   "new_s": 1.6,
+   "ratio": 0.2318840579710145,
+   "verdict": "OVERFIT (<0.3)",
+   "per_seed_new": [
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6
+   ]
+  },
+  {
+   "theta": "stand_theta_guard",
+   "home_s": 6.82,
+   "new_s": 1.6,
+   "ratio": 0.23460410557184752,
+   "verdict": "OVERFIT (<0.3)",
+   "per_seed_new": [
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6,
+    1.6
+   ]
+  }
+ ],
+ "falsifier_fires": false
+}
