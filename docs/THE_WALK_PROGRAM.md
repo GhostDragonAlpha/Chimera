@@ -620,6 +620,62 @@ question is not about the walk program at all: *why does this body now fall at 7
 still, and what does it take to get that back?* Until it is answered, every walk number on this
 page is measured against a foundation that is itself unwell.
 
+## THE FALL, FINALLY WATCHED: it is LATERAL, and the formula has no roll term
+
+Every number above is measured against a stand that dies at 7 s. Watching that death instead of
+theorising about it, same θ, sampled every 0.1 s through the collapse:
+
+| t | pelvis | pitch | roll | CoM-y offset | CoM-x offset |
+|---:|---:|---:|---:|---:|---:|
+| 5.50 | 0.941 | −16.3° | +2.9° | −1.4 mm | +52 mm |
+| 6.00 | 0.939 | −16.7° | +2.2° | −15 mm | +47 mm |
+| 6.50 | 0.925 | −22.3° | −0.6° | −84 mm | +27 mm |
+| 7.00 | 0.889 | −34.8° | −7.1° | **−262 mm** | +7 mm |
+| 7.60 | 0.452 | −83.2° | **−53.4°** | **−812 mm** | +37 mm |
+
+**THE BODY TOPPLES SIDEWAYS.** CoM-y runs to −812 mm while CoM-x never exceeds 52 mm. Pitch is
+*stable at −16° for the first 5.5 seconds* — the sagittal plane is controlled. The lateral drift
+begins imperceptibly at 5.5 s and is irreversible by 6.5 s.
+
+**And the controller has no frontal-plane sense at all.** The stand formula is
+`a0 + kh·(tgt−z) + kp·pitch` — height and PITCH. **There is no roll term.** It is an inverted
+pendulum with feedback in one plane, standing on a body whose own port documentation predicted
+this: *"ONE centre of mass is carried by TWO hips 0.162 m apart… a body that cannot decide which
+leg is carrying it is a body that falls over."*
+
+**THIS ALSO CORRECTS HYPOTHESIS 1.** I opened this membrane by proposing the frontal plane, then
+"refuted" it by measuring 1669 mm of lateral CoM excursion and concluding *"the body is falling
+sideways, not failing to shift."* **It is falling sideways. That was the finding, and I filed it
+as a dismissal** — I had tested the wrong version of the claim (weight-shift-for-stepping) and
+retired the right one with it.
+
+## HYPOTHESIS SEVEN: a roll term does NOT fix it
+
+The derived fix — give the formula the second lean angle a 3-D inverted pendulum has — was
+tested: `a0 + kh·(tgt−z) + kp·pitch + kr·roll`, with **a0/kh/kp frozen at the trained values and
+only the 290 roll gains searched**, 25 turns × pop 32, judged over 12 s.
+
+| | held |
+|---|---:|
+| control (kr = 0, the current θ) | **7.60 s** |
+| best roll-feedback θ found | **7.60 s** |
+
+**Identical.** The search never beat `kr = 0` — turns 17–24 all landed *worse* (4.78–6.16 s).
+
+**What this does and does not say.** It does **not** rescue the six dead hypotheses or unseat the
+diagnosis: the fall is measurably, unambiguously lateral. What it says is that *this form* of
+frontal feedback — a proportional gain per muscle, bolted onto a postural policy trained without
+it — is not the structure that fixes it. Lateral balance in a real body is not a whole-body gain;
+it is the hip **abductors** and ankle **inversion/eversion** doing specific work, and those are
+exactly the joints whose ligaments arrived only hours ago and whose muscle groups this program
+has never measured (`muscle_groups` covers hip_flexion, knee, ankle — all sagittal, like
+everything else here).
+
+**SEVEN HYPOTHESES, SEVEN MEASUREMENTS.** The two that survive are both structural and both
+negative: *upright and travel are exchanged*, and *the exchange lives in the plant*. The one new
+positive result is the fall's direction — and it points at frontal-plane structure that no port,
+primitive, or program on this ladder has yet built.
+
 ## WHAT LANDED, and stands on its own
 
 - `tools/walk_port.py` — the port (ω, stride, duty, target speed, all derived; `speed_closure_pct`
