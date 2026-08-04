@@ -310,3 +310,20 @@ that wasn't there when it learned). Consequence: the walk's numbers are
 theta-PAIR-specific, and re-judging or re-training the walk against a
 foundation that is still moving buys numbers that expire on arrival.
 The walk retrains once, against the settled stand — not before.
+
+**The settled-stand precondition is MET (2026-08-04, commit `1f24f74`,
+Claude's rung 9).** The frontal retrain — hypothesis nine, the roll
+term trained IN from scratch rather than grafted — holds **9.08 s** at
+the 12 s horizon (was 7.60), pelvis 102.9%, and F3 exit 0. The second
+clause resolves itself rather than being ruled on: with frontal
+control the feet make a 0.0961 m half-width against theStance's
+published 0.1020 (0.94×, down from 1.90×) — the splay was the body
+catching a topple it could not sense, never a landmark disagreement.
+The stance `stand_port.py:83` selects is now the stance the body
+actually stands in; the residual (the selection is still unstated in
+the code) is documentation, not physics. The foundation is now a
+4-block theta (a0/kh/kp/kr, 1160 numbers), promoted after f3 judged it
+better; 3-block thetas remain bit-identical in behavior (kr = 0).
+`walk_port.walk_formula` inherits the roll block explicitly (Claude,
+in flight at this writing) — the walk retrains against THIS stand,
+once, per the condition above.
