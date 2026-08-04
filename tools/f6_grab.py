@@ -46,6 +46,7 @@ from parser import Parser, default_registry, Formula, OVERLAY            # noqa:
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
+CARRY_THETA = OUTDIR / "carry_theta.npy"
 T_GRAB = 1.0                    # the weld engages here (held from t=0; inside reach by design)
 T_DROP = 4.0                    # the weld releases here
 SECS = 6.0
@@ -58,7 +59,14 @@ def run() -> int:
     import mujoco
     if not STAND_THETA.exists():
         raise SystemExit(f"no {STAND_THETA} -- carrying is composed over standing. Refusing.")
-    theta = np.load(STAND_THETA)
+    # THE CARRY POLICY, when it exists. Phase 2 grades the body THROUGH the carry, and
+    # train_carry.py exists precisely because the unloaded stand theta was measured dying
+    # under the weld (f6 run 2: pelvis 4%, plantar sum 0). Phases 1 and 3 are DELTAS, so a
+    # policy trained with the weld on still yields a clean pre-grab baseline. The theta in
+    # use is printed -- an instrument that will not say which policy it graded is the
+    # species this project keeps getting caught by.
+    theta_path = CARRY_THETA if CARRY_THETA.exists() else STAND_THETA
+    theta = np.load(theta_path)
     P, S = derive_grab_port(), derive_stand_port()
     path = stone_xml(MYOBODY, P)
     m, g = load_body(path, mujoco)
@@ -133,6 +141,7 @@ def run() -> int:
     print(f"  stone: {P['OUT stone_mass_kg']:.2f} kg quartzite = {W:.1f} N in g {g:.4f} "
           f"({100 * P['OUT load_frac_of_body']:.0f}% of body mass -- THE FINDING)")
     print(f"  weld: {WELD_NAME} -> torso at the stated carry pose; reach {P['OUT reach_m']:.3f} m")
+    print(f"  policy: {theta_path.name}")
     print("-" * 78)
     print(f"  1. THE LOAD IS FELT   plantar sum {base:.1f} -> {loaded:.1f} N at the weld "
           f"(delta {delta_on:+.1f} N vs weight {W:.1f} N, tol {100 * LOAD_TOL:.0f}%)  ->  "
