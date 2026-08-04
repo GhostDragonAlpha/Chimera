@@ -31,6 +31,24 @@ from stand_port import derive_stand_port, stand_reward
 
 MYOBODY = ROOT / "external" / "myo_sim" / "body" / "myobody.xml"
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
+# ONE QUANTITY, ONE LANDMARK (rule 19). The randomized-start nudge lives HERE and
+# `tools/stand_survival.py` imports it, so the trainer and the instrument that judges it cannot
+# perturb by two different amounts and call the disagreement a result.
+NUDGE = 1e-6
+# THE CONTROL CADENCE, and this is its ONE home. `tools/timestep_audit.py` found the same
+# constant declared three times -- here as a bare `k % 20` literal, in f3_stand.py, and in
+# train_walk.py -- across files that must agree or the trainer and the judge are running
+# different plants. They all said 20 and the audit found no mismatch, which is the good case
+# and is also exactly how this rots: three copies agree until one is edited. `f3_stand` and
+# `train_walk` now import it from here (both already import from this module, so no cycle).
+# THE CADENCE IS DECLARED, NOT DESCRIBED. `tools/timestep_audit.py` reads the line below and
+# checks it against `CTRL_EVERY * m.opt.timestep` for the model this file loads. It arrived at
+# that design the hard way -- four runs of inferring the subject from English, four different
+# misattributions, every one caught by its control -- and the rule it settled on is the one
+# `story/folding.py` already states: DECLARED, never inferred, because a subject you infer is
+# a subject that can be wrong. Prose beside a constant is now reported and never judged.
+# cadence: 20 ms, 50 Hz
+CTRL_EVERY = 20
 
 # THE PRIMARY LEG JOINTS. The model also carries `knee_angle_*_beta_*`, `*_translation*` and
 # `*_rotation*` -- the coupled DOFs of the knee's four-bar mechanism, driven by knee_angle, not
@@ -117,6 +135,17 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     pelvis HEIGHT ERROR and PITCH. Those two are not chosen: they are what an inverted pendulum
     has (a height it must hold and a lean that will topple it), and theStance publishes the
     fall rate that makes the second one urgent.
+
+    `seed` WAS A DEAD PARAMETER UNTIL 2026-08-04, and that is the defect this docstring exists
+    to name. It sat in the signature and appeared NOWHERE in the body: every caller that passed
+    a seed got the identical deterministic rollout, so an interface that reads as "N randomized
+    starts" delivered one. `tools/stand_survival.py` then measured what that cost -- a nudge of
+    1e-6 on qpos moves survival from 6.30 s to 9.08 s (SPREAD 2.780 s over 10 seeds), and the
+    UNPERTURBED start is the LUCKIEST of the ten. So the trainer was scoring every candidate on
+    the single most flattering initial condition available, which is the exact shape of the
+    fraud CLAUDE.md already records: the 13.52-body-length champion that lost 5.5 body lengths
+    to a one-micron nudge. One rollout is a coin toss; a dead seed parameter is a coin toss
+    wearing the costume of a measurement.
     """
     nu = m.nu
     jids = joint_ids(m, mujoco)
@@ -130,6 +159,14 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
+    if seed:
+        # THE NUDGE, and it is not a knob: 1e-6 is the smallest perturbation that is
+        # unambiguously beneath meaning. theHuman's gait envelope has a grain of 4.16 deg
+        # = 7.3e-2 rad, so a microradian is 73,000x below the finest angle this world can
+        # resolve. Applied AFTER the seat, so a seed cannot push the body back outside the
+        # limits the line above just enforced.
+        d.qpos[:] = d.qpos + np.random.default_rng(seed).normal(0.0, NUDGE, size=d.qpos.shape)
+        mujoco.mj_forward(m, d)
     tgt = P["OUT pelvis_target_m"]
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
@@ -137,7 +174,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
     tr = {"t": [], "z": [], "comx": [], "comy": [], "r": [], "jf": []}
     pics, tot, n, fell = [], 0.0, 0, False
     for k in range(steps):
-        if k % 20 == 0:
+        if k % CTRL_EVERY == 0:
             z = float(d.qpos[2])
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
@@ -148,7 +185,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
-        if k % 20 == 0:
+        if k % CTRL_EVERY == 0:
             z = float(d.qpos[2])
             com = d.subtree_com[0]
             # THE FOOT CENTRE IS THE FOOT POLYGON, NOT THE HEELS. This was the mean of calcn_r
@@ -175,6 +212,38 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0):
         ren.close()
     score = tot / max(n, 1) - (3.0 if fell else 0.0) - 2.0 * (1.0 - (k + 1) / steps)
     return float(score), tr, pics
+
+
+def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0):
+    """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
+    worst one. Returns `(score, trace, pics, per_seed_scores)`.
+
+    THE RULE THIS ENFORCES IS ALREADY IN CLAUDE.md AND WAS NOT IN THIS TRAINER: score every
+    genome from N randomized starts and keep the WORST, because one rollout from one initial
+    condition is not a measurement, it is a coin toss. MEASURED on this exact body and this
+    exact saved policy (`tools/stand_survival.py`, 2026-08-04): a 1e-6 nudge spans 6.30 s to
+    9.08 s of survival, and the unperturbed start is the LUCKIEST of ten. A search scored on
+    seed 0 alone is therefore selecting for initial conditions, not for policies.
+
+    `seeds=1` REPRODUCES THE OLD BEHAVIOUR EXACTLY -- seed 0, unperturbed, one rollout -- so
+    this is an option the caller opens, not a silent change to every past number.
+
+    The worst-case trace is the one drawn, deliberately. A picture of the best seed under a
+    worst-seed score is an instrument showing you a different rollout from the one it graded.
+    """
+    if seeds <= 1:
+        s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames)
+        return s, tr, pics, [s]
+    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i) for i in range(seeds)]
+    scores = [r[0] for r in runs]
+    w = int(np.argmin(scores))
+    # the worst seed is re-run WITH frames only when frames are asked for, so the common path
+    # (scoring a population) never pays for a renderer it will not look at
+    if frames:
+        _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames)
+    else:
+        tr, pics = runs[w][1], runs[w][2]
+    return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
 def draw_turn(turn, P, tr, pics, hist, path):
@@ -221,23 +290,39 @@ def main() -> int:
     pop = int(a[a.index("--pop") + 1]) if "--pop" in a else 24
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 1.2
     init = a[a.index("--init") + 1] if "--init" in a else None
+    seeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 1
+    out_name = a[a.index("--out") + 1] if "--out" in a else "stand_theta.npy"
+    # BLOCKS: 4 = a0|kh|kp|kr (with the frontal-plane roll term), 3 = a0|kh|kp (without it).
+    # THIS EXISTS TO MAKE AN A/B POSSIBLE, and without it the roll experiment has no control.
+    # Training a 4-block policy from scratch and comparing it to the SAVED incumbent compares
+    # two things that differ in the policy form AND the training history AND the scoring rule --
+    # three coupled changes, which is a three-body problem with no attributable answer. With
+    # `--blocks 3` the identical trainer, budget, seeds, window and RNG stream produce the
+    # without-roll arm, and the roll term is the only variable between them.
+    #
+    # A 3-block run still SAVES 4*nu numbers with kr = 0, so every consumer (parser, walk_formula,
+    # f3) reads one shape and the two arms are interchangeable at judgment.
+    blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else 4
+    if blocks not in (3, 4):
+        raise SystemExit("--blocks must be 3 (no roll term) or 4 (with it). Refusing.")
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     P = derive_stand_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
     nu = m.nu
-    dim = 4 * nu        # a0 | kh | kp | kr -- the roll block, 2026-08-04
-    mu = np.concatenate([np.full(nu, 0.15), np.zeros(nu), np.zeros(nu), np.zeros(nu)])
-    sd = np.concatenate([np.full(nu, 0.15), np.full(nu, 0.6), np.full(nu, 0.6),
-                         np.full(nu, 0.6)])
+    dim = blocks * nu   # a0 | kh | kp [| kr -- the roll block, 2026-08-04]
+    mu = np.concatenate([np.full(nu, 0.15)] + [np.zeros(nu)] * (blocks - 1))
+    sd = np.concatenate([np.full(nu, 0.15)] + [np.full(nu, 0.6)] * (blocks - 1))
     if init:
         # WARM START: continue from a saved theta instead of re-paying for the search from zero.
         # The spread is halved -- the question is now "what is near the best known", not "what
         # is anywhere" (same derivation, finer measurement).
         mu = np.load(init)
-        if mu.size == 3 * nu:      # an old 3-block checkpoint: adopt it with kr = 0, so the
-            mu = np.concatenate([mu, np.zeros(nu)])   # warm start is the old policy exactly
+        if mu.size == 3 * nu and blocks == 4:   # an old 3-block checkpoint: adopt it with kr = 0,
+            mu = np.concatenate([mu, np.zeros(nu)])   # so the warm start is the old policy exactly
+        if mu.size == 4 * nu and blocks == 3:   # a 4-block checkpoint into a 3-block search: the
+            mu = mu[:3 * nu]                    # roll block is DROPPED, and the arm says so
         sd = 0.5 * sd
         print(f"warm start from {init}")
     elite = max(3, pop // 5)
@@ -246,8 +331,14 @@ def main() -> int:
     best_ever = (-np.inf, mu.copy())     # the SAVE is the session's best, not the last turn's
 
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
-          f"g {g:.4f}, {nu} muscles, {dim}-dim search")
-    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}{'jmax':>7}  verdict")
+          f"g {g:.4f}, {nu} muscles, {dim}-dim search "
+          f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})")
+    print(f"  scoring: WORST of {seeds} randomized start(s) x {secs:.1f} s"
+          + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
+             else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
+    print(f"  saving to {out_name}")
+    print(f"{'turn':>5}{'best':>10}{'mean':>10}{'pelvis MIN':>13}{'% of target':>13}{'held':>8}"
+          f"{'jmax':>7}{'seedspr':>9}  verdict")
     best_theta = mu.copy()
     for turn in range(turns):
         cand = rng.normal(mu, sd, size=(pop, dim))
@@ -260,12 +351,12 @@ def main() -> int:
         # policy cannot be lost by looking for a better one), and it costs one evaluation.
         cand[0] = mu
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
-        scores = np.array([evaluate(m, d, mujoco, c, P, secs)[0] for c in cand])
+        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds)[0] for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
         mu, sd = el.mean(0), el.std(0) + 1e-3
         best_theta = cand[order[0]]
-        s, tr, pics = evaluate(m, d, mujoco, best_theta, P, secs, frames=6)
+        s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6)
         # THE BAR IS THE MINIMUM OVER THE FULL FIVE SECONDS, NOT THE PEAK OVER ONE.
         # The first version printed PROVEN on turn 0 because the KEYFRAME starts at 0.98 m: the
         # "peak" was the starting height, and a 1.0 s rollout satisfied a 5 s requirement. That is
@@ -273,8 +364,23 @@ def main() -> int:
         # `surv% = 92.8` over a body that was toppling. Minimum, full duration, or it is not proven.
         held = min(tr["z"]) if tr["z"] else 0.0
         frac = 100 * held / P["OUT pelvis_target_m"]
-        survived = len(tr["t"]) * 0.02
-        ok = frac >= 90.0 and survived >= 4.99
+        survived = len(tr["t"]) * CTRL_EVERY * m.opt.timestep
+        # THE BAR IS f3's FIVE SECONDS, or the whole training window if it is shorter -- so a
+        # 1.2 s smoke run cannot print PROVEN for surviving its own duration. `0.02` was
+        # hardcoded here and is the control period; read from the model instead, because a
+        # literal that happens to equal CTRL_EVERY * timestep is a coincidence waiting to rot.
+        ok = frac >= 90.0 and survived >= min(secs, 5.0) - 0.01
+        # THE SEED SPREAD, max - min over the seeds, and NOT the worst/mean ratio CLAUDE.md
+        # names. That ratio is only meaningful for a positive fitness: this score is negative
+        # almost everywhere (fall penalty -3, duration penalty -2), and worst/mean on negatives
+        # is greater than 1 and gets LARGER as the policy gets more fragile -- a robustness
+        # number that improves when robustness falls. MEASURED on the first smoke run: every
+        # candidate scored about -3.8 and the guard `mean > 0` silently printed n/a for all of
+        # them, which is the guard correctly refusing to report a quantity that was undefined.
+        # The spread is sign-agnostic and answers the question the ratio was reaching for:
+        # HOW MUCH DOES THE SEED DECIDE? 0 = the policy decides; large = the coin does.
+        rb = (max(per_seed) - min(per_seed)) if seeds > 1 else None
+        rb_txt = f"{rb:.2f}" if rb is not None else "n/a"
         hist.append((turn, float(scores[order[0]])))
         if float(scores[order[0]]) > best_ever[0]:
             # The last version saved the LAST turn's winner: a session whose best came at turn 12
@@ -283,10 +389,16 @@ def main() -> int:
             # the same species as the peak-vs-minimum bar.
             best_ever = (float(scores[order[0]]), cand[order[0]].copy())
         print(f"{turn:>5}{scores[order[0]]:>10.3f}{scores.mean():>10.3f}{held:>12.3f}m"
-              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}  "
-              f"{'PROVEN' if ok else 'not yet'}")
+              f"{frac:>12.0f}%{survived:>7.2f}s{max(tr['jf']) if tr['jf'] else 0:>7.2f}"
+              f"{rb_txt:>9}  {'PROVEN' if ok else 'not yet'}")
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"stand_turn_{turn:02d}.png")
-    np.save(OUTDIR / "stand_theta.npy", best_ever[1])
+    # SAVED AT 4*nu WHATEVER THE ARM. A 3-block winner is padded with an explicit zero roll
+    # block, so both arms hand the judge the identical shape and `walk_formula`/`parser` need no
+    # branch. The zeros are the without-roll policy exactly -- kr * roll = 0 for every roll.
+    saved = best_ever[1]
+    if saved.size == 3 * nu:
+        saved = np.concatenate([saved, np.zeros(nu)])
+    np.save(OUTDIR / out_name, saved)
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")
     print("A TURN YOU HAVE NOT LOOKED AT DID NOT END.")

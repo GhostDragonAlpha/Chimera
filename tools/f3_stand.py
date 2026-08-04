@@ -43,13 +43,16 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body
 from stand_port import derive_stand_port, MYOBODY
-from train_stand import joint_ids, seat_in_limits, joint_frac_named
+from train_stand import joint_ids, seat_in_limits, joint_frac_named, CTRL_EVERY
 from parser import Parser, default_registry
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 THETA = OUTDIR / "stand_theta.npy"
-CTRL_EVERY = 20                 # 20 ms: the timestep is 0.001 s MEASURED, not the 0.002 this
-                                # comment claimed until 2026-08-04. evaluate()'s cadence, 50 Hz.
+# CTRL_EVERY IS IMPORTED, NOT REDECLARED (2026-08-04, tools/timestep_audit.py). It was `= 20`
+# here, `= 20` in train_walk.py and a bare `k % 20` literal in train_stand.py -- three copies of
+# one number across the trainer, the judge and the walk, which must agree or the thing being
+# trained is not the thing being judged. They did all agree; that is how this species survives
+# long enough to matter. The trainer owns it now, and the judge reads the trainer's.
 PHASE1_SECS = 5.0               # the slice's bar: five full seconds upright
 PHASE2_MAX = 3.0                # release; the body must slump well inside this
 

@@ -48,9 +48,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCAN_DIRS = ("tools", "ChimeraEngine", "Chimera/core", "story")
 
-# THE CONTROL SUBJECT. These two files' comments were repaired on 2026-08-04 and are known to
-# state the truth. If the audit convicts them, falsifier 1 has fired and the audit is the defect.
-CONTROL_SUBJECTS = ("tools/f3_stand.py", "tools/train_walk.py")
+# THE CONTROL SUBJECT. A file whose stated cadence is known-correct, pushed through the whole
+# instrument the way the clay control is (rule 12). If the audit convicts it, falsifier 1 has
+# fired and the audit is the defect.
+#
+# IT MOVED, and the move is itself a lesson. v1's controls were f3_stand.py and train_walk.py,
+# whose comments were repaired on 2026-08-04. Consolidating CTRL_EVERY into its one home
+# (train_stand.py) deleted the constant from both of them -- so the control would have gone on
+# reporting CLEAN by having nothing left to check. A CONTROL THAT CAN PASS BY BEING ABSENT IS
+# NOT A CONTROL, which is why `main` refuses outright when a control subject yields no site.
+# TWO SUBJECTS WITH DIFFERENT dt, deliberately. train_stand runs myobody at 1e-3 (20 ms, 50 Hz);
+# train_transition runs its own integrator at 5e-4 (10 ms, 100 Hz) with the IDENTICAL
+# CONTROL_EVERY = 20. A one-subject control can be satisfied by an audit that hardcodes the
+# right answer; this one cannot -- the same constant must come back two different periods, so
+# the resolver has to actually read each file's own dt to pass.
+CONTROL_SUBJECTS = ("tools/train_stand.py", "ChimeraEngine/train_transition.py")
 
 # A CADENCE SITE is either a named constant or a bare modulus gate. Both forms exist in this repo
 # and the bare ones are older, so an audit that only read the named ones would report the tidy
@@ -113,9 +125,21 @@ def clause_around(body: str, span) -> str:
     # and one stating the dt, separated by a colon. Without it the cadence claim reads inside a
     # clause that says "timestep" and gets checked against dt: 20 ms vs 1 ms, a conviction
     # manufactured entirely by where this function decided a sentence ends.
-    seps = (";", ".", ",", ":", " -- ", "(", ")")
-    start = max((body.rfind(sep, 0, lo) for sep in seps), default=-1)
-    end = min((p for p in (body.find(sep, hi) for sep in seps) if p != -1), default=len(body))
+    # A DECIMAL POINT IS NOT A SENTENCE BOUNDARY, and the third run's only conviction was
+    # exactly that: `# 20 steps x 0.001 s MEASURED timestep = 20 ms` split at the `.` inside
+    # `0.001`, so the clause around "20 ms" began mid-number, contained the word `timestep`,
+    # and the cadence claim was checked against dt. The instrument convicted its own control
+    # for the third time in one afternoon, each time on a different reading of where a sentence
+    # ends -- which is the honest cost of parsing prose, and the reason the control exists.
+    seps = (";", ",", ":", " -- ", "(", ")")
+    bounds = [i for i, ch in enumerate(body) if ch == "."
+              and not (i > 0 and body[i-1].isdigit() and i + 1 < len(body)
+                       and body[i+1].isdigit())]
+    starts = [body.rfind(sep, 0, lo) for sep in seps] + [b for b in bounds if b < lo]
+    ends = [p for p in (body.find(sep, hi) for sep in seps) if p != -1] \
+        + [b for b in bounds if b >= hi]
+    start = max(starts, default=-1)
+    end = min(ends, default=len(body))
     return body[start + 1:end]
 
 # WHICH MODEL A FILE MEANS WHEN IT SAYS NOTHING. Resolved by import, never by guess: a file that
@@ -184,8 +208,39 @@ def resolve_dt(path: Path, text: str, lines):
     return None, "no DT, no .xml, no model import -- UNRESOLVED"
 
 
+# ── THE DECLARATION, and why inference was abandoned ──────────────────────────────────────────
+# FOUR RUNS, FOUR DIFFERENT MISATTRIBUTIONS, EVERY ONE CAUGHT BY THE CONTROL:
+#   run 1  harvested every time-like number near a cadence      -> 7 convictions, 4 of them false
+#   run 2  split clauses without treating `:` as a boundary     -> 2 false convictions
+#   run 3  split clauses ON THE DECIMAL POINT inside `0.001`    -> 1 false conviction
+#   run 4  checked dt before span, so a `3.0 s episode` became a timestep claim
+# and run 4's own fix produced a fifth: the comment written to DOCUMENT the bug ("the audit
+# checked 20 ms against the TIMESTEP") contains the word TIMESTEP, so the documentation of the
+# false claim became a false claim.
+#
+# That is not a sequence of careless regexes. It is the measurement telling me the quantity is
+# not there: ENGLISH PROSE DOES NOT CARRY AN ATTRIBUTABLE SUBJECT, and every patch traded one
+# misattribution for another while the control kept firing. This project already settled this
+# exact question elsewhere and wrote the answer down -- `story/folding.py`: *signatures are
+# DECLARED, never inferred from equation text, because a serial you can choose is a serial that
+# can lie.* A subject you INFER is a subject that can be wrong.
+#
+# So the audit judges DECLARATIONS and only declarations:
+#
+#     CTRL_EVERY = 20      # cadence: 20 ms, 50 Hz
+#     DT = 5e-4            # timestep: 0.0005 s
+#
+# Prose periods are still found and still printed -- as UNCHECKED, with the text, because "here
+# is a written period nobody can verify" is real signal about where the next rot will start.
+# They can no longer produce a verdict. A check that cannot be trusted is worse than no check.
+RE_DECL = re.compile(r"#\s*(cadence|timestep)\s*:\s*(.+)$", re.I)
+
+
 def claims_for(lines, i, name):
-    """Every period this site CLAIMS, with the text that claims it. Three attributable sources."""
+    """Every period this site DECLARES, plus the prose ones it merely mentions.
+
+    Returns dicts with `declared=True/False`. Only the declared ones are ever judged.
+    """
     out = []
     # ATTACHED vs DISTANT. A comment physically attached to an assignment -- on its line, or in
     # the contiguous block immediately above or below it -- documents THAT ASSIGNMENT; that is
@@ -206,6 +261,17 @@ def claims_for(lines, i, name):
             if name in ln and ("\"\"\"" in ln or ln.strip().startswith("#")) and k != i:
                 src.append((ln, f"docstring L{k+1}", False))
     for text, where, attached in src:
+        # A DECLARATION FIRST. `# cadence: 20 ms, 50 Hz` says what it is about, so every number
+        # after the colon belongs to that subject and no parsing of English is involved.
+        decl = RE_DECL.search(text)
+        if decl:
+            subj, payload = decl.group(1).lower(), decl.group(2)
+            for unit, rx in (("ms", RE_MS), ("Hz", RE_HZ), ("s", RE_SEC)):
+                for mo in rx.finditer(payload):
+                    out.append(dict(unit=unit, val=float(mo.group(1)), where=where,
+                                    raw=mo.group(0).strip(), subject=subj, declared=True,
+                                    clause=payload.strip()[:70]))
+            continue
         body = text.split("#", 1)[1] if "#" in text else text
         for unit, rx in (("ms", RE_MS), ("Hz", RE_HZ), ("s", RE_SEC)):
             for mo in rx.finditer(body):
@@ -213,12 +279,19 @@ def claims_for(lines, i, name):
                 # ROUTED BY WHAT THE CLAUSE IS ABOUT, and a number the clause does not tie to
                 # anything is DROPPED rather than guessed at. A dropped claim costs this audit a
                 # check; a guessed one costs it its verdict, which is what falsifier 1 measured.
+                # ORDER IS THE RULE, and getting it wrong cost a run. A clause routinely names
+                # more than one marker -- `T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3.0 s
+                # episode` carries a dt word AND a span word -- so whichever test runs first
+                # wins, and the first version put dt first and filed a 3.0 s episode as a
+                # timestep claim. SPAN IS THE MOST SPECIFIC: a clause that says "episode" is
+                # about an episode whatever else it mentions. Negation outranks everything,
+                # because a corrected value is not a claim at all.
                 if RE_NEGATED.search(cl):
                     subject = "negated"          # the text is CORRECTING this value, not claiming it
-                elif RE_ABOUT_DT.search(cl):
-                    subject = "dt"               # checkable, but against the timestep
                 elif RE_ABOUT_SPAN.search(cl):
                     subject = "span"             # a duration -- not a cadence, not this audit's
+                elif RE_ABOUT_DT.search(cl):
+                    subject = "dt"               # checkable, but against the timestep
                 elif RE_ABOUT_CADENCE.search(cl) or (name and name in cl):
                     subject = "cadence"
                 elif attached and name:
@@ -227,7 +300,7 @@ def claims_for(lines, i, name):
                     subject = "cadence"
                 else:
                     subject = "unattributed"
-                out.append(dict(unit=unit, val=float(mo.group(1)), where=where,
+                out.append(dict(unit=unit, val=float(mo.group(1)), where=where, declared=False,
                                 raw=mo.group(0).strip(), subject=subject, clause=cl.strip()[:70]))
     return out
 
@@ -273,10 +346,12 @@ def audit():
             verdicts, dropped = [], []
             for c in claims_for(lines, i, name):
                 unit, val, subject = c["unit"], c["val"], c["subject"]
-                if subject in ("negated", "span", "unattributed"):
-                    dropped.append(c)            # counted and printed, never silently discarded
+                if not c["declared"]:
+                    # PROSE. Recorded and reported, never judged -- see the RE_DECL block above
+                    # for the four false convictions that bought this rule.
+                    dropped.append(c)
                     continue
-                if subject == "dt":
+                if subject == "timestep":
                     # THE CLAIM IS ABOUT THE TIMESTEP, so it is checked against the timestep. This
                     # is a real check and it is the ORIGINAL defect's own shape: a docstring
                     # asserting 0.002 over a model that runs 0.001.
@@ -326,16 +401,28 @@ def main() -> int:
         print(f"\nUNRESOLVED dt -- reported, never assumed ({len(unresolved)} files):")
         for rel, why, ns in unresolved:
             print(f"  {rel:56} N={ns}  {why}")
-    # THE CONTROL. If the two known-correct files come back convicted, the instrument is the bug.
+    # THE CONTROL. If a known-correct file comes back convicted, the instrument is the bug -- and
+    # if it comes back with nothing to check, the control is vacuous and this refuses rather than
+    # printing the CLEAN that a missing subject would earn for free.
     ctrl_bad = [t for t, _, _ in bad if t.split(":")[0] in CONTROL_SUBJECTS]
+    ctrl_checked = {s: sum(1 for r in rows if r["file"] == s and r["claims"])
+                    for s in CONTROL_SUBJECTS}
+    ctrl_missing = [s for s, n in ctrl_checked.items() if n == 0]
     print("\n" + "=" * 100)
     print(f"  sites found {len(rows)}, sites stating a checkable period {checked}, "
           f"MISMATCHES {len(bad)}")
     print(f"  time-like numbers DROPPED as not-about-the-cadence: {n_dropped} "
           f"(negations, spans, unattributed -- see --json for every one)")
-    print(f"  CONTROL SUBJECT ({', '.join(CONTROL_SUBJECTS)}): "
-          + ("CLEAN -- the instrument agrees with the two known-correct files"
-             if not ctrl_bad else f"CONVICTED {ctrl_bad} -- FALSIFIER 1 FIRED, the audit is wrong"))
+    if ctrl_missing:
+        print(f"  CONTROL SUBJECT {ctrl_missing}: NO CHECKABLE SITE. Refusing to report a verdict "
+              f"-- an instrument whose control has nothing to check is asserting its own "
+              f"correctness, not measuring it (rule 24: an instrument needs an instrument).")
+    else:
+        print(f"  CONTROL SUBJECT ({', '.join(CONTROL_SUBJECTS)}, "
+              f"{sum(ctrl_checked.values())} checkable site(s)): "
+              + ("CLEAN -- the instrument agrees with the known-correct file"
+                 if not ctrl_bad else
+                 f"CONVICTED {ctrl_bad} -- FALSIFIER 1 FIRED, the audit is wrong"))
     for tag, c, r in bad:
         print(f"\n  MISMATCH  {tag}  {r['name']} = {r['n']}")
         print(f"            claims {c['claim']!r} in {c['where']}")

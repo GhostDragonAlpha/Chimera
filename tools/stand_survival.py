@@ -45,18 +45,19 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body                                       # noqa: E402
 from stand_port import derive_stand_port, MYOBODY                 # noqa: E402
-from train_stand import joint_ids, seat_in_limits                 # noqa: E402
+from train_stand import (joint_ids, seat_in_limits,               # noqa: E402
+                         CTRL_EVERY, NUDGE)
 from parser import Parser, default_registry                       # noqa: E402
 from classify_fall import classify_trace                          # noqa: E402
-from f3_stand import CTRL_EVERY                                   # noqa: E402
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 LOGDIR = ROOT / "agent_logs"
 THETA = OUTDIR / "stand_theta.npy"
-# THE NUDGE. Not a knob -- see the module docstring. Metres on the free joint's translation,
-# radians on every hinge; both are the same number because both are 1e-6 of their own unit and
-# the point is that the magnitude is beneath meaning in either.
-NUDGE = 1e-6
+# THE NUDGE IS IMPORTED FROM THE TRAINER, not declared here. Not a knob -- see the module
+# docstring. Metres on the free joint's translation, radians on every hinge; both are the same
+# number because both are 1e-6 of their own unit and the point is that the magnitude is beneath
+# meaning in either. It lives in train_stand.py so the search and the instrument that judges it
+# cannot perturb by two different amounts and call the disagreement a result (rule 19).
 
 
 def rollout(m, d, mujoco, theta, P, secs, seed, jids, tgt, nu):

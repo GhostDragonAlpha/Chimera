@@ -44,7 +44,13 @@ DT = 5e-4                             # armature is 0 to match our engine, so Eu
                                       # the cost of keeping the MuJoCo model identical to the
                                       # witnessed one rather than adding rotor inertia it does not
                                       # have.
-CONTROL_EVERY = 20                    # still 100 Hz neural drive
+# cadence: 10 ms, 100 Hz
+CONTROL_EVERY = 20                    # 20 steps x this file's own DT = 5e-4 s. DECLARED above
+                                      # for tools/timestep_audit.py, which resolves dt PER FILE:
+                                      # this one is 5e-4 while every myobody harness is 1e-3, so
+                                      # the same CONTROL_EVERY = 20 is 100 Hz here and 50 Hz
+                                      # there. An audit assuming one dt for the repo would
+                                      # convict this line, and it is correct.
 EPISODE = 1.2                         # seconds
 HID = 24
 LR = 0.6                              # ES step size

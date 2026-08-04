@@ -13,43 +13,6 @@
    "dropped": []
   },
   {
-   "file": "tools/f3_stand.py",
-   "line": 51,
-   "name": "CTRL_EVERY",
-   "n": 20,
-   "dt": 0.001,
-   "period_ms": 20.0,
-   "hz": 50.0,
-   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
-   "claims": [
-    {
-     "claim": "20 ms",
-     "where": "same line",
-     "ok": true,
-     "measured": "20.0 ms",
-     "about": "cadence",
-     "clause": "20 ms"
-    },
-    {
-     "claim": "0.001 s",
-     "where": "same line",
-     "ok": true,
-     "measured": "0.0010 s",
-     "about": "dt",
-     "clause": "the timestep is 0.001 s MEASURED"
-    },
-    {
-     "claim": "50 Hz",
-     "where": "comment L52",
-     "ok": true,
-     "measured": "50.0 Hz",
-     "about": "cadence",
-     "clause": "50 Hz"
-    }
-   ],
-   "dropped": []
-  },
-  {
    "file": "tools/policy_gait_eval.py",
    "line": 38,
    "name": "CONTROL_EVERY",
@@ -70,17 +33,18 @@
    "period_ms": 20.0,
    "hz": 50.0,
    "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
-   "claims": [
+   "claims": [],
+   "dropped": [
     {
-     "claim": "20 ms",
+     "unit": "ms",
+     "val": 20.0,
      "where": "same line",
-     "ok": true,
-     "measured": "20.0 ms",
-     "about": "cadence",
+     "declared": false,
+     "raw": "20 ms",
+     "subject": "cadence",
      "clause": "the same 20 ms interval R3 measured"
     }
-   ],
-   "dropped": []
+   ]
   },
   {
    "file": "tools/port_trainer.py",
@@ -97,6 +61,7 @@
      "unit": "s",
      "val": 1.5,
      "where": "comment L237",
+     "declared": false,
      "raw": "1.5 s",
      "subject": "unattributed",
      "clause": "violent 35 deg oscillation for 1.5 s"
@@ -105,6 +70,7 @@
      "unit": "s",
      "val": 3.5,
      "where": "comment L238",
+     "declared": false,
      "raw": "3.5 s",
      "subject": "span",
      "clause": "remaining 3.5 s"
@@ -168,24 +134,25 @@
    "period_ms": 20.0,
    "hz": 50.0,
    "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
-   "claims": [
-    {
-     "claim": "0.001 s",
-     "where": "docstring L91",
-     "ok": true,
-     "measured": "0.0010 s",
-     "about": "dt",
-     "clause": "T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3"
-    }
-   ],
+   "claims": [],
    "dropped": [
+    {
+     "unit": "s",
+     "val": 0.001,
+     "where": "docstring L91",
+     "declared": false,
+     "raw": "0.001 s",
+     "subject": "dt",
+     "clause": "T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3.0 s"
+    },
     {
      "unit": "s",
      "val": 3.0,
      "where": "docstring L91",
+     "declared": false,
      "raw": "3.0 s",
-     "subject": "unattributed",
-     "clause": "001 s = a 3.0 s"
+     "subject": "dt",
+     "clause": "T=150 x CONTROL_EVERY=20 x timestep 0.001 s = a 3.0 s"
     }
    ]
   },
@@ -227,73 +194,32 @@
   },
   {
    "file": "tools/train_stand.py",
-   "line": 140,
-   "name": "gate `k % 20`",
-   "n": 20,
-   "dt": 0.001,
-   "period_ms": 20.0,
-   "hz": 50.0,
-   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
-   "claims": [],
-   "dropped": []
-  },
-  {
-   "file": "tools/train_stand.py",
-   "line": 151,
-   "name": "gate `k % 20`",
-   "n": 20,
-   "dt": 0.001,
-   "period_ms": 20.0,
-   "hz": 50.0,
-   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
-   "claims": [],
-   "dropped": []
-  },
-  {
-   "file": "tools/train_walk.py",
-   "line": 48,
+   "line": 51,
    "name": "CTRL_EVERY",
    "n": 20,
    "dt": 0.001,
    "period_ms": 20.0,
    "hz": 50.0,
-   "provenance": "imports MYOBODY -> external/myo_sim/body/myobody.xml (loaded)",
+   "provenance": "external/myo_sim/body/myobody.xml (loaded, m.opt.timestep)",
    "claims": [
     {
-     "claim": "50 Hz",
-     "where": "comment L44",
-     "ok": true,
-     "measured": "50.0 Hz",
-     "about": "cadence",
-     "clause": "-- so the parser's cadence is 50 Hz"
-    },
-    {
      "claim": "20 ms",
-     "where": "comment L43",
+     "where": "comment L50",
      "ok": true,
      "measured": "20.0 ms",
      "about": "cadence",
-     "clause": "20 ms"
+     "clause": "20 ms, 50 Hz"
     },
     {
-     "claim": "0.001 s",
-     "where": "comment L43",
+     "claim": "50 Hz",
+     "where": "comment L50",
      "ok": true,
-     "measured": "0.0010 s",
-     "about": "dt",
-     "clause": "myobody's timestep is 0.001 s"
+     "measured": "50.0 Hz",
+     "about": "cadence",
+     "clause": "20 ms, 50 Hz"
     }
    ],
-   "dropped": [
-    {
-     "unit": "Hz",
-     "val": 25.0,
-     "where": "comment L44",
-     "raw": "25 Hz",
-     "subject": "negated",
-     "clause": "not the 25 Hz every docstring in"
-    }
-   ]
+   "dropped": []
   },
   {
    "file": "tools/walk_dyad.py",
@@ -381,7 +307,7 @@
   },
   {
    "file": "ChimeraEngine/train_transition.py",
-   "line": 47,
+   "line": 48,
    "name": "CONTROL_EVERY",
    "n": 20,
    "dt": 0.0005,
@@ -390,15 +316,42 @@
    "provenance": "module-level DT = 5e-4",
    "claims": [
     {
+     "claim": "10 ms",
+     "where": "comment L47",
+     "ok": true,
+     "measured": "10.0 ms",
+     "about": "cadence",
+     "clause": "10 ms, 100 Hz"
+    },
+    {
      "claim": "100 Hz",
-     "where": "same line",
+     "where": "comment L47",
      "ok": true,
      "measured": "100.0 Hz",
      "about": "cadence",
-     "clause": "still 100 Hz neural drive"
+     "clause": "10 ms, 100 Hz"
     }
    ],
-   "dropped": []
+   "dropped": [
+    {
+     "unit": "Hz",
+     "val": 100.0,
+     "where": "docstring L51",
+     "declared": false,
+     "raw": "100 Hz",
+     "subject": "cadence",
+     "clause": "the same CONTROL_EVERY = 20 is 100 Hz here and 50 Hz"
+    },
+    {
+     "unit": "Hz",
+     "val": 50.0,
+     "where": "docstring L51",
+     "declared": false,
+     "raw": "50 Hz",
+     "subject": "cadence",
+     "clause": "the same CONTROL_EVERY = 20 is 100 Hz here and 50 Hz"
+    }
+   ]
   },
   {
    "file": "Chimera/core/trainables/bigbang.py",

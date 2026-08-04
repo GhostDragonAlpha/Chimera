@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body                                              # noqa: E402
 from stand_port import MYOBODY                                           # noqa: E402
-from train_stand import joint_ids, seat_in_limits                        # noqa: E402
+from train_stand import joint_ids, seat_in_limits, CTRL_EVERY            # noqa: E402
 from walk_port import (derive_walk_port, muscle_groups, walk_formula,    # noqa: E402
                        walk_reward, score_walk, N_FREE, OSC_JOINTS, WalkOscillator)
 from chimera_gait import _periodicity                                    # noqa: E402
@@ -40,12 +40,14 @@ from chimera_gait import _periodicity                                    # noqa:
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 STAND_THETA = OUTDIR / "stand_theta.npy"
 WALK_THETA = OUTDIR / "walk_theta.npy"
-# 20 ms: myobody's timestep is 0.001 s, MEASURED (`m.opt.timestep`), not the 0.002 this comment
+# CTRL_EVERY IS IMPORTED FROM train_stand (see the import above), not redeclared here. It was
+# `= 20` in three files; they agreed, and `tools/timestep_audit.py` says so with numbers rather
+# than with a reading. The history this replaces, kept because it is the reason the audit exists:
+# myobody's timestep is 0.001 s, MEASURED (`m.opt.timestep`), not the 0.002 the comment here
 # claimed until 2026-08-04 -- so the parser's cadence is 50 Hz, not the 25 Hz every docstring in
 # this pair of files asserted. Nothing computed from it was wrong (every consumer multiplies by
 # `m.opt.timestep` rather than a literal), which is exactly why it survived: a wrong number under
 # a formula that still reads plausibly is invisible until someone prints the timestep.
-CTRL_EVERY = 20
 
 
 def foot_contact(m, d, mujoco):
