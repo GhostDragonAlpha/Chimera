@@ -120,3 +120,40 @@ stand formula's 870 numbers re-searched with the weld ACTIVE from the
 spawn (warm start from stand_theta; the loaded stand is a separate
 artifact, carry_theta.npy). f6's phase 2 then judges the carry policy;
 phase 1 and 3's bars do not move.
+
+**Run 3 — `train_carry.py` run 1 (24×32, warm from the retrained stand
+theta, weld ON from the spawn, horizon 3.0 s = f6's window): NO CARRY
+FOUND, and the instrument question answered by probe BEFORE any theory
+moved.** Every turn fell at 1.1–1.9 s, pelvis MIN 46–50%, best score
+−3.737 (turn 16). Flat to the eye — but not dead: the mean climbed
+−4.554 → −4.253 and the best held-time crept 1.82 → 1.92 s. A live,
+weak gradient. Two measurements taken before reading anything into it:
+
+- **The landmark was already right.** Suspicion: the reward grades
+  `subtree_com[0]`, which might exclude the welded stone (separate
+  freejoint tree) — the same wrong-landmark species the other agent
+  caught in f3 the same week. PROBED, not theorised: `subtree_com[0]`
+  equals the hand-computed body+stone CoM to the fourth decimal
+  ((−0.0313, 0.1776) both ways). The compass was correct all along.
+  Also surfaced: the model's bodies sum to 82.0 kg, not theHuman's
+  94.5 — the load fraction against the MODEL's mass is 59.49/82.0 =
+  73%, heavier than the doc's headline. Recorded, not reconciled.
+- **Born outside the polygon.** At the seated spawn with the weld on,
+  the combined CoM sits 0.178 m ahead in y against a fore box half of
+  0.1355 — 4.2 cm OUTSIDE the base of support at t=0. Statics: the
+  hold needs the body's own CoM ~10.5 cm BEHIND the foot centre, and
+  the hip-extensor moment is ~206 N·m (stone 189 + torso ~17) — at the
+  edge of the published human maximum (strongman-class, not
+  impossible). f6 with carry_theta confirmed all three phases red —
+  the body is down before the weld even engages.
+
+Falsifier 2 (cannot stand with the load at ANY trained setting) is NOT
+fired: 24 narrow warm-start turns with a weak but live gradient is not
+"any trained setting" — the same discipline the walk got (v2 run 1
+climbing → continuation granted). Backed up to
+`carry_theta.run1.bak.npy`; a 48-turn continuation from the session
+best runs now. If the continuation plateaus with no candidate holding
+3.0 s, falsifier 2 fires with its numbers and the finding to publish
+is the stone itself: 73% of model mass at a 0.45 m lever is a dial
+(THE HUMAN's D = 0.35 m) sitting past the edge of the published human
+hip moment — and only THE HUMAN moves that dial.
