@@ -877,7 +877,7 @@ class StandSimulator:
         """Create the MuJoCo simulation environment with the stand policy.
 
         Args:
-            theta_path: path to the .npy theta file (4-block P-only or 7-block PD).
+            theta_path: path to the .npy theta file (4-block P-only, 6-block P+CoM or 7-block PD).
                         Defaults to ChimeraEngine/output/ports/stand_theta.npy
             mujoco_body: path to the MuJoCo XML model. Defaults to the myobody.
             gravity: override gravity (m/s^2). None uses the model's default.
@@ -907,7 +907,9 @@ class StandSimulator:
         # Load policy
         self.theta_path = Path(theta_path) if theta_path else (_HERE / "output" / "ports" / "stand_theta.npy")
         self.decoder = SynergyDecoder(theta_path=self.theta_path, tgt=self.tgt, nu=self.nu)
-        self.is_pd = self.decoder.blocks == 7
+        # SYNERGY LAYOUTS: 6/7/9-block thetas decode through the decoder's richer formulas
+        # (P+CoM / PD / PD+CoM); 4-block is the parser-compatible P-only policy.
+        self.is_pd = self.decoder.blocks in (6, 7, 9)
 
         # State tracking
         self.t = 0.0

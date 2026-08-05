@@ -45,6 +45,56 @@ N_FRAMES = 5          # 2 discarded as warm-up, 3 timed -- the task asks for 3
 _BG = np.array([0.015, 0.015, 0.04], dtype=np.float32) * 255.0
 
 
+def gpu_state() -> dict:
+    """What else was using the card when this sweep ran.
+
+    THIS EXISTS BECAUSE THE COEFFICIENTS MOVED AND NOBODY COULD SAY WHY. Across four sweeps the
+    fitted slope went 2.91e-05 -> 3.83e-05 -> 3.15e-05 -> 3.61e-05 and the empty-frame floor read
+    9.4-9.8, then 7.7-7.9, then 8.7-9.1 ms -- with ZERO expansions every time, so the renderer
+    cannot have moved it. One sweep even reported aTerrain as an 18% regression that measured
+    -3.7% when re-run interleaved. The cause was always the same: this box shares one 4090 with
+    LM Studio, and nothing recorded what the card was doing.
+
+        A MEASUREMENT THAT DOES NOT RECORD ITS CONDITIONS CANNOT BE COMPARED TO ANOTHER ONE.
+
+    So every row now carries the machine state it was taken under. It does not make the noise go
+    away -- it makes two sweeps comparable, and it makes "why did this move" answerable instead of
+    a shrug. Best-effort: a missing nvidia-smi or a stopped LM Studio must never fail a benchmark.
+    """
+    import json as _json
+    import subprocess
+    import urllib.request
+    st = {"vram_used_mb": None, "vram_total_mb": None, "gpu_util_pct": None,
+          "sm_clock_mhz": None, "temp_c": None, "lm_model": None}
+    try:
+        q = ("utilization.gpu,memory.used,memory.total,temperature.gpu,clocks.current.sm")
+        out = subprocess.run(["nvidia-smi", f"--query-gpu={q}", "--format=csv,noheader,nounits"],
+                             capture_output=True, text=True, timeout=15).stdout.strip()
+        u, mu, mt, t, c = [x.strip() for x in out.splitlines()[0].split(",")]
+        st.update(gpu_util_pct=int(u), vram_used_mb=int(mu), vram_total_mb=int(mt),
+                  temp_c=int(t), sm_clock_mhz=int(c))
+    except Exception:
+        pass
+    try:
+        # WHICH MODEL IS RESIDENT, not whether one "should" be. The gateway ADOPTS whatever
+        # LM Studio has loaded, so the only honest way to record it is to ask LM Studio.
+        with urllib.request.urlopen("http://127.0.0.1:1234/api/v0/models", timeout=10) as r:
+            for m in _json.loads(r.read().decode()).get("data", []):
+                if m.get("state") == "loaded":
+                    st["lm_model"] = f"{m.get('id')}@{m.get('loaded_context_length')}"
+                    break
+    except Exception:
+        pass
+    return st
+
+
+def _fmt_gpu(st: dict) -> str:
+    vu, vt = st.get("vram_used_mb"), st.get("vram_total_mb")
+    frac = f"{vu:,}/{vt:,} MiB ({100*vu/vt:.0f}%)" if vu and vt else "VRAM unknown"
+    return (f"GPU: {frac} | util {st.get('gpu_util_pct')}% | sm {st.get('sm_clock_mhz')} MHz "
+            f"| {st.get('temp_c')} C | LM Studio: {st.get('lm_model') or 'nothing loaded'}")
+
+
 def _aim(cam, dist):
     """Place the camera at `dist` on -y and point it at the origin.
 
@@ -91,6 +141,8 @@ def bench(quick: bool = False) -> list[dict]:
     pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
     cam = FirstPersonCamera((0.0, -3.0, 0.0))
 
+    _g0 = gpu_state()
+    print("  " + _fmt_gpu(_g0), flush=True)
     reps = heaviest_per_class()
     if quick:
         reps = dict(list(reps.items())[:3])
@@ -127,7 +179,9 @@ def bench(quick: bool = False) -> list[dict]:
                          "n_vis": nvis,
                          "coverage_frac": round(cov, 6), "render_ms": round(ms, 3),
                          "render_ms_std": round(sd, 3), "fps": round(1000.0 / ms, 2),
-                         "expansions": exp, "expansions_per_splat": round(eps, 2)})
+                         "expansions": exp, "expansions_per_splat": round(eps, 2),
+                         "gpu_vram_mb": _g0["vram_used_mb"], "gpu_util_pct": _g0["gpu_util_pct"],
+                         "lm_model": _g0["lm_model"] or ""})
             print(f"  {term:22s} {z:5.2f}x  base={buf.shape[0]:>7d} lod={draw.shape[0]:>7d} "
                   f"vis={nvis:>7d} cover={100*cov:6.2f}%  exp={exp:>10,d} eps={eps:>7.1f}  "
                   f"{ms:7.2f} +- {sd:5.2f} ms  {1000.0/ms:6.1f} fps", flush=True)
@@ -333,6 +387,16 @@ def main(argv=None) -> int:
     print("=" * 92)
     rows = bench(quick)
     m = model_report(rows)
+    # PRINTED AT BOTH ENDS. If the card's state changed DURING the sweep, the early rows and the
+    # late rows were measured under different machines and the fit spans two populations -- which
+    # is exactly the failure this probe exists to make visible rather than mysterious.
+    _g1 = gpu_state()
+    print("\n  conditions at end:   " + _fmt_gpu(_g1))
+    if rows and rows[0].get("gpu_vram_mb") and _g1.get("vram_used_mb"):
+        _d = abs(_g1["vram_used_mb"] - rows[0]["gpu_vram_mb"])
+        if _d > 512:
+            print(f"  *** VRAM MOVED {_d:,} MiB DURING THIS SWEEP -- the early and late rows were "
+                  f"measured under different machines and the fit spans two populations. ***")
     out = _HERE.parent / "docs" / "pipeline_benchmark.csv"
     with open(out, "w", newline="", encoding="utf8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))

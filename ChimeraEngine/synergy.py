@@ -187,7 +187,15 @@ class SynergyDecoder:
                                   1 - 2 * (q[1]**2 + q[2]**2)))
         roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                  1 - 2 * (q[1]**2 + q[2]**2)))
-        obs = {"z": z, "pitch": pitch, "roll": roll, "tgt": tgt}
+        # THE FOOT CENTRE IS THE FOOT POLYGON, NOT THE HEELS -- measured 2026-08-02: against
+        # heels alone the CoM reads ~15 cm forward and OUTSIDE the base; against heels AND toes
+        # it is comfortably inside. com_x/com_y are the CoM offset from that polygon centre,
+        # the base-of-support margins that determine lateral stability.
+        com = d.subtree_com[0]
+        foot = 0.25 * (d.xpos[m.body("calcn_r").id] + d.xpos[m.body("calcn_l").id]
+                       + d.xpos[m.body("toes_r").id] + d.xpos[m.body("toes_l").id])
+        obs = {"z": z, "pitch": pitch, "roll": roll, "tgt": tgt,
+               "com_x": float(com[0] - foot[0]), "com_y": float(com[1] - foot[1])}
         if prev is not None:
             obs["z_dot"] = (z - prev["z"]) / dt
             obs["pitch_dot"] = (pitch - prev["pitch"]) / dt
@@ -203,21 +211,22 @@ class SynergyDecoder:
     def decode(self, obs):
         """Map an observation dict to 290 muscle activations.
 
-        obs keys: z, pitch, roll, (z_dot, pitch_dot, roll_dot) — all floats.
+        obs keys: z, pitch, roll, com_x, com_y, (z_dot, pitch_dot, roll_dot) — all floats.
         The observation is the body's state relative to the stand target.
-        The target (tgt - z) is the height error; pitch/roll are lean angles.
+        The target (tgt - z) is the height error; pitch/roll are lean angles; com_x/com_y
+        are the CoM offset from the foot-polygon centre. 6-block and 9-block thetas REQUIRE
+        com_x/com_y in obs and raise if absent, so a CoM theta cannot run blind.
         """
         z = float(obs["z"]); pitch = float(obs["pitch"]); roll = float(obs["roll"])
         z_err = self.tgt - z
-        if self.blocks == 7:
-            zd = float(obs.get("z_dot", 0.0))
-            pd = float(obs.get("pitch_dot", 0.0))
-            rd = float(obs.get("roll_dot", 0.0))
-            u = (self.a0 + self.kh * z_err + self.kdz * zd
-                 + self.kp * pitch + self.kdp * pd
-                 + self.kr * roll + self.kdr * rd)
-        else:
-            u = self.a0 + self.kh * z_err + self.kp * pitch + self.kr * roll
+        u = self.a0 + self.kh * z_err + self.kp * pitch + self.kr * roll
+        if self.blocks in (7, 9):
+            zd = float(obs["z_dot"])
+            pd = float(obs["pitch_dot"])
+            rd = float(obs["roll_dot"])
+            u = u + self.kdz * zd + self.kdp * pd + self.kdr * rd
+        if self.blocks in (6, 9):
+            u = u + self.kx * float(obs["com_x"]) + self.ky * float(obs["com_y"])
         return np.clip(u, 0.0, 1.0)
 
     def decode_with_basis(self, obs):
@@ -290,8 +299,13 @@ if __name__ == "__main__":
     print(f"theta: {th.size} numbers = {blocks} blocks x {nu} muscles")
     if blocks == 4:
         print("  formula: a0 + kh*(tgt-z) + kp*pitch + kr*roll  [P-only]")
+    elif blocks == 6:
+        print("  formula: a0 + kh*(tgt-z) + kp*pitch + kr*roll + kx*com_x + ky*com_y  [P+CoM]")
     elif blocks == 7:
         print("  formula: a0 + kh*(tgt-z) + kdz*ż + kp*pitch + kdp*θ̇ + kr*roll + kdr*ṙ  [PD]")
+    elif blocks == 9:
+        print("  formula: a0 + kh*(tgt-z) + kdz*ż + kp*pitch + kdp*θ̇ + kr*roll + kdr*ṙ"
+              " + kx*com_x + ky*com_y  [PD+CoM]")
     dec = SynergyDecoder()
     print(f"  target: {dec.tgt:.4f} m")
     if dec.synergies.shape[0] < dec.nu:
