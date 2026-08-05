@@ -16,7 +16,22 @@ import numpy as np
 
 NCOLS = 28
 PX, PY, PZ = 0, 1, 2
+# GRAIN MASS -- the sim pipeline's own MASS column (col 9), adopted for matter. A grain is a
+# Gaussian density packet: mass here + SIZE below fully determine its peak density (grain_density),
+# and density is what the optics below READ. Optional: zero means "this emit carries no mass".
+MASS = 9
 TYPE = 11
+# THE SPECULAR COLUMNS -- what a grain needs for light to REFLECT off it, both derived, never picked:
+#   SPEC_F0     Fresnel reflectance at normal incidence = fresnel_f0(refractive_index(rho)) --
+#               the membrane's own published density, pushed through Lorentz-Lorenz. Water lands on
+#               the 2% every photographer knows without anyone typing it.
+#   SPEC_SLOPE  RMS sub-grain slope (tan units) -- the membrane's own published surface statistic
+#               (aSaltOcean: Cox-Munk surface_slope_mean; aTerrain: tan(mean_slope_deg)).
+# THESE OVERLAY THE SIM PATH'S PROP0/PROP1 (some particle types read PROP0 as an opacity source).
+# No collision is possible: the renderer reads them as specular inputs ONLY when a light has been
+# explicitly set on the pipeline (set_light), which no sim demo does -- and zero in either column
+# means "not published", which disables the term for that grain rather than inventing a default.
+SPEC_F0, SPEC_SLOPE = 12, 13
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-face-culls the far side
 # THE ALBEDO A GRAIN IS MADE OF, as opposed to the colour it currently shows. A membrane that will be
@@ -158,6 +173,80 @@ def blackbody_rgb(T: float) -> tuple:
         return (1.0, 0.35 + 0.6 * f, 0.1 + 0.85 * f)
     f = min(1.0, (t - 5800.0) / 20000.0)
     return (1.0 - 0.35 * f, 1.0 - 0.15 * f, 1.0)
+
+
+# ══ THE OPTICS OF MATTER: density → refractive index → reflection ═══════════════════════════════
+# THE TWO-FORCE READER (2026-08-05; theory: docs/THE_TWO_FORCES.md). Light is not a new physics
+# system in this world -- it is a third READER of the density field that gravity and mechanics
+# already read. The bridge is Lorentz-Lorenz, which is electromagnetism and nothing else: a bound
+# electron cloud polarises in the light's field, and summing that response over the number of
+# molecules per volume -- the DENSITY -- gives the refractive index,
+#
+#     (n^2 - 1) / (n^2 + 2) = r * rho
+#
+# where r is the material's SPECIFIC REFRACTION (cm^3/g), a measured molecular constant that enters
+# the way nuclear binding enters theStar: sourced, cited, never fitted. Everything downstream is a
+# consequence: Fresnel reflectance from n, the sunglint from Fresnel. THE CHECK THAT THIS IS A
+# DERIVATION AND NOT A STORY: seawater at aSaltOcean's own published 1026.95 kg/m^3 comes out
+# n = 1.3437 against the 1.34 its physics sourced independently -- 0.3% from density alone, and
+# aSaltOcean's published sunglint_intensity (0.0211) is fresnel_f0 of that n. Move the density and
+# the glint moves; that is the slider test.
+
+# Specific refraction r (cm^3/g), each a MEASURED constant restated through the law above:
+#   water    : molar refraction R_M = 3.712 cm^3/mol (CRC) over M = 18.015 g/mol.
+#   silicate : quartz's measured n = 1.548 at rho = 2.65 g/cm^3, inverted through Lorentz-Lorenz --
+#              the same number mineralogy tables carry as its specific refraction (~0.120).
+# A porous or salty material needs NO extra rule: refractivity is additive in mass, so bulk density
+# already carries porosity (theGround's 1537 kg/m^3 regolith reflects LESS than solid rock, and
+# that is the physics, not a style choice).
+SPECIFIC_REFRACTION_CM3_G = {
+    "water": 3.712 / 18.015,          # = 0.20605
+    "silicate": 0.1198,
+}
+
+
+def refractive_index(rho_kg_m3: float, r_cm3_g: float) -> float:
+    """Lorentz-Lorenz: density in, refractive index out. Refuses an unphysical input rather than
+    clamping it -- r*rho >= 1 has no real n, and a clamp here would be a fallback wearing a hat."""
+    x = float(r_cm3_g) * (float(rho_kg_m3) / 1000.0)      # rho to g/cm^3, same unit system as r
+    if not (0.0 <= x < 1.0):
+        raise ValueError(f"refractive_index: r*rho = {x:.4f} is outside [0, 1) -- "
+                         f"check the density ({rho_kg_m3} kg/m^3) or the specific refraction ({r_cm3_g})")
+    return float(np.sqrt((1.0 + 2.0 * x) / (1.0 - x)))
+
+
+def fresnel_f0(n: float) -> float:
+    """Reflectance at normal incidence for a dielectric meeting vacuum/air: ((n-1)/(n+1))^2.
+    Water's n = 1.34 lands on 0.0211 -- the 2% glint -- with nothing typed but the density."""
+    n = float(n)
+    return ((n - 1.0) / (n + 1.0)) ** 2
+
+
+def grain_mass(rho_kg_m3: float, size: float) -> float:
+    """The MASS column value that gives a Gaussian grain of this SIZE the stated peak density.
+    A grain is a density packet rho(x) = rho0 * exp(-|x|^2 / (2 s^2)); integrating it gives
+    M = rho0 * (2 pi)^(3/2) * s^3. The disc reshaping in the renderer is a screen-coverage device,
+    not a matter property, so the matter's own shape here is the isotropic ball the emit asked for."""
+    s = abs(float(size))
+    return float(rho_kg_m3) * (2.0 * np.pi) ** 1.5 * s ** 3
+
+
+def grain_density(mass: float, size: float) -> float:
+    """The inverse of grain_mass: peak density of the packet, kg/m^3 in the membrane's own frame.
+    This is THE one place density is computed from the buffer; any reader that wants a grain's
+    density comes here (the one-source-of-truth test in ChimeraEngine/test_optics.py enforces it)."""
+    s = abs(float(size))
+    if s <= 0.0:
+        raise ValueError("grain_density: a grain with zero SIZE has no volume to hold mass")
+    return float(mass) / ((2.0 * np.pi) ** 1.5 * s ** 3)
+
+
+def paint_specular(buf: np.ndarray, f0, slope) -> np.ndarray:
+    """Write the specular columns. f0/slope are scalars or (N,) arrays -- typically ONE value per
+    membrane, because they come from the membrane's own published numbers, not per-grain taste."""
+    buf[:, SPEC_F0] = f0
+    buf[:, SPEC_SLOPE] = slope
+    return buf
 
 
 # ══ THE MEASURED MATERIAL ELEMENTS ═══════════════════════════════════════════════════════════════

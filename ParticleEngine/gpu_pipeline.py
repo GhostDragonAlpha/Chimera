@@ -247,13 +247,82 @@ def _profile(tcode):
 # ═══════════════════════════════════════════════════════════════════
 #  PARTICLE → SPLAT
 # ═══════════════════════════════════════════════════════════════════
+@cuda.jit(device=True, cache=True)
+def _smith_g1(c, sg):
+    """Smith masking-shadowing for a Beckmann (Gaussian-slope) surface, EXACT -- no fitted
+    rational approximation anywhere in it (RULE 1):
+
+        Lambda(a) = (exp(-a^2)/(a*sqrt(pi)) - erfc(a)) / 2,   a = 1/(sg * tan th) = c/(sg * sin th)
+
+    The a > 6 early-out is derived, not tuned: Lambda(6) ~ 2e-17, below float32's own resolution
+    of (1 + Lambda), so returning 1 there is exact at the precision this kernel computes in.
+    Declared model + float64 referee: ChimeraEngine/core/optics.py."""
+    s2 = 1.0 - c * c
+    if s2 <= 0.0:
+        return 1.0
+    a = c / (sg * math.sqrt(s2))
+    if a > 6.0:
+        return 1.0
+    lam = 0.5 * (math.exp(-a * a) / (a * 1.7724538509055159) - math.erfc(a))
+    return 1.0 / (1.0 + lam)
+
+
 @cuda.jit(cache=True)
-def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr, scg, scb, sopa, n):
+def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr, scg, scb, sopa, n,
+         lon, ex, ey, ez, ldx, ldy, ldz, lcr, lcg, lcb):
     i = cuda.grid(1)
     if i >= n: return
     o = i * NCOLS
     spx[i] = dp[o + PX]; spy[i] = dp[o + PY]; spz[i] = dp[o + PZ]
     scr[i] = dp[o + CR]; scg[i] = dp[o + CG]; scb[i] = dp[o + CB]
+
+    # ── THE SPECULAR TERM: one grain, one facet, one light slot (2026-08-05) ─────────────────────
+    # Cook-Torrance per GRAIN, not per pixel: colour is per-grain in this renderer, so the glint is
+    # resolved at grain granularity and the compositor is untouched -- its cost model keeps holding.
+    # Every number is read, never invented: F0 and slope come from the membrane's own published
+    # density and surface statistic (story.matter.SPEC_F0/SPEC_SLOPE = PROP0/PROP1 -- the sim path
+    # reads PROP0 as opacity for some types, which is why this block runs ONLY under an explicitly
+    # set light (set_light), which no sim demo sets). Zero in either column means "not published"
+    # and disables the term for that grain -- a fallback would be an assumption wearing a hat.
+    # Model + float64 referee + pre-registered tolerances: ChimeraEngine/core/optics.py.
+    if lon != 0:
+        f0 = dp[o + PROP0]                    # story.matter.SPEC_F0
+        sg = dp[o + PROP1]                    # story.matter.SPEC_SLOPE
+        if f0 > 0.0 and sg > 0.0:
+            snx = dp[o + NX]; sny = dp[o + NY]; snz = dp[o + NZ]
+            nn2 = snx*snx + sny*sny + snz*snz
+            if nn2 > 1e-6:
+                ninv = 1.0 / math.sqrt(nn2)
+                snx *= ninv; sny *= ninv; snz *= ninv
+                wx2 = ex - dp[o + PX]; wy2 = ey - dp[o + PY]; wz2 = ez - dp[o + PZ]
+                ww = wx2*wx2 + wy2*wy2 + wz2*wz2
+                if ww > 0.0:
+                    winv = 1.0 / math.sqrt(ww)
+                    wx2 *= winv; wy2 *= winv; wz2 *= winv
+                    cosv = snx*wx2 + sny*wy2 + snz*wz2
+                    cosl = snx*ldx + sny*ldy + snz*ldz
+                    if cosv > 0.0 and cosl > 0.0:
+                        hx = wx2 + ldx; hy = wy2 + ldy; hz = wz2 + ldz
+                        hh = hx*hx + hy*hy + hz*hz
+                        if hh > 0.0:
+                            hinv = 1.0 / math.sqrt(hh)
+                            hx *= hinv; hy *= hinv; hz *= hinv
+                            ch = snx*hx + sny*hy + snz*hz
+                            if ch > 0.0:
+                                ch2 = ch * ch
+                                tt = (1.0 - ch2) / (ch2 * sg * sg)
+                                if tt <= 40.0:            # EXP_CUTOFF -- derived, core/optics.py
+                                    dd = math.exp(-tt) / (math.pi * sg * sg * ch2 * ch2)
+                                    cvh = wx2*hx + wy2*hy + wz2*hz
+                                    if cvh < 0.0: cvh = 0.0
+                                    if cvh > 1.0: cvh = 1.0
+                                    om = 1.0 - cvh
+                                    fr = f0 + (1.0 - f0) * om*om*om*om*om
+                                    gg = _smith_g1(cosv, sg) * _smith_g1(cosl, sg)
+                                    sp = fr * dd * gg / (4.0 * cosv * cosl)
+                                    scr[i] += lcr * sp
+                                    scg[i] += lcg * sp
+                                    scb[i] += lcb * sp
 
     t = int(dp[o + TYPE])
     sm, osrc, aniso, astr = _profile(t)
@@ -751,6 +820,11 @@ class FullGPUPipeline:
         # did not produce is a budget checking a hypothesis.
         self._tile_stats = _tile_stats(0, 0, 0, 0)
         self._last_term = ""
+        # THE SCENE'S LIGHT, and None is load-bearing: with no light set, the specular block in
+        # _p2s is skipped entirely and every caller that never asks renders bit-identical to the
+        # pre-optics pipeline. Set per scene by whoever composed it (a witness, a test, the
+        # viewer) -- the pipeline never invents a light.
+        self._light = None
 
     def _grow(self, n):
         if n <= self._a: return
@@ -1062,6 +1136,29 @@ class FullGPUPipeline:
         except Exception:
             return data                      # a lens must never be the reason a frame fails
 
+    def set_light(self, direction, rgb=(1.0, 1.0, 1.0)):
+        """Give the scene ITS light, for the per-grain specular term in `_p2s`.
+
+        `direction` points FROM the scene TOWARD the light (any length; normalised here) in the
+        same frame as the uploaded buffer -- a membrane's buffer is in its own local frame, so the
+        caller that composed the scene is the only one who knows this vector. `rgb` is the light's
+        colour premultiplied by the same exposure the emit's `lit()` used, so diffuse and specular
+        live in one declared exposure system. `set_light(None)` clears.
+
+        This is deliberately pipeline STATE and not a render_from_gpu parameter: the existing
+        callers (viewer, witnesses, demo, benchmark) keep their signatures and keep rendering
+        exactly what they rendered -- no light, no term, bit-identical."""
+        if direction is None:
+            self._light = None
+            return
+        d = np.asarray(direction, dtype=np.float64)
+        nn = float(np.linalg.norm(d))
+        if nn <= 0.0:
+            raise ValueError("set_light: zero-length direction names no light")
+        r = np.asarray(rgb, dtype=np.float64)
+        self._light = (float(d[0] / nn), float(d[1] / nn), float(d[2] / nn),
+                       float(r[0]), float(r[1]), float(r[2]))
+
     def step_particles(self, dt, cvars):
         n = self._n
         if n == 0: return
@@ -1093,16 +1190,30 @@ class FullGPUPipeline:
         self._grow(n)
         g = (n + 255) // 256
 
+        # View matrices FIRST: the specular term in _p2s needs the eye position, and for a rigid
+        # view matrix [R | t] that is -R^T t -- exact, and it assumes nothing about the camera
+        # object beyond the view_matrix() this function already required.
+        V = camera.view_matrix().astype(np.float32)
+        P = camera.projection_matrix(params.width, params.height).astype(np.float32)
+        fy = params.height / (2.0 * np.tan(camera.fov / 2.0))
+        eye = -(V[:3, :3].T @ V[:3, 3])
+        if self._light is None:
+            lon = 0
+            ldx = ldy = ldz = 0.0
+            lcr = lcg = lcb = 0.0
+        else:
+            lon = 1
+            ldx, ldy, ldz, lcr, lcg, lcb = self._light
+
         # Particle → splat
         _p2s[g, (256,)](self._dp, self.base_scale,
             self._spx, self._spy, self._spz,
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
-            self._scr, self._scg, self._scb, self._sopa, n)
+            self._scr, self._scg, self._scb, self._sopa, n,
+            lon, float(eye[0]), float(eye[1]), float(eye[2]),
+            ldx, ldy, ldz, lcr, lcg, lcb)
 
         # Project
-        V = camera.view_matrix().astype(np.float32)
-        P = camera.projection_matrix(params.width, params.height).astype(np.float32)
-        fy = params.height / (2.0 * np.tan(camera.fov / 2.0))
         _project[g, (256,)](self._dp, self._spx, self._spy, self._spz,
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
             V[0, 0], V[0, 1], V[0, 2], V[0, 3], V[1, 0], V[1, 1], V[1, 2], V[1, 3],

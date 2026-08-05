@@ -121,6 +121,29 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 MS_PER_EXPANSION = 3.6085e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
 FIXED_MS = 14.413                  # fitted intercept (measured empty-frame floor is 8.7-9.1 ms)
 
+# ── THE SPECULAR TERM'S COST: MEASURED, AND IT IS A NULL (2026-08-05, benchmark_optics.py) ───────
+# The per-grain Cook-Torrance block in `_p2s` (the two-force reader's light half) was measured by
+# interleaved A/B -- light-off/light-on alternating in one process, worst case by construction
+# (every grain passes every gate: 4k/65k/262k grains, 24 pairs each). At N = 262,144 the delta was
+# -0.0020 ± 0.0118 ms: statistically ZERO. The pre-stated decision rule (written in the benchmark's
+# docstring BEFORE the first run) therefore records an UPPER BOUND, not a slope:
+#
+#     MS_PER_LIT_GRAIN <= 2*sigma / N = 9.0e-08 ms per lit grain
+#
+# and adds NO check -- at that bound a 200 ms frame admits >= 2.2 BILLION lit grains, four orders
+# of magnitude past any buffer this pipeline has ever held, so MAX_EXPANSIONS_PER_FRAME fires
+# first in every reachable scene. A cap on lit grains would be a wall nothing can hit without
+# being over the expansion wall already -- decorative, which is this module's own named failure.
+# If a future change makes the term measurable (a per-PIXEL specular, say), re-run
+# benchmark_optics.py: its rule promotes the bound to a fitted slope + inversion automatically.
+MS_PER_LIT_GRAIN_MAX = 9.0e-08     # 2-sigma upper bound; NOT a fitted slope -- see above
+
+
+def predicted_light_ms(n_lit: int) -> float:
+    """The MOST the specular term can cost for n_lit lit grains, from the measured bound. For the
+    HUD, beside predicted_ms -- a model on screen is a model somebody will notice going wrong."""
+    return MS_PER_LIT_GRAIN_MAX * float(n_lit)
+
 
 def expansions_for_ms(target_ms: float) -> int:
     """How many (splat, tile) pairs fit inside `target_ms`, from the measured fit.
