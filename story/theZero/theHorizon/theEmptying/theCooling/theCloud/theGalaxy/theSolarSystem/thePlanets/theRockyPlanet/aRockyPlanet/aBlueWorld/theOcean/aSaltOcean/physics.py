@@ -1,7 +1,9 @@
 """aSaltOcean -- the water that actually fills aBlueWorld's basins. An INSTANCE of theOcean.
 
 theOcean established what an ocean IS: a liquid gravity holds, with a colour its absorption
-spectrum forces and a glint its surface reflects. This membrane is the instance -- it inherits
+spectrum forces and a glint its surface reflects. The glint is now a READER, not a paint (Stage
+21): density -> Lorentz-Lorenz -> n -> Fresnel F0, drawn by the renderer's kernel only when a
+light is set, never painted onto the buffer. This membrane is the instance -- it inherits
 this world's water mass, temperature, wind and spin from the law above, and derives everything
 the water here is LIKE: its depth, its colour, its currents, its ice, its tide (21 cm from the
 star alone, twice a day, forever -- no moon exists here), and how far the light gets down.
@@ -32,7 +34,10 @@ ABSORB_RGB = (0.320, 0.060, 0.0145)
 # MEASURED backscatter of pure water at 460 nm (Morel 1974), falling ~lambda^-4.3 -- the tiny
 # fraction of light the water itself returns.
 BACKSCATTER_460 = 0.0030
-FRESNEL_R0 = ((1.34 - 1.0) / (1.34 + 1.0)) ** 2    # normal-incidence reflectance, n=1.34: 0.021
+# THE GLINT IS NOT TYPED. The typed n = 1.34 Fresnel constant (0.02111) was the last un-derived
+# optical number in this emit; Stage 21 derives it from density below via Lorentz-Lorenz
+# (matter.refractive_index + fresnel_f0) and publishes it as sunglint_intensity. At the default
+# 35 g/kg the derived value is 0.02150 against the old typed 0.02111 -- a 1.8% tightening.
 
 AU = 1.495978707e11
 M_SUN = 1.98892e30
@@ -48,8 +53,6 @@ FREE = {
 
 # THE LENS -- dials that change the PICTURE and nothing else.
 LENS = {
-    "glint": {"lo": 0.0, "hi": 8.0, "default": 3.0,
-              "label": "sun glint", "unit": "x Fresnel"},
     "exposure": {"lo": 0.15, "hi": 1.0, "default": 0.42,
                  "label": "film speed", "unit": "gamma"},
 }
@@ -100,6 +103,14 @@ def derive(parent, free):
     freezing_point = 273.15 - freezing_depression
     density_deep = density_surface + 4.0              # cold deep water is denser still
     sound_speed = 1449.0 + 4.6 * T_C - 0.055 * T_C * T_C + 1.34 * (salinity - 35.0)
+
+    # THE GLINT, DERIVED (Stage 21): Lorentz-Lorenz from THIS water's density -> n -> Fresnel F0.
+    # The glint is no longer a typed constant from a sourced n = 1.34; it is what the dissolved
+    # load says it is. Move the salinity dial and the glint moves with the density -- the slider
+    # test in ChimeraEngine/test_optics.py (T6) is what catches any typed remnant.
+    from matter import refractive_index, fresnel_f0, SPECIFIC_REFRACTION_CM3_G
+    n_surface = refractive_index(density_surface, SPECIFIC_REFRACTION_CM3_G["water"])
+    sunglint_intensity = fresnel_f0(n_surface)
 
     # THE COLOUR -- measured absorption, measured backscatter, nothing else.
     ocean_rgb_deep = _water_rgb(ABSORB_RGB, BACKSCATTER_460)
@@ -172,7 +183,7 @@ def derive(parent, free):
         "wave_height_m": wave_height_m,
         "foam_fraction": foam_fraction,
         "surface_slope_mean": surface_slope_mean,
-        "sunglint_intensity": FRESNEL_R0,
+        "sunglint_intensity": sunglint_intensity,
         "solar_tide_m": solar_tide,
         "tide_period_h": tide_period_h,
         "tidal_bulge": "two, sun-facing and far side",
@@ -188,31 +199,44 @@ def derive(parent, free):
     }
 
 
+def sun_direction(tt: float):
+    """The star's direction in the water's own frame, at time tt of one day.
+
+    THE ONE DECLARATION of where the sun is. The emit bakes the diffuse with it; the live viewer
+    sets the renderer's light with it; the renderer's specular kernel draws the glint where the
+    half-vector says -- so the baked diffuse and the glint can never disagree about where the
+    sun is. Same phase as theTerrain's sun (the day runs together)."""
+    import numpy as np
+    day = 2.0 * pi * float(tt) - 1.15
+    sun = np.array([sin(day), -cos(day), 0.22], np.float32)
+    return sun / np.linalg.norm(sun)
+
+
 def emit(nums, t=1.0):
     """The matter of this water, in its own local units (1.0 = the planet's radius).
 
     THE WATER ALONE -- the land is theTerrain's, the clouds theAtmosphere's; a membrane may not
     draw a sibling's matter. What is drawn is what the WATER does to light:
       * the BODY -- deep navy, the measured absorption spectrum (red dies first);
-      * the GLINT -- the sun's own reflection off the surface (Fresnel, measured 2.1%,
-        concentrated into the specular point), which sweeps across as the day runs;
+      * the GLINT -- a READER, not a paint (Stage 21). The buffer carries the density-derived
+        Fresnel F0 and the sea's own slope in the specular columns (SPEC_F0/SPEC_SLOPE); the
+        renderer's kernel draws the glint where the mirror point says, and ONLY when the live
+        viewer sets the membrane's own sun as a light. No light, no glint -- nothing painted;
       * the ICE -- white where the parent froze the sea, purely by latitude;
       * the FOAM -- a sparkle of whitecaps where the wind works, sparse at 7 m/s.
     The movie is ONE DAY: the glint crosses the water once, dawn to dusk.
     """
     import numpy as np
-    from matter import blank, fibonacci_sphere, surface_grain, lit, SOLID
+    from matter import (blank, fibonacci_sphere, surface_grain, lit, SOLID,
+                        paint_specular, SPEC_F0, SPEC_SLOPE)
 
     tt = float(t)
     rng = np.random.default_rng(83)
     R = float(nums["extent_m"])
     lens = nums.get("_lens", {})
-    GLINT = float(lens.get("glint", 3.0))
     TONE = float(lens.get("exposure", 0.42))
 
-    day = 2.0 * pi * tt - 1.15                     # ONE DAY, the same phase as theTerrain's sun
-    sun = np.array([sin(day), -cos(day), 0.22], np.float32)
-    sun = sun / np.linalg.norm(sun)
+    sun = sun_direction(tt)
     S_rel = float(nums.get("S_earth", 1.0))
 
     deep = np.array(nums["ocean_rgb_deep"], np.float32)
@@ -226,20 +250,23 @@ def emit(nums, t=1.0):
     b[:, 21:24] = d
     cos_sun = np.clip((d * sun[None, :]).sum(1), 0.0, None)
 
-    # the water body: the measured deep colour, lit by the sun -- and the GLINT, the measured
-    # reflection concentrated at the specular point (the patch whose mirror points at us).
-    glint_dir = (d * sun[None, :]).sum(1)                     # 1 exactly under the sun
-    glint = np.clip((glint_dir - 0.985) / 0.015, 0.0, 1.0) ** 2
+    # the water body: the measured deep colour, lit by the sun. The glint is NOT painted on top
+    # (the old warm patch is gone); it lives in the reader columns below.
     foam = np.clip(rng.normal(0.0, 1.0, n) - 2.6, 0.0, 1.0) * float(nums["foam_fraction"]) * 40.0
     water_col = lit(deep[None, :] * np.ones((n, 3), np.float32),
                     S_rel * cos_sun + 0.012, e_ref=max(S_rel, 1e-6), tone=TONE)
-    glint_col = np.array([1.0, 0.98, 0.92], np.float32) * glint[:, None] * GLINT * cos_sun[:, None]
-    col = np.clip(water_col + glint_col + foam[:, None] * 0.5, 0.0, 1.0)
+    col = np.clip(water_col + foam[:, None] * 0.5, 0.0, 1.0)
     col[ice] = np.array([0.80, 0.84, 0.88], np.float32) * (0.25 + 0.75 * cos_sun[ice, None])
     b[:, 16:19] = col.astype(np.float32)
     b[:, 19] = np.where(ice, 0.95, 0.85)
     b[:, 20] = surface_grain(n, radius=1.0, cover=0.75)
     b[:, 11] = SOLID
+    # THE READER: the membrane's own derived numbers, painted where the kernel can read them.
+    # The ice REFUSES the water's reader -- ice has its own optics, and this membrane has not
+    # published them; an unpainted column is a silence, never a default.
+    paint_specular(b, float(nums["sunglint_intensity"]), float(nums["surface_slope_mean"]))
+    b[ice, SPEC_F0] = 0.0
+    b[ice, SPEC_SLOPE] = 0.0
     return b
 
 

@@ -45,7 +45,7 @@
 | `wave_height_m` | 1.521 |
 | `foam_fraction` | 0.004336 |
 | `surface_slope_mean` | 0.1233 |
-| `sunglint_intensity` | 0.02111 |
+| `sunglint_intensity` | 0.02149 |
 | `solar_tide_m` | 0.2109 |
 | `tide_period_h` | 12 |
 | `tidal_bulge` | two, sun-facing and far side |

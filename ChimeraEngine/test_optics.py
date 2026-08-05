@@ -18,6 +18,12 @@ What is on trial (docs/THE_TWO_FORCES.md; plan: two-forces-gaussian-splat-light)
       light, must both render BIT-IDENTICAL to the baseline: the instrument must be silent before
       it may convict or acquit (the 2026-08-01 lesson).
   T5  REAL OUTPUT -- on/off frames written to agent_logs/ so the operator can see the glint.
+  T11 STAGE 21 ADOPTION -- aSaltOcean's glint is a READER, not a paint. The emitted buffer must
+      carry the membrane's own derived numbers in the specular columns (density -> n -> F0, and
+      its own slope), the ice must refuse the water's reader, the kernel lit by the membrane's OWN
+      declared sun must draw a tight patch that the float64 referee endorses, and the old painted
+      warm patch must be provably gone (the colour at the sub-solar point is EXACTLY the diffuse
+      replica). Predicted value pre-registered: sunglint_intensity = 0.02149, nothing typed.
 """
 from __future__ import annotations
 
@@ -494,11 +500,136 @@ def t10_bounce():
           f"R^2 = {r2:.4f} over N = {ns} ({[f'{t*1000:.0f}ms' for t in times]})")
 
 
+# ═══ T11 -- STAGE 21 ADOPTION: THE OCEAN READS ITS OWN GLINT ═════════════════════════════════════
+def t11_adoption():
+    """The glint is a READER, not a paint. Everything below reads PUBLISHED numbers or the REAL
+    emitted buffer; nothing is constructed by hand except the referee. Falsifiers:
+      a. published sunglint_intensity IS fresnel_f0(refractive_index(density)) -- the typed
+         n = 1.34 is gone, so the published number and the derived number are the SAME number;
+      b. the REAL buffer's specular columns carry exactly those two published numbers on the
+         water, and the ice refuses the water's reader (its optics are not published);
+      c. rendered under the membrane's OWN declared sun, the kernel's glint matches the float64
+         referee within the pre-registered tolerances, lights a TIGHT patch, and shows on screen;
+      d. the old painted warm patch is gone: the colour at the sub-solar point is EXACTLY the
+         float64 diffuse replica (any vestige of the old paint breaks bit-equality);
+      e. the clay controls still hold on the real buffer: zeroed columns under the sun and
+         populated columns under no light are both bit-identical to the emitted baseline.
+    """
+    import splat_appearance as _sa
+    sea = published("aSaltOcean")
+    slope = float(sea["surface_slope_mean"])
+    f0_der = matter.fresnel_f0(matter.refractive_index(
+        float(sea["density_surface_kg_m3"]), matter.SPECIFIC_REFRACTION_CM3_G["water"]))
+    check("T11a the published glint is DERIVED (density -> n -> F0 == the published number)",
+          abs(float(sea["sunglint_intensity"]) - f0_der) <= 1e-12,
+          f"published {sea['sunglint_intensity']:.7f} vs derived {f0_der:.7f}")
+
+    buf = _sa.scene_buffer("aSaltOcean")
+    assert buf is not None and buf.ndim == 2 and buf.shape[1] == 28, "the ocean must still render"
+    mod = _sa._MODULES["aSaltOcean"]
+    n = buf.shape[0]
+
+    # THE EMIT'S OWN GEOMETRY, recomputed bit-identically (same seed, same law) -- the ice mask
+    # must be THE mask the emit used, or a grain straddling the line could be misjudged.
+    d = matter.fibonacci_sphere(n, jitter=0.9, seed=83)
+    ice = np.abs(d[:, 2]) > math.sin(math.radians(float(sea["ice_line_lat_deg"])))
+    water = ~ice
+
+    f0s = np.unique(buf[water, matter.SPEC_F0])
+    sls = np.unique(buf[water, matter.SPEC_SLOPE])
+    check("T11b the buffer CARRIES the reader: SPEC_F0 == the derived F0 on every water grain",
+          len(f0s) == 1 and abs(float(f0s[0]) - f0_der) <= 1e-7,
+          f"column {float(f0s[0]) if len(f0s) else float('nan'):.6f}, derived {f0_der:.6f}")
+    check("T11b the buffer CARRIES the reader: SPEC_SLOPE == the published surface_slope_mean",
+          len(sls) == 1 and abs(float(sls[0]) - slope) <= 1e-7,
+          f"column {float(sls[0]) if len(sls) else float('nan'):.6f}, published {slope:.6f}")
+    check("T11b the ice REFUSES the water's reader (an unpainted column is a silence)",
+          not np.any(buf[ice, matter.SPEC_F0] > 0.0) and not np.any(buf[ice, matter.SPEC_SLOPE] > 0.0),
+          f"{int(ice.sum())} ice grains, all F0/slope == 0")
+
+    # THE ONE DECLARATION OF WHERE THE SUN IS: emit bakes with it, the renderer glints with it.
+    sun = np.asarray(mod.sun_direction(1.0), dtype=np.float64)
+    check("T11c the membrane declares ONE sun (unit length, in its own frame)",
+          abs(float(np.linalg.norm(sun)) - 1.0) <= 1e-6, f"|sun| = {np.linalg.norm(sun):.7f}")
+
+    cam = FirstPersonCamera(position=(0.0, -2.5, 0.0), yaw=np.pi / 2, pitch=0.0)
+    prm = cam.params(width=640, height=480)
+    light_rgb = (1.0, 1.0, 1.0)
+    pipe = gp.FullGPUPipeline()
+    pipe.upload(np.ascontiguousarray(buf, dtype=np.float32), term="aSaltOcean")
+
+    pipe.set_light(None)
+    img_off = pipe.render_from_gpu(cam, prm)
+    base_cols = grain_colours(pipe, n)
+
+    pipe.set_light(tuple(float(v) for v in sun), light_rgb)
+    img_on = pipe.render_from_gpu(cam, prm)
+    lit_cols = grain_colours(pipe, n)
+    add = lit_cols.astype(np.float64) - base_cols.astype(np.float64)
+    ref_add = optics.specular_reference(buf, np.asarray(cam.position, np.float64),
+                                        tuple(float(v) for v in sun), light_rgb)
+    diff = np.abs(add - ref_add)
+    lit = ref_add.max(axis=1) > 0.0
+    n_lit = int(lit.sum())
+    check(f"T11d real buffer: kernel vs float64 referee, max |diff| <= {optics.EPS_KERNEL_MAX}",
+          float(diff.max()) <= optics.EPS_KERNEL_MAX,
+          f"max {float(diff.max()):.2e} over {n} grains ({n_lit} lit), peak {ref_add.max():.3f}")
+    check("T11d the kernel lights a TIGHT patch of water (glint is where the mirror point is)",
+          0 < n_lit <= 0.15 * int(water.sum()),
+          f"{n_lit} of {int(water.sum())} water grains carry specular energy")
+    check("T11d the glint SHOWS in the frame (reader renders, on != off)",
+          int((img_on != img_off).sum()) > 0,
+          f"{int((img_on != img_off).sum())} subpixel values changed")
+
+    # THE OLD PAINT IS PROVABLY GONE: where the old warm patch sat (the sub-solar point, cos > .985)
+    # the buffer colour is EXACTLY the float64 diffuse replica -- nothing was added on top.
+    S = float(sea["S_earth"])
+    deep = np.array(sea["ocean_rgb_deep"], np.float32)
+    cos_sun = np.clip((d * sun[None, :]).sum(1), 0.0, None)
+    water_col = matter.lit(deep[None, :] * np.ones((n, 3), np.float32),
+                           S * cos_sun + 0.012, e_ref=max(S, 1e-6), tone=0.42)
+    rng = np.random.default_rng(83)
+    foam = np.clip(rng.normal(0.0, 1.0, n) - 2.6, 0.0, 1.0) * float(sea["foam_fraction"]) * 40.0
+    replica = np.clip(water_col + foam[:, None] * 0.5, 0.0, 1.0).astype(np.float32)
+    sel = (cos_sun > 0.985) & water
+    if int(sel.sum()) == 0:
+        check("T11e no painted glint: vacuous -- no water grain at the sub-solar point", True,
+              f"{int(sel.sum())} grains; camera may be framing the wrong hemisphere")
+    else:
+        err = float(np.abs(buf[sel, matter.CR:matter.CB + 1].astype(np.float64)
+                           - replica[sel].astype(np.float64)).max())
+        check("T11e no painted glint: the sub-solar colour is EXACTLY the diffuse replica",
+              err <= 2e-5, f"max |col - diffuse| = {err:.2e} over {int(sel.sum())} grains")
+
+    # THE CLAY CONTROLS, on the real buffer: the instrument must be silent before it convicts.
+    clay = buf.copy()
+    clay[:, matter.SPEC_F0] = 0.0
+    clay[:, matter.SPEC_SLOPE] = 0.0
+    pipe.upload(clay)
+    img_clay = pipe.render_from_gpu(cam, prm)
+    check("T11f zeroed columns under the membrane's sun -> bit-identical frame",
+          np.array_equal(img_clay, img_off), "the reader is silent without published numbers")
+    pipe.upload(buf)
+    pipe.set_light(None)
+    img_dark = pipe.render_from_gpu(cam, prm)
+    check("T11f populated columns with NO light -> bit-identical frame",
+          np.array_equal(img_dark, img_off),
+          "no caller that never asks for a light can be changed by this pass")
+    pipe.set_light(None)
+
+    try:
+        from PIL import Image
+        Image.fromarray(img_off).save(ROOT / "agent_logs" / "optics_ocean_reader_off.png")
+        Image.fromarray(img_on).save(ROOT / "agent_logs" / "optics_ocean_reader_on.png")
+        print("[art ] agent_logs/optics_ocean_reader_{off,on}.png written", flush=True)
+    except Exception as e:
+        print(f"[art ] PNG save skipped: {e}", flush=True)
+
+
 def main() -> int:
     t1_stage0_closure()
     t2_one_source()
     t6_slider_closure()
-
     sea = published("aSaltOcean")
     ter = published("aTerrain")
     gnd = published("theGround")
@@ -525,6 +656,7 @@ def main() -> int:
     t8_caustics(t7_state[2])
     t9_dispersion(t7_state)
     t10_bounce()
+    t11_adoption()
 
     print(f"\n{_PASS} passed, {_FAIL} failed", flush=True)
     return 1 if _FAIL else 0

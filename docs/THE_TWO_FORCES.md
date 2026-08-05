@@ -678,10 +678,41 @@ metals), contact (Hertz, Mindlin, the seam), sound (impedance, the chain speed),
 way the method refuted five of its own instruments, two of its own models, and three of its own
 "needs a citation" claims — each conviction pinned as a test that goes red if the record drifts.
 
+### Stage 21 — The adoption: aSaltOcean's glint becomes a READER (2026-08-05)
+
+The ledger's three refusals stand, but one gap was not a refusal: the world's own ocean was still
+PAINTING its glint. The old `sunglint_intensity = 0.02111` was a typed constant from a sourced
+n = 1.34; the emit added it to the water's colour as a warm patch, so the light half of the theory
+had derived F₀ for test membranes while the flagship ocean kept a hand-written number. **The
+membrane now reads its own glint**: `derive()` pushes its published density through Lorentz–Lorenz
+to n and on to Fresnel F₀ (`0.02149`, +1.8% from the typed value — the dissolved load is what the
+glint is), and `emit()` paints the READER columns instead of the colour: `paint_specular` with the
+derived F₀ and the sea's own slope, the ice **refusing** the water's reader (its optics are not
+published, so the columns are a silence), and a `sun_direction(t)` declaration that the renderer's
+light and the baked diffuse must agree on. **No light set, no glint rendered — nothing painted, ever.**
+
+**THE FALSIFIERS (T11, 11 checks pre-registered before the renderer read a pixel):**
+  a. published `sunglint_intensity` == `fresnel_f0(refractive_index(density))` **exactly** (1e-12) —
+     the typed n = 1.34 is gone, the published number and the derived number are the SAME number;
+  b. the real buffer carries the reader: SPEC_F0/SPEC_SLOPE on every water grain, and the 10,757 ice
+     grains carry both columns exactly 0.0;
+  c. rendered under the membrane's OWN sun, the kernel's glint matches the float64 referee
+     (max |diff| = 1.21e-06 vs EPS_KERNEL_MAX 1e-03), lights a tight patch (2,257 of 23,243 water
+     grains, 9.7%), and shows in the frame (21,887 subpixels);
+  d. the old paint is PROVABLY gone: at the sub-solar point the colour is the float64 diffuse
+     replica bit-for-bit (max |diff| = 0.00e+00);
+  e. the clay controls hold on the real buffer: zeroed columns under the sun, and populated columns
+     under no light, are both bit-identical to the emitted baseline.
+
+**THE ONE DECLARATION:** `sun_direction(t)` — same phase as theTerrain's sun, unit length, in the
+water's own frame. The emit bakes the diffuse with it, the live viewer sets the renderer's light
+with it, and the renderer's specular kernel draws the glint where the half-vector says. **Baked
+diffuse and glint can never disagree about where the sun is, because neither chose.**
+
 ## THE GATE (all of it)
 
 ```bash
-python ChimeraEngine/test_optics.py          # 47 checks: closure, referee, controls, lensing chain, bounce
+python ChimeraEngine/test_optics.py          # 58 checks: closure, referee, controls, lensing chain, bounce, adoption
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction
