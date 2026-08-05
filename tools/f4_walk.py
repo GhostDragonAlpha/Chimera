@@ -73,7 +73,7 @@ SEEDS = 10                    # the headline is the median of these
 
 
 def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0,
-            entrained=False, seed=0, stand_class=None):
+            entrained=False, seed=0, stand_class=None, w0=None):
     """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path.
 
     `seed = 0` is the UNPERTURBED control; every other seed nudges qpos by `NUDGE` after the
@@ -91,6 +91,10 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     """
     reg = default_registry(theta_stand, tgt, nu)
     # MOVE was a named Refusal ("no trained formula -- its atoms are M3"). This is the formula.
+    # NO `w0=` HERE. `move_formula_fn` takes (…, gain, stand_class) and nothing else -- a blind
+    # regex that added w0 to every `stand_class=stand_class)` call site put it here too, which
+    # imports fine and raises TypeError the moment MOVE is registered. Caught by reading the
+    # callee's signature rather than by trusting the edit.
     reg["MOVE"] = Formula("MOVE", move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P,
                                                   gain=gain, stand_class=stand_class), EXCLUSIVE)
     PARSER = Parser(reg)
@@ -265,6 +269,13 @@ def run() -> int:
     # left `parser_tests` falsifier 1 silently dead for several commits).
     if stand_class is not None:
         stand_class.decode_theta(theta_stand, nu)
+    # omega_0 ONCE PER RUN, not once per rollout -- `run_one`'s own ValueError says exactly this
+    # ("this function will not derive it per rollout: derive_stand_port() loads the whole MuJoCo
+    # model to read the simulated body's mass. Compute it once in run() and pass it in"). It was
+    # referenced there and never defined or passed, so any --stand-class run raised NameError
+    # BEFORE reaching the ValueError written to catch that case: the guard's own precondition was
+    # the thing that crashed. Derived, not chosen: sqrt(g / com_height), both published.
+    w0 = _PC.omega0(S) if stand_class is not None else None
 
     entrained = "--entrained" in sys.argv or theta_walk.size == N_FREE + 2
     nseeds = int(sys.argv[sys.argv.index("--seeds") + 1]) if "--seeds" in sys.argv else SEEDS
@@ -279,9 +290,9 @@ def run() -> int:
     # THE SAME SEEDS FOR BOTH ARMS. The ablation is the walk's control, and a control
     # run from a different initial condition than the thing it controls is not a control.
     lives = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0,
-                     entrained=entrained, seed=s, stand_class=stand_class) for s in seed_ids]
+                     entrained=entrained, seed=s, stand_class=stand_class, w0=w0) for s in seed_ids]
     abls = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
-                    entrained=entrained, seed=s, stand_class=stand_class) for s in seed_ids]
+                    entrained=entrained, seed=s, stand_class=stand_class, w0=w0) for s in seed_ids]
 
     def med(rows, key):
         return float(np.median([r[key] for r in rows]))
@@ -293,7 +304,7 @@ def run() -> int:
     med_per = float(np.median(per_all))
     rep_i = int(np.argmin(np.abs(per_all - med_per)))
     live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
-                   entrained=entrained, seed=lives[rep_i]["seed"], stand_class=stand_class)
+                   entrained=entrained, seed=lives[rep_i]["seed"], stand_class=stand_class, w0=w0)
     abl = abls[rep_i]
 
     spd_all = np.array([r["speed"] for r in lives])
