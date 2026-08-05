@@ -69,7 +69,7 @@
     "aTerrain": {
       "coverage": 0.038671,
       "drew": true,
-      "max_pixel": 237.0,
+      "max_pixel": 240.0,
       "n_grains": 262144,
       "n_lod": 16384
     },
