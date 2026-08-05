@@ -427,3 +427,61 @@ passes 47/47.
 `max(20000, n_particles)` — a number about the wrong quantity. At T=32 that is 8,161 and the 20,000
 floor happened to cover it; at T=8 it is 32,401 and a scene with fewer grains would have written
 past the end. Now derived from the tile grid at 4K.
+
+## 11. The JPEG encode ran in series with the render
+
+**Fixed 2026-08-04. `_submit` / `_encode_loop` in `live_viewer.py`.**
+
+The live viewer encoded each frame to JPEG on the render thread, so every frame cost
+`render + encode` in series — measured at **9.4–10.4 ms of encode per frame** at 1920×1080. The two
+do not contend: the render thread owns the GPU, the encoder is pure CPU, and PIL releases the GIL
+inside its C encoder. Moving the encode to its own thread makes the frame period `max(render,
+encode)` instead of the sum.
+
+**One slot, and it drops rather than queues.** If the encoder is busy when the next frame arrives,
+the newer frame *replaces* the pending one. A queue is worse in both directions — it grows without
+bound when the encoder falls behind, and every frame it holds is one the viewer is shown late. For
+a live view the newest frame is the only one anyone wants.
+
+**Measured, real frames, same loop with the publish inline vs handed off:**
+
+| term | render | encode | sync loop | async loop | gain | fps |
+|---|---:|---:|---:|---:|---:|---|
+| aTerrain | 24.41 | 9.74 | 34.14 | 24.36 | **−28.7%** | 29.3 → 41.1 |
+| aHuman | 18.03 | 10.39 | 28.42 | 24.38 | −14.2% | 35.2 → 41.0 |
+| theMining | 18.82 | 9.38 | 28.20 | 24.94 | −11.6% | 35.5 → 40.1 |
+| aBlueWorld | 26.42 | 9.67 | 36.09 | 33.53 | −7.1% | 27.7 → 29.8 |
+| theGalaxy | 31.52 | 9.68 | 41.20 | 38.97 | −5.4% | 24.3 → 25.7 |
+
+The gain is usually less than the whole encode time because the encoder still competes for CPU with
+the render thread's own host-side work; `aTerrain` recovers essentially all of it.
+
+`/stats` now reports `frame_ms = max(render_ms, publish_ms)` rather than their sum — reporting the
+sum after parallelising them would hide the entire benefit. It is `max` and not `render_ms` alone
+because the encoder is a real ceiling: `aBlueWorld` at 9.22 ms render against 9.41 ms encode is
+already limited by the encoder, and the number has to be able to say so.
+
+**Stepping opts out.** `/step` grants one tick and its whole contract is that the frame you stepped
+to is the frame you see; handing that one to a background encoder makes the contract a race, and
+since the loop is then paused no later frame arrives to correct it. Asynchrony is a throughput
+optimisation and stepping is not a throughput problem.
+
+### Testing it through the viewer answered nothing three times
+
+`ChimeraEngine/test_encoder.py` drives `_submit`/`_encode_loop`/`_publish` with synthetic frames and
+no GPU. That is not squeamishness about integration tests — the obvious "start the viewer and watch
+the stream advance" test was written first and produced three false negatives in a row:
+
+- `aBlueWorld` publishes a **byte-identical** frame under camera motion, including a 0.9 rad manual
+  spin. **Pre-existing** — a git-stash control reproduced it exactly on the committed code — and
+  still unexplained. Worth its own investigation.
+- `theMining` is a cone, rotationally symmetric about Z, so azimuthal drift genuinely renders the
+  same picture. Correct behaviour that looks identical to a stall.
+- One process rendered **5 frames in 6 seconds** with no error and both threads alive — the same
+  unexplained viewer slowness as §5c.
+
+Three different confounds, none of them the thing under test. **A test that cannot fail for only one
+reason is not testing that reason.** The unit test has one possible cause for failure and covers the
+properties that matter: every frame arrives when the encoder keeps up (10/10), a 40-frame burst
+settles on the *newest* and encodes **1 of 40** rather than queueing, a malformed frame is reported
+without wedging the thread, and `_publish` alone lands synchronously for the `/step` path.
