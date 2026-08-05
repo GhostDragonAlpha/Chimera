@@ -24,6 +24,7 @@ Each takes milliseconds. There is no reason ever to have skipped them.
 """
 from __future__ import annotations
 
+import json
 import math
 import sys
 from pathlib import Path
@@ -222,17 +223,60 @@ def t_spindle(mujoco):
                        f"{100*consistent:.4f}%")
 
 
+BASELINE = ROOT / "tools" / "port_baseline.json"
+
+# THE BAND IS TIGHT BECAUSE THESE TESTS ARE DETERMINISTIC, and that is the whole argument for
+# having a baseline at all. Every port predicts a closed form and measures a fixed-seed simulator:
+# run it twice and it returns the same bits. So unlike the render benchmark -- where a 13% swing is
+# just the shared 4090 -- ANY movement here means a number moved somewhere upstream.
+#
+#     A PASSING SUITE IS NOT AN UNCHANGED SUITE. Every one of these ports would still print PASS if
+#     matter_library.json edited a cohesion, if a membrane republished an extent, or if a MuJoCo
+#     upgrade shifted a solver default -- because each port checks its own measurement against its
+#     own prediction, and BOTH move together when the input moves. The pair agreeing tells you the
+#     arithmetic is consistent; it cannot tell you the world is the same world.
+#
+# This is the check that theGround's cohesion fix would have tripped: it changed `terrain_footprint`
+# from 8.674e-19 m to 3.122 mm while the port passed on both sides of the change.
+_DRIFT = 1e-6          # relative; anything above this on a deterministic test is a real change
+
+
+def _baseline_check(rows: dict, record: bool) -> list:
+    """Compare each port's measured value against the recorded one. Returns the drifted ports."""
+    import json
+    if record:
+        BASELINE.write_text(json.dumps({"ports": rows}, indent=2, sort_keys=True), encoding="utf8")
+        print(f"\n  BASELINE RECORDED: {len(rows)} ports -> {BASELINE.name}")
+        return []
+    if not BASELINE.exists():
+        print(f"\n  no baseline yet -- run `python tools/port_tests.py --baseline` to record one")
+        return []
+    old = json.loads(BASELINE.read_text(encoding="utf8")).get("ports", {})
+    drift = []
+    for n, v in rows.items():
+        b = old.get(n)
+        if b is None:                 # A NEW PORT IS NOT A REGRESSION. Adding one must not break
+            continue                  # the suite; it is recorded on the next --baseline.
+        for key in ("pred", "got"):
+            a_, b_ = float(v.get(key, 0.0)), float(b.get(key, 0.0))
+            scale = max(abs(a_), abs(b_), 1e-30)
+            if abs(a_ - b_) / scale > _DRIFT:
+                drift.append((n, key, b_, a_))
+    return drift
+
+
 def main() -> int:
     import mujoco
     import port_tests_more    # noqa: F401 -- registers ports 5-12 into the shared registry
     import port_tests_matter  # noqa: F401 -- registers the non-human passive ports, 13 onward
     expect(20)                # a partial suite is a REFUSAL, not a smaller number
     a = sys.argv
+    record = "--baseline" in a
     only = a[a.index("--port") + 1] if "--port" in a else None
     names = [only] if only else list(TESTS)
     print(f"\nPORT TESTS -- one instruction at a time, prediction computed BEFORE the run\n"
           + "=" * 100)
-    npass = 0
+    npass, rows = 0, {}
     for n in names:
         if n not in TESTS:
             print(f"  unknown port {n}; have {list(TESTS)}")
@@ -245,6 +289,8 @@ def main() -> int:
             continue
         ok = bool(r["pass_"])
         npass += ok
+        rows[n] = {"pred": float(r.get("pred", 0.0)), "got": float(r.get("got", 0.0)),
+                   "pass": ok}
         print(f"\n  {n.upper():<14} {'PASS' if ok else 'FAIL'}")
         print(f"    claims     {t['statement']}")
         print(f"    measured   {r['detail']}")
@@ -253,6 +299,21 @@ def main() -> int:
     print("\n" + "=" * 100)
     print(f"  {npass}/{len(names)} ports validated. A port that has not been tested alone cannot "
           f"be ruled out\n  when a composition built on it fails.")
+
+    # THE BASELINE IS ONLY MEANINGFUL OVER THE WHOLE SUITE. Recording from a `--port X` run would
+    # write a file containing one port and silently drop the other nineteen.
+    if only and record:
+        print("  refusing to record a baseline from a single-port run -- it would drop the rest")
+        return 0 if npass == len(names) else 1
+    drift = _baseline_check(rows, record and not only)
+    if drift:
+        print(f"\n  DRIFT AGAINST BASELINE ({len(drift)}) -- these ports PASS but their numbers "
+              f"MOVED:")
+        for n, key, was, now in drift:
+            print(f"    {n:<20} {key:<5} {was:.10g}  ->  {now:.10g}  "
+                  f"({100*(now-was)/max(abs(was),1e-30):+.4f}%)")
+        print("  A deterministic test that returns a different number is reporting a change "
+              "UPSTREAM of it.\n  If the change was intended, re-record with --baseline.")
     return 0 if npass == len(names) else 1
 
 
