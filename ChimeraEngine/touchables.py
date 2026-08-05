@@ -168,15 +168,74 @@ _KICK_V = 0.6                # of the player's velocity, handed to a kicked grai
 _KICK_UP = 0.4               # m/s up
 _KICK_R = 0.5
 _SETTLE = 0.01               # m/s -- the membrane's settle criterion
-_CLOD = 0.06                 # display size of one grain-splat (a clod, not a grain) -- THE HUMAN.
-                             # Raised 0.04 -> 0.06 after the rung-3 blind read: at the 3.2 m
-                             # third-person camera distance, 4 cm clods merged into a faint mush.
-                             # Display only; the physics still counts 400 grains of d50 0.35 mm.
+_FOOTPRINT = 2.67            # MEASURED, tools/splat_ruler.py: one splat paints 2.67x its nominal
+                             # size (SIZE * base_scale). Deriving against the nominal size would be
+                             # deriving against a number the screen does not use.
+_BASE_SCALE = 0.5            # FullGPUPipeline's default
+
+
+_CLOD_BLIND = 0.06           # THE HUMAN, and it stays that way: raised 0.04 -> 0.06 after the
+                             # rung-3 blind read, at 3.2 m, by an eye. Display only; the physics
+                             # still counts 400 grains of d50 0.35 mm.
+
+
+def _pile_display(r_base: float, height: float, n_grains: int, n_copies: int):
+    """The clod size and the jitter radius, DERIVED so the copies TILE the cone instead of stacking.
+
+    WHAT WAS HERE, AND WHY IT WAS COSTING FOUR TIMES NOTHING. `_CLOD` was 0.06 by hand ("raised
+    0.04 -> 0.06 after the blind read") and the jitter was `(rand-0.5)*_CLOD`, i.e. a radius of
+    0.030 m. But a splat of SIZE 0.06 paints 0.06 * 0.5 * 2.67 = 0.080 m ACROSS -- a radius of
+    0.040 m. The four copies were displaced by LESS THAN ONE SPLAT RADIUS.
+
+        THEY OVERLAPPED BY CONSTRUCTION. tools/splat_density.py measured it: overdraw 15.97x and
+        STILL 17.1% holes -- the pile painted sixteen times its own silhouette and had gaps. Two
+        instruments agreed and neither could see the other's half: the density table said the
+        splats were stacked, and the frame-cost model (docs/MEASURED_RENDER_BUDGETS.md) said a
+        splat costs (2r/32+1)^2 tile expansions, so four coincident splats cost 4x for ~1x the
+        coverage.
+
+    THE STATEMENT THAT REPLACES THE HAND-PICKED NUMBER: each grain is responsible for its own share
+    of the cone's surface, and its `n_copies` display splats should cover that share and no more.
+
+        share area  = A_cone / n_grains          A_cone = pi * r * sqrt(r^2 + h^2)
+        share radius= sqrt(A_cone / (pi*n))
+        painted R   = share_radius / sqrt(n_copies)      <- n discs of R tile a disc of share_radius
+        _CLOD       = 2R / (FOOTPRINT * BASE_SCALE)      <- undo what the renderer adds
+
+    Nothing is chosen. Change the grain count, the pile radius or the repose height and every
+    number here moves with them -- which the hand-picked 0.06 could never do.
+    """
+    A = math.pi * r_base * math.sqrt(r_base * r_base + height * height)
+    share_r = math.sqrt(A / (math.pi * max(n_grains, 1)))
+    R_paint = share_r / math.sqrt(max(n_copies, 1))
+    # THE SIZE IS *NOT* DERIVED FROM THIS, AND THE ATTEMPT IS RECORDED BECAUSE IT FAILED.
+    # Sizing the clod so n_copies tile `share_r` gave 0.0428 m, and the measurement refused it:
+    # overdraw fell 15.97x -> 8.21x (the jitter working) but holes ROSE 17.1% -> 22.4%. The error
+    # is in the denominator -- `share_r` divides the cone's SURFACE among all 400 grains, but the
+    # grains fill its VOLUME, and only the ones within a splat radius of the surface are ever seen.
+    # Dividing a surface among volume-distributed grains makes every share too small, so every
+    # clod came out too small, so the pile got holes.
+    #
+    #     THE JITTER IS PROVABLY WRONG AT 0.030; THE SIZE WAS NOT PROVABLY WRONG AT 0.06.
+    #
+    # So only the provable half is changed. The clod keeps the value the blind read set it to --
+    # a human looked at the pile and said 0.04 was mush -- and the jitter is fixed to the share
+    # radius, which is what stops the four copies landing on top of each other. The right derivation
+    # for the SIZE needs the visible-surface grain count, which needs the shell fraction, which
+    # depends on the splat radius it is trying to determine. That is a fixed point nobody has
+    # solved here, and it is named rather than approximated.
+    return _CLOD_BLIND, share_r
+
 _PILE_DISPLAY = 4            # display splats per grain -- INK membrane (docs/THE_RECORDED_SESSION_2.md,
                              # 2026-08-04): the cone is filled by VOLUME, so only ~a third of the 400
                              # clods sit on the visible surface (~10% coverage of a 4.1 m2 cone) and
                              # the live blind read scored the pile beats 0.2 ("white powder"). Each
                              # grain's copies ride it through the kick, so physics is untouched.
+                             # THE COUNT STAYS 4; what changed is that they now TILE rather than
+                             # stack -- see _pile_display above. The INK membrane's goal (fill the
+                             # cone's surface) is what tiling actually achieves; four copies inside
+                             # one splat radius achieved 16x overdraw and 17% holes instead.
+
 
 _VEG_ALB = np.array([0.20, 0.27, 0.14], np.float32)
 # THE TUFT IS NOT THE GROUND'S MEAN. walker.py's veg palette is a spatial MEAN -- blades plus the
@@ -201,6 +260,10 @@ def _ground_nums():
 def _mu_repose() -> float:
     gnd, _ = _ground_nums()
     return math.tan(math.radians(float(gnd["repose_regolith_deg"])))
+
+# DERIVED AT IMPORT from the pile's own geometry, not typed. `_mu_repose()` reads theGround, so the
+# cone's height is the repose angle this world grew -- move it and the clod moves.
+_CLOD, _PILE_JIT_R = _pile_display(_PILE_R, _PILE_R * _mu_repose(), _PILE_GRAINS, _PILE_DISPLAY)
 
 
 def _sun_light(w):
@@ -491,7 +554,11 @@ class Pile:
         # display jitter: _PILE_DISPLAY fixed offsets per grain, half a clod across, one seed --
         # the copies ride their grain through kick and settle, so the pile never shimmers.
         jrng = np.random.default_rng(11)
-        self._jit = (jrng.random((n, _PILE_DISPLAY, 3), dtype=np.float32) - 0.5) * _CLOD
+        # THE SPREAD IS THE GRAIN'S SHARE OF THE SURFACE, not half a clod. The old radius
+        # (0.030 m) was SMALLER than the splat's own painted radius (0.040 m), so the four
+        # copies could not help overlapping. 2*(rand-0.5)*R spans +-R.
+        self._jit = (2.0 * _PILE_JIT_R
+                     * (jrng.random((n, _PILE_DISPLAY, 3), dtype=np.float32) - 0.5))
         # the pile's colour is theGround's own measured minerals, averaged
         mins = gnd["mineral_materials"]
         self._alb = np.mean([mins[m]["rgb_mean"] for m in mins], axis=0).astype(np.float32)

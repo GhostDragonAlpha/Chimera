@@ -99,6 +99,25 @@ class LiveViewer:
         self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
         self._running = True
         self._err = None
+        # ── THE JPEG ENCODE RUNS BESIDE THE RENDER, NOT AFTER IT ────────────────────────────────
+        # `_publish` measured 9.5 ms per frame and sat directly in the render thread's path, so
+        # every frame cost render + encode in series. They do not contend: the render thread owns
+        # the GPU and the encoder is pure CPU, and PIL releases the GIL inside its C encoder. So
+        # the frame period becomes max(render, encode) instead of their sum.
+        #
+        # ONE SLOT, AND IT DROPS RATHER THAN QUEUES. If the encoder is still busy when the next
+        # frame arrives, the newer frame REPLACES the pending one. A queue would be worse in both
+        # directions -- it grows without bound when the encoder falls behind, and every frame it
+        # holds is a frame the viewer is shown LATE. For a live view the newest frame is the only
+        # one anybody wants; the older one has already been superseded on screen.
+        #
+        # `render_from_gpu` returns a fresh host array every call (`out.copy_to_host()`), so the
+        # hand-off needs no copy and the render thread cannot overwrite a frame being encoded.
+        self._enc_slot = None
+        self._enc_cv = threading.Condition()
+        self._enc_thread = threading.Thread(target=self._encode_loop, name="live-encode",
+                                            daemon=True)
+        self._enc_thread.start()
         # NAMED IN FULL, deliberately: `_t` is the story's TIME axis. The thread that draws it is a
         # different thing, and when both were called `_t` the render loop handed a Thread object to
         # emit(t) and every frame came back blank.
@@ -394,21 +413,29 @@ class LiveViewer:
                 t_r0 = time.time()
                 img = pipe.render_from_gpu(cam, params)
                 t_render_ms = (time.time() - t_r0) * 1000.0
-                # ── THE PUBLISH IS TIMED SEPARATELY, AND IT WAS NOT ────────────────────────────
+                # ── STEPPING PUBLISHES SYNCHRONOUSLY, PLAYBACK DOES NOT ─────────────────────────
+                # `/step` grants exactly one tick and its whole contract is that the frame you
+                # stepped to is the frame you then see. Handing that one to a background encoder
+                # makes the contract a race: the caller can read /stream before the encode lands
+                # and get the PREVIOUS frame, and since the loop is now paused no later frame ever
+                # arrives to correct it. The asynchrony is a throughput optimisation and stepping
+                # is not a throughput problem, so it opts out.
+                if self._paused:
+                    self._publish(img)
+                else:
+                    self._submit(img)
+                # ── THE PUBLISH WAS ONCE TIMED AS PART OF THE RENDER, AND IT IS NOW NEITHER ─────
                 # The comment below has always said "RENDER TIME IS TIMED AROUND THE RENDER", and
-                # it was not true: `_publish` sat inside the timed region, so every fps number
-                # this viewer has ever reported included a 1920x1080 JPEG encode. MEASURED, that
-                # is most of the frame -- theZero renders in ~38 ms offline and the viewer
-                # reported 141.9 ms for the same scene, against 23.9 ms predicted by the cost
-                # model. Six times off, and the excess was the encoder.
+                # for a long time it was not true: `_publish` sat inside the timed region, so
+                # every fps number this viewer reported included a 1920x1080 JPEG encode.
+                # MEASURED, that was most of the gap -- theZero renders in ~38 ms offline and the
+                # viewer reported 141.9 ms for the same scene against 23.9 ms predicted by the
+                # cost model.
                 #
-                # THE ENCODE IS REAL WORK AND IT IS NOT A RENDER. It sets how fast the MJPEG
-                # stream can go and belongs on screen, but attributing it to the render made the
-                # GPU look slow and made the expansion model look wrong -- a measurement blaming
-                # the wrong stage cannot be argued with, only re-measured.
-                t_p0 = time.time()
-                self._publish(img)
-                t_publish_ms = (time.time() - t_p0) * 1000.0
+                # Splitting the two made the attribution honest; moving the encode onto its own
+                # thread (see __init__) makes it FREE, because it now overlaps the next render
+                # instead of following this one. `_publish` times itself and reports through
+                # `_pub_hist`, so the encode stays visible without being on this path at all.
                 # ── THE FRAME BUDGET, MEASURED WHERE IT IS SPENT ────────────────────────────────
                 # The grain count is read off `pipe._n` rather than bookkept at each upload site.
                 # There are four of those and one of them is the LOD switch, which uploads a
@@ -437,7 +464,7 @@ class LiveViewer:
                     if isinstance(_e, getattr(_pg, "PerfBudgetError", Exception)):
                         print(f"[PERF] {self._loaded or '<none>'}: {_e}", flush=True)
                 self._note_frame(int(getattr(pipe, "_n", 0)), t_render_ms,
-                                 _exp, float(pipe.expansions_per_splat()), t_publish_ms)
+                                 _exp, float(pipe.expansions_per_splat()))
                 time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
         except Exception as e:                                          # a dead render thread must be visible, not silent
             import traceback
@@ -469,8 +496,7 @@ class LiveViewer:
             return
         density_enforce(term, n)          # prints to stderr with the floor and the surface type
 
-    def _note_frame(self, grains: int, ms: float, expansions: int = 0, eps: float = 0.0,
-                    publish_ms: float = 0.0):
+    def _note_frame(self, grains: int, ms: float, expansions: int = 0, eps: float = 0.0):
         """Record one rendered frame: its grain count, its tile work, and how long it took.
 
         THE FPS IS A ROLLING MEAN OVER THE LAST 30 RENDERS, not an instantaneous 1/dt. A single
@@ -489,11 +515,11 @@ class LiveViewer:
             self._expansions = int(expansions)
             self._eps = float(eps)
             self._ms_hist.append(float(ms))
-            self._pub_hist.append(float(publish_ms))
             if len(self._ms_hist) > 30:
                 del self._ms_hist[:-30]
-            if len(self._pub_hist) > 30:
-                del self._pub_hist[:-30]
+            # `_pub_hist` IS APPENDED BY THE ENCODER THREAD, not here. The two histories no longer
+            # advance together -- a dropped frame encodes nothing -- and pairing them by index
+            # would silently line up a render with someone else's encode.
 
     def stats(self) -> dict:
         """The frame budget as a number, for the footer and for /stats.
@@ -529,10 +555,15 @@ class LiveViewer:
         # Reported anyway because the average moving is a cheap early signal, and the expensive
         # per-tile maximum costs a second GPU sync per frame on the live render thread.
         screen_tiles = max(1, ((_W + _TS - 1) // _TS) * ((_H + _TS - 1) // _TS))
-        # `fps` IS THE FRAME RATE A VIEWER SEES, so it is 1000/(render + publish) -- both have to
-        # happen before the next picture appears. `render_ms` is the render ALONE, which is what
-        # `predicted_ms` models and the only one of the two the expansion budget governs.
-        frame_ms = ms + pub_ms
+        # `fps` IS THE FRAME RATE A VIEWER SEES. The render and the JPEG encode run on separate
+        # threads now, so a new picture appears every max(render, encode) -- NOT their sum, which
+        # is what this computed while the encode was inline. Reporting the sum after making them
+        # parallel would hide the entire benefit of having done it.
+        #
+        # It is max() and not the render alone because the encoder is a real ceiling: if encoding
+        # ever became the slower half, the stream would advance at ITS rate no matter how fast the
+        # GPU was, and `frame_ms` has to be able to say so.
+        frame_ms = max(ms, pub_ms)
         return {"fps": round(1000.0 / frame_ms, 2) if frame_ms > 1e-9 else 0.0,
                 "render_ms": round(ms, 2),
                 "publish_ms": round(pub_ms, 2),
@@ -563,11 +594,47 @@ class LiveViewer:
                 "lod_count": self._lod_n,
                 "base_count": (None if self._lod_base is None else int(self._lod_base.shape[0]))}
 
+    def _submit(self, img):
+        """Hand a rendered frame to the encoder and return immediately.
+
+        Replaces whatever was pending -- see the note in __init__ for why dropping beats queueing.
+        """
+        with self._enc_cv:
+            self._enc_slot = img
+            self._enc_cv.notify()
+
+    def _encode_loop(self):
+        """The encoder thread. Owns nothing but the JPEG."""
+        while self._running:
+            with self._enc_cv:
+                while self._enc_slot is None and self._running:
+                    self._enc_cv.wait(0.2)      # bounded, so shutdown does not need a poison pill
+                img, self._enc_slot = self._enc_slot, None
+            if img is not None:
+                try:
+                    self._publish(img)
+                except Exception as e:          # an encoder death must not be silent
+                    self._err = f"encode thread: {e}"
+                    print(f"[live_viewer] {self._err}", flush=True)
+
     def _publish(self, img):
+        """Encode one frame to JPEG and make it the current one.
+
+        IT TIMES ITSELF because it no longer runs where the render thread could time it. The
+        duration still has to reach `/stats` -- an encoder that quietly became the bottleneck
+        would otherwise show up only as fps that stopped tracking `render_ms`, which is a symptom
+        nobody would read correctly.
+        """
         from PIL import Image
+        t0 = time.time()
         buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=85)
+        data = buf.getvalue()
+        ms = (time.time() - t0) * 1000.0
         with self._lock:
-            self._latest = buf.getvalue()
+            self._latest = data
+            self._pub_hist.append(ms)
+            if len(self._pub_hist) > 30:
+                del self._pub_hist[:-30]
 
     def _walk_moved(self) -> float:
         ax, ay = getattr(self, "_walk_anchor", (1e18, 1e18))
@@ -596,7 +663,7 @@ class LiveViewer:
         b[:, 19] = 1.0
         b[:, 20] = 0.22          # grains close enough to read as a floor
         b[:, 11] = SOLID
-        return np.ascontiguousarray(b, dtype=_np.float32)
+        return _np.ascontiguousarray(b, dtype=_np.float32)
 
     # ── read/control surface (called from HTTP threads) ──
     def frame(self) -> bytes:
