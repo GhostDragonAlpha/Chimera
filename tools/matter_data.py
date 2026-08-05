@@ -205,6 +205,9 @@ SOIL = {
 # stated load fraction instead.
 _CORDAGE = ("Cordage Institute standard test methods for fiber rope / ASTM D-4268; elongation "
             "figures as published by Practical Sailor and by cordage manufacturers' data sheets")
+_SPLICE = ("Cordage Institute splicing guidance and the published knot/splice efficiency band: a "
+           "correctly made eye splice retains 85-95% of rope strength (the CI standard holds that "
+           "a proper one yields the full published MBS); a knot reduces strength by 40-60%")
 
 ROPE = {
     "nylon_eps_at_10pct":     _e(0.025, "1", _CORDAGE, "researched",
@@ -217,6 +220,17 @@ ROPE = {
                                  note="10-15% elongation at break; mid-band"),
     "safety_factor":          _e(5.0, "1", _CORDAGE, "researched",
                                  note="WLL = breaking strength / 5, the standard factor"),
+    # THE SEAM, which port 18 refused for want of exactly these two numbers. A rope does not fail
+    # in its middle; it fails where it was terminated, and the termination has its own strength as
+    # a FRACTION of the rope's. Two terminations, two very different fractions.
+    "eff_splice":             _e(0.90, "1", _SPLICE, "researched", spread=0.05,
+                                 note="properly executed eye splice retains 85-95%; the Cordage "
+                                      "Institute standard says a correct one yields the full "
+                                      "published Minimum Breaking Strength, so 0.90 is the "
+                                      "conservative middle of the measured band, not the standard"),
+    "eff_knot":               _e(0.50, "1", _SPLICE, "researched", spread=0.10,
+                                 note="a knot REDUCES strength 40-60%, i.e. retains 40-60%; 0.50 "
+                                      "is mid-band"),
 }
 
 # VEHICLE SUSPENSION -- the quarter-car model's published parameters. TWO ROUTES ARE PUBLISHED AND

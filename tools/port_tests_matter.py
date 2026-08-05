@@ -254,9 +254,20 @@ def t_grass_blade(mujoco):
                         f"a pure moment. To match deflection k = 3EI/L = {k_defl:.4g}; to match "
                         f"root slope k = 2EI/L = {k_slope:.4g}. NO SINGLE SPRING MATCHES BOTH "
                         f"(50% apart), so a blade is distributed or it is wrong.\n"
-                        f"    REFUSED: blade damping c. Vincent publishes a dynamic modulus "
-                        f"(44.38 MPa vs 554 static) which PROVES the blade is viscoelastic, but "
-                        f"no loss factor is published, and c may not be chosen."))
+                        f"    STILL REFUSED: blade damping c, and the earlier justification for "
+                        f"the refusal was itself overreach. It said Vincent's dynamic modulus "
+                        f"(44.38 MPa against 554 static) PROVES the blade is viscoelastic. It "
+                        f"proves nothing of the sort: for a viscoelastic solid the dynamic "
+                        f"modulus is the HIGHER one -- stiffer the faster you load it -- and a "
+                        f"dynamic value 12x BELOW the static is backwards. Either the pair is a "
+                        f"storage-vs-loss mislabel in a second-hand reading, or the two were "
+                        f"measured on different axes. Until the primary is read, that pair is "
+                        f"evidence of nothing.\n"
+                        f"    WHAT WOULD ACTUALLY CLOSE IT: a loss tangent (tan delta) for leaf "
+                        f"tissue, from which c = 2*zeta*sqrt(k*I) with zeta = tan(delta)/2. A "
+                        f"search of the DMA literature returns the method and no plant-tissue "
+                        f"number. c stays refused, and now the refusal names the measurement "
+                        f"instead of leaning on a pair that points the wrong way."))
 
 
 # ── PORT 14: ROCK FRACTURE ────────────────────────────────────────────────────────────────────
@@ -793,10 +804,20 @@ def t_fibre_rope(mujoco):
                         f"    CONSEQUENCE FOR THE GAME: a rope modelled as a linear spring from "
                         f"the published low-load figure stretches 2.4x too far in polyester and "
                         f"will look slack under a load it should hold taut.\n"
-                        f"    REFUSED: the seam. A splice or knot fails at a published FRACTION "
-                        f"of rope strength (a splice efficiency); no such fraction is in "
-                        f"matter_data, so no seam F_break is published here. The brief asked for "
-                        f"one; the honest output is the name of the missing measurement."))
+                        f"    THE SEAM, no longer refused: a rope does not fail in its middle, it "
+                        f"fails where it was TERMINATED. Splice retains "
+                        f"{100*md.val('rope','eff_splice'):.0f}% +- "
+                        f"{100*md.spread('rope','eff_splice'):.0f}, knot "
+                        f"{100*md.val('rope','eff_knot'):.0f}% +- "
+                        f"{100*md.spread('rope','eff_knot'):.0f} (Cordage Institute).\n"
+                        f"    AND THE SAFETY FACTOR IS NOT A PROPERTY OF THE ROPE. WLL is "
+                        f"BS/{sf:.0f}, so the published factor of {sf:.0f} is really "
+                        f"{sf*md.val('rope','eff_splice'):.1f} on a spliced rope and "
+                        f"{sf*md.val('rope','eff_knot'):.1f} on a knotted one -- a knot spends "
+                        f"HALF the safety margin the rating was sold with, and it spends it at "
+                        f"the one place the rope is guaranteed to break. That is derived from two "
+                        f"published fractions and the rating's own definition; nothing here was "
+                        f"chosen."))
 
 
 # ── PORT 19: VEHICLE SUSPENSION ───────────────────────────────────────────────────────────────
