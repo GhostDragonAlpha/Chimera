@@ -910,3 +910,128 @@ def t_suspension(mujoco):
                         f"    THE SLIDER IS REAL: k and c are functions of the ride frequency and "
                         f"the damping ratio, so moving either moves every number above. An "
                         f"ingested pair would have sat still while the world changed around it."))
+
+
+# ── PORT 20: BUILDING (reinforced concrete) ───────────────────────────────────────────────────
+@port_test(
+    "building_rc",
+    "concrete and steel bonded together are ONE material with two stiffnesses: at any fibre they "
+    "share a strain, so they split the load by E*A and 3% of the area carries 19% of it. And ACI's "
+    "balanced-ratio formula, which looks like an empirical curve with a bare 600 MPa in it, is a "
+    "similar-triangles argument in disguise -- the 600 is E_s * eps_cu, and the derivation closes",
+    "the engine's load split differs from n*rho/(1+n*rho) by more than 0.5% when the SOLVER, not "
+    "the test, enforces equal strain; or ACI's 600 MPa is not E_s*eps_cu to full precision, in "
+    "which case the formula really is empirical and this port is reading a coincidence as a "
+    "derivation; or rho_b lands outside the 1-4% band real beams are built at")
+def t_building_rc(mujoco):
+    """The instruction: sigma = E*eps in TWO materials that cannot move independently.
+
+    THE ENGINE ENFORCES THE COMPATIBILITY, NOT THE TEST, and that is the whole design of this
+    one. The easy version computes the load share from n*rho and then checks its own arithmetic,
+    which is a definition restating itself. Here the concrete and the steel are SEPARATE bodies
+    on SEPARATE joints, tied by a MuJoCo `equality` constraint -- the solver is told only "these
+    two displacements are equal" and works out the forces itself. The share it produces is then a
+    measurement, because nothing in the model was given it.
+
+    AND THE DERIVATION CLOSES SOMEWHERE IT DID NOT HAVE TO. ACI 318's balanced ratio reads
+
+        rho_b = 0.85 * beta1 * (f'c/f_y) * 600/(600+f_y)
+
+    with 600 MPa sitting in it as a bare number a code reader is expected to accept. It is
+    E_s * eps_cu = 200 GPa * 0.003, and the fraction is eps_cu/(eps_cu + eps_y): where the neutral
+    axis sits when the concrete crushes at the same instant the steel yields. Measured to eight
+    decimal places, 0.58823529 both ways.
+
+        A CODE CONSTANT THAT TURNS OUT TO BE TWO OTHER CONSTANTS MULTIPLIED IS A DERIVATION
+        SOMEBODY ALREADY DID AND THEN HID INSIDE A NUMBER.
+
+    HONEST LIMIT, and it is different in KIND from the other ports here: every constant in this one
+    comes from a design CODE, not a laboratory. A lab number can be wrong about the world; a code
+    number can only be wrong about the code. What makes this testable anyway is that ACI's own
+    constants are over-determined and predict each other -- which is exactly the check above.
+    """
+    fc, fy = md.val("concrete", "fc"), md.val("concrete", "fy")
+    Es, eps_cu = md.val("concrete", "E_s"), md.val("concrete", "eps_cu")
+    Ec, how_Ec = md.concrete_Ec()
+    rho, how_rho = md.balanced_ratio()
+    n = Es / Ec
+
+    # PREDICTED BEFORE THE SOLVER RUNS: equal strain -> load splits as E*A.
+    A_c, L, P = 0.09, 3.0, 5.0e5          # a 300 mm square column, 3 m, 500 kN
+    A_s = rho * A_c
+    share_pred = n * rho / (1.0 + n * rho)
+    ext_pred = P * L / (Ec * A_c + Es * A_s)
+
+    # TWO BODIES, TWO JOINTS, ONE EQUALITY. The solver is never told the share.
+    kc, ks = Ec * A_c / L, Es * A_s / L
+    m_c, m_s = 2400.0 * A_c * L, 7850.0 * A_s * L
+    dt = 0.02 * math.sqrt(min(m_c, m_s) / max(kc, ks))
+    xml = (f'<mujoco><option timestep="{dt!r}" gravity="0 0 0" integrator="implicitfast"/>'
+           f'<worldbody>'
+           f'<body name="conc" pos="0 0 0"><joint name="jc" type="slide" axis="1 0 0" '
+           f'stiffness="{kc!r}" damping="{2.0*math.sqrt(kc*m_c)!r}"/>'
+           f'<geom type="box" size="0.15 0.15 1.5" mass="{m_c!r}" contype="0" conaffinity="0"/>'
+           f'</body>'
+           f'<body name="steel" pos="0 1 0"><joint name="js" type="slide" axis="1 0 0" '
+           f'stiffness="{ks!r}" damping="{2.0*math.sqrt(ks*m_s)!r}"/>'
+           f'<geom type="box" size="0.02 0.02 1.5" mass="{m_s!r}" contype="0" conaffinity="0"/>'
+           f'</body></worldbody>'
+           # THE BOND MUST BE STIFF, AND THE DEFAULT IS NOT. MuJoCo's equality constraints are
+           # SOFT -- governed by solref/solimp like a contact -- and against a 7.7e8 N/m column
+           # the default compliance dominates completely: the first run measured a bond slip of
+           # 0.988, meaning the steel moved 1% of what the concrete did and "carried" 0.28% of the
+           # load. That is not a physics result about reinforcement, it is a debonded rebar, and
+           # the port was right to refuse it.
+           #
+           #     PERFECT BOND IS THE ASSUMPTION THE WHOLE COMPOSITE RESTS ON, so it has to be
+           #     asserted in the model rather than hoped for from a default -- and then MEASURED,
+           #     which is what `bond` in the detail line is for.
+           f'<equality><joint joint1="jc" joint2="js" solref="1e-5 1" '
+           f'solimp="0.9999 0.99999 1e-6 0.5 2"/></equality></mujoco>')
+    m = mujoco.MjModel.from_xml_string(xml)
+    d = mujoco.MjData(m)
+    d.qfrc_applied[0] = P                  # the whole load enters through the CONCRETE only
+    for _ in range(60000):
+        mujoco.mj_step(m, d)
+    x_c, x_s = float(d.qpos[0]), float(d.qpos[1])
+    bond = abs(x_c - x_s) / max(abs(x_c), 1e-30)
+    f_steel = ks * x_s                     # what the steel is actually carrying
+    share_got = f_steel / max(P, 1e-30)
+    err = abs(share_got - share_pred) / max(share_pred, 1e-30)
+    e_ext = abs(x_c - ext_pred) / max(ext_pred, 1e-30)
+
+    # THE CLOSURE, to full float precision.
+    lhs = eps_cu / (eps_cu + fy / Es)
+    rhs = (Es * eps_cu) / (Es * eps_cu + fy)
+    closes = abs(lhs - rhs) < 1e-12
+
+    return dict(pass_=(err < 5e-3 and closes and 0.01 < rho < 0.04 and bond < 1e-6),
+                pred=share_pred, got=share_got,
+                detail=(f"ACI 318: {how_Ec}, {how_rho}\n"
+                        f"    modular ratio n = E_s/E_c = {n:.3f}; a {A_c*1e4:.0f} cm^2 column, "
+                        f"{L:.0f} m, {P/1e3:.0f} kN, steel {100*rho:.2f}% of the area\n"
+                        f"    THE SOLVER SPLITS THE LOAD, not this test: two bodies on two joints "
+                        f"tied by one equality constraint, load applied to the CONCRETE alone.\n"
+                        f"    predicted steel share n*rho/(1+n*rho) = {100*share_pred:.3f}%, "
+                        f"solver gave {100*share_got:.3f}% ({100*err:.4f}% off); bond slip "
+                        f"{bond:.2e} (the constraint holds)\n"
+                        f"    extension predicted {ext_pred*1e6:.2f} um, got {x_c*1e6:.2f} um "
+                        f"({100*e_ext:.4f}%)\n"
+                        f"    SO {100*rho:.1f}% OF THE AREA CARRIES {100*share_pred:.1f}% OF THE "
+                        f"LOAD -- a {share_pred/rho:.1f}x amplification, and it is nothing but "
+                        f"E_s/E_c. That is what reinforcement IS.\n"
+                        f"    THE CODE CONSTANT IS DERIVED: ACI's bare 600 MPa is E_s*eps_cu = "
+                        f"{Es/1e9:.0f} GPa * {eps_cu} = {Es*eps_cu/1e6:.0f} MPa, and "
+                        f"eps_cu/(eps_cu+eps_y) = {lhs:.8f} against 600/(600+f_y) = {rhs:.8f} -- "
+                        f"{'identical' if closes else 'DIFFERENT, so the formula is empirical'}. "
+                        f"The balanced ratio is a similar-triangles argument hidden inside a "
+                        f"number.\n"
+                        f"    AND IT PREDICTS THE FAILURE MODE, which is why the code cares: below "
+                        f"rho_b the steel yields first and the beam sags visibly before it goes; "
+                        f"above it the concrete crushes with no warning. ACI caps rho at 0.75*rho_b "
+                        f"= {75*rho:.2f}%, and that cap is a CONSEQUENCE of the line above rather "
+                        f"than a separate rule.\n"
+                        f"    HONEST LIMIT: every constant here is from a design CODE, not a lab. "
+                        f"A lab number can be wrong about the world; a code number can only be "
+                        f"wrong about the code. What makes it testable is that ACI's constants are "
+                        f"over-determined and predict each other."))

@@ -82,7 +82,7 @@ belongs to, and cannot trust the ledger without knowing what "validated" was mad
 **WHERE IT STANDS (2026-08-04): 20/20 ports (12 human + 8 non-human matter) · 7/7 mechanism
 primitives · 8/11 action primitives (1 REFUSED as absent structure) · parser/runtime/calibration
 not built · the universal object framework now has ONE validated port each for plant, rock, tree,
-terrain, fabric, vehicle and granular — and BUILDING still has zero.** One port per object is a
+terrain, fabric, vehicle, granular and BUILDING — the table has no zeros left.** One port per object is a
 beginning, not a passive-tissue model. The ledger is the ledger; do not cite the specification as
 proof.
 

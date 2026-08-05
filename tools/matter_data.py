@@ -33,6 +33,7 @@ and the grass blade's damping is refused outright because nobody published it.
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -242,8 +243,62 @@ SUSPENSION = {
 }
 
 
+# REINFORCED CONCRETE -- ACI 318, and it is the ONE material here whose "constants" are a code's
+# design equations rather than a laboratory measurement. That is stated because it changes what a
+# falsifier can mean: a lab number can be wrong about the world, a code equation can only be wrong
+# about the code. What makes this testable anyway is that ACI's equations are OVER-DETERMINED --
+# the balanced-ratio formula contains a bare 600 MPa that turns out to be E_s * eps_cu, so the
+# code's own constants predict each other and the closure is checkable.
+_ACI = ("ACI 318 (metric): E_c = 4700*sqrt(f'c) MPa for normal-weight concrete; beta1 = 0.85 for "
+        "f'c <= 28 MPa, 0.85 - 0.05(f'c-28)/7 above; eps_cu = 0.003; Grade 420 = ASTM A615 "
+        "Grade 60, f_y 420 MPa, E_s 200 GPa")
+
+CONCRETE = {
+    "fc":      _e(30e6, "Pa", _ACI, "researched", spread=10e6,
+                  note="specified compressive strength; 20-40 MPa is ordinary structural concrete"),
+    "eps_cu":  _e(0.003, "1", _ACI, "researched",
+                  note="ACI's crushing strain -- the assumed extreme-fibre limit"),
+    "fy":      _e(420e6, "Pa", _ACI, "researched",
+                  note="Grade 420 / Grade 60, the standard US rebar"),
+    "E_s":     _e(200e9, "Pa", _ACI, "researched", note="steel, and it is the same 200 GPa "
+                                                        "everywhere -- rebar is not special"),
+}
+
+
+def concrete_Ec() -> tuple[float, str]:
+    """E_c = 4700*sqrt(f'c), ACI's own empirical fit. Returns (Pa, the arithmetic)."""
+    fc = val("concrete", "fc")
+    ec = 4700.0 * math.sqrt(fc / 1e6) * 1e6
+    return ec, f"E_c = 4700*sqrt({fc/1e6:.0f} MPa) = {ec/1e9:.2f} GPa"
+
+
+def concrete_beta1() -> tuple[float, str]:
+    fc = val("concrete", "fc") / 1e6
+    b = 0.85 if fc <= 28.0 else max(0.65, 0.85 - 0.05 * (fc - 28.0) / 7.0)
+    return b, f"beta1 = 0.85 - 0.05({fc:.0f}-28)/7 = {b:.4f}"
+
+
+def balanced_ratio() -> tuple[float, str]:
+    """ACI's balanced reinforcement ratio -- and the check is that its 600 MPa is DERIVED.
+
+        rho_b = 0.85 * beta1 * (f'c/f_y) * 600/(600+f_y)
+
+    The 600 sits in the code as a bare number. It is E_s * eps_cu = 200 GPa * 0.003 = 600 MPa, and
+    the whole fraction is the strain-compatibility geometry: eps_cu/(eps_cu + eps_y) is where the
+    neutral axis sits when the concrete crushes at the same instant the steel yields. So the
+    formula is not an empirical curve with a magic constant in it; it is a similar-triangles
+    argument, and that it CLOSES is the thing to test.
+    """
+    fc, fy = val("concrete", "fc"), val("concrete", "fy")
+    b1, _ = concrete_beta1()
+    six = val("concrete", "E_s") * val("concrete", "eps_cu")     # 600 MPa, derived not typed
+    rho = 0.85 * b1 * (fc / fy) * six / (six + fy)
+    return rho, (f"rho_b = 0.85*{b1:.4f}*({fc/1e6:.0f}/{fy/1e6:.0f})*"
+                 f"{six/1e6:.0f}/({six/1e6:.0f}+{fy/1e6:.0f}) = {100*rho:.3f}%")
+
+
 # ── ACCESS ────────────────────────────────────────────────────────────────────────────────────
-_TABLES = {"grass": GRASS, "grass_blade": GRASS_BLADE, "rock": ROCK,
+_TABLES = {"grass": GRASS, "grass_blade": GRASS_BLADE, "rock": ROCK, "concrete": CONCRETE,
            "soil": SOIL, "rope": ROPE, "suspension": SUSPENSION}
 
 
