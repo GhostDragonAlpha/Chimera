@@ -468,6 +468,49 @@ does not rest on the precision of a citation. And `rolling_coefficient` takes ta
 day one is published. **Anelastic bulk loss (dislocation motion, grain-boundary sliding) remains
 UNBUILT and still needs a real measurement** — but nothing has to be rewritten to accept one.
 
+### Stage 15 — Anelastic bulk loss — **BUILT, PASSED — the microstructure CANCELS**
+Stage 14 deliberately left `rolling_coefficient`'s tan δ as an *argument* so a measured loss tangent
+could plug in later. **It is filled here by a derivation instead** — the third time in this lane a
+"needs a citation" note turned out to be reachable, and for the same reason each time: the question
+was never what value the constant should take, but what physical thing it is.
+
+**WHAT ANELASTIC LOSS ACTUALLY IS IN A GRANULAR SOLID.** The dominant internal-friction mechanism
+in rock and soil is not dislocation motion — it is **frictional sliding on internal surfaces**, and
+in a granular medium those surfaces are the grain contacts. Stage 13 already derived what one
+contact dissipates per cycle; the bulk loss is that summed over the contacts a cubic metre holds,
+and the contact count comes from theGround's own **published porosity and median grain size**.
+
+**THE RESULT, and the ending is the surprise:**
+`tan δ = 2τ/(9π·μ·σ)` — **every microstructural term cancels.** Grain size, porosity, contact
+stiffness, both elastic moduli: all gone. The bulk anelastic loss of a frictional granular medium
+depends on nothing but the ratio of shear amplitude to confining stress, and on μ. Nobody chose
+that simplification; it is what the sum does — and it is why measured Q for granular materials is so
+stubbornly universal across wildly different mineralogies. **Verified numerically, not just on
+paper**: a 100× sweep of grain size and the full loose-to-dense porosity range both move tan δ by
+**0.000%**.
+
+**THE MAGNITUDE, unfitted.** **Q = 109** at τ/σ = 0.1 — squarely in the order-10² band crustal rock
+and soil are measured in. The inputs were theGround's published porosity and d₅₀, its **grown**
+repose angle, and two cited elastic moduli. The two routes (closed form vs explicit per-contact sum
+with Stage 13's exact loop) agree to **0.80%** in the asymptotic regime, and the exact loop runs
+**8.7% hot** at larger amplitude — the same super-cubic approach to full slip Stage 13 measured,
+recorded rather than hidden.
+
+**TWO ORTHOGONAL SIGNATURES, which is the real payoff.** Frictional loss is **amplitude-dependent**
+(exponent 1.027 against 1) and **frequency-independent** — there is no rate anywhere in it. Stage
+14's thermoelastic loss is the mirror image: amplitude-independent and **peaked in frequency**
+(50× swing over the same span). So a medium's damping can be **decomposed by experiment** — sweep
+amplitude at fixed frequency to see one, frequency at fixed amplitude to see the other. A single
+fitted loss tangent could never have separated them. It also means **"the" loss tangent of a
+granular medium is not a constant of the material**, and rock Q genuinely falls with strain.
+
+**THE HONEST REMAINDER.** This is the frictional mechanism. **Granato–Lücke dislocation damping**
+needs dislocation densities and pinning lengths, and **point-defect relaxation** needs activation
+energies — neither is published, both remain UNBUILT, and for room-temperature quartz both are
+genuinely small. The asymptotic ceiling 2/(9π) = 0.0707 is a small-amplitude formula pushed to full
+slip; the exact loop gives 0.189 near it, so the ceiling is labelled an order of magnitude rather
+than a limit.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -479,6 +522,7 @@ python ChimeraEngine/test_hertz.py           # 21 checks: Hertz, the P^(1/6) exp
 python ChimeraEngine/test_rolling.py         # 13 checks: contact torque, rolling resistance, the 5/7 law
 python ChimeraEngine/test_hysteresis.py      # 17 checks: Mindlin microslip, the cubic law, the Stage 12 correction
 python ChimeraEngine/test_viscoelastic.py    # 13 checks: Zener damping, the peak rolling speed, the decomposition
+python ChimeraEngine/test_anelastic.py       # 13 checks: the cancellation, Q ~ 100, the two signatures
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
