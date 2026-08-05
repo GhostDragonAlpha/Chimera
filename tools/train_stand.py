@@ -206,6 +206,14 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     # is bit-identical to the old formula, because kr is then zeros.
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
     kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+    # SIX BLOCKS: the CoM feedback arm (2026-08-04). kx, ky multiply the CoM offset from the
+    # foot-polygon centre -- the base-of-support margins lateral stability is about. The arm is
+    # trained with `--blocks 6` and the 4-block incumbent as init; a 4-block theta never enters
+    # this branch, so the P-only control stays bit-identical (the same discipline `--blocks 3|4`
+    # bought for the roll term).
+    kx = theta[4 * nu:5 * nu] if theta.size >= 5 * nu else np.zeros(nu)
+    ky = theta[5 * nu:6 * nu] if theta.size >= 6 * nu else np.zeros(nu)
+    n_com = theta.size >= 5 * nu
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
@@ -234,6 +242,15 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             z_err = tgt - z
             u = a0 + kh * z_err + kp * pitch + kr * roll
+            if n_com:
+                # CoM BoS feedback, read at CONTROL time: xpos/subtree_com are consistent with
+                # the qpos the controller is about to act on (the same convention the reward
+                # branch uses one step later -- a plot's origin is a measurement, rule 19).
+                _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
+                _foot = 0.25 * (_b("calcn_r") + _b("calcn_l") + _b("toes_r") + _b("toes_l"))
+                cdx = float(d.subtree_com[0][0] - _foot[0])
+                cdy = float(d.subtree_com[0][1] - _foot[1])
+                u = u + kx * cdx + ky * cdy
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
             prev = {"z": z, "pitch": pitch, "roll": roll}
         mujoco.mj_step(m, d)
@@ -417,11 +434,15 @@ def main() -> int:
     # `--blocks 3` the identical trainer, budget, seeds, window and RNG stream produce the
     # without-roll arm, and the roll term is the only variable between them.
     #
-    # A 3-block run still SAVES 4*nu numbers with kr = 0, so every consumer (parser, walk_formula,
-    # f3) reads one shape and the two arms are interchangeable at judgment.
+    # 6 = a0|kh|kp|kr|kx|ky: the CoM-BoS feedback arm (2026-08-04). Same single-variable
+    # discipline: warm-started from the 4-block incumbent (kx=ky=0), the ONLY difference from
+    # the P-only control is the kx*com_x + ky*com_y term. 9-block PD+CoM is NOT trained here:
+    # the velocity arm was falsified on this body (any non-zero kdz/kdp/kdr drops survival from
+    # ~9 s to 3-5 s), and adding it back would couple two variables into one experiment.
     blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else 4
-    if blocks not in (3, 4):
-        raise SystemExit("--blocks must be 3 (no roll term) or 4 (with it). Refusing.")
+    if blocks not in (3, 4, 6):
+        raise SystemExit("--blocks must be 3 (no roll term), 4 (with it) or 6 (with the CoM "
+                         "BoS arm). Refusing.")
     # THE JOINTS TERM'S SHAPE, and its control. "hinge" = the derived per-joint sum; "retired" =
     # the max-then-gaussian, executable so the A/B has an arm that is the old reward exactly.
     # Measured before the change (tools/joints_gradient.py): the retired form sees ONE joint per
@@ -461,8 +482,14 @@ def main() -> int:
         mu = np.load(init)
         if mu.size == 3 * nu and blocks == 4:   # an old 3-block checkpoint: adopt it with kr = 0,
             mu = np.concatenate([mu, np.zeros(nu)])   # so the warm start is the old policy exactly
+        if mu.size == 3 * nu and blocks == 6:   # 3-block into the CoM arm: kh|kp kept, kr|kx|ky = 0
+            mu = np.concatenate([mu, np.zeros(3 * nu)])
         if mu.size == 4 * nu and blocks == 3:   # a 4-block checkpoint into a 3-block search: the
             mu = mu[:3 * nu]                    # roll block is DROPPED, and the arm says so
+        if mu.size == 4 * nu and blocks == 6:   # THE CoM ARM'S WARM START: the 4-block incumbent
+            mu = np.concatenate([mu, np.zeros(2 * nu)])  # plus kx = ky = 0. The P-only policy is
+            # then the initial candidate exactly (kx*0 + ky*0 = 0), so turn 0 CANNOT be worse
+            # than the incumbent -- the same correctness property `cand[0] = mu` enforces per turn.
         sd = 0.5 * sd
         print(f"warm start from {init}")
     elite = max(3, pop // 5)
@@ -511,13 +538,27 @@ def main() -> int:
 
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
           f"g {g:.4f}, {nu} muscles, {dim}-dim search "
-          f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})",
+          f"({blocks} blocks: "
+          f"{'a0|kh|kp' if blocks == 3 else 'a0|kh|kp|kr' if blocks == 4 else 'a0|kh|kp|kr|kx|ky COM'}"
+          f"{'  -- NO ROLL TERM, the control arm' if blocks == 3 else ''})",
           end="")
     print()
-    print(f"  joints term: {joints.upper()}"
-          + ("  (per-joint hinge summed over every graded joint -- the derived form)"
-             if joints == "hinge" else
-             "  -- THE CONTROL ARM: max-then-gaussian, the retired form exactly"))
+    # ONE DESCRIPTION PER ARM, LOOKED UP -- not an if/else with a catch-all. The two-branch
+    # version printed "THE CONTROL ARM: max-then-gaussian, the retired form exactly" for
+    # `--joints load`, because anything that was not "hinge" fell into the else. The run was
+    # correct and its own log described it as a different experiment; a log published as
+    # evidence would have claimed the physical arm was the retired geometric one. A catch-all
+    # branch is a claim about every value the author did not think of.
+    _JOINTS_DESC = {
+        "hinge":   "(per-joint hinge summed over every graded joint -- the derived form)",
+        "retired": "-- THE CONTROL ARM: max-then-gaussian, the retired form exactly",
+        "load":    "(the SAME hinge shape and constants, on the MEASURED constraint torque "
+                   "normalised per joint by muscular capacity -- stand_port.load_joints_factor)",
+    }
+    if joints not in _JOINTS_DESC:
+        raise SystemExit(f"no printed description for --joints {joints!r}. Refusing to run an "
+                         f"arm whose log cannot say what it is.")
+    print(f"  joints term: {joints.upper()}  {_JOINTS_DESC[joints]}")
     print(f"  scoring: WORST of {seeds} randomized start(s) x {secs:.1f} s"
           + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
              else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
@@ -635,8 +676,18 @@ def main() -> int:
     saved = best_ever[1]
     if saved.size == 3 * nu and blocks == 4:
         saved = np.concatenate([saved, np.zeros(nu)])
-    from parser import check_theta_shape
-    check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
+    if blocks == 6:
+        # THE 6-BLOCK LAYOUT IS A SYNERGY CONTRACT, NOT A PARSER ONE. parser.check_theta_shape
+        # caps at 5 blocks (a0|kh|kp|kr|kw) on purpose -- a 6-block checkpoint fed to the parser's
+        # formula would be silently truncated, which is exactly the silent-degradation that guard
+        # exists to refuse. The decoder (SynergyDecoder) validates 6/7/9 layouts itself, so the
+        # guard here is only that the CoM arm produced the shape it was asked for.
+        if saved.size != 6 * nu:
+            raise SystemExit(f"6-block arm produced {saved.size // nu} blocks of {nu} -- the "
+                             f"CoM layout is broken. Refusing to save.")
+    else:
+        from parser import check_theta_shape
+        check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
     np.save(OUTDIR / out_name, saved)
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")
