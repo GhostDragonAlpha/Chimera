@@ -52,24 +52,42 @@ def worst_case_buffer(n: int) -> np.ndarray:
     return b
 
 
-def measure(n: int, pairs: int = 24, warmup: int = 6):
+def measure(n: int, pairs: int = 24, warmup: int = 6, term: str = "specular"):
+    """Interleaved A/B for one optics term. term='specular' toggles set_light;
+    term='refraction' toggles set_refraction (worst case: every grain is an interface)."""
     buf = worst_case_buffer(n)
     cam = FirstPersonCamera(position=(0.0, -2.5, 0.0), yaw=np.pi / 2, pitch=0.0)
     prm = cam.params(width=640, height=480)
     light = ((0.0, 1.0, 0.15), (1.0, 0.97, 0.92))
 
     pipe = gp.FullGPUPipeline()
+    if term == "refraction":
+        from ChimeraEngine.core import optics
+        buf[:, matter.REFRACT] = 1.0
+        floor = matter.blank(96 * 96)
+        f = np.linspace(-1.2, 1.2, 96)
+        fx, fy = np.meshgrid(f, f)
+        floor[:, matter.PX] = fx.ravel(); floor[:, matter.PY] = fy.ravel()
+        floor[:, matter.CR] = 0.5; floor[:, matter.CG] = 0.4; floor[:, matter.CB] = 0.3
+        origin, cell, grid_rgb, grid_has = optics.build_floor_grid(floor, float(f[1] - f[0]))
+        eta = 1.0 / 1.3436
+        arm_on = lambda: pipe.set_refraction((eta, eta, eta), -1.0, (0.32, 0.06, 0.0145),
+                                             origin, cell, grid_rgb, grid_has)
+        arm_off = lambda: pipe.set_refraction(None)
+    else:
+        arm_on = lambda: pipe.set_light(*light)
+        arm_off = lambda: pipe.set_light(None)
     pipe.upload(buf)
 
     for _ in range(warmup):                       # JIT + allocator + cache warm, both arms
-        pipe.set_light(None); pipe.render_from_gpu(cam, prm)
-        pipe.set_light(*light); pipe.render_from_gpu(cam, prm)
+        arm_off(); pipe.render_from_gpu(cam, prm)
+        arm_on(); pipe.render_from_gpu(cam, prm)
 
     off = np.empty(pairs); on = np.empty(pairs)
     for k in range(pairs):                        # interleaved: A B A B ...
-        pipe.set_light(None)
+        arm_off()
         t0 = time.perf_counter(); pipe.render_from_gpu(cam, prm); off[k] = time.perf_counter() - t0
-        pipe.set_light(*light)
+        arm_on()
         t0 = time.perf_counter(); pipe.render_from_gpu(cam, prm); on[k] = time.perf_counter() - t0
 
     d = (on - off) * 1000.0
@@ -80,10 +98,13 @@ def measure(n: int, pairs: int = 24, warmup: int = 6):
 
 
 def main() -> int:
+    import sys as _sys
+    term = "refraction" if "--refraction" in _sys.argv else "specular"
+    print(f"[{term}]")
     print(f"{'N grains':>10} {'off ms':>10} {'on ms':>10} {'delta ms':>10} {'±sem':>8}   verdict")
     rows = []
     for n in (4096, 65536, 262144):
-        r = measure(n)
+        r = measure(n, term=term)
         rows.append(r)
         clears = abs(r["delta_ms"]) > 2.0 * r["sem"]
         verdict = "MEASURABLE" if clears else "below noise"
@@ -96,7 +117,7 @@ def main() -> int:
         print(f"\nMS_PER_LIT_GRAIN = {slope:.3e}  (fit at N={big['n']:,}; wire into perf_guard)")
     else:
         bound = (2.0 * big["sem"]) / big["n"]
-        print(f"\nThe specular term DOES NOT CLEAR THE NOISE at N={big['n']:,}: "
+        print(f"\nThe {term} term DOES NOT CLEAR THE NOISE at N={big['n']:,}: "
               f"delta {big['delta_ms']:+.4f} ± {big['sem']:.4f} ms.")
         print(f"Honest record: MS_PER_LIT_GRAIN <= {bound:.3e} ms/grain (2-sigma upper bound).")
         print("Per the pre-stated rule: the light term is NOT the binding constraint; "

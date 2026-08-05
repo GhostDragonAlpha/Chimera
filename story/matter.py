@@ -32,6 +32,11 @@ TYPE = 11
 # explicitly set on the pipeline (set_light), which no sim demo does -- and zero in either column
 # means "not published", which disables the term for that grain rather than inventing a default.
 SPEC_F0, SPEC_SLOPE = 12, 13
+# REFRACT (overlays the sim path's PROP2, which no current particle type reads): > 0 marks this
+# grain as a refractive INTERFACE -- the renderer bends the view ray by Snell at the grain's own
+# n (from its density) and shows the membrane-published floor through it, attenuated by the
+# membrane's own absorption. Zero means opaque, exactly as before the pass existed.
+REFRACT = 14
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 NX, NY, NZ = 21, 22, 23        # optional outward normal -> the pipeline back-face-culls the far side
 # THE ALBEDO A GRAIN IS MADE OF, as opposed to the colour it currently shows. A membrane that will be
@@ -202,6 +207,30 @@ def blackbody_rgb(T: float) -> tuple:
 SPECIFIC_REFRACTION_CM3_G = {
     "water": 3.712 / 18.015,          # = 0.20605
     "silicate": 0.1198,
+}
+
+# DISPERSION -- n depends on wavelength, and the dependence is MEASURED, never picked. Literature
+# water indices at the Fraunhofer lines (Hale & Querry / CRC): C 656.3 nm, D 589.3 nm, F 486.1 nm.
+# Restated per colour channel through the same Lorentz-Lorenz form as everything else, so the
+# density slider still moves all three together:
+#     r_channel = r_D * [(n_c^2-1)/(n_c^2+2)] / [(n_D^2-1)/(n_D^2+2)]
+WATER_N_BY_CHANNEL = {"R": 1.3311, "G": 1.3334, "B": 1.3371}
+
+
+def dispersive_refraction(r_d_cm3_g: float, n_d: float, n_channel: float) -> float:
+    """The channel's specific refraction implied by its measured index -- the sourced dispersion
+    constant restated through the law (same move as the silicate entry above)."""
+    ll = lambda n: (n * n - 1.0) / (n * n + 2.0)
+    return float(r_d_cm3_g) * ll(float(n_channel)) / ll(float(n_d))
+
+
+# BULK MODULUS -- what the OVERLAP-PRESSURE reader consumes (docs/THE_TWO_FORCES.md Stage 8):
+# compressing matter costs energy at a rate the material itself publishes. Measured constants,
+# cited (CRC): water 2.2 GPa; quartz ~37 GPa. These enter the way specific refraction does --
+# the ONLY legal way a material constant enters this world.
+BULK_MODULUS_PA = {
+    "water": 2.2e9,
+    "silicate": 3.7e10,
 }
 
 

@@ -269,7 +269,7 @@ def _smith_g1(c, sg):
 
 @cuda.jit(cache=True)
 def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr, scg, scb, sopa, n,
-         lon, ex, ey, ez, ldx, ldy, ldz, lcr, lcg, lcb):
+         lon, ex, ey, ez, ldx, ldy, ldz, lcr, lcg, lcb, rpar, gcol, ghas):
     i = cuda.grid(1)
     if i >= n: return
     o = i * NCOLS
@@ -323,6 +323,62 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
                                     scr[i] += lcr * sp
                                     scg[i] += lcg * sp
                                     scb[i] += lcb * sp
+
+    # ── THE REFRACTION TERM (Stages 4/7, 2026-08-05): a refractive grain is an INTERFACE ─────────
+    # Snell at the grain's own density-derived eta (three channels: dispersion is the same pass
+    # with three measured indices), straight to the membrane-published floor plane, floor colour
+    # through a cell grid, Beer-Lambert over the refracted path, weighted by the energy the
+    # specular term did NOT reflect: (1 - F(cos_v)). The refracted direction eta*d + (eta*c1-c2)*n
+    # is EXACTLY unit length (|t|^2 = 1, algebra in core/optics.py), so the plane parameter IS the
+    # path length -- no normalisation. rpar layout + float64 referee + tolerances: core/optics.py.
+    # Gated like specular: no set_refraction() -> rpar[0] = 0 -> not one bit changes anywhere.
+    if rpar[0] > 0.0:
+        rf2 = dp[o + PROP2]                   # story matter.REFRACT: > 0 marks an interface
+        if rf2 > 0.0:
+            f02 = dp[o + PROP0]
+            rnx = dp[o + NX]; rny = dp[o + NY]; rnz = dp[o + NZ]
+            rn2 = rnx*rnx + rny*rny + rnz*rnz
+            if rn2 > 1e-6:
+                rinv = 1.0 / math.sqrt(rn2)
+                rnx *= rinv; rny *= rinv; rnz *= rinv
+                qx = ex - dp[o + PX]; qy = ey - dp[o + PY]; qz = ez - dp[o + PZ]
+                qq = qx*qx + qy*qy + qz*qz
+                if qq > 0.0:
+                    qinv = 1.0 / math.sqrt(qq)
+                    qx *= qinv; qy *= qinv; qz *= qinv
+                    c1 = rnx*qx + rny*qy + rnz*qz
+                    if c1 > 0.0:
+                        om2 = 1.0 - c1
+                        frv = f02 + (1.0 - f02) * om2*om2*om2*om2*om2
+                        tw = 1.0 - frv                     # transmitted Fresnel fraction
+                        gnx_i = int(rpar[11]); gny_i = int(rpar[12])
+                        for ch in range(3):
+                            eta = rpar[1 + ch]
+                            kk = 1.0 - eta * eta * (1.0 - c1 * c1)
+                            if kk >= 0.0:                  # TIR refuses transmission (eta>1 only)
+                                c2 = math.sqrt(kk)
+                                fq = eta * c1 - c2
+                                tx2 = -eta * qx + fq * rnx
+                                ty2 = -eta * qy + fq * rny
+                                tz2 = -eta * qz + fq * rnz
+                                if tz2 < 0.0:
+                                    ss = (rpar[4] - dp[o + PZ]) / tz2
+                                    if ss > 0.0:
+                                        hx2 = dp[o + PX] + tx2 * ss
+                                        hy2 = dp[o + PY] + ty2 * ss
+                                        cix = int(math.floor((hx2 - rpar[8]) / rpar[10]))
+                                        ciy = int(math.floor((hy2 - rpar[9]) / rpar[10]))
+                                        if cix >= 0 and cix < gnx_i and ciy >= 0 and ciy < gny_i:
+                                            gi = ciy * gnx_i + cix
+                                            if ghas[gi] != 0.0:
+                                                att = math.exp(-rpar[5 + ch] * ss)
+                                                cadd = tw * att * gcol[gi * 3 + ch]
+                                                if ch == 0:
+                                                    scr[i] += cadd
+                                                elif ch == 1:
+                                                    scg[i] += cadd
+                                                else:
+                                                    scb[i] += cadd
 
     t = int(dp[o + TYPE])
     sm, osrc, aniso, astr = _profile(t)
@@ -825,6 +881,9 @@ class FullGPUPipeline:
         # pre-optics pipeline. Set per scene by whoever composed it (a witness, a test, the
         # viewer) -- the pipeline never invents a light.
         self._light = None
+        # THE REFRACTION STATE, same contract: None (the default) means rpar[0] = 0 in the kernel
+        # and not one bit of any existing render changes. Set per scene by whoever composed it.
+        self._refr = None
 
     def _grow(self, n):
         if n <= self._a: return
@@ -1159,6 +1218,37 @@ class FullGPUPipeline:
         self._light = (float(d[0] / nn), float(d[1] / nn), float(d[2] / nn),
                        float(r[0]), float(r[1]), float(r[2]))
 
+    def set_refraction(self, eta_rgb=None, floor_z=0.0, absorb_rgb=(0.0, 0.0, 0.0),
+                       grid_origin=(0.0, 0.0), cell=1.0, grid_rgb=None, grid_has=None):
+        """Give the scene its refractive floor, for the per-grain refraction term in `_p2s`.
+
+        eta_rgb      three etas (n_outside / n_medium per colour channel; equal values = no
+                     dispersion, per-channel measured indices = dispersion, same pass either way)
+        floor_z      the membrane-published floor plane, in the buffer's own frame
+        absorb_rgb   the membrane's own absorption per unit path (aSaltOcean publishes exactly this)
+        grid_*       the floor colour grid from ChimeraEngine.core.optics.build_floor_grid
+
+        `set_refraction(None)` (or no eta) clears. Grains opt in per-grain via matter.REFRACT > 0,
+        exactly as specular opts in via its columns -- absence refuses, never defaults."""
+        if eta_rgb is None:
+            self._refr = None
+            return
+        if grid_rgb is None or grid_has is None:
+            raise ValueError("set_refraction: a floor with no grid names nothing to see")
+        ny, nx = grid_has.shape
+        rpar = np.zeros(13, dtype=np.float32)
+        rpar[0] = 1.0
+        rpar[1:4] = np.asarray(eta_rgb, dtype=np.float32)
+        rpar[4] = float(floor_z)
+        rpar[5:8] = np.asarray(absorb_rgb, dtype=np.float32)
+        rpar[8] = float(grid_origin[0]); rpar[9] = float(grid_origin[1]); rpar[10] = float(cell)
+        rpar[11] = float(nx); rpar[12] = float(ny)
+        self._refr = (cuda.to_device(rpar),
+                      cuda.to_device(np.ascontiguousarray(
+                          np.asarray(grid_rgb, dtype=np.float32).reshape(-1))),
+                      cuda.to_device(np.ascontiguousarray(
+                          np.asarray(grid_has, dtype=np.float32).reshape(-1))))
+
     def step_particles(self, dt, cvars):
         n = self._n
         if n == 0: return
@@ -1205,13 +1295,22 @@ class FullGPUPipeline:
             lon = 1
             ldx, ldy, ldz, lcr, lcg, lcb = self._light
 
+        if self._refr is None:
+            if not hasattr(self, "_refr_off"):       # persistent dummies: same types, zero flag
+                self._refr_off = (cuda.to_device(np.zeros(13, dtype=np.float32)),
+                                  cuda.to_device(np.zeros(3, dtype=np.float32)),
+                                  cuda.to_device(np.zeros(1, dtype=np.float32)))
+            rpar_d, gcol_d, ghas_d = self._refr_off
+        else:
+            rpar_d, gcol_d, ghas_d = self._refr
+
         # Particle → splat
         _p2s[g, (256,)](self._dp, self.base_scale,
             self._spx, self._spy, self._spz,
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
             self._scr, self._scg, self._scb, self._sopa, n,
             lon, float(eye[0]), float(eye[1]), float(eye[2]),
-            ldx, ldy, ldz, lcr, lcg, lcb)
+            ldx, ldy, ldz, lcr, lcg, lcb, rpar_d, gcol_d, ghas_d)
 
         # Project
         _project[g, (256,)](self._dp, self._spx, self._spy, self._spz,
