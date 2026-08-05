@@ -119,7 +119,7 @@ def term_inventory() -> dict:
     """
     render = set(scene_terms())
     try:
-        import terms_data as _td
+        import ChimeraEngine.terms_data as _td
         declared = {t[0] if isinstance(t, (tuple, list)) else str(t) for t in _td.TERMS}
     except Exception:
         declared = set()

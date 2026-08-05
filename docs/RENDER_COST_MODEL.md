@@ -485,3 +485,75 @@ reason is not testing that reason.** The unit test has one possible cause for fa
 properties that matter: every frame arrives when the encoder keeps up (10/10), a 40-frame burst
 settles on the *newest* and encodes **1 of 40** rather than queueing, a malformed frame is reported
 without wedging the thread, and `_publish` alone lands synchronously for the `/step` path.
+
+## 12. The biggest performance factor measured all day is not code
+
+**Measured 2026-08-05 by evicting LM Studio, timing, and reloading it.**
+
+Every optimisation in §8–§11 bought 6–12%. Sharing the card costs **41%**, and the work being done
+is bit-for-bit the same:
+
+| scene | expansions | LM Studio **busy** | GPU free | gain | fps |
+|---|---:|---:|---:|---:|---|
+| aHuman @1.0 | 37,916 | 14.31 ms | 7.30 ms | **−49.0%** | 69.9 → **137.0** |
+| aBlueWorld @1.0 | 100,749 | 19.39 ms | 11.31 ms | −41.7% | 51.6 → 88.4 |
+| theMining @0.25 | 701,815 | 38.84 ms | 22.93 ms | −41.0% | 25.7 → 43.6 |
+| theGalaxy @1.0 | 174,056 | 24.68 ms | 15.09 ms | −38.9% | 40.5 → 66.3 |
+| aTerrain @0.25 | 7,210,490 | 263.47 ms | 171.37 ms | −35.0% | 3.8 → 5.8 |
+
+**Mean −41.1%, median −41.0%. Expansion counts identical on all five** — same scene, same frame,
+same work; only the machine differed.
+
+> **READ THE LEFT COLUMN CAREFULLY: it is "busy", not "resident".** That baseline was taken while
+> the card reported **31–34% utilisation** — LM Studio was doing something, not merely holding
+> weights. A later quick sweep with the *same* model resident but **idle at 1% utilisation** ran
+> `aSaltOcean @0.5×` in 11.0 ms against 18.2 ms in the contended sweep, which is most of the
+> difference recovered without evicting anything.
+>
+> So the honest reading is **"another client actively using the GPU costs ~41%"**, and the separate
+> question — *what does a large model cost while merely resident and idle?* — is **not settled by
+> this table**. Treat the 41% as the cost of contention, not the cost of residency, and do not use
+> it to argue for keeping VRAM empty.
+
+**The correlate is the clock, not the memory.** During the contended baseline the card sat at
+**330–1005 MHz**; with LM Studio unloaded the same render ran at **2715 MHz**. VRAM went
+21,819 → 1,629 MiB, but a 4090 with 2.8 GB in use is not memory-starved at either figure — the
+render's own footprint is small. A ~2.7× clock difference is the right size to explain a ~1.7×
+frame time; VRAM pressure is not.
+
+*(A correlation. Clocks were sampled at instants either side of the eviction, not continuously
+through the render.)*
+
+### What this does to every other measurement in this document
+
+It is the missing term behind the noise §5c and §5d describe:
+
+- The fitted slope went 2.91e-05 → 3.83e-05 → 3.15e-05 → 3.61e-05 across four sweeps. That spread
+  is ±15%, and a factor that moves frame time by 41% was free to vary between them.
+- The empty-frame floor read 9.4–9.8, 7.7–7.9, then 8.7–9.1 ms with **zero expansions** every time.
+- §9's device-side depth sort made all 47 terms faster and the refitted slope still went **up**.
+- One sweep reported `aTerrain` as an 18% regression that measured **−3.7%** interleaved.
+
+**So `benchmark_pipeline.gpu_state()` now records VRAM, utilisation, SM clock, temperature and the
+resident LM Studio model into every benchmark row, prints it at both ends of a sweep, and shouts if
+VRAM moved by more than 512 MiB mid-sweep** — because then the early and late rows were measured
+under different machines and the fit spans two populations. It does not remove the noise. It makes
+two sweeps comparable and makes "why did this move" answerable instead of a shrug.
+
+> **A MEASUREMENT THAT DOES NOT RECORD ITS CONDITIONS CANNOT BE COMPARED TO ANOTHER ONE.**
+
+### The operational note
+
+Eviction is **not** automatic and must not become so. `core/lm_gateway.py` adopts whatever model is
+resident and raises `NoModelLoaded` rather than pulling one — the operator decides what runs, and
+two clients each forcing a different model evict each other mid-load and both die. The eviction here
+was explicitly authorised, taken while `lms ps` reported the model **IDLE**, and reversed
+immediately: the exact config (identifier, 262,144 context, parallel 4) was captured first and
+restored in **9.57 s**, verified identical afterwards.
+
+**And check `gpu_util_pct` before reaching for it at all.** The evidence above says the expensive
+condition is another client *working*, not a model *resident* — a quick sweep with the same 19.2 GB
+model loaded but idle at 1% utilisation recovered most of the difference on its own. So the cheap
+move is to wait for the card to go quiet; evicting is for when it will not, or when a sweep must be
+reproducible against an earlier one. Either way, read `render_ms` only from sweeps whose recorded
+`lm_model` **and** `gpu_util_pct` match the run you are comparing against.

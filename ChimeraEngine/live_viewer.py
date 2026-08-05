@@ -973,6 +973,10 @@ def handle(handler) -> bool:
     if path == "/stats":
         _send(handler, 200, "application/json",
               json.dumps(get_viewer().stats()).encode()); return True
+    if path == "/inventory":
+        # THE TERM GAP: declared vs renderable, counted. See docs/TERM_INVENTORY.md.
+        from splat_appearance import term_inventory as _inv
+        _send(handler, 200, "application/json", json.dumps(_inv()).encode()); return True
     if path == "/step":
         v = get_viewer()
         with v._lock:

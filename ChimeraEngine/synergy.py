@@ -11,6 +11,16 @@ THEORY (stated so it can fail):
   FALSIFIER   If CoM gains train to near-zero, or survival does not improve, the
               BoS feedback hypothesis is dead.
 
+RESULT 2026-08-04 -- FALSIFIED, and the finding is adopted.
+  The 6-block arm (warm-started from the 4-block incumbent, pop 24 x seeds 3 x 12 s x
+  30 turns) trained kx/ky OFF zero -- per-muscle std ~0.2, range +-0.7..1.3 -- so the
+  near-zero clause does not fire. The survival clause does: measured fresh under the
+  identical protocol (10 seeds, held-out 3..9), P-only median 6.82 s vs P+CoM 6.68 s
+  (-2.1%, against a >=+30% prediction). The CoM BoS term is dead as a linear add-on to
+  the P-only policy on this body. The trainer DID find a slightly better worst-of-3
+  training score (-3.784 vs the incumbent's -3.864), and that did NOT transfer -- the
+  same train/test gap the survival gate exists to catch.
+
 WHAT THIS FILE HOLDS
   The decoder that bridges the trained theta (output/ports/stand_theta.npy) and
   the MuJoCo simulation (ChimeraEngine render loop). It is NOT the parser
@@ -20,8 +30,8 @@ WHAT THIS FILE HOLDS
   formula to produce 290 muscle activations.
 
   A 4-block theta is bit-identical to the parser's stand_formula_fn (backward
-  compatible). A 6-block theta adds CoM BoS gains — kx, ky.
-  A 7-block theta adds velocity gains — kdz, kdp, kdr.
+  compatible). A 6-block theta adds CoM BoS gains — kx, ky (FALSIFIED 2026-08-04).
+  A 7-block theta adds velocity gains — kdz, kdp, kdr (FALSIFIED 2026-08-04).
   A 9-block theta adds both — velocity + CoM feedback.
 
 THE POLICY:
