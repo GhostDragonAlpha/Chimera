@@ -352,9 +352,13 @@ def _verbs_buffers(spec: dict, term: str):
     The proxy's own diagnosis drove the palette (2026-08-05): the first scene's cyan arc read as "a
     second figure", and a trail in BOTH frames read as "no change". The expected reading is "repeated
     PALE round forms that brighten along the curve", so every form here is the stone's own pale
-    colour and the arc is a faint grey thread -- and the stone itself sits in genuinely different
-    places across the two frames. Each change is traceable to the falsifier's specific failure; this
-    is one derived correction, not a sweep."""
+    colour and the arc is a faint grey thread. Second derived correction, from the same falsifier
+    line: a 35B reasoning model ALSO read "the scene stays the same" -- the change was real but too
+    subtle to narrate (the stone shifted ~12% of frame width while the rest was identical). So the
+    stone now travels from the figure's HAND (begin) to the far upper-right (end), and the right
+    half of the frame starts EMPTY and fills with the rising trail and the arrived glow: a change a
+    blind eye cannot miss. Each change is traceable to the falsifier's specific failure; this is a
+    derived correction, not a sweep."""
     import numpy as np
     rng = np.random.default_rng(_seed(term))
 
@@ -402,21 +406,22 @@ def _verbs_buffers(spec: dict, term: str):
         a[:, CR], a[:, CG], a[:, CB] = body_c
         return a
 
-    OLD = (16.0, 0.0, 3.0)
-    NEW = (36.0, 0.0, 16.0)
+    OLD = (-16.0, 0.0, 14.0)          # at the figure's hand
+    NEW = (40.0, 0.0, 18.0)           # far away, upper right -- the arrived place
 
-    # the stone and its pale kin -- ONE colour everywhere, so nothing reads as a second object
-    stone_c = (0.82, 0.80, 0.74)
+    # the stone and its pale kin -- ONE colour everywhere, so nothing reads as a second object.
+    # Slightly whiter than the body so the stone reads as a distinct round form at the hand.
+    stone_c = (0.95, 0.93, 0.88)
 
-    def stone(pos, radius=4.0, alpha=0.9):
-        s = _dots(pos, radius, 60, stone_c, rng)
+    def stone(pos, radius=4.2, alpha=0.95):
+        s = _dots(pos, radius, 70, stone_c, rng)
         s[:, ALPHA] = alpha
         return s
 
     # the rising path of travel: stations along the arc, brightening toward the end
     def trail(alpha_gain):
         parts = []
-        for tt, al in ((0.12, 0.35), (0.32, 0.50), (0.52, 0.65), (0.72, 0.80)):
+        for tt, al in ((0.14, 0.35), (0.34, 0.50), (0.54, 0.65), (0.74, 0.80)):
             pos = (OLD[0] + (NEW[0] - OLD[0]) * tt, 0.0,
                    OLD[2] + (NEW[2] - OLD[2]) * tt + 6.0 * np.sin(tt * np.pi))
             st = _dots(pos, 3.2, 50, stone_c, rng)
@@ -432,22 +437,21 @@ def _verbs_buffers(spec: dict, term: str):
     arc[:, PZ] = OLD[2] + (NEW[2] - OLD[2]) * t + 6.0 * np.sin(t * np.pi)
     arc[:, TYPE] = 3.0; arc[:, SIZE] = 1.2
     arc[:, CR], arc[:, CG], arc[:, CB] = 0.72, 0.74, 0.78
-    arc_dim = arc.copy(); arc_dim[:, ALPHA] = 0.10
-    arc_lit = arc.copy(); arc_lit[:, ALPHA] = 0.22
+    arc_dim = arc.copy(); arc_dim[:, ALPHA] = 0.06
+    arc_lit = arc.copy(); arc_lit[:, ALPHA] = 0.20
 
     # the ghost: the dim shape of where the stone WAS, in the end frame
-    ghost = stone(OLD, radius=3.6, alpha=0.30)
+    ghost = stone(OLD, radius=3.6, alpha=0.28)
 
     # the arrived stone: lit and glowing warm-white at the new place
-    arrived = stone(NEW, radius=4.2, alpha=0.95)
-    glow = _halo(NEW, 7.5, (1.0, 1.0, 0.92), rng, alpha=0.16, size=1.9)
+    arrived = stone(NEW, radius=4.4, alpha=1.0)
+    glow = _halo(NEW, 8.0, (1.0, 1.0, 0.92), rng, alpha=0.18, size=2.0)
 
-    # begin: the stone AT the old place, the path only potential
-    begin = np.concatenate([ground] + fig + [arm(4.0), stone(OLD, alpha=0.9)]
-                           + trail(0.30) + [arc_dim], axis=0)
-    # end: the same stone ARRIVED -- a ghost where it was, a brightening trail, the arrived glow
-    end = np.concatenate([ground] + fig + [arm(15.0), ghost]
-                         + trail(0.85) + [arc_lit, arrived, glow], axis=0)
+    # begin: the stone AT the hand, the right half EMPTY -- only a barely-there thread of intent
+    begin = np.concatenate([ground] + fig + [arm(14.0), stone(OLD, alpha=0.95), arc_dim], axis=0)
+    # end: the same stone ARRIVED far away -- a ghost where it was, the path filled in and burning
+    end = np.concatenate([ground] + fig + [arm(20.0), ghost]
+                         + trail(0.90) + [arc_lit, arrived, glow], axis=0)
     return end, begin
 
 

@@ -37,7 +37,23 @@ def _mock_dyad(term, frame, threshold=0.6, human_override=None):
 
 
 human_messenger.dyad = _mock_dyad                          # no LM Studio in tests -- mock the human side
-splat_appearance.project_movie = lambda term, out: None    # no GPU in tests -- fall back to the matplotlib mock
+
+
+def _no_gpu_appearance(self, name):
+    """No GPU in tests -- bypass the real splat MOVIE and fall back to the matplotlib projectors.
+
+    Patching `splat_appearance.project_movie` directly is USELESS: the engine's `_appearance`
+    RELOADS splat_appearance before every render (so scene edits land live), which resurrects the
+    real function and wipes the mock -- the tests then render real GPU movies whose frames the
+    mock dyad rejects. Patch at the engine boundary instead, where the reload cannot interfere:
+    the appearance is whatever matplotlib projector the test installed, or nothing (a term with no
+    projector REFUSES, exactly the gate under test)."""
+    import appearance
+    p = appearance.project(name, engine_state._HERE / "output")
+    return {"begin": p, "end": p} if p else None
+
+
+engine_state.Engine._appearance = _no_gpu_appearance       # no GPU in tests -- the renderer is mocked
 
 
 def _install_projector(term):

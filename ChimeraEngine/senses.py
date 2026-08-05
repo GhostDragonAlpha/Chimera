@@ -19,6 +19,11 @@ import re
 import urllib.request
 
 SENSES_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
+# The eye's token budget. qwen2.5-omni-7b answers inside 512; a REASONING vision model
+# (qwen-agentworld-35b) spends its budget on `reasoning_content` first and returns an EMPTY
+# `content` when the budget runs out -- the eye reads nothing and the dyad fails dark. 4096
+# gives the reasoning tower room to finish AND answer; override per setup.
+MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "4096"))
 
 
 def available(timeout: float = 3.0) -> bool:
@@ -35,7 +40,7 @@ def _b64(path: str) -> str:
         return base64.b64encode(f.read()).decode()
 
 
-def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = 512):
+def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX_TOKENS):
     body = {"messages": [{"role": "user", "content": content}],
             "temperature": temperature, "max_tokens": max_tokens}
     req = urllib.request.Request(f"{SENSES_URL}/v1/chat/completions",
