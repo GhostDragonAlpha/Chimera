@@ -386,9 +386,11 @@ Every one of these is a *gameplay* consequence of a *passive* number, not a scri
 > | **Terrain** | `terrain_footprint` | a stiffness and a strength from two literatures land on the same millimetre (3.84 vs 3.12 mm) | a footprint DEPTH — unresolvable across cohesion's own ±0.4 kPa, which spans 54 mm to zero |
 > | **Fabric/rope** | `fibre_rope` | EA from published strain-at-10%-BS; the same standard's break elongation **refutes F = kx for polyester** (96% of break at its RATED load) | the seam — a splice efficiency is not published in `matter_data` |
 > | **Vehicle** | `suspension` | k and c DERIVED from ride frequency and damping ratio, not ingested; overshoot and settling exact to 0.02% | the quoted default (k, c) pair as a comfort car — it implies 1.42 Hz and ζ 0.122 |
-> | *(granular)* | `granular_repose` | θ_r = atan(μ) is **BRACKETED, not reached**: spheres 0.0° < 35.0° < boxes 66.2° at identical friction | a repose angle from a rigid-body engine at all |
+> | **Building** | `building_rc` | concrete + rebar share a strain, so 3% of the area carries **18.8%** of the load; and ACI's bare 600 MPa in the balanced-ratio formula turns out to be **E_s x eps_cu**, so the code constant is a derivation somebody hid inside a number | nothing yet -- but every constant is from a design CODE, not a lab, and that is a different kind of claim |
+| *(granular)* | `granular_repose` | θ_r = atan(μ) is **BRACKETED, not reached**: spheres 0.0° < 35.0° < boxes 66.2° at identical friction | a repose angle from a rigid-body engine at all |
 >
-> **19/19 ports and 7/7 primitives.** **Building has zero validated ports** and nothing in its row
+> **20/20 ports and 7/7 primitives. BUILDING NOW HAS ONE** (`building_rc`) -- the last zero
+> in this table is closed. Nothing else in its row
 > may be cited. One port per object is a beginning, not a passive-tissue model: each row above
 > names several ports and exactly one of them has a measured falsifier.
 >
