@@ -66,6 +66,17 @@ def main() -> int:
     a = sys.argv
     nseeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 24
     secs = float(a[a.index("--secs") + 1]) if "--secs" in a else 20.0
+    # --arms TAKES `class:thetafile` PAIRS, so the same paired test that resolved rate feedback
+    # can be pointed at any two arms without a second implementation of "how long did it stand".
+    # Absent, it runs T1 exactly as it did. The CLASS is declared beside the file and never
+    # inferred from a theta's length -- `pd` and `pd_windowed` are both 7 blocks.
+    arms = ARMS
+    if "--arms" in a:
+        arms = tuple(tuple(s.split(":")) for s in a[a.index("--arms") + 1].split(","))
+        if len(arms) != 2 or any(len(t) != 2 for t in arms):
+            raise SystemExit("--arms needs exactly two `class:thetafile` pairs. A paired sign "
+                             "test compares two things; three would need a different test.")
+    globals()["ARMS"] = arms
     P = derive_stand_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
@@ -82,34 +93,35 @@ def main() -> int:
     print(f"  seed count before it was a fact about the body. Nothing is retrained here; only n "
           f"moves.")
     print("-" * 96)
-    res = {}
-    for label, fname in ARMS:
+    res, labels = {}, [t[0] for t in arms]
+    for label, fname in arms:
         p = OUTDIR / f"{fname}.npy"
         if not p.exists():
             raise SystemExit(f"no {p} -- refusing to re-judge an arm that is not on disk "
                              f"(rule 20).")
         th = np.load(p)
-        pc = PC.get(label)
+        pc = PC.get(label.split("@")[0])
         pc.decode_theta(th, m.nu)
         _, per = BP.survive(mujoco, m, d, jids, P, pc, th, secs, held)
         res[label] = np.array(per, dtype=float)
         print(f"  {label:8} median {float(np.median(res[label])):.2f} s   "
               f"min {res[label].min():.2f}   max {res[label].max():.2f}")
-    diff = res["pd"] - res["p_only"]
+    a_lbl, b_lbl = labels[0], labels[1]
+    diff = res[a_lbl] - res[b_lbl]
     wins = int((diff > 1e-9).sum())
     losses = int((diff < -1e-9).sum())
     ties = int(len(diff) - wins - losses)
     pval = sign_p(wins, losses)
     print("-" * 96)
-    print(f"  PAIRED (pd - p_only), per seed:")
+    print(f"  PAIRED ({a_lbl} - {b_lbl}), per seed:")
     for i in range(0, len(held), 12):
         print("    " + "  ".join(f"{v:+.2f}" for v in diff[i:i + 12]))
     print(f"  wins {wins}  ties {ties}  losses {losses}   paired median "
           f"{float(np.median(diff)):+.3f} s   mean {float(diff.mean()):+.3f} s")
     print(f"  exact two-sided sign test (ties dropped, n = {wins+losses}): p = {pval:.4f}")
-    print(f"  UNPAIRED medians would say: pd {float(np.median(res['pd'])):.2f} vs p_only "
-          f"{float(np.median(res['p_only'])):.2f} = "
-          f"{float(np.median(res['pd']) - np.median(res['p_only'])):+.2f} s")
+    print(f"  UNPAIRED medians would say: {a_lbl} {float(np.median(res[a_lbl])):.2f} vs "
+          f"{b_lbl} {float(np.median(res[b_lbl])):.2f} = "
+          f"{float(np.median(res[a_lbl]) - np.median(res[b_lbl])):+.2f} s")
     print("=" * 96)
     rate = wins / max(wins + losses, 1)
     fires = rate < 0.65 or pval >= 0.05
@@ -129,9 +141,10 @@ def main() -> int:
     print(f"  proxy throws away choosing which theta to deliver.")
 
     LOGDIR.mkdir(parents=True, exist_ok=True)
-    out = LOGDIR / "rate_feedback_power.json"
+    out = LOGDIR / (a[a.index("--json") + 1] if "--json" in a else "rate_feedback_power.json")
     out.write_text(json.dumps(dict(
-        seeds=held, secs=secs, pd=res["pd"].tolist(), p_only=res["p_only"].tolist(),
+        seeds=held, secs=secs, arms=[list(t) for t in arms],
+        a=res[a_lbl].tolist(), b=res[b_lbl].tolist(),
         diff=diff.tolist(), wins=wins, ties=ties, losses=losses,
         paired_median=float(np.median(diff)), paired_mean=float(diff.mean()),
         p_value=pval, win_rate=rate, falsifier_fires=bool(fires)), indent=1), encoding="utf8")
