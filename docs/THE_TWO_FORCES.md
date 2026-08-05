@@ -210,11 +210,63 @@ redistribution (F ∝ h^1.5) is a named unbuilt refinement. v1's tails carry no 
 superseded, not summed. Both records stand in one test file; the supersession check
 (`v1 3.2 mm > 1 mm > v2 1.2 nm`) goes red if either model drifts from its verdict.
 
+### Stage 9 — The seam: contact carries a body, and carries sound — **BUILT, PASSED**
+The integration Stage 8 v2 earned. If contact really is the overlap of density packets, the same
+stiffness must do a contact law's two other jobs — and both are checked against numbers published
+by other membranes for other reasons.
+
+**TWO DERIVED IDENTITIES, no chosen constant.** At first touch the lens force's slope is
+`k = πBR/2 = B·(πR²)/(2R)` — **exactly the rod stiffness E·A/L of the sphere's own great circle
+across the centre spacing**; nobody arranged that, it falls out of the lens volume. And a line of
+touching spheres fills exactly **2/3** of its bounding cylinder, so the chain has a rod's
+stiffness with two thirds of a rod's mass and must run `√(3/2) = 1.2247×` faster:
+`c_chain = √(3B/2ρ₀)`, carrying **no R** — the wave speed of a packet chain is independent of
+packet size, which is what makes it a statement about the material rather than the grid.
+
+**THE FLAGSHIP PREDICTION — a number never fitted to.** `aSaltOcean` publishes
+`sound_speed_water_ms = 1474.78`, derived from an oceanographic temperature/salinity formula that
+knows nothing about contact mechanics. Given only the **cited** bulk modulus (CRC, 2 sig figs) and
+the membrane's own published density, the simulated packet chain runs at **1792.5 m/s**, and with
+the derived packing factor √(2/3) that is **1463.5 m/s against the published 1474.78 — 0.76%**.
+The mode measurement matches the derived dispersion to **0.007%** and is **scale-invariant to five
+significant figures** (10× smaller packets, same speed).
+
+**THE INSTRUMENT REFUTATION, and it was mine.** The first wave measurement timed the front's
+*first arrival* against a fraction of the piston speed, and reported 15% high. The sweep convicted
+it: 1795.0 / 1824.7 / 1878.8 / 1928.8 / 1975.6 / **2069.3** m/s at triggers 3e-1 → 1e-6 — a
+monotone dependence on the threshold, because a discrete lattice puts an exponentially small
+**precursor** ahead of the energy-carrying front. *The threshold being an external number (the
+piston's own speed) did not save it* — external or not, it defined a quantity that is not the
+sound speed. Replaced by a **threshold-free normal-mode period**, with the exact discrete
+dispersion `ω = 2√(k/m)·sin(qa/2)` so the finite-N correction is derived too. The refuted
+instrument is kept as a passing test so it cannot quietly return. (An earlier defect in the same
+function is also recorded there: a run window of 3 oscillation periods, in which the front crosses
+only ~19 of 60 grains — the other 41 never moved and the fit returned a *negative* speed.)
+
+**THE BODY ON THE GROUND.** theHuman's published 668.7 N over its published 276 cm² foot rests on
+**241,576** of theGround's published grains (d₅₀ = 0.35 mm, porosity 0.42). Elastic contact
+settlement: **0.129 µm** over the footing's own equivalent width — the seam holds, the foot
+neither floats nor sinks through. **THE REGIME SEPARATION is the real result:** theHuman publishes
+a **3.122 mm** footprint, which is **24,148× larger** than the elastic answer — so that footprint
+is theGround's Terzaghi *rearrangement*, not compression, and **the two mechanisms do not
+double-count**. The finding survives softening the contact law by **1000×** (still 24× under the
+published footprint), so it does not rest on the linear-vs-Hertz choice.
+
+**NAMED LIMITS, measured not asserted.** Restitution is **exactly 1.000000** — the force is
+conservative, so a dropped packet returns to its drop height forever; real ground damps, and a
+dissipative term is UNBUILT (this is how a future one will be detected). And the linear law reads
+**E_eff = 31.1 GPa** against solid quartz's 37 GPa at light load, because `k` does not vanish at
+zero penetration — exactly what a **Hertzian** `k ∝ √h` refinement would fix, still named unbuilt.
+Deliberately *not* claimed: theGround's 0.58 solid fraction is `1 − POROSITY` with porosity
+**declared**, so reading it back as "the random-loose-packing fraction of spheres" would be
+circular, and it is not used as a prediction anywhere.
+
 ## THE GATE (all of it)
 
 ```bash
 python ChimeraEngine/test_optics.py          # 47 checks: closure, referee, controls, lensing chain, bounce
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
+python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
