@@ -381,6 +381,7 @@ Every one of these is a *gameplay* consequence of a *passive* number, not a scri
 > | object | port | what it validated | what it REFUSED |
 > |---|---|---|---|
 > | **Plant** | `grass_blade` | a lamina is a DISTRIBUTED beam; a lumped root spring is exact under a pure moment and **3× too stiff under a tip force**, and a foot is a tip force | damping `c` — Vincent publishes a dynamic modulus proving the blade is viscoelastic but no loss factor |
+| **Plant** (2nd) | `plant_selfbuckling` | Greenhill: a blade stands to L_crit = (7.8373EI/rho g A)^(1/3). Vincent's 1982 modulus and Kew's blade dimensions -- neither computing this -- put the published 12 cm blade **9.2% under** its own Earth buckling limit of 13.21 cm, and the 4-20 cm range brackets it | **turgor**: Vincent measured LIVING leaf, so his E already contains it; separating needs a wilted modulus on the same tissue, unpublished |
 > | **Rock** | `rock_fracture` | σ = Eε to σ_t; E/σ_t/K_IC are OVER-DETERMINED and the flaw they imply is **8.72 mm** (vesicle, not grain). UCS/σ_t = 18.3 against Griffith's 8 | the library's 2 mm "grain size" as a Griffith flaw — its own note says it is surface texture |
 > | **Tree** | `tree_trunk` | orthotropic wood: G_LR/E_L = 0.086 is **4.47× below isotropic**; the shear share is exact at three slendernesses; trunks always fail in bending | a trunk diameter — no chapter grows a wood, so the claim is stated in L/d |
 > | **Terrain** | `terrain_footprint` | a stiffness and a strength from two literatures land on the same millimetre (3.84 vs 3.12 mm) | a footprint DEPTH — unresolvable across cohesion's own ±0.4 kPa, which spans 54 mm to zero |
@@ -389,7 +390,7 @@ Every one of these is a *gameplay* consequence of a *passive* number, not a scri
 > | **Building** | `building_rc` | concrete + rebar share a strain, so 3% of the area carries **18.8%** of the load; and ACI's bare 600 MPa in the balanced-ratio formula turns out to be **E_s x eps_cu**, so the code constant is a derivation somebody hid inside a number | nothing yet -- but every constant is from a design CODE, not a lab, and that is a different kind of claim |
 | *(granular)* | `granular_repose` | θ_r = atan(μ) is **BRACKETED, not reached**: spheres 0.0° < 35.0° < boxes 66.2° at identical friction | a repose angle from a rigid-body engine at all |
 >
-> **20/20 ports and 7/7 primitives. BUILDING NOW HAS ONE** (`building_rc`) -- the last zero
+> **21/21 ports and 7/7 primitives. BUILDING HAS ONE** (`building_rc`) -- the last zero
 > in this table is closed. Nothing else in its row
 > may be cited. One port per object is a beginning, not a passive-tissue model: each row above
 > names several ports and exactly one of them has a measured falsifier.

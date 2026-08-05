@@ -60,6 +60,11 @@
       "pass": true,
       "pred": 0.0
     },
+    "plant_selfbuckling": {
+      "got": 0.12,
+      "pass": true,
+      "pred": 0.13211479155477943
+    },
     "plantar_pressure": {
       "got": 52.26597301906314,
       "pass": true,

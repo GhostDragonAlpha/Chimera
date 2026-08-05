@@ -269,7 +269,7 @@ def main() -> int:
     import mujoco
     import port_tests_more    # noqa: F401 -- registers ports 5-12 into the shared registry
     import port_tests_matter  # noqa: F401 -- registers the non-human passive ports, 13 onward
-    expect(20)                # a partial suite is a REFUSAL, not a smaller number
+    expect(21)                # a partial suite is a REFUSAL, not a smaller number
     a = sys.argv
     record = "--baseline" in a
     only = a[a.index("--port") + 1] if "--port" in a else None

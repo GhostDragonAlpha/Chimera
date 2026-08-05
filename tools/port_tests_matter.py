@@ -40,6 +40,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from port_registry import port_test
+from world import gravity
 import matter_data as md
 
 
@@ -1056,3 +1057,125 @@ def t_building_rc(mujoco):
                         f"A lab number can be wrong about the world; a code number can only be "
                         f"wrong about the code. What makes it testable is that ACI's constants are "
                         f"over-determined and predict each other."))
+
+
+# ── PORT 21: PLANT SELF-BUCKLING (the plant row's SECOND port) ─────────────────────────────────
+@port_test(
+    "plant_selfbuckling",
+    "a blade must hold up its OWN WEIGHT, which is a different question from how it answers a "
+    "push -- port 13 measured the response, this measures the STABILITY. Greenhill's self-buckling "
+    "length L_crit = (7.8373*EI/(rho*g*A))^(1/3) says how tall a column of this tissue can stand "
+    "before its own mass folds it, and the published blade length should sit just under it",
+    "a vertical blade at 0.7*L_crit does not return toward upright, or one at 1.4*L_crit does not "
+    "fall away -- the engine would then disagree with the closed form about where the crossing is; "
+    "or the published Earth blade length is not within a factor of two of the Earth L_crit, in "
+    "which case Vincent's modulus and Kew's dimensions are not describing the same plant")
+def t_plant_selfbuckling(mujoco):
+    """The instruction: stability under self-weight. THE PLANT ROW'S SECOND PORT.
+
+    WHY A SECOND ONE MATTERS. THE_COMPILER's table names four ports for Plant -- cellulose,
+    lignin, cell-wall turgor, root -- and until now exactly one had a falsifier, which is why the
+    ledger keeps repeating that one port per object is a beginning and not a passive-tissue model.
+    This is a genuinely different mechanism from port 13: that one asks what the blade DOES under
+    a load, this one asks whether it stands up at all carrying nothing but itself.
+
+    THE PREDICTION IT WAS NOT FITTED TO, and it is the reason this port is worth having. Vincent
+    measured a modulus in 1982; Kew's GrassBase describes blade dimensions for the same species.
+    Neither was computing a buckling length. Put them together:
+
+        EARTH        L_crit = 13.21 cm      published blade 12 cm      the blade is 10% under
+        THIS WORLD   L_crit = 14.73 cm      (lower g, so the same tissue could stand taller)
+
+    GRASS GROWS TO JUST UNDER ITS OWN BUCKLING LIMIT. And the published range brackets it: 4 cm
+    blades are far inside, 20 cm blades are PAST 13.21 cm and cannot stand -- which is exactly what
+    long grass does. Two sources, neither aimed at this, meeting inside 10%.
+
+    THE ENGINE TEST IS THE CROSSING, not a single number. Gravity runs ALONG the chain -- root at
+    the origin, blade extending into it -- which is the self-weight compression Greenhill's formula
+    describes. A tip perturbation either decays (the blade stands) or grows (it folds). The closed
+    form says where that switches; the solver is asked independently and never told the answer.
+
+    REFUSED: turgor. The Plant row also names cell-wall turgor, `P = k(V-V0)`, and it is NOT ported
+    here. Vincent's modulus was measured on LIVING leaf, so it already contains whatever turgor
+    contributes -- separating them needs a WILTED modulus on the same tissue, and no such pair is
+    published in matter_data. A port claiming to isolate turgor from this data would be inventing
+    the split rather than measuring it.
+    """
+    E = md.val("grass", "E_long")
+    I, _ = md.grass_second_moment()
+    w, t = md.val("grass_blade", "width"), md.val("grass_blade", "thickness")
+    L_pub, L_sp = md.val("grass_blade", "length"), md.spread("grass_blade", "length")
+    A = w * t
+    # fresh herbaceous tissue is mostly water -- the same stated assumption touchables.py's tuft
+    # carries, and it is water's density rather than a fitted number.
+    rho = 1000.0
+    g = gravity()                   # THIS world's, read from theHuman. Never 9.81.
+
+    def L_crit(gv):
+        return (7.8373 * E * I / (rho * gv * A)) ** (1.0 / 3.0)
+
+    Lc, Lc_earth = L_crit(g), L_crit(9.80665)
+
+    def stands(L, N=20):
+        """Does a vertical blade of length L return toward upright after a nudge?
+
+        THE TEST IS THE SIGN OF THE DRIFT, not its size. A stable column relaxes back toward
+        vertical and an unstable one keeps going, and that distinction survives whatever the
+        perturbation happened to be -- which a threshold on the displacement would not.
+        """
+        ell = L / N
+        k = E * I / ell
+        m_seg = rho * A * ell
+        parts = ""
+        for i in range(N):
+            J = m_seg * (ell ** 2) * (N - i) ** 3 / 3.0
+            c = 0.7 * math.sqrt(max(k * J, 1e-300))
+            pos = "0 0 0" if i == 0 else f"{ell} 0 0"
+            parts += (f'<body name="s{i}" pos="{pos}">'
+                      f'<joint name="j{i}" type="hinge" axis="0 1 0" pos="0 0 0" '
+                      f'stiffness="{k!r}" damping="{c!r}" limited="false"/>'
+                      f'<geom type="box" pos="{ell/2} 0 0" size="{ell/2} {math.sqrt(A)/2} '
+                      f'{math.sqrt(A)/2}" density="{rho!r}" contype="0" conaffinity="0"/>')
+        parts += "</body>" * N
+        w_n = math.sqrt(k / max(m_seg * ell ** 2 / 3.0, 1e-300))
+        xml = (f'<mujoco><option timestep="{0.02/w_n!r}" gravity="-{g!r} 0 0" '
+               f'integrator="implicitfast"/><worldbody>{parts}</worldbody></mujoco>')
+        m = mujoco.MjModel.from_xml_string(xml)
+        d = mujoco.MjData(m)
+        d.qpos[:] = 1e-4            # a small uniform tilt: the perturbation
+        mujoco.mj_forward(m, d)
+        tip0 = abs(float(_tip(m, d)[2]))
+        for _ in range(40000):
+            mujoco.mj_step(m, d)
+        tip1 = abs(float(_tip(m, d)[2]))
+        return tip1 < tip0, tip0, tip1
+
+    ok_lo, a0, a1 = stands(0.7 * Lc)
+    ok_hi, b0, b1 = stands(1.4 * Lc)
+    ratio_earth = L_pub / Lc_earth
+
+    return dict(pass_=(ok_lo and not ok_hi and 0.5 < ratio_earth < 2.0),
+                pred=Lc_earth, got=L_pub,
+                detail=(f"E {E/1e6:.0f} MPa (Vincent 1982), I {I:.4g} m^4, A {A:.4g} m^2, "
+                        f"rho {rho:.0f} kg/m^3 (water -- fresh tissue)\n"
+                        f"    Greenhill L_crit = (7.8373*EI/(rho*g*A))^(1/3): "
+                        f"{100*Lc:.2f} cm at g {g:.3f}, {100*Lc_earth:.2f} cm at EARTH's 9.807\n"
+                        f"    ENGINE, the crossing: at 0.70*L_crit the tip drifted "
+                        f"{a0*1e6:.3f} -> {a1*1e6:.3f} um ({'RETURNS' if ok_lo else 'FALLS'}); at "
+                        f"1.40*L_crit {b0*1e6:.3f} -> {b1*1e6:.3f} um "
+                        f"({'returns' if ok_hi else 'FALLS AWAY'})\n"
+                        f"    THE PREDICTION IT WAS NOT FITTED TO: Kew publishes this species' "
+                        f"blade at {100*L_pub:.0f} cm (range {100*(L_pub-L_sp):.0f}-"
+                        f"{100*(L_pub+L_sp):.0f}). Earth L_crit is {100*Lc_earth:.2f} cm, so the "
+                        f"blade sits {100*(1-ratio_earth):.1f}% UNDER its own buckling limit. "
+                        f"Vincent measured a modulus in 1982 and Kew described a plant; neither "
+                        f"was computing this, and they meet inside 10%.\n"
+                        f"    AND THE PUBLISHED RANGE BRACKETS IT: 4 cm blades are far inside the "
+                        f"limit, 20 cm blades are PAST {100*Lc_earth:.1f} cm and cannot stand -- "
+                        f"which is what long grass does. On THIS world's lower gravity the same "
+                        f"tissue stands {100*(Lc-Lc_earth):.2f} cm taller.\n"
+                        f"    REFUSED: turgor. The Plant row names cell-wall turgor P = k(V-V0) "
+                        f"and it is not ported. Vincent's modulus was measured on LIVING leaf, so "
+                        f"it already contains whatever turgor contributes; separating them needs a "
+                        f"wilted modulus on the same tissue and no such pair is published. A port "
+                        f"claiming to isolate turgor from this data would be inventing the split."))
