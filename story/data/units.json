@@ -142,9 +142,16 @@
   "ipd_sample_size": "count",
   "fixation_drift_arcmin": "arcmin",
   "fixation_tremor_arcmin": "arcmin",
-  "tremor_frequency_hz": "Hz"
+  "tremor_frequency_hz": "Hz",
+  "n_grains": "count",
+  "timeline_serial": "count"
  },
  "by_membrane": {
+  "theGarden": {
+   "P_garden_cm": "cm",
+   "rain_rate_mm_day": "mm/day",
+   "npp_garden_over_world": "ratio"
+  },
   "theStance": {
    "sway_freq_fore_aft_hz": "1/s",
    "sway_freq_lateral_hz": "1/s",

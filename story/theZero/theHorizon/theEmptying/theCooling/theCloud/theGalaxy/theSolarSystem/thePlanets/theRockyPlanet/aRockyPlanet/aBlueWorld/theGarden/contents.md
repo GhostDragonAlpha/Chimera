@@ -13,10 +13,37 @@
 
 | number | value |
 |---|---|
-| `extent_m` | 1.577e+06 |
+| `extent_m` | 5.256e+06 |
 | `duration_s` | 3.311e+07 |
-| `placeholder` | True |
-| `placeholder_reason` | declared in terms_data.py, no law written yet |
-| `parent_substituted` | aPlanet -> aBlueWorld (the lush place is on the habitable world) |
-| `n_grains` | 3000 |
 | `g` | 7.076 |
+| `lush_lat_deg` | 0 |
+| `T_garden_C` | 21.04 |
+| `P_garden_mm_yr` | 998.4 |
+| `P_garden_cm` | 99.84 |
+| `rain_rate_mm_day` | 1.693 |
+| `garden_biome` | savanna |
+| `garden_canopy_m` | 3 |
+| `garden_biomass_kg_m2` | 4 |
+| `garden_rgb` | [0.45, 0.55, 0.2] |
+| `npp_max_g_m2_yr` | 1454 |
+| `npp_world_mean_g_m2_yr` | 780.2 |
+| `npp_garden_over_world` | 1.864 |
+| `lush_belt_90pct_full_width_km` | 2018 |
+| `lush_belt_50pct_full_width_km` | 5504 |
+| `lush_belt_90pct_half_lat_deg` | 11 |
+| `T_mean_C` | 6.041 |
+| `dT_equator_pole` | 45 |
+| `hadley_edge_deg` | 12.69 |
+| `dry_belt_lat_deg` | 39.57 |
+| `growing_season_days` | 383.2 |
+| `latitude_deg` | 0 |
+| `obliquity_deg` | 37.38 |
+| `obliquity_effective_deg` | 37.38 |
+| `sun_altitude_at_garden_deg` | 37.03 |
+| `sun_declination_deg` | 14.36 |
+| `S_earth` | 1.005 |
+| `day_s` | 8.64e+04 |
+| `days_per_year` | 383.2 |
+| `year_s` | 3.311e+07 |
+| `n_grains` | 30000 |
+| `name` | theGarden |

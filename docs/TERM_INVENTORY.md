@@ -168,3 +168,24 @@ instead: **a stub may not be another stub's parent, or the tree grows on nothing
 
 The honest gap is therefore still **46**: 41 with no code at all, plus these 5 with geometry and
 no law.
+
+---
+
+## AMENDMENT — theGARDEN GRADUATES (the lush place is a law, not geometry)
+
+2026-08-05. `theGarden` derived its law: the lush place is the **argmax of the Miami production
+field** over aBlueWorld's own published climate (savanna, 21.0 °C, 99.8 cm — one centimetre below
+the rainforest floor; 1.86x the world's area-mean productivity; the 90% belt ±11°). Its
+`numbers.json` no longer publishes `placeholder: true`, and its `story.md` claims a theory, not a
+stub. The counts that measure the *tree* do not move — the garden was already counted in both
+columns as a placeholder — but the honest gap does:
+
+| | before | after |
+|---|---:|---:|
+| declared but not renderable | 41 | **41** |
+| placeholders with geometry and no law | 5 | **4** |
+| **true gap (no code at all)** | 41 | **41** |
+| **honest gap (including the four stubs)** | 46 | **45** |
+
+The remaining four stubs — `theSeed`, `theShip`, `theDescent`, `theFlight` — still announce
+themselves and still owe a law.

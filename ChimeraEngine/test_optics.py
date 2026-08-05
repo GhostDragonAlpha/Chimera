@@ -26,6 +26,14 @@ What is on trial (docs/THE_TWO_FORCES.md; plan: two-forces-gaussian-splat-light)
       replica), and the viewer's helper must read THE SAME sun while a membrane with no declared
       sun arms no light at all. Predicted value pre-registered: sunglint_intensity = 0.02149,
       nothing typed.
+  T12 THE ONE SUN ON THE HUMAN -- every day-lit human membrane reads the ground's sun to 1e-9, the
+      baked altitude is the published number, and no human membrane types a star.
+  T13 THE LAMPS ARE LAMPS -- a fixed lamp (aActiveInterior, aTerraceMine) arms no light and borrows
+      no sun's name.
+  T14 THE GARDEN IS THE ARGMAX -- theGarden's lush place is not chosen: it is the argmax of the
+      Miami production field over the world's own published climate (rain closes to the air's rate
+      to 1e-9; the cell is the savanna row, one centimetre below the rainforest's floor; the lush is
+      1.86x the world mean; the 90% belt is +-11 deg), and the emitted green band sits at that peak.
 """
 from __future__ import annotations
 
@@ -708,6 +716,76 @@ def t13_lamps():
               "the ONE SUN is matter.py's; a fixed lamp may not borrow its name")
 
 
+# ═══ T14 -- THE GARDEN IS THE ARGMAX ═════════════════════════════════════════════════════════════
+def t14_garden():
+    """THE GARDEN IS THE ARGMAX. theGarden's lush place is not chosen: it is the latitude with the
+    largest Miami NPP over the world's OWN published climate, read from the biomes law by path.
+    Falsifiers: (a) the garden's rain closes to aNitrogenAtmosphere's published rate to 1e-9 (one
+    law reached twice); (b) lush_lat_deg == 0.0 and the membrane's own measure() agrees; (c) the
+    garden's cell is the SAVANNA row of the biomes table (T >= 20, 25 <= P_cm < 100 -- 99.8 cm is
+    one below the rainforest floor); (d) the lush is 1.86x the world area-mean and the 90% belt is
+    +-11 deg (~2,018 km); (e) the ONE SUN the garden arms equals matter.local_sun at its own
+    latitude to 1e-9 and the baked altitude is the published one; (f) the emitted green band sits
+    at the peak (the top decile of day-lit green stays inside the published belt).
+    """
+    import importlib.util
+
+    import splat_appearance as _sa
+    gdn = published("theGarden")
+    air = published("aNitrogenAtmosphere")
+
+    check("T14a the garden's rain closes to the air's published rate (one law, reached twice)",
+          abs(float(gdn["rain_rate_mm_day"]) - float(air["rain_rate_mm_day"])) <= 1e-9,
+          f"garden {float(gdn['rain_rate_mm_day']):.13f} vs air {float(air['rain_rate_mm_day']):.13f}")
+
+    phys = next(iter(ROOT.glob("story/**/theGarden/physics.py")))
+    spec = importlib.util.spec_from_file_location("garden_t14", phys)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    m = mod.measure(gdn)
+    check("T14b the garden IS the argmax and measure() agrees (lush_lat == 0.0, closes to the air)",
+          float(gdn["lush_lat_deg"]) == 0.0 and m["is_argmax"] and m["closes_to_the_air"],
+          f"lush_lat {float(gdn['lush_lat_deg'])}")
+
+    t, p = float(gdn["T_garden_C"]), float(gdn["P_garden_cm"])
+    in_savanna_row = 20.0 <= t < 90.0 and 25.0 <= p < 100.0
+    check("T14c the garden's cell is the SAVANNA row (99.8 cm < the rainforest's 100 cm floor)",
+          gdn["garden_biome"] == "savanna" and in_savanna_row,
+          f"T {t:.2f} C, P {p:.2f} cm, cell {gdn['garden_biome']}")
+
+    check("T14d the lush is 1.86x the world mean and the 90% belt is +-11 deg (~2,018 km)",
+          abs(float(gdn["npp_garden_over_world"]) - 1.863585678933045) <= 1e-3
+          and float(gdn["lush_belt_90pct_half_lat_deg"]) == 11.0
+          and abs(float(gdn["lush_belt_90pct_full_width_km"]) - 2018.21) <= 1.0,
+          f"ratio {float(gdn['npp_garden_over_world']):.4f}, belt "
+          f"{float(gdn['lush_belt_90pct_full_width_km']):.1f} km, half +-"
+          f"{float(gdn['lush_belt_90pct_half_lat_deg']):.0f} deg")
+
+    sun_g = _sa.sun_direction("theGarden", 1.0)
+    law_sun = matter.local_sun(1.0, float(gdn["obliquity_effective_deg"]),
+                               float(gdn["latitude_deg"]), matter.SUN_OPEN_HOUR)
+    check("T14e the garden arms THE SAME sun the emit baked (matter.local_sun at its own latitude)",
+          sun_g is not None and all(abs(sun_g[i] - law_sun[i]) <= 1e-9 for i in range(3)),
+          f"{tuple(round(x, 6) for x in sun_g) if sun_g else None}")
+    law_alt = matter.sun_altitude_deg(1.0, float(gdn["obliquity_deg"]),
+                                      float(gdn["latitude_deg"]), matter.SUN_OPEN_HOUR)
+    check("T14e baked altitude == published sun_altitude_at_garden_deg (the number IS the light)",
+          abs(law_alt - float(gdn["sun_altitude_at_garden_deg"])) <= 1e-9,
+          f"law {law_alt:.9f} vs published {float(gdn['sun_altitude_at_garden_deg']):.9f}")
+
+    buf = mod.emit(gdn, t=1.0)
+    d = matter.fibonacci_sphere(int(gdn["n_grains"]), jitter=0.9, seed=71)
+    sun = matter.local_sun(1.0, float(gdn["obliquity_deg"]), 0.0, matter.SUN_OPEN_HOUR)
+    lam = np.clip(d @ sun, 0.0, None)
+    day = lam > 0.15
+    lit_green = buf[day, 17]
+    top = np.argsort(lit_green)[-max(int(day.sum() * 0.1), 1):]
+    lat = np.abs(np.degrees(np.arcsin(d[day][:, 2])))
+    check("T14f the emitted green band sits at the peak (top decile of day-lit green in +-11 deg)",
+          float(lat[top].mean()) <= 11.0,
+          f"mean |lat| {float(lat[top].mean()):.2f} deg over {len(top)} grains")
+
+
 def main() -> int:
     t1_stage0_closure()
     t2_one_source()
@@ -741,6 +819,7 @@ def main() -> int:
     t11_adoption()
     t12_human_chain()
     t13_lamps()
+    t14_garden()
 
     print(f"\n{_PASS} passed, {_FAIL} failed", flush=True)
     return 1 if _FAIL else 0

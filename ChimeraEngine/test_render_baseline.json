@@ -179,11 +179,11 @@
       "n_lod": 16384
     },
     "theGarden": {
-      "coverage": 0.222288,
+      "coverage": 0.22293,
       "drew": true,
-      "max_pixel": 255.0,
-      "n_grains": 3000,
-      "n_lod": 3000
+      "max_pixel": 139.0,
+      "n_grains": 30000,
+      "n_lod": 16384
     },
     "theGrip": {
       "coverage": 0.017452,
