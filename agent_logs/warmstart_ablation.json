@@ -1,0 +1,194 @@
+[
+ {
+  "name": "pd",
+  "obs": 6,
+  "theta": 2030,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "p_only",
+  "obs": 3,
+  "theta": 1160,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_windowed",
+  "obs": 6,
+  "theta": 2030,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_phase",
+  "obs": 8,
+  "theta": 2610,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_no_z",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 2.08,
+  "per_seed": [
+   2.08,
+   2.08,
+   2.08,
+   2.08,
+   2.08,
+   2.08,
+   2.08
+  ],
+  "note": "drops TRAINED z_err"
+ },
+ {
+  "name": "pd_no_zdot",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_no_pitch",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 1.26,
+  "per_seed": [
+   1.26,
+   1.26,
+   1.26,
+   1.26,
+   1.26,
+   1.26,
+   1.26
+  ],
+  "note": "drops TRAINED pitch"
+ },
+ {
+  "name": "pd_no_pitch_rate",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_no_roll",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 2.32,
+  "per_seed": [
+   2.32,
+   2.32,
+   2.32,
+   2.32,
+   2.32,
+   2.32,
+   2.32
+  ],
+  "note": "drops TRAINED roll"
+ },
+ {
+  "name": "pd_no_roll_rate",
+  "obs": 5,
+  "theta": 1740,
+  "survival": 6.82,
+  "per_seed": [
+   7.2,
+   7.7,
+   6.36,
+   6.3,
+   6.38,
+   6.82,
+   7.54
+  ],
+  "note": "nothing (added channels start at 0)"
+ },
+ {
+  "name": "pd_no_a0",
+  "obs": 6,
+  "theta": 1740,
+  "survival": 1.62,
+  "per_seed": [
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62
+  ],
+  "note": "no a0"
+ },
+ {
+  "name": "p_only_no_a0",
+  "obs": 3,
+  "theta": 870,
+  "survival": 1.62,
+  "per_seed": [
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62,
+   1.62
+  ],
+  "note": "no a0"
+ }
+]

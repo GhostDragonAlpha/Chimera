@@ -1,0 +1,236 @@
+{
+ "comparisons": [
+  {
+   "label": "T1  rate feedback",
+   "a": [
+    "pd",
+    "full"
+   ],
+   "b": [
+    "p_only",
+    "full"
+   ],
+   "median_a": 6.76,
+   "median_b": 6.86,
+   "paired_median": 0.1800000000000006,
+   "wins": 6,
+   "ties": 0,
+   "losses": 1,
+   "p": 0.125,
+   "fires_median": true,
+   "fires_paired": false,
+   "ceiling_a": 6.8,
+   "ceiling_b": 7.640000000000001,
+   "per_seed_diff": [
+    0.5,
+    0.1800000000000006,
+    0.019999999999999574,
+    0.2599999999999998,
+    0.08000000000000007,
+    -0.10000000000000053,
+    0.3799999999999999
+   ]
+  },
+  {
+   "label": "T2  long baseline",
+   "a": [
+    "pd_windowed",
+    "full"
+   ],
+   "b": [
+    "pd",
+    "full"
+   ],
+   "median_a": 6.76,
+   "median_b": 6.76,
+   "paired_median": -0.040000000000000036,
+   "wins": 2,
+   "ties": 1,
+   "losses": 4,
+   "p": 0.6875,
+   "fires_median": true,
+   "fires_paired": true,
+   "ceiling_a": 6.82,
+   "ceiling_b": 6.8,
+   "per_seed_diff": [
+    -0.2999999999999998,
+    0.09999999999999964,
+    -0.040000000000000036,
+    -0.21999999999999975,
+    -0.05999999999999961,
+    0.0,
+    0.019999999999999574
+   ]
+  },
+  {
+   "label": "T3  phase basis",
+   "a": [
+    "pd_phase",
+    "full"
+   ],
+   "b": [
+    "pd",
+    "full"
+   ],
+   "median_a": 7.48,
+   "median_b": 6.76,
+   "paired_median": 0.0,
+   "wins": 3,
+   "ties": 1,
+   "losses": 3,
+   "p": 1.0,
+   "fires_median": false,
+   "fires_paired": true,
+   "ceiling_a": 7.54,
+   "ceiling_b": 6.8,
+   "per_seed_diff": [
+    -0.1999999999999993,
+    0.2599999999999998,
+    -0.040000000000000036,
+    0.0,
+    -0.05999999999999961,
+    0.7800000000000002,
+    0.0600000000000005
+   ]
+  },
+  {
+   "label": "T6  support-only",
+   "a": [
+    "p_only",
+    "support_only"
+   ],
+   "b": [
+    "p_only",
+    "full"
+   ],
+   "median_a": 7.0,
+   "median_b": 6.86,
+   "paired_median": 0.20000000000000018,
+   "wins": 6,
+   "ties": 0,
+   "losses": 1,
+   "p": 0.125,
+   "fires_median": false,
+   "fires_paired": false,
+   "ceiling_a": 7.640000000000001,
+   "ceiling_b": 7.640000000000001,
+   "per_seed_diff": [
+    0.20000000000000018,
+    0.6399999999999997,
+    -0.040000000000000036,
+    0.2599999999999998,
+    0.020000000000000462,
+    0.13999999999999968,
+    0.5200000000000005
+   ]
+  },
+  {
+   "label": "T6b support-only (pd)",
+   "a": [
+    "pd",
+    "support_only"
+   ],
+   "b": [
+    "pd",
+    "full"
+   ],
+   "median_a": 6.8,
+   "median_b": 6.76,
+   "paired_median": -0.020000000000000462,
+   "wins": 2,
+   "ties": 1,
+   "losses": 4,
+   "p": 0.6875,
+   "fires_median": false,
+   "fires_paired": true,
+   "ceiling_a": 6.8,
+   "ceiling_b": 6.8,
+   "per_seed_diff": [
+    -0.17999999999999972,
+    -0.020000000000000462,
+    0.040000000000000036,
+    -0.040000000000000036,
+    0.0,
+    0.040000000000000036,
+    -0.05999999999999961
+   ]
+  }
+ ],
+ "ablations": [
+  {
+   "name": "pd_no_z",
+   "warm": 2.08,
+   "drop_warm": -4.74,
+   "after": 6.18,
+   "vs_pd": -0.8799999999999999,
+   "wins": 0,
+   "ties": 0,
+   "losses": 7,
+   "p": 0.015625,
+   "ceiling": 6.18
+  },
+  {
+   "name": "pd_no_zdot",
+   "warm": 6.82,
+   "drop_warm": 0.0,
+   "after": 6.78,
+   "vs_pd": 0.0,
+   "wins": 2,
+   "ties": 2,
+   "losses": 3,
+   "p": 1.0,
+   "ceiling": 6.92
+  },
+  {
+   "name": "pd_no_pitch",
+   "warm": 1.26,
+   "drop_warm": -5.5600000000000005,
+   "after": 2.2600000000000002,
+   "vs_pd": -4.5,
+   "wins": 0,
+   "ties": 0,
+   "losses": 7,
+   "p": 0.015625,
+   "ceiling": 2.2600000000000002
+  },
+  {
+   "name": "pd_no_pitch_rate",
+   "warm": 6.82,
+   "drop_warm": 0.0,
+   "after": 6.76,
+   "vs_pd": -0.019999999999999574,
+   "wins": 2,
+   "ties": 1,
+   "losses": 4,
+   "p": 0.6875,
+   "ceiling": 6.88
+  },
+  {
+   "name": "pd_no_roll",
+   "warm": 2.32,
+   "drop_warm": -4.5,
+   "after": 5.7,
+   "vs_pd": -1.0599999999999996,
+   "wins": 0,
+   "ties": 0,
+   "losses": 7,
+   "p": 0.015625,
+   "ceiling": 6.18
+  },
+  {
+   "name": "pd_no_roll_rate",
+   "warm": 6.82,
+   "drop_warm": 0.0,
+   "after": 7.5200000000000005,
+   "vs_pd": 0.0,
+   "wins": 3,
+   "ties": 2,
+   "losses": 2,
+   "p": 1.0,
+   "ceiling": 7.58
+  }
+ ],
+ "worst_objective_cost": 0.7800000000000002,
+ "median_objective_cost": 0.05999999999999961,
+ "near_incumbent_spread": 0.7600000000000007
+}

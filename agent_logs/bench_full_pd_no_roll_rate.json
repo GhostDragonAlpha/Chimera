@@ -1,0 +1,319 @@
+{
+ "name": "pd_no_roll_rate",
+ "objective": "full",
+ "channels": [
+  "z_err",
+  "zdot",
+  "pitch",
+  "pitch_rate",
+  "roll"
+ ],
+ "has_a0": true,
+ "window": 1,
+ "obs_dim": 5,
+ "n_blocks": 6,
+ "theta_numbers": 1740,
+ "pop": 24,
+ "turns": 30,
+ "train_seeds": 3,
+ "secs": 12.0,
+ "warm": true,
+ "theta_path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\bench_full_pd_no_roll_rate.npy",
+ "survival_before": 6.82,
+ "survival_after": 7.5200000000000005,
+ "survival_per_seed_before": [
+  7.2,
+  7.7,
+  6.36,
+  6.3,
+  6.38,
+  6.82,
+  7.54
+ ],
+ "survival_per_seed_after": [
+  7.5200000000000005,
+  8.18,
+  6.32,
+  6.66,
+  6.42,
+  7.9,
+  9.040000000000001
+ ],
+ "survival_trained_seeds": 8.6,
+ "survival_ceiling": 7.58,
+ "survival_ceiling_turn": 1,
+ "objective_before": -3.8640500108769533,
+ "objective_after": -3.529638445533892,
+ "step_chosen": 0.0001,
+ "step_refused": false,
+ "step_ladder": [
+  [
+   1.0,
+   0.0
+  ],
+  [
+   0.1,
+   0.0
+  ],
+  [
+   0.01,
+   0.0
+  ],
+  [
+   0.001,
+   0.0
+  ],
+  [
+   0.0001,
+   0.4166666666666667
+  ],
+  [
+   1e-05,
+   0.6666666666666666
+  ]
+ ],
+ "history": [
+  {
+   "turn": 0,
+   "best": -3.7207413760157726,
+   "mean": -3.868426020101618,
+   "elite_mean": -3.8076157029138757,
+   "moved": true,
+   "survival": 6.82
+  },
+  {
+   "turn": 1,
+   "best": -3.7039470328362905,
+   "mean": -3.8661962488572423,
+   "elite_mean": -3.777504869892743,
+   "moved": true,
+   "survival": 7.58
+  },
+  {
+   "turn": 2,
+   "best": -3.6570523329106526,
+   "mean": -3.836920623914169,
+   "elite_mean": -3.680428896021162,
+   "moved": true,
+   "survival": 6.46
+  },
+  {
+   "turn": 3,
+   "best": -3.612648820059673,
+   "mean": -3.8251300663354058,
+   "elite_mean": -3.6302942631140214,
+   "moved": true,
+   "survival": 6.8
+  },
+  {
+   "turn": 4,
+   "best": -3.6302942631140214,
+   "mean": -3.8196289279496063,
+   "elite_mean": -3.713187109860982,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 5,
+   "best": -3.6302942631140214,
+   "mean": -3.8023055108671664,
+   "elite_mean": -3.6403548196000886,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 6,
+   "best": -3.6302942631140214,
+   "mean": -3.7669307749176464,
+   "elite_mean": -3.713990691538039,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 7,
+   "best": -3.529638445533892,
+   "mean": -3.757358709672271,
+   "elite_mean": -3.719750502429598,
+   "moved": false,
+   "survival": 7.5200000000000005
+  },
+  {
+   "turn": 8,
+   "best": -3.6302942631140214,
+   "mean": -3.750416077751306,
+   "elite_mean": -3.6536953743168312,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 9,
+   "best": -3.6302942631140214,
+   "mean": -3.726442675397552,
+   "elite_mean": -3.662915119366372,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 10,
+   "best": -3.6025021894977813,
+   "mean": -3.7057973515454337,
+   "elite_mean": -3.5925139210787536,
+   "moved": true,
+   "survival": 7.26
+  },
+  {
+   "turn": 11,
+   "best": -3.5925139210787536,
+   "mean": -3.6816954176153005,
+   "elite_mean": -3.6369561183795023,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 12,
+   "best": -3.5925139210787536,
+   "mean": -3.689124451747831,
+   "elite_mean": -3.6125953229529317,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 13,
+   "best": -3.5925139210787536,
+   "mean": -3.658132415851142,
+   "elite_mean": -3.6058778133317784,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 14,
+   "best": -3.5856717137667076,
+   "mean": -3.637715047143139,
+   "elite_mean": -3.585718872490566,
+   "moved": true,
+   "survival": 7.24
+  },
+  {
+   "turn": 15,
+   "best": -3.5790625195473824,
+   "mean": -3.6296171883568618,
+   "elite_mean": -3.5924667066874116,
+   "moved": false,
+   "survival": 7.24
+  },
+  {
+   "turn": 16,
+   "best": -3.572251611880886,
+   "mean": -3.624665594062525,
+   "elite_mean": -3.59913166107464,
+   "moved": false,
+   "survival": 7.42
+  },
+  {
+   "turn": 17,
+   "best": -3.5823521367448334,
+   "mean": -3.622832050607181,
+   "elite_mean": -3.599157479426893,
+   "moved": false,
+   "survival": 7.28
+  },
+  {
+   "turn": 18,
+   "best": -3.5723236115439767,
+   "mean": -3.619016196591494,
+   "elite_mean": -3.5991080614110182,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 19,
+   "best": -3.5723437334947667,
+   "mean": -3.609935391207523,
+   "elite_mean": -3.595747134079829,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 20,
+   "best": -3.57563763059128,
+   "mean": -3.61390851691715,
+   "elite_mean": -3.595776100560698,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 21,
+   "best": -3.5757331859266293,
+   "mean": -3.612770477560941,
+   "elite_mean": -3.5958326832755794,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 22,
+   "best": -3.5756689057463693,
+   "mean": -3.6088767942303335,
+   "elite_mean": -3.5891320864550726,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 23,
+   "best": -3.582361813424032,
+   "mean": -3.6179000768146814,
+   "elite_mean": -3.5856974007956453,
+   "moved": true,
+   "survival": 7.24
+  },
+  {
+   "turn": 24,
+   "best": -3.579042150612819,
+   "mean": -3.629183509356237,
+   "elite_mean": -3.5958304336859896,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 25,
+   "best": -3.575691709565184,
+   "mean": -3.6188850391259026,
+   "elite_mean": -3.5890595734468285,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 26,
+   "best": -3.576623855658868,
+   "mean": -3.613769145159768,
+   "elite_mean": -3.5790823247245567,
+   "moved": true,
+   "survival": 7.24
+  },
+  {
+   "turn": 27,
+   "best": -3.579052711371087,
+   "mean": -3.616141766817306,
+   "elite_mean": -3.592410952775091,
+   "moved": false,
+   "survival": 7.28
+  },
+  {
+   "turn": 28,
+   "best": -3.5722933532068875,
+   "mean": -3.603366723949749,
+   "elite_mean": -3.59911438314789,
+   "moved": false,
+   "survival": 7.26
+  },
+  {
+   "turn": 29,
+   "best": -3.575674076977539,
+   "mean": -3.6201384910627374,
+   "elite_mean": -3.582308528481332,
+   "moved": false,
+   "survival": 7.24
+  }
+ ],
+ "wall_s": 4306.213518857956,
+ "log": "\n=== pd_no_roll_rate  [full]  T4: no roll rate\n  channels ('z_err', 'zdot', 'pitch', 'pitch_rate', 'roll')  a0=True  window=1 tick(s) = 20 ms\n  theta 1740 numbers = 6 blocks x 290 muscles\n  warm start: the incumbent, matched by channel NAME; every channel this class adds starts at ZERO gain\n  budget 24x30 = 720 candidates x worst-of-3 starts x 12 s\n  AT THE WARM START: held-out survival 6.82 s, objective -3.8641\n  deriving the step (criterion: >= 4/24 = 0.17 of samples must beat the incumbent)\n     x1            0% beat the incumbent\n     x0.1          0% beat the incumbent\n     x0.01         0% beat the incumbent\n     x0.001        0% beat the incumbent\n     x0.0001      42% beat the incumbent   <- CHOSEN\n     x1e-05       67% beat the incumbent\n turn      best      mean    elmean     mu  bestobj    surv\n    0    -3.721    -3.868    -3.808  moved   -3.721   6.82s\n    1    -3.704    -3.866    -3.778  moved   -3.704   7.58s\n    2    -3.657    -3.837    -3.680  moved   -3.657   6.46s\n    3    -3.613    -3.825    -3.630  moved   -3.613   6.80s\n    4    -3.630    -3.820    -3.713   HELD   -3.613   7.42s\n    5    -3.630    -3.802    -3.640   HELD   -3.613   7.42s\n    6    -3.630    -3.767    -3.714   HELD   -3.613   7.42s\n    7    -3.530    -3.757    -3.720   HELD   -3.530   7.52s\n    8    -3.630    -3.750    -3.654   HELD   -3.530   7.42s\n    9    -3.630    -3.726    -3.663   HELD   -3.530   7.42s\n   10    -3.603    -3.706    -3.593  moved   -3.530   7.26s\n   11    -3.593    -3.682    -3.637   HELD   -3.530   7.26s\n   12    -3.593    -3.689    -3.613   HELD   -3.530   7.26s\n   13    -3.593    -3.658    -3.606   HELD   -3.530   7.26s\n   14    -3.586    -3.638    -3.586  moved   -3.530   7.24s\n   15    -3.579    -3.630    -3.592   HELD   -3.530   7.24s\n   16    -3.572    -3.625    -3.599   HELD   -3.530   7.42s\n   17    -3.582    -3.623    -3.599   HELD   -3.530   7.28s\n   18    -3.572    -3.619    -3.599   HELD   -3.530   7.26s\n   19    -3.572    -3.610    -3.596   HELD   -3.530   7.26s\n   20    -3.576    -3.614    -3.596   HELD   -3.530   7.26s\n   21    -3.576    -3.613    -3.596   HELD   -3.530   7.26s\n   22    -3.576    -3.609    -3.589   HELD   -3.530   7.26s\n   23    -3.582    -3.618    -3.586  moved   -3.530   7.24s\n   24    -3.579    -3.629    -3.596   HELD   -3.530   7.26s\n   25    -3.576    -3.619    -3.589   HELD   -3.530   7.26s\n   26    -3.577    -3.614    -3.579  moved   -3.530   7.24s\n   27    -3.579    -3.616    -3.592   HELD   -3.530   7.28s\n   28    -3.572    -3.603    -3.599   HELD   -3.530   7.26s\n   29    -3.576    -3.620    -3.582   HELD   -3.530   7.24s\n  AFTER 30 turns: held-out survival 7.52 s (+0.70 s), objective -3.5296 (+0.3344)\n  train/test gap: trained seeds 8.60 s vs held-out 7.52 s = +1.08 s\n  CAPABILITY CEILING (best held-out survival at ANY turn, turn 1): 7.58 s -- SELECTED ON THE JUDGE, so it is biased upward and ranks nothing. It separates 'this class cannot stand longer' from 'the objective cannot find it'."
+}

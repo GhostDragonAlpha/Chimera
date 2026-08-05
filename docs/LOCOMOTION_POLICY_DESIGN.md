@@ -205,6 +205,68 @@ because a negative answer invalidates the others.**
 give a degenerate population with no variance to correlate. A spanning population must be drawn
 the way `tools/search_landscape.py` draws one — a scale ladder around a known-good point.
 
+> ## ANSWERED 2026-08-04, SECOND PASS — Q2, Q3 and Q4 are closed, and the control closes them all
+>
+> Thirteen arms, `tools/benchmark_policies.py`, all warm-started from **one point** (the incumbent,
+> matched by channel name, every added channel at zero gain — so a PD policy at the warm start IS
+> the P-only policy, measured bit-identically by `--selftest`). Identical budget 24×30, worst-of-3
+> starts × 12 s, identical RNG seed, derive-step + elite-guard on every arm. Judged on the same
+> seven held-out seeds. Verdicts: `tools/benchmark_verdict.py`.
+>
+> **READ THE PAIRED STATISTIC, NOT THE MEDIAN.** Every arm is judged on the *same* seven initial
+> conditions, so the samples are paired by construction and a median over the unpaired set throws
+> that away. It is not a nicety — the two disagree:
+>
+> | | seed 3 | 4 | 5 | 6 | 7 | 8 | 9 | median |
+> |---|---:|---:|---:|---:|---:|---:|---:|---:|
+> | `p_only` | 7.18 | 7.72 | 6.32 | 6.40 | 6.34 | **6.86** | 7.62 | 6.86 |
+> | `pd` | 7.68 | 7.90 | 6.34 | 6.66 | 6.42 | **6.76** | 8.00 | 6.76 |
+>
+> `pd` wins on **six of seven** seeds; both medians are the seed-8 value, the one seed where it
+> loses. The median reports the opposite sign from every other seed in the set.
+>
+> | question | comparison | paired median | wins | sign test p | verdict |
+> |---|---|---:|---:|---:|---|
+> | **Q2** derivative | `pd` vs `p_only` | **+0.18 s** | 6/7 | 0.125 | positive, **not significant** |
+> | **Q4** longer baseline | `pd_windowed` vs `pd` | **−0.04 s** | 2/7 | 0.688 | **no help** |
+> | **Q3** phase basis | `pd_phase` vs `pd` | **+0.00 s** | 3/7 (1 tie) | 1.000 | **adds nothing over PD** |
+> | objective v2 | `p_only`[support-only] vs [full] | **+0.20 s** | 6/7 | 0.125 | positive, not significant |
+> | objective v2 | `pd`[support-only] vs [full] | −0.02 s | 2/7 | 0.688 | no help |
+>
+> **AND THE CONTROL SIZES ALL OF IT.** The theta each run *delivers* is the best-**objective** one;
+> the *ceiling* is the best held-out survival the search visited at any turn. `p_only` delivered
+> **6.86 s** having visited **7.64 s at turn 1** — the objective preferred a policy that stands
+> **0.78 s less**. The entire spread across the seven arms that start at 6.82 s is **0.76 s**.
+>
+> > **The objective's own worst mis-ranking is larger than the whole between-class spread.** Every
+> > policy-class difference measured here sits inside the noise the objective introduces. This is
+> > `docs/LOCOMOTION_OBJECTIVE_DIAGNOSIS.md` §4 arriving exactly where it predicted.
+>
+> **WHICH OBSERVATION MATTERS (Q7, new).** The ablation is **two questions**, because the warm
+> start is P-only: removing `z`/`pitch`/`roll` drops a *trained* gain block, while removing
+> `ż`/`pitch̊`/`roll̊` drops a channel whose gain *starts at zero* and therefore costs exactly
+> nothing until training acquires it.
+>
+> | removed | held-out at the warm start | drop | after training | vs `pd`, paired | p |
+> |---|---:|---:|---:|---:|---:|
+> | `pitch` | 1.26 s | **−5.56** | 2.26 s | −4.50 s (0/7) | 0.016 |
+> | `a0` | 1.62 s | −5.20 | 4.46 s | — | — |
+> | `z` | 2.08 s | −4.74 | 6.18 s | −0.88 s (0/7) | 0.016 |
+> | `roll` | 2.32 s | −4.50 | 5.70 s | −1.06 s (0/7) | 0.016 |
+> | `ż` | 6.82 s | **0.00** | 6.78 s | +0.00 (2/7) | 1.000 |
+> | `pitch̊` | 6.82 s | **0.00** | 6.76 s | −0.02 (2/7) | 0.688 |
+> | `roll̊` | 6.82 s | **0.00** | 7.52 s | +0.00 (3/7) | 1.000 |
+>
+> **The stated null — that `ż` and `pitch̊` are the critical terms — is refuted.** They are the two
+> whose removal costs the least. `pitch` is the load-bearing channel by a factor of five.
+>
+> **Q5 EXTENDED, and the ratio was hiding the answer.** Earth-gravity held-out survival:
+> incumbent **1.60 s**, `p_only` **1.60 s**, `pd` **1.60 s**, `pd_phase` **1.60 s**, `pd_no_a0`
+> **1.64 s** — two control ticks apart across every policy class tried. `pd_no_a0`'s transfer
+> *ratio* rises 0.23 → 0.37 only because its home survival collapsed 6.82 → 4.46 s. **The
+> denominator moved; the quantity the ratio is about did not.** No policy class in this family
+> transfers, and removing the baseline does not buy transfer — it buys a smaller home number.
+
 **Q2. Does the missing derivative matter more than the missing phase?**
 The policy has no `ż` and no `pitch̊`. A P-only controller on an inverted pendulum is the
 textbook case for oscillation and divergence, and the measured fall is exactly that shape:
@@ -261,3 +323,37 @@ does — and it is now mandatory rather than preferable.
 **And every comparison is on held-out seeds.** The judge scores seeds 0–9; the trainer selects on
 0–2. The gap is +0.88 s on the incumbent and grew to +1.08 s under a better search. A policy-class
 benchmark that reports all-10 medians will rank the class that overfits its three seeds best.
+
+---
+
+## 7. WHAT THE SECOND PASS ADDS TO THE RULE (2026-08-04)
+
+Three rules, each earned by a measurement above rather than reasoned to.
+
+1. **PAIRED SEEDS DEMAND A PAIRED STATISTIC.** Every arm is judged on the same seven initial
+   conditions. A median over the unpaired set is a rank statistic decided by one seed, and it
+   reported the opposite sign from the other six on Q2 *and* on Q3 — in opposite directions.
+   `tools/benchmark_verdict.py` prints both and reads the paired one, out loud.
+   **A comparison that discards structure the design already had is not a cheaper measurement,
+   it is a different one.**
+2. **THE SEARCH'S CEILING IS THE CONTROL FOR THE OBJECTIVE, AND IT IS NOT A RANKING.** Recording
+   the best held-out survival visited at any turn costs seven rollouts per turn and separates
+   *"this class cannot stand longer"* from *"the objective cannot find it"*. On these thirteen
+   arms it is always the second. The number is selected on the judge, so it is biased upward and
+   must never rank an arm — it exists to size the objective's error, and the error is **0.78 s
+   against a 0.76 s between-class spread**.
+3. **AN INSTRUMENT MUST RESOLVE ITS OWN CRITERION.** `derive_step` selects the largest ladder rung
+   where ≥ `elite/pop` = 4/24 = 16.7% of samples beat the incumbent, and it sampled `k = 6` — so
+   the finest fraction it could measure *was* the criterion, and one sample chose a rung. Measured:
+   the same basin reads **1e-4** at 10 samples, **3e-4** at 12, and **1e-4** at 24. `k` is now the
+   search's own population. Same species as *never threshold on a quantile of the population you
+   measure*.
+
+**AND THE STANDING QUESTION IS NOW Q6, ALONE.** Q2, Q3 and Q4 are answered and all three answers
+are *"the policy class is not the wall"*. Nothing in the family — a derivative, a longer baseline,
+an oscillator basis, six ablations, a second objective — moved held-out survival by more than the
+objective's own mis-ranking. `pitch` carries the stand (−5.56 s when removed) and `a0` carries the
+gravity (Earth-g survival is 1.60 s for every class tried). What has *not* been tried is the one
+§5 already named: **the 1160 free numbers are describing a ~16-dimensional body**
+(`ChimeraEngine/synergy.py`: 8 dims = 91%, 16 = 96%), and the basin being 10⁴ narrower than a naive
+step is what over-parameterisation looks like from the search's side.

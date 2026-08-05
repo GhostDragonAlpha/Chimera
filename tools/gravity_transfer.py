@@ -52,6 +52,11 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 LOGDIR = ROOT / "agent_logs"
 TRAINED_SEEDS = (0, 1, 2)
 THETAS = ("stand_theta", "stand_theta_derived", "stand_theta_guard")
+# --arms TAKES `theta[:class]` PAIRS (2026-08-04, task 5). A policy class is not recoverable from
+# a theta's length -- `pd` and `pd_windowed` are both 7 blocks and differ only in the derivative
+# baseline -- so the class is DECLARED beside the file and never inferred (story/folding.py's
+# rule, and the substitution that left parser_tests falsifier 1 dead for several commits).
+# Absent, this file runs exactly as it did: the three named thetas through the inline formula.
 
 
 def survive(m, d, mujoco, theta, P, jids, secs, seeds):
@@ -107,25 +112,43 @@ def main() -> int:
     print(f"  own mass and leg length too, and the comparison would have no fixed quantity in it.")
     print(f"  survival = median over HELD-OUT seeds {held} at {secs:.0f} s")
     print("-" * 100)
-    print(f"  {'theta':26}{'home g':>10}{'Earth g':>10}{'ratio':>9}   verdict")
+    # THE ARMS. `name` alone -> the inline formula (what this file has always run); `name:class`
+    # -> `benchmark_policies.survive` with that class, which is the SAME judge the policy-class
+    # benchmark ranks on. One judge, two shapes -- never two implementations of "how long did it
+    # stand", because the difference between those would be indistinguishable from a difference
+    # in transfer.
+    arms = ([s.strip() for s in a[a.index("--arms") + 1].split(",") if s.strip()]
+            if "--arms" in a else list(THETAS))
+    import policy_classes as PC                                       # noqa: E402
+    import benchmark_policies as BP                                   # noqa: E402
+    print(f"  {'theta':26}{'class':>13}{'home g':>10}{'Earth g':>10}{'ratio':>9}   verdict")
     rows = []
-    for name in THETAS:
+    for spec in arms:
+        name, _, cls_name = spec.partition(":")
+        pc = PC.get(cls_name) if cls_name else None
         p = OUTDIR / f"{name}.npy"
         if not p.exists():
             print(f"  {name:26}  -- not on disk, skipped")
             continue
         th = np.load(p)
+        if pc is not None:
+            pc.decode_theta(th, m.nu)
+        _sv = ((lambda: BP.survive(mujoco, m, d, jids, P, pc, th, secs, held))
+               if pc is not None else
+               (lambda: survive(m, d, mujoco, th, P, jids, secs, held)))
         m.opt.gravity[2] = -abs(g_home)
-        s_home, _ = survive(m, d, mujoco, th, P, jids, secs, held)
+        s_home, _ = _sv()
         m.opt.gravity[2] = -abs(g_new)
-        s_new, per = survive(m, d, mujoco, th, P, jids, secs, held)
+        s_new, per = _sv()
         m.opt.gravity[2] = -abs(g_home)          # restored, always
         ratio = s_new / max(s_home, 1e-9)
         verdict = ("GENERALISES (>0.5)" if ratio > 0.5 else
                    "partial" if ratio >= 0.3 else "OVERFIT (<0.3)")
-        rows.append(dict(theta=name, home_s=s_home, new_s=s_new, ratio=ratio,
+        rows.append(dict(theta=name, policy_class=cls_name or "p_only (inline)",
+                         home_s=s_home, new_s=s_new, ratio=ratio,
                          verdict=verdict, per_seed_new=per))
-        print(f"  {name:26}{s_home:>9.2f}s{s_new:>9.2f}s{ratio:>9.2f}   {verdict}")
+        print(f"  {name:26}{(cls_name or 'inline'):>13}{s_home:>9.2f}s{s_new:>9.2f}s"
+              f"{ratio:>9.2f}   {verdict}")
     print("=" * 100)
     if not rows:
         raise SystemExit("no theta on disk -- refusing to report a transfer nothing was measured "
@@ -140,11 +163,21 @@ def main() -> int:
              f"{sum(1 for r in ratios if r < 0.3)}/{len(ratios)} below 0.3."))
     # THE CONTROL THAT SAYS THE TEST DID ANYTHING: home-g survival must reproduce the judge's
     # own numbers, or the harness has moved something it did not mean to.
-    print(f"  CONTROL: home-g survival here should reproduce stand_survival's held-out medians "
-          f"(incumbent 6.82 s).")
-    print(f"           measured {rows[0]['home_s']:.2f} s for {rows[0]['theta']} -> "
-          + ("agrees." if abs(rows[0]["home_s"] - 6.82) < 0.05 else
-             "DISAGREES, so read the ratios with suspicion: this harness is not the judge's."))
+    # THE CONTROL IS THE INCUMBENT, NAMED -- not "whatever row came first". With `--arms` the
+    # first row can be any policy, and comparing an arbitrary arm against the incumbent's
+    # published 6.82 s would report a DISAGREEMENT that is only a mismatch of subjects.
+    _ctl = next((r for r in rows if r["theta"] == "stand_theta"), None)
+    if _ctl is None:
+        print(f"  CONTROL: the incumbent (`stand_theta`) is not among the arms, so this run has "
+              f"no anchor to\n           stand_survival's published 6.82 s. Include it to keep "
+              f"one -- an unanchored ratio is a\n           number this harness cannot check "
+              f"against another instrument.")
+    else:
+        print(f"  CONTROL: home-g survival here should reproduce stand_survival's held-out "
+              f"medians (incumbent 6.82 s).")
+        print(f"           measured {_ctl['home_s']:.2f} s for stand_theta -> "
+              + ("agrees." if abs(_ctl["home_s"] - 6.82) < 0.05 else
+                 "DISAGREES, so read the ratios with suspicion: this harness is not the judge's."))
 
     LOGDIR.mkdir(parents=True, exist_ok=True)
     out = LOGDIR / "gravity_transfer.json"
