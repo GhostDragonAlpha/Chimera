@@ -262,6 +262,16 @@ SPECIFIC_HEAT_J_KG_K = {"silicate": 730.0}
 THERMAL_CONDUCTIVITY_W_M_K = {"silicate": 6.5}
 
 
+# COMPLEX REFRACTIVE INDICES -- what a METAL is, optically: n + ik per colour channel, measured
+# (Johnson & Christy 1972 for copper; Rakic 1995 for aluminium), at the same R/G/B wavelengths the
+# water dispersion table uses. A metal's COLOUR falls out of these -- copper reflects red far
+# better than blue -- with nothing tuned; see ChimeraEngine/core/complex_fresnel.py.
+COMPLEX_INDEX_RGB = {
+    "aluminum": ((1.39, 7.65), (0.96, 6.69), (0.71, 5.72)),
+    "copper": ((0.21, 3.67), (0.76, 2.46), (1.15, 2.50)),
+}
+
+
 def thermal_diffusivity(k_therm: float, rho: float, c_p: float) -> float:
     """D = k / (rho c_p) -- how fast a temperature difference spreads. It is what decides whether
     a load cycle is isothermal, adiabatic, or in the lossy middle between them."""

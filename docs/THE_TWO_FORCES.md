@@ -599,6 +599,85 @@ phase (TIR's phase shift is dropped here). **Metals** have a complex refractive 
 need two columns plus an incidence-plane frame — the *chain* correction needs neither, which is why
 it shipped.
 
+### Stage 18 — Multi-interface & the curved floor — **BUILT, PASSED** (the last original Part II item)
+**THE TELESCOPING THEOREM, which is why Stage 4 survives intact.** Across parallel interfaces
+`n·sinθ` is conserved, so the exit direction depends only on first and last medium — **Stage 4's
+single-η kernel was already ANGLE-EXACT for any layered stack** (verified: inserting an ice layer
+changes the exit direction by 0.00e+00). What a stack adds is only a lateral walk-off,
+`t(tanθ₁−tanθ₂)` — closed form matches the exact trace, and its **visibility bound is derived**:
+ice up to 0.36 scene units thick renders CELL-exactly through the existing kernel, thicker needs the
+walk-off term. (Convention note, paid for: the textbook "beam displacement" is the *perpendicular*
+offset, smaller by cosθ — the *horizontal* one decides which cell a ray reads.)
+**ICE COMES FREE — the stage's never-fitted prediction.** Lorentz–Lorenz is additive in mass, so
+water's refractivity at ice's density (917 kg/m³) predicts **n_ice = 1.3034 vs measured 1.31
+(0.5%)** — the phase change costs nothing and no ice constant is cited anywhere.
+**THE CURVED FLOOR, which aSaltOcean actually has** (mean depth 2861 m, deepest 8582 m — the plane
+was always an approximation). The declared model is **one fixed-point step on the floor's own
+height field**: intersect the mean plane, read that cell's published height, re-intersect, read the
+colour where the ray actually lands. Against the exact paraboloid referee over 400 refracted rays
+into a 35%-sag bowl: plane error 0.223 → one-step **0.032 (6.9× better)**. In the kernel: an
+explicit flat height field renders **bit-identical** (the step recomputes identical numbers), and a
+bowl floor moves 154,991 subpixels through the same water — the floor's own published depths now
+bend what you see.
+
+### Stage 19 — Curved-mirror focusing — **BUILT, PASSED** (Stage 5's machinery pointed at reflection)
+A caustic never cared whether the bend came from Snell or a mirror. The deposit instrument is
+reused verbatim; only the gain changes — and **the SIGN is the physics**: a mirror throws the ray
+to the *opposite* side of the normal, so the fold sits on the minus branch
+(`sin(kx*) = −1/(2DAk²)`). My first version carried refraction's sign and **the deposition
+histogram refuted it** — the measured bands (0.3175/0.4325) landed exactly on the correct branch
+(0.3205/0.4295, err 0.003). Conservation exact (24,000 = 24,000).
+**THE CROSS-STAGE IDENTITY:** the same sine surface over the same drop folds at depths in the ratio
+**(1−η)/2 = 0.1279**, measured equal to 12 digits — Stages 5, 16 and 19 in one line.
+**THE R/2 FLAGSHIP:** a spherical mirror focuses parallel light at **−1.0006 vs −R/2 = −1.0000
+(0.06%)** inside an aperture **derived from the instrument** (a < √(2R·cell)); opening it 4× walks
+the focus **short, toward the mirror** (−1.0006 → −1.0112) — spherical aberration as a measured
+prediction. (And a second sign lesson, kept in the test: naming a direction and checking its sign
+are two different acts.)
+
+### Stage 20 — Complex Fresnel: TIR phase, circularity, metals — **BUILT, PASSED**
+The full complex amplitudes — what Stage 17's power-only model structurally could not say.
+**Its dielectric limit IS Stage 17's module** (worst diff 0.00e+00 over 88 angles), and under TIR
+both amplitudes have unit magnitude with **different phases** — the dropped physics.
+**THE FRESNEL RHOMB, DERIVED:** max single-bounce retardance is closed-form in the index ratio
+(`tan(Δ/2) = (1−n²)/2n`) — glass gives **45.94°** (closed form = numeric sweep to 6 digits), the
+45° crossing sits at the classic **48.6°** cut (of the 48.6/54.6 pair), and two bounces drive
+Stokes **|V| = 1.00000000** — a quarter-wave plate from glass and geometry, circularity reached.
+**AND THE IMPOSSIBILITY:** water's max retardance is **33.4° < 45°** — *a Fresnel rhomb cannot be
+made of water*, a derived impossibility as falsifiable as any possibility.
+**METALS** enter as cited complex indices (Johnson & Christy Cu, Rakić Al) and colour comes OUT:
+aluminium reflects **(0.913, 0.921, 0.920)** — the measured ~92%, nearly neutral, why it makes a
+colourless mirror — while copper reflects **(0.944, 0.668, 0.577)**: **copper's redness is
+derived**, nothing tuned. A colour is a measurement, again. And a metal has **no Brewster zero** —
+R_p bottoms at 0.747 — which is why a polarising filter kills water glare but not metallic glare.
+
+---
+
+# THE LEDGER CLOSES (2026-08-05)
+
+Twenty stages, twelve gate suites (**244 checks**), every falsifier named before its build. What
+remains unbuilt is not a queue — it is three **measured refusals**, each with its reason on record:
+
+1. **A per-grain polarization state in the renderer.** A Stokes state needs three components;
+   `PROP3` (col 15) is the buffer's **last free column**. The chain-level correction (Stage 17)
+   ships through the existing scalar F₀, and burning the final column for a sub-LSB refinement
+   fails the house's own budget discipline. Refused on a counted budget, not forgotten.
+2. **Granato–Lücke dislocation damping & point-defect relaxation.** These name *microstructural
+   inventories* (dislocation densities, pinning lengths, activation energies) that no membrane
+   publishes and no process already in hand supplies — the citation claim survived the same
+   scrutiny that overturned it three times elsewhere. Bounded: literature rock values put them
+   ~100× below the derived frictional Q⁻¹ at any strain that matters here.
+3. **Circular polarization *in the render path*** (as opposed to the derivation, which Stage 20
+   completes). Same column budget as refusal 1, and no membrane yet emits circularly polarized
+   light for a renderer to carry.
+
+The theory stands as built: **two forces, one density field, and every reader derived** — optics
+(specular, refraction, caustics, dispersion, bounce, chains, polarization, interfaces, mirrors,
+metals), contact (Hertz, Mindlin, the seam), sound (impedance, the chain speed), and dissipation
+(radiation, microslip, thermoelastic, frictional-anelastic — decomposable by experiment). Along the
+way the method refuted five of its own instruments, two of its own models, and three of its own
+"needs a citation" claims — each conviction pinned as a test that goes red if the record drifts.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -613,6 +692,7 @@ python ChimeraEngine/test_viscoelastic.py    # 13 checks: Zener damping, the pea
 python ChimeraEngine/test_anelastic.py       # 13 checks: the cancellation, Q ~ 100, the two signatures
 python ChimeraEngine/test_chains.py          # 16 checks: lobe composition, the anisotropy, the derived depth
 python ChimeraEngine/test_polarization.py    # 20 checks: Brewster from density, R+T=1, the Stage 16 correction
+python ChimeraEngine/test_final_optics.py    # 22 checks: telescoping, curved floor, R/2 focus, rhomb, metals
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm

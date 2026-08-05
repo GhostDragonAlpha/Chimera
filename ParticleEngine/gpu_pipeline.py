@@ -269,7 +269,7 @@ def _smith_g1(c, sg):
 
 @cuda.jit(cache=True)
 def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr, scg, scb, sopa, n,
-         lon, ex, ey, ez, ldx, ldy, ldz, lcr, lcg, lcb, rpar, gcol, ghas):
+         lon, ex, ey, ez, ldx, ldy, ldz, lcr, lcg, lcb, rpar, gcol, ghas, gz):
     i = cuda.grid(1)
     if i >= n: return
     o = i * NCOLS
@@ -371,14 +371,32 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
                                         if cix >= 0 and cix < gnx_i and ciy >= 0 and ciy < gny_i:
                                             gi = ciy * gnx_i + cix
                                             if ghas[gi] != 0.0:
-                                                att = math.exp(-rpar[5 + ch] * ss)
-                                                cadd = tw * att * gcol[gi * 3 + ch]
-                                                if ch == 0:
-                                                    scr[i] += cadd
-                                                elif ch == 1:
-                                                    scg[i] += cadd
-                                                else:
-                                                    scb[i] += cadd
+                                                # THE CURVED FLOOR (Stage 18): one fixed-point
+                                                # step on the floor's own height field -- read the
+                                                # first cell's published z, re-intersect there,
+                                                # read the colour where the ray ACTUALLY lands.
+                                                # On a flat floor gz[gi] == rpar[4], so every value
+                                                # recomputes identically and all pre-Stage-18
+                                                # callers stay bit-identical. Residual is second
+                                                # order (slope x height deviation); the exact
+                                                # referee lives in core/interfaces.py.
+                                                ss = (gz[gi] - dp[o + PZ]) / tz2
+                                                if ss > 0.0:
+                                                    hx2 = dp[o + PX] + tx2 * ss
+                                                    hy2 = dp[o + PY] + ty2 * ss
+                                                    cix = int(math.floor((hx2 - rpar[8]) / rpar[10]))
+                                                    ciy = int(math.floor((hy2 - rpar[9]) / rpar[10]))
+                                                    if cix >= 0 and cix < gnx_i and ciy >= 0 and ciy < gny_i:
+                                                        gi = ciy * gnx_i + cix
+                                                        if ghas[gi] != 0.0:
+                                                            att = math.exp(-rpar[5 + ch] * ss)
+                                                            cadd = tw * att * gcol[gi * 3 + ch]
+                                                            if ch == 0:
+                                                                scr[i] += cadd
+                                                            elif ch == 1:
+                                                                scg[i] += cadd
+                                                            else:
+                                                                scb[i] += cadd
 
     t = int(dp[o + TYPE])
     sm, osrc, aniso, astr = _profile(t)
@@ -1219,7 +1237,8 @@ class FullGPUPipeline:
                        float(r[0]), float(r[1]), float(r[2]))
 
     def set_refraction(self, eta_rgb=None, floor_z=0.0, absorb_rgb=(0.0, 0.0, 0.0),
-                       grid_origin=(0.0, 0.0), cell=1.0, grid_rgb=None, grid_has=None):
+                       grid_origin=(0.0, 0.0), cell=1.0, grid_rgb=None, grid_has=None,
+                       grid_z=None):
         """Give the scene its refractive floor, for the per-grain refraction term in `_p2s`.
 
         eta_rgb      three etas (n_outside / n_medium per colour channel; equal values = no
@@ -1243,11 +1262,18 @@ class FullGPUPipeline:
         rpar[5:8] = np.asarray(absorb_rgb, dtype=np.float32)
         rpar[8] = float(grid_origin[0]); rpar[9] = float(grid_origin[1]); rpar[10] = float(cell)
         rpar[11] = float(nx); rpar[12] = float(ny)
+        # grid_z: the floor's own height per cell (Stage 18). None keeps the plane -- a constant
+        # array equal to floor_z, which makes the kernel's fixed-point step recompute identical
+        # numbers and leaves every pre-Stage-18 caller bit-identical.
+        gz = (np.full(int(nx) * int(ny), float(floor_z), dtype=np.float32)
+              if grid_z is None
+              else np.ascontiguousarray(np.asarray(grid_z, dtype=np.float32).reshape(-1)))
         self._refr = (cuda.to_device(rpar),
                       cuda.to_device(np.ascontiguousarray(
                           np.asarray(grid_rgb, dtype=np.float32).reshape(-1))),
                       cuda.to_device(np.ascontiguousarray(
-                          np.asarray(grid_has, dtype=np.float32).reshape(-1))))
+                          np.asarray(grid_has, dtype=np.float32).reshape(-1))),
+                      cuda.to_device(gz))
 
     def step_particles(self, dt, cvars):
         n = self._n
@@ -1299,10 +1325,11 @@ class FullGPUPipeline:
             if not hasattr(self, "_refr_off"):       # persistent dummies: same types, zero flag
                 self._refr_off = (cuda.to_device(np.zeros(13, dtype=np.float32)),
                                   cuda.to_device(np.zeros(3, dtype=np.float32)),
+                                  cuda.to_device(np.zeros(1, dtype=np.float32)),
                                   cuda.to_device(np.zeros(1, dtype=np.float32)))
-            rpar_d, gcol_d, ghas_d = self._refr_off
+            rpar_d, gcol_d, ghas_d, gz_d = self._refr_off
         else:
-            rpar_d, gcol_d, ghas_d = self._refr
+            rpar_d, gcol_d, ghas_d, gz_d = self._refr
 
         # Particle → splat
         _p2s[g, (256,)](self._dp, self.base_scale,
@@ -1310,7 +1337,7 @@ class FullGPUPipeline:
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
             self._scr, self._scg, self._scb, self._sopa, n,
             lon, float(eye[0]), float(eye[1]), float(eye[2]),
-            ldx, ldy, ldz, lcr, lcg, lcb, rpar_d, gcol_d, ghas_d)
+            ldx, ldy, ldz, lcr, lcg, lcb, rpar_d, gcol_d, ghas_d, gz_d)
 
         # Project
         _project[g, (256,)](self._dp, self._spx, self._spy, self._spz,
