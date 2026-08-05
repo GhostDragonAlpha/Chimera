@@ -71,6 +71,96 @@ def contact_force(m1, s1, m2, s2, d, B, rho0) -> float:
     return contact_energy(m1, s1, m2, s2, d, B, rho0) * float(d) / S2
 
 
+# ═══ STAGE 8 v2 — THE SUCCESSOR: SATURATED-DENSITY (VOLUME-EXCLUSION) CONTACT ════════════════════
+# THE DECLARED MODEL, built where v1's refutation said stiffness must live. Matter saturates at
+# its rest density: a packet of mass m occupies the sphere of its own mass at rho0,
+#
+#     R = (3 m / (4 pi rho0))^(1/3)        -- for a Gaussian packet, R = 1.5550 sigma, DERIVED
+#
+# (the Gaussian is the packet's APPEARANCE; its matter is the rest volume -- which is exactly the
+# v1 diagnosis: "a real density edge is sharper than its rendering Gaussian"). Contact is the
+# LENS where two rest volumes intersect. The matter there is double-occupied -- strain
+# (2 rho0 - rho0)/rho0 = 1 -- so the linear-elastic energy density is B/2, and
+#
+#     U(d) = (B / 2) * V_lens(d)           F(d) = -dU/dd = (pi B / 8) (4 R^2 - d^2)   [equal R]
+#
+# Stiffness at small penetration h = 2R - d: F ~ (pi B R / 2) h -- LINEAR IN B, which inverts
+# v1's logarithmic pathology and is the sharpest measurable contrast between the two models.
+# DECLARED SCOPE: uniform unit strain in the lens (DEM-style linear overlap contact); Hertzian
+# half-space redistribution (F ~ h^1.5) is a named unbuilt refinement, not this model. The tails
+# carry NO contact force in v2 -- v1's cross-term is superseded, not summed with.
+
+def rest_radius(m: float, rho0: float) -> float:
+    """The sphere a packet's matter fills at rest density. No free parameter anywhere."""
+    return (3.0 * float(m) / (4.0 * math.pi * float(rho0))) ** (1.0 / 3.0)
+
+
+def lens_volume(r1: float, r2: float, d: float) -> float:
+    """The intersection volume of two spheres a distance d apart -- the classic closed form
+        V = pi (A - d)^2 (d^2 + 2 d A - 3 C^2) / (12 d),   A = r1 + r2,  C = r1 - r2
+    valid for |r1 - r2| < d < r1 + r2; one sphere inside the other and no-overlap handled."""
+    r1, r2, d = float(r1), float(r2), float(d)
+    if d >= r1 + r2:
+        return 0.0
+    if d <= abs(r1 - r2):
+        rmin = min(r1, r2)
+        return 4.0 * math.pi * rmin ** 3 / 3.0
+    a = r1 + r2
+    c = r1 - r2
+    return math.pi * (a - d) ** 2 * (d * d + 2.0 * d * a - 3.0 * c * c) / (12.0 * d)
+
+
+def lens_volume_numeric(r1: float, r2: float, d: float, n: int = 200001) -> float:
+    """The referee for the lens: V = pi INT max(0, min(r1^2 - z^2, r2^2 - (d-z)^2)) dz --
+    a 1D quadrature, float64, accurate far past the closed form's float error."""
+    z0 = min(-r1, d - r2)
+    z1 = max(r1, d + r2)
+    z = np.linspace(z0, z1, n)
+    a = np.minimum(r1 * r1 - z * z, r2 * r2 - (d - z) ** 2)
+    return float(np.trapezoid(math.pi * np.clip(a, 0.0, None), z))
+
+
+def saturated_energy(m1: float, s1: float, m2: float, s2: float, d: float,
+                     B: float, rho0: float) -> float:
+    r1 = rest_radius(m1, rho0)
+    r2 = rest_radius(m2, rho0)
+    return 0.5 * float(B) * lens_volume(r1, r2, d)
+
+
+def saturated_force(m1: float, s1: float, m2: float, s2: float, d: float,
+                    B: float, rho0: float) -> float:
+    """-dU/dd, analytic from the general lens formula. Positive = repulsive; exactly zero at and
+    beyond first touch (d >= r1 + r2) -- the onset is continuous, not stepped."""
+    r1 = rest_radius(m1, rho0)
+    r2 = rest_radius(m2, rho0)
+    d = float(d)
+    if d >= r1 + r2 or d <= abs(r1 - r2) or d <= 0.0:
+        return 0.0
+    a = r1 + r2
+    c = r1 - r2
+    n_ = (a - d) ** 2 * (d * d + 2.0 * d * a - 3.0 * c * c)
+    np_ = (-2.0 * (a - d) * (d * d + 2.0 * d * a - 3.0 * c * c)
+           + (a - d) ** 2 * (2.0 * d + 2.0 * a))
+    dv = math.pi * (np_ * d - n_) / (12.0 * d * d)
+    return -0.5 * float(B) * dv
+
+
+def saturated_equilibrium(load_N: float, m: float, s: float, B: float, rho0: float) -> float:
+    """The separation where the saturated-contact force carries the load (equal packets).
+    F is monotone in penetration on (0, 2R), so bisection; refuses an impossible load."""
+    r = rest_radius(m, rho0)
+    lo, hi = 1e-9 * r, 2.0 * r
+    if saturated_force(m, s, m, s, lo, B, rho0) < load_N:
+        raise ValueError(f"load {load_N:.3g} N exceeds the model's capacity at full overlap")
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if saturated_force(m, s, m, s, mid, B, rho0) > load_N:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
 def equilibrium_distance(load_N: float, m: float, s: float, B: float, rho0: float,
                          lo: float = None, hi: float = None) -> float:
     """The separation where the overlap force balances the load, for two equal grains --

@@ -125,6 +125,71 @@ def main() -> int:
           f"d_eq(10B)/d_eq(B) = {ratio:.4f}, derived bound {1.0 + bound:.4f} -- stiffness lives "
           f"in the tail shape, not in B, which is why no material constant can rescue this form")
 
+    # ═══ STAGE 8 v2 -- THE SUCCESSOR: saturated-density contact must close the seam ══════════════
+    # Pre-registered before the first run: EPS_LENS (1D-quadrature referee, 200001 points, kinked
+    # integrand -> 1e-5 rel); EPS_CONSERVATIVE as above; the seam gate is the SAME SEAM_MM = 1 mm
+    # that v1 failed; B-linearity within 1e-3 rel of exactly 1/10 (bisection resolution).
+    EPS_LENS = 1e-5
+
+    r_derived = overlap.rest_radius(m, rho0)
+    r_over_sigma = (3.0 * (2.0 * np.pi) ** 1.5 / (4.0 * np.pi)) ** (1.0 / 3.0)
+    check("v2 rest radius is DERIVED: R/sigma = (3(2pi)^1.5/4pi)^(1/3), no free parameter",
+          abs(r_derived / s - r_over_sigma) < 1e-12,
+          f"R = {r_derived / s:.4f} sigma = {r_derived * 1000:.2f} mm for a {s * 1000:.0f} mm grain")
+
+    for d_frac in (0.3, 0.8, 1.2, 1.7):
+        d = d_frac * r_derived
+        closed = overlap.lens_volume(r_derived, r_derived, d)
+        numeric = overlap.lens_volume_numeric(r_derived, r_derived, d)
+        rel = abs(closed - numeric) / max(numeric, 1e-300)
+        check(f"v2 closed-form lens == quadrature referee at d={d_frac:.1f}R (equal spheres)",
+              rel <= EPS_LENS, f"rel {rel:.2e}")
+    d_u = 1.1 * r_derived
+    closed = overlap.lens_volume(r_derived, 0.6 * r_derived, d_u)
+    numeric = overlap.lens_volume_numeric(r_derived, 0.6 * r_derived, d_u)
+    check("v2 closed-form lens == quadrature referee (UNEQUAL spheres)",
+          abs(closed - numeric) / numeric <= EPS_LENS,
+          f"rel {abs(closed - numeric) / numeric:.2e}")
+
+    h2 = 1e-8
+    for d_frac in (1.2, 1.8):
+        d = d_frac * r_derived
+        fd = -(overlap.saturated_energy(m, s, m, s, d + h2, B, rho0)
+               - overlap.saturated_energy(m, s, m, s, d - h2, B, rho0)) / (2 * h2)
+        fa = overlap.saturated_force(m, s, m, s, d, B, rho0)
+        rel = abs(fa - fd) / max(abs(fd), 1e-300)
+        check(f"v2 force is -dU/dd (conservative) at d={d_frac:.1f}R", rel <= EPS_CONSERVATIVE,
+              f"analytic {fa:.6e}, numeric {fd:.6e}, rel {rel:.2e}")
+
+    f_at = overlap.saturated_force(m, s, m, s, 2.0 * r_derived, B, rho0)
+    f_past = overlap.saturated_force(m, s, m, s, 2.5 * r_derived, B, rho0)
+    f_eps = overlap.saturated_force(m, s, m, s, 2.0 * r_derived * (1 - 1e-6), B, rho0)
+    check("v2 onset is exact and continuous: F(2R) = 0 = F(beyond), F(2R-) tiny",
+          f_at == 0.0 and f_past == 0.0 and 0.0 < f_eps < 1e3,
+          f"F just inside touch = {f_eps:.3e} N")
+
+    # THE SEAM -- the falsifier v1 fired, and v2 must close.
+    d_self2 = overlap.saturated_equilibrium(self_w, m, s, B, rho0)
+    d_load2 = overlap.saturated_equilibrium(self_w + share, m, s, B, rho0)
+    settle2_mm = (d_self2 - d_load2) * 1000.0
+    pen_full = (2.0 * r_derived - overlap.saturated_equilibrium(W, m, s, B, rho0)) * 1000.0
+    check("v2 THE SEAM CLOSES: settlement under theHuman's published weight is 0.000 mm at mm precision",
+          settle2_mm < SEAM_MM,
+          f"settles {settle2_mm * 1e6:.1f} nm per pair (v1: 3.2 mm); even the WHOLE body on one "
+          f"pair penetrates {pen_full * 1000:.2f} um -- the witnessed seam, from density + cited B")
+
+    d_10B2 = overlap.saturated_equilibrium(self_w + share, m, s, 10.0 * B, rho0)
+    h_b = 2.0 * r_derived - d_load2
+    h_10b = 2.0 * r_derived - d_10B2
+    check("v2 THE PATHOLOGY INVERTED: B enters LINEARLY (10x B -> exactly h/10)",
+          abs(h_10b / h_b - 0.1) < 1e-3,
+          f"h(10B)/h(B) = {h_10b / h_b:.5f} (v1 moved d_eq just 6.3% for the same 10x)")
+
+    check("v2 SUPERSEDES v1 in the regime that matters (both records stand, one model serves)",
+          settle_mm > SEAM_MM > settle2_mm,
+          f"v1 {settle_mm:.1f} mm (refuted) vs v2 {settle2_mm * 1e6:.1f} nm (passes) under the "
+          f"same load, same cited B, same published density")
+
     print(f"\n{_PASS} passed, {_FAIL} failed", flush=True)
     return 1 if _FAIL else 0
 

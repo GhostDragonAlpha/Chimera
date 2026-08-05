@@ -5,11 +5,13 @@ by using only the forces of nature, mainly electromagnetism and gravity — if w
 those two forces, then all the other forces would make themselves apparent… if you put in the
 concept of density then you can do it."
 
-Status: **ALL PARTS BUILT AND JUDGED** (2026-08-05, same day, two passes). Part I (specular) and
-Part II Stages 4/5/6/7 passed their pre-registered falsifiers; Stage 8's machinery passed and its
-physics **fired its own falsifier** — the cross-term overlap-contact model is refuted with the
-numbers pinned in `ChimeraEngine/test_overlap.py`. A theory that can lose, losing exactly once
-and on the record, is the method working.
+Status: **ALL PARTS BUILT AND JUDGED, INCLUDING THE SUCCESSOR** (2026-08-05, one day, three
+passes). Part I (specular) and Part II Stages 4/5/6/7 passed their pre-registered falsifiers.
+Stage 8's first model **fired its own falsifier** (cross-term overlap: 3.2 mm settlement vs the
+witnessed 0.000 mm seam) — and the named successor, saturated-density contact, was then built and
+**closed the seam at 1.2 nm** with stiffness linear in the cited bulk modulus. A theory that can
+lose, losing exactly once on the record and being repaired by its own diagnosis, is the method
+working end to end.
 
 ---
 
@@ -190,11 +192,29 @@ becomes valid exactly where this one leaves (d ≲ 2.4σ, where summed density r
 `ChimeraEngine/test_overlap.py` pins the refutation: if the model changes and the seam closes,
 the refutation checks go red and force this record to be updated. Both directions honest.
 
+### Stage 8 v2 — Saturated-density contact — **BUILT, PASSED: THE SEAM CLOSES** (2026-08-05)
+THE SUCCESSOR, built where the refutation said stiffness must live. Matter saturates at its rest
+density: a packet of mass m occupies the sphere of its own mass at ρ₀ — **R = (3m/4πρ₀)^⅓ =
+1.5550σ for a Gaussian packet, derived, no free parameter**. The Gaussian is the packet's
+APPEARANCE; its matter is the rest volume (the v1 diagnosis, taken literally). Contact is the
+lens where two rest volumes intersect, double-occupied at strain 1: `U = (B/2)·V_lens(d)`,
+`F = (πB/8)(4R²−d²)` for equal packets — stiffness `k = πBR/2`, **linear in B**.
+MEASURED, all against pre-registered gates: closed-form lens = 1D-quadrature referee to
+**1e-11–1e-9** (equal AND unequal spheres); force conservative to **2.5e-10**; onset exact and
+continuous (F(2R) = 0 identically). **THE SEAM:** settlement under theHuman's published 668.7 N
+is **1.2 nm per pair** (v1: 3.2 mm — six orders of magnitude); even the whole body on ONE pair
+penetrates **0.37 µm**. The witnessed 0.000 mm seam, reproduced from density + cited B alone.
+**THE PATHOLOGY INVERTED:** 10× B → exactly h/10 (v1 moved 6.3% for the same 10×). DECLARED
+SCOPE: DEM-style linear overlap contact (uniform unit strain in the lens); Hertzian half-space
+redistribution (F ∝ h^1.5) is a named unbuilt refinement. v1's tails carry no contact force —
+superseded, not summed. Both records stand in one test file; the supersession check
+(`v1 3.2 mm > 1 mm > v2 1.2 nm`) goes red if either model drifts from its verdict.
+
 ## THE GATE (all of it)
 
 ```bash
 python ChimeraEngine/test_optics.py          # 47 checks: closure, referee, controls, lensing chain, bounce
-python ChimeraEngine/test_overlap.py         # 10 checks: overlap machinery + the pinned refutation
+python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
