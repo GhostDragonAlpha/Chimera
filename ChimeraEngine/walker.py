@@ -896,6 +896,8 @@ class StandSimulator:
 
         # Load MuJoCo model
         self.m, self.g = load_body(self.body_path, mujoco)
+        self._mujoco = mujoco
+        self._SynergyDecoder = SynergyDecoder
         if gravity is not None:
             self.m.opt.gravity[2] = -gravity
             self.g = float(-self.m.opt.gravity[2])
@@ -950,7 +952,7 @@ class StandSimulator:
 
         for k in range(total_steps):
             if k % ctrl_every == 0:
-                obs, self.prev_obs_state = SynergyDecoder.obs_from_mujoco(
+                obs, self.prev_obs_state = self._SynergyDecoder.obs_from_mujoco(
                     self.d, self.m, self.tgt, prev=self.prev_obs_state)
                 u = self.decoder.decode(obs)
                 np.clip(u, 0.0, 1.0, out=u)
@@ -1008,8 +1010,11 @@ class StandSimulator:
         The MuJoCo model's geoms are mapped to splats so the viewer can render
         the body in the SAME pipeline as the terrain splats.
         """
-        import mujoco
         m, d = self.m, self.d
+        mujoco = self._mujoco
+        import sys as _sys
+        _sys.path.insert(0, str(_STORY))
+        from matter import blank, SOLID
         geoms = []
         for gi in range(m.ngeom):
             g = m.geom(gi)
