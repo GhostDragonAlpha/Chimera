@@ -191,3 +191,37 @@ coverage 9/18 cells (50%)   QD-score 72.0
 - **assumption:** The player assumes they are supposed to examine or interact with this massive shell to trigger a narrative event or discover hidden rewards.
 - **violation:** ON_INTERACT_SHELL triggers 'Captive Burst' mechanic, instantly releasing stored toxic spores that apply 'Asphyxiation' to all players within radius and convert AErisaidActor into a stationary turret that fires based on player proximity, replacing the expected narrative reward with an immediate area-denial combat encounter.
 - **why it works:** Players must rapidly pivot from passive exploration to tactical positioning, mastering kiting and cover usage while mitigating area denial. This transforms a static interaction into an emergent combat loop that rewards spatial awareness and adaptive strategy.
+
+## Run (fast judge) - 4 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     8/10      .  
+coupling         .       8/10     6/10
+delay            .        .        .  
+scarcity         .        .        .  
+agency           .        .        .  
+identity         .        .        .  
+
+coverage 4/18 cells (22%)   QD-score 29.0
+```
+
+### FFootstepAudioTelemetry  (8/10)  `inversion|scope1`
+- **assumption:** The game's enemies (or environment) can actively detect and track you by your footstep sounds, making audio awareness a core gameplay mechanic.
+- **violation:** Footstep audio telemetry is inverted—the louder your footsteps, the more precisely enemies can predict your path, but whisper-quiet movement triggers a "stealth overcompensation" AI behavior where enemies actively sweep toward you out of suspicion, forcing players to occasionally make deliberate noise to appear non-threatening.
+- **why it works:** The inversion of "quiet is safe" into "quiet is suspicious" forces players to abandon their ingrained stealth model and master a new strategic layer where deliberate noise becomes a tool. It rewards mastery through emergent decision-making rather than punishing the player arbitrarily.
+
+### UCostlessLifeEndingDiagnostic  (7/10)  `inversion|scope0`
+- **assumption:** This is a debug/test mode that lets you freely trigger death states to test game systems without any penalty or resource cost.
+- **violation:** Each triggered death state permanently deducts 10% from your total accumulated currency across all playthroughs, with no refund option — the "diagnostic" is costless only for the test instance, not your actual progress.
+- **why it works:** The rule directly inverts the player's assumption of costless isolation into permanent cross-playthrough penalty, forcing a new mental model where even diagnostic tools carry real stakes. It rewards cautious mastery rather than mere frustration.
+
+### UCostlessLifeEndingDiagnostic  (6/10)  `coupling|scope2`
+- **assumption:** This is a debug/test mode that lets you freely trigger death states to test game systems without any penalty or resource cost.
+- **violation:** Every life-ending trigger in diagnostic mode writes a hidden flag that degrades the difficulty scaling of the next normal-game run by increasing enemy HP and reducing player drop rates by 15% per activation.
+- **why it works:** Hidden flags that silently degrade future runs are frustrating rather than rewarding mastery — players can't meaningfully strategize around an invisible penalty they don't know exists. The cognitive friction feels like a trap, not an insight.
+
+### TitanRunTrack  (8/10)  `coupling|scope1`
+- **assumption:** Players will assume they must sprint or roll through each corridor in sequence, expecting gravity to flip at the boundary and needing to orient their movement accordingly as a continuous forward progression.
+- **violation:** Gravity does not flip at corridor boundaries; instead, it flips on a 3-second countdown timer that is independent of position, and the UI shows an inverted hourglass icon when a flip is imminent — players who time their sprints to hallway transitions will fall mid-stride into walls or ceilings.
+- **why it works:** It replaces a spatial mental model with a temporal one, creating deep timing-based mastery that rewards pattern recognition and anticipation. The UI cue (inverted hourglass) gives players the tools to adapt rather than leaving them feeling cheated.
