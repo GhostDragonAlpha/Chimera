@@ -9,7 +9,7 @@
 >
 > **FALSIFIER (named before the sweep).** Expansions R² drops below 0.9 on the full 35-row set.
 >
-> **RESULT: did not fire. R² = 0.9917, n = 35** — and this is the *second* time it did not fire.
+> **RESULT: did not fire. R² = 0.9945, n = 35** — and this is the *third* time it did not fire.
 > The first fit was made while LOD was flattening every membrane's splat size, so it measured a
 > world where splat size did not vary. That is fixed; the model was refitted on honest data and
 > **got more robust** (§5a). §3 and §5 are where this document argues against itself.
@@ -27,7 +27,9 @@ A **tile expansion** is one `(splat, tile)` pair. `_build_tiles_gpu` computes ea
 screen footprint and emits one pair per tile it touches:
 
 ```
-n_x = ⌈(px + 1.5r)/32⌉ − ⌊(px − 1.5r)/32⌋       expansions_for_this_splat = n_x · n_y
+n_x = ⌈(px + FOOTPRINT·r)/32⌉ − ⌊(px − FOOTPRINT·r)/32⌋    expansions_for_this_splat = n_x · n_y
+
+                       FOOTPRINT = 1.2390, derived in §8 (was a hand-written 1.5)
 ```
 
 Summed over visible splats, that is the frame's expansion count. It is already computed on the
@@ -41,25 +43,28 @@ visible splats into 804,771 expansions (99 tiles each); `aTerrain` at 5× zoom d
 ## 2. The equation
 
 ```
-render_ms ≈ 3.8342e-05 × expansions + 22.053            n = 35, R² = 0.9917
+render_ms ≈ 3.1526e-05 × expansions + 14.049            n = 35, R² = 0.9945
 ```
 
 Coefficients live in `ChimeraEngine/perf_guard.py` as `MS_PER_EXPANSION` and `FIXED_MS`, and the
 frame budget is the equation **inverted**, never a chosen number:
 
 ```python
-MAX_EXPANSIONS_PER_FRAME = expansions_for_ms(MAX_RENDER_MS)   # (200 − 22.053) / 3.8342e-05
+MAX_EXPANSIONS_PER_FRAME = expansions_for_ms(MAX_RENDER_MS)   # (200 − 14.049) / 3.1526e-05
 ```
 
 | frame-time wall | derived cap | rows firing (of 35) |
 |---|---:|---:|
-| 200 ms (5 fps) — **declared** | 4,641,046 | 1 |
-| 33 ms (30 fps) | 293,333 | 9 |
-| 16.7 ms (60 fps) | **0** | 35 |
+| 200 ms (5 fps) — **declared** | 5,898,337 | 1 |
+| 33 ms (30 fps) | 610,638 | — |
+| 16.7 ms (60 fps) | 84,089 | — |
 
-That last row is a finding, not a formatting accident: **the measured fixed floor exceeds a 60 fps
-frame**, so 60 fps at 1920×1080 is unreachable by any scene here, empty ones included. It is a
-statement about the pipeline, not about any membrane.
+**60 fps became arithmetically expressible during this work.** On the previous sweep the 16.7 ms
+cap came out at literally **0** — the fitted floor exceeded a 60 fps frame, so no scene could reach
+it. It is now 84,089. Do not read that as an 8 ms speedup: an empty frame has zero expansions, so
+nothing in §7 or §8 could have moved the floor. The measured empty-frame cost read 9.4–9.8 ms then
+and 7.7–7.9 ms now, and the difference is what else the shared 4090 was doing. **Quote the floor as
+a range, and never read a change in it as a change in the renderer.**
 
 > **The one lever.** To make the guard stricter, change `MAX_RENDER_MS`; everything else moves with
 > it. **A derived cap also moves when the world does** — fixing the LOD size flattening changed
@@ -80,6 +85,8 @@ wrong is the one that dominates.** Per-stage timing, medians of 3, syncs between
 | aBlueWorld 0.25× | 553,530 | 6.4 ms (22%) | **17.0 ms (59%)** |
 | theZero @ d=1.0 | 100,000 | 6.2 ms (17%) | **27.4 ms (73%)** |
 | theZero @ d=2.8e-6 | 8,160,000 | 15.0 ms (72%) | **1.6 ms (8%)** |
+
+*(measured before §8; the stage ratios hold, the absolute numbers are ~10% lower now)*
 
 **Binning and sorting are 6–35% of the frame.** The compositor is 59–90%, and it does not walk
 expansions — it walks *pixels*, and per pixel walks that pixel's tile list:
@@ -113,7 +120,7 @@ and costs **17× more** to composite. Expansions are wrong by ~1000× there.
 ## 4. The practical rule
 
 **To speed up a slow scene, shrink the largest splats. Reducing grain count may do nothing.**
-`theMining` at 0.25× costs 57 ms with 9,000 grains; `aBlueWorld` costs 47 ms with 43,000.
+`theMining` at 0.25× costs 37 ms with 9,000 grains; `aBlueWorld` at 0.5× costs 36 ms with 43,000.
 
 ```bash
 python ChimeraEngine/benchmark_pipeline.py --audit
@@ -138,23 +145,25 @@ it changes nothing (0 splats over 2× mean). It is a lens, not a fix.
 
 ## 5. What is wrong with this model
 
-**(a) One point carries the R², and this is the second sweep where that is true.**
+**(a) One point carries the R², and this is the third sweep where that is true.**
 Drop `aTerrain @ 0.25×` (7.95M expansions, 324 ms):
 
 | | full (n=35) | outlier removed (n=34) |
 |---|---:|---:|
-| expansions | 0.9917 | **0.8971** |
-| coverage | 0.1568 | 0.4624 |
-| grain count | 0.4940 | **0.0848** |
+| expansions | 0.9945 | **0.8707** |
+| coverage | 0.1409 | 0.4907 |
+| grain count | 0.4930 | **0.0934** |
 
-Quote **0.90** for an ordinary scene, not 0.99. The *ranking* is not inflated — expansions win by
+Quote **0.87** for an ordinary scene, not 0.99. The *ranking* is not inflated — expansions win by
 ≥0.43 either way, and grain count collapsing to 0.085 shows its apparent 0.49 was that same single
 point. **The refit is the interesting part:** on the old flattened-size data the outlier-free R²
 was 0.8293; on honest data it is 0.8971. The model was not living off the flattening.
 
-**(b) The fitted intercept is not the real floor.** Two rows render nothing (`aSaltOcean` and
-`aSteppeBiomes` at 0.25× — camera inside the shell, 0 visible splats) and cost **9.4–9.8 ms**. That
-is the true fixed cost. The fitted 22.1 ms is a line bending toward the outlier.
+**(b) The fitted intercept is not the real floor, and the floor is not a constant.** Two rows
+render nothing (`aSaltOcean` and `aSteppeBiomes` at 0.25× — camera inside the shell, 0 visible
+splats). They cost **7.7–7.9 ms** this sweep and **9.4–9.8 ms** the previous one, with zero
+expansions in both — that 1.8 ms is contention, not code. The fitted 14.0 ms is a line bending
+toward the outlier.
 
 **(c) It is calibrated on bursts and the live viewer is slower.** The benchmark times 3 frames
 after 2 warm-ups. Under the viewer's sustained loop the same work runs **1.7–4.9× slower** than
@@ -174,14 +183,14 @@ evicts far splats in an overfull tile — a visual defect with no cost signature
 
 | model | R² (n=35) | R² without outlier | verdict |
 |---|---:|---:|---|
-| **tile expansions** | **0.9917** | **0.8971** | in use — `MAX_EXPANSIONS_PER_FRAME` |
-| grain count (`n_lod`) | 0.4940 | 0.0848 | **superseded.** `MAX_GRAINS_PER_FRAME = 250,000` |
-| visible grain count | 0.4489 | — | never shipped |
-| expansions per splat | 0.2962 | — | a *diagnostic*, not a predictor of total cost |
-| pixel coverage | 0.1568 | 0.4624 | **refuted** as the dominant driver |
+| **tile expansions** | **0.9945** | **0.8707** | in use — `MAX_EXPANSIONS_PER_FRAME` |
+| grain count (`n_lod`) | 0.4930 | 0.0934 | **superseded.** `MAX_GRAINS_PER_FRAME = 250,000` |
+| visible grain count | 0.4446 | — | never shipped |
+| expansions per splat | 0.2953 | — | a *diagnostic*, not a predictor of total cost |
+| pixel coverage | 0.1409 | 0.4907 | **refuted** as the dominant driver |
 
-Correlation against `render_ms`: expansions **0.996** · n_lod 0.703 · n_vis 0.670 ·
-expansions/splat 0.544 · coverage 0.396.
+Correlation against `render_ms`: expansions **0.997** · n_lod 0.702 · n_vis 0.667 ·
+expansions/splat 0.543 · coverage 0.375.
 
 **The per-class grain budgets rank the classes wrongly, and honest sizes made it worse: 7 of 7
 classes now misrank** (it was 5 of 7 on flattened data). `terrain` holds the largest allowance
@@ -233,3 +242,54 @@ the LOD path.
 > **The lesson for the cost model:** it was fitted on a world where splat size was constant, which
 > is the one condition under which "count the pairs" and "count the grains" are hardest to tell
 > apart. It survived being refitted on a world where size varies by 23× within a single membrane.
+
+## 8. The binner was expanding 21% further than the compositor can use
+
+**Derived, not swept. Fixed 2026-08-04. `gpu_pipeline.FOOTPRINT`.**
+
+`_inv_radii` sets `rad = 3.0·√eig_max` — **3σ** on the major axis. The binner expanded each splat's
+tile footprint to `1.5·rad` = **4.5σ**. But `_composite` drops a splat the moment its Gaussian
+weight falls under 0.001:
+
+```
+wgt = exp(−0.5·ge) < 0.001   ⟹   ge > −2·ln(0.001) = 13.8155   ⟹   3.7169 σ
+```
+
+So every `(splat, tile)` pair between 3.717σ and 4.5σ was binned, sorted, and walked per pixel —
+then discarded by a test it could never pass. The required multiplier is `3.7169/3 = 1.2390`, and
+the constant is written as that derivation so it tracks if either input changes:
+
+```python
+WGT_CUTOFF   = 0.001                                  # _composite's own threshold
+_SIGMA_REACH = math.sqrt(-2.0 * math.log(WGT_CUTOFF)) # 3.7169
+_RAD_IN_SIGMA = 3.0                                   # _inv_radii: rad = 3*sqrt(eig)
+FOOTPRINT = _SIGMA_REACH / _RAD_IN_SIGMA              # 1.2390  (was a hand-written 1.5)
+```
+
+**The falsifier was bit-identity, and it did not fire.** If 3.717σ is the true reach, the discarded
+pairs contribute nothing and every frame must be unchanged. Measured across **all 47 terms: worst
+pixel difference 0.** At the boundary a splat contributes `opacity × 0.001` — under 0.25 of a
+0–255 step, below quantisation.
+
+**Measured, interleaved A/B in one process** (variants alternated so contention drift hits both):
+
+| scene | expansions | render_ms | fps |
+|---|---:|---:|---|
+| aTerrain 0.25× | −9.2% | −9.7% | 3.9 → 4.3 |
+| theRockyPlanet 0.25× | −20.3% | −8.8% | 18.8 → 20.6 |
+| theMining 0.25× | −12.8% | −10.5% | 23.9 → 26.7 |
+| aBlueWorld 0.50× | −25.5% | −7.3% | 25.6 → 27.6 |
+| aHuman 0.25× | −26.0% | −7.4% | 46.4 → 50.2 |
+| aYellowStar 1.00× | −28.6% | −14.2% | 13.3 → 15.5 |
+
+Across all 47 terms at default framing: **−18.1% expansions, −6.5% median frame time.** The sign is
+consistent on every scene, which is what separates it from the ±13% noise floor — noise flips sign.
+
+**Why 18% and not the 31.8% the area ratio predicts:** `(1.5/1.239)² = 1.466` is the *asymptote*,
+true only for splats spanning many tiles. A splat covering 1–4 tiles is dominated by the `⌈⌉`
+quantisation and the `+1`, and shrinking its radius changes nothing. The saving scales with how
+large the splats already are — which is the same thing the whole cost model has been saying.
+
+**Also found:** `_sort_tiles` (gpu_pipeline.py:438) is dead code — never called since the CuPy
+binner sorts on device. And the `ge > 20.0` test in `_composite` is unreachable: `wgt < 0.001`
+fires first, at ge = 13.82.

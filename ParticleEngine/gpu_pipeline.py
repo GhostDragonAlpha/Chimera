@@ -47,6 +47,30 @@ TILE_SIZE = 32
 # assuming which kind you have: if the splats in the hot tile are LARGE, it is this; if they are
 # small and thousands are centred inside one tile, it is the emit.
 MAX_PER_TILE = 16384
+
+# ── HOW FAR A SPLAT REACHES, DERIVED FROM THE COMPOSITOR'S OWN CUTOFF ────────────────────────────
+# The binner expanded every splat to `1.5 * rad` and nobody had checked that against the number the
+# compositor actually uses. `_inv_radii` sets `rad = 3.0 * sqrt(eig_max)`, so 1.5*rad is 4.5 SIGMA.
+# `_composite` drops a splat when its Gaussian weight falls under 0.001:
+#
+#     wgt = exp(-0.5 * ge) < 0.001   =>   ge > -2*ln(0.001) = 13.8155   =>   3.7169 SIGMA
+#
+# So every pair between 3.7169 and 4.5 sigma was binned, sorted, and walked per pixel, and then
+# thrown away by a test it could never pass. Area ratio (4.5/3.7169)^2 = 1.466, i.e. 31.8% of the
+# expansions on any splat large enough to span tiles.
+#
+# THIS IS A DERIVATION, NOT A TUNING, and it is written as one: change the cutoff or change how
+# `_inv_radii` defines rad, and this tracks. A typed 1.239 would be the same number with the
+# reasoning deleted, and the next person to touch either constant would silently break it.
+#
+# IT IS ALSO INVISIBLE BY CONSTRUCTION. At the boundary a splat contributes `opacity * 0.001`,
+# which is under 0.25 of a 0-255 channel step -- below quantisation even at full opacity. The
+# claim was checked rather than argued: all 47 terms render BIT-IDENTICAL frames after the change.
+WGT_CUTOFF = 0.001                                       # `_composite`: `if wgt < 0.001: continue`
+_SIGMA_REACH = math.sqrt(-2.0 * math.log(WGT_CUTOFF))    # 3.7169 sigma
+_RAD_IN_SIGMA = 3.0                                      # `_inv_radii`: rad = 3.0 * sqrt(eig_max)
+FOOTPRINT = _SIGMA_REACH / _RAD_IN_SIGMA                 # 1.2390 (was a hand-written 1.5)
+
 PX, PY, PZ = 0, 1, 2
 VX, VY, VZ = 3, 4, 5
 AX, AY, AZ = 6, 7, 8
@@ -548,7 +572,7 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     srad = np.nan_to_num(srad, nan=0.0, posinf=float(span), neginf=0.0)
     sx = np.nan_to_num(sx, nan=-1e9, posinf=1e9, neginf=-1e9)
     sy = np.nan_to_num(sy, nan=-1e9, posinf=1e9, neginf=-1e9)
-    r = np.clip((srad * 1.5), 0.0, float(span)).astype(np.int64) + 1   # compositor's 1.5*rad reach
+    r = np.clip((srad * FOOTPRINT), 0.0, float(span)).astype(np.int64) + 1   # the reach the compositor can use
     px = np.clip(sx, -float(span), float(span)).astype(np.int64)
     py = np.clip(sy, -float(span), float(span)).astype(np.int64)
     tx0 = np.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = np.clip((px + r) // tile_sz, 0, tiles_x - 1)
@@ -592,7 +616,7 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     srad = cp.nan_to_num(srad, nan=0.0, posinf=float(span), neginf=0.0)
     sx = cp.nan_to_num(sx, nan=-1e9, posinf=1e9, neginf=-1e9)
     sy = cp.nan_to_num(sy, nan=-1e9, posinf=1e9, neginf=-1e9)
-    r = cp.clip(srad * 1.5, 0.0, float(span)).astype(cp.int64) + 1
+    r = cp.clip(srad * FOOTPRINT, 0.0, float(span)).astype(cp.int64) + 1
     px = cp.clip(sx, -float(span), float(span)).astype(cp.int64)
     py = cp.clip(sy, -float(span), float(span)).astype(cp.int64)
     tx0 = cp.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = cp.clip((px + r) // tile_sz, 0, tiles_x - 1)
