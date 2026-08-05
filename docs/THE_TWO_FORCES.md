@@ -511,6 +511,46 @@ genuinely small. The asymptotic ceiling 2/(9π) = 0.0707 is a small-amplitude fo
 slip; the exact loop gives 0.189 near it, so the ceiling is labelled an order of magnitude rather
 than a limit.
 
+### Stage 16 — Specular-to-specular bounce chains — **BUILT, PASSED — no new pass needed**
+Stage 6's one-bounce gather was diffuse-receive only and named specular chains unbuilt. They need
+**no new render pass at all**, for the reason that justifies this lane's whole framing:
+
+**A SPECULAR LOBE IS A GAUSSIAN, AND GAUSSIANS ADD VARIANCES.** So an N-bounce chain is not N
+passes — it collapses to **one** Gaussian lobe: `s_chain = √(Σsᵢ²)` (variances add) and
+`F_chain = ΠFᵢ(θ)` (Fresnel multiplies). Those are exactly the two numbers
+`story/matter.paint_specular` already takes, so **a chain renders through the Stage 1 kernel
+unchanged** — one more reader of one field, again. Verified against a 400,000-ray Monte Carlo, with
+a control proving the test can distinguish the right law from the wrong one (summing standard
+deviations instead of variances lands 36% wide).
+
+**THE MONTE CARLO FOUND A REAL OMISSION IN MY MODEL.** The first version carried one lobe width and
+read 2.4% low — not noise, at 400k rays. Resolving the spread along and across the incidence plane
+showed why: **the mirror gain is 2 in the plane of incidence and 2·cos θ out of it**, so a rough
+mirror's lobe is an *ellipse*, not a disc. Measured 0.07% and 0.10% against those two laws. This is
+the foreshortening that makes a grazing reflection on water **smear into a long streak** instead of
+a round highlight — a real phenomenon the single-width model could not have produced.
+
+**THE CHAIN DEPTH IS DERIVED FROM THE OUTPUT FORMAT.** The compositor writes uint8, so nothing under
+half a channel step (1/510) can move a pixel by more than one LSB; energy decays as the Fresnel
+product, so `n_max(θ) = ⌊ln(1/510)/ln F(θ)⌋`. For water that is a strong statement: **n_max = 1 at
+normal incidence** — a second specular bounce off water is invisible — and **n_max = 6 at 80°**.
+Specular chains are a *grazing-angle phenomenon*, derived, which is exactly where people see them.
+Same discipline as `gpu_pipeline.FOOTPRINT`, derived from the compositor's own weight cutoff.
+
+**PROVEN IN A FRAME, and an overclaim corrected.** One bounce shows (25,134 subpixels), two bounces
+are a visibly distinct term (24,582 differ from one), and a three-bounce water chain **cannot move
+any channel by more than 1 LSB** — 83 of 921,600 subpixels (0.01%) shift at all. My first version
+asserted **bit-identity** there and failed: a sub-step contribution still flips the rounding of any
+channel already sitting within it of an integer boundary. The derivation bounds the error to one
+LSB; it never promised zero, and the test now says so.
+
+**NAMED UNBUILT — one a real physical omission, not a scope choice.** **Polarization**: successive
+specular bounces polarize the beam and real Fresnel differs for s- and p-polarization, so a long
+chain's energy is not truly the product of unpolarized coefficients (Schlick's unpolarized form is
+used throughout). **Curved-mirror focusing**: composition assumes lobes stay narrow and the geometry
+does not converge — a concave specular surface focuses, which is Stage 5's caustic machinery pointed
+at reflection rather than refraction.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -523,6 +563,7 @@ python ChimeraEngine/test_rolling.py         # 13 checks: contact torque, rollin
 python ChimeraEngine/test_hysteresis.py      # 17 checks: Mindlin microslip, the cubic law, the Stage 12 correction
 python ChimeraEngine/test_viscoelastic.py    # 13 checks: Zener damping, the peak rolling speed, the decomposition
 python ChimeraEngine/test_anelastic.py       # 13 checks: the cancellation, Q ~ 100, the two signatures
+python ChimeraEngine/test_chains.py          # 16 checks: lobe composition, the anisotropy, the derived depth
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
