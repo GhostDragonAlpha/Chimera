@@ -78,7 +78,7 @@ def foot_contact(m, d, mujoco):
 
 
 def score_theta(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, seeds=1, frames=0,
-                score_mode="sub", entrained=False, cadence=False, stand_class=None):
+                score_mode="sub", entrained=False, cadence=False, stand_class=None, w0=None):
     """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
     worst one. Returns `(score, trace, pics, per_seed_scores)`.
 
@@ -94,25 +94,26 @@ def score_theta(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, seeds=1,
     if seeds <= 1:
         s, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
                                frames=frames, score_mode=score_mode, entrained=entrained,
-                               cadence=cadence, seed=0, stand_class=stand_class)
+                               cadence=cadence, seed=0, stand_class=stand_class, w0=w0)
         return s, tr, pics, [s]
     runs = [evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
                      score_mode=score_mode, entrained=entrained, cadence=cadence, seed=i,
-                     stand_class=stand_class)
+                     stand_class=stand_class, w0=w0)
             for i in range(seeds)]
     scores = [r[0] for r in runs]
     w = int(np.argmin(scores))
     if frames:
         _, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
                                frames=frames, score_mode=score_mode, entrained=entrained,
-                               cadence=cadence, seed=w, stand_class=stand_class)
+                               cadence=cadence, seed=w, stand_class=stand_class, w0=w0)
     else:
         tr, pics = runs[w][1], runs[w][2]
     return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
 def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
-             score_mode="sub", entrained=False, cadence=False, seed=0, stand_class=None):
+             score_mode="sub", entrained=False, cadence=False, seed=0, stand_class=None,
+             w0=None):
     """One life under a candidate. Returns (score, trace, pics).
 
     `cadence=True` multiplies `walk_port.cadence_factor` into the multiplicative score -- the
@@ -159,12 +160,23 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
     # stand policy needs its rates here exactly as it needs them in `f3_stand` -- same class,
     # same window, same omega_0, same cadence. `stand_class=None` builds nothing and the loop
     # below takes the path it always took.
+    #
+    # omega_0 ARRIVES AS A PARAMETER AND IS NOT DERIVED HERE. The first version of this line
+    # called `derive_stand_port()` per rollout -- and that function LOADS THE WHOLE MUJOCO MODEL
+    # to read the simulated body's mass, so a 24x30x3 training run paid for ~2,700 model builds
+    # and printed 247 kB of `[world]` lines announcing every one. Caught by reading the log's
+    # SIZE, which is the only thing that looked wrong. Every other harness in this lane derives
+    # its port ONCE at startup and holds it; this now matches them, explicitly rather than
+    # through a hidden memo.
     observer = None
     if stand_class is not None:
         import policy_classes as _PC
-        from stand_port import derive_stand_port as _dsp
-        observer = _PC.Observer(P["OUT pelvis_target_m"], _PC.omega0(_dsp()),
-                                stand_class.window, ctrl_dt)
+        if w0 is None:
+            raise ValueError(
+                "a stand_class needs omega_0, and this function will not derive it per rollout "
+                "(that cost ~2,700 MuJoCo model builds per run). Compute it once with "
+                "`policy_classes.omega0(derive_stand_port())` and pass it in.")
+        observer = _PC.Observer(P["OUT pelvis_target_m"], w0, stand_class.window, ctrl_dt)
     # THE TRAINER DRIVES WHAT THE JUDGE DRIVES: the clock phase (omega*t), exactly as f4's
     # parser path does -- no entrainment state, no swing gate, because the judge has neither.
     # The entrained WalkOscillator + interlock trained here for one session and was never
@@ -360,8 +372,16 @@ def main() -> int:
     if init:
         mu = np.load(init); sd = 0.5 * sd
         print(f"warm start from {init}")
+    # omega_0 IS DERIVED ONCE PER PROCESS, HERE, and threaded down. `derive_stand_port()` reads
+    # the published numbers AND loads the whole MuJoCo model to get the simulated body's mass, so
+    # calling it per rollout cost ~2,700 model builds in a 24x30x3 run. Every other harness in
+    # this lane derives its port once at startup; this matches them.
+    w0 = None
     if stand_class is not None:
+        import policy_classes as _PCM
+        from stand_port import derive_stand_port as _dsp
         stand_class.decode_theta(theta_stand, m.nu)   # against the MODEL's nu, never a division
+        w0 = _PCM.omega0(_dsp())
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     hist, best_ever = [], (-np.inf, mu.copy())
@@ -382,7 +402,7 @@ def main() -> int:
         ladder = (1.0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5)
         inc = score_theta(m, d, mujoco, theta_stand, mu, groups, P, secs, seeds=seeds,
                           score_mode=score_mode, entrained=entrained, cadence=cadence,
-                          stand_class=stand_class)[0]
+                          stand_class=stand_class, w0=w0)[0]
         print(f"  DERIVING THE STEP from this policy's own landscape (criterion: >= "
               f"{elite}/{pop} = {elite/pop:.2f} of samples must beat the incumbent {inc:.4f})")
         chosen, rows = None, []
@@ -395,7 +415,7 @@ def main() -> int:
                     c[N_FREE:] = np.clip(c[N_FREE:], 0.0, None)
                 if score_theta(m, d, mujoco, theta_stand, c, groups, P, secs, seeds=seeds,
                                score_mode=score_mode, entrained=entrained, cadence=cadence,
-                               stand_class=stand_class)[0] > inc:
+                               stand_class=stand_class, w0=w0)[0] > inc:
                     hits += 1
             rows.append((s, hits / pop))
             if chosen is None and hits / pop >= elite / pop:
@@ -453,7 +473,7 @@ def main() -> int:
         scores = np.array([score_theta(m, d, mujoco, theta_stand, c, groups, P, secs,
                                        seeds=seeds, score_mode=score_mode,
                                        entrained=entrained, cadence=cadence,
-                                       stand_class=stand_class)[0]
+                                       stand_class=stand_class, w0=w0)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
@@ -468,7 +488,7 @@ def main() -> int:
         if elite_guard:
             em = score_theta(m, d, mujoco, theta_stand, el_mean, groups, P, secs, seeds=seeds,
                              score_mode=score_mode, entrained=entrained, cadence=cadence,
-                             stand_class=stand_class)[0]
+                             stand_class=stand_class, w0=w0)[0]
             mu = el_mean if em > scores[0] else mu
         else:
             mu = el_mean
@@ -476,7 +496,7 @@ def main() -> int:
         s, tr, pics, per_seed = score_theta(m, d, mujoco, theta_stand, cand[order[0]], groups,
                                             P, secs, seeds=seeds, frames=6,
                                             score_mode=score_mode, entrained=entrained,
-                                            cadence=cadence, stand_class=stand_class)
+                                            cadence=cadence, stand_class=stand_class, w0=w0)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]

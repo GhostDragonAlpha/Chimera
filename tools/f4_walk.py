@@ -118,9 +118,12 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     observer = None
     if stand_class is not None:
         import policy_classes as _PC
-        from stand_port import derive_stand_port as _dsp
-        observer = _PC.Observer(tgt, _PC.omega0(_dsp()), stand_class.window,
-                                CTRL_EVERY * m.opt.timestep)
+        if w0 is None:
+            raise ValueError(
+                "a stand_class needs omega_0 and this function will not derive it per rollout: "
+                "`derive_stand_port()` loads the whole MuJoCo model to read the simulated body's "
+                "mass. Compute it once in `run()` and pass it in.")
+        observer = _PC.Observer(tgt, w0, stand_class.window, CTRL_EVERY * m.opt.timestep)
     _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
     from walk_port import WalkOscillator                                  # noqa: E402
     osc = WalkOscillator(P["OUT omega_rad_s"],

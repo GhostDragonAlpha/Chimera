@@ -62,7 +62,18 @@ WARM_A0_SD = 0.5 * 0.15
 WARM_GAIN_SD = 0.5 * 0.6
 # The decades either side of it. Powers of ten, so the curve spans the question rather than
 # sampling near an answer somebody hoped for.
-SCALES = (0.0, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 1e-1, 3e-1, 1.0)
+#
+# EXTENDED DOWN TO 1e-6 ON 2026-08-04, and the extension is a measurement, not a tuning. Task 10
+# asked whether rate feedback WIDENS the basin; the PD policy returned 0% at every rung including
+# the smallest, so the honest report was "below 1e-4" -- a bound, not a number. This file's own
+# rule is that a value off the end of a measured curve is not a measurement, so the curve was
+# lengthened until the answer is inside it. The grid stays powers of ten and nothing about it is
+# selected for an outcome.
+#
+# THE LARGEST QUALIFYING RUNG IS THE ANSWER, so adding rungs BELOW cannot change a result that
+# already qualified above them: `p_only` reaches 58.3% at 1e-4 on both grids and its basin is
+# 1e-4 either way. The extension can only resolve arms that were pinned at the old floor.
+SCALES = (0.0, 1e-6, 3e-6, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 1e-1, 3e-1, 1.0)
 
 
 def main() -> int:
