@@ -73,6 +73,10 @@ class LiveViewer:
         self._walk_in = {"fwd": 0.0, "strafe": 0.0, "sprint": False,
                          "jump": False, "crouch": False, "mx": 0.0, "my": 0.0}
         self._walk_dirty = True
+        # MUJOCO STAND SIM MODE. `_sim` is a walker.StandSimulator once /sim is asked for; it
+        # runs the real MuJoCo body under the trained stand policy instead of the story Walker.
+        self._sim = None
+        self._sim_theta = None
         self._view = "first"              # 'first' = through the eyes; 'third' = watching the body
         self._last_input = 0.0     # wall-time of the last drag/zoom -> drives the moving-vs-settled LOD
         self._clients = 0                                          # active /stream connections
@@ -155,6 +159,26 @@ class LiveViewer:
                         self._ticks += 1
                 if frozen:
                     time.sleep(0.05); continue
+                if self._sim is not None:
+                    # ── THE MUJOCO STAND SIM -- the real body, standing under its policy. ──────
+                    # The StandSimulator owns the physics; the viewer's only job is to step it at
+                    # a fixed cadence and render the body + a flat ground as splats.
+                    import walker as _wk
+                    st = self._sim.step(1)
+                    ground = np.ascontiguousarray(
+                        _wk.scene_around(self._ground_walker) if getattr(self, "_ground_walker", None)
+                        else self._sim_floor(), dtype=np.float32)
+                    body = self._sim.body_splats()
+                    pipe.upload(np.ascontiguousarray(
+                        np.concatenate([ground, body], axis=0), dtype=np.float32))
+                    # a fixed third-person camera: 3 m out, chest-high, aimed at the pelvis
+                    cam.position = np.array([1.5, -2.6, 0.85], dtype=np.float32)
+                    cam.yaw = math.atan2(2.6, 1.5)   # look toward -Y/0.0
+                    cam.pitch = -0.05
+                    self._sim_state = st
+                    self._publish(pipe.render_from_gpu(cam, params_hi))
+                    time.sleep(max(0.0, 1 / 60 - (time.time() - now)))
+                    continue
                 if self._walk is not None:
                     # ── STANDING IN IT -- through THE STATE MACHINE (controller.py). The keys map
                     # onto named states (walk, sidestep, steer, jump), and the states drive the
@@ -549,6 +573,31 @@ class LiveViewer:
         ax, ay = getattr(self, "_walk_anchor", (1e18, 1e18))
         return math.hypot(self._walk.x - ax, self._walk.y - ay)
 
+    def _sim_floor(self):
+        """A flat, featureless floor for the MuJoCo sim to stand on -- the myobody model has no
+        terrain, and rendering it against the story's carved ground would show a body standing in
+        the air. 61x61 grains at 0.15 m spacing covers a 9 m x 9 m pad under the body."""
+        import numpy as _np
+        import walker as _wk
+        v = _np.arange(-4.5, 4.51, 0.15)
+        XX, YY = _np.meshgrid(v, v)
+        X, Y = XX.ravel(), YY.ravel()
+        n = len(X)
+        import sys as _sys
+        _sys.path.insert(0, str(_wk._STORY))
+        from matter import blank, lit, SOLID
+        b = blank(n)
+        b[:, 0], b[:, 1], b[:, 2] = X, Y, _np.full(n, 0.0)
+        b[:, 21], b[:, 22], b[:, 23] = 0.0, 0.0, 1.0     # up normal
+        alb = _np.array([0.34, 0.31, 0.27], _np.float32)
+        sun = _np.array([0.3, 0.0, 0.95], _np.float32)
+        lam = _np.clip(b[:, 21:24] @ sun, 0.0, None)
+        b[:, 16:19] = lit(alb, 1.0 * lam + 0.15, e_ref=1.0, tone=0.45)
+        b[:, 19] = 1.0
+        b[:, 20] = 0.22          # grains close enough to read as a floor
+        b[:, 11] = SOLID
+        return np.ascontiguousarray(b, dtype=_np.float32)
+
     # ── read/control surface (called from HTTP threads) ──
     def frame(self) -> bytes:
         with self._lock:
@@ -713,6 +762,34 @@ def handle(handler) -> bool:
             import traceback; traceback.print_exc()
             r = {"walking": False, "error": str(e)}
         _send(handler, 200, "application/json", _json.dumps(r).encode()); return True
+    if path == "/sim":
+        # MUJOCO STAND SIM. `on=1` enters sim mode (the real MuJoCo body under the trained stand
+        # policy); `on=0` leaves it. `theta` optionally points at a different theta .npy.
+        import json as _json
+        on = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
+        try:
+            if not on:
+                v = get_viewer()
+                with v._lock:
+                    v._sim = None
+                _send(handler, 200, "application/json", _json.dumps({"sim": False}).encode())
+                return True
+            import walker as _wk
+            theta = qs.get("theta") or [None]
+            theta_path = theta[0] if theta[0] else None
+            sim = _wk.StandSimulator(theta_path=theta_path)
+            v = get_viewer()
+            with v._lock:
+                v._sim = sim
+                v._sim_theta = theta_path
+            _send(handler, 200, "application/json",
+                  _json.dumps({"sim": True, "nu": sim.nu, "g": round(sim.g, 3),
+                               "pd": sim.is_pd, "theta": theta_path}).encode())
+        except Exception as e:
+            import traceback; traceback.print_exc()
+            _send(handler, 200, "application/json",
+                  _json.dumps({"sim": False, "error": str(e)}).encode())
+        return True
     if path == "/walk":
         import json as _json
         r = get_viewer().walk_input(

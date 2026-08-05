@@ -1018,18 +1018,24 @@ class StandSimulator:
         geoms = []
         for gi in range(m.ngeom):
             g = m.geom(gi)
+            gtype = int(g.type)
+            if gtype == 0:
+                continue                    # skip the ground plane -- it is not part of the body
             pos = d.geom_xpos[gi]
             rot = d.geom_xmat[gi].reshape(3, 3)
-            # geom size -> radius (use the largest dimension)
+            # geom size -> radius (use the largest dimension of the box/capsule cross-section)
             size = m.geom_size[gi]
-            radius = float(np.max(size))
-            # geom type: 0=plane, 1=hull, 2=triangle, 3=sphere, 4=capsule, 5=cylinder, 6=cone, 7=arrow, 8=torus, 9=curve, 10=composite
-            gtype = int(g.type)
+            # for capsule/cylinder the size is (radius, half-length); a splat wants a surface
+            # radius, so use the first two components (the cross-section) not the long axis
+            radius = float(np.max(size[:2])) if gtype in (4, 5, 6) else float(np.max(size))
             # color from geom rgba
             rgba = m.geom_rgba[gi]
             # normal: geom's local Z axis in world frame
             normal = rot @ np.array([0, 0, 1], dtype=np.float64)
             geoms.append((pos.copy(), rgba, radius, gtype, normal))
+            # soft cap: bodies are ~290 bones; keep the buffer from exploding on huge models
+            if len(geoms) > 2048:
+                break
 
         n = len(geoms)
         if n == 0:
