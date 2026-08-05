@@ -78,7 +78,7 @@ def foot_contact(m, d, mujoco):
 
 
 def score_theta(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, seeds=1, frames=0,
-                score_mode="sub", entrained=False, cadence=False):
+                score_mode="sub", entrained=False, cadence=False, stand_class=None):
     """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
     worst one. Returns `(score, trace, pics, per_seed_scores)`.
 
@@ -94,24 +94,25 @@ def score_theta(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, seeds=1,
     if seeds <= 1:
         s, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
                                frames=frames, score_mode=score_mode, entrained=entrained,
-                               cadence=cadence, seed=0)
+                               cadence=cadence, seed=0, stand_class=stand_class)
         return s, tr, pics, [s]
     runs = [evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
-                     score_mode=score_mode, entrained=entrained, cadence=cadence, seed=i)
+                     score_mode=score_mode, entrained=entrained, cadence=cadence, seed=i,
+                     stand_class=stand_class)
             for i in range(seeds)]
     scores = [r[0] for r in runs]
     w = int(np.argmin(scores))
     if frames:
         _, tr, pics = evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs,
                                frames=frames, score_mode=score_mode, entrained=entrained,
-                               cadence=cadence, seed=w)
+                               cadence=cadence, seed=w, stand_class=stand_class)
     else:
         tr, pics = runs[w][1], runs[w][2]
     return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
 def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, gain=1.0,
-             score_mode="sub", entrained=False, cadence=False, seed=0):
+             score_mode="sub", entrained=False, cadence=False, seed=0, stand_class=None):
     """One life under a candidate. Returns (score, trace, pics).
 
     `cadence=True` multiplies `walk_port.cadence_factor` into the multiplicative score -- the
@@ -154,6 +155,16 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
                          kappa=float(theta_walk[7]) if theta_walk.size > 7 else 4.0) \
         if entrained else None
     ctrl_dt = CTRL_EVERY * m.opt.timestep
+    # THE SUBSTRATE'S OBSERVER (2026-08-04, task 7). Walking is composed over standing, so a PD
+    # stand policy needs its rates here exactly as it needs them in `f3_stand` -- same class,
+    # same window, same omega_0, same cadence. `stand_class=None` builds nothing and the loop
+    # below takes the path it always took.
+    observer = None
+    if stand_class is not None:
+        import policy_classes as _PC
+        from stand_port import derive_stand_port as _dsp
+        observer = _PC.Observer(P["OUT pelvis_target_m"], _PC.omega0(_dsp()),
+                                stand_class.window, ctrl_dt)
     # THE TRAINER DRIVES WHAT THE JUDGE DRIVES: the clock phase (omega*t), exactly as f4's
     # parser path does -- no entrainment state, no swing gate, because the judge has neither.
     # The entrained WalkOscillator + interlock trained here for one session and was never
@@ -166,6 +177,10 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            chan = None
+            if observer is not None:
+                observer.push(z, pitch, roll)
+                chan = observer.channels()
             if osc is not None:
                 # THE FEET ARE READ BEFORE THE PHASE IS ADVANCED. That order is the whole point
                 # of entrainment: the phase is corrected by what the sensors say NOW, so reading
@@ -175,10 +190,12 @@ def evaluate(m, d, mujoco, theta_stand, theta_walk, groups, P, secs, frames=0, g
                 gate = {s: osc.swing_allowed(s, _cr, _cl) for s in ("r", "l")}
                 d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
                                          0.0, nu, tgt, gain=gain, roll=roll,
-                                         phases=ph, swing_gate=gate)
+                                         phases=ph, swing_gate=gate,
+                                         stand_class=stand_class, chan=chan)
             else:
                 d.ctrl[:] = walk_formula(theta_stand, theta_walk, groups, z, pitch,
-                                         omega * d.time, nu, tgt, gain=gain, roll=roll)
+                                         omega * d.time, nu, tgt, gain=gain, roll=roll,
+                                         stand_class=stand_class, chan=chan)
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
@@ -300,10 +317,25 @@ def main() -> int:
             "Refusing to invent a constant (rule 1).")
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
-    if not STAND_THETA.exists():
-        raise SystemExit(f"no {STAND_THETA} -- run `python tools/train_stand.py` first. Walking is "
+    # THE SUBSTRATE IS A PARAMETER (2026-08-04, task 7). Walking is composed over standing, so
+    # when the stand port's policy class changes the walk inherits it -- and a trainer that can
+    # only load ONE substrate can only train ONE composition. Absent, this is exactly what it
+    # was: the incumbent's 4-block theta through the inline formula.
+    import policy_classes as PCM
+    stand_path = Path(a[a.index("--stand") + 1]) if "--stand" in a else STAND_THETA
+    if not stand_path.is_absolute():
+        stand_path = OUTDIR / stand_path.name
+    stand_class_name = a[a.index("--stand-class") + 1] if "--stand-class" in a else None
+    stand_class = PCM.get(stand_class_name) if stand_class_name else None
+    # THE SEARCH REPAIRS, both OFF by default so every arm already run stays a valid control --
+    # the sequence `--blocks`, `--joints` and train_stand's own `--elite-guard`/`--derive-step`
+    # all followed. They become the default when they are PROVEN here, not when they are written.
+    elite_guard = "--elite-guard" in a
+    derive_step_flag = "--derive-step" in a
+    if not stand_path.exists():
+        raise SystemExit(f"no {stand_path} -- run `python tools/train_stand.py` first. Walking is "
                          f"composed over standing; refusing to compose over nothing (rule 20).")
-    theta_stand = np.load(STAND_THETA)
+    theta_stand = np.load(stand_path)
     P = derive_walk_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
@@ -328,9 +360,56 @@ def main() -> int:
     if init:
         mu = np.load(init); sd = 0.5 * sd
         print(f"warm start from {init}")
+    if stand_class is not None:
+        stand_class.decode_theta(theta_stand, m.nu)   # against the MODEL's nu, never a division
     elite = max(3, pop // 5)
     rng = np.random.default_rng(0)
     hist, best_ever = [], (-np.inf, mu.copy())
+    # THE DERIVED STEP, generalised from `train_stand.derive_step`: measure the step THIS
+    # policy's own landscape supports instead of halving a cold spread that describes a space
+    # the incumbent does not live in. The ladder is powers of ten, the criterion is the search's
+    # OWN elite fraction, and the sample count is the search's own population -- nothing chosen.
+    # `1e-3` absolute is the historical spread floor; on the derived path it becomes the same
+    # thousandth OF THE SPREAD ACTUALLY USED, because an absolute floor swamps a derived step
+    # (measured 133x on the stand port).
+    sd_floor = 1e-3
+    step_report = None
+    if derive_step_flag:
+        if not init:
+            raise SystemExit("--derive-step needs --init: it measures the basin around a KNOWN "
+                             "policy and a cold search has no incumbent to measure around. "
+                             "Refusing to measure a landscape with no centre (rule 20).")
+        ladder = (1.0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5)
+        inc = score_theta(m, d, mujoco, theta_stand, mu, groups, P, secs, seeds=seeds,
+                          score_mode=score_mode, entrained=entrained, cadence=cadence,
+                          stand_class=stand_class)[0]
+        print(f"  DERIVING THE STEP from this policy's own landscape (criterion: >= "
+              f"{elite}/{pop} = {elite/pop:.2f} of samples must beat the incumbent {inc:.4f})")
+        chosen, rows = None, []
+        for s in ladder:
+            hits = 0
+            for _ in range(pop):
+                c = mu + rng.normal(0.0, 1.0, size=mu.shape) * sd * s
+                c[:nj] = np.clip(c[:nj], 0.0, 1.0)
+                if entrained:
+                    c[N_FREE:] = np.clip(c[N_FREE:], 0.0, None)
+                if score_theta(m, d, mujoco, theta_stand, c, groups, P, secs, seeds=seeds,
+                               score_mode=score_mode, entrained=entrained, cadence=cadence,
+                               stand_class=stand_class)[0] > inc:
+                    hits += 1
+            rows.append((s, hits / pop))
+            if chosen is None and hits / pop >= elite / pop:
+                chosen = s
+            print(f"     x{s:<8g} {100*hits/pop:>5.0f}% beat the incumbent"
+                  + ("   <- CHOSEN" if s == chosen and chosen is not None
+                     and rows[-1][0] == chosen else ""))
+        if chosen is None:
+            print("     NO RUNG MET THE CRITERION -- the smallest tried is used and this line "
+                  "is the refusal.")
+        sd = sd * (chosen if chosen is not None else ladder[-1])
+        sd_floor = 1e-3 * sd.copy()
+        step_report = dict(incumbent=float(inc), ladder=rows, chosen=chosen,
+                           refused=chosen is None)
 
     print(f"\nTRAINING THE WALK PORT -- {n_free} free numbers "
           f"(omega {P['OUT omega_rad_s']:.4f} rad/s and the antiphase are DERIVED, not searched)")
@@ -345,6 +424,14 @@ def main() -> int:
           f"  ({100*P['CHK froude_target']/P['CHK froude_transition_lit']:.0f}% -- a walk)")
     print(f"  target {P['OUT target_speed_ms']:.4f} m/s, stride {P['OUT stride_s']:.4f} s, "
           f"duty {P['OUT duty_factor']:.4f}, g {g:.4f}, stand theta FROZEN ({theta_stand.size} numbers)")
+    print(f"  SUBSTRATE: {stand_path.name} "
+          + (f"[{stand_class_name}: {', '.join(stand_class.channels)}"
+             f"{', a0' if stand_class.has_a0 else ', NO a0'}, window {stand_class.window}]"
+             if stand_class is not None else
+             "[p_only -- the incumbent's own inline formula, unchanged]"))
+    print(f"  SEARCH REPAIRS: elite-mean guard "
+          + ("ON" if elite_guard else "off")
+          + ", derived step " + ("ON" if derive_step_flag else "off"))
     print(f"  SCORING: WORST of {seeds} randomized start(s)"
           + ("  (seeds=1 -- the old single-rollout behaviour, reproduced exactly)" if seeds <= 1
              else f"  (nudge {NUDGE:g} on qpos; seed 0 unperturbed)"))
@@ -365,15 +452,31 @@ def main() -> int:
                                                                        # pushes toward IN-phase
         scores = np.array([score_theta(m, d, mujoco, theta_stand, c, groups, P, secs,
                                        seeds=seeds, score_mode=score_mode,
-                                       entrained=entrained, cadence=cadence)[0]
+                                       entrained=entrained, cadence=cadence,
+                                       stand_class=stand_class)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
-        mu, sd = el.mean(0), el.std(0) + 1e-3
+        # THE ELITE-MEAN GUARD, generalised from train_stand: CEM's centre may not move DOWNHILL.
+        # `cand[0] = mu` guarantees the best policy cannot be LOST; it does NOT guarantee the
+        # search can still FIND anything, and those are different properties. When mu is the best
+        # point and every sample is worse, the elite is {mu, three worse samples} and el.mean(0)
+        # drags the centre three-quarters of the way toward the worse ones. `scores[0]` IS the
+        # incumbent's score, because cand[0] = mu -- read, never re-run. `sd` comes from the
+        # elite either way: the spread is a different quantity from the centre.
+        el_mean = el.mean(0)
+        if elite_guard:
+            em = score_theta(m, d, mujoco, theta_stand, el_mean, groups, P, secs, seeds=seeds,
+                             score_mode=score_mode, entrained=entrained, cadence=cadence,
+                             stand_class=stand_class)[0]
+            mu = el_mean if em > scores[0] else mu
+        else:
+            mu = el_mean
+        sd = el.std(0) + sd_floor
         s, tr, pics, per_seed = score_theta(m, d, mujoco, theta_stand, cand[order[0]], groups,
                                             P, secs, seeds=seeds, frames=6,
                                             score_mode=score_mode, entrained=entrained,
-                                            cadence=cadence)
+                                            cadence=cadence, stand_class=stand_class)
         held = tr["t"][-1] if tr["t"] else 0.0
         pct = 100.0 * tr["speed"] / P["OUT target_speed_ms"]
         ok = pct >= 75.0 and tr["periodicity"] >= 0.60 and not tr["fell"]

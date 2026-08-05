@@ -414,8 +414,20 @@ class WalkOscillator:
 
 
 def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain=1.0,
-                 phases=None, swing_gate=None, roll=0.0):
+                 phases=None, swing_gate=None, roll=0.0, stand_class=None, chan=None):
     """THE BUTTON'S CONTENT: the stand formula, plus one oscillator, and nothing else.
+
+    `stand_class` / `chan` (2026-08-04, task 7): the STAND SUBSTRATE AS A PARAMETER. Walking is
+    composed over standing, so when the stand port's policy class changes the walk must inherit
+    it -- and the composition is the only thing that may change. Given a
+    `policy_classes.PolicyClass` and its channel dict, the base becomes `stand_class.control(...)`
+    and the oscillator below is untouched, so a P-only walk and a PD walk differ in the substrate
+    and in NOTHING ELSE.
+
+    ABSENT, THIS FUNCTION IS BIT-IDENTICAL TO WHAT IT WAS. The inline path below is the original
+    arithmetic, unedited, so every arm already judged remains a valid control -- the same
+    discipline `--blocks 3` and `--joints retired` follow. `tools/walk_pd_ab.py --selftest`
+    MEASURES that identity against `policy_classes.get("p_only")` rather than asserting it here.
 
     `theta_walk` = [A_hip, A_knee, A_ankle, ph_hip, ph_knee, ph_ankle] -- amplitudes and
     intra-limb phase offsets. These are the ONLY free numbers. omega and the L/R antiphase are
@@ -430,6 +442,16 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
     condition, never the final position. The oscillator supplies effort; where the limb ends up
     is an OUTPUT, decided by the body, the ground and gravity.
     """
+    if stand_class is not None:
+        if chan is None:
+            raise ValueError(
+                "walk_formula got a stand_class and no channels. The class says WHICH scalars "
+                "the substrate feeds back; without them there is nothing to feed. Refusing to "
+                "substitute zeros -- that is exactly the defect this parameter exists to end "
+                "(f4_walk supplied no `roll` and silently multiplied 290 of the frozen stand "
+                "policy's numbers by zero for every arm it ever judged).")
+        return _oscillate(stand_class.control(theta_stand, nu, chan), theta_walk, groups, gain,
+                          phase, phases, swing_gate)
     u = np.clip(theta_stand[:nu] + theta_stand[nu:2 * nu] * (tgt - z)
                 + theta_stand[2 * nu:3 * nu] * pitch
                 # THE STAND PORT GAINED A ROLL BLOCK (2026-08-04, parser.py + train_stand.py):
@@ -441,6 +463,21 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
                 # learned. A 3-block theta still works: kr is then zeros.
                 + (theta_stand[3 * nu:4 * nu] * roll if theta_stand.size >= 4 * nu else 0.0),
                 0.0, 1.0)
+    return _oscillate(u, theta_walk, groups, gain, phase, phases, swing_gate)
+
+
+def _oscillate(u, theta_walk, groups, gain, phase, phases, swing_gate):
+    """THE RHYTHM, applied to whatever postural command arrives -- the walk's entire difference
+    from standing, in one place.
+
+    EXTRACTED 2026-08-04, when the stand substrate became a parameter, and extracted rather than
+    copied for the reason this project keeps paying for: two copies of a formula agree until one
+    is edited (`CTRL_EVERY` in three files, the retired joints factor in two). The P-only walk
+    and the PD walk must differ in the SUBSTRATE and in nothing else, which is only true if they
+    reach the identical oscillator -- this function, not a second one that looks like it.
+
+    The arithmetic below is unedited.
+    """
     amps, offs = theta_walk[:len(OSC_JOINTS)], theta_walk[len(OSC_JOINTS):2 * len(OSC_JOINTS)]
     # `phases` is the WalkOscillator's live per-leg phase, entrained by the feet. If it is
     # absent this falls back to the open-loop clock -- kept ONLY so the measured failure above
@@ -465,7 +502,7 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
     return u
 
 
-def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0):
+def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0, stand_class=None):
     """MOVE, AS A PARSER FORMULA REGISTRATION -- the shape `tools/parser.py` expects.
 
     `tools/parser.py` registers MOVE as a named Refusal: "no trained formula -- its atoms are
@@ -481,10 +518,24 @@ def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0):
     applied here, in the one place that owns it. A caller cannot hand this formula a cadence.
     """
     def fn(obs, value):
+        # `roll` IS NOT OPTIONAL ANY MORE, and the change is a repair with a number on it.
+        # `tools/walk_roll_probe.py`, 2026-08-04: this line read `obs.get("roll", 0.0)` while
+        # `f4_walk` built its obs as {z, pitch, t}, so 290 of the frozen stand policy's 1160
+        # numbers were multiplied by ZERO at judgment while `train_walk` trained against them.
+        # MEASURED on walk_theta_entrained over held-out seeds 3-9: travel 0.3495 -> 0.4603 m/s,
+        # a 32% difference in the exact quantity falsifier 1 is written about. A default of 0.0
+        # is a fallback, and a fallback is an assumption wearing a hat -- so the formula now
+        # REFUSES an obs with no lean in it rather than inventing an upright body.
+        if "roll" not in obs:
+            raise KeyError(
+                "MOVE's obs carries no `roll`. The stand substrate feeds the frontal lean back "
+                "(parser.stand_formula_fn's kr block, 290 numbers) and a missing key used to "
+                "default to 0.0 -- which judged every walk arm on a policy it was not trained "
+                "with. Supply roll, or state a class whose channels do not include it.")
         return walk_formula(theta_stand, theta_walk, groups, obs["z"], obs["pitch"],
                             P["OUT omega_rad_s"] * obs["t"], nu, tgt, gain=gain * float(value),
                             phases=obs.get("phases"), swing_gate=obs.get("swing_gate"),
-                            roll=obs.get("roll", 0.0))
+                            roll=obs["roll"], stand_class=stand_class, chan=obs.get("chan"))
     return fn
 
 

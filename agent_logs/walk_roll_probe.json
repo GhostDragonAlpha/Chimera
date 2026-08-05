@@ -1,0 +1,78 @@
+{
+ "secs": 6.0,
+ "held_out_seeds": [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "g": 7.076122169232295,
+ "stand_theta_numbers": 1160,
+ "nu": 290,
+ "identical": false,
+ "rows": [
+  {
+   "theta": "walk_theta_entrained.npy",
+   "feed_roll": false,
+   "entrained": true,
+   "speed": 0.34945173423580844,
+   "periodicity": 0.19874593621537393,
+   "period_s": 1.74,
+   "held": 2.06,
+   "z_min": 0.4215703220327303
+  },
+  {
+   "theta": "walk_theta_entrained.npy",
+   "feed_roll": true,
+   "entrained": true,
+   "speed": 0.4602774587335348,
+   "periodicity": 0.17251595825837643,
+   "period_s": 1.9000000000000001,
+   "held": 2.2,
+   "z_min": 0.4121414007082003
+  },
+  {
+   "theta": "walk_theta_entrained2.npy",
+   "feed_roll": false,
+   "entrained": true,
+   "speed": 0.556160705542113,
+   "periodicity": 0.3851332877648668,
+   "period_s": 0.2,
+   "held": 1.52,
+   "z_min": 0.44419643058412844
+  },
+  {
+   "theta": "walk_theta_entrained2.npy",
+   "feed_roll": true,
+   "entrained": true,
+   "speed": 0.5689965638992142,
+   "periodicity": 0.41176470588235314,
+   "period_s": 0.22,
+   "held": 1.52,
+   "z_min": 0.41963965138668974
+  },
+  {
+   "theta": "walk_theta_mult.npy",
+   "feed_roll": false,
+   "entrained": false,
+   "speed": 0.5312289091826903,
+   "periodicity": 0.0,
+   "period_s": 0.0,
+   "held": 1.62,
+   "z_min": 0.4014482013659781
+  },
+  {
+   "theta": "walk_theta_mult.npy",
+   "feed_roll": true,
+   "entrained": false,
+   "speed": 0.5276116025583896,
+   "periodicity": 0.0,
+   "period_s": 0.0,
+   "held": 1.62,
+   "z_min": 0.44304235177131673
+  }
+ ]
+}

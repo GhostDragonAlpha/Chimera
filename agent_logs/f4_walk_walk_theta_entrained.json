@@ -1,0 +1,61 @@
+{
+ "theta": "walk_theta_entrained.npy",
+ "entrained": true,
+ "seeds": 4,
+ "nudge": 1e-06,
+ "g": 7.076122169232295,
+ "target_speed_ms": 0.9923704920281614,
+ "stride_s": 1.1730185106589321,
+ "speed_median": 0.4601402217242538,
+ "speed_min": 0.46002628434445264,
+ "speed_max": 0.4604734913354086,
+ "speed_per_seed": [
+  0.46006499408775303,
+  0.4604734913354086,
+  0.46021544936075454,
+  0.46002628434445264
+ ],
+ "periodicity_median": 0.16658498316979609,
+ "periodicity_min": 0.16658498316979609,
+ "periodicity_per_seed": [
+  0.16658498316979609,
+  0.16658498316979609,
+  0.17251595825837643,
+  0.16658498316979609
+ ],
+ "footfall_interval_median_s": 0.0,
+ "footfall_interval_per_seed": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "cadence_floor_s": 0.35190555319767963,
+ "cadence_factor_median": 0.0,
+ "period_s_median": 1.9000000000000001,
+ "z_min_median": 0.4075115666156318,
+ "z_min_min": 0.40678729285448734,
+ "held_median": 2.2,
+ "held_min": 2.2,
+ "ablation_median": 0.005493419265622209,
+ "ablation_per_seed": [
+  0.006200941485172576,
+  0.04093213628345746,
+  0.0047858970460718415,
+  0.0025462043875645827
+ ],
+ "duty_r_median": 0.7747747747747747,
+ "duty_l_median": 0.7027027027027027,
+ "seeds_passing": {
+  "travel": 0,
+  "cycle": 0,
+  "upright": 0,
+  "ablation": 4
+ },
+ "median_seed": 0,
+ "verdict": false,
+ "verdict_travel": false,
+ "verdict_cycle": false,
+ "verdict_upright": false,
+ "verdict_ablation": true
+}

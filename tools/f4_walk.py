@@ -73,7 +73,7 @@ SEEDS = 10                    # the headline is the median of these
 
 
 def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0,
-            entrained=False, seed=0):
+            entrained=False, seed=0, stand_class=None):
     """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path.
 
     `seed = 0` is the UNPERTURBED control; every other seed nudges qpos by `NUDGE` after the
@@ -92,7 +92,7 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     reg = default_registry(theta_stand, tgt, nu)
     # MOVE was a named Refusal ("no trained formula -- its atoms are M3"). This is the formula.
     reg["MOVE"] = Formula("MOVE", move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P,
-                                                  gain=gain), EXCLUSIVE)
+                                                  gain=gain, stand_class=stand_class), EXCLUSIVE)
     PARSER = Parser(reg)
     PARSER.set_verb("MOVE", True)
 
@@ -115,6 +115,12 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
     tr = {k: [] for k in ("t", "x", "z", "cr", "cl", "sup", "jf", "jn", "all",
                           "comx", "comy", "polx", "poly")}
     pics, fell_t, x0, driver = [], None, float(d.qpos[0]), None
+    observer = None
+    if stand_class is not None:
+        import policy_classes as _PC
+        from stand_port import derive_stand_port as _dsp
+        observer = _PC.Observer(tgt, _PC.omega0(_dsp()), stand_class.window,
+                                CTRL_EVERY * m.opt.timestep)
     _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
     from walk_port import WalkOscillator                                  # noqa: E402
     osc = WalkOscillator(P["OUT omega_rad_s"],
@@ -127,7 +133,24 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
             q = d.qpos[3:7]
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            obs = {"z": z, "pitch": pitch, "t": float(d.time)}
+            # ROLL WAS MISSING FROM THIS DICT, and `move_formula_fn` read `obs.get("roll", 0.0)`.
+            # So this judge multiplied 290 of the frozen stand policy's 1160 numbers by ZERO for
+            # every walk arm it ever graded, while `train_walk.evaluate` computed roll and
+            # trained against it. MEASURED before the repair (tools/walk_roll_probe.py, held-out
+            # seeds 3-9 on walk_theta_entrained): travel 0.3495 -> 0.4603 m/s, +32% on the exact
+            # quantity falsifier 1 reads. The walk port's LEDGER already records this species
+            # once -- the trainer drove an entrained oscillator the judge did not run -- and this
+            # is the same defect in a second place. The formula now REFUSES an obs with no lean
+            # in it, so it cannot recur silently.
+            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
+                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
+            obs = {"z": z, "pitch": pitch, "roll": roll, "t": float(d.time)}
+            if observer is not None:
+                # THE SUBSTRATE'S OWN SENSE OF ITS STATE. A PD stand policy needs rates, and a
+                # rate needs a past; the observer is the judge's, at the judge's cadence, so the
+                # trained substrate is driven here exactly as it was trained.
+                observer.push(z, pitch, roll)
+                obs["chan"] = observer.channels()
             if osc is not None:
                 # THE ENTRAINED PLANT, SUPPLIED THROUGH THE PARSER'S OBS -- not around it. The
                 # formula reads `obs.get("phases")` and `obs.get("swing_gate")`; it already did,
@@ -210,8 +233,23 @@ def run() -> int:
         _wt = OUTDIR / _wt.name
     if not _wt.exists():
         raise SystemExit(f"no {_wt} -- refusing to judge a walk that was never trained (rule 20).")
-    theta_stand, theta_walk = np.load(STAND_THETA), np.load(_wt)
-    print(f"\n  judging: {_wt.name}")
+    # --stand / --stand-class NAME THE SUBSTRATE. Walking is composed over standing, so when the
+    # stand port's policy class changes the walk inherits it -- and a judge that can only load
+    # ONE substrate can only judge ONE composition. `p_only` is the incumbent's own form, so the
+    # default path is what this file has always run (tools/walk_pd_ab.py --selftest measures it).
+    import policy_classes as _PC
+    _st = Path(sys.argv[sys.argv.index("--stand") + 1]) if "--stand" in sys.argv else STAND_THETA
+    if not _st.is_absolute():
+        _st = OUTDIR / _st.name
+    if not _st.exists():
+        raise SystemExit(f"no {_st} -- refusing to compose a walk over a stand that does not "
+                         f"exist (rule 20).")
+    _sc_name = (sys.argv[sys.argv.index("--stand-class") + 1] if "--stand-class" in sys.argv
+                else None)
+    stand_class = _PC.get(_sc_name) if _sc_name else None
+    theta_stand, theta_walk = np.load(_st), np.load(_wt)
+    print(f"\n  judging: {_wt.name}   over stand {_st.name}"
+          + (f" [{_sc_name}]" if _sc_name else " [p_only -- the incumbent's own form]"))
     P, S = derive_walk_port(), derive_stand_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
@@ -219,15 +257,28 @@ def run() -> int:
     tgt, nu = S["OUT pelvis_target_m"], m.nu
     vt = P["OUT target_speed_ms"]
 
+    # THE SUBSTRATE'S SHAPE, CHECKED AGAINST THE MODEL'S OWN nu (never against a block count
+    # divided out of the file -- `parser.check_theta_shape`'s rule, and the substitution that
+    # left `parser_tests` falsifier 1 silently dead for several commits).
+    if stand_class is not None:
+        stand_class.decode_theta(theta_stand, nu)
+
     entrained = "--entrained" in sys.argv or theta_walk.size == N_FREE + 2
     nseeds = int(sys.argv[sys.argv.index("--seeds") + 1]) if "--seeds" in sys.argv else SEEDS
+    # --held-out JUDGES ON SEEDS 3..9 ONLY. `docs/LOCOMOTION_OBJECTIVE_DIAGNOSIS.md` section 6:
+    # the trainer selects on 0-2 and the train/test gap on the stand is +0.88 s, so a comparison
+    # reporting all-ten medians ranks the arm that overfits its three training seeds best. The
+    # default stays 0..9 so every number this file has already published remains reproducible.
+    seed_ids = ([s for s in range(nseeds) if s not in (0, 1, 2)] if "--held-out" in sys.argv
+                else list(range(nseeds)))
+    nseeds = len(seed_ids)
 
-    # TEN SEEDS FOR BOTH ARMS, THE SAME TEN. The ablation is the walk's control, and a control
+    # THE SAME SEEDS FOR BOTH ARMS. The ablation is the walk's control, and a control
     # run from a different initial condition than the thing it controls is not a control.
     lives = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0,
-                     entrained=entrained, seed=s) for s in range(nseeds)]
+                     entrained=entrained, seed=s, stand_class=stand_class) for s in seed_ids]
     abls = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
-                    entrained=entrained, seed=s) for s in range(nseeds)]
+                    entrained=entrained, seed=s, stand_class=stand_class) for s in seed_ids]
 
     def med(rows, key):
         return float(np.median([r[key] for r in rows]))
@@ -239,7 +290,7 @@ def run() -> int:
     med_per = float(np.median(per_all))
     rep_i = int(np.argmin(np.abs(per_all - med_per)))
     live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
-                   entrained=entrained, seed=lives[rep_i]["seed"])
+                   entrained=entrained, seed=lives[rep_i]["seed"], stand_class=stand_class)
     abl = abls[rep_i]
 
     spd_all = np.array([r["speed"] for r in lives])
@@ -395,9 +446,16 @@ def run() -> int:
     import json
     LOGDIR = ROOT / "agent_logs"
     LOGDIR.mkdir(parents=True, exist_ok=True)
-    _out = LOGDIR / f"f4_walk_{_wt.stem}.json"
+    # THE SUBSTRATE IS PART OF THE ARM'S NAME. Two walks over two different stand policies are
+    # two arms, and a file named only after the walk theta would let them overwrite each other --
+    # the exact defect the line above records for three walk arms sharing one filename.
+    _stem = _wt.stem + (f"__{_sc_name}" if _sc_name else "") + ("__heldout" if "--held-out"
+                                                                in sys.argv else "")
+    _out = LOGDIR / f"f4_walk_{_stem}.json"
     _out.write_text(json.dumps(dict(
-        theta=_wt.name, entrained=bool(entrained), seeds=nseeds, nudge=NUDGE, g=g,
+        theta=_wt.name, stand_theta=_st.name, stand_class=_sc_name or "p_only",
+        held_out_only=bool("--held-out" in sys.argv), seed_ids=seed_ids,
+        entrained=bool(entrained), seeds=nseeds, nudge=NUDGE, g=g,
         target_speed_ms=vt, stride_s=P["OUT stride_s"],
         speed_median=med_spd, speed_min=float(spd_all.min()), speed_max=float(spd_all.max()),
         speed_per_seed=[float(v) for v in spd_all],
