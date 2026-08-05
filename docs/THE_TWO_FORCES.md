@@ -349,6 +349,48 @@ of Mindlin + Coulomb rather than being smoothed in. Past the ceiling it slides a
 a foot skidding 1 cm turns **4.71 J** into heat: **the first genuinely irreversible process in this
 contact model** (Stage 10's damping is radiation — transfer, not loss).
 
+### Stage 12 — Rolling resistance and contact torque — **BUILT, PASSED**
+The last place in a contact model where a coefficient normally gets plugged in.
+
+**CONTACT TORQUE is not a new law.** Stage 11's tangential force acts at a lever arm R from the
+centre, so `τ = R·F_t` — the moment of a force already derived, and the whole reason a grain can
+spin rather than merely translate.
+
+**ROLLING RESISTANCE IS THE MOMENT OF A DISSIPATION ALREADY DERIVED.** A rolling sphere loads the
+material at the front of its contact patch and unloads it at the back. Stage 10's radiative damping
+pressure is proportional to the local indentation *rate*, which is antisymmetric across the patch —
+so it adds **no net force and a net moment**:
+`τ_r = ∫ s·(ζ_A·v·s/R) dA = ζ_A·v·πa⁴/(4R)`, with ζ_A = ρc_p the half-space impedance per unit
+area, a from Hertz, and nothing chosen. **Two independent integrals confirm it**: the closed form
+matches quadrature to 1e-6, and the *moment* route's `τ_r·ω` equals the *energy* route's direct
+`∫ζ_A(ḣ)²dA` to 1e-6 — different integrals of the same physics, which is how wrong algebra gets
+caught.
+
+**TWO PREDICTIONS THAT DISAGREE WITH THE TEXTBOOK MODEL, on the record.** Resistance is **viscous**
+— exactly 3× at 3× the speed, and **exactly zero at rest**, where a constant-μᵣ model wrongly
+resists a parked sphere and then needs a stiction hack to hide it. And it stiffens as **N^(4/3)**
+(measured 16.000× at 8× load, against 8^(4/3) = 16.000).
+
+**THE FLAGSHIP: 5/7, and it must not move.** A sphere launched sliding transitions to rolling at
+`v = (5/7)v₀` — a fraction that depends on nothing but the 2/5 in a solid sphere's moment of
+inertia, and that **appears nowhere in the code**. Measured **0.71427–0.71428 against 0.71429** at
+the grown friction, at half that friction, at Earth gravity, and at 64× the mass with 4× the
+radius. Friction, gravity, mass, radius and material all cancel out of it, so one measurement tests
+the lever arm, the Coulomb ceiling, the inertia and the integrator simultaneously.
+
+**A FREE CHECK ON BOTH CITED MODULI.** The solid's longitudinal speed `c_p = √((B+4G/3)/ρ)` comes
+out at **6008 m/s** — quartz's measured value — confirming neither cited constant is wrong. (Stage
+9's √(B/ρ) is the *fluid* speed, correct for water and 3737 m/s here, which is why a solid needs
+the shear term.)
+
+**THE HONEST SCOPE, and it is the useful finding.** μᵣ = 7.8e-07 at 1 m/s — rolling is **~1,000,000×
+cheaper than sliding**, which is why a wheel is worth having, but it is also **orders below any
+handbook μᵣ** (steel-on-steel ~1e-3). That is not hidden and not fitted around: this model contains
+only the **acoustic** term. Real rolling resistance is dominated by **bulk hysteresis**, which needs
+a published loss tangent that **no membrane in this world has** — so the gap *is* the missing
+measurement, named UNBUILT. Plastic rearrangement (theGround's Terzaghi mechanism) is likewise
+absent here.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -357,6 +399,7 @@ python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned 
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction
 python ChimeraEngine/test_hertz.py           # 21 checks: Hertz, the P^(1/6) exponent, Mindlin, tilt table
+python ChimeraEngine/test_rolling.py         # 13 checks: contact torque, rolling resistance, the 5/7 law
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm

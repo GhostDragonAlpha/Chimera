@@ -70,6 +70,22 @@ def shear_contact_modulus(g: float, nu: float) -> float:
     return float(g) / (2.0 * (2.0 - float(nu)))
 
 
+def p_wave_speed(b: float, g: float, rho: float) -> float:
+    """The LONGITUDINAL wave speed of an elastic solid, c_p = sqrt((B + 4G/3)/rho).
+
+    Not the same as Stage 9's sqrt(B/rho): that is the fluid sound speed, correct for water and
+    wrong for a solid, which resists shear as well as compression. With quartz's two cited moduli
+    this returns ~6000 m/s, which is what quartz measures -- a free check on both constants."""
+    return math.sqrt((float(b) + 4.0 * float(g) / 3.0) / float(rho))
+
+
+def radiation_impedance_per_area(b: float, g: float, rho: float) -> float:
+    """rho * c_p -- the impedance a half-space presents PER UNIT AREA of contact. Stage 10's
+    Z = sqrt(km) was the same quantity for a chain; this is its continuum form, and it is what a
+    contact PATCH radiates through."""
+    return float(rho) * p_wave_speed(b, g, rho)
+
+
 def r_eff(r1: float, r2: float = None) -> float:
     r2 = r1 if r2 is None else r2
     return 1.0 / (1.0 / float(r1) + 1.0 / float(r2))
