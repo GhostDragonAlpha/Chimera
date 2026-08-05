@@ -261,12 +261,60 @@ Deliberately *not* claimed: theGround's 0.58 solid fraction is `1 − POROSITY` 
 **declared**, so reading it back as "the random-loose-packing fraction of spheres" would be
 circular, and it is not used as a prediction anywhere.
 
+### Stage 10 — Damping is the medium, not a coefficient. And friction. — **BUILT, PASSED**
+Every contact model in the world carries a damping constant somebody chose. This one does not.
+
+**THE STATEMENT.** A struck grain does not lose energy to a fitted number — it launches a
+compression wave into the material behind it, and that energy never comes back. What a truncated
+simulation calls "damping" is the **impedance of the medium it truncated**:
+`Z = √(km) = √(2/3)·√(Bρ₀)·πR²` — the same computed linear packing fraction that set the wave
+speed in Stage 9, because a chain carrying a rod's stiffness with 2/3 a rod's mass carries √(2/3)
+of a rod's impedance. Both routes agree to float64. A consequence with nothing chosen in it: a
+packet meeting its own medium is **exactly half-critically damped** (ζ = Z/2√(km) = ½).
+
+**TWO INDEPENDENT ROUTES TO Z, both measured.** *Wave route* — a chain terminated at Z must not
+reflect: measured **R = 0.0012** at Z, **0.1122** at both 2Z and 0.5Z (transmission-line theory
+says ((f−1)/(f+1))² = 0.1111), and **0.9988** at a free end (theory 1). Energy books close to
+1.7e-5. *Impact route* — a mass striking a semi-infinite medium decays as `v = v₀e^(−Zt/M)`:
+measured **0.50%** from Z/M at M/m = 100 and **1.27%** at M/m = 40, R² = 1.000000, in a code path
+**containing no damping term at all**. The control confirms the measurement can fail (it sits 101%
+from Z/2 and 50% from 2Z), and the rate is insensitive to the fit window across 2–4 e-foldings.
+
+**THE TOPOLOGY THE CHAIN CORRECTED, kept as a test.** The lumped model was first wired with the
+dashpot **parallel** to the contact spring (Kelvin–Voigt), giving ζ = 0.05 and a lively e = 0.859.
+The radiating chain — which has no damping term to argue with — returned ~0. The chain was right:
+the impactor pushes the contact spring and the spring pushes a medium that radiates, so they act
+**in series** (Maxwell), which inverts the damping ratio to ζ = √(kM)/2Z = 5 — overdamped, and
+**the body lands instead of bouncing**. *A wrong topology has the right units and the right
+constants*; only a model that could disagree found it. Stage 9's undamped contact returned exactly
+1.0; restitution is now ~0.
+
+**FRICTION, labelled honestly.** `μ = tan(φ)` is the *definition* of a friction angle, so this is
+a restatement, not a derivation — what is not trivial is that φ was **grown**: theGround's repose
+angle emerged at **40.03°** from the granular trainer's local stochastic rule, inside the
+researched lunar-regolith band. The consequence is a prediction: the terrain this world grew is
+walkable by the repose angle it grew — aTerrain's p95 slope 33.00° and mean 19.46° sit under
+40.03°, a 1.29× margin at the steepest published slope — and **aTerrain independently publishes
+`slopes_below_repose = true`**. Two routes, one answer. A standing body has 561.7 N of shear
+available against its own 668.7 N of weight.
+
+**THREE MORE INSTRUMENT DEFECTS, each caught by a run and kept as code.** (1) A hand-integrated
+potential had the **sign backwards**, so pulse energy went negative and every ratio blew to −1e8
+— fixed by deriving U from the form that already has a referee. (2) The `imbalance <= tol` check
+**passed vacuously on that negative number**; it now reads `0 <= imbalance <= tol`. (3) A
+pre-compressed chain with free ends **is not in equilibrium** — it relaxed explosively and the
+dashpots absorbed the static release instead of the pulse (R and T both ~3.8e5). A confining end
+clamp equal to the pre-compression's own force fixes it, which is what confining pressure is.
+Also: `slopes_below_repose` belongs to **aTerrain**, not theGround — guessing which membrane owns
+a number is the same error class as matching names instead of definitions.
+
 ## THE GATE (all of it)
 
 ```bash
 python ChimeraEngine/test_optics.py          # 47 checks: closure, referee, controls, lensing chain, bounce
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
+python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm

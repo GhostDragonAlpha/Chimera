@@ -88,6 +88,93 @@ def pair_force_equal(d, r: float, B: float):
     return np.where((d > 0.0) & (d < 2.0 * r), f, 0.0)
 
 
+def pair_pe_equal(d, r: float, B: float):
+    """U(d) = (B/2) V_lens for EQUAL packets, vectorised: pi B (2R-d)^2 (d^2+4Rd) / (24 d).
+
+    IT IS WRITTEN FROM THE REFEREED FORM ON PURPOSE. The first version of this integrated the
+    force by hand and got the SIGN BACKWARDS -- U came out negative, the pulse energy with it, and
+    every energy ratio downstream exploded to -1e8 while an `imbalance <= tol` check passed
+    vacuously on the negative number. Two lessons kept as code: derive the potential from the
+    energy that already has a referee, and never write a tolerance check that a negative value
+    can satisfy."""
+    d = np.asarray(d, dtype=np.float64)
+    safe = np.where(d > 0.0, d, 1.0)
+    u = math.pi * float(B) * (2.0 * r - safe) ** 2 * (safe * safe + 4.0 * r * safe) / (24.0 * safe)
+    return np.where((d > 0.0) & (d < 2.0 * r), u, 0.0)
+
+
+def impactor_decay(n_grains: int, m_imp: float, m: float, B: float, rho0: float, v0: float,
+                   steps_per_period: int = 200, n_efold: float = 3.0):
+    """THE IMPACT ROUTE TO Z, and the cleanest statement damping has here.
+
+    A mass striking a semi-infinite medium decelerates as v(t) = v0 exp(-Z t / M): classical, and
+    it names the impedance directly. This runs an impactor into a chain whose contacts are PURELY
+    ELASTIC -- there is no damping term in this code path at all -- and fits the decay. If the
+    measured rate is Z/M with Z = sqrt(km), the "damping coefficient" was never a free parameter;
+    it is what the medium does.
+
+    The fit window is DERIVED, not chosen: it starts after the contact spring's own transient
+    (5 sqrt(M/k)) and ends before the wave could return from the chain's far end. Returns
+    (rate_measured, rate_predicted, r2, far_grain_speed).
+    """
+    r = rest_radius(m, rho0)
+    a0 = 2.0 * r
+    k = math.pi * float(B) * a0 / 4.0
+    z = math.sqrt(k * m)
+    c = a0 * math.sqrt(k / m)
+    dt = (2.0 * math.pi * math.sqrt(m / k)) / float(steps_per_period)
+    t1 = 5.0 * math.sqrt(m_imp / k)
+    # TWO CEILINGS, both derived: the wave must not have returned from the far end, AND the fit
+    # must not run so deep into the decay that it is fitting numerical dust. At M/m = 40 the
+    # chain-only window was 8 e-foldings -- v had fallen by e^-8 and R^2 dropped to 0.976, which
+    # is the fit reporting on the residue rather than the physics. `n_efold` is a fit-window
+    # resolution, and the test checks the answer is INSENSITIVE to it rather than trusting it.
+    t2 = min(0.80 * (n_grains * a0) / c, t1 + n_efold * m_imp / z)
+    n_steps = int(t2 / dt)
+
+    x = np.arange(n_grains, dtype=np.float64) * a0
+    v = np.zeros(n_grains)
+    xi, vi = -a0, float(v0)
+    ts, vs = [], []
+
+    def forces(xx):
+        fp = pair_force_equal(xx[1:] - xx[:-1], r, B)
+        f = np.zeros(n_grains)
+        f[:-1] -= fp
+        f[1:] += fp
+        return f
+
+    f = forces(x)
+    fc = float(pair_force_equal(np.array([x[0] - xi]), r, B)[0])
+    f[0] += fc
+    fi = -fc
+    for s in range(n_steps):
+        vi += 0.5 * dt * fi / m_imp
+        v += 0.5 * dt * f / m
+        xi += dt * vi
+        x += dt * v
+        f = forces(x)
+        fc = float(pair_force_equal(np.array([x[0] - xi]), r, B)[0])
+        f[0] += fc
+        fi = -fc
+        vi += 0.5 * dt * fi / m_imp
+        v += 0.5 * dt * f / m
+        t = (s + 1) * dt
+        if t1 <= t <= t2 and vi > 0.0:
+            ts.append(t)
+            vs.append(vi)
+
+    if len(ts) < 50:
+        raise RuntimeError(f"only {len(ts)} samples in the derived fit window -- widen the chain, "
+                           f"do not widen the tolerance")
+    ts_a = np.asarray(ts)
+    lv = np.log(np.asarray(vs))
+    slope, icpt = np.polyfit(ts_a, lv, 1)
+    pred = slope * ts_a + icpt
+    r2 = 1.0 - float(np.sum((lv - pred) ** 2)) / max(float(np.sum((lv - lv.mean()) ** 2)), 1e-300)
+    return -slope, z / m_imp, r2, float(abs(v[-1]))
+
+
 def simulate_chain(n_grains: int, m: float, B: float, rho0: float, v_drive: float,
                    steps_per_period: int = 120, cross_margin: float = 1.25,
                    trigger_frac: float = 1e-6):
@@ -278,6 +365,203 @@ def softening_robustness(pressure_Pa: float, influence_depth_m: float, B: float,
     whether a conclusion depends on the linear-vs-Hertz choice. Softening B softens k in exactly
     the same proportion, so this brackets the whole family."""
     return elastic_settlement(pressure_Pa, influence_depth_m, B / float(factor), porosity, r)
+
+
+# ═══ STAGE 10: DAMPING IS NOT A PARAMETER -- IT IS THE MEDIUM ════════════════════════════════════
+# THE STATEMENT. A struck grain does not lose energy to a fitted coefficient; it launches a
+# compression wave into the material behind it and that energy never comes back. What a truncated
+# simulation calls "damping" is the IMPEDANCE of the medium it truncated:
+#
+#     Z = sqrt(k m)          (chain)   =   sqrt(2/3) * sqrt(B rho0) * pi R^2   (continuum)
+#
+# and the two routes agree through the SAME computed linear packing fraction that set the wave
+# speed -- the chain carries a rod's stiffness with 2/3 a rod's mass, so it carries sqrt(2/3) of a
+# rod's impedance. Nothing here is chosen; `test_damping.py` checks the identity rather than
+# trusting it.
+#
+# THE PROOF THAT Z IS THE MEDIUM AND NOT A KNOB is a dyad: run one impact TWICE -- once against an
+# explicit chain with PURELY ELASTIC contacts (no damping term exists anywhere in that run; the
+# energy leaves as sound), and once against a single dashpot Z. If the restitutions agree, the
+# dashpot IS the chain, summarised. That is the only sense in which this model may be said to
+# have damping.
+
+def radiation_impedance(m: float, B: float, rho0: float, d: float = None) -> float:
+    """Z = sqrt(k m) -- the characteristic impedance of a chain of these packets. `d` is the
+    contact separation if the chain is pre-compressed (k = pi B d / 4); defaults to first touch."""
+    r = rest_radius(m, rho0)
+    dd = 2.0 * r if d is None else float(d)
+    k = math.pi * float(B) * dd / 4.0
+    return math.sqrt(k * float(m))
+
+
+def continuum_impedance(m: float, B: float, rho0: float) -> float:
+    """The same impedance by the other route: sqrt(2/3) * (rho0 c) * A for the great circle.
+    Written separately so the agreement is a test, not an assertion."""
+    r = rest_radius(m, rho0)
+    return math.sqrt(LINEAR_PACKING) * math.sqrt(float(B) * float(rho0)) * math.pi * r * r
+
+
+def simulate_reflection(n_grains: int, m: float, B: float, rho0: float, term_factor: float,
+                        pulse_width_grains: float = 12.0, amp_frac: float = 0.05,
+                        precompress_frac: float = 1e-3, steps_per_period: int = 200):
+    """Launch a purely RIGHTWARD long-wavelength pulse and ask what the right-hand terminator
+    reflects. Both ends carry dashpots: the LEFT one at exactly Z (perfect, so returning energy is
+    captured and cannot bounce again), the RIGHT one at term_factor * Z (the thing under test).
+
+    Reflection is then read off the two absorbed totals with no timing window and no threshold:
+        R = E_absorbed_left / E_0      T = E_absorbed_right / E_0      R + T = 1 (checked)
+    Transmission-line theory predicts R = ((f-1)/(f+1))^2 for f = Z_term/Z: 0 at f=1, 1/9 at f=2
+    and at f=1/2, and 1 at f=0 (a free end reflects everything). Returns (R, T, books_error).
+    """
+    r = rest_radius(m, rho0)
+    h0 = float(precompress_frac) * r
+    a0 = 2.0 * r - h0
+    k0 = math.pi * float(B) * a0 / 4.0
+    c = a0 * math.sqrt(k0 / m)
+    z = math.sqrt(k0 * m)
+    z_right = float(term_factor) * z
+    dt = (2.0 * math.pi * math.sqrt(m / k0)) / float(steps_per_period)
+    n_steps = int(3.0 * (n_grains * a0 / c) / dt)
+
+    j = np.arange(n_grains, dtype=np.float64)
+    x0 = j * a0
+    u = amp_frac * h0 * np.exp(-(((j - 0.25 * n_grains) / pulse_width_grains) ** 2))
+    v = -c * np.gradient(u, a0)                        # v = -c du/dx  =>  purely rightward
+    x = x0 + u
+
+    u_ref = float(pair_pe_equal(np.array([a0]), r, B)[0])
+
+    def pair_pe(xx):
+        # relative to the uniform pre-compressed state: the PULSE's own energy, nothing else
+        return float(np.sum(pair_pe_equal(xx[1:] - xx[:-1], r, B) - u_ref))
+
+    def forces(xx):
+        fp = pair_force_equal(xx[1:] - xx[:-1], r, B)
+        f = np.zeros(n_grains)
+        f[:-1] -= fp
+        f[1:] += fp
+        return f
+
+    # THE CONFINING CLAMP, and it is not optional. A pre-compressed chain with FREE ends is not
+    # in equilibrium: grain 0 has a neighbour pushing it outward and nothing pushing back, so the
+    # whole chain relaxes explosively and the dashpots absorb THAT instead of the pulse. (First
+    # run: R and T both ~3.8e5 -- the static release dwarfing the signal by five orders.) A
+    # constant end force equal to the pre-compression's own F(a0) balances the ends exactly, which
+    # is what a confining pressure physically is.
+    f_clamp = float(pair_force_equal(np.array([a0]), r, B)[0])
+
+    def total_forces(xx, vv):
+        f = forces(xx)
+        f[0] += f_clamp - z * vv[0]
+        f[-1] += -f_clamp - z_right * vv[-1]
+        return f
+
+    e0 = 0.5 * m * float(np.sum(v * v)) + pair_pe(x)
+    abs_l = abs_r = 0.0
+    f = total_forces(x, v)
+    for _ in range(n_steps):
+        v += 0.5 * dt * f / m
+        x += dt * v
+        f = total_forces(x, v)
+        v += 0.5 * dt * f / m
+        abs_l += z * v[0] * v[0] * dt
+        abs_r += z_right * v[-1] * v[-1] * dt
+
+    left_over = 0.5 * m * float(np.sum(v * v)) + pair_pe(x)
+    books = abs((abs_l + abs_r + left_over) - e0) / e0
+    return abs_l / e0, abs_r / e0, books
+
+
+def simulate_impact_radiating(n_grains: int, m_imp: float, m: float, B: float, rho0: float,
+                              v0: float, steps_per_period: int = 400):
+    """LEG ONE OF THE DYAD. An impactor strikes a chain whose contacts are PURELY ELASTIC -- there
+    is no damping term anywhere in this function. Restitution below 1 can only come from energy
+    walking away as sound. The chain is long enough that nothing reflects back during contact
+    (checked: the far grain must never move)."""
+    r = rest_radius(m, rho0)
+    a0 = 2.0 * r
+    k = math.pi * float(B) * a0 / 4.0
+    dt = (2.0 * math.pi * math.sqrt(m_imp / k)) / float(steps_per_period)
+    x = np.arange(n_grains, dtype=np.float64) * a0
+    v = np.zeros(n_grains)
+    xi = -a0                                            # impactor, just touching grain 0
+    vi = float(v0)
+
+    def forces(xx):
+        fp = pair_force_equal(xx[1:] - xx[:-1], r, B)
+        f = np.zeros(n_grains)
+        f[:-1] -= fp
+        f[1:] += fp
+        return f
+
+    def contact():
+        return float(pair_force_equal(np.array([x[0] - xi]), r, B)[0])
+
+    f = forces(x)
+    fc = contact()
+    f[0] += fc
+    fi = -fc
+    for _ in range(steps_per_period * 40):
+        vi += 0.5 * dt * fi / m_imp
+        v += 0.5 * dt * f / m
+        xi += dt * vi
+        x += dt * v
+        f = forces(x)
+        fc = contact()
+        f[0] += fc
+        fi = -fc
+        vi += 0.5 * dt * fi / m_imp
+        v += 0.5 * dt * f / m
+        if fc == 0.0 and vi < 0.0:                      # separated and moving away
+            break
+    return -vi / v0, float(abs(v[-1]))
+
+
+def restitution_lumped_series(m_imp: float, m: float, B: float, rho0: float, v0: float,
+                              z_factor: float = 1.0, steps: int = 2000000):
+    """The medium as ONE dashpot -- IN SERIES with the contact spring, which is the correction the
+    explicit chain forced.
+
+    THE REFUTED VERSION AND WHY. This first modelled the medium as a dashpot in PARALLEL with the
+    contact stiffness (Kelvin-Voigt), giving zeta = Z/(2 sqrt(kM)) = 0.05 at M = 100m and a lively
+    e = 0.859. The radiating chain -- which contains no damping term to argue with -- returned
+    e ~ 0.00. The chain was right: the impactor pushes the contact spring, and the spring pushes
+    a medium that radiates, so the two act IN SEQUENCE, not side by side. Series inverts the
+    damping ratio to zeta = sqrt(kM)/(2Z) = 5, overdamped, and the body lands instead of bouncing.
+
+        M v' = -k h ,   h' = v - (k/Z) h ,   separation when h <= 0
+
+    A wrong topology is invisible to dimensional analysis: both wirings have the same units and
+    the same constants, and only a model that could disagree found it.
+    """
+    r = rest_radius(m, rho0)
+    k = math.pi * float(B) * (2.0 * r) / 4.0
+    z = float(z_factor) * math.sqrt(k * float(m))
+    dt = (2.0 * math.pi * math.sqrt(m_imp / k)) / 20000.0
+    h, v = 0.0, float(v0)
+    for _ in range(steps):
+        v += dt * (-k * h) / m_imp
+        h += dt * (v - (k / z) * h)
+        if h <= 0.0:
+            break
+    return v / v0
+
+
+# ── FRICTION: the tangential half, from an angle this world GREW ────────────────────────────────
+# mu = tan(phi) IS the definition of a friction angle, so this is a restatement and is labelled as
+# one -- what makes it non-trivial is WHERE phi comes from. theGround's repose angle was not looked
+# up: it EMERGED at 40.03 +- 1.55 degrees from the granular trainer's local stochastic rule
+# (core/trainables/granular.py), inside the researched lunar-regolith band. So the tangential force
+# available to a foot is set by a number this world grew.
+
+def friction_coefficient(repose_deg: float) -> float:
+    return math.tan(math.radians(float(repose_deg)))
+
+
+def max_walkable_slope_deg(mu: float) -> float:
+    """A slope is walkable while the required friction stays under what is available; equality is
+    the repose angle itself, which is what makes repose the ceiling on standable ground."""
+    return math.degrees(math.atan(float(mu)))
 
 
 def drop_restitution(m: float, B: float, rho0: float, v_impact: float,
