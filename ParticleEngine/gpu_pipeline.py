@@ -27,7 +27,41 @@ _TILE_DIAG_AT = float(_os.environ.get('CHIMERA_TILE_DIAG_AT', '0.5'))
 _EXPAND_DIAG = _os.environ.get('CHIMERA_EXPANSION_DIAG') == '1'
 _SIZE_DIAG = _os.environ.get('CHIMERA_SPLAT_SIZE_DIAG') == '1'
 _CLAMP_SIZE = _os.environ.get('CHIMERA_CLAMP_SPLAT_SIZE') == '1'
-TILE_SIZE = 32
+# ── THE TILE SIZE, AND WHY IT IS AN ENV VAR RATHER THAN A CONSTANT ──────────────────────────────
+# It IS a constant at runtime -- numba bakes module globals into a kernel at compile time, so
+# `_composite` captures whatever this reads at import and nothing can change it afterwards. The env
+# var exists because that is exactly why it had never been measured: every candidate value needs
+# its own PROCESS, and a parameter you cannot A/B in one session is a parameter nobody A/Bs.
+#
+# THIS IS A LEGITIMATE SWEEP AND THE DISTINCTION MATTERS HERE. Sweeping is banned for numbers a
+# derivation should produce -- `FOOTPRINT` above came out of the compositor's own weight cutoff and
+# would have been an admission if it were searched. A tile size is not that kind of number: it
+# partitions work between the binner and the compositor and answers to the hardware, not to the
+# world. There is nothing in the physics of this game that knows what 32 means.
+#
+# MEASURED 2026-08-04: 32 IS THE OPTIMUM AND IT IS NOT CLOSE. Against T=32, geomean frame time over
+# 12 cases was T=8 1.77x, T=16 1.41x, T=64 1.34x. Both directions lose, for opposite reasons --
+# smaller tiles quadruple expansions per halving (the binner and sorter pay for every pair), larger
+# tiles make the compositor test every splat in a tile against 4x more pixels. Do not re-sweep this
+# without a reason; see docs/RENDER_COST_MODEL.md section 10.
+_DEFAULT_TILE_SIZE = 32
+TILE_SIZE = int(_os.environ.get('CHIMERA_TILE_SIZE', _DEFAULT_TILE_SIZE))
+# `@cuda.jit(cache=True)` KEYS ITS ON-DISK CACHE ON THE FUNCTION SOURCE, NOT ON THE MODULE GLOBALS
+# THE KERNEL CLOSED OVER. TILE_SIZE is one of those -- `_composite` bakes it in at compile time --
+# so a process running a swept value writes a kernel built for the wrong tile grid into the SHARED
+# cache, and the next process to run at the default silently loads it. The binner is pure CuPy and
+# honours the real value, so the two halves of the pipeline then disagree.
+#
+# IT IS NOT HYPOTHETICAL AND IT COST THIS LANE A FALSE FINDING. The first tile sweep ran that way
+# and produced (a) a 'the render depends on TILE_SIZE' result that was entirely the poisoning, and
+# (b) timings that made T=64 look 8% FASTER when it is 34% slower. The very next
+# test_render_pipeline run had membranes rendering NOTHING -- which is the only reason it was
+# caught. A control that ran the same TILE_SIZE twice could not see it: both runs shared the
+# poisoned kernel.
+#
+# So a non-default tile size DOES NOT CACHE. It costs a recompile per process, which is exactly
+# what a measurement run should pay, and it makes the sweep unable to corrupt the default.
+_CACHE_TILE_KERNELS = (TILE_SIZE == _DEFAULT_TILE_SIZE)
 # HOW MANY SPLATS ONE 32-PX TILE MAY HOLD. Past this the far ones are evicted, and if the survivors
 # do not happen to cover the tile you get a hard-edged black RECTANGLE on the tile grid.
 #
@@ -475,7 +509,9 @@ def _sort_tiles(tile_ids, tile_offsets, n_tiles):
         tile_ids[b + 1] = key
 
 
-@cuda.jit(cache=True)
+# THE ONLY KERNEL THAT BAKES TILE_SIZE IN, hence the only one whose cache a swept value can
+# poison. See `_CACHE_TILE_KERNELS` for what that cost before it was noticed.
+@cuda.jit(cache=_CACHE_TILE_KERNELS)
 def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
                tile_ids, tile_offsets, out,
                w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):
@@ -742,8 +778,15 @@ class FullGPUPipeline:
         # Tile arrays: need n_tiles*MAX_PER_TILE entries. Allocate large enough.
         # Worst case: 1920x1080 = 8100 tiles @ 1024 = 8.3M. Cap at a reasonable size.
         max_tile_entries = max(self._a * 16, 2000000)  # generous: 16× particle count for tile coverage
-        self._tf = cuda.device_array(max(20000, self._a), dtype=np.int32)  # n_tiles worst case
-        self._to = cuda.device_array(max(20000, self._a), dtype=np.int32)
+        # THE TILE-OFFSET BUFFER IS SIZED FROM THE TILE GRID, NOT FROM THE PARTICLE COUNT. It held
+        # `max(20000, n_particles)` int32, which is a number about the wrong thing: the array it
+        # backs is `n_tiles + 1` long. At TILE_SIZE 32 that is 8,161 and the 20,000 floor happened
+        # to cover it; at TILE_SIZE 8 it is 32,401 and a scene with fewer than that many grains
+        # would have written past the end. The bug was latent only because nobody had ever changed
+        # TILE_SIZE -- which is the same reason the value had never been measured.
+        _mt = ((3840 + TILE_SIZE - 1) // TILE_SIZE) * ((2160 + TILE_SIZE - 1) // TILE_SIZE) + 1
+        self._tf = cuda.device_array(max(_mt, self._a), dtype=np.int32)   # 4K worst case
+        self._to = cuda.device_array(max(_mt, self._a), dtype=np.int32)
         self._tids = cuda.device_array(max_tile_entries, dtype=np.int32)
 
     # ── WHAT THE LAST FRAME COST ────────────────────────────────────────────────────────────────

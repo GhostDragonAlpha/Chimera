@@ -358,71 +358,72 @@ n=31,581); there was no trade to make.
 > The change did not introduce an arbitrary ordering and then contain it. It **removed** one that
 > had been in the render all along, on every membrane with coplanar splats.
 
-## 10. TILE_SIZE: 32 is right, and the derivation that said otherwise was wrong
+## 10. TILE_SIZE: 32 is the optimum, and both my prediction and my first measurement were wrong
 
 **Swept 2026-08-04. Result: no change. `TILE_SIZE` stays 32.**
 
-This is a legitimate sweep and the distinction matters: `FOOTPRINT` (§8) came out of the
-compositor's own cutoff and searching for it would have been an admission. A tile size answers to
-the hardware, not to the world — nothing in the physics of this game knows what 32 means.
+A legitimate sweep, and the distinction matters: `FOOTPRINT` (§8) came out of the compositor's own
+cutoff and searching for it would have been an admission. A tile size answers to the hardware, not
+the world — nothing in the physics of this game knows what 32 means.
 
-**Prediction, made before the run.** Compositor work ≈ `expansions × T²`. For a splat of radius
-r >> T, `expansions ≈ (2·FOOTPRINT·r/T)²` so work ≈ `(2.478r)²` — *independent of T*. For r << T,
-expansions = 1 and work = T², so small tiles win outright. Against that, `_composite` launches
-16×16 thread blocks: at T ≥ 16 a warp stays inside one tile, at T = 8 a 16-wide row straddles two
-and diverges. **⟹ T=16 should win.**
+**Prediction, made before the run.** Compositor work ≈ `expansions × T²`. For r >> T,
+`expansions ≈ (2·FOOTPRINT·r/T)²` so work ≈ `(2.478r)²`, *independent of T*; for r << T,
+expansions = 1 and work = T², so small tiles win. Against that, `_composite` uses 16×16 thread
+blocks, so at T = 8 a warp straddles two tiles and diverges. **⟹ T=16 should win.**
 
-**Measured, 12 cases spanning heavy/light/flat/degenerate, one process per value:**
+**Measured** — 12 cases spanning heavy/light/flat/degenerate, one process and one isolated numba
+cache per value:
 
 | | T=8 | T=16 | **T=32** | T=64 |
 |---|---:|---:|---:|---:|
-| median vs T=32 | 2.17× | 1.14× | **1.00×** | 1.02× |
-| geomean | 2.21× | 1.27× | **1.00×** | 0.92× |
+| median vs T=32 | 1.60× | 1.27× | **1.00×** | 1.34× |
+| geomean | 1.77× | 1.41× | **1.00×** | 1.34× |
 | screen tiles | 32,400 | 8,160 | 2,040 | 510 |
 | aTerrain@0.25 expansions | 107,389,864 | 27,579,055 | 7,210,490 | 1,996,797 |
 
+**32 wins on both averages and on every case but one** (`theZero`, the degenerate r=0 framing where
+every splat covers the screen, prefers T=64 at 0.67×). Both directions lose for opposite reasons:
+smaller tiles quadruple expansions per halving and the binner and sorter pay for every pair; larger
+tiles make the compositor test each splat against 4× more pixels.
+
 **The prediction was refuted, and the error is instructive: the binner and sorter scale with
-expansions ALONE, not with `expansions × T²`.** Halving T quadruples expansions, which quadruples
-bin+sort work while compositor work stays flat. §3 measured bin+sort at only 6–35% of the frame —
-but that was *at T=32*. At T=8 expansions are 15× higher and that stage dominates. A stage share
-measured at one setting is not a constant of the pipeline.
+expansions ALONE, not `expansions × T²`.** §3 measured them at 6–35% of the frame — but that was
+*at T=32*. At T=8 expansions are 15× higher and that stage dominates. **A stage share measured at
+one setting is not a constant of the pipeline.**
 
-**T=64 is 8% better on geomean and 2% worse on median**, because it wins big where expansions
-dominate (aTerrain@0.25 0.53×, theZero 0.56×) and loses everywhere they don't (aTerrain@1.0 1.38×,
-theGalaxy 1.09×). Trading a broad small regression for a narrow large win on the scenes already
-furthest from budget is not obviously right, and the two averages disagree about it. **Not taken.**
+**The falsifier — the picture must not change, since tiling is a work partition — did not fire.**
+Output is identical across all four tile sizes on all 12 cases.
 
-**Two things did come out of the sweep:**
+### The first run of this sweep was measured with a broken instrument
 
-- **A latent buffer overflow, fixed.** `self._tf`/`self._to` back an `n_tiles + 1` array and were
-  sized `max(20000, n_particles)` — a number about the wrong quantity. At T=32 that is 8,161 and
-  the 20,000 floor happened to cover it; at T=8 it is 32,401 and a scene with fewer grains than
-  that would have written past the end. Now derived from the tile grid at 4K.
-- **`CHIMERA_TILE_SIZE`**, because numba bakes the global into the kernel at compile time, so each
-  value needs its own process — which is exactly why this had never been measured.
+Recorded because it produced two confident, wrong findings and nearly shipped both.
 
-### Open: the render is TILE_SIZE-dependent on scenes with very large splats
+`@cuda.jit(cache=True)` keys its on-disk cache on the function source and signature, **not on the
+values of the module globals the kernel closed over.** `TILE_SIZE` is one of those — `_composite`
+bakes it in at compile time — so a process running a swept value wrote a kernel built for the wrong
+tile grid into the *shared* cache, and the next process at the default silently loaded it. The
+binner is pure CuPy and honours the real value, so the two halves of the pipeline disagreed.
 
-Tiling is a work partition and must not change the picture. It does, and **this predates every
-change in this document** (measured identical at FOOTPRINT 1.5 and 1.239). Between T=32 and T=64:
+What the poisoned sweep reported, and what is actually true:
 
-| case | splats with rad > 1000 px | pixels differing | max diff |
-|---|---:|---:|---:|
-| theZero @1.0 | 4000 of 4000 | 14.07% | 245 |
-| aBlueWorld @0.25 | 807 of 7704 | 0.11% | 13 |
-| aYellowStar @1.0 | **0** | **0** | 0 |
-| theSkin @1.0 | **0** | **0** | 0 |
-| aHuman @1.0 | **0** | **0** | 0 |
+| claim from the poisoned run | truth |
+|---|---|
+| "the render depends on TILE_SIZE" — 12 of 12 cases differed, correlating exactly with splats over 1000 px | **entirely the artifact.** Output is identical across all T |
+| T=64 is **8% faster** on geomean | T=64 is **34% slower** |
+| T=8 is 2.21× slower | 1.77× slower |
 
-The correlation with "contains splats over ~1000 px projected radius" is exact. The differing
-pixels form **horizontal bands** (theZero rows 80–271, aBlueWorld rows 0–39), full screen width,
-with a flat `x mod T` histogram — so it is not a tile-boundary artifact.
+**A control ran and could not see it.** Rendering the *same* TILE_SIZE twice in two processes gave
+0 pixel difference on all five cases — because both runs shared the same poisoned kernel. What
+caught it was `test_render_pipeline.py`: the very next run had membranes rendering **NOTHING**,
+which is exactly the regression the baseline was added to detect. *A control that cannot express
+the failure is not a control; the guard that had no idea what it was looking for is what worked.*
 
-**Refuted, do not re-test:** (1) `MAX_PER_TILE` eviction — no tile exceeds 4,000 of 16,384 in any
-case; (2) the magnitude clamps in `_inv_radii` — **zero** splats reach `rad = 5000` or `|ic| = 1e4`;
-(3) cross-process nondeterminism — a control running the *same* T in two processes gives 0
-difference on all five cases, so the render is reproducible and the effect is real.
+**Fixed so it cannot recur:** a non-default `TILE_SIZE` now compiles `_composite` with
+`cache=False`. It costs a recompile per process — what a measurement run should pay — and makes a
+sweep unable to corrupt the default. Verified: a `TILE_SIZE=64` run followed by a default run
+passes 47/47.
 
-Mechanism unidentified. It costs nothing at T=32 (the shipped value) since the picture is only
-inconsistent *between* tile sizes, but it means the binner and the compositor disagree about how
-far a very large splat reaches, and that disagreement is worth finding.
+**Also found and fixed:** `self._tf`/`self._to` back an `n_tiles + 1` array and were sized
+`max(20000, n_particles)` — a number about the wrong quantity. At T=32 that is 8,161 and the 20,000
+floor happened to cover it; at T=8 it is 32,401 and a scene with fewer grains would have written
+past the end. Now derived from the tile grid at 4K.
