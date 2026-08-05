@@ -56,5 +56,6 @@
 | `S_earth` | 1.005 |
 | `T_star_surface` | 5839 |
 | `day_s` | 8.64e+04 |
+| `obliquity_effective_deg` | 37.38 |
 | `ocean_class` | Salt |
 | `name` | aSaltOcean |

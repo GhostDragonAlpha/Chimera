@@ -37,6 +37,8 @@
 | `sun_rgb_noon` | [0.9290589330645356, 1.0, 0.9380039549052102] |
 | `S_earth` | 1.005 |
 | `T_star_surface` | 5839 |
+| `day_s` | 8.64e+04 |
+| `obliquity_effective_deg` | 37.38 |
 | `dewpoint_surface` | 275.5 |
 | `cloud_base_m` | 800.3 |
 | `cloud_top_m` | 2.146e+04 |
@@ -51,7 +53,6 @@
 | `snow_line_altitude_m` | 1298 |
 | `exobase_m` | 2.777e+05 |
 | `escape_velocity_ms` | 8625 |
-| `day_s` | 8.64e+04 |
 | `twilight_duration_s` | 1440 |
 | `solar_zenith_track` | sun crosses the sky once per day; rate set by day_s |
 | `o2_fraction` | 0.21 |

@@ -38,3 +38,4 @@
 | `T_surface` | 279.2 |
 | `interior_class_of_this_world` | Active |
 | `ra_critical` | 1100 |
+| `obliquity_effective_deg` | 37.38 |

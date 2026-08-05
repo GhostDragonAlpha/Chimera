@@ -430,7 +430,7 @@ def emit(nums, t=1.0):
     a year feels like anything at all from the ground."""
     import numpy as np
     from matter import (blank, fibonacci_sphere, paint, lit, blackbody_rgb,
-                        surface_grain, SOLID, GLOW)
+                        surface_grain, SOLID, GLOW, sun_direction, sun_declination)
 
     tt = float(t)
     rng = np.random.default_rng(41)
@@ -448,25 +448,14 @@ def emit(nums, t=1.0):
     # sunrises; that is flicker, not a day. The day belongs to the ground, where it is the right
     # length of film. Here the star's direction turns once, because the planet goes round it.
     #
-    # AND THE SEASON IS THE SAME VARIABLE. The spin axis is fixed in space while the planet goes
-    # round, so from the ground the sun climbs above the equator and falls below it once a year.
-    # That angle is the DECLINATION, and it is the whole of what a season is -- one number that
-    # tilts the terminator and melts one cap while it grows the other. Nothing else is needed.
-    # The 1.15 rad offset is DECLARED and MEASURED, not guessed: the viewer's default eye sits on -Y,
-    # so a sun near -Y lights the face square-on and the world reads FLAT -- which is what a smaller
-    # offset gave. At 1.15 the sun is ~65 degrees off the eye, which puts the terminator across the
-    # visible disk. A sphere only reads as a sphere when you can see its shadow line.
-    # THE TILT IS DERIVED NOW, AND THE MOVIE MUST WEAR IT. This was `TILT = 0.41` -- Earth's --
-    # typed while theRockyPlanet was deriving 37.4 deg from the impact distribution: the render
-    # contradicting the numbers it sits on, which is the exact failure the slider test exists to
-    # catch (turn the axis percentile and the year-movie's seasons would not have moved).
+    # THE SUN IS ONE, and it lives in matter.py: the phase, the 1.15 offset, and the declination
+    # (the whole of a season) are all derived there, and every daylit membrane in this tree reads
+    # the same star. This membrane is a year film, so the declination breathes -- one cap melts
+    # while the other grows, which is the only thing a season is. The ice needs the declination
+    # itself (not just the vector) to know which hemisphere leans into the sun.
     TILT = float(np.radians(float(nums["obliquity_effective_deg"])))
-    orbit = 2.0 * pi * tt - 1.15
-    decl = TILT * np.cos(orbit)                            # the sun's height above the equator
-    sun = np.array([np.sin(orbit) * np.cos(decl),
-                    -np.cos(orbit) * np.cos(decl),
-                    np.sin(decl)], np.float32)
-    sun /= np.linalg.norm(sun)
+    decl = sun_declination(tt, float(nums["obliquity_effective_deg"]))
+    sun = sun_direction(tt, float(nums["obliquity_effective_deg"]))
 
     n = 34000
     d = fibonacci_sphere(n, jitter=0.9, seed=41)
@@ -541,6 +530,13 @@ def emit(nums, t=1.0):
     # planet. WHERE THE STAR IS, IS ALREADY BEING SAID -- by the terminator, by which limb is bright,
     # by the length of the shadow. A light source is told by its light. Nothing replaces it.
     return np.concatenate(parts, axis=0)
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))
 
 
 def measure(nums):

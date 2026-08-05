@@ -228,9 +228,9 @@ def emit(nums, t=1.0):
     rng = np.random.default_rng(71)
     a_core = float(nums["core_radius_frac"])
     S_rel = float(nums.get("S_earth", 1.0))
-    orbit = 2.0 * pi * tt - 1.15
-    sun = np.array([np.sin(orbit), -np.cos(orbit), 0.10], np.float32)
-    sun /= np.linalg.norm(sun)
+    # THE ONE SUN, READ (matter.py): the shared phase, the 1.15 offset and the declination come
+    # from the law -- never a typed copy of where the light is.
+    sun = sun_direction(tt, nums)
 
     # ── the mantle shell, cut away on the unlit side so the inside is visible ──
     n = 30000
@@ -288,6 +288,13 @@ def emit(nums, t=1.0):
         parts.append(f)
 
     return np.concatenate(parts, axis=0)
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))
 
 
 def measure(nums):

@@ -216,6 +216,10 @@ def derive(parent, free):
         "sun_rgb_noon": sun_rgb_noon,
         "S_earth": S_rel,
         "T_star_surface": T_star,
+        "day_s": day_s,
+        # THE TILT, CARRIED. The ONE sun is derived from it (matter.py), so every daylit membrane
+        # needs it. No default -- a missing tilt is a broken chain, not a tilt of zero.
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
         "dewpoint_surface": dewpoint_surface,
         "cloud_base_m": cloud_base_m,
         "cloud_top_m": cloud_top_m,
@@ -266,9 +270,9 @@ def emit(nums, t=1.0):
     THICK = float(lens.get("thickness", 12.0))
     TONE = float(lens.get("exposure", 0.42))
 
-    day = 2.0 * pi * tt - 1.15                     # same phase as theTerrain: ONE DAY, one sun-crossing
-    sun = np.array([sin(day), -cos(day), 0.22], np.float32)
-    sun = sun / np.linalg.norm(sun)
+    # THE ONE SUN, READ (matter.py) -- the shared phase, the 1.15 offset and the declination come
+    # from the law, never a typed copy of where the light is. ONE DAY, one sun-crossing.
+    sun = sun_direction(tt, nums)
 
     noon = np.array(nums["sky_rgb_noon"], np.float32)
     dawn = np.array(nums["sky_rgb_dawn"], np.float32)
@@ -350,3 +354,10 @@ def measure(nums):
             "gas_class": nums["gas_class"],
             "name_matches_class": folder == nums["name"],
             "molecule_is_air": 27.0 < nums["mean_molar_mass"] < 30.0}
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))

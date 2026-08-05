@@ -347,11 +347,10 @@ def emit(nums, t=1.0):
     # The day is a faster clock and belongs to a faster membrane -- to the ground, where standing
     # still and watching the sun cross is exactly the right length of film.
     #
-    # The 0.6 rad offset is DECLARED: it puts the terminator inside the default view, because a fully
-    # lit face reads flat and a fully dark one reads like nothing at all.
-    orbit = 2.0 * pi * tt - 1.15      # ~65 deg off the default eye: a sphere needs its shadow line
-    sun = np.array([np.sin(orbit), -np.cos(orbit), 0.10], np.float32)
-    sun /= np.linalg.norm(sun)
+    # THE SUN IS ONE (matter.py): the shared phase, the declared 1.15 offset and the declination are
+    # all read from the law, never typed here. This membrane derives the tilt itself, so the sun it
+    # reads is its own law's answer.
+    sun = sun_direction(tt, nums)
 
     # ── the solid surface ──
     n = 30000
@@ -413,6 +412,13 @@ def emit(nums, t=1.0):
     # planet. WHERE THE STAR IS, IS ALREADY BEING SAID -- by the terminator, by which limb is bright,
     # by the length of the shadow. A light source is told by its light. Nothing replaces it.
     return np.concatenate(parts, axis=0)
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))
 
 
 def measure(nums):

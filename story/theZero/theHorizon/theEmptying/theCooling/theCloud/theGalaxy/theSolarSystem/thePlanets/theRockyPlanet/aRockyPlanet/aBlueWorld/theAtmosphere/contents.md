@@ -27,6 +27,7 @@
 | `wind_surface_ms` | 7.336 |
 | `ocean_fraction` | 0.6838 |
 | `greenhouse_K` | 29.1 |
+| `obliquity_effective_deg` | 37.38 |
 | `jeans_keep_threshold` | 6 |
 | `gases_kept` | ['CH4', 'H2O', 'N2', 'O2', 'CO2'] |
 | `escape_ratios` | {'H2': 2.9929704160256954, 'He': 4.217450123701474, 'CH4': 8.442272032533301, 'H2O': 8.948176740771531, 'N2': 11.15613380809292, 'O2': 11.924279560417913, 'CO2': 13.984046019002296} |

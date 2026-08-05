@@ -481,14 +481,13 @@ def emit(nums, t=1.0):
     weathered = (d_mm > 8.0) & (rng.random(n) < 0.55)
     albedo[weathered] = alb_o[weathered]
 
-    # ONE DAY: the sun crosses at this latitude's height. The shadows are the point. The +0.9
-    # phase starts the film mid-morning, sun ~45 degrees up: the day-movie's two ends (t=0, t=1)
-    # share that readable light instead of opening on the sunrise graze, where the patch renders
-    # nearly black and the whole point -- stones, texture, shadows -- is invisible to the eye.
-    hour = 2.0 * pi * tt + 0.9
-    alt = np.cos(np.radians(float(nums.get("latitude_deg", 31.0)))) * np.sin(hour)
-    sun = np.array([np.cos(hour), 0.30, max(alt, 0.04)], np.float32)
-    sun /= np.linalg.norm(sun)
+    # ONE DAY: the sun crosses, and its height is the local-sky altitude -- the ONE declination
+    # (matter.py) projected onto this latitude. The shadows are the point. DAY_OPEN_HOUR opens the
+    # film mid-morning: the day-movie's two ends (t=0, t=1) share that readable light instead of
+    # opening on the sunrise graze, where the patch renders nearly black and the whole point --
+    # stones, texture, shadows -- is invisible to the eye. It is FILM FRAMING, a LENS choice, and it
+    # is shared with aTerrain so zooming between the two never jumps the light.
+    sun = sun_direction(tt, nums)
     lam = np.clip(nrm @ sun, 0.0, None)
     b[:, 16:19] = lit(albedo, float(nums.get("S_earth", 1.0)) * lam + 0.06,
                       e_ref=float(nums.get("S_earth", 1.0)), tone=0.45)
@@ -503,6 +502,10 @@ def emit(nums, t=1.0):
 # they are sub-pixel and a dyad judges blur. 1.15x puts the camera at crouch height, close enough
 # that the grains the law sized are actually visible.
 FRAMING = {"dist": 1.15, "elev": 0.55}
+
+# FILM FRAMING, shared with aTerrain: the hour of the day-movie this surface opens on. Which hour
+# is a LENS choice, never a fact about the sun; the sun's ELEVATION at that hour is the law's.
+DAY_OPEN_HOUR = 0.9
 
 
 def layout(nums):
@@ -546,3 +549,12 @@ def measure(nums):
         "earth_sinkage_under_20mm": sink_e < 0.020,
         "carries_reference_load": nums["carries_reference_load"],
     }
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): this patch's light is the world's single star, seen from this
+    latitude -- derived, never typed. Declared here so the live viewer arms the renderer with THE
+    SAME sun the emit baked with."""
+    import matter
+    return matter.local_sun(float(tt), float(nums["obliquity_effective_deg"]),
+                            float(nums["latitude_deg"]), DAY_OPEN_HOUR)

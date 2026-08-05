@@ -88,10 +88,17 @@ RENDER_GRID = 512
 # A FLAT GREEN PLATE. That is not a render bug, it is what a landscape looks like from a low angle;
 # every relief map ever printed exaggerates for the same reason. Declared, dialled, and reversible --
 # set it to 1 and you are looking at the real shape of the ground.
+#
+# `sun_height` WAS HERE and is gone (2026-08-05): where the sun is is not a picture dial, it is the
+# world's own declination and latitude, read from matter.py's ONE sun. A slider that moves the light
+# is a second sun, and this world has one.
 LENS = {
     "relief": {"lo": 1.0, "hi": 24.0, "default": 6.0, "label": "relief", "unit": "x true height"},
-    "sun_height": {"lo": 0.05, "hi": 1.0, "default": 0.30, "label": "sun height", "unit": ""},
 }
+
+# FILM FRAMING, shared with theGround: the hour of the day-movie this surface opens on. Which hour
+# is a LENS choice, never a fact about the sun; the sun's ELEVATION at that hour is the law's.
+DAY_OPEN_HOUR = 0.9
 
 
 def _red_surface(n, rng, roughness):
@@ -745,13 +752,11 @@ def emit(nums, t=1.0):
     rock = sample_genome_rgb(_sg["rock"], rng, n * n)
     albedo = np.where(channel[:, None], water, np.where(steep[:, None], rock, veg))
 
-    # ONE DAY: the sun crosses. Its height is the latitude's, so the shadows are this place's.
-    hour = 2.0 * pi * tt
-    alt = max(float(lens.get("sun_height", 0.30)) * 0.2,
-              np.cos(np.radians(float(nums["latitude_deg"]))) * np.sin(hour)
-              * float(lens.get("sun_height", 0.30)) / 0.30)
-    sun = np.array([np.cos(hour), 0.25, alt], np.float32)
-    sun /= np.linalg.norm(sun)
+    # ONE DAY: the sun crosses, and its height is the local-sky altitude -- the ONE declination
+    # (matter.py) projected onto this latitude. The shadows are the point: a landscape is legible
+    # because of them, and at noon a real valley nearly disappears. DAY_OPEN_HOUR is FILM FRAMING,
+    # shared with theGround so zooming between the two never jumps the light.
+    sun = sun_direction(tt, nums)
     lam = np.clip(nrm @ sun, 0.0, None)
     b[:, 16:19] = lit(albedo, float(nums["S_earth"]) * lam + 0.05,
                       e_ref=float(nums["S_earth"]), tone=0.45)
@@ -795,3 +800,12 @@ def measure(nums):
         # loose rock cannot stand steeper than its friction angle
         "slopes_below_repose": nums["slopes_below_repose"],
     }
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): this surface scene's light is the world's single star, seen
+    from this latitude -- derived, never dialled. Declared here so the live viewer arms the
+    renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.local_sun(float(tt), float(nums["obliquity_effective_deg"]),
+                            float(nums["latitude_deg"]), DAY_OPEN_HOUR)

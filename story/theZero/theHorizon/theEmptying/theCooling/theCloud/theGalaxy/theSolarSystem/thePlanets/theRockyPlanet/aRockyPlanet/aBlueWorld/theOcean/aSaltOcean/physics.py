@@ -194,22 +194,22 @@ def derive(parent, free):
         "S_earth": float(parent.get("S_earth", 1.0)),
         "T_star_surface": float(parent.get("T_star_surface", 5772.0)),
         "day_s": day_s,
+        # THE TILT, CARRIED. The ONE sun is derived from it (matter.py) -- the glint's mirror point
+        # and the baked diffuse both hang off this number, so the chain must deliver it.
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
         "ocean_class": cls,
         "name": "a" + cls + "Ocean",                        # derived, like the star's colour
     }
 
 
-def sun_direction(tt: float):
-    """The star's direction in the water's own frame, at time tt of one day.
-
-    THE ONE DECLARATION of where the sun is. The emit bakes the diffuse with it; the live viewer
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): the water's light is the world's single star, derived from
+    the world's own tilt -- never a typed copy. The emit bakes the diffuse with it; the live viewer
     sets the renderer's light with it; the renderer's specular kernel draws the glint where the
-    half-vector says -- so the baked diffuse and the glint can never disagree about where the
-    sun is. Same phase as theTerrain's sun (the day runs together)."""
-    import numpy as np
-    day = 2.0 * pi * float(tt) - 1.15
-    sun = np.array([sin(day), -cos(day), 0.22], np.float32)
-    return sun / np.linalg.norm(sun)
+    half-vector says -- so the baked diffuse and the glint can never disagree about where the sun
+    is. Same phase as theTerrain's sun (the day runs together)."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))
 
 
 def emit(nums, t=1.0):
@@ -236,7 +236,7 @@ def emit(nums, t=1.0):
     lens = nums.get("_lens", {})
     TONE = float(lens.get("exposure", 0.42))
 
-    sun = sun_direction(tt)
+    sun = sun_direction(tt, nums)
     S_rel = float(nums.get("S_earth", 1.0))
 
     deep = np.array(nums["ocean_rgb_deep"], np.float32)

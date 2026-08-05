@@ -697,17 +697,27 @@ light and the baked diffuse must agree on. **No light set, no glint rendered —
   b. the real buffer carries the reader: SPEC_F0/SPEC_SLOPE on every water grain, and the 10,757 ice
      grains carry both columns exactly 0.0;
   c. rendered under the membrane's OWN sun, the kernel's glint matches the float64 referee
-     (max |diff| = 1.21e-06 vs EPS_KERNEL_MAX 1e-03), lights a tight patch (2,257 of 23,243 water
-     grains, 9.7%), and shows in the frame (21,887 subpixels);
+     (max |diff| = 1.13e-06 vs EPS_KERNEL_MAX 1e-03), lights a tight patch (2,251 of 23,243 water
+     grains, 9.7%), and shows in the frame (21,729 subpixels);
   d. the old paint is PROVABLY gone: at the sub-solar point the colour is the float64 diffuse
      replica bit-for-bit (max |diff| = 0.00e+00);
   e. the clay controls hold on the real buffer: zeroed columns under the sun, and populated columns
      under no light, are both bit-identical to the emitted baseline.
 
-**THE ONE DECLARATION:** `sun_direction(t)` — same phase as theTerrain's sun, unit length, in the
-water's own frame. The emit bakes the diffuse with it, the live viewer sets the renderer's light
-with it, and the renderer's specular kernel draws the glint where the half-vector says. **Baked
-diffuse and glint can never disagree about where the sun is, because neither chose.**
+**THE ONE DECLARATION, now a law:** `story/matter.py` holds the world's single star —
+`sun_direction(tt, obliquity)` in the equatorial frame, `local_sun(tt, obliquity, latitude, hour)`
+for surface scenes, and the declination `sin(decl) = sin(obliquity)·cos(phase)` that is the whole
+of a season. **Every day-lit membrane is a reader of it** (theRockyPlanet, aRockyPlanet, aBlueWorld,
+theTerrain, theAtmosphere, theOcean, aNitrogenAtmosphere, aSaltOcean in the equatorial frame;
+aTerrain and theGround at their latitude) — each publishes `sun_direction(tt, nums)` so the emit,
+the live viewer and the renderer's specular kernel all draw THE SAME sun, and the baked diffuse and
+the glint can never disagree about where the sun is because neither chose. The two surface scenes
+open on the same film hour (`DAY_OPEN_HOUR`, a LENS choice shared between aTerrain and theGround), so
+zooming between them never jumps the light. The old per-file typed vectors — 0.22 in one, 0.12 in
+another, 0.30 in a third, some not even turning the same way — are gone; the sweep deleted the
+`sun_height` dial that used to be a second sun wearing a slider. Falsifier (T11): a membrane with no
+declared sun (aActiveInterior, whose light is a lamp's) arms no light, and all equatorial scenes
+return the same vector at a given t.
 
 ## THE GATE (all of it)
 

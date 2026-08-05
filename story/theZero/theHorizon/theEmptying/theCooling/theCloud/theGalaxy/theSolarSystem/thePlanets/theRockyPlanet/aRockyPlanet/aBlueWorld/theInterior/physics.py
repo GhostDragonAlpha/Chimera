@@ -84,6 +84,9 @@ def derive(parent, free):
         "T_surface": float(parent.get("T_surface", 288.0)),
         "interior_class_of_this_world": cls,
         "ra_critical": RA_CRITICAL,
+        # THE TILT, CARRIED. Not used by the interior itself (a deep mine's light is a lamp's), but
+        # the chain must not drop what the daylit leaves derive from; carried for uniformity.
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
     }
 
 

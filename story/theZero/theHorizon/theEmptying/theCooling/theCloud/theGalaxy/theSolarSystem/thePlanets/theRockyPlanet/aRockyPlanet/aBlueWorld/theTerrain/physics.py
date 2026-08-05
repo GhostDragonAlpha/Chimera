@@ -417,10 +417,9 @@ def emit(nums, t=1.0):
     albedo = np.where((snowy | sea_ice)[:, None], snow, np.where(dry[:, None], land_a, sea))
 
     S_rel = float(nums.get("S_earth", 1.0))
-    # ONE DAY: the sun goes round once. The 1.15 offset keeps the terminator on the visible face.
-    day = 2.0 * pi * tt - 1.15
-    sun = np.array([np.sin(day), -np.cos(day), 0.22], np.float32)
-    sun /= np.linalg.norm(sun)
+    # ONE DAY: the sun goes round once. The 1.15 offset -- and the whole of where the sun is -- is
+    # the ONE SUN of matter.py, read here like every daylit membrane reads it: never a typed copy.
+    sun = sun_direction(tt, nums)
     cosang = np.clip((nrm * sun[None, :]).sum(1), 0.0, None)   # light the REAL surface, bumps and all
     b[:, 16:19] = lit(albedo, S_rel * cosang + 0.012, e_ref=max(S_rel, 1e-6), tone=TONE)
     # Water has no grain and rock does -- so the sea blends and the land does not.
@@ -508,3 +507,10 @@ def measure(nums):
         "mars_mountain_ratio": max_relief(3.721, RHO_OCEAN) / max_relief(g_e, RHO_OCEAN),
         "olympus_predicted_km": max_relief(3.721, RHO_OCEAN) / 1e3,
     }
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))

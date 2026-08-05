@@ -550,16 +550,23 @@ def t11_adoption():
           f"{int(ice.sum())} ice grains, all F0/slope == 0")
 
     # THE ONE DECLARATION OF WHERE THE SUN IS: emit bakes with it, the renderer glints with it.
-    sun = np.asarray(mod.sun_direction(1.0), dtype=np.float64)
+    sun = np.asarray(mod.sun_direction(1.0, sea), dtype=np.float64)
     check("T11c the membrane declares ONE sun (unit length, in its own frame)",
           abs(float(np.linalg.norm(sun)) - 1.0) <= 1e-6, f"|sun| = {np.linalg.norm(sun):.7f}")
     via = _sa.sun_direction("aSaltOcean", 1.0)
     check("T11c the viewer's helper reads THE SAME sun the emit baked (set_light wiring)",
           via is not None and all(abs(via[i] - sun[i]) <= 1e-7 for i in range(3)),
           f"helper {via}, membrane {tuple(sun)}")
-    check("T11c a membrane with no declared sun arms NO light (theTerrain stays lightless)",
-          _sa.sun_direction("theTerrain", 1.0) is None,
+    check("T11c a membrane with no declared sun arms NO light (aActiveInterior stays lightless)",
+          _sa.sun_direction("aActiveInterior", 1.0) is None,
           "no sun declared, no light armed, picture bit-identical")
+    eq_terms = ["theRockyPlanet", "aBlueWorld", "aSaltOcean"]
+    eq_suns = [_sa.sun_direction(t_, 1.0) for t_ in eq_terms]
+    check("T11c THE ONE SUN: every equatorial-frame daylit membrane reads the same vector",
+          all(s is not None for s in eq_suns)
+          and all(abs(eq_suns[0][i] - eq_suns[k][i]) <= 1e-6
+                  for k in range(1, len(eq_suns)) for i in range(3)),
+          f"{[(t_, eq_suns[k][0]) for k, t_ in enumerate(eq_terms)]}")
 
     cam = FirstPersonCamera(position=(0.0, -2.5, 0.0), yaw=np.pi / 2, pitch=0.0)
     prm = cam.params(width=640, height=480)

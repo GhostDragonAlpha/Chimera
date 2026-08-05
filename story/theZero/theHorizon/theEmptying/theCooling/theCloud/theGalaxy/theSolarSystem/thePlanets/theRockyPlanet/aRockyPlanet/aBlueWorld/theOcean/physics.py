@@ -67,6 +67,9 @@ def derive(parent, free):
         "a_au": float(parent["a_au"]),
         "L_star": float(parent["L_star"]),
         "P_surface_bar": P,
+        # THE TILT, CARRIED. The ONE sun is derived from it (matter.py), so every daylit membrane
+        # needs it. No default -- a missing tilt is a broken chain, not a tilt of zero.
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
         # the law's own facts
         "water_state": water_state,
         "phase_liquid": bool(liquid),
@@ -107,8 +110,7 @@ def emit(nums, t=1.0):
     lat = np.arcsin(np.clip(d[:, 2], -1.0, 1.0))
 
     tt = float(t) % 1.0
-    sun = np.array([math.cos(2.0 * math.pi * tt), math.sin(2.0 * math.pi * tt), 0.12])
-    sun /= np.linalg.norm(sun)
+    sun = sun_direction(tt, nums)
 
     # THE TEMPERATURE PROFILE, mean-preserving (see the docstring), in Celsius.
     T_mean = float(nums["T_surface_C"])
@@ -164,3 +166,10 @@ def measure(nums):
     return {"phase_liquid": nums.get("phase_liquid", False),
             "has_ocean": nums.get("has_ocean", False),
             "water_state": nums.get("water_state", "unknown")}
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))

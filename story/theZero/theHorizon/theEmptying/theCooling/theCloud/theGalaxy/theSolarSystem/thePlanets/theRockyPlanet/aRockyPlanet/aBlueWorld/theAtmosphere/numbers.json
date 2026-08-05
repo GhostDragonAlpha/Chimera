@@ -11,6 +11,7 @@
   "wind_surface_ms": 7.3359905252964115,
   "ocean_fraction": 0.6837938426374871,
   "greenhouse_K": 29.0951267646482,
+  "obliquity_effective_deg": 37.38250904743713,
   "jeans_keep_threshold": 6.0,
   "gases_kept": [
     "CH4",

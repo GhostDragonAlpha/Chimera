@@ -54,6 +54,7 @@
   "S_earth": 1.0048952107836961,
   "T_star_surface": 5839.193528311371,
   "day_s": 86400.0,
+  "obliquity_effective_deg": 37.38250904743713,
   "ocean_class": "Salt",
   "name": "aSaltOcean",
   "timeline_serial": 23,

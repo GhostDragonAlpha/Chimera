@@ -180,6 +180,65 @@ def blackbody_rgb(T: float) -> tuple:
     return (1.0 - 0.35 * f, 1.0 - 0.15 * f, 1.0)
 
 
+# ══ THE ONE SUN ═══════════════════════════════════════════════════════════════════════════════
+# THE ONE SUN (2026-08-05; theory: docs/THE_TWO_FORCES.md, Stage 21). Every membrane used to type
+# its own copy of where the light comes from -- 0.22 in one file, 0.12 in another, 0.30 in a third,
+# some of them not even turning the same way -- so this world had as many suns as it had files.
+# There is ONE star, and it is a reader like every other in this world: its place falls out of the
+# world's own numbers, and a daylit emit reads it from here or it has no sun at all. A sun that is
+# typed in two files is two suns; this is the only place one is ever made.
+#
+# The sun is two derived quantities and nothing else:
+#   THE PHASE -- where the world has got to in its orbit, the shared clock `2*pi*t - 1.15`. The
+#     1.15 offset is DECLARED and MEASURED, not guessed (aBlueWorld): the viewer's default eye sits
+#     on -Y, and at ~1.15 rad the sun is ~65 deg off the eye, which puts the terminator across the
+#     visible disk so a sphere reads as a sphere instead of a flat lit face.
+#   THE DECLINATION -- the tilt projected onto the orbit, the whole of a season:
+#     sin(decl) = sin(obliquity) * cos(phase). Zero at the equinoxes, the whole tilt at the
+#     solstices, and past the poles it is polar day and polar night. It is the same projection the
+#     human's chain derives for its own epoch (theHuman); this is its home now, so the space scenes,
+#     the surface scenes and the ground can never disagree about where the sun is again.
+SUN_PHASE_OFFSET_RAD = 1.15
+
+
+def sun_declination(tt, obliquity_deg):
+    """The sun's height above the equator, RADIANS -- the ONE season number of the whole world.
+    Every daylit scene shares it; nothing in this tree types a declination."""
+    phase = 2.0 * np.pi * float(tt) - SUN_PHASE_OFFSET_RAD
+    return float(np.arcsin(np.sin(np.radians(float(obliquity_deg))) * np.cos(phase)))
+
+
+def sun_direction(tt, obliquity_deg):
+    """The one sun as a direction in the planet's equatorial frame (unit vector) -- for scenes that
+    look at the whole planet or a whole sky. An emit dots its surface normals against it."""
+    phase = 2.0 * np.pi * float(tt) - SUN_PHASE_OFFSET_RAD
+    decl = sun_declination(tt, obliquity_deg)
+    v = np.array([np.sin(phase) * np.cos(decl),
+                  -np.cos(phase) * np.cos(decl),
+                  np.sin(decl)], dtype=np.float64)
+    return v / np.linalg.norm(v)
+
+
+def local_sun(tt, obliquity_deg, latitude_deg, hour_offset=0.0):
+    """The one sun in a SURFACE scene's own frame (up = +z), unit vector. The azimuth sweeps with
+    the scene's film; the elevation is the local-sky altitude -- the same declination projected
+    onto the scene's latitude,
+        sin(alt) = sin(decl)*sin(lat) + cos(decl)*cos(lat)*cos(hour)
+    so noon is overhead only where the declination reaches the latitude (a tilted world's sun passes
+    straight overhead on the way to the solstice, and has already started back down by it).
+    `hour_offset` is FILM FRAMING -- the hour of the day-movie it opens on -- a LENS choice, never a
+    fact about the sun."""
+    decl = sun_declination(tt, obliquity_deg)
+    hour = 2.0 * np.pi * float(tt) + float(hour_offset)
+    lat = np.radians(float(latitude_deg))
+    sin_alt = np.sin(decl) * np.sin(lat) + np.cos(decl) * np.cos(lat) * np.cos(hour)
+    alt = np.arcsin(np.clip(sin_alt, -1.0, 1.0))
+    v = np.array([np.cos(hour) * np.cos(alt),
+                  np.sin(hour) * np.cos(alt),
+                  np.sin(alt)], dtype=np.float64)
+    return v / np.linalg.norm(v)
+
+
 # ══ THE OPTICS OF MATTER: density → refractive index → reflection ═══════════════════════════════
 # THE TWO-FORCE READER (2026-08-05; theory: docs/THE_TWO_FORCES.md). Light is not a new physics
 # system in this world -- it is a third READER of the density field that gravity and mechanics

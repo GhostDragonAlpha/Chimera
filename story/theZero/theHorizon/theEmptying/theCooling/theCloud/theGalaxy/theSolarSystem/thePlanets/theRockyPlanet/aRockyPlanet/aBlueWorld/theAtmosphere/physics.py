@@ -64,6 +64,9 @@ def derive(parent, free):
         "wind_surface_ms": float(parent.get("wind_surface_ms", 0.0)),
         "ocean_fraction": float(parent.get("ocean_fraction", 0.0)),
         "greenhouse_K": float(parent.get("greenhouse_K", 0.0)),
+        # THE TILT, CARRIED. The ONE sun is derived from it (matter.py), so every daylit membrane
+        # needs it. No default -- a missing tilt is a broken chain, not a tilt of zero.
+        "obliquity_effective_deg": float(parent["obliquity_effective_deg"]),
         # the law's own facts
         "jeans_keep_threshold": JEANS_KEEP,
         "gases_kept": kept,
@@ -110,9 +113,7 @@ def emit(nums, t=1.0):
     H = H_over_R * EXAGGERATION
 
     tt = float(t) % 1.0
-    sun = np.array([math.cos(2.0 * math.pi * tt), math.sin(2.0 * math.pi * tt), 0.12],
-                   dtype=np.float64)
-    sun /= np.linalg.norm(sun)
+    sun = sun_direction(tt, nums)
 
     rng = np.random.default_rng(73)
     n = 12000
@@ -183,3 +184,10 @@ def measure(nums):
     return {"kept_above_threshold": all(v > JEANS_KEEP for v in kept.values()),
             "lost_below_threshold": all(v < JEANS_KEEP for v in lost.values()),
             "retention_holds": nums.get("retention_holds", False)}
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py). This scene is daylit; its light is the world's single star,
+    declared here so the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.sun_direction(float(tt), float(nums["obliquity_effective_deg"]))

@@ -32,6 +32,7 @@
 | `a_au` | 1.041 |
 | `L_star` | 4.169e+26 |
 | `P_surface_bar` | 0.5199 |
+| `obliquity_effective_deg` | 37.38 |
 | `water_state` | liquid |
 | `phase_liquid` | True |
 | `freeze_bracket_K` | 270.1 |
