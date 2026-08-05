@@ -247,6 +247,27 @@ SHEAR_MODULUS_PA = {
 }
 
 
+# THERMAL CONSTANTS -- what BULK viscoelastic loss is made of. Thermoelastic (Zener) damping is a
+# real bulk mechanism and it is DERIVABLE: compressing matter warms it, the warm region conducts
+# heat away, and the heat does not come back on the return stroke. That needs only a material's
+# thermal expansion, heat capacity and conductivity -- measured constants, cited here the way B and
+# G are (alpha-quartz, CRC ranges; conductivity is strongly anisotropic in quartz and this is a
+# polycrystalline average). No membrane in this world publishes any of them, so unlike temperature
+# they cannot be read.
+#
+# THE CONCLUSIONS DRAWN FROM THESE ARE TESTED FOR ROBUSTNESS rather than trusted:
+# ChimeraEngine/test_viscoelastic.py varies each by 3x and checks the finding survives.
+THERMAL_EXPANSION_PER_K = {"silicate": 1.2e-5}
+SPECIFIC_HEAT_J_KG_K = {"silicate": 730.0}
+THERMAL_CONDUCTIVITY_W_M_K = {"silicate": 6.5}
+
+
+def thermal_diffusivity(k_therm: float, rho: float, c_p: float) -> float:
+    """D = k / (rho c_p) -- how fast a temperature difference spreads. It is what decides whether
+    a load cycle is isothermal, adiabatic, or in the lossy middle between them."""
+    return float(k_therm) / (float(rho) * float(c_p))
+
+
 def youngs_modulus(B: float, G: float) -> float:
     """E = 9BG/(3B+G) -- derived, once the two independent constants are in hand."""
     return 9.0 * float(B) * float(G) / (3.0 * float(B) + float(G))

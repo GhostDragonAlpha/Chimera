@@ -428,6 +428,46 @@ floor**, and the two add, being different mechanisms. Both together still sit un
 steel-on-steel ~1e-3 — the remainder is bulk viscoelastic hysteresis, still awaiting a loss
 tangent, still named.
 
+### Stage 14 — Bulk viscoelastic hysteresis — **BUILT, PASSED** (the third and last dissipation)
+Stage 12 added radiation (energy leaving as sound), Stage 13 added contact microslip (a slip
+annulus at the rim). This is the one acting *inside* the material: compress a solid and it warms,
+the warm region conducts heat outward, and on the return stroke that heat does not come back —
+Zener's thermoelastic damping, which needs **no loss tangent handed to it**, only thermal
+constants (α, c_p, k, newly cited in `story/matter.py` the way B and G were).
+
+**IT READS THE WORLD'S OWN TEMPERATURE.** `Δ = Eα²T/(ρc_p) = 1.96e-03` at aBlueWorld's published
+`T_surface = 279.19 K`, and doubling T doubles Δ exactly — **a colder world's rock is a better
+spring**, as a consequence rather than a setting.
+
+**THE SHAPE IS THE PREDICTION, with two different zeros.** `tan δ → 0` as ω→0 because a slow cycle
+stays **isothermal** (heat equilibrates, no gradient ever forms), and `tan δ → 0` as ω→∞ because a
+fast cycle is **adiabatic** (heat has no time to move). Measured 1.96e-09 at both ends — the same
+zero for opposite reasons — with the peak exactly at ωτ = 1 and exactly Δ/2.
+
+**THE FLAGSHIP: a rolling speed of maximum loss.** Since a rolling contact loads at ω = πv/a, the
+awkward middle happens at a *speed*: **v_peak = D/(πa) = 5.41 mm/s** for the 198 µm contact tested,
+with tan δ falling away by 50× at a hundredth and a hundred times that speed. A 4× bigger contact
+peaks at exactly a quarter the speed, because heat has four times as far to go. The constant-μᵣ
+model cannot express any of this.
+
+**THE LOAD LAW.** μᵣ = (2π/5)·tan δ·(a/R), giving the classic hysteretic **N^(1/3)** scaling —
+measured exponent **0.3333** over a 512× load range.
+
+**THE CLOSING DECOMPOSITION — three mechanisms, and they are not interchangeable.** A **freely
+coasting** wheel pays radiation (7.8e-07) and hysteresis (5.3e-08) but **exactly nothing** to
+microslip, whose T³ dependence vanishes with the tractive force (1.3e-31). A **hard-driven** wheel
+is dominated by microslip (4.7e-04), 600× everything else. And for hard quartz, thermoelastic
+hysteresis is the *smallest* of the three — a soft polymer inverts that completely, since tan δ ≈
+0.1 is four orders above quartz's thermoelastic 1.1e-05, **which is why rubber tyres and rock
+behave nothing alike**. Which mechanism rules is now a question with a computed answer.
+
+**ROBUSTNESS AND THE NAMED REMAINDER.** The conclusion survives varying **every** cited thermal
+constant by 3× in both directions (worst case 4.75e-07, still far under a handbook ~1e-3), so it
+does not rest on the precision of a citation. And `rolling_coefficient` takes tan δ as an
+**argument**: hand it the derived thermoelastic value today, or a measured total loss tangent the
+day one is published. **Anelastic bulk loss (dislocation motion, grain-boundary sliding) remains
+UNBUILT and still needs a real measurement** — but nothing has to be rewritten to accept one.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -438,6 +478,7 @@ python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection,
 python ChimeraEngine/test_hertz.py           # 21 checks: Hertz, the P^(1/6) exponent, Mindlin, tilt table
 python ChimeraEngine/test_rolling.py         # 13 checks: contact torque, rolling resistance, the 5/7 law
 python ChimeraEngine/test_hysteresis.py      # 17 checks: Mindlin microslip, the cubic law, the Stage 12 correction
+python ChimeraEngine/test_viscoelastic.py    # 13 checks: Zener damping, the peak rolling speed, the decomposition
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
