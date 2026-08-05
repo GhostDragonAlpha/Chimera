@@ -551,6 +551,54 @@ used throughout). **Curved-mirror focusing**: composition assumes lobes stay nar
 does not converge — a concave specular surface focuses, which is Stage 5's caustic machinery pointed
 at reflection rather than refraction.
 
+### Stage 17 — Polarization — **BUILT, PASSED — and it CORRECTS Stage 16 by up to 26×**
+Stage 16 flagged polarization as a *real physical omission* rather than a scope choice. It was, and
+the size of the error is now measured.
+
+**WHY A CHAIN GETS IT WRONG.** s-polarized light always reflects better off a dielectric than
+p-polarized light, so every bounce filters the beam further toward s — **a chain polarizes itself.**
+Convexity then guarantees the direction of the error:
+`(R_sⁿ + R_pⁿ)/2 ≥ ((R_s+R_p)/2)ⁿ`, so **Stage 16 UNDERESTIMATED chain energy**, worse the deeper the
+chain. Measured for water at 60°: **1.00× / 1.87× / 3.61× / 6.97× / 26.03×** at depths 1/2/3/4/6.
+Meanwhile the degree of polarization climbs 0.932 → 0.998 → 1.000 — after a few bounces essentially
+all surviving light is in the strongly-reflecting state.
+
+**A NEVER-FITTED PREDICTION FROM DENSITY.** Brewster's angle is arctan(n), and n comes from
+aSaltOcean's **published density** through Lorentz–Lorenz (Stage 0). So the world's own ocean density
+predicts **θ_B = 53.34°** against water's measured ~53.1° — the angle at which glare goes perfectly
+polarized, reached from a number that knows nothing about optics. At that angle R_p is float-zero
+(4.8e-33, gate eps²) while R_s holds at **8.24%** — a ratio of 1.7e31, and that surviving 8% is
+exactly what a polarising filter removes.
+
+**SCHLICK, HONESTLY ASSESSED.** Stages 1, 11 and 16 all use Schlick's approximation. Measured against
+exact Fresnel: max absolute error **0.0101 out to 60°** (validating those stages where they operate),
+drifting to **0.0567 near grazing**. And being one scalar, it cannot represent the s/p split at any
+angle — which is the structural reason it could not have produced this stage's correction.
+
+**TWO CHECKS THAT CATCH REAL BUGS.** `R + T = 1` for **each** polarization at every angle to
+**4.4e-16** — the check that catches a dropped (n₂cosθₜ)/(n₁cosθᵢ) factor or an inverted sign
+convention. And the **critical angle agrees with Stage 4's refraction kernel**: θ_c = 48.098° from
+arcsin(1/n), where the kernel's TIR discriminant k = 1.1e-16 — two independent routes to one
+boundary, three stages apart.
+
+**THE CORRECTED DEPTH BOUND AND THE FRAME.** Stage 16 said 6 visible bounces at 80°; polarization
+says **7**, because the s-component decays more slowly than the average. And the correction renders
+**through Stage 1's own kernel** — F₀ 1.41e-04 → 8.46e-04 (6.0×), 4,764 subpixels brighter — with no
+polarization state in the renderer, just a corrected number. Frames:
+`agent_logs/optics_chain_{polarized,unpolarized}.png`.
+
+**TWO INSTRUMENT CORRECTIONS, both mine, both the same species.** The Brewster test first used a
+round `1e-24` for "float zero" and failed on a correct 4.8e-33 — R_p is r_p *squared*, so its floor
+is eps², not eps; the gate is now derived from machine epsilon. It then demanded `R_s > 0.1` and
+failed on water's true 0.0824 — a threshold invented rather than read, replaced by the ratio, which
+is what the physics actually claims.
+
+**NAMED UNBUILT.** **Circular/elliptical polarization** needs complex amplitudes with a relative
+phase (TIR's phase shift is dropped here). **Metals** have a complex refractive index and are
+**refused**, not approximated. And a genuine **per-grain polarization state** in the renderer would
+need two columns plus an incidence-plane frame — the *chain* correction needs neither, which is why
+it shipped.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -564,6 +612,7 @@ python ChimeraEngine/test_hysteresis.py      # 17 checks: Mindlin microslip, the
 python ChimeraEngine/test_viscoelastic.py    # 13 checks: Zener damping, the peak rolling speed, the decomposition
 python ChimeraEngine/test_anelastic.py       # 13 checks: the cancellation, Q ~ 100, the two signatures
 python ChimeraEngine/test_chains.py          # 16 checks: lobe composition, the anisotropy, the derived depth
+python ChimeraEngine/test_polarization.py    # 20 checks: Brewster from density, R+T=1, the Stage 16 correction
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
