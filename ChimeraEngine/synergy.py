@@ -1,36 +1,37 @@
 """synergy.py — THE SYNERGY DECODER.
 
 THEORY (stated so it can fail):
-  STATEMENT  The stand policy maps a 3-D observation {z, pitch, roll} through a
-             linear-per-muscle formula (a0 + kh*(tgt-z) + kp*pitch + kr*roll)
-             into 290 muscle activations, and that 290-D activation vector
-             lives on a ~16-dimensional manifold extracted by ICA-PCA.
-  PREDICTION  The decoded 290-D vector projects onto the 16-D synergy basis with
-             >90% of the explained variance captured by the first 8 synergies,
-             and a PD extension (adding velocity feedback ż, θ̇) reduces the
-             synergy trajectory's path length by >=15% relative to P-only.
-  FALSIFIER   If the PD decoded activations project to MORE than 16 dimensions
-             with comparable variance (the manifold does not tighten), or if
-             the velocity gains train to near-zero (velocity carries no signal),
-             the synergy hypothesis for the stand is dead.
+  STATEMENT  The stand policy maps a 5-D observation {z, pitch, roll, com_x, com_y}
+              through a linear-per-muscle formula (a0 + kh*(tgt-z) + kp*pitch + kr*roll
+              + kx*com_x + ky*com_y) into 290 muscle activations, and that 290-D
+              activation vector lives on a ~16-dimensional manifold extracted by ICA-PCA.
+  PREDICTION  Adding CoM BoS feedback (kx, ky) increases held-out survival median by
+              >=30% relative to P-only, by giving the policy direct access to the
+              base-of-support margins that determine lateral stability.
+  FALSIFIER   If CoM gains train to near-zero, or survival does not improve, the
+              BoS feedback hypothesis is dead.
 
 WHAT THIS FILE HOLDS
   The decoder that bridges the trained theta (output/ports/stand_theta.npy) and
   the MuJoCo simulation (ChimeraEngine render loop). It is NOT the parser
   (tools/parser.py) — the parser is the button-layer contract. This is the
   physics-layer contract: it reads muJoCo state, assembles observations
-  {z, ż, pitch, pitcḣ, roll, roll̇}, and applies the policy formula to produce
-  290 muscle activations.
+  {z, ż, pitch, pitcḣ, roll, roll̇, com_x, com_y}, and applies the policy
+  formula to produce 290 muscle activations.
 
   A 4-block theta is bit-identical to the parser's stand_formula_fn (backward
-  compatible). A 7-block theta adds velocity gains — kdz, kdp, kdr — applied
-  here, where the MuJoCo simulation runs, not in the parser (which is the
-  button contract and cannot grow past its declared STAND_BLOCKS).
+  compatible). A 6-block theta adds CoM BoS gains — kx, ky.
+  A 7-block theta adds velocity gains — kdz, kdp, kdr.
+  A 9-block theta adds both — velocity + CoM feedback.
 
 THE POLICY:
   P-only (4 blocks):  u = clip(a0 + kh*(tgt-z) + kp*pitch + kr*roll, 0, 1)
+  P+CoM (6 blocks):   u = clip(a0 + kh*(tgt-z) + kp*pitch + kr*roll
+                              + kx*com_x + ky*com_y, 0, 1)
   PD     (7 blocks):  u = clip(a0 + kh*(tgt-z) + kdz*ż + kp*pitch + kdp*pitcḣ
-                        + kr*roll + kdr*roll̇, 0, 1)
+                              + kr*roll + kdr*roll̇, 0, 1)
+  PD+CoM (9 blocks):  u = clip(a0 + kh*(tgt-z) + kdz*ż + kp*pitch + kdp*pitcḣ
+                              + kr*roll + kdr*roll̇ + kx*com_x + ky*com_y, 0, 1)
 """
 from __future__ import annotations
 
@@ -55,8 +56,10 @@ class SynergyDecoder:
     The decoder holds the theta as flat blocks of `nu` muscles each. The number
     of blocks determines which formula applies:
 
-      4 blocks (a0|kh|kp|kr)     → P-only, backward-compatible with parser
+      4 blocks (a0|kh|kp|kr)       → P-only, backward-compatible with parser
+      6 blocks (a0|kh|kp|kr|kx|ky) → P-only + CoM BoS feedback
       7 blocks (a0|kh|kdz|kp|kdp|kr|kdr) → PD with velocity feedback
+      9 blocks (a0|kh|kdz|kp|kdp|kr|kdr|kx|ky) → PD + CoM BoS feedback
 
     The synergy basis (ICA-PCA) is optional: it is loaded for analysis and
     projection, but the policy output is always 290-D (the full muscle space).
@@ -82,18 +85,30 @@ class SynergyDecoder:
         self._load_basis()
 
     def _validate_blocks(self):
-        if self.blocks == 7:
-            return  # PD with velocity feedback
-        if self.blocks <= 5:
-            return  # P-only (4 or 5 blocks, backward-compatible with parser)
+        if self.blocks in (4, 6, 7, 9):
+            return  # valid layouts
+        if self.blocks == 5:
+            return  # P-only + load (legacy)
         raise ValueError(
             f"theta has {self.blocks} blocks of {self.nu}; "
-            f"expected 4 (P-only), 5 (P-only + load), or 7 (PD with velocity).")
+            f"expected 4 (P-only), 6 (P+CoM), 7 (PD), or 9 (PD+CoM).")
 
     def _load_blocks(self):
         nu = self.nu
         th = self.theta
-        if self.blocks == 7:
+        if self.blocks == 9:
+            # PD+CoM layout: a0 | kh | kdz | kp | kdp | kr | kdr | kx | ky
+            self.a0  = th[0*nu:1*nu]
+            self.kh  = th[1*nu:2*nu]
+            self.kdz = th[2*nu:3*nu]
+            self.kp  = th[3*nu:4*nu]
+            self.kdp = th[4*nu:5*nu]
+            self.kr  = th[5*nu:6*nu]
+            self.kdr = th[6*nu:7*nu]
+            self.kx  = th[7*nu:8*nu]
+            self.ky  = th[8*nu:9*nu]
+            self.kw = np.zeros(nu)
+        elif self.blocks == 7:
             # PD layout: a0 | kh | kdz | kp | kdp | kr | kdr
             self.a0  = th[0*nu:1*nu]
             self.kh  = th[1*nu:2*nu]
@@ -102,6 +117,17 @@ class SynergyDecoder:
             self.kdp = th[4*nu:5*nu]
             self.kr  = th[5*nu:6*nu]
             self.kdr = th[6*nu:7*nu]
+            self.kx = self.ky = None
+            self.kw = np.zeros(nu)
+        elif self.blocks == 6:
+            # P+CoM layout: a0 | kh | kp | kr | kx | ky
+            self.a0  = th[0*nu:1*nu]
+            self.kh  = th[1*nu:2*nu]
+            self.kp  = th[2*nu:3*nu]
+            self.kr  = th[3*nu:4*nu]
+            self.kx  = th[4*nu:5*nu]
+            self.ky  = th[5*nu:6*nu]
+            self.kdz = self.kdp = self.kdr = None
             self.kw = np.zeros(nu)
         else:
             # P-only layout: a0 | kh | kp | kr [| kw]
@@ -111,6 +137,7 @@ class SynergyDecoder:
             self.kr  = th[3*nu:4*nu] if th.size >= 4*nu else np.zeros(nu)
             self.kw  = th[4*nu:5*nu] if th.size >= 5*nu else np.zeros(nu)
             self.kdz = self.kdp = self.kdr = None
+            self.kx = self.ky = None
 
     def _derive_target(self):
         """Read the derived pelvis target from the stand port if available."""
