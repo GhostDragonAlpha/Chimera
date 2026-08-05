@@ -54,10 +54,6 @@ NUDGE = 1e-6
 # cadence: 20 ms, 50 Hz
 CTRL_EVERY = 20
 
-# PD finite-difference window: velocity estimated over PD_DT seconds of sim time.
-# Matches the CTRL_EVERY cadence (50 Hz -> dt = 0.02 s).
-PD_DT = 0.020
-
 # THE PRIMARY LEG JOINTS. The model also carries `knee_angle_*_beta_*`, `*_translation*` and
 # `*_rotation*` -- the coupled DOFs of the knee's four-bar mechanism, driven by knee_angle, not
 # independently actuated. Grading the body on those would be grading it on the consequences of a
@@ -171,7 +167,7 @@ def _load_tables(m, d, mujoco, jids):
     return _LOAD_TABLES[key]
 
 
-def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=False):
+def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     """One life under a candidate. Returns (score, trace, pics).
 
     `joints` selects the JOINTS TERM'S SHAPE and exists so the change to it has a control:
@@ -187,16 +183,6 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=
     has (a height it must hold and a lean that will topple it), and theStance publishes the
     fall rate that makes the second one urgent.
 
-    `pd=True` extends the formula with DERIVATIVE feedback (velocity), adding 3 blocks:
-      [a0 | kh | kdz | kp | kdp | kr | kdr]  (7 blocks = 7*nu)
-    The derivatives are computed by FINITE DIFFERENCES over the control cadence:
-      ż  = (z - z_prev) / dt
-      θ̇  = (pitch - pitch_prev) / dt
-      ṙ  = (roll - roll_prev) / dt
-    where dt = CTRL_EVERY * m.opt.timestep = 0.02 s. This is PD, not PI: the derivative acts on
-    the OBSERVATION (the lean rate), not the ERROR (the height error's rate). The lean rate is
-    the most direct signal of an imminent topple, and the height rate is the body's own
-    compression -- both are the dynamics the body must react to, not the error integral.
 
     `seed` WAS A DEAD PARAMETER UNTIL 2026-08-04, and that is the defect this docstring exists
     to name. It sat in the signature and appeared NOWHERE in the body: every caller that passed
@@ -218,20 +204,8 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=
     # the lesson this session paid for twice, in the walk port: a number optimised against
     # a plant the judge does not run is dead at judgment. A 3-block theta still works and
     # is bit-identical to the old formula, because kr is then zeros.
-    #
-    # SEVEN BLOCKS (PD): a0 | kh | kdz | kp | kdp | kr | kdr. The kdz/kdp/kdr gains feed back
-    # the finite-difference velocity of z, pitch, roll -- the dynamics the inverted pendulum
-    # commits to, not just its position. This doubles the observation from 3->6 dims.
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
     kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
-    if pd and theta.size >= 7 * nu:
-        kdz = theta[2 * nu:3 * nu]      # NOTE: in 7-block layout, block 2 is kdz, not kp
-        kp  = theta[3 * nu:4 * nu]      # block 3 is kp
-        kdp = theta[4 * nu:5 * nu]
-        kr  = theta[5 * nu:6 * nu]
-        kdr = theta[6 * nu:7 * nu]
-    else:
-        kdz = kdp = kdr = None
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
@@ -259,14 +233,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             z_err = tgt - z
-            if pd and kdz is not None:
-                zd = (z - prev["z"]) / dt if prev else 0.0
-                pd_val = (pitch - prev["pitch"]) / dt if prev else 0.0
-                rd = (roll - prev["roll"]) / dt if prev else 0.0
-                u = (a0 + kh * z_err + kdz * zd + kp * pitch + kdp * pd_val
-                     + kr * roll + kdr * rd)
-            else:
-                u = a0 + kh * z_err + kp * pitch + kr * roll
+            u = a0 + kh * z_err + kp * pitch + kr * roll
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
             prev = {"z": z, "pitch": pitch, "roll": roll}
         mujoco.mj_step(m, d)
@@ -309,7 +276,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=
     score = tot / max(n, 1) - (3.0 if fell else 0.0) - 2.0 * (1.0 - (k + 1) / steps)
     return float(score), tr, pics
 
-def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge", pd=False):
+def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge"):
     """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
     worst one. Returns `(score, trace, pics, per_seed_scores)`.
 
@@ -328,9 +295,9 @@ def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge",
     """
     if seeds <= 1:
         s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames,
-                               joints=joints, pd=pd)
+                               joints=joints)
         return s, tr, pics, [s]
-    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i, joints=joints, pd=pd)
+    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i, joints=joints)
             for i in range(seeds)]
     scores = [r[0] for r in runs]
     w = int(np.argmin(scores))
@@ -338,13 +305,13 @@ def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge",
     # (scoring a population) never pays for a renderer it will not look at
     if frames:
         _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames,
-                               joints=joints, pd=pd)
+                               joints=joints)
     else:
         tr, pics = runs[w][1], runs[w][2]
     return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
-def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k=6, pd=False):
+def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k=6):
     """MEASURE the step this policy's own landscape supports, instead of halving a cold guess.
 
     RULE 1 APPLIED TO THE SEARCH ITSELF. `train_stand`'s warm start set `sd = 0.5 * sd` -- half
@@ -377,7 +344,7 @@ def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k
     Returns `(sd_scaled, report)`. Costs `len(ladder) * k` evaluations, once.
     """
     ladder = (1.0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5)
-    inc = score_theta(m, d, mujoco, mu, P, secs, seeds, joints=joints, pd=pd)[0]
+    inc = score_theta(m, d, mujoco, mu, P, secs, seeds, joints=joints)[0]
     report = []
     chosen = None
     for s in ladder:
@@ -385,7 +352,7 @@ def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k
         for _ in range(k):
             cand = mu + rng.normal(0.0, 1.0, size=mu.shape) * sd * s
             cand[:m.nu] = np.clip(cand[:m.nu], 0.0, 1.0)
-            if score_theta(m, d, mujoco, cand, P, secs, seeds, joints=joints, pd=pd)[0] > inc:
+            if score_theta(m, d, mujoco, cand, P, secs, seeds, joints=joints)[0] > inc:
                 hits += 1
         frac = hits / k
         report.append((s, frac))
@@ -442,11 +409,6 @@ def main() -> int:
     init = a[a.index("--init") + 1] if "--init" in a else None
     seeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 1
     out_name = a[a.index("--out") + 1] if "--out" in a else "stand_theta.npy"
-    # PD: velocity feedback. The --blocks flag stays for the P-only A/B arms (3|4);
-    # --pd adds 3 velocity blocks (kdz, kdp, kdr) for a 7-block PD theta.
-    # The observation doubles from {z, pitch, roll} to {z, ż, pitch, pitcḣ, roll, roll̇},
-    # computed by finite differences over the control cadence (CTRL_EVERY * timestep = 0.02 s).
-    pd = "--pd" in a
     # BLOCKS: 4 = a0|kh|kp|kr (with the frontal-plane roll term), 3 = a0|kh|kp (without it).
     # THIS EXISTS TO MAKE AN A/B POSSIBLE, and without it the roll experiment has no control.
     # Training a 4-block policy from scratch and comparing it to the SAVED incumbent compares
@@ -457,13 +419,8 @@ def main() -> int:
     #
     # A 3-block run still SAVES 4*nu numbers with kr = 0, so every consumer (parser, walk_formula,
     # f3) reads one shape and the two arms are interchangeable at judgment.
-    blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else (7 if pd else 4)
-    if pd and blocks not in (7,):
-        if blocks == 4:
-            blocks = 7  # --pd upgrades to 7 blocks automatically
-        else:
-            raise SystemExit("--pd requires 7 blocks (a0|kh|kdz|kp|kdp|kr|kdr). Refusing.")
-    if not pd and blocks not in (3, 4):
+    blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else 4
+    if blocks not in (3, 4):
         raise SystemExit("--blocks must be 3 (no roll term) or 4 (with it). Refusing.")
     # THE JOINTS TERM'S SHAPE, and its control. "hinge" = the derived per-joint sum; "retired" =
     # the max-then-gaussian, executable so the A/B has an arm that is the old reward exactly.
@@ -495,8 +452,6 @@ def main() -> int:
     nu = m.nu
     dim = blocks * nu   # a0 | kh | kp [| kr -- the roll block, 2026-08-04]
     # INITIALIZATION. a0 starts at 0.15 (mid-range activation); every gain starts at 0.
-    # Velocity gains (kdz, kdp, kdr) start at ZERO so PD begins from the P-only policy's
-    # behaviour and the velocity terms only move if the search finds them useful.
     mu = np.concatenate([np.full(nu, 0.15)] + [np.zeros(nu)] * (blocks - 1))
     sd = np.concatenate([np.full(nu, 0.15)] + [np.full(nu, 0.6)] * (blocks - 1))
     if init:
@@ -508,13 +463,6 @@ def main() -> int:
             mu = np.concatenate([mu, np.zeros(nu)])   # so the warm start is the old policy exactly
         if mu.size == 4 * nu and blocks == 3:   # a 4-block checkpoint into a 3-block search: the
             mu = mu[:3 * nu]                    # roll block is DROPPED, and the arm says so
-        # PD WARM START: pad a 4-block theta with zeros for the 3 velocity blocks.
-        if mu.size == 4 * nu and blocks == 7:
-            # 4-block layout: a0 | kh | kp | kr
-            # 7-block layout: a0 | kh | kdz | kp | kdp | kr | kdr
-            # Map: a0->a0, kh->kh, kp->kdz(zero), kp->kp, kp->kdp(zero), kr->kr, kr->kdr(zero)
-            a0_, kh_, kp_, kr_ = mu[:nu], mu[nu:2*nu], mu[2*nu:3*nu], mu[3*nu:4*nu]
-            mu = np.concatenate([a0_, kh_, np.zeros(nu), kp_, np.zeros(nu), kr_, np.zeros(nu)])
         sd = 0.5 * sd
         print(f"warm start from {init}")
     elite = max(3, pop // 5)
@@ -545,7 +493,7 @@ def main() -> int:
               f"(criterion: >= the search's own elite fraction {elite}/{pop} = "
               f"{elite/pop:.2f} of samples must beat the incumbent)")
         sd, step_report = derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints,
-                                      elite / pop, rng, pd=pd)
+                                      elite / pop, rng)
         for s, frac in step_report["ladder"]:
             print(f"     x{s:<8g} {100*frac:>5.0f}% beat the incumbent"
                   + ("   <- CHOSEN" if s == step_report["chosen"] else ""))
@@ -565,10 +513,7 @@ def main() -> int:
           f"g {g:.4f}, {nu} muscles, {dim}-dim search "
           f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})",
           end="")
-    if pd:
-        print(f"  [PD - velocity feedback: zd, pitch_dot, roll_dot via finite differences, dt=0.02 s]")
-    else:
-        print()
+    print()
     print(f"  joints term: {joints.upper()}"
           + ("  (per-joint hinge summed over every graded joint -- the derived form)"
              if joints == "hinge" else
@@ -595,7 +540,7 @@ def main() -> int:
         # policy cannot be lost by looking for a better one), and it costs one evaluation.
         cand[0] = mu
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
-        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds, joints=joints, pd=pd)[0]
+        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds, joints=joints)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
@@ -625,7 +570,7 @@ def main() -> int:
         # centre, and freezing it too would stop the search refining.
         el_mean = el.mean(0)
         if elite_guard:
-            em_score = score_theta(m, d, mujoco, el_mean, P, secs, seeds, joints=joints, pd=pd)[0]
+            em_score = score_theta(m, d, mujoco, el_mean, P, secs, seeds, joints=joints)[0]
             moved = em_score > scores[0]
             mu = el_mean if moved else mu
         else:
@@ -634,7 +579,7 @@ def main() -> int:
         sd = el.std(0) + sd_floor
         best_theta = cand[order[0]]
         s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6,
-                                             joints=joints, pd=pd)
+                                             joints=joints)
         # THE BAR IS THE MINIMUM OVER THE FULL FIVE SECONDS, NOT THE PEAK OVER ONE.
         # The first version printed PROVEN on turn 0 because the KEYFRAME starts at 0.98 m: the
         # "peak" was the starting height, and a 1.0 s rollout satisfied a 5 s requirement. That is
@@ -687,27 +632,11 @@ def main() -> int:
     # SAVED AT dim NUMBERS WHATEVER THE ARM. A 3-block winner is padded with an explicit zero roll
     # block, so both arms hand the judge the identical shape and `walk_formula`/`parser` need no
     # branch. The zeros are the without-roll policy exactly -- kr * roll = 0 for every roll.
-    #
-    # PD (7-block) checkpoints bypass the parser's `check_theta_shape` -- the parser declares only
-    # 5 STAND_BLOCKS (a0|kh|kp|kr|kw) and cannot grow past it (it is the button-layer contract).
-    # The 7-block layout is the SynergyDecoder's contract, not the parser's. A local shape check
-    # guards the save instead.
     saved = best_ever[1]
     if saved.size == 3 * nu and blocks == 4:
         saved = np.concatenate([saved, np.zeros(nu)])
-    if pd and saved.size == 4 * nu:
-        # pad 4-block warm start to 7-block (zeros for velocity gains)
-        saved = np.concatenate([saved[:nu], saved[nu:2*nu], np.zeros(nu),
-                                saved[2*nu:3*nu], np.zeros(nu),
-                                saved[3*nu:4*nu], np.zeros(nu)])
-    if blocks <= 5:
-        from parser import check_theta_shape
-        check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
-    else:
-        # PD: 7 blocks. Local shape guard since the parser does not know this layout.
-        assert saved.size == 7 * nu, \
-            f"PD theta must be 7*{nu}={7*nu}, got {saved.size}"
-        print(f"  [pd] shape check: {saved.size} = 7 x {nu}  (parser bypassed -- SynergyDecoder contract)")
+    from parser import check_theta_shape
+    check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
     np.save(OUTDIR / out_name, saved)
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")

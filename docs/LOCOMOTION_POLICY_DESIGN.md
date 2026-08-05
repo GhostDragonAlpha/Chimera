@@ -227,11 +227,34 @@ the way `tools/search_landscape.py` draws one — a scale ladder around a known-
 >
 > | question | comparison | paired median | wins | sign test p | verdict |
 > |---|---|---:|---:|---:|---|
-> | **Q2** derivative | `pd` vs `p_only` | **+0.18 s** | 6/7 | 0.125 | positive, **not significant** |
+> | **Q2** derivative | `pd` vs `p_only` | +0.18 s | 6/7 | 0.125 | **superseded — see below** |
 > | **Q4** longer baseline | `pd_windowed` vs `pd` | **−0.04 s** | 2/7 | 0.688 | **no help** |
 > | **Q3** phase basis | `pd_phase` vs `pd` | **+0.00 s** | 3/7 (1 tie) | 1.000 | **adds nothing over PD** |
 > | objective v2 | `p_only`[support-only] vs [full] | **+0.20 s** | 6/7 | 0.125 | positive, not significant |
 > | objective v2 | `pd`[support-only] vs [full] | −0.02 s | 2/7 | 0.688 | no help |
+>
+> ### Q2 CORRECTED AT n = 24 — the direction survives, the magnitude does not
+>
+> The n = 7 reading above was **underpowered, and that is a fact about the design before it is a
+> fact about the body**: at n = 7 the *only* outcome reaching p ≤ 0.05 is a perfect 7/7
+> (p = 0.0156), so the experiment had exactly one significant result available to it. Held-out
+> seeds are cheap — a rollout ends when the body falls — so nothing was retrained, no theta moved,
+> the same two arms and the same `survive`; only **n went 7 → 24** (seeds 3–26).
+>
+> | | wins | ties | losses | win rate | paired median | paired mean | sign test p |
+> |---|---:|---:|---:|---:|---:|---:|---:|
+> | **`pd` vs `p_only`, n = 24** | **18** | 0 | 6 | 0.75 | **+0.040 s** | +0.054 s | **0.0227** |
+>
+> **RATE FEEDBACK IS REAL AND SIGNIFICANT, AND IT IS WORTH 0.04 s.** The direction held; the
+> effect size fell by a factor of four, because the first seven seeds happened to hold the larger
+> differences. Independently replicated (`agent_logs/t1_replication_n24.json`) — the two
+> measurements agree to the digit, and both reproduce the original seven seeds exactly, which is
+> the control that says one instrument is not measuring something adjacent to the other's.
+>
+> **AND IT SHARPENS THE HEADLINE RATHER THAN SOFTENING IT.** A statistically real +0.04 s sits
+> against an objective whose own worst mis-ranking is **0.78 s** — twenty times larger. The
+> policy class is not the wall, and now that is true with a significant effect measured rather
+> than an insignificant one assumed.
 >
 > **AND THE CONTROL SIZES ALL OF IT.** The theta each run *delivers* is the best-**objective** one;
 > the *ceiling* is the best held-out survival the search visited at any turn. `p_only` delivered
