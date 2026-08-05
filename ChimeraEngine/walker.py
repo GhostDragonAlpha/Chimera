@@ -840,3 +840,210 @@ def height_field_coarse(n, patch):
     Z = np.array([[height_at(x, y) for x in v] for y in v])
     _COARSE[n] = Z
     return Z
+
+
+class StandSimulator:
+    """MuJoCo stand policy simulator -- runs the body in physics, tracks survival.
+
+    THEORY (stated so it can fail):
+      STATEMENT  The stand policy (theta) decoded by SynergyDecoder produces muscle activations
+                  that the MuJoCo body can execute in real time, and the simulator's traced
+                  state (pelvis height, COM drift) is the ground truth for survival.
+      PREDICTION  Over 20 s the pelvis height stays above 50% of target and the COM drift
+                  stays within the base of support; the simulator reports held_time and fall_state.
+      FALSIFIER   If the body falls within the window where the training score said it should
+                  stand, the plant the judge runs does not match the plant the trainer optimised.
+
+    This is the bridge between the story's terrain Walker and the MuJoCo physics: the simulator
+    owns the MuJoCo state, and the live viewer reads its body positions as splats for rendering.
+    """
+
+    # MuJoCo geoms: body_id -> (color_rgb, radius_m) for splat rendering
+    _BODY_COLORS = {
+        "pelvis": (0.52, 0.44, 0.38),
+        "torso":  (0.52, 0.44, 0.38),
+        "head":   (0.52, 0.44, 0.38),
+        "thigh_r": (0.20, 0.30, 0.40),
+        "thigh_l": (0.20, 0.30, 0.40),
+        "shank_r": (0.20, 0.30, 0.40),
+        "shank_l": (0.20, 0.30, 0.40),
+        "foot_r":  (0.10, 0.10, 0.10),
+        "foot_l":  (0.10, 0.10, 0.10),
+        "toe_r":   (0.10, 0.10, 0.10),
+        "toe_l":   (0.10, 0.10, 0.10),
+    }
+
+    def __init__(self, theta_path=None, mujoco_body=None, gravity=None):
+        """Create the MuJoCo simulation environment with the stand policy.
+
+        Args:
+            theta_path: path to the .npy theta file (4-block P-only or 7-block PD).
+                        Defaults to ChimeraEngine/output/ports/stand_theta.npy
+            mujoco_body: path to the MuJoCo XML model. Defaults to the myobody.
+            gravity: override gravity (m/s^2). None uses the model's default.
+        """
+        import sys as _sys
+        import mujoco
+        _sys.path.insert(0, str(_HERE.parent / "tools"))
+        from world import load_body
+        from synergy import SynergyDecoder
+        from stand_port import derive_stand_port, MYOBODY
+
+        self.mujoco = mujoco
+        self.body_path = mujoco_body or MYOBODY
+        self.P = derive_stand_port()
+        self.tgt = float(self.P["OUT pelvis_target_m"])
+
+        # Load MuJoCo model
+        self.m, self.g = load_body(self.body_path, mujoco)
+        if gravity is not None:
+            self.m.opt.gravity[2] = -gravity
+            self.g = float(-self.m.opt.gravity[2])
+        self.d = mujoco.MjData(self.m)
+        self.nu = self.m.nu
+
+        # Load policy
+        self.theta_path = Path(theta_path) if theta_path else (_HERE / "output" / "ports" / "stand_theta.npy")
+        self.decoder = SynergyDecoder(theta_path=self.theta_path, tgt=self.tgt, nu=self.nu)
+        self.is_pd = self.decoder.blocks == 7
+
+        # State tracking
+        self.t = 0.0
+        self.prev_obs_state = None
+        self.held_time = 0.0          # how long pelvis has been above 90% of target
+        self.support_score = 1.0      # COM within base of support, 0..1
+        self.fall_state = "standing"  # "standing" | "falling" | "fallen"
+        self.fall_time = None         # when the fall below 50% target occurred
+        self.fell = False
+        self.ctrl_history = []        # muscle activations over time
+        self._b = lambda n: self.d.xpos[mujoco.mj_name2id(self.m, mujoco.mjtObj.mjOBJ_BODY, n)]
+
+        # Reset to keyframe 0 (seated pose)
+        self.reset()
+
+    def reset(self):
+        """Reset to the seated keyframe."""
+        self.mujoco.mj_resetDataKeyframe(self.m, self.d, 0)
+        self.mujoco.mj_forward(self.m, self.d)
+        # Apply the stand keyframe adjustments (seat_in_limits equivalent)
+        from train_stand import joint_ids, seat_in_limits
+        jids = joint_ids(self.m, self.mujoco)
+        seat_in_limits(self.m, self.d, self.mujoco, jids)
+        self.t = 0.0
+        self.prev_obs_state = None
+        self.held_time = 0.0
+        self.support_score = 1.0
+        self.fall_state = "standing"
+        self.fall_time = None
+        self.fell = False
+        self.ctrl_history = []
+
+    def step(self, n_substeps=1):
+        """Advance the MuJoCo simulation by n_substeps * CTRL_EVERY timesteps.
+
+        At each control tick, decodes the policy and applies muscle activations.
+        Returns (t, pelvis_z, fallen, held_time, support_score).
+        """
+        dt = float(self.m.opt.timestep)
+        ctrl_every = 20  # 50 Hz control rate
+        total_steps = n_substeps * ctrl_every
+
+        for k in range(total_steps):
+            if k % ctrl_every == 0:
+                obs, self.prev_obs_state = SynergyDecoder.obs_from_mujoco(
+                    self.d, self.m, self.tgt, prev=self.prev_obs_state)
+                u = self.decoder.decode(obs)
+                np.clip(u, 0.0, 1.0, out=u)
+                self.d.ctrl[:] = u
+                if (k % ctrl_every) == 0:
+                    self.ctrl_history.append(float(np.abs(u).mean()))
+                    if len(self.ctrl_history) > 300:  # keep last ~60s at 50Hz
+                        self.ctrl_history.pop(0)
+            self.mujoco.mj_step(self.m, self.d)
+            self.t += dt
+
+            # Check fall every control tick
+            if k % ctrl_every == 0:
+                z = float(self.d.qpos[2])
+                fall_bar = 0.5 * self.tgt
+                if z < fall_bar and not self.fell:
+                    self.fell = True
+                    self.fall_time = self.t
+                    self.fall_state = "fallen"
+                elif z < self.tgt:
+                    self.fall_state = "falling"
+                elif z >= 0.9 * self.tgt:
+                    self.held_time += ctrl_every * dt
+                    self.fall_state = "standing"
+
+                # Update support score (COM within base of support)
+                com = self.d.subtree_com[0]
+                try:
+                    foot = 0.25 * (self._b("calcn_r") + self._b("calcn_l") +
+                                   self._b("toes_r") + self._b("toes_l"))
+                    hw, hl = (self.P.get("OUT bos_half_lat_m", 0.1),
+                              self.P.get("OUT bos_half_fore_m", 0.1))
+                    dx = float(com[0] - foot[0])
+                    dy = float(com[1] - foot[1])
+                    self.support_score = float(np.exp(-((dx/hw)**2 + (dy/hl)**2)))
+                except Exception:
+                    self.support_score = 0.0
+
+        return dict(t=self.t, pelvis_z=float(self.d.qpos[2]),
+                    fell=self.fell, held_time=self.held_time,
+                    support_score=self.support_score, fall_state=self.fall_state,
+                    fall_time=self.fall_time)
+
+    def body_splats(self):
+        """Return MuJoCo geom positions as a splat buffer for the live viewer.
+
+        Produces an N x 24 float32 array in the matter.splat format:
+          [:,0:3]   = world position (x, y, z)
+          [:,16:19] = RGB color
+          [:,19]    = alpha
+          [:,20]    = radius (m)
+          [:,21:24] = normal (nx, ny, nz)
+          [:,11]    = SOLID flag
+
+        The MuJoCo model's geoms are mapped to splats so the viewer can render
+        the body in the SAME pipeline as the terrain splats.
+        """
+        import mujoco
+        m, d = self.m, self.d
+        geoms = []
+        for gi in range(m.ngeom):
+            g = m.geom(gi)
+            pos = d.geom_xpos[gi]
+            rot = d.geom_xmat[gi].reshape(3, 3)
+            # geom size -> radius (use the largest dimension)
+            size = m.geom_size[gi]
+            radius = float(np.max(size))
+            # geom type: 0=plane, 1=hull, 2=triangle, 3=sphere, 4=capsule, 5=cylinder, 6=cone, 7=arrow, 8=torus, 9=curve, 10=composite
+            gtype = int(g.type)
+            # color from geom rgba
+            rgba = m.geom_rgba[gi]
+            # normal: geom's local Z axis in world frame
+            normal = rot @ np.array([0, 0, 1], dtype=np.float64)
+            geoms.append((pos.copy(), rgba, radius, gtype, normal))
+
+        n = len(geoms)
+        if n == 0:
+            return np.zeros((0, 24), np.float32)
+
+        from matter import blank, SOLID
+        b = blank(n)
+        for i, (pos, rgba, radius, gtype, normal) in enumerate(geoms):
+            b[i, 0] = pos[0]     # x
+            b[i, 1] = pos[1]     # y
+            b[i, 2] = pos[2]     # z
+            # scale radius for splat rendering (geoms are small)
+            b[i, 20] = max(radius * 3.0, 0.01)     # splat size
+            b[i, 16] = rgba[0]   # R
+            b[i, 17] = rgba[1]   # G
+            b[i, 18] = rgba[2]   # B
+            b[i, 19] = rgba[3] if rgba[3] > 0 else 0.95  # alpha
+            b[i, 21] = normal[0] # nx
+            b[i, 22] = normal[1] # ny
+            b[i, 23] = normal[2] # nz
+            b[i, 11] = SOLID
+        return np.ascontiguousarray(b, dtype=np.float32)
