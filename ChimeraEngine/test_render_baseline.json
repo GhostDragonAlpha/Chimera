@@ -1,0 +1,343 @@
+{
+  "bands": {
+    "grain_drop": 0.2,
+    "max_pixel_drop": 0.5
+  },
+  "fov": 1.047,
+  "note": "Recorded by test_render_pipeline.py --baseline. Regenerate ONLY when a change to emit/LOD/render is intended; a diff here is the point of the file. Frame time is not recorded: it varies +-13% run to run on this box because the GPU is shared.",
+  "resolution": [
+    960,
+    540
+  ],
+  "terms": {
+    "aActiveInterior": {
+      "coverage": 0.214396,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 38765,
+      "n_lod": 16384
+    },
+    "aBlueWorld": {
+      "coverage": 0.210025,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 43000,
+      "n_lod": 16384
+    },
+    "aHuman": {
+      "coverage": 0.054842,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 16745,
+      "n_lod": 16384
+    },
+    "aNitrogenAtmosphere": {
+      "coverage": 0.166501,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 30500,
+      "n_lod": 16384
+    },
+    "aRockyPlanet": {
+      "coverage": 0.065133,
+      "drew": true,
+      "max_pixel": 208.0,
+      "n_grains": 29732,
+      "n_lod": 16384
+    },
+    "aSaltOcean": {
+      "coverage": 0.225922,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 34000,
+      "n_lod": 16384
+    },
+    "aSteppeBiomes": {
+      "coverage": 0.226956,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 34000,
+      "n_lod": 16384
+    },
+    "aTerraceMine": {
+      "coverage": 0.027145,
+      "drew": true,
+      "max_pixel": 250.0,
+      "n_grains": 36000,
+      "n_lod": 16384
+    },
+    "aTerrain": {
+      "coverage": 0.038671,
+      "drew": true,
+      "max_pixel": 237.0,
+      "n_grains": 262144,
+      "n_lod": 16384
+    },
+    "aYellowStar": {
+      "coverage": 0.189111,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 31000,
+      "n_lod": 16384
+    },
+    "theAnkle": {
+      "coverage": 0.016071,
+      "drew": true,
+      "max_pixel": 222.0,
+      "n_grains": 1541,
+      "n_lod": 1541
+    },
+    "theAtmosphere": {
+      "coverage": 0.149726,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 12000,
+      "n_lod": 12000
+    },
+    "theBalance": {
+      "coverage": 0.01974,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 1826,
+      "n_lod": 1826
+    },
+    "theBiomes": {
+      "coverage": 0.23244,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 12000,
+      "n_lod": 12000
+    },
+    "theBreath": {
+      "coverage": 0.21341,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 4200,
+      "n_lod": 4200
+    },
+    "theClock": {
+      "coverage": 0.028274,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 18200,
+      "n_lod": 16384
+    },
+    "theCloud": {
+      "coverage": 0.029356,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 16000,
+      "n_lod": 16000
+    },
+    "theCooling": {
+      "coverage": 0.206117,
+      "drew": true,
+      "max_pixel": 235.0,
+      "n_grains": 14000,
+      "n_lod": 14000
+    },
+    "theDensityClock": {
+      "coverage": 0.024138,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 22000,
+      "n_lod": 16384
+    },
+    "theDescent": {
+      "coverage": 0.283127,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 2200,
+      "n_lod": 2200
+    },
+    "theEmptying": {
+      "coverage": 0.212045,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 12000,
+      "n_lod": 12000
+    },
+    "theEye": {
+      "coverage": 0.128507,
+      "drew": true,
+      "max_pixel": 110.0,
+      "n_grains": 3294,
+      "n_lod": 3294
+    },
+    "theFlight": {
+      "coverage": 0.293266,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 1800,
+      "n_lod": 1800
+    },
+    "theGalaxy": {
+      "coverage": 0.031576,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 35000,
+      "n_lod": 16384
+    },
+    "theGarden": {
+      "coverage": 0.269657,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 3000,
+      "n_lod": 3000
+    },
+    "theGrip": {
+      "coverage": 0.036412,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 4280,
+      "n_lod": 4280
+    },
+    "theGround": {
+      "coverage": 0.010318,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 26000,
+      "n_lod": 16384
+    },
+    "theHand": {
+      "coverage": 0.007882,
+      "drew": true,
+      "max_pixel": 188.0,
+      "n_grains": 2956,
+      "n_lod": 2956
+    },
+    "theHorizon": {
+      "coverage": 0.237569,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 9500,
+      "n_lod": 9500
+    },
+    "theHuman": {
+      "coverage": 0.053364,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 3120,
+      "n_lod": 3120
+    },
+    "theHumanClock": {
+      "coverage": 0.015422,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 17000,
+      "n_lod": 16384
+    },
+    "theInterior": {
+      "coverage": 0.219894,
+      "drew": true,
+      "max_pixel": 246.0,
+      "n_grains": 6996,
+      "n_lod": 6996
+    },
+    "theLoad": {
+      "coverage": 0.059215,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 4414,
+      "n_lod": 4414
+    },
+    "theMining": {
+      "coverage": 0.096113,
+      "drew": true,
+      "max_pixel": 232.0,
+      "n_grains": 9000,
+      "n_lod": 9000
+    },
+    "theOcean": {
+      "coverage": 0.228509,
+      "drew": true,
+      "max_pixel": 254.0,
+      "n_grains": 12000,
+      "n_lod": 12000
+    },
+    "thePlanets": {
+      "coverage": 0.033605,
+      "drew": true,
+      "max_pixel": 142.0,
+      "n_grains": 24336,
+      "n_lod": 16384
+    },
+    "theRockyPlanet": {
+      "coverage": 0.210826,
+      "drew": true,
+      "max_pixel": 173.0,
+      "n_grains": 41974,
+      "n_lod": 16384
+    },
+    "theSeed": {
+      "coverage": 0.307602,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 1400,
+      "n_lod": 1400
+    },
+    "theShip": {
+      "coverage": 0.275557,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 2600,
+      "n_lod": 2600
+    },
+    "theSkin": {
+      "coverage": 0.117809,
+      "drew": true,
+      "max_pixel": 190.0,
+      "n_grains": 1040,
+      "n_lod": 1040
+    },
+    "theSolarSystem": {
+      "coverage": 0.029844,
+      "drew": true,
+      "max_pixel": 175.0,
+      "n_grains": 20000,
+      "n_lod": 16384
+    },
+    "theStance": {
+      "coverage": 0.018968,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 1726,
+      "n_lod": 1726
+    },
+    "theStar": {
+      "coverage": 0.036387,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 20000,
+      "n_lod": 16384
+    },
+    "theSweep": {
+      "coverage": 0.205822,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 5200,
+      "n_lod": 5200
+    },
+    "theTerrain": {
+      "coverage": 0.211601,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 55000,
+      "n_lod": 16384
+    },
+    "theThrust": {
+      "coverage": 0.091047,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 2501,
+      "n_lod": 2501
+    },
+    "theZero": {
+      "coverage": 1.0,
+      "drew": true,
+      "max_pixel": 255.0,
+      "n_grains": 4000,
+      "n_lod": 4000
+    }
+  }
+}

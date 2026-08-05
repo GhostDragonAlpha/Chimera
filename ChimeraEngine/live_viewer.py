@@ -88,7 +88,10 @@ class LiveViewer:
         self._lod_level = None     # which mip rung is active (len-1 == the base, full detail)
         self._lod_levels_n = None  # how many rungs this body's pyramid has
         self._grains = 0           # grains in the last rendered frame (read off the pipeline)
-        self._ms_hist = []         # last 30 render times, ms -- the rolling fps
+        self._expansions = 0       # (splat, tile) pairs the binner emitted for that frame
+        self._eps = 0.0            # ... per visible splat: the shape-free form of "grains too big"
+        self._ms_hist = []         # last 30 RENDER times, ms -- the rolling fps
+        self._pub_hist = []        # ... and the JPEG encode beside it, so the two never merge again
         self._scrub_t = None           # set to a specific t for scrubbing a membrane's own timeline
         self._running = True
         self._err = None
@@ -105,6 +108,7 @@ class LiveViewer:
             from ParticleEngine.camera import FirstPersonCamera
             import lod as LOD
             import numpy as np
+            import perf_guard as _pg
             from PIL import Image
             pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
             cam = FirstPersonCamera((0.0, -self._radius, 0.0))
@@ -365,7 +369,22 @@ class LiveViewer:
                 params = params_hi
                 t_r0 = time.time()
                 img = pipe.render_from_gpu(cam, params)
+                t_render_ms = (time.time() - t_r0) * 1000.0
+                # ── THE PUBLISH IS TIMED SEPARATELY, AND IT WAS NOT ────────────────────────────
+                # The comment below has always said "RENDER TIME IS TIMED AROUND THE RENDER", and
+                # it was not true: `_publish` sat inside the timed region, so every fps number
+                # this viewer has ever reported included a 1920x1080 JPEG encode. MEASURED, that
+                # is most of the frame -- theZero renders in ~38 ms offline and the viewer
+                # reported 141.9 ms for the same scene, against 23.9 ms predicted by the cost
+                # model. Six times off, and the excess was the encoder.
+                #
+                # THE ENCODE IS REAL WORK AND IT IS NOT A RENDER. It sets how fast the MJPEG
+                # stream can go and belongs on screen, but attributing it to the render made the
+                # GPU look slow and made the expansion model look wrong -- a measurement blaming
+                # the wrong stage cannot be argued with, only re-measured.
+                t_p0 = time.time()
                 self._publish(img)
+                t_publish_ms = (time.time() - t_p0) * 1000.0
                 # ── THE FRAME BUDGET, MEASURED WHERE IT IS SPENT ────────────────────────────────
                 # The grain count is read off `pipe._n` rather than bookkept at each upload site.
                 # There are four of those and one of them is the LOD switch, which uploads a
@@ -376,7 +395,25 @@ class LiveViewer:
                 # RENDER TIME IS TIMED AROUND THE RENDER, not the whole iteration: the loop also
                 # sleeps to cap 60 fps, and including that would report the CAP as the cost and
                 # hide the moment the render itself stopped fitting inside it.
-                self._note_frame(int(getattr(pipe, "_n", 0)), (time.time() - t_r0) * 1000.0)
+                #
+                # THE FRAME BUDGET IS CHECKED HERE AND NOWHERE EARLIER, because the quantity it
+                # budgets does not exist until the frame has been binned. `check_frame_budget`
+                # used to take a grain count and could therefore run at upload; it now takes tile
+                # EXPANSIONS, which are produced by the render itself. Asking before the render
+                # would mean asking a question the pipeline cannot yet answer, which is what the
+                # grain-count budget was doing for as long as it existed.
+                #
+                # IT PRINTS, IT DOES NOT RAISE. The render thread owns the GPU for the whole
+                # session; an exception here kills the viewer over a scene that is merely slow,
+                # and a dead viewer reports nothing at all.
+                _exp = int(pipe.expansion_count())
+                try:
+                    _pg.check_frame_budget(_exp)
+                except Exception as _e:
+                    if isinstance(_e, getattr(_pg, "PerfBudgetError", Exception)):
+                        print(f"[PERF] {self._loaded or '<none>'}: {_e}", flush=True)
+                self._note_frame(int(getattr(pipe, "_n", 0)), t_render_ms,
+                                 _exp, float(pipe.expansions_per_splat()), t_publish_ms)
                 time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
         except Exception as e:                                          # a dead render thread must be visible, not silent
             import traceback
@@ -408,8 +445,9 @@ class LiveViewer:
             return
         density_enforce(term, n)          # prints to stderr with the floor and the surface type
 
-    def _note_frame(self, grains: int, ms: float):
-        """Record one rendered frame: its grain count and how long the render took.
+    def _note_frame(self, grains: int, ms: float, expansions: int = 0, eps: float = 0.0,
+                    publish_ms: float = 0.0):
+        """Record one rendered frame: its grain count, its tile work, and how long it took.
 
         THE FPS IS A ROLLING MEAN OVER THE LAST 30 RENDERS, not an instantaneous 1/dt. A single
         frame's time is dominated by whatever else the shared 4090 was doing that millisecond --
@@ -419,9 +457,19 @@ class LiveViewer:
         """
         with self._lock:
             self._grains = grains
+            # THE EXPANSION COUNT IS INSTANTANEOUS WHERE THE TIME IS ROLLED, and the asymmetry is
+            # deliberate. The frame time is noisy because this box shares its 4090 with LM Studio,
+            # so it needs 30 frames to mean anything. The expansion count is DETERMINISTIC for a
+            # given (buffer, camera): the same view produces the same number every frame, and a
+            # rolling mean over it would only blur the moment a camera move changed it.
+            self._expansions = int(expansions)
+            self._eps = float(eps)
             self._ms_hist.append(float(ms))
+            self._pub_hist.append(float(publish_ms))
             if len(self._ms_hist) > 30:
                 del self._ms_hist[:-30]
+            if len(self._pub_hist) > 30:
+                del self._pub_hist[:-30]
 
     def stats(self) -> dict:
         """The frame budget as a number, for the footer and for /stats.
@@ -430,21 +478,60 @@ class LiveViewer:
         rather than copied so the HUD cannot disagree with the guard that raises.
         """
         try:
-            from perf_guard import MAX_GRAINS_PER_FRAME as _CAP, MAX_RENDER_MS as _MS
+            from perf_guard import (MAX_GRAINS_PER_FRAME as _CAP, MAX_RENDER_MS as _MS,
+                                    MAX_EXPANSIONS_PER_FRAME as _ECAP, predicted_ms as _pred)
         except Exception:
-            _CAP, _MS = 250_000, 200
+            _CAP, _MS, _ECAP = 250_000, 200, 6_154_729
+            _pred = lambda e: 0.0
+        try:
+            from ParticleEngine.gpu_pipeline import TILE_SIZE as _TS, MAX_PER_TILE as _MPT
+        except Exception:
+            _TS, _MPT = 32, 16384
         with self._lock:
             hist = list(self._ms_hist)
+            pub = list(self._pub_hist)
             g = int(self._grains)
+            exp = int(self._expansions)
+            eps = float(self._eps)
         ms = sum(hist) / len(hist) if hist else 0.0
-        return {"fps": round(1000.0 / ms, 2) if ms > 1e-9 else 0.0,
+        pub_ms = sum(pub) / len(pub) if pub else 0.0
+        # HOW CLOSE THE WHOLE SCREEN IS TO ITS PER-TILE CEILING. `MAX_PER_TILE` evicts the far
+        # splats in any tile that overflows, and an eviction is something NOT DRAWN -- so this is
+        # the one number here that predicts a visual defect (hard-edged black rectangles on the
+        # tile grid) rather than a slow frame.
+        #
+        # IT IS AN AVERAGE AND CANNOT SEE ONE HOT TILE. A scene at 3% here can still have a single
+        # tile at 100%, which is why `CHIMERA_TILE_DIAG=1` reports the hottest five individually.
+        # Reported anyway because the average moving is a cheap early signal, and the expensive
+        # per-tile maximum costs a second GPU sync per frame on the live render thread.
+        screen_tiles = max(1, ((_W + _TS - 1) // _TS) * ((_H + _TS - 1) // _TS))
+        # `fps` IS THE FRAME RATE A VIEWER SEES, so it is 1000/(render + publish) -- both have to
+        # happen before the next picture appears. `render_ms` is the render ALONE, which is what
+        # `predicted_ms` models and the only one of the two the expansion budget governs.
+        frame_ms = ms + pub_ms
+        return {"fps": round(1000.0 / frame_ms, 2) if frame_ms > 1e-9 else 0.0,
                 "render_ms": round(ms, 2),
+                "publish_ms": round(pub_ms, 2),
+                "frame_ms": round(frame_ms, 2),
                 "grains": g,
                 "grain_cap": int(_CAP),
                 "budget_pct": round(100.0 * g / max(_CAP, 1), 1),
                 "over_budget": bool(g > _CAP),
                 "render_ms_cap": int(_MS),
                 "over_time": bool(ms > _MS),
+                # ── WHAT THE FRAME ACTUALLY COST (2026-08-04) ────────────────────────────────
+                # `grains`/`budget_pct` above are the SUPERSEDED model, kept because the HUD and
+                # existing callers read them. These four are the measured one.
+                "expansions": exp,
+                "expansions_per_splat": round(eps, 2),
+                "expansion_cap": int(_ECAP),
+                "expansion_pct": round(100.0 * exp / max(_ECAP, 1), 2),
+                "over_expansions": bool(exp > _ECAP),
+                "tile_expansion_ratio": round(exp / float(screen_tiles * _MPT), 6),
+                "screen_tiles": screen_tiles,
+                # The model's own guess, next to the measured time. A prediction on screen beside
+                # the thing it predicts is a prediction somebody will notice going wrong.
+                "predicted_ms": round(float(_pred(exp)), 2),
                 "term": self._loaded or "",
                 # LOD, so a caller can see WHICH rung is active rather than infer it from a count.
                 "lod_level": self._lod_level,
@@ -1197,13 +1284,20 @@ paintTree();
   const el=document.getElementById('budget');
   if(!el) return;
   const tick=()=>fetch('/stats').then(r=>r.json()).then(s=>{
-    const g=(s.grains||0).toLocaleString(), cap=(s.grain_cap||0).toLocaleString();
-    /* BOTH WALLS ARE SHOWN, because a scene can be inside the grain cap and still too slow --
-       grains and milliseconds are different budgets and only one of them is what a viewer feels. */
-    const over=s.over_budget||s.over_time;
-    const what=s.over_budget?'BUDGET OVER':(s.over_time?'TOO SLOW':'OK');
+    const g=(s.grains||0).toLocaleString();
+    const e=(s.expansions||0).toLocaleString(), ecap=(s.expansion_cap||0).toLocaleString();
+    /* GRAINS ARE STILL SHOWN AND ARE NO LONGER THE BUDGET. The wall is EXPANSIONS -- (splat,tile)
+       pairs -- which the 35-row sweep put at R^2 0.995 against frame time where grain count sat at
+       0.472. The grain count stays on screen because it is the number a person changes when they
+       edit an emit(), and watching it move independently of the cost is the fastest way to learn
+       that a few huge splats outrank many small ones. */
+    const over=s.over_expansions||s.over_time;
+    const what=s.over_expansions?'EXPANSIONS OVER':(s.over_time?'TOO SLOW':'OK');
     el.innerHTML='fps: <i>'+(s.fps||0).toFixed(1)+'</i> &middot; '+(s.render_ms||0).toFixed(0)+' ms'+
-                 ' &middot; grains: <i>'+g+'</i> / '+cap+' ('+(s.budget_pct||0).toFixed(1)+'%)'+
+                 ' (pred '+(s.predicted_ms||0).toFixed(0)+')'+
+                 ' &middot; grains: <i>'+g+'</i>'+
+                 ' &middot; expansions: <i>'+e+'</i> / '+ecap+' ('+(s.expansion_pct||0).toFixed(1)+'%)'+
+                 ' &middot; '+(s.expansions_per_splat||0).toFixed(1)+' tiles/splat'+
                  ' &middot; budget: <i>'+what+'</i>';
     el.style.color = over ? '#ff5555' : '';
   }).catch(()=>{});

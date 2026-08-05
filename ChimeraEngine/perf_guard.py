@@ -39,53 +39,136 @@ MAX_GRAINS_PER_TILE = 16384
 # which is the model being wrong rather than the measurement being noisy. Replacing one unmeasured
 # number with a better-dressed unmeasured number is the move this studio has a rule against.
 # MAX_RENDER_MS below is the wall that means something; nothing in the registry is within 4x of it.
+#
+# SUPERSEDED 2026-08-04 AS A FRAME BUDGET. `check_frame_budget` no longer reads it --
+# MAX_EXPANSIONS_PER_FRAME below is the frame check, and the 35-row sweep put grain count's R^2 at
+# 0.472 (and at 0.042 with the single outlier removed, i.e. essentially no predictive power on an
+# ordinary scene). This constant survives for exactly one job: the `general` fallback in
+# `_classify_budget`, where the question is "is this membrane suspiciously dense" and NOT "will
+# this frame drop". Those are different questions and only the second one has been solved.
 MAX_GRAINS_PER_FRAME = 250_000
 # Desired frame time budget at 60 fps simulation (not render) target
 MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 
-# ── WHAT ACTUALLY PREDICTS A FRAME'S COST (measured 2026-08-04, 35-row sweep) ────────────────────
-# Four candidate predictors were fitted against the SAME rows. Neither of the two that had been
-# proposed works, and one of them was my own hypothesis from a two-point sample:
+# ── WHAT ACTUALLY PREDICTS A FRAME'S COST (measured 2026-08-04, FULL 35-row sweep) ───────────────
+# Five candidate predictors fitted against the SAME rows -- 7 surface classes x 5 zoom levels,
+# `docs/pipeline_benchmark.csv`. The earlier note here reported the expansion fit at n = 4 and
+# flagged that as its weakness; this is the same fit at n = 35, so the number is no longer a
+# promise:
 #
-#     coverage fraction            R^2 = 0.11      (the "coverage is the real driver" claim)
-#     grain count                  R^2 = 0.48      (what MAX_GRAINS_PER_FRAME assumes)
-#     grains x coverage            R^2 = 0.85      (better, but carried by one outlier)
-#     TILE EXPANSIONS              R^2 = 0.998     (n=4, and it is a MECHANISM)
+#     coverage fraction            R^2 = 0.127     (the "coverage is the real driver" claim)
+#     expansions per splat         R^2 = 0.307
+#     visible grain count          R^2 = 0.430
+#     grain count uploaded         R^2 = 0.472     (what MAX_GRAINS_PER_FRAME assumes)
+#     TILE EXPANSIONS              R^2 = 0.995     (and it is a MECHANISM, not a shape)
 #
-# A tile expansion is one (splat, tile) pair: the binner and the sorter process exactly these, so
-# this is not a curve fitted to a shape, it is a count of the work being done. The pipeline
-# already computes it -- `CHIMERA_TILE_DIAG=1` prints "total expansions".
+# A tile expansion is one (splat, tile) pair. The binner emits exactly these, the sorter sorts
+# exactly these, and the compositor walks exactly these per pixel -- so this is a count of work,
+# not a curve fitted to a silhouette.
 #
-# THE CASE THAT KILLS BOTH SIMPLE MODELS: theMining at 0.25x zoom has only 8,157 splats and 52%
-# coverage, and costs 49 ms -- more than aBlueWorld's 43,000 splats at 96% coverage (28 ms).
-# Neither its grain count nor its coverage is remarkable. Its EXPANSION count is 1.3 MILLION,
-# because at that zoom its splats are enormous and each one lands in hundreds of tiles.
+# THE CASE THAT KILLS BOTH SIMPLE MODELS: theMining at 0.25x zoom has 8,157 visible splats and 52%
+# coverage, and costs 65 ms -- more than aBlueWorld's 43,000 splats at 96% coverage (45 ms).
+# Neither its grain count nor its coverage is remarkable. Its EXPANSION count is 1.31 MILLION,
+# because at that zoom each of its grains lands in ~160 tiles.
 #
 #     A FEW HUGE SPLATS COST MORE THAN MANY SMALL ONES, and grain count cannot see the difference.
 #
-# HONEST LIMIT: n = 4 for the expansion fit and its R^2 is inflated by one extreme point; the
-# mid-range residuals are +37% and -23%. It is the best of the four and the only one with a
-# mechanism behind it, and it is still a 4-point fit. Treat the cap below as an order of magnitude.
-MAX_TILE_EXPANSIONS = 6_900_000     # (MAX_RENDER_MS - 12.39) / 2.7013e-5, from the fit above
+# THE HONEST LIMIT SURVIVED THE BIGGER SAMPLE, and it is the same one: ONE extreme point carries
+# the headline figure. Drop aTerrain at 0.25x (12.8M expansions, 393 ms) and the fit reads
+#
+#     expansions R^2 = 0.829 | grains R^2 = 0.042 | coverage R^2 = 0.449   (n = 34)
+#
+# So 0.995 is inflated and 0.83 is the number to quote for an ordinary scene. THE RANKING IS NOT
+# INFLATED -- expansions wins by 0.38 over the next best either way, and grain count COLLAPSES to
+# 0.042 without the outlier, which means its apparent 0.47 was that single point too. The model
+# being replaced was standing on the same rock as the model replacing it; only one of them is
+# still standing when the rock is removed.
+#
+# TWO ROWS RENDER NOTHING (aSaltOcean and aSteppeBiomes at 0.25x: the camera is inside the shell,
+# 0 visible splats, 0 expansions) and they cost 10.1-10.3 ms. That is the REAL fixed floor of this
+# pipeline -- kernel launches, the two host round-trips, the image download. The fitted intercept
+# of 21.0 ms is higher because a straight line has to bend to reach the outlier; when a budget
+# says "a scene costs 21 ms before it draws anything", the measured answer is 10.
+MS_PER_EXPANSION = 2.9083e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
+FIXED_MS = 21.002                  # fitted intercept (measured empty-frame floor is ~10.2 ms)
 
 
-def check_work_budget(expansions: int, max_expansions: int = MAX_TILE_EXPANSIONS):
+def expansions_for_ms(target_ms: float) -> int:
+    """How many (splat, tile) pairs fit inside `target_ms`, from the measured fit.
+
+    THE CAP IS DERIVED, NEVER CHOSEN. The alternative on the table was "measure one membrane at
+    default framing and multiply by 1.5", and it is worth recording why that was not taken: it
+    makes the budget a property of whichever membrane got measured, and the 50% is taste wearing
+    a decimal point. Measured against the 35-row sweep, a cap built that way (aRockyPlanet at
+    default framing = 149,302 -> cap 223,953) fires on 12 of 35 rows and FIVE OF THOSE RENDER IN
+    UNDER 33 ms -- it flags fast scenes as over budget, which is precisely the false-positive
+    check the same task asked for. A wall you cannot pass without being wrong is not a wall.
+
+    Inverting the fit ties the cap to the only number here anybody declared on purpose: how long a
+    frame is allowed to take. Change MAX_RENDER_MS and every cap moves with it.
+    """
+    return max(0, int((float(target_ms) - FIXED_MS) / MS_PER_EXPANSION))
+
+
+# THE FRAME CAP, DERIVED FROM THE DECLARED WALL. At MAX_RENDER_MS = 200 this is ~6.15M, and the
+# n=4 fit that preceded it said 6.9M -- an 11% move, which is the sample size mattering less than
+# it might have.
+#
+# READ THIS BEFORE RAISING AN EYEBROW AT HOW LOOSE IT IS. 200 ms is 5 fps. A cap derived from it
+# fires on exactly ONE of the 35 measured rows, and it lets theMining at 0.25x (1.31M expansions,
+# 65 ms) through. That is not the guard failing -- 65 ms IS inside a 200 ms budget, and a guard
+# that fired there would be disagreeing with the wall it was derived from. If a 65 ms frame should
+# be an error, the thing that is wrong is MAX_RENDER_MS, and it is one line above. For reference,
+# measured against the same 35 rows:
+#
+#     MAX_RENDER_MS = 200 (5 fps)   -> cap 6,154,819   1 row fires,  0 false positives
+#     MAX_RENDER_MS =  33 (30 fps)  -> cap   423,000   8 rows fire,  2 false positives
+#     MAX_RENDER_MS =  16 (60 fps)  -> cap         0   every row fires -- the FLOOR alone is 21 ms,
+#                                                      so 60 fps is not reachable by ANY scene here
+#                                                      and no budget can express it
+#
+# That last line is the useful one: this pipeline cannot render a 60 fps frame at 1920x1080 even
+# empty, so a 60 fps target is a statement about the pipeline, not about any membrane in it.
+MAX_EXPANSIONS_PER_FRAME = expansions_for_ms(MAX_RENDER_MS)
+MAX_TILE_EXPANSIONS = MAX_EXPANSIONS_PER_FRAME      # the previous name, kept for existing callers
+
+
+def check_frame_budget(expansions: int, max_expansions: int = None,
+                       target_ms: float = MAX_RENDER_MS):
     """Assert the per-frame (splat, tile) pair count stays within budget.
 
-    This is the budget that MEANS something. `check_frame_budget` counts grains, which the
-    measurement shows explains under half the variance in frame time; this counts the pairs the
-    tile binner and sorter actually process, which explains nearly all of it.
+    THE ARGUMENT CHANGED MEANING AND THE OLD ONE CANNOT BE PASSED BY ACCIDENT IN A WAY THAT
+    MATTERS. This used to take a grain count against MAX_GRAINS_PER_FRAME; it now takes tile
+    expansions. A stale caller handing it grains compares a number against a cap 25x larger and
+    simply never fires -- it goes quiet rather than lying, which is the failure direction to
+    prefer, but `gpu_pipeline.upload()` was the only such caller and it no longer calls this at
+    all. Expansions DO NOT EXIST at upload time; the frame has to be binned first.
 
-    It is not wired into `upload()` because the count does not exist until the frame has been
-    binned -- by then the work is done. It is for the diagnostic path and for anything that
-    renders offline and can afford to look afterwards.
+    A frame is charged for every pair the binner emits, including the ones the per-tile cap is
+    about to evict -- so this is checked against the pre-cap total. See `_tile_stats` in
+    gpu_pipeline for why that is the right side of the cap to budget.
     """
-    if expansions > max_expansions:
+    cap = MAX_EXPANSIONS_PER_FRAME if max_expansions is None else max_expansions
+    if expansions > cap:
         raise PerfBudgetError(
-            f"Frame work budget exceeded: {expansions:,} tile expansions > {max_expansions:,} "
-            f"max (~{MAX_RENDER_MS} ms). This is usually a few OVERSIZED splats, not too many "
-            f"of them -- check the per-splat radius before reducing the count."
+            f"Frame budget exceeded: {expansions:,} tile expansions > {cap:,} max "
+            f"(~{target_ms:.0f} ms at {MS_PER_EXPANSION:.4g} ms/expansion + {FIXED_MS:.1f} ms "
+            f"fixed). Predicted {MS_PER_EXPANSION*expansions + FIXED_MS:.0f} ms. This is usually "
+            f"a few OVERSIZED splats, not too many of them -- check the per-splat radius "
+            f"(pipe.expansions_per_splat()) before reducing the count."
         )
+
+
+def check_work_budget(expansions: int, max_expansions: int = None):
+    """The name this check had while `check_frame_budget` still meant grains. Same check."""
+    check_frame_budget(expansions, max_expansions)
+
+
+def predicted_ms(expansions: int) -> float:
+    """What the fit says this frame should cost. For a HUD that wants to show the model's guess
+    next to the measured time -- a model whose disagreement with reality is on screen is a model
+    somebody will notice going wrong."""
+    return MS_PER_EXPANSION * float(expansions) + FIXED_MS
 
 
 # ── Per-surface-type budgets (derived from Laguna density table) ────────────────────────────────
@@ -104,16 +187,6 @@ BUDGET_ATMOSPHERE_GRAINS = 50_000
 BUDGET_STELLAR_GRAINS = 60_000
 # Human-scale bodies: detailed, near-field
 BUDGET_BODY_GRAINS = 20_000
-
-
-def check_frame_budget(n_grains: int, max_grains: int = MAX_GRAINS_PER_FRAME,
-                       target_ms: float = MAX_RENDER_MS):
-    """Assert the per-frame grain count stays within the total budget."""
-    if n_grains > max_grains:
-        raise PerfBudgetError(
-            f"Frame budget exceeded: {n_grains} grains > {max_grains} max. "
-            f"Reduce LOD distance or decrease base density."
-        )
 
 
 def check_surface_budget(term: str, n_grains: int):
@@ -214,10 +287,15 @@ def report(term: str, n_grains: int) -> str:
 
 
 if __name__ == "__main__":
-    print("Perf guard budgets (Task 7):")
-    print(f"  MAX_GRAINS_PER_FRAME  = {MAX_GRAINS_PER_FRAME}")
-    print(f"  MAX_GRAINS_PER_TILE   = {MAX_GRAINS_PER_TILE}")
-    print(f"  MAX_RENDER_MS         = {MAX_RENDER_MS}")
+    print("Perf guard budgets:")
+    print(f"  MAX_RENDER_MS            = {MAX_RENDER_MS} ms   <- the declared wall; everything below is derived from it")
+    print(f"  MAX_EXPANSIONS_PER_FRAME = {MAX_EXPANSIONS_PER_FRAME:,}  "
+          f"= ({MAX_RENDER_MS} - {FIXED_MS}) / {MS_PER_EXPANSION:.4e}")
+    for _t in (16.7, 33.3, 50.0, 100.0, 200.0):
+        print(f"      at {_t:6.1f} ms ({1000/_t:5.1f} fps) the cap would be {expansions_for_ms(_t):>10,d}")
+    print(f"  MAX_GRAINS_PER_FRAME     = {MAX_GRAINS_PER_FRAME}  (SUPERSEDED as a frame budget; "
+          f"still the `general` surface fallback)")
+    print(f"  MAX_GRAINS_PER_TILE      = {MAX_GRAINS_PER_TILE}")
     print(f"  BUDGET_TERRAIN        = {BUDGET_TERRAIN_GRAINS}")
     print(f"  BUDGET_ROCK           = {BUDGET_ROCK_GRAINS}")
     print(f"  BUDGET_SAND           = {BUDGET_SAND_GRAINS}")

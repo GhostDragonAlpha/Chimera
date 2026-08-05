@@ -31,6 +31,7 @@ sys.path.insert(0, str(_HERE))
 
 import splat_appearance as sa
 import lod as LOD
+import perf_guard
 from ParticleEngine.gpu_pipeline import FullGPUPipeline
 from ParticleEngine.camera import FirstPersonCamera
 
@@ -101,6 +102,25 @@ def _render_frame(pipe, cam, buf, title: str, frame_idx: int, term: str = "") ->
     if buf is not None and buf.shape[0] > 0:
         pipe.upload(np.ascontiguousarray(buf, dtype=np.float32), term=term)
         img = pipe.render_from_gpu(cam, cam.params(_W, _H))
+        # ── THE FRAME BUDGET, CHECKED AFTER THE FRAME EXISTS ────────────────────────────────────
+        # The tour is the one place every membrane passes a single checkpoint, so it is where an
+        # over-budget stop should announce itself. What it checks changed: `upload()` used to test
+        # the GRAIN count here, and the 35-row sweep put that predictor at R^2 0.472 against frame
+        # time. Tile expansions read 0.995, and they cannot be known until the frame is binned --
+        # so the check moved from before the render to after it.
+        #
+        # THE TOUR RENDERS AT 1280x720 AND THE BUDGET WAS FITTED AT 1920x1080. The cap is NOT
+        # rescaled for that, and the direction of the error is worth stating rather than hiding:
+        # fewer pixels means fewer tiles, so the same scene expands into fewer pairs here and the
+        # tour is being judged slightly leniently. A lenient wall that is honest about being
+        # lenient beats a rescaled one nobody measured.
+        _exp = int(pipe.expansion_count())
+        try:
+            perf_guard.check_frame_budget(_exp)
+        except perf_guard.PerfBudgetError as e:
+            print(f"[PERF] frame {frame_idx}: {_exp:,} expansions > "
+                  f"{perf_guard.MAX_EXPANSIONS_PER_FRAME:,} -- {term or title}", flush=True)
+            print(f"[PERF]   {e}", flush=True)
     else:
         img = np.zeros((_H, _W, 3), dtype=np.uint8)
         img[:, :, :] = (4, 5, 11)
@@ -232,8 +252,13 @@ def run():
         # was never called.
         _nb = 0 if current_buf is None else int(current_buf.shape[0])
         _nd = 0 if draw_buf is None else int(draw_buf.shape[0])
+        # AND THE EXPANSION COUNT, which is the number that predicts the millisecond beside it.
+        # `drawn` and `ms` sitting on one line without it is how a tour reports 9,000 grains at
+        # 65 ms and gives a reader nothing to explain it with.
+        _exp = int(pipe.expansion_count())
         print(f"  f{frame:<5d} {current_term:<22s} base={_nb:>7d} drawn={_nd:>7d} "
               f"lod={'base' if _nd == _nb else f'mip/{_nb / max(_nd, 1):.0f}x'} "
+              f"exp={_exp:>10,d} ({pipe.expansions_per_splat():5.1f}/splat) "
               f"{_ms:6.1f} ms {1000.0 / max(_ms, 1e-6):5.1f} fps", flush=True)
 
         # Save frame

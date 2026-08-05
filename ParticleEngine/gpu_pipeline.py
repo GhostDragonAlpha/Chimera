@@ -14,6 +14,19 @@ import os as _os
 _TILE_DIAG = _os.environ.get('CHIMERA_TILE_DIAG') == '1'
 # how full a tile must get before it is worth reporting, as a fraction of the cap
 _TILE_DIAG_AT = float(_os.environ.get('CHIMERA_TILE_DIAG_AT', '0.5'))
+# ── THREE DIAGNOSTIC LENSES OVER THE SAME COST, EACH ANSWERING A DIFFERENT QUESTION ─────────────
+# The frame cost is (splat, tile) pairs. Given a scene that costs too much, there are three
+# distinct things you can be asking, and one flag cannot serve all three:
+#
+#   _EXPAND_DIAG  HOW MANY pairs, and how many per splat  -> is this scene's problem SIZE or COUNT
+#   _SIZE_DIAG    WHERE in the buffer the large grains are -> is it all of them or a tail
+#   _CLAMP_SIZE   what happens if the tail is removed      -> is the tail actually the cost
+#
+# The third is a LENS, not a physics change: it alters what you SEE, never what the membrane IS,
+# which is why it is off by default and named so that leaving it on is obviously a lie.
+_EXPAND_DIAG = _os.environ.get('CHIMERA_EXPANSION_DIAG') == '1'
+_SIZE_DIAG = _os.environ.get('CHIMERA_SPLAT_SIZE_DIAG') == '1'
+_CLAMP_SIZE = _os.environ.get('CHIMERA_CLAMP_SPLAT_SIZE') == '1'
 TILE_SIZE = 32
 # HOW MANY SPLATS ONE 32-PX TILE MAY HOLD. Past this the far ones are evicted, and if the survivors
 # do not happen to cover the tile you get a hard-edged black RECTANGLE on the tile grid.
@@ -481,6 +494,27 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
 # ═══════════════════════════════════════════════════════════════════
 #  PIPELINE
 # ═══════════════════════════════════════════════════════════════════
+def _tile_stats(expansions, kept, n_tiles, nv, hot=None):
+    """The per-frame tile-work record. ONE shape, both binner paths, so a reader of
+    `pipe.expansion_count()` cannot get a different thing depending on whether CuPy was present.
+
+    `expansions` is the count BEFORE the per-tile cap and `kept` is the count after, and the
+    distinction is the whole point rather than bookkeeping:
+
+        the binner EXPANDS all of them        -> cost scales with `expansions`
+        the sorter SORTS all of them          -> cost scales with `expansions`
+        the compositor BLENDS only survivors  -> cost scales with `kept`
+
+    Two of the three stages pay for the pairs that are about to be thrown away, so a budget written
+    against `kept` would under-count the work by exactly the amount the cap is doing. `expansions`
+    is the one to budget against; `kept` is here so the gap between them is visible instead of
+    inferred, because a large gap means the cap is evicting splats and something is being NOT DRAWN.
+    """
+    return {"expansions": int(expansions), "kept": int(kept),
+            "n_tiles": int(n_tiles), "nv": int(nv),
+            "hot": (None if hot is None else int(hot))}
+
+
 def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     """Tile binning with DEPTH ORDER preserved, via ONE global (tile, depth) sort -- the 3DGS approach.
 
@@ -491,7 +525,8 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     (which was slow): one vectorised numpy sort of ~10^5 pairs, ~tens of ms instead of ~600 ms."""
     nv = len(sx)
     n_tiles = tiles_x * tiles_y
-    empty = (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32))
+    empty = (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32),
+             _tile_stats(0, 0, n_tiles, 0))
     if nv == 0:
         return empty
     # CLAMP BEFORE THE CAST, OR int64 WRAPS AND A SPAN GOES NEGATIVE.
@@ -538,7 +573,8 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     within = np.arange(total, dtype=np.int64) - np.repeat(np.cumsum(per_tile) - per_tile, per_tile)
     keep = within < np.repeat(capped, per_tile)                       # cap per tile -> keep the NEAREST
     offsets = np.zeros(n_tiles + 1, dtype=np.int32); offsets[1:] = np.cumsum(capped)
-    return sorted_splat[keep], offsets
+    return (sorted_splat[keep], offsets,
+            _tile_stats(total, int(capped.sum()), n_tiles, nv, hot=int(per_tile.max())))
 
 
 def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
@@ -563,10 +599,15 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     ty0 = cp.clip((py - r) // tile_sz, 0, tiles_y - 1); ty1 = cp.clip((py + r) // tile_sz, 0, tiles_y - 1)
     nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
     counts = (nx * ny).astype(cp.int64)
+    # THIS SYNC IS NOT NEW AND THE EXPANSION COUNT IS THEREFORE FREE. `total` has always been
+    # computed here because the zero-check below needs it on the host; it was simply thrown away
+    # afterwards. Reporting it costs no additional device->host transfer, which is why the count
+    # can be on the LIVE path rather than behind a diagnostic flag.
     total = int(counts.sum())
     if nv == 0 or total == 0:
         z = cp.zeros(0, cp.int32); o = cp.zeros(n_tiles + 1, cp.int32)
-        return cuda.as_cuda_array(z), cuda.as_cuda_array(o), (z, o)
+        return (cuda.as_cuda_array(z), cuda.as_cuda_array(o), (z, o),
+                _tile_stats(0, 0, n_tiles, nv))
     splat = cp.repeat(cp.arange(nv, dtype=cp.int64), counts)          # depth rank (nearest first)
     local = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(counts) - counts, counts)
     nxr = cp.repeat(nx, counts)
@@ -624,8 +665,18 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     keep = within < cp.repeat(capped, per_tile)
     offsets = cp.zeros(n_tiles + 1, dtype=cp.int32); offsets[1:] = cp.cumsum(capped).astype(cp.int32)
     tids = cp.ascontiguousarray(sorted_splat[keep])
+    # KEPT AND HOT COST A SECOND SYNC, SO THEY ARE OPT-IN. `total` above is free (the zero-check
+    # already downloaded it); `capped.sum()` and `per_tile.max()` are not, and this runs once per
+    # frame on the live viewer's render thread. They are folded into ONE transfer when asked for,
+    # never two, and the frame budget in perf_guard is written against `expansions` precisely so
+    # that the number it needs is the free one.
+    _kept, _hot = -1, None
+    if _TILE_DIAG or _EXPAND_DIAG:
+        _both = cp.stack([capped.sum(), per_tile.max()]).get()
+        _kept, _hot = int(_both[0]), int(_both[1])
     # return numba views + the owning CuPy arrays (caller must hold them so the memory isn't freed)
-    return cuda.as_cuda_array(tids), cuda.as_cuda_array(offsets), (tids, offsets)
+    return (cuda.as_cuda_array(tids), cuda.as_cuda_array(offsets), (tids, offsets),
+            _tile_stats(total, _kept, n_tiles, nv, hot=_hot))
 
 
 class FullGPUPipeline:
@@ -633,6 +684,13 @@ class FullGPUPipeline:
         self.bg = bg; self.base_scale = base_scale
         self._a = 0; self._n = 0
         self.attractors: list = []  # [(x, y, z, strength, type_code, radius), ...]
+        # THE FRAME'S WORK, RECORDED RATHER THAN RECOMPUTED. `expansion_count()` returns what the
+        # binner actually did on the last frame, not a second pass over the same geometry. A
+        # recomputation can disagree with the render -- different visibility, a different camera,
+        # a buffer swapped underneath -- and a budget that is checked against a number the frame
+        # did not produce is a budget checking a hypothesis.
+        self._tile_stats = _tile_stats(0, 0, 0, 0)
+        self._last_term = ""
 
     def _grow(self, n):
         if n <= self._a: return
@@ -664,6 +722,136 @@ class FullGPUPipeline:
         self._to = cuda.device_array(max(20000, self._a), dtype=np.int32)
         self._tids = cuda.device_array(max_tile_entries, dtype=np.int32)
 
+    # ── WHAT THE LAST FRAME COST ────────────────────────────────────────────────────────────────
+    def _count_expansions(self) -> int:
+        """Total (splat, tile) pairs the binner produced for the last rendered frame.
+
+        This is the quantity the pipeline is actually billed for. `MAX_GRAINS_PER_FRAME` budgets
+        the splat count instead, and the two come apart badly: theMining draws 9,000 splats and
+        costs more than aBlueWorld's 43,000, because at a wide framing each of its grains covers
+        hundreds of tiles and each of those coverings is a separate unit of work.
+
+        Returns 0 before the first render -- an honest "no frame has been measured", which reads
+        differently from a small number and must not be confused with one.
+        """
+        return int(self._tile_stats.get("expansions", 0))
+
+    # PUBLIC NAME. `_count_expansions` is the internal one the perf work was specified against;
+    # the viewer, the demo tour and the benchmark are separate modules and should not be reaching
+    # through an underscore to ask a pipeline what it just did.
+    def expansion_count(self) -> int:
+        return self._count_expansions()
+
+    def expansions_per_splat(self) -> float:
+        """Tiles touched per visible splat. THE SHAPE-FREE FORM OF "the grains are too big".
+
+        Dividing by the visible count rather than the uploaded count is deliberate: a buffer whose
+        grains are mostly off-screen or behind the camera would otherwise report a small average
+        and hide the fact that the few splats being drawn are enormous.
+        """
+        st = self._tile_stats
+        nv = int(st.get("nv", 0))
+        return (float(st.get("expansions", 0)) / nv) if nv > 0 else 0.0
+
+    def tile_stats(self) -> dict:
+        """The whole record for the last frame. See `_tile_stats` for what `kept` means and why
+        it is -1 unless a diagnostic flag asked for it."""
+        return dict(self._tile_stats)
+
+    def _report_expansions(self, tiles_x: int, tiles_y: int) -> None:
+        """LOUD warning when one splat is covering a serious fraction of the screen's tiles.
+
+        THE THRESHOLD IS THE SCREEN, NOT THE POPULATION. Half of `tiles_x * tiles_y` is an absolute
+        reference that comes from outside the thing being measured -- the same discipline the splat
+        densification work had to learn the hard way, where a top-12%-by-gradient rule grew a real
+        capture and a known-flat clay control to the same 5,619 splats and could therefore report
+        nothing about either. A quantile of the splat sizes in this scene would call the largest
+        grains "too large" in every scene, including the ones that are fine.
+
+        It fires on the AVERAGE splat, which makes it deliberately hard to trip: a scene has to be
+        broadly over-sized, not merely own a few big grains. A term with a heavy tail and a fine
+        median is the case `CHIMERA_SPLAT_SIZE_DIAG=1` exists to show.
+        """
+        st = self._tile_stats
+        nv = int(st.get("nv", 0))
+        if nv <= 0:
+            return
+        eps = float(st["expansions"]) / nv
+        half_screen = 0.5 * tiles_x * tiles_y
+        if eps > half_screen:
+            # THE PROJECTED RADIUS IS MEASURED HERE AND NOT ALWAYS, and the reason is that this
+            # branch is rare while the sync it costs is not free. It is what makes the message
+            # ACTIONABLE instead of merely alarming.
+            #
+            # THE WARNING USED TO SAY "shrink SIZE column" AND THAT WAS WRONG ADVICE ON THE ONLY
+            # TERM THAT TRIPS IT. theZero has a SIZE of 0.03 -- among the SMALLEST of all 47
+            # membranes -- and still covers all 2,040 tiles, because its body_radius is 0 and the
+            # framing rule `2.8 * max(R, 1e-6)` puts the camera 2.8 microns away. The grains are
+            # not big; the camera is inside them. A diagnostic that names one cause when two
+            # produce the identical symptom sends a reader to edit an emit() that is fine.
+            try:
+                _r = self._krad.copy_to_host()[:nv]
+                _r = _r[np.isfinite(_r)]
+                _med = float(np.median(_r)) if _r.size else float("nan")
+                _mx = float(_r.max()) if _r.size else float("nan")
+            except Exception:
+                _med = _mx = float("nan")
+            print(f"[SPLAT SIZE] {self._last_term or '<untagged>'}: {eps:.0f} tiles/splat "
+                  f"(half-screen is {half_screen:.0f} of {tiles_x*tiles_y}; "
+                  f"{st['expansions']:,} expansions over {nv:,} visible splats). "
+                  f"PROJECTED radius median {_med:.1f} px, max {_mx:.1f} px -- "
+                  f"either the SIZE column is too large (check CHIMERA_SPLAT_SIZE_DIAG=1) or the "
+                  f"camera is too close for this body's extent (check body_radius vs distance).",
+                  flush=True)
+        elif _EXPAND_DIAG:
+            print(f"[expansion-diag] {self._last_term or '<untagged>'}: "
+                  f"{st['expansions']:,} expansions / {nv:,} splats = {eps:.1f} tiles/splat "
+                  f"(screen is {tiles_x*tiles_y} tiles)", flush=True)
+
+    @staticmethod
+    def _size_histogram(data) -> None:
+        """Log-binned histogram of the SIZE column, printed under CHIMERA_SPLAT_SIZE_DIAG=1.
+
+        Task 2's average says WHICH term is expensive; it cannot say whether every grain is large
+        or a tail of them is, and those want opposite fixes -- a density that is wrong everywhere
+        versus a handful of outliers. The bins are logarithmic because splat size in this project
+        spans membranes 41 orders of magnitude apart in scale; linear bins would put every term in
+        the first bucket.
+
+        DIAGNOSTIC ONLY. It downloads the size column, so it is never on the live path.
+        """
+        try:
+            col = np.asarray(data[:, SIZE], dtype=np.float64)
+        except Exception:
+            return
+        edges = [0.0, 0.001, 0.01, 0.1, 1.0, 10.0, float("inf")]
+        names = ["<1e-3", "1e-3..1e-2", "1e-2..0.1", "0.1..1", "1..10", ">10"]
+        counts = [int(((col >= edges[i]) & (col < edges[i + 1])).sum()) for i in range(len(names))]
+        finite = col[np.isfinite(col)]
+        mean = float(finite.mean()) if finite.size else 0.0
+        std = float(finite.std()) if finite.size else 0.0
+        mx = float(finite.max()) if finite.size else 0.0
+        print("[splat-size] size_hist = {"
+              + ", ".join(f"{n}: {c}" for n, c in zip(names, counts)) + "}", flush=True)
+        print(f"[splat-size]   n={col.size} mean={mean:.6g} std={std:.6g} max={mx:.6g} "
+              f"max/mean={(mx/mean if mean > 0 else 0.0):.1f}x", flush=True)
+        if std == 0.0 and col.size > 1:
+            # A PERFECTLY FLAT HISTOGRAM IS USUALLY NOT WHAT THE MEMBRANE EMITTED. `lod.build_mips`
+            # overwrites this column with the surface-grain law `beta * 2R / sqrt(N)` at EVERY
+            # level including the base one, so whatever emit() decided is gone by the time a
+            # buffer reaches here. Measured: aYellowStar emits {0.03, 0.33} -- a hot core and a
+            # soft corona, an 11x ratio -- and uploads a single 0.044. aRockyPlanet emits four
+            # sizes topping out at 0.0347 and uploads 0.1058, THREE TIMES its own largest grain.
+            #
+            # Reported rather than corrected: the same law is doing real work on the coarse
+            # levels, where a level of N grains genuinely must have grains that tile the surface.
+            # It is only its application to the FULL-DETAIL level that discards the emit.
+            print("[splat-size]   std is EXACTLY 0 -- every grain identical. If this membrane's "
+                  "emit() varies its\n[splat-size]   grain size, LOD flattened it: "
+                  "lod.build_mips overwrites SIZE with beta*2R/sqrt(N)\n"
+                  "[splat-size]   on the base level too. Compare against the raw scene_buffer().",
+                  flush=True)
+
     def upload(self, data, term=""):
         n = len(data)
         # ── THE BUDGET GUARD, and it is deliberately NON-FATAL here ──────────────────────────────
@@ -680,20 +868,72 @@ class FullGPUPipeline:
         # AND IT IS OPT-IN BY `term`. Without a term there is no surface class to check against and
         # a frame-budget check alone would fire on legitimate composites (the live viewer uploads
         # ground + body + touchables as one buffer). A caller that wants the check names itself.
+        #
+        # THE FRAME BUDGET IS NO LONGER CHECKED HERE, AND THAT IS THE POINT OF THE CHANGE.
+        # `check_frame_budget` used to take this `n` and compare it against MAX_GRAINS_PER_FRAME;
+        # the 35-row sweep showed grain count explains R^2 = 0.48 of frame time, so the check was
+        # firing on the wrong quantity. It now takes tile EXPANSIONS -- which DO NOT EXIST YET at
+        # upload time, because nothing has been projected or binned.
+        #
+        #     THE COST CANNOT BE KNOWN BEFORE THE FRAME IS BUILT. That is a fact about the
+        #     pipeline, not a shortcoming of the guard, and pretending otherwise is what the
+        #     grain-count budget was doing.
+        #
+        # So the frame check moved to the post-render call sites (live_viewer._loop,
+        # demo._render_frame, the benchmark), where the number is real. The per-surface grain
+        # budget stays here: it is a claim about a MEMBRANE'S DENSITY, which is knowable from the
+        # buffer alone and is a different question from what this frame will cost to draw.
+        self._last_term = term or ""
         if term:
             try:
-                from ChimeraEngine.perf_guard import (check_frame_budget, check_surface_budget,
-                                                      PerfBudgetError)
+                from ChimeraEngine.perf_guard import check_surface_budget, PerfBudgetError
             except Exception:                     # perf_guard absent -> render, do not crash
                 pass
             else:
-                for chk in (lambda: check_frame_budget(n), lambda: check_surface_budget(term, n)):
-                    try:
-                        chk()
-                    except PerfBudgetError as e:
-                        print(f"[GPU BUDGET] {e}")
+                try:
+                    check_surface_budget(term, n)
+                except PerfBudgetError as e:
+                    print(f"[GPU BUDGET] {e}")
+        if _SIZE_DIAG and n:
+            print(f"[splat-size] {term or '<untagged>'}:", flush=True)
+            self._size_histogram(data)
+        data = self._clamp_sizes(data, term) if (_CLAMP_SIZE and n) else data
         self._grow(n); self._n = n
         self._dp[:n*NCOLS] = cuda.to_device(data.ravel().astype(np.float32))[:n*NCOLS]
+
+    @staticmethod
+    def _clamp_sizes(data, term=""):
+        """Cap the SIZE column at 2x its own mean. A LENS -- gated by CHIMERA_CLAMP_SPLAT_SIZE=1.
+
+        IT COPIES, AND THE COPY IS LOAD-BEARING. The viewer hands `upload()` a view into
+        `_lod_base` or a cached mip level, which are built once per load and reused for every
+        subsequent frame. Clamping in place would write the lens into the membrane's stored
+        buffer, so turning the flag off again would not turn the effect off -- the modification
+        would persist for the rest of the session and quietly become what the membrane IS. A lens
+        that cannot be removed is not a lens.
+
+        The threshold is 2x THIS BUFFER'S mean, which makes it a within-scene outlier rule and
+        therefore unable to say anything about how this scene compares to another -- the same
+        limitation the densification work hit. It is the right shape for the question being asked
+        here ("is this term's cost carried by its own tail?") and the wrong shape for any question
+        about absolute size.
+        """
+        try:
+            col = np.asarray(data[:, SIZE], dtype=np.float32)
+            finite = col[np.isfinite(col)]
+            if finite.size == 0:
+                return data
+            cap = 2.0 * float(finite.mean())
+            n_over = int((col > cap).sum())
+            if n_over == 0:
+                return data
+            out = np.array(data, dtype=np.float32, copy=True)
+            out[:, SIZE] = np.minimum(np.nan_to_num(col, nan=cap, posinf=cap), cap)
+            print(f"[clamp] {term or '<untagged>'}: {n_over}/{col.size} splats over 2*mean "
+                  f"({cap:.6g}) clamped; was max {float(finite.max()):.6g}", flush=True)
+            return out
+        except Exception:
+            return data                      # a lens must never be the reason a frame fails
 
     def step_particles(self, dt, cvars):
         n = self._n
@@ -720,6 +960,7 @@ class FullGPUPipeline:
     def render_from_gpu(self, camera, params):
         n = self._n
         if n == 0:
+            self._tile_stats = _tile_stats(0, 0, 0, 0)   # empty buffer: no work, and say so
             return (np.full((params.height, params.width, 3),
                     [b*255 for b in self.bg], dtype=np.uint8))
         self._grow(n)
@@ -752,6 +993,12 @@ class FullGPUPipeline:
         hv = self._sv.copy_to_host()[:n]
         nv = int(hv.sum())
         if nv == 0:
+            # NOTHING SURVIVED THE CULL -> no tiles are built -> the recorded work must be ZEROED,
+            # not left holding the previous frame's. A stale count on an empty frame reads as
+            # "this scene is expensive" for a scene that drew nothing at all, and it is exactly
+            # the framing (camera pointed away, everything behind the near plane) where somebody
+            # is already looking for a reason the picture is blank.
+            self._tile_stats = _tile_stats(0, 0, 0, 0)
             return (np.full((params.height, params.width, 3),
                     [b*255 for b in self.bg], dtype=np.uint8))
         self._pfx[:n] = cuda.to_device(np.cumsum(hv.astype(np.int32)) - 1)
@@ -781,14 +1028,16 @@ class FullGPUPipeline:
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
         if _HAS_CUPY:
-            tids_dev, toff_dev, _own = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
+            tids_dev, toff_dev, _own, _st = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
                                                         tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
         else:
-            tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+            tids_h, toff_h, _st = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
                                               self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
             self._tids[:len(tids_h)] = cuda.to_device(tids_h)
             self._to[:nt + 1] = cuda.to_device(toff_h)
             tids_dev, toff_dev, _own = self._tids, self._to, None
+        self._tile_stats = _st
+        self._report_expansions(tx, ty)
 
         # GPU composite
         out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
@@ -852,6 +1101,12 @@ class FullGPUPipeline:
         hv = self._sv.copy_to_host()[:n]
         nv = int(hv.sum())
         if nv == 0:
+            # NOTHING SURVIVED THE CULL -> no tiles are built -> the recorded work must be ZEROED,
+            # not left holding the previous frame's. A stale count on an empty frame reads as
+            # "this scene is expensive" for a scene that drew nothing at all, and it is exactly
+            # the framing (camera pointed away, everything behind the near plane) where somebody
+            # is already looking for a reason the picture is blank.
+            self._tile_stats = _tile_stats(0, 0, 0, 0)
             return (np.full((params.height, params.width, 3),
                     [b*255 for b in self.bg], dtype=np.uint8))
         self._pfx[:n] = cuda.to_device(np.cumsum(hv.astype(np.int32)) - 1)
@@ -876,14 +1131,16 @@ class FullGPUPipeline:
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
         if _HAS_CUPY:
-            tids_dev, toff_dev, _own = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
+            tids_dev, toff_dev, _own, _st = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
                                                         tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
         else:
-            tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+            tids_h, toff_h, _st = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
                                               self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
             self._tids[:len(tids_h)] = cuda.to_device(tids_h)
             self._to[:nt + 1] = cuda.to_device(toff_h)
             tids_dev, toff_dev, _own = self._tids, self._to, None
+        self._tile_stats = _st
+        self._report_expansions(tx, ty)
 
         out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
         bk2 = (16, 16)
