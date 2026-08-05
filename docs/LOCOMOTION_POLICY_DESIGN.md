@@ -349,6 +349,68 @@ Three rules, each earned by a measurement above rather than reasoned to.
    search's own population. Same species as *never threshold on a quantile of the population you
    measure*.
 
+## 8. THE WALK AND THE LANDSCAPE (2026-08-04) — the derivative does not transfer, and it narrows the basin
+
+**THE WALK.** Two arms, identical in everything but the frozen stand substrate: the walk's eight
+oscillator numbers warm-started from `walk_theta_entrained`, trained 24×30 worst-of-3 × 8 s with
+derive-step and elite-guard, judged by `f4_walk` on held-out seeds 3–9.
+
+| walk arm | travel | **periodicity** | pelvis min | held |
+|---|---:|---:|---:|---:|
+| baseline (`walk_theta_entrained`, incumbent substrate) | 0.4603 m/s | **0.173** | 0.4121 m | 2.20 s |
+| **P-only substrate**, retrained | 0.4963 m/s | **0.245** | 0.4330 m | 2.08 s |
+| **PD substrate**, retrained | 0.4758 m/s | **0.188** | 0.4559 m | 2.18 s |
+
+Paired over the seven held-out seeds:
+
+| comparison | paired median periodicity | wins | p |
+|---|---:|---:|---:|
+| PD vs P-only | **−0.061** | 2/7 | 0.453 |
+| PD vs baseline | +0.015 | **7/7** | **0.016** |
+| P-only vs baseline | **+0.073** | **7/7** | **0.016** |
+
+**Task 7's falsifier fires on both statistics: the PD walk's periodicity is *lower* than the
+P-only walk's.** The derivative does not transfer from standing to walking. What *did* move is
+the search and the judge: both retrained arms beat the repaired baseline on 7/7 seeds
+(p = 0.016), and the larger gain belongs to the P-only substrate. **Every arm still fails all
+three F4 bars** — 0/7 seeds on travel, periodicity and upright. This is a better failure, not a
+walk.
+
+> **The baseline it is measured against had to be repaired first, twice.** The quoted prior best
+> — *"entrained+mult, periodicity 0.59, held 2.06 s"* — was scored at a **period of 0.14 s**, the
+> `_periodicity` window-floor artifact this document already records. Re-judged with the repaired
+> gauge it is **0.173**. And `f4_walk` was building its parser obs as `{z, pitch, t}` while
+> `move_formula_fn` read `obs.get("roll", 0.0)`, so **290 of the frozen stand policy's 1160
+> numbers were multiplied by zero at judgment** while `train_walk` trained against them —
+> travel 0.3495 → 0.4603 m/s, **+32%**, on the exact quantity falsifier 1 reads.
+> `tools/walk_roll_probe.py` measured it; the formula now refuses a lean-less obs.
+
+**THE LANDSCAPE.** `tools/search_landscape.py --class`, 24 samples per rung (the search's own
+population), ladder extended to 1e-6 so the answer is inside the measured curve:
+
+| perturbation × the trainer's warm step | `p_only` (1160 numbers) | `pd` (2030 numbers) |
+|---|---:|---:|
+| 1e-6 | 58.3% | **0.0%** |
+| 1e-5 | 75.0% | **0.0%** |
+| 3e-5 | 87.5% | **0.0%** |
+| 1e-4 | 16.7% | 0.0% |
+| 3e-4 | 16.7% | 0.0% |
+| ≥ 1e-3 | 0.0% | 0.0% |
+| **basin at the elite criterion (4/24)** | **1e-4 … 3e-4** | **below 1e-6** |
+
+**The PD basin is at least two decades narrower than the P-only one — the opposite of task 10's
+hypothesis.** Adding 870 parameters did not widen the landscape the search navigates; it made
+every perturbation, down to a step of ~1e-5 in ‖Δθ‖, strictly worse. Read `p_only`'s 58.3% at
+1e-6 for what it says: the incumbent is *not* at a local optimum, and a random tiny step is a
+coin toss. `pd`'s 0/24 at the same scale says it *is* at one.
+
+*Honest limit:* `p_only`'s qualifying rung sits exactly at the criterion — 16.7% **is** 4/24 — so
+which of 1e-4 and 3e-4 is "the" basin flips with the RNG realisation (12.5% = 3/24 on a different
+draw). The robust statement is the range, not a single rung. The PD result needs no such caveat:
+it is 0/24 everywhere.
+
+---
+
 **AND THE STANDING QUESTION IS NOW Q6, ALONE.** Q2, Q3 and Q4 are answered and all three answers
 are *"the policy class is not the wall"*. Nothing in the family — a derivative, a longer baseline,
 an oscillator basis, six ablations, a second objective — moved held-out survival by more than the
