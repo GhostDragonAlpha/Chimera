@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 _HERE = Path(__file__).resolve().parent
 _STORY = _HERE.parent / "story"
@@ -267,6 +268,238 @@ def term_numbers(term: str) -> dict:
 
 # SIZE column index — must match ParticleEngine.gpu_pipeline.SIZE and matter.SIZE
 SIZE = 20
+
+# ── THE ENGINE'S MOVIE PATH (recovered 2026-08-05) ─────────────────────────────────────────────
+# engine_state._appearance calls splat_appearance.project_movie(term, out) and expects a MOVIE
+# {"begin", "end"}. The density-lane rewrite (272f87c) stripped project_movie, SCENES, and every
+# authored scene builder from this file, so every declared-but-not-a-membrane term fell back to the
+# matplotlib placeholder (a single still duplicated as begin==end) -- which is exactly why the
+# theVerbs dyad failed: the proxy watched two IDENTICAL frames and reported "the scene stays the
+# same". The scene builders survive in git (70cc71f). Restoring the path here hands the engine back
+# its real render: a story membrane's own timeline (emit at t=0 -> t=1) and an authored two-frame
+# composition for the design-language terms that have no membrane.
+
+# the particle buffer layout the pipeline reads (ParticleEngine.core.COL)
+NCOLS = 28
+PX, PY, PZ = 0, 1, 2
+TYPE = 11
+CR, CG, CB, ALPHA = 16, 17, 18, 19
+NX, NY, NZ = 21, 22, 23     # OPTIONAL surface normal -> back-face-culls occluded grains (0,0,0 = no cull)
+
+
+def _seed(term: str) -> int:
+    """A stable per-term seed -- deterministic across processes (hash() is salted; zlib.crc32 is not)."""
+    import zlib
+    return zlib.crc32(term.encode("utf-8")) & 0x7FFFFFFF
+
+
+def _fibonacci_sphere(n: int, jitter: float = 0.0, seed: int = 0) -> np.ndarray:
+    """n unit vectors spread evenly over the sphere (the golden-angle spiral). Deterministic.
+
+    JITTER BREAKS THE LATTICE. The golden-angle spiral is *regular*, and a regular sampling pattern
+    is VISIBLE (faint curved streaks in a planet's ocean). `jitter` displaces each grain TANGENTIALLY
+    (in the surface, then renormalised onto the shell) by a fraction of the mean grain spacing,
+    turning the spiral into blue noise. It is tangential ON PURPOSE: RADIAL jitter scatters grains in
+    depth and lets the background speckle through between them."""
+    i = np.arange(n, dtype=np.float64)
+    z = 1.0 - 2.0 * (i + 0.5) / n                 # -1..1, even in area
+    r = np.sqrt(np.clip(1.0 - z * z, 0.0, 1.0))
+    theta = np.pi * (1.0 + 5.0 ** 0.5) * i        # golden angle
+    d = np.stack([r * np.cos(theta), r * np.sin(theta), z], axis=1)
+    if jitter > 0.0:
+        rng = np.random.default_rng(seed)
+        spacing = 2.0 / np.sqrt(max(n, 1))                       # mean angular spacing on a unit sphere
+        v = rng.normal(0.0, 1.0, (n, 3))
+        v -= (v * d).sum(1, keepdims=True) * d                   # project into the TANGENT plane
+        v /= (np.linalg.norm(v, axis=1, keepdims=True) + 1e-12)
+        d = d + v * (jitter * spacing * rng.random((n, 1)) ** 0.5)
+        d /= (np.linalg.norm(d, axis=1, keepdims=True) + 1e-12)  # back onto the shell: no depth change
+    return d
+
+
+def _dots(center, radius, n, color, rng):
+    """A tiny solid ball of one colour -- a small compact object drawn as grains."""
+    d = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    b[:, PX:PZ + 1] = np.asarray(center, np.float32) + d * radius
+    b[:, TYPE] = 3.0
+    b[:, ALPHA] = 0.8; b[:, SIZE] = 2.0
+    b[:, CR], b[:, CG], b[:, CB] = color
+    return b
+
+
+def _halo(center, radius, color, rng, alpha: float = 0.09, size: float = 1.8, n: int | None = None):
+    """A faint soft glow shell (atmosphere type = big soft blobs) -- a limb/atmosphere/star glow."""
+    if n is None:
+        n = max(300, int(0.06 * 4.0 * np.pi * radius * radius))
+    dirs = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    b[:, PX:PZ + 1] = np.asarray(center, np.float32) + dirs * radius
+    b[:, TYPE] = 5.0                                               # atmosphere: sm=6.0 -> big soft blobs
+    b[:, CR] = color[0]; b[:, CG] = color[1]; b[:, CB] = color[2]
+    b[:, ALPHA] = alpha; b[:, SIZE] = size
+    return b
+
+
+def _verbs_buffers(spec: dict, term: str):
+    """theVerbs: the acts that change the world. A verb IS a change, so the two frames must DIFFER in
+    the world, not in brightness. begin: ONE pale stone rests at the old place beside a reaching
+    figure, the path only a faint thread of intent. end: that same stone has ARRIVED at the new
+    place, lit and glowing -- a dim ghost where it was, a trail of pale forms brightening along the
+    rising curve between. The claim is not the figure and not the stone but the CHANGE: same object,
+    two places, one arc of action between them.
+
+    The proxy's own diagnosis drove the palette (2026-08-05): the first scene's cyan arc read as "a
+    second figure", and a trail in BOTH frames read as "no change". The expected reading is "repeated
+    PALE round forms that brighten along the curve", so every form here is the stone's own pale
+    colour and the arc is a faint grey thread -- and the stone itself sits in genuinely different
+    places across the two frames. Each change is traceable to the falsifier's specific failure; this
+    is one derived correction, not a sweep."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+
+    # ground hint: a sparse dark slab
+    n_g = 800
+    th = rng.random(n_g) * 2.0 * np.pi
+    rr = 60.0 * np.sqrt(rng.random(n_g))
+    ground = np.zeros((n_g, NCOLS), dtype=np.float32)
+    ground[:, PX] = rr * np.cos(th)
+    ground[:, PY] = rr * np.sin(th)
+    ground[:, PZ] = rng.normal(0.0, 0.7, n_g) - 0.5
+    ground[:, TYPE] = 3.0; ground[:, ALPHA] = 0.25; ground[:, SIZE] = 2.4
+    ground[:, CR], ground[:, CG], ground[:, CB] = 0.38, 0.40, 0.38
+
+    # the figure: a full upright form on the left
+    FX = -30.0
+    fig = []
+    body_c = (0.82, 0.80, 0.74)
+    n_b = 160
+    t = np.linspace(0.0, 1.0, n_b)
+    torso = np.zeros((n_b, NCOLS), dtype=np.float32)
+    torso[:, PX] = FX + rng.normal(0.0, 0.4, n_b)
+    torso[:, PZ] = 6.0 + 8.0 * t
+    torso[:, TYPE] = 3.0; torso[:, ALPHA] = 0.8; torso[:, SIZE] = 1.6
+    torso[:, CR], torso[:, CG], torso[:, CB] = body_c
+    fig.append(torso)
+    for lx in (-2.0, 2.0):                                          # legs
+        n_l = 90
+        tl = np.linspace(0.0, 1.0, n_l)
+        leg = np.zeros((n_l, NCOLS), dtype=np.float32)
+        leg[:, PX] = FX + lx + rng.normal(0.0, 0.3, n_l)
+        leg[:, PZ] = 0.5 + 5.5 * tl
+        leg[:, TYPE] = 3.0; leg[:, ALPHA] = 0.8; leg[:, SIZE] = 1.4
+        leg[:, CR], leg[:, CG], leg[:, CB] = body_c
+        fig.append(leg)
+    fig.append(_dots((FX, 0.0, 16.5), 2.4, 36, body_c, rng))        # head
+
+    def arm(reach):                                                 # the reaching arm
+        n_a = 110
+        t = np.linspace(0.0, 1.0, n_a)
+        a = np.zeros((n_a, NCOLS), dtype=np.float32)
+        a[:, PX] = FX + reach * t
+        a[:, PZ] = 13.5 + 2.0 * t + rng.normal(0.0, 0.3, n_a)
+        a[:, TYPE] = 3.0; a[:, ALPHA] = 0.8; a[:, SIZE] = 1.4
+        a[:, CR], a[:, CG], a[:, CB] = body_c
+        return a
+
+    OLD = (16.0, 0.0, 3.0)
+    NEW = (36.0, 0.0, 16.0)
+
+    # the stone and its pale kin -- ONE colour everywhere, so nothing reads as a second object
+    stone_c = (0.82, 0.80, 0.74)
+
+    def stone(pos, radius=4.0, alpha=0.9):
+        s = _dots(pos, radius, 60, stone_c, rng)
+        s[:, ALPHA] = alpha
+        return s
+
+    # the rising path of travel: stations along the arc, brightening toward the end
+    def trail(alpha_gain):
+        parts = []
+        for tt, al in ((0.12, 0.35), (0.32, 0.50), (0.52, 0.65), (0.72, 0.80)):
+            pos = (OLD[0] + (NEW[0] - OLD[0]) * tt, 0.0,
+                   OLD[2] + (NEW[2] - OLD[2]) * tt + 6.0 * np.sin(tt * np.pi))
+            st = _dots(pos, 3.2, 50, stone_c, rng)
+            st[:, ALPHA] = al * alpha_gain
+            parts.append(st)
+        return parts
+
+    # a faint grey thread between the stations -- continuity, never a bright object
+    n_arc = 220
+    t = np.linspace(0.0, 1.0, n_arc)
+    arc = np.zeros((n_arc, NCOLS), dtype=np.float32)
+    arc[:, PX] = OLD[0] + (NEW[0] - OLD[0]) * t
+    arc[:, PZ] = OLD[2] + (NEW[2] - OLD[2]) * t + 6.0 * np.sin(t * np.pi)
+    arc[:, TYPE] = 3.0; arc[:, SIZE] = 1.2
+    arc[:, CR], arc[:, CG], arc[:, CB] = 0.72, 0.74, 0.78
+    arc_dim = arc.copy(); arc_dim[:, ALPHA] = 0.10
+    arc_lit = arc.copy(); arc_lit[:, ALPHA] = 0.22
+
+    # the ghost: the dim shape of where the stone WAS, in the end frame
+    ghost = stone(OLD, radius=3.6, alpha=0.30)
+
+    # the arrived stone: lit and glowing warm-white at the new place
+    arrived = stone(NEW, radius=4.2, alpha=0.95)
+    glow = _halo(NEW, 7.5, (1.0, 1.0, 0.92), rng, alpha=0.16, size=1.9)
+
+    # begin: the stone AT the old place, the path only potential
+    begin = np.concatenate([ground] + fig + [arm(4.0), stone(OLD, alpha=0.9)]
+                           + trail(0.30) + [arc_dim], axis=0)
+    # end: the same stone ARRIVED -- a ghost where it was, a brightening trail, the arrived glow
+    end = np.concatenate([ground] + fig + [arm(15.0), ghost]
+                         + trail(0.85) + [arc_lit, arrived, glow], axis=0)
+    return end, begin
+
+
+# the authored compositions for the declared terms that have no story membrane. A term with a
+# membrane is ALWAYS rendered from its own emit() -- the folder wins -- and these are the fallback.
+_DESIGN_SCENES = {
+    "theVerbs": {"kind": "verbs", "cam": (0.0, -95.0, 30.0)},
+}
+_DESIGN_BUILDERS = {"verbs": _verbs_buffers}
+
+
+def project_movie(term: str, out_dir) -> dict | None:
+    """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene.
+
+    A story membrane's movie is its OWN timeline (emit at t=0 -> t=1), framed by its own extent. A
+    declared term with an authored composition (the design language: theVerbs) is drawn from its
+    two-state buffer pair. The engine's `_appearance` falls back to the matplotlib placeholder only
+    when BOTH are absent -- a term with no scene has no appearance, honestly."""
+    from ParticleEngine.gpu_pipeline import FullGPUPipeline
+    from ParticleEngine.camera import FirstPersonCamera
+
+    out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+
+    if term in _discover():                                          # THE FOLDER WINS, always
+        end_buf = membrane_buffer(term, 1.0)
+        begin_buf = membrane_buffer(term, 0.0)
+        if end_buf is None or begin_buf is None:
+            return None
+        extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0
+        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+    else:
+        spec = _DESIGN_SCENES.get(term)
+        if not spec:
+            return None
+        builder = _DESIGN_BUILDERS.get(spec["kind"])
+        if not builder:
+            return None
+        end_buf, begin_buf = builder(spec, term)
+        cam_pos = spec["cam"]
+
+    cx, cy, cz = cam_pos                                            # AIM at the body (origin)
+    cam = FirstPersonCamera(cam_pos, yaw=float(np.arctan2(-cy, -cx)),
+                            pitch=float(np.arctan2(-cz, float(np.hypot(cx, cy)))))
+    p = cam.params(720, 540)
+    pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
+    paths = {}
+    for label, buf in (("begin", begin_buf), ("end", end_buf)):
+        png = out / f"movie_{term}_{label}.png"
+        pipe.upload(np.ascontiguousarray(buf, dtype=np.float32), term=term)
+        Image.fromarray(pipe.render_from_gpu(cam, p)).save(png)
+        paths[label] = str(png)
+    return paths
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@
 |---|---|
 | `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — |
 | `theBiomes` | A biome is the largest community of life a climate can hold. Give a world's |
-| `theGarden` | Declared in terms_data.py; placed under aBlueWorld |
+| `theGarden` | The world grows its life in one place and the whole world agrees where: the |
 | `theInterior` | A rocky planet is shells: the heavy sank and the light floated, so it has an |
 | `theOcean` | An ocean is a liquid that gravity holds in a world's basins. Everything else |
 | `theTerrain` | The last chapter said how much water there is but refused to say where the coast |

@@ -23,9 +23,12 @@ def _engine(tmp_path):
 
 def _mock_dyad(term, frame, threshold=0.6, human_override=None):
     """Stand in for the LM-Studio vision human side in tests. PASS if the render is green (the mock
-    'good' appearance), FAIL_RESTART if not (the 'lie' the human rejects)."""
+    'good' appearance), FAIL_RESTART if not (the 'lie' the human rejects). The engine judges the MOVIE
+    ([begin, end]) -- the settled END frame is the state the dyad weighs."""
     from PIL import Image
     import numpy as np
+    if isinstance(frame, (list, tuple)):
+        frame = frame[-1]                                    # the movie's settled end
     a = np.asarray(Image.open(frame).convert("RGB"), dtype=float)
     r, g, b = a[..., 0].mean(), a[..., 1].mean(), a[..., 2].mean()
     ok = g > r + 5 and g > b + 5
