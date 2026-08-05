@@ -308,6 +308,47 @@ clamp equal to the pre-compression's own force fixes it, which is what confining
 Also: `slopes_below_repose` belongs to **aTerrain**, not theGround — guessing which membrane owns
 a number is the same error class as matching names instead of definitions.
 
+### Stage 11 — Hertzian contact and the Mindlin tangential force — **BUILT, PASSED**
+The refinement Stage 9 named, and the tangential half the seam was missing.
+
+**TWO CITED MODULI, AND EXACTLY TWO.** An isotropic elastic solid needs two independent moduli;
+bulk alone cannot produce a contact theory. `story/matter.py` now publishes **G** alongside B (both
+measured, entering as theStar's fusion constants do) and E, ν follow — α-quartz's unusually low
+**ν = 0.0742** among them. **Water is deliberately absent and `hertz.py` REFUSES it**: a fluid has
+no shear modulus, so Hertzian contact does not apply, and that is a scope boundary rather than a
+missing number to substitute.
+
+**THE DEFECT IS FIXED.** Hertzian stiffness `k_n = 2E*√(R_eff·h)` is **exactly zero** at zero
+penetration, where the linear law held 1.0e7 N/m all the way down. Under a foot the pack softens
+from **31.1 GPa to 303 MPa** — 103×, into the range a real soil's small-strain modulus occupies.
+
+**THE FLAGSHIP: the textbook exponent EMERGES.** Because stiffness rises with the load it carries,
+sound speed in a granular pack must go as `c ∝ F^(1/6)`. Measured through Stage 9's
+already-validated threshold-free mode instrument over a 100× force range: **0.1666 against the
+derived 0.1667**, speeds 286 → 904 m/s (dry sand's own measured band). The **linear law is run
+through the identical instrument as a control and returns exponent ~0** (0.74% spread over the
+same range, at solid-quartz speed 4576 m/s) — so the test can come out two ways, which is what
+makes it a test.
+
+**THE IDENTITY EVERY MODULUS CANCELS OUT OF.** `k_t/k_n = 2(1−ν)/(2−ν) = 0.9615` — a pure function
+of Poisson's ratio, checked against the full Mindlin/Hertz expressions and independent of
+penetration, so a contact's stick-to-slip character does not drift as it loads.
+
+**A PRIOR CLAIM CLOSED HONESTLY.** Stage 9 asserted its elastic-vs-plastic finding "survives 1000×
+softening" without knowing the real factor. Hertz supplies it: **103×, inside the bracket tested**,
+and settlement 13.3 µm remains **235×** under theHuman's published 3.122 mm footprint. The
+mechanisms stay separate; the hypothetical is now a measurement.
+
+**THE TANGENTIAL FORCE, AND A SIMULATED EXPERIMENT.** Mindlin `k_t = 8G*a(h)` under a Coulomb
+ceiling at μ = tan(grown repose). A **simulated tilt table** — quasi-static by construction, which
+is literally how a friction angle is measured in a lab — releases at **40.030000°**, the angle the
+granular trainer GREW by piling grains up. Two unrelated experiments, one number. On aTerrain's
+steepest published slope each of the 241,576 contacts under a foot carries its 1.508 mN share
+without slipping, deforming **14.5 nm** first — tribology's pre-sliding displacement, falling out
+of Mindlin + Coulomb rather than being smoothed in. Past the ceiling it slides at exactly μF_n, and
+a foot skidding 1 cm turns **4.71 J** into heat: **the first genuinely irreversible process in this
+contact model** (Stage 10's damping is radiation — transfer, not loss).
+
 ## THE GATE (all of it)
 
 ```bash
@@ -315,6 +356,7 @@ python ChimeraEngine/test_optics.py          # 47 checks: closure, referee, cont
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction
+python ChimeraEngine/test_hertz.py           # 21 checks: Hertz, the P^(1/6) exponent, Mindlin, tilt table
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm

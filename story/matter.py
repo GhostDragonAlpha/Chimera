@@ -233,6 +233,29 @@ BULK_MODULUS_PA = {
     "silicate": 3.7e10,
 }
 
+# SHEAR MODULUS -- the SECOND independent elastic constant, and an isotropic solid needs exactly
+# two. Bulk modulus alone cannot give you a contact theory: Hertz needs Young's modulus and
+# Poisson's ratio, and those follow from (B, G) and from nothing less. Measured, cited (CRC /
+# Voigt-Reuss-Hill for alpha-quartz), entering the way every material constant does here.
+#
+# WATER IS DELIBERATELY ABSENT AND THAT IS THE POINT. A fluid has no shear modulus, so Hertzian
+# contact -- an elastic-SOLID theory -- does not apply to it at all. `ChimeraEngine/core/hertz.py`
+# refuses rather than substituting a number, because a missing constant is a scope boundary and a
+# fallback would be an assumption wearing a hat.
+SHEAR_MODULUS_PA = {
+    "silicate": 4.4e10,
+}
+
+
+def youngs_modulus(B: float, G: float) -> float:
+    """E = 9BG/(3B+G) -- derived, once the two independent constants are in hand."""
+    return 9.0 * float(B) * float(G) / (3.0 * float(B) + float(G))
+
+
+def poisson_ratio(B: float, G: float) -> float:
+    """nu = (3B-2G)/(2(3B+G)). Quartz lands near 0.08 -- unusually low, and correct."""
+    return (3.0 * float(B) - 2.0 * float(G)) / (2.0 * (3.0 * float(B) + float(G)))
+
 
 def refractive_index(rho_kg_m3: float, r_cm3_g: float) -> float:
     """Lorentz-Lorenz: density in, refractive index out. Refuses an unphysical input rather than
