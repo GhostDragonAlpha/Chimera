@@ -28,6 +28,10 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from world import load_body
 from stand_port import derive_stand_port, stand_reward
+# `joint_load` is imported LAZILY inside `_load_tables`, not here: it imports joint_ids and
+# seat_in_limits from THIS module, so a top-level import either way is a cycle. Python reports
+# it as "cannot import name 'joint_ids' from partially initialized module", which names the
+# symbol and not the loop -- worth the comment so the next person does not re-add the line.
 
 MYOBODY = ROOT / "external" / "myo_sim" / "body" / "myobody.xml"
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
@@ -49,6 +53,10 @@ NUDGE = 1e-6
 # a subject that can be wrong. Prose beside a constant is now reported and never judged.
 # cadence: 20 ms, 50 Hz
 CTRL_EVERY = 20
+
+# PD finite-difference window: velocity estimated over PD_DT seconds of sim time.
+# Matches the CTRL_EVERY cadence (50 Hz -> dt = 0.02 s).
+PD_DT = 0.020
 
 # THE PRIMARY LEG JOINTS. The model also carries `knee_angle_*_beta_*`, `*_translation*` and
 # `*_rotation*` -- the coupled DOFs of the knee's four-bar mechanism, driven by knee_angle, not
@@ -140,7 +148,30 @@ def joint_frac_named(d, jids):
                key=lambda p: p[0])
 
 
-def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
+_LOAD_TABLES = {}
+
+
+def _load_tables(m, d, mujoco, jids):
+    """(limit_overload, capacity, joint-id -> name, primary set) for the `load` arm. Measured ONCE per process.
+
+    `joint_capacity` sweeps every graded joint at full activation -- ~0.5 s and a full
+    `mj_resetData` per sample, which is fine once and ruinous inside a rollout that runs 24
+    candidates x 3 seeds x 40 turns. Cached on the model's own shape key, the same discipline
+    `walk_port.muscle_groups` uses, so two bodies cannot read one another's numbers.
+    """
+    key = f"{m.nu}x{m.njnt}"
+    if key not in _LOAD_TABLES:
+        from joint_load import joint_capacity, limit_overload
+        _LOAD_TABLES[key] = (
+            limit_overload,                       # bound once, not imported in the hot loop
+            joint_capacity(m, d, mujoco, jids),
+            {j: (mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, j) or "")
+             for j in range(m.njnt)},
+            {n for _, _, _, n in jids})
+    return _LOAD_TABLES[key]
+
+
+def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge", pd=False):
     """One life under a candidate. Returns (score, trace, pics).
 
     `joints` selects the JOINTS TERM'S SHAPE and exists so the change to it has a control:
@@ -156,6 +187,17 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     has (a height it must hold and a lean that will topple it), and theStance publishes the
     fall rate that makes the second one urgent.
 
+    `pd=True` extends the formula with DERIVATIVE feedback (velocity), adding 3 blocks:
+      [a0 | kh | kdz | kp | kdp | kr | kdr]  (7 blocks = 7*nu)
+    The derivatives are computed by FINITE DIFFERENCES over the control cadence:
+      ż  = (z - z_prev) / dt
+      θ̇  = (pitch - pitch_prev) / dt
+      ṙ  = (roll - roll_prev) / dt
+    where dt = CTRL_EVERY * m.opt.timestep = 0.02 s. This is PD, not PI: the derivative acts on
+    the OBSERVATION (the lean rate), not the ERROR (the height error's rate). The lean rate is
+    the most direct signal of an imminent topple, and the height rate is the body's own
+    compression -- both are the dynamics the body must react to, not the error integral.
+
     `seed` WAS A DEAD PARAMETER UNTIL 2026-08-04, and that is the defect this docstring exists
     to name. It sat in the signature and appeared NOWHERE in the body: every caller that passed
     a seed got the identical deterministic rollout, so an interface that reads as "N randomized
@@ -169,16 +211,33 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     """
     nu = m.nu
     jids = joint_ids(m, mujoco)
+    if joints == "load":
+        _OVL_FN, _CAP, _JNAME, _PRIM = _load_tables(m, d, mujoco, jids)
     # FOUR BLOCKS: baseline, height gain, pitch gain, ROLL gain. The roll block is new
     # (2026-08-04) and the trainer gained it in the SAME commit as the parser formula --
     # the lesson this session paid for twice, in the walk port: a number optimised against
     # a plant the judge does not run is dead at judgment. A 3-block theta still works and
     # is bit-identical to the old formula, because kr is then zeros.
+    #
+    # SEVEN BLOCKS (PD): a0 | kh | kdz | kp | kdp | kr | kdr. The kdz/kdp/kdr gains feed back
+    # the finite-difference velocity of z, pitch, roll -- the dynamics the inverted pendulum
+    # commits to, not just its position. This doubles the observation from 3->6 dims.
     a0, kh, kp = theta[:nu], theta[nu:2 * nu], theta[2 * nu:3 * nu]
     kr = theta[3 * nu:4 * nu] if theta.size >= 4 * nu else np.zeros(nu)
+    if pd and theta.size >= 7 * nu:
+        kdz = theta[2 * nu:3 * nu]      # NOTE: in 7-block layout, block 2 is kdz, not kp
+        kp  = theta[3 * nu:4 * nu]      # block 3 is kp
+        kdp = theta[4 * nu:5 * nu]
+        kr  = theta[5 * nu:6 * nu]
+        kdr = theta[6 * nu:7 * nu]
+    else:
+        kdz = kdp = kdr = None
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)      # the body may not START outside its own stops
+    tgt = P["OUT pelvis_target_m"]
+    dt = CTRL_EVERY * m.opt.timestep      # control period: 20 ms at 50 Hz
+    prev = None
     if seed:
         # THE NUDGE, and it is not a knob: 1e-6 is the smallest perturbation that is
         # unambiguously beneath meaning. theHuman's gait envelope has a grain of 4.16 deg
@@ -187,7 +246,6 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
         # limits the line above just enforced.
         d.qpos[:] = d.qpos + np.random.default_rng(seed).normal(0.0, NUDGE, size=d.qpos.shape)
         mujoco.mj_forward(m, d)
-    tgt = P["OUT pelvis_target_m"]
     steps = int(secs / m.opt.timestep)
     grab = set(np.linspace(0, steps - 1, frames).astype(int)) if frames else set()
     ren = mujoco.Renderer(m, height=240, width=320) if frames else None
@@ -200,8 +258,17 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
             pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]), 1 - 2 * (q[1] ** 2 + q[2] ** 2)))
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                      1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u = a0 + kh * (tgt - z) + kp * pitch + kr * roll
+            z_err = tgt - z
+            if pd and kdz is not None:
+                zd = (z - prev["z"]) / dt if prev else 0.0
+                pd_val = (pitch - prev["pitch"]) / dt if prev else 0.0
+                rd = (roll - prev["roll"]) / dt if prev else 0.0
+                u = (a0 + kh * z_err + kdz * zd + kp * pitch + kdp * pd_val
+                     + kr * roll + kdr * rd)
+            else:
+                u = a0 + kh * z_err + kp * pitch + kr * roll
             d.ctrl[:] = np.clip(u, 0.0, 1.0)
+            prev = {"z": z, "pitch": pitch, "roll": roll}
         mujoco.mj_step(m, d)
         if k in grab and ren is not None:
             ren.update_scene(d); pics.append(ren.render().copy())
@@ -224,8 +291,14 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
             fr = joint_fracs(d, jids)                    # every graded joint, not the worst one
             jf = float(fr.max())                         # the HEADLINE, still the max: it is what
                                                          # the picture and the log column report
+            # THE PHYSICAL OVERLOAD, measured only when the arm asks for it. `limit_overload`
+            # reads the ACTIVE constraint rows this step, so it must be called here inside the
+            # loop and cannot be hoisted -- and it costs nothing on the hinge/retired arms,
+            # which never enter the branch.
+            _ovl = (_OVL_FN(m, d, mujoco, _CAP, _JNAME, _PRIM)[0]
+                    if joints == "load" else None)
             r, _ = stand_reward(z, (dx, dy), fr, False, float(np.abs(d.ctrl).mean()), P,
-                                joints_form=joints)
+                                joints_form=joints, overload=_ovl)
             tot += r; n += 1
             tr["t"].append(k * m.opt.timestep); tr["z"].append(z)
             tr["comx"].append(dx); tr["comy"].append(dy); tr["r"].append(r); tr["jf"].append(jf)
@@ -236,8 +309,7 @@ def evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=0, joints="hinge"):
     score = tot / max(n, 1) - (3.0 if fell else 0.0) - 2.0 * (1.0 - (k + 1) / steps)
     return float(score), tr, pics
 
-
-def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge"):
+def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge", pd=False):
     """A candidate's score is the WORST of `seeds` randomized starts, and the trace is that
     worst one. Returns `(score, trace, pics, per_seed_scores)`.
 
@@ -255,21 +327,24 @@ def score_theta(m, d, mujoco, theta, P, secs, seeds=1, frames=0, joints="hinge")
     worst-seed score is an instrument showing you a different rollout from the one it graded.
     """
     if seeds <= 1:
-        s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames, joints=joints)
+        s, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=0, frames=frames,
+                               joints=joints, pd=pd)
         return s, tr, pics, [s]
-    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i, joints=joints) for i in range(seeds)]
+    runs = [evaluate(m, d, mujoco, theta, P, secs, seed=i, joints=joints, pd=pd)
+            for i in range(seeds)]
     scores = [r[0] for r in runs]
     w = int(np.argmin(scores))
     # the worst seed is re-run WITH frames only when frames are asked for, so the common path
     # (scoring a population) never pays for a renderer it will not look at
     if frames:
-        _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames, joints=joints)
+        _, tr, pics = evaluate(m, d, mujoco, theta, P, secs, seed=w, frames=frames,
+                               joints=joints, pd=pd)
     else:
         tr, pics = runs[w][1], runs[w][2]
     return float(scores[w]), tr, pics, [float(s) for s in scores]
 
 
-def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k=6):
+def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k=6, pd=False):
     """MEASURE the step this policy's own landscape supports, instead of halving a cold guess.
 
     RULE 1 APPLIED TO THE SEARCH ITSELF. `train_stand`'s warm start set `sd = 0.5 * sd` -- half
@@ -302,7 +377,7 @@ def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k
     Returns `(sd_scaled, report)`. Costs `len(ladder) * k` evaluations, once.
     """
     ladder = (1.0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5)
-    inc = score_theta(m, d, mujoco, mu, P, secs, seeds, joints=joints)[0]
+    inc = score_theta(m, d, mujoco, mu, P, secs, seeds, joints=joints, pd=pd)[0]
     report = []
     chosen = None
     for s in ladder:
@@ -310,7 +385,7 @@ def derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints, elite_frac, rng, k
         for _ in range(k):
             cand = mu + rng.normal(0.0, 1.0, size=mu.shape) * sd * s
             cand[:m.nu] = np.clip(cand[:m.nu], 0.0, 1.0)
-            if score_theta(m, d, mujoco, cand, P, secs, seeds, joints=joints)[0] > inc:
+            if score_theta(m, d, mujoco, cand, P, secs, seeds, joints=joints, pd=pd)[0] > inc:
                 hits += 1
         frac = hits / k
         report.append((s, frac))
@@ -367,6 +442,11 @@ def main() -> int:
     init = a[a.index("--init") + 1] if "--init" in a else None
     seeds = int(a[a.index("--seeds") + 1]) if "--seeds" in a else 1
     out_name = a[a.index("--out") + 1] if "--out" in a else "stand_theta.npy"
+    # PD: velocity feedback. The --blocks flag stays for the P-only A/B arms (3|4);
+    # --pd adds 3 velocity blocks (kdz, kdp, kdr) for a 7-block PD theta.
+    # The observation doubles from {z, pitch, roll} to {z, ż, pitch, pitcḣ, roll, roll̇},
+    # computed by finite differences over the control cadence (CTRL_EVERY * timestep = 0.02 s).
+    pd = "--pd" in a
     # BLOCKS: 4 = a0|kh|kp|kr (with the frontal-plane roll term), 3 = a0|kh|kp (without it).
     # THIS EXISTS TO MAKE AN A/B POSSIBLE, and without it the roll experiment has no control.
     # Training a 4-block policy from scratch and comparing it to the SAVED incumbent compares
@@ -377,8 +457,13 @@ def main() -> int:
     #
     # A 3-block run still SAVES 4*nu numbers with kr = 0, so every consumer (parser, walk_formula,
     # f3) reads one shape and the two arms are interchangeable at judgment.
-    blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else 4
-    if blocks not in (3, 4):
+    blocks = int(a[a.index("--blocks") + 1]) if "--blocks" in a else (7 if pd else 4)
+    if pd and blocks not in (7,):
+        if blocks == 4:
+            blocks = 7  # --pd upgrades to 7 blocks automatically
+        else:
+            raise SystemExit("--pd requires 7 blocks (a0|kh|kdz|kp|kdp|kr|kdr). Refusing.")
+    if not pd and blocks not in (3, 4):
         raise SystemExit("--blocks must be 3 (no roll term) or 4 (with it). Refusing.")
     # THE JOINTS TERM'S SHAPE, and its control. "hinge" = the derived per-joint sum; "retired" =
     # the max-then-gaussian, executable so the A/B has an arm that is the old reward exactly.
@@ -387,9 +472,13 @@ def main() -> int:
     # doing nothing -- the same species of defect as `joint_frac` returning a hardcoded 0.0 for
     # this trainer's first three turns, found the same way and named the same way.
     joints = a[a.index("--joints") + 1] if "--joints" in a else "hinge"
-    if joints not in ("hinge", "retired"):
-        raise SystemExit("--joints must be 'hinge' (derived) or 'retired' (the control). "
-                         "A third shape is a sweep where a derivation belongs (rule 1). Refusing.")
+    if joints not in ("hinge", "retired", "load"):
+        raise SystemExit(
+            "--joints must be 'hinge' (derived), 'retired' (the control) or 'load' (the same "
+            "shape and the same constants on the MEASURED constraint torque -- see "
+            "stand_port.load_joints_factor). 'load' is not a third SHAPE, which rule 1 would "
+            "forbid as a sweep: the aggregation, the lorentzian and both constants are held "
+            "fixed and the QUANTITY is the single variable. Refusing.")
     # THE ELITE-MEAN GUARD, off by default so every existing invocation reproduces its history
     # bit-for-bit and the arms already run remain valid controls. It becomes the default when
     # it is PROVEN, not when it is written -- the same sequence `--blocks` and `--joints`
@@ -405,6 +494,9 @@ def main() -> int:
     d = mujoco.MjData(m)
     nu = m.nu
     dim = blocks * nu   # a0 | kh | kp [| kr -- the roll block, 2026-08-04]
+    # INITIALIZATION. a0 starts at 0.15 (mid-range activation); every gain starts at 0.
+    # Velocity gains (kdz, kdp, kdr) start at ZERO so PD begins from the P-only policy's
+    # behaviour and the velocity terms only move if the search finds them useful.
     mu = np.concatenate([np.full(nu, 0.15)] + [np.zeros(nu)] * (blocks - 1))
     sd = np.concatenate([np.full(nu, 0.15)] + [np.full(nu, 0.6)] * (blocks - 1))
     if init:
@@ -416,6 +508,13 @@ def main() -> int:
             mu = np.concatenate([mu, np.zeros(nu)])   # so the warm start is the old policy exactly
         if mu.size == 4 * nu and blocks == 3:   # a 4-block checkpoint into a 3-block search: the
             mu = mu[:3 * nu]                    # roll block is DROPPED, and the arm says so
+        # PD WARM START: pad a 4-block theta with zeros for the 3 velocity blocks.
+        if mu.size == 4 * nu and blocks == 7:
+            # 4-block layout: a0 | kh | kp | kr
+            # 7-block layout: a0 | kh | kdz | kp | kdp | kr | kdr
+            # Map: a0->a0, kh->kh, kp->kdz(zero), kp->kp, kp->kdp(zero), kr->kr, kr->kdr(zero)
+            a0_, kh_, kp_, kr_ = mu[:nu], mu[nu:2*nu], mu[2*nu:3*nu], mu[3*nu:4*nu]
+            mu = np.concatenate([a0_, kh_, np.zeros(nu), kp_, np.zeros(nu), kr_, np.zeros(nu)])
         sd = 0.5 * sd
         print(f"warm start from {init}")
     elite = max(3, pop // 5)
@@ -446,7 +545,7 @@ def main() -> int:
               f"(criterion: >= the search's own elite fraction {elite}/{pop} = "
               f"{elite/pop:.2f} of samples must beat the incumbent)")
         sd, step_report = derive_step(m, d, mujoco, mu, sd, P, secs, seeds, joints,
-                                      elite / pop, rng)
+                                      elite / pop, rng, pd=pd)
         for s, frac in step_report["ladder"]:
             print(f"     x{s:<8g} {100*frac:>5.0f}% beat the incumbent"
                   + ("   <- CHOSEN" if s == step_report["chosen"] else ""))
@@ -464,7 +563,12 @@ def main() -> int:
 
     print(f"\nTRAINING THE STAND PORT — target pelvis {P['OUT pelvis_target_m']:.4f} m, "
           f"g {g:.4f}, {nu} muscles, {dim}-dim search "
-          f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})")
+          f"({blocks} blocks: a0|kh|kp{'|kr ROLL' if blocks == 4 else '  -- NO ROLL TERM, the control arm'})",
+          end="")
+    if pd:
+        print(f"  [PD - velocity feedback: zd, pitch_dot, roll_dot via finite differences, dt=0.02 s]")
+    else:
+        print()
     print(f"  joints term: {joints.upper()}"
           + ("  (per-joint hinge summed over every graded joint -- the derived form)"
              if joints == "hinge" else
@@ -491,7 +595,7 @@ def main() -> int:
         # policy cannot be lost by looking for a better one), and it costs one evaluation.
         cand[0] = mu
         cand[:, :nu] = np.clip(cand[:, :nu], 0.0, 1.0)
-        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds, joints=joints)[0]
+        scores = np.array([score_theta(m, d, mujoco, c, P, secs, seeds, joints=joints, pd=pd)[0]
                            for c in cand])
         order = np.argsort(-scores)
         el = cand[order[:elite]]
@@ -521,7 +625,7 @@ def main() -> int:
         # centre, and freezing it too would stop the search refining.
         el_mean = el.mean(0)
         if elite_guard:
-            em_score = score_theta(m, d, mujoco, el_mean, P, secs, seeds, joints=joints)[0]
+            em_score = score_theta(m, d, mujoco, el_mean, P, secs, seeds, joints=joints, pd=pd)[0]
             moved = em_score > scores[0]
             mu = el_mean if moved else mu
         else:
@@ -530,7 +634,7 @@ def main() -> int:
         sd = el.std(0) + sd_floor
         best_theta = cand[order[0]]
         s, tr, pics, per_seed = score_theta(m, d, mujoco, best_theta, P, secs, seeds, frames=6,
-                                            joints=joints)
+                                             joints=joints, pd=pd)
         # THE BAR IS THE MINIMUM OVER THE FULL FIVE SECONDS, NOT THE PEAK OVER ONE.
         # The first version printed PROVEN on turn 0 because the KEYFRAME starts at 0.98 m: the
         # "peak" was the starting height, and a 1.0 s rollout satisfied a 5 s requirement. That is
@@ -580,21 +684,30 @@ def main() -> int:
         # "A turn you have not looked at did not end" is worth nothing if the turn you looked
         # at was someone else's.
         draw_turn(turn, P, tr, pics, hist, OUTDIR / f"{Path(out_name).stem}_turn_{turn:02d}.png")
-    # SAVED AT 4*nu WHATEVER THE ARM. A 3-block winner is padded with an explicit zero roll
+    # SAVED AT dim NUMBERS WHATEVER THE ARM. A 3-block winner is padded with an explicit zero roll
     # block, so both arms hand the judge the identical shape and `walk_formula`/`parser` need no
     # branch. The zeros are the without-roll policy exactly -- kr * roll = 0 for every roll.
+    #
+    # PD (7-block) checkpoints bypass the parser's `check_theta_shape` -- the parser declares only
+    # 5 STAND_BLOCKS (a0|kh|kp|kr|kw) and cannot grow past it (it is the button-layer contract).
+    # The 7-block layout is the SynergyDecoder's contract, not the parser's. A local shape check
+    # guards the save instead.
     saved = best_ever[1]
-    if saved.size == 3 * nu:
+    if saved.size == 3 * nu and blocks == 4:
         saved = np.concatenate([saved, np.zeros(nu)])
-    # THE SHAPE GUARD, AT THE SAVE (2026-08-04). The pad above is the trainer's own intent and
-    # the check below is the parser's -- two parties, and the artifact only leaves if they
-    # agree. Without it the pad was the ONLY thing standing between a 3-block winner and a
-    # checkpoint every consumer would silently zero-fill, and a pad is a line of code that can
-    # be edited; a refusal from the module that CONSUMES the file cannot be edited by accident
-    # from here. `parser_tests` runs the same function against the theta on disk, so the sweep
-    # and the writer check one contract.
-    from parser import check_theta_shape
-    check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
+    if pd and saved.size == 4 * nu:
+        # pad 4-block warm start to 7-block (zeros for velocity gains)
+        saved = np.concatenate([saved[:nu], saved[nu:2*nu], np.zeros(nu),
+                                saved[2*nu:3*nu], np.zeros(nu),
+                                saved[3*nu:4*nu], np.zeros(nu)])
+    if blocks <= 5:
+        from parser import check_theta_shape
+        check_theta_shape(saved, nu, where=f"train_stand --out {out_name}")
+    else:
+        # PD: 7 blocks. Local shape guard since the parser does not know this layout.
+        assert saved.size == 7 * nu, \
+            f"PD theta must be 7*{nu}={7*nu}, got {saved.size}"
+        print(f"  [pd] shape check: {saved.size} = 7 x {nu}  (parser bypassed -- SynergyDecoder contract)")
     np.save(OUTDIR / out_name, saved)
     print(f"\nsaved the SESSION'S best (score {best_ever[0]:.3f}), not the last turn's")
     print(f"\nPICTURES: {OUTDIR}/stand_turn_*.png")

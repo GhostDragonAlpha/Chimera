@@ -166,6 +166,38 @@ def joints_factor(fracs):
     return float(1.0 / (1.0 + float(e.sum()) / JOINT_WIDTH))
 
 
+def load_joints_factor(overload):
+    """The SAME shape and the SAME constants as `joints_factor`, fed a PHYSICAL quantity.
+
+        joints_factor:      E = SUM_j max(0, f_j - JOINT_COLD)      f_j = fraction of RANGE
+        load_joints_factor: S = SUM_j |limit torque_j| / capacity_j  measured in N.m, normalised
+        both:               r_j = 1 / (1 + E / JOINT_WIDTH)
+
+    ONE VARIABLE, AND IT IS THE QUANTITY. The aggregation (a sum), the shape (lorentzian) and
+    both constants (0.8, 0.1) are held fixed, so an A/B between "hinge" and "load" cannot be
+    confounded by any of them. That is only affordable because the two aggregates happen to land
+    on the same scale -- MEASURED on the incumbent over 5 s, E = 0.7409 against S = 0.9021, a 22%
+    difference -- so JOINT_WIDTH carries over unchanged rather than being re-fitted. Had they
+    differed by an order of magnitude the honest arm would have needed a re-derived width, and
+    then the width and the quantity would both be moving.
+
+    NOTE THE MISSING THRESHOLD, and it is not an omission. `E` subtracts JOINT_COLD because a
+    joint inside 0.8 of its range is not loading anything -- the threshold is doing the work of
+    saying "no tissue is engaged yet". `S` needs no such subtraction because MuJoCo only reports
+    a limit constraint when one is ACTUALLY ACTIVE: the zero point is measured, not declared.
+    That is the whole argument for the physical quantity in one line -- the geometric one needs a
+    threshold to guess where load begins, and the physical one is simply zero until it begins.
+
+    WHAT THIS IS FOR (tools/joint_load.py's RULE 0, falsifier 3). The two measures were shown to
+    RANK the joints alike -- both call knee_angle_l worst -- so the case for this form was
+    explicitly recorded as UNPROVEN, and it is settled by a retrain rather than by argument.
+    The one thing the geometric measure provably cannot see: a joint RESTING on its stop and one
+    being DRIVEN into it sit at the same angle, and MEASURED they differ 32.9x here (S = 0.9021
+    driven, 0.0274 under zero control).
+    """
+    return float(1.0 / (1.0 + max(0.0, float(overload)) / JOINT_WIDTH))
+
+
 def retired_joints_factor(fracs):
     """The max-then-gaussian this replaced, kept EXECUTABLE so the A/B has a control.
 
@@ -178,8 +210,64 @@ def retired_joints_factor(fracs):
     return float(np.exp(-((max(0.0, float(f.max()) - JOINT_COLD) / JOINT_WIDTH) ** 2)))
 
 
+# ── THE PORT'S OWN PROOF BAR, as a number rather than a sentence ──────────────────────────────
+# `main()` prints "PROVEN = 5 s upright, pelvis >= 90% of target". This is that 90%, read by the
+# reward instead of being restated in it. Not a new constant: the same one, in one home.
+PROOF_FRAC = 0.90
+
+
+def support_gated(pelvis_z, com_xy, P):
+    """THE MEASURED OBJECTIVE: the one predictive term, gated by the one satisfiable constraint.
+
+    WHY THIS EXISTS (2026-08-04, `tools/objective_survival.py` + `tools/objective_matrix.py`,
+    200 policies on a scale ladder, judged on held-out survival):
+
+        component   correlation with survival (within-rung, confound held constant)
+        support      +0.891      <- the only one that tracks it
+        height       -0.042
+        joints       -0.057
+        height vs joints: -0.943  <- and they are almost perfectly OPPOSED
+
+    `stand_reward` MULTIPLIES all three. So one informative factor is gated by two that are
+    individually uninformative and mutually exclusive, and the optimiser has been asked for
+    something the body cannot deliver in exchange for something the bar does not measure. Near
+    the incumbent -- the only regime a warm-started search lives in -- the whole product
+    correlates with survival at **-0.162**.
+
+    THE FIX IS NOT AN INVENTION; IT IS THE PORT'S OWN SENTENCE. `stand_port.main()` already
+    declares what standing is: *"5 s upright, pelvis >= 90% of target, CoM inside the base,
+    joints off their limits."* That is ONE MAXIMAND (time upright) and THREE CONSTRAINTS. The
+    reward inverted it -- it multiplied the constraints into a product and demoted the maximand
+    to a penalty term. A constraint written as a multiplied gaussian trades off against
+    everything else, which is precisely what the -0.943 is.
+
+        r_t = support_t   if z_t >= 0.90 * target   else 0.0
+
+    WHY HEIGHT BECOMES A GATE AND JOINTS DOES NOT. Measured: the body holds 102.9% of target, so
+    the 90% bar is SATISFIABLE and a gate on it is a constraint the policy can meet. The joint
+    bar is NOT -- 5 of 29 joints sit past their stop, three of them 98% of phase 1 -- so a hard
+    joint gate would zero every score on every policy and leave the search with no gradient at
+    all. `f3_stand` already handles that exactly this way: it reports the joints as OPEN DEBT and
+    keeps them out of its exit code. This follows the precedent rather than inventing a second
+    one.
+
+    NO NEW CONSTANT ENTERS. 0.90 is the port's published proof bar; `support` is unchanged;
+    `effort`'s chosen 0.01 and the joints term are dropped rather than retuned.
+
+    THE GATE BITES DURING THE FALL, and that is the point. While the body is upright the bar is
+    never near, so this equals `support_only` there; when the pelvis starts down the CoM can
+    still sit over the feet, and the retired forms go on paying for "support" while the body is
+    on its way to the floor.
+    """
+    mx = abs(com_xy[0]) / P["OUT bos_half_fore_m"]
+    my = abs(com_xy[1]) / P["OUT bos_half_lat_m"]
+    r_s = float(np.exp(-max(mx, my) ** 2))
+    return r_s if pelvis_z >= PROOF_FRAC * P["OUT pelvis_target_m"] else 0.0
+
+
 # ── THE REWARD, derived from the port and from nothing else ───────────────────────────────────
-def stand_reward(pelvis_z, com_xy, joint_fracs, fell, effort, P, joints_form="hinge"):
+def stand_reward(pelvis_z, com_xy, joint_fracs, fell, effort, P, joints_form="hinge",
+                 overload=None):
     """A single number, and every term traceable to a published one.
 
     height  -- the pelvis at its DERIVED target. Not "high", not "0.9 of something": 0.9201 m,
@@ -205,9 +293,21 @@ def stand_reward(pelvis_z, com_xy, joint_fracs, fell, effort, P, joints_form="hi
         r_j = joints_factor(joint_fracs)
     elif joints_form == "retired":
         r_j = retired_joints_factor(joint_fracs)
+    elif joints_form == "load":
+        # THE PHYSICAL QUANTITY, same shape and constants -- see `load_joints_factor`. It is not
+        # a third SHAPE (which rule 1 would forbid as a sweep); the shape is identical and the
+        # QUANTITY is the variable, which is what makes hinge-vs-load a one-variable A/B.
+        if overload is None:
+            raise ValueError(
+                "joints_form='load' needs the measured overload and this function will not "
+                "derive it: it requires the model, the active constraint rows and the cached "
+                "per-joint capacity. Compute it with tools/joint_load.limit_overload and pass "
+                "it in. Refusing to score a physical term on a quantity nobody measured.")
+        r_j = load_joints_factor(overload)
     else:
-        raise ValueError(f"joints_form must be 'hinge' or 'retired', not {joints_form!r}. "
-                         f"A third shape would be a sweep where a derivation belongs (rule 1).")
+        raise ValueError(f"joints_form must be 'hinge', 'retired' or 'load', not "
+                         f"{joints_form!r}. A new SHAPE would be a sweep where a derivation "
+                         f"belongs (rule 1); 'load' is the same shape on a measured quantity.")
     return r_h * r_s * r_j - (3.0 if fell else 0.0) - 0.01 * effort, dict(
         height=r_h, support=r_s, joints=r_j, fell=fell)
 
