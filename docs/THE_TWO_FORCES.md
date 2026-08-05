@@ -712,7 +712,7 @@ diffuse and glint can never disagree about where the sun is, because neither cho
 ## THE GATE (all of it)
 
 ```bash
-python ChimeraEngine/test_optics.py          # 58 checks: closure, referee, controls, lensing chain, bounce, adoption
+python ChimeraEngine/test_optics.py          # 60 checks: closure, referee, controls, lensing chain, bounce, adoption
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction

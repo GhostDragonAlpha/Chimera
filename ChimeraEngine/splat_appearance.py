@@ -196,6 +196,31 @@ def scene_buffer(term: str) -> np.ndarray | None:
     return buf
 
 
+def sun_direction(term: str, t: float = 1.0) -> tuple | None:
+    """A membrane's declared sun, as a (x, y, z) direction FROM the scene TOWARD the light.
+
+    Returns None when the membrane publishes no `sun_direction` -- the renderer then stays
+    lightless and the picture is bit-identical to the baseline. When a membrane DOES declare one
+    (aSaltOcean, Stage 21), the live viewer arms `pipe.set_light(sun, (1.0, 1.0, 1.0))` with THE
+    SAME declaration the emit baked its diffuse with, so baked diffuse and kernel glint can never
+    disagree about where the sun is. t is clipped exactly as membrane_buffer clips it.
+    """
+    t = float(np.clip(t, 0.0, 1.0))
+    _discover()                       # populates _MODULES -- lazy, like membrane_buffer
+    mod = _MODULES.get(term)
+    if mod is None or not hasattr(mod, "sun_direction"):
+        return None
+    try:
+        s = np.asarray(mod.sun_direction(t), dtype=np.float64)
+    except Exception:
+        return None
+    if s.ndim != 1 or s.size != 3 or float(np.linalg.norm(s)) <= 0.0:
+        return None
+    return (float(s[0]) / float(np.linalg.norm(s)),
+            float(s[1]) / float(np.linalg.norm(s)),
+            float(s[2]) / float(np.linalg.norm(s)))
+
+
 def invalidate(term: str | None = None):
     """Clear caches so the next call re-imports and re-emits. None = clear all.
 

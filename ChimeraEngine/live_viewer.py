@@ -183,6 +183,7 @@ class LiveViewer:
                     # The StandSimulator owns the physics; the viewer's only job is to step it at
                     # a fixed cadence and render the body + a flat ground as splats.
                     import walker as _wk
+                    pipe.set_light(None)              # a composite: no single membrane's sun
                     st = self._sim.step(1)
                     ground = np.ascontiguousarray(
                         _wk.scene_around(self._ground_walker) if getattr(self, "_ground_walker", None)
@@ -203,6 +204,7 @@ class LiveViewer:
                     # onto named states (walk, sidestep, steer, jump), and the states drive the
                     # walker's process law. The mouse stays the look; the keyboard stays the feet.
                     import controller as _ctl
+                    pipe.set_light(None)              # a composite: its light is baked, not kernel
                     if getattr(self, "_controller", None) is None:
                         self._controller = _ctl.Controller()
                     with self._lock:
@@ -335,6 +337,17 @@ class LiveViewer:
                         self._loaded = self._pending
                         self._loaded_t = want_t
                         self._reload = False
+                        # ── THE LIGHT IS THE MEMBRANE'S OWN SUN (Stage 21 adoption) ─────────────
+                        # A membrane that declares `sun_direction` arms the renderer's light with
+                        # THE SAME declaration its emit baked the diffuse with -- baked diffuse and
+                        # kernel glint agree on where the sun is because neither chose. Scrub the
+                        # day and the sun moves with the loaded time. A membrane that declares
+                        # nothing stays lightless, bit-identical to the recorded baseline.
+                        _sun = self._sa.sun_direction(self._pending, want_t)
+                        if _sun is not None:
+                            pipe.set_light(_sun, (1.0, 1.0, 1.0))
+                        else:
+                            pipe.set_light(None)
                 # apply input + auto-spin, then place the camera on the orbit sphere aimed at origin
                 with self._lock:
                     self._azim += self._in["dazim"] + _AUTO_SPIN * dt
@@ -1086,7 +1099,7 @@ def _plain_of(folder) -> str:
     return ""
 
 
-def _tree_of(folder):
+def _tree_of(folder, t: float = 1.0):
     """The membrane tree, as the FILESYSTEM has it -- name, its plain words, the numbers it hands
     down, and its children. THE HIERARCHY IS THE NAVIGATION: a flat row of buttons cannot show that
     theStar and thePlanets live INSIDE theSolarSystem, which is the one fact the whole method is
@@ -1127,6 +1140,26 @@ def _tree_of(folder):
                         node[nm.lower()] = _ast.literal_eval(st.value)
         except Exception:
             pass
+    # THE SUN, DERIVED -- a READOUT, never a dial (Stage 21). A membrane that declares
+    # `sun_direction` has ONE sun; its azimuth and elevation are where that declaration says they
+    # are, at the loaded time, and a slider here would be a second sun disagreeing with the baked
+    # diffuse. So the lens panel SHOWS it and does not let you change it -- the handle is the /time
+    # scrub, which is the same clock the sun is derived from.
+    if py.exists() and node["membrane"]:
+        try:
+            import splat_appearance as _sa
+            s = _sa.sun_direction(folder.name, t)
+            if s is not None:
+                az = math.degrees(math.atan2(s[0], s[1])) % 360.0
+                el = math.degrees(math.asin(max(-1.0, min(1.0, s[2]))))
+                node["lens"]["sun_azimuth_deg"] = {
+                    "readonly": True, "value": round(az, 1),
+                    "label": f"sun azimuth at t={t:.2f}", "unit": "deg"}
+                node["lens"]["sun_elevation_deg"] = {
+                    "readonly": True, "value": round(el, 1),
+                    "label": "sun elevation", "unit": "deg"}
+        except Exception:
+            pass
     tj = folder / "trained.json"
     if tj.exists():
         try:
@@ -1141,14 +1174,14 @@ def _tree_of(folder):
             node["lens_set"] = {}
     for c in sorted(d for d in folder.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))):
         if (c / "story.md").exists():
-            node["children"].append(_tree_of(c))
+            node["children"].append(_tree_of(c, t))
     return node
 
 
-def story_tree():
+def story_tree(t: float = 1.0):
     if not _STORY.is_dir():
         return []
-    return [_tree_of(d) for d in sorted(_STORY.iterdir())
+    return [_tree_of(d, t) for d in sorted(_STORY.iterdir())
             if d.is_dir() and not d.name.startswith((".", "_")) and (d / "story.md").exists()]
 
 
@@ -1177,10 +1210,14 @@ def _page(blind: bool = False) -> str:
     membranes = set(splat_appearance.membrane_terms())
     kinds = {t: ("membrane" if t in membranes else "painted") for t in terms}
     import json
+    try:
+        _t = get_viewer()._t                     # the sun readout tracks the loaded time
+    except Exception:
+        _t = 1.0
     return (_PAGE.replace("__TERMS__", json.dumps(terms))
                  .replace("__READINGS__", json.dumps(readings))
                  .replace("__KINDS__", json.dumps(kinds))
-                 .replace("__TREE__", json.dumps(story_tree())))
+                 .replace("__TREE__", json.dumps(story_tree(_t))))
 
 
 _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
@@ -1571,14 +1608,20 @@ function paintFree(){
 function paintLens(){
   const n=INDEX[term]||{}, L=n.lens||{}, set=n.lens_set||{}, box=document.getElementById('lensbox');
   if(!box) return;
-  const keys=Object.keys(L);
-  if(!keys.length){ box.innerHTML=''; return; }
+  const dials=Object.keys(L).filter(k=>!L[k].readonly);
+  const reads=Object.keys(L).filter(k=>L[k].readonly);
+  if(!dials.length&&!reads.length){ box.innerHTML=''; return; }
   let h='<h3 style="margin-top:16px">the lens <span class=note style="font-weight:400">'
        +'&mdash; changes what you see, never what is</span></h3>'
        +'<p class=note>true scale is mostly invisible: this world&rsquo;s tallest mountain is two parts '
        +'in a thousand of its radius. every exaggeration is declared here and can be turned back.</p>'
        +'<div class=free>';
-  for(const k of keys){
+  // THE SUN IS DERIVED, NOT A DIAL (Stage 21): one declaration, shown read-only, moved only by /time.
+  for(const k of reads){
+    const f=L[k];
+    h+='<label class=note>'+f.label+' <i id="lv_'+k+'">'+f.value+' '+(f.unit||'')+'</i></label>';
+  }
+  for(const k of dials){
     const f=L[k], cur=(k in set)?set[k]:f.default;
     const lo=Math.log10(f.lo||0.01), hi=Math.log10(f.hi), pos=Math.round(1000*(Math.log10(Math.max(cur,f.lo||0.01))-lo)/(hi-lo));
     h+='<label>'+f.label+' <i id="lv_'+k+'">'+(+cur).toPrecision(3)+' '+(f.unit||'')+'</i></label>'
@@ -1600,7 +1643,7 @@ function paintLens(){
   });
   const b=document.getElementById('truescale');
   if(b) b.onclick=()=>{
-    Promise.all(keys.map(k=>fetch('/lens?term='+encodeURIComponent(term)
+    Promise.all(dials.map(k=>fetch('/lens?term='+encodeURIComponent(term)
       +'&name='+encodeURIComponent(k)+'&value='+(L[k].lo||1))))
       .then(()=>setTimeout(()=>location.reload(),900));
   };

@@ -21,9 +21,11 @@ What is on trial (docs/THE_TWO_FORCES.md; plan: two-forces-gaussian-splat-light)
   T11 STAGE 21 ADOPTION -- aSaltOcean's glint is a READER, not a paint. The emitted buffer must
       carry the membrane's own derived numbers in the specular columns (density -> n -> F0, and
       its own slope), the ice must refuse the water's reader, the kernel lit by the membrane's OWN
-      declared sun must draw a tight patch that the float64 referee endorses, and the old painted
+      declared sun must draw a tight patch that the float64 referee endorses, the old painted
       warm patch must be provably gone (the colour at the sub-solar point is EXACTLY the diffuse
-      replica). Predicted value pre-registered: sunglint_intensity = 0.02149, nothing typed.
+      replica), and the viewer's helper must read THE SAME sun while a membrane with no declared
+      sun arms no light at all. Predicted value pre-registered: sunglint_intensity = 0.02149,
+      nothing typed.
 """
 from __future__ import annotations
 
@@ -551,6 +553,13 @@ def t11_adoption():
     sun = np.asarray(mod.sun_direction(1.0), dtype=np.float64)
     check("T11c the membrane declares ONE sun (unit length, in its own frame)",
           abs(float(np.linalg.norm(sun)) - 1.0) <= 1e-6, f"|sun| = {np.linalg.norm(sun):.7f}")
+    via = _sa.sun_direction("aSaltOcean", 1.0)
+    check("T11c the viewer's helper reads THE SAME sun the emit baked (set_light wiring)",
+          via is not None and all(abs(via[i] - sun[i]) <= 1e-7 for i in range(3)),
+          f"helper {via}, membrane {tuple(sun)}")
+    check("T11c a membrane with no declared sun arms NO light (theTerrain stays lightless)",
+          _sa.sun_direction("theTerrain", 1.0) is None,
+          "no sun declared, no light armed, picture bit-identical")
 
     cam = FirstPersonCamera(position=(0.0, -2.5, 0.0), yaw=np.pi / 2, pitch=0.0)
     prm = cam.params(width=640, height=480)
