@@ -43,12 +43,14 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 from world import load_body                                       # noqa: E402
 from stand_port import derive_stand_port, MYOBODY                 # noqa: E402
 from train_stand import (joint_ids, seat_in_limits,               # noqa: E402
                          CTRL_EVERY, NUDGE)
 from parser import Parser, default_registry                       # noqa: E402
 from classify_fall import classify_trace                          # noqa: E402
+from synergy import SynergyDecoder                                # noqa: E402
 
 OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 LOGDIR = ROOT / "agent_logs"
@@ -62,8 +64,19 @@ THETA = OUTDIR / "stand_theta.npy"
 
 def rollout(m, d, mujoco, theta, P, secs, seed, jids, tgt, nu):
     """One life. `seed = 0` is the UNPERTURBED control; every other seed nudges qpos by NUDGE."""
-    PARSER = Parser(default_registry(theta, tgt, nu))
-    PARSER.set_verb("STAND", True)
+    n_blocks = theta.size // nu
+    # 6/7/9-block thetas are SYNERGY layouts (P+CoM / PD / PD+CoM): the parser formula only
+    # declares 4 blocks (a0|kh|kp|kr) plus the carry arm's kw, and would silently truncate a
+    # 6-block checkpoint. The decoder is the only reader that knows those layouts.
+    use_synergy = n_blocks in (6, 7, 9)
+    if use_synergy:
+        dec = SynergyDecoder(theta_path=None, tgt=tgt, nu=nu)
+        dec.theta = theta
+        dec.blocks = n_blocks
+        dec._load_blocks()
+    else:
+        PARSER = Parser(default_registry(theta, tgt, nu))
+        PARSER.set_verb("STAND", True)
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     seat_in_limits(m, d, mujoco, jids)
@@ -74,15 +87,14 @@ def rollout(m, d, mujoco, theta, P, secs, seed, jids, tgt, nu):
     steps = int(secs / m.opt.timestep)
     tr = {k: [] for k in ("t", "z", "comx", "comy", "polx", "poly")}
     _b = lambda n: d.xpos[mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)]
+    prev_obs = None
     for k in range(steps):
         if k % CTRL_EVERY == 0:
-            z = float(d.qpos[2])
-            q = d.qpos[3:7]
-            pitch = float(np.arctan2(2 * (q[0] * q[2] - q[3] * q[1]),
-                                     1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
-                                    1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            u, _ = PARSER.command({"z": z, "pitch": pitch, "roll": roll})
+            obs, prev_obs = SynergyDecoder.obs_from_mujoco(d, m, tgt, prev=prev_obs)
+            if use_synergy:
+                u = dec.decode(obs)
+            else:
+                u, _ = PARSER.command({"z": obs["z"], "pitch": obs["pitch"], "roll": obs["roll"]})
             d.ctrl[:] = u if u is not None else 0.0
         mujoco.mj_step(m, d)
         if k % CTRL_EVERY == 0:
@@ -115,8 +127,10 @@ def main() -> int:
     jids = joint_ids(m, mujoco)
     tgt, nu = P["OUT pelvis_target_m"], m.nu
 
+    n_blocks = theta.size // nu
+    mode = {6: "P+CoM", 7: "PD (velocity feedback)", 9: "PD+CoM"}.get(n_blocks, "P-only")
     print(f"\nSTAND SURVIVAL -- {nseeds} seeds x {secs:.0f} s, theta {tpath.name} "
-          f"({theta.size} numbers = {theta.size // nu} blocks x {nu})")
+          f"({theta.size} numbers = {n_blocks} blocks x {nu})  [{mode}]")
     print(f"  world g {g:.4f} m/s2, target pelvis {tgt:.4f} m, fall bar {0.5*tgt:.4f} m (50%)")
     print(f"  nudge {NUDGE:g} on every qpos for seeds 1..{nseeds-1}; seed 0 is UNPERTURBED")
     _hos_dbg = a[a.index("--held-out-seeds") + 1] if "--held-out-seeds" in a else \

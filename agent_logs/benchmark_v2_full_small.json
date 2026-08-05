@@ -1,0 +1,417 @@
+{
+ "tag": "v2_full_small",
+ "objective": "full",
+ "pop": 12,
+ "turns": 15,
+ "train_seeds": 3,
+ "secs": 8.0,
+ "held_out_seeds": [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "judge_secs": 20.0,
+ "warm": true,
+ "wall_s": 763.8009970188141,
+ "rows": [
+  {
+   "name": "p_only",
+   "objective": "full",
+   "channels": [
+    "z_err",
+    "pitch",
+    "roll"
+   ],
+   "has_a0": true,
+   "window": 1,
+   "obs_dim": 3,
+   "n_blocks": 4,
+   "theta_numbers": 1160,
+   "pop": 12,
+   "turns": 15,
+   "train_seeds": 3,
+   "secs": 8.0,
+   "warm": true,
+   "theta_path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\bench_v2_full_small_p_only.npy",
+   "survival_before": 6.82,
+   "survival_after": 6.88,
+   "survival_per_seed_before": [
+    7.2,
+    7.7,
+    6.36,
+    6.3,
+    6.38,
+    6.82,
+    7.54
+   ],
+   "survival_per_seed_after": [
+    7.12,
+    9.28,
+    6.28,
+    6.76,
+    6.36,
+    6.88,
+    9.540000000000001
+   ],
+   "survival_trained_seeds": 8.28,
+   "survival_ceiling": 6.9,
+   "survival_ceiling_turn": 5,
+   "objective_before": -3.31896667754362,
+   "objective_after": 0.04750215054865299,
+   "step_chosen": 0.0001,
+   "step_refused": false,
+   "step_ladder": [
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.1,
+     0.0
+    ],
+    [
+     0.01,
+     0.0
+    ],
+    [
+     0.001,
+     0.08333333333333333
+    ],
+    [
+     0.0001,
+     0.4166666666666667
+    ],
+    [
+     1e-05,
+     0.75
+    ]
+   ],
+   "history": [
+    {
+     "turn": 0,
+     "best": -3.0287117452388497,
+     "mean": -3.3206092458623195,
+     "elite_mean": -3.2436452468697174,
+     "moved": true,
+     "survival": 6.82
+    },
+    {
+     "turn": 1,
+     "best": -3.0779966448940135,
+     "mean": -3.238338811344694,
+     "elite_mean": -3.0979875528810377,
+     "moved": true,
+     "survival": 6.8
+    },
+    {
+     "turn": 2,
+     "best": -3.0979875528810377,
+     "mean": -3.277682687120702,
+     "elite_mean": -3.2536960991340544,
+     "moved": false,
+     "survival": 6.86
+    },
+    {
+     "turn": 3,
+     "best": -2.988521065471611,
+     "mean": -3.2108446005898554,
+     "elite_mean": -3.0629655013890327,
+     "moved": true,
+     "survival": 6.76
+    },
+    {
+     "turn": 4,
+     "best": -2.9927230297534626,
+     "mean": -3.164500965045452,
+     "elite_mean": -2.993544251902354,
+     "moved": true,
+     "survival": 6.88
+    },
+    {
+     "turn": 5,
+     "best": -2.993544251902354,
+     "mean": -3.1167684408521086,
+     "elite_mean": 0.04672969880151161,
+     "moved": true,
+     "survival": 6.9
+    },
+    {
+     "turn": 6,
+     "best": 0.04672969880151161,
+     "mean": -2.8586163610007738,
+     "elite_mean": -2.987646907758873,
+     "moved": false,
+     "survival": 6.88
+    },
+    {
+     "turn": 7,
+     "best": 0.04672969880151161,
+     "mean": -2.8306698445395297,
+     "elite_mean": -3.00865066529105,
+     "moved": false,
+     "survival": 6.88
+    },
+    {
+     "turn": 8,
+     "best": 0.04672969880151161,
+     "mean": -2.7804537204817605,
+     "elite_mean": -3.0078217717416775,
+     "moved": false,
+     "survival": 6.88
+    },
+    {
+     "turn": 9,
+     "best": 0.04672969880151161,
+     "mean": -2.5166588252577697,
+     "elite_mean": -2.9935544233547136,
+     "moved": false,
+     "survival": 6.88
+    },
+    {
+     "turn": 10,
+     "best": 0.04733327997414683,
+     "mean": -2.2623477181512324,
+     "elite_mean": 0.046922872512098195,
+     "moved": true,
+     "survival": 6.88
+    },
+    {
+     "turn": 11,
+     "best": 0.04732088257525527,
+     "mean": -1.9797588797598602,
+     "elite_mean": 0.047172157725207615,
+     "moved": true,
+     "survival": 6.88
+    },
+    {
+     "turn": 12,
+     "best": 0.047348782323299095,
+     "mean": -1.4624493438766544,
+     "elite_mean": 0.047282996608131296,
+     "moved": true,
+     "survival": 6.88
+    },
+    {
+     "turn": 13,
+     "best": 0.04739313051576914,
+     "mean": -1.216717279434426,
+     "elite_mean": -2.9576031521069477,
+     "moved": false,
+     "survival": 6.86
+    },
+    {
+     "turn": 14,
+     "best": 0.04750215054865299,
+     "mean": -1.2145981904949286,
+     "elite_mean": 0.047258528097798756,
+     "moved": false,
+     "survival": 6.88
+    }
+   ],
+   "wall_s": 763.5952651500702
+  },
+  {
+   "name": "pd",
+   "objective": "full",
+   "channels": [
+    "z_err",
+    "zdot",
+    "pitch",
+    "pitch_rate",
+    "roll",
+    "roll_rate"
+   ],
+   "has_a0": true,
+   "window": 1,
+   "obs_dim": 6,
+   "n_blocks": 7,
+   "theta_numbers": 2030,
+   "pop": 12,
+   "turns": 15,
+   "train_seeds": 3,
+   "secs": 8.0,
+   "warm": true,
+   "theta_path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\bench_v2_full_small_pd.npy",
+   "survival_before": 6.82,
+   "survival_after": 6.84,
+   "survival_per_seed_before": [
+    7.2,
+    7.7,
+    6.36,
+    6.3,
+    6.38,
+    6.82,
+    7.54
+   ],
+   "survival_per_seed_after": [
+    7.58,
+    7.96,
+    6.36,
+    6.38,
+    6.42,
+    6.84,
+    8.18
+   ],
+   "survival_trained_seeds": 8.16,
+   "survival_ceiling": 6.88,
+   "survival_ceiling_turn": 2,
+   "objective_before": -3.31896667754362,
+   "objective_after": 0.047598347716721764,
+   "step_chosen": 0.0001,
+   "step_refused": false,
+   "step_ladder": [
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.1,
+     0.0
+    ],
+    [
+     0.01,
+     0.0
+    ],
+    [
+     0.001,
+     0.0
+    ],
+    [
+     0.0001,
+     0.5833333333333334
+    ],
+    [
+     1e-05,
+     0.75
+    ]
+   ],
+   "history": [
+    {
+     "turn": 0,
+     "best": -3.269219941661666,
+     "mean": -3.3833636013681967,
+     "elite_mean": -3.2836960620325124,
+     "moved": true,
+     "survival": 6.640000000000001
+    },
+    {
+     "turn": 1,
+     "best": -3.037868469531514,
+     "mean": -3.29018328946278,
+     "elite_mean": -3.2184645089033506,
+     "moved": true,
+     "survival": 6.72
+    },
+    {
+     "turn": 2,
+     "best": -3.048706573342714,
+     "mean": -3.259000407909094,
+     "elite_mean": -3.1039647805066224,
+     "moved": true,
+     "survival": 6.88
+    },
+    {
+     "turn": 3,
+     "best": -3.0327843774775163,
+     "mean": -3.2757641245422686,
+     "elite_mean": -3.083826714248437,
+     "moved": true,
+     "survival": 6.5200000000000005
+    },
+    {
+     "turn": 4,
+     "best": -2.983532087847277,
+     "mean": -3.1686082443001644,
+     "elite_mean": -2.9885293789343566,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 5,
+     "best": -2.97344503921874,
+     "mean": -3.117145482233155,
+     "elite_mean": -2.963429690908911,
+     "moved": true,
+     "survival": 6.8
+    },
+    {
+     "turn": 6,
+     "best": -2.963429690908911,
+     "mean": -3.0915689510663924,
+     "elite_mean": -2.983487481932222,
+     "moved": false,
+     "survival": 6.84
+    },
+    {
+     "turn": 7,
+     "best": 0.046603586875760473,
+     "mean": -2.791816418270368,
+     "elite_mean": -2.958501114338869,
+     "moved": true,
+     "survival": 6.82
+    },
+    {
+     "turn": 8,
+     "best": 0.046998407832305134,
+     "mean": -2.7766701501904616,
+     "elite_mean": 0.046791441032655534,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 9,
+     "best": 0.047023099088505466,
+     "mean": -2.2502566129097894,
+     "elite_mean": 0.04676835901200829,
+     "moved": false,
+     "survival": 6.84
+    },
+    {
+     "turn": 10,
+     "best": 0.046952720689115345,
+     "mean": -1.4766161725695748,
+     "elite_mean": 0.047175842292674235,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 11,
+     "best": 0.04735227495097176,
+     "mean": -1.7194571863661088,
+     "elite_mean": 0.04727060322055055,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 12,
+     "best": 0.04756680438734198,
+     "mean": -0.9577970213348465,
+     "elite_mean": 0.04753119235658465,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 13,
+     "best": 0.0475627916764218,
+     "mean": -0.7060991195861726,
+     "elite_mean": 0.04753898687639607,
+     "moved": true,
+     "survival": 6.84
+    },
+    {
+     "turn": 14,
+     "best": 0.047598347716721764,
+     "mean": -0.705662532839158,
+     "elite_mean": 0.047556375380998904,
+     "moved": true,
+     "survival": 6.84
+    }
+   ],
+   "wall_s": 758.2478940486908
+  }
+ ]
+}

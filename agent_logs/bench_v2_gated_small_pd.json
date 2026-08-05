@@ -1,0 +1,200 @@
+{
+ "name": "pd",
+ "objective": "support_gated",
+ "channels": [
+  "z_err",
+  "zdot",
+  "pitch",
+  "pitch_rate",
+  "roll",
+  "roll_rate"
+ ],
+ "has_a0": true,
+ "window": 1,
+ "obs_dim": 6,
+ "n_blocks": 7,
+ "theta_numbers": 2030,
+ "pop": 12,
+ "turns": 15,
+ "train_seeds": 3,
+ "secs": 8.0,
+ "warm": true,
+ "theta_path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\bench_v2_gated_small_pd.npy",
+ "survival_before": 6.82,
+ "survival_after": 6.84,
+ "survival_per_seed_before": [
+  7.2,
+  7.7,
+  6.36,
+  6.3,
+  6.38,
+  6.82,
+  7.54
+ ],
+ "survival_per_seed_after": [
+  7.58,
+  7.98,
+  6.34,
+  6.38,
+  6.42,
+  6.84,
+  8.120000000000001
+ ],
+ "survival_trained_seeds": 8.120000000000001,
+ "survival_ceiling": 6.88,
+ "survival_ceiling_turn": 2,
+ "objective_before": -2.591120128569743,
+ "objective_after": 0.8286527181577193,
+ "step_chosen": 0.0001,
+ "step_refused": false,
+ "step_ladder": [
+  [
+   1.0,
+   0.0
+  ],
+  [
+   0.1,
+   0.0
+  ],
+  [
+   0.01,
+   0.0
+  ],
+  [
+   0.001,
+   0.0
+  ],
+  [
+   0.0001,
+   0.5833333333333334
+  ],
+  [
+   1e-05,
+   0.75
+  ]
+ ],
+ "history": [
+  {
+   "turn": 0,
+   "best": -2.5258511369191896,
+   "mean": -2.658028850406668,
+   "elite_mean": -2.5487672619505357,
+   "moved": true,
+   "survival": 6.640000000000001
+  },
+  {
+   "turn": 1,
+   "best": -2.2803053970988056,
+   "mean": -2.555357767555513,
+   "elite_mean": -2.4765255964507418,
+   "moved": true,
+   "survival": 6.72
+  },
+  {
+   "turn": 2,
+   "best": -2.2852289751026333,
+   "mean": -2.51880522765104,
+   "elite_mean": -2.346748940994571,
+   "moved": true,
+   "survival": 6.88
+  },
+  {
+   "turn": 3,
+   "best": -2.273844933266825,
+   "mean": -2.5358993869615403,
+   "elite_mean": -2.3233451193896215,
+   "moved": true,
+   "survival": 6.5200000000000005
+  },
+  {
+   "turn": 4,
+   "best": -2.2157316355569474,
+   "mean": -2.4168030618559677,
+   "elite_mean": -2.220837178616547,
+   "moved": true,
+   "survival": 6.84
+  },
+  {
+   "turn": 5,
+   "best": -2.2040918131174543,
+   "mean": -2.3635952301973586,
+   "elite_mean": -2.1937203610931224,
+   "moved": true,
+   "survival": 6.8
+  },
+  {
+   "turn": 6,
+   "best": -2.1937203610931224,
+   "mean": -2.3341390140869205,
+   "elite_mean": -2.2159521417054466,
+   "moved": false,
+   "survival": 6.84
+  },
+  {
+   "turn": 7,
+   "best": 0.8209185869183654,
+   "mean": -2.0294280413703256,
+   "elite_mean": -2.189856634041022,
+   "moved": true,
+   "survival": 6.82
+  },
+  {
+   "turn": 8,
+   "best": 0.8220584997411703,
+   "mean": -2.013565935113776,
+   "elite_mean": 0.8219220508818306,
+   "moved": true,
+   "survival": 6.84
+  },
+  {
+   "turn": 9,
+   "best": 0.8219220508818306,
+   "mean": -1.4803952254720603,
+   "elite_mean": 0.820171398452498,
+   "moved": false,
+   "survival": 6.84
+  },
+  {
+   "turn": 10,
+   "best": 0.8220499395676316,
+   "mean": -1.2110108483042428,
+   "elite_mean": 0.8223214175228298,
+   "moved": true,
+   "survival": 6.84
+  },
+  {
+   "turn": 11,
+   "best": 0.825261686951632,
+   "mean": -0.6958720223117622,
+   "elite_mean": 0.8177508407079599,
+   "moved": false,
+   "survival": 6.84
+  },
+  {
+   "turn": 12,
+   "best": 0.8223214175228298,
+   "mean": -0.9545274861191428,
+   "elite_mean": 0.8219754304306731,
+   "moved": false,
+   "survival": 6.84
+  },
+  {
+   "turn": 13,
+   "best": 0.8286527181577193,
+   "mean": 0.06648206448251018,
+   "elite_mean": 0.8257127784851837,
+   "moved": true,
+   "survival": 6.84
+  },
+  {
+   "turn": 14,
+   "best": 0.828148040254375,
+   "mean": 0.3199982831980195,
+   "elite_mean": 0.8286579420006552,
+   "moved": true,
+   "survival": 6.84
+  }
+ ],
+ "wall_s": 756.0493185520172,
+ "log": "\n=== pd  [support_gated]  T1: rate feedback, one-tick difference. 7 blocks = 2030 numbers.\n  channels ('z_err', 'zdot', 'pitch', 'pitch_rate', 'roll', 'roll_rate')  a0=True  window=1 tick(s) = 20 ms\n  theta 2030 numbers = 7 blocks x 290 muscles\n  warm start: the incumbent, matched by channel NAME; every channel this class adds starts at ZERO gain\n  budget 12x15 = 180 candidates x worst-of-3 starts x 8 s\n  AT THE WARM START: held-out survival 6.82 s, objective -2.5911\n  deriving the step (criterion: >= 3/12 = 0.25 of samples must beat the incumbent)\n     x1            0% beat the incumbent\n     x0.1          0% beat the incumbent\n     x0.01         0% beat the incumbent\n     x0.001        0% beat the incumbent\n     x0.0001      58% beat the incumbent   <- CHOSEN\n     x1e-05       75% beat the incumbent\n turn      best      mean    elmean     mu  bestobj    surv\n    0    -2.526    -2.658    -2.549  moved   -2.526   6.64s\n    1    -2.280    -2.555    -2.477  moved   -2.280   6.72s\n    2    -2.285    -2.519    -2.347  moved   -2.280   6.88s\n    3    -2.274    -2.536    -2.323  moved   -2.274   6.52s\n    4    -2.216    -2.417    -2.221  moved   -2.216   6.84s\n    5    -2.204    -2.364    -2.194  moved   -2.204   6.80s\n    6    -2.194    -2.334    -2.216   HELD   -2.194   6.84s\n    7     0.821    -2.029    -2.190  moved    0.821   6.82s\n    8     0.822    -2.014     0.822  moved    0.822   6.84s\n    9     0.822    -1.480     0.820   HELD    0.822   6.84s\n   10     0.822    -1.211     0.822  moved    0.822   6.84s\n   11     0.825    -0.696     0.818   HELD    0.825   6.84s\n   12     0.822    -0.955     0.822   HELD    0.825   6.84s\n   13     0.829     0.066     0.826  moved    0.829   6.84s\n   14     0.828     0.320     0.829  moved    0.829   6.84s\n  AFTER 15 turns: held-out survival 6.84 s (+0.02 s), objective 0.8287 (+3.4198)\n  train/test gap: trained seeds 8.12 s vs held-out 6.84 s = +1.28 s\n  CAPABILITY CEILING (best held-out survival at ANY turn, turn 2): 6.88 s -- SELECTED ON THE JUDGE, so it is biased upward and ranks nothing. It separates 'this class cannot stand longer' from 'the objective cannot find it'."
+}
