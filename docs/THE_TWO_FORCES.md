@@ -391,6 +391,43 @@ a published loss tangent that **no membrane in this world has** — so the gap *
 measurement, named UNBUILT. Plastic rearrangement (theGround's Terzaghi mechanism) is likewise
 absent here.
 
+### Stage 13 — Hysteretic rolling loss — **BUILT, PASSED — and it CORRECTS Stage 12**
+**THE CORRECTION FIRST.** Stage 12 recorded that hysteretic rolling loss "needs a published loss
+tangent that no membrane has." **That was too broad, and building it is how the error surfaced.**
+There are two hysteresis mechanisms, not one: **contact microslip** (Mindlin–Deresiewicz) is
+derivable from μ and G*, both already in hand — this stage — while **bulk viscoelastic loss** (a
+material loss tangent) genuinely still needs a citation and remains UNBUILT. The lumped claim is
+replaced by the sharp split.
+
+**WHY STAGE 11 HAD NO HYSTERESIS, precisely.** Its tangential law is a linear spring under a hard
+cap: loading traces δ = T/k_t and unloading traces the *same line*, so the loop encloses **exactly
+zero area** — computed with the same integral, not asserted. The absence of dissipation was **the
+linear approximation, never a missing material constant.** Mindlin's real contact doesn't stick
+uniformly: an annulus at the rim slips while the centre holds and grows with load, so the paths
+differ and the loop has area. Its tangent at the origin *is* Stage 11's k_t (that law was the
+tangent, which is why it was right at small load and lossless everywhere), and full slip arrives
+**1.5× further out** than the linear model put it — the approximation stated as a number.
+
+**THE FLAGSHIP: the cubic law.** Derived here by expanding the Masing loop:
+`ΔW ≈ 2T³/(9μN·k_t)` — cubic in tangential amplitude, the known signature of fretting/microslip
+damping. Measured log-log slope **3.0056** against 3 in the asymptotic regime, and the exact loop
+integral converges to the derived asymptote within **0.67%** — two routes, one number.
+
+**A TEST OF MINE WAS WRONG AND THE MODEL WAS RIGHT.** The first exponent fit ran at 2–16% of the
+Coulomb ceiling, read 3.0474, and called the model wrong. Varying the quadrature from 5k to 320k
+points moved the integral only in the **ninth significant figure**, so the rise is physics, not
+discretisation: **the cubic law is an asymptote**, and the loop stiffens as full slip approaches
+(slope 3.17 at 10–40% of the ceiling). The test now asks in the regime where the law holds *and*
+records the departure as a measured fact — a wheel worked near its friction limit pays
+disproportionately, which the constant-μᵣ model cannot say at all.
+
+**ROLLING.** One load cycle happens per 2a of travel, so `F_r = ΔW/(2a)` and μᵣ = F_r/N — and
+because ΔW ∝ T³, **microslip rolling loss grows cubically with transmitted tractive force**
+(measured 8.054× for 2× traction). At 90% traction μᵣ = 4.66e-04, **597× Stage 12's radiative
+floor**, and the two add, being different mechanisms. Both together still sit under a handbook
+steel-on-steel ~1e-3 — the remainder is bulk viscoelastic hysteresis, still awaiting a loss
+tangent, still named.
+
 ## THE GATE (all of it)
 
 ```bash
@@ -400,6 +437,7 @@ python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, so
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction
 python ChimeraEngine/test_hertz.py           # 21 checks: Hertz, the P^(1/6) exponent, Mindlin, tilt table
 python ChimeraEngine/test_rolling.py         # 13 checks: contact torque, rolling resistance, the 5/7 law
+python ChimeraEngine/test_hysteresis.py      # 17 checks: Mindlin microslip, the cubic law, the Stage 12 correction
 python ChimeraEngine/test_render_pipeline.py # 47/47 baseline terms, bit-level
 python ChimeraEngine/test_perf_guard.py      # 11 checks
 python ChimeraEngine/benchmark_optics.py     # specular cost A/B; --refraction for the lensing arm
