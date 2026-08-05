@@ -373,7 +373,27 @@ def get(name: str) -> PolicyClass:
 # `support` is the only component that tracks survival; `height` and `joints` are nearly
 # perfectly anti-correlated and NEITHER relates to survival -- and `stand_reward` MULTIPLIES all
 # three. T6's v2 removes the two that do not inform and the effort term with them.
-OBJECTIVES = ("full", "support_only")
+#
+# A THIRD, AND IT IS A DERIVATION RATHER THAN THE SWEEP THIS TUPLE EXISTS TO REFUSE.
+# `support_only` drops height and joints ENTIRELY, which removes the CONSTRAINT along with the
+# noise: with no height term at all it goes on paying for "support" while the pelvis is on its
+# way to the floor, because a CoM over the feet scores just as well descending as standing.
+#
+# `support_gated` is `stand_port.main()`'s own printed sentence written as arithmetic --
+# *"PROVEN = 5 s upright, pelvis >= 90% of target"* -- which is ONE MAXIMAND and THREE
+# CONSTRAINTS, where the reward had been multiplying the constraints and demoting the maximand
+# to a penalty:
+#
+#       r_t = support_t   if z_t >= 0.90 * target   else 0.0
+#
+# HEIGHT BECOMES A GATE AND JOINTS DOES NOT, and that asymmetry is measured, not preferred: the
+# body holds 102.9% of target so the 90% bar is SATISFIABLE, while 5 of 29 joints sit past their
+# stop (three of them 98% of phase 1) so a hard joint gate would zero every score on every
+# policy and leave the search with no gradient at all. `f3_stand` already treats the joints
+# exactly this way -- reported as OPEN DEBT, kept out of the exit code -- so this follows an
+# existing precedent instead of minting a second one. No new constant enters: 0.90 is the port's
+# published proof bar, in one home as `stand_port.PROOF_FRAC`.
+OBJECTIVES = ("full", "support_only", "support_gated")
 
 
 def rollout_score(mean_r: float, fell: bool, frac_run: float) -> float:

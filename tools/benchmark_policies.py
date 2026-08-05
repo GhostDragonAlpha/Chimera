@@ -135,7 +135,24 @@ def evaluate(mujoco, m, d, jids, P, pc, theta, secs, seed=0, objective="full", t
             # THE OBJECTIVE'S ONE VARIABLE. `support` is the only component measured to track
             # survival (+0.891 within-rung); `height` x `joints` are anti-correlated at -0.943
             # and neither relates to it. v2 keeps the informative factor and drops the gate.
-            r = r if objective == "full" else parts["support"]
+            # THE OBJECTIVE'S ONE VARIABLE, now three-valued. `support_gated` is the port's
+            # own PROVEN sentence written as arithmetic: the one predictive term (+0.891),
+            # gated by the one CONSTRAINT this body can satisfy (pelvis >= 90% of target,
+            # measured at 102.9%). `support_only` drops height and joints entirely, which
+            # removes the constraint along with the noise -- it goes on paying for "support"
+            # while the pelvis is on its way to the floor. Same rollout composition for all
+            # three, so the per-sample reward is the single variable between the arms.
+            from stand_port import support_gated
+            if objective == "full":
+                pass
+            elif objective == "support_only":
+                r = parts["support"]
+            elif objective == "support_gated":
+                r = support_gated(z, (dx, dy), P)
+            else:
+                raise SystemExit(f"--objective must be full | support_only | support_gated, "
+                                 f"not {objective!r}. Refusing to score against a rule nothing "
+                                 f"declares.")
             tot += r
             n += 1
             if trace:
