@@ -70,6 +70,9 @@ _AN = _ansur()["male"]          # the person of this story defaults to the measu
 # height above the ground is a small difference between large lengths, so the entire segment error
 # lands on it.
 import measured as _m_seg                                   # noqa: E402
+# THE ONE SUN (matter.py), imported the way the ground underfoot imports it -- the single star of
+# this world, never typed in this membrane.
+import matter                                                # noqa: E402
 # ONE LEG LENGTH FOR THE WHOLE BODY. LEG_FRAC was 0.530 (Dempster, hip joint) while the segments
 # summed to ANSUR's 0.5123 (trochanterion) and the gait dataset measured 0.5243 on its own subjects
 # -- three lengths, 3.11 cm apart, in a leg that has one. The measured one wins and the ANSUR
@@ -824,9 +827,6 @@ def derive(parent, free):
     start_day = int(round(yfrac * days_per_year)) % int(days_per_year)
     yfrac_snapped = start_day / days_per_year
     decl = math.asin(math.sin(eps) * math.sin(2.0 * math.pi * yfrac_snapped))
-    hour_angle = math.radians(15.0 * (start_hour - 12.0) * (24.0 * 3600.0 / day_s))
-    sun_alt = math.asin(math.sin(decl) * math.sin(lat)
-                        + math.cos(decl) * math.cos(lat) * math.cos(hour_angle))
 
     # HOW LONG TODAY IS. The half-day angle saturates: cos H0 = -tan(lat) tan(decl), clamped, which
     # is polar night at one end and midnight sun at the other. Nobody writes those two cases in --
@@ -1009,8 +1009,15 @@ def derive(parent, free):
         "days_per_year": days_per_year,
         "year_s": float(parent["year_s"]),
         "season_days": days_per_year / 4.0,
-        "sun_declination_deg": math.degrees(decl),
-        "sun_altitude_at_start_deg": math.degrees(sun_alt),
+        # THE LIGHT THE EMIT BAKES is THE ONE SUN (matter.py), read exactly like the ground
+        # underfoot: same latitude, same effective tilt, same film opening hour. These two numbers
+        # describe the star that ACTUALLY lights this body at the film's opening frame (t=1.0), so
+        # a reader can check the render against the claim -- the year-row below stays the world's
+        # calendar structure, this row is the body's light. It used to be a second, solstice-scale
+        # sun the ground never saw; the record of that refusal is in docs/THE_TWO_FORCES.md.
+        "sun_declination_deg": math.degrees(matter.sun_declination(1.0, math.degrees(eps))),
+        "sun_altitude_at_start_deg": matter.sun_altitude_deg(1.0, math.degrees(eps),
+                                                             math.degrees(lat), matter.SUN_OPEN_HOUR),
 
         # ── WHAT THE TILT DOES TO A PERSON STANDING HERE ─────────────────────────────────────────
         "obliquity_deg": math.degrees(eps),
@@ -1343,8 +1350,11 @@ def emit(nums, t=1.0):
     nrm /= (np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-9)
     b[:, 21:24] = nrm
 
-    sun = np.array([0.55, -0.72, 0.42], np.float32)
-    sun /= np.linalg.norm(sun)
+    # THE ONE SUN, read (matter.py): this body stands on theGround at this latitude, so it is lit
+    # by the same local sun the ground reads -- the star the world's law describes, derived never
+    # typed. The old typed vector aimed at an altitude this latitude could not produce; the refusal
+    # is recorded in docs/THE_TWO_FORCES.md.
+    sun = sun_direction(t, nums)
     lam = np.clip(nrm @ sun, 0.0, None)
     body = np.array([0.52, 0.44, 0.38], np.float32)
     b[:, 16:19] = lit(body, float(nums.get("S_earth", 1.0)) * lam + 0.10,
@@ -1362,3 +1372,11 @@ def emit(nums, t=1.0):
     # Rendered alone, this membrane is a body in the dark -- which is honest: on its own, that is
     # all it is.
     return b
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): this body's light is the world's single star, seen from the
+    latitude the ground underfoot already reads -- derived, never typed. Declared here so the live
+    viewer arms the renderer with THE SAME sun the emit baked with."""
+    return matter.local_sun(float(tt), float(nums["obliquity_deg"]),
+                            float(nums["latitude_deg"]), matter.SUN_OPEN_HOUR)

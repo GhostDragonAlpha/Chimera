@@ -18,35 +18,35 @@
       "n_lod": 16384
     },
     "aBlueWorld": {
-      "coverage": 0.210025,
+      "coverage": 0.210035,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 43000,
       "n_lod": 16384
     },
     "aHuman": {
-      "coverage": 0.054842,
+      "coverage": 0.054547,
       "drew": true,
-      "max_pixel": 255.0,
+      "max_pixel": 252.0,
       "n_grains": 16745,
       "n_lod": 16384
     },
     "aNitrogenAtmosphere": {
-      "coverage": 0.166501,
+      "coverage": 0.166013,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 30500,
       "n_lod": 16384
     },
     "aRockyPlanet": {
-      "coverage": 0.065133,
+      "coverage": 0.065162,
       "drew": true,
       "max_pixel": 208.0,
       "n_grains": 29732,
       "n_lod": 16384
     },
     "aSaltOcean": {
-      "coverage": 0.225922,
+      "coverage": 0.225916,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 34000,
@@ -67,9 +67,9 @@
       "n_lod": 16384
     },
     "aTerrain": {
-      "coverage": 0.038671,
+      "coverage": 0.039539,
       "drew": true,
-      "max_pixel": 240.0,
+      "max_pixel": 255.0,
       "n_grains": 262144,
       "n_lod": 16384
     },
@@ -88,7 +88,7 @@
       "n_lod": 1541
     },
     "theAtmosphere": {
-      "coverage": 0.143067,
+      "coverage": 0.143439,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 12000,
@@ -158,11 +158,11 @@
       "n_lod": 12000
     },
     "theEye": {
-      "coverage": 0.104431,
+      "coverage": 0.105866,
       "drew": true,
       "max_pixel": 110.0,
-      "n_grains": 3294,
-      "n_lod": 3294
+      "n_grains": 3343,
+      "n_lod": 3343
     },
     "theFlight": {
       "coverage": 0.229797,
@@ -193,7 +193,7 @@
       "n_lod": 4280
     },
     "theGround": {
-      "coverage": 0.010318,
+      "coverage": 0.010314,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 26000,
@@ -214,9 +214,9 @@
       "n_lod": 9500
     },
     "theHuman": {
-      "coverage": 0.020054,
+      "coverage": 0.019695,
       "drew": true,
-      "max_pixel": 255.0,
+      "max_pixel": 229.0,
       "n_grains": 3120,
       "n_lod": 3120
     },
@@ -249,7 +249,7 @@
       "n_lod": 9000
     },
     "theOcean": {
-      "coverage": 0.209855,
+      "coverage": 0.209942,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 12000,
@@ -263,10 +263,10 @@
       "n_lod": 16384
     },
     "theRockyPlanet": {
-      "coverage": 0.210826,
+      "coverage": 0.210787,
       "drew": true,
       "max_pixel": 173.0,
-      "n_grains": 41974,
+      "n_grains": 41980,
       "n_lod": 16384
     },
     "theSeed": {
@@ -284,9 +284,9 @@
       "n_lod": 2600
     },
     "theSkin": {
-      "coverage": 0.062269,
+      "coverage": 0.010754,
       "drew": true,
-      "max_pixel": 191.0,
+      "max_pixel": 30.0,
       "n_grains": 1040,
       "n_lod": 1040
     },
@@ -319,7 +319,7 @@
       "n_lod": 5200
     },
     "theTerrain": {
-      "coverage": 0.211601,
+      "coverage": 0.211613,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 55000,

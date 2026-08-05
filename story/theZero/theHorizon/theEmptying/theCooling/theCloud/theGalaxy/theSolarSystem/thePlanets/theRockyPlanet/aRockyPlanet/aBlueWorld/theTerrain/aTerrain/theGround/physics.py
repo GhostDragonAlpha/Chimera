@@ -482,11 +482,12 @@ def emit(nums, t=1.0):
     albedo[weathered] = alb_o[weathered]
 
     # ONE DAY: the sun crosses, and its height is the local-sky altitude -- the ONE declination
-    # (matter.py) projected onto this latitude. The shadows are the point. DAY_OPEN_HOUR opens the
-    # film mid-morning: the day-movie's two ends (t=0, t=1) share that readable light instead of
-    # opening on the sunrise graze, where the patch renders nearly black and the whole point --
-    # stones, texture, shadows -- is invisible to the eye. It is FILM FRAMING, a LENS choice, and it
-    # is shared with aTerrain so zooming between the two never jumps the light.
+    # (matter.py) projected onto this latitude. The shadows are the point. matter.SUN_OPEN_HOUR
+    # opens the film mid-morning: the day-movie's two ends (t=0, t=1) share that readable light
+    # instead of opening on the sunrise graze, where the patch renders nearly black and the whole
+    # point -- stones, texture, shadows -- is invisible to the eye. It is FILM FRAMING, a LENS
+    # choice, shared with aTerrain and the human chain standing here so zooming never jumps the
+    # light.
     sun = sun_direction(tt, nums)
     lam = np.clip(nrm @ sun, 0.0, None)
     b[:, 16:19] = lit(albedo, float(nums.get("S_earth", 1.0)) * lam + 0.06,
@@ -503,9 +504,8 @@ def emit(nums, t=1.0):
 # that the grains the law sized are actually visible.
 FRAMING = {"dist": 1.15, "elev": 0.55}
 
-# FILM FRAMING, shared with aTerrain: the hour of the day-movie this surface opens on. Which hour
-# is a LENS choice, never a fact about the sun; the sun's ELEVATION at that hour is the law's.
-DAY_OPEN_HOUR = 0.9
+# The day-movie's opening hour is matter.SUN_OPEN_HOUR -- FILM FRAMING, typed once, shared with
+# aTerrain and the human chain standing here, so zooming never jumps the light.
 
 
 def layout(nums):
@@ -557,4 +557,4 @@ def sun_direction(tt, nums):
     SAME sun the emit baked with."""
     import matter
     return matter.local_sun(float(tt), float(nums["obliquity_effective_deg"]),
-                            float(nums["latitude_deg"]), DAY_OPEN_HOUR)
+                            float(nums["latitude_deg"]), matter.SUN_OPEN_HOUR)

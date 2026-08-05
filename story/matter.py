@@ -200,6 +200,14 @@ def blackbody_rgb(T: float) -> tuple:
 #     the surface scenes and the ground can never disagree about where the sun is again.
 SUN_PHASE_OFFSET_RAD = 1.15
 
+# FILM FRAMING, and it is shared so no surface scene can drift from the others: the hour of the
+# day-movie the surface scenes open on (t = 1.0). WHICH hour is a LENS choice, never a fact about
+# the sun -- the sun's ELEVATION at that hour is the law's. It used to be typed in aTerrain AND
+# theGround (two files, one number, the drift that was already inevitable); it is typed here once.
+# aTerrain, theGround and the human chain standing on the ground all read the same opening hour, so
+# zooming from terrain to ground to body never jumps the light.
+SUN_OPEN_HOUR = 0.9
+
 
 def sun_declination(tt, obliquity_deg):
     """The sun's height above the equator, RADIANS -- the ONE season number of the whole world.
@@ -237,6 +245,13 @@ def local_sun(tt, obliquity_deg, latitude_deg, hour_offset=0.0):
                   np.sin(hour) * np.cos(alt),
                   np.sin(alt)], dtype=np.float64)
     return v / np.linalg.norm(v)
+
+
+def sun_altitude_deg(tt, obliquity_deg, latitude_deg, hour_offset=0.0):
+    """The ONE sun's elevation above the local horizon, DEGREES -- the number a day-lit membrane
+    publishes so a reader can check the light it baked against the claim it wrote."""
+    v = local_sun(tt, obliquity_deg, latitude_deg, hour_offset)
+    return float(np.degrees(np.arcsin(float(v[2]))))
 
 
 # ══ THE OPTICS OF MATTER: density → refractive index → reflection ═══════════════════════════════

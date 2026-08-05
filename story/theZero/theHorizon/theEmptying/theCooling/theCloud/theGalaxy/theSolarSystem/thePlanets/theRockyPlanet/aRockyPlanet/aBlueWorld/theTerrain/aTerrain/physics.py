@@ -91,14 +91,11 @@ RENDER_GRID = 512
 #
 # `sun_height` WAS HERE and is gone (2026-08-05): where the sun is is not a picture dial, it is the
 # world's own declination and latitude, read from matter.py's ONE sun. A slider that moves the light
-# is a second sun, and this world has one.
+# is a second sun, and this world has one. The day-movie's opening hour is matter.SUN_OPEN_HOUR --
+# FILM FRAMING, shared with theGround and the human chain, typed once.
 LENS = {
     "relief": {"lo": 1.0, "hi": 24.0, "default": 6.0, "label": "relief", "unit": "x true height"},
 }
-
-# FILM FRAMING, shared with theGround: the hour of the day-movie this surface opens on. Which hour
-# is a LENS choice, never a fact about the sun; the sun's ELEVATION at that hour is the law's.
-DAY_OPEN_HOUR = 0.9
 
 
 def _red_surface(n, rng, roughness):
@@ -754,8 +751,8 @@ def emit(nums, t=1.0):
 
     # ONE DAY: the sun crosses, and its height is the local-sky altitude -- the ONE declination
     # (matter.py) projected onto this latitude. The shadows are the point: a landscape is legible
-    # because of them, and at noon a real valley nearly disappears. DAY_OPEN_HOUR is FILM FRAMING,
-    # shared with theGround so zooming between the two never jumps the light.
+    # because of them, and at noon a real valley nearly disappears. The film's opening hour is
+    # matter.SUN_OPEN_HOUR -- shared with theGround so zooming between the two never jumps the light.
     sun = sun_direction(tt, nums)
     lam = np.clip(nrm @ sun, 0.0, None)
     b[:, 16:19] = lit(albedo, float(nums["S_earth"]) * lam + 0.05,
@@ -808,4 +805,4 @@ def sun_direction(tt, nums):
     renderer with THE SAME sun the emit baked with."""
     import matter
     return matter.local_sun(float(tt), float(nums["obliquity_effective_deg"]),
-                            float(nums["latitude_deg"]), DAY_OPEN_HOUR)
+                            float(nums["latitude_deg"]), matter.SUN_OPEN_HOUR)

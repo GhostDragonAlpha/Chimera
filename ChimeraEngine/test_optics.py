@@ -642,6 +642,72 @@ def t11_adoption():
         print(f"[art ] PNG save skipped: {e}", flush=True)
 
 
+# ═══ T12 -- THE ONE SUN ON THE HUMAN ════════════════════════════════════════════════════════════
+def t12_human_chain():
+    """THE ONE SUN ON THE BODY. theHuman/aHuman/theSkin stand on theGround, so their light must BE
+    the ground's light -- matter.local_sun at the same latitude, tilt and opening hour, derived
+    never typed. Falsifiers: (a) the human's sun equals the ground's sun to 1e-9; (b) the baked
+    altitude equals theHuman's published sun_altitude_at_start_deg -- the number must describe the
+    light the emit ACTUALLY bakes, not a second star the ground never saw; (c) no human-chain
+    membrane types a sun vector.
+    """
+    import splat_appearance as _sa
+    hum = published("theHuman")
+    gnd = published("theGround")
+
+    sun_h = _sa.sun_direction("theHuman", 1.0)
+    sun_g = _sa.sun_direction("theGround", 1.0)
+    check("T12a the human reads THE SAME sun as the ground underfoot (ONE SUN, not a second star)",
+          sun_h is not None and sun_g is not None
+          and all(abs(sun_h[i] - sun_g[i]) <= 1e-9 for i in range(3)),
+          f"human {tuple(round(x, 6) for x in sun_h) if sun_h else None}, "
+          f"ground {tuple(round(x, 6) for x in sun_g) if sun_g else None}")
+    check("T12a aHuman and theSkin read that same sun too (every day-lit human membrane)",
+          all((s := _sa.sun_direction(m, 1.0)) is not None
+              and all(abs(s[i] - sun_g[i]) <= 1e-9 for i in range(3))
+              for m in ("aHuman", "theSkin")),
+          f"{[tuple(round(x, 6) for x in s) if (s := _sa.sun_direction(m, 1.0)) else None for m in ('aHuman', 'theSkin')]}")
+
+    law_alt = matter.sun_altitude_deg(1.0, float(hum["obliquity_deg"]),
+                                      float(hum["latitude_deg"]), matter.SUN_OPEN_HOUR)
+    check("T12b baked altitude == published sun_altitude_at_start_deg (the number IS the light)",
+          abs(law_alt - float(hum["sun_altitude_at_start_deg"])) <= 1e-9,
+          f"law {law_alt:.9f} vs published {float(hum['sun_altitude_at_start_deg']):.9f}")
+    law_decl = float(np.degrees(matter.sun_declination(1.0, float(hum["obliquity_deg"]))))
+    check("T12b baked declination == published sun_declination_deg (one declination, one law)",
+          abs(law_decl - float(hum["sun_declination_deg"])) <= 1e-9,
+          f"law {law_decl:.9f} vs published {float(hum['sun_declination_deg']):.9f}")
+
+    for leaf in ("theHuman", "aHuman", "theSkin"):
+        p = next(iter(ROOT.glob(f"story/**/{leaf}/physics.py")))
+        src = p.read_text(encoding="utf-8")
+        check(f"T12c {leaf} types NO sun vector (the old [0.55,-0.72,0.42] is gone)",
+              "0.55, -0.72" not in src and "0.55,-0.72" not in src,
+              "the one sun is matter.py's; a body may not type a star")
+
+
+# ═══ T13 -- THE LAMPS ARE LAMPS ═════════════════════════════════════════════════════════════════
+def t13_lamps():
+    """THE LAMPS ARE LAMPS. aActiveInterior and aTerraceMine light with FIXED directions for the
+    eye -- the interior of a planet has no sun, and an underground mine has none either. They
+    publish no sun_direction wrapper, so the appearance layer arms NO light from them (a lamp that
+    could be mistaken for a sun is a sun), and neither types a sun vector.
+    """
+    import splat_appearance as _sa
+    check("T13 aActiveInterior arms NO light (a fixed lamp, not a sun)",
+          _sa.sun_direction("aActiveInterior", 1.0) is None,
+          "no wrapper, no armed light, picture bit-identical")
+    check("T13 aTerraceMine arms NO light (a fixed bench lamp, not a sun)",
+          _sa.sun_direction("aTerraceMine", 1.0) is None,
+          "no wrapper, no armed light, picture bit-identical")
+    for leaf in ("aActiveInterior", "aTerraceMine"):
+        p = next(iter(ROOT.glob(f"story/**/{leaf}/physics.py")))
+        src = p.read_text(encoding="utf-8")
+        check(f"T13 {leaf} types NO sun vector (a lamp is named a lamp or is absent)",
+              "sun = np.array" not in src,
+              "the ONE SUN is matter.py's; a fixed lamp may not borrow its name")
+
+
 def main() -> int:
     t1_stage0_closure()
     t2_one_source()
@@ -673,6 +739,8 @@ def main() -> int:
     t9_dispersion(t7_state)
     t10_bounce()
     t11_adoption()
+    t12_human_chain()
+    t13_lamps()
 
     print(f"\n{_PASS} passed, {_FAIL} failed", flush=True)
     return 1 if _FAIL else 0

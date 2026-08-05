@@ -271,16 +271,20 @@ def emit(nums, t=1.0):
     b2[:, 11] = SOLID
     parts.append(b2)
 
-    # the crust: the dark rocky skin, kept whole AWAY from the wedge and lit by the sun
+    # the crust: the dark rocky skin, kept whole AWAY from the wedge and lit for the eye
     n3 = 16000
     d3 = fibonacci_sphere(n3, jitter=0.9, seed=104)
     d3 = d3[_keep(d3)]
     b3 = blank(len(d3))
     b3[:, 0:3] = d3
     b3[:, 21:24] = d3
-    sun = np.array([0.5, -0.75, 0.42], np.float32)
-    sun /= np.linalg.norm(sun)
-    cosang = np.clip((d3 * sun[None, :]).sum(1), 0.0, None)
+    # A LAMP, NOT A SUN -- a fixed direction for making the crust's shape readable. It is
+    # deliberately NOT a declared sun (no sun_direction wrapper), so the appearance layer can never
+    # arm it as the renderer's light: the ONE SUN is matter.py's, and this interior has none of it.
+    # docs/THE_TWO_FORCES.md records the refusal.
+    _lamp_direction = np.array([0.5, -0.75, 0.42], np.float32)
+    _lamp_direction /= np.linalg.norm(_lamp_direction)
+    cosang = np.clip((d3 * _lamp_direction[None, :]).sum(1), 0.0, None)
     b3[:, 16:19] = lit(np.array([0.30, 0.25, 0.18], np.float32)[None, :].repeat(len(d3), 0),
                        float(nums.get("S_earth", 1.0)) * cosang + 0.02,
                        e_ref=max(float(nums.get("S_earth", 1.0)), 1e-6), tone=TONE)

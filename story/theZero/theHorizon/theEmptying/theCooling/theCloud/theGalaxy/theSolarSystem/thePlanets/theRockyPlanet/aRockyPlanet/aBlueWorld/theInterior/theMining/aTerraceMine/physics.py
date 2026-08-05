@@ -207,14 +207,16 @@ def emit(nums, t=1.0):
     # colour: grey-buff gangue on the upper benches, iron-oxide ore near the floor -- and the
     # SHADING BY BENCH, not by smooth depth: each tread catches the light and each riser sits in
     # its own shadow, the alternating stripes that read as TERRACES in every pit photograph
-    # (smooth depth shading rendered as a bullseye gradient; the dyad caught it)
+    # (smooth depth shading rendered as a bullseye gradient; the dyad caught it). This light is a
+    # FIXED LAMP, baked at emit time from bench geometry -- deliberately NOT a declared sun (no
+    # sun_direction wrapper), so the appearance layer can never arm it: the ONE SUN is matter.py's,
+    # and an underground mine has none of it. A typed `sun = [...]` used to sit here pointing at
+    # nothing -- no emit line ever read it; docs/THE_TWO_FORCES.md records the refusal.
     ore = np.array([0.42, 0.20, 0.12], np.float32)
     gang = np.array([0.48, 0.42, 0.34], np.float32)
     oreline = 1.0 - float(nums["ore_grades"]["Fe"]) * 0.5
     is_ore = r < oreline
     alb = np.where(is_ore[:, None], ore, gang)
-    sun = np.array([0.45, -0.55, 0.70], np.float32)
-    sun /= np.linalg.norm(sun)
     bench_phase = (r * 7.0) % 1.0                          # 0 at the tread edge, 1 at the riser top
     tread = np.clip(bench_phase * 2.0, 0.0, 1.0)           # lit tread
     riser = np.clip((bench_phase - 0.7) * 3.3, 0.0, 1.0)   # shadowed riser band

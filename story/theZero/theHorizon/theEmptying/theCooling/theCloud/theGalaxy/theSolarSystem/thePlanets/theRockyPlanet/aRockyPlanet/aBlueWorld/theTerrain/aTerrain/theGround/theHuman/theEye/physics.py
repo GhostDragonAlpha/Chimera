@@ -8,15 +8,16 @@ is an optics question with an answer.
 
 THE DERIVATION, in one line. The parent's insolation and sun altitude give an illuminance; the
 illuminance gives a pupil; the pupil gives a diffraction limit; and the diffraction limit is
-**1.07 arcmin**, which is the 20/20 line on an eye chart. Nothing in that chain was fitted to
-1 arcmin -- it comes out of S_earth, an atmosphere's pressure, a sun 52.5 degrees up, and the CIE's
-measured luminous-efficiency curve read off disk.
+**1.06 arcmin**, which is the 20/20 line on an eye chart. Nothing in that chain was fitted to
+1 arcmin -- it comes out of S_earth, an atmosphere's pressure, a sun 40.1 degrees up (THE ONE SUN,
+matter.py's law at the film's opening), and the CIE's measured luminous-efficiency curve read off
+disk.
 
 AND A SECOND, INDEPENDENT ROUTE ARRIVES AT THE SAME PLACE. Foveal cones sit 2.41 um apart; through
 the eye's nodal distance that is 0.497 arcmin per cone, a Nyquist limit of 60.4 cycles/degree, and
 the pupil whose diffraction cutoff *equals* that sampling limit is **1.92 mm**. The pupil this
-world's daylight actually forces is **2.18 mm**. The eye is built at its own diffraction limit, to
-within 14%, and the two numbers were computed from completely different measurements -- one from
+world's daylight actually forces is **2.20 mm**. The eye is built at its own diffraction limit, to
+within 14.6%, and the two numbers were computed from completely different measurements -- one from
 sunlight and air, one from a cadaver's cone mosaic.
 
 WHAT THIS BUYS THE RENDERER, and it is the reason this chapter is not decoration:

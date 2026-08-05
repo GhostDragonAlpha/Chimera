@@ -34,3 +34,5 @@
 | `spectrum_reflectance` | [0.041918986455505854, 0.12327406515688077, 0.20134575735912405, 0.23517655009288374, 0.3318595067449445, 0.39439563888168183, 0.41865195440369807, 0.41588906158445593] |
 | `sss_red_over_blue` | 2.335 |
 | `optics_source` | Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json) |
+| `latitude_deg` | 30.77 |
+| `obliquity_deg` | 37.38 |

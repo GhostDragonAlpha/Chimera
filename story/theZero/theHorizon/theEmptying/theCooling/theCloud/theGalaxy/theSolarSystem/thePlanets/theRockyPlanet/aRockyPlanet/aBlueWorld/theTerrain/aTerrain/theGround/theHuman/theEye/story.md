@@ -38,20 +38,21 @@ between blinks: ten fixations, ten saccades, and the lid coming down at the end.
 ## The chain, and the number at the end of it
 
 The parent hands down how much sunlight arrives (`S_earth = 1.005`), how high the sun is
-(**52.5°**), and how thick the air is (**0.52 bar**). Nothing else is needed.
+(**40.1°** — THE ONE SUN, matter.py's law at the film's opening, not a second star), and how thick
+the air is (**0.52 bar**). Nothing else is needed.
 
 | step | | |
 |---|---|---:|
 | the star's light at the top of the air | `S · 1361 W/m² · 93 lm/W` | **127,193 lx** |
-| through 1.26 air masses at τ = 0.146 | Beer–Lambert, τ scaled by the parent's own pressure | ×0.832 |
-| onto the ground, sun 52.5° up | direct 83,995 + skylight 8,459 | **92,453 lx** |
-| off a 20%-reflectance scene | `L = Eρ/π` | **5,886 cd/m²** |
-| the pupil that forces | Moon & Spencer 1944 | **2.180 mm** |
-| **what diffraction then allows** | **`θ = 1.22 λ / D`** | **1.068 arcmin** |
+| through 1.55 air masses at τ = 0.146 | Beer–Lambert, τ scaled by the parent's own pressure | ×0.798 |
+| onto the ground, sun 40.1° up | direct 65,376 + skylight 8,287 | **73,663 lx** |
+| off a 20%-reflectance scene | `L = Eρ/π` | **4,690 cd/m²** |
+| the pupil that forces | Moon & Spencer 1944 | **2.202 mm** |
+| **what diffraction then allows** | **`θ = 1.22 λ / D`** | **1.057 arcmin** |
 
 **The 20/20 line on an eye chart is 1.00 arcmin.** Nothing in that chain was fitted to it — it is an
 insolation, an air pressure, a sun altitude and the CIE's 1924 luminous-efficiency curve read off
-disk, multiplied together. **20/21.4.**
+disk, multiplied together. **20/21.1.**
 
 ### The wavelength was not typed either
 

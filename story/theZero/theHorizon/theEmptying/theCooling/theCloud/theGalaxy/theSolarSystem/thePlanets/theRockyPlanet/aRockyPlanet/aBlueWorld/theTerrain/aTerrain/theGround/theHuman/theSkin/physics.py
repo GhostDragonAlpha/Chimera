@@ -95,6 +95,11 @@ def derive(parent, free):
         # RED GOES FURTHEST -- the gradient IS the subsurface glow.
         "sss_red_over_blue": float(parent["skin_sss_mfp_mm"][0]) / float(parent["skin_sss_mfp_mm"][2]),
         "optics_source": str(parent["skin_optics_source"]),
+        # THE PLACE, CARRIED: this skin lives on a body standing at this latitude under this tilt.
+        # Its emit reads the ONE sun (matter.py) from these two numbers like the ground underfoot
+        # does -- a patch of skin is daylit exactly as the soil next to it is.
+        "latitude_deg": float(parent["latitude_deg"]),
+        "obliquity_deg": float(parent["obliquity_deg"]),
     }
 
 
@@ -157,8 +162,10 @@ def emit(nums, t=1.0):
     # colour is mfp / (2*pi*r) of a radian, and red wraps furthest. Measured inputs, no palette.
     r_patch_mm = 0.028 * 1.755 * 1000.0          # the limb this patch stands for
     wrap = np.clip(mfp / r_patch_mm, 0.0, 1.0)   # per band: the fraction of a radian light reaches
-    sun = np.array([0.55, -0.72, 0.42], np.float32)
-    sun /= np.linalg.norm(sun)
+    # THE ONE SUN, read (matter.py): this skin is daylit by the same star as the ground underfoot --
+    # same latitude, same tilt, same film opening hour, typed nowhere. The subsurface wrap does the
+    # rest; the old typed vector aimed at a sun this world does not have.
+    sun = sun_direction(t, nums)
     lam = np.clip(nrm @ sun, -1.0, 1.0)          # signed: the wrap is what carries light past 0
     wrapped = np.clip((lam[:, None] + wrap[None, :]) / (1.0 + wrap[None, :]), 0.0, 1.0)
     b[:, 16:19] = lit(alb[None, :] * wrapped, 1.4, e_ref=1.0, tone=0.45)
@@ -187,3 +194,12 @@ def measure(nums):
                                           <= nums["melanin_fraction"] <=
                                           _skin.F_MEL_CLASSES[nums["melanin_class"]][1],
     }
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): this skin is daylit by the world's single star, seen from the
+    latitude its parent theHuman already carries -- derived, never typed. Declared here so the live
+    viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.local_sun(float(tt), float(nums["obliquity_deg"]),
+                            float(nums["latitude_deg"]), matter.SUN_OPEN_HOUR)

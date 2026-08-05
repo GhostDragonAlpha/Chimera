@@ -585,8 +585,10 @@ def emit(nums, t=1.0, ground=None, cycle=None):
         alb[sel] = np.clip(a, 0.0, 1.0)
     alb[MAT == 3] = np.array(nums["skin_albedo_rgb"], np.float32)
 
-    sun = np.array([0.55, -0.72, 0.42], np.float32)
-    sun /= np.linalg.norm(sun)
+    # THE ONE SUN, read (matter.py): this body stands on theGround at this latitude, so it is lit
+    # by the same local sun the ground and the terrain read -- derived, never typed. The hard
+    # visor highlight below is the SAME light, so the suit and the glint can never disagree.
+    sun = sun_direction(t, nums)
     lam = np.clip(N @ sun, 0.0, None)
     S = float(nums.get("S_earth", 1.0))
     b[:, 16:19] = lit(alb, S * lam + 0.13, e_ref=S, tone=0.45)
@@ -638,3 +640,12 @@ def measure(nums):
         "suit_is_bulkier_than_bare": nums["bulk_over_bare"] > 0.0,
         "no_pressure_shell": not nums["breathable_unaided"] and nums["insulation_m"] > 0.0,
     }
+
+
+def sun_direction(tt, nums):
+    """THE ONE SUN, read (matter.py): this suited body's light is the world's single star, seen
+    from the latitude its parent theHuman already reads -- derived, never typed. Declared here so
+    the live viewer arms the renderer with THE SAME sun the emit baked with."""
+    import matter
+    return matter.local_sun(float(tt), float(nums["obliquity_deg"]),
+                            float(nums["latitude_deg"]), matter.SUN_OPEN_HOUR)

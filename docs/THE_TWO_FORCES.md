@@ -706,23 +706,49 @@ light and the baked diffuse must agree on. **No light set, no glint rendered —
 
 **THE ONE DECLARATION, now a law:** `story/matter.py` holds the world's single star —
 `sun_direction(tt, obliquity)` in the equatorial frame, `local_sun(tt, obliquity, latitude, hour)`
-for surface scenes, and the declination `sin(decl) = sin(obliquity)·cos(phase)` that is the whole
-of a season. **Every day-lit membrane is a reader of it** (theRockyPlanet, aRockyPlanet, aBlueWorld,
-theTerrain, theAtmosphere, theOcean, aNitrogenAtmosphere, aSaltOcean in the equatorial frame;
-aTerrain and theGround at their latitude) — each publishes `sun_direction(tt, nums)` so the emit,
-the live viewer and the renderer's specular kernel all draw THE SAME sun, and the baked diffuse and
-the glint can never disagree about where the sun is because neither chose. The two surface scenes
-open on the same film hour (`DAY_OPEN_HOUR`, a LENS choice shared between aTerrain and theGround), so
-zooming between them never jumps the light. The old per-file typed vectors — 0.22 in one, 0.12 in
-another, 0.30 in a third, some not even turning the same way — are gone; the sweep deleted the
-`sun_height` dial that used to be a second sun wearing a slider. Falsifier (T11): a membrane with no
-declared sun (aActiveInterior, whose light is a lamp's) arms no light, and all equatorial scenes
-return the same vector at a given t.
+for surface scenes, `sun_altitude_deg` for the number a membrane publishes, and the declination
+`sin(decl) = sin(obliquity)·cos(phase)` that is the whole of a season. **Every day-lit membrane is a
+reader of it** (theRockyPlanet, aRockyPlanet, aBlueWorld, theTerrain, theAtmosphere, theOcean,
+aNitrogenAtmosphere, aSaltOcean in the equatorial frame; aTerrain, theGround **and the whole human
+chain** — theHuman, aHuman, theSkin — at their latitude): each publishes `sun_direction(tt, nums)` so
+the emit, the live viewer and the renderer's specular kernel all draw THE SAME sun, and the baked
+diffuse and the glint can never disagree about where the sun is because neither chose. The surface
+scenes open on the same film hour (`matter.SUN_OPEN_HOUR`, a LENS choice typed once and shared by
+aTerrain, theGround and the body standing on it), so zooming never jumps the light. The old per-file
+typed vectors — 0.22 in one, 0.12 in another, 0.30 in a third, some not even turning the same way —
+are gone; the sweep deleted the `sun_height` dial that used to be a second sun wearing a slider.
+Falsifiers (T11/T12/T13): a membrane with no declared sun arms no light; all equatorial scenes return
+the same vector at a given t; the human's sun equals the ground's to 1e-9; and the interior lamps are
+refused (below).
+
+**THE LAMPS ARE LAMPS (2026-08-05, the last typed vectors refused):** two membranes were left with a
+`sun = np.array(...)` after the sweep, and neither is a day-lit scene: aActiveInterior (a planet's
+interior — no sun has ever shone there) and aTerraceMine (an underground mine). aActiveInterior's is
+now `_lamp_direction`, a fixed direction for making the crust's shape readable, with no
+`sun_direction` wrapper so the appearance layer can never arm it; aTerraceMine's was **dead code** —
+no emit line ever read it — so it was deleted, and the bench shading stands as the fixed lamp it
+always was. Both stay in the T13 falsifier: no light armed, no `sun = np.array` in source. The ONE
+SUN is matter.py's; a fixed lamp may not borrow its name.
+
+**THE HUMAN SWEEP (2026-08-05, the pre-registered 2° lane was a miss — recorded as a miss):**
+the plan's T12 lane assumed `local_sun(1.0, 37.3825, 30.7707, 0.9)` would land within 2° of the old
+typed `[0.55, -0.72, 0.42]` (≈24.9° elevation). It does not: the law gives 40.11° elevation on the
+OPPOSITE azimuth (+51.6° vs −52.6°), and no hour_offset can reproduce the old pair — its
+altitude/azimuth combination is off the world's local-sky curve for any declination the law produces.
+The old vector matched nothing it stood next to: not the ground's sun (40.1°), not the membrane's own
+published `sun_altitude_at_start_deg` (52.5°, a solstice-scale sun from a year-clock the render never
+saw), not even its own declination. So the lane was abandoned as a miss and the falsifier rewritten:
+the human chain reads the ground's EXACT sun (T12a, equality to 1e-9), and the two published star
+facts — `sun_declination_deg` (37.38 → 14.36) and `sun_altitude_at_start_deg` (52.5 → 40.11) — now
+describe THE LIGHT THE EMIT BAKES, computed from the same law at the same film frame (T12b). The
+year-row (`daylight_today_h`, solstice noon altitudes, `start_day`) stays the world's calendar
+structure, untouched; the body's light is the world's single star. theEye, which reads its parent's
+`sun_altitude_at_start_deg`, inherits the corrected light for free.
 
 ## THE GATE (all of it)
 
 ```bash
-python ChimeraEngine/test_optics.py          # 60 checks: closure, referee, controls, lensing chain, bounce, adoption
+python ChimeraEngine/test_optics.py          # 72 checks: closure, referee, controls, lensing chain, bounce, adoption, ONE-SUN human chain, lamp refusals
 python ChimeraEngine/test_overlap.py         # 22 checks: v1 machinery + pinned refutation + v2 seam closure
 python ChimeraEngine/test_seam.py            # 17 checks: stiffness identity, sound speed, body-on-ground
 python ChimeraEngine/test_damping.py         # 25 checks: impedance, reflection, decay rate, friction

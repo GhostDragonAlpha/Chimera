@@ -35,8 +35,8 @@
 | `days_per_year` | 383.2 |
 | `year_s` | 3.311e+07 |
 | `season_days` | 95.8 |
-| `sun_declination_deg` | 37.38 |
-| `sun_altitude_at_start_deg` | 52.5 |
+| `sun_declination_deg` | 14.36 |
+| `sun_altitude_at_start_deg` | 40.11 |
 | `obliquity_deg` | 37.38 |
 | `has_seasons` | True |
 | `daylight_today_h` | 15.61 |
