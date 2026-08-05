@@ -121,9 +121,24 @@ def build_mips(base: np.ndarray, radius_world: float, p: dict | None = None) -> 
                 lvl[:, c] = (sums / cnts).astype(np.float32)
         lvl[:, _SIZE_COL] = p["beta"] * 2.0 * radius_world / math.sqrt(max(1, N))
         levels.append(lvl)
-    base_lvl = base.copy()
-    base_lvl[:, _SIZE_COL] = p["beta"] * 2.0 * radius_world / math.sqrt(max(1, n_base))
-    levels.append(base_lvl)
+    # ── THE BASE LEVEL KEEPS THE SIZE ITS emit() WROTE ──────────────────────────────────────────
+    # This used to run the same `beta*2R/sqrt(N)` law over the base as over the coarse levels, and
+    # that is the one place it does not belong. A COARSE level is a resampling -- N points chosen
+    # to stand for n_base of them -- so its grain size is a consequence of N and nothing the
+    # membrane said; the law is the only source of truth there. The BASE is not a resampling. It
+    # is what the membrane emitted, and its SIZE column is a measurement the same way its colour
+    # is.
+    #
+    # WHAT IT COST, measured 2026-08-04: 44 of 47 terms reached the GPU with ONE unique size.
+    # aYellowStar emits {0.03, 0.33} -- a dense core and a soft corona, an 11x ratio it derives --
+    # and uploaded a flat 0.044, so the corona was not rendered as a corona. aRockyPlanet emits
+    # four sizes topping out at 0.0347 and uploaded 0.1058: THREE TIMES its own largest grain.
+    #
+    #     emit() and the render disagreed about the body, and the render won silently.
+    #
+    # THE LAW IS STILL RIGHT ABOUT COARSE LEVELS and is untouched above. What is removed is its
+    # application to a level that was never resampled.
+    levels.append(base.copy())
     cg = p.get("color_gain", [1.0, 1.0, 1.0])            # re-expose for the law's overdraw (calibrated once)
     if cg != [1.0, 1.0, 1.0]:
         for lvl in levels:

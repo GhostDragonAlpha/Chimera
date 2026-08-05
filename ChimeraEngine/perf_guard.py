@@ -56,11 +56,25 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 # flagged that as its weakness; this is the same fit at n = 35, so the number is no longer a
 # promise:
 #
-#     coverage fraction            R^2 = 0.127     (the "coverage is the real driver" claim)
-#     expansions per splat         R^2 = 0.307
-#     visible grain count          R^2 = 0.430
-#     grain count uploaded         R^2 = 0.472     (what MAX_GRAINS_PER_FRAME assumes)
-#     TILE EXPANSIONS              R^2 = 0.995     (and it is a MECHANISM, not a shape)
+#     coverage fraction            R^2 = 0.157     (the "coverage is the real driver" claim)
+#     expansions per splat         R^2 = 0.296
+#     visible grain count          R^2 = 0.449
+#     grain count uploaded         R^2 = 0.494     (what MAX_GRAINS_PER_FRAME assumes)
+#     TILE EXPANSIONS              R^2 = 0.992     (and it is a MECHANISM, not a shape)
+#
+# REFITTED 2026-08-04 ON HONEST DATA. The first fit was made while `lod.build_mips` was overwriting
+# every membrane's SIZE column with a uniform value, so it was measured on a world where per-grain
+# size DID NOT VARY -- a model of splat cost, fitted where splat size was constant. That is fixed
+# (lod.py: the base level keeps its emitted sizes) and these are the numbers from the rebuilt sweep.
+#
+# THE MODEL SURVIVED AND GOT MORE ROBUST, which is the part worth stating. On the full 35 rows it
+# moved 0.9949 -> 0.9917, which is nothing. With the single extreme point removed -- the test that
+# mattered -- it moved 0.8293 -> 0.8971, while grain count stayed dead at 0.085. It was not
+# depending on the flattening.
+#
+# THE COST ITSELF MOVED A LOT, in both directions, because the uniform law had been inflating most
+# membranes and shrinking a few: aTerrain@0.25x 12.83M -> 7.95M expansions (-38%), aHuman -60%,
+# aSaltOcean -64%, but theRockyPlanet@0.25x 624k -> 1.00M (+61%).
 #
 # A tile expansion is one (splat, tile) pair. The binner emits exactly these, the sorter sorts
 # exactly these, and the compositor walks exactly these per pixel -- so this is a count of work,
@@ -73,24 +87,24 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 #
 #     A FEW HUGE SPLATS COST MORE THAN MANY SMALL ONES, and grain count cannot see the difference.
 #
-# THE HONEST LIMIT SURVIVED THE BIGGER SAMPLE, and it is the same one: ONE extreme point carries
-# the headline figure. Drop aTerrain at 0.25x (12.8M expansions, 393 ms) and the fit reads
+# THE HONEST LIMIT SURVIVED THE BIGGER SAMPLE AND THE REFIT, and it is the same one: ONE extreme
+# point carries the headline figure. Drop aTerrain at 0.25x (7.95M expansions, 324 ms):
 #
-#     expansions R^2 = 0.829 | grains R^2 = 0.042 | coverage R^2 = 0.449   (n = 34)
+#     expansions R^2 = 0.897 | grains R^2 = 0.085 | coverage R^2 = 0.462   (n = 34)
 #
-# So 0.995 is inflated and 0.83 is the number to quote for an ordinary scene. THE RANKING IS NOT
-# INFLATED -- expansions wins by 0.38 over the next best either way, and grain count COLLAPSES to
-# 0.042 without the outlier, which means its apparent 0.47 was that single point too. The model
+# So 0.992 is inflated and 0.90 is the number to quote for an ordinary scene. THE RANKING IS NOT
+# INFLATED -- expansions wins by 0.44 over the next best either way, and grain count COLLAPSES to
+# 0.085 without the outlier, which means its apparent 0.49 was that single point too. The model
 # being replaced was standing on the same rock as the model replacing it; only one of them is
 # still standing when the rock is removed.
 #
 # TWO ROWS RENDER NOTHING (aSaltOcean and aSteppeBiomes at 0.25x: the camera is inside the shell,
-# 0 visible splats, 0 expansions) and they cost 10.1-10.3 ms. That is the REAL fixed floor of this
+# 0 visible splats, 0 expansions) and they cost 9.4-9.8 ms. That is the REAL fixed floor of this
 # pipeline -- kernel launches, the two host round-trips, the image download. The fitted intercept
-# of 21.0 ms is higher because a straight line has to bend to reach the outlier; when a budget
-# says "a scene costs 21 ms before it draws anything", the measured answer is 10.
-MS_PER_EXPANSION = 2.9083e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
-FIXED_MS = 21.002                  # fitted intercept (measured empty-frame floor is ~10.2 ms)
+# of 22.1 ms is higher because a straight line has to bend to reach the outlier; when a budget
+# says "a scene costs 22 ms before it draws anything", the measured answer is under 10.
+MS_PER_EXPANSION = 3.8342e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
+FIXED_MS = 22.053                  # fitted intercept (measured empty-frame floor is ~9.6 ms)
 
 
 def expansions_for_ms(target_ms: float) -> int:
@@ -104,26 +118,30 @@ def expansions_for_ms(target_ms: float) -> int:
     UNDER 33 ms -- it flags fast scenes as over budget, which is precisely the false-positive
     check the same task asked for. A wall you cannot pass without being wrong is not a wall.
 
+    AND A DERIVED CAP MOVES WHEN THE WORLD DOES. Fixing the LOD size flattening changed what
+    scenes cost -- most fell 38-64%, one rose 61% -- and the cap tracked it from 6.15M to 4.64M
+    without anyone choosing a number, because the slope was refitted and the wall did not move.
+    A cap set as "the measured scene x 1.5" would have needed a human to notice and re-measure.
+
     Inverting the fit ties the cap to the only number here anybody declared on purpose: how long a
     frame is allowed to take. Change MAX_RENDER_MS and every cap moves with it.
     """
     return max(0, int((float(target_ms) - FIXED_MS) / MS_PER_EXPANSION))
 
 
-# THE FRAME CAP, DERIVED FROM THE DECLARED WALL. At MAX_RENDER_MS = 200 this is ~6.15M, and the
-# n=4 fit that preceded it said 6.9M -- an 11% move, which is the sample size mattering less than
-# it might have.
+# THE FRAME CAP, DERIVED FROM THE DECLARED WALL. At MAX_RENDER_MS = 200 this is ~4.64M. It read
+# 6.15M against the pre-fix sweep; the drop is the refitted slope, not a decision.
 #
 # READ THIS BEFORE RAISING AN EYEBROW AT HOW LOOSE IT IS. 200 ms is 5 fps. A cap derived from it
-# fires on exactly ONE of the 35 measured rows, and it lets theMining at 0.25x (1.31M expansions,
-# 65 ms) through. That is not the guard failing -- 65 ms IS inside a 200 ms budget, and a guard
-# that fired there would be disagreeing with the wall it was derived from. If a 65 ms frame should
+# fires on exactly ONE of the 35 measured rows, and it lets theMining at 0.25x (805k expansions,
+# 57 ms) through. That is not the guard failing -- 57 ms IS inside a 200 ms budget, and a guard
+# that fired there would be disagreeing with the wall it was derived from. If a 57 ms frame should
 # be an error, the thing that is wrong is MAX_RENDER_MS, and it is one line above. For reference,
 # measured against the same 35 rows:
 #
-#     MAX_RENDER_MS = 200 (5 fps)   -> cap 6,154,819   1 row fires,  0 false positives
-#     MAX_RENDER_MS =  33 (30 fps)  -> cap   423,000   8 rows fire,  2 false positives
-#     MAX_RENDER_MS =  16 (60 fps)  -> cap         0   every row fires -- the FLOOR alone is 21 ms,
+#     MAX_RENDER_MS = 200 (5 fps)   -> cap 4,641,028   1 row fires,  0 false positives
+#     MAX_RENDER_MS =  33 (30 fps)  -> cap   293,532   9 rows fire
+#     MAX_RENDER_MS =  16 (60 fps)  -> cap         0   every row fires -- the FLOOR alone is 22 ms,
 #                                                      so 60 fps is not reachable by ANY scene here
 #                                                      and no budget can express it
 #

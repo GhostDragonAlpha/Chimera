@@ -81,35 +81,35 @@
       "n_lod": 16384
     },
     "theAnkle": {
-      "coverage": 0.016071,
+      "coverage": 0.004608,
       "drew": true,
-      "max_pixel": 222.0,
+      "max_pixel": 220.0,
       "n_grains": 1541,
       "n_lod": 1541
     },
     "theAtmosphere": {
-      "coverage": 0.149726,
+      "coverage": 0.143067,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 12000,
       "n_lod": 12000
     },
     "theBalance": {
-      "coverage": 0.01974,
+      "coverage": 0.007409,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 1826,
       "n_lod": 1826
     },
     "theBiomes": {
-      "coverage": 0.23244,
+      "coverage": 0.212836,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 12000,
       "n_lod": 12000
     },
     "theBreath": {
-      "coverage": 0.21341,
+      "coverage": 0.230872,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 4200,
@@ -123,16 +123,16 @@
       "n_lod": 16384
     },
     "theCloud": {
-      "coverage": 0.029356,
+      "coverage": 0.046362,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 16000,
       "n_lod": 16000
     },
     "theCooling": {
-      "coverage": 0.206117,
+      "coverage": 0.197149,
       "drew": true,
-      "max_pixel": 235.0,
+      "max_pixel": 201.0,
       "n_grains": 14000,
       "n_lod": 14000
     },
@@ -144,28 +144,28 @@
       "n_lod": 16384
     },
     "theDescent": {
-      "coverage": 0.283127,
+      "coverage": 0.226597,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 2200,
       "n_lod": 2200
     },
     "theEmptying": {
-      "coverage": 0.212045,
+      "coverage": 0.232195,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 12000,
       "n_lod": 12000
     },
     "theEye": {
-      "coverage": 0.128507,
+      "coverage": 0.104431,
       "drew": true,
       "max_pixel": 110.0,
       "n_grains": 3294,
       "n_lod": 3294
     },
     "theFlight": {
-      "coverage": 0.293266,
+      "coverage": 0.229797,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 1800,
@@ -179,14 +179,14 @@
       "n_lod": 16384
     },
     "theGarden": {
-      "coverage": 0.269657,
+      "coverage": 0.222288,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 3000,
       "n_lod": 3000
     },
     "theGrip": {
-      "coverage": 0.036412,
+      "coverage": 0.017452,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 4280,
@@ -200,21 +200,21 @@
       "n_lod": 16384
     },
     "theHand": {
-      "coverage": 0.007882,
+      "coverage": 0.004209,
       "drew": true,
-      "max_pixel": 188.0,
+      "max_pixel": 252.0,
       "n_grains": 2956,
       "n_lod": 2956
     },
     "theHorizon": {
-      "coverage": 0.237569,
+      "coverage": 0.220449,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 9500,
       "n_lod": 9500
     },
     "theHuman": {
-      "coverage": 0.053364,
+      "coverage": 0.020054,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 3120,
@@ -228,30 +228,30 @@
       "n_lod": 16384
     },
     "theInterior": {
-      "coverage": 0.219894,
+      "coverage": 0.199051,
       "drew": true,
-      "max_pixel": 246.0,
+      "max_pixel": 255.0,
       "n_grains": 6996,
       "n_lod": 6996
     },
     "theLoad": {
-      "coverage": 0.059215,
+      "coverage": 0.016159,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 4414,
       "n_lod": 4414
     },
     "theMining": {
-      "coverage": 0.096113,
+      "coverage": 0.081898,
       "drew": true,
       "max_pixel": 232.0,
       "n_grains": 9000,
       "n_lod": 9000
     },
     "theOcean": {
-      "coverage": 0.228509,
+      "coverage": 0.209855,
       "drew": true,
-      "max_pixel": 254.0,
+      "max_pixel": 255.0,
       "n_grains": 12000,
       "n_lod": 12000
     },
@@ -270,23 +270,23 @@
       "n_lod": 16384
     },
     "theSeed": {
-      "coverage": 0.307602,
+      "coverage": 0.234317,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 1400,
       "n_lod": 1400
     },
     "theShip": {
-      "coverage": 0.275557,
+      "coverage": 0.224184,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 2600,
       "n_lod": 2600
     },
     "theSkin": {
-      "coverage": 0.117809,
+      "coverage": 0.062269,
       "drew": true,
-      "max_pixel": 190.0,
+      "max_pixel": 191.0,
       "n_grains": 1040,
       "n_lod": 1040
     },
@@ -298,7 +298,7 @@
       "n_lod": 16384
     },
     "theStance": {
-      "coverage": 0.018968,
+      "coverage": 0.003613,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 1726,
@@ -312,9 +312,9 @@
       "n_lod": 16384
     },
     "theSweep": {
-      "coverage": 0.205822,
+      "coverage": 0.186366,
       "drew": true,
-      "max_pixel": 255.0,
+      "max_pixel": 232.0,
       "n_grains": 5200,
       "n_lod": 5200
     },
@@ -326,7 +326,7 @@
       "n_lod": 16384
     },
     "theThrust": {
-      "coverage": 0.091047,
+      "coverage": 0.018356,
       "drew": true,
       "max_pixel": 255.0,
       "n_grains": 2501,

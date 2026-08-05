@@ -836,21 +836,21 @@ class FullGPUPipeline:
         print(f"[splat-size]   n={col.size} mean={mean:.6g} std={std:.6g} max={mx:.6g} "
               f"max/mean={(mx/mean if mean > 0 else 0.0):.1f}x", flush=True)
         if std == 0.0 and col.size > 1:
-            # A PERFECTLY FLAT HISTOGRAM IS USUALLY NOT WHAT THE MEMBRANE EMITTED. `lod.build_mips`
-            # overwrites this column with the surface-grain law `beta * 2R / sqrt(N)` at EVERY
-            # level including the base one, so whatever emit() decided is gone by the time a
-            # buffer reaches here. Measured: aYellowStar emits {0.03, 0.33} -- a hot core and a
-            # soft corona, an 11x ratio -- and uploads a single 0.044. aRockyPlanet emits four
-            # sizes topping out at 0.0347 and uploads 0.1058, THREE TIMES its own largest grain.
+            # A FLAT HISTOGRAM IS NOW A FACT ABOUT THE MEMBRANE, NOT ABOUT THE RENDERER.
             #
-            # Reported rather than corrected: the same law is doing real work on the coarse
-            # levels, where a level of N grains genuinely must have grains that tile the surface.
-            # It is only its application to the FULL-DETAIL level that discards the emit.
-            print("[splat-size]   std is EXACTLY 0 -- every grain identical. If this membrane's "
-                  "emit() varies its\n[splat-size]   grain size, LOD flattened it: "
-                  "lod.build_mips overwrites SIZE with beta*2R/sqrt(N)\n"
-                  "[splat-size]   on the base level too. Compare against the raw scene_buffer().",
-                  flush=True)
+            # It used to mean neither. `lod.build_mips` overwrote this column with the
+            # surface-grain law at EVERY level including the base, so 44 of 47 terms arrived here
+            # flat no matter what their emit() wrote -- aYellowStar's {0.03, 0.33} core-and-corona
+            # became a single 0.044, and the diagnostic could not have told you otherwise.
+            # Fixed 2026-08-04; the base level now keeps its emitted sizes and aYellowStar reads
+            # two bins.
+            #
+            # SO THE MESSAGE CHANGED WITH THE CAUSE. A diagnostic that keeps blaming a bug after
+            # the bug is gone sends every future reader to the wrong file.
+            print("[splat-size]   std is EXACTLY 0 -- every grain identical. That is this "
+                  "membrane's own emit()\n[splat-size]   (LOD no longer flattens the base level). "
+                  "A COARSER MIP is uniform by\n[splat-size]   construction, so check whether the "
+                  "base was selected before reading anything into it.", flush=True)
 
     def upload(self, data, term=""):
         n = len(data)

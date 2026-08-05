@@ -33,7 +33,9 @@ def check(name, cond, detail=""):
 print("=" * 100)
 print("TASK 1 falsifier -- 'theMining at 0.25x zoom passes the budget check'")
 print("=" * 100)
-MIN_EXP = 1_307_982       # measured, docs/pipeline_benchmark.csv
+MIN_EXP = 804_771         # measured, docs/pipeline_benchmark.csv (was 1,307,982 before the LOD
+                          # size fix -- theMining's grains had been inflated 1.77x by the uniform
+                          # law, so a third of that "cost" was the renderer, not the membrane)
 try:
     pg.check_frame_budget(MIN_EXP)
     passed = True
@@ -41,8 +43,8 @@ except pg.PerfBudgetError:
     passed = False
 print(f"  theMining@0.25x = {MIN_EXP:,} expansions vs cap {pg.MAX_EXPANSIONS_PER_FRAME:,}")
 print(f"  -> the FALSIFIER {'FIRES: it passes the check' if passed else 'does not fire'}")
-print(f"  measured frame time there is 65.6 ms; the declared wall MAX_RENDER_MS is "
-      f"{pg.MAX_RENDER_MS} ms, so a 65.6 ms frame is INSIDE budget and a correctly derived cap")
+print(f"  measured frame time there is 57.1 ms; the declared wall MAX_RENDER_MS is "
+      f"{pg.MAX_RENDER_MS} ms, so a 57.1 ms frame is INSIDE budget and a correctly derived cap")
 print(f"  must let it through. At a 33 ms wall the cap would be "
       f"{pg.expansions_for_ms(33.3):,} and theMining WOULD be caught.")
 try:
