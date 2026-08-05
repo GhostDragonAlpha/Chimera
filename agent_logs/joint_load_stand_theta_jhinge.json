@@ -1,0 +1,104 @@
+{
+ "theta": "stand_theta_jhinge.npy",
+ "secs": 5.0,
+ "capacity": {
+  "flex_extension": 169.56081655633196,
+  "lat_bending": 221.72130424265418,
+  "axial_rotation": 261.68846690238496,
+  "L4_L5_FE": 198.53001929405434,
+  "L4_L5_LB": 163.73154252830665,
+  "L4_L5_AR": 150.89277263122963,
+  "L3_L4_FE": 170.6140879805933,
+  "L3_L4_LB": 149.5032137403244,
+  "L3_L4_AR": 79.65119607062968,
+  "L2_L3_FE": 176.30669647598694,
+  "L2_L3_LB": 146.95232769409503,
+  "L2_L3_AR": 94.40991608620627,
+  "L1_L2_FE": 207.37441116455418,
+  "L1_L2_LB": 148.25267237467577,
+  "L1_L2_AR": 86.88617279256167,
+  "hip_flexion_r": 559.6173961243927,
+  "hip_adduction_r": 418.00667066826196,
+  "hip_rotation_r": 184.01873117216655,
+  "knee_angle_r": 326.51415439626817,
+  "ankle_angle_r": 421.3448666601788,
+  "subtalar_angle_r": 131.3099634790403,
+  "mtp_angle_r": 6.524835366213285,
+  "hip_flexion_l": 556.2461274247897,
+  "hip_adduction_l": 417.6665286025152,
+  "hip_rotation_l": 182.42686483550105,
+  "knee_angle_l": 326.55904141563354,
+  "ankle_angle_l": 420.4413458050024,
+  "subtalar_angle_l": 130.92619032578733,
+  "mtp_angle_l": 6.503250301725112
+ },
+ "S_driven_mean": 0.007448678090812424,
+ "S_resting_mean": 0.02740834617051979,
+ "separation": 0.27176678390118136,
+ "per_joint": [
+  {
+   "joint": "L4_L5_FE",
+   "geometric_pct": 57.75598299065042,
+   "physical_pct": 43.63518576586097,
+   "note": "agree"
+  },
+  {
+   "joint": "mtp_angle_l",
+   "geometric_pct": 20.776224512131964,
+   "physical_pct": 56.36481423413903,
+   "note": "agree"
+  },
+  {
+   "joint": "L1_L2_FE",
+   "geometric_pct": 4.772161261040012,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "L2_L3_FE",
+   "geometric_pct": 4.585362637451037,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "L3_L4_FE",
+   "geometric_pct": 2.3277857146853456,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "hip_flexion_l",
+   "geometric_pct": 2.1907803299536623,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "knee_angle_r",
+   "geometric_pct": 1.93279190208138,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "L3_L4_AR",
+   "geometric_pct": 1.713302456601259,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "knee_angle_l",
+   "geometric_pct": 1.7128900667812272,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  },
+  {
+   "joint": "L1_L2_LB",
+   "geometric_pct": 1.7082347897700727,
+   "physical_pct": 0.0,
+   "note": "geometric overstates"
+  }
+ ],
+ "worst_geometric": "L4_L5_FE",
+ "worst_physical": "mtp_angle_l",
+ "falsifier2_fires": true,
+ "falsifier3_fires": false
+}
