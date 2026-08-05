@@ -9,7 +9,7 @@
 >
 > **FALSIFIER (named before the sweep).** Expansions R² drops below 0.9 on the full 35-row set.
 >
-> **RESULT: did not fire. R² = 0.9945, n = 35** — and this is the *third* time it did not fire.
+> **RESULT: did not fire. R² = 0.9923, n = 35** — and this is the *fourth* time it did not fire.
 > The first fit was made while LOD was flattening every membrane's splat size, so it measured a
 > world where splat size did not vary. That is fixed; the model was refitted on honest data and
 > **got more robust** (§5a). §3 and §5 are where this document argues against itself.
@@ -43,21 +43,21 @@ visible splats into 804,771 expansions (99 tiles each); `aTerrain` at 5× zoom d
 ## 2. The equation
 
 ```
-render_ms ≈ 3.1526e-05 × expansions + 14.049            n = 35, R² = 0.9945
+render_ms ≈ 3.6085e-05 × expansions + 14.413            n = 35, R² = 0.9923
 ```
 
 Coefficients live in `ChimeraEngine/perf_guard.py` as `MS_PER_EXPANSION` and `FIXED_MS`, and the
 frame budget is the equation **inverted**, never a chosen number:
 
 ```python
-MAX_EXPANSIONS_PER_FRAME = expansions_for_ms(MAX_RENDER_MS)   # (200 − 14.049) / 3.1526e-05
+MAX_EXPANSIONS_PER_FRAME = expansions_for_ms(MAX_RENDER_MS)   # (200 − 14.413) / 3.6085e-05
 ```
 
 | frame-time wall | derived cap | rows firing (of 35) |
 |---|---:|---:|
-| 200 ms (5 fps) — **declared** | 5,898,337 | 1 |
-| 33 ms (30 fps) | 610,638 | — |
-| 16.7 ms (60 fps) | 84,089 | — |
+| 200 ms (5 fps) — **declared** | 5,143,051 | 1 |
+| 33 ms (30 fps) | 523,403 | — |
+| 16.7 ms (60 fps) | 63,378 | — |
 
 **60 fps became arithmetically expressible during this work.** On the previous sweep the 16.7 ms
 cap came out at literally **0** — the fitted floor exceeded a 60 fps frame, so no scene could reach
@@ -150,20 +150,26 @@ Drop `aTerrain @ 0.25×` (7.95M expansions, 324 ms):
 
 | | full (n=35) | outlier removed (n=34) |
 |---|---:|---:|
-| expansions | 0.9945 | **0.8707** |
-| coverage | 0.1409 | 0.4907 |
-| grain count | 0.4930 | **0.0934** |
+| expansions | 0.9923 | **0.8860** |
+| coverage | 0.1455 | 0.4375 |
+| grain count | 0.4827 | **0.0613** |
 
-Quote **0.87** for an ordinary scene, not 0.99. The *ranking* is not inflated — expansions win by
+Quote **0.89** for an ordinary scene, not 0.99. The *ranking* is not inflated — expansions win by
 ≥0.43 either way, and grain count collapsing to 0.085 shows its apparent 0.49 was that same single
 point. **The refit is the interesting part:** on the old flattened-size data the outlier-free R²
 was 0.8293; on honest data it is 0.8971. The model was not living off the flattening.
 
 **(b) The fitted intercept is not the real floor, and the floor is not a constant.** Two rows
 render nothing (`aSaltOcean` and `aSteppeBiomes` at 0.25× — camera inside the shell, 0 visible
-splats). They cost **7.7–7.9 ms** this sweep and **9.4–9.8 ms** the previous one, with zero
-expansions in both — that 1.8 ms is contention, not code. The fitted 14.0 ms is a line bending
+splats). Across four sweeps they cost **9.4–9.8**, then **7.7–7.9**, then **8.7–9.1 ms**, with zero
+expansions every time — that spread is contention, not code. The fitted 14.4 ms is a line bending
 toward the outlier.
+
+**The slope is noisy the same way, and it is the honest limit on every coefficient here.** §9's
+device-side depth sort made all 47 terms faster when measured interleaved, and the refitted slope
+still went *up* (3.15e-05 → 3.61e-05) because the two sweeps ran under different contention. Trust
+the fit for **ranking predictors** and for an order-of-magnitude cap. Do not read a 15% move in
+either coefficient between sweeps as meaning anything.
 
 **(c) It is calibrated on bursts and the live viewer is slower.** The benchmark times 3 frames
 after 2 warm-ups. Under the viewer's sustained loop the same work runs **1.7–4.9× slower** than
@@ -183,14 +189,14 @@ evicts far splats in an overfull tile — a visual defect with no cost signature
 
 | model | R² (n=35) | R² without outlier | verdict |
 |---|---:|---:|---|
-| **tile expansions** | **0.9945** | **0.8707** | in use — `MAX_EXPANSIONS_PER_FRAME` |
-| grain count (`n_lod`) | 0.4930 | 0.0934 | **superseded.** `MAX_GRAINS_PER_FRAME = 250,000` |
-| visible grain count | 0.4446 | — | never shipped |
-| expansions per splat | 0.2953 | — | a *diagnostic*, not a predictor of total cost |
-| pixel coverage | 0.1409 | 0.4907 | **refuted** as the dominant driver |
+| **tile expansions** | **0.9923** | **0.8860** | in use — `MAX_EXPANSIONS_PER_FRAME` |
+| grain count (`n_lod`) | 0.4827 | 0.0613 | **superseded.** `MAX_GRAINS_PER_FRAME = 250,000` |
+| visible grain count | 0.4311 | — | never shipped |
+| expansions per splat | 0.3187 | — | a *diagnostic*, not a predictor of total cost |
+| pixel coverage | 0.1455 | 0.4375 | **refuted** as the dominant driver |
 
-Correlation against `render_ms`: expansions **0.997** · n_lod 0.702 · n_vis 0.667 ·
-expansions/splat 0.543 · coverage 0.375.
+Correlation against `render_ms`: expansions **0.996** · n_lod 0.695 · n_vis 0.657 ·
+expansions/splat 0.565 · coverage 0.381.
 
 **The per-class grain budgets rank the classes wrongly, and honest sizes made it worse: 7 of 7
 classes now misrank** (it was 5 of 7 on flattened data). `terrain` holds the largest allowance
@@ -293,3 +299,61 @@ large the splats already are — which is the same thing the whole cost model ha
 **Also found:** `_sort_tiles` (gpu_pipeline.py:438) is dead code — never called since the CuPy
 binner sorts on device. And the `ge > 20.0` test in `_composite` is unreachable: `wgt < 0.001`
 fires first, at ge = 13.82.
+
+## 9. The depth sort left the GPU every frame
+
+**Fixed 2026-08-04. `_visible_prefix` / `_depth_order` in `gpu_pipeline.py`.**
+
+`render_from_gpu` left the device twice mid-frame:
+
+1. download `n` visibility bools → `np.cumsum` on the host → upload `n` int32
+2. download `nv` depths → **`np.argsort` of up to 262,144 floats on one CPU core** → upload `nv` int32
+
+The second is the expensive one, and the cost is not the transfer — it is a full CPU sort inside a
+GPU pipeline, every frame. This project already has the rule written down (*nothing reads back from
+the GPU inside the loop*; the attempt that ignored it ran 300× slower than the CPU) and the render
+path had been quietly breaking it.
+
+Both are CuPy one-liners, and CuPy is already a hard dependency of the tile binner. **Exactly one
+sync survives, and it must:** `nv` sizes every later kernel launch, so it is now read as the last
+element of the inclusive prefix sum — **4 bytes instead of `n` bools**.
+
+**Measured** (per-term, all 47 at default framing; the one apparent regression, `aTerrain` at
++18%, was cross-run contention and measured **−3.7%** when interleaved):
+
+| | |
+|---|---|
+| median frame time | **−12.2%** |
+| terms faster | **46 of 47** (47/47 interleaved) |
+| the 14 terms over 100k expansions | **−13.8%** median |
+| expansion counts changed | **0** — this touches no geometry |
+
+### The falsifier fired, and what it caught was already broken
+
+Bit-identity was the named falsifier. **12 of 47 terms changed.** The correlation with tied depths
+is exact:
+
+| term | tied depths | pixels changed | max diff |
+|---|---:|---:|---:|
+| aBlueWorld | 0.2% | **0** | 0 |
+| theMining | 0.1% | **0** | 0 |
+| theClock | 0.2% | 46 | 1 |
+| aTerrain | 98.4% | 48,498 | 39 |
+| theGrip / theLoad / theThrust | **100%** | up to 7,528 | up to 174 |
+
+Every term with ~no ties was bit-identical; every term that changed had ties. `theGrip`, `theLoad`
+and `theThrust` have **one unique depth across all their splats** — they are flat diagrams, so
+their compositing order never had a defined answer.
+
+**And CuPy was not the culprit.** `cp.argsort` default and `kind="stable"` agree on all 47 terms —
+all 12 differences trace to **numpy's** default `quicksort`, which is unstable. The committed
+behaviour was the arbitrary one: tie order decided by introsort internals.
+
+So both paths now use `kind="stable"`, which tie-breaks on original index = **emit order**, the
+membrane's own layering. Verified: numpy-stable and cupy-stable produce identical permutations on a
+50%-tied array, so a machine without CuPy renders the same pixels as one with it — which was *not*
+true of the unstable pair. And it is **cheaper than the unstable default** (0.109 ms vs 0.133 ms at
+n=31,581); there was no trade to make.
+
+> The change did not introduce an arbitrary ordering and then contain it. It **removed** one that
+> had been in the render all along, on every membrane with coplanar splats.

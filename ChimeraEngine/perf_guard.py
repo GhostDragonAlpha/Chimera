@@ -56,11 +56,11 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 # flagged that as its weakness; this is the same fit at n = 35, so the number is no longer a
 # promise:
 #
-#     coverage fraction            R^2 = 0.141     (the "coverage is the real driver" claim)
-#     expansions per splat         R^2 = 0.295
-#     visible grain count          R^2 = 0.445
-#     grain count uploaded         R^2 = 0.493     (what MAX_GRAINS_PER_FRAME assumes)
-#     TILE EXPANSIONS              R^2 = 0.994     (and it is a MECHANISM, not a shape)
+#     coverage fraction            R^2 = 0.146     (the "coverage is the real driver" claim)
+#     expansions per splat         R^2 = 0.319
+#     visible grain count          R^2 = 0.431
+#     grain count uploaded         R^2 = 0.483     (what MAX_GRAINS_PER_FRAME assumes)
+#     TILE EXPANSIONS              R^2 = 0.992     (and it is a MECHANISM, not a shape)
 #
 # REFITTED 2026-08-04 ON HONEST DATA. The first fit was made while `lod.build_mips` was overwriting
 # every membrane's SIZE column with a uniform value, so it was measured on a world where per-grain
@@ -90,31 +90,36 @@ MAX_RENDER_MS = 200  # ms — below this, 5+ fps is maintained
 # THE HONEST LIMIT SURVIVED THE BIGGER SAMPLE AND THE REFIT, and it is the same one: ONE extreme
 # point carries the headline figure. Drop aTerrain at 0.25x (7.95M expansions, 324 ms):
 #
-#     expansions R^2 = 0.871 | grains R^2 = 0.093 | coverage R^2 = 0.491   (n = 34)
+#     expansions R^2 = 0.886 | grains R^2 = 0.061 | coverage R^2 = 0.438   (n = 34)
 #
-# So 0.994 is inflated and 0.87 is the number to quote for an ordinary scene. THE RANKING IS NOT
+# So 0.992 is inflated and 0.89 is the number to quote for an ordinary scene. THE RANKING IS NOT
 # INFLATED -- expansions wins by 0.38 over the next best either way, and grain count COLLAPSES to
 # 0.093 without the outlier, which means its apparent 0.49 was that single point too. The model
 # being replaced was standing on the same rock as the model replacing it; only one of them is
 # still standing when the rock is removed.
 #
 # TWO ROWS RENDER NOTHING (aSaltOcean and aSteppeBiomes at 0.25x: the camera is inside the shell,
-# 0 visible splats, 0 expansions) and they cost 7.70-7.88 ms. That is the REAL fixed floor of this
+# 0 visible splats, 0 expansions) and they cost 8.69-9.15 ms. That is the REAL fixed floor of this
 # pipeline -- kernel launches, the two host round-trips, the image download. The fitted intercept
 # of 14.0 ms is higher because a straight line has to bend to reach the outlier; when a budget
-# says "a scene costs 14 ms before it draws anything", the measured answer is under 8.
+# says "a scene costs 14 ms before it draws anything", the measured answer is under 10.
 #
-# AND THAT FLOOR IS NOT A CONSTANT OF THIS CODE. It read 9.4-9.8 ms on the previous sweep and
-# 7.70-7.88 ms on this one. An empty frame has ZERO expansions, so nothing changed here could have
-# moved it: the 1.8 ms is what else the shared 4090 was doing that hour. Quote the floor as a
-# RANGE, and do not read a change in it as a change in the renderer.
+# AND THAT FLOOR IS NOT A CONSTANT OF THIS CODE. Across three sweeps it read 9.4-9.8, then
+# 7.70-7.88, then 8.69-9.15 ms. An empty frame has ZERO expansions, so nothing changed in the
+# renderer could have moved it -- that spread is what else the shared 4090 was doing that hour.
+#
+# THE SLOPE IS NOISY THE SAME WAY, and this is the honest limit on every coefficient here: the
+# device-side depth sort made every one of the 47 terms FASTER when measured interleaved, and the
+# refitted slope still went UP (3.1526e-05 -> 3.6085e-05) because the two sweeps ran under
+# different contention. Trust the fit for RANKING predictors and for an order-of-magnitude cap.
+# Do not trust a 15% move in either coefficient between sweeps to mean anything at all.
 #
 # REFITTED AGAIN after `FOOTPRINT` (gpu_pipeline) was derived from the compositor's own weight
 # cutoff instead of the hand-written 1.5. Every scene got cheaper for the same picture -- expansions
 # -9% to -29%, frame time -5.6% to -14.2%, output BIT-IDENTICAL on all 47 terms -- so both
 # coefficients moved. Nothing about the MODEL changed; the world it measures got faster.
-MS_PER_EXPANSION = 3.1526e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
-FIXED_MS = 14.049                  # fitted intercept (measured empty-frame floor is 7.8 ms)
+MS_PER_EXPANSION = 3.6085e-05      # slope, n=35 least squares, docs/pipeline_benchmark.csv
+FIXED_MS = 14.413                  # fitted intercept (measured empty-frame floor is 8.7-9.1 ms)
 
 
 def expansions_for_ms(target_ms: float) -> int:
@@ -139,9 +144,11 @@ def expansions_for_ms(target_ms: float) -> int:
     return max(0, int((float(target_ms) - FIXED_MS) / MS_PER_EXPANSION))
 
 
-# THE FRAME CAP, DERIVED FROM THE DECLARED WALL. At MAX_RENDER_MS = 200 this is ~5.90M. It has
-# read 6.15M, then 4.64M, now 5.90M across three refits -- and not one of those moves was a
-# decision. The slope changed because the renderer did.
+# THE FRAME CAP, DERIVED FROM THE DECLARED WALL. At MAX_RENDER_MS = 200 this is ~5.14M. It has
+# read 6.15M, 4.64M, 5.90M and now 5.14M across four refits -- and not one of those moves was a
+# decision. Some were the renderer changing and some were the machine; see the coefficient-noise
+# note above. This is why the cap is DERIVED: a chosen number would have needed a human in the
+# loop four times and would have been stale three of them.
 #
 # READ THIS BEFORE RAISING AN EYEBROW AT HOW LOOSE IT IS. 200 ms is 5 fps. A cap derived from it
 # fires on exactly ONE of the 35 measured rows, and it lets theMining at 0.25x (702k expansions,
@@ -150,11 +157,11 @@ def expansions_for_ms(target_ms: float) -> int:
 # be an error, the thing that is wrong is MAX_RENDER_MS, and it is one line above. For reference,
 # measured against the same 35 rows:
 #
-#     MAX_RENDER_MS = 200 (5 fps)   -> cap 5,898,282   1 row fires,  0 false positives
-#     MAX_RENDER_MS =  33 (30 fps)  -> cap   611,224
-#     MAX_RENDER_MS =  16 (60 fps)  -> cap    84,724   reachable now: the floor fell to 7.8 ms when
-#                                                      FOOTPRINT was derived, so 60 fps stopped
-#                                                      being arithmetically impossible
+#     MAX_RENDER_MS = 200 (5 fps)   -> cap 5,143,009   1 row fires,  0 false positives
+#     MAX_RENDER_MS =  33 (30 fps)  -> cap   523,873
+#     MAX_RENDER_MS =  16 (60 fps)  -> cap    63,433   expressible at all only because the fitted
+#                                                      floor dropped below 16.7 ms; see the note on
+#                                                      coefficient noise above before celebrating
 #
 # That last line is the useful one: this pipeline cannot render a 60 fps frame at 1920x1080 even
 # empty, so a 60 fps target is a statement about the pipeline, not about any membrane in it.
