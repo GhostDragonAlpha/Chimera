@@ -270,7 +270,7 @@ def main():
     else:
         print_note = "(BOX/VEL_SIGMA unused for authored print)"
         if args.structure == "lattice":
-            pos, vel = seed_structures.lattice(seed=SEED)
+            pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
             N = pos.shape[0]
             n_core = 0
             r_target = 0.0

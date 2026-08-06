@@ -67,9 +67,19 @@ RULE 0 doc section) as the print proofs earn them.*
 - **BONE**: a dense lattice bulk — ordered packing = stiff, disordered = compliant;
   the distinction is free because points are identical. Bone is the PARENT
   membrane of the muscle: muscle is defined by its two bony attachments, and
-  every 1-D/2-D structure that bears load anchors to bone. Falsifier: bears a
-  derived compressive/tensile load without bond rupture, and deflects less than
-  a packed-bed bulk of equal mass by a derived factor (ordered beats random).
+  every 1-D/2-D structure that bears load anchors to bone.
+  **PRINT SPEC (v1, after theMaxChunk):** an ASSEMBLY of sub-critical grains —
+  each grain a lattice chunk of side 6-8 (216-512 points, below M_crit=640) —
+  grains bonded face-to-face at r_bond in a rod. Never one merged mass: the
+  grains are the atoms, the rod is the bone (real bone: mineral crystallites
+  in a matrix — the universe agrees). Load is applied by two ANCHOR plates
+  (pinned 0-D points, the anchor membrane) driven together at a derived speed.
+  **Falsifiers:** (a) no grain merges into another — grain count stable through
+  the window (the assembly must not collapse into one core); (b) under derived
+  compression the rod deflects and springs back with NO bond ruptures below the
+  derived load, and ruptures AT the derived load (not before); (c) deflection
+  per unit load is less than a packed-bed rod of equal mass by a derived factor
+  (ordered beats random).
 - **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
   this manifest tracks: not anchors-to but contains-within. Bone is the brain's
   parent by enclosure: it takes the load so the brain doesn't have to.

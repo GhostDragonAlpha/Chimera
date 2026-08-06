@@ -85,6 +85,42 @@ light the world emits.
 - Flicker returns (cluster-count CV > 0.20 in the final 25%): dissipation destabilizes
   the balance rather than closing it — the force pair itself is judged.
 
+## THE SUCCESSOR'S SUCCESSOR: THE FINITE PACKET (named 2026-08-06, after run 3)
+
+Run 3's bulk settled (bound fraction 0.489, ~1850 stable clusters, half the mass in one
+clump) while a few points were ejected to radius 5.6e9. Evidence it was integration
+stiffness, not the force pair: the radius jumped 50 -> 709451 between ticks 34580-41990,
+requiring v ~ 2e5 lu/tick where physical infall is ~10^2 (the P_rad peak of 34939
+implies v_rad ~ 86). During collapse a pair at v_rel ~ 100 crosses the entire wall
+depth (r_wall = 0.05 = v_rel * dt) in ONE tick; the (r_wall/r)^6/r repulsion at the
+resulting deep penetration is unresolved at dt = 5e-4, and Verlet overshoot converts it
+into a slingshot amplified ~10^7x over any physical ejection speed.
+
+**STATEMENT.** The point is a packet, not a singularity — the DRAW already honors this
+(EPS softening). The wall must too: two packets at FULL overlap feel a finite force,
+not a divergent one. The wall branch softens as `r -> r_eff = sqrt(r^2 + s^2)`.
+
+**THE DERIVED SOFTENING (no new free numbers).** s is fixed by the same closure that
+derived DT: the timestep was chosen so the fastest resolved interaction is the wall at
+r = r_wall/2, giving a_max = K_WALL * 2^(p+1) / r_wall = 2560. Set the SATURATED wall
+force equal to exactly that resolvable maximum:
+`K_WALL (r_wall/s)^p / s = a_max`  =>  `s = r_wall / 2 = 0.025`.
+Above s the wall is unchanged (r_eff ~ r); at full overlap the force is exactly the
+strongest push the integrator can resolve. The wall can never push harder than the
+timestep can see — the same law, closed on itself.
+
+**PREDICTION.** Same start, same window (10 t_ff), same verdict thresholds as runs 1-3:
+radius stays bounded through collapse (no ejected outliers); bound mass fraction meets
+or beats run 3's 0.489; cluster count settles and holds; edges sharpen. Radiated flux
+continues to be recorded.
+
+**FALSIFIER (any one ends this line).**
+- Outliers still eject (radius > 10x initial): the ejection is physical, not numerical —
+  the two-force family itself is judged; the next move is dissipation throughout the
+  bond zone (the medium reads, not just the wall), as pre-named.
+- One blob swallows >95% (COLLAPSE) or flicker returns (CV > 0.20): the balance fails
+  as registered.
+
 ## THE FORCE LAWS (the entire physics)
 
 Per point i, per tick, two passes over one point set:
@@ -93,7 +129,10 @@ Per point i, per tick, two passes over one point set:
   — inverse-square with softening ε (the point is a packet, not a singularity: ε is the
   packet's size, the one geometric fact a point owns). m = 1 for all points: identical.
 - **RESISTANCE (short-range, reading):** neighbor list, cutoff r_c. Per neighbor:
-  - `|r| < r_wall`: strong repulsion ∝ (r_wall/|r|)^p — the wall; makes edges.
+  - `|r| < r_wall`: strong repulsion ∝ (r_wall/r_eff)^p / r_eff with
+    r_eff = sqrt(r² + s²), s = r_wall/2 — the wall; makes edges, and is finite at
+    full overlap (the packet is not a singularity; derivation in THE SUCCESSOR'S
+    SUCCESSOR: THE FINITE PACKET).
     Inside the wall only, the pair also radiates: an equal-and-opposite radial
     damping force `-gamma_w * v_rel_radial` on each member (gamma_w = sqrt(K_BOND / 2) /
     r_bond, critical damping of the bond oscillator — derived in THE SUCCESSOR:
