@@ -11,9 +11,10 @@ every tick:
               Barnes-Hut tree can drop in as v2 without changing callers.
 
   2. RESISTANCE — short-range electromagnetism.  Neighbor list with cutoff r_c;
-                  wall at |r| < r_wall, bond at r_wall <= |r| <= r_bond,
-                  zero beyond r_c.  The public interface is
-                  ``compute_resistance(positions) -> accelerations``.
+                  wall at |r| < r_wall (with contact radiation / radial damping),
+                  bond at r_wall <= |r| <= r_bond, zero beyond r_c.
+                  The public interface is
+                  ``compute_resistance(positions, velocities) -> accelerations``.
 
   3. INTEGRATE  — velocity Verlet with the fixed dt declared in constants.py.
 
@@ -31,7 +32,7 @@ from numba.core.errors import NumbaPerformanceWarning
 import warnings
 
 from LightEngine.constants import (
-    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, DT,
+    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, DT, GAMMA_W,
 )
 
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
@@ -86,15 +87,24 @@ def _draw_cpu(pos: np.ndarray, G: float, eps2: float, out: np.ndarray):
 
 
 @njit(parallel=True, cache=True)
-def _resist_cpu(pos: np.ndarray, rw: float, rb: float, rc: float,
-                p: float, kw: float, kb: float, out: np.ndarray):
-    """Direct O(N^2) resistance pass with cutoff on the CPU."""
+def _resist_cpu(pos: np.ndarray, vel: np.ndarray, rw: float, rb: float, rc: float,
+                p: float, kw: float, kb: float, gamma_w: float, out: np.ndarray):
+    """
+    Direct O(N^2) resistance pass with cutoff on the CPU.
+
+    Returns the total radiated power in the wall branch (sum over unordered
+    pairs of gamma_w * v_rad^2) via the 1-element ``power`` array.
+    """
     n = pos.shape[0]
     rc2 = rc * rc
+    power = 0.0
     for i in prange(n):
         xi = pos[i, 0]
         yi = pos[i, 1]
         zi = pos[i, 2]
+        vxi = vel[i, 0]
+        vyi = vel[i, 1]
+        vzi = vel[i, 2]
         ax = 0.0
         ay = 0.0
         az = 0.0
@@ -116,6 +126,22 @@ def _resist_cpu(pos: np.ndarray, rw: float, rb: float, rc: float,
                 ax += f * (xi - pos[j, 0])
                 ay += f * (yi - pos[j, 1])
                 az += f * (zi - pos[j, 2])
+                # contact radiation: radial damping, equal and opposite
+                dvx = vel[j, 0] - vxi
+                dvy = vel[j, 1] - vyi
+                dvz = vel[j, 2] - vzi
+                inv_r = 1.0 / r
+                ux = dx * inv_r
+                uy = dy * inv_r
+                uz = dz * inv_r
+                v_rad = dvx * ux + dvy * uy + dvz * uz
+                # F_i damps the relative radial motion: F_i = +gamma_w * v_rad * u
+                damp = gamma_w * v_rad
+                ax += damp * ux
+                ay += damp * uy
+                az += damp * uz
+                # each unordered pair is visited twice; accumulate half each time
+                power += 0.5 * gamma_w * v_rad * v_rad
             elif r <= rb:
                 # bond spring: attractive when stretched, repulsive when compressed
                 f = kb * (r - rb) / (rb * r)
@@ -125,6 +151,7 @@ def _resist_cpu(pos: np.ndarray, rw: float, rb: float, rc: float,
         out[i, 0] = ax
         out[i, 1] = ay
         out[i, 2] = az
+    return power
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -160,7 +187,7 @@ if _cuda_available:
         out[i, 2] = az
 
     @cuda.jit(cache=True)
-    def _resist_cuda(pos, out, rw, rb, rc, p, kw, kb, n):
+    def _resist_cuda(pos, vel, out, rw, rb, rc, p, kw, kb, gamma_w, power_out, n):
         """Direct O(N^2) resistance pass with cutoff on the GPU."""
         i = cuda.grid(1)
         if i >= n:
@@ -168,6 +195,9 @@ if _cuda_available:
         xi = pos[i, 0]
         yi = pos[i, 1]
         zi = pos[i, 2]
+        vxi = vel[i, 0]
+        vyi = vel[i, 1]
+        vzi = vel[i, 2]
         ax = 0.0
         ay = 0.0
         az = 0.0
@@ -189,6 +219,22 @@ if _cuda_available:
                 ax += f * (xi - pos[j, 0])
                 ay += f * (yi - pos[j, 1])
                 az += f * (zi - pos[j, 2])
+                # contact radiation: radial damping, equal and opposite
+                dvx = vel[j, 0] - vxi
+                dvy = vel[j, 1] - vyi
+                dvz = vel[j, 2] - vzi
+                inv_r = 1.0 / r
+                ux = dx * inv_r
+                uy = dy * inv_r
+                uz = dz * inv_r
+                v_rad = dvx * ux + dvy * uy + dvz * uz
+                damp = gamma_w * v_rad
+                ax += damp * ux
+                ay += damp * uy
+                az += damp * uz
+                # each unordered pair is visited twice; accumulate half each time
+                if power_out is not None:
+                    cuda.atomic.add(power_out, 0, 0.5 * gamma_w * v_rad * v_rad)
             elif r <= rb:
                 f = kb * (r - rb) / (rb * r)
                 ax += f * dx
@@ -270,20 +316,22 @@ def compute_draw(positions: np.ndarray,
 
 
 def compute_resistance(positions: np.ndarray,
+                       velocities: np.ndarray,
                        out: np.ndarray | None = None,
                        use_cuda: bool | None = None) -> np.ndarray:
     """
     Compute the RESISTANCE acceleration for every point.
 
-    Interface: ``compute_resistance(positions) -> accelerations``.
-    This build evaluates every pair and skips beyond r_c.  A uniform-grid
-    cell-hash acceleration is available in ``build_neighbor_list_grid``
-    for metrics and tests; the force kernel may be replaced by a grid-
-    accelerated CUDA pass as v2.
+    Interface: ``compute_resistance(positions, velocities) -> accelerations``.
+    This build evaluates every pair and skips beyond r_c.  Inside the wall
+    a radial damping term removes relative radial kinetic energy as light.
+    A uniform-grid cell-hash acceleration is available in
+    ``build_neighbor_list_grid`` for metrics and tests.
 
     Parameters
     ----------
     positions : (N, 3) float array
+    velocities : (N, 3) float array
     out : optional (N, 3) float array to fill
     use_cuda : if True, require GPU; if False, force CPU; if None, auto
 
@@ -292,6 +340,7 @@ def compute_resistance(positions: np.ndarray,
     out : (N, 3) float array of accelerations
     """
     positions = np.asarray(positions, dtype=np.float32)
+    velocities = np.asarray(velocities, dtype=np.float32)
     n = positions.shape[0]
     if out is None:
         out = np.empty((n, 3), dtype=np.float32)
@@ -301,25 +350,31 @@ def compute_resistance(positions: np.ndarray,
     gpu = (use_cuda is True) or (use_cuda is None and _cuda_available)
     if gpu:
         d_pos = cuda.to_device(positions)
+        d_vel = cuda.to_device(velocities)
         d_out = cuda.to_device(out)
+        # dummy power sink (not read back)
+        d_power = cuda.to_device(np.zeros(1, dtype=np.float32))
         threads = 256
         blocks = (n + threads - 1) // threads
         _resist_cuda[blocks, threads](
-            d_pos, d_out, float(R_WALL), float(R_BOND), float(R_C),
-            float(P_WALL), float(K_WALL), float(K_BOND), n,
+            d_pos, d_vel, d_out, float(R_WALL), float(R_BOND), float(R_C),
+            float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+            d_power, n,
         )
         d_out.copy_to_host(out)
     else:
-        _resist_cpu(positions, float(R_WALL), float(R_BOND), float(R_C),
-                    float(P_WALL), float(K_WALL), float(K_BOND), out)
+        _resist_cpu(positions, velocities, float(R_WALL), float(R_BOND), float(R_C),
+                    float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W), out)
     return out
 
 
 def compute_forces(positions: np.ndarray,
+                   velocities: np.ndarray,
                    out: np.ndarray | None = None,
                    use_cuda: bool | None = None) -> np.ndarray:
     """Compute DRAW + RESISTANCE into one acceleration array."""
     positions = np.asarray(positions, dtype=np.float32)
+    velocities = np.asarray(velocities, dtype=np.float32)
     n = positions.shape[0]
     if out is None:
         out = np.empty((n, 3), dtype=np.float32)
@@ -327,7 +382,7 @@ def compute_forces(positions: np.ndarray,
         out = np.asarray(out, dtype=np.float32)
     compute_draw(positions, out=out, use_cuda=use_cuda)
     tmp = np.empty_like(out)
-    compute_resistance(positions, out=tmp, use_cuda=use_cuda)
+    compute_resistance(positions, velocities, out=tmp, use_cuda=use_cuda)
     out += tmp
     return out
 
@@ -485,15 +540,20 @@ def brute_neighbor_counts(positions: np.ndarray, r_cut: float) -> np.ndarray:
 # ═══════════════════════════════════════════════════════════════════
 class VelocityVerlet:
     """
-    Velocity Verlet integrator for the two-force point set.
+    Velocity Verlet integrator for the two-force point set with contact
+    radiation bookkeeping.
 
-    Holds positions, velocities and the current acceleration on either host
-    or device.  ``step(dt)`` advances one tick:
+    Holds positions, velocities, current acceleration, and cumulative radiated
+    energy on either host or device.  ``step(dt)`` advances one tick:
 
         v_{n+1/2} = v_n + a_n * dt/2
         x_{n+1}   = x_n + v_{n+1/2} * dt
-        a_{n+1}   = F(x_{n+1}) / m
+        a_{n+1}   = F(x_{n+1}, v_{n+1/2}) / m
         v_{n+1}   = v_{n+1/2} + a_{n+1} * dt/2
+
+    The damping term is evaluated with the velocities held at force-evaluation
+    time; radiated power is accumulated as gamma_w * v_rad^2 per unordered
+    wall pair.
     """
 
     def __init__(self, n: int, use_cuda: bool | None = None):
@@ -502,6 +562,8 @@ class VelocityVerlet:
         self.pos = np.zeros((n, 3), dtype=np.float32)
         self.vel = np.zeros((n, 3), dtype=np.float32)
         self.acc = np.zeros((n, 3), dtype=np.float32)
+        self.radiated_energy = 0.0  # float64, cumulative
+        self.last_radiated_power = 0.0  # float64, most recent tick
         if self.use_cuda:
             self.d_pos = cuda.to_device(self.pos)
             self.d_vel = cuda.to_device(self.vel)
@@ -516,7 +578,7 @@ class VelocityVerlet:
             self.d_vel.copy_to_device(self.vel)
 
     def compute_acceleration(self):
-        """Compute a = F(x) at the current positions."""
+        """Compute a = F(x, v) at the current state."""
         if self.use_cuda:
             threads = 256
             blocks = (self.n + threads - 1) // threads
@@ -524,18 +586,22 @@ class VelocityVerlet:
                 self.d_pos, self.d_acc, float(G), float(EPS * EPS), self.n)
             if not hasattr(self, "_d_tmp") or self._d_tmp.shape[0] < self.n:
                 self._d_tmp = cuda.device_array((self.n, 3), dtype=np.float32)
+            if not hasattr(self, "_d_power"):
+                self._d_power = cuda.device_array(1, dtype=np.float32)
+            self._d_power[0] = 0.0
             _resist_cuda[blocks, threads](
-                self.d_pos, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
-                float(P_WALL), float(K_WALL), float(K_BOND), self.n)
+                self.d_pos, self.d_vel, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
+                float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+                self._d_power, self.n)
             _add_acc[blocks, threads](self.d_acc, self._d_tmp, self.n)
             cuda.synchronize()
             self.d_acc.copy_to_host(self.acc)
         else:
-            compute_forces(self.pos, out=self.acc, use_cuda=False)
+            compute_forces(self.pos, self.vel, out=self.acc, use_cuda=False)
         return self.acc
 
     def step(self, dt: float = DT):
-        """Advance one velocity-Verlet tick."""
+        """Advance one velocity-Verlet tick and account for radiated energy."""
         dt = float(dt)
         if self.use_cuda:
             threads = 256
@@ -544,14 +610,18 @@ class VelocityVerlet:
             _verlet_kick_drift[blocks, threads](
                 self.d_pos, self.d_vel, self.d_acc, dt, self.n)
             cuda.synchronize()
-            # 2. recompute total acceleration at the new positions
+            # 2. recompute total acceleration at the new positions and current v
             _draw_cuda[blocks, threads](
                 self.d_pos, self.d_acc, float(G), float(EPS * EPS), self.n)
             if not hasattr(self, "_d_tmp") or self._d_tmp.shape[0] < self.n:
                 self._d_tmp = cuda.device_array((self.n, 3), dtype=np.float32)
+            if not hasattr(self, "_d_power"):
+                self._d_power = cuda.device_array(1, dtype=np.float32)
+            self._d_power[0] = 0.0
             _resist_cuda[blocks, threads](
-                self.d_pos, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
-                float(P_WALL), float(K_WALL), float(K_BOND), self.n)
+                self.d_pos, self.d_vel, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
+                float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+                self._d_power, self.n)
             _add_acc[blocks, threads](self.d_acc, self._d_tmp, self.n)
             cuda.synchronize()
             # 3. final half-kick using a(t+dt)
@@ -560,11 +630,23 @@ class VelocityVerlet:
             self.d_pos.copy_to_host(self.pos)
             self.d_vel.copy_to_host(self.vel)
             self.d_acc.copy_to_host(self.acc)
+            power = float(self._d_power.copy_to_host()[0])
+            self.last_radiated_power = power
+            self.radiated_energy += power * dt
         else:
             self.vel += 0.5 * dt * self.acc
             self.pos += dt * self.vel
-            compute_forces(self.pos, out=self.acc, use_cuda=False)
+            # compute resistance + draw; resistance returns radiated power
+            draw_acc = np.empty_like(self.acc)
+            _draw_cpu(self.pos, float(G), float(EPS * EPS), draw_acc)
+            resist_acc = np.empty_like(self.acc)
+            power = _resist_cpu(
+                self.pos, self.vel, float(R_WALL), float(R_BOND), float(R_C),
+                float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W), resist_acc)
+            self.acc[:] = draw_acc + resist_acc
             self.vel += 0.5 * dt * self.acc
+            self.last_radiated_power = float(power)
+            self.radiated_energy += float(power) * dt
 
     def sync_from_device(self):
         """Copy device state back to host (CUDA only)."""

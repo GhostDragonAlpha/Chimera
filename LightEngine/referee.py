@@ -10,18 +10,10 @@ Pre-registered tolerance: EPS_REF = 1e-3 relative on accelerations.
 
 import numpy as np
 from LightEngine.constants import (
-    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS,
+    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, GAMMA_W,
 )
 
 EPS_REF = 1e-3
-
-
-def _distance_vectors(pos: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Return displacement vectors (i<-j) and squared distances for all pairs."""
-    # pos: (N, 3) float64
-    diff = pos[:, None, :] - pos[None, :, :]  # diff[i,j] = r_i - r_j
-    r2 = np.einsum("ijk,ijk->ij", diff, diff)
-    return diff, r2
 
 
 def compute_draw_ref(positions: np.ndarray,
@@ -42,25 +34,32 @@ def compute_draw_ref(positions: np.ndarray,
     return acc
 
 
-def compute_resistance_ref(positions: np.ndarray) -> np.ndarray:
+def compute_resistance_ref(positions: np.ndarray,
+                         velocities: np.ndarray) -> np.ndarray:
     """
     Reference RESISTANCE acceleration.
 
     Neighbor list with cutoff r_c.  Per neighbor j != i:
-      |r| < r_wall          : strong repulsion  a_i += K_WALL*(r_wall/|r|)^p * (r_i-r_j)/|r|
-      r_wall <= |r| <= r_bond: bond spring      a_i += K_BOND*(|r|-r_bond)/(r_bond*|r|) * (r_j-r_i)
+      |r| < r_wall          : strong repulsion + radial contact damping
+                               a_i += K_WALL*(r_wall/|r|)^p * (r_i-r_j)/|r|
+                                    + gamma_w * v_rad * u
+      r_wall <= |r| <= r_bond: bond spring
+                               a_i += K_BOND*(|r|-r_bond)/(r_bond*|r|) * (r_j-r_i)
       |r| > r_c             : zero
+
+    Here u = (r_j - r_i)/|r| and v_rad = dot(v_j - v_i, u).
     """
     pos = np.asarray(positions, dtype=np.float64)
+    vel = np.asarray(velocities, dtype=np.float64)
     n = pos.shape[0]
-    diff, r2 = _distance_vectors(pos)  # diff[i,j] = r_i - r_j
+    diff = pos[:, None, :] - pos[None, :, :]  # diff[i,j] = r_i - r_j
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
     np.fill_diagonal(r2, np.inf)
     r = np.sqrt(r2)
 
     # masks
     wall_mask = r < R_WALL
     bond_mask = (r >= R_WALL) & (r <= R_BOND)
-    cutoff_mask = r <= R_C
 
     acc = np.zeros_like(pos)
 
@@ -69,6 +68,15 @@ def compute_resistance_ref(positions: np.ndarray) -> np.ndarray:
         f_wall = np.zeros_like(r)
         f_wall[wall_mask] = K_WALL * (R_WALL / r[wall_mask]) ** P_WALL / r[wall_mask]
         acc += np.einsum("ij,ijk->ik", f_wall, diff)
+
+        # contact radiation: radial damping, equal and opposite
+        # u[i,j] = (r_j - r_i)/r = -diff/r  (unit vector from i to j)
+        u = -diff / r[:, :, None]
+        dv = vel[None, :, :] - vel[:, None, :]  # dv[i,j] = v_j - v_i
+        v_rad = np.einsum("ijk,ijk->ij", dv, u)
+        f_damp = np.zeros_like(r)
+        f_damp[wall_mask] = GAMMA_W * v_rad[wall_mask]
+        acc += np.einsum("ij,ijk->ik", f_damp, u)
 
     # bond: spring, direction toward j ( -diff = r_j - r_i )
     if bond_mask.any():
@@ -79,9 +87,10 @@ def compute_resistance_ref(positions: np.ndarray) -> np.ndarray:
     return acc
 
 
-def compute_forces_ref(positions: np.ndarray) -> np.ndarray:
+def compute_forces_ref(positions: np.ndarray,
+                       velocities: np.ndarray) -> np.ndarray:
     """Total acceleration = DRAW + RESISTANCE."""
-    return compute_draw_ref(positions) + compute_resistance_ref(positions)
+    return compute_draw_ref(positions) + compute_resistance_ref(positions, velocities)
 
 
 def relative_error(a: np.ndarray, b: np.ndarray) -> float:

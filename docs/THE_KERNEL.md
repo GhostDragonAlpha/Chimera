@@ -41,6 +41,50 @@ The successor, if refuted: the balance needs a dissipation channel (the matter e
 lesson — *damping is the medium, not a coefficient*: a balance cannot settle if energy
 has nowhere to go). Dissipation enters as light: energy the balance radiates away.
 
+## THE SUCCESSOR: RADIATION (named 2026-08-06, after run 2 fired DISPERSE)
+
+Run 2 (98,822 ticks = 10 t_ff) is the real refutation: a 1313-point clump formed by
+1.5 t_ff, thermalized, and evaporated; bound fraction peaked 0.187 and settled ~0.12;
+the radius grew 10 -> 127 without stopping. No flicker, no single-blob collapse — the
+balance *almost* holds and cannot close, because velocity Verlet conserves energy and
+a collapsing clump converts every unit of potential into heat it cannot lose.
+
+**STATEMENT.** The balance settles only if collisions radiate. Concretely: a pair that
+meets inside the wall (`|r| < r_wall`) loses radial relative kinetic energy — the
+energy leaves the point set as light (a recorded radiated flux, not a new kind of
+point; the identical-points doctrine stands). The wall is where the resistance reads
+hardest, so the wall is where the balance shines. This is not a drag coefficient on
+free flight — that is the matter-era "damping as a coefficient," rejected. Dissipation
+acts only on contact, like grains in a granular gas: free flight conserves energy
+exactly, collisions do not.
+
+**THE DERIVED STRENGTH.** The damping is not free: it is critical damping of the bond
+oscillator, computed from the declared force law. The bond spring
+`F = K_BOND (r − r_bond)/(r_bond r)` has stiffness `k = dF/dr|r_bond = K_BOND / r_bond²`
+per unit mass. A pair of identical points has reduced mass μ = 1/2, so the relative
+coordinate oscillates at `omega_bond = sqrt(k/μ) = sqrt(2 K_BOND / r_bond²) ≈ 9.43/tick`
+(period ≈ 0.67 ticks ≈ 1333 steps at dt — resolved). Critical damping of that coordinate
+is `c_crit = 2 sqrt(μ k) ≈ 9.43`; applied as equal-and-opposite per-point forces
+`∓ gamma_w v_rel_radial` (which the relative coordinate feels doubled), the per-point
+strength is **gamma_w = sqrt(K_BOND / 2) / r_bond ≈ 4.71**. Underdamped is run 2 (no
+settling); overdamped would freeze collisions into glass (an authored feel). Critical
+damping is derived, not picked.
+
+**PREDICTION.** Same start as runs 1-2 (N=4096, seed=20260806, box=10, VEL_SIGMA=1.0,
+window = 10 t_ff): with contact radiation on, bound clusters fall from ~N to a stable
+count (tens, not thousands, not one); the bound mass fraction RISES past run 2's 0.187
+peak and holds; the radius stops growing (collapses, then stays bounded); edges sharpen
+(edge metric above run 2's ~0.3). Radiated flux is recorded and reported — the first
+light the world emits.
+
+**FALSIFIER (any one ends this successor).**
+- Still disperses (radius > 10x initial at 10 t_ff): contact radiation is too rare —
+  the successor's successor is dissipation throughout the bond zone (the medium reads,
+  not just the wall).
+- One blob swallows >95%: radiation is too strong / overdamped — re-derive gamma_w.
+- Flicker returns (cluster-count CV > 0.20 in the final 25%): dissipation destabilizes
+  the balance rather than closing it — the force pair itself is judged.
+
 ## THE FORCE LAWS (the entire physics)
 
 Per point i, per tick, two passes over one point set:
@@ -50,6 +94,11 @@ Per point i, per tick, two passes over one point set:
   packet's size, the one geometric fact a point owns). m = 1 for all points: identical.
 - **RESISTANCE (short-range, reading):** neighbor list, cutoff r_c. Per neighbor:
   - `|r| < r_wall`: strong repulsion ∝ (r_wall/|r|)^p — the wall; makes edges.
+    Inside the wall only, the pair also radiates: an equal-and-opposite radial
+    damping force `-gamma_w * v_rel_radial` on each member (gamma_w = sqrt(K_BOND / 2) /
+    r_bond, critical damping of the bond oscillator — derived in THE SUCCESSOR:
+    RADIATION). Momentum is conserved; radial relative kinetic energy leaves the
+    point set and is recorded as radiated flux. Free flight is untouched.
   - `r_wall ≤ |r| ≤ r_bond`: attraction toward the bond distance — the bond; holds the
     balance.
   - beyond r_c: nothing (short-range by construction).

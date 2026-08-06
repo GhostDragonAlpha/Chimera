@@ -9,6 +9,8 @@ Unit convention: positions in "light units" (lu), time in "ticks", and mass /
 charge are dimensionless (m = 1, q = 1 for every point).
 """
 
+import math
+
 FREE = {
     # ── Geometry of an identical point ──────────────────────────────
     # R_WALL is the "packet size": the one length a point owns.  It is the
@@ -54,6 +56,19 @@ FREE = {
     # the wall region.
     "EPS": 0.02,
 
+    # ── Contact radiation (derived, not free) ───────────────────────
+    # Inside the wall the resistance reads hardest and radiates.  GAMMA_W is
+    # the per-point radial damping strength derived from critical damping of
+    # the bond oscillator:
+    #   bond spring stiffness  k = K_BOND / R_BOND^2
+    #   reduced mass of a pair mu = 1/2
+    #   critical damping coeff  c_crit = 2 * sqrt(mu * k)
+    #                                 = sqrt(2 * K_BOND) / R_BOND
+    #   equal-and-opposite per-point force doubles the felt damping, so the
+    #   per-point strength is gamma_w = c_crit / 2 = sqrt(K_BOND / 2) / R_BOND.
+    # This is a DERIVED number: it is computed from K_BOND and R_BOND below.
+    "GAMMA_W": None,
+
     # ── Time step ───────────────────────────────────────────────────
     # DT is derived from the fastest interaction: a head-on wall collision at
     # r = R_WALL / 2 produces acceleration
@@ -79,3 +94,7 @@ K_WALL = FREE["K_WALL"]
 K_BOND = FREE["K_BOND"]
 EPS = FREE["EPS"]
 DT = FREE["DT"]
+
+# Derived constants (computed from FREE, not independently free)
+GAMMA_W = math.sqrt(K_BOND / 2.0) / R_BOND
+FREE["GAMMA_W"] = GAMMA_W

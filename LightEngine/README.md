@@ -14,6 +14,7 @@ python LightEngine/demo_seed.py
 ## v2 notes
 
 - `compute_draw(positions, masses) -> accelerations` is an interface boundary: v2 swaps the direct O(N²) sum for a Barnes-Hut tree without changing callers.
-- `compute_resistance(positions) -> accelerations` is direct-pair with cutoff in this build; a GPU uniform-grid cell-hash neighbor list is the planned v2 acceleration.
+- `compute_resistance(positions, velocities) -> accelerations` is direct-pair with cutoff in this build; a GPU uniform-grid cell-hash neighbor list is the planned v2 acceleration.
+- Contact radiation (the successor named in `docs/THE_KERNEL.md`) adds radial damping inside the wall only.  The strength `gamma_w` is a derived constant in `LightEngine/constants.py`, not a free parameter.
 
 Constants live in `LightEngine/constants.py` (FREE dict), declared once and never retuned after a falsifier result.

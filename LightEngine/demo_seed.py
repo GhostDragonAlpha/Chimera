@@ -220,6 +220,8 @@ def main():
         "bound_frac": [],
         "edge": [],
         "radius": [],
+        "radiated_energy": [],
+        "radiated_power": [],
     }
 
     # pre-initial frame
@@ -238,9 +240,12 @@ def main():
             metrics["bound_frac"].append(bound_frac)
             metrics["edge"].append(edge)
             metrics["radius"].append(rad)
-            print(f"tick={tick:4d} | clusters={n_clust:4d} | "
+            metrics["radiated_energy"].append(float(sim.radiated_energy))
+            metrics["radiated_power"].append(float(sim.last_radiated_power))
+            print(f"tick={tick:6d} | clusters={n_clust:4d} | "
                   f"max={sizes.max():4d} | bound={bound_frac:.3f} | "
-                  f"edge={edge:.3f} | radius={rad:.3f}")
+                  f"edge={edge:.3f} | radius={rad:.3f} | "
+                  f"E_rad={sim.radiated_energy:.4f} | P_rad={sim.last_radiated_power:.4f}")
         if tick == TOTAL_TICKS // 2:
             dump_frame(sim.pos.copy(), os.path.join(OUTPUT_DIR, "frame_mid.png"))
 
@@ -280,6 +285,9 @@ def main():
         verdict = "FLICKER"
         reasons.append(f"bound_frac swing={bound_swing:.3f} > {BOUND_MASS_PERSISTENCE}")
 
+    final_rad_energy = float(metrics["radiated_energy"][-1])
+    final_rad_power = float(metrics["radiated_power"][-1])
+
     print("=" * 60)
     print(f"FALSIFIER VERDICT: {verdict}")
     print(f"  final clusters          = {int(clusters[-1])}")
@@ -288,6 +296,8 @@ def main():
     print(f"  final system radius     = {final_radius:.4f}")
     print(f"  cluster count CV (late) = {cluster_cv:.4f}")
     print(f"  bound frac swing (late) = {bound_swing:.4f}")
+    print(f"  radiated energy         = {final_rad_energy:.4f}")
+    print(f"  radiated power          = {final_rad_power:.4f}")
     if reasons:
         print("  reasons:")
         for r in reasons:
