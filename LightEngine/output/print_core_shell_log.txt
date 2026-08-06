@@ -1,0 +1,64 @@
+============================================================
+THE KERNEL — first light-era run
+N=4096, seed=20260806, structure=core_shell, box=10.0, dt=0.0005, ticks=98822 (BOX/VEL_SIGMA unused for authored print)
+============================================================
+tick=  2470 | clusters=   2 | max=2048 | bound=0.721 | edge=0.089 | radius=3.790 | E_rad=95532.1150 | P_rad=28.0979 | shell_r=3.532±0.034 | core_bound=1.000
+tick=  4940 | clusters= 137 | max=2048 | bound=0.813 | edge=0.089 | radius=4.180 | E_rad=96303.6282 | P_rad=106.9188 | shell_r=2.519±0.238 | core_bound=1.000
+tick=  7410 | clusters= 405 | max=2054 | bound=0.797 | edge=0.089 | radius=8.645 | E_rad=97161.5122 | P_rad=370.5487 | shell_r=2.472±0.639 | core_bound=1.000
+tick=  9880 | clusters= 884 | max=2059 | bound=0.721 | edge=0.089 | radius=13.115 | E_rad=97946.4471 | P_rad=313.1862 | shell_r=3.395±0.948 | core_bound=1.000
+tick= 12350 | clusters= 968 | max=2072 | bound=0.712 | edge=0.090 | radius=17.433 | E_rad=98922.0988 | P_rad=183.9734 | shell_r=3.561±1.549 | core_bound=1.000
+tick= 14820 | clusters= 945 | max=2216 | bound=0.718 | edge=0.089 | radius=21.631 | E_rad=99792.5254 | P_rad=901.2085 | shell_r=3.306±1.916 | core_bound=1.000
+tick= 17290 | clusters= 953 | max=2410 | bound=0.715 | edge=0.090 | radius=25.741 | E_rad=100857.4102 | P_rad=833.9866 | shell_r=3.232±2.022 | core_bound=1.000
+tick= 19760 | clusters= 947 | max=2302 | bound=0.725 | edge=0.088 | radius=29.783 | E_rad=103782.0783 | P_rad=6379.2593 | shell_r=3.314±2.204 | core_bound=1.000
+tick= 22230 | clusters=1016 | max=2280 | bound=0.721 | edge=0.087 | radius=33.771 | E_rad=109425.9566 | P_rad=1892.0020 | shell_r=3.522±2.442 | core_bound=1.000
+tick= 24700 | clusters=1049 | max=2445 | bound=0.715 | edge=0.087 | radius=37.717 | E_rad=110784.7646 | P_rad=951.1477 | shell_r=3.642±2.794 | core_bound=1.000
+tick= 27170 | clusters=1049 | max=2284 | bound=0.715 | edge=0.087 | radius=41.627 | E_rad=111917.6052 | P_rad=1976.1372 | shell_r=3.835±3.077 | core_bound=1.000
+tick= 29640 | clusters=1038 | max=2309 | bound=0.723 | edge=0.087 | radius=45.507 | E_rad=114790.4414 | P_rad=2837.6174 | shell_r=3.872±3.472 | core_bound=1.000
+tick= 32110 | clusters=1038 | max=2420 | bound=0.720 | edge=0.086 | radius=49.362 | E_rad=117602.7713 | P_rad=1045.6121 | shell_r=3.945±3.847 | core_bound=1.000
+tick= 34580 | clusters=1034 | max=2325 | bound=0.727 | edge=0.086 | radius=53.270 | E_rad=119427.0699 | P_rad=1222.3799 | shell_r=4.207±4.130 | core_bound=1.000
+tick= 37050 | clusters=1024 | max=2315 | bound=0.733 | edge=0.086 | radius=57.309 | E_rad=123092.6472 | P_rad=3328.3157 | shell_r=4.337±4.525 | core_bound=1.000
+tick= 39520 | clusters=1006 | max=2340 | bound=0.739 | edge=0.085 | radius=61.328 | E_rad=124566.0039 | P_rad=1810.2031 | shell_r=4.344±5.031 | core_bound=1.000
+tick= 41990 | clusters=1006 | max=2349 | bound=0.744 | edge=0.085 | radius=65.332 | E_rad=126555.0222 | P_rad=1247.1060 | shell_r=4.608±5.446 | core_bound=1.000
+tick= 44460 | clusters=1017 | max=2353 | bound=0.747 | edge=0.085 | radius=69.320 | E_rad=128559.2471 | P_rad=3243.5125 | shell_r=4.905±5.909 | core_bound=1.000
+tick= 46930 | clusters=1003 | max=2342 | bound=0.751 | edge=0.084 | radius=74.621 | E_rad=130004.1601 | P_rad=417.9233 | shell_r=5.059±6.497 | core_bound=1.000
+tick= 49400 | clusters= 992 | max=2358 | bound=0.756 | edge=0.084 | radius=81.283 | E_rad=131445.0735 | P_rad=167.0757 | shell_r=5.478±6.961 | core_bound=1.000
+tick= 51870 | clusters= 995 | max=2375 | bound=0.758 | edge=0.084 | radius=87.938 | E_rad=132489.7487 | P_rad=875.5665 | shell_r=5.731±7.545 | core_bound=1.000
+tick= 54340 | clusters= 990 | max=2378 | bound=0.762 | edge=0.083 | radius=94.581 | E_rad=133958.6653 | P_rad=507.9373 | shell_r=5.979±8.124 | core_bound=1.000
+tick= 56810 | clusters= 973 | max=2386 | bound=0.763 | edge=0.083 | radius=101.224 | E_rad=134930.7644 | P_rad=264.5486 | shell_r=6.300±8.671 | core_bound=1.000
+tick= 59280 | clusters= 968 | max=2389 | bound=0.767 | edge=0.083 | radius=107.855 | E_rad=136348.5408 | P_rad=2092.0649 | shell_r=6.437±9.317 | core_bound=1.000
+tick= 61750 | clusters= 965 | max=2401 | bound=0.768 | edge=0.083 | radius=114.479 | E_rad=137142.4488 | P_rad=243.2765 | shell_r=6.733±9.896 | core_bound=1.000
+tick= 64220 | clusters= 961 | max=2400 | bound=0.771 | edge=0.083 | radius=121.103 | E_rad=137750.4527 | P_rad=226.5124 | shell_r=6.980±10.521 | core_bound=1.000
+tick= 66690 | clusters= 962 | max=2401 | bound=0.771 | edge=0.083 | radius=127.728 | E_rad=138354.1887 | P_rad=730.0395 | shell_r=7.281±11.129 | core_bound=1.000
+tick= 69160 | clusters= 953 | max=2404 | bound=0.773 | edge=0.083 | radius=134.352 | E_rad=139030.3107 | P_rad=32.0729 | shell_r=7.535±11.772 | core_bound=1.000
+tick= 71630 | clusters= 946 | max=2411 | bound=0.776 | edge=0.083 | radius=140.976 | E_rad=139384.9742 | P_rad=121.5748 | shell_r=7.837±12.390 | core_bound=1.000
+tick= 74100 | clusters= 945 | max=2411 | bound=0.776 | edge=0.083 | radius=147.600 | E_rad=139839.2049 | P_rad=234.9729 | shell_r=8.044±13.060 | core_bound=1.000
+tick= 76570 | clusters= 931 | max=2421 | bound=0.779 | edge=0.083 | radius=154.211 | E_rad=140276.2205 | P_rad=129.7450 | shell_r=8.314±13.701 | core_bound=1.000
+tick= 79040 | clusters= 926 | max=2423 | bound=0.781 | edge=0.083 | radius=160.798 | E_rad=141019.5297 | P_rad=233.2858 | shell_r=8.449±14.411 | core_bound=1.000
+tick= 81510 | clusters= 919 | max=2428 | bound=0.782 | edge=0.083 | radius=167.385 | E_rad=141567.5902 | P_rad=41.3561 | shell_r=8.745±15.060 | core_bound=1.000
+tick= 83980 | clusters= 904 | max=2431 | bound=0.785 | edge=0.083 | radius=173.971 | E_rad=142081.7496 | P_rad=820.3882 | shell_r=8.814±15.824 | core_bound=1.000
+tick= 86450 | clusters= 911 | max=2433 | bound=0.783 | edge=0.082 | radius=180.558 | E_rad=142532.9576 | P_rad=20.2435 | shell_r=9.232±16.449 | core_bound=1.000
+tick= 88920 | clusters= 908 | max=2436 | bound=0.785 | edge=0.082 | radius=187.145 | E_rad=142818.0218 | P_rad=163.3887 | shell_r=9.387±17.213 | core_bound=1.000
+tick= 91390 | clusters= 899 | max=2442 | bound=0.787 | edge=0.082 | radius=193.731 | E_rad=143467.9323 | P_rad=87.2157 | shell_r=9.906±17.832 | core_bound=1.000
+tick= 93860 | clusters= 892 | max=2446 | bound=0.787 | edge=0.082 | radius=200.318 | E_rad=143620.3115 | P_rad=10.2030 | shell_r=10.125±18.594 | core_bound=1.000
+tick= 96330 | clusters= 892 | max=2446 | bound=0.788 | edge=0.082 | radius=206.904 | E_rad=143808.8266 | P_rad=251.3908 | shell_r=10.569±19.264 | core_bound=1.000
+tick= 98800 | clusters= 890 | max=2446 | bound=0.790 | edge=0.082 | radius=213.490 | E_rad=144237.2954 | P_rad=365.4259 | shell_r=10.823±20.018 | core_bound=1.000
+tick= 98822 | clusters= 891 | max=2446 | bound=0.789 | edge=0.082 | radius=213.549 | E_rad=144240.5221 | P_rad=241.8715 | shell_r=10.829±20.023 | core_bound=1.000
+============================================================
+FALSIFIER VERDICT: DISPERSE
+  final clusters          = 891
+  final max cluster size  = 2446
+  final bound mass frac   = 0.7893
+  final system radius     = 213.5491
+  cluster count CV (late) = 0.0133
+  bound frac swing (late) = 0.0088
+  radiated energy         = 144240.5221
+  radiated power          = 241.8715
+  reasons:
+    - radius 213.549 > 10.0x initial 3.790
+  output frames: E:\PythonChimera\LightEngine\output
+PRINT PERSISTENCE:
+  shell radius mean = 10.8286 (target 4.0000)
+  shell radius std  = 20.0231
+  core bound frac   = 1.0000
+  radius within 50% : FAIL
+============================================================
