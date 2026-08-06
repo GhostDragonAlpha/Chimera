@@ -45,6 +45,12 @@ RULE 0 doc section) as the print proofs earn them.*
 - **sheet**: triangular/hex lattice at r_bond, one point thick. Falsifier: holds
   area and edge under derived pressure; drapes (no bending stiffness = cloth) or
   resists (packed multi-layer = shell) as printed.
+- **SKIN**: a sheet printed CONFORMAL to a muscle/composite bulk and anchored to
+  it at derived spacing — skin comes from the muscle: the muscle is its parent
+  membrane, the layer beneath that it must move with. Falsifier: stays conformal
+  through the muscle's full contraction cycle — does not slide off (anchor
+  retention), does not tear (strain distributes as derived across the sheet),
+  and its edge stays closed (a bag with a hole is not skin).
 - **bladder**: closed sheet enclosing gas points; pressure from wall collisions.
   Falsifier: holds derived pressure-volume relation; ruptures past derived
   pressure (tearing already in the bond law).
@@ -88,5 +94,10 @@ fiber tears at r_c rather than stretching forever — and the BONES do not migra
 
 lattice (running) -> BONE (a lattice that bears load) -> packed bed (needs
 nothing) -> fiber/rope (needs bone anchors) -> sheet (needs fiber) ->
-tendon/socket (needs bone+chain) -> muscle (needs all) -> bladder -> LIFE
-(a boundary that maintains itself — needs all).
+tendon/socket (needs bone+chain) -> muscle (needs all) -> SKIN (a sheet
+conformal to muscle) -> bladder -> LIFE (a boundary that maintains itself —
+needs all).
+
+The anatomy is the dependency graph: bone holds muscle, muscle holds skin,
+skin holds the boundary, and the boundary that maintains itself is life.
+Each layer's parent is the layer it anchors to.
