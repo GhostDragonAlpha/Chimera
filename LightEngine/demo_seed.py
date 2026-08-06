@@ -719,7 +719,10 @@ def main():
                     extra += f" | z_disp={z_disp:.3f}"
             elif args.structure == "lattice":
                 nn = nearest_neighbor_distances(sim.pos)
-                bond_ret = float(((nn >= R_WALL) & (nn <= R_C)).mean())
+                # cushion-era lower bound: settled matter rests at nn ~ R_WALL
+                # minus the softening (measured 0.0499 vs the old 0.05 bound);
+                # 0.9*R_WALL counts the wall-rest state, still excludes overlap.
+                bond_ret = float(((nn >= 0.9 * R_WALL) & (nn <= R_C)).mean())
                 extra = f" | bond_ret={bond_ret:.3f}"
 
             metrics["tick"].append(tick)

@@ -138,8 +138,12 @@ Per point i, per tick, two passes over one point set:
     r_bond, critical damping of the bond oscillator — derived in THE SUCCESSOR:
     RADIATION). Momentum is conserved; radial relative kinetic energy leaves the
     point set and is recorded as radiated flux. Free flight is untouched.
-  - `r_wall ≤ |r| ≤ r_bond`: attraction toward the bond distance — the bond; holds the
-    balance.
+  - `r_wall ≤ |r| ≤ r_bond`: the spring cushion — REPULSIVE only
+    (`f = K_BOND(r − r_bond)/(r_bond·r)`, zero at r_bond, growing inward). There
+    is no attractive branch: beyond r_bond the resistance is exactly zero, so all
+    cohesion in this universe is DRAW. (Measured 2026-08-06: the crush series
+    8..4096 — see theCushionLaw in THE_HIERARCHY.md. An earlier draft of this
+    line said "attraction toward the bond distance"; the code never did that.)
   - beyond r_c: nothing (short-range by construction).
 - **Integrate:** velocity Verlet, fixed dt chosen so the fastest wall interaction is
   resolved (dt from the force law, not from taste).

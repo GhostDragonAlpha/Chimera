@@ -148,7 +148,9 @@ def _resist_cpu(pos: np.ndarray, vel: np.ndarray, rw: float, rb: float, rc: floa
                 # each unordered pair is visited twice; accumulate half each time
                 power += 0.5 * gamma_w * v_rad * v_rad
             elif r <= rb:
-                # bond spring: attractive when stretched, repulsive when compressed
+                # spring cushion: REPULSIVE only, zero at r_bond; there is no
+                # attractive branch (beyond r_bond the resistance is exactly 0).
+                # All cohesion is DRAW. See theCushionLaw, docs/THE_HIERARCHY.md.
                 f = kb * (r - rb) / (rb * r)
                 ax += f * dx
                 ay += f * dy
