@@ -358,12 +358,16 @@ def dump_frame(pos: np.ndarray, path: str, camera_pos=(25.0, 25.0, 25.0)):
 
 
 def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
-                 tag, label, overload: bool = False):
+                 tag, label, overload: bool = False, cycles: int = 1):
     """
     Run the BONE v2 preload protocol on one configuration (ordered or packed).
 
-    Phases: converge plates until plate force >= F_pre, hold, half-release,
-    final hold, optional overload pulse.  Returns (metrics, converge_ticks).
+    Phases per cycle: converge plates until plate force >= F_pre, hold,
+    half-release, final hold.  With ``cycles > 1`` the converge/hold/release
+    loop repeats: the first cycle beds the contacts in (irreversible anneal),
+    and the LAST cycle is the elasticity measurement (v2 smoke successor,
+    named 2026-08-06 after the first-cycle hysteresis falsifier fired).
+    Optional overload pulse at the end.  Returns (metrics, converge_ticks).
     """
     N = pos.shape[0]
     sim = kernel.VelocityVerlet(N)
@@ -382,6 +386,7 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
     metrics = {
         "tick": [],
         "phase": [],
+        "cycle": [],
         "closure": [],
         "plate_force": [],
         "column_length": [],
@@ -393,7 +398,7 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
         "radiated_power": [],
     }
 
-    def _sample(tick: int, phase: str):
+    def _sample(tick: int, phase: str, cycle: int):
         n_clust, sizes = cluster_count_and_sizes(sim.pos, R_C)
         bound_frac = bound_mass_fraction(sim.pos, R_BOND)
         col_len = _column_length(sim.pos, grain_ids)
@@ -407,6 +412,7 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
 
         metrics["tick"].append(tick)
         metrics["phase"].append(phase)
+        metrics["cycle"].append(cycle)
         metrics["closure"].append(closure)
         metrics["plate_force"].append(pforce)
         metrics["column_length"].append(col_len)
@@ -417,7 +423,7 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
         metrics["radiated_energy"].append(float(sim.radiated_energy))
         metrics["radiated_power"].append(float(sim.last_radiated_power))
 
-        print(f"[{label}] tick={tick:6d} phase={phase:12s} | "
+        print(f"[{label}] tick={tick:6d} cycle={cycle} phase={phase:12s} | "
               f"closure={closure:.5f} | force={pforce:.3f} | "
               f"length={col_len:.5f} | gap_L={left_gap:.4f} | "
               f"gap_R={right_gap:.4f} | escape={escaped} | "
@@ -433,6 +439,8 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
 
     tick = 0
     phase = "converge"
+    cycle = 1
+    converge_start = 0
     converge_ticks = 0
     max_closure = 0.0
     hold_ticks = BONE_HOLD_MIN_TICKS
@@ -452,29 +460,28 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
 
             pforce = _plate_force(sim.acc, left_idx, right_idx)
             if pforce >= F_pre:
-                converge_ticks = tick
-                max_closure = initial_sep - (
+                converge_ticks = tick - converge_start
+                max_closure = max(max_closure, initial_sep - (
                     float(sim.pos[right_idx, 0].mean()) -
-                    float(sim.pos[left_idx, 0].mean()))
+                    float(sim.pos[left_idx, 0].mean())))
                 hold_ticks = max(BONE_HOLD_MIN_TICKS, converge_ticks)
                 phase = "preload_hold"
                 phase_end = tick + hold_ticks
                 do_sample = True
-                print(f"\n[{label}] preload reached at tick {tick}: "
+                print(f"\n[{label}] preload reached at tick {tick} "
+                      f"(cycle {cycle}, {converge_ticks} converge ticks): "
                       f"force={pforce:.3f} closure={max_closure:.5f}\n")
 
         elif phase == "preload_hold":
             sim.step(dt)
             if tick >= phase_end:
                 phase = "release"
-                release_ticks = int(round(
-                    (converge_ticks * v_plate * dt * BONE_HALF_RELEASE_FRAC) /
-                    (v_plate * dt)))
-                release_ticks = max(1, release_ticks)
+                release_ticks = max(1, int(round(
+                    converge_ticks * BONE_HALF_RELEASE_FRAC)))
                 phase_end = tick + release_ticks
                 do_sample = True
                 print(f"\n[{label}] releasing {release_ticks} ticks "
-                      f"(half convergence distance)\n")
+                      f"(half convergence distance, cycle {cycle})\n")
 
         elif phase == "release":
             dx = -v_plate * dt
@@ -487,12 +494,19 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
                 phase = "final_hold"
                 phase_end = tick + hold_ticks
                 do_sample = True
-                print(f"\n[{label}] entering final hold\n")
+                print(f"\n[{label}] entering final hold (cycle {cycle})\n")
 
         elif phase == "final_hold":
             sim.step(dt)
             if tick >= phase_end:
-                if overload:
+                if cycle < cycles:
+                    cycle += 1
+                    converge_start = tick
+                    phase = "converge"
+                    do_sample = True
+                    print(f"\n[{label}] starting cycle {cycle}: "
+                          f"re-converge on the bedded column\n")
+                elif overload:
                     phase = "overload"
                     overload_ticks = int(round(
                         BONE_OVERLOAD_PER_SIDE / (v_plate * dt)))
@@ -519,9 +533,9 @@ def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
             break
 
         if do_sample:
-            _sample(tick, phase)
+            _sample(tick, phase, cycle)
 
-    _sample(tick, phase)
+    _sample(tick, phase, cycle)
 
     dump_frame(sim.pos.copy(),
                os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
@@ -556,24 +570,63 @@ def _print_bone_v2_verdict(metrics, F_pre, end_weight, label):
 
     # (c) SPRING-BACK: final hold values should match the seated values at the
     # half-released closure (reversibility / no hysteresis failure).
+    # With multiple cycles (the bed-in successor, named 2026-08-06): the first
+    # cycle beds the contacts in; the LAST cycle is the elasticity judgement —
+    # loop hysteresis: converge vs release force/length at the midpoint of
+    # that cycle's closure travel.
+    cycles_seen = metrics["cycle"] if "cycle" in metrics else [1] * len(phases)
+    last_cycle = max(cycles_seen)
     release_idx = [i for i, p in enumerate(phases) if p == "release"]
     half_closure = 0.0
     F_seated_half = 0.0
     L_seated_half = 0.0
-    if release_idx:
-        closures_rel = np.array([metrics["closure"][i] for i in release_idx])
-        forces_rel = np.array([metrics["plate_force"][i] for i in release_idx])
-        lengths_rel = np.array([metrics["column_length"][i] for i in release_idx])
-        half_closure = 0.5 * max(metrics["closure"])
-        nearest = int(np.argmin(np.abs(closures_rel - half_closure)))
-        F_seated_half = float(forces_rel[nearest])
-        L_seated_half = float(lengths_rel[nearest])
-
-    if final_idx:
-        F_release = np.mean([metrics["plate_force"][i] for i in final_idx[-5:]])
-        L_release = np.mean([metrics["column_length"][i] for i in final_idx[-5:]])
+    if last_cycle > 1:
+        conv_idx = [i for i, (p, c) in enumerate(zip(phases, cycles_seen))
+                    if p == "converge" and c == last_cycle]
+        rel_idx = [i for i, (p, c) in enumerate(zip(phases, cycles_seen))
+                   if p == "release" and c == last_cycle]
+        final_idx = [i for i, (p, c) in enumerate(zip(phases, cycles_seen))
+                     if p == "final_hold" and c == last_cycle]
+        if conv_idx and rel_idx:
+            clo = max(metrics["closure"][i] for i in conv_idx)
+            chi = min(metrics["closure"][i] for i in rel_idx)
+            if chi < clo:
+                half_closure = 0.5 * (clo + chi)
+                c_rel = np.array([metrics["closure"][i] for i in rel_idx])
+                f_rel = np.array([metrics["plate_force"][i] for i in rel_idx])
+                l_rel = np.array([metrics["column_length"][i] for i in rel_idx])
+                o = np.argsort(c_rel)
+                F_seated_half = float(np.interp(half_closure, c_rel[o], f_rel[o]))
+                L_seated_half = float(np.interp(half_closure, c_rel[o], l_rel[o]))
+                c_con = np.array([metrics["closure"][i] for i in conv_idx])
+                f_con = np.array([metrics["plate_force"][i] for i in conv_idx])
+                l_con = np.array([metrics["column_length"][i] for i in conv_idx])
+                o2 = np.argsort(c_con)
+                F_load_half = float(np.interp(half_closure, c_con[o2], f_con[o2]))
+                L_load_half = float(np.interp(half_closure, c_con[o2], l_con[o2]))
+            else:
+                F_load_half = L_load_half = 0.0
+        else:
+            F_load_half = L_load_half = 0.0
+        # final hold of the last cycle replaces the release-end comparison
+        F_release = F_load_half
+        L_release = L_load_half
     else:
-        F_release = L_release = 0.0
+        final_idx = [i for i, p in enumerate(phases) if p == "final_hold"]
+        if release_idx:
+            closures_rel = np.array([metrics["closure"][i] for i in release_idx])
+            forces_rel = np.array([metrics["plate_force"][i] for i in release_idx])
+            lengths_rel = np.array([metrics["column_length"][i] for i in release_idx])
+            half_closure = 0.5 * max(metrics["closure"])
+            nearest = int(np.argmin(np.abs(closures_rel - half_closure)))
+            F_seated_half = float(forces_rel[nearest])
+            L_seated_half = float(lengths_rel[nearest])
+
+        if final_idx:
+            F_release = np.mean([metrics["plate_force"][i] for i in final_idx[-5:]])
+            L_release = np.mean([metrics["column_length"][i] for i in final_idx[-5:]])
+        else:
+            F_release = L_release = 0.0
 
     F_tol = max(1e-9, abs(F_seated_half))
     L_tol = max(1e-9, abs(L_seated_half))
@@ -594,10 +647,17 @@ def _print_bone_v2_verdict(metrics, F_pre, end_weight, label):
           f"(threshold {BONE_SEATING_MAX_GAP:.2f})")
     print(f"  (b) ESCAPE    : {'PASS' if escape_ok else 'FAIL'}  "
           f"max escapees = {max_escape}")
-    print(f"  (c) SPRING-BACK: {'PASS' if spring_ok else 'FAIL'}  "
-          f"half-closure={half_closure:.5f}  "
-          f"seated F/L={F_seated_half:.3f}/{L_seated_half:.5f}  "
-          f"final F/L={F_release:.3f}/{L_release:.5f}")
+    if last_cycle > 1:
+        print(f"  (c) SPRING-BACK: {'PASS' if spring_ok else 'FAIL'}  "
+              f"cycle={last_cycle} loop hysteresis at mid-closure="
+              f"{half_closure:.5f}  release F/L={F_seated_half:.3f}/"
+              f"{L_seated_half:.5f}  converge F/L={F_release:.3f}/"
+              f"{L_release:.5f}")
+    else:
+        print(f"  (c) SPRING-BACK: {'PASS' if spring_ok else 'FAIL'}  "
+              f"half-closure={half_closure:.5f}  "
+              f"seated F/L={F_seated_half:.3f}/{L_seated_half:.5f}  "
+              f"final F/L={F_release:.3f}/{L_release:.5f}")
     print(f"  (d) OVERLOAD  : peak force={peak_force:.3f}  "
           f"peak deflect={peak_deflect:.4f}")
 
@@ -630,7 +690,7 @@ def bone_main(args, seed):
     print("=" * 70)
     print("THE KERNEL — BONE v2 print run")
     print(f"N={N}, column=4x4x{length}, seed={seed}, "
-          f"control={args.control}, dt={dt}")
+          f"control={args.control}, cycles={args.cycles}, dt={dt}")
     print("-" * 70)
     print("STATEMENT: A cold-ordered cushion-spaced column between two pinned")
     print("  anchor plates can be preloaded to 1.5x its end-weight, remain")
@@ -650,14 +710,15 @@ def bone_main(args, seed):
 
     bone_peak_force, bone_peak_deflect = _print_bone_v2_verdict(
         _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre,
-                     v_plate, dt, tag, "bone", overload=True)[0],
+                     v_plate, dt, tag, "bone", overload=True,
+                     cycles=args.cycles)[0],
         F_pre, end_weight, "bone")
 
     if args.control == "packed":
         pos_p, vel_p = _make_packed_control_v2(pos, vel, grain_ids, seed=seed + 999)
         packed_metrics, _ = _run_bone_v2(
             pos_p, vel_p, pin_mask, grain_ids, n_plate, F_pre,
-            v_plate, dt, tag, "packed", overload=True)
+            v_plate, dt, tag, "packed", overload=True, cycles=args.cycles)
         packed_peak_force, packed_peak_deflect = _print_bone_v2_verdict(
             packed_metrics, F_pre, end_weight, "packed")
 
@@ -697,6 +758,12 @@ def main():
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
                         help="control structure for BONE print (default none)")
+    parser.add_argument("--spacing", type=float, default=None,
+                        help="lattice print spacing in lu (default R_BOND); "
+                             "print geometry, not a physics constant")
+    parser.add_argument("--cycles", type=int, default=1,
+                        help="BONE v2 preload cycles (default 1; use 2 to "
+                             "judge spring-back on the bedded column)")
     args = parser.parse_args()
     SEED = args.seed
 
@@ -715,7 +782,11 @@ def main():
     else:
         print_note = "(BOX/VEL_SIGMA unused for authored print)"
         if args.structure == "lattice":
-            pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
+            if args.spacing is None:
+                pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
+            else:
+                pos, vel = seed_structures.lattice(n=args.n, seed=SEED,
+                                                   spacing=args.spacing)
             N = pos.shape[0]
             n_core = 0
             r_target = 0.0

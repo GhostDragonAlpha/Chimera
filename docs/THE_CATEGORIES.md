@@ -110,6 +110,18 @@ RULE 0 doc section) as the print proofs earn them.*
   cannot be printed — form lives in MEMBRANES (pins, containment,
   assemblies), never in material microstate. This matches the doctrine:
   types live on membranes/clumps, never authored per-point.
+  **v2 CYCLE-2 VERDICT 2026-08-06 (the bed-in successor run):** (a)/(b) PASS
+  again; (c) FAILS again but 36% -> 12% force / 13% length hysteresis on the
+  second cycle — the loop is closing with annealing but converges onto a
+  CREEP FLOOR, not zero: at equal closure the column is LONGER on release
+  than on converge (slow rearrangement under sustained load). And at cycle-2
+  deep converge the right end skated to gap 0.147, a hair under the spring
+  cutoff 0.15 — near-detachment at preload. The honest material law: the
+  cushion phase is a CREEPING granular solid, not an elastic one. Successor
+  to (c): measure the hysteresis asymptote over N cycles (converges to zero
+  = slow bed-in; converges to a floor = creep is the law) — named, not yet
+  run. Bone's elasticity claim is REFUTED at the 10% bar; bone as a
+  creeping-but-seated compression member stands ((a)/(b) at preload).
 - **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
   this manifest tracks: not anchors-to but contains-within. Bone is the brain's
   parent by enclosure: it takes the load so the brain doesn't have to.
