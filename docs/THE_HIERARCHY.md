@@ -60,7 +60,15 @@ damaging something is not a term; it is the absence of one.
   partial rearrangement; 27 HOLDS (d_eq ~ 0.055 > R_WALL). FALSIFIER for this
   model: if 216 holds order, or 64 keeps bond_ret > 0.5 with spacing outside
   the wall, the crush is not hydrostatic equilibrium (next suspect: dynamical
-  Jeans-style instability of the jittered start). CONSEQUENCE unchanged but
+  Jeans-style instability of the jittered start). BRACKET RESULT 2026-08-06
+  (runs truncated once decisive — the box-density window convention inflates
+  to ~3h at small N; the crush completes <20k ticks and then holds steady):
+  216 CRUSHED as predicted (radius 0.123, bond_ret 0.000); 64 ALSO CRUSHED —
+  deeper than the model's marginal call (spacing ~0.040 vs predicted ~0.046,
+  bond_ret 0.000). The model's named falsifier did NOT fire (nothing held
+  order), so the hydrostatic picture stands but its one-point calibration
+  under-reads the crush: M_crit is smaller than 45. The 3^3=27 run decides
+  whether ANY lattice grain keeps order. CONSEQUENCE unchanged but
   sharper: all condensed matter is an ASSEMBLY of sub-critical chunks; the
   chunk size is now being measured, not guessed. 3-D. Parent: theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
