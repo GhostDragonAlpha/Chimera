@@ -143,14 +143,40 @@ RULE 0 doc section) as the print proofs earn them.*
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 
-Bundle of fibers (arbitrary L, O(L) per fiber to compute) packed in a sheath,
-strung between two BONES via tendons — muscle comes from the bone; there is no
-muscle without a bony anchor at each end. Contraction = shortened fiber rest
-length; force = derived aggregate; stroke = L x (r_c - r_bond) per link. Tearing,
-failed movement, and limits are EMERGENT (bond rupture, force balance). Falsifier:
-bundle delivers derived force to the bones, survives contraction, and a pulled
-fiber tears at r_c rather than stretching forever — and the BONES do not migrate
-(the anchor holds; if the bones move, the muscle moved the wrong thing).
+*(v1 fiber spec retired 2026-08-06: "rest length" and "bond rupture" presumed
+an attractive bond that does not exist — see theCushionLaw. Re-derived below
+for the universe as measured.)*
+
+**theMuscle is the DRAW-bridge.** No tension exists in the resistance; the
+only pull in this universe is DRAW (long-range, softened inverse-square).
+A muscle is a condensed droplet seated (cushion contact) on one bony anchor
+and pulling the OTHER anchor toward it across the gap — it never needs to
+touch its far tendon, the same way a planet never touches its moon. Force =
+G·M_muscle·m_anchor/s², kernel-exact; contraction = plates converging under
+that pull; the SAME droplet in compression is the cushion — the antagonist
+pair is built into the physics (one material, two regimes: pull when
+extended, push when compressed). Stroke is derived from the force law, not
+from link count: force halves at s·√2, so the useful stroke is s₀(√2 − 1)
+≈ 0.41·s₀. Tearing is emergent and redefined: under extension the droplet
+either migrates (bridge loses symmetry) or SPLITS (cluster count > 1) at a
+derived separation — the ledger records which and where.
+**PRINT SPEC (v1 of the bridge):** two pinned anchor plates (the tendons;
+bones come later — muscle comes from the bone, anchors first), a droplet of
+N_m points printed cold at cushion spacing 0.05, seated on the left plate at
+cushion contact; plates separated so the far plate sits at a derived
+separation s₀ (droplet-to-far-plate DRAW = a derived fraction of
+droplet-near-plate adhesion — the bridge must be pulling, not touching).
+Protocol: pull plates apart at 5% sound speed to s₀·√2·1.5, converge back
+past s₀ into the cushion regime, measuring plate force throughout.
+**Falsifiers:** (a) FORCE LAW — the measured contractile force-separation
+curve matches the kernel-exact DRAW prediction within 10% over the stroke
+(the muscle's force is DERIVATION, not mystery); (b) STROKE — contractile
+force stays ≥ half its s₀ value out to s₀·√2 (the inverse-square stroke);
+(c) TEAR — beyond the derived separation the bridge fails as named
+(migration or split, recorded), never silently; (d) ANTAGONIST — past full
+convergence the force REVERSES sign onto the cushion (the same material
+pushes); (e) the anchors do not migrate (pins hold; if the plates move, the
+muscle moved the wrong thing).
 
 ## ORDER OF PROOF (derived from dependency depth)
 
