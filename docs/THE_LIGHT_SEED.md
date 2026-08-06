@@ -81,6 +81,31 @@ not the prose.*
   one field, light as reader. Its physics was right; its delivery (analytic membranes)
   could never run a game. The kernel replaces the derivation.
 
+## THE MEMBRANE, REBORN AS MEMORY (the operator's question, 2026-08-06)
+
+*What if the one electron represented one memory — one membrane — and all the physical
+properties of that electron lived inside the membrane?*
+
+The electrons are perfectly identical: same mass, same charge, same rules. Then the ONLY
+thing that makes this electron different from that one is where it has been and what the
+two forces have done to it. **Its memory is its identity.** The membrane is not a chapter
+someone writes (matter era — deleted); the membrane is the record a point earns by
+running (light era). One electron = one membrane = one memory.
+
+- **What is inside:** the two-force state — position, velocity, the vector and the
+  magnitude, the balance currently held — and the timeline: where it has been.
+- **What is NOT inside:** "physical properties." Solidity, color, temperature are never
+  stored; they are READ off the balance by light, at the moment they are seen.
+- **The budget:** memory costs per point, and there are millions of points. Every
+  electron carries the minimal state (one vector, one magnitude). Rich memory — the long
+  timeline — accrues only where it is earned: points near the eye, points bound into
+  something stable, points a story is being told about. Wolfram's fact protects the
+  design: you cannot predict which points will matter, so memory accumulates where the
+  balance holds instead of being assigned in advance.
+- **The proof engine's new job:** a membrane can again be witnessed and proven — but the
+  proof is no longer "the ocean derives from the star." It is "this pattern of balances,
+  read by light, is what the human says it is."
+
 ## THE NEXT BUILD
 
 One kernel: the two-force tree pass over the splat point set — the draw, the resistance,
