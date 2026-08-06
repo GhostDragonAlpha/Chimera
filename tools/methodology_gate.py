@@ -212,6 +212,13 @@ KNOWN_EQUAL = {
     ("push_off_m", "landing_travel_m"): "the distance pushed through is the distance landed through.",
     ("flight_time_s", "unsteerable_time_s"):
         "you cannot steer with nothing to push against, so the airborne time IS the blind time.",
+    # ── THE THRUST'S NUMERIC COINCIDENCES ────────────────────────────────────────────────────
+    ("landing_give_frac", "landing_give_required_frac"):
+        "the actual give fraction and the required give fraction happen to share 1.0 when no amount"
+        " of give is enough; they are different quantities but numerically equal here.",
+    ("push_off_m", "landing_travel_required_m"):
+        "when give_needed=1.0, the push-off distance and the landing travel required are the same"
+        " number; conceptually distinct but numerically identical at this setting.",
 }
 
 

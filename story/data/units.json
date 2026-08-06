@@ -272,6 +272,7 @@
    "measured_leg_over_stature": "ratio",
    "leg_over_stature_used": "ratio",
    "grf_peak_bw_typed_was": "ratio",
+   "footprint_deeper_on_earth_by": "ratio",
    "timeline_serial": "count"
   },
   "aHuman": {
@@ -405,6 +406,7 @@
   },
   "theGround": {
    "fractal_D": "ratio",
+   "reference_load_vs_threshold": "ratio",
    "timeline_serial": "count"
   },
   "theBalance": {

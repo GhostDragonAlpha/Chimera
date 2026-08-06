@@ -463,6 +463,31 @@ _DESIGN_SCENES = {
 _DESIGN_BUILDERS = {"verbs": _verbs_buffers}
 
 
+def _movie_instants(nums: dict) -> tuple[float, float]:
+    """THE TWO FRAMES OF A MEMBRANE'S MOVIE that carry its claim, read off its own timeline.
+
+    The default movie is beginning -> settled (t=0 -> t=1). For a membrane whose film IS a process,
+    the endpoints can be the two frames that look most alike -- a jump starts and ends with the
+    body on the ground, so a blind eye watching [start, landed] sees "no change" even though
+    everything happened. The 35B eye said exactly that about theThrust. So when a membrane publishes
+    its own phase durations, the movie is sampled at the two instants where its claim is VISIBLE:
+    mid-push (the ground reaction bar up, body driving) and apex (airborne, the bar gone to zero --
+    no contact, no thrust). Both frames are still the membrane's own emit() output, and both are
+    derived from its own published numbers; nothing here is authored."""
+    try:
+        t_c = float(nums["crouch_time_s"])
+        t_p = float(nums["contact_time_s"])
+        t_f = float(nums["flight_time_s"])
+        total = float(nums["duration_s"])
+    except (KeyError, TypeError, ValueError):
+        return 0.0, 1.0
+    if total <= 0.0 or t_f <= 0.0:
+        return 0.0, 1.0
+    mid_push = (t_c + 0.5 * t_p) / total
+    apex = (t_c + t_p + 0.5 * t_f) / total
+    return mid_push, apex
+
+
 def project_movie(term: str, out_dir) -> dict | None:
     """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene.
 
@@ -476,8 +501,9 @@ def project_movie(term: str, out_dir) -> dict | None:
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
 
     if term in _discover():                                          # THE FOLDER WINS, always
-        end_buf = membrane_buffer(term, 1.0)
-        begin_buf = membrane_buffer(term, 0.0)
+        t_begin, t_end = _movie_instants(_NUMBERS.get(term, {}))
+        end_buf = membrane_buffer(term, t_end)
+        begin_buf = membrane_buffer(term, t_begin)
         if end_buf is None or begin_buf is None:
             return None
         extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0

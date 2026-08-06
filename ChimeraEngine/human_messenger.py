@@ -218,6 +218,12 @@ PHYSICS_READING = {
                        "around a mass: time runs fast far out and slow near the middle, "
                        "the dark center is where time stops: time leaning with depth, "
                        "NOT the same everywhere",
+    "theThrust": "a pale stylized human figure beside a flat dark ground line, making ONE "
+                 "vertical jump: it crouches, drives, leaves the ground, rises and falls "
+                 "back in a single arc, with a white bar rising from the ground during the "
+                 "push that goes to zero while the figure is airborne -- a body pushed up "
+                 "off the ground by the ground's force and pulled back down by gravity, "
+                 "every splat placed on the same line of the world",
 }
 
 _SEE_PROMPT = ("Look at this image and describe what you actually see in one or two short sentences: "

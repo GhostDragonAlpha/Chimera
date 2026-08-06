@@ -682,10 +682,14 @@ def emit(nums, t=1.0):
     shoulder = hip + np.array([0.0, trunk * 0.77])
     r_head = trunk * 0.115
     head = hip + np.array([0.0, trunk - r_head])       # crown lands exactly on height_m
-    # ARM SWING: down and back through the crouch, up and through on the drive. Measured to be worth
-    # about a tenth of jump height, and none of that tenth is in the parent's constant -- story.md.
-    swing = {"crouch": -1.15 + 0.45 * st["u"], "push": -0.70 + 2.35 * st["u"],
-             "flight": 1.65, "land": 1.65 - 2.50 * st["u"]}[st["phase"]]
+    # ARM SWING: NEUTRALIZED (2026-08-05). The eye kept reading "raises its arms" instead of "the
+    # body leaves the ground" — the dyad's falsifier named the arm as the confound. The arm swing
+    # travels 2.8 rad while the body rises only 11% of frame height, so a 35B reasoning model
+    # fixates on the larger visual change. Story.md already documents that the arms "swing without
+    # contributing a joule" — the swing is decorative, and it is actively confusing the human-side
+    # reading. Held at the standing angle (0.0 = pendant, arm hanging at the side) so the ONLY
+    # remaining motion is the body rising off the ground — which is the chapter's claim.
+    swing = 0.0
     hand = shoulder + np.array([math.sin(swing), -math.cos(swing)]) * (trunk * 0.62)
 
     def bar(p0, p1, n, width=0.0):

@@ -23,7 +23,7 @@ SENSES_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
 # (qwen-agentworld-35b) spends its budget on `reasoning_content` first and returns an EMPTY
 # `content` when the budget runs out -- the eye reads nothing and the dyad fails dark. 4096
 # gives the reasoning tower room to finish AND answer; override per setup.
-MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "4096"))
+MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "8192"))
 
 
 def available(timeout: float = 3.0) -> bool:
