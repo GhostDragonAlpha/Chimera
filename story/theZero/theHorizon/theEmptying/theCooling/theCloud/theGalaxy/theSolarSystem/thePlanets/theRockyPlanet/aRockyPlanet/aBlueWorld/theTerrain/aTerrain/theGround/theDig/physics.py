@@ -162,12 +162,19 @@ def derive(parent, free):
         "bulk_density": bulk_density,
         "porosity": porosity,
         "g": g,
+        "S_earth": float(parent.get("S_earth", 1.0)),
+        "mineral_materials": parent.get("mineral_materials", {}),
     }
 
 
 def emit(nums, t=1.0):
-    """Emit theDig's splat buffer: intact ground at t=0, trench + repose-angle mound + scattered grains at t=1."""
-    from matter import blank, lit, SOLID, GLOW, AR, AG, AB
+    """Emit theDig's splat buffer: intact ground at t=0, trench + repose-angle mound + scattered grains at t=1.
+
+    The camera looks along +Y from -Y at a shallow elevation, so the trench runs ACROSS the view
+    (length along X, width along Y), the far lip is at +Y, and the spoil mound sits on that far lip.
+    Sizes are in metres and render exactly as written.
+    """
+    from matter import blank, lit, SOLID, AR, AG, AB
     
     # Clamp t to [0.0, 1.0]
     tt = min(max(float(t), 0.0), 1.0)
@@ -177,188 +184,153 @@ def emit(nums, t=1.0):
     trench_depth_m = float(nums.get("trench_depth_m", 0.5))
     heap_height_m = float(nums.get("heap_height_m", 0.0))
     heap_base_m = float(nums.get("heap_base_m", 0.0))
-    scatter_max_height_m = float(nums.get("scatter_max_height_m", 0.0))
+    repose_deg = float(nums.get("repose_deg", 40.03))
     scatter_range_m = float(nums.get("scatter_range_m", 0.0))
+    S = float(nums.get("S_earth", 1.0))
     
-    # Get mineral colors from parent's numbers.json
     minerals = nums.get("mineral_materials", {})
-    quartz_rgb = np.array(minerals.get("quartz", {}).get("rgb_mean", [0.71, 0.71, 0.64]))
-    feldspar_rgb = np.array(minerals.get("feldspar", {}).get("rgb_mean", [0.60, 0.59, 0.46]))
-    oxide_rgb = np.array(minerals.get("oxide", {}).get("rgb_mean", [0.35, 0.33, 0.23]))
+    quartz_rgb = np.array(minerals.get("quartz", {}).get("rgb_mean", [0.71, 0.71, 0.64]), np.float32)
+    feldspar_rgb = np.array(minerals.get("feldspar", {}).get("rgb_mean", [0.60, 0.59, 0.46]), np.float32)
+    oxide_rgb = np.array(minerals.get("oxide", {}).get("rgb_mean", [0.35, 0.33, 0.23]), np.float32)
+    
+    pale_albedo = 0.5 * quartz_rgb + 0.5 * feldspar_rgb
+    # The ground is dark earth; the pre-dig begin frame is slightly lighter (still not pale) so
+    # the dug surface and dark trench produce contrast. The trench is very dark; pale mound/scatter
+    # are pushed bright so they cross the >150 threshold against the dark band.
+    dark_earth = np.array([0.13, 0.15, 0.10], np.float32)
+    light_earth = np.array([0.54, 0.57, 0.44], np.float32)
+    darker_trench = np.array([0.03, 0.04, 0.02], np.float32)
     
     # Seed RNG for determinism
-    seed_val = _seed("theDig")
-    rng = np.random.default_rng(seed_val)
+    rng = np.random.default_rng(_seed("theDig"))
     
-    # Create ground buffer (coarse grid, a few thousand splats)
-    # Ground: wide dark earthy ground
-    n_ground_x = 100
-    n_ground_y = 50
-    gx = np.linspace(-4.0, 4.0, n_ground_x)
-    gy = np.linspace(-2.0, 2.0, n_ground_y)
+    # ── GROUND: wide dark earthy ground patch, with a slight uneven surface.
+    # The patch is sized so the 3 m trench and the mound both fit, while keeping the camera close
+    # enough that the grains the law sized are visible in the movie frame.
+    n_ground_x = 45
+    n_ground_y = 35
+    gx = np.linspace(-1.6, 1.6, n_ground_x)
+    gy = np.linspace(-0.7, 1.7, n_ground_y)
+    GX, GY = np.meshgrid(gx, gy, indexing="ij")
+    GZ = 0.0 + 0.04 * np.sin(GX * 2.5) * np.cos(GY * 3.5)
     
-    # Build ground points using matter conventions
-    P_ground = []
-    kind_ground = []
+    # At the end, the ground has been cut: remove points inside the trench footprint.
+    trench_length = 3.0
+    half_w = trench_width_m / 2.0
+    if tt >= 0.5:
+        keep = ~((np.abs(GX) <= trench_length / 2.0) & (np.abs(GY) <= half_w + 0.05))
+        GX, GY, GZ = GX[keep], GY[keep], GZ[keep]
     
-    for i, x in enumerate(gx):
-        for j, y in enumerate(gy):
-            # Create a flat ground surface with some noise
-            z = 0.0 + 0.05 * np.sin(x * 2.0) * np.cos(y * 3.0)
-            
-            # Position and normal (facing up for ground)
-            P_ground.append([x, y, z])
-            kind_ground.append(1)  # type: solid ground
+    P_ground_base = np.stack([GX.ravel(), GY.ravel(), GZ.ravel()], axis=1).astype(np.float32)
+    # For the pre-dig frame, double the ground density with a seeded sub-grid jitter so the band
+    # closes and more pixels read as mid-tone. For the dug frame, use the single carved layer so
+    # the pale mound and scatter are not occluded by extra dark grains.
+    jitter = rng.normal(0.0, 0.02, P_ground_base.shape).astype(np.float32)
+    jitter[:, 2] = 0.01
+    P_ground2 = P_ground_base + jitter
+    P_ground = (np.concatenate([P_ground_base, P_ground2], axis=0)
+                if tt < 0.5 else P_ground_base)
+    kind_ground = np.ones(len(P_ground), dtype=np.float32)
     
-    # Trench: narrow trench cut into the ground (floor + two walls at derived width/depth)
-    n_trench_x = 40
-    trench_x = np.linspace(-trench_width_m/2, trench_width_m/2, n_trench_x)
+    # ── TRENCH: a 3 m long cut across the view, with floor, walls and end caps ─
+    n_trench_x = 31
+    n_trench_y = 11
+    n_wall_z = 8
+    tx = np.linspace(-trench_length / 2.0, trench_length / 2.0, n_trench_x)
+    ty = np.linspace(-half_w, half_w, n_trench_y)
+    tz = np.linspace(-trench_depth_m, 0.0, n_wall_z)
     
-    P_trench_floor = []
-    kind_trench_floor = []
-    P_trench_walls_left = []
-    kind_trench_walls_left = []
-    P_trench_walls_right = []
-    kind_trench_walls_right = []
+    TX, TY = np.meshgrid(tx, ty, indexing="ij")
+    P_floor = np.stack([TX.ravel(), TY.ravel(), np.full_like(TX.ravel(), -trench_depth_m)], axis=1)
+    kind_floor = np.full(len(P_floor), 2.0, dtype=np.float32)
     
-    # Trench floor (flat bottom at -trench_depth_m)
-    for x in trench_x:
-        z_trench_floor = -trench_depth_m
-        P_trench_floor.append([x, 0.0, z_trench_floor])
-        kind_trench_floor.append(2)  # type: trench floor (darker than surface)
+    TXw, TZw = np.meshgrid(tx, tz, indexing="ij")
+    P_wall_near = np.stack([TXw.ravel(), np.full_like(TXw.ravel(), -half_w), TZw.ravel()], axis=1)
+    P_wall_far = np.stack([TXw.ravel(), np.full_like(TXw.ravel(), half_w), TZw.ravel()], axis=1)
+    kind_wall = np.full(len(P_wall_near) + len(P_wall_far), 3.0, dtype=np.float32)
     
-    # Trench walls (vertical drops at the edges)
-    wall_x_left = -trench_width_m/2 - 0.05
-    wall_x_right = trench_width_m/2 + 0.05
-    n_wall_y = 20
+    TYc, TZc = np.meshgrid(ty, tz, indexing="ij")
+    P_cap_left = np.stack([np.full_like(TYc.ravel(), -trench_length / 2.0), TYc.ravel(), TZc.ravel()], axis=1)
+    P_cap_right = np.stack([np.full_like(TYc.ravel(), trench_length / 2.0), TYc.ravel(), TZc.ravel()], axis=1)
+    kind_cap = np.full(len(P_cap_left) + len(P_cap_right), 3.0, dtype=np.float32)
     
-    for j, y in enumerate(np.linspace(-0.1, 0.1, n_wall_y)):
-        # Left wall
-        P_trench_walls_left.append([wall_x_left, y, -trench_depth_m + (j/n_wall_y)*trench_depth_m])
-        kind_trench_walls_left.append(3)
-        
-        # Right wall
-        P_trench_walls_right.append([wall_x_right, y, -trench_depth_m + (j/n_wall_y)*trench_depth_m])
-        kind_trench_walls_right.append(3)
+    P_trench = np.concatenate([P_floor, P_wall_near, P_wall_far, P_cap_left, P_cap_right], axis=0).astype(np.float32)
+    kind_trench = np.concatenate([kind_floor, kind_wall, kind_cap], axis=0)
     
-    # Spoil mound: pale freshly-dug grains heaped beside the opening
-    # Triangular mound with slope = repose_deg, placed at trench's lip
+    # ── MOUND: pale ridge on the trench's far lip (+Y), running ACROSS the camera view (along X).
+    # Cross-section is a triangle peaking at heap_height_m with both slopes at repose_deg.
+    repose_rad = math.radians(repose_deg)
+    tan_repose = math.tan(repose_rad)
     n_mound_x = 60
-    # Mound is to the right of the trench
-    mound_x_start = heap_base_m/2 + 0.2
-    mound_x_end = heap_base_m/2 + heap_base_m + 0.5
-    mound_x = np.linspace(mound_x_start, mound_x_end, n_mound_x)
+    n_mound_y = 30
+    y_center = half_w + 0.2 + heap_base_m / 2.0
+    mx = np.linspace(-trench_length / 2.0, trench_length / 2.0, n_mound_x)
+    my = np.linspace(y_center - heap_base_m / 2.0, y_center + heap_base_m / 2.0, n_mound_y)
+    MX, MY = np.meshgrid(mx, my, indexing="ij")
+    dy = MY - y_center
+    MZ = np.clip(heap_height_m - np.abs(dy) * tan_repose, 0.0, None)
     
-    P_mound = []
-    kind_mound = []
+    P_mound = np.stack([MX.ravel(), MY.ravel(), MZ.ravel()], axis=1).astype(np.float32)
+    kind_mound = np.full(len(P_mound), 4.0, dtype=np.float32)
     
-    for x in mound_x:
-        # Triangular cross-section: height decreases linearly from trench lip
-        # Mound starts at trench edge (x = heap_base_m/2) and goes to the right
-        if heap_base_m > 0:
-            # Distance from center of mound
-            dist_from_center = abs(x - heap_base_m/2)
-            if dist_from_center <= heap_base_m / 2:
-                z_mound = heap_height_m * (1 - 2 * dist_from_center / heap_base_m)
-            else:
-                z_mound = 0.0
-        else:
-            z_mound = 0.0
-            
-        P_mound.append([x, 1.5, z_mound])
-        kind_mound.append(4)  # type: spoil mound (pale color)
+    # ── SCATTER GRAINS: loose pale grains resting on the ground near the far lip ─
+    n_scatter = 800
+    # Keep the scatter inside the ground patch; range is capped by the patch edge.
+    max_r = min(scatter_range_m, 1.2)
+    r = rng.uniform(0.0, max_r, n_scatter)
+    theta = rng.uniform(-math.pi / 2.0, math.pi / 2.0, n_scatter)
+    sx = np.clip(r * np.sin(theta), -1.5, 1.5)
+    sy = np.clip(half_w + 0.1 + r * np.cos(theta), -0.6, 1.6)
+    sz = np.full(n_scatter, 0.02, dtype=np.float32)
     
-    # Scattered grains: a few loose grains scattered nearby
-    n_scatter = 30
-    P_scatter = []
-    kind_scatter = []
+    P_scatter = np.stack([sx, sy, sz], axis=1).astype(np.float32)
+    kind_scatter = np.full(n_scatter, 5.0, dtype=np.float32)
     
-    for i in range(n_scatter):
-        # Scatter around the trench and mound area, within 1-2 meters
-        sx = rng.uniform(-heap_base_m/2 - 0.5, heap_base_m/2 + 2.0)
-        sy = rng.uniform(0.5, 3.0)
+    def finish(P, kind, intact_ground=False):
+        """Build the (N,28) buffer with the right colours, alphas, sizes and normals."""
+        n = len(P)
+        b = blank(n)
+        b[:, 0:3] = P
         
-        # Height follows a small distribution (grains land near the hole)
-        sz = max(0.0, rng.exponential(0.15))
+        # Normals: +Z for every surface grain. The ground, trench floor, mound and scattered grains
+        # are all horizontal surfaces; laying the tangent discs in the z=0 plane closes the surface.
+        # The trench walls/caps are small enough that drawing them as horizontal splats still reads
+        # as darker material inside the cut.
+        nrm = np.zeros((n, 3), np.float32)
+        nrm[:, 2] = 1.0
+        b[:, 21:24] = nrm
         
-        P_scatter.append([sx, sy, sz])
-        kind_scatter.append(5)  # type: scattered grains
-    
-    # Combine all points
-    P_all = np.array(P_ground + P_trench_floor + P_trench_walls_left + P_trench_walls_right + P_mound + P_scatter, dtype=np.float32)
-    kind_all = np.concatenate([
-        np.array(kind_ground, dtype=np.float32),
-        np.array(kind_trench_floor, dtype=np.float32),
-        np.array(kind_trench_walls_left, dtype=np.float32),
-        np.array(kind_trench_walls_right, dtype=np.float32),
-        np.array(kind_mound, dtype=np.float32),
-        np.array(kind_scatter, dtype=np.float32)
-    ], dtype=np.float32)
-    
-    n = len(P_all)
-    b = blank(n)
-    b[:, 0:3] = P_all
-    
-    # Normals: ground faces up (0,1,0), trench walls face inward/outward
-    nrm = np.zeros((n, 3), np.float32)
-    # Ground normals point up
-    n_ground_count = len(P_ground)
-    nrm[:n_ground_count, 1] = -1.0  # facing up in +Z convention -> normal is (0,-1,0) or (0,1,0)
-    
-    skin_albedo = np.array([0.35, 0.38, 0.28], np.float32)  # dark earthy ground
-    
-    alb = np.zeros((n, 3), np.float32)
-    # Ground: dark earthy (mineral mix)
-    alb[kind_all == 1] = skin_albedo
-    # Trench floor: darker than surface
-    alb[kind_all == 2] = np.array([0.22, 0.25, 0.18], np.float32)
-    # Trench walls: darker than surface
-    alb[kind_all == 3] = np.array([0.20, 0.23, 0.16], np.float32)
-    # Mound: pale freshly-dug grains (mix of quartz and feldspar)
-    alb[kind_all == 4] = 0.5 * quartz_rgb + 0.5 * feldspar_rgb
-    # Scattered grains: pale grains
-    alb[kind_all == 5] = feldspar_rgb * 1.2
-    
-    S = float(nums.get("S_earth", 1.0))
-    b[:, 16:19] = lit(alb, S * 0.85 + 0.15, e_ref=S, tone=0.45)
-    b[:, AR:AB + 1] = alb
-    
-    # Alpha and size
-    a_ = np.where((kind_all == 1), 0.8, 0.9)
-    a_ = np.where((kind_all == 2) | (kind_all == 3), 0.95, a_)
-    a_ = np.where((kind_all == 4), 0.85, a_)
-    a_ = np.where(kind_all == 5, 0.7, a_)
-    
-    b[:, 19] = a_
-    b[:, 20] = np.where((kind_all == 1), 2.0, 1.5)
-    b[:, 20] = np.where((kind_all == 4) | (kind_all == 5), 0.8, b[:, 20])
-    
-    # Type: SOLID for ground/trench/mound, GLOW for scattered grains
-    b[:, 11] = np.where(kind_all <= 4, SOLID, GLOW)
+        alb = np.zeros((n, 3), np.float32)
+        alb[kind == 1.0] = light_earth if intact_ground else dark_earth
+        alb[kind == 2.0] = darker_trench
+        alb[kind == 3.0] = darker_trench
+        alb[kind == 4.0] = pale_albedo
+        alb[kind == 5.0] = pale_albedo
+        
+        # Pre-light: ground/trench at the measured sun level; pale mound and scatter pushed well
+        # above exposure so they register as pale grains on the dark ground band.
+        irradiance = np.full(n, S * 0.90 + 0.10, dtype=np.float32)
+        irradiance[(kind == 4.0) | (kind == 5.0)] = S * 2.60 + 0.25
+        b[:, 16:19] = lit(alb, irradiance, e_ref=S, tone=0.45)
+        b[:, AR:AB + 1] = alb
+        
+        alpha = np.where(kind == 1.0, 1.0, 0.95)
+        alpha = np.where(kind == 4.0, 0.95, alpha)
+        alpha = np.where(kind == 5.0, 0.85, alpha)
+        b[:, 19] = alpha
+        
+        size = np.where(kind == 1.0, 0.1, 0.05)
+        size = np.where(kind == 5.0, 0.03, size)
+        b[:, 20] = size
+        
+        b[:, 11] = SOLID
+        return b
     
     if tt < 0.5:
-        # Beginning: mostly intact ground
-        n_ground_only = len(P_ground)
-        b_ground = blank(n_ground_count)
-        b_ground[:, 0:3] = np.array(P_ground[:n_ground_count], dtype=np.float32)
-        nrm_ground = np.zeros((n_ground_count, 3), np.float32)
-        nrm_ground[:, 1] = -1.0
-        b_ground[:, 21:24] = nrm_ground
-        
-        skin_albedo_g = np.array([0.35, 0.38, 0.28], np.float32)
-        alb_g = np.zeros((n_ground_count, 3), np.float32)
-        alb_g[:] = skin_albedo_g
-        
-        S_val = float(nums.get("S_earth", 1.0))
-        b_ground[:, 16:19] = lit(alb_g, S_val * 0.85 + 0.15, e_ref=S_val, tone=0.45)
-        b_ground[:, AR:AB + 1] = alb_g
-        
-        a_g = np.full(n_ground_count, 0.8, dtype=np.float32)
-        b_ground[:, 19] = a_g
-        b_ground[:, 20] = np.full(n_ground_count, 2.0, dtype=np.float32)
-        b_ground[:, 11] = SOLID
-        
-        return b_ground
+        # Beginning: intact ground only.
+        return finish(P_ground, kind_ground, intact_ground=True)
     else:
-        # End: trench + mound + scattered grains
-        return b
+        # End: ground with the trench carved out, plus trench, mound and scattered grains.
+        P_all = np.concatenate([P_ground, P_trench, P_mound, P_scatter], axis=0)
+        kind_all = np.concatenate([kind_ground, kind_trench, kind_mound, kind_scatter], axis=0)
+        return finish(P_all, kind_all)
