@@ -86,6 +86,16 @@ MUSCLE_EXP_TOL = 0.25                            # DRAW exponent -2 ± this (far
 MUSCLE_LAW_TOL = 0.10                            # (a) max rel err, measured vs pairwise-DRAW prediction
 MUSCLE_MIGRATION_TOL = 0.05                      # droplet COM must stay on x-axis
 
+# ── TENDON print parameters (derived from force constants) ────────────
+# Drive the anchor plates at 5% of the bond sound speed.
+TENDON_V_PLATE = 0.05 * math.sqrt(K_BOND)        # lu / tick
+TENDON_D_EQ = seed_structures.TENDON_D_EQ        # cushion equilibrium spacing (~0.0484 lu)
+TENDON_LAW_TOL = 0.10                            # (a)/(d) max rel err, measured vs prediction
+TENDON_BUCKLE_BAR = 2.0 * (0.5 * 0.05)           # 2 x cross-section half-width = 0.05 lu
+TENDON_UNSEAT_HALF_TOL = 0.5 * TENDON_D_EQ       # ± half a lattice step
+TENDON_COMPRESS_DIST = 2.0 * TENDON_D_EQ         # total plate convergence during compress phase
+TENDON_EXTEND_EXTRA = 0.15                       # extension past s0 into the unseat window
+
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
     """Return (positions, velocities) for a structureless initial state."""
@@ -1154,6 +1164,344 @@ def muscle_main(args, seed):
     print("=" * 70)
 
 
+# ── TENDON-specific helpers ───────────────────────────────────────────
+
+def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
+                       r_cut: float = R_BOND) -> int:
+    """Number of connected components in the rod (grain 0)."""
+    rod_idx = np.flatnonzero(grain_ids == 0)
+    if rod_idx.size == 0:
+        return 0
+    return cluster_count_and_sizes(pos[rod_idx], r_cut)[0]
+
+
+def _rod_end_gaps(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
+    """Return cushion gaps from the rod's end cross-sections to each plate."""
+    rod = pos[grain_ids == 0]
+    plates = pos[grain_ids == -1]
+    if rod.shape[0] == 0 or plates.shape[0] == 0:
+        return 0.0, 0.0
+    # The rod is printed 2x2xn_len; the end cross-sections are the 4 points
+    # with smallest / largest x coordinates.
+    order = np.argsort(rod[:, 0])
+    n_per_layer = 4
+    left_end = rod[order[:n_per_layer]]
+    right_end = rod[order[-n_per_layer:]]
+    left_plate = plates[plates[:, 0] < rod[:, 0].min()]
+    right_plate = plates[plates[:, 0] > rod[:, 0].max()]
+    if left_plate.shape[0] == 0 or right_plate.shape[0] == 0:
+        return 0.0, 0.0
+    left_gap = float(np.linalg.norm(
+        left_plate[:, None, :] - left_end[None, :, :], axis=2).min())
+    right_gap = float(np.linalg.norm(
+        right_plate[:, None, :] - right_end[None, :, :], axis=2).min())
+    return left_gap, right_gap
+
+
+def _mid_column_deflection(pos: np.ndarray, grain_ids: np.ndarray) -> float:
+    """Max transverse displacement of the middle half of the rod from the x-axis."""
+    rod = pos[grain_ids == 0]
+    if rod.shape[0] == 0:
+        return 0.0
+    order = np.argsort(rod[:, 0])
+    n_mid = max(1, rod.shape[0] // 2)
+    lo = (rod.shape[0] - n_mid) // 2
+    hi = lo + n_mid
+    mid = rod[order[lo:hi]]
+    return float(np.sqrt(mid[:, 1] ** 2 + mid[:, 2] ** 2).max())
+
+
+def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
+                tag, label):
+    """
+    Run the TENDON compress->extend protocol.
+
+    Phase 1: compress plates inward by 2*d_eq total (one equilibrium spacing).
+    Phase 2: extend plates back through s0 to s0 + 0.15 (unseat window).
+    Returns the metrics dict and the final position array.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    n_rod = int((grain_ids == 0).sum())
+    n_plate = int((grain_ids == -1).sum()) // 2
+    left_idx = np.arange(n_plate, dtype=np.int32)
+    right_idx = np.arange(N - n_plate, N, dtype=np.int32)
+    rod_idx = np.arange(n_plate, n_plate + n_rod, dtype=np.int32)
+
+    sample_every = 500
+
+    metrics = {
+        "tick": [],
+        "phase": [],
+        "separation": [],
+        "plate_force": [],
+        "right_force": [],
+        "signed_force": [],
+        "rod_clusters": [],
+        "mid_deflection": [],
+        "left_gap": [],
+        "right_gap": [],
+        "radiated_energy": [],
+        "radiated_power": [],
+        "rod_pos": [],
+        "right_plate_pos": [],
+    }
+
+    def _sample(tick: int, phase: str):
+        left_x = float(sim.pos[left_idx, 0].mean())
+        right_x = float(sim.pos[right_idx, 0].mean())
+        separation = right_x - left_x
+        pforce = _plate_force(sim.acc, left_idx, right_idx)
+        right_force = -float(sim.acc[right_idx, 0].sum())
+        sforce = _signed_plate_force(sim.acc, left_idx, right_idx)
+        n_clust = _rod_cluster_count(sim.pos, grain_ids, R_BOND)
+        left_gap, right_gap = _rod_end_gaps(sim.pos, grain_ids)
+        deflect = _mid_column_deflection(sim.pos, grain_ids)
+
+        metrics["tick"].append(tick)
+        metrics["phase"].append(phase)
+        metrics["separation"].append(separation)
+        metrics["plate_force"].append(pforce)
+        metrics["right_force"].append(right_force)
+        metrics["signed_force"].append(sforce)
+        metrics["rod_clusters"].append(n_clust)
+        metrics["mid_deflection"].append(deflect)
+        metrics["left_gap"].append(left_gap)
+        metrics["right_gap"].append(right_gap)
+        metrics["radiated_energy"].append(float(sim.radiated_energy))
+        metrics["radiated_power"].append(float(sim.last_radiated_power))
+        metrics["rod_pos"].append(sim.pos[rod_idx].copy())
+        metrics["right_plate_pos"].append(sim.pos[right_idx].copy())
+
+        print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+              f"sep={separation:.5f} | right_F={right_force:.4f} | "
+              f"sforce={sforce:.4f} | clusters={n_clust} | "
+              f"deflect={deflect:.4f} | gap_L={left_gap:.4f} | "
+              f"gap_R={right_gap:.4f}")
+
+    print(f"\n[{label}] N={N} rod={n_rod} plates={n_plate*2}")
+    print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
+          f"v_plate={v_plate:.5f} dt={dt}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    tick = 0
+    _sample(tick, "init")
+
+    # Phase 1: compress by 2*d_eq total.
+    target_compress = s0 - TENDON_COMPRESS_DIST
+    phase = "compress"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep <= target_compress:
+            break
+        dx = 0.5 * v_plate * dt
+        sim.pos[left_idx, 0] += dx
+        sim.pos[right_idx, 0] -= dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    # Phase 2: extend back through s0 to s0 + 0.15.
+    target_extend = s0 + TENDON_EXTEND_EXTRA
+    phase = "extend"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep >= target_extend:
+            break
+        dx = -0.5 * v_plate * dt
+        sim.pos[left_idx, 0] += dx
+        sim.pos[right_idx, 0] -= dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics, sim.pos.copy()
+
+
+def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
+    """Print TENDON falsifier verdict; return dict of booleans."""
+    phases = metrics["phase"]
+    sep = np.asarray(metrics["separation"], dtype=np.float64)
+    rforce = np.asarray(metrics["right_force"], dtype=np.float64)
+    clusters = np.asarray(metrics["rod_clusters"], dtype=np.int32)
+    left_gap = np.asarray(metrics["left_gap"], dtype=np.float64)
+    right_gap = np.asarray(metrics["right_gap"], dtype=np.float64)
+    deflect = np.asarray(metrics["mid_deflection"], dtype=np.float64)
+
+    n_plate = int((grain_ids == -1).sum()) // 2
+    d_eq = TENDON_D_EQ
+    s_fail = s0 + (R_BOND - d_eq)
+    unseat_lo = s_fail - TENDON_UNSEAT_HALF_TOL
+    unseat_hi = s_fail + TENDON_UNSEAT_HALF_TOL
+
+    # (a) PUSH LAW: during compress, static recompute on recorded geometry.
+    push_idx = [i for i, p in enumerate(phases) if p == "compress"]
+    push_pred = np.full(len(phases), np.nan)
+    for i in push_idx:
+        rod_i = np.asarray(metrics["rod_pos"][i], dtype=np.float32)
+        right_i = np.asarray(metrics["right_plate_pos"][i], dtype=np.float32)
+        left_i = right_i.copy()
+        left_i[:, 0] -= float(sep[i])
+        full_pos = np.vstack([left_i, rod_i, right_i])
+        full_vel = np.zeros_like(full_pos)
+        acc = kernel.compute_forces(full_pos, full_vel, use_cuda=False)
+        push_pred[i] = -float(acc[-n_plate:, 0].sum())
+
+    push_max_err = None
+    push_ok = False  # untested = FAIL
+    if len(push_idx) >= 3:
+        push_max_err = max(
+            abs(rforce[i] - push_pred[i]) / max(abs(push_pred[i]), 1e-12)
+            for i in push_idx)
+        push_ok = push_max_err <= TENDON_LAW_TOL
+
+    # (b) BUCKLE: mid-column deflection during compress.
+    buckle_ok = False
+    max_buckle = None
+    if push_idx:
+        max_buckle = float(deflect[push_idx].max())
+        buckle_ok = max_buckle <= TENDON_BUCKLE_BAR
+
+    # (c) UNSEAT: an end gap crosses R_BOND inside s_fail ± 0.5*d_eq, and the
+    # rod stays one cluster for the whole run.
+    max_gap = np.maximum(left_gap, right_gap)
+    unseat_crossings = [
+        i for i, p in enumerate(phases)
+        if max_gap[i] > R_BOND and unseat_lo <= sep[i] <= unseat_hi]
+    unseat_ok = bool(len(unseat_crossings) > 0 and int(clusters.max()) == 1)
+
+    # (d) PULL LAW: during extend, on contact-free samples predict the right-plate
+    # force as the pairwise softened-DRAW sum over (rod U left_plate) x right_plate.
+    pull_pred = np.full(len(phases), np.nan)
+    gap_rr = np.full(len(phases), np.nan)
+    for i in range(len(phases)):
+        rod_i = np.asarray(metrics["rod_pos"][i], dtype=np.float64)
+        right_i = np.asarray(metrics["right_plate_pos"][i], dtype=np.float64)
+        left_i = right_i.copy()
+        left_i[:, 0] -= float(sep[i])
+        pullers = np.vstack([rod_i, left_i])
+        d = right_i[:, None, :] - pullers[None, :, :]
+        r2 = (d * d).sum(axis=2) + EPS ** 2
+        pull_pred[i] = float(G * (d[:, :, 0] / r2 ** 1.5).sum())
+        dd = rod_i[:, None, :] - right_i[None, :, :]
+        gap_rr[i] = float(np.sqrt((dd * dd).sum(axis=2)).min())
+
+    pull_idx = [i for i, p in enumerate(phases)
+                if p == "extend" and gap_rr[i] > R_BOND and rforce[i] > 0]
+    pull_max_err = None
+    pull_ok = False  # untested = FAIL
+    if len(pull_idx) >= 3:
+        pull_max_err = max(
+            abs(rforce[i] - pull_pred[i]) / max(abs(pull_pred[i]), 1e-12)
+            for i in pull_idx)
+        pull_ok = pull_max_err <= TENDON_LAW_TOL
+
+    print(f"\n[{label}] TENDON FALSIFIERS:")
+    if push_max_err is not None:
+        print(f"  (a) PUSH LAW : {'PASS' if push_ok else 'FAIL'}  "
+              f"max rel err measured-vs-static-recompute={push_max_err:.3f} "
+              f"(bar {TENDON_LAW_TOL:.2f}, {len(push_idx)} compress samples)")
+    else:
+        print(f"  (a) PUSH LAW : {'PASS' if push_ok else 'FAIL'}  "
+              f"(insufficient compress samples)")
+    if max_buckle is not None:
+        print(f"  (b) BUCKLE   : {'PASS' if buckle_ok else 'FAIL'}  "
+              f"max mid deflection={max_buckle:.4f} "
+              f"(bar {TENDON_BUCKLE_BAR:.4f})")
+    else:
+        print(f"  (b) BUCKLE   : {'PASS' if buckle_ok else 'FAIL'}  "
+              f"(no compress samples)")
+    print(f"  (c) UNSEAT   : {'PASS' if unseat_ok else 'FAIL'}  "
+          f"crossings in window [{unseat_lo:.4f},{unseat_hi:.4f}] = "
+          f"{len(unseat_crossings)}, max clusters={int(clusters.max())}")
+    if pull_max_err is not None:
+        print(f"  (d) PULL LAW : {'PASS' if pull_ok else 'FAIL'}  "
+              f"max rel err measured-vs-pairwise-DRAW={pull_max_err:.3f} "
+              f"(bar {TENDON_LAW_TOL:.2f}, {len(pull_idx)} contact-free "
+              f"extension samples)")
+    else:
+        print(f"  (d) PULL LAW : {'PASS' if pull_ok else 'FAIL'}  "
+              f"(insufficient contact-free extension samples)")
+    print(f"  derived s_fail = {s_fail:.4f} (s0={s0:.4f}, d_eq={d_eq:.4f}, "
+          f"R_BOND={R_BOND:.4f})")
+
+    return {
+        "push_ok": push_ok,
+        "buckle_ok": buckle_ok,
+        "unseat_ok": unseat_ok,
+        "pull_ok": pull_ok,
+    }
+
+
+def tendon_main(args, seed):
+    """TENDON print entry point: build, compress, extend, judge."""
+    pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, seed=seed)
+    N = pos.shape[0]
+    n_plate = 4 * 4
+
+    dt = DT
+    v_plate = TENDON_V_PLATE
+    tag = f"{args.tag}_" if args.tag else ""
+
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL — TENDON print run")
+    print(f"N={N}, rod=2x2x8, plates=4x4, seed={seed}, dt={dt}")
+    print("-" * 70)
+    print("STATEMENT: A cold cushion-spaced 2x2x8 rod seated between two pinned")
+    print("  anchor plates routes force along a line: it pushes under plate")
+    print("  convergence and pulls under extension, failing only by end-plate")
+    print("  detachment at a derived separation.")
+    print("PREDICTION: Compression plate force matches the static two-force")
+    print("  recompute within 10%, mid-column deflection stays below the derived")
+    print("  buckle bar, the rod remains one cluster, and after unseat the")
+    print("  extension force matches the pairwise-DRAW prediction within 10%.")
+    print("FALSIFIERS:")
+    print("  (a) PUSH LAW — measured right-plate force vs static recompute on")
+    print("      recorded positions within 10% (compress phase)")
+    print("  (b) BUCKLE   — mid-column off-axis deflection > 2 x cross-section")
+    print("      half-width during compression")
+    print("  (c) UNSEAT   — end gap does not cross R_BOND inside s_fail ± 0.5*d_eq")
+    print("      OR the rod splits (cluster count > 1)")
+    print("  (d) PULL LAW — measured right-plate force vs pairwise-DRAW sum on")
+    print("      recorded positions within 10% (contact-free extension)")
+    print("=" * 70)
+    print(f"\nDerived d_eq     = {TENDON_D_EQ:.5f}")
+    print(f"Derived rod_span = {rod_span:.5f}")
+    print(f"Derived s0       = {s0:.5f}")
+    print(f"Derived s_fail   = {s0 + (R_BOND - TENDON_D_EQ):.5f}")
+    print(f"Compress target  = {s0 - TENDON_COMPRESS_DIST:.5f}")
+    print(f"Extend target    = {s0 + TENDON_EXTEND_EXTRA:.5f}\n")
+
+    metrics, final_pos = _run_tendon(
+        pos, vel, pin_mask, grain_ids, s0, rod_span,
+        v_plate, dt, tag, "tendon")
+
+    _print_tendon_verdict(metrics, grain_ids, s0, rod_span, "tendon")
+    print("=" * 70)
+
+
 def main():
     global N, SEED, T_FF, TOTAL_TICKS, SAMPLE_EVERY
 
@@ -1167,7 +1515,7 @@ def main():
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
-                                 "bone", "muscle"],
+                                 "bone", "muscle", "tendon"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -1189,6 +1537,11 @@ def main():
     # MUSCLE print has its own driver (extension->convergence bridge test)
     if args.structure == "muscle":
         muscle_main(args, SEED)
+        return
+
+    # TENDON print has its own driver (compress->extend router test)
+    if args.structure == "tendon":
+        tendon_main(args, SEED)
         return
 
     # choose initial state

@@ -151,11 +151,70 @@ RULE 0 doc section) as the print proofs earn them.*
 
 ## CROSS-STRUCTURE — ATTACHMENTS (tendons, sockets, roots)
 
-- **tendon**: a chain connecting a 1-D structure to a 3-D bulk (muscle to bone).
-  Falsifier: force transmits across the interface; the interface fails at the
-  DERIVED weakest link (chain, bond, or bulk — the ledger records which).
 - **socket**: a 0-D anchor embedded in a bulk, holding a hinge. Falsifier:
   pullout strength matches derivation from bulk packing.
+
+## THE TENDON (the 1-D force router — light-era derivation 2026-08-06)
+
+*(Old chain spec retired: "force transmits across the interface; fails at
+the weakest link (chain, bond, or bulk)" presumed a tension bond that does
+not exist — see theCushionLaw. Re-derived for the universe as measured.)*
+
+**theTendon is a 1-D condensed column that seats two anchors and routes
+force along a line.** There is no chain and no rupture: the column is held
+condensed by its own DRAW (self-gravitating, exactly as theCushionLaw's
+droplet), its ends ADHERE to the anchor plates by DRAW at cushion-contact
+distance, push travels along the column as a cushion chain (each interior
+pair at d_eq transmits the same force — the only contact forces are the two
+end contacts), and pull is the column's DRAW on the far anchor. The only
+openable links are the END-PLATE contacts (DRAW is strongest where mass is
+densest), so the tendon fails by DETACHMENT at a derived separation, never
+by rupture — the same two regimes as theMuscle, but localized to a line,
+and with a compression regime the droplet never showed: a thin column can
+BUCKLE.
+**PRINT SPEC (v1 of the router):** two pinned 4×4 anchor plates (spacing
+0.05, the muscle's anchors); a rod 2×2×8 printed cold at cushion spacing
+0.05 (span 0.3500) centered between them; plate separation s₀ = span +
+2·d_eq = 0.4468 (both ends exactly at cushion equilibrium — derived, not
+tuned). Protocol (5% sound speed, quasistatic): (i) CONVERGE the plates by
+2·d_eq total (one equilibrium spacing of crush) — compression; (ii) EXTEND
+back through s₀ to s₀ + 0.15 — detachment.
+**Derived numbers:** s₀ = 0.4468; unseat separation s_fail = s₀ +
+(r_c − d_eq) = 0.5484 (as plates open by δ, the rod sticks to one plate by
+symmetry-breaking and the far-end gap grows by ≈ δ; the gap crosses
+r_c = 0.15 when δ ≈ r_c − d_eq), tolerance ± 0.5·d_eq = ±0.0242 (half a
+lattice step); buckle bar = 2× the cross-section half-width = 0.05.
+**Falsifiers:** (a) PUSH LAW — compression plate force vs the pairwise
+two-force sum (DRAW + cushion contacts) on the RECORDED positions within
+10% (the deformation-immune law test, inherited from theMuscle); (b)
+BUCKLE — mid-column off-axis deflection ≤ 0.05 through the whole
+compression phase (a thin column's own failure mode, emergent); (c) UNSEAT
+— an END gap crosses r_c inside s ∈ s_fail ± 0.0242, and it is always an
+END: the rod's cluster count stays 1 for the entire run (the weakest link
+is the end contact, never mid-column — that IS the claim); (d) PULL LAW —
+after unseat, extension force vs the pairwise DRAW sum within 10% on
+contact-free samples (identical in form to theMuscle (a)).
+**ROUTER v1 VERDICT 2026-08-06 (N=64, rod 2×2×8 + two 4×4 plates, run tag
+tendon_smoke):** (a) PUSH LAW PASS — max rel err 0.002 vs the static
+two-force recompute (8 compress samples); (d) PULL LAW PASS — 0.000 over 21
+contact-free samples: theMuscle's law holds for a 1-D bridge. (c) UNSEAT
+PASS in extension, exactly as derived: the rod sticks to the LEFT plate by
+symmetry-breaking (gap_L ≈ 0.045 all run), gap_R crosses r_c inside
+s_fail ± 0.0242 (4 samples in the window), cluster count 1 throughout — the
+weakest link is the end contact, never mid-column. (b) BUCKLE FAIL, and the
+recorded mode is richer than the name: under one equilibrium spacing of
+crush the RIGHT end pops its seat at sep ≈ 0.41 (gap_R 0.049 → 0.107 →
+0.275), the signed plate force briefly REVERSES (−77.9 at sep 0.397), and
+the rod rides tilted, mid-column off-axis 0.0975 (2.7× the printed corner
+offset 0.0354). A free 2×2 rod seated at exact d_eq does NOT hold
+compression — the cushion chain ejects it from the far seat rather than
+buckling elastically. Successor (named, not run): seat the rod PRELOADED
+(print at s₀ − d_eq so both ends sit in the cushion well, not on its rim)
+and split (b) into (b1) SEAT-HOLD — both end gaps ≤ r_c through the crush —
+and (b2) BUCKLE proper, mid-column deflection measured from the end-to-end
+CHORD with rigid tilt subtracted (the v1 metric conflated tilt with
+curvature). The end-pop force reversal is the signature to watch: a router
+that loses its seat telegraphs it in the force sign.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 

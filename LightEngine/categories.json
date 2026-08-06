@@ -105,5 +105,19 @@
   "n": 112,
   "falsifier_ref": "THE_CATEGORIES.md THE MUSCLE (the DRAW-bridge)",
   "runner": "solo"
+ },
+ {
+  "id": "tendon_router_v1",
+  "category": "life_support",
+  "structure": "tendon",
+  "geometry": {
+   "side": 4,
+   "n_len": 8,
+   "spacing": 0.05
+  },
+  "seed": 50,
+  "n": 64,
+  "falsifier_ref": "THE_CATEGORIES.md THE TENDON (the 1-D force router)",
+  "runner": "solo"
  }
 ]

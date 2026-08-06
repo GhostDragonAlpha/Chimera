@@ -277,3 +277,68 @@ def test_muscle_seated_on_left_plate():
     left_x = float(pos[:len(left_plate), 0].mean())
     right_x = float(pos[-len(right_plate):, 0].mean())
     assert abs(right_x - left_x - s0) < 0.01
+
+
+def test_tendon_determinism():
+    """tendon() is deterministic for a fixed seed."""
+    a = seed_structures.tendon(side=4, n_len=8, seed=7)
+    b = seed_structures.tendon(side=4, n_len=8, seed=7)
+    for x, y in zip(a, b):
+        np.testing.assert_array_equal(x, y)
+
+
+def test_tendon_geometry():
+    """tendon() builds a 2x2x8 rod between two pinned 4x4 plates."""
+    pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, seed=0)
+    n_plate = 4 * 4
+    n_rod = 4 * 8
+    assert pos.shape[0] == n_rod + 2 * n_plate
+
+    # both plates pinned, rod free
+    assert pin_mask[:n_plate].all()
+    assert pin_mask[-n_plate:].all()
+    assert not pin_mask[n_plate:n_plate + n_rod].any()
+
+    # grain ids: plates -1, rod 0
+    assert (grain_ids[:n_plate] == -1).all()
+    assert (grain_ids[-n_plate:] == -1).all()
+    assert (grain_ids[n_plate:n_plate + n_rod] == 0).all()
+
+    # cold print: zero velocity
+    np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+    # derived numbers are positive and consistent
+    assert rod_span == pytest.approx((8 - 1) * 0.05, rel=1e-12)
+    assert s0 == pytest.approx(rod_span + 2.0 * seed_structures.TENDON_D_EQ,
+                               rel=1e-12)
+
+
+def test_tendon_centered_and_seated():
+    """The rod is centered on the x-axis and seated d_eq from each plate."""
+    spacing = 0.05
+    d_eq = seed_structures.TENDON_D_EQ
+    pos, _, _, grain_ids, s0, _ = seed_structures.tendon(
+        side=4, n_len=8, spacing=spacing, seed=0)
+    rod = pos[grain_ids == 0]
+    plates = pos[grain_ids == -1]
+
+    # rod COM lies on the x-axis
+    com = rod.mean(axis=0)
+    assert abs(com[1]) < 0.01
+    assert abs(com[2]) < 0.01
+
+    # plate separation matches s0
+    left_plate = plates[plates[:, 0] < rod[:, 0].min()]
+    right_plate = plates[plates[:, 0] > rod[:, 0].max()]
+    left_x = float(left_plate[:, 0].mean())
+    right_x = float(right_plate[:, 0].mean())
+    assert abs(right_x - left_x - s0) < 0.01
+
+    # end gaps are approximately d_eq
+    left_gap = np.linalg.norm(
+        left_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    right_gap = np.linalg.norm(
+        right_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    assert abs(left_gap - d_eq) < 0.01
+    assert abs(right_gap - d_eq) < 0.01

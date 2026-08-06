@@ -14,6 +14,11 @@ import numpy as np
 from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND
 
 
+# Cushion equilibrium spacing measured in theCushionLaw lattice8eq print
+# (a 2^3 cube crushed to its stable corner-force root, ~0.0484 lu).
+TENDON_D_EQ = 0.0484
+
+
 def _remove_net_momentum(vel: np.ndarray) -> np.ndarray:
     """Subtract mean velocity so the whole system has zero net momentum."""
     vel = vel.copy()
@@ -444,3 +449,82 @@ def muscle(side: int = 4,
     pos += jitter
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, s0, R_droplet
+
+
+def tendon(side: int = 4,
+           n_len: int = 8,
+           spacing: float = 0.05,
+           seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                   np.ndarray, float, float]:
+    """
+    THE TENDON print: a 2×2×n_len cushion rod seated between two pinned
+    anchor plates, acting as a 1-D force router.
+
+    The rod is printed as a simple-cubic lattice at ``spacing`` (cushion
+    spacing), centered on the x-axis, with its two end faces at cushion
+    equilibrium distance ``d_eq`` from the inner faces of the left and right
+    plates.  The plate separation is therefore
+
+        s0 = rod_span + 2 * d_eq,   rod_span = (n_len - 1) * spacing.
+
+    For the default ``n_len=8`` and ``spacing=0.05`` this gives
+    ``rod_span = 0.3500`` and ``s0 = 0.4468``.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, s0, rod_span)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; both plates are pinned.
+      - ``grain_ids`` is length-N int32; plates are -1, rod is 0.
+      - ``s0`` and ``rod_span`` are the derived router numbers.
+
+    The point count is ``4 * n_len + 2 * side**2``.
+    """
+    rng = np.random.default_rng(seed)
+    s = int(side)
+    if s < 2:
+        raise ValueError("side must be at least 2")
+    l = int(n_len)
+    if l < 2:
+        raise ValueError("n_len must be at least 2")
+    d = float(spacing)
+
+    n_rod = 4 * l
+    n_plate = s * s
+
+    d_eq = TENDON_D_EQ
+    rod_span = (l - 1) * d
+    s0 = rod_span + 2.0 * d_eq
+
+    # Rod: 2 x 2 x l cubic lattice along x, centered on the axis.
+    x_off = (np.arange(l, dtype=np.float64) - (l - 1) / 2.0) * d
+    y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
+    z_off = (np.arange(2, dtype=np.float64) - 0.5) * d
+    gx, gy, gz = np.meshgrid(x_off, y_off, z_off, indexing="ij")
+    rod_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+    # Shift so the left rod face sits one cushion-equilibrium spacing from the
+    # left plate (inner face at x = 0).
+    rod_pos[:, 0] += d_eq + rod_span / 2.0
+
+    # Plates: s x s lattices perpendicular to x.
+    p_off = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * d
+    py, pz = np.meshgrid(p_off, p_off, indexing="ij")
+    plate_yz = np.stack([py.ravel(), pz.ravel()], axis=1)
+    left_plate = np.hstack([np.zeros((n_plate, 1)), plate_yz])
+    right_plate = np.hstack([np.full((n_plate, 1), s0), plate_yz])
+
+    pos = np.vstack([left_plate, rod_pos, right_plate]).astype(np.float64)
+    vel = np.zeros((pos.shape[0], 3), dtype=np.float64)
+
+    pin_mask = np.zeros(pos.shape[0], dtype=bool)
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate + n_rod:] = True
+
+    grain_ids = np.empty(pos.shape[0], dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_rod] = 0
+    grain_ids[n_plate + n_rod:] = -1
+
+    # Tiny positional jitter to break exact lattice degeneracy (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, s0, rod_span
