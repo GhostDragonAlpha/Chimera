@@ -383,23 +383,35 @@ def main():
     cluster_cv = float(late_clusters.std() / (late_clusters.mean() + 1e-12))
     bound_swing = float(late_bound.max() - late_bound.min())
 
-    verdict = "PASS"
+    # collect every fired criterion, then precedence: COLLAPSE > FLICKER > DISPERSE
+    # (run 4c fired BOTH collapse and radius-dispersal; the bulk's fate is the
+    # primary label, the tail is a secondary note -- thresholds untouched)
+    fired = []
     reasons = []
     if final_max >= N * COLLAPSE_MAX_CLUSTER_FRAC:
-        verdict = "COLLAPSE"
+        fired.append("COLLAPSE")
         reasons.append(f"max_cluster={final_max} >= {COLLAPSE_MAX_CLUSTER_FRAC*N:.0f}")
     if final_max <= N * DISPERSE_MAX_CLUSTER_FRAC and final_bound < 0.3:
-        verdict = "DISPERSE"
+        fired.append("DISPERSE")
         reasons.append(f"max_cluster={final_max} <= {DISPERSE_MAX_CLUSTER_FRAC*N:.0f} and bound_frac={final_bound:.3f}")
     if final_radius > initial_radius * DISPERSE_RADIUS_GROWTH:
-        verdict = "DISPERSE"
+        fired.append("DISPERSE")
         reasons.append(f"radius {final_radius:.3f} > {DISPERSE_RADIUS_GROWTH}x initial {initial_radius:.3f}")
     if cluster_cv > FLICKER_CV_THRESHOLD:
-        verdict = "FLICKER"
+        fired.append("FLICKER")
         reasons.append(f"cluster_count CV={cluster_cv:.3f} > {FLICKER_CV_THRESHOLD}")
     if bound_swing > BOUND_MASS_PERSISTENCE:
-        verdict = "FLICKER"
+        fired.append("FLICKER")
         reasons.append(f"bound_frac swing={bound_swing:.3f} > {BOUND_MASS_PERSISTENCE}")
+
+    for precedent in ("COLLAPSE", "FLICKER", "DISPERSE"):
+        if precedent in fired:
+            verdict = precedent
+            break
+    else:
+        verdict = "PASS"
+    if len(set(fired)) > 1:
+        reasons.append(f"(multiple criteria fired: {', '.join(dict.fromkeys(fired))})")
 
     final_rad_energy = float(metrics["radiated_energy"][-1])
     final_rad_power = float(metrics["radiated_power"][-1])
