@@ -80,7 +80,14 @@ damaging something is not a term; it is the absence of one.
   crush — while the same cube at r_bond crushes (already observed).
   FALSIFIER: if the equilibrium print ALSO collapses or wanders, the
   kernel-exact force reading is wrong and the integrator itself is next
-  under the light. 3-D. Parent: theBalance.
+  under the light. CONFIRMED 2026-08-06 (lattice8eq): no collapse, radius
+  steady at 0.055 (the +31% over the cold root is the builder's thermal
+  sigma — print cold next), radiation 4.6x under the bond-spaced start; a
+  20k-tick CPU replica shows the cube ANNEALS into a close-packed
+  wall-spaced cluster (17 contacts at 0.0499) — the printed shape is not
+  the equilibrium shape, and the equilibrium shape of this universe is the
+  close-packed droplet. The crystal this universe grows is close-packed,
+  not cubic. 3-D. Parent: theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
 - **theSoil** — packed bed, disordered bonds. 3-D. Parent: theBalance.
 - **theSlope** — packed bed at a tilt; repose angle emergent. 3-D. Parent: theSoil.

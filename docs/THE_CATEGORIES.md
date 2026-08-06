@@ -63,28 +63,37 @@ RULE 0 doc section) as the print proofs earn them.*
 - **packed bed**: random points at ~bond density under their own draw — soil,
   sand, granular ground. Falsifier: holds a derived angle of repose against a
   printed tilt (the matter era's repose lesson, relearned emergently).
-- **lattice bulk**: the crystal print (RUNNING). Falsifier: bond retention > 50%.
-- **BONE**: a dense lattice bulk — ordered packing = stiff, disordered = compliant;
+- **lattice bulk**: the crystal print — DEAD 2026-08-06 at every size (no
+  attractive bond exists; see theCushionLaw). Successor: cushion-equilibrium
+  prints (stable, confirmed lattice8eq); the universe's crystal is
+  close-packed, grown by annealing, not printed cubic.
+- **BONE**: a dense ordered bulk — ordered print = stiff, disordered = compliant;
   the distinction is free because points are identical. Bone is the PARENT
   membrane of the muscle: muscle is defined by its two bony attachments, and
   every 1-D/2-D structure that bears load anchors to bone.
-  **PRINT SPEC (v1, after theMaxChunk):** an ASSEMBLY of sub-critical grains —
-  each grain a lattice chunk BELOW the true M_crit. (v1 said side 6-8,
-  216-512 points, below the naive M_crit=640 — REFUTED 2026-08-06 when the
-  512 lattice crushed to spacing 0.028; the hydrostatic model predicts
-  M_crit ~ 45, i.e. grains of side ~3, bracket runs at 216/64 in flight —
-  see theMaxChunk in THE_HIERARCHY.md. Grain size is set by that bracket
-  before the bone verdict run.) Grains bonded face-to-face at r_bond in a
-  rod. Never one merged mass: the grains are the atoms, the rod is the bone
-  (real bone: mineral crystallites in a matrix — the universe agrees). Load
-  is applied by two ANCHOR plates (pinned 0-D points, the anchor membrane)
-  driven together at a derived speed (5% of bond-lattice sound speed).
-  **Falsifiers:** (a) no grain merges into another — grain count stable through
-  the window (the assembly must not collapse into one core); (b) under derived
-  compression the rod deflects and springs back with NO bond ruptures below the
-  derived load, and ruptures AT the derived load (not before); (c) deflection
-  per unit load is less than a packed-bed rod of equal mass by a derived factor
-  (ordered beats random).
+  **PRINT SPEC (v2, after theCushionLaw — v1 grain spec dead with the crystal):
+  the bone is a PRELOADED COMPRESSION COLUMN.** The tension derivation
+  2026-08-06: a free rod's self-DRAW contraction exceeds its end adhesion
+  (DRAW at cushion gap) by 20-100x at every aspect ratio — no free-standing
+  extended structure can exist here; the universe makes droplets, not sticks.
+  But real bone is a preload compression member (muscles hold it loaded), and
+  the cushion phase is incompressible and elastic. So: a column printed
+  ORDERED at cushion spacing (0.05) between two pinned anchor plates IN
+  CUSHION CONTACT, preloaded by plate convergence until the plate force
+  reaches 1.5x the derived end-weight of the column (the axial DRAW that
+  would lift an end off its plate — computed from the print geometry, kernel
+  force law, no free numbers), then HELD for the window; then half-released
+  and re-seated for the spring-back test.
+  **Falsifiers:** (a) SEATING — both ends stay in cushion contact with their
+  plates for the whole hold (any end gap > r_c = detachment); (b) ESCAPE —
+  zero points leave the column (nearest-neighbor distance > r_c) under
+  preload; (c) SPRING-BACK — after the half-release, plate force and column
+  length return to the seated values within 10% (elastic, no hysteresis
+  failure); (d) ORDERED BEATS RANDOM — deflection per unit load under a
+  derived overload pulse beats the packed-bed column of equal mass by 2x
+  (v1 smoke already showed 21x on this axis; v2 measures it under preload).
+  A dead falsifier, recorded honestly: v1(a) grain-identity — grains never
+  existed; the crystal is not a phase.
 - **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
   this manifest tracks: not anchors-to but contains-within. Bone is the brain's
   parent by enclosure: it takes the load so the brain doesn't have to.
