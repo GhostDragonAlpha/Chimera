@@ -20,10 +20,18 @@ but what the points do.
 
 Two forces, and only two, act on every point:
 
-1. **THE DRAW — gravity.** Every point pulls every other point toward itself.
-2. **THE RESISTANCE — electromagnetism.** The pushback against that draw. Matter is not
-   a substance; **matter is the balance of the draw and the resistance.** Life, too — a
-   balance, held.
+1. **THE DRAW — gravity.** Every point pulls every other point toward itself. The draw is
+   BLIND: it reads only mass and distance, it pulls everything the same way, and a blind
+   force can never make structure.
+2. **THE RESISTANCE — electromagnetism.** The pushback against that draw — and the force
+   that READS. **EM is how a membrane changes force based on its proximity to other
+   membranes and what those membranes hold** (the operator, 2026-08-06). Far: a whisper.
+   Mid-range: a bond — the balance holds and two membranes become one thing. Close: the
+   wall — the resistance that makes an edge; an edge is what light reads; an edge read by
+   light is what a player calls solid. Matter is not a substance; **matter is the balance
+   of the draw and the resistance.** Life, too — a balance, held. And "types" of membrane
+   are never authored: they EMERGE from accumulated balance — chemistry without a
+   periodic table, matter without a material library.
 
 Each force is a **vector and a magnitude**. That is the entire physics statement of the
 world. Everything else — solidity, pressure, terrain, bodies, oceans — is what the balance
@@ -31,10 +39,15 @@ looks like when enough identical points are doing it at once.
 
 ## THE ONE KERNEL (the engineering consequence)
 
-The whole game runs on one algorithm, run twice per tick over the same point set:
+The whole game runs on one algorithm, run twice per tick over the same point set —
+two forces, two ranges:
 
-- An **N-body tree algorithm** (Barnes–Hut and its kin — "the Hall": efficient gravity
-  across thousands of objects, O(N log N) instead of N²).
+- **The draw is LONG-RANGE.** An **N-body tree algorithm** (Barnes–Hut and its kin —
+  "the Hall": efficient gravity across thousands of objects, O(N log N) instead of N²).
+- **The resistance is SHORT-RANGE.** Bonds and walls act between neighbors, so the EM
+  pass rides a neighbor list over the same point set — and it is the pass that READS each
+  neighbor's membrane. **Memory feeds back into force:** the timeline inside a membrane
+  changes the force it exchanges.
 - **The same tree, again, for electromagnetism.** One data structure, two passes.
 
 This is what buys **high FPS AND high detail**: not fewer points, but one cheap operation
