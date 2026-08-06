@@ -117,3 +117,17 @@ damaging something is not a term; it is the absence of one.
    onto points.
 5. The exclusion rule above is enforced at authorship — a harmful term is not
    failed, it is never written.
+
+## SUB-HIERARCHIES (the imported breadth — 2026-08-06)
+
+This file is the MASTER SPINE: the physics-first terms that get membranes, prints,
+and falsifiers. Beneath it hang the imported sub-hierarchies — 35,835 physical-world
+terms from WordNet (`LightEngine/hierarchy_import/wordnet_terms.json`, built by
+`LightEngine/hierarchy_import.py`, exclusions applied: 1,252 ancestry-dropped,
+567 backstop-dropped, both audited). The graft points — which imported subtrees hang
+under which spine term — live in `LightEngine/hierarchy_import/graft_map.json`.
+
+Promotion rule: a sub-hierarchy term is CANDIDATE VOCABULARY. It joins this spine
+only through membrane authorship (parent named, constraint dimension assigned,
+falsifier written). The spine decides what is REAL; the sub-hierarchies decide what
+is NAMEABLE. This doc points at the import; it does not duplicate it.

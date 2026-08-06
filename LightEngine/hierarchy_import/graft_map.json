@@ -1,0 +1,36 @@
+{
+  "_comment": "Master-spine term -> WordNet synset roots whose imported subtrees hang beneath it. A sub-hierarchy term is CANDIDATE vocabulary; it joins the master spine only via membrane authorship (RULE 0). Resolved against wordnet_terms.json by LightEngine/hierarchy_import.py conventions.",
+  "grafts": {
+    "theSkeleton": ["skeletal_system.n.01"],
+    "theBone": ["bone.n.01"],
+    "theMuscle": ["muscle.n.01"],
+    "theTendon": ["tendon.n.01"],
+    "theBrain": ["nervous_system.n.01"],
+    "theSignal": ["nerve.n.01"],
+    "theSkin": ["skin.n.01"],
+    "theOrgan": ["organ.n.01"],
+    "theBranch": ["circulatory_system.n.01", "vessel.n.03"],
+    "theCreature": ["vertebrate.n.01", "invertebrate.n.01"],
+    "thePlant": ["plant_organ.n.01"],
+    "theFrame": ["structure.n.01", "tool.n.01"],
+    "theRock": ["mineral.n.01"],
+    "theTerrain": ["geological_formation.n.01"],
+    "thePlanetSystem": ["celestial_body.n.01"],
+    "theLiquid": ["fluid.n.01"],
+    "theCurrent": ["body_of_water.n.01"],
+    "theWeather": ["weather.n.01"],
+    "theFood": ["food.n.02"]
+  },
+  "lexname_fallback": {
+    "_comment": "Imported roots not claimed by a specific graft attach by lexname bucket.",
+    "noun.animal": "theCreature",
+    "noun.plant": "thePlant",
+    "noun.artifact": "theFrame",
+    "noun.body": "theOrgan",
+    "noun.food": "theFood",
+    "noun.substance": "theSoil",
+    "noun.object": "theRock",
+    "noun.phenomenon": "theWeather",
+    "noun.process": "theMetabolism"
+  }
+}
