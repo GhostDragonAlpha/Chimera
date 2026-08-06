@@ -53,3 +53,13 @@ does not replace them).*
 - Packing beyond measured occupancy (the 3-process contention crash taught us:
   fill the card, don't fight it — one context, sized to the measured limit).
 - Mixed-N batches that pad worlds into lies (uniform N per batch, always).
+- THE WINDOW INFLATION (measured 2026-08-06): the seed's window derivation
+  (10 * t_ff from N/BOX^3) inflates absurdly for small authored prints — N=216
+  -> 430k ticks (~3h), N=8 -> 2.2M. The print's own free-fall time is the
+  wrong clock entirely (cushion-phase t_ff ~ 0.1 ticks). The observation
+  window is a PROTOCOL, not a physics number: it must cover late-developing
+  instabilities, and the only measured late-event clock is run 3's slingshot
+  at ~35-42k ticks. QUEUE RULE: authored-print batches run a flat 100k-tick
+  window (2.5x the latest observed instability birth), declared in the batch
+  header; diagnostics may be truncated early ONLY when the record notes the
+  truncation and the metric was steady (the crush series precedent).
