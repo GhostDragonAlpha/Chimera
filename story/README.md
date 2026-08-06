@@ -236,15 +236,14 @@ and improved, never subtracted.
 
 ## The chapters so far
 
-| # | chapter | proven by | visual |
-|---|---|---|---|
-| 1 | `theZero` | r=0; the one forbidden operation. Black hole ≡ electron: three numbers, and Kerr–Newman with an electron's values gives g=2 exactly | everything arrives at a point with no size |
-| 2 | `theHorizon` | `r_s = 2GM/c²` vs `λ_C = ħ/mc` cross at `M=√(ħc/2G)` → `l_P`, `t_P`. Zero is *fenced*, not approachable | the fence at radius 1, the point at its centre |
-| 3 | `theEmptying` | `S = kA/4l_P²` — the information is on the *boundary*. `T = ħc³/8πGMk`, lifetime ∝ M³ → a runaway, not a leak | the surface empties into the space it drew |
-| 4 | `theCooling` | Saha: atoms permitted at **3760 K** (lit. ~3700 K), lateness **42×** derived | opaque blue-white → transparent, salmon at 3760 K |
+There are **47 membranes** in the story tree. To see the full list of chapters and their status,
+run:
 
-Next: gravity has no threshold and never switches off, and it has just been handed matter that is
-neutral and one part in 100,000 uneven.
+```bash
+python story/grow.py --read --depth 2
+```
+
+Or check `ChimeraEngine/engine_state.json` for the current hierarchy and proof status of each term.
 
 ---
 

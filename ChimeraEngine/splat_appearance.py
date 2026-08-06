@@ -459,8 +459,31 @@ def _verbs_buffers(spec: dict, term: str):
 # membrane is ALWAYS rendered from its own emit() -- the folder wins -- and these are the fallback.
 _DESIGN_SCENES = {
     "theVerbs": {"kind": "verbs", "cam": (0.0, -95.0, 30.0)},
+    # Non-meaning terms with PHYSICS_READING but no real membrane
+    "theScan": {"kind": "scan", "cam": (0.0, -10.0, 5.0)},
+    "theNavigate": {"kind": "navigate", "cam": (0.0, -20.0, 10.0)},
+    "theShoot": {"kind": "shoot", "cam": (0.0, -15.0, 8.0)},
+    "thePlayer": {"kind": "player", "cam": (0.0, -5.0, 3.0)},
+    "theInput": {"kind": "input", "cam": (0.0, -5.0, 3.0)},
+    "theState": {"kind": "state", "cam": (0.0, -5.0, 3.0)},
+    "thePersistence": {"kind": "persistence", "cam": (0.0, -5.0, 3.0)},
+    "theLoop": {"kind": "loop", "cam": (0.0, -10.0, 5.0)},
 }
-_DESIGN_BUILDERS = {"verbs": _verbs_buffers}
+_DESIGN_BUILDERS = {
+    "verbs": _verbs_buffers,
+    # Scene builders for terms without real membranes
+    "scan": lambda spec, term: (_dots((0, 0, 0), 2.0, 100, (0.3, 0.6, 0.9), np.random.default_rng(_seed(term))),
+                                  _dots((0, 0, 0), 2.0, 100, (0.3, 0.6, 0.9), np.random.default_rng(_seed(term)))),
+    "navigate": lambda spec, term: (_halo((0, 0, 0), 5.0, (0.2, 0.4, 0.8), np.random.default_rng(_seed(term))),
+                                      _dots((0, 0, 0), 1.5, 50, (0.5, 0.7, 0.9), np.random.default_rng(_seed(term)))),
+    "shoot": lambda spec, term: (_dots((0, 0, 0), 3.0, 80, (0.9, 0.2, 0.1), np.random.default_rng(_seed(term))),
+                                   _halo((0, 0, 0), 6.0, (0.9, 0.3, 0.1), np.random.default_rng(_seed(term)), alpha=0.15, size=2.2)),
+    "player": lambda spec, term: (_dots((0, 0, 0), 2.5, 60, (0.8, 0.8, 0.7), np.random.default_rng(_seed(term))),),
+    "input": lambda spec, term: (_dots((0, 0, 0), 1.5, 40, (0.4, 0.6, 0.8), np.random.default_rng(_seed(term))),),
+    "state": lambda spec, term: (_halo((0, 0, 0), 3.0, (0.3, 0.5, 0.3), np.random.default_rng(_seed(term)), alpha=0.12, size=1.8),),
+    "persistence": lambda spec, term: (_dots((0, 0, 0), 2.0, 70, (0.6, 0.7, 0.6), np.random.default_rng(_seed(term))),),
+    "loop": lambda spec, term: (_halo((0, 0, 0), 4.0, (0.5, 0.3, 0.6), np.random.default_rng(_seed(term)), alpha=0.1, size=2.0),),
+}
 
 
 def _movie_instants(nums: dict) -> tuple[float, float]:

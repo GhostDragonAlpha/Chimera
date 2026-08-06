@@ -51,10 +51,23 @@ def _summary(folder: Path) -> str:
     if not s.exists():
         return "(awaiting the human story)"
     text = s.read_text(encoding="utf-8", errors="replace")
+    # Consume continuation lines after the plain-words line
+    result_parts = []
+    in_plain_words = False
     for line in text.splitlines():
         t = line.strip()
         if t.startswith(_PLAIN):
-            return t[len(_PLAIN):].strip().rstrip(".")
+            in_plain_words = True
+            result_parts.append(t[len(_PLAIN):].strip().rstrip("."))
+        elif in_plain_words:
+            # Continuation lines: any non-empty line that is not a section marker
+            if t and not t.startswith(('#', '>', '*', '`', '|', '-')):
+                result_parts.append(t)
+            else:
+                # End of the plain-words section (empty line or section marker)
+                in_plain_words = False
+    if result_parts:
+        return " ".join(result_parts)
     for line in text.splitlines():
         t = line.strip()
         if t and not t.startswith(("#", ">", "*", "`", "|", "-")):

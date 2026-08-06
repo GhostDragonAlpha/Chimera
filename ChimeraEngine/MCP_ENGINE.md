@@ -130,25 +130,18 @@ disagreeing means the **physics is wrong — start over**; only the operator's o
 dark eye. And the render the human judges is the **Gaussian-splat engine** movie (`ParticleEngine`,
 beginning→end frames as a timeline slice unfolds), NOT a matplotlib diagram — those were placeholders.
 
-## Honest scope (V1 — what forces now, what's next)
+## Honest scope (V2 — what forces now, what's next)
 
 **Forces now:** `prove` cannot be faked — the engine owns "proven" at the state layer; real
-saturation; the hierarchy advances itself. (The appearance gate currently runs the self-measured
-`convergence.py` **monad** — see "still to build" #1; the real human dyad is built but not yet wired
-as the gate.)
+saturation; the hierarchy advances itself. The dyad gates prove at `engine_state.py:234-244`; splat
+movie is the path via `splat_appearance.project_movie`. The human dyad and splat movie ARE wired now.
 
 **Still to build:**
-1. **Wire the human dyad into `render`/`prove`.** `human_messenger.py` (vision proxy + cross-reference
-   + summon + override) is BUILT and runs, but `prove` still gates on the self-measured `convergence.py`
-   monad. The gate must become: the render's human ALIGNMENT ≥ threshold.
-2. **Rewire the appearance to the splat MOVIE.** Replace the matplotlib `appearance.py` projectors with
-   the Gaussian-splat engine (`ParticleEngine`) rendering each term as a beginning→end movie — the
-   mandatory visual test.
-3. The **pure form** — run the agent with *only* these tools (Bash/Write removed), so choices genuinely
+1. The **pure form** — run the agent with *only* these tools (Bash/Write removed), so choices genuinely
    *are* the tool list.
-4. **Auto-fire** — a pre-commit hook that refuses a "done" claim which didn't go through the engine.
-5. A `PHYSICS` terminal that requires a **measurement record**, not just a label.
-6. **The story as a filesystem** (next phase) — the term hierarchy becomes a real directory tree
+2. **Auto-fire** — a pre-commit hook that refuses a "done" claim which didn't go through the engine.
+3. A `PHYSICS` terminal that requires a **measurement record**, not just a label.
+4. **The story as a filesystem** (next phase) — the term hierarchy becomes a real directory tree
    under `story/` (folder = term, **path = serial**, proof-files inside), replacing `engine_state.json`
    + the DNA graph. The filesystem hierarchy IS the term hierarchy IS the story, readable top-to-bottom
    by a human *and* an AI, no query engine. Build → prove → migrate → retire the graph (never rip out

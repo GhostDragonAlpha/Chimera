@@ -25,6 +25,44 @@ if printf '%s' "$msg" | grep -qiE '^(Merge |Revert |fixup!|squash!|chore: auto-f
   exit 0
 fi
 
+# --- proven claim requires the boundary crossed ----------------------------
+# "Proven" is a fact only the engine ledger holds: status proven AND the dyad
+# crossed (crossed_boundary: true, proven_via: mcp). A commit claiming "proven"
+# while ANY term in the ledger sits uncrossed is refused -- a monad is not proof
+# (ChimeraEngine/MCP_ENGINE.md). A rule that only warns is prose; prose rots.
+if printf '%s' "$msg" | grep -qiw 'proven'; then
+  state_file="ChimeraEngine/engine_state.json"
+  if [ -f "$state_file" ] && command -v python >/dev/null 2>&1; then
+    uncrossed=$(python - "$state_file" <<'PY'
+import json, sys
+try:
+    state = json.load(open(sys.argv[1], encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+for term, data in state.get("terms", {}).items():
+    if data.get("status") == "proven":
+        if not data.get("crossed_boundary", False) or data.get("proven_via") != "mcp":
+            print(f"  {term}: crossed_boundary={data.get('crossed_boundary')}, "
+                  f"proven_via={data.get('proven_via')!r}")
+PY
+)
+    if [ -n "$uncrossed" ]; then
+      cat >&2 <<MSG
+
+[proven-claim] REFUSED: this message claims "proven" but the ledger holds uncrossed proofs:
+
+$uncrossed
+
+  A proof counts only when it crosses the boundary (prove through the MCP tool,
+  not a driver). Cross the term, or reword the claim, or bypass with --no-verify
+  if the message is not about an engine term.
+
+MSG
+      exit 1
+    fi
+  fi
+fi
+
 if printf '%s' "$msg" | grep -qiE '^(Co-Authored-By|Agent|Authored-By):'; then
   exit 0
 fi
