@@ -60,6 +60,22 @@ The fundamental constants (G, r_wall, r_bond, r_c, p, ε) are the seed's free nu
 the light era's `FREE` dict. Their RATIOS decide whether a balance region exists at all;
 they are declared here once, before the run, and the falsifier judges them as a set.
 
+## THE OBSERVATION WINDOW (derived 2026-08-06, after run 1)
+
+**Run 1 (1000 ticks, dt = 5e-4): verdict DISPERSE.** Diagnosis before any change: the run
+simulated 0.5 time units. The free-fall time of the initial cloud is
+
+    t_ff = 1 / sqrt(G * rho),   rho = N / BOX^3 = 4096 / 1000 = 4.096 lu^-3
+    t_ff = 1 / sqrt(0.01 * 4.096) = 4.94 time units
+
+Run 1 observed 0.10 t_ff — the draw never had time to act; the falsifier fired on the
+observation window, not on the force balance. `TOTAL_TICKS=1000` had been picked, not
+derived. This is the correction, recorded per the falsifier clause: **the observation
+window is derived from the free-fall time** — observe for 10 t_ff (≈ 98,820 ticks at
+dt = 5e-4). The FREE force constants are untouched. If DISPERSE (or COLLAPSE, or
+FLICKER) fires again over 10 t_ff, the refutation is real and the named successor —
+dissipation as radiated light — is the next build.
+
 ## THE REFEREE (the dyad for numbers)
 
 Two independent implementations of the same declared laws — the GPU kernel (fast, the

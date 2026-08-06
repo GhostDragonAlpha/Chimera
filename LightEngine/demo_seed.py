@@ -32,8 +32,18 @@ N = 4096
 SEED = 20260806
 BOX = 10.0                 # positions uniformly in [-BOX/2, BOX/2]^3
 VEL_SIGMA = 1.0            # structureless Gaussian velocity dispersion
-TOTAL_TICKS = 1000
-SAMPLE_EVERY = 25
+
+# ── Observation window (derived, not picked — THE_KERNEL.md) ────────
+# Run 1 used TOTAL_TICKS=1000 = 0.5 time units = 0.10 t_ff and fired
+# DISPERSE on a window too short for the draw to act.  The window is
+# derived from the free-fall time of the initial cloud:
+#   t_ff = 1/sqrt(G * rho), rho = N / BOX^3
+# Declared before this run: observe for T_FF_COUNT free-fall times.
+T_FF_COUNT = 10
+RHO = N / BOX ** 3
+T_FF = 1.0 / math.sqrt(G * RHO)
+TOTAL_TICKS = int(math.ceil(T_FF_COUNT * T_FF / DT))
+SAMPLE_EVERY = max(1, TOTAL_TICKS // 40)
 METRIC_R_INNER = R_BOND * 0.5
 METRIC_R_OUTER = R_C
 
