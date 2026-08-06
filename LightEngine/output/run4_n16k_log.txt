@@ -6,3 +6,10 @@ tick=  1235 | clusters=4084 | max=3512 | bound=0.258 | edge=0.275 | radius=9.344
 tick=  2470 | clusters=2077 | max=13240 | bound=0.633 | edge=0.047 | radius=10.361 | E_rad=2909.7561 | P_rad=24421.4355
 tick=  3705 | clusters= 552 | max=15735 | bound=0.926 | edge=0.075 | radius=12.084 | E_rad=4069164.9884 | P_rad=2633007.7500
 tick=  4940 | clusters= 806 | max=15365 | bound=0.920 | edge=0.076 | radius=13.561 | E_rad=4873493.6828 | P_rad=729283.1250
+tick=  6175 | clusters= 730 | max=15485 | bound=0.931 | edge=0.076 | radius=15.199 | E_rad=5142617.1263 | P_rad=269451.6250
+tick=  7410 | clusters= 677 | max=15585 | bound=0.936 | edge=0.076 | radius=21.197 | E_rad=5286532.5151 | P_rad=324183.9375
+tick=  8645 | clusters= 628 | max=15657 | bound=0.941 | edge=0.077 | radius=27.054 | E_rad=5386116.1467 | P_rad=143117.8438
+tick=  9880 | clusters= 586 | max=15694 | bound=0.945 | edge=0.077 | radius=32.825 | E_rad=5454422.9137 | P_rad=93711.1719
+tick= 11115 | clusters= 552 | max=15710 | bound=0.948 | edge=0.077 | radius=38.539 | E_rad=5513775.2889 | P_rad=61363.1211
+tick= 12350 | clusters= 523 | max=15726 | bound=0.952 | edge=0.077 | radius=44.210 | E_rad=5572259.2828 | P_rad=64448.6406
+tick= 13585 | clusters= 549 | max=15723 | bound=0.950 | edge=0.077 | radius=49.850 | E_rad=5619246.7400 | P_rad=45490.2891
