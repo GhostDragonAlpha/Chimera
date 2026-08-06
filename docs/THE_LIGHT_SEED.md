@@ -62,6 +62,29 @@ Each force is a **vector and a magnitude**. That is the entire physics statement
 world. Everything else — solidity, pressure, terrain, bodies, oceans — is what the balance
 looks like when enough identical points are doing it at once.
 
+## THE MILLION (the budget doctrine — the operator, 2026-08-06)
+
+**One million splats per frame. That is the budget, and the budget is a conservation
+law.** Points are never created or destroyed — only REARRANGED in front of the player.
+Matter is neither created nor destroyed; the game makes it literally true. Terrain,
+ships, bodies, menus, UI — everything is the same million points in different
+arrangements; a menu morphs into a tool into a wall, because there is nothing else for
+anything to be made of. Morphable matter is not a feature; it is the only substance.
+
+And because the pool is conserved, **LOD stops being a system**: the tree reallocates
+points toward the player's light — near points carry rich membranes, far points
+aggregate — and the frame always costs one million. Fixed cost, infinite reallocation.
+
+**The splat's shape is derived, never stored.** A Gaussian splat is anisotropic — it has
+a covariance, an orientation. The tree already knows every point's neighbors, and the
+covariance of that local neighbor cloud IS the splat's shape matrix: a point under
+tension along its bonds renders STRETCHED along those bonds; a point settled in a clump
+renders round. Stress becomes visible with zero new physics — the splat's shape is the
+membrane's balance, drawn. We do not morph matter; **we morph light** — the splat was
+never matter, only the reader's packet, and all its properties fall out of the same
+walk: position from the integrator, shape from the neighbor cloud, color from what light
+reads off the balance.
+
 ## THE ONE KERNEL (the engineering consequence)
 
 The whole game runs on one tree walk per tick over the point set — the draw computed
