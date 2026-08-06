@@ -33,14 +33,39 @@ Two forces, and only two, act on every point:
    are never authored: they EMERGE from accumulated balance — chemistry without a
    periodic table, matter without a material library.
 
+## THE MODIFIER (the operator's unification, 2026-08-06)
+
+*What if electromagnetism was simply a Barnes–Hut modifier, contained within each
+membrane?*
+
+Then there are not two passes. There is ONE tree walk, and every pairwise draw the walk
+computes is multiplied by a modifier M — **and M lives inside the membranes**, computed
+from what the two interacting membranes hold:
+
+- **M is screening made structural.** EM is the stronger force but cancels at distance —
+  a neutral clump's resistances screen themselves away, which is why planets orbit on the
+  draw alone. In the tree this is exact: **distant aggregated nodes apply no modifier**
+  (M → 1, pure draw); only the NEAR leaves awaken M. The tree's depth structure IS the
+  range structure of the two forces.
+- **M = 0 is the bond.** The separation where draw and resistance exactly cancel is not a
+  constant — it is emergent per pair, from the two membranes' states. **M < 0 is the
+  wall**: net repulsion, the edge, the thing light reads.
+- **M is where memory becomes physics.** Two points with different accumulated balances
+  exchange a different force than two fresh identical ones. Types are not labels — a type
+  is a modifier shaped by a timeline.
+
+The force LAWS do not change (draw + proximity-and-state resistance); the modifier is the
+same physics folded into the traversal. v1 builds the laws as two passes with a referee;
+v2 folds them into one modified walk.
+
 Each force is a **vector and a magnitude**. That is the entire physics statement of the
 world. Everything else — solidity, pressure, terrain, bodies, oceans — is what the balance
 looks like when enough identical points are doing it at once.
 
 ## THE ONE KERNEL (the engineering consequence)
 
-The whole game runs on one algorithm, run twice per tick over the same point set —
-two forces, two ranges:
+The whole game runs on one tree walk per tick over the point set — the draw computed
+everywhere, the modifier applied where the walk goes deep:
 
 - **The draw is LONG-RANGE.** An **N-body tree algorithm** (Barnes–Hut and its kin —
   "the Hall": efficient gravity across thousands of objects, O(N log N) instead of N²).
