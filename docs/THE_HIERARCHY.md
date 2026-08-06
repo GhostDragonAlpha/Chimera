@@ -45,7 +45,9 @@ damaging something is not a term; it is the absence of one.
   successor 8^3=512 ALSO FAILED 2026-08-06 (COLLAPSE: one bound blob, radius
   0.1405 = spacing 0.028 << R_WALL, bond_retention 0.000 — the chunk stays ONE
   OBJECT but the lattice order is crushed out of it). Successor: bracket the
-  true boundary at 6^3=216 and 4^3=64 (RUNNING).
+  true boundary at 6^3=216 and 4^3=64 (BOTH CRUSHED), then 3^3=27 (CRUSHED).
+  The bond-spaced crystal is not a phase of this universe at any tested size;
+  floor test at 2^3=8 RUNNING (prediction: holds, by direct pair balance).
 - **theMaxChunk** — the universe's atom-size limit. First derivation (naive:
   surface draw G*M/r_wall^2 vs one saturated wall push a_max) gave M_crit =
   a_max*r_wall^2/G = 640 — REFUTED 2026-08-06 by the 512 collapse. The naive
@@ -67,10 +69,24 @@ damaging something is not a term; it is the absence of one.
   deeper than the model's marginal call (spacing ~0.040 vs predicted ~0.046,
   bond_ret 0.000). The model's named falsifier did NOT fire (nothing held
   order), so the hydrostatic picture stands but its one-point calibration
-  under-reads the crush: M_crit is smaller than 45. The 3^3=27 run decides
-  whether ANY lattice grain keeps order. CONSEQUENCE unchanged but
-  sharper: all condensed matter is an ASSEMBLY of sub-critical chunks; the
-  chunk size is now being measured, not guessed. 3-D. Parent: theBalance.
+  under-reads the crush: M_crit is smaller than 45. Then 27 CRUSHED TOO
+  (radius 0.084, spacing ~0.045, bond_ret 0.000) — the calibrated model's
+  "27 holds" prediction is REFUTED; the bond-spaced crystal is not a stable
+  phase at ANY tested size (27, 64, 216, 512, 4096). The emerging law: this
+  universe has exactly ONE condensed phase — the wall-supported crushed
+  droplet, spacing ~0.03-0.05, hydrostatically equilibrated, rock-stable
+  (512 held radius constant for 270k ticks, CV=0). The crystal at bond
+  spacing cannot exist here, the same way ordinary gas cannot exist at
+  absolute zero. FLOOR TEST (named before the run): for 2^3=8, DIRECT pair
+  balance (not the continuum pressure model, which is absurd at N=8) says a
+  corner point's DRAW inward (~1.3) is held by 3 bond springs at compression
+  delta ~ 0.01 — 8 HOLDS with bond_ret high. If 8 crushes too, even the
+  direct two-force reading of the bond spring is wrong somewhere, and the
+  bond law itself is next under the light. Whatever the floor, the doctrine
+  consequence stands: condensed matter is an ASSEMBLY — but of crushed-phase
+  droplets bonded at their surfaces (the disk's 151 persistent clumps show
+  distinct droplets coexist), not of intact crystal grains. 3-D. Parent:
+  theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
 - **theSoil** — packed bed, disordered bonds. 3-D. Parent: theBalance.
 - **theSlope** — packed bed at a tilt; repose angle emergent. 3-D. Parent: theSoil.

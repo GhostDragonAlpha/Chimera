@@ -1,0 +1,6 @@
+============================================================
+THE KERNEL — first light-era run
+N=27, seed=20260806, structure=lattice, box=10.0, dt=0.0005, ticks=1217162 (BOX/VEL_SIGMA unused for authored print)
+============================================================
+tick= 30429 | clusters=   1 | max=  27 | bound=1.000 | edge=0.421 | radius=0.084 | E_rad=24.9772 | P_rad=0.0451 | bond_ret=0.000
+tick= 60858 | clusters=   1 | max=  27 | bound=1.000 | edge=0.421 | radius=0.083 | E_rad=25.5014 | P_rad=0.0297 | bond_ret=0.000
