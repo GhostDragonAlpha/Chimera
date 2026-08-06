@@ -1,0 +1,25 @@
+======================================================================
+QUEUE BENCHMARK — measuring batch-size scaling on this card
+N=4096, ticks=2000, W candidates={8,16,32}
+----------------------------------------------------------------------
+  W= 8: wall=12.185s  per-world/tick=0.7615ms  regression=1.000x
+  W=16: wall=24.374s  per-world/tick=0.7617ms  regression=1.000x
+  W=32: wall=50.565s  per-world/tick=0.7901ms  regression=1.037x
+  chosen batch size W=32
+======================================================================
+
+BATCH N8_B1: W=1, N=8, ticks=10000 (diagnostic truncation)
+concepts: smoke_cushion_eq_8
+  batch wall time: 1.740s  (0.174 ms/tick total)
+  VERDICT [smoke_cushion_eq_8]: COLLAPSE
+
+BATCH N216_B2: W=2, N=216, ticks=10000 (diagnostic truncation)
+concepts: smoke_packed_bed_216, smoke_core_shell_216
+  batch wall time: 20.088s  (2.009 ms/tick total)
+  VERDICT [smoke_packed_bed_216]: COLLAPSE
+  VERDICT [smoke_core_shell_216]: PASS
+
+======================================================================
+QUEUE DONE — 4 concepts recorded
+ledger: E:\PythonChimera\LightEngine\output\ledger.json
+======================================================================

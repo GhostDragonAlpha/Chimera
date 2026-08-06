@@ -1,0 +1,56 @@
+[
+  {
+    "id": "smoke_cushion_eq_8",
+    "category": "geological",
+    "structure": "cushion_cube",
+    "geometry": {
+      "side": 2,
+      "spacing": 0.0484
+    },
+    "seed": 0,
+    "n": 8,
+    "falsifier_ref": "THE_HIERARCHY.md LEVEL 2 theCushionLaw",
+    "runner": "batch",
+    "expected": "mono_condensed"
+  },
+  {
+    "id": "smoke_packed_bed_216",
+    "category": "terrain",
+    "structure": "packed_bed",
+    "geometry": {
+      "density_spacing": 0.15
+    },
+    "seed": 10,
+    "n": 216,
+    "falsifier_ref": "THE_CATEGORIES.md 3-D BULKS packed bed",
+    "runner": "batch",
+    "expected": "mono_condensed"
+  },
+  {
+    "id": "smoke_core_shell_216",
+    "category": "celestial",
+    "structure": "core_shell",
+    "geometry": {
+      "f_core": 0.5,
+      "r_shell": 4.0
+    },
+    "seed": 20,
+    "n": 216,
+    "falsifier_ref": "THE_HIERARCHY.md LEVEL 1 theCore",
+    "runner": "batch"
+  },
+  {
+    "id": "smoke_bone_v2",
+    "category": "life_support",
+    "structure": "bone_v2",
+    "geometry": {
+      "width": 4,
+      "height": 4,
+      "length": 16
+    },
+    "seed": 30,
+    "n": 288,
+    "falsifier_ref": "THE_CATEGORIES.md 3-D BULKS BONE v2",
+    "runner": "solo"
+  }
+]

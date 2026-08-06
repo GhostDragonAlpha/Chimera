@@ -1,0 +1,193 @@
+[
+  {
+    "id": "smoke_cushion_eq_8",
+    "batch_id": "N8_B1",
+    "verdict": "COLLAPSE",
+    "reasons": [
+      "max_cluster=8 >= 8"
+    ],
+    "metrics": {
+      "final_max_cluster": 8,
+      "final_bound_frac": 1.0,
+      "final_radius": 0.046562958508729935,
+      "cluster_cv_late": 0.0,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 0.33281436562538147,
+      "radiated_power": 0.0017405737889930606,
+      "shell_radius_mean": 0.0,
+      "shell_radius_std": 0.0,
+      "core_bound_frac": 0.0,
+      "z_disp": 0.0,
+      "bond_retention": 0.0
+    },
+    "n": 8,
+    "ticks": 10000,
+    "wall_seconds": 1.7404850000020815,
+    "timestamp": "2026-08-06T23:00:06Z",
+    "diagnostic_note": "diagnostic truncation"
+  },
+  {
+    "id": "smoke_packed_bed_216",
+    "batch_id": "N216_B2",
+    "verdict": "COLLAPSE",
+    "reasons": [
+      "max_cluster=216 >= 205"
+    ],
+    "metrics": {
+      "final_max_cluster": 216,
+      "final_bound_frac": 1.0,
+      "final_radius": 0.12327997386455536,
+      "cluster_cv_late": 0.0,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 1225.143798828125,
+      "radiated_power": 0.6713288426399231,
+      "shell_radius_mean": 0.0,
+      "shell_radius_std": 0.0,
+      "core_bound_frac": 0.0,
+      "z_disp": 0.0,
+      "bond_retention": 0.0
+    },
+    "n": 216,
+    "ticks": 10000,
+    "wall_seconds": 20.08836739999242,
+    "timestamp": "2026-08-06T23:00:26Z",
+    "diagnostic_note": "diagnostic truncation"
+  },
+  {
+    "id": "smoke_core_shell_216",
+    "batch_id": "N216_B2",
+    "verdict": "PASS",
+    "reasons": [],
+    "metrics": {
+      "final_max_cluster": 107,
+      "final_bound_frac": 0.49537037037037035,
+      "final_radius": 7.413426399230957,
+      "cluster_cv_late": 0.002729754322110985,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 311.3094787597656,
+      "radiated_power": 0.11605585366487503,
+      "shell_radius_mean": 3.6358859539031982,
+      "shell_radius_std": 0.053903527557849884,
+      "core_bound_frac": 0.9907407407407407,
+      "z_disp": 1.5852866172790527,
+      "bond_retention": 0.0
+    },
+    "n": 216,
+    "ticks": 10000,
+    "wall_seconds": 20.08836739999242,
+    "timestamp": "2026-08-06T23:00:26Z",
+    "diagnostic_note": "diagnostic truncation"
+  },
+  {
+    "id": "smoke_bone_v2",
+    "batch_id": "solo",
+    "verdict": "QUEUED_SOLO",
+    "reasons": [
+      "runner is 'solo'; not executed by the batch queue"
+    ],
+    "metrics": {},
+    "n": 288,
+    "ticks": 0,
+    "wall_seconds": 0.0,
+    "timestamp": "2026-08-06T23:00:26Z",
+    "diagnostic_note": null
+  },
+  {
+    "id": "smoke_cushion_eq_8",
+    "batch_id": "N8_B1",
+    "verdict": "SETTLED",
+    "standard_verdict": "COLLAPSE",
+    "reasons": [
+      "intended mono-condensed equilibrium held (standard verdict recorded as evidence)",
+      "max_cluster=8 >= 8"
+    ],
+    "metrics": {
+      "final_max_cluster": 8,
+      "final_bound_frac": 1.0,
+      "final_radius": 0.046562958508729935,
+      "cluster_cv_late": 0.0,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 0.33281436562538147,
+      "radiated_power": 0.0017405737889930606,
+      "shell_radius_mean": 0.0,
+      "shell_radius_std": 0.0,
+      "core_bound_frac": 0.0,
+      "z_disp": 0.0,
+      "bond_retention": 0.0
+    },
+    "n": 8,
+    "ticks": 10000,
+    "wall_seconds": 1.7519288999901619,
+    "timestamp": "2026-08-06T23:05:13Z",
+    "diagnostic_note": "diagnostic truncation (SETTLED translation check)"
+  },
+  {
+    "id": "smoke_packed_bed_216",
+    "batch_id": "N216_B2",
+    "verdict": "SETTLED",
+    "standard_verdict": "COLLAPSE",
+    "reasons": [
+      "intended mono-condensed equilibrium held (standard verdict recorded as evidence)",
+      "max_cluster=216 >= 205"
+    ],
+    "metrics": {
+      "final_max_cluster": 216,
+      "final_bound_frac": 1.0,
+      "final_radius": 0.12327997386455536,
+      "cluster_cv_late": 0.0,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 1225.143798828125,
+      "radiated_power": 0.6713288426399231,
+      "shell_radius_mean": 0.0,
+      "shell_radius_std": 0.0,
+      "core_bound_frac": 0.0,
+      "z_disp": 0.0,
+      "bond_retention": 0.0
+    },
+    "n": 216,
+    "ticks": 10000,
+    "wall_seconds": 19.960149100006674,
+    "timestamp": "2026-08-06T23:05:33Z",
+    "diagnostic_note": "diagnostic truncation (SETTLED translation check)"
+  },
+  {
+    "id": "smoke_core_shell_216",
+    "batch_id": "N216_B2",
+    "verdict": "PASS",
+    "standard_verdict": "PASS",
+    "reasons": [],
+    "metrics": {
+      "final_max_cluster": 107,
+      "final_bound_frac": 0.49537037037037035,
+      "final_radius": 7.413426399230957,
+      "cluster_cv_late": 0.002729754322110985,
+      "bound_swing_late": 0.0,
+      "radiated_energy": 311.3094787597656,
+      "radiated_power": 0.11605585366487503,
+      "shell_radius_mean": 3.6358859539031982,
+      "shell_radius_std": 0.053903527557849884,
+      "core_bound_frac": 0.9907407407407407,
+      "z_disp": 1.5852866172790527,
+      "bond_retention": 0.0
+    },
+    "n": 216,
+    "ticks": 10000,
+    "wall_seconds": 19.960149100006674,
+    "timestamp": "2026-08-06T23:05:33Z",
+    "diagnostic_note": "diagnostic truncation (SETTLED translation check)"
+  },
+  {
+    "id": "smoke_bone_v2",
+    "batch_id": "solo",
+    "verdict": "QUEUED_SOLO",
+    "reasons": [
+      "runner is 'solo'; not executed by the batch queue"
+    ],
+    "metrics": {},
+    "n": 288,
+    "ticks": 0,
+    "wall_seconds": 0.0,
+    "timestamp": "2026-08-06T23:05:33Z",
+    "diagnostic_note": null
+  }
+]
