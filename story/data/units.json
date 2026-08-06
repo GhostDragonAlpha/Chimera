@@ -409,6 +409,11 @@
    "reference_load_vs_threshold": "ratio",
    "timeline_serial": "count"
   },
+  "theDig": {
+   "loose_porosity": "frac",
+   "in_situ_porosity": "frac",
+   "timeline_serial": "count"
+  },
   "theBalance": {
    "timeline_serial": "count"
   },

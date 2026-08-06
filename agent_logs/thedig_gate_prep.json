@@ -1,0 +1,111 @@
+{
+  "claim": "Digging a trench in granular soil requires overcoming shear strength determined by cohesion plus density\u00b7g\u00b7depth, and the spoil mound forms at exactly the repose angle with volume expanded by a bulking factor derived from porosity change.",
+  "rounds": [
+    {
+      "round": 1,
+      "discovered": [
+        "trench_width_m",
+        "trench_depth_m"
+      ]
+    },
+    {
+      "round": 2,
+      "discovered": [
+        "bulk_density",
+        "porosity",
+        "repose_deg",
+        "g"
+      ]
+    },
+    {
+      "round": 3,
+      "discovered": [
+        "bearing_zero_depth_Pa",
+        "bearing_depth_coeff_Pa_per_m"
+      ]
+    },
+    {
+      "round": 4,
+      "discovered": [
+        "dig_resistance_Pa"
+      ]
+    },
+    {
+      "round": 5,
+      "discovered": [
+        "loose_porosity",
+        "bulking_ratio"
+      ]
+    },
+    {
+      "round": 6,
+      "discovered": [
+        "trench_volume_per_m3",
+        "heap_volume_per_m3"
+      ]
+    },
+    {
+      "round": 7,
+      "discovered": [
+        "heap_height_m",
+        "heap_base_m"
+      ]
+    },
+    {
+      "round": 8,
+      "discovered": [
+        "repose_rad"
+      ]
+    },
+    {
+      "round": 9,
+      "discovered": [
+        "scatter_fraction"
+      ]
+    },
+    {
+      "round": 10,
+      "discovered": [
+        "excavated_mass_per_m2_kg",
+        "excavation_energy_per_m2_J"
+      ]
+    },
+    {
+      "round": 11,
+      "discovered": [
+        "scattered_grain_velocity_ms"
+      ]
+    },
+    {
+      "round": 12,
+      "discovered": [
+        "scatter_max_height_m",
+        "scatter_range_m"
+      ]
+    }
+  ],
+  "classification": {
+    "trench_width_m": "THE HUMAN",
+    "trench_depth_m": "THE HUMAN",
+    "bulk_density": "PHYSICS",
+    "porosity": "PHYSICS",
+    "repose_deg": "PHYSICS",
+    "g": "PHYSICS",
+    "bearing_zero_depth_Pa": "PHYSICS",
+    "bearing_depth_coeff_Pa_per_m": "PHYSICS",
+    "dig_resistance_Pa": "PHYSICS",
+    "loose_porosity": "PHYSICS",
+    "bulking_ratio": "PHYSICS",
+    "trench_volume_per_m3": "PHYSICS",
+    "heap_volume_per_m3": "PHYSICS",
+    "heap_height_m": "PHYSICS",
+    "heap_base_m": "PHYSICS",
+    "repose_rad": "PHYSICS",
+    "scatter_fraction": "PHYSICS",
+    "excavated_mass_per_m2_kg": "PHYSICS",
+    "excavation_energy_per_m2_J": "PHYSICS",
+    "scattered_grain_velocity_ms": "PHYSICS",
+    "scatter_max_height_m": "PHYSICS",
+    "scatter_range_m": "PHYSICS"
+  }
+}
