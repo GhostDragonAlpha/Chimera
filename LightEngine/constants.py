@@ -69,6 +69,20 @@ FREE = {
     # This is a DERIVED number: it is computed from K_BOND and R_BOND below.
     "GAMMA_W": None,
 
+    # ── Finite packet size / wall softening (derived, not free) ─────
+    # The wall force must stay finite at full overlap so the integrator can
+    # resolve it.  S_WALL is the softening length derived by saturating the
+    # wall scalar at the same maximum the timestep was derived to resolve:
+    #   original wall scalar at r = R_WALL/2:
+    #     f_max = K_WALL * (R_WALL / (R_WALL/2))^P_WALL / (R_WALL/2)
+    #           = K_WALL * 2^(P_WALL + 1) / R_WALL.
+    #   softened scalar f = K_WALL * (R_WALL / r_eff)^P_WALL / r_eff,
+    #   with r_eff = sqrt(r^2 + S_WALL^2), saturates at r = 0 to
+    #     f_max = K_WALL * (R_WALL / S_WALL)^P_WALL / S_WALL.
+    #   Equating the two gives S_WALL = R_WALL / 2.
+    # This is a DERIVED number: it is computed from R_WALL below.
+    "S_WALL": None,
+
     # ── Time step ───────────────────────────────────────────────────
     # DT is derived from the fastest interaction: a head-on wall collision at
     # r = R_WALL / 2 produces acceleration
@@ -98,3 +112,5 @@ DT = FREE["DT"]
 # Derived constants (computed from FREE, not independently free)
 GAMMA_W = math.sqrt(K_BOND / 2.0) / R_BOND
 FREE["GAMMA_W"] = GAMMA_W
+S_WALL = R_WALL / 2.0
+FREE["S_WALL"] = S_WALL

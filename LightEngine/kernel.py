@@ -32,7 +32,7 @@ from numba.core.errors import NumbaPerformanceWarning
 import warnings
 
 from LightEngine.constants import (
-    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, DT, GAMMA_W,
+    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, DT, GAMMA_W, S_WALL,
 )
 
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
@@ -88,7 +88,8 @@ def _draw_cpu(pos: np.ndarray, G: float, eps2: float, out: np.ndarray):
 
 @njit(parallel=True, cache=True)
 def _resist_cpu(pos: np.ndarray, vel: np.ndarray, rw: float, rb: float, rc: float,
-                p: float, kw: float, kb: float, gamma_w: float, out: np.ndarray):
+                p: float, kw: float, kb: float, gamma_w: float, s_wall: float,
+                out: np.ndarray):
     """
     Direct O(N^2) resistance pass with cutoff on the CPU.
 
@@ -121,25 +122,29 @@ def _resist_cpu(pos: np.ndarray, vel: np.ndarray, rw: float, rb: float, rc: floa
                 continue
             r = math.sqrt(r2)
             if r < rw:
-                # strong short-range wall: push away from j
-                f = kw * ((rw / r) ** p) / r
-                ax += f * (xi - pos[j, 0])
-                ay += f * (yi - pos[j, 1])
-                az += f * (zi - pos[j, 2])
+                # strong short-range wall: push away from j.
+                # r_eff softens the packet core; the scalar is evaluated with r_eff
+                # but the direction stays along the true unit vector (r_i - r_j)/r.
+                inv_r = 1.0 / r
+                ux_ij = dx * inv_r
+                uy_ij = dy * inv_r
+                uz_ij = dz * inv_r
+                r_eff = math.sqrt(r2 + s_wall * s_wall)
+                f = kw * ((rw / r_eff) ** p) / r_eff
+                # repulsive force on i is along (r_i - r_j)/r = -u_ij
+                ax += f * (-ux_ij)
+                ay += f * (-uy_ij)
+                az += f * (-uz_ij)
                 # contact radiation: radial damping, equal and opposite
                 dvx = vel[j, 0] - vxi
                 dvy = vel[j, 1] - vyi
                 dvz = vel[j, 2] - vzi
-                inv_r = 1.0 / r
-                ux = dx * inv_r
-                uy = dy * inv_r
-                uz = dz * inv_r
-                v_rad = dvx * ux + dvy * uy + dvz * uz
+                v_rad = dvx * ux_ij + dvy * uy_ij + dvz * uz_ij
                 # F_i damps the relative radial motion: F_i = +gamma_w * v_rad * u
                 damp = gamma_w * v_rad
-                ax += damp * ux
-                ay += damp * uy
-                az += damp * uz
+                ax += damp * ux_ij
+                ay += damp * uy_ij
+                az += damp * uz_ij
                 # each unordered pair is visited twice; accumulate half each time
                 power += 0.5 * gamma_w * v_rad * v_rad
             elif r <= rb:
@@ -187,7 +192,8 @@ if _cuda_available:
         out[i, 2] = az
 
     @cuda.jit(cache=True)
-    def _resist_cuda(pos, vel, out, rw, rb, rc, p, kw, kb, gamma_w, power_out, n):
+    def _resist_cuda(pos, vel, out, rw, rb, rc, p, kw, kb, gamma_w, s_wall,
+                     power_out, n):
         """Direct O(N^2) resistance pass with cutoff on the GPU."""
         i = cuda.grid(1)
         if i >= n:
@@ -215,23 +221,28 @@ if _cuda_available:
                 continue
             r = math.sqrt(r2)
             if r < rw:
-                f = kw * ((rw / r) ** p) / r
-                ax += f * (xi - pos[j, 0])
-                ay += f * (yi - pos[j, 1])
-                az += f * (zi - pos[j, 2])
+                # strong short-range wall: push away from j.
+                # r_eff softens the packet core; the scalar is evaluated with r_eff
+                # but the direction stays along the true unit vector (r_i - r_j)/r.
+                inv_r = 1.0 / r
+                ux_ij = dx * inv_r
+                uy_ij = dy * inv_r
+                uz_ij = dz * inv_r
+                r_eff = math.sqrt(r2 + s_wall * s_wall)
+                f = kw * ((rw / r_eff) ** p) / r_eff
+                # repulsive force on i is along (r_i - r_j)/r = -u_ij
+                ax += f * (-ux_ij)
+                ay += f * (-uy_ij)
+                az += f * (-uz_ij)
                 # contact radiation: radial damping, equal and opposite
                 dvx = vel[j, 0] - vxi
                 dvy = vel[j, 1] - vyi
                 dvz = vel[j, 2] - vzi
-                inv_r = 1.0 / r
-                ux = dx * inv_r
-                uy = dy * inv_r
-                uz = dz * inv_r
-                v_rad = dvx * ux + dvy * uy + dvz * uz
+                v_rad = dvx * ux_ij + dvy * uy_ij + dvz * uz_ij
                 damp = gamma_w * v_rad
-                ax += damp * ux
-                ay += damp * uy
-                az += damp * uz
+                ax += damp * ux_ij
+                ay += damp * uy_ij
+                az += damp * uz_ij
                 # each unordered pair is visited twice; accumulate half each time
                 if power_out is not None:
                     cuda.atomic.add(power_out, 0, 0.5 * gamma_w * v_rad * v_rad)
@@ -359,12 +370,13 @@ def compute_resistance(positions: np.ndarray,
         _resist_cuda[blocks, threads](
             d_pos, d_vel, d_out, float(R_WALL), float(R_BOND), float(R_C),
             float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
-            d_power, n,
+            float(S_WALL), d_power, n,
         )
         d_out.copy_to_host(out)
     else:
         _resist_cpu(positions, velocities, float(R_WALL), float(R_BOND), float(R_C),
-                    float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W), out)
+                    float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+                    float(S_WALL), out)
     return out
 
 
@@ -592,7 +604,7 @@ class VelocityVerlet:
             _resist_cuda[blocks, threads](
                 self.d_pos, self.d_vel, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
                 float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
-                self._d_power, self.n)
+                float(S_WALL), self._d_power, self.n)
             _add_acc[blocks, threads](self.d_acc, self._d_tmp, self.n)
             cuda.synchronize()
             self.d_acc.copy_to_host(self.acc)
@@ -621,7 +633,7 @@ class VelocityVerlet:
             _resist_cuda[blocks, threads](
                 self.d_pos, self.d_vel, self._d_tmp, float(R_WALL), float(R_BOND), float(R_C),
                 float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
-                self._d_power, self.n)
+                float(S_WALL), self._d_power, self.n)
             _add_acc[blocks, threads](self.d_acc, self._d_tmp, self.n)
             cuda.synchronize()
             # 3. final half-kick using a(t+dt)
@@ -642,7 +654,8 @@ class VelocityVerlet:
             resist_acc = np.empty_like(self.acc)
             power = _resist_cpu(
                 self.pos, self.vel, float(R_WALL), float(R_BOND), float(R_C),
-                float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W), resist_acc)
+                float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+                float(S_WALL), resist_acc)
             self.acc[:] = draw_acc + resist_acc
             self.vel += 0.5 * dt * self.acc
             self.last_radiated_power = float(power)

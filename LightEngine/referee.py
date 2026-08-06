@@ -10,7 +10,7 @@ Pre-registered tolerance: EPS_REF = 1e-3 relative on accelerations.
 
 import numpy as np
 from LightEngine.constants import (
-    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, GAMMA_W,
+    G, K_WALL, K_BOND, R_WALL, R_BOND, R_C, P_WALL, EPS, GAMMA_W, S_WALL,
 )
 
 EPS_REF = 1e-3
@@ -63,11 +63,17 @@ def compute_resistance_ref(positions: np.ndarray,
 
     acc = np.zeros_like(pos)
 
-    # wall: repulsive, direction away from j (diff = r_i - r_j)
+    # wall: repulsive, direction away from j (unit = diff/r = (r_i - r_j)/r).
+    # r_eff softens the packet core; the scalar is evaluated with r_eff but
+    # the direction stays along the true unit vector diff/r.
     if wall_mask.any():
+        r_eff = np.sqrt(r2 + S_WALL * S_WALL)
         f_wall = np.zeros_like(r)
-        f_wall[wall_mask] = K_WALL * (R_WALL / r[wall_mask]) ** P_WALL / r[wall_mask]
-        acc += np.einsum("ij,ijk->ik", f_wall, diff)
+        f_wall[wall_mask] = (K_WALL *
+            (R_WALL / r_eff[wall_mask]) ** P_WALL / r_eff[wall_mask])
+        r_safe = np.where(r > 0.0, r, 1.0)
+        unit = diff / r_safe[:, :, None]
+        acc += np.einsum("ij,ijk->ik", f_wall, unit)
 
         # contact radiation: radial damping, equal and opposite
         # u[i,j] = (r_j - r_i)/r = -diff/r  (unit vector from i to j)

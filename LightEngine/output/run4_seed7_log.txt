@@ -1,0 +1,407 @@
+============================================================
+THE KERNEL — first light-era run
+N=4096, seed=7, box=10.0, dt=0.0005, ticks=98822
+============================================================
+tick=  2470 | clusters=3273 | max=   8 | bound=0.065 | edge=0.634 | radius=10.673 | E_rad=31.6901 | P_rad=0.5033
+tick=  4940 | clusters=2819 | max=  39 | bound=0.089 | edge=0.455 | radius=14.175 | E_rad=99.7801 | P_rad=137.0295
+tick=  7410 | clusters=2013 | max=1410 | bound=0.224 | edge=0.139 | radius=17.360 | E_rad=431.9453 | P_rad=445.7248
+tick=  9880 | clusters=1718 | max=1532 | bound=0.203 | edge=0.251 | radius=20.339 | E_rad=1150.8738 | P_rad=369.2134
+tick= 12350 | clusters=2165 | max= 955 | bound=0.154 | edge=0.265 | radius=23.168 | E_rad=1521.9875 | P_rad=223.0384
+tick= 14820 | clusters=2346 | max=1037 | bound=0.151 | edge=0.253 | radius=25.882 | E_rad=1800.8782 | P_rad=311.6583
+tick= 17290 | clusters=2316 | max=1119 | bound=0.168 | edge=0.173 | radius=28.503 | E_rad=2120.6968 | P_rad=348.5481
+tick= 19760 | clusters=2165 | max=1320 | bound=0.214 | edge=0.185 | radius=31.049 | E_rad=2530.5297 | P_rad=425.0245
+tick= 22230 | clusters=2091 | max=1439 | bound=0.227 | edge=0.110 | radius=33.529 | E_rad=3108.4353 | P_rad=564.1544
+tick= 24700 | clusters=1923 | max=1667 | bound=0.276 | edge=0.094 | radius=35.955 | E_rad=3921.6792 | P_rad=1006.6882
+tick= 27170 | clusters=1817 | max=1806 | bound=0.333 | edge=0.058 | radius=38.333 | E_rad=5299.1357 | P_rad=1943.2673
+tick= 29640 | clusters=1779 | max=1892 | bound=0.372 | edge=0.045 | radius=40.668 | E_rad=11149.7521 | P_rad=23454.2969
+tick= 32110 | clusters=1639 | max=2031 | bound=0.437 | edge=0.092 | radius=42.966 | E_rad=38407.5193 | P_rad=18258.8418
+tick= 34580 | clusters=1574 | max=2118 | bound=0.461 | edge=0.091 | radius=45.231 | E_rad=54486.6031 | P_rad=13249.0723
+Traceback (most recent call last):
+  File "E:\PythonChimera\LightEngine\demo_seed.py", line 332, in <module>
+  File "E:\PythonChimera\LightEngine\demo_seed.py", line 251, in main
+    parser.add_argument("--n", type=int, default=N,
+        ^^^^^^^^^^^^
+  File "E:\PythonChimera\LightEngine\kernel.py", line 638, in step
+    cuda.synchronize()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\api.py", line 252, in synchronize
+    return current_context().synchronize()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1514, in synchronize
+    driver.cuCtxSynchronize()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuCtxSynchronize results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1702, in core
+    dealloc.add_item(module_unload, handle)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1700, in module_unload
+    driver.cuModuleUnload(handle)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuModuleUnload results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1702, in core
+    dealloc.add_item(module_unload, handle)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1700, in module_unload
+    driver.cuModuleUnload(handle)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuModuleUnload results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1702, in core
+    dealloc.add_item(module_unload, handle)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1700, in module_unload
+    driver.cuModuleUnload(handle)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuModuleUnload results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 2177, in deref
+    mem.free()
+    ~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1966, in free
+    self._finalizer()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1618, in core
+    deallocations.add_item(driver.cuMemFree, ptr, size)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuMemFree results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 2177, in deref
+    mem.free()
+    ~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1966, in free
+    self._finalizer()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1618, in core
+    deallocations.add_item(driver.cuMemFree, ptr, size)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuMemFree results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1702, in core
+    dealloc.add_item(module_unload, handle)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1700, in module_unload
+    driver.cuModuleUnload(handle)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuModuleUnload results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 2177, in deref
+    mem.free()
+    ~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1966, in free
+    self._finalizer()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1618, in core
+    deallocations.add_item(driver.cuMemFree, ptr, size)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuMemFree results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 2177, in deref
+    mem.free()
+    ~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1966, in free
+    self._finalizer()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1618, in core
+    deallocations.add_item(driver.cuMemFree, ptr, size)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuMemFree results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "C:\Python314\Lib\weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 2177, in deref
+    mem.free()
+    ~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1966, in free
+    self._finalizer()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1618, in core
+    deallocations.add_item(driver.cuMemFree, ptr, size)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1184, in add_item
+    self.clear()
+    ~~~~~~~~~~^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 1195, in clear
+    dtor(handle)
+    ~~~~^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 327, in safe_cuda_api_call
+    self._check_ctypes_error(fname, retcode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\allen\AppData\Roaming\Python\Python314\site-packages\numba\cuda\cudadrv\driver.py", line 399, in _check_ctypes_error
+    raise CudaAPIError(retcode, msg)
+numba.cuda.cudadrv.driver.CudaAPIError: [700] Call to cuMemFree results in UNKNOWN_CUDA_ERROR
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Exception ignored in: 'cupy.cuda.function.Module.__dealloc__'
+Traceback (most recent call last):
+  File "cupy_backends/cuda/api/driver.pyx", line 235, in cupy_backends.cuda.api.driver.moduleUnload
+  File "cupy_backends/cuda/api/driver.pyx", line 64, in cupy_backends.cuda.api.driver.check_status
+cupy_backends.cuda.api.driver.CUDADriverError: CUDA_ERROR_ILLEGAL_ADDRESS: an illegal memory access was encountered
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:
+Error in sys.excepthook:
+
+Original exception was:

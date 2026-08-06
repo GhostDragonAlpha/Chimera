@@ -1,0 +1,8 @@
+============================================================
+THE KERNEL — first light-era run
+N=16384, seed=20260806, box=10.0, dt=0.0005, ticks=49411
+============================================================
+tick=  1235 | clusters=4084 | max=3512 | bound=0.258 | edge=0.275 | radius=9.344 | E_rad=352.0608 | P_rad=644.3514
+tick=  2470 | clusters=2077 | max=13240 | bound=0.633 | edge=0.047 | radius=10.361 | E_rad=2909.7561 | P_rad=24421.4355
+tick=  3705 | clusters= 552 | max=15735 | bound=0.926 | edge=0.075 | radius=12.084 | E_rad=4069164.9884 | P_rad=2633007.7500
+tick=  4940 | clusters= 806 | max=15365 | bound=0.920 | edge=0.076 | radius=13.561 | E_rad=4873493.6828 | P_rad=729283.1250

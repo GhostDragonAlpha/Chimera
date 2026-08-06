@@ -14,7 +14,7 @@ import pytest
 
 from LightEngine import kernel, referee
 from LightEngine.constants import (
-    G, R_WALL, R_BOND, R_C, P_WALL, K_WALL, K_BOND, EPS, DT, GAMMA_W,
+    G, R_WALL, R_BOND, R_C, P_WALL, K_WALL, K_BOND, EPS, DT, GAMMA_W, S_WALL,
 )
 
 TOL = referee.EPS_REF
@@ -78,8 +78,30 @@ def test_wall_collision():
 
 
 # ── (b) energy bookkeeping on a free-fall pair ──────────────────────
+def _wall_potential_antiderivative(r):
+    """Antiderivative of (r^2 + S_WALL^2)^(-(P_WALL+1)/2) for P_WALL = 6."""
+    r = np.asarray(r, dtype=np.float64)
+    r_eff = np.sqrt(r * r + S_WALL * S_WALL)
+    #  ∫ (r^2 + s^2)^(-7/2) dr  =
+    #    r/(5 s^2 r_eff^5) + 4 r/(15 s^4 r_eff^3) + 8 r/(15 s^6 r_eff)
+    return r * (1.0 / (5.0 * S_WALL**2 * r_eff**5) +
+                4.0 / (15.0 * S_WALL**4 * r_eff**3) +
+                8.0 / (15.0 * S_WALL**6 * r_eff))
+
+
+# value of the antiderivative at infinity: 8/(15 S_WALL^6)
+_WALL_POTENTIAL_AT_INF = K_WALL * (R_WALL ** P_WALL) * 8.0 / (15.0 * S_WALL**6)
+
+
 def _potential_energy(pos):
-    """Float64 potential energy of the two-force pair."""
+    """
+    Float64 potential energy of the two-force pair.
+
+    Wall branch uses the softened potential consistent with the doc force law.
+    For scalar f(r) = K_WALL (R_WALL / r_eff)^P_WALL / r_eff,
+        U_wall(r) = K_WALL R_WALL^P_WALL ∫_r^∞ (r'^2 + S_WALL^2)^(-(P+1)/2) dr'.
+    With P_WALL = 6 this has the closed form used above.
+    """
     pos = np.asarray(pos, dtype=np.float64)
     diff = pos[None, :, :] - pos[:, None, :]
     r2 = np.einsum("ijk,ijk->ij", diff, diff)
@@ -89,12 +111,14 @@ def _potential_energy(pos):
     # softened gravity: U = -G / sqrt(r^2 + eps^2)
     u_draw = -0.5 * G * np.sum((r2 + EPS * EPS) ** (-0.5))
 
-    # wall: U = K_WALL * r_wall^P * r^(1-P) / (P-1)
+    # softened wall: pair potential, summed over unordered pairs
     wall = r < R_WALL
     u_wall = 0.0
     if wall.any():
-        u_wall = 0.5 * K_WALL * (R_WALL ** P_WALL) * np.sum(
-            r[wall] ** (1 - P_WALL)) / (P_WALL - 1)
+        u_wall = 0.5 * np.sum(
+            _WALL_POTENTIAL_AT_INF -
+            K_WALL * (R_WALL ** P_WALL) * _wall_potential_antiderivative(r[wall])
+        )
 
     # bond: U = 0.5 * K_BOND / R_BOND * (r - R_BOND)^2
     bond = (r >= R_WALL) & (r <= R_BOND)
@@ -296,3 +320,97 @@ def test_free_flight_conserves_energy():
     # no damping outside the wall: energy conserved to integration accuracy
     assert abs(e1 - e0) < 1e-3 * (abs(e0) + 1.0)
     assert vv.radiated_energy == 0.0
+
+
+# ── (f) finite packet / softened wall tests ─────────────────────────
+def test_softened_wall_potential_derivative():
+    """
+    The softened wall potential must satisfy -dU/dr = f_scalar(r), where
+    f_scalar = K_WALL (R_WALL / r_eff)^P_WALL / r_eff is the doc's scalar
+    repulsion magnitude.
+    """
+    # grid of separations inside the wall (including deep overlap)
+    rs = np.logspace(-4, np.log10(R_WALL), 200, dtype=np.float64)
+    dr = 1e-8
+
+    def U_pair(r):
+        return K_WALL * (R_WALL ** P_WALL) * (
+            8.0 / (15.0 * S_WALL**6) - _wall_potential_antiderivative(r)
+        )
+
+    dU_dr = (U_pair(rs + dr) - U_pair(rs - dr)) / (2.0 * dr)
+    r_eff = np.sqrt(rs * rs + S_WALL * S_WALL)
+    f_scalar = K_WALL * (R_WALL / r_eff) ** P_WALL / r_eff
+    rel_err = np.abs(-dU_dr - f_scalar) / (f_scalar + 1e-12)
+    assert np.max(rel_err) < 1e-4
+
+
+def test_deep_overlap_finite_acceleration():
+    """Two points deeply overlapped feel the saturated wall, not infinity."""
+    a_max = K_WALL * (2.0 ** (P_WALL + 1)) / R_WALL  # 2560
+
+    for r_sep in [1e-4, 1e-3, 0.01, 0.03]:
+        pos = np.array([[0.0, 0.0, 0.0],
+                        [r_sep, 0.0, 0.0]], dtype=np.float32)
+        vel = np.zeros_like(pos)
+
+        a_cpu = kernel.compute_resistance(pos, vel, use_cuda=False)
+        mag_cpu = float(np.linalg.norm(a_cpu[0]))
+
+        if kernel.cuda_is_available():
+            a_gpu = kernel.compute_resistance(pos, vel, use_cuda=True)
+            mag_gpu = float(np.linalg.norm(a_gpu[0]))
+            assert abs(mag_cpu - mag_gpu) <= 1e-4 * max(mag_cpu, 1.0), (
+                f"CPU/GPU mismatch at r={r_sep}: {mag_cpu} vs {mag_gpu}")
+
+        # scalar formula for the wall branch (unit-vector direction)
+        r_eff = np.sqrt(r_sep * r_sep + S_WALL * S_WALL)
+        f_scalar = K_WALL * (R_WALL / r_eff) ** P_WALL / r_eff
+        assert abs(mag_cpu - f_scalar) <= 1e-3 * max(f_scalar, 1.0), (
+            f"|a|={mag_cpu} vs scalar {f_scalar} at r={r_sep}")
+
+        # must stay below the saturation cap
+        assert mag_cpu <= a_max * 1.01, (
+            f"|a|={mag_cpu} at r={r_sep} exceeds cap {a_max}")
+        assert np.isfinite(mag_cpu)
+
+    # deepest overlap must be within 1% of the cap
+    pos = np.array([[0.0, 0.0, 0.0],
+                    [1e-4, 0.0, 0.0]], dtype=np.float32)
+    a_deep = kernel.compute_resistance(pos, np.zeros_like(pos), use_cuda=False)
+    mag_deep = float(np.linalg.norm(a_deep[0]))
+    assert mag_deep >= a_max * 0.99, (
+        f"deep overlap |a|={mag_deep} not saturated near {a_max}")
+
+
+def test_high_speed_wall_encounter_no_slingshot():
+    """
+    Regression for run-3 blow-up: a head-on pair at v_rel=100 starting just
+    outside the wall must not be ejected faster than it arrived.  Total energy
+    accounting (mechanical + radiated) must not show energy creation.
+    """
+    pos = np.array([[0.0, 0.0, 0.0],
+                    [0.06, 0.0, 0.0]], dtype=np.float32)
+    vel = np.array([[50.0, 0.0, 0.0],
+                    [-50.0, 0.0, 0.0]], dtype=np.float32)
+    v_rel0 = float(np.linalg.norm(vel[1] - vel[0]))
+
+    vv = kernel.VelocityVerlet(2, use_cuda=False)
+    vv.set_state(pos, vel)
+    vv.compute_acceleration()
+    e0 = _potential_energy(vv.pos) + 0.5 * np.sum(vv.vel.astype(np.float64) ** 2)
+
+    for _ in range(600):
+        vv.step(DT)
+
+    v_rel1 = float(np.linalg.norm(vv.vel[1] - vv.vel[0]))
+    e1 = _potential_energy(vv.pos) + 0.5 * np.sum(vv.vel.astype(np.float64) ** 2)
+
+    # no slingshot amplification
+    assert v_rel1 <= 1.2 * v_rel0, f"v_rel grew {v_rel0:.3f} -> {v_rel1:.3f}"
+
+    # energy accounting: final mechanical + radiated must not exceed initial
+    # by more than integration tolerance
+    total_out = e1 + vv.radiated_energy
+    assert total_out <= e0 + 1e-2 * (abs(e0) + 1.0), (
+        f"energy created: E0={e0:.4f}, E1+rad={total_out:.4f}")
