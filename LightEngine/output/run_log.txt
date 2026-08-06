@@ -1,0 +1,56 @@
+============================================================
+THE KERNEL — first light-era run
+N=4096, seed=20260806, box=10.0, dt=0.0005, ticks=1000
+============================================================
+tick=  25 | clusters=3204 | max=   8 | bound=0.058 | edge=0.824 | radius=8.306
+tick=  50 | clusters=3207 | max=   8 | bound=0.062 | edge=0.800 | radius=8.294
+tick=  75 | clusters=3201 | max=   8 | bound=0.066 | edge=0.700 | radius=8.281
+tick= 100 | clusters=3190 | max=   8 | bound=0.065 | edge=0.650 | radius=8.282
+tick= 125 | clusters=3195 | max=   7 | bound=0.061 | edge=0.667 | radius=8.286
+tick= 150 | clusters=3202 | max=   6 | bound=0.063 | edge=0.650 | radius=8.289
+tick= 175 | clusters=3201 | max=   6 | bound=0.063 | edge=0.651 | radius=8.293
+tick= 200 | clusters=3203 | max=   7 | bound=0.062 | edge=0.786 | radius=8.296
+tick= 225 | clusters=3216 | max=   7 | bound=0.061 | edge=0.733 | radius=8.299
+tick= 250 | clusters=3214 | max=   7 | bound=0.061 | edge=0.741 | radius=8.303
+tick= 275 | clusters=3235 | max=   9 | bound=0.060 | edge=0.727 | radius=8.306
+tick= 300 | clusters=3257 | max=   8 | bound=0.057 | edge=0.750 | radius=8.309
+tick= 325 | clusters=3282 | max=   8 | bound=0.057 | edge=0.718 | radius=8.312
+tick= 350 | clusters=3264 | max=   8 | bound=0.058 | edge=0.720 | radius=8.315
+tick= 375 | clusters=3278 | max=   8 | bound=0.056 | edge=0.692 | radius=8.318
+tick= 400 | clusters=3288 | max=   7 | bound=0.054 | edge=0.667 | radius=8.321
+tick= 425 | clusters=3278 | max=   7 | bound=0.049 | edge=0.833 | radius=8.324
+tick= 450 | clusters=3280 | max=   6 | bound=0.052 | edge=1.000 | radius=8.336
+tick= 475 | clusters=3270 | max=   6 | bound=0.049 | edge=0.774 | radius=8.360
+tick= 500 | clusters=3275 | max=   6 | bound=0.047 | edge=0.698 | radius=8.383
+tick= 525 | clusters=3259 | max=   7 | bound=0.049 | edge=0.667 | radius=8.407
+tick= 550 | clusters=3264 | max=   7 | bound=0.052 | edge=0.800 | radius=8.430
+tick= 575 | clusters=3266 | max=   7 | bound=0.059 | edge=0.688 | radius=8.454
+tick= 600 | clusters=3268 | max=   7 | bound=0.056 | edge=0.714 | radius=8.477
+tick= 625 | clusters=3266 | max=   7 | bound=0.058 | edge=0.622 | radius=8.500
+tick= 650 | clusters=3279 | max=  10 | bound=0.057 | edge=0.609 | radius=8.523
+tick= 675 | clusters=3277 | max=  10 | bound=0.056 | edge=0.667 | radius=8.546
+tick= 700 | clusters=3288 | max=   8 | bound=0.056 | edge=0.656 | radius=8.569
+tick= 725 | clusters=3285 | max=   8 | bound=0.053 | edge=0.711 | radius=8.592
+tick= 750 | clusters=3287 | max=  11 | bound=0.054 | edge=0.681 | radius=8.615
+tick= 775 | clusters=3276 | max=   9 | bound=0.050 | edge=0.727 | radius=8.637
+tick= 800 | clusters=3273 | max=  11 | bound=0.051 | edge=0.769 | radius=8.660
+tick= 825 | clusters=3266 | max=   8 | bound=0.052 | edge=0.691 | radius=8.682
+tick= 850 | clusters=3277 | max=   8 | bound=0.051 | edge=0.710 | radius=8.705
+tick= 875 | clusters=3284 | max=   8 | bound=0.043 | edge=0.667 | radius=8.727
+tick= 900 | clusters=3294 | max=   9 | bound=0.046 | edge=0.625 | radius=8.749
+tick= 925 | clusters=3282 | max=  11 | bound=0.046 | edge=0.596 | radius=8.771
+tick= 950 | clusters=3266 | max=  10 | bound=0.049 | edge=0.522 | radius=8.793
+tick= 975 | clusters=3256 | max=  11 | bound=0.050 | edge=0.516 | radius=8.815
+tick=1000 | clusters=3265 | max=  11 | bound=0.048 | edge=0.609 | radius=8.837
+============================================================
+FALSIFIER VERDICT: DISPERSE
+  final clusters          = 3265
+  final max cluster size  = 11
+  final bound mass frac   = 0.0481
+  final system radius     = 8.8365
+  cluster count CV (late) = 0.0032
+  bound frac swing (late) = 0.0085
+  reasons:
+    - max_cluster=11 <= 410 and bound_frac=0.048
+  output frames: E:\PythonChimera\LightEngine\output
+============================================================

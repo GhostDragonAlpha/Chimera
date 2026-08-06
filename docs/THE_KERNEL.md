@@ -81,3 +81,24 @@ dark, not a uniform haze and not a single point.
 python -m pytest LightEngine/tests -q          # referee agreement + conservation checks
 python LightEngine/demo_seed.py                # the run: prints cluster metrics + falsifier verdict
 ```
+
+## THE HARDWARE BUDGET (measured machine, 2026-08-06)
+
+RTX 4090 (24 GB, compute 8.9): 16,384 FP32 cores, ~82.6 TFLOPS peak (~45–50 effective),
+FP64 at 1/64 rate (physics is FP32 on GPU; the referee is float64 on CPU — the dyad
+meets at a pre-registered tolerance), ~1 TB/s, 24 GB VRAM (point state ~48 B → memory
+is never the wall; FLOPs per tick are).
+
+At ~20 FLOPs per force pair and a 16.6 ms frame budget:
+
+| points | direct all-pairs | tree (N log N) |
+|---|---|---|
+| 16,384 | ~0.1 ms | overkill |
+| 65,000 | ~2 ms | overkill |
+| 130,000 | ~8 ms (borderline) | trivial |
+| 1,000,000 | ~0.45 s (dead) | ~1–3 ms — REALTIME |
+
+Consequences: v1 (direct) is honest to ~100k points — enough to judge the falsifier.
+The tree (with the modifier folded into its deep walks) unlocks the millions; the
+modifier is nearly free because it awakens only in the near field. numba-CUDA suffices
+for the direct pass; a tuned Barnes–Hut at 1M+ likely wants CUDA C++ — the v2 decision.
