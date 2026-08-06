@@ -51,9 +51,12 @@ RULE 0 doc section) as the print proofs earn them.*
   through the muscle's full contraction cycle — does not slide off (anchor
   retention), does not tear (strain distributes as derived across the sheet),
   and its edge stays closed (a bag with a hole is not skin).
-- **bladder**: closed sheet enclosing gas points; pressure from wall collisions.
-  Falsifier: holds derived pressure-volume relation; ruptures past derived
-  pressure (tearing already in the bond law).
+- **bladder**: closed sheet enclosing gas points, CONTAINED WITHIN the muscle
+  bulk (like the brain within bone) — the muscle is its parent by enclosure,
+  and the muscle's contraction is its function: squeeze is what moves contents.
+  Falsifier: holds its contents under the muscle's derived squeeze pressure
+  without rupture, and yields its contents when the squeeze exceeds a derived
+  threshold (a bladder that can't empty is a cyst).
 
 ## 3-D — BULKS (flesh, organs, soil, rock)
 
@@ -67,6 +70,13 @@ RULE 0 doc section) as the print proofs earn them.*
   every 1-D/2-D structure that bears load anchors to bone. Falsifier: bears a
   derived compressive/tensile load without bond rupture, and deflects less than
   a packed-bed bulk of equal mass by a derived factor (ordered beats random).
+- **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
+  this manifest tracks: not anchors-to but contains-within. Bone is the brain's
+  parent by enclosure: it takes the load so the brain doesn't have to.
+  Falsifier: a bone shell surrounding a compliant bulk absorbs a derived impact
+  — shell bonds may rupture, but the contained bulk's structure persists (its
+  bond retention stays above threshold) where an UNSHELLED bulk of the same
+  stuff fails. LIFE is contained in the brain — the deepest nesting.
 - **composite bulk**: fibers embedded in packed bed = flesh, muscle-in-sheath.
   Falsifier: the composite holds forms neither component holds alone (this is
   where the muscle print lives).
@@ -92,12 +102,13 @@ fiber tears at r_c rather than stretching forever — and the BONES do not migra
 
 ## ORDER OF PROOF (derived from dependency depth)
 
-lattice (running) -> BONE (a lattice that bears load) -> packed bed (needs
-nothing) -> fiber/rope (needs bone anchors) -> sheet (needs fiber) ->
-tendon/socket (needs bone+chain) -> muscle (needs all) -> SKIN (a sheet
-conformal to muscle) -> bladder -> LIFE (a boundary that maintains itself —
-needs all).
+lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
+in bone) -> packed bed (needs nothing) -> fiber/rope (needs bone anchors) ->
+sheet (needs fiber) -> tendon/socket (needs bone+chain) -> muscle (needs all)
+-> SKIN (a sheet conformal to muscle) + bladder (contained in muscle) ->
+LIFE (contained in the brain — a boundary that maintains itself; needs all).
 
-The anatomy is the dependency graph: bone holds muscle, muscle holds skin,
-skin holds the boundary, and the boundary that maintains itself is life.
-Each layer's parent is the layer it anchors to.
+The anatomy is the dependency graph, and it tracks TWO relations:
+anchors-to (muscle to bone, skin to muscle) and contains-within (bone holds
+the brain, muscle holds the bladder, the brain holds life). Each layer's
+parent is the layer it anchors to or the layer it lives inside.
