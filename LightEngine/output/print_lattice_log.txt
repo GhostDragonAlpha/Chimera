@@ -1,0 +1,62 @@
+============================================================
+THE KERNEL — first light-era run
+N=4096, seed=20260806, structure=lattice, box=10.0, dt=0.0005, ticks=98822 (BOX/VEL_SIGMA unused for authored print)
+============================================================
+tick=  2470 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380644.2531 | P_rad=31.4474 | bond_ret=0.000
+tick=  4940 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380670.7727 | P_rad=15.1899 | bond_ret=0.000
+tick=  7410 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380684.7023 | P_rad=10.6307 | bond_ret=0.000
+tick=  9880 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380698.4182 | P_rad=10.8394 | bond_ret=0.000
+tick= 12350 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=380711.9395 | P_rad=11.3637 | bond_ret=0.000
+tick= 14820 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=380726.3347 | P_rad=10.2117 | bond_ret=0.000
+tick= 17290 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=380739.1870 | P_rad=10.4533 | bond_ret=0.000
+tick= 19760 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380753.4662 | P_rad=11.1704 | bond_ret=0.000
+tick= 22230 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380766.9245 | P_rad=10.0817 | bond_ret=0.000
+tick= 24700 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380779.3260 | P_rad=9.6901 | bond_ret=0.000
+tick= 27170 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380791.6225 | P_rad=9.8093 | bond_ret=0.000
+tick= 29640 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380804.0493 | P_rad=9.8773 | bond_ret=0.000
+tick= 32110 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380816.3471 | P_rad=9.7308 | bond_ret=0.000
+tick= 34580 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380828.5878 | P_rad=9.5884 | bond_ret=0.000
+tick= 37050 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380840.8490 | P_rad=9.7596 | bond_ret=0.000
+tick= 39520 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380853.2114 | P_rad=10.1896 | bond_ret=0.000
+tick= 41990 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380865.6613 | P_rad=10.0339 | bond_ret=0.000
+tick= 44460 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380878.0527 | P_rad=9.8686 | bond_ret=0.000
+tick= 46930 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380890.3962 | P_rad=10.1482 | bond_ret=0.000
+tick= 49400 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380902.8319 | P_rad=10.2474 | bond_ret=0.000
+tick= 51870 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380915.2683 | P_rad=10.0187 | bond_ret=0.000
+tick= 54340 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380927.7036 | P_rad=10.5995 | bond_ret=0.000
+tick= 56810 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380940.1113 | P_rad=10.5333 | bond_ret=0.000
+tick= 59280 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380952.9012 | P_rad=10.0423 | bond_ret=0.000
+tick= 61750 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380965.3815 | P_rad=10.3465 | bond_ret=0.000
+tick= 64220 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=380977.8519 | P_rad=10.0805 | bond_ret=0.000
+tick= 66690 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=380990.1532 | P_rad=9.5465 | bond_ret=0.000
+tick= 69160 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=381002.4854 | P_rad=10.0849 | bond_ret=0.000
+tick= 71630 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.177 | E_rad=381015.0897 | P_rad=10.2550 | bond_ret=0.000
+tick= 74100 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381027.6927 | P_rad=10.4286 | bond_ret=0.000
+tick= 76570 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381039.9516 | P_rad=10.0570 | bond_ret=0.000
+tick= 79040 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381052.1965 | P_rad=9.9528 | bond_ret=0.000
+tick= 81510 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381064.3928 | P_rad=9.7210 | bond_ret=0.000
+tick= 83980 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381076.5292 | P_rad=9.9210 | bond_ret=0.000
+tick= 86450 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381088.6971 | P_rad=9.8945 | bond_ret=0.000
+tick= 88920 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381100.9732 | P_rad=9.5157 | bond_ret=0.000
+tick= 91390 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381113.1953 | P_rad=9.7186 | bond_ret=0.000
+tick= 93860 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381125.4434 | P_rad=9.6354 | bond_ret=0.000
+tick= 96330 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381137.6281 | P_rad=9.8766 | bond_ret=0.000
+tick= 98800 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381149.8507 | P_rad=9.9623 | bond_ret=0.000
+tick= 98822 | clusters=   1 | max=4096 | bound=1.000 | edge=0.081 | radius=0.178 | E_rad=381149.9598 | P_rad=9.8557 | bond_ret=0.000
+============================================================
+FALSIFIER VERDICT: COLLAPSE
+  final clusters          = 1
+  final max cluster size  = 4096
+  final bound mass frac   = 1.0000
+  final system radius     = 0.1776
+  cluster count CV (late) = 0.0000
+  bound frac swing (late) = 0.0000
+  radiated energy         = 381149.9598
+  radiated power          = 9.8557
+  reasons:
+    - max_cluster=4096 >= 3891
+  output frames: E:\PythonChimera\LightEngine\output
+PRINT PERSISTENCE:
+  bond retention    = 0.0000
+  retention > 50%   : FAIL
+============================================================

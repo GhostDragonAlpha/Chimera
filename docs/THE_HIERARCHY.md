@@ -40,7 +40,18 @@ damaging something is not a term; it is the absence of one.
 
 ## LEVEL 2 — GEOLOGICAL (the ground things)
 
-- **theCrystal** — lattice bulk, ordered bonds. 3-D. Parent: theBalance. (RUNNING.)
+- **theCrystal** — lattice bulk, ordered bonds. 3-D. Parent: theBalance. FAILED at
+  16^3=4096 (total collapse through the saturated wall — see theMaxChunk);
+  successor: 8^3=512, below the critical mass. (RUNNING.)
+- **theMaxChunk** — the universe's atom-size limit, DERIVED 2026-08-06 from the
+  lattice collapse: the saturated wall pushes at most a_max = 2560; a condensed
+  chunk's self-gravity at the wall scale is G*M/r_wall^2. Above
+  M_crit = a_max*r_wall^2/G = 640 points at bond density, nothing can hold a
+  structure up — it collapses into the softened core (bound 1.000, radius ~0.18,
+  the universe's black hole). CONSEQUENCE: all condensed matter in the game is
+  built of sub-640 chunks; larger structures are ASSEMBLIES of chunks held by
+  bonds between them, never merged into one. This is the granularity of matter —
+  and it came from a falsifier, not a design choice. 3-D. Parent: theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
 - **theSoil** — packed bed, disordered bonds. 3-D. Parent: theBalance.
 - **theSlope** — packed bed at a tilt; repose angle emergent. 3-D. Parent: theSoil.
