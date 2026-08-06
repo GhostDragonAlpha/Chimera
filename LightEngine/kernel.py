@@ -280,6 +280,145 @@ if _cuda_available:
         vel[i, 1] += acc[i, 1] * half
         vel[i, 2] += acc[i, 2] * half
 
+    @cuda.jit(cache=True)
+    def _draw_cuda_batch(pos, out, G, eps2, total, N):
+        """Batched DRAW: each thread handles one point in one world."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        w = i // N
+        base = w * N
+        i_local = i - base
+        xi = pos[i, 0]
+        yi = pos[i, 1]
+        zi = pos[i, 2]
+        ax = 0.0
+        ay = 0.0
+        az = 0.0
+        for j in range(base, base + N):
+            if i_local == (j - base):
+                continue
+            dx = pos[j, 0] - xi
+            dy = pos[j, 1] - yi
+            dz = pos[j, 2] - zi
+            r2 = dx * dx + dy * dy + dz * dz + eps2
+            inv_r3 = 1.0 / (r2 * math.sqrt(r2))
+            f = G * inv_r3
+            ax += f * dx
+            ay += f * dy
+            az += f * dz
+        out[i, 0] = ax
+        out[i, 1] = ay
+        out[i, 2] = az
+
+    @cuda.jit(cache=True)
+    def _resist_cuda_batch(pos, vel, out, rw, rb, rc, p, kw, kb, gamma_w, s_wall,
+                           power_out, total, N):
+        """Batched RESISTANCE: each thread handles one point in one world."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        w = i // N
+        base = w * N
+        i_local = i - base
+        xi = pos[i, 0]
+        yi = pos[i, 1]
+        zi = pos[i, 2]
+        vxi = vel[i, 0]
+        vyi = vel[i, 1]
+        vzi = vel[i, 2]
+        ax = 0.0
+        ay = 0.0
+        az = 0.0
+        rc2 = rc * rc
+        for j in range(base, base + N):
+            if i_local == (j - base):
+                continue
+            dx = pos[j, 0] - xi
+            dy = pos[j, 1] - yi
+            dz = pos[j, 2] - zi
+            r2 = dx * dx + dy * dy + dz * dz
+            if r2 > rc2:
+                continue
+            if r2 < 1e-18:
+                continue
+            r = math.sqrt(r2)
+            if r < rw:
+                inv_r = 1.0 / r
+                ux_ij = dx * inv_r
+                uy_ij = dy * inv_r
+                uz_ij = dz * inv_r
+                r_eff = math.sqrt(r2 + s_wall * s_wall)
+                f = kw * ((rw / r_eff) ** p) / r_eff
+                ax += f * (-ux_ij)
+                ay += f * (-uy_ij)
+                az += f * (-uz_ij)
+                dvx = vel[j, 0] - vxi
+                dvy = vel[j, 1] - vyi
+                dvz = vel[j, 2] - vzi
+                v_rad = dvx * ux_ij + dvy * uy_ij + dvz * uz_ij
+                damp = gamma_w * v_rad
+                ax += damp * ux_ij
+                ay += damp * uy_ij
+                az += damp * uz_ij
+                if power_out is not None:
+                    cuda.atomic.add(power_out, w, 0.5 * gamma_w * v_rad * v_rad)
+            elif r <= rb:
+                f = kb * (r - rb) / (rb * r)
+                ax += f * dx
+                ay += f * dy
+                az += f * dz
+        out[i, 0] = ax
+        out[i, 1] = ay
+        out[i, 2] = az
+
+    @cuda.jit(cache=True)
+    def _verlet_kick_drift_batch(pos, vel, acc, dt, total):
+        """Batched velocity-Verlet half-kick + drift."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+        pos[i, 0] += vel[i, 0] * dt
+        pos[i, 1] += vel[i, 1] * dt
+        pos[i, 2] += vel[i, 2] * dt
+
+    @cuda.jit(cache=True)
+    def _verlet_final_kick_batch(vel, acc, dt, total):
+        """Batched velocity-Verlet final half-kick."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+
+    @cuda.jit(cache=True)
+    def _add_acc_batch(a, b, total):
+        """Add batched acceleration arrays pointwise."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        a[i, 0] += b[i, 0]
+        a[i, 1] += b[i, 1]
+        a[i, 2] += b[i, 2]
+
+    @cuda.jit(cache=True)
+    def _accumulate_radiation_kernel(power_out, radiated_accum, last_power_out,
+                                     dt, W):
+        """Per-world: accum += power*dt, record last power, zero power."""
+        w = cuda.grid(1)
+        if w >= W:
+            return
+        p = power_out[w]
+        radiated_accum[w] += p * dt
+        last_power_out[w] = p
+        power_out[w] = 0.0
+
 
 # ═══════════════════════════════════════════════════════════════════
 #  Public force interfaces
@@ -667,6 +806,117 @@ class VelocityVerlet:
             self.d_pos.copy_to_host(self.pos)
             self.d_vel.copy_to_host(self.vel)
             self.d_acc.copy_to_host(self.acc)
+
+
+class EnsembleVerlet:
+    """
+    Batched Velocity-Verlet integrator for W independent worlds on one CUDA
+    context.  Each world has N points; the flat device arrays have shape
+    (W*N, 3).  Force kernels are launched once per tick for the whole batch,
+    so Python launch latency is paid once, not W times.
+
+    Physics is identical to ``VelocityVerlet``: each thread loops only over the
+    points belonging to its own world, and the sequence of float operations is
+    the same as the solo kernels.
+    """
+
+    def __init__(self, W: int, N: int, use_cuda: bool | None = None):
+        if not _cuda_available:
+            raise RuntimeError("EnsembleVerlet requires a CUDA device")
+        self.W = int(W)
+        self.N = int(N)
+        self.total = self.W * self.N
+        self.use_cuda = True
+
+        # host mirrors: flat arrays plus (W,N,3) views
+        self._pos_flat = np.zeros((self.total, 3), dtype=np.float32)
+        self._vel_flat = np.zeros((self.total, 3), dtype=np.float32)
+        self._acc_flat = np.zeros((self.total, 3), dtype=np.float32)
+        self.pos = self._pos_flat.reshape(self.W, self.N, 3)
+        self.vel = self._vel_flat.reshape(self.W, self.N, 3)
+        self.acc = self._acc_flat.reshape(self.W, self.N, 3)
+
+        # radiated energy: float32 accumulator on device, float64 host mirrors
+        self._radiated_accum_host = np.zeros(self.W, dtype=np.float32)
+        self._last_power_host = np.zeros(self.W, dtype=np.float32)
+        self.radiated_energy = np.zeros(self.W, dtype=np.float64)
+        self.last_radiated_power = np.zeros(self.W, dtype=np.float64)
+
+        # device arrays
+        self.d_pos = cuda.to_device(self._pos_flat)
+        self.d_vel = cuda.to_device(self._vel_flat)
+        self.d_acc = cuda.to_device(self._acc_flat)
+        self.d_tmp = cuda.device_array((self.total, 3), dtype=np.float32)
+        self.d_power = cuda.device_array(self.W, dtype=np.float32)
+        self.d_radiated_accum = cuda.device_array(self.W, dtype=np.float32)
+        self.d_last_power = cuda.device_array(self.W, dtype=np.float32)
+
+        # initial acceleration: zeros, matching VelocityVerlet constructor
+        self._threads = 256
+        self._blocks = (self.total + self._threads - 1) // self._threads
+        self._blocks_w = (self.W + self._threads - 1) // self._threads
+
+    def set_state(self, world_index: int,
+                  positions: np.ndarray, velocities: np.ndarray):
+        """Upload one world's (N,3) initial state."""
+        if not (0 <= world_index < self.W):
+            raise IndexError(f"world_index {world_index} out of [0, {self.W})")
+        self.pos[world_index] = np.asarray(positions, dtype=np.float32)
+        self.vel[world_index] = np.asarray(velocities, dtype=np.float32)
+        base = world_index * self.N
+        self.d_pos[base:base + self.N].copy_to_device(self._pos_flat[base:base + self.N])
+        self.d_vel[base:base + self.N].copy_to_device(self._vel_flat[base:base + self.N])
+
+    def set_all(self, positions: np.ndarray, velocities: np.ndarray):
+        """Upload all W worlds at once; arrays must be (W, N, 3)."""
+        pos = np.asarray(positions, dtype=np.float32).reshape(self.W, self.N, 3)
+        vel = np.asarray(velocities, dtype=np.float32).reshape(self.W, self.N, 3)
+        self.pos[:] = pos
+        self.vel[:] = vel
+        self.d_pos.copy_to_device(self._pos_flat)
+        self.d_vel.copy_to_device(self._vel_flat)
+
+    def compute_acceleration(self):
+        """Compute a = F(x, v) for every point in every world (device only)."""
+        _draw_cuda_batch[self._blocks, self._threads](
+            self.d_pos, self.d_acc, float(G), float(EPS * EPS), self.total, self.N)
+        _resist_cuda_batch[self._blocks, self._threads](
+            self.d_pos, self.d_vel, self.d_tmp, float(R_WALL), float(R_BOND), float(R_C),
+            float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+            float(S_WALL), self.d_power, self.total, self.N)
+        _add_acc_batch[self._blocks, self._threads](self.d_acc, self.d_tmp, self.total)
+        return self.acc
+
+    def step(self, dt: float = DT):
+        """Advance all worlds by one velocity-Verlet tick (pure device work)."""
+        dt = float(dt)
+        # 1. half-kick + drift using a(t)
+        _verlet_kick_drift_batch[self._blocks, self._threads](
+            self.d_pos, self.d_vel, self.d_acc, dt, self.total)
+        # 2. recompute total acceleration at new positions and current v
+        _draw_cuda_batch[self._blocks, self._threads](
+            self.d_pos, self.d_acc, float(G), float(EPS * EPS), self.total, self.N)
+        _resist_cuda_batch[self._blocks, self._threads](
+            self.d_pos, self.d_vel, self.d_tmp, float(R_WALL), float(R_BOND), float(R_C),
+            float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
+            float(S_WALL), self.d_power, self.total, self.N)
+        _add_acc_batch[self._blocks, self._threads](self.d_acc, self.d_tmp, self.total)
+        # 3. final half-kick using a(t+dt)
+        _verlet_final_kick_batch[self._blocks, self._threads](
+            self.d_vel, self.d_acc, dt, self.total)
+        # 4. accumulate radiated energy per world on device, record last power
+        _accumulate_radiation_kernel[self._blocks_w, self._threads](
+            self.d_power, self.d_radiated_accum, self.d_last_power, dt, self.W)
+
+    def sync_from_device(self):
+        """Copy device state back to host (call only at sample times)."""
+        self.d_pos.copy_to_host(self._pos_flat)
+        self.d_vel.copy_to_host(self._vel_flat)
+        self.d_acc.copy_to_host(self._acc_flat)
+        self.d_radiated_accum.copy_to_host(self._radiated_accum_host)
+        self.d_last_power.copy_to_host(self._last_power_host)
+        self.radiated_energy[:] = self._radiated_accum_host
+        self.last_radiated_power[:] = self._last_power_host
 
 
 if _cuda_available:
