@@ -94,6 +94,22 @@ RULE 0 doc section) as the print proofs earn them.*
   (v1 smoke already showed 21x on this axis; v2 measures it under preload).
   A dead falsifier, recorded honestly: v1(a) grain-identity — grains never
   existed; the crystal is not a phase.
+  **v2 SMOKE VERDICT 2026-08-06 (N=288, 4x4x16 column, F_pre=2467.8 derived):**
+  (a) SEATING PASS (both ends glued, gaps 0.0000 through the hold);
+  (b) ESCAPE PASS (zero escapees); (c) SPRING-BACK FAIL — force hysteresis
+  36% on the first cycle (236 loading vs 320 release at half-closure) while
+  LENGTH hysteresis is 0.05%: the first cycle beds the contacts in
+  (irreversible anneal toward close-packed), it is not elastic failure.
+  Successor: measure spring-back on the SECOND cycle (bed-in first, then
+  judge elasticity on the annealed column). (d) ORDERED-BEATS-RANDOM FAIL —
+  1.025x (threshold 2.0): under preload the packed column anneals into the
+  SAME close-packed cushion state and performs identically. The universe
+  crystallizes both prints into one attractor; order matters for the
+  FORMATION PATH (v1: coherent crush, 21x) but is forgotten by the annealed
+  material. Consequence for the whole manifest: permanent microstructure
+  cannot be printed — form lives in MEMBRANES (pins, containment,
+  assemblies), never in material microstate. This matches the doctrine:
+  types live on membranes/clumps, never authored per-point.
 - **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
   this manifest tracks: not anchors-to but contains-within. Bone is the brain's
   parent by enclosure: it takes the load so the brain doesn't have to.

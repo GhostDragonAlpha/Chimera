@@ -296,3 +296,79 @@ def bone(n: int = 1024,
     pos += jitter
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, ids
+
+
+def bone2(width: int = 4,
+          height: int = 4,
+          length: int = 16,
+          spacing: float = 0.05,
+          plate_gap: float | None = None,
+          seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    BONE v2 print: a preloaded compression column (theCushionLaw).
+
+    The column is printed ORDERED at cushion ``spacing`` (default 0.05) with a
+    ``width × height`` cross-section and ``length`` layers along x.  Two pinned
+    anchor plates (``width × height``) sit one ``plate_gap`` beyond the terminal
+    layers; ``plate_gap`` defaults to ``spacing`` so the plates are in cushion
+    contact.  Velocities are zero (cold print) apart from a tiny positional
+    jitter to break degeneracy.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is a length-N bool array; plate points are True.
+      - ``grain_ids`` is a length-N int32 array; plate points are -1 and the
+        single ordered column carries grain index 0.
+
+    The point count is ``width * height * (length + 2)``.
+    """
+    rng = np.random.default_rng(seed)
+    if plate_gap is None:
+        plate_gap = spacing
+    w = int(width)
+    h = int(height)
+    l = int(length)
+    d = float(spacing)
+    g = float(plate_gap)
+    if w < 2 or h < 2 or l < 2:
+        raise ValueError("width, height, and length must be at least 2")
+
+    n_col = w * h * l
+    n_plate = w * h
+
+    # column grid centered at the origin
+    x_off = (np.arange(l, dtype=np.float64) - (l - 1) / 2.0) * d
+    y_off = (np.arange(w, dtype=np.float64) - (w - 1) / 2.0) * d
+    z_off = (np.arange(h, dtype=np.float64) - (h - 1) / 2.0) * d
+    gx, gy, gz = np.meshgrid(x_off, y_off, z_off, indexing="ij")
+    col_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    # plates perpendicular to x, in cushion contact with the terminal layers
+    py, pz = np.meshgrid(y_off, z_off, indexing="ij")
+    plate_yz = np.stack([py.ravel(), pz.ravel()], axis=1)
+    left_plate = np.hstack([
+        np.full((n_plate, 1), x_off[0] - g),
+        plate_yz,
+    ])
+    right_plate = np.hstack([
+        np.full((n_plate, 1), x_off[-1] + g),
+        plate_yz,
+    ])
+
+    pos = np.vstack([left_plate, col_pos, right_plate]).astype(np.float64)
+
+    vel = np.zeros((pos.shape[0], 3), dtype=np.float64)
+    pin_mask = np.zeros(pos.shape[0], dtype=bool)
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate + n_col:] = True
+
+    grain_ids = np.empty(pos.shape[0], dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_col] = 0
+    grain_ids[n_plate + n_col:] = -1
+
+    # tiny positional jitter to break exact lattice degeneracy (<< R_WALL)
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids

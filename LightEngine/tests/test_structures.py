@@ -163,3 +163,58 @@ def test_bone_grains_bonded():
         mask_b = grain_ids == g + 1
         dists = np.linalg.norm(pos[mask_a][:, None] - pos[mask_b][None], axis=2)
         assert dists.min() <= R_BOND * 1.01, f"grain {g}-{g+1} not bonded"
+
+
+def test_bone2_determinism():
+    """bone2() is deterministic for a fixed seed."""
+    a = seed_structures.bone2(seed=5)
+    b = seed_structures.bone2(seed=5)
+    for x, y in zip(a, b):
+        np.testing.assert_array_equal(x, y)
+
+
+def test_bone2_geometry():
+    """bone2() builds a cushion-spaced column with pinned plates."""
+    pos, vel, pin_mask, grain_ids = seed_structures.bone2(
+        width=4, height=4, length=16, spacing=0.05, seed=0)
+    n_plate = 4 * 4
+    n_col = 4 * 4 * 16
+    assert pos.shape[0] == n_col + 2 * n_plate
+
+    # plates pinned, column free
+    assert pin_mask[:n_plate].all()
+    assert pin_mask[-n_plate:].all()
+    assert not pin_mask[n_plate:n_plate + n_col].any()
+
+    # grain ids: plates -1, column 0
+    assert (grain_ids[:n_plate] == -1).all()
+    assert (grain_ids[-n_plate:] == -1).all()
+    assert (grain_ids[n_plate:n_plate + n_col] == 0).all()
+
+    # column is elongated along x
+    extents = pos.max(axis=0) - pos.min(axis=0)
+    assert extents[0] > extents[1]
+    assert extents[0] > extents[2]
+
+    # cold print: zero velocity
+    np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+
+def test_bone2_cushion_gap():
+    """bone2() plates sit one cushion spacing from the terminal column layers."""
+    spacing = 0.05
+    pos, _, _, grain_ids = seed_structures.bone2(
+        width=4, height=4, length=16, spacing=spacing, seed=0)
+    col = pos[grain_ids >= 0]
+    plates = pos[grain_ids == -1]
+    left_plate = plates[plates[:, 0] < col[:, 0].min()]
+    right_plate = plates[plates[:, 0] > col[:, 0].max()]
+
+    left_gap = np.linalg.norm(
+        left_plate[:, None, :] - col[None, :, :], axis=2).min()
+    right_gap = np.linalg.norm(
+        right_plate[:, None, :] - col[None, :, :], axis=2).min()
+
+    # gap is approximately one spacing, within the tiny jitter tolerance
+    assert abs(left_gap - spacing) < 0.01
+    assert abs(right_gap - spacing) < 0.01

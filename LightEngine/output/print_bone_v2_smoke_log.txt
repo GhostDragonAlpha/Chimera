@@ -1,0 +1,348 @@
+======================================================================
+THE KERNEL — BONE v2 print run
+N=320, column=4x4x18, seed=20260806, control=packed, dt=0.0005
+----------------------------------------------------------------------
+STATEMENT: A cold-ordered cushion-spaced column between two pinned
+  anchor plates can be preloaded to 1.5x its end-weight, remain
+  seated and intact, spring back elastically after half-release, and
+  outperform a packed-bed control under overload.
+PREDICTION: End gaps stay < R_C, zero escapees, force/length return
+  within 10% after half-release, ordered deflection/load <= 1/2 of
+  the packed-bed control under overload.
+FALSIFIERS:
+  (a) SEATING   — any end gap > r_c during preload hold
+  (b) ESCAPE    — any column point with NN > r_c under preload
+  (c) SPRING-BACK — force/length after release differ >10% from loading
+  (d) ORDERED BEATS RANDOM — ordered deflection/load not 2x better
+======================================================================
+
+Derived end-weight = 1645.231
+Derived F_pre      = 2467.847
+
+
+[bone] N=320 column=288 plates=32
+[bone] v_plate=0.05000 lu/tick, dt=0.0005
+[bone] F_pre=2467.847
+
+[bone] tick=   500 phase=converge     | closure=0.02500 | force=192.531 | length=0.19373 | gap_L=0.3728 | gap_R=0.3587 | escape=0 | deflect=0.2401 | clusters=   3 | bound=1.000
+[bone] tick=  1000 phase=converge     | closure=0.05001 | force=218.630 | length=0.25822 | gap_L=0.3200 | gap_R=0.3232 | escape=0 | deflect=0.1512 | clusters=   3 | bound=1.000
+[bone] tick=  1500 phase=converge     | closure=0.07501 | force=230.746 | length=0.24075 | gap_L=0.3129 | gap_R=0.3223 | escape=0 | deflect=0.1325 | clusters=   3 | bound=1.000
+[bone] tick=  2000 phase=converge     | closure=0.10002 | force=245.472 | length=0.24835 | gap_L=0.2991 | gap_R=0.3030 | escape=0 | deflect=0.1317 | clusters=   2 | bound=1.000
+[bone] tick=  2500 phase=converge     | closure=0.12502 | force=260.000 | length=0.24805 | gap_L=0.2820 | gap_R=0.2955 | escape=0 | deflect=0.1265 | clusters=   1 | bound=1.000
+[bone] tick=  3000 phase=converge     | closure=0.15002 | force=275.921 | length=0.24910 | gap_L=0.2642 | gap_R=0.2876 | escape=0 | deflect=0.1263 | clusters=   1 | bound=1.000
+[bone] tick=  3500 phase=converge     | closure=0.17503 | force=294.662 | length=0.24908 | gap_L=0.2411 | gap_R=0.2857 | escape=0 | deflect=0.1264 | clusters=   1 | bound=1.000
+[bone] tick=  4000 phase=converge     | closure=0.20003 | force=322.633 | length=0.24922 | gap_L=0.2043 | gap_R=0.2976 | escape=0 | deflect=0.1265 | clusters=   1 | bound=1.000
+[bone] tick=  4500 phase=converge     | closure=0.22504 | force=404.719 | length=0.25047 | gap_L=0.1340 | gap_R=0.3423 | escape=0 | deflect=0.1264 | clusters=   2 | bound=1.000
+[bone] tick=  5000 phase=converge     | closure=0.25004 | force=564.759 | length=0.23760 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1259 | clusters=   2 | bound=1.000
+[bone] tick=  5500 phase=converge     | closure=0.27505 | force=246.203 | length=0.24521 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1361 | clusters=   2 | bound=1.000
+[bone] tick=  6000 phase=converge     | closure=0.30005 | force=124.949 | length=0.25842 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   2 | bound=1.000
+[bone] tick=  6500 phase=converge     | closure=0.32505 | force=149.664 | length=0.25777 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1303 | clusters=   2 | bound=1.000
+[bone] tick=  7000 phase=converge     | closure=0.35006 | force=156.425 | length=0.25646 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1299 | clusters=   2 | bound=1.000
+[bone] tick=  7500 phase=converge     | closure=0.37506 | force=160.150 | length=0.25529 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1302 | clusters=   2 | bound=1.000
+[bone] tick=  8000 phase=converge     | closure=0.40007 | force=183.925 | length=0.25616 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1310 | clusters=   2 | bound=1.000
+[bone] tick=  8500 phase=converge     | closure=0.42507 | force=207.458 | length=0.25673 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1310 | clusters=   2 | bound=1.000
+[bone] tick=  9000 phase=converge     | closure=0.45007 | force=236.116 | length=0.25668 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1298 | clusters=   2 | bound=1.000
+[bone] tick=  9500 phase=converge     | closure=0.47508 | force=256.492 | length=0.25760 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1299 | clusters=   1 | bound=1.000
+[bone] tick= 10000 phase=converge     | closure=0.50008 | force=294.129 | length=0.25782 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1304 | clusters=   1 | bound=1.000
+[bone] tick= 10500 phase=converge     | closure=0.52509 | force=331.359 | length=0.25764 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+[bone] tick= 11000 phase=converge     | closure=0.55009 | force=375.646 | length=0.25946 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1302 | clusters=   1 | bound=1.000
+[bone] tick= 11500 phase=converge     | closure=0.57510 | force=432.181 | length=0.26009 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1296 | clusters=   1 | bound=1.000
+[bone] tick= 12000 phase=converge     | closure=0.60010 | force=500.692 | length=0.26285 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1278 | clusters=   1 | bound=1.000
+[bone] tick= 12500 phase=converge     | closure=0.62510 | force=616.394 | length=0.26688 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1270 | clusters=   1 | bound=1.000
+[bone] tick= 13000 phase=converge     | closure=0.65011 | force=725.383 | length=0.26634 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1259 | clusters=   1 | bound=1.000
+[bone] tick= 13500 phase=converge     | closure=0.67511 | force=944.406 | length=0.26218 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1290 | clusters=   1 | bound=1.000
+[bone] tick= 14000 phase=converge     | closure=0.70012 | force=1029.298 | length=0.26738 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1249 | clusters=   1 | bound=1.000
+[bone] tick= 14500 phase=converge     | closure=0.72511 | force=460.656 | length=0.25352 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[bone] tick= 15000 phase=converge     | closure=0.75011 | force=31.309 | length=0.25483 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1311 | clusters=   1 | bound=1.000
+[bone] tick= 15500 phase=converge     | closure=0.77511 | force=447.918 | length=0.24541 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1335 | clusters=   1 | bound=1.000
+[bone] tick= 16000 phase=converge     | closure=0.80010 | force=726.932 | length=0.23386 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1372 | clusters=   1 | bound=1.000
+[bone] tick= 16500 phase=converge     | closure=0.82510 | force=634.588 | length=0.24381 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1392 | clusters=   1 | bound=1.000
+[bone] tick= 17000 phase=converge     | closure=0.85010 | force=974.717 | length=0.22881 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1426 | clusters=   1 | bound=1.000
+[bone] tick= 17500 phase=converge     | closure=0.87510 | force=839.825 | length=0.24030 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1387 | clusters=   1 | bound=1.000
+[bone] tick= 18000 phase=converge     | closure=0.90010 | force=658.173 | length=0.25053 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1349 | clusters=   1 | bound=1.000
+
+[bone] preload reached at tick 18479: force=2475.157 closure=0.92405
+
+[bone] tick= 18479 phase=preload_hold | closure=0.92405 | force=2475.157 | length=0.24580 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1405 | clusters=   1 | bound=1.000
+[bone] tick= 18500 phase=preload_hold | closure=0.92405 | force=2329.226 | length=0.24649 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1409 | clusters=   1 | bound=1.000
+[bone] tick= 19000 phase=preload_hold | closure=0.92405 | force=2075.828 | length=0.24802 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1394 | clusters=   1 | bound=1.000
+[bone] tick= 19500 phase=preload_hold | closure=0.92405 | force=1922.049 | length=0.24850 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1396 | clusters=   1 | bound=1.000
+[bone] tick= 20000 phase=preload_hold | closure=0.92405 | force=1921.170 | length=0.24679 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1398 | clusters=   1 | bound=1.000
+[bone] tick= 20500 phase=preload_hold | closure=0.92405 | force=1942.708 | length=0.24622 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1393 | clusters=   1 | bound=1.000
+[bone] tick= 21000 phase=preload_hold | closure=0.92405 | force=1962.509 | length=0.24751 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1388 | clusters=   1 | bound=1.000
+[bone] tick= 21500 phase=preload_hold | closure=0.92405 | force=1927.889 | length=0.24682 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1382 | clusters=   1 | bound=1.000
+[bone] tick= 22000 phase=preload_hold | closure=0.92405 | force=1940.662 | length=0.24716 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1377 | clusters=   1 | bound=1.000
+[bone] tick= 22500 phase=preload_hold | closure=0.92405 | force=1937.526 | length=0.24752 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1377 | clusters=   1 | bound=1.000
+[bone] tick= 23000 phase=preload_hold | closure=0.92405 | force=1940.991 | length=0.24735 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 23500 phase=preload_hold | closure=0.92405 | force=1935.600 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1377 | clusters=   1 | bound=1.000
+[bone] tick= 24000 phase=preload_hold | closure=0.92405 | force=1932.296 | length=0.24750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 24500 phase=preload_hold | closure=0.92405 | force=1943.248 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1377 | clusters=   1 | bound=1.000
+[bone] tick= 25000 phase=preload_hold | closure=0.92405 | force=1942.252 | length=0.24745 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 25500 phase=preload_hold | closure=0.92405 | force=1942.729 | length=0.24751 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 26000 phase=preload_hold | closure=0.92405 | force=1932.130 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 26500 phase=preload_hold | closure=0.92405 | force=1934.228 | length=0.24750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 27000 phase=preload_hold | closure=0.92405 | force=1931.829 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 27500 phase=preload_hold | closure=0.92405 | force=1942.117 | length=0.24751 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 28000 phase=preload_hold | closure=0.92405 | force=1949.346 | length=0.24750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 28500 phase=preload_hold | closure=0.92405 | force=1947.048 | length=0.24748 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 29000 phase=preload_hold | closure=0.92405 | force=1935.033 | length=0.24748 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 29500 phase=preload_hold | closure=0.92405 | force=1927.648 | length=0.24754 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 30000 phase=preload_hold | closure=0.92405 | force=1944.577 | length=0.24747 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 30500 phase=preload_hold | closure=0.92405 | force=1930.558 | length=0.24747 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 31000 phase=preload_hold | closure=0.92405 | force=1940.609 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 31500 phase=preload_hold | closure=0.92405 | force=1932.163 | length=0.24747 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 32000 phase=preload_hold | closure=0.92405 | force=1925.932 | length=0.24749 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 32500 phase=preload_hold | closure=0.92405 | force=1945.245 | length=0.24748 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 33000 phase=preload_hold | closure=0.92405 | force=1940.641 | length=0.24748 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 33500 phase=preload_hold | closure=0.92405 | force=1949.364 | length=0.24750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 34000 phase=preload_hold | closure=0.92405 | force=1936.631 | length=0.24747 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 34500 phase=preload_hold | closure=0.92405 | force=1933.405 | length=0.24751 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 35000 phase=preload_hold | closure=0.92405 | force=1937.325 | length=0.24750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 35500 phase=preload_hold | closure=0.92405 | force=1947.829 | length=0.24744 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 36000 phase=preload_hold | closure=0.92405 | force=1936.867 | length=0.24747 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 36500 phase=preload_hold | closure=0.92405 | force=1945.379 | length=0.24746 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+
+[bone] releasing 9240 ticks (half convergence distance)
+
+[bone] tick= 36958 phase=release      | closure=0.92405 | force=1956.378 | length=0.24751 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 37000 phase=release      | closure=0.92195 | force=990.516 | length=0.24754 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[bone] tick= 37500 phase=release      | closure=0.89695 | force=1251.150 | length=0.25662 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1353 | clusters=   1 | bound=1.000
+[bone] tick= 38000 phase=release      | closure=0.87195 | force=668.382 | length=0.26033 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1414 | clusters=   1 | bound=1.000
+[bone] tick= 38500 phase=release      | closure=0.84695 | force=810.081 | length=0.26810 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1398 | clusters=   1 | bound=1.000
+[bone] tick= 39000 phase=release      | closure=0.82195 | force=652.541 | length=0.25367 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1407 | clusters=   1 | bound=1.000
+[bone] tick= 39500 phase=release      | closure=0.79695 | force=765.477 | length=0.27550 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1431 | clusters=   1 | bound=1.000
+[bone] tick= 40000 phase=release      | closure=0.77196 | force=694.553 | length=0.27393 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1367 | clusters=   1 | bound=1.000
+[bone] tick= 40500 phase=release      | closure=0.74696 | force=614.210 | length=0.24470 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1303 | clusters=   1 | bound=1.000
+[bone] tick= 41000 phase=release      | closure=0.72196 | force=895.150 | length=0.25292 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1294 | clusters=   1 | bound=1.000
+[bone] tick= 41500 phase=release      | closure=0.69697 | force=922.484 | length=0.26117 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1303 | clusters=   1 | bound=1.000
+[bone] tick= 42000 phase=release      | closure=0.67196 | force=913.029 | length=0.24267 | gap_L=0.0340 | gap_R=0.0378 | escape=0 | deflect=0.1250 | clusters=   1 | bound=1.000
+[bone] tick= 42500 phase=release      | closure=0.64696 | force=1065.306 | length=0.24292 | gap_L=0.0413 | gap_R=0.0416 | escape=0 | deflect=0.1262 | clusters=   1 | bound=1.000
+[bone] tick= 43000 phase=release      | closure=0.62195 | force=1087.180 | length=0.25852 | gap_L=0.0451 | gap_R=0.0482 | escape=0 | deflect=0.1268 | clusters=   1 | bound=1.000
+[bone] tick= 43500 phase=release      | closure=0.59695 | force=1033.554 | length=0.26568 | gap_L=0.0500 | gap_R=0.0581 | escape=0 | deflect=0.1275 | clusters=   1 | bound=1.000
+[bone] tick= 44000 phase=release      | closure=0.57194 | force=942.544 | length=0.26416 | gap_L=0.0447 | gap_R=0.0813 | escape=0 | deflect=0.1283 | clusters=   1 | bound=1.000
+[bone] tick= 44500 phase=release      | closure=0.54694 | force=344.293 | length=0.23973 | gap_L=0.0299 | gap_R=0.1578 | escape=0 | deflect=0.1316 | clusters=   1 | bound=1.000
+[bone] tick= 45000 phase=release      | closure=0.52194 | force=441.182 | length=0.25640 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1322 | clusters=   1 | bound=1.000
+[bone] tick= 45500 phase=release      | closure=0.49693 | force=498.200 | length=0.24236 | gap_L=0.0359 | gap_R=0.2004 | escape=0 | deflect=0.1270 | clusters=   1 | bound=1.000
+[bone] tick= 46000 phase=release      | closure=0.47193 | force=222.093 | length=0.25139 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1294 | clusters=   1 | bound=1.000
+
+[bone] entering final hold
+
+[bone] tick= 46198 phase=final_hold   | closure=0.46203 | force=306.726 | length=0.25216 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+[bone] tick= 46500 phase=final_hold   | closure=0.46203 | force=323.203 | length=0.24944 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1263 | clusters=   1 | bound=1.000
+[bone] tick= 47000 phase=final_hold   | closure=0.46203 | force=322.545 | length=0.24991 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+[bone] tick= 47500 phase=final_hold   | closure=0.46203 | force=314.052 | length=0.25095 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1301 | clusters=   1 | bound=1.000
+[bone] tick= 48000 phase=final_hold   | closure=0.46203 | force=328.794 | length=0.25120 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1273 | clusters=   1 | bound=1.000
+[bone] tick= 48500 phase=final_hold   | closure=0.46203 | force=313.699 | length=0.25025 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[bone] tick= 49000 phase=final_hold   | closure=0.46203 | force=320.003 | length=0.25295 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1279 | clusters=   1 | bound=1.000
+[bone] tick= 49500 phase=final_hold   | closure=0.46203 | force=318.243 | length=0.25370 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1274 | clusters=   1 | bound=1.000
+[bone] tick= 50000 phase=final_hold   | closure=0.46203 | force=328.933 | length=0.25328 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1281 | clusters=   1 | bound=1.000
+[bone] tick= 50500 phase=final_hold   | closure=0.46203 | force=321.042 | length=0.25322 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1280 | clusters=   1 | bound=1.000
+[bone] tick= 51000 phase=final_hold   | closure=0.46203 | force=322.402 | length=0.25711 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1283 | clusters=   1 | bound=1.000
+[bone] tick= 51500 phase=final_hold   | closure=0.46203 | force=321.820 | length=0.25635 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1271 | clusters=   1 | bound=1.000
+[bone] tick= 52000 phase=final_hold   | closure=0.46203 | force=320.503 | length=0.25671 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1282 | clusters=   1 | bound=1.000
+[bone] tick= 52500 phase=final_hold   | closure=0.46203 | force=313.067 | length=0.25638 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[bone] tick= 53000 phase=final_hold   | closure=0.46203 | force=318.478 | length=0.25641 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[bone] tick= 53500 phase=final_hold   | closure=0.46203 | force=319.831 | length=0.25615 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1289 | clusters=   1 | bound=1.000
+[bone] tick= 54000 phase=final_hold   | closure=0.46203 | force=319.171 | length=0.25664 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1281 | clusters=   1 | bound=1.000
+[bone] tick= 54500 phase=final_hold   | closure=0.46203 | force=319.297 | length=0.25637 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1280 | clusters=   1 | bound=1.000
+[bone] tick= 55000 phase=final_hold   | closure=0.46203 | force=330.285 | length=0.25652 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1283 | clusters=   1 | bound=1.000
+[bone] tick= 55500 phase=final_hold   | closure=0.46203 | force=324.248 | length=0.25636 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+[bone] tick= 56000 phase=final_hold   | closure=0.46203 | force=322.259 | length=0.25648 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1293 | clusters=   1 | bound=1.000
+[bone] tick= 56500 phase=final_hold   | closure=0.46203 | force=321.138 | length=0.25625 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1280 | clusters=   1 | bound=1.000
+[bone] tick= 57000 phase=final_hold   | closure=0.46203 | force=317.705 | length=0.25635 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1277 | clusters=   1 | bound=1.000
+[bone] tick= 57500 phase=final_hold   | closure=0.46203 | force=320.366 | length=0.25643 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[bone] tick= 58000 phase=final_hold   | closure=0.46203 | force=326.148 | length=0.25656 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+[bone] tick= 58500 phase=final_hold   | closure=0.46203 | force=319.168 | length=0.25632 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1289 | clusters=   1 | bound=1.000
+[bone] tick= 59000 phase=final_hold   | closure=0.46203 | force=310.248 | length=0.25646 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1282 | clusters=   1 | bound=1.000
+[bone] tick= 59500 phase=final_hold   | closure=0.46203 | force=324.486 | length=0.25653 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1282 | clusters=   1 | bound=1.000
+[bone] tick= 60000 phase=final_hold   | closure=0.46203 | force=320.980 | length=0.25655 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[bone] tick= 60500 phase=final_hold   | closure=0.46203 | force=318.265 | length=0.25644 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[bone] tick= 61000 phase=final_hold   | closure=0.46203 | force=318.890 | length=0.25654 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[bone] tick= 61500 phase=final_hold   | closure=0.46203 | force=319.980 | length=0.25656 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1279 | clusters=   1 | bound=1.000
+[bone] tick= 62000 phase=final_hold   | closure=0.46203 | force=325.388 | length=0.25650 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1275 | clusters=   1 | bound=1.000
+[bone] tick= 62500 phase=final_hold   | closure=0.46203 | force=316.279 | length=0.25654 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1280 | clusters=   1 | bound=1.000
+[bone] tick= 63000 phase=final_hold   | closure=0.46203 | force=322.709 | length=0.25657 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[bone] tick= 63500 phase=final_hold   | closure=0.46203 | force=322.742 | length=0.25652 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[bone] tick= 64000 phase=final_hold   | closure=0.46203 | force=317.569 | length=0.25654 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1277 | clusters=   1 | bound=1.000
+[bone] tick= 64500 phase=final_hold   | closure=0.46203 | force=321.670 | length=0.25655 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1276 | clusters=   1 | bound=1.000
+
+[bone] overload pulse 1000 ticks
+
+[bone] tick= 64677 phase=overload     | closure=0.46203 | force=321.923 | length=0.25659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1277 | clusters=   1 | bound=1.000
+[bone] tick= 65000 phase=overload     | closure=0.47818 | force=289.971 | length=0.25441 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+[bone] tick= 65500 phase=overload     | closure=0.50318 | force=442.068 | length=0.25465 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1266 | clusters=   1 | bound=1.000
+[bone] tick= 65677 phase=overload     | closure=0.51203 | force=432.583 | length=0.25352 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1267 | clusters=   1 | bound=1.000
+
+[bone] BONE v2 FALSIFIERS:
+  (a) SEATING   : PASS  max gap L/R = 0.0000 / 0.0000 (threshold 0.30)
+  (b) ESCAPE    : PASS  max escapees = 0
+  (c) SPRING-BACK: FAIL  half-closure=0.45005  load F/L=236.088/0.25668  release F/L=320.194/0.25654
+  (d) OVERLOAD  : peak force=442.068  peak deflect=0.1286
+
+[packed] N=320 column=288 plates=32
+[packed] v_plate=0.05000 lu/tick, dt=0.0005
+[packed] F_pre=2467.847
+
+[packed] tick=   500 phase=converge     | closure=0.02500 | force=192.721 | length=1.25132 | gap_L=0.0000 | gap_R=0.0000 | escape=1 | deflect=0.3698 | clusters=   2 | bound=0.988
+[packed] tick=  1000 phase=converge     | closure=0.05001 | force=217.206 | length=1.20658 | gap_L=0.0000 | gap_R=0.0000 | escape=1 | deflect=0.2972 | clusters=   2 | bound=0.994
+[packed] tick=  1500 phase=converge     | closure=0.07501 | force=234.562 | length=1.13275 | gap_L=0.0000 | gap_R=0.0000 | escape=1 | deflect=0.2195 | clusters=   3 | bound=0.997
+[packed] tick=  2000 phase=converge     | closure=0.10002 | force=266.184 | length=0.96549 | gap_L=0.0000 | gap_R=0.0000 | escape=1 | deflect=0.2244 | clusters=   3 | bound=0.997
+[packed] tick=  2500 phase=converge     | closure=0.12502 | force=373.255 | length=0.50329 | gap_L=0.1931 | gap_R=0.1293 | escape=0 | deflect=0.2166 | clusters=   1 | bound=0.997
+[packed] tick=  3000 phase=converge     | closure=0.15002 | force=936.623 | length=0.31926 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1393 | clusters=   2 | bound=1.000
+[packed] tick=  3500 phase=converge     | closure=0.17503 | force=94.671 | length=0.24348 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1642 | clusters=   2 | bound=1.000
+[packed] tick=  4000 phase=converge     | closure=0.20003 | force=112.967 | length=0.24809 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1331 | clusters=   2 | bound=1.000
+[packed] tick=  4500 phase=converge     | closure=0.22504 | force=111.097 | length=0.24214 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1325 | clusters=   2 | bound=1.000
+[packed] tick=  5000 phase=converge     | closure=0.25004 | force=130.193 | length=0.24196 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1334 | clusters=   2 | bound=1.000
+[packed] tick=  5500 phase=converge     | closure=0.27505 | force=111.089 | length=0.24090 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1335 | clusters=   2 | bound=1.000
+[packed] tick=  6000 phase=converge     | closure=0.30005 | force=123.564 | length=0.24079 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1327 | clusters=   2 | bound=1.000
+[packed] tick=  6500 phase=converge     | closure=0.32505 | force=133.614 | length=0.24091 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1336 | clusters=   2 | bound=1.000
+[packed] tick=  7000 phase=converge     | closure=0.35006 | force=154.298 | length=0.24118 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1335 | clusters=   2 | bound=1.000
+[packed] tick=  7500 phase=converge     | closure=0.37506 | force=154.901 | length=0.24112 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1325 | clusters=   2 | bound=1.000
+[packed] tick=  8000 phase=converge     | closure=0.40007 | force=169.319 | length=0.24094 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1329 | clusters=   2 | bound=1.000
+[packed] tick=  8500 phase=converge     | closure=0.42507 | force=193.968 | length=0.24095 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1324 | clusters=   2 | bound=1.000
+[packed] tick=  9000 phase=converge     | closure=0.45007 | force=219.117 | length=0.24121 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1326 | clusters=   2 | bound=1.000
+[packed] tick=  9500 phase=converge     | closure=0.47508 | force=239.955 | length=0.24113 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1322 | clusters=   2 | bound=1.000
+[packed] tick= 10000 phase=converge     | closure=0.50008 | force=283.020 | length=0.24232 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1316 | clusters=   1 | bound=1.000
+[packed] tick= 10500 phase=converge     | closure=0.52509 | force=306.359 | length=0.24349 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1317 | clusters=   1 | bound=1.000
+[packed] tick= 11000 phase=converge     | closure=0.55009 | force=351.435 | length=0.24358 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1309 | clusters=   1 | bound=1.000
+[packed] tick= 11500 phase=converge     | closure=0.57510 | force=397.256 | length=0.24445 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1321 | clusters=   1 | bound=1.000
+[packed] tick= 12000 phase=converge     | closure=0.60010 | force=465.573 | length=0.24489 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1318 | clusters=   1 | bound=1.000
+[packed] tick= 12500 phase=converge     | closure=0.62510 | force=535.487 | length=0.24590 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1309 | clusters=   1 | bound=1.000
+[packed] tick= 13000 phase=converge     | closure=0.65011 | force=632.649 | length=0.24793 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1301 | clusters=   1 | bound=1.000
+[packed] tick= 13500 phase=converge     | closure=0.67511 | force=783.704 | length=0.25384 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 14000 phase=converge     | closure=0.70012 | force=935.641 | length=0.25827 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1257 | clusters=   1 | bound=1.000
+[packed] tick= 14500 phase=converge     | closure=0.72511 | force=1037.813 | length=0.26272 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1241 | clusters=   1 | bound=1.000
+[packed] tick= 15000 phase=converge     | closure=0.75011 | force=507.239 | length=0.24462 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1314 | clusters=   1 | bound=1.000
+[packed] tick= 15500 phase=converge     | closure=0.77511 | force=74.923 | length=0.24743 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1302 | clusters=   1 | bound=1.000
+[packed] tick= 16000 phase=converge     | closure=0.80010 | force=431.577 | length=0.24063 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1317 | clusters=   1 | bound=1.000
+[packed] tick= 16500 phase=converge     | closure=0.82510 | force=859.954 | length=0.22735 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1380 | clusters=   1 | bound=1.000
+[packed] tick= 17000 phase=converge     | closure=0.85010 | force=954.764 | length=0.23501 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1380 | clusters=   1 | bound=1.000
+[packed] tick= 17500 phase=converge     | closure=0.87510 | force=856.931 | length=0.24168 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[packed] tick= 18000 phase=converge     | closure=0.90010 | force=916.911 | length=0.24810 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1440 | clusters=   1 | bound=1.000
+
+[packed] preload reached at tick 18466: force=2477.215 closure=0.92340
+
+[packed] tick= 18466 phase=preload_hold | closure=0.92340 | force=2477.215 | length=0.24872 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1389 | clusters=   1 | bound=1.000
+[packed] tick= 18500 phase=preload_hold | closure=0.92340 | force=2287.010 | length=0.24813 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1380 | clusters=   1 | bound=1.000
+[packed] tick= 19000 phase=preload_hold | closure=0.92340 | force=1934.840 | length=0.24766 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1381 | clusters=   1 | bound=1.000
+[packed] tick= 19500 phase=preload_hold | closure=0.92340 | force=1919.713 | length=0.24883 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1376 | clusters=   1 | bound=1.000
+[packed] tick= 20000 phase=preload_hold | closure=0.92340 | force=1903.926 | length=0.24660 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1378 | clusters=   1 | bound=1.000
+[packed] tick= 20500 phase=preload_hold | closure=0.92340 | force=1910.008 | length=0.24737 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 21000 phase=preload_hold | closure=0.92340 | force=1914.289 | length=0.24708 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1373 | clusters=   1 | bound=1.000
+[packed] tick= 21500 phase=preload_hold | closure=0.92340 | force=1891.439 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1373 | clusters=   1 | bound=1.000
+[packed] tick= 22000 phase=preload_hold | closure=0.92340 | force=1898.736 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 22500 phase=preload_hold | closure=0.92340 | force=1897.038 | length=0.24656 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 23000 phase=preload_hold | closure=0.92340 | force=1889.908 | length=0.24655 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 23500 phase=preload_hold | closure=0.92340 | force=1903.023 | length=0.24660 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 24000 phase=preload_hold | closure=0.92340 | force=1903.120 | length=0.24661 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 24500 phase=preload_hold | closure=0.92340 | force=1893.257 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 25000 phase=preload_hold | closure=0.92340 | force=1886.910 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 25500 phase=preload_hold | closure=0.92340 | force=1899.165 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 26000 phase=preload_hold | closure=0.92340 | force=1907.388 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 26500 phase=preload_hold | closure=0.92340 | force=1899.248 | length=0.24658 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 27000 phase=preload_hold | closure=0.92340 | force=1895.711 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 27500 phase=preload_hold | closure=0.92340 | force=1902.049 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 28000 phase=preload_hold | closure=0.92340 | force=1890.029 | length=0.24657 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 28500 phase=preload_hold | closure=0.92340 | force=1887.050 | length=0.24667 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 29000 phase=preload_hold | closure=0.92340 | force=1893.217 | length=0.24665 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 29500 phase=preload_hold | closure=0.92340 | force=1912.936 | length=0.24660 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 30000 phase=preload_hold | closure=0.92340 | force=1898.269 | length=0.24660 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 30500 phase=preload_hold | closure=0.92340 | force=1894.782 | length=0.24658 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 31000 phase=preload_hold | closure=0.92340 | force=1895.175 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 31500 phase=preload_hold | closure=0.92340 | force=1894.712 | length=0.24662 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 32000 phase=preload_hold | closure=0.92340 | force=1906.453 | length=0.24664 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 32500 phase=preload_hold | closure=0.92340 | force=1905.719 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 33000 phase=preload_hold | closure=0.92340 | force=1893.162 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 33500 phase=preload_hold | closure=0.92340 | force=1898.284 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 34000 phase=preload_hold | closure=0.92340 | force=1891.043 | length=0.24664 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 34500 phase=preload_hold | closure=0.92340 | force=1897.519 | length=0.24664 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 35000 phase=preload_hold | closure=0.92340 | force=1882.917 | length=0.24661 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 35500 phase=preload_hold | closure=0.92340 | force=1905.740 | length=0.24657 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 36000 phase=preload_hold | closure=0.92340 | force=1883.799 | length=0.24655 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 36500 phase=preload_hold | closure=0.92340 | force=1893.587 | length=0.24661 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+
+[packed] releasing 9233 ticks (half convergence distance)
+
+[packed] tick= 36932 phase=release      | closure=0.92340 | force=1894.750 | length=0.24659 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1374 | clusters=   1 | bound=1.000
+[packed] tick= 37000 phase=release      | closure=0.92000 | force=666.867 | length=0.24663 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1370 | clusters=   1 | bound=1.000
+[packed] tick= 37500 phase=release      | closure=0.89500 | force=1148.157 | length=0.25629 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1354 | clusters=   1 | bound=1.000
+[packed] tick= 38000 phase=release      | closure=0.87000 | force=702.486 | length=0.25750 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1385 | clusters=   1 | bound=1.000
+[packed] tick= 38500 phase=release      | closure=0.84500 | force=765.550 | length=0.26318 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1405 | clusters=   1 | bound=1.000
+[packed] tick= 39000 phase=release      | closure=0.82000 | force=699.248 | length=0.26416 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1420 | clusters=   1 | bound=1.000
+[packed] tick= 39500 phase=release      | closure=0.79500 | force=681.089 | length=0.27633 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1365 | clusters=   1 | bound=1.000
+[packed] tick= 40000 phase=release      | closure=0.77001 | force=690.247 | length=0.26983 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1346 | clusters=   1 | bound=1.000
+[packed] tick= 40500 phase=release      | closure=0.74501 | force=733.036 | length=0.27610 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+[packed] tick= 41000 phase=release      | closure=0.72001 | force=746.774 | length=0.27712 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1267 | clusters=   1 | bound=1.000
+[packed] tick= 41500 phase=release      | closure=0.69502 | force=768.829 | length=0.24745 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1271 | clusters=   1 | bound=1.000
+[packed] tick= 42000 phase=release      | closure=0.67001 | force=927.199 | length=0.23326 | gap_L=0.0392 | gap_R=0.0394 | escape=0 | deflect=0.1302 | clusters=   1 | bound=1.000
+[packed] tick= 42500 phase=release      | closure=0.64501 | force=1077.724 | length=0.24328 | gap_L=0.0429 | gap_R=0.0417 | escape=0 | deflect=0.1239 | clusters=   1 | bound=1.000
+[packed] tick= 43000 phase=release      | closure=0.62000 | force=1086.648 | length=0.25589 | gap_L=0.0483 | gap_R=0.0463 | escape=0 | deflect=0.1242 | clusters=   1 | bound=1.000
+[packed] tick= 43500 phase=release      | closure=0.59500 | force=1031.755 | length=0.26307 | gap_L=0.0582 | gap_R=0.0501 | escape=0 | deflect=0.1250 | clusters=   1 | bound=1.000
+[packed] tick= 44000 phase=release      | closure=0.56999 | force=905.051 | length=0.25317 | gap_L=0.0946 | gap_R=0.0418 | escape=0 | deflect=0.1253 | clusters=   1 | bound=1.000
+[packed] tick= 44500 phase=release      | closure=0.54499 | force=272.380 | length=0.23494 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1281 | clusters=   1 | bound=1.000
+[packed] tick= 45000 phase=release      | closure=0.51999 | force=502.029 | length=0.24482 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1266 | clusters=   1 | bound=1.000
+[packed] tick= 45500 phase=release      | closure=0.49498 | force=428.261 | length=0.23424 | gap_L=0.2105 | gap_R=0.0341 | escape=0 | deflect=0.1277 | clusters=   1 | bound=1.000
+[packed] tick= 46000 phase=release      | closure=0.46998 | force=281.814 | length=0.24404 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1297 | clusters=   1 | bound=1.000
+
+[packed] entering final hold
+
+[packed] tick= 46165 phase=final_hold   | closure=0.46173 | force=322.176 | length=0.24502 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1308 | clusters=   1 | bound=1.000
+[packed] tick= 46500 phase=final_hold   | closure=0.46173 | force=290.234 | length=0.24526 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1308 | clusters=   1 | bound=1.000
+[packed] tick= 47000 phase=final_hold   | closure=0.46173 | force=342.596 | length=0.24500 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1293 | clusters=   1 | bound=1.000
+[packed] tick= 47500 phase=final_hold   | closure=0.46173 | force=301.294 | length=0.24654 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1306 | clusters=   1 | bound=1.000
+[packed] tick= 48000 phase=final_hold   | closure=0.46173 | force=324.528 | length=0.24577 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1295 | clusters=   1 | bound=1.000
+[packed] tick= 48500 phase=final_hold   | closure=0.46173 | force=319.546 | length=0.24585 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[packed] tick= 49000 phase=final_hold   | closure=0.46173 | force=316.304 | length=0.24587 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1296 | clusters=   1 | bound=1.000
+[packed] tick= 49500 phase=final_hold   | closure=0.46173 | force=321.967 | length=0.24556 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1310 | clusters=   1 | bound=1.000
+[packed] tick= 50000 phase=final_hold   | closure=0.46173 | force=319.474 | length=0.24607 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1309 | clusters=   1 | bound=1.000
+[packed] tick= 50500 phase=final_hold   | closure=0.46173 | force=314.339 | length=0.24580 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1293 | clusters=   1 | bound=1.000
+[packed] tick= 51000 phase=final_hold   | closure=0.46173 | force=319.338 | length=0.24640 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1294 | clusters=   1 | bound=1.000
+[packed] tick= 51500 phase=final_hold   | closure=0.46173 | force=308.734 | length=0.24604 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[packed] tick= 52000 phase=final_hold   | closure=0.46173 | force=320.683 | length=0.24518 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1302 | clusters=   1 | bound=1.000
+[packed] tick= 52500 phase=final_hold   | closure=0.46173 | force=314.954 | length=0.24534 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1300 | clusters=   1 | bound=1.000
+[packed] tick= 53000 phase=final_hold   | closure=0.46173 | force=319.092 | length=0.24555 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+[packed] tick= 53500 phase=final_hold   | closure=0.46173 | force=321.549 | length=0.24627 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[packed] tick= 54000 phase=final_hold   | closure=0.46173 | force=320.470 | length=0.24615 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 54500 phase=final_hold   | closure=0.46173 | force=318.319 | length=0.24589 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1296 | clusters=   1 | bound=1.000
+[packed] tick= 55000 phase=final_hold   | closure=0.46173 | force=317.462 | length=0.24515 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1296 | clusters=   1 | bound=1.000
+[packed] tick= 55500 phase=final_hold   | closure=0.46173 | force=313.160 | length=0.24520 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[packed] tick= 56000 phase=final_hold   | closure=0.46173 | force=314.583 | length=0.24622 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+[packed] tick= 56500 phase=final_hold   | closure=0.46173 | force=313.118 | length=0.24625 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[packed] tick= 57000 phase=final_hold   | closure=0.46173 | force=317.256 | length=0.24619 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1292 | clusters=   1 | bound=1.000
+[packed] tick= 57500 phase=final_hold   | closure=0.46173 | force=311.313 | length=0.24598 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[packed] tick= 58000 phase=final_hold   | closure=0.46173 | force=315.149 | length=0.24608 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 58500 phase=final_hold   | closure=0.46173 | force=317.337 | length=0.24611 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 59000 phase=final_hold   | closure=0.46173 | force=316.371 | length=0.24623 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[packed] tick= 59500 phase=final_hold   | closure=0.46173 | force=314.718 | length=0.24626 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+[packed] tick= 60000 phase=final_hold   | closure=0.46173 | force=315.167 | length=0.24559 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1290 | clusters=   1 | bound=1.000
+[packed] tick= 60500 phase=final_hold   | closure=0.46173 | force=322.799 | length=0.24551 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1289 | clusters=   1 | bound=1.000
+[packed] tick= 61000 phase=final_hold   | closure=0.46173 | force=318.193 | length=0.24608 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1290 | clusters=   1 | bound=1.000
+[packed] tick= 61500 phase=final_hold   | closure=0.46173 | force=320.413 | length=0.24615 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[packed] tick= 62000 phase=final_hold   | closure=0.46173 | force=317.242 | length=0.24615 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+[packed] tick= 62500 phase=final_hold   | closure=0.46173 | force=318.544 | length=0.24611 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 63000 phase=final_hold   | closure=0.46173 | force=317.674 | length=0.24610 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1287 | clusters=   1 | bound=1.000
+[packed] tick= 63500 phase=final_hold   | closure=0.46173 | force=317.495 | length=0.24610 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1290 | clusters=   1 | bound=1.000
+[packed] tick= 64000 phase=final_hold   | closure=0.46173 | force=314.795 | length=0.24611 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[packed] tick= 64500 phase=final_hold   | closure=0.46173 | force=318.371 | length=0.24614 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1286 | clusters=   1 | bound=1.000
+
+[packed] overload pulse 1000 ticks
+
+[packed] tick= 64631 phase=overload     | closure=0.46173 | force=306.864 | length=0.24618 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1285 | clusters=   1 | bound=1.000
+[packed] tick= 65000 phase=overload     | closure=0.48018 | force=297.073 | length=0.24451 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[packed] tick= 65500 phase=overload     | closure=0.50518 | force=419.220 | length=0.24486 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1288 | clusters=   1 | bound=1.000
+[packed] tick= 65631 phase=overload     | closure=0.51173 | force=433.267 | length=0.24545 | gap_L=0.0000 | gap_R=0.0000 | escape=0 | deflect=0.1291 | clusters=   1 | bound=1.000
+
+[packed] BONE v2 FALSIFIERS:
+  (a) SEATING   : PASS  max gap L/R = 0.0000 / 0.0000 (threshold 0.30)
+  (b) ESCAPE    : PASS  max escapees = 0
+  (c) SPRING-BACK: FAIL  half-closure=0.45005  load F/L=219.093/0.24121  release F/L=317.376/0.24611
+  (d) OVERLOAD  : peak force=433.267  peak deflect=0.1291
+
+ORDERED-BEATS-RANDOM COMPARISON (falsifier d):
+  bone peak force    = 442.068
+  bone peak deflect  = 0.1286
+  packed peak force  = 433.267
+  packed peak deflect= 0.1291
+  deflection/load ratio (packed/bone) = 1.025 (threshold 2.0)
+  verdict            : FAIL
+======================================================================

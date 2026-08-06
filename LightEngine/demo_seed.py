@@ -59,18 +59,22 @@ DISPERSE_RADIUS_GROWTH = 10.0         # system radius grows >10x initial
 FLICKER_CV_THRESHOLD = 0.20           # cluster count CV > 20% in final 25%
 BOUND_MASS_PERSISTENCE = 0.15         # bound fraction swing > 15% in final 25%
 
-# ── BONE print parameters (derived from force constants) ────────────
-# Longitudinal sound speed in the bond lattice: c = sqrt(K_BOND) = 1.0 lu/tick
-# because spacing R_BOND and spring constant K_BOND / R_BOND^2 cancel.
+# ── BONE v2 print parameters (derived from force constants) ─────────
+# Longitudinal sound speed in the cushion lattice: c = sqrt(K_BOND) = 1.0 lu/tick.
 # Drive the anchor plates together at 5% of sound speed.
 BONE_V_PLATE = 0.05 * math.sqrt(K_BOND)          # lu / tick
-BONE_COMPRESS_DIST = 2.0 * R_BOND                # total plate closure, lu
-BONE_HOLD_FRAC = 0.25                            # hold phase / compression phase
-# BONE falsifier thresholds (named before the run; do not retune)
-BONE_MERGE_PAIR_GROWTH = 2.0                     # merged grain pairs > 2x initial
-BONE_PLASTIC_FRAC = 0.10                         # permanent length change > 10%
-BONE_RUPTURE_FRAC = 0.10                         # > 10% of initial bonds ruptured
-BONE_STIFFNESS_GAIN = 2.0                        # bone stiffer than packed bed by 2x
+# Preload target: 1.5x the kernel-exact end-weight of the column.
+BONE_PRELOAD_FACTOR = 1.5
+# Half-release: plates return outward by half the convergence distance.
+BONE_HALF_RELEASE_FRAC = 0.5
+# Overload pulse after spring-back: 0.5 * R_WALL per side (derived wall pulse).
+BONE_OVERLOAD_PER_SIDE = 0.5 * R_WALL
+# Hold window: at least 5000 ticks, equal to the convergence duration.
+BONE_HOLD_MIN_TICKS = 5000
+# Falsifier thresholds (named before the run; do not retune)
+BONE_SEATING_MAX_GAP = R_C                       # any end gap > r_c = detached
+BONE_SPRINGBACK_TOL = 0.10                       # force/length within 10%
+BONE_ORDERED_GAIN = 2.0                          # ordered beats random by 2x
 
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
@@ -218,79 +222,93 @@ def shell_disk_metrics(pos: np.ndarray, n_core: int) -> tuple[float, float, floa
     return float(radii.mean()), float(radii.std()), float(z.std())
 
 
-# ── BONE-specific helpers ───────────────────────────────────────────
+# ── BONE v2-specific helpers ────────────────────────────────────────
 
-def _rod_bounding_box(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Axis-aligned bounding box of the rod points (grain_ids >= 0)."""
-    rod = pos[grain_ids >= 0]
-    return rod.min(axis=0), rod.max(axis=0)
-
-
-def _make_packed_control(pos: np.ndarray, vel: np.ndarray, grain_ids: np.ndarray,
-                         seed: int) -> tuple[np.ndarray, np.ndarray]:
+def _end_weight(col_pos: np.ndarray, eps: float = 0.02) -> float:
     """
-    Return a packed-bed control: keep the two pinned plates, replace the rod
-    with a uniform random fill of the same bounding box and point count.
+    Kernel-exact axial DRAW end-weight of the column.
+
+    Splits the column at the median x, sums the x-component of the softened
+    inverse-square draw that the right half feels from the left half.  This is
+    the force each anchor plate must supply to keep the column from contracting
+    under its own draw.
+    """
+    mid = float(np.median(col_pos[:, 0]))
+    left = col_pos[col_pos[:, 0] <= mid]
+    right = col_pos[col_pos[:, 0] > mid]
+    if left.shape[0] == 0 or right.shape[0] == 0:
+        return 0.0
+    dx = right[:, 0][:, None] - left[:, 0][None, :]
+    dy = right[:, 1][:, None] - left[:, 1][None, :]
+    dz = right[:, 2][:, None] - left[:, 2][None, :]
+    r2 = dx * dx + dy * dy + dz * dz + eps * eps
+    f_over_r = G / (r2 * np.sqrt(r2))
+    fx = f_over_r * dx
+    return float(fx.sum())
+
+
+def _column_length(pos: np.ndarray, grain_ids: np.ndarray) -> float:
+    """Length of the ordered column along x."""
+    col = pos[grain_ids >= 0]
+    return float(col[:, 0].max() - col[:, 0].min())
+
+
+def _max_deflection(pos: np.ndarray, grain_ids: np.ndarray) -> float:
+    """Maximum transverse displacement of any column point from the x-axis."""
+    col = pos[grain_ids >= 0]
+    return float(np.sqrt(col[:, 1] ** 2 + col[:, 2] ** 2).max())
+
+
+def _end_gaps(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
+    """Return (left_gap, right_gap) from each plate to the nearest column point."""
+    col = pos[grain_ids >= 0]
+    plates = pos[grain_ids == -1]
+    if col.shape[0] == 0 or plates.shape[0] == 0:
+        return 0.0, 0.0
+    left_plate = plates[plates[:, 0] < col[:, 0].min()]
+    right_plate = plates[plates[:, 0] > col[:, 0].max()]
+    if left_plate.shape[0] == 0 or right_plate.shape[0] == 0:
+        return 0.0, 0.0
+    left_gap = float(np.linalg.norm(
+        left_plate[:, None, :] - col[None, :, :], axis=2).min())
+    right_gap = float(np.linalg.norm(
+        right_plate[:, None, :] - col[None, :, :], axis=2).min())
+    return left_gap, right_gap
+
+
+def _escape_count(pos: np.ndarray, grain_ids: np.ndarray,
+                  r_c: float = R_C) -> int:
+    """Number of column points whose nearest neighbor is beyond r_c."""
+    col_idx = np.flatnonzero(grain_ids >= 0)
+    if col_idx.size == 0:
+        return 0
+    n = pos.shape[0]
+    mins = np.full(n, np.inf, dtype=np.float64)
+    for lo, hi, r2 in _pairwise_r2(pos):
+        for k in range(hi - lo):
+            r2[k, lo + k] = np.inf
+        mins[lo:hi] = np.minimum(mins[lo:hi], np.sqrt(r2).min(axis=1))
+    col_mins = mins[col_idx]
+    return int(np.count_nonzero(col_mins > r_c))
+
+
+def _make_packed_control_v2(pos: np.ndarray, vel: np.ndarray,
+                            grain_ids: np.ndarray,
+                            seed: int) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Packed-bed control for BONE v2: keep the pinned plates, replace the ordered
+    column with a uniform random fill of the same bounding box and point count.
     """
     pos = pos.copy()
     vel = vel.copy()
-    rod_mask = grain_ids >= 0
-    n_rod = int(rod_mask.sum())
-    bbox_min, bbox_max = _rod_bounding_box(pos, grain_ids)
+    col_mask = grain_ids >= 0
+    n_col = int(col_mask.sum())
+    col = pos[col_mask]
+    bbox_min = col.min(axis=0)
+    bbox_max = col.max(axis=0)
     rng = np.random.default_rng(seed)
-    pos[rod_mask] = rng.uniform(bbox_min, bbox_max, (n_rod, 3)).astype(np.float32)
+    pos[col_mask] = rng.uniform(bbox_min, bbox_max, (n_col, 3)).astype(np.float32)
     return pos, vel
-
-
-def _initial_bond_pairs(pos: np.ndarray, r_bond: float = R_BOND) -> np.ndarray:
-    """Return unordered point pairs within r_bond in the given state."""
-    rb2 = r_bond * r_bond
-    pairs = []
-    for lo, hi, r2 in _pairwise_r2(pos):
-        ii, jj = np.nonzero(r2 <= rb2)
-        ii = ii + lo
-        keep = ii < jj
-        pairs.extend(zip(ii[keep].tolist(), jj[keep].tolist()))
-    if not pairs:
-        return np.empty((0, 2), dtype=np.int64)
-    return np.array(pairs, dtype=np.int64)
-
-
-def _ruptured_count(pairs: np.ndarray, pos: np.ndarray, r_c: float = R_C) -> int:
-    """How many of the initial pairs now exceed the resistance cutoff r_c."""
-    if pairs.size == 0:
-        return 0
-    d2 = np.sum((pos[pairs[:, 0]] - pos[pairs[:, 1]]) ** 2, axis=1)
-    return int(np.count_nonzero(d2 > r_c * r_c))
-
-
-def _grain_metrics(pos: np.ndarray, grain_ids: np.ndarray,
-                   r_bond: float = R_BOND) -> tuple[int, int]:
-    """Return (number of distinct grain ids, number of merged grain pairs)."""
-    unique = np.unique(grain_ids[grain_ids >= 0])
-    n_grains = int(unique.shape[0])
-    rb2 = r_bond * r_bond
-    merged = set()
-    g = grain_ids
-    for lo, hi, r2 in _pairwise_r2(pos):
-        ii, jj = np.nonzero(r2 <= rb2)
-        ii = ii + lo
-        keep = ii < jj
-        for a, b in zip(ii[keep], jj[keep]):
-            ga, gb = int(g[a]), int(g[b])
-            if ga >= 0 and gb >= 0 and ga != gb:
-                if ga > gb:
-                    ga, gb = gb, ga
-                merged.add((ga, gb))
-    return n_grains, len(merged)
-
-
-def _rod_shape(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
-    """Return (rod length along x, maximum transverse deflection)."""
-    rod = pos[grain_ids >= 0]
-    length = float(rod[:, 0].max() - rod[:, 0].min())
-    deflection = float(np.sqrt(rod[:, 1] ** 2 + rod[:, 2] ** 2).max())
-    return length, deflection
 
 
 def _plate_force(acc: np.ndarray, left_idx: np.ndarray,
@@ -299,21 +317,6 @@ def _plate_force(acc: np.ndarray, left_idx: np.ndarray,
     left = float(np.abs(acc[left_idx, 0].sum()))
     right = float(np.abs(acc[right_idx, 0].sum()))
     return 0.5 * (left + right)
-
-
-def _stiffness(displacement: list[float], force: list[float]) -> float:
-    """Linear slope dF/dx for the compression phase (magnitude)."""
-    if len(displacement) < 2:
-        return 0.0
-    x = np.array(displacement, dtype=np.float64)
-    y = np.array(force, dtype=np.float64)
-    mask = x >= 0
-    if mask.sum() < 2:
-        return 0.0
-    x = x[mask]
-    y = y[mask]
-    slope, _ = np.polyfit(x, y, 1)
-    return float(abs(slope))
 
 
 def dump_frame(pos: np.ndarray, path: str, camera_pos=(25.0, 25.0, 25.0)):
@@ -354,11 +357,14 @@ def dump_frame(pos: np.ndarray, path: str, camera_pos=(25.0, 25.0, 25.0)):
         print(f"[demo_seed] could not save frame: {e}")
 
 
-def _run_bone_compression(pos, vel, pin_mask, grain_ids, n_plate, initial_pairs,
-                          initial_rod_length, initial_grain_count,
-                          compress_ticks, hold_ticks, retract_ticks,
-                          v_plate, dt, tag, label):
-    """Run compress-hold-retract on one BOME (or packed control) configuration."""
+def _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre, v_plate, dt,
+                 tag, label, overload: bool = False):
+    """
+    Run the BONE v2 preload protocol on one configuration (ordered or packed).
+
+    Phases: converge plates until plate force >= F_pre, hold, half-release,
+    final hold, optional overload pulse.  Returns (metrics, converge_ticks).
+    """
     N = pos.shape[0]
     sim = kernel.VelocityVerlet(N)
     sim.set_state(pos, vel)
@@ -371,239 +377,307 @@ def _run_bone_compression(pos, vel, pin_mask, grain_ids, n_plate, initial_pairs,
     right_x0 = float(pos[right_idx, 0].mean())
     initial_sep = right_x0 - left_x0
 
-    total_ticks = compress_ticks + hold_ticks + retract_ticks
-    sample_every = max(1, total_ticks // 40)
+    sample_every = 500
 
     metrics = {
         "tick": [],
-        "clusters": [],
-        "max_cluster": [],
-        "bound_frac": [],
-        "edge": [],
-        "radius": [],
+        "phase": [],
+        "closure": [],
+        "plate_force": [],
+        "column_length": [],
+        "left_gap": [],
+        "right_gap": [],
+        "escape_count": [],
+        "deflection": [],
         "radiated_energy": [],
         "radiated_power": [],
-        "grain_count": [],
-        "merged_pairs": [],
-        "rod_length": [],
-        "deflection": [],
-        "ruptured_bonds": [],
-        "plate_force": [],
-        "closure": [],
     }
 
-    print(f"\n[{label}] N={N} grains={initial_grain_count} "
-          f"rod_length={initial_rod_length:.4f}")
-    print(f"[{label}] compression={compress_ticks} hold={hold_ticks} "
-          f"retract={retract_ticks} ticks")
-    print(f"[{label}] v_plate={v_plate:.5f} lu/tick, "
-          f"closure={BONE_COMPRESS_DIST:.4f} lu\n")
+    def _sample(tick: int, phase: str):
+        n_clust, sizes = cluster_count_and_sizes(sim.pos, R_C)
+        bound_frac = bound_mass_fraction(sim.pos, R_BOND)
+        col_len = _column_length(sim.pos, grain_ids)
+        left_gap, right_gap = _end_gaps(sim.pos, grain_ids)
+        escaped = _escape_count(sim.pos, grain_ids)
+        deflect = _max_deflection(sim.pos, grain_ids)
+        pforce = _plate_force(sim.acc, left_idx, right_idx)
+        left_x = float(sim.pos[left_idx, 0].mean())
+        right_x = float(sim.pos[right_idx, 0].mean())
+        closure = initial_sep - (right_x - left_x)
+
+        metrics["tick"].append(tick)
+        metrics["phase"].append(phase)
+        metrics["closure"].append(closure)
+        metrics["plate_force"].append(pforce)
+        metrics["column_length"].append(col_len)
+        metrics["left_gap"].append(left_gap)
+        metrics["right_gap"].append(right_gap)
+        metrics["escape_count"].append(escaped)
+        metrics["deflection"].append(deflect)
+        metrics["radiated_energy"].append(float(sim.radiated_energy))
+        metrics["radiated_power"].append(float(sim.last_radiated_power))
+
+        print(f"[{label}] tick={tick:6d} phase={phase:12s} | "
+              f"closure={closure:.5f} | force={pforce:.3f} | "
+              f"length={col_len:.5f} | gap_L={left_gap:.4f} | "
+              f"gap_R={right_gap:.4f} | escape={escaped} | "
+              f"deflect={deflect:.4f} | clusters={n_clust:4d} | "
+              f"bound={bound_frac:.3f}")
+
+    print(f"\n[{label}] N={N} column={int((grain_ids >= 0).sum())} plates={n_plate*2}")
+    print(f"[{label}] v_plate={v_plate:.5f} lu/tick, dt={dt}")
+    print(f"[{label}] F_pre={F_pre:.3f}\n")
 
     dump_frame(sim.pos.copy(),
                os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
 
-    for tick in range(1, total_ticks + 1):
-        if tick <= compress_ticks:
-            dx = v_plate * dt
-        elif tick <= compress_ticks + hold_ticks:
-            dx = 0.0
-        else:
-            dx = -v_plate * dt
+    tick = 0
+    phase = "converge"
+    converge_ticks = 0
+    max_closure = 0.0
+    hold_ticks = BONE_HOLD_MIN_TICKS
+    phase_end = None
 
-        if dx != 0.0:
+    while True:
+        tick += 1
+        do_sample = (tick % sample_every == 0)
+
+        if phase == "converge":
+            dx = v_plate * dt
             sim.pos[left_idx, 0] += dx
             sim.pos[right_idx, 0] -= dx
             if sim.use_cuda:
                 sim.d_pos.copy_to_device(sim.pos)
+            sim.step(dt)
 
-        sim.step(dt)
+            pforce = _plate_force(sim.acc, left_idx, right_idx)
+            if pforce >= F_pre:
+                converge_ticks = tick
+                max_closure = initial_sep - (
+                    float(sim.pos[right_idx, 0].mean()) -
+                    float(sim.pos[left_idx, 0].mean()))
+                hold_ticks = max(BONE_HOLD_MIN_TICKS, converge_ticks)
+                phase = "preload_hold"
+                phase_end = tick + hold_ticks
+                do_sample = True
+                print(f"\n[{label}] preload reached at tick {tick}: "
+                      f"force={pforce:.3f} closure={max_closure:.5f}\n")
 
-        if tick % sample_every == 0 or tick == total_ticks:
-            n_clust, sizes = cluster_count_and_sizes(sim.pos, R_C)
-            bound_frac = bound_mass_fraction(sim.pos, R_BOND)
-            edge = edge_sharpness(sim.pos, METRIC_R_INNER, METRIC_R_OUTER)
-            rad = system_radius(sim.pos)
-            n_grains, merged_pairs = _grain_metrics(sim.pos, grain_ids)
-            rod_length, deflection = _rod_shape(sim.pos, grain_ids)
-            ruptured = _ruptured_count(initial_pairs, sim.pos)
-            plate_force = _plate_force(sim.acc, left_idx, right_idx)
-            left_x = float(sim.pos[left_idx, 0].mean())
-            right_x = float(sim.pos[right_idx, 0].mean())
-            closure = initial_sep - (right_x - left_x)
+        elif phase == "preload_hold":
+            sim.step(dt)
+            if tick >= phase_end:
+                phase = "release"
+                release_ticks = int(round(
+                    (converge_ticks * v_plate * dt * BONE_HALF_RELEASE_FRAC) /
+                    (v_plate * dt)))
+                release_ticks = max(1, release_ticks)
+                phase_end = tick + release_ticks
+                do_sample = True
+                print(f"\n[{label}] releasing {release_ticks} ticks "
+                      f"(half convergence distance)\n")
 
-            metrics["tick"].append(tick)
-            metrics["clusters"].append(n_clust)
-            metrics["max_cluster"].append(int(sizes.max()))
-            metrics["bound_frac"].append(bound_frac)
-            metrics["edge"].append(edge)
-            metrics["radius"].append(rad)
-            metrics["radiated_energy"].append(float(sim.radiated_energy))
-            metrics["radiated_power"].append(float(sim.last_radiated_power))
-            metrics["grain_count"].append(n_grains)
-            metrics["merged_pairs"].append(merged_pairs)
-            metrics["rod_length"].append(rod_length)
-            metrics["deflection"].append(deflection)
-            metrics["ruptured_bonds"].append(ruptured)
-            metrics["plate_force"].append(plate_force)
-            metrics["closure"].append(closure)
+        elif phase == "release":
+            dx = -v_plate * dt
+            sim.pos[left_idx, 0] += dx
+            sim.pos[right_idx, 0] -= dx
+            if sim.use_cuda:
+                sim.d_pos.copy_to_device(sim.pos)
+            sim.step(dt)
+            if tick >= phase_end:
+                phase = "final_hold"
+                phase_end = tick + hold_ticks
+                do_sample = True
+                print(f"\n[{label}] entering final hold\n")
 
-            print(f"[{label}] tick={tick:6d} | clusters={n_clust:4d} | "
-                  f"max={sizes.max():4d} | bound={bound_frac:.3f} | "
-                  f"grains={n_grains} | merged={merged_pairs} | "
-                  f"length={rod_length:.4f} | deflect={deflection:.4f} | "
-                  f"ruptured={ruptured} | force={plate_force:.3f} | "
-                  f"closure={closure:.4f}")
+        elif phase == "final_hold":
+            sim.step(dt)
+            if tick >= phase_end:
+                if overload:
+                    phase = "overload"
+                    overload_ticks = int(round(
+                        BONE_OVERLOAD_PER_SIDE / (v_plate * dt)))
+                    overload_ticks = max(1, overload_ticks)
+                    phase_end = tick + overload_ticks
+                    do_sample = True
+                    print(f"\n[{label}] overload pulse {overload_ticks} ticks\n")
+                else:
+                    do_sample = True
+                    break
 
-        if tick == compress_ticks:
-            dump_frame(sim.pos.copy(),
-                       os.path.join(OUTPUT_DIR, f"{tag}{label}_mid.png"))
+        elif phase == "overload":
+            dx = v_plate * dt
+            sim.pos[left_idx, 0] += dx
+            sim.pos[right_idx, 0] -= dx
+            if sim.use_cuda:
+                sim.d_pos.copy_to_device(sim.pos)
+            sim.step(dt)
+            if tick >= phase_end:
+                do_sample = True
+                break
+
+        else:
+            break
+
+        if do_sample:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
 
     dump_frame(sim.pos.copy(),
                os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
-    return metrics
+    return metrics, converge_ticks
 
 
-def _print_bone_verdict(metrics, initial_grain_count, initial_rod_length,
-                        initial_bond_count, label):
-    """Print BONE falsifier verdict for one run; return (stiffness, verdict)."""
+def _print_bone_v2_verdict(metrics, F_pre, end_weight, label):
+    """Print BONE v2 falsifier verdict for one run; return overload peaks."""
     if not metrics["tick"]:
-        return 0.0, "N/A", [], []
+        return 0.0, 0.0
 
-    final_merged = metrics["merged_pairs"][-1]
-    initial_merged = max(1, initial_grain_count - 1)
-    merge_ratio = final_merged / initial_merged
-    final_length = metrics["rod_length"][-1]
-    plastic = abs(final_length - initial_rod_length) / max(1e-9, initial_rod_length)
-    ruptured = max(metrics["ruptured_bonds"])
-    rupture_frac = ruptured / max(1, initial_bond_count)
+    phases = metrics["phase"]
+    preload_idx = [i for i, p in enumerate(phases) if p == "preload_hold"]
+    final_idx = [i for i, p in enumerate(phases) if p == "final_hold"]
+    overload_idx = [i for i, p in enumerate(phases) if p == "overload"]
+    converge_idx = [i for i, p in enumerate(phases) if p == "converge"]
 
-    closure = np.array(metrics["closure"], dtype=np.float64)
-    force = np.array(metrics["plate_force"], dtype=np.float64)
-    max_idx = int(np.argmax(closure))
-    if max_idx >= 2:
-        stiff = _stiffness(closure[:max_idx + 1].tolist(),
-                           force[:max_idx + 1].tolist())
+    # (a) SEATING: end gaps stay <= R_C during preload hold
+    if preload_idx:
+        max_left_gap = max(metrics["left_gap"][i] for i in preload_idx)
+        max_right_gap = max(metrics["right_gap"][i] for i in preload_idx)
     else:
-        stiff = 0.0
+        max_left_gap = max_right_gap = 0.0
+    seating_ok = max(max_left_gap, max_right_gap) <= BONE_SEATING_MAX_GAP
 
-    fired = []
-    reasons = []
-    if merge_ratio >= BONE_MERGE_PAIR_GROWTH:
-        fired.append("MERGE")
-        reasons.append(
-            f"merged_pairs {final_merged}/{initial_merged} = ratio {merge_ratio:.2f}")
-    if plastic > BONE_PLASTIC_FRAC:
-        fired.append("PLASTIC")
-        reasons.append(f"length change {plastic:.3f}")
-    if rupture_frac > BONE_RUPTURE_FRAC:
-        fired.append("RUPTURE")
-        reasons.append(
-            f"ruptured bonds {ruptured}/{initial_bond_count} = {rupture_frac:.3f}")
-
-    verdict = fired[0] if fired else "PASS"
-
-    print(f"\n[{label}] BONE FALSIFIER VERDICT: {verdict}")
-    print(f"  grain count initial/final  = {initial_grain_count}/"
-          f"{metrics['grain_count'][-1]}")
-    print(f"  merged pairs ratio         = {merge_ratio:.3f}")
-    print(f"  rod length initial/final   = {initial_rod_length:.4f}/"
-          f"{final_length:.4f}")
-    print(f"  plastic strain             = {plastic:.4f}")
-    print(f"  ruptured bonds             = {ruptured}/{initial_bond_count}")
-    print(f"  compression stiffness      = {stiff:.3f}")
-    if reasons:
-        print("  reasons:")
-        for r in reasons:
-            print(f"    - {r}")
+    # (b) ESCAPE: zero column points with NN > R_C during preload hold
+    if preload_idx:
+        max_escape = max(metrics["escape_count"][i] for i in preload_idx)
     else:
-        print("  reasons: none — prediction held")
-    return stiff, verdict, fired, reasons
+        max_escape = 0
+    escape_ok = max_escape == 0
+
+    # (c) SPRING-BACK: final hold values should match the seated values at the
+    # half-released closure (reversibility / no hysteresis failure).
+    release_idx = [i for i, p in enumerate(phases) if p == "release"]
+    half_closure = 0.0
+    F_seated_half = 0.0
+    L_seated_half = 0.0
+    if release_idx:
+        closures_rel = np.array([metrics["closure"][i] for i in release_idx])
+        forces_rel = np.array([metrics["plate_force"][i] for i in release_idx])
+        lengths_rel = np.array([metrics["column_length"][i] for i in release_idx])
+        half_closure = 0.5 * max(metrics["closure"])
+        nearest = int(np.argmin(np.abs(closures_rel - half_closure)))
+        F_seated_half = float(forces_rel[nearest])
+        L_seated_half = float(lengths_rel[nearest])
+
+    if final_idx:
+        F_release = np.mean([metrics["plate_force"][i] for i in final_idx[-5:]])
+        L_release = np.mean([metrics["column_length"][i] for i in final_idx[-5:]])
+    else:
+        F_release = L_release = 0.0
+
+    F_tol = max(1e-9, abs(F_seated_half))
+    L_tol = max(1e-9, abs(L_seated_half))
+    spring_ok = (abs(F_release - F_seated_half) <= BONE_SPRINGBACK_TOL * F_tol and
+                 abs(L_release - L_seated_half) <= BONE_SPRINGBACK_TOL * L_tol)
+
+    # (d) overload peaks (compared against packed control by caller)
+    if overload_idx:
+        peak_force = max(metrics["plate_force"][i] for i in overload_idx)
+        peak_deflect = max(metrics["deflection"][i] for i in overload_idx)
+    else:
+        peak_force = 0.0
+        peak_deflect = 0.0
+
+    print(f"\n[{label}] BONE v2 FALSIFIERS:")
+    print(f"  (a) SEATING   : {'PASS' if seating_ok else 'FAIL'}  "
+          f"max gap L/R = {max_left_gap:.4f} / {max_right_gap:.4f} "
+          f"(threshold {BONE_SEATING_MAX_GAP:.2f})")
+    print(f"  (b) ESCAPE    : {'PASS' if escape_ok else 'FAIL'}  "
+          f"max escapees = {max_escape}")
+    print(f"  (c) SPRING-BACK: {'PASS' if spring_ok else 'FAIL'}  "
+          f"half-closure={half_closure:.5f}  "
+          f"seated F/L={F_seated_half:.3f}/{L_seated_half:.5f}  "
+          f"final F/L={F_release:.3f}/{L_release:.5f}")
+    print(f"  (d) OVERLOAD  : peak force={peak_force:.3f}  "
+          f"peak deflect={peak_deflect:.4f}")
+
+    return peak_force, peak_deflect
 
 
 def bone_main(args, seed):
-    """BONE print entry point: build, optionally run packed control, verdict."""
-    pos, vel, pin_mask, grain_ids = seed_structures.bone(
-        n=args.n, grain_side=6, seed=seed)
-    N = pos.shape[0]
-    n_plate = int(np.count_nonzero(grain_ids == -1) // 2)
-    initial_grain_count = len(np.unique(grain_ids[grain_ids >= 0]))
+    """BONE v2 print entry point: build, preload, optionally packed control."""
+    # Map --n to a 4x4 column length so total points ~= n.
+    width = 4
+    height = 4
+    length = max(4, int(round(args.n / (width * height))) - 2)
 
-    initial_pairs = _initial_bond_pairs(pos, R_BOND)
-    initial_rod_length, _ = _rod_shape(pos, grain_ids)
-    initial_bond_count = initial_pairs.shape[0]
+    pos, vel, pin_mask, grain_ids = seed_structures.bone2(
+        width=width, height=height, length=length,
+        spacing=0.05, plate_gap=0.05, seed=seed)
+    N = pos.shape[0]
+    n_plate = width * height
+
+    # kernel-exact end-weight from the cold print geometry
+    col_pos = pos[grain_ids >= 0].astype(np.float64)
+    end_weight = _end_weight(col_pos, eps=0.02)
+    F_pre = BONE_PRELOAD_FACTOR * end_weight
 
     dt = DT
     v_plate = BONE_V_PLATE
-    compress_ticks = int(math.ceil(BONE_COMPRESS_DIST / (2.0 * v_plate * dt)))
-    hold_ticks = max(1, int(round(compress_ticks * BONE_HOLD_FRAC)))
-    retract_ticks = compress_ticks
-
     tag = f"{args.tag}_" if args.tag else ""
 
-    print("=" * 60)
-    print("THE KERNEL — BONE print run")
-    print(f"N={N}, seed={seed}, structure={args.structure}, "
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL — BONE v2 print run")
+    print(f"N={N}, column=4x4x{length}, seed={seed}, "
           f"control={args.control}, dt={dt}")
-    print("=" * 60)
+    print("-" * 70)
+    print("STATEMENT: A cold-ordered cushion-spaced column between two pinned")
+    print("  anchor plates can be preloaded to 1.5x its end-weight, remain")
+    print("  seated and intact, spring back elastically after half-release, and")
+    print("  outperform a packed-bed control under overload.")
+    print("PREDICTION: End gaps stay < R_C, zero escapees, force/length return")
+    print("  within 10% after half-release, ordered deflection/load <= 1/2 of")
+    print("  the packed-bed control under overload.")
+    print("FALSIFIERS:")
+    print("  (a) SEATING   — any end gap > r_c during preload hold")
+    print("  (b) ESCAPE    — any column point with NN > r_c under preload")
+    print("  (c) SPRING-BACK — force/length after release differ >10% from loading")
+    print("  (d) ORDERED BEATS RANDOM — ordered deflection/load not 2x better")
+    print("=" * 70)
+    print(f"\nDerived end-weight = {end_weight:.3f}")
+    print(f"Derived F_pre      = {F_pre:.3f}\n")
 
-    bone_metrics = _run_bone_compression(
-        pos, vel, pin_mask, grain_ids, n_plate, initial_pairs,
-        initial_rod_length, initial_grain_count,
-        compress_ticks, hold_ticks, retract_ticks,
-        v_plate, dt, tag, "bone")
+    bone_peak_force, bone_peak_deflect = _print_bone_v2_verdict(
+        _run_bone_v2(pos, vel, pin_mask, grain_ids, n_plate, F_pre,
+                     v_plate, dt, tag, "bone", overload=True)[0],
+        F_pre, end_weight, "bone")
 
-    packed_metrics = None
     if args.control == "packed":
-        pos_p, vel_p = _make_packed_control(pos, vel, grain_ids, seed=seed + 999)
-        initial_pairs_p = _initial_bond_pairs(pos_p, R_BOND)
-        initial_rod_length_p, _ = _rod_shape(pos_p, grain_ids)
-        packed_metrics = _run_bone_compression(
-            pos_p, vel_p, pin_mask, grain_ids, n_plate, initial_pairs_p,
-            initial_rod_length_p, initial_grain_count,
-            compress_ticks, hold_ticks, retract_ticks,
-            v_plate, dt, tag, "packed")
+        pos_p, vel_p = _make_packed_control_v2(pos, vel, grain_ids, seed=seed + 999)
+        packed_metrics, _ = _run_bone_v2(
+            pos_p, vel_p, pin_mask, grain_ids, n_plate, F_pre,
+            v_plate, dt, tag, "packed", overload=True)
+        packed_peak_force, packed_peak_deflect = _print_bone_v2_verdict(
+            packed_metrics, F_pre, end_weight, "packed")
 
-    print("=" * 60)
-    bone_stiff, bone_verdict, _, _ = _print_bone_verdict(
-        bone_metrics, initial_grain_count, initial_rod_length,
-        initial_bond_count, "bone")
-
-    if packed_metrics is not None:
-        packed_stiff, packed_verdict, _, _ = _print_bone_verdict(
-            packed_metrics, initial_grain_count, initial_rod_length_p,
-            initial_pairs_p.shape[0], "packed")
-        # slope-based gain (positive now); guard against sign issues with abs
-        gain = abs(bone_stiff) / max(1e-12, abs(packed_stiff))
-
-        # deflection-per-unit-load comparison (matches THE_CATEGORIES.md wording)
-        bone_force = max(bone_metrics["plate_force"])
-        bone_deflect = max(bone_metrics["deflection"])
-        packed_force = max(packed_metrics["plate_force"])
-        packed_deflect = max(packed_metrics["deflection"])
-        bone_dpl = bone_deflect / max(1e-12, bone_force)
-        packed_dpl = packed_deflect / max(1e-12, packed_force)
+        bone_dpl = bone_peak_deflect / max(1e-12, bone_peak_force)
+        packed_dpl = packed_peak_deflect / max(1e-12, packed_peak_force)
         dpl_ratio = packed_dpl / max(1e-12, bone_dpl)
-        stiffness_ok = dpl_ratio >= BONE_STIFFNESS_GAIN
+        ordered_ok = dpl_ratio >= BONE_ORDERED_GAIN
 
-        print("\nSTIFFNESS COMPARISON:")
-        print(f"  bone dF/dx        = {bone_stiff:.3f}")
-        print(f"  packed dF/dx      = {packed_stiff:.3f}")
-        print(f"  slope gain        = {gain:.3f}")
-        print(f"  bone max force    = {bone_force:.3f}")
-        print(f"  bone max deflect  = {bone_deflect:.4f}")
-        print(f"  packed max force  = {packed_force:.3f}")
-        print(f"  packed max deflect= {packed_deflect:.4f}")
+        print("\nORDERED-BEATS-RANDOM COMPARISON (falsifier d):")
+        print(f"  bone peak force    = {bone_peak_force:.3f}")
+        print(f"  bone peak deflect  = {bone_peak_deflect:.4f}")
+        print(f"  packed peak force  = {packed_peak_force:.3f}")
+        print(f"  packed peak deflect= {packed_peak_deflect:.4f}")
         print(f"  deflection/load ratio (packed/bone) = {dpl_ratio:.3f} "
-              f"(threshold {BONE_STIFFNESS_GAIN:.1f})")
-        print(f"  ordered > random  : {'PASS' if stiffness_ok else 'FAIL'}")
-        if not stiffness_ok:
-            print("  [bone] verdict updated: STIFFNESS (gain below threshold)")
-            bone_verdict = "STIFFNESS"
+              f"(threshold {BONE_ORDERED_GAIN:.1f})")
+        print(f"  verdict            : {'PASS' if ordered_ok else 'FAIL'}")
     else:
-        print("\nSTIFFNESS COMPARISON: skipped (no --control packed)")
+        print("\nORDERED-BEATS-RANDOM COMPARISON: skipped (no --control packed)")
 
-    print(f"\nFINAL BONE VERDICT: {bone_verdict}")
-    print("=" * 60)
+    print("=" * 70)
 
 
 def main():
@@ -623,9 +697,6 @@ def main():
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
                         help="control structure for BONE print (default none)")
-    parser.add_argument("--spacing", type=float, default=None,
-                        help="lattice print spacing in lu (default R_BOND); "
-                             "print geometry, not a physics constant")
     args = parser.parse_args()
     SEED = args.seed
 
@@ -644,11 +715,7 @@ def main():
     else:
         print_note = "(BOX/VEL_SIGMA unused for authored print)"
         if args.structure == "lattice":
-            if args.spacing is None:
-                pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
-            else:
-                pos, vel = seed_structures.lattice(n=args.n, seed=SEED,
-                                                   spacing=args.spacing)
+            pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
             N = pos.shape[0]
             n_core = 0
             r_target = 0.0
@@ -719,10 +786,7 @@ def main():
                     extra += f" | z_disp={z_disp:.3f}"
             elif args.structure == "lattice":
                 nn = nearest_neighbor_distances(sim.pos)
-                # cushion-era lower bound: settled matter rests at nn ~ R_WALL
-                # minus the softening (measured 0.0499 vs the old 0.05 bound);
-                # 0.9*R_WALL counts the wall-rest state, still excludes overlap.
-                bond_ret = float(((nn >= 0.9 * R_WALL) & (nn <= R_C)).mean())
+                bond_ret = float(((nn >= R_WALL) & (nn <= R_C)).mean())
                 extra = f" | bond_ret={bond_ret:.3f}"
 
             metrics["tick"].append(tick)
