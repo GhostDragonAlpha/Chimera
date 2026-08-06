@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theRockyPlanet` | Once you know how much rock a world is made of and how far it sits from its |
+| `theRockyPlanet` | Once you know how much rock a world is made of and how far it sits from its star, you no longer get to decide anything about it. Its size, its weight, how hard it is to leave, and even *which gases it is able to hold on to* all follow. This chapter works out the body. What the weather then does to that body is the next chapter. |
 
 ## Hands down
 

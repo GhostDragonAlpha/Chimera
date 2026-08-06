@@ -32,7 +32,7 @@
   "S_earth": 1.0048952107836961,
   "helmet_free_volume_l": 11.663236822380453,
   "P_loop_bar": 0.5199302820248954,
-  "timeline_serial": 37,
+  "timeline_serial": 38,
   "t_since_seed_s": 5757154536625875.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

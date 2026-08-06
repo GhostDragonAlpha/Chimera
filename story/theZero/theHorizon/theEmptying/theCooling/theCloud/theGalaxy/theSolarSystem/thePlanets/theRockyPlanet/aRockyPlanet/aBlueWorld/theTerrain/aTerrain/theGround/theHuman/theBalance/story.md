@@ -33,6 +33,29 @@ which tilts — so the two hips are not at the same height, and a side view has 
 
 *It is not a smaller thing than its parent. It is the same body, seen along the other axis.*
 
+## What the engine declares, and what this chapter actually derives
+
+The term `theBalance` is declared in the engine as **"center-of-mass vs center-of-thrust"**. That
+name is not wrong; it is the same physics under a more general wording. In this chapter the
+"thrust" is the ground's contact force, and its line of action passes through the **center of
+pressure** under the stance foot — the moving point that the base of support reduces to when only
+one foot carries the body. The chapter's whole job is to track the **centre of mass** relative to
+that pressure point: when the CoM drifts past it, the body falls; when the next foot lands lateral
+of the extrapolated CoM, the fall is reversed. Walking is simply the rhythmic version of that
+balance act.
+
+So the declared meaning and the derived content are one claim, not two:
+
+- `center-of-mass`  →  the CoM that `com_lateral()` computes from the frontal pendulum.
+- `center-of-thrust` →  the stance-foot pressure point about which the same pendulum pivots, and the
+  capture point (XcoM) on the ground that says where the thrust must be applied next.
+- `vs`  →  the margin of stability `b`: the gap between the CoM's projected landing and the foot
+  that must catch it.
+
+The equations below do not change; they were already written as CoM-over-base-of-support. This
+section only names the correspondence honestly, so the engine's declaration and the membrane's law
+cannot be read as different things.
+
 ## Sideways is a different problem, and that is measured
 
 Fore-and-aft, the catch is free. The swing leg is going forward anyway, so a forward fall lands on a

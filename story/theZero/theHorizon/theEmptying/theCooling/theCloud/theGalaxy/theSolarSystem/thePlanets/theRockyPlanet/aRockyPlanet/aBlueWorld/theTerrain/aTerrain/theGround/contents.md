@@ -9,7 +9,8 @@
 
 | membrane | what it is |
 |---|---|
-| `theHuman` | A person, standing on that ground. Everything above this chapter exists so this |
+| `theDig` | A body opens the ground: a narrow trench cut into an earthy surface, with a mound of freshly-dug grains heaped beside the opening, and a few loose grains scattered nearby. The matter is piled at the repose angle, and the resistance comes from the granular medium's bearing capacity and cohesion |
+| `theHuman` | A person, standing on that ground. Everything above this chapter exists so this one can stand up: the seed emptied, the sea cooled, a cloud shattered until its pieces were the size of stars, one of them lit, a rock swept up the leftovers, its core stayed warm enough to keep the air, water fell and cut the rock, and the rock broke down into something that bears weight. **All of it to arrive at 7.08 m/s² and a surface that carries 110 kPa.** This chapter is what those two numbers do to a body. |
 
 ## Hands down
 

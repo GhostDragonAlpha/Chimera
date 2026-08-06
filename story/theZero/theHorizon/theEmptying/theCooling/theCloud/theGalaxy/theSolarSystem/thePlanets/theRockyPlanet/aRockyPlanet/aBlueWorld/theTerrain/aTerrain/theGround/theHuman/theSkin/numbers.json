@@ -52,7 +52,7 @@
   "optics_source": "Jacques OMLC 1998 (archived) + Prahl hemoglobin table (research_references/human/hemoglobin_extinction_prahl.json)",
   "latitude_deg": 30.77072291868692,
   "obliquity_deg": 37.38250904743713,
-  "timeline_serial": 33,
+  "timeline_serial": 34,
   "t_since_seed_s": 5757154536625858.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

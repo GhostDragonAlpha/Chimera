@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aSteppeBiomes` | A cold, dry world wearing mostly grass: a wide steppe belt around the |
+| `aSteppeBiomes` | A cold, dry world wearing mostly grass: a wide steppe belt around the mid-latitudes, woodland and savanna nearer the equator, ice past 63°, and a frost line that breathes 19 degrees poleward and back through the year. |
 
 ## Hands down
 

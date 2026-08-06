@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aRockyPlanet` | This is the same world as the last chapter, seen from the inside. Because it was |
+| `aRockyPlanet` | This is the same world as the last chapter, seen from the inside. Because it was once molten, it sorted itself: the iron sank and made a core, the lighter rock floated on top. How big that core is, how hard it is squeezed, how far out of round the spin pushes the whole thing, and — the one that matters — **whether the core is still moving.** A moving iron core makes a magnetic field, and a magnetic field is what stops the star from blowing the air away. |
 
 ## Hands down
 

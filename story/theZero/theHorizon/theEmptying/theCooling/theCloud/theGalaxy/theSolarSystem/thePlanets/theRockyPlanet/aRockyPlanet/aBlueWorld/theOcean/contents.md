@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aSaltOcean` | The water that actually fills this world's basins: 2,861 metres of it on |
+| `aSaltOcean` | The water that actually fills this world's basins: 2,861 metres of it on average, dark navy where it is deep, frozen past 43° latitude, with waves a metre and a half tall and a tide that never changes — 21 centimetres from the star alone, twice a day, forever. |
 
 ## Hands down
 

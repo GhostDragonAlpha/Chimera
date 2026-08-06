@@ -258,7 +258,7 @@
   "g": 7.076122169232295,
   "S_earth": 1.0048952107836961,
   "ankle_torque_Nm": 87.28445363504646,
-  "timeline_serial": 38,
+  "timeline_serial": 39,
   "t_since_seed_s": 5757154536654655.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

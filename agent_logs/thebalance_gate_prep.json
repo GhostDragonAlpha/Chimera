@@ -1,0 +1,41 @@
+{
+  "claim": "A walking body's centre of mass is kept above its base of support by the same inverted-pendulum-on-contact law as fore-aft balance, turned ninety degrees, so the lateral peak-to-peak sway is the pelvis width multiplied by (cosh(\u03c9\u2080 T/2) - 1).",
+  "rounds": [
+    {"round": 1, "question": "What physical constant sets how fast the body falls sideways when unsupported?", "discovered": ["fall_rate_rad_s"]},
+    {"round": 2, "question": "What geometric statement about the leg at mid-stance closes the lateral pendulum?", "discovered": ["pelvis_width_m", "step_time_s", "com_medial_offset_m"]},
+    {"round": 3, "question": "What does mirror periodicity of the gait require for the distance between foot centres?", "discovered": ["step_width_m", "frontal_efolds_ratio", "sway_gain_ratio"]},
+    {"round": 4, "question": "How far short of the next foot does the extrapolated centre of mass land, and what is that gap called?", "discovered": ["margin_of_stability_m", "xcom_at_contact_m"]},
+    {"round": 5, "question": "Where do the pelvis width and abductor lever arm come from, since a tape measure cannot reach a joint centre?", "discovered": ["hip_separation_frac", "abductor_lever_frac", "pelvis_source"]},
+    {"round": 6, "question": "What muscle force and joint load resist the pelvis listing in single support?", "discovered": ["abductor_force_N", "hip_contact_force_N", "body_moment_arm_m"]},
+    {"round": 7, "question": "Because a stride's endpoints look alike, which phase durations let the film sampler pick claim-bearing instants?", "discovered": ["crouch_time_s", "contact_time_s", "flight_time_s", "duration_s"]},
+    {"round": 8, "question": "How is the derived step width checked against the measured adult cohort, and on what gravity?", "discovered": ["step_width_measured_m", "step_width_error_pct", "step_width_earth_m"]},
+    {"round": 9, "question": "What happens to the lateral sway as walking speed increases while step width stays nearly flat?", "discovered": ["sway_earth_slow_m", "sway_earth_comf_m", "sway_earth_fast_m"]}
+  ],
+  "classification": {
+    "fall_rate_rad_s": "PHYSICS",
+    "pelvis_width_m": "PHYSICS",
+    "step_time_s": "PHYSICS",
+    "com_medial_offset_m": "PHYSICS",
+    "step_width_m": "PHYSICS",
+    "frontal_efolds_ratio": "PHYSICS",
+    "sway_gain_ratio": "PHYSICS",
+    "margin_of_stability_m": "PHYSICS",
+    "xcom_at_contact_m": "PHYSICS",
+    "hip_separation_frac": "PHYSICS",
+    "abductor_lever_frac": "PHYSICS",
+    "pelvis_source": "PHYSICS",
+    "abductor_force_N": "PHYSICS",
+    "hip_contact_force_N": "PHYSICS",
+    "body_moment_arm_m": "PHYSICS",
+    "crouch_time_s": "PHYSICS",
+    "contact_time_s": "PHYSICS",
+    "flight_time_s": "PHYSICS",
+    "duration_s": "PHYSICS",
+    "step_width_measured_m": "PHYSICS",
+    "step_width_error_pct": "PHYSICS",
+    "step_width_earth_m": "PHYSICS",
+    "sway_earth_slow_m": "PHYSICS",
+    "sway_earth_comf_m": "PHYSICS",
+    "sway_earth_fast_m": "PHYSICS"
+  }
+}

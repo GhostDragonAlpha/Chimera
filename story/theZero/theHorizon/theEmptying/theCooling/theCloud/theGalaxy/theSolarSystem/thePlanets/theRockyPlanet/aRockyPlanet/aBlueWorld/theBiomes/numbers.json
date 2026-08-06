@@ -21,7 +21,7 @@
   "lapse_rate_K_per_km": 4.64700560367494,
   "whittaker_cells": 12,
   "has_life_band": true,
-  "timeline_serial": 39,
+  "timeline_serial": 40,
   "t_since_seed_s": 5757154569476098.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

@@ -56,7 +56,7 @@
   "name": "aActiveInterior",
   "S_earth": 1.0048952107836961,
   "day_s": 86400.0,
-  "timeline_serial": 45,
+  "timeline_serial": 46,
   "t_since_seed_s": 2.8977015453636666e+17,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

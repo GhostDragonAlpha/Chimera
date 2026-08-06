@@ -410,6 +410,14 @@ def derive(parent, free):
     tilt = math.degrees(math.asin(min(abs(W_pelvis / 2.0 - d_e_meas) / leg_L, 1.0)))
     abad_mid = measured.gait_sample("hip_abad", 0.5 * duty, speed, group)
 
+    # PHASE DURATIONS for the film sampler. A stride's endpoints are the same phase, so the default
+    # movie [0,1] would show no change. The sampler keys are named for a jump, but the mapping here
+    # is: crouch=offset to first single support, contact=duration of single support, flight=duration
+    # of double support. That makes the two frames mid-sway (one foot, maximum lateral displacement)
+    # and mid-transition (both feet down, CoM crossing the midline).
+    single_support_s = (1.0 - duty) * stride_s
+    double_support_s = max(duty - 0.5, 0.0) * stride_s
+
     return {
         # ITS SIZE. Not a smaller thing than its parent -- the SAME body, seen along the other axis.
         # The frontal pendulum's own length is the height of the mass that swings, and that is the
@@ -422,6 +430,13 @@ def derive(parent, free):
         # ITS DURATION: one full stride, because the frontal cycle needs BOTH steps -- one list to
         # the left and one to the right. Half of it is half a story.
         "duration_s": stride_s,
+        # PHASE KEYS for the film sampler. A stride's endpoints are the same phase, so the sampler
+        # needs claim-bearing instants inside it. The keys are named for a jump (the sampler's only
+        # vocabulary); here crouch=offset to first single support, contact=duration of single support,
+        # flight=duration of double support. That yields mid-sway and mid-transition frames.
+        "crouch_time_s": 0.0,
+        "contact_time_s": single_support_s,
+        "flight_time_s": double_support_s,
 
         # ── the pelvis, read from two models that agree to 2.1% ──────────────────────────────
         "pelvis_width_m": W_pelvis,
@@ -524,7 +539,7 @@ def emit(nums, t=1.0):
     """One stride seen from the front: the sway, the list, and the capture point reaching sideways.
 
     LOCAL UNITS: 1.0 is the centre of mass's standing height, which is the frontal pendulum's own
-    length. +Y is the body's LEFT and Z is up; X is zero everywhere, because this membrane IS the
+    length. +X is the body's LEFT and Z is up; Y is zero everywhere, because this membrane IS the
     frontal plane and drawing depth into it would be drawing the parent's chapter again.
 
     WHAT MOVES, AND WHY EACH THING MOVES:
@@ -675,11 +690,11 @@ def emit(nums, t=1.0):
     K = np.concatenate(kind, 0)
     n = len(P)
     b = blank(n)
-    b[:, 0] = 0.0                                      # the frontal plane, and only it
-    b[:, 1] = P[:, 0]
+    b[:, 0] = P[:, 0]                                  # lateral sway is +X so the frontal view reads
+    b[:, 1] = 0.0                                      # horizontally; Y is the viewing depth, zero here
     b[:, 2] = P[:, 1] - 0.5 * H                        # centre the framing between floor and CoM
     nrm = np.zeros((n, 3), np.float32)
-    nrm[:, 0] = -1.0                                   # a plane seen face on: everything faces out
+    nrm[:, 1] = -1.0                                   # camera sits at -Y looking +Y; the disc faces it
     b[:, 21:24] = nrm
 
     alb = np.zeros((n, 3), np.float32)
@@ -697,8 +712,15 @@ def emit(nums, t=1.0):
     b[:, AR:AB + 1] = alb
     b[:, 19] = np.where(K == 6, 0.50, np.where(K == 7, 0.45,
                         np.where(K == 5, 0.60, np.where(K == 8, 0.88, 0.96))))
-    b[:, 20] = np.where((K == 2) | (K == 3), 0.030,
-                        np.where((K == 6) | (K == 7), 0.009, 0.014))
+    # GRAIN SIZES are world metres and render exactly as written. The original sizes (9-30 mm)
+    # projected to sub-pixel blobs at the camera distance (1.4 m) and the frame was black. The
+    # sizes below are thick for a human outline because the camera is close: a 1 m body seen from
+       # ~1.4 m needs 10-18 cm grains to read as continuous lines, and the marks must be the loudest.
+    b[:, 20] = np.where((K == 2) | (K == 3), 0.180,                 # CoM and XcoM: warm/cool marks
+                        np.where(K == 4, 0.140,                    # pelvis bar: the chapter's subject
+                        np.where((K == 0) | (K == 1) | (K == 8), 0.100,  # body, ground, pendulum rod
+                        np.where(K == 5, 0.080,                    # dropped lead from CoM to XcoM
+                        0.060))))                                   # trails and level line
     b[:, 11] = np.where((K == 2) | (K == 3), GLOW, SOLID)
     return b
 

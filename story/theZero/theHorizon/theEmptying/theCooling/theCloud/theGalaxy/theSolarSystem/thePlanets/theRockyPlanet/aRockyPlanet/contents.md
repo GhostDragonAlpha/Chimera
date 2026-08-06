@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aBlueWorld` | This is the weather, worked out for the world the last chapter built. It turns |
+| `aBlueWorld` | This is the weather, worked out for the world the last chapter built. It turns out to be an ice-age Earth: an average of about **−0.5 °C**, ice reaching down from both poles to about **35° latitude**, and liquid ocean across the middle third. That liquid water is why it is called *a blue world* — the name is the answer, not a label put on it. |
 
 ## Hands down
 

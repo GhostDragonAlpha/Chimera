@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aTerraceMine` | A stepped hole in the steppe: benches spiralling down five hundred metres |
+| `aTerraceMine` | A stepped hole in the steppe: benches spiralling down five hundred metres to iron-red ore, because a slope you cannot stand on is a slope you cannot cut — and the first metal this world pulls out of the ground is iron. |
 
 ## Hands down
 

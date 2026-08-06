@@ -108,7 +108,7 @@
   "S_earth": 1.0048952107836961,
   "height_m": 1.7550000000000001,
   "ipd_stature_pearson_r": 0.18047543056978324,
-  "timeline_serial": 34,
+  "timeline_serial": 35,
   "t_since_seed_s": 5757154536625859.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

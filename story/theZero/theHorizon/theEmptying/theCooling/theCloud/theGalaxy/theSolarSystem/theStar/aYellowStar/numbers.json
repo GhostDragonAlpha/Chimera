@@ -14,7 +14,7 @@
   "granules_across": 1418.7874154211584,
   "granule_dT": 250.0,
   "burning": true,
-  "timeline_serial": 46,
+  "timeline_serial": 47,
   "t_since_seed_s": 3.0046960427884614e+17,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

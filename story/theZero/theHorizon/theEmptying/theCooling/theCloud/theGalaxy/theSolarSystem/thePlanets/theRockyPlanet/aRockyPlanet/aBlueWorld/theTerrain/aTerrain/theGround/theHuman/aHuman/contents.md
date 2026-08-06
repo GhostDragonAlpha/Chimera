@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theBreath` | What the person in the suit is actually breathing. The parent established that |
+| `theBreath` | What the person in the suit is actually breathing. The parent established that this air cannot be trusted and that no pressure shell is needed; it never said what goes in the helmet instead. This does — and it turns out **the oxygen is not the problem.** |
 
 ## Hands down
 

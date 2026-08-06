@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aNitrogenAtmosphere` | The air that actually formed over this world: 0.52 bar of nitrogen air that |
+| `aNitrogenAtmosphere` | The air that actually formed over this world: 0.52 bar of nitrogen air that weighs half what Earth's does, holds a deeper blue at noon, burns red at the terminator for twenty-four minutes, keeps its clouds within the first kilometre — and would not keep a human breathing. |
 
 ## Hands down
 

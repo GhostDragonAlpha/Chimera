@@ -71,6 +71,19 @@ GATE_FIX = {
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
 }
 
+# GRANDFATHERED terms: 41 existing proven/decided terms in the ledger. Their records stay valid
+# without PHYSICS measurement pointers. Do not rewrite engine_state.json for these.
+GRANDFATHERED_TERMS = {
+    "theStory", "theSeed", "theDeterminism", "theLaws", "theTruth",
+    "theSolarSystem", "theStar", "thePlanets", "aPlanet", "theTerrain",
+    "theAtmosphere", "theOcean", "theBiomes", "theGround", "theInterior",
+    "theMining", "theGarden", "theEcosystem", "theTree", "theTreeForm",
+    "theFruit", "thePlanting", "theFarming", "thePlanetaryFarm", "theLunarFarm",
+    "theOrbitalFarm", "theSpace", "theDensityClock", "theShip", "theFlight",
+    "theShipPower", "theShipCombat", "theShields", "theWarpDrive", "theShipView",
+    "theSalvage", "theDescent", "theStanding", "theBlackHole", "theVerbs", "theThrust",
+}
+
 
 def _now() -> float:
     return time.time()
@@ -165,6 +178,36 @@ class Engine:
                     seen.append(v)
         return seen
 
+    def _validate_pointer(self, pointer: str) -> bool:
+        """Validate a PHYSICS measurement pointer: path/to/numbers.json#key
+        
+        Resolve the file path relative to the repo root. The file must exist and
+        the key must be present in it.
+        """
+        # Parse pointer: path/to/numbers.json#key
+        if "#" not in pointer:
+            return False
+        parts = pointer.rsplit("#", 1)
+        if len(parts) != 2:
+            return False
+        file_path, key = parts[0], parts[1]
+        
+        # Resolve relative to repo root
+        full_path = (_REPO / file_path).resolve()
+        if not full_path.exists():
+            return False
+        if not full_path.is_file():
+            return False
+        
+        # Check the key exists in the JSON file
+        try:
+            data = json.loads(full_path.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and key in data:
+                return True
+        except Exception:
+            pass
+        return False
+
     def compression(self, name: str) -> float:
         """MEASURED compression of the term's genome: distinct variables represented per compressed
         byte -- meaning-density. Higher = more world in less data = the smarter, more compressed
@@ -242,10 +285,34 @@ class Engine:
         else:
             vis_detail = f"the DYAD did not hold [{dyad.get('verdict')}] -- {dyad.get('detail', '')}"
         out.append(("APPEARANCE MESSENGER", vis_exists and dyad_pass, vis_detail))
-        why_ok = bool(vs) and all(term in ("PHYSICS", "THE HUMAN")
-                                  for term in t["classification"].values())
-        out.append(("S5 WHY-TERMINAL", why_ok,
-                    "every variable reaches PHYSICS or THE HUMAN" if why_ok else "a variable's terminal is not legal"))
+        # S5 WHY-TERMINAL: check terminals and PHYSICS measurement pointers
+        why_ok = bool(vs)
+        why_detail = "every variable reaches PHYSICS or THE HUMAN"
+        if vs:
+            # Check that all variables are classified with a legal terminal
+            for v, classification in t["classification"].items():
+                term = classification.get("terminal", classification) if isinstance(classification, dict) else classification
+                if term not in ("PHYSICS", "THE HUMAN"):
+                    why_ok = False
+                    why_detail = f"a variable's terminal is not legal: {v} -> {term}"
+                    break
+                # For PHYSICS variables, check the measurement pointer (unless grandfathered)
+                if term == "PHYSICS":
+                    pointer = classification.get("pointer") if isinstance(classification, dict) else None
+                    if pointer is not None:
+                        # Validate the pointer: path/to/numbers.json#key
+                        valid_pointer = self._validate_pointer(pointer)
+                        if not valid_pointer:
+                            why_ok = False
+                            why_detail = f"PHYSICS variable lacks a valid measurement pointer: {v} -> {pointer}"
+                            break
+                    else:
+                        # No pointer - check if this term is grandfathered
+                        if name not in GRANDFATHERED_TERMS:
+                            why_ok = False
+                            why_detail = f"PHYSICS variable lacks a measurement pointer: {v}"
+                            break
+        out.append(("S5 WHY-TERMINAL", why_ok, why_detail))
         return out
 
     def next_action(self, name) -> str:
@@ -277,10 +344,26 @@ class Engine:
 
     def classify(self, name: str, assignments: dict) -> str:
         t = self._term(name)
-        for v, term in assignments.items():
-            if term not in ("PHYSICS", "THE HUMAN"):
-                return f"REFUSED (S3): `{term}` is not a terminal. Only PHYSICS or THE HUMAN."
-            t["classification"][v] = term
+        for v, assignment in assignments.items():
+            # assignment can be "PHYSICS#path/to/numbers.json#key" or "THE HUMAN"
+            if isinstance(assignment, str):
+                if assignment == "THE HUMAN":
+                    t["classification"][v] = {"terminal": "THE HUMAN"}
+                elif assignment.startswith("PHYSICS#"):
+                    # format: PHYSICS#path/to/numbers.json#key
+                    parts = assignment.split("#", 2)
+                    if len(parts) != 3 or parts[0] != "PHYSICS":
+                        return f"REFUSED (S3): `{assignment}` is not a valid terminal+pointer. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
+                    pointer = f"{parts[1]}#{parts[2]}"
+                    t["classification"][v] = {"terminal": "PHYSICS", "pointer": pointer}
+                else:
+                    return f"REFUSED (S3): `{assignment}` is not a terminal. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
+            else:
+                # backward compatibility: dict format
+                term = assignment.get("terminal", assignment)
+                if term not in ("PHYSICS", "THE HUMAN"):
+                    return f"REFUSED (S3): `{term}` is not a terminal. Only PHYSICS or THE HUMAN."
+                t["classification"][v] = assignment
         t["status"] = "classified"; self._save()
         return f"S3 CLASSIFY: {assignments}.  Next: {self.next_action(name)}"
 

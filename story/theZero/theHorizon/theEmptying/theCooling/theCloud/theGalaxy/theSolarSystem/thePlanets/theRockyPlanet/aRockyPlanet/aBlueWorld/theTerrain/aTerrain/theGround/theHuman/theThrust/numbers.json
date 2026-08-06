@@ -107,7 +107,7 @@
     0.20134575735912405,
     0.12327406515688077
   ],
-  "timeline_serial": 30,
+  "timeline_serial": 31,
   "t_since_seed_s": 5757154536625857.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

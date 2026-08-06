@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1728 entries** across 8 chapters.
+**1732 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*634 entries; showing 40.*
+*638 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -1333,112 +1333,112 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> ADotCharacter                          20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> AErisaidActor                          20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     18 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     20 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry      9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
+> audio_visual_sync/report_telemetry     10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access     63 reps  100%  streak  8  battery  10 (3 pie)  tier 0/1
+> audio_visual_sync/telemetry_access     70 reps  100%  streak  8  battery  10 (3 pie)  tier 0/1
 
 ### Beat_Scripts_Tautology_Fix — ledger standing
 <sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
 
-> Beat_Scripts_Tautology_Fix              9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Beat_Scripts_Tautology_Fix             10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                              9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Demo_Level                             10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Diagnose — ledger standing
 <sub>`repstat:Diagnose`</sub>
 
-> Diagnose WeightShift 2/4 test fail      9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Diagnose WeightShift 2/4 test fail     10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### FFootstepEvent — ledger standing
 <sub>`repstat:FFootstepEvent`</sub>
 
-> FFootstepEvent                         18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> FFootstepEvent                         20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### FStar — ledger standing
 <sub>`repstat:FStar`</sub>
 
-> FStar                                  18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> FStar                                  20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                              18 reps  100%  streak  8  battery   5 (0 pie)  tier 0/3
+> Game_Feel                              20 reps  100%  streak  8  battery   5 (0 pie)  tier 0/3
 
 ### granular_matter — ledger standing
 <sub>`repstat:granular_matter`</sub>
 
-> granular_matter                        18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> granular_matter                        20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     306 reps  100%  streak  8  battery  34 (0 pie)  READY
+> Ground_Sand_Sound                     340 reps  100%  streak  8  battery  34 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                     9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Ground_Sand_Surface                    10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Malcolm_Envelope — ledger standing
 <sub>`repstat:Malcolm_Envelope`</sub>
 
-> Malcolm_Envelope                       63 reps   96%  streak  1  battery  18 (8 pie)  tier 0/2
+> Malcolm_Envelope                       70 reps   96%  streak  2  battery  18 (8 pie)  tier 0/2
 
 ### materialization — ledger standing
 <sub>`repstat:materialization`</sub>
 
-> materialization                        18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> materialization                        20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### matter_library — ledger standing
 <sub>`repstat:matter_library`</sub>
 
-> matter_library                         18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> matter_library                         20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### MCP_Pathways — ledger standing
 <sub>`repstat:MCP_Pathways`</sub>
 
-> MCP_Pathways                            9 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> MCP_Pathways                           10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### planet_averages — ledger standing
 <sub>`repstat:planet_averages`</sub>
 
-> planet_averages                        18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> planet_averages                        20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Shelter_Habitat_Lighting — ledger standing
 <sub>`repstat:Shelter_Habitat_Lighting`</sub>
 
-> Shelter_Habitat_Lighting               18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> Shelter_Habitat_Lighting               20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Shelter_Habitat_Materials — ledger standing
 <sub>`repstat:Shelter_Habitat_Materials`</sub>
 
-> Shelter_Habitat_Materials              18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> Shelter_Habitat_Materials              20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Sky_Atmosphere_Scattering — ledger standing
 <sub>`repstat:Sky_Atmosphere_Scattering`</sub>
 
-> Sky_Atmosphere_Scattering              18 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> Sky_Atmosphere_Scattering              20 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ## VII. The Drift Ledger (spec promises vs kept)
 

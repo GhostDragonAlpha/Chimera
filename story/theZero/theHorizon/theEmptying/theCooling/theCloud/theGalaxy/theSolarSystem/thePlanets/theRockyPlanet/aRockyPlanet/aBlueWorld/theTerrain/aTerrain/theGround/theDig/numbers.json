@@ -23,6 +23,33 @@
   "bulk_density": 1537.0000000000002,
   "porosity": 0.42,
   "g": 7.076122169232295,
+  "S_earth": 1.0048952107836961,
+  "mineral_materials": {
+    "quartz": {
+      "genome_id": 24,
+      "rgb_mean": [
+        0.7100783586502075,
+        0.707780122756958,
+        0.6420968770980835
+      ]
+    },
+    "feldspar": {
+      "genome_id": 9,
+      "rgb_mean": [
+        0.6007148623466492,
+        0.5874956250190735,
+        0.45696356892585754
+      ]
+    },
+    "oxide": {
+      "genome_id": 28,
+      "rgb_mean": [
+        0.3465217053890228,
+        0.3319152891635895,
+        0.2344687581062317
+      ]
+    }
+  },
   "timeline_serial": 26,
   "t_since_seed_s": 5757154536625852.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"

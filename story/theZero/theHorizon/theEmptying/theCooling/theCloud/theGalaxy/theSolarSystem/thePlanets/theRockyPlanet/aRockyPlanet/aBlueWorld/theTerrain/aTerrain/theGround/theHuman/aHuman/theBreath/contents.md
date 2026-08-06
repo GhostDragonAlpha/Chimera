@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theSweep` | The draught across the inside of the faceplate. The parent proved a fan has to |
+| `theSweep` | The draught across the inside of the faceplate. The parent proved a fan has to exist and then refused to size it; this sizes it. And the answer is decided not by the lungs but by |
 
 ## Hands down
 

@@ -9,8 +9,8 @@
 
 | membrane | what it is |
 |---|---|
-| `aActiveInterior` | The inside this planet actually has: a working engine. 23 terawatts leaving |
-| `theMining` | An ore is a concentration: the interior's elements sit in the crust at |
+| `aActiveInterior` | The inside this planet actually has: a working engine. 23 terawatts leaving through rock that creeps two centimetres a year, an iron heart a third of the way to the centre freezing slowly and powering a magnetic field that holds the star's wind five and a half planet- radii away. |
+| `theMining` | An ore is a concentration: the interior's elements sit in the crust at trace fractions, and a mine is the place geology piled them up past the grade where taking them pays. Everything else — the method, the energy, the deepest hole — is that fact meeting physics. |
 
 ## Hands down
 

@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `aTerrain` | One place on that world, twelve kilometres across — about two hours on foot |
+| `aTerrain` | One place on that world, twelve kilometres across — about two hours on foot The parent worked in continents; this is the scale where you can see a hill. Nothing here draws a river: the ground starts as rough noise, water is sent downhill, and every patch is worn down by how much water crosses it and how steeply it falls. Do that for long enough and valleys are what is |
 
 ## Hands down
 

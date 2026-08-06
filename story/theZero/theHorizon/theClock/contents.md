@@ -10,7 +10,7 @@
 | membrane | what it is |
 |---|---|
 | `theDensityClock` | Time runs slower when you are deep in gravity or moving fast. Your clock is really a readout of how much mass is packed around you |
-| `theHumanClock` | A person can only produce and notice events inside a narrow band of speeds — |
+| `theHumanClock` | A person can only produce and notice events inside a narrow band of speeds — roughly a twenty-fifth of a second to about ten seconds. Everything the player controls has to be geared into that band, or they cannot feel it: too fast and a tap overshoots, too slow and the button feels dead. |
 
 ## Hands down
 

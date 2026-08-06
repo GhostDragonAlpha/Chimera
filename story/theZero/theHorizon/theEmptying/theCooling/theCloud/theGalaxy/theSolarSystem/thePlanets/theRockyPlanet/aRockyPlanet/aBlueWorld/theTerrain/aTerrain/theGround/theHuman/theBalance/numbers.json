@@ -2,6 +2,9 @@
   "extent_m": 0.5045625,
   "pendulum_length_m": 1.009125,
   "duration_s": 3.44867442133726,
+  "crouch_time_s": 0.0,
+  "contact_time_s": 1.3700346244233093,
+  "flight_time_s": 0.3543025862453208,
   "pelvis_width_m": 0.1611720882352941,
   "pelvis_width_frac": 0.09183594771241829,
   "pelvis_width_spread_pct": 2.0511141635055457,
@@ -938,7 +941,7 @@
   "com_height_m": 1.009125,
   "leg_length_m": 0.9201465000000001,
   "S_earth": 1.0048952107836961,
-  "timeline_serial": 32,
+  "timeline_serial": 33,
   "t_since_seed_s": 5757154536625858.0,
   "t_since_seed_note": "sum of duration_s down the path from theZero: exact as an ORDERING, approximate as an absolute epoch, because the story publishes process spans and not yet the waiting between them"
 }

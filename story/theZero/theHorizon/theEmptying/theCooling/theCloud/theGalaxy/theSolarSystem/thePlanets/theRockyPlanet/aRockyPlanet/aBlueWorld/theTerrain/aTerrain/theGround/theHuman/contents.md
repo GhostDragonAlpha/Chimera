@@ -9,16 +9,16 @@
 
 | membrane | what it is |
 |---|---|
-| `aHuman` | The person you actually play. Not a body in the abstract — *this* body, on *this* |
-| `theAnkle` | The joint that makes walking cheap, and the only one that touches the ground |
-| `theBalance` | Everything above this walks forwards. Seen from the side a body is never falling |
-| `theEye` | Everything above this chapter derived a world. This one derives the hole the |
-| `theGrip` | The hand does not aim its fingers at a place. It **closes until it cannot**, and |
+| `aHuman` | The person you actually play. Not a body in the abstract — *this* body, on *this* world, wearing what this world requires. Fifteen membranes of physics arrive here as three plain sentences: **you cannot breathe the air, you do not need a pressure shell, and it is cold.** What those three facts do to a person is a suit, and the suit is what you look like. |
+| `theAnkle` | The joint that makes walking cheap, and the only one that touches the ground The parent's gait was a **sled**: both feet 4.2% of stature off the floor at mid-stride, duty factor near 1.0 on each, no double support. Two faults caused it, and the second is this chapter — the knee bent on the wrong leg, **and the foot had no joint.** |
+| `theBalance` | Everything above this walks forwards. Seen from the side a body is never falling sideways, which is why the side view is comfortable and why it is only half the story. This chapter is the other half: the sway, the step width, and the fact that a pelvis is a **bar between two hips** which tilts — so the two hips are not at the same height, and a side view has no way to say so. |
+| `theEye` | Everything above this chapter derived a world. This one derives the hole the world has to fit through. An eye is a two-millimetre aperture, and a two-millimetre aperture cannot be argued with — diffraction puts a hard floor under how fine a detail can survive the trip to the retina, and no amount of retina underneath recovers what the pupil already threw away. So how much detail is worth drawing is not a taste question. It is an optics question, and it has an answer. |
+| `theGrip` | The hand does not aim its fingers at a place. It **closes until it cannot**, and whatever it ran into decides where the fingers stopped and how hard they now have to squeeze. So there is one GRAB, and a pin and a bowling ball are the *same command* with different answers. |
 | `theHand` | What the person can do to things. The manual's own control law lives here: COMMAND THE PROCESS, NOT THE POSITION — the hand closes until it cannot, and the OBJECT decides where the fingers land. One GRAB serves a pin and a bowling ball |
-| `theLoad` | A body with something on its back is a **different body**: heavier, higher |
+| `theLoad` | A body with something on its back is a **different body**: heavier, higher centred, leaning forward, and burning a third more fuel to go the same distance at the same speed. Nothing about that is designed. One added mass, at one added height, at one added distance behind the spine — and everything else on this page is arithmetic done to those three numbers. |
 | `theSkin` | The suit's insulation is derived in `aHuman` and the body's heat is derived in `theSweep`, and now the surface between them is derived too: skin is a 60-micron melanin filter crossed twice, over blood-bearing collagen that diffuses light — red furthest, which is why a finger glows red against a torch. What happens when something goes THROUGH it is still open: the story's only injury is a laser graze and a coagulant |
-| `theStance` | Standing still is not a thing a body is, it is a thing a body keeps doing. The |
-| `theThrust` | The body as an engine. Every time a person jumps, starts, stops, climbs or |
+| `theStance` | Standing still is not a thing a body is, it is a thing a body keeps doing. The feet mark out a patch of ground, the body falls very slowly in one direction or another inside it, and something catches it before it runs out of patch. How much patch there is, how fast it is running out, and what it costs to make the patch bigger — that is this chapter. |
+| `theThrust` | The body as an engine. Every time a person jumps, starts, stops, climbs or shoves, they are turning muscle work into momentum against this planet's gravity — and the floor has to be able to take it. It cannot always take it. |
 
 ## Hands down
 

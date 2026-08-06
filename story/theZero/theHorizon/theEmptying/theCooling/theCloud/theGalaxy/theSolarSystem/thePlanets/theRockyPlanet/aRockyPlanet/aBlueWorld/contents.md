@@ -9,12 +9,12 @@
 
 | membrane | what it is |
 |---|---|
-| `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — |
-| `theBiomes` | A biome is the largest community of life a climate can hold. Give a world's |
-| `theGarden` | The world grows its life in one place and the whole world agrees where: the |
-| `theInterior` | A rocky planet is shells: the heavy sank and the light floated, so it has an |
-| `theOcean` | An ocean is a liquid that gravity holds in a world's basins. Everything else |
-| `theTerrain` | The last chapter said how much water there is but refused to say where the coast |
+| `theAtmosphere` | An atmosphere is gas that gravity keeps. Everything else about any air — its weight, its colour, its weather, and the way it fades instead of ending — is that one fact consequences chasing it down. |
+| `theBiomes` | A biome is the largest community of life a climate can hold. Give a world's temperature and its rain, and the bands are forced — because life has requirements that do not negotiate: warmth enough to grow, water enough to drink, light enough to eat. |
+| `theGarden` | The world grows its life in one place and the whole world agrees where: the equator, 21 °C and 99.8 cm of rain a year — a wet savanna-woodland, not a jungle, because that climate is a hair short of the rainforest's 100 cm floor. The band that holds 90% of the peak is 2,018 km wide. The render is not a map of cells; it is the production field itself — how much life each latitude actually makes — lit by the world's star from the equator, bright at the garden and dark where nothing can grow. |
+| `theInterior` | A rocky planet is shells: the heavy sank and the light floated, so it has an iron heart wrapped in rock wrapped in a thin skin. Everything else — the heat, the stirring, the magnetic field, the volcanoes — is that one fact's engine running. |
+| `theOcean` | An ocean is a liquid that gravity holds in a world's basins. Everything else about every ocean — its depth, its colour, its currents, its tides — is that one fact's consequences chasing it down. |
+| `theTerrain` | The last chapter said how much water there is but refused to say where the coast is, because on a perfectly smooth world there isn't one — the sea just goes all the way round. Land exists only because some rock stands higher than the water reaches. This chapter works out how high rock is *able* to stand, and then fills the low ground with the water until it fits. Where it stops is sea level, and everything above it is land: **30% of this world.** |
 
 ## Hands down
 

@@ -56,8 +56,9 @@ def question(term: str, question: str, variables: list[str]) -> str:
 
 @mcp.tool()
 def classify(term: str, assignments: dict[str, str]) -> str:
-    """S3. Send each discovered variable to its terminal: 'PHYSICS' (measurable fact) or
-    'THE HUMAN' (taste/meaning). No other terminal is legal."""
+    """S3. Send each discovered variable to its terminal: 'PHYSICS#path/to/numbers.json#key'
+    (measurable fact with measurement pointer) or 'THE HUMAN' (taste/meaning). No other terminal
+    is legal."""
     return ENG.classify(term, assignments)
 
 

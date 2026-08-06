@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theClock` | Everything that gravity holds together ticks, and how fast it ticks depends on |
+| `theClock` | Everything that gravity holds together ticks, and how fast it ticks depends on only one thing: how densely it is packed. A star, a planet and a galaxy run on the same formula — they just have wildly different densities, so a star's tick is an hour and a galaxy's is a hundred million years. |
 | `theEmptying` | Everything a black hole knows is written on its surface, not stored inside it. And a surface like that glows — so it hands back what the point could never hold |
 
 ## Hands down

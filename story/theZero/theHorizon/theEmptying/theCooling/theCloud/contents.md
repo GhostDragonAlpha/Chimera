@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theGalaxy` | The clumps of gas keep falling into each other and pile up into one enormous |
+| `theGalaxy` | The clumps of gas keep falling into each other and pile up into one enormous spinning island of stars. It has to spin, because it cannot fall straight in — and that spin is what makes the spiral arms, which are not solid things but traffic jams that stars drift through. |
 
 ## Hands down
 

@@ -9,7 +9,7 @@
 
 | membrane | what it is |
 |---|---|
-| `theGround` | Four metres across. The parent gave the *shape* of the land over twelve |
+| `theGround` | Four metres across. The parent gave the *shape* of the land over twelve kilometres, and never said what any of it is made of — but a shape cannot be stood on. This chapter answers the only question a body actually asks of a planet: **will it hold me, and how far do I sink?** It holds. You sink less than a millimetre. |
 
 ## Hands down
 

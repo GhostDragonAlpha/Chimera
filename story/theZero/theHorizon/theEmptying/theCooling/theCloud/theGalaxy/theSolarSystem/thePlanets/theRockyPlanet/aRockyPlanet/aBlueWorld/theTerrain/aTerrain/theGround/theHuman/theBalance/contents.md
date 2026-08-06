@@ -16,6 +16,9 @@
 | `extent_m` | 0.5046 |
 | `pendulum_length_m` | 1.009 |
 | `duration_s` | 3.449 |
+| `crouch_time_s` | 0 |
+| `contact_time_s` | 1.37 |
+| `flight_time_s` | 0.3543 |
 | `pelvis_width_m` | 0.1612 |
 | `pelvis_width_frac` | 0.09184 |
 | `pelvis_width_spread_pct` | 2.051 |
