@@ -55,6 +55,12 @@ RULE 0 doc section) as the print proofs earn them.*
   sand, granular ground. Falsifier: holds a derived angle of repose against a
   printed tilt (the matter era's repose lesson, relearned emergently).
 - **lattice bulk**: the crystal print (RUNNING). Falsifier: bond retention > 50%.
+- **BONE**: a dense lattice bulk — ordered packing = stiff, disordered = compliant;
+  the distinction is free because points are identical. Bone is the PARENT
+  membrane of the muscle: muscle is defined by its two bony attachments, and
+  every 1-D/2-D structure that bears load anchors to bone. Falsifier: bears a
+  derived compressive/tensile load without bond rupture, and deflects less than
+  a packed-bed bulk of equal mass by a derived factor (ordered beats random).
 - **composite bulk**: fibers embedded in packed bed = flesh, muscle-in-sheath.
   Falsifier: the composite holds forms neither component holds alone (this is
   where the muscle print lives).
@@ -70,14 +76,17 @@ RULE 0 doc section) as the print proofs earn them.*
 ## THE MUSCLE (flagship composite — the operator's spec)
 
 Bundle of fibers (arbitrary L, O(L) per fiber to compute) packed in a sheath,
-between two anchor plates. Contraction = shortened fiber rest length; force =
-derived aggregate; stroke = L x (r_c - r_bond) per link. Tearing, failed
-movement, and limits are EMERGENT (bond rupture, force balance). Falsifier:
-bundle delivers derived force to anchors, survives contraction, and a pulled
-fiber tears at r_c rather than stretching forever.
+strung between two BONES via tendons — muscle comes from the bone; there is no
+muscle without a bony anchor at each end. Contraction = shortened fiber rest
+length; force = derived aggregate; stroke = L x (r_c - r_bond) per link. Tearing,
+failed movement, and limits are EMERGENT (bond rupture, force balance). Falsifier:
+bundle delivers derived force to the bones, survives contraction, and a pulled
+fiber tears at r_c rather than stretching forever — and the BONES do not migrate
+(the anchor holds; if the bones move, the muscle moved the wrong thing).
 
 ## ORDER OF PROOF (derived from dependency depth)
 
-lattice (running) -> packed bed (needs nothing) -> fiber/rope (needs lattice
-anchors) -> sheet (needs fiber) -> tendon/socket (needs bulk+chain) -> muscle
-(needs all) -> bladder -> LIFE (a boundary that maintains itself — needs all).
+lattice (running) -> BONE (a lattice that bears load) -> packed bed (needs
+nothing) -> fiber/rope (needs bone anchors) -> sheet (needs fiber) ->
+tendon/socket (needs bone+chain) -> muscle (needs all) -> bladder -> LIFE
+(a boundary that maintains itself — needs all).
