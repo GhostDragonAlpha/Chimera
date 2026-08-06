@@ -281,6 +281,36 @@ if _cuda_available:
         vel[i, 2] += acc[i, 2] * half
 
     @cuda.jit(cache=True)
+    def _verlet_kick_drift_pinned(pos, vel, acc, dt, pin_mask, n):
+        """Velocity Verlet half-kick + drift, skipping pinned points."""
+        i = cuda.grid(1)
+        if i >= n or pin_mask[i]:
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+        pos[i, 0] += vel[i, 0] * dt
+        pos[i, 1] += vel[i, 1] * dt
+        pos[i, 2] += vel[i, 2] * dt
+
+    @cuda.jit(cache=True)
+    def _verlet_final_kick_pinned(vel, acc, dt, pin_mask, n):
+        """Velocity Verlet final half-kick; pinned points keep zero velocity."""
+        i = cuda.grid(1)
+        if i >= n:
+            return
+        if pin_mask[i]:
+            vel[i, 0] = 0.0
+            vel[i, 1] = 0.0
+            vel[i, 2] = 0.0
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+
+    @cuda.jit(cache=True)
     def _draw_cuda_batch(pos, out, G, eps2, total, N):
         """Batched DRAW: each thread handles one point in one world."""
         i = cuda.grid(1)
@@ -391,6 +421,36 @@ if _cuda_available:
         """Batched velocity-Verlet final half-kick."""
         i = cuda.grid(1)
         if i >= total:
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+
+    @cuda.jit(cache=True)
+    def _verlet_kick_drift_batch_pinned(pos, vel, acc, dt, pin_mask, total):
+        """Batched half-kick + drift, skipping pinned points."""
+        i = cuda.grid(1)
+        if i >= total or pin_mask[i]:
+            return
+        half = 0.5 * dt
+        vel[i, 0] += acc[i, 0] * half
+        vel[i, 1] += acc[i, 1] * half
+        vel[i, 2] += acc[i, 2] * half
+        pos[i, 0] += vel[i, 0] * dt
+        pos[i, 1] += vel[i, 1] * dt
+        pos[i, 2] += vel[i, 2] * dt
+
+    @cuda.jit(cache=True)
+    def _verlet_final_kick_batch_pinned(vel, acc, dt, pin_mask, total):
+        """Batched final half-kick; pinned points keep zero velocity."""
+        i = cuda.grid(1)
+        if i >= total:
+            return
+        if pin_mask[i]:
+            vel[i, 0] = 0.0
+            vel[i, 1] = 0.0
+            vel[i, 2] = 0.0
             return
         half = 0.5 * dt
         vel[i, 0] += acc[i, 0] * half
@@ -715,10 +775,14 @@ class VelocityVerlet:
         self.acc = np.zeros((n, 3), dtype=np.float32)
         self.radiated_energy = 0.0  # float64, cumulative
         self.last_radiated_power = 0.0  # float64, most recent tick
+        # pinned points: receive forces but are not integrated by the Verlet step
+        self.pin_mask = np.zeros(n, dtype=bool)
+        self._has_pins = False
         if self.use_cuda:
             self.d_pos = cuda.to_device(self.pos)
             self.d_vel = cuda.to_device(self.vel)
             self.d_acc = cuda.to_device(self.acc)
+            self.d_pin_mask = cuda.to_device(self.pin_mask)
 
     def set_state(self, positions: np.ndarray, velocities: np.ndarray):
         """Replace host state; upload to device if using CUDA."""
@@ -727,6 +791,13 @@ class VelocityVerlet:
         if self.use_cuda:
             self.d_pos.copy_to_device(self.pos)
             self.d_vel.copy_to_device(self.vel)
+
+    def set_pin_mask(self, mask: np.ndarray):
+        """Set which points are pinned (True = fixed, still exerts forces)."""
+        self.pin_mask[:] = np.asarray(mask, dtype=bool)[:self.n]
+        self._has_pins = bool(self.pin_mask.any())
+        if self.use_cuda:
+            self.d_pin_mask.copy_to_device(self.pin_mask)
 
     def compute_acceleration(self):
         """Compute a = F(x, v) at the current state."""
@@ -758,8 +829,12 @@ class VelocityVerlet:
             threads = 256
             blocks = (self.n + threads - 1) // threads
             # 1. half-kick + drift using a(t)
-            _verlet_kick_drift[blocks, threads](
-                self.d_pos, self.d_vel, self.d_acc, dt, self.n)
+            if self._has_pins:
+                _verlet_kick_drift_pinned[blocks, threads](
+                    self.d_pos, self.d_vel, self.d_acc, dt, self.d_pin_mask, self.n)
+            else:
+                _verlet_kick_drift[blocks, threads](
+                    self.d_pos, self.d_vel, self.d_acc, dt, self.n)
             cuda.synchronize()
             # 2. recompute total acceleration at the new positions and current v
             _draw_cuda[blocks, threads](
@@ -776,7 +851,11 @@ class VelocityVerlet:
             _add_acc[blocks, threads](self.d_acc, self._d_tmp, self.n)
             cuda.synchronize()
             # 3. final half-kick using a(t+dt)
-            _verlet_final_kick[blocks, threads](self.d_vel, self.d_acc, dt, self.n)
+            if self._has_pins:
+                _verlet_final_kick_pinned[blocks, threads](
+                    self.d_vel, self.d_acc, dt, self.d_pin_mask, self.n)
+            else:
+                _verlet_final_kick[blocks, threads](self.d_vel, self.d_acc, dt, self.n)
             cuda.synchronize()
             self.d_pos.copy_to_host(self.pos)
             self.d_vel.copy_to_host(self.vel)
@@ -785,8 +864,9 @@ class VelocityVerlet:
             self.last_radiated_power = power
             self.radiated_energy += power * dt
         else:
-            self.vel += 0.5 * dt * self.acc
-            self.pos += dt * self.vel
+            free = ~self.pin_mask
+            self.vel[free] += 0.5 * dt * self.acc[free]
+            self.pos[free] += dt * self.vel[free]
             # compute resistance + draw; resistance returns radiated power
             draw_acc = np.empty_like(self.acc)
             _draw_cpu(self.pos, float(G), float(EPS * EPS), draw_acc)
@@ -796,7 +876,8 @@ class VelocityVerlet:
                 float(P_WALL), float(K_WALL), float(K_BOND), float(GAMMA_W),
                 float(S_WALL), resist_acc)
             self.acc[:] = draw_acc + resist_acc
-            self.vel += 0.5 * dt * self.acc
+            self.vel[free] += 0.5 * dt * self.acc[free]
+            self.vel[~free] = 0.0
             self.last_radiated_power = float(power)
             self.radiated_energy += float(power) * dt
 
@@ -836,6 +917,11 @@ class EnsembleVerlet:
         self.vel = self._vel_flat.reshape(self.W, self.N, 3)
         self.acc = self._acc_flat.reshape(self.W, self.N, 3)
 
+        # pinned points per world
+        self._pin_flat = np.zeros(self.total, dtype=bool)
+        self.pin_mask = self._pin_flat.reshape(self.W, self.N)
+        self._has_pins = False
+
         # radiated energy: float32 accumulator on device, float64 host mirrors
         self._radiated_accum_host = np.zeros(self.W, dtype=np.float32)
         self._last_power_host = np.zeros(self.W, dtype=np.float32)
@@ -846,6 +932,7 @@ class EnsembleVerlet:
         self.d_pos = cuda.to_device(self._pos_flat)
         self.d_vel = cuda.to_device(self._vel_flat)
         self.d_acc = cuda.to_device(self._acc_flat)
+        self.d_pin_mask = cuda.to_device(self._pin_flat)
         self.d_tmp = cuda.device_array((self.total, 3), dtype=np.float32)
         self.d_power = cuda.device_array(self.W, dtype=np.float32)
         self.d_radiated_accum = cuda.device_array(self.W, dtype=np.float32)
@@ -876,6 +963,21 @@ class EnsembleVerlet:
         self.d_pos.copy_to_device(self._pos_flat)
         self.d_vel.copy_to_device(self._vel_flat)
 
+    def set_pin_mask(self, world_index: int, mask: np.ndarray):
+        """Set pinned mask for one world (N,) bool array."""
+        if not (0 <= world_index < self.W):
+            raise IndexError(f"world_index {world_index} out of [0, {self.W})")
+        self.pin_mask[world_index] = np.asarray(mask, dtype=bool)[:self.N]
+        self._has_pins = bool(self._pin_flat.any())
+        base = world_index * self.N
+        self.d_pin_mask[base:base + self.N].copy_to_device(self._pin_flat[base:base + self.N])
+
+    def set_all_pin_masks(self, masks: np.ndarray):
+        """Set pinned masks for all worlds; array must be (W, N) bool."""
+        self.pin_mask[:] = np.asarray(masks, dtype=bool).reshape(self.W, self.N)
+        self._has_pins = bool(self._pin_flat.any())
+        self.d_pin_mask.copy_to_device(self._pin_flat)
+
     def compute_acceleration(self):
         """Compute a = F(x, v) for every point in every world (device only)."""
         _draw_cuda_batch[self._blocks, self._threads](
@@ -891,8 +993,12 @@ class EnsembleVerlet:
         """Advance all worlds by one velocity-Verlet tick (pure device work)."""
         dt = float(dt)
         # 1. half-kick + drift using a(t)
-        _verlet_kick_drift_batch[self._blocks, self._threads](
-            self.d_pos, self.d_vel, self.d_acc, dt, self.total)
+        if self._has_pins:
+            _verlet_kick_drift_batch_pinned[self._blocks, self._threads](
+                self.d_pos, self.d_vel, self.d_acc, dt, self.d_pin_mask, self.total)
+        else:
+            _verlet_kick_drift_batch[self._blocks, self._threads](
+                self.d_pos, self.d_vel, self.d_acc, dt, self.total)
         # 2. recompute total acceleration at new positions and current v
         _draw_cuda_batch[self._blocks, self._threads](
             self.d_pos, self.d_acc, float(G), float(EPS * EPS), self.total, self.N)
@@ -902,8 +1008,12 @@ class EnsembleVerlet:
             float(S_WALL), self.d_power, self.total, self.N)
         _add_acc_batch[self._blocks, self._threads](self.d_acc, self.d_tmp, self.total)
         # 3. final half-kick using a(t+dt)
-        _verlet_final_kick_batch[self._blocks, self._threads](
-            self.d_vel, self.d_acc, dt, self.total)
+        if self._has_pins:
+            _verlet_final_kick_batch_pinned[self._blocks, self._threads](
+                self.d_vel, self.d_acc, dt, self.d_pin_mask, self.total)
+        else:
+            _verlet_final_kick_batch[self._blocks, self._threads](
+                self.d_vel, self.d_acc, dt, self.total)
         # 4. accumulate radiated energy per world on device, record last power
         _accumulate_radiation_kernel[self._blocks_w, self._threads](
             self.d_power, self.d_radiated_accum, self.d_last_power, dt, self.W)

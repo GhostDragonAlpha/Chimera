@@ -59,6 +59,19 @@ DISPERSE_RADIUS_GROWTH = 10.0         # system radius grows >10x initial
 FLICKER_CV_THRESHOLD = 0.20           # cluster count CV > 20% in final 25%
 BOUND_MASS_PERSISTENCE = 0.15         # bound fraction swing > 15% in final 25%
 
+# ── BONE print parameters (derived from force constants) ────────────
+# Longitudinal sound speed in the bond lattice: c = sqrt(K_BOND) = 1.0 lu/tick
+# because spacing R_BOND and spring constant K_BOND / R_BOND^2 cancel.
+# Drive the anchor plates together at 5% of sound speed.
+BONE_V_PLATE = 0.05 * math.sqrt(K_BOND)          # lu / tick
+BONE_COMPRESS_DIST = 2.0 * R_BOND                # total plate closure, lu
+BONE_HOLD_FRAC = 0.25                            # hold phase / compression phase
+# BONE falsifier thresholds (named before the run; do not retune)
+BONE_MERGE_PAIR_GROWTH = 2.0                     # merged grain pairs > 2x initial
+BONE_PLASTIC_FRAC = 0.10                         # permanent length change > 10%
+BONE_RUPTURE_FRAC = 0.10                         # > 10% of initial bonds ruptured
+BONE_STIFFNESS_GAIN = 2.0                        # bone stiffer than packed bed by 2x
+
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
     """Return (positions, velocities) for a structureless initial state."""
@@ -205,6 +218,104 @@ def shell_disk_metrics(pos: np.ndarray, n_core: int) -> tuple[float, float, floa
     return float(radii.mean()), float(radii.std()), float(z.std())
 
 
+# ── BONE-specific helpers ───────────────────────────────────────────
+
+def _rod_bounding_box(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Axis-aligned bounding box of the rod points (grain_ids >= 0)."""
+    rod = pos[grain_ids >= 0]
+    return rod.min(axis=0), rod.max(axis=0)
+
+
+def _make_packed_control(pos: np.ndarray, vel: np.ndarray, grain_ids: np.ndarray,
+                         seed: int) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Return a packed-bed control: keep the two pinned plates, replace the rod
+    with a uniform random fill of the same bounding box and point count.
+    """
+    pos = pos.copy()
+    vel = vel.copy()
+    rod_mask = grain_ids >= 0
+    n_rod = int(rod_mask.sum())
+    bbox_min, bbox_max = _rod_bounding_box(pos, grain_ids)
+    rng = np.random.default_rng(seed)
+    pos[rod_mask] = rng.uniform(bbox_min, bbox_max, (n_rod, 3)).astype(np.float32)
+    return pos, vel
+
+
+def _initial_bond_pairs(pos: np.ndarray, r_bond: float = R_BOND) -> np.ndarray:
+    """Return unordered point pairs within r_bond in the given state."""
+    rb2 = r_bond * r_bond
+    pairs = []
+    for lo, hi, r2 in _pairwise_r2(pos):
+        ii, jj = np.nonzero(r2 <= rb2)
+        ii = ii + lo
+        keep = ii < jj
+        pairs.extend(zip(ii[keep].tolist(), jj[keep].tolist()))
+    if not pairs:
+        return np.empty((0, 2), dtype=np.int64)
+    return np.array(pairs, dtype=np.int64)
+
+
+def _ruptured_count(pairs: np.ndarray, pos: np.ndarray, r_c: float = R_C) -> int:
+    """How many of the initial pairs now exceed the resistance cutoff r_c."""
+    if pairs.size == 0:
+        return 0
+    d2 = np.sum((pos[pairs[:, 0]] - pos[pairs[:, 1]]) ** 2, axis=1)
+    return int(np.count_nonzero(d2 > r_c * r_c))
+
+
+def _grain_metrics(pos: np.ndarray, grain_ids: np.ndarray,
+                   r_bond: float = R_BOND) -> tuple[int, int]:
+    """Return (number of distinct grain ids, number of merged grain pairs)."""
+    unique = np.unique(grain_ids[grain_ids >= 0])
+    n_grains = int(unique.shape[0])
+    rb2 = r_bond * r_bond
+    merged = set()
+    g = grain_ids
+    for lo, hi, r2 in _pairwise_r2(pos):
+        ii, jj = np.nonzero(r2 <= rb2)
+        ii = ii + lo
+        keep = ii < jj
+        for a, b in zip(ii[keep], jj[keep]):
+            ga, gb = int(g[a]), int(g[b])
+            if ga >= 0 and gb >= 0 and ga != gb:
+                if ga > gb:
+                    ga, gb = gb, ga
+                merged.add((ga, gb))
+    return n_grains, len(merged)
+
+
+def _rod_shape(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
+    """Return (rod length along x, maximum transverse deflection)."""
+    rod = pos[grain_ids >= 0]
+    length = float(rod[:, 0].max() - rod[:, 0].min())
+    deflection = float(np.sqrt(rod[:, 1] ** 2 + rod[:, 2] ** 2).max())
+    return length, deflection
+
+
+def _plate_force(acc: np.ndarray, left_idx: np.ndarray,
+                 right_idx: np.ndarray) -> float:
+    """Mean magnitude of the x-reaction force on the two anchor plates."""
+    left = float(np.abs(acc[left_idx, 0].sum()))
+    right = float(np.abs(acc[right_idx, 0].sum()))
+    return 0.5 * (left + right)
+
+
+def _stiffness(displacement: list[float], force: list[float]) -> float:
+    """Linear slope dF/dx for the compression phase (magnitude)."""
+    if len(displacement) < 2:
+        return 0.0
+    x = np.array(displacement, dtype=np.float64)
+    y = np.array(force, dtype=np.float64)
+    mask = x >= 0
+    if mask.sum() < 2:
+        return 0.0
+    x = x[mask]
+    y = y[mask]
+    slope, _ = np.polyfit(x, y, 1)
+    return float(abs(slope))
+
+
 def dump_frame(pos: np.ndarray, path: str, camera_pos=(25.0, 25.0, 25.0)):
     """Render the point set through ParticleEngine and save a PNG."""
     from ParticleEngine.gpu_pipeline import FullGPUPipeline
@@ -243,6 +354,258 @@ def dump_frame(pos: np.ndarray, path: str, camera_pos=(25.0, 25.0, 25.0)):
         print(f"[demo_seed] could not save frame: {e}")
 
 
+def _run_bone_compression(pos, vel, pin_mask, grain_ids, n_plate, initial_pairs,
+                          initial_rod_length, initial_grain_count,
+                          compress_ticks, hold_ticks, retract_ticks,
+                          v_plate, dt, tag, label):
+    """Run compress-hold-retract on one BOME (or packed control) configuration."""
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    left_idx = np.arange(n_plate, dtype=np.int32)
+    right_idx = np.arange(N - n_plate, N, dtype=np.int32)
+    left_x0 = float(pos[left_idx, 0].mean())
+    right_x0 = float(pos[right_idx, 0].mean())
+    initial_sep = right_x0 - left_x0
+
+    total_ticks = compress_ticks + hold_ticks + retract_ticks
+    sample_every = max(1, total_ticks // 40)
+
+    metrics = {
+        "tick": [],
+        "clusters": [],
+        "max_cluster": [],
+        "bound_frac": [],
+        "edge": [],
+        "radius": [],
+        "radiated_energy": [],
+        "radiated_power": [],
+        "grain_count": [],
+        "merged_pairs": [],
+        "rod_length": [],
+        "deflection": [],
+        "ruptured_bonds": [],
+        "plate_force": [],
+        "closure": [],
+    }
+
+    print(f"\n[{label}] N={N} grains={initial_grain_count} "
+          f"rod_length={initial_rod_length:.4f}")
+    print(f"[{label}] compression={compress_ticks} hold={hold_ticks} "
+          f"retract={retract_ticks} ticks")
+    print(f"[{label}] v_plate={v_plate:.5f} lu/tick, "
+          f"closure={BONE_COMPRESS_DIST:.4f} lu\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    for tick in range(1, total_ticks + 1):
+        if tick <= compress_ticks:
+            dx = v_plate * dt
+        elif tick <= compress_ticks + hold_ticks:
+            dx = 0.0
+        else:
+            dx = -v_plate * dt
+
+        if dx != 0.0:
+            sim.pos[left_idx, 0] += dx
+            sim.pos[right_idx, 0] -= dx
+            if sim.use_cuda:
+                sim.d_pos.copy_to_device(sim.pos)
+
+        sim.step(dt)
+
+        if tick % sample_every == 0 or tick == total_ticks:
+            n_clust, sizes = cluster_count_and_sizes(sim.pos, R_C)
+            bound_frac = bound_mass_fraction(sim.pos, R_BOND)
+            edge = edge_sharpness(sim.pos, METRIC_R_INNER, METRIC_R_OUTER)
+            rad = system_radius(sim.pos)
+            n_grains, merged_pairs = _grain_metrics(sim.pos, grain_ids)
+            rod_length, deflection = _rod_shape(sim.pos, grain_ids)
+            ruptured = _ruptured_count(initial_pairs, sim.pos)
+            plate_force = _plate_force(sim.acc, left_idx, right_idx)
+            left_x = float(sim.pos[left_idx, 0].mean())
+            right_x = float(sim.pos[right_idx, 0].mean())
+            closure = initial_sep - (right_x - left_x)
+
+            metrics["tick"].append(tick)
+            metrics["clusters"].append(n_clust)
+            metrics["max_cluster"].append(int(sizes.max()))
+            metrics["bound_frac"].append(bound_frac)
+            metrics["edge"].append(edge)
+            metrics["radius"].append(rad)
+            metrics["radiated_energy"].append(float(sim.radiated_energy))
+            metrics["radiated_power"].append(float(sim.last_radiated_power))
+            metrics["grain_count"].append(n_grains)
+            metrics["merged_pairs"].append(merged_pairs)
+            metrics["rod_length"].append(rod_length)
+            metrics["deflection"].append(deflection)
+            metrics["ruptured_bonds"].append(ruptured)
+            metrics["plate_force"].append(plate_force)
+            metrics["closure"].append(closure)
+
+            print(f"[{label}] tick={tick:6d} | clusters={n_clust:4d} | "
+                  f"max={sizes.max():4d} | bound={bound_frac:.3f} | "
+                  f"grains={n_grains} | merged={merged_pairs} | "
+                  f"length={rod_length:.4f} | deflect={deflection:.4f} | "
+                  f"ruptured={ruptured} | force={plate_force:.3f} | "
+                  f"closure={closure:.4f}")
+
+        if tick == compress_ticks:
+            dump_frame(sim.pos.copy(),
+                       os.path.join(OUTPUT_DIR, f"{tag}{label}_mid.png"))
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics
+
+
+def _print_bone_verdict(metrics, initial_grain_count, initial_rod_length,
+                        initial_bond_count, label):
+    """Print BONE falsifier verdict for one run; return (stiffness, verdict)."""
+    if not metrics["tick"]:
+        return 0.0, "N/A", [], []
+
+    final_merged = metrics["merged_pairs"][-1]
+    initial_merged = max(1, initial_grain_count - 1)
+    merge_ratio = final_merged / initial_merged
+    final_length = metrics["rod_length"][-1]
+    plastic = abs(final_length - initial_rod_length) / max(1e-9, initial_rod_length)
+    ruptured = max(metrics["ruptured_bonds"])
+    rupture_frac = ruptured / max(1, initial_bond_count)
+
+    closure = np.array(metrics["closure"], dtype=np.float64)
+    force = np.array(metrics["plate_force"], dtype=np.float64)
+    max_idx = int(np.argmax(closure))
+    if max_idx >= 2:
+        stiff = _stiffness(closure[:max_idx + 1].tolist(),
+                           force[:max_idx + 1].tolist())
+    else:
+        stiff = 0.0
+
+    fired = []
+    reasons = []
+    if merge_ratio >= BONE_MERGE_PAIR_GROWTH:
+        fired.append("MERGE")
+        reasons.append(
+            f"merged_pairs {final_merged}/{initial_merged} = ratio {merge_ratio:.2f}")
+    if plastic > BONE_PLASTIC_FRAC:
+        fired.append("PLASTIC")
+        reasons.append(f"length change {plastic:.3f}")
+    if rupture_frac > BONE_RUPTURE_FRAC:
+        fired.append("RUPTURE")
+        reasons.append(
+            f"ruptured bonds {ruptured}/{initial_bond_count} = {rupture_frac:.3f}")
+
+    verdict = fired[0] if fired else "PASS"
+
+    print(f"\n[{label}] BONE FALSIFIER VERDICT: {verdict}")
+    print(f"  grain count initial/final  = {initial_grain_count}/"
+          f"{metrics['grain_count'][-1]}")
+    print(f"  merged pairs ratio         = {merge_ratio:.3f}")
+    print(f"  rod length initial/final   = {initial_rod_length:.4f}/"
+          f"{final_length:.4f}")
+    print(f"  plastic strain             = {plastic:.4f}")
+    print(f"  ruptured bonds             = {ruptured}/{initial_bond_count}")
+    print(f"  compression stiffness      = {stiff:.3f}")
+    if reasons:
+        print("  reasons:")
+        for r in reasons:
+            print(f"    - {r}")
+    else:
+        print("  reasons: none — prediction held")
+    return stiff, verdict, fired, reasons
+
+
+def bone_main(args, seed):
+    """BONE print entry point: build, optionally run packed control, verdict."""
+    pos, vel, pin_mask, grain_ids = seed_structures.bone(
+        n=args.n, grain_side=6, seed=seed)
+    N = pos.shape[0]
+    n_plate = int(np.count_nonzero(grain_ids == -1) // 2)
+    initial_grain_count = len(np.unique(grain_ids[grain_ids >= 0]))
+
+    initial_pairs = _initial_bond_pairs(pos, R_BOND)
+    initial_rod_length, _ = _rod_shape(pos, grain_ids)
+    initial_bond_count = initial_pairs.shape[0]
+
+    dt = DT
+    v_plate = BONE_V_PLATE
+    compress_ticks = int(math.ceil(BONE_COMPRESS_DIST / (2.0 * v_plate * dt)))
+    hold_ticks = max(1, int(round(compress_ticks * BONE_HOLD_FRAC)))
+    retract_ticks = compress_ticks
+
+    tag = f"{args.tag}_" if args.tag else ""
+
+    print("=" * 60)
+    print("THE KERNEL — BONE print run")
+    print(f"N={N}, seed={seed}, structure={args.structure}, "
+          f"control={args.control}, dt={dt}")
+    print("=" * 60)
+
+    bone_metrics = _run_bone_compression(
+        pos, vel, pin_mask, grain_ids, n_plate, initial_pairs,
+        initial_rod_length, initial_grain_count,
+        compress_ticks, hold_ticks, retract_ticks,
+        v_plate, dt, tag, "bone")
+
+    packed_metrics = None
+    if args.control == "packed":
+        pos_p, vel_p = _make_packed_control(pos, vel, grain_ids, seed=seed + 999)
+        initial_pairs_p = _initial_bond_pairs(pos_p, R_BOND)
+        initial_rod_length_p, _ = _rod_shape(pos_p, grain_ids)
+        packed_metrics = _run_bone_compression(
+            pos_p, vel_p, pin_mask, grain_ids, n_plate, initial_pairs_p,
+            initial_rod_length_p, initial_grain_count,
+            compress_ticks, hold_ticks, retract_ticks,
+            v_plate, dt, tag, "packed")
+
+    print("=" * 60)
+    bone_stiff, bone_verdict, _, _ = _print_bone_verdict(
+        bone_metrics, initial_grain_count, initial_rod_length,
+        initial_bond_count, "bone")
+
+    if packed_metrics is not None:
+        packed_stiff, packed_verdict, _, _ = _print_bone_verdict(
+            packed_metrics, initial_grain_count, initial_rod_length_p,
+            initial_pairs_p.shape[0], "packed")
+        # slope-based gain (positive now); guard against sign issues with abs
+        gain = abs(bone_stiff) / max(1e-12, abs(packed_stiff))
+
+        # deflection-per-unit-load comparison (matches THE_CATEGORIES.md wording)
+        bone_force = max(bone_metrics["plate_force"])
+        bone_deflect = max(bone_metrics["deflection"])
+        packed_force = max(packed_metrics["plate_force"])
+        packed_deflect = max(packed_metrics["deflection"])
+        bone_dpl = bone_deflect / max(1e-12, bone_force)
+        packed_dpl = packed_deflect / max(1e-12, packed_force)
+        dpl_ratio = packed_dpl / max(1e-12, bone_dpl)
+        stiffness_ok = dpl_ratio >= BONE_STIFFNESS_GAIN
+
+        print("\nSTIFFNESS COMPARISON:")
+        print(f"  bone dF/dx        = {bone_stiff:.3f}")
+        print(f"  packed dF/dx      = {packed_stiff:.3f}")
+        print(f"  slope gain        = {gain:.3f}")
+        print(f"  bone max force    = {bone_force:.3f}")
+        print(f"  bone max deflect  = {bone_deflect:.4f}")
+        print(f"  packed max force  = {packed_force:.3f}")
+        print(f"  packed max deflect= {packed_deflect:.4f}")
+        print(f"  deflection/load ratio (packed/bone) = {dpl_ratio:.3f} "
+              f"(threshold {BONE_STIFFNESS_GAIN:.1f})")
+        print(f"  ordered > random  : {'PASS' if stiffness_ok else 'FAIL'}")
+        if not stiffness_ok:
+            print("  [bone] verdict updated: STIFFNESS (gain below threshold)")
+            bone_verdict = "STIFFNESS"
+    else:
+        print("\nSTIFFNESS COMPARISON: skipped (no --control packed)")
+
+    print(f"\nFINAL BONE VERDICT: {bone_verdict}")
+    print("=" * 60)
+
+
 def main():
     global N, SEED, T_FF, TOTAL_TICKS, SAMPLE_EVERY
 
@@ -255,10 +618,21 @@ def main():
     parser.add_argument("--tag", type=str, default="",
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
-                        choices=["random", "core_shell", "disk", "lattice"],
+                        choices=["random", "core_shell", "disk", "lattice", "bone"],
                         help="initial seed structure (default random)")
+    parser.add_argument("--control", type=str, default="none",
+                        choices=["none", "packed"],
+                        help="control structure for BONE print (default none)")
+    parser.add_argument("--spacing", type=float, default=None,
+                        help="lattice print spacing in lu (default R_BOND); "
+                             "print geometry, not a physics constant")
     args = parser.parse_args()
     SEED = args.seed
+
+    # BONE print has its own driver (compression test)
+    if args.structure == "bone":
+        bone_main(args, SEED)
+        return
 
     # choose initial state
     if args.structure == "random":
@@ -270,7 +644,11 @@ def main():
     else:
         print_note = "(BOX/VEL_SIGMA unused for authored print)"
         if args.structure == "lattice":
-            pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
+            if args.spacing is None:
+                pos, vel = seed_structures.lattice(n=args.n, seed=SEED)
+            else:
+                pos, vel = seed_structures.lattice(n=args.n, seed=SEED,
+                                                   spacing=args.spacing)
             N = pos.shape[0]
             n_core = 0
             r_target = 0.0

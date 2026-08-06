@@ -40,53 +40,47 @@ damaging something is not a term; it is the absence of one.
 
 ## LEVEL 2 — GEOLOGICAL (the ground things)
 
-- **theCrystal** — lattice bulk, ordered bonds. 3-D. Parent: theBalance. FAILED at
-  16^3=4096 (total collapse through the saturated wall — see theMaxChunk);
-  successor 8^3=512 ALSO FAILED 2026-08-06 (COLLAPSE: one bound blob, radius
-  0.1405 = spacing 0.028 << R_WALL, bond_retention 0.000 — the chunk stays ONE
-  OBJECT but the lattice order is crushed out of it). Successor: bracket the
-  true boundary at 6^3=216 and 4^3=64 (BOTH CRUSHED), then 3^3=27 (CRUSHED).
-  The bond-spaced crystal is not a phase of this universe at any tested size;
-  floor test at 2^3=8 RUNNING (prediction: holds, by direct pair balance).
-- **theMaxChunk** — the universe's atom-size limit. First derivation (naive:
-  surface draw G*M/r_wall^2 vs one saturated wall push a_max) gave M_crit =
-  a_max*r_wall^2/G = 640 — REFUTED 2026-08-06 by the 512 collapse. The naive
-  form under-counts: crushing is HYDROSTATIC — the whole chunk's weight is
-  transmitted through the contact network, and the equilibrium spacing d_eq
-  solves P_c(M,d) = f_wall(d)/d^2 with P_c = 0.806*G*M^(2/3)/d^4 (uniform-sphere
-  central pressure). Calibrated on the 512 collapse (d_eq = 0.028), the scaling
-  M ∝ (f_wall(d)*d^2)^(3/2) predicts: the largest chunk that keeps bond order
-  (d_eq >= R_WALL) is M_crit ~ 45 — grains of side 3 (27 points), not side 6-8.
-  PREDICTION (named before the bracket runs): 216 CRUSHES (bond_ret ~ 0,
-  radius ~ 0.13); 64 lands at d_eq ~ 0.046, just inside the wall — marginal,
-  partial rearrangement; 27 HOLDS (d_eq ~ 0.055 > R_WALL). FALSIFIER for this
-  model: if 216 holds order, or 64 keeps bond_ret > 0.5 with spacing outside
-  the wall, the crush is not hydrostatic equilibrium (next suspect: dynamical
-  Jeans-style instability of the jittered start). BRACKET RESULT 2026-08-06
-  (runs truncated once decisive — the box-density window convention inflates
-  to ~3h at small N; the crush completes <20k ticks and then holds steady):
-  216 CRUSHED as predicted (radius 0.123, bond_ret 0.000); 64 ALSO CRUSHED —
-  deeper than the model's marginal call (spacing ~0.040 vs predicted ~0.046,
-  bond_ret 0.000). The model's named falsifier did NOT fire (nothing held
-  order), so the hydrostatic picture stands but its one-point calibration
-  under-reads the crush: M_crit is smaller than 45. Then 27 CRUSHED TOO
-  (radius 0.084, spacing ~0.045, bond_ret 0.000) — the calibrated model's
-  "27 holds" prediction is REFUTED; the bond-spaced crystal is not a stable
-  phase at ANY tested size (27, 64, 216, 512, 4096). The emerging law: this
-  universe has exactly ONE condensed phase — the wall-supported crushed
-  droplet, spacing ~0.03-0.05, hydrostatically equilibrated, rock-stable
-  (512 held radius constant for 270k ticks, CV=0). The crystal at bond
-  spacing cannot exist here, the same way ordinary gas cannot exist at
-  absolute zero. FLOOR TEST (named before the run): for 2^3=8, DIRECT pair
-  balance (not the continuum pressure model, which is absurd at N=8) says a
-  corner point's DRAW inward (~1.3) is held by 3 bond springs at compression
-  delta ~ 0.01 — 8 HOLDS with bond_ret high. If 8 crushes too, even the
-  direct two-force reading of the bond spring is wrong somewhere, and the
-  bond law itself is next under the light. Whatever the floor, the doctrine
-  consequence stands: condensed matter is an ASSEMBLY — but of crushed-phase
-  droplets bonded at their surfaces (the disk's 151 persistent clumps show
-  distinct droplets coexist), not of intact crystal grains. 3-D. Parent:
-  theBalance.
+- **theCrystal** — lattice bulk, ordered bonds. 3-D. Parent: theBalance. DEAD
+  2026-08-06 at every tested size (8..4096): no attractive bond exists, so no
+  static crystal can (see theCushionLaw). Its successor is not a smaller
+  chunk but a different print: cushion-phase matter printed AT equilibrium.
+  The term survives as the ORDERED INITIAL CONDITION — the bone smoke showed
+  an ordered start self-crushes coherently into an elastic slug that bears
+  load 21x better (deflection/load) than a random start ("the memory of
+  order"), while the random start stays mud. Order matters as PRINT
+  GEOMETRY, not as a phase.
+- **theMaxChunk** — SUPERSEDED 2026-08-06 by theCushionLaw, after the full
+  crush series (8, 27, 64, 216, 512, 4096 — every bond-spaced lattice chunk
+  collapses). The M_crit chain (640 naive, ~45 hydrostatic) asked the wrong
+  question because it assumed an attractive bond existed to be overwhelmed.
+  Read the kernel's actual law (kernel.py:150-154): the "bond spring"
+  f = K_BOND(r-r_bond)/(r_bond*r) exists ONLY on [r_wall, r_bond] and is
+  REPULSIVE there; beyond r_bond there is NO resistance force at all; below
+  r_wall the wall. THE RESISTANCE IS REPULSION-ONLY — a cushion. All
+  cohesion in this universe is DRAW. R_BOND never was an attraction
+  distance; it is the outer edge of the cushion. (The kernel comment
+  "attractive when stretched" is a lie the code never told — the branch is
+  unreachable for r > r_bond.)
+- **theCushionLaw** — the one condensed phase. Every free condensed body is
+  a self-gravitating droplet resting on the spring+wall cushion: DRAW pulls
+  in, the cushion pushes out, equilibrium spacing sits AT/BELOW the wall
+  edge (~0.048 for a 2^3 cube, ~0.028 at N=512 — deeper with mass,
+  hydrostatically). Rock-stable once settled (512 held radius 0.140 for
+  270k ticks, CV=0). The crush from a bond-spaced start is free-fall onto
+  the cushion — there is nothing at r_bond to catch it, because no
+  attraction ever lived there. CONSEQUENCES: (1) there is no static crystal
+  at any size — theCushionLaw is the only solid; (2) the printer's first
+  law: PRINT AT EQUILIBRIUM, or the 4th dimension finds it violently and
+  radiates the difference; (3) extended shapes (rods, sheets) are NOT
+  equilibria — they survive only HELD (pinned anchors pushing, containment,
+  rotation) or as blobs; tension does not exist beyond the cushion, so a
+  rod must be held OPEN, never hung. PREDICTION (named before the run): a
+  2^3 cube printed at its derived cushion equilibrium d_eq = 0.0484 (corner
+  force root, kernel-exact) HOLDS — radius stable ~0.042, E_rad ~ 0, no
+  crush — while the same cube at r_bond crushes (already observed).
+  FALSIFIER: if the equilibrium print ALSO collapses or wanders, the
+  kernel-exact force reading is wrong and the integrator itself is next
+  under the light. 3-D. Parent: theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
 - **theSoil** — packed bed, disordered bonds. 3-D. Parent: theBalance.
 - **theSlope** — packed bed at a tilt; repose angle emergent. 3-D. Parent: theSoil.

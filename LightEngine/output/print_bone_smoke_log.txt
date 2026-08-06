@@ -1,0 +1,135 @@
+============================================================
+THE KERNEL — BONE print run
+N=936, seed=20260806, structure=bone, control=packed, dt=0.0005
+============================================================
+
+[bone] N=936 grains=4 rod_length=3.4525
+[bone] compression=6000 hold=1500 retract=6000 ticks
+[bone] v_plate=0.05000 lu/tick, closure=0.3000 lu
+
+[bone] tick=   337 | clusters=   1 | max= 936 | bound=1.000 | grains=4 | merged=3 | length=3.3640 | deflect=0.4414 | ruptured=0 | force=266.441 | closure=0.0169
+[bone] tick=   674 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=3 | length=2.9125 | deflect=0.1486 | ruptured=0 | force=217.931 | closure=0.0337
+[bone] tick=  1011 | clusters=   3 | max= 864 | bound=0.995 | grains=4 | merged=3 | length=2.3939 | deflect=0.3306 | ruptured=165 | force=135.744 | closure=0.0506
+[bone] tick=  1348 | clusters=   3 | max= 864 | bound=0.998 | grains=4 | merged=5 | length=1.3576 | deflect=0.2472 | ruptured=94 | force=98.668 | closure=0.0675
+[bone] tick=  1685 | clusters=   3 | max= 864 | bound=0.999 | grains=4 | merged=6 | length=0.3986 | deflect=0.3853 | ruptured=98 | force=90.657 | closure=0.0844
+[bone] tick=  2022 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2458 | deflect=0.2098 | ruptured=25 | force=91.518 | closure=0.1012
+[bone] tick=  2359 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2872 | deflect=0.1677 | ruptured=2 | force=92.533 | closure=0.1181
+[bone] tick=  2696 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2978 | deflect=0.1512 | ruptured=0 | force=93.441 | closure=0.1350
+[bone] tick=  3033 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2974 | deflect=0.1522 | ruptured=0 | force=94.269 | closure=0.1519
+[bone] tick=  3370 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2999 | deflect=0.1528 | ruptured=0 | force=95.139 | closure=0.1687
+[bone] tick=  3707 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3015 | deflect=0.1538 | ruptured=0 | force=96.016 | closure=0.1856
+[bone] tick=  4044 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3012 | deflect=0.1532 | ruptured=0 | force=96.904 | closure=0.2025
+[bone] tick=  4381 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3012 | deflect=0.1534 | ruptured=0 | force=97.801 | closure=0.2193
+[bone] tick=  4718 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3003 | deflect=0.1535 | ruptured=0 | force=98.715 | closure=0.2362
+[bone] tick=  5055 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3000 | deflect=0.1533 | ruptured=0 | force=99.640 | closure=0.2531
+[bone] tick=  5392 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3001 | deflect=0.1531 | ruptured=0 | force=100.580 | closure=0.2700
+[bone] tick=  5729 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.3000 | deflect=0.1531 | ruptured=0 | force=101.532 | closure=0.2868
+[bone] tick=  6066 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2997 | deflect=0.1535 | ruptured=0 | force=102.305 | closure=0.3004
+[bone] tick=  6403 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2983 | deflect=0.1537 | ruptured=0 | force=102.304 | closure=0.3004
+[bone] tick=  6740 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2978 | deflect=0.1535 | ruptured=0 | force=102.307 | closure=0.3004
+[bone] tick=  7077 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2978 | deflect=0.1535 | ruptured=0 | force=102.306 | closure=0.3004
+[bone] tick=  7414 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2979 | deflect=0.1537 | ruptured=0 | force=102.306 | closure=0.3004
+[bone] tick=  7751 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2983 | deflect=0.1531 | ruptured=0 | force=101.590 | closure=0.2878
+[bone] tick=  8088 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2980 | deflect=0.1526 | ruptured=0 | force=100.638 | closure=0.2710
+[bone] tick=  8425 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2979 | deflect=0.1526 | ruptured=0 | force=99.699 | closure=0.2541
+[bone] tick=  8762 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2978 | deflect=0.1523 | ruptured=0 | force=98.769 | closure=0.2372
+[bone] tick=  9099 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2977 | deflect=0.1525 | ruptured=0 | force=97.856 | closure=0.2203
+[bone] tick=  9436 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2977 | deflect=0.1525 | ruptured=0 | force=96.955 | closure=0.2035
+[bone] tick=  9773 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2969 | deflect=0.1527 | ruptured=0 | force=96.065 | closure=0.1866
+[bone] tick= 10110 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2968 | deflect=0.1527 | ruptured=0 | force=95.190 | closure=0.1697
+[bone] tick= 10447 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2966 | deflect=0.1526 | ruptured=0 | force=94.324 | closure=0.1529
+[bone] tick= 10784 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2966 | deflect=0.1526 | ruptured=0 | force=93.471 | closure=0.1360
+[bone] tick= 11121 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2966 | deflect=0.1526 | ruptured=0 | force=92.629 | closure=0.1191
+[bone] tick= 11458 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2966 | deflect=0.1526 | ruptured=0 | force=91.799 | closure=0.1022
+[bone] tick= 11795 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2966 | deflect=0.1526 | ruptured=0 | force=90.976 | closure=0.0854
+[bone] tick= 12132 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=90.170 | closure=0.0685
+[bone] tick= 12469 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=89.369 | closure=0.0516
+[bone] tick= 12806 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=88.582 | closure=0.0347
+[bone] tick= 13143 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=87.806 | closure=0.0179
+[bone] tick= 13480 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=87.037 | closure=0.0010
+[bone] tick= 13500 | clusters=   3 | max= 864 | bound=1.000 | grains=4 | merged=6 | length=0.2965 | deflect=0.1526 | ruptured=0 | force=86.992 | closure=0.0000
+
+[packed] N=936 grains=4 rod_length=3.4499
+[packed] compression=6000 hold=1500 retract=6000 ticks
+[packed] v_plate=0.05000 lu/tick, closure=0.3000 lu
+
+[packed] tick=   337 | clusters=   3 | max= 934 | bound=0.987 | grains=4 | merged=6 | length=3.5703 | deflect=0.7396 | ruptured=56 | force=257.907 | closure=0.0169
+[packed] tick=   674 | clusters=   5 | max= 861 | bound=0.998 | grains=4 | merged=6 | length=3.3434 | deflect=0.8725 | ruptured=215 | force=182.763 | closure=0.0337
+[packed] tick=  1011 | clusters=   5 | max= 861 | bound=0.989 | grains=4 | merged=6 | length=2.8385 | deflect=0.8588 | ruptured=234 | force=121.265 | closure=0.0506
+[packed] tick=  1348 | clusters=   6 | max= 860 | bound=0.995 | grains=4 | merged=6 | length=2.4456 | deflect=0.6777 | ruptured=384 | force=94.775 | closure=0.0675
+[packed] tick=  1685 | clusters=   6 | max= 860 | bound=0.991 | grains=4 | merged=6 | length=2.4356 | deflect=0.5466 | ruptured=58 | force=92.497 | closure=0.0844
+[packed] tick=  2022 | clusters=  11 | max= 856 | bound=0.990 | grains=4 | merged=6 | length=2.7089 | deflect=1.1453 | ruptured=43 | force=92.856 | closure=0.1012
+[packed] tick=  2359 | clusters=  11 | max= 856 | bound=0.991 | grains=4 | merged=6 | length=3.3946 | deflect=1.5387 | ruptured=32 | force=92.994 | closure=0.1181
+[packed] tick=  2696 | clusters=  11 | max= 856 | bound=0.991 | grains=4 | merged=6 | length=4.0961 | deflect=1.8646 | ruptured=33 | force=93.152 | closure=0.1350
+[packed] tick=  3033 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=4.7042 | deflect=2.1354 | ruptured=27 | force=93.769 | closure=0.1519
+[packed] tick=  3370 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=5.2339 | deflect=2.3523 | ruptured=24 | force=94.630 | closure=0.1687
+[packed] tick=  3707 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=5.6968 | deflect=2.5262 | ruptured=24 | force=95.561 | closure=0.1856
+[packed] tick=  4044 | clusters=   9 | max= 858 | bound=0.993 | grains=4 | merged=6 | length=6.1004 | deflect=2.6638 | ruptured=23 | force=96.553 | closure=0.2025
+[packed] tick=  4381 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=6.4485 | deflect=2.7699 | ruptured=23 | force=97.503 | closure=0.2193
+[packed] tick=  4718 | clusters=   9 | max= 858 | bound=0.993 | grains=4 | merged=6 | length=6.7425 | deflect=2.9330 | ruptured=23 | force=98.358 | closure=0.2362
+[packed] tick=  5055 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=6.9809 | deflect=3.1944 | ruptured=23 | force=99.320 | closure=0.2531
+[packed] tick=  5392 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=7.1598 | deflect=3.4521 | ruptured=23 | force=100.317 | closure=0.2700
+[packed] tick=  5729 | clusters=   9 | max= 858 | bound=0.993 | grains=4 | merged=6 | length=7.3602 | deflect=3.7066 | ruptured=23 | force=101.390 | closure=0.2868
+[packed] tick=  6066 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=7.8091 | deflect=3.9582 | ruptured=23 | force=102.322 | closure=0.3004
+[packed] tick=  6403 | clusters=  10 | max= 857 | bound=0.993 | grains=4 | merged=6 | length=8.2429 | deflect=4.2073 | ruptured=23 | force=102.279 | closure=0.3004
+[packed] tick=  6740 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=8.6614 | deflect=4.4541 | ruptured=17 | force=102.293 | closure=0.3004
+[packed] tick=  7077 | clusters=   9 | max= 858 | bound=0.994 | grains=4 | merged=6 | length=9.0645 | deflect=4.6988 | ruptured=20 | force=102.432 | closure=0.3004
+[packed] tick=  7414 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=9.4515 | deflect=4.9416 | ruptured=17 | force=102.582 | closure=0.3004
+[packed] tick=  7751 | clusters=   8 | max= 859 | bound=0.994 | grains=4 | merged=6 | length=9.8217 | deflect=5.1828 | ruptured=20 | force=101.779 | closure=0.2878
+[packed] tick=  8088 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=10.1740 | deflect=5.4223 | ruptured=17 | force=100.902 | closure=0.2710
+[packed] tick=  8425 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=10.5069 | deflect=5.6604 | ruptured=17 | force=100.015 | closure=0.2541
+[packed] tick=  8762 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=10.8181 | deflect=5.8971 | ruptured=17 | force=99.178 | closure=0.2372
+[packed] tick=  9099 | clusters=   8 | max= 859 | bound=0.995 | grains=4 | merged=6 | length=11.1049 | deflect=6.1326 | ruptured=17 | force=98.414 | closure=0.2203
+[packed] tick=  9436 | clusters=   7 | max= 860 | bound=0.995 | grains=4 | merged=6 | length=11.3628 | deflect=6.3669 | ruptured=17 | force=97.687 | closure=0.2035
+[packed] tick=  9773 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.5857 | deflect=6.6002 | ruptured=13 | force=97.020 | closure=0.1866
+[packed] tick= 10110 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.7638 | deflect=6.8324 | ruptured=13 | force=96.440 | closure=0.1697
+[packed] tick= 10447 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.8808 | deflect=7.0636 | ruptured=13 | force=95.962 | closure=0.1529
+[packed] tick= 10784 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.9014 | deflect=7.2939 | ruptured=13 | force=95.348 | closure=0.1360
+[packed] tick= 11121 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.7148 | deflect=7.5234 | ruptured=13 | force=94.735 | closure=0.1191
+[packed] tick= 11458 | clusters=   6 | max= 861 | bound=0.996 | grains=4 | merged=6 | length=11.5765 | deflect=7.7521 | ruptured=12 | force=94.250 | closure=0.1022
+[packed] tick= 11795 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=11.8806 | deflect=7.9799 | ruptured=13 | force=93.845 | closure=0.0854
+[packed] tick= 12132 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=12.1827 | deflect=8.2071 | ruptured=13 | force=93.445 | closure=0.0685
+[packed] tick= 12469 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=12.6069 | deflect=8.4336 | ruptured=13 | force=93.205 | closure=0.0516
+[packed] tick= 12806 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=13.1915 | deflect=8.6594 | ruptured=13 | force=93.096 | closure=0.0347
+[packed] tick= 13143 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=13.6764 | deflect=8.8846 | ruptured=13 | force=93.106 | closure=0.0179
+[packed] tick= 13480 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=13.9630 | deflect=9.1091 | ruptured=13 | force=93.165 | closure=0.0010
+[packed] tick= 13500 | clusters=   7 | max= 860 | bound=0.996 | grains=4 | merged=6 | length=13.9699 | deflect=9.1225 | ruptured=13 | force=93.163 | closure=0.0000
+============================================================
+
+[bone] BONE FALSIFIER VERDICT: MERGE
+  grain count initial/final  = 4/4
+  merged pairs ratio         = 2.000
+  rod length initial/final   = 3.4525/0.2965
+  plastic strain             = 0.9141
+  ruptured bonds             = 165/1498
+  compression stiffness      = 297.488
+  reasons:
+    - merged_pairs 6/3 = ratio 2.00
+    - length change 0.914
+    - ruptured bonds 165/1498 = 0.110
+
+[packed] BONE FALSIFIER VERDICT: MERGE
+  grain count initial/final  = 4/4
+  merged pairs ratio         = 2.000
+  rod length initial/final   = 3.4499/13.9699
+  plastic strain             = 3.0494
+  ruptured bonds             = 384/2635
+  compression stiffness      = 244.670
+  reasons:
+    - merged_pairs 6/3 = ratio 2.00
+    - length change 3.049
+    - ruptured bonds 384/2635 = 0.146
+
+STIFFNESS COMPARISON:
+  bone dF/dx        = 297.488
+  packed dF/dx      = 244.670
+  slope gain        = 1.216
+  bone max force    = 266.441
+  bone max deflect  = 0.4414
+  packed max force  = 257.907
+  packed max deflect= 9.1225
+  deflection/load ratio (packed/bone) = 21.353 (threshold 2.0)
+  ordered > random  : PASS
+
+FINAL BONE VERDICT: MERGE
+============================================================

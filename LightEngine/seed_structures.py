@@ -184,7 +184,7 @@ def disk(n: int = 4096,
     return pos.astype(np.float32), vel.astype(np.float32)
 
 
-def lattice(n: int = 4096, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+def lattice(n: int = 4096, seed: int = 0, spacing: float = R_BOND) -> tuple[np.ndarray, np.ndarray]:
     """
     Simple cubic crystal print.
 
@@ -192,8 +192,13 @@ def lattice(n: int = 4096, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
     ``side = ceil(n^(1/3))``; the actual count is therefore ``side^3``.
 
     Derivation:
-      - Grid spacing ``= R_BOND``; side chosen so at least ``n`` sites are
-        available.  Points are centered at the origin.
+      - Grid spacing defaults to ``R_BOND``.  After the 2026-08-06 crush
+        series (8..4096 all collapse from a bond-spaced start) the spacing is
+        a PRINT GEOMETRY parameter: the resistance is repulsion-only (a
+        cushion on [r_wall, r_bond], nothing beyond), so the only stable
+        prints are at the cushion equilibrium spacing (2^3 cube: d_eq ~
+        0.048, kernel-exact corner-force root).  Printing at the derived
+        equilibrium tests theCushionLaw (docs/THE_HIERARCHY.md).
       - Thermal velocities with ``sigma = 0.01 * sqrt(K_BOND * R_BOND)``
         (bond energy scale).  Net momentum removed.
     """
@@ -201,7 +206,7 @@ def lattice(n: int = 4096, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
     side = int(math.ceil(n ** (1.0 / 3.0)))
 
     indices = np.arange(side, dtype=np.float64)
-    offsets = (indices - (side - 1) / 2.0) * R_BOND
+    offsets = (indices - (side - 1) / 2.0) * spacing
     x, y, z = np.meshgrid(offsets, offsets, offsets, indexing="ij")
     pos = np.stack([x.ravel(), y.ravel(), z.ravel()], axis=1).astype(np.float64)
 
@@ -210,3 +215,84 @@ def lattice(n: int = 4096, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
     vel = _remove_net_momentum(vel)
 
     return pos.astype(np.float32), vel.astype(np.float32)
+
+
+def bone(n: int = 1024,
+         grain_side: int = 6,
+         seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    BONE print: a rod of bonded lattice grains with two pinned anchor plates.
+
+    Each grain is a simple-cubic lattice chunk of ``grain_side^3`` points at
+    spacing ``R_BOND``.  Grains are placed along the x-axis so that the face
+    atoms of neighboring grains are ``R_BOND`` apart, producing face-to-face
+    bonds.  Two square lattice plates (pinned) cap the ends of the rod and are
+    spaced one bond length from the terminal grain faces.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is a length-N bool array; plate points are True.
+      - ``grain_ids`` is a length-N int32 array; plate points are -1 and rod
+        points carry their grain index.
+
+    The actual point count is ``2 * grain_side^2 + n_grains * grain_side^3``
+    where ``n_grains = max(1, n // grain_side^3)``.
+    """
+    rng = np.random.default_rng(seed)
+    s = int(grain_side)
+    if s < 2:
+        raise ValueError("grain_side must be at least 2")
+    pts_per_grain = s ** 3
+    n_grains = max(1, n // pts_per_grain)
+
+    # base cubic grain centered at origin
+    offsets = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * R_BOND
+    gx, gy, gz = np.meshgrid(offsets, offsets, offsets, indexing="ij")
+    base_grain = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    # rod: grains spaced by s*R_BOND so face points bond at R_BOND
+    grain_positions = []
+    grain_ids = []
+    for g in range(n_grains):
+        grain = base_grain.copy()
+        grain[:, 0] += g * s * R_BOND
+        grain_positions.append(grain)
+        grain_ids.extend([g] * pts_per_grain)
+    rod_pos = np.vstack(grain_positions)
+
+    # anchor plates: s x s square lattices perpendicular to x
+    plate_offsets = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * R_BOND
+    px, py = np.meshgrid(plate_offsets, plate_offsets, indexing="ij")
+    plate_base = np.stack([px.ravel(), py.ravel(), np.zeros(s * s)], axis=1)
+
+    left_plate = plate_base.copy()
+    left_plate[:, 0] = -(s + 1) / 2.0 * R_BOND
+    right_plate = plate_base.copy()
+    right_plate[:, 0] = (n_grains * s - (s - 1) / 2.0 + (s + 1) / 2.0) * R_BOND
+    # simplify: right terminal grain center = (n_grains-1)*s*R; its right face
+    # at (n_grains-1)*s*R + (s-1)/2*R; plate one bond beyond that:
+    right_plate[:, 0] = (n_grains - 1) * s * R_BOND + (s + 1) / 2.0 * R_BOND
+
+    pos = np.vstack([left_plate, rod_pos, right_plate]).astype(np.float64)
+
+    # center the whole assembly at the origin
+    mid_x = (pos[:, 0].min() + pos[:, 0].max()) / 2.0
+    pos[:, 0] -= mid_x
+
+    n_total = pos.shape[0]
+    vel = np.zeros((n_total, 3), dtype=np.float64)
+    pin_mask = np.zeros(n_total, dtype=bool)
+    n_plate = s * s
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate + len(rod_pos):] = True
+
+    ids = np.empty(n_total, dtype=np.int32)
+    ids[:n_plate] = -1
+    ids[n_plate:n_plate + len(rod_pos)] = np.array(grain_ids, dtype=np.int32)
+    ids[n_plate + len(rod_pos):] = -1
+
+    # tiny random jitter to break exact lattice degeneracy (<< R_WALL)
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, ids

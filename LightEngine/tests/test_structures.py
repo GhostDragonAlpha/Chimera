@@ -117,3 +117,49 @@ def test_net_momentum_removed(gen, kwargs):
     _, vel = gen(**kwargs, seed=19)
     net = vel.mean(axis=0)
     np.testing.assert_allclose(net, 0.0, atol=1e-5)
+
+
+def test_bone_determinism():
+    """bone() is deterministic for a fixed seed."""
+    a = seed_structures.bone(n=1024, grain_side=6, seed=3)
+    b = seed_structures.bone(n=1024, grain_side=6, seed=3)
+    for x, y in zip(a, b):
+        np.testing.assert_array_equal(x, y)
+
+
+def test_bone_geometry():
+    """bone() builds a rod along x with pinned plates and bonded grains."""
+    pos, vel, pin_mask, grain_ids = seed_structures.bone(n=1024, grain_side=6, seed=0)
+    s = 6
+    pts_per_grain = s ** 3
+    n_grains = pos.shape[0] // pts_per_grain  # approximate
+
+    # plates are pinned
+    n_plate = s * s
+    assert pin_mask[:n_plate].all()
+    assert pin_mask[-n_plate:].all()
+    assert not pin_mask[n_plate:-n_plate].any()
+
+    # rod points carry grain ids, plates are -1
+    assert (grain_ids[:n_plate] == -1).all()
+    assert (grain_ids[-n_plate:] == -1).all()
+    assert (grain_ids[n_plate:-n_plate] >= 0).all()
+
+    # rod is elongated along x
+    extents = pos.max(axis=0) - pos.min(axis=0)
+    assert extents[0] > extents[1]
+    assert extents[0] > extents[2]
+
+    # no velocities
+    np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+
+def test_bone_grains_bonded():
+    """Adjacent grains in bone() have face points within R_BOND."""
+    pos, _, _, grain_ids = seed_structures.bone(n=1024, grain_side=6, seed=0)
+    n_grains = int(grain_ids.max()) + 1
+    for g in range(n_grains - 1):
+        mask_a = grain_ids == g
+        mask_b = grain_ids == g + 1
+        dists = np.linalg.norm(pos[mask_a][:, None] - pos[mask_b][None], axis=2)
+        assert dists.min() <= R_BOND * 1.01, f"grain {g}-{g+1} not bonded"
