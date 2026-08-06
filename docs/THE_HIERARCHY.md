@@ -42,16 +42,27 @@ damaging something is not a term; it is the absence of one.
 
 - **theCrystal** — lattice bulk, ordered bonds. 3-D. Parent: theBalance. FAILED at
   16^3=4096 (total collapse through the saturated wall — see theMaxChunk);
-  successor: 8^3=512, below the critical mass. (RUNNING.)
-- **theMaxChunk** — the universe's atom-size limit, DERIVED 2026-08-06 from the
-  lattice collapse: the saturated wall pushes at most a_max = 2560; a condensed
-  chunk's self-gravity at the wall scale is G*M/r_wall^2. Above
-  M_crit = a_max*r_wall^2/G = 640 points at bond density, nothing can hold a
-  structure up — it collapses into the softened core (bound 1.000, radius ~0.18,
-  the universe's black hole). CONSEQUENCE: all condensed matter in the game is
-  built of sub-640 chunks; larger structures are ASSEMBLIES of chunks held by
-  bonds between them, never merged into one. This is the granularity of matter —
-  and it came from a falsifier, not a design choice. 3-D. Parent: theBalance.
+  successor 8^3=512 ALSO FAILED 2026-08-06 (COLLAPSE: one bound blob, radius
+  0.1405 = spacing 0.028 << R_WALL, bond_retention 0.000 — the chunk stays ONE
+  OBJECT but the lattice order is crushed out of it). Successor: bracket the
+  true boundary at 6^3=216 and 4^3=64 (RUNNING).
+- **theMaxChunk** — the universe's atom-size limit. First derivation (naive:
+  surface draw G*M/r_wall^2 vs one saturated wall push a_max) gave M_crit =
+  a_max*r_wall^2/G = 640 — REFUTED 2026-08-06 by the 512 collapse. The naive
+  form under-counts: crushing is HYDROSTATIC — the whole chunk's weight is
+  transmitted through the contact network, and the equilibrium spacing d_eq
+  solves P_c(M,d) = f_wall(d)/d^2 with P_c = 0.806*G*M^(2/3)/d^4 (uniform-sphere
+  central pressure). Calibrated on the 512 collapse (d_eq = 0.028), the scaling
+  M ∝ (f_wall(d)*d^2)^(3/2) predicts: the largest chunk that keeps bond order
+  (d_eq >= R_WALL) is M_crit ~ 45 — grains of side 3 (27 points), not side 6-8.
+  PREDICTION (named before the bracket runs): 216 CRUSHES (bond_ret ~ 0,
+  radius ~ 0.13); 64 lands at d_eq ~ 0.046, just inside the wall — marginal,
+  partial rearrangement; 27 HOLDS (d_eq ~ 0.055 > R_WALL). FALSIFIER for this
+  model: if 216 holds order, or 64 keeps bond_ret > 0.5 with spacing outside
+  the wall, the crush is not hydrostatic equilibrium (next suspect: dynamical
+  Jeans-style instability of the jittered start). CONSEQUENCE unchanged but
+  sharper: all condensed matter is an ASSEMBLY of sub-critical chunks; the
+  chunk size is now being measured, not guessed. 3-D. Parent: theBalance.
 - **theBone** — load-bearing dense lattice. 3-D. Parent: theCrystal.
 - **theSoil** — packed bed, disordered bonds. 3-D. Parent: theBalance.
 - **theSlope** — packed bed at a tilt; repose angle emergent. 3-D. Parent: theSoil.

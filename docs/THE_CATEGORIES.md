@@ -69,11 +69,16 @@ RULE 0 doc section) as the print proofs earn them.*
   membrane of the muscle: muscle is defined by its two bony attachments, and
   every 1-D/2-D structure that bears load anchors to bone.
   **PRINT SPEC (v1, after theMaxChunk):** an ASSEMBLY of sub-critical grains —
-  each grain a lattice chunk of side 6-8 (216-512 points, below M_crit=640) —
-  grains bonded face-to-face at r_bond in a rod. Never one merged mass: the
-  grains are the atoms, the rod is the bone (real bone: mineral crystallites
-  in a matrix — the universe agrees). Load is applied by two ANCHOR plates
-  (pinned 0-D points, the anchor membrane) driven together at a derived speed.
+  each grain a lattice chunk BELOW the true M_crit. (v1 said side 6-8,
+  216-512 points, below the naive M_crit=640 — REFUTED 2026-08-06 when the
+  512 lattice crushed to spacing 0.028; the hydrostatic model predicts
+  M_crit ~ 45, i.e. grains of side ~3, bracket runs at 216/64 in flight —
+  see theMaxChunk in THE_HIERARCHY.md. Grain size is set by that bracket
+  before the bone verdict run.) Grains bonded face-to-face at r_bond in a
+  rod. Never one merged mass: the grains are the atoms, the rod is the bone
+  (real bone: mineral crystallites in a matrix — the universe agrees). Load
+  is applied by two ANCHOR plates (pinned 0-D points, the anchor membrane)
+  driven together at a derived speed (5% of bond-lattice sound speed).
   **Falsifiers:** (a) no grain merges into another — grain count stable through
   the window (the assembly must not collapse into one core); (b) under derived
   compression the rod deflects and springs back with NO bond ruptures below the
