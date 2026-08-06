@@ -122,6 +122,22 @@ RULE 0 doc section) as the print proofs earn them.*
   = slow bed-in; converges to a floor = creep is the law) — named, not yet
   run. Bone's elasticity claim is REFUTED at the 10% bar; bone as a
   creeping-but-seated compression member stands ((a)/(b) at preload).
+  **v2 CYCLE-4 VERDICT 2026-08-06 (the asymptote run, print_bone_c4):** four
+  preload cycles with halving convergence distance (18479 → 9242 → 4617 →
+  2305 ticks), preload 2469–2479 each time. (a)/(b) PASS all four cycles
+  (gaps 0.0000, zero escapees, one cluster). (c) SPRING-BACK FAIL at every
+  cycle and the hysteresis does NOT converge to zero: cycle-4 loop at
+  mid-closure 0.8988 reads release F/L = 761.2/0.26024 vs converge
+  F/L = 550.7/0.24996 — the column is LONGER on release than on converge at
+  equal closure, a plastic ratchet, and under the final hold at fixed
+  closure the force relaxes from 808 to ~223 (≈9% of preload): the column
+  does not store elastic preload, it creeps to a force floor while holding
+  its set length. The asymptote question is answered: creep is the law, not
+  slow bed-in. Bone is a PLASTIC compression member — seated, containing,
+  load-bearing, never a spring. The reversible element of the body is the
+  muscle (the DRAW-bridge, whose (a) FORCE LAW passed the same day);
+  bone-muscle is the plastic-elastic pair. (d) OVERLOAD pulse: peak force
+  1456, peak deflection 0.151, column recovers into the same set.
 - **BRAIN**: a soft bulk CONTAINED WITHIN bone (the skull) — the second relation
   this manifest tracks: not anchors-to but contains-within. Bone is the brain's
   parent by enclosure: it takes the load so the brain doesn't have to.
@@ -177,6 +193,21 @@ force stays ≥ half its s₀ value out to s₀·√2 (the inverse-square stroke
 convergence the force REVERSES sign onto the cushion (the same material
 pushes); (e) the anchors do not migrate (pins hold; if the plates move, the
 muscle moved the wrong thing).
+**BRIDGE v1 VERDICT 2026-08-06 (N=112, droplet 4³ + two 4×4 plates,
+run tag muscle_v3):** ALL FIVE PASS. (a) FORCE LAW — measured right-plate
+force vs the exact pairwise softened-DRAW sum over (droplet ∪ left plate) ×
+right plate on the RECORDED positions: max rel err 0.000 over 16
+contact-free extension samples (bar 0.10). The deformation-immune form was
+forced by two refuted predecessors: a point-COM log-log exponent fit read
+−1.557 (not −2) because the droplet STRETCHES toward the receding plate —
+real muscle physics that makes point-COM the wrong coordinate (exponent kept
+as a diagnostic only). The muscle's force is derivation, exactly. (b) STROKE
+PASS — F(s₀·√2)/F(s₀) = 0.669 ≥ 0.5. (c) TEAR PASS — one cluster through
+the whole stroke; migration max |com_yz| = 0.011 (bar 0.05). (d) ANTAGONIST
+PASS — force reverses to −328.2 in convergence (the same material pushes).
+(e) ANCHORS PASS — plate drift 0.000000. One material, two regimes,
+measured. Successor: theTendon (force across the muscle–bone interface,
+fails at the DERIVED weakest link), then theJoint — the first moving part.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

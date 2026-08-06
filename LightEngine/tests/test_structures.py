@@ -218,3 +218,62 @@ def test_bone2_cushion_gap():
     # gap is approximately one spacing, within the tiny jitter tolerance
     assert abs(left_gap - spacing) < 0.01
     assert abs(right_gap - spacing) < 0.01
+
+
+def test_muscle_determinism():
+    """muscle() is deterministic for a fixed seed."""
+    a = seed_structures.muscle(side=4, seed=7)
+    b = seed_structures.muscle(side=4, seed=7)
+    for x, y in zip(a, b):
+        np.testing.assert_array_equal(x, y)
+
+
+def test_muscle_geometry():
+    """muscle() builds a 4³ droplet on a pinned left plate with a right plate at s₀."""
+    pos, vel, pin_mask, grain_ids, s0, R_droplet = seed_structures.muscle(
+        side=4, spacing=0.05, seed=0)
+    n_plate = 4 * 4
+    n_drop = 4 ** 3
+    assert pos.shape[0] == n_drop + 2 * n_plate
+
+    # both plates pinned, droplet free
+    assert pin_mask[:n_plate].all()
+    assert pin_mask[-n_plate:].all()
+    assert not pin_mask[n_plate:n_plate + n_drop].any()
+
+    # grain ids: plates -1, droplet 0
+    assert (grain_ids[:n_plate] == -1).all()
+    assert (grain_ids[-n_plate:] == -1).all()
+    assert (grain_ids[n_plate:n_plate + n_drop] == 0).all()
+
+    # cold print: zero velocity
+    np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+    # derived numbers are positive and consistent
+    assert R_droplet > 0.0
+    assert s0 == pytest.approx(2.0 * R_droplet, rel=1e-12)
+
+
+def test_muscle_seated_on_left_plate():
+    """The droplet's left face sits at one cushion spacing from the left plate."""
+    spacing = 0.05
+    pos, _, _, grain_ids, s0, _ = seed_structures.muscle(
+        side=4, spacing=spacing, seed=0)
+    drop = pos[grain_ids == 0]
+    left_plate = pos[grain_ids == -1]
+    left_plate = left_plate[left_plate[:, 0] < drop[:, 0].min()]
+
+    gap = np.linalg.norm(
+        left_plate[:, None, :] - drop[None, :, :], axis=2).min()
+    assert abs(gap - spacing) < 0.01
+
+    # right plate is farther than the droplet right face
+    right_plate = pos[grain_ids == -1]
+    right_plate = right_plate[right_plate[:, 0] > drop[:, 0].max()]
+    right_gap = np.linalg.norm(
+        right_plate[:, None, :] - drop[None, :, :], axis=2).min()
+    assert right_gap > 0.0
+    # plate separation matches s0
+    left_x = float(pos[:len(left_plate), 0].mean())
+    right_x = float(pos[-len(right_plate):, 0].mean())
+    assert abs(right_x - left_x - s0) < 0.01

@@ -124,8 +124,10 @@ damaging something is not a term; it is the absence of one.
 
 ## LEVEL 6 — COMPOSITES (the anatomy — anchored & contained)
 
-- **theMuscle** — fiber bundle between bones, O(L) per fiber. COMPOSITE.
-  Parent: theBone + theTendon. Falsifier incl.: the bones do not migrate.
+- **theMuscle** — the DRAW-bridge: a condensed droplet seated on one anchor,
+  pulling the far anchor by pure DRAW (no tension exists — see theCushionLaw;
+  re-derived 2026-08-06 from the retired fiber-bundle spec). COMPOSITE.
+  Parent: theBone + theTendon. Falsifier incl.: the anchors do not migrate.
 - **theBladder** — closed sheet contained within muscle; squeeze is its function.
   2-D/3-D. Parent: theMuscle (contained-within).
 - **theBrain** — soft bulk contained within bone. 3-D. Parent: theBone

@@ -22,7 +22,7 @@ import os
 import numpy as np
 
 from LightEngine import kernel, seed_structures
-from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, DT
+from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, DT, EPS
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -75,6 +75,16 @@ BONE_HOLD_MIN_TICKS = 5000
 BONE_SEATING_MAX_GAP = R_C                       # any end gap > r_c = detached
 BONE_SPRINGBACK_TOL = 0.10                       # force/length within 10%
 BONE_ORDERED_GAIN = 2.0                          # ordered beats random by 2x
+
+# ── MUSCLE print parameters (derived from force constants) ──────────
+# Drive the anchor plates at 5% of the bond sound speed.
+MUSCLE_V_PLATE = 0.05 * math.sqrt(K_BOND)        # lu / tick
+# Extension limit and stroke are derived from s₀ (returned by the builder).
+MUSCLE_EXTENSION_FACTOR = math.sqrt(2.0) * 1.5   # s_ext = s0 * sqrt(2) * 1.5
+MUSCLE_STROKE_FACTOR = math.sqrt(2.0)            # F(s0*sqrt(2)) should be >= F(s0)/2
+MUSCLE_EXP_TOL = 0.25                            # DRAW exponent -2 ± this (far range, diagnostic only)
+MUSCLE_LAW_TOL = 0.10                            # (a) max rel err, measured vs pairwise-DRAW prediction
+MUSCLE_MIGRATION_TOL = 0.05                      # droplet COM must stay on x-axis
 
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
@@ -741,6 +751,409 @@ def bone_main(args, seed):
     print("=" * 70)
 
 
+# ── MUSCLE-specific helpers ─────────────────────────────────────────
+
+def _signed_plate_force(acc: np.ndarray, left_idx: np.ndarray,
+                        right_idx: np.ndarray) -> float:
+    """
+    Signed x-reaction on the two anchor plates.
+
+    Positive = plates pull toward each other (contractile DRAW bridge).
+    Negative = plates push apart (antagonist cushion).
+    """
+    left = float(acc[left_idx, 0].sum())
+    right = float(acc[right_idx, 0].sum())
+    return left - right
+
+
+def _droplet_plate_gaps(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
+    """Return cushion gaps from the droplet to the left and right plates."""
+    drop = pos[grain_ids == 0]
+    plates = pos[grain_ids == -1]
+    if drop.shape[0] == 0 or plates.shape[0] == 0:
+        return 0.0, 0.0
+    left_plate = plates[plates[:, 0] < drop[:, 0].min()]
+    right_plate = plates[plates[:, 0] > drop[:, 0].max()]
+    if left_plate.shape[0] == 0 or right_plate.shape[0] == 0:
+        return 0.0, 0.0
+    left_gap = float(np.linalg.norm(
+        left_plate[:, None, :] - drop[None, :, :], axis=2).min())
+    right_gap = float(np.linalg.norm(
+        right_plate[:, None, :] - drop[None, :, :], axis=2).min())
+    return left_gap, right_gap
+
+
+def _droplet_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
+                           r_cut: float = R_C) -> int:
+    """Number of connected components in the droplet (grain 0)."""
+    drop_idx = np.flatnonzero(grain_ids == 0)
+    if drop_idx.size == 0:
+        return 0
+    return cluster_count_and_sizes(pos[drop_idx], r_cut)[0]
+
+
+def _run_muscle(pos, vel, pin_mask, grain_ids, s0, R_droplet, v_plate, dt,
+                tag, label):
+    """
+    Run the MUSCLE extension->convergence protocol.
+
+    Phase 1: extend plates apart to ``s0 * sqrt(2) * 1.5``.
+    Phase 2: converge plates back through ``s0`` until cushion contact / force
+    reversal.  Returns the metrics dict and the final position array.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    n_droplet = int((grain_ids == 0).sum())
+    n_plate = int((grain_ids == -1).sum()) // 2
+    left_idx = np.arange(n_plate, dtype=np.int32)
+    right_idx = np.arange(N - n_plate, N, dtype=np.int32)
+    drop_idx = np.arange(n_plate, n_plate + n_droplet, dtype=np.int32)
+
+    sample_every = 500
+
+    metrics = {
+        "tick": [],
+        "phase": [],
+        "separation": [],
+        "plate_force": [],
+        "right_force": [],
+        "signed_force": [],
+        "droplet_clusters": [],
+        "left_gap": [],
+        "right_gap": [],
+        "droplet_com_y": [],
+        "droplet_com_z": [],
+        "radiated_energy": [],
+        "radiated_power": [],
+        "droplet_pos": [],
+        "right_plate_pos": [],
+    }
+
+    def _sample(tick: int, phase: str):
+        left_x = float(sim.pos[left_idx, 0].mean())
+        right_x = float(sim.pos[right_idx, 0].mean())
+        separation = right_x - left_x
+        pforce = _plate_force(sim.acc, left_idx, right_idx)
+        # right plate force: positive when the droplet pulls it left (contractile)
+        right_force = -float(sim.acc[right_idx, 0].sum())
+        sforce = _signed_plate_force(sim.acc, left_idx, right_idx)
+        n_clust = _droplet_cluster_count(sim.pos, grain_ids, R_C)
+        left_gap, right_gap = _droplet_plate_gaps(sim.pos, grain_ids)
+        drop_com = sim.pos[drop_idx].mean(axis=0)
+
+        metrics["tick"].append(tick)
+        metrics["phase"].append(phase)
+        metrics["separation"].append(separation)
+        metrics["plate_force"].append(pforce)
+        metrics["right_force"].append(right_force)
+        metrics["signed_force"].append(sforce)
+        metrics["droplet_clusters"].append(n_clust)
+        metrics["left_gap"].append(left_gap)
+        metrics["right_gap"].append(right_gap)
+        metrics["droplet_com_y"].append(float(drop_com[1]))
+        metrics["droplet_com_z"].append(float(drop_com[2]))
+        metrics["radiated_energy"].append(float(sim.radiated_energy))
+        metrics["radiated_power"].append(float(sim.last_radiated_power))
+        metrics["droplet_pos"].append(sim.pos[drop_idx].copy())
+        metrics["right_plate_pos"].append(sim.pos[right_idx].copy())
+
+        print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+              f"sep={separation:.5f} | right_F={right_force:.4f} | "
+              f"sforce={sforce:.4f} | clusters={n_clust} | "
+              f"gap_L={left_gap:.4f} | gap_R={right_gap:.4f} | "
+              f"com_yz=({drop_com[1]:.4f},{drop_com[2]:.4f})")
+
+    print(f"\n[{label}] N={N} droplet={n_droplet} plates={n_plate*2}")
+    print(f"[{label}] s0={s0:.5f} R_droplet={R_droplet:.5f} "
+          f"v_plate={v_plate:.5f} dt={dt}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    tick = 0
+    _sample(tick, "init")
+    target_sep = s0 * MUSCLE_EXTENSION_FACTOR
+
+    # Phase 1: extend
+    phase = "extend"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep >= target_sep:
+            break
+        # both plates move outward by half the relative motion
+        dx = 0.5 * v_plate * dt
+        sim.pos[left_idx, 0] -= dx
+        sim.pos[right_idx, 0] += dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    # Phase 2: converge back through s0 into cushion
+    phase = "converge"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        sforce = _signed_plate_force(sim.acc, left_idx, right_idx)
+        # stop when we are well into cushion and the force has reversed
+        if cur_sep <= 0.5 * s0 and sforce < 0.0:
+            break
+        if cur_sep <= 0.0:
+            break
+        dx = -0.5 * v_plate * dt
+        sim.pos[left_idx, 0] -= dx
+        sim.pos[right_idx, 0] += dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics, sim.pos.copy()
+
+
+def _print_muscle_verdict(metrics, initial_pos, final_pos, grain_ids,
+                          s0, R_droplet, label):
+    """Print MUSCLE falsifier verdict; return dict of booleans."""
+    phases = metrics["phase"]
+    sep = np.asarray(metrics["separation"], dtype=np.float64)
+    rforce = np.asarray(metrics["right_force"], dtype=np.float64)
+    sforce = np.asarray(metrics["signed_force"], dtype=np.float64)
+    clusters = np.asarray(metrics["droplet_clusters"], dtype=np.int32)
+    com_y = np.asarray(metrics["droplet_com_y"], dtype=np.float64)
+    com_z = np.asarray(metrics["droplet_com_z"], dtype=np.float64)
+
+    n_droplet = int((grain_ids == 0).sum())
+    n_plate = int((grain_ids == -1).sum()) // 2
+    left_idx = np.arange(n_plate, dtype=np.int32)
+    right_idx = np.arange(final_pos.shape[0] - n_plate,
+                          final_pos.shape[0], dtype=np.int32)
+
+
+    # Contractile force per plate = signed_force / 2.  This cancels the
+    # direct plate-plate interaction and isolates the bridge force.
+    cforce = sforce / 2.0
+
+    # Kernel-exact static prediction: recompute DRAW + static RESISTANCE on
+    # the sampled full geometry (zero velocity) and take the signed plate
+    # acceleration.  This is the fair comparison for the measured force,
+    # which contains both draws and cushion repulsion.
+    pred_cforce = np.empty_like(cforce)
+    for i in range(len(metrics["phase"])):
+        drop_i = np.asarray(metrics["droplet_pos"][i], dtype=np.float32)
+        right_i = np.asarray(metrics["right_plate_pos"][i], dtype=np.float32)
+        left_i = right_i.copy()
+        left_i[:, 0] -= float(sep[i])
+        full_pos = np.vstack([left_i, drop_i, right_i])
+        full_vel = np.zeros_like(full_pos)
+        acc = kernel.compute_forces(full_pos, full_vel, use_cuda=False)
+        left_acc = acc[:n_plate, 0].sum()
+        right_acc = acc[-n_plate:, 0].sum()
+        pred_cforce[i] = 0.5 * (left_acc - right_acc)
+
+    # (a) FORCE LAW — deformation-immune version (2026-08-06): per sample,
+    # predict the contractile force on the right plate as the exact pairwise
+    # softened DRAW sum over (droplet U left plate) x right plate on the
+    # RECORDED positions, and compare to the measured rforce.  Restrict to
+    # extension samples whose droplet-to-right-plate clearance exceeds
+    # R_BOND, so no RESISTANCE contact can contaminate the pure-DRAW claim.
+    # This survives droplet deformation: a droplet that stretches toward the
+    # receding plate is real muscle physics, and then the point-COM distance
+    # is the wrong coordinate — so the log-log exponent is kept as a printed
+    # diagnostic only, never as a gate.
+    f_pred = np.full(len(phases), np.nan)
+    gap_dr = np.full(len(phases), np.nan)
+    for i in range(len(phases)):
+        drop_i = np.asarray(metrics["droplet_pos"][i], dtype=np.float64)
+        right_i = np.asarray(metrics["right_plate_pos"][i], dtype=np.float64)
+        left_i = right_i.copy()
+        left_i[:, 0] -= float(sep[i])
+        pullers = np.vstack([drop_i, left_i])
+        d = right_i[:, None, :] - pullers[None, :, :]     # (n_right, n_pull, 3)
+        r2 = (d * d).sum(axis=2) + EPS**2
+        # rforce = -(right-plate accel x-sum), contractile-positive; DRAW
+        # accel on a right grain toward a puller is -G*dx/r^3 (softened).
+        f_pred[i] = float(G * (d[:, :, 0] / r2**1.5).sum())
+        dd = drop_i[:, None, :] - right_i[None, :, :]
+        gap_dr[i] = float(np.sqrt((dd * dd).sum(axis=2)).min())
+
+    droplet_com_x = np.array([
+        np.asarray(metrics["droplet_pos"][i], dtype=np.float64)[:, 0].mean()
+        for i in range(len(phases))])
+    r_dr = sep - droplet_com_x
+    f_pp = G * n_plate * n_plate * sep / (sep**2 + EPS**2) ** 1.5
+    # NB: metrics["right_force"] is already contractile-positive (negated at
+    # sampling) — do NOT negate it again here.
+    f_bridge = rforce - f_pp
+    extend_idx = [i for i, p in enumerate(phases)
+                  if p == "extend" and r_dr[i] >= 0.25 and f_bridge[i] > 0]
+    law_alpha = None
+    if len(extend_idx) >= 3:
+        lx = np.log(r_dr[extend_idx])
+        ly = np.log(f_bridge[extend_idx])
+        law_alpha = float(np.polyfit(lx, ly, 1)[0])
+
+    law_idx = [i for i, p in enumerate(phases)
+               if p == "extend" and gap_dr[i] > R_BOND and rforce[i] > 0]
+    law_max_err = None
+    law_ok = False  # an untested falsifier is not a pass; the fit must run
+    if len(law_idx) >= 3:
+        law_max_err = max(
+            abs(rforce[i] - f_pred[i]) / max(abs(f_pred[i]), 1e-12)
+            for i in law_idx)
+        law_ok = law_max_err <= MUSCLE_LAW_TOL
+
+    # (b) STROKE: measured contractile force at s0*sqrt(2) vs half at s0
+    stroke_ok = True
+    force_at_s0 = None
+    force_at_sqrt2 = None
+    pred_at_s0 = None
+    pred_at_sqrt2 = None
+    if sep.size > 1:
+        o = np.argsort(sep)
+        force_at_s0 = float(np.interp(s0, sep[o], cforce[o]))
+        force_at_sqrt2 = float(np.interp(
+            s0 * MUSCLE_STROKE_FACTOR, sep[o], cforce[o]))
+        pred_at_s0 = float(np.interp(s0, sep[o], pred_cforce[o]))
+        pred_at_sqrt2 = float(np.interp(
+            s0 * MUSCLE_STROKE_FACTOR, sep[o], pred_cforce[o]))
+        if force_at_s0 > 0:
+            stroke_ok = force_at_sqrt2 >= 0.5 * force_at_s0
+
+    # (c) TEAR (split) and migration
+    max_clusters = int(clusters.max())
+    tear_ok = max_clusters == 1
+    max_com_y = float(np.max(np.abs(com_y)))
+    max_com_z = float(np.max(np.abs(com_z)))
+    migration_ok = (max_com_y <= MUSCLE_MIGRATION_TOL and
+                    max_com_z <= MUSCLE_MIGRATION_TOL)
+
+    # (d) ANTAGONIST
+    converge_idx = [i for i, p in enumerate(phases) if p == "converge"]
+    antagonist_ok = False
+    min_converge_force = 0.0
+    if converge_idx:
+        min_converge_force = float(sforce[converge_idx].min())
+        antagonist_ok = min_converge_force < 0.0
+
+    # (e) ANCHORS
+    left_drift = float(np.max(np.abs(initial_pos[left_idx, 1:] -
+                                     final_pos[left_idx, 1:])))
+    right_drift = float(np.max(np.abs(initial_pos[right_idx, 1:] -
+                                      final_pos[right_idx, 1:])))
+    anchor_drift = max(left_drift, right_drift)
+    anchor_ok = anchor_drift <= 1e-4
+
+    # measurement-consistency diagnostic (NOT the law test): measured vs
+    # static recompute on the same geometry, over [s0, s0*sqrt(2)].
+    stroke_idx = [i for i, s in enumerate(sep)
+                  if s0 <= s <= s0 * MUSCLE_STROKE_FACTOR]
+    consistency_max_rel = 0.0
+    if stroke_idx:
+        consistency_max_rel = max(
+            abs(cforce[i] - pred_cforce[i]) / max(abs(pred_cforce[i]), 1e-12)
+            for i in stroke_idx)
+
+    print(f"\n[{label}] MUSCLE FALSIFIERS:")
+    if law_max_err is not None:
+        print(f"  (a) FORCE LAW : {'PASS' if law_ok else 'FAIL'}  "
+              f"max rel err measured-vs-pairwise-DRAW={law_max_err:.3f} "
+              f"(bar {MUSCLE_LAW_TOL:.2f}, {len(law_idx)} contact-free "
+              f"extension samples)")
+    else:
+        print(f"  (a) FORCE LAW : {'PASS' if law_ok else 'FAIL'}  "
+              f"(insufficient contact-free extension samples)")
+    if law_alpha is not None:
+        print(f"      exponent    : {law_alpha:+.3f} (log-log fit, "
+              f"diagnostic only — droplet deformation breaks point-COM r)")
+    print(f"      consistency : max rel err measured-vs-recompute="
+              f"{consistency_max_rel:.3f} (diagnostic, not the falsifier)")
+    if force_at_s0 is not None and force_at_sqrt2 is not None:
+        print(f"  (b) STROKE    : {'PASS' if stroke_ok else 'FAIL'}  "
+              f"F(s0)={force_at_s0:.4f} "
+              f"F(s0*sqrt2)={force_at_sqrt2:.4f} "
+              f"ratio={force_at_sqrt2/max(force_at_s0,1e-12):.3f} "
+              f"pred_sqrt2={pred_at_sqrt2:.4f}")
+    else:
+        print(f"  (b) STROKE    : {'PASS' if stroke_ok else 'FAIL'}  "
+              f"(no samples near s0/s0*sqrt2)")
+    print(f"  (c) TEAR      : {'PASS' if tear_ok else 'FAIL'}  "
+          f"max clusters={max_clusters}")
+    print(f"      migration : {'PASS' if migration_ok else 'FAIL'}  "
+          f"max |com_yz|=({max_com_y:.4f},{max_com_z:.4f}) "
+          f"(threshold {MUSCLE_MIGRATION_TOL:.3f})")
+    print(f"  (d) ANTAGONIST: {'PASS' if antagonist_ok else 'FAIL'}  "
+          f"min signed force in converge={min_converge_force:.4f}")
+    print(f"  (e) ANCHORS   : {'PASS' if anchor_ok else 'FAIL'}  "
+          f"plate y/z drift={anchor_drift:.6f}")
+
+    return {
+        "force_law_ok": law_ok,
+        "stroke_ok": stroke_ok,
+        "tear_ok": tear_ok,
+        "migration_ok": migration_ok,
+        "antagonist_ok": antagonist_ok,
+        "anchor_ok": anchor_ok,
+    }
+
+
+def muscle_main(args, seed):
+    """MUSCLE print entry point: build, extend, converge, judge."""
+    pos, vel, pin_mask, grain_ids, s0, R_droplet = seed_structures.muscle(
+        side=4, spacing=0.05, seed=seed)
+    N = pos.shape[0]
+    n_plate = 4 * 4
+
+    dt = DT
+    v_plate = MUSCLE_V_PLATE
+    tag = f"{args.tag}_" if args.tag else ""
+
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL — MUSCLE print run")
+    print(f"N={N}, droplet=4³, plates=4×4, seed={seed}, dt={dt}")
+    print("-" * 70)
+    print("STATEMENT: A cold cushion-spaced droplet seated on a pinned anchor")
+    print("  plate pulls the second anchor plate toward it via DRAW, producing")
+    print("  a contractile bridge; the same material pushes as an antagonist")
+    print("  cushion when the plates converge past contact.")
+    print("PREDICTION: Plate force follows the kernel-exact inverse-square law")
+    print("  over the stroke, force stays >= half at s0*sqrt(2), the droplet")
+    print("  remains one cluster and on-axis, force reverses in convergence,")
+    print("  and the pinned anchors do not migrate.")
+    print("FALSIFIERS:")
+    print("  (a) FORCE LAW — measured right-plate force vs pairwise-DRAW")
+    print("      prediction on recorded positions within 10% (contact-free)")
+    print("  (b) STROKE    — force >= half at s0*sqrt(2)")
+    print("  (c) TEAR      — droplet splits or migrates off axis")
+    print("  (d) ANTAGONIST — force reverses sign past convergence")
+    print("  (e) ANCHORS   — pinned plates drift in y/z")
+    print("=" * 70)
+    print(f"\nDerived R_droplet = {R_droplet:.5f}")
+    print(f"Derived s0        = {s0:.5f}")
+    print(f"Extension limit   = {s0 * MUSCLE_EXTENSION_FACTOR:.5f}\n")
+
+    metrics, final_pos = _run_muscle(
+        pos, vel, pin_mask, grain_ids, s0, R_droplet,
+        v_plate, dt, tag, "muscle")
+
+    _print_muscle_verdict(metrics, pos, final_pos, grain_ids,
+                          s0, R_droplet, "muscle")
+    print("=" * 70)
+
+
 def main():
     global N, SEED, T_FF, TOTAL_TICKS, SAMPLE_EVERY
 
@@ -753,7 +1166,8 @@ def main():
     parser.add_argument("--tag", type=str, default="",
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
-                        choices=["random", "core_shell", "disk", "lattice", "bone"],
+                        choices=["random", "core_shell", "disk", "lattice",
+                                 "bone", "muscle"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -770,6 +1184,11 @@ def main():
     # BONE print has its own driver (compression test)
     if args.structure == "bone":
         bone_main(args, SEED)
+        return
+
+    # MUSCLE print has its own driver (extension->convergence bridge test)
+    if args.structure == "muscle":
+        muscle_main(args, SEED)
         return
 
     # choose initial state

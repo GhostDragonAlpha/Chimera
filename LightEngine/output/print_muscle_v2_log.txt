@@ -1,0 +1,94 @@
+======================================================================
+THE KERNEL — MUSCLE print run
+N=96, droplet=4³, plates=4×4, seed=20260806, dt=0.0005
+----------------------------------------------------------------------
+STATEMENT: A cold cushion-spaced droplet seated on a pinned anchor
+  plate pulls the second anchor plate toward it via DRAW, producing
+  a contractile bridge; the same material pushes as an antagonist
+  cushion when the plates converge past contact.
+PREDICTION: Plate force follows the kernel-exact inverse-square law
+  over the stroke, force stays >= half at s0*sqrt(2), the droplet
+  remains one cluster and on-axis, force reverses in convergence,
+  and the pinned anchors do not migrate.
+FALSIFIERS:
+  (a) FORCE LAW — measured curve vs kernel-exact within 10%
+  (b) STROKE    — force >= half at s0*sqrt(2)
+  (c) TEAR      — droplet splits or migrates off axis
+  (d) ANTAGONIST — force reverses sign past convergence
+  (e) ANCHORS   — pinned plates drift in y/z
+======================================================================
+
+Derived R_droplet = 0.12407
+Derived s0        = 0.24814
+Extension limit   = 0.52638
+
+
+[muscle] N=96 droplet=64 plates=32
+[muscle] s0=0.24814 R_droplet=0.12407 v_plate=0.05000 dt=0.0005
+
+[muscle] tick=     0 phase=init       | sep=0.24804 | right_F=179.5172 | sforce=455.8117 | clusters=1 | gap_L=0.0492 | gap_R=0.0470 | com_yz=(-0.0000,-0.0000)
+[muscle] tick=   500 phase=extend     | sep=0.26054 | right_F=301.7560 | sforce=630.2785 | clusters=1 | gap_L=0.0440 | gap_R=0.0447 | com_yz=(0.0021,-0.0004)
+[muscle] tick=  1000 phase=extend     | sep=0.27303 | right_F=329.3090 | sforce=647.8352 | clusters=1 | gap_L=0.0483 | gap_R=0.0501 | com_yz=(0.0032,-0.0023)
+[muscle] tick=  1500 phase=extend     | sep=0.28553 | right_F=314.0134 | sforce=636.4358 | clusters=1 | gap_L=0.0475 | gap_R=0.0569 | com_yz=(-0.0014,-0.0001)
+[muscle] tick=  2000 phase=extend     | sep=0.29802 | right_F=274.2009 | sforce=558.1080 | clusters=1 | gap_L=0.0458 | gap_R=0.0779 | com_yz=(-0.0021,0.0066)
+[muscle] tick=  2500 phase=extend     | sep=0.31051 | right_F=217.3196 | sforce=415.1683 | clusters=1 | gap_L=0.0421 | gap_R=0.1187 | com_yz=(0.0037,0.0006)
+[muscle] tick=  3000 phase=extend     | sep=0.32301 | right_F=194.9699 | sforce=404.3276 | clusters=1 | gap_L=0.0409 | gap_R=0.1343 | com_yz=(0.0028,-0.0002)
+[muscle] tick=  3500 phase=extend     | sep=0.33550 | right_F=175.6424 | sforce=336.8596 | clusters=1 | gap_L=0.0386 | gap_R=0.1507 | com_yz=(0.0032,0.0031)
+[muscle] tick=  4000 phase=extend     | sep=0.34799 | right_F=160.1677 | sforce=325.6797 | clusters=1 | gap_L=0.0418 | gap_R=0.1591 | com_yz=(0.0036,0.0067)
+[muscle] tick=  4500 phase=extend     | sep=0.36048 | right_F=143.3683 | sforce=292.6268 | clusters=1 | gap_L=0.0412 | gap_R=0.1809 | com_yz=(0.0023,0.0029)
+[muscle] tick=  5000 phase=extend     | sep=0.37298 | right_F=129.9802 | sforce=255.1061 | clusters=1 | gap_L=0.0419 | gap_R=0.1927 | com_yz=(0.0003,-0.0036)
+[muscle] tick=  5500 phase=extend     | sep=0.38547 | right_F=120.0101 | sforce=235.0385 | clusters=1 | gap_L=0.0413 | gap_R=0.2063 | com_yz=(-0.0005,-0.0043)
+[muscle] tick=  6000 phase=extend     | sep=0.39797 | right_F=111.5301 | sforce=252.9215 | clusters=1 | gap_L=0.0400 | gap_R=0.2225 | com_yz=(-0.0009,0.0004)
+[muscle] tick=  6500 phase=extend     | sep=0.41046 | right_F=102.9653 | sforce=216.3713 | clusters=1 | gap_L=0.0407 | gap_R=0.2375 | com_yz=(-0.0046,0.0034)
+[muscle] tick=  7000 phase=extend     | sep=0.42296 | right_F=95.8974 | sforce=197.8658 | clusters=1 | gap_L=0.0406 | gap_R=0.2502 | com_yz=(-0.0048,0.0007)
+[muscle] tick=  7500 phase=extend     | sep=0.43545 | right_F=90.1107 | sforce=166.5677 | clusters=1 | gap_L=0.0411 | gap_R=0.2618 | com_yz=(-0.0013,0.0012)
+[muscle] tick=  8000 phase=extend     | sep=0.44795 | right_F=84.3402 | sforce=171.4234 | clusters=1 | gap_L=0.0406 | gap_R=0.2749 | com_yz=(-0.0018,0.0006)
+[muscle] tick=  8500 phase=extend     | sep=0.46044 | right_F=79.2331 | sforce=160.7629 | clusters=1 | gap_L=0.0402 | gap_R=0.2879 | com_yz=(-0.0043,0.0013)
+[muscle] tick=  9000 phase=extend     | sep=0.47293 | right_F=74.3376 | sforce=148.1479 | clusters=1 | gap_L=0.0406 | gap_R=0.3040 | com_yz=(-0.0031,0.0033)
+[muscle] tick=  9500 phase=extend     | sep=0.48543 | right_F=70.1191 | sforce=140.2696 | clusters=1 | gap_L=0.0402 | gap_R=0.3161 | com_yz=(-0.0024,0.0021)
+[muscle] tick= 10000 phase=extend     | sep=0.49792 | right_F=65.8843 | sforce=124.4603 | clusters=1 | gap_L=0.0401 | gap_R=0.3298 | com_yz=(-0.0009,0.0009)
+[muscle] tick= 10500 phase=extend     | sep=0.51042 | right_F=62.3159 | sforce=132.5660 | clusters=1 | gap_L=0.0400 | gap_R=0.3427 | com_yz=(0.0023,0.0019)
+[muscle] tick= 11000 phase=extend     | sep=0.52291 | right_F=59.0379 | sforce=116.2338 | clusters=1 | gap_L=0.0402 | gap_R=0.3545 | com_yz=(0.0007,0.0012)
+[muscle] tick= 11500 phase=converge   | sep=0.51739 | right_F=60.3245 | sforce=146.4786 | clusters=1 | gap_L=0.0397 | gap_R=0.3497 | com_yz=(-0.0010,0.0006)
+[muscle] tick= 12000 phase=converge   | sep=0.50490 | right_F=63.7481 | sforce=108.9989 | clusters=1 | gap_L=0.0398 | gap_R=0.3370 | com_yz=(0.0009,0.0022)
+[muscle] tick= 12500 phase=converge   | sep=0.49240 | right_F=67.5126 | sforce=149.0580 | clusters=1 | gap_L=0.0401 | gap_R=0.3236 | com_yz=(0.0011,0.0020)
+[muscle] tick= 13000 phase=converge   | sep=0.47991 | right_F=71.4568 | sforce=136.7666 | clusters=1 | gap_L=0.0402 | gap_R=0.3107 | com_yz=(0.0001,0.0001)
+[muscle] tick= 13500 phase=converge   | sep=0.46741 | right_F=75.8585 | sforce=162.1558 | clusters=1 | gap_L=0.0401 | gap_R=0.2982 | com_yz=(0.0007,0.0019)
+[muscle] tick= 14000 phase=converge   | sep=0.45492 | right_F=80.5727 | sforce=167.2480 | clusters=1 | gap_L=0.0402 | gap_R=0.2855 | com_yz=(0.0005,0.0019)
+[muscle] tick= 14500 phase=converge   | sep=0.44242 | right_F=85.8294 | sforce=178.3918 | clusters=1 | gap_L=0.0402 | gap_R=0.2721 | com_yz=(0.0004,0.0004)
+[muscle] tick= 15000 phase=converge   | sep=0.42993 | right_F=91.6296 | sforce=184.9935 | clusters=1 | gap_L=0.0404 | gap_R=0.2593 | com_yz=(0.0008,0.0018)
+[muscle] tick= 15500 phase=converge   | sep=0.41743 | right_F=98.0704 | sforce=194.0951 | clusters=1 | gap_L=0.0405 | gap_R=0.2463 | com_yz=(-0.0001,0.0015)
+[muscle] tick= 16000 phase=converge   | sep=0.40494 | right_F=105.0512 | sforce=209.4420 | clusters=1 | gap_L=0.0405 | gap_R=0.2333 | com_yz=(0.0003,0.0014)
+[muscle] tick= 16500 phase=converge   | sep=0.39244 | right_F=112.8398 | sforce=231.4915 | clusters=1 | gap_L=0.0405 | gap_R=0.2204 | com_yz=(0.0010,0.0015)
+[muscle] tick= 17000 phase=converge   | sep=0.37995 | right_F=121.5309 | sforce=239.2367 | clusters=1 | gap_L=0.0404 | gap_R=0.2071 | com_yz=(0.0003,0.0014)
+[muscle] tick= 17500 phase=converge   | sep=0.36746 | right_F=131.4230 | sforce=273.0694 | clusters=1 | gap_L=0.0407 | gap_R=0.1943 | com_yz=(0.0005,0.0022)
+[muscle] tick= 18000 phase=converge   | sep=0.35496 | right_F=142.3479 | sforce=280.0349 | clusters=1 | gap_L=0.0407 | gap_R=0.1809 | com_yz=(0.0005,0.0020)
+[muscle] tick= 18500 phase=converge   | sep=0.34247 | right_F=155.0025 | sforce=318.9696 | clusters=1 | gap_L=0.0408 | gap_R=0.1673 | com_yz=(0.0004,0.0022)
+[muscle] tick= 19000 phase=converge   | sep=0.32998 | right_F=169.3485 | sforce=335.1238 | clusters=1 | gap_L=0.0409 | gap_R=0.1535 | com_yz=(-0.0002,0.0022)
+[muscle] tick= 19500 phase=converge   | sep=0.31748 | right_F=185.4243 | sforce=366.9357 | clusters=1 | gap_L=0.0408 | gap_R=0.1399 | com_yz=(0.0002,0.0018)
+[muscle] tick= 20000 phase=converge   | sep=0.30499 | right_F=204.5459 | sforce=415.3870 | clusters=1 | gap_L=0.0416 | gap_R=0.1252 | com_yz=(0.0017,0.0017)
+[muscle] tick= 20500 phase=converge   | sep=0.29250 | right_F=223.3574 | sforce=443.4542 | clusters=1 | gap_L=0.0415 | gap_R=0.1122 | com_yz=(0.0016,0.0014)
+[muscle] tick= 21000 phase=converge   | sep=0.28000 | right_F=245.4306 | sforce=493.4847 | clusters=1 | gap_L=0.0418 | gap_R=0.0961 | com_yz=(-0.0002,0.0012)
+[muscle] tick= 21500 phase=converge   | sep=0.26751 | right_F=271.2444 | sforce=535.8367 | clusters=1 | gap_L=0.0435 | gap_R=0.0821 | com_yz=(0.0024,0.0008)
+[muscle] tick= 22000 phase=converge   | sep=0.25502 | right_F=307.9174 | sforce=600.3323 | clusters=1 | gap_L=0.0441 | gap_R=0.0609 | com_yz=(-0.0013,0.0007)
+[muscle] tick= 22500 phase=converge   | sep=0.24252 | right_F=318.2449 | sforce=645.8625 | clusters=1 | gap_L=0.0453 | gap_R=0.0459 | com_yz=(-0.0054,0.0022)
+[muscle] tick= 23000 phase=converge   | sep=0.23002 | right_F=271.6325 | sforce=569.6772 | clusters=1 | gap_L=0.0446 | gap_R=0.0430 | com_yz=(-0.0019,-0.0027)
+[muscle] tick= 23500 phase=converge   | sep=0.21752 | right_F=291.4771 | sforce=558.5575 | clusters=1 | gap_L=0.0429 | gap_R=0.0416 | com_yz=(-0.0056,0.0026)
+[muscle] tick= 24000 phase=converge   | sep=0.20501 | right_F=263.3099 | sforce=504.6177 | clusters=1 | gap_L=0.0424 | gap_R=0.0417 | com_yz=(-0.0082,-0.0005)
+[muscle] tick= 24500 phase=converge   | sep=0.19251 | right_F=204.6618 | sforce=425.5097 | clusters=1 | gap_L=0.0417 | gap_R=0.0395 | com_yz=(-0.0089,-0.0009)
+[muscle] tick= 25000 phase=converge   | sep=0.18001 | right_F=186.7384 | sforce=374.3496 | clusters=1 | gap_L=0.0409 | gap_R=0.0382 | com_yz=(-0.0093,0.0011)
+[muscle] tick= 25500 phase=converge   | sep=0.16751 | right_F=138.5397 | sforce=274.1941 | clusters=1 | gap_L=0.0409 | gap_R=0.0383 | com_yz=(-0.0098,0.0048)
+[muscle] tick= 26000 phase=converge   | sep=0.15501 | right_F=73.0073 | sforce=130.1716 | clusters=1 | gap_L=0.0389 | gap_R=0.0386 | com_yz=(-0.0089,-0.0003)
+[muscle] tick= 26500 phase=converge   | sep=0.14251 | right_F=-28.2791 | sforce=-81.8416 | clusters=1 | gap_L=0.0381 | gap_R=0.0378 | com_yz=(-0.0082,-0.0010)
+[muscle] tick= 27000 phase=converge   | sep=0.13001 | right_F=-125.8306 | sforce=-262.8455 | clusters=1 | gap_L=0.0372 | gap_R=0.0364 | com_yz=(-0.0113,-0.0035)
+[muscle] tick= 27239 phase=converge   | sep=0.12406 | right_F=-158.0941 | sforce=-328.2298 | clusters=1 | gap_L=0.0376 | gap_R=0.0373 | com_yz=(-0.0105,-0.0025)
+
+[muscle] MUSCLE FALSIFIERS:
+  (a) FORCE LAW : FAIL  exponent=-1.557 (bar -2±0.25)  prefactor err=0.612 (bar 0.10 + derived near-field margin)
+      consistency : max rel err measured-vs-recompute=0.073 (diagnostic, not the falsifier)
+  (b) STROKE    : PASS  F(s0)=228.9152 F(s0*sqrt2)=153.2428 ratio=0.669 pred_sqrt2=166.4421
+  (c) TEAR      : PASS  max clusters=1
+      migration : PASS  max |com_yz|=(0.0113,0.0067) (threshold 0.050)
+  (d) ANTAGONIST: PASS  min signed force in converge=-328.2298
+  (e) ANCHORS   : PASS  plate y/z drift=0.000000
+======================================================================

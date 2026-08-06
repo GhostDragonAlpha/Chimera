@@ -372,3 +372,75 @@ def bone2(width: int = 4,
     pos += jitter
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids
+
+
+def muscle(side: int = 4,
+           spacing: float = 0.05,
+           seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                   np.ndarray, float, float]:
+    """
+    THE MUSCLE print: a ``side³`` cushion droplet seated on a pinned left
+    anchor plate, with a second pinned right plate at derived separation ``s₀``.
+
+    The droplet is printed as a simple-cubic lattice at ``spacing`` (cushion
+    spacing), left face in cushion contact with the left plate.  The right
+    plate is placed at ``s₀ = 2 * R_droplet`` (plate-inner-face to
+    plate-inner-face), where ``R_droplet`` is the radius of a ball with the
+    same volume as ``side³`` points at ``spacing``.  This leaves a small
+    cushion gap between the droplet's right face and the right plate so the
+    bridge is pulling, not touching.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, s0, R_droplet)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; both plates are pinned.
+      - ``grain_ids`` is length-N int32; plates are -1, droplet is 0.
+      - ``s0`` and ``R_droplet`` are the derived bridge numbers.
+
+    The point count is ``side³ + 2 * side²``.
+    """
+    rng = np.random.default_rng(seed)
+    s = int(side)
+    if s < 2:
+        raise ValueError("side must be at least 2")
+    d = float(spacing)
+
+    n_droplet = s ** 3
+    n_plate = s * s
+
+    # Droplet: s x s x s cubic lattice at cushion spacing.
+    offsets = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * d
+    gx, gy, gz = np.meshgrid(offsets, offsets, offsets, indexing="ij")
+    drop_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    # Equivalent spherical radius from the droplet volume.
+    R_droplet = _ball_radius_for_bond_spacing(n_droplet, d)
+    s0 = 2.0 * R_droplet
+
+    # Plates: s x s lattices perpendicular to x.
+    py, pz = np.meshgrid(offsets, offsets, indexing="ij")
+    plate_yz = np.stack([py.ravel(), pz.ravel()], axis=1)
+
+    # Left plate inner face at x = 0; droplet left face at x = d.
+    left_plate = np.hstack([np.zeros((n_plate, 1)), plate_yz])
+    drop_pos[:, 0] += d + (s - 1) / 2.0 * d
+
+    # Right plate inner face at x = s0.
+    right_plate = np.hstack([np.full((n_plate, 1), s0), plate_yz])
+
+    pos = np.vstack([left_plate, drop_pos, right_plate]).astype(np.float64)
+    vel = np.zeros((pos.shape[0], 3), dtype=np.float64)
+
+    pin_mask = np.zeros(pos.shape[0], dtype=bool)
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate + n_droplet:] = True
+
+    grain_ids = np.empty(pos.shape[0], dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_droplet] = 0
+    grain_ids[n_plate + n_droplet:] = -1
+
+    # Tiny positional jitter to break exact lattice degeneracy (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, s0, R_droplet
