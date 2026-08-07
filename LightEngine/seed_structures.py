@@ -11,7 +11,7 @@ from __future__ import annotations
 import math
 import numpy as np
 
-from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND
+from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, EPS
 
 
 # Cushion equilibrium spacing measured in theCushionLaw lattice8eq print
@@ -584,3 +584,136 @@ def tendon(side: int = 4,
     pos += jitter
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, s0, rod_span
+
+
+def joint(spacing: float = 0.05,
+          seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                  np.ndarray, dict]:
+    """
+    THE JOINT print: a pinned ground plate, a vertical bone A (pillar), a
+    horizontal bone B (limb), and a muscle droplet that pulls B's far half.
+
+    Geometry (all lengths in lu, derived from ``spacing`` and ``d_eq``):
+      - ground plate: 6×6 lattice in the z=0 plane, spacing ``spacing``;
+      - bone A: 4×4×16 column vertical along z, base seated ``d_eq`` above the
+        plate (grain_ids = 1);
+      - bone B: 4×4×16 column horizontal along x, joint-end face seated
+        ``d_eq`` above A's top face, cantilevered in +x (grain_ids = 2);
+      - muscle droplet: 4³ cube, bottom face seated ``d_eq`` above the plate,
+        offset along x under B's far half (grain_ids = 0).
+
+    The A-top / B-bottom cushion contact is the joint fulcrum.  No two grains
+    share a position; the builder raises if the print law is violated.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, derived)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; only the ground plate is pinned.
+      - ``grain_ids`` is length-N int32; plate = -1, droplet = 0, A = 1, B = 2.
+      - ``derived`` is a dict with the joint contact point, B's weight W
+        (pairwise DRAW magnitude B × plate), the muscle pull F_m (pairwise
+        DRAW magnitude B × droplet), and the print constants ``d_eq`` and
+        ``r_c``.
+    """
+    rng = np.random.default_rng(seed)
+    d = float(spacing)
+    d_eq = TENDON_D_EQ
+
+    # Ground plate: 6×6 at z = 0.
+    plate_side = 6
+    n_plate = plate_side * plate_side
+    plate_off = (np.arange(plate_side, dtype=np.float64)
+                 - (plate_side - 1) / 2.0) * d
+    px, py = np.meshgrid(plate_off, plate_off, indexing="ij")
+    plate_pos = np.stack([px.ravel(), py.ravel(), np.zeros(n_plate)], axis=1)
+
+    # Muscle droplet: 4³, bottom at z = d_eq, centered under B's far half.
+    drop_side = 4
+    n_drop = drop_side ** 3
+    drop_off = (np.arange(drop_side, dtype=np.float64)
+                - (drop_side - 1) / 2.0) * d
+    # B spans x in [0, (B_l - 1) * d] = [0, 0.75]; far half is [0.375, 0.75].
+    drop_x_center = 0.5625  # midpoint of B's far half
+    drop_x = drop_off + drop_x_center
+    drop_y = drop_off
+    drop_z = np.arange(drop_side, dtype=np.float64) * d + d_eq
+    gx, gy, gz = np.meshgrid(drop_x, drop_y, drop_z, indexing="ij")
+    drop_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    # Bone A: 4×4×16 vertical pillar, base at z = d_eq.
+    A_w, A_h, A_l = 4, 4, 16
+    n_A = A_w * A_h * A_l
+    A_x_off = (np.arange(A_w, dtype=np.float64)
+               - (A_w - 1) / 2.0) * d
+    A_y_off = (np.arange(A_h, dtype=np.float64)
+               - (A_h - 1) / 2.0) * d
+    A_z_off = np.arange(A_l, dtype=np.float64) * d + d_eq
+    gx, gy, gz = np.meshgrid(A_x_off, A_y_off, A_z_off, indexing="ij")
+    A_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    # Bone B: 4×4×16 horizontal limb, joint end seated d_eq above A's top face.
+    A_top_z = d_eq + (A_l - 1) * d
+    B_w, B_h, B_l = 4, 4, 16
+    n_B = B_w * B_h * B_l
+    B_x_off = np.arange(B_l, dtype=np.float64) * d  # joint-end face at x = 0
+    B_y_off = (np.arange(B_w, dtype=np.float64)
+               - (B_w - 1) / 2.0) * d
+    B_z_off = np.arange(B_h, dtype=np.float64) * d + A_top_z + d_eq
+    gx, gy, gz = np.meshgrid(B_x_off, B_y_off, B_z_off, indexing="ij")
+    B_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+
+    pos = np.vstack([plate_pos, drop_pos, A_pos, B_pos]).astype(np.float64)
+
+    # Print law: no two grains may share a position.
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"joint print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6")
+
+    # Tiny positional jitter to break exact lattice degeneracy (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    N = pos.shape[0]
+    vel = np.zeros((N, 3), dtype=np.float64)
+
+    pin_mask = np.zeros(N, dtype=bool)
+    pin_mask[:n_plate] = True
+
+    grain_ids = np.empty(N, dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_drop] = 0
+    grain_ids[n_plate + n_drop:n_plate + n_drop + n_A] = 1
+    grain_ids[n_plate + n_drop + n_A:] = 2
+
+    # Derived quantities (computed from the cold print geometry).
+    joint_contact_point = np.array([0.0, 0.0, A_top_z], dtype=np.float64)
+
+    def _draw_force_magnitude(src: np.ndarray, dst: np.ndarray) -> float:
+        """Magnitude of the pairwise softened-DRAW force on ``dst`` from ``src``."""
+        # Attractive DRAW: force on dst is G * (src - dst) / r^3.
+        dpos = src[:, None, :] - dst[None, :, :]  # (n_src, n_dst, 3)
+        r2 = (dpos * dpos).sum(axis=2) + EPS ** 2
+        # z-component of force on dst (negative when src is below dst, i.e.
+        # the attractive pull is downward).
+        fz = G * dpos[:, :, 2] / (r2 ** 1.5)
+        # Downward pull magnitude = -sum(fz) over all source-destination pairs.
+        return float(np.maximum(-fz.sum(), 0.0))
+
+    W = _draw_force_magnitude(plate_pos, B_pos)
+    F_m = _draw_force_magnitude(drop_pos, B_pos)
+
+    derived = {
+        "joint_contact_point": joint_contact_point,
+        "W": W,
+        "F_m": F_m,
+        "d_eq": d_eq,
+        "r_c": R_C,
+        "A_top_z": A_top_z,
+        "B_length": (B_l - 1) * d,
+    }
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived

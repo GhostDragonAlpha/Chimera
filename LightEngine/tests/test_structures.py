@@ -441,3 +441,93 @@ def test_tendon_foot_default_unchanged():
         side=4, n_len=8, spacing=0.05, foot_side=0, seed=13)
     np.testing.assert_array_equal(pos_default, pos_explicit)
     assert s0_default == pytest.approx(s0_explicit, rel=1e-12)
+
+
+def test_joint_determinism():
+    """joint() is deterministic for a fixed seed."""
+    a = seed_structures.joint(seed=5)
+    b = seed_structures.joint(seed=5)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+def test_joint_counts():
+    """joint() builds the expected point counts: plate + droplet + A + B."""
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.joint(seed=0)
+    n_plate = 6 * 6
+    n_drop = 4 ** 3
+    n_A = 4 * 4 * 16
+    n_B = 4 * 4 * 16
+    assert pos.shape[0] == n_plate + n_drop + n_A + n_B
+    assert vel.shape[0] == pos.shape[0]
+    assert pin_mask.shape[0] == pos.shape[0]
+    assert grain_ids.shape[0] == pos.shape[0]
+    assert int((grain_ids == -1).sum()) == n_plate
+    assert int((grain_ids == 0).sum()) == n_drop
+    assert int((grain_ids == 1).sum()) == n_A
+    assert int((grain_ids == 2).sum()) == n_B
+
+
+def test_joint_pin_mask():
+    """Only the ground plate is pinned."""
+    pos, _, pin_mask, grain_ids, _ = seed_structures.joint(seed=0)
+    n_plate = int((grain_ids == -1).sum())
+    assert pin_mask[:n_plate].all()
+    assert not pin_mask[n_plate:].any()
+
+
+def test_joint_no_shared_positions():
+    """No two grains share a position in the joint print."""
+    pos, _, _, _, _ = seed_structures.joint(seed=0)
+    pos64 = np.asarray(pos, dtype=np.float64)
+    diff = pos64[:, None, :] - pos64[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
+
+def test_joint_bone_orientations():
+    """Bone A is vertical along z and bone B is horizontal along x."""
+    pos, _, _, grain_ids, _ = seed_structures.joint(seed=0)
+    A = pos[grain_ids == 1]
+    B = pos[grain_ids == 2]
+    A_extents = A.max(axis=0) - A.min(axis=0)
+    B_extents = B.max(axis=0) - B.min(axis=0)
+    # A is tallest in z.
+    assert A_extents[2] > A_extents[0]
+    assert A_extents[2] > A_extents[1]
+    # B is longest in x.
+    assert B_extents[0] > B_extents[1]
+    assert B_extents[0] > B_extents[2]
+
+
+def test_joint_gap():
+    """B's joint-end face sits approximately d_eq above A's top face."""
+    pos, _, _, grain_ids, derived = seed_structures.joint(seed=0)
+    A = pos[grain_ids == 1]
+    B = pos[grain_ids == 2]
+    # Joint-end face: the 16 points (4×4 cross-section) with smallest x.
+    joint_face = B[np.argsort(B[:, 0])[:16]]
+    # A's top face: the 16 points with largest z.
+    A_top = A[np.argsort(A[:, 2])[-16:]]
+    gap = np.linalg.norm(
+        joint_face[:, None, :] - A_top[None, :, :], axis=2).min()
+    assert abs(gap - derived["d_eq"]) < 0.01
+
+
+def test_joint_control_drops_droplet():
+    """Removing the droplet drops exactly 64 grains."""
+    pos, vel, pin_mask, grain_ids, _ = seed_structures.joint(seed=0)
+    keep = grain_ids != 0
+    pos_c = pos[keep]
+    grain_ids_c = grain_ids[keep]
+    assert pos_c.shape[0] == pos.shape[0] - 64
+    assert int((grain_ids_c == 0).sum()) == 0

@@ -97,6 +97,11 @@ TENDON_UNSEAT_HALF_TOL = 0.5 * TENDON_D_EQ       # ± half a lattice step
 TENDON_COMPRESS_DIST = 2.0 * TENDON_D_EQ         # total plate convergence during compress phase
 TENDON_EXTEND_EXTRA = 0.15                       # extension past s0 into the unseat window
 
+# ── JOINT print parameters (derived from force constants) ─────────────
+JOINT_D_EQ = seed_structures.TENDON_D_EQ         # cushion equilibrium spacing
+JOINT_LAW_TOL = 0.10                             # (b) torque law vs pairwise-DRAW
+JOINT_GAP_BAR = R_C                              # (a) joint dislocation threshold
+
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
     """Return (positions, velocities) for a structureless initial state."""
@@ -1711,6 +1716,367 @@ def tendon_main(args, seed):
     print("=" * 70)
 
 
+# ── JOINT-specific helpers ──────────────────────────────────────────
+
+def _B_end_faces(ref_B: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Return indices of B's joint-end face (minimum x) and far-end face."""
+    order = np.argsort(ref_B[:, 0])
+    n_per_face = 4 * 4  # 4×4 cross-section
+    joint_face = order[:n_per_face]
+    far_face = order[-n_per_face:]
+    return joint_face, far_face
+
+
+def _B_end_faces(B: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Return indices of the 16 points forming each end face of B."""
+    order = np.argsort(B[:, 0])
+    n_per_face = 4 * 4
+    return order[:n_per_face], order[-n_per_face:]
+
+
+def _B_angle(pos: np.ndarray, grain_ids: np.ndarray) -> float:
+    """Angle of B below horizontal from current end-face centroids (radians)."""
+    B = pos[grain_ids == 2]
+    if B.shape[0] == 0:
+        return 0.0
+    joint_face, far_face = _B_end_faces(B)
+    c_joint = B[joint_face].mean(axis=0)
+    c_far = B[far_face].mean(axis=0)
+    dx = c_far[0] - c_joint[0]
+    dz = c_far[2] - c_joint[2]
+    # Positive theta means the far (free) end is below the joint end.
+    return float(math.atan2(max(0.0, -dz), max(1e-12, abs(dx))))
+
+
+def _joint_gap(pos: np.ndarray, grain_ids: np.ndarray) -> float:
+    """Cushion gap from B's current joint-end face to A's top face."""
+    B = pos[grain_ids == 2]
+    A = pos[grain_ids == 1]
+    if B.shape[0] == 0 or A.shape[0] == 0:
+        return 0.0
+    joint_face, _ = _B_end_faces(B)
+    joint_points = B[joint_face]
+    # A top face: points within a small tolerance of the maximum z.
+    zmax = A[:, 2].max()
+    A_top = A[A[:, 2] >= zmax - 1e-3]
+    return float(np.linalg.norm(
+        joint_points[:, None, :] - A_top[None, :, :], axis=2).min())
+
+
+def _group_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
+                         group_id: int, r_cut: float = R_C) -> int:
+    """Number of connected components in one grain group."""
+    idx = np.flatnonzero(grain_ids == group_id)
+    if idx.size == 0:
+        return 0
+    return cluster_count_and_sizes(pos[idx], r_cut)[0]
+
+
+def _draw_torque_on_B(pos: np.ndarray, grain_ids: np.ndarray,
+                      contact: np.ndarray, use_kernel: bool) -> np.ndarray:
+    """
+    Return the y-axis torque on B about ``contact`` due to DRAW.
+
+    If ``use_kernel`` is True the torque is computed from
+    ``kernel.compute_draw`` on the full geometry (the measurement).  Otherwise
+    it is computed as a direct pairwise softened-DRAW sum over all points
+    acting on B (the prediction).  The two should agree because they are the
+    same physical force law evaluated on the same recorded positions; this is
+    the deformation-immune law test for the joint's angular dynamics.
+    """
+    B = pos[grain_ids == 2].astype(np.float64)
+    if B.shape[0] == 0:
+        return np.zeros(3)
+
+    if use_kernel:
+        acc = kernel.compute_draw(pos.astype(np.float32), use_cuda=False)
+        B_acc = acc[grain_ids == 2].astype(np.float64)
+    else:
+        # Direct pairwise softened-DRAW sum over all sources acting on B.
+        # Self-interactions (B×B) are excluded; they contribute no net torque.
+        src = pos.astype(np.float64)
+        dpos = B[:, None, :] - src[None, :, :]  # (n_B, N, 3)
+        r2 = (dpos * dpos).sum(axis=2) + EPS ** 2
+        # attractive DRAW on B: G * (src - B) / r^3 = -G * dpos / r^3
+        B_acc = np.zeros_like(B)
+        for i in range(B.shape[0]):
+            mask = np.ones(src.shape[0], dtype=bool)
+            # global index of B point i
+            b_global = int(np.flatnonzero(grain_ids == 2)[i])
+            mask[b_global] = False
+            B_acc[i] = (-G * dpos[i, mask] / (r2[i, mask][:, None] ** 1.5)).sum(axis=0)
+
+    r = B - contact[None, :]
+    torque = np.cross(r, B_acc).sum(axis=0)
+    return torque
+
+
+def _make_joint_control(pos: np.ndarray, vel: np.ndarray,
+                        pin_mask: np.ndarray, grain_ids: np.ndarray):
+    """Return the joint geometry with the muscle droplet removed."""
+    keep = grain_ids != 0
+    return pos[keep].copy(), vel[keep].copy(), pin_mask[keep].copy(), grain_ids[keep].copy()
+
+
+def _run_joint(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+               tag, label, control: bool = False):
+    """
+    Free-evolution joint protocol: only the ground plate is pinned; the
+    droplet and bones move under DRAW and cushion forces.  Returns metrics.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    n_plate = int((grain_ids == -1).sum())
+    A_idx = np.flatnonzero(grain_ids == 1)
+    B_idx = np.flatnonzero(grain_ids == 2)
+    drop_idx = np.flatnonzero(grain_ids == 0) if not control else np.array([], dtype=np.int32)
+
+    sample_every = max(1, ticks // 40)
+
+    metrics = {
+        "tick": [],
+        "theta": [],
+        "free_end_pos": [],
+        "joint_gap": [],
+        "A_clusters": [],
+        "B_clusters": [],
+        "drop_clusters": [],
+        "droplet_com": [],
+        "A_pos": [],
+        "B_pos": [],
+        "drop_pos": [],
+        "plate_pos": [],
+        "control": control,
+    }
+
+    contact = derived["joint_contact_point"].astype(np.float64)
+
+    def _sample(tick: int):
+        theta = _B_angle(sim.pos, grain_ids)
+        Bpos = sim.pos[B_idx]
+        _, far_face = _B_end_faces(Bpos)
+        free_end = Bpos[far_face].mean(axis=0)
+        gap = _joint_gap(sim.pos, grain_ids)
+        A_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
+        B_clust = _group_cluster_count(sim.pos, grain_ids, 2, R_C)
+        drop_clust = (_group_cluster_count(sim.pos, grain_ids, 0, R_C)
+                      if not control else 0)
+        drop_com = (sim.pos[drop_idx].mean(axis=0)
+                    if drop_idx.size else np.zeros(3, dtype=np.float64))
+
+        metrics["tick"].append(tick)
+        metrics["theta"].append(theta)
+        metrics["free_end_pos"].append(free_end.copy())
+        metrics["joint_gap"].append(gap)
+        metrics["A_clusters"].append(A_clust)
+        metrics["B_clusters"].append(B_clust)
+        metrics["drop_clusters"].append(drop_clust)
+        metrics["droplet_com"].append(drop_com.copy())
+        metrics["A_pos"].append(sim.pos[A_idx].copy())
+        metrics["B_pos"].append(Bpos.copy())
+        metrics["drop_pos"].append(sim.pos[drop_idx].copy()
+                                    if drop_idx.size else np.zeros((0, 3), dtype=np.float32))
+        metrics["plate_pos"].append(sim.pos[:n_plate].copy())
+
+        print(f"[{label}] tick={tick:6d} | theta={math.degrees(theta):6.2f}° | "
+              f"gap={gap:.4f} | A/B/drop clusters={A_clust}/{B_clust}/{drop_clust} | "
+              f"free_end=({free_end[0]:.4f},{free_end[1]:.4f},{free_end[2]:.4f}) | "
+              f"drop_com=({drop_com[0]:.4f},{drop_com[1]:.4f},{drop_com[2]:.4f})")
+
+    print(f"\n[{label}] N={N} plate={n_plate} A={A_idx.size} B={B_idx.size} "
+          f"drop={drop_idx.size} dt={dt} ticks={ticks}")
+    if control:
+        print(f"[{label}] CONTROL: muscle droplet removed\n")
+    else:
+        print(f"[{label}] W={derived['W']:.3f} F_m={derived['F_m']:.3f}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    _sample(0)
+    for tick in range(1, ticks + 1):
+        sim.step(dt)
+        if tick % sample_every == 0 or tick == ticks:
+            _sample(tick)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics
+
+
+def _print_joint_verdict(metrics, derived, label):
+    """Print JOINT falsifier verdict; return dict of booleans."""
+    ticks = np.asarray(metrics["tick"], dtype=np.int32)
+    theta = np.asarray(metrics["theta"], dtype=np.float64)
+    gap = np.asarray(metrics["joint_gap"], dtype=np.float64)
+    A_clust = np.asarray(metrics["A_clusters"], dtype=np.int32)
+    B_clust = np.asarray(metrics["B_clusters"], dtype=np.int32)
+    drop_clust = np.asarray(metrics["drop_clusters"], dtype=np.int32)
+    control = bool(metrics.get("control", False))
+    contact = derived["joint_contact_point"].astype(np.float64)
+
+    # (a) PIVOT: B rotates (theta increases) and joint gap stays <= R_C.
+    max_theta = float(theta.max())
+    min_gap = float(gap.min())
+    max_gap = float(gap.max())
+    pivot_rotated = max_theta > math.radians(1.0)  # any real rotation
+    pivot_contact = max_gap <= JOINT_GAP_BAR
+    pivot_ok = pivot_rotated and pivot_contact
+
+    # (b) TORQUE LAW: measured DRAW torque on B vs pairwise-DRAW prediction.
+    law_errs = []
+    for i in range(len(ticks)):
+        full_pos = np.vstack([
+            metrics["plate_pos"][i],
+            metrics["drop_pos"][i],
+            metrics["A_pos"][i],
+            metrics["B_pos"][i],
+        ]).astype(np.float32)
+        # Reconstruct grain_ids for this sampled geometry.
+        n_plate_i = metrics["plate_pos"][i].shape[0]
+        n_drop_i = metrics["drop_pos"][i].shape[0]
+        n_A_i = metrics["A_pos"][i].shape[0]
+        n_B_i = metrics["B_pos"][i].shape[0]
+        gids = np.empty(n_plate_i + n_drop_i + n_A_i + n_B_i, dtype=np.int32)
+        gids[:n_plate_i] = -1
+        gids[n_plate_i:n_plate_i + n_drop_i] = 0
+        gids[n_plate_i + n_drop_i:n_plate_i + n_drop_i + n_A_i] = 1
+        gids[n_plate_i + n_drop_i + n_A_i:] = 2
+        tau_meas = _draw_torque_on_B(full_pos, gids, contact, use_kernel=True)
+        tau_pred = _draw_torque_on_B(full_pos, gids, contact, use_kernel=False)
+        # Compare y-axis torque (rotation is in the x-z plane).
+        m = abs(tau_pred[1])
+        if m > 1e-12:
+            law_errs.append(abs(tau_meas[1] - tau_pred[1]) / m)
+    law_max_err = float(max(law_errs)) if law_errs else None
+    law_ok = (law_max_err is not None and law_max_err <= JOINT_LAW_TOL)
+
+    # (c) REST (control only): final theta recorded vs a derived estimate.
+    rest_ok = None
+    rest_derived = None
+    rest_final = None
+    if control:
+        rest_final = float(theta[-1])
+        # Derived weight-only estimate: the COM of B must hang directly above
+        # the joint contact patch.  Approximate the contact patch half-width as
+        # the bone cross-section half-width (2 * spacing / 2 = spacing).
+        # The equilibrium angle satisfies tan(theta) ~ patch_half_width / L_arm,
+        # where L_arm is the horizontal distance from joint to B's COM.
+        L_arm = derived["B_length"] * 0.5
+        patch_half = 0.05
+        rest_derived = math.atan(patch_half / max(L_arm, 1e-12))
+        rest_tol = math.radians(15.0)
+        rest_ok = abs(rest_final - rest_derived) <= rest_tol
+
+    # (d) STOP: free-end descent halts before the derived solid stop.
+    # Derived stop: B's underside contacts the ground plate.  Starting free-end
+    # z is roughly A_top_z + d_eq + spacing/2; it can descend until it reaches
+    # cushion distance from the plate.  If sin(theta_stop) >= 1 the plate is
+    # never reached from a pure rotation about the joint.
+    free_end_z = np.array([p[2] for p in metrics["free_end_pos"]], dtype=np.float64)
+    z_stop_sine = (derived["A_top_z"] - JOINT_D_EQ) / max(derived["B_length"], 1e-12)
+    theta_stop = math.asin(min(1.0, max(0.0, z_stop_sine)))
+    theta_final = float(theta[-1])
+    # The run is long enough if the final few samples show little change.
+    late = theta[-5:] if theta.size >= 5 else theta
+    settled = float(late.std()) < math.radians(1.0)
+    stop_ok = settled and theta_final <= theta_stop + math.radians(5.0)
+
+    # (e) INTEGRITY: each group stays one cluster.
+    integrity_ok = (
+        int(A_clust.max()) == 1 and
+        int(B_clust.max()) == 1 and
+        (control or int(drop_clust.max()) == 1)
+    )
+
+    print(f"\n[{label}] JOINT FALSIFIERS:")
+    print(f"  (a) PIVOT    : {'PASS' if pivot_ok else 'FAIL'}  "
+          f"rotated={pivot_rotated} max_theta={math.degrees(max_theta):.2f}° "
+          f"max_gap={max_gap:.4f} (bar {JOINT_GAP_BAR:.2f})")
+    if law_max_err is not None:
+        print(f"  (b) TORQUE LAW: {'PASS' if law_ok else 'FAIL'}  "
+              f"max rel err measured-vs-pairwise-DRAW={law_max_err:.3f} "
+              f"(bar {JOINT_LAW_TOL:.2f})")
+    else:
+        print(f"  (b) TORQUE LAW: {'PASS' if law_ok else 'FAIL'}  "
+              f"(no samples)")
+    if control:
+        print(f"  (c) REST     : {'PASS' if rest_ok else 'FAIL'}  "
+              f"final_theta={math.degrees(rest_final):.2f}° "
+              f"derived={math.degrees(rest_derived):.2f}°")
+    else:
+        print(f"  (c) REST     : skipped (main run); use --joint-control")
+    print(f"  (d) STOP     : {'PASS' if stop_ok else 'FAIL'}  "
+          f"final_theta={math.degrees(theta_final):.2f}° "
+          f"derived_stop={math.degrees(theta_stop):.2f}° "
+          f"settled={settled}")
+    print(f"  (e) INTEGRITY: {'PASS' if integrity_ok else 'FAIL'}  "
+          f"max clusters A/B/drop={int(A_clust.max())}/{int(B_clust.max())}/"
+          f"{int(drop_clust.max())}")
+
+    return {
+        "pivot_ok": pivot_ok,
+        "law_ok": law_ok,
+        "rest_ok": rest_ok,
+        "stop_ok": stop_ok,
+        "integrity_ok": integrity_ok,
+    }
+
+
+def joint_main(args, seed):
+    """JOINT print entry point: build, free-evolve, judge."""
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.joint(
+        spacing=0.05, seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    ticks = int(getattr(args, "joint_ticks", 2000))
+    tag = f"{args.tag}_" if args.tag else ""
+    control = bool(getattr(args, "joint_control", False))
+
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL — JOINT print run")
+    print(f"N={N}, plate=6×6, A=4×4×16, B=4×4×16, drop=4³, "
+          f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
+    print("-" * 70)
+    print("STATEMENT: Two bones and a muscle arranged so the muscle's pull")
+    print("  becomes rotation about a cushion fulcrum: the first moving part.")
+    print("PREDICTION: B rotates, the joint contact holds, the torque law")
+    print("  matches the pairwise-DRAW prediction, the bones and droplet stay")
+    print("  intact, and without the droplet B settles to its weight-only angle.")
+    print("FALSIFIERS:")
+    print("  (a) PIVOT    — B does not rotate or the joint dislocates (gap > r_c)")
+    print("  (b) TORQUE LAW — measured DRAW torque vs pairwise-DRAW moment >10%")
+    print("  (c) REST     — control (no droplet) final angle vs derived > tol")
+    print("  (d) STOP     — free end descends past the derived solid stop")
+    print("  (e) INTEGRITY — A/B/droplet split (cluster count > 1)")
+    print("=" * 70)
+    print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")
+    print(f"Derived W     = {derived['W']:.3f}")
+    print(f"Derived F_m   = {derived['F_m']:.3f}")
+    print(f"Derived r_c   = {derived['r_c']:.3f}\n")
+
+    _print_joint_verdict(
+        _run_joint(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+                   tag, "joint", control=False),
+        derived, "joint")
+
+    if control:
+        pos_c, vel_c, pin_c, gids_c = _make_joint_control(
+            pos, vel, pin_mask, grain_ids)
+        _print_joint_verdict(
+            _run_joint(pos_c, vel_c, pin_c, gids_c, derived, dt, ticks,
+                       tag, "joint_control", control=True),
+            derived, "joint_control")
+
+    print("=" * 70)
+
+
 def main():
     global N, SEED, T_FF, TOTAL_TICKS, SAMPLE_EVERY
 
@@ -1724,7 +2090,7 @@ def main():
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
-                                 "bone", "muscle", "tendon"],
+                                 "bone", "muscle", "tendon", "joint"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -1741,6 +2107,11 @@ def main():
     parser.add_argument("--tendon-foot", type=int, default=0,
                         help="TENDON end-foot cross-section side: 0 = no feet, "
                              "4 = 4x4 feet on a 2x2 shaft (default 0)")
+    parser.add_argument("--joint-ticks", type=int, default=2000,
+                        help="JOINT free-evolution ticks (default 2000)")
+    parser.add_argument("--joint-control", action="store_true",
+                        help="JOINT control: run the same geometry without the "
+                             "muscle droplet")
     args = parser.parse_args()
     SEED = args.seed
 
@@ -1757,6 +2128,11 @@ def main():
     # TENDON print has its own driver (compress->extend router test)
     if args.structure == "tendon":
         tendon_main(args, SEED)
+        return
+
+    # JOINT print has its own driver (free-evolution moving-part test)
+    if args.structure == "joint":
+        joint_main(args, SEED)
         return
 
     # choose initial state

@@ -322,6 +322,38 @@ count 1 through the whole stroke (bone's law), and the muscle keeps its
 own (theMuscle's law). The joint is the first membrane whose falsifiers
 are entirely INHERITED from settled members except one: that rotation
 itself emerges from pull + fulcrum.
+**JOINT v1 VERDICT 2026-08-06 (N=612, run tags joint_v1 / joint_v1_control,
+6000 ticks each):** the one new claim is CONFIRMED in substance — rotation
+emerges: B pivots from horizontal through ≥25° (free-end z 0.92 → 0.38 in
+the tumble) under weight + muscle pull, and both runs settle into stable
+configurations. (b) TORQUE LAW PASS, exact: 0.000 max rel err in BOTH runs
+— the fourth structure where the pairwise-DRAW law on recorded positions
+reproduces the measured force to print precision. (a) PIVOT FAILS AS
+WRITTEN, and the failure is the discovery: the bondless fulcrum
+TRANSIENTLY dislocates in both runs (gap peaks 0.365 main / 0.374 control
+vs r_c = 0.30) during the initial tumble, then RE-SEATS (settled gap
+0.104) — in a universe where everything attracts, dislocations HEAL: the
+joint is self-reducing. The v1 continuous-hold bar asked the wrong
+question. (d) STOP PASS by its bar, recorded with a caveat: the "derived
+stop" was a 90° placeholder, not a derivation — v2 derives the actual
+landing. (e) INTEGRITY PASS in main (1/1/1 throughout); in control B
+flickered to 2 clusters once at tick 5550 after settling, then recombined
+— a threshold flicker at the R_BOND surface while rocking, recorded. (c)
+REST INCONCLUSIVE: the θ metric is broken by construction — end faces were
+recomputed by x-sort EVERY sample, so once B passes 45° the faces swap and
+θ collapses to 0 mid-descent (two shadowing `_B_end_faces` definitions
+compounded it). The trustworthy channel, free-end POSITION, reads main
+(0.095, −0.021, −0.033) vs control (0.096, 0.005, −0.013): both tumble to
+the plate; the muscle's static contribution at this geometry shows only in
+the settled gap (0.104 vs 0.135). A metric that lies is worse than no
+metric — v1(c) is struck, not passed.
+**Successor (named):** v2 — (i) kinematics fixed: end faces by FIXED
+print-time indices (single definition), or a PCA axis with print-anchored
+sign; (ii) (a) becomes RECOVERY: any dislocation (gap > r_c) must re-seat
+within a derived time and STAY seated to end of run — the v1 data says it
+will, and that is the joint's real claim; (iii) (c) stop derived from the
+actual print geometry (B's landing on plate or droplet); (iv) settle
+window derived from the measured settling time, not guessed.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 

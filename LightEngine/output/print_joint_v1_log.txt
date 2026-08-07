@@ -1,0 +1,75 @@
+======================================================================
+THE KERNEL — JOINT print run
+N=612, plate=6×6, A=4×4×16, B=4×4×16, drop=4³, seed=20260806, dt=0.0005, ticks=6000, control=False
+----------------------------------------------------------------------
+STATEMENT: Two bones and a muscle arranged so the muscle's pull
+  becomes rotation about a cushion fulcrum: the first moving part.
+PREDICTION: B rotates, the joint contact holds, the torque law
+  matches the pairwise-DRAW prediction, the bones and droplet stay
+  intact, and without the droplet B settles to its weight-only angle.
+FALSIFIERS:
+  (a) PIVOT    — B does not rotate or the joint dislocates (gap > r_c)
+  (b) TORQUE LAW — measured DRAW torque vs pairwise-DRAW moment >10%
+  (c) REST     — control (no droplet) final angle vs derived > tol
+  (d) STOP     — free end descends past the derived solid stop
+  (e) INTEGRITY — A/B/droplet split (cluster count > 1)
+======================================================================
+
+Derived d_eq  = 0.04840
+Derived W     = 82.621
+Derived F_m   = 218.708
+Derived r_c   = 0.300
+
+
+[joint] N=612 plate=36 A=256 B=256 drop=64 dt=0.0005 ticks=6000
+[joint] W=82.621 F_m=218.708
+
+[joint] tick=     0 | theta=  0.00° | gap=0.0537 | A/B/drop clusters=1/1/1 | free_end=(0.7498,-0.0000,0.9218) | drop_com=(0.5624,0.0000,0.1235)
+[joint] tick=   150 | theta=  0.00° | gap=0.0674 | A/B/drop clusters=1/1/1 | free_end=(0.6776,0.0001,0.9141) | drop_com=(0.5419,0.0000,0.1385)
+[joint] tick=   300 | theta=  0.00° | gap=0.0314 | A/B/drop clusters=1/1/1 | free_end=(0.4947,-0.0043,0.8883) | drop_com=(0.4755,0.0000,0.1885)
+[joint] tick=   450 | theta= 25.16° | gap=0.0489 | A/B/drop clusters=1/1/1 | free_end=(0.3659,0.0005,0.5906) | drop_com=(0.3429,0.0002,0.3057)
+[joint] tick=   600 | theta=  0.00° | gap=0.2473 | A/B/drop clusters=1/1/1 | free_end=(0.3867,0.0001,0.5411) | drop_com=(0.1538,0.0021,0.5693)
+[joint] tick=   750 | theta=  0.00° | gap=0.1978 | A/B/drop clusters=1/1/1 | free_end=(0.3808,-0.0101,0.5482) | drop_com=(0.1515,-0.0037,0.6614)
+[joint] tick=   900 | theta=  0.00° | gap=0.2881 | A/B/drop clusters=1/1/1 | free_end=(0.3603,-0.0066,0.4596) | drop_com=(0.2258,-0.0044,0.5676)
+[joint] tick=  1050 | theta=  0.00° | gap=0.2108 | A/B/drop clusters=1/1/1 | free_end=(0.3613,-0.0018,0.4901) | drop_com=(0.2378,0.0003,0.4725)
+[joint] tick=  1200 | theta=  7.96° | gap=0.3646 | A/B/drop clusters=1/1/1 | free_end=(0.3131,-0.0118,0.3845) | drop_com=(0.2320,0.0008,0.4002)
+[joint] tick=  1350 | theta=  2.44° | gap=0.1903 | A/B/drop clusters=1/1/1 | free_end=(0.2727,-0.0205,0.3524) | drop_com=(0.2158,-0.0008,0.3512)
+[joint] tick=  1500 | theta=  4.99° | gap=0.1544 | A/B/drop clusters=1/1/1 | free_end=(0.2480,-0.0246,0.2540) | drop_com=(0.1860,-0.0009,0.2788)
+[joint] tick=  1650 | theta=  0.00° | gap=0.1256 | A/B/drop clusters=1/1/1 | free_end=(0.2169,-0.0238,0.1903) | drop_com=(0.1536,-0.0011,0.2005)
+[joint] tick=  1800 | theta=  1.66° | gap=0.1209 | A/B/drop clusters=1/1/1 | free_end=(0.1808,-0.0192,0.0646) | drop_com=(0.1108,-0.0003,0.0964)
+[joint] tick=  1950 | theta=  4.90° | gap=0.1174 | A/B/drop clusters=1/1/1 | free_end=(0.1454,-0.0094,-0.0092) | drop_com=(0.0660,0.0016,0.0374)
+[joint] tick=  2100 | theta=  0.00° | gap=0.1673 | A/B/drop clusters=1/1/1 | free_end=(0.0983,-0.0224,-0.0197) | drop_com=(0.0305,0.0028,0.0278)
+[joint] tick=  2250 | theta=  5.77° | gap=0.1218 | A/B/drop clusters=1/1/1 | free_end=(0.0834,-0.0257,-0.0300) | drop_com=(0.0080,0.0041,0.0270)
+[joint] tick=  2400 | theta=  3.58° | gap=0.1167 | A/B/drop clusters=1/1/1 | free_end=(0.0738,-0.0158,-0.0294) | drop_com=(-0.0023,0.0033,0.0279)
+[joint] tick=  2550 | theta=  5.08° | gap=0.0924 | A/B/drop clusters=1/1/1 | free_end=(0.0799,-0.0125,-0.0289) | drop_com=(0.0009,0.0058,0.0279)
+[joint] tick=  2700 | theta=  3.82° | gap=0.1068 | A/B/drop clusters=1/1/1 | free_end=(0.0865,-0.0178,-0.0197) | drop_com=(0.0080,0.0074,0.0279)
+[joint] tick=  2850 | theta=  5.90° | gap=0.1120 | A/B/drop clusters=1/1/1 | free_end=(0.0886,-0.0178,-0.0300) | drop_com=(0.0117,0.0065,0.0273)
+[joint] tick=  3000 | theta=  5.29° | gap=0.1093 | A/B/drop clusters=1/1/1 | free_end=(0.0940,-0.0147,-0.0291) | drop_com=(0.0138,0.0048,0.0268)
+[joint] tick=  3150 | theta=  7.72° | gap=0.1060 | A/B/drop clusters=1/1/1 | free_end=(0.0937,-0.0210,-0.0343) | drop_com=(0.0150,0.0038,0.0272)
+[joint] tick=  3300 | theta=  7.17° | gap=0.1077 | A/B/drop clusters=1/1/1 | free_end=(0.0950,-0.0213,-0.0343) | drop_com=(0.0152,0.0027,0.0275)
+[joint] tick=  3450 | theta=  6.92° | gap=0.1053 | A/B/drop clusters=1/1/1 | free_end=(0.0949,-0.0212,-0.0339) | drop_com=(0.0147,0.0026,0.0272)
+[joint] tick=  3600 | theta=  7.59° | gap=0.1052 | A/B/drop clusters=1/1/1 | free_end=(0.0943,-0.0201,-0.0343) | drop_com=(0.0147,0.0028,0.0273)
+[joint] tick=  3750 | theta=  7.97° | gap=0.1059 | A/B/drop clusters=1/1/1 | free_end=(0.0944,-0.0205,-0.0344) | drop_com=(0.0153,0.0032,0.0274)
+[joint] tick=  3900 | theta=  7.86° | gap=0.1046 | A/B/drop clusters=1/1/1 | free_end=(0.0944,-0.0211,-0.0342) | drop_com=(0.0154,0.0034,0.0272)
+[joint] tick=  4050 | theta=  7.59° | gap=0.1036 | A/B/drop clusters=1/1/1 | free_end=(0.0948,-0.0211,-0.0340) | drop_com=(0.0155,0.0033,0.0272)
+[joint] tick=  4200 | theta=  7.43° | gap=0.1037 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0215,-0.0336) | drop_com=(0.0155,0.0031,0.0273)
+[joint] tick=  4350 | theta=  7.50° | gap=0.1040 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0213,-0.0336) | drop_com=(0.0155,0.0031,0.0272)
+[joint] tick=  4500 | theta=  7.62° | gap=0.1036 | A/B/drop clusters=1/1/1 | free_end=(0.0947,-0.0214,-0.0337) | drop_com=(0.0154,0.0032,0.0272)
+[joint] tick=  4650 | theta=  7.57° | gap=0.1036 | A/B/drop clusters=1/1/1 | free_end=(0.0948,-0.0217,-0.0336) | drop_com=(0.0153,0.0033,0.0272)
+[joint] tick=  4800 | theta=  7.50° | gap=0.1038 | A/B/drop clusters=1/1/1 | free_end=(0.0948,-0.0214,-0.0336) | drop_com=(0.0154,0.0033,0.0272)
+[joint] tick=  4950 | theta=  7.45° | gap=0.1038 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0213,-0.0336) | drop_com=(0.0155,0.0033,0.0272)
+[joint] tick=  5100 | theta=  7.38° | gap=0.1037 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0213,-0.0334) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5250 | theta=  7.36° | gap=0.1037 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0215,-0.0334) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5400 | theta=  7.28° | gap=0.1041 | A/B/drop clusters=1/1/1 | free_end=(0.0950,-0.0214,-0.0331) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5550 | theta=  7.29° | gap=0.1039 | A/B/drop clusters=1/1/1 | free_end=(0.0952,-0.0211,-0.0331) | drop_com=(0.0157,0.0034,0.0273)
+[joint] tick=  5700 | theta=  7.27° | gap=0.1037 | A/B/drop clusters=1/1/1 | free_end=(0.0952,-0.0212,-0.0330) | drop_com=(0.0157,0.0035,0.0273)
+[joint] tick=  5850 | theta=  7.28° | gap=0.1038 | A/B/drop clusters=1/1/1 | free_end=(0.0952,-0.0212,-0.0330) | drop_com=(0.0156,0.0035,0.0272)
+[joint] tick=  6000 | theta=  7.28° | gap=0.1038 | A/B/drop clusters=1/1/1 | free_end=(0.0951,-0.0212,-0.0331) | drop_com=(0.0155,0.0034,0.0273)
+
+[joint] JOINT FALSIFIERS:
+  (a) PIVOT    : FAIL  rotated=True max_theta=25.16° max_gap=0.3646 (bar 0.30)
+  (b) TORQUE LAW: PASS  max rel err measured-vs-pairwise-DRAW=0.000 (bar 0.10)
+  (c) REST     : skipped (main run); use --joint-control
+  (d) STOP     : PASS  final_theta=7.28° derived_stop=90.00° settled=True
+  (e) INTEGRITY: PASS  max clusters A/B/drop=1/1/1
+======================================================================
