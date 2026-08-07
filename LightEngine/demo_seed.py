@@ -2300,6 +2300,14 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
     lever_contact_local = lever_idx[derived["lever_contact_local"]]
     rope_chain_local = derived["rope_chain"]
     rope_chain = rope_idx[rope_chain_local]
+    lintel_idx = derived.get("lintel_idx", np.array([], dtype=np.int32))
+    # cheek grains are the fulcrum body grains after the block and before the lintel
+    n_fulcrum_block = derived.get("n_fulcrum", 0) - derived.get("n_cheek", 0) - derived.get("n_lintel", 0)
+    n_cheek = derived.get("n_cheek", 0)
+    if n_fulcrum_block >= 0 and n_cheek > 0:
+        cheek_idx = fulcrum_idx[n_fulcrum_block:n_fulcrum_block + n_cheek]
+    else:
+        cheek_idx = np.array([], dtype=np.int32)
 
     load_end_z0 = float(derived["load_end_z0"])
     plate_pos0 = derived["plate_pos0"]
@@ -2337,6 +2345,8 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         "rope_slack_frac": [],
         "rope_taut_links": [],
         "rope_max_compression": [],
+        "lintel_gap": [],
+        "cheek_gap": [],
         "theta": [],
         "theta_stop_muscle": theta_stop_muscle,
         "theta_stop_load": theta_stop_load,
@@ -2387,6 +2397,13 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
             lever_p[derived["muscle_face"]], drop_p)
         droplet_apex_z = float(drop_p[:, 2].max())
 
+        lintel_gap = (_min_pair_distance(
+            sim.pos[lintel_idx].astype(np.float64), lever_p)
+            if lintel_idx.size > 0 else 0.0)
+        cheek_gap = (_min_pair_distance(
+            sim.pos[cheek_idx].astype(np.float64), lever_p)
+            if cheek_idx.size > 0 else 0.0)
+
         link_forces = _rope_link_forces(sim.pos, grain_ids, rope_chain_local)
         if link_forces.size > 0:
             rope_force_mean = float(np.mean(link_forces))
@@ -2422,6 +2439,8 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         metrics["rope_slack_frac"].append(rope_slack_frac)
         metrics["rope_taut_links"].append(rope_taut_links)
         metrics["rope_max_compression"].append(rope_max_compression)
+        metrics["lintel_gap"].append(lintel_gap)
+        metrics["cheek_gap"].append(cheek_gap)
         metrics["theta"].append(lever_angle)
         metrics["plate_pos"].append(plate_p.copy())
         metrics["drop_pos"].append(drop_p.copy())
@@ -2438,6 +2457,7 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
               f"contact={contact_ratio:.3f} | "
               f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}/{rope_clust} | "
               f"tip_to_drop={arm_tip_to_drop_min:.4f} | apex_z={droplet_apex_z:.4f} | "
+              f"lintel={lintel_gap:.4f} cheek={cheek_gap:.4f} | "
               f"rope links T/S/C={rope_taut_links}/"
               f"{int(round(rope_slack_frac*link_forces.size if link_forces.size else 0))}/"
               f"{int(round(rope_compression_frac*link_forces.size if link_forces.size else 0))} "
@@ -2486,6 +2506,8 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     rope_slack_frac = np.asarray(metrics["rope_slack_frac"], dtype=np.float64)
     rope_taut_links = np.asarray(metrics["rope_taut_links"], dtype=np.int32)
     rope_max_compression = np.asarray(metrics["rope_max_compression"], dtype=np.float64)
+    lintel_gap = np.asarray(metrics.get("lintel_gap", []), dtype=np.float64)
+    cheek_gap = np.asarray(metrics.get("cheek_gap", []), dtype=np.float64)
 
     d_eq = float(derived["d_eq"])
     seated_band = d_eq + 0.05
@@ -2591,10 +2613,21 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     else:
         slack_ok = mean_compression_frac <= 0.20
 
+    # CAPTURE-CLOSED falsifier: all capture gaps must stay in the cushion band.
+    s_wall = float(S_WALL)
+    capture_band_hi = 2.0 * d_eq
+    if lintel_gap.size > 0 and cheek_gap.size > 0:
+        capture_ok = (
+            (fulcrum_gap.min() >= s_wall) and (fulcrum_gap.max() <= capture_band_hi) and
+            (cheek_gap.min() >= s_wall) and (cheek_gap.max() <= capture_band_hi) and
+            (lintel_gap.min() >= s_wall) and (lintel_gap.max() <= capture_band_hi))
+    else:
+        capture_ok = None
+
     route = derived.get("route", "unknown")
     gate_passed = derived.get("gate_passed", False)
 
-    print(f"\n[{label}] LEG v3 FALSIFIERS (route={route}, gate_passed={gate_passed}):")
+    print(f"\n[{label}] SOCKET v1 FALSIFIERS (route={route}, gate_passed={gate_passed}):")
     if control:
         print(f"  (a) LIFT      : skipped (control)")
         print(f"  (b) HOLD      : {'PASS' if hold_ok else 'FAIL'}  "
@@ -2623,6 +2656,14 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         print(f"  (f) SLACK     : {'PASS' if slack_ok else 'FAIL'}  "
               f"mean rope compression fraction={mean_compression_frac:.2f} "
               f"(bar 0.20)")
+    if capture_ok is None:
+        print(f"  (g) CAPTURE-CLOSED: skipped (no lintel/cheek telemetry)")
+    else:
+        print(f"  (g) CAPTURE-CLOSED: {'PASS' if capture_ok else 'FAIL'}  "
+              f"perch=[{fulcrum_gap.min():.4f},{fulcrum_gap.max():.4f}] "
+              f"cheek=[{cheek_gap.min():.4f},{cheek_gap.max():.4f}] "
+              f"lintel=[{lintel_gap.min():.4f},{lintel_gap.max():.4f}] "
+              f"band=[{s_wall:.4f},{capture_band_hi:.4f}]")
     print(f"  ROPE TELEMETRY:")
     print(f"    min arm-tip-to-droplet distance = {min_tip_to_drop:.4f}")
     print(f"    droplet apex z range = [{min_apex:.4f}, {max_apex:.4f}]")
@@ -2644,13 +2685,14 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         "sag_detected": sag_detected,
         "slack_ok": slack_ok,
         "theta_exceeded": theta_exceeded,
+        "capture_ok": capture_ok,
         "gate_passed": gate_passed,
         "route": route,
     }
 
 
 def leg_main(args, seed):
-    """LEG v3 print entry point: build, free-evolve, judge."""
+    """SOCKET v1 print entry point: closed capture, free-evolve, judge."""
     control = bool(getattr(args, "leg_control", False))
     ticks = int(getattr(args, "leg_ticks", 8000))
     pos, vel, pin_mask, grain_ids, derived = seed_structures.leg(
@@ -2658,52 +2700,45 @@ def leg_main(args, seed):
     N = pos.shape[0]
 
     dt = DT
-    base = args.tag if args.tag else "leg"
-    label = f"{base}_control" if control else base
+    label = "socket_v1_control" if control else "socket_v1"
     version = "control" if control else "main"
     tag = ""
 
     droplet_label = f"{derived['droplet_side']}^3"
     lever_len = derived.get('lever_len', 13)
     n_rope = derived.get('n_rope', 0)
+    n_lintel = derived.get('n_lintel', 0)
     route = derived.get('route', 'unknown')
     gate_passed = derived.get('gate_passed', False)
     print("=" * 70)
-    print(f"THE KERNEL - LEG v3 print run ({version})")
+    print(f"THE KERNEL - SOCKET v1 print run ({version})")
     print(f"N={N}, plate=18x6+well ({derived['n_plate']} pinned), "
-          f"fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), "
+          f"fulcrum=4x4x4+2x(4x1x3) cheeks+lintel (PINNED), "
           f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
           f"droplet={droplet_label} in well (PINNED), load=4^3, "
-          f"rope=single-file x {n_rope} grains, route={route}, "
-          f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
+          f"rope=single-file x {n_rope} grains, lintel={n_lintel} grains, "
+          f"route={route}, seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
-    print("STATEMENT: A captured muscle-bone machine routes the muscle pull")
-    print("  through a single-file rope tendon from the arm-tip underside to an")
-    print("  anchored droplet at the bottom of a deep well.  The rope pulls but")
-    print("  cannot push; when slack it must crumple into the well rather than")
-    print("  prop the lever.  The fulcrum contact is chosen by a FULL-ARC gate")
-    print("  that samples the kernel static torque ratio R_true(theta) on both")
-    print("  sides of the print pose, out to both derived end-stops.")
-    if control:
-        print("PREDICTION: With kernel-verified R_slack <= 1 on the full arc")
-        print("  (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down")
-        print("  and never rises more than one lattice step above its print height.")
-    else:
-        print("PREDICTION: With kernel-verified min_R_taut >= 1 on the full arc,")
-        print("  the captured arm tips muscle-side-down (positive settled angle),")
-        print("  the rope stays taut or slack (never compressed), and the load end")
-        print("  lifts through at least two lattice steps.")
+    print("STATEMENT: A closed capture forbids every translation of the arm, so")
+    print("  the machine's settle is a rotation state the statics price -- the leg v3")
+    print("  escape was through the open degree of freedom, not a failure of the")
+    print("  torque law.  The lintel spans cheek-to-cheek over the tube, leaving")
+    print("  only rotation about the transverse axis free to both derived end-stops.")
+    print("PREDICTION: No lift-off (perch gap never leaves [S_WALL, 2*d_eq]); the")
+    print("  machine settles LOAD-side ON the pivot in both runs (the full-arc")
+    print("  landscape's stable side), making (c) BALANCE pass both runs for the")
+    print("  first time in the leg line; rope compression stays 0.00.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
-    print("  (c) BALANCE - kernel torque predicts the SETTLED tip direction:")
-    print("      sign of mean lever angle over the last 20% of samples must")
-    print("      match sign(R_true - 1)")
+    print("  (c) BALANCE - settled lever-angle sign (last 20%) matches sign(R_true(0)-1)")
+    print("                BOTH runs must pass")
     print("  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold")
     print("  (e) SAG     - if the arm rotates muscle-down but the load end does")
     print("      not lift, the tendon route failed to transmit the pull")
-    print("  (f) SLACK   - main: rope must not prop the lever; sustained")
-    print("      compression (>20% of samples) = FAIL")
+    print("  (f) SLACK   - main: rope compression > 20% of samples = FAIL")
+    print("  (g) CAPTURE-CLOSED - all capture gaps (perch, cheek, lintel) within")
+    print("      [S_WALL, 2*d_eq] all run; any escape = FAIL")
     print("=" * 70)
     print(f"\nDerived d_eq   = {derived['d_eq']:.5f}")
     print(f"Derived contact_x = {derived['fulcrum_contact_point'][0]:.5f}")
@@ -2712,11 +2747,16 @@ def leg_main(args, seed):
     print(f"Derived R_true = {derived['R_true']:.3f}")
     print(f"Derived theta_stop_muscle = {math.degrees(derived['theta_stop_muscle']):.2f} deg")
     print(f"Derived theta_stop_load = {math.degrees(derived['theta_stop_load']):.2f} deg")
+    print(f"Derived lintel_bottom_z = {derived.get('lintel_bottom_z', 0.0):.5f}")
+    print(f"Derived lintel_top_z = {derived.get('lintel_top_z', 0.0):.5f}")
+    print(f"Derived lintel_y_outer = {derived.get('lintel_y_outer', 0.0):.5f}")
+    print(f"Derived corner_rise = {derived.get('corner_rise', 0.0):.5f}")
     print(f"Derived lever_len = {lever_len}")
     print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}")
     print(f"Derived well_floor_z = {derived['well_floor_z']:.5f}")
     print(f"Derived droplet_apex = {derived['droplet_apex']:.5f}")
-    print(f"Derived n_rope = {n_rope}\n")
+    print(f"Derived n_rope = {n_rope}")
+    print(f"Derived n_lintel = {n_lintel}\n")
 
     metrics = _run_leg(pos, vel, pin_mask, grain_ids, derived,
                        dt, ticks, tag, label)

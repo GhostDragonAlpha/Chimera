@@ -1577,6 +1577,10 @@ def leg(control: bool = False,
       - rope    = 4  (single-file tendon chain, free)
 
     Returns ``(positions, velocities, pin_mask, grain_ids, derived)``.
+
+    v3.1 (theSocket v1): adds a pinned lintel beam spanning cheek-to-cheek
+    over the tube, closing the capture against upward escape while leaving
+    rotation about the transverse axis free.
     """
     rng = np.random.default_rng(seed)
     d = float(spacing)
@@ -1666,6 +1670,19 @@ def leg(control: bool = False,
     lever_top_z = lever_bottom_z + (fulcrum_side - 1) * d
     lever_pos_template[:, 2] += lever_bottom_z + fulcrum_half_width
 
+    # --- Socket lintel (closed capture) ---
+    # The lintel is a pinned slab (grain_id=1) spanning cheek-to-cheek over the
+    # tube.  Its underside clears the tube top face by the max corner rise of a
+    # rotating 0.2x0.2 cross-section plus one cushion gap.
+    corner_rise = (math.sqrt(2.0) - 1.0) * 0.10
+    lintel_bottom_z = lever_top_z + corner_rise + d_eq
+    lintel_top_z = lintel_bottom_z + d  # one grain thick
+    lintel_y_outer = cheek_y_center + d / 2.0  # outer cheek face
+    lintel_ny = max(1, int(round(2.0 * lintel_y_outer / d)) + 1)
+    lintel_nz = 1
+    lintel_nx = fulcrum_side
+    n_lintel = lintel_nx * lintel_ny * lintel_nz
+
     # --- Load block ---
     n_load = load_side ** 3
     load_off = f_off
@@ -1687,13 +1704,23 @@ def leg(control: bool = False,
         dx, dy, dz = np.meshgrid(drop_x, drop_off_i, drop_z, indexing="ij")
         droplet_pos = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
 
-        # fulcrum block + cheeks
+        # fulcrum block + cheeks + lintel
         fx = f_off + contact_x
         fxg, fyg, fzg = np.meshgrid(fx, f_off, fulcrum_z, indexing="ij")
         block_pos = np.stack([fxg.ravel(), fyg.ravel(), fzg.ravel()], axis=1)
         cheek_pos_shifted = cheek_pos.copy()
         cheek_pos_shifted[:, 0] += contact_x
-        fulcrum_pos = np.vstack([block_pos, cheek_pos_shifted])
+
+        # lintel spans cheek-to-cheek, pinned to fulcrum body
+        lintel_x = f_off + contact_x
+        lintel_y = (np.arange(lintel_ny, dtype=np.float64)
+                    - (lintel_ny - 1) / 2.0) * d
+        lintel_z = np.array([lintel_bottom_z], dtype=np.float64)
+        lxg, lyg, lzg = np.meshgrid(
+            lintel_x, lintel_y, lintel_z, indexing="ij")
+        lintel_pos = np.stack([lxg.ravel(), lyg.ravel(), lzg.ravel()], axis=1)
+
+        fulcrum_pos = np.vstack([block_pos, cheek_pos_shifted, lintel_pos])
 
         # load
         load_x = load_off + load_end_x
@@ -1729,7 +1756,7 @@ def leg(control: bool = False,
         plate_pos = np.vstack([plate_flat, _make_well(well_floor_z)])
         n_plate = plate_pos.shape[0]
         n_drop = drop_side_i ** 3
-        n_fulcrum = n_fulcrum_block + n_cheek
+        n_fulcrum = n_fulcrum_block + n_cheek + n_lintel
 
         n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load + n_chain
         grain_ids = np.empty(n_total, dtype=np.int32)
@@ -2082,6 +2109,11 @@ def leg(control: bool = False,
                      n_plate + n_drop + n_fulcrum + n_lever + n_load]
     rope_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever + n_load:]
 
+    # global indices for lintel (part of fulcrum body, grain_id=1)
+    lintel_start = n_plate + n_drop + n_fulcrum_block + n_cheek
+    lintel_idx = np.arange(lintel_start, lintel_start + n_lintel,
+                           dtype=np.int32)
+
     # --- Print law ---
     diff = pos[:, None, :] - pos[None, :, :]
     r2 = (diff * diff).sum(axis=2)
@@ -2151,9 +2183,15 @@ def leg(control: bool = False,
         "n_droplet": n_drop,
         "n_fulcrum": n_fulcrum,
         "n_cheek": n_cheek,
+        "n_lintel": n_lintel,
         "n_lever": n_lever,
         "n_load": n_load,
         "n_rope": n_chain,
+        "lintel_idx": lintel_idx,
+        "lintel_bottom_z": float(lintel_bottom_z),
+        "lintel_top_z": float(lintel_top_z),
+        "lintel_y_outer": float(lintel_y_outer),
+        "corner_rise": float(corner_rise),
         "well_floor_z": well_floor_z,
         "droplet_apex": droplet_apex,
         "muscle_tip_x": muscle_tip_x,

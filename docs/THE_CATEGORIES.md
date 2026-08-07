@@ -1085,6 +1085,69 @@ capture that is not closed will be escaped through the open direction.**
 Successor: theSkeleton, draft spec at
 docs/scratch/theskeleton_spec_draft.md (post-draft note prices the two
 things this verdict changed: the gate refusal and the socket).
+**SOCKET v1 VERDICT 2026-08-07 (box capture — lintel added, run tags
+socket_v1 / socket_v1_control, 8000 ticks):** the lintel was never
+touched — the machine left through the axis. Verified link by link from
+the logs. (1) THE LINTEL HELD ITS DOF: no lift-off — the lintel gap
+GREW monotonically in both runs (0.093 -> 0.320 main); the arm never
+pressed the roof. The implementing agent's report phrase "pushed
+through the lintel" is STRUCK: the gaps grew, nothing breached — the
+meter flagged the band being left upward, and the mechanism matters.
+(2) THE ESCAPE USED THE SIXTH DOF: perch and lintel gaps ballooned
+TOGETHER (perch 0.14-0.16, lintel 0.32, cheeks cycling 0.03-0.13) —
+the arm's saddle-crossing section moved away from every capture surface
+at once, which is geometrically possible only along the arm's own long
+axis. The box closed five directions; the machine found the sixth,
+sliding lengthwise until it hung +75-80° muscle-down (main) / +22°
+(control) — escaped heaps against statics, the v3 class of settle.
+(3) THE ROPE'S FIRST FAILURE IS THE ESCAPE'S, NOT THE ROPE'S: the
+axial slide drove the tip into the well and crushed the rope against
+the anchored droplet — main rope compression 88% of samples (max_comp
+85.8), the first sustained compression of the rope era; control 5%.
+(f) SLACK FAIL main. (4) Verdicts: (a) LIFT FAIL, (c) BALANCE FAIL
+both, (b) HOLD PASS control, (d) INTEGRITY PASS both, (g)
+CAPTURE-CLOSED FAIL both. One tolerance relaxation recorded:
+test_leg_rope_spans_well 1e-3 -> 2e-3 (the lintel changed the RNG
+jitter sequence; the rope bottom sits one jitter lower). The v1 law of
+the socket: **a box around the shaft captures nothing — the open
+direction is always the one the machine finds, and the only capture
+that closes translation is one that wraps the bone's END.** Anatomy
+has it on the first page: ball-and-socket — the ball IS the end of the
+bone. Successor (named): socket v2 — the CUP: the arm's muscle-side
+end grows a ball and the fulcrum wraps it (derived: the smallest cup
+that keeps the contact patch inside across both end-stops), so rotation
+about the cup center is the only degree of freedom by construction. The
+rope and the full-arc gate stand unchanged.
+**SPINE v1 VERDICT 2026-08-07 (two-vertebra frame, run tags spine_v1 /
+spine_v1_control, 8000 ticks):** the frame failed at the BONE, not the
+joint — a tube is a column, not a cantilever. Verified link by link
+from the logs. (1) THE SACRUM BROKE: clusters 2/1/1/1/1/1 from tick
+600 in BOTH runs — the 1-grain-shell tube, pinned at its base and
+torqued at its top by the lumbar plus load, sheared apart just above
+the pinned face. (d) INTEGRITY FAIL both. (2) THE TILT IS THE BREAK:
+sacrum_tilt 12.5° main / 3.3° control (bar 2°) with base_migration
+0.0000 — the base held; the tube above it bent and tore. (f) FRAME
+FAIL both. (3) Everything downstream follows the break: capture gaps
+left the band (max 0.23 / 0.28) as the sacrum leaned; rope compression
+spiked 88.6 / 72.7 at the first moves ((e) SLACK passes the 20% meter
+at 15% / 2% — the meter misses the spikes, recorded); (a) LIFT FAIL;
+(c) BALANCE FAIL main (settled −13.6° vs R_true = 1.311); control
+settled +37.8° muscle-side, the escaped-heap class. (4) Metering sin
+recorded: header prints "droplet=64^3" (it is 4^3 = 64 grains) —
+cosmetic, struck. The v1 law of the spine: **the v5 hollow-tube
+derivation was for a beam supported in the middle; a vertical
+cantilever torqued at the top concentrates the bending moment at the
+base, and a 1-grain shell has no shear there — the frame's weakest
+membrane is the bone's own base.** Anatomy, on cue: bones are hollow
+in the midshaft and SOLID at the ends — the metaphysis carries the
+joint moments. Successor (named): spine v2 — the SOLID-BASE sacrum:
+shell solidity derived per ring from the local bending moment (maximal
+at the base, zero at the free top — a tapered solid-to-hollow column,
+which is a real bone's cross-section), the FRAME falsifier reruns
+unchanged. FALSIFIER: if the tapered sacrum still tears, the cushion
+kernel has no bending membrane at the single-bone scale and the frame
+must distribute the moment across TWO supports (the pelvis branches —
+the branched chain becomes the next membrane) — record, do not patch.
 
 ## ORDER OF PROOF (derived from dependency depth)
 
