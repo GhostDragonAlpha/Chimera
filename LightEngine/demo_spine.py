@@ -1,8 +1,8 @@
 """
-THE SPINE v1 run driver for LightEngine.
+THE SPINE v2 run driver for LightEngine.
 
 Standalone CLI:
-    python LightEngine/demo_spine.py --ticks 8000 --tag spine_v1 [--control]
+    python LightEngine/demo_spine.py --ticks 8000 --tag spine_v2 [--control]
 
 Writes:
     LightEngine/output/print_<tag>_log.txt  (or _control_log.txt)
@@ -14,6 +14,7 @@ from __future__ import annotations
 import sys
 import os
 import math
+import time
 import argparse
 import numpy as np
 
@@ -347,7 +348,7 @@ def _run_spine(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
     print(f"[{label}] dt={dt} ticks={ticks} sample_every={sample_every}\n")
 
     _dump_frame(sim.pos.copy(),
-                os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+                os.path.join(OUTPUT_DIR, f"{label}_begin.png"))
 
     _sample(0)
     for tick in range(1, ticks + 1):
@@ -356,7 +357,7 @@ def _run_spine(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
             _sample(tick)
 
     _dump_frame(sim.pos.copy(),
-                os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+                os.path.join(OUTPUT_DIR, f"{label}_end.png"))
     return metrics
 
 
@@ -421,7 +422,7 @@ def _print_spine_verdict(metrics, derived: dict, label: str, control: bool):
     route = derived.get("route", "unknown")
     gate_passed = derived.get("gate_passed", False)
 
-    print(f"\n[{label}] SPINE v1 FALSIFIERS (route={route}, gate_passed={gate_passed}):")
+    print(f"\n[{label}] SPINE v2 FALSIFIERS (route={route}, gate_passed={gate_passed}):")
     if control:
         print(f"  (a) LIFT           : skipped (control)")
         print(f"  (b) HOLD           : {'PASS' if hold_ok else 'FAIL'}  "
@@ -477,36 +478,40 @@ def _run_one(control: bool, ticks: int, seed: int, tag: str) -> dict:
     log_name = f"print_{tag}_control_log.txt" if control else f"print_{tag}_log.txt"
     log_path = os.path.join(OUTPUT_DIR, log_name)
 
-    droplet_label = f"{derived.get('n_droplet', 64)}"
     n_rope = derived.get("n_rope", 0)
     route = derived.get("route", "unknown")
     gate_passed = derived.get("gate_passed", False)
+    sacrum_ring_counts = derived.get("sacrum_ring_counts", [12] * 8)
+    ring_desc = "/".join(str(n) for n in sacrum_ring_counts)
 
     print("=" * 70)
-    print(f"THE KERNEL - SPINE v1 print run ({version})")
+    print(f"THE KERNEL - SPINE v2 print run ({version})")
     print(f"N={N}, plate=6x6 ({derived['n_plate']} pinned), "
-          f"sacrum=4x4x8 hollow tube (bottom face pinned), "
+          f"sacrum=4x4x8 tapered solid-base column (rings {ring_desc}), "
           f"saddle=4x4x4+cheeks+lintel (PINNED), "
-          f"lumbar=4x4x8 hollow tube, droplet={droplet_label}^3 in well (PINNED), "
+          f"lumbar=4x4x8 hollow tube, droplet=4^3 in well (PINNED), "
           f"load=4^3, rope=single-file x {n_rope} grains, route={route}, "
           f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
-    print("STATEMENT: A frame of hollow-tube bones joined by a closed capture")
-    print("  carries its own stability -- the settled configuration is the frame's")
-    print("  geometry, and the muscle only moves it.")
-    print("PREDICTION: The closed capture holds (no lift-off escape, contrast leg v3's")
-    print("  gap 0.21); the settle is a rotation state, not an off-perch heap;")
-    print("  the rope never compresses.")
+    print("STATEMENT: A bone's cross-section is its bending-moment diagram made solid")
+    print("  -- the metaphysis carries the joint moment, the midshaft carries only")
+    print("  axial load, so a tapered solid-to-hollow sacrum does not tear where v1 tore.")
+    print("PREDICTION: The tapered sacrum stays ONE cluster both runs (v1 tore at tick 600);")
+    print("  sacrum_tilt stays within 2deg; the downstream failures of v1 (capture gaps")
+    print("  leaving the band) do not recur because the frame no longer leans.")
     print("FALSIFIERS:")
     print("  (a) LIFT      - main: lumbar far-end rises >= 0.10 lu")
     print("  (b) HOLD      - control: lumbar far-end rises <= 0.05 lu")
-    print("  (c) BALANCE   - settled sign matches sign(R_true(0) - 1)")
-    print("  (d) INTEGRITY - one cluster each; sacrum base/saddle/droplet pins hold")
+    print("  (c) BALANCE   - settled sign matches sign(R_true(0) - 1) both runs")
+    print("  (d) INTEGRITY - one cluster each -- THE claim of this print")
     print("  (e) SLACK     - rope compression > 20% of samples = FAIL")
     print("  (f) FRAME     - sacrum axis stays within 2 deg of vertical,")
     print("                  base migration < 0.5*d_eq")
     print("  (g) CAPTURE-CLOSED - every capture gap stays within [S_WALL, 2*d_eq];")
     print("                       any lift-off escape = FAIL")
+    print("THEORY-FALSIFIER: if the tapered sacrum still tears, the cushion kernel has no")
+    print("  bending membrane at single-bone scale and the moment must go to TWO supports")
+    print("  (the pelvis branches) -- record, do not patch.")
     print("=" * 70)
     print(f"\nDerived d_eq          = {derived['d_eq']:.5f}")
     print(f"Derived contact_x     = {derived['fulcrum_contact_point'][0]:.5f}")
@@ -517,7 +522,31 @@ def _run_one(control: bool, ticks: int, seed: int, tag: str) -> dict:
     print(f"Derived droplet_apex_z= {derived['droplet_apex_z']:.5f}")
     print(f"Derived n_rope        = {n_rope}")
     print(f"Derived lintel_bottom_z = {derived['lintel_bottom_z']:.5f}")
-    print(f"Derived corner_rise   = {derived['corner_rise']:.5f}\n")
+    print(f"Derived corner_rise   = {derived['corner_rise']:.5f}")
+
+    # Taper derivation block
+    F_tip = derived.get("F_tip", 0.0)
+    M_max = derived.get("M_max", 0.0)
+    extra_needed = derived.get("taper_extra_needed_base", 0.0)
+    f_cushion = derived.get("taper_f_cushion", 0.0)
+    lever_arm = derived.get("taper_arm_dim", 0.0)
+    print(f"\nDerived sacrum taper (M(z) = F_tip * (H - z)):")
+    print(f"  lumbar+load weight W        = {derived.get('taper_W', 0.0):.4f}")
+    print(f"  lumbar+load COM x           = {derived.get('taper_x_com', 0.0):.4f}")
+    print(f"  moment arm (COM - contact_x)= {derived.get('taper_arm', 0.0):.4f}")
+    print(f"  sacrum height H             = {derived['sacrum_layers'] * derived['spacing']:.4f}")
+    print(f"  derived F_tip               = {F_tip:.4f}")
+    print(f"  derived M_max (base moment) = {M_max:.4f}")
+    print(f"  cushion force scale         = {f_cushion:.4f}")
+    print(f"  extra grains needed at base = {extra_needed:.4f} (budget [0, 4])")
+    print(f"  ring grain counts (base->top)= {ring_desc}")
+    if extra_needed >= 4.0:
+        print("  TAPER NOTE: capacity check demands >=4 extra grains at base; using solid 4x4.")
+    elif extra_needed <= 0.0:
+        print("  TAPER NOTE: capacity check demands <=0 extra grains; using hollow shell.")
+    else:
+        print("  TAPER NOTE: normalized M(z)/M_max mapped linearly onto grain range [12, 16].")
+    print()
 
     metrics = _run_spine(pos, vel, pin_mask, grain_ids, derived,
                          dt, ticks, tag, label)
@@ -527,9 +556,9 @@ def _run_one(control: bool, ticks: int, seed: int, tag: str) -> dict:
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Spine v1 print driver")
+    parser = argparse.ArgumentParser(description="Spine v2 print driver")
     parser.add_argument("--ticks", type=int, default=8000)
-    parser.add_argument("--tag", type=str, default="spine_v1")
+    parser.add_argument("--tag", type=str, default="spine_v2")
     parser.add_argument("--seed", type=int, default=20260807)
     parser.add_argument("--control", action="store_true")
     args = parser.parse_args(argv)
@@ -543,7 +572,29 @@ def main(argv=None):
     old_stdout = sys.stdout
     sys.stdout = tee
     try:
-        _run_one(control=control, ticks=args.ticks, seed=args.seed, tag=args.tag)
+        # Retry on CUDA OOM / memory contention without killing other processes.
+        last_err = None
+        for attempt in range(3):
+            try:
+                _run_one(control=control, ticks=args.ticks, seed=args.seed, tag=args.tag)
+                break
+            except Exception as e:
+                last_err = e
+                msg = str(e).lower()
+                is_oom = (
+                    "cuda" in msg or
+                    "out of memory" in msg or
+                    "cumemalloc" in msg or
+                    "runtimeerror" in msg and "memory" in msg
+                )
+                if is_oom and attempt < 2:
+                    print(f"[demo_spine] CUDA/memory contention detected, "
+                          f"waiting 60s before retry {attempt + 2}/3 ...")
+                    time.sleep(60.0)
+                    continue
+                raise
+        else:
+            raise last_err if last_err else RuntimeError("spine v2 run failed")
     finally:
         sys.stdout = old_stdout
         tee.close()

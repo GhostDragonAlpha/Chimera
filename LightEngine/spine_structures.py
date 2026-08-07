@@ -1,11 +1,19 @@
 """
-theSpine v1 structure printer for LightEngine.
+theSpine v2 structure printer for LightEngine.
 
-A grounded two-vertebra frame: pinned plate, vertical sacrum, captured saddle
-with cheeks+lintel, horizontal lumbar, anchored muscle droplet, single-file
-rope tendon, and load block.  The full-arc static gate is evaluated honestly;
-if muscle-dominance is unreachable the build records gate_passed=False and
-falls back to the best-effort contact, exactly like theLeg v3.
+A grounded two-vertebra frame: pinned plate, vertical tapered sacrum (solid
+base tapering to a hollow shell at the free top), captured saddle with
+cheeks+lintel, horizontal lumbar, anchored muscle droplet, single-file rope
+tendon, and load block.  The full-arc static gate is evaluated honestly; if
+muscle-dominance is unreachable the build records gate_passed=False and falls
+back to the best-effort contact, exactly like theLeg v3.
+
+v2 change: the sacrum is no longer a uniform hollow tube.  For a vertical
+cantilever torqued at the top, M(z) = F_tip * (H - z) is maximal at the base
+and zero at the top.  Each ring's grain count is allocated linearly across the
+available solidity range [hollow shell, solid square] using the normalized
+moment M(z)/M_max, so the metaphysis (base) is solid 4x4 and the diaphysis
+(top) is the same 12-grain hollow shell used in v1.
 """
 
 from __future__ import annotations
@@ -62,12 +70,16 @@ def _R_true_at_print(pos: np.ndarray,
     return R_true, tau_pos, tau_neg
 
 
-def _hollow_ring(side: int, d: float) -> np.ndarray:
-    """Return the (n,2) cross-section of a one-grain-thick square shell."""
+def _ring_xy(side: int, d: float, n_keep: int) -> np.ndarray:
+    """Return the n_keep outermost grains of a side x side square grid."""
     off = (np.arange(side, dtype=np.float64) - (side - 1) / 2.0) * d
     gx, gy = np.meshgrid(off, off, indexing="ij")
-    shell = ~((np.abs(gx) <= 0.5 * d + 1e-12) & (np.abs(gy) <= 0.5 * d + 1e-12))
-    return np.stack([gx[shell], gy[shell]], axis=1)
+    gx = gx.ravel()
+    gy = gy.ravel()
+    r2 = gx * gx + gy * gy
+    order = np.argsort(-r2)  # largest radius first
+    keep = order[:n_keep]
+    return np.stack([gx[keep], gy[keep]], axis=1)
 
 
 def _min_pair_distance(a: np.ndarray, b: np.ndarray) -> float:
@@ -78,9 +90,69 @@ def _min_pair_distance(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.sqrt((d * d).sum(axis=2).min()))
 
 
+def _derive_sacrum_ring_counts(contact_x: float,
+                               pos0: np.ndarray,
+                               grain_ids: np.ndarray,
+                               sacrum_layers: int,
+                               spacing: float,
+                               n_plate: int) -> tuple[list[int], dict]:
+    """
+    Derive the tapered sacrum ring profile from the cantilever bending moment.
+
+    M(z) = F_tip * (H - z).  F_tip is estimated from the plate's downward draw
+    on the lumbar+load assembly, times the horizontal moment arm, divided by
+    sacrum height H.  The grain-count profile maps M(z)/M_max linearly onto the
+    available range [12, 16] grains per ring: solid 4x4 at the base, hollow
+    shell at the free top.
+    """
+    lumbar_idx = np.flatnonzero(grain_ids == 2)
+    load_idx = np.flatnonzero(grain_ids == 5)
+    lumbar_load_pos = np.vstack([pos0[lumbar_idx], pos0[load_idx]])
+    plate_pos = pos0[:n_plate]
+
+    W = abs(_draw_force_z(plate_pos, lumbar_load_pos))
+    x_com = float(np.mean(lumbar_load_pos[:, 0]))
+    arm = x_com - contact_x
+    H = sacrum_layers * spacing
+    F_tip = W * arm / H if H > 0.0 else 0.0
+    M_max = W * arm
+
+    # Capacity check using the wall-force scale K_WALL/R_WALL and the full
+    # tube width as the lever arm for an extra grain.  This is printed so the
+    # log can record whether the taper is inside the capacity budget or whether
+    # the derivation would have demanded an all-solid column.
+    f_cushion = K_WALL / R_WALL
+    lever_arm = 4.0 * spacing
+    M_cap_per_extra_grain = f_cushion * lever_arm
+    extra_needed_base = M_max / M_cap_per_extra_grain if M_cap_per_extra_grain > 0.0 else 0.0
+
+    ring_counts: list[int] = []
+    for i in range(sacrum_layers):
+        z = i * spacing
+        frac = (H - z) / H if H > 0.0 else 0.0
+        # map normalized moment linearly onto the extra-grain range [0, 4]
+        n = int(round(12.0 + 4.0 * frac))
+        n = max(12, min(16, n))
+        ring_counts.append(n)
+
+    info = {
+        "W": W,
+        "x_com": x_com,
+        "arm": arm,
+        "H": H,
+        "F_tip": F_tip,
+        "M_max": M_max,
+        "f_cushion": f_cushion,
+        "lever_arm": lever_arm,
+        "M_cap_per_extra_grain": M_cap_per_extra_grain,
+        "extra_needed_base": extra_needed_base,
+    }
+    return ring_counts, info
+
+
 def spine(control: bool = False, seed: int = 0) -> tuple:
     """
-    Build theSpine v1.
+    Build theSpine v2.
 
     Returns (positions, velocities, pin_mask, grain_ids, derived).
     Grain ids: plate=-1, sacrum=0, saddle=1, lumbar=2, droplet=3, rope=4,
@@ -90,14 +162,14 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
     d = 0.05
     d_eq = TENDON_D_EQ
     s = 4
-    n_ring = 12
     sacrum_layers = 8
     lumbar_layers = 8
     drop_side = 4
     margin = 0.10
     theta_max = math.radians(120.0)
 
-    ring_xy = _hollow_ring(s, d)
+    # v1 lumbar remains a 4x4x8 hollow tube
+    lumbar_ring_xy = _ring_xy(s, d, 12)
     tube_half_width = (s - 1) / 2.0 * d
     L = (lumbar_layers - 1) * d
 
@@ -110,52 +182,52 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
     plate_pos = np.stack([px.ravel(), py.ravel(),
                           np.zeros(n_plate, dtype=np.float64)], axis=1)
 
-    # --- Sacrum: vertical 4x4x8 hollow tube ---
-    sacrum_z0 = d_eq
-    sacrum_z_off = np.arange(sacrum_layers, dtype=np.float64) * d + sacrum_z0
-    sacrum_pos = np.zeros((sacrum_layers * n_ring, 3), dtype=np.float64)
-    for i, z in enumerate(sacrum_z_off):
-        lo = i * n_ring
-        hi = lo + n_ring
-        sacrum_pos[lo:hi, 0] = ring_xy[:, 0]
-        sacrum_pos[lo:hi, 1] = ring_xy[:, 1]
-        sacrum_pos[lo:hi, 2] = z
-    n_sacrum = sacrum_pos.shape[0]
-    sacrum_top_z = float(sacrum_z_off[-1])
-    sacrum_bottom_z = float(sacrum_z_off[0])
-
     # --- Saddle block 4x4x4 on sacrum top ---
     f_off = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * d
-    block_bottom_z = sacrum_top_z + d_eq
-    block_z_off = np.arange(s, dtype=np.float64) * d + block_bottom_z
-    block_top_z = float(block_z_off[-1])
 
     # --- Cheeks and lintel (closed capture) ---
     cheek_y_center = tube_half_width + d_eq + d / 2.0
     corner_rise = (math.sqrt(2.0) - 1.0) * 0.10
-    lintel_bottom_z = (block_top_z + d_eq) + (s - 1) * d + corner_rise + d_eq
-    # cheek height: integer layers, stop short of lintel to avoid overlap
-    n_cheek_z = max(3, int(math.floor((lintel_bottom_z - block_top_z) / d)) - 1)
-    outer_y = cheek_y_center + d / 2.0
-    n_lintel_y = max(4, 2 * int(math.ceil(outer_y / d)) + 1)
+    # block_top_z and lintel_bottom_z are determined below once sacrum_top_z is known
 
     # Droplet well floor chosen so the muscle-side stop is a reasonable angle.
-    # attach point starts at the lumbar underside, exactly over the saddle top.
-    lumbar_bottom_z = block_top_z + d_eq
-    attach_z0 = lumbar_bottom_z - d_eq  # = block_top_z = saddle contact height
-    target_attach_apex_sep = 0.10  # derived small-swing clearance
-    droplet_apex_z = attach_z0 - target_attach_apex_sep
-    well_floor_z = droplet_apex_z - (drop_side - 1) * d - d_eq
-    muscle_tip_x = -0.30  # beside the sacrum base, outside its cross-section
+    attach_z0_placeholder = None  # set after sacrum_top_z is fixed
+    target_attach_apex_sep = 0.10
+    muscle_tip_x = -0.30
 
-    def _build_no_jitter(contact_x: float) -> np.ndarray:
+    def _build_no_jitter(contact_x: float,
+                         sacrum_ring_counts: list[int]) -> np.ndarray:
         """Assemble all grains for a candidate contact_x."""
-        # saddle block
+        # --- Sacrum: vertical tapered column ---
+        sacrum_z0 = d_eq
+        sacrum_z_off = np.arange(sacrum_layers, dtype=np.float64) * d + sacrum_z0
+        sacrum_pos_list = []
+        for i, (z, n_keep) in enumerate(zip(sacrum_z_off, sacrum_ring_counts)):
+            ring = _ring_xy(s, d, n_keep)
+            layer = np.zeros((ring.shape[0], 3), dtype=np.float64)
+            layer[:, 0] = ring[:, 0]
+            layer[:, 1] = ring[:, 1]
+            layer[:, 2] = z
+            sacrum_pos_list.append(layer)
+        sacrum_pos = np.vstack(sacrum_pos_list)
+        n_sacrum = sacrum_pos.shape[0]
+        sacrum_top_z = float(sacrum_z_off[-1])
+        sacrum_bottom_z = float(sacrum_z_off[0])
+
+        # --- Saddle block on sacrum top ---
+        block_bottom_z = sacrum_top_z + d_eq
+        block_z_off = np.arange(s, dtype=np.float64) * d + block_bottom_z
+        block_top_z = float(block_z_off[-1])
         bx = f_off + contact_x
         bxg, byg, bzg = np.meshgrid(bx, f_off, block_z_off, indexing="ij")
         block_pos = np.stack([bxg.ravel(), byg.ravel(), bzg.ravel()], axis=1)
 
         # cheeks
+        lintel_bottom_z = (block_top_z + d_eq) + (s - 1) * d + corner_rise + d_eq
+        n_cheek_z = max(3, int(math.floor((lintel_bottom_z - block_top_z) / d)) - 1)
+        outer_y = cheek_y_center + d / 2.0
+        n_lintel_y = max(4, 2 * int(math.ceil(outer_y / d)) + 1)
+
         cheek_z_off = np.arange(n_cheek_z, dtype=np.float64) * d + block_top_z
         cxg, cyg, czg = np.meshgrid(
             bx, np.array([cheek_y_center]), cheek_z_off, indexing="ij")
@@ -173,19 +245,25 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
             np.full(lx.size, lintel_bottom_z, dtype=np.float64)
         ], axis=1)
         saddle_pos = np.vstack([block_pos, cheek_pos, lintel_pos])
+        n_saddle = saddle_pos.shape[0]
 
         # lumbar: horizontal, near end at x=0, far end at x=L
-        lumbar_pos = np.zeros((lumbar_layers * n_ring, 3), dtype=np.float64)
+        n_ring_lumbar = 12
+        lumbar_pos = np.zeros((lumbar_layers * n_ring_lumbar, 3), dtype=np.float64)
         x_off = np.arange(lumbar_layers, dtype=np.float64) * d
         for i, x in enumerate(x_off):
-            lo = i * n_ring
-            hi = lo + n_ring
+            lo = i * n_ring_lumbar
+            hi = lo + n_ring_lumbar
             lumbar_pos[lo:hi, 0] = x
-            lumbar_pos[lo:hi, 1] = ring_xy[:, 0]
-            lumbar_pos[lo:hi, 2] = ring_xy[:, 1] + lumbar_bottom_z + tube_half_width
+            lumbar_pos[lo:hi, 1] = lumbar_ring_xy[:, 0]
+            lumbar_pos[lo:hi, 2] = lumbar_ring_xy[:, 1] + block_top_z + d_eq + tube_half_width
         lumbar_top_z = float(lumbar_pos[:, 2].max())
+        lumbar_bottom_z = float(lumbar_pos[:, 2].min())
 
         # droplet pinned in well
+        attach_z0 = block_top_z
+        droplet_apex_z = attach_z0 - target_attach_apex_sep
+        well_floor_z = droplet_apex_z - (drop_side - 1) * d - d_eq
         drop_off = (np.arange(drop_side, dtype=np.float64)
                     - (drop_side - 1) / 2.0) * d
         drop_x = drop_off + muscle_tip_x
@@ -211,20 +289,25 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         return np.vstack([
             plate_pos, sacrum_pos, saddle_pos, lumbar_pos,
             droplet_pos, chain_pos, load_pos,
-        ]).astype(np.float64)
+        ]).astype(np.float64), n_sacrum, n_saddle, block_top_z, \
+            lintel_bottom_z, well_floor_z, droplet_apex_z, lumbar_bottom_z, lumbar_top_z
 
-    def _assemble(contact_x: float) -> tuple:
-        pos0 = _build_no_jitter(contact_x)
+    def _assemble(contact_x: float,
+                  sacrum_ring_counts: list[int]) -> tuple:
+        pos0, n_sacrum, n_saddle, block_top_z, lintel_bottom_z, well_floor_z, \
+            droplet_apex_z, lumbar_bottom_z, lumbar_top_z = \
+            _build_no_jitter(contact_x, sacrum_ring_counts)
         N = pos0.shape[0]
-        # count each component by geometry
+
         n_block = s ** 3
-        n_cheek = 2 * s * n_cheek_z
+        n_cheek = 2 * s * max(3, int(math.floor((lintel_bottom_z - block_top_z) / d)) - 1)
+        outer_y = cheek_y_center + d / 2.0
+        n_lintel_y = max(4, 2 * int(math.ceil(outer_y / d)) + 1)
         n_lintel = s * n_lintel_y
-        n_saddle = n_block + n_cheek + n_lintel
-        n_lumbar = lumbar_layers * n_ring
+        n_lumbar = lumbar_layers * 12
         n_drop = drop_side ** 3
-        # rope count from build
-        n_rope = N - (n_plate + n_sacrum + n_saddle + n_lumbar + n_drop + drop_side ** 3)
+        n_load = drop_side ** 3
+        n_rope = N - (n_plate + n_sacrum + n_saddle + n_lumbar + n_drop + n_load)
 
         grain_ids = np.empty(N, dtype=np.int32)
         grain_ids[:n_plate] = -1
@@ -242,6 +325,7 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         pin_mask[:n_plate] = True
         # pin sacrum bottom face (z == sacrum_bottom_z)
         sacrum_start = n_plate
+        sacrum_bottom_z = d_eq
         sacrum_bottom_mask = np.abs(
             pos0[sacrum_start:sacrum_start + n_sacrum, 2] - sacrum_bottom_z) <= 1e-3
         pin_mask[sacrum_start:sacrum_start + n_sacrum][sacrum_bottom_mask] = True
@@ -252,13 +336,15 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         drop_start = n_plate + n_sacrum + n_saddle + n_lumbar
         pin_mask[drop_start:drop_start + n_drop] = True
 
-        return pos0, grain_ids, pin_mask, n_saddle, n_rope
+        return pos0, grain_ids, pin_mask, n_sacrum, n_saddle, n_rope, \
+            block_top_z, lintel_bottom_z, well_floor_z, droplet_apex_z, \
+            lumbar_bottom_z, lumbar_top_z
 
     # --- Derive end-stops ---
     def _derive_theta_muscle(contact_x: float) -> float:
-        rel_x = -contact_x
-        target_z = droplet_apex_z + d_eq
-        dz = attach_z0 - target_z
+        # The near-end underside must reach droplet_apex_z = block_top_z - 0.10,
+        # so the required vertical drop from the contact point is:
+        dz = target_attach_apex_sep - d_eq
         if contact_x <= 0.0:
             return theta_max
         ratio = dz / contact_x
@@ -272,30 +358,31 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         return cp_z + rel[0] * s + rel[2] * c
 
     def _derive_theta_load(contact_x: float, n_samples: int = 101) -> float:
+        # Use a hollow sacrum for end-stop derivation; geometry is insensitive.
+        tmp_pos, gids, pmask, n_sacrum_h, n_saddle_h, n_rope_h, \
+            block_top_z, lintel_bottom_z, _, _, _, _ = \
+            _assemble(contact_x, [12] * sacrum_layers)
         cp = np.array([contact_x, 0.0, block_top_z], dtype=np.float64)
-        # lintel gap as function of theta (over the captured near-end top)
-        tmp_pos, gids, pmask, n_saddle, n_rope = _assemble(contact_x)
-        lumbar_start = n_plate + n_sacrum + n_saddle
-        lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * n_ring)
+        lumbar_start = n_plate + n_sacrum_h + n_saddle_h
+        lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * 12)
         lumbar_p = tmp_pos[lumbar_idx]
         order = np.argsort(lumbar_p[:, 0])
-        muscle_local = order[:n_ring]
+        muscle_local = order[:12]
         top_mask = np.abs(lumbar_p[muscle_local, 2]
                           - lumbar_p[muscle_local, 2].max()) <= 1e-3
         rel_top = lumbar_p[muscle_local][top_mask] - cp
-        saddle_start = n_plate + n_sacrum
-        saddle_p = tmp_pos[saddle_start:saddle_start + n_saddle]
+        saddle_start = n_plate + n_sacrum_h
+        saddle_p = tmp_pos[saddle_start:saddle_start + n_saddle_h]
         lintel_mask = np.abs(saddle_p[:, 2] - lintel_bottom_z) <= 1e-3
         lintel_p = saddle_p[lintel_mask]
 
-        load_start = n_plate + n_sacrum + n_saddle + lumbar_layers * n_ring + drop_side ** 3 + n_rope
+        load_start = n_plate + n_sacrum_h + n_saddle_h + lumbar_layers * 12 + drop_side ** 3 + n_rope_h
         load_p = tmp_pos[load_start:]
         load_bottom_z0 = float(load_p[:, 2].min())
         rel_load = np.array([L - contact_x, 0.0, load_bottom_z0 - block_top_z])
 
         thetas = np.linspace(0.0, -theta_max, n_samples)
         for theta in thetas[1:]:
-            # top corner max z
             rot_top = rel_top.copy()
             c = math.cos(theta)
             s = math.sin(theta)
@@ -312,24 +399,27 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         return -theta_max
 
     # --- Full-arc gate ---
-    def _full_arc_R_true(contact_x: float, n_theta: int = 25) -> dict:
-        pos0, gids, pmask, n_saddle, n_rope = _assemble(contact_x)
+    def _full_arc_R_true(contact_x: float,
+                         sacrum_ring_counts: list[int],
+                         n_theta: int = 25) -> dict:
+        pos0, gids, pmask, n_sacrum_b, n_saddle_b, n_rope_b, \
+            block_top_z, lintel_bottom_z, _, droplet_apex_z, _, _ = \
+            _assemble(contact_x, sacrum_ring_counts)
         theta_muscle = _derive_theta_muscle(contact_x)
         theta_load = _derive_theta_load(contact_x)
         thetas = np.linspace(theta_load, theta_muscle, n_theta)
         cp = np.array([float(contact_x), 0.0, float(block_top_z)], dtype=np.float64)
 
-        # component boundaries
         sacrum_start = n_plate
-        saddle_start = n_plate + n_sacrum
-        lumbar_start = saddle_start + n_saddle
-        drop_start = lumbar_start + lumbar_layers * n_ring
+        saddle_start = n_plate + n_sacrum_b
+        lumbar_start = saddle_start + n_saddle_b
+        drop_start = lumbar_start + lumbar_layers * 12
         rope_start = drop_start + drop_side ** 3
-        load_start = rope_start + n_rope
+        load_start = rope_start + n_rope_b
 
-        lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * n_ring)
+        lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * 12)
         load_idx = np.arange(load_start, load_start + drop_side ** 3)
-        rope_idx = np.arange(rope_start, rope_start + n_rope)
+        rope_idx = np.arange(rope_start, rope_start + n_rope_b)
 
         anchor = np.array([float(muscle_tip_x), 0.0,
                            float(droplet_apex_z + d_eq)], dtype=np.float64)
@@ -343,7 +433,6 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
             c = math.cos(theta)
             s = math.sin(theta)
 
-            # rotate lumbar and load about cp
             for idx in (lumbar_idx, load_idx):
                 rel = pos[idx] - cp[None, :]
                 rot = rel.copy()
@@ -357,18 +446,16 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
                 cp[2] + rel_attach[0] * s + rel_attach[2] * c,
             ], dtype=np.float64)
 
-            # taut rope
             axis = attach - anchor
             Lr = float(np.linalg.norm(axis))
             if Lr < 1e-9:
                 Lr = 1e-9
-            for li in range(n_rope):
-                t = li / max(1, n_rope - 1.0)
+            for li in range(n_rope_b):
+                t = li / max(1, n_rope_b - 1.0)
                 pos[rope_idx[li]] = anchor + t * axis
 
             R_taut[i], _, _ = _R_true_at_print(pos, gids, cp, pmask)
 
-            # slack rope: remove its pull
             pos_slack = pos.copy()
             pos_slack[rope_idx] = np.array([0.0, 0.0, 1e6], dtype=np.float64)
             R_slack[i], _, _ = _R_true_at_print(pos_slack, gids, cp, pmask)
@@ -387,13 +474,17 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
     n_contact = 101
     xs = np.linspace(cx_min, cx_max, n_contact)
 
+    # Gate scan uses the v1 hollow sacrum; the gate ratio depends only on free
+    # grains (lumbar, load, rope), so the sacrum taper does not affect it.
+    hollow_counts = [12] * sacrum_layers
+
     strict_ok = False
     chosen_cx = None
     chosen_trace = None
     chosen_route = None
 
     for cx in xs:
-        trace = _full_arc_R_true(cx)
+        trace = _full_arc_R_true(cx, hollow_counts)
         if not control:
             if float(np.min(trace["R_taut"])) >= 1.0:
                 strict_ok = True
@@ -411,10 +502,9 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
                 break
 
     if not strict_ok:
-        # best-effort fallback
         best_candidates = []
         for cx in xs:
-            trace = _full_arc_R_true(cx)
+            trace = _full_arc_R_true(cx, hollow_counts)
             if control:
                 R0 = float(trace["R_slack"][0])
                 if 0.5 <= R0 <= 1.0:
@@ -437,33 +527,41 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         chosen_route = "best-effort"
 
     if chosen_cx is None:
-        raise RuntimeError("spine v1 gate failed unexpectedly")
+        raise RuntimeError("spine v2 gate failed unexpectedly")
 
-    # --- Final assembly at chosen contact ---
-    pos, grain_ids, pin_mask, n_saddle, n_rope = _assemble(chosen_cx)
+    # --- Derive tapered sacrum profile for the chosen contact ---
+    tmp_pos, tmp_gids, _, _, _, _, _, _, _, _, _, _ = \
+        _assemble(chosen_cx, hollow_counts)
+    sacrum_ring_counts, taper_info = _derive_sacrum_ring_counts(
+        chosen_cx, tmp_pos, tmp_gids, sacrum_layers, d, n_plate)
+
+    # --- Final assembly at chosen contact with tapered sacrum ---
+    pos, grain_ids, pin_mask, n_sacrum, n_saddle, n_rope, \
+        block_top_z, lintel_bottom_z, well_floor_z, droplet_apex_z, \
+        lumbar_bottom_z, lumbar_top_z = _assemble(chosen_cx, sacrum_ring_counts)
     jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
     pos += jitter
 
     # boundaries
     saddle_start = n_plate + n_sacrum
     lumbar_start = saddle_start + n_saddle
-    drop_start = lumbar_start + lumbar_layers * n_ring
+    drop_start = lumbar_start + lumbar_layers * 12
     rope_start = drop_start + drop_side ** 3
     load_start = rope_start + n_rope
 
     # face indices for telemetry
     sacrum_idx = np.arange(n_plate, n_plate + n_sacrum)
+    sacrum_bottom_z = d_eq
+    sacrum_top_z = d_eq + (sacrum_layers - 1) * d
     sacrum_bottom_local = np.flatnonzero(
         np.abs(pos[sacrum_idx, 2] - sacrum_bottom_z) <= 1e-3)
     sacrum_top_local = np.flatnonzero(
         np.abs(pos[sacrum_idx, 2] - sacrum_top_z) <= 1e-3)
 
-    lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * n_ring)
+    lumbar_idx = np.arange(lumbar_start, lumbar_start + lumbar_layers * 12)
     lumbar_order = np.argsort(pos[lumbar_idx, 0])
-    muscle_face_local = lumbar_order[:n_ring].astype(np.int32)
-    load_face_local = lumbar_order[-n_ring:].astype(np.int32)
-    lumbar_bottom_z = float(pos[lumbar_idx, 2].min())
-    lumbar_top_z = float(pos[lumbar_idx, 2].max())
+    muscle_face_local = lumbar_order[:12].astype(np.int32)
+    load_face_local = lumbar_order[-12:].astype(np.int32)
     lumbar_contact_local = np.flatnonzero(
         np.abs(pos[lumbar_idx, 0] - chosen_cx) <= tube_half_width + 1e-3)
     lumbar_side_local = np.flatnonzero(
@@ -483,7 +581,6 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
     rope_idx = np.arange(rope_start, rope_start + n_rope)
     load_idx = np.arange(load_start, load_start + drop_side ** 3)
 
-    # rope order from anchor to attach
     anchor = np.array([float(muscle_tip_x), 0.0,
                        float(droplet_apex_z + d_eq)], dtype=np.float64)
     rope_order_local = np.argsort(
@@ -506,7 +603,7 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
     min_pair_dist = float(np.sqrt(r2.min()))
     if min_pair_dist <= 1e-6:
         raise RuntimeError(
-            f"spine v1 print law violated: min pair distance {min_pair_dist}")
+            f"spine v2 print law violated: min pair distance {min_pair_dist}")
 
     derived = {
         "control": bool(control),
@@ -517,13 +614,14 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         "spacing": d,
         "sacrum_layers": sacrum_layers,
         "lumbar_layers": lumbar_layers,
+        "sacrum_ring_counts": sacrum_ring_counts,
         "n_plate": n_plate,
         "n_sacrum": n_sacrum,
         "n_saddle": n_saddle,
         "n_block": s ** 3,
-        "n_cheek": 2 * s * n_cheek_z,
-        "n_lintel": s * n_lintel_y,
-        "n_lumbar": lumbar_layers * n_ring,
+        "n_cheek": 2 * s * max(3, int(math.floor((lintel_bottom_z - block_top_z) / d)) - 1),
+        "n_lintel": s * max(4, 2 * int(math.ceil((cheek_y_center + d / 2.0) / d)) + 1),
+        "n_lumbar": lumbar_layers * 12,
         "n_droplet": drop_side ** 3,
         "n_rope": n_rope,
         "n_load": drop_side ** 3,
@@ -562,6 +660,13 @@ def spine(control: bool = False, seed: int = 0) -> tuple:
         "arc_trace": chosen_trace,
         "load_end_z0": float(load_c[2]),
         "plate_pos0": pos[:n_plate].copy(),
+        "F_tip": taper_info["F_tip"],
+        "M_max": taper_info["M_max"],
+        "taper_arm": taper_info["arm"],
+        "taper_x_com": taper_info["x_com"],
+        "taper_W": taper_info["W"],
+        "taper_extra_needed_base": taper_info["extra_needed_base"],
+        "taper_f_cushion": taper_info["f_cushion"],
     }
 
     return pos.astype(np.float32), np.zeros_like(pos, dtype=np.float32), \

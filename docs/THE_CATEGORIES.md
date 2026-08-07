@@ -1148,6 +1148,35 @@ unchanged. FALSIFIER: if the tapered sacrum still tears, the cushion
 kernel has no bending membrane at the single-bone scale and the frame
 must distribute the moment across TWO supports (the pelvis branches —
 the branched chain becomes the next membrane) — record, do not patch.
+**SPINE v2 VERDICT 2026-08-07 (tapered solid-base sacrum, run tags
+spine_v2 / spine_v2_control, 8000 ticks):** the THEORY-FALSIFIER has
+fired, and it names the deepest law of the frame: THERE IS NO TENSION.
+Verified link by link from the logs. (1) THE TAPER WAS DERIVED AND
+BUILT: rings 16/16/15/14/14/14/13/12 from M(z) = F_tip·(H−z), the
+bending-moment diagram made solid — the instrument worked. (2) IT TORE
+ANYWAY: clusters 2/1/1/1/1/1 in BOTH runs — main tilt 12.05° (the v1
+break), control tilt improved to 1.41° (under the 2° bar) yet still
+split. No cross-section profile saves the cantilever, because the
+failure was never the profile: the cushion is REPULSION-ONLY, and a
+cantilever's windward side is a TENSION side — it separates, always,
+no matter how many grains you add to the compression side. (3) The v2
+law, and it is the skeleton's constitution: **bones in this kernel are
+COMPRESSION-ONLY members; tension lives only in ropes. A frame must
+carry every moment as compression geometry — two supports, an arch, a
+brace — or it carries it not at all.** Anatomy agrees to the letter:
+bone bears compression, ligament and muscle bear tension, and no
+vertebra is a cantilever — the spine is a STACK, the pelvis an ARCH,
+the skull a DOME. (4) Verdicts: (a) LIFT FAIL, (c) BALANCE FAIL main,
+(d) INTEGRITY FAIL both (the tear), (e) SLACK PASS on meters (spikes
+recorded), (f) FRAME FAIL main / PASS control (tilt 1.41° — but the
+tear renders it moot), (g) CAPTURE-CLOSED FAIL both (band left as the
+frame leaned). (5) DESIGN RULE FOR THE WHOLE SKELETON, effective now:
+NO CANTILEVERS — every bone loaded along its axis in compression, every
+transverse moment resolved into a compression pair or a rope. Successor
+(named): spine v3 = theBracedFrame — the sacrum becomes TWO inclined
+tapered columns meeting at the apex saddle (an A — the pelvis' own
+shape), the lumbar's moment resolved into compression down both legs;
+the falsifier battery reruns unchanged, and INTEGRITY is the claim.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

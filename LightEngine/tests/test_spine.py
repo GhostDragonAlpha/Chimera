@@ -1,4 +1,4 @@
-"""Tests for theSpine v1 structure builder."""
+"""Tests for theSpine v2 structure builder."""
 
 from __future__ import annotations
 
@@ -20,13 +20,34 @@ def test_counts():
     assert grain_ids.shape[0] == pos.shape[0]
     assert pin_mask.shape[0] == pos.shape[0]
     assert derived["n_plate"] == 36
-    assert derived["n_sacrum"] == 8 * 12
+    # v2 tapered sacrum: bottom rings solid 4x4 (16 grains), top ring hollow (12)
+    expected_sacrum = sum(derived["sacrum_ring_counts"])
+    assert derived["n_sacrum"] == expected_sacrum
+    assert derived["n_sacrum"] > 8 * 12  # more grains than v1 hollow tube
     assert derived["n_lumbar"] == 8 * 12
     assert derived["n_droplet"] == 64
     assert derived["n_load"] == 64
     assert derived["n_rope"] >= 2
     # grain ids present
     assert set(grain_ids) == {-1, 0, 1, 2, 3, 4, 5}
+
+
+def test_tapered_sacrum_profile():
+    pos, vel, pin_mask, grain_ids, derived = _build()
+    counts = derived["sacrum_ring_counts"]
+    layers = derived["sacrum_layers"]
+    assert len(counts) == layers
+    assert counts[0] == 16  # base ring solid 4x4
+    assert counts[-1] == 12  # top ring hollow shell
+    assert all(12 <= c <= 16 for c in counts)
+    # non-increasing from base to top (moment decreases with height)
+    assert all(counts[i] >= counts[i + 1] for i in range(len(counts) - 1))
+    # total grain count matches the actual sacrum grains
+    assert sum(counts) == derived["n_sacrum"]
+    # derivation numbers are present and physically sane
+    assert derived["F_tip"] > 0.0
+    assert derived["M_max"] > 0.0
+    assert derived["taper_extra_needed_base"] >= 0.0
 
 
 def test_pinned_bodies():
@@ -43,7 +64,9 @@ def test_pinned_bodies():
     bottom_z = derived["sacrum_bottom_z"]
     pinned_frac = (pin_mask[sacrum_idx]).mean()
     assert 0.0 < pinned_frac < 1.0
-    assert pinned_frac == pytest.approx(1.0 / 8.0, rel=0.2)
+    # bottom ring is solid 4x4 = 16 grains; total sacrum is sum of ring counts
+    expected_pinned_frac = 16.0 / derived["n_sacrum"]
+    assert pinned_frac == pytest.approx(expected_pinned_frac, rel=0.2)
 
 
 def test_box_capture_dimensions():
