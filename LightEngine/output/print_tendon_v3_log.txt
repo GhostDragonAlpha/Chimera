@@ -1,0 +1,73 @@
+======================================================================
+THE KERNEL — TENDON v3 print run
+N=96, rod=2x2x8 + 4x4 feet, plates=4x4, foot_side=4, seed=20260806, dt=0.0005
+----------------------------------------------------------------------
+STATEMENT: A 2x2x8 tendon shaft rooted at each end by a 4x4 foot
+  the size of the anchor plate grips the plate by DRAW, moving the
+  weak link from the seat to the shaft.
+PREDICTION: With 4x4 feet, (b1) SEAT-HOLD passes at the same crush
+  that ejected v1/v2, and the weak link moves from the seat to the
+  shaft — recorded where it fails, if it does.  PUSH LAW, PULL LAW,
+  and UNSEAT remain as derived.
+FALSIFIERS:
+  (a) PUSH LAW  — measured right-plate force vs static recompute
+      on recorded positions within 10% (compress phase)
+  (b1) SEAT-HOLD — any foot-to-plate end gap exceeds R_BOND during
+      compression
+  (b2) BUCKLE    — chord-relative mid-shaft curvature > 0.05
+  (c) UNSEAT    — end gap does not cross R_BOND inside
+      s_fail ± 0.5*d_eq OR the rod splits (cluster count > 1)
+  (d) PULL LAW  — measured right-plate force vs pairwise-DRAW sum
+      on recorded positions within 10% (contact-free extension)
+======================================================================
+
+Derived d_eq     = 0.04840
+Derived rod_span = 0.35000
+Derived s0       = 0.44680
+Derived s_fail   = 0.54840
+Compress target  = 0.35000
+Extend target    = 0.59680
+
+
+[tendon] N=96 rod=64 plates=32
+[tendon] s0=0.44680 rod_span=0.35000 foot_side=4 v_plate=0.05000 dt=0.0005
+
+[tendon] tick=     0 phase=init       | sep=0.44670 | right_F=62.2313 | sforce=147.7912 | clusters=1 | curv=0.0000 | gap_L=0.0476 | gap_R=0.0472
+[tendon] tick=   500 phase=compress   | sep=0.43421 | right_F=135.6903 | sforce=306.9221 | clusters=19 | curv=0.7768 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  1000 phase=compress   | sep=0.42172 | right_F=87.7075 | sforce=278.4600 | clusters=19 | curv=1.9963 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  1500 phase=compress   | sep=0.40922 | right_F=72.7771 | sforce=238.2950 | clusters=19 | curv=3.1505 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  2000 phase=compress   | sep=0.39673 | right_F=80.9545 | sforce=167.9963 | clusters=19 | curv=4.0859 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  2500 phase=compress   | sep=0.38423 | right_F=86.6893 | sforce=120.5617 | clusters=19 | curv=5.0027 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  3000 phase=compress   | sep=0.37174 | right_F=95.0943 | sforce=199.9949 | clusters=18 | curv=5.9306 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  3500 phase=compress   | sep=0.35925 | right_F=102.3333 | sforce=194.1667 | clusters=18 | curv=6.9475 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  3872 phase=compress   | sep=0.34998 | right_F=111.2027 | sforce=206.5543 | clusters=18 | curv=7.7076 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  4000 phase=extend     | sep=0.35318 | right_F=80.2268 | sforce=225.8029 | clusters=17 | curv=7.9672 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  4500 phase=extend     | sep=0.36567 | right_F=99.0119 | sforce=176.6262 | clusters=18 | curv=8.9533 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  5000 phase=extend     | sep=0.37816 | right_F=91.7280 | sforce=191.5623 | clusters=18 | curv=9.9248 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  5500 phase=extend     | sep=0.39066 | right_F=84.9350 | sforce=153.2964 | clusters=18 | curv=10.9100 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  6000 phase=extend     | sep=0.40315 | right_F=79.9661 | sforce=165.0166 | clusters=17 | curv=11.9319 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  6500 phase=extend     | sep=0.41564 | right_F=75.2865 | sforce=149.2169 | clusters=18 | curv=12.9523 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  7000 phase=extend     | sep=0.42814 | right_F=68.9384 | sforce=127.8518 | clusters=18 | curv=13.9543 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  7500 phase=extend     | sep=0.44063 | right_F=64.6881 | sforce=135.9710 | clusters=18 | curv=14.9513 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  8000 phase=extend     | sep=0.45312 | right_F=61.3971 | sforce=117.7775 | clusters=18 | curv=15.9472 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  8500 phase=extend     | sep=0.46562 | right_F=59.4993 | sforce=119.9995 | clusters=17 | curv=16.9398 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  9000 phase=extend     | sep=0.47811 | right_F=55.2570 | sforce=133.2878 | clusters=17 | curv=17.9378 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick=  9500 phase=extend     | sep=0.49061 | right_F=52.9701 | sforce=-65.1747 | clusters=16 | curv=18.9536 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 10000 phase=extend     | sep=0.50310 | right_F=52.0356 | sforce=107.9903 | clusters=15 | curv=19.9663 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 10500 phase=extend     | sep=0.51559 | right_F=47.8734 | sforce=122.4828 | clusters=16 | curv=20.9651 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 11000 phase=extend     | sep=0.52809 | right_F=45.0670 | sforce=108.5741 | clusters=16 | curv=21.9609 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 11500 phase=extend     | sep=0.54058 | right_F=42.7695 | sforce=85.4720 | clusters=16 | curv=22.9573 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 12000 phase=extend     | sep=0.55307 | right_F=40.7254 | sforce=73.2037 | clusters=16 | curv=23.9532 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 12500 phase=extend     | sep=0.56558 | right_F=38.8043 | sforce=76.8935 | clusters=16 | curv=24.9473 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 13000 phase=extend     | sep=0.57809 | right_F=37.0338 | sforce=71.6128 | clusters=16 | curv=25.9427 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 13500 phase=extend     | sep=0.59060 | right_F=35.3416 | sforce=71.0741 | clusters=16 | curv=26.9368 | gap_L=0.0000 | gap_R=0.0000
+[tendon] tick= 13749 phase=extend     | sep=0.59680 | right_F=34.5899 | sforce=64.9591 | clusters=16 | curv=27.4296 | gap_L=0.0000 | gap_R=0.0000
+
+[tendon] TENDON v3 FALSIFIERS:
+  (a) PUSH LAW  : PASS  max rel err measured-vs-static-recompute=0.000 (bar 0.10, 8 compress samples)
+  (b1) SEAT-HOLD: PASS  max compress end gap=0.0000 (bar 0.1500)
+  (b2) BUCKLE   : FAIL  max chord-relative curvature=7.7076 (bar 0.0500)
+  (c) UNSEAT    : FAIL  crossings in window [0.5242,0.5726] = 0, max clusters=19
+  (d) PULL LAW  : PASS  max rel err measured-vs-pairwise-DRAW=0.000 (bar 0.10, 19 contact-free extension samples)
+  derived s_fail = 0.5484 (s0=0.4468, d_eq=0.0484, R_BOND=0.1500)
+======================================================================

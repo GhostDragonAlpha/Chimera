@@ -236,6 +236,23 @@ end cross-section flares to the anchor plate size (4×4 feet on a 2×2 shaft,
 the insertion geometry of a real tendon), falsifier (b1) at the same crush
 with the weak link predicted to move from the seat to the shaft, recorded
 where.
+**ROUTER v3 VERDICT 2026-08-06 (4×4 feet, run tag tendon_v3):** the SEAT
+hypothesis is CONFIRMED and the CONSTRUCTION is refuted — two different
+verdicts in one run, recorded separately. (b1) SEAT-HOLD PASS: both foot
+gaps 0.0000 through the whole crush that ejected v1 and v2 — end-face area
+IS the confinement variable. But the printed foot was one 4×4 layer
+coplanar with the shaft's terminal 2×2 layer: the central four foot points
+occupied the shaft end points' positions, the wall repulsion ejected the
+duplicates at the first steps, and the structure ran as 15–19 fragments
+(clusters 19 from tick 500, (b2) 7.71, (c) no clean crossing — all
+artifacts). The physics never got to answer where the rooted tendon's weak
+link is; the print law did: NO TWO GRAINS MAY SHARE A POSITION — an overlap
+is not matter, it is a bomb. (a)/(d) PASS on the recorded positions as
+always; the two-force law remains unindicted in every run to date.
+Successor (named): v4 — the foot REPLACES the shaft's terminal layer (4×4
+foot at the end plane, 2×2×6 interior shaft between the feet, no shared
+positions), the same five falsifiers, the weak-link question finally asked
+of physics instead of the printer.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 

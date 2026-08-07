@@ -377,3 +377,61 @@ def test_tendon_preload_geometry():
         right_plate[:, None, :] - rod[None, :, :], axis=2).min()
     assert abs(left_gap - d_eq / 2.0) < 0.01
     assert abs(right_gap - d_eq / 2.0) < 0.01
+
+
+def test_tendon_foot_geometry():
+    """foot_side=4 adds 4x4 feet at both ends without changing s0 or rod_span."""
+    spacing = 0.05
+    d_eq = seed_structures.TENDON_D_EQ
+    pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
+        side=4, n_len=8, spacing=spacing, foot_side=4, seed=0)
+
+    n_plate = 4 * 4
+    n_shaft = 4 * 8
+    n_foot = 2 * 4 * 4
+    assert pos.shape[0] == n_shaft + n_foot + 2 * n_plate
+
+    # plates pinned, rod free
+    assert pin_mask[:n_plate].all()
+    assert pin_mask[-n_plate:].all()
+    assert not pin_mask[n_plate:n_plate + n_shaft + n_foot].any()
+
+    # grain ids: plates -1, rod (shaft + feet) 0
+    assert (grain_ids[:n_plate] == -1).all()
+    assert (grain_ids[-n_plate:] == -1).all()
+    assert (grain_ids[n_plate:n_plate + n_shaft + n_foot] == 0).all()
+
+    # s0 and rod_span unchanged from the no-foot v1 case
+    assert s0 == pytest.approx((8 - 1) * spacing + 2.0 * d_eq, rel=1e-12)
+    assert rod_span == pytest.approx((8 - 1) * spacing, rel=1e-12)
+
+    # cold print: zero velocity
+    np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+    rod = pos[grain_ids == 0]
+    plates = pos[grain_ids == -1]
+    left_plate = plates[plates[:, 0] < rod[:, 0].min()]
+    right_plate = plates[plates[:, 0] > rod[:, 0].max()]
+
+    # plate separation matches s0
+    left_x = float(left_plate[:, 0].mean())
+    right_x = float(right_plate[:, 0].mean())
+    assert abs(right_x - left_x - s0) < 0.01
+
+    # end gaps measured from the foot outer face are approximately d_eq
+    left_gap = np.linalg.norm(
+        left_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    right_gap = np.linalg.norm(
+        right_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    assert abs(left_gap - d_eq) < 0.01
+    assert abs(right_gap - d_eq) < 0.01
+
+
+def test_tendon_foot_default_unchanged():
+    """foot_side=0 (the default) reproduces the v1/v2 builder exactly."""
+    pos_default, _, _, _, s0_default, _ = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, seed=13)
+    pos_explicit, _, _, _, s0_explicit, _ = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, foot_side=0, seed=13)
+    np.testing.assert_array_equal(pos_default, pos_explicit)
+    assert s0_default == pytest.approx(s0_explicit, rel=1e-12)

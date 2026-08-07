@@ -455,6 +455,7 @@ def tendon(side: int = 4,
            n_len: int = 8,
            spacing: float = 0.05,
            preload_frac: float = 0.0,
+           foot_side: int = 0,
            seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
                                    np.ndarray, float, float]:
     """
@@ -462,9 +463,9 @@ def tendon(side: int = 4,
     anchor plates, acting as a 1-D force router.
 
     The rod is printed as a simple-cubic lattice at ``spacing`` (cushion
-    spacing), centered on the x-axis.  By default (``preload_frac=0.0``) the
-    rod end faces sit at cushion equilibrium distance ``d_eq`` from the plates,
-    giving
+    spacing), centered on the x-axis.  By default (``preload_frac=0.0``,
+    ``foot_side=0``) the rod end faces sit at cushion equilibrium distance
+    ``d_eq`` from the plates, giving
 
         s0 = rod_span + 2 * d_eq,   rod_span = (n_len - 1) * spacing.
 
@@ -474,13 +475,18 @@ def tendon(side: int = 4,
 
         s0 = rod_span + 2 * d_eq * (1 - preload_frac).
 
-    ``preload_frac=0.5`` therefore seats the rod one half-spacing deep into the
-    cushion, where cushion repulsion exceeds the plate-DRAW and the end has a
-    derived hold margin of ``d_eq/2`` before it can eject.
+    With ``foot_side > 0`` a ``foot_side × foot_side`` layer (one point thick,
+    plane normal to x) is added flush at each end of the 2×2 shaft.  The foot
+    outer face is coplanar with the shaft end, so ``rod_span`` and ``s0`` are
+    unchanged from the no-foot case; the flare increases the end-face area
+    gripping the plate.
 
     For the default ``n_len=8`` and ``spacing=0.05``:
-      - ``preload_frac=0.0`` gives ``rod_span = 0.3500`` and ``s0 = 0.4468``.
+      - ``preload_frac=0.0, foot_side=0`` gives ``rod_span = 0.3500`` and
+        ``s0 = 0.4468``.
       - ``preload_frac=0.5`` gives ``s0 = 0.3984``.
+      - ``foot_side=4`` adds 32 foot grains to the 32-grain shaft for a total
+        rod of 64 grains (N = 96 with the two 4×4 plates).
 
     Returns ``(positions, velocities, pin_mask, grain_ids, s0, rod_span)``:
       - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
@@ -488,7 +494,8 @@ def tendon(side: int = 4,
       - ``grain_ids`` is length-N int32; plates are -1, rod is 0.
       - ``s0`` and ``rod_span`` are the derived router numbers.
 
-    The point count is ``4 * n_len + 2 * side**2``.
+    The default point count is ``4 * n_len + 2 * side**2``; with feet it is
+    ``(4 * n_len + 2 * foot_side**2) + 2 * side**2``.
     """
     rng = np.random.default_rng(seed)
     s = int(side)
@@ -499,8 +506,8 @@ def tendon(side: int = 4,
         raise ValueError("n_len must be at least 2")
     d = float(spacing)
     p = float(preload_frac)
+    f = int(foot_side)
 
-    n_rod = 4 * l
     n_plate = s * s
 
     d_eq = TENDON_D_EQ
@@ -508,15 +515,35 @@ def tendon(side: int = 4,
     seat_gap = d_eq * (1.0 - p)
     s0 = rod_span + 2.0 * seat_gap
 
-    # Rod: 2 x 2 x l cubic lattice along x, centered on the axis.
+    # Shaft: 2 x 2 x l cubic lattice along x, centered on the axis.
     x_off = (np.arange(l, dtype=np.float64) - (l - 1) / 2.0) * d
     y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
     z_off = (np.arange(2, dtype=np.float64) - 0.5) * d
     gx, gy, gz = np.meshgrid(x_off, y_off, z_off, indexing="ij")
-    rod_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-    # Shift so the left rod face sits ``seat_gap`` from the left plate
+    shaft_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+    # Shift so the left shaft face sits ``seat_gap`` from the left plate
     # (inner face at x = 0).
-    rod_pos[:, 0] += seat_gap + rod_span / 2.0
+    shaft_pos[:, 0] += seat_gap + rod_span / 2.0
+
+    rod_parts = [shaft_pos]
+    if f > 0:
+        # Feet: one f x f layer at each end, outer face coplanar with the
+        # shaft end cross-section.
+        foot_off = (np.arange(f, dtype=np.float64) - (f - 1) / 2.0) * d
+        fy, fz = np.meshgrid(foot_off, foot_off, indexing="ij")
+        foot_yz = np.stack([fy.ravel(), fz.ravel()], axis=1)
+        left_foot = np.hstack([
+            np.full((f * f, 1), seat_gap),
+            foot_yz,
+        ])
+        right_foot = np.hstack([
+            np.full((f * f, 1), seat_gap + rod_span),
+            foot_yz,
+        ])
+        rod_parts = [left_foot, shaft_pos, right_foot]
+
+    rod_pos = np.vstack(rod_parts)
+    n_rod = rod_pos.shape[0]
 
     # Plates: s x s lattices perpendicular to x.
     p_off = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * d

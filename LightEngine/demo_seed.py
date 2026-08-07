@@ -1176,18 +1176,46 @@ def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
     return cluster_count_and_sizes(pos[rod_idx], r_cut)[0]
 
 
-def _rod_end_gaps(pos: np.ndarray, grain_ids: np.ndarray) -> tuple[float, float]:
-    """Return cushion gaps from the rod's end cross-sections to each plate."""
+def _end_face_indices(ref_rod: np.ndarray, foot_side: int = 0):
+    """
+    Return (left_face, right_face, mid_idx) indices into the rod for the
+    terminal cross-sections and the middle column.  With feet, the terminal
+    faces are the ``foot_side × foot_side`` foot layers; otherwise the 2×2
+    shaft terminal layers.  Indices are fixed from the cold print.
+    """
+    order = np.argsort(ref_rod[:, 0])
+    if foot_side > 0:
+        n_per_end = foot_side * foot_side
+        # The foot points share the same x-plane as the shaft terminal layer,
+        # so include a few extra candidates and select the foot by its larger
+        # transverse radius.
+        n_extra = 4
+        left_candidates = order[:n_per_end + n_extra]
+        right_candidates = order[-(n_per_end + n_extra):]
+        rad = np.linalg.norm(ref_rod[:, 1:], axis=1)
+        left_face = left_candidates[np.argsort(rad[left_candidates])[-n_per_end:]]
+        right_face = right_candidates[np.argsort(rad[right_candidates])[-n_per_end:]]
+    else:
+        n_per_layer = 4
+        left_face = order[:n_per_layer]
+        right_face = order[-n_per_layer:]
+
+    mid = np.setdiff1d(
+        np.arange(ref_rod.shape[0]),
+        np.concatenate([left_face, right_face]),
+        assume_unique=True)
+    return left_face, right_face, mid
+
+
+def _rod_end_gaps(pos: np.ndarray, grain_ids: np.ndarray,
+                  left_face: np.ndarray, right_face: np.ndarray) -> tuple[float, float]:
+    """Return cushion gaps from the rod's end faces to each plate."""
     rod = pos[grain_ids == 0]
     plates = pos[grain_ids == -1]
     if rod.shape[0] == 0 or plates.shape[0] == 0:
         return 0.0, 0.0
-    # The rod is printed 2x2xn_len; the end cross-sections are the 4 points
-    # with smallest / largest x coordinates.
-    order = np.argsort(rod[:, 0])
-    n_per_layer = 4
-    left_end = rod[order[:n_per_layer]]
-    right_end = rod[order[-n_per_layer:]]
+    left_end = rod[left_face]
+    right_end = rod[right_face]
     left_plate = plates[plates[:, 0] < rod[:, 0].min()]
     right_plate = plates[plates[:, 0] > rod[:, 0].max()]
     if left_plate.shape[0] == 0 or right_plate.shape[0] == 0:
@@ -1213,45 +1241,45 @@ def _mid_column_deflection(pos: np.ndarray, grain_ids: np.ndarray) -> float:
 
 
 def _chord_relative_curvature(pos: np.ndarray, grain_ids: np.ndarray,
-                              ref_pos: np.ndarray) -> float:
+                              ref_pos: np.ndarray,
+                              left_face: np.ndarray, right_face: np.ndarray,
+                              mid_idx: np.ndarray) -> float:
     """
     Max increase in distance of the middle rod points from the end-to-end chord.
 
     The reference distances are taken from ``ref_pos`` (the cold print).  The
-    chord is the line between the centroids of the two end 2×2 cross-sections.
-    This separates rigid tilt (the chord follows the ends) from actual curvature.
+    chord is the line between the centroids of the two end faces.  This
+    separates rigid tilt (the chord follows the ends) from actual curvature.
     """
     rod = pos[grain_ids == 0]
     ref_rod = ref_pos[grain_ids == 0]
-    if rod.shape[0] == 0 or ref_rod.shape[0] == 0:
+    if (rod.shape[0] == 0 or ref_rod.shape[0] == 0 or
+        mid_idx.size == 0):
         return 0.0
-    # Identify the end cross-sections by their order in the cold print.
-    order = np.argsort(ref_rod[:, 0])
-    n_per_layer = 4
-    if rod.shape[0] <= 2 * n_per_layer:
-        return 0.0
-    left_end = order[:n_per_layer]
-    right_end = order[-n_per_layer:]
-    mid = order[n_per_layer:-n_per_layer]
 
-    def _dists(points, left_idx, right_idx):
-        a = points[left_idx].mean(axis=0)
-        b = points[right_idx].mean(axis=0)
+    def _dists(points, ref_points):
+        a = points[left_face].mean(axis=0)
+        b = points[right_face].mean(axis=0)
+        a0 = ref_points[left_face].mean(axis=0)
+        b0 = ref_points[right_face].mean(axis=0)
         u = b - a
+        u0 = b0 - a0
         lu = float(np.linalg.norm(u))
-        if lu < 1e-12:
-            return None
-        return np.linalg.norm(np.cross(points[mid] - a, u), axis=1) / lu
+        lu0 = float(np.linalg.norm(u0))
+        if lu < 1e-12 or lu0 < 1e-12:
+            return None, None
+        cur = np.linalg.norm(np.cross(rod[mid_idx] - a, u), axis=1) / lu
+        ref = np.linalg.norm(np.cross(ref_rod[mid_idx] - a0, u0), axis=1) / lu0
+        return cur, ref
 
-    ref_d = _dists(ref_rod, left_end, right_end)
-    cur_d = _dists(rod, left_end, right_end)
-    if ref_d is None or cur_d is None:
+    cur_d, ref_d = _dists(rod, ref_rod)
+    if cur_d is None or ref_d is None:
         return 0.0
     return float(np.maximum(cur_d - ref_d, 0.0).max())
 
 
 def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
-                tag, label, preload_frac: float = 0.0):
+                tag, label, preload_frac: float = 0.0, foot_side: int = 0):
     """
     Run the TENDON compress->extend protocol.
 
@@ -1271,6 +1299,11 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
     right_idx = np.arange(N - n_plate, N, dtype=np.int32)
     rod_idx = np.arange(n_plate, n_plate + n_rod, dtype=np.int32)
 
+    # Cold-print reference and fixed end-face indices for metrics.
+    ref_pos = sim.pos.copy()
+    ref_rod = ref_pos[rod_idx]
+    left_face, right_face, mid_idx = _end_face_indices(ref_rod, foot_side)
+
     sample_every = 500
 
     metrics = {
@@ -1289,10 +1322,11 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         "radiated_power": [],
         "rod_pos": [],
         "right_plate_pos": [],
+        "foot_side": foot_side,
+        "left_face": left_face,
+        "right_face": right_face,
+        "mid_idx": mid_idx,
     }
-
-    # Cold-print reference for chord-relative curvature (v2).
-    ref_pos = sim.pos.copy()
 
     def _sample(tick: int, phase: str):
         left_x = float(sim.pos[left_idx, 0].mean())
@@ -1302,9 +1336,11 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         right_force = -float(sim.acc[right_idx, 0].sum())
         sforce = _signed_plate_force(sim.acc, left_idx, right_idx)
         n_clust = _rod_cluster_count(sim.pos, grain_ids, R_BOND)
-        left_gap, right_gap = _rod_end_gaps(sim.pos, grain_ids)
+        left_gap, right_gap = _rod_end_gaps(
+            sim.pos, grain_ids, left_face, right_face)
         deflect = _mid_column_deflection(sim.pos, grain_ids)
-        curvature = _chord_relative_curvature(sim.pos, grain_ids, ref_pos)
+        curvature = _chord_relative_curvature(
+            sim.pos, grain_ids, ref_pos, left_face, right_face, mid_idx)
 
         metrics["tick"].append(tick)
         metrics["phase"].append(phase)
@@ -1322,7 +1358,13 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         metrics["rod_pos"].append(sim.pos[rod_idx].copy())
         metrics["right_plate_pos"].append(sim.pos[right_idx].copy())
 
-        if preload_frac != 0.0:
+        if foot_side > 0:
+            print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+                  f"sep={separation:.5f} | right_F={right_force:.4f} | "
+                  f"sforce={sforce:.4f} | clusters={n_clust} | "
+                  f"curv={curvature:.4f} | gap_L={left_gap:.4f} | "
+                  f"gap_R={right_gap:.4f}")
+        elif preload_frac != 0.0:
             print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
                   f"sep={separation:.5f} | right_F={right_force:.4f} | "
                   f"sforce={sforce:.4f} | clusters={n_clust} | "
@@ -1336,13 +1378,13 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
                   f"gap_R={right_gap:.4f}")
 
     print(f"\n[{label}] N={N} rod={n_rod} plates={n_plate*2}")
+    info_parts = [f"s0={s0:.5f}", f"rod_span={rod_span:.5f}"]
+    if foot_side > 0:
+        info_parts.append(f"foot_side={foot_side}")
     if preload_frac != 0.0:
-        print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
-              f"preload_frac={preload_frac:.2f} "
-              f"v_plate={v_plate:.5f} dt={dt}\n")
-    else:
-        print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
-              f"v_plate={v_plate:.5f} dt={dt}\n")
+        info_parts.append(f"preload_frac={preload_frac:.2f}")
+    info_parts.extend([f"v_plate={v_plate:.5f}", f"dt={dt}"])
+    print(f"[{label}] " + " ".join(info_parts) + "\n")
 
     dump_frame(sim.pos.copy(),
                os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
@@ -1396,7 +1438,7 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
 
 
 def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
-                          preload_frac: float = 0.0):
+                          preload_frac: float = 0.0, foot_side: int = 0):
     """Print TENDON falsifier verdict; return dict of booleans."""
     phases = metrics["phase"]
     sep = np.asarray(metrics["separation"], dtype=np.float64)
@@ -1468,8 +1510,8 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
             for i in pull_idx)
         pull_ok = pull_max_err <= TENDON_LAW_TOL
 
-    if preload_frac != 0.0:
-        # v2: split (b) into seat-hold and chord-relative buckle.
+    # v2/v3: split (b) into seat-hold and chord-relative buckle.
+    if preload_frac != 0.0 or foot_side > 0:
         seat_hold_ok = False
         max_compress_gap = None
         if push_idx:
@@ -1482,7 +1524,8 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
             max_curvature = float(curvature[push_idx].max())
             buckle_ok = max_curvature <= TENDON_BUCKLE_BAR
 
-        print(f"\n[{label}] TENDON v2 FALSIFIERS:")
+        version = "v3" if foot_side > 0 else "v2"
+        print(f"\n[{label}] TENDON {version} FALSIFIERS:")
         if push_max_err is not None:
             print(f"  (a) PUSH LAW  : {'PASS' if push_ok else 'FAIL'}  "
                   f"max rel err measured-vs-static-recompute={push_max_err:.3f} "
@@ -1526,7 +1569,7 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
             "pull_ok": pull_ok,
         }
 
-    # v1 legacy verdict (unchanged output for preload_frac=0.0).
+    # v1 legacy verdict (unchanged output for preload_frac=0.0 and foot_side=0).
     buckle_ok = False
     max_buckle = None
     if push_idx:
@@ -1573,8 +1616,10 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
 def tendon_main(args, seed):
     """TENDON print entry point: build, compress, extend, judge."""
     preload_frac = float(getattr(args, "tendon_preload", 0.0))
+    foot_side = int(getattr(args, "tendon_foot", 0))
     pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
-        side=4, n_len=8, spacing=0.05, preload_frac=preload_frac, seed=seed)
+        side=4, n_len=8, spacing=0.05,
+        preload_frac=preload_frac, foot_side=foot_side, seed=seed)
     N = pos.shape[0]
     n_plate = 4 * 4
 
@@ -1584,7 +1629,29 @@ def tendon_main(args, seed):
 
     # RULE 0 header
     print("=" * 70)
-    if preload_frac != 0.0:
+    if foot_side > 0:
+        print("THE KERNEL — TENDON v3 print run")
+        print(f"N={N}, rod=2x2x8 + 4x4 feet, plates=4x4, foot_side={foot_side}, "
+              f"seed={seed}, dt={dt}")
+        print("-" * 70)
+        print("STATEMENT: A 2x2x8 tendon shaft rooted at each end by a 4x4 foot")
+        print("  the size of the anchor plate grips the plate by DRAW, moving the")
+        print("  weak link from the seat to the shaft.")
+        print("PREDICTION: With 4x4 feet, (b1) SEAT-HOLD passes at the same crush")
+        print("  that ejected v1/v2, and the weak link moves from the seat to the")
+        print("  shaft — recorded where it fails, if it does.  PUSH LAW, PULL LAW,")
+        print("  and UNSEAT remain as derived.")
+        print("FALSIFIERS:")
+        print("  (a) PUSH LAW  — measured right-plate force vs static recompute")
+        print("      on recorded positions within 10% (compress phase)")
+        print("  (b1) SEAT-HOLD — any foot-to-plate end gap exceeds R_BOND during")
+        print("      compression")
+        print("  (b2) BUCKLE    — chord-relative mid-shaft curvature > 0.05")
+        print("  (c) UNSEAT    — end gap does not cross R_BOND inside")
+        print("      s_fail ± 0.5*d_eq OR the rod splits (cluster count > 1)")
+        print("  (d) PULL LAW  — measured right-plate force vs pairwise-DRAW sum")
+        print("      on recorded positions within 10% (contact-free extension)")
+    elif preload_frac != 0.0:
         print("THE KERNEL — TENDON v2 print run")
         print(f"N={N}, rod=2x2x8, plates=4x4, preload_frac={preload_frac}, "
               f"seed={seed}, dt={dt}")
@@ -1637,10 +1704,11 @@ def tendon_main(args, seed):
 
     metrics, final_pos = _run_tendon(
         pos, vel, pin_mask, grain_ids, s0, rod_span,
-        v_plate, dt, tag, "tendon", preload_frac=preload_frac)
+        v_plate, dt, tag, "tendon",
+        preload_frac=preload_frac, foot_side=foot_side)
 
     _print_tendon_verdict(metrics, grain_ids, s0, rod_span, "tendon",
-                          preload_frac=preload_frac)
+                          preload_frac=preload_frac, foot_side=foot_side)
     print("=" * 70)
 
 
@@ -1671,6 +1739,9 @@ def main():
     parser.add_argument("--tendon-preload", type=float, default=0.0,
                         help="TENDON preload fraction: ends are seated "
                              "d_eq*(1-preload) from the plates (default 0.0)")
+    parser.add_argument("--tendon-foot", type=int, default=0,
+                        help="TENDON end-foot cross-section side: 0 = no feet, "
+                             "4 = 4x4 feet on a 2x2 shaft (default 0)")
     args = parser.parse_args()
     SEED = args.seed
 
