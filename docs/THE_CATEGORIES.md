@@ -242,6 +242,31 @@ existed.
   the wall is rupture, recorded); (d) SHELL INTEGRITY post-yield: after
   the squeeze releases, the shell remains one closed mat (clusters == 1,
   no holes beyond the neck — a bladder that can't re-fill is a wound).
+**BLADDER v1 VERDICT 2026-08-07 (run tag bladder_v1, 32,769 ticks):** the
+v1 print is a CYST — the spec's own named failure, produced honestly.
+(a) SEAL PASS but hollow: 26 sub-threshold samples, zero escapes, one
+cluster — nothing escaped because the neck was never held open. The
+trajectory tells the story: shell displacement jumps to ≈0.18 by tick
+6000 (≈ r_b itself) — the hollow shell CRUMPLED INWARD onto its contents
+in the first seconds, exactly like the sheet, and for the same reason:
+the cushion-splint was never installed. The contents (4³ at 0.05, radius
+≈ 0.13) inside a shell of radius 0.20 leave a ~0.07 gap — the splint
+doesn't touch the wall at print, so the wall folds before the contents
+can hold it. After the crumple the assembly is a solid ball: plates
+closed to the geometric limit (sep 0.09999, force 661 = 2×F_hold) and
+(b) YIELD FAIL — 0/32 escapes, because a solid ball has no cavity to
+squeeze and the neck crumpled shut with the rest of the wall. (c) NECK
+FAIL vacuously (no escapes to select). (d) INTEGRITY FAIL as written
+(max shell displacement 0.182 > 0.10) — recorded with the caveat that the
+bar measures form-holding, and the form was lost to crumple, not rupture:
+the shell stayed ONE CLUSTER the whole run, never burst. What is refuted
+is the print, not the concept — the cushion-splint was never actually
+installed. Successor (named): v2 — contents FILL the shell at cushion
+contact at print: N_contents derived from the interior volume at cushion
+spacing (interior radius r_b − d_eq ≈ 0.15 → N ≈ 113 at 0.05), so the
+splint touches the wall from tick 0. Prediction stated: shell
+displacement stays ≤ 0.10 through the squeeze, and past 2×F_hold the
+contents exit through the neck corridor.
 
 ## 3-D — BULKS (flesh, organs, soil, rock)
 

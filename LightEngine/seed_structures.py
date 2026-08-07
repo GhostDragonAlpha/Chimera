@@ -1106,3 +1106,133 @@ def skin(spacing: float = 0.05,
 
     return (pos.astype(np.float32), vel.astype(np.float32), pin_mask,
             grain_ids, s0, R_droplet, derived)
+
+
+def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                     np.ndarray, float, dict]:
+    """
+    THE BLADDER print: a closed spherical shell (grain_id=1) packed with a
+    condensed content droplet (grain_id=2), squeezed by two pinned 4x4 muscle
+    plates, with one derived neck opening.
+
+    The shell is one grain thick at cushion equilibrium spacing d_eq = 0.0484
+    on a sphere of radius r_b = 0.20 lu.  Its point count is derived from the
+    sphere's surface area divided by the shell spacing squared.  The contents
+    are a 4^3 droplet at the muscle's 0.05 lattice step, centered inside the
+    shell.  The neck is a hole of diameter 2*d_eq at the +z pole, the smallest
+    opening that passes one grain.
+
+    The plates are the muscle's pinned 4x4 anchors, placed so each plate face
+    sits at cushion distance d_eq from the shell surface:
+
+        s0 = 2 * (r_b + d_eq)
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, s0, derived)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; only the two plates are pinned.
+      - ``grain_ids`` is length-N int32; plates=-1, shell=1, contents=2.
+      - ``derived`` carries r_b, d_eq, n_shell, n_content, neck geometry,
+        center_x, and F_hold (the derived hold force from the kernel at print).
+    """
+    rng = np.random.default_rng(seed)
+    muscle_spacing = 0.05
+    d_eq = TENDON_D_EQ
+    r_b = 0.20
+
+    # Muscle anchor plates: 4x4, pinned, perpendicular to x.
+    side = 4
+    n_plate = side * side
+    offsets = (np.arange(side, dtype=np.float64) - (side - 1) / 2.0) * muscle_spacing
+    py, pz = np.meshgrid(offsets, offsets, indexing="ij")
+    plate_yz = np.stack([py.ravel(), pz.ravel()], axis=1)
+
+    s0 = 2.0 * (r_b + d_eq)
+    center_x = s0 / 2.0
+
+    left_plate = np.hstack([np.zeros((n_plate, 1)), plate_yz])
+    right_plate = np.hstack([np.full((n_plate, 1), s0), plate_yz])
+
+    # Spherical shell: count derived from surface area / shell spacing^2.
+    shell_area = 4.0 * math.pi * r_b * r_b
+    n_shell_target = int(round(shell_area / (d_eq * d_eq)))
+    n_shell_target = max(4, n_shell_target)
+
+    # Deterministic Fibonacci sphere on the r_b sphere, z-axis as pole.
+    indices = np.arange(n_shell_target, dtype=np.float64)
+    cos_phi = 1.0 - 2.0 * indices / (n_shell_target - 1)
+    sin_phi = np.sqrt(np.maximum(1.0 - cos_phi * cos_phi, 0.0))
+    golden_angle = math.pi * (3.0 - math.sqrt(5.0))
+    theta = golden_angle * indices
+    sx = sin_phi * np.cos(theta)
+    sy = sin_phi * np.sin(theta)
+    sz = cos_phi
+    shell_pos = r_b * np.stack([sx, sy, sz], axis=1)
+    shell_pos[:, 0] += center_x
+
+    # Neck: remove shell grains within one shell spacing of the +z pole.
+    neck_center = np.array([center_x, 0.0, r_b], dtype=np.float64)
+    neck_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+    dist_to_neck = np.linalg.norm(shell_pos - neck_center, axis=1)
+    shell_pos = shell_pos[dist_to_neck > d_eq]
+    n_shell = shell_pos.shape[0]
+
+    # Contents: 4^3 simple-cubic droplet at muscle spacing, centered.
+    n_content = side ** 3
+    offsets_c = (np.arange(side, dtype=np.float64) - (side - 1) / 2.0) * muscle_spacing
+    gx, gy, gz = np.meshgrid(offsets_c, offsets_c, offsets_c, indexing="ij")
+    content_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+    content_pos[:, 0] += center_x
+
+    # Assemble: plates first, then shell, then contents.
+    pos = np.vstack([left_plate, right_plate, shell_pos, content_pos]).astype(np.float64)
+    vel = np.zeros_like(pos)
+
+    pin_mask = np.zeros(pos.shape[0], dtype=bool)
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate:2 * n_plate] = True
+
+    grain_ids = np.empty(pos.shape[0], dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:2 * n_plate] = -1
+    grain_ids[2 * n_plate:2 * n_plate + n_shell] = 1
+    grain_ids[2 * n_plate + n_shell:] = 2
+
+    # Tiny deterministic jitter to break exact degeneracies (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    # Print law: no two grains occupy the same position across the assembly.
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"bladder print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6")
+
+    # Derived hold force: the x-reaction the left plate must supply to hold the
+    # shell+contents at the cold print geometry.  This is the muscle end-weight
+    # form: sum the x-acceleration on the left plate from the kernel's force
+    # evaluation on the zero-velocity print (resistance is zero at print, so the
+    # result is pure DRAW + static cushion; for the hold threshold we take the
+    # magnitude).
+    acc = kernel.compute_forces(pos.astype(np.float32), vel.astype(np.float32),
+                                use_cuda=False)
+    F_hold = float(np.abs(acc[:n_plate, 0].sum()))
+
+    derived = {
+        "r_b": r_b,
+        "d_eq": d_eq,
+        "muscle_spacing": muscle_spacing,
+        "n_plate": 2 * n_plate,
+        "n_shell": n_shell,
+        "n_content": n_content,
+        "s0": s0,
+        "center_x": center_x,
+        "neck_center": neck_center,
+        "neck_axis": neck_axis,
+        "F_hold": F_hold,
+    }
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, s0, derived

@@ -1461,6 +1461,348 @@ def skin_main(args, seed):
     print("=" * 70)
 
 
+# ── BLADDER-specific helpers ──────────────────────────────────────────
+
+# Inherit the muscle's derived plate speed (5% bond sound speed).
+BLADDER_V_PLATE = MUSCLE_V_PLATE
+
+
+def _bladder_plate_indices(pos: np.ndarray, grain_ids: np.ndarray):
+    """Return (left_idx, right_idx) for the two pinned plates."""
+    plate_idx = np.flatnonzero(grain_ids == -1)
+    n_plate = plate_idx.size
+    n_half = n_plate // 2
+    plate_x = pos[plate_idx, 0]
+    order = np.argsort(plate_x)
+    left_idx = plate_idx[order[:n_half]].astype(np.int32)
+    right_idx = plate_idx[order[-n_half:]].astype(np.int32)
+    return left_idx, right_idx
+
+
+def _bladder_escape_count_and_first_pos(pos: np.ndarray, grain_ids: np.ndarray,
+                                        center: np.ndarray, r_out: float,
+                                        escaped: np.ndarray,
+                                        first_pos: np.ndarray) -> int:
+    """
+    Update escape state for contents and return current escape count.
+
+    ``escaped`` and ``first_pos`` are updated in place for newly escaped grains.
+    """
+    content_idx = np.flatnonzero(grain_ids == 2)
+    if content_idx.size == 0:
+        return 0
+    rel = pos[content_idx].astype(np.float64) - center[None, :]
+    dist = np.linalg.norm(rel, axis=1)
+    outside = dist > r_out
+    newly = outside & (~escaped)
+    first_pos[newly] = pos[content_idx[newly]].astype(np.float64)
+    escaped[:] = escaped | outside
+    return int(outside.sum())
+
+
+def _bladder_shell_displacement(pos: np.ndarray, grain_ids: np.ndarray,
+                                ref_shell: np.ndarray) -> float:
+    """Max distance from any current shell grain to its nearest print shell grain."""
+    shell_idx = np.flatnonzero(grain_ids == 1)
+    if shell_idx.size == 0 or ref_shell.shape[0] == 0:
+        return 0.0
+    cur = pos[shell_idx].astype(np.float64)
+    d = cur[:, None, :] - ref_shell[None, :, :]
+    dist = np.linalg.norm(d, axis=2)
+    return float(dist.min(axis=1).max())
+
+
+def _run_bladder(pos, vel, pin_mask, grain_ids, s0, derived, v_plate, dt,
+                 tag, label):
+    """
+    Run the BLADDER squeeze protocol.
+
+    Phase 1 (converge): plates move inward from s0 until the measured plate
+    force reaches 2*F_hold AND at least half the contents have escaped, or the
+    plates reach the geometric limit of 2 muscle spacings apart.
+    Phase 2 (release): plates return to s0.
+    Phase 3 (hold): free evolution for ~1000 ticks (post-yield integrity window).
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    left_idx, right_idx = _bladder_plate_indices(pos, grain_ids)
+    n_content = int(derived["n_content"])
+    content_idx = np.arange(
+        2 * derived["n_plate"] + derived["n_shell"],
+        2 * derived["n_plate"] + derived["n_shell"] + n_content,
+        dtype=np.int32)
+
+    center = np.array([derived["center_x"], 0.0, 0.0], dtype=np.float64)
+    r_b = float(derived["r_b"])
+    d_eq = float(derived["d_eq"])
+    r_out = r_b + d_eq
+    F_hold = float(derived["F_hold"])
+    muscle_spacing = float(derived["muscle_spacing"])
+    min_sep = 2.0 * muscle_spacing
+    integrity_bar = 2.0 * muscle_spacing
+    neck_center = derived["neck_center"].astype(np.float64)
+    neck_axis = derived["neck_axis"].astype(np.float64)
+    neck_axis_u = neck_axis / max(np.linalg.norm(neck_axis), 1e-12)
+
+    ref_shell = pos[grain_ids == 1].copy().astype(np.float64)
+    escaped = np.zeros(n_content, dtype=bool)
+    first_escape_pos = np.zeros((n_content, 3), dtype=np.float64)
+
+    sample_every = 500
+
+    metrics = {
+        "tick": [],
+        "phase": [],
+        "separation": [],
+        "plate_force": [],
+        "shell_clusters": [],
+        "content_escape_count": [],
+        "max_shell_displacement": [],
+    }
+
+    def _sample(tick: int, phase: str):
+        left_x = float(sim.pos[left_idx, 0].mean())
+        right_x = float(sim.pos[right_idx, 0].mean())
+        separation = right_x - left_x
+        pforce = _plate_force(sim.acc, left_idx, right_idx)
+        shell_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
+        esc = _bladder_escape_count_and_first_pos(
+            sim.pos, grain_ids, center, r_out, escaped, first_escape_pos)
+        disp = _bladder_shell_displacement(sim.pos, grain_ids, ref_shell)
+
+        metrics["tick"].append(tick)
+        metrics["phase"].append(phase)
+        metrics["separation"].append(separation)
+        metrics["plate_force"].append(pforce)
+        metrics["shell_clusters"].append(shell_clust)
+        metrics["content_escape_count"].append(esc)
+        metrics["max_shell_displacement"].append(disp)
+
+        print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+              f"sep={separation:.5f} | force={pforce:.2f} | "
+              f"shell_clust={shell_clust} | escapes={esc:3d} | "
+              f"shell_disp={disp:.4f}")
+
+    print(f"\n[{label}] N={N} shell={derived['n_shell']} "
+          f"content={n_content} plates={derived['n_plate']}")
+    print(f"[{label}] s0={s0:.5f} F_hold={F_hold:.2f} 2*F_hold={2.0*F_hold:.2f} "
+          f"v_plate={v_plate:.5f} dt={dt}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    tick = 0
+    _sample(tick, "init")
+
+    # Phase 1: converge until yield threshold or geometric limit.
+    phase = "converge"
+    target_force = 2.0 * F_hold
+    target_escape = n_content // 2
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep <= min_sep:
+            break
+        # move plates inward by half the relative motion each side
+        dx = 0.5 * v_plate * dt
+        sim.pos[left_idx, 0] += dx
+        sim.pos[right_idx, 0] -= dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+        # check yield stop after stepping
+        cur_force = _plate_force(sim.acc, left_idx, right_idx)
+        cur_esc = int(escaped.sum())
+        if cur_force >= target_force and cur_esc >= target_escape:
+            break
+
+    _sample(tick, phase)
+
+    # Phase 2: release back to s0.
+    phase = "release"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep >= s0:
+            break
+        dx = -0.5 * v_plate * dt
+        sim.pos[left_idx, 0] += dx
+        sim.pos[right_idx, 0] -= dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    # Phase 3: post-yield integrity hold.
+    phase = "hold"
+    hold_ticks = 1000
+    for _ in range(hold_ticks):
+        tick += 1
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics, first_escape_pos, escaped, sim.pos.copy()
+
+
+def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
+                           label: str):
+    """Print BLADDER falsifier verdict; return dict of booleans."""
+    phases = metrics["phase"]
+    sep = np.asarray(metrics["separation"], dtype=np.float64)
+    pforce = np.asarray(metrics["plate_force"], dtype=np.float64)
+    shell_clust = np.asarray(metrics["shell_clusters"], dtype=np.int32)
+    esc = np.asarray(metrics["content_escape_count"], dtype=np.int32)
+    disp = np.asarray(metrics["max_shell_displacement"], dtype=np.float64)
+
+    F_hold = float(derived["F_hold"])
+    muscle_spacing = float(derived["muscle_spacing"])
+    integrity_bar = 2.0 * muscle_spacing
+    neck_center = derived["neck_center"].astype(np.float64)
+    neck_axis = derived["neck_axis"].astype(np.float64)
+    neck_axis_u = neck_axis / max(np.linalg.norm(neck_axis), 1e-12)
+
+    # (a) SEAL: while force < F_hold, zero escapes and shell clusters == 1.
+    seal_idx = [i for i, f in enumerate(pforce) if f < F_hold]
+    if not seal_idx:
+        seal_idx = [0]
+    seal_ok = (
+        all(esc[i] == 0 for i in seal_idx) and
+        all(shell_clust[i] == 1 for i in seal_idx))
+
+    # (b) YIELD: by force >= 2*F_hold or max convergence (min separation).
+    min_sep = 2.0 * muscle_spacing
+    yield_idx = None
+    for i in range(len(phases)):
+        if pforce[i] >= 2.0 * F_hold or sep[i] <= min_sep:
+            yield_idx = i
+            break
+    if yield_idx is None:
+        yield_ok = False
+        yield_esc = 0
+    else:
+        yield_ok = (esc[yield_idx] >= derived["n_content"] // 2 and
+                    (shell_clust == 1).all())
+        yield_esc = int(esc[yield_idx])
+
+    # (c) NECK SELECTIVITY: first-outside positions within 2 spacings of axis.
+    total_escaped = int(escaped.sum())
+    neck_ok = False
+    in_neck = out_neck = 0
+    if total_escaped > 0:
+        pos_out = first_escape_pos[escaped]
+        to_axis = pos_out - neck_center[None, :]
+        cross = np.cross(to_axis, neck_axis_u[None, :])
+        dist_axis = np.linalg.norm(cross, axis=1)
+        in_neck = int(np.count_nonzero(dist_axis <= integrity_bar))
+        out_neck = total_escaped - in_neck
+        neck_ok = out_neck == 0
+
+    # (d) SHELL INTEGRITY post-yield: after release/hold, shell cluster 1 and
+    # max displacement <= 2 spacings.
+    post_idx = [i for i, p in enumerate(phases) if p in ("release", "hold")]
+    if post_idx:
+        integrity_ok = (
+            all(shell_clust[i] == 1 for i in post_idx) and
+            all(disp[i] <= integrity_bar for i in post_idx))
+        post_max_disp = float(max(disp[i] for i in post_idx))
+    else:
+        integrity_ok = False
+        post_max_disp = 0.0
+
+    print(f"\n[{label}] BLADDER FALSIFIERS:")
+    print(f"  (a) SEAL      : {'PASS' if seal_ok else 'FAIL'}  "
+          f"force<F_hold samples={len(seal_idx)} escapes={int(esc[seal_idx].max()) if seal_idx else 0} "
+          f"shell_clust max={int(shell_clust[seal_idx].max()) if seal_idx else 0}")
+    if yield_idx is not None:
+        print(f"  (b) YIELD     : {'PASS' if yield_ok else 'FAIL'}  "
+              f"at tick={metrics['tick'][yield_idx]} force={pforce[yield_idx]:.2f} "
+              f"sep={sep[yield_idx]:.5f} escapes={yield_esc}/{derived['n_content']//2} "
+              f"shell_clust max={int(shell_clust.max())}")
+    else:
+        print(f"  (b) YIELD     : FAIL  (force never reached 2*F_hold or min sep)")
+    print(f"  (c) NECK      : {'PASS' if neck_ok else 'FAIL'}  "
+          f"escaped={total_escaped} in_neck={in_neck} out_neck={out_neck} "
+          f"(bar {integrity_bar:.4f} from axis)")
+    print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
+          f"post-yield shell_clust max={int(shell_clust[post_idx].max()) if post_idx else 0} "
+          f"max disp={post_max_disp:.4f} (bar {integrity_bar:.4f})")
+
+    return {
+        "seal_ok": seal_ok,
+        "yield_ok": yield_ok,
+        "neck_ok": neck_ok,
+        "integrity_ok": integrity_ok,
+    }
+
+
+def bladder_main(args, seed):
+    """BLADDER print entry point: build, squeeze, yield, release, judge."""
+    pos, vel, pin_mask, grain_ids, s0, derived = seed_structures.bladder(
+        seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    v_plate = BLADDER_V_PLATE
+    tag = f"{args.tag}_" if args.tag else ""
+
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL - BLADDER v1 print run")
+    print(f"N={N}, shell={derived['n_shell']}, content=4^3, plates=4x4, "
+          f"seed={seed}, dt={dt}")
+    print("-" * 70)
+    print("STATEMENT: A closed spherical shell one grain thick, packed with a")
+    print("  condensed content droplet and squeezed by two pinned muscle plates,")
+    print("  seals at low pressure, yields contents through a single neck at a")
+    print("  derived force threshold, and remains one closed mat after release.")
+    print("PREDICTION: The shell holds zero content escape while plate force is")
+    print("  below F_hold; at or before 2*F_hold at least half the contents exit")
+    print("  through the neck; the shell stays one cluster and shows no grain")
+    print("  displacement > 2 spacings after release.")
+    print("FALSIFIERS:")
+    print("  (a) SEAL      - content escapes or shell splits while force < F_hold")
+    print("  (b) YIELD     - fewer than half contents escape by 2*F_hold/min sep")
+    print("      OR shell splits during squeeze")
+    print("  (c) NECK      - any escapee exits outside the neck corridor")
+    print("  (d) INTEGRITY - shell splits or any shell grain displaced > 2 spacings")
+    print("      post-yield")
+    print("=" * 70)
+    print(f"\nDerived r_b        = {derived['r_b']:.5f}")
+    print(f"Derived d_eq       = {derived['d_eq']:.5f}")
+    print(f"Derived s0         = {s0:.5f}")
+    print(f"Derived F_hold     = {derived['F_hold']:.2f}")
+    print(f"2 * F_hold         = {2.0*derived['F_hold']:.2f}")
+    print(f"Min separation     = {2.0*derived['muscle_spacing']:.5f}")
+    print(f"Neck center        = ({derived['neck_center'][0]:.4f}, "
+          f"{derived['neck_center'][1]:.4f}, {derived['neck_center'][2]:.4f})")
+    print(f"Neck axis          = ({derived['neck_axis'][0]:.4f}, "
+          f"{derived['neck_axis'][1]:.4f}, {derived['neck_axis'][2]:.4f})\n")
+
+    metrics, first_escape_pos, escaped, final_pos = _run_bladder(
+        pos, vel, pin_mask, grain_ids, s0, derived,
+        v_plate, dt, tag, "bladder")
+
+    _print_bladder_verdict(metrics, first_escape_pos, escaped, derived,
+                           "bladder")
+    print("=" * 70)
+
+
 # ── TENDON-specific helpers ───────────────────────────────────────────
 
 def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
@@ -2945,7 +3287,7 @@ def main():
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
                                  "bone", "muscle", "tendon", "joint", "sheet",
-                                 "skin"],
+                                 "skin", "bladder"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -3012,6 +3354,11 @@ def main():
     # SKIN print has its own driver (mat draped on muscle bulk)
     if args.structure == "skin":
         skin_main(args, SEED)
+        return
+
+    # BLADDER print has its own driver (closed shell + contents squeeze test)
+    if args.structure == "bladder":
+        bladder_main(args, SEED)
         return
 
     # choose initial state

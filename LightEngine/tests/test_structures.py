@@ -800,3 +800,75 @@ def test_skin_surface_grains_exist():
     assert derived["surface_grains"].size > 0
     lo, hi = derived["conform_band"]
     assert lo < hi
+
+
+def test_bladder_determinism():
+    """bladder() is deterministic for a fixed seed."""
+    a = seed_structures.bladder(seed=7)
+    b = seed_structures.bladder(seed=7)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+def test_bladder_counts():
+    """bladder() builds two 4x4 plates, a derived shell, and 4^3 contents."""
+    pos, _, pin_mask, grain_ids, s0, derived = seed_structures.bladder(seed=0)
+    n_plate = 2 * 4 * 4
+    n_content = 4 ** 3
+    assert pos.shape[0] == n_plate + derived["n_shell"] + n_content
+    assert int((grain_ids == -1).sum()) == n_plate
+    assert int((grain_ids == 2).sum()) == n_content
+    assert int((grain_ids == 1).sum()) == derived["n_shell"]
+    # shell count is derived from surface area / d_eq^2
+    expected_shell = int(round(4.0 * np.pi * derived["r_b"] ** 2
+                               / derived["d_eq"] ** 2))
+    assert 0.95 * expected_shell <= derived["n_shell"] <= 1.05 * expected_shell
+
+
+def test_bladder_only_plates_pinned():
+    """Only the squeeze plates are pinned; shell and contents are free."""
+    _, _, pin_mask, grain_ids, _, _ = seed_structures.bladder(seed=0)
+    plate_mask = grain_ids == -1
+    assert pin_mask[plate_mask].all()
+    assert not pin_mask[~plate_mask].any()
+
+
+def test_bladder_neck_hole():
+    """No shell grain sits inside the derived neck exclusion zone."""
+    pos, _, _, grain_ids, _, derived = seed_structures.bladder(seed=0)
+    shell = pos[grain_ids == 1]
+    dist = np.linalg.norm(shell - derived["neck_center"], axis=1)
+    assert dist.min() > 0.8 * derived["d_eq"]
+
+
+def test_bladder_no_shared_positions():
+    """No two grains share a position in the bladder print."""
+    pos, _, _, _, _, _ = seed_structures.bladder(seed=0)
+    pos64 = np.asarray(pos, dtype=np.float64)
+    diff = pos64[:, None, :] - pos64[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
+
+def test_bladder_plate_separation():
+    """Plate separation matches the derived s0."""
+    pos, _, _, grain_ids, s0, _ = seed_structures.bladder(seed=0)
+    plates = pos[grain_ids == -1]
+    left_x = float(plates[plates[:, 0] < plates[:, 0].mean(), 0].mean())
+    right_x = float(plates[plates[:, 0] > plates[:, 0].mean(), 0].mean())
+    assert abs((right_x - left_x) - s0) < 0.01
+
+
+def test_bladder_F_hold_positive():
+    """The derived hold force is positive."""
+    _, _, _, _, _, derived = seed_structures.bladder(seed=0)
+    assert derived["F_hold"] > 0.0
