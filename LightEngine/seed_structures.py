@@ -1133,10 +1133,10 @@ def _R_true_at_print(pos: np.ndarray,
     Kernel torque ratio about the fulcrum contact point at the cold print.
 
     The kernel is asked for the static force on every grain (zero velocity,
-    current positions).  Only FREE grains are summed: the pinned ground plate
-    is the support and is excluded.  All free bodies are included --- lever,
-    fulcrum, droplet, load --- because every one of them exerts or receives
-    torque about the fulcrum through the pair forces.
+    current positions).  Only FREE grains are summed: every pinned body is a
+    support and is excluded (ground plate in all versions; the fulcrum block in
+    the pinned-fulcrum v3).  The moving bodies --- lever, droplet, load --- are
+    the ones that generate torque about the fulcrum.
 
     Sign convention: muscle-side-down torque is positive.  For a grain at
     position r relative to the contact point and force F = a (mass = 1),
@@ -1156,7 +1156,7 @@ def _R_true_at_print(pos: np.ndarray,
     acc64 = np.asarray(acc, dtype=np.float64)
     cp = np.asarray(contact_point, dtype=np.float64)
 
-    free = grain_ids != -1
+    free = (grain_ids != -1) & (~pin_mask)
     r = pos64[free] - cp
     F = acc64[free]
     tau_z = r[:, 0] * F[:, 2] - r[:, 2] * F[:, 0]
@@ -1175,19 +1175,19 @@ def lever(control: bool = False,
           seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
                                   np.ndarray, dict]:
     """
-    THE LEVER v2 print: a light lever whose balance ratio is the kernel's own
-    static torque about the fulcrum contact point.
+    THE LEVER v3 print: the fulcrum is a pinned bone, and the balance ratio is
+    the kernel's static torque about the fulcrum contact point.
 
     Grain ids:
       - plate   = -1 (pinned)
       - droplet = 0  (muscle)
-      - fulcrum = 1
+      - fulcrum = 1  (pinned in v3 — the skeletal pivot)
       - lever   = 2
       - load    = 3
 
     Geometry (all numbers derived from ``spacing`` and ``d_eq``):
       - 6x6 ground plate at z = 0.
-      - 4x4x4 fulcrum block seated d_eq above the plate.
+      - 4x4x4 fulcrum block seated d_eq above the plate and pinned to it.
       - 2x1x18 lever laid horizontal along x, its bottom face d_eq above
         the fulcrum top face.  L = 0.85 lu; muscle end at x = -L/2,
         load end at x = +L/2.
@@ -1196,17 +1196,20 @@ def lever(control: bool = False,
       - 4^3 load block resting on the lever's load (right) end, d_eq above
         the lever top face.
 
+    The muscle droplet is upgraded to 5^3 only if the standard 4^3 print
+    drives the main fulcrum contact within 10 % of the bracket edge (i.e.
+    within two lattice steps of the lever end).  This is the doc's
+    "heavier muscle first" route, tried before any arm length is changed.
+
     The fulcrum's contact x-position is derived by bisection on the kernel
     torque ratio R_true = tau_muscle / tau_load, where tau_muscle is the
     sum of all muscle-side-down signed torques and tau_load is the sum of
-    all load-side-down signed torques, computed over every free grain
-    (lever, fulcrum, droplet, load) at the cold print.  The pinned plate is
-    excluded because it is the external support.
+    all load-side-down signed torques, computed over the FREE grains
+    (lever, droplet, load) at the cold print.  The pinned plate and pinned
+    fulcrum are excluded because they are the support.
 
-    Main: R_true ~= 2.0 (+/- 0.1).  Control: the fulcrum is shifted toward
-    the muscle end, but it must clear the droplet by at least d_eq; the
-    contact is placed at the leftmost allowed position and R_true is checked
-    to lie in [0.5, 1.0].
+    Main: R_true ~= 2.0 (+/- 0.1), contact at least 2 lattice steps from the
+    lever end.  Control: R_true in [0.5, 1.0].
 
     Returns ``(positions, velocities, pin_mask, grain_ids, derived)``.
     """
@@ -1248,28 +1251,17 @@ def lever(control: bool = False,
     muscle_end_x = float(lever_x_off[0])
     load_end_x = float(lever_x_off[-1])
     # The insertion point is derived from the torque scan: place the droplet
-    # 30 % of the lever span from the muscle end so the main print can reach
-    # R_true = 2.0 without colliding with the fulcrum in the control print.
+    # 30 % of the lever span from the muscle end.
     insertion_x = muscle_end_x + 0.30 * L
 
-    # Droplet: 4^3 centered at the muscle insertion point.
-    drop_side = 4
-    n_drop = drop_side ** 3
-    drop_off = f_off
-    drop_y = f_off
-    drop_z = np.arange(drop_side, dtype=np.float64) * d + d_eq
-
-    drop_x = drop_off + insertion_x
-    dx, dy, dz = np.meshgrid(drop_x, drop_y, drop_z, indexing="ij")
-    droplet_pos = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
-    droplet_left = insertion_x - fulcrum_half_width
-
-    n_load = drop_side ** 3
+    # Load block is always 4^3; droplet size is chosen below.
+    load_side = 4
+    n_load = load_side ** 3
+    load_off = f_off
     load_y = f_off
     load_top_z = lever_bottom_z + (lever_h - 1) * d
-    load_z = np.arange(drop_side, dtype=np.float64) * d + load_top_z + d_eq
-
-    load_x = drop_off + load_end_x
+    load_z = np.arange(load_side, dtype=np.float64) * d + load_top_z + d_eq
+    load_x = load_off + load_end_x
     lx, ly2, lz2 = np.meshgrid(load_x, load_y, load_z, indexing="ij")
     load_pos = np.stack([lx.ravel(), ly2.ravel(), lz2.ravel()], axis=1)
 
@@ -1277,56 +1269,82 @@ def lever(control: bool = False,
     cx_min = muscle_end_x + fulcrum_half_width
     cx_max = load_end_x - fulcrum_half_width
 
-    # For the control, the fulcrum must also clear the droplet by d_eq.
-    cx_clear = droplet_left - fulcrum_half_width - d_eq
-    cx_ctrl_clip = float(np.clip(cx_clear, cx_min, cx_max))
+    def _solve(drop_side: int):
+        """Return the geometry and bisection result for one droplet size."""
+        n_drop = drop_side ** 3
+        drop_off = (np.arange(drop_side, dtype=np.float64)
+                    - (drop_side - 1) / 2.0) * d
+        drop_z = np.arange(drop_side, dtype=np.float64) * d + d_eq
+        drop_x = drop_off + insertion_x
+        dx, dy, dz = np.meshgrid(drop_x, drop_off, drop_z, indexing="ij")
+        droplet_pos = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
+        droplet_left = float(drop_x.min())
 
-    n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load
+        n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load
 
-    # Grain IDs and pin mask are the same for every candidate fulcrum placement.
-    grain_ids = np.empty(n_total, dtype=np.int32)
-    grain_ids[:n_plate] = -1
-    grain_ids[n_plate:n_plate + n_drop] = 0
-    grain_ids[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = 1
-    grain_ids[n_plate + n_drop + n_fulcrum:
-              n_plate + n_drop + n_fulcrum + n_lever] = 2
-    grain_ids[n_plate + n_drop + n_fulcrum + n_lever:] = 3
+        grain_ids = np.empty(n_total, dtype=np.int32)
+        grain_ids[:n_plate] = -1
+        grain_ids[n_plate:n_plate + n_drop] = 0
+        grain_ids[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = 1
+        grain_ids[n_plate + n_drop + n_fulcrum:
+                  n_plate + n_drop + n_fulcrum + n_lever] = 2
+        grain_ids[n_plate + n_drop + n_fulcrum + n_lever:] = 3
 
-    pin_mask = np.zeros(n_total, dtype=bool)
-    pin_mask[:n_plate] = True
+        pin_mask = np.zeros(n_total, dtype=bool)
+        pin_mask[:n_plate] = True
+        # v3: the fulcrum is a pinned bone anchored to the plate.
+        pin_mask[n_plate + n_drop:
+                 n_plate + n_drop + n_fulcrum] = True
 
-    # Build a throw-away to fix the shape, then generate one jitter field that
-    # is reused for every torque evaluation so the bisection is deterministic.
-    def _build_no_jitter(contact_x: float) -> np.ndarray:
-        fx = f_off + contact_x
-        fxg, fyg, fzg = np.meshgrid(fx, f_off, fz, indexing="ij")
-        fulcrum_p = np.stack([fxg.ravel(), fyg.ravel(), fzg.ravel()], axis=1)
-        pos = np.vstack([plate_pos, droplet_pos, fulcrum_p,
-                         lever_pos, load_pos]).astype(np.float64)
-        return pos
+        def _build_no_jitter(contact_x: float) -> np.ndarray:
+            fx = f_off + contact_x
+            fxg, fyg, fzg = np.meshgrid(fx, f_off, fz, indexing="ij")
+            fulcrum_p = np.stack([fxg.ravel(), fyg.ravel(), fzg.ravel()],
+                                 axis=1)
+            pos = np.vstack([plate_pos, droplet_pos, fulcrum_p,
+                             lever_pos, load_pos]).astype(np.float64)
+            return pos
 
-    tmp_pos = _build_no_jitter(0.0)
-    jitter = rng.normal(0.0, R_WALL * 0.01, size=tmp_pos.shape)
+        tmp_pos = _build_no_jitter(0.0)
+        jitter = rng.normal(0.0, R_WALL * 0.01, size=tmp_pos.shape)
 
-    def _assemble(contact_x: float) -> np.ndarray:
-        pos = _build_no_jitter(contact_x)
-        pos += jitter
-        return pos
+        def _assemble(contact_x: float) -> np.ndarray:
+            pos = _build_no_jitter(contact_x)
+            pos += jitter
+            return pos
 
-    def _ratio_for_cx(cx: float):
-        pos = _assemble(cx)
-        cp = np.array([float(cx), 0.0, fulcrum_top_z], dtype=np.float64)
-        R_true, tau_pos, tau_neg = _R_true_at_print(
-            pos, grain_ids, cp, pin_mask)
-        return R_true, tau_pos, tau_neg
+        def _ratio_for_cx(cx: float):
+            pos = _assemble(cx)
+            cp = np.array([float(cx), 0.0, fulcrum_top_z], dtype=np.float64)
+            R_true, tau_pos, tau_neg = _R_true_at_print(
+                pos, grain_ids, cp, pin_mask)
+            return R_true, tau_pos, tau_neg
 
-    # --- main: bisect fulcrum contact_x until R_true ~= 2.0 -------------
+        return {
+            "drop_side": drop_side,
+            "n_drop": n_drop,
+            "n_total": n_total,
+            "droplet_pos": droplet_pos,
+            "droplet_left": droplet_left,
+            "grain_ids": grain_ids,
+            "pin_mask": pin_mask,
+            "jitter": jitter,
+            "_build_no_jitter": _build_no_jitter,
+            "_assemble": _assemble,
+            "_ratio_for_cx": _ratio_for_cx,
+        }
+
+    # --- Try standard 4^3 muscle first. ---------------------------------
+    route = "standard"
+    geometry = _solve(4)
+
+    # --- main bisection -------------------------------------------------
     target_main = 2.0
     tol_main = 0.1
-    print(f"[lever] v2 deriving main fulcrum contact_x for "
+    print(f"[lever] v3 deriving main fulcrum contact_x for "
           f"R_true = {target_main:.1f} +/- {tol_main:.2f}")
-    R_min, tp_min, tn_min = _ratio_for_cx(cx_min)
-    R_max, tp_max, tn_max = _ratio_for_cx(cx_max)
+    R_min, tp_min, tn_min = geometry["_ratio_for_cx"](cx_min)
+    R_max, tp_max, tn_max = geometry["_ratio_for_cx"](cx_max)
     print(f"  bracket cx={cx_min:.6f} -> R_true={R_min:.4f} "
           f"(tau_pos={tp_min:.3f}, tau_neg={tn_min:.3f})")
     print(f"  bracket cx={cx_max:.6f} -> R_true={R_max:.4f} "
@@ -1334,14 +1352,14 @@ def lever(control: bool = False,
 
     if R_max < target_main - tol_main or R_min > target_main + tol_main:
         raise RuntimeError(
-            f"lever v2 cannot derive main R_true near {target_main}: "
+            f"lever v3 cannot derive main R_true near {target_main}: "
             f"R(cx_min)={R_min:.3f}, R(cx_max)={R_max:.3f}")
 
     cx_lo = cx_min
     cx_hi = cx_max
     for step in range(24):
         cx_mid = 0.5 * (cx_lo + cx_hi)
-        R_mid, tp_mid, tn_mid = _ratio_for_cx(cx_mid)
+        R_mid, tp_mid, tn_mid = geometry["_ratio_for_cx"](cx_mid)
         print(f"  step {step:2d}: cx={cx_mid:.6f}  R_true={R_mid:.4f}  "
               f"tau_pos={tp_mid:.3f}  tau_neg={tn_mid:.3f}")
         if R_mid < target_main:
@@ -1350,26 +1368,74 @@ def lever(control: bool = False,
             cx_hi = cx_mid
 
     contact_x = 0.5 * (cx_lo + cx_hi)
-    R_true_main, _, _ = _ratio_for_cx(contact_x)
+    R_true_main, _, _ = geometry["_ratio_for_cx"](contact_x)
     print(f"  main final: contact_x={contact_x:.6f}  R_true={R_true_main:.4f}")
+
+    # Margin from the contact point to the load end of the lever.
+    margin_to_load_end = float(load_end_x - contact_x)
+    min_margin = 2.0 * d
+    print(f"[lever] v3 load-end margin = {margin_to_load_end:.5f} "
+          f"(derived bar = {min_margin:.5f})")
+
+    if margin_to_load_end < min_margin:
+        print("[lever] v3 route: standard muscle lands on the bracket edge; "
+              "switching to HEAVY MUSCLE (5^3 droplet) per THE_CATEGORIES.")
+        route = "heavy_muscle"
+        geometry = _solve(5)
+
+        print(f"[lever] v3 deriving main fulcrum contact_x for "
+              f"R_true = {target_main:.1f} +/- {tol_main:.2f}")
+        R_min, tp_min, tn_min = geometry["_ratio_for_cx"](cx_min)
+        R_max, tp_max, tn_max = geometry["_ratio_for_cx"](cx_max)
+        print(f"  bracket cx={cx_min:.6f} -> R_true={R_min:.4f} "
+              f"(tau_pos={tp_min:.3f}, tau_neg={tn_min:.3f})")
+        print(f"  bracket cx={cx_max:.6f} -> R_true={R_max:.4f} "
+              f"(tau_pos={tp_max:.3f}, tau_neg={tn_max:.3f})")
+
+        if R_max < target_main - tol_main or R_min > target_main + tol_main:
+            raise RuntimeError(
+                f"lever v3 heavy muscle cannot derive main R_true near "
+                f"{target_main}: R(cx_min)={R_min:.3f}, R(cx_max)={R_max:.3f}")
+
+        cx_lo = cx_min
+        cx_hi = cx_max
+        for step in range(24):
+            cx_mid = 0.5 * (cx_lo + cx_hi)
+            R_mid, tp_mid, tn_mid = geometry["_ratio_for_cx"](cx_mid)
+            print(f"  step {step:2d}: cx={cx_mid:.6f}  R_true={R_mid:.4f}  "
+                  f"tau_pos={tp_mid:.3f}  tau_neg={tn_mid:.3f}")
+            if R_mid < target_main:
+                cx_lo = cx_mid
+            else:
+                cx_hi = cx_mid
+
+        contact_x = 0.5 * (cx_lo + cx_hi)
+        R_true_main, _, _ = geometry["_ratio_for_cx"](contact_x)
+        margin_to_load_end = float(load_end_x - contact_x)
+        print(f"  main final: contact_x={contact_x:.6f}  R_true={R_true_main:.4f}")
+        print(f"[lever] v3 heavy-muscle load-end margin = "
+              f"{margin_to_load_end:.5f}")
+    else:
+        print("[lever] v3 route: STANDARD (4^3 droplet) -- contact clears "
+              "the bracket edge by the derived margin.")
 
     # --- control: place fulcrum as far left as geometry allows ----------
     if control:
-        cx_ctrl = cx_ctrl_clip
-        R_ctrl, tp_c, tn_c = _ratio_for_cx(cx_ctrl)
-        print(f"[lever] v2 control clearance cx={cx_ctrl:.6f}  "
+        droplet_left = geometry["droplet_left"]
+        cx_clear = droplet_left - fulcrum_half_width - d_eq
+        cx_ctrl = float(np.clip(cx_clear, cx_min, cx_max))
+        R_ctrl, tp_c, tn_c = geometry["_ratio_for_cx"](cx_ctrl)
+        print(f"[lever] v3 control clearance cx={cx_ctrl:.6f}  "
               f"R_true={R_ctrl:.4f}  tau_pos={tp_c:.3f}  tau_neg={tn_c:.3f}")
 
         if not (0.5 <= R_ctrl <= 1.0):
-            # Fall back to a one-sided bisection toward the nearest target.
             if R_ctrl > 1.0:
                 target_ctrl = 1.0
                 lo, hi = cx_min, cx_ctrl
                 R_lo, R_hi = R_min, R_ctrl
-                # R should fall as cx moves left.
                 if R_lo > target_ctrl:
                     raise RuntimeError(
-                        f"lever v2 control cannot reach R_true <= 1.0: "
+                        f"lever v3 control cannot reach R_true <= 1.0: "
                         f"R(cx_min)={R_min:.3f}, R(clearance)={R_ctrl:.3f}")
             else:  # R_ctrl < 0.5
                 target_ctrl = 0.5
@@ -1377,12 +1443,12 @@ def lever(control: bool = False,
                 R_lo, R_hi = R_ctrl, R_max
                 if R_hi < target_ctrl:
                     raise RuntimeError(
-                        f"lever v2 control cannot reach R_true >= 0.5: "
+                        f"lever v3 control cannot reach R_true >= 0.5: "
                         f"R(clearance)={R_ctrl:.3f}, R(cx_max)={R_max:.3f}")
 
             for step in range(16):
                 cx_mid = 0.5 * (lo + hi)
-                R_mid, tp_m, tn_m = _ratio_for_cx(cx_mid)
+                R_mid, tp_m, tn_m = geometry["_ratio_for_cx"](cx_mid)
                 print(f"  ctrl step {step:2d}: cx={cx_mid:.6f}  "
                       f"R_true={R_mid:.4f}  tau_pos={tp_m:.3f}  "
                       f"tau_neg={tn_m:.3f}")
@@ -1398,18 +1464,22 @@ def lever(control: bool = False,
                     else:
                         hi = cx_mid
                     contact_x = hi
-            R_ctrl, _, _ = _ratio_for_cx(contact_x)
+            R_ctrl, _, _ = geometry["_ratio_for_cx"](contact_x)
             print(f"  control final: contact_x={contact_x:.6f}  "
                   f"R_true={R_ctrl:.4f}")
         else:
             contact_x = cx_ctrl
-            R_ctrl, _, _ = _ratio_for_cx(contact_x)
+            R_ctrl, _, _ = geometry["_ratio_for_cx"](contact_x)
             print(f"  control final: contact_x={contact_x:.6f}  "
                   f"R_true={R_ctrl:.4f}")
     else:
         contact_x = float(contact_x)
 
     # Final print positions at the derived contact point.
+    _assemble = geometry["_assemble"]
+    grain_ids = geometry["grain_ids"]
+    pin_mask = geometry["pin_mask"]
+    n_drop = geometry["n_drop"]
     pos = _assemble(contact_x)
 
     # Recompute component positions after jitter for derived quantities.
@@ -1427,7 +1497,7 @@ def lever(control: bool = False,
     min_pair_dist = float(np.sqrt(r2.min()))
     if min_pair_dist <= 1e-6:
         raise RuntimeError(
-            f"lever v2 print law violated: minimum pair distance "
+            f"lever v3 print law violated: minimum pair distance "
             f"{min_pair_dist} <= 1e-6 (control={control})")
 
     # Fixed indices from the cold print (after jitter; ordering is stable).
@@ -1458,11 +1528,11 @@ def lever(control: bool = False,
     if control:
         if R_true_final > 1.05:
             raise RuntimeError(
-                f"lever v2 control print R_true={R_true_final:.3f} exceeds 1.05")
+                f"lever v3 control print R_true={R_true_final:.3f} exceeds 1.05")
     else:
         if not (1.8 <= R_true_final <= 2.2):
             raise RuntimeError(
-                f"lever v2 main print R_true={R_true_final:.3f} outside "
+                f"lever v3 main print R_true={R_true_final:.3f} outside "
                 f"[1.8, 2.2]")
 
     fulcrum_contact_point = np.array([float(contact_x), 0.0, fulcrum_top_z],
@@ -1470,6 +1540,8 @@ def lever(control: bool = False,
 
     derived = {
         "control": bool(control),
+        "route": route,
+        "droplet_side": geometry["drop_side"],
         "d_eq": d_eq,
         "spacing": d,
         "n_plate": n_plate,
@@ -1490,6 +1562,7 @@ def lever(control: bool = False,
         "R_true": float(R_true_final),
         "tau_pos": float(tau_pos_final),
         "tau_neg": float(tau_neg_final),
+        "margin_to_load_end": margin_to_load_end,
         "plate_pos0": plate_pos_j.copy(),
         "load_end_z0": float(load_c[2]),
     }

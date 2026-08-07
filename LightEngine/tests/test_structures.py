@@ -935,10 +935,12 @@ def test_lever_counts():
     pos, _, pin_mask, grain_ids, derived = seed_structures.lever(
         control=False, seed=0)
     n_plate = 6 * 6
-    n_drop = 4 ** 3
     n_fulcrum = 4 ** 3
     n_lever = 2 * 1 * 18
     n_load = 4 ** 3
+    # The droplet may be standard 4^3 or heavy-muscle 5^3; read it back.
+    n_drop = derived["n_droplet"]
+    assert n_drop in (4 ** 3, 5 ** 3)
     assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load
     assert int((grain_ids == -1).sum()) == n_plate
     assert int((grain_ids == 0).sum()) == n_drop
@@ -946,18 +948,17 @@ def test_lever_counts():
     assert int((grain_ids == 2).sum()) == n_lever
     assert int((grain_ids == 3).sum()) == n_load
     assert derived["n_plate"] == n_plate
-    assert derived["n_droplet"] == n_drop
     assert derived["n_fulcrum"] == n_fulcrum
     assert derived["n_lever"] == n_lever
     assert derived["n_load"] == n_load
 
 
-def test_lever_only_plate_pinned():
-    """Only the ground plate is pinned."""
+def test_lever_pinned_bodies():
+    """The ground plate and the fulcrum block are pinned; nothing else is."""
     pos, _, pin_mask, grain_ids, _ = seed_structures.lever(control=False, seed=0)
-    plate_mask = grain_ids == -1
-    assert pin_mask[plate_mask].all()
-    assert not pin_mask[~plate_mask].any()
+    pinned_mask = (grain_ids == -1) | (grain_ids == 1)
+    assert pin_mask[pinned_mask].all()
+    assert not pin_mask[~pinned_mask].any()
 
 
 def test_lever_no_shared_positions():
@@ -974,6 +975,16 @@ def test_lever_main_ratio():
     """Main lever print derives kernel R_true in [1.8, 2.2]."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
     assert 1.8 <= derived["R_true"] <= 2.2
+
+
+def test_lever_main_contact_margin():
+    """Main fulcrum contact clears the lever end by at least 2 lattice steps."""
+    _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
+    if derived["route"] == "standard":
+        assert derived["margin_to_load_end"] >= 2.0 * derived["spacing"]
+    else:
+        # Heavy-muscle route is recorded in derived; just ensure it was noted.
+        assert derived["route"] == "heavy_muscle"
 
 
 def test_lever_control_ratio():

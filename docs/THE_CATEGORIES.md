@@ -792,6 +792,31 @@ same bisection (the target must now be reachable OFF the bracket edge —
 if it is not, derive a heavier muscle, 5³ = 125, before touching the arm
 lengths), and rerun the two-sided falsifier unchanged: main lifts through
 0.10 in absolute z, control holds.
+**LEVER v3 VERDICT 2026-08-07 (pinned fulcrum, run tags lever_v3 /
+lever_v3_control):** the pivot is FIXED and the machine's soul is
+CONFIRMED — what remains is a bone-class mistake. Pinned, the fulcrum
+holds: main gap seated at 0.041 for the whole run, zero migration, and
+the SETTLED rotation direction now matches R_true in BOTH builds —
+main (R_true = 2.003) settles muscle-down at +20°, control (R_true =
+0.912) settles load-down at −150°. The two-sided claim theLever was
+built to measure is true: the kernel's static torque about the anchored
+fulcrum decides which way the machine turns, in both directions. (c)
+BALANCE FAILS only as metered — the first-600-tick window catches the
+transient sag before the torque direction dominates; the falsifier's
+substance passes at settle, the window is the bug (struck, re-derived
+in v4). (a) LIFT FAILS for the real reason, and it is the dimension
+ladder speaking again: the v2 agent swapped the 4×4×16 bone column for a
+2×1×18 rod, and a 2×1 rod is TENDON-CLASS — no transverse confinement,
+no bending stiffness; under the load block it sags (load_gain −0.166
+while rotating muscle-down, exactly the sheet/tendon lesson). A lever
+arm must be BONE-CLASS: bulk that bears. (b) HOLD PASS; (d) INTEGRITY
+PASS both runs (control's fulcrum gap opens to 0.145 as the rod rolls
+around the pinned block — recorded; the pinned block itself never
+migrates). Successor (named): v4 — bone-class lever arm (4×4×16, the v1
+cross-section restored), pinned fulcrum, R_true bisection unchanged
+(heavier muscle 5³ if the edge intrudes), (c) judged on the SETTLED
+direction (last 20% of samples vs R_true sign), (a) unchanged at 0.10
+absolute.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

@@ -2132,25 +2132,26 @@ def lever_main(args, seed):
     label = "lever_control" if control else "lever"
     version = "control" if control else "main"
 
+    droplet_label = f"{derived['droplet_side']}^3"
     print("=" * 70)
-    print(f"THE KERNEL - LEVER v2 print run ({version})")
-    print(f"N={N}, plate=6x6, fulcrum=4x4x4, lever=2x1x18, droplet=4^3, "
-          f"load=4^3, seed={seed}, dt={dt}, ticks={ticks}, control={control}")
+    print(f"THE KERNEL - LEVER v3 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), lever=2x1x18, "
+          f"droplet={droplet_label} (route={derived['route']}), load=4^3, "
+          f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
     print("STATEMENT: A muscle-bone machine trades muscle force for load force")
     print("  through arm length; the balance ratio is the kernel's own static")
-    print("  torque about the fulcrum contact point on the cold print.")
+    print("  torque about the PINNED fulcrum contact point on the cold print.")
     if control:
         print("PREDICTION: With kernel-verified R_true <= 1, the load end")
         print("  tips load-side-down and never rises more than one lattice")
         print("  step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified R_true >= 2, the muscle side")
-        print("  tips down, the load end lifts through at least two lattice")
-        print("  steps while the fulcrum contact holds or recovers.")
+        print("PREDICTION: With kernel-verified R_true >= 2 and the fulcrum")
+        print("  anchored, the muscle side tips down and the load end lifts")
+        print("  through at least two lattice steps.")
     print("FALSIFIERS:")
-    print("  (a) LIFT    - main: load end rises >= 0.10 while fulcrum contact")
-    print("      holds or recovers to the seated band")
+    print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
     print("  (c) BALANCE - kernel torque predicts the first-sustained tip:")
     print("      sign of early angle matches sign(R_true - 1) and R_true lies")
@@ -2163,7 +2164,8 @@ def lever_main(args, seed):
     print(f"Derived F_m   = {derived['F_m']:.3f}")
     print(f"Derived W_L   = {derived['W_L']:.3f}")
     print(f"Derived R_static = {derived['R_static']:.3f}")
-    print(f"Derived R_true= {derived['R_true']:.3f}\n")
+    print(f"Derived R_true= {derived['R_true']:.3f}")
+    print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}\n")
 
     metrics = _run_lever(pos, vel, pin_mask, grain_ids, derived,
                          dt, ticks, tag, label)
