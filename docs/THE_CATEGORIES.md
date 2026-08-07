@@ -817,6 +817,51 @@ cross-section restored), pinned fulcrum, R_true bisection unchanged
 (heavier muscle 5³ if the edge intrudes), (c) judged on the SETTLED
 direction (last 20% of samples vs R_true sign), (a) unchanged at 0.10
 absolute.
+**LEVER v4 VERDICT 2026-08-07 (bone-class arm 4×4×16 restored, pinned
+fulcrum, run tags lever_v4 / lever_v4_control, 8000 ticks):** the sag is
+dead and the machine slid off its pivot — the heavy arm spends the whole
+torque budget carrying itself. The chain of cause, each link verified
+from the logs. (1) The bone-class arm is RIGID: no decoupled sag this
+print (v3's tendon-class failure mode is gone at 4×4×16). (2) But a
+solid 256-grain arm crushes the ratio: the bracket sweep gives R_true in
+[0.89, 1.46] with the standard 4³ muscle and — note this — [0.79, 1.41]
+with the HEAVY 5³ muscle: the bigger droplet LOWERED the ceiling,
+because DRAW is long-range (a_m = 0.675, ~14 lattice steps) and the
+muscle pulls the whole arm, load side included, inflating both torque
+sums toward parity. R_true = 2.0 is UNREACHABLE anywhere in the bracket;
+the bisection clamped to the edge cx = +0.300, 0.075 from the load end.
+(3) At that degenerate placement the pivot cannot hold the machine:
+main's transient went +4° muscle-down at tick 200 (the statics winning,
+R_true = 1.409), then reversed to −46° by tick 400 as the fulcrum gap
+spiked to 0.198 — contact LOST — settling slumped at −61.8° with the gap
+riding 0.108 (out of the seated band; the load end grounded on the plate
+and the lever lying against its pivot, not seated on it). (c) BALANCE
+FAIL main (settled sign −1 vs R_true > 1), (a) LIFT FAIL (max load_gain
+0.0000 — the load never rose). Control (R_true = 0.794, cx = −0.300,
+opposite edge): settled −64.6° load-down as predicted — (c) PASS, (b)
+HOLD PASS (max 0.0198), (d) INTEGRITY PASS both runs. The v4 law, two
+clauses: a lever's advantage is paid out of the arm's own mass, and a
+draw-muscle's force cannot be localized to its insertion — so the static
+margin must be LARGE and the pivot must sit OFF the bracket edge (v3:
+R_true = 2.0 mid-bracket survived the dynamics; v4: 1.41 at the edge did
+not). One metering sin struck: the v4 test asserts the heavy-muscle
+contingency route as the EXPECTED outcome — a test that enshrines the
+fallback; v5 must restore the standard route as the expectation.
+Successor (named): v5 — the HOLLOW-TUBE arm, which is what bone
+actually is. Beam theory: bending stiffness lives in the second moment
+of area (outer grains carry it), weight lives in the volume — a 4×4×16
+shell one grain thick with a 2×2 void (12 grains per ring, 192 total,
+75% of the solid mass) keeps most of the stiffness and hands the torque
+budget back to the muscle. The FIRST gate is static, no dynamics run
+before it passes: the same bracket sweep on the tube geometry must reach
+R_true = 2.0 at a contact point at least 2 lattice steps OFF the bracket
+edge with the STANDARD 4³ muscle. If the sweep cannot, the derivation —
+not a sweep — says which knob moves: shorten the arm (self-weight torque
+scales with length squared, stiffness with length cubed — shorter arms
+are disproportionately stiffer AND lighter-torqued) before touching the
+muscle. FALSIFIER: if the tube sags under the load (load_gain decouples
+from rotation as in v3) the 1-grain shell is sheet-class and the void
+shrinks to 1×1; record it.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

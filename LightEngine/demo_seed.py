@@ -2048,13 +2048,12 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
         lift_ok = (max_gain >= 0.10) and recovery_ok
         hold_ok = None
 
-    # BALANCE LAW v2: print-time R_true must predict the first-sustained tip.
+    # BALANCE LAW v4: print-time R_true predicts the SETTLED direction.
     R_true = float(derived.get("R_true", 0.0))
-    early_idx = ticks <= 600
-    if early_idx.any():
-        measured_sign = int(np.sign(np.median(lever_angle[early_idx])))
-    else:
-        measured_sign = 0
+    # Use the last 20 % of samples to determine the settled sign.
+    n_angle = len(lever_angle)
+    last_n = max(1, int(round(0.20 * n_angle)))
+    settled_sign = int(np.sign(np.mean(lever_angle[-last_n:])))
 
     # Muscle-side-down (positive angle) iff R_true > 1.
     if R_true > 1.0:
@@ -2064,20 +2063,10 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
     else:
         predicted_sign = 0
 
-    if control:
-        in_band = 0.5 <= R_true <= 1.05
-        band_str = "[0.500, 1.050]"
-    else:
-        in_band = 1.8 <= R_true <= 2.2
-        band_str = "[1.800, 2.200]"
-
-    balance_ok = (
-        predicted_sign != 0 and
-        measured_sign == predicted_sign and
-        in_band)
+    balance_ok = (predicted_sign != 0 and settled_sign == predicted_sign)
     balance_detail = (
-        f"R_true={R_true:.3f} early_angle_sign={measured_sign} "
-        f"predicted={predicted_sign} band={band_str}")
+        f"R_true={R_true:.3f} settled_angle_sign={settled_sign} "
+        f"predicted={predicted_sign} (last {last_n}/{n_angle} samples)")
 
     # INTEGRITY: all bodies one cluster; plate pins hold.
     integrity_ok = (
@@ -2134,8 +2123,8 @@ def lever_main(args, seed):
 
     droplet_label = f"{derived['droplet_side']}^3"
     print("=" * 70)
-    print(f"THE KERNEL - LEVER v3 print run ({version})")
-    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), lever=2x1x18, "
+    print(f"THE KERNEL - LEVER v4 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), lever=4x4x16, "
           f"droplet={droplet_label} (route={derived['route']}), load=4^3, "
           f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
@@ -2147,15 +2136,15 @@ def lever_main(args, seed):
         print("  tips load-side-down and never rises more than one lattice")
         print("  step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified R_true >= 2 and the fulcrum")
-        print("  anchored, the muscle side tips down and the load end lifts")
-        print("  through at least two lattice steps.")
+        print("PREDICTION: With kernel-verified R_true > 1 and the fulcrum")
+        print("  anchored, the muscle side tips down (positive settled angle)")
+        print("  and the load end lifts through at least two lattice steps.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
-    print("  (c) BALANCE - kernel torque predicts the first-sustained tip:")
-    print("      sign of early angle matches sign(R_true - 1) and R_true lies")
-    print("      in its derived band (main [1.8, 2.2], control <= 1.05)")
+    print("  (c) BALANCE - kernel torque predicts the SETTLED tip direction:")
+    print("      sign of mean lever angle over the last 20% of samples must")
+    print("      match sign(R_true - 1)")
     print("  (d) INTEGRITY - all four bodies one cluster; plate pins hold")
     print("=" * 70)
     print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")

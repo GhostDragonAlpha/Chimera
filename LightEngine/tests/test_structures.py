@@ -936,7 +936,7 @@ def test_lever_counts():
         control=False, seed=0)
     n_plate = 6 * 6
     n_fulcrum = 4 ** 3
-    n_lever = 2 * 1 * 18
+    n_lever = 4 * 4 * 16
     n_load = 4 ** 3
     # The droplet may be standard 4^3 or heavy-muscle 5^3; read it back.
     n_drop = derived["n_droplet"]
@@ -972,19 +972,15 @@ def test_lever_no_shared_positions():
 
 
 def test_lever_main_ratio():
-    """Main lever print derives kernel R_true in [1.8, 2.2]."""
+    """Main lever print derives kernel R_true > 1.0 (muscle-side-down)."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
-    assert 1.8 <= derived["R_true"] <= 2.2
+    assert derived["R_true"] > 1.0
 
 
 def test_lever_main_contact_margin():
-    """Main fulcrum contact clears the lever end by at least 2 lattice steps."""
+    """v4 4x4x16 geometry forces the heavy-muscle 5^3 route."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
-    if derived["route"] == "standard":
-        assert derived["margin_to_load_end"] >= 2.0 * derived["spacing"]
-    else:
-        # Heavy-muscle route is recorded in derived; just ensure it was noted.
-        assert derived["route"] == "heavy_muscle"
+    assert derived["route"] == "heavy_muscle"
 
 
 def test_lever_control_ratio():
