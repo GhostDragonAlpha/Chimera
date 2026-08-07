@@ -342,3 +342,38 @@ def test_tendon_centered_and_seated():
         right_plate[:, None, :] - rod[None, :, :], axis=2).min()
     assert abs(left_gap - d_eq) < 0.01
     assert abs(right_gap - d_eq) < 0.01
+
+
+def test_tendon_default_unchanged():
+    """preload_frac=0.0 (the default) reproduces the v1 derived s0."""
+    pos_default, _, _, _, s0_default, _ = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, seed=11)
+    pos_explicit, _, _, _, s0_explicit, _ = seed_structures.tendon(
+        side=4, n_len=8, spacing=0.05, preload_frac=0.0, seed=11)
+    np.testing.assert_array_equal(pos_default, pos_explicit)
+    assert s0_default == pytest.approx(s0_explicit, rel=1e-12)
+    assert s0_default == pytest.approx(
+        (8 - 1) * 0.05 + 2.0 * seed_structures.TENDON_D_EQ, rel=1e-12)
+
+
+def test_tendon_preload_geometry():
+    """preload_frac=0.5 halves the seat gap and s0."""
+    spacing = 0.05
+    d_eq = seed_structures.TENDON_D_EQ
+    pos, _, _, grain_ids, s0, rod_span = seed_structures.tendon(
+        side=4, n_len=8, spacing=spacing, preload_frac=0.5, seed=0)
+
+    assert rod_span == pytest.approx((8 - 1) * spacing, rel=1e-12)
+    assert s0 == pytest.approx(rod_span + d_eq, rel=1e-12)
+
+    rod = pos[grain_ids == 0]
+    plates = pos[grain_ids == -1]
+    left_plate = plates[plates[:, 0] < rod[:, 0].min()]
+    right_plate = plates[plates[:, 0] > rod[:, 0].max()]
+
+    left_gap = np.linalg.norm(
+        left_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    right_gap = np.linalg.norm(
+        right_plate[:, None, :] - rod[None, :, :], axis=2).min()
+    assert abs(left_gap - d_eq / 2.0) < 0.01
+    assert abs(right_gap - d_eq / 2.0) < 0.01

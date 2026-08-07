@@ -215,6 +215,27 @@ and (b2) BUCKLE proper, mid-column deflection measured from the end-to-end
 CHORD with rigid tilt subtracted (the v1 metric conflated tilt with
 curvature). The end-pop force reversal is the signature to watch: a router
 that loses its seat telegraphs it in the force sign.
+**ROUTER v2 VERDICT 2026-08-06 (preloaded seats, --tendon-preload 0.5, run
+tag tendon_v2):** the preload hypothesis is REFUTED. Seating the ends one
+half-spacing deep (s₀ = 0.3984) made ejection SOONER, not later: gap_R pops
+0.063 → 0.178 between sep 0.373 and 0.361 (v1 popped at ≈0.41) and peaks at
+0.216. (b1) SEAT-HOLD FAIL (bar 0.15); (b2) BUCKLE FAIL but the
+chord-relative split did its job — true curvature peaks at 0.0633, the
+other 0.034 of v1's 0.0975 was rigid tilt from the popped seat, so seat
+loss is the root cause and curvature its consequence. The preloaded seat
+starts the run sprung: stored cushion repulsion gives the ejection its
+energy. (a)/(c)/(d) PASS as in v1 (push 0.056, unseat in the derived window
+with the rod stuck to the LEFT plate this time, pull 0.000). The law
+standing after two refutations: a free 1-D column between converging
+plates ALWAYS ejects — compression along a line has no transverse
+confinement, and the cushion chain finds the escape. Meanwhile bone's
+4×4×16 column held its seats at gaps 0.0000 through four preload cycles —
+the difference is the END FACE: 16-grain feet grip the plate by DRAW where
+4-grain ends cannot. Successor (named, not run): the tendon ROOTS itself —
+end cross-section flares to the anchor plate size (4×4 feet on a 2×2 shaft,
+the insertion geometry of a real tendon), falsifier (b1) at the same crush
+with the weak link predicted to move from the seat to the shaft, recorded
+where.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 

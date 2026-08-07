@@ -92,6 +92,7 @@ TENDON_V_PLATE = 0.05 * math.sqrt(K_BOND)        # lu / tick
 TENDON_D_EQ = seed_structures.TENDON_D_EQ        # cushion equilibrium spacing (~0.0484 lu)
 TENDON_LAW_TOL = 0.10                            # (a)/(d) max rel err, measured vs prediction
 TENDON_BUCKLE_BAR = 2.0 * (0.5 * 0.05)           # 2 x cross-section half-width = 0.05 lu
+TENDON_SEAT_HOLD_BAR = R_BOND                    # (b1) end gap must stay within the bond cutoff
 TENDON_UNSEAT_HALF_TOL = 0.5 * TENDON_D_EQ       # ± half a lattice step
 TENDON_COMPRESS_DIST = 2.0 * TENDON_D_EQ         # total plate convergence during compress phase
 TENDON_EXTEND_EXTRA = 0.15                       # extension past s0 into the unseat window
@@ -1211,8 +1212,46 @@ def _mid_column_deflection(pos: np.ndarray, grain_ids: np.ndarray) -> float:
     return float(np.sqrt(mid[:, 1] ** 2 + mid[:, 2] ** 2).max())
 
 
+def _chord_relative_curvature(pos: np.ndarray, grain_ids: np.ndarray,
+                              ref_pos: np.ndarray) -> float:
+    """
+    Max increase in distance of the middle rod points from the end-to-end chord.
+
+    The reference distances are taken from ``ref_pos`` (the cold print).  The
+    chord is the line between the centroids of the two end 2×2 cross-sections.
+    This separates rigid tilt (the chord follows the ends) from actual curvature.
+    """
+    rod = pos[grain_ids == 0]
+    ref_rod = ref_pos[grain_ids == 0]
+    if rod.shape[0] == 0 or ref_rod.shape[0] == 0:
+        return 0.0
+    # Identify the end cross-sections by their order in the cold print.
+    order = np.argsort(ref_rod[:, 0])
+    n_per_layer = 4
+    if rod.shape[0] <= 2 * n_per_layer:
+        return 0.0
+    left_end = order[:n_per_layer]
+    right_end = order[-n_per_layer:]
+    mid = order[n_per_layer:-n_per_layer]
+
+    def _dists(points, left_idx, right_idx):
+        a = points[left_idx].mean(axis=0)
+        b = points[right_idx].mean(axis=0)
+        u = b - a
+        lu = float(np.linalg.norm(u))
+        if lu < 1e-12:
+            return None
+        return np.linalg.norm(np.cross(points[mid] - a, u), axis=1) / lu
+
+    ref_d = _dists(ref_rod, left_end, right_end)
+    cur_d = _dists(rod, left_end, right_end)
+    if ref_d is None or cur_d is None:
+        return 0.0
+    return float(np.maximum(cur_d - ref_d, 0.0).max())
+
+
 def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
-                tag, label):
+                tag, label, preload_frac: float = 0.0):
     """
     Run the TENDON compress->extend protocol.
 
@@ -1243,6 +1282,7 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         "signed_force": [],
         "rod_clusters": [],
         "mid_deflection": [],
+        "chord_curvature": [],
         "left_gap": [],
         "right_gap": [],
         "radiated_energy": [],
@@ -1250,6 +1290,9 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         "rod_pos": [],
         "right_plate_pos": [],
     }
+
+    # Cold-print reference for chord-relative curvature (v2).
+    ref_pos = sim.pos.copy()
 
     def _sample(tick: int, phase: str):
         left_x = float(sim.pos[left_idx, 0].mean())
@@ -1261,6 +1304,7 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         n_clust = _rod_cluster_count(sim.pos, grain_ids, R_BOND)
         left_gap, right_gap = _rod_end_gaps(sim.pos, grain_ids)
         deflect = _mid_column_deflection(sim.pos, grain_ids)
+        curvature = _chord_relative_curvature(sim.pos, grain_ids, ref_pos)
 
         metrics["tick"].append(tick)
         metrics["phase"].append(phase)
@@ -1270,6 +1314,7 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         metrics["signed_force"].append(sforce)
         metrics["rod_clusters"].append(n_clust)
         metrics["mid_deflection"].append(deflect)
+        metrics["chord_curvature"].append(curvature)
         metrics["left_gap"].append(left_gap)
         metrics["right_gap"].append(right_gap)
         metrics["radiated_energy"].append(float(sim.radiated_energy))
@@ -1277,15 +1322,27 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
         metrics["rod_pos"].append(sim.pos[rod_idx].copy())
         metrics["right_plate_pos"].append(sim.pos[right_idx].copy())
 
-        print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
-              f"sep={separation:.5f} | right_F={right_force:.4f} | "
-              f"sforce={sforce:.4f} | clusters={n_clust} | "
-              f"deflect={deflect:.4f} | gap_L={left_gap:.4f} | "
-              f"gap_R={right_gap:.4f}")
+        if preload_frac != 0.0:
+            print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+                  f"sep={separation:.5f} | right_F={right_force:.4f} | "
+                  f"sforce={sforce:.4f} | clusters={n_clust} | "
+                  f"curv={curvature:.4f} | gap_L={left_gap:.4f} | "
+                  f"gap_R={right_gap:.4f}")
+        else:
+            print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+                  f"sep={separation:.5f} | right_F={right_force:.4f} | "
+                  f"sforce={sforce:.4f} | clusters={n_clust} | "
+                  f"deflect={deflect:.4f} | gap_L={left_gap:.4f} | "
+                  f"gap_R={right_gap:.4f}")
 
     print(f"\n[{label}] N={N} rod={n_rod} plates={n_plate*2}")
-    print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
-          f"v_plate={v_plate:.5f} dt={dt}\n")
+    if preload_frac != 0.0:
+        print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
+              f"preload_frac={preload_frac:.2f} "
+              f"v_plate={v_plate:.5f} dt={dt}\n")
+    else:
+        print(f"[{label}] s0={s0:.5f} rod_span={rod_span:.5f} "
+              f"v_plate={v_plate:.5f} dt={dt}\n")
 
     dump_frame(sim.pos.copy(),
                os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
@@ -1338,7 +1395,8 @@ def _run_tendon(pos, vel, pin_mask, grain_ids, s0, rod_span, v_plate, dt,
     return metrics, sim.pos.copy()
 
 
-def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
+def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
+                          preload_frac: float = 0.0):
     """Print TENDON falsifier verdict; return dict of booleans."""
     phases = metrics["phase"]
     sep = np.asarray(metrics["separation"], dtype=np.float64)
@@ -1347,6 +1405,7 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
     left_gap = np.asarray(metrics["left_gap"], dtype=np.float64)
     right_gap = np.asarray(metrics["right_gap"], dtype=np.float64)
     deflect = np.asarray(metrics["mid_deflection"], dtype=np.float64)
+    curvature = np.asarray(metrics["chord_curvature"], dtype=np.float64)
 
     n_plate = int((grain_ids == -1).sum()) // 2
     d_eq = TENDON_D_EQ
@@ -1374,13 +1433,6 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
             abs(rforce[i] - push_pred[i]) / max(abs(push_pred[i]), 1e-12)
             for i in push_idx)
         push_ok = push_max_err <= TENDON_LAW_TOL
-
-    # (b) BUCKLE: mid-column deflection during compress.
-    buckle_ok = False
-    max_buckle = None
-    if push_idx:
-        max_buckle = float(deflect[push_idx].max())
-        buckle_ok = max_buckle <= TENDON_BUCKLE_BAR
 
     # (c) UNSEAT: an end gap crosses R_BOND inside s_fail ± 0.5*d_eq, and the
     # rod stays one cluster for the whole run.
@@ -1415,6 +1467,71 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
             abs(rforce[i] - pull_pred[i]) / max(abs(pull_pred[i]), 1e-12)
             for i in pull_idx)
         pull_ok = pull_max_err <= TENDON_LAW_TOL
+
+    if preload_frac != 0.0:
+        # v2: split (b) into seat-hold and chord-relative buckle.
+        seat_hold_ok = False
+        max_compress_gap = None
+        if push_idx:
+            max_compress_gap = float(max_gap[push_idx].max())
+            seat_hold_ok = max_compress_gap <= TENDON_SEAT_HOLD_BAR
+
+        buckle_ok = False
+        max_curvature = None
+        if push_idx:
+            max_curvature = float(curvature[push_idx].max())
+            buckle_ok = max_curvature <= TENDON_BUCKLE_BAR
+
+        print(f"\n[{label}] TENDON v2 FALSIFIERS:")
+        if push_max_err is not None:
+            print(f"  (a) PUSH LAW  : {'PASS' if push_ok else 'FAIL'}  "
+                  f"max rel err measured-vs-static-recompute={push_max_err:.3f} "
+                  f"(bar {TENDON_LAW_TOL:.2f}, {len(push_idx)} compress samples)")
+        else:
+            print(f"  (a) PUSH LAW  : {'PASS' if push_ok else 'FAIL'}  "
+                  f"(insufficient compress samples)")
+        if max_compress_gap is not None:
+            print(f"  (b1) SEAT-HOLD: {'PASS' if seat_hold_ok else 'FAIL'}  "
+                  f"max compress end gap={max_compress_gap:.4f} "
+                  f"(bar {TENDON_SEAT_HOLD_BAR:.4f})")
+        else:
+            print(f"  (b1) SEAT-HOLD: {'PASS' if seat_hold_ok else 'FAIL'}  "
+                  f"(no compress samples)")
+        if max_curvature is not None:
+            print(f"  (b2) BUCKLE   : {'PASS' if buckle_ok else 'FAIL'}  "
+                  f"max chord-relative curvature={max_curvature:.4f} "
+                  f"(bar {TENDON_BUCKLE_BAR:.4f})")
+        else:
+            print(f"  (b2) BUCKLE   : {'PASS' if buckle_ok else 'FAIL'}  "
+                  f"(no compress samples)")
+        print(f"  (c) UNSEAT    : {'PASS' if unseat_ok else 'FAIL'}  "
+              f"crossings in window [{unseat_lo:.4f},{unseat_hi:.4f}] = "
+              f"{len(unseat_crossings)}, max clusters={int(clusters.max())}")
+        if pull_max_err is not None:
+            print(f"  (d) PULL LAW  : {'PASS' if pull_ok else 'FAIL'}  "
+                  f"max rel err measured-vs-pairwise-DRAW={pull_max_err:.3f} "
+                  f"(bar {TENDON_LAW_TOL:.2f}, {len(pull_idx)} contact-free "
+                  f"extension samples)")
+        else:
+            print(f"  (d) PULL LAW  : {'PASS' if pull_ok else 'FAIL'}  "
+                  f"(insufficient contact-free extension samples)")
+        print(f"  derived s_fail = {s_fail:.4f} (s0={s0:.4f}, d_eq={d_eq:.4f}, "
+              f"R_BOND={R_BOND:.4f})")
+
+        return {
+            "push_ok": push_ok,
+            "seat_hold_ok": seat_hold_ok,
+            "buckle_ok": buckle_ok,
+            "unseat_ok": unseat_ok,
+            "pull_ok": pull_ok,
+        }
+
+    # v1 legacy verdict (unchanged output for preload_frac=0.0).
+    buckle_ok = False
+    max_buckle = None
+    if push_idx:
+        max_buckle = float(deflect[push_idx].max())
+        buckle_ok = max_buckle <= TENDON_BUCKLE_BAR
 
     print(f"\n[{label}] TENDON FALSIFIERS:")
     if push_max_err is not None:
@@ -1455,8 +1572,9 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label):
 
 def tendon_main(args, seed):
     """TENDON print entry point: build, compress, extend, judge."""
+    preload_frac = float(getattr(args, "tendon_preload", 0.0))
     pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
-        side=4, n_len=8, spacing=0.05, seed=seed)
+        side=4, n_len=8, spacing=0.05, preload_frac=preload_frac, seed=seed)
     N = pos.shape[0]
     n_plate = 4 * 4
 
@@ -1466,26 +1584,49 @@ def tendon_main(args, seed):
 
     # RULE 0 header
     print("=" * 70)
-    print("THE KERNEL — TENDON print run")
-    print(f"N={N}, rod=2x2x8, plates=4x4, seed={seed}, dt={dt}")
-    print("-" * 70)
-    print("STATEMENT: A cold cushion-spaced 2x2x8 rod seated between two pinned")
-    print("  anchor plates routes force along a line: it pushes under plate")
-    print("  convergence and pulls under extension, failing only by end-plate")
-    print("  detachment at a derived separation.")
-    print("PREDICTION: Compression plate force matches the static two-force")
-    print("  recompute within 10%, mid-column deflection stays below the derived")
-    print("  buckle bar, the rod remains one cluster, and after unseat the")
-    print("  extension force matches the pairwise-DRAW prediction within 10%.")
-    print("FALSIFIERS:")
-    print("  (a) PUSH LAW — measured right-plate force vs static recompute on")
-    print("      recorded positions within 10% (compress phase)")
-    print("  (b) BUCKLE   — mid-column off-axis deflection > 2 x cross-section")
-    print("      half-width during compression")
-    print("  (c) UNSEAT   — end gap does not cross R_BOND inside s_fail ± 0.5*d_eq")
-    print("      OR the rod splits (cluster count > 1)")
-    print("  (d) PULL LAW — measured right-plate force vs pairwise-DRAW sum on")
-    print("      recorded positions within 10% (contact-free extension)")
+    if preload_frac != 0.0:
+        print("THE KERNEL — TENDON v2 print run")
+        print(f"N={N}, rod=2x2x8, plates=4x4, preload_frac={preload_frac}, "
+              f"seed={seed}, dt={dt}")
+        print("-" * 70)
+        print("STATEMENT: A preloaded cushion-spaced 2x2x8 rod, seated one half-")
+        print("  spacing deep into the cushion band, routes force along a line")
+        print("  without popping its end seats under compression.")
+        print("PREDICTION: Both end gaps stay within R_BOND through compression,")
+        print("  the chord-relative mid-column curvature stays below the derived")
+        print("  buckle bar, compression force matches the static recompute, the")
+        print("  rod stays one cluster, and post-unseat extension force matches")
+        print("  the pairwise-DRAW prediction.")
+        print("FALSIFIERS:")
+        print("  (a) PUSH LAW  — measured right-plate force vs static recompute")
+        print("      on recorded positions within 10% (compress phase)")
+        print("  (b1) SEAT-HOLD — any end gap exceeds R_BOND during compression")
+        print("  (b2) BUCKLE    — chord-relative mid-column curvature > 0.05")
+        print("  (c) UNSEAT    — end gap does not cross R_BOND inside")
+        print("      s_fail ± 0.5*d_eq OR the rod splits (cluster count > 1)")
+        print("  (d) PULL LAW  — measured right-plate force vs pairwise-DRAW sum")
+        print("      on recorded positions within 10% (contact-free extension)")
+    else:
+        print("THE KERNEL — TENDON print run")
+        print(f"N={N}, rod=2x2x8, plates=4x4, seed={seed}, dt={dt}")
+        print("-" * 70)
+        print("STATEMENT: A cold cushion-spaced 2x2x8 rod seated between two pinned")
+        print("  anchor plates routes force along a line: it pushes under plate")
+        print("  convergence and pulls under extension, failing only by end-plate")
+        print("  detachment at a derived separation.")
+        print("PREDICTION: Compression plate force matches the static two-force")
+        print("  recompute within 10%, mid-column deflection stays below the derived")
+        print("  buckle bar, the rod remains one cluster, and after unseat the")
+        print("  extension force matches the pairwise-DRAW prediction within 10%.")
+        print("FALSIFIERS:")
+        print("  (a) PUSH LAW — measured right-plate force vs static recompute on")
+        print("      recorded positions within 10% (compress phase)")
+        print("  (b) BUCKLE   — mid-column off-axis deflection > 2 x cross-section")
+        print("      half-width during compression")
+        print("  (c) UNSEAT   — end gap does not cross R_BOND inside s_fail ± 0.5*d_eq")
+        print("      OR the rod splits (cluster count > 1)")
+        print("  (d) PULL LAW — measured right-plate force vs pairwise-DRAW sum on")
+        print("      recorded positions within 10% (contact-free extension)")
     print("=" * 70)
     print(f"\nDerived d_eq     = {TENDON_D_EQ:.5f}")
     print(f"Derived rod_span = {rod_span:.5f}")
@@ -1496,9 +1637,10 @@ def tendon_main(args, seed):
 
     metrics, final_pos = _run_tendon(
         pos, vel, pin_mask, grain_ids, s0, rod_span,
-        v_plate, dt, tag, "tendon")
+        v_plate, dt, tag, "tendon", preload_frac=preload_frac)
 
-    _print_tendon_verdict(metrics, grain_ids, s0, rod_span, "tendon")
+    _print_tendon_verdict(metrics, grain_ids, s0, rod_span, "tendon",
+                          preload_frac=preload_frac)
     print("=" * 70)
 
 
@@ -1526,6 +1668,9 @@ def main():
     parser.add_argument("--cycles", type=int, default=1,
                         help="BONE v2 preload cycles (default 1; use 2 to "
                              "judge spring-back on the bedded column)")
+    parser.add_argument("--tendon-preload", type=float, default=0.0,
+                        help="TENDON preload fraction: ends are seated "
+                             "d_eq*(1-preload) from the plates (default 0.0)")
     args = parser.parse_args()
     SEED = args.seed
 
