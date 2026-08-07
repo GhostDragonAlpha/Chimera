@@ -1179,6 +1179,288 @@ def muscle_main(args, seed):
     print("=" * 70)
 
 
+# ── SKIN-specific helpers ─────────────────────────────────────────────
+
+# Drive the muscle anchor plates at the same derived 5% sound speed used by
+# the muscle stroke.
+SKIN_V_PLATE = MUSCLE_V_PLATE
+
+
+def _skin_conform_and_coverage(pos: np.ndarray, grain_ids: np.ndarray,
+                               derived: dict) -> tuple[float, float, np.ndarray]:
+    """
+    Return (conform_fraction, coverage_fraction, mat_com - droplet_com).
+
+    Conform: fraction of mat grains whose nearest droplet grain lies inside
+    the derived conform band.
+    Coverage: fraction of droplet surface grains that have a mat grain inside
+    the conform band.
+    """
+    pos64 = np.asarray(pos, dtype=np.float64)
+    droplet_idx = np.flatnonzero(grain_ids == 0)
+    mat_idx = np.flatnonzero(grain_ids == 1)
+    if droplet_idx.size == 0 or mat_idx.size == 0:
+        return 0.0, 0.0, np.zeros(3, dtype=np.float64)
+
+    drop = pos64[droplet_idx]
+    mat = pos64[mat_idx]
+
+    # nearest mat->droplet distance
+    dmd = np.linalg.norm(
+        mat[:, None, :] - drop[None, :, :], axis=2)
+    min_md = dmd.min(axis=1)
+    lo, hi = derived["conform_band"]
+    conform_frac = float(((min_md >= lo) & (min_md <= hi)).mean())
+
+    # coverage: top-hemisphere surface grains to nearest mat grain
+    surface_local = derived.get("surface_grains", np.array([], dtype=np.int32))
+    if surface_local.size == 0:
+        coverage_frac = 0.0
+    else:
+        surface = drop[surface_local]
+        dsm = np.linalg.norm(
+            surface[:, None, :] - mat[None, :, :], axis=2)
+        min_sm = dsm.min(axis=1)
+        coverage_frac = float(((min_sm >= lo) & (min_sm <= hi)).mean())
+
+    mat_com = mat.mean(axis=0)
+    drop_com = drop.mean(axis=0)
+    rel_com = mat_com - drop_com
+    return conform_frac, coverage_frac, rel_com
+
+
+def _run_skin(pos, vel, pin_mask, grain_ids, s0, derived, v_plate, dt,
+              tag, label, settle_ticks: int):
+    """
+    Run the SKIN protocol: settle, then the muscle's extension->convergence
+    stroke (extend to s0*sqrt(2), converge back to s0).
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    # The two anchor plates are the grain-id -1 points; the mat is appended
+    # after the whole muscle print, so the right plate is NOT at the end.
+    plate_idx = np.flatnonzero(grain_ids == -1)
+    n_plate = plate_idx.size
+    n_plate_half = n_plate // 2
+    plate_x = pos[plate_idx, 0]
+    median_x = float(np.median(plate_x))
+    left_idx = plate_idx[plate_x < median_x].astype(np.int32)
+    right_idx = plate_idx[plate_x >= median_x].astype(np.int32)
+    # Guard: exactly half each.
+    if left_idx.size != n_plate_half or right_idx.size != n_plate_half:
+        left_idx = plate_idx[np.argsort(plate_x)[:n_plate_half]]
+        right_idx = plate_idx[np.argsort(plate_x)[-n_plate_half:]]
+
+    sample_every = 500
+
+    metrics = {
+        "tick": [],
+        "phase": [],
+        "separation": [],
+        "mat_clusters": [],
+        "droplet_clusters": [],
+        "conform_fraction": [],
+        "coverage_fraction": [],
+        "mat_com_rel": [],
+    }
+
+    def _sample(tick: int, phase: str):
+        left_x = float(sim.pos[left_idx, 0].mean())
+        right_x = float(sim.pos[right_idx, 0].mean())
+        separation = right_x - left_x
+        mat_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
+        drop_clust = _group_cluster_count(sim.pos, grain_ids, 0, R_C)
+        conform, coverage, rel_com = _skin_conform_and_coverage(
+            sim.pos, grain_ids, derived)
+
+        metrics["tick"].append(tick)
+        metrics["phase"].append(phase)
+        metrics["separation"].append(separation)
+        metrics["mat_clusters"].append(mat_clust)
+        metrics["droplet_clusters"].append(drop_clust)
+        metrics["conform_fraction"].append(conform)
+        metrics["coverage_fraction"].append(coverage)
+        metrics["mat_com_rel"].append(rel_com.copy())
+
+        print(f"[{label}] tick={tick:6d} phase={phase:10s} | "
+              f"sep={separation:.5f} | mat_clust={mat_clust} | "
+              f"drop_clust={drop_clust} | conform={conform:.3f} | "
+              f"coverage={coverage:.3f} | "
+              f"rel_com=({rel_com[0]:.4f},{rel_com[1]:.4f},{rel_com[2]:.4f})")
+
+    print(f"\n[{label}] N={N} droplet={derived['n_droplet']} "
+          f"mat={derived['n_mat']} plates={n_plate}")
+    print(f"[{label}] s0={s0:.5f} v_plate={v_plate:.5f} dt={dt} "
+          f"settle_ticks={settle_ticks}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    tick = 0
+    _sample(tick, "init")
+
+    # Phase: settle (free evolution so the mat drapes onto the droplet)
+    for tick in range(1, settle_ticks + 1):
+        sim.step(dt)
+        if tick % sample_every == 0 or tick == settle_ticks:
+            _sample(tick, "settle")
+
+    # Phase: extend plates to s0 * sqrt(2)
+    target_extend = s0 * MUSCLE_STROKE_FACTOR
+    phase = "extend"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep >= target_extend:
+            break
+        dx = 0.5 * v_plate * dt
+        sim.pos[left_idx, 0] -= dx
+        sim.pos[right_idx, 0] += dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    # Phase: converge back to s0
+    phase = "converge"
+    while True:
+        tick += 1
+        cur_sep = float(sim.pos[right_idx, 0].mean() -
+                        sim.pos[left_idx, 0].mean())
+        if cur_sep <= s0:
+            break
+        dx = -0.5 * v_plate * dt
+        sim.pos[left_idx, 0] -= dx
+        sim.pos[right_idx, 0] += dx
+        if sim.use_cuda:
+            sim.d_pos.copy_to_device(sim.pos)
+        sim.step(dt)
+        if tick % sample_every == 0:
+            _sample(tick, phase)
+
+    _sample(tick, phase)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics, sim.pos.copy()
+
+
+def _print_skin_verdict(metrics, derived: dict, label: str):
+    """Print SKIN falsifier verdict; return dict of booleans."""
+    phases = metrics["phase"]
+    conform = np.asarray(metrics["conform_fraction"], dtype=np.float64)
+    coverage = np.asarray(metrics["coverage_fraction"], dtype=np.float64)
+    mat_clust = np.asarray(metrics["mat_clusters"], dtype=np.int32)
+    drop_clust = np.asarray(metrics["droplet_clusters"], dtype=np.int32)
+    rel_com = np.asarray(metrics["mat_com_rel"], dtype=np.float64)
+
+    slide_bar = float(derived.get("slide_bar", 2.0 * derived["muscle_spacing"]))
+
+    settle_idx = [i for i, p in enumerate(phases) if p == "settle"]
+    stroke_idx = [i for i, p in enumerate(phases) if p in ("extend", "converge")]
+
+    # Baseline relative COM is the last settle sample (post-settle value).
+    if settle_idx:
+        baseline = rel_com[settle_idx[-1]]
+        end_settle_conform = float(conform[settle_idx[-1]])
+        end_settle_coverage = float(coverage[settle_idx[-1]])
+    else:
+        baseline = rel_com[0]
+        end_settle_conform = float(conform[0])
+        end_settle_coverage = float(coverage[0])
+
+    # Max drift of mat COM relative to droplet COM from the post-settle value.
+    if stroke_idx:
+        drifts = np.linalg.norm(rel_com[stroke_idx] - baseline, axis=1)
+        max_drift = float(drifts.max())
+    else:
+        max_drift = 0.0
+
+    conform_ok = (end_settle_conform >= 0.5 and
+                  (all(conform[i] >= 0.5 for i in stroke_idx) if stroke_idx else True))
+    coverage_ok = end_settle_coverage >= 0.5
+    slide_ok = max_drift <= slide_bar
+    integrity_ok = bool((mat_clust == 1).all() and (drop_clust == 1).all())
+
+    print(f"\n[{label}] SKIN FALSIFIERS:")
+    print(f"  (a) CONFORM   : {'PASS' if conform_ok else 'FAIL'}  "
+          f"end-settle={end_settle_conform:.3f}  "
+          f"stroke min={float(conform[stroke_idx].min()) if stroke_idx else 0.0:.3f} "
+          f"(bar 0.5)")
+    print(f"  (b) NO SLIDE-OFF: {'PASS' if slide_ok else 'FAIL'}  "
+          f"max drift={max_drift:.4f} (bar {slide_bar:.4f})")
+    print(f"  (c) COVERAGE  : {'PASS' if coverage_ok else 'FAIL'}  "
+          f"end-settle={end_settle_coverage:.3f} (bar 0.5)")
+    print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
+          f"mat clusters max={int(mat_clust.max())}  "
+          f"droplet clusters max={int(drop_clust.max())}")
+
+    return {
+        "conform_ok": conform_ok,
+        "slide_ok": slide_ok,
+        "coverage_ok": coverage_ok,
+        "integrity_ok": integrity_ok,
+    }
+
+
+def skin_main(args, seed):
+    """SKIN print entry point: build, settle, stroke, judge."""
+    pos, vel, pin_mask, grain_ids, s0, R_droplet, derived = seed_structures.skin(
+        spacing=0.05, seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    v_plate = SKIN_V_PLATE
+    tag = f"{args.tag}_" if args.tag else ""
+    settle_ticks = int(getattr(args, "skin_settle_ticks", 3000))
+
+    # RULE 0 header
+    print("=" * 70)
+    print("THE KERNEL - SKIN v1 print run")
+    print(f"N={N}, droplet=4^3, mat=16x16, plates=4x4, seed={seed}, dt={dt}, "
+          f"settle_ticks={settle_ticks}")
+    print("-" * 70)
+    print("STATEMENT: A 16x16 mat printed one 2-D lattice step above a muscle")
+    print("  droplet settles into a conformal drape held only by the muscle's DRAW;")
+    print("  during the muscle's own extension->convergence stroke the mat stays")
+    print("  conformal, does not slide off, covers the droplet top hemisphere, and")
+    print("  remains one cluster.")
+    print("PREDICTION: After settle, >= half the mat grains sit within the derived")
+    print("  conform band of some droplet grain, >= half the droplet surface grains")
+    print("  are covered, the mat and droplet each stay one cluster, and the mat's")
+    print("  COM drifts <= 2 muscle lattice steps from its post-settle value.")
+    print("FALSIFIERS:")
+    print("  (a) CONFORM   - < half mat grains in conform band after settle or any")
+    print("      stroke sample")
+    print("  (b) NO SLIDE-OFF - mat COM relative to droplet COM drifts > 2 lattice")
+    print("      steps during the stroke")
+    print("  (c) COVERAGE  - < half droplet surface grains covered after settle")
+    print("  (d) INTEGRITY - mat or droplet splits (cluster count > 1)")
+    print("=" * 70)
+    print(f"\nDerived d_eq_2D  = {derived['d_eq_2D']:.5f}")
+    print(f"Derived s0         = {s0:.5f}")
+    print(f"Derived R_droplet  = {R_droplet:.5f}")
+    print(f"Conform band       = [{derived['conform_band'][0]:.5f}, "
+          f"{derived['conform_band'][1]:.5f}]")
+    print(f"Stroke extend      = {s0 * MUSCLE_STROKE_FACTOR:.5f}")
+    print(f"Slide bar          = {derived['slide_bar']:.5f}\n")
+
+    metrics, final_pos = _run_skin(
+        pos, vel, pin_mask, grain_ids, s0, derived,
+        v_plate, dt, tag, "skin", settle_ticks)
+
+    _print_skin_verdict(metrics, derived, "skin")
+    print("=" * 70)
+
+
 # ── TENDON-specific helpers ───────────────────────────────────────────
 
 def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
@@ -2662,7 +2944,8 @@ def main():
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
-                                 "bone", "muscle", "tendon", "joint", "sheet"],
+                                 "bone", "muscle", "tendon", "joint", "sheet",
+                                 "skin"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -2695,6 +2978,9 @@ def main():
                              "and omit the substrate plate")
     parser.add_argument("--sheet-ticks", type=int, default=20000,
                         help="SHEET evolution ticks (default 20000)")
+    parser.add_argument("--skin-settle-ticks", type=int, default=3000,
+                        help="SKIN free-evolution settle ticks before the stroke "
+                             "(default 3000)")
     args = parser.parse_args()
     SEED = args.seed
 
@@ -2721,6 +3007,11 @@ def main():
     # SHEET print has its own driver (2-D membrane phase test)
     if args.structure == "sheet":
         sheet_main(args, SEED)
+        return
+
+    # SKIN print has its own driver (mat draped on muscle bulk)
+    if args.structure == "skin":
+        skin_main(args, SEED)
         return
 
     # choose initial state

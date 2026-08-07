@@ -12,7 +12,7 @@ import math
 import numpy as np
 
 from LightEngine import kernel
-from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, EPS
+from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, EPS, S_WALL
 
 
 # Cushion equilibrium spacing measured in theCushionLaw lattice8eq print
@@ -1001,3 +1001,108 @@ def sheet(mode: str = "flat",
             derived["n_pinned"] = int(top_row.sum() + bottom_row.sum())
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived
+
+
+def skin(spacing: float = 0.05,
+         seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                  np.ndarray, float, float, dict]:
+    """
+    THE SKIN print: a 16×16 mat at d_eq_2D draped conformal to the muscle bulk.
+
+    Builds the settled muscle print (two pinned 4×4 plates + 4³ droplet bridge)
+    and then prints a 16×16 mat one lattice step (d_eq_2D) above the droplet's
+    top face, centered over the droplet.  The mat is unpinned; it is held to
+    the muscle only by the muscle's DRAW.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, s0, R_droplet,
+    derived)``:
+      - grain ids: -1 = plates, 0 = droplet, 1 = mat.
+      - ``derived`` carries d_eq_2D, the conform band (cushion band union the
+        wall-seat band from joint v2), droplet surface-grain indices, and
+        counts needed by the driver.
+    """
+    rng = np.random.default_rng(seed)
+    muscle_spacing = float(spacing)
+
+    # Parent membrane: the settled muscle print.
+    pos_m, vel_m, pin_mask_m, grain_ids_m, s0, R_droplet = muscle(
+        side=4, spacing=muscle_spacing, seed=seed)
+    n_plate = int((grain_ids_m == -1).sum())
+    n_droplet = int((grain_ids_m == 0).sum())
+    drop_idx_global = np.flatnonzero(grain_ids_m == 0)
+    droplet_pos = pos_m[drop_idx_global].astype(np.float64)
+
+    # Mat: 16×16 sheet printed at the derived 2-D equilibrium spacing.
+    d_eq_2d = derive_sheet_equilibrium_spacing(verbose=False)
+    pos_s, vel_s, pin_mask_s, grain_ids_s, sheet_derived = sheet(
+        mode="free", spacing=d_eq_2d, seed=seed)
+    n_mat = pos_s.shape[0]
+
+    # Center the mat over the droplet, one lattice step above its top face.
+    droplet_com = droplet_pos.mean(axis=0)
+    droplet_top_z = float(droplet_pos[:, 2].max())
+    target_z = droplet_top_z + d_eq_2d
+    shift = np.array([
+        droplet_com[0],
+        droplet_com[1],
+        target_z - sheet_derived["sheet_z"],
+    ], dtype=np.float64)
+    pos_s = pos_s.astype(np.float64) + shift
+    vel_s = vel_s.astype(np.float64)
+
+    # Combine the two prints.
+    pos = np.vstack([pos_m, pos_s]).astype(np.float64)
+    vel = np.vstack([vel_m, vel_s]).astype(np.float64)
+    pin_mask = np.concatenate([pin_mask_m, pin_mask_s])
+    grain_ids = np.concatenate([
+        grain_ids_m,
+        np.full(n_mat, 1, dtype=np.int32),
+    ])
+
+    # Droplet surface grains: grains with no neighbor above them within
+    # 1.5 lattice steps.  A surface grain has a neighbor-free +z side so the
+    # mat can band to it.  The criterion is derived from the muscle spacing.
+    surface_local = []
+    for i, p in enumerate(droplet_pos):
+        dz = droplet_pos[:, 2] - p[2]
+        above = dz > 0.0
+        if not above.any():
+            surface_local.append(i)
+            continue
+        dists = np.linalg.norm(droplet_pos[above] - p, axis=1)
+        if not (dists <= 1.5 * muscle_spacing).any():
+            surface_local.append(i)
+    surface_local = np.array(surface_local, dtype=np.int32)
+
+    # Print law: no two grains shared a position across the whole assembly.
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"skin print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6")
+
+    d_eq = TENDON_D_EQ
+    # Conform band: union of cushion band around the droplet's d_eq and the
+    # wall-seat band [S_WALL - 0.01, S_WALL + 0.01] measured from joint v2.
+    conform_lo = min(d_eq - 0.02, S_WALL - 0.01)
+    conform_hi = d_eq + 0.05
+
+    derived = {
+        "d_eq_2D": d_eq_2d,
+        "muscle_spacing": muscle_spacing,
+        "s0": s0,
+        "R_droplet": R_droplet,
+        "conform_band": (conform_lo, conform_hi),
+        "surface_grains": surface_local,
+        "n_plate": n_plate,
+        "n_droplet": n_droplet,
+        "n_mat": n_mat,
+        "slide_bar": 2.0 * muscle_spacing,
+        "droplet_top_z": droplet_top_z,
+    }
+
+    return (pos.astype(np.float32), vel.astype(np.float32), pin_mask,
+            grain_ids, s0, R_droplet, derived)

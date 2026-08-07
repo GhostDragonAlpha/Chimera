@@ -1,0 +1,65 @@
+======================================================================
+THE KERNEL - SKIN v1 print run
+N=352, droplet=4^3, mat=16x16, plates=4x4, seed=20260806, dt=0.0005, settle_ticks=3000
+----------------------------------------------------------------------
+STATEMENT: A 16x16 mat printed one 2-D lattice step above a muscle
+  droplet settles into a conformal drape held only by the muscle's DRAW;
+  during the muscle's own extension->convergence stroke the mat stays
+  conformal, does not slide off, covers the droplet top hemisphere, and
+  remains one cluster.
+PREDICTION: After settle, >= half the mat grains sit within the derived
+  conform band of some droplet grain, >= half the droplet surface grains
+  are covered, the mat and droplet each stay one cluster, and the mat's
+  COM drifts <= 2 muscle lattice steps from its post-settle value.
+FALSIFIERS:
+  (a) CONFORM   - < half mat grains in conform band after settle or any
+      stroke sample
+  (b) NO SLIDE-OFF - mat COM relative to droplet COM drifts > 2 lattice
+      steps during the stroke
+  (c) COVERAGE  - < half droplet surface grains covered after settle
+  (d) INTEGRITY - mat or droplet splits (cluster count > 1)
+======================================================================
+
+Derived d_eq_2D  = 0.04005
+Derived s0         = 0.24814
+Derived R_droplet  = 0.12407
+Conform band       = [0.01500, 0.09840]
+Stroke extend      = 0.35092
+Slide bar          = 0.10000
+
+
+[skin] N=352 droplet=64 mat=256 plates=32
+[skin] s0=0.24814 v_plate=0.05000 dt=0.0005 settle_ticks=3000
+
+[skin] tick=     0 phase=init       | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.234 | coverage=1.000 | rel_com=(-0.0001,0.0000,0.1166)
+[skin] tick=   500 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.969 | coverage=1.000 | rel_com=(0.0038,-0.0053,0.0770)
+[skin] tick=  1000 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0005,0.0041,0.0384)
+[skin] tick=  1500 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0011,0.0026,0.0335)
+[skin] tick=  2000 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0026,-0.0004,0.0384)
+[skin] tick=  2500 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0035,-0.0012,0.0379)
+[skin] tick=  3000 phase=settle     | sep=0.24804 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0021,-0.0015,0.0354)
+[skin] tick=  3500 phase=extend     | sep=0.26054 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0011,-0.0020,0.0363)
+[skin] tick=  4000 phase=extend     | sep=0.27303 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0013,-0.0020,0.0362)
+[skin] tick=  4500 phase=extend     | sep=0.28553 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0015,-0.0013,0.0345)
+[skin] tick=  5000 phase=extend     | sep=0.29802 | mat_clust=1 | drop_clust=1 | conform=0.984 | coverage=1.000 | rel_com=(-0.0013,-0.0010,0.0350)
+[skin] tick=  5500 phase=extend     | sep=0.31051 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(0.0000,-0.0008,0.0352)
+[skin] tick=  6000 phase=extend     | sep=0.32301 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(0.0007,-0.0008,0.0347)
+[skin] tick=  6500 phase=extend     | sep=0.33550 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(0.0008,-0.0011,0.0346)
+[skin] tick=  7000 phase=extend     | sep=0.34799 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(0.0000,-0.0019,0.0349)
+[skin] tick=  7119 phase=extend     | sep=0.35094 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(-0.0003,-0.0021,0.0352)
+[skin] tick=  7500 phase=converge   | sep=0.34142 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(-0.0005,-0.0030,0.0356)
+[skin] tick=  8000 phase=converge   | sep=0.32893 | mat_clust=1 | drop_clust=1 | conform=0.988 | coverage=1.000 | rel_com=(0.0002,-0.0042,0.0350)
+[skin] tick=  8500 phase=converge   | sep=0.31644 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0027,-0.0039,0.0350)
+[skin] tick=  9000 phase=converge   | sep=0.30394 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0037,-0.0033,0.0350)
+[skin] tick=  9500 phase=converge   | sep=0.29145 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0012,-0.0014,0.0349)
+[skin] tick= 10000 phase=converge   | sep=0.27895 | mat_clust=1 | drop_clust=1 | conform=0.992 | coverage=1.000 | rel_com=(-0.0017,0.0003,0.0352)
+[skin] tick= 10500 phase=converge   | sep=0.26646 | mat_clust=1 | drop_clust=1 | conform=0.996 | coverage=1.000 | rel_com=(-0.0015,0.0021,0.0357)
+[skin] tick= 11000 phase=converge   | sep=0.25397 | mat_clust=1 | drop_clust=1 | conform=1.000 | coverage=1.000 | rel_com=(-0.0019,0.0031,0.0361)
+[skin] tick= 11235 phase=converge   | sep=0.24812 | mat_clust=1 | drop_clust=1 | conform=1.000 | coverage=1.000 | rel_com=(-0.0015,0.0021,0.0361)
+
+[skin] SKIN FALSIFIERS:
+  (a) CONFORM   : PASS  end-settle=0.996  stroke min=0.984 (bar 0.5)
+  (b) NO SLIDE-OFF: PASS  max drift=0.0047 (bar 0.1000)
+  (c) COVERAGE  : PASS  end-settle=1.000 (bar 0.5)
+  (d) INTEGRITY : PASS  mat clusters max=1  droplet clusters max=1
+======================================================================

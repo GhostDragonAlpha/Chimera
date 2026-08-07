@@ -191,6 +191,22 @@ existed.
   settle + stroke, and (inherited from theMuscle) the droplet does too.
   The edge-closed claim from the retired line is struck honestly: an open
   mat cannot close its own edge — that claim belongs to theBladder.
+  **SKIN v1 VERDICT 2026-08-07 (N=352, run tag skin_v1, 3000-tick settle +
+  full muscle stroke):** ALL FOUR PASS on the first construction — the only
+  membrane so far to do that, and the reason is the derivation: the mat was
+  already the measured 2-D phase, and the muscle's DRAW was already the
+  measured pull; nothing new was invented. (a) CONFORM PASS: 0.234 at print
+  (the sheet starts one lattice step off) → 0.996 after settle, stroke
+  minimum 0.984, closing at 1.000 on full converge — the mat rides the
+  droplet's surface through the whole stroke. (b) NO SLIDE-OFF PASS: max
+  COM drift 0.0047 against a 0.10 bar — twenty times under; the muscle's
+  DRAW holds its skin the way a planet holds its atmosphere. (c) COVERAGE
+  PASS: 1.000 of droplet surface grains banded at end of settle and never
+  less. (d) INTEGRITY PASS: mat and droplet each one cluster throughout.
+  The contains-within / anchors-to family is now open: skin works because
+  it is a bulk lying on a bulk, not a plane stretched over one. Next of
+  kin: theBladder (a CLOSED mat enclosing contents within the muscle —
+  squeeze as function) and theOrgan (any composite contained within skin).
 - **bladder** *(parent relation stands)*: closed sheet enclosing gas
   points, CONTAINED WITHIN the muscle bulk — squeeze is its function.
   Falsifier: holds its contents under the muscle's derived squeeze pressure

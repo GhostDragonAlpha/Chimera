@@ -729,3 +729,74 @@ def test_sheet_framed_tear_grips():
     bottom = sheet_idx[(np.arange(side * side) % side) == (side - 1)]
     assert pin_mask[top].all()
     assert pin_mask[bottom].all()
+
+
+def test_skin_determinism():
+    """skin() is deterministic for a fixed seed."""
+    a = seed_structures.skin(seed=5)
+    b = seed_structures.skin(seed=5)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+def test_skin_counts():
+    """skin() builds a 4³ muscle droplet + two 4×4 plates + a 16×16 mat."""
+    pos, vel, pin_mask, grain_ids, s0, R_droplet, derived = seed_structures.skin(
+        spacing=0.05, seed=0)
+    n_plate = 2 * 4 * 4
+    n_drop = 4 ** 3
+    n_mat = 16 * 16
+    assert pos.shape[0] == n_plate + n_drop + n_mat
+    assert vel.shape[0] == pos.shape[0]
+    assert pin_mask.shape[0] == pos.shape[0]
+    assert grain_ids.shape[0] == pos.shape[0]
+    assert int((grain_ids == -1).sum()) == n_plate
+    assert int((grain_ids == 0).sum()) == n_drop
+    assert int((grain_ids == 1).sum()) == n_mat
+    assert derived["n_plate"] == n_plate
+    assert derived["n_droplet"] == n_drop
+    assert derived["n_mat"] == n_mat
+
+
+def test_skin_only_plates_pinned():
+    """Only the muscle anchor plates are pinned; droplet and mat are free."""
+    pos, _, pin_mask, grain_ids, _, _, _ = seed_structures.skin(seed=0)
+    plate_mask = grain_ids == -1
+    assert pin_mask[plate_mask].all()
+    assert not pin_mask[~plate_mask].any()
+
+
+def test_skin_mat_height():
+    """The mat is printed one 2-D lattice step above the droplet top face."""
+    pos, _, _, grain_ids, _, _, derived = seed_structures.skin(seed=0)
+    droplet_top = pos[grain_ids == 0, 2].max()
+    mat = pos[grain_ids == 1]
+    mat_center_z = mat[:, 2].mean()
+    expected = droplet_top + derived["d_eq_2D"]
+    assert abs(mat_center_z - expected) < 1e-5
+
+
+def test_skin_no_shared_positions():
+    """No two grains share a position in the skin print."""
+    pos, _, _, _, _, _, _ = seed_structures.skin(seed=0)
+    pos64 = np.asarray(pos, dtype=np.float64)
+    diff = pos64[:, None, :] - pos64[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
+
+def test_skin_surface_grains_exist():
+    """The droplet has surface grains and a non-empty conform band."""
+    _, _, _, _, _, _, derived = seed_structures.skin(seed=0)
+    assert derived["surface_grains"].size > 0
+    lo, hi = derived["conform_band"]
+    assert lo < hi
