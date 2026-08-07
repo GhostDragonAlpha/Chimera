@@ -1,0 +1,107 @@
+[lever] v5 static gate: tube length=16 rings, L=0.750 lu, bracket=[-0.300000, 0.300000]
+  bracket cx=-0.300000 -> R_true=0.6675 (tau_pos=690.205, tau_neg=1033.987)
+  bracket cx=0.300000 -> R_true=1.6299 (tau_pos=674.290, tau_neg=413.693)
+  [fail] bracket R range [0.6675, 1.6299] cannot reach 1.90
+[lever] v5 static gate: tube length=15 rings, L=0.700 lu, bracket=[-0.275000, 0.275000]
+  bracket cx=-0.275000 -> R_true=0.6327 (tau_pos=602.302, tau_neg=951.968)
+  bracket cx=0.275000 -> R_true=1.5779 (tau_pos=593.914, tau_neg=376.398)
+  [fail] bracket R range [0.6327, 1.5779] cannot reach 1.90
+[lever] v5 static gate: tube length=14 rings, L=0.650 lu, bracket=[-0.250000, 0.250000]
+  bracket cx=-0.250000 -> R_true=0.6060 (tau_pos=526.518, tau_neg=868.902)
+  bracket cx=0.250000 -> R_true=0.5916 (tau_pos=547.220, tau_neg=924.988)
+  [fail] bracket R range [0.5916, 0.6060] cannot reach 1.90
+[lever] v5 static gate: tube length=13 rings, L=0.600 lu, bracket=[-0.225000, 0.225000]
+  bracket cx=-0.225000 -> R_true=0.5767 (tau_pos=438.459, tau_neg=760.343)
+  bracket cx=0.225000 -> R_true=4.9436 (tau_pos=2897.059, tau_neg=586.019)
+  candidate contact_x=0.050177 R_true=2.0000 margin_to_load_end=0.24982
+  [pass] static gate passed at length=13
+[lever] v5 route: STANDARD (4^3 droplet), tube length=13 rings, contact_x=0.050177, R_true=2.0000, margin_to_load_end=0.24982
+[lever] v5 control sweep: R(cx_min)=0.5767, R(cx_max)=4.9436
+[lever] v5 control final: contact_x=-0.052225 R_true=0.7500 margin_to_load_end=0.35222 margin_to_muscle_end=0.24778
+======================================================================
+THE KERNEL - LEVER v5 print run (control)
+N=384, plate=6x6, fulcrum=4x4x4 (PINNED), lever=4x4 tube (1-grain shell, 2x2 void) x 13 rings, droplet=4^3 (route=standard), load=4^3, seed=20260806, dt=0.0005, ticks=8000, control=True
+----------------------------------------------------------------------
+STATEMENT: A muscle-bone machine trades muscle force for load force
+  through arm length; the balance ratio is the kernel's own static
+  torque about the PINNED fulcrum contact point on the cold print.
+  v5 uses a hollow bone-class tube arm to cut self-weight while
+  keeping transverse confinement.
+PREDICTION: With kernel-verified R_true <= 1, the load end
+  tips load-side-down and never rises more than one lattice
+  step above its print height.
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10 absolute z
+  (b) HOLD    - control: load end rises <= 0.05 all run
+  (c) BALANCE - kernel torque predicts the SETTLED tip direction:
+      sign of mean lever angle over the last 20% of samples must
+      match sign(R_true - 1)
+  (d) INTEGRITY - all four bodies one cluster; plate pins hold
+  (e) SAG     - tube rotates muscle-down but load_gain decouples
+      (sheet-class shell); if detected, void shrinks to 1x1 next
+======================================================================
+
+Derived d_eq  = 0.04840
+Derived a_m   = 0.24776
+Derived a_l   = 0.35220
+Derived F_m   = 1240.777
+Derived W_L   = 53.932
+Derived R_static = 16.184
+Derived R_true= 0.750
+Derived lever_len = 13
+Derived margin_to_load_end = 0.35222
+
+
+[lever_control] N=384 plate=36 droplet=64 fulcrum=64 lever=156 load=64
+[lever_control] dt=0.0005 ticks=8000 sample_every=200
+
+[lever_control] tick=     0 | load_gain=+0.0000 | angle= -0.01deg | gap=0.0526 | plate_F=1226.89 | contact=-18.794 | clusters=1/1/1/1
+[lever_control] tick=   200 | load_gain=-0.0066 | angle=  5.16deg | gap=0.0266 | plate_F=1415.72 | contact=-22.156 | clusters=1/1/1/1
+[lever_control] tick=   400 | load_gain=-0.1663 | angle=-20.88deg | gap=0.0332 | plate_F=1924.08 | contact=40.943 | clusters=1/1/1/1
+[lever_control] tick=   600 | load_gain=-0.2543 | angle=-26.20deg | gap=0.0444 | plate_F=159.22 | contact=9.364 | clusters=1/1/1/1
+[lever_control] tick=   800 | load_gain=-0.2706 | angle=-31.74deg | gap=0.0274 | plate_F=255.20 | contact=7.257 | clusters=1/1/1/1
+[lever_control] tick=  1000 | load_gain=-0.2744 | angle=-31.52deg | gap=0.0304 | plate_F=555.72 | contact=14.642 | clusters=1/1/1/1
+[lever_control] tick=  1200 | load_gain=-0.2755 | angle=-30.15deg | gap=0.0323 | plate_F=807.64 | contact=9.024 | clusters=1/1/1/1
+[lever_control] tick=  1400 | load_gain=-0.2746 | angle=-29.63deg | gap=0.0357 | plate_F=809.14 | contact=9.079 | clusters=1/1/1/1
+[lever_control] tick=  1600 | load_gain=-0.2752 | angle=-30.24deg | gap=0.0363 | plate_F=794.55 | contact=10.599 | clusters=1/1/1/1
+[lever_control] tick=  1800 | load_gain=-0.2746 | angle=-29.86deg | gap=0.0355 | plate_F=779.10 | contact=10.815 | clusters=1/1/1/1
+[lever_control] tick=  2000 | load_gain=-0.2747 | angle=-30.19deg | gap=0.0355 | plate_F=799.52 | contact=10.486 | clusters=1/1/1/1
+[lever_control] tick=  2200 | load_gain=-0.2754 | angle=-30.65deg | gap=0.0351 | plate_F=790.45 | contact=10.246 | clusters=1/1/1/1
+[lever_control] tick=  2400 | load_gain=-0.2752 | angle=-30.60deg | gap=0.0351 | plate_F=814.80 | contact=10.758 | clusters=1/1/1/1
+[lever_control] tick=  2600 | load_gain=-0.2751 | angle=-30.62deg | gap=0.0353 | plate_F=796.18 | contact=10.785 | clusters=1/1/1/1
+[lever_control] tick=  2800 | load_gain=-0.2757 | angle=-30.94deg | gap=0.0354 | plate_F=809.25 | contact=10.311 | clusters=1/1/1/1
+[lever_control] tick=  3000 | load_gain=-0.2758 | angle=-31.03deg | gap=0.0354 | plate_F=799.10 | contact=10.690 | clusters=1/1/1/1
+[lever_control] tick=  3200 | load_gain=-0.2757 | angle=-30.91deg | gap=0.0354 | plate_F=792.47 | contact=10.708 | clusters=1/1/1/1
+[lever_control] tick=  3400 | load_gain=-0.2758 | angle=-31.00deg | gap=0.0355 | plate_F=784.55 | contact=10.401 | clusters=1/1/1/1
+[lever_control] tick=  3600 | load_gain=-0.2757 | angle=-30.98deg | gap=0.0355 | plate_F=800.90 | contact=10.614 | clusters=1/1/1/1
+[lever_control] tick=  3800 | load_gain=-0.2757 | angle=-30.97deg | gap=0.0354 | plate_F=783.42 | contact=10.700 | clusters=1/1/1/1
+[lever_control] tick=  4000 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=804.76 | contact=10.316 | clusters=1/1/1/1
+[lever_control] tick=  4200 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=791.97 | contact=10.500 | clusters=1/1/1/1
+[lever_control] tick=  4400 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=788.70 | contact=10.524 | clusters=1/1/1/1
+[lever_control] tick=  4600 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=793.18 | contact=10.244 | clusters=1/1/1/1
+[lever_control] tick=  4800 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=791.58 | contact=10.871 | clusters=1/1/1/1
+[lever_control] tick=  5000 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=787.37 | contact=10.311 | clusters=1/1/1/1
+[lever_control] tick=  5200 | load_gain=-0.2757 | angle=-30.98deg | gap=0.0354 | plate_F=787.85 | contact=10.393 | clusters=1/1/1/1
+[lever_control] tick=  5400 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=806.53 | contact=10.394 | clusters=1/1/1/1
+[lever_control] tick=  5600 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=791.07 | contact=10.597 | clusters=1/1/1/1
+[lever_control] tick=  5800 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=784.69 | contact=10.899 | clusters=1/1/1/1
+[lever_control] tick=  6000 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=805.79 | contact=10.333 | clusters=1/1/1/1
+[lever_control] tick=  6200 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=803.60 | contact=10.855 | clusters=1/1/1/1
+[lever_control] tick=  6400 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=799.90 | contact=10.549 | clusters=1/1/1/1
+[lever_control] tick=  6600 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=779.16 | contact=10.490 | clusters=1/1/1/1
+[lever_control] tick=  6800 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=792.20 | contact=10.793 | clusters=1/1/1/1
+[lever_control] tick=  7000 | load_gain=-0.2757 | angle=-30.98deg | gap=0.0355 | plate_F=795.72 | contact=10.294 | clusters=1/1/1/1
+[lever_control] tick=  7200 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=777.37 | contact=10.383 | clusters=1/1/1/1
+[lever_control] tick=  7400 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=792.97 | contact=11.147 | clusters=1/1/1/1
+[lever_control] tick=  7600 | load_gain=-0.2757 | angle=-30.98deg | gap=0.0355 | plate_F=784.39 | contact=10.999 | clusters=1/1/1/1
+[lever_control] tick=  7800 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0354 | plate_F=793.25 | contact=10.631 | clusters=1/1/1/1
+[lever_control] tick=  8000 | load_gain=-0.2758 | angle=-30.98deg | gap=0.0355 | plate_F=785.26 | contact=10.724 | clusters=1/1/1/1
+
+[lever_control] LEVER FALSIFIERS:
+  (a) LIFT      : skipped (control)
+  (b) HOLD      : PASS  max load_gain=0.0000 at tick=0 (bar 0.0500)
+  (c) BALANCE   : PASS  R_true=0.750 settled_angle_sign=-1 predicted=-1 (last 8/41 samples)
+  (d) INTEGRITY : PASS  max clusters droplet/fulcrum/lever/load=1/1/1/1 plate_drift=0.000000
+  (e) SAG       : skipped (control)
+======================================================================
+lever runs complete

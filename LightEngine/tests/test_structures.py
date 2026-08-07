@@ -936,11 +936,12 @@ def test_lever_counts():
         control=False, seed=0)
     n_plate = 6 * 6
     n_fulcrum = 4 ** 3
-    n_lever = 4 * 4 * 16
     n_load = 4 ** 3
-    # The droplet may be standard 4^3 or heavy-muscle 5^3; read it back.
-    n_drop = derived["n_droplet"]
-    assert n_drop in (4 ** 3, 5 ** 3)
+    # v5: standard 4^3 droplet only; tube arm count depends on chosen length.
+    n_drop = 4 ** 3
+    n_lever = derived["n_lever"]
+    lever_len = derived["lever_len"]
+    assert n_lever == lever_len * 12  # 12 grains per tube ring
     assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load
     assert int((grain_ids == -1).sum()) == n_plate
     assert int((grain_ids == 0).sum()) == n_drop
@@ -949,7 +950,6 @@ def test_lever_counts():
     assert int((grain_ids == 3).sum()) == n_load
     assert derived["n_plate"] == n_plate
     assert derived["n_fulcrum"] == n_fulcrum
-    assert derived["n_lever"] == n_lever
     assert derived["n_load"] == n_load
 
 
@@ -972,15 +972,16 @@ def test_lever_no_shared_positions():
 
 
 def test_lever_main_ratio():
-    """Main lever print derives kernel R_true > 1.0 (muscle-side-down)."""
+    """Main lever print derives kernel R_true = 2.0 +/- 0.1."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
-    assert derived["R_true"] > 1.0
+    assert 1.9 <= derived["R_true"] <= 2.1
 
 
 def test_lever_main_contact_margin():
-    """v4 4x4x16 geometry forces the heavy-muscle 5^3 route."""
+    """Main fulcrum contact clears the lever end by at least 2 lattice steps."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
-    assert derived["route"] == "heavy_muscle"
+    assert derived["route"] == "standard"
+    assert derived["margin_to_load_end"] >= 2.0 * derived["spacing"]
 
 
 def test_lever_control_ratio():

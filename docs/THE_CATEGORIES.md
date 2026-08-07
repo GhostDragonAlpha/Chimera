@@ -862,6 +862,48 @@ are disproportionately stiffer AND lighter-torqued) before touching the
 muscle. FALSIFIER: if the tube sags under the load (load_gain decouples
 from rotation as in v3) the 1-grain shell is sheet-class and the void
 shrinks to 1×1; record it.
+**LEVER v5 VERDICT 2026-08-07 (hollow-tube arm, run tags lever_v5 /
+lever_v5_control, 8000 ticks):** the statics are FIXED and the perch is
+the failure — a pivot that cannot capture its arm is not a pivot, v2's
+lesson one level up. Verified link by link. (1) STATICS WIN: the
+tube-plus-length derivation restored the headroom exactly as the v4 law
+predicted — the gate passes at 13 rings (156 grains vs 256 solid, and
+shorter, both derived moves), R_true = 2.000 at cx = +0.050 with 0.250
+margin OFF the bracket edge, STANDARD 4³ muscle. The hollow-tube clause
+is confirmed: bone buys stiffness without weight. (2) SAG struck: the
+tube is rigid — no decoupling anywhere in either run. (3) DYNAMICS
+FAIL, and the signature is a SLIP, not a tip: main settles LEVEL
+(angle −0.5°) with load_gain −0.221 — the whole assembly translated
+down beside the 0.2-tall fulcrum and lies on the plate, gap 0.034
+being SIDE contact with the block, not perch contact; control settles
+−31° with load_gain −0.276, same translation. Both runs follow one
+sequence: ~200 ticks as the statics predict (muscle-down, gap
+compressing 0.053 → 0.024), then a violent load-down lurch at tick 400
+(plate_F spikes 1832 / 1924 — the landing impact), then the slump. (c)
+BALANCE FAIL main, (a) LIFT FAIL main (max load_gain 0.0000); control
+(b) HOLD PASS (trivially — the load never rose), (c) PASS, (d)
+INTEGRITY PASS both. (4) TWO SINS STRUCK. First, a RULE 1 violation:
+the implementing agent ran a parameter SWEEP over insertion fraction
+α ∈ [0,1] × length 6..16 and "chose" α = 0.625 — choosing a number is
+the one thing the method forbids; bisection on the kernel torque sum is
+the legal instrument and v6 must re-derive the insertion with it.
+Second, the muscle droplet sits on the PLATE at the arm's tip, so its
+draw reaches the tip with a LATERAL component that walks the uncaptured
+arm off the perch — a muscle that pulls from beside the machine pulls
+the machine apart. The v5 law: a perch cannot hold a machine — the
+fulcrum must CAPTURE the arm so rotation is the only free degree of
+freedom, and the joint membrane (v2) already proved the socket that
+does it. Anatomy said it first: pivots are joints, and muscles pull
+through captured paths. Successor (named): v6 — the CAPTURED pivot:
+the fulcrum grows cheeks flanking the tube (a saddle; rotation only),
+the insertion fraction is re-DERIVED by bisection on the kernel torque
+sum (no sweeps, ever), the muscle stays on the plate (its anatomy: a
+muscle anchored to ground pulls the limb to it). Prediction: captured,
+the tick-400 lurch cannot slide the arm and the settled direction
+matches R_true both runs. FALSIFIER: if the captured machine still
+settles against R_true, the governor is the muscle droplet's freedom to
+wander, and the muscle must be anchored THROUGH a tendon — the tendon
+membrane is already proven, and that is the leg.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

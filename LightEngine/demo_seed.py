@@ -2068,6 +2068,12 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
         f"R_true={R_true:.3f} settled_angle_sign={settled_sign} "
         f"predicted={predicted_sign} (last {last_n}/{n_angle} samples)")
 
+    # SAG v5: if the tube rotates muscle-down but the load end does not lift,
+    # the 1-grain shell is sheet-class and the void must shrink to 1x1 next.
+    sag_detected = False
+    if not control:
+        sag_detected = (settled_sign == 1 and max_gain < 0.10)
+
     # INTEGRITY: all bodies one cluster; plate pins hold.
     integrity_ok = (
         int(drop_clust.max()) == 1 and
@@ -2098,6 +2104,11 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
           f"{int(drop_clust.max())}/{int(fulcrum_clust.max())}/"
           f"{int(lever_clust.max())}/{int(load_clust.max())} "
           f"plate_drift={plate_drift:.6f}")
+    if control:
+        print(f"  (e) SAG       : skipped (control)")
+    else:
+        print(f"  (e) SAG       : {'DETECTED' if sag_detected else 'not detected'}  "
+              f"settled_sign={settled_sign} max_load_gain={max_gain:.4f}")
 
     return {
         "lift_ok": lift_ok,
@@ -2105,6 +2116,7 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
         "balance_ok": balance_ok,
         "integrity_ok": integrity_ok,
         "plate_ok": plate_ok,
+        "sag_detected": sag_detected,
     }
 
 
@@ -2122,23 +2134,28 @@ def lever_main(args, seed):
     version = "control" if control else "main"
 
     droplet_label = f"{derived['droplet_side']}^3"
+    lever_len = derived.get('lever_len', 16)
     print("=" * 70)
-    print(f"THE KERNEL - LEVER v4 print run ({version})")
-    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), lever=4x4x16, "
+    print(f"THE KERNEL - LEVER v5 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), "
+          f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
           f"droplet={droplet_label} (route={derived['route']}), load=4^3, "
           f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
     print("STATEMENT: A muscle-bone machine trades muscle force for load force")
     print("  through arm length; the balance ratio is the kernel's own static")
     print("  torque about the PINNED fulcrum contact point on the cold print.")
+    print("  v5 uses a hollow bone-class tube arm to cut self-weight while")
+    print("  keeping transverse confinement.")
     if control:
         print("PREDICTION: With kernel-verified R_true <= 1, the load end")
         print("  tips load-side-down and never rises more than one lattice")
         print("  step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified R_true > 1 and the fulcrum")
-        print("  anchored, the muscle side tips down (positive settled angle)")
-        print("  and the load end lifts through at least two lattice steps.")
+        print("PREDICTION: With kernel-verified R_true = 2.0 (+/- 0.1) and")
+        print("  the fulcrum anchored off-edge, the muscle side tips down")
+        print("  (positive settled angle) and the load end lifts through at")
+        print("  least two lattice steps.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
@@ -2146,6 +2163,8 @@ def lever_main(args, seed):
     print("      sign of mean lever angle over the last 20% of samples must")
     print("      match sign(R_true - 1)")
     print("  (d) INTEGRITY - all four bodies one cluster; plate pins hold")
+    print("  (e) SAG     - tube rotates muscle-down but load_gain decouples")
+    print("      (sheet-class shell); if detected, void shrinks to 1x1 next")
     print("=" * 70)
     print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")
     print(f"Derived a_m   = {derived['a_m']:.5f}")
@@ -2154,6 +2173,7 @@ def lever_main(args, seed):
     print(f"Derived W_L   = {derived['W_L']:.3f}")
     print(f"Derived R_static = {derived['R_static']:.3f}")
     print(f"Derived R_true= {derived['R_true']:.3f}")
+    print(f"Derived lever_len = {lever_len}")
     print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}\n")
 
     metrics = _run_lever(pos, vel, pin_mask, grain_ids, derived,
