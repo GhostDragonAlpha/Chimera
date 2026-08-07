@@ -166,11 +166,31 @@ printed conformal to the muscle bulk, held by the muscle's own DRAW —
 the falsifiers (conformal through the stroke, no slide-off, edge closed)
 inherit the mat's measured stability instead of a plane that never
 existed.
-- **SKIN** *(parent relation stands)*: a sheet printed CONFORMAL to a
-  muscle/composite bulk, anchored at derived spacing — inherits theSheet's
-  phase and theMuscle's stroke. Falsifier (from the retired line, kept):
-  stays conformal through the muscle's full contraction cycle — does not
-  slide off, does not tear, edge stays closed.
+- **SKIN** — re-derived on the mat 2026-08-07 (no plane ever existed — see
+  theSheet v1–v3): **theSkin is a crumpled mat printed conformal to the
+  muscle bulk and held by the muscle's own DRAW.** Real skin is multi-layer;
+  this universe's condensed 2-D form was always going to be a mat. The
+  muscle is its parent membrane: the substrate that gives the mat its form
+  (bone's lesson — form lives in the membrane beneath).
+  **PRINT SPEC (v1):** the settled muscle print (two pinned 4×4 anchor
+  plates, one 4³ droplet bridge seated at cushion contact) PLUS a 16×16
+  sheet at d_eq_2D = 0.04005 printed horizontal one lattice step above the
+  droplet's top face — no pins on the mat, nothing holding it but the
+  muscle's DRAW. Protocol: a derived settle window (the mat conforms), then
+  the muscle's own stroke: plates extend to s₀·√2 and converge back
+  (5% sound, the muscle protocol).
+  **Falsifiers:** (a) CONFORM — after settle and at every stroke sample,
+  ≥ half the mat's grains sit within the cushion band [d_eq − 0.02,
+  d_eq + 0.05] of SOME droplet grain (wall-seated at ≈S_WALL also counts,
+  per the joint v2 law — the band unions both); (b) NO SLIDE-OFF — the
+  mat's COM relative to the droplet's COM drifts ≤ 2 lattice steps from
+  its post-settle value through the whole stroke; (c) COVERAGE — the mat
+  ends covering the droplet's TOP hemisphere: ≥ half of droplet surface
+  grains (grains with a neighbor-free +z side at print) have a mat grain
+  within the band; (d) INTEGRITY — the mat stays one cluster through
+  settle + stroke, and (inherited from theMuscle) the droplet does too.
+  The edge-closed claim from the retired line is struck honestly: an open
+  mat cannot close its own edge — that claim belongs to theBladder.
 - **bladder** *(parent relation stands)*: closed sheet enclosing gas
   points, CONTAINED WITHIN the muscle bulk — squeeze is its function.
   Falsifier: holds its contents under the muscle's derived squeeze pressure
