@@ -701,6 +701,42 @@ PASS — force reverses to −328.2 in convergence (the same material pushes).
 measured. Successor: theTendon (force across the muscle–bone interface,
 fails at the DERIVED weakest link), then theJoint — the first moving part.
 
+## THE LEVER (the muscle-bone machine — light-era derivation 2026-08-07)
+
+The joint v2 proved a limb rotates under pull; theLever is the same
+mechanism QUANTIFIED — the machine that trades muscle force for load force
+through arm length. Every member is settled: the bone column, the cushion
+fulcrum (bondless, self-reducing), the muscle bridge. The one new claim is
+the RATIO: quasi-static balance F_m·a_m = W_L·a_l decides whether the
+load moves, and NOTHING else does.
+**PRINT SPEC (v1):** a pinned ground plate; a 4×4×4 fulcrum block seated
+on it; a 4×4×16 bone column (the lever arm) laid HORIZONTAL, balanced on
+the fulcrum's top face at its midpoint (cushion contact, unpinned — the
+joint mechanism). Muscle: a 4³ droplet seated on the plate beside the
+lever's MUSCLE end, pulling that end down by pure DRAW (the joint v2
+biceps). Load: a 4³ block resting on the lever's LOAD end (cushion
+contact). Derived in code: arm lengths a_m, a_l from the fulcrum contact
+point; the muscle's pull F_m on the lever (pairwise DRAW at print); the
+load's weight W_L (pairwise DRAW load × plate at print); the balance
+ratio R = F_m·a_m / (W_L·a_l).
+**The two-sided falsifier (the lever's soul):** the MAIN run is printed
+with R derived ≥ 2× (muscle arm and droplet placement set so the ratio
+clears the canonical one-halving margin) — the load MUST lift; the
+CONTROL run halves the muscle arm (a_m/2, load side unchanged) so R ≤ 1
+— the load MUST NOT lift. If main lifts and control holds, the machine is
+measured: advantage decides, both directions.
+**Falsifiers:** (a) LIFT — main: the load end's height above its print
+height increases through a derived arc (≥ 2 lattice steps) while the
+fulcrum contact holds OR recovers (the joint v2 law — dislocation that
+re-seats is not failure); (b) HOLD — control: the load end never rises
+more than 1 lattice step above print through the whole run; (c) BALANCE
+LAW — in main, at the quasi-static moment before liftoff (load contact
+force → 0), the measured F_m·a_m / (W_L·a_l) lies within [0.9, 1.1] of
+unity... honestly: within 10% of the DERIVED ratio at liftoff (the
+balance point is computed on recorded positions, not fitted); (d)
+INTEGRITY — lever, fulcrum, droplet, load each one cluster throughout;
+the plate pins hold.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
