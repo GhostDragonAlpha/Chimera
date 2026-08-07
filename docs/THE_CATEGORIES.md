@@ -42,18 +42,51 @@ RULE 0 doc section) as the print proofs earn them.*
 
 ## 2-D — SHEETS (skin, membranes, cloth, shells)
 
-- **sheet**: triangular/hex lattice at r_bond, one point thick. Falsifier: holds
-  area and edge under derived pressure; drapes (no bending stiffness = cloth) or
-  resists (packed multi-layer = shell) as printed.
-- **SKIN**: a sheet printed CONFORMAL to a muscle/composite bulk and anchored to
-  it at derived spacing — skin comes from the muscle: the muscle is its parent
-  membrane, the layer beneath that it must move with. Falsifier: stays conformal
-  through the muscle's full contraction cycle — does not slide off (anchor
-  retention), does not tear (strain distributes as derived across the sheet),
-  and its edge stays closed (a bag with a hole is not skin).
-- **bladder**: closed sheet enclosing gas points, CONTAINED WITHIN the muscle
-  bulk (like the brain within bone) — the muscle is its parent by enclosure,
-  and the muscle's contraction is its function: squeeze is what moves contents.
+*(Old sheet line retired 2026-08-06: "triangular/hex lattice at r_bond"
+presumed the attractive bond that does not exist — see theCushionLaw.
+Re-derived below.)*
+
+## THE SHEET (the 2-D membrane — light-era derivation 2026-08-06)
+
+The crush series already proved the hard half: every FREE lattice 8→4096
+collapses into a droplet — there is no bending stiffness, so a free sheet
+must ball up. And bone's anneal proved where form lives: in MEMBRANES (pins,
+containment, substrates), never in material microstate. So theSheet's
+claim is not "a sheet holds itself" — nothing does — it is: **a 2-D layer
+on a substrate is a persistent 2-D phase**: the substrate's DRAW holds it
+flat, the cushion keeps it one grain off the surface, and its own
+self-DRAW holds it in-plane. Cloth, not shell, by necessity — and cloth is
+what skin and bladder need.
+**PRINT SPEC (v1):** a 16×16 sheet one grain thick at cushion spacing
+0.05, printed horizontal at height d_eq + one lattice step above a pinned
+6×6 plate; in the DRAPE run a 4×4×4 block (the obstacle, a standing-in
+bone) sits on the plate under the sheet's center. Three settle runs —
+BUMP, FLAT (no obstacle), FREE (no plate: the anti-falsifier) — and one
+TEAR run: the sheet printed on the plate, its two opposite edge rows
+pinned (the frame), pulled apart quasistatically at 5% sound speed.
+**Falsifiers:** (a) PHASE — in BUMP and FLAT the sheet ends as a 2-D
+phase: cluster count 1 AND thickness (sheet-grain z-spread) ≤ 2 lattice
+steps; in FREE the same print MUST ball (thickness > half the sheet
+width) — if a free sheet stays flat, theCushionLaw is wrong and the whole
+era reopens; (b) DRAPE — in BUMP, settled: the sheet contacts the
+obstacle's top face within the cushion band [d_eq − 0.02, d_eq + 0.05]
+AND ≥ half its outer edge rows reach cushion distance of the plate —
+cloth conforms; a sheet that tents over the block with a void underneath
+is a shell, recorded as REFUTED for v1 (shells are multi-layer, later);
+(c) TEAR — under the pinned-frame pull, first split (cluster count 2)
+arrives at a measured global stretch in the derived window [1.5×, 4×]:
+uniform stretch breaks links at exactly 3× (0.05 → R_BOND = 0.15) and
+strain concentration at the grips can only lower it; the split location
+is recorded (predicted: adjacent to a grip, where concentration lives),
+and post-split each fragment remains one condensed sheet (no
+sub-fragmentation beyond cluster count 2 at first split).
+- **SKIN** *(parent relation stands)*: a sheet printed CONFORMAL to a
+  muscle/composite bulk, anchored at derived spacing — inherits theSheet's
+  phase and theMuscle's stroke. Falsifier (from the retired line, kept):
+  stays conformal through the muscle's full contraction cycle — does not
+  slide off, does not tear, edge stays closed.
+- **bladder** *(parent relation stands)*: closed sheet enclosing gas
+  points, CONTAINED WITHIN the muscle bulk — squeeze is its function.
   Falsifier: holds its contents under the muscle's derived squeeze pressure
   without rupture, and yields its contents when the squeeze exceeds a derived
   threshold (a bladder that can't empty is a cyst).
