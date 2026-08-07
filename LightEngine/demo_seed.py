@@ -1524,7 +1524,7 @@ def _print_tendon_verdict(metrics, grain_ids, s0, rod_span, label,
             max_curvature = float(curvature[push_idx].max())
             buckle_ok = max_curvature <= TENDON_BUCKLE_BAR
 
-        version = "v3" if foot_side > 0 else "v2"
+        version = "v4" if foot_side > 0 else "v2"
         print(f"\n[{label}] TENDON {version} FALSIFIERS:")
         if push_max_err is not None:
             print(f"  (a) PUSH LAW  : {'PASS' if push_ok else 'FAIL'}  "
@@ -1630,17 +1630,16 @@ def tendon_main(args, seed):
     # RULE 0 header
     print("=" * 70)
     if foot_side > 0:
-        print("THE KERNEL — TENDON v3 print run")
-        print(f"N={N}, rod=2x2x8 + 4x4 feet, plates=4x4, foot_side={foot_side}, "
+        print("THE KERNEL — TENDON v4 print run")
+        print(f"N={N}, rod=2x2x6 + 4x4 feet, plates=4x4, foot_side={foot_side}, "
               f"seed={seed}, dt={dt}")
         print("-" * 70)
-        print("STATEMENT: A 2x2x8 tendon shaft rooted at each end by a 4x4 foot")
-        print("  the size of the anchor plate grips the plate by DRAW, moving the")
-        print("  weak link from the seat to the shaft.")
-        print("PREDICTION: With 4x4 feet, (b1) SEAT-HOLD passes at the same crush")
-        print("  that ejected v1/v2, and the weak link moves from the seat to the")
-        print("  shaft — recorded where it fails, if it does.  PUSH LAW, PULL LAW,")
-        print("  and UNSEAT remain as derived.")
+        print("STATEMENT: A 2x2x6 tendon shaft rooted at each end by a 4x4 foot")
+        print("  the size of the anchor plate grips the plate by DRAW.  v3 proved")
+        print("  the seats hold; v4 asks where the rooted tendon fails under crush.")
+        print("PREDICTION: With seats holding, the weak link moves from the seat")
+        print("  to the shaft — recorded as either (b2) BUCKLE or a clean hold.")
+        print("  PUSH LAW, PULL LAW, and UNSEAT remain as derived.")
         print("FALSIFIERS:")
         print("  (a) PUSH LAW  — measured right-plate force vs static recompute")
         print("      on recorded positions within 10% (compress phase)")

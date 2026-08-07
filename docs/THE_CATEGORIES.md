@@ -253,6 +253,30 @@ Successor (named): v4 — the foot REPLACES the shaft's terminal layer (4×4
 foot at the end plane, 2×2×6 interior shaft between the feet, no shared
 positions), the same five falsifiers, the weak-link question finally asked
 of physics instead of the printer.
+**ROUTER v4 VERDICT 2026-08-06 (flush feet, run tag tendon_v4) and THE
+MEASURED TENDON LAW:** the print law held — one cluster for all 13,754
+ticks — and physics answered: the weak link is STILL the seat. The right
+foot popped at sep ≈ 0.397 with the force-reversal signature (−75.6),
+gap_R peaking at 0.2652; both ends crept together (gaps ≈ 0.12–0.13 at
+tick 1000) before the left re-seated and the right let go. v1 bare rod
+popped at ≈0.41, v2 preloaded at ≈0.361, v4 rooted at ≈0.397 — FOUR
+constructions, one answer: preload hurts, foot area does nothing, and v3's
+"held" seats were never loaded (the fragmented load path spared them).
+Compression along a free 1-D column ejects at roughly the same separation
+no matter how it is printed — there is no transverse confinement to buy.
+So theTendon's final measured form, and it matches anatomy exactly:
+**tendon = tension only, bone = compression, muscle = both regimes.**
+The router's passing specification is the pull half, green in all four
+constructions: (d) PULL LAW 0.000 vs the pairwise-DRAW prediction, (c)
+UNSEAT at the derived s_fail with cluster count 1 and the rod sticking to
+one plate as derived. The compression half of the v1 spec is REFUTED and
+retired: (b) in all its forms ((b) v1 tilt-conflated, (b1)/(b2) split)
+FAILS; force routing in compression belongs to bulk (bone: gaps 0.0000
+through four preload cycles). (a) PUSH LAW's 0.000 PASS is recorded
+honestly for what it is — the LAW is exact even as the STRUCTURE fails; the
+kernel predicts the ejection force perfectly. theTendon is SETTLED as a
+pull router at v4; theJoint inherits: bone-muscle-bone with tendon
+pull-links, the first moving part.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 

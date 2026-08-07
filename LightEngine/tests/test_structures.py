@@ -380,15 +380,15 @@ def test_tendon_preload_geometry():
 
 
 def test_tendon_foot_geometry():
-    """foot_side=4 adds 4x4 feet at both ends without changing s0 or rod_span."""
+    """foot_side=4 replaces terminal shaft layers with 4x4 feet (v4)."""
     spacing = 0.05
     d_eq = seed_structures.TENDON_D_EQ
     pos, vel, pin_mask, grain_ids, s0, rod_span = seed_structures.tendon(
         side=4, n_len=8, spacing=spacing, foot_side=4, seed=0)
 
     n_plate = 4 * 4
-    n_shaft = 4 * 8
-    n_foot = 2 * 4 * 4
+    n_shaft = 4 * 6          # 2x2x6 interior shaft
+    n_foot = 2 * 4 * 4       # two 4x4 foot layers
     assert pos.shape[0] == n_shaft + n_foot + 2 * n_plate
 
     # plates pinned, rod free
@@ -408,7 +408,13 @@ def test_tendon_foot_geometry():
     # cold print: zero velocity
     np.testing.assert_allclose(vel, 0.0, atol=1e-6)
 
+    # print law: no two grains share a position
     rod = pos[grain_ids == 0]
+    diff = rod[:, None, :] - rod[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
     plates = pos[grain_ids == -1]
     left_plate = plates[plates[:, 0] < rod[:, 0].min()]
     right_plate = plates[plates[:, 0] > rod[:, 0].max()]

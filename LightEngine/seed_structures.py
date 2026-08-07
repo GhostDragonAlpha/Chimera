@@ -475,18 +475,18 @@ def tendon(side: int = 4,
 
         s0 = rod_span + 2 * d_eq * (1 - preload_frac).
 
-    With ``foot_side > 0`` a ``foot_side × foot_side`` layer (one point thick,
-    plane normal to x) is added flush at each end of the 2×2 shaft.  The foot
-    outer face is coplanar with the shaft end, so ``rod_span`` and ``s0`` are
-    unchanged from the no-foot case; the flare increases the end-face area
-    gripping the plate.
+    With ``foot_side > 0`` a ``foot_side × foot_side`` foot layer (one point
+    thick, plane normal to x) sits at each end plane IN PLACE OF the shaft's
+    terminal 2×2 layer.  The shaft interior is therefore ``2 × 2 × (n_len - 2)``
+    and the feet provide the end-face area that grips the plate.  ``rod_span``
+    and ``s0`` remain unchanged from the no-foot case.
 
     For the default ``n_len=8`` and ``spacing=0.05``:
       - ``preload_frac=0.0, foot_side=0`` gives ``rod_span = 0.3500`` and
         ``s0 = 0.4468``.
       - ``preload_frac=0.5`` gives ``s0 = 0.3984``.
-      - ``foot_side=4`` adds 32 foot grains to the 32-grain shaft for a total
-        rod of 64 grains (N = 96 with the two 4×4 plates).
+      - ``foot_side=4`` gives a 2×2×6 shaft (24 grains) plus two 4×4 feet
+        (32 grains) for a total rod of 56 grains (N = 88 with the plates).
 
     Returns ``(positions, velocities, pin_mask, grain_ids, s0, rod_span)``:
       - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
@@ -495,7 +495,7 @@ def tendon(side: int = 4,
       - ``s0`` and ``rod_span`` are the derived router numbers.
 
     The default point count is ``4 * n_len + 2 * side**2``; with feet it is
-    ``(4 * n_len + 2 * foot_side**2) + 2 * side**2``.
+    ``(4 * (n_len - 2) + 2 * foot_side**2) + 2 * side**2``.
     """
     rng = np.random.default_rng(seed)
     s = int(side)
@@ -516,19 +516,23 @@ def tendon(side: int = 4,
     s0 = rod_span + 2.0 * seat_gap
 
     # Shaft: 2 x 2 x l cubic lattice along x, centered on the axis.
-    x_off = (np.arange(l, dtype=np.float64) - (l - 1) / 2.0) * d
+    # With feet, the terminal shaft layers are replaced by the foot layers,
+    # so the interior shaft has l - 2 layers.
+    shaft_len = l if f == 0 else max(2, l - 2)
+    x_off = (np.arange(shaft_len, dtype=np.float64) - (shaft_len - 1) / 2.0) * d
     y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
     z_off = (np.arange(2, dtype=np.float64) - 0.5) * d
     gx, gy, gz = np.meshgrid(x_off, y_off, z_off, indexing="ij")
     shaft_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-    # Shift so the left shaft face sits ``seat_gap`` from the left plate
-    # (inner face at x = 0).
+    # The shaft (or shaft interior, when feet replace the terminals) is
+    # centered in the same overall rod_span, so the shift is unchanged.
     shaft_pos[:, 0] += seat_gap + rod_span / 2.0
 
     rod_parts = [shaft_pos]
     if f > 0:
-        # Feet: one f x f layer at each end, outer face coplanar with the
-        # shaft end cross-section.
+        if l < 4:
+            raise ValueError("n_len must be at least 4 when foot_side > 0")
+        # Feet: one f x f layer at each end, replacing the terminal shaft layer.
         foot_off = (np.arange(f, dtype=np.float64) - (f - 1) / 2.0) * d
         fy, fz = np.meshgrid(foot_off, foot_off, indexing="ij")
         foot_yz = np.stack([fy.ravel(), fz.ravel()], axis=1)
@@ -544,6 +548,17 @@ def tendon(side: int = 4,
 
     rod_pos = np.vstack(rod_parts)
     n_rod = rod_pos.shape[0]
+
+    # Print law: no two grains may share a position.
+    pos_check = rod_pos.astype(np.float64)
+    diff = pos_check[:, None, :] - pos_check[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"tendon print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6 (foot_side={f}, preload_frac={p})")
 
     # Plates: s x s lattices perpendicular to x.
     p_off = (np.arange(s, dtype=np.float64) - (s - 1) / 2.0) * d
