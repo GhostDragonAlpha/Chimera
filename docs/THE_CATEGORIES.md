@@ -278,6 +278,51 @@ kernel predicts the ejection force perfectly. theTendon is SETTLED as a
 pull router at v4; theJoint inherits: bone-muscle-bone with tendon
 pull-links, the first moving part.
 
+## THE JOINT (the first moving part — light-era derivation 2026-08-06)
+
+Everything below is assembled from SETTLED members only: bone (plastic-set
+compression, seats hold in bulk), theMuscle (DRAW-bridge, antagonist
+cushion), theTendon (pull-only router, unseats at derived s_fail), and the
+one free mechanism this universe hands us: **cushion contact is a bondless
+fulcrum** — a bone end resting on another body touches without sticking, so
+it can ROLL and PIVOT. A hinge costs nothing and cannot break, because it
+was never bonded.
+**theJoint is two bones and a muscle arranged so the muscle's pull becomes
+ROTATION about a cushion fulcrum.** There is no uniform gravity in this
+universe, but there is WEIGHT: bone B's own DRAW toward the ground plate.
+The muscle must out-pull the weight to lift; the resting angle is the
+derived equilibrium where muscle DRAW balances weight DRAW. Motion stops at
+the derived stop (geometric contact or the muscle's stroke limit s·√2).
+**PRINT SPEC (v1 of the hinge):** a pinned ground plate (6×6, spacing
+0.05). Bone A: a 4×4×16 column printed vertical, base seated on the plate
+at cushion contact — the pillar. Bone B: a 4×4×16 column printed
+HORIZONTAL, one end face seated on A's top face at cushion contact — the
+limb; the A-top/B-end contact is the joint. Muscle: a 4³ droplet seated on
+the plate offset from A's base by a derived moment arm, pulling B's far
+(half's) underside by pure DRAW — the biceps. All separations, arm lengths,
+and the droplet offset derived from the print geometry; no free numbers.
+**Derived at print (in code):** B's weight W = pairwise DRAW sum B ×
+plate; the muscle's pull on B at rest F_m(0) = pairwise sum (droplet ∪
+plate) × B restricted to the bridge geometry; the resting equilibrium
+angle θ₀ solving F_m(θ)·arm_m(θ) = W·arm_w(θ) — the code solves it on the
+kernel, never fits it.
+**Falsifiers:** (a) PIVOT — under the muscle's pull, B rotates: its free
+end descends through a derived arc while the JOINT CONTACT HOLDS (the B
+end face stays within r_c of A's top face — a joint that dislocates is not
+a joint); (b) TORQUE LAW — the measured joint torque vs angle matches the
+pairwise-DRAW moment computed on the RECORDED positions within 10% (the
+deformation-immune form, third generation); (c) REST — when the muscle
+droplet is removed (or equivalently its mass set to zero in the recompute),
+B settles to the derived weight-only equilibrium, recorded angle vs derived
+within derived tolerance; (d) STOP — the free end's descent halts at the
+derived stop (B-to-plate contact at cushion distance or the muscle stroke
+limit, whichever the geometry says is first), never passing through solid
+matter; (e) INTEGRITY — both bones keep their seats and their cluster
+count 1 through the whole stroke (bone's law), and the muscle keeps its
+own (theMuscle's law). The joint is the first membrane whose falsifiers
+are entirely INHERITED from settled members except one: that rotation
+itself emerges from pull + fulcrum.
+
 ## THE MUSCLE (flagship composite — the operator's spec)
 
 *(v1 fiber spec retired 2026-08-06: "rest length" and "bond rupture" presumed
