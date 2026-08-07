@@ -207,11 +207,41 @@ existed.
   it is a bulk lying on a bulk, not a plane stretched over one. Next of
   kin: theBladder (a CLOSED mat enclosing contents within the muscle —
   squeeze as function) and theOrgan (any composite contained within skin).
-- **bladder** *(parent relation stands)*: closed sheet enclosing gas
-  points, CONTAINED WITHIN the muscle bulk — squeeze is its function.
-  Falsifier: holds its contents under the muscle's derived squeeze pressure
-  without rupture, and yields its contents when the squeeze exceeds a derived
-  threshold (a bladder that can't empty is a cyst).
+- **bladder** — re-derived on the mat 2026-08-07 ("closed sheet enclosing
+  gas points" retired: gas does not exist — every grain condenses; and a
+  hollow shell is the sheet's hollow cousin, doomed to collapse unless
+  something holds it open. What holds it open is measured: the CUSHION —
+  incompressible condensed contents, exactly as a real bladder is full of
+  fluid). **theBladder is a closed mat shell packed with condensed
+  contents, with one derived opening — the neck.** Containment comes from
+  the shell's own self-DRAW (the mat is stable), inflation from the
+  contents' cushion repulsion, function from the muscle's squeeze, and the
+  neck is what separates a bladder from a cyst.
+  **PRINT SPEC (v1):** a spherical shell one grain thick at d_eq =
+  0.0484, radius r_b = 0.20 (≈ 200 grains — derived from surface area at
+  shell spacing), packed with a condensed content droplet (4³ = 64 at
+  0.05) — the contents' cushion pressure is the shell's splint; ONE neck:
+  a derived hole in the shell, diameter = 2 grain spacings (the smallest
+  opening that passes one grain — derived, not chosen). The assembly sits
+  between the muscle's two pinned plates (the squeeze protocol is
+  inherited: plates converge at 5% sound). Full containment within a
+  muscle BULK is v2; v1 asks the container question alone.
+  **Falsifiers:** (a) SEAL — under convergence to a derived hold pressure
+  (plates at cushion contact with the shell, derived force F_hold =
+  the shell's own end-weight form — computed in code from the kernel at
+  print), zero content grains escape (every content grain stays within
+  r_b + d_eq of the shell center) and the shell stays one cluster; (b)
+  YIELD — under continued convergence past the derived threshold (force
+  ≥ 2× F_hold, the one-halving canonical step), content grains exit —
+  escape count ≥ derived fraction (half the contents) — and the shell
+  does NOT rupture: shell cluster count stays 1 through the whole squeeze
+  (a bladder that bursts is not a bladder); (c) NECK SELECTIVITY — the
+  escaped grains exit THROUGH THE NECK: each escapee's position at the
+  moment of exit (first sample outside r_b + d_eq) lies within 2 grain
+  spacings of the neck axis, never through shell wall (an escape through
+  the wall is rupture, recorded); (d) SHELL INTEGRITY post-yield: after
+  the squeeze releases, the shell remains one closed mat (clusters == 1,
+  no holes beyond the neck — a bladder that can't re-fill is a wound).
 
 ## 3-D — BULKS (flesh, organs, soil, rock)
 
