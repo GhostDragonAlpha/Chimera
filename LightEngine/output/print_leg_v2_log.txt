@@ -1,0 +1,99 @@
+======================================================================
+THE KERNEL - LEG v2 print run (main)
+N=568, plate=18x6+well (188 pinned), fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), lever=4x4 tube (1-grain shell, 2x2 void) x 13 rings, droplet=4^3 in well (PINNED), load=4^3, rod=2x2x2 tendon, seed=20260806, dt=0.0005, ticks=8000, control=False
+----------------------------------------------------------------------
+STATEMENT: A captured muscle-bone machine routes the muscle pull
+  through a vertical tendon rod that spans from the arm tip to an
+  anchored droplet at the bottom of a deep well, so the bone never
+  intersects the muscle.  The droplet is pinned to the well floor;
+  the well depth is derived so the arm-tip arc clears the droplet;
+  the fulcrum contact is chosen by an arc gate that samples the
+  kernel static torque ratio R_true(theta) over [0, theta_stop].
+PREDICTION: With kernel-verified min_R_taut >= 1 over the arc,
+  the captured arm tips muscle-side-down (positive settled angle)
+  and the load end lifts through at least two lattice steps.
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10 absolute z
+  (b) HOLD    - control: load end rises <= 0.05 all run
+  (c) BALANCE - kernel torque predicts the SETTLED tip direction:
+      sign of mean lever angle over the last 20% of samples must
+      match sign(R_true - 1)
+  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold
+  (e) SAG     - if the arm rotates muscle-down but the load end does
+      not lift, the tendon route failed to transmit the pull
+  (f) SLACK   - main: rod must stay taut (slack fraction <= 0.20)
+======================================================================
+
+Derived d_eq   = 0.04840
+Derived contact_x = -0.09750
+Derived a_m    = 0.20217
+Derived a_l    = 0.39734
+Derived R_true = 1.003
+Derived theta_stop = 27.79 deg
+Derived lever_len = 13
+Derived margin_to_load_end = 0.39750
+Derived well_floor_z = -0.10000
+Derived droplet_apex = 0.09840
+Derived n_rod_layers = 2
+Derived n_rod  = 8
+
+
+[leg_v2] N=568 plate=188 droplet=64 fulcrum=88 lever=156 load=64 rod=8
+[leg_v2] dt=0.0005 ticks=8000 sample_every=200
+
+[leg_v2] tick=     0 | load_gain=+0.0000 | angle=  0.03deg | theta/theta_stop=  0.03/ 27.79deg | gap=0.0547 | plate_F=14612.61 | contact=-906.244 | clusters=1/1/1/1/1 | tip_to_drop=0.1493 | apex_z=0.0995 | rod=tension(+0.78)
+[leg_v2] tick=   200 | load_gain=+0.0017 | angle= 17.07deg | theta/theta_stop= 17.07/ 27.79deg | gap=0.0627 | plate_F=14913.97 | contact=-617.503 | clusters=1/1/1/1/1 | tip_to_drop=0.0532 | apex_z=0.0995 | rod=compression(-181.78)
+[leg_v2] tick=   400 | load_gain=-0.1917 | angle= -3.16deg | theta/theta_stop= -3.16/ 27.79deg | gap=0.0792 | plate_F=15577.61 | contact=4226.815 | clusters=1/1/1/1/1 | tip_to_drop=0.0308 | apex_z=0.0995 | rod=compression(-25.62)
+[leg_v2] tick=   600 | load_gain=-0.2691 | angle=-14.47deg | theta/theta_stop=-14.47/ 27.79deg | gap=0.1024 | plate_F=13115.11 | contact=2219.424 | clusters=1/1/1/1/1 | tip_to_drop=0.0214 | apex_z=0.0995 | rod=tension(+67.73)
+[leg_v2] tick=   800 | load_gain=-0.2818 | angle=-10.76deg | theta/theta_stop=-10.76/ 27.79deg | gap=0.1146 | plate_F=14553.63 | contact=2007.160 | clusters=1/1/1/1/1 | tip_to_drop=0.0242 | apex_z=0.0995 | rod=tension(+3.27)
+[leg_v2] tick=  1000 | load_gain=-0.2745 | angle= -5.06deg | theta/theta_stop= -5.06/ 27.79deg | gap=0.1200 | plate_F=14781.47 | contact=378.277 | clusters=1/1/1/1/1 | tip_to_drop=0.0258 | apex_z=0.0995 | rod=tension(+3.53)
+[leg_v2] tick=  1200 | load_gain=-0.2750 | angle= -4.54deg | theta/theta_stop= -4.54/ 27.79deg | gap=0.1537 | plate_F=14539.22 | contact=908.990 | clusters=1/1/1/1/1 | tip_to_drop=0.0260 | apex_z=0.0995 | rod=tension(+3.63)
+[leg_v2] tick=  1400 | load_gain=-0.2760 | angle= -5.46deg | theta/theta_stop= -5.46/ 27.79deg | gap=0.1561 | plate_F=14176.11 | contact=1096.348 | clusters=1/1/1/1/1 | tip_to_drop=0.0263 | apex_z=0.0995 | rod=tension(+4.20)
+[leg_v2] tick=  1600 | load_gain=-0.2770 | angle= -5.10deg | theta/theta_stop= -5.10/ 27.79deg | gap=0.1550 | plate_F=14344.88 | contact=956.700 | clusters=1/1/1/1/1 | tip_to_drop=0.0263 | apex_z=0.0995 | rod=tension(+5.26)
+[leg_v2] tick=  1800 | load_gain=-0.2794 | angle= -7.35deg | theta/theta_stop= -7.35/ 27.79deg | gap=0.1531 | plate_F=14170.89 | contact=938.953 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+14.15)
+[leg_v2] tick=  2000 | load_gain=-0.2791 | angle= -7.37deg | theta/theta_stop= -7.37/ 27.79deg | gap=0.1532 | plate_F=14386.45 | contact=929.731 | clusters=1/1/1/1/1 | tip_to_drop=0.0271 | apex_z=0.0995 | rod=tension(+65.50)
+[leg_v2] tick=  2200 | load_gain=-0.2802 | angle= -8.26deg | theta/theta_stop= -8.26/ 27.79deg | gap=0.1538 | plate_F=14417.67 | contact=985.894 | clusters=1/1/1/1/1 | tip_to_drop=0.0259 | apex_z=0.0995 | rod=tension(+70.84)
+[leg_v2] tick=  2400 | load_gain=-0.2803 | angle= -8.30deg | theta/theta_stop= -8.30/ 27.79deg | gap=0.1534 | plate_F=14488.80 | contact=915.040 | clusters=1/1/1/1/1 | tip_to_drop=0.0262 | apex_z=0.0995 | rod=tension(+71.21)
+[leg_v2] tick=  2600 | load_gain=-0.2803 | angle= -8.22deg | theta/theta_stop= -8.22/ 27.79deg | gap=0.1533 | plate_F=14465.31 | contact=925.177 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+70.15)
+[leg_v2] tick=  2800 | load_gain=-0.2803 | angle= -8.14deg | theta/theta_stop= -8.14/ 27.79deg | gap=0.1534 | plate_F=14480.45 | contact=912.988 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+68.97)
+[leg_v2] tick=  3000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14479.33 | contact=896.357 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.44)
+[leg_v2] tick=  3200 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14469.79 | contact=949.888 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.54)
+[leg_v2] tick=  3400 | load_gain=-0.2804 | angle= -8.17deg | theta/theta_stop= -8.17/ 27.79deg | gap=0.1535 | plate_F=14484.94 | contact=951.942 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.53)
+[leg_v2] tick=  3600 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14475.82 | contact=914.486 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.60)
+[leg_v2] tick=  3800 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1534 | plate_F=14489.34 | contact=930.894 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.55)
+[leg_v2] tick=  4000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14477.06 | contact=911.612 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.54)
+[leg_v2] tick=  4200 | load_gain=-0.2804 | angle= -8.17deg | theta/theta_stop= -8.17/ 27.79deg | gap=0.1535 | plate_F=14461.10 | contact=919.222 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.62)
+[leg_v2] tick=  4400 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14469.64 | contact=926.704 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.38)
+[leg_v2] tick=  4600 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14464.15 | contact=918.344 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.62)
+[leg_v2] tick=  4800 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14473.88 | contact=905.576 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.68)
+[leg_v2] tick=  5000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14474.16 | contact=934.624 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.57)
+[leg_v2] tick=  5200 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1534 | plate_F=14476.11 | contact=909.386 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.59)
+[leg_v2] tick=  5400 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14485.96 | contact=926.170 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.54)
+[leg_v2] tick=  5600 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1534 | plate_F=14469.98 | contact=927.062 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.44)
+[leg_v2] tick=  5800 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14482.02 | contact=938.814 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.61)
+[leg_v2] tick=  6000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14469.03 | contact=919.398 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.48)
+[leg_v2] tick=  6200 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14467.53 | contact=926.344 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.49)
+[leg_v2] tick=  6400 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14469.36 | contact=934.370 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.49)
+[leg_v2] tick=  6600 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14466.59 | contact=905.847 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.66)
+[leg_v2] tick=  6800 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14473.78 | contact=929.464 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.44)
+[leg_v2] tick=  7000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14485.91 | contact=932.379 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.41)
+[leg_v2] tick=  7200 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1535 | plate_F=14486.30 | contact=908.945 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.59)
+[leg_v2] tick=  7400 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14457.77 | contact=929.388 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.79)
+[leg_v2] tick=  7600 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1535 | plate_F=14465.33 | contact=898.526 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.68)
+[leg_v2] tick=  7800 | load_gain=-0.2804 | angle= -8.19deg | theta/theta_stop= -8.19/ 27.79deg | gap=0.1534 | plate_F=14484.03 | contact=923.639 | clusters=1/1/1/1/1 | tip_to_drop=0.0265 | apex_z=0.0995 | rod=tension(+69.41)
+[leg_v2] tick=  8000 | load_gain=-0.2804 | angle= -8.18deg | theta/theta_stop= -8.18/ 27.79deg | gap=0.1534 | plate_F=14478.28 | contact=923.212 | clusters=1/1/1/1/1 | tip_to_drop=0.0266 | apex_z=0.0995 | rod=tension(+69.43)
+
+[leg_v2] LEG v2 FALSIFIERS:
+  (a) LIFT      : FAIL  max load_gain=0.0017 at tick=200 (bar 0.1000) recovery_ok=True
+  (b) HOLD      : skipped (main)
+  (c) BALANCE   : FAIL  R_true=1.003 settled_angle_sign=-1 predicted=1 (last 8/41 samples)
+  (d) INTEGRITY : PASS  max clusters droplet/fulcrum/lever/load/rod=1/1/1/1/1 plate_drift=0.000000
+  (e) SAG       : not detected  settled_sign=-1 max_load_gain=0.0017
+  (f) SLACK     : PASS  rod_slack_frac=0.00 (bar 0.20)
+  TENDON TELEMETRY:
+    min arm-tip-to-droplet distance = 0.0214
+    droplet apex z range = [0.0995, 0.0995]
+    max |theta| / theta_stop = 17.07 / 27.79 deg  exceeded=False
+    final rod internal force z = +69.431
+    rod sign fractions: tension=0.95 slack=0.00 compression=0.05
+======================================================================

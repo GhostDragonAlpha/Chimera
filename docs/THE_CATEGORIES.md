@@ -995,6 +995,55 @@ end-stop, the contact still derived by bisection. FALSIFIER: if the
 anchored, arc-gated machine still settles load-down, then cold-pose
 BALANCE is the wrong meter entirely and the settled direction must be
 judged against the arc integral — record, do not patch.
+**LEG v2 VERDICT 2026-08-07 (anchored muscle + arc gate, run tags
+leg_v2 / leg_v2_control, 8000 ticks):** the anchor holds, and the rod
+is a prop in waiting — a link that can be compressed by the motion it
+drives is a strut, and a gate that prices only the winning side of the
+arc leaves the losing side ungoverned. Verified link by link from the
+logs. (1) THE ANCHOR WORKS: the droplet, pinned at the well floor,
+holds apex_z = 0.0995 in both runs for the whole 8000 ticks — the v1
+leap is dead, the first clause of the v1 law confirmed. (2) THE ROD
+FAILS IN BOTH DIRECTIONS: when the muscle wins, the tip descends and
+CRUSHES the rigid rod against the anchored droplet — main tick 200,
+rod compression −181.78 at just +17° — and when the load wins, the
+machine LEANS on the rod: the control settles at −38.6° with the rod in
+compression 90% of the run (−21.7 steady), resting on its own tendon.
+tip_to_drop min 0.021 / 0.023 — below d_eq in both runs; the geometric
+floor failed in practice, and the control blew past the gate's own
+theta_stop (50.8° > 38.2°) — the derived arc did not bound the real
+one. (f) SLACK passes the 0.20 meter in main (5% compression) but the
+meter misses the physics: the spikes are the story. (3) THE
+KNIFE-EDGE: the arc gate required min_R_taut >= 1.0 on the muscle-side
+arc and the bisection delivered exactly R_true = 1.003 — neutral
+balance. At neutral, the print's relaxation lurch (the tick-400 spike,
++4227 this print — fourth print running) picks the direction; the gate
+priced only [0, theta_stop] and said nothing about the load side, which
+is exactly where the machine was knocked and held: main settles −8.2°
+load-down with the rod in STEADY TENSION +69 — the tendon as a tether,
+the muscle working hard on the wrong side of the balance. (4) Verdicts:
+main (a) LIFT FAIL (max +0.0017), (c) BALANCE FAIL, (e) SAG not
+detected, (d) INTEGRITY PASS; control (b) HOLD PASS, (c) PASS on the
+meters — with the rod-prop recorded. (5) The agent's follow-up halved
+right: "stronger threshold" is tuning language (struck); "longer,
+softer" carries the rope's seed. The v2 law: **a tension link must go
+slack along the muscle's winning direction — crumple or fold, never
+prop — and the gate must price the WHOLE reachable arc, both sides, or
+the unpriced side is where the machine will live.** Anatomy, again
+first: tendons are ropes around pulleys; slack rope crumples out of the
+way (the sheet line proved crumpling is the slack phase). Successor
+(named): leg v3 — the ROPE tendon: a single-file chain from the
+anchored droplet apex to the tip underside, long enough to be taut at
+the print, free to crumple into the well as the muscle wins; and the
+FULL-ARC gate: R_true(theta) >= 1 on BOTH sides of the print pose out
+to both derived end-stops, so the muscle-side stop is the UNIQUE stable
+equilibrium; if no contact achieves that, the derived knob is the
+DROPLET SIZE (muscle strength, from the muscle print's own law),
+bisected against the gate — never the contact hunted for a feel-good
+settle. FALSIFIER: if the rope-tendon, full-arc-gated machine still
+settles load-down, the two-force kernel's draw cannot hold a working
+machine against its own relaxation lurch at this scale, and the answer
+moves up a level — the skeleton's geometry must carry the stability —
+record, do not patch.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

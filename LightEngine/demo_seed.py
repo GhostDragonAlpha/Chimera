@@ -2230,11 +2230,11 @@ def _rod_internal_force_z(pos: np.ndarray, grain_ids: np.ndarray,
 def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
              tag, label):
     """
-    Free-evolution leg protocol: only the ground plate and fulcrum are pinned.
+    Free-evolution LEG v2 protocol: plate, droplet and fulcrum are pinned.
 
-    Records the same lever metrics plus leg-specific telemetry: minimum
-    arm-tip-to-droplet distance, droplet apex height, and the internal tendon
-    rod force sign.
+    Records lever metrics plus leg-specific telemetry: minimum
+    arm-tip-to-droplet distance, droplet apex height, internal tendon rod force
+    sign, and lever angle versus the derived arc stop theta_stop.
     """
     N = pos.shape[0]
     sim = kernel.VelocityVerlet(N)
@@ -2259,6 +2259,7 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
     load_end_z0 = float(derived["load_end_z0"])
     plate_pos0 = derived["plate_pos0"]
     d_eq = float(derived["d_eq"])
+    theta_stop = float(derived.get("theta_stop", 0.0))
 
     plate_fz0 = seed_structures._draw_force_z(
         sim.pos[plate_idx].astype(np.float64),
@@ -2286,6 +2287,8 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         "droplet_apex_z": [],
         "rod_force_z": [],
         "rod_sign": [],
+        "theta": [],
+        "theta_stop": theta_stop,
         "plate_pos": [],
         "drop_pos": [],
         "fulcrum_pos": [],
@@ -2357,6 +2360,7 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         metrics["droplet_apex_z"].append(droplet_apex_z)
         metrics["rod_force_z"].append(rod_force_z)
         metrics["rod_sign"].append(rod_sign)
+        metrics["theta"].append(lever_angle)
         metrics["plate_pos"].append(plate_p.copy())
         metrics["drop_pos"].append(drop_p.copy())
         metrics["fulcrum_pos"].append(fulcrum_p.copy())
@@ -2366,6 +2370,8 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
 
         print(f"[{label}] tick={tick:6d} | load_gain={load_gain:+.4f} | "
               f"angle={math.degrees(lever_angle):6.2f}deg | "
+              f"theta/theta_stop={math.degrees(lever_angle):6.2f}/"
+              f"{math.degrees(theta_stop):6.2f}deg | "
               f"gap={fulcrum_gap:.4f} | plate_F={plate_force:.2f} | "
               f"contact={contact_ratio:.3f} | "
               f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}/{rod_clust} | "
@@ -2392,10 +2398,12 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
 
 
 def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
-    """Print LEG v1 falsifier verdict; return dict of booleans."""
+    """Print LEG v2 falsifier verdict; return dict of booleans."""
     ticks = np.asarray(metrics["tick"], dtype=np.int32)
     load_gain = np.asarray(metrics["load_gain"], dtype=np.float64)
     lever_angle = np.asarray(metrics["lever_angle"], dtype=np.float64)
+    theta = np.asarray(metrics["theta"], dtype=np.float64)
+    theta_stop = float(metrics.get("theta_stop", 0.0))
     fulcrum_gap = np.asarray(metrics["fulcrum_gap"], dtype=np.float64)
     plate_force = np.asarray(metrics["plate_force"], dtype=np.float64)
     contact_ratio = np.asarray(metrics["contact_ratio"], dtype=np.float64)
@@ -2498,7 +2506,16 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     rod_compression_frac = float(np.mean(rod_force_z < -0.5))
     rod_slack_frac = float(np.mean(np.abs(rod_force_z) <= 0.5))
 
-    print(f"\n[{label}] LEG v1 FALSIFIERS:")
+    max_theta = float(np.max(np.abs(theta)))
+    theta_exceeded = max_theta > theta_stop
+
+    # SLACK falsifier: main must keep the tendon route engaged.
+    if control:
+        slack_ok = None
+    else:
+        slack_ok = rod_slack_frac <= 0.20
+
+    print(f"\n[{label}] LEG v2 FALSIFIERS:")
     if control:
         print(f"  (a) LIFT      : skipped (control)")
         print(f"  (b) HOLD      : {'PASS' if hold_ok else 'FAIL'}  "
@@ -2521,9 +2538,16 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     else:
         print(f"  (e) SAG       : {'DETECTED' if sag_detected else 'not detected'}  "
               f"settled_sign={settled_sign} max_load_gain={max_gain:.4f}")
+    if control:
+        print(f"  (f) SLACK     : skipped (control)")
+    else:
+        print(f"  (f) SLACK     : {'PASS' if slack_ok else 'FAIL'}  "
+              f"rod_slack_frac={rod_slack_frac:.2f} (bar 0.20)")
     print(f"  TENDON TELEMETRY:")
     print(f"    min arm-tip-to-droplet distance = {min_tip_to_drop:.4f}")
     print(f"    droplet apex z range = [{min_apex:.4f}, {max_apex:.4f}]")
+    print(f"    max |theta| / theta_stop = {math.degrees(max_theta):.2f} / "
+          f"{math.degrees(theta_stop):.2f} deg  exceeded={theta_exceeded}")
     print(f"    final rod internal force z = {final_rod_force:+.3f}")
     print(f"    rod sign fractions: tension={rod_tension_frac:.2f} "
           f"slack={rod_slack_frac:.2f} compression={rod_compression_frac:.2f}")
@@ -2535,11 +2559,13 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         "integrity_ok": integrity_ok,
         "plate_ok": plate_ok,
         "sag_detected": sag_detected,
+        "slack_ok": slack_ok,
+        "theta_exceeded": theta_exceeded,
     }
 
 
 def leg_main(args, seed):
-    """LEG v1 print entry point: build, free-evolve, judge."""
+    """LEG v2 print entry point: build, free-evolve, judge."""
     control = bool(getattr(args, "leg_control", False))
     ticks = int(getattr(args, "leg_ticks", 8000))
     pos, vel, pin_mask, grain_ids, derived = seed_structures.leg(
@@ -2554,27 +2580,30 @@ def leg_main(args, seed):
 
     droplet_label = f"{derived['droplet_side']}^3"
     lever_len = derived.get('lever_len', 13)
+    n_rod_layers = derived.get('n_rod_layers', derived['n_rod'] // 4)
     print("=" * 70)
-    print(f"THE KERNEL - LEG v1 print run ({version})")
+    print(f"THE KERNEL - LEG v2 print run ({version})")
     print(f"N={N}, plate=18x6+well ({derived['n_plate']} pinned), "
           f"fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), "
           f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
-          f"droplet={droplet_label} in well, load=4^3, "
-          f"rod=2x2x2 tendon, seed={seed}, dt={dt}, ticks={ticks}, "
+          f"droplet={droplet_label} in well (PINNED), load=4^3, "
+          f"rod=2x2x{n_rod_layers} tendon, seed={seed}, dt={dt}, ticks={ticks}, "
           f"control={control}")
     print("-" * 70)
     print("STATEMENT: A captured muscle-bone machine routes the muscle pull")
-    print("  through a vertical tendon rod that hangs from the arm tip into a")
-    print("  well, so the bone never intersects the free droplet muscle.")
-    print("  The fulcrum contact is derived from the kernel's own static torque")
-    print("  about the pinned fulcrum contact point.")
+    print("  through a vertical tendon rod that spans from the arm tip to an")
+    print("  anchored droplet at the bottom of a deep well, so the bone never")
+    print("  intersects the muscle.  The droplet is pinned to the well floor;")
+    print("  the well depth is derived so the arm-tip arc clears the droplet;")
+    print("  the fulcrum contact is chosen by an arc gate that samples the")
+    print("  kernel static torque ratio R_true(theta) over [0, theta_stop].")
     if control:
-        print("PREDICTION: With kernel-verified R_true <= 1, the load end")
-        print("  tips load-side-down and never rises more than one lattice")
-        print("  step above its print height.")
+        print("PREDICTION: With kernel-verified R_true < 1 over the arc (slack)")
+        print("  the load end tips load-side-down and never rises more than one")
+        print("  lattice step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified R_true = 2.0 (+/- 0.1), the")
-        print("  captured arm tips muscle-side-down (positive settled angle)")
+        print("PREDICTION: With kernel-verified min_R_taut >= 1 over the arc,")
+        print("  the captured arm tips muscle-side-down (positive settled angle)")
         print("  and the load end lifts through at least two lattice steps.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
@@ -2585,15 +2614,19 @@ def leg_main(args, seed):
     print("  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold")
     print("  (e) SAG     - if the arm rotates muscle-down but the load end does")
     print("      not lift, the tendon route failed to transmit the pull")
+    print("  (f) SLACK   - main: rod must stay taut (slack fraction <= 0.20)")
     print("=" * 70)
     print(f"\nDerived d_eq   = {derived['d_eq']:.5f}")
     print(f"Derived contact_x = {derived['fulcrum_contact_point'][0]:.5f}")
     print(f"Derived a_m    = {derived['a_m']:.5f}")
     print(f"Derived a_l    = {derived['a_l']:.5f}")
     print(f"Derived R_true = {derived['R_true']:.3f}")
+    print(f"Derived theta_stop = {math.degrees(derived['theta_stop']):.2f} deg")
     print(f"Derived lever_len = {lever_len}")
     print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}")
     print(f"Derived well_floor_z = {derived['well_floor_z']:.5f}")
+    print(f"Derived droplet_apex = {derived['droplet_apex']:.5f}")
+    print(f"Derived n_rod_layers = {n_rod_layers}")
     print(f"Derived n_rod  = {derived['n_rod']}\n")
 
     metrics = _run_leg(pos, vel, pin_mask, grain_ids, derived,
@@ -4128,10 +4161,10 @@ def main():
     parser.add_argument("--lever-ticks", type=int, default=8000,
                         help="LEVER free-evolution ticks (default 8000)")
     parser.add_argument("--leg-control", action="store_true",
-                        help="LEG v1 control run: muscle-ward fulcrum, load must NOT "
+                        help="LEG v2 control run: muscle-ward fulcrum, load must NOT "
                              "lift (default main run)")
     parser.add_argument("--leg-ticks", type=int, default=8000,
-                        help="LEG v1 free-evolution ticks (default 8000)")
+                        help="LEG v2 free-evolution ticks (default 8000)")
     parser.add_argument("--bladder-fill", type=str, default="gap",
                         choices=["gap", "fill"],
                         help="BLADDER content geometry: gap=v1 4^3 droplet, "

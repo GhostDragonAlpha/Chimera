@@ -1075,6 +1075,11 @@ def test_leg_determinism():
             for k in x:
                 if isinstance(x[k], np.ndarray):
                     np.testing.assert_array_equal(x[k], y[k])
+                elif k == "arc_trace":
+                    # dict of arrays: compare elementwise
+                    assert y[k].keys() == x[k].keys()
+                    for kk in x[k]:
+                        np.testing.assert_array_equal(x[k][kk], y[k][kk])
                 else:
                     assert x[k] == pytest.approx(y[k])
         else:
@@ -1093,10 +1098,11 @@ def test_leg_counts():
     n_drop = 4 ** 3
     n_lever = derived["n_lever"]
     n_rod = derived["n_rod"]
+    n_rod_layers = derived["n_rod_layers"]
     lever_len = derived["lever_len"]
     assert lever_len == 13
     assert n_lever == lever_len * 12
-    assert n_rod == 2 * 2 * 2
+    assert n_rod == 4 * n_rod_layers
     assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rod
     assert int((grain_ids == -1).sum()) == n_plate
     assert int((grain_ids == 0).sum()) == n_drop
@@ -1112,9 +1118,9 @@ def test_leg_counts():
 
 
 def test_leg_pinned_bodies():
-    """The ground plate and the fulcrum block are pinned; nothing else is."""
+    """The ground plate, droplet and fulcrum block are pinned; rod/lever/load free."""
     pos, _, pin_mask, grain_ids, _ = seed_structures.leg(control=False, seed=0)
-    pinned_mask = (grain_ids == -1) | (grain_ids == 1)
+    pinned_mask = (grain_ids == -1) | (grain_ids == 0) | (grain_ids == 1)
     assert pin_mask[pinned_mask].all()
     assert not pin_mask[~pinned_mask].any()
 
@@ -1130,11 +1136,9 @@ def test_leg_no_shared_positions():
 
 
 def test_leg_well_depth():
-    """The well floor is at z = -2 * spacing and the droplet sits on it."""
+    """The well floor depth is derived and the droplet sits on it."""
     pos, _, _, grain_ids, derived = seed_structures.leg(control=False, seed=0)
-    d = derived["spacing"]
     well_floor_z = derived["well_floor_z"]
-    assert well_floor_z == pytest.approx(-2.0 * d, rel=1e-12)
     plate = pos[grain_ids == -1]
     min_plate_z = float(plate[:, 2].min())
     # Print jitter lets the lowest well-floor grain sit slightly below nominal.
@@ -1143,10 +1147,20 @@ def test_leg_well_depth():
     assert droplet[:, 2].min() > well_floor_z - 1e-3
 
 
+def test_leg_droplet_anchored():
+    """The droplet grains are pinned to the well floor."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.leg(
+        control=False, seed=0)
+    drop_idx = np.flatnonzero(grain_ids == 0)
+    assert pin_mask[drop_idx].all()
+
+
 def test_leg_main_ratio():
-    """Main leg print derives kernel R_true = 2.0 +/- 0.1."""
+    """Main leg print derives cold R_true >= 1.0 (arc gate taut price)."""
     _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
-    assert 1.9 <= derived["R_true"] <= 2.1
+    assert derived["R_true"] >= 1.0
+    trace = derived["arc_trace"]
+    assert np.min(trace["R_taut"]) >= 1.0
 
 
 def test_leg_main_contact_margin():
@@ -1156,9 +1170,12 @@ def test_leg_main_contact_margin():
 
 
 def test_leg_control_ratio():
-    """Control leg print derives kernel R_true in [0.5, 1.0]."""
+    """Control leg print derives cold R_true in [0.5, 1.0] (arc gate slack price)."""
     _, _, _, _, derived = seed_structures.leg(control=True, seed=0)
     assert 0.5 <= derived["R_true"] <= 1.0
+    trace = derived["arc_trace"]
+    assert 0.5 <= trace["R_slack"][0] <= 1.0
+    assert np.max(trace["R_slack"]) <= 1.0
 
 
 def test_leg_control_weaker_arm():
@@ -1169,17 +1186,37 @@ def test_leg_control_weaker_arm():
     assert derived_ctrl["a_l"] > derived_main["a_l"]
 
 
-def test_leg_rod_under_arm_tip():
-    """The tendon rod hangs from the muscle end with a d_eq gap to the arm."""
+def test_leg_rod_spans_well():
+    """The tendon rod spans from the arm tip underside to the droplet apex."""
     pos, _, _, grain_ids, derived = seed_structures.leg(control=False, seed=0)
     lever = pos[grain_ids == 2]
     rod = pos[grain_ids == 4]
+    droplet = pos[grain_ids == 0]
     muscle_tip_x = derived["muscle_tip_x"]
+    d_eq = derived["d_eq"]
     # Rod is centered on the muscle tip in x/y.
     assert abs(rod[:, 0].mean() - muscle_tip_x) < 0.05
     assert abs(rod[:, 1].mean()) < 0.05
-    # Rod top sits below the lever underside.
+    # Rod top sits d_eq below the lever underside.
     lever_bottom_z = lever[:, 2].min()
     rod_top_z = rod[:, 2].max()
     assert rod_top_z < lever_bottom_z
-    assert abs(lever_bottom_z - rod_top_z - derived["d_eq"]) < 0.01
+    assert abs(lever_bottom_z - rod_top_z - d_eq) < 0.01
+    # Rod bottom sits at or above droplet_apex + d_eq.
+    rod_bottom_z = rod[:, 2].min()
+    droplet_apex = float(droplet[:, 2].max())
+    assert rod_bottom_z >= droplet_apex + d_eq - 1e-3
+
+
+def test_leg_arc_trace():
+    """The arc gate returns a theta_stop and sampled R_true traces."""
+    _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
+    trace = derived["arc_trace"]
+    assert "theta_stop" in trace
+    assert "thetas" in trace
+    assert "R_taut" in trace
+    assert "R_slack" in trace
+    assert trace["theta_stop"] > 0.0
+    assert trace["thetas"][0] == 0.0
+    assert trace["thetas"][-1] == pytest.approx(trace["theta_stop"])
+    assert len(trace["thetas"]) == len(trace["R_taut"]) == len(trace["R_slack"])
