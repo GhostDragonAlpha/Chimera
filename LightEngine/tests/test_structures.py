@@ -872,3 +872,38 @@ def test_bladder_F_hold_positive():
     """The derived hold force is positive."""
     _, _, _, _, _, derived = seed_structures.bladder(seed=0)
     assert derived["F_hold"] > 0.0
+
+
+def test_bladder_gap_mode_unchanged():
+    """fill='gap' reproduces the v1 content count exactly."""
+    pos, _, _, grain_ids, _, derived = seed_structures.bladder(
+        seed=0, fill="gap")
+    assert derived["fill"] == "gap"
+    assert derived["n_content"] == 4 ** 3
+    assert int((grain_ids == 2).sum()) == 4 ** 3
+
+
+def test_bladder_fill_mode_count():
+    """fill='fill' derives a content count from the interior sphere."""
+    pos, _, _, grain_ids, _, derived = seed_structures.bladder(
+        seed=0, fill="fill")
+    assert derived["fill"] == "fill"
+    assert derived["n_content"] != 4 ** 3
+    assert int((grain_ids == 2).sum()) == derived["n_content"]
+    # v2 expected ~113-123 grains for r_in = 0.1516 at spacing 0.05
+    assert 90 <= derived["n_content"] <= 140
+
+
+def test_bladder_fill_mode_cushion_contact():
+    """fill='fill' places contents in cushion contact with the shell wall."""
+    pos, _, _, grain_ids, _, derived = seed_structures.bladder(
+        seed=0, fill="fill")
+    shell = pos[grain_ids == 1]
+    content = pos[grain_ids == 2]
+    d = np.linalg.norm(
+        content[:, None, :] - shell[None, :, :], axis=2)
+    min_dist = float(d.min())
+    d_eq = derived["d_eq"]
+    assert 0.8 * d_eq <= min_dist <= 1.5 * d_eq, (
+        f"min content-shell distance {min_dist} not in "
+        f"[{0.8*d_eq:.4f}, {1.5*d_eq:.4f}]")

@@ -267,6 +267,33 @@ spacing (interior radius r_b − d_eq ≈ 0.15 → N ≈ 113 at 0.05), so the
 splint touches the wall from tick 0. Prediction stated: shell
 displacement stays ≤ 0.10 through the squeeze, and past 2×F_hold the
 contents exit through the neck corridor.
+**BLADDER v2 VERDICT 2026-08-07 (fill mode, N_contents = 122 derived, run
+tag bladder_v2, 32,769 ticks):** the splint is installed and the crumple
+verdict changes character — but the cyst stands, and now for a measured
+reason. The v1 reading needs correcting in the ledger: with the fill
+installed, shell displacement STILL reaches 0.18 by tick 5000, and the
+timing indicts the SQUEEZE, not spontaneous crumple — the plates converge
+from tick 0 (sep 0.497 → 0.372 by tick 5000), so the shell is flattened
+between the jaws, not self-collapsed. (a) SEAL PASS, no longer hollow: 32
+sub-threshold samples, zero escapes, one cluster — the shell SEALS
+robustly, flattened or not. (b) YIELD FAIL at the geometric limit: 0/61
+escapes at sep 0.09999, force 664 = 2×F_hold. The diagnosis is measured,
+and it is a real granular phenomenon: the NECK JAMS — a 2-spacing hole
+against cushion-packed contents under pressure forms force arches and
+locks (granular arching over an orifice; the same physics as a hopper),
+and the neck sits at the +z pole, PERPENDICULAR to the squeeze, where
+the pressure gradient never points. (c)/(d) FAIL with it. What survives:
+the shell construction itself (two prints, one cluster through 32k ticks
+each, never a rupture) — a closed mat container EXISTS and SEALS; what is
+refuted is the yield pathway as printed. Successor (named): v3 — the
+ANTI-JAM neck: diameter derived from the arch condition, not the
+single-grain condition — an arch needs ≥ 2 grains abreast to span (2
+spacings) and a stable arch up to 3 (3 spacings), so the neck opens at
+4 spacings, the smallest hole no cushion arch can close; SEAL is then the
+interesting falsifier (a 4-spacing hole against DRAW-packed contents:
+the packed-bed repose law says it holds at rest — if it leaks at F_hold,
+record it). And the neck moves onto the squeeze axis (the pole facing a
+plate), where the pressure gradient actually points.
 
 ## 3-D — BULKS (flesh, organs, soil, rock)
 

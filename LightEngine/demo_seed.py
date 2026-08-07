@@ -1753,28 +1753,42 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
 
 def bladder_main(args, seed):
     """BLADDER print entry point: build, squeeze, yield, release, judge."""
+    fill = str(getattr(args, "bladder_fill", "gap"))
     pos, vel, pin_mask, grain_ids, s0, derived = seed_structures.bladder(
-        seed=seed)
+        seed=seed, fill=fill)
     N = pos.shape[0]
 
     dt = DT
     v_plate = BLADDER_V_PLATE
     tag = f"{args.tag}_" if args.tag else ""
+    version = "v2" if fill == "fill" else "v1"
 
     # RULE 0 header
     print("=" * 70)
-    print("THE KERNEL - BLADDER v1 print run")
-    print(f"N={N}, shell={derived['n_shell']}, content=4^3, plates=4x4, "
-          f"seed={seed}, dt={dt}")
+    print(f"THE KERNEL - BLADDER {version} print run")
+    print(f"N={N}, shell={derived['n_shell']}, content={derived['n_content']}, "
+          f"fill={fill}, plates=4x4, seed={seed}, dt={dt}")
     print("-" * 70)
-    print("STATEMENT: A closed spherical shell one grain thick, packed with a")
-    print("  condensed content droplet and squeezed by two pinned muscle plates,")
-    print("  seals at low pressure, yields contents through a single neck at a")
-    print("  derived force threshold, and remains one closed mat after release.")
-    print("PREDICTION: The shell holds zero content escape while plate force is")
-    print("  below F_hold; at or before 2*F_hold at least half the contents exit")
-    print("  through the neck; the shell stays one cluster and shows no grain")
-    print("  displacement > 2 spacings after release.")
+    if fill == "fill":
+        print("STATEMENT: A closed spherical shell one grain thick, filled with a")
+        print("  condensed content droplet in cushion contact with the wall and")
+        print("  squeezed by two pinned muscle plates, seals at low pressure, yields")
+        print("  contents through a single neck at a derived force threshold, and")
+        print("  remains one closed mat after release.")
+        print("PREDICTION: The cushion-splinted wall holds shape from tick 0; the")
+        print("  shell holds zero content escape while plate force is below F_hold;")
+        print("  at or before 2*F_hold at least half the contents exit through the")
+        print("  neck; the shell stays one cluster and shows no grain displacement")
+        print("  > 2 spacings after release.")
+    else:
+        print("STATEMENT: A closed spherical shell one grain thick, packed with a")
+        print("  condensed content droplet and squeezed by two pinned muscle plates,")
+        print("  seals at low pressure, yields contents through a single neck at a")
+        print("  derived force threshold, and remains one closed mat after release.")
+        print("PREDICTION: The shell holds zero content escape while plate force is")
+        print("  below F_hold; at or before 2*F_hold at least half the contents exit")
+        print("  through the neck; the shell stays one cluster and shows no grain")
+        print("  displacement > 2 spacings after release.")
     print("FALSIFIERS:")
     print("  (a) SEAL      - content escapes or shell splits while force < F_hold")
     print("  (b) YIELD     - fewer than half contents escape by 2*F_hold/min sep")
@@ -3323,6 +3337,11 @@ def main():
     parser.add_argument("--skin-settle-ticks", type=int, default=3000,
                         help="SKIN free-evolution settle ticks before the stroke "
                              "(default 3000)")
+    parser.add_argument("--bladder-fill", type=str, default="gap",
+                        choices=["gap", "fill"],
+                        help="BLADDER content geometry: gap=v1 4^3 droplet, "
+                             "fill=v2 contents fill shell at cushion contact "
+                             "(default gap)")
     args = parser.parse_args()
     SEED = args.seed
 

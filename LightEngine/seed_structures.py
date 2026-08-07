@@ -1108,8 +1108,9 @@ def skin(spacing: float = 0.05,
             grain_ids, s0, R_droplet, derived)
 
 
-def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
-                                     np.ndarray, float, dict]:
+def bladder(seed: int = 0,
+            fill: str = "gap") -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                         np.ndarray, float, dict]:
     """
     THE BLADDER print: a closed spherical shell (grain_id=1) packed with a
     condensed content droplet (grain_id=2), squeezed by two pinned 4x4 muscle
@@ -1117,10 +1118,19 @@ def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
 
     The shell is one grain thick at cushion equilibrium spacing d_eq = 0.0484
     on a sphere of radius r_b = 0.20 lu.  Its point count is derived from the
-    sphere's surface area divided by the shell spacing squared.  The contents
-    are a 4^3 droplet at the muscle's 0.05 lattice step, centered inside the
-    shell.  The neck is a hole of diameter 2*d_eq at the +z pole, the smallest
-    opening that passes one grain.
+    sphere's surface area divided by the shell spacing squared.
+
+    ``fill="gap"`` (v1): the contents are a 4^3 droplet at the muscle's 0.05
+    lattice step, centered inside the shell — this leaves a gap and the shell
+    crumples.
+
+    ``fill="fill"`` (v2): the contents are derived to fill the shell interior at
+    cushion contact.  A cubic lattice at muscle spacing is carved to fit inside
+    radius ``r_in = r_b - d_eq``; the outermost content grains sit ~d_eq from the
+    shell wall, providing the cushion splint that holds the wall at print.
+
+    The neck is a hole of diameter 2*d_eq at the +z pole, the smallest opening
+    that passes one grain.
 
     The plates are the muscle's pinned 4x4 anchors, placed so each plate face
     sits at cushion distance d_eq from the shell surface:
@@ -1131,9 +1141,13 @@ def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
       - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
       - ``pin_mask`` is length-N bool; only the two plates are pinned.
       - ``grain_ids`` is length-N int32; plates=-1, shell=1, contents=2.
-      - ``derived`` carries r_b, d_eq, n_shell, n_content, neck geometry,
-        center_x, and F_hold (the derived hold force from the kernel at print).
+      - ``derived`` carries r_b, d_eq, n_shell, n_content, fill mode, neck
+        geometry, center_x, and F_hold (the derived hold force from the kernel
+        at print).
     """
+    if fill not in ("gap", "fill"):
+        raise ValueError("fill must be 'gap' or 'fill'")
+
     rng = np.random.default_rng(seed)
     muscle_spacing = 0.05
     d_eq = TENDON_D_EQ
@@ -1176,12 +1190,26 @@ def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
     shell_pos = shell_pos[dist_to_neck > d_eq]
     n_shell = shell_pos.shape[0]
 
-    # Contents: 4^3 simple-cubic droplet at muscle spacing, centered.
-    n_content = side ** 3
-    offsets_c = (np.arange(side, dtype=np.float64) - (side - 1) / 2.0) * muscle_spacing
-    gx, gy, gz = np.meshgrid(offsets_c, offsets_c, offsets_c, indexing="ij")
-    content_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-    content_pos[:, 0] += center_x
+    # Contents.
+    if fill == "gap":
+        # v1: 4^3 simple-cubic droplet at muscle spacing, centered.
+        n_content = side ** 3
+        offsets_c = (np.arange(side, dtype=np.float64) - (side - 1) / 2.0) * muscle_spacing
+        gx, gy, gz = np.meshgrid(offsets_c, offsets_c, offsets_c, indexing="ij")
+        content_pos = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+        content_pos[:, 0] += center_x
+    else:
+        # v2: fill the interior up to r_in = r_b - d_eq at muscle spacing.
+        r_in = r_b - d_eq
+        n_grid = max(1, int(math.ceil(r_in / muscle_spacing)))
+        grid_idx = np.arange(-n_grid, n_grid + 1)
+        gx, gy, gz = np.meshgrid(grid_idx, grid_idx, grid_idx, indexing="ij")
+        cand = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1) * muscle_spacing
+        # keep points inside the interior sphere
+        keep = np.linalg.norm(cand, axis=1) <= r_in + 1e-9
+        content_pos = cand[keep].copy()
+        content_pos[:, 0] += center_x
+        n_content = content_pos.shape[0]
 
     # Assemble: plates first, then shell, then contents.
     pos = np.vstack([left_plate, right_plate, shell_pos, content_pos]).astype(np.float64)
@@ -1225,6 +1253,7 @@ def bladder(seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
         "r_b": r_b,
         "d_eq": d_eq,
         "muscle_spacing": muscle_spacing,
+        "fill": fill,
         "n_plate": 2 * n_plate,
         "n_shell": n_shell,
         "n_content": n_content,
