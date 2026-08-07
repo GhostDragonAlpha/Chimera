@@ -1,0 +1,131 @@
+======================================================================
+THE KERNEL - JOINT v2 print run
+N=612, plate=6x6, A=4x4x16, B=4x4x16, drop=4^3, seed=20260806, dt=0.0005, ticks=6000, control=True
+----------------------------------------------------------------------
+STATEMENT: The first moving part is a bone-muscle-bone composite:
+  bone A (pillar), bone B (limb), and a muscle droplet that pull-
+  rotates B about a cushion fulcrum at A's top face.
+PREDICTION: B rotates and the joint self-recovers from transient
+  excursions; the fixed-index theta metric tracks the full tumble;
+  the torque law is exact; B settles against the plate or droplet in
+  the derived cushion band; without the droplet B rests at the
+  weight-only derived stop; bones and droplet stay intact.
+FALSIFIERS:
+  (a) RECOVERY - gap excursions above r_c do not self-reduce to the
+      seated band (d_eq + one lattice step) within the derived time
+  (b) TORQUE LAW - measured DRAW torque vs pairwise-DRAW moment >10%
+  (c) REST     - control (no droplet) final theta vs weight-only stop >10 deg
+  (d) STOP     - settled B is not in cushion contact with plate/droplet
+  (e) INTEGRITY - A/B/droplet split (sustained, flicker recorded)
+======================================================================
+
+Derived d_eq  = 0.04840
+Derived W     = 82.621
+Derived F_m   = 218.708
+Derived r_c   = 0.300
+
+
+[joint] N=612 plate=36 A=256 B=256 drop=64 dt=0.0005 ticks=6000
+[joint] W=82.621 F_m=218.708
+
+[joint] tick=     0 | theta= -4.48 deg | gap=0.0532 | B_to_plate=0.8454 | B_to_drop=0.6468 | A/B/drop clusters=1/1/1 | free_end=(0.7498,-0.0000,0.9218) | drop_com=(0.5624,0.0000,0.1235)
+[joint] tick=   150 | theta= -8.35 deg | gap=0.0327 | B_to_plate=0.8010 | B_to_drop=0.6558 | A/B/drop clusters=1/1/1 | free_end=(0.6776,0.0001,0.9141) | drop_com=(0.5419,0.0000,0.1385)
+[joint] tick=   300 | theta=-25.45 deg | gap=0.0314 | B_to_plate=0.6588 | B_to_drop=0.3672 | A/B/drop clusters=1/1/1 | free_end=(0.4835,0.0030,0.8818) | drop_com=(0.4755,0.0000,0.1885)
+[joint] tick=   450 | theta=-95.96 deg | gap=0.0269 | B_to_plate=0.5674 | B_to_drop=0.1299 | A/B/drop clusters=1/1/1 | free_end=(0.2147,0.0046,0.7165) | drop_com=(0.3429,0.0002,0.3057)
+[joint] tick=   600 | theta=-115.07 deg | gap=0.1502 | B_to_plate=0.3641 | B_to_drop=0.0218 | A/B/drop clusters=1/1/1 | free_end=(0.2039,0.0035,0.6709) | drop_com=(0.1538,0.0021,0.5693)
+[joint] tick=   750 | theta=-102.29 deg | gap=0.2293 | B_to_plate=0.1647 | B_to_drop=0.0226 | A/B/drop clusters=1/1/1 | free_end=(0.2495,0.0077,0.5724) | drop_com=(0.1515,-0.0037,0.6614)
+[joint] tick=   900 | theta=-57.91 deg | gap=0.3278 | B_to_plate=0.0265 | B_to_drop=0.0195 | A/B/drop clusters=1/1/1 | free_end=(0.2173,0.0098,0.4997) | drop_com=(0.2258,-0.0044,0.5676)
+[joint] tick=  1050 | theta=-30.96 deg | gap=0.2246 | B_to_plate=0.0725 | B_to_drop=0.0236 | A/B/drop clusters=1/1/1 | free_end=(0.2027,0.0117,0.4361) | drop_com=(0.2378,0.0003,0.4725)
+[joint] tick=  1200 | theta= -2.67 deg | gap=0.3181 | B_to_plate=0.2506 | B_to_drop=0.0240 | A/B/drop clusters=1/1/1 | free_end=(0.1949,0.0139,0.3730) | drop_com=(0.2320,0.0008,0.4002)
+[joint] tick=  1350 | theta= -1.15 deg | gap=0.1497 | B_to_plate=0.1468 | B_to_drop=0.0253 | A/B/drop clusters=1/1/1 | free_end=(0.1788,0.0146,0.3206) | drop_com=(0.2158,-0.0008,0.3512)
+[joint] tick=  1500 | theta=  5.46 deg | gap=0.1310 | B_to_plate=0.1084 | B_to_drop=0.0261 | A/B/drop clusters=1/1/1 | free_end=(0.1584,0.0159,0.2543) | drop_com=(0.1860,-0.0009,0.2788)
+[joint] tick=  1650 | theta= -0.42 deg | gap=0.1210 | B_to_plate=0.0167 | B_to_drop=0.0259 | A/B/drop clusters=1/1/1 | free_end=(0.1263,0.0160,0.1714) | drop_com=(0.1536,-0.0011,0.2005)
+[joint] tick=  1800 | theta= -4.88 deg | gap=0.1198 | B_to_plate=0.0202 | B_to_drop=0.0236 | A/B/drop clusters=1/1/1 | free_end=(0.0890,0.0167,0.0695) | drop_com=(0.1108,-0.0003,0.0964)
+[joint] tick=  1950 | theta=-10.18 deg | gap=0.0809 | B_to_plate=0.0218 | B_to_drop=0.0220 | A/B/drop clusters=1/1/1 | free_end=(0.0513,0.0159,-0.0023) | drop_com=(0.0660,0.0016,0.0374)
+[joint] tick=  2100 | theta=-21.08 deg | gap=0.0818 | B_to_plate=0.0224 | B_to_drop=0.0248 | A/B/drop clusters=1/1/1 | free_end=(0.0267,0.0167,-0.0197) | drop_com=(0.0305,0.0028,0.0278)
+[joint] tick=  2250 | theta=-21.10 deg | gap=0.0710 | B_to_plate=0.0248 | B_to_drop=0.0260 | A/B/drop clusters=1/1/1 | free_end=(0.0125,0.0180,-0.0197) | drop_com=(0.0080,0.0041,0.0270)
+[joint] tick=  2400 | theta=-23.71 deg | gap=0.0882 | B_to_plate=0.0250 | B_to_drop=0.0256 | A/B/drop clusters=1/1/1 | free_end=(0.0079,0.0158,-0.0181) | drop_com=(-0.0023,0.0033,0.0279)
+[joint] tick=  2550 | theta=-23.16 deg | gap=0.0927 | B_to_plate=0.0243 | B_to_drop=0.0258 | A/B/drop clusters=1/1/1 | free_end=(0.0116,0.0156,-0.0189) | drop_com=(0.0009,0.0058,0.0279)
+[joint] tick=  2700 | theta=-24.13 deg | gap=0.0940 | B_to_plate=0.0241 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0156,0.0163,-0.0184) | drop_com=(0.0080,0.0074,0.0279)
+[joint] tick=  2850 | theta=-23.96 deg | gap=0.0853 | B_to_plate=0.0239 | B_to_drop=0.0259 | A/B/drop clusters=1/1/1 | free_end=(0.0176,0.0161,-0.0189) | drop_com=(0.0117,0.0065,0.0273)
+[joint] tick=  3000 | theta=-25.48 deg | gap=0.0858 | B_to_plate=0.0194 | B_to_drop=0.0255 | A/B/drop clusters=1/1/1 | free_end=(0.0187,0.0163,-0.0190) | drop_com=(0.0138,0.0048,0.0268)
+[joint] tick=  3150 | theta=-25.91 deg | gap=0.0883 | B_to_plate=0.0246 | B_to_drop=0.0252 | A/B/drop clusters=1/1/1 | free_end=(0.0190,0.0161,-0.0188) | drop_com=(0.0150,0.0038,0.0272)
+[joint] tick=  3300 | theta=-26.16 deg | gap=0.0870 | B_to_plate=0.0245 | B_to_drop=0.0252 | A/B/drop clusters=1/1/1 | free_end=(0.0194,0.0162,-0.0183) | drop_com=(0.0152,0.0027,0.0275)
+[joint] tick=  3450 | theta=-26.49 deg | gap=0.0893 | B_to_plate=0.0249 | B_to_drop=0.0248 | A/B/drop clusters=1/1/1 | free_end=(0.0189,0.0167,-0.0185) | drop_com=(0.0147,0.0026,0.0272)
+[joint] tick=  3600 | theta=-26.90 deg | gap=0.0903 | B_to_plate=0.0248 | B_to_drop=0.0250 | A/B/drop clusters=1/1/1 | free_end=(0.0189,0.0168,-0.0183) | drop_com=(0.0147,0.0028,0.0273)
+[joint] tick=  3750 | theta=-26.73 deg | gap=0.0904 | B_to_plate=0.0247 | B_to_drop=0.0252 | A/B/drop clusters=1/1/1 | free_end=(0.0190,0.0170,-0.0183) | drop_com=(0.0153,0.0032,0.0274)
+[joint] tick=  3900 | theta=-26.90 deg | gap=0.0910 | B_to_plate=0.0248 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0190,0.0171,-0.0183) | drop_com=(0.0154,0.0034,0.0272)
+[joint] tick=  4050 | theta=-27.11 deg | gap=0.0916 | B_to_plate=0.0248 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0170,-0.0181) | drop_com=(0.0155,0.0033,0.0272)
+[joint] tick=  4200 | theta=-27.23 deg | gap=0.0916 | B_to_plate=0.0248 | B_to_drop=0.0252 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0167,-0.0180) | drop_com=(0.0155,0.0031,0.0273)
+[joint] tick=  4350 | theta=-27.14 deg | gap=0.0914 | B_to_plate=0.0249 | B_to_drop=0.0250 | A/B/drop clusters=1/1/1 | free_end=(0.0191,0.0167,-0.0182) | drop_com=(0.0155,0.0031,0.0272)
+[joint] tick=  4500 | theta=-27.11 deg | gap=0.0916 | B_to_plate=0.0250 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0190,0.0169,-0.0181) | drop_com=(0.0154,0.0032,0.0272)
+[joint] tick=  4650 | theta=-27.11 deg | gap=0.0916 | B_to_plate=0.0251 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0190,0.0169,-0.0181) | drop_com=(0.0153,0.0033,0.0272)
+[joint] tick=  4800 | theta=-27.27 deg | gap=0.0915 | B_to_plate=0.0251 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0191,0.0170,-0.0180) | drop_com=(0.0154,0.0033,0.0272)
+[joint] tick=  4950 | theta=-27.30 deg | gap=0.0916 | B_to_plate=0.0251 | B_to_drop=0.0251 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0170,-0.0180) | drop_com=(0.0155,0.0033,0.0272)
+[joint] tick=  5100 | theta=-27.36 deg | gap=0.0915 | B_to_plate=0.0250 | B_to_drop=0.0250 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0169,-0.0180) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5250 | theta=-27.48 deg | gap=0.0914 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0168,-0.0180) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5400 | theta=-27.41 deg | gap=0.0915 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0168,-0.0179) | drop_com=(0.0156,0.0033,0.0272)
+[joint] tick=  5550 | theta=-27.58 deg | gap=0.0915 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0193,0.0170,-0.0179) | drop_com=(0.0157,0.0034,0.0273)
+[joint] tick=  5700 | theta=-27.59 deg | gap=0.0915 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0193,0.0170,-0.0179) | drop_com=(0.0157,0.0035,0.0273)
+[joint] tick=  5850 | theta=-27.56 deg | gap=0.0916 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0193,0.0169,-0.0179) | drop_com=(0.0156,0.0035,0.0272)
+[joint] tick=  6000 | theta=-27.57 deg | gap=0.0916 | B_to_plate=0.0250 | B_to_drop=0.0249 | A/B/drop clusters=1/1/1 | free_end=(0.0192,0.0169,-0.0179) | drop_com=(0.0155,0.0034,0.0273)
+
+[joint] JOINT v2 FALSIFIERS:
+  (a) RECOVERY : PASS  excursions=2 max_gap=0.3278 last_ends_at=1350 measured_recovery_ticks=600 derived_recovery_ticks=4032 (a_restore=0.1614)
+  (b) TORQUE LAW: PASS  max rel err measured-vs-pairwise-DRAW=0.000 (bar 0.10)
+  (c) REST     : skipped (main run); use --joint-control
+  (d) STOP     : FAIL  final_theta=-27.57 deg derived_stop=51.30 deg B_to_plate=0.0250 B_to_drop=0.0249 band=[0.0284,0.0984] location=none settled=True
+  (e) INTEGRITY: PASS  max clusters A/B/drop=1/1/1 flicker_samples=0/0/0
+
+[joint_control] N=548 plate=36 A=256 B=256 drop=0 dt=0.0005 ticks=6000
+[joint_control] CONTROL: muscle droplet removed
+
+[joint_control] tick=     0 | theta= -4.48 deg | gap=0.0532 | B_to_plate=0.8454 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.7498,-0.0000,0.9218) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   150 | theta= -8.40 deg | gap=0.0327 | B_to_plate=0.8030 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.6782,0.0001,0.9168) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   300 | theta=-25.12 deg | gap=0.0310 | B_to_plate=0.6643 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.4856,0.0031,0.8932) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   450 | theta=-84.19 deg | gap=0.0369 | B_to_plate=0.5840 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.2118,0.0065,0.7502) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   600 | theta=-96.81 deg | gap=0.1197 | B_to_plate=0.4452 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1785,0.0258,0.7535) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   750 | theta=-80.76 deg | gap=0.0619 | B_to_plate=0.2801 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.2138,0.0153,0.6877) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=   900 | theta=-84.52 deg | gap=0.0569 | B_to_plate=0.2060 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1895,0.0229,0.6209) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1050 | theta=-64.27 deg | gap=0.0364 | B_to_plate=0.1170 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1915,0.0129,0.5714) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1200 | theta=-80.67 deg | gap=0.0739 | B_to_plate=0.0591 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1569,0.0083,0.5102) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1350 | theta=-80.65 deg | gap=0.0584 | B_to_plate=0.0825 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1419,0.0087,0.4452) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1500 | theta=-94.99 deg | gap=0.0475 | B_to_plate=0.1523 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.1181,0.0076,0.3765) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1650 | theta=-114.61 deg | gap=0.0495 | B_to_plate=0.0838 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.0885,0.0088,0.2917) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1800 | theta=-129.35 deg | gap=0.0623 | B_to_plate=0.0296 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(0.0560,0.0086,0.1845) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  1950 | theta=-151.95 deg | gap=0.0840 | B_to_plate=0.0221 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(0.0111,0.0108,0.0651) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2100 | theta=-163.63 deg | gap=0.0861 | B_to_plate=0.0213 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0231,0.0127,-0.0103) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2250 | theta=174.94 deg | gap=0.0916 | B_to_plate=0.0229 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0468,0.0095,-0.0364) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2400 | theta=-178.05 deg | gap=0.0927 | B_to_plate=0.0227 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0592,0.0140,-0.0339) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2550 | theta=178.93 deg | gap=0.0929 | B_to_plate=0.0237 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0613,0.0162,-0.0325) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2700 | theta=177.98 deg | gap=0.0931 | B_to_plate=0.0243 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0619,0.0146,-0.0317) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  2850 | theta=179.07 deg | gap=0.0912 | B_to_plate=0.0240 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0584,0.0138,-0.0333) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3000 | theta=178.71 deg | gap=0.0917 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0542,0.0135,-0.0336) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3150 | theta=177.40 deg | gap=0.0971 | B_to_plate=0.0237 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0522,0.0129,-0.0344) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3300 | theta=177.77 deg | gap=0.1004 | B_to_plate=0.0233 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0516,0.0134,-0.0348) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3450 | theta=-178.96 deg | gap=0.1011 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0532,0.0133,-0.0331) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3600 | theta=-179.29 deg | gap=0.1014 | B_to_plate=0.0233 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0534,0.0124,-0.0333) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3750 | theta=-178.63 deg | gap=0.0979 | B_to_plate=0.0233 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0526,0.0130,-0.0333) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  3900 | theta=-177.50 deg | gap=0.0988 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0519,0.0135,-0.0332) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4050 | theta=-178.33 deg | gap=0.0989 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0519,0.0136,-0.0334) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4200 | theta=-177.65 deg | gap=0.0986 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0516,0.0135,-0.0332) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4350 | theta=-177.76 deg | gap=0.0994 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0520,0.0136,-0.0331) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4500 | theta=-177.81 deg | gap=0.1011 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0524,0.0135,-0.0331) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4650 | theta=-177.48 deg | gap=0.1026 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0525,0.0134,-0.0329) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4800 | theta=-177.24 deg | gap=0.1032 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0528,0.0135,-0.0328) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  4950 | theta=-177.26 deg | gap=0.1027 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0528,0.0136,-0.0330) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5100 | theta=-177.20 deg | gap=0.1029 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0525,0.0136,-0.0332) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5250 | theta=-177.59 deg | gap=0.1024 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0523,0.0135,-0.0332) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5400 | theta=-177.94 deg | gap=0.1022 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0523,0.0135,-0.0331) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5550 | theta=-177.94 deg | gap=0.1020 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0525,0.0136,-0.0331) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5700 | theta=-177.76 deg | gap=0.1024 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/2/0 | free_end=(-0.0527,0.0135,-0.0330) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  5850 | theta=-177.77 deg | gap=0.1023 | B_to_plate=0.0235 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0529,0.0134,-0.0330) | drop_com=(0.0000,0.0000,0.0000)
+[joint_control] tick=  6000 | theta=-177.78 deg | gap=0.1022 | B_to_plate=0.0234 | B_to_drop=inf | A/B/drop clusters=1/1/0 | free_end=(-0.0529,0.0134,-0.0330) | drop_com=(0.0000,0.0000,0.0000)
+
+[joint_control] JOINT v2 FALSIFIERS:
+  (a) RECOVERY : PASS  no excursions above r_c=0.300
+  (b) TORQUE LAW: PASS  max rel err measured-vs-pairwise-DRAW=0.000 (bar 0.10)
+  (c) REST     : PASS  final_theta=-177.78 deg settle_mean=-177.65 deg settled=True
+  (d) STOP     : FAIL  final_theta=-177.78 deg derived_stop=90.70 deg B_to_plate=0.0234 B_to_drop=inf band=[0.0284,0.0984] location=none settled=True
+  (e) INTEGRITY: FAIL  max clusters A/B/drop=1/2/0 flicker_samples=0/7/0
+======================================================================

@@ -8,7 +8,7 @@ determinism, geometry, derived velocities, and momentum removal.
 import numpy as np
 import pytest
 
-from LightEngine import seed_structures
+from LightEngine import seed_structures, demo_seed
 from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND
 
 
@@ -531,3 +531,34 @@ def test_joint_control_drops_droplet():
     grain_ids_c = grain_ids[keep]
     assert pos_c.shape[0] == pos.shape[0] - 64
     assert int((grain_ids_c == 0).sum()) == 0
+
+
+def test_joint_fixed_angle_metric():
+    """
+    The fixed-index θ metric must read a rigid rotation honestly, including
+    past the 45° face-swap regime that broke the v1 x-sort metric.
+    """
+    pos, _, _, grain_ids, derived = seed_structures.joint(seed=0)
+    B = pos[grain_ids == 2].copy()
+    contact = derived["joint_contact_point"]
+    joint_face, far_face = demo_seed._B_end_faces(B, contact)
+
+    # Initial print angle from the fixed face centroids (slightly non-zero
+    # because the face-centroid line is not perfectly horizontal).
+    theta0 = demo_seed._B_angle(pos, grain_ids, joint_face, far_face)
+
+    # Rigidly rotate B about the contact point in the x-z plane.
+    angle_deg = 60.0
+    angle = np.radians(angle_deg)
+    c, s = np.cos(angle), np.sin(angle)
+    B_rot = B.copy()
+    rel = B - contact[None, :]
+    B_rot[:, 0] = contact[0] + rel[:, 0] * c + rel[:, 2] * s
+    B_rot[:, 2] = contact[2] - rel[:, 0] * s + rel[:, 2] * c
+
+    pos_rot = pos.copy()
+    pos_rot[grain_ids == 2] = B_rot
+    theta = demo_seed._B_angle(pos_rot, grain_ids, joint_face, far_face)
+    # The metric should report the actual rotation increment, not be offset
+    # by the initial face-centroid tilt.
+    assert np.degrees(theta - theta0) == pytest.approx(angle_deg, abs=1.0)

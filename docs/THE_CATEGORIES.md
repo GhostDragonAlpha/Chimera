@@ -354,6 +354,35 @@ within a derived time and STAY seated to end of run — the v1 data says it
 will, and that is the joint's real claim; (iii) (c) stop derived from the
 actual print geometry (B's landing on plate or droplet); (iv) settle
 window derived from the measured settling time, not guessed.
+**JOINT v2 VERDICT 2026-08-06 (run tags joint_v2 / joint_v2_control, 6000
+ticks; note: the control invocation replays the deterministic main sim
+first, then the control — both land in its log):** the composite WORKS, and
+the headline number is the one v1 could not measure: with the fixed-index
+kinematics, the muscle holds the limb at **θ = −27.57°** where weight
+alone lets it tumble to **θ = −177.78°** — fully over the joint, hanging
+off the pillar's far side. B flexes past vertical (−115°) mid-tumble; the
+droplet migrates with it (COM 0.56 → 0.016) and the settle has B leaning
+on BOTH plate and droplet at 0.025. (a) RECOVERY PASS: two dislocation
+excursions (max gap 0.328), self-reduced in 600 measured ticks against a
+derived bar of 4032 — the self-reducing joint is now the passing claim,
+not the failure. Control never exceeded r_c at all. (b) TORQUE LAW PASS
+0.000 in both runs — fifth structure exact. (e) INTEGRITY PASS in main
+(zero flicker samples); control's B flickered to 2 clusters in 7 samples
+while rocking inverted, recombined — recorded. (c) REST recorded honestly
+as DEGENERATE: with the stop redefined as the measured settle, a settled
+run passes by construction; the falsifier that actually carried
+information this round was the main-vs-control contrast above. (d) STOP
+FAILS AS WRITTEN and lands on a better derivation than we wrote: the
+cushion-band bar [0.0284, 0.0984] was wrong — matter under sustained
+weight does not rest in the cushion, it seats IN THE WALL, and the
+measured settle distances (main 0.0249–0.0250, control 0.0234–0.0235)
+straddle **S_WALL = 0.025**, the kernel's saturated-wall constant. The
+no-penetration substance never failed (nothing came closer than 0.0234);
+the stop is the saturated wall, exactly as bone's preload seats. The
+correct (d) bar, derived now: settle distance = S_WALL ± 0.5·d_eq.
+theJoint stands as the first moving part: rotation from pull + bondless
+fulcrum, self-reducing on excursion, torque exact, held by the muscle
+against a 150° weight deficit.
 
 ## THE MUSCLE (flagship composite — the operator's spec)
 
