@@ -874,6 +874,46 @@ def test_bladder_F_hold_positive():
     assert derived["F_hold"] > 0.0
 
 
+def test_bladder_narrow_mode_unchanged():
+    """neck='narrow' reproduces the default builder exactly."""
+    pos_default, _, _, _, _, derived_default = seed_structures.bladder(seed=13)
+    pos_narrow, _, _, _, _, derived_narrow = seed_structures.bladder(
+        seed=13, neck="narrow")
+    np.testing.assert_array_equal(pos_default, pos_narrow)
+    assert derived_default["neck"] == "narrow"
+    assert derived_narrow["neck"] == "narrow"
+    assert derived_default["neck_diameter"] == pytest.approx(
+        derived_narrow["neck_diameter"], rel=1e-12)
+    np.testing.assert_allclose(
+        derived_default["neck_axis"], derived_narrow["neck_axis"], atol=1e-12)
+
+
+def test_bladder_antijam_neck_axis():
+    """antijam neck is centered on the +x sphere point with axis +x."""
+    pos, _, _, _, _, derived = seed_structures.bladder(
+        seed=0, fill="fill", neck="antijam")
+    assert derived["neck"] == "antijam"
+    expected_center = np.array([
+        derived["center_x"] + derived["r_b"], 0.0, 0.0])
+    np.testing.assert_allclose(
+        derived["neck_center"], expected_center, atol=1e-5)
+    np.testing.assert_allclose(
+        derived["neck_axis"], np.array([1.0, 0.0, 0.0]), atol=1e-12)
+
+
+def test_bladder_antijam_neck_hole():
+    """antijam neck is a 4-spacing hole: no shell grain within 2 spacings."""
+    pos, _, _, grain_ids, _, derived = seed_structures.bladder(
+        seed=0, fill="fill", neck="antijam")
+    shell = pos[grain_ids == 1]
+    dist = np.linalg.norm(shell - derived["neck_center"], axis=1)
+    # The hole radius is 2 lattice spacings; after print jitter allow a small
+    # margin and require no shell grain inside the nominal hole.
+    assert dist.min() > 0.09, (
+        f"shell grain inside anti-jam neck at dist {dist.min():.4f}")
+    assert derived["neck_diameter"] == pytest.approx(4.0 * 0.05, rel=1e-12)
+
+
 def test_bladder_gap_mode_unchanged():
     """fill='gap' reproduces the v1 content count exactly."""
     pos, _, _, grain_ids, _, derived = seed_structures.bladder(

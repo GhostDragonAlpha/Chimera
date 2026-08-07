@@ -1673,6 +1673,8 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
     F_hold = float(derived["F_hold"])
     muscle_spacing = float(derived["muscle_spacing"])
     integrity_bar = 2.0 * muscle_spacing
+    neck_diameter = float(derived["neck_diameter"])
+    corridor_radius = neck_diameter / 2.0 + muscle_spacing
     neck_center = derived["neck_center"].astype(np.float64)
     neck_axis = derived["neck_axis"].astype(np.float64)
     neck_axis_u = neck_axis / max(np.linalg.norm(neck_axis), 1e-12)
@@ -1700,7 +1702,8 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
                     (shell_clust == 1).all())
         yield_esc = int(esc[yield_idx])
 
-    # (c) NECK SELECTIVITY: first-outside positions within 2 spacings of axis.
+    # (c) NECK SELECTIVITY: first-outside positions within the derived neck
+    # corridor (neck radius + one lattice spacing).
     total_escaped = int(escaped.sum())
     neck_ok = False
     in_neck = out_neck = 0
@@ -1709,9 +1712,12 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
         to_axis = pos_out - neck_center[None, :]
         cross = np.cross(to_axis, neck_axis_u[None, :])
         dist_axis = np.linalg.norm(cross, axis=1)
-        in_neck = int(np.count_nonzero(dist_axis <= integrity_bar))
+        in_neck = int(np.count_nonzero(dist_axis <= corridor_radius))
         out_neck = total_escaped - in_neck
         neck_ok = out_neck == 0
+
+    first_escape_idx = next(
+        (i for i, e in enumerate(esc) if e > 0), None)
 
     # (d) SHELL INTEGRITY post-yield: after release/hold, shell cluster 1 and
     # max displacement <= 2 spacings.
@@ -1736,9 +1742,17 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
               f"shell_clust max={int(shell_clust.max())}")
     else:
         print(f"  (b) YIELD     : FAIL  (force never reached 2*F_hold or min sep)")
+    if first_escape_idx is not None:
+        first_esc_info = (
+            f"first_escape=tick={metrics['tick'][first_escape_idx]} "
+            f"force={pforce[first_escape_idx]:.2f} "
+            f"sep={sep[first_escape_idx]:.5f}"
+        )
+    else:
+        first_esc_info = "first_escape=none"
     print(f"  (c) NECK      : {'PASS' if neck_ok else 'FAIL'}  "
           f"escaped={total_escaped} in_neck={in_neck} out_neck={out_neck} "
-          f"(bar {integrity_bar:.4f} from axis)")
+          f"{first_esc_info} (bar {corridor_radius:.4f} from axis)")
     print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
           f"post-yield shell_clust max={int(shell_clust[post_idx].max()) if post_idx else 0} "
           f"max disp={post_max_disp:.4f} (bar {integrity_bar:.4f})")
@@ -1754,22 +1768,39 @@ def _print_bladder_verdict(metrics, first_escape_pos, escaped, derived: dict,
 def bladder_main(args, seed):
     """BLADDER print entry point: build, squeeze, yield, release, judge."""
     fill = str(getattr(args, "bladder_fill", "gap"))
+    neck = str(getattr(args, "bladder_neck", "narrow"))
     pos, vel, pin_mask, grain_ids, s0, derived = seed_structures.bladder(
-        seed=seed, fill=fill)
+        seed=seed, fill=fill, neck=neck)
     N = pos.shape[0]
 
     dt = DT
     v_plate = BLADDER_V_PLATE
     tag = f"{args.tag}_" if args.tag else ""
-    version = "v2" if fill == "fill" else "v1"
+    if neck == "antijam":
+        version = "v3"
+    elif fill == "fill":
+        version = "v2"
+    else:
+        version = "v1"
 
     # RULE 0 header
     print("=" * 70)
     print(f"THE KERNEL - BLADDER {version} print run")
     print(f"N={N}, shell={derived['n_shell']}, content={derived['n_content']}, "
-          f"fill={fill}, plates=4x4, seed={seed}, dt={dt}")
+          f"fill={fill}, neck={neck}, plates=4x4, seed={seed}, dt={dt}")
     print("-" * 70)
-    if fill == "fill":
+    if neck == "antijam":
+        print("STATEMENT: A closed spherical shell one grain thick, filled with a")
+        print("  condensed content droplet in cushion contact with the wall and")
+        print("  squeezed by two pinned muscle plates, seals at low pressure, yields")
+        print("  contents through a derived anti-jam neck, and remains one closed mat")
+        print("  after release.")
+        print("PREDICTION: The 4-spacing neck on the squeeze axis is too large for a")
+        print("  cushion arch to close; the shell holds zero content escape while plate")
+        print("  force is below F_hold; at or before 2*F_hold at least half the contents")
+        print("  exit through the neck corridor; the shell stays one cluster and shows")
+        print("  no grain displacement > 2 spacings after release.")
+    elif fill == "fill":
         print("STATEMENT: A closed spherical shell one grain thick, filled with a")
         print("  condensed content droplet in cushion contact with the wall and")
         print("  squeezed by two pinned muscle plates, seals at low pressure, yields")
@@ -1797,12 +1828,15 @@ def bladder_main(args, seed):
     print("  (d) INTEGRITY - shell splits or any shell grain displaced > 2 spacings")
     print("      post-yield")
     print("=" * 70)
+    neck_corridor = derived['neck_diameter'] / 2.0 + derived['muscle_spacing']
     print(f"\nDerived r_b        = {derived['r_b']:.5f}")
     print(f"Derived d_eq       = {derived['d_eq']:.5f}")
     print(f"Derived s0         = {s0:.5f}")
     print(f"Derived F_hold     = {derived['F_hold']:.2f}")
     print(f"2 * F_hold         = {2.0*derived['F_hold']:.2f}")
     print(f"Min separation     = {2.0*derived['muscle_spacing']:.5f}")
+    print(f"Neck diameter      = {derived['neck_diameter']:.5f}")
+    print(f"Neck corridor      = {neck_corridor:.5f}")
     print(f"Neck center        = ({derived['neck_center'][0]:.4f}, "
           f"{derived['neck_center'][1]:.4f}, {derived['neck_center'][2]:.4f})")
     print(f"Neck axis          = ({derived['neck_axis'][0]:.4f}, "
@@ -3342,6 +3376,11 @@ def main():
                         help="BLADDER content geometry: gap=v1 4^3 droplet, "
                              "fill=v2 contents fill shell at cushion contact "
                              "(default gap)")
+    parser.add_argument("--bladder-neck", type=str, default="narrow",
+                        choices=["narrow", "antijam"],
+                        help="BLADDER neck geometry: narrow=v1/v2 one-grain "
+                             "hole at +z pole, antijam=v3 4-spacing hole on "
+                             "the squeeze axis (default narrow)")
     args = parser.parse_args()
     SEED = args.seed
 

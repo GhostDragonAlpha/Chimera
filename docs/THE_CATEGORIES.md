@@ -294,6 +294,34 @@ interesting falsifier (a 4-spacing hole against DRAW-packed contents:
 the packed-bed repose law says it holds at rest — if it leaks at F_hold,
 record it). And the neck moves onto the squeeze axis (the pole facing a
 plate), where the pressure gradient actually points.
+**BLADDER v3 VERDICT 2026-08-07 (antijam neck, 4 spacings, on the squeeze
+axis, run tag bladder_v3):** the strongest SEAL yet and the third YIELD
+failure — and three failures now draw the law. (a) SEAL PASS: 43
+sub-threshold samples, zero escapes through a 0.20 hole — the
+anti-jam neck does not leak at rest, exactly as the packed-bed repose law
+predicted; that half of the v3 derivation is CONFIRMED. (b) YIELD FAIL
+again: 0/61 at the geometric limit. The anti-jam neck is corked by its
+own squeeze jaw: the plates close to sep 0.09999 with the neck FACING
+the right plate, so at full squeeze the hole is pressed against the jaw
+that was supposed to be the pressure source — and anything that did ooze
+out stays within the escape radius (r_b + d_eq) because DRAW reclaims it:
+in a universe where everything attracts, ejecta fall back. (c)/(d) FAIL
+with it (disp 0.189, the flattened shell). The three-version arc
+converges on a universal, not a print bug: **containment is this
+universe's default (everything clumps, every container seals); expulsion
+is the expensive direction — separation must be PAID, and pressure alone
+does not pay it.** The yield pathway was conceived as a pressure problem;
+it is a PLUMBING problem. Successor (named): v4 — the DUCT: a derived
+port through the right plate aligned with the neck (the muscle does not
+sit on its drain), the escape criterion re-derived as crossing the duct
+PLANE (a flattened shell breaks the spherical criterion), and the
+falsifier unchanged. If the duct yields, theBladder is the first organ
+with a function; if it still fails, the law hardens: in this universe
+nothing is excreted, only re-condensed — recorded either way.
+**Operator note 2026-08-07: theBladder is parked at v3** — the sealed
+container (the storage half, the game-useful half) is measured and
+works; the duct v4 waits on the locomotion priority (theSkeleton /
+theLever).
 
 ## 3-D — BULKS (flesh, organs, soil, rock)
 

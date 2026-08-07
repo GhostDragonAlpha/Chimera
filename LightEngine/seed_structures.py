@@ -1109,8 +1109,9 @@ def skin(spacing: float = 0.05,
 
 
 def bladder(seed: int = 0,
-            fill: str = "gap") -> tuple[np.ndarray, np.ndarray, np.ndarray,
-                                         np.ndarray, float, dict]:
+            fill: str = "gap",
+            neck: str = "narrow") -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                            np.ndarray, float, dict]:
     """
     THE BLADDER print: a closed spherical shell (grain_id=1) packed with a
     condensed content droplet (grain_id=2), squeezed by two pinned 4x4 muscle
@@ -1129,8 +1130,18 @@ def bladder(seed: int = 0,
     radius ``r_in = r_b - d_eq``; the outermost content grains sit ~d_eq from the
     shell wall, providing the cushion splint that holds the wall at print.
 
-    The neck is a hole of diameter 2*d_eq at the +z pole, the smallest opening
-    that passes one grain.
+    ``neck="narrow"`` (v1/v2): a hole of diameter 2*d_eq at the +z pole, the
+    smallest opening that passes one grain.
+
+    ``neck="antijam"`` (v3): the neck is derived from granular arching.  An arch
+    needs at least 2 grains abreast to span (2 spacings) and is stable up to 3
+    spacings, so the opening is set to 4 spacings — the smallest hole no cushion
+    arch can close.  The neck is centered on the +x point of the sphere, facing
+    the right squeeze plate, so the pressure gradient points through it:
+
+        neck_diameter = 4 * muscle_spacing = 0.20 lu
+        neck_center   = (center_x + r_b, 0, 0)
+        neck_axis     = (+1, 0, 0)
 
     The plates are the muscle's pinned 4x4 anchors, placed so each plate face
     sits at cushion distance d_eq from the shell surface:
@@ -1142,11 +1153,13 @@ def bladder(seed: int = 0,
       - ``pin_mask`` is length-N bool; only the two plates are pinned.
       - ``grain_ids`` is length-N int32; plates=-1, shell=1, contents=2.
       - ``derived`` carries r_b, d_eq, n_shell, n_content, fill mode, neck
-        geometry, center_x, and F_hold (the derived hold force from the kernel
-        at print).
+        mode, neck_diameter, neck geometry, center_x, and F_hold (the derived
+        hold force from the kernel at print).
     """
     if fill not in ("gap", "fill"):
         raise ValueError("fill must be 'gap' or 'fill'")
+    if neck not in ("narrow", "antijam"):
+        raise ValueError("neck must be 'narrow' or 'antijam'")
 
     rng = np.random.default_rng(seed)
     muscle_spacing = 0.05
@@ -1183,11 +1196,25 @@ def bladder(seed: int = 0,
     shell_pos = r_b * np.stack([sx, sy, sz], axis=1)
     shell_pos[:, 0] += center_x
 
-    # Neck: remove shell grains within one shell spacing of the +z pole.
-    neck_center = np.array([center_x, 0.0, r_b], dtype=np.float64)
-    neck_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+    # Neck geometry: derived from the requested neck mode.
+    if neck == "narrow":
+        # v1/v2: one-grain hole at the +z pole, diameter 2*d_eq.
+        neck_radius = d_eq
+        neck_diameter = 2.0 * d_eq
+        neck_center = np.array([center_x, 0.0, r_b], dtype=np.float64)
+        neck_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+    else:
+        # v3: anti-jam hole on the squeeze axis, diameter = 4 lattice spacings.
+        # Arching over an orifice: an arch needs >= 2 grains abreast to span
+        # (2 spacings), stable arches form up to 3 spacings, so the opening is
+        # 4 spacings — the smallest hole no cushion arch can close.
+        neck_radius = 2.0 * muscle_spacing
+        neck_diameter = 4.0 * muscle_spacing
+        neck_center = np.array([center_x + r_b, 0.0, 0.0], dtype=np.float64)
+        neck_axis = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+
     dist_to_neck = np.linalg.norm(shell_pos - neck_center, axis=1)
-    shell_pos = shell_pos[dist_to_neck > d_eq]
+    shell_pos = shell_pos[dist_to_neck > neck_radius]
     n_shell = shell_pos.shape[0]
 
     # Contents.
@@ -1259,6 +1286,9 @@ def bladder(seed: int = 0,
         "n_content": n_content,
         "s0": s0,
         "center_x": center_x,
+        "neck": neck,
+        "neck_diameter": neck_diameter,
+        "neck_radius": neck_radius,
         "neck_center": neck_center,
         "neck_axis": neck_axis,
         "F_hold": F_hold,

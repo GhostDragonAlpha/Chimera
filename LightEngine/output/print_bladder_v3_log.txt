@@ -1,0 +1,114 @@
+======================================================================
+THE KERNEL - BLADDER v3 print run
+N=357, shell=202, content=123, fill=fill, neck=antijam, plates=4x4, seed=20260806, dt=0.0005
+----------------------------------------------------------------------
+STATEMENT: A closed spherical shell one grain thick, filled with a
+  condensed content droplet in cushion contact with the wall and
+  squeezed by two pinned muscle plates, seals at low pressure, yields
+  contents through a derived anti-jam neck, and remains one closed mat
+  after release.
+PREDICTION: The 4-spacing neck on the squeeze axis is too large for a
+  cushion arch to close; the shell holds zero content escape while plate
+  force is below F_hold; at or before 2*F_hold at least half the contents
+  exit through the neck corridor; the shell stays one cluster and shows
+  no grain displacement > 2 spacings after release.
+FALSIFIERS:
+  (a) SEAL      - content escapes or shell splits while force < F_hold
+  (b) YIELD     - fewer than half contents escape by 2*F_hold/min sep
+      OR shell splits during squeeze
+  (c) NECK      - any escapee exits outside the neck corridor
+  (d) INTEGRITY - shell splits or any shell grain displaced > 2 spacings
+      post-yield
+======================================================================
+
+Derived r_b        = 0.20000
+Derived d_eq       = 0.04840
+Derived s0         = 0.49680
+Derived F_hold     = 674.18
+2 * F_hold         = 1348.37
+Min separation     = 0.10000
+Neck diameter      = 0.20000
+Neck corridor      = 0.15000
+Neck center        = (0.4484, 0.0000, 0.0000)
+Neck axis          = (1.0000, 0.0000, 0.0000)
+
+
+[bladder] N=357 shell=202 content=123 plates=32
+[bladder] s0=0.49680 F_hold=674.18 2*F_hold=1348.37 v_plate=0.05000 dt=0.0005
+
+[bladder] tick=     0 phase=init       | sep=0.49698 | force=631.56 | shell_clust=1 | escapes=  0 | shell_disp=0.0000
+[bladder] tick=   500 phase=converge   | sep=0.48448 | force=729.01 | shell_clust=1 | escapes=  0 | shell_disp=0.1352
+[bladder] tick=  1000 phase=converge   | sep=0.47199 | force=833.07 | shell_clust=1 | escapes=  0 | shell_disp=0.1765
+[bladder] tick=  1500 phase=converge   | sep=0.45950 | force=644.18 | shell_clust=1 | escapes=  0 | shell_disp=0.1831
+[bladder] tick=  2000 phase=converge   | sep=0.44700 | force=571.68 | shell_clust=1 | escapes=  0 | shell_disp=0.1787
+[bladder] tick=  2500 phase=converge   | sep=0.43451 | force=405.66 | shell_clust=1 | escapes=  0 | shell_disp=0.1811
+[bladder] tick=  3000 phase=converge   | sep=0.42202 | force=520.61 | shell_clust=1 | escapes=  0 | shell_disp=0.1811
+[bladder] tick=  3500 phase=converge   | sep=0.40952 | force=520.28 | shell_clust=1 | escapes=  0 | shell_disp=0.1873
+[bladder] tick=  4000 phase=converge   | sep=0.39703 | force=614.43 | shell_clust=1 | escapes=  0 | shell_disp=0.1980
+[bladder] tick=  4500 phase=converge   | sep=0.38454 | force=708.90 | shell_clust=1 | escapes=  0 | shell_disp=0.1844
+[bladder] tick=  5000 phase=converge   | sep=0.37205 | force=826.46 | shell_clust=1 | escapes=  0 | shell_disp=0.1749
+[bladder] tick=  5500 phase=converge   | sep=0.35955 | force=803.01 | shell_clust=1 | escapes=  0 | shell_disp=0.1726
+[bladder] tick=  6000 phase=converge   | sep=0.34706 | force=932.06 | shell_clust=1 | escapes=  0 | shell_disp=0.1630
+[bladder] tick=  6500 phase=converge   | sep=0.33456 | force=1084.59 | shell_clust=1 | escapes=  0 | shell_disp=0.1502
+[bladder] tick=  7000 phase=converge   | sep=0.32207 | force=1198.70 | shell_clust=1 | escapes=  0 | shell_disp=0.1379
+[bladder] tick=  7500 phase=converge   | sep=0.30957 | force=1130.39 | shell_clust=1 | escapes=  0 | shell_disp=0.1370
+[bladder] tick=  8000 phase=converge   | sep=0.29708 | force=1076.94 | shell_clust=1 | escapes=  0 | shell_disp=0.1366
+[bladder] tick=  8500 phase=converge   | sep=0.28458 | force=978.93 | shell_clust=1 | escapes=  0 | shell_disp=0.1390
+[bladder] tick=  9000 phase=converge   | sep=0.27209 | force=824.83 | shell_clust=1 | escapes=  0 | shell_disp=0.1379
+[bladder] tick=  9500 phase=converge   | sep=0.25959 | force=667.89 | shell_clust=1 | escapes=  0 | shell_disp=0.1354
+[bladder] tick= 10000 phase=converge   | sep=0.24710 | force=425.17 | shell_clust=1 | escapes=  0 | shell_disp=0.1376
+[bladder] tick= 10500 phase=converge   | sep=0.23461 | force=230.60 | shell_clust=1 | escapes=  0 | shell_disp=0.1375
+[bladder] tick= 11000 phase=converge   | sep=0.22211 | force=140.59 | shell_clust=1 | escapes=  0 | shell_disp=0.1365
+[bladder] tick= 11500 phase=converge   | sep=0.20962 | force=40.37 | shell_clust=1 | escapes=  0 | shell_disp=0.1388
+[bladder] tick= 12000 phase=converge   | sep=0.19712 | force=199.62 | shell_clust=1 | escapes=  0 | shell_disp=0.1373
+[bladder] tick= 12500 phase=converge   | sep=0.18463 | force=411.05 | shell_clust=1 | escapes=  0 | shell_disp=0.1378
+[bladder] tick= 13000 phase=converge   | sep=0.17213 | force=557.77 | shell_clust=1 | escapes=  0 | shell_disp=0.1426
+[bladder] tick= 13500 phase=converge   | sep=0.15964 | force=634.68 | shell_clust=1 | escapes=  0 | shell_disp=0.1449
+[bladder] tick= 14000 phase=converge   | sep=0.14714 | force=492.20 | shell_clust=1 | escapes=  0 | shell_disp=0.1481
+[bladder] tick= 14500 phase=converge   | sep=0.13465 | force=567.65 | shell_clust=1 | escapes=  0 | shell_disp=0.1550
+[bladder] tick= 15000 phase=converge   | sep=0.12215 | force=557.95 | shell_clust=1 | escapes=  0 | shell_disp=0.1561
+[bladder] tick= 15500 phase=converge   | sep=0.10966 | force=719.75 | shell_clust=1 | escapes=  0 | shell_disp=0.1585
+[bladder] tick= 15888 phase=converge   | sep=0.09999 | force=766.92 | shell_clust=1 | escapes=  0 | shell_disp=0.1645
+[bladder] tick= 16000 phase=release    | sep=0.10279 | force=461.01 | shell_clust=1 | escapes=  0 | shell_disp=0.1649
+[bladder] tick= 16500 phase=release    | sep=0.11528 | force=116.91 | shell_clust=1 | escapes=  0 | shell_disp=0.1639
+[bladder] tick= 17000 phase=release    | sep=0.12778 | force=440.22 | shell_clust=1 | escapes=  0 | shell_disp=0.1608
+[bladder] tick= 17500 phase=release    | sep=0.14027 | force=638.16 | shell_clust=1 | escapes=  0 | shell_disp=0.1649
+[bladder] tick= 18000 phase=release    | sep=0.15277 | force=800.07 | shell_clust=1 | escapes=  0 | shell_disp=0.1614
+[bladder] tick= 18500 phase=release    | sep=0.16526 | force=626.70 | shell_clust=1 | escapes=  0 | shell_disp=0.1557
+[bladder] tick= 19000 phase=release    | sep=0.17775 | force=598.05 | shell_clust=1 | escapes=  0 | shell_disp=0.1497
+[bladder] tick= 19500 phase=release    | sep=0.19025 | force=477.11 | shell_clust=1 | escapes=  0 | shell_disp=0.1550
+[bladder] tick= 20000 phase=release    | sep=0.20274 | force=595.21 | shell_clust=1 | escapes=  0 | shell_disp=0.1519
+[bladder] tick= 20500 phase=release    | sep=0.21524 | force=579.83 | shell_clust=1 | escapes=  0 | shell_disp=0.1510
+[bladder] tick= 21000 phase=release    | sep=0.22773 | force=572.31 | shell_clust=1 | escapes=  0 | shell_disp=0.1533
+[bladder] tick= 21500 phase=release    | sep=0.24023 | force=660.38 | shell_clust=1 | escapes=  0 | shell_disp=0.1519
+[bladder] tick= 22000 phase=release    | sep=0.25272 | force=702.12 | shell_clust=1 | escapes=  0 | shell_disp=0.1555
+[bladder] tick= 22500 phase=release    | sep=0.26522 | force=848.13 | shell_clust=1 | escapes=  0 | shell_disp=0.1575
+[bladder] tick= 23000 phase=release    | sep=0.27771 | force=988.54 | shell_clust=1 | escapes=  0 | shell_disp=0.1530
+[bladder] tick= 23500 phase=release    | sep=0.29021 | force=1084.51 | shell_clust=1 | escapes=  0 | shell_disp=0.1555
+[bladder] tick= 24000 phase=release    | sep=0.30270 | force=1158.17 | shell_clust=1 | escapes=  0 | shell_disp=0.1566
+[bladder] tick= 24500 phase=release    | sep=0.31520 | force=1187.10 | shell_clust=1 | escapes=  0 | shell_disp=0.1542
+[bladder] tick= 25000 phase=release    | sep=0.32769 | force=1189.38 | shell_clust=1 | escapes=  0 | shell_disp=0.1538
+[bladder] tick= 25500 phase=release    | sep=0.34018 | force=1195.17 | shell_clust=1 | escapes=  0 | shell_disp=0.1564
+[bladder] tick= 26000 phase=release    | sep=0.35268 | force=1129.02 | shell_clust=1 | escapes=  0 | shell_disp=0.1587
+[bladder] tick= 26500 phase=release    | sep=0.36517 | force=831.50 | shell_clust=1 | escapes=  0 | shell_disp=0.1668
+[bladder] tick= 27000 phase=release    | sep=0.37767 | force=654.82 | shell_clust=1 | escapes=  0 | shell_disp=0.1704
+[bladder] tick= 27500 phase=release    | sep=0.39016 | force=810.72 | shell_clust=1 | escapes=  0 | shell_disp=0.1683
+[bladder] tick= 28000 phase=release    | sep=0.40265 | force=605.00 | shell_clust=1 | escapes=  0 | shell_disp=0.1684
+[bladder] tick= 28500 phase=release    | sep=0.41515 | force=557.83 | shell_clust=1 | escapes=  0 | shell_disp=0.1761
+[bladder] tick= 29000 phase=release    | sep=0.42764 | force=558.07 | shell_clust=1 | escapes=  0 | shell_disp=0.1801
+[bladder] tick= 29500 phase=release    | sep=0.44013 | force=472.06 | shell_clust=1 | escapes=  0 | shell_disp=0.1843
+[bladder] tick= 30000 phase=release    | sep=0.45263 | force=468.77 | shell_clust=1 | escapes=  0 | shell_disp=0.1847
+[bladder] tick= 30500 phase=release    | sep=0.46512 | force=392.22 | shell_clust=1 | escapes=  0 | shell_disp=0.1791
+[bladder] tick= 31000 phase=release    | sep=0.47761 | force=402.61 | shell_clust=1 | escapes=  0 | shell_disp=0.1823
+[bladder] tick= 31500 phase=release    | sep=0.49011 | force=353.77 | shell_clust=1 | escapes=  0 | shell_disp=0.1845
+[bladder] tick= 31769 phase=release    | sep=0.49680 | force=340.68 | shell_clust=1 | escapes=  0 | shell_disp=0.1856
+[bladder] tick= 32000 phase=hold       | sep=0.49680 | force=312.11 | shell_clust=1 | escapes=  0 | shell_disp=0.1864
+[bladder] tick= 32500 phase=hold       | sep=0.49680 | force=381.78 | shell_clust=1 | escapes=  0 | shell_disp=0.1890
+[bladder] tick= 32769 phase=hold       | sep=0.49680 | force=360.71 | shell_clust=1 | escapes=  0 | shell_disp=0.1884
+
+[bladder] BLADDER FALSIFIERS:
+  (a) SEAL      : PASS  force<F_hold samples=43 escapes=0 shell_clust max=1
+  (b) YIELD     : FAIL  at tick=15888 force=766.92 sep=0.09999 escapes=0/61 shell_clust max=1
+  (c) NECK      : FAIL  escaped=0 in_neck=0 out_neck=0 first_escape=none (bar 0.1500 from axis)
+  (d) INTEGRITY : FAIL  post-yield shell_clust max=1 max disp=0.1890 (bar 0.1000)
+======================================================================
