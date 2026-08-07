@@ -1,0 +1,91 @@
+======================================================================
+THE KERNEL - LEG v1 print run (control)
+N=568, plate=18x6+well (188 pinned), fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), lever=4x4 tube (1-grain shell, 2x2 void) x 13 rings, droplet=4^3 in well, load=4^3, rod=2x2x2 tendon, seed=20260806, dt=0.0005, ticks=8000, control=True
+----------------------------------------------------------------------
+STATEMENT: A captured muscle-bone machine routes the muscle pull
+  through a vertical tendon rod that hangs from the arm tip into a
+  well, so the bone never intersects the free droplet muscle.
+  The fulcrum contact is derived from the kernel's own static torque
+  about the pinned fulcrum contact point.
+PREDICTION: With kernel-verified R_true <= 1, the load end
+  tips load-side-down and never rises more than one lattice
+  step above its print height.
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10 absolute z
+  (b) HOLD    - control: load end rises <= 0.05 all run
+  (c) BALANCE - kernel torque predicts the SETTLED tip direction:
+      sign of mean lever angle over the last 20% of samples must
+      match sign(R_true - 1)
+  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold
+  (e) SAG     - if the arm rotates muscle-down but the load end does
+      not lift, the tendon route failed to transmit the pull
+======================================================================
+
+Derived d_eq   = 0.04840
+Derived contact_x = -0.22500
+Derived a_m    = 0.07467
+Derived a_l    = 0.52484
+Derived R_true = 0.548
+Derived lever_len = 13
+Derived margin_to_load_end = 0.52500
+Derived well_floor_z = -0.10000
+Derived n_rod  = 8
+
+
+[leg_v1_control] N=568 plate=188 droplet=64 fulcrum=88 lever=156 load=64 rod=8
+[leg_v1_control] dt=0.0005 ticks=8000 sample_every=200
+
+[leg_v1_control] tick=     0 | load_gain=+0.0000 | angle=  0.03deg | gap=0.0463 | plate_F=3717.02 | contact=-858.026 | clusters=1/1/1/1/1 | tip_to_drop=0.1493 | apex_z=0.0995 | rod=tension(+0.78)
+[leg_v1_control] tick=   200 | load_gain=+0.0078 | angle= 14.13deg | gap=0.0192 | plate_F=4579.88 | contact=-303.477 | clusters=1/1/1/1/1 | tip_to_drop=0.0270 | apex_z=0.1622 | rod=compression(-4.01)
+[leg_v1_control] tick=   400 | load_gain=-0.1694 | angle=-10.45deg | gap=0.0254 | plate_F=3645.08 | contact=-964.102 | clusters=1/1/1/1/1 | tip_to_drop=0.0346 | apex_z=0.1744 | rod=tension(+186.89)
+[leg_v1_control] tick=   600 | load_gain=-0.3272 | angle=-61.54deg | gap=0.0439 | plate_F=2352.19 | contact=1370.369 | clusters=1/1/1/1/1 | tip_to_drop=0.0270 | apex_z=0.1671 | rod=tension(+16.99)
+[leg_v1_control] tick=   800 | load_gain=-0.3318 | angle=-69.46deg | gap=0.0452 | plate_F=3870.67 | contact=404.365 | clusters=1/1/1/1/1 | tip_to_drop=0.0258 | apex_z=0.1562 | rod=tension(+90.55)
+[leg_v1_control] tick=  1000 | load_gain=-0.3335 | angle=-78.23deg | gap=0.0552 | plate_F=3728.36 | contact=669.335 | clusters=1/1/1/1/1 | tip_to_drop=0.0269 | apex_z=0.1366 | rod=tension(+101.82)
+[leg_v1_control] tick=  1200 | load_gain=-0.3365 | angle=-79.44deg | gap=0.0557 | plate_F=3275.87 | contact=921.387 | clusters=1/1/1/1/1 | tip_to_drop=0.0286 | apex_z=0.1261 | rod=tension(+111.73)
+[leg_v1_control] tick=  1400 | load_gain=-0.3372 | angle=-78.91deg | gap=0.0586 | plate_F=3291.52 | contact=606.867 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1255 | rod=tension(+122.09)
+[leg_v1_control] tick=  1600 | load_gain=-0.3369 | angle=-80.23deg | gap=0.0579 | plate_F=3240.72 | contact=749.153 | clusters=1/1/1/1/1 | tip_to_drop=0.0289 | apex_z=0.1253 | rod=tension(+129.43)
+[leg_v1_control] tick=  1800 | load_gain=-0.3373 | angle=-80.13deg | gap=0.0576 | plate_F=3229.56 | contact=738.621 | clusters=1/1/1/1/1 | tip_to_drop=0.0296 | apex_z=0.1237 | rod=tension(+89.83)
+[leg_v1_control] tick=  2000 | load_gain=-0.3371 | angle=-79.96deg | gap=0.0578 | plate_F=3290.99 | contact=751.333 | clusters=1/1/1/1/1 | tip_to_drop=0.0285 | apex_z=0.1239 | rod=tension(+81.26)
+[leg_v1_control] tick=  2200 | load_gain=-0.3376 | angle=-79.94deg | gap=0.0579 | plate_F=3297.35 | contact=783.568 | clusters=1/1/1/1/1 | tip_to_drop=0.0293 | apex_z=0.1238 | rod=tension(+76.53)
+[leg_v1_control] tick=  2400 | load_gain=-0.3376 | angle=-80.03deg | gap=0.0579 | plate_F=3335.64 | contact=759.242 | clusters=1/1/1/1/1 | tip_to_drop=0.0290 | apex_z=0.1250 | rod=tension(+84.08)
+[leg_v1_control] tick=  2600 | load_gain=-0.3382 | angle=-79.98deg | gap=0.0577 | plate_F=3339.37 | contact=757.722 | clusters=1/1/1/1/1 | tip_to_drop=0.0290 | apex_z=0.1260 | rod=tension(+92.17)
+[leg_v1_control] tick=  2800 | load_gain=-0.3380 | angle=-79.90deg | gap=0.0577 | plate_F=3396.37 | contact=797.502 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1261 | rod=tension(+92.53)
+[leg_v1_control] tick=  3000 | load_gain=-0.3377 | angle=-79.98deg | gap=0.0577 | plate_F=3393.73 | contact=780.817 | clusters=1/1/1/1/1 | tip_to_drop=0.0294 | apex_z=0.1262 | rod=tension(+92.85)
+[leg_v1_control] tick=  3200 | load_gain=-0.3377 | angle=-80.04deg | gap=0.0577 | plate_F=3425.92 | contact=784.097 | clusters=1/1/1/1/1 | tip_to_drop=0.0294 | apex_z=0.1260 | rod=tension(+88.41)
+[leg_v1_control] tick=  3400 | load_gain=-0.3378 | angle=-80.10deg | gap=0.0577 | plate_F=3345.74 | contact=791.821 | clusters=1/1/1/1/1 | tip_to_drop=0.0295 | apex_z=0.1264 | rod=tension(+84.86)
+[leg_v1_control] tick=  3600 | load_gain=-0.3374 | angle=-80.15deg | gap=0.0578 | plate_F=3380.91 | contact=742.651 | clusters=1/1/1/1/1 | tip_to_drop=0.0297 | apex_z=0.1273 | rod=tension(+93.85)
+[leg_v1_control] tick=  3800 | load_gain=-0.3369 | angle=-80.26deg | gap=0.0576 | plate_F=3370.92 | contact=731.231 | clusters=1/1/1/1/1 | tip_to_drop=0.0295 | apex_z=0.1273 | rod=tension(+88.50)
+[leg_v1_control] tick=  4000 | load_gain=-0.3367 | angle=-80.18deg | gap=0.0577 | plate_F=3345.99 | contact=753.226 | clusters=1/1/1/1/1 | tip_to_drop=0.0294 | apex_z=0.1270 | rod=tension(+91.52)
+[leg_v1_control] tick=  4200 | load_gain=-0.3369 | angle=-80.22deg | gap=0.0576 | plate_F=3316.77 | contact=754.261 | clusters=1/1/1/1/1 | tip_to_drop=0.0294 | apex_z=0.1261 | rod=tension(+87.02)
+[leg_v1_control] tick=  4400 | load_gain=-0.3369 | angle=-80.14deg | gap=0.0576 | plate_F=3341.80 | contact=780.354 | clusters=1/1/1/1/1 | tip_to_drop=0.0293 | apex_z=0.1262 | rod=tension(+73.37)
+[leg_v1_control] tick=  4600 | load_gain=-0.3369 | angle=-79.92deg | gap=0.0576 | plate_F=3304.86 | contact=757.545 | clusters=1/1/1/1/1 | tip_to_drop=0.0294 | apex_z=0.1262 | rod=tension(+70.68)
+[leg_v1_control] tick=  4800 | load_gain=-0.3368 | angle=-79.98deg | gap=0.0576 | plate_F=3309.64 | contact=770.189 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1264 | rod=tension(+67.24)
+[leg_v1_control] tick=  5000 | load_gain=-0.3369 | angle=-80.00deg | gap=0.0576 | plate_F=3309.89 | contact=765.797 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1265 | rod=tension(+64.40)
+[leg_v1_control] tick=  5200 | load_gain=-0.3369 | angle=-80.06deg | gap=0.0577 | plate_F=3315.65 | contact=781.083 | clusters=1/1/1/1/1 | tip_to_drop=0.0293 | apex_z=0.1263 | rod=tension(+62.80)
+[leg_v1_control] tick=  5400 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3296.90 | contact=796.464 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1263 | rod=tension(+61.01)
+[leg_v1_control] tick=  5600 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3296.27 | contact=746.405 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1263 | rod=tension(+60.93)
+[leg_v1_control] tick=  5800 | load_gain=-0.3369 | angle=-80.01deg | gap=0.0577 | plate_F=3305.31 | contact=779.411 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.81)
+[leg_v1_control] tick=  6000 | load_gain=-0.3369 | angle=-80.01deg | gap=0.0577 | plate_F=3300.94 | contact=802.178 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.86)
+[leg_v1_control] tick=  6200 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3295.90 | contact=757.111 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1263 | rod=tension(+60.72)
+[leg_v1_control] tick=  6400 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3327.86 | contact=746.884 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.59)
+[leg_v1_control] tick=  6600 | load_gain=-0.3369 | angle=-80.01deg | gap=0.0577 | plate_F=3317.35 | contact=751.168 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.75)
+[leg_v1_control] tick=  6800 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3306.83 | contact=786.728 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.70)
+[leg_v1_control] tick=  7000 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3316.44 | contact=744.262 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.92)
+[leg_v1_control] tick=  7200 | load_gain=-0.3369 | angle=-80.01deg | gap=0.0577 | plate_F=3318.62 | contact=751.660 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.35)
+[leg_v1_control] tick=  7400 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3288.79 | contact=787.356 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+65.85)
+[leg_v1_control] tick=  7600 | load_gain=-0.3369 | angle=-80.01deg | gap=0.0577 | plate_F=3308.53 | contact=769.578 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.73)
+[leg_v1_control] tick=  7800 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3318.31 | contact=759.009 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.82)
+[leg_v1_control] tick=  8000 | load_gain=-0.3369 | angle=-80.02deg | gap=0.0577 | plate_F=3284.14 | contact=760.680 | clusters=1/1/1/1/1 | tip_to_drop=0.0292 | apex_z=0.1262 | rod=tension(+60.65)
+
+[leg_v1_control] LEG v1 FALSIFIERS:
+  (a) LIFT      : skipped (control)
+  (b) HOLD      : PASS  max load_gain=0.0078 at tick=200 (bar 0.0500)
+  (c) BALANCE   : PASS  R_true=0.548 settled_angle_sign=-1 predicted=-1 (last 8/41 samples)
+  (d) INTEGRITY : PASS  max clusters droplet/fulcrum/lever/load/rod=1/1/1/1/1 plate_drift=0.000000
+  (e) SAG       : skipped (control)
+  TENDON TELEMETRY:
+    min arm-tip-to-droplet distance = 0.0258
+    droplet apex z range = [0.0995, 0.1744]
+    final rod internal force z = +60.645
+    rod sign fractions: tension=0.98 slack=0.00 compression=0.02
+======================================================================

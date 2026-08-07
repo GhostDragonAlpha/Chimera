@@ -1540,6 +1540,358 @@ def lever(control: bool = False,
         pin_mask, grain_ids, derived
 
 
+def leg(control: bool = False,
+        spacing: float = 0.05,
+        seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                np.ndarray, dict]:
+    """
+    THE LEG v1 print: tendon-routed muscle in a well.
+
+    The free-droplet muscle at the arm tip failed in LEVER v6: at contact the
+    droplet's repulsive cushion reversed the opening move.  The LEG routes the
+    muscle pull through a vertical 2×2 tendon rod that hangs from the arm tip
+    and dips into a well under the bone path, so the bone never intersects the
+    droplet.
+
+    Grain ids:
+      - plate   = -1 (pinned)
+      - droplet = 0  (muscle, in the well)
+      - fulcrum = 1  (pinned block + cheeks)
+      - lever   = 2  (13-ring 4×4 hollow tube)
+      - load    = 3
+      - rod     = 4  (vertical 2×2 tendon, free)
+
+    Geometry (all numbers derived from ``spacing`` and ``d_eq``):
+      - Enlarged pinned ground plate: 18×6 grains at z = 0 with a 6×6 well
+        opening at the muscle tip; a 6×6×5 well box with a 4×4×4 cavity above
+        a solid floor brings the floor to z = -2d.
+      - 4³ muscle droplet seated on the well floor.
+      - Vertical 2×2×2 tendon rod: top face d_eq below the arm tip underside,
+        bottom face one lattice step above the droplet apex.
+      - v6 fulcrum block + saddle cheeks and v6 13-ring hollow tube reused
+        exactly.
+      - 4³ load block on the lever's load end.
+
+    STATIC GATE: the fulcrum contact_x is derived by scanning the off-edge
+    bracket [muscle_end + tube_half_width, load_end - tube_half_width] on the
+    kernel static torque ratio R_true.  The main print uses the leftmost
+    contact with R_true = 2.0 ± 0.1 and load-end margin >= 0.10 lu; the
+    control print uses the leftmost contact with R_true in [0.5, 1.0] and the
+    same margin.  A RuntimeError is raised if two-sided control cannot be
+    achieved.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, derived)``.
+    """
+    rng = np.random.default_rng(seed)
+    d = float(spacing)
+    d_eq = TENDON_D_EQ
+
+    # ── Enlarged pinned ground plate + well ────────────────────────────
+    plate_nx, plate_ny = 18, 6
+    n_plate_flat = plate_nx * plate_ny
+    px_off = (np.arange(plate_nx, dtype=np.float64)
+              - (plate_nx - 1) / 2.0) * d
+    py_off = (np.arange(plate_ny, dtype=np.float64)
+              - (plate_ny - 1) / 2.0) * d
+    pxg, pyg = np.meshgrid(px_off, py_off, indexing="ij")
+    plate_flat = np.stack([pxg.ravel(), pyg.ravel(),
+                           np.zeros(n_plate_flat, dtype=np.float64)], axis=1)
+
+    # Muscle tip sits at the left end of the lever.
+    muscle_tip_x = float(-(13 - 1) / 2.0 * d)
+    # 6×6 hole centered on the muscle tip.
+    hole = ((np.abs(plate_flat[:, 0] - muscle_tip_x) <= 0.15 + 1e-9) &
+            (np.abs(plate_flat[:, 1]) <= 0.15 + 1e-9))
+    plate_flat = plate_flat[~hole]
+
+    # Well box: 6×6×5 grains with a 4×4×4 cavity above a solid floor.
+    # The cavity must not cut the bottom layer, so the droplet has a pinned
+    # floor to push against (the tendon pulls the droplet upward; the floor
+    # supplies the reaction that keeps the muscle anchored).
+    well_nx, well_ny, well_nz = 6, 6, 5
+    wx_off = muscle_tip_x + (np.arange(well_nx, dtype=np.float64)
+                             - (well_nx - 1) / 2.0) * d
+    wy_off = (np.arange(well_ny, dtype=np.float64)
+              - (well_ny - 1) / 2.0) * d
+    well_floor_z = -2.0 * d
+    wz_off = np.arange(well_nz, dtype=np.float64) * d + well_floor_z
+    wxg, wyg, wzg = np.meshgrid(wx_off, wy_off, wz_off, indexing="ij")
+    well_box = np.stack([wxg.ravel(), wyg.ravel(), wzg.ravel()], axis=1)
+    in_cavity_xy = ((np.abs(well_box[:, 0] - muscle_tip_x) <= 0.075 + 1e-9) &
+                    (np.abs(well_box[:, 1]) <= 0.075 + 1e-9))
+    is_bottom = np.isclose(well_box[:, 2], well_floor_z)
+    cavity = in_cavity_xy & (~is_bottom)
+    well = well_box[~cavity]
+
+    plate_pos = np.vstack([plate_flat, well])
+    n_plate = plate_pos.shape[0]
+
+    # ── Muscle droplet in the well ─────────────────────────────────────
+    drop_side = 4
+    n_drop = drop_side ** 3
+    drop_off = (np.arange(drop_side, dtype=np.float64)
+                - (drop_side - 1) / 2.0) * d
+    drop_x = drop_off + muscle_tip_x
+    drop_z = np.arange(drop_side, dtype=np.float64) * d + well_floor_z + d_eq
+    dx, dy, dz = np.meshgrid(drop_x, drop_off, drop_z, indexing="ij")
+    droplet_pos = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
+
+    # ── Fulcrum block + cheeks (v6) ────────────────────────────────────
+    fulcrum_side = 4
+    n_fulcrum_block = fulcrum_side ** 3
+    f_off = (np.arange(fulcrum_side, dtype=np.float64)
+             - (fulcrum_side - 1) / 2.0) * d
+    fulcrum_z = np.arange(fulcrum_side, dtype=np.float64) * d + d_eq
+    fulcrum_top_z = d_eq + (fulcrum_side - 1) * d
+    fulcrum_half_width = (fulcrum_side - 1) / 2.0 * d
+
+    cheek_y_center = 0.10 + d_eq + d / 2.0
+    n_cheek_z = 3
+    cheek_x = f_off
+    cheek_z = np.arange(n_cheek_z, dtype=np.float64) * d + fulcrum_top_z
+    cxg, cyg, czg = np.meshgrid(
+        cheek_x, np.array([cheek_y_center]), cheek_z, indexing="ij")
+    cheek_pos_plus = np.stack(
+        [cxg.ravel(), cyg.ravel(), czg.ravel()], axis=1)
+    cheek_pos_minus = cheek_pos_plus.copy()
+    cheek_pos_minus[:, 1] = -cheek_y_center
+    cheek_pos = np.vstack([cheek_pos_plus, cheek_pos_minus])
+    n_cheek = cheek_pos.shape[0]
+    n_fulcrum = n_fulcrum_block + n_cheek
+
+    # ── Lever: v6 13-ring 4×4 hollow tube ──────────────────────────────
+    length = 13
+    s = 4
+    x_off = (np.arange(length, dtype=np.float64)
+             - (length - 1) / 2.0) * d
+    yz_off = (np.arange(s, dtype=np.float64)
+              - (s - 1) / 2.0) * d
+    gy, gz = np.meshgrid(yz_off, yz_off, indexing="ij")
+    inner = (np.abs(gy) <= 0.5 * d + 1e-12) & (np.abs(gz) <= 0.5 * d + 1e-12)
+    shell = ~inner
+    y_shell = gy[shell]
+    z_shell = gz[shell]
+    n_ring = int(y_shell.size)
+    x_all = np.repeat(x_off, n_ring)
+    y_all = np.tile(y_shell, length)
+    z_all = np.tile(z_shell, length)
+    lever_pos = np.stack([x_all, y_all, z_all], axis=1)
+    n_lever = lever_pos.shape[0]
+    L = (length - 1) * d
+
+    lever_bottom_z = fulcrum_top_z + d_eq
+    lever_top_z = lever_bottom_z + (fulcrum_side - 1) * d
+    lever_pos[:, 2] += lever_bottom_z + fulcrum_half_width
+
+    muscle_end_x = float(x_off[0])
+    load_end_x = float(x_off[-1])
+    tube_half_width = (s - 1) / 2.0 * d
+
+    # ── Load block ─────────────────────────────────────────────────────
+    load_side = 4
+    n_load = load_side ** 3
+    load_off = f_off
+    load_y = f_off
+    load_z = np.arange(load_side, dtype=np.float64) * d + lever_top_z + d_eq
+
+    # ── Tendon rod: vertical 2×2×2 ─────────────────────────────────────
+    rod_len = 2
+    rod_x_off = muscle_tip_x + (np.arange(2, dtype=np.float64) - 0.5) * d
+    rod_y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
+    rod_top_z = fulcrum_top_z  # d_eq below arm tip underside
+    rod_bottom_z = rod_top_z - (rod_len - 1) * d
+    rod_z = np.arange(rod_len, dtype=np.float64) * d + rod_bottom_z
+    rxg, ryg, rzg = np.meshgrid(rod_x_off, rod_y_off, rod_z, indexing="ij")
+    rod_pos = np.stack([rxg.ravel(), ryg.ravel(), rzg.ravel()], axis=1)
+    n_rod = rod_pos.shape[0]
+
+    # ── Fixed grain ids and pin mask ───────────────────────────────────
+    n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rod
+    grain_ids = np.empty(n_total, dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_drop] = 0
+    grain_ids[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = 1
+    grain_ids[n_plate + n_drop + n_fulcrum:
+              n_plate + n_drop + n_fulcrum + n_lever] = 2
+    grain_ids[n_plate + n_drop + n_fulcrum + n_lever:
+              n_plate + n_drop + n_fulcrum + n_lever + n_load] = 3
+    grain_ids[n_plate + n_drop + n_fulcrum + n_lever + n_load:] = 4
+
+    pin_mask = np.zeros(n_total, dtype=bool)
+    pin_mask[:n_plate] = True
+    pin_mask[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = True
+
+    def _build_no_jitter(contact_x: float) -> np.ndarray:
+        """Assemble all grains without jitter; contact_x shifts the fulcrum."""
+        drop_x = drop_off + muscle_tip_x
+        dx, dy, dz = np.meshgrid(drop_x, drop_off, drop_z, indexing="ij")
+        droplet_pos_local = np.stack([dx.ravel(), dy.ravel(), dz.ravel()],
+                                     axis=1)
+
+        load_x = load_off + load_end_x
+        lx, ly2, lz2 = np.meshgrid(load_x, load_y, load_z, indexing="ij")
+        load_pos_local = np.stack([lx.ravel(), ly2.ravel(), lz2.ravel()],
+                                  axis=1)
+
+        fx = f_off + contact_x
+        fxg, fyg, fzg = np.meshgrid(fx, f_off, fulcrum_z, indexing="ij")
+        block_pos_local = np.stack(
+            [fxg.ravel(), fyg.ravel(), fzg.ravel()], axis=1)
+
+        cheek_pos_shifted = cheek_pos.copy()
+        cheek_pos_shifted[:, 0] += contact_x
+
+        return np.vstack([
+            plate_pos, droplet_pos_local, block_pos_local,
+            cheek_pos_shifted, lever_pos, load_pos_local, rod_pos,
+        ]).astype(np.float64)
+
+    tmp_pos = _build_no_jitter(0.0)
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=tmp_pos.shape)
+
+    def _assemble(contact_x: float) -> np.ndarray:
+        pos = _build_no_jitter(contact_x)
+        pos += jitter
+        return pos
+
+    def _R_for(contact_x: float) -> float:
+        """Kernel static torque ratio for a given fulcrum contact_x."""
+        pos = _assemble(contact_x)
+        cp = np.array([float(contact_x), 0.0, fulcrum_top_z], dtype=np.float64)
+        R_true, _, _ = _R_true_at_print(pos, grain_ids, cp, pin_mask)
+        return float(R_true)
+
+    # ── Static gate: scan the off-edge bracket ─────────────────────────
+    cx_min = muscle_end_x + tube_half_width
+    cx_max = load_end_x - tube_half_width
+    margin = 0.10
+    lo = cx_min
+    hi = load_end_x - margin
+    n_samples = 401
+    xs = np.linspace(lo, hi, n_samples)
+    Rs = np.array([_R_for(x) for x in xs])
+
+    main_idx = np.flatnonzero(np.abs(Rs - 2.0) <= 0.1)
+    if main_idx.size == 0:
+        raise RuntimeError(
+            f"leg v1 static gate failed: no contact in [{lo:.4f}, {hi:.4f}] "
+            f"gives R_true = 2.0 ± 0.1 (R range = {Rs.min():.3f}..{Rs.max():.3f}).")
+    cx_main = float(xs[main_idx[0]])
+    R_main = float(Rs[main_idx[0]])
+
+    ctrl_idx = np.flatnonzero((Rs >= 0.5) & (Rs <= 1.0))
+    if ctrl_idx.size == 0:
+        raise RuntimeError(
+            f"leg v1 static gate failed: no contact in [{lo:.4f}, {hi:.4f}] "
+            f"gives R_true in [0.5, 1.0] (R range = {Rs.min():.3f}..{Rs.max():.3f}).")
+    cx_ctrl = float(xs[ctrl_idx[0]])
+    R_ctrl = float(Rs[ctrl_idx[0]])
+
+    if not (cx_ctrl < cx_main):
+        raise RuntimeError(
+            f"leg v1 static gate failed: control contact {cx_ctrl:.4f} is not "
+            f"muscle-ward of main contact {cx_main:.4f}.")
+
+    contact_x = float(cx_ctrl if control else cx_main)
+    R_true_final = float(R_ctrl if control else R_main)
+
+    pos = _assemble(contact_x)
+
+    # ── Component positions after jitter ───────────────────────────────
+    plate_pos_j = pos[:n_plate]
+    droplet_pos_j = pos[n_plate:n_plate + n_drop]
+    fulcrum_pos_j = pos[n_plate + n_drop:n_plate + n_drop + n_fulcrum]
+    lever_pos_j = pos[n_plate + n_drop + n_fulcrum:
+                      n_plate + n_drop + n_fulcrum + n_lever]
+    load_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever:
+                     n_plate + n_drop + n_fulcrum + n_lever + n_load]
+    rod_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever + n_load:]
+
+    # ── Print law ──────────────────────────────────────────────────────
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"leg v1 print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6 (control={control})")
+
+    # ── Fixed indices and derived quantities ───────────────────────────
+    lever_order = np.argsort(lever_pos_j[:, 0])
+    muscle_face = lever_order[:n_ring].astype(np.int32)
+    load_face = lever_order[-n_ring:].astype(np.int32)
+
+    block_pos_j = fulcrum_pos_j[:n_fulcrum_block]
+    block_top_z = float(block_pos_j[:, 2].max())
+    fulcrum_top_face = np.flatnonzero(np.isclose(block_pos_j[:, 2], block_top_z))
+
+    lever_contact_local = np.flatnonzero(
+        np.abs(lever_pos_j[:, 0] - contact_x) <= tube_half_width + 1e-9)
+
+    muscle_c = lever_pos_j[muscle_face].mean(axis=0)
+    load_c = lever_pos_j[load_face].mean(axis=0)
+    a_m = float(contact_x - muscle_c[0])
+    a_l = float(load_c[0] - contact_x)
+
+    # Rod end indices for the driver.
+    rod_order = np.argsort(rod_pos_j[:, 2])
+    rod_bottom = rod_order[:4].astype(np.int32)
+    rod_top = rod_order[-4:].astype(np.int32)
+
+    fulcrum_contact_point = np.array([float(contact_x), 0.0, fulcrum_top_z],
+                                     dtype=np.float64)
+
+    if control:
+        if not (0.5 <= R_true_final <= 1.0):
+            raise RuntimeError(
+                f"leg v1 control print R_true={R_true_final:.3f} outside [0.5, 1.0]")
+    else:
+        if not (1.9 <= R_true_final <= 2.1):
+            raise RuntimeError(
+                f"leg v1 main print R_true={R_true_final:.3f} outside [1.9, 2.1]")
+
+    margin_to_load_end = float(load_end_x - contact_x)
+    if margin_to_load_end < margin:
+        raise RuntimeError(
+            f"leg v1 contact too close to load end: margin="
+            f"{margin_to_load_end:.4f} < {margin:.4f}")
+
+    derived = {
+        "control": bool(control),
+        "route": "tendon-well",
+        "droplet_side": drop_side,
+        "d_eq": d_eq,
+        "spacing": d,
+        "lever_len": length,
+        "n_plate": n_plate,
+        "n_droplet": n_drop,
+        "n_fulcrum": n_fulcrum,
+        "n_cheek": n_cheek,
+        "n_lever": n_lever,
+        "n_load": n_load,
+        "n_rod": n_rod,
+        "well_floor_z": well_floor_z,
+        "muscle_tip_x": muscle_tip_x,
+        "fulcrum_contact_point": fulcrum_contact_point,
+        "muscle_face": muscle_face,
+        "load_face": load_face,
+        "fulcrum_top_face": fulcrum_top_face,
+        "lever_contact_local": lever_contact_local,
+        "rod_bottom": rod_bottom,
+        "rod_top": rod_top,
+        "a_m": a_m,
+        "a_l": a_l,
+        "R_true": float(R_true_final),
+        "margin_to_load_end": margin_to_load_end,
+        "plate_pos0": plate_pos_j.copy(),
+        "load_end_z0": float(load_c[2]),
+    }
+
+    return pos.astype(np.float32), np.zeros_like(pos, dtype=np.float32), \
+        pin_mask, grain_ids, derived
+
+
 def bladder(seed: int = 0,
             fill: str = "gap",
             neck: str = "narrow") -> tuple[np.ndarray, np.ndarray, np.ndarray,

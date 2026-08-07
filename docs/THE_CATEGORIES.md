@@ -945,6 +945,56 @@ and goes slack before contact, so the muscle can never become a prop.
 First-print falsifiers: LIFT through the derived arc, HOLD in a
 two-sided control (R_true inside [0.5, 1.0] this time), and SETTLED
 direction matching the statics — the three the lever never got to keep.
+**LEG v1 VERDICT 2026-08-07 (tendon-routed muscle, run tags leg_v1 /
+leg_v1_control, 8000 ticks):** the tendon TRANSMITS and the free muscle
+CLIMBS — the origin must be anchored, and the statics must be gated on
+the arc, not the pose. Verified link by link from the logs. (1) THE
+TWO-SIDED CONTROL IS BACK: control R_true = 0.548 inside [0.5, 1.0],
+(b) HOLD PASS, (c) BALANCE PASS — first genuinely two-sided print since
+v3. (2) THE TENDON ROUTES: the rod sits in tension 93% of the main run
+and 98% of the control, and in both settled states it holds a steady
+tension (+25 / +70..100) with the machine at rest — theTendon's
+transmission law confirmed inside a machine. (3) THE FREE MUSCLE
+LEAPED: in BOTH runs the droplet climbed toward the descending tip
+(apex_z 0.099 -> 0.162 main, -> 0.174 control) until tip_to_drop
+crashed through d_eq (min 0.025 both runs) and the rod went into
+COMPRESSION at the first move (main tick 200: −48.75) — the SLACK law
+broken at the opening. A muscle free to move toward the bone it pulls
+is a collision on a timer; the agent-added well floor reacts DOWNWARD
+and cannot hold against a draw that pulls UP. (4) THE OPENING-LAW
+QUALIFIED: both runs opened +14° muscle-down — but the CONTROL opened
+muscle-down AGAINST its R_true = 0.548, the first exception in seven
+prints. The exception is explained: the droplet sits within direct
+draw range of the tip (0.149 at print) and pulls it down UNMEDIATED by
+the fulcrum — the leg's opening conflates the lever's torque with a
+straight droplet-tip attraction, so only the lever line's six openings
+count as the statics law; the leg's openings count as the collision
+law. (5) THE OVER-ROTATION: R_true = 2.016 was purchased with a_m =
+0.081 — a nearly-zero muscle arm — and once the machine rotated, the
+torque landscape collapsed muscle-side; both runs blew past vertical to
+settle at −72° / −80° load-down, the muscle hanging plumb off the
+near-vertical arm, still pulling, never again able to lift. Cold-print
+R_true is a POSE quantity; a machine that rotates 70° lives in the
+whole landscape R_true(theta). (a) LIFT FAIL (max +0.0075), (c)
+BALANCE FAIL main, (d) INTEGRITY PASS both. (6) TWO SINS STRUCK: the
+agent's follow-up phrasing — "move the contact load-ward UNTIL R_true
+= 2.0 corresponds to a stable settle" — is tuning language, and the
+solid well floor was an off-spec addition that fixed nothing (recorded,
+kept as plate, harmless). The v1 law, two clauses: **a muscle's origin
+is an anchor — a free muscle climbs to the bone and becomes a prop at
+contact — and a rotating machine's balance lives in the torque
+landscape across its arc, never in one pose.** Anatomy, twice again:
+muscles are anchored at the origin, and joints have range limits.
+Successor (named): leg v2 — the ANCHORED muscle: the droplet is PINNED
+at the well floor (its origin), making tip_to_droplet a computable
+geometric floor over the arc; the tendon rod lengthens to span the well
+with its ends at d_eq (taut, uncompressed); and the static gate becomes
+the ARC GATE — R_true(theta) recomputed by the kernel at rotated poses
+across the reachable arc, required >= 1 up to the derived muscle-side
+end-stop, the contact still derived by bisection. FALSIFIER: if the
+anchored, arc-gated machine still settles load-down, then cold-pose
+BALANCE is the wrong meter entirely and the settled direction must be
+judged against the arc integral — record, do not patch.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

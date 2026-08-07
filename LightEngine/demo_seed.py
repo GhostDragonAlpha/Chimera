@@ -22,7 +22,7 @@ import os
 import numpy as np
 
 from LightEngine import kernel, seed_structures
-from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, DT, EPS
+from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, K_WALL, P_WALL, DT, EPS, S_WALL
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -2184,6 +2184,424 @@ def lever_main(args, seed):
     print("=" * 70)
 
 
+# ── LEG v1-specific helpers ───────────────────────────────────────────
+
+
+def _rod_internal_force_z(pos: np.ndarray, grain_ids: np.ndarray,
+                          rod_top: np.ndarray, rod_bottom: np.ndarray) -> float:
+    """
+    Net z-force exerted by the rod top layer on the rod bottom layer.
+
+    Positive means the top pulls the bottom upward (tension); negative means
+    the top pushes the bottom downward (compression); near-zero means slack.
+    DRAW is always attractive; static RESISTANCE is repulsive for r < R_BOND.
+    Damping is omitted because this is a static sign read.
+    """
+    rod = pos[grain_ids == 4].astype(np.float64)
+    if rod.shape[0] == 0 or rod_top.size == 0 or rod_bottom.size == 0:
+        return 0.0
+    top = rod[rod_top]
+    bottom = rod[rod_bottom]
+    dpos = top[:, None, :] - bottom[None, :, :]  # (n_top, n_bottom, 3)
+    r2 = (dpos * dpos).sum(axis=2)
+    # DRAW on bottom from top.
+    draw_fz = float((G * dpos[:, :, 2] / ((r2 + EPS * EPS) ** 1.5)).sum())
+    # Static RESISTANCE on bottom from top.
+    r = np.sqrt(r2)
+    resist_fz = 0.0
+    # Wall region: repulsive away from top.
+    mask_wall = r < R_WALL
+    if np.any(mask_wall):
+        r_eff = np.sqrt(r2[mask_wall] + S_WALL * S_WALL)
+        f_scalar = K_WALL * (R_WALL / r_eff) ** P_WALL / r_eff
+        ux = dpos[:, :, 0][mask_wall] / r[mask_wall]
+        uy = dpos[:, :, 1][mask_wall] / r[mask_wall]
+        uz = dpos[:, :, 2][mask_wall] / r[mask_wall]
+        # Force on bottom is -f * unit_vector(bottom->top)
+        resist_fz += float((-f_scalar * uz).sum())
+    # Bond region: also repulsive (equilibrium at R_BOND).
+    mask_bond = (r >= R_WALL) & (r <= R_BOND)
+    if np.any(mask_bond):
+        f_scalar = K_BOND * (r[mask_bond] - R_BOND) / (R_BOND * r[mask_bond])
+        resist_fz += float((f_scalar * dpos[:, :, 2][mask_bond]).sum())
+    return float(draw_fz + resist_fz)
+
+
+def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+             tag, label):
+    """
+    Free-evolution leg protocol: only the ground plate and fulcrum are pinned.
+
+    Records the same lever metrics plus leg-specific telemetry: minimum
+    arm-tip-to-droplet distance, droplet apex height, and the internal tendon
+    rod force sign.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    plate_idx = np.flatnonzero(grain_ids == -1).astype(np.int32)
+    drop_idx = np.flatnonzero(grain_ids == 0).astype(np.int32)
+    fulcrum_idx = np.flatnonzero(grain_ids == 1).astype(np.int32)
+    lever_idx = np.flatnonzero(grain_ids == 2).astype(np.int32)
+    load_idx = np.flatnonzero(grain_ids == 3).astype(np.int32)
+    rod_idx = np.flatnonzero(grain_ids == 4).astype(np.int32)
+
+    muscle_face = lever_idx[derived["muscle_face"]]
+    load_face = lever_idx[derived["load_face"]]
+    fulcrum_top_face = fulcrum_idx[derived["fulcrum_top_face"]]
+    lever_contact_local = lever_idx[derived["lever_contact_local"]]
+    rod_top = rod_idx[derived["rod_top"]]
+    rod_bottom = rod_idx[derived["rod_bottom"]]
+
+    load_end_z0 = float(derived["load_end_z0"])
+    plate_pos0 = derived["plate_pos0"]
+    d_eq = float(derived["d_eq"])
+
+    plate_fz0 = seed_structures._draw_force_z(
+        sim.pos[plate_idx].astype(np.float64),
+        sim.pos[load_idx].astype(np.float64))
+    acc_load_z0 = float(sim.acc[load_idx, 2].sum())
+    print_contact = float(acc_load_z0 - plate_fz0)
+    if print_contact <= 0.0:
+        print_contact = float(derived["W_L"]) if "W_L" in derived else 1.0
+
+    sample_every = max(1, ticks // 40)
+
+    metrics = {
+        "tick": [],
+        "load_gain": [],
+        "lever_angle": [],
+        "fulcrum_gap": [],
+        "plate_force": [],
+        "contact_ratio": [],
+        "drop_clusters": [],
+        "fulcrum_clusters": [],
+        "lever_clusters": [],
+        "load_clusters": [],
+        "rod_clusters": [],
+        "arm_tip_to_drop_min": [],
+        "droplet_apex_z": [],
+        "rod_force_z": [],
+        "rod_sign": [],
+        "plate_pos": [],
+        "drop_pos": [],
+        "fulcrum_pos": [],
+        "lever_pos": [],
+        "load_pos": [],
+        "rod_pos": [],
+    }
+
+    def _min_pair_distance(a: np.ndarray, b: np.ndarray) -> float:
+        d = a[:, None, :] - b[None, :, :]
+        return float(np.sqrt((d * d).sum(axis=2).min()))
+
+    def _sample(tick: int):
+        plate_p = sim.pos[plate_idx].astype(np.float64)
+        drop_p = sim.pos[drop_idx].astype(np.float64)
+        fulcrum_p = sim.pos[fulcrum_idx].astype(np.float64)
+        lever_p = sim.pos[lever_idx].astype(np.float64)
+        load_p = sim.pos[load_idx].astype(np.float64)
+        rod_p = sim.pos[rod_idx].astype(np.float64)
+
+        load_c = lever_p[derived["load_face"]].mean(axis=0)
+        muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
+        load_gain = float(load_c[2] - load_end_z0)
+        lever_angle = float(math.atan2(
+            load_c[2] - muscle_c[2], load_c[0] - muscle_c[0]))
+
+        fulcrum_gap = _min_pair_distance(
+            fulcrum_p[derived["fulcrum_top_face"]],
+            lever_p[derived["lever_contact_local"]])
+
+        plate_force = float(np.abs(sim.acc[plate_idx, 2].sum()))
+
+        plate_fz = seed_structures._draw_force_z(plate_p, load_p)
+        acc_load_z = float(sim.acc[load_idx, 2].sum())
+        contact_ratio = ((acc_load_z - plate_fz) /
+                         max(print_contact, 1e-12))
+
+        drop_clust = _group_cluster_count(sim.pos, grain_ids, 0, R_C)
+        fulcrum_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
+        lever_clust = _group_cluster_count(sim.pos, grain_ids, 2, R_C)
+        load_clust = _group_cluster_count(sim.pos, grain_ids, 3, R_C)
+        rod_clust = _group_cluster_count(sim.pos, grain_ids, 4, R_C)
+
+        arm_tip_to_drop_min = _min_pair_distance(
+            lever_p[derived["muscle_face"]], drop_p)
+        droplet_apex_z = float(drop_p[:, 2].max())
+        rod_force_z = _rod_internal_force_z(sim.pos, grain_ids,
+                                            derived["rod_top"],
+                                            derived["rod_bottom"])
+        if rod_force_z > 0.5:
+            rod_sign = "tension"
+        elif rod_force_z < -0.5:
+            rod_sign = "compression"
+        else:
+            rod_sign = "slack"
+
+        metrics["tick"].append(tick)
+        metrics["load_gain"].append(load_gain)
+        metrics["lever_angle"].append(lever_angle)
+        metrics["fulcrum_gap"].append(fulcrum_gap)
+        metrics["plate_force"].append(plate_force)
+        metrics["contact_ratio"].append(contact_ratio)
+        metrics["drop_clusters"].append(drop_clust)
+        metrics["fulcrum_clusters"].append(fulcrum_clust)
+        metrics["lever_clusters"].append(lever_clust)
+        metrics["load_clusters"].append(load_clust)
+        metrics["rod_clusters"].append(rod_clust)
+        metrics["arm_tip_to_drop_min"].append(arm_tip_to_drop_min)
+        metrics["droplet_apex_z"].append(droplet_apex_z)
+        metrics["rod_force_z"].append(rod_force_z)
+        metrics["rod_sign"].append(rod_sign)
+        metrics["plate_pos"].append(plate_p.copy())
+        metrics["drop_pos"].append(drop_p.copy())
+        metrics["fulcrum_pos"].append(fulcrum_p.copy())
+        metrics["lever_pos"].append(lever_p.copy())
+        metrics["load_pos"].append(load_p.copy())
+        metrics["rod_pos"].append(rod_p.copy())
+
+        print(f"[{label}] tick={tick:6d} | load_gain={load_gain:+.4f} | "
+              f"angle={math.degrees(lever_angle):6.2f}deg | "
+              f"gap={fulcrum_gap:.4f} | plate_F={plate_force:.2f} | "
+              f"contact={contact_ratio:.3f} | "
+              f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}/{rod_clust} | "
+              f"tip_to_drop={arm_tip_to_drop_min:.4f} | apex_z={droplet_apex_z:.4f} | "
+              f"rod={rod_sign}({rod_force_z:+.2f})")
+
+    print(f"\n[{label}] N={N} plate={len(plate_idx)} droplet={len(drop_idx)} "
+          f"fulcrum={len(fulcrum_idx)} lever={len(lever_idx)} load={len(load_idx)} "
+          f"rod={len(rod_idx)}")
+    print(f"[{label}] dt={dt} ticks={ticks} sample_every={sample_every}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    _sample(0)
+    for tick in range(1, ticks + 1):
+        sim.step(dt)
+        if tick % sample_every == 0 or tick == ticks:
+            _sample(tick)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics
+
+
+def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
+    """Print LEG v1 falsifier verdict; return dict of booleans."""
+    ticks = np.asarray(metrics["tick"], dtype=np.int32)
+    load_gain = np.asarray(metrics["load_gain"], dtype=np.float64)
+    lever_angle = np.asarray(metrics["lever_angle"], dtype=np.float64)
+    fulcrum_gap = np.asarray(metrics["fulcrum_gap"], dtype=np.float64)
+    plate_force = np.asarray(metrics["plate_force"], dtype=np.float64)
+    contact_ratio = np.asarray(metrics["contact_ratio"], dtype=np.float64)
+    drop_clust = np.asarray(metrics["drop_clusters"], dtype=np.int32)
+    fulcrum_clust = np.asarray(metrics["fulcrum_clusters"], dtype=np.int32)
+    lever_clust = np.asarray(metrics["lever_clusters"], dtype=np.int32)
+    load_clust = np.asarray(metrics["load_clusters"], dtype=np.int32)
+    rod_clust = np.asarray(metrics["rod_clusters"], dtype=np.int32)
+    arm_tip_to_drop_min = np.asarray(metrics["arm_tip_to_drop_min"], dtype=np.float64)
+    droplet_apex_z = np.asarray(metrics["droplet_apex_z"], dtype=np.float64)
+    rod_force_z = np.asarray(metrics["rod_force_z"], dtype=np.float64)
+
+    d_eq = float(derived["d_eq"])
+    seated_band = d_eq + 0.05
+    r_c = R_C
+
+    # Recovery: fulcrum gap excursions above r_c must return to seated band.
+    excursions = []
+    in_excursion = False
+    t_start = 0
+    max_gap_in = 0.0
+    for i, (t, g) in enumerate(zip(ticks, fulcrum_gap)):
+        if g > r_c:
+            if not in_excursion:
+                in_excursion = True
+                t_start = int(t)
+                max_gap_in = float(g)
+            else:
+                max_gap_in = max(max_gap_in, float(g))
+        else:
+            if in_excursion:
+                excursions.append((t_start, int(t), max_gap_in))
+                in_excursion = False
+    if in_excursion:
+        excursions.append((t_start, int(ticks[-1]), max_gap_in))
+
+    recovery_ok = True
+    if excursions:
+        last_end = excursions[-1][1]
+        last_end_idx = int(np.searchsorted(ticks, last_end))
+        seated = fulcrum_gap <= seated_band
+        recovered_idx = None
+        for i in range(last_end_idx, len(ticks)):
+            if seated[i:].all():
+                recovered_idx = i
+                break
+        recovery_ok = recovered_idx is not None
+
+    max_gain = float(load_gain.max())
+    max_gain_idx = int(np.argmax(load_gain))
+    max_gain_tick = int(ticks[max_gain_idx])
+
+    if control:
+        lift_ok = None
+        hold_ok = max_gain <= 0.05
+    else:
+        lift_ok = (max_gain >= 0.10) and recovery_ok
+        hold_ok = None
+
+    # BALANCE LAW: print-time R_true predicts the SETTLED direction.
+    R_true = float(derived.get("R_true", 0.0))
+    n_angle = len(lever_angle)
+    last_n = max(1, int(round(0.20 * n_angle)))
+    settled_sign = int(np.sign(np.mean(lever_angle[-last_n:])))
+
+    if R_true > 1.0:
+        predicted_sign = 1
+    elif R_true < 1.0:
+        predicted_sign = -1
+    else:
+        predicted_sign = 0
+
+    balance_ok = (predicted_sign != 0 and settled_sign == predicted_sign)
+    balance_detail = (
+        f"R_true={R_true:.3f} settled_angle_sign={settled_sign} "
+        f"predicted={predicted_sign} (last {last_n}/{n_angle} samples)")
+
+    sag_detected = False
+    if not control:
+        sag_detected = (settled_sign == 1 and max_gain < 0.10)
+
+    integrity_ok = (
+        int(drop_clust.max()) == 1 and
+        int(fulcrum_clust.max()) == 1 and
+        int(lever_clust.max()) == 1 and
+        int(load_clust.max()) == 1 and
+        int(rod_clust.max()) == 1)
+
+    plate_pos0 = np.asarray(derived["plate_pos0"], dtype=np.float64)
+    plate_pos_final = np.asarray(metrics["plate_pos"][-1], dtype=np.float64)
+    plate_drift = float(np.max(np.abs(plate_pos_final[:, 1:] - plate_pos0[:, 1:])))
+    plate_ok = plate_drift <= 1e-4
+
+    # Leg-specific telemetry summary.
+    min_tip_to_drop = float(arm_tip_to_drop_min.min())
+    min_apex = float(droplet_apex_z.min())
+    max_apex = float(droplet_apex_z.max())
+    final_rod_force = float(rod_force_z[-1])
+    rod_tension_frac = float(np.mean(rod_force_z > 0.5))
+    rod_compression_frac = float(np.mean(rod_force_z < -0.5))
+    rod_slack_frac = float(np.mean(np.abs(rod_force_z) <= 0.5))
+
+    print(f"\n[{label}] LEG v1 FALSIFIERS:")
+    if control:
+        print(f"  (a) LIFT      : skipped (control)")
+        print(f"  (b) HOLD      : {'PASS' if hold_ok else 'FAIL'}  "
+              f"max load_gain={max_gain:.4f} at tick={max_gain_tick} "
+              f"(bar 0.0500)")
+    else:
+        print(f"  (a) LIFT      : {'PASS' if lift_ok else 'FAIL'}  "
+              f"max load_gain={max_gain:.4f} at tick={max_gain_tick} "
+              f"(bar 0.1000) recovery_ok={recovery_ok}")
+        print(f"  (b) HOLD      : skipped (main)")
+    print(f"  (c) BALANCE   : {'PASS' if balance_ok else 'FAIL'}  "
+          f"{balance_detail}")
+    print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
+          f"max clusters droplet/fulcrum/lever/load/rod="
+          f"{int(drop_clust.max())}/{int(fulcrum_clust.max())}/"
+          f"{int(lever_clust.max())}/{int(load_clust.max())}/{int(rod_clust.max())} "
+          f"plate_drift={plate_drift:.6f}")
+    if control:
+        print(f"  (e) SAG       : skipped (control)")
+    else:
+        print(f"  (e) SAG       : {'DETECTED' if sag_detected else 'not detected'}  "
+              f"settled_sign={settled_sign} max_load_gain={max_gain:.4f}")
+    print(f"  TENDON TELEMETRY:")
+    print(f"    min arm-tip-to-droplet distance = {min_tip_to_drop:.4f}")
+    print(f"    droplet apex z range = [{min_apex:.4f}, {max_apex:.4f}]")
+    print(f"    final rod internal force z = {final_rod_force:+.3f}")
+    print(f"    rod sign fractions: tension={rod_tension_frac:.2f} "
+          f"slack={rod_slack_frac:.2f} compression={rod_compression_frac:.2f}")
+
+    return {
+        "lift_ok": lift_ok,
+        "hold_ok": hold_ok,
+        "balance_ok": balance_ok,
+        "integrity_ok": integrity_ok,
+        "plate_ok": plate_ok,
+        "sag_detected": sag_detected,
+    }
+
+
+def leg_main(args, seed):
+    """LEG v1 print entry point: build, free-evolve, judge."""
+    control = bool(getattr(args, "leg_control", False))
+    ticks = int(getattr(args, "leg_ticks", 8000))
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.leg(
+        control=control, seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    base = args.tag if args.tag else "leg"
+    label = f"{base}_control" if control else base
+    version = "control" if control else "main"
+    tag = ""
+
+    droplet_label = f"{derived['droplet_side']}^3"
+    lever_len = derived.get('lever_len', 13)
+    print("=" * 70)
+    print(f"THE KERNEL - LEG v1 print run ({version})")
+    print(f"N={N}, plate=18x6+well ({derived['n_plate']} pinned), "
+          f"fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), "
+          f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
+          f"droplet={droplet_label} in well, load=4^3, "
+          f"rod=2x2x2 tendon, seed={seed}, dt={dt}, ticks={ticks}, "
+          f"control={control}")
+    print("-" * 70)
+    print("STATEMENT: A captured muscle-bone machine routes the muscle pull")
+    print("  through a vertical tendon rod that hangs from the arm tip into a")
+    print("  well, so the bone never intersects the free droplet muscle.")
+    print("  The fulcrum contact is derived from the kernel's own static torque")
+    print("  about the pinned fulcrum contact point.")
+    if control:
+        print("PREDICTION: With kernel-verified R_true <= 1, the load end")
+        print("  tips load-side-down and never rises more than one lattice")
+        print("  step above its print height.")
+    else:
+        print("PREDICTION: With kernel-verified R_true = 2.0 (+/- 0.1), the")
+        print("  captured arm tips muscle-side-down (positive settled angle)")
+        print("  and the load end lifts through at least two lattice steps.")
+    print("FALSIFIERS:")
+    print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
+    print("  (b) HOLD    - control: load end rises <= 0.05 all run")
+    print("  (c) BALANCE - kernel torque predicts the SETTLED tip direction:")
+    print("      sign of mean lever angle over the last 20% of samples must")
+    print("      match sign(R_true - 1)")
+    print("  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold")
+    print("  (e) SAG     - if the arm rotates muscle-down but the load end does")
+    print("      not lift, the tendon route failed to transmit the pull")
+    print("=" * 70)
+    print(f"\nDerived d_eq   = {derived['d_eq']:.5f}")
+    print(f"Derived contact_x = {derived['fulcrum_contact_point'][0]:.5f}")
+    print(f"Derived a_m    = {derived['a_m']:.5f}")
+    print(f"Derived a_l    = {derived['a_l']:.5f}")
+    print(f"Derived R_true = {derived['R_true']:.3f}")
+    print(f"Derived lever_len = {lever_len}")
+    print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}")
+    print(f"Derived well_floor_z = {derived['well_floor_z']:.5f}")
+    print(f"Derived n_rod  = {derived['n_rod']}\n")
+
+    metrics = _run_leg(pos, vel, pin_mask, grain_ids, derived,
+                       dt, ticks, tag, label)
+    _print_leg_verdict(metrics, derived, label, control)
+    print("=" * 70)
+
+
 # ── TENDON-specific helpers ───────────────────────────────────────────
 
 def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
@@ -3668,7 +4086,7 @@ def main():
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
                                  "bone", "muscle", "tendon", "joint", "sheet",
-                                 "skin", "bladder", "lever"],
+                                 "skin", "bladder", "lever", "leg"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -3709,6 +4127,11 @@ def main():
                              "lift (default main run)")
     parser.add_argument("--lever-ticks", type=int, default=8000,
                         help="LEVER free-evolution ticks (default 8000)")
+    parser.add_argument("--leg-control", action="store_true",
+                        help="LEG v1 control run: muscle-ward fulcrum, load must NOT "
+                             "lift (default main run)")
+    parser.add_argument("--leg-ticks", type=int, default=8000,
+                        help="LEG v1 free-evolution ticks (default 8000)")
     parser.add_argument("--bladder-fill", type=str, default="gap",
                         choices=["gap", "fill"],
                         help="BLADDER content geometry: gap=v1 4^3 droplet, "
@@ -3760,6 +4183,11 @@ def main():
     # LEVER print has its own driver (muscle-bone machine balance test)
     if args.structure == "lever":
         lever_main(args, SEED)
+        return
+
+    # LEG v1 print has its own driver (tendon-routed muscle in a well)
+    if args.structure == "leg":
+        leg_main(args, SEED)
         return
 
     # choose initial state

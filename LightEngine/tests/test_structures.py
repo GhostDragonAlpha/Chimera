@@ -1063,3 +1063,123 @@ def test_bladder_fill_mode_cushion_contact():
     assert 0.8 * d_eq <= min_dist <= 1.5 * d_eq, (
         f"min content-shell distance {min_dist} not in "
         f"[{0.8*d_eq:.4f}, {1.5*d_eq:.4f}]")
+
+
+def test_leg_determinism():
+    """leg() is deterministic for a fixed seed and control flag."""
+    a = seed_structures.leg(control=False, seed=7)
+    b = seed_structures.leg(control=False, seed=7)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+def test_leg_counts():
+    """leg() builds the expected point counts."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.leg(
+        control=False, seed=0)
+    # 18x6 flat plate minus 6x6 hole = 72; well box 6x6x5 with 4x4x4 cavity
+    # above a solid bottom layer = 36 + 4*(36-16) = 116; total plate = 188.
+    n_plate = 188
+    n_fulcrum = 4 ** 3 + 2 * 4 * 3
+    n_load = 4 ** 3
+    n_drop = 4 ** 3
+    n_lever = derived["n_lever"]
+    n_rod = derived["n_rod"]
+    lever_len = derived["lever_len"]
+    assert lever_len == 13
+    assert n_lever == lever_len * 12
+    assert n_rod == 2 * 2 * 2
+    assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rod
+    assert int((grain_ids == -1).sum()) == n_plate
+    assert int((grain_ids == 0).sum()) == n_drop
+    assert int((grain_ids == 1).sum()) == n_fulcrum
+    assert int((grain_ids == 2).sum()) == n_lever
+    assert int((grain_ids == 3).sum()) == n_load
+    assert int((grain_ids == 4).sum()) == n_rod
+    assert derived["n_plate"] == n_plate
+    assert derived["n_fulcrum"] == n_fulcrum
+    assert derived["n_cheek"] == 2 * 4 * 3
+    assert derived["n_load"] == n_load
+    assert derived["n_rod"] == n_rod
+
+
+def test_leg_pinned_bodies():
+    """The ground plate and the fulcrum block are pinned; nothing else is."""
+    pos, _, pin_mask, grain_ids, _ = seed_structures.leg(control=False, seed=0)
+    pinned_mask = (grain_ids == -1) | (grain_ids == 1)
+    assert pin_mask[pinned_mask].all()
+    assert not pin_mask[~pinned_mask].any()
+
+
+def test_leg_no_shared_positions():
+    """No two grains share a position in the leg print."""
+    pos, _, _, _, _ = seed_structures.leg(control=False, seed=0)
+    pos64 = np.asarray(pos, dtype=np.float64)
+    diff = pos64[:, None, :] - pos64[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
+
+def test_leg_well_depth():
+    """The well floor is at z = -2 * spacing and the droplet sits on it."""
+    pos, _, _, grain_ids, derived = seed_structures.leg(control=False, seed=0)
+    d = derived["spacing"]
+    well_floor_z = derived["well_floor_z"]
+    assert well_floor_z == pytest.approx(-2.0 * d, rel=1e-12)
+    plate = pos[grain_ids == -1]
+    min_plate_z = float(plate[:, 2].min())
+    # Print jitter lets the lowest well-floor grain sit slightly below nominal.
+    assert abs(min_plate_z - well_floor_z) < 0.005
+    droplet = pos[grain_ids == 0]
+    assert droplet[:, 2].min() > well_floor_z - 1e-3
+
+
+def test_leg_main_ratio():
+    """Main leg print derives kernel R_true = 2.0 +/- 0.1."""
+    _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
+    assert 1.9 <= derived["R_true"] <= 2.1
+
+
+def test_leg_main_contact_margin():
+    """Main fulcrum contact clears the lever load end by at least 0.10 lu."""
+    _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
+    assert derived["margin_to_load_end"] >= 0.10
+
+
+def test_leg_control_ratio():
+    """Control leg print derives kernel R_true in [0.5, 1.0]."""
+    _, _, _, _, derived = seed_structures.leg(control=True, seed=0)
+    assert 0.5 <= derived["R_true"] <= 1.0
+
+
+def test_leg_control_weaker_arm():
+    """Control run moves the fulcrum toward the muscle end."""
+    _, _, _, _, derived_main = seed_structures.leg(control=False, seed=0)
+    _, _, _, _, derived_ctrl = seed_structures.leg(control=True, seed=0)
+    assert derived_ctrl["a_m"] < derived_main["a_m"]
+    assert derived_ctrl["a_l"] > derived_main["a_l"]
+
+
+def test_leg_rod_under_arm_tip():
+    """The tendon rod hangs from the muscle end with a d_eq gap to the arm."""
+    pos, _, _, grain_ids, derived = seed_structures.leg(control=False, seed=0)
+    lever = pos[grain_ids == 2]
+    rod = pos[grain_ids == 4]
+    muscle_tip_x = derived["muscle_tip_x"]
+    # Rod is centered on the muscle tip in x/y.
+    assert abs(rod[:, 0].mean() - muscle_tip_x) < 0.05
+    assert abs(rod[:, 1].mean()) < 0.05
+    # Rod top sits below the lever underside.
+    lever_bottom_z = lever[:, 2].min()
+    rod_top_z = rod[:, 2].max()
+    assert rod_top_z < lever_bottom_z
+    assert abs(lever_bottom_z - rod_top_z - derived["d_eq"]) < 0.01
