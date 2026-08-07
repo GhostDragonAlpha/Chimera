@@ -120,3 +120,152 @@ def test_v3_control_no_theta_exceedance() -> None:
     metrics = verify_run.recompute_metrics(parsed)
     assert metrics["theta_exceedance"] is None
     assert metrics["max_abs_theta"] == pytest.approx(17.07, abs=0.1)
+
+
+def _write_log(tmp_path: Path, name: str, body: str) -> Path:
+    p = tmp_path / name
+    p.write_text(body, encoding="utf-8")
+    return p
+
+
+def test_cluster_split_body_2(tmp_path: Path) -> None:
+    log = """======================================================================
+THE KERNEL - CLUSTER TEST
+======================================================================
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10 absolute z
+  (d) INTEGRITY - one cluster each
+======================================================================
+
+Derived d_eq   = 0.04840
+
+[test] N=100
+[test] dt=0.0005 ticks=200 sample_every=100
+
+[test] tick=     0 | load_gain=+0.0000 | angle=  0.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1/1/1
+[test] tick=   100 | load_gain=-0.0100 | angle=  1.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1/1/1
+[test] tick=   200 | load_gain=-0.0200 | angle=  2.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/2/1/1
+
+[test] TEST FALSIFIERS:
+  (a) LIFT      : FAIL  max load_gain=0.0000
+  (d) INTEGRITY : FAIL  max clusters 1/1/2/1/1
+======================================================================
+"""
+    path = _write_log(tmp_path, "cluster_test.txt", log)
+    parsed = verify_run.parse_log(path)
+    metrics = verify_run.recompute_metrics(parsed)
+    splits = {s["body"]: s for s in metrics["cluster_splits"]}
+    assert 2 in splits
+    assert splits[2]["max"] == 2
+    assert splits[2]["first_tick"] == 200
+    verdicts = verify_run.check_verdicts(parsed, metrics)
+    integrity = next(v for v in verdicts if v["name"] == "INTEGRITY")
+    assert integrity["agree"] == "AGREE"
+
+
+def test_spine_tilt_breach(tmp_path: Path) -> None:
+    log = """======================================================================
+THE KERNEL - SPINE TEST
+======================================================================
+FALSIFIERS:
+  (f) FRAME - sacrum axis stays within 2 deg of vertical
+======================================================================
+
+Derived d_eq   = 0.04840
+
+[spine] N=100
+[spine] dt=0.0005 ticks=200 sample_every=100
+
+[spine] tick=     0 | load_gain=+0.0000 | angle=  0.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1 | sacrum_tilt=1.0deg | base_migration=0.0000
+[spine] tick=   100 | load_gain=-0.0100 | angle=  1.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1 | sacrum_tilt=2.1deg | base_migration=0.0000
+[spine] tick=   200 | load_gain=-0.0200 | angle=  2.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1 | sacrum_tilt=3.5deg | base_migration=0.0000
+
+[spine] SPINE FALSIFIERS:
+  (f) FRAME : FAIL  max sacrum_tilt=3.5deg (bar 2.0) max base_migration=0.0000 (bar 0.0242)
+======================================================================
+"""
+    path = _write_log(tmp_path, "spine_tilt.txt", log)
+    parsed = verify_run.parse_log(path)
+    metrics = verify_run.recompute_metrics(parsed)
+    assert metrics["tilt_breach"] is True
+    assert metrics["max_sacrum_tilt"] == pytest.approx(3.5, abs=0.01)
+    verdicts = verify_run.check_verdicts(parsed, metrics)
+    frame = next(v for v in verdicts if v["name"] == "FRAME")
+    assert frame["agree"] == "AGREE"
+
+
+def test_250_body_cluster_vector(tmp_path: Path) -> None:
+    parts = ["1"] * 250
+    parts[150] = "2"
+    cluster_str = "/".join(parts)
+    sample = f"[big] tick=     0 | clusters={cluster_str}"
+    log = f"""======================================================================
+THE KERNEL - BIG CLUSTER TEST
+======================================================================
+FALSIFIERS:
+  (d) INTEGRITY - one cluster each
+======================================================================
+
+[big] N=100
+[big] dt=0.0005 ticks=0 sample_every=0
+
+{sample}
+
+[big] BIG FALSIFIERS:
+  (d) INTEGRITY : FAIL  max clusters body 150
+======================================================================
+"""
+    path = _write_log(tmp_path, "big_cluster.txt", log)
+    parsed = verify_run.parse_log(path)
+    metrics = verify_run.recompute_metrics(parsed)
+    assert len(metrics["cluster_body_max"]) == 250
+    splits = {s["body"]: s for s in metrics["cluster_splits"]}
+    assert 150 in splits
+    assert splits[150]["max"] == 2
+
+
+def test_verdict_h_parsed(tmp_path: Path) -> None:
+    log = """======================================================================
+THE KERNEL - H TEST
+======================================================================
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10
+  (b) HOLD    - control: load end rises <= 0.05
+  (c) BALANCE - settled sign matches sign(R_true - 1)
+  (d) INTEGRITY - one cluster each
+  (e) SAG     - sag detected
+  (f) SLACK   - slack <= 0.20
+  (g) FRAME   - sacrum axis stays within 2 deg
+  (h) EXTRA   - custom falsifier
+======================================================================
+
+Derived d_eq   = 0.04840
+Derived R_true = 1.500
+
+[h] N=100
+[h] dt=0.0005 ticks=200 sample_every=100
+
+[h] tick=     0 | load_gain=+0.0000 | angle=  0.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1/1
+[h] tick=   100 | load_gain=-0.0100 | angle=  1.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1/1
+[h] tick=   200 | load_gain=-0.0200 | angle=  2.00deg | gap=0.0500 | contact=-10.000 | clusters=1/1/1/1
+
+[h] H FALSIFIERS:
+  (a) LIFT      : FAIL  max load_gain=0.0000
+  (b) HOLD      : skipped (control)
+  (c) BALANCE   : PASS  R_true=1.500 settled_angle_sign=1 predicted=1
+  (d) INTEGRITY : PASS  max clusters 1/1/1/1
+  (e) SAG       : not detected
+  (f) SLACK     : PASS
+  (g) FRAME     : PASS
+  (h) EXTRA     : PASS
+======================================================================
+"""
+    path = _write_log(tmp_path, "h_test.txt", log)
+    parsed = verify_run.parse_log(path)
+    letters = {v["letter"] for v in parsed["verdicts"]}
+    assert "h" in letters
+    metrics = verify_run.recompute_metrics(parsed)
+    verdicts = verify_run.check_verdicts(parsed, metrics)
+    assert len(verdicts) == 8
+    h = next(v for v in verdicts if v["letter"] == "h")
+    assert h["agree"] == "UNCHECKED"

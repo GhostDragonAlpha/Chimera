@@ -38,8 +38,12 @@ _ROPE_RE = re.compile(
 _THETA_RANGE_RE = re.compile(
     r"^\[\s*([-+]?\d+\.?\d*)\s*,\s*([-+]?\d+\.?\d*)\s*\]deg?$"
 )
-_FALSIFIER_RE = re.compile(r"^\s*\(([a-f])\)\s+(\w+)\s*-\s*(.*)$")
+_FALSIFIER_RE = re.compile(r"^\s*\(([a-z])\)\s+([\w-]+)\s*-\s*(.*)$")
 _BAR_RE = re.compile(r"([<>]=?)\s*(\d+\.?\d*)")
+_BAND_RE = re.compile(r"band=\[\s*([\d.]+)\s*,\s*([\d.]+)\s*\]")
+# Extracts key=value pairs from a segment, allowing whitespace around '=' and
+# multiple pairs in one segment (e.g. "tick=0 phase=init").
+_KEYVAL_RE = re.compile(r"(\w[\w/]*)\s*=\s*([^=]*?)(?=(?:\s+\w[\w/]*\s*=|$))")
 
 
 def _parse_sample_line(line: str) -> dict | None:
@@ -69,42 +73,52 @@ def _parse_sample_line(line: str) -> dict | None:
 
         if "=" not in segment:
             continue
-        key, value = segment.split("=", 1)
-        key = key.strip()
-        value = value.strip()
 
-        if key == "tick":
-            sample["tick"] = int(value)
-        elif key == "load_gain":
-            sample["load_gain"] = float(value)
-        elif key == "angle":
-            sample["angle"] = float(value.replace("deg", ""))
-        elif key == "theta/theta_stop":
-            parts = value.split("/", 1)
-            if len(parts) == 2:
-                sample["theta"] = float(parts[0].strip())
-                sample["theta_stop"] = float(parts[1].replace("deg", "").strip())
-        elif key == "theta":
-            # v3 range: theta=[-120.00,  18.54]deg
-            m = _THETA_RANGE_RE.match(value)
-            if m:
-                sample["theta_stop_load"] = float(m.group(1))
-                sample["theta_stop_muscle"] = float(m.group(2))
-        elif key == "clusters":
-            sample["clusters"] = value
-        elif key == "rod":
-            m = _ROD_RE.match(value)
-            if m:
-                sample["rod_label"] = m.group(1)
-                sample["rod_force"] = float(m.group(2))
-            else:
-                sample["rod_raw"] = value
-        else:
-            # Generic float columns: gap, plate_F, contact, tip_to_drop, apex_z, ...
-            try:
+        for m in _KEYVAL_RE.finditer(segment):
+            key = m.group(1).strip()
+            value = m.group(2).strip()
+
+            if key == "tick":
+                sample["tick"] = int(value)
+            elif key == "load_gain":
+                sample["load_gain"] = float(value)
+            elif key == "angle":
+                sample["angle"] = float(value.replace("deg", ""))
+            elif key == "theta/theta_stop":
+                parts = value.split("/", 1)
+                if len(parts) == 2:
+                    sample["theta"] = float(parts[0].strip())
+                    sample["theta_stop"] = float(parts[1].replace("deg", "").strip())
+            elif key == "theta":
+                # v3 range: theta=[-120.00,  18.54]deg
+                m2 = _THETA_RANGE_RE.match(value)
+                if m2:
+                    sample["theta_stop_load"] = float(m2.group(1))
+                    sample["theta_stop_muscle"] = float(m2.group(2))
+            elif key == "clusters":
+                sample["clusters"] = value
+            elif key in ("lintel_gap", "cheek_gap", "lintel", "cheek"):
+                # Capture gap columns (socket uses lintel/cheek without _gap).
                 sample[key] = float(value)
-            except ValueError:
-                sample[key] = value
+            elif key == "sacrum_tilt":
+                sample["sacrum_tilt"] = float(value.replace("deg", ""))
+            elif key == "base_migration":
+                sample["base_migration"] = float(value)
+            elif key == "com_over_support":
+                sample["com_over_support"] = value.lower() in ("true", "1")
+            elif key == "rod":
+                m2 = _ROD_RE.match(value)
+                if m2:
+                    sample["rod_label"] = m2.group(1)
+                    sample["rod_force"] = float(m2.group(2))
+                else:
+                    sample["rod_raw"] = value
+            else:
+                # Generic float columns: gap, plate_F, contact, tip_to_drop, apex_z, ...
+                try:
+                    sample[key] = float(value)
+                except ValueError:
+                    sample[key] = value
     return sample
 
 
@@ -124,6 +138,10 @@ def parse_log(path: Path) -> dict:
     current_falsifier: str | None = None
     in_tendon = False
     in_rope = False
+
+    capture_band: tuple[float, float] | None = None
+    frame_tilt_bar: float | None = None
+    frame_migration_bar: float | None = None
 
     for line in lines:
         # Derived values
@@ -159,7 +177,7 @@ def parse_log(path: Path) -> dict:
             continue
 
         # Verdict lines near the end of the log
-        m = re.match(r"^\s*\(([a-f])\)\s+(\w+)\s*:\s(.*)$", line)
+        m = re.match(r"^\s*\(([a-z])\)\s+([\w-]+)\s*:\s(.*)$", line)
         if m:
             letter, name, after = m.groups()
             # Status may be PASS/FAIL/skipped, "not detected", or "DETECTED".
@@ -204,6 +222,36 @@ def parse_log(path: Path) -> dict:
                 key, val = stripped.split("=", 1)
                 target[key.strip()] = val.strip()
 
+    # Post-process: extract capture band and frame-meter bars from verdict rests
+    # and falsifier descriptions.
+    for v in verdicts:
+        rest = v.get("rest", "")
+        # Capture gap band only belongs to CAPTURE-CLOSED / CAPTURE verdicts.
+        if "capture" in v.get("name", "").lower():
+            bm = _BAND_RE.search(rest)
+            if bm:
+                capture_band = (float(bm.group(1)), float(bm.group(2)))
+        # Bars printed in verdict rests, e.g. "(bar 2.0)".
+        for bar_m in re.finditer(r"\(\s*bar\s+([\d.]+)\s*\)", rest):
+            # Associate the bar with the preceding quantity if possible.
+            prefix = rest[: bar_m.start()]
+            qm = re.search(r"(sacrum_tilt|base_migration)\s*=", prefix)
+            if qm:
+                qty = qm.group(1)
+                val = float(bar_m.group(1))
+                if qty == "sacrum_tilt":
+                    frame_tilt_bar = val
+                elif qty == "base_migration":
+                    frame_migration_bar = val
+
+    # Frame tilt bar may also appear in the falsifier header as "within X deg".
+    if frame_tilt_bar is None:
+        for info in falsifiers.values():
+            m = re.search(r"(?:within|stay within)\s+([\d.]+)\s*deg", info["desc"], re.IGNORECASE)
+            if m:
+                frame_tilt_bar = float(m.group(1))
+                break
+
     return {
         "path": str(path),
         "derived": derived,
@@ -212,6 +260,9 @@ def parse_log(path: Path) -> dict:
         "verdicts": verdicts,
         "tendon_telemetry": tendon,
         "rope_telemetry": rope,
+        "capture_band": capture_band,
+        "frame_tilt_bar": frame_tilt_bar,
+        "frame_migration_bar": frame_migration_bar,
     }
 
 
@@ -228,24 +279,30 @@ def recompute_metrics(parsed: dict) -> dict:
     if n == 0:
         return {"n_samples": 0}
 
-    load_gains = [s["load_gain"] for s in samples]
-    max_load = max(load_gains)
-    max_load_tick = samples[load_gains.index(max_load)]["tick"]
+    load_gains = [s.get("load_gain", 0.0) for s in samples]
+    max_load = max(load_gains) if load_gains else 0.0
+    max_load_tick = (
+        samples[load_gains.index(max_load)]["tick"]
+        if load_gains and "tick" in samples[0]
+        else None
+    )
 
     last_n = max(1, int(n * 0.2))
-    last_angles = [s["angle"] for s in samples[-last_n:]]
-    settled_angle = statistics.mean(last_angles)
+    last_angles = [s.get("angle", 0.0) for s in samples[-last_n:]]
+    settled_angle = statistics.mean(last_angles) if last_angles else 0.0
     settled_sign = _sign(settled_angle)
 
-    gaps = [s["gap"] for s in samples]
-    gap_min = min(gaps)
-    gap_max = max(gaps)
-    gap_mean = statistics.mean(gaps)
+    gaps = [s.get("gap", 0.0) for s in samples]
+    gap_min = min(gaps) if gaps else 0.0
+    gap_max = max(gaps) if gaps else 0.0
+    gap_mean = statistics.mean(gaps) if gaps else 0.0
 
-    contacts = [s["contact"] for s in samples]
-    contact_min = min(contacts)
-    contact_max = max(contacts)
-    positive_contacts = [(s["tick"], s["contact"]) for s in samples if s["contact"] > 0]
+    contacts = [s.get("contact", 0.0) for s in samples]
+    contact_min = min(contacts) if contacts else 0.0
+    contact_max = max(contacts) if contacts else 0.0
+    positive_contacts = [
+        (s["tick"], s.get("contact", 0.0)) for s in samples if s.get("contact", 0.0) > 0
+    ]
     spike_tick = None
     spike_value = None
     if positive_contacts:
@@ -256,7 +313,7 @@ def recompute_metrics(parsed: dict) -> dict:
     # When the cold-print contact is small (near-zero preload) that threshold is
     # meaningless, so we use the cold magnitude itself as a floor for small-baseline
     # runs while keeping the 10x rule for preloaded runs.
-    cold_abs = abs(samples[0]["contact"])
+    cold_abs = abs(samples[0].get("contact", 0.0))
     reversal_spike = None
     if spike_tick is not None and spike_tick <= 1000:
         threshold = max(10.0, cold_abs) if cold_abs < 100.0 else 10.0 * cold_abs
@@ -292,24 +349,21 @@ def recompute_metrics(parsed: dict) -> dict:
     compression_events: list[dict] = []
     max_rope_compression = None
     if "rope_t" in samples[0]:
-        # v3: counts of taut/slack/compression links per sample.
-        t_count = s_count = c_count = 0
+        # T/S/C are link counts.  Fractions are over the total observed links.
+        t_total = sum(s["rope_t"] for s in samples)
+        s_total = sum(s["rope_s"] for s in samples)
+        c_total = sum(s["rope_c"] for s in samples)
+        total_links = t_total + s_total + c_total
+        rope_fracs = {
+            "tension": t_total / total_links if total_links else 0.0,
+            "slack": s_total / total_links if total_links else 0.0,
+            "compression": c_total / total_links if total_links else 0.0,
+        }
         for s in samples:
-            if s["rope_t"] > 0:
-                t_count += 1
-            elif s["rope_s"] > 0:
-                s_count += 1
-            elif s["rope_c"] > 0:
-                c_count += 1
             if s["rope_c"] > 0 or s["rope_max_comp"] > 1.0:
                 compression_events.append(
                     {"tick": s["tick"], "force": -s["rope_max_comp"]}
                 )
-        rope_fracs = {
-            "tension": t_count / n,
-            "slack": s_count / n,
-            "compression": c_count / n,
-        }
         max_rope_compression = max(s["rope_max_comp"] for s in samples)
     elif "rod_label" in samples[0]:
         rod_counts = {"tension": 0, "compression": 0, "slack": 0}
@@ -354,6 +408,78 @@ def recompute_metrics(parsed: dict) -> dict:
             ):
                 theta_exceedance = max_abs_theta
 
+    # Per-body cluster vectors (variable length, e.g. clusters=1/1/1/1/1/1).
+    cluster_body_max: list[int] = []
+    cluster_splits: list[dict] = []
+    if "clusters" in samples[0]:
+        counts: list[list[int]] = [[] for _ in range(n)]
+        for idx, s in enumerate(samples):
+            parts = s["clusters"].split("/")
+            counts[idx] = [int(p.strip()) for p in parts]
+        n_bodies = max(len(c) for c in counts) if counts else 0
+        cluster_body_max = [0] * n_bodies
+        first_split_tick: list[int | None] = [None] * n_bodies
+        for idx, c in enumerate(counts):
+            for body_idx, val in enumerate(c):
+                if val > cluster_body_max[body_idx]:
+                    cluster_body_max[body_idx] = val
+                if val > 1 and first_split_tick[body_idx] is None:
+                    first_split_tick[body_idx] = samples[idx]["tick"]
+        cluster_splits = [
+            {"body": i, "max": cluster_body_max[i], "first_tick": first_split_tick[i]}
+            for i in range(n_bodies)
+            if cluster_body_max[i] > 1
+        ]
+
+    # Frame meter.
+    max_sacrum_tilt = None
+    tilt_breach = False
+    if "sacrum_tilt" in samples[0]:
+        max_sacrum_tilt = max(s["sacrum_tilt"] for s in samples)
+        bar = parsed.get("frame_tilt_bar")
+        if bar is not None and max_sacrum_tilt > bar:
+            tilt_breach = True
+
+    max_base_migration = None
+    migration_breach = False
+    if "base_migration" in samples[0]:
+        max_base_migration = max(s["base_migration"] for s in samples)
+        bar = parsed.get("frame_migration_bar")
+        if bar is not None and max_base_migration > bar:
+            migration_breach = True
+
+    com_escape = False
+    if "com_over_support" in samples[0]:
+        com_escape = any(not s["com_over_support"] for s in samples)
+
+    # Capture gaps (lintel/cheek/perch).  Band defaults to None; a breach is
+    # only reported when the log itself prints the band.
+    capture_band = parsed.get("capture_band")
+    capture_gaps: dict[str, dict] = {}
+    capture_breaches: list[dict] = []
+    gap_cols = []
+    for col in ("lintel_gap", "cheek_gap", "lintel", "cheek", "gap"):
+        if col in samples[0]:
+            gap_cols.append(col)
+    for col in gap_cols:
+        vals = [s[col] for s in samples]
+        gmin, gmax = min(vals), max(vals)
+        breach = False
+        if capture_band is not None:
+            lo, hi = capture_band
+            breach = gmin < lo or gmax > hi
+            if breach:
+                capture_breaches.append(
+                    {
+                        "col": col,
+                        "min": gmin,
+                        "max": gmax,
+                        "lo": lo,
+                        "hi": hi,
+                    }
+                )
+        capture_gaps[col] = {"min": gmin, "max": gmax, "breach": breach}
+
     return {
         "n_samples": n,
         "last_n": last_n,
@@ -383,6 +509,15 @@ def recompute_metrics(parsed: dict) -> dict:
         "theta_stop_load": theta_stop_load,
         "max_abs_theta": max_abs_theta,
         "theta_exceedance": theta_exceedance,
+        "cluster_body_max": cluster_body_max,
+        "cluster_splits": cluster_splits,
+        "max_sacrum_tilt": max_sacrum_tilt,
+        "tilt_breach": tilt_breach,
+        "max_base_migration": max_base_migration,
+        "migration_breach": migration_breach,
+        "com_escape": com_escape,
+        "capture_gaps": capture_gaps,
+        "capture_breaches": capture_breaches,
     }
 
 
@@ -431,15 +566,33 @@ def check_verdicts(parsed: dict, metrics: dict) -> list[dict]:
         elif name == "BALANCE":
             r_true = derived.get("R_true")
             if r_true is not None:
+                desc = falsifiers.get(letter, {}).get("desc", "").lower()
+                rest = verdict.get("rest", "")
                 predicted = _sign(r_true - 1.0)
-                recomputed = "PASS" if metrics["settled_sign"] == predicted else "FAIL"
+                if "early" in desc:
+                    # "First-sustained tip" -- first post-cold sample with |angle| > 1 deg.
+                    early_sign = 0
+                    for s in samples:
+                        if s["tick"] > 0 and abs(s.get("angle", 0.0)) > 1.0:
+                            early_sign = _sign(s["angle"])
+                            break
+                    sign_ok = early_sign == predicted
+                else:
+                    sign_ok = metrics["settled_sign"] == predicted
+                # Some BALANCE falsifiers also require R_true to lie in a printed band.
+                band_ok = True
+                band_m = re.search(r"band=\[\s*([\d.]+)\s*,\s*([\d.]+)\s*\]", rest)
+                if band_m:
+                    lo, hi = float(band_m.group(1)), float(band_m.group(2))
+                    band_ok = lo <= r_true <= hi
+                recomputed = "PASS" if sign_ok and band_ok else "FAIL"
         elif name == "INTEGRITY":
-            all_one = all(
-                all(part == "1" for part in s["clusters"].split("/")) for s in samples
-            )
-            recomputed = "PASS" if all_one else "FAIL"
-            # Plate/fulcrum drift is not present in the tick table; the cluster
-            # check above is the only independently recomputable part.
+            if "clusters" in samples[0]:
+                recomputed = "PASS" if not metrics["cluster_splits"] else "FAIL"
+            else:
+                # Skin/bladder-style logs use separate *_clust columns; those are
+                # not part of the per-body vector check, so leave UNCHECKED.
+                recomputed = "UNCHECKED"
         elif name == "SAG":
             # Sag is detected when the arm tips muscle-down (positive settled
             # angle) but the load end still did not lift.
@@ -460,8 +613,22 @@ def check_verdicts(parsed: dict, metrics: dict) -> list[dict]:
                 else:
                     slack_frac = metrics["rod_fracs"].get("slack", 0.0)
                     recomputed = "PASS" if slack_frac <= bar["threshold"] else "FAIL"
+        elif name == "FRAME":
+            if metrics["max_sacrum_tilt"] is not None:
+                recomputed = "PASS"
+                if metrics["tilt_breach"]:
+                    recomputed = "FAIL"
+                if metrics["migration_breach"]:
+                    recomputed = "FAIL"
+            else:
+                recomputed = "UNCHECKED"
+        elif name == "CAPTURE-CLOSED":
+            if parsed.get("capture_band") is not None:
+                recomputed = "PASS" if not metrics["capture_breaches"] else "FAIL"
+            else:
+                recomputed = "UNCHECKED"
         else:
-            # e.g. lever_v6's CAPTURE falsifier -- no tick-table bar available.
+            # e.g. lever_v6's CAPTURE, bladder SEAL/YIELD/NECK, skin CONFORM...
             recomputed = "UNCHECKED"
 
         if printed == "skipped" or recomputed == "skipped":
@@ -723,6 +890,36 @@ def format_section(parsed: dict, metrics: dict, verdicts: list[dict]) -> str:
                 )
             )
 
+    if metrics["cluster_body_max"]:
+        lines.append(
+            "  cluster max/body     {}".format(
+                "/".join(str(x) for x in metrics["cluster_body_max"])
+            )
+        )
+    if metrics["max_sacrum_tilt"] is not None:
+        breach = "  TILT_BREACH" if metrics["tilt_breach"] else ""
+        lines.append(
+            "  sacrum_tilt          max {:.3f} deg (bar {:.3f}){}".format(
+                metrics["max_sacrum_tilt"],
+                parsed.get("frame_tilt_bar") or 0.0,
+                breach,
+            )
+        )
+    if metrics["max_base_migration"] is not None:
+        breach = "  MIGRATION_BREACH" if metrics["migration_breach"] else ""
+        lines.append(
+            "  base_migration       max {:.4f} (bar {:.4f}){}".format(
+                metrics["max_base_migration"],
+                parsed.get("frame_migration_bar") or 0.0,
+                breach,
+            )
+        )
+    for col, info in metrics.get("capture_gaps", {}).items():
+        breach = "  BREACH" if info["breach"] else ""
+        lines.append(
+            "  {:<18} min {:.4f} max {:.4f}{}".format(col, info["min"], info["max"], breach)
+        )
+
     lines.append("")
     lines.append("PHYSICS FLAGS")
     flags: list[str] = []
@@ -773,6 +970,36 @@ def format_section(parsed: dict, metrics: dict, verdicts: list[dict]) -> str:
                     metrics["theta_stop_muscle"],
                 )
             )
+    if metrics["cluster_splits"]:
+        details = ", ".join(
+            "body {} max={} first_tick={}".format(
+                s["body"], s["max"], s["first_tick"]
+            )
+            for s in metrics["cluster_splits"]
+        )
+        flags.append("  CLUSTER SPLITS       " + details)
+    if metrics["tilt_breach"]:
+        flags.append(
+            "  TILT BREACH          max sacrum_tilt {:.3f} deg > bar {:.3f}".format(
+                metrics["max_sacrum_tilt"], parsed.get("frame_tilt_bar") or 0.0
+            )
+        )
+    if metrics["migration_breach"]:
+        flags.append(
+            "  MIGRATION BREACH     max base_migration {:.4f} > bar {:.4f}".format(
+                metrics["max_base_migration"],
+                parsed.get("frame_migration_bar") or 0.0,
+            )
+        )
+    if metrics["com_escape"]:
+        flags.append("  COM ESCAPE           com_over_support=false at least once")
+    if metrics["capture_breaches"]:
+        for b in metrics["capture_breaches"]:
+            flags.append(
+                "  CAPTURE GAP BREACH   {} min={:.4f} max={:.4f} outside [{:.4f}, {:.4f}]".format(
+                    b["col"], b["min"], b["max"], b["lo"], b["hi"]
+                )
+            )
     if not flags:
         flags.append("  (none)")
     lines.extend(flags)
@@ -816,12 +1043,95 @@ def format_section(parsed: dict, metrics: dict, verdicts: list[dict]) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _run_tag(parsed: dict, path: Path) -> str:
+    """Return the run tag, e.g. spine_v2, from the first sample line or filename."""
+    samples = parsed.get("samples", [])
+    if samples:
+        # The tag is not stored explicitly; infer from the path stem for batch rows.
+        pass
+    return path.stem.replace("print_", "")
+
+
+def _key_flags(metrics: dict) -> str:
+    """Short comma-separated list of fired physics flags."""
+    names: list[str] = []
+    if metrics.get("reversal_spike"):
+        names.append("REV_SPIKE")
+    if metrics.get("leap"):
+        names.append("LEAP")
+    if metrics.get("compression_events"):
+        names.append("COMP")
+    if metrics.get("floor_breach"):
+        names.append("FLOOR")
+    if metrics.get("theta_exceedance"):
+        names.append("THETA")
+    if metrics.get("cluster_splits"):
+        names.append("SPLIT")
+    if metrics.get("tilt_breach"):
+        names.append("TILT")
+    if metrics.get("migration_breach"):
+        names.append("MIGRATE")
+    if metrics.get("com_escape"):
+        names.append("COM_ESC")
+    if metrics.get("capture_breaches"):
+        names.append("GAP")
+    return ",".join(names) if names else "-"
+
+
+def _format_batch_row(path: Path, parsed: dict, metrics: dict, verdicts: list[dict]) -> str:
+    tag = _run_tag(parsed, path)
+    agree = sum(1 for v in verdicts if v["agree"] == "AGREE")
+    disagree = sum(1 for v in verdicts if v["agree"] == "DISAGREE")
+    unchecked = sum(1 for v in verdicts if v["agree"] == "UNCHECKED")
+    return "  {:<34} {:<18} {:>3} samples  settled={:>2}  flags={:<20}  verdicts A={} D={} U={}".format(
+        path.name,
+        tag,
+        metrics.get("n_samples", 0),
+        metrics.get("settled_sign", 0),
+        _key_flags(metrics),
+        agree,
+        disagree,
+        unchecked,
+    )
+
+
+def run_batch(output_dir: Path) -> int:
+    """Scan output_dir/print_*_log.txt, verify each, print a one-line summary table."""
+    paths = sorted(output_dir.glob("print_*_log.txt"))
+    if not paths:
+        sys.stdout.write("no print_*_log.txt files found in {}\n".format(output_dir))
+        return 0
+
+    rows: list[str] = []
+    any_disagree = False
+    for path in paths:
+        parsed = parse_log(path)
+        metrics = recompute_metrics(parsed)
+        verdicts = check_verdicts(parsed, metrics)
+        rows.append(_format_batch_row(path, parsed, metrics, verdicts))
+        if any(v["agree"] == "DISAGREE" for v in verdicts):
+            any_disagree = True
+
+    sys.stdout.write("BATCH VERIFICATION SUMMARY\n")
+    sys.stdout.write(
+        "  {:<34} {:<18} {:>3}        {:>7}  {:<20}  {}\n".format(
+            "LOG", "TAG", "N", "SETTLED", "FLAGS", "VERDICTS"
+        )
+    )
+    sys.stdout.write("\n".join(rows) + "\n")
+    return 1 if any_disagree else 0
+
+
 def main(argv: list[str]) -> int:
     if len(argv) < 2:
         sys.stderr.write(
             "usage: python tools/verify_run.py <log_path> [<log_path> ...]\n"
+            "       python tools/verify_run.py --all\n"
         )
         return 2
+
+    if argv[1] == "--all":
+        return run_batch(Path("LightEngine/output"))
 
     all_agree = True
     sections: list[str] = []

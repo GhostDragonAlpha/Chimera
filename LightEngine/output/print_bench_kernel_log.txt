@@ -1,0 +1,54 @@
+======================================================================
+LightEngine kernel scaling benchmark
+Device: CUDA available = True
+Device name: NVIDIA GeForce RTX 4090
+DT = 0.0005, R_WALL = 0.05, lattice spacing = 0.05
+Sizes: [512, 1024, 2048, 4096, 8192, 16384]
+Timing 10 steps after 2 warmup steps
+Per-size timeout: 120.0s for 10 steps
+======================================================================
+
+N = 512
+  10 steps in 0.0273s -> 365.84 steps/sec
+  2.7335 ms/step
+  host array footprint ~ 0.02 MB
+
+N = 1024
+  10 steps in 0.0421s -> 237.43 steps/sec
+  4.2118 ms/step
+  host array footprint ~ 0.05 MB
+
+N = 2048
+  10 steps in 0.0589s -> 169.78 steps/sec
+  5.8901 ms/step
+  host array footprint ~ 0.10 MB
+
+N = 4096
+  10 steps in 0.0916s -> 109.13 steps/sec
+  9.1635 ms/step
+  host array footprint ~ 0.20 MB
+
+N = 8192
+  10 steps in 0.1655s -> 60.42 steps/sec
+  16.5496 ms/step
+  host array footprint ~ 0.39 MB
+
+N = 16384
+  10 steps in 0.3077s -> 32.50 steps/sec
+  30.7656 ms/step
+  host array footprint ~ 0.79 MB
+
+======================================================================
+Summary table
+======================================================================
+       N      steps/sec      ms/step
+     512         365.84       2.7335
+    1024         237.43       4.2118
+    2048         169.78       5.8901
+    4096         109.13       9.1635
+    8192          60.42      16.5496
+   16384          32.50      30.7656
+
+Log-log fit: steps/sec = 2.880e+04 * N^-0.686
+N=30000: predicted 24.35 steps/sec -> 8000-tick print = 328.6s (0.09h)
+N=50000: predicted 17.15 steps/sec -> 8000-tick print = 466.6s (0.13h)
