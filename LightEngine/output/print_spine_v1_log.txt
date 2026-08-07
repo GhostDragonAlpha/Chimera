@@ -1,0 +1,94 @@
+======================================================================
+THE KERNEL - SPINE v1 print run (main)
+N=495, plate=6x6 (36 pinned), sacrum=4x4x8 hollow tube (bottom face pinned), saddle=4x4x4+cheeks+lintel (PINNED), lumbar=4x4x8 hollow tube, droplet=64^3 in well (PINNED), load=4^3, rope=single-file x 7 grains, route=full-arc, seed=20260807, dt=0.0005, ticks=8000, control=False
+----------------------------------------------------------------------
+STATEMENT: A frame of hollow-tube bones joined by a closed capture
+  carries its own stability -- the settled configuration is the frame's
+  geometry, and the muscle only moves it.
+PREDICTION: The closed capture holds (no lift-off escape, contrast leg v3's
+  gap 0.21); the settle is a rotation state, not an off-perch heap;
+  the rope never compresses.
+FALSIFIERS:
+  (a) LIFT      - main: lumbar far-end rises >= 0.10 lu
+  (b) HOLD      - control: lumbar far-end rises <= 0.05 lu
+  (c) BALANCE   - settled sign matches sign(R_true(0) - 1)
+  (d) INTEGRITY - one cluster each; sacrum base/saddle/droplet pins hold
+  (e) SLACK     - rope compression > 20% of samples = FAIL
+  (f) FRAME     - sacrum axis stays within 2 deg of vertical,
+                  base migration < 0.5*d_eq
+  (g) CAPTURE-CLOSED - every capture gap stays within [S_WALL, 2*d_eq];
+                       any lift-off escape = FAIL
+======================================================================
+
+Derived d_eq          = 0.04840
+Derived contact_x     = 0.18700
+Derived R_true        = 1.311
+Derived theta_stop_muscle = 16.02 deg
+Derived theta_stop_load   = -15.60 deg
+Derived well_floor_z  = 0.29840
+Derived droplet_apex_z= 0.49680
+Derived n_rope        = 7
+Derived lintel_bottom_z = 0.88502
+Derived corner_rise   = 0.04142
+
+
+[spine_v1] N=495 plate=36 sacrum=96 saddle=132 lumbar=96 droplet=64 rope=7 load=64
+[spine_v1] dt=0.0005 ticks=8000 sample_every=200
+
+[spine_v1] tick=     0 | load_gain=-0.0000 | angle=   0.03deg | theta=[ -15.60,  16.02]deg | gap=0.0491 | lintel_gap=0.0927 | cheek_gap=0.0734 | plate_F=655.85 | contact=-1003.192 | clusters=1/1/1/1/1/1 | tip_to_drop=0.2688 | apex_z=0.4976 | rope links T/S/C=6/0/0 max_comp=0.00 | sacrum_tilt=0.092deg | base_migration=0.0000
+[spine_v1] tick=   200 | load_gain=-0.0060 | angle=  15.90deg | theta=[ -15.60,  16.02]deg | gap=0.0248 | lintel_gap=0.0864 | cheek_gap=0.0764 | plate_F=614.95 | contact=-631.235 | clusters=1/1/1/1/1/1 | tip_to_drop=0.3250 | apex_z=0.4976 | rope links T/S/C=5/0/1 max_comp=88.57 | sacrum_tilt=4.454deg | base_migration=0.0000
+[spine_v1] tick=   400 | load_gain=-0.1253 | angle=  -7.00deg | theta=[ -15.60,  16.02]deg | gap=0.0244 | lintel_gap=0.2038 | cheek_gap=0.0273 | plate_F=466.72 | contact=779.546 | clusters=1/1/1/1/1/1 | tip_to_drop=0.2814 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=80.75 | sacrum_tilt=8.812deg | base_migration=0.0000
+[spine_v1] tick=   600 | load_gain=-0.1545 | angle=   1.73deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1888 | cheek_gap=0.0369 | plate_F=431.01 | contact=-765.444 | clusters=2/1/1/1/1/1 | tip_to_drop=0.1578 | apex_z=0.4976 | rope links T/S/C=3/3/0 max_comp=0.00 | sacrum_tilt=9.395deg | base_migration=0.0000
+[spine_v1] tick=   800 | load_gain=-0.1543 | angle=   4.88deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.2260 | cheek_gap=0.0393 | plate_F=428.26 | contact=231.879 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2291 | apex_z=0.4976 | rope links T/S/C=4/2/0 max_comp=0.00 | sacrum_tilt=11.108deg | base_migration=0.0000
+[spine_v1] tick=  1000 | load_gain=-0.1507 | angle=  11.56deg | theta=[ -15.60,  16.02]deg | gap=0.0305 | lintel_gap=0.2304 | cheek_gap=0.0522 | plate_F=426.24 | contact=537.242 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2680 | apex_z=0.4976 | rope links T/S/C=2/3/1 max_comp=53.11 | sacrum_tilt=12.249deg | base_migration=0.0000
+[spine_v1] tick=  1200 | load_gain=-0.1478 | angle=  -1.12deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1972 | cheek_gap=0.0491 | plate_F=419.94 | contact=-219.146 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2544 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=57.15 | sacrum_tilt=11.805deg | base_migration=0.0000
+[spine_v1] tick=  1400 | load_gain=-0.1471 | angle= -10.51deg | theta=[ -15.60,  16.02]deg | gap=0.0292 | lintel_gap=0.1820 | cheek_gap=0.0427 | plate_F=415.65 | contact=57.094 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2670 | apex_z=0.4976 | rope links T/S/C=2/3/1 max_comp=40.42 | sacrum_tilt=12.031deg | base_migration=0.0000
+[spine_v1] tick=  1600 | load_gain=-0.1461 | angle= -13.60deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1811 | cheek_gap=0.0444 | plate_F=412.07 | contact=11.120 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=51.37 | sacrum_tilt=12.328deg | base_migration=0.0000
+[spine_v1] tick=  1800 | load_gain=-0.1449 | angle= -15.87deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1817 | cheek_gap=0.0430 | plate_F=411.07 | contact=103.673 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2797 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=17.17 | sacrum_tilt=12.443deg | base_migration=0.0000
+[spine_v1] tick=  2000 | load_gain=-0.1447 | angle= -15.11deg | theta=[ -15.60,  16.02]deg | gap=0.0283 | lintel_gap=0.1802 | cheek_gap=0.0426 | plate_F=410.66 | contact=45.752 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2717 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=19.56 | sacrum_tilt=12.394deg | base_migration=0.0000
+[spine_v1] tick=  2200 | load_gain=-0.1445 | angle= -14.78deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1803 | cheek_gap=0.0409 | plate_F=410.52 | contact=63.018 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2750 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=9.32 | sacrum_tilt=12.444deg | base_migration=0.0000
+[spine_v1] tick=  2400 | load_gain=-0.1452 | angle= -13.72deg | theta=[ -15.60,  16.02]deg | gap=0.0284 | lintel_gap=0.1803 | cheek_gap=0.0414 | plate_F=411.05 | contact=67.314 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2759 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=11.45 | sacrum_tilt=12.445deg | base_migration=0.0000
+[spine_v1] tick=  2600 | load_gain=-0.1454 | angle= -13.73deg | theta=[ -15.60,  16.02]deg | gap=0.0285 | lintel_gap=0.1810 | cheek_gap=0.0418 | plate_F=411.32 | contact=22.218 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2779 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=10.99 | sacrum_tilt=12.413deg | base_migration=0.0000
+[spine_v1] tick=  2800 | load_gain=-0.1451 | angle= -13.72deg | theta=[ -15.60,  16.02]deg | gap=0.0285 | lintel_gap=0.1803 | cheek_gap=0.0414 | plate_F=411.09 | contact=66.052 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2758 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=15.71 | sacrum_tilt=12.425deg | base_migration=0.0000
+[spine_v1] tick=  3000 | load_gain=-0.1452 | angle= -14.42deg | theta=[ -15.60,  16.02]deg | gap=0.0286 | lintel_gap=0.1796 | cheek_gap=0.0415 | plate_F=410.92 | contact=15.091 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2773 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=19.73 | sacrum_tilt=12.471deg | base_migration=0.0000
+[spine_v1] tick=  3200 | load_gain=-0.1451 | angle= -14.33deg | theta=[ -15.60,  16.02]deg | gap=0.0285 | lintel_gap=0.1797 | cheek_gap=0.0417 | plate_F=410.91 | contact=39.820 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2766 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=25.38 | sacrum_tilt=12.450deg | base_migration=0.0000
+[spine_v1] tick=  3400 | load_gain=-0.1452 | angle= -13.86deg | theta=[ -15.60,  16.02]deg | gap=0.0286 | lintel_gap=0.1799 | cheek_gap=0.0419 | plate_F=411.08 | contact=64.218 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.99 | sacrum_tilt=12.428deg | base_migration=0.0000
+[spine_v1] tick=  3600 | load_gain=-0.1454 | angle= -13.89deg | theta=[ -15.60,  16.02]deg | gap=0.0286 | lintel_gap=0.1798 | cheek_gap=0.0427 | plate_F=411.18 | contact=18.030 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2773 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.30 | sacrum_tilt=12.420deg | base_migration=0.0000
+[spine_v1] tick=  3800 | load_gain=-0.1452 | angle= -13.93deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1800 | cheek_gap=0.0427 | plate_F=411.11 | contact=47.684 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.50 | sacrum_tilt=12.424deg | base_migration=0.0000
+[spine_v1] tick=  4000 | load_gain=-0.1452 | angle= -14.04deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1805 | cheek_gap=0.0428 | plate_F=411.06 | contact=81.330 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.51 | sacrum_tilt=12.435deg | base_migration=0.0000
+[spine_v1] tick=  4200 | load_gain=-0.1452 | angle= -13.99deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1809 | cheek_gap=0.0426 | plate_F=411.11 | contact=63.711 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.69 | sacrum_tilt=12.427deg | base_migration=0.0000
+[spine_v1] tick=  4400 | load_gain=-0.1453 | angle= -13.97deg | theta=[ -15.60,  16.02]deg | gap=0.0288 | lintel_gap=0.1809 | cheek_gap=0.0425 | plate_F=411.15 | contact=77.924 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.86 | sacrum_tilt=12.418deg | base_migration=0.0000
+[spine_v1] tick=  4600 | load_gain=-0.1452 | angle= -14.10deg | theta=[ -15.60,  16.02]deg | gap=0.0288 | lintel_gap=0.1807 | cheek_gap=0.0426 | plate_F=411.09 | contact=29.174 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=24.07 | sacrum_tilt=12.425deg | base_migration=0.0000
+[spine_v1] tick=  4800 | load_gain=-0.1451 | angle= -14.12deg | theta=[ -15.60,  16.02]deg | gap=0.0288 | lintel_gap=0.1806 | cheek_gap=0.0428 | plate_F=411.02 | contact=49.272 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=23.54 | sacrum_tilt=12.423deg | base_migration=0.0000
+[spine_v1] tick=  5000 | load_gain=-0.1450 | angle= -14.05deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1803 | cheek_gap=0.0428 | plate_F=410.99 | contact=36.697 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2772 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=20.87 | sacrum_tilt=12.405deg | base_migration=0.0000
+[spine_v1] tick=  5200 | load_gain=-0.1451 | angle= -14.15deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1801 | cheek_gap=0.0425 | plate_F=411.04 | contact=69.547 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=21.25 | sacrum_tilt=12.396deg | base_migration=0.0000
+[spine_v1] tick=  5400 | load_gain=-0.1451 | angle= -14.11deg | theta=[ -15.60,  16.02]deg | gap=0.0287 | lintel_gap=0.1801 | cheek_gap=0.0425 | plate_F=411.02 | contact=47.090 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=20.47 | sacrum_tilt=12.402deg | base_migration=0.0000
+[spine_v1] tick=  5600 | load_gain=-0.1449 | angle= -14.21deg | theta=[ -15.60,  16.02]deg | gap=0.0288 | lintel_gap=0.1801 | cheek_gap=0.0425 | plate_F=410.94 | contact=29.603 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=20.70 | sacrum_tilt=12.408deg | base_migration=0.0000
+[spine_v1] tick=  5800 | load_gain=-0.1450 | angle= -14.23deg | theta=[ -15.60,  16.02]deg | gap=0.0289 | lintel_gap=0.1796 | cheek_gap=0.0424 | plate_F=410.96 | contact=40.579 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=21.01 | sacrum_tilt=12.408deg | base_migration=0.0000
+[spine_v1] tick=  6000 | load_gain=-0.1450 | angle= -14.10deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.1793 | cheek_gap=0.0422 | plate_F=411.00 | contact=56.891 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2771 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=20.73 | sacrum_tilt=12.411deg | base_migration=0.0000
+[spine_v1] tick=  6200 | load_gain=-0.1449 | angle= -13.81deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.1791 | cheek_gap=0.0423 | plate_F=411.01 | contact=32.605 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=21.05 | sacrum_tilt=12.417deg | base_migration=0.0000
+[spine_v1] tick=  6400 | load_gain=-0.1447 | angle= -13.65deg | theta=[ -15.60,  16.02]deg | gap=0.0289 | lintel_gap=0.1788 | cheek_gap=0.0425 | plate_F=410.95 | contact=62.992 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.43 | sacrum_tilt=12.439deg | base_migration=0.0000
+[spine_v1] tick=  6600 | load_gain=-0.1447 | angle= -13.66deg | theta=[ -15.60,  16.02]deg | gap=0.0289 | lintel_gap=0.1787 | cheek_gap=0.0426 | plate_F=410.93 | contact=30.725 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.55 | sacrum_tilt=12.445deg | base_migration=0.0000
+[spine_v1] tick=  6800 | load_gain=-0.1447 | angle= -13.59deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.1789 | cheek_gap=0.0428 | plate_F=410.96 | contact=26.426 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.24 | sacrum_tilt=12.436deg | base_migration=0.0000
+[spine_v1] tick=  7000 | load_gain=-0.1447 | angle= -13.54deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1790 | cheek_gap=0.0429 | plate_F=410.98 | contact=49.228 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.17 | sacrum_tilt=12.428deg | base_migration=0.0000
+[spine_v1] tick=  7200 | load_gain=-0.1446 | angle= -13.50deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1790 | cheek_gap=0.0430 | plate_F=410.99 | contact=85.629 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=4/1/1 max_comp=21.34 | sacrum_tilt=12.428deg | base_migration=0.0000
+[spine_v1] tick=  7400 | load_gain=-0.1445 | angle= -13.40deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.1789 | cheek_gap=0.0431 | plate_F=410.96 | contact=67.717 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.47 | sacrum_tilt=12.437deg | base_migration=0.0000
+[spine_v1] tick=  7600 | load_gain=-0.1445 | angle= -13.41deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1789 | cheek_gap=0.0430 | plate_F=410.98 | contact=65.614 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2770 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.47 | sacrum_tilt=12.437deg | base_migration=0.0000
+[spine_v1] tick=  7800 | load_gain=-0.1446 | angle= -13.43deg | theta=[ -15.60,  16.02]deg | gap=0.0290 | lintel_gap=0.1788 | cheek_gap=0.0429 | plate_F=410.99 | contact=43.769 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.44 | sacrum_tilt=12.430deg | base_migration=0.0000
+[spine_v1] tick=  8000 | load_gain=-0.1446 | angle= -13.56deg | theta=[ -15.60,  16.02]deg | gap=0.0291 | lintel_gap=0.1789 | cheek_gap=0.0430 | plate_F=410.97 | contact=25.199 | clusters=2/1/1/1/1/1 | tip_to_drop=0.2769 | apex_z=0.4976 | rope links T/S/C=3/2/1 max_comp=21.53 | sacrum_tilt=12.425deg | base_migration=0.0000
+
+[spine_v1] SPINE v1 FALSIFIERS (route=full-arc, gate_passed=True):
+  (a) LIFT           : FAIL  max load_gain=-0.0000 at tick=0 (bar 0.1000)
+  (b) HOLD           : skipped (main)
+  (c) BALANCE        : FAIL  R_true=1.311 settled_sign=-1 predicted=1 (last 8/41 samples)
+  (d) INTEGRITY      : FAIL  max clusters sacrum/saddle/lumbar/droplet/rope/load=2/1/1/1/1/1
+  (e) SLACK          : PASS  mean rope compression fraction=0.15 (bar 0.20)
+  (f) FRAME          : FAIL  max sacrum_tilt=12.471deg (bar 2.0) max base_migration=0.0000 (bar 0.0242)
+  (g) CAPTURE-CLOSED : FAIL  capture gaps min=0.0244 max=0.2304 band=[0.0250, 0.0968]
+
+[spine_v1] ROPE TELEMETRY:
+  min tip-to-droplet distance = 0.1578
+  droplet apex z range = [0.4976, 0.4976]
+  rope sign fractions: tension=0.61 slack=0.24 compression=0.15
+  max taut links = 6 / 6 max compression magnitude = 88.57
+======================================================================
