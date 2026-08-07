@@ -285,16 +285,18 @@ def _orthonormal_basis(axis: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return v, w
 
 
-def _generate_2x2_rod(
+def _generate_square_rod(
     prox: np.ndarray,
     dist: np.ndarray,
+    side_n: int,
     spacing: float,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Return a 2x2 square rod aligned from prox to dist.
+    """Return an ``side_n x side_n`` solid square rod from prox to dist.
 
-    This matches the scaling lane's rung (c) estimate: four grains per
-    cross-section, spaced by ``spacing`` along the bone axis.
+    ``side_n = 2`` reproduces the scaling lane's rung (c) estimate (four
+    grains per cross-section).  ``side_n = 3`` is the solid 3x3 upgrade used
+    when the shrunken ground plate frees budget for the longest bones.
     """
     prox = np.asarray(prox, dtype=np.float64)
     dist = np.asarray(dist, dtype=np.float64)
@@ -305,14 +307,14 @@ def _generate_2x2_rod(
     axis /= length
     v, w = _orthonormal_basis(axis)
 
-    # Offset vectors for the 2x2 square; each is half a spacing off-axis.
-    half = 0.5 * spacing
-    offsets = [
-        half * v + half * w,
-        half * v - half * w,
-        -half * v + half * w,
-        -half * v - half * w,
-    ]
+    side_n = max(1, int(side_n))
+    # Grid offsets centered on the bone axis; for side_n == 2 this is +/- half spacing.
+    offsets = []
+    for i in range(side_n):
+        for j in range(side_n):
+            off_v = (i - (side_n - 1) / 2.0) * spacing * v
+            off_w = (j - (side_n - 1) / 2.0) * spacing * w
+            offsets.append(off_v + off_w)
 
     n_layers = max(2, int(math.ceil(length / spacing)) + 1)
     t = np.linspace(0.0, 1.0, n_layers)
@@ -321,6 +323,15 @@ def _generate_2x2_rod(
     pts = np.vstack([c[None, :] + off for c in centers for off in offsets])
     jitter = rng.normal(0.0, R_WALL * 0.01, size=pts.shape)
     return pts + jitter
+
+
+def _square_effective_radius(side_n: int, spacing: float) -> float:
+    """Radius that encloses the corners of a square rod cross-section.
+
+    Used for cup sizing: a spherical cup must clear the farthest corner of
+    the child bone's end.
+    """
+    return 0.5 * side_n * spacing * math.sqrt(2.0)
 
 
 def _generate_tapered_cylinder(
@@ -448,33 +459,63 @@ def _generate_rope(
     return pts + jitter
 
 
-def _generate_ground_plate(
-    height_lu: float,
+def _foot_projection_points(height_lu: float) -> dict[str, list[tuple[float, float]]]:
+    """Return projected (x, y) foot contact points for each foot.
+
+    The plate only needs to cover the actual foot contact area.  The points
+    are the scaled joint centers of the foot chain projected onto the ground
+    plane (z = 0).
+    """
+    j = _joint_dict(height_lu)
+    feet: dict[str, list[tuple[float, float]]] = {"L": [], "R": []}
+    for side in ("L", "R"):
+        for key in (
+            f"ankle_{side}",
+            f"tarsal_{side}",
+            f"metatarsal_base_{side}",
+            f"mtp_{side}",
+            f"forefoot_{side}",
+        ):
+            p = j[key]
+            feet[side].append((float(p[0]), float(p[1])))
+    return feet
+
+
+def _generate_foot_pads(
+    foot_points: dict[str, list[tuple[float, float]]],
     spacing: float,
+    margin: float,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Return a pinned lattice plate sized to the standing support polygon.
+    """Return two pinned rectangular foot pads, one per foot.
 
-    Matches the scaling lane's _plate_grains estimate: the support polygon is
-    width_h = 0.12 H (lateral ankle separation) by length_h = 0.09 H
-    (calcaneus to metatarsal base), plus a one-grain margin.
+    Each pad is the axis-aligned bounding box of the foot contact points plus
+    a one-grain margin.  The old full-support-polygon plate is replaced by
+    these pads, freeing grains for bone resolution upgrades.
     """
-    width_h, length_h = skeleton_scaling._support_polygon_size_h()
-    margin = spacing
-    width = width_h * height_lu + 2.0 * margin
-    length = length_h * height_lu + 2.0 * margin
-    nx = max(1, int(math.ceil(width / spacing)))
-    ny = max(1, int(math.ceil(length / spacing)))
+    pads: list[np.ndarray] = []
+    for side in ("L", "R"):
+        pts = foot_points[side]
+        xs = [p[0] for p in pts]
+        ys = [p[1] for p in pts]
+        min_x = min(xs) - margin
+        max_x = max(xs) + margin
+        min_y = min(ys) - margin
+        max_y = max(ys) + margin
 
-    xs = np.linspace(-0.5 * width, 0.5 * width, nx)
-    ys = np.linspace(-0.5 * length, 0.5 * length, ny)
-    px, py = np.meshgrid(xs, ys, indexing="ij")
-    n = px.size
-    pts = np.stack([
-        px.ravel(),
-        py.ravel(),
-        np.zeros(n, dtype=np.float64),
-    ], axis=1)
+        nx = max(1, int(math.ceil((max_x - min_x) / spacing)))
+        ny = max(1, int(math.ceil((max_y - min_y) / spacing)))
+        gx = np.linspace(min_x, max_x, nx)
+        gy = np.linspace(min_y, max_y, ny)
+        px, py = np.meshgrid(gx, gy, indexing="ij")
+        pad = np.stack([
+            px.ravel(),
+            py.ravel(),
+            np.zeros(px.size, dtype=np.float64),
+        ], axis=1)
+        pads.append(pad)
+
+    pts = np.vstack(pads)
     jitter = rng.normal(0.0, R_WALL * 0.01, size=pts.shape)
     jitter[:, 2] = 0.0
     return pts + jitter
@@ -520,49 +561,31 @@ def build_skeleton(
         raise RuntimeError("No body instances could be built from the scaling table.")
 
     # ------------------------------------------------------------------
-    # Generate bone points and cups.
+    # Bone geometry helpers.
     # ------------------------------------------------------------------
-    positions_list: list[np.ndarray] = []
-    grain_ids_list: list[np.ndarray] = []
-    body_names: list[str] = []
-    coms: dict[str, np.ndarray] = {}
-    joint_records: list[dict] = []
-
-    for body_id, inst in enumerate(instances):
+    def _make_bone_points(inst: dict, side_n: int, rng_local: np.random.Generator) -> np.ndarray:
+        """Generate points for one bone instance at the given square-rod side."""
         row = inst["row"]
-        D_lu = float(row["outer_diameter_lu"])
-        solid_end_l = float(row["solid_end_lu"])
-        shell_l = float(row["shell_thickness_lu"])
-        length_lu = float(row["length_lu"])
         rung = row.get("rung", "a")
-
-        prox = np.asarray(inst["prox"], dtype=np.float64)
-        dist = np.asarray(inst["dist"], dtype=np.float64)
-        axis = dist - prox
-        cur_len = float(np.linalg.norm(axis))
-        if cur_len > 1e-12:
-            axis_unit = axis / cur_len
-        else:
-            axis_unit = np.array([0.0, 0.0, 1.0], dtype=np.float64)
-
-        inst["prox_final"] = prox
-        inst["dist_final"] = dist
-        inst["axis_unit"] = axis_unit
-
+        prox = inst["prox_final"]
+        dist = inst["dist_final"]
         if rung == "c":
-            pts = _generate_2x2_rod(prox, dist, spacing, rng)
-        else:
-            r_base = 0.5 * D_lu
-            r_prox = r_base
-            r_dist = r_base * 0.85
-            pts = _generate_tapered_cylinder(
-                prox, dist, r_prox, r_dist, solid_end_l, shell_l, spacing, rng
-            )
+            return _generate_square_rod(prox, dist, side_n, spacing, rng_local)
+        D_lu = float(row["outer_diameter_lu"])
+        r_base = 0.5 * D_lu
+        return _generate_tapered_cylinder(
+            prox, dist, r_base, r_base * 0.85,
+            float(row["solid_end_lu"]), float(row["shell_thickness_lu"]),
+            spacing, rng_local,
+        )
 
-        body_names.append(inst["name"])
-        positions_list.append(pts)
-        grain_ids_list.append(np.full(pts.shape[0], body_id, dtype=np.int32))
-        coms[inst["name"]] = pts.mean(axis=0)
+    def _child_radius(inst: dict, side_n: int) -> float:
+        """Effective radius of a bone end for cup sizing."""
+        D_lu = float(inst["row"]["outer_diameter_lu"])
+        rung = inst["row"].get("rung", "a")
+        if rung == "c":
+            return max(0.5 * D_lu, _square_effective_radius(side_n, spacing))
+        return 0.5 * D_lu
 
     # Cup joints: parent bone end wraps child bone end.
     ball_cup_pairs = [
@@ -573,13 +596,145 @@ def build_skeleton(
         ("vertebra_C1", "prox", "skull", "dist", "atlanto_occipital"),
     ]
 
+    def _count_cups(side_n_by_name: dict[str, int], rng_local: np.random.Generator) -> int:
+        """Return the total cup grain count for the current side_n map."""
+        total = 0
+        for parent_name, parent_end, child_name, child_end, _ in ball_cup_pairs:
+            parent = next((i for i in instances if i["name"] == parent_name), None)
+            child = next((i for i in instances if i["name"] == child_name), None)
+            if parent is None or child is None:
+                continue
+            child_r = _child_radius(child, side_n_by_name.get(child_name, 2))
+            if parent_end == "prox":
+                cup_center = parent["prox_final"]
+                axis = -parent["axis_unit"]
+            else:
+                cup_center = parent["dist_final"]
+                axis = parent["axis_unit"]
+            cup_pts = _generate_cup(
+                cup_center, axis, child_r + d_eq, spacing, spacing, rng_local
+            )
+            total += int(cup_pts.shape[0])
+        return total
+
+    # ------------------------------------------------------------------
+    # First pass: default 2x2 square rods (or hollow/solid for rung a/b).
+    # ------------------------------------------------------------------
+    body_names: list[str] = []
+    coms: dict[str, np.ndarray] = {}
+
+    for body_id, inst in enumerate(instances):
+        prox = np.asarray(inst["prox"], dtype=np.float64)
+        dist = np.asarray(inst["dist"], dtype=np.float64)
+        axis = dist - prox
+        cur_len = float(np.linalg.norm(axis))
+        if cur_len > 1e-12:
+            axis_unit = axis / cur_len
+        else:
+            axis_unit = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+        inst["prox_final"] = prox
+        inst["dist_final"] = dist
+        inst["axis_unit"] = axis_unit
+        inst["default_side_n"] = 2 if inst["row"].get("rung", "a") == "c" else 0
+        body_names.append(inst["name"])
+
+    # ------------------------------------------------------------------
+    # Reallocate plate savings into bone resolution upgrades.
+    #
+    # The shrunken foot-pad plate frees thousands of grains.  Spend them on
+    # the longest / most heavily loaded square-rod bones by upgrading whole
+    # left/right groups to 3x3 solid rods, stopping before the budget.
+    # ------------------------------------------------------------------
+    side_n_by_name: dict[str, int] = {
+        inst["name"]: inst["default_side_n"] for inst in instances
+    }
+
+    # Fixed-cost bodies (ropes + plate) can be counted once.
+    rope_network = get_rope_network()
+    rope_count = sum(
+        max(2, int(round(float(np.linalg.norm(
+            np.asarray(r["anchor_a_point"]) - np.asarray(r["anchor_b_point"])
+        )) * height_lu / spacing)) + 1)
+        for r in rope_network
+    )
+    foot_points = _foot_projection_points(height_lu)
+    plate_pts_count = _generate_foot_pads(
+        foot_points, spacing, d_eq, np.random.default_rng(0)
+    ).shape[0]
+    fixed_cost = rope_count + plate_pts_count
+
+    count_rng = np.random.default_rng(seed + 9999)
+
+    # Build upgrade groups from the scaling table row names (keeps L/R symmetric).
+    groups: dict[str, list[dict]] = {}
+    for inst in instances:
+        groups.setdefault(inst["row"]["name"], []).append(inst)
+
+    def _group_priority(group_instances: list[dict]) -> float:
+        return sum(
+            float(g["row"].get("length_lu", 0.0))
+            * float(g["row"].get("design_load_kg", 1.0))
+            for g in group_instances
+        )
+
+    sorted_groups = sorted(groups.values(), key=_group_priority, reverse=True)
+
+    positions_list: list[np.ndarray] = [
+        _make_bone_points(inst, side_n_by_name[inst["name"]], count_rng)
+        for inst in instances
+    ]
+
+    SAFETY_GRAINS = 100
+    for group in sorted_groups:
+        upgradeable = [
+            inst for inst in group
+            if inst["default_side_n"] == 2 and side_n_by_name[inst["name"]] == 2
+        ]
+        if not upgradeable:
+            continue
+
+        # Try upgrading the whole group together.
+        for inst in upgradeable:
+            side_n_by_name[inst["name"]] = 3
+            idx = instances.index(inst)
+            positions_list[idx] = _make_bone_points(inst, 3, count_rng)
+
+        bone_count = sum(p.shape[0] for p in positions_list)
+        cup_count = _count_cups(side_n_by_name, count_rng)
+        total = bone_count + cup_count + fixed_cost
+
+        if total > BUDGET_GRAINS - SAFETY_GRAINS:
+            # Revert.
+            for inst in upgradeable:
+                side_n_by_name[inst["name"]] = 2
+                idx = instances.index(inst)
+                positions_list[idx] = _make_bone_points(inst, 2, count_rng)
+
+    # ------------------------------------------------------------------
+    # Final bone geometry with the resolved side_n map and the main RNG.
+    # ------------------------------------------------------------------
+    positions_list = [
+        _make_bone_points(inst, side_n_by_name[inst["name"]], rng)
+        for inst in instances
+    ]
+    grain_ids_list: list[np.ndarray] = [
+        np.full(p.shape[0], i, dtype=np.int32)
+        for i, p in enumerate(positions_list)
+    ]
+    for inst, pts in zip(instances, positions_list):
+        coms[inst["name"]] = pts.mean(axis=0)
+
+    # ------------------------------------------------------------------
+    # Generate cups for real, using the upgraded child radii.
+    # ------------------------------------------------------------------
+    joint_records: list[dict] = []
     for parent_name, parent_end, child_name, child_end, joint_name in ball_cup_pairs:
         parent = next((i for i in instances if i["name"] == parent_name), None)
         child = next((i for i in instances if i["name"] == child_name), None)
         if parent is None or child is None:
             continue
 
-        child_r = 0.5 * float(child["row"]["outer_diameter_lu"])
+        child_r = _child_radius(child, side_n_by_name.get(child_name, 2))
         child_center = child["prox_final"] if child_end == "prox" else child["dist_final"]
 
         if parent_end == "prox":
@@ -616,7 +771,6 @@ def build_skeleton(
     # Generate ropes.
     # ------------------------------------------------------------------
     rope_records: list[dict] = []
-    rope_network = get_rope_network()
     rope_id_start = len(body_names)
     for rope_idx, rope in enumerate(rope_network):
         a = np.asarray(rope["anchor_a_point"], dtype=np.float64) * height_lu
@@ -636,9 +790,9 @@ def build_skeleton(
         })
 
     # ------------------------------------------------------------------
-    # Ground plate.
+    # Ground plate: two foot pads instead of the full support rectangle.
     # ------------------------------------------------------------------
-    plate_pts = _generate_ground_plate(height_lu, spacing, rng)
+    plate_pts = _generate_foot_pads(foot_points, spacing, d_eq, rng)
     plate_id = len(body_names)
     body_names.append("ground_plate")
     positions_list.append(plate_pts)
@@ -693,6 +847,16 @@ def build_skeleton(
                 support_points.append(p)
     support_polygon = np.vstack(support_points) if support_points else np.zeros((0, 3))
 
+    # Per-body grain counts and upgrade record for the report.
+    per_body_counts = {
+        n: int((grain_ids == i).sum()) for i, n in enumerate(body_names)
+    }
+    upgrade_groups = sorted({
+        inst["row"]["name"]
+        for inst in instances
+        if side_n_by_name[inst["name"]] >= 3
+    })
+
     derived: dict[str, Any] = {
         "lam": lam,
         "height_lu": height_lu,
@@ -708,6 +872,10 @@ def build_skeleton(
         "n_bones": len(instances),
         "n_ropes": len(rope_network),
         "rung_counts": rc,
+        "bone_resolution": dict(side_n_by_name),
+        "upgrade_groups": upgrade_groups,
+        "per_body_counts": per_body_counts,
+        "plate_grains": int(plate_pts.shape[0]),
     }
 
     return (

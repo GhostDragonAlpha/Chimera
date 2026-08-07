@@ -1,0 +1,53 @@
+======================================================================
+LightEngine Barnes-Hut DRAW scaling benchmark
+G = 0.01, EPS = 0.02, theta = 0.3, leaf_size = 16
+Device: CUDA available = True
+Sizes: [16384, 65536, 262144, 1048576, 2097152, 4194304]
+Timing 3 runs after 1 warmup
+Per-size timeout: 60.0s
+======================================================================
+
+N = 16384
+  BH steps/sec    = 12.31
+  Pairwise extrap = 37.01
+  Speedup         = 0.33x
+
+N = 65536
+  BH steps/sec    = 2.94
+  Pairwise extrap = 14.30
+  Speedup         = 0.21x
+
+N = 262144
+  BH steps/sec    = 1.36
+  Pairwise extrap = 5.52
+  Speedup         = 0.25x
+
+N = 1048576
+  BH steps/sec    = 0.22
+  Pairwise extrap = 2.13
+  Speedup         = 0.10x
+
+N = 2097152
+  BH steps/sec    = 0.16
+  Pairwise extrap = 1.33
+  Speedup         = 0.12x
+
+N = 4194304
+  ABORT: timeout: 96.1s > 60.0s
+
+======================================================================
+Summary table
+======================================================================
+         N         BH sps   pairwise sps    speedup
+     16384          12.31          37.01       0.33
+     65536           2.94          14.30       0.21
+    262144           1.36           5.52       0.25
+   1048576           0.22           2.13       0.10
+   2097152           0.16           1.33       0.12
+
+BH log-log fit: steps/sec = 8.471e+04 * N^-0.911
+Crossover N (BH faster than pairwise extrap): 120
+
+8000-tick print projections (DRAW-only, BH):
+  N= 500000: 0.54 steps/sec -> 14767.0s (4.10h)
+  N=6400000: 0.05 steps/sec -> 150807.5s (41.89h)
