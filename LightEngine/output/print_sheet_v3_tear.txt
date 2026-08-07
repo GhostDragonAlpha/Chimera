@@ -1,0 +1,57 @@
+[derive d_eq_2D] bracket rationale: cushion band is [R_WALL, R_BOND] = [0.05, 0.15] lu; 3-D droplet d_eq = 0.04840 lu sits just under R_WALL.
+[derive d_eq_2D] bisecting F_edge(a) = 0 on the 16x16 patch:
+  iter 0: a=0.03000 F=-85.768181
+  iter 0: a=0.10000 F=+4.957038
+  iter 1: a=0.04750 F=+9.259963  bracket=[0.03000, 0.06500]
+  iter 2: a=0.03875 F=-3.306798  bracket=[0.03000, 0.04750]
+  iter 3: a=0.04312 F=+5.375486  bracket=[0.03875, 0.04750]
+  iter 4: a=0.04094 F=+1.876093  bracket=[0.03875, 0.04312]
+  iter 5: a=0.03984 F=-0.479806  bracket=[0.03875, 0.04094]
+  iter 6: a=0.04039 F=+0.752100  bracket=[0.03984, 0.04094]
+  iter 7: a=0.04012 F=+0.150255  bracket=[0.03984, 0.04039]
+  iter 8: a=0.03998 F=-0.161182  bracket=[0.03984, 0.04012]
+  iter 9: a=0.04005 F=-0.004576  bracket=[0.03998, 0.04012]
+  iter 10: a=0.04008 F=+0.072976  bracket=[0.04005, 0.04012]
+  iter 11: a=0.04007 F=+0.034257  bracket=[0.04005, 0.04008]
+  iter 12: a=0.04006 F=+0.014810  bracket=[0.04005, 0.04007]
+  iter 13: a=0.04005 F=+0.005117  bracket=[0.04005, 0.04006]
+[derive d_eq_2D] root d_eq_2D = 0.04005 lu (tol=1.0e-05, iters=13)
+======================================================================
+THE KERNEL - SHEET v3 print run (FRAMED)
+N=256, sheet=16x16, frame=60 grains, mode=tear, spacing=0.04005, seed=20260806, dt=0.0005, ticks=20000
+----------------------------------------------------------------------
+STATEMENT: A flat membrane exists only in a frame; the frame IS the
+  membrane that holds the plane.  Cloth, not shell, by necessity.
+PREDICTION: the framed sheet holds flat (thickness <= 2 lattice steps)
+  under its own self-DRAW; when two opposite frame rows are pulled
+  apart, the sheet tears once at a global stretch between 1.5x and 4x
+  while it is still flat.
+FALSIFIERS:
+  (a) PHASE-FRAMED -- any sample in the settle run has clusters != 1 or thickness > 0.08011 lu (2 lattice steps)
+  (c) TEAR-FRAMED -- first split outside [1.5x,4x], fragmentation >2,
+      or thickness at split exceeds the flat bar; split location recorded
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived d_eq_2D    = 0.04005
+Derived spacing    = 0.04005
+Derived flat bar   = 0.08011
+Derived cushion    = [0.02840, 0.09840]
+Derived width      = 0.60080
+
+
+[sheet] N=256 sheet=256 plate=0 block=0 dt=0.0005 ticks=20000 mode=tear
+[sheet] d_eq=0.04840 band=[0.0284,0.0984] sheet_width=0.6008
+
+[sheet] tick=     0 | clusters=1 | thickness=0.0029 | com=(-0.0001,0.0000,0.0885) | sep=0.6010 stretch=1.000
+
+[sheet] FIRST SPLIT at tick=362: clusters=2 stretch=1.031 split_between_rows=0-1 thickness_at_split=0.2817
+
+[sheet] tick=   500 | clusters=1 | thickness=0.4394 | com=(-0.0002,-0.0001,0.0884) | sep=0.6260 stretch=1.042
+[sheet] tick=   861 | clusters=1 | thickness=0.1677 | com=(-0.0003,-0.0002,0.0885) | sep=0.6441 stretch=1.072
+
+[sheet] SHEET v3 FALSIFIERS:
+  (a) PHASE  : skipped (tear run)
+  (b) DRAPE  : skipped (tear)
+  (c) TEAR-FRAMED   : FAIL  split_tick=362 stretch=1.031 window=[1.5,4.0] clusters_at_split=2 split_between_rows=0-1 thickness_at_split=0.2817 flat_at_split=False
+======================================================================

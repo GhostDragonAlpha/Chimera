@@ -829,34 +829,39 @@ def derive_sheet_equilibrium_spacing(sheet_side: int = 16,
 
 def sheet(mode: str = "flat",
           spacing: float | None = None,
+          framed: bool = False,
           seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
                                   np.ndarray, dict]:
     """
-    THE SHEET print: a 16×16 sheet one grain thick, horizontal above a
-    pinned 6×6 plate (except in free mode).
+    THE SHEET print: a 16×16 sheet one grain thick.
 
     Modes:
-      - "flat":  sheet printed d_eq + one lattice step above the plate.
+      - "flat":  sheet printed d_eq + one lattice step above a pinned 6×6
+                 plate (unless ``framed``).
       - "bump":  a 4×4×4 block sits on the plate under the sheet's center;
-                 the sheet is printed d_eq + 0.05 above the block top.
+                 the sheet is printed d_eq + one step above the block top.
       - "free":  the sheet alone in space, same initial height as flat
                  (anti-falsifier: it must ball up under self-DRAW).
-      - "tear":  flat print with the two opposite y-edge rows of the sheet
-                 pinned and pulled apart in the driver.
+      - "tear":  flat print with two opposite y-edge rows pinned and pulled
+                 apart in the driver (unless ``framed``).
 
     ``spacing`` is the in-plane lattice step.  If ``None``, the 2-D in-plane
     equilibrium spacing d_eq_2D is derived from the kernel via
     ``derive_sheet_equilibrium_spacing``.  The explicit ``spacing=0.05`` path
-    is preserved for v1 reproducibility.
+    is preserved for v1/v2 reproducibility.
+
+    ``framed`` (v3): the four border rows of the sheet (60 grains) are pinned
+    in their print positions and the plate is omitted.  The frame itself is
+    the membrane that holds the plane.  In framed tear mode, two opposite
+    border rows serve as the moving grips.
 
     Grain ids: plate = -1, sheet = 0, block = 1.
 
     Returns ``(positions, velocities, pin_mask, grain_ids, derived)``:
       - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
-      - ``pin_mask`` is length-N bool; plate always pinned; tear pins the
-        two edge rows.
-      - ``derived`` carries d_eq, d_eq_2D, the cushion band, sheet width, and
-        mode-specific derived numbers.
+      - ``pin_mask`` is length-N bool; plate / frame pinned as described above.
+      - ``derived`` carries d_eq, d_eq_2D, spacing, the cushion band, sheet
+        width, frame count, and mode-specific derived numbers.
     """
     rng = np.random.default_rng(seed)
     d_eq = TENDON_D_EQ
@@ -904,7 +909,11 @@ def sheet(mode: str = "flat",
         np.full(n_sheet, sheet_z, dtype=np.float64),
     ], axis=1)
 
-    if mode == "free":
+    if framed:
+        # v3: the frame itself is the membrane; no substrate plate.
+        plate_pos = np.zeros((0, 3), dtype=np.float64)
+        n_plate = 0
+    elif mode == "free":
         # No plate, no block.
         plate_pos = np.zeros((0, 3), dtype=np.float64)
         n_plate = 0
@@ -928,16 +937,26 @@ def sheet(mode: str = "flat",
     grain_ids[n_plate:n_plate + n_sheet] = 0
     grain_ids[n_plate + n_sheet:] = 1
 
+    # Local lattice indices for the sheet grains.
+    x_indices = np.arange(n_sheet) // sheet_side
+    y_indices = np.arange(n_sheet) % sheet_side
+    frame_mask = (
+        (x_indices == 0) |
+        (x_indices == sheet_side - 1) |
+        (y_indices == 0) |
+        (y_indices == sheet_side - 1)
+    )
+
     pin_mask = np.zeros(N, dtype=bool)
     if n_plate > 0:
         pin_mask[:n_plate] = True
 
-    if mode == "tear":
+    sheet_start = n_plate
+    if framed:
+        # Pin all four border rows (the frame).
+        pin_mask[sheet_start:sheet_start + n_sheet] = frame_mask
+    elif mode == "tear":
         # Pin the two y-edge rows (y-index 0 and y-index sheet_side-1).
-        # meshgrid(off, off, indexing="ij") + ravel: the LAST axis (y) changes
-        # fastest, so local index k has x-index = k // side and y-index = k % side.
-        sheet_start = n_plate
-        y_indices = np.arange(n_sheet) % sheet_side
         top_row = y_indices == 0
         bottom_row = y_indices == (sheet_side - 1)
         pin_mask[sheet_start:sheet_start + n_sheet] = (top_row | bottom_row)
@@ -969,11 +988,16 @@ def sheet(mode: str = "flat",
         "n_sheet": n_sheet,
         "n_block": block_pos.shape[0],
         "mode": mode,
+        "framed": bool(framed),
+        "frame": int(frame_mask.sum()),
     }
     if mode == "tear":
         # Rows are pulled apart along y.  Print separation of the pinned rows.
         derived["pinned_row_separation"] = sheet_width
         derived["max_separation"] = 4.0 * sheet_width
-        derived["n_pinned"] = int(top_row.sum() + bottom_row.sum())
+        if framed:
+            derived["n_pinned"] = int(frame_mask.sum())
+        else:
+            derived["n_pinned"] = int(top_row.sum() + bottom_row.sum())
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived

@@ -2468,12 +2468,21 @@ def _print_sheet_verdict(metrics, derived, label):
 
     final_clusters = int(clusters[-1])
     final_thickness = float(thickness[-1])
+    framed = bool(derived.get("framed", False))
+    flat_bar = 2.0 * derived["spacing"]
 
-    # (a) PHASE
+    # (a) PHASE / PHASE-FRAMED
     phase_ok = None
-    if mode in ("bump", "flat"):
-        phase_ok = (final_clusters == 1 and
-                    final_thickness <= SHEET_PHASE_THICKNESS_MAX)
+    phase_fail_tick = None
+    phase_max_thickness = float(thickness.max())
+    if framed and mode == "flat":
+        # v3: the framed sheet must stay flat at EVERY sampled tick.
+        bad = (clusters != 1) | (thickness > flat_bar)
+        phase_ok = not bool(bad.any())
+        if not phase_ok:
+            phase_fail_tick = int(ticks[bad][0])
+    elif mode in ("bump", "flat"):
+        phase_ok = (final_clusters == 1 and final_thickness <= flat_bar)
     elif mode == "free":
         phase_ok = final_thickness > SHEET_FREE_THICKNESS_MIN_FRAC * sheet_width
 
@@ -2489,12 +2498,13 @@ def _print_sheet_verdict(metrics, derived, label):
         if block_contact and not edge_drape:
             tented = True
 
-    # (c) TEAR
+    # (c) TEAR / TEAR-FRAMED
     tear_ok = None
     split_tick = metrics.get("split_tick")
     split_stretch = metrics.get("split_stretch")
     split_clusters = metrics.get("split_clusters")
     split_location = metrics.get("split_location")
+    split_thickness = metrics.get("split_thickness")
     if mode == "tear":
         if split_tick is None:
             tear_ok = False
@@ -2502,14 +2512,28 @@ def _print_sheet_verdict(metrics, derived, label):
             in_window = (SHEET_TEAR_STRETCH_MIN <= split_stretch <=
                          SHEET_TEAR_STRETCH_MAX)
             no_frag = split_clusters == 2
-            tear_ok = in_window and no_frag
+            if framed:
+                # v3: sheet must still be flat at the moment of tear.
+                flat_at_split = (split_thickness is not None and
+                                 split_thickness <= flat_bar)
+                tear_ok = in_window and no_frag and flat_at_split
+            else:
+                tear_ok = in_window and no_frag
 
     # ── Print verdict. ──
-    print(f"\n[{label}] SHEET v2 FALSIFIERS:")
-    if mode in ("bump", "flat"):
+    if framed:
+        print(f"\n[{label}] SHEET v3 FALSIFIERS:")
+    else:
+        print(f"\n[{label}] SHEET v2 FALSIFIERS:")
+    if framed and mode == "flat":
+        print(f"  (a) PHASE-FRAMED : {'PASS' if phase_ok else 'FAIL'}  "
+              f"samples={len(ticks)} max_thickness={phase_max_thickness:.4f} "
+              f"bar<= {flat_bar:.5f} "
+              f"first_fail_tick={phase_fail_tick if phase_fail_tick is not None else 'none'}")
+    elif mode in ("bump", "flat"):
         print(f"  (a) PHASE  : {'PASS' if phase_ok else 'FAIL'}  "
               f"final_clusters={final_clusters} final_thickness={final_thickness:.4f} "
-              f"bar<= {SHEET_PHASE_THICKNESS_MAX:.4f}")
+              f"bar<= {flat_bar:.5f}")
     elif mode == "free":
         print(f"  (a) PHASE  : {'PASS' if phase_ok else 'FAIL'}  "
               f"final_clusters={final_clusters} final_thickness={final_thickness:.4f} "
@@ -2527,16 +2551,22 @@ def _print_sheet_verdict(metrics, derived, label):
         print(f"  (b) DRAPE  : skipped ({mode})")
 
     if mode == "tear":
-        split_thickness = metrics.get("split_thickness")
         if split_tick is None:
-            print(f"  (c) TEAR   : FAIL  no split detected in {int(ticks[-1])} ticks")
+            print(f"  (c) TEAR{'-FRAMED' if framed else ''}   : FAIL  "
+                  f"no split detected in {int(ticks[-1])} ticks")
         else:
-            print(f"  (c) TEAR   : {'PASS' if tear_ok else 'FAIL'}  "
+            extra = ""
+            if framed:
+                flat_at_split = (split_thickness is not None and
+                                 split_thickness <= flat_bar)
+                extra = f" flat_at_split={flat_at_split}"
+            print(f"  (c) TEAR{'-FRAMED' if framed else ''}   : "
+                  f"{'PASS' if tear_ok else 'FAIL'}  "
                   f"split_tick={split_tick} stretch={split_stretch:.3f} "
                   f"window=[{SHEET_TEAR_STRETCH_MIN:.1f},{SHEET_TEAR_STRETCH_MAX:.1f}] "
                   f"clusters_at_split={split_clusters} "
                   f"split_between_rows={split_location}-{split_location+1} "
-                  f"thickness_at_split={split_thickness:.4f}")
+                  f"thickness_at_split={split_thickness:.4f}{extra}")
     else:
         print(f"  (c) TEAR   : skipped ({mode})")
 
@@ -2548,11 +2578,12 @@ def _print_sheet_verdict(metrics, derived, label):
 
 
 def sheet_main(args, seed):
-    """SHEET v2 print entry point: build, evolve, judge."""
+    """SHEET print entry point: build, evolve, judge (v2 or v3 framed)."""
     mode = str(getattr(args, "sheet_mode", "flat"))
     sheet_spacing = getattr(args, "sheet_spacing", None)
+    framed = bool(getattr(args, "sheet_framed", False))
     pos, vel, pin_mask, grain_ids, derived = seed_structures.sheet(
-        mode=mode, spacing=sheet_spacing, seed=seed)
+        mode=mode, spacing=sheet_spacing, framed=framed, seed=seed)
     N = pos.shape[0]
 
     dt = DT
@@ -2561,30 +2592,51 @@ def sheet_main(args, seed):
     ticks = int(getattr(args, "sheet_ticks", 20000))
     tag = f"{args.tag}_" if args.tag else ""
 
+    flat_bar = 2.0 * derived["spacing"]
+
     print("=" * 70)
-    print("THE KERNEL - SHEET v2 print run")
-    print(f"N={N}, sheet=16x16, plate=6x6, mode={mode}, "
-          f"spacing={derived['spacing']:.5f}, seed={seed}, dt={dt}, ticks={ticks}")
-    print("-" * 70)
-    print("STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;")
-    print("  the substrate's DRAW holds it flat, the cushion keeps it one grain")
-    print("  off the surface, and its own self-DRAW holds it in-plane.  Cloth,")
-    print("  not shell, by necessity -- and cloth is what skin and bladder need.")
-    print("PREDICTION: at the derived 2-D equilibrium spacing d_eq_2D, bump and")
-    print("  flat prints settle as a single connected sheet <=2 lattice steps thick;")
-    print("  the bump run drapes so the block top and the plate edges are both in")
-    print("  cushion contact; the free sheet balls up; the tear run splits once at a")
-    print("  global stretch between 1.5x and 4x while the sheet is still flat.")
-    print("FALSIFIERS:")
-    print("  (a) PHASE -- bump/flat not 1 cluster or thickness > 0.10 lu;")
-    print("      free sheet does not ball (thickness <= half sheet width)")
-    print("  (b) DRAPE -- bump: block not in cushion band or < half edge grains in")
-    print("      cushion band of plate (tented recorded)")
-    print("  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters;")
-    print("      thickness at split recorded")
+    if framed:
+        print("THE KERNEL - SHEET v3 print run (FRAMED)")
+        print(f"N={N}, sheet=16x16, frame={derived['frame']} grains, mode={mode}, "
+              f"spacing={derived['spacing']:.5f}, seed={seed}, dt={dt}, ticks={ticks}")
+        print("-" * 70)
+        print("STATEMENT: A flat membrane exists only in a frame; the frame IS the")
+        print("  membrane that holds the plane.  Cloth, not shell, by necessity.")
+        print("PREDICTION: the framed sheet holds flat (thickness <= 2 lattice steps)")
+        print("  under its own self-DRAW; when two opposite frame rows are pulled")
+        print("  apart, the sheet tears once at a global stretch between 1.5x and 4x")
+        print("  while it is still flat.")
+        print("FALSIFIERS:")
+        print(f"  (a) PHASE-FRAMED -- any sample in the settle run has clusters != 1 "
+              f"or thickness > {flat_bar:.5f} lu (2 lattice steps)")
+        print("  (c) TEAR-FRAMED -- first split outside [1.5x,4x], fragmentation >2,")
+        print("      or thickness at split exceeds the flat bar; split location recorded")
+    else:
+        print("THE KERNEL - SHEET v2 print run")
+        print(f"N={N}, sheet=16x16, plate=6x6, mode={mode}, "
+              f"spacing={derived['spacing']:.5f}, seed={seed}, dt={dt}, ticks={ticks}")
+        print("-" * 70)
+        print("STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;")
+        print("  the substrate's DRAW holds it flat, the cushion keeps it one grain")
+        print("  off the surface, and its own self-DRAW holds it in-plane.  Cloth,")
+        print("  not shell, by necessity -- and cloth is what skin and bladder need.")
+        print("PREDICTION: at the derived 2-D equilibrium spacing d_eq_2D, bump and")
+        print("  flat prints settle as a single connected sheet <=2 lattice steps thick;")
+        print("  the bump run drapes so the block top and the plate edges are both in")
+        print("  cushion contact; the free sheet balls up; the tear run splits once at a")
+        print("  global stretch between 1.5x and 4x while the sheet is still flat.")
+        print("FALSIFIERS:")
+        print(f"  (a) PHASE -- bump/flat not 1 cluster or thickness > {flat_bar:.5f} lu;")
+        print("      free sheet does not ball (thickness <= half sheet width)")
+        print("  (b) DRAPE -- bump: block not in cushion band or < half edge grains in")
+        print("      cushion band of plate (tented recorded)")
+        print("  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters;")
+        print("      thickness at split recorded")
     print("=" * 70)
     print(f"\nDerived d_eq       = {derived['d_eq']:.5f}")
     print(f"Derived d_eq_2D    = {derived['d_eq_2D']:.5f}")
+    print(f"Derived spacing    = {derived['spacing']:.5f}")
+    print(f"Derived flat bar   = {flat_bar:.5f}")
     print(f"Derived cushion    = [{derived['cushion_band'][0]:.5f}, "
           f"{derived['cushion_band'][1]:.5f}]")
     print(f"Derived width      = {derived['sheet_width']:.5f}\n")
@@ -2638,6 +2690,9 @@ def main():
     parser.add_argument("--sheet-spacing", type=float, default=None,
                         help="SHEET in-plane lattice step in lu (default None, "
                              "which triggers derivation of d_eq_2D)")
+    parser.add_argument("--sheet-framed", action="store_true",
+                        help="SHEET v3: pin the four border rows as a frame "
+                             "and omit the substrate plate")
     parser.add_argument("--sheet-ticks", type=int, default=20000,
                         help="SHEET evolution ticks (default 20000)")
     args = parser.parse_args()

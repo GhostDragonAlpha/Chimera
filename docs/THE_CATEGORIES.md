@@ -144,6 +144,28 @@ window, location, cleanliness — finally asked of a flat lattice). If the
 frame cannot hold the plane either, the 2-D rung closes as REFUTED and
 SKIN inherits the mat (a crumpled-mat skin conformal to muscle is
 multi-layer skin, which real skin also is).
+**SHEET v3 VERDICT 2026-08-06 (framed, d_eq_2D, run tags sheet_v3_framed /
+sheet_v3_tear):** the conditional is answered — **the frame cannot hold
+the plane; the 2-D rung closes as REFUTED.** (a) PHASE-FRAMED FAIL: the
+sheet buckles through the 0.080 bar at tick 300, folds to 0.396, and then
+the failure deepens past buckling — the interior TEARS OFF THE FRAME
+(clusters 2 from tick 600, sustained all run) and drags in-plane (COM
+wanders to (−0.010, −0.018)): the pinned border holds its 60 grains while
+the sheet inside rips itself free and slides. The frame contains the
+border; it cannot contain the interior, because containment would need the
+interior to carry tension, and tension does not exist. (c) TEAR-FRAMED
+FAIL on the same numbers as always: split at tick 362, stretch 1.031,
+already 0.282 thick at split. Three constructions, one answer, third
+rung of the ladder measured: **0-D pins hold, 1-D routes tension only,
+2-D has no flat phase at any spacing in any frame — the condensed 2-D
+form is the crumpled mat, and the mat is 3-D-ish.** The dimension ladder
+now reads: form lives in 0-D pins, 1-D pullers, and 3-D bulks; a membrane
+in this universe is a BULK THAT LEARNED TO LIE FLAT AGAINST SOMETHING,
+never a plane. SKIN is re-derived accordingly (next membrane): a mat
+printed conformal to the muscle bulk, held by the muscle's own DRAW —
+the falsifiers (conformal through the stroke, no slide-off, edge closed)
+inherit the mat's measured stability instead of a plane that never
+existed.
 - **SKIN** *(parent relation stands)*: a sheet printed CONFORMAL to a
   muscle/composite bulk, anchored at derived spacing — inherits theSheet's
   phase and theMuscle's stroke. Falsifier (from the retired line, kept):

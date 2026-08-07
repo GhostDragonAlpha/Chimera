@@ -684,3 +684,48 @@ def test_sheet_derived_counts():
     ]:
         pos, _, _, _, _ = seed_structures.sheet(mode=mode, spacing=None, seed=3)
         assert pos.shape[0] == n_expected
+
+
+def test_sheet_framed_pins_border():
+    """Framed sheet pins exactly the 60 border grains and omits the plate."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.sheet(
+        mode="flat", spacing=None, framed=True, seed=0)
+    assert derived["framed"] is True
+    assert derived["frame"] == 60
+    assert derived["n_plate"] == 0
+    assert (grain_ids == -1).sum() == 0
+    assert pin_mask.sum() == 60
+    # Every pinned grain is a sheet grain.
+    assert (grain_ids[pin_mask] == 0).all()
+
+
+def test_sheet_framed_spacing_derived():
+    """Framed sheet with spacing=None uses the derived d_eq_2D."""
+    d_eq_2d = seed_structures.derive_sheet_equilibrium_spacing(verbose=False)
+    _, _, _, _, derived = seed_structures.sheet(
+        mode="flat", spacing=None, framed=True, seed=0)
+    assert derived["spacing"] == pytest.approx(d_eq_2d, abs=1e-4)
+
+
+def test_sheet_framed_tear_grips():
+    """Framed tear pins the full frame; two opposite y-rows are the grips."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.sheet(
+        mode="tear", spacing=None, framed=True, seed=0)
+    sheet_idx = np.flatnonzero(grain_ids == 0)
+    local_pinned = np.arange(sheet_idx.size)[pin_mask[sheet_idx]]
+    assert local_pinned.size == 60
+
+    # Local lattice indices: x changes slowest, y changes fastest.
+    side = derived["sheet_side"]
+    x_idx = local_pinned // side
+    y_idx = local_pinned % side
+    # Pinned grains are exactly the border grains (x=0 or x=15 or y=0 or y=15).
+    on_border = ((x_idx == 0) | (x_idx == side - 1) |
+                 (y_idx == 0) | (y_idx == side - 1))
+    assert on_border.all()
+
+    # The two y-edge rows (top and bottom) are fully pinned.
+    top = sheet_idx[(np.arange(side * side) % side) == 0]
+    bottom = sheet_idx[(np.arange(side * side) % side) == (side - 1)]
+    assert pin_mask[top].all()
+    assert pin_mask[bottom].all()
