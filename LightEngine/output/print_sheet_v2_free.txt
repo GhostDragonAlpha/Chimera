@@ -1,0 +1,96 @@
+[derive d_eq_2D] bracket rationale: cushion band is [R_WALL, R_BOND] = [0.05, 0.15] lu; 3-D droplet d_eq = 0.04840 lu sits just under R_WALL.
+[derive d_eq_2D] bisecting F_edge(a) = 0 on the 16x16 patch:
+  iter 0: a=0.03000 F=-85.768181
+  iter 0: a=0.10000 F=+4.957038
+  iter 1: a=0.04750 F=+9.259963  bracket=[0.03000, 0.06500]
+  iter 2: a=0.03875 F=-3.306798  bracket=[0.03000, 0.04750]
+  iter 3: a=0.04312 F=+5.375486  bracket=[0.03875, 0.04750]
+  iter 4: a=0.04094 F=+1.876093  bracket=[0.03875, 0.04312]
+  iter 5: a=0.03984 F=-0.479806  bracket=[0.03875, 0.04094]
+  iter 6: a=0.04039 F=+0.752100  bracket=[0.03984, 0.04094]
+  iter 7: a=0.04012 F=+0.150255  bracket=[0.03984, 0.04039]
+  iter 8: a=0.03998 F=-0.161182  bracket=[0.03984, 0.04012]
+  iter 9: a=0.04005 F=-0.004576  bracket=[0.03998, 0.04012]
+  iter 10: a=0.04008 F=+0.072976  bracket=[0.04005, 0.04012]
+  iter 11: a=0.04007 F=+0.034257  bracket=[0.04005, 0.04008]
+  iter 12: a=0.04006 F=+0.014810  bracket=[0.04005, 0.04007]
+  iter 13: a=0.04005 F=+0.005117  bracket=[0.04005, 0.04006]
+[derive d_eq_2D] root d_eq_2D = 0.04005 lu (tol=1.0e-05, iters=13)
+======================================================================
+THE KERNEL - SHEET v2 print run
+N=256, sheet=16x16, plate=6x6, mode=free, spacing=0.04005, seed=20260806, dt=0.0005, ticks=20000
+----------------------------------------------------------------------
+STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;
+  the substrate's DRAW holds it flat, the cushion keeps it one grain
+  off the surface, and its own self-DRAW holds it in-plane.  Cloth,
+  not shell, by necessity -- and cloth is what skin and bladder need.
+PREDICTION: at the derived 2-D equilibrium spacing d_eq_2D, bump and
+  flat prints settle as a single connected sheet <=2 lattice steps thick;
+  the bump run drapes so the block top and the plate edges are both in
+  cushion contact; the free sheet balls up; the tear run splits once at a
+  global stretch between 1.5x and 4x while the sheet is still flat.
+FALSIFIERS:
+  (a) PHASE -- bump/flat not 1 cluster or thickness > 0.10 lu;
+      free sheet does not ball (thickness <= half sheet width)
+  (b) DRAPE -- bump: block not in cushion band or < half edge grains in
+      cushion band of plate (tented recorded)
+  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters;
+      thickness at split recorded
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived d_eq_2D    = 0.04005
+Derived cushion    = [0.02840, 0.09840]
+Derived width      = 0.60080
+
+
+[sheet] N=256 sheet=256 plate=0 block=0 dt=0.0005 ticks=20000 mode=free
+[sheet] d_eq=0.04840 band=[0.0284,0.0984] sheet_width=0.6008
+
+[sheet] tick=     0 | clusters=1 | thickness=0.0029 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=   500 | clusters=1 | thickness=0.4677 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  1000 | clusters=1 | thickness=0.2567 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  1500 | clusters=1 | thickness=0.2522 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  2000 | clusters=1 | thickness=0.2432 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  2500 | clusters=1 | thickness=0.2386 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  3000 | clusters=1 | thickness=0.2398 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  3500 | clusters=1 | thickness=0.2399 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  4000 | clusters=1 | thickness=0.2397 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  4500 | clusters=1 | thickness=0.2388 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  5000 | clusters=1 | thickness=0.2383 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  5500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  6000 | clusters=1 | thickness=0.2381 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  6500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  7000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  7500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  8000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  8500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  9000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick=  9500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 10000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 10500 | clusters=1 | thickness=0.2381 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 11000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 11500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 12000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 12500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 13000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 13500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 14000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 14500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 15000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 15500 | clusters=1 | thickness=0.2381 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 16000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 16500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 17000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 17500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 18000 | clusters=1 | thickness=0.2381 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 18500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 19000 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 19500 | clusters=1 | thickness=0.2382 | com=(-0.0001,0.0000,0.0885)
+[sheet] tick= 20000 | clusters=1 | thickness=0.2381 | com=(-0.0001,0.0000,0.0885)
+
+[sheet] SHEET v1 FALSIFIERS:
+  (a) PHASE  : FAIL  final_clusters=1 final_thickness=0.2381 bar> 0.3004
+  (b) DRAPE  : skipped (free)
+  (c) TEAR   : skipped (free)
+======================================================================

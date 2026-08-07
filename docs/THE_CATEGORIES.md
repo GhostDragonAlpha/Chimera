@@ -116,6 +116,34 @@ theCushionLaw's lattice8eq print derived d_eq for the droplet), print the
 sheet at d_eq_2D, and rerun PHASE / DRAPE / TEAR unchanged. Prediction
 named before the run: at d_eq_2D the sheet stays flat (thickness ≤ 2
 steps), drapes instead of tenting, and tears inside [1.5×, 4×].
+**SHEET v2 VERDICT 2026-08-06 (d_eq_2D derived and printed; run tags
+sheet_v2_flat / bump / free / tear; the logs carry the stale "SHEET v1"
+verdict header — the label edit landed after the runs; numbers
+unaffected):** the derivation SUCCEEDED and the prediction is REFUTED —
+both recorded. d_eq_2D = 0.04005 by bisection of the edge-grain force
+zero-crossing on a static 16×16 patch (13 iterations, bracket [0.03,
+0.10]): SMALLER than the droplet's 0.0484, exactly as the per-grain DRAW
+intuition says — fewer in-plane neighbors, weaker inward pull, so the
+plane sits deeper in the wall where repulsion is stronger. A real 2-D
+quantity from the kernel, derived not swept. But at d_eq_2D the sheet
+STILL crumples: flat 0.2497 (with a 0.387 fold-wave at tick 600), free
+0.2381 stable 20k ticks, torn at tick 343 / stretch 1.029 already 0.3126
+thick. The static equilibrium answers where in-plane force vanishes; it
+cannot answer the dynamic question, and the dynamic answer is now
+measured twice: a fold brings distant regions of the plane into DRAW
+range of each other, and DRAW amplifies density — the plane is
+Jeans-unstable to folding. **There is no flat 2-D phase at any spacing;
+condensed matter in this universe is always 3-D-ish (droplets, mats).**
+What improved and is recorded: bump edge-drape 22/60 → 34/60 at d_eq_2D
+(passes the ≥half bar). The surviving route to a flat sheet is the one
+bone taught: form lives in MEMBRANES — a flat sheet exists only in a
+FRAME. Successor (named): v3 — the framed sheet: all four border rows
+pinned (the frame IS the membrane holding the plane), falsifiers PHASE
+(framed flat holds ≤ 2 lattice steps all run) and TEAR (the [1.5×, 4×]
+window, location, cleanliness — finally asked of a flat lattice). If the
+frame cannot hold the plane either, the 2-D rung closes as REFUTED and
+SKIN inherits the mat (a crumpled-mat skin conformal to muscle is
+multi-layer skin, which real skin also is).
 - **SKIN** *(parent relation stands)*: a sheet printed CONFORMAL to a
   muscle/composite bulk, anchored at derived spacing — inherits theSheet's
   phase and theMuscle's stroke. Falsifier (from the retired line, kept):

@@ -1,0 +1,96 @@
+[derive d_eq_2D] bracket rationale: cushion band is [R_WALL, R_BOND] = [0.05, 0.15] lu; 3-D droplet d_eq = 0.04840 lu sits just under R_WALL.
+[derive d_eq_2D] bisecting F_edge(a) = 0 on the 16x16 patch:
+  iter 0: a=0.03000 F=-85.768181
+  iter 0: a=0.10000 F=+4.957038
+  iter 1: a=0.04750 F=+9.259963  bracket=[0.03000, 0.06500]
+  iter 2: a=0.03875 F=-3.306798  bracket=[0.03000, 0.04750]
+  iter 3: a=0.04312 F=+5.375486  bracket=[0.03875, 0.04750]
+  iter 4: a=0.04094 F=+1.876093  bracket=[0.03875, 0.04312]
+  iter 5: a=0.03984 F=-0.479806  bracket=[0.03875, 0.04094]
+  iter 6: a=0.04039 F=+0.752100  bracket=[0.03984, 0.04094]
+  iter 7: a=0.04012 F=+0.150255  bracket=[0.03984, 0.04039]
+  iter 8: a=0.03998 F=-0.161182  bracket=[0.03984, 0.04012]
+  iter 9: a=0.04005 F=-0.004576  bracket=[0.03998, 0.04012]
+  iter 10: a=0.04008 F=+0.072976  bracket=[0.04005, 0.04012]
+  iter 11: a=0.04007 F=+0.034257  bracket=[0.04005, 0.04008]
+  iter 12: a=0.04006 F=+0.014810  bracket=[0.04005, 0.04007]
+  iter 13: a=0.04005 F=+0.005117  bracket=[0.04005, 0.04006]
+[derive d_eq_2D] root d_eq_2D = 0.04005 lu (tol=1.0e-05, iters=13)
+======================================================================
+THE KERNEL - SHEET v2 print run
+N=356, sheet=16x16, plate=6x6, mode=bump, spacing=0.04005, seed=20260806, dt=0.0005, ticks=6000
+----------------------------------------------------------------------
+STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;
+  the substrate's DRAW holds it flat, the cushion keeps it one grain
+  off the surface, and its own self-DRAW holds it in-plane.  Cloth,
+  not shell, by necessity -- and cloth is what skin and bladder need.
+PREDICTION: at the derived 2-D equilibrium spacing d_eq_2D, bump and
+  flat prints settle as a single connected sheet <=2 lattice steps thick;
+  the bump run drapes so the block top and the plate edges are both in
+  cushion contact; the free sheet balls up; the tear run splits once at a
+  global stretch between 1.5x and 4x while the sheet is still flat.
+FALSIFIERS:
+  (a) PHASE -- bump/flat not 1 cluster or thickness > 0.10 lu;
+      free sheet does not ball (thickness <= half sheet width)
+  (b) DRAPE -- bump: block not in cushion band or < half edge grains in
+      cushion band of plate (tented recorded)
+  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters;
+      thickness at split recorded
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived d_eq_2D    = 0.04005
+Derived cushion    = [0.02840, 0.09840]
+Derived width      = 0.60080
+
+
+[sheet] N=356 sheet=256 plate=36 block=64 dt=0.0005 ticks=6000 mode=bump
+[sheet] d_eq=0.04840 band=[0.0284,0.0984] sheet_width=0.6008
+
+[sheet] tick=     0 | clusters=1 | thickness=0.0029 | com=(-0.0001,-0.0000,0.2571) | min_to_block=0.0876 | edge_in_band=0/60
+[sheet] tick=   150 | clusters=1 | thickness=0.0926 | com=(-0.0001,0.0001,0.2363) | min_to_block=0.0229 | edge_in_band=0/60
+[sheet] tick=   300 | clusters=1 | thickness=0.3372 | com=(0.0009,-0.0015,0.2000) | min_to_block=0.0216 | edge_in_band=0/60
+[sheet] tick=   450 | clusters=1 | thickness=0.3683 | com=(0.0024,-0.0020,0.1530) | min_to_block=0.0235 | edge_in_band=10/60
+[sheet] tick=   600 | clusters=1 | thickness=0.1724 | com=(0.0018,-0.0026,0.1042) | min_to_block=0.0223 | edge_in_band=23/60
+[sheet] tick=   750 | clusters=1 | thickness=0.2541 | com=(0.0018,-0.0016,0.0893) | min_to_block=0.0246 | edge_in_band=42/60
+[sheet] tick=   900 | clusters=1 | thickness=0.2401 | com=(0.0033,-0.0016,0.1107) | min_to_block=0.0270 | edge_in_band=29/60
+[sheet] tick=  1050 | clusters=1 | thickness=0.2611 | com=(0.0028,-0.0026,0.1236) | min_to_block=0.0269 | edge_in_band=21/60
+[sheet] tick=  1200 | clusters=1 | thickness=0.2412 | com=(0.0002,-0.0034,0.1095) | min_to_block=0.0274 | edge_in_band=30/60
+[sheet] tick=  1350 | clusters=1 | thickness=0.2229 | com=(-0.0032,-0.0035,0.0946) | min_to_block=0.0265 | edge_in_band=38/60
+[sheet] tick=  1500 | clusters=1 | thickness=0.2331 | com=(-0.0066,-0.0022,0.1012) | min_to_block=0.0276 | edge_in_band=36/60
+[sheet] tick=  1650 | clusters=1 | thickness=0.2435 | com=(-0.0082,-0.0009,0.1095) | min_to_block=0.0279 | edge_in_band=30/60
+[sheet] tick=  1800 | clusters=1 | thickness=0.2386 | com=(-0.0066,-0.0007,0.1048) | min_to_block=0.0276 | edge_in_band=32/60
+[sheet] tick=  1950 | clusters=1 | thickness=0.2284 | com=(-0.0036,-0.0020,0.0980) | min_to_block=0.0274 | edge_in_band=38/60
+[sheet] tick=  2100 | clusters=1 | thickness=0.2335 | com=(-0.0011,-0.0039,0.1020) | min_to_block=0.0283 | edge_in_band=36/60
+[sheet] tick=  2250 | clusters=1 | thickness=0.2414 | com=(0.0002,-0.0047,0.1064) | min_to_block=0.0282 | edge_in_band=31/60
+[sheet] tick=  2400 | clusters=1 | thickness=0.2375 | com=(0.0005,-0.0046,0.1030) | min_to_block=0.0277 | edge_in_band=34/60
+[sheet] tick=  2550 | clusters=1 | thickness=0.2305 | com=(-0.0001,-0.0043,0.0998) | min_to_block=0.0276 | edge_in_band=35/60
+[sheet] tick=  2700 | clusters=1 | thickness=0.2356 | com=(-0.0013,-0.0043,0.1026) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  2850 | clusters=1 | thickness=0.2372 | com=(-0.0023,-0.0039,0.1046) | min_to_block=0.0279 | edge_in_band=32/60
+[sheet] tick=  3000 | clusters=1 | thickness=0.2339 | com=(-0.0033,-0.0037,0.1023) | min_to_block=0.0276 | edge_in_band=34/60
+[sheet] tick=  3150 | clusters=1 | thickness=0.2314 | com=(-0.0041,-0.0038,0.1013) | min_to_block=0.0278 | edge_in_band=34/60
+[sheet] tick=  3300 | clusters=1 | thickness=0.2359 | com=(-0.0044,-0.0043,0.1032) | min_to_block=0.0278 | edge_in_band=33/60
+[sheet] tick=  3450 | clusters=1 | thickness=0.2366 | com=(-0.0039,-0.0048,0.1033) | min_to_block=0.0278 | edge_in_band=33/60
+[sheet] tick=  3600 | clusters=1 | thickness=0.2347 | com=(-0.0031,-0.0050,0.1020) | min_to_block=0.0277 | edge_in_band=34/60
+[sheet] tick=  3750 | clusters=1 | thickness=0.2356 | com=(-0.0021,-0.0050,0.1021) | min_to_block=0.0277 | edge_in_band=34/60
+[sheet] tick=  3900 | clusters=1 | thickness=0.2374 | com=(-0.0013,-0.0048,0.1030) | min_to_block=0.0277 | edge_in_band=34/60
+[sheet] tick=  4050 | clusters=1 | thickness=0.2372 | com=(-0.0012,-0.0044,0.1026) | min_to_block=0.0276 | edge_in_band=34/60
+[sheet] tick=  4200 | clusters=1 | thickness=0.2361 | com=(-0.0016,-0.0040,0.1021) | min_to_block=0.0277 | edge_in_band=34/60
+[sheet] tick=  4350 | clusters=1 | thickness=0.2357 | com=(-0.0021,-0.0038,0.1024) | min_to_block=0.0278 | edge_in_band=34/60
+[sheet] tick=  4500 | clusters=1 | thickness=0.2366 | com=(-0.0026,-0.0038,0.1026) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  4650 | clusters=1 | thickness=0.2364 | com=(-0.0030,-0.0042,0.1024) | min_to_block=0.0280 | edge_in_band=34/60
+[sheet] tick=  4800 | clusters=1 | thickness=0.2364 | com=(-0.0030,-0.0046,0.1023) | min_to_block=0.0280 | edge_in_band=34/60
+[sheet] tick=  4950 | clusters=1 | thickness=0.2372 | com=(-0.0027,-0.0047,0.1025) | min_to_block=0.0280 | edge_in_band=34/60
+[sheet] tick=  5100 | clusters=1 | thickness=0.2367 | com=(-0.0022,-0.0046,0.1025) | min_to_block=0.0280 | edge_in_band=34/60
+[sheet] tick=  5250 | clusters=1 | thickness=0.2365 | com=(-0.0017,-0.0045,0.1023) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  5400 | clusters=1 | thickness=0.2367 | com=(-0.0013,-0.0043,0.1023) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  5550 | clusters=1 | thickness=0.2369 | com=(-0.0014,-0.0041,0.1024) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  5700 | clusters=1 | thickness=0.2369 | com=(-0.0017,-0.0040,0.1024) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  5850 | clusters=1 | thickness=0.2368 | com=(-0.0022,-0.0039,0.1024) | min_to_block=0.0279 | edge_in_band=34/60
+[sheet] tick=  6000 | clusters=1 | thickness=0.2368 | com=(-0.0027,-0.0040,0.1025) | min_to_block=0.0279 | edge_in_band=34/60
+
+[sheet] SHEET v1 FALSIFIERS:
+  (a) PHASE  : FAIL  final_clusters=1 final_thickness=0.2368 bar<= 0.1000
+  (b) DRAPE  : FAIL  min_to_block=0.0279 band=[0.0284,0.0984] edge_in_band=34/60 tented=False
+  (c) TEAR   : skipped (bump)
+======================================================================

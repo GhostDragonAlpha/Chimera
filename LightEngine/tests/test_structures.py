@@ -651,3 +651,36 @@ def test_sheet_zero_velocity():
     for mode in ["bump", "flat", "free", "tear"]:
         _, vel, _, _, _ = seed_structures.sheet(mode=mode, spacing=0.05, seed=0)
         np.testing.assert_allclose(vel, 0.0, atol=1e-6)
+
+
+def test_sheet_derived_spacing():
+    """spacing=None triggers the derived 2-D equilibrium spacing d_eq_2D."""
+    d_eq_2d = seed_structures.derive_sheet_equilibrium_spacing(verbose=False)
+    pos, _, _, _, derived = seed_structures.sheet(
+        mode="flat", spacing=None, seed=0)
+    assert derived["spacing"] == pytest.approx(d_eq_2d, abs=1e-4)
+    assert derived["d_eq_2D"] == pytest.approx(d_eq_2d, abs=1e-4)
+    # The derived spacing should be smaller than the 3-D droplet d_eq:
+    # fewer in-plane neighbors mean weaker inward DRAW, so the 2-D patch must
+    # sit closer to the wall where cushion repulsion is stronger.
+    assert d_eq_2d < seed_structures.TENDON_D_EQ
+
+
+def test_sheet_explicit_spacing_unchanged():
+    """An explicit spacing overrides the derivation and is recorded verbatim."""
+    pos, _, _, _, derived = seed_structures.sheet(
+        mode="flat", spacing=0.05, seed=0)
+    assert derived["spacing"] == pytest.approx(0.05, abs=1e-12)
+    assert derived["d_eq_2D"] == pytest.approx(0.05, abs=1e-12)
+
+
+def test_sheet_derived_counts():
+    """Derived-spacing builds keep the same structural counts as v1."""
+    for mode, n_expected in [
+        ("flat", 292),
+        ("bump", 356),
+        ("free", 256),
+        ("tear", 292),
+    ]:
+        pos, _, _, _, _ = seed_structures.sheet(mode=mode, spacing=None, seed=3)
+        assert pos.shape[0] == n_expected

@@ -11,6 +11,7 @@ from __future__ import annotations
 import math
 import numpy as np
 
+from LightEngine import kernel
 from LightEngine.constants import G, R_WALL, R_BOND, R_C, K_BOND, EPS
 
 
@@ -719,8 +720,115 @@ def joint(spacing: float = 0.05,
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived
 
 
+# Cache for the 2-D in-plane equilibrium spacing derived below.
+_D_EQ_2D_CACHE: float | None = None
+
+
+def derive_sheet_equilibrium_spacing(sheet_side: int = 16,
+                                     a_lo: float = 0.03,
+                                     a_hi: float = 0.10,
+                                     tol: float = 1e-5,
+                                     max_iter: int = 50,
+                                     verbose: bool = True) -> float:
+    """
+    Derive the 2-D in-plane equilibrium spacing d_eq_2D for a finite square
+    sheet from the kernel forces.
+
+    Derivation:
+      - Interior grains of a uniform lattice feel zero net in-plane force by
+        symmetry; the equilibrium lives at the BOUNDARY.
+      - For a side×side flat patch at spacing ``a``, every edge grain feels a
+        net inward DRAW from the sheet plus outward cushion/wall repulsion from
+        its in-plane neighbors.
+      - d_eq_2D is the zero-crossing of F_edge(a), the mean inward-signed
+        in-plane force on the perimeter grains, computed with
+        ``kernel.compute_forces`` on a static patch (zero velocity).
+      - Bisection bracket [a_lo, a_hi] = [0.03, 0.10] lu: the cushion band is
+        [R_WALL, R_BOND] = [0.05, 0.15] and the 3-D droplet equilibrium sits
+        just under R_WALL at ~0.0484 lu.  The 2-D root is expected to differ,
+        so the bracket is intentionally wide and the measurement is allowed to
+        find the root without bias.
+
+    Returns d_eq_2D to the requested tolerance.  The result is cached so the
+    expensive O(N^2) root find is evaluated only once per process.
+    """
+    global _D_EQ_2D_CACHE
+    if _D_EQ_2D_CACHE is not None:
+        return _D_EQ_2D_CACHE
+
+    def _edge_force(a: float) -> float:
+        """Mean inward-signed in-plane force on the patch perimeter."""
+        off = (np.arange(sheet_side, dtype=np.float64)
+               - (sheet_side - 1) / 2.0) * a
+        sx, sy = np.meshgrid(off, off, indexing="ij")
+        pos = np.stack([
+            sx.ravel(),
+            sy.ravel(),
+            np.zeros(sheet_side * sheet_side, dtype=np.float64),
+        ], axis=1).astype(np.float32)
+        vel = np.zeros_like(pos)
+        acc = kernel.compute_forces(pos, vel, use_cuda=False)
+
+        k = np.arange(sheet_side * sheet_side)
+        x_idx = k // sheet_side
+        y_idx = k % sheet_side
+        edge = (
+            (x_idx == 0) |
+            (x_idx == sheet_side - 1) |
+            (y_idx == 0) |
+            (y_idx == sheet_side - 1)
+        )
+
+        # Inward radial unit vector in the sheet plane.
+        r_xy = pos[edge, :2]
+        norms = np.linalg.norm(r_xy, axis=1, keepdims=True)
+        norms = np.where(norms < 1e-12, 1.0, norms)
+        inward = -r_xy / norms
+
+        f_in = np.einsum("ij,ij->i", acc[edge, :2], inward)
+        return float(f_in.mean())
+
+    f_lo = _edge_force(a_lo)
+    f_hi = _edge_force(a_hi)
+    if f_lo * f_hi > 0:
+        raise RuntimeError(
+            f"derive_sheet_equilibrium_spacing: bracket does not straddle a "
+            f"root (F({a_lo})={f_lo:.4f}, F({a_hi})={f_hi:.4f}). "
+            f"Widen [a_lo, a_hi].")
+
+    if verbose:
+        print("[derive d_eq_2D] bracket rationale: cushion band is "
+              f"[R_WALL, R_BOND] = [{R_WALL:.2f}, {R_BOND:.2f}] lu; "
+              f"3-D droplet d_eq = {TENDON_D_EQ:.5f} lu sits just under R_WALL.")
+        print("[derive d_eq_2D] bisecting F_edge(a) = 0 on the 16x16 patch:")
+        print(f"  iter 0: a={a_lo:.5f} F={f_lo:+.6f}")
+        print(f"  iter 0: a={a_hi:.5f} F={f_hi:+.6f}")
+
+    a_mid = 0.5 * (a_lo + a_hi)
+    f_mid = _edge_force(a_mid)
+    for i in range(max_iter):
+        if f_lo * f_mid <= 0.0:
+            a_hi, f_hi = a_mid, f_mid
+        else:
+            a_lo, f_lo = a_mid, f_mid
+        a_mid = 0.5 * (a_lo + a_hi)
+        f_mid = _edge_force(a_mid)
+        if verbose:
+            print(f"  iter {i + 1}: a={a_mid:.5f} F={f_mid:+.6f}  "
+                  f"bracket=[{a_lo:.5f}, {a_hi:.5f}]")
+        if abs(a_hi - a_lo) <= tol:
+            break
+
+    d_eq_2d = float(a_mid)
+    _D_EQ_2D_CACHE = d_eq_2d
+    if verbose:
+        print(f"[derive d_eq_2D] root d_eq_2D = {d_eq_2d:.5f} lu "
+              f"(tol={tol:.1e}, iters={i + 1})")
+    return d_eq_2d
+
+
 def sheet(mode: str = "flat",
-          spacing: float = 0.05,
+          spacing: float | None = None,
           seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
                                   np.ndarray, dict]:
     """
@@ -736,18 +844,27 @@ def sheet(mode: str = "flat",
       - "tear":  flat print with the two opposite y-edge rows of the sheet
                  pinned and pulled apart in the driver.
 
+    ``spacing`` is the in-plane lattice step.  If ``None``, the 2-D in-plane
+    equilibrium spacing d_eq_2D is derived from the kernel via
+    ``derive_sheet_equilibrium_spacing``.  The explicit ``spacing=0.05`` path
+    is preserved for v1 reproducibility.
+
     Grain ids: plate = -1, sheet = 0, block = 1.
 
     Returns ``(positions, velocities, pin_mask, grain_ids, derived)``:
       - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
       - ``pin_mask`` is length-N bool; plate always pinned; tear pins the
         two edge rows.
-      - ``derived`` carries d_eq, the cushion band, sheet width, and
+      - ``derived`` carries d_eq, d_eq_2D, the cushion band, sheet width, and
         mode-specific derived numbers.
     """
     rng = np.random.default_rng(seed)
-    d = float(spacing)
     d_eq = TENDON_D_EQ
+    if spacing is None:
+        d = derive_sheet_equilibrium_spacing(sheet_side=16, verbose=True)
+    else:
+        d = float(spacing)
+    d_eq_2d = float(d)
     cushion_band = (d_eq - 0.02, d_eq + 0.05)
     sheet_side = 16
     n_sheet = sheet_side * sheet_side
@@ -841,6 +958,8 @@ def sheet(mode: str = "flat",
 
     derived = {
         "d_eq": d_eq,
+        "d_eq_2D": d_eq_2d,
+        "spacing": d,
         "cushion_band": cushion_band,
         "sheet_width": sheet_width,
         "sheet_side": sheet_side,
