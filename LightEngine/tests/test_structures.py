@@ -935,12 +935,13 @@ def test_lever_counts():
     pos, _, pin_mask, grain_ids, derived = seed_structures.lever(
         control=False, seed=0)
     n_plate = 6 * 6
-    n_fulcrum = 4 ** 3
+    # v6 fulcrum is the 4x4x4 block plus two 4x1x3 cheeks.
+    n_fulcrum = 4 ** 3 + 2 * 4 * 3
     n_load = 4 ** 3
-    # v5: standard 4^3 droplet only; tube arm count depends on chosen length.
     n_drop = 4 ** 3
     n_lever = derived["n_lever"]
     lever_len = derived["lever_len"]
+    assert lever_len == 13
     assert n_lever == lever_len * 12  # 12 grains per tube ring
     assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load
     assert int((grain_ids == -1).sum()) == n_plate
@@ -950,7 +951,9 @@ def test_lever_counts():
     assert int((grain_ids == 3).sum()) == n_load
     assert derived["n_plate"] == n_plate
     assert derived["n_fulcrum"] == n_fulcrum
+    assert derived["n_cheek"] == 2 * 4 * 3
     assert derived["n_load"] == n_load
+    assert derived["alpha_method"] == "bisection"
 
 
 def test_lever_pinned_bodies():

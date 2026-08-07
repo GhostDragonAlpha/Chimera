@@ -2129,33 +2129,34 @@ def lever_main(args, seed):
     N = pos.shape[0]
 
     dt = DT
-    tag = f"{args.tag}_" if args.tag else ""
-    label = "lever_control" if control else "lever"
+    base = args.tag if args.tag else "lever"
+    label = f"{base}_control" if control else base
     version = "control" if control else "main"
+    tag = ""  # label already carries the full tag; no extra prefix
 
     droplet_label = f"{derived['droplet_side']}^3"
-    lever_len = derived.get('lever_len', 16)
+    lever_len = derived.get('lever_len', 13)
     print("=" * 70)
-    print(f"THE KERNEL - LEVER v5 print run ({version})")
-    print(f"N={N}, plate=6x6, fulcrum=4x4x4 (PINNED), "
+    print(f"THE KERNEL - LEVER v6 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), "
           f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
           f"droplet={droplet_label} (route={derived['route']}), load=4^3, "
           f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
-    print("STATEMENT: A muscle-bone machine trades muscle force for load force")
-    print("  through arm length; the balance ratio is the kernel's own static")
-    print("  torque about the PINNED fulcrum contact point on the cold print.")
-    print("  v5 uses a hollow bone-class tube arm to cut self-weight while")
-    print("  keeping transverse confinement.")
+    print("STATEMENT: A captured muscle-bone machine trades muscle force for")
+    print("  load force through arm length; the saddle cheeks pin the tube to")
+    print("  the fulcrum so rotation is the only free degree of freedom.")
+    print("  The insertion fraction alpha is re-derived by bisection on the")
+    print("  kernel's own static torque about the PINNED fulcrum contact point.")
+    print("  v6 keeps the muscle droplet on the ground plate at the arm tip.")
     if control:
         print("PREDICTION: With kernel-verified R_true <= 1, the load end")
         print("  tips load-side-down and never rises more than one lattice")
         print("  step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified R_true = 2.0 (+/- 0.1) and")
-        print("  the fulcrum anchored off-edge, the muscle side tips down")
-        print("  (positive settled angle) and the load end lifts through at")
-        print("  least two lattice steps.")
+        print("PREDICTION: With kernel-verified R_true = 2.0 (+/- 0.1), the")
+        print("  captured arm tips muscle-side-down (positive settled angle)")
+        print("  and the load end lifts through at least two lattice steps.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
@@ -2163,16 +2164,17 @@ def lever_main(args, seed):
     print("      sign of mean lever angle over the last 20% of samples must")
     print("      match sign(R_true - 1)")
     print("  (d) INTEGRITY - all four bodies one cluster; plate pins hold")
-    print("  (e) SAG     - tube rotates muscle-down but load_gain decouples")
-    print("      (sheet-class shell); if detected, void shrinks to 1x1 next")
+    print("  (e) CAPTURE - if the saddle still lets the arm wander, the muscle")
+    print("      must be anchored through a tendon (the tendon membrane is next)")
     print("=" * 70)
-    print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")
-    print(f"Derived a_m   = {derived['a_m']:.5f}")
-    print(f"Derived a_l   = {derived['a_l']:.5f}")
-    print(f"Derived F_m   = {derived['F_m']:.3f}")
-    print(f"Derived W_L   = {derived['W_L']:.3f}")
-    print(f"Derived R_static = {derived['R_static']:.3f}")
-    print(f"Derived R_true= {derived['R_true']:.3f}")
+    print(f"\nDerived d_eq   = {derived['d_eq']:.5f}")
+    print(f"Derived alpha  = {derived['alpha']:.6f}  (method={derived['alpha_method']})")
+    print(f"Derived a_m    = {derived['a_m']:.5f}")
+    print(f"Derived a_l    = {derived['a_l']:.5f}")
+    print(f"Derived F_m    = {derived['F_m']:.3f}")
+    print(f"Derived W_L    = {derived['W_L']:.3f}")
+    print(f"Derived R_static={derived['R_static']:.3f}")
+    print(f"Derived R_true = {derived['R_true']:.3f}")
     print(f"Derived lever_len = {lever_len}")
     print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}\n")
 

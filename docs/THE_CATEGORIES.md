@@ -904,6 +904,47 @@ matches R_true both runs. FALSIFIER: if the captured machine still
 settles against R_true, the governor is the muscle droplet's freedom to
 wander, and the muscle must be anchored THROUGH a tendon — the tendon
 membrane is already proven, and that is the leg.
+**LEVER v6 VERDICT 2026-08-07 (captured pivot — fulcrum cheeks, run
+tags lever_v6 / lever_v6_control, 8000 ticks):** the saddle WORKS and
+the muscle is the governor. Verified link by link from the logs. (1)
+CAPTURE CONFIRMED: for the first time in six lever prints the machine
+reaches a STABLE rotational equilibrium on its pivot — main holds
+−13.10°, control −24.48°, rock-steady to 0.01° across the last 6000
+ticks, perch gap seated and constant, INTEGRITY one cluster each, pins
+hold. The v5 slide-off is dead: the cheeks held the arm through a
+violent transient and kept it for the whole run. The saddle is a proven
+membrane — the first captured joint. (2) THE STATICS GOVERN THE
+OPENING: both runs begin exactly as R_true predicts — +12° muscle-down
+at tick 200 WITH THE LOAD RISING (+0.022, the first lift ever measured
+in the lever line). Six prints now agree without exception: the
+kernel's static torque calls the initial direction. (3) THE TICK-400
+REVERSAL IS THE MUSCLE'S OWN COLLISION: at tick 400 both runs spike a
+large REPULSIVE contact (main +21, control +77, in prints whose
+cold-print contact is DRAW at −17) and the perch gap opens
+(0.081 / 0.077), and the machine falls back load-down into its captured
+rest. The candidate governors are the same animal twice: the
+descending arm meets its own ground-seated muscle — the cushion erases
+the draw and the muscle becomes a prop, a second fulcrum at the muscle
+end that pivots the whole long arm load-down — or the droplet, struck,
+wanders and the pull vanishes. Either way: a free-droplet muscle works
+only until the machine answers it. (4) METERING SIN RECORDED: the
+control's R_true landed at 1.050, OUTSIDE the specified [0.5, 1.0] —
+v6's BALANCE evidence is single-sided (both builds predicted
+muscle-down, both settled load-down; one repeated measurement, not
+two). The v6 law, and it is the lever line's crown: **the kernel's
+static torque always calls the opening move, but a muscle that can
+touch the bone it pulls stops being a muscle at the instant of contact
+— the pull must arrive along a path the bone never intersects.** That
+is why tendons exist, derived from the kernel. theLever CLOSES here:
+statics proven (opening direction, six prints), capture proven (the
+saddle), the governor named (muscle embodiment, not lever mechanics).
+Successor (named, and it is theLeg): the TENDON-ROUTED muscle — the
+droplet anchored in a well below the tip's swing arc, its pull carried
+by a tension-only chain (theTendon, already proven) that can only pull
+and goes slack before contact, so the muscle can never become a prop.
+First-print falsifiers: LIFT through the derived arc, HOLD in a
+two-sided control (R_true inside [0.5, 1.0] this time), and SETTLED
+direction matching the statics — the three the lever never got to keep.
 
 ## ORDER OF PROOF (derived from dependency depth)
 
