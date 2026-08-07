@@ -1542,18 +1542,31 @@ def lever(control: bool = False,
 
 def leg(control: bool = False,
         spacing: float = 0.05,
-        seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
-                                np.ndarray, dict]:
+        seed: int = 0,
+        drop_side: int | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                               np.ndarray, dict]:
     """
-    THE LEG v2 print: anchored droplet, tendon rod spans a deep well, arc gate.
+    THE LEG v3 print: anchored droplet, single-file rope tendon, full-arc gate.
 
-    v1 failed because the free droplet muscle was pulled up into the lever tip,
-    reversing the opening torque.  v2 pins the droplet to the well floor so it
-    acts as a fixed anchor, deepens the well until the arm-tip arc cannot hit
-    the droplet, and lengthens the tendon rod so it spans from the arm tip to
-    the anchored droplet.  The fulcrum contact is chosen by an arc gate that
-    samples the kernel static torque ratio R_true(theta) over the allowed
-    rotation [0, theta_stop], pricing in rod taut/slack.
+    v2 failed because the tendon was a rigid rod that props the arm-tip away
+    from the droplet; the rod could transmit compression, so it acted as a
+    strut and the machine settled against it.  v3 replaces the rod with a
+    single-file rope chain from the anchored droplet apex to the arm-tip
+    underside.  A rope can pull but not push; when the muscle wins it stays
+    taut, and when it goes slack it must crumple into the well rather than
+    prop the lever.
+
+    The FULL-ARC gate prices the kernel static torque ratio R_true(theta) on
+    the whole reachable interval [-theta_load, +theta_muscle], not just the
+    muscle side.  The main print demands min_R_taut >= 1 everywhere, so the
+    muscle-side stop is the unique attractor.  The control print demands
+    R_slack(0) in [0.5, 1.0] and max_R_slack <= 1 everywhere, so the load
+    side can descend.
+
+    If the strict gate cannot be satisfied, the derived knob is the droplet
+    side {4,5,6} (muscle strength).  If still no contact passes, the builder
+    records the failure honestly and falls back to a best-effort contact so
+    that dynamics can still be run for the falsifier.
 
     Grain ids:
       - plate   = -1 (pinned)
@@ -1561,28 +1574,7 @@ def leg(control: bool = False,
       - fulcrum = 1  (pinned block + cheeks)
       - lever   = 2  (13-ring 4x4 hollow tube)
       - load    = 3  (free)
-      - rod     = 4  (tendon, free, 2x2 shaft)
-
-    Geometry (derived from ``spacing`` and ``d_eq``):
-      - Enlarged pinned ground plate: 18x6 grains at z=0 with a 6x6 well
-        opening at the muscle tip.
-      - Well floor depth is derived by bisection so the rotating muscle end of
-        the lever stays at least ``d_eq`` away from the anchored droplet.
-      - 4^3 droplet seated on the well floor and PINNED.
-      - 2x2 tendon rod: top face ``d_eq`` below the arm tip underside, bottom
-        face ``d_eq`` above the droplet apex, vertical in the cold pose.
-      - v6 fulcrum block + cheeks and v6 13-ring hollow tube reused.
-      - 4^3 load block on the lever's load end.
-
-    ARC GATE: for each candidate fulcrum contact_x we derive theta_stop from the
-    tip underside reaching ``droplet_apex + d_eq`` and sample the kernel static
-    torque ratio R_true(theta) over [0, theta_stop].  Two prices are returned:
-      - TAUT: rod grains lie on the straight line from the droplet anchor to
-        the rotated arm-tip underside, so the rod transmits the droplet pull.
-      - SLACK: rod grains are moved far away, so they transmit no pull.
-    Main print: leftmost contact with min_R_taut >= 1.0 over the arc.
-    Control print: leftmost contact with R_slack(0) in [0.5, 1.0] and
-        max_R_slack_on_arc <= 1.0.
+      - rope    = 4  (single-file tendon chain, free)
 
     Returns ``(positions, velocities, pin_mask, grain_ids, derived)``.
     """
@@ -1592,20 +1584,19 @@ def leg(control: bool = False,
 
     # --- Shared geometry constants ---
     plate_nx, plate_ny = 18, 6
-    drop_side = 4
     fulcrum_side = 4
     length = 13
     s = 4
     load_side = 4
     margin = 0.10
+    theta_max = math.radians(120.0)
 
     muscle_tip_x = float(-(length - 1) / 2.0 * d)
     load_end_x = float((length - 1) / 2.0 * d)
     muscle_end_x = muscle_tip_x
-    L = (length - 1) * d
     tube_half_width = (s - 1) / 2.0 * d
 
-    # --- Pinned ground plate + well (well_floor_z is a parameter) ---
+    # --- Pinned ground plate + well ---
     n_plate_flat = plate_nx * plate_ny
     px_off = (np.arange(plate_nx, dtype=np.float64)
               - (plate_nx - 1) / 2.0) * d
@@ -1682,17 +1673,18 @@ def leg(control: bool = False,
     load_z = np.arange(load_side, dtype=np.float64) * d + lever_top_z + d_eq
 
     # --- Helper: assemble full cold pose without jitter ---
-    def _build_no_jitter(contact_x: float, well_floor_z: float) -> np.ndarray:
+    def _build_no_jitter(contact_x: float, well_floor_z: float,
+                         drop_side_i: int) -> np.ndarray:
         """Assemble all grains without jitter."""
         # plate + well
         plate_pos = np.vstack([plate_flat, _make_well(well_floor_z)])
 
         # droplet (anchored, seated on well floor)
-        drop_off = (np.arange(drop_side, dtype=np.float64)
-                    - (drop_side - 1) / 2.0) * d
-        drop_x = drop_off + muscle_tip_x
-        drop_z = np.arange(drop_side, dtype=np.float64) * d + well_floor_z + d_eq
-        dx, dy, dz = np.meshgrid(drop_x, drop_off, drop_z, indexing="ij")
+        drop_off_i = (np.arange(drop_side_i, dtype=np.float64)
+                      - (drop_side_i - 1) / 2.0) * d
+        drop_x = drop_off_i + muscle_tip_x
+        drop_z = np.arange(drop_side_i, dtype=np.float64) * d + well_floor_z + d_eq
+        dx, dy, dz = np.meshgrid(drop_x, drop_off_i, drop_z, indexing="ij")
         droplet_pos = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
 
         # fulcrum block + cheeks
@@ -1708,41 +1700,38 @@ def leg(control: bool = False,
         lx, ly2, lz2 = np.meshgrid(load_x, load_y, load_z, indexing="ij")
         load_pos = np.stack([lx.ravel(), ly2.ravel(), lz2.ravel()], axis=1)
 
-        # rod: 2x2 shaft, top face d_eq below arm tip underside,
-        # bottom face d_eq above droplet apex.
-        droplet_apex = well_floor_z + d_eq + (drop_side - 1) * d
-        rod_top_target_z = lever_bottom_z - d_eq  # = fulcrum_top_z
-        rod_bottom_target_z = droplet_apex + d_eq
-        required_span = rod_top_target_z - rod_bottom_target_z
-        n_rod_layers = max(2, int(np.floor(required_span / d)) + 1)
-        rod_top_z = rod_top_target_z
-        rod_bottom_z = rod_top_z - (n_rod_layers - 1) * d
-        rod_z = np.arange(n_rod_layers, dtype=np.float64) * d + rod_bottom_z
-        rod_x_off = muscle_tip_x + (np.arange(2, dtype=np.float64) - 0.5) * d
-        rod_y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
-        rxg, ryg, rzg = np.meshgrid(rod_x_off, rod_y_off, rod_z, indexing="ij")
-        rod_pos = np.stack([rxg.ravel(), ryg.ravel(), rzg.ravel()], axis=1)
+        # rope: single-file chain from droplet apex (+d_eq) to arm-tip underside (-d_eq)
+        droplet_apex = well_floor_z + d_eq + (drop_side_i - 1) * d
+        anchor_z = droplet_apex + d_eq
+        attach_z = lever_bottom_z - d_eq
+        span = attach_z - anchor_z
+        n_chain = max(1, int(np.floor(span / d)) + 1)
+        chain_z = np.linspace(anchor_z, attach_z, n_chain)
+        chain_pos = np.column_stack([
+            np.full(n_chain, muscle_tip_x, dtype=np.float64),
+            np.zeros(n_chain, dtype=np.float64),
+            chain_z,
+        ])
 
         return np.vstack([
             plate_pos, droplet_pos, fulcrum_pos, lever_pos_template,
-            load_pos, rod_pos,
+            load_pos, chain_pos,
         ]).astype(np.float64)
 
-    # --- Grain ids / pin mask depend on well_floor_z through n_rod ---
-    def _make_masks(well_floor_z: float):
-        droplet_apex = well_floor_z + d_eq + (drop_side - 1) * d
-        rod_top_target_z = lever_bottom_z - d_eq
-        rod_bottom_target_z = droplet_apex + d_eq
-        required_span = rod_top_target_z - rod_bottom_target_z
-        n_rod_layers = max(2, int(np.floor(required_span / d)) + 1)
-        n_rod = 4 * n_rod_layers
+    # --- Grain ids / pin mask depend on well_floor_z and drop_side ---
+    def _make_masks(well_floor_z: float, drop_side_i: int):
+        droplet_apex = well_floor_z + d_eq + (drop_side_i - 1) * d
+        anchor_z = droplet_apex + d_eq
+        attach_z = lever_bottom_z - d_eq
+        span = attach_z - anchor_z
+        n_chain = max(1, int(np.floor(span / d)) + 1)
 
         plate_pos = np.vstack([plate_flat, _make_well(well_floor_z)])
         n_plate = plate_pos.shape[0]
-        n_drop = drop_side ** 3
+        n_drop = drop_side_i ** 3
         n_fulcrum = n_fulcrum_block + n_cheek
 
-        n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rod
+        n_total = n_plate + n_drop + n_fulcrum + n_lever + n_load + n_chain
         grain_ids = np.empty(n_total, dtype=np.int32)
         grain_ids[:n_plate] = -1
         grain_ids[n_plate:n_plate + n_drop] = 0
@@ -1757,47 +1746,20 @@ def leg(control: bool = False,
         pin_mask[:n_plate] = True
         pin_mask[n_plate:n_plate + n_drop] = True  # anchored droplet
         pin_mask[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = True
-        return grain_ids, pin_mask, n_plate, n_drop, n_fulcrum, n_rod, n_rod_layers
+        return grain_ids, pin_mask, n_plate, n_drop, n_fulcrum, n_chain
 
-    # --- Derive theta_stop for a given contact_x and well_floor_z ---
-    def _derive_theta_stop(contact_x: float, well_floor_z: float) -> float:
-        droplet_apex = well_floor_z + d_eq + (drop_side - 1) * d
-        target = droplet_apex + d_eq
-        dx = contact_x - muscle_tip_x
-        rel_x = muscle_tip_x - contact_x
-        rel_z = lever_bottom_z - fulcrum_top_z  # = d_eq
-
-        def z_tip(theta: float) -> float:
-            # clockwise rotation of muscle-tip underside about fulcrum contact
-            return (fulcrum_top_z
-                    + rel_x * math.sin(theta)
-                    + rel_z * math.cos(theta))
-
-        theta_max = math.radians(120.0)
-        if z_tip(theta_max) > target:
-            return theta_max
-        lo, hi = 0.0, theta_max
-        for _ in range(50):
-            mid = (lo + hi) / 2.0
-            if z_tip(mid) > target:
-                lo = mid
-            else:
-                hi = mid
-        return (lo + hi) / 2.0
-
-    # --- Minimum tip-to-droplet distance over the arc ---
+    # --- Minimum tip-to-droplet distance over the muscle-side arc ---
     def _min_arc_distance(contact_x: float, well_floor_z: float,
-                          n_theta: int = 21) -> tuple[float, float]:
-        pos = _build_no_jitter(contact_x, well_floor_z)
-        grain_ids, pin_mask, n_plate, n_drop, n_fulcrum, n_rod, _ = \
-            _make_masks(well_floor_z)
-        theta_stop = _derive_theta_stop(contact_x, well_floor_z)
+                          drop_side_i: int, n_theta: int = 21) -> tuple[float, float]:
+        pos = _build_no_jitter(contact_x, well_floor_z, drop_side_i)
+        grain_ids_m, pin_mask_m, n_plate, n_drop, n_fulcrum, n_chain = \
+            _make_masks(well_floor_z, drop_side_i)
+        theta_stop = _derive_theta_muscle(contact_x, well_floor_z, drop_side_i)
 
         lever_idx = np.arange(n_plate + n_drop + n_fulcrum,
                               n_plate + n_drop + n_fulcrum + n_lever)
         drop_idx = np.arange(n_plate, n_plate + n_drop)
 
-        # tip grains: muscle-end ring (lowest x)
         lever_x = pos[lever_idx, 0]
         tip_local = lever_idx[lever_x <= muscle_tip_x + 1e-9]
         tip_grains = pos[tip_local].astype(np.float64)
@@ -1820,57 +1782,81 @@ def leg(control: bool = False,
             min_dist = min(min_dist, float(np.sqrt(r2.min())))
         return theta_stop, min_dist
 
-    # --- Derive well_floor_z by bisection ---
-    def _derive_well_floor(contact_x_for_depth: float) -> float:
-        # Deeper well -> larger clearance.  Find shallowest well with clearance >= d_eq.
-        lo = -10.0 * d   # deep
-        hi = -2.0 * d    # shallow (v1 depth)
-        _, d_lo = _min_arc_distance(contact_x_for_depth, lo)
-        _, d_hi = _min_arc_distance(contact_x_for_depth, hi)
+    # --- Derive muscle-side stop (arm-tip underside reaches droplet apex + d_eq) ---
+    def _derive_theta_muscle(contact_x: float, well_floor_z: float,
+                             drop_side_i: int) -> float:
+        droplet_apex = well_floor_z + d_eq + (drop_side_i - 1) * d
+        target = droplet_apex + d_eq
+        rel_x = muscle_tip_x - contact_x
+        rel_z = lever_bottom_z - fulcrum_top_z  # = d_eq
+
+        def z_tip(theta: float) -> float:
+            return fulcrum_top_z + rel_x * math.sin(theta) + rel_z * math.cos(theta)
+
+        if z_tip(theta_max) > target:
+            return theta_max
+        lo, hi = 0.0, theta_max
+        for _ in range(50):
+            mid = (lo + hi) / 2.0
+            if z_tip(mid) > target:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2.0
+
+    # --- Derive load-side stop (load bottom reaches ground + d_eq) ---
+    def _derive_theta_load(contact_x: float) -> float:
+        load_bottom_z0 = load_z.min()
+        target = d_eq
+        rel_x = load_end_x - contact_x
+        rel_z = load_bottom_z0 - fulcrum_top_z
+
+        def z_load(theta: float) -> float:
+            return fulcrum_top_z + rel_x * math.sin(theta) + rel_z * math.cos(theta)
+
+        if z_load(-theta_max) < target:
+            return -theta_max
+        lo, hi = -theta_max, 0.0
+        for _ in range(50):
+            mid = (lo + hi) / 2.0
+            if z_load(mid) < target:
+                hi = mid
+            else:
+                lo = mid
+        return (lo + hi) / 2.0
+
+    # --- Derive well_floor_z by bisection (clear arm-tip arc from droplet) ---
+    def _derive_well_floor(contact_x_for_depth: float, drop_side_i: int) -> float:
+        lo = -10.0 * d
+        hi = -2.0 * d
+        _, d_lo = _min_arc_distance(contact_x_for_depth, lo, drop_side_i)
+        _, d_hi = _min_arc_distance(contact_x_for_depth, hi, drop_side_i)
         if d_hi >= d_eq:
             return hi
         if d_lo < d_eq:
             raise RuntimeError(
-                f"leg v2 well depth bisection failed: even well_floor_z={lo} "
+                f"leg v3 well depth bisection failed: even well_floor_z={lo} "
                 f"gives min arc distance {d_lo:.4f} < d_eq={d_eq:.4f}")
         for _ in range(30):
             mid = (lo + hi) / 2.0
-            _, d_mid = _min_arc_distance(contact_x_for_depth, mid)
+            _, d_mid = _min_arc_distance(contact_x_for_depth, mid, drop_side_i)
             if d_mid >= d_eq:
-                lo = mid  # valid, can try shallower
+                lo = mid
             else:
-                hi = mid  # invalid, need deeper
+                hi = mid
         return lo
 
-    # Conservative depth estimate: use rightmost contact_x (largest dx => largest arc).
-    cx_max = load_end_x - margin
-    well_floor_z = _derive_well_floor(cx_max)
-
-    # With well_floor_z fixed, build masks and base arrays.
-    grain_ids, pin_mask, n_plate, n_drop, n_fulcrum, n_rod, n_rod_layers = \
-        _make_masks(well_floor_z)
-
-    droplet_apex = well_floor_z + d_eq + (drop_side - 1) * d
-    rod_top_target_z = lever_bottom_z - d_eq
-    rod_bottom_target_z = droplet_apex + d_eq
-
-    # Jitter sized to the fixed geometry.
-    tmp_pos = _build_no_jitter(0.0, well_floor_z)
-    jitter = rng.normal(0.0, R_WALL * 0.01, size=tmp_pos.shape)
-
-    def _assemble(contact_x: float) -> np.ndarray:
-        pos = _build_no_jitter(contact_x, well_floor_z)
-        pos += jitter
-        return pos
-
-    # --- Arc gate: R_true(theta) for taut and slack rod ---
-    def _arc_R_true(contact_x: float, n_theta: int = 21) -> dict:
-        pos0 = _build_no_jitter(contact_x, well_floor_z)
-        theta_stop = _derive_theta_stop(contact_x, well_floor_z)
-        thetas = np.linspace(0.0, theta_stop, n_theta)
+    # --- Full-arc gate: R_true(theta) for taut and slack rope ---
+    def _full_arc_R_true(contact_x: float, well_floor_z: float, drop_side_i: int,
+                         n_theta: int = 25) -> dict:
+        pos0 = _build_no_jitter(contact_x, well_floor_z, drop_side_i)
+        grain_ids_m, pin_mask_m, n_plate, n_drop, n_fulcrum, n_chain = \
+            _make_masks(well_floor_z, drop_side_i)
+        theta_muscle = _derive_theta_muscle(contact_x, well_floor_z, drop_side_i)
+        theta_load = _derive_theta_load(contact_x)
+        thetas = np.linspace(theta_load, theta_muscle, n_theta)
         cp = np.array([float(contact_x), 0.0, fulcrum_top_z], dtype=np.float64)
 
-        # indices of movable bodies
         plate_end = n_plate
         drop_end = plate_end + n_drop
         fulcrum_end = drop_end + n_fulcrum
@@ -1879,14 +1865,11 @@ def leg(control: bool = False,
 
         lever_idx = np.arange(fulcrum_end, lever_end)
         load_idx = np.arange(lever_end, load_end)
-        rod_idx = np.arange(load_end, pos0.shape[0])
+        rope_idx = np.arange(load_end, pos0.shape[0])
 
-        # Rod cross-section basis (cold pose: vertical)
-        rod_y_off = (np.arange(2, dtype=np.float64) - 0.5) * d
-        rod_x_off = muscle_tip_x + (np.arange(2, dtype=np.float64) - 0.5) * d
-        # anchor point (droplet side) is fixed at cold-pose rod bottom center
+        droplet_apex = well_floor_z + d_eq + (drop_side_i - 1) * d
         anchor = np.array([float(muscle_tip_x), 0.0,
-                           float(rod_bottom_target_z)], dtype=np.float64)
+                           float(droplet_apex + d_eq)], dtype=np.float64)
 
         R_taut = np.empty(n_theta, dtype=np.float64)
         R_slack = np.empty(n_theta, dtype=np.float64)
@@ -1896,7 +1879,7 @@ def leg(control: bool = False,
             c = math.cos(theta)
             s = math.sin(theta)
 
-            # rotate lever+load about cp clockwise
+            # rotate lever+load about cp
             for idx in (lever_idx, load_idx):
                 rel = pos[idx] - cp[None, :]
                 rot = rel.copy()
@@ -1904,109 +1887,188 @@ def leg(control: bool = False,
                 rot[:, 2] = rel[:, 0] * s + rel[:, 2] * c
                 pos[idx] = rot + cp[None, :]
 
-            # arm-tip underside attachment point (cold-pose rod top center)
+            # arm-tip underside attachment point
             rel_attach = np.array([float(muscle_tip_x - contact_x), 0.0,
-                                   float(rod_top_target_z - fulcrum_top_z)])
+                                   float(lever_bottom_z - d_eq - fulcrum_top_z)])
             attach = np.array([
                 cp[0] + rel_attach[0] * c - rel_attach[2] * s,
                 0.0,
                 cp[2] + rel_attach[0] * s + rel_attach[2] * c,
             ], dtype=np.float64)
 
-            # TAUT: place rod along anchor->attach
-            axis = attach - anchor
-            L_rod = float(np.linalg.norm(axis))
-            if L_rod < 1e-9:
-                L_rod = 1e-9
-            axis_u = axis / L_rod
-            u = np.array([0.0, 1.0, 0.0], dtype=np.float64)
-            if abs(np.dot(axis_u, u)) > 0.99:
-                u = np.array([1.0, 0.0, 0.0], dtype=np.float64)
-            v = np.cross(axis_u, u)
-            v_norm = float(np.linalg.norm(v))
-            if v_norm < 1e-12:
-                v = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+            # TAUT: place rope grains along anchor->attach
+            if n_chain >= 2:
+                axis = attach - anchor
+                L_rope = float(np.linalg.norm(axis))
+                if L_rope < 1e-9:
+                    L_rope = 1e-9
+                for li in range(n_chain):
+                    t = li / (n_chain - 1.0)
+                    pos[rope_idx[li]] = anchor + t * axis
             else:
-                v = v / v_norm
-            u = np.cross(v, axis_u)  # ensure orthonormal
-            u = u / float(np.linalg.norm(u))
+                # single grain sits at anchor
+                pos[rope_idx[0]] = anchor.copy()
 
-            rod_points = []
-            for li in range(n_rod_layers):
-                if n_rod_layers > 1:
-                    t = li / (n_rod_layers - 1.0)
-                else:
-                    t = 0.0
-                center = anchor + t * axis
-                for rx in rod_x_off - muscle_tip_x:
-                    for ry in rod_y_off:
-                        # interpret rx, ry as offsets in the (v, u) plane
-                        p = center + rx * v + ry * u
-                        rod_points.append(p)
-            pos[rod_idx] = np.array(rod_points, dtype=np.float64)
+            R_taut[i], _, _ = _R_true_at_print(pos, grain_ids_m, cp, pin_mask_m)
 
-            R_taut[i], _, _ = _R_true_at_print(pos, grain_ids, cp, pin_mask)
-
-            # SLACK: move rod grains far away
+            # SLACK: rope grains moved far away so they transmit no pull
             pos_slack = pos.copy()
-            pos_slack[rod_idx] = np.array([0.0, 0.0, 1e6], dtype=np.float64)
-            R_slack[i], _, _ = _R_true_at_print(pos_slack, grain_ids, cp, pin_mask)
+            pos_slack[rope_idx] = np.array([0.0, 0.0, 1e6], dtype=np.float64)
+            R_slack[i], _, _ = _R_true_at_print(pos_slack, grain_ids_m, cp, pin_mask_m)
 
         return {
-            "theta_stop": theta_stop,
+            "theta_load": theta_load,
+            "theta_muscle": theta_muscle,
             "thetas": thetas,
             "R_taut": R_taut,
             "R_slack": R_slack,
         }
 
-    # --- Bisect / scan contact_x for main and control ---
+    # --- Scan contact_x and droplet size for strict gate ---
     cx_min = muscle_end_x + tube_half_width
     cx_max = load_end_x - margin
     n_contact = 201
     xs = np.linspace(cx_min, cx_max, n_contact)
 
-    # Evaluate arc gate on the samples.
-    arc_main_ok = np.zeros(n_contact, dtype=bool)
-    arc_control_ok = np.zeros(n_contact, dtype=bool)
-    arc_traces = []
-    for i, cx in enumerate(xs):
-        trace = _arc_R_true(cx)
-        arc_traces.append(trace)
-        R_t = trace["R_taut"]
-        R_s = trace["R_slack"]
-        if np.min(R_t) >= 1.0:
-            arc_main_ok[i] = True
-        if (0.5 <= R_s[0] <= 1.0) and np.max(R_s) <= 1.0:
-            arc_control_ok[i] = True
+    # Droplet-size knob; explicit value bypasses the knob.
+    all_drop_sizes = [4, 5, 6]
+    drop_sizes = [drop_side] if drop_side is not None else all_drop_sizes
 
-    main_idx = np.flatnonzero(arc_main_ok)
-    if main_idx.size == 0:
-        mins = [np.min(t["R_taut"]) for t in arc_traces]
-        raise RuntimeError(
-            f"leg v2 arc gate failed: no contact in [{cx_min:.4f}, {cx_max:.4f}] "
-            f"has min_R_taut >= 1.0 (best min={max(mins):.3f}).")
-    cx_main = float(xs[main_idx[0]])
+    # Pre-derive well depth for each drop size using rightmost contact (largest arc).
+    well_floor_by_drop = {}
+    for ds in drop_sizes:
+        well_floor_by_drop[ds] = _derive_well_floor(cx_max, ds)
+    # Also derive for the full knob set so best-effort can compare honestly.
+    for ds in all_drop_sizes:
+        if ds not in well_floor_by_drop:
+            well_floor_by_drop[ds] = _derive_well_floor(cx_max, ds)
 
-    ctrl_idx = np.flatnonzero(arc_control_ok)
-    if ctrl_idx.size == 0:
-        r0s = [t["R_slack"][0] for t in arc_traces]
-        maxs = [np.max(t["R_slack"]) for t in arc_traces]
-        raise RuntimeError(
-            f"leg v2 arc gate failed: no contact in [{cx_min:.4f}, {cx_max:.4f}] "
-            f"has R_slack(0) in [0.5,1.0] and max<=1.0 "
-            f"(R0 range {min(r0s):.3f}..{max(r0s):.3f}, "
-            f"max range {min(maxs):.3f}..{max(maxs):.3f}).")
-    cx_ctrl = float(xs[ctrl_idx[0]])
+    def _strict_main_ok(trace: dict) -> bool:
+        return float(np.min(trace["R_taut"])) >= 1.0
 
-    if not (cx_ctrl < cx_main):
-        raise RuntimeError(
-            f"leg v2 arc gate failed: control contact {cx_ctrl:.4f} is not "
-            f"muscle-ward of main contact {cx_main:.4f}.")
+    def _strict_control_ok(trace: dict) -> bool:
+        R0 = float(trace["R_slack"][0])
+        return (0.5 <= R0 <= 1.0) and float(np.max(trace["R_slack"])) <= 1.0
 
-    contact_x = float(cx_ctrl if control else cx_main)
-    trace_final = arc_traces[int(np.searchsorted(xs, contact_x))]
-    R_true_final = float(trace_final["R_taut"][0] if not control
-                         else trace_final["R_slack"][0])
+    strict_ok = False
+    chosen_drop = None
+    chosen_cx = None
+    chosen_trace = None
+    chosen_route = None
+
+    for ds in drop_sizes:
+        wfz = well_floor_by_drop[ds]
+        for i, cx in enumerate(xs):
+            trace = _full_arc_R_true(cx, wfz, ds)
+            if control:
+                if _strict_control_ok(trace):
+                    strict_ok = True
+                    chosen_drop = ds
+                    chosen_cx = float(cx)
+                    chosen_trace = trace
+                    chosen_route = "full-arc"
+                    break
+            else:
+                if _strict_main_ok(trace):
+                    strict_ok = True
+                    chosen_drop = ds
+                    chosen_cx = float(cx)
+                    chosen_trace = trace
+                    chosen_route = "full-arc"
+                    break
+        if strict_ok:
+            break
+
+    # If strict gate failed, choose the least-bad contact honestly.
+    # The search space is the full knob set unless the caller pinned a size.
+    if not strict_ok:
+        search_sizes = all_drop_sizes if drop_side is None else [drop_side]
+        best_candidates = []
+        for ds in search_sizes:
+            wfz = well_floor_by_drop[ds]
+            # Rope must be long enough to transmit tension; otherwise it is a prop.
+            droplet_apex_i = wfz + d_eq + (ds - 1) * d
+            span_i = lever_bottom_z - droplet_apex_i - 2.0 * d_eq
+            n_chain_i = max(1, int(np.floor(span_i / d)) + 1)
+            if n_chain_i < 2:
+                # Cannot pull; skip this droplet size.
+                continue
+            traces = [_full_arc_R_true(cx, wfz, ds) for cx in xs]
+            if control:
+                costs = []
+                for tr in traces:
+                    R0 = float(tr["R_slack"][0])
+                    Rmax = float(np.max(tr["R_slack"]))
+                    theta_m = float(tr["theta_muscle"])
+                    cost = abs(R0 - 0.75)
+                    if Rmax > 1.0:
+                        cost += (Rmax - 1.0) * 10.0
+                    if R0 < 0.5:
+                        cost += (0.5 - R0) * 5.0
+                    if theta_m < math.radians(5.0):
+                        cost += 10.0
+                    costs.append(cost)
+            else:
+                costs = []
+                for tr in traces:
+                    Rmin = float(np.min(tr["R_taut"]))
+                    theta_m = float(tr["theta_muscle"])
+                    cost = 1.0 - min(1.0, Rmin)
+                    if theta_m < math.radians(5.0):
+                        cost += 10.0
+                    costs.append(cost)
+            best_i = int(np.argmin(costs))
+            best_candidates.append((costs[best_i], ds, xs[best_i], traces[best_i], wfz))
+
+        if not best_candidates:
+            # Last resort: ignore tension-length filter and take the least-bad.
+            for ds in search_sizes:
+                wfz = well_floor_by_drop[ds]
+                traces = [_full_arc_R_true(cx, wfz, ds) for cx in xs]
+                if control:
+                    costs = []
+                    for tr in traces:
+                        R0 = float(tr["R_slack"][0])
+                        Rmax = float(np.max(tr["R_slack"]))
+                        cost = abs(R0 - 0.75)
+                        if Rmax > 1.0:
+                            cost += (Rmax - 1.0) * 10.0
+                        if R0 < 0.5:
+                            cost += (0.5 - R0) * 5.0
+                        costs.append(cost)
+                else:
+                    costs = [1.0 - min(1.0, float(np.min(tr["R_taut"]))) for tr in traces]
+                best_i = int(np.argmin(costs))
+                best_candidates.append((costs[best_i], ds, xs[best_i], traces[best_i], wfz))
+
+        best = min(best_candidates, key=lambda x: x[0])
+        chosen_drop = int(best[1])
+        chosen_cx = float(best[2])
+        chosen_trace = best[3]
+        chosen_route = "best-effort"
+
+    if chosen_drop is None:
+        # Should not happen because best-effort always produces a candidate.
+        raise RuntimeError("leg v3 gate failed and best-effort fallback also failed.")
+
+    drop_side = chosen_drop
+    contact_x = chosen_cx
+    trace_final = chosen_trace
+    well_floor_z = well_floor_by_drop[drop_side]
+
+    # Final masks and base arrays.
+    grain_ids, pin_mask, n_plate, n_drop, n_fulcrum, n_chain = \
+        _make_masks(well_floor_z, drop_side)
+    droplet_apex = well_floor_z + d_eq + (drop_side - 1) * d
+
+    # Jitter sized to the fixed geometry.
+    tmp_pos = _build_no_jitter(contact_x, well_floor_z, drop_side)
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=tmp_pos.shape)
+
+    def _assemble(contact_x_a: float) -> np.ndarray:
+        pos = _build_no_jitter(contact_x_a, well_floor_z, drop_side)
+        pos += jitter
+        return pos
 
     pos = _assemble(contact_x)
 
@@ -2018,7 +2080,7 @@ def leg(control: bool = False,
                       n_plate + n_drop + n_fulcrum + n_lever]
     load_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever:
                      n_plate + n_drop + n_fulcrum + n_lever + n_load]
-    rod_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever + n_load:]
+    rope_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever + n_load:]
 
     # --- Print law ---
     diff = pos[:, None, :] - pos[None, :, :]
@@ -2027,7 +2089,7 @@ def leg(control: bool = False,
     min_pair_dist = float(np.sqrt(r2.min()))
     if min_pair_dist <= 1e-6:
         raise RuntimeError(
-            f"leg v2 print law violated: minimum pair distance {min_pair_dist} "
+            f"leg v3 print law violated: minimum pair distance {min_pair_dist} "
             f"<= 1e-6 (control={control})")
 
     # --- Fixed indices and derived quantities ---
@@ -2047,34 +2109,40 @@ def leg(control: bool = False,
     a_m = float(contact_x - muscle_c[0])
     a_l = float(load_c[0] - contact_x)
 
-    # Rod end indices for the driver (by z).
-    rod_order = np.argsort(rod_pos_j[:, 2])
-    rod_bottom = rod_order[:4].astype(np.int32)
-    rod_top = rod_order[-4:].astype(np.int32)
+    # Rope chain indices ordered from bottom (droplet side) to top (lever side)
+    rope_order = np.argsort(rope_pos_j[:, 2])
+    rope_bottom = rope_order[:1].astype(np.int32)
+    rope_top = rope_order[-1:].astype(np.int32)
+    rope_chain = rope_order.astype(np.int32)
 
     fulcrum_contact_point = np.array([float(contact_x), 0.0, fulcrum_top_z],
                                      dtype=np.float64)
 
-    if control:
-        if not (0.5 <= R_true_final <= 1.0):
-            raise RuntimeError(
-                f"leg v2 control print R_true={R_true_final:.3f} outside [0.5, 1.0]")
-    else:
-        if R_true_final < 1.0:
-            raise RuntimeError(
-                f"leg v2 main print cold R_true={R_true_final:.3f} < 1.0")
+    R_true_final = float(trace_final["R_taut"][0] if not control
+                         else trace_final["R_slack"][0])
+
+    if chosen_route == "full-arc":
+        if control:
+            if not (0.5 <= R_true_final <= 1.0):
+                raise RuntimeError(
+                    f"leg v3 control print R_true={R_true_final:.3f} outside [0.5, 1.0]")
+        else:
+            if R_true_final < 1.0:
+                raise RuntimeError(
+                    f"leg v3 main print cold R_true={R_true_final:.3f} < 1.0")
 
     margin_to_load_end = float(load_end_x - contact_x)
     if margin_to_load_end < margin:
         raise RuntimeError(
-            f"leg v2 contact too close to load end: margin="
+            f"leg v3 contact too close to load end: margin="
             f"{margin_to_load_end:.4f} < {margin:.4f}")
 
-    theta_stop = float(trace_final["theta_stop"])
+    theta_stop_muscle = float(trace_final["theta_muscle"])
+    theta_stop_load = float(trace_final["theta_load"])
 
     derived = {
         "control": bool(control),
-        "route": "tendon-well-v2",
+        "route": chosen_route,
         "droplet_side": drop_side,
         "d_eq": d_eq,
         "spacing": d,
@@ -2085,8 +2153,7 @@ def leg(control: bool = False,
         "n_cheek": n_cheek,
         "n_lever": n_lever,
         "n_load": n_load,
-        "n_rod": n_rod,
-        "n_rod_layers": n_rod_layers,
+        "n_rope": n_chain,
         "well_floor_z": well_floor_z,
         "droplet_apex": droplet_apex,
         "muscle_tip_x": muscle_tip_x,
@@ -2095,20 +2162,24 @@ def leg(control: bool = False,
         "load_face": load_face,
         "fulcrum_top_face": fulcrum_top_face,
         "lever_contact_local": lever_contact_local,
-        "rod_bottom": rod_bottom,
-        "rod_top": rod_top,
+        "rope_bottom": rope_bottom,
+        "rope_top": rope_top,
+        "rope_chain": rope_chain,
         "a_m": a_m,
         "a_l": a_l,
         "R_true": float(R_true_final),
-        "theta_stop": theta_stop,
+        "theta_stop_muscle": theta_stop_muscle,
+        "theta_stop_load": theta_stop_load,
         "arc_trace": trace_final,
         "margin_to_load_end": margin_to_load_end,
         "plate_pos0": plate_pos_j.copy(),
         "load_end_z0": float(load_c[2]),
+        "gate_passed": strict_ok,
     }
 
     return pos.astype(np.float32), np.zeros_like(pos, dtype=np.float32), \
         pin_mask, grain_ids, derived
+
 
 def bladder(seed: int = 0,
             fill: str = "gap",

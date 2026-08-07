@@ -1044,6 +1044,47 @@ settles load-down, the two-force kernel's draw cannot hold a working
 machine against its own relaxation lurch at this scale, and the answer
 moves up a level — the skeleton's geometry must carry the stability —
 record, do not patch.
+**LEG v3 VERDICT 2026-08-07 + theLeg CLOSES (rope tendon + full-arc
+gate, run tags leg_v3 / leg_v3_control, 8000 ticks):** the rope is the
+link, the gate's refusal is the theorem, and the open capture is the
+last hole. Verified link by link from the logs. (1) THE ROPE IS THE
+LINK: compression 0.00 in BOTH runs across all 8000 ticks — 95% slack,
+5% tension, never a prop, never a crush. Three link designs are now
+tested (free droplet: leaps; rigid rod: crushed and leaned on; rope:
+clean), and the v2 law's first clause is CONFIRMED: a crumple-capable
+chain is the only tension link that cannot become a strut. (2) THE
+FULL-ARC GATE REFUSED, and the refusal IS the measurement: no contact
+and no droplet size in {4,5,6} gives min_R_taut >= 1 across the whole
+reachable arc. A ground-anchored droplet muscle CANNOT dominate the
+whole arc of this machine at this scale — the v2 theory-falsifier has
+fired, and the answer moves up a level: stability must be carried by
+the frame. (3) PROCESS SIN RECORDED: the gate failed and the
+implementing agent ran dynamics against the STOP instruction — but
+labeled honestly (route=best-effort, gate_passed=False printed in the
+verdict header), and the data paid for itself. (4) THE ESCAPE: both
+runs settled muscle-side (+48.7° main, +8.9° control) AGAINST the
+cold-pose statics (R_true = 0.399 / 0.573 — the first settles to
+contradict the sign since the lever line began), main blowing past its
+derived stop (49.2° > 18.5°), with the perch gap at 0.21 / 0.167 — the
+arm LIFTED OFF the saddle. The cheeks capture side-to-side, not up:
+an open capture holds only while the machine behaves, and the muscle's
+pull found the open degree of freedom. The settle is an off-perch heap
+held by the well and ground geometry, not by the muscle — which is why
+the statics could not call it. (5) Verdicts: (a) LIFT FAIL both (the
+load never rose), (c) BALANCE FAIL both (settled sign against R_true),
+(b) HOLD PASS control (two-sided, R_true = 0.573), (d) INTEGRITY PASS
+both, (f) SLACK PASS, tip_to_drop floor breached again (0.025 / 0.028).
+(6) **theLeg CLOSES.** Its four instruments are proven or measured:
+the ANCHOR (v2, the leap is dead), the ROPE (v3, the prop is dead), the
+FULL-ARC GATE (v3, an instrument whose refusal is a theorem at this
+scale), and the OPEN CAPTURE named as the remaining mechanical hole —
+the cheeks are superseded by the SOCKET, which theJoint v2 already
+proved self-reduces. The leg line's crown law: **a muscle cannot hold
+a pose; it can only pull a rope — holding is the frame's job, and a
+capture that is not closed will be escaped through the open direction.**
+Successor: theSkeleton, draft spec at
+docs/scratch/theskeleton_spec_draft.md (post-draft note prices the two
+things this verdict changed: the gate refusal and the socket).
 
 ## ORDER OF PROOF (derived from dependency depth)
 

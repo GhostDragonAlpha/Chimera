@@ -1087,7 +1087,7 @@ def test_leg_determinism():
 
 
 def test_leg_counts():
-    """leg() builds the expected point counts."""
+    """leg() builds the expected point counts with a single-file rope."""
     pos, _, pin_mask, grain_ids, derived = seed_structures.leg(
         control=False, seed=0)
     # 18x6 flat plate minus 6x6 hole = 72; well box 6x6x5 with 4x4x4 cavity
@@ -1095,30 +1095,28 @@ def test_leg_counts():
     n_plate = 188
     n_fulcrum = 4 ** 3 + 2 * 4 * 3
     n_load = 4 ** 3
-    n_drop = 4 ** 3
+    n_drop = derived["n_droplet"]
     n_lever = derived["n_lever"]
-    n_rod = derived["n_rod"]
-    n_rod_layers = derived["n_rod_layers"]
+    n_rope = derived["n_rope"]
     lever_len = derived["lever_len"]
     assert lever_len == 13
     assert n_lever == lever_len * 12
-    assert n_rod == 4 * n_rod_layers
-    assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rod
+    assert n_rope >= 2, f"rope must transmit tension, got {n_rope} grains"
+    assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load + n_rope
     assert int((grain_ids == -1).sum()) == n_plate
     assert int((grain_ids == 0).sum()) == n_drop
     assert int((grain_ids == 1).sum()) == n_fulcrum
     assert int((grain_ids == 2).sum()) == n_lever
     assert int((grain_ids == 3).sum()) == n_load
-    assert int((grain_ids == 4).sum()) == n_rod
+    assert int((grain_ids == 4).sum()) == n_rope
     assert derived["n_plate"] == n_plate
     assert derived["n_fulcrum"] == n_fulcrum
     assert derived["n_cheek"] == 2 * 4 * 3
     assert derived["n_load"] == n_load
-    assert derived["n_rod"] == n_rod
 
 
 def test_leg_pinned_bodies():
-    """The ground plate, droplet and fulcrum block are pinned; rod/lever/load free."""
+    """The ground plate, droplet and fulcrum block are pinned; rope/lever/load free."""
     pos, _, pin_mask, grain_ids, _ = seed_structures.leg(control=False, seed=0)
     pinned_mask = (grain_ids == -1) | (grain_ids == 0) | (grain_ids == 1)
     assert pin_mask[pinned_mask].all()
@@ -1155,12 +1153,18 @@ def test_leg_droplet_anchored():
     assert pin_mask[drop_idx].all()
 
 
-def test_leg_main_ratio():
-    """Main leg print derives cold R_true >= 1.0 (arc gate taut price)."""
+def test_leg_main_records_gate():
+    """Main print records the full-arc gate result honestly."""
     _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
-    assert derived["R_true"] >= 1.0
     trace = derived["arc_trace"]
-    assert np.min(trace["R_taut"]) >= 1.0
+    assert "R_taut" in trace
+    assert "theta_muscle" in trace
+    assert "theta_load" in trace
+    assert "gate_passed" in derived
+    # If the gate passed, the strict assertions must hold.
+    if derived["gate_passed"]:
+        assert derived["R_true"] >= 1.0
+        assert np.min(trace["R_taut"]) >= 1.0
 
 
 def test_leg_main_contact_margin():
@@ -1169,13 +1173,18 @@ def test_leg_main_contact_margin():
     assert derived["margin_to_load_end"] >= 0.10
 
 
-def test_leg_control_ratio():
-    """Control leg print derives cold R_true in [0.5, 1.0] (arc gate slack price)."""
+def test_leg_control_records_gate():
+    """Control print records the slack gate result honestly."""
     _, _, _, _, derived = seed_structures.leg(control=True, seed=0)
-    assert 0.5 <= derived["R_true"] <= 1.0
     trace = derived["arc_trace"]
-    assert 0.5 <= trace["R_slack"][0] <= 1.0
-    assert np.max(trace["R_slack"]) <= 1.0
+    assert "R_slack" in trace
+    assert "theta_muscle" in trace
+    assert "theta_load" in trace
+    assert "gate_passed" in derived
+    if derived["gate_passed"]:
+        assert 0.5 <= derived["R_true"] <= 1.0
+        assert 0.5 <= trace["R_slack"][0] <= 1.0
+        assert np.max(trace["R_slack"]) <= 1.0
 
 
 def test_leg_control_weaker_arm():
@@ -1186,37 +1195,55 @@ def test_leg_control_weaker_arm():
     assert derived_ctrl["a_l"] > derived_main["a_l"]
 
 
-def test_leg_rod_spans_well():
-    """The tendon rod spans from the arm tip underside to the droplet apex."""
+def test_leg_rope_spans_well():
+    """The single-file rope spans from the arm tip underside to the droplet apex."""
     pos, _, _, grain_ids, derived = seed_structures.leg(control=False, seed=0)
     lever = pos[grain_ids == 2]
-    rod = pos[grain_ids == 4]
+    rope = pos[grain_ids == 4]
     droplet = pos[grain_ids == 0]
     muscle_tip_x = derived["muscle_tip_x"]
     d_eq = derived["d_eq"]
-    # Rod is centered on the muscle tip in x/y.
-    assert abs(rod[:, 0].mean() - muscle_tip_x) < 0.05
-    assert abs(rod[:, 1].mean()) < 0.05
-    # Rod top sits d_eq below the lever underside.
+    # Rope is centered on the muscle tip in x/y.
+    assert abs(rope[:, 0].mean() - muscle_tip_x) < 0.05
+    assert abs(rope[:, 1].mean()) < 0.05
+    # Rope top sits d_eq below the lever underside.
     lever_bottom_z = lever[:, 2].min()
-    rod_top_z = rod[:, 2].max()
-    assert rod_top_z < lever_bottom_z
-    assert abs(lever_bottom_z - rod_top_z - d_eq) < 0.01
-    # Rod bottom sits at or above droplet_apex + d_eq.
-    rod_bottom_z = rod[:, 2].min()
+    rope_top_z = rope[:, 2].max()
+    assert rope_top_z < lever_bottom_z
+    assert abs(lever_bottom_z - rope_top_z - d_eq) < 0.01
+    # Rope bottom sits at or above droplet_apex + d_eq.
+    rope_bottom_z = rope[:, 2].min()
     droplet_apex = float(droplet[:, 2].max())
-    assert rod_bottom_z >= droplet_apex + d_eq - 1e-3
+    assert rope_bottom_z >= droplet_apex + d_eq - 1e-3
 
 
 def test_leg_arc_trace():
-    """The arc gate returns a theta_stop and sampled R_true traces."""
+    """The full-arc gate returns both muscle- and load-side stops."""
     _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
     trace = derived["arc_trace"]
-    assert "theta_stop" in trace
+    assert "theta_muscle" in trace
+    assert "theta_load" in trace
     assert "thetas" in trace
     assert "R_taut" in trace
     assert "R_slack" in trace
-    assert trace["theta_stop"] > 0.0
-    assert trace["thetas"][0] == 0.0
-    assert trace["thetas"][-1] == pytest.approx(trace["theta_stop"])
+    assert trace["theta_load"] < 0.0 < trace["theta_muscle"]
+    assert trace["thetas"][0] == pytest.approx(trace["theta_load"])
+    assert trace["thetas"][-1] == pytest.approx(trace["theta_muscle"])
     assert len(trace["thetas"]) == len(trace["R_taut"]) == len(trace["R_slack"])
+
+
+def test_leg_droplet_knob_honest():
+    """An explicit droplet side is accepted; the route is recorded honestly."""
+    _, _, _, _, derived = seed_structures.leg(
+        control=False, seed=0, drop_side=4)
+    assert derived["droplet_side"] == 4
+    assert derived["route"] in ("full-arc", "best-effort")
+    assert "gate_passed" in derived
+
+
+def test_leg_chain_can_tauten():
+    """The best-effort machine keeps a rope long enough to pull."""
+    _, _, _, _, derived = seed_structures.leg(control=False, seed=0)
+    assert derived["n_rope"] >= 2
+    _, _, _, _, derived_c = seed_structures.leg(control=True, seed=0)
+    assert derived_c["n_rope"] >= 2

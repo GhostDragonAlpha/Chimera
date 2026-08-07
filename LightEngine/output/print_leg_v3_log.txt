@@ -1,0 +1,102 @@
+======================================================================
+THE KERNEL - LEG v3 print run (main)
+N=562, plate=18x6+well (188 pinned), fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), lever=4x4 tube (1-grain shell, 2x2 void) x 13 rings, droplet=4^3 in well (PINNED), load=4^3, rope=single-file x 2 grains, route=best-effort, seed=20260806, dt=0.0005, ticks=8000, control=False
+----------------------------------------------------------------------
+STATEMENT: A captured muscle-bone machine routes the muscle pull
+  through a single-file rope tendon from the arm-tip underside to an
+  anchored droplet at the bottom of a deep well.  The rope pulls but
+  cannot push; when slack it must crumple into the well rather than
+  prop the lever.  The fulcrum contact is chosen by a FULL-ARC gate
+  that samples the kernel static torque ratio R_true(theta) on both
+  sides of the print pose, out to both derived end-stops.
+PREDICTION: With kernel-verified min_R_taut >= 1 on the full arc,
+  the captured arm tips muscle-side-down (positive settled angle),
+  the rope stays taut or slack (never compressed), and the load end
+  lifts through at least two lattice steps.
+FALSIFIERS:
+  (a) LIFT    - main: load end rises >= 0.10 absolute z
+  (b) HOLD    - control: load end rises <= 0.05 all run
+  (c) BALANCE - kernel torque predicts the SETTLED tip direction:
+      sign of mean lever angle over the last 20% of samples must
+      match sign(R_true - 1)
+  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold
+  (e) SAG     - if the arm rotates muscle-down but the load end does
+      not lift, the tendon route failed to transmit the pull
+  (f) SLACK   - main: rope must not prop the lever; sustained
+      compression (>20% of samples) = FAIL
+======================================================================
+
+Derived d_eq   = 0.04840
+Derived contact_x = 0.00662
+Derived a_m    = 0.30630
+Derived a_l    = 0.29321
+Derived R_true = 0.399
+Derived theta_stop_muscle = 18.54 deg
+Derived theta_stop_load = -120.00 deg
+Derived lever_len = 13
+Derived margin_to_load_end = 0.29338
+Derived well_floor_z = -0.10000
+Derived droplet_apex = 0.09840
+Derived n_rope = 2
+
+
+[v3] N=562 plate=188 droplet=64 fulcrum=88 lever=156 load=64 rope=2
+[v3] dt=0.0005 ticks=8000 sample_every=200
+
+[v3] tick=     0 | load_gain=+0.0000 | angle=  0.03deg | theta=[-120.00,  18.54]deg | gap=0.0573 | plate_F=2908.58 | contact=-965.198 | clusters=1/1/1/1/1 | tip_to_drop=0.1493 | apex_z=0.0995 | rope links T/S/C=1/0/0 max_comp=0.00
+[v3] tick=   200 | load_gain=-0.0098 | angle= 14.99deg | theta=[-120.00,  18.54]deg | gap=0.0794 | plate_F=3453.96 | contact=-940.286 | clusters=1/1/1/1/1 | tip_to_drop=0.0555 | apex_z=0.0995 | rope links T/S/C=1/0/0 max_comp=0.00
+[v3] tick=   400 | load_gain=-0.1841 | angle= 29.32deg | theta=[-120.00,  18.54]deg | gap=0.1156 | plate_F=3845.16 | contact=3400.079 | clusters=1/1/1/1/1 | tip_to_drop=0.0686 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=   600 | load_gain=-0.2450 | angle= 29.65deg | theta=[-120.00,  18.54]deg | gap=0.1445 | plate_F=1223.07 | contact=2618.079 | clusters=1/1/1/1/1 | tip_to_drop=0.0281 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=   800 | load_gain=-0.2373 | angle= 46.82deg | theta=[-120.00,  18.54]deg | gap=0.1846 | plate_F=3264.74 | contact=1071.768 | clusters=1/1/1/1/1 | tip_to_drop=0.0290 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  1000 | load_gain=-0.2435 | angle= 45.59deg | theta=[-120.00,  18.54]deg | gap=0.2149 | plate_F=2335.22 | contact=769.652 | clusters=1/1/1/1/1 | tip_to_drop=0.0321 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  1200 | load_gain=-0.2419 | angle= 46.45deg | theta=[-120.00,  18.54]deg | gap=0.2113 | plate_F=2835.32 | contact=1118.642 | clusters=1/1/1/1/1 | tip_to_drop=0.0332 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  1400 | load_gain=-0.2435 | angle= 48.74deg | theta=[-120.00,  18.54]deg | gap=0.2116 | plate_F=2595.70 | contact=993.949 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  1600 | load_gain=-0.2446 | angle= 48.11deg | theta=[-120.00,  18.54]deg | gap=0.2094 | plate_F=2418.55 | contact=1118.576 | clusters=1/1/1/1/1 | tip_to_drop=0.0349 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  1800 | load_gain=-0.2440 | angle= 49.22deg | theta=[-120.00,  18.54]deg | gap=0.2108 | plate_F=2482.38 | contact=1006.727 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  2000 | load_gain=-0.2441 | angle= 49.18deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2528.09 | contact=1010.795 | clusters=1/1/1/1/1 | tip_to_drop=0.0335 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  2200 | load_gain=-0.2442 | angle= 48.85deg | theta=[-120.00,  18.54]deg | gap=0.2104 | plate_F=2488.14 | contact=1032.484 | clusters=1/1/1/1/1 | tip_to_drop=0.0342 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  2400 | load_gain=-0.2442 | angle= 48.85deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2518.00 | contact=1020.680 | clusters=1/1/1/1/1 | tip_to_drop=0.0337 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  2600 | load_gain=-0.2442 | angle= 48.80deg | theta=[-120.00,  18.54]deg | gap=0.2110 | plate_F=2494.17 | contact=1044.535 | clusters=1/1/1/1/1 | tip_to_drop=0.0332 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  2800 | load_gain=-0.2442 | angle= 48.69deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2522.25 | contact=1027.525 | clusters=1/1/1/1/1 | tip_to_drop=0.0331 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  3000 | load_gain=-0.2443 | angle= 48.68deg | theta=[-120.00,  18.54]deg | gap=0.2110 | plate_F=2543.39 | contact=1010.102 | clusters=1/1/1/1/1 | tip_to_drop=0.0329 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  3200 | load_gain=-0.2443 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2532.24 | contact=1014.113 | clusters=1/1/1/1/1 | tip_to_drop=0.0332 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  3400 | load_gain=-0.2443 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2542.34 | contact=1011.786 | clusters=1/1/1/1/1 | tip_to_drop=0.0334 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  3600 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2552.19 | contact=1003.012 | clusters=1/1/1/1/1 | tip_to_drop=0.0342 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  3800 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2521.87 | contact=994.769 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  4000 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2110 | plate_F=2520.60 | contact=1012.583 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  4200 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2495.83 | contact=987.219 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  4400 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2513.04 | contact=1026.639 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  4600 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2523.57 | contact=1005.370 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  4800 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2522.98 | contact=1007.923 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  5000 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2518.60 | contact=1010.717 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  5200 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2502.63 | contact=999.013 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  5400 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2501.92 | contact=1018.676 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  5600 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2491.49 | contact=1015.308 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  5800 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2533.99 | contact=1019.580 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  6000 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2534.80 | contact=1037.393 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  6200 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2526.45 | contact=1003.698 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  6400 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2526.44 | contact=1013.214 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  6600 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2510.14 | contact=1017.492 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  6800 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2518.92 | contact=988.376 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  7000 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2530.31 | contact=1012.443 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  7200 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2531.20 | contact=1017.749 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  7400 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2519.95 | contact=1011.678 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  7600 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2528.44 | contact=993.288 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  7800 | load_gain=-0.2444 | angle= 48.65deg | theta=[-120.00,  18.54]deg | gap=0.2108 | plate_F=2514.21 | contact=1018.775 | clusters=1/1/1/1/1 | tip_to_drop=0.0340 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+[v3] tick=  8000 | load_gain=-0.2444 | angle= 48.66deg | theta=[-120.00,  18.54]deg | gap=0.2109 | plate_F=2520.88 | contact=1028.522 | clusters=1/1/1/1/1 | tip_to_drop=0.0341 | apex_z=0.0995 | rope links T/S/C=0/1/0 max_comp=0.00
+
+[v3] LEG v3 FALSIFIERS (route=best-effort, gate_passed=False):
+  (a) LIFT      : FAIL  max load_gain=0.0000 at tick=0 (bar 0.1000) recovery_ok=True
+  (b) HOLD      : skipped (main)
+  (c) BALANCE   : FAIL  R_true=0.399 settled_angle_sign=1 predicted=-1 (last 8/41 samples)
+  (d) INTEGRITY : PASS  max clusters droplet/fulcrum/lever/load/rope=1/1/1/1/1 plate_drift=0.000000
+  (e) SAG       : DETECTED  settled_sign=1 max_load_gain=0.0000
+  (f) SLACK     : PASS  mean rope compression fraction=0.00 (bar 0.20)
+  ROPE TELEMETRY:
+    min arm-tip-to-droplet distance = 0.0281
+    droplet apex z range = [0.0995, 0.0995]
+    max |theta| / muscle_load stops = 49.22 / 18.54, 120.00 deg  exceeded=True
+    final rope mean link force = +0.402
+    rope sign fractions: tension=0.05 slack=0.95 compression=0.00
+    max taut links = 1 / 1 max compression magnitude = 0.00
+======================================================================

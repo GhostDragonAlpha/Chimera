@@ -2227,14 +2227,59 @@ def _rod_internal_force_z(pos: np.ndarray, grain_ids: np.ndarray,
     return float(draw_fz + resist_fz)
 
 
+def _rope_link_forces(pos: np.ndarray, grain_ids: np.ndarray,
+                      rope_chain: np.ndarray) -> np.ndarray:
+    """
+    Signed scalar force on each rope link, ordered from bottom to top.
+
+    For link i (grain i to grain i+1 in ``rope_chain``), positive means the
+    upper grain pulls the lower grain upward -- tension.  Negative means the
+    upper grain pushes the lower grain -- compression.  Near-zero means slack.
+
+    The scalar is the projection of the force on the lower grain (from the
+    upper grain) onto the unit vector from the lower grain to the upper grain.
+    """
+    rope = pos[grain_ids == 4].astype(np.float64)
+    if rope.shape[0] < 2 or rope_chain.size < 2:
+        return np.zeros(max(0, rope_chain.size - 1), dtype=np.float64)
+
+    forces = np.zeros(rope_chain.size - 1, dtype=np.float64)
+    for k in range(rope_chain.size - 1):
+        i = rope_chain[k]
+        j = rope_chain[k + 1]
+        pi = rope[i]
+        pj = rope[j]
+        dpos = pj - pi
+        r2 = float((dpos * dpos).sum())
+        r = math.sqrt(r2)
+        if r < 1e-12:
+            forces[k] = 0.0
+            continue
+        u = dpos / r
+
+        # DRAW on i from j (attractive, pulls i toward j => positive along u)
+        F = G * dpos / ((r2 + EPS * EPS) ** 1.5)
+        # Resistance: repulsive for r < R_BOND
+        if r < R_WALL:
+            r_eff = math.sqrt(r2 + S_WALL * S_WALL)
+            f_scalar = K_WALL * (R_WALL / r_eff) ** P_WALL / r_eff
+            F -= f_scalar * u
+        elif r <= R_BOND:
+            f_scalar = K_BOND * (r - R_BOND) / (R_BOND * r)
+            F += f_scalar * dpos
+        forces[k] = float(np.dot(F, u))
+    return forces
+
+
 def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
              tag, label):
     """
-    Free-evolution LEG v2 protocol: plate, droplet and fulcrum are pinned.
+    Free-evolution LEG v3 protocol: plate, droplet and fulcrum are pinned.
 
     Records lever metrics plus leg-specific telemetry: minimum
-    arm-tip-to-droplet distance, droplet apex height, internal tendon rod force
-    sign, and lever angle versus the derived arc stop theta_stop.
+    arm-tip-to-droplet distance, droplet apex height, rope link forces (tension
+    vs compression vs slack), lever angle versus both derived arc stops, and
+    the number of taut rope links.
     """
     N = pos.shape[0]
     sim = kernel.VelocityVerlet(N)
@@ -2247,19 +2292,20 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
     fulcrum_idx = np.flatnonzero(grain_ids == 1).astype(np.int32)
     lever_idx = np.flatnonzero(grain_ids == 2).astype(np.int32)
     load_idx = np.flatnonzero(grain_ids == 3).astype(np.int32)
-    rod_idx = np.flatnonzero(grain_ids == 4).astype(np.int32)
+    rope_idx = np.flatnonzero(grain_ids == 4).astype(np.int32)
 
     muscle_face = lever_idx[derived["muscle_face"]]
     load_face = lever_idx[derived["load_face"]]
     fulcrum_top_face = fulcrum_idx[derived["fulcrum_top_face"]]
     lever_contact_local = lever_idx[derived["lever_contact_local"]]
-    rod_top = rod_idx[derived["rod_top"]]
-    rod_bottom = rod_idx[derived["rod_bottom"]]
+    rope_chain_local = derived["rope_chain"]
+    rope_chain = rope_idx[rope_chain_local]
 
     load_end_z0 = float(derived["load_end_z0"])
     plate_pos0 = derived["plate_pos0"]
     d_eq = float(derived["d_eq"])
-    theta_stop = float(derived.get("theta_stop", 0.0))
+    theta_stop_muscle = float(derived.get("theta_stop_muscle", 0.0))
+    theta_stop_load = float(derived.get("theta_stop_load", 0.0))
 
     plate_fz0 = seed_structures._draw_force_z(
         sim.pos[plate_idx].astype(np.float64),
@@ -2282,19 +2328,24 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         "fulcrum_clusters": [],
         "lever_clusters": [],
         "load_clusters": [],
-        "rod_clusters": [],
+        "rope_clusters": [],
         "arm_tip_to_drop_min": [],
         "droplet_apex_z": [],
-        "rod_force_z": [],
-        "rod_sign": [],
+        "rope_force_mean": [],
+        "rope_tension_frac": [],
+        "rope_compression_frac": [],
+        "rope_slack_frac": [],
+        "rope_taut_links": [],
+        "rope_max_compression": [],
         "theta": [],
-        "theta_stop": theta_stop,
+        "theta_stop_muscle": theta_stop_muscle,
+        "theta_stop_load": theta_stop_load,
         "plate_pos": [],
         "drop_pos": [],
         "fulcrum_pos": [],
         "lever_pos": [],
         "load_pos": [],
-        "rod_pos": [],
+        "rope_pos": [],
     }
 
     def _min_pair_distance(a: np.ndarray, b: np.ndarray) -> float:
@@ -2307,7 +2358,7 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         fulcrum_p = sim.pos[fulcrum_idx].astype(np.float64)
         lever_p = sim.pos[lever_idx].astype(np.float64)
         load_p = sim.pos[load_idx].astype(np.float64)
-        rod_p = sim.pos[rod_idx].astype(np.float64)
+        rope_p = sim.pos[rope_idx].astype(np.float64)
 
         load_c = lever_p[derived["load_face"]].mean(axis=0)
         muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
@@ -2330,20 +2381,27 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         fulcrum_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
         lever_clust = _group_cluster_count(sim.pos, grain_ids, 2, R_C)
         load_clust = _group_cluster_count(sim.pos, grain_ids, 3, R_C)
-        rod_clust = _group_cluster_count(sim.pos, grain_ids, 4, R_C)
+        rope_clust = _group_cluster_count(sim.pos, grain_ids, 4, R_C)
 
         arm_tip_to_drop_min = _min_pair_distance(
             lever_p[derived["muscle_face"]], drop_p)
         droplet_apex_z = float(drop_p[:, 2].max())
-        rod_force_z = _rod_internal_force_z(sim.pos, grain_ids,
-                                            derived["rod_top"],
-                                            derived["rod_bottom"])
-        if rod_force_z > 0.5:
-            rod_sign = "tension"
-        elif rod_force_z < -0.5:
-            rod_sign = "compression"
+
+        link_forces = _rope_link_forces(sim.pos, grain_ids, rope_chain_local)
+        if link_forces.size > 0:
+            rope_force_mean = float(np.mean(link_forces))
+            rope_tension_frac = float(np.mean(link_forces > 0.5))
+            rope_compression_frac = float(np.mean(link_forces < -0.5))
+            rope_slack_frac = float(np.mean(np.abs(link_forces) <= 0.5))
+            rope_taut_links = int(np.sum(link_forces > 0.5))
+            rope_max_compression = float(np.maximum(-np.min(link_forces), 0.0))
         else:
-            rod_sign = "slack"
+            rope_force_mean = 0.0
+            rope_tension_frac = 0.0
+            rope_compression_frac = 0.0
+            rope_slack_frac = 1.0
+            rope_taut_links = 0
+            rope_max_compression = 0.0
 
         metrics["tick"].append(tick)
         metrics["load_gain"].append(load_gain)
@@ -2355,32 +2413,39 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
         metrics["fulcrum_clusters"].append(fulcrum_clust)
         metrics["lever_clusters"].append(lever_clust)
         metrics["load_clusters"].append(load_clust)
-        metrics["rod_clusters"].append(rod_clust)
+        metrics["rope_clusters"].append(rope_clust)
         metrics["arm_tip_to_drop_min"].append(arm_tip_to_drop_min)
         metrics["droplet_apex_z"].append(droplet_apex_z)
-        metrics["rod_force_z"].append(rod_force_z)
-        metrics["rod_sign"].append(rod_sign)
+        metrics["rope_force_mean"].append(rope_force_mean)
+        metrics["rope_tension_frac"].append(rope_tension_frac)
+        metrics["rope_compression_frac"].append(rope_compression_frac)
+        metrics["rope_slack_frac"].append(rope_slack_frac)
+        metrics["rope_taut_links"].append(rope_taut_links)
+        metrics["rope_max_compression"].append(rope_max_compression)
         metrics["theta"].append(lever_angle)
         metrics["plate_pos"].append(plate_p.copy())
         metrics["drop_pos"].append(drop_p.copy())
         metrics["fulcrum_pos"].append(fulcrum_p.copy())
         metrics["lever_pos"].append(lever_p.copy())
         metrics["load_pos"].append(load_p.copy())
-        metrics["rod_pos"].append(rod_p.copy())
+        metrics["rope_pos"].append(rope_p.copy())
 
         print(f"[{label}] tick={tick:6d} | load_gain={load_gain:+.4f} | "
               f"angle={math.degrees(lever_angle):6.2f}deg | "
-              f"theta/theta_stop={math.degrees(lever_angle):6.2f}/"
-              f"{math.degrees(theta_stop):6.2f}deg | "
+              f"theta=[{math.degrees(theta_stop_load):6.2f}, "
+              f"{math.degrees(theta_stop_muscle):6.2f}]deg | "
               f"gap={fulcrum_gap:.4f} | plate_F={plate_force:.2f} | "
               f"contact={contact_ratio:.3f} | "
-              f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}/{rod_clust} | "
+              f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}/{rope_clust} | "
               f"tip_to_drop={arm_tip_to_drop_min:.4f} | apex_z={droplet_apex_z:.4f} | "
-              f"rod={rod_sign}({rod_force_z:+.2f})")
+              f"rope links T/S/C={rope_taut_links}/"
+              f"{int(round(rope_slack_frac*link_forces.size if link_forces.size else 0))}/"
+              f"{int(round(rope_compression_frac*link_forces.size if link_forces.size else 0))} "
+              f"max_comp={rope_max_compression:.2f}")
 
     print(f"\n[{label}] N={N} plate={len(plate_idx)} droplet={len(drop_idx)} "
           f"fulcrum={len(fulcrum_idx)} lever={len(lever_idx)} load={len(load_idx)} "
-          f"rod={len(rod_idx)}")
+          f"rope={len(rope_idx)}")
     print(f"[{label}] dt={dt} ticks={ticks} sample_every={sample_every}\n")
 
     dump_frame(sim.pos.copy(),
@@ -2398,12 +2463,13 @@ def _run_leg(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
 
 
 def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
-    """Print LEG v2 falsifier verdict; return dict of booleans."""
+    """Print LEG v3 falsifier verdict; return dict of booleans."""
     ticks = np.asarray(metrics["tick"], dtype=np.int32)
     load_gain = np.asarray(metrics["load_gain"], dtype=np.float64)
     lever_angle = np.asarray(metrics["lever_angle"], dtype=np.float64)
     theta = np.asarray(metrics["theta"], dtype=np.float64)
-    theta_stop = float(metrics.get("theta_stop", 0.0))
+    theta_stop_muscle = float(metrics.get("theta_stop_muscle", 0.0))
+    theta_stop_load = float(metrics.get("theta_stop_load", 0.0))
     fulcrum_gap = np.asarray(metrics["fulcrum_gap"], dtype=np.float64)
     plate_force = np.asarray(metrics["plate_force"], dtype=np.float64)
     contact_ratio = np.asarray(metrics["contact_ratio"], dtype=np.float64)
@@ -2411,10 +2477,15 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     fulcrum_clust = np.asarray(metrics["fulcrum_clusters"], dtype=np.int32)
     lever_clust = np.asarray(metrics["lever_clusters"], dtype=np.int32)
     load_clust = np.asarray(metrics["load_clusters"], dtype=np.int32)
-    rod_clust = np.asarray(metrics["rod_clusters"], dtype=np.int32)
+    rope_clust = np.asarray(metrics["rope_clusters"], dtype=np.int32)
     arm_tip_to_drop_min = np.asarray(metrics["arm_tip_to_drop_min"], dtype=np.float64)
     droplet_apex_z = np.asarray(metrics["droplet_apex_z"], dtype=np.float64)
-    rod_force_z = np.asarray(metrics["rod_force_z"], dtype=np.float64)
+    rope_force_mean = np.asarray(metrics["rope_force_mean"], dtype=np.float64)
+    rope_tension_frac = np.asarray(metrics["rope_tension_frac"], dtype=np.float64)
+    rope_compression_frac = np.asarray(metrics["rope_compression_frac"], dtype=np.float64)
+    rope_slack_frac = np.asarray(metrics["rope_slack_frac"], dtype=np.float64)
+    rope_taut_links = np.asarray(metrics["rope_taut_links"], dtype=np.int32)
+    rope_max_compression = np.asarray(metrics["rope_max_compression"], dtype=np.float64)
 
     d_eq = float(derived["d_eq"])
     seated_band = d_eq + 0.05
@@ -2490,7 +2561,7 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         int(fulcrum_clust.max()) == 1 and
         int(lever_clust.max()) == 1 and
         int(load_clust.max()) == 1 and
-        int(rod_clust.max()) == 1)
+        int(rope_clust.max()) == 1)
 
     plate_pos0 = np.asarray(derived["plate_pos0"], dtype=np.float64)
     plate_pos_final = np.asarray(metrics["plate_pos"][-1], dtype=np.float64)
@@ -2501,21 +2572,29 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     min_tip_to_drop = float(arm_tip_to_drop_min.min())
     min_apex = float(droplet_apex_z.min())
     max_apex = float(droplet_apex_z.max())
-    final_rod_force = float(rod_force_z[-1])
-    rod_tension_frac = float(np.mean(rod_force_z > 0.5))
-    rod_compression_frac = float(np.mean(rod_force_z < -0.5))
-    rod_slack_frac = float(np.mean(np.abs(rod_force_z) <= 0.5))
+    final_rope_force = float(rope_force_mean[-1])
+    mean_tension_frac = float(np.mean(rope_tension_frac))
+    mean_compression_frac = float(np.mean(rope_compression_frac))
+    mean_slack_frac = float(np.mean(rope_slack_frac))
+    max_taut_links = int(rope_taut_links.max())
+    max_comp = float(rope_max_compression.max())
 
     max_theta = float(np.max(np.abs(theta)))
-    theta_exceeded = max_theta > theta_stop
+    theta_exceeded = (
+        max_theta > theta_stop_muscle or max_theta > abs(theta_stop_load))
 
-    # SLACK falsifier: main must keep the tendon route engaged.
+    # SLACK falsifier: a rope must crumple, never prop.  Sustained compression
+    # in the main run means the chain is acting as a strut and the v3 anatomy
+    # is violated.
     if control:
         slack_ok = None
     else:
-        slack_ok = rod_slack_frac <= 0.20
+        slack_ok = mean_compression_frac <= 0.20
 
-    print(f"\n[{label}] LEG v2 FALSIFIERS:")
+    route = derived.get("route", "unknown")
+    gate_passed = derived.get("gate_passed", False)
+
+    print(f"\n[{label}] LEG v3 FALSIFIERS (route={route}, gate_passed={gate_passed}):")
     if control:
         print(f"  (a) LIFT      : skipped (control)")
         print(f"  (b) HOLD      : {'PASS' if hold_ok else 'FAIL'}  "
@@ -2529,9 +2608,9 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
     print(f"  (c) BALANCE   : {'PASS' if balance_ok else 'FAIL'}  "
           f"{balance_detail}")
     print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
-          f"max clusters droplet/fulcrum/lever/load/rod="
+          f"max clusters droplet/fulcrum/lever/load/rope="
           f"{int(drop_clust.max())}/{int(fulcrum_clust.max())}/"
-          f"{int(lever_clust.max())}/{int(load_clust.max())}/{int(rod_clust.max())} "
+          f"{int(lever_clust.max())}/{int(load_clust.max())}/{int(rope_clust.max())} "
           f"plate_drift={plate_drift:.6f}")
     if control:
         print(f"  (e) SAG       : skipped (control)")
@@ -2542,15 +2621,19 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         print(f"  (f) SLACK     : skipped (control)")
     else:
         print(f"  (f) SLACK     : {'PASS' if slack_ok else 'FAIL'}  "
-              f"rod_slack_frac={rod_slack_frac:.2f} (bar 0.20)")
-    print(f"  TENDON TELEMETRY:")
+              f"mean rope compression fraction={mean_compression_frac:.2f} "
+              f"(bar 0.20)")
+    print(f"  ROPE TELEMETRY:")
     print(f"    min arm-tip-to-droplet distance = {min_tip_to_drop:.4f}")
     print(f"    droplet apex z range = [{min_apex:.4f}, {max_apex:.4f}]")
-    print(f"    max |theta| / theta_stop = {math.degrees(max_theta):.2f} / "
-          f"{math.degrees(theta_stop):.2f} deg  exceeded={theta_exceeded}")
-    print(f"    final rod internal force z = {final_rod_force:+.3f}")
-    print(f"    rod sign fractions: tension={rod_tension_frac:.2f} "
-          f"slack={rod_slack_frac:.2f} compression={rod_compression_frac:.2f}")
+    print(f"    max |theta| / muscle_load stops = {math.degrees(max_theta):.2f} / "
+          f"{math.degrees(theta_stop_muscle):.2f}, "
+          f"{math.degrees(abs(theta_stop_load)):.2f} deg  exceeded={theta_exceeded}")
+    print(f"    final rope mean link force = {final_rope_force:+.3f}")
+    print(f"    rope sign fractions: tension={mean_tension_frac:.2f} "
+          f"slack={mean_slack_frac:.2f} compression={mean_compression_frac:.2f}")
+    print(f"    max taut links = {max_taut_links} / {derived.get('n_rope', 0) - 1} "
+          f"max compression magnitude = {max_comp:.2f}")
 
     return {
         "lift_ok": lift_ok,
@@ -2561,11 +2644,13 @@ def _print_leg_verdict(metrics, derived: dict, label: str, control: bool):
         "sag_detected": sag_detected,
         "slack_ok": slack_ok,
         "theta_exceeded": theta_exceeded,
+        "gate_passed": gate_passed,
+        "route": route,
     }
 
 
 def leg_main(args, seed):
-    """LEG v2 print entry point: build, free-evolve, judge."""
+    """LEG v3 print entry point: build, free-evolve, judge."""
     control = bool(getattr(args, "leg_control", False))
     ticks = int(getattr(args, "leg_ticks", 8000))
     pos, vel, pin_mask, grain_ids, derived = seed_structures.leg(
@@ -2580,31 +2665,34 @@ def leg_main(args, seed):
 
     droplet_label = f"{derived['droplet_side']}^3"
     lever_len = derived.get('lever_len', 13)
-    n_rod_layers = derived.get('n_rod_layers', derived['n_rod'] // 4)
+    n_rope = derived.get('n_rope', 0)
+    route = derived.get('route', 'unknown')
+    gate_passed = derived.get('gate_passed', False)
     print("=" * 70)
-    print(f"THE KERNEL - LEG v2 print run ({version})")
+    print(f"THE KERNEL - LEG v3 print run ({version})")
     print(f"N={N}, plate=18x6+well ({derived['n_plate']} pinned), "
           f"fulcrum=4x4x4+2x(4x1x3) cheeks (PINNED), "
           f"lever=4x4 tube (1-grain shell, 2x2 void) x {lever_len} rings, "
           f"droplet={droplet_label} in well (PINNED), load=4^3, "
-          f"rod=2x2x{n_rod_layers} tendon, seed={seed}, dt={dt}, ticks={ticks}, "
-          f"control={control}")
+          f"rope=single-file x {n_rope} grains, route={route}, "
+          f"seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
     print("STATEMENT: A captured muscle-bone machine routes the muscle pull")
-    print("  through a vertical tendon rod that spans from the arm tip to an")
-    print("  anchored droplet at the bottom of a deep well, so the bone never")
-    print("  intersects the muscle.  The droplet is pinned to the well floor;")
-    print("  the well depth is derived so the arm-tip arc clears the droplet;")
-    print("  the fulcrum contact is chosen by an arc gate that samples the")
-    print("  kernel static torque ratio R_true(theta) over [0, theta_stop].")
+    print("  through a single-file rope tendon from the arm-tip underside to an")
+    print("  anchored droplet at the bottom of a deep well.  The rope pulls but")
+    print("  cannot push; when slack it must crumple into the well rather than")
+    print("  prop the lever.  The fulcrum contact is chosen by a FULL-ARC gate")
+    print("  that samples the kernel static torque ratio R_true(theta) on both")
+    print("  sides of the print pose, out to both derived end-stops.")
     if control:
-        print("PREDICTION: With kernel-verified R_true < 1 over the arc (slack)")
-        print("  the load end tips load-side-down and never rises more than one")
-        print("  lattice step above its print height.")
+        print("PREDICTION: With kernel-verified R_slack <= 1 on the full arc")
+        print("  (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down")
+        print("  and never rises more than one lattice step above its print height.")
     else:
-        print("PREDICTION: With kernel-verified min_R_taut >= 1 over the arc,")
-        print("  the captured arm tips muscle-side-down (positive settled angle)")
-        print("  and the load end lifts through at least two lattice steps.")
+        print("PREDICTION: With kernel-verified min_R_taut >= 1 on the full arc,")
+        print("  the captured arm tips muscle-side-down (positive settled angle),")
+        print("  the rope stays taut or slack (never compressed), and the load end")
+        print("  lifts through at least two lattice steps.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 absolute z")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
@@ -2614,20 +2702,21 @@ def leg_main(args, seed):
     print("  (d) INTEGRITY - all five bodies one cluster; plate/fulcrum pins hold")
     print("  (e) SAG     - if the arm rotates muscle-down but the load end does")
     print("      not lift, the tendon route failed to transmit the pull")
-    print("  (f) SLACK   - main: rod must stay taut (slack fraction <= 0.20)")
+    print("  (f) SLACK   - main: rope must not prop the lever; sustained")
+    print("      compression (>20% of samples) = FAIL")
     print("=" * 70)
     print(f"\nDerived d_eq   = {derived['d_eq']:.5f}")
     print(f"Derived contact_x = {derived['fulcrum_contact_point'][0]:.5f}")
     print(f"Derived a_m    = {derived['a_m']:.5f}")
     print(f"Derived a_l    = {derived['a_l']:.5f}")
     print(f"Derived R_true = {derived['R_true']:.3f}")
-    print(f"Derived theta_stop = {math.degrees(derived['theta_stop']):.2f} deg")
+    print(f"Derived theta_stop_muscle = {math.degrees(derived['theta_stop_muscle']):.2f} deg")
+    print(f"Derived theta_stop_load = {math.degrees(derived['theta_stop_load']):.2f} deg")
     print(f"Derived lever_len = {lever_len}")
     print(f"Derived margin_to_load_end = {derived['margin_to_load_end']:.5f}")
     print(f"Derived well_floor_z = {derived['well_floor_z']:.5f}")
     print(f"Derived droplet_apex = {derived['droplet_apex']:.5f}")
-    print(f"Derived n_rod_layers = {n_rod_layers}")
-    print(f"Derived n_rod  = {derived['n_rod']}\n")
+    print(f"Derived n_rope = {n_rope}\n")
 
     metrics = _run_leg(pos, vel, pin_mask, grain_ids, derived,
                        dt, ticks, tag, label)
