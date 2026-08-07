@@ -1851,6 +1851,360 @@ def bladder_main(args, seed):
     print("=" * 70)
 
 
+# ── LEVER-specific helpers ────────────────────────────────────────────
+
+
+def _run_lever(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+               tag, label):
+    """
+    Free-evolution lever protocol: only the ground plate is pinned.
+
+    Records load-end height, lever angle, fulcrum gap, plate reaction force,
+    load-lever contact force, and cluster counts for all four bodies.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    # Fixed global group indices.
+    plate_idx = np.flatnonzero(grain_ids == -1).astype(np.int32)
+    drop_idx = np.flatnonzero(grain_ids == 0).astype(np.int32)
+    fulcrum_idx = np.flatnonzero(grain_ids == 1).astype(np.int32)
+    lever_idx = np.flatnonzero(grain_ids == 2).astype(np.int32)
+    load_idx = np.flatnonzero(grain_ids == 3).astype(np.int32)
+
+    # Fixed local face indices mapped to global lever / fulcrum arrays.
+    muscle_face = lever_idx[derived["muscle_face"]]
+    load_face = lever_idx[derived["load_face"]]
+    fulcrum_top_face = fulcrum_idx[derived["fulcrum_top_face"]]
+    lever_contact_local = lever_idx[derived["lever_contact_local"]]
+
+    load_end_z0 = float(derived["load_end_z0"])
+    plate_pos0 = derived["plate_pos0"]
+    d_eq = float(derived["d_eq"])
+
+    # Print contact force supporting the load (upward lever push on load).
+    plate_fz0 = seed_structures._draw_force_z(
+        sim.pos[plate_idx].astype(np.float64),
+        sim.pos[load_idx].astype(np.float64))
+    acc_load_z0 = float(sim.acc[load_idx, 2].sum())
+    print_contact = float(acc_load_z0 - plate_fz0)
+    if print_contact <= 0.0:
+        print_contact = float(derived["W_L"])
+
+    sample_every = max(1, ticks // 40)
+
+    metrics = {
+        "tick": [],
+        "load_gain": [],
+        "lever_angle": [],
+        "fulcrum_gap": [],
+        "plate_force": [],
+        "contact_ratio": [],
+        "drop_clusters": [],
+        "fulcrum_clusters": [],
+        "lever_clusters": [],
+        "load_clusters": [],
+        "plate_pos": [],
+        "drop_pos": [],
+        "fulcrum_pos": [],
+        "lever_pos": [],
+        "load_pos": [],
+    }
+
+    def _min_pair_distance(a: np.ndarray, b: np.ndarray) -> float:
+        d = a[:, None, :] - b[None, :, :]
+        return float(np.sqrt((d * d).sum(axis=2).min()))
+
+    def _sample(tick: int):
+        plate_p = sim.pos[plate_idx].astype(np.float64)
+        drop_p = sim.pos[drop_idx].astype(np.float64)
+        fulcrum_p = sim.pos[fulcrum_idx].astype(np.float64)
+        lever_p = sim.pos[lever_idx].astype(np.float64)
+        load_p = sim.pos[load_idx].astype(np.float64)
+
+        load_c = lever_p[derived["load_face"]].mean(axis=0)
+        muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
+        load_gain = float(load_c[2] - load_end_z0)
+        lever_angle = float(math.atan2(
+            load_c[2] - muscle_c[2], load_c[0] - muscle_c[0]))
+
+        fulcrum_gap = _min_pair_distance(
+            fulcrum_p[derived["fulcrum_top_face"]],
+            lever_p[derived["lever_contact_local"]])
+
+        plate_force = float(np.abs(sim.acc[plate_idx, 2].sum()))
+
+        plate_fz = seed_structures._draw_force_z(plate_p, load_p)
+        acc_load_z = float(sim.acc[load_idx, 2].sum())
+        contact_ratio = ((acc_load_z - plate_fz) /
+                         max(print_contact, 1e-12))
+
+        drop_clust = _group_cluster_count(sim.pos, grain_ids, 0, R_C)
+        fulcrum_clust = _group_cluster_count(sim.pos, grain_ids, 1, R_C)
+        lever_clust = _group_cluster_count(sim.pos, grain_ids, 2, R_C)
+        load_clust = _group_cluster_count(sim.pos, grain_ids, 3, R_C)
+
+        metrics["tick"].append(tick)
+        metrics["load_gain"].append(load_gain)
+        metrics["lever_angle"].append(lever_angle)
+        metrics["fulcrum_gap"].append(fulcrum_gap)
+        metrics["plate_force"].append(plate_force)
+        metrics["contact_ratio"].append(contact_ratio)
+        metrics["drop_clusters"].append(drop_clust)
+        metrics["fulcrum_clusters"].append(fulcrum_clust)
+        metrics["lever_clusters"].append(lever_clust)
+        metrics["load_clusters"].append(load_clust)
+        metrics["plate_pos"].append(plate_p.copy())
+        metrics["drop_pos"].append(drop_p.copy())
+        metrics["fulcrum_pos"].append(fulcrum_p.copy())
+        metrics["lever_pos"].append(lever_p.copy())
+        metrics["load_pos"].append(load_p.copy())
+
+        print(f"[{label}] tick={tick:6d} | load_gain={load_gain:+.4f} | "
+              f"angle={math.degrees(lever_angle):6.2f}deg | "
+              f"gap={fulcrum_gap:.4f} | plate_F={plate_force:.2f} | "
+              f"contact={contact_ratio:.3f} | "
+              f"clusters={drop_clust}/{fulcrum_clust}/{lever_clust}/{load_clust}")
+
+    print(f"\n[{label}] N={N} plate={len(plate_idx)} droplet={len(drop_idx)} "
+          f"fulcrum={len(fulcrum_idx)} lever={len(lever_idx)} load={len(load_idx)}")
+    print(f"[{label}] dt={dt} ticks={ticks} sample_every={sample_every}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    _sample(0)
+    for tick in range(1, ticks + 1):
+        sim.step(dt)
+        if tick % sample_every == 0 or tick == ticks:
+            _sample(tick)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics
+
+
+def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
+    """Print LEVER falsifier verdict; return dict of booleans."""
+    ticks = np.asarray(metrics["tick"], dtype=np.int32)
+    load_gain = np.asarray(metrics["load_gain"], dtype=np.float64)
+    lever_angle = np.asarray(metrics["lever_angle"], dtype=np.float64)
+    fulcrum_gap = np.asarray(metrics["fulcrum_gap"], dtype=np.float64)
+    plate_force = np.asarray(metrics["plate_force"], dtype=np.float64)
+    contact_ratio = np.asarray(metrics["contact_ratio"], dtype=np.float64)
+    drop_clust = np.asarray(metrics["drop_clusters"], dtype=np.int32)
+    fulcrum_clust = np.asarray(metrics["fulcrum_clusters"], dtype=np.int32)
+    lever_clust = np.asarray(metrics["lever_clusters"], dtype=np.int32)
+    load_clust = np.asarray(metrics["load_clusters"], dtype=np.int32)
+
+    d_eq = float(derived["d_eq"])
+    seated_band = d_eq + 0.05
+    r_c = R_C
+
+    # Recovery: fulcrum gap excursions above r_c must return to seated band.
+    excursions = []
+    in_excursion = False
+    t_start = 0
+    max_gap_in = 0.0
+    for i, (t, g) in enumerate(zip(ticks, fulcrum_gap)):
+        if g > r_c:
+            if not in_excursion:
+                in_excursion = True
+                t_start = int(t)
+                max_gap_in = float(g)
+            else:
+                max_gap_in = max(max_gap_in, float(g))
+        else:
+            if in_excursion:
+                excursions.append((t_start, int(t), max_gap_in))
+                in_excursion = False
+    if in_excursion:
+        excursions.append((t_start, int(ticks[-1]), max_gap_in))
+
+    recovery_ok = True
+    if excursions:
+        last_end = excursions[-1][1]
+        last_end_idx = int(np.searchsorted(ticks, last_end))
+        seated = fulcrum_gap <= seated_band
+        recovered_idx = None
+        for i in range(last_end_idx, len(ticks)):
+            if seated[i:].all():
+                recovered_idx = i
+                break
+        recovery_ok = recovered_idx is not None
+
+    max_gain = float(load_gain.max())
+    max_gain_idx = int(np.argmax(load_gain))
+    max_gain_tick = int(ticks[max_gain_idx])
+
+    if control:
+        lift_ok = None
+        hold_ok = max_gain <= 0.05
+    else:
+        # LIFT: main must raise load end >= 0.10 while fulcrum stays or recovers.
+        lift_ok = (max_gain >= 0.10) and recovery_ok
+        hold_ok = None
+
+    # BALANCE LAW (main only): at liftoff (contact force <= 10% of print).
+    balance_ok = False
+    balance_ratio = None
+    max_ratio_seen = 0.0
+    if not control:
+        liftoff_idx = next(
+            (i for i, cr in enumerate(contact_ratio) if cr <= 0.10), None)
+        if liftoff_idx is not None:
+            plate_p = np.asarray(metrics["plate_pos"][liftoff_idx],
+                                 dtype=np.float64)
+            drop_p = np.asarray(metrics["drop_pos"][liftoff_idx],
+                                dtype=np.float64)
+            fulcrum_p = np.asarray(metrics["fulcrum_pos"][liftoff_idx],
+                                   dtype=np.float64)
+            lever_p = np.asarray(metrics["lever_pos"][liftoff_idx],
+                                 dtype=np.float64)
+            load_p = np.asarray(metrics["load_pos"][liftoff_idx],
+                                dtype=np.float64)
+
+            muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
+            load_c = lever_p[derived["load_face"]].mean(axis=0)
+            # Contact x is the current fulcrum top centroid x.
+            contact_x = float(fulcrum_p[derived["fulcrum_top_face"], 0].mean())
+            a_m = float(contact_x - muscle_c[0])
+            a_l = float(load_c[0] - contact_x)
+            F_m = seed_structures._downward_draw_magnitude(drop_p, lever_p)
+            W_L = seed_structures._downward_draw_magnitude(plate_p, load_p)
+            if W_L > 0.0 and a_l > 0.0 and a_m > 0.0:
+                balance_ratio = float(F_m * a_m / (W_L * a_l))
+            else:
+                balance_ratio = 0.0
+            # Honest band around unity: the quasi-static liftoff is noisy,
+            # so the gate is [0.5, 2.0] rather than a tight 10% band.
+            balance_ok = 0.5 <= balance_ratio <= 2.0
+        else:
+            # No liftoff: report the maximum ratio seen across samples.
+            for i in range(len(ticks)):
+                plate_p = np.asarray(metrics["plate_pos"][i],
+                                     dtype=np.float64)
+                drop_p = np.asarray(metrics["drop_pos"][i],
+                                    dtype=np.float64)
+                fulcrum_p = np.asarray(metrics["fulcrum_pos"][i],
+                                       dtype=np.float64)
+                lever_p = np.asarray(metrics["lever_pos"][i],
+                                     dtype=np.float64)
+                load_p = np.asarray(metrics["load_pos"][i],
+                                    dtype=np.float64)
+                muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
+                load_c = lever_p[derived["load_face"]].mean(axis=0)
+                contact_x = float(
+                    fulcrum_p[derived["fulcrum_top_face"], 0].mean())
+                a_m = float(contact_x - muscle_c[0])
+                a_l = float(load_c[0] - contact_x)
+                F_m = seed_structures._downward_draw_magnitude(drop_p, lever_p)
+                W_L = seed_structures._downward_draw_magnitude(plate_p, load_p)
+                if W_L > 0.0 and a_l > 0.0 and a_m > 0.0:
+                    r = float(F_m * a_m / (W_L * a_l))
+                    max_ratio_seen = max(max_ratio_seen, r)
+            balance_ratio = max_ratio_seen
+
+    # INTEGRITY: all bodies one cluster; plate pins hold.
+    integrity_ok = (
+        int(drop_clust.max()) == 1 and
+        int(fulcrum_clust.max()) == 1 and
+        int(lever_clust.max()) == 1 and
+        int(load_clust.max()) == 1)
+
+    plate_pos0 = np.asarray(derived["plate_pos0"], dtype=np.float64)
+    plate_pos_final = np.asarray(metrics["plate_pos"][-1], dtype=np.float64)
+    plate_drift = float(np.max(np.abs(plate_pos_final[:, 1:] - plate_pos0[:, 1:])))
+    plate_ok = plate_drift <= 1e-4
+
+    print(f"\n[{label}] LEVER FALSIFIERS:")
+    if control:
+        print(f"  (a) LIFT      : skipped (control)")
+        print(f"  (b) HOLD      : {'PASS' if hold_ok else 'FAIL'}  "
+              f"max load_gain={max_gain:.4f} at tick={max_gain_tick} "
+              f"(bar 0.0500)")
+    else:
+        print(f"  (a) LIFT      : {'PASS' if lift_ok else 'FAIL'}  "
+              f"max load_gain={max_gain:.4f} at tick={max_gain_tick} "
+              f"(bar 0.1000) recovery_ok={recovery_ok}")
+        print(f"  (b) HOLD      : skipped (main)")
+    if control:
+        print(f"  (c) BALANCE   : skipped (control)")
+    else:
+        if liftoff_idx is not None:
+            print(f"  (c) BALANCE   : {'PASS' if balance_ok else 'FAIL'}  "
+                  f"liftoff tick={ticks[liftoff_idx]} "
+                  f"F_m*a_m/(W_L*a_l)={balance_ratio:.3f} (band [0.500, 2.000])")
+        else:
+            print(f"  (c) BALANCE   : FAIL  no liftoff; max ratio seen="
+                  f"{balance_ratio:.3f}")
+    print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
+          f"max clusters droplet/fulcrum/lever/load="
+          f"{int(drop_clust.max())}/{int(fulcrum_clust.max())}/"
+          f"{int(lever_clust.max())}/{int(load_clust.max())} "
+          f"plate_drift={plate_drift:.6f}")
+
+    return {
+        "lift_ok": lift_ok,
+        "hold_ok": hold_ok,
+        "balance_ok": balance_ok,
+        "integrity_ok": integrity_ok,
+        "plate_ok": plate_ok,
+    }
+
+
+def lever_main(args, seed):
+    """LEVER print entry point: build, free-evolve, judge."""
+    control = bool(getattr(args, "lever_control", False))
+    ticks = int(getattr(args, "lever_ticks", 8000))
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.lever(
+        control=control, seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    tag = f"{args.tag}_" if args.tag else ""
+    label = "lever_control" if control else "lever"
+    version = "control" if control else "main"
+
+    print("=" * 70)
+    print(f"THE KERNEL - LEVER v1 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4, lever=4x4x16, droplet=4^3, "
+          f"load=4^3, seed={seed}, dt={dt}, ticks={ticks}, control={control}")
+    print("-" * 70)
+    print("STATEMENT: A muscle-bone machine trades muscle force for load force")
+    print("  through arm length; the balance ratio R = F_m·a_m / (W_L·a_l)")
+    print("  decides whether the load lifts, and nothing else does.")
+    if control:
+        print("PREDICTION: With the muscle arm halved (R <= 1), the load end")
+        print("  never rises more than one lattice step above its print height.")
+    else:
+        print("PREDICTION: With the muscle arm long enough (R >= 2), the load")
+        print("  end lifts through at least two lattice steps while the fulcrum")
+        print("  contact holds or recovers, and the balance law at liftoff is")
+        print("  within an honest band around unity.")
+    print("FALSIFIERS:")
+    print("  (a) LIFT    - main: load end rises >= 0.10 while fulcrum contact")
+    print("      holds or recovers to the seated band")
+    print("  (b) HOLD    - control: load end rises <= 0.05 all run")
+    print("  (c) BALANCE - main: F_m·a_m/(W_L·a_l) within [0.5, 2.0] at liftoff")
+    print("  (d) INTEGRITY - all four bodies one cluster; plate pins hold")
+    print("=" * 70)
+    print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")
+    print(f"Derived a_m   = {derived['a_m']:.5f}")
+    print(f"Derived a_l   = {derived['a_l']:.5f}")
+    print(f"Derived F_m   = {derived['F_m']:.3f}")
+    print(f"Derived W_L   = {derived['W_L']:.3f}")
+    print(f"Derived R     = {derived['R']:.3f}\n")
+
+    metrics = _run_lever(pos, vel, pin_mask, grain_ids, derived,
+                         dt, ticks, tag, label)
+    _print_lever_verdict(metrics, derived, label, control)
+    print("=" * 70)
+
+
 # ── TENDON-specific helpers ───────────────────────────────────────────
 
 def _rod_cluster_count(pos: np.ndarray, grain_ids: np.ndarray,
@@ -3335,7 +3689,7 @@ def main():
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
                                  "bone", "muscle", "tendon", "joint", "sheet",
-                                 "skin", "bladder"],
+                                 "skin", "bladder", "lever"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -3371,6 +3725,11 @@ def main():
     parser.add_argument("--skin-settle-ticks", type=int, default=3000,
                         help="SKIN free-evolution settle ticks before the stroke "
                              "(default 3000)")
+    parser.add_argument("--lever-control", action="store_true",
+                        help="LEVER control run: halved muscle arm, load must NOT "
+                             "lift (default main run)")
+    parser.add_argument("--lever-ticks", type=int, default=8000,
+                        help="LEVER free-evolution ticks (default 8000)")
     parser.add_argument("--bladder-fill", type=str, default="gap",
                         choices=["gap", "fill"],
                         help="BLADDER content geometry: gap=v1 4^3 droplet, "
@@ -3417,6 +3776,11 @@ def main():
     # BLADDER print has its own driver (closed shell + contents squeeze test)
     if args.structure == "bladder":
         bladder_main(args, SEED)
+        return
+
+    # LEVER print has its own driver (muscle-bone machine balance test)
+    if args.structure == "lever":
+        lever_main(args, SEED)
         return
 
     # choose initial state

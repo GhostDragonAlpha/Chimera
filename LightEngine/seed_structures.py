@@ -1108,6 +1108,289 @@ def skin(spacing: float = 0.05,
             grain_ids, s0, R_droplet, derived)
 
 
+def _draw_force_z(src: np.ndarray, dst: np.ndarray, eps: float = EPS) -> float:
+    """
+    Sum the z-component of the softened-DRAW force that ``src`` exerts on
+    ``dst``.  Negative means ``dst`` is pulled downward (toward a src below it).
+    """
+    dpos = src[:, None, :] - dst[None, :, :]
+    r2 = (dpos * dpos).sum(axis=2) + eps * eps
+    fz = G * dpos[:, :, 2] / (r2 ** 1.5)
+    return float(fz.sum())
+
+
+def _downward_draw_magnitude(src: np.ndarray, dst: np.ndarray,
+                             eps: float = EPS) -> float:
+    """Downward pull magnitude of ``src`` on ``dst`` (non-negative)."""
+    return float(np.maximum(-_draw_force_z(src, dst, eps), 0.0))
+
+
+def lever(control: bool = False,
+          spacing: float = 0.05,
+          seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                  np.ndarray, dict]:
+    """
+    THE LEVER print: a pinned ground plate, a cushion fulcrum, a horizontal
+    bone lever, a 4³ muscle droplet, and a 4³ load block.
+
+    Grain ids:
+      - plate   = -1 (pinned)
+      - droplet = 0  (muscle)
+      - fulcrum = 1
+      - lever   = 2
+      - load    = 3
+
+    Geometry:
+      - 6×6 ground plate at z = 0.
+      - 4×4×4 fulcrum block seated ``d_eq`` above the plate.
+      - 4×4×16 lever laid horizontal along x, its bottom face ``d_eq`` above
+        the fulcrum top face.
+      - 4³ muscle droplet seated on the plate under/beside the lever's muscle
+        (left) end, pulling that end down by DRAW.
+      - 4³ load block resting on the lever's load (right) end, ``d_eq`` above
+        the lever top face.
+
+    In ``control=True`` the fulcrum contact point is shifted toward the muscle
+    end so the muscle arm ``a_m`` is halved while the load arm ``a_l`` is
+    unchanged in absolute length; the muscle droplet and load positions are
+    unchanged except for the print-law adjustment described below.
+
+    The droplet's right-face x position is derived by bisection so that the
+    main-run balance ratio ``R = F_m·a_m / (W_L·a_l)`` lands near 2.2 while
+    keeping a cushion gap away from the shifted fulcrum in the control
+    configuration.  ``R`` must be ≥ 1.8 for main and ≤ 1.1 for control at the
+    cold print.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, derived)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; only the ground plate is pinned.
+      - ``grain_ids`` is length-N int32.
+      - ``derived`` carries the fulcrum contact point, fixed face indices,
+        arm lengths ``a_m``/``a_l``, ``F_m``, ``W_L``, ``R``, counts, and the
+        control flag.
+    """
+    rng = np.random.default_rng(seed)
+    d = float(spacing)
+    d_eq = TENDON_D_EQ
+
+    # Plate: 6×6 at z = 0.
+    plate_side = 6
+    n_plate = plate_side * plate_side
+    p_off = (np.arange(plate_side, dtype=np.float64)
+             - (plate_side - 1) / 2.0) * d
+    px, py = np.meshgrid(p_off, p_off, indexing="ij")
+    plate_pos = np.stack([px.ravel(), py.ravel(),
+                          np.zeros(n_plate, dtype=np.float64)], axis=1)
+
+    # Fulcrum: 4×4×4, bottom at z = d_eq.
+    fulcrum_side = 4
+    n_fulcrum = fulcrum_side ** 3
+    f_off = (np.arange(fulcrum_side, dtype=np.float64)
+             - (fulcrum_side - 1) / 2.0) * d
+    fz = np.arange(fulcrum_side, dtype=np.float64) * d + d_eq
+    fx, fy, fzz = np.meshgrid(f_off, f_off, fz, indexing="ij")
+    fulcrum_pos = np.stack([fx.ravel(), fy.ravel(), fzz.ravel()], axis=1)
+
+    # Lever: 4×4×16 along x, bottom face d_eq above fulcrum top face.
+    lever_side = 4
+    lever_len = 16
+    n_lever = lever_side * lever_side * lever_len
+    L = (lever_len - 1) * d
+    lever_x_off = (np.arange(lever_len, dtype=np.float64)
+                   - (lever_len - 1) / 2.0) * d
+    fulcrum_top_z = d_eq + (fulcrum_side - 1) * d
+    lever_bottom_z = fulcrum_top_z + d_eq
+    lz = np.arange(lever_side, dtype=np.float64) * d + lever_bottom_z
+    ly = f_off
+    lxx, lyy, lzz = np.meshgrid(lever_x_off, ly, lz, indexing="ij")
+    lever_pos = np.stack([lxx.ravel(), lyy.ravel(), lzz.ravel()], axis=1)
+
+    muscle_end_x = float(lever_x_off[0])
+    load_end_x = float(lever_x_off[-1])
+
+    # Muscle droplet: 4³ on the plate, placed under/beside the muscle end.
+    # Its right-face x is derived below; build helper uses a candidate x_right.
+    drop_side = 4
+    n_drop = drop_side ** 3
+    drop_off = f_off
+    drop_y = f_off
+    drop_z = np.arange(drop_side, dtype=np.float64) * d + d_eq
+
+    # Load block: 4³ resting on the load end of the lever.
+    n_load = drop_side ** 3
+    load_y = f_off
+    load_top_z = lever_bottom_z + (lever_side - 1) * d
+    load_z = np.arange(drop_side, dtype=np.float64) * d + load_top_z + d_eq
+
+    fulcrum_half_width = (fulcrum_side - 1) / 2.0 * d
+
+    # The control fulcrum's left face must stay clear of the droplet; this sets
+    # the closest the droplet can approach the lever from the muscle side.
+    fulcrum_shift_control = -L / 4.0
+    fulcrum_left_control = fulcrum_shift_control - fulcrum_half_width
+    x_right_max = fulcrum_left_control - d_eq
+
+    # Bisect droplet right-face x to hit R ≈ 2.2 in the MAIN geometry
+    # (fulcrum centered at x=0).  R increases as the droplet moves right.
+    x_right_lo = muscle_end_x - 2.0
+    x_right_hi = x_right_max
+    target_R = 2.0
+
+    def _build_with_x_right(x_right: float, fulcrum_p: np.ndarray):
+        drop_x_center = x_right - 0.5 * (drop_side - 1) * d
+        drop_x = drop_off + drop_x_center
+        dx, dy, dz = np.meshgrid(drop_x, drop_y, drop_z, indexing="ij")
+        droplet_p = np.stack([dx.ravel(), dy.ravel(), dz.ravel()], axis=1)
+
+        load_x_center = load_end_x
+        load_x = drop_off + load_x_center
+        lx, ly2, lz2 = np.meshgrid(load_x, load_y, load_z, indexing="ij")
+        load_p = np.stack([lx.ravel(), ly2.ravel(), lz2.ravel()], axis=1)
+
+        pos_all = np.vstack([
+            plate_pos, droplet_p, fulcrum_p, lever_pos, load_p
+        ]).astype(np.float64)
+        return pos_all, droplet_p, load_p
+
+    def _ratio_for_x_right(x_right: float, fulcrum_p: np.ndarray,
+                           cx: float):
+        pos_all, droplet_p, load_p = _build_with_x_right(x_right, fulcrum_p)
+        plate_p = pos_all[:n_plate]
+        lever_p = pos_all[n_plate + n_drop + n_fulcrum:
+                          n_plate + n_drop + n_fulcrum + n_lever]
+        order = np.argsort(lever_p[:, 0])
+        muscle_face = order[:lever_side * lever_side]
+        load_face = order[-lever_side * lever_side:]
+        a_m = cx - float(lever_p[muscle_face, 0].mean())
+        a_l = float(lever_p[load_face, 0].mean()) - cx
+        F_m = _downward_draw_magnitude(droplet_p, lever_p)
+        W_L = _downward_draw_magnitude(plate_p, load_p)
+        if W_L <= 0.0 or a_l <= 0.0:
+            return 0.0, pos_all, droplet_p, load_p
+        R = F_m * a_m / (W_L * a_l)
+        return R, pos_all, droplet_p, load_p
+
+    # Sanity-check the main bracket.
+    R_lo, _, _, _ = _ratio_for_x_right(x_right_lo, fulcrum_pos, 0.0)
+    R_hi, _, _, _ = _ratio_for_x_right(x_right_hi, fulcrum_pos, 0.0)
+    if R_hi < 1.8:
+        raise RuntimeError(
+            f"lever print cannot derive main R >= 1.8: "
+            f"R(x_right_max)={R_hi:.3f}")
+    if R_lo > 3.3:
+        raise RuntimeError(
+            f"lever print cannot derive control R <= 1.1: "
+            f"R(x_right_min)={R_lo:.3f}")
+
+    x_right = x_right_hi
+    for _ in range(24):
+        x_mid = 0.5 * (x_right_lo + x_right_hi)
+        R_mid, _, _, _ = _ratio_for_x_right(x_mid, fulcrum_pos, 0.0)
+        if R_mid < target_R:
+            x_right_lo = x_mid
+        else:
+            x_right_hi = x_mid
+        x_right = x_mid
+
+    # Apply the control fulcrum shift now; the droplet placement stays the same.
+    if control:
+        fulcrum_pos[:, 0] += fulcrum_shift_control
+        contact_x = float(fulcrum_shift_control)
+    else:
+        contact_x = 0.0
+
+    pos, droplet_pos, load_pos = _build_with_x_right(x_right, fulcrum_pos)
+
+    # Tiny deterministic jitter to break exact degeneracies (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    # Recompute component positions after jitter for derived quantities.
+    plate_pos_j = pos[:n_plate]
+    droplet_pos_j = pos[n_plate:n_plate + n_drop]
+    fulcrum_pos_j = pos[n_plate + n_drop:n_plate + n_drop + n_fulcrum]
+    lever_pos_j = pos[n_plate + n_drop + n_fulcrum:
+                      n_plate + n_drop + n_fulcrum + n_lever]
+    load_pos_j = pos[n_plate + n_drop + n_fulcrum + n_lever:]
+
+    # Print law: no two grains share a position.
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"lever print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6 (control={control})")
+
+    # Fixed indices from the cold print (after jitter; ordering is stable).
+    lever_order = np.argsort(lever_pos_j[:, 0])
+    muscle_face = lever_order[:lever_side * lever_side].astype(np.int32)
+    load_face = lever_order[-lever_side * lever_side:].astype(np.int32)
+    fulcrum_top_face = np.flatnonzero(
+        np.isclose(fulcrum_pos_j[:, 2], fulcrum_pos_j[:, 2].max()))
+    lever_contact_local = np.flatnonzero(
+        np.abs(lever_pos_j[:, 0] - contact_x) <= fulcrum_half_width + 1e-9)
+
+    muscle_c = lever_pos_j[muscle_face].mean(axis=0)
+    load_c = lever_pos_j[load_face].mean(axis=0)
+    a_m = float(contact_x - muscle_c[0])
+    a_l = float(load_c[0] - contact_x)
+
+    F_m = _downward_draw_magnitude(droplet_pos_j, lever_pos_j)
+    W_L = _downward_draw_magnitude(plate_pos_j, load_pos_j)
+    R = float(F_m * a_m / (W_L * a_l)) if W_L > 0.0 and a_l > 0.0 else 0.0
+
+    if control:
+        if R > 1.1:
+            raise RuntimeError(
+                f"lever control print R={R:.3f} exceeds 1.1")
+    else:
+        if R < 1.8:
+            raise RuntimeError(
+                f"lever main print R={R:.3f} below 1.8")
+
+    fulcrum_contact_point = np.array([contact_x, 0.0, lever_bottom_z],
+                                     dtype=np.float64)
+
+    pin_mask = np.zeros(pos.shape[0], dtype=bool)
+    pin_mask[:n_plate] = True
+
+    grain_ids = np.empty(pos.shape[0], dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_drop] = 0
+    grain_ids[n_plate + n_drop:n_plate + n_drop + n_fulcrum] = 1
+    grain_ids[n_plate + n_drop + n_fulcrum:
+              n_plate + n_drop + n_fulcrum + n_lever] = 2
+    grain_ids[n_plate + n_drop + n_fulcrum + n_lever:] = 3
+
+    derived = {
+        "control": bool(control),
+        "d_eq": d_eq,
+        "spacing": d,
+        "n_plate": n_plate,
+        "n_droplet": n_drop,
+        "n_fulcrum": n_fulcrum,
+        "n_lever": n_lever,
+        "n_load": n_load,
+        "fulcrum_contact_point": fulcrum_contact_point,
+        "muscle_face": muscle_face,
+        "load_face": load_face,
+        "fulcrum_top_face": fulcrum_top_face,
+        "lever_contact_local": lever_contact_local,
+        "a_m": a_m,
+        "a_l": a_l,
+        "F_m": F_m,
+        "W_L": W_L,
+        "R": R,
+        "plate_pos0": plate_pos_j.copy(),
+        "load_end_z0": float(load_c[2]),
+    }
+
+    return pos.astype(np.float32), np.zeros_like(pos, dtype=np.float32), \
+        pin_mask, grain_ids, derived
+
+
 def bladder(seed: int = 0,
             fill: str = "gap",
             neck: str = "narrow") -> tuple[np.ndarray, np.ndarray, np.ndarray,

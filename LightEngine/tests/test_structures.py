@@ -914,6 +914,104 @@ def test_bladder_antijam_neck_hole():
     assert derived["neck_diameter"] == pytest.approx(4.0 * 0.05, rel=1e-12)
 
 
+def test_lever_determinism():
+    """lever() is deterministic for a fixed seed and control flag."""
+    a = seed_structures.lever(control=False, seed=7)
+    b = seed_structures.lever(control=False, seed=7)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+def test_lever_counts():
+    """lever() builds the expected point counts."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.lever(
+        control=False, seed=0)
+    n_plate = 6 * 6
+    n_drop = 4 ** 3
+    n_fulcrum = 4 ** 3
+    n_lever = 4 * 4 * 16
+    n_load = 4 ** 3
+    assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load
+    assert int((grain_ids == -1).sum()) == n_plate
+    assert int((grain_ids == 0).sum()) == n_drop
+    assert int((grain_ids == 1).sum()) == n_fulcrum
+    assert int((grain_ids == 2).sum()) == n_lever
+    assert int((grain_ids == 3).sum()) == n_load
+    assert derived["n_plate"] == n_plate
+    assert derived["n_droplet"] == n_drop
+    assert derived["n_fulcrum"] == n_fulcrum
+    assert derived["n_lever"] == n_lever
+    assert derived["n_load"] == n_load
+
+
+def test_lever_only_plate_pinned():
+    """Only the ground plate is pinned."""
+    pos, _, pin_mask, grain_ids, _ = seed_structures.lever(control=False, seed=0)
+    plate_mask = grain_ids == -1
+    assert pin_mask[plate_mask].all()
+    assert not pin_mask[~plate_mask].any()
+
+
+def test_lever_no_shared_positions():
+    """No two grains share a position in the lever print."""
+    pos, _, _, _, _ = seed_structures.lever(control=False, seed=0)
+    pos64 = np.asarray(pos, dtype=np.float64)
+    diff = pos64[:, None, :] - pos64[None, :, :]
+    r2 = np.einsum("ijk,ijk->ij", diff, diff)
+    np.fill_diagonal(r2, np.inf)
+    assert np.sqrt(r2.min()) > 1e-6
+
+
+def test_lever_main_ratio():
+    """Main lever print derives R >= 1.8."""
+    _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
+    assert derived["R"] >= 1.8
+    assert derived["R"] <= 3.3  # keeps control ratio <= 1.1
+
+
+def test_lever_control_ratio():
+    """Control lever print derives R <= 1.1."""
+    _, _, _, _, derived = seed_structures.lever(control=True, seed=0)
+    assert derived["R"] <= 1.1
+
+
+def test_lever_control_arm_halves():
+    """Control run halves the muscle arm and leaves load arm unchanged."""
+    _, _, _, _, derived_main = seed_structures.lever(control=False, seed=0)
+    _, _, _, _, derived_ctrl = seed_structures.lever(control=True, seed=0)
+    # control a_m is approximately half the main a_m
+    assert derived_ctrl["a_m"] == pytest.approx(
+        0.5 * derived_main["a_m"], rel=0.05)
+    # control a_l is approximately 1.5x the main a_l
+    assert derived_ctrl["a_l"] == pytest.approx(
+        1.5 * derived_main["a_l"], rel=0.05)
+
+
+def test_lever_cushion_contacts():
+    """Initial lever-fulcrum and load-lever gaps are approximately d_eq."""
+    pos, _, _, grain_ids, derived = seed_structures.lever(control=False, seed=0)
+    fulcrum = pos[grain_ids == 1]
+    lever = pos[grain_ids == 2]
+    load = pos[grain_ids == 3]
+    fulcrum_top = fulcrum[derived["fulcrum_top_face"]]
+    lever_contact = lever[derived["lever_contact_local"]]
+    d = fulcrum_top[:, None, :] - lever_contact[None, :, :]
+    fulcrum_gap = float(np.sqrt((d * d).sum(axis=2).min()))
+    load_lever_gap = float(np.linalg.norm(
+        load[:, None, :] - lever[None, :, :], axis=2).min())
+    d_eq = derived["d_eq"]
+    assert abs(fulcrum_gap - d_eq) < 0.01
+    assert abs(load_lever_gap - d_eq) < 0.01
+
+
 def test_bladder_gap_mode_unchanged():
     """fill='gap' reproduces the v1 content count exactly."""
     pos, _, _, grain_ids, _, derived = seed_structures.bladder(

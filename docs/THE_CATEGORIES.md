@@ -736,6 +736,32 @@ unity... honestly: within 10% of the DERIVED ratio at liftoff (the
 balance point is computed on recorded positions, not fitted); (d)
 INTEGRITY — lever, fulcrum, droplet, load each one cluster throughout;
 the plate pins hold.
+**LEVER v1 VERDICT 2026-08-07 (run tags lever_v1 / lever_v1_control,
+8000 ticks):** the machine tipped BACKWARD — the two-torque model is
+refuted, not the lever. Main, printed at R_static = 1.999, rotated
+load-side DOWN from the first transient (load_gain −0.167 by tick 600,
+settled −0.333 at a 34° tilt, load end parked on the plate, fulcrum gap
+compressed to 0.050) — the static ratio said muscle-side wins by 2× and
+the dynamics said otherwise immediately. The model error is named: R was
+two pairwise sums (droplet→lever, load→plate) treated as point forces at
+the ends, but the kernel's real torque budget includes the lever's OWN
+256-grain weight (4× the load's mass) about a fulcrum that was only
+geometrically centered, the load's DRAW to lever and fulcrum (not just
+plate), and the fulcrum's own pull — none of which were in R. (a) LIFT
+FAIL (max +0.019 at tick 200, then the backward runaway: F_m decays as
+1/r² while W_L does not). (b) HOLD PASS but vacuously — the control sank
+too (max +0.026), so HOLD measured nothing discriminating this round.
+(c) BALANCE recorded VACUOUS: the liftoff detector fired at tick 0 on a
+contact-metric artifact (contact = −24.9 at print) — a metric that fires
+at print is not a measurement; struck. (d) INTEGRITY main PASS;
+control's droplet flickered to 2 clusters under plate/lever shear in four
+windows, recombined — recorded. Successor (named): v2 — the ratio is
+computed from the FULL kernel torque about the fulcrum on the print
+(every body, recorded positions, signed per grain: R_true = Στ_muscle /
+Στ_load), and the fulcrum contact point is re-derived until the kernel
+itself says the muscle side wins by 2× (bisection on the contact point —
+derivation, not sweep). The two-sided falsifier then runs on R_true:
+main must lift, control (kernel-verified R_true ≤ 1) must hold.
 
 ## ORDER OF PROOF (derived from dependency depth)
 
