@@ -1,0 +1,75 @@
+======================================================================
+THE KERNEL - SHEET v1 print run
+N=292, sheet=16x16, plate=6x6, mode=flat, seed=20260806, dt=0.0005, ticks=6000
+----------------------------------------------------------------------
+STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;
+  the substrate's DRAW holds it flat, the cushion keeps it one grain
+  off the surface, and its own self-DRAW holds it in-plane.  Cloth,
+  not shell, by necessity -- and cloth is what skin and bladder need.
+PREDICTION: bump and flat prints settle as a single connected sheet
+  <=2 lattice steps thick; the bump run drapes so the block top and the
+  plate edges are both in cushion contact; the free sheet balls up;
+  the tear run splits once at a global stretch between 1.5x and 4x.
+FALSIFIERS:
+  (a) PHASE -- bump/flat not 1 cluster or thickness > 2 lattice steps;
+      free sheet does not ball (thickness <= half sheet width)
+  (b) DRAPE -- bump: block not in cushion band or < half edge grains in
+      cushion band of plate (tented recorded)
+  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived cushion    = [0.02840, 0.09840]
+Derived width      = 0.75000
+
+
+[sheet] N=292 sheet=256 plate=36 block=0 dt=0.0005 ticks=6000 mode=flat
+[sheet] d_eq=0.04840 band=[0.0284,0.0984] sheet_width=0.7500
+
+[sheet] tick=     0 | clusters=1 | thickness=0.0029 | com=(-0.0001,-0.0000,0.0984) | edge_in_band=32/60
+[sheet] tick=   150 | clusters=1 | thickness=0.0306 | com=(-0.0001,-0.0000,0.0915) | edge_in_band=60/60
+[sheet] tick=   300 | clusters=1 | thickness=0.1423 | com=(0.0000,0.0002,0.0708) | edge_in_band=59/60
+[sheet] tick=   450 | clusters=1 | thickness=0.4220 | com=(0.0013,-0.0004,0.0758) | edge_in_band=42/60
+[sheet] tick=   600 | clusters=1 | thickness=0.4403 | com=(0.0002,-0.0004,0.1042) | edge_in_band=21/60
+[sheet] tick=   750 | clusters=1 | thickness=0.2928 | com=(0.0005,0.0007,0.0923) | edge_in_band=31/60
+[sheet] tick=   900 | clusters=1 | thickness=0.2091 | com=(0.0017,0.0018,0.0476) | edge_in_band=42/60
+[sheet] tick=  1050 | clusters=1 | thickness=0.2583 | com=(0.0013,0.0028,0.0411) | edge_in_band=36/60
+[sheet] tick=  1200 | clusters=1 | thickness=0.2610 | com=(0.0000,0.0032,0.0474) | edge_in_band=33/60
+[sheet] tick=  1350 | clusters=1 | thickness=0.2385 | com=(-0.0009,0.0028,0.0432) | edge_in_band=38/60
+[sheet] tick=  1500 | clusters=1 | thickness=0.2427 | com=(-0.0016,0.0020,0.0404) | edge_in_band=33/60
+[sheet] tick=  1650 | clusters=1 | thickness=0.2395 | com=(-0.0020,0.0000,0.0419) | edge_in_band=34/60
+[sheet] tick=  1800 | clusters=1 | thickness=0.2389 | com=(-0.0011,-0.0004,0.0417) | edge_in_band=31/60
+[sheet] tick=  1950 | clusters=1 | thickness=0.2391 | com=(-0.0001,0.0002,0.0406) | edge_in_band=32/60
+[sheet] tick=  2100 | clusters=1 | thickness=0.2427 | com=(-0.0002,0.0006,0.0415) | edge_in_band=35/60
+[sheet] tick=  2250 | clusters=1 | thickness=0.2397 | com=(-0.0007,0.0008,0.0418) | edge_in_band=34/60
+[sheet] tick=  2400 | clusters=1 | thickness=0.2402 | com=(-0.0013,0.0010,0.0413) | edge_in_band=33/60
+[sheet] tick=  2550 | clusters=1 | thickness=0.2385 | com=(-0.0015,0.0010,0.0413) | edge_in_band=34/60
+[sheet] tick=  2700 | clusters=1 | thickness=0.2397 | com=(-0.0017,0.0011,0.0413) | edge_in_band=34/60
+[sheet] tick=  2850 | clusters=1 | thickness=0.2389 | com=(-0.0015,0.0013,0.0414) | edge_in_band=34/60
+[sheet] tick=  3000 | clusters=1 | thickness=0.2396 | com=(-0.0014,0.0014,0.0414) | edge_in_band=34/60
+[sheet] tick=  3150 | clusters=1 | thickness=0.2393 | com=(-0.0015,0.0014,0.0413) | edge_in_band=34/60
+[sheet] tick=  3300 | clusters=1 | thickness=0.2393 | com=(-0.0017,0.0013,0.0413) | edge_in_band=35/60
+[sheet] tick=  3450 | clusters=1 | thickness=0.2394 | com=(-0.0016,0.0012,0.0413) | edge_in_band=34/60
+[sheet] tick=  3600 | clusters=1 | thickness=0.2403 | com=(-0.0015,0.0012,0.0414) | edge_in_band=34/60
+[sheet] tick=  3750 | clusters=1 | thickness=0.2407 | com=(-0.0013,0.0012,0.0413) | edge_in_band=35/60
+[sheet] tick=  3900 | clusters=1 | thickness=0.2411 | com=(-0.0012,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  4050 | clusters=1 | thickness=0.2412 | com=(-0.0012,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  4200 | clusters=1 | thickness=0.2416 | com=(-0.0013,0.0012,0.0413) | edge_in_band=35/60
+[sheet] tick=  4350 | clusters=1 | thickness=0.2414 | com=(-0.0014,0.0012,0.0413) | edge_in_band=35/60
+[sheet] tick=  4500 | clusters=1 | thickness=0.2413 | com=(-0.0014,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  4650 | clusters=1 | thickness=0.2413 | com=(-0.0014,0.0010,0.0413) | edge_in_band=35/60
+[sheet] tick=  4800 | clusters=1 | thickness=0.2412 | com=(-0.0013,0.0010,0.0412) | edge_in_band=35/60
+[sheet] tick=  4950 | clusters=1 | thickness=0.2413 | com=(-0.0013,0.0010,0.0412) | edge_in_band=35/60
+[sheet] tick=  5100 | clusters=1 | thickness=0.2414 | com=(-0.0013,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  5250 | clusters=1 | thickness=0.2413 | com=(-0.0014,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  5400 | clusters=1 | thickness=0.2414 | com=(-0.0014,0.0011,0.0413) | edge_in_band=35/60
+[sheet] tick=  5550 | clusters=1 | thickness=0.2414 | com=(-0.0014,0.0010,0.0413) | edge_in_band=35/60
+[sheet] tick=  5700 | clusters=1 | thickness=0.2414 | com=(-0.0013,0.0010,0.0413) | edge_in_band=35/60
+[sheet] tick=  5850 | clusters=1 | thickness=0.2414 | com=(-0.0013,0.0010,0.0413) | edge_in_band=35/60
+[sheet] tick=  6000 | clusters=1 | thickness=0.2414 | com=(-0.0013,0.0011,0.0413) | edge_in_band=35/60
+
+[sheet] SHEET v1 FALSIFIERS:
+  (a) PHASE  : FAIL  final_clusters=1 final_thickness=0.2414 bar<= 0.1000
+  (b) DRAPE  : skipped (flat)
+  (c) TEAR   : skipped (flat)
+======================================================================

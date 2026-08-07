@@ -1,0 +1,40 @@
+======================================================================
+THE KERNEL - SHEET v1 print run
+N=292, sheet=16x16, plate=6x6, mode=tear, seed=20260806, dt=0.0005, ticks=20000
+----------------------------------------------------------------------
+STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;
+  the substrate's DRAW holds it flat, the cushion keeps it one grain
+  off the surface, and its own self-DRAW holds it in-plane.  Cloth,
+  not shell, by necessity -- and cloth is what skin and bladder need.
+PREDICTION: bump and flat prints settle as a single connected sheet
+  <=2 lattice steps thick; the bump run drapes so the block top and the
+  plate edges are both in cushion contact; the free sheet balls up;
+  the tear run splits once at a global stretch between 1.5x and 4x.
+FALSIFIERS:
+  (a) PHASE -- bump/flat not 1 cluster or thickness > 2 lattice steps;
+      free sheet does not ball (thickness <= half sheet width)
+  (b) DRAPE -- bump: block not in cushion band or < half edge grains in
+      cushion band of plate (tented recorded)
+  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived cushion    = [0.02840, 0.09840]
+Derived width      = 0.75000
+
+
+[sheet] N=292 sheet=256 plate=36 block=0 dt=0.0005 ticks=20000 mode=tear
+[sheet] d_eq=0.04840 band=[0.0284,0.0984] sheet_width=0.7500
+
+[sheet] tick=     0 | clusters=1 | thickness=0.0029 | com=(-0.0001,-0.0000,0.0984) | sep=0.7502 stretch=1.000
+
+[sheet] FIRST SPLIT at tick=341: clusters=2 stretch=1.023 split_between_rows=0-1
+
+[sheet] tick=   500 | clusters=3 | thickness=0.4642 | com=(0.0019,-0.0011,0.0844) | sep=0.7752 stretch=1.034
+[sheet] tick=   840 | clusters=3 | thickness=0.2081 | com=(-0.0007,-0.0023,0.0621) | sep=0.7922 stretch=1.056
+
+[sheet] SHEET v1 FALSIFIERS:
+  (a) PHASE  : skipped (tear run)
+  (b) DRAPE  : skipped (tear)
+  (c) TEAR   : FAIL  split_tick=341 stretch=1.023 window=[1.5,4.0] clusters_at_split=2 split_between_rows=0-1
+======================================================================

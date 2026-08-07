@@ -562,3 +562,92 @@ def test_joint_fixed_angle_metric():
     # The metric should report the actual rotation increment, not be offset
     # by the initial face-centroid tilt.
     assert np.degrees(theta - theta0) == pytest.approx(angle_deg, abs=1.0)
+
+
+@pytest.mark.parametrize("mode", ["bump", "flat", "free", "tear"])
+def test_sheet_determinism(mode):
+    """sheet() is deterministic for a fixed seed and mode."""
+    a = seed_structures.sheet(mode=mode, spacing=0.05, seed=11)
+    b = seed_structures.sheet(mode=mode, spacing=0.05, seed=11)
+    for x, y in zip(a, b):
+        if isinstance(x, dict):
+            assert x.keys() == y.keys()
+            for k in x:
+                if isinstance(x[k], np.ndarray):
+                    np.testing.assert_array_equal(x[k], y[k])
+                else:
+                    assert x[k] == pytest.approx(y[k])
+        else:
+            np.testing.assert_array_equal(x, y)
+
+
+@pytest.mark.parametrize("mode,n_expected", [
+    ("flat", 292),
+    ("bump", 356),
+    ("free", 256),
+    ("tear", 292),
+])
+def test_sheet_counts(mode, n_expected):
+    """sheet() builds the expected total point counts per mode."""
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.sheet(
+        mode=mode, spacing=0.05, seed=0)
+    assert pos.shape[0] == n_expected
+    assert vel.shape[0] == n_expected
+    assert pin_mask.shape[0] == n_expected
+    assert grain_ids.shape[0] == n_expected
+    assert derived["n_sheet"] == 16 * 16
+    if mode != "free":
+        assert derived["n_plate"] == 6 * 6
+        assert int((grain_ids == -1).sum()) == 6 * 6
+    else:
+        assert derived["n_plate"] == 0
+        assert int((grain_ids == -1).sum()) == 0
+    if mode == "bump":
+        assert derived["n_block"] == 4 * 4 * 4
+        assert int((grain_ids == 1).sum()) == 4 * 4 * 4
+    else:
+        assert derived["n_block"] == 0
+
+
+def test_sheet_no_shared_positions():
+    """No two grains share a position in any sheet print."""
+    for mode in ["bump", "flat", "free", "tear"]:
+        pos, _, _, _, _ = seed_structures.sheet(mode=mode, spacing=0.05, seed=0)
+        pos64 = np.asarray(pos, dtype=np.float64)
+        diff = pos64[:, None, :] - pos64[None, :, :]
+        r2 = np.einsum("ijk,ijk->ij", diff, diff)
+        np.fill_diagonal(r2, np.inf)
+        assert np.sqrt(r2.min()) > 1e-6, f"mode={mode} print law violated"
+
+
+def test_sheet_bump_height():
+    """In bump mode the sheet center is d_eq + 0.05 above the block top."""
+    pos, _, _, grain_ids, derived = seed_structures.sheet(
+        mode="bump", spacing=0.05, seed=0)
+    sheet = pos[grain_ids == 0]
+    # Use the derived nominal block top; the sheet center already includes
+    # the tiny print jitter, so allow a small tolerance.
+    block_top_z = derived["block_top_z"]
+    sheet_center_z = sheet[:, 2].mean()
+    expected = derived["d_eq"] + 0.05
+    assert abs((sheet_center_z - block_top_z) - expected) < 1e-4
+
+
+def test_sheet_tear_pins():
+    """tear mode pins exactly the two y-edge rows (32 grains)."""
+    pos, _, pin_mask, grain_ids, derived = seed_structures.sheet(
+        mode="tear", spacing=0.05, seed=0)
+    sheet_idx = np.flatnonzero(grain_ids == 0)
+    pinned = pin_mask[sheet_idx]
+    assert pinned.sum() == 32
+    # All pinned grains sit near one of the two extreme y values.
+    y = pos[sheet_idx][pinned, 1]
+    y_target = derived["sheet_width"] / 2.0
+    assert np.all(np.abs(np.abs(y) - y_target) < 0.01)
+
+
+def test_sheet_zero_velocity():
+    """Cold sheet prints have zero velocity."""
+    for mode in ["bump", "flat", "free", "tear"]:
+        _, vel, _, _, _ = seed_structures.sheet(mode=mode, spacing=0.05, seed=0)
+        np.testing.assert_allclose(vel, 0.0, atol=1e-6)

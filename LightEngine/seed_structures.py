@@ -717,3 +717,144 @@ def joint(spacing: float = 0.05,
     }
 
     return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived
+
+
+def sheet(mode: str = "flat",
+          spacing: float = 0.05,
+          seed: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray,
+                                  np.ndarray, dict]:
+    """
+    THE SHEET print: a 16×16 sheet one grain thick, horizontal above a
+    pinned 6×6 plate (except in free mode).
+
+    Modes:
+      - "flat":  sheet printed d_eq + one lattice step above the plate.
+      - "bump":  a 4×4×4 block sits on the plate under the sheet's center;
+                 the sheet is printed d_eq + 0.05 above the block top.
+      - "free":  the sheet alone in space, same initial height as flat
+                 (anti-falsifier: it must ball up under self-DRAW).
+      - "tear":  flat print with the two opposite y-edge rows of the sheet
+                 pinned and pulled apart in the driver.
+
+    Grain ids: plate = -1, sheet = 0, block = 1.
+
+    Returns ``(positions, velocities, pin_mask, grain_ids, derived)``:
+      - ``positions`` / ``velocities`` are float32 (N, 3) arrays.
+      - ``pin_mask`` is length-N bool; plate always pinned; tear pins the
+        two edge rows.
+      - ``derived`` carries d_eq, the cushion band, sheet width, and
+        mode-specific derived numbers.
+    """
+    rng = np.random.default_rng(seed)
+    d = float(spacing)
+    d_eq = TENDON_D_EQ
+    cushion_band = (d_eq - 0.02, d_eq + 0.05)
+    sheet_side = 16
+    n_sheet = sheet_side * sheet_side
+    sheet_width = (sheet_side - 1) * d
+
+    if mode not in ("bump", "flat", "free", "tear"):
+        raise ValueError(f"unknown sheet mode: {mode}")
+
+    # Sheet grid in x-y, centered at the origin.
+    off = (np.arange(sheet_side, dtype=np.float64)
+           - (sheet_side - 1) / 2.0) * d
+    sx, sy = np.meshgrid(off, off, indexing="ij")
+    sx = sx.ravel()
+    sy = sy.ravel()
+
+    if mode == "bump":
+        # 4×4×4 block centered under the sheet, bottom seated d_eq above plate.
+        block_side = 4
+        block_off = (np.arange(block_side, dtype=np.float64)
+                     - (block_side - 1) / 2.0) * d
+        bx, by = np.meshgrid(block_off, block_off, indexing="ij")
+        bx = np.repeat(bx.ravel(), block_side)
+        by = np.repeat(by.ravel(), block_side)
+        bz = np.tile(np.arange(block_side, dtype=np.float64) * d + d_eq,
+                     block_side * block_side)
+        block_pos = np.stack([bx, by, bz], axis=1)
+        block_top_z = d_eq + (block_side - 1) * d
+        sheet_z = block_top_z + d_eq + d
+    else:
+        block_pos = np.zeros((0, 3), dtype=np.float64)
+        block_top_z = 0.0
+        sheet_z = d_eq + d
+
+    sheet_pos = np.stack([
+        sx,
+        sy,
+        np.full(n_sheet, sheet_z, dtype=np.float64),
+    ], axis=1)
+
+    if mode == "free":
+        # No plate, no block.
+        plate_pos = np.zeros((0, 3), dtype=np.float64)
+        n_plate = 0
+    else:
+        # Pinned 6×6 ground plate at z = 0.
+        plate_side = 6
+        n_plate = plate_side * plate_side
+        p_off = (np.arange(plate_side, dtype=np.float64)
+                 - (plate_side - 1) / 2.0) * d
+        px, py = np.meshgrid(p_off, p_off, indexing="ij")
+        plate_pos = np.stack([
+            px.ravel(), py.ravel(), np.zeros(n_plate, dtype=np.float64)
+        ], axis=1)
+
+    pos = np.vstack([plate_pos, sheet_pos, block_pos]).astype(np.float64)
+    N = pos.shape[0]
+    vel = np.zeros((N, 3), dtype=np.float64)
+
+    grain_ids = np.empty(N, dtype=np.int32)
+    grain_ids[:n_plate] = -1
+    grain_ids[n_plate:n_plate + n_sheet] = 0
+    grain_ids[n_plate + n_sheet:] = 1
+
+    pin_mask = np.zeros(N, dtype=bool)
+    if n_plate > 0:
+        pin_mask[:n_plate] = True
+
+    if mode == "tear":
+        # Pin the two y-edge rows (y-index 0 and y-index sheet_side-1).
+        # meshgrid(off, off, indexing="ij") + ravel: the LAST axis (y) changes
+        # fastest, so local index k has x-index = k // side and y-index = k % side.
+        sheet_start = n_plate
+        y_indices = np.arange(n_sheet) % sheet_side
+        top_row = y_indices == 0
+        bottom_row = y_indices == (sheet_side - 1)
+        pin_mask[sheet_start:sheet_start + n_sheet] = (top_row | bottom_row)
+
+    # Print law: no two grains share a position.
+    diff = pos[:, None, :] - pos[None, :, :]
+    r2 = (diff * diff).sum(axis=2)
+    np.fill_diagonal(r2, np.inf)
+    min_pair_dist = float(np.sqrt(r2.min()))
+    if min_pair_dist <= 1e-6:
+        raise RuntimeError(
+            f"sheet print law violated: minimum pair distance {min_pair_dist} "
+            f"<= 1e-6 (mode={mode})")
+
+    # Tiny positional jitter to break exact lattice degeneracy (<< R_WALL).
+    jitter = rng.normal(0.0, R_WALL * 0.01, size=pos.shape)
+    pos += jitter
+
+    derived = {
+        "d_eq": d_eq,
+        "cushion_band": cushion_band,
+        "sheet_width": sheet_width,
+        "sheet_side": sheet_side,
+        "sheet_z": sheet_z,
+        "block_top_z": block_top_z,
+        "n_plate": n_plate,
+        "n_sheet": n_sheet,
+        "n_block": block_pos.shape[0],
+        "mode": mode,
+    }
+    if mode == "tear":
+        # Rows are pulled apart along y.  Print separation of the pinned rows.
+        derived["pinned_row_separation"] = sheet_width
+        derived["max_separation"] = 4.0 * sheet_width
+        derived["n_pinned"] = int(top_row.sum() + bottom_row.sum())
+
+    return pos.astype(np.float32), vel.astype(np.float32), pin_mask, grain_ids, derived

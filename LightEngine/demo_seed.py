@@ -102,6 +102,15 @@ JOINT_D_EQ = seed_structures.TENDON_D_EQ         # cushion equilibrium spacing
 JOINT_LAW_TOL = 0.10                             # (b) torque law vs pairwise-DRAW
 JOINT_GAP_BAR = R_C                              # (a) joint dislocation threshold
 
+# ── SHEET print parameters (derived from force constants) ──────────────
+SHEET_V_PLATE = 0.05 * math.sqrt(K_BOND)         # 5% sound speed, tear grips
+SHEET_PHASE_THICKNESS_MAX = 2.0 * 0.05           # 2 lattice steps
+SHEET_FREE_THICKNESS_MIN_FRAC = 0.5              # thickness > half sheet width
+SHEET_TEAR_STRETCH_MIN = 1.5                     # derived lower tear window
+SHEET_TEAR_STRETCH_MAX = 4.0                     # derived upper tear window
+SHEET_TEAR_MARGIN_TICKS = 500                    # stop ~500 ticks after split
+SHEET_DRAPE_EDGE_FRAC = 0.5                      # ≥ half edge grains in band
+
 
 def structureless_start(n: int, box: float, vel_sigma: float, seed: int):
     """Return (positions, velocities) for a structureless initial state."""
@@ -2215,6 +2224,368 @@ def joint_main(args, seed):
     print("=" * 70)
 
 
+# ── SHEET-specific helpers ────────────────────────────────────────────
+
+def _sheet_edge_mask(sheet_pos0: np.ndarray,
+                      sheet_side: int = 16) -> np.ndarray:
+    """Return bool mask of sheet grains on the outer perimeter (4 borders).
+
+    Uses lattice index, not coordinate, so print jitter does not hide edges.
+    The builder uses meshgrid(..., indexing="ij") and ravel: the LAST axis
+    (y) changes fastest, so local index k has x-index = k // side and
+    y-index = k % side.
+    """
+    n = sheet_pos0.shape[0]
+    k = np.arange(n)
+    x_idx = k // sheet_side
+    y_idx = k % sheet_side
+    return (
+        (x_idx == 0) |
+        (x_idx == sheet_side - 1) |
+        (y_idx == 0) |
+        (y_idx == sheet_side - 1)
+    )
+
+
+def _sheet_row_indices(sheet_pos0: np.ndarray,
+                       sheet_side: int = 16) -> list[np.ndarray]:
+    """Return indices of sheet grains grouped by y-row (rows along x)."""
+    n = sheet_pos0.shape[0]
+    k = np.arange(n)
+    rows = []
+    for j in range(sheet_side):
+        rows.append(np.flatnonzero(k % sheet_side == j))
+    return rows
+
+
+def _run_sheet(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+               tag, label, mode: str):
+    """
+    Sheet protocol:
+      - bump/flat/free: free evolution, plate pinned if present.
+      - tear: two opposite y-edge rows are pulled apart at 5% sound speed
+        until the sheet first splits into 2 clusters, plus a derived margin,
+        or until max separation (4x sheet width) is reached.
+    Returns metrics dict.
+    """
+    N = pos.shape[0]
+    sim = kernel.VelocityVerlet(N)
+    sim.set_state(pos, vel)
+    sim.set_pin_mask(pin_mask)
+    sim.compute_acceleration()
+
+    sheet_idx = np.flatnonzero(grain_ids == 0)
+    plate_idx = np.flatnonzero(grain_ids == -1)
+    block_idx = np.flatnonzero(grain_ids == 1)
+    sheet_pos0 = sim.pos[sheet_idx].copy()
+    sheet_side = derived["sheet_side"]
+    edge_mask = _sheet_edge_mask(sheet_pos0, sheet_side=sheet_side)
+    rows_y = _sheet_row_indices(sheet_pos0, sheet_side=sheet_side)
+
+    d_eq = derived["d_eq"]
+    cushion_lo, cushion_hi = derived["cushion_band"]
+    sheet_width = derived["sheet_width"]
+
+    # Tear-only: pinned row separation and velocity.
+    tear = (mode == "tear")
+    if tear:
+        # Select the two outermost y-rows (the ones the builder pinned).
+        row_mean_y = np.array([float(sheet_pos0[r, 1].mean()) for r in rows_y])
+        top_row_idx = int(np.argmax(row_mean_y))
+        bottom_row_idx = int(np.argmin(row_mean_y))
+        top_idx_local = rows_y[top_row_idx]
+        bottom_idx_local = rows_y[bottom_row_idx]
+        top_idx = sheet_idx[top_idx_local]
+        bottom_idx = sheet_idx[bottom_idx_local]
+        # Sanity: these must be the pinned grains.
+        if not (pin_mask[top_idx].all() and pin_mask[bottom_idx].all()):
+            print(f"[{label}] WARNING: tear grip rows are not fully pinned")
+    else:
+        top_idx = bottom_idx = np.array([], dtype=np.int32)
+    print_sep0 = derived.get("pinned_row_separation", sheet_width)
+    v_plate = SHEET_V_PLATE
+    max_separation = derived.get("max_separation", 4.0 * sheet_width)
+
+    sample_every = max(1, ticks // 40)
+
+    metrics = {
+        "tick": [],
+        "sheet_clusters": [],
+        "thickness": [],
+        "com": [],
+        "min_sheet_to_block": [],
+        "edge_in_band": [],
+        "separation": [],
+        "global_stretch": [],
+        "sheet_pos": [],
+        "mode": mode,
+        "split_tick": None,
+        "split_stretch": None,
+        "split_clusters": None,
+        "split_location": None,
+    }
+
+    def _sample(tick: int):
+        spos = sim.pos[sheet_idx]
+        n_clust, _ = cluster_count_and_sizes(spos, R_BOND)
+        thickness = float(spos[:, 2].max() - spos[:, 2].min())
+        com = spos.mean(axis=0)
+
+        if block_idx.size:
+            d = spos[:, None, :] - sim.pos[block_idx][None, :, :]
+            min_to_block = float(np.sqrt((d * d).sum(axis=2).min()))
+        else:
+            min_to_block = np.inf
+
+        if plate_idx.size:
+            # "within cushion band of plate" = vertical height above plate
+            # lies in the derived cushion band (the sheet has sagged to seat).
+            edge_z = spos[edge_mask, 2]
+            edge_in_band = int(np.count_nonzero(
+                (edge_z >= cushion_lo) & (edge_z <= cushion_hi)))
+        else:
+            edge_in_band = 0
+
+        if tear and top_idx.size and bottom_idx.size:
+            top_y = float(sim.pos[top_idx, 1].mean())
+            bottom_y = float(sim.pos[bottom_idx, 1].mean())
+            separation = top_y - bottom_y
+            stretch = separation / print_sep0 if print_sep0 > 0 else 1.0
+        else:
+            separation = 0.0
+            stretch = 1.0
+
+        metrics["tick"].append(tick)
+        metrics["sheet_clusters"].append(n_clust)
+        metrics["thickness"].append(thickness)
+        metrics["com"].append(com.copy())
+        metrics["min_sheet_to_block"].append(min_to_block)
+        metrics["edge_in_band"].append(edge_in_band)
+        metrics["separation"].append(separation)
+        metrics["global_stretch"].append(stretch)
+        metrics["sheet_pos"].append(spos.copy())
+
+        extra = ""
+        if mode == "bump":
+            extra = f" | min_to_block={min_to_block:.4f}"
+        if mode in ("bump", "flat"):
+            extra += f" | edge_in_band={edge_in_band}/{edge_mask.sum()}"
+        if tear:
+            extra += f" | sep={separation:.4f} stretch={stretch:.3f}"
+        print(f"[{label}] tick={tick:6d} | clusters={n_clust} | "
+              f"thickness={thickness:.4f} | com=({com[0]:.4f},{com[1]:.4f},{com[2]:.4f})"
+              f"{extra}")
+
+    print(f"\n[{label}] N={N} sheet={sheet_idx.size} plate={plate_idx.size} "
+          f"block={block_idx.size} dt={dt} ticks={ticks} mode={mode}")
+    print(f"[{label}] d_eq={d_eq:.5f} band=[{cushion_lo:.4f},{cushion_hi:.4f}] "
+          f"sheet_width={sheet_width:.4f}\n")
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_begin.png"))
+
+    split_detected = False
+    split_tick = None
+    split_stretch = None
+    split_clusters = None
+    margin_count = 0
+
+    _sample(0)
+    for tick in range(1, ticks + 1):
+        if tear:
+            # Move pinned edge rows apart quasistatically.
+            dy = v_plate * dt
+            if top_idx.size:
+                sim.pos[top_idx, 1] += dy
+            if bottom_idx.size:
+                sim.pos[bottom_idx, 1] -= dy
+            if sim.use_cuda:
+                sim.d_pos.copy_to_device(sim.pos)
+
+        sim.step(dt)
+
+        if tear and not split_detected:
+            n_clust, _ = cluster_count_and_sizes(sim.pos[sheet_idx], R_BOND)
+            if n_clust >= 2:
+                split_detected = True
+                split_tick = tick
+                split_clusters = int(n_clust)
+                # current stretch
+                top_y = float(sim.pos[top_idx, 1].mean()) if top_idx.size else 0.0
+                bottom_y = float(sim.pos[bottom_idx, 1].mean()) if bottom_idx.size else 0.0
+                separation = top_y - bottom_y
+                split_stretch = separation / print_sep0 if print_sep0 > 0 else 1.0
+                # locate split: largest gap between adjacent y-row centroids.
+                row_ys = np.array([float(sim.pos[sheet_idx[r], 1].mean()) for r in rows_y])
+                gaps = row_ys[1:] - row_ys[:-1]
+                split_loc = int(np.argmax(gaps))
+                metrics["split_tick"] = split_tick
+                metrics["split_stretch"] = split_stretch
+                metrics["split_clusters"] = split_clusters
+                metrics["split_location"] = split_loc
+                print(f"\n[{label}] FIRST SPLIT at tick={split_tick}: "
+                      f"clusters={split_clusters} stretch={split_stretch:.3f} "
+                      f"split_between_rows={split_loc}-{split_loc+1}\n")
+
+        if split_detected and tear:
+            margin_count += 1
+            if margin_count >= SHEET_TEAR_MARGIN_TICKS:
+                _sample(tick)
+                break
+            if top_idx.size and bottom_idx.size:
+                top_y = float(sim.pos[top_idx, 1].mean())
+                bottom_y = float(sim.pos[bottom_idx, 1].mean())
+                if (top_y - bottom_y) >= max_separation:
+                    _sample(tick)
+                    break
+
+        if tick % sample_every == 0 or tick == ticks:
+            _sample(tick)
+
+    dump_frame(sim.pos.copy(),
+               os.path.join(OUTPUT_DIR, f"{tag}{label}_end.png"))
+    return metrics
+
+
+def _print_sheet_verdict(metrics, derived, label):
+    """Print SHEET v1 falsifier verdict; return dict of booleans."""
+    ticks = np.asarray(metrics["tick"], dtype=np.int32)
+    clusters = np.asarray(metrics["sheet_clusters"], dtype=np.int32)
+    thickness = np.asarray(metrics["thickness"], dtype=np.float64)
+    min_to_block = np.asarray(metrics["min_sheet_to_block"], dtype=np.float64)
+    edge_in_band = np.asarray(metrics["edge_in_band"], dtype=np.int32)
+    mode = str(metrics.get("mode", "flat"))
+    d_eq = derived["d_eq"]
+    cushion_lo, cushion_hi = derived["cushion_band"]
+    sheet_width = derived["sheet_width"]
+    n_edge = int(_sheet_edge_mask(metrics["sheet_pos"][0],
+                                  sheet_side=derived["sheet_side"]).sum())
+
+    final_clusters = int(clusters[-1])
+    final_thickness = float(thickness[-1])
+
+    # (a) PHASE
+    phase_ok = None
+    if mode in ("bump", "flat"):
+        phase_ok = (final_clusters == 1 and
+                    final_thickness <= SHEET_PHASE_THICKNESS_MAX)
+    elif mode == "free":
+        phase_ok = final_thickness > SHEET_FREE_THICKNESS_MIN_FRAC * sheet_width
+
+    # (b) DRAPE (bump only)
+    drape_ok = None
+    tented = False
+    if mode == "bump":
+        final_min_to_block = float(min_to_block[-1])
+        final_edge_in_band = int(edge_in_band[-1])
+        block_contact = cushion_lo <= final_min_to_block <= cushion_hi
+        edge_drape = final_edge_in_band >= int(np.ceil(SHEET_DRAPE_EDGE_FRAC * n_edge))
+        drape_ok = block_contact and edge_drape
+        if block_contact and not edge_drape:
+            tented = True
+
+    # (c) TEAR
+    tear_ok = None
+    split_tick = metrics.get("split_tick")
+    split_stretch = metrics.get("split_stretch")
+    split_clusters = metrics.get("split_clusters")
+    split_location = metrics.get("split_location")
+    if mode == "tear":
+        if split_tick is None:
+            tear_ok = False
+        else:
+            in_window = (SHEET_TEAR_STRETCH_MIN <= split_stretch <=
+                         SHEET_TEAR_STRETCH_MAX)
+            no_frag = split_clusters == 2
+            tear_ok = in_window and no_frag
+
+    # ── Print verdict. ──
+    print(f"\n[{label}] SHEET v1 FALSIFIERS:")
+    if mode in ("bump", "flat"):
+        print(f"  (a) PHASE  : {'PASS' if phase_ok else 'FAIL'}  "
+              f"final_clusters={final_clusters} final_thickness={final_thickness:.4f} "
+              f"bar<= {SHEET_PHASE_THICKNESS_MAX:.4f}")
+    elif mode == "free":
+        print(f"  (a) PHASE  : {'PASS' if phase_ok else 'FAIL'}  "
+              f"final_clusters={final_clusters} final_thickness={final_thickness:.4f} "
+              f"bar> {SHEET_FREE_THICKNESS_MIN_FRAC*sheet_width:.4f}")
+    else:
+        print(f"  (a) PHASE  : skipped (tear run)")
+
+    if mode == "bump":
+        print(f"  (b) DRAPE  : {'PASS' if drape_ok else 'FAIL'}  "
+              f"min_to_block={float(min_to_block[-1]):.4f} "
+              f"band=[{cushion_lo:.4f},{cushion_hi:.4f}] "
+              f"edge_in_band={int(edge_in_band[-1])}/{n_edge} "
+              f"tented={tented}")
+    else:
+        print(f"  (b) DRAPE  : skipped ({mode})")
+
+    if mode == "tear":
+        if split_tick is None:
+            print(f"  (c) TEAR   : FAIL  no split detected in {int(ticks[-1])} ticks")
+        else:
+            print(f"  (c) TEAR   : {'PASS' if tear_ok else 'FAIL'}  "
+                  f"split_tick={split_tick} stretch={split_stretch:.3f} "
+                  f"window=[{SHEET_TEAR_STRETCH_MIN:.1f},{SHEET_TEAR_STRETCH_MAX:.1f}] "
+                  f"clusters_at_split={split_clusters} "
+                  f"split_between_rows={split_location}-{split_location+1}")
+    else:
+        print(f"  (c) TEAR   : skipped ({mode})")
+
+    return {
+        "phase_ok": phase_ok,
+        "drape_ok": drape_ok,
+        "tear_ok": tear_ok,
+    }
+
+
+def sheet_main(args, seed):
+    """SHEET v1 print entry point: build, evolve, judge."""
+    mode = str(getattr(args, "sheet_mode", "flat"))
+    pos, vel, pin_mask, grain_ids, derived = seed_structures.sheet(
+        mode=mode, spacing=0.05, seed=seed)
+    N = pos.shape[0]
+
+    dt = DT
+    # Default derived tick count: for tear, a large window; for settle, derived
+    # from free-fall time measured in smoke.  Use a safe default here.
+    ticks = int(getattr(args, "sheet_ticks", 20000))
+    tag = f"{args.tag}_" if args.tag else ""
+
+    print("=" * 70)
+    print("THE KERNEL - SHEET v1 print run")
+    print(f"N={N}, sheet=16x16, plate=6x6, mode={mode}, "
+          f"seed={seed}, dt={dt}, ticks={ticks}")
+    print("-" * 70)
+    print("STATEMENT: A 2-D layer on a substrate is a persistent 2-D phase;")
+    print("  the substrate's DRAW holds it flat, the cushion keeps it one grain")
+    print("  off the surface, and its own self-DRAW holds it in-plane.  Cloth,")
+    print("  not shell, by necessity -- and cloth is what skin and bladder need.")
+    print("PREDICTION: bump and flat prints settle as a single connected sheet")
+    print("  <=2 lattice steps thick; the bump run drapes so the block top and the")
+    print("  plate edges are both in cushion contact; the free sheet balls up;")
+    print("  the tear run splits once at a global stretch between 1.5x and 4x.")
+    print("FALSIFIERS:")
+    print("  (a) PHASE -- bump/flat not 1 cluster or thickness > 2 lattice steps;")
+    print("      free sheet does not ball (thickness <= half sheet width)")
+    print("  (b) DRAPE -- bump: block not in cushion band or < half edge grains in")
+    print("      cushion band of plate (tented recorded)")
+    print("  (c) TEAR -- first split outside [1.5x,4x] or fragmentation >2 clusters")
+    print("=" * 70)
+    print(f"\nDerived d_eq       = {derived['d_eq']:.5f}")
+    print(f"Derived cushion    = [{derived['cushion_band'][0]:.5f}, "
+          f"{derived['cushion_band'][1]:.5f}]")
+    print(f"Derived width      = {derived['sheet_width']:.5f}\n")
+
+    _print_sheet_verdict(
+        _run_sheet(pos, vel, pin_mask, grain_ids, derived, dt, ticks,
+                   tag, "sheet", mode=mode),
+        derived, "sheet")
+
+    print("=" * 70)
+
+
 def main():
     global N, SEED, T_FF, TOTAL_TICKS, SAMPLE_EVERY
 
@@ -2228,7 +2599,7 @@ def main():
                         help="prefix for output frames (parallel runs)")
     parser.add_argument("--structure", type=str, default="random",
                         choices=["random", "core_shell", "disk", "lattice",
-                                 "bone", "muscle", "tendon", "joint"],
+                                 "bone", "muscle", "tendon", "joint", "sheet"],
                         help="initial seed structure (default random)")
     parser.add_argument("--control", type=str, default="none",
                         choices=["none", "packed"],
@@ -2250,6 +2621,11 @@ def main():
     parser.add_argument("--joint-control", action="store_true",
                         help="JOINT control: run the same geometry without the "
                              "muscle droplet")
+    parser.add_argument("--sheet-mode", type=str, default="flat",
+                        choices=["bump", "flat", "free", "tear"],
+                        help="SHEET print mode (default flat)")
+    parser.add_argument("--sheet-ticks", type=int, default=20000,
+                        help="SHEET evolution ticks (default 20000)")
     args = parser.parse_args()
     SEED = args.seed
 
@@ -2271,6 +2647,11 @@ def main():
     # JOINT print has its own driver (free-evolution moving-part test)
     if args.structure == "joint":
         joint_main(args, SEED)
+        return
+
+    # SHEET print has its own driver (2-D membrane phase test)
+    if args.structure == "sheet":
+        sheet_main(args, SEED)
         return
 
     # choose initial state

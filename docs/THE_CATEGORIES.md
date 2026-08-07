@@ -80,6 +80,42 @@ strain concentration at the grips can only lower it; the split location
 is recorded (predicted: adjacent to a grip, where concentration lives),
 and post-split each fragment remains one condensed sheet (no
 sub-fragmentation beyond cluster count 2 at first split).
+**SHEET v1 VERDICT 2026-08-06 (16×16 at 0.05, run tags sheet_v1_flat /
+bump / free / tear):** ALL FOUR FALSIFIERS FAIL, and the failures are the
+discovery — recorded per doctrine, each against the verified trajectories.
+(a) PHASE: there is no flat 2-D phase at 0.05. The sheet CRUMPLES to a
+coherent folded mat — thickness 0.003 → 0.2414 on the plate, 0.003 → 0.2411
+FREE, cluster count 1 in both, stable for 20,000 ticks. The spec's central
+claim ("a 2-D layer on a substrate is a persistent 2-D phase") is REFUTED:
+the substrate neither causes nor prevents the crumple — the on-plate and
+free mats agree to 0.0003, so the mat is the sheet's own phase, not a
+substrate artifact. The anti-falsifier half-fires: no free flat sheet
+exists (theCushionLaw holds) — but condensation ARRESTS at the mat
+(0.241 ≈ 5 layers) instead of balling to a droplet (>0.375); 2-D initial
+conditions reach a folded phase the 3-D crush series never saw. The free
+mat's COM stays fixed at print height for 20k ticks — momentum conserved,
+physics clean. (b) DRAPE: partial — the sheet contacts the block at 0.0279,
+BELOW the cushion band, i.e. seated in the wall at ≈S_WALL exactly as the
+joint v2 law says matter under weight must; but only 22/60 edge grains
+reach the plate band — the crumpled mat TENTS where a flat cloth would
+drape. (c) TEAR: first split at tick 341, stretch 1.023 — two hundredths
+of the derived window's floor — between grip rows 0–1, the predicted
+LOCATION (strain concentration at the grip), with exactly 2 clusters at
+split, the predicted CLEANLINESS. The derived window [1.5×, 4×] is void:
+its premise was a flat lattice under in-plane strain, and the sheet
+crumples in the first ~900 ticks, so the grip pulls out of a mat, not a
+lattice — the premise died before the pull began.
+**The law the failures leave:** at cushion spacing 0.05 a 2-D plane is
+OVER-COMPRESSED in-plane (the droplet's d_eq = 0.0484 is a 3-D equilibrium;
+the 2-D plane's own balance differs), and with no bending stiffness the
+over-compression escapes out-of-plane: the sheet folds. What holds a sheet
+flat is not a substrate but its own equilibrium spacing. Successor (named):
+v2 — derive the 2-D in-plane equilibrium spacing d_eq_2D from the kernel
+(print a small patch, measure where in-plane force vanishes, exactly as
+theCushionLaw's lattice8eq print derived d_eq for the droplet), print the
+sheet at d_eq_2D, and rerun PHASE / DRAPE / TEAR unchanged. Prediction
+named before the run: at d_eq_2D the sheet stays flat (thickness ≤ 2
+steps), drapes instead of tenting, and tears inside [1.5×, 4×].
 - **SKIN** *(parent relation stands)*: a sheet printed CONFORMAL to a
   muscle/composite bulk, anchored at derived spacing — inherits theSheet's
   phase and theMuscle's stroke. Falsifier (from the retired line, kept):
