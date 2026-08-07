@@ -2048,65 +2048,36 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
         lift_ok = (max_gain >= 0.10) and recovery_ok
         hold_ok = None
 
-    # BALANCE LAW (main only): at liftoff (contact force <= 10% of print).
-    balance_ok = False
-    balance_ratio = None
-    max_ratio_seen = 0.0
-    if not control:
-        liftoff_idx = next(
-            (i for i, cr in enumerate(contact_ratio) if cr <= 0.10), None)
-        if liftoff_idx is not None:
-            plate_p = np.asarray(metrics["plate_pos"][liftoff_idx],
-                                 dtype=np.float64)
-            drop_p = np.asarray(metrics["drop_pos"][liftoff_idx],
-                                dtype=np.float64)
-            fulcrum_p = np.asarray(metrics["fulcrum_pos"][liftoff_idx],
-                                   dtype=np.float64)
-            lever_p = np.asarray(metrics["lever_pos"][liftoff_idx],
-                                 dtype=np.float64)
-            load_p = np.asarray(metrics["load_pos"][liftoff_idx],
-                                dtype=np.float64)
+    # BALANCE LAW v2: print-time R_true must predict the first-sustained tip.
+    R_true = float(derived.get("R_true", 0.0))
+    early_idx = ticks <= 600
+    if early_idx.any():
+        measured_sign = int(np.sign(np.median(lever_angle[early_idx])))
+    else:
+        measured_sign = 0
 
-            muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
-            load_c = lever_p[derived["load_face"]].mean(axis=0)
-            # Contact x is the current fulcrum top centroid x.
-            contact_x = float(fulcrum_p[derived["fulcrum_top_face"], 0].mean())
-            a_m = float(contact_x - muscle_c[0])
-            a_l = float(load_c[0] - contact_x)
-            F_m = seed_structures._downward_draw_magnitude(drop_p, lever_p)
-            W_L = seed_structures._downward_draw_magnitude(plate_p, load_p)
-            if W_L > 0.0 and a_l > 0.0 and a_m > 0.0:
-                balance_ratio = float(F_m * a_m / (W_L * a_l))
-            else:
-                balance_ratio = 0.0
-            # Honest band around unity: the quasi-static liftoff is noisy,
-            # so the gate is [0.5, 2.0] rather than a tight 10% band.
-            balance_ok = 0.5 <= balance_ratio <= 2.0
-        else:
-            # No liftoff: report the maximum ratio seen across samples.
-            for i in range(len(ticks)):
-                plate_p = np.asarray(metrics["plate_pos"][i],
-                                     dtype=np.float64)
-                drop_p = np.asarray(metrics["drop_pos"][i],
-                                    dtype=np.float64)
-                fulcrum_p = np.asarray(metrics["fulcrum_pos"][i],
-                                       dtype=np.float64)
-                lever_p = np.asarray(metrics["lever_pos"][i],
-                                     dtype=np.float64)
-                load_p = np.asarray(metrics["load_pos"][i],
-                                    dtype=np.float64)
-                muscle_c = lever_p[derived["muscle_face"]].mean(axis=0)
-                load_c = lever_p[derived["load_face"]].mean(axis=0)
-                contact_x = float(
-                    fulcrum_p[derived["fulcrum_top_face"], 0].mean())
-                a_m = float(contact_x - muscle_c[0])
-                a_l = float(load_c[0] - contact_x)
-                F_m = seed_structures._downward_draw_magnitude(drop_p, lever_p)
-                W_L = seed_structures._downward_draw_magnitude(plate_p, load_p)
-                if W_L > 0.0 and a_l > 0.0 and a_m > 0.0:
-                    r = float(F_m * a_m / (W_L * a_l))
-                    max_ratio_seen = max(max_ratio_seen, r)
-            balance_ratio = max_ratio_seen
+    # Muscle-side-down (positive angle) iff R_true > 1.
+    if R_true > 1.0:
+        predicted_sign = 1
+    elif R_true < 1.0:
+        predicted_sign = -1
+    else:
+        predicted_sign = 0
+
+    if control:
+        in_band = 0.5 <= R_true <= 1.05
+        band_str = "[0.500, 1.050]"
+    else:
+        in_band = 1.8 <= R_true <= 2.2
+        band_str = "[1.800, 2.200]"
+
+    balance_ok = (
+        predicted_sign != 0 and
+        measured_sign == predicted_sign and
+        in_band)
+    balance_detail = (
+        f"R_true={R_true:.3f} early_angle_sign={measured_sign} "
+        f"predicted={predicted_sign} band={band_str}")
 
     # INTEGRITY: all bodies one cluster; plate pins hold.
     integrity_ok = (
@@ -2131,16 +2102,8 @@ def _print_lever_verdict(metrics, derived: dict, label: str, control: bool):
               f"max load_gain={max_gain:.4f} at tick={max_gain_tick} "
               f"(bar 0.1000) recovery_ok={recovery_ok}")
         print(f"  (b) HOLD      : skipped (main)")
-    if control:
-        print(f"  (c) BALANCE   : skipped (control)")
-    else:
-        if liftoff_idx is not None:
-            print(f"  (c) BALANCE   : {'PASS' if balance_ok else 'FAIL'}  "
-                  f"liftoff tick={ticks[liftoff_idx]} "
-                  f"F_m*a_m/(W_L*a_l)={balance_ratio:.3f} (band [0.500, 2.000])")
-        else:
-            print(f"  (c) BALANCE   : FAIL  no liftoff; max ratio seen="
-                  f"{balance_ratio:.3f}")
+    print(f"  (c) BALANCE   : {'PASS' if balance_ok else 'FAIL'}  "
+          f"{balance_detail}")
     print(f"  (d) INTEGRITY : {'PASS' if integrity_ok else 'FAIL'}  "
           f"max clusters droplet/fulcrum/lever/load="
           f"{int(drop_clust.max())}/{int(fulcrum_clust.max())}/"
@@ -2170,26 +2133,28 @@ def lever_main(args, seed):
     version = "control" if control else "main"
 
     print("=" * 70)
-    print(f"THE KERNEL - LEVER v1 print run ({version})")
-    print(f"N={N}, plate=6x6, fulcrum=4x4x4, lever=4x4x16, droplet=4^3, "
+    print(f"THE KERNEL - LEVER v2 print run ({version})")
+    print(f"N={N}, plate=6x6, fulcrum=4x4x4, lever=2x1x18, droplet=4^3, "
           f"load=4^3, seed={seed}, dt={dt}, ticks={ticks}, control={control}")
     print("-" * 70)
     print("STATEMENT: A muscle-bone machine trades muscle force for load force")
-    print("  through arm length; the balance ratio R = F_m·a_m / (W_L·a_l)")
-    print("  decides whether the load lifts, and nothing else does.")
+    print("  through arm length; the balance ratio is the kernel's own static")
+    print("  torque about the fulcrum contact point on the cold print.")
     if control:
-        print("PREDICTION: With the muscle arm halved (R <= 1), the load end")
-        print("  never rises more than one lattice step above its print height.")
+        print("PREDICTION: With kernel-verified R_true <= 1, the load end")
+        print("  tips load-side-down and never rises more than one lattice")
+        print("  step above its print height.")
     else:
-        print("PREDICTION: With the muscle arm long enough (R >= 2), the load")
-        print("  end lifts through at least two lattice steps while the fulcrum")
-        print("  contact holds or recovers, and the balance law at liftoff is")
-        print("  within an honest band around unity.")
+        print("PREDICTION: With kernel-verified R_true >= 2, the muscle side")
+        print("  tips down, the load end lifts through at least two lattice")
+        print("  steps while the fulcrum contact holds or recovers.")
     print("FALSIFIERS:")
     print("  (a) LIFT    - main: load end rises >= 0.10 while fulcrum contact")
     print("      holds or recovers to the seated band")
     print("  (b) HOLD    - control: load end rises <= 0.05 all run")
-    print("  (c) BALANCE - main: F_m·a_m/(W_L·a_l) within [0.5, 2.0] at liftoff")
+    print("  (c) BALANCE - kernel torque predicts the first-sustained tip:")
+    print("      sign of early angle matches sign(R_true - 1) and R_true lies")
+    print("      in its derived band (main [1.8, 2.2], control <= 1.05)")
     print("  (d) INTEGRITY - all four bodies one cluster; plate pins hold")
     print("=" * 70)
     print(f"\nDerived d_eq  = {derived['d_eq']:.5f}")
@@ -2197,7 +2162,8 @@ def lever_main(args, seed):
     print(f"Derived a_l   = {derived['a_l']:.5f}")
     print(f"Derived F_m   = {derived['F_m']:.3f}")
     print(f"Derived W_L   = {derived['W_L']:.3f}")
-    print(f"Derived R     = {derived['R']:.3f}\n")
+    print(f"Derived R_static = {derived['R_static']:.3f}")
+    print(f"Derived R_true= {derived['R_true']:.3f}\n")
 
     metrics = _run_lever(pos, vel, pin_mask, grain_ids, derived,
                          dt, ticks, tag, label)

@@ -762,6 +762,36 @@ computed from the FULL kernel torque about the fulcrum on the print
 itself says the muscle side wins by 2× (bisection on the contact point —
 derivation, not sweep). The two-sided falsifier then runs on R_true:
 main must lift, control (kernel-verified R_true ≤ 1) must hold.
+**LEVER v2 VERDICT 2026-08-07 (run tags lever_v2 / lever_v2_control,
+8000 ticks; geometry changed by the implementing agent to a 2×1×18 rod
+with the droplet at muscle_end + 0.30L — recorded as its derivation
+route):** the bisection is legitimate (23 steps, R_true trace monotone,
+τ_neg frozen at 202.803 from step 13 — kernel root-finding, not a sweep),
+and it exposed two things the spec had wrong. First: **R_true = 2 is only
+reachable at the bracket's edge** — the ratio asymptotes to 1.9819 at
+cx = 0.350, the degenerate end of the lever, leaving a load arm of
+~0.075: the 2× margin was purchased by deleting the machine. Second, and
+decisive: **a free fulcrum is not a pivot.** Main tips muscle-down as
+R_true = 1.98 predicts ((c) BALANCE PASS — the kernel torque DOES call
+the initial tip, the v2 claim that survives), but the fulcrum block
+rolls/sinks with the lever, so the load end's ABSOLUTE height falls
+(−0.237) even while rotating up — (a) LIFT's absolute bar is unreachable
+when the pivot itself travels. Control proves the same point from the
+other side: R_true = 0.864 predicted load-down and the lever flipped to
++88.9° muscle-down instead ((c) FAIL) — with the pivot rolling, the
+static torque about the print's contact point stops governing after the
+first instant. (b) HOLD PASS and (d) INTEGRITY PASS both runs (no droplet
+flicker this geometry). The law after two lever prints: the machine is
+real (the kernel's torque predicts the tip), but the pivot must be
+ANCHORED — which matches anatomy exactly: fulcrums are BONES, and bones
+are anchored (the joint v2 pillar held its base at gaps 0.0000; that is
+why the joint worked and the lever does not). Successor (named): v3 —
+PIN the fulcrum block to the ground plate (it is a skeletal bone, not a
+loose rock), keep the rod, re-derive the contact x for R_true = 2 by the
+same bisection (the target must now be reachable OFF the bracket edge —
+if it is not, derive a heavier muscle, 5³ = 125, before touching the arm
+lengths), and rerun the two-sided falsifier unchanged: main lifts through
+0.10 in absolute z, control holds.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

@@ -937,7 +937,7 @@ def test_lever_counts():
     n_plate = 6 * 6
     n_drop = 4 ** 3
     n_fulcrum = 4 ** 3
-    n_lever = 4 * 4 * 16
+    n_lever = 2 * 1 * 18
     n_load = 4 ** 3
     assert pos.shape[0] == n_plate + n_drop + n_fulcrum + n_lever + n_load
     assert int((grain_ids == -1).sum()) == n_plate
@@ -971,28 +971,23 @@ def test_lever_no_shared_positions():
 
 
 def test_lever_main_ratio():
-    """Main lever print derives R >= 1.8."""
+    """Main lever print derives kernel R_true in [1.8, 2.2]."""
     _, _, _, _, derived = seed_structures.lever(control=False, seed=0)
-    assert derived["R"] >= 1.8
-    assert derived["R"] <= 3.3  # keeps control ratio <= 1.1
+    assert 1.8 <= derived["R_true"] <= 2.2
 
 
 def test_lever_control_ratio():
-    """Control lever print derives R <= 1.1."""
+    """Control lever print derives kernel R_true in [0.5, 1.05]."""
     _, _, _, _, derived = seed_structures.lever(control=True, seed=0)
-    assert derived["R"] <= 1.1
+    assert 0.5 <= derived["R_true"] <= 1.05
 
 
-def test_lever_control_arm_halves():
-    """Control run halves the muscle arm and leaves load arm unchanged."""
+def test_lever_control_weaker_arm():
+    """Control run moves the fulcrum toward the muscle end."""
     _, _, _, _, derived_main = seed_structures.lever(control=False, seed=0)
     _, _, _, _, derived_ctrl = seed_structures.lever(control=True, seed=0)
-    # control a_m is approximately half the main a_m
-    assert derived_ctrl["a_m"] == pytest.approx(
-        0.5 * derived_main["a_m"], rel=0.05)
-    # control a_l is approximately 1.5x the main a_l
-    assert derived_ctrl["a_l"] == pytest.approx(
-        1.5 * derived_main["a_l"], rel=0.05)
+    assert derived_ctrl["a_m"] < derived_main["a_m"]
+    assert derived_ctrl["a_l"] > derived_main["a_l"]
 
 
 def test_lever_cushion_contacts():
@@ -1003,11 +998,23 @@ def test_lever_cushion_contacts():
     load = pos[grain_ids == 3]
     fulcrum_top = fulcrum[derived["fulcrum_top_face"]]
     lever_contact = lever[derived["lever_contact_local"]]
-    d = fulcrum_top[:, None, :] - lever_contact[None, :, :]
-    fulcrum_gap = float(np.sqrt((d * d).sum(axis=2).min()))
-    load_lever_gap = float(np.linalg.norm(
-        load[:, None, :] - lever[None, :, :], axis=2).min())
     d_eq = derived["d_eq"]
+    d = derived["spacing"]
+
+    # Vertical cushion gap: consider only pairs whose horizontal offset is
+    # small (within two lattice steps), because a thin lever's diagonal
+    # corner-to-corner distance is not the contact gap.
+    def _vertical_gap(src: np.ndarray, dst: np.ndarray) -> float:
+        delta = src[:, None, :] - dst[None, :, :]
+        r_xy = np.linalg.norm(delta[:, :, :2], axis=2)
+        dz = np.abs(delta[:, :, 2])
+        close = r_xy <= 2.0 * d
+        if not close.any():
+            return float(np.sqrt((delta * delta).sum(axis=2).min()))
+        return float(dz[close].min())
+
+    fulcrum_gap = _vertical_gap(fulcrum_top, lever_contact)
+    load_lever_gap = _vertical_gap(load, lever)
     assert abs(fulcrum_gap - d_eq) < 0.01
     assert abs(load_lever_gap - d_eq) < 0.01
 
