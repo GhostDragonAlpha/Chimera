@@ -630,3 +630,24 @@ still > 1 J -> per-link KE trace (.tmp/diag_rest_ke.py); if the
 same light chain holds the residue the row's c is chain-blind
 (m_eff = isolated link, not pile-loaded) -> run 19 derives c
 from the assembled K diagonal.
+RUN 18 DIAGNOSTIC OUTCOME (2026-08-08, agent_logs/diag_rest_ke_run18.log):
+**the chain-blindness theory CONFIRMS on (b): the residue sits on the
+same light spine chain -- vertebra_C5 0.06 kg at 2.4 m/s, T5/T6,
+sternum, scapula_L; top-5 share 53%; curve 3.0 -> 2.3 -> 1.8 -> 3.9
+-> 1.3 J (decaying, humped).**  (a) settles monotone 89.3 -> 13.2 J
+-- the all-depths damped row is a slow settle, not a cycle; noted,
+but (a) stays measured-wrong on NO TUNNEL.  The reading: c =
+2*sqrt(m_eff*k) with m_eff the ISOLATED link's mass under-damps a
+spring that is really arresting the TRUNK pressing through the
+joint chain -- a 0.06 kg vertebra carries kilograms, so c is light
+by an order of magnitude.  RUN 19 MEMBRANE (the numbers chose it):
+**LOADED-c** -- the solve already measures the load: at rest the
+row's own lambda ~ dt * (force pressing through), so m_load =
+max(m_eff, lambda_prev/(g*dt)) from the PREVIOUS TICK's solved
+lambda (the kernel's existing warm-start idiom, friction mode 3),
+then c = 2*sqrt(m_load*k_loc).  Derived from the solve's own
+answer, no sweep.  The launch guard strengthens by construction
+(bigger c only shrinks the bias k*d/(dt*k+c)).  Named risk,
+recorded before the run: heavier c slows the pad lift -- the (a)
+regression mechanism -- so (b)'s NO TUNNEL -0.0663 is the leg to
+watch.  1-DOF verifies loaded-c stability before kernel entry.
