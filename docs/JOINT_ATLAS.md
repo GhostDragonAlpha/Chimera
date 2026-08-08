@@ -567,3 +567,22 @@ diagonal softening makes the row stable for ALL link masses
 penetration (the lift); the implicit form is dissipative at high
 omega*dt (the REST).  This is what MuJoCo/ODE/PhysX do -- and
 the 1-DOF probe verifies it BEFORE the kernel change.
+RUN 17 OUTCOME (2026-08-08, agent_logs/floor_run17.log): **the
+zoned implicit row kills the pump and the tunnel; the REST
+residual shrinks 5-29x but does not clear the bar -- REST
+3.971 J (a) / 3.865 J (b), bar < 1.0, FAIL both.**  Every other
+leg goes green or near-green for the first time in the saga:
+(a) NO SINK +0.0008 PASS, NO TUNNEL -0.0845 PASS, NO PUMP
+566.9 J PASS, (d2) +0.0001 PASS, (d1) hair-fail -0.0527;
+(b) NO TUNNEL -0.0940 PASS, NO PUMP 335.9 J PASS, (d2) -0.0095
+PASS, NO SINK FAIL -0.0778, (d1) FAIL -0.0985.  The named
+falsifier governs: REST > 1 J -> per-link KE trace + decay
+curve (.tmp/diag_rest_ke.py, run-17 kernel) BEFORE naming run
+18.  If the curve decays the residue is an under-damped settle
+(needs time or implicit damping, not a new form); if it holds
+flat on the same light shoulder chain the gamma row still pumps
+in the chain and run 18 lets the implicit pad row take ALL
+depths (drop the rigid zone).  Note: (a)'s servo refused @tick
+3 (COM exits the foot polygon immediately with pen_d_pad = 1.0
+-- the soft implicit pad lets the standing frame sag), so its
+(d1) is effectively a drop-arm number; (b) refused @527.
