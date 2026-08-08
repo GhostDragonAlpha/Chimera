@@ -1863,6 +1863,31 @@ lock/solve stack should permit.  The probes in this saga measured
 against a static-pose bar; the datum stands as the reference the
 balance membrane's next design must derive from.
 
+**OPERATOR DATUM 2, 2026-08-08 (THE HUMAN terminal, locomotion control —
+recorded verbatim):** "If you want to move fast you have to increase
+the angle. If you accelerate fast you have to increase that angle of
+torso inclination. If you do it too much you'll fall over — but if you
+want to go fast quickly you have to kind of fall over to that one
+point where the pressure of your legs counteracts the equilibrium
+momentarily and overrides, so that when you get up to full velocity
+you're actually forward still, but not as much — just enough to
+counter wind resistance. In a way running is just about the maximum
+velocity that we can move in any direction, and then we base
+everything off of that. That's how our brain works."  Consequences
+for the membrane stack: (1) the locomotion controller's ONE input
+knob is the lean (torso/pelvis inclination): acceleration demand ->
+lean angle, derived from the inverted-pendulum balance of gravity
+moment vs ground-reaction moment — the same omega0 geometry the push
+verb already uses; (2) "too much and you fall" IS the falsifiable
+boundary: the lean has a derived maximum (the step threshold — beyond
+the polygon edge a step MUST fire or the frame falls); (3) steady-
+state lean != 0: cruise lean balances drag, so the gait membrane's
+equilibrium is speed-dependent, not upright; (4) THE HUMAN defines
+the locomotion envelope as RUNNING = maximum velocity in any
+direction, with every other gait derived as a fraction of it — the
+reference for the walk/run membranes is a top-down scale, not a
+bottom-up walk that gets faster.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
