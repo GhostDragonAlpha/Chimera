@@ -1178,6 +1178,60 @@ tapered columns meeting at the apex saddle (an A — the pelvis' own
 shape), the lumbar's moment resolved into compression down both legs;
 the falsifier battery reruns unchanged, and INTEGRITY is the claim.
 
+## THE STANDING HUMAN (the whole frame at once — the operator's order)
+
+**STANDING v1 VERDICT 2026-08-07 (77 bones, 43 ropes, 49 864 grains, foot-pad
+plate, run tags skeleton_v1 / skeleton_v1_control, 8 000 ticks):** the
+standing-frame statement is FALSIFIED, and the control names why with unusual
+clarity. Verified link by link from the logs. (1) THE LEG BONES SHATTER: max
+clusters 607 main / 618 control, worst offenders exactly the upgraded 3x3
+solid-rod groups — fibula_R(607/618), tibia_L(545/518), fibula_L(548). The
+tendon-line's proven 2x2 compression rod does not scale to 3x3 under full
+body weight; a wider cross-section is MORE fragments, not fewer. (a)
+INTEGRITY FAIL both. (2) THE JOINTS COMPRESS THROUGH THE WALL: capture gap
+min 0.0094-0.0095 vs S_WALL 0.0250, worst atlanto_occipital, shoulder_R,
+hip_L — the stacked slump drives every ball deeper into its cup than the
+derived seat. (b) CAPTURE FAIL both. (3) THE ROPES CRUMPLE UNDER THE SLUMP:
+271 compression link-samples main, max 0.769, offenders the posterior spinal
+ropes (lumbar_posterior_5, thoracic_posterior_3/12) — the trunk leans back
+onto ropes that can only pull. (d) ROPE FAIL. (4) THE HEAD SINKS THROUGH THE
+BAND: head_z range [62.016, 66.901] vs 65.689 +/- 2.342 — a ~10 cm settle at
+lam, monotonic, still sinking at tick 8 000. (e) STAND FAIL both. (5) THE
+CONTROL IS THE CLEANEST RESULT OF THE RUN: ropes cut at tick 1 200 and the
+frame DOES NOT FALL — true COM drop ~0.04 lu in the 600-tick window vs the
+6.863 lu bar, and the post-cut trajectory tracks the main run's slump to
+within 0.2 lu at every sample. (f) CONTROL FAIL. The law: **the v1 skeleton
+stands on bone-on-bone cushion propping and the pinned foot pads; the rope
+network carries nothing. The tension half of the standing constitution is
+decorative as printed — and therefore the design never met its own
+constitution, which forbids exactly the propping cantilevers the slump feeds
+on.** (6) (c) FRAME PASS both, recorded honestly for what it is: the COM
+margin is positive (min +0.0006) and GROWS (to 0.400) because the slumping
+COM drifts toward the polygon centroid — the meter reads balance while the
+body sinks through it. A polygon meter without a height meter is half an
+instrument; (e) is what caught the fall. (7) Metering sin recorded:
+com_at_cut (demo_skeleton.py:395) averages over the plate, cur_com_z
+(demo_skeleton.py:420) does not — a ~2.9 lu bias against detecting a fall;
+the observed non-fall is untainted (true drop ~0.04 lu) and the report's
+first-pass "COM_z rises" reading was this artifact, struck. Fix named:
+one mask for both. (8) The slump's engine is (1): as the leg rods
+disintegrate the column shortens, every joint over-seats, the trunk leans
+onto its ropes. The failure-localization table routes all four FAILs to one
+membrane: BONE INTEGRITY AT SCALE. Successors (named, in dependency order):
+standing v2a — the load-path audit: per-bone axial force telemetry, so the
+claim "this bone is in compression along its axis" is MEASURED per bone
+rather than assumed from geometry (no reprint; instrument the v1 driver and
+rerun — if the tibia's load has a transverse component, the shatter is the
+constitution enforcing itself, not a resolution problem); standing v2b —
+the bone that cannot shatter: leg cross-section derived from the measured
+v2a load, with the tendon-line's 2x2 rod law as the floor and the falsifier
+(a) INTEGRITY alone; only then v2c — ropes re-routed onto the measured COM
+line so the control has something to cut. FALSIFIER for the whole v2 line:
+if the audit shows the leg bones carrying pure axial compression and they
+STILL shatter, the cushion kernel has no bulk shear strength at any
+cross-section and the skeleton must stand on arches, not columns — record,
+do not patch.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

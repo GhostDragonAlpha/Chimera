@@ -1,0 +1,61 @@
+======================================================================
+THE KERNEL - STANDING HUMAN v1 print run (control)
+N=49864, bones=77, ropes=43, plate=4480 pinned, seed=20260807, dt=0.0005, ticks=8000, cut_ropes=True
+----------------------------------------------------------------------
+STATEMENT: The 206-bone skeleton stands because its printed geometry routes
+  the whole body weight to the ground through bones in compression and
+  ropes in tension. Standing is a property of the frame, not of any muscle.
+PREDICTION: During the verdict window every bone stays one cluster and inside
+  its derived positional band; every capture gap stays inside [S_WALL, d_eq];
+  the COM projects inside the foot-bone support polygon; required ropes stay
+  taut; the head height stays within the standing band.
+FALSIFIERS:
+  (a) INTEGRITY - per bone: no body splits into >=2 clusters in window
+  (b) CAPTURE   - every cup/ball gap stays within [S_WALL, d_eq]
+  (c) FRAME     - COM of non-ground grains stays over the support polygon
+  (d) ROPE      - loaded ropes taut-or-slack, never compressed
+  (e) STAND     - head height stays within print_z +/- H_head*tan(2deg)+d_eq
+  (f) CONTROL   - cut ropes at tick 1200; FAIL if COM does not drop >
+                  L_leg*sin(12deg) within 600 ticks
+======================================================================
+
+Derived d_eq       = 0.04840
+Derived spacing    = 0.04840
+Derived height_lu  = 66.68
+Derived lam        = 2.699280e-02 m/lu
+Derived total      = 49864
+Derived upgrade_groups = femur pair, fibula pair, forefoot mass, humerus pair, metatarsals group, patella pair, pelvis pair, sacrum, tarsals group, tibia pair, vertebra L3, vertebra L4, vertebra L5
+
+[skeleton_v1_control] N=49864 bones=77 ropes=43 plate=4480 cut_ropes=True
+[skeleton_v1_control] dt=0.0005 ticks=8000 sample_every=1000
+[skeleton_v1_control] support_polygon_pts=6 delta_fail=6.863 loaded_ropes=4
+
+[skeleton_v1_control] tick=     0 | COM=(1.291,-0.000,31.903) com_over_support=False margin=-0.043 | head_z=65.689 | clusters=max1 worst=none | capture_gap=0.0637 worst_joint=hip_R | rope links T/S/C=0/1943/0 max_comp=0.000 worst=none | plate_F=13380.43
+[skeleton_v1_control] tick=  1000 | COM=(1.299,-0.000,31.854) com_over_support=False margin=-0.035 | head_z=66.631 | clusters=max518 worst=tibia_L | capture_gap=0.0192 worst_joint=shoulder_R | rope links T/S/C=639/1284/20 max_comp=0.449 worst=rope_hip_anterior_R | plate_F=16178.23
+[skeleton_v1_control] CUT ROPES at tick=1200; 1986 rope grains removed; com_z at cut=28.921
+[skeleton_v1_control] tick=  2000 | COM=(1.377,0.000,31.818) com_over_support=True margin=0.043 | head_z=66.906 | clusters=max618 worst=fibula_R | capture_gap=0.0140 worst_joint=shoulder_R | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=13654.87
+[skeleton_v1_control] tick=  3000 | COM=(1.413,-0.001,31.648) com_over_support=True margin=0.079 | head_z=66.827 | clusters=max340 worst=tibia_L | capture_gap=0.0190 worst_joint=hip_L | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=14444.12
+[skeleton_v1_control] tick=  4000 | COM=(1.459,0.001,31.418) com_over_support=True margin=0.125 | head_z=66.458 | clusters=max540 worst=fibula_L | capture_gap=0.0215 worst_joint=hip_L | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=12075.87
+[skeleton_v1_control] tick=  5000 | COM=(1.500,0.001,31.164) com_over_support=True margin=0.166 | head_z=65.824 | clusters=max548 worst=fibula_L | capture_gap=0.0170 worst_joint=hip_L | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=9216.05
+[skeleton_v1_control] tick=  6000 | COM=(1.542,0.004,30.860) com_over_support=True margin=0.208 | head_z=64.932 | clusters=max473 worst=tibia_L | capture_gap=0.0109 worst_joint=atlanto_occipital | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=8326.56
+[skeleton_v1_control] tick=  7000 | COM=(1.585,0.007,30.509) com_over_support=True margin=0.251 | head_z=63.776 | clusters=max503 worst=fibula_L | capture_gap=0.0108 worst_joint=atlanto_occipital | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=8655.02
+[skeleton_v1_control] tick=  8000 | COM=(1.631,0.010,30.107) com_over_support=True margin=0.297 | head_z=62.347 | clusters=max510 worst=tibia_L | capture_gap=0.0094 worst_joint=atlanto_occipital | rope links T/S/C=0/0/0 max_comp=0.000 worst=none | plate_F=9341.35
+
+[skeleton_v1_control] STANDING HUMAN v1 FALSIFIERS:
+  (a) INTEGRITY      : FAIL  max clusters=618 worst=tibia_L
+  (b) CAPTURE        : FAIL  capture gap band=[0.0250, 0.0484] min=0.0094 max=0.0637
+  (c) FRAME          : PASS  COM margin min=0.0435 (bar >= 0.0)
+  (d) ROPE           : FAIL  total compression samples=20
+  (e) STAND          : FAIL  head_z0=65.689 band=+/-2.342 range=[62.347, 66.906]
+  (f) CONTROL (FALL) : FAIL  fall_detected=False fall_tick=None delta_fail=6.863
+
+[skeleton_v1_control] WORST OFFENDERS:
+  bodies by max clusters: fibula_R(618), fibula_L(548), tibia_L(518)
+  joints by smallest capture gap: atlanto_occipital(0.0094), shoulder_R(0.0140), hip_L(0.0170)
+  ropes by max compression: rope_hip_anterior_R(0.449)
+
+[skeleton_v1_control] ROPE TELEMETRY:
+  loaded rope set (4): rope_ankle_anterior_L, rope_ankle_anterior_R, rope_ankle_posterior_L, rope_ankle_posterior_R
+  total link samples: T=639 S=3227 C=20
+  max rope compression = 0.449
+======================================================================
