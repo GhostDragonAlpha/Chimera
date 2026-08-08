@@ -322,7 +322,9 @@ def position_pass(
                     quat[cb] = _premult_rotate(quat[cb], -dtheta_c, _norm3(dtheta_c))
 
         # rotation-lock position stabilization (small-angle, frame-fixed)
-        if do_rotation_locks != 0:
+        # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
+        # 3=position stabilization only (toxic-component A/B, 2026-08-08).
+        if do_rotation_locks == 1 or do_rotation_locks == 3:
             for ji in range(n_joints):
                 pa = joint_parent[ji]
                 cb = joint_child[ji]
@@ -545,7 +547,9 @@ def step_core(
                 joint_impulses_ang[ji] = joint_impulses_ang[ji] + _cross3(r_c, jv)
 
         # rotation locks at velocity level
-        if do_rotation_locks != 0:
+        # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
+        # 3=position stabilization only (toxic-component A/B, 2026-08-08).
+        if do_rotation_locks == 1 or do_rotation_locks == 2:
             for ji in range(n_joints):
                 pa = joint_parent[ji]
                 cb = joint_child[ji]
@@ -791,7 +795,9 @@ def step_core_direct(
             n_rows += 1
 
     # rotation locks: pure angular rows on the locked axes
-    if do_rotation_locks != 0:
+    # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
+    # 3=position stabilization only (toxic-component A/B, 2026-08-08).
+    if do_rotation_locks == 1 or do_rotation_locks == 2:
         for ji in range(n_joints):
             pa = joint_parent[ji]
             cb = joint_child[ji]

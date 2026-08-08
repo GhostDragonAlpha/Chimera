@@ -1786,6 +1786,36 @@ locks ON), and a position-pass A/B (lock rows in the velocity solve
 ONLY vs position-pass ONLY vs both) — the toxic component, one run
 each; then the fix membrane for the component, not the flag.
 
+**LOCK COMPONENT + MODE-2 PROTOCOL VERDICTS 2026-08-08 (probes
+.tmp/probe_lock_components.py, .tmp/probe_mode2_full.py; kernel split:
+lock mode 0=off, 1=both legacy, 2=velocity rows only, 3=position
+stabilization only):** the component A/B membrane STOOD and named the
+poison; the full-protocol membrane then FALSIFIED mode 2 as a fix —
+and the two together hand us the classic derived shape. (1) Component
+A/B (400 ticks): mode 2 SAFE and eerily level (head 1.810 -> 1.810 ->
+1.811, resid 0.013 rad, max |w| 20.6); mode 3 TOXIC (head 0.975 @399,
+|w| 1 855) — the BETA=0.2 position-pass stabilization is the K2 pump's
+living address: it rotates quats without touching velocities, an
+energy-inconsistent correction, exactly the note the code already
+carried. (2) Mode 2 full protocol (8 000 ticks): FALSIFIED on three
+legs — STAND fails (head @1000 = 1.399, @4000 = -0.682), the LEAK
+RE-OPENS (locked resid 0.011 -> 0.632 @1000 -> 2.784 @7999), whip
+2 915 rad/s in the debris; NON-VACUOUS passes. Velocity-level equality
+rows hold locked-axis VELOCITY at zero but integrate no position
+correction: the leak converts from a pump to a slow drift. (3) Net
+law: **locked-axis closure needs velocity rows that carry their own
+position error as a Baumgarte bias (row target = -BETA/dt x the
+locked-axis error, inside the SAME K solve that carries motors and
+contacts — positions and velocities corrected together, no separate
+quat pass): velocity-only drifts, position-only pumps, the bias form
+is the derived middle; BETA is the file's existing stabilization
+factor, no constant is chosen.** Successors (dependency order): the
+bias-row membrane (mode 4) in the direct solve + the sweep; the full
+protocol re-run unchanged; then the v2 battery ROTATION_LOCKS=4; then
+the demo default flips and the v2 constitution comment is corrected
+(locks were never vacuous — CONTROL still falls on every run of this
+saga).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
