@@ -1614,6 +1614,32 @@ push-recover game (shove the frame with the derived PUSH/SHOVE
 impulse already in serve_standing_demo.py, give it a step verb, score
 the recovery) — it now has a ground loop that can recover.
 
+**DEMO v3 PUSH-RECOVERY VERDICT 2026-08-08 (probe .tmp/probe_demo_v3.py,
+hybrid ground loop, muscles ON, push at tick 100):** the membrane is
+FALSIFIED AS NAMED on both recovery and dose — and the falsifier found
+the real hole, which is not in the push channel. (1) The push channel
+is honest: 0.5x push = 58.7 N for 332 ticks (J = 19.5 N s), 2.0x shove
+= 234.7 N (J = 77.9 N s), both derived from the live support geometry;
+REFUSAL PASS (the guard refuses at tick 3000, frame flat at head_z =
+-1.877 m). (2) RECOVERY FAIL as named: gap vs the unpushed run peaks
+0.2521 m and is still growing at push_end + 4W. BUT the baseline
+itself is falling: unpushed head_z 1.796 @100 -> 0.923 @500 ->
+-0.545 @1000. Recovery was defined against a trajectory that collapses
+on its own inside one recovery window (4W = 1 328 ticks) — past
+tick ~1 000 the gap measures chaotic divergence of two collapsing
+runs, not push lethality. The pendulum domain the recovery verb is
+defined in does not exist long enough to test recovery in it. (3) DOSE
+FAIL as named: shove peak gap 0.1404 m < push peak 0.2521 m — an
+inverted dose response, same confound: once both runs are falling,
+gap-vs-base is noise, not dose. (4) Net law: **the push-recovery game
+cannot be scored until the frame HOLDS the standing domain on its own;
+the falsifier redirects from the push channel (honest) to the standing
+controller (absent — muscles ON slows the crumple but does not stop
+it).** Successors (dependency order): a standing-balance membrane
+(servo that keeps COM inside the support polygon indefinitely — the
+recovery verb's arena); then DEMO v3 re-probed, unchanged, against a
+baseline that stands.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
