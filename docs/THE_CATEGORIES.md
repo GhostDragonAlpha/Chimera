@@ -2100,6 +2100,32 @@ CONTROL better — exactly what forensics are for). Successor probe
 named: ligaments (stiff from rest, k = F_max/d_eq_m, no play band)
 vs axial spin vs new furniture contacts.
 
+**PASSIVE-RIGIDITY FORENSICS 2, VERDICT 2026-08-08 (probe
+.tmp/probe_passive_forensics2.py, ghost-free CONTROL @1499):** THE
+LIGAMENTS ARE THE RIGIDITY. (a) PASS — 25 of 43 sweep ligaments taut,
+carrying 1 313 N = 1.67x body weight with every muscle cut: the
+frame's passive tissues alone can hold it standing, which no relaxed
+body does. (b) PASS — the ankle fold is 100% single-axis pitch (a
+real fold, not axial spin; the slow head drop is not a measurement
+artifact). (d) PASS — only the two tarsals touch the ground (87 N
+each): no furniture, the frame is not resting on new contacts. (c)
+FAIL as named, and the failure sharpens the membrane: mean taut
+extension is 4.2 mm = 3.2x the d_eq_m design bound (1.31 mm) — the
+spring law k = F_max/d_eq_m engages FROM REST with zero play and the
+velocity-level solve then lets extensions overshoot the intended
+elongation 3x. The anatomical ligament is the opposite shape: SLACK
+through the joint's play band, stiff only at its end. **Passive-play
+membrane (aimed): ligament rest length gains the measured play —
+force = k*(ext - d_eq_m) beyond the band, zero inside it — so a
+muscles-cut body folds freely through the play and the elastic wall
+only appears at the anatomical limit, where gravity torque and
+momentum already exceed the catch.** Uncertainty named before the
+A/B: at the folded pose (ext 4.2 mm) force still engages beyond the
+band — whether the frame then falls depends on whether the catch
+holds at large fold angle; that is exactly what the probe measures.
+Open question deferred from (c): whether the 3.2x extension overshoot
+is its own membrane (solve softness) — not gated by the play band.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
