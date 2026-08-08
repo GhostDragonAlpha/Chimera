@@ -367,3 +367,18 @@ not additive: a point is served by the row XOR the spring, never
 both.  The floor work is FROZEN here pending the sourced-data
 re-derivation (operator directive 2026-08-08: measured contact
 constants from the atlas, not another kernel variant).
+RUN 10 CANDIDATES (sourced, 2026-08-08): the 1-DOF measured-floor
+probe (.tmp/probe_measured_floor.py, log agent_logs/
+measured_floor_probe.json) FALSIFIED its own statement that no
+constant k in the Wearing band can meet both bars -- constant
+k = 212 kN/m (Wearing FINAL stiffness) passes crush (0.051 m) and
+rest (0.0 J) in 1-DOF.  The bilinear 32k->212k with rigid pad
+bottom at 10.4 mm (Lopez-Lopez 2019) passes with 3x margin
+(0.0155 m) and matches anatomy.  CAVEAT the probe cannot see:
+1-DOF has no solver boundary, so run 8's 7.8 J jitter (spring x
+solver-tick fight) is untested by it.  RUN 10 = full-skeleton test
+of BOTH candidates under the run-9 EXCLUSIVE composition rule
+(spring XOR row per point, never both).  Validation reference now
+on disk: external/grf/standing_reference.json (5 subjects, quiet
+ankle moments -3..+5 N m, sacrum sway std, Zenodo 3819630) and
+7 CMU mocap traces (external/mocap/traces/, Vitruvian-checked).
