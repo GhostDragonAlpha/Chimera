@@ -1662,6 +1662,36 @@ successors), probed FIRST by this forensics probe (slip signature must
 go absent, head_z fall tick must move past 1 000), THEN the v2 battery
 (the simmer pump must stay dead), then DEMO v3 re-probed unchanged.
 
+**FRICTION v4 PRE-PROBE VERDICT 2026-08-08 (probe
+.tmp/probe_friction_v4_pre.py, hybrid, ticks 100-300):** the cone-
+limited membrane is FALSIFIED — and the falsifier found the real
+address. (1) Of 1 338 loaded contact-ticks with residual slip,
+only 154 are cone-limited; 1 184 are UNDER bound with the budget
+unspent; ZERO contact-ticks are fully arrested. The slip is not a
+small MU. (2) The dominant under-bound mode: bound = 0.0000 while the
+point carries 0.1-0.6 m/s tangential — the solve's normal impulse is
+ZERO at most loaded points (the samples show 2 of 8 foot points
+carrying the whole normal load: the rigid-indeterminate contact solve
+legally concentrates the load, and with it ALL the friction budget).
+The few loaded pivots arrest (residual 2.4 mm/s, ~10% of budget
+spent); the unloaded points are carried through big arcs as the foot
+rocks and yaws about those pivots under the servo's ankle torques —
+that is where the 271 mm of 'drift' is traced. (3) Instrumentation
+note (honest): the probe's 50 mm 'loaded' bar counts hovering points
+the solver never rows; the zero-bound class mixes hovering (no row —
+physically correct) with in-row zero-impulse (the degeneracy). (4) Net
+law: **the grip failure is the rigid contact solve's load concentration:
+normal impulse — and therefore MU x normal — pools onto a few pivot
+points while the rest of the foot offers zero resistance; Coulomb for a
+rigid foot depends on the LINK's total normal load, not on which
+indeterminate point the solver happened to charge.** Successors
+(dependency order): (a) a pivot-rotation probe that separates hovering
+from in-row-zero and measures drift-about-loaded-pivots per foot link;
+(b) v4: pool the cone bound per LINK (each point's bound = MU x the
+link's total normal impulse this tick — derived from rigid-contact
+mechanics, no number chosen), then the forensics probe (slip must go
+absent) and the v2 battery (the simmer pump must stay dead).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
