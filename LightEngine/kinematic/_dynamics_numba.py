@@ -772,6 +772,7 @@ def step_core_direct(
     contacts_in_solve,
     contact_friction,
     pos_pass_mode,
+    contact_prev_n,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -802,7 +803,14 @@ def step_core_direct(
     MU x the solve's normal impulse -- sweep clamping is dissipative by
     construction, which the in-solve cone fix was measured not to be
     (v3d: simmer pump, supercritical at tick 7 713).  Default 1: the full
-    cone in-solve (v3a), kept for A/B."""
+    cone in-solve (v3a), kept for A/B.  contact_friction == 3 (warm-start
+    cone, the friction-placement membrane 2026-08-08): friction rows in
+    the solve like mode 1, but the cone bound is contact_prev_n -- the
+    PREVIOUS TICK's solved normal impulse per contact, fixed all tick,
+    so the bound is never revised intra-tick (the v3d pump's address)
+    while friction stays simultaneous with the motors (the friction-fork
+    verdict: the post-solve sweep overwrites the ankle servo's booked
+    rotation, wrong-way at 100% of samples)."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
@@ -955,9 +963,11 @@ def step_core_direct(
             n_rows += 1
             # friction rows enter the solve only in mode 1 (full cone
             # in-solve, v3a -- measured leaky on the long protocol, kept
-            # for A/B).  Mode 0: no friction anywhere (v3d instrument).
-            # Mode 2 (hybrid, v3e): friction runs in the sweep below.
-            if contact_friction != 1:
+            # for A/B) and mode 3 (warm-start cone: same rows, bound
+            # fixed from the previous tick's normal impulse).  Mode 0:
+            # no friction anywhere (v3d instrument).  Mode 2 (hybrid,
+            # v3e): friction runs in the sweep below.
+            if contact_friction != 1 and contact_friction != 3:
                 continue
             for t_ax in range(2):
                 t = np.zeros(3, dtype=np.float64)
@@ -1105,16 +1115,23 @@ def step_core_direct(
                     lam_full[r] = 0.0
                     violated = True
             elif kind[r] == _FRICTION:
-                # cone bound from THIS attempt's solved normal lambda; a
-                # normal row dropped earlier in this pass leaves lim = 0,
-                # so its friction rows go to zero with it.  A row past the
-                # cone is FIXED at the bound: the bounded impulse is applied
-                # NOW (next attempt's rhs sees it) and the row leaves the
+                # cone bound: mode 1 from THIS attempt's solved normal
+                # lambda (a normal row dropped earlier in this pass
+                # leaves lim = 0, so its friction rows go to zero with
+                # it); mode 3 from the PREVIOUS TICK's normal impulse
+                # (contact_prev_n), fixed all tick -- the warm start
+                # that removes the intra-tick bound revision (the v3d
+                # simmer pump's address).  A row past the cone is FIXED
+                # at the bound: the bounded impulse is applied NOW
+                # (next attempt's rhs sees it) and the row leaves the
                 # set -- the motor-row idiom, never a post-solve clamp.
-                pn = pair[r]
-                lam_n = 0.0
-                if pn >= 0 and active[pn]:
-                    lam_n = lam[cmap[pn]]
+                if contact_friction == 3:
+                    lam_n = contact_prev_n[rec_i[r]]
+                else:
+                    pn = pair[r]
+                    lam_n = 0.0
+                    if pn >= 0 and active[pn]:
+                        lam_n = lam[cmap[pn]]
                 lim = MU * lam_n
                 if lim < 0.0:
                     lim = 0.0
@@ -1148,10 +1165,17 @@ def step_core_direct(
         if kind[r] == _UNILATERAL and lam_full[r] < 0.0:
             lam_full[r] = 0.0
         if kind[r] == _FRICTION:
-            pn = pair[r]
-            lim = 0.0
-            if pn >= 0 and active[pn]:
-                lim = MU * lam_full[pn]
+            if contact_friction == 3:
+                # warm-start cone: the bound never revises intra-tick,
+                # so the final clamp reads the same fixed bound.
+                lim = MU * contact_prev_n[rec_i[r]]
+                if lim < 0.0:
+                    lim = 0.0
+            else:
+                pn = pair[r]
+                lim = 0.0
+                if pn >= 0 and active[pn]:
+                    lim = MU * lam_full[pn]
             if lam_full[r] > lim:
                 lam_full[r] = lim
             elif lam_full[r] < -lim:

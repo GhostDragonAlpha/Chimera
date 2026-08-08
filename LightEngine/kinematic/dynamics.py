@@ -631,6 +631,16 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             if state.get("lig_force_limit", False) \
             else np.zeros(n_lig, dtype=np.float64)
         contact_impulses = np.zeros((n_contacts, 3), dtype=np.float64)
+        # Warm-start cone (contact_friction == 3): the previous tick's
+        # solved normal impulse per contact, read BEFORE this tick's
+        # solve overwrites the channel (state holds last tick's array).
+        # Zeros on the first tick -- no friction until the normals have
+        # been solved once.
+        prev_ci = state.get("contact_impulses")
+        if prev_ci is not None and prev_ci.shape[0] == n_contacts:
+            contact_prev_n = prev_ci[:, 2].copy()
+        else:
+            contact_prev_n = np.zeros(n_contacts, dtype=np.float64)
         # Position-pass ghost instrumentation (ghost-source probe,
         # 2026-08-08): per-link rotations applied at position level,
         # invisible in ang_vel, split by block.  Accounting only.
@@ -669,7 +679,8 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             _numba_step_core_direct(
                 *args, int(state.get("contacts_in_solve", False)),
                 int(state.get("contact_friction", True)),
-                int(state.get("pos_pass_mode", 0)))
+                int(state.get("pos_pass_mode", 0)),
+                contact_prev_n)
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin
