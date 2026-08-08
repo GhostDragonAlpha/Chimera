@@ -810,6 +810,21 @@ def step_core_direct(
     so the bound is never revised intra-tick (the v3d pump's address)
     while friction stays simultaneous with the motors (the friction-fork
     verdict: the post-solve sweep overwrites the ankle servo's booked
+    rotation, wrong-way at 100% of samples).  FALSIFIED 2026-08-08: the
+    staleness starves friction while the normals load (MAIN falls @434
+    with muscles on).  contact_friction == 4 (frozen first-solve cone):
+    friction rows in the solve, bound = MU x the FIRST attempt's solved
+    lambda_n per contact, frozen for the rest of the tick --
+    simultaneous (this tick, the warm-start falsifier) and unrevised
+    (the v3d pump's address) at once.  FALSIFIED 2026-08-08: not a
+    simmer, a launch (KE 1.05e8 J) -- fix-at-bound with ANY
+    pre-computed bound mismatches the final lambda_n with systematic
+    sign.  contact_friction == 5 (muscle-exclusion membrane): the
+    v3e hybrid sweep (dissipative, long-protocol stable) with the
+    muscle channel's own contribution to the contact-point velocity
+    EXCLUDED from the tangential kill -- friction opposes the
+    world's sliding, not the muscle's command (the friction-fork
+    verdict: the mode-2 sweep overwrites the ankle servo's booked
     rotation, wrong-way at 100% of samples)."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
@@ -961,13 +976,16 @@ def step_core_direct(
             rec_t[n_rows] = _REC_CONTACT
             rec_i[n_rows] = ci
             n_rows += 1
-            # friction rows enter the solve only in mode 1 (full cone
+            # friction rows enter the solve in mode 1 (full cone
             # in-solve, v3a -- measured leaky on the long protocol, kept
-            # for A/B) and mode 3 (warm-start cone: same rows, bound
-            # fixed from the previous tick's normal impulse).  Mode 0:
-            # no friction anywhere (v3d instrument).  Mode 2 (hybrid,
+            # for A/B), mode 3 (warm-start cone: bound fixed from the
+            # previous tick's normal impulse -- FALSIFIED 2026-08-08,
+            # staleness starves the settle), and mode 4 (frozen
+            # first-solve cone: bound = MU x the first attempt's
+            # lambda_n, never recomputed intra-tick).  Mode 0: no
+            # friction anywhere (v3d instrument).  Mode 2 (hybrid,
             # v3e): friction runs in the sweep below.
-            if contact_friction != 1 and contact_friction != 3:
+            if contact_friction not in (1, 3, 4):
                 continue
             for t_ax in range(2):
                 t = np.zeros(3, dtype=np.float64)
@@ -1004,6 +1022,11 @@ def step_core_direct(
     # ---- 4. active-set direct solve ----
     active = np.ones(rows_max, dtype=np.bool_)
     lam_full = np.zeros(rows_max, dtype=np.float64)
+    # Frozen first-solve cone (contact_friction == 4): the FIRST
+    # attempt's solved normal impulse per contact, captured once and
+    # never recomputed intra-tick -- simultaneous (this tick) and
+    # unrevised (no pump) at once.
+    frozen_n = np.zeros(n_contacts, dtype=np.float64)
     for _attempt in range(4):
         # compact active-row map
         cmap = np.full(rows_max, -1, dtype=np.int64)
@@ -1077,6 +1100,16 @@ def step_core_direct(
         for i in range(m):
             K[i, i] = K[i, i] + eps
         lam = _chol_solve(K, rhs)
+        # Frozen first-solve cone (mode 4): capture the FIRST attempt's
+        # solved normal impulses -- the cone bound for the rest of the
+        # tick.  Attempt 1's friction fixing below reads the same
+        # just-solved lambdas mode 1 would use; the modes diverge from
+        # attempt 2, where mode 1 recomputes and mode 4 stays frozen.
+        if contact_friction == 4 and _attempt == 0:
+            for r in range(n_rows):
+                if kind[r] == _UNILATERAL and rec_t[r] == _REC_CONTACT:
+                    ln0 = lam[cmap[r]]
+                    frozen_n[rec_i[r]] = ln0 if ln0 > 0.0 else 0.0
         # Active-set bookkeeping.  Unilateral rows with lambda < 0 leave the
         # set.  Motor rows that exceed their impulse bound are FIXED at the
         # bound: the bounded impulse is applied to the bodies NOW (so the
@@ -1125,7 +1158,12 @@ def step_core_direct(
                 # at the bound: the bounded impulse is applied NOW
                 # (next attempt's rhs sees it) and the row leaves the
                 # set -- the motor-row idiom, never a post-solve clamp.
-                if contact_friction == 3:
+                if contact_friction == 4:
+                    # frozen first-solve cone: the bound NEVER revises
+                    # intra-tick (the v3d pump's address) and never goes
+                    # stale (this tick, the warm-start falsifier).
+                    lam_n = frozen_n[rec_i[r]]
+                elif contact_friction == 3:
                     lam_n = contact_prev_n[rec_i[r]]
                 else:
                     pn = pair[r]
@@ -1165,7 +1203,13 @@ def step_core_direct(
         if kind[r] == _UNILATERAL and lam_full[r] < 0.0:
             lam_full[r] = 0.0
         if kind[r] == _FRICTION:
-            if contact_friction == 3:
+            if contact_friction == 4:
+                # frozen first-solve cone: the final clamp reads the
+                # same frozen bound the active set used.
+                lim = MU * frozen_n[rec_i[r]]
+                if lim < 0.0:
+                    lim = 0.0
+            elif contact_friction == 3:
                 # warm-start cone: the bound never revises intra-tick,
                 # so the final clamp reads the same fixed bound.
                 lim = MU * contact_prev_n[rec_i[r]]
@@ -1222,6 +1266,11 @@ def step_core_direct(
     # lambdas POST-solve re-introduced the K2 active-set energy pump --
     # wmax 1.2e7 rad/s in 300 ticks.  v3a keeps lift-off AND the friction
     # cone inside the re-solve instead; the sweep remains the fallback.)
+    # mode 5 (muscle-exclusion membrane): per-link angular velocity
+    # contributed by the muscle channel THIS tick -- the exclusion the
+    # friction sweep subtracts before its tangential kill.  Filled on
+    # the sweep's first iteration from motor_impulses (angular rows).
+    motor_dw = np.zeros((n_links, 3), dtype=np.float64)
     for _it in range(n_proj_iters):
         # ligaments: unilateral, only when taut and separating
         for li in range(n_lig):
@@ -1280,9 +1329,36 @@ def step_core_direct(
         # per-iteration sweep clamping is dissipative by construction,
         # which the in-solve cone fix was measured not to be (v3d:
         # simmer pump, supercritical at tick 7 713).  Friction modes 0
-        # (none) and 1 (full cone in-solve) skip this sweep.
-        if contacts_in_solve != 0 and contact_friction != 2:
+        # (none), 1 (full cone in-solve), 3 (warm-start) and 4 (frozen
+        # first-solve) skip this sweep.  contact_friction == 5 (the
+        # muscle-exclusion membrane, 2026-08-08): the same hybrid sweep,
+        # but the tangential kill acts on (v_t - v_t_motor) -- the
+        # muscle channel's own contribution to the contact-point
+        # velocity, computed exactly from motor_impulses (angular rows,
+        # jab = L), is EXCLUDED.  The friction-fork verdict: the mode-2
+        # sweep kills the contact-point velocity the servo just booked
+        # and back-drives the tarsals, wrong-way at 100% of samples.
+        # Friction opposes the world's sliding, not the muscle's
+        # command.
+        if contacts_in_solve != 0 and contact_friction != 2 \
+                and contact_friction != 5:
             continue
+        # mode 5: the muscle channel's angular-velocity contribution
+        # per link, computed once per tick before the first iteration.
+        if contact_friction == 5 and _it == 0:
+            for mi in range(n_motors):
+                l_mi = motor_impulses[mi]
+                if l_mi == 0.0:
+                    continue
+                mpa = motor_parent[mi]
+                mcb = motor_child[mi]
+                Lmi = motor_axis[mi]
+                if mcb >= 0 and mass[mcb] > 0.0:
+                    motor_dw[mcb] = motor_dw[mcb] + I_inv[mcb] @ (
+                        l_mi * Lmi)
+                if mpa >= 0 and mass[mpa] > 0.0:
+                    motor_dw[mpa] = motor_dw[mpa] - I_inv[mpa] @ (
+                        l_mi * Lmi)
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
@@ -1314,6 +1390,15 @@ def step_core_direct(
                 if j_n < 0.0:
                     j_n = 0.0
             v_t = v_p - vn * z_hat
+            if contact_friction == 5:
+                # muscle-exclusion membrane: remove the muscle
+                # channel's own contribution to the contact-point
+                # velocity before the tangential kill; friction
+                # opposes the world's sliding, not the muscle's
+                # command.  The exclusion is tangential-only (the
+                # normal channel is untouched).
+                v_t = v_t - _cross3(motor_dw[li], r)
+                v_t = v_t - (v_t @ z_hat) * z_hat
             vt_mag = _norm3(v_t)
             if vt_mag > 1e-12:
                 t_dir = v_t / vt_mag
