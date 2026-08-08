@@ -88,6 +88,7 @@ THETA_CLAMP = 0.24
 _BILATERAL = 0
 _UNILATERAL = 1     # lambda >= 0 required (ligament tension, contact normal)
 _FRICTION = 2       # |lambda| <= MU * lambda of the paired normal row
+_MOTOR = 3          # muscle row: target relative velocity, |lambda| <= lmax
 
 _REC_JOINT_LIN = 0
 _REC_JOINT_ANG = 1
@@ -482,12 +483,19 @@ def step_core(
     contact_link_idx, contact_off_local,
     contact_slop, dt, n_proj_iters,
     do_rotation_locks,
+    ext_force, ext_torque,
+    motor_parent, motor_child, motor_joint, motor_axis, motor_target,
+    motor_lmax, motor_impulses,
     joint_impulses_lin, joint_impulses_ang,
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and
-    accumulated from the velocity pass (that is where the physics is)."""
+    accumulated from the velocity pass (that is where the physics is).
+
+    Motor rows are NOT implemented in this scheme (it diverges at this
+    skeleton's mass ratios anyway -- module docstring); the muscle lane
+    runs on the direct solve.  The parameters are accepted and ignored."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
@@ -495,11 +503,14 @@ def step_core(
 
     z_hat = np.array([0.0, 0.0, 1.0], dtype=np.float64)
 
-    # ---- 1. integrate external forces (gravity) into velocities ----
+    # ---- 1. integrate external forces (gravity + caller-supplied) ----
     for i in range(n_links):
         if mass[i] <= 0.0:
             continue
         lin_vel[i, 2] = lin_vel[i, 2] - dt * GRAVITY
+        lin_vel[i] = lin_vel[i] + dt * inv_mass[i] * ext_force[i]
+        I_inv_i = _world_inertia_inv(quat[i], inv_inertia_diag_local[i])
+        ang_vel[i] = ang_vel[i] + dt * (I_inv_i @ ext_torque[i])
 
     # ---- 2. velocity-level sequential impulses ----
     for _it in range(n_proj_iters):
@@ -664,30 +675,49 @@ def step_core_direct(
     contact_link_idx, contact_off_local,
     contact_slop, dt, n_proj_iters,
     do_rotation_locks,
+    ext_force, ext_torque,
+    motor_parent, motor_child, motor_joint, motor_axis, motor_target,
+    motor_lmax, motor_impulses,
     joint_impulses_lin, joint_impulses_ang,
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
-    from the solved lambdas (lambda IS the impulse along its row)."""
+    from the solved lambdas (lambda IS the impulse along its row).
+
+    Motor rows are the muscle channel: pure angular rows with a target
+    relative velocity (rad/s) and a hard impulse bound |lambda| <= lmax
+    (the physiology torque cap x dt).  They are solved INSIDE the same
+    K system as the joint coincidence rows, so the muscle impulse and the
+    joint reaction are consistent -- an external pre-solve torque kick is
+    not (measured 2026-08-08: ext-couple actuation whipped light links,
+    wmax 2000 rad/s, while the supported trunk barely moved)."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
     n_contacts = contact_link_idx.shape[0]
+    n_motors = motor_parent.shape[0]
 
     z_hat = np.array([0.0, 0.0, 1.0], dtype=np.float64)
 
-    # ---- 1. integrate external forces (gravity) into velocities ----
+    # ---- 1. integrate external forces (gravity + caller-supplied) ----
     for i in range(n_links):
         if mass[i] <= 0.0:
             continue
         lin_vel[i, 2] = lin_vel[i, 2] - dt * GRAVITY
+        lin_vel[i] = lin_vel[i] + dt * inv_mass[i] * ext_force[i]
 
     # World inverse inertia per body (needed by assembly and application).
     I_inv = np.zeros((n_links, 3, 3), dtype=np.float64)
     for i in range(n_links):
         if mass[i] > 0.0:
             I_inv[i] = _world_inertia_inv(quat[i], inv_inertia_diag_local[i])
+
+    # Caller-supplied torques: dw = dt * I_world^-1 @ tau (muscle channel).
+    for i in range(n_links):
+        if mass[i] <= 0.0:
+            continue
+        ang_vel[i] = ang_vel[i] + dt * (I_inv[i] @ ext_torque[i])
 
     # ---- 2. assemble BILATERAL constraint rows (joints + rotation locks) ----
     # Unilaterals (ligaments, contacts, friction) are NOT in the direct
@@ -699,7 +729,7 @@ def step_core_direct(
     # generalized velocity (v, w) and J the (lin, ang) pair.  Sign
     # convention: relative velocity of the B side minus the A side along the
     # row direction, so J_b = (n, r_b x n), J_a = (-n, -r_a x n).
-    rows_max = 6 * n_joints + 1
+    rows_max = 6 * n_joints + n_motors + 1
     rb_a = np.full(rows_max, -1, dtype=np.int64)
     rb_b = np.full(rows_max, -1, dtype=np.int64)
     jla = np.zeros((rows_max, 3), dtype=np.float64)
@@ -710,6 +740,7 @@ def step_core_direct(
     pair = np.full(rows_max, -1, dtype=np.int64)
     rec_t = np.zeros(rows_max, dtype=np.int64)
     rec_i = np.zeros(rows_max, dtype=np.int64)
+    mid = np.full(rows_max, -1, dtype=np.int64)
     n_rows = 0
 
     # joints: point coincidence along all 3 world axes
@@ -754,6 +785,22 @@ def step_core_direct(
                 rec_t[n_rows] = _REC_JOINT_ANG
                 rec_i[n_rows] = ji
                 n_rows += 1
+
+    # muscle motors: pure angular rows on the actuated free axes, with a
+    # target relative velocity and a hard impulse bound (applied below).
+    # rec_t is _REC_JOINT_ANG so the LIMIT meter reads the muscle's share of
+    # the bone load; mid carries the motor index for the target/bound lookup.
+    for mi in range(n_motors):
+        L = motor_axis[mi]
+        rb_a[n_rows] = motor_parent[mi]
+        rb_b[n_rows] = motor_child[mi]
+        jaa[n_rows] = -L
+        jab[n_rows] = L
+        kind[n_rows] = _MOTOR
+        rec_t[n_rows] = _REC_JOINT_ANG
+        rec_i[n_rows] = motor_joint[mi]
+        mid[n_rows] = mi
+        n_rows += 1
 
     # ---- 3. body->rows incidence (CSR) ----
     counts = np.zeros(n_links, dtype=np.int64)
@@ -802,7 +849,11 @@ def step_core_direct(
             bb = rb_b[r]
             if bb >= 0:
                 vr += jlb[r] @ lin_vel[bb] + jab[r] @ ang_vel[bb]
-            rhs[cmap[r]] = -vr
+            if kind[r] == _MOTOR:
+                # drive relative velocity to the muscle target, not to zero
+                rhs[cmap[r]] = motor_target[mid[r]] - vr
+            else:
+                rhs[cmap[r]] = -vr
         # K = J M^-1 J^T via body incidence (K is SPD by construction)
         for b in range(n_links):
             s0 = starts[b]
@@ -846,7 +897,14 @@ def step_core_direct(
         for i in range(m):
             K[i, i] = K[i, i] + eps
         lam = _chol_solve(K, rhs)
-        # unilateral rows with lambda < 0 leave the active set; re-solve
+        # Active-set bookkeeping.  Unilateral rows with lambda < 0 leave the
+        # set.  Motor rows that exceed their impulse bound are FIXED at the
+        # bound: the bounded impulse is applied to the bodies NOW (so the
+        # next attempt's rhs sees it) and the row leaves the set.  Clamping
+        # a solved lambda post-solve instead would break K lambda = rhs and
+        # pump energy -- the K2 measurement (+10.5 kJ / 2000 ticks) that
+        # moved the unilaterals out of this solve in the first place; the
+        # motor lane gets the correct box-constraint active set instead.
         violated = False
         for r in range(n_rows):
             if not active[r]:
@@ -854,7 +912,28 @@ def step_core_direct(
             lam_full[r] = lam[cmap[r]]
             if kind[r] == _UNILATERAL and lam[cmap[r]] < -1e-9:
                 active[r] = False
+                lam_full[r] = 0.0
                 violated = True
+            elif kind[r] == _MOTOR:
+                lim = motor_lmax[mid[r]]
+                lc = lam[cmap[r]]
+                if lc > lim or lc < -lim:
+                    if lc > lim:
+                        lc = lim
+                    else:
+                        lc = -lim
+                    ba = rb_a[r]
+                    bb = rb_b[r]
+                    if ba >= 0 and mass[ba] > 0.0:
+                        ang_vel[ba] = ang_vel[ba] + I_inv[ba] @ (lc * jaa[r])
+                    if bb >= 0 and mass[bb] > 0.0:
+                        ang_vel[bb] = ang_vel[bb] + I_inv[bb] @ (lc * jab[r])
+                    motor_impulses[mid[r]] = motor_impulses[mid[r]] + lc
+                    joint_impulses_ang[rec_i[r]] = \
+                        joint_impulses_ang[rec_i[r]] + lc * jab[r]
+                    active[r] = False
+                    lam_full[r] = 0.0
+                    violated = True
         if not violated:
             break
 
@@ -878,6 +957,8 @@ def step_core_direct(
                 lam_full[r] = lim
             elif lam_full[r] < -lim:
                 lam_full[r] = -lim
+        # motor bounds are handled INSIDE the active-set loop above (fix at
+        # the bound and re-solve); nothing to clamp here.
 
     # ---- 5. apply impulses and record reactions ----
     for r in range(n_rows):
@@ -905,11 +986,16 @@ def step_core_direct(
             lig_impulses_ang[ri] = lig_impulses_ang[ri] + l * jaa[r]
         elif rt == _REC_CONTACT:
             contact_impulses[ri] = contact_impulses[ri] + l * jlb[r]
+        if kind[r] == _MOTOR and mid[r] >= 0:
+            motor_impulses[mid[r]] = motor_impulses[mid[r]] + l
 
     # ---- 5b. unilateral sweeps (ligaments, contacts): sequential impulses
     # with per-iteration clamping -- dissipative by construction.  These run
     # AFTER the direct bilateral solve; the small joint disturbance they add
-    # is cleaned by the next tick's solve and the position pass.
+    # is cleaned by the next tick's solve and the position pass.  (Measured
+    # 2026-08-08: moving the contacts INTO the direct solve re-introduced
+    # the K2 active-set energy pump -- wmax 1.2e7 rad/s in 300 ticks.  The
+    # feet stay sweep-grounded; the muscle lane works around the phase lag.)
     for _it in range(n_proj_iters):
         # ligaments: unilateral, only when taut and separating
         for li in range(n_lig):

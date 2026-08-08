@@ -1269,6 +1269,59 @@ theStandingHuman v2-rigid — the muscle lane (actuated torques on the
 hinge/saddle dofs), the first membrane where STAND can pass honestly; this
 unactuated battery stays as its control.
 
+**STANDING v2 MUSCLE VERDICT 2026-08-08 (77 links, 76 joints, 43 ligament
+ropes, 121 muscle motor rows, hybrid direct solver at 1 kHz, run tag
+demo_kinematic_v2, 8 000 ticks MAIN + CONTROL, muscles relaxed at 1 200):**
+the muscle-stands statement is FALSIFIED on its first membrane iteration —
+and the control finally tells the truth, which is the run's real payload.
+Verified from the battery log. (0) THE MECHANISM, three measured lessons
+before the verdict: (i) actuation as an EXTERNAL pre-solve couple whips the
+light local links while the heavy supported mass barely moves (wmax 2 000
+rad/s in 25 ticks, humerus I_long 7e-6 kg m^2) — the torque must live
+INSIDE the constraint solve, so muscles became MOTOR ROWS (target relative
+velocity, impulse bound = torque cap x dt, solved in the same K system as
+the joint coincidence rows); (ii) clamping a solved motor lambda post-solve
+re-opens the K2 energy pump (NaN by tick 104) — the bound rides a
+box-constraint ACTIVE SET instead (fix at the bound, apply, re-solve);
+(iii) the raw bind pose is NOT balanced — COM projects 7.75 cm behind the
+support centroid, 1.25 cm inside the heel edge (the K3 FRAME failure's own
+geometry) — so the servo target carries the derived ankle lean that puts
+the COM over mid-foot (the "ankle strategy"; measured working: COM drift
++0.012 -> +0.122 lu is toward and past the centroid). (1) THE CONTROL
+PASSES FOR THE FIRST TIME: muscles relaxed at tick 1 200 and the frame
+falls an extra 0.280 m over MAIN in the 600-tick window (bar 0.185 m).
+(f) CONTROL PASS — where K3's ropes-or-no-ropes frame read 0.002 m. The
+muscle channel is genuinely LOAD-BEARING: cutting it is visible. (2) THE
+OPEN CHAINS HOLD: spine and arm joints sit at <= 1 deg error through the
+settle window — motor rows stabilize every chain that does not touch the
+ground interface. (3) THE LEGS BUCKLE ANYWAY (e) STAND FAIL: the ground
+reaction arrives in the post-solve unilateral sweeps, one phase after the
+solve that issues the muscle correction — the correction escapes through
+the free foot, the leg fold runs past the ankle cap (~6 deg of authority),
+head z leaves the band inside the settle window and the meters mostly read
+the post-collapse whip (head z [-5.29, -2.31] vs band [1.75, 1.88]; floor
+caveat applies). (4) THE FALL IS VIOLENT UNDER ACTUATION: a losing muscle
+makes the fall worse than no muscle — worst transverse moment femur_L at
+7.279 x M_fail (a) LIMIT FAIL and femur_L separation 2.7 cm, a hip
+dislocation (b) CAPTURE FAIL, on a frame the unactuated crumple never
+broke. (c) FRAME FAIL (COM x 0.46 -> +22.19 lu, forward — the commanded
+lean's direction, overshooting). (d) LIGAMENT PASS: 0 compression events,
+max 3 954 N. (5) The structural attempt that does NOT work, recorded so
+the next lane does not re-pay for it: moving the foot contacts INTO the
+direct solve as unilateral rows re-introduced the K2 active-set pump
+(wmax 1.2e7 rad/s in 300 ticks) — reverted; the feet stay sweep-grounded.
+(6) Net law: **muscles are load-bearing and hold every open chain, but
+standing is a ground-loop property: a correction issued one phase before
+the ground answers is a correction spent on the free foot. The next
+membrane is the contact solver itself — a proper LCP-style solve where
+joint coincidence, muscle motors, and ground normal/friction rows are one
+system — not another muscle gain.** Successors (dependency order): v3a —
+the ground loop (LCP contacts in the direct solve without the K2 pump:
+the active set must handle lift-off AND the friction cone inside the
+re-solve, where v2's attempt clamped after); v3b — only then the standing
+verdict re-run, same six meters, same windows; the unactuated battery and
+this battery both stay as controls.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

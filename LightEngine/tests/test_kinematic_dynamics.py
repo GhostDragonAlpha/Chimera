@@ -512,3 +512,151 @@ def test_joint_reactions_balance_weight():
     force_on_child = reactions["rod"][0]
     # Reaction on child from parent must balance gravity: upward force ~ m*g.
     assert force_on_child[2] == pytest.approx(spec["mass_kg"] * GRAVITY, rel=0.10)
+
+
+# ---------------------------------------------------------------------------
+# Muscle lane: external torque channel + derived-gain PD controller
+# ---------------------------------------------------------------------------
+def _free_link_spec() -> dict[str, Any]:
+    """One floating rod, no joints: the cleanest torque-injection probe."""
+    links = {
+        "rod": _mklink(
+            "rod", None, np.zeros(3), np.array([0.0, 0.0, 1.0]),
+            2.0, np.array([0.2, 0.2, 0.01]),
+        ),
+    }
+    return {
+        "links": links,
+        "joints": {},
+        "ligaments": [],
+        "contacts": {"L": [], "R": []},
+        "lam": 1.0,
+        "mass_kg": 2.0,
+    }
+
+
+def test_ext_torque_channel_obeys_euler():
+    """A known torque on a free link gives dw = I^-1 @ tau * dt, exactly."""
+    from LightEngine.kinematic.muscle_controller import MuscleController  # noqa: F401
+    spec = _free_link_spec()
+    state = init_state(spec)
+    n = len(state["link_names"])
+    state["ext_force"] = np.zeros((n, 3))
+    state["ext_torque"] = np.zeros((n, 3))
+    tau = np.array([0.0, 1.5, 0.0])
+    dt = 1e-3
+    # One tick: local frame is identity, so I^-1 @ tau = tau / I_yy.
+    state["ext_torque"][0] = tau
+    step(spec, state, dt, n_proj_iters=5)
+    expected = dt * tau[1] / state["inertia_diag_local"][0][1]
+    assert state["ang_vel"][0][1] == pytest.approx(expected, rel=1e-9)
+    # No force channel engaged: linear velocity must be gravity-only.
+    assert state["lin_vel"][0][2] == pytest.approx(-dt * GRAVITY, rel=1e-12)
+
+
+def test_zero_ext_channel_is_a_no_op():
+    """Explicit zero ext arrays reproduce the unactuated trajectory bitwise."""
+    spec = _hinge_spec()
+    s1 = init_state(spec)
+    for _ in range(50):
+        step(spec, s1, 1e-3, n_proj_iters=20)
+
+    s2 = init_state(spec)
+    n = len(s2["link_names"])
+    s2["ext_force"] = np.zeros((n, 3))
+    s2["ext_torque"] = np.zeros((n, 3))
+    for _ in range(50):
+        step(spec, s2, 1e-3, n_proj_iters=20)
+
+    assert np.array_equal(s1["pos"], s2["pos"])
+    assert np.array_equal(s1["quat"], s2["quat"])
+    assert np.array_equal(s1["ang_vel"], s2["ang_vel"])
+
+
+def test_controller_holds_inverted_hinge():
+    """The derived-gain PD holds an inverted hinge upright; unactuated it falls.
+
+    The hinge rig's rod starts vertical (COM above the joint): an inverted
+    pendulum.  With the controller attached the y-dof is closed; without it
+    the rod falls.  Rotation locks stay ON here -- the rig tests the one free
+    dof, the other two are the test fixture.
+    """
+    from LightEngine.kinematic.muscle_controller import MuscleController
+
+    spec = _hinge_spec()
+    dt = 1e-3
+    # Seed with an initial angular velocity: exactly vertical + exactly zero
+    # velocity is the unstable fixed point itself, and fp noise alone takes
+    # far longer than 2 s to grow.  The kick is an initial condition, not a
+    # tuned constant -- far below the toppling energy barrier.
+    kick = 0.5  # rad/s about the free (y) axis
+
+    # Control: unactuated falls.  The rod swings (pendulum), so the meter is
+    # the MINIMUM height over the run, not the endpoint.
+    s_fall = init_state(spec)
+    rod_f = s_fall["name_to_idx"]["rod"]
+    s_fall["ang_vel"][rod_f][1] = kick
+    com_z_min_fell = math.inf
+    for _ in range(2000):
+        step(spec, s_fall, dt, n_proj_iters=20)
+        com_z_min_fell = min(com_z_min_fell, float(s_fall["pos"][rod_f][2]))
+    assert com_z_min_fell < 0.4, "unactuated inverted hinge must fall"
+
+    # Main: actuated holds.
+    s_hold = init_state(spec)
+    s_hold["ang_vel"][s_hold["name_to_idx"]["rod"]][1] = kick
+    ctrl = MuscleController(spec, s_hold, physiology={"rod": (30.0, 0.05)})
+    assert len(ctrl.actuators) == 1, "hinge rig must yield exactly one actuator"
+    rod = s_hold["name_to_idx"]["rod"]
+    com_z0 = float(s_hold["pos"][rod][2])
+    com_z_min_held = math.inf
+    for _ in range(2000):
+        ctrl.apply(s_hold)
+        step(spec, s_hold, dt, n_proj_iters=20)
+        com_z_min_held = min(com_z_min_held, float(s_hold["pos"][rod][2]))
+    assert com_z_min_held > com_z0 - 0.01, (
+        f"actuated hinge must hold: z {com_z0:.4f} -> min {com_z_min_held:.4f}"
+    )
+
+
+def test_controller_motor_commands_sane(spec):
+    """Motor rows: shapes, finite targets, lmax = torque cap x dt.
+
+    The net external wrench is zero BY CONSTRUCTION (motor rows are angular
+    pairs inside the constraint solve), so the measurables are the command
+    arrays themselves and one bounded tick after a disturbance.
+    """
+    from LightEngine.kinematic.muscle_controller import MuscleController
+
+    state = init_state(spec)
+    dt = 1e-3
+    ctrl = MuscleController(spec, state, dt=dt)
+    state["ang_vel"] += 0.05
+    ctrl.apply(state)
+    n = len(ctrl.actuators)
+    assert state["motor_axis"].shape == (n, 3)
+    assert state["motor_target"].shape == (n,)
+    assert np.all(np.isfinite(state["motor_target"]))
+    for mi, a in enumerate(ctrl.actuators):
+        assert state["motor_lmax"][mi] == pytest.approx(
+            a["torque_limit_Nm"] * dt, rel=1e-12)
+        assert np.linalg.norm(state["motor_axis"][mi]) == pytest.approx(
+            1.0, rel=1e-9)
+    step(spec, state, dt, n_proj_iters=20)
+    assert np.max(np.linalg.norm(state["ang_vel"], axis=1)) < 20.0
+    assert state["motor_impulses"].shape == (n,)
+
+
+def test_controller_determinism(spec):
+    """Two actuated runs of 200 ticks produce identical trajectories."""
+    from LightEngine.kinematic.muscle_controller import MuscleController
+
+    pos_runs = []
+    for _ in range(2):
+        state = init_state(spec)
+        ctrl = MuscleController(spec, state)
+        for _ in range(200):
+            ctrl.apply(state)
+            step(spec, state, 1e-3, n_proj_iters=20)
+        pos_runs.append(state["pos"].copy())
+    assert np.array_equal(pos_runs[0], pos_runs[1])

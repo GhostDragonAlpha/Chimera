@@ -206,12 +206,13 @@ def _run(spec, state, label, cut_ligaments_at=None):
     return metrics
 
 
-def _verdict(metrics, spec, control_metrics=None):
+def _verdict(metrics, spec, control_metrics=None,
+             title="STANDING HUMAN v1 -- RIGID MODEL BATTERY"):
     """Print the falsifier battery verdict."""
     d_eq = metrics["d_eq_m"]
     H = metrics["head_z0"]
     stand_band = H * math.tan(STAND_ANGLE) + d_eq
-    print(f"\n[{metrics['label']}] STANDING HUMAN v1 -- RIGID MODEL BATTERY")
+    print(f"\n[{metrics['label']}] {title}")
     print(f"  wall time {metrics['wall_s']:.0f}s  vmax {metrics['vmax']:.3f} m/s")
     print("  NOTE: the floor holds ONLY the feet (10 contact points).  A crumpled")
     print("  link below z=0 is a model limitation, not a measurement; (c)/(e) read")

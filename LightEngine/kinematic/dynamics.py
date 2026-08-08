@@ -572,10 +572,35 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         raise ValueError("dt must be positive")
 
     if _HAS_NUMBA:
+        n_links = len(state["link_names"])
         n_joints = len(state["joint_names"])
         n_lig = len(state["lig_records"])
         n_contacts = len(state["contact_records"])
         contact_slop = float(spec["lam"]) * D_EQ_LU
+        # Caller-supplied external channel (the muscle lane writes these in
+        # place each tick; zero-filled here when absent).
+        ext_force = state.get("ext_force")
+        if ext_force is None:
+            ext_force = np.zeros((n_links, 3), dtype=np.float64)
+        ext_torque = state.get("ext_torque")
+        if ext_torque is None:
+            ext_torque = np.zeros((n_links, 3), dtype=np.float64)
+        # Muscle motor channel (the controller writes these each tick).
+        motor_parent = state.get("motor_parent")
+        if motor_parent is None:
+            motor_parent = np.zeros(0, dtype=np.int64)
+            motor_child = np.zeros(0, dtype=np.int64)
+            motor_joint = np.zeros(0, dtype=np.int64)
+            motor_axis = np.zeros((0, 3), dtype=np.float64)
+            motor_target = np.zeros(0, dtype=np.float64)
+            motor_lmax = np.zeros(0, dtype=np.float64)
+        else:
+            motor_child = state["motor_child"]
+            motor_joint = state["motor_joint"]
+            motor_axis = state["motor_axis"]
+            motor_target = state["motor_target"]
+            motor_lmax = state["motor_lmax"]
+        motor_impulses = np.zeros(motor_parent.shape[0], dtype=np.float64)
         joint_impulses_lin = np.zeros((n_joints, 3), dtype=np.float64)
         joint_impulses_ang = np.zeros((n_joints, 3), dtype=np.float64)
         lig_impulses_lin = np.zeros((n_lig, 3), dtype=np.float64)
@@ -600,12 +625,16 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             state["contact_link_idx"], state["contact_off_local"],
             contact_slop, float(dt), int(n_proj_iters),
             int(state.get("rotation_locks", True)),
+            ext_force, ext_torque,
+            motor_parent, motor_child, motor_joint, motor_axis,
+            motor_target, motor_lmax, motor_impulses,
             joint_impulses_lin, joint_impulses_ang,
             lig_impulses_lin, lig_impulses_ang,
             contact_impulses,
         )
         state["joint_impulses_lin"] = joint_impulses_lin
         state["joint_impulses_ang"] = joint_impulses_ang
+        state["motor_impulses"] = motor_impulses
         state["lig_impulses_lin"] = lig_impulses_lin
         state["lig_impulses_ang"] = lig_impulses_ang
         state["contact_impulses"] = contact_impulses
@@ -647,6 +676,13 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
     if dt <= 0.0:
         raise ValueError("dt must be positive")
 
+    if state.get("motor_parent") is not None and \
+            len(state.get("motor_target", ())) > 0:
+        raise RuntimeError(
+            "The Python fallback does not implement muscle motor rows; "
+            "the muscle lane requires the numba direct solve."
+        )
+
     n_links = len(state["link_names"])
     n_contacts = len(state["contact_records"])
     pos = state["pos"]
@@ -671,6 +707,14 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
     # Gravity.
     for i in range(n_links):
         forces[i] = mass[i] * g_vec
+
+    # Caller-supplied external channel (the muscle lane; zero when unused).
+    ext_force = state.get("ext_force")
+    ext_torque = state.get("ext_torque")
+    if ext_force is not None:
+        forces += ext_force
+    if ext_torque is not None:
+        torques += ext_torque
 
     # Ligaments are handled as unilateral distance constraints inside the PBD
     # projection loop below, NOT as explicit springs.  Explicit ligament springs
