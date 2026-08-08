@@ -238,6 +238,9 @@ for (let i = 0; i < N_LINKS; i++) {
 }
 boneGeo.setAttribute('color', new BufferAttribute(boneCol, 3));
 const bones = new LineSegments(boneGeo, new LineBasicMaterial({ vertexColors: true }));
+// The follow-COM camera can leave the stale first-frame bounding sphere
+// behind; never cull the skeleton (measured trap in the live lane).
+bones.frustumCulled = false;
 scene.add(bones);
 
 // joints: small points at prox endpoints
@@ -245,6 +248,7 @@ const jointGeo = new BufferGeometry();
 const jointPos = new Float32Array(N_LINKS * 3);
 jointGeo.setAttribute('position', new BufferAttribute(jointPos, 3));
 const joints = new Points(jointGeo, new PointsMaterial({ color: 0xffe9b0, size: 0.03 }));
+joints.frustumCulled = false;
 scene.add(joints);
 
 // COM marker
@@ -435,15 +439,19 @@ __PLAYER_JS__
 """
 
 
-def build_html(data: dict) -> None:
+def load_three_bridged() -> tuple[str, str]:
+    """Inline-ready three.js r185 sources: (core_js, module_js).
+
+    The two builds cannot share one inline module scope (duplicate mangled
+    identifiers), so the core is transformed to publish its exports on
+    window.__THREE_CORE__ and the module to destructure them back.  The
+    module's own import covers only 197 of the 444 core exports (Scene,
+    WebGLRenderer arrive via the re-export), so the FULL core export list is
+    destructured.  No 'as' aliases exist in any statement (verified r185).
+    """
+    import re
     core = (THREE_DIR / "three.core.js").read_text(encoding="utf-8")
     module = (THREE_DIR / "three.module.js").read_text(encoding="utf-8")
-    # Both builds declare the same mangled helper names at top level, so they
-    # cannot share one <script type="module"> scope (SyntaxError on concat).
-    # Bridge them instead: the core runs in its own module and publishes its
-    # exports on window; the three module destructures them back.  No 'as'
-    # aliases exist in any of the three statements (verified against r185).
-    import re
     m_core_exp = re.search(r"export\s*\{([^}]*)\}\s*;", core, flags=re.DOTALL)
     if m_core_exp is None:
         raise RuntimeError("three bridge failed (core export not found)")
@@ -451,9 +459,6 @@ def build_html(data: dict) -> None:
     core = core[:m_core_exp.start()] + \
         "window.__THREE_CORE__ = {" + core_names + "};" + \
         core[m_core_exp.end():]
-    # The module imports only the 197 names ITS code needs; the other 247
-    # (Scene, WebGLRenderer, ...) reach its API through the re-export below.
-    # The player needs them in scope, so destructure the FULL core export.
     module, n1 = re.subn(
         r"import\s*\{[^}]*\}\s*from\s*'\./three\.core\.js';",
         "const {" + core_names + "} = window.__THREE_CORE__;",
@@ -464,6 +469,11 @@ def build_html(data: dict) -> None:
     if n1 != 1 or n2 != 1:
         raise RuntimeError(
             f"three bridge failed (import={n1}, reexport={n2})")
+    return core, module
+
+
+def build_html(data: dict) -> None:
+    core, module = load_three_bridged()
 
     # Slim payload for the page: drop the raw python-side duplicates.
     page_data = {

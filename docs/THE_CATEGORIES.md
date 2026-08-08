@@ -1365,6 +1365,40 @@ socket at the measured rate (honest slow motion, labeled), or the solve
 moves to the GPU first (the operator's Barnes-Hut lane); v3a (the ground
 loop) remains the physics successor.
 
+**STANDING DEMO v1 VERDICT 2026-08-08 (LIVE — LightEngine/serve_standing_demo.py,
+sim thread + websocket broadcast on 127.0.0.1:8765, the FIRST INTERACTIVE
+membrane: a CUT MUSCLES button that changes the physics as you watch):**
+the live membrane STANDS, with one falsifier firing at the margin and
+recorded. Verified by a python websocket client against the baked battery
+export and by playwright screenshots (demo_live_{uncut,cut}.png). (a) RATE,
+FALSIFIED AT THE MARGIN, honestly: 94-101 ticks/s sustained with a
+rendering client attached vs the 100 bar (named from the 116 solo bench) —
+the cause is CPU contention with the headless browser, not the membrane;
+the HUD labels the true rate (0.06-0.09x realtime) rather than hiding it.
+(b) FAITHFULNESS PASS: worst |live - baked MAIN| head_z over ticks 0..496
+is 4.994e-5 m, EXACTLY the exporter's own round(z,4) storage quantum —
+the live loop is the battery's physics (the vectorized controller is
+bitwise the scalar one). (c) INTERACTIVITY PASS: muscles cut at tick 512
+leave head z at tick 1 112 at -2.583 m vs baked-uncut -1.668 m — an extra
+0.915 m of fall from ONE button press (bar 0.1 m). The membrane is not
+decoration. (d) Measured build traps, recorded so the next live lane does
+not re-pay: (i) websockets' process_request must pass Upgrade requests
+through — answering the handshake with the HTML page reads as
+'Unexpected response code: 200' on the client; (ii) headless Chromium
+throttles requestAnimationFrame, so probe/telemetry hooks live in the
+websocket message handler, never in the RAF loop; (iii) a BufferGeometry
+whose positions start all-zero gets its boundingSphere frozen at radius 0
+on the first render — the follow-COM camera then culls the ENTIRE
+skeleton (renderer.info: bs=0, 0 of 77 bone lines drawn; caught by
+instrumenting, not by eye); frustumCulled=false on every dynamically
+updated geometry, applied to the v0 player too; (iv) the frames-JSON
+head_z column is round(z,4) — a 5e-5 m storage quantum that must be the
+tolerance floor of any live-vs-baked comparison. Successors (dependency
+order): DEMO v2 — the operator's real interaction (push the frame, watch
+it recover or fall: an impulse command row, derived bound) or the GPU
+solve (Barnes-Hut lane) so the feed runs at realtime; v3a (the ground
+loop) remains the physics successor.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
