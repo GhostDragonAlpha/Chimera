@@ -407,3 +407,26 @@ motors, so no cross-phase fight is possible; soft, so it cannot
 clamp like run 9's equality rows).  The run-9 XOR lesson is
 preserved: the compliant row REPLACES both the rigid row and the
 pre-solve spring for floor endpoints -- one object, not two.
+RUN 11 OUTCOME (2026-08-08): **the velocity-target form of the
+spring is measured WRONG -- it is a clamp, not a spring**.  The
+compliant row solved cleanly (no cross-phase fight -- the
+integration-site hypothesis was correct) and the math fails
+elsewhere: with dt*c/m_eff >> 1 the implicit damper division
+vanishes and lambda -> m_eff*(F/c - v) -- the FULL velocity
+correction in ONE tick, i.e. a velocity clamp to F/c, not a
+gradual spring.  Measured: candidate (a) const 212k REST FAIL
+175.9 J (worse than pre-solve's 12.8 J -- the clamp launches as
+hard as it brakes); candidate (b) bilinear+rigid CATASTROPHE:
+the rigid segment's F/c target launched the body to +4.6 m
+endpoints, head_z 35 m, KE 189 kJ -- (b)/(c)/(d) "PASS" lines
+are airborne artifacts, not floor behavior.  THE LESSON: in
+impulse form a spring must be BOUNDED BY ITS OWN FORCE --
+lambda <= dt*F(d) per tick; a velocity target collapses the
+spring's whole time constant into one tick whenever c is large.
+RUN 12 MEMBRANE NAMED: **IMPULSE-BOUNDED COMPLIANT ROW** -- the
+row keeps the K-solve site (proven: no cross-phase fight) but
+its impulse is BOXED at dt*F(d) using the motor-row idiom
+(fix-at-bound inside the active set, the solve's proven box
+constraint); damping comes from the unilateral solve itself
+(plastic contact), no explicit c term -- the c = 2*sqrt(m*k)
+coefficient is what turns braking into launching.
