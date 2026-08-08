@@ -297,7 +297,12 @@ def position_pass(
     lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest,
     contact_link_idx, contact_off_local,
     contact_slop, n_proj_iters, do_rotation_locks,
+    ghost_coinc, ghost_lig, ghost_lock,
 ):
+    # ghost_* are instrumentation accumulators (ghost-source probe,
+    # 2026-08-08): every position-level ROTATION this pass applies to a
+    # link's quat -- invisible in ang_vel -- is added to the block's
+    # array.  Pure accounting: the physics is unchanged.
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
     n_contacts = contact_link_idx.shape[0]
@@ -337,11 +342,13 @@ def position_pass(
                 dtheta_p = I_inv_p @ (c_mag * rn_p)
                 if _norm3(dtheta_p) > 1e-15:
                     quat[pa] = _premult_rotate(quat[pa], dtheta_p, _norm3(dtheta_p))
+                    ghost_coinc[pa] = ghost_coinc[pa] + dtheta_p
             if mass[cb] > 0.0:
                 pos[cb] = pos[cb] - inv_mass[cb] * c_mag * n
                 dtheta_c = I_inv_c @ (c_mag * rn_c)
                 if _norm3(dtheta_c) > 1e-15:
                     quat[cb] = _premult_rotate(quat[cb], -dtheta_c, _norm3(dtheta_c))
+                    ghost_coinc[cb] = ghost_coinc[cb] - dtheta_c
 
         # rotation-lock position stabilization (small-angle, frame-fixed)
         # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
@@ -405,8 +412,10 @@ def position_pass(
                 alpha_c = BETA * ib / denom
                 if mass[pa] > 0.0:
                     quat[pa] = _premult_rotate(quat[pa], err_axis, alpha_p * err_angle)
+                    ghost_lock[pa] = ghost_lock[pa] + err_axis * (alpha_p * err_angle)
                 if mass[cb] > 0.0:
                     quat[cb] = _premult_rotate(quat[cb], err_axis, -alpha_c * err_angle)
+                    ghost_lock[cb] = ghost_lock[cb] - err_axis * (alpha_c * err_angle)
 
         # ligament unilateral distance projection (positions only)
         for li in range(n_lig):
@@ -441,11 +450,13 @@ def position_pass(
                 dtheta_a = I_inv_a @ (c_mag * rn_a)
                 if _norm3(dtheta_a) > 1e-15:
                     quat[ia] = _premult_rotate(quat[ia], dtheta_a, _norm3(dtheta_a))
+                    ghost_lig[ia] = ghost_lig[ia] + dtheta_a
             if mass[ib] > 0.0:
                 pos[ib] = pos[ib] - inv_mass[ib] * c_mag * n
                 dtheta_b = I_inv_b @ (c_mag * rn_b)
                 if _norm3(dtheta_b) > 1e-15:
                     quat[ib] = _premult_rotate(quat[ib], -dtheta_b, _norm3(dtheta_b))
+                    ghost_lig[ib] = ghost_lig[ib] - dtheta_b
 
         # (no contact projection here -- see the position_pass docstring:
         # contacts are held by the velocity solve, and a position-level
@@ -513,6 +524,7 @@ def step_core(
     joint_impulses_lin, joint_impulses_ang,
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
+    ghost_coinc, ghost_lig, ghost_lock,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and
     accumulated from the velocity pass (that is where the physics is).
@@ -690,6 +702,7 @@ def step_core(
         lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest,
         contact_link_idx, contact_off_local,
         contact_slop, n_proj_iters, do_rotation_locks,
+        ghost_coinc, ghost_lig, ghost_lock,
     )
 
 
@@ -714,6 +727,7 @@ def step_core_direct(
     joint_impulses_lin, joint_impulses_ang,
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
+    ghost_coinc, ghost_lig, ghost_lock,
     contacts_in_solve,
     contact_friction,
 ):
@@ -1250,4 +1264,5 @@ def step_core_direct(
         lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest,
         contact_link_idx, contact_off_local,
         contact_slop, n_proj_iters, do_rotation_locks,
+        ghost_coinc, ghost_lig, ghost_lock,
     )

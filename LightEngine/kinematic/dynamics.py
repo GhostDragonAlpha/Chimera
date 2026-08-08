@@ -606,6 +606,12 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         lig_impulses_lin = np.zeros((n_lig, 3), dtype=np.float64)
         lig_impulses_ang = np.zeros((n_lig, 3), dtype=np.float64)
         contact_impulses = np.zeros((n_contacts, 3), dtype=np.float64)
+        # Position-pass ghost instrumentation (ghost-source probe,
+        # 2026-08-08): per-link rotations applied at position level,
+        # invisible in ang_vel, split by block.  Accounting only.
+        ghost_coinc = np.zeros((n_links, 3), dtype=np.float64)
+        ghost_lig = np.zeros((n_links, 3), dtype=np.float64)
+        ghost_lock = np.zeros((n_links, 3), dtype=np.float64)
         # The direct solve is the default: the sequential (Gauss-Seidel)
         # solver diverges at this skeleton's mass ratios (module docstring).
         # state["solver"] = "sequential" keeps the old scheme for comparison.
@@ -631,6 +637,7 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             joint_impulses_lin, joint_impulses_ang,
             lig_impulses_lin, lig_impulses_ang,
             contact_impulses,
+            ghost_coinc, ghost_lig, ghost_lock,
         )
         if state.get("solver", "direct") == "direct":
             _numba_step_core_direct(
@@ -644,6 +651,9 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         state["lig_impulses_lin"] = lig_impulses_lin
         state["lig_impulses_ang"] = lig_impulses_ang
         state["contact_impulses"] = contact_impulses
+        state["ghost_coinc"] = ghost_coinc
+        state["ghost_lig"] = ghost_lig
+        state["ghost_lock"] = ghost_lock
         # Spring channel is retired: external contact force is identically zero;
         # the whole normal/friction load flows through contact_impulses now.
         state["contact_forces_ext"] = np.zeros((n_contacts, 3), dtype=np.float64)

@@ -1961,6 +1961,37 @@ stretch): instrument by quat delta per position-pass block, one run;
 then the fix membrane for the two parents together; then the
 two-channel balance controller (operator datums 1-4).
 
+**GHOST-SOURCE VERDICT 2026-08-08 (probe .tmp/probe_ghost_source.py +
+kernel instrumentation: ghost_coinc/ghost_lig/ghost_lock per-link
+position-level rotation accumulators; mode 2, ticks 100-1000):** the
+'coincidence >= 80%' membrane is FALSIFIED as named — the ghost at the
+ankle has TWO co-equal parents in a tug-of-war, and the instrumentation
+is proven faithful. (1) (b) PASS, the anchor: the instrumented net
+ghost at the ankle sums to 1.0139 rad vs the ghost probe's independent
+1.0157 rad — ratio 1.00. The accumulators tell the truth. (2) (a)
+FAIL as named: gross relative churn splits coincidence 53.1% /
+ligaments 46.9% (lock block 0.000 as expected in mode 2). (3) The net
+split is the smoking gun: coincidence net 6.93 rad, ligament net 6.15
+rad, TOTAL net 1.01 rad — the two blocks rotate the ankle in nearly
+OPPOSITE directions ~7 rad each over 900 ticks, 86% cancelling, and
+the 1.0 rad residue is exactly the ghost that folds the ankle. The
+position pass is not a stabilizer at this joint; it is two projectors
+fighting through the bone, outside the velocity record, and the muscle
+servo spends its budget correcting yesterday's ghost. (4) Net law:
+**the ankle fold's second parent is the coincidence<->ligament
+tug-of-war at position level: joint-coincidence corrections rotate
+links (ghost channel 1), ligament stretch corrections rotate links
+back (ghost channel 2) — and the ligaments already have a velocity-
+level sweep (5b), so their position projection is a SECOND, ghosting
+application of the same constraint.** Successors (dependency order):
+the ghost-free projection membrane — (i) coincidence corrected by
+TRANSLATION ONLY (two meeting points need no link rotation; kills
+channel 1 by construction); (ii) the ligament position projection
+retired to its velocity sweep (kills channel 2 by construction) —
+A/B against the full protocol, 'measured stable on every rig' on
+record as the falsifier bar; then the two-channel balance controller
+(operator datums 1-4) on clean hardware.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
