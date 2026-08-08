@@ -2258,6 +2258,24 @@ are not? If yes: the roll is a physiological authority question
 toe servo has authority and doesn't correct — then the toe's
 reference/measurement is the address.
 
+**OPERATOR DATUM 6, 2026-08-08 (THE HUMAN terminal, the posture
+OBJECTIVE — recorded verbatim):** "Head height is a reward: the human
+needs to be as tall as possible to see — the elevation it acquires,
+the more [it reads of the] environment."  Consequences for the
+membrane stack: (1) the standing controller's objective is not
+"hold the pose" but MAXIMIZE HEAD HEIGHT subject to the balance band
+(datums 1/4) and the energy budget (datum 4) — posture is a
+sensing strategy: elevation buys environmental read, so a stander
+extends, it does not merely not-fall; (2) this explains the neck's
+lead in datum 5: the neck stabilizes the sensor platform (the head)
+at its maximum elevation first, and the chain below organizes to
+afford it; (3) for the probe suite: head_z is not just the fall
+detector — it is the REWARD SIGNAL, and a standing controller that
+stands at 1.75 m when 1.81 is available is failing the objective
+even if every balance bar passes; the demo's standing leg should
+report achieved head height against the skeleton's maximum, not only
+against the no-fall bar.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
