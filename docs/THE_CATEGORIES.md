@@ -2434,6 +2434,35 @@ POSITION without re-writing the motor channel's velocity (or must
 fold its correction into the next tick's target, not this tick's
 velocity).
 
+**PROJECTION VERDICT CORRECTED — THE 5b SWEEP, NOT THE POSITION
+PASS 2026-08-08 (code read of _dynamics_numba.py + array-level
+reproduction at tick 200):** the fork probe's n_proj_iters knob
+gates TWO writers, and the verdict named the innocent one. The
+position_pass (line 1313) NEVER touches velocities — in ghost-free
+mode 1 it translates only, no quats, no ang_vel; it is exonerated
+by construction. The same knob also gates the 5b UNILATERAL SWEEP
+(line 1201), a velocity-level post-solve loop that writes ang_vel
+directly: the ligament sweep (impulses measured <= 0.00012 N s in
+the census — exonerated) and the v3e-hybrid FRICTION SWEEP (lines
+1292-1303: tangential impulses at the foot contacts, cone bound
+MU x the solve's normal impulse, applied through the contact lever
+twenty times per tick, AFTER the direct solve has booked the servo
+command). Reproduced at array level: same tick, deepcopy, proj=0
+gives w_rel == target exactly; proj=20 rewrites the tarsals'
+ang_vel by -0.209 rad/s in one tick. By elimination the friction
+sweep is the carrier: it spins the light tarsals about its COM
+(small impulse x large I_inv) while its moment about the ankle
+CENTER stays small — which is why the contact-moment budget
+measured "balanced" (frame mixing: the budget read the moment
+about the joint center; the spin lives about the link COM).
+Successor named: friction-fork A/B — same tick, n_proj_iters=20 in
+both, contact_friction=1 (full cone inside the direct solve, sweep
+skipped) vs contact_friction=2 (hybrid sweep). If the cone-in-solve
+fork tracks the ankle target, the sweep's post-solve friction is
+the overwriter and the membrane is friction placement; if both
+fail, the cone rows themselves disturb the ankle and placement is
+irrelevant.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
