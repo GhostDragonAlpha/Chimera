@@ -2057,6 +2057,34 @@ moves UP to first, and passive play (NON-VACUOUS) follows, since both
 touch the lock/muscle rows and the controller's authority depends on
 what passivity holds.
 
+**BALANCE-PROBE v1 FALSIFIED 2026-08-08 (probe .tmp/probe_balance.py,
+ankle-channel capture-point loop, ghost-free config, 8 000 ticks):**
+all four legs FAIL — and the failure is the most instructive of the
+saga because the data isolates the wrong piece. Head_z: 1.810 @100,
+1.812 @1000 (level), then the SAME fall as uncontrolled (1.729 @1416;
+forensics had the uncontrolled fall at 1490) and then WORSE: the loop
+flails the fallen frame, COM to -3.75 m, max err 3.09 rad (29x), |w|
+1 664, KE 2 262 J — debris class. The isolation: the COM trace with
+the loop matches the UNCONTROLLED trace tick-for-tick through the
+creep (+0.0433 @758 vs +0.0468 @790 uncontrolled) — the loop did
+NOTHING during the entire roll, because the named deadband was the
+whole support polygon and the capture point only exits the polygon
+AFTER the toe has folded 0.5+ rad and the heel has unloaded; the
+correction then fires as a full-amplitude bang (off = centroid -
+x_ic) at a frame already past recovery, and with no authority clamp
+it keeps banging on the debris. **The falsified element is precisely
+"polygon = deadband": datum 4's range is NOT the polygon edge (the
+edge is where balance is already LOST) — the sway band is a narrow
+band around the support centroid, corrected continuously and small,
+and the correction must clamp to what the ankle authority can
+actually produce.** What the probe did NOT falsify: the measurement
+(capture point), the venue (ankle channel), the rate (servo omega_n)
+— none of them ever got to act. Successor (one membrane, named):
+balance v2 = narrow derived deadband about the centroid (candidate:
+the system's own derived small length d_eq_m, the measured joint
+play) + proportional correction + authority clamp (the loop lets go
+beyond what the ankles can recapture — no flailing).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
