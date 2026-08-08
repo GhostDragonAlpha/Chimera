@@ -2026,6 +2026,37 @@ Successors (dependency order): the 1000-4000 fall forensics (sink/
 fold/which-joint, unchanged probes); then passive play; then the
 two-channel balance controller (operator datums 1-4).
 
+**FALL-FORENSICS VERDICT 2026-08-08 (probe .tmp/probe_fall_forensics.py,
+pos_pass_mode=1 + lock mode 2, hybrid, ticks 100-4000):** FOLD, and the
+folding joint is the TOE. The killer's address, measured: (a) FOLD
+PRESENT — max actuated-joint error grows 0.1065 -> 0.7996 rad (7.5x)
+and LEADS the fall (half-error at tick 1138, quarter head-drop at
+1321); the worst joint is metatarsals on tarsals (the ball-of-foot
+flexion axis) on BOTH feet, alternating R/L as the roll advances. (b)
+TRAPDOOR absent — loaded pivots hold z to 0.1 mm (they even rise).
+(d) CREEP absent — joint-center coincidence holds 1.31 -> 1.40 mm
+against the 13.1 mm bar; the retired ligament position projection was
+NOT load-bearing on the long horizon. (c) DRIFT absent as named (the
+fold fired first) but the COM tells the mechanism: it creeps forward
++x monotonically from tick 100 (0.0119 -> 0.2765 m by the fall) in
+lockstep with the toe error. The fall, narrated: **a slow forward
+roll over the forefoot — the toes dorsiflex under the ground reaction,
+the support point and the COM advance together, the heel unloads
+(pivot_z goes NaN at ticks 1020/1135/1480: moments with NO loaded
+contact at all), and past ~0.26 m of COM travel the frame tips.** The
+hardware is clean (pivots, coincidence, locks all hold); what is
+missing is the operator's datum-1/datum-3 channel: a real stander
+arrests exactly this roll by shifting weight BACK through the ankle
+(slow channel) long before the toe reaches 0.8 rad. The static-pose
+servo holds every joint at bind and has no sway — it watches the COM
+leave and corrects nothing. This verdict RE-ORDERS the successors:
+the toe fold is not a hardware bug to patch but the named absence of
+the balance controller — so the two-channel balance controller (hip
+fast / ankle slow, weight-shift sway, deadband + fatigue rotation)
+moves UP to first, and passive play (NON-VACUOUS) follows, since both
+touch the lock/muscle rows and the controller's authority depends on
+what passivity holds.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
