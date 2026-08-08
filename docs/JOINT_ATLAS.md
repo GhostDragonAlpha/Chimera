@@ -611,3 +611,22 @@ ODE/PhysX contact model; implicit damping is unconditionally
 stable and chain-aware through K, so the run-15 ratchet has no
 structure to exist.  At rest v ~ 0: damping force ~ 0, no jitter
 added.  1-DOF probe verifies BEFORE the kernel change.
+RUN 18 OUTCOME (2026-08-08, agent_logs/floor_run18.log): **damping
+moves the measured candidate within 29% of the REST bar and
+REGRESSES the all-depths candidate -- (b) REST 1.286 J (was
+3.865), NO SINK -0.0211 PASS (was FAIL -0.0778), NO TUNNEL
+-0.0663 PASS (was -0.0940), (d2) -0.0247 PASS; (a) REST 13.168 J
+(was 3.971), NO TUNNEL FAIL -0.1461 (was PASS -0.0845).**  Two
+readings, both recorded.  ONE: the all-depths damped row is a
+slow lifter under crush (bias k*d/(dt*k+c) shrinks ~3x for heavy
+links), so the rigid zone's paced lift was load-bearing for NO
+TUNNEL -- candidate (a)'s pad-to-1.0 config is measured wrong;
+(b) carries the line.  TWO: (d1) pre-fall floor safety worsened
+on both (-0.2165 (b), was -0.0985) -- the same slow-lift
+mechanism lets the standing crush sink deeper before the fall;
+the standing arm keeps voting for a STIFFER floor than the drop
+arm wants.  The named falsifier governs the next step: REST
+still > 1 J -> per-link KE trace (.tmp/diag_rest_ke.py); if the
+same light chain holds the residue the row's c is chain-blind
+(m_eff = isolated link, not pile-loaded) -> run 19 derives c
+from the assembled K diagonal.
