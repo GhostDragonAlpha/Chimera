@@ -1910,6 +1910,30 @@ both are needed: the ankle fold was a SLOW leak (ankle channel's
 domain), while the shove recovery needs a FAST catch (hip channel's
 domain).
 
+**OPERATOR DATUM 4, 2026-08-08 (THE HUMAN terminal, why the sway exists —
+recorded verbatim):** "It's more like a range enforcement. That's why
+you see a human kind of swaying a little bit slowly as you watch them
+stand, or why they shift their position — it's because muscles get
+tired and you're balancing the whole load throughout the system. It's
+about energy efficiency for all things."  Consequences for the
+membrane stack: (1) the balance target is a RANGE (a deadband), not a
+point: the COM has an allowed band inside the support polygon and the
+muscles act at the band's EDGES, not against every millimeter of
+error — a point-servo spends energy fighting the very micro-motion
+the body uses to rest; (2) the sway is LOAD ROTATION: sustained
+isometric contraction fatigues a muscle group, so the controller
+periodically hands the load to a different group (shift the weight,
+rest the last one) — the sway's existence, and its slow rate, follow
+from the fatigue rate, not from any geometry; (3) the controller's
+objective is therefore ENERGY EFFICIENCY (minimize sustained
+activation) subject to the band, not pose error — the first
+controller objective in this stack with a physiology datum as its
+source; (4) this gives the muscle model its missing term: an
+activation-cost integral per group, and the hand-off rule derives
+from it (hand the load over when the carrying group's cost integral
+exceeds the relief cost of the shift) — no chosen threshold, the
+crossing point of two measured costs.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
