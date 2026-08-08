@@ -2276,6 +2276,25 @@ even if every balance bar passes; the demo's standing leg should
 report achieved head height against the skeleton's maximum, not only
 against the no-fall bar.
 
+**TOE-AUTHORITY FORENSICS, FALSIFIED 2026-08-08 (probe
+.tmp/probe_toe_authority.py, ghost-free, ticks 100-1200):** nobody is
+saturated. Toe rows at >= 95% lmax for 1% of creep ticks, ankle rows
+0% — (a) FAIL, (b) PASS, (c) FAIL as measured (forefoot reaction
+moment reads 0.0: the contact spec attaches ALL contacts to tarsals,
+none ahead of the MTP joint — a spec gap named, not patched). The
+servo HAS authority and doesn't use it. The actuator table (measured,
+no sim): toe rows m_sub 3.53 kg vs ankle 74.11 kg — the toe muscle's
+gain derivation supports ONLY THE TOE BONES (kp 0.091 vs the ankle's
+1 598.7, omega_n 1.45-1.66 alive but tiny-gained, tau_lim 2.25 N m vs
+75). In standing, the toe muscle's real load is the BODY's roll
+moment over the MTP, not the toes' weight — the gain law's subtree
+logic misassigns the load path at exactly the joint the forensics
+named first mover. Successor: a single-row time-series probe
+(theta_err, target, lambda, achieved w_rel, error, ticks 100-1300)
+to name WHERE the chain breaks — command (target small), impulse
+(lambda small vs needed), or tracking (w_rel achieved yet error
+grows — geometry).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
