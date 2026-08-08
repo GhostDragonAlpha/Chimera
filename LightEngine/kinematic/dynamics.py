@@ -605,6 +605,16 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         joint_impulses_ang = np.zeros((n_joints, 3), dtype=np.float64)
         lig_impulses_lin = np.zeros((n_lig, 3), dtype=np.float64)
         lig_impulses_ang = np.zeros((n_lig, 3), dtype=np.float64)
+        # Passive-play membrane (2026-08-08, forensics: the sweep
+        # ligaments hold 1.67x body weight with every muscle cut --
+        # no relaxed body does that).  Anatomy: a ligament is SLACK
+        # through the joint's play band and stiffens at its end.  The
+        # play is the measured d_eq_m = lam * D_EQ_LU, added to the
+        # effective rest length; zero inside the band by construction.
+        # Default off: legacy path stays bit-identical.
+        lig_rest_eff = state["lig_rest"]
+        if state.get("lig_play_band", False):
+            lig_rest_eff = lig_rest_eff + float(spec["lam"]) * D_EQ_LU
         contact_impulses = np.zeros((n_contacts, 3), dtype=np.float64)
         # Position-pass ghost instrumentation (ghost-source probe,
         # 2026-08-08): per-link rotations applied at position level,
@@ -627,7 +637,7 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             state["r_joint_parent_local"], state["r_joint_child_local"],
             state["joint_q_rel0"],
             state["lig_idx_a"], state["lig_idx_b"],
-            state["lig_off_a"], state["lig_off_b"], state["lig_rest"],
+            state["lig_off_a"], state["lig_off_b"], lig_rest_eff,
             state["contact_link_idx"], state["contact_off_local"],
             contact_slop, float(dt), int(n_proj_iters),
             int(state.get("rotation_locks", True)),
@@ -993,6 +1003,11 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
         # the two points back to rest_length.  This is the rope-law compilation:
         # near-rigid in tension, zero force when slack.  Splitting the correction
         # by generalized inverse mass keeps angular effects correct.
+        # Passive-play membrane (mirrors the numba path): with
+        # state["lig_play_band"] the effective rest gains the measured
+        # joint play d_eq_m -- slack through the band, stiff at its end.
+        lig_play = float(spec["lam"]) * D_EQ_LU \
+            if state.get("lig_play_band", False) else 0.0
         for li, lig in enumerate(state["lig_records"]):
             ia = lig["idx_a"]
             ib = lig["idx_b"]
@@ -1007,11 +1022,11 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
             pb = pos[ib] + r_b
             vec = pb - pa
             L = float(np.linalg.norm(vec))
-            if L <= lig["rest_length_m"] + 1e-15:
+            if L <= lig["rest_length_m"] + lig_play + 1e-15:
                 continue
 
             n = vec / L
-            delta = L - lig["rest_length_m"]
+            delta = L - lig["rest_length_m"] - lig_play
 
             I_inv_a = _world_inertia_inv(quat[ia], inv_inertia_diag_local[ia])
             I_inv_b = _world_inertia_inv(quat[ib], inv_inertia_diag_local[ib])

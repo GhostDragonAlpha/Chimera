@@ -2162,6 +2162,30 @@ bind-pose derivation inverts in closed loop), or NOT AT ALL
 probe — twin runs from one initial state, A with the loop, B with off
 forced to zero, divergence vs commanded off measured per tick.
 
+**BALANCE SIGN FORENSICS 2026-08-08 (probe .tmp/probe_balance_sign.py,
+twin runs A=loop / B=no-channel, one initial state, 600 ticks):**
+WORKS — the channel moves the COM as commanded (D(599) +8.3 mm with
+cumulative off +29.0, sign match, (c) PRESENT; INVERTED and INERT
+absent). The channel is exonerated; the trace convicts the TARGET:
+off_x is +67 mm FROM TICK 0 — the loop commands a FORWARD lean from
+the very start, because the anatomical contact-point mean (the
+polygon "centroid") sits ~7 cm ahead of the bind pose's achievable
+balance (COM +0.0125 at settle). The uncontrolled frame stands level
+1 000 ticks precisely BECAUSE the static servo never converges to
+that forward reference; v2/v3 closed the loop on it and dragged the
+frame into the fall it was meant to prevent. This is the operator's
+datum 1 in numbers: muscles lock onto the STABILIZING POSITION THEY
+FIND — a measured, achieved equilibrium — not onto a geometric
+centroid. (It also re-reads the intrinsic creep: B creeps forward
++16 mm/600 ticks with no loop at all — consistent with the servo
+slowly tracking its own too-forward static reference; v4 measures
+whether the creep dies when the target stops pulling.) Successor
+named: balance v4 = v3 with the target = the ACHIEVED SETTLE
+POSITION (mean COM over ticks 50-100, the system's own measured
+equilibrium — nothing chosen), deadband d_eq, ankle channel, clamp.
+Kernel note: ligament play-band flag (state["lig_play_band"],
+rest+d_eq, default off) landed with pytest 201/201.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
