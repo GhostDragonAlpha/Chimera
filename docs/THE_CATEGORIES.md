@@ -2276,6 +2276,30 @@ even if every balance bar passes; the demo's standing leg should
 report achieved head height against the skeleton's maximum, not only
 against the no-fall bar.
 
+**OPERATOR DATUM 7, 2026-08-08 (THE HUMAN terminal, the TWO
+SEARCHES — recorded verbatim):** "Everything has a beginning and an
+end.  We need two methods: 1 that searches for these beginnings and
+these endings, and the other that searches everything in between
+the beginning and the end."  Consequences, landed as code:
+(1) the two methods are `LightEngine/trace_search.py` —
+`find_bounds` (method 1: the beginning is the first index the
+signal crosses its bar, the end is the last; an event that never
+returns runs to the trace's end, and that is itself data — the fall
+that does not recover; a trace that never crosses answers None, not
+index 0) and `read_interval` (method 2: count, endpoints, mean,
+slope, sign consistency, extrema with ABSOLUTE indices, so an
+interior event lands back on the timeline), composed as
+`search_event`; (2) the discipline this replaces: probes
+hard-coding their windows (ticks 100-800) instead of finding them —
+the window is a measurement, not a choice; RULE 1 applies to time
+too: derive the bounds, don't pick them; (3) the saga's own numbers
+as the first application: the fall's beginning is
+find_bounds(head_z, 0.5*head_z@100) — and the tracking overwrite's
+beginning is tick 100 (the first measured tick), which says the
+writer lives inside the step from tick 0 — the fork chain's
+verdict, restated as a bounds measurement. Tests:
+LightEngine/tests/test_trace_search.py.
+
 **TOE-AUTHORITY FORENSICS, FALSIFIED 2026-08-08 (probe
 .tmp/probe_toe_authority.py, ghost-free, ticks 100-1200):** nobody is
 saturated. Toe rows at >= 95% lmax for 1% of creep ticks, ankle rows
