@@ -1843,6 +1843,26 @@ means never-enforced (solve-fidelity territory: regularizer eps,
 attempt cap, or row redundancy); then the membrane for whichever is
 measured.
 
+**OPERATOR DATUM 2026-08-08 (THE HUMAN terminal, standing biomechanics —
+recorded verbatim because it reframes the balance membrane's target):**
+"Standing is simply shifting the weight back and forth between the two
+legs until there's a balance. It doesn't matter the position of the
+legs — it's like the body is taking a step forward and a step backward
+but the legs don't move, it's just a weight shift. Weight shift is how
+you start moving: you tilt your pelvis in the direction of movement.
+For standing you rock back and forth until you find a stabilizing
+position to lock your muscles."  Consequences for the membrane stack:
+(1) the balance servo's reference is NOT a static pose — it is a
+bounded COM oscillation INSIDE the support polygon (sway), with the
+lock-rows and muscle rows holding the sway's envelope, not a point;
+(2) the pelvis is the LEAD segment for any translation intent — the
+step verb's seed is a pelvis tilt, not a foot command;
+(3) "lock the muscles once stabilized" names the terminal state: sway
+decaying into a clamped equilibrium — which is exactly what a working
+lock/solve stack should permit.  The probes in this saga measured
+against a static-pose bar; the datum stands as the reference the
+balance membrane's next design must derive from.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
