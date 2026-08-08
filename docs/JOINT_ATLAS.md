@@ -513,3 +513,14 @@ and it CANNOT launch by construction: |delta_v| <= |v| always
 (the run-11 launch was an UNBOUNDED damping force; the run-14
 bounce was NO damping; this is the bounded middle).  At rest
 v ~ 0: damping ~ 0, no jitter added.
+RUN 15 OUTCOME (2026-08-08): **the capped damping PUMPS -- REST
+106.5 / 132.5 J (worse than run 14's undamped 70.2 / 77.9), KE
+max 1342 J on (b)**.  All other legs hold from run 14: (a) even
+keeps NO TUNNEL -0.0862 PASS.  The cap binds at full momentum
+removal on every compression tick (dt*c >> m_eff at these k), so
+the "viscous" regime never engages -- every down-tick is a
+plastic stop while every up-tick gets the full spring push: a
+ratchet, and the chain converts it to jitter.  THE FALSIFIER'S
+OWN INSTRUCTION governs the next step: measure the bounce's
+source (per-endpoint KE trace + decay curve) BEFORE naming run
+16.  Do not widen the cap; do not guess the next form.
