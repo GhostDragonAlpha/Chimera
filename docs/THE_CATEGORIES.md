@@ -2300,6 +2300,56 @@ writer lives inside the step from tick 0 — the fork chain's
 verdict, restated as a bounds measurement. Tests:
 LightEngine/tests/test_trace_search.py.
 
+**OPERATOR DATUM 8, 2026-08-08 (THE HUMAN terminal, stance width and
+the standing RANGE — recorded verbatim):** "Maximum head height is a
+product of understanding how far apart the feet are when both feet
+are in contact with the ground.  Standing is an entire range — from
+squatting on the ground like someone taking a poop to all the way
+standing up with your feet together as close as they can be, or
+relative to hip width."  Consequences for the membrane stack: (1)
+datum 6's "skeleton's maximum head height" is NOT a single number:
+head height is a function of STANCE WIDTH (feet apart lowers the
+pelvis and therefore the head; feet together — or hip width —
+raises it) and of EXTENSION (the squat-to-stand continuum), so the
+datum-6 report must read achieved head height against the maximum
+AVAILABLE AT THE CURRENT STANCE, not against the bind pose alone —
+a stander at hip width and a stander at wide stance have different
+ceilings; (2) STANDING IS A RANGE, not a pose: the squat end and
+the extended end are the same skill at different extension, and the
+battery's STAND meter should eventually span the range (hold at
+squat, rise, hold at extension) instead of gating one pose — for
+the demo lane this lands as the report first, the range battery
+after the ground loop closes; (3) the support polygon the battery
+already measures (com_inside_poly) is the stance-width channel's
+other face: the polygon widens with the feet, so stance width
+trades head height for stability margin — the trade itself is the
+control law's territory (datum 4's energy efficiency picks where
+on the trade to sit).
+
+**OPERATOR DATUM 9, 2026-08-08 (THE HUMAN terminal, the
+developmental order — recorded verbatim):** "A human learns to
+crawl before it learns to walk.  There may be things that you learn
+from that."  Consequences for the membrane stack: (1) the ORDER is
+the lesson: nature does not solve the hardest balance problem
+first — crawling is the forgiving regime (four contact points, low
+COM, a wide support polygon, cheap falls), and the laws learned
+there (weight shift across the polygon, the pivot chain, the servo
++ ground-loop stack under load) transfer upward to standing and
+then walking; (2) for the demo lane this names a BATTERY LADDER:
+crawl (all-fours hold, then crawl weight-shift) -> squat hold ->
+stand (the current battery) -> gait — each rung validates the same
+ground loop and servo chain under a stability margin the next rung
+doesn't have, so a failure at rung N is diagnosed against a PASSING
+rung N-1 instead of against nothing (the standing saga paid for
+the missing lower rung: every fall was ambiguous between ground
+loop, servo chain, and controller); (3) for the head-height reward
+(datum 6): crawling is the regime where head height is LOW by
+design, so the reward is always relative to the regime's ceiling
+(datum 8), never absolute. The crawl battery is NAMED, scheduled
+after the ground loop closes — the ground loop is shared physics,
+and it must be right once, low, before it is asked to be right
+high.
+
 **TOE-AUTHORITY FORENSICS, FALSIFIED 2026-08-08 (probe
 .tmp/probe_toe_authority.py, ghost-free, ticks 100-1200):** nobody is
 saturated. Toe rows at >= 95% lmax for 1% of creep ticks, ankle rows
