@@ -1888,6 +1888,28 @@ direction, with every other gait derived as a fraction of it — the
 reference for the walk/run membranes is a top-down scale, not a
 bottom-up walk that gets faster.
 
+**OPERATOR DATUM 3, 2026-08-08 (THE HUMAN terminal, the two pivot
+strategies — recorded verbatim):** "That inclining pivot happens at
+two locations: one is the hip and the other is the ankle. You'll find
+that you'll need the two to work together — the hip for fast
+movements and the ankles for slow adjustments — and it's where most
+of the standing algorithm is calculated."  Consequences for the
+membrane stack: (1) the balance controller is a TWO-CHANNEL system
+with a derived frequency split, not one pose servo: the ankle channel
+owns the slow, small-amplitude corrections (the sway envelope of
+datum 1), the hip channel owns the fast, large-amplitude corrections
+(acceleration leans of datum 2, push recovery); (2) the split itself
+is derivable, not chosen: each channel's bandwidth is bounded by its
+own segment dynamics — the ankle strategy moves the whole-body
+pendulum about the support (slow, omega0 of the full COM height),
+the hip strategy moves the upper body about the hip (fast, the
+shorter pendulum of trunk-above-hip) — the same "the body responds
+at the rate the body falls" law the muscle servo already uses, now
+with two pendulums; (3) the probe chain's numbers already show why
+both are needed: the ankle fold was a SLOW leak (ankle channel's
+domain), while the shove recovery needs a FAST catch (hip channel's
+domain).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
