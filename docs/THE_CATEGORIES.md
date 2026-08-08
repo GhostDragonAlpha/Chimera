@@ -1992,6 +1992,40 @@ A/B against the full protocol, 'measured stable on every rig' on
 record as the falsifier bar; then the two-channel balance controller
 (operator datums 1-4) on clean hardware.
 
+**GHOST-FREE A/B VERDICT 2026-08-08 (probe .tmp/probe_ghostfree.py,
+pos_pass_mode=1 + lock mode 2, hybrid, 8 000 MAIN / 1 500 CONTROL):**
+FALSIFIED on three legs — and the three PASSES are the biggest wins of
+the saga while the three FAILURES name the next two membranes. (1)
+(a) GHOST DEAD PASS: ankle net ghost 0.0000 rad (legacy 1.0139) — the
+tug-of-war is abolished by construction and the instrumentation
+proves it. (2) (b) FOLD HALVED PASS, 49x better than the bar:
+locked-resid growth +0.0131 rad vs legacy +0.617 (bar was 50%) —
+with the ghost gone the fold is 98% dead; parent 1's lock-row under-
+enforcement turns out to have been mostly the ghost's shadow (the
+servo was fighting phantom corrections). (3) (c) STAND FAIL, but the
+horizon TRIPLED first: head_z 1.810 -> 1.811 @1000 (level), then
+-0.782 @4000 — the frame stands three times longer than anything
+ever measured, then something NEW kills it between ticks 1000 and
+4000. (4) (d) NO PUMP FAIL (|w| 2 091, debris-class post-fall); (f)
+RIG STABILITY PASS (coincidence held to 1.32 mm vs the 13.1 mm bar —
+translation-only holds joints as well as the legacy rotations did).
+(5) (e) NON-VACUOUS FAIL — the constitution's fear arrives in its
+true form: the muscles-cut CONTROL only sags to 1.312 m by tick 1499
+(legacy: -0.5): with clean hardware the PASSIVE structure (lock rows
+with unlimited rigid authority + sweep ligaments) holds the frame for
+hundreds of ticks with no muscles at all — the frame is too rigid
+passively, and a real relaxed body falls immediately. (6) Net law:
+**the ghost was the fold; with it dead, standing lasts 1 000+ ticks
+on muscle law alone, and the saga's remaining two questions are now
+named precisely: (i) what kills the frame between 1000 and 4000 (a
+new failure mode, forensicate with the same probe chain); (ii) the
+passive-stiffness membrane — real bone geometry has PLAY and limited
+passive stiffness (the d_eq band), the current lock rows are
+infinitely rigid, and the (e) failure is that rigidity's price.**
+Successors (dependency order): the 1000-4000 fall forensics (sink/
+fold/which-joint, unchanged probes); then passive play; then the
+two-channel balance controller (operator datums 1-4).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

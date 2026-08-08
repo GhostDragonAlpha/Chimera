@@ -298,11 +298,21 @@ def position_pass(
     contact_link_idx, contact_off_local,
     contact_slop, n_proj_iters, do_rotation_locks,
     ghost_coinc, ghost_lig, ghost_lock,
+    pos_pass_mode,
 ):
     # ghost_* are instrumentation accumulators (ghost-source probe,
     # 2026-08-08): every position-level ROTATION this pass applies to a
     # link's quat -- invisible in ang_vel -- is added to the block's
     # array.  Pure accounting: the physics is unchanged.
+    #
+    # pos_pass_mode 0 = legacy, 1 = GHOST-FREE (2026-08-08): joint
+    # coincidence corrected by TRANSLATION ONLY (two meeting points
+    # need no link rotation), and the ligament position projection
+    # retired -- the ligaments already have their velocity-level sweep
+    # (step section 5b); the position copy was a second, ghosting
+    # application of the same constraint (ghost-source verdict:
+    # coincidence<->ligament tug-of-war, 86% self-cancelling, the
+    # residue folds the standing ankle).
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
     n_contacts = contact_link_idx.shape[0]
@@ -335,6 +345,18 @@ def position_pass(
             w_c = inv_mass[cb] + rn_c @ (I_inv_c @ rn_c)
             denom = w_p + w_c
             if denom <= 1e-15:
+                continue
+            if pos_pass_mode == 1:
+                # GHOST-FREE: translation only, inverse-mass split --
+                # no quat is touched, so no ghost rotation can exist.
+                denom_m = inv_mass[pa] + inv_mass[cb]
+                if denom_m <= 1e-15:
+                    continue
+                c_mag = BETA * (err - contact_slop) / denom_m
+                if mass[pa] > 0.0:
+                    pos[pa] = pos[pa] + inv_mass[pa] * c_mag * n
+                if mass[cb] > 0.0:
+                    pos[cb] = pos[cb] - inv_mass[cb] * c_mag * n
                 continue
             c_mag = BETA * (err - contact_slop) / denom
             if mass[pa] > 0.0:
@@ -418,7 +440,13 @@ def position_pass(
                     ghost_lock[cb] = ghost_lock[cb] - err_axis * (alpha_c * err_angle)
 
         # ligament unilateral distance projection (positions only)
-        for li in range(n_lig):
+        # GHOST-FREE mode retires this block: the velocity sweep (step
+        # section 5b) already enforces the ligaments; this copy ghosts.
+        if pos_pass_mode == 0:
+            n_lig_eff = n_lig
+        else:
+            n_lig_eff = 0
+        for li in range(n_lig_eff):
             ia = lig_idx_a[li]
             ib = lig_idx_b[li]
             if mass[ia] <= 0.0 and mass[ib] <= 0.0:
@@ -525,6 +553,7 @@ def step_core(
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
     ghost_coinc, ghost_lig, ghost_lock,
+    pos_pass_mode,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and
     accumulated from the velocity pass (that is where the physics is).
@@ -703,6 +732,7 @@ def step_core(
         contact_link_idx, contact_off_local,
         contact_slop, n_proj_iters, do_rotation_locks,
         ghost_coinc, ghost_lig, ghost_lock,
+        pos_pass_mode,
     )
 
 
@@ -730,6 +760,7 @@ def step_core_direct(
     ghost_coinc, ghost_lig, ghost_lock,
     contacts_in_solve,
     contact_friction,
+    pos_pass_mode,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -1265,4 +1296,5 @@ def step_core_direct(
         contact_link_idx, contact_off_local,
         contact_slop, n_proj_iters, do_rotation_locks,
         ghost_coinc, ghost_lig, ghost_lock,
+        pos_pass_mode,
     )
