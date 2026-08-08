@@ -1232,6 +1232,43 @@ STILL shatter, the cushion kernel has no bulk shear strength at any
 cross-section and the skeleton must stand on arches, not columns — record,
 do not patch.
 
+**STANDING v1 RIGID-MODEL VERDICT 2026-08-08 (77 links, 76 joints, 43
+ligament ropes, hybrid direct/sequential rigid solver at 1 kHz, run tag
+demo_kinematic_v1, 8 000 ticks MAIN + CONTROL):** the standing-frame
+statement is FALSIFIED again — faster and cleaner than the grain print,
+exactly the direction named in the prediction (same failure, but a rigid
+joint cannot ooze). Verified from the battery log. (1) THE UNACTUATED FRAME
+CRUMPLES FROM t=0: rotation locks off, ROM on the ligament network, and the
+hinge/saddle dofs are free — a muscle-less body folds; head z leaves the
+band inside the first 600 ticks. (e) STAND FAIL. The COM leaves the
+polygon (x drift 0.46 -> -6.03 lu; the grain run drifted 1.29 -> 1.73).
+(c) FRAME FAIL. Floor caveat recorded: only the feet carry contacts, so
+late-window z < 0 readings are the model's limit, not a measurement. (2)
+THE BONES HOLD: worst transverse reaction moment fibula_L at 0.215 of
+M_fail = sigma*Z with the ANATOMY-DATUM diameters. (a) LIMIT PASS — in the
+rigid model integrity is a moment audit, and nothing breaks; the grain
+run's shatter mechanism (cushion kernel has no bulk shear) does not exist
+here. (3) THE SI JOINT DISLOCATES: pelvis_R separation 3.1 cm vs the 1.3 mm
+d_eq band during the crumple whip. (b) CAPTURE FAIL — the joint position
+pass loses to the unilateral-sweep disturbance under whip loads; recorded
+as honest dislocation (fix named if a later lane needs capture under whip:
+a second bilateral solve after the unilateral sweeps). (4) THE ROPES ARE
+TRUE ROPES: zero compression events, max measured tension 1 875 N. (d)
+LIGAMENT PASS — tension-only is enforced by the solver, not by hope. (5)
+THE CONTROL REPRODUCES v1's NON-FALL WITH A DIFFERENT MECHANISM: extra COM
+drop vs MAIN 0.002 m in the 600-tick window vs the 0.185 m bar. (f) CONTROL
+FAIL — and the honest reading: by the cut tick both frames are already down
+(the frame crumples unactuated), so the comparative meter is inconclusive
+about rope statics; what it does establish is that the ligament network
+does not prevent, delay, or reshape the crumple — the same law v1 named
+("the rope network carries nothing") now measured in a model where ropes
+provably CAN carry tension. (6) Net law: **a frame without muscles cannot
+stand, ropes or no ropes; the rigid runtime answers the constitution in
+seconds where the grain print needed hours.** Successor named:
+theStandingHuman v2-rigid — the muscle lane (actuated torques on the
+hinge/saddle dofs), the first membrane where STAND can pass honestly; this
+unactuated battery stays as its control.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
