@@ -1718,6 +1718,27 @@ one probe decides.** Successors (dependency order): the sink probe
 (per-tick pivot z + per-joint max |theta_err|, ticks 100-267); only
 then a membrane touching the solve.
 
+**SINK PROBE VERDICT 2026-08-08 (probe .tmp/probe_sink.py, hybrid,
+ticks 100-267):** FOLD PRESENT, TRAPDOOR absent — and the fold has ONE
+address. (1) TRAPDOOR absent: loaded pivots creep 4.69 mm (3% of the
+head drop) — the ground loop is INNOCENT of the standing collapse.
+(2) FOLD present: max actuated-joint error grows 0.641 -> 2.988 rad
+(4.7x), monotonic from tick 100, at ONE joint the whole way:
+**tarsals_R on tibia_R — the right ankle**. The body does not slip,
+skate, or sink: it slowly hinges over the right ankle, and the servo
+never stops it — while (forensics) no sustained clamping shows in the
+row stats. (3) The open question the fold raises: the error measured
+is the TOTAL angle; the servo can only actuate the joint's FREE axes.
+Either the ankle's free-axis error grows UNCLAMPED (the servo is not
+spending budget it has — a servo-law bug) or the growth lives on a
+LOCKED axis (a joint-constraint leak — the solve lets a constrained
+dof drift, and no muscle can fix that). (4) Net law: **the standing
+collapse is a single-ankle hinge; the next probe reads the error
+decomposed onto the actuator axes with the row's impulse vs its
+bound — servo starvation vs constraint leak, one run decides.**
+Successors (dependency order): the ankle autopsy probe; then the
+membrane for whichever system is guilty — nothing else is touched.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
