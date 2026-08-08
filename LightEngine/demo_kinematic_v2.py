@@ -157,9 +157,19 @@ def main():
     # same windows -- the run that decides the flag default.
     # CONTACT_FRICTION picks the friction mode when in-solve: 1 = full
     # cone in-solve (v3a, measured leaky), 2 = hybrid (v3e: normals
-    # in-solve, friction swept, bounded at sweep-level steady state).
+    # in-solve, friction swept, bounded at sweep-level steady state),
+    # 3 = warm-start cone (friction-placement membrane: rows in-solve,
+    # bound fixed all tick from the previous tick's normal impulse).
     in_solve = os.environ.get("CONTACTS_IN_SOLVE", "0") == "1"
     fric_mode = int(os.environ.get("CONTACT_FRICTION", "1"))
+    # Ghost-free stack (the fall-saga forensics): POS_PASS_MODE=1 is
+    # translation-only coincidence with the ligament position projection
+    # retired; LIG_PLAY_BAND=1 adds the measured joint play to the
+    # ligament rest; LIG_FORCE_LIMIT=1 clamps ligament impulses to
+    # f_max * dt.  All default off: legacy stays bit-identical.
+    pos_pass_mode = int(os.environ.get("POS_PASS_MODE", "0"))
+    lig_play_band = os.environ.get("LIG_PLAY_BAND", "0") == "1"
+    lig_force_limit = os.environ.get("LIG_FORCE_LIMIT", "0") == "1"
 
     state = init_state(spec)
     # v2 constitution: the muscles, NOT the rotation locks, close the free
@@ -170,6 +180,9 @@ def main():
     # the lock mode for A/B: 0=off (default), 1=legacy both, 2=velocity
     # rows, 3=position pass, 4=Baumgarte bias rows.
     state["rotation_locks"] = int(os.environ.get("ROTATION_LOCKS", "0"))
+    state["pos_pass_mode"] = pos_pass_mode
+    state["lig_play_band"] = lig_play_band
+    state["lig_force_limit"] = lig_force_limit
     if in_solve:
         state["contacts_in_solve"] = True
         state["contact_friction"] = fric_mode
@@ -177,8 +190,8 @@ def main():
     print(f"actuators: {len(main_ctrl.actuators)} "
           f"(torque limits {min(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f}"
           f"-{max(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f} N m)")
-    mode_name = {0: "NONE", 1: "FULL CONE", 2: "HYBRID SWEPT"}.get(
-        fric_mode, str(fric_mode))
+    mode_name = {0: "NONE", 1: "FULL CONE", 2: "HYBRID SWEPT",
+                 3: "WARM-START CONE"}.get(fric_mode, str(fric_mode))
     if in_solve:
         print(f"ground loop: CONTACTS IN SOLVE, friction {mode_name}")
     main_metrics = _run_v2(spec, state, "MAIN", main_ctrl)
@@ -188,6 +201,9 @@ def main():
     if which == "both":
         state_c = init_state(spec)
         state_c["rotation_locks"] = int(os.environ.get("ROTATION_LOCKS", "0"))
+        state_c["pos_pass_mode"] = pos_pass_mode
+        state_c["lig_play_band"] = lig_play_band
+        state_c["lig_force_limit"] = lig_force_limit
         if in_solve:
             state_c["contacts_in_solve"] = True
             state_c["contact_friction"] = fric_mode
