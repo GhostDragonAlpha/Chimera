@@ -216,8 +216,12 @@ def _build_link_specs(instances: list[dict], mass_kg: float,
         com_offset_m = com_offset_lu * lam
 
         mass = mass_by_name[name]
+        # Inertia uses the ANATOMY-DATUM diameter: outer_diameter_m is a
+        # grain-print-budget artifact (2-grain floor for every bone) whose
+        # axial inertia (~1e-6 kg m^2) made the dynamics ill-conditioned.
         inertia_m = _solid_rod_inertia(
-            mass, length_m, float(row["outer_diameter_m"])
+            mass, length_m,
+            float(row.get("anatomical_diameter_m", row["outer_diameter_m"])),
         )
         # Inertia in lu units: I_lu = I_m / lambda^2 (mass*length^2 scaling).
         inertia_lu = inertia_m / (lam ** 2) if lam > 0.0 else inertia_m

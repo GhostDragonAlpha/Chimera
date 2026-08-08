@@ -1,4 +1,4 @@
-# The Herald — 2026-08-06
+# The Herald — 2026-08-07
 
 **Good news:** 15 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/AI, subsystem/Combat and more.
 **Watch:** 8 feature(s) failed some checks recently (Any position-dependent beat against chimeradefault, Substrate_Engine, Substrate_Terrain); they are on the work board with evidence attached.

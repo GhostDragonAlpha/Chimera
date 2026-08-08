@@ -139,6 +139,8 @@ def _bone_definitions():
         "name": "skull",
         # ANATOMY-DATUM: skull front-to-back length ~12% of stature.
         "length_fraction": 0.12,
+        # ANATOMY-DATUM: head breadth ~15 cm at 1.80 m stature (~0.083 H).
+        "diameter_fraction": 0.083,
         "load_fraction": HEAD_MASS_FRACTION,
         "prox": "suture",
         "dist": "ball-cup",
@@ -168,9 +170,13 @@ def _bone_definitions():
             moment = "upper-body load -> sacral arch compression"
         else:
             dist = "saddle"
+        # ANATOMY-DATUM: vertebral body width ~2.5 cm cervical, ~3 cm
+        # thoracic, ~4.5 cm lumbar at 1.80 m stature.
+        diameter_fraction = {"C": 0.014, "T": 0.017, "L": 0.025}[region]
         bones.append({
             "name": name,
             "length_fraction": _vertebral_length_fraction(i),
+            "diameter_fraction": diameter_fraction,
             "load_fraction": _vertebral_load_fraction(i),
             "prox": prox,
             "dist": dist,
@@ -182,6 +188,8 @@ def _bone_definitions():
         "name": "sacrum",
         # ANATOMY-DATUM: sacral length ~6% of stature.
         "length_fraction": 0.06,
+        # ANATOMY-DATUM: sacral width ~10 cm at 1.80 m stature (~0.056 H).
+        "diameter_fraction": 0.056,
         "load_fraction": HEAD_MASS_FRACTION + ARM_MASS_FRACTION + TRUNK_MASS_FRACTION,
         "prox": "saddle",
         "dist": "ball-cup",
@@ -194,6 +202,8 @@ def _bone_definitions():
             "name": f"rib pair {pair}",
             # ANATOMY-DATUM: average rib arc length ~18% of stature.
             "length_fraction": 0.18,
+            # ANATOMY-DATUM: rib shaft diameter ~1 cm at 1.80 m stature (~0.006 H).
+            "diameter_fraction": 0.006,
             "load_fraction": RIB_CAGE_MASS_SHARE / 12.0,
             "prox": "hinge",
             "dist": "hinge",
@@ -203,6 +213,8 @@ def _bone_definitions():
         "name": "sternum",
         # ANATOMY-DATUM: sternum length ~9% of stature.
         "length_fraction": 0.09,
+        # ANATOMY-DATUM: sternum width ~3 cm at 1.80 m stature (~0.017 H).
+        "diameter_fraction": 0.017,
         "load_fraction": 0.10,
         "prox": "saddle",
         "dist": "suture",
@@ -214,6 +226,8 @@ def _bone_definitions():
         "name": "clavicle pair",
         # ANATOMY-DATUM: clavicle length ~5% of stature.
         "length_fraction": 0.05,
+        # ANATOMY-DATUM: clavicle shaft diameter ~1.2 cm (~0.007 H).
+        "diameter_fraction": 0.007,
         "load_fraction": SHOULDER_GIRDLE_MASS_FRACTION,
         "prox": "saddle",
         "dist": "ball-cup",
@@ -223,6 +237,9 @@ def _bone_definitions():
         "name": "scapula pair",
         # ANATOMY-DATUM: scapula height ~9% of stature.
         "length_fraction": 0.09,
+        # ANATOMY-DATUM: scapula breadth ~10 cm; representative cross-section
+        # for the rigid-link inertia (~0.056 H).
+        "diameter_fraction": 0.056,
         "load_fraction": SHOULDER_GIRDLE_MASS_FRACTION,
         "prox": "saddle",
         "dist": "ball-cup",
@@ -234,6 +251,8 @@ def _bone_definitions():
         "name": "humerus pair",
         # ANATOMY-DATUM: humerus length ~19% of stature.
         "length_fraction": 0.19,
+        # ANATOMY-DATUM: humerus shaft diameter ~2.2 cm (~0.012 H).
+        "diameter_fraction": 0.012,
         "load_fraction": UPPER_ARM_MASS_FRACTION,
         "prox": "ball-cup",
         "dist": "hinge",
@@ -243,6 +262,8 @@ def _bone_definitions():
         "name": "radius/ulna pair",
         # ANATOMY-DATUM: forearm length ~14% of stature.
         "length_fraction": 0.14,
+        # ANATOMY-DATUM: radius/ulna shaft diameter ~1.5 cm (~0.008 H).
+        "diameter_fraction": 0.008,
         "load_fraction": FOREARM_MASS_FRACTION,
         "prox": "hinge",
         "dist": "saddle",
@@ -254,6 +275,8 @@ def _bone_definitions():
         "name": "hand mass",
         # ANATOMY-DATUM: hand length ~6% of stature.
         "length_fraction": 0.06,
+        # ANATOMY-DATUM: hand breadth ~9 cm (~0.05 H).
+        "diameter_fraction": 0.05,
         "load_fraction": HAND_MASS_FRACTION,
         "prox": "saddle",
         "dist": "hinge",
@@ -265,6 +288,8 @@ def _bone_definitions():
         "name": "pelvis pair",
         # ANATOMY-DATUM: ilium length ~14% of stature.
         "length_fraction": 0.14,
+        # ANATOMY-DATUM: hemipelvis breadth ~14 cm (~0.08 H).
+        "diameter_fraction": 0.08,
         "load_fraction": (HEAD_MASS_FRACTION + ARM_MASS_FRACTION + TRUNK_MASS_FRACTION) / 2.0,
         "prox": "saddle",
         "dist": "ball-cup",
@@ -276,6 +301,8 @@ def _bone_definitions():
         "name": "femur pair",
         # ANATOMY-DATUM: femur length ~24.5% of stature.
         "length_fraction": 0.245,
+        # ANATOMY-DATUM: femur shaft diameter ~2.8 cm (~0.016 H).
+        "diameter_fraction": 0.016,
         "load_fraction": 0.5,
         "prox": "ball-cup",
         "dist": "hinge",
@@ -285,6 +312,8 @@ def _bone_definitions():
         "name": "patella pair",
         # ANATOMY-DATUM: patella thickness ~3% of stature.
         "length_fraction": 0.03,
+        # ANATOMY-DATUM: patella width ~4 cm (~0.022 H).
+        "diameter_fraction": 0.022,
         "load_fraction": 0.5,
         "prox": "saddle",
         "dist": "saddle",
@@ -294,6 +323,8 @@ def _bone_definitions():
         "name": "tibia pair",
         # ANATOMY-DATUM: tibia length ~25% of stature.
         "length_fraction": 0.25,
+        # ANATOMY-DATUM: tibia shaft diameter ~3 cm (~0.017 H).
+        "diameter_fraction": 0.017,
         "load_fraction": 0.5,
         "prox": "hinge",
         "dist": "hinge",
@@ -303,6 +334,8 @@ def _bone_definitions():
         "name": "fibula pair",
         # ANATOMY-DATUM: fibula length ~22% of stature.
         "length_fraction": 0.22,
+        # ANATOMY-DATUM: fibula shaft diameter ~1.5 cm (~0.008 H).
+        "diameter_fraction": 0.008,
         "load_fraction": FIBULA_DESIGN_LOAD_FRACTION,
         "prox": "hinge",
         "dist": "hinge",
@@ -314,6 +347,8 @@ def _bone_definitions():
         "name": "tarsals group",
         # ANATOMY-DATUM: tarsal block length ~6% of stature.
         "length_fraction": 0.06,
+        # ANATOMY-DATUM: hindfoot block width ~7 cm (~0.039 H).
+        "diameter_fraction": 0.039,
         "load_fraction": 0.5,
         "prox": "hinge",
         "dist": "saddle",
@@ -323,6 +358,8 @@ def _bone_definitions():
         "name": "metatarsals group",
         # ANATOMY-DATUM: metatarsal length ~8% of stature.
         "length_fraction": 0.08,
+        # ANATOMY-DATUM: midfoot block width ~6 cm (~0.033 H).
+        "diameter_fraction": 0.033,
         "load_fraction": 0.5,
         "prox": "saddle",
         "dist": "hinge",
@@ -332,6 +369,8 @@ def _bone_definitions():
         "name": "forefoot mass",
         # ANATOMY-DATUM: toe phalanges length ~5% of stature.
         "length_fraction": 0.05,
+        # ANATOMY-DATUM: toe block width ~5 cm (~0.028 H).
+        "diameter_fraction": 0.028,
         "load_fraction": FOREFOOT_DESIGN_LOAD_FRACTION,
         "prox": "hinge",
         "dist": "hinge",
@@ -596,6 +635,12 @@ def scale_skeleton(height_m=DEFAULT_HEIGHT_M, mass_kg=DEFAULT_MASS_KG):
             "length_lu": length_lu,
             "outer_diameter_m": D_m,
             "outer_diameter_lu": D_lu,
+            # ANATOMY-DATUM: real bone diameter for the RIGID model's inertia
+            # (outer_diameter_m above is a grain-print-budget artifact and
+            # collapses to the 2-grain floor for every bone; the slender-rod
+            # axial inertia it produced -- ~1e-6 kg m^2 -- blew up every
+            # solver, measured 2026-08-07/08).
+            "anatomical_diameter_m": b["diameter_fraction"] * height_m,
             "shell_thickness_lu": shell_lu,
             "solid_end_lu": solid_end_lu,
             "design_load_kg": design_load_kg,
