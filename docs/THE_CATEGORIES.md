@@ -2591,6 +2591,39 @@ the motors, the friction-fork verdict), bound = MU x the first
 attempt's lambda_n, never recomputed intra-tick (no revision, the
 v3d verdict), no staleness (this tick, the warm-start verdict).
 
+**FROZEN FIRST-SOLVE CONE, FALSIFIED AT (b) 2026-08-08 (probe
+.tmp/probe_frozen_cone.py, contact_friction=4, ghost-free, MAIN
+8 000 + CONTROL 1 500):** not a simmer — a LAUNCH. KE 8.7e3 J at
+tick 400, 1.05e8 J by tick 2 800 and holding (the frame is thrown:
+head_z 756 m at 8 000, vmax 5.4e5 m/s, fall tick 134). (a) FAIL
+(150.2 rad/s, tumble noise). (b) FAIL (69 samples >= 1e4). (c)
+"PASS" on the letter of the bar (head_z @8000 >= 0.9x @100 — the
+frame is 756 m IN THE AIR; a bar that a launch passes is a bar that
+needs the fall-tick companion; noted, not patched — the falsifier
+that matters is (b)). (d) FAIL. The payload is the ORDERING: mode 1
+(bound from the current attempt, revised) simmered 6 000 ticks
+before exploding; mode 4 (bound frozen at attempt 1) exploded
+immediately; mode 3 (bound one tick stale) fell without pumping.
+The law the three falsifications draw together: **fix-at-bound
+with ANY pre-computed bound mismatches the final lambda_n, and the
+mismatch is systematic in sign — friction fixed at a bound larger
+than the revised normal does positive work on jiggle. Mode 1
+mismatches least (a simmer), modes 3/4 more (an explosion). The
+cone is |lambda_t| <= MU x lambda_n with BOTH decided
+simultaneously; the K system is linear and every linearization
+tried so far pumps.** The v3e hybrid (mode 2: normals in-solve,
+friction swept post-solve, dissipative by construction) remains the
+only long-protocol-stable ground loop on record — and its one
+measured crime is the ankle overwrite (the friction-fork verdict:
+the sweep kills the contact-point velocity the servo just booked).
+Successor named: keep the dissipative sweep, but EXCLUDE THE
+MUSCLE CHANNEL from what it kills — motor impulses are angular
+rows, their per-tick angular-velocity contribution is exactly
+computable from motor_impulses, and the sweep's tangential kill
+should act on (v_t - v_t_motor): friction opposes the world's
+sliding, not the muscle's command. contact_friction=5 = the hybrid
+with the muscle channel excluded from its tangential kill.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
