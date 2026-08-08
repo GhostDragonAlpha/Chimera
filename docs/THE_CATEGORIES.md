@@ -1934,6 +1934,27 @@ from it (hand the load over when the carrying group's cost integral
 exceeds the relief cost of the shift) — no chosen threshold, the
 crossing point of two measured costs.
 
+**OPERATOR DATUM 5, 2026-08-08 (THE HUMAN terminal, the chain ABOVE
+the hip — recorded verbatim):** "Besides the ankle and the hip there
+is the neck, which LEADS the hip, and then the spine in between,
+which is more of a curve than a joint."  Consequences for the
+membrane stack: (1) the balance chain is FOUR tiers, not two: ankle
+(slow, datum 3) -> spine (a distributed curve, not a pivot) -> hip
+(fast) -> neck (the lead). The neck leading matches the head's role
+as the balance organ's platform: the head stabilizes first and the
+trunk follows it (vestibular lead), so the hip channel's reference
+comes from the neck, not from the pelvis; (2) the SPINE is not a
+pivot to servo at one joint: it distributes the lean over its
+vertebrae as a CURVE — the stack already has the 2-D sheet/1-D chain
+machinery for distributed members, so the spine's balance role maps
+to a curvature target shared across the lumbar/thoracic actuators
+rather than a single-joint offset; (3) for the demo lane this lands
+AFTER the ankle channel stands: the v-order is ankle (in flight) ->
+hip fast channel (push recovery, datum 3) -> neck lead + spine curve
+(the full four-tier chain) — the standing demo does not gate on the
+upper tiers, but the walking/gait membranes do, and the four-tier
+chain is now on record as the architecture.
+
 **ENFORCEMENT + GHOST VERDICTS 2026-08-08 (probes
 .tmp/probe_enforcement.py, .tmp/probe_ghost.py; mode 2, ticks
 100-1000, tarsals_R):** the ankle drift's accounting CLOSES — two
@@ -2185,6 +2206,38 @@ POSITION (mean COM over ticks 50-100, the system's own measured
 equilibrium — nothing chosen), deadband d_eq, ankle channel, clamp.
 Kernel note: ligament play-band flag (state["lig_play_band"],
 rest+d_eq, default off) landed with pytest 201/201.
+
+**BALANCE-PROBE v4 FALSIFIED 2026-08-08 (probe .tmp/probe_balance4.py,
+settle-position target (+0.0119,-0.0001) measured ticks 50-100,
+ankle channel, d_eq band, clamp):** (e) CLAMP PASS; the other four
+FAIL — but the early trace is the diagnostic: +0.0432 @758 matches
+the UNCONTROLLED creep (+0.0468), so the target fix removed v2/v3's
+forward drag, and still the frame falls at the same tick (~1416)
+with the channel saturated at 95.6 mm. Per v4's own named falsifier,
+the creep's parent is the STATIC BALANCED REFERENCE itself: the
+muscle servo keeps dragging the COM toward its derived forward lean
+(~7 cm ahead of the achievable equilibrium) and the balance loop
+fights its own servo at limited authority. Datum 1, second reading:
+it is the SERVO, not just the loop, that must lock onto the
+stabilizing position found. Successor named: v5 = v4 + at tick 100
+rebase the static ankle target_offset to the MEASURED settle
+theta_err, so the servo holds the achieved position and the creep
+dies at the source.
+
+**PASSIVE-PLAY A/B 2026-08-08 (probe .tmp/probe_play_band.py, ligament
+play band rest+d_eq_m, ghost-free):** (b) STANDING UNAFFECTED PASS —
+MAIN with the band matches without it to <= 34 mm at every
+checkpoint (the band is slack in a held pose; the flag is safe to
+ship). (a) NON-VACUOUS FAIL, and the forensics-2 uncertainty
+resolves: CONTROL with the band still sags to 1.328 m (off: 1.312),
+taut tension ROSE to 1 444 N (22 taut) — ligaments stretched ~3x
+past the band still hold 1.8x body weight, because the velocity rows
+apply UNLIMITED tension impulse (near-rigid in tension). The same
+disease as the lock rows, one row over. Successor named: the
+ligament force LIMIT — clamp the row's impulse to the
+physiological F_max * dt (F_max is already in the ligament table;
+stiffness = F_max/d_eq_m derives from it), so an overstretched
+ligament YIELDS and the relaxed body crumples past the catch.
 
 ## ORDER OF PROOF (derived from dependency depth)
 
