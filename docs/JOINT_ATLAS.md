@@ -586,3 +586,28 @@ depths (drop the rigid zone).  Note: (a)'s servo refused @tick
 3 (COM exits the foot polygon immediately with pen_d_pad = 1.0
 -- the soft implicit pad lets the standing frame sag), so its
 (d1) is effectively a drop-arm number; (b) refused @527.
+RUN 17 DIAGNOSTIC OUTCOME (2026-08-08, agent_logs/diag_rest_ke_run17.log):
+**FALSIFIER FIRED -- the residue is a bursty LIMIT CYCLE on the same
+light chain, not a settle.**  (a) decay curve 20.1 -> 2.1 -> 3.3 ->
+37.0 -> 4.0 J (a 37 J burst at tick 3499); (b) 7.0 -> 14.7 -> 10.9
+-> 8.0 -> 3.9 J (humped, not monotonic).  Top-5 share 79% (a) / 47%
+(b), held by the run-15 signature links: clavicle_L 0.13 kg at 3.3
+m/s, vertebrae T2-T8 0.06-0.10 kg at 1.3-2.5 m/s, scapulae 8 kg at
+0.4-0.5 m/s.  The implicit row is stable in 1-DOF, but the SYSTEM it
+builds is an UNDAMPED ELASTIC FLOOR: energy sloshes link-to-link in
+the light shoulder/spine chain with no dissipation path.  Note (a)
+already runs pen_d_pad = 1.0 (implicit row at all depths) -- the
+"drop the rigid zone" candidate is measured and is not the cure.
+RUN 18 MEMBRANE (the numbers chose it): **IMPLICIT SPRING-DAMPER
+ROW**.  Run 15 falsified EXPLICIT capped damping (plastic-stop
+ratchet); the derived fix is damping INSIDE the implicit
+linearization: F = k*d - c*v_n with lambda = dt*F gives row
+gamma = 1/(dt*(dt*k + c)), bias = k*d/(dt*k + c) -- at c = 0 it
+reduces EXACTLY to run 17 (no second form, a superset).  c is
+derived, not swept: critical damping of the row's own effective
+mass along the normal, c = 2*sqrt(m_eff*k), m_eff from
+inv_mass + (r x n).I_inv.(r x n) at assembly.  This is the
+ODE/PhysX contact model; implicit damping is unconditionally
+stable and chain-aware through K, so the run-15 ratchet has no
+structure to exist.  At rest v ~ 0: damping force ~ 0, no jitter
+added.  1-DOF probe verifies BEFORE the kernel change.
