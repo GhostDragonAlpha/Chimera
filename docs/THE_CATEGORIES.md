@@ -1760,6 +1760,32 @@ locked-axis error's correction row?); the leak-rate membrane
 (0.011 rad/tick = ?); the derived fix; then the FULL probe chain
 re-run unchanged: sink (fold absent) -> forensics -> DEMO v3.
 
+**BONE-CLOSURE A/B VERDICT 2026-08-08 (probe .tmp/probe_bone_closure.py,
+locks ON, hybrid):** FALSIFIED as a fix SHAPE — the flag kills the leak
+but wounds the frame worse. (1) (a) LEAK DEAD PASS: tarsals_R locked
+residual SHRINKS 0.304 -> 0.149 rad — the lock rows do close the
+corkscrew, so the leak's address was right. (2) (b) NO FOLD FAIL,
+decisive: head_z @267 = 1.047 m — the frame falls FASTER with locks
+on than with the leak open (1.615 m), and it is already losing height
+by tick 100 (1.629 vs 1.796 locks-off): the lock machinery hurts the
+frame from the first second, before any collapse debris exists. (3)
+(c) NON-VACUOUS PASS: muscles-cut CONTROL still falls (head_z 1.933
+below zero at 1499) — the v2 constitution's fear is confirmed
+unfounded on this leg: locks never do the muscles' job. (4) (d) NO
+PUMP FAIL as named: max |w| 13 817 rad/s, KE 16.8 kJ over the 8000 —
+measured across the early collapse the number is debris-class, not
+standing-class, but with (b) already red the distinction is moot. (5)
+Net law: **the constitution was half right — locks as implemented are
+toxic, but NOT because they make STAND vacuous: something in the lock
+machinery (the bilateral equality rows in the direct K solve fighting
+the motor rows? the BETA=0.2 position-pass lock stabilization pumping
+the chain it corrects? both?) breaks the standing frame faster than
+the leak does.** Successors (dependency order): locks-on forensics —
+where does the locks-ON frame fall first (same joint autopsy,
+locks ON), and a position-pass A/B (lock rows in the velocity solve
+ONLY vs position-pass ONLY vs both) — the toxic component, one run
+each; then the fix membrane for the component, not the flag.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
