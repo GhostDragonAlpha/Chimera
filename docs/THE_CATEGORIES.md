@@ -1399,6 +1399,35 @@ it recover or fall: an impulse command row, derived bound) or the GPU
 solve (Barnes-Hut lane) so the feed runs at realtime; v3a (the ground
 loop) remains the physics successor.
 
+**STANDING DEMO v2 VERDICT 2026-08-08 (the PUSH verb — derived
+step-threshold impulse J = factor * m * omega0 * margin at the sternum
+over one pendulum timescale, PUSH 0.5x / SHOVE 2x, live):** the membrane
+STANDS, and its falsifiers fired twice first and taught twice. (a)
+IMPULSE FIDELITY PASS: COM velocity over the push window +0.271 m/s vs
+the derived J/m = 0.248 (+9%, gravity and the buckle leak are the only
+thieves) — the impulse becomes COM motion, the command channel is not
+decoration. (b) SERVO RESISTANCE PASS: the same push with muscles ON vs
+CUT, each against its own unpushed baseline (the battery's CONTROL
+idiom): max |comx deviation| 0.0636 m vs 0.1679 m — the servo absorbs
+~62% of the excursion; "indistinguishable" was the falsifier and it did
+not fire. (c) FLAGS PASS: [PUSHING] rides the frame for exactly the
+derived window. The two findings the falsifiers bought, recorded: (i)
+the derivation has a DOMAIN — issued into the collapsed frame it read
+the h-clamp as h=1e-6 and returned a 17.7 MN force (the lie); the
+membrane now REFUSES outside the standing domain and logs it ("PUSH
+REFUSED at tick 895: frame not standing (com_z=-1.052 m)") — a refused
+push is honest data; (ii) the force window's count ran down BEFORE the
+step, so a 1-tick push was fully zeroed before the solver saw it — the
+count runs down after the step now. Plus a third, from the feed: (iii)
+a 256-deep frame queue let the faster muscles-cut run put the viewer
+~800 ticks behind the sim, so "push at tick 96" landed at tick 895;
+a live feed now carries the NEWEST frame only (maxsize=1, producer
+evicts) — live means latest, not buffered. Successors (dependency
+order): DEMO v3 — the push-recover experiment as a game (shove the
+frame past its threshold, give it a step verb, score the recovery) —
+needs v3a (the ground loop) for a frame that can actually recover; or
+the GPU solve (the Barnes-Hut lane) so the feed runs at realtime.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

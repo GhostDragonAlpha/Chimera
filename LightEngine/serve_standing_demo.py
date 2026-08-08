@@ -1,23 +1,27 @@
-"""theStandingHuman DEMO v1 -- the LIVE feed (Lane D5).
+"""theStandingHuman DEMO v1+v2 -- the LIVE feed, now with the push verb.
 
-RULE 0 -- STATEMENT: the same physics the battery ran can be watched AS IT
-IS COMPUTED, and the viewer's action changes it live: a local feed (sim in
-a thread, websocket broadcast) drives the v0 player at the measured solve
-rate, and a "cut muscles" button press visibly deepens the fall -- the
-first interactive membrane.
+RULE 0 -- STATEMENT (v2, the push): a derived push is a perturbation the
+muscle servo measurably RESISTS, and the command channel delivers it
+faithfully: a shove whose impulse is the derived STEP THRESHOLD (omega0 *
+margin * m at the sternum, over one pendulum timescale) produces the
+derived COM velocity change when nothing fights it, and a visibly smaller
+excursion when the muscles are on.
 
 PREDICTION (named before the run):
-  (a) the stream sustains >= 100 sim-ticks/s over the probe window
-      (measured 116 ticks/s solo, 2026-08-08);
-  (b) with no commands, the live head_z at tick T matches the baked MAIN
-      export at the same tick to 1e-9 (same deterministic trajectory,
-      verified bitwise in the controller lane);
-  (c) a cut at tick ~250 leaves head_z at tick 850 at least 0.1 m BELOW
-      the baked MAIN at tick 850 -- the viewer's action has real effect.
+  (a) IMPULSE FIDELITY: muscles cut, then pushed: the COM gains
+      |dv| = J/m = 0.5 * omega0 * margin to within 25% (gravity and the
+      mid-buckle leak are the only thieves);
+  (b) SERVO RESISTANCE: the same push with muscles on vs muscles cut:
+      the 500-tick COM-x excursion is SMALLER with muscles on -- any
+      positive margin; "indistinguishable" falsifies the servo;
+  (c) the flags channel shows [PUSHING] for exactly the derived window.
 
-FALSIFIERS: (a) fails -> the live membrane cannot sustain the rate;
-(b) fails -> the live loop is not the battery's physics; (c) fails ->
-the button is decoration.  Any firing -> record, don't patch.
+FALSIFIERS: the push moves nothing (command decoration); muscles-on and
+muscles-off excursions are indistinguishable (servo decoration).  Either
+fires -> record, don't patch.
+
+v1 membrane (the feed itself) and its verdict: docs/THE_CATEGORIES.md,
+STANDING DEMO v1 VERDICT 2026-08-08.
 
 Usage:
     PYTHONPATH=E:/PythonChimera python LightEngine/serve_standing_demo.py
@@ -37,7 +41,9 @@ import time
 import numpy as np
 
 from LightEngine.kinematic import build_spec, transforms
-from LightEngine.kinematic.dynamics import center_of_mass, init_state, step
+from LightEngine.kinematic.dynamics import (
+    GRAVITY_MPS2, center_of_mass, init_state, step,
+)
 from LightEngine.kinematic.muscle_controller import MuscleController
 from LightEngine.build_standing_demo import (
     DEMO_SAMPLE_EVERY, _region, load_three_bridged,
@@ -48,7 +54,11 @@ HOST = "127.0.0.1"   # loopback only -- bind-guard law
 PORT = 8765
 
 CMDQ: queue.Queue[str] = queue.Queue()
-FRAMEQ: queue.Queue[bytes] = queue.Queue(maxsize=256)
+# A live feed carries the NEWEST state, never a backlog: maxsize=1 and the
+# producer evicts the stale frame.  Measured 2026-08-08: a 256-deep queue
+# let a faster (muscles-cut) run put the viewer ~800 ticks behind the sim,
+# so a "push at tick 96" landed at tick 895 -- into the collapsed frame.
+FRAMEQ: queue.Queue[bytes] = queue.Queue(maxsize=1)
 CLIENTS: set = set()
 
 
@@ -70,18 +80,64 @@ def _endpoints(spec, state):
     return d
 
 
+def _push_force(spec, state, factor: float):
+    """The derived push (Lane D6 / DEMO v2): (force vector, ticks) or None.
+
+    The STEP THRESHOLD of balance biomechanics, derived from the live support
+    geometry at push time -- no number is chosen:
+      omega0 = sqrt(g / h_com)     inverted-pendulum eigenfrequency
+      margin = max(polygon x) - com_x   forward margin to the toe edge
+      v*     = omega0 * margin     COM velocity that carries the pendulum
+                                   to the polygon edge (the step threshold)
+      J      = factor * m * v*     0.5 = sub-threshold, 2.0 = super-threshold
+      dt_push = 1 / omega0         the push acts over ONE natural timescale
+                                   of the body
+      F      = J / dt_push, +x on the STERNUM
+
+    DOMAIN: the pendulum model exists only for the STANDING frame.  Outside
+    it (COM at/below the support plane, or COM past the toe edge) the
+    derivation has no meaning -- measured 2026-08-08: a push issued into the
+    collapsed frame read h = clamp(1e-6) -> omega0 = 3 130 rad/s -> a
+    17.7 MN lie.  The membrane REFUSES; a refused push is honest data.
+    """
+    m = float(np.sum(state["mass"]))
+    com = center_of_mass(spec, state)
+    h = float(com[2])
+    poly_x = []
+    for rec in state["contact_records"]:
+        li = rec["link_idx"]
+        R = transforms.to_matrix(state["quat"][li])
+        p = state["pos"][li] + R @ rec["offset_local"]
+        poly_x.append(float(p[0]))
+    margin = max(poly_x) - float(com[0])
+    if h <= 0.0 or margin <= 0.0:
+        return None
+    omega0 = (GRAVITY_MPS2 / h) ** 0.5
+    v_star = omega0 * margin
+    dt_push = 1.0 / omega0
+    ticks = max(1, round(dt_push / DT))
+    F = factor * m * v_star / (ticks * DT)
+    return np.array([F, 0.0, 0.0], dtype=np.float64), ticks
+
+
 def sim_loop():
     spec = build_spec(1.80, 80.0)
 
     def fresh():
         state = init_state(spec)
         state["rotation_locks"] = False
+        state["ext_force"] = np.zeros((len(state["link_names"]), 3),
+                                      dtype=np.float64)
+        state["ext_torque"] = np.zeros((len(state["link_names"]), 3),
+                                       dtype=np.float64)
         return state, MuscleController(spec, state)
 
     state, ctrl = fresh()
     skull = state["name_to_idx"]["skull"]
+    sternum = state["name_to_idx"]["sternum"]
     tick = 0
     n_links = len(state["link_names"])
+    push_remaining = 0
     t0 = time.time()
     while True:
         # commands from the page
@@ -94,26 +150,58 @@ def sim_loop():
                 elif cmd == "reset":
                     state, ctrl = fresh()
                     skull = state["name_to_idx"]["skull"]
+                    sternum = state["name_to_idx"]["sternum"]
                     tick = 0
+                    push_remaining = 0
                     t0 = time.time()
                     print("[sim] reset", flush=True)
+                elif cmd in ("push", "shove"):
+                    factor = 0.5 if cmd == "push" else 2.0
+                    derived = _push_force(spec, state, factor)
+                    if derived is None:
+                        com_now = center_of_mass(spec, state)
+                        print(f"[sim] {cmd.upper()} REFUSED at tick {tick}: "
+                              f"frame not standing (com_z={com_now[2]:.3f} m)",
+                              flush=True)
+                    else:
+                        F, ticks = derived
+                        state["ext_force"][:] = 0.0
+                        state["ext_force"][sternum] = F
+                        push_remaining = ticks
+                        print(f"[sim] {cmd.upper()} at tick {tick}: "
+                              f"|F|={F[0]:.1f} N for {ticks} ticks "
+                              f"(J={F[0]*ticks*DT:.1f} N s)", flush=True)
         except queue.Empty:
             pass
 
         ctrl.apply(state)
         step(spec, state, DT, n_proj_iters=20)
+        # The push window counts DOWN AFTER the step that used the force --
+        # measured 2026-08-08: decrementing before the step zeroed a 1-tick
+        # push before the solver ever saw it (the whole push was a no-op).
+        if push_remaining > 0:
+            push_remaining -= 1
+            if push_remaining == 0:
+                state["ext_force"][:] = 0.0
         if tick % DEMO_SAMPLE_EVERY == 0:
             seg = _endpoints(spec, state)
             com = center_of_mass(spec, state)
             head_z = float(state["pos"][skull][2])
-            flags = 1 if ctrl.enabled else 0
+            flags = (1 if ctrl.enabled else 0) | (2 if push_remaining else 0)
             payload = struct.pack("<IIf", tick, flags, head_z) \
                 + seg.astype("<f4").tobytes() \
                 + np.asarray(com, dtype="<f4").tobytes()
             try:
                 FRAMEQ.put_nowait(payload)
             except queue.Full:
-                pass  # slow client: drop, never block the physics
+                try:
+                    FRAMEQ.get_nowait()   # evict the stale frame
+                except queue.Empty:
+                    pass
+                try:
+                    FRAMEQ.put_nowait(payload)
+                except queue.Full:
+                    pass
         tick += 1
         if tick % 2000 == 0:
             rate = tick / (time.time() - t0)
@@ -254,6 +342,8 @@ ws.onclose = () => { el('status').textContent = 'DISCONNECTED -- is the server r
 const el = id => document.getElementById(id);
 el('btnCut').onclick = () => ws.send('cut');
 el('btnReset').onclick = () => ws.send('reset');
+el('btnPush').onclick = () => ws.send('push');
+el('btnShove').onclick = () => ws.send('shove');
 
 function loop() {
   requestAnimationFrame(loop);
@@ -278,10 +368,11 @@ function loop() {
       applyCamera();
     }
     const cut = (curF.flags & 1) === 0 ? '  [MUSCLES CUT]' : '';
+    const pushing = (curF.flags & 2) ? '  [PUSHING]' : '';
     el('hud').textContent =
       `LIVE  tick ${curF.tick}   ${tpsEMA.toFixed(0)} ticks/s` +
       `  (${(tpsEMA / 1000).toFixed(2)}x realtime, honest slow motion)` +
-      `   head z ${curF.headz.toFixed(2)} m${cut}`;
+      `   head z ${curF.headz.toFixed(2)} m${cut}${pushing}`;
     window.__live = { tick: curF.tick, headz: curF.headz, tps: tpsEMA,
                       cut: (curF.flags & 1) === 0 };
     // render-side telemetry for the probe (module scope is unreachable)
@@ -328,6 +419,8 @@ _LIVE_HTML = """<!DOCTYPE html>
 <div id="view"></div>
 <div id="ui">
   <button id="btnCut">CUT MUSCLES</button>
+  <button id="btnPush">PUSH</button>
+  <button id="btnShove">SHOVE</button>
   <button id="btnReset">reset</button>
   <div id="hud">connecting...</div>
   <div id="status">connecting...</div>
@@ -397,7 +490,7 @@ async def _async_main():
             await ws.send(init_msg)
             async for msg in ws:
                 cmd = str(msg).strip().lower()
-                if cmd in ("cut", "reset"):
+                if cmd in ("cut", "reset", "push", "shove"):
                     CMDQ.put(cmd)
         finally:
             CLIENTS.discard(ws)
