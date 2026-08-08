@@ -2295,6 +2295,25 @@ to name WHERE the chain breaks — command (target small), impulse
 (lambda small vs needed), or tracking (w_rel achieved yet error
 grows — geometry).
 
+**TOE-CHAIN TIME SERIES 2026-08-08 (probe .tmp/probe_toe_chain.py,
+row 102 metatarsals_R, ticks 100-1300):** IMPULSE — the chain breaks
+at delivery. The command is ALIVE and correct (target -0.153 ->
+-0.649 rad/s, tracking the growing error exactly as the servo law
+prescribes); the tracking bar is not the issue; but the solved
+lambda sits at ~30% of lmax through the creep while the achieved
+w_rel goes the WRONG WAY (+0.41 vs target -0.31 @800; |w_rel -
+target| mean 1.20 rad/s). The direct solve satisfies its equality
+rows exactly, so the overwrite lands AFTER the solve: the post-solve
+LIGAMENT SWEEP rewrites the foot's velocities with unlimited impulse
+(1 313 N of taut tension vs the toe muscle's 2.25 N m — 30:1). The
+toe servo never lost; it was overruled after the verdict. This
+convicts the same row as the NON-VACUOUS failure — the unlimited
+ligament tension — from the opposite direction: it makes the held
+stand too WEAK at the toe (muscles overruled) and the cut body too
+STRONG (frame held without muscles). The ligament force-limit
+membrane (clamp the row to f_max * dt, f_max = g * heavier subtree,
+already derived in the table) is hereby the named fix for BOTH.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
