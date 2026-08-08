@@ -456,3 +456,28 @@ saga-proven RIGID row with spring-paced recovery (run 4's brake,
 capped at one slop per tick -- cannot launch either).  Both
 zones' idioms are already proven in this kernel; the zone
 boundary is the measured pad thickness.
+RUN 13 OUTCOME (2026-08-08): **LIFT is closed; the velocity target
+trades launch for bounce; the rigid zone re-imports the gate
+disease**.  Candidate (a) spring-only: NO SINK PASS -0.006 m,
+NO TUNNEL PASS -0.0965 m (the spring row arrests AND restores --
+(d2) PASS -0.0021 m), but REST FAIL 43.5 J: the bias target
+dt*F/m_eff overshoots equilibrium every tick (drive v to +g*dt,
+rise, F drops, fall back -- a limit cycle, not a clamp) and (d1)
+hair-FAIL -0.0516 m.  Candidate (b) zoned: (d2) PASS -0.0113 m
+but NO TUNNEL FAIL -0.2535 m and (d1) FAIL -0.1228 m -- below pad
+bottom the rigid row EJECTS under crush (the runs 4-7 gate
+disease, unchanged); and the 2e8 segment remains poison in every
+form tried (pre-solve pump, velocity launch, force launch).
+READING THE TABLE: the pad zone's F never needs the rigid segment
+in play (at pad bottom F ~ 1.7 kN x 5 points = 13x BW; 25x-BW
+crush data is the atlas's honest UNKNOWN).  What REST needs is a
+spring whose impulse does NOT depend on velocity: at equilibrium
+F = m*g exactly cancels gravity every tick -- no target to
+overshoot, no bounce.  RUN 14 MEMBRANE NAMED: **SPRING AS
+IN-SOLVE FORCE SOURCE** -- the pad spring row applies its exact
+impulse dt*F(d) inside the attempt loop (saturated-row idiom:
+applied NOW, row leaves the set, next attempt's rhs sees it --
+joints and contacts solve AGAINST the spring force in the same
+tick), bilinear F continued below the pad (no 2e8 segment at
+all); the rigid zone is retired to the atlas as UNKNOWN pending
+real 5-25x BW data.
