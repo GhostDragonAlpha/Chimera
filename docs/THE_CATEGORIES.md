@@ -1692,6 +1692,32 @@ link's total normal impulse this tick — derived from rigid-contact
 mechanics, no number chosen), then the forensics probe (slip must go
 absent) and the v2 battery (the simmer pump must stay dead).
 
+**PIVOT PROBE VERDICT 2026-08-08 (probe .tmp/probe_pivot.py, hybrid,
+ticks 100-300):** FALSIFIED on two of three legs — and the falsification
+kills BOTH the load-concentration theory and the forensics' slip
+reading. (1) (a) PASS: loaded pivots HOLD — median drift 5.36 mm vs
+the 13.1 mm bar (max 73 mm). The points the solver charges do not
+slide. (2) (c) FAIL decisively: the zero-bound class is 1 605 HOVER
+vs 37 in-row — the anatomical sole is NOT flat (heel/ball/toes load,
+arch points hover; 2-3 load zones per foot is reality, not a solver
+degeneracy). The '2 of 8 points charged' reading was anatomy, not
+concentration. (3) (b) FAIL: in-row unloaded points are nearly
+nonexistent (n=37). There is no pool of touching-but-uncharged points
+for a pooled bound to empower — v4-as-pooling would change ~2% of
+contact-ticks. (4) The fatal re-read: the forensics' 271 mm 'drift'
+was measured across ALL sole points including anatomically airborne
+ones swinging through arcs — contaminated. Pivots hold in xy, the COM
+converges on the polygon centroid (forensics (1)), no saturation —
+and the head still sinks 0.18 m in 167 ticks. A body sinking STRAIGHT
+DOWN over held feet is not a skate and not a slip: it is either a
+posture fold (joints flexing away from the servo reference without
+clamping) or a trapdoor (the contact plane itself creeps -z). (5) Net
+law: **the ground loop may be innocent; the fall's next candidate
+address is vertical, not tangential — pivot z-creep vs joint fold,
+one probe decides.** Successors (dependency order): the sink probe
+(per-tick pivot z + per-joint max |theta_err|, ticks 100-267); only
+then a membrane touching the solve.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
