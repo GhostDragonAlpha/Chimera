@@ -2372,6 +2372,22 @@ taut population clusters at the ankle/midfoot — 25 taut, 1 313 N,
 applied post-solve every tick the same way the toe-chain probe
 caught). Successor named: ankle ligament-moment budget.
 
+**ANKLE LIGAMENT-MOMENT BUDGET, CLEAN 2026-08-08 (probe
+.tmp/probe_ankle_lig_moment.py, ticks 100-800):** only THREE ligaments
+touch the foot links at all (ankle_posterior, ankle_anterior,
+foot_arch_plantar) and every one is SLACK in MAIN (0.0000 N m). The
+taut population of CONTROL lives up the chain — knee, hip, spine.
+Every writer at the foot is now exonerated: ligaments slack, ground
+loop balanced, servo wins its local budget, nobody saturates. The
+toe-chain overwrite mechanism re-aims one joint up: taut ligaments
+at the KNEE/HIP act on the TIBIA (the ankle joint's parent), and a
+post-solve yank on the parent invalidates the ankle servo's solved
+command exactly the way the foot's sweep invalidated the toe's.
+Successor named: ankle-chain time series (row 101: target, lambda,
+achieved w_rel, error) + a full taut-ligament audit on the leg links
+in MAIN — does the ankle's w_rel track its command, and who touches
+the tibia post-solve?
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
