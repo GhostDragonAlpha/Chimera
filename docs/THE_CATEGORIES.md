@@ -2324,7 +2324,14 @@ already measures (com_inside_poly) is the stance-width channel's
 other face: the polygon widens with the feet, so stance width
 trades head height for stability margin — the trade itself is the
 control law's territory (datum 4's energy efficiency picks where
-on the trade to sit).
+on the trade to sit).  LANDED 2026-08-08 (demo lane, report first):
+demo_kinematic_v2.main prints the datum-8 stance-aware ceiling
+head_z0 - (L_leg - sqrt(L_leg^2 - d_lat^2)), d_lat = per-leg
+lateral foot offset beyond hip width, both widths read from the
+spec's own geometry (contact centers, femur prox points).  At the
+bind stance (feet 0.241 m vs hips 0.324 m) d_lat = 0 — the ceiling
+equals the bind height, the honest answer for a narrow stance; the
+report earns its keep when the feet go wide (squat ladder, gait).
 
 **OPERATOR DATUM 9, 2026-08-08 (THE HUMAN terminal, the
 developmental order — recorded verbatim):** "A human learns to
@@ -2657,6 +2664,59 @@ the fall tick moves past 1 429 or disappears, tracking restores.
 FALSIFIER: the fall tick stays at ~1 416-1 429 WITH forefoot
 contacts — the fold is downstream after all; re-aim at the servo
 command membrane (the command issued for a falling body).
+
+**FOREFOOT CONTACT SPEC, FALSIFIED AT (a) 2026-08-08 — THE TOE
+MUSCLE IS NOT A COLUMN (probe .tmp/probe_forefoot.py, saga harness
+and ruler, CONTACT_LINKS=1, hybrid, ghost-free, MAIN 8 000 +
+CONTROL 1 500):** the membrane landed clean — the spec change is
+small and anatomic: skeleton_structures._foot_projection_joints
+carries the joint key with each support point, skeleton_spec's new
+_CONTACT_POINT_LINK maps ankle/tarsal -> tarsals, metatarsal_base/
+mtp -> metatarsals, forefoot -> forefoot, and dynamics.init_state
+attaches each point to cp.get("link", tarsals) — build_spec(...,
+contact_links=False) keeps the legacy default bit-identical (pytest
+210/210 on the change tree).  The ball of the foot (mtp @ +0.126 m)
+and the toe tip (+0.18 m) now ride the links the toe servo actually
+rotates.  Two interactions audited and closed BEFORE the verdict
+run, both measured: (1) the servo's balanced-lean reference was
+derived "child link carries contacts" — under the anatomic contact
+set that hands the ankle strategy to the tarsal/mtp joints too, so
+muscle_controller's offset loop is guarded to the PIVOT (child
+carries contacts AND parent does not); verified bit-identical under
+legacy (offsets -0.067507/-0.067506 rad on exactly tibia->tarsals
+L/R) and ankle-only with identical values under anatomic.  (2) the
+actuator table (muscles.py's supported-side sizing also reads the
+contact set) is proven IDENTICAL under both specs — every foot
+joint's parent component carries the whole other foot, so the
+contact count never flips a foot joint's supported side (m_sub, kp,
+kd, omega_n, torque caps row-for-row equal).  THEN THE RUN: (b)
+NO-SIMMER PASS (KE max 2 412 J, zero samples >= 1e4 — the ground
+loop does not pump).  (a) MAIN FAILS AT TICK 386 — not the
+invariant 1 416-1 429, EARLIER, so the saga falsifier did not
+fire: the membrane moved the fall, against the frame.  (c) CONTROL
+FAILS — crumpled before the cut (head -1.354 m @1100).  The trace
+is the verdict's payload: toe fold 2.85 rad by tick 400 (a FLUNG
+link — the first-order servo never commands such a fold), ankle
+tracking 28.6 rad/s (legacy hybrid 0.3491), vmax 1 387 m/s: the
+forefoot WHIPS.  The physics: five contact springs per foot at
+M*g/n = 157 N/point now press a chain whose mtp joint caps at
+3.6 N m — ~28 N at the metatarsal-head lever — so the toe column
+buckles on contact, the 1.18 kg link rattles under springs sized
+for body weight, and the servo is back-driven off its target.  The
+legacy spec hid all of this by tying the forefoot load path to the
+ankle's 75 N m through the tarsals attachment.  **The law: a
+contact point can only bear what the joint chain behind it can
+hold; in the real foot the ball bears half the body through the
+PASSIVE ARCH (plantar fascia, long plantar ligament — ligaments,
+not muscle), a membrane this spec does not have.  The toe servo
+was never the missing lever; the ligamentous arch is.**  Successor
+named: the PLANTAR ARCH membrane — rope-derived ligaments across
+the tarsal/mtp joints sized to the arch's measured share of the
+standing load, so the forefoot contact column stands on passive
+tissue (as anatomy does) and the toe servo goes back to its real
+job (the datum-2 throttle, not load-bearing).  The contact_links
+flag stays in the tree, default OFF, as the membrane's measured
+instrument — the arch probe runs on it.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

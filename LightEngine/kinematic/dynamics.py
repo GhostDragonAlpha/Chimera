@@ -376,17 +376,19 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
             "name": lig["name"],
         })
 
-    # Contact records: attach all foot contact points to the tarsals link.
-    # This is a first approximation; a later lane may distribute them across
-    # tarsals/metatarsals/forefoot.
+    # Contact records: each point attaches to its spec-assigned link when
+    # the record carries "link" (anatomic mode), otherwise to the tarsals
+    # link (legacy default).  The anatomic mode is the forefoot-contact
+    # membrane: points ahead of the MTP joint ride the metatarsals/forefoot
+    # links so a toe fold presses them into the ground instead of air.
     k_contact, c_contact = _contact_constants(spec)
     contact_records: list[dict[str, Any]] = []
     for side in ("L", "R"):
-        link_name = f"tarsals_{side}"
-        if link_name not in name_to_idx:
-            continue
-        link_idx = name_to_idx[link_name]
         for cp in spec["contacts"][side]:
+            link_name = cp.get("link", f"tarsals_{side}")
+            if link_name not in name_to_idx:
+                continue
+            link_idx = name_to_idx[link_name]
             p_world_m = np.asarray(cp["point_m"], dtype=np.float64).reshape(3)
             # Compute local offset at zero pose (state is already built).
             R = transforms.to_matrix(quat[link_idx])

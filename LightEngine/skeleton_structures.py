@@ -459,15 +459,14 @@ def _generate_rope(
     return pts + jitter
 
 
-def _foot_projection_points(height_lu: float) -> dict[str, list[tuple[float, float]]]:
-    """Return projected (x, y) foot contact points for each foot.
+def _foot_projection_joints(height_lu: float) -> dict[str, list[tuple[str, float, float]]]:
+    """Return projected (joint_key, x, y) foot contact points for each foot.
 
-    The plate only needs to cover the actual foot contact area.  The points
-    are the scaled joint centers of the foot chain projected onto the ground
-    plane (z = 0).
+    Same points as _foot_projection_points() but carrying the joint key, so
+    the contact spec can assign each point to its anatomical link.
     """
     j = _joint_dict(height_lu)
-    feet: dict[str, list[tuple[float, float]]] = {"L": [], "R": []}
+    feet: dict[str, list[tuple[str, float, float]]] = {"L": [], "R": []}
     for side in ("L", "R"):
         for key in (
             f"ankle_{side}",
@@ -477,8 +476,19 @@ def _foot_projection_points(height_lu: float) -> dict[str, list[tuple[float, flo
             f"forefoot_{side}",
         ):
             p = j[key]
-            feet[side].append((float(p[0]), float(p[1])))
+            feet[side].append((key, float(p[0]), float(p[1])))
     return feet
+
+
+def _foot_projection_points(height_lu: float) -> dict[str, list[tuple[float, float]]]:
+    """Return projected (x, y) foot contact points for each foot.
+
+    The plate only needs to cover the actual foot contact area.  The points
+    are the scaled joint centers of the foot chain projected onto the ground
+    plane (z = 0).
+    """
+    keyed = _foot_projection_joints(height_lu)
+    return {side: [(x, y) for _key, x, y in pts] for side, pts in keyed.items()}
 
 
 def _generate_foot_pads(

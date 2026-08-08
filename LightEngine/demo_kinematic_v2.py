@@ -150,7 +150,11 @@ def _run_v2(spec, state, label, controller, relax_muscles_at=None):
 
 def main():
     which = sys.argv[1] if len(sys.argv) > 1 else "both"
-    spec = build_spec(1.80, 80.0)
+    # CONTACT_LINKS=1 is the forefoot-contact membrane: support points ahead
+    # of the MTP joint attach to the metatarsals/forefoot links instead of
+    # tarsals, so the toe fold presses its own contacts into the ground.
+    contact_links = os.environ.get("CONTACT_LINKS", "0") == "1"
+    spec = build_spec(1.80, 80.0, contact_links=contact_links)
 
     # v3c A/B: CONTACTS_IN_SOLVE=1 moves the ground-contact rows into the
     # direct solve (default off: the post-solve sweep).  Same six meters,
@@ -227,6 +231,32 @@ def main():
         print(f"[{m['label']}] datum-6 head height: window max "
               f"{m['head_z_max']:.3f} m vs bind {m['head_z0']:.3f} m "
               f"({100.0 * m['head_z_max'] / m['head_z0']:.1f}%)")
+    # OPERATOR DATUM 8 (THE HUMAN terminal, 2026-08-08): maximum head height
+    # is a product of STANCE WIDTH -- the legs are struts, so lateral foot
+    # offset beyond hip width costs vertical reach, and standing is a RANGE
+    # from squat to full extension, not a point.  A REPORT, not a gate.  The
+    # stance-aware ceiling is derived from the leg-as-strut geometry:
+    # ceiling = head_z0 - (L_leg - sqrt(L_leg^2 - d_lat^2)), with d_lat the
+    # per-leg lateral offset of foot center beyond the hip center.  No
+    # tuning: L_leg is the scaling table's femur + tibia fractions, the
+    # stance and hip widths come from the spec's own geometry.
+    leg_m = (0.245 + 0.25) * 1.80  # femur + tibia length fractions (table)
+    foot_c = {
+        side: float(np.mean([cp["point_m"][1] for cp in spec["contacts"][side]]))
+        for side in ("L", "R")
+    }
+    stance_w = abs(foot_c["L"] - foot_c["R"])
+    hip_w = abs(float(spec["links"]["femur_L"]["prox_m"][1])
+                - float(spec["links"]["femur_R"]["prox_m"][1]))
+    d_lat = max(0.0, (stance_w - hip_w) / 2.0)
+    drop = leg_m - math.sqrt(max(0.0, leg_m * leg_m - d_lat * d_lat))
+    for m in (main_metrics, control_metrics):
+        if m is None:
+            continue
+        ceiling = m["head_z0"] - drop
+        print(f"[{m['label']}] datum-8 stance-aware ceiling: {ceiling:.3f} m "
+              f"(stance {stance_w:.3f} m vs hips {hip_w:.3f} m), achieved "
+              f"{100.0 * m['head_z_max'] / ceiling:.1f}%")
     failed = [k for k, ok in verdict.items() if not ok]
     print(f"\nVERDICT: {'FALSIFIED: ' + ', '.join(failed) if failed else 'STANDS'}")
     return verdict

@@ -85,15 +85,24 @@ class MuscleController:
 
         # Balanced reference: the rigid ankle lean that puts the COM over the
         # support centroid (module docstring: the derivation).  One offset
-        # per actuator, nonzero only for joints whose CHILD LINK carries the
-        # ground contacts (the ankles): the lean pivots the body there.
+        # per actuator, nonzero only for the joint that PIVOTS the body on
+        # the ground -- the ankle.  Derived membership test: the child link
+        # carries ground contacts AND the parent link does not (the pivot is
+        # where the contact-carrying chain meets the free chain).  The plain
+        # "child carries contacts" test is WRONG under the anatomic contact
+        # spec (CONTACT_LINKS=1): there the tarsal/mtp joints also carry
+        # contacts, and handing them the lean distributes the ankle strategy
+        # across the foot joints -- not the derived design.  Under the legacy
+        # spec the parent test changes nothing (tibia never carries
+        # contacts), so legacy stays bit-identical.
         contact_links = {int(r["link_idx"]) for r in state["contact_records"]}
         centroid = _support_centroid_xy(state)
         com = _com_xy(state)
         offset_vec = centroid - com
         for a in self.actuators:
             a["target_offset"] = 0.0
-            if a["child_idx"] not in contact_links:
+            if a["child_idx"] not in contact_links \
+                    or a["parent_idx"] in contact_links:
                 continue
             q_p = state["quat"][a["parent_idx"]]
             axis_w = transforms.rotate(q_p, a["axis_local_parent"])

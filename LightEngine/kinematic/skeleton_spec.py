@@ -439,27 +439,50 @@ def _build_ligament_specs(links: dict[str, dict[str, Any]],
     return ligaments
 
 
-def _build_contact_specs(height_lu: float, lam: float) -> dict[str, list[dict[str, Any]]]:
+# Anatomic ownership of the foot support points: which link each projected
+# joint center belongs to.  DERIVED-GEOMETRY from the foot-chain topology
+# (tarsals = ankle->tarsal, metatarsals = tarsal->mtp, forefoot = mtp->toe
+# tip).  The legacy default attaches every point to tarsals; the anatomic
+# mode lets the toe fold press its own contacts into the ground.
+_CONTACT_POINT_LINK = {
+    "ankle": "tarsals",
+    "tarsal": "tarsals",
+    "metatarsal_base": "metatarsals",
+    "mtp": "metatarsals",
+    "forefoot": "forefoot",
+}
+
+
+def _build_contact_specs(height_lu: float, lam: float,
+                         contact_links: bool = False) -> dict[str, list[dict[str, Any]]]:
     """Return foot support polygon points per side.
 
     DERIVED-GEOMETRY: points are the scaled joint centers projected to z=0,
     exactly as produced by LightEngine/skeleton_structures._foot_projection_points().
+    When contact_links is True each record also carries "link", the anatomic
+    owner of that point per _CONTACT_POINT_LINK (default False = legacy, all
+    points attach to the tarsals link downstream).
     """
-    points = skeleton_structures._foot_projection_points(height_lu)
+    points = skeleton_structures._foot_projection_joints(height_lu)
     contacts: dict[str, list[dict[str, Any]]] = {}
     for side in ("L", "R"):
         contacts[side] = []
-        for x, y in points[side]:
+        for key, x, y in points[side]:
             p_lu = np.array([float(x), float(y), 0.0], dtype=np.float64)
             p_m = p_lu * lam
-            contacts[side].append({"point_lu": p_lu, "point_m": p_m})
+            rec: dict[str, Any] = {"point_lu": p_lu, "point_m": p_m}
+            if contact_links:
+                stem = key[: -len(f"_{side}")]
+                rec["link"] = f"{_CONTACT_POINT_LINK[stem]}_{side}"
+            contacts[side].append(rec)
     return contacts
 
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
-def build_spec(height_m: float = 1.80, mass_kg: float = 80.0) -> dict[str, Any]:
+def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
+               contact_links: bool = False) -> dict[str, Any]:
     """Build and return the 77-link StandingHuman kinematic spec.
 
     Returns a dictionary with keys:
@@ -471,6 +494,10 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0) -> dict[str, Any]:
       - "height_lu": float           -- total standing height in lu.
       - "height_m": float            -- input height in meters.
       - "mass_kg": float             -- input mass in kilograms.
+
+    contact_links=False (default) is the legacy behavior: every contact
+    point attaches to the tarsals link downstream.  contact_links=True tags
+    each contact point with its anatomic owner link (_CONTACT_POINT_LINK).
     """
     table, lam, total, breakdown, rc, cand_log = skeleton_scaling.scale_skeleton(
         height_m, mass_kg
@@ -494,7 +521,7 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0) -> dict[str, Any]:
     links = _build_link_specs(instances, mass_kg, lam)
     joints = _build_joint_specs(links, lam)
     ligaments = _build_ligament_specs(links, height_lu, lam)
-    contacts = _build_contact_specs(height_lu, lam)
+    contacts = _build_contact_specs(height_lu, lam, contact_links=contact_links)
 
     # Ensure every non-root link has a joint record.
     for name, link in links.items():
