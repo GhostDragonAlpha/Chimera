@@ -215,6 +215,17 @@ def main():
                        title="STANDING HUMAN v2 -- MUSCLE BATTERY" + (
                            f" [CONTACTS IN SOLVE, friction {mode_name}]"
                            if in_solve else ""))
+    # OPERATOR DATUM 6 (THE HUMAN terminal, 2026-08-08): head height is
+    # the posture REWARD -- elevation buys environmental read, so a
+    # stander extends, it does not merely not-fall.  A REPORT, not a
+    # seventh gate: achieved max head height in the verdict window vs
+    # the bind height (the skeleton's available maximum).
+    for m in (main_metrics, control_metrics):
+        if m is None:
+            continue
+        print(f"[{m['label']}] datum-6 head height: window max "
+              f"{m['head_z_max']:.3f} m vs bind {m['head_z0']:.3f} m "
+              f"({100.0 * m['head_z_max'] / m['head_z0']:.1f}%)")
     failed = [k for k, ok in verdict.items() if not ok]
     print(f"\nVERDICT: {'FALSIFIED: ' + ', '.join(failed) if failed else 'STANDS'}")
     return verdict
