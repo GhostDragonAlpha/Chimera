@@ -2463,6 +2463,35 @@ the overwriter and the membrane is friction placement; if both
 fail, the cone rows themselves disturb the ankle and placement is
 irrelevant.
 
+**FRICTION-FORK A/B, FRICTION SWEEP CONVICTED 2026-08-08 (probe
+.tmp/probe_friction_fork.py, three forks per tick, row 101):**
+DECISIVE — same tick, n_proj_iters=20 in both: the cone-in-solve
+fork (contact_friction=1) tracks the servo target EXACTLY at every
+sampled tick (mean |w_rel - target| 0.0001 rad/s, the iters=0
+reference's class), while the running hybrid (contact_friction=2,
+friction swept post-solve) goes wrong-way at 100% of samples (mean
+error 0.3491 rad/s). Leg (c) absent on a technicality (0.0001 vs
+2x 0.0000 — the bar is meaningless at zero; the fork is the
+reference's numerical twin). The mechanism: the solve books the
+servo's foot rotation, the contact points acquire tangential
+velocity from it, and the post-solve friction sweep pins those
+points twenty times per tick — through the contact lever the
+pinning back-drives the tarsals' spin, cancelling the servo's trim
+exactly (target +0.2 -> achieved -0.2). Friction is a simultaneous
+constraint; applied after the solve it is an overwrite. THE
+MEMBRANE IS FRICTION PLACEMENT — and the derived fix is already on
+record from the v3d audit: the in-solve cone's simmer pump
+(exploded tick 7 713 on the lying frame) was convicted to the
+INTRA-TICK BOUND REVISION (bound from the current attempt's
+lambda_n, then lambda_n revised by the re-solve), whose named
+successor is the WARM-START CONE: friction rows in the direct
+solve, cone bound from the PREVIOUS TICK's normal impulse, fixed
+all tick — friction in the solve (this verdict) with no intra-tick
+revision (the v3d verdict). Successor named: contact_friction=3
+(warm-start cone), default off, then the membrane probe — ankle
+tracking restored AND 8 000-tick energy bounded AND the battery
+bars (MAIN stands, CONTROL falls, no pump, rig stability).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
