@@ -2085,6 +2085,21 @@ the system's own derived small length d_eq_m, the measured joint
 play) + proportional correction + authority clamp (the loop lets go
 beyond what the ankles can recapture — no flailing).
 
+**PASSIVE-RIGIDITY FORENSICS 1, FALSIFIED 2026-08-08 (probe
+.tmp/probe_passive_forensics.py, ghost-free CONTROL, muscles cut
+@1200):** the lock rows are NOT the excess rigidity. (b) PASS — the
+sag is carried 100% by FREE axes (tarsals 2.57 rad, metatarsals 2.55,
+femur 1.61, L5 1.24 @1499); (c) PASS — the sag is slower than the
+pendulum (head 1.312 > 0.5 m bar); but (a) FAIL — locked axes are
+not frozen (only 86.7% of joints under 0.05 rad locked error @1499,
+ankles at 0.21). The frame IS folding through its free axes like a
+closing knife — 2.5 rad at the ankle — yet the head is still at
+1.31 m, so something ELSE holds it up. The lock-row play-band
+membrane is hereby DEAD (it would have made standing worse, not
+CONTROL better — exactly what forensics are for). Successor probe
+named: ligaments (stiff from rest, k = F_max/d_eq_m, no play band)
+vs axial spin vs new furniture contacts.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
