@@ -382,3 +382,28 @@ of BOTH candidates under the run-9 EXCLUSIVE composition rule
 on disk: external/grf/standing_reference.json (5 subjects, quiet
 ankle moments -3..+5 N m, sacrum sway std, Zenodo 3819630) and
 7 CMU mocap traces (external/mocap/traces/, Vitruvian-checked).
+RUN 10 OUTCOME (2026-08-08): **the measured law is RIGHT, the
+sequential-phase integration is the pump**.  The evidence
+partitions exactly on the spring's force law vs its integration
+site.  Candidate (a) constant 212 kN/m: REST FAIL 12.8 J (stiffer
+spring, worse cross-tick fight than run 8's 7.8 J -- the fight
+scales with k), NO TUNNEL FAIL -0.1512 m, (d1) FAIL -0.0598,
+(d2) PASS.  Candidate (b) measured bilinear + rigid pad bottom:
+**ALL FOUR STRUCTURAL LEGS PASS FOR THE FIRST TIME** -- NO SINK
++0.0001 m, NO TUNNEL -0.0161 m (best ever recorded; run 4's gate
+record was -0.0901), (d1) +0.0836 m, (d2) -0.0040 m -- but REST
+FAIL 208.9 J and NO PUMP FAIL 92,984 J: the rigid segment
+(K_RIGID = 2e8) multiplies any numeric residue by an enormous
+critical-damping c and kicks the point every tick -- an energy
+pump at the solver boundary, exactly the arm the run-10 falsifier
+named.  THE LESSON: a pre-solve spring of ANY law fights the
+solve across the tick boundary; the fight scales with k.  The
+measured curve is validated as the floor's physics (4/4
+structural legs) -- what remains is the INTEGRATION SITE.
+RUN 11 MEMBRANE NAMED: **COMPLIANT-ROW FLOOR** -- the measured
+bilinear spring enters the direct velocity solve as a SOFT row
+(CFM-style compliant constraint: same K system as joints and
+motors, so no cross-phase fight is possible; soft, so it cannot
+clamp like run 9's equality rows).  The run-9 XOR lesson is
+preserved: the compliant row REPLACES both the rigid row and the
+pre-solve spring for floor endpoints -- one object, not two.
