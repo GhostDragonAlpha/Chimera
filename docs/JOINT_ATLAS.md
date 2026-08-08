@@ -524,3 +524,24 @@ ratchet, and the chain converts it to jitter.  THE FALSIFIER'S
 OWN INSTRUCTION governs the next step: measure the bounce's
 source (per-endpoint KE trace + decay curve) BEFORE naming run
 16.  Do not widen the cap; do not guess the next form.
+RUN 15 DIAGNOSTIC OUTCOME (2026-08-08, agent_logs/diag_rest_ke.
+log): **the pump is CHAIN-BLINDNESS, and it lives in the shoulder
+chain**.  Decay curve GROWS (48.7 -> 106.5 J over 2000 ticks, (a))
+-- a true pump, not a slow settle.  83% of the energy is in 5
+links: scapula_R 41 J at 3.2 m/s (an 8 kg link!), scapula_L 17 J,
+then clavicles at 5-6 m/s; (b) puts the skull at 4.2 m/s.  The
+shoulder/head links are both FLOOR-CONTACTED and LOAD-BEARING for
+the pile: the declared spring impulse dt*F(d) knows the
+penetration but not the trunk's weight pressing THROUGH the link,
+so spring and chain fight on the link's velocity and the
+oscillation grows.  Run 12's solved row was quiet (0.038 J)
+exactly because the K solve is chain-aware -- its λ distributes
+the transmitted load; it only lacked lift.  RUN 16 MEMBRANE (the
+numbers chose it): **SOLVED-OR-DECLARED REMAINDER SPRING** -- the
+spring row SOLVES its λ inside K like any unilateral contact
+(chain-consistent hold: run-12 quiet), then applies only the
+UNMET REMAINDER max(dt*F - λ, 0) (run-14 lift).  At equilibrium
+λ = dt*F -> remainder 0 -> quiet; buried: λ ~ m*g*dt << dt*F ->
+remainder lifts; chain-loaded: λ grows -> remainder shrinks ->
+the pump's feedback loop is cut.  No damping term (run 15
+falsified it).
