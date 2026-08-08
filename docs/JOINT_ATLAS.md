@@ -430,3 +430,29 @@ its impulse is BOXED at dt*F(d) using the motor-row idiom
 constraint); damping comes from the unilateral solve itself
 (plastic contact), no explicit c term -- the c = 2*sqrt(m*k)
 coefficient is what turns braking into launching.
+RUN 12 OUTCOME (2026-08-08): **the fight is DEAD -- and what
+remains is LIFT**.  REST PASS on BOTH candidates (0.075 J / 0.038
+J -- the first sub-1 J rest since the floor saga began; run 8:
+7.8 J, run 10a: 12.8, run 11a: 175.9) and NO PUMP PASS (323 J
+max).  The impulse box is proven: an in-solve row bounded by its
+own force law cannot fight and cannot launch.  But NO SINK /
+NO TUNNEL / (d1) / (d2) all FAIL at -0.33 m: the pile sinks a
+third of a meter and SLEEPS there (REST 0.04 J at -0.33 m --
+arrested, never restored).  THE MEASURED LESSON: a row with
+row_bias = 0 is a GATE -- it can only zero a point's velocity.
+The box made the arrest gradual (the spring compression), but
+nothing ever pushes back up; the pre-solve spring's recovery
+(+0.0004 m, run 8) came from its force acting regardless of
+velocity.  A spring's force must appear as an impulse DEMAND,
+not only as a bound.  SECOND LESSON: the rigid segment
+(2e8 N/m) is not a spring at all -- as a force it launches
+(F = 64 MN at 33 cm deep); bone-on-concrete is a ROW's job.
+RUN 13 MEMBRANE NAMED: **ZONED FLOOR** -- one row per point,
+its law chosen by depth zone (EXCLUSIVE by construction, the
+run-9 XOR): in the pad (d < 10.4 mm) a spring row with velocity
+target = the spring's own per-tick delta-v (bias = dt*F/m_eff,
+~0.01 m/s -- gentle, cannot launch); below pad bottom the
+saga-proven RIGID row with spring-paced recovery (run 4's brake,
+capped at one slop per tick -- cannot launch either).  Both
+zones' idioms are already proven in this kernel; the zone
+boundary is the measured pad thickness.
