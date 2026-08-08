@@ -163,8 +163,13 @@ def main():
 
     state = init_state(spec)
     # v2 constitution: the muscles, NOT the rotation locks, close the free
-    # dofs.  Locks on would make STAND trivially vacuous.
-    state["rotation_locks"] = False
+    # dofs.  (2026-08-08 correction, autopsy + bone-closure + lock-split
+    # saga: locks were NEVER vacuous -- they act only on locked axes, and
+    # CONTROL still falls on every run; the toxic component was the
+    # position-pass stabilization, not the rows.)  ROTATION_LOCKS picks
+    # the lock mode for A/B: 0=off (default), 1=legacy both, 2=velocity
+    # rows, 3=position pass, 4=Baumgarte bias rows.
+    state["rotation_locks"] = int(os.environ.get("ROTATION_LOCKS", "0"))
     if in_solve:
         state["contacts_in_solve"] = True
         state["contact_friction"] = fric_mode
@@ -182,7 +187,7 @@ def main():
     control_metrics = None
     if which == "both":
         state_c = init_state(spec)
-        state_c["rotation_locks"] = False
+        state_c["rotation_locks"] = int(os.environ.get("ROTATION_LOCKS", "0"))
         if in_solve:
             state_c["contacts_in_solve"] = True
             state_c["contact_friction"] = fric_mode
