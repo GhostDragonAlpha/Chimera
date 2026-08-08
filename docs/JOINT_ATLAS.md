@@ -545,3 +545,25 @@ UNMET REMAINDER max(dt*F - λ, 0) (run-14 lift).  At equilibrium
 remainder lifts; chain-loaded: λ grows -> remainder shrinks ->
 the pump's feedback loop is cut.  No damping term (run 15
 falsified it).
+RUN 16 OUTCOME (2026-08-08): **the remainder cuts the pump 4-7x
+but does not kill it -- REST 112.3 J (a) / 18.4 J (b), (d1)
+hair-fail both, (d2) FAIL -0.0836 on (b)**.  The remainder is
+applied post-solve, chain-blind to the NEXT tick -- the same
+disease at lower amplitude.  And the pattern across ALL runs now
+has a single explanation: EVERY force-declared form pumps (14:
+70 J, 15: 106 J, 16: 18-112 J) and concentrates in the SHOULDER
+chain's LIGHT links (clavicle 0.13 kg at 5-6 m/s); EVERY solved-
+row form is quiet (12: 0.038 J) but cannot lift.  THE NUMBER
+THAT EXPLAINS IT: omega*dt = dt*sqrt(k/m_eff) = 10.6 for a
+0.13 kg clavicle at k = 212 kN/m -- an explicit spring is
+numerically UNSTABLE past omega*dt > 2; the K-solve rows are
+implicit (stable).  The pump is not a physics error, it is an
+INTEGRATION STABILITY error on light links.  RUN 17 MEMBRANE:
+**IMPLICIT SPRING ROW (the true CFM/ERP form)** -- derived, not
+tuned: lambda = dt*F(d') with d' = d - dt*v_n' linearized gives
+row gamma = 1/(dt^2*k) on the K diagonal and bias = d/dt.  The
+diagonal softening makes the row stable for ALL link masses
+(light links get a weak row by construction); the bias removes
+penetration (the lift); the implicit form is dissipative at high
+omega*dt (the REST).  This is what MuJoCo/ODE/PhysX do -- and
+the 1-DOF probe verifies it BEFORE the kernel change.
