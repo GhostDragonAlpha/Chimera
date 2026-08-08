@@ -2516,6 +2516,31 @@ revision (the v3d verdict). Successor named: contact_friction=3
 tracking restored AND 8 000-tick energy bounded AND the battery
 bars (MAIN stands, CONTROL falls, no pump, rig stability).
 
+**WARM-START CONE, FALSIFIED AT (a) 2026-08-08 (probe
+.tmp/probe_warm_start.py, contact_friction=3, ghost-free, MAIN
+8 000 + CONTROL 1 500):** the staleness starves friction when the
+normals load. (a) TRACKING FAIL — mean |w_rel - target| 31.77 rad/s
+over 400-800 (the hybrid was 0.3491), but the number is polluted:
+MAIN FALLS AT TICK 434 WITH MUSCLES ON, so the window reads a
+tumble (vmax 2 555 m/s, head_z oscillating -1.1 to +0.8 — bounded
+debris, not a stand). (b) NO-SIMMER PASS — KE max 5 105 J, zero
+samples >= 1e4: the warm start DID kill the revision pump, so the
+v3d address (intra-tick bound revision) is CONFIRMED as the pump's
+mechanism. (c) FAIL (head_z 1.803 -> -0.685). (d) FAIL (sag -1.071:
+MAIN had already fallen before the cut). The mechanism: on tick 0
+the bound is zero — no friction at all — and during the settle the
+bound trails the loading normals by a tick, so the feet skate
+exactly while the frame is finding its balance. Net law: **the
+cone bound must be SIMULTANEOUS (this tick — the warm start's
+falsifier) AND UNREVISED (frozen after the first solve — the v3d
+pump's address). Both constraints are now measured, and they are
+compatible: freeze the bound at the FIRST attempt's solved
+lambda_n.** Successor named: contact_friction=4, the frozen
+first-solve cone — friction rows in the solve (simultaneous with
+the motors, the friction-fork verdict), bound = MU x the first
+attempt's lambda_n, never recomputed intra-tick (no revision, the
+v3d verdict), no staleness (this tick, the warm-start verdict).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
