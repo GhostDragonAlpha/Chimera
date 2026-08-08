@@ -1934,6 +1934,33 @@ from it (hand the load over when the carrying group's cost integral
 exceeds the relief cost of the shift) — no chosen threshold, the
 crossing point of two measured costs.
 
+**ENFORCEMENT + GHOST VERDICTS 2026-08-08 (probes
+.tmp/probe_enforcement.py, .tmp/probe_ghost.py; mode 2, ticks
+100-1000, tarsals_R):** the ankle drift's accounting CLOSES — two
+measured parents, no fourth mechanism. (1) UNDER-ENFORCEMENT
+CONFIRMED: the post-solve relative spin on the locked axes averages
+0.41 rad/s (max 21.8) — the velocity rows ask for 0 and the solve
+delivers 0.41; its signed integral covers about half the drift. (The
+enforcement probe's leg (b) FALSIFIED as named — ratio 0.47 vs the
+0.5 bar — and that falsifier bought the question the ghost probe
+answered.) (2) GHOST CONFIRMED: 2.20 rad/s mean of orientation change
+at the ankle that exists NOWHERE in the velocity record —
+position-level quat rotations (the joint-coincidence BETA projections
+rotate quats, never touching ang_vel). The full accounting
+rv_total = w*dt + ghost closes at 0.94 of the measured +0.617 rad
+growth (bar 0.5-2x). (3) Net law: **the ankle fold has exactly two
+parents and both are solver machinery: the direct solve under-
+enforces the lock rows (velocity channel), and the position pass
+rotates the bones outside the velocity record (the same energy-
+inconsistent class already proven to be the K2 pump in the lock
+lane). No muscle law, friction law, or balance strategy could have
+stood this frame.** Successors (dependency order): the ghost-source
+probe — which position-pass projection injects at the ankle (joint
+coincidence is the only always-on suspect; ligaments engage on
+stretch): instrument by quat delta per position-pass block, one run;
+then the fix membrane for the two parents together; then the
+two-channel balance controller (operator datums 1-4).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
