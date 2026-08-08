@@ -2359,6 +2359,19 @@ budget — normal vs friction reaction moment about the ankle and MTP
 joint centers (impulse at world point x lever; no impulse-frame
 ambiguity), vs the servo moments, over the clean creep window.
 
+**CONTACT-MOMENT BUDGET, BALANCED 2026-08-08 (probe
+.tmp/probe_contact_moment.py, ticks 100-800, tarsals_R):** the ground
+loop is CLEAN — friction moment 0.2x the servo trim, normal 1.4x,
+both under the 2x bar; and all three traces grow together in the
+same direction, the signature of moments DOWNSTREAM of the creep
+(COM advances, gravity moment grows, ground reaction shifts, servo
+trims harder) rather than its cause. The v3e hybrid is exonerated.
+One post-solve writer at the foot remains unmeasured: the LIGAMENT
+SWEEP's moment about the ANKLE (the toe ligament was slack, but the
+taut population clusters at the ankle/midfoot — 25 taut, 1 313 N,
+applied post-solve every tick the same way the toe-chain probe
+caught). Successor named: ankle ligament-moment budget.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
