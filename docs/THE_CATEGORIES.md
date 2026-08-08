@@ -1739,6 +1739,27 @@ bound — servo starvation vs constraint leak, one run decides.**
 Successors (dependency order): the ankle autopsy probe; then the
 membrane for whichever system is guilty — nothing else is touched.
 
+**ANKLE AUTOPSY VERDICT 2026-08-08 (probe .tmp/probe_ankle_autopsy.py,
+hybrid, ticks 100-267):** LEAK PRESENT, starvation and physiology-weak
+both absent — the guilty system is the constraint solve, not the
+muscle. (1) tarsals_R is a HINGE: one free dof, axis ~(0,1,0)
+(plantarflexion), torque cap 75 N m. (2) The servo holds the axis it
+owns: free-axis error 0.143 -> 0.176 rad (1.2x) through the whole
+'collapse'. (3) The fold lives on the LOCKED axes: residual 2.983 rad
+at the fall tick, 17x the free error, growing ~0.011 rad/tick
+monotonic from tick 100 — the two constrained rotational dofs of the
+right ankle drift 171 degrees while every other system watches. (4)
+Net law: **the standing collapse is a joint-constraint leak at ONE
+hinge: the solve enforces the ankle's free axis (the muscle's row is
+in the same K system and holds) but lets the two locked axes bleed
+at a steady rate — no servo, friction law, or ground loop could ever
+have fixed that, and every previous probe in this chain was measuring
+its shadow.** Successors (dependency order): read the kernel's joint
+rows for hinge locked axes (K solve + position_pass — where is the
+locked-axis error's correction row?); the leak-rate membrane
+(0.011 rad/tick = ?); the derived fix; then the FULL probe chain
+re-run unchanged: sink (fold absent) -> forensics -> DEMO v3.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
