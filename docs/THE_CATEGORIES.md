@@ -2837,6 +2837,38 @@ vanishes.  FALSIFIER: the ratchet persists with the linear-only
 kill -> the driver is the cone itself (MU too low for the servo's
 reaction shear; a DERIVED MU membrane).
 
+**ROLLING-BLIND SWEEP, MEASURED 2026-08-08 — FALSIFIER FIRED: the
+cone itself is the driver (probe .tmp/probe_rolling_blind.py,
+LEGACY contacts, ghost-free, contact_friction=6, base servo, MAIN
+8 000 + CONTROL 1 500):** sizing the tangential kill on the
+contact link's LINEAR tangential velocity (the sliding channel)
+halved the ratchet (-13.1 / -15.8 mm over ticks 100-900 vs the
+mode-2 baseline's -27 mm, bar +/- 2 mm — FAIL) and pushed the
+fall past the saga invariant (tick 1 782, same ruler — PASS), but
+the ratchet did not stop.  The cliff still came, harder: peak
+per-foot normal 3 892 / 4 137 N over ticks 100-900 vs the mode-2
+spike of 750 N (bar 588 N = 1.5 x half weight — FAIL): with the
+rolling channel freed, the normal channel absorbs the servo
+reaction alone and spikes ~10x static before letting go.  KE
+clean throughout (max 2 663 J, no simmer — PASS); CONTROL sagged
+0.481 m vs the 0.5 bar (a 19 mm miss, FAIL recorded, not
+patched).  **The law the pair of membranes names: the ratchet is
+the servo's reaction shear overflowing the friction cone — the
+ground cannot hold what the lean demands.  Neither killing the
+rolling channel (mode 6) nor slowing the command growth (live
+reference) fixes the hold; both move the same cliff to the same
+later tick (~1 780).**  Successor named by the falsifier:
+DERIVED-MU — the cone cap is sized from the servo reaction shear
+itself (the lean torque over the ankle height, per contact, per
+tick), not from the skin-floor datum MU = 0.70; a cone that holds
+exactly what the muscle can demand is DERIVED, not tuned.
+PREDICTION: the ratchet stops (bar (a) +/- 2 mm), the cliff never
+comes (bar (b)), the fall moves past 1 429 or vanishes, the
+control still falls.  FALSIFIER: the ratchet persists even with
+the cone sized to the demand -> the leak is upstream of friction
+entirely (the servo's booked velocity vs the solve's momentum
+budget); reopen at the servo, not the ground.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

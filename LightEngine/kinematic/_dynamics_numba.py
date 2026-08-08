@@ -1339,9 +1339,13 @@ def step_core_direct(
         # sweep kills the contact-point velocity the servo just booked
         # and back-drives the tarsals, wrong-way at 100% of samples.
         # Friction opposes the world's sliding, not the muscle's
-        # command.
+        # command.  contact_friction == 6 (the rolling-blind sweep,
+        # 2026-08-08): the tangential kill is sized on the contact
+        # link's LINEAR tangential velocity (the sliding channel);
+        # the rotational surface velocity omega x r at the point is
+        # the joint's business.  Friction kills sliding, not rolling.
         if contacts_in_solve != 0 and contact_friction != 2 \
-                and contact_friction != 5:
+                and contact_friction != 5 and contact_friction != 6:
             continue
         # mode 5: the muscle channel's angular-velocity contribution
         # per link, computed once per tick before the first iteration.
@@ -1399,11 +1403,26 @@ def step_core_direct(
                 # normal channel is untouched).
                 v_t = v_t - _cross3(motor_dw[li], r)
                 v_t = v_t - (v_t @ z_hat) * z_hat
+            if contact_friction == 6:
+                # rolling-blind sweep: size the kill on the link's
+                # LINEAR tangential velocity -- the sliding channel.
+                # A rolling foot (omega x r large, lin_vel small)
+                # draws almost no tangential impulse; a skating foot
+                # draws the full cone.  The impulse still torques the
+                # link through cross(r, jv_t), as a physical friction
+                # impulse at a contact point does.
+                v_lin = lin_vel[li]
+                v_t = v_lin - (v_lin @ z_hat) * z_hat
             vt_mag = _norm3(v_t)
             if vt_mag > 1e-12:
                 t_dir = v_t / vt_mag
                 rn_t = _cross3(r, t_dir)
                 K_t = inv_mass[li] + rn_t @ (I_inv_l @ rn_t)
+                if contact_friction == 6:
+                    # linear-channel effective mass only: the kill
+                    # cancels lin_vel exactly (inv_mass * j = v_t),
+                    # the angular reaction rides along at the joint.
+                    K_t = inv_mass[li]
                 if K_t > 1e-15:
                     j_t = min(vt_mag / K_t, MU * j_n)
                     jv_t = -j_t * t_dir
