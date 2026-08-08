@@ -1531,6 +1531,34 @@ revises; second: the ligament sweep fighting the in-solve contacts);
 only then another battery A/B. The flag stays OFF everywhere (battery,
 demo server, exporter) until a full battery passes with it ON.
 
+**STANDING v3d ENERGY-AUDIT VERDICT 2026-08-08 (probe .tmp/probe_v3d.py,
+four 8 000-tick configs, per-tick total kinetic energy, bar 1e8 J; the
+contact_friction=0 instrumentation toggle added to step_core_direct for
+exactly this audit, default unchanged):** the statement HOLDS — the
+long-timescale leak lives in the friction fix-at-bound machinery, and
+the meter names the address by elimination. (1) sweep (reference):
+BOUNDED, max KE 1.3e3 J, post-crumble steady state ~30 J. (2) full
+cone: EXPLODED at tick 7 713 — and the trace is the payload: KE climbs
+to 1.3e5 J by tick 2 000 and SIMMERS there for 6 000 ticks (1.29e5 ->
+1.6e5, a slow positive-work pump holding the lying frame hot at 4 000x
+the sweep's steady state) before going supercritical (2.5e228 J). Not
+a spike: a simmer. (3) friction rows skipped: BOUNDED, max KE 3.0e3 J,
+a sweep-like profile — the normal-row active set alone is clean. (4)
+ligaments neutralized (rest length 1e9): EXPLODED EARLIER, tick 1 436 —
+ligaments are not a component of the leak at all; without them the
+frame crumples faster and the friction pump goes critical sooner. (5)
+Net law: **the in-solve friction cone as built — bound computed from
+the current attempt's lambda_n, fixed, applied, row removed, lambda_n
+then revised by the re-solve — does positive mean work on the jiggling
+lying frame; the normals-in-solve active set is stable; the K2 ghost's
+address is the intra-tick bound revision.** Successors (dependency
+order): v3e — the derived fix candidates, in order: (i) normals-in-solve
++ friction back in the post-solve sweep (dissipative there by
+construction; the hybrid keeps the in-phase ground loop that won the
+short window); (ii) cone bound from the PREVIOUS TICK's lambda_n (a
+warm-start box constraint, no intra-tick revision); then the battery
+A/B again — the flag stays OFF until a full battery passes ON.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

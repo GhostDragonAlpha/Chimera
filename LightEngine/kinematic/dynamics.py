@@ -634,7 +634,8 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         )
         if state.get("solver", "direct") == "direct":
             _numba_step_core_direct(
-                *args, int(state.get("contacts_in_solve", False)))
+                *args, int(state.get("contacts_in_solve", False)),
+                int(state.get("contact_friction", True)))
         else:
             _numba_step_core(*args)
         state["joint_impulses_lin"] = joint_impulses_lin

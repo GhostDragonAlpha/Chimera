@@ -682,6 +682,7 @@ def step_core_direct(
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
     contacts_in_solve,
+    contact_friction,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -704,7 +705,12 @@ def step_core_direct(
     remove -- exactly the motor-row idiom, never a post-solve lambda clamp
     (the K2 pump, +10.5 kJ / 2000 ticks).  A dropped normal row takes its
     friction rows to zero with it.  With the flag off (default) the feet
-    are grounded by the post-solve sequential sweep, the pre-v3a path."""
+    are grounded by the post-solve sequential sweep, the pre-v3a path.
+
+    contact_friction == 0 (v3d instrumentation): skip the pyramid friction
+    rows (normals only).  Exists for the energy audit that isolates the
+    long-timescale leak found by the v3c battery A/B; default 1, the full
+    cone."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
@@ -842,6 +848,8 @@ def step_core_direct(
             rec_t[n_rows] = _REC_CONTACT
             rec_i[n_rows] = ci
             n_rows += 1
+            if contact_friction == 0:
+                continue
             for t_ax in range(2):
                 t = np.zeros(3, dtype=np.float64)
                 t[t_ax] = 1.0
