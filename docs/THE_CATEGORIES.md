@@ -2126,6 +2126,25 @@ holds at large fold angle; that is exactly what the probe measures.
 Open question deferred from (c): whether the 3.2x extension overshoot
 is its own membrane (solve softness) — not gated by the play band.
 
+**BALANCE-PROBE v2 FALSIFIED 2026-08-08 (probe .tmp/probe_balance2.py,
+d_eq deadband 1.31 mm + proportional + clamp 95.6 mm + anatomical
+polygon, ghost-free, 8 000 ticks):** (e) CLAMP HOLDS PASS (|off| never
+exceeded the derived 95.6 mm) — and the other four legs FAIL with a
+signature that names the culprit: the COM creeps forward FASTER than
+uncontrolled (+0.0592 @758 vs +0.0468) with the correction saturated,
+the fall lands at the same tick (~1416), then debris (|w| 11 405).
+The loop pushes the frame FORWARD. The v2 lean channel inherited
+v1's row set: every actuator whose child carries a contact — ankle
+(tarsals) AND TOE (metatarsals). Commanding a backward COM shift
+through the TOE rows commands a backward tip about the ball of the
+foot (the toe joint's pivot), whose ground reaction presses the frame
+forward — positive feedback, matching the trace. Datum 3 assigns the
+slow channel to the ANKLE only. v2's other pieces are unfalsified:
+the d_eq deadband fired early and proportionally as designed, the
+anatomical polygon did not chase the fall, the clamp bounded the
+flail. Successor named: v3 = v2 with the lean channel restricted to
+the ankle rows (one change, per the one-membrane rule).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
