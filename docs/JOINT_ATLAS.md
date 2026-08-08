@@ -110,3 +110,85 @@ The atlas schema does not change; only the rows do.
 2. S1 Part I PDF (ankle/hip/spine axes).
 3. S3 CMU walking + standing sequences (direct download URLs).
 4. S5 quantitative tables (sway mm, torque N·m/kg, frequencies).
+
+## 5. KERNEL DIFF VERDICTS (atlas vs LightEngine skeleton spec)
+
+**VERDICT 1, 2026-08-08 — the kernel's mass distribution is a design-load
+scaffold, NOT anthropometry.** `skeleton_spec.py:165-177`
+(`_normalize_mass`) derives link masses from `design_load_kg` in the
+skeleton-scaling table — its own docstring admits "load_fraction ... is a
+design load, not a true mass fraction."  Measured against the atlas
+(de Leva 1996 adjusted Zatsiorsky-Seluyanov,
+`external/atlas/anthropometry.json`, male):
+
+| region | kernel (77 links, 80 kg) | de Leva male | ratio |
+|---|---|---|---|
+| feet | 14.7% (11.8 kg) | 2.6% (2.1 kg) | **5.7× too heavy** |
+| head | 0.4% (0.3 kg) | 6.9% (5.5 kg) | **0.06×** |
+| arms | 1.8% | 9.9% | 0.18× |
+| thighs+shanks | 13.0% | 39.4% | 0.33× |
+| trunk+pelvis | 70.2% | 43.5% | 1.6× |
+
+Consequence chain (recorded, not yet re-run): the entire standing-fall
+saga — foot whipping, the 1.18 kg forefoot kicked by 157 N/point springs,
+the backward ratchet, the toe fold — ran through feet 5.7× heavier than
+anatomy, a head 18× lighter than anatomy, and legs carrying a third of
+their real mass.  The saga's measurements stand as measurements OF THAT
+BODY; they do not transfer to an anatomic body.  Corrective named:
+ANATOMIC-MASS membrane — redistribute the 77 links' masses onto the
+de Leva segment table (map each link to its parent segment, split segment
+mass across its links by link volume from the scaling table), then RE-RUN
+the saga battery before any friction/servo conclusion is trusted.
+Inertias: the kernel uses solid-cylinder formulas from the scaling table's
+diameters (`_solid_rod_inertia`); the atlas carries radii of gyration per
+segment — diff after the mass membrane lands.
+Joint ranges: ankle in the .osim is [-40°, +47°]; the kernel spec's ankle
+row range — UNKNOWN, not yet diffed.
+
+**VERDICT 2, 2026-08-08 — mass distribution WAS a saga driver; the anatomic
+body falls by a different clock (446, outside 1416-1429).** ANATOMIC-MASS
+landed as `build_spec(mass_model="deleva")` (`skeleton_spec.py`:
+`_DELEVA_PCT`, `_deleva_segment`, `_deleva_mass`; paired segments ×2 sides;
+legacy `mass_model="design"` default bit-identical).  Battery
+(`.tmp/probe_anatomic_mass.py`, ghost-free fr=2, MAIN 8000 + CONTROL 1500,
+saga ruler `find_bounds(hz_all, 0.5*hz@100, side="below")`):
+(a) distribution exact — worst group deviation 0.000 pp (bar 0.01);
+(b) fall tick **446** — OUTSIDE the invariant 1416-1429 (same ruler);
+(c) no simmer — max KE 3264 J, 0 samples >= 1e4 J;
+(d) control falls — head_z 3.26 m sag over 1499 ticks.
+Two mechanism reads, recorded not assumed: (i) the scaffold's 5.7×-heavy
+feet were an anchor — the real body is top-heavier and falls SOONER;
+(ii) the ratchet REVERSED SIGN: +208.5/+206.2 mm forward (scaffold:
+-27 mm backward) — the ratchet is mass-distribution-sensitive, so every
+ratchet/cliff verdict of the old saga is quarantined to the scaffold body
+until re-run on this one.  Also measured: head_z @8000 = -50.8 m — after
+the fall the body passes THROUGH the floor (contacts exist only on feet).
+G0 world floor (every link collides) is now the blocking gap.
+
+**VERDICT 3, 2026-08-08 — rod inertia: transverse HOLDS, axial is
+bone-only (3-30× small).** Probe `.tmp/probe_inertia_diff.py` vs
+Rajagopal2015 inertias (now merged into
+`external/anatomy/rajagopal_extract.json`; axis semantics checked: atlas
+long-bone frames are Y-long, kernel rod is [ix, ix, iz=axial]).
+Transverse ratios (kernel/atlas): femur 1.67, tibia 0.81, humerus 1.49,
+forearm 0.96 — all inside [0.5, 2.0]; transverse is the term that drives
+swing dynamics, and the rod model earns its keep there.  Axial ratios
+0.03-0.07 — the anatomical_diameter is bone-only; the atlas axial inertia
+includes the flesh cylinder around the bone.  Absolute error is small
+(axial is the small term) but wrong in kind; matters for twist DoFs
+(hip rotation, spine torsion) when those get trained.  Foot group 0.17 —
+a foot is not a rod; noted, not gated.  Segmentation cross-study note:
+de Leva thigh (kernel 11.59 kg) vs Rajagopal femur_r (9.30 kg) — different
+dissection boundaries, both recorded.
+
+**FINDING (joint ranges) — the kernel has NO per-joint angular range
+table.** Ligaments are rope-derived capture bands (`_build_ligament_specs`,
+S_WALL..d_eq), not angular stops.  The atlas carries ranges for all 23
+joints (e.g. hip flexion [-30°, +120°], knee [0°, +120°], ankle
+[-40°, +47°], elbow [0°, +150°], subtalar [-20°, +20°], mtp [-30°, +30°],
+lumbar ±90°×3, wrist flex [-70°, +70°]).  DoF classes DO match 1:1:
+ball-cup=hip 3-DoF, hinge=knee/ankle/elbow PinJoint, saddle=wrist
+UniversalJoint.  Open question (operator terminal): are angular stops a
+membrane (derived from ligament geometry) or an atlas datum (typed in from
+the table)?  Range enforcement is the operator's standing datum
+("it's more like a range enforcement").

@@ -177,6 +177,73 @@ def _normalize_mass(instances: list[dict], mass_kg: float) -> dict[str, float]:
             for inst in instances}
 
 
+# ---------------------------------------------------------------------------
+# ANATOMIC-MASS membrane (2026-08-08, JOINT_ATLAS.md VERDICT 1): the legacy
+# distribution is a design-load scaffold (feet 5.7x, head 0.06x anatomy).
+# The de Leva 1996 adjusted Zatsiorsky-Seluyanov segment table (atlas:
+# external/atlas/anthropometry.json, male) gives each segment's share of
+# body mass; each link's share of its segment is its cylinder-volume share
+# (pi r^2 L from the scaling table's anatomical diameter + link length).
+# Default "design" keeps the legacy path bit-identical.
+# ---------------------------------------------------------------------------
+_DELEVA_PCT = {  # male, % body mass; paired segments are per-side
+    "head": 6.94, "trunk": 43.46, "upper_arm": 2.71, "forearm": 1.62,
+    "hand": 0.61, "thigh": 14.78, "shank": 4.81, "foot": 1.29,
+}
+
+
+def _deleva_segment(name: str) -> str:
+    """Map a 77-link name to its de Leva segment."""
+    n = name.lower()
+    if n == "skull" or n.startswith("vertebra_c"):
+        return "head"
+    if n.startswith("humerus"):
+        return "upper_arm"
+    if n.startswith("radius_ulna"):
+        return "forearm"
+    if n.startswith("hand"):
+        return "hand"
+    if n.startswith("femur") or n.startswith("patella"):
+        return "thigh"
+    if n.startswith("tibia") or n.startswith("fibula"):
+        return "shank"
+    if n.startswith(("tarsals", "metatarsals", "forefoot")):
+        return "foot"
+    # sternum, T/L vertebrae, sacrum, pelvis, ribs, clavicles, scapulae
+    return "trunk"
+
+
+def _deleva_mass(instances: list[dict], mass_kg: float,
+                 lam: float) -> dict[str, float]:
+    """Redistribute mass_kg onto the de Leva segment table, volume-split."""
+    paired = ("upper_arm", "forearm", "hand", "thigh", "shank", "foot")
+    total_pct = _DELEVA_PCT["head"] + _DELEVA_PCT["trunk"] \
+        + 2.0 * sum(_DELEVA_PCT[s] for s in paired)
+    # Cylinder volume per link from the table's anatomical diameter.
+    vol: dict[str, float] = {}
+    seg_vol: dict[str, float] = {}
+    for inst in instances:
+        name = inst["name"]
+        row = inst["row"]
+        d = float(row.get("anatomical_diameter_m", row["outer_diameter_m"]))
+        axis = np.asarray(inst["dist"]).reshape(3) - np.asarray(inst["prox"]).reshape(3)
+        length_m = float(np.linalg.norm(axis)) * lam
+        v = 3.141592653589793 * (0.5 * d) ** 2 * max(length_m, 1e-9)
+        vol[name] = v
+        seg = _deleva_segment(name)
+        seg_vol[seg] = seg_vol.get(seg, 0.0) + v
+    out: dict[str, float] = {}
+    for inst in instances:
+        name = inst["name"]
+        seg = _deleva_segment(name)
+        # pct is PER SIDE for paired segments; both sides' links share
+        # seg_vol, so the group needs both sides' mass.
+        sides = 2.0 if seg in paired else 1.0
+        seg_mass = mass_kg * (_DELEVA_PCT[seg] / total_pct) * sides
+        out[name] = seg_mass * (vol[name] / seg_vol[seg])
+    return out
+
+
 def _solid_rod_inertia(mass_kg: float, length_m: float,
                        outer_diameter_m: float) -> np.ndarray:
     """Return the diagonal inertia tensor (kg*m^2) of a solid cylinder about COM.
@@ -194,9 +261,12 @@ def _solid_rod_inertia(mass_kg: float, length_m: float,
 
 
 def _build_link_specs(instances: list[dict], mass_kg: float,
-                      lam: float) -> dict[str, dict[str, Any]]:
+                      lam: float, mass_model: str = "design") -> dict[str, dict[str, Any]]:
     """Return the per-link spec dictionary."""
-    mass_by_name = _normalize_mass(instances, mass_kg)
+    if mass_model == "deleva":
+        mass_by_name = _deleva_mass(instances, mass_kg, lam)
+    else:
+        mass_by_name = _normalize_mass(instances, mass_kg)
     links: dict[str, dict[str, Any]] = {}
 
     for inst in instances:
@@ -482,7 +552,8 @@ def _build_contact_specs(height_lu: float, lam: float,
 # Public API
 # ---------------------------------------------------------------------------
 def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
-               contact_links: bool = False) -> dict[str, Any]:
+               contact_links: bool = False,
+               mass_model: str = "design") -> dict[str, Any]:
     """Build and return the 77-link StandingHuman kinematic spec.
 
     Returns a dictionary with keys:
@@ -498,6 +569,11 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
     contact_links=False (default) is the legacy behavior: every contact
     point attaches to the tarsals link downstream.  contact_links=True tags
     each contact point with its anatomic owner link (_CONTACT_POINT_LINK).
+
+    mass_model="design" (default) is the legacy design-load scaffold,
+    bit-identical.  mass_model="deleva" (ANATOMIC-MASS membrane,
+    2026-08-08) redistributes mass_kg onto the de Leva 1996 segment table
+    (atlas anthropometry.json), volume-split within each segment.
     """
     table, lam, total, breakdown, rc, cand_log = skeleton_scaling.scale_skeleton(
         height_m, mass_kg
@@ -518,7 +594,7 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
     if extra:
         raise RuntimeError(f"Topology has extra links: {sorted(extra)}")
 
-    links = _build_link_specs(instances, mass_kg, lam)
+    links = _build_link_specs(instances, mass_kg, lam, mass_model=mass_model)
     joints = _build_joint_specs(links, lam)
     ligaments = _build_ligament_specs(links, height_lu, lam)
     contacts = _build_contact_specs(height_lu, lam, contact_links=contact_links)

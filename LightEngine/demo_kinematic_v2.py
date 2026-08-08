@@ -196,7 +196,8 @@ def main():
           f"-{max(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f} N m)")
     mode_name = {0: "NONE", 1: "FULL CONE", 2: "HYBRID SWEPT",
                  3: "WARM-START CONE", 4: "FROZEN CONE",
-                 5: "HYBRID -MUSCLE", 6: "ROLLING-BLIND"}.get(fric_mode, str(fric_mode))
+                 5: "HYBRID -MUSCLE", 6: "ROLLING-BLIND",
+                 7: "DERIVED-MU"}.get(fric_mode, str(fric_mode))
     if in_solve:
         print(f"ground loop: CONTACTS IN SOLVE, friction {mode_name}")
     main_metrics = _run_v2(spec, state, "MAIN", main_ctrl)

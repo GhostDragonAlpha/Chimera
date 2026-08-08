@@ -1271,6 +1271,12 @@ def step_core_direct(
     # friction sweep subtracts before its tangential kill.  Filled on
     # the sweep's first iteration from motor_impulses (angular rows).
     motor_dw = np.zeros((n_links, 3), dtype=np.float64)
+    # mode 7 (DERIVED-MU) bookkeeping: per-link ground-shear demand
+    # (impulse units) from the solved muscle impulses, and the number
+    # of contact points per link to split it.  Filled on the sweep's
+    # first iteration.
+    shear_demand = np.zeros(n_links, dtype=np.float64)
+    contacts_per_link = np.zeros(n_links, dtype=np.float64)
     for _it in range(n_proj_iters):
         # ligaments: unilateral, only when taut and separating
         for li in range(n_lig):
@@ -1344,8 +1350,18 @@ def step_core_direct(
         # link's LINEAR tangential velocity (the sliding channel);
         # the rotational surface velocity omega x r at the point is
         # the joint's business.  Friction kills sliding, not rolling.
+        # contact_friction == 7 (DERIVED-MU, 2026-08-08): the
+        # rolling-blind sliding-channel kill with the cone cap sized
+        # from the SERVO REACTION SHEAR itself -- the rolling-blind
+        # falsifier fired: the ratchet is the lean torque's ground
+        # reaction overflowing the datum cone MU*j_n.  Per tick the
+        # muscle impulse l about a joint at height h demands ground
+        # shear |l|/h (moment balance about the joint); a cone that
+        # holds exactly what the muscle can demand is DERIVED, not
+        # tuned.  The datum cone stays as the floor.
         if contacts_in_solve != 0 and contact_friction != 2 \
-                and contact_friction != 5 and contact_friction != 6:
+                and contact_friction != 5 and contact_friction != 6 \
+                and contact_friction != 7:
             continue
         # mode 5: the muscle channel's angular-velocity contribution
         # per link, computed once per tick before the first iteration.
@@ -1363,6 +1379,42 @@ def step_core_direct(
                 if mpa >= 0 and mass[mpa] > 0.0:
                     motor_dw[mpa] = motor_dw[mpa] - I_inv[mpa] @ (
                         l_mi * Lmi)
+        # mode 7 (DERIVED-MU): per-link ground-shear demand from this
+        # tick's solved muscle impulses, and the contact count per
+        # link to split it across the link's contact points.  The
+        # demand: a muscle impulse |l| about a joint at height h
+        # above the contact plane requires ground shear |l|/h
+        # (moment balance about the joint).  Only the contact-
+        # carrying side of the joint transmits it to the ground;
+        # internal joints (neither side grounded) demand nothing.
+        if contact_friction == 7 and _it == 0:
+            for ci in range(n_contacts):
+                li = contact_link_idx[ci]
+                if mass[li] > 0.0:
+                    contacts_per_link[li] = contacts_per_link[li] + 1.0
+            for mi in range(n_motors):
+                l_mi = motor_impulses[mi]
+                if l_mi == 0.0:
+                    continue
+                mpa = motor_parent[mi]
+                mcb = motor_child[mi]
+                ji = motor_joint[mi]
+                side = -1
+                if mcb >= 0 and contacts_per_link[mcb] > 0.0:
+                    side = mcb
+                elif mpa >= 0 and contacts_per_link[mpa] > 0.0:
+                    side = mpa
+                if side < 0:
+                    continue
+                if side == mcb:
+                    r_off = r_joint_child_local[ji]
+                else:
+                    r_off = r_joint_parent_local[ji]
+                jw = pos[side] + _qmat(quat[side]) @ r_off
+                h = jw[2]
+                if h < 1e-3:
+                    h = 1e-3
+                shear_demand[side] = shear_demand[side] + abs(l_mi) / h
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
@@ -1403,7 +1455,7 @@ def step_core_direct(
                 # normal channel is untouched).
                 v_t = v_t - _cross3(motor_dw[li], r)
                 v_t = v_t - (v_t @ z_hat) * z_hat
-            if contact_friction == 6:
+            if contact_friction == 6 or contact_friction == 7:
                 # rolling-blind sweep: size the kill on the link's
                 # LINEAR tangential velocity -- the sliding channel.
                 # A rolling foot (omega x r large, lin_vel small)
@@ -1418,13 +1470,21 @@ def step_core_direct(
                 t_dir = v_t / vt_mag
                 rn_t = _cross3(r, t_dir)
                 K_t = inv_mass[li] + rn_t @ (I_inv_l @ rn_t)
-                if contact_friction == 6:
+                if contact_friction == 6 or contact_friction == 7:
                     # linear-channel effective mass only: the kill
                     # cancels lin_vel exactly (inv_mass * j = v_t),
                     # the angular reaction rides along at the joint.
                     K_t = inv_mass[li]
                 if K_t > 1e-15:
-                    j_t = min(vt_mag / K_t, MU * j_n)
+                    j_cap = MU * j_n
+                    if contact_friction == 7 and \
+                            contacts_per_link[li] > 0.0:
+                        # DERIVED-MU: the cone holds the datum shear
+                        # PLUS this tick's servo reaction shear,
+                        # split across the link's contact points.
+                        j_cap = j_cap + shear_demand[li] \
+                            / contacts_per_link[li]
+                    j_t = min(vt_mag / K_t, j_cap)
                     jv_t = -j_t * t_dir
                     lin_vel[li] = lin_vel[li] + inv_mass[li] * jv_t
                     ang_vel[li] = ang_vel[li] + I_inv_l @ _cross3(r, jv_t)
