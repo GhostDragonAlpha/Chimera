@@ -2314,6 +2314,30 @@ STRONG (frame held without muscles). The ligament force-limit
 membrane (clamp the row to f_max * dt, f_max = g * heavier subtree,
 already derived in the table) is hereby the named fix for BOTH.
 
+**FORCE-LIMIT FULL PROTOCOL, FALSIFIED 2026-08-08 (probe
+.tmp/probe_force_limit.py, lig_force_limit + lig_play_band,
+ghost-free):** only (d) RIG STABILITY passes (coinc 1.33 mm). MAIN
+still falls at ~1416 (head 1.737 @1416, -0.735 @4000), toe error
+still leads (0.64 @1416, 0.81 @2000), CONTROL still sags (1.330 —
+identical to play band alone). The clamp barely binds, and the
+record must say why: f_max = g x heavier subtree was the STATIC LOAD
+CRITERION of the stiffness derivation, not a yield ceiling — clamped
+there, 25 ligaments still apply ~20 N s per tick, sustained, against
+the toe's 0.002 N s. The ligament-tension venue is hereby CLOSED by
+exhaustion: play band, force limit, both — the fall does not move.
+Five controller variants and two ligament membranes all fail at the
+SAME tick: the standing fall is not an overruling, not a target, not
+a reference, not an authority. What has never been measured: the
+TORQUE BUDGET at the MTP joint itself — who applies the dorsiflexion
+moment that grows the toe error from tick 100 (ligaments pre-taut at
+bind? joint coincidence reaction? the contact spec's tarsals-only
+attachment putting the forefoot's ground reaction where anatomy
+doesn't?). Successor named: toe torque-budget forensics — per-tick,
+per-source moment about the MTP axis: ligament, joint reaction,
+servo, gravity, contact. Also on record: the demo battery's verdict
+window (t >= 1200 over 8 000 ticks, demo_kinematic_v2.py) equals the
+saga's bar — no shortcut exists; the stand must hold 8 000.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
