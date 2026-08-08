@@ -2388,6 +2388,29 @@ achieved w_rel, error) + a full taut-ligament audit on the leg links
 in MAIN — does the ankle's w_rel track its command, and who touches
 the tibia post-solve?
 
+**ANKLE-CHAIN TIME SERIES, OVERWRITTEN — CARRIER NOT LIGAMENT
+2026-08-08 (probe .tmp/probe_ankle_chain.py, ticks 100-800, row
+101):** leg (a) PRESENT — the ankle's achieved w_rel goes the WRONG
+WAY against a growing command (target +0.26 -> +0.38 rad/s, achieved
+-0.20 -> -0.33, theta_err -0.16 -> -0.21 rad), the same overwrite
+signature the toe showed at row 102. Leg (b) absent — and the
+census closes the ligament venue for good: EVERY ligament impulse
+in MAIN ticks 100-800 is <= 0.00012 N s (knee_posterior 31% taut at
+0.00012, everything else an order smaller). Nothing carrying zero
+impulse can overwrite anything; the post-solve carrier is the
+POSITION PROJECTION or the contact-solve rows, not the ligament
+sweep. ANOMALY recorded, not chased: ankle_posterior_L/R (lig 0/1,
+femur -> tarsals, spanning knee AND ankle) sit 100% taut at 3.92 mm
+stretch yet deliver exactly 0.00000 N s — a rest-length or
+impulse-recording question for the derivation lane, but with zero
+impulse it moves nothing and is not the fall driver. Successor
+named: projection-fork A/B — same tick, deepcopied state, step once
+with n_proj_iters=0 vs 20, compare achieved w_rel at the ankle; if
+the no-projection fork tracks the command, the projection pass is
+the overwriter; if both forks go wrong-way, the velocity solve
+itself (contact rows at the foot vs the light tarsals) is the
+carrier and the next probe is the contact-row impulse share.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
