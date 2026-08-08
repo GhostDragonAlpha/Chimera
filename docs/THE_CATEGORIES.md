@@ -1464,6 +1464,39 @@ crumple-whip link behind the 1.7e4 spike, then re-run the v2 battery
 A/B on the same six meters and windows; the flag stays OFF by default
 until the battery says otherwise.
 
+**STANDING v3b WHIP-HUNT VERDICT 2026-08-08 (probe .tmp/probe_v3b.py,
+contacts-in-solve, 600 ticks at 1 kHz, per-tick argmax |ang_vel| +
+per-link peaks; contrast run on the sweep path):** the diagnosis
+membrane is FALSIFIED AS NAMED — the spike is not one slender link —
+and the falsifier bought the real mechanism. (1) NOT A PUMP, confirmed
+on the re-named ratchet falsifier: block maxima 26, 14, 656, 318,
+2.00e4, 2.44e3 rad/s — no monotonic 3-block growth, no block above
+1e5; the spike decays 10x in the block after the crumple. (2) NOT ONE
+LINK EITHER: the whip is a CHAIN WAVE entering through the
+CONTACT-BEARING link and amplifying distally — tarsals_R (carries the
+contact points, peak 1.07e4 @tick 420) -> metatarsals_R (1.78e4 @422)
+-> forefoot_R (2.00e4 @423, no contact point, the chain's lightest
+link, inv_I 2.7e3); the argmax hops (forefoot_R holds only 29% of the
+spike window) and the peak timing walks proximal->distal 1-2 ticks per
+joint. Crack-the-whip: the in-solve contact impulse decided at the
+tarsals is redistributed through the toe joints in the SAME tick, and
+the light distal toe spins up 20x. (3) THE CONTRAST RUN (sweep path,
+same hunt): a DIFFERENT animal — femur_L 9.4e2 @tick 364, femur_R
+6.6e2 @353, rib_L_1 2.8e2 @357 — the thigh spinning in the fold; the
+sweep's late, dissipated ground reaction never energizes the toe chain
+at all. The toe whip is specific to the in-solve path: the price the
+ground loop pays for answering in-phase is a 20x distal toe transient
+during collapse. (4) Net law: **in-solve contacts move the collapse
+energy from the thigh fold to the toe chain — bounded (2e4, decaying,
+the frame recovered after it in the v3a run), and it is exactly the
+load the foot's real restraints (plantar fascia, toe flexors) exist to
+carry.** Successors (dependency order): the v2 battery A/B (sweep vs
+contacts-in-solve, same six meters, same windows) decides whether the
+flag defaults ON; if the toe transient hurts the LIMIT/CAPTURE meters
+on the foot links, the named fix is the toe-restraint membrane
+(plantar-fascia ligament rows, derived rest lengths — anatomy, not a
+gain and not a clamp).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
