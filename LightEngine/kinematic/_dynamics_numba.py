@@ -542,7 +542,7 @@ def step_core(
     mass, inv_mass, inertia_diag_local, inv_inertia_diag_local,
     joint_parent, joint_child, joint_dof, joint_axes,
     r_joint_parent_local, r_joint_child_local, joint_q_rel0,
-    lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest,
+    lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest, lig_fmax,
     contact_link_idx, contact_off_local,
     contact_slop, dt, n_proj_iters,
     do_rotation_locks,
@@ -670,6 +670,17 @@ def step_core(
             if v_sep <= 0.0:
                 continue
             j = -v_sep / K
+            # force-limit membrane: an overstretched ligament YIELDS at
+            # its physiological ceiling (f_max * dt per tick, counting
+            # what earlier iterations already applied); f_max <= 0 is
+            # the legacy unlimited row.
+            if lig_fmax[li] > 0.0:
+                used = lig_impulses_lin[li] @ n
+                avail = lig_fmax[li] * dt - used
+                if avail <= 0.0:
+                    continue
+                if -j > avail:
+                    j = -avail
             jv = j * n
             lin_vel[ib] = lin_vel[ib] + inv_mass[ib] * jv
             ang_vel[ib] = ang_vel[ib] + I_inv_b @ _cross3(r_b, jv)
@@ -747,7 +758,7 @@ def step_core_direct(
     mass, inv_mass, inertia_diag_local, inv_inertia_diag_local,
     joint_parent, joint_child, joint_dof, joint_axes,
     r_joint_parent_local, r_joint_child_local, joint_q_rel0,
-    lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest,
+    lig_idx_a, lig_idx_b, lig_off_a, lig_off_b, lig_rest, lig_fmax,
     contact_link_idx, contact_off_local,
     contact_slop, dt, n_proj_iters,
     do_rotation_locks,
@@ -1216,6 +1227,17 @@ def step_core_direct(
             if v_sep <= 0.0:
                 continue
             j = -v_sep / K
+            # force-limit membrane: an overstretched ligament YIELDS at
+            # its physiological ceiling (f_max * dt per tick, counting
+            # what earlier iterations already applied); f_max <= 0 is
+            # the legacy unlimited row.
+            if lig_fmax[li] > 0.0:
+                used = lig_impulses_lin[li] @ n
+                avail = lig_fmax[li] * dt - used
+                if avail <= 0.0:
+                    continue
+                if -j > avail:
+                    j = -avail
             jv = j * n
             lin_vel[ib] = lin_vel[ib] + inv_mass[ib] * jv
             ang_vel[ib] = ang_vel[ib] + I_inv_b @ _cross3(r_b, jv)

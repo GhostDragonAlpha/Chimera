@@ -237,6 +237,11 @@ def derive_ligament_stiffness(spec: dict[str, Any]) -> None:
         link_b = lig["anchor_b"]["link"]
         F_max = g * max(subtree[link_a], subtree[link_b])
         lig["stiffness"] = F_max / d_eq_m
+        # The physiological tension ceiling: the force-limit membrane
+        # (2026-08-08) clamps the ligament row's impulse to f_max * dt
+        # when state["lig_force_limit"] is on -- an overstretched
+        # ligament YIELDS instead of applying unlimited rigid tension.
+        lig["f_max"] = F_max
 
 
 def _contact_constants(spec: dict[str, Any]) -> tuple[float, float]:
@@ -367,6 +372,7 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
             "offset_b_local": offset_b_local,
             "rest_length_m": float(lig["rest_length_m"]),
             "stiffness": float(lig["stiffness"]),
+            "f_max": float(lig["f_max"]),
             "name": lig["name"],
         })
 
@@ -434,6 +440,8 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
         "lig_off_a": lig_off_a,
         "lig_off_b": lig_off_b,
         "lig_rest": lig_rest,
+        "lig_fmax": np.array([r["f_max"] for r in lig_records],
+                             dtype=np.float64),
         "contact_link_idx": contact_link_idx,
         "contact_off_local": contact_off_local,
         "joint_axes_arr": joint_axes_arr,
@@ -615,6 +623,13 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         lig_rest_eff = state["lig_rest"]
         if state.get("lig_play_band", False):
             lig_rest_eff = lig_rest_eff + float(spec["lam"]) * D_EQ_LU
+        # Ligament force limit (the toe-chain membrane, 2026-08-08):
+        # rows clamped to f_max * dt so taut ligaments cannot overrule
+        # the muscles 30:1 post-solve.  Entries of zero = no limit
+        # (legacy default, bit-identical).
+        lig_fmax_eff = state["lig_fmax"] \
+            if state.get("lig_force_limit", False) \
+            else np.zeros(n_lig, dtype=np.float64)
         contact_impulses = np.zeros((n_contacts, 3), dtype=np.float64)
         # Position-pass ghost instrumentation (ghost-source probe,
         # 2026-08-08): per-link rotations applied at position level,
@@ -638,6 +653,7 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             state["joint_q_rel0"],
             state["lig_idx_a"], state["lig_idx_b"],
             state["lig_off_a"], state["lig_off_b"], lig_rest_eff,
+            lig_fmax_eff,
             state["contact_link_idx"], state["contact_off_local"],
             contact_slop, float(dt), int(n_proj_iters),
             int(state.get("rotation_locks", True)),
@@ -1038,6 +1054,15 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
             if denom <= 1e-15:
                 continue
             c_mag = RELAX * delta / denom
+            # Force-limit membrane (mirrors the numba sweeps): the
+            # correction impulse is capped at f_max * dt per tick.
+            if state.get("lig_force_limit", False):
+                cap = float(lig["f_max"]) * dt * dt
+                used = float(lig_impulses_lin[li] @ n) * dt
+                avail = cap - used
+                if avail <= 0.0:
+                    continue
+                c_mag = min(c_mag, avail)
 
             # Impulse on body A (toward B) and the corresponding moment.
             j_a = c_mag * n * inv_dt

@@ -2338,6 +2338,27 @@ servo, gravity, contact. Also on record: the demo battery's verdict
 window (t >= 1200 over 8 000 ticks, demo_kinematic_v2.py) equals the
 saga's bar — no shortcut exists; the stand must hold 8 000.
 
+**MTP TORQUE-BUDGET, RESIDUAL WITH A BOOKKEEPING CAVEAT 2026-08-08
+(probe .tmp/probe_toe_budget.py, ticks 100-800):** the toe's one
+ligament is SLACK (0.0000 N m — ligaments exonerated AT THE TOE),
+servo +0.67 vs gravity -0.44 (the servo outmuscles gravity), and the
+"joint" term (-1.36) failed its 3x bar — but on accounting, not
+physics: joint_impulses_ang is recorded about the body COM, not the
+joint center, so that term mixes frames and is struck from the
+record. What survives: the servo wins its local budget and the toe
+STILL dorsiflexes against command (w_rel +0.4 vs target -0.3,
+toe-chain probe) — the overwrite is post-solve, and with ligaments
+slack at the toe the only post-solve writer left at the foot is the
+v3e HYBRID FRICTION SWEEP: every contact point attaches to tarsals,
+and the swept friction impulses act at those points with real levers
+about the ankle and MTP — a per-tick forward rotation the solve
+never sees and no servo can answer. Fits the saga's fingerprint:
+identical fall tick in every configuration (the contacts never
+changed), nobody ever saturated. Successor named: contact-moment
+budget — normal vs friction reaction moment about the ankle and MTP
+joint centers (impulse at world point x lever; no impulse-frame
+ambiguity), vs the servo moments, over the clean creep window.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
