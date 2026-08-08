@@ -2411,6 +2411,29 @@ the overwriter; if both forks go wrong-way, the velocity solve
 itself (contact rows at the foot vs the light tarsals) is the
 carrier and the next probe is the contact-row impulse share.
 
+**PROJECTION-FORK A/B, PROJECTION CONVICTED 2026-08-08 (probe
+.tmp/probe_projection_fork.py, deepcopy fork per tick, row 101):**
+DECISIVE and stronger than predicted — the no-projection fork
+(n_proj_iters=0, velocity solve only) achieves the servo target
+EXACTLY (mean |w_rel - target| = 0.0000 rad/s at every sampled
+tick, 100-750), while the same tick stepped with the running config
+(n_proj_iters=20) lands -0.09 -> -0.29 rad/s against a +0.09 ->
++0.34 command (mean error 0.3491 rad/s, wrong way). The velocity
+solve delivers the servo's command perfectly; the POSITION
+PROJECTION then overwrites it every tick, growing with the creep.
+Every prior exoneration holds and the mechanism is now singular:
+the fall is the projection pass's pseudo-velocity book-keeping —
+positional corrections re-entering as angular velocity and
+clobbering the motor-achieved w_rel. This also explains the saga's
+fingerprint (identical fall tick in every controller variant): the
+overwriter is downstream of ALL control. Successor named: read the
+projection pass, find the exact velocity writeback (joint
+projection vs contact projection, linear vs angular), then the
+membrane is the writeback itself — the projection must correct
+POSITION without re-writing the motor channel's velocity (or must
+fold its correction into the next tick's target, not this tick's
+velocity).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
