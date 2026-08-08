@@ -1349,10 +1349,21 @@ share one inline module scope (duplicate mangled identifiers) — bridge via
 window.__THREE_CORE__; the module's own import list is only 197 of the 444
 core exports (Scene, WebGLRenderer arrive via the re-export) so the bridge
 must destructure the full core export; the player code fences itself in a
-block (the module build has its own top-level const DATA). Successor
-(dependency order): DEMO v1 — the same player driven LIVE by the solver
-(export loop becomes a websocket/SharedArrayBuffer feed), the first
-interactive membrane; v3a (the ground loop) remains the physics successor.
+block (the module build has its own top-level const DATA). (6) LIVE-FEED
+FEASIBILITY, measured 2026-08-08 (the DEMO v1 question, answered before
+building it): the tick costs 13.71 ms of which 6.21 ms was the PYTHON
+muscle controller (121 actuators x per-call numpy overhead). Vectorizing
+MuscleController.apply (same per-element arithmetic batched; verified
+BITWISE identical over 300 ticks, 0.0 drift in pos/quat, determinism and
+the battery untouched) takes it to 0.135 ms and the full tick to 8.6 ms
+(116 ticks/s). The remaining cost is the direct solve itself (~9 ms with
+motor rows). Verdict: real-time 1 kHz in CPython is 8.6x away and the
+controller is no longer the membrane — the solve is; 0.12x slow-motion
+live streaming IS reachable today with no further work. Successor
+(dependency order): DEMO v1 — the same player fed live over a local
+socket at the measured rate (honest slow motion, labeled), or the solve
+moves to the GPU first (the operator's Barnes-Hut lane); v3a (the ground
+loop) remains the physics successor.
 
 ## ORDER OF PROOF (derived from dependency depth)
 

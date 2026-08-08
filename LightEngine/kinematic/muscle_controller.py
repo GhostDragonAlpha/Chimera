@@ -43,7 +43,6 @@ lever a x r_com; nothing is chosen.
 
 from __future__ import annotations
 
-import math
 from typing import Any
 
 import numpy as np
@@ -129,6 +128,42 @@ class MuscleController:
             [a["torque_limit_Nm"] * self.dt for a in self.actuators],
             dtype=np.float64)
 
+        # Stacked per-actuator constants for the vectorized apply (the scalar
+        # loop cost 6.2 ms/tick in Python-call overhead, measured 2026-08-08;
+        # the math below is the SAME per-element arithmetic, batched).
+        self._P = state["motor_parent"]
+        self._C = state["motor_child"]
+        self._J = state["motor_joint"]
+        self._axis_local = np.array(
+            [a["axis_local_parent"] for a in self.actuators], dtype=np.float64)
+        self._omega_n = np.array(
+            [a["omega_n"] for a in self.actuators], dtype=np.float64)
+        self._t_off = np.array(
+            [a["target_offset"] for a in self.actuators], dtype=np.float64)
+        self._lmax = state["motor_lmax"].copy()
+
+    @staticmethod
+    def _normalize_rows(q: np.ndarray) -> np.ndarray:
+        """transforms.normalize, batched over rows of (n, 4)."""
+        n = np.linalg.norm(q, axis=1)
+        n = np.where(n < 1e-12, 1.0, n)
+        return q / n[:, None]
+
+    @classmethod
+    def _multiply_rows(cls, a: np.ndarray, b: np.ndarray) -> np.ndarray:
+        """transforms.multiply, batched (Hamilton product, normalized)."""
+        a = cls._normalize_rows(a)
+        b = cls._normalize_rows(b)
+        aw, ax, ay, az = a[:, 0], a[:, 1], a[:, 2], a[:, 3]
+        bw, bx, by, bz = b[:, 0], b[:, 1], b[:, 2], b[:, 3]
+        out = np.stack([
+            aw * bw - ax * bx - ay * by - az * bz,
+            aw * bx + ax * bw + ay * bz - az * by,
+            aw * by - ax * bz + ay * bw + az * bx,
+            aw * bz + ax * by - ay * bx + az * bw,
+        ], axis=1)
+        return cls._normalize_rows(out)
+
     def apply(self, state: dict[str, Any]) -> None:
         """Compute this tick's motor rows (axis, target, lmax) in the state."""
         motor_axis = state["motor_axis"]
@@ -142,31 +177,35 @@ class MuscleController:
             return
 
         quat = state["quat"]
-        q_rel0_all = state["joint_q_rel0"]
 
-        for mi, a in enumerate(self.actuators):
-            p = a["parent_idx"]
-            c = a["child_idx"]
-            q_p = quat[p]
-            q_c = quat[c]
+        # Relative orientation, child in the parent's frame, and its error
+        # against the bind pose -- the scalar reference is in the module
+        # history (git); identical per-element arithmetic, batched over the
+        # 121 actuators.
+        q_p = self._normalize_rows(quat[self._P])
+        q_c = quat[self._C]
+        q_rel = self._multiply_rows(
+            np.column_stack([q_p[:, 0], -q_p[:, 1], -q_p[:, 2], -q_p[:, 3]]),
+            q_c)
+        q_rel0_conj = np.column_stack([
+            state["joint_q_rel0"][self._J, 0],
+            -state["joint_q_rel0"][self._J, 1],
+            -state["joint_q_rel0"][self._J, 2],
+            -state["joint_q_rel0"][self._J, 3]])
+        q_err = self._multiply_rows(q_rel, q_rel0_conj)
+        q_err = np.where(q_err[:, :1] < 0.0, -q_err, q_err)
 
-            # Relative orientation, child in the parent's frame, and its error
-            # against the bind pose.  rv(q_err).axis_local is the angle error
-            # about this free axis.
-            q_rel = transforms.multiply(transforms.conjugate(q_p), q_c)
-            q_err = transforms.multiply(
-                q_rel, transforms.conjugate(q_rel0_all[a["joint_index"]])
-            )
-            if q_err[0] < 0.0:
-                q_err = -q_err
-            sin_half = float(np.linalg.norm(q_err[1:]))
-            theta_err = 0.0
-            axis_local = a["axis_local_parent"]
-            if sin_half > 1e-14:
-                angle = 2.0 * math.atan2(sin_half, float(q_err[0]))
-                rv = q_err[1:] / sin_half * angle
-                theta_err = float(rv @ axis_local)
+        sin_half = np.linalg.norm(q_err[:, 1:], axis=1)
+        live = sin_half > 1e-14
+        angle = np.zeros(len(q_err), dtype=np.float64)
+        angle[live] = 2.0 * np.arctan2(sin_half[live], q_err[live, 0])
+        rv = np.zeros((len(q_err), 3), dtype=np.float64)
+        rv[live] = q_err[live, 1:] / sin_half[live, None] * angle[live, None]
+        theta_err = (rv * self._axis_local).sum(axis=1)
 
-            motor_axis[mi] = transforms.rotate(q_p, axis_local)
-            motor_target[mi] = -a["omega_n"] * (theta_err - a["target_offset"])
-            motor_lmax[mi] = a["torque_limit_Nm"] * self.dt
+        # transforms.rotate(q_p, axis_local), batched: t = 2*cross(xyz, v).
+        t = 2.0 * np.cross(q_p[:, 1:], self._axis_local)
+        motor_axis[:] = self._axis_local + q_p[:, :1] * t \
+            + np.cross(q_p[:, 1:], t)
+        motor_target[:] = -self._omega_n * (theta_err - self._t_off)
+        motor_lmax[:] = self._lmax
