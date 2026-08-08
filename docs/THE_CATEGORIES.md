@@ -1322,6 +1322,38 @@ re-solve, where v2's attempt clamped after); v3b — only then the standing
 verdict re-run, same six meters, same windows; the unactuated battery and
 this battery both stay as controls.
 
+**STANDING DEMO v0 VERDICT 2026-08-08 (Lane D — LightEngine/build_standing_demo.py,
+self-contained three.js player at LightEngine/output/standing_demo.html, 1 001
+frames x 2 runs at 8-tick cadence, verified by playwright screenshots
+demo_check_{main,control}_*.png):** the replay pipeline is FAITHFUL and
+LEGIBLE — and its first payload is that the eye now agrees with the meters.
+(1) Prediction (a) PASS: exported head_z0 = 1.8106 m, dead center of the
+battery band [1.746, 1.875], both runs — the exporter re-runs the exact
+deterministic battery trajectory (a unit-trap fired and was fixed on the
+way: dynamics state pos is link COM in METERS, not lu; the exporter now
+refuses to write frames when head_z0 leaves [1.70, 1.92]). (2) Prediction
+(b) PASS: the MAIN render at tick 80 shows a standing figure (head z
+1.79 m); CONTROL renders past tick 1 800 show head z < 0.5 m — verified
+from screenshots, not prose. (3) The STATEMENT survives only as corrected
+by the data: a blind viewer CAN tell the runs apart — they are identical
+until the cut at 1 200 by construction, then CONTROL sinks ~2x deeper
+(head z -10.37 m vs MAIN -5.29 m at tick 8 000) — but "MAIN stands" is
+true only for ~0.3 s (head z < 1.5 m by tick 312, through the floor grid
+by 624). The demo does not hide the falsified STAND; it shows it, labeled,
+in the HUD. (4) Two honest-presentation rules came out of the build: the
+ground plane renders as faint glass (the floor holds only 10 foot contact
+points, so an opaque plane would lie about where the body is), and a
+follow-COM camera keeps the sinking frame in view. (5) Measured build
+traps for the next HTML lane: three.js r185 core and module builds cannot
+share one inline module scope (duplicate mangled identifiers) — bridge via
+window.__THREE_CORE__; the module's own import list is only 197 of the 444
+core exports (Scene, WebGLRenderer arrive via the re-export) so the bridge
+must destructure the full core export; the player code fences itself in a
+block (the module build has its own top-level const DATA). Successor
+(dependency order): DEMO v1 — the same player driven LIVE by the solver
+(export loop becomes a websocket/SharedArrayBuffer feed), the first
+interactive membrane; v3a (the ground loop) remains the physics successor.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
