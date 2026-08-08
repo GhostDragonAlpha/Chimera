@@ -2239,6 +2239,25 @@ physiological F_max * dt (F_max is already in the ligament table;
 stiffness = F_max/d_eq_m derives from it), so an overstretched
 ligament YIELDS and the relaxed body crumples past the catch.
 
+**BALANCE-PROBE v5 FALSIFIED 2026-08-08 (probe .tmp/probe_balance5.py,
+static reference rebased to the measured settle theta_err — ankle
+t_off -0.0900 rad vs the derived -0.0675):** (e) CLAMP PASS; all
+others FAIL, and the verdict closes a whole branch: across FIVE
+controller variants (no loop / polygon deadband / anatomical polygon
+/ settle-COM target / settle-rebased servo) the creep proceeds
+IDENTICALLY (+0.043 @758, fall ~1416) — no reference or target or
+loop above the ankle touches it. The creep's parent is below the
+controller layer entirely, at the roll's pivot: the TOE joint's own
+servo/authority (the forefoot group is the weakest actuator in the
+table: 6.0 kg PCSA, 0.020 m moment arm — and the forensics' first
+mover was metatarsals, leading the head by 180 ticks). Successor
+named: toe-authority forensics — are the metatarsals motor rows
+saturated (|impulse| at lmax) through the creep while the ankle rows
+are not? If yes: the roll is a physiological authority question
+(is the forefoot spec right?), not a control question. If no: the
+toe servo has authority and doesn't correct — then the toe's
+reference/measurement is the address.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
