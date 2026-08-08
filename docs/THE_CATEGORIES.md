@@ -2145,6 +2145,23 @@ anatomical polygon did not chase the fall, the clamp bounded the
 flail. Successor named: v3 = v2 with the lean channel restricted to
 the ankle rows (one change, per the one-membrane rule).
 
+**BALANCE-PROBE v3 FALSIFIED 2026-08-08 (probe .tmp/probe_balance3.py,
+ankle-only lean channel): BIT-IDENTICAL to v2 — every number matches
+to all printed digits (head_z, COM, max_err, KE, |w| 11 405, |off|
+95.6). The identity itself is the verdict: the toe rows contributed
+NOTHING to v2's channel (their lever projection is ~zero at this
+geometry), so the "toe rows push the frame forward" theory is
+falsified and the forward push — if it exists — comes through the
+ANKLE rows themselves, or the channel is inert and v2/v3's divergence
+from the uncontrolled trace was set during the settle (max_err @100
+differs: 0.162 vs 0.106 uncontrolled — the correction was already
+acting before tick 100). Open either way: whether the ankle lean
+channel moves the COM WITH the commanded off, AGAINST it (the static
+bind-pose derivation inverts in closed loop), or NOT AT ALL
+(authority never reaches the COM). Successor named: a sign-forensics
+probe — twin runs from one initial state, A with the loop, B with off
+forced to zero, divergence vs commanded off measured per tick.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
