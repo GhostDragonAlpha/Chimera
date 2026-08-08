@@ -2624,6 +2624,40 @@ should act on (v_t - v_t_motor): friction opposes the world's
 sliding, not the muscle's command. contact_friction=5 = the hybrid
 with the muscle channel excluded from its tangential kill.
 
+**MUSCLE-EXCLUSION SWEEP, FALSIFIED AT (a) — AND THE FALL TICK IS
+INVARIANT 2026-08-08 (probe .tmp/probe_muscle_exclusion.py,
+contact_friction=5, ghost-free, MAIN 8 000 + CONTROL 1 500):** (b)
+NO-SIMMER PASS (KE max 2 893 J, zero samples >= 1e4 — the
+exclusion does not pump, the sweep stays dissipative). (d) CONTROL
+PASS (sag 1.043 m). (a) TRACKING FAIL — 0.7466 rad/s, WORSE than
+the hybrid's 0.3491: freeing the muscle channel from the sweep did
+not move the servo onto its target, so the sweep's pin was never
+what held the servo off it. (c) MAIN FAILS AT TICK 1 429 — and
+that number is the payload: the hybrid fell at ~1 416, every
+controller variant at ~1 416, the exclusion at 1 429. **The fall
+tick is INVARIANT across every long-protocol-stable configuration
+— five controllers, the play band, the force limit, the hybrid,
+the muscle-exclusion. The friction venue is CLOSED BY EXHAUSTION:
+no friction treatment that stays bounded moves the fall. The
+driver is upstream of every knob turned so far.** What the record
+already holds about the driver: the fall forensics convicted the
+TOE FOLD as first mover (metatarsals error leads the head drop by
+~180 ticks), and the toe-authority forensics named the CONTACT
+SPEC GAP: every contact point attaches to the tarsals, NONE ahead
+of the MTP joint — the toe servo pushes its 2.25 N m against air,
+the ground has no forefoot lever to resist the fold, and the fold
+leads the fall by exactly the class of delay the creep takes to
+reach the polygon edge. The ankle is innocent; the friction is
+innocent; the FIRST MOVER pushes on nothing. Successor named: the
+FOREFOOT CONTACT SPEC membrane — contact points at the metatarsal
+heads (anatomy datum: the ball of the foot bears load; it is how
+the toe muscle's reaction exists at all), derived from the spec's
+own bone geometry. PREDICTION: the toe fold vanishes or delays,
+the fall tick moves past 1 429 or disappears, tracking restores.
+FALSIFIER: the fall tick stays at ~1 416-1 429 WITH forefoot
+contacts — the fold is downstream after all; re-aim at the servo
+command membrane (the command issued for a falling body).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
