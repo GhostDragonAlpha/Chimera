@@ -496,3 +496,20 @@ fight of run 10 one level down.  The velocity solve is CLEAN
 (five green legs prove it).  RUN 15 MEMBRANE NAMED: **the
 position pass must skip _SPRINGSRC contact points** -- the spring
 owns its penetration band; projection corrects JOINT error only.
+RUN 14 POSTSCRIPT / RUN 15 MEMBRANE (2026-08-08): the position pass
+was INNOCENT -- it has no contact projection at all (its own
+docstring: contacts do not drift, contact projection removed for
+pumping).  The real REST mechanism is simpler: the force source
+is a CONSERVATIVE spring with zero damping -- the drop's kinetic
+energy is stored elastically and returned, forever; 70 J at tick
+3999 is the undamped bounce of the initial fall.  Every earlier
+form got its dissipation free from the solve (rigid rows are
+perfectly plastic).  RUN 15: **PLASTIC-CAPPED DAMPING** -- the
+spring row applies dt*F(d) plus a damping impulse opposing
+COMPRESSION, bounded by the point's own normal momentum:
+lambda_damp = min(dt*c*(-v_n), m_eff*(-v_n)), c = 2*sqrt(m_eff*
+k_local).  Viscous when gentle, perfectly plastic when violent --
+and it CANNOT launch by construction: |delta_v| <= |v| always
+(the run-11 launch was an UNBOUNDED damping force; the run-14
+bounce was NO damping; this is the bounded middle).  At rest
+v ~ 0: damping ~ 0, no jitter added.
