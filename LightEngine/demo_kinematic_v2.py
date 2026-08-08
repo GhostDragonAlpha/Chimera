@@ -25,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import math
+import os
 import sys
 import time
 
@@ -151,14 +152,23 @@ def main():
     which = sys.argv[1] if len(sys.argv) > 1 else "both"
     spec = build_spec(1.80, 80.0)
 
+    # v3c A/B: CONTACTS_IN_SOLVE=1 moves the ground-contact rows into the
+    # direct solve (default off: the post-solve sweep).  Same six meters,
+    # same windows -- the run that decides the flag default.
+    in_solve = os.environ.get("CONTACTS_IN_SOLVE", "0") == "1"
+
     state = init_state(spec)
     # v2 constitution: the muscles, NOT the rotation locks, close the free
     # dofs.  Locks on would make STAND trivially vacuous.
     state["rotation_locks"] = False
+    if in_solve:
+        state["contacts_in_solve"] = True
     main_ctrl = MuscleController(spec, state)
     print(f"actuators: {len(main_ctrl.actuators)} "
           f"(torque limits {min(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f}"
           f"-{max(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f} N m)")
+    if in_solve:
+        print("ground loop: CONTACTS IN SOLVE (v3a path)")
     main_metrics = _run_v2(spec, state, "MAIN", main_ctrl)
     print(f"[MAIN] peak actuator link-torque {main_metrics['max_torque']:.2f} N m")
 
@@ -166,12 +176,15 @@ def main():
     if which == "both":
         state_c = init_state(spec)
         state_c["rotation_locks"] = False
+        if in_solve:
+            state_c["contacts_in_solve"] = True
         control_ctrl = MuscleController(spec, state_c)
         control_metrics = _run_v2(spec, state_c, "CONTROL", control_ctrl,
                                   relax_muscles_at=CONTROL_CUT_TICK)
 
     verdict = _verdict(main_metrics, spec, control_metrics,
-                       title="STANDING HUMAN v2 -- MUSCLE BATTERY")
+                       title="STANDING HUMAN v2 -- MUSCLE BATTERY" + (
+                           " [CONTACTS IN SOLVE]" if in_solve else ""))
     failed = [k for k, ok in verdict.items() if not ok]
     print(f"\nVERDICT: {'FALSIFIED: ' + ', '.join(failed) if failed else 'STANDS'}")
     return verdict

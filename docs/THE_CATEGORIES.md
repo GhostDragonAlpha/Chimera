@@ -1497,6 +1497,40 @@ on the foot links, the named fix is the toe-restraint membrane
 (plantar-fascia ligament rows, derived rest lengths — anatomy, not a
 gain and not a clamp).
 
+**STANDING v3c BATTERY A/B VERDICT 2026-08-08 (the v2 battery, same six
+meters, same windows, sweep (A) vs contacts-in-solve (B);
+CONTACTS_IN_SOLVE env flag added to demo_kinematic_v2 and
+serve_standing_demo for exactly this A/B; MAIN + CONTROL, 8 000 ticks
+each):** the membrane is FALSIFIED as named and the flag stays OFF. A
+reproduces the recorded v2 battery exactly (LIMIT femur_L 7.279, CAPTURE
+0.0269 m, FRAME +22.19 lu, LIGAMENT PASS 0 events / 3 954 N, STAND head
+z [-5.294, -2.308], CONTROL PASS +0.280 m) — the control side is
+bit-consistent with history. B holds better through the early window
+(the 600-tick probe's +0.862 m was real) and then DIVERGES on the long
+protocol: vmax 2e156 m/s by tick 8 000 with numpy overflow warnings,
+LIMIT / CAPTURE / FRAME reading 1e170-class debris numbers, and — the
+falsifier named before the run — (d) LIGAMENT FAILS (7 compression
+events), a meter A passed. ((f) CONTROL reads PASS at 3.979 m but is
+vacuous: both frames are exploded debris by the cut window.) (1) The
+600-tick probe and the 8 000-tick battery are BOTH true: the in-solve
+ground loop delays the crumple, then a slow energy leak the short
+window cannot see goes supercritical on the LYING frame, where many
+contact rows are active at once and the fix-at-bound friction, the
+active-set entries/exits, and the post-solve ligament sweep interact
+tick after tick. (2) Net law: **a solver membrane is not done when it
+wins the short window — the K2 ghost did not die, it moved to a longer
+timescale: the leak is not the post-solve clamp (that stayed removed)
+but somewhere in the bound-revision / active-set / ligament-sweep
+interaction, and only a per-tick energy-drift meter over a long
+lying-frame run will name it.** Successors (dependency order): v3d —
+the energy audit: run the lying frame with contacts-in-solve, log total
+kinetic energy and per-row-kind impulse work each tick, and find the
+row kind whose mean work is positive (prime suspect: friction
+fix-at-bound with a bound computed from a lambda_n the re-solve later
+revises; second: the ligament sweep fighting the in-solve contacts);
+only then another battery A/B. The flag stays OFF everywhere (battery,
+demo server, exporter) until a full battery passes with it ON.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import queue
 import struct
 import sys
@@ -126,6 +127,11 @@ def sim_loop():
     def fresh():
         state = init_state(spec)
         state["rotation_locks"] = False
+        # v3c: CONTACTS_IN_SOLVE=1 runs the demo on the in-solve ground
+        # loop (default off: the sweep path).  The flag default is decided
+        # by the v3c battery A/B verdict in docs/THE_CATEGORIES.md.
+        if os.environ.get("CONTACTS_IN_SOLVE", "0") == "1":
+            state["contacts_in_solve"] = True
         state["ext_force"] = np.zeros((len(state["link_names"]), 3),
                                       dtype=np.float64)
         state["ext_torque"] = np.zeros((len(state["link_names"]), 3),
