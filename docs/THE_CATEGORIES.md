@@ -2798,6 +2798,45 @@ booked, and must not remove more than the cone allows
 (|kill| <= MU x lambda_n per tick); the kernel's mode-2 sweep is
 read before the probe is written.
 
+**CREEP DECOMPOSITION, MEASURED 2026-08-08 — the feet ratchet
+BACKWARD under load, then the ground lets go (probe
+.tmp/probe_creep_decomposition.py, LEGACY contacts, hybrid fr=2,
+ghost-free, 2 000 ticks):** neither skate nor lean — MIXED (foot
+share 44% of the COM drift @100 -> @1150), and the mechanism reads
+in three phases.  (1) THE RATCHET, ticks 0-950: the feet slide
+BACKWARD (-0.030 -> -0.057 m, both, symmetric) while loaded at a
+steady 392 N per foot (exactly W_f), the COM creeps forward
+(+0.012 -> +0.072 m), the servo target GROWS (+0.08 -> +0.53 rad/s)
+and the achieved ankle w_rel stays NEGATIVE — the joint does the
+opposite of the command, the friction-fork crime in the raw.  The
+mode-2 kill stops the contact POINT exactly (j_t = min(vt_mag/K_t,
+MU*j_n), sign-preserving at the point), but the point's velocity is
+mostly ANGULAR (the foot rotating about the ankle), so the kill's
+linear reaction over-drives the foot's COM backward each tick —
+the ratchet.  (2) THE CLIFF, @950: the required ground shear (the
+lean-growing ankle torque over the 0.072 m ankle height) crosses
+the per-tick cone cap MU*j_n — Fn spikes 392 -> 750 N, then reads
+ZERO: the feet leave the ground.  (3) THE DIVE, @1000+: airborne
+intervals (Fn 0 at most samples to @1900), the COM accelerating
+0.6 m forward, crumple by ~1 900.  **The law: friction kills
+SLIDING, not ROLLING — a contact-point velocity due to rotation
+about the joint is the rolling channel, and killing it back-drives
+the planted foot.**  This explains the whole saga at once: the
+ratchet rate is set by the servo gain and the cone cap (both
+identical across friction modes -> the invariant 1 416-1 429); the
+live reference slowed the command growth (-> 1 779); the
+muscle-exclusion freed the muscle velocity from the kill and let
+the foot slide MORE (-> tracking 0.747, worse).  Successor named:
+the ROLLING-BLIND SWEEP (contact_friction=6) — the tangential kill
+sized on the contact link's LINEAR tangential velocity (the sliding
+channel), cone-capped as now; the rotational surface velocity
+omega x r at the point is the joint's business, not friction's.
+PREDICTION: the ratchet stops (foot_x holds +/- 2 mm over ticks
+100-900), the cliff never comes, the fall tick moves past 1 429 or
+vanishes.  FALSIFIER: the ratchet persists with the linear-only
+kill -> the driver is the cone itself (MU too low for the servo's
+reaction shear; a DERIVED MU membrane).
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
