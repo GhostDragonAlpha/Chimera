@@ -481,3 +481,18 @@ joints and contacts solve AGAINST the spring force in the same
 tick), bilinear F continued below the pad (no 2e8 segment at
 all); the rigid zone is retired to the atlas as UNKNOWN pending
 real 5-25x BW data.
+RUN 14 OUTCOME (2026-08-08): **FIVE OF SIX LEGS GREEN ON BOTH
+CANDIDATES -- and the last membrane has an address**.  (a) const
+212k source: NO SINK +0.0011, NO TUNNEL -0.0443 (BEST BRAKING
+EVER RECORDED), (d1) -0.0465 PASS, (d2) -0.0011 PASS, NO PUMP
+PASS.  (b) bilinear source: same sweep except NO TUNNEL hair-fail
+-0.1254.  REST FAIL on both: 70.2 / 77.9 J.  THE MECHANISM, named
+by the run's own falsifier: the spring's equilibrium REQUIRES
+penetration (the pad holds weight at 4-8 mm depth by design), and
+the POSITION pass projects penetrated points back to the surface
+every tick -- it erases the equilibrium; the point re-falls, the
+spring re-pushes: a projection pump, exactly the phase-separation
+fight of run 10 one level down.  The velocity solve is CLEAN
+(five green legs prove it).  RUN 15 MEMBRANE NAMED: **the
+position pass must skip _SPRINGSRC contact points** -- the spring
+owns its penetration band; projection corrects JOINT error only.
