@@ -1640,6 +1640,28 @@ it).** Successors (dependency order): a standing-balance membrane
 recovery verb's arena); then DEMO v3 re-probed, unchanged, against a
 baseline that stands.
 
+**BALANCE FORENSICS VERDICT 2026-08-08 (probe
+.tmp/probe_balance_forensics.py, hybrid ground loop, muscles ON,
+candidates: reference lie / saturation / slip):** the membrane STANDS —
+exactly one signature present, and it is SLIP. (1) REFERENCE LIE absent:
+the COM- centroid offset SHRINKS 0.0645 -> 0.0119 m through the fall
+window — the servo's balanced reference works; the body converges on
+its target. (2) SATURATION absent: no sustained clamping before the
+fall — the physiology is strong enough. (3) SLIP PRESENT: loaded
+contact points migrate 80 mm by tick 200, 271 mm by tick 300, against
+the solver's own 1.31 mm slop — the feet slide out from under a frame
+that is balancing correctly; head falls 0.18 m by tick 267. (4) Net
+law: **the collapse is not a balance failure, it is a GRIP failure —
+the v3e hybrid's swept friction under-grips exactly where the v3e
+battery said it would (early-gain FAIL: 'swept friction recovers only
+a third of the early grip'), and standing is where that bill comes
+due.** Successors (dependency order): friction v4 — the warm-start
+cone bound (previous tick's lambda_n as the box constraint, no
+intra-tick revision — the derived fix already named in the v3d/v3e
+successors), probed FIRST by this forensics probe (slip signature must
+go absent, head_z fall tick must move past 1 000), THEN the v2 battery
+(the simmer pump must stay dead), then DEMO v3 re-probed unchanged.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
