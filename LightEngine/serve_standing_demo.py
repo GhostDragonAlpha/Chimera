@@ -127,11 +127,13 @@ def sim_loop():
     def fresh():
         state = init_state(spec)
         state["rotation_locks"] = False
-        # v3c: CONTACTS_IN_SOLVE=1 runs the demo on the in-solve ground
-        # loop (default off: the sweep path).  The flag default is decided
-        # by the v3c battery A/B verdict in docs/THE_CATEGORIES.md.
-        if os.environ.get("CONTACTS_IN_SOLVE", "0") == "1":
+        # v3e battery verdict: the hybrid ground loop (normals in-solve,
+        # friction swept) is battery-equivalent-or-better vs the sweep on
+        # all six meters -- it is the demo default.  CONTACTS_IN_SOLVE=0
+        # opts back out to the pre-v3a sweep path.
+        if os.environ.get("CONTACTS_IN_SOLVE", "1") == "1":
             state["contacts_in_solve"] = True
+            state["contact_friction"] = 2
         state["ext_force"] = np.zeros((len(state["link_names"]), 3),
                                       dtype=np.float64)
         state["ext_torque"] = np.zeros((len(state["link_names"]), 3),

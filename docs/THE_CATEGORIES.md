@@ -1559,6 +1559,40 @@ short window); (ii) cone bound from the PREVIOUS TICK's lambda_n (a
 warm-start box constraint, no intra-tick revision); then the battery
 A/B again — the flag stays OFF until a full battery passes ON.
 
+**STANDING v3e HYBRID VERDICT 2026-08-08 (normals in-solve + friction
+swept, cone bound MU x the solve's own normal impulse; probe
+.tmp/probe_v3e.py + the v2 battery CONTACTS_IN_SOLVE=1
+CONTACT_FRICTION=2, MAIN + CONTROL, 8 000 ticks):** the membrane is
+FALSIFIED AS NAMED on its early-gain falsifier — and it is still the
+first in-solve ground loop that survives the full protocol; the
+falsifier bought the exact price list. (1) ENERGY PASS: 8 000 ticks
+BOUNDED, max KE 4.3e3 J, post-crumble steady state 32.0 J = the sweep's
+~30 J — the simmer pump is dead. (2) EARLY-GAIN FAIL as named: head z
+@600 = 0.368 m < the 0.5 bar (full cone: 0.980; sweep: 0.118) —
+in-solve friction WAS buying early grip, and swept friction recovers
+only a third of it. (3) THE BATTERY ARBITRATES (same six meters, same
+windows, vs the sweep's recorded numbers): (a) LIMIT femur_L 7.439 vs
+7.279 (~same), (b) CAPTURE femur_L 0.0265 m vs 0.0269 m (~same), (c)
+FRAME drift 7.45 lu vs 22.19 lu (3x BETTER), (d) LIGAMENT PASS 0
+compression events (force 6 502 N vs 3 954 N), (e) STAND head z
+[-2.533, -1.284] vs [-5.294, -2.308] (2x SHALLOWER crumple), (f)
+CONTROL PASS +0.842 m vs +0.280 m (3x stronger muscle visibility).  No
+meter the sweep passed regressed; every failing meter's numbers
+improved or held; vmax 28.2 m/s is the sweep's post-crumble whip
+class, not the full cone's 1e156 debris.  The sweep path verified
+bit-identical after the kernel changes (head z @600 0.1178, wmax
+934.7, both exact). (4) Net law: **the full cone's early-window
+advantage was bought with a 6 000-tick simmer that explodes — not a
+foundation; the hybrid trades two thirds of the early grip for
+long-protocol stability and is strictly battery-equivalent-or-better,
+so the hybrid becomes the DEMO's ground loop (server + exporter;
+CONTACTS_IN_SOLVE=0 opts out) while the step() library default stays
+sweep until the wider suite says otherwise.** Successors (dependency
+order): the warm-start cone bound (previous tick's lambda_n) if the
+early grip matters for STAND; the toe-restraint membrane (plantar
+fascia, v3b) still stands; DEMO v3 (the push-recover game) now has a
+ground loop that can actually recover.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

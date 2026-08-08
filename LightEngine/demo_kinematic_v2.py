@@ -155,7 +155,11 @@ def main():
     # v3c A/B: CONTACTS_IN_SOLVE=1 moves the ground-contact rows into the
     # direct solve (default off: the post-solve sweep).  Same six meters,
     # same windows -- the run that decides the flag default.
+    # CONTACT_FRICTION picks the friction mode when in-solve: 1 = full
+    # cone in-solve (v3a, measured leaky), 2 = hybrid (v3e: normals
+    # in-solve, friction swept, bounded at sweep-level steady state).
     in_solve = os.environ.get("CONTACTS_IN_SOLVE", "0") == "1"
+    fric_mode = int(os.environ.get("CONTACT_FRICTION", "1"))
 
     state = init_state(spec)
     # v2 constitution: the muscles, NOT the rotation locks, close the free
@@ -163,12 +167,15 @@ def main():
     state["rotation_locks"] = False
     if in_solve:
         state["contacts_in_solve"] = True
+        state["contact_friction"] = fric_mode
     main_ctrl = MuscleController(spec, state)
     print(f"actuators: {len(main_ctrl.actuators)} "
           f"(torque limits {min(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f}"
           f"-{max(a['torque_limit_Nm'] for a in main_ctrl.actuators):.1f} N m)")
+    mode_name = {0: "NONE", 1: "FULL CONE", 2: "HYBRID SWEPT"}.get(
+        fric_mode, str(fric_mode))
     if in_solve:
-        print("ground loop: CONTACTS IN SOLVE (v3a path)")
+        print(f"ground loop: CONTACTS IN SOLVE, friction {mode_name}")
     main_metrics = _run_v2(spec, state, "MAIN", main_ctrl)
     print(f"[MAIN] peak actuator link-torque {main_metrics['max_torque']:.2f} N m")
 
@@ -178,13 +185,15 @@ def main():
         state_c["rotation_locks"] = False
         if in_solve:
             state_c["contacts_in_solve"] = True
+            state_c["contact_friction"] = fric_mode
         control_ctrl = MuscleController(spec, state_c)
         control_metrics = _run_v2(spec, state_c, "CONTROL", control_ctrl,
                                   relax_muscles_at=CONTROL_CUT_TICK)
 
     verdict = _verdict(main_metrics, spec, control_metrics,
                        title="STANDING HUMAN v2 -- MUSCLE BATTERY" + (
-                           " [CONTACTS IN SOLVE]" if in_solve else ""))
+                           f" [CONTACTS IN SOLVE, friction {mode_name}]"
+                           if in_solve else ""))
     failed = [k for k, ok in verdict.items() if not ok]
     print(f"\nVERDICT: {'FALSIFIED: ' + ', '.join(failed) if failed else 'STANDS'}")
     return verdict

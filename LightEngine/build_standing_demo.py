@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -78,6 +79,13 @@ def _export_run(spec, label: str, relax_muscles_at: int | None) -> dict:
     """
     state = init_state(spec)
     state["rotation_locks"] = False
+    # v3e battery verdict: the hybrid ground loop (normals in-solve,
+    # friction swept) is battery-equivalent-or-better vs the sweep on all
+    # six meters -- the export runs on it.  CONTACTS_IN_SOLVE=0 opts back
+    # out to the pre-v3a sweep path.
+    if os.environ.get("CONTACTS_IN_SOLVE", "1") == "1":
+        state["contacts_in_solve"] = True
+        state["contact_friction"] = 2
     ctrl = MuscleController(spec, state)
 
     names = list(state["link_names"])

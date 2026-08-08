@@ -708,9 +708,12 @@ def step_core_direct(
     are grounded by the post-solve sequential sweep, the pre-v3a path.
 
     contact_friction == 0 (v3d instrumentation): skip the pyramid friction
-    rows (normals only).  Exists for the energy audit that isolates the
-    long-timescale leak found by the v3c battery A/B; default 1, the full
-    cone."""
+    rows (normals only).  contact_friction == 2 (v3e hybrid): normals in
+    the solve, friction back in the post-solve sweep with the cone bound
+    MU x the solve's normal impulse -- sweep clamping is dissipative by
+    construction, which the in-solve cone fix was measured not to be
+    (v3d: simmer pump, supercritical at tick 7 713).  Default 1: the full
+    cone in-solve (v3a), kept for A/B."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
@@ -848,7 +851,11 @@ def step_core_direct(
             rec_t[n_rows] = _REC_CONTACT
             rec_i[n_rows] = ci
             n_rows += 1
-            if contact_friction == 0:
+            # friction rows enter the solve only in mode 1 (full cone
+            # in-solve, v3a -- measured leaky on the long protocol, kept
+            # for A/B).  Mode 0: no friction anywhere (v3d instrument).
+            # Mode 2 (hybrid, v3e): friction runs in the sweep below.
+            if contact_friction != 1:
                 continue
             for t_ax in range(2):
                 t = np.zeros(3, dtype=np.float64)
@@ -1079,10 +1086,11 @@ def step_core_direct(
             motor_impulses[mid[r]] = motor_impulses[mid[r]] + l
 
     # ---- 5b. unilateral sweeps: sequential impulses with per-iteration
-    # clamping -- dissipative by construction.  Ligaments ALWAYS sweep here.
-    # Contacts sweep here only when contacts_in_solve == 0; with the v3a
-    # flag on, the contact rows live in the direct solve above and sweeping
-    # them again would double-apply the ground reaction.  (Measured
+    # clamping -- dissipative by construction.  Ligaments ALWAYS sweep
+    # here.  Contacts sweep here when contacts_in_solve == 0 (the full
+    # sweep, pre-v3a path), or when contact_friction == 2 (v3e hybrid:
+    # FRICTION ONLY -- the normals live in the direct solve above and
+    # sweeping them again would double-apply the ground reaction).  (Measured
     # 2026-08-08: a first contacts-in-solve attempt that clamped contact
     # lambdas POST-solve re-introduced the K2 active-set energy pump --
     # wmax 1.2e7 rad/s in 300 ticks.  v3a keeps lift-off AND the friction
@@ -1125,9 +1133,17 @@ def step_core_direct(
             lig_impulses_lin[li] = lig_impulses_lin[li] - jv
             lig_impulses_ang[li] = lig_impulses_ang[li] - _cross3(r_a, jv)
 
-        # contacts: unilateral normal + Coulomb friction, inelastic
-        # (sweep path only -- skipped when the v3a direct-solve rows are on)
-        if contacts_in_solve != 0:
+        # contacts: unilateral normal + Coulomb friction, inelastic.
+        # contacts_in_solve == 0: full sweep (normals + friction), the
+        # pre-v3a path.  contacts_in_solve with contact_friction == 2
+        # (v3e hybrid): the normals were decided by the direct solve
+        # above; this sweep applies FRICTION ONLY, with the cone bound
+        # MU x the solve's normal impulse (contact_impulses[ci][2]) --
+        # per-iteration sweep clamping is dissipative by construction,
+        # which the in-solve cone fix was measured not to be (v3d:
+        # simmer pump, supercritical at tick 7 713).  Friction modes 0
+        # (none) and 1 (full cone in-solve) skip this sweep.
+        if contacts_in_solve != 0 and contact_friction != 2:
             continue
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
@@ -1145,13 +1161,20 @@ def step_core_direct(
             if K_n <= 1e-15:
                 continue
             vn = v_p @ z_hat
-            j_n = 0.0
-            if vn < 0.0:
-                j_n = -vn / K_n
-                jv = j_n * z_hat
-                lin_vel[li] = lin_vel[li] + inv_mass[li] * jv
-                ang_vel[li] = ang_vel[li] + I_inv_l @ _cross3(r, jv)
-                contact_impulses[ci] = contact_impulses[ci] + jv
+            if contacts_in_solve == 0:
+                j_n = 0.0
+                if vn < 0.0:
+                    j_n = -vn / K_n
+                    jv = j_n * z_hat
+                    lin_vel[li] = lin_vel[li] + inv_mass[li] * jv
+                    ang_vel[li] = ang_vel[li] + I_inv_l @ _cross3(r, jv)
+                    contact_impulses[ci] = contact_impulses[ci] + jv
+            else:
+                # hybrid: the direct solve already applied this tick's
+                # normal impulse; its z component is the cone bound.
+                j_n = contact_impulses[ci][2]
+                if j_n < 0.0:
+                    j_n = 0.0
             v_t = v_p - vn * z_hat
             vt_mag = _norm3(v_t)
             if vt_mag > 1e-12:
