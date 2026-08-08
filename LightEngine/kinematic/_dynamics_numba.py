@@ -681,6 +681,7 @@ def step_core_direct(
     joint_impulses_lin, joint_impulses_ang,
     lig_impulses_lin, lig_impulses_ang,
     contact_impulses,
+    contacts_in_solve,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -691,7 +692,19 @@ def step_core_direct(
     K system as the joint coincidence rows, so the muscle impulse and the
     joint reaction are consistent -- an external pre-solve torque kick is
     not (measured 2026-08-08: ext-couple actuation whipped light links,
-    wmax 2000 rad/s, while the supported trunk barely moved)."""
+    wmax 2000 rad/s, while the supported trunk barely moved).
+
+    contacts_in_solve != 0 (v3a): ground-contact normal rows and their
+    two pyramid friction rows are assembled into the SAME K system as the
+    joints and motors, so the ground reaction is decided simultaneously
+    with the joint coincidence and the muscle impulse -- not one phase
+    later in a sweep.  Both inequalities are enforced INSIDE the active-set
+    re-solve: lift-off by the unilateral rule (lambda_n < 0 drops the row),
+    the friction cone (|lambda_t| <= MU * lambda_n) by fix-at-bound, apply,
+    remove -- exactly the motor-row idiom, never a post-solve lambda clamp
+    (the K2 pump, +10.5 kJ / 2000 ticks).  A dropped normal row takes its
+    friction rows to zero with it.  With the flag off (default) the feet
+    are grounded by the post-solve sequential sweep, the pre-v3a path."""
     n_links = pos.shape[0]
     n_joints = joint_parent.shape[0]
     n_lig = lig_idx_a.shape[0]
@@ -719,17 +732,20 @@ def step_core_direct(
             continue
         ang_vel[i] = ang_vel[i] + dt * (I_inv[i] @ ext_torque[i])
 
-    # ---- 2. assemble BILATERAL constraint rows (joints + rotation locks) ----
-    # Unilaterals (ligaments, contacts, friction) are NOT in the direct
-    # solve: clamping their lambdas after the equality solve breaks
-    # K lambda = -v_rel and pumps energy (measured 2026-08-08: +10.5 kJ over
-    # 2000 ticks on the full skeleton).  They run as sequential sweeps AFTER
-    # the direct solve, where per-iteration clamping is dissipative.
+    # ---- 2. assemble constraint rows (joints, locks, motors, contacts) ----
+    # Ligaments stay OUT of the direct solve: clamping their lambdas after
+    # the equality solve breaks K lambda = -v_rel and pumps energy (measured
+    # 2026-08-08: +10.5 kJ over 2000 ticks on the full skeleton).  They run
+    # as sequential sweeps AFTER the direct solve, where per-iteration
+    # clamping is dissipative.  Ground contacts enter the solve ONLY when
+    # contacts_in_solve != 0 (v3a): both inequalities are resolved INSIDE
+    # the active-set re-solve below (lift-off by the unilateral rule, the
+    # friction cone by fix-at-bound), never by a post-solve lambda clamp.
     # Each row: constraint  J_a . V_a + J_b . V_b = 0  where V is the
     # generalized velocity (v, w) and J the (lin, ang) pair.  Sign
     # convention: relative velocity of the B side minus the A side along the
     # row direction, so J_b = (n, r_b x n), J_a = (-n, -r_a x n).
-    rows_max = 6 * n_joints + n_motors + 1
+    rows_max = 6 * n_joints + n_motors + 3 * n_contacts + 1
     rb_a = np.full(rows_max, -1, dtype=np.int64)
     rb_b = np.full(rows_max, -1, dtype=np.int64)
     jla = np.zeros((rows_max, 3), dtype=np.float64)
@@ -801,6 +817,42 @@ def step_core_direct(
         rec_i[n_rows] = motor_joint[mi]
         mid[n_rows] = mi
         n_rows += 1
+
+    # ground contacts (v3a, only when contacts_in_solve != 0): one
+    # unilateral normal row + two pyramid friction rows per active contact
+    # point, solved INSIDE the same K system as joints and motors.  The
+    # ground is immovable, so each row is single-body (B side only).
+    # Friction rows pair to their normal row; the cone bound is enforced
+    # inside the active-set re-solve below.
+    if contacts_in_solve != 0:
+        for ci in range(n_contacts):
+            li = contact_link_idx[ci]
+            if mass[li] <= 0.0:
+                continue
+            R = _qmat(quat[li])
+            r = R @ contact_off_local[ci]
+            p_w = pos[li] + r
+            if p_w[2] >= contact_slop:
+                continue
+            normal_row = n_rows
+            rb_b[n_rows] = li
+            jlb[n_rows] = z_hat
+            jab[n_rows] = _cross3(r, z_hat)
+            kind[n_rows] = _UNILATERAL
+            rec_t[n_rows] = _REC_CONTACT
+            rec_i[n_rows] = ci
+            n_rows += 1
+            for t_ax in range(2):
+                t = np.zeros(3, dtype=np.float64)
+                t[t_ax] = 1.0
+                rb_b[n_rows] = li
+                jlb[n_rows] = t
+                jab[n_rows] = _cross3(r, t)
+                kind[n_rows] = _FRICTION
+                pair[n_rows] = normal_row
+                rec_t[n_rows] = _REC_CONTACT
+                rec_i[n_rows] = ci
+                n_rows += 1
 
     # ---- 3. body->rows incidence (CSR) ----
     counts = np.zeros(n_links, dtype=np.int64)
@@ -934,6 +986,35 @@ def step_core_direct(
                     active[r] = False
                     lam_full[r] = 0.0
                     violated = True
+            elif kind[r] == _FRICTION:
+                # cone bound from THIS attempt's solved normal lambda; a
+                # normal row dropped earlier in this pass leaves lim = 0,
+                # so its friction rows go to zero with it.  A row past the
+                # cone is FIXED at the bound: the bounded impulse is applied
+                # NOW (next attempt's rhs sees it) and the row leaves the
+                # set -- the motor-row idiom, never a post-solve clamp.
+                pn = pair[r]
+                lam_n = 0.0
+                if pn >= 0 and active[pn]:
+                    lam_n = lam[cmap[pn]]
+                lim = MU * lam_n
+                if lim < 0.0:
+                    lim = 0.0
+                lc = lam[cmap[r]]
+                if lc > lim or lc < -lim:
+                    if lc > lim:
+                        lc = lim
+                    else:
+                        lc = -lim
+                    bb = rb_b[r]
+                    if bb >= 0 and mass[bb] > 0.0:
+                        lin_vel[bb] = lin_vel[bb] + inv_mass[bb] * lc * jlb[r]
+                        ang_vel[bb] = ang_vel[bb] + I_inv[bb] @ (lc * jab[r])
+                    contact_impulses[rec_i[r]] = \
+                        contact_impulses[rec_i[r]] + lc * jlb[r]
+                    active[r] = False
+                    lam_full[r] = 0.0
+                    violated = True
         if not violated:
             break
 
@@ -989,13 +1070,15 @@ def step_core_direct(
         if kind[r] == _MOTOR and mid[r] >= 0:
             motor_impulses[mid[r]] = motor_impulses[mid[r]] + l
 
-    # ---- 5b. unilateral sweeps (ligaments, contacts): sequential impulses
-    # with per-iteration clamping -- dissipative by construction.  These run
-    # AFTER the direct bilateral solve; the small joint disturbance they add
-    # is cleaned by the next tick's solve and the position pass.  (Measured
-    # 2026-08-08: moving the contacts INTO the direct solve re-introduced
-    # the K2 active-set energy pump -- wmax 1.2e7 rad/s in 300 ticks.  The
-    # feet stay sweep-grounded; the muscle lane works around the phase lag.)
+    # ---- 5b. unilateral sweeps: sequential impulses with per-iteration
+    # clamping -- dissipative by construction.  Ligaments ALWAYS sweep here.
+    # Contacts sweep here only when contacts_in_solve == 0; with the v3a
+    # flag on, the contact rows live in the direct solve above and sweeping
+    # them again would double-apply the ground reaction.  (Measured
+    # 2026-08-08: a first contacts-in-solve attempt that clamped contact
+    # lambdas POST-solve re-introduced the K2 active-set energy pump --
+    # wmax 1.2e7 rad/s in 300 ticks.  v3a keeps lift-off AND the friction
+    # cone inside the re-solve instead; the sweep remains the fallback.)
     for _it in range(n_proj_iters):
         # ligaments: unilateral, only when taut and separating
         for li in range(n_lig):
@@ -1035,6 +1118,9 @@ def step_core_direct(
             lig_impulses_ang[li] = lig_impulses_ang[li] - _cross3(r_a, jv)
 
         # contacts: unilateral normal + Coulomb friction, inelastic
+        # (sweep path only -- skipped when the v3a direct-solve rows are on)
+        if contacts_in_solve != 0:
+            continue
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:

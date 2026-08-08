@@ -1428,6 +1428,42 @@ frame past its threshold, give it a step verb, score the recovery) —
 needs v3a (the ground loop) for a frame that can actually recover; or
 the GPU solve (the Barnes-Hut lane) so the feed runs at realtime.
 
+**STANDING v3a GROUND-LOOP VERDICT 2026-08-08 (contact normal + pyramid
+friction rows inside the direct solve, lift-off AND the friction cone
+enforced INSIDE the active-set re-solve — fix-at-bound, the motor-row
+idiom; state["contacts_in_solve"], default OFF; probe .tmp/probe_v3a.py,
+600 ticks at 1 kHz, muscle servo on):** the membrane is FALSIFIED AS
+NAMED — and the falsifier's own trace reclassifies the failure. (0)
+Baseline honesty: the sweep path (A) collapses on THIS protocol too —
+head z 1.78 @100, 1.69 @200, 1.52 @300, 0.12 @600, wmax 9.3e2 — verified
+pre-existing by re-running the probe against the stashed pre-change code
+(same trajectory); the v2 battery's windows, not 600 raw ticks, are its
+meters. (1) PUMP FALSIFIER FAIL as named: wmax 1.719e4 rad/s >= the 1e4
+bar. But the windowed trace — the falsifier's own data — shows NO K2
+ratchet: block maxima 25.8, 10.9, 653, 316, 1.72e4, 1.84e3 rad/s; the
+spike sits exactly in the tick-400-500 crumple block and DECAYS 10x in
+the next block while the frame recovers, where the K2 pump ratcheted
+monotonically to 1.2e7 (700x higher). The mechanism v3a outlawed —
+post-solve lambda clamping — is gone; what remains is a collapse
+transient whipping a slender link (I_inv ~1e7) caught between a contact
+row and a joint row during the fall. (2) PARITY PASS and it is not
+close: B holds higher head z at EVERY 100-tick block (1.80/1.72/1.57/1.38
+vs A's 1.78/1.69/1.52/1.25), crumples later, and then does what the sweep
+path never did — RECOVERS, head z 0.33 @500 back to 0.98 @600, dz(B-A) =
++0.862 m at tick 600. A ground reaction decided inside the solve is
+measurably stronger than the one decided a phase later. (3) DETERMINISM
+PASS: B rerun bitwise identical (the active-set row set varies per tick
+but is a deterministic function of state). (4) Net law: **the K2 law
+holds in the positive direction — inequalities enforced inside the
+re-solve (fix-at-bound, apply, re-solve) do not pump, even for the
+contact cone; the frame's remaining enemy is the crumple transient, not
+the solve.** Successors (dependency order): v3b — re-name the pump
+falsifier as the ratchet it actually is (monotonic growth across >= 3
+consecutive 100-tick blocks, or any block > 1e5 rad/s), hunt the
+crumple-whip link behind the 1.7e4 spike, then re-run the v2 battery
+A/B on the same six meters and windows; the flag stays OFF by default
+until the battery says otherwise.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

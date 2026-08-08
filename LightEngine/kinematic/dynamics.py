@@ -609,10 +609,10 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
         # The direct solve is the default: the sequential (Gauss-Seidel)
         # solver diverges at this skeleton's mass ratios (module docstring).
         # state["solver"] = "sequential" keeps the old scheme for comparison.
-        core = _numba_step_core
-        if state.get("solver", "direct") == "direct":
-            core = _numba_step_core_direct
-        core(
+        # state["contacts_in_solve"] = True (v3a) moves the ground-contact
+        # rows into the direct solve; default off, the feet are grounded by
+        # the post-solve sequential sweep (pre-v3a path).
+        args = (
             state["pos"], state["quat"], state["lin_vel"], state["ang_vel"],
             state["mass"], state["inv_mass"],
             state["inertia_diag_local"], state["inv_inertia_diag_local"],
@@ -632,6 +632,11 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
             lig_impulses_lin, lig_impulses_ang,
             contact_impulses,
         )
+        if state.get("solver", "direct") == "direct":
+            _numba_step_core_direct(
+                *args, int(state.get("contacts_in_solve", False)))
+        else:
+            _numba_step_core(*args)
         state["joint_impulses_lin"] = joint_impulses_lin
         state["joint_impulses_ang"] = joint_impulses_ang
         state["motor_impulses"] = motor_impulses
@@ -681,6 +686,11 @@ def _step_python(spec: dict[str, Any], state: dict[str, Any], dt: float,
         raise RuntimeError(
             "The Python fallback does not implement muscle motor rows; "
             "the muscle lane requires the numba direct solve."
+        )
+    if state.get("contacts_in_solve"):
+        raise RuntimeError(
+            "The Python fallback does not implement contacts_in_solve; "
+            "the v3a contact rows require the numba direct solve."
         )
 
     n_links = len(state["link_names"])
