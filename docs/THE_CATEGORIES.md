@@ -1816,6 +1816,33 @@ the demo default flips and the v2 constitution comment is corrected
 (locks were never vacuous — CONTROL still falls on every run of this
 saga).
 
+**MODE-4 BAUMGARTE VERDICT 2026-08-08 (probe .tmp/probe_mode4_full.py,
+bias rows in both cores):** FALSIFIED on three legs — and the anomaly
+inside the failure re-aims the hunt from the correction LAW to the
+solve's ENFORCEMENT FIDELITY. (1) (a) STAND FAIL, worse than mode 2:
+head_z @1000 = 0.713 m (mode 2: 1.399). (2) (d) LEAK STAYS DEAD FAIL —
+but the number is the tell: locked residual @1000 = 0.6507 rad vs mode
+2's 0.6323, statistically the SAME drift. A working bias would move
+that number in EITHER direction; the ankle behaves as if the bias is
+not there, while the rest of the frame falls FASTER. (3) (b) NO PUMP
+FAIL (|w| 3 537 in debris); (c) NON-VACUOUS PASS (fourth time: locks
+never hold the frame for the muscles). (4) Integrity: the default
+paths verified bit-identical across the mode-4 kernel edits via a
+stash A/B (head_z@600 0.1111 pre == post, wmax 934.7 exact; the
+0.1178 on record was the battery harness, not this probe's). (5) Net
+law: **the drift was never a missing correction law — mode 2's
+velocity rows already demand w_rel.L = 0 exactly, yet 0.63 rad of
+error accumulates by tick 1 000: the solve UNDER-ENFORCES the lock
+rows (min-norm regularizer + over-constrained tree + attempt cap),
+and the Baumgarte bias just gave the same under-enforcing solve a
+larger, more violent target to miss. The address is enforcement
+fidelity, not BETA.** Successors (dependency order): the enforcement
+probe — per-tick post-solve |w_rel.L| at tarsals_R in mode 2: ~0
+means enforced-and-integrating (bias-law territory), significant
+means never-enforced (solve-fidelity territory: regularizer eps,
+attempt cap, or row redundancy); then the membrane for whichever is
+measured.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained

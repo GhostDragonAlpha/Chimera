@@ -255,6 +255,28 @@ def _locked_axes(dof, R_p, axes_ji, z_hat):
     return la, n_locked
 
 
+@njit(cache=True)
+def _lock_err_theta(q_p, q_c, q_rel0, R_p):
+    """World-frame locked-axis error rotation vector of a joint (mode 4).
+
+    Controller convention: q_err = q_rel * q_rel0^-1, axis in the parent's
+    CURRENT local frame, rotated to world by R_p.  Projecting the result
+    onto a locked axis L (from _locked_axes) gives the signed error the
+    Baumgarte bias corrects; L is orthogonal to the free axes by
+    construction, so no per-dof masking is needed at the call sites."""
+    q_rel = _qmul(_qconj(q_p), q_c)
+    if q_rel[0] < 0.0:
+        q_rel = -q_rel
+    q_err = _qmul(q_rel, _qconj(q_rel0))
+    if q_err[0] < 0.0:
+        q_err = -q_err
+    s = _norm3(q_err[1:])
+    if s < 1e-12:
+        return np.zeros(3, dtype=np.float64)
+    ang = 2.0 * math.atan2(s, q_err[0])
+    return ang * (R_p @ (q_err[1:] / s))
+
+
 # ---------------------------------------------------------------------------
 # Position stabilization pass (shared by both velocity solvers).
 # NEVER touches velocities: it exists to kill integration drift only.
@@ -548,8 +570,10 @@ def step_core(
 
         # rotation locks at velocity level
         # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
-        # 3=position stabilization only (toxic-component A/B, 2026-08-08).
-        if do_rotation_locks == 1 or do_rotation_locks == 2:
+        # 3=position stabilization only, 4=velocity rows with a Baumgarte
+        # bias (position error carried INSIDE the velocity row: mode 2
+        # measured drifting, mode 3 measured pumping, 2026-08-08).
+        if do_rotation_locks != 0 and do_rotation_locks != 3:
             for ji in range(n_joints):
                 pa = joint_parent[ji]
                 cb = joint_child[ji]
@@ -561,12 +585,17 @@ def step_core(
                 I_inv_c = _world_inertia_inv(quat[cb], inv_inertia_diag_local[cb])
                 w_rel = ang_vel[cb] - ang_vel[pa]
                 la, n_locked = _locked_axes(dof, R_p, joint_axes[ji], z_hat)
+                if do_rotation_locks == 4:
+                    theta = _lock_err_theta(quat[pa], quat[cb],
+                                            joint_q_rel0[ji], R_p)
+                else:
+                    theta = np.zeros(3, dtype=np.float64)
                 for k in range(n_locked):
                     L = la[k]
                     K = L @ ((I_inv_p + I_inv_c) @ L)
                     if K <= 1e-15:
                         continue
-                    j = -(w_rel @ L) / K
+                    j = (-(w_rel @ L) - BETA * (theta @ L) / dt) / K
                     jv = j * L
                     ang_vel[cb] = ang_vel[cb] + I_inv_c @ jv
                     ang_vel[pa] = ang_vel[pa] - I_inv_p @ jv
@@ -770,6 +799,9 @@ def step_core_direct(
     rec_t = np.zeros(rows_max, dtype=np.int64)
     rec_i = np.zeros(rows_max, dtype=np.int64)
     mid = np.full(rows_max, -1, dtype=np.int64)
+    # per-row velocity targets for the rhs (0 everywhere except mode-4
+    # Baumgarte lock rows; motor rows override via motor_target below)
+    row_bias = np.zeros(rows_max, dtype=np.float64)
     n_rows = 0
 
     # joints: point coincidence along all 3 world axes
@@ -796,8 +828,10 @@ def step_core_direct(
 
     # rotation locks: pure angular rows on the locked axes
     # lock modes: 0=off, 1=both (legacy), 2=velocity rows only,
-    # 3=position stabilization only (toxic-component A/B, 2026-08-08).
-    if do_rotation_locks == 1 or do_rotation_locks == 2:
+    # 3=position stabilization only, 4=velocity rows with a Baumgarte
+    # bias (position error carried INSIDE the row's rhs: mode 2 measured
+    # drifting, mode 3 measured pumping, 2026-08-08).
+    if do_rotation_locks != 0 and do_rotation_locks != 3:
         for ji in range(n_joints):
             pa = joint_parent[ji]
             cb = joint_child[ji]
@@ -806,6 +840,10 @@ def step_core_direct(
                 continue
             R_p = _qmat(quat[pa])
             la, n_locked = _locked_axes(dof, R_p, joint_axes[ji], z_hat)
+            theta = np.zeros(3, dtype=np.float64)
+            if do_rotation_locks == 4:
+                theta = _lock_err_theta(quat[pa], quat[cb],
+                                        joint_q_rel0[ji], R_p)
             for k in range(n_locked):
                 L = la[k]
                 rb_a[n_rows] = pa
@@ -813,6 +851,8 @@ def step_core_direct(
                 jaa[n_rows] = -L
                 jab[n_rows] = L
                 kind[n_rows] = _BILATERAL
+                if do_rotation_locks == 4:
+                    row_bias[n_rows] = -BETA * (theta @ L) / dt
                 rec_t[n_rows] = _REC_JOINT_ANG
                 rec_i[n_rows] = ji
                 n_rows += 1
@@ -926,7 +966,8 @@ def step_core_direct(
                 # drive relative velocity to the muscle target, not to zero
                 rhs[cmap[r]] = motor_target[mid[r]] - vr
             else:
-                rhs[cmap[r]] = -vr
+                # row_bias is 0 except for mode-4 Baumgarte lock rows
+                rhs[cmap[r]] = row_bias[r] - vr
         # K = J M^-1 J^T via body incidence (K is SPD by construction)
         for b in range(n_links):
             s0 = starts[b]
