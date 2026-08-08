@@ -2718,6 +2718,86 @@ job (the datum-2 throttle, not load-bearing).  The contact_links
 flag stays in the tree, default OFF, as the membrane's measured
 instrument — the arch probe runs on it.
 
+**PLANTAR ARCH, FALSIFIED 2026-08-08 — THE TENSION WAS RIGHT, THE
+PATH WAS WRONG (probe .tmp/probe_plantar_arch.py, in-memory truss
+ties on CONTACT_LINKS=1, hybrid, ghost-free, saga ruler, MAIN
+8 000 + CONTROL 1 500):** the truss derivation: per foot W_f 392 N,
+COM over the support centroid x 0.081 m, ball reaction R_b 252 N,
+arch moment M_tar 22.7 N m over the tarsal joint's 0.018 m height
+-> T_tar 1 261 N (the rope was sized 34 N); toe-spring moment
+M_mtp 4.24 N m over the fascia lever 0.0103 m -> T_mtp 411 N.
+Results: (c) NO-SIMMER PASS (KE max 1 820 J — the ties do not
+pump).  (a) TOE FAIL (fold max 3.14 rad — fully flipped).  (b)
+MAIN FAILS AT TICK 346.  (d) CONTROL FAILS (crumpled before the
+cut).  The payload is in the EARLY trace: the fold at tick 400 was
+0.19 rad — the truss delayed the whip 15x (2.85 rad @400 without
+it) — then lost authority completely.  The geometry read: the
+modeled fascia is a STRAIGHT rope heel -> toe tip, rest 0.181 m;
+dorsiflex the toe 90 deg and the chord shortens to 0.141 m — the
+rope SLACKENS in exactly the direction it exists to resist.  The
+real windlass tensions because the fascia WRAPS the metatarsal
+head; this spec's mtp joint center sits ON the plantar plane
+(z = 0.000), so there is no wrap lever and no straight rope can
+supply one.  **The law: a ligament membrane must carry the tissue's
+PATH, not just its tension — a tie that slackens in its working
+direction is decoration.**  Successor named (the probe's own
+falsifier branch): CONTACT-SPRING PER-LINK SIZING — the whip's
+direct driver is a 157 N/point spring kicking a 1.18 kg link; the
+pad stiffness should be sized by the load the point's own tissue
+column carries (the toe pad is softer than the heel pad in every
+measurement of the real foot), not by M*g/n shared across the whole
+body.  The windlass-wrap finding stays on the record for the gait
+lane: if the mtp ever needs real dorsiflexion authority (push-off),
+the joint geometry needs a plantar radius to wrap.
+
+**LIVE LEAN REFERENCE, PART-OF-DRIVER 2026-08-08 — 350 TICKS OF
+THE FALL IS THE REFERENCE; THE REST IS THE SWEEP (probe
+.tmp/probe_live_reference.py, LEGACY contacts, hybrid fr=2,
+ghost-free, saga ruler, MAIN 8 000 + CONTROL 1 500):** the
+queue-jump over the arch verdict's named successor (contact-spring
+per-link sizing) was justified by the invariance itself: per-link
+sizing treats the anatomic-contact whip (a twice-falsified
+direction, PARKED), but the one thing EVERY falling configuration
+shared — five friction treatments, the play band, the force limit
+— was the BIND-TIME balanced reference, the only upstream
+component no friction knob touched.  The staleness was measured
+before the run: after 400 settle ticks the live derivation wants
+-0.0607 rad where the servo holds -0.0675 (~7 mm of COM error
+tracked forever); the toe fold is re-read as the CANARY (kp 0.03 N
+m/rad, the weakest loop, shows the sway first), not the driver.
+The membrane: recompute the lean offset from the live polygon and
+live COM every K = round(1/omega_n_ankle / DT) = 366 ticks
+(omega_n 2.73 rad/s measured — datum 3's slow channel, the
+controller's own cadence doctrine).  RESULTS: (b) NO-SIMMER PASS
+(KE max 2 104 J).  (a) MAIN FALLS AT TICK 1 779 — OUTSIDE the
+invariant 1 416-1 429, a 350-tick (25%) delay: the reference
+staleness is PART of the driver, exactly the probe's middle
+branch.  (c) CONTROL sag 0.494 m vs the 0.5 bar — a 6 mm miss
+(the pre-cut frame was better balanced, so the post-cut fall runs
+slower; recorded as FAIL, the near-miss is itself the membrane's
+fingerprint).  (d) THE PAYLOAD: creep margin @100 0.168 -> @800
+0.122 -> @1400 -0.191 m — the COM crossed the forward edge at
+~1 400 and the fall completed ~380 ticks later; and the live
+offsets WHIP once the margin is negative (-0.0675 -> +0.41 rad
+@1464 -> -1.15 rad @2928): chasing the centroid of a polygon the
+COM has already left leans the frame INTO the fall.  **Two laws
+land. (1) A balance reference must hold the base, not chase it:
+once the COM passes the polygon edge the centroid-following law is
+a positive feedback. (2) The point of no return is the lean the
+ankle cap can recover: theta_cap = tau_cap/(M g h) = 75/(80 x 9.81
+x 0.9) ~= 0.106 rad; the margin crossing, not the crumple, is the
+fall's beginning, and every fall-saga run died by the creep
+reaching it.**  The reference updates compensated the creep
+(350 ticks) but never removed its driver — consistent with the
+friction-fork's measured crime (the 5b sweep back-drives the
+tarsals wrong-way at 100% of samples: the servo's booked
+corrections leak into lean).  Successor named: the
+SIGN-PRESERVING SWEEP — friction may dissipate tangential velocity
+but must not reverse the sign of the velocity the servo just
+booked, and must not remove more than the cone allows
+(|kill| <= MU x lambda_n per tick); the kernel's mode-2 sweep is
+read before the probe is written.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
