@@ -1593,6 +1593,27 @@ early grip matters for STAND; the toe-restraint membrane (plantar
 fascia, v3b) still stands; DEMO v3 (the push-recover game) now has a
 ground loop that can actually recover.
 
+**STANDING v3f DEMO VERDICT 2026-08-08 (hybrid artifacts rebuilt,
+server v10 live on 127.0.0.1:8765; probes .tmp/probe_live.js,
+playwright screenshots):** (1) LIVE == BAKED PASS: the live server's
+head_z matches the baked replay to |d| = 3.94e-5 m, one round(z,4)
+quantum — the hybrid solver in the server and the exporter are the
+same machine. (2) CUT EFFECT PASS: [MUSCLES CUT] buys an extra 0.4287
+m of head drop at the probed tick — the muscle channel is visibly
+load-bearing in the live demo. (3) RATE FAIL, marginal: 69.2 t/s vs
+the 100 t/s bar — CPU contention on a shared box, physics fine;
+recorded, not patched (a rate bar is a hardware claim, not a law).
+(4) SCREENSHOTS VERIFIED BY EYE: demo_live_uncut.png (tick 504,
+figure mid-crumple, head_z 0.90) and demo_live_cut.png (tick 888,
+[MUSCLES CUT] flag up, deeper fall) are faithful renders of the
+state. (5) Net: the demo a player opens IS the hybrid ground loop
+that passed the v3e battery — standing_demo.html +
+standing_demo_frames.json rebuilt on it (MAIN + CONTROL 1001 frames
+each, head_z0 = 1.8106 guard passed). Successor: DEMO v3 — the
+push-recover game (shove the frame with the derived PUSH/SHOVE
+impulse already in serve_standing_demo.py, give it a step verb, score
+the recovery) — it now has a ground loop that can recover.
+
 ## ORDER OF PROOF (derived from dependency depth)
 
 lattice (running) -> BONE (a lattice that bears load) -> BRAIN (a bulk contained
