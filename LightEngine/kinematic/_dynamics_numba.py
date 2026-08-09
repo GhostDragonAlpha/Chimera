@@ -89,6 +89,7 @@ _BILATERAL = 0
 _UNILATERAL = 1     # lambda >= 0 required (ligament tension, contact normal)
 _FRICTION = 2       # |lambda| <= MU * lambda of the paired normal row
 _MOTOR = 3          # muscle row: target relative velocity, |lambda| <= lmax
+_SPRINGSRC = 4      # force-source row: applies exactly dt*F(d) per tick (run 14)
 
 _REC_JOINT_LIN = 0
 _REC_JOINT_ANG = 1
@@ -773,6 +774,15 @@ def step_core_direct(
     contact_friction,
     pos_pass_mode,
     contact_prev_n,
+    contact_recovery,
+    contact_priority,
+    contact_is_floor,
+    k_contact_pen,
+    contact_penalty,
+    pen_k1,
+    pen_k2,
+    pen_d_break,
+    pen_d_pad,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -853,6 +863,86 @@ def step_core_direct(
             continue
         ang_vel[i] = ang_vel[i] + dt * (I_inv[i] @ ext_torque[i])
 
+    # ---- 1b. PENALTY-FLOOR (2026-08-08, run 8): world-floor endpoints
+    # (side "W") ride an INDEPENDENT per-point spring, not the shared
+    # unilateral rows.  The Baumgarte line closed at run 7: any form
+    # that couples buried-point lift into the shared K solve either
+    # starves the holding rows (retention, any gate) or abandons the
+    # buried (ejection).  A floor is not a shared resource -- each
+    # point pushes back on its own, force ~ depth, and it never
+    # ejects because it is not a row.
+    #   k = k_contact_pen, DERIVED (dynamics.py:_contact_constants):
+    #       body weight over the 5-point support polygon compressing
+    #       the measured play d_eq.
+    #   c = 2*sqrt(m_eff*k), DERIVED per point per tick: critical
+    #       damping for the point's effective mass (1/K-diagonal), so
+    #       the spring never overshoots by construction.
+    #   IMPLICIT damping: j = dt*(k*depth - c*v_n)/(1 + dt*c/m_eff)
+    #       -- unconditionally stable for any dt (an explicit kick is
+    #       not: dt*omega > 2 for the lightest links), and still an
+    #       independent per-point law, no K coupling.
+    # The impulse is recorded in contact_impulses, so the post-solve
+    # friction sweep reads it as the cone bound like any solved normal.
+    # The points leave the unilateral row system entirely (below).
+    # RUN 11: mode 2 (compliant-row) carries the spring INSIDE the
+    # direct solve instead -- the pre-solve path stays run-9-only.
+    if contact_penalty == 1:
+        for ci in range(n_contacts):
+            if contact_is_floor[ci] == 0:
+                continue
+            li = contact_link_idx[ci]
+            if mass[li] <= 0.0:
+                continue
+            R = _qmat(quat[li])
+            r = R @ contact_off_local[ci]
+            p_w = pos[li] + r
+            depth = contact_slop - p_w[2]
+            if depth <= 0.0:
+                continue
+            v_p = lin_vel[li] + _cross3(ang_vel[li], r)
+            rn = _cross3(r, z_hat)
+            denom = inv_mass[li] + rn @ (I_inv[li] @ rn)
+            if denom > 1e-15:
+                m_eff = 1.0 / denom
+            else:
+                m_eff = mass[li]
+            if contact_penalty == 2:
+                # MEASURED-FLOOR (2026-08-08, run 10): the spring force
+                # law is the measured heel-pad curve, not the derived
+                # constant k.  Wearing 2014 (J Biomech): 32 kN/m
+                # initial -> 212 kN/m final; Lopez-Lopez 2019: pad
+                # bottoms out at 10.4 mm (unloaded 10.36 +/- 1.78 mm)
+                # -> near-rigid below.  D_BREAK is the midpoint of the
+                # travel (Wearing reports endpoints only -- recorded,
+                # NOT tuned).  EXCLUSIVE composition (run-9 lesson):
+                # these points assemble NO unilateral row, so nothing
+                # clamps against the spring's lift.
+                d = depth
+                if d < pen_d_break:
+                    k_loc = pen_k1
+                    F = pen_k1 * d
+                elif d < pen_d_pad:
+                    k_loc = pen_k2
+                    F = pen_k1 * pen_d_break + pen_k2 * (d - pen_d_break)
+                else:
+                    k_loc = 2.0e8
+                    F = pen_k1 * pen_d_break \
+                        + pen_k2 * (pen_d_pad - pen_d_break) \
+                        + 2.0e8 * (d - pen_d_pad)
+                c_eff = 2.0 * math.sqrt(m_eff * k_loc)
+                jn = dt * (F - c_eff * v_p[2]) \
+                    / (1.0 + dt * c_eff * denom)
+            else:
+                c_eff = 2.0 * math.sqrt(m_eff * k_contact_pen)
+                jn = dt * (k_contact_pen * depth - c_eff * v_p[2]) \
+                    / (1.0 + dt * c_eff * denom)
+            if jn <= 0.0:
+                continue
+            jv = jn * z_hat
+            lin_vel[li] = lin_vel[li] + inv_mass[li] * jv
+            ang_vel[li] = ang_vel[li] + I_inv[li] @ _cross3(r, jv)
+            contact_impulses[ci] = contact_impulses[ci] + jv
+
     # ---- 2. assemble constraint rows (joints, locks, motors, contacts) ----
     # Ligaments stay OUT of the direct solve: clamping their lambdas after
     # the equality solve breaks K lambda = -v_rel and pumps energy (measured
@@ -881,6 +971,17 @@ def step_core_direct(
     # per-row velocity targets for the rhs (0 everywhere except mode-4
     # Baumgarte lock rows; motor rows override via motor_target below)
     row_bias = np.zeros(rows_max, dtype=np.float64)
+    # IMPLICIT SPRING ROW (2026-08-08, run 17): per-row K-diagonal
+    # compliance gamma = 1/(dt^2*k).  Zero = rigid row (bit-identical);
+    # only the measured-floor implicit spring rows set it.
+    row_gamma = np.zeros(rows_max, dtype=np.float64)
+    # per-row regime flag for penetrating-contact priority: 1 = the
+    # point arrived as an IMPACT (sinking faster than the spring-paced
+    # lift, -v_n > depth/T at assembly), 0 = STUCK (quasi-static).
+    # Impacts eject (run-4 measured good); stuck rows are retained
+    # (run-6 measured good).  Set only for contact rows in recovery
+    # mode 3; zero elsewhere, so the flag alone changes nothing.
+    row_crush = np.zeros(rows_max, dtype=np.int64)
     n_rows = 0
 
     # joints: point coincidence along all 3 world axes
@@ -959,9 +1060,116 @@ def step_core_direct(
     # Friction rows pair to their normal row; the cone bound is enforced
     # inside the active-set re-solve below.
     if contacts_in_solve != 0:
+        # SPRING-PACED RECOVERY period, DERIVED (2026-08-08, run 4): the
+        # in-solve bias replaces the sweep path's penalty spring, so it
+        # may not outrun that spring.  k_contact = M*g/(n*d_eq) with
+        # n = 5 support-polygon points sharing one foot's load
+        # (dynamics.py:_contact_constants) gives the natural period
+        # T = 2*pi*sqrt(M/k) = 2*pi*sqrt(n*d_eq/g) = 0.162 s at the
+        # 1.80 m / 80 kg build (d_eq = contact_slop).  Paced recovery:
+        # v = depth/T -- an exponential settle, no launch.
+        t_recovery = 2.0 * math.pi * math.sqrt(5.0 * contact_slop / GRAVITY)
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
+                continue
+            # GATE + SPRING (run 9): world-floor endpoints assemble a
+            # PURE GATE row (no bias -- the run-4 impact brake) while
+            # the penalty spring above does the lifting (the run-8
+            # recovery).  The spring lifting reads as positive normal
+            # velocity, so the gate releases; the gate brakes the
+            # crush while the spring lifts underneath, so ejection no
+            # longer abandons the buried.  Feet keep the biased modes.
+            floor_spring = contact_penalty != 0 \
+                and contact_is_floor[ci] != 0
+            if contact_penalty == 2 and contact_is_floor[ci] != 0:
+                # ZONED IMPLICIT SPRING-DAMPER (2026-08-08, run 18): pad
+                # zone (depth < pen_d_pad) is an IMPLICIT spring-damper
+                # row -- bias k*d/(dt*k+c) plus gamma 1/(dt*(dt*k+c))
+                # on the K diagonal, c = 2*sqrt(m_eff*k) derived at
+                # assembly (below); the rigid zone below the pad keeps
+                # the saga-proven spring-paced lift bias
+                # depth/t_recovery.  Run 17 (undamped implicit) killed
+                # the explicit-spring pump (REST 18-112 J -> 4 J) but
+                # left a bursty limit cycle on the light chain; run
+                # 18's damping is the dissipation path, implicit so
+                # the run-15 ratchet has no structure to exist, and
+                # zone-bounded so the all-depths damped launch (+4.98
+                # m in 1-DOF) cannot occur.  All forms 1-DOF verified
+                # before kernel entry (.tmp/probe_implicit_row_1dof).
+                R = _qmat(quat[li])
+                r = R @ contact_off_local[ci]
+                p_w = pos[li] + r
+                depth = contact_slop - p_w[2]
+                if depth <= 0.0:
+                    continue
+                normal_row = n_rows
+                rb_b[n_rows] = li
+                jlb[n_rows] = z_hat
+                jab[n_rows] = _cross3(r, z_hat)
+                kind[n_rows] = _UNILATERAL
+                rec_t[n_rows] = _REC_CONTACT
+                rec_i[n_rows] = ci
+                if depth < pen_d_pad:
+                    # IMPLICIT SPRING-DAMPER ROW (2026-08-08, run 18):
+                    # run 17's undamped implicit spring killed the
+                    # light-link divergence but built a CONSERVATIVE
+                    # elastic floor -- the run-17 chain diagnostic
+                    # measured a bursty limit cycle (37 J bursts)
+                    # sloshing through the shoulder/spine links with
+                    # no dissipation path.  Damping INSIDE the same
+                    # linearization: lambda = dt*(k*d - c*v') gives
+                    # gamma = 1/(dt*(dt*k + c)), bias = k*d/(dt*k + c)
+                    # -- at c = 0 this reduces EXACTLY to run 17.
+                    # c is derived, not swept: critical damping of
+                    # the row's LOADED mass along the normal,
+                    # c = 2*sqrt(m_load*k) -- run 19 below; run 18's
+                    # isolated-link m_eff under-damped the chain.  The bias stays bounded by
+                    # the MEASURED pad thickness -- the run-18
+                    # all-depths damped row LAUNCHED in 1-DOF (+4.98
+                    # m); the zone bound is the launch guard.
+                    # Implicit damping cannot ratchet (run 15's
+                    # disease was an explicit cap).  1-DOF verified
+                    # before kernel entry (.tmp/probe_implicit_row_1dof).
+                    if depth < pen_d_break:
+                        k_loc = pen_k1
+                    else:
+                        k_loc = pen_k2
+                    rn = _cross3(r, z_hat)
+                    denom = inv_mass[li] + rn @ (I_inv[li] @ rn)
+                    if denom > 1e-15:
+                        m_eff = 1.0 / denom
+                    else:
+                        m_eff = mass[li]
+                    # LOADED-c (2026-08-08, run 19): the spring arrests
+                    # the mass LOADING the point, not the isolated
+                    # link -- the run-18 trace showed the limit cycle
+                    # surviving on 0.06-0.13 kg vertebrae/clavicles
+                    # that carry the trunk through the joint chain, so
+                    # isolated-link c was light by an order of
+                    # magnitude.  The solve already measures the load:
+                    # at rest the row's lambda ~ dt*(force pressing
+                    # through), so m_load = max(m_eff,
+                    # lambda_prev/(g*dt)) from the PREVIOUS tick's
+                    # solved normal impulse (the warm-start channel,
+                    # friction mode 3).  Derived, not swept; bigger c
+                    # only shrinks the bias, so the launch guard
+                    # strengthens by construction.
+                    m_load = m_eff
+                    lam_prev = contact_prev_n[ci]
+                    if lam_prev > 0.0:
+                        m_l = lam_prev / (GRAVITY * dt)
+                        if m_l > m_load:
+                            m_load = m_l
+                    c_eff = 2.0 * math.sqrt(m_load * k_loc)
+                    row_bias[n_rows] = k_loc * depth / (dt * k_loc + c_eff)
+                    row_gamma[n_rows] = 1.0 / (dt * (dt * k_loc + c_eff))
+                else:
+                    # RIGID ZONE: bone-on-concrete, the saga-proven
+                    # row with run-4 spring-paced lift (bias =
+                    # depth/t_recovery, gentle, cannot launch).
+                    row_bias[n_rows] = depth / t_recovery
+                n_rows += 1
                 continue
             R = _qmat(quat[li])
             r = R @ contact_off_local[ci]
@@ -975,6 +1183,60 @@ def step_core_direct(
             kind[n_rows] = _UNILATERAL
             rec_t[n_rows] = _REC_CONTACT
             rec_i[n_rows] = ci
+            if floor_spring:
+                # GATE + SPRING (run 9): pure gate, no bias -- the
+                # penalty spring owns the lift for floor endpoints.
+                pass
+            elif contact_recovery == 1:
+                # CONTACT-RECOVERY (2026-08-08): the in-solve ground was a
+                # one-way velocity gate -- nothing ever pushed a sunk point
+                # back up, so the crumple pile ratcheted down through gate
+                # ejections and rested INSIDE the slab (71/154 endpoints
+                # below -0.05 m, scapula_R -0.357 m, DROP forensic).
+                # The fix is the kernel's own Baumgarte idiom (the mode-4
+                # lock rows' row_bias): drive the point back toward the
+                # slop surface at BETA of the depth per dt, INSIDE the same
+                # K solve as the joints -- simultaneous, so the cross-pass
+                # fight that pumped 1->220 m/s in 100 ticks (position_pass
+                # NOTE, measured) has no structure to exist.  Correction
+                # capped at one slop per tick: bigger steps outrun the
+                # linearization (the THETA_CLAMP argument, position level).
+                depth = contact_slop - p_w[2]
+                if depth > 0.0:
+                    if depth > contact_slop:
+                        depth = contact_slop
+                    row_bias[n_rows] = BETA * depth / dt
+            elif contact_recovery == 2:
+                # DIAGNOSTIC MODE (2026-08-08): UNCAPPED bias.  Absurd by
+                # design (49 m/s at 0.245 m depth) -- it exists to answer
+                # one question: is the buried row's lambda < -1e-9 because
+                # the bias is weak, or because the joint coupling always
+                # sacrifices the row no matter its target?  ~0 N still ->
+                # structural, no single-row bias can work.  Run 3 measured
+                # this form as a LAUNCHER (42 m/s targets at 0.21 m
+                # depth): the pile breathed forever (REST KE 4.9 J @3999)
+                # and re-impacts tunneled to -0.213 m.  Kept for
+                # provenance; mode 3 is the derived form.
+                depth = contact_slop - p_w[2]
+                if depth > 0.0:
+                    row_bias[n_rows] = BETA * depth / dt
+            elif contact_recovery >= 3:
+                # SPRING-PACED RECOVERY (2026-08-08, run 4): lift the
+                # point at one depth per spring period (t_recovery,
+                # derived above) instead of BETA per dt -- the bias
+                # replaces the penalty spring and may not outrun it.
+                # REGIME GATE (run 7): a point sinking faster than the
+                # lift pace (-v_n > depth/T) is an IMPACT -- ejection
+                # handles those (run-4 NO TUNNEL -0.090 m); retention
+                # is for STUCK points only (run-6 (d2) recovery, and
+                # run-6 showed crush-phase retention steals holding
+                # force from live rows: NO TUNNEL back to -0.213 m).
+                depth = contact_slop - p_w[2]
+                if depth > 0.0:
+                    row_bias[n_rows] = depth / t_recovery
+                    v_p = lin_vel[li] + _cross3(ang_vel[li], r)
+                    if -v_p[2] > depth / t_recovery:
+                        row_crush[n_rows] = 1
             n_rows += 1
             # friction rows enter the solve in mode 1 (full cone
             # in-solve, v3a -- measured leaky on the long protocol, kept
@@ -1088,6 +1350,15 @@ def step_core_direct(
                     K[ci_, cj_] = K[ci_, cj_] + c
                     if cj_ != ci_:
                         K[cj_, ci_] = K[cj_, ci_] + c
+        # compliant-row softening (run 18): the implicit spring-damper
+        # rows carry gamma = 1/(dt*(dt*k + c)) on their K diagonal --
+        # the exact linearization of lambda = dt*(k*depth - c*v'),
+        # stable and dissipative at every link mass where the explicit
+        # spring diverged and the undamped row rang.
+        for r in range(n_rows):
+            if active[r] and row_gamma[r] != 0.0:
+                cr_ = cmap[r]
+                K[cr_, cr_] = K[cr_, cr_] + row_gamma[r]
         # min-norm regularizer for redundant rows (over-constrained bodies
         # make K singular; eps scales with the system, 1e-9 of the mean
         # diagonal)
@@ -1124,6 +1395,23 @@ def step_core_direct(
                 continue
             lam_full[r] = lam[cmap[r]]
             if kind[r] == _UNILATERAL and lam[cmap[r]] < -1e-9:
+                # PENETRATING-CONTACT PRIORITY (2026-08-08, run 6): a
+                # point below the slop surface (row_bias > 0 only then,
+                # recovery mode 3) is never ejected.  Ejection was the
+                # one-way gate's kill (F2; run 5: rows die under pile
+                # crush even with the servo off, the pile stuck at
+                # -0.22 m).  The row rides every attempt: its lift
+                # target stays in K, so the chain-connected rows raise
+                # the point (the diag's named route -- recovery THROUGH
+                # the joint chain), the bounded motor rows saturate and
+                # leave the set instead, and the row's own negative
+                # lambda takes the final never-pull clamp below (a
+                # contact can never pull -- the measured suction poison
+                # stays forbidden).  The floor is immovable; the muscle
+                # is not.  Default off: legacy bit-identical.
+                if contact_priority != 0 and rec_t[r] == _REC_CONTACT \
+                        and row_bias[r] > 0.0 and row_crush[r] == 0:
+                    continue
                 active[r] = False
                 lam_full[r] = 0.0
                 violated = True
@@ -1230,16 +1518,17 @@ def step_core_direct(
     # ---- 5. apply impulses and record reactions ----
     for r in range(n_rows):
         l = lam_full[r]
+        if l != 0.0:
+            ba = rb_a[r]
+            if ba >= 0 and mass[ba] > 0.0:
+                lin_vel[ba] = lin_vel[ba] + inv_mass[ba] * l * jla[r]
+                ang_vel[ba] = ang_vel[ba] + I_inv[ba] @ (l * jaa[r])
+            bb = rb_b[r]
+            if bb >= 0 and mass[bb] > 0.0:
+                lin_vel[bb] = lin_vel[bb] + inv_mass[bb] * l * jlb[r]
+                ang_vel[bb] = ang_vel[bb] + I_inv[bb] @ (l * jab[r])
         if l == 0.0:
             continue
-        ba = rb_a[r]
-        if ba >= 0 and mass[ba] > 0.0:
-            lin_vel[ba] = lin_vel[ba] + inv_mass[ba] * l * jla[r]
-            ang_vel[ba] = ang_vel[ba] + I_inv[ba] @ (l * jaa[r])
-        bb = rb_b[r]
-        if bb >= 0 and mass[bb] > 0.0:
-            lin_vel[bb] = lin_vel[bb] + inv_mass[bb] * l * jlb[r]
-            ang_vel[bb] = ang_vel[bb] + I_inv[bb] @ (l * jab[r])
         rt = rec_t[r]
         ri = rec_i[r]
         if rt == _REC_JOINT_LIN:

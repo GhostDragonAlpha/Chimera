@@ -106,6 +106,9 @@ def _push_force(spec, state, factor: float):
     h = float(com[2])
     poly_x = []
     for rec in state["contact_records"]:
+        # G0: world-floor endpoints (side "W") are not the support margin.
+        if rec.get("side") == "W":
+            continue
         li = rec["link_idx"]
         R = transforms.to_matrix(state["quat"][li])
         p = state["pos"][li] + R @ rec["offset_local"]
@@ -122,11 +125,17 @@ def _push_force(spec, state, factor: float):
 
 
 def sim_loop():
-    spec = build_spec(1.80, 80.0)
+    # G0 WORLD-FLOOR build (2026-08-08): anatomic de Leva masses + a
+    # contact endpoint on every link, so cut-muscles crumples ONTO a
+    # floor instead of sinking through the world (floorless: head_z
+    # -50.8 m @8000, VERDICT 2).  The full ghost-free config comes with
+    # it -- that is the config the floor probe measured green under.
+    spec = build_spec(1.80, 80.0, mass_model="deleva", floor_links=True)
 
     def fresh():
         state = init_state(spec)
-        state["rotation_locks"] = False
+        state["rotation_locks"] = 2
+        state["pos_pass_mode"] = 1
         # v3e battery verdict: the hybrid ground loop (normals in-solve,
         # friction swept) is battery-equivalent-or-better vs the sweep on
         # all six meters -- it is the demo default.  CONTACTS_IN_SOLVE=0
@@ -134,6 +143,25 @@ def sim_loop():
         if os.environ.get("CONTACTS_IN_SOLVE", "1") == "1":
             state["contacts_in_solve"] = True
             state["contact_friction"] = 2
+        # Spring-paced contact recovery: a sunk point is lifted at one
+        # depth per contact-spring period (T = 0.162 s, derived from
+        # k_contact), so the pile settles instead of ratcheting into the
+        # slab (one-way gate forensic, JOINT_ATLAS.md VERDICT 4).
+        state["contact_recovery"] = 3
+        # Servo domain refusal: when the COM leaves the foot polygon the
+        # standing program terminates (a fallen body is not stand-served
+        # -- run-4 diag: the live servo shoved endpoints to -0.359 m).
+        state["servo_domain_refusal"] = True
+        # MEASURED BILINEAR FLOOR (2026-08-08, runs 17-21 proven): each
+        # world-floor endpoint rides a zoned implicit spring-damper row
+        # -- pad zone: bias k*d/(dt*k+c) + gamma 1/(dt*(dt*k+c)) on the
+        # K diagonal, c = 2*sqrt(m_load*k) with m_load from the previous
+        # tick's solved impulse; below the pad: the spring-paced lift.
+        # Drop arm green at REST 0.020 J (JOINT_ATLAS run 19).
+        state["contact_penalty"] = 2
+        state["contact_priority"] = 0  # run 21: gated per-tick below --
+        # retention exists to resist MOTOR crush; no live servo, no
+        # crush source (always-on reproduced the run-6 tunnel disease).
         state["ext_force"] = np.zeros((len(state["link_names"]), 3),
                                       dtype=np.float64)
         state["ext_torque"] = np.zeros((len(state["link_names"]), 3),
@@ -183,6 +211,7 @@ def sim_loop():
             pass
 
         ctrl.apply(state)
+        state["contact_priority"] = 1 if ctrl.enabled else 0  # run 21 gate
         step(spec, state, DT, n_proj_iters=20)
         # The push window counts DOWN AFTER the step that used the force --
         # measured 2026-08-08: decrementing before the step zeroed a 1-tick

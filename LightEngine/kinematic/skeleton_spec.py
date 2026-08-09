@@ -548,12 +548,35 @@ def _build_contact_specs(height_lu: float, lam: float,
     return contacts
 
 
+def _build_floor_contact_specs(links: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """G0 WORLD-FLOOR (2026-08-08): one contact point at each END of every
+    link, in link-local frame.
+
+    DERIVED-GEOMETRY: a straight rigid rod resting on a flat plane touches
+    it at its endpoints; the uniform-rod COM is the midpoint, so the
+    endpoints are exactly +-com_offset_m.  VERDICT 2 (JOINT_ATLAS.md)
+    measured the foot-only contact model letting a fallen body pass
+    through the floor (head_z -50.8 m @8000): a body that falls must
+    LAND.  These records are tagged side="W" downstream so the posture
+    servo's support-polygon queries never count them as feet.
+    """
+    floor: list[dict[str, Any]] = []
+    for name, lk in links.items():
+        if float(lk["mass_kg"]) <= 0.0:
+            continue
+        c = np.asarray(lk["com_offset_m"], dtype=np.float64).reshape(3)
+        floor.append({"link": name, "offset_local_m": -c})
+        floor.append({"link": name, "offset_local_m": c.copy()})
+    return floor
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
                contact_links: bool = False,
-               mass_model: str = "design") -> dict[str, Any]:
+               mass_model: str = "design",
+               floor_links: bool = False) -> dict[str, Any]:
     """Build and return the 77-link StandingHuman kinematic spec.
 
     Returns a dictionary with keys:
@@ -574,6 +597,12 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
     bit-identical.  mass_model="deleva" (ANATOMIC-MASS membrane,
     2026-08-08) redistributes mass_kg onto the de Leva 1996 segment table
     (atlas anthropometry.json), volume-split within each segment.
+
+    floor_links=False (default) is the legacy behavior: only the feet
+    carry ground contacts.  floor_links=True (G0 WORLD-FLOOR membrane,
+    2026-08-08) adds "floor_contacts": both endpoints of every link, so a
+    fallen body LANDS instead of passing through the plane (VERDICT 2
+    measured head_z -50.8 m @8000 with foot-only contacts).
     """
     table, lam, total, breakdown, rc, cand_log = skeleton_scaling.scale_skeleton(
         height_m, mass_kg
@@ -607,7 +636,7 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
         if jname not in joints:
             raise RuntimeError(f"Link {name!r} references missing joint {jname!r}")
 
-    return {
+    spec: dict[str, Any] = {
         "links": links,
         "joints": joints,
         "ligaments": ligaments,
@@ -620,3 +649,6 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
         "breakdown": breakdown,
         "rung_counts": rc,
     }
+    if floor_links:
+        spec["floor_contacts"] = _build_floor_contact_specs(links)
+    return spec

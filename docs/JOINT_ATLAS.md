@@ -769,3 +769,26 @@ biomechanics corpus -- and the first run TRANSLATES the published
 solution into our form.  Runs are for the unknowns no paper
 carries: this kernel, this skeleton, this servo.  Research-gate
 (S4) applies to physics membranes exactly as it does to assets.
+STANDING VALIDATION OUTCOME (2026-08-08, agent_logs/
+validate_standing_run21.log): **FALSIFIER FIRED, recorded -- the
+servo is not a quiet-standing human: ankle moments +9.9 N m both
+sides, OUTSIDE the 5-subject envelope [-3.08, +5.24]; sacrum sway
+0.1/0.0 mm vs the measured 3.8-9.5 / 1.4-4.3 mm (a statue, not a
+human).**  Window ticks 10..120 = 0.11 s (thin by construction --
+gated retention refuses @0.12 s).  TWO CORRECTIONS TO THE RECORD,
+same measurement: (1) DT = 0.001 s (demo_kinematic), so the
+"~446-tick fall" is 0.44 SECONDS of standing, not the 3.7 s said
+earlier in this saga -- VERDICT 2 is an order worse than quoted;
+(2) the 1-DOF probe hardcoded DT = 1/120 while the kernel runs 1
+ms -- its omega*dt = 10.6 divergence number is at 8.3 ms ticks,
+and at 1 ms omega*dt = 1.28 (< 2, marginally stable).  The saga's
+CONCLUSIONS stand (every full-kernel measurement ran at the
+correct 1 ms, and the implicit/damped/zoned forms are stable at
+both DTs), but the "explicit diverges" narrative is a 1/120
+artifact; at 1 ms the explicit forms' pump needs a different
+explanation -- recorded, not resolved.  NEXT MEMBRANE (VERDICT 2,
+servo strength): per RESEARCH CORRELATION the first move is the
+capture-point / DCM literature (Pratt 2006, Koolen 2012) and
+whole-body QP control, translated -- the ankle-overwork + statue-
+sway + 0.44 s fall is the classic under-actuated balance failure
+that literature solves.

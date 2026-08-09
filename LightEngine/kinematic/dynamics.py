@@ -259,6 +259,31 @@ def _contact_constants(spec: dict[str, Any]) -> tuple[float, float]:
     return k_contact, c_contact
 
 
+# MEASURED-FLOOR (2026-08-08, run 10): the measured heel-pad spring law.
+# Wearing et al. 2014 (J Biomech): stiffness 32 kN/m initial -> 212 kN/m
+# final (nonlinear stiffening).  Lopez-Lopez 2019: unloaded pad thickness
+# 10.36 +/- 1.78 mm -> the pad bottoms out and goes near-rigid.  Sources:
+# external/atlas/contact_floor.json.  D_BREAK is the midpoint of the
+# travel (Wearing reports endpoint stiffnesses only -- recorded in the
+# atlas as a derivation-free placeholder, NOT a tuned value).
+_MEAS_FLOOR = {
+    "pen_k1": 32000.0,      # N/m, Wearing 2014 initial
+    "pen_k2": 212000.0,     # N/m, Wearing 2014 final
+    "pen_d_break": 0.003,   # m, midpoint of pad travel (see note above)
+    "pen_d_pad": 0.0104,    # m, Lopez-Lopez 2019 pad bottom
+}
+
+
+def _measured_floor_params(state: dict[str, Any]) -> tuple[float, float, float, float]:
+    """Measured heel-pad spring law constants; state keys override for probes."""
+    return (
+        float(state.get("pen_k1", _MEAS_FLOOR["pen_k1"])),
+        float(state.get("pen_k2", _MEAS_FLOOR["pen_k2"])),
+        float(state.get("pen_d_break", _MEAS_FLOOR["pen_d_break"])),
+        float(state.get("pen_d_pad", _MEAS_FLOOR["pen_d_pad"])),
+    )
+
+
 # ---------------------------------------------------------------------------
 # State construction
 # ---------------------------------------------------------------------------
@@ -399,6 +424,23 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
                 "side": side,
             })
 
+    # G0 WORLD-FLOOR (2026-08-08): per-link endpoint contacts.  Offsets are
+    # already link-local (+-com_offset_m, skeleton_spec), so they enter the
+    # records directly.  side="W" marks them as world-floor, never feet:
+    # the posture servo's support-polygon queries skip them, and probes
+    # that sum per-side foot forces are unaffected.  Legacy specs carry no
+    # "floor_contacts" key, so this loop is empty bit-identically.
+    for fc in spec.get("floor_contacts", []):
+        link_name = fc["link"]
+        if link_name not in name_to_idx:
+            continue
+        contact_records.append({
+            "link_idx": name_to_idx[link_name],
+            "offset_local": np.asarray(fc["offset_local_m"],
+                                       dtype=np.float64).reshape(3),
+            "side": "W",
+        })
+
     # Flat arrays for the numba core (_dynamics_numba.step_core).  The dict
     # records above stay for the Python fallback and the reaction queries.
     lig_idx_a = np.array([r["idx_a"] for r in lig_records], dtype=np.int64)
@@ -411,6 +453,11 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
     contact_link_idx = np.array([r["link_idx"] for r in contact_records], dtype=np.int64)
     contact_off_local = np.array([r["offset_local"] for r in contact_records], dtype=np.float64) \
         if contact_records else np.zeros((0, 3), dtype=np.float64)
+    # PENALTY-FLOOR membrane (2026-08-08, run 8): which records are
+    # world-floor endpoints (side "W") -- the per-point spring lane.
+    contact_is_floor = np.array(
+        [1 if r.get("side") == "W" else 0 for r in contact_records],
+        dtype=np.int64)
     joint_axes_arr = np.zeros((len(joint_items), 2, 3), dtype=np.float64)
     for ji, axes in enumerate(joint_axes_local):
         for ai in range(min(2, len(axes))):
@@ -446,6 +493,7 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
                              dtype=np.float64),
         "contact_link_idx": contact_link_idx,
         "contact_off_local": contact_off_local,
+        "contact_is_floor": contact_is_floor,
         "joint_axes_arr": joint_axes_arr,
         "k_contact": k_contact,
         "c_contact": c_contact,
@@ -682,7 +730,23 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 *args, int(state.get("contacts_in_solve", False)),
                 int(state.get("contact_friction", True)),
                 int(state.get("pos_pass_mode", 0)),
-                contact_prev_n)
+                contact_prev_n,
+                # CONTACT-RECOVERY membrane: Baumgarte row_bias on ground
+                # contact rows (default off = the one-way velocity gate,
+                # bit-identical).  CONTACT-PRIORITY: a penetrating row is
+                # never ejected (default off, bit-identical).
+                int(state.get("contact_recovery", False)),
+                int(state.get("contact_priority", False)),
+                # PENALTY-FLOOR membrane (run 8): world-floor endpoints
+                # ride an independent per-point spring instead of the
+                # shared unilateral rows (default off, bit-identical).
+                state["contact_is_floor"],
+                float(state["k_contact"]),
+                int(state.get("contact_penalty", False)),
+                # MEASURED-FLOOR (run 10): bilinear heel-pad law,
+                # used only when contact_penalty == 2 (default
+                # off = run-8 constant-k behavior, bit-identical).
+                *_measured_floor_params(state))
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin

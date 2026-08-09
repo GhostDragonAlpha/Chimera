@@ -75,6 +75,9 @@ def _support_polygon(state) -> np.ndarray:
     """Convex hull of the foot contact points (world xy)."""
     pts = []
     for rec in state["contact_records"]:
+        # G0: world-floor endpoints (side "W") are not the foot polygon.
+        if rec.get("side") == "W":
+            continue
         li = rec["link_idx"]
         R = transforms.to_matrix(state["quat"][li])
         p = state["pos"][li] + R @ rec["offset_local"]

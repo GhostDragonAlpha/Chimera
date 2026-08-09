@@ -55,6 +55,9 @@ def _support_centroid_xy(state: dict[str, Any]) -> np.ndarray:
     """Centroid (world xy) of the foot contact points at the current pose."""
     pts = []
     for rec in state["contact_records"]:
+        # G0: world-floor endpoints (side "W") are never support polygon.
+        if rec.get("side") == "W":
+            continue
         li = rec["link_idx"]
         R = transforms.to_matrix(state["quat"][li])
         p = state["pos"][li] + R @ rec["offset_local"]
@@ -94,8 +97,11 @@ class MuscleController:
         # contacts, and handing them the lean distributes the ankle strategy
         # across the foot joints -- not the derived design.  Under the legacy
         # spec the parent test changes nothing (tibia never carries
-        # contacts), so legacy stays bit-identical.
-        contact_links = {int(r["link_idx"]) for r in state["contact_records"]}
+        # contacts), so legacy stays bit-identical.  G0: world-floor
+        # endpoints (side "W") ride EVERY link -- counting them would leave
+        # no pivot at all -- so the membership test reads feet only.
+        contact_links = {int(r["link_idx"]) for r in state["contact_records"]
+                         if r.get("side") != "W"}
         centroid = _support_centroid_xy(state)
         com = _com_xy(state)
         offset_vec = centroid - com
@@ -184,6 +190,43 @@ class MuscleController:
             motor_target[:] = 0.0
             motor_lmax[:] = 0.0
             return
+
+        # SERVO DOMAIN REFUSAL (2026-08-08, opt-in via
+        # state["servo_domain_refusal"]): the standing program has a
+        # domain -- the COM projects inside the foot support polygon,
+        # the same derived frame the push path uses
+        # (serve_standing_demo.py: h > 0 and margin > 0, refused instead
+        # of lying).  Outside that frame a standing servo has no
+        # meaning: measured 2026-08-08 (run-4 STAND arm + the
+        # ejected-vs-outpaced diag) the live servo shoved endpoints to
+        # -0.359 m under a fallen body -- 62% of the buried floor rows
+        # ejected by the muscle crush, the rest outpaced by it.  A body
+        # does not stand-serve a fall; the program TERMINATES (latched
+        # via self.enabled -- getting up is a different program), and
+        # the body enters the proven dead-body floor regime (run-4
+        # DROP arm, all legs pass).  Default off: legacy bit-identical.
+        if state.get("servo_domain_refusal"):
+            xs, ys = [], []
+            for rec in state["contact_records"]:
+                # G0: world-floor endpoints (side "W") are not the
+                # support polygon.
+                if rec.get("side") == "W":
+                    continue
+                li = rec["link_idx"]
+                R = transforms.to_matrix(state["quat"][li])
+                p = state["pos"][li] + R @ rec["offset_local"]
+                xs.append(float(p[0]))
+                ys.append(float(p[1]))
+            if xs:
+                mass = state["mass"]
+                com3 = (state["pos"] * mass[:, None]).sum(axis=0) / mass.sum()
+                if com3[2] <= 0.0 or com3[0] < min(xs) \
+                        or com3[0] > max(xs) or com3[1] < min(ys) \
+                        or com3[1] > max(ys):
+                    self.enabled = False
+                    motor_target[:] = 0.0
+                    motor_lmax[:] = 0.0
+                    return
 
         quat = state["quat"]
 

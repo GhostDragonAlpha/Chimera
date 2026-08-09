@@ -231,11 +231,16 @@ def build_actuator_table(spec: dict[str, Any], state: dict[str, Any],
         # the knee holding the 8 kg shank while the 60 kg trunk buckled it --
         # the load that matters is the side the joint holds UP, not the side
         # the tree hangs DOWN.)
+        # G0: count FOOT contacts only -- world-floor endpoints (side "W")
+        # ride every link, and counting them declares the SMALLER TREE the
+        # grounded side, sizing every servo to hold ~1 kg instead of the
+        # body above it (G0 probe STAND-arm collapse, 2026-08-08).
         subtree = _subtree_links(joints, child_name)
         idxs = [state["name_to_idx"][n] for n in subtree]
         idx_set = set(idxs)
         comp_p = [i for i in range(len(state["link_names"])) if i not in idx_set]
-        contact_idxs = {int(r["link_idx"]) for r in state["contact_records"]}
+        contact_idxs = {int(r["link_idx"]) for r in state["contact_records"]
+                        if r.get("side") != "W"}
         n_cont_c = sum(1 for i in idxs if i in contact_idxs)
         n_cont_p = sum(1 for i in comp_p if i in contact_idxs)
         m_c = float(sum(mass[i] for i in idxs))
