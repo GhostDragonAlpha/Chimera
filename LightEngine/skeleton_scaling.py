@@ -20,6 +20,9 @@ Budget input:
 """
 
 import math
+from LightEngine.rope_network import (
+    _CERVICAL_FRAC, _THORACIC_FRAC, _LUMBAR_FRAC,
+)
 
 # ---------------------------------------------------------------------------
 # Kernel / print constants
@@ -102,16 +105,17 @@ def _vertebral_load_fraction(index, total=24):
 def _vertebral_length_fraction(index, total=24):
     """Length fraction for an individual vertebra.
 
-    Derivation: total vertebral column (C1-S1) is ~32% of stature.  The C1-L5
-    portion is split as cervical 8%, thoracic 16%, lumbar 8% of stature.
+    Source: vertebral fractions defined in LightEngine/rope_network.py
+    (single home).  Total C1-L5 = cervical 8% + thoracic 16% + lumbar 8%.
     """
     cervical = 7
     thoracic = 12
     if index < cervical:
-        return 0.08 / cervical
+        return _CERVICAL_FRAC
     if index < cervical + thoracic:
-        return 0.16 / thoracic
-    return 0.08 / (total - cervical - thoracic)
+        return _THORACIC_FRAC
+    # lumbar: same ratio as imported constant, scaled to (total - cervical - thoracic) levels
+    return _LUMBAR_FRAC * 5 / (total - cervical - thoracic)
 
 
 def _bone_definitions():

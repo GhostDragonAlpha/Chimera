@@ -143,13 +143,16 @@ class TestDerivedAnatomy:
         assert abs(actual - 0.250) <= TOLERANCE_H, f"tibia {actual:.4f} H"
 
     def test_hip_height_ansur_crosscheck(self, derived, lam):
-        """FINDING 6: hip derived from bone table; notes inherent offset."""
+        """FINDING 6: hip closes to ANSUR II leg_frac = 0.512 H.
+
+        Resolution (option b): femur/tibia scaled proportionally from bone-table
+        ratio so ankle + tibia_new + femur_new = ANSUR trochanterion height.
+        scale = (0.512 - 0.040) / (0.245 + 0.250) = 0.9535.
+        Source: ANSUR II leg_frac_of_stature median = 0.5121 (male, n=4082).
+        """
         hip_z = derived["hip_L"][2] / (H_M / lam)
-        # Bone-table derivation gives 0.535 H; ANSUR says 0.512 H.
-        assert abs(hip_z - 0.535) < 0.002, f"hip z {hip_z:.3f} H"
         ansur_hip = 0.5121
-        deviation_cm = (hip_z - ansur_hip) * H_M * 100
-        assert deviation_cm > 3.0, "hip should be above ANSUR due to ankle offset"
+        assert abs(hip_z - ansur_hip) < 0.002, f"hip z {hip_z:.3f} H vs ANSUR 0.512"
 
     def test_lumbar_per_level_within_2pct(self):
         """FINDING 7: each lumbar vertebra ~0.016 H (±2% of stature)."""

@@ -531,3 +531,105 @@ This build does NOT flip the default. The membrane proves the derived body is an
 - `docs/JOINT_ATLAS.md` — explicitly forbidden
 - Any commit — task says "do not commit"
 - Any file outside the permitted edit set
+
+---
+
+## OUTCOME — RULE 27 Adoption Blockers Resolved (2026-08-09)
+
+### Gate Result
+
+```
+pytest LightEngine/tests/test_kinematic_dynamics.py \
+       LightEngine/tests/test_kinematic.py \
+       LightEngine/tests/test_skeleton.py \
+       LightEngine/tests/test_skeleton_anatomy.py -q
+69 passed, 2 warnings in 55.48s
+```
+
+### Item 1 — Leg Closure (option b)
+
+**Problem:** derived hip z = 0.535 H; ANSUR II trochanterion = 0.512 H; gap = 2.3 cm.
+The prior test asserted the deviation rather than resolving it.
+
+**Resolution (option b):** close the chain to ANSUR by scaling femur and tibia
+proportionally from their bone-table ratio:
+
+```
+scale = (ANSUR_leg_frac - ankle_z) / (bone_table_femur + bone_table_tibia)
+      = (0.512 - 0.040) / (0.245 + 0.250)
+      = 0.472 / 0.495 ≈ 0.9535
+
+femur_new = 0.245 * scale ≈ 0.2336 H
+ tibia_new = 0.250 * scale ≈ 0.2384 H
+knee_z    = ankle(0.040) + tibia_new(0.2384) ≈ 0.2784 H
+hip_z     = knee(0.2784) + femur_new(0.2336) ≈ 0.512 H
+```
+
+**Citation:** ANSUR II leg_frac_of_stature median = 0.5121 (male, n = 4,082);
+trochanterion_m median = 0.899 m at stature median 1.755 m → 0.899/1.755 =
+0.5121 H at 1.80 m. The femoral-head center sits measurably below the GT tip
+(Kumar et al. 2021, mean 9.2 ± 5.3 mm distal; Theivendran & Hart 2009, mean
+3.4 ± 6.6 mm proximal), so anchoring at trochanterion and deriving downward is
+the anatomically conservative choice.
+
+**Result:** hip z = 0.5120 H vs ANSUR 0.5121 H → diff = 0.0001 H (0.018 cm).
+Femur diagonal ≈ 0.2347 H, |diff from datum 0.245| = 0.0103 < 0.02 ✓.
+Tibia diagonal ≈ 0.2405 H, |diff from datum 0.250| = 0.0095 < 0.02 ✓.
+
+**Test updated:** `test_hip_height_ansur_crosscheck` now asserts hip ≈ ANSUR
+within ±0.2% rather than asserting the prior deviation.
+
+### Item 2 — One Fact, One Home (vertebral fractions)
+
+**Problem:** `_vertebral_length_fraction()` in `skeleton_scaling.py:102-114`
+and `_build_derived_vertebral_centers()` in `rope_network.py:103` each carried
+their own copy of the per-level fractions (cervical 0.08/7, thoracic 0.16/12,
+lumbar 0.08/5). Two copies of one fact.
+
+**Resolution:** moved the three fraction constants to `rope_network.py` as module-
+level exports `_CERVICAL_FRAC`, `_THORACIC_FRAC`, `_LUMBAR_FRAC`. Both consumers
+read the same object:
+
+- `rope_network.py:_build_derived_vertebral_centers()` uses `_CERVICAL_FRAC`,
+  `_THORACIC_FRAC`, `_LUMBAR_FRAC` directly.
+- `skeleton_scaling.py:_vertebral_length_fraction()` imports them and returns
+  the imported values (preserving the original `(total - cervical - thoracic)`
+  scaling for non-default `total`).
+
+No circular import: `rope_network.py` uses only the standard library; it does
+not import from `skeleton_scaling.py`.
+
+**Evidence:** both consumers return identical values:
+```
+rope_network._CERVICAL_FRAC = 0.011428571428571429
+scaling._vertebral_length_fraction(0) = 0.011428571428571429
+Same object? True
+```
+
+### Gate Evidence
+
+| test suite | result |
+|---|---|
+| test_kinematic_dynamics.py | 15 passed |
+| test_kinematic.py | 21 passed |
+| test_skeleton.py | 8 passed |
+| test_skeleton_anatomy.py | 25 passed |
+| **total** | **69 passed, 0 failed** |
+
+Legacy bit-identity: `body_style="legacy"` (default) joint dicts match the
+original hardcoded constants verbatim; shoulder unchanged (0.000000 lu diff);
+35 keys differ between legacy and derived (intentional: spine + leg + arm).
+
+### Files Changed (this build)
+
+| file | change |
+|---|---|
+| `LightEngine/rope_network.py` | Leg closure: hip/knee re-derived from ANSUR anchor; added `_CERVICAL_FRAC`, `_THORACIC_FRAC`, `_LUMBAR_FRAC` as single-home vertebral fractions; `_build_derived_vertebral_centers()` reads them |
+| `LightEngine/skeleton_scaling.py` | Imported `_CERVICAL_FRAC`, `_THORACIC_FRAC`, `_LUMBAR_FRAC` from rope_network; `_vertebral_length_fraction()` uses imported constants instead of inline literals |
+| `LightEngine/tests/test_skeleton_anatomy.py` | Updated `test_hip_height_ansur_crosscheck` to assert ANSUR closure rather than the prior deviation |
+
+### Files NOT Changed (per constraints)
+
+- `docs/JOINT_ATLAS.md` — explicitly forbidden
+- Any commit — task says "do not commit"
+- Any file outside the permitted edit set
