@@ -273,19 +273,14 @@ class MuscleController:
         motor_lmax[:] = self._lmax
 
         # BALANCE-BY-COP (VERDICT 2/13 membrane, opt-in): re-derive the
-        # ankle pivots' lean offset PER TICK from the COP ERROR.  Pratt 2006
-        # / Koolen 2012: the LIPM capture point xi = x + xdot/omega with
-        # omega = sqrt(g/h); balance control = place the COP at
-        # p* = x + (1+kd)*xdot/omega (VERDICT 2's own design note; kd = 1
-        # is critical damping of the xi error dynamics).  VERDICT 12
-        # measured the centroid-referenced variant chasing the polygon's
-        # geometric center (5 cm of permanent lean demand, +17 N m of
-        # fight): pressure recenters UNDER the COM in humans, so the
-        # reference is the pressure-weighted COP p_now from THIS tick's
-        # contact impulses -- a balanced birth asks for nothing.
-        # Sign convention matches __init__: static t_off = -phi lands
-        # -wn*(theta_err + phi), so the dynamic form is
-        # -wn*(theta_err + phi_t).
+        # ankle pivots' reference PER TICK.  Pratt 2006 / Koolen 2012: the
+        # LIPM capture point xi = x + xdot/omega with omega = sqrt(g/h);
+        # balance control = place the COP at p* = x + (1+kd)*xdot/omega
+        # (VERDICT 2's own design note; kd = 1 is critical damping of the
+        # xi error dynamics).  VERDICT 22 measured the ankle-PD phi drive
+        # cannot steer the physical COP (|p_now-p*| 0.0293 m driven vs
+        # 0.0269 m pinned -- worse than dead): the pose-PD suppresses the
+        # sway the balance law needs.  VERDICT 23 frees the ankles.
         if state.get("balance_cop") and self._bal_idx:
             mass = state["mass"]
             M = float(mass.sum())
@@ -297,37 +292,47 @@ class MuscleController:
                 omega = float(np.sqrt(9.80665 / h))
                 kd = 1.0  # derived: critical damping (VERDICT 2 notes)
                 p_star = com3[:2] + (1.0 + kd) * comv[:2] / omega
-                cop_num = np.zeros(2, dtype=np.float64)
-                cop_den = 0.0
-                impulses = state.get("contact_impulses")
-                if impulses is not None:
-                    for ci, rec in enumerate(state["contact_records"]):
-                        if rec.get("side") == "W":
-                            continue
-                        lam_n = float(impulses[ci][2])
-                        if lam_n <= 0.0:
-                            continue
-                        li = int(rec["link_idx"])
-                        R = transforms.to_matrix(state["quat"][li])
-                        p = state["pos"][li] + R @ rec["offset_local"]
-                        cop_num += p[:2] * lam_n
-                        cop_den += lam_n
-                p_now = cop_num / cop_den if cop_den > 1e-9 \
-                    else com3[:2].copy()
-                offset_vec = p_star - p_now
+
+                # VERDICT 23 FREE SWAY (2026-08-09): quiet standing is a FREE
+                # inverted pendulum caught by the balance law, not a pose held
+                # by a PD.  The ankle pivot rows hold ZERO stiffness: motor
+                # target = 0 (the solve drives the ankle's relative angular
+                # velocity to zero -- a velocity damper, not a pose clamp) with
+                # motor_lmax KEPT at the derived torque cap (a live muscle, not
+                # a dead motor).  The other 119 actuators keep the pose-PD from
+                # the vectorized apply above untouched.
+                # The ONLY ankle drive is the VERDICT 20 true-normal external
+                # torque channel, restored: N_a = M*g/2 per foot (the statics
+                # share, VERDICT 20 symmetric limit), p* = com + (1+kd)*comv/omega
+                # (capture point, kd = 1.0), delta_p3 = p_star - ankle_xy,
+                # tau_scalar = N_a * dot(cross(delta_p3, z_hat), axis_w), SET
+                # on the tibia parent and -tau on the tarsals child.  The
+                # VERDICT 22 phi modulation is REMOVED -- COP steering through
+                # the ext_torque couple, not through the ankle PD rows.
+                z_hat = np.array([0.0, 0.0, 1.0])
+                n_a = 0.5 * M * 9.80665  # statics share per foot (VERDICT 20)
+                ext_torque = state.get("ext_torque")
+                if ext_torque is None:
+                    ext_torque = np.zeros((len(state["link_names"]), 3),
+                                          dtype=np.float64)
+                    state["ext_torque"] = ext_torque
+                else:
+                    ext_torque[:] = 0.0
                 for a in self._bal_idx:
                     act = self.actuators[a]
-                    q_pa = state["quat"][act["parent_idx"]]
-                    axis_w = transforms.rotate(
-                        q_pa, act["axis_local_parent"])
-                    R_c = transforms.to_matrix(state["quat"][act["child_idx"]])
-                    jc = state["pos"][act["child_idx"]] \
+                    motor_target[a] = 0.0
+                    motor_lmax[a] = float(self._lmax[a])
+                    cb = act["child_idx"]
+                    R_c = transforms.to_matrix(state["quat"][cb])
+                    jc = state["pos"][cb] \
                         + R_c @ state["r_joint_child_local"][act["joint_index"]]
-                    r = com3 - jc
-                    lever = np.cross(axis_w, r)
-                    lever_xy = float(np.linalg.norm(lever[:2]))
-                    if lever_xy < 1e-9:
-                        continue
-                    phi = float(np.dot(offset_vec, lever[:2])
-                                / (lever_xy ** 2))
-                    motor_target[a] = -self._omega_n[a] * (theta_err[a] + phi)
+                    ankle_xy = jc[:2]
+                    delta_p3 = np.array([p_star[0] - ankle_xy[0],
+                                         p_star[1] - ankle_xy[1], 0.0])
+                    axis_w = transforms.rotate(
+                        state["quat"][act["parent_idx"]],
+                        act["axis_local_parent"])
+                    tau_scalar = n_a * float(
+                        np.dot(np.cross(delta_p3, z_hat), axis_w))
+                    ext_torque[act["parent_idx"]] = tau_scalar * axis_w
+                    ext_torque[cb] = -tau_scalar * axis_w

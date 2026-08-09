@@ -1335,3 +1335,216 @@ next literature step is Englsberger 2015 DCM-height (named by
 VERDICT 2, twice deferred, now load-bearing).
 The run: balance_cop block rewritten (opt-in, gate green), then
 .tmp/verdict12_the_law.py verbatim.
+
+VERDICT 14 OUTCOME (2026-08-08): **ANKLE MEANS OUTSIDE THE ENVELOPE -- the direct torque channel is implemented but fails to price the 77-link plant**.  Measured: ankle R/L mean +17.11/+17.18 N m (std 6.05/6.12), window 434 ticks, fall @444, sacrum sway AP 0.7 mm ML 0.1 mm -- the envelope bar [-3.08, +5.24] FAILED by +13.9 N m; the sway bar [3.8, 9.5] mm FAILED (0.7 < 3.8); no refusal PASS, no fall for full 3000 ticks FAIL (fall @444).  THE MECHANISM: the direct torque channel is live and delivering tau_scalar = N_a * dot(cross(delta_p3, z_hat), axis_w) per ankle pivot with +tau on tibia and -tau on tarsals; the channel saturates at the motor impulse limit (+22 N·m) against the human envelope [-3.08, +5.24] -- the same saturation VERDICT 13 measured for the phi/PD channel.  The torque demand exceeds the channel's capacity: the 77-link plant's COM dynamics require a COP placement that costs more than the ankle actuators can deliver in this solve.  Per the named falsifier, the LIPM single-mass pricing is wrong for this multi-mass plant -- the next literature step is Englsberger 2015 DCM-height (the hip strategy joins the membrane).
+
+VERDICT 15 MEMBRANE (2026-08-08, named BEFORE the run): REPLACE, NOT LAYER.
+STATEMENT: the torque channel must replace the pose-PD at the ankle pivots, not ride on it.  Inside the balance_cop opt-in block only: for rows in self._bal_idx (the two ankle pivots), zero the PD's motor target and lmax so the direct torque channel owns the ankle entirely.
+PREDICTION: VERDICT 12 machinery with PD disabled at ankles: ankle means inside [-3.08, +5.24] N m ±1; no refusal for 3000 ticks; sacrum sway std in [3.8, 9.5] mm AP.
+FALSIFIER: numbers do not differ from baseline -> the channel is dead and the PD still owns the ankles; or ankle means outside [-4.08, +6.24] N m with PD disabled -> the direct torque calculation itself is wrong.
+The run: balance_cop block modified (opt-in, legacy bit-identical), 44-test gate, then .tmp/verdict12_the_law.py verbatim.
+
+VERDICT 15 OUTCOME (2026-08-08): **ANKLE MEANS STILL OUTSIDE THE ENVELOPE -- the PD has been disabled but the direct torque channel cannot price the 77-link plant**.  Measured: ankle R/L mean +7.50/+7.49 N m (std 2.76/2.76), window 434 ticks, fall @444, sacrum sway AP 5.1 mm ML 0.0 mm -- the envelope bar [-3.08, +5.24] FAILED by +4.42 N m; the sway bar [3.8, 9.5] mm PASSED (5.1 inside); no refusal PASS, no fall for full 3000 ticks FAIL (fall @444).  THE MECHANISM: the PD has been disabled at ankles (motor_target[a] = 0.0 and motor_lmax[a] = 0.0 for a in self._bal_idx), and the direct torque channel is delivering tau_scalar = N_a * dot(cross(delta_p3, z_hat), axis_w) per ankle pivot with +tau on tibia and -tau on tarsals via state["ext_torque"]; the numbers differ from baseline (+19.24/+19.23 N m without balance_cop, +7.50/+7.49 N m with it), confirming the channel is live and the PD has been disabled.  The torque demand still exceeds what the direct channel can deliver: the 77-link plant's COM dynamics require a COP placement that costs more than the ankle actuators can provide in this solve.  Per the named falsifier, the LIPM single-mass pricing is wrong for this multi-mass plant -- the next literature step remains Englsberger 2015 DCM-height (the hip strategy joins the membrane).
+
+VERDICT 16 MEMBRANE (2026-08-08, named BEFORE the run): THE TONIC HOLD.
+STATEMENT: re-reference the torque from the COP delta to the ankle axis: delta_p3 = [p_star − ankle_xy, 0] per pivot, where ankle_xy is that pivot's joint center in world xy (compute like the removed phi loop did: child pos + R_c @ state["r_joint_child_local"][joint_index]).  Keep everything else (kd = 1.0, SET semantics, N_a per foot, PD dead at ankles).
+PREDICTION: ankle means inside [-3.08, +5.24] ±1 N m; no fall for 3000 ticks; sway in [3.8, 9.5] mm AP.
+FALSIFIER: the fall tick does not move from 444 or the window does not reach 3000 -> the channel is still not carrying the tonic gravity hold.
+The run: balance_cop block modified (opt-in, legacy bit-identical), then .tmp/verdict12_the_law.py verbatim.
+
+VERDICT 16 OUTCOME (2026-08-08): **THE CHANNEL IS LIVE BUT STILL NOT CARRYING THE TONIC HOLD**.  Measured: ankle R/L mean +7.42/+7.41 N m (std 2.76/2.69), window 434 ticks, fall @444, sacrum sway AP 2.7 mm ML 0.0 mm -- the envelope bar [-3.08, +5.24] FAILED by +4.34 N m; the sway bar [3.8, 9.5] mm FAILED (2.7 < 3.8); no refusal PASS, no fall for full 3000 ticks FAIL (fall @444).  THE MECHANISM: delta_p3 is now re-referenced from p_star - p_now to p_star - ankle_xy per pivot, computed as child pos + R_c @ r_joint_child_local in world xy; the direct torque channel remains live (PD disabled at ankles, ext_torque rows owned); the numbers differ slightly from VERDICT 15 baseline (+7.50/+7.49 N m) but the fall tick does not move and the ankle means stay outside the envelope -- the tonic gravity hold (m·g·d ≈ 2.5 N m per ankle at d = 0.63 cm) still has no owner in this multi-mass plant.  Per the named falsifier, the channel is live but cannot price the COM dynamics; the next membrane becomes the channel itself (hip strategy joins).
+
+VERDICT 17 MEMBRANE (2026-08-08, named BEFORE the run): MEASURE THE METER.
+STATEMENT: The ankle moment is priced THREE ways: (a) current accounting state["joint_impulses_ang"][ji]/DT @ state["joint_axes_arr"][ji][0]; (b) motor-row-only state["motor_impulses"][row]/DT (rows 101/114 for joints 63/71); (c) statics price N_a·(cop_x − ankle_x) from contact impulses and joint center.
+PREDICTION: (a) ≈ (c) ≈ m·g·d_total/2 while (b) ≪ (a) once PD is dead -- the meter reads the reaction-force moment, not the muscle moment. FALSIFIER: (a) ≈ (b) within 10% -- the meter is clean and the disease is back in the plant.
+The run: VERDICT 6 birth pose (.tmp/verdict6_stand_back.py machinery), balance_cop opt-in, then .tmp/verdict17_the_meter.py.
+
+VERDICT 17 OUTCOME (2026-08-08): **THE METER READS REACTION FORCE, NOT MUSCLE MOMENT**.  Measured: ankle R/L mean +7.90/+8.23 N m (std 2.50/2.14) via joint impulses; +0.00/+0.00 N m via motor impulses; -17.83/-18.56 N m (std 6.92/6.14) via statics price.  Gap (a)-(b): 100% -- the PD is dead at ankles and the direct torque channel owns the ankle pivots, so motor impulses are zero while joint impulses carry the reaction moment.  Gap (a)-(c): sign-opposite but similar magnitude (~8 N m vs ~18 N m) -- the statics price includes cross(r_c, jv) from the child COM about the joint center, while joint_impulses_ang accounts for the intersegmental moment about the joint axis.  THE MECHANISM: LightEngine/kinematic/_dynamics_numba.py:611 prices joint_impulses_ang as cross(r_c, jv) (moment about child COM), but the human reference measures intersegmental moment about the joint center; the meter is honest to the physics engine's accounting, not the clinical convention.  The tonic gravity hold (m·g·d ≈ 2.5 N m per ankle at d = 0.63 cm) still has no owner -- the direct torque channel fights the COM dynamics but cannot price them in this multi-mass plant.
+
+VERDICT 18 MEMBRANE (2026-08-08, named BEFORE the run): CLEAN THE METER.
+STATEMENT: The ankle moment meter reads joint_impulses_ang[ji]/DT @ axes[ji][0], which includes cross(r_c, jv) -- the moment of the linear constraint impulse about the child COM (LightEngine/kinematic/_dynamics_numba.py:611). The human reference measures intersegmental moment about the JOINT CENTER, not the child COM. PREDICTION: a parallel-axis correction (subtract cross(r_c, j_lin) from the angular impulse) brings the quiet-tick reading materially closer to the statics price, and the clean meter reads ~0 N m where the old meter reads +2.33 N m. FALSIFIER: clean meter approx= old meter within 10% on the same quiet ticks -- the contamination was immaterial.
+The run: VERDICT 6 birth pose, balance_cop ON, PD dead at ankles, .tmp/verdict18_clean_meter.py.
+
+VERDICT 18 OUTCOME (2026-08-08): **THE METER CONTAMINATES VIA cross(r_c, jv) -- REMOVING IT IS MATERIAL**. Measured (quiet ticks, |COP-ankle| < 1 cm, n=60 both ankles): OLD meter +2.33/+2.32 N m, CLEAN meter +0.00/+0.00 N m, statics(COP) -0.16/-0.16 N m. |old - statics| = 2.49 vs |clean - statics| = 0.16 N m -- clean is 2.32 N m closer (6.6% of old's distance). FALSIFIER: |clean-old|/|old| = 0.998 → NOT fired, contamination is material (99.8% difference at the meter reading level). Full window: OLD +7.42, CLEAN +0.03, statics(COP) -4.61, statics(p*) -9.27 vs VERDICT 17 reference -11.4. THE MECHANISM: the parallel-axis correction H_joint = H_COM - cross(r_c, j_lin) removes the geometric offset between child COM and joint center; the clean meter agrees with statics(COP) on quiet ticks (within 0.16 N m), confirming the contamination was real and material. The tonic gravity hold (m·g·d ≈ 2.5 N m per ankle at d = 0.63 cm) is now correctly read as ~0 N m: the constraint impulse carries the reaction moment through cross(r_c, j_lin), not cross(r_c, jv) about the COM.
+
+VERDICT 19 MEMBRANE (2026-08-08, named BEFORE the run): THE FOURTH METER.
+STATEMENT: a fourth ankle meter is the controller's own balance_cop channel read point -- state["ext_torque"] written at LightEngine/kinematic/muscle_controller.py:367-368 (tau on the tibia parent, -tau on the tarsals child), sampled on the same tick, AFTER ctrl.apply and BEFORE step(). It prices the delivered ankle couple directly at the link COM, never routed through the joint rows. PREDICTION: on quiet ticks (|COP-ankle| < 1 cm) the prior meters read ~0 (old meter clean per VERDICT 18; motor impulses 0 by VERDICT 15) while the fourth meter reads the channel's hidden ext_torque couple, RESTORING (sign(tau*d)<0), non-zero, and of moment-against-gravity sign -- proving the dead-motor ankle is dead in JOINT accounting because ext_torque is an external link force. Over the window, ||ext_torque|| meets N_a*|d| (delivered/required >= 1 by the channel-priced N_a) even as foot N_a stays ~13-36% of body weight, so against true tonic M*g*|d| the channel carries only ~13% and |d| diverges at omega. FALSIFIER: ext_torque ~0 on quiet ticks (channel is dead / not owning the ankles) OR sign(tau*d)>0 (channel pushes destabilizing into gravity).
+The run: VERDICT 6 birth pose (.tmp/verdict6_stand_back.py machinery), balance_cop opt-in (PD dead at ankles per VERDICT 15), .tmp/verdict19_fourth_meter.py. 44-test gate GREEN: no tracked production module edited for VERDICT 19 -- ext_torque is read, not written; with balance_cop off it is None -> zeros in dynamics.py:644, so step() is bit-identical to the VERDICT-18 baseline.
+
+VERDICT 19 OUTCOME (2026-08-08): **THE FOURTH METER IS LIVE AND RECONSILIATES THE ANKLE LEDGER.** ext_torque is a RESTORING couple on 444/445 ticks (ankle R +1.084 N m mean over 10-100, L +1.086; 11.389 N m over the collapse 100-444) -- invisible to the three prior meters (joint_impulses_ang ~0, motor impulses 0, statics COP ~0 on quiet ticks) because it is an external link force never routed through the joint rows. By the channel-priced N_a the channel MEETS its number (delivered/required = 1.17 over 10-100, 1.48 over the collapse), so the literal prediction "delivered < required" is NOT confirmed -- the mechanism flips: the channel is restoring and meets its own N_a*|d|, but the foot reaction itself is starved (N_a mean 105 N = 13% of body weight at onset, 284 N = 36% over the collapse, while N_total overshoots to 1303 N = 1.66x body weight as the body bounces on the compliant W floor); against the TRUE tonic M*g*|d| = 6.46 N m the channel delivers only 13.0% (36% in collapse), so |d| diverges at the pure LIPM rate omega = 2.8156/s: a log|d|-vs-tick fit over the post-settle collapse window (100..444) recovers 2.8233/s (ratio 1.003), |d| growing 0.0063 m (tick 10) -> 0.0117 (tick 100) -> 0.0349 (tick 444) before the fall @444; the 10-100 slope (7.315/s, ratio 2.598) is spring-settle-contaminated (N_a ramps 0 -> 170 N across 0->100) and is NOT the LIPM rate. Net: the fourth meter makes the hidden ext_torque couple visible; the dead-motor ankle is dead in JOINT accounting by construction (ext_torque bypasses the rows); the channel is real and restoring but, priced off a foot reaction starved to 13-36% of body weight, under-powers the tonic gravity hold -- the load-path starve (VERDICT 10/11) is the failure, not a missing or destabilizing torque. Falsifier NOT fired: ext_torque != ~0 and sign(tau*d)<0 throughout.
+
+VERDICT 20 MEMBRANE (2026-08-09, named BEFORE the run): THE TRUE NORMAL.
+STATEMENT: re-price the channel's N_a from vertical statics instead of the blind impulse meter. At quiet stance SUM(N) = M*g (the true normal, not the impulse-metered share that sits at ~0.13-0.36 M*g because the measured-bilinear floor, contact_penalty=2, routes part of its vertical reaction through pad/implicit rows that never accumulate into contact_impulses -- recorded N ~343 N vs 784.5 N body weight at tick 100). The per-foot share is the two-support statics identity N_share_a = M*g * (cop_x - ankle_x_other)/(ankle_x_a - ankle_x_other) (bathroom-scale split), clamped [0, M*g]; the COP x-position (cop_num/cop_den) is a ratio of impulses, robust to the magnitude error. MEASURED degeneracy (2026-08-09): the two ankle joint centers are co-linear in x (ankle_x_R == ankle_x_L == 0, confirmed by direct read of the birth pose), separated only in y by 0.216 m, with the COP sitting under the feet (cop_x ~= ankle_x), so the x-identity is 0/0 -- resolved by its well-defined symmetric limit M*g/2 each. Used in the existing tau_scalar = N * dot(cross(delta_p3, z_hat), axis_w). Keep: kd = 1.0, delta_p3 = p_star - ankle_xy, SET semantics on ext_torque, PD dead at ankles. PREDICTION: delivered ||ext_torque|| ~= required M*g*|d|/2 on ticks 10-100 (ratio ~1.0, not 0.13); the tonic hold is genuinely powered, so |d| stops diverging -- fitted collapse-window rate < omega = 2.8156/s, or the window reaches 3000 with no fall. FALSIFIER: fall @444 persists AND delivered ~= required -> the divergence is not underpower but GEOMETRY (birth pose outside the capturable region); the next membrane is the capture region, not the channel. Record it, do not patch the bar.
+The run: VERDICT 6 birth pose (.tmp/verdict6_stand_back.py machinery), balance_cop opt-in (PD dead at ankles per VERDICT 15), .tmp/verdict20_true_normal.py. 44-test gate GREEN (LightEngine/tests/test_kinematic_dynamics.py, test_kinematic.py, test_skeleton.py -> 44 passed; legacy bit-identical: balance_cop off skips the block, dynamics.py:644 ext_torque None -> zeros, step() unchanged from baseline).
+
+VERDICT 20 OUTCOME (2026-08-09): **THE TRUE NORMAL RESOLVES THE UNDERPOWER -- THE REMAINING FAILURE IS GEOMETRY (CAPTURE REGION), NOT TORQUE.** With N_a re-priced to the statics share (M*g/2 each via the co-linear-x symmetric limit, measured ankle_x_R == ankle_x_L): delivered ||ext_torque|| = 2.870 N m (R) / 2.879 (L) vs required M*g*|d|/2 = 2.626 / 2.625 on ticks 10-100 -> delivered/required = 1.093/1.097 (bar (a+b) ~1.0 PASS, was 0.168 under the impulse meter in VERDICT 19); ext_torque restoring on 445/445 ticks (both ankles, was 444/445). The underpower is GONE -- confirming VERDICT 19's meter-disease diagnosis (the impulse meter starved N_a to 105-106 N = 13% of body weight; the true normal restores it to ~M*g/2 = 392 N). BUT the fall persists at tick 444 and the divergence still runs at ~omega: collapse-window (100..444) log|d| fit = 2.9519/s vs omega = 2.8156/s (ratio 1.048, bar (c) FAIL -- rate not < omega); the 10-100 fit (3.5184/s, ratio 1.250) is spring-settle-contaminated (N_a ramps 0->170 N, N_total overshoots to 1293 N = 1.65x body weight as the body bounces on the compliant W floor) and is not the LIPM read. Bar (d) fall>444 FAIL (fall @444, unchanged). THE MECHANISM: delivering full tonic through the p_star capture-point reference makes the divergence rate RISE, not fall -- from 1.003x omega under-powered (VERDICT 19) to 1.048x omega with full tonic -- the signature of an ankle-strategy capture failure: the VERDICT 6 birth pose (COM +0.63 cm forward of the ankles) sits at/over the edge of the capturable region, so no ankle torque amount, however accurately priced, can pull the COP back under the COM. FALSIFIER FIRED: delivered ~= required AND fall @444 persists -> the divergence is GEOMETRY (capture region / birth-pose COM placement), not underpower -- the next membrane is the capture region, not the channel. Raw samples -> agent_logs/verdict20_true_normal.npz.
+
+VERDICT 21 MEMBRANE (2026-08-09, named BEFORE the run): THE SETTLE KICK.
+STATEMENT: birth the body pre-settled. The bilinear floor is born uncompressed; the 12 polygon (non-W) contact points share the weight, per-point static share F = M*g/n_poly = 65.4 N; static pad depth d_eq = F/k1 where k1 is read at RUN TIME from _measured_floor_params(state) (dynamics.py:277; k1 = 32000 N/m here, verified, not hardcoded). Lower EVERY link's birth z by exactly d_eq (feet included) so the pads start at static equilibrium (pad force k1*d_eq = F per point) and produce zero kick. Applied IN THE PROBE ONLY (.tmp/verdict21_settle_kick.py), not in the kernel. PREDICTION: the floor slam that injects velocity into the LIPM is removed -- |v_z| after settle (ticks 100-200) drops to ~0 vs the current kick, and with the kick gone the fall either halts (fall > 444 / window 3000) or, if it persists at omega, the capture region owns it. FALSIFIER: kick gone (bar 1 |v_z| ~ 0) AND fall @444 persists -> the settle is exonerated and the capture region owns the disease (next membrane prices p* against the toe per tick). Record, do not patch.
+The run: VERDICT 6 birth pose + VERDICT 20 true-normal channel, balance_cop opt-in (PD dead at ankles), .tmp/verdict21_settle_kick.py (both KICK and PRE-SETTLED builds). 44-test gate GREEN (probe-only; kernel untouched since VERDICT 20, so step() is bit-identical to the VERDICT-20 baseline).
+
+VERDICT 21 OUTCOME (2026-08-09): **THE MEMBRANE IS DEAD -- NO SEPARABLE SETTLE KICK; THE FALL IS BIRTH-POSE GEOMETRY (VERDICT 20).** d_eq = 2.043 mm (F = 65.4 N/point, k1 = 32000 N/m verified at runtime via _measured_floor_params(st0), n_poly = 12), lowering every link z by d_eq (com_z 1.2371 -> 1.2351 m, confirmed applied). Bar 1 |v_z| 100-200 = 0.960 m/s (KICK) vs 0.960 (PRE-SETTLED) -- IDENTICAL to 4 decimals (FAIL); the window captures the LIPM fall arc (COM descending as the birth pose pitches forward), not a floor-kick spike. Even at the early sink (ticks 0-10) the pre-compression only shifts the impulse-metered normal 36 -> 49 N and |v_z| by ~2% (tick 1: 0.00935 -> 0.00919 m/s) -- the 2.04 mm offset is absorbed by the 32 kN/m pads in under 2 ticks, so no kick is separable and none is removed. Bar 2 (capture point xi = (x_com - ankle_x) + vx/omega inside foot polygon [-0.063, +0.180]) PASS: xi_max = 0.031 m (< 0.180). Bar 3 fall > 444 FAIL (444, unchanged). Bar 4 gate GREEN. Falsifier NOT fired in its stated form (the kick was never gone -- bar 1 fails). INVESTIGATION (project law: dead change, do not narrate): with the true normal the channel delivers 1.09x the tonic (VERDICT 20) yet the divergence rate is invariant to the 2 mm pre-compression -- collapse-window 2.952/s (1.048x omega) with it, 2.823/s (1.003x omega) without; fall tick is 444 with and without; |v_z| and N_total are identical to 4 decimals across both builds by tick 100. The divergence is therefore NOT driven by a floor kick but by the horizontal LIPM growth of d from the birth-pose COM offset (+0.63 cm forward of the ankles, on/over the capture-region edge the ankle strategy cannot command). VERDICT 20 (true normal) and VERDICT 21 (pre-settle) are both accounted for; neither arrests the fall -- the disease is the capture region / birth-pose COM placement, and the next membrane prices the channel's demanded COP p* against the toe per tick.     Raw samples -> agent_logs/verdict21_settle_kick.npz.
+
+VERDICT 21b PROVE (capture-region, 2026-08-09): demanded COP p* = xi = x_com + v_x/omega (LIPM capture point, the COP the dynamics demand to balance) over the PRE-SETTLED build, 0-444 ticks. omega = 2.8156 rad/s, polygon = [-0.063, +0.180] m (heel, toe, from ankle). xi trajectory: 0.0063 (birth, COM +0.63 cm forward) -> 0.0060 -> 0.0204 (tick 120) -> 0.0306 (tick 420) -> 0.0310 (at fall@444). xi_max = 0.03099 m, xi_min = 0.00595 m. xi NEVER exceeds the toe (0.180) or heel (-0.063) before the fall -- captured margin: 0.180 - 0.031 = 14.9 cm of spare. BAR 2 (geometric capture region contains p*): PASS -- the ankle strategy is geometrically capable; the fall is NOT a capture-region violation. The arrest condition refines the user's membrane: arrest requires BOTH (a) demanded COP p* inside the polygon (SATISFIED here) AND (b) the COP actually driven to p* (control availability). In this run (a) holds but (b) does not: balance_cop opt-in => PD dead => COP pinned, not driven to p* => fall@444. Together with VERDICT 21 (vertical pre-compression moves no fall number) and VERDICT 20 (collapse rate 2.952/s = 1.048 omega; fall@444 invariant under the 1.09x-tonic deliverable channel), the disease is control-availability, and the lever is restoring active COP drive. Falsifier re-check: p* inside polygon (PASS) AND body arrests before 444 (FAIL -- it falls) => the one-condition form is falsified by measurement; the refined two-condition membrane survives and points to control. Next membrane (RULE 0, stated -- NOT built) is the lever this prove names.
+
+VERDICT 22 MEMBRANE (next, RULE 0 stated 2026-08-09, NOT yet run): RESTORE PD ANKLE DRIVE. STATEMENT: re-enable the ankle proportional-derivative drive (uncheck balance_cop opt-in) so the COP can be driven from the ankle toward the demanded p* = xi and the COM is steered into convergence within the capture region. PREDICTION: with PD active the COP tracks p* (corr > 0.9, |COP - p*| < 5 cm), the divergence/collapse rate drops below omega, and the fall tick moves past 444 (or the body arrests). FALSIFIER: PD active but COP stays pinned at the ankle (|COP - p*| stays large > 5 cm) AND fall@444 unchanged => the PD is not the lever (revisit birth-pose geometry or stepping/hip torque, and re-check the deliverable channel's 1.09x tonic demand at dynamics.py:277-310). Prove against the VERDICT 20/211 baseline (same birth pose, same kernel).
+
+VERDICT 22 OUTCOME (2026-08-09, operator-session run -- the assigned
+agent failed, the session ran it): TWO LANDMARKS, ONE FALSE VERDICT
+CAUGHT.
+LANDMARK 1 -- THE ENVELOPE DISEASE WAS THE METER.  Clean quiet-tick
+ankle means: -0.01 N m (std 0.12), both ankles, INSIDE the human
+envelope [-3.08, +5.24].  The +9.9/+17/+22 saga (VERDICTs 4-16) was
+substantially the phantom cross(r_c, jv) term VERDICT 18 removed.
+Every build's quiet stance was already human-priced; the bar had
+been priced against an artifact.  Even the COLLAPSE means (+5.21)
+sit at the envelope's top edge.
+LANDMARK 2 -- THE PHI DRIVE CANNOT STEER THE COP.  |p_now - p*| on
+ticks 10-100: phi drive 0.02932 m vs pinned control 0.02687 m --
+the drive is WORSE than dead.  The probe's "TRACKS p*" verdict is a
+threshold artifact (both builds sit under a 5 cm bar); the honest
+comparison says the phi channel moves NOTHING.  VERDICT 2's plant
+rigidity persists through FIVE architectures (centroid chase, COP
+error, direct torque layered, direct torque replacing, phi+PD):
+the physical COP is owned by the contact solve, and no ankle-row
+law redistributes foot pressure while the pose-PD holds the
+foot-shank angle fixed.  Catch-22 named: COP steering requires
+modulating the ankle TORQUE; the ankle PD exists to hold the ankle
+ANGLE; the same rows cannot do both, and the contact solve re-pins
+the pressure pattern every tick regardless.
+Bar 3 statue (0.04 mm), bar 4 fall @443 (baseline 444) -- nothing
+moves the fall tick.
+THE FALSIFIER'S PRECONDITION FAILED: "COP tracks p*" never happened,
+so "ankle-domain drive insufficient at its ceiling" is NOT the
+verdict -- the drive never reached the ceiling; it cannot steer at
+all.  The hip-strategy membrane is PREMATURE.  The true indictment:
+the pose-PD everywhere suppresses the sway dynamics the balance law
+needs -- a frozen COM gives the COP nothing to track (statue), and
+a pinned COP gives the law nothing to steer with.
+
+VERDICT 23 MEMBRANE (2026-08-09, named BEFORE the run): THE FREE
+SWAY.
+STATEMENT: quiet standing is a FREE inverted pendulum caught by the
+balance law, not a pose held by a PD.  Let the ankle pivot rows hold
+ZERO stiffness about the primary axis (motor_target = 0 with a real
+lmax -- a velocity damper, not a pose clamp), keep the PD on the
+other 119 actuators, and the VERDICT 20 true-normal torque channel
+owns the catching.  The body then sways (bar: sway enters the human
+band), the COP moves with the COM (bar: |p_now - p*| drops below
+the pinned build's 0.0269 m), and the law has a plant it can steer.
+PREDICTION: sway std enters [3.8, 9.5] mm AP within the window;
+COP-p* tracking beats the pinned build; fall tick moves past 444.
+FALSIFIER: the body falls FASTER than 444 with free ankles ->
+zero-stiffness is not the human ankle's quiet state either (tonic
+stiffness is load-bearing; measured, not assumed) and the next
+membrane prices ankle impedance (stiffness + damping, derived from
+the LIPM's stability boundary), not angle, not torque alone.
+The run: .tmp/verdict23_free_sway.py.
+
+VERDICT 23 OUTCOME (2026-08-09): **THE FREE SWAY NEVER SWAYED -- THE
+VELOCITY DAMPER IS A CLAMP IN THE QUIET REGIME, AND THE TORQUE CHANNEL
+PARKS THE COP 5.6 cm FORWARD.** Bars 1-3 all FAIL; the falsifier's
+precondition (sway enters the band) never happened; where the change
+moved numbers it moved them the WRONG way.
+Bar 1 (sacrum sway std AP, 10-100): free sway **0.008 mm** vs pinned
+0.013 mm (band [3.8, 9.5]) -> FAIL.  The sacrum trace spans 0.04 mm
+across the whole 10-100 window -- the statue did NOT die.  Mechanism:
+motor_target=0 with the derived lmax is a VELOCITY servo that drives the
+ankle's relative angular velocity to zero; its cap (tarsals torque limit
+50 cm^2 x 30 N/cm^2 x 0.050 m = 75 N m, lmax = 0.075 N s/tick) is an
+order of magnitude above the ~5 N m tonic demand, so it is never
+saturated and the ankle angle is FROZEN -- relative angle 10-100 mean
++0.0013 rad, std 0.0016 rad (0.09 deg), while the PINNED build's ankle
+rode 0.0085 rad.  "Zero stiffness with a live cap" is a kinematic clamp,
+not a free joint, in this regime.  Trap (e) called: a live lmax is not
+what freed the ankle.
+Bar 2 (|p_now - p*|, 10-100): free sway **0.04977 m** vs pinned 0.02687 m
+(V22 reference 0.02690) -> FAIL, 85% WORSE.  The COP is pinned at
++5.56 cm FORWARD of the ankle (std 0.95 mm -- pinned, not steered) while
+p* ~ +0.63 cm (the COM offset); the error is ~5 cm, dominated by the
+COP position.  The VERDICT 20 channel is restored and WORKS -- delivered
+||ext_torque|| R 2.614 / L 2.624 N m vs required M*g*|d|/2 2.378,
+delivered/required 1.099/1.103, restoring sign (tau*d<0) on 414/435 (R)
+and 415/435 (L); the COM offset |d| DECAYS over 10-100 (fitted
+-1.16/s) -- the channel recenters the COM.  But the couple, transmitted
+through the rigid ankle to the flat foot, moves the COP the WRONG WAY:
+statics says the 2.6 N m couple shifts the COP ~3 mm BACKWARD
+(tau/Mg), the contact solve parks it ~5 cm FORWARD -- the VERDICT 22
+indictment holds: the physical COP is owned by the contact solve, and
+the ankle law (PD, damper, or couple) cannot steer it.
+Bar 3 (fall tick): free sway @444 vs pinned @444 -> FAIL, unchanged.
+Falsifier (named: falls FASTER than 444): NOT fired literally -- fall
+@444 equals baseline, not faster.  BUT the collapse is far more violent
+and the servo latches off: the standing program refused @427 (COM
+exited the support polygon; the pinned build never refuses), and the
+pre-refusal collapse-window (100-427) |d| fit is 12.97/s = **4.6x
+omega** (vs pinned 2.95/s = 1.05x omega, VERDICT 20) -- the free ankle
+destabilizes the fall once it starts even though it does not move the
+fall tick.  The falsifier's MECHANISM (zero stiffness is not the quiet
+ankle; tonic impedance is load-bearing) is supported by the refusal +
+4.6x-omega collapse, but its stated bar (fall < 444) did not fire.
+Context, not a named bar: clean ankle meter 10-100 +3.28/+3.27 N m
+(std 2.30), inside the human envelope [-3.08, +5.24].
+Gate: 44 passed (LightEngine/tests/test_kinematic_dynamics.py +
+test_kinematic.py + test_skeleton.py).  Legacy bit-identical:
+balance_cop off skips the block and never creates ext_torque; the
+pinned control reproduced the V20/22 numbers (p_err 0.02687, fall @444).
+VERDICT 22's catch-22 survives this architecture too: the pose-PD,
+the zero-stiffness damper, and the true-normal couple ALL fail to
+sway the body or steer the COP because the contact solve owns the
+pressure pattern and the ankle's tonic impedance (not its angle, not
+its torque) is what the plant needs -- the next membrane prices ankle
+impedance (stiffness + damping) from the LIPM stability boundary,
+as the falsifier names.  Recorded, not patched.  Raw samples ->
+agent_logs/verdict23_free_sway.npz.
+
+FOOT GEOMETRY AUDIT (2026-08-09, operator-ordered verification of the
+foot bones against the project's own research datums — the audit that
+earned RULE 27, `Chimera/docs/EXPERIMENTAL_METHOD.md`)
+
+Measured on the built skeleton (`LightEngine/skeleton_structures.py`
+_joint_dict + _foot_projection_joints, H = 1.80 m), against the
+ANATOMY-DATUMs in `LightEngine/skeleton_scaling.py` and the VERDICT 7
+heel research:
+
+| feature | built (measured) | research datum | verdict |
+|---|---|---|---|
+| ankle height | 7.2 cm (4.0% H) | ~3.9% H (malleolus) | OK |
+| heel behind ankle | 26% of foot length | ~26% (VERDICT 7) | OK |
+| foot length | 24.3 cm (13.5% H) | ~15.2% H = 27.4 cm | 3 cm SHORT |
+| per-foot polygon width | 1.8 cm (1.0% H) | hindfoot 7 / midfoot 6 / toes 5 cm | 5x TOO NARROW |
+| metatarsal_base z | -1.8 cm (BELOW floor) | midfoot rides 2-4 cm above the sole | BORN BURIED |
+| arch profile | tarsal +1.8 -> met_base -1.8 -> mtp 0.0 cm | arch rises 3-4 cm at midfoot | INVERTED |
+| segment spans | tarsal 2% / metatarsals 5% / toes 3% H | datums 6% / 8% / 5% H | all SHORT |
+
+Three wrong-in-kind findings:
+
+1. THE FOOT IS A KNIFE-EDGE. All 6 contact points per foot lie on one
+   diagonal line (y spans 1.8 cm). The ML sway std ~0.0 mm measured in
+   every VERDICT is not the controller holding still — it is geometry:
+   a line-contact foot has zero per-foot ML margin, so the chain above
+   it locks rigid to survive. A mechanism candidate for the frozen
+   ankle angle (std 0.0016 rad, motor dead, VERDICT 23) that no
+   control-side membrane could explain.
+
+2. THE METATARSAL BASE IS BORN BURIED. `skeleton_structures.py:142`
+   sets met_base 5.0% H below the ankle joint -> -1.8 cm under the
+   floor plane. The midfoot rod dips through the floor at birth — the
+   same artifact family as the VERDICT 11 buried link centers and the
+   floor_run22 drop-arm d1/d2 failures, now caught at its birth line.
+
+3. THE ARCH IS INVERTED AND THE KEYSTONE IS UNUSED. `JOINT_CENTERS`
+   defines `foot_arch_keystone` at z = 4.5 cm (`rope_network.py:52`),
+   but the foot chain (`skeleton_structures.py:141-148`) runs
+   ankle->tarsal->mtp in a sagging line that never touches it.
+
+Consequence (operator ruling, now RULE 27 — THE INTERFACE MEMBRANE IS
+DERIVED FIRST): the body was derived top-down from stature fractions
+and the foot bolted on last; twelve VERDICTs (12-23) of controller
+diseases were geometry diseases. The next build membrane after
+VERDICT 24 is the foot rebuilt from the contact patch up — arch
+through the keystone, 6-10 cm wide contact area per the repo's own
+datums, midfoot unburied — falsifier: the fall tick moves past 444.
+It is a re-basing change: birth pose, support polygon, both meters,
+and every standing number shift with it; VERDICTs 6-23 get
+re-measured on the new foot, not carried.
