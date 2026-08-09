@@ -101,7 +101,7 @@ trainer as it stood on 2026-08-02, it refuses and names both defects with the co
 
 ## The rest of the method
 
-The full set — **26 rules**, each with the failure that earned it — is
+The full set — **27 rules**, each with the failure that earned it — is
 **`Chimera/docs/EXPERIMENTAL_METHOD.md`**. Rules 2–11 are about not fooling yourself while
 *debugging*; 12–17 while *reporting*; 18–21 about *direction* (where to look when everything you
 can see is already correct); 22–26 about *order*, about instruments that need instruments, about
@@ -146,6 +146,7 @@ other twenty-four are being applied to a real question at all.
 | EM-25 | a transported number is not a derived number | `tools/training_gate.py` | EM-25 |
 | EM-9 | arithmetic before action — but verify the model behind the arithmetic | prose | EM-9 |
 | EM-17 | derive the shape, let physics set the level; when they disagree, the disagreement IS the finding | prose | EM-17 |
+| EM-27 | the interface membrane is derived first — grow from the connection, not from the average | prose | EM-27 |
 
 **Measurement hygiene (not fooling yourself)**
 

@@ -16,7 +16,7 @@
 > primitives → programs → parser → runtime → calibration.
 >
 > **[docs/THE_LAW.md](docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 27 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > **This file POINTS. It does not duplicate.** Rewritten 2026-07-16, from 408 lines.

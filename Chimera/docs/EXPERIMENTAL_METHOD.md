@@ -16,7 +16,7 @@
 > primitives → programs → parser → runtime → calibration.
 >
 > **[docs/THE_LAW.md](../../docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 27 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > How this studio finds out what is true about a running system.
@@ -683,6 +683,38 @@ failed is worth nothing.** Before believing a pass, check the falsifier was reac
 FOOT` closing at +0.7% was real evidence because the contact solver and the integrator could have
 disagreed. `mean(hold)` improving while every episode ended in 0.42 s was not, because a shorter
 window cannot exceed a max-based bar.
+
+---
+
+## RULE 27 — THE INTERFACE MEMBRANE IS DERIVED FIRST
+
+Operator ruling, 2026-08-09, after the foot-geometry audit (evidence node: `docs/JOINT_ATLAS.md`,
+FOOT GEOMETRY AUDIT 2026-08-09). Twelve VERDICTs (12-23) measured controller diseases that were
+geometry diseases: the body had been derived top-down from stature fractions -- hip height, knee
+height, ankle height -- and the foot, the one membrane that touches the terrain, was bolted on
+last as a line of offsets. The measured cost: a support polygon 1.8 cm wide against the project's
+own research datums of 5-7 cm, a metatarsal base born 1.8 cm BELOW the floor plane, an inverted
+arch that never touches the keystone joint the data already carried, and a statue that twelve
+control-side membranes could not melt.
+
+**Whatever touches the parent membrane is where derivation starts, because the parent's physics
+sets the constraints.** The floor's spring law, the friction cone, the load path -- these are
+properties of the terrain, and the foot must be derived to meet them. The foot is not a body part
+with contacts attached; it is a contact patch with a body attached. The same holds everywhere:
+the hand is built palm-first when grasping arrives, not arm-first.
+
+Operational form:
+
+    1. derive the contact patch from the PARENT membrane's physics (its force law, its
+       friction, its geometry),
+    2. grow the structure upward from the patch -- bone lengths, joint centers, arches --
+       so that every point has a load path to the parent,
+    3. nothing may be born buried: a point below its parent's surface at birth is a
+       derivation error, not a contact-solver problem.
+
+Rule 18 says debug UP the chain; this rule says BUILD up from the connection. They are the same
+law read in the two directions of time: the interface is where the physics enters, in debugging
+and in growth alike.
 
 ---
 

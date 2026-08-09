@@ -16,7 +16,7 @@
 > primitives → programs → parser → runtime → calibration.
 >
 > **[docs/THE_LAW.md](docs/THE_LAW.md)** · the method: `docs/THE_WORKFLOW.md` §0
-> · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
+> · 27 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
 > # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video game experience
@@ -128,7 +128,7 @@ python tools/port_tests.py && python tools/primitive_tests.py && python tools/ac
    genome, status marked `PROVEN` / `DESIGNED` / `FRONTIER` per stage, file inventory in §7.5.
 3. `WorldModel/ML_PIPELINE.md` — the generative half. SplatVAE, three training paths,
    hierarchical LOD, infinite world, cellular rules, physics universe.
-4. `Chimera/docs/EXPERIMENTAL_METHOD.md` — **26 rules** for diagnosing a live system without
+4. `Chimera/docs/EXPERIMENTAL_METHOD.md` — **27 rules** for diagnosing a live system without
    fooling yourself. Read before debugging *or reporting* anything. Rules 12-17 (2026-08-01) are the
    control set: run a KNOWN subject through the whole instrument, measure at the scale the thing
    lives at, never threshold on a quantile of what you are measuring, suspect the data's own
