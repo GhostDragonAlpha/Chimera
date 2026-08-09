@@ -868,3 +868,24 @@ the bind pose with the COM over the foot centroid at t=0 and
 re-measure the ankle envelope; (2) contact-freeze membrane -- let
 the shank rotate about the planted foot (measure foot slide vs
 shank rotation under a known lean torque).
+
+VERDICT 3 MEMBRANE (2026-08-08, named BEFORE the run): BIRTH OFFSET.
+STATEMENT: the bind pose is born unbalanced -- the whole-body COM at
+t=0 sits 5.45 cm behind the foot-support centroid (measured above),
+so every servo downstream inherits a permanent ankle moment that no
+feedback law can remove without moving the COM the contacts freeze.
+A human would never choose this pose: quiet stance parks the COM
+over mid-foot INSIDE the support polygon.
+PREDICTION: rebuild the stand with the COM placed over the support
+centroid at t=0 (shift the pelvis/trunk forward at birth -- a spec
+change, NOT a servo gain) and the quiet-window ankle mean lands
+inside the human envelope [-3.08, +5.24] N m WITHOUT balance_cop
+and without the statue getting worse (sway stays >= its current
+0.1 mm -- we are not allowed to buy the envelope with more freeze).
+FALSIFIER: ankle mean stays outside the envelope with the COM born
+over the centroid -> the birth offset is not the load-bearing term
+and the contact-freeze candidate (VERDICT 3b) owns the disease:
+measure foot-slide vs shank-rotation under a known lean torque.
+The run: .tmp/validate_standing.py against a birth-shifted spec;
+record whichever way it lands, do not tune the shift (derive it
+from the measured 5.45 cm, never sweep).
