@@ -273,8 +273,10 @@ def _bone_definitions():
     # Hand grouped as one mass body -------------------------------------------
     bones.append({
         "name": "hand mass",
-        # ANATOMY-DATUM: hand length ~6% of stature.
-        "length_fraction": 0.06,
+        # ANATOMY-DATUM: hand length ~11% of stature (ANSUR II male median
+        # 0.193 m / 1.755 m = 0.110 H at 1.80 m; supersedes the prior 0.06 H
+        # estimate which matched palm length, not full hand length).
+        "length_fraction": 0.11,
         # ANATOMY-DATUM: hand breadth ~9 cm (~0.05 H).
         "diameter_fraction": 0.05,
         "load_fraction": HAND_MASS_FRACTION,

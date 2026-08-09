@@ -23,6 +23,8 @@ from LightEngine import skeleton_scaling
 from LightEngine.rope_network import (
     JOINT_CENTERS,
     VERTEBRAL_CENTERS,
+    DERIVED_JOINT_CENTERS,
+    DERIVED_VERTEBRAL_CENTERS,
     SACRUM_POSTERIOR,
     SACRUM_PROMONTORY,
     ILIUM_POSTERIOR,
@@ -135,23 +137,32 @@ _PATCH_FOOT = {
 }
 
 
-def _joint_dict(height_lu: float, foot_style: str = "legacy") -> dict[str, np.ndarray]:
+def _joint_dict(height_lu: float, foot_style: str = "legacy",
+                body_style: str = "legacy") -> dict[str, np.ndarray]:
     """Return all named joint centers in lu.
 
     foot_style="patch" (VERDICT 25) rebuilds the foot chain from the
     contact patch up (see _PATCH_FOOT); "legacy" (default) is the
     pre-VERDICT-25 geometry, bit-identical.
+
+    body_style="derived" (RULE 27 build membrane, 2026-08-09) re-derives
+    VERTEBRAL_CENTERS, JOINT_CENTERS, and limb offsets from bone-table
+    fractions so every segment matches its ANATOMY-DATUM within ±2% of
+    stature.  body_style="legacy" (default) is bit-identical to the
+    pre-build geometry.
     """
     j: dict[str, np.ndarray] = {}
 
-    # Mirrored limb joints.
+    # Mirrored limb joints — legacy or derived center set.
+    jc_set = DERIVED_JOINT_CENTERS if body_style == "derived" else JOINT_CENTERS
     for key in ("ankle", "knee", "hip", "shoulder", "foot_arch_keystone"):
-        left = JOINT_CENTERS[key]
+        left = jc_set[key]
         j[f"{key}_L"] = _scale_point(left, height_lu)
         j[f"{key}_R"] = _scale_point(_mirror_y(left), height_lu)
 
-    # Vertebral body centers (midline).
-    for level, xz in VERTEBRAL_CENTERS.items():
+    # Vertebral body centers (midline) — legacy or derived.
+    vc_set = DERIVED_VERTEBRAL_CENTERS if body_style == "derived" else VERTEBRAL_CENTERS
+    for level, xz in vc_set.items():
         j[level] = _scale_xz(xz, height_lu)
 
     # Sacrum / pelvis arch reference points.
@@ -162,7 +173,13 @@ def _joint_dict(height_lu: float, foot_style: str = "legacy") -> dict[str, np.nd
 
     # Head (cranial vault center and suture/condyle region).
     j["skull_center"] = _scale_point((-0.020, 0.000, 0.950), height_lu)
-    j["skull_suture"] = _scale_point((-0.030, 0.000, 0.985), height_lu)
+    if body_style == "derived":
+        # DERIVED-GEOMETRY: skull link covers full 0.12 H per bone table.
+        # Suture at C1_z + skull length_fraction (0.12 H).
+        c1_z = DERIVED_VERTEBRAL_CENTERS["C1"][1]
+        j["skull_suture"] = _scale_point((-0.030, 0.000, c1_z + 0.120), height_lu)
+    else:
+        j["skull_suture"] = _scale_point((-0.030, 0.000, 0.985), height_lu)
 
     # Sternum.
     j["sternum_top"] = _scale_point((-0.005, 0.000, 0.885), height_lu)
@@ -172,14 +189,26 @@ def _joint_dict(height_lu: float, foot_style: str = "legacy") -> dict[str, np.nd
     for side in ("L", "R"):
         sgn = 1.0 if side == "L" else -1.0
         sh = j[f"shoulder_{side}"]
-        elbow = sh + np.array([0.015, 0.015 * sgn, -0.180]) * height_lu
-        j[f"elbow_{side}"] = elbow
-        wrist = elbow + np.array([0.015, 0.010 * sgn, -0.130]) * height_lu
-        j[f"wrist_{side}"] = wrist
-        hand = wrist + np.array([0.025, 0.010 * sgn, -0.060]) * height_lu
-        hand_tip = hand + np.array([0.030, 0.005 * sgn, -0.050]) * height_lu
-        j[f"hand_{side}"] = hand
-        j[f"hand_tip_{side}"] = hand_tip
+        if body_style == "derived":
+            # DERIVED-GEOMETRY: upper arm 0.19 H, forearm 0.14 H per bone table.
+            elbow = sh + np.array([0.015, 0.015 * sgn, -0.190]) * height_lu
+            j[f"elbow_{side}"] = elbow
+            wrist = elbow + np.array([0.015, 0.010 * sgn, -0.140]) * height_lu
+            j[f"wrist_{side}"] = wrist
+            # Hand: fold phantom tip into single link at ANSUR 0.110 H.
+            # diag = sqrt(0.025^2 + 0.010^2 + z_drop^2) = 0.110 → z_drop ≈ -0.1067
+            hand_z = -math.sqrt(0.110**2 - 0.025**2 - 0.010**2)
+            hand = wrist + np.array([0.025, 0.010 * sgn, hand_z]) * height_lu
+            j[f"hand_{side}"] = hand
+        else:
+            elbow = sh + np.array([0.015, 0.015 * sgn, -0.180]) * height_lu
+            j[f"elbow_{side}"] = elbow
+            wrist = elbow + np.array([0.015, 0.010 * sgn, -0.130]) * height_lu
+            j[f"wrist_{side}"] = wrist
+            hand = wrist + np.array([0.025, 0.010 * sgn, -0.060]) * height_lu
+            hand_tip = hand + np.array([0.030, 0.005 * sgn, -0.050]) * height_lu
+            j[f"hand_{side}"] = hand
+            j[f"hand_tip_{side}"] = hand_tip
 
         # Foot chain.
         ankle = j[f"ankle_{side}"]
@@ -221,9 +250,10 @@ def _joint_dict(height_lu: float, foot_style: str = "legacy") -> dict[str, np.nd
 
 
 def _body_instances(table: list[dict], height_lu: float,
-                    foot_style: str = "legacy") -> list[dict]:
+                    foot_style: str = "legacy",
+                    body_style: str = "legacy") -> list[dict]:
     """Expand the scaling table into concrete left/right body instances."""
-    j = _joint_dict(height_lu, foot_style=foot_style)
+    j = _joint_dict(height_lu, foot_style=foot_style, body_style=body_style)
     instances: list[dict] = []
 
     def add(name: str, prox_key: str, dist_key: str, row: dict) -> None:
@@ -296,7 +326,8 @@ def _body_instances(table: list[dict], height_lu: float,
             add(f"radius_ulna_{side}", f"elbow_{side}", f"wrist_{side}",
                 rows["radius/ulna pair"])
         if "hand mass" in rows:
-            add(f"hand_{side}", f"wrist_{side}", f"hand_tip_{side}",
+            dist_key = f"hand_{side}" if body_style == "derived" else f"hand_tip_{side}"
+            add(f"hand_{side}", f"wrist_{side}", dist_key,
                 rows["hand mass"])
 
     # Pelvis and legs.
@@ -656,6 +687,8 @@ def build_skeleton(
     height_m: float = 1.80,
     mass_kg: float = 80.0,
     seed: int = 0,
+    foot_style: str = "legacy",
+    body_style: str = "legacy",
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[str], dict[str, Any]]:
     """Build the StandingHuman print.
 
@@ -667,6 +700,13 @@ def build_skeleton(
     grain_ids : (N,) int32 array
     body_names : list of body names; grain_ids index into this list.
     derived : dict with per-body COMs, support polygon, joints, ropes, etc.
+
+    foot_style="legacy" (default) is the pre-VERDICT-25 knife-edge foot;
+    foot_style="patch" (VERDICT 25) rebuilds from the contact patch up.
+
+    body_style="legacy" (default) is bit-identical to the pre-RULE27 geometry.
+    body_style="derived" (RULE 27 build membrane) re-derives upper-body and
+    spine geometry from bone-table fractions.
     """
     # New budget-first API returns (table, lam, total, breakdown, rc, cand_log).
     table, lam, total_estimated, breakdown, rc, _ = skeleton_scaling.scale_skeleton(
@@ -684,7 +724,8 @@ def build_skeleton(
     spacing = SPACING_LU
     d_eq = D_EQ_LU
 
-    instances = _body_instances(table, height_lu)
+    instances = _body_instances(table, height_lu, foot_style=foot_style,
+                                body_style=body_style)
     if not instances:
         raise RuntimeError("No body instances could be built from the scaling table.")
 

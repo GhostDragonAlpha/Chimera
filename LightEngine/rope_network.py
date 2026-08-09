@@ -52,6 +52,20 @@ JOINT_CENTERS: dict[str, tuple[float, float, float]] = {
     "foot_arch_keystone": (0.020, 0.040, 0.025),
 }
 
+# DERIVED-GEOMETRY (RULE 27 build membrane, 2026-08-09): joint centers
+# re-derived from bone-table fractions so every segment matches its
+# ANATOMY-DATUM within ±2% of stature.  Ankle stays (passed audit).
+# Knee = ankle_z + tibia 0.25 H; hip = knee_z + femur 0.245 H.
+# Shoulder derived from trunk chain (= T1_z, see VERTEBRAL_CENTERS below);
+# x/y offsets preserved as anatomical lateral/anterior positions.
+DERIVED_JOINT_CENTERS: dict[str, tuple[float, float, float]] = {
+    "ankle": (0.000, 0.060, 0.040),          # ANATOMY-DATUM: foot thickness ~4% H
+    "knee":  (0.030, 0.070, 0.290),         # 0.040 + tibia 0.25 H
+    "hip":   (0.040, 0.090, 0.535),         # 0.290 + femur 0.245 H; ANSUR leg_frac=0.512 → +4.1 cm offset
+    "shoulder": (0.020, 0.160, 0.820),      # trunk chain: T1_z = S1+lumbar+thoracic = 0.580+0.080+0.160 = 0.820
+    "foot_arch_keystone": (0.020, 0.040, 0.025),
+}
+
 # Vertebral body centers (x, z).  y = 0 for the midline spine.
 VERTEBRAL_CENTERS: dict[str, tuple[float, float]] = {
     # sacral base (fictive S1 body for the lumbosacral junction)
@@ -84,6 +98,48 @@ VERTEBRAL_CENTERS: dict[str, tuple[float, float]] = {
     "C2": (-0.022, 0.944),
     "C1": (-0.020, 0.940),
 }
+
+# DERIVED-GEOMETRY (RULE 27 build membrane, 2026-08-09): cumulative positions
+# from S1 using per-level fractions matching _vertebral_length_fraction()
+# in skeleton_scaling.py: cervical 0.08/7 H/level, thoracic 0.016/12 H/level,
+# lumbar 0.08/5 = 0.016 H/level.  x offsets preserved from the original
+# hardcoded values (anatomical anterior lean pattern); z is derived.
+#
+# Total C1-S1 span: 0.320 H (= 0.08 + 0.16 + 0.08), matching the bone-table
+# comment "total vertebral column (C1-S1) is ~32% of stature".
+# C2→C1 spacing is positive (C1 above C2), fixing Finding 10 inversion.
+def _build_derived_vertebral_centers() -> dict[str, tuple[float, float]]:
+    """Return VERTEBRAL_CENTERS derived from cumulative spine fractions."""
+    S1_Z = 0.580
+    # Per-level length fractions (must sum to region totals: C=0.08, T=0.16, L=0.08)
+    cervical_frac = 0.08 / 7   # ~0.011429
+    thoracic_frac = 0.16 / 12  # ~0.013333
+    lumbar_frac = 0.08 / 5     # 0.016
+    # x offsets: anterior lean pattern, preserved from original hardcoded values.
+    lumbar_x = [0.015, 0.020, 0.025, 0.025, 0.020]      # L5..L1
+    thoracic_x = [0.010, 0.005, 0.000, -0.005, -0.010, -0.012,
+                  -0.014, -0.016, -0.017, -0.018, -0.019, -0.020]  # T12..T1
+    cervical_x = [-0.020, -0.018, -0.016, -0.014, -0.018, -0.022, -0.020]  # C7..C1
+    out: dict[str, tuple[float, float]] = {"S1": (-0.030, S1_Z)}
+    z = S1_Z
+    for i, x in enumerate(lumbar_x):
+        z += lumbar_frac
+        out[f"L{5 - i}"] = (x, z)
+    for i, x in enumerate(thoracic_x):
+        z += thoracic_frac
+        out[f"T{12 - i}"] = (x, z)
+    for i, x in enumerate(cervical_x):
+        z += cervical_frac
+        out[f"C{7 - i}"] = (x, z)
+    return out
+
+DERIVED_VERTEBRAL_CENTERS = _build_derived_vertebral_centers()
+# Sanity: total span must equal 0.32 H.
+assert abs(DERIVED_VERTEBRAL_CENTERS["C1"][1] - DERIVED_VERTEBRAL_CENTERS["S1"][1] - 0.32) < 1e-9, \
+    "derived spine total span must be 0.32 H"
+# C1 above C2 (Finding 10 fix).
+assert DERIVED_VERTEBRAL_CENTERS["C1"][1] > DERIVED_VERTEBRAL_CENTERS["C2"][1], \
+    "C1 must be above C2"
 
 # Spinous process offset posterior to the vertebral body center, in H.
 SPINOUS_OFFSET_X = -0.035 * H
