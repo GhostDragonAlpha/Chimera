@@ -831,3 +831,40 @@ reduction is wrong for this skeleton (multi-mass, 77 links --
 the DCM-with-height-variation or a three-mass model is the next
 literature step; Englsberger 2015).  Record, do not tune kd
 (derived from the error dynamics, swept never).
+
+VERDICT 2 OUTCOME (2026-08-08): FALSIFIED AS IMPLEMENTED -- and the
+falsifier caught a deeper disease than the one the membrane aimed at.
+WHAT SHIPPED: the xi-feedback variant (capture point inside the lean
+offset, not the COP-placement torque): opt-in state["balance_cop"],
+per-tick offset_vec = centroid_xy - xi against the two ankle pivots
+(actuator rows 101/114 = joints 63/71).  Default off; 44-test fast
+gate green bit-identical on the legacy path.
+MEASURED (.tmp/validate_standing.py, flag on): ankle R/L mean
++9.59 N m (was +9.9) -- still OUTSIDE the human envelope
+[-3.08, +5.24].  Refusal still at tick 119.  Sway still 0.1 mm AP.
+Standing duration unchanged.  PREDICTION (1) and (2) both fail.
+THE INSTRUMENTED TRUTH (what the falsifier actually caught): the xi
+channel is LIVE (bal_idx resolves to the ankle pivots; offset_vec
+recomputes per tick) but the PLANT IS RIGID.  Over 118 ticks: COM
+x frozen at 0.0266 m (statue confirmed at the millimetre level),
+while the support centroid DRIFTS 0.081 -> 0.0985 m -- the feet
+slide forward 1.75 cm in 0.12 s under a body that does not move.
+The servo pushes, the contact-projection solver pushes back, net
+motion zero.  Neither the static lean nor xi feedback can migrate
+the COM because the contact solve cancels the lean torque each tick.
+ROOT-CAUSE CANDIDATES, measured not guessed: (a) BIRTH OFFSET -- at
+bind the COM sits 5.45 cm behind the foot-support centroid; human
+quiet stance parks the COM over mid-foot, so the pose itself demands
+a permanent ankle moment before any servo runs; (b) CONTACT FREEZE
+-- the projection solver pins the foot endpoints hard enough that
+the feet translate (slide) instead of the shanks rotating over them,
+so the ankle strategy's mechanism (shank rotation about the COP)
+does not exist in this plant.
+RECORDED PER RULE 0: bars not patched, kd not tuned.  The next
+membrane is NOT Englsberger DCM-height (that fixes the MODEL; the
+measurements say the GEOMETRY and the CONTACT are wrong first).
+VERDICT 3 candidates in order: (1) birth-offset membrane -- stand
+the bind pose with the COM over the foot centroid at t=0 and
+re-measure the ankle envelope; (2) contact-freeze membrane -- let
+the shank rotate about the planted foot (measure foot slide vs
+shank rotation under a known lean torque).

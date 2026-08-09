@@ -105,6 +105,16 @@ class MuscleController:
         centroid = _support_centroid_xy(state)
         com = _com_xy(state)
         offset_vec = centroid - com
+        # BALANCE-BY-COP (2026-08-08, VERDICT 2 membrane, opt-in via
+        # state["balance_cop"]): the pivot actuators identified by the
+        # SAME membership test, re-listed so apply() can re-derive their
+        # lean offset PER TICK from the capture point (Pratt 2006:
+        # xi = x + xdot/omega, omega = sqrt(g/h)) instead of the bind-
+        # pose COM.  Legacy default off: the static offset below is
+        # bit-identical.
+        self._bal_idx = [i for i, a in enumerate(self.actuators)
+                         if a["child_idx"] in contact_links
+                         and a["parent_idx"] not in contact_links]
         for a in self.actuators:
             a["target_offset"] = 0.0
             if a["child_idx"] not in contact_links \
@@ -261,3 +271,40 @@ class MuscleController:
             + np.cross(q_p[:, 1:], t)
         motor_target[:] = -self._omega_n * (theta_err - self._t_off)
         motor_lmax[:] = self._lmax
+
+        # BALANCE-BY-COP (VERDICT 2 membrane, opt-in): re-derive the ankle
+        # pivots' lean offset PER TICK from the capture point.  Pratt 2006 /
+        # Koolen 2012: the LIPM capture point xi = x + xdot/omega with
+        # omega = sqrt(g/h); steering the support-centroid offset against xi
+        # instead of the static COM adds the xdot/omega velocity feedback the
+        # pose-PD lacks (measured disease: +9.9 N-m ankle moments against the
+        # human envelope [-3.08, +5.24], 0.44 s standing).  Sign convention
+        # matches __init__: static t_off = -phi lands -wn*(theta_err + phi),
+        # so the dynamic form is -wn*(theta_err + phi_t).
+        if state.get("balance_cop") and self._bal_idx:
+            mass = state["mass"]
+            M = float(mass.sum())
+            com3 = (state["pos"] * mass[:, None]).sum(axis=0) / M
+            comv = (state["lin_vel"] * mass[:, None]).sum(axis=0) / M
+            h = float(com3[2])
+            if h > 1e-6:
+                # ANATOMY-DATUM: standard gravity, same constant as dynamics.
+                omega = float(np.sqrt(9.80665 / h))
+                xi = com3[:2] + comv[:2] / omega
+                offset_vec = _support_centroid_xy(state) - xi
+                for a in self._bal_idx:
+                    act = self.actuators[a]
+                    q_pa = state["quat"][act["parent_idx"]]
+                    axis_w = transforms.rotate(
+                        q_pa, act["axis_local_parent"])
+                    R_c = transforms.to_matrix(state["quat"][act["child_idx"]])
+                    jc = state["pos"][act["child_idx"]] \
+                        + R_c @ state["r_joint_child_local"][act["joint_index"]]
+                    r = com3 - jc
+                    lever = np.cross(axis_w, r)
+                    lever_xy = float(np.linalg.norm(lever[:2]))
+                    if lever_xy < 1e-9:
+                        continue
+                    phi = float(np.dot(offset_vec, lever[:2])
+                                / (lever_xy ** 2))
+                    motor_target[a] = -self._omega_n[a] * (theta_err[a] + phi)
