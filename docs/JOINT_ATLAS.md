@@ -671,3 +671,34 @@ bar is the bar: recorded RED, unpatched.  NEXT: .tmp/diag_stand_d1
 decide the membrane -- servo crumple refusal (terminate standing
 when the frame is geometrically lost, then the green DROP regime
 owns the body) vs a standing-load floor stiffness distinction.
+RUN 19 (d1) FORCE DIAGNOSTIC OUTCOME (2026-08-08, agent_logs/
+diag_d1_forces.log + diag_stand_d1.log): **(d1) is the floor losing
+the VOTE to live motors in the shared K, not crumple and not
+softness.**  Measured: the sink is feet-only (femur/tibia never
+cross -0.02); the sole polygon rows sit buried 14-17 cm carrying a
+STEADY 27-80 N each (~600 N = most of body weight) while the foot
+keeps sinking -- a buried row with a 1.1 m/s lift bias holding
+steady force and not lifting is the compromise-solution signature:
+the servo's bounded motor rows demand the pose through the joint
+chain, the contact rows demand the lift, the direct solve splits
+the error, and the floor's share is 2/3 of what holding needs.
+The FLOOR rod-end rows on foot links carry 0.0 N even buried
+10-18 cm (ejected; the run-5/6 disease) -- and the toe rod ends
+are buried AT BIRTH by anatomy (metatarsals -0.067 m, forefoot
+-0.052 m at init pose, measured): the foot is a plate with a sole
+polygon, not a rod resting on endpoints.  RUN 20 MEMBRANE (the
+numbers chose it): **CONTACT PRIORITY UNDER THE DAMPED FLOOR** --
+the run-6 retention flag (buried biased contact rows are never
+ejected; the bounded motor rows saturate and leave instead;
+_kernel contact_priority, dormant since run 7) re-measured now
+that the floor rows are damped implicit rows, not the undamped
+forms of runs 6-7.  Config-only change (make_state
+contact_priority=1).  PREDICTION: (d1) PASS (the sole rows hold
+z >= -0.05 pre-fall with retention; the motors, not the floor,
+absorb the servo's crush); DROP legs stay green (the damped rows
+plus retention is unmeasured territory).  FALSIFIER (named before
+the run): the run-6 disease returns -- retention during crush
+steals holding force and NO TUNNEL fails (run 6: -0.2132) -> the
+two membranes (retention, damped rows) conflict in kind and the
+next step is retention restricted to is_floor rows.  Record, do
+not patch.
