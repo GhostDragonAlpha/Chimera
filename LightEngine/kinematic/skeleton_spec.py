@@ -521,20 +521,40 @@ _CONTACT_POINT_LINK = {
     "metatarsal_base": "metatarsals",
     "mtp": "metatarsals",
     "forefoot": "forefoot",
+    # PATCH-UP FOOT (VERDICT 25): heel/ankle ride the tarsals link, the
+    # midfoot and ball ride the metatarsals link, the toes ride the
+    # forefoot link -- the load path still reaches the ankle joint
+    # through the tarsals chain.
+    "heel_lat": "tarsals",
+    "heel_med": "tarsals",
+    "heel_mid": "tarsals",
+    "ankle_mid": "tarsals",
+    "mid_lat": "metatarsals",
+    "mid_med": "metatarsals",
+    "ball_lat": "metatarsals",
+    "ball_med": "metatarsals",
+    "toe_lat": "forefoot",
+    "toe_med": "forefoot",
 }
 
 
 def _build_contact_specs(height_lu: float, lam: float,
-                         contact_links: bool = False) -> dict[str, list[dict[str, Any]]]:
+                         contact_links: bool = False,
+                         foot_style: str = "legacy") -> dict[str, list[dict[str, Any]]]:
     """Return foot support polygon points per side.
 
-    DERIVED-GEOMETRY: points are the scaled joint centers projected to z=0,
-    exactly as produced by LightEngine/skeleton_structures._foot_projection_points().
+    DERIVED-GEOMETRY: foot_style="legacy" points are the scaled joint
+    centers projected to z=0, exactly as produced by
+    LightEngine/skeleton_structures._foot_projection_points().
+    foot_style="patch" (VERDICT 25) uses the independently derived contact
+    patch (every point z=0, heel 26% of foot length behind the ankle, foot
+    length to the 15.2% H datum, 10 points per foot).
     When contact_links is True each record also carries "link", the anatomic
     owner of that point per _CONTACT_POINT_LINK (default False = legacy, all
     points attach to the tarsals link downstream).
     """
-    points = skeleton_structures._foot_projection_joints(height_lu)
+    points = skeleton_structures._foot_projection_joints(
+        height_lu, foot_style=foot_style)
     contacts: dict[str, list[dict[str, Any]]] = {}
     for side in ("L", "R"):
         contacts[side] = []
@@ -587,7 +607,8 @@ def _build_floor_contact_specs(links: dict[str, dict[str, Any]]) -> list[dict[st
 def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
                contact_links: bool = False,
                mass_model: str = "design",
-               floor_links: bool = False) -> dict[str, Any]:
+               floor_links: bool = False,
+               foot_style: str = "legacy") -> dict[str, Any]:
     """Build and return the 77-link StandingHuman kinematic spec.
 
     Returns a dictionary with keys:
@@ -614,13 +635,22 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
     2026-08-08) adds "floor_contacts": both endpoints of every link, so a
     fallen body LANDS instead of passing through the plane (VERDICT 2
     measured head_z -50.8 m @8000 with foot-only contacts).
+
+    foot_style="legacy" (default) is the pre-VERDICT-25 knife-edge foot,
+    bit-identical.  foot_style="patch" (VERDICT 25, THE PATCH-UP FOOT)
+    rebuilds the foot from the contact patch up: 10 derived points per
+    foot (all z=0, heel 26% of foot length behind the ankle, foot length
+    to the 15.2% H datum, 6-10 cm wide polygon), bones grown above it
+    (arch apex through foot_arch_keystone at z=4.5 cm, metatarsal_base
+    unburied).  The derivation is in skeleton_structures._PATCH_FOOT.
     """
     table, lam, total, breakdown, rc, cand_log = skeleton_scaling.scale_skeleton(
         height_m, mass_kg
     )
     height_lu = height_m / lam
 
-    instances = skeleton_structures._body_instances(table, height_lu)
+    instances = skeleton_structures._body_instances(
+        table, height_lu, foot_style=foot_style)
     instances_by_name = {inst["name"]: inst for inst in instances}
 
     # Validate that the topology covers exactly the generated instances.
@@ -637,7 +667,8 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
     links = _build_link_specs(instances, mass_kg, lam, mass_model=mass_model)
     joints = _build_joint_specs(links, lam)
     ligaments = _build_ligament_specs(links, height_lu, lam)
-    contacts = _build_contact_specs(height_lu, lam, contact_links=contact_links)
+    contacts = _build_contact_specs(height_lu, lam, contact_links=contact_links,
+                                    foot_style=foot_style)
 
     # Ensure every non-root link has a joint record.
     for name, link in links.items():
@@ -659,6 +690,7 @@ def build_spec(height_m: float = 1.80, mass_kg: float = 80.0,
         "total_grain_estimate": total,
         "breakdown": breakdown,
         "rung_counts": rc,
+        "foot_style": foot_style,
     }
     if floor_links:
         spec["floor_contacts"] = _build_floor_contact_specs(links)

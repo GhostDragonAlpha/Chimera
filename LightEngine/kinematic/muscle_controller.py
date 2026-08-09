@@ -290,27 +290,35 @@ class MuscleController:
             if h > 1e-6:
                 # ANATOMY-DATUM: standard gravity, same constant as dynamics.
                 omega = float(np.sqrt(9.80665 / h))
-                kd = 1.0  # derived: critical damping (VERDICT 2 notes)
-                p_star = com3[:2] + (1.0 + kd) * comv[:2] / omega
 
-                # VERDICT 23 FREE SWAY (2026-08-09): quiet standing is a FREE
-                # inverted pendulum caught by the balance law, not a pose held
-                # by a PD.  The ankle pivot rows hold ZERO stiffness: motor
-                # target = 0 (the solve drives the ankle's relative angular
-                # velocity to zero -- a velocity damper, not a pose clamp) with
-                # motor_lmax KEPT at the derived torque cap (a live muscle, not
-                # a dead motor).  The other 119 actuators keep the pose-PD from
-                # the vectorized apply above untouched.
-                # The ONLY ankle drive is the VERDICT 20 true-normal external
-                # torque channel, restored: N_a = M*g/2 per foot (the statics
-                # share, VERDICT 20 symmetric limit), p* = com + (1+kd)*comv/omega
-                # (capture point, kd = 1.0), delta_p3 = p_star - ankle_xy,
-                # tau_scalar = N_a * dot(cross(delta_p3, z_hat), axis_w), SET
-                # on the tibia parent and -tau on the tarsals child.  The
-                # VERDICT 22 phi modulation is REMOVED -- COP steering through
-                # the ext_torque couple, not through the ankle PD rows.
-                z_hat = np.array([0.0, 0.0, 1.0])
-                n_a = 0.5 * M * 9.80665  # statics share per foot (VERDICT 20)
+                # VERDICT 26 ANKLE IMPEDANCE (2026-08-09): the free-sway
+                # damper of VERDICT 23 was a KINEMATIC CLAMP (ankle angle
+                # frozen, std 0.0016 rad) and the VERDICT 20 couple channel
+                # priced M*g*d -- exactly cancelling gravity, leaving the
+                # lean NEUTRALLY stable (d frozen ~200 ticks, then the
+                # neutral mode drifts; measured 2026-08-09 in VERDICT 25:
+                # collapse at 0.97x omega, ankle torque saturated at the
+                # 75 N m physiology cap).  The DERIVED law (RULE 1: the
+                # constants come from the EOM, not a sweep) replaces the
+                # gravity feedforward with a SPRING about the balanced
+                # reference d_ref:
+                #   |tau| = M*g*d_ref + 2*M*g*(d - d_ref) + 2*M*g*v/omega
+                # with d = com_x - ankle_x (forward lean), v = com_x vel.
+                # Closed loop: M*h*d'' + M*g*(d-d_ref) + 2*M*g*v/omega = 0
+                # -- a critically-damped oscillator at omega_osc = omega
+                # (the pendulum rate): stiffness (k - M*g) = M*g, kd = 1
+                # capture law == critical damping, k_angular = 2*M*g*h =
+                # 1828 N m/rad (Winter's 1.5-3x M*g*h band).  d_ref = the
+                # VERDICT 6 envelope midpoint (0.005 m): rest ankle torque
+                # M*g*d_ref = 3.9 N m inside the human envelope [-3.08,
+                # +5.24].  The ankle motor rows are FREED (lmax = 0 -- a
+                # free hinge; the torque source is the sole ankle
+                # authority), so the body can actually sway.
+                # Per foot: half the total (the statics share, VERDICT 20
+                # symmetric limit), applied as the ext_torque couple on the
+                # tibia/tarsals pair with the VERDICT 20 restoring sign
+                # (backward torque for a forward lean: tau*d < 0).
+                d_ref = 0.005  # VERDICT 6 envelope midpoint (m)
                 ext_torque = state.get("ext_torque")
                 if ext_torque is None:
                     ext_torque = np.zeros((len(state["link_names"]), 3),
@@ -321,18 +329,19 @@ class MuscleController:
                 for a in self._bal_idx:
                     act = self.actuators[a]
                     motor_target[a] = 0.0
-                    motor_lmax[a] = float(self._lmax[a])
+                    motor_lmax[a] = 0.0
                     cb = act["child_idx"]
                     R_c = transforms.to_matrix(state["quat"][cb])
                     jc = state["pos"][cb] \
                         + R_c @ state["r_joint_child_local"][act["joint_index"]]
-                    ankle_xy = jc[:2]
-                    delta_p3 = np.array([p_star[0] - ankle_xy[0],
-                                         p_star[1] - ankle_xy[1], 0.0])
+                    d = float(com3[0] - jc[0])
+                    v = float(comv[0])
+                    tau_mag = 0.5 * (M * 9.80665 * d_ref
+                                     + 2.0 * M * 9.80665 * (d - d_ref)
+                                     + 2.0 * M * 9.80665 * v / omega)
                     axis_w = transforms.rotate(
                         state["quat"][act["parent_idx"]],
                         act["axis_local_parent"])
-                    tau_scalar = n_a * float(
-                        np.dot(np.cross(delta_p3, z_hat), axis_w))
+                    tau_scalar = -tau_mag
                     ext_torque[act["parent_idx"]] = tau_scalar * axis_w
                     ext_torque[cb] = -tau_scalar * axis_w

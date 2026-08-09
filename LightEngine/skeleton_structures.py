@@ -95,8 +95,53 @@ def _spinous(level: str, height_lu: float) -> np.ndarray:
 # ---------------------------------------------------------------------------
 # Body plan: map scaling-table rows to anatomical instances.
 # ---------------------------------------------------------------------------
-def _joint_dict(height_lu: float) -> dict[str, np.ndarray]:
-    """Return all named joint centers in lu."""
+# PATCH-UP FOOT (VERDICT 25, docs/JOINT_ATLAS.md, membrane written
+# 2026-08-09 before the build).  The knife-edge legacy foot was measured
+# 2026-08-09: per-foot polygon 1.8 cm wide (a single diagonal line),
+# metatarsal_base at z = -1.8 cm BELOW the floor, arch inverted
+# (tarsal +1.8 -> met_base -1.8 -> mtp 0.0 cm, never touching the
+# keystone at z = 4.5 cm), foot length 24.3 cm (13.5% H) vs the 15.2% H
+# datum.  The patch-up foot derives the CONTACT PATCH on the floor first,
+# then grows the bones up from it.  All numbers below are derived, never
+# swept; each carries its datum:
+#   L      = 0.152 H         foot length datum (15.2% stature = 27.4 cm).
+#   heel   = 0.26 * L behind the ankle   (VERDICT 7 calcaneus derivation)
+#   toe    = 0.74 * L ahead of the ankle
+#   ankle  = (0, +-0.060, 0.040) H   audit 2026-08-09: OK (4.0% H ~ 3.9%)
+#   keystone = foot_arch_keystone at (0.020, +-0.040, 0.025) H (4.5 cm);
+#             the tarsal joint IS the keystone, so the arch apex passes
+#             through it (prediction (c)).
+#   mtp    = 70% of foot length from the heel, ON the sole (the ball).
+#   met_base = midpoint of the tarsal->mtp arch rod: unburied (z = 1.25%
+#             H = 2.25 cm, in the "midfoot rides 2-4 cm above the sole"
+#             datum band).
+#   zone widths (repo datum, @H=1.8): hindfoot 7 / midfoot 6 / toes 5 cm
+#             = 0.0389 / 0.0333 / 0.0278 H; the ball (MTP heads) uses the
+#             widest zone 7 cm.
+# The repo segment-span datums (tarsals 6% / metatarsals 8% / toes 5% H)
+# are mutually inconsistent with L = 0.152 H (6+8+5 = 19% H > 15.2% H),
+# so the spans are derived from the settled constraints instead: tarsals
+# 2% H (pinned by the keystone x), metatarsals 4.7% H (tarsal->mtp),
+# toes 4.6% H (mtp->toe, hits the 5% datum).  Recorded, not swept.
+_PATCH_FOOT = {
+    "foot_length_h": 0.152,
+    "heel_frac": 0.26,
+    "mtp_frac": 0.70,          # MTP line at 70% of L from the heel
+    "ankle": (0.000, 0.060, 0.040),
+    "keystone": (0.020, 0.040, 0.025),
+    "w_heel_h": 0.0389,        # 7 cm @H=1.8 (repo datum)
+    "w_mid_h": 0.0333,         # 6 cm @H=1.8 (repo datum)
+    "w_toe_h": 0.0278,         # 5 cm @H=1.8 (repo datum)
+}
+
+
+def _joint_dict(height_lu: float, foot_style: str = "legacy") -> dict[str, np.ndarray]:
+    """Return all named joint centers in lu.
+
+    foot_style="patch" (VERDICT 25) rebuilds the foot chain from the
+    contact patch up (see _PATCH_FOOT); "legacy" (default) is the
+    pre-VERDICT-25 geometry, bit-identical.
+    """
     j: dict[str, np.ndarray] = {}
 
     # Mirrored limb joints.
@@ -138,10 +183,26 @@ def _joint_dict(height_lu: float) -> dict[str, np.ndarray]:
 
         # Foot chain.
         ankle = j[f"ankle_{side}"]
-        tarsal = ankle + np.array([0.020, 0.005 * sgn, -0.030]) * height_lu
-        met_base = ankle + np.array([0.035, 0.010 * sgn, -0.050]) * height_lu
-        mtp = ankle + np.array([0.070, 0.010 * sgn, -0.040]) * height_lu
-        forefoot = ankle + np.array([0.100, 0.010 * sgn, -0.035]) * height_lu
+        if foot_style == "patch":
+            # PATCH-UP FOOT (VERDICT 25): bones grow up from the contact
+            # patch derived in _foot_patch_points.  H-fraction offsets in
+            # the body-plan frame, scaled by height_lu like every joint.
+            pf = _PATCH_FOOT
+            L_h = pf["foot_length_h"]
+            heel_x_h = -pf["heel_frac"] * L_h
+            toe_x_h = (1.0 - pf["heel_frac"]) * L_h
+            kx, ky, kz = pf["keystone"]
+            tarsal = np.array([kx, ky * sgn, kz]) * height_lu
+            mtp_x_h = heel_x_h + pf["mtp_frac"] * L_h
+            mtp = np.array([mtp_x_h, 0.060 * sgn, 0.000]) * height_lu
+            # met_base = midpoint of the tarsal->mtp arch rod (unburied).
+            met_base = 0.5 * (tarsal + mtp)
+            forefoot = np.array([toe_x_h, 0.060 * sgn, 0.000]) * height_lu
+        else:
+            tarsal = ankle + np.array([0.020, 0.005 * sgn, -0.030]) * height_lu
+            met_base = ankle + np.array([0.035, 0.010 * sgn, -0.050]) * height_lu
+            mtp = ankle + np.array([0.070, 0.010 * sgn, -0.040]) * height_lu
+            forefoot = ankle + np.array([0.100, 0.010 * sgn, -0.035]) * height_lu
         j[f"tarsal_{side}"] = tarsal
         j[f"metatarsal_base_{side}"] = met_base
         j[f"mtp_{side}"] = mtp
@@ -159,9 +220,10 @@ def _joint_dict(height_lu: float) -> dict[str, np.ndarray]:
     return j
 
 
-def _body_instances(table: list[dict], height_lu: float) -> list[dict]:
+def _body_instances(table: list[dict], height_lu: float,
+                    foot_style: str = "legacy") -> list[dict]:
     """Expand the scaling table into concrete left/right body instances."""
-    j = _joint_dict(height_lu)
+    j = _joint_dict(height_lu, foot_style=foot_style)
     instances: list[dict] = []
 
     def add(name: str, prox_key: str, dist_key: str, row: dict) -> None:
@@ -459,12 +521,54 @@ def _generate_rope(
     return pts + jitter
 
 
-def _foot_projection_joints(height_lu: float) -> dict[str, list[tuple[str, float, float]]]:
+def _foot_patch_points(height_lu: float) -> dict[str, list[tuple[str, float, float]]]:
+    """PATCH-UP FOOT (VERDICT 25): the contact patch derived on the floor
+    FIRST -- every point z = 0 at birth, heel 26% of foot length behind
+    the ankle, foot length to the 15.2% H datum, zone widths to the repo
+    datums (hindfoot 7 / midfoot 6 / toes 5 cm @H=1.8).  10 points per
+    foot (the membrane's <= 10).  Keys end in _L/_R for the contact-spec
+    link owner map.
+    """
+    pf = _PATCH_FOOT
+    L_h = pf["foot_length_h"]
+    heel_x_h = -pf["heel_frac"] * L_h
+    toe_x_h = (1.0 - pf["heel_frac"]) * L_h
+    mtp_x_h = heel_x_h + pf["mtp_frac"] * L_h
+    mid_x_h = 0.5 * (pf["keystone"][0] + mtp_x_h)  # tarsal->mtp rod midpoint
+    w_heel = 0.5 * pf["w_heel_h"]
+    w_mid = 0.5 * pf["w_mid_h"]
+    w_ball = 0.5 * pf["w_heel_h"]   # MTP heads use the widest zone
+    w_toe = 0.5 * pf["w_toe_h"]
+    feet: dict[str, list[tuple[str, float, float]]] = {"L": [], "R": []}
+    for side in ("L", "R"):
+        sgn = 1.0 if side == "L" else -1.0
+        yc = 0.060 * sgn
+        raw = [
+            (f"heel_lat_{side}", heel_x_h, yc + w_heel),
+            (f"heel_med_{side}", heel_x_h, yc - w_heel),
+            (f"heel_mid_{side}", heel_x_h, yc),
+            (f"ankle_mid_{side}", 0.00000, yc),
+            (f"mid_lat_{side}", mid_x_h, yc + w_mid),
+            (f"mid_med_{side}", mid_x_h, yc - w_mid),
+            (f"ball_lat_{side}", mtp_x_h, yc + w_ball),
+            (f"ball_med_{side}", mtp_x_h, yc - w_ball),
+            (f"toe_lat_{side}", toe_x_h, yc + w_toe),
+            (f"toe_med_{side}", toe_x_h, yc - w_toe),
+        ]
+        feet[side] = [(k, x * height_lu, y * height_lu) for k, x, y in raw]
+    return feet
+
+
+def _foot_projection_joints(height_lu: float,
+                            foot_style: str = "legacy") -> dict[str, list[tuple[str, float, float]]]:
     """Return projected (joint_key, x, y) foot contact points for each foot.
 
-    Same points as _foot_projection_points() but carrying the joint key, so
-    the contact spec can assign each point to its anatomical link.
+    foot_style="patch" (VERDICT 25) returns the independently derived
+    contact patch (_foot_patch_points); "legacy" (default) projects the
+    joint centers to z = 0, exactly as before.
     """
+    if foot_style == "patch":
+        return _foot_patch_points(height_lu)
     j = _joint_dict(height_lu)
     feet: dict[str, list[tuple[str, float, float]]] = {"L": [], "R": []}
     for side in ("L", "R"):
@@ -492,14 +596,16 @@ def _foot_projection_joints(height_lu: float) -> dict[str, list[tuple[str, float
     return feet
 
 
-def _foot_projection_points(height_lu: float) -> dict[str, list[tuple[float, float]]]:
+def _foot_projection_points(height_lu: float,
+                            foot_style: str = "legacy") -> dict[str, list[tuple[float, float]]]:
     """Return projected (x, y) foot contact points for each foot.
 
     The plate only needs to cover the actual foot contact area.  The points
     are the scaled joint centers of the foot chain projected onto the ground
-    plane (z = 0).
+    plane (z = 0); foot_style="patch" (VERDICT 25) uses the independently
+    derived contact patch instead.
     """
-    keyed = _foot_projection_joints(height_lu)
+    keyed = _foot_projection_joints(height_lu, foot_style=foot_style)
     return {side: [(x, y) for _key, x, y in pts] for side, pts in keyed.items()}
 
 

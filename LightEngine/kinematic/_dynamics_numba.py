@@ -783,6 +783,7 @@ def step_core_direct(
     pen_k2,
     pen_d_break,
     pen_d_pad,
+    contact_static_share,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -1069,6 +1070,24 @@ def step_core_direct(
         # 1.80 m / 80 kg build (d_eq = contact_slop).  Paced recovery:
         # v = depth/T -- an exponential settle, no launch.
         t_recovery = 2.0 * math.pi * math.sqrt(5.0 * contact_slop / GRAVITY)
+        # STATIC-SHARE floor (VERDICT 28, opt-in state["contact_static_share"]):
+        # the load a foot-polygon row OWNS = total body weight distributed
+        # over the loaded polygon rows (the non-floor contact rows), DERIVED
+        # from the solve's own mass array and the polygon -- never a
+        # hardcoded share.  Seeded once at tick 0 (below); the solved
+        # impulse may only RAISE it, so the row is priced against the load
+        # it carries, not against a starved lambda_prev.
+        static_share_mass = 0.0
+        if contact_static_share:
+            M_total = 0.0
+            for i in range(n_links):
+                M_total = M_total + mass[i]
+            n_poly = 0
+            for cj in range(n_contacts):
+                if contact_is_floor[cj] == 0:
+                    n_poly = n_poly + 1
+            if n_poly > 0:
+                static_share_mass = M_total / n_poly
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
@@ -1157,6 +1176,15 @@ def step_core_direct(
                     # strengthens by construction.
                     m_load = m_eff
                     lam_prev = contact_prev_n[ci]
+                    if contact_static_share:
+                        # STATIC-SHARE floor (VERDICT 28): seed m_load from
+                        # the load the row OWNS (the static share, derived
+                        # above), never from lambda_prev which is starved by
+                        # construction -- the measured run-19 floor (0.43 kg)
+                        # never reached the 6.67 kg share.  The solved
+                        # impulse may only raise it.
+                        if static_share_mass > m_load:
+                            m_load = static_share_mass
                     if lam_prev > 0.0:
                         m_l = lam_prev / (GRAVITY * dt)
                         if m_l > m_load:

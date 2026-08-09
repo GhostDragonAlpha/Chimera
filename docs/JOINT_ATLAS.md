@@ -1548,3 +1548,252 @@ datums, midfoot unburied — falsifier: the fall tick moves past 444.
 It is a re-basing change: birth pose, support polygon, both meters,
 and every standing number shift with it; VERDICTs 6-23 get
 re-measured on the new foot, not carried.
+
+---
+
+## VERDICT 25 — THE PATCH-UP FOOT (membrane written 2026-08-09, before the build)
+
+**STATEMENT** (something to disagree with): the knife-edge foot is the
+disease, and a foot rebuilt from the contact patch upward — derived from
+the floor's physics, not bolted onto a torso fraction — moves the fall
+past the current measurement. Current geometry measured 2026-08-09:
+per-foot contact polygon 1.8 cm wide (a single diagonal line, 6 points),
+metatarsal_base at z = −1.8 cm BELOW the floor, arch inverted
+(tarsal +1.8 → met_base −1.8 → mtp 0.0 cm, never touching the keystone
+at z = 4.5 cm), foot length 24.3 cm (13.5% H) vs 15.2% H datum
+(27.4 cm), segment spans under the datums (tarsals 2% vs 6%,
+metatarsals 5% vs 8%, toes 3% vs 5% H), ML sway std ≈ 0.0 mm in every
+VERDICT — not a controller holding still but a foot with no ML margin
+forcing the chain above to lock rigid. Fall @444 (VERDICT 23), refusal
+@427.
+
+**PREDICTION** (measurable bars, named before the run):
+(a) per-foot polygon width 1.8 cm → [6, 10] cm (repo datum);
+(b) metatarsal_base z −1.8 cm → strictly above the floor;
+(c) arch apex passes through the keystone at z = 4.5 cm;
+(d) heel point carries ≥ 25% of foot normal load at quiet stance
+    (VERDICT 24's probe measures before/after);
+(e) fall tick > 444, or a full 3000-tick stand;
+(f) ML sway std becomes nonzero (currently 0.0 mm).
+
+**FALSIFIER** (named before the run): the rebuilt patch-up foot —
+verified 2-D contact polygon, unburied midfoot, arch through the
+keystone, heel loading ≥ 25% — still falls at or before tick 444 with
+the statue intact → the geometry is exonerated and the disease is
+control-side; the next membrane prices ankle impedance from the LIPM
+stability boundary, not angle, not torque alone.
+
+**The build** (RULE 27: derive the membrane before the bones):
+1. Contact patch derived on the floor first — per foot, ≤ 10 points,
+   every patch point z = 0 at birth, heel kept at 26% of foot length
+   behind the ankle (VERDICT 7 calcaneus derivation), foot length to
+   the 15.2% H datum.
+2. Bones grow up from the patch: ankle joint stays ≈ 3.9% H above the
+   sole; metatarsal_base unburied; arch rises heel/MTP → keystone
+   (tarsal chain passes through foot_arch_keystone at 4.5 cm);
+   tarsals/metatarsals/toes toward the repo segment-span datums.
+3. Nothing born buried: assert every foot joint center and link rod
+   endpoint z ≥ 0; a below-floor joint is a derivation failure, fixed
+   in the foot — not by raising the floor.
+4. VERDICT 6 birth pose re-derived on the new foot (new pivot angle,
+   same machinery in `.tmp/verdict6_stand_back.py`).
+5. Re-measured with the current VERDICT 23 controller build — same
+   probe, same 3000-tick stand, clean ankle meter (VERDICT 18), quiet
+   window ticks 10-100 vs collapse window 100→fall kept separate,
+   impulses / DT never confused with forces.
+6. Legacy foot stays buildable bit-identically: `foot_style` parameter
+   so the old geometry can be re-instantiated by any test that needs it.
+
+**Gates:** `python tools/training_gate.py` before and after the change;
+`py test_kinematic_dynamics.py test_kinematic.py test_skeleton.py`
+baseline measured 2026-08-09: **44 passed**. Probes in `.tmp/`, raw
+samples to `agent_logs/`. Not committed.
+
+**VERDICT 25 OUTCOME (2026-08-09): THE PATCH-UP FOOT DID NOT MOVE THE FALL — THE FOOT IS EXONERATED AND THE DISEASE IS CONTROL-SIDE (ANKLE TORQUE CAPACITY).** Geometry bars (a)(b)(c) PASS: patch polygon width 7.00 cm ∈ [6,10], metatarsal_base z = +2.25 cm (was −1.8, nothing born buried — every foot joint z ≥ 0), arch apex 4.50 cm through `foot_arch_keystone` at 4.50 cm, foot length 27.36 cm = 15.20% H (datum 15.2%), heel 26% behind ankle (−7.11 cm), 10 points/foot, k_contact re-derived 60051 N/m (n=10, was n=6). Bar (f) ML sway PASS: 0.0013 mm nonzero (was 0.0000 on the knife edge). **Bar 1 sway FAIL: 0.015 mm vs the [3.8, 9.5] mm band — the body is dead, frozen, not standing.** Bar (e) fall > 444 FAIL: fall @444 — **and the legacy knife-edge foot on the identical probe also falls @444 (both with the VERDICT 6 birth pose correctly re-derived: birth COM +2.65 cm forward, D_CM = −2.15, COM → +0.50 cm envelope midpoint): zero-tick foot effect.** (Note: the first patch run measured fall @445 — that was a sign bug in the probe that shifted the birth COM FORWARD to the support centroid (+5.8 cm); corrected to VERDICT 6's machinery the fall is 444 = 444.) The patch genuinely improves the servo domain (refusal None vs legacy @427 — the wider foot keeps the COM in the polygon) and the contact (heel load, no buried bones), but the collapse is unchanged. THE MECHANISM: collapse-window d-rate ≈ 0.97×omega (both feet) — a rigid inverted-pendulum divergence; the ankle clean torque saturates at **−75 N·m = the derived physiology cap exactly (30 N/cm² × 50 cm² × 0.050 m, `muscles.py`)** once the forward lean d = COM−ankle passes m·g·d > 75 → d > 0.096 m (measured d grows 0.056 → 0.135 m; late-window torque pinned at −74.95 ± 0.03 N·m). Foot length/width/heel position do not enter the ankle's torque capacity, so the fall is foot-independent by construction. FALSIFIER FIRED AS WRITTEN: the rebuilt foot, verified on every geometric bar, falls at the same tick (444) as the legacy foot on the same probe — geometry exonerated, disease control-side. Raw samples -> `agent_logs/verdict25_patch_stand.npz`, control -> `agent_logs/verdict25_legacy_stand.npz`.
+
+**VERDICT 26 MEMBRANE (next, RULE 0 stated 2026-08-09, NOT yet run): PRICE THE ANKLE FROM THE LIPM BOUNDARY, NOT THE RIGID-LEAN ANGLE.** STATEMENT: the rigid-lean reference (whole-body lean of the contact-free chain about the ankle axis, `muscle_controller.py` `target_offset`) prices the ankle servos against a static geometry the LIPM does not demand — the body holds the lean with the ankle parked near −75 N·m and slowly tips past the 75/784.5 = 0.096 m static moment arm, then the ankle saturates. PREDICTION: with the ankle commanded from the capture-point boundary (demanded COP p* = xi inside the polygon, ankle torque = −m·g·(d − xi) priced per tick, servo bandwidth the LIPM pole), the ankle parks far from saturation at the small-lean equilibrium, d stays inside the capturable region, and the fall tick moves past 445 (or the body arrests). FALSIFIER: ankle re-priced from the boundary but the fall tick is unchanged (≤445) AND the ankle still saturates at ±75 N·m → the ankle channel cannot deliver the boundary torque (re-check the motor-row solve and N_a pricing), and the disease is delivery, not reference. Prove against the VERDICT 25 baseline on the patch foot (same probe, same 3000-tick stand, same clean ankle meter, quiet 10-100 vs collapse 100→fall separate).
+
+VERDICT 26 VERIFICATION (2026-08-09, kimi re-run of the agent's
+vertical diagnosis — .tmp/verdict26_verify.py, EM-7 controls):
+
+  box, default config:      N = 100% M*g, z = 0.000 m
+  box, GHOST-FREE config:   N = 99% M*g, rests +0.0448 m ABOVE the
+                            floor (recovery-bias buoyancy)
+  chimera DEAD patch foot:  foot contacts -0.034 m @100, -0.102 m @440,
+                            then collapse onto trunk; N_metric -> 0 at
+                            rest (meter sees only foot-polygon rows,
+                            not the 142 trunk endpoint rows)
+  chimera LIVE legacy foot: -0.076 m @100, -0.238 m @440, N_metric
+                            caps 648 N (83% bw)
+
+Reconciliation: "Newton's third law does not close in the multi-row
+solve" is FALSIFIED — the box closes in both configs.  The disease is
+the FOOT LANE specifically: polygon rows ratchet down from tick ~100,
+live AND dead, legacy AND patch foot (648 N @ -23.8 cm vs the agent's
+644 N @ -22 cm — identical within noise), which exonerates the servo,
+the muscles, and the patch foot.  The agent's N_metric is blind to
+trunk-endpoint load (W-sided records), so "caps at 82% of M*g" is the
+foot lane's number, not the body's.  The fall @444 was measured on a
+platform sinking from tick ~100 — the LIPM omega-fit (VERDICT 20)
+must be re-derived once the feet hold depth.  Agent's npz has
+mislabeled columns (min_pz holds skull z, foot_pitch holds min_pz);
+its printed table was correct.  VERDICT 26 agent grade: B+ — the
+vertical diagnosis is the most important measurement since VERDICT
+18; the universal framing did not survive its own control.  Next:
+VERDICT 27 — THE STARVED ROW.
+
+## VERDICT 27 — THE STARVED ROW (membrane written 2026-08-09, probe only, no patch)
+
+**STATEMENT** (something to disagree with): the foot rows starve through
+their own pricing — each row's damping mass m_load is seeded by its own
+previous tick's solved normal impulse (`contact_prev_n`,
+`LightEngine/kinematic/_dynamics_numba.py:1158-1163`), so a row that
+under-delivers once is priced with a smaller m_load next tick → smaller
+c_eff → LARGER gamma (`gamma = 1/(dt·(dt·k + c))`, the implicit row
+softens) → it delivers even less at the same depth → a ratchet that
+converts any transient under-delivery into permanent starvation.  The
+single box escapes because its one row carries the full 78 kg from tick 0
+(m_load → 78 kg, row stiff, bias correct immediately); the chimera's 12
+foot-polygon rows each see ~5 kg while the 77-link chain crushes through
+them.
+
+**PREDICTION (before the run)**: live free-ankle LEGACY-foot build
+(`verdict26_descend.py` machinery, `balance_cop=1`), quiet ticks 10-100,
+pad-zone rows (depth < 10.4 mm): delivered/priced < 0.3; m_load ~5 kg vs
+the 6.67 kg static share.  **My own split (2026-08-09)**: m_load starts
+near/above share (~6-8 kg from the early settle's lambda_prev) and decays
+→ negative slope is the ratchet signature; D/P early 0.3-0.7 collapsing
+< 0.3 by 60-100.
+
+**FALSIFIER**: pad-zone delivered/priced > 0.8 while the sink continues →
+pricing is healthy, starvation is in the LIFT PACING; next membrane is
+pacing, not pricing.  Either way the losing mechanism is named dead.
+
+**MEASURED (2026-08-09, `.tmp/verdict27_starved_row.py`, raw →
+`agent_logs/verdict27_starved_row.npz`)**:
+
+  fall_tick = 444 (exact reproduction of VERDICT 26)
+  N_total@100 = 345 N, min_pz@100 = -0.033 m
+  N_total@440 = 644 N, min_pz@440 = -0.232 m
+  static share/row = 784.5/12 = 65.4 N = 6.67 kg
+
+  QUIET 10-100, per-row (pad-zone): depth ~9.9 mm | delivered 8.8-26.7 N
+  | spring price k·d = 703-804 N | **D/P = 0.082 (pad-zone row-ticks 554,
+  falsifier < 0.3 → PRICING STARVED, falsifier NOT fired)** | m_load
+  0.9-1.6 kg (mean 1.22) | c_eff 621-870 | gamma 1.65-1.82 | bias
+  0.31-0.48 m/s.
+  Delivered is monotone in the row's contact-point offset: +0.075 m
+  anterior → 26.6 N (m_eff 0.176 kg); -0.128 m posterior → 8.8 N (m_eff
+  0.006 kg).  m_eff = 1/(inv_mass + rn·(I^-1·rn)) ranges **0.006-0.176 kg
+  (mean 0.072)** across the 12 rows → K = 1/m_eff = 6-163 (mean ~14).
+
+  m_load trajectory (pad-zone): **0.43 → 0.71 → 0.99 → 1.28 → 1.56 →
+  1.76 kg** across t0-60 — it CLIMBS with delivered (corr 0.999, m_load ≡
+  delivered/(g·dt)), it does NOT decay; it never approaches the 6.67 kg
+  share.
+
+  COLLAPSE 100→444: 100% rigid-zone rows (no k·d price; bias =
+  depth/t_recovery = 0.77-0.88 m/s at 128-149 mm).  Delivered 24.7-69.5 N
+  per row (mean 47.2, total 566 N < 784 N) — even the rigid-zone lift is
+  K-limited.  The resting depth where bias delivers the static share at
+  v_rel≈0 is depth = t_recovery·K·share·dt ≈ 0.162·14·65·0.001 ≈ **147 mm
+  — the measured burial depth.  The body sinks to the depth the rows can
+  afford.**
+
+  BOX CONTROL (the statement's own escape hatch, single 78 kg box,
+  ghost-free config, `.tmp/verdict26_staticbox.py` + the same probe
+  meters): contact point directly below the COM (rn ≈ 0) → m_eff = 78 kg
+  exactly, K = 0.013; **delivered 757.5 N = 99% M·g throughout the quiet
+  window, resting.**  Row machinery carries a full load when the row's
+  own effective mass is the load; it starves at 0.006-0.176 kg.
+
+**VERDICT**: the OUTCOME the statement claimed (foot rows starve through
+their own pricing) is CONFIRMED — D/P = 0.082, the pricing lane is dead,
+the falsifier did not fire.  But the statement's MECHANISM is wrong in
+both magnitude and direction: m_load never sits near ~5 kg (measured
+0.43-1.76 kg, climbing, not decaying — my own split failed the same way);
+and the m_load ratchet is a FOLLOWER (corr 0.999 with delivered), not a
+driver — even at the full 6.67 kg share, gamma = 1.05 vs K = 14, so K is
+still 93% of the row diagonal; a fully-loaded row delivers only ~6% more.
+**The true killer is K = 1/m_eff, and it is GEOMETRIC, not a pricing
+loop: the foot-polygon points sit at up to 12.8 cm horizontal offset from
+the COM of the light 0.41 kg tarsals link, so rn·(I^-1·rn) dominates the
+effective-mass denominator and the rows price against grams, not the
+6.67 kg they must carry.**  The row converts its velocity bias into force
+through (K + gamma) ≈ 14-16, so a 1 m/s residual buys only ~65 N; the pad
+gives 0.3-0.5 m/s bias and the rows deliver 8-27 N against a 703-804 N
+spring price; in the rigid zone the same K forces a 147 mm equilibrium
+burial.  **The losing mechanism is named dead: the rows are
+velocity-coupled but not load-coupled — they can arrest an impact
+(VERDICT 19's drop rests) but cannot hold a standing weight.**  VERDICT 26's
+"polygon rows ratchet down from tick ~100" is re-read: the ratchet is
+real but it is the ~50-tick plunge through the pad into the K-starved
+rigid-zone equilibrium, and its primary cause is not m_load softness.
+
+**VERDICT 28 MEMBRANE (next, RULE 0 stated 2026-08-09, NOT yet run):
+PRICE THE FOOT ROWS FROM THE STATIC SHARE, SEEDED ONCE, NOT FROM
+lambda_prev.**  STATEMENT: m_load must come from the load the row OWNS
+(the chain's subtree mass / static share, ~6.67 kg/row), seeded at tick 0
+and updated from the SOLVED impulse only as a floor, never as the primary
+source — because lambda_prev is starved by construction, seeding from it
+can never reach the share (measured: 0.43 kg floor, max 1.76 kg).
+PREDICTION: with m_load = static share at tick 0, c_eff = 2·sqrt(6.67·k)
+and the pad-zone row diagonal drops toward K + 1.05 — but the primary
+defect (K ≈ 14 from contact-point geometry on a light link) is unchanged,
+so this alone moves delivered/priced from 0.08 toward ~0.15, not past the
+falsifier.  FALSIFIER (the geometry, not the pricing, is the wall):
+delivered/priced still < 0.3 with m_load fixed at the static share → the
+row diagonal K = 1/m_eff is the binding term and the next membrane must
+change the CONTACT GEOMETRY or the effective mass (e.g. price the row
+against the foot's aggregate polygon inertia, or give the tarsals a
+load-bearing effective mass), not the pricing.  Prove on the same probe:
+quiet 10-100 D/P, m_load trajectory, burial depth, fall tick.
+
+## VERDICT 28 — THE STATIC SHARE DOES NOT TOUCH THE FOOT (membrane 2026-08-09, probe only, no patch)
+
+**MEASURED (2026-08-09, `.tmp/verdict28_static_share.py`, same probe as
+VERDICT 27 with the opt-in kernel flag `state["contact_static_share"] = 1`,
+raw → `agent_logs/verdict28_OFF.npz` (control) and
+`agent_logs/verdict28_ON.npz` (flag))**:
+
+  Control (flag off) reproduces VERDICT 27 bit-for-bit: fall_tick = 444,
+  N_total@100 = 344.9 N, min_pz@100 = -0.033 m, min_pz@440 = -0.232 m,
+  quiet 10-100 pad-zone D/P = 0.082, m_load mean 1.22 kg, K = 1/m_eff
+  mean ~14 (pad rows), range 6-163.
+
+  Flag on: the m_load pricing channel moves EXACTLY as the membrane
+  stated — seeded once at tick 0 and flat at 6.67 kg (the 784.5/12
+  share) the whole run: trajectory 6.67, 6.67, 6.67, 6.67, 6.67, 6.67
+  with c_eff 924 → 2378 and gamma 1.046 → 0.386 (pad-row diagonal
+  drops toward K + 1.05, the membrane's own number).  **Delivered is
+  bit-identical per row (22.0 / 19.4 / 17.4 / 12.8 / 8.8 / 26.6 N L,
+  mirrored R), so D/P = 0.082, fall_tick = 444, burial -0.033/-0.232 m,
+  and N_total all UNCHANGED.**  The static share never reaches the foot
+  rows because the 12 foot-polygon points are hard unilateral rows
+  (contact_is_floor == 0, the general branch `_dynamics_numba.py:1202+`);
+  the m_load/c_eff/gamma lane (`contact_penalty == 2 and
+  contact_is_floor != 0`, the W-floor implicit rows) is the only consumer
+  of the flag, and no W row is active in the quiet or collapse window of
+  a standing body.
+
+  PLUMBING PROOF (the flag is not dead — it is priced into a lane the
+  foot never uses): step() forwards contact_static_share to the kernel
+  (arg #58, captured = 1); with a single 78 kg link whose W-floor row sits
+  in the pad zone at lambda_prev = 0 (`.tmp/verdict28_flag_live7.py`),
+  the flag raises m_load from m_eff = 3.8 kg to the static share 78 kg
+  and the delivered impulse changes 471.7 → 245.1 N — the exact
+  c = 2·sqrt(m_load·k) mechanism the membrane described.
+
+**VERDICT**: the membrane's PREDICTION (D/P 0.08 → ~0.15, not past the
+falsifier) is FALSIFIED IN DIRECTION OF ZERO: D/P did not move at all
+(0.0817 both).  The pricing lane is exonerated in the strongest sense —
+live, correct, and irrelevant to the foot.  **The membrane's FALSIFIER
+FIRED AS WRITTEN: D/P 0.08 < 0.3 with m_load fixed at the static share →
+the row diagonal K = 1/m_eff is the binding term; the next membrane must
+change the CONTACT GEOMETRY / effective mass (aggregate polygon inertia
+or a load-bearing foot effective mass), not the pricing.**  VERDICT 27's
+"the rows are velocity-coupled but not load-coupled" is re-confirmed at
+its root: the load channel (m_load) is now proven to be wired only to the
+W-floor lane, and pricing the foot rows at their own static share is a
+no-op by branch structure, not by tuning.  The disease sits in K and in
+which rows own the LOADED-c lane.

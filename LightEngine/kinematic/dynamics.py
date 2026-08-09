@@ -746,7 +746,12 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 # MEASURED-FLOOR (run 10): bilinear heel-pad law,
                 # used only when contact_penalty == 2 (default
                 # off = run-8 constant-k behavior, bit-identical).
-                *_measured_floor_params(state))
+                *_measured_floor_params(state),
+                # STATIC-SHARE floor (VERDICT 28): m_load seeded from the
+                # row's static share (body weight over the polygon rows),
+                # not from lambda_prev.  Default off = the LOADED-c idiom,
+                # bit-identical.
+                int(state.get("contact_static_share", False)))
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin
