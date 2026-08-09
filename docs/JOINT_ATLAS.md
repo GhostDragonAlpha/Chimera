@@ -751,3 +751,21 @@ HUMAN: flip the demo with the artifact recorded (its live effect
 is a small bounded lift on the toes), fix the foot spec first, or
 re-derive the endpoint bars relative to rest pose.  Recorded with
 all three options; the floor saga's physics is CLOSED.
+METHOD LESSON (2026-08-08, operator): **the saga re-derived a
+PUBLISHED model by failure instead of translating it by reading.**
+ODE's manual and MuJoCo's contact documentation (solref/solimp =
+bias/gamma, implicit integration for stability at any stiffness,
+damping from the contact's effective mass) held the run-17/18 form
+all along; the atlas itself named it at run 17 ("this is what
+MuJoCo/ODE/PhysX do") -- after 16 runs of arriving.  Translated
+honestly, the floor should have cost 3-5 runs: translate the
+published contact model into the row form, 1-DOF verify, probe,
+then spend the runs on the unknowns that are genuinely OURS (the
+servo-motor vote fight, gated retention, LOADED-c from the
+warm-start channel, the foot-spec artifact).  THE RULE, sharper
+than before: every membrane starts with a literature scan --
+MuJoCo/ODE/PhysX docs, Baraff/Witkin SIGGRAPH notes, the OpenSim
+biomechanics corpus -- and the first run TRANSLATES the published
+solution into our form.  Runs are for the unknowns no paper
+carries: this kernel, this skeleton, this servo.  Research-gate
+(S4) applies to physics membranes exactly as it does to assets.
