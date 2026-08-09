@@ -751,7 +751,13 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 # row's static share (body weight over the polygon rows),
                 # not from lambda_prev.  Default off = the LOADED-c idiom,
                 # bit-identical.
-                int(state.get("contact_static_share", False)))
+                int(state.get("contact_static_share", False)),
+                # LOADED-FOOT effective mass (VERDICT 29): foot-polygon
+                # rows are priced AND responded at the static-share
+                # effective mass (scaled-Jacobian loaded row, 1-DOF
+                # gate passed) instead of the tarsals' free inertia.
+                # Default off = legacy K = 1/m_eff, bit-identical.
+                int(state.get("contact_loaded_mass", False)))
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin
