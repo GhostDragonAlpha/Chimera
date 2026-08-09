@@ -1191,3 +1191,40 @@ DEMAND itself exceeds mu*N at quiet load (then the demand's source
 is the motor reaction torque distribution -- the next membrane
 prices how a pure ankle moment becomes foot shear in this solve).
 The run: .tmp/verdict10_normal_force.py; measurement only.
+
+VERDICT 10 OUTCOME (2026-08-08): BOTH NAMED BRANCHES MISSED -- the
+truth is bigger.  N per foot-polygon point MEAN is 7.3 N against an
+even share of 65.4 N: the twelve polygon points carry 87.6 N of the
+784.5 N body weight -- ELEVEN PERCENT.  95% of point-ticks sit below
+half-share; some points carry 0.0 N mean.  Drift rides the low-N
+ticks 99% to 1%, but corr(N, |v_t|) is only -0.15 because N is not
+oscillating around the share -- it is ABSENT.  Total grip =
+mu * 87.6 N = 61 N against a skating demand; the cone prices each
+point by its own N and the polygon points have none.  The weight is
+being STOLEN by the second contact system on the same feet: the G0
+world-floor endpoints (side "W", one at each end of EVERY link,
+born in the floor saga to stop a fallen body tunneling) ride the
+foot links too, and they carry the other ~89% of the load.  The
+polygon system -- the one with the anatomically placed heel-to-toe
+points and the friction that was supposed to hold the stand -- is
+starved by its own duplicate.
+
+VERDICT 11 MEMBRANE (2026-08-08, named BEFORE the run): LOAD THEFT.
+STATEMENT: foot links must not carry W floor endpoints -- the feet
+already have the anatomically derived polygon (12 points); the W
+duplicates sit at rod ends (one measured buried: metatarsals at
+-0.024 m) and intercept the load first.
+PREDICTION: exclude the foot-chain links (tarsals/metatarsals/
+forefoot, the polygon owners) from _build_floor_contact_specs and
+re-run the verdict6 probe verbatim: polygon N rises to ~the even
+share, |lambda_t|/lambda_n drops below mu, the drift dies, and the
+window stretches past 238 ticks with ankle means back inside
+[-3.08, +5.24] N m.
+FALSIFIER: polygon N still starved with W off the feet -> the theft
+runs through the solve's row ordering, not the duplicate geometry
+(measure per-link W vs polygon N on the tarsals directly); drift
+persists with N restored -> the demand itself exceeds mu*weight
+and the motor-reaction shear membrane is next.
+The run: spec change behind the 44-test gate (drop arm must stay
+green -- the W system keeps every OTHER link), then
+.tmp/verdict6_stand_back.py verbatim.
