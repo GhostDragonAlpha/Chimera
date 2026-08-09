@@ -757,7 +757,12 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 # effective mass (scaled-Jacobian loaded row, 1-DOF
                 # gate passed) instead of the tarsals' free inertia.
                 # Default off = legacy K = 1/m_eff, bit-identical.
-                int(state.get("contact_loaded_mass", False)))
+                int(state.get("contact_loaded_mass", False)),
+                # LOAD-AWARE rhs (VERDICT 31): the static share enters
+                # the foot-polygon rows' rhs as a force channel, so the
+                # solve's impulse carries the load (1-DOF gate passed).
+                # Default off = legacy rhs = bias - vr, bit-identical.
+                int(state.get("contact_load_rhs", False)))
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin

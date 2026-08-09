@@ -1914,3 +1914,115 @@ PASSED — the loaded-row form is sound):**
   velocity response both use the loaded mass — never a K-diagonal
   gamma/edit, which either breaks SPD or launches (both measured
   above).
+
+## VERDICT 31 — THE FORCE CHANNEL (load-aware rhs, membrane 2026-08-09, RULE 0 stated, built + measured)
+
+**STATEMENT** (something to disagree with): the rows starve because their
+rhs is the pacing bias alone — the solve never sees the static gravity
+load the chain presses into the row.  Standard contact-solve form prices
+the row against the load by solving contact rows against the
+post-external velocity v⁺ = v + M⁻¹·f_ext·dt (gravity included), so
+lambda must cancel the velocity the load injects along the row normal —
+sustained impulse equals the load.  Adding the share as a load-aware rhs
+to foot-polygon rows (kernel flag `contact_load_rhs=1`) moves quiet D/P
+past 0.3 and ends the burial.
+
+**PREDICTION (before the run)**: quiet 10-100 D/P from 0.082 to [> 0.3];
+burial from −0.232 m to [pad-zone, ≥ −0.01 m]; N_metric to M·g ±10%;
+fall tick past 444 or a 3000-tick stand.
+
+**FALSIFIER (named before the run)**: load-aware rhs in place and
+verified live (its own gauge evidence), D/P still < 0.3 → the
+velocity-row structure itself is the wall; next membrane is the direct
+force-form channel, named dead-or-alive with numbers.
+
+**PHYSICS CAUTION (answered before the build)**: the kernel applies
+gravity to ALL links (`_dynamics_numba.py` `lin_vel[i,2] -= dt·GRAVITY`)
+BEFORE row assembly and the rhs, so BOTH joint and contact rows see the
+post-external velocity v⁺ — the literal "joints yes, contacts no"
+asymmetry does NOT hold.  The membrane's scope: it is NOT "add gravity
+to contacts" (already there); it is "add the CHAIN load (m_share·g) to
+the contact row's rhs", because the chain load is not in the foot's own
+g·dt kick.
+
+**CLOSED FORM (derived before the build)**: in the row coordinate,
+`rhs_load = loaded_share_mass·GRAVITY·dt·(ls/m_eff)` with
+`m_eff = 1/(inv_mass[li] + rn@(I_inv[li]@rn))`; legacy pricing (ls = 1)
+gives `m_share·g·dt/m_eff`.  The solve's impulse gains
+`m_eff·rhs_load = loaded_share_mass·g·dt` = the share; the velocity
+channel keeps its paced bias.  1-DOF discrete form:
+`lam = (bias−v)·m_price + load·DT; v += lam/m_resp; v −= load/m_resp·DT`.
+With consistent pricing the load terms cancel EXACTLY in the velocity
+update: `v' = d/T_REC`, `d_eq = 0` (rest at the contact-band top), steady
+`lam = load·DT` (the share), recovery paced (`v_peak = d_start/T_REC`),
+no launch, no creep.
+
+**1-DOF GATE (2026-08-09, `.tmp/probe_loaded_row_1dof.py`, PASSED)**:
+  E) legacy pricing + load-aware rhs: holds 65.38 N at d_eq ≈ 0
+     (end z −0.0000 m), peak v 0.309 m/s (paced, no launch), no creep.
+  F) loaded pricing: the SAME closed form (price-independent by the
+     algebra — delivered 65.38 N, d_eq ≈ 0).
+  G) price ≠ resp + load-aware rhs: still launches (968 m/s) — the
+     consistency law is not masked by the load drive.
+
+**KERNEL GAUGE (`.tmp/gauge_tick_v31.py`, PASSED)**: flag-off (explicit
+0) vs legacy (no flag key): `max|Δimp| = 0.0` EXACT — bit-identical.
+Flag-on vs legacy: drives the solve (sum|Δimp| 1.55 → 0.03 over 3
+ticks, converging as the system settles) — not a no-op.
+
+**STANDING PROBE (`.tmp/verdict31_force_channel.py`, OFF/ON, same
+metrics: D/P, m_load trajectory, K diagonal, burial, fall tick,
+N_metric)**:
+
+OFF (legacy control, the bit-identity regression): fall_tick 444 |
+quiet 10-100 D/P 0.082 | del/share 0.273 | burial@440 −0.232 m |
+N_total@440 644 N — reproduces VERDICT 27/29 exactly.  The OFF arm of
+this probe == V29 OFF == V29 ON == the OLD-kernel OFF npz: the kernel
+edits are bit-identical for legacy, cross-validated on the stored files.
+
+ON (`contact_load_rhs=1`):
+  - fall_tick 454 (legacy 444; NOT a stand — head_z monotonic
+    1.81 → 0.95 through the run).
+  - quiet 10-100 D/P: 0.082 → 22.6  (falsifier band < 0.3: cleared).
+  - del/share mean 2.887 (inflated by settling-transient impacts).
+  - K = 1/m_eff mean 12.8 (the force channel does not touch K).
+  - rhs_load mean 0.8 m/s; m_load mean 2.36 kg (share 6.67 kg).
+  - burial@min(fall,440): −0.016 m (legacy −0.232; pad-zone ≥ −0.01
+    predicted: NOT met).
+  - N_metric@min(fall,440): 288 N = 37% of M·g = 785 N (M·g ±10%
+    predicted: NOT met).
+  - trajectory: N_total 46 → 606 → 596 → 269 → 288 N; min_pz
+    −0.000 → −0.036 (t200) → −0.000 (t300, feet pop UP) → −0.016 → fall.
+
+**MECHANISM (measured)**: over-delivery on the settling transient kicks
+the contact points UP out of the slop band (interior rows 95% zone-NONE,
+i.e. above the contact surface), the total reaction collapses below the
+body weight (288 N), and the body sinks with a bounce.  A force channel
+inside a velocity row cannot complete the force loop through the soft
+chain (torque-capped ankle, soft joints): the row's own over-delivery
+removes the very contact point it is trying to hold.
+
+**D/P METER NOTE (measured consequence)**: once a force channel is in the
+rhs, any engaged load-aware row delivers ≥ share, so D/P = share/(k·d)
+≥ 1 at pad depths < ~2 mm.  The meter is structurally saturated — it can
+no longer lose.  It is no longer a discriminating falsifier; N_metric and
+burial are the honest meters, and they failed.
+
+**VERDICT**:
+  FALSIFIER (as written, quiet D/P < 0.3): NOT fired — D/P moved
+  0.082 → 22.6; the load-aware rhs is a real force channel.
+  PREDICTION (as promised — ends the burial, N_metric M·g ±10%, stand
+  past 444): NOT met — burial −16 mm, N_metric 37% of M·g, fall at 454
+  (a collapse, not a 3000-tick stand).
+  OUTCOME: the force channel moves the meters but does not produce the
+  promised static stand.  The velocity-row structure IS the wall for a
+  sustained load through the soft chain.  NEXT MEMBRANE (named dead-or-
+  alive with numbers): the DIRECT FORCE-FORM channel — a contact row
+  priced against the load FORCE that STAYS engaged (does not eject its
+  own point), judged on N_metric = M·g ±10% and a 3000-tick stand, NOT
+  on D/P (which can no longer lose).
+
+**GATE**: 52-test pytest green (test_kernel + test_kinematic +
+test_kinematic_dynamics), no commit.  Raw samples →
+`agent_logs/verdict31_force_channel_{ON,OFF}.npz`;
+`agent_logs/verdict31_gauge.log`, `agent_logs/verdict31_gate.log`.

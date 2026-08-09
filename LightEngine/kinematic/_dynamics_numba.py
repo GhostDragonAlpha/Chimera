@@ -786,6 +786,7 @@ def step_core_direct(
     pen_d_pad,
     contact_static_share,
     contact_loaded_mass,
+    contact_load_rhs,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -991,6 +992,11 @@ def step_core_direct(
     # at the static-share effective mass (the scaled-Jacobian loaded row,
     # 1-DOF gate passed).  1.0 = legacy (bit-identical).
     row_load_s = np.ones(rows_max, dtype=np.float64)
+    # LOAD-AWARE rhs (VERDICT 31): the static share as a force channel in
+    # the row's rhs -- per-row extra rhs = loaded_share_mass*G*dt*(ls/m_eff),
+    # so the solve's impulse carries the share (steady lam = share*dt).
+    # Zero everywhere with the flag off (bit-identical legacy).
+    row_rhs_load = np.zeros(rows_max, dtype=np.float64)
     n_rows = 0
 
     # joints: point coincidence along all 3 world axes
@@ -1098,9 +1104,10 @@ def step_core_direct(
                 static_share_mass = M_total / n_poly
         # LOADED-FOOT share (VERDICT 29): the same M_total/n_poly, gated
         # on contact_loaded_mass -- the effective mass the foot-polygon
-        # rows are re-priced at.
+        # rows are re-priced at.  VERDICT 31 (contact_load_rhs) needs the
+        # same share as the force channel's drive.
         loaded_share_mass = 0.0
-        if contact_loaded_mass:
+        if contact_loaded_mass or contact_load_rhs:
             M_total = 0.0
             for i in range(n_links):
                 M_total = M_total + mass[i]
@@ -1245,16 +1252,26 @@ def step_core_direct(
             # gamma/edit: that breaks SPD or launches (1-DOF measured
             # 883 m/s; the diagonal-only re-price is indefinite).
             ls = 1.0
-            if contact_loaded_mass and contact_is_floor[ci] == 0 \
+            if contact_is_floor[ci] == 0 \
+                    and (contact_loaded_mass or contact_load_rhs) \
                     and loaded_share_mass > 0.0:
                 rn = _cross3(r, z_hat)
                 denom = inv_mass[li] + rn @ (I_inv[li] @ rn)
                 m_eff = (1.0 / denom) if denom > 1e-15 else mass[li]
-                if m_eff < loaded_share_mass:
+                if contact_loaded_mass and m_eff < loaded_share_mass:
                     ls = math.sqrt(m_eff / loaded_share_mass)
                     jlb[n_rows] = ls * jlb[n_rows]
                     jab[n_rows] = ls * jab[n_rows]
                     row_load_s[n_rows] = ls
+                if contact_load_rhs:
+                    # LOAD-AWARE rhs (VERDICT 31, 1-DOF gate passed): the
+                    # static share enters the row's rhs as a force channel.
+                    # Steady impulse = loaded_share_mass*G*dt (the share);
+                    # the velocity channel keeps its paced bias.  The
+                    # (ls/m_eff) scaling puts the physical force at
+                    # loaded_share_mass*G regardless of the row scale.
+                    row_rhs_load[n_rows] = \
+                        loaded_share_mass * GRAVITY * dt * (ls / m_eff)
             if floor_spring:
                 # GATE + SPRING (run 9): pure gate, no bias -- the
                 # penalty spring owns the lift for floor endpoints.
@@ -1400,8 +1417,9 @@ def step_core_direct(
                 # drive relative velocity to the muscle target, not to zero
                 rhs[cmap[r]] = motor_target[mid[r]] - vr
             else:
-                # row_bias is 0 except for mode-4 Baumgarte lock rows
-                rhs[cmap[r]] = row_bias[r] - vr
+                # row_bias is 0 except for mode-4 Baumgarte lock rows;
+                # row_rhs_load is 0 except for VERDICT 31 load-aware rows
+                rhs[cmap[r]] = row_bias[r] - vr + row_rhs_load[r]
         # K = J M^-1 J^T via body incidence (K is SPD by construction)
         for b in range(n_links):
             s0 = starts[b]
