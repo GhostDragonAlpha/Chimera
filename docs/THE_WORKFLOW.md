@@ -433,6 +433,15 @@ python story/audit.py --typed                                 # numbers that did
 **THE TELL, before you run variants: ask what QUESTION each one answers. If the answer is "which
 number is best", stop.** That is a search where a derivation belongs.
 
+**RESEARCH CORRELATION (2026-08-08, the floor saga's lesson — `docs/JOINT_ATLAS.md` METHOD
+LESSON).** Derivation starts with a literature scan, not a blank page. Contact mechanics (ODE's
+CFM/ERP, MuJoCo's solref/solimp — implicit rows, bias, damping from effective mass) was in print
+the whole time the floor saga spent 16 runs arriving at it by failure. The rule: the first run
+TRANSLATES the published solution into our form; runs are spent only on the unknowns no paper
+carries — this kernel, this skeleton, this servo. A published model is a measured-constant-class
+input (a legal terminal); a copied library is not (a black box, no chain). Scan first: MuJoCo /
+ODE / PhysX docs, Baraff–Witkin SIGGRAPH notes, the OpenSim corpus, the capture-point literature.
+
 ### S5 · TRAIN — and only the genuinely free numbers
 
 Everything S4 could not reach is what S5 is for, and nothing else. **Program the rules, train the
