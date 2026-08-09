@@ -651,3 +651,23 @@ answer, no sweep.  The launch guard strengthens by construction
 recorded before the run: heavier c slows the pad lift -- the (a)
 regression mechanism -- so (b)'s NO TUNNEL -0.0663 is the leg to
 watch.  1-DOF verifies loaded-c stability before kernel entry.
+RUN 19 OUTCOME (2026-08-08, agent_logs/floor_run19.log): **THE DROP
+ARM IS GREEN -- candidate (b) measured bilinear passes all four legs
+for the first time in the saga: REST 0.020 J (200x under the bar),
+NO SINK -0.0138, NO TUNNEL -0.0989, NO PUMP 314.4 J; (d2) post-fall
+recovery -0.0201 PASS.**  The named risk showed up but held: heavier
+c slowed the pad lift, NO TUNNEL slipped -0.0663 -> -0.0989, 1.1 mm
+under the wire.  (a) improved (REST 13.2 -> 4.2 J) but stays out of
+the line.  THE LAST RED LEG is (d1) pre-fall floor safety: -0.2233 m
+(was -0.2165).  Mechanism, measured across runs 5/18/19: the live-
+but-failing servo (falls @452, refuses @953 -- 500 ticks late)
+presses endpoints through a floor whose lift pace is bounded by
+construction; the floor lifts, the dying servo out-shoves it.  The
+evidence says (d1) belongs to the ACTUATOR domain (VERDICT 2's
+servo-strength membrane + the refusal geometry that fires 500 ticks
+after the fall it was meant to catch), not the floor's -- but the
+bar is the bar: recorded RED, unpatched.  NEXT: .tmp/diag_stand_d1
+.py traces WHICH endpoints sink pre-fall, when, and how deep, to
+decide the membrane -- servo crumple refusal (terminate standing
+when the frame is geometrically lost, then the green DROP regime
+owns the body) vs a standing-load floor stiffness distinction.
