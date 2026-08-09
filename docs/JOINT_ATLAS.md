@@ -1797,3 +1797,120 @@ its root: the load channel (m_load) is now proven to be wired only to the
 W-floor lane, and pricing the foot rows at their own static share is a
 no-op by branch structure, not by tuning.  The disease sits in K and in
 which rows own the LOADED-c lane.
+
+## VERDICT 28 FOLLOW-UP — THE FOLLOWER QUESTION IS ANSWERED (2026-08-09, re-read of the record, no new run)
+
+The standing probe's unchanged numbers under the static-share flag read,
+to a careless eye, as "contact rows are inert followers whose bias/gamma
+do not set their lambda."  That reading is WRONG, and the record already
+proves it in both directions:
+
+**The channel is live.**  `.tmp/verdict28_flag_live7.py` (one 78 kg link,
+ONE active W-floor pad row, flag forced 0 vs 1 on identical fresh states):
+delivered moves 471.7 → 245.1 N.  The m_load → c_eff → gamma → K-diagonal
+mechanism demonstrably changes the solved impulse the moment its lane has
+an active row.
+
+**The standing body's no-op is branch wiring, not inertness.**  The flag's
+only consumer is the W-floor implicit lane (`contact_penalty == 2 and
+contact_is_floor != 0`, `_dynamics_numba.py:1104`).  A standing body has
+ZERO active W-floor rows — its 12 foot-polygon points assemble through the
+general branch (`contact_is_floor == 0`, `_dynamics_numba.py:1202+`),
+which owns NO m_load/c_eff/gamma lane at all: per-point velocity bias
+only.  Raising m_load in a lane the foot never enters is a no-op by
+construction.
+
+**The binding term is geometric K = 1/m_eff ≈ 14, and it is a real wall
+with a real hazard, now DERIVED (2026-08-09).**  Two naive "fixes" fail on
+paper before any run:
+
+  - DIAGONAL-ONLY RE-PRICE (set K_ii = 1/static_share on the foot rows):
+    breaks SPD.  The foot row shares the 0.41 kg tarsals body with the
+    ankle joint rows; dropping the contact diagonal to 0.15 while the
+    ankle-row cross terms stay at 1/m_tarsals ≈ 2.4 makes the 2x2 block
+    [[0.15, 2.4], [2.4, K_ankle]] indefinite for K_ankle < 38.4 → the
+    Cholesky fails mid-tick.
+  - K ONLY, RESPONSE UNCHANGED (solve at 6.67 kg, apply at 0.02 kg): the
+    point's velocity response to an impulse priced for the share is
+    ~300x the target — the run-4/7 LAUNCHER disease in closed form.
+    The row's effective mass must enter the K assembly AND the velocity
+    response as the SAME number, or the fix creates the very launch the
+    contact saga spent runs 4-21 killing.
+
+**CONCLUSION (the follower question):** contact rows are NOT followers —
+they are geometrically starved and the load-coupling lane never reaches
+them.  The next membrane must give the foot row a LOAD-BEARING effective
+mass (the static share), entered consistently in the solve AND the
+response, and must be 1-DOF verified before kernel entry (the
+probe_implicit_row_1dof discipline) — because the naive forms break the
+solve or launch.
+
+## VERDICT 29 — THE LOAD-BEARING FOOT EFFECTIVE MASS (membrane 2026-08-09, RULE 0 stated, not yet built)
+
+**STATEMENT** (something to disagree with): the foot-polygon rows cannot
+hold standing weight because their row is priced against the tarsals
+link's FREE inertia (m_eff 0.006-0.176 kg, K = 1/m_eff ≈ 14) instead of
+the load the foot carries.  Give the row the static-share effective mass
+(M_total / n_poly, DERIVED from the solve's own mass array — never
+hardcoded), entered CONSISTENTLY in the K assembly and the velocity
+response, and the SAME per-point velocity bias delivers the share at
+shallow depth.
+
+**PREDICTION (before the run)**: with the row's effective mass = static
+share in both the solve and the response, quiet 10-100 pad-zone D/P
+moves from 0.08 toward the bias-delivered share; the rigid-zone
+equilibrium depth (VERDICT 27's depth = t_recovery·K·share·dt ≈ 147 mm)
+collapses to ≈ t_recovery·dt ≈ 0.16 mm — the body rests ON the floor,
+not 15 cm in it; fall tick moves past 444 or the body arrests.
+
+**FALSIFIER (named before the run)**: load-bearing effective mass in
+place, but quiet D/P still < 0.3 AND burial ≥ -0.1 m at min(fall, 440) →
+the row's effective mass is not the binding term either; the disease is
+the LIFT PACING (a per-point bias capped at one slop per tick cannot
+hold a standing weight) → next membrane is pacing, and the geometry fix
+is dead.  Either way the losing mechanism is named dead.
+
+**BUILD GATE (mandatory before kernel entry, the record's own
+discipline)**: the loaded-row form is 1-DOF verified first —
+`.tmp/probe_loaded_row_1dof.py`: a single 6.67 kg effective-mass row
+holding the share at v_rel ≈ 0 must deliver ≈ M·g without launching and
+without an indefinite K block.  Then the kernel flag + standing probe.
+
+**1-DOF GATE RESULT (2026-08-09, `.tmp/probe_loaded_row_1dof.py`,
+PASSED — the loaded-row form is sound):**
+
+  The row model had to be derived twice before it closed.  The
+  velocity-target form (mass cancels → equilibrium g·T·dt regardless of
+  the price) and the force form (row force = bias·m_price/dt; reproduces
+  the 148 mm disease but LAUNCHES at deep burial because the row force
+  at 0.148 m is 93x the load) both failed.  The closing form is the
+  velocity-impulse row with the LOAD as a downward velocity pull at the
+  row's response inertia:
+
+      lam = (bias - v) * m_price ;  v += lam / m_resp ;
+      v -= (m_share*g) / m_resp * dt
+      equilibrium:  bias * m_price = m_share*g*dt
+          =>  d_eq = m_share*g*T*dt / m_price
+
+  Disease (m_price = m_eff = 0.0714):  d_eq = 148 mm  (V27 reproduced,
+  v -> -7e-9, no launch).
+  Fix (m_price = m_resp = m_share = 6.667):  d_eq = 1.6 mm, end z
+  -0.00159 m, v -> +1.6e-11, peak v 0.904 m/s (the paced bias at the
+  start depth, reached once — NOT a launch; peak z -0.0016 m, never
+  above the floor), creep 2000->4000 = 0.
+  Hazard (price = m_share, response at m_eff — the diagonal-only
+  re-price, i.e. a negative-gamma "softening"): peak v 883 m/s in 50
+  ticks — the launcher, in closed form, dead.
+  SPD (3x3 tarsals block: contact x ankle-z x ankle-y): the scaled
+  row+column (DKD, congruent — a single row AND its cross terms scaled
+  by s = m_eff/m_share) preserves positive-definiteness (min-eig +0.35
+  scaled vs +2.26 original); the diagonal-only re-price is INDEFINITE
+  (min-eig -1.40) — Cholesky fails.
+
+  IMPLEMENTATION CONSEQUENCE (derived): the kernel change MUST be the
+  scaled-Jacobian loaded row (scale the contact row's jlb/jab AND its
+  bias by sqrt(s) = sqrt(m_eff/m_share), s = m_eff/m_share computed
+  from the row's geometric effective mass), so the solve AND the
+  velocity response both use the loaded mass — never a K-diagonal
+  gamma/edit, which either breaks SPD or launches (both measured
+  above).

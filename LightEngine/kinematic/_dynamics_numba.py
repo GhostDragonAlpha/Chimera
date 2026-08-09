@@ -97,6 +97,7 @@ _REC_LIGAMENT = 2
 _REC_CONTACT = 3
 
 
+
 # ---------------------------------------------------------------------------
 # Quaternion helpers (exact ports of transforms.py, scalar math)
 # ---------------------------------------------------------------------------
@@ -784,6 +785,7 @@ def step_core_direct(
     pen_d_break,
     pen_d_pad,
     contact_static_share,
+    contact_loaded_mass,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -983,6 +985,12 @@ def step_core_direct(
     # (run-6 measured good).  Set only for contact rows in recovery
     # mode 3; zero elsewhere, so the flag alone changes nothing.
     row_crush = np.zeros(rows_max, dtype=np.int64)
+    # LOADED-FOOT effective mass (VERDICT 29): per-row Jacobian scale
+    # sqrt(s) = sqrt(m_eff/m_share) applied to foot-polygon contact rows
+    # when contact_loaded_mass is on, so the row is priced AND responded
+    # at the static-share effective mass (the scaled-Jacobian loaded row,
+    # 1-DOF gate passed).  1.0 = legacy (bit-identical).
+    row_load_s = np.ones(rows_max, dtype=np.float64)
     n_rows = 0
 
     # joints: point coincidence along all 3 world axes
@@ -1088,6 +1096,20 @@ def step_core_direct(
                     n_poly = n_poly + 1
             if n_poly > 0:
                 static_share_mass = M_total / n_poly
+        # LOADED-FOOT share (VERDICT 29): the same M_total/n_poly, gated
+        # on contact_loaded_mass -- the effective mass the foot-polygon
+        # rows are re-priced at.
+        loaded_share_mass = 0.0
+        if contact_loaded_mass:
+            M_total = 0.0
+            for i in range(n_links):
+                M_total = M_total + mass[i]
+            n_poly = 0
+            for cj in range(n_contacts):
+                if contact_is_floor[cj] == 0:
+                    n_poly = n_poly + 1
+            if n_poly > 0:
+                loaded_share_mass = M_total / n_poly
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
@@ -1211,6 +1233,28 @@ def step_core_direct(
             kind[n_rows] = _UNILATERAL
             rec_t[n_rows] = _REC_CONTACT
             rec_i[n_rows] = ci
+            # LOADED-FOOT effective mass (VERDICT 29, opt-in
+            # contact_loaded_mass): foot-polygon rows are priced AND
+            # responded at the static-share effective mass via the
+            # scaled-Jacobian loaded row (1-DOF gate passed) -- the
+            # row's jlb/jab AND its bias scaled by sqrt(s), with
+            # s = m_eff_geo/m_share, so K_ii = 1/m_share in both the
+            # solve and the velocity response (the point responds as if
+            # it carried the share; the equilibrium collapses from the
+            # V27 147 mm to g*T*dt ~ 1.6 mm).  NEVER a K-diagonal
+            # gamma/edit: that breaks SPD or launches (1-DOF measured
+            # 883 m/s; the diagonal-only re-price is indefinite).
+            ls = 1.0
+            if contact_loaded_mass and contact_is_floor[ci] == 0 \
+                    and loaded_share_mass > 0.0:
+                rn = _cross3(r, z_hat)
+                denom = inv_mass[li] + rn @ (I_inv[li] @ rn)
+                m_eff = (1.0 / denom) if denom > 1e-15 else mass[li]
+                if m_eff < loaded_share_mass:
+                    ls = math.sqrt(m_eff / loaded_share_mass)
+                    jlb[n_rows] = ls * jlb[n_rows]
+                    jab[n_rows] = ls * jab[n_rows]
+                    row_load_s[n_rows] = ls
             if floor_spring:
                 # GATE + SPRING (run 9): pure gate, no bias -- the
                 # penalty spring owns the lift for floor endpoints.
@@ -1265,6 +1309,11 @@ def step_core_direct(
                     v_p = lin_vel[li] + _cross3(ang_vel[li], r)
                     if -v_p[2] > depth / t_recovery:
                         row_crush[n_rows] = 1
+            # LOADED-FOOT: the bias rides the same Jacobian scale as the
+            # row's K, so the recovery target is priced at the share mass
+            # (unscaled target, scaled coefficient).  ls == 1.0 is a no-op.
+            if ls != 1.0:
+                row_bias[n_rows] = ls * row_bias[n_rows]
             n_rows += 1
             # friction rows enter the solve in mode 1 (full cone
             # in-solve, v3a -- measured leaky on the long protocol, kept
@@ -1283,6 +1332,12 @@ def step_core_direct(
                 rb_b[n_rows] = li
                 jlb[n_rows] = t
                 jab[n_rows] = _cross3(r, t)
+                # LOADED-FOOT: the paired friction rows share the normal
+                # row's Jacobian scale so the cone block scales uniformly
+                # (SPD preserved; tangential response also loaded).
+                if row_load_s[normal_row] != 1.0:
+                    jlb[n_rows] = row_load_s[normal_row] * jlb[n_rows]
+                    jab[n_rows] = row_load_s[normal_row] * jab[n_rows]
                 kind[n_rows] = _FRICTION
                 pair[n_rows] = normal_row
                 rec_t[n_rows] = _REC_CONTACT
@@ -1396,8 +1451,20 @@ def step_core_direct(
         eps = 1e-9 * tr / m
         if eps <= 0.0:
             eps = 1e-12
+        # Per-row min-norm floor, gauge-congruent: a row scaled by ls
+        # (row_load_s) must get eps*ls^2, not eps.  Added uniformly, the
+        # floor breaks the loaded gauge (K loaded != D K_off D) -- with tr
+        # dominated by stiff motor rows it over-regularized the loaded
+        # foot rows 16x in VERDICT 29 and the falsifier fired on a
+        # corrupted row.  row_load_s is 1.0 everywhere in legacy, so this
+        # is bit-identical there.
+        rev = np.full(m, -1, dtype=np.int64)
+        for r in range(n_rows):
+            if active[r]:
+                rev[cmap[r]] = r
         for i in range(m):
-            K[i, i] = K[i, i] + eps
+            ls2 = row_load_s[rev[i]] * row_load_s[rev[i]]
+            K[i, i] = K[i, i] + eps * ls2
         lam = _chol_solve(K, rhs)
         # Frozen first-solve cone (mode 4): capture the FIRST attempt's
         # solved normal impulses -- the cone bound for the rest of the
