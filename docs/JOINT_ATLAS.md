@@ -792,3 +792,42 @@ capture-point / DCM literature (Pratt 2006, Koolen 2012) and
 whole-body QP control, translated -- the ankle-overwork + statue-
 sway + 0.44 s fall is the classic under-actuated balance failure
 that literature solves.
+VERDICT 2 MEMBRANE -- BALANCE-BY-COP, RESEARCH CORRELATION FIRST
+(2026-08-08).  THE LITERATURE: Pratt 2006 (capture point / XCoM:
+xi = x + xdot/omega, omega = sqrt(g/h) -- the point a LIPM comes
+to rest over); Koolen 2012 (DCM, the 3D form); Hof 2007 (J
+Biomech: a standing human balances by THREE mechanisms -- move the
+COP (ankle), counter-rotate (hip), step -- the operator's own
+words: ankle for slow, hip for fast); Frontiers 2021 segmented-
+feet review (XCoM/MoS as THE stability metric).  THE DIAGNOSIS IT
+GIVES US: our servo is a joint-angle PD holding a POSE -- posture
+control with no COM/COP feedback.  That is the measured disease:
++9.9 N m ankle moments (2x the human quiet band, it fights itself
+because pose-PD has no equilibrium without exact COM-over-COP),
+statue sway (PD suppresses the human micro-sway), 0.44 s fall
+(any COM offset integrates unseen until the polygon exit).
+THE TRANSLATION (derived from the LIPM, not copied): for the
+body over a flat floor, x'' = omega^2 (x - p), p = COP position.
+Balance control = place the COP under the capture point:
+  p* = xi + kd * xdot / omega     (kd ~ 1 derived from critical
+  damping of the xi error dynamics: xi' = omega (xi - p) ->
+  xi error decays at rate omega*kd/(1+kd)... closed form below)
+  p* clamped to the foot polygon interior (the ankle strategy's
+  DOMAIN -- outside it the hip strategy owns the recovery, the
+  membrane after this one).
+The ankle moment to place the COP: tau = F_z * (p* - p_now)
+measured against the current solved foot reaction; F_z from the
+contact impulses (already in state).  This REPLACES the pose-PD
+at the ankles only; the rest of the posture servo keeps its
+domain.  PREDICTION (named before any run, measured by
+.tmp/validate_standing.py + the probe STAND arm): (1) ankle
+moment mean inside the human envelope [-3.08, +5.24] N m;
+(2) standing duration before refusal/fall > 2 s (from 0.44 s --
+a 4x bar, still 30x short of human quiet standing);
+(3) DROP/floor legs unchanged (the floor is untouched).
+FALSIFIER: ankle moments stay outside the envelope, or standing
+does not reach 2 s with the COP layer active -> the LIPM
+reduction is wrong for this skeleton (multi-mass, 77 links --
+the DCM-with-height-variation or a three-mass model is the next
+literature step; Englsberger 2015).  Record, do not tune kd
+(derived from the error dynamics, swept never).
