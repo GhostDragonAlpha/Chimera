@@ -970,3 +970,48 @@ assumed).
 The run: .tmp/verdict4_the_fight.py against an instrumented
 dynamics.py (logging flag default off, 44-test gate before the
 probe).
+
+VERDICT 4 OUTCOME (2026-08-08): FALSIFIED -- there is NO FIGHT.
+110-sample quiet window: motor-row impulse mean +6.21 N m, sign-flip
+rate 0.00, lag-1 autocorr +0.97 (both ankles); joint-row total +9.88
+N m, autocorr +0.98.  The servo tracks its command SMOOTHLY; the
+solve delivers it cleanly; the +3.7 N m gap between motor rows and
+joint totals is the rotation-lock rows doing their steady job.
+NOTHING oscillates in this window.  (The 15 N m std in VERDICT 3
+was that run's own plant -- the shifted shanks -- not the standing
+servo's.)  The servo is healthy.  The solve is healthy.
+THE DISEASE THE NUMBERS GAVE UP: the +9.9 N m is a STEADY-STATE
+GRAVITY MOMENT, not chatter and not a fight.  The statics identity
+d = tau_total / (m g) = (2 x 9.88) / (80 x 9.80665) = 2.52 cm --
+the body's COM hangs 2.52 cm aft of the ankle axis at birth, and
+the servo faithfully holds that debt tick after tick.  The human
+envelope [-3.08, +5.24] corresponds to d <= ~0.7 cm: humans park
+the COM OVER the ankle.  VERDICT 3 aimed at the support CENTROID
+(5.45 cm) -- the wrong target, overshot the ankle, and paid for it.
+Second measured disease, same runs: the feet CREEP forward 1.75 cm
+per 0.12 s under the steady moment; the support polygon slides out
+from under the frozen COM and the refusal gate fires at ~tick 120.
+The fall is not a balance failure -- it is the floor letting the
+feet walk away.
+
+VERDICT 5 MEMBRANE (2026-08-08, named BEFORE the run): COM OVER THE
+ANKLE.
+STATEMENT: the birth pose must hang the COM over the ANKLE AXIS, not
+the support centroid -- the ankle moment is priced about the joint,
+and the measured debt is d = 2.52 cm aft (from the statics identity,
+not from geometry guesses).
+PREDICTION: shift the birth pose forward by EXACTLY 2.52 cm worth of
+ankle-line rotation (theta = atan2(0.0252, h_com), same pivot code as
+verdict3, magnitude derived from the measured moment) and the quiet-
+window ankle mean lands inside the human envelope [-3.08, +5.24]
+N m; standing duration before refusal stretches past the current
+0.12 s (the creep is moment-driven; kill the moment, slow the
+creep).
+FALSIFIER: ankle mean stays outside the envelope with the COM over
+the ankle axis -> the reference envelope does not price THIS
+skeleton's proportions (rod-end feet, De Leva segments) and the
+next membrane is the foot-spec rod frames (the artifact deferred
+from the floor saga, now load-bearing).  Creep that persists with
+the moment dead becomes VERDICT 6 (friction owns the refusal).
+The run: .tmp/verdict5_com_over_ankle.py; shift derived from the
+measured 2.52 cm, never swept.
