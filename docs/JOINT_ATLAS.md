@@ -1015,3 +1015,37 @@ from the floor saga, now load-bearing).  Creep that persists with
 the moment dead becomes VERDICT 6 (friction owns the refusal).
 The run: .tmp/verdict5_com_over_ankle.py; shift derived from the
 measured 2.52 cm, never swept.
+
+VERDICT 5 OUTCOME (2026-08-08): FALSIFIED -- and the run caught the
+membrane's own sign error.  The instrumented birth line says the
+ankle pivot sits at x=0.000 and the COM at x=+0.0265 -- the COM
+hangs 2.65 cm FORWARD of the ankle axis at birth (the VERDICT 4
+"aft" claim was wrong; the statics identity gives a magnitude, not
+a direction, and the membrane assumed the direction instead of
+measuring it).  The run applied the 2.52 cm shift FORWARD -- COM to
+5.02 cm forward of the ankle -- and statics collected the debt:
+ankle means +12.97/+14.49 N m (from +9.88), still outside, as
+predicted by tau = m g d once the sign is known.  Two real wins
+came with it: the window stretched 402 ticks (0.39 s, was 0.12 s)
+and sacrum sway reached 3.1 mm AP -- the low edge of the human
+band [3.8, 9.5]; the body started SWAYING for the first time.  The
+envelope prices d = 2*tau/(m g) in [-0.79, +1.34] cm at 80 kg;
+the body is born at +2.65 cm -- roughly DOUBLE the human stand.
+
+VERDICT 6 MEMBRANE (2026-08-08, named BEFORE the run): STAND BACK.
+STATEMENT: the birth pose overshoots the human stand FORWARD; the
+fix is a BACKWARD shift of d_shift = 2.65 - 0.50 = 2.15 cm about
+the ankle line (target d = +0.50 cm forward of the ankle -- the
+envelope midpoint, tau ~ +2 N m; both numbers derived from the
+VERDICT 5 measurement and the envelope, never swept).
+PREDICTION: with the backward 2.15 cm birth shift, quiet-window
+ankle means land inside [-3.08, +5.24] N m (+/-1), the window
+stretches past 0.39 s, and sway stays inside the human band
+[3.8, 9.5] mm AP or just under it.
+FALSIFIER: ankle means stay outside with d = +0.5 cm measured at
+birth -> the envelope does not price this skeleton's rod-end feet
+(the deferred foot-spec membrane becomes load-bearing); window
+collapses instead of stretching -> the creep was never moment-
+driven and friction owns the refusal (VERDICT 7).
+The run: .tmp/verdict6_stand_back.py -- identical machinery to
+verdict5 with the shift direction reversed and magnitude 2.15 cm.
