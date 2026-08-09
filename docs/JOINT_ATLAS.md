@@ -1089,3 +1089,71 @@ two-contact foot changes the statics and the membrane re-derives.
 The run: foot-spec rod-frame fix in the skeleton spec (measured
 against the recorded burial depths), then .tmp/verdict6_stand_back
 .py re-run verbatim as the verdict probe.
+
+VERDICT 7 OUTCOME (2026-08-08): THE HEEL WORKS -- and it exposed the
+real unbalancer.  Calcaneus point derived into the foot projection
+(ankle_x - toe_x * 0.26/0.74, one per side, tarsals-owned); 44-test
+gate green.  Same VERDICT 6 birth pose: window 43 -> 238 ticks
+(5.5x; the polygon finally has a rear edge behind the COM).  But
+ankle means rose to +11.0/+10.4 N m -- outside.  The instrumented
+ramp is the truth: the moment starts +0.93 N m at tick 0-10 (the
+balanced birth pose WORKS), then RAMPS +1.4 -> +5.0 -> +9.5 ->
++12.8 over 160 ticks while the COM stays frozen and the centroid
+creeps.  The driver: the controller's STATIC lean offset t_off =
+-2.49 deg, baked at init from centroid(0.057) - COM(0.006) = a 5
+cm forward-lean demand.  The pose-PD integrates that demand into a
+growing ankle moment until the refusal gate fires.  VERDICT 6's
++3.6 "pass" was the ramp's EARLY values amputated at tick 43 --
+not an equilibrium.  The causality is backward: humans do not lean
+to the geometric centroid; pressure recenters under the COM.  The
+t_off chase leans the body to where the centroid is and prices the
+difference as a permanent, growing moment.
+
+VERDICT 8 MEMBRANE (2026-08-08, named BEFORE the run): KILL THE
+CHASE.
+STATEMENT: with the static ankle lean offset zeroed (no centroid
+chase; the pose-PD holds the birth pose as given), the VERDICT 6
+birth pose (COM +0.63 cm forward of the ankle, heel polygon) holds
+ankle means inside [-3.08, +5.24] N m for the WHOLE window, not
+just its first 10 ticks, and the window stretches past 238 ticks.
+PREDICTION: probe-side override ctrl._t_off[bal_idx] = 0 (no kernel
+change), verdict6 machinery verbatim otherwise: ankle means in
+envelope, window > 238 ticks, sway returns toward [3.8, 9.5] mm.
+FALSIFIER: the body falls backward without the chase (the lean was
+doing real catching work) -> the static lean must be REPLACED, not
+removed: VERDICT 9 is the COP-feedback lean (VERDICT 2's capture-
+point law re-run on this now-measured-healthy plant, where xi
+feedback has a plant that can actually move).
+The run: .tmp/verdict8_kill_the_chase.py; override probe-side,
+record either way.
+
+VERDICT 8 OUTCOME (2026-08-08): FALSIFIED -- the chase is innocent.
+t_off zeroed at the ankle rows: +11.05/+11.32 N m, window 231 --
+bit-for-bit the disease it was supposed to cure.  With the command
+offset dead, the growing moment can only come from a GROWING
+theta_err: the feet CREEP forward under the frozen body (centroid
+0.057 -> 0.063 over 80 ticks, measured), the ankle angle opens,
+and the healthy pose-PD prices the opening harder every tick.  The
+ramp is not a control disease at all -- it is the odometer of the
+creep.  The moment at birth is +0.93 N m (balanced, measured);
+everything after is the floor letting the feet walk away with the
+support polygon while the servo faithfully holds a pose whose feet
+are leaving.
+
+VERDICT 9 MEMBRANE (2026-08-08, named BEFORE the run): THE CREEP.
+STATEMENT: at quiet-standing load the tangential friction holds at
+the VELOCITY level but the points still translate -- the creep
+enters through the POSITION pass (contact recovery rows pushing the
+penetrating points, and drag the feet with them), not through the
+friction solve.
+PREDICTION: instrument the per-tick world xy of the tarsals contact
+points plus their solved tangential/normal impulses and tangential
+velocity: tangential velocity will be ~0 each tick (velocity-level
+friction holds) while the POSITION-level displacement accumulates
+(the creep is born in the recovery pass).
+FALSIFIER: tangential velocity is materially nonzero while |lambda_t|
+sits below mu_s * lambda_n -> the friction row itself leaks at quiet
+load and the membrane is the friction solve's limit, not the
+position pass.
+The run: .tmp/verdict9_the_creep.py against the VERDICT 6 birth
+pose; measurement only, fix direction decided by the outcome.
