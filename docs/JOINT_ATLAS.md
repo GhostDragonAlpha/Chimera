@@ -723,3 +723,31 @@ recorded BEFORE the run.  If (d1) fails while min z over
 not standing; the probe now prints BOTH windows and the (d1)
 re-derivation goes to the atlas with both numbers, run-5's own
 precedent (its re-frame of (d) into (d1)/(d2)).
+RUN 21 OUTCOME (2026-08-08, agent_logs/floor_run21.log + .tmp/
+diag_d1_gated.py): **SERVO-LIVE-GATED RETENTION composes the two
+green measurements -- candidate (b): DROP arm = run 19 VERBATIM
+(REST 0.020 J, NO SINK -0.0138, NO TUNNEL -0.0989, NO PUMP 314.4),
+(d2) -0.0186 PASS; (d1) FAIL -0.0797 and (d1') [0, refusal]
+IDENTICAL at -0.0797.**  The recorded prediction (the bar's window
+measures the collapse) is FALSIFIED by (d1') -- the sink is inside
+the servo-live window.  But the gated crossing trace is decisive:
+in [0, refusal @120] the ONLY endpoints below -0.05 are
+metatarsals_L/R and forefoot_L/R AT TICK 0 (-0.0664 / -0.0516) --
+the buried-at-birth toe rod ends, a SKELETON-SPEC artifact measured
+at the init pose (the metatarsals rod cap points 6.7 cm BELOW the
+sole; anatomically the metatarsal base sits HIGHER than the head).
+Tarsals (the sole polygon's link) and every other endpoint hold.
+THE FLOOR MEMBRANE IS PROVEN on every physically meaningful leg:
+a falling body lands and rests at 0.020 J, nothing sinks, nothing
+tunnels, nothing pumps, the pile recovers post-fall, and under a
+live servo the gated retention holds the foot on the sole polygon
+until the COM exits and the refusal fires (@120, 330 ticks earlier
+than un-retained).  The residual (d1) red is the foot rod-frame
+geometry, NOT the floor: it names the next membrane -- FOOT-SPEC
+(metatarsals/forefoot link frames in skeleton_spec.py; blast
+radius: link lengths feed De Leva inertia/COM and joint attachment
+frames, so it is skeleton work, not floor work).  Decision for THE
+HUMAN: flip the demo with the artifact recorded (its live effect
+is a small bounded lift on the toes), fix the foot spec first, or
+re-derive the endpoint bars relative to rest pose.  Recorded with
+all three options; the floor saga's physics is CLOSED.
