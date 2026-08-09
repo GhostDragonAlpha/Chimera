@@ -930,3 +930,43 @@ itself (next candidate: the servo rows and contact rows fighting in
 the same projection pass -- measure joint_impulses_ang with servo
 on vs the applied motor torque directly).
 The run: .tmp/verdict3b_contact_freeze.py; torque derived, not swept.
+
+VERDICT 3b OUTCOME (2026-08-08): FALSIFIED -- the contact solve is
+NOT the freezer.  Servo OFF, 7.85 N m total about the ankle axes
+(m*g*1cm, derived), 0.5 s: the shanks rotated 67.4 deg (the body
+pitched over, gravity took it) while the feet slid 248 mm DURING
+the fall.  Rotation-dominant: the ankle mechanism EXISTS -- shank
+rotates over the foot when the servo is not running.  Per the
+named falsifier the disease is therefore inside the SERVO/SOLVE
+interaction: with the servo live, the motor rows and the contact
+rows fight inside the same projection pass, and the fight is what
+reads as +9.6/+16.3 N m chatter with 15 N m std and 0.1-0.4 mm
+statue sway.  The body is not too weak to balance and the floor is
+not too stiff to let it -- the two constraint sets are canceling
+each other tick by tick.
+
+VERDICT 4 MEMBRANE (2026-08-08, named BEFORE the run): THE FIGHT,
+INSTRUMENTED.
+STATEMENT: during quiet standing (servo ON, no external load), the
+angular impulse delivered at the ankle rows does not track the
+motor command -- it oscillates in sign or magnitude tick-to-tick
+(chatter), because the motor velocity-source rows and the contact
+rows solve against each other in the same Gauss-Seidel pass order.
+PREDICTION: instrument the solve (default-off logging flag, legacy
+bit-identical) to record the ankle MOTOR-row impulse separately
+from the joint-limit/contact rows per tick over the quiet window;
+the motor-row impulse will show tick-to-tick sign flips or a duty
+cycle (fight), not a smooth track of the command (no fight).
+Quantifier: sign-flip rate and the autocorrelation of the motor
+impulse series at lag 1 -- a fighting series has lag-1 autocorr
+< 0 (alternation); a tracking servo has autocorr > 0.9.
+FALSIFIER: motor-row impulse tracks the command smoothly (lag-1
+autocorr > 0.9, no alternation) -> the fight is not in the solve
+pass; the chatter enters through the COMMAND itself (the pose-PD
+target oscillating against the refusal gate) and the next membrane
+is the servo law's own stability (discrete-time PD at DT=1 ms with
+omega_n chosen for the old 4 ms tick would ring -- measured, not
+assumed).
+The run: .tmp/verdict4_the_fight.py against an instrumented
+dynamics.py (logging flag default off, 44-test gate before the
+probe).
