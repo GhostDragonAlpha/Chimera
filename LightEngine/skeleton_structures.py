@@ -477,6 +477,18 @@ def _foot_projection_joints(height_lu: float) -> dict[str, list[tuple[str, float
         ):
             p = j[key]
             feet[side].append((key, float(p[0]), float(p[1])))
+        # CALCANEUS (2026-08-08, VERDICT 7): the human foot extends 26% of
+        # its length BEHIND the ankle; this skeleton's polygon used to start
+        # AT the ankle joint, so a balanced COM (0.6 cm forward of the
+        # ankle) was born 6 mm from the polygon's rear edge and the refusal
+        # gate fired at tick 43 (measured).  DERIVED-GEOMETRY: ankle-to-toe
+        # is the other 74%, so heel_x = ankle_x - forefoot_x * 0.26/0.74;
+        # the heel rides the ankle's y (rear-foot centerline).
+        ankle = j[f"ankle_{side}"]
+        toe_x = float(j[f"forefoot_{side}"][0]) - float(ankle[0])
+        feet[side].append((f"calcaneus_{side}",
+                           float(ankle[0]) - toe_x * (0.26 / 0.74),
+                           float(ankle[1])))
     return feet
 
 

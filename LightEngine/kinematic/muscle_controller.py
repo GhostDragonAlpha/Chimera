@@ -272,15 +272,20 @@ class MuscleController:
         motor_target[:] = -self._omega_n * (theta_err - self._t_off)
         motor_lmax[:] = self._lmax
 
-        # BALANCE-BY-COP (VERDICT 2 membrane, opt-in): re-derive the ankle
-        # pivots' lean offset PER TICK from the capture point.  Pratt 2006 /
-        # Koolen 2012: the LIPM capture point xi = x + xdot/omega with
-        # omega = sqrt(g/h); steering the support-centroid offset against xi
-        # instead of the static COM adds the xdot/omega velocity feedback the
-        # pose-PD lacks (measured disease: +9.9 N-m ankle moments against the
-        # human envelope [-3.08, +5.24], 0.44 s standing).  Sign convention
-        # matches __init__: static t_off = -phi lands -wn*(theta_err + phi),
-        # so the dynamic form is -wn*(theta_err + phi_t).
+        # BALANCE-BY-COP (VERDICT 2/13 membrane, opt-in): re-derive the
+        # ankle pivots' lean offset PER TICK from the COP ERROR.  Pratt 2006
+        # / Koolen 2012: the LIPM capture point xi = x + xdot/omega with
+        # omega = sqrt(g/h); balance control = place the COP at
+        # p* = x + (1+kd)*xdot/omega (VERDICT 2's own design note; kd = 1
+        # is critical damping of the xi error dynamics).  VERDICT 12
+        # measured the centroid-referenced variant chasing the polygon's
+        # geometric center (5 cm of permanent lean demand, +17 N m of
+        # fight): pressure recenters UNDER the COM in humans, so the
+        # reference is the pressure-weighted COP p_now from THIS tick's
+        # contact impulses -- a balanced birth asks for nothing.
+        # Sign convention matches __init__: static t_off = -phi lands
+        # -wn*(theta_err + phi), so the dynamic form is
+        # -wn*(theta_err + phi_t).
         if state.get("balance_cop") and self._bal_idx:
             mass = state["mass"]
             M = float(mass.sum())
@@ -290,8 +295,26 @@ class MuscleController:
             if h > 1e-6:
                 # ANATOMY-DATUM: standard gravity, same constant as dynamics.
                 omega = float(np.sqrt(9.80665 / h))
-                xi = com3[:2] + comv[:2] / omega
-                offset_vec = _support_centroid_xy(state) - xi
+                kd = 1.0  # derived: critical damping (VERDICT 2 notes)
+                p_star = com3[:2] + (1.0 + kd) * comv[:2] / omega
+                cop_num = np.zeros(2, dtype=np.float64)
+                cop_den = 0.0
+                impulses = state.get("contact_impulses")
+                if impulses is not None:
+                    for ci, rec in enumerate(state["contact_records"]):
+                        if rec.get("side") == "W":
+                            continue
+                        lam_n = float(impulses[ci][2])
+                        if lam_n <= 0.0:
+                            continue
+                        li = int(rec["link_idx"])
+                        R = transforms.to_matrix(state["quat"][li])
+                        p = state["pos"][li] + R @ rec["offset_local"]
+                        cop_num += p[:2] * lam_n
+                        cop_den += lam_n
+                p_now = cop_num / cop_den if cop_den > 1e-9 \
+                    else com3[:2].copy()
+                offset_vec = p_star - p_now
                 for a in self._bal_idx:
                     act = self.actuators[a]
                     q_pa = state["quat"][act["parent_idx"]]

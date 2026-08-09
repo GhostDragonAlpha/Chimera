@@ -1228,3 +1228,110 @@ and the motor-reaction shear membrane is next.
 The run: spec change behind the 44-test gate (drop arm must stay
 green -- the W system keeps every OTHER link), then
 .tmp/verdict6_stand_back.py verbatim.
+
+VERDICT 11 OUTCOME (2026-08-08): THE THEFT IS DEAD -- and the plant
+is finally HONEST.  Foot links excluded from the W floor endpoints
+(44-test gate green): the refusal gate NEVER fired (was tick 238) --
+the polygon now grips and holds the COM.  The window ended by an
+actual FALL at tick 444 (0.43 s, was 0.23 s).  Ankle means +17.1/
++17.2 N m (outside) -- but read the mechanism: with the skate dead,
+the feet no longer bleed off the imbalance, and the body does what
+VERDICT 3b proved it can do -- it TIPS over the planted feet.  The
++17 is the uncontrolled inverted pendulum diverging (omega ~ 2.8/s,
+any residual offset amplifying e-fold per ~0.35 s) while the
+pose-PD -- which has NO COM/COP feedback (VERDICT 2's measured
+disease) -- fights the growing pitch.  Every piece of the plant is
+now measured-healthy (grip holds, polygon heel-to-toe, statics
+priced tau = m g d, servo tracks its command) and what is missing
+is exactly the thing VERDICT 2 built and the plant could not use:
+the capture-point law.  VERDICT 8's falsifier scheduled this: the
+COP-feedback lean re-run on a plant that can move.
+
+VERDICT 12 MEMBRANE (2026-08-08, named BEFORE the run): THE LAW, ON
+AN HONEST PLANT.
+STATEMENT: with balance_cop ON (the VERDICT 2 capture-point lean,
+per-tick xi = x + xdot/omega steering at the ankle pivots) on the
+VERDICT 6 birth pose with the VERDICT 7 heel and the VERDICT 11
+grip, the ankle moments stay inside [-3.08, +5.24] N m for the
+whole window and the window passes 444 ticks WITHOUT a fall -- the
+law prices the divergence before it grows, which is the only thing
+the plant still lacks.
+PREDICTION: ankle means in envelope; no refusal, no fall for the
+full 3000-tick run (3 s, 7x the current window); sacrum sway enters
+the human band [3.8, 9.5] mm AP (real sway, not statue).
+FALSIFIER: still falls with the law live -> the LIPM reduction is
+wrong for this 77-link multi-mass plant after all (Englsberger
+2015 DCM-height, the step VERDICT 2 named); moments leave the
+envelope while standing -> the law's torque channel (lever-arm phi
+projection) is underpowered against the full plant and the hip
+strategy joins the membrane.
+The run: .tmp/verdict12_the_law.py = verdict6 machinery +
+state["balance_cop"] = 1.
+
+VERDICT 12 OUTCOME (2026-08-08): FALSIFIED -- the law chased the
+GEOMETRIC centroid, same backward causality as VERDICT 8's t_off.
+balance_cop ON: +16.9/+17.0 N m, fall @444, statue sway 0.6 mm --
+bit-identical to the law being off.  The mechanism: offset_vec =
+centroid - xi = 5 cm of permanent forward-lean demand (centroid
+0.057 vs COM 0.006); the servo pushes at its torque limit trying to
+lean the body onto the polygon centroid; the VERDICT 11 grip holds,
+so the torque accumulates as internal stress instead of skate --
++17 N m of fight with 0.6 mm of motion -- until the plant gives at
+tick 444.  Humans do not stand on the polygon centroid; pressure
+recenters UNDER the COM (VERDICT 8, recorded).  VERDICT 2's own
+design note had it right and the implementation drifted: balance
+control = PLACE THE COP UNDER THE CAPTURE POINT, p* = x +
+(1+kd)*xdot/omega -- a COP ERROR, not a centroid chase.
+
+VERDICT 13 MEMBRANE (2026-08-08, named BEFORE the run): THE COP
+ERROR.
+STATEMENT: the lean modulation must price (p* - p_now) -- the
+capture-point demand against the pressure-weighted COP measured
+from the contact impulses THIS tick -- so a balanced birth (p_now
+~ COM ~ p*) asks for NOTHING and only divergence pays.
+PREDICTION: with offset_vec = p* - p_now (kd = 1, critical damping,
+derived in VERDICT 2's notes; p_now = the normal-impulse-weighted
+mean of the non-W contact points), the VERDICT 12 run repeats with
+ankle means inside [-3.08, +5.24] N m, no fall for the full 3000
+ticks, and sway entering [3.8, 9.5] mm AP.
+FALSIFIER: still fights or falls with the COP error live -> the
+torque channel (phi lever projection through a velocity-source PD)
+cannot deliver the COP placement and the membrane becomes the
+channel itself (direct ankle torque rows, VERDICT 14).
+The run: balance_cop block re-referenced in muscle_controller.py
+(opt-in, legacy bit-identical), 44-test gate, then
+.tmp/verdict12_the_law.py verbatim.
+
+VERDICT 13 OUTCOME (2026-08-08): THE SWAY BAR PASSED -- 5.6 mm AP,
+inside the human band [3.8, 9.5] for the first time; the COP-error
+reference moves the body HUMANLY.  The envelope bar FAILED harder:
++22.1/+22.1 N m.  The mechanism is measured: the phi lever
+projection pipes the COP error through the pose-PD's angle gain as
+a velocity target, and the impulse limit lmax saturates -- the law
+slams the channel to its ceiling and holds it there (+22 ~ the
+motor's limit, not a price).  Window 401 ticks, ends by refusal:
+the (healthy, human-band) sway carried the COM out of the polygon
+-- the polygon exit is now a CONTROL problem (sway must be
+steered), not a geometry problem.  Per the named falsifier the
+membrane becomes the channel itself.
+
+VERDICT 14 MEMBRANE (2026-08-08, named BEFORE the run): THE DIRECT
+TORQUE.
+STATEMENT: COP placement is a TORQUE, not an angle: shifting the
+COP by delta_p costs tau = N * delta_p about the ankle axis
+(statics, derived -- N from the same tick's contact impulses, no
+gain to tune).  The phi/PD channel cannot deliver it (measured,
+VERDICT 13); a direct torque row can: tau_a = N_a * (p* - p_now)
+per foot, sign-derived against VERDICT 4's measured moment
+direction (tau_scalar = N_a * dot(cross(delta_p3, z_hat), axis_w);
++tau on the tibia, -tau on the tarsals, via state["ext_torque"]
+which the controller owns when balance_cop is live).
+PREDICTION: VERDICT 12 machinery with the direct channel (phi
+modulation REMOVED): ankle means inside [-3.08, +5.24] N m, no
+refusal, no fall for 3000 ticks, sway stays in [3.8, 9.5] mm AP.
+FALSIFIER: still outside with the derived torque delivered -> the
+LIPM single-mass pricing is wrong for the 77-link plant and the
+next literature step is Englsberger 2015 DCM-height (named by
+VERDICT 2, twice deferred, now load-bearing).
+The run: balance_cop block rewritten (opt-in, gate green), then
+.tmp/verdict12_the_law.py verbatim.

@@ -515,6 +515,7 @@ def _build_ligament_specs(links: dict[str, dict[str, Any]],
 # tip).  The legacy default attaches every point to tarsals; the anatomic
 # mode lets the toe fold press its own contacts into the ground.
 _CONTACT_POINT_LINK = {
+    "calcaneus": "tarsals",
     "ankle": "tarsals",
     "tarsal": "tarsals",
     "metatarsal_base": "metatarsals",
@@ -559,11 +560,21 @@ def _build_floor_contact_specs(links: dict[str, dict[str, Any]]) -> list[dict[st
     through the floor (head_z -50.8 m @8000): a body that falls must
     LAND.  These records are tagged side="W" downstream so the posture
     servo's support-polygon queries never count them as feet.
+
+    VERDICT 11 (2026-08-08): the foot-chain links are EXCLUDED -- they
+    own the anatomically derived support polygon (12 points, heel to
+    toe) and the W duplicates measured stealing 89% of the normal
+    load (polygon points carried 7.3 N against a 65.4 N share),
+    leaving the friction cone grip-less (LOAD THEFT, JOINT_ATLAS.md).
+    Every other link keeps its W endpoints: a body that falls must
+    still LAND.
     """
     floor: list[dict[str, Any]] = []
     for name, lk in links.items():
         if float(lk["mass_kg"]) <= 0.0:
             continue
+        if name.startswith(("tarsals", "metatarsals", "forefoot")):
+            continue  # VERDICT 11: the feet own their polygon
         c = np.asarray(lk["com_offset_m"], dtype=np.float64).reshape(3)
         floor.append({"link": name, "offset_local_m": -c})
         floor.append({"link": name, "offset_local_m": c.copy()})
