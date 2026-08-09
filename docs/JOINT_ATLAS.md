@@ -889,3 +889,44 @@ measure foot-slide vs shank-rotation under a known lean torque.
 The run: .tmp/validate_standing.py against a birth-shifted spec;
 record whichever way it lands, do not tune the shift (derive it
 from the measured 5.45 cm, never sweep).
+
+VERDICT 3 OUTCOME (2026-08-08): FALSIFIED -- the birth offset is NOT
+the load-bearing term.  The shift ran exactly as derived (2.52 deg
+about the ankle line from the measured 5.45 cm; post-shift COM xy
+[0.0777, -0.0001] over centroid [0.081, 0.0]).  Result: ankle means
++16.33/+16.49 N m -- WORSE than the unshifted +9.59 -- with std
+14.6-15.8 N m (human quiet std is ~1; the plant CHATTERS, it does
+not balance).  Window 217 ticks (0.21 s; was 119).  Sway 0.4 mm AP
+(less frozen, still statue).  Per the named falsifier the disease
+passes to VERDICT 3b: CONTACT FREEZE.  The moments are not gravity
+moments -- a balanced pose made them bigger -- they are the servo
+and the contact-projection solve fighting through the ankle rows,
+and the fight OSCILLATES (std 15 N m on a 0.2 s window).  The
+statue sway and the chatter are the same fact seen two ways: the
+solve cancels all real dynamics and what leaks through is noise.
+
+VERDICT 3b MEMBRANE (2026-08-08, named BEFORE the run): CONTACT
+FREEZE / ankle-mechanism existence.
+STATEMENT: in this plant the ankle strategy's mechanism does not
+exist -- the contact solve pins the foot endpoints so hard that a
+known lean torque at the ankle produces FOOT SLIDE (translation)
+instead of SHANK ROTATION over the planted foot (VERDICT 2's
+instrumentation already saw 1.75 cm of slide in 0.12 s under a
+frozen COM).  If the mechanism does not exist, no balance law --
+ankle, capture-point, or hip -- can ever run on this plant, which
+is why VERDICTs 2 and 3 both falsified without moving a number in
+the right direction.
+PREDICTION: apply a known constant external torque about the ankle
+axis (derived: tau = m*g*1 cm = 80*9.80665*0.01 = 7.8 N m, one
+centimetre of COP travel -- the unit of quiet standing) with the
+servo OFF and measure the ratio of shank angular displacement to
+foot linear displacement over 0.5 s.  A live ankle mechanism gives
+rotation-dominant response (shank rotates >> foot slides); this
+plant will give slide-dominant or frozen (ratio near zero rotation)
+-- measured, either way recorded.
+FALSIFIER: the response is rotation-dominant -> the contact solve is
+NOT the freezer, the disease is inside the servo/solve interaction
+itself (next candidate: the servo rows and contact rows fighting in
+the same projection pass -- measure joint_impulses_ang with servo
+on vs the applied motor torque directly).
+The run: .tmp/verdict3b_contact_freeze.py; torque derived, not swept.
