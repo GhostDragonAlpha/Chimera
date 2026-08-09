@@ -702,3 +702,24 @@ steals holding force and NO TUNNEL fails (run 6: -0.2132) -> the
 two membranes (retention, damped rows) conflict in kind and the
 next step is retention restricted to is_floor rows.  Record, do
 not patch.
+RUN 20 OUTCOME (2026-08-08, agent_logs/floor_run20.log): **the named
+falsifier fired -- the run-6 disease reproduced under the damped
+floor: (b) NO TUNNEL -0.2467 (was -0.0989 PASS), REST 1.060 J (was
+0.020).  And (d1) improved -0.2233 -> -0.0767, still RED.**  (a)
+worsened REST 4.2 -> 17.0 J.  THE TELL: with retention the servo
+refused @120 (run 19: @953) while the fall tick stayed ~440 -- so
+320 of the 440 ticks inside (d1)'s [0, headfall] window are
+POST-REFUSAL COLLAPSE (the drop regime), not standing.  Retention
+resists motor crush; with no motors it has only its measured harm,
+and the two regimes never coexist.  RUN 21 MEMBRANE (the numbers
+chose it): **SERVO-LIVE-GATED RETENTION** -- contact_priority on
+exactly while the servo is enabled (its run-6 purpose: resist
+motor crush), off otherwise (no crush source).  Config-only,
+per-tick from the controller's own enabled flag.  PREDICTION:
+DROP arm identical to run 19 (all green, retention never active);
+(d2) = run 19's -0.0201 PASS; (d1) = run 20's -0.0767 FAIL --
+recorded BEFORE the run.  If (d1) fails while min z over
+[0, refusal] >= -0.05, the bar's window measures the COLLAPSE,
+not standing; the probe now prints BOTH windows and the (d1)
+re-derivation goes to the atlas with both numbers, run-5's own
+precedent (its re-frame of (d) into (d1)/(d2)).
