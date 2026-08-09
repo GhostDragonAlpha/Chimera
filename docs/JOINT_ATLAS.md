@@ -1157,3 +1157,37 @@ load and the membrane is the friction solve's limit, not the
 position pass.
 The run: .tmp/verdict9_the_creep.py against the VERDICT 6 birth
 pose; measurement only, fix direction decided by the outcome.
+
+VERDICT 9 OUTCOME (2026-08-08): FALSIFIED -- and the falsifier
+promoted the friction row from suspect to WITNESS.  The velocity
+level does not hold: mean tangential velocity at the foot contacts
+428 mm/s (max 11.8 m/s spikes), drift 269 mm/s -- velocity-born,
+not position-pass.  But the ratio |lambda_t|/lambda_n MEAN is
+0.695 against MU_CONTACT = 0.70 (dynamics.py:170, the skin-floor
+datum): the friction rows are SATURATED, not leaking.  They clamp
+exactly at mu*N and the feet skate on kinetic friction.  The max
+ratio 14.0 is the tell about the mechanism: points whose normal
+force is momentarily near zero carry tangential impulse anyway --
+the cone's denominator VANISHES under those points, and a point
+with no weight has no grip.  So the skate is not a friction-solve
+bug; it is a NORMAL-FORCE disease: the pad normal (spring-paced,
+contact_recovery=3; damped implicit, contact_penalty=2) does not
+hold quiet-standing load steadily, and every time a point's N dips
+toward zero its grip goes with it.
+
+VERDICT 10 MEMBRANE (2026-08-08, named BEFORE the run): THE NORMAL
+FORCE.
+STATEMENT: the per-point normal force at quiet standing oscillates
+(spring-paced recovery pumps the pad), and the tangential velocity
+spikes coincide with the normal-force dips -- the skate is the
+shadow of an oscillating N, point by point.
+PREDICTION: log per-tick N(t) and |v_t|(t) per foot point over the
+VERDICT 6 window: the correlation between N and |v_t| will be
+strongly NEGATIVE (v_t spikes when N dips), and the fraction of
+ticks with N < 0.5 * (weight/n_points) will account for the bulk
+of the drift.
+FALSIFIER: N is steady and v_t is uncorrelated -> the tangential
+DEMAND itself exceeds mu*N at quiet load (then the demand's source
+is the motor reaction torque distribution -- the next membrane
+prices how a pure ankle moment becomes foot shear in this solve).
+The run: .tmp/verdict10_normal_force.py; measurement only.
