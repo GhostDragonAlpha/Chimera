@@ -1049,3 +1049,43 @@ collapses instead of stretching -> the creep was never moment-
 driven and friction owns the refusal (VERDICT 7).
 The run: .tmp/verdict6_stand_back.py -- identical machinery to
 verdict5 with the shift direction reversed and magnitude 2.15 cm.
+
+VERDICT 6 OUTCOME (2026-08-08): THE ENVELOPE BAR PASSED -- the first
+green bar of the standing saga.  Backward 2.15 cm as derived: post-
+shift COM +0.63 cm forward of the ankle, ankle means +3.60/+3.56
+N m INSIDE the human envelope [-3.08, +5.24] with std 0.80 (human-
+like; was 5.2).  The statics membrane is PROVEN at the moment
+level: tau = m g d prices this plant, and d is the whole disease.
+The other two bars FAILED: window collapsed to 43 ticks (0.03 s,
+was 0.39) and sway 0.0 mm.  The collapse mechanism is measured,
+not guessed: the refusal gate prices the COM against the support
+polygon, and the support polygon is built ONLY from the tarsals
+contact records (VERDICT 3b instrumentation: foot links =
+[tarsals_L, tarsals_R] alone).  The metatarsals/forefoot rod
+endpoints are buried at birth (-0.067/-0.052 m, the artifact
+recorded in the floor saga), so the polygon is a NARROW MIDFOOT
+PATCH around x ~ [0.03, 0.13].  Stand the COM at +0.63 cm and it
+is born at the patch's rear edge; the first settle tick pushes it
+out and the gate fires at tick 43.  The balance was right; the
+FOOT the balance stands on does not exist yet.
+
+VERDICT 7 MEMBRANE (2026-08-08, named BEFORE the run): THE FOOT.
+STATEMENT: the support polygon must span the human foot -- heel to
+forefoot, ~[-0.07, +0.19] m about the ankle for a 1.80 m body
+(anthropometric: foot length 0.152 x stature = 27.4 cm, heel-to-
+ankle 26% = 7.1 cm, ankle-to-toe 74% = 20.3 cm; derived, not
+swept).  The rod-end burial means the forefoot contact frame is
+placed 5-7 cm below the floor at birth -- a spec geometry error,
+not a physics one.
+PREDICTION: with the foot contact frames derived to touch at z=0
+(tarsals AND metatarsals in the contact records at birth), the
+same VERDICT 6 birth pose (COM +0.63 cm forward of the ankle)
+keeps ankle means inside the envelope AND the window stretches
+past 0.39 s AND sway returns toward the human band.
+FALSIFIER: window still collapses with a full-length polygon ->
+the refusal gate's polygon math owns the collapse (VERDICT 8);
+ankle means leave the envelope with the forefoot grounded -> the
+two-contact foot changes the statics and the membrane re-derives.
+The run: foot-spec rod-frame fix in the skeleton spec (measured
+against the recorded burial depths), then .tmp/verdict6_stand_back
+.py re-run verbatim as the verdict probe.
