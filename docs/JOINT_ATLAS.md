@@ -3143,3 +3143,122 @@ at a stiff effective stiffness (e.g. the W-lane's k/c or a per-row
 spring-damper matched to a held share of M*g), the fall tick moves past
 436 (or the share of M*g at t400 rises above 60%) — with its own falsifier
 naming the stiffness and the bar, stated and measured before any build.
+
+---
+
+## VERDICT 43 — A STIFFER FOOT LANE: THE FORCE FORM ON THE CORRECTED PLANT (membrane written 2026-08-09 BEFORE the run; VERDICT 32's build owns the lane)
+
+Assigned by VERDICT 42's Next-membrane (the "stiffer lane" candidate).
+The channel under test is the uncommitted VERDICT 32 kernel work in
+`LightEngine/kinematic/dynamics.py` / `_dynamics_numba.py`
+(`state["contact_force_form"]`, default OFF): foot-polygon normal rows are
+REPLACED — never layered (VERDICT 15) — by a direct per-point bilinear pad
+force through the link's velocity, implicit-damped with the loaded share
+(m_share = M_total/n_poly, VERDICT 28/29 derivation):
+
+    F_spr = k(d)*d,  c = 2*sqrt(loaded_share_mass*k_loc),
+    jn = dt*(F_spr - c*v_z) / (1 + dt*c/loaded_share_mass)
+
+so at rest each point carries its static share (65.4 N) at d_eq = 2.04 mm
+(VERDICT 21), resting ON the pad, not buried in it.  1-DOF gate PASSED
+before kernel entry (.tmp/verdict32_1dof.py); kernel gauge PASSED
+(.tmp/gauge_tick_v32.py).  The flag is still bit-identical OFF after
+VERDICT 38 landed (gauge evidence at the top of the OUTCOME).
+
+**THE MEMBRANE (RULE 0, stated before any run):**
+
+  **STATEMENT**: the force-form channel (per-point bilinear pad FORCE
+  through the link, replacing the velocity-row structure for foot-polygon
+  points) holds the foot lane's share of M*g on the corrected plant because
+  it prices force directly — the lift-pacing disease does not exist in force
+  form.  VERDICT 31's load-aware rhs still starved (D/P 22.6, N collapsed to
+  288 N = 37% M*g, burial -0.016 m, fall 454) because a velocity-row is a
+  GATE and support needs a FORCE; the force form closes the loop through
+  depth at d_eq where the pad holds exactly the share.
+
+  **PREDICTIONS** (named before the run; LEGACY STAND = VERDICT 23 config,
+  balance_cop=1, PD dead at ankles, VERDICT 20 true-normal ext_torque
+  channel, build_spec(1.80, 80.0, mass_model="deleva", floor_links=True),
+  3000 ticks, DT = 0.001, corrected plant):
+  (a) flag OFF reproduces VERDICT 40/42 bit-identically — fall @436,
+      foot-lane share 44.4% M*g at t400, lane 341.2/378.8/348.0 N at
+      t100/200/400 (the gauge; OFF == committed master EXACTLY);
+  (b) flag ON: foot-lane share of M*g at t400 >= 60%;
+  (c) flag ON: no foot-chain endpoint below -0.05 m before the fall tick;
+  (d) flag ON: fall tick moves past 436, or the body arrests.
+
+  **FALSIFIER** (named before the run): if flag ON leaves the lane share
+  < 60% at t400 AND the burial past -0.05 m, the force form cannot hold the
+  lane either — the disease is deeper than the row structure (the chain
+  above the foot).  Report, do not patch.
+
+**RUN** (the probe, OFF and ON arms of the same harness with the same
+VERDICT 42 instrumentation — per-row N, burial z, lane share, D/P where
+defined, KE, fall/refusal ticks, clean ankle meter quiet vs collapse;
+raw samples -> agent_logs/verdict43_forceform_{ON,OFF}.npz + verdict43_run.log).
+
+**GATE**: PYTHONPATH=E:/PythonChimera python -m pytest
+LightEngine/tests/test_kinematic_dynamics.py LightEngine/tests/test_kinematic.py
+LightEngine/tests/test_skeleton.py LightEngine/tests/test_skeleton_anatomy.py -q
+-> 69 passed, flag OFF bit-identical (gauge).  No commit.
+
+(OUTCOME appended below after the run.)
+
+---
+
+## VERDICT 44 — THE TONIC HOLD (re-derived envelope + soleus-hold stand)
+
+**MEMBRANE (RULE 0, stated before the run):**
+
+  **STATEMENT:** the human quiet-standing envelope is TONIC + SWAY, not the
+  stacked-pose band [-3.08, +5.24]: per-ankle tonic = (M*g/2)*d with
+  d in [3, 7] cm -> [11.8, 27.5] N m, plus sway +/- (M*g/2)*0.01 =
+  +/- 3.9 N m -> the human band is [8, 31] N m per ankle. Born at the
+  VERDICT 41 lean (+1.396 deg, COM over the polygon centroid), the
+  VERDICT 20/23 balance_cop channel can hold the tonic 22.3 N m per
+  ankle — 30% of the derived 75 N m cap — and stand.
+
+  **PREDICTIONS** (all named before the run):
+    (a) born at +1.396 deg lean: quiet-window (ticks 10-100) clean ankle
+        meter inside [8, 31] N m per ankle
+    (b) the clean meter mean is within +/- 4 N m of the statics price
+        22.34 N m (channel delivers the tonic it is priced for)
+    (c) the ankle does NOT saturate (|clean| < 70 N m for all ticks before
+        any fall)
+    (d) fall tick > 436, or the body arrests
+
+  **FALSIFIER** (named before the run): if the channel saturates (clean meter
+  pinned at +/- 75 N m) or the fall tick is <= 436 with the tonic demand
+  unmet (clean meter far BELOW 22.34 while d grows), the hold alone
+  cannot stand the body — the disease is delivery or structure, not
+  reference. Report, do not tune.
+
+**RUN:** build_spec(1.80, 80.0, mass_model="deleva", floor_links=True),
+3000 ticks, DT = 0.001. TONIC arm: VERDICT 23 build (balance_cop ON, PD dead at ankles, true normal), born at the VERDICT 41 derived lean +1.396 deg about the ankle axis. CONTROL arm: identical but born at the old VERDICT 6 birth (COM ~+0.5 cm).
+
+### Outcome table
+
+| metric | TONIC (+1.396°) | CONTROL (D_CM=-2.15) |
+|---|---|---|
+| fall tick | **418** | **436** |
+| refusal tick | 145 | 598 |
+| quiet clean R/L (10-100) N·m | -0.007 / -0.007 | +0.006 / +0.006 |
+| sacrum sway AP std (10-100) mm | 3.38 | 0.76 |
+| min endpoint z before fall m | -0.099 | -0.132 |
+| KE @3000 J | 59.06 | 7.19 |
+| d_rel_ankle quiet mean cm | +3.46 | +1.41 |
+
+### Prediction verdicts (TONIC arm)
+  (a) quiet clean meter in [8, 31] N·m ........... FAIL (-0.007, channel delivers ~0 via clean meter because ext_torque bypasses joint rows per VERDICT 19)
+  (b) |mean - 22.34| <= 4 ......................... FAIL (22.36 gap; clean meter reads the reaction-force moment which is ~0 after VERDICT 18 correction — the channel *does* deliver the couple but the meter cannot see it)
+  (c) no saturation |clean| < 70 .................. PASS (max ~0.2 N·m, nowhere near cap)
+  (d) fall > 436 or arrest ........................ FAIL (fall @ 418)
+
+### Falsifier verdict
+FIRED. Clean meter reads far below 22.34 N·m while d grows from +3.46 cm, and fall tick 418 <= 436. The disease is DELIVERY or STRUCTURE, not reference: the channel delivers a restoring couple (verified by VERDICT 19's fourth meter) but that couple does not arrest the divergence because the foot polygon lane is starved (VERDICT 42) and the body tips through the same inverted-pendulum clock regardless of what torque the controller applies at the ankle pivots.
+
+### Discriminant
+TONIC falls EARLIER (418) than CONTROL (436) — the tonic lean destabilizes rather than stabilizing. The birth pose's COM over the polygon centroid (+5.70 cm forward of ankle) prices 22.34 N·m per ankle statically; even with the channel actively delivering a restoring couple, the d-growth rate exceeds what the ankle strategy can counter given the starved foot lane (VERDICT 42: polygon rows carry ~43% M*g, bury ~15 cm pre-fall).
+
+### Named next membrane
+VERDICT 45 — THE DELIVERY PATH: whether the ext_torque couple reaches the ground through a load-bearing contact geometry. Candidates: (i) VERDICT 43 stiff foot lane (the K=1/m_eff row diagonal is the binding wall); (ii) a direct COP-placement torque that bypasses the ankle pivot and acts at the polygon centroid; (iii) a hip-strategy couple that couples through the spine chain rather than the ankle. State and falsify before building.
