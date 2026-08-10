@@ -283,7 +283,6 @@ def _build_link_specs(instances: list[dict], mass_kg: float,
         # DERIVED-GEOMETRY: uniform-rod midpoint is the first COM approximation.
         # Its error will be measured by the demo battery.
         com_offset_lu = 0.5 * axis_lu
-        com_offset_m = com_offset_lu * lam
 
         mass = mass_by_name[name]
         # Inertia uses the ANATOMY-DATUM diameter: outer_diameter_m is a
@@ -302,6 +301,21 @@ def _build_link_specs(instances: list[dict], mass_kg: float,
             # Zero-length patella: align with world axes as a neutral fallback.
             x, y, z = _orthonormal_basis(np.array([0.0, 0.0, 1.0]))
         R_world_to_local = _world_to_local_matrix(x, y, z)
+
+        # VERDICT 38 (THE FRAME): com_offset_m is a LINK-LOCAL half-axis.  The
+        # world-axes half-axis is 0.5*(dist_m - prox_m); every consumer
+        # (init_state's pos_com, the joint rows, ligament offsets, the W floor
+        # contacts, state_poses, the demo export endpoints) rotates or
+        # subtracts it in the link's own frame.  Rotating the world half-axis
+        # into the link frame by R_world_to_local -- whose z row IS the link
+        # axis -- makes it exactly the local (0, 0, length_m/2) vector.
+        com_offset_m = R_world_to_local @ (com_offset_lu * lam)
+        assert np.allclose(com_offset_m,
+                           np.array([0.0, 0.0, 0.5 * length_m]),
+                           atol=1e-12), (
+            f"{name}: com_offset_m {com_offset_m} must be the local z "
+            f"half-axis (0, 0, {0.5 * length_m})"
+        )
 
         links[name] = {
             "name": name,

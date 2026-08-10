@@ -2487,3 +2487,203 @@ next membrane named at the end of VERDICT 36 must NOT be read as "VERDICT 37"
 membrane **THE FRAME** (com_offset_m world-axes vs link-local at
 `init_state`/`_build_floor_contact_specs`); whoever claims it next should
 give it the next free number.
+
+---
+
+## VERDICT 38 — THE FRAME (com_offset_m frame fix, one source change, full re-measure)
+
+Read the VERDICT 36 ADDENDUM first (the unnumbered THE FRAME membrane was
+claimed here as the next free number).  The instrument verdict of VERDICT 36
+measured the split: `skeleton_spec.py:285-286` stored
+`com_offset_m = 0.5·(dist_lu − prox_lu)·λ` — a WORLD-axes half-axis — while
+every consumer treats it as LINK-LOCAL (`dynamics.py:319` `pos_com`,
+`:364-368` joint rows, `:387-391` ligament offsets, `:1226` `state_poses`,
+`skeleton_spec.py:598` W floor contacts, `build_standing_demo.py:100` and
+`serve_standing_demo.py:75` `−com_off` / `d_tip − com_off` where `d_tip` is
+explicitly local).  Standing birth body COM was 1.2371 m vs 1.0117 m correct;
+mean per-link COM error 101.9 mm, max 487.3 mm (femur); min endpoint z
+−0.0666 m (born buried).  Joint-anchor residual 0.0000 mm — the c term
+cancels in the joint rows, so the skeleton hangs together while gravity acts
+at the wrong points.
+
+**STATEMENT** (RULE 0, stated before the build): `com_offset_m` is consumed
+as link-local everywhere; storing it link-local at the source —
+`com_offset_m = R_world_to_local @ (world half-axis)`, which by the
+`_orthonormal_basis` construction (z row = link axis) is exactly
+`(0, 0, length_m/2)` — makes every consumer correct with no other code
+change.  The one production edit is the SOURCE, not the consumers.
+
+**PREDICTION** (named before the run): after the fix, standing birth body
+COM z = 1.0117 m ± 1 mm; min endpoint z ≥ −1 mm; joint-anchor coincidence
+residual at birth stays ≤ 0.01 mm; per-link COM error vs the world-frame
+reference ≤ 1 mm.
+
+**FALSIFIER** (named before the run): if any endpoint is born buried
+(min z < −1 mm) or the joint residual exceeds 0.01 mm after the change, the
+frame theory is wrong — revert and report.
+
+**BUILD**: one source change.  `skeleton_spec.py` — the
+`_orthonormal_basis` / `R_world_to_local` computation moved above the
+`com_offset_m` line (from the inertia block into the derived-geometry block),
+then `com_offset_m = R_world_to_local @ (com_offset_lu * lam)` with a per-link
+assert `np.allclose(com_offset_m, [0, 0, 0.5·length_m], atol=1e-12)`.  All 77
+links pass the assert (2 are the zero-length patellas, trivially zero).  The
+`.tmp/diag_v36_frame_audit.py` prober convention was updated to match: the
+pre-fix prober applied `R_world_to_local @ com_offset_m` to convert the
+world-axes value to local; with the source now local, the correct formula is
+`pos = p + R @ com_offset_m` with no extra rotation.  `_dynamics_numba.py` and
+`docs/RULE27_AUDIT.md` untouched (concurrent agent).  No commit.
+
+### OUTCOME (2026-08-09): PREDICTION CONFIRMED, FALSIFIER NOT FIRED
+
+**Frame audit** (`.tmp/diag_v36_frame_audit.py`, standing state,
+`build_spec(1.80, 80.0, mass_model='deleva', floor_links=True)`):
+
+| bar | predicted | measured | verdict |
+|---|---|---|---|
+| standing birth COM z | 1.0117 m ± 1 mm | **1.0117 m** (x +0.0341, y 0.0000) | PASS |
+| min endpoint z | ≥ −1 mm | **−0.0000 m** | PASS |
+| joint residual (max) | ≤ 0.01 mm | **0.0000 mm** | PASS |
+| per-link COM error vs bone midpoint | ≤ 1 mm | mean **0.000 mm**, max **0.000 mm** | PASS |
+| engine vs prober convention | equal | |dCOM| mean **0.00 mm** | PASS |
+
+Per-link COM error table (top 8, vs the world-frame bone midpoint
+`0.5·(prox_m + dist_m)`): radius_ulna_L/R 0.000 mm, hand_L/R 0.000 mm,
+metatarsals_R/L 0.000 mm, forefoot_R/L 0.000 mm — all 77 links 0.000 mm.
+Engine endpoints now coincide with the bones' own `prox_m`/`dist_m` exactly
+(skull +1.7730/+1.6920, tibia_L +0.4680/+0.0720, tarsals_L +0.0720/+0.0180);
+min/max endpoint z = −0.0000 / +1.7730 m.
+
+**Before/after** (both measured on the standing birth state, engine
+convention):
+
+| quantity | before | after |
+|---|---|---|
+| body COM z | 1.2371 m | **1.0117 m** |
+| mean / max per-link COM error | 101.9 mm / 487.3 mm (femur) | 0.000 / 0.000 mm |
+| min endpoint z | −0.0666 m (born buried) | **−0.0000 m** |
+| joint-anchor residual | 0.0000 mm | 0.0000 mm |
+| omega = sqrt(g/h_com) | 2.8156 /s | **3.1135 /s** |
+
+**Standing baseline re-measure** (VERDICT 23 probe `.tmp/verdict23_free_sway.py`,
+3000 ticks, both builds, raw → `agent_logs/verdict23_free_sway.npz`; pre-fix
+copy preserved at `agent_logs/verdict23_free_sway_pre_v38.npz`): birth COM z
+1.0117 m; omega 3.1135 /s; fall tick **436** both free-sway (A) and pinned (B)
+— was 444 (VERDICT 20 baseline); ankle clean-meter torques ticks 10-100: mean
+0.006 Nm, std 0.001 Nm (R and L), n = 91; min endpoint z at birth −0.0000 m.
+The 436/444 shift is RE-BASED REFERENCE, not a standing verdict: this run only
+re-anchors the numbers the corrected geometry changes.  VERDICT 23's bars all
+read FAIL on the corrected frame (sway 0.762 mm, |p−p*| 0.06719 m, fall 436
+≤ 444) and its falsifier is NOT fired (free ≠ pinned at the same fall tick).
+
+**GATE**: `pytest test_kinematic_dynamics.py test_kinematic.py test_skeleton.py
+test_skeleton_anatomy.py` — **69 passed** before and after.  Every one of the
+69 is structure/geometry/kinematics (joint coincidence, FK poses, anatomy
+datums, shapes, boundedness, determinism); none asserts a number priced from
+the scrambled COM (positions, torques, fall ticks), so **no test expectation
+needed re-derivation** — the prediction that the suite "prices joint
+coincidence, which the term cancels out of" held exactly.
+
+**VERDICT**: the STATEMENT is CONFIRMED.  One source change put every
+consumer on the geometrically correct frame: body COM 1.0117 m (human-ref
+band 0.95-1.00 m), no endpoint born buried, joint rows still exact, per-link
+COM error 0.000 mm.  THE FRAME is settled.  Every prior verdict priced
+against COM height (1.2371), `m_eff`'s `rn` lever (computed from a
+mis-placed COM), or W endpoint depth must be re-read on this geometry; the
+VERDICT 36 crawl-hold experiment can now be re-run as written, posed IN the
+engine's own geometry.
+
+---
+
+## VERDICT 39 — THE CRAWL POSE, RE-MEASURED (membrane written 2026-08-09 BEFORE the run; probe only, no patch, no commit)
+
+**Prerequisite read**: VERDICT 34's CORRECTION note (the "knee impossible"
+result is an INSTRUMENT verdict: its search froze hip_z at 0.883-0.897 and its
+q_vc term restored standing orientation, so a folded pose was inexpressible),
+VERDICT 35 (which inherited that instrument), and VERDICT 36's OUTCOME (two
+named instrument diseases: (i) the com_offset_m frame split, and (ii) every
+`inside=` printed by the VERDICT 33/34/35 diags came from a swallowed
+`ImportError` in a bare `except: pass` because **scipy is absent from .venv** —
+the polygon test was ALWAYS returning False, i.e. never measured; plus their
+`nf = 12` came from reading `spec["contacts"][side]["point_m"]`, the STANDING
+world foot constants, as if they were posed endpoints).
+
+**MEMBRANE (RULE 0, stated before running)**
+
+  **STATEMENT** (something to disagree with): a six-point crawl pose
+  (2 hands + 2 knees + 2 feet) EXISTS in this skeleton's FK space when the
+  pelvis root is free to translate and pitch.  The previous "knee impossible"
+  verdict was an artifact of a frozen root and dead instruments, not an
+  anatomical fact about this skeleton.
+
+  **PREDICTION** (named before the run): a configuration exists with all six
+  support endpoints within **5 mm of z = 0** AND the body COM xy **inside the
+  six-point support polygon**, measured with a LIVE polygon test.  Expected
+  shape: hip flexion near 90 deg, pelvis pitched forward, knees under hips,
+  hands under shoulders.
+
+  **FALSIFIER** (named before the run): if an exhaustive search finds NO
+  configuration with all six endpoints within 5 mm of z = 0 and the COM inside
+  the polygon, then the skeleton's DERIVED SEGMENT PROPORTIONS forbid crawling
+  — record it as an anatomy finding and NAME THE BINDING SEGMENT.
+
+**INSTRUMENT REPAIR (both diseases named in VERDICT 36 are closed here)**
+
+  1. *The polygon test is the membrane.*  scipy is absent and will NOT be
+     installed.  The prober carries an INLINE 2D convex-hull + point-in-convex
+     -polygon cross-product sign test written in numpy, and UNIT-TESTS it
+     against known in/out points before any pose is trusted.  A self-check line
+     is printed proving the test is live (a swallowed ImportError cannot
+     masquerade as a measurement).
+  2. *Every endpoint comes from the POSED state.*  No `spec["contacts"]
+     [side]["point_m"]` standing constants are read as if they were posed
+     contacts.  Endpoints are `p_m + R @ com_offset_m` (prox) and
+     `p_m + 2 * R @ com_offset_m` (dist) evaluated on the POSED FK output.
+  3. *The frame.*  VERDICT 38 (THE FRAME) has landed in the working tree:
+     `skeleton_spec.py` now stores `com_offset_m` as a LINK-LOCAL half-axis
+     (asserted equal to `(0, 0, length_m/2)`).  The prober therefore uses
+     `R @ com_offset_m` directly — applying VERDICT 36's
+     `R_world_to_local @ com_offset_m` on top of the fixed source would
+     DOUBLE-ROTATE.  The prober verifies its frame against bone truth
+     (`prox_m` / `dist_m`) at the standing pose before searching.
+  4. *The root is a search variable.*  `fk.forward_kinematics` pins the root
+     (`sacrum`) at its rest pose, which is exactly the freeze that produced the
+     "hip_z is a constant" arithmetic.  The prober applies a world root
+     transform (pelvis xyz translation + pitch about world y) ON TOP of FK
+     output, so hip height and pelvis attitude are SOLVED FOR, not assumed.
+
+**SEARCH BOX, DERIVED (not swept blindly)**
+
+  Measured segment lengths (1.80 m / 80 kg, `mass_model="deleva"`,
+  `floor_links=True`): femur 0.4877 m, tibia 0.4001, tarsals 0.0655,
+  metatarsals 0.0922, forefoot 0.0547, pelvis 0.1153, humerus 0.3262,
+  radius_ulna 0.2362, hand 0.2230, scapula 0.3120.  Standing hip prox
+  z = 0.954, shoulder prox z = 1.476, standing COM z = 1.0117.
+
+  - *Hip height* is bounded by the kneeling triangle, not by standing: with the
+    knee ON the floor the hip sits at most one femur above it, so
+    `hip_z in (0, femur] = (0, 0.4877]`.  Search 0.15-0.55 m to admit both a
+    tucked and an extended-hip kneel plus solver slack.
+  - *Pelvis pitch* must carry the trunk from vertical toward horizontal:
+    search 0-110 deg forward (90 deg = trunk horizontal, the crawl shape).
+  - *Knee flexion* must fold the shank back so the FOOT can also reach z = 0
+    while the knee is down: with knee and foot both grounded and the
+    tibia+tarsals+metatarsals chain 0.558 m long, the shank must lie
+    near-horizontal, i.e. knee flexion 90-170 deg.
+  - *Hip flexion* near 90 deg is the prediction; search 40-140 deg.
+  - *Shoulder / elbow*: hand must reach the floor from shoulder height
+    `hip_z + trunk_forward_reach`; humerus+radius_ulna+hand = 0.7854 m of
+    reach, so shoulder flexion 40-140 deg and elbow 0-100 deg brackets the
+    solution with margin.
+  - *Spine flexion* 0-70 deg total, distributed over the 24 vertebral saddle
+    joints, to pitch the shoulder girdle over the hands.
+
+**BUILD**: one clean prober `.tmp/verdict39_crawl_pose.py`, numpy only, no
+scipy, no production file touched.  Coarse-to-fine search over the box above.
+Raw samples -> `agent_logs/verdict39_crawl_pose.npz`.  Report: every joint
+angle, the pelvis pose, all six endpoint z errors, COM xy, the polygon margin
+(distance from COM to the nearest polygon edge), and an ASCII map of the
+support polygon with the COM marked.
+
+**GATE**: prober self-checks pass; `git diff --name-only` shows only `.tmp/`,
+`agent_logs/`, `docs/JOINT_ATLAS.md`.  No commit.
