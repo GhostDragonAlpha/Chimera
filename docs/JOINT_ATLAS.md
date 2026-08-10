@@ -2855,3 +2855,291 @@ VERDICT 41 (THE NEW BIRTH — standing birth pose re-derived on the corrected
 plant, assigned to a concurrent lane before VERDICT 40 reported).  The
 foot-lane membrane is **VERDICT 42**.  VERDICT 40's own text is unchanged;
 read its "VERDICT 41" reference as VERDICT 42.
+
+---
+
+## VERDICT 41 OUTCOME (2026-08-09) — THE FALSIFIER FIRED; NO BIRTH POSE ON THIS GEOMETRY PRICES INSIDE THE ENVELOPE WITH COM OVER THE POLYGON CENTER
+
+Raw samples -> `agent_logs/verdict41_birth.npz`.  T = 100 ticks, DT =
+0.001 s.  KERNEL CONTACT FLAGS: legacy (contact_recovery=3, contact_penalty=2,
+friction=2).
+
+### Derivation chain (closed form, no sweep)
+
+  Zero-pose COM rel ankle pivot: dx_0 = +3.41 cm, dz_0 = 0.9397 m
+  R_COM = sqrt(dx_0^2 + dz_0^2) = 0.9403 m
+  alpha = atan2(dx_0, dz_0) = 2.077 deg (zero-pose COM angle from vertical)
+  Polygon centroid x rel ankle: dx_target = +5.70 cm
+  theta = arcsin(dx_target / R_COM) - alpha
+        = arcsin(0.0570 / 0.9403) - atan2(0.0341, 0.9397)
+        = 0.06065 - 0.03627
+        = 0.02438 rad = +1.396 deg (forward lean / dorsiflexion)
+  Birth COM z (world) = ankle_z + R_COM * cos(theta + alpha)
+                      = 0.0720 + 0.9403 * cos(0.06065)
+                      = 1.0106 m
+  Per-ankle tau = (M*g/2) * dx_target = 392.4 * 0.0570 = 22.34 N m
+
+### Birth pose table
+  theta (ankle dorsi/plantar) = +1.396 deg
+  COM x rel ankle after rotation = +5.70 cm (over polygon centroid, by construction)
+  COM z (world) = 1.0106 m
+
+### Statics price vs envelope
+  Per-ankle tau = +22.34 N m
+  Envelope = [-3.08, +5.24] N m
+  Inside envelope? NO -- outside by +17.10 N m (4.3x the upper bound)
+  Prediction (b): FAIL
+  Prediction (c) COM x within +/- 2 cm of ankle midpoint: FAIL (+5.70 cm)
+
+### Simulation verification (100 ticks, legacy STAND)
+  Quiet window (ticks 10-100) clean ankle meter:
+    R: +0.044 N m, L: +0.044 N m (std ~0.001)
+    envelope bar: INSIDE -- the balance_cop channel actively keeps the
+    impulse-metered torque near zero despite the large statics debt.
+  Birth COM z = 1.0106 m (PASS prediction a, within +/- 5 mm of 1.0117)
+  Min endpoint z @100 = -0.0364 m (no burial before 100 ticks)
+  KE @100 = 17.965 J
+
+### Falsifier verdict
+FIRED.  No birth pose on the corrected geometry can price inside the
+human quiet-standing envelope with the COM over the polygon center.
+When COM is over the polygon centroid, per-ankle tau = (M*g/2) * d_centroid
+= 392.4 * 0.0570 = 22.34 N m regardless of how the pose is derived or
+what mass distribution the body has -- the moment depends only on the
+horizontal distance from ankle to COM projection, which equals d_centroid
+by construction.
+
+### Binding constraint
+The tarsals / metatarsals / forefoot chain binds.  The polygon centroid
+sits at +5.70 cm forward of the ankle midpoint because the foot-chain
+links extend the support polygon from heel (-6.3 cm) to toe (+18.0 cm),
+with the centroid pulled forward by the midfoot and forefoot contact
+points (metatarsal_base @+6.3, mtp @+12.6, forefoot @+18.0).  The human
+ankle-torque envelope only permits d <= +1.34 cm per ankle.  The gap is
+4.36 cm -- no mass redistribution can close it because the per-ankle
+moment when COM is over the polygon centroid is invariant to segment
+masses (it equals (M*g/2)*d_centroid).  The binding constraint is the
+foot-chain geometry itself: the tarsals link anchors the ankle at z=7.2
+cm and its distal end at x=+3.6 cm starts the forward progression that
+places the polygon centroid beyond what the quiet-standing envelope
+permits.
+
+### Mechanism read
+The corrected plant's foot polygon is shifted forward relative to the
+ankle compared to what the quiet-standing envelope allows.  The VERDICT 6
+birth pose (D_CM = -2.15, COM at +1.26 cm) prices tau = 4.93 N m -- inside
+the envelope but barely (at the top edge).  That pose places COM near the
+ankle midpoint, NOT over the polygon centroid.  Placing COM over the
+polygon centroid (the STATEMENT's requirement) requires a +1.40 deg
+forward lean that shifts COM to +5.70 cm forward of the ankle, pricing
+22.34 N m per ankle -- far outside the envelope.  The balance_cop channel
+can dynamically keep the clean ankle meter near zero (+0.044 N m), but
+the statics price of the birth pose itself is what the membrane tests,
+and it fails.
+
+### Gate
+`git diff --name-only`: `.tmp/verdict41_birth.py`, `agent_logs/verdict41_birth.npz`,
+`docs/JOINT_ATLAS.md`.  No production file modified, no commit.
+
+### Next membrane (named, not built)
+VERDICT 42 - THE FOOT-LANE ON THE CORRECTED FRAME: the starved non-W
+polygon lane still carries 43-47% of body weight and buries the foot chain
+~13 cm before the fall tick.  Falsifier: on the corrected plant the lane's
+share of M*g is still < 60% at tick 400 -> the starvation is intrinsic to
+the re-based rn geometry, and the burial is a lane failure, not the frame's.
+
+---
+
+## VERDICT 41 — THE NEW BIRTH (standing birth pose, re-derived on the corrected plant)
+
+**MEMBRANE (RULE 0, stated before any run; probe-only lane — `.tmp/`
+scripts, raw samples to `agent_logs/`, this file append-only.)**
+
+  **STATEMENT** (something to disagree with): a standing birth pose exists
+  on the corrected plant (VERDICT 38 THE FRAME, COM z = 1.0117 m,
+  omega = 3.1135 /s) whose statics price — per-ankle moment about the ankle
+  joint center from M*g acting at the whole-body COM, two-support share —
+  lands inside the human quiet-standing envelope [-3.08, +5.24] N m,
+  with the COM projecting over the foot polygon centroid — derived,
+  not searched.
+
+  **PREDICTION** (named before the run):
+  (a) birth COM z = 1.0117 m ± 5 mm;
+  (b) per-ankle statics moment inside [-3.08, +5.24] N m when COM is
+      placed over the polygon centroid via closed-form rotation about
+      the ankle axis;
+  (c) COM x within ±2 cm of the ankle-axis midpoint after the derived
+      rotation.
+
+  **FALSIFIER** (named before the run): if NO birth pose on the corrected
+  geometry prices inside the envelope with the COM over the polygon center,
+  the segment/mass data cannot price quiet standing — record which link's
+  mass or length binds. Report, do not tune.
+
+**DERIVE** (no sweeps — RULE 1):
+  1. Build spec: `build_spec(1.80, 80.0, mass_model="deleva",
+     floor_links=True)`. Use `forward_kinematics` and the POST-38
+     convention (endpoint = p + R @ com_offset_m).
+  2. Compute whole-body COM at zero pose; derive support polygon from
+     spec["contacts"].
+  3. Derive target COM xy = polygon centroid. Derive ankle dorsi/
+     plantar angle: theta = arcsin(dx_target / R) - atan2(dx_0, dz_0)
+     where R = sqrt(dx_0² + dz_0²), dx_0/dz_0 are zero-pose COM offsets
+     from the ankle pivot. Closed form — no grid search.
+  4. Price statics: per-ankle tau = share * M * g * d, with two-support
+     share from VERDICT 20's identity (M*g/2 symmetric limit when ankles
+     are collinear in x).
+  5. VERIFY by simulation: birth the engine at derived pose, run 100 ticks
+     with legacy standing program, record clean ankle meter (ticks 10-100),
+     birth COM, and whether hold is quiet.
+
+**SAVE**: `agent_logs/verdict41_birth.npz` (pose, COM, polygon, statics
+price, 100-tick trace) and `agent_logs/verdict41_run.log`.
+
+---
+
+## VERDICT 42 — THE FOOT-LANE ON THE CORRECTED FRAME (measurement membrane; THE FALSIFIER FIRED — the starvation is a lane failure, not a frame artifact)
+
+Renumbered from "VERDICT 41 - THE FOOT-LANE" by the NUMBERING ADDENDUM above.
+Assigned by VERDICT 40's Next-membrane; stated verbatim there.  Raw samples
+-> `agent_logs/verdict42_footlane.npz` (12 rows x ticks 0-440: delivered N,
+depth, zone, m_eff origin/COM-new/COM-old, |rn| origin/COM-new/COM-old,
+priced, bias, point z, COM z; full-trace n_foot/n_total; birth row
+positions; fall=436, refusal=598) and `agent_logs/verdict42_run.log`.
+
+**THE MEMBRANE (RULE 0, stated before any run):**
+
+  **STATEMENT**: the starved non-W foot-polygon lane (K = 1/m_eff rows)
+  carries 43-47% of body weight and buries the foot chain ~13 cm before
+  the fall tick ON THE CORRECTED FRAME.
+
+  **FALSIFIER** (already named): if the lane's share of M*g is STILL < 60%
+  at tick 400 on the corrected plant, the starvation is intrinsic to the
+  re-based rn geometry (a lane failure), not a frame artifact.
+
+**MEASURE** (LEGACY STAND = VERDICT 23 config: balance_cop=1, PD dead at
+ankles, VERDICT 20 true-normal ext_torque channel; build_spec(1.80, 80.0,
+mass_model="deleva", floor_links=True); 3000 ticks, DT = 0.001; kernel
+contact_recovery=3, contact_penalty=2, friction=2, legacy force form —
+the uncommitted VERDICT 32 kernel was never enabled).
+
+### Measurement 1 — lane share per tick (cross-check PASSED)
+
+Reproduced VERDICT 40's numbers exactly on the corrected plant:
+t100 = 341.2 N, t200 = 378.8 N, t400 = 348.0 N; fall @436, refusal @598.
+
+  t  50: foot-lane 205.6 N | total 205.6 N | foot/total 100.0% | share of M*g 26.2%
+  t 100: foot-lane 341.2 N | total 341.2 N | foot/total 100.0% | share of M*g 43.5%
+  t 150: foot-lane 448.8 N | total 448.8 N | foot/total 100.0% | share of M*g 57.2%
+  t 200: foot-lane 378.8 N | total 655.7 N | foot/total  57.8% | share of M*g 48.3%
+  t 300: foot-lane 364.1 N | total 608.0 N | foot/total  59.9% | share of M*g 46.4%
+  t 400: foot-lane 348.0 N | total 1392.4 N | foot/total 25.0% | share of M*g 44.4%
+  t 435: foot-lane 288.1 N | total 560.8 N | foot/total  51.4% | share of M*g 36.7%
+
+Ticks 0-436: foot/total mean 70.8%; share of M*g mean 42.4%, max 59.8% —
+the lane never reaches 60% of M*g in the entire pre-fall window.
+
+### Measurement 2 — per-point decomposition (12 rows, ticks 10-400)
+
+Static share per row = 65.4 N (M*g/12).  m_eff = kernel row diagonal
+(1/(inv_mass + rn·I⁻¹·rn)), rn from the link ORIGIN (rn = R@offset_local).
+
+  ci  label                   | m_eff  | |rn| origin | |rn| COM-new | del@100 | del@400
+  0  tarsals_L@(+0.040,-0.008) | 0.247  |  0.021      |  0.038       | 34.9    | 38.0
+  1  tarsals_L@(+0.010,-0.002) | 0.302  |  0.016      |  0.001       | 31.0    | 32.4
+  2  tarsals_L@(-0.012,+0.005) | 0.106  |  0.044      |  0.027       | 28.2    | 28.2
+  3  tarsals_L@(-0.065,+0.000) | 0.023  |  0.106      |  0.089       | 20.2    | 17.9
+  4  tarsals_L@(-0.110,-0.004) | 0.011  |  0.160      |  0.143       | 13.3    |  9.1
+  5  tarsals_L@(+0.093,-0.003) | 0.036  |  0.084      |  0.100       | 42.9    | 48.4
+  6-11 mirror tarsals_R        | (same) | (same)     | (same)       | (same)  | (same)
+
+Every row starves: the best-fed (the +9.3 cm heel/forefoot-tip rows 5/11)
+deliver 43-48 N = 66-74% of their 65.4 N share; the worst (rows 4/10,
+the far -11 cm points, m_eff 0.011 kg) deliver 13 N then 9 N.  corr(|rn
+origin|, m_eff) = -0.868 (VERDICT 27's signature: larger lever, smaller
+effective mass).  corr(|rn origin|, delivered@100) = -0.384 (monotone
+starvation in lever arm, weak-to-moderate).
+
+### Measurement 3 — rn geometry on the corrected frame
+
+  Kernel m_eff (link ORIGIN), ticks 10-400: min 0.0106, max 0.3023,
+  mean 0.1207 kg (K = 1/m_eff mean 8.3).
+  COM-relative |rn| (new frame): min 0.001, max 0.143, mean 0.067 m.
+  COM-relative |rn| (old-frame reconstruction): min 0.010, max 0.190,
+  mean 0.084 m.
+  COM-relative m_eff (new frame): min 0.0131, max 0.4139, mean 0.1351 kg.
+  COM-relative m_eff (old-frame reconstruction): min 0.0076, max 0.3536,
+  mean 0.1002 kg.
+
+  The kernel row diagonal is UNCHANGED by the VERDICT 38 frame re-base by
+  construction: offset_local is computed against the link COM
+  (dynamics.py:420), the kernel solves from the link ORIGIN
+  (rn = R@offset_local), and neither the offsets nor the birth poses moved
+  in the re-base.  THE FRAME moved the COM relative to the WORLD (and to
+  the W-floor lane's endpoints), NOT the polygon points relative to the
+  kernel's pricing origin.
+
+  CONFOUND, measured and not skipped: VERDICT 27's row offsets (npz labels
+  +0.022/-0.013 ... -0.128/-0.009) do NOT match the current (+0.040/-0.008
+  ... -0.110/-0.004).  The skeleton was re-anchored to ANSUR 0.512 H
+  (8e5793b) and RULE 27 re-derived the spine/legs/arms (2bdcb8b) AFTER
+  VERDICT 27 ran.  VERDICT 27's m_eff 0.006-0.176 (mean 0.072) priced the
+  OLD skeleton; this run's 0.0106-0.3023 (mean 0.1207) prices the CURRENT
+  skeleton.  They are NOT comparable as frame-old-vs-new; the frame
+  comparison is self-contained (this run == VERDICT 40's numbers exactly).
+
+### Measurement 4 — D/P (delivered/priced), VERDICT 27 form
+
+  QUIET 10-100: pad-zone row-ticks 336; mean D/P = 0.028 (OLD skeleton
+  VERDICT 27 quiet D/P = 0.082).  Pricing lane even more starved now.
+  PRE-FALL 300-400: ZERO pad-zone row-ticks — every row buried past
+  pen_d_pad (10.4 mm) into rigid-zone pricing (bias = depth/t_recovery
+  only, no k*d price).  D/P is UNDEFINED pre-fall, not merely low: the
+  k*d pricing lane has already vanished before the fall.
+
+### Burial (the membrane's "~13 cm")
+
+  pre-fall 300-400: max depth 153.3 mm; min point z -0.152 m.
+  fall window 400-436: max depth 162.7 mm; min point z -0.161 m.
+  The foot chain buries ~15-16 cm by the fall tick (membrane said ~13 cm;
+  same order, slightly deeper).  ALL 12 rows are rigid-zone (> 10.4 mm)
+  throughout the pre-fall window.
+
+### Falsifier verdict
+
+FIRED.  Lane's share of M*g at tick 400 on the corrected plant = 44.4%
+(348.0 N / 784.5 N), far below the 60% bar.  The starvation is intrinsic
+to the re-based rn geometry — a lane failure — NOT a frame artifact.
+The corrected frame moved the COM relative to the world; it did not move
+the polygon points relative to the kernel's pricing origin, and the lane
+still carries under 45% of body weight at tick 400 and buries 15+ cm.
+
+### Mechanism read
+
+Twelve rows with mean kernel m_eff 0.12 kg (K ~ 8.3) cannot hold a 78.5 kg
+body: the effective mass of the foot-chain contacts is two orders of
+magnitude below the load.  The quiet-window D/P = 0.028 shows the priced
+k*d force barely registers against delivered normal force; pre-fall the
+rows have all buried past the pad into rigid-zone lift pacing (bias =
+depth/t_recovery), which cannot price a static hold (VERDICT 29's velocity-
+channel disease) — and the foot/total share collapses to 25% at t400 as the
+W-floor lane and the collision cascade take over, then the whole chain
+buries.  The lane is a knife: stiff K, tiny m_eff, starving against 784 N.
+
+### Gate
+
+`git diff --name-only`: `.tmp/verdict42_footlane.py`, `agent_logs/verdict42_footlane.npz`,
+`agent_logs/verdict42_run.log`, `docs/JOINT_ATLAS.md`.  No production file
+modified, no commit; the uncommitted VERDICT 32 kernel work was never
+enabled.
+
+### Next membrane (named, not built — the atlas's own discipline)
+
+Whether a STIFFER lane heals the fall is a SEPARATE membrane and must be
+stated separately with its own falsifier.  This membrane only priced the
+starvation; it does NOT claim that fixing the lane arrests the fall at 436.
+Candidate: "VERDICT 43 — A STIFFER FOOT LANE": with the non-W rows priced
+at a stiff effective stiffness (e.g. the W-lane's k/c or a per-row
+spring-damper matched to a held share of M*g), the fall tick moves past
+436 (or the share of M*g at t400 rises above 60%) — with its own falsifier
+naming the stiffness and the bar, stated and measured before any build.
