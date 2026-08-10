@@ -3870,7 +3870,20 @@ No production dependence — does NOT re-run the standing ladder.
 SAVE: agent_logs/verdict48_soleus.npz + verdict48_run.log.
 GATE: flag OFF -> 69 passed, bit-identical (gauge dump included).
 
-(OUTCOME appended below after the probe ran.)
+## OUTCOME (probe .tmp/probe_verdict48_soleus.py, 2026-08-10)
+
+`
+VERDICT 48 OUTCOME
+======================================================================
+  PREDICTION (a) a_tonic in [0.05, 0.40]: PASS
+  PREDICTION (b) full-act moment > 75 N m cap: PASS
+  PREDICTION (c) fiber in [0.5, 1.5] x L_opt: PASS
+  FALSIFIER: 22.3 N m achievable: PASS
+
+  FINDING: atlas soleus+gasmed full-act = 342.0 N m,
+  4.6x the abstract 75 N m cap.
+  Tonic 22.3 N m at a=0.0652 (within [0.05, 0.40]).
+`
 
 ---
 
