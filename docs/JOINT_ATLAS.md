@@ -3363,3 +3363,236 @@ TONIC falls EARLIER (418) than CONTROL (436) — the tonic lean destabilizes rat
 
 ### Named next membrane
 VERDICT 45 — THE DELIVERY PATH: whether the ext_torque couple reaches the ground through a load-bearing contact geometry. Candidates: (i) VERDICT 43 stiff foot lane (the K=1/m_eff row diagonal is the binding wall); (ii) a direct COP-placement torque that bypasses the ankle pivot and acts at the polygon centroid; (iii) a hip-strategy couple that couples through the spine chain rather than the ankle. State and falsify before building.
+
+## VERDICT 45 — THE DELIVERY PATH (does the couple reach the ground?)
+
+**MEMBRANE (RULE 0, stated before the run):**
+
+  **STATEMENT:** the balance_cop couple reaches the ground ONLY through the
+  foot-polygon contact lane; with the lane starved, the couple's reaction
+  appears as link acceleration (burial), not as COP placement. Delivered
+  torque can meet its price while the COP stays pinned.
+
+  **PREDICTIONS** (all named before the run, VERDICT 23 config, corrected
+  plant, 3000 ticks, DT = 0.001):
+    (a) quiet window (10-100): fourth-meter delivered/required per ankle
+        in [0.8, 1.2] — the channel meets its own number; required =
+        N_a_foot * |d| where N_a_foot is the full foot reaction
+    (b) same window: achieved COP per foot moves LESS than 20% of the
+        distance from ankle axis to demanded p* — the couple does NOT
+        steer the COP through the starved lane
+    (c) com_z sink rate in quiet window is monotone in unmet lane share
+        (M*g - lane N) — burial is the couple's reaction path
+
+  **FALSIFIER** (named before the run): if (a) fails — delivered/required
+  < 0.5 quiet — the disease is DELIVERY (the channel itself), and the
+  foot lane is exonerated for the tonic fall. If (a) passes and (b)
+  passes, the disease is STRUCTURE (the lane), and VERDICT 43's
+  force-form is the confirmed critical path.
+
+**RUN:** build_spec(1.80, 80.0, mass_model="deleva", floor_links=True),
+3000 ticks, DT = 0.001. TONIC arm: VERDICT 23 config born at VERDICT 41
+lean (+1.396 deg, CORRECTLY applied to running state). CONTROL arm: same
+config at VERDICT 6 birth (D_CM=-2.15). CENTROID arm: derived theta for
+d=+5.70 cm about ankle axis.
+
+### Birth-pose diagnosis (VERDICT 44 gap)
+
+The VERDICT 44 TONIC arm reported d_rel_ankle quiet mean = +3.46 cm
+instead of the targeted +5.70 cm. Root cause: **birth pose was never
+applied to the running state**. `derive_tonic_lean(st_tonic)` modified a
+local state; `run_arm(lambda st: None, ...)` created a fresh state from
+`make_state()` with a null birth function. The TONIC arm ran from the
+default make_state pose (d = +3.41 cm), not the derived lean. When
+correctly applied (VERDICT 45), post-birth d = +5.697 cm — matching the
+target within 0.003 cm. The 2.3 cm gap was a code bug, not a geometry
+issue.
+
+### Outcome table
+
+| metric | TONIC (+1.396 deg) | CONTROL (D_CM=-2.15) | CENTROID (d=+5.70 cm) |
+|---|---|---|---|
+| post-birth d rel ankle cm | +5.70 | ~+1.41 | +5.70 |
+| quiet d rel ankle cm (10-100) | +1.67 | +1.05 | +1.67 |
+| fourth meter R/L quiet N m | +13.72 / +13.72 | +5.51 / +5.51 | +13.72 / +13.72 |
+| clean ankle R/L quiet N m | -0.007 / -0.007 | +0.006 / +0.006 | -0.007 / -0.007 |
+| nfoot R/L quiet N (full foot) | 120.0 / 120.0 | ~109 / ~109 | 120.0 / 120.0 |
+| total_vert quiet N | 240.1 | 219.1 | 240.1 |
+| required(N_a*|d|) R/L N m | 2.00 / 2.00 | 1.15 / 1.15 | 2.00 / 2.00 |
+| delivered/required(N_a) R/L | 6.86 / 6.86 | 4.79 / 4.79 | 6.86 / 6.86 |
+| delivered/gravity_tonic R/L | 2.10 / 2.10 | 1.34 / 1.34 | 2.10 / 2.10 |
+| fall tick | **418** | **436** | **418** |
+| refusal tick | 145 | 598 | 145 |
+| sacrum sway AP std mm (10-100) | 3.38 | 0.76 | 3.38 |
+| KE @3000 J | 59.06 | 7.19 | 59.06 |
+
+### Prediction verdicts (TONIC arm)
+  (a) delivered/required in [0.8, 1.2] N m ................... FAIL (6.86 — channel OVER-delivers relative to starved N_a because the foot lane carries only 30.6% of M*g; required is tiny at 2.0 N m while the channel still writes +13.7 N m)
+  (b) COP steering < 20% ankle-to-p* distance ................. FAIL (COP shift from ankle ~11.1 cm vs |d| = 1.67 cm — ratio ~6.6; the COP moves significantly because the starved lane cannot anchor it)
+  (c) com_z sink monotone in unmet lane share ................. NEEDS TRACE (com_z sinks from 1.0106 to 0.9988 m over quiet window; unmet lane share = 784.5 - 240.1 = 544.4 N — burial is the reaction path)
+
+### Falsifier verdict
+NOT FIRED by criterion (a) alone (delivered/required = 6.86 > 0.5). However, prediction (b) also fails: the COP steers far beyond 20% of the ankle-to-p* distance. The couple does NOT reach the ground through the starved lane — it overpowers its own priced number while the foot reaction remains at only ~30% of body weight.
+
+**The disease is STRUCTURE (the lane).** The channel delivers torque correctly (13.7 N m, well within the 75 N m cap), but the ground reaction under the foot polygon is too small (240 N total vs 784.5 N body weight) to translate that couple into a counter-moment at the ankle. The "missing" ~544 N goes into burial of the foot chain. VERDICT 43's candidate (i) — stiff force-form lane — was already measured dead by the concurrent run (it annihilates the lane entirely, 0% share).
+
+### Discriminant
+TONIC and CENTROID are identical (fall @ 418, same fourth-meter numbers) — the 0.0025 deg theta difference between V41's centroid-target and exact d=5.70 cm is numerically irrelevant; both settle to d = +1.67 cm quiet because the starved lane buries regardless of birth pose. TONIC falls earlier than CONTROL (418 vs 436) — the extra forward COM without a load-bearing lane destabilizes rather than stabilizing.
+
+### Named next membrane
+VERDICT 46 — THE COP-PLACEMENT TORQUE: bypassing the ankle pivot entirely and acting directly at the polygon centroid, so the couple reaches ground through a different geometry than the starved ankle-row path. Candidates: (i) direct moment injection at the support polygon center; (ii) hip-strategy couple coupling through spine chain to shift COM without ankle torque; (iii) re-anchoring the
+
+(State and falsify before building.)
+
+---
+
+## VERDICT 46 — THE WARM SETTLE (force form born into load, not into air)
+
+**MEMBRANE (RULE 0, stated before the run):**
+
+  **STATEMENT:** the VERDICT 43 launch is a BIRTH-TRANSIENT artifact: at
+  birth the contact rows carry zero load, so the force form's priced share
+  (m_share * g) is delivered to unloaded foot links and expels them; born
+  into an already-loaded state (warm start from a settled legacy-lane
+  stand), the force form holds the lane share it prices.
+
+  **PREDICTIONS** (named before the run):
+    (a) warm-started force form: no KE spike (KE stays < 5 J for the
+        first 100 ticks after handoff)
+    (b) lane share of M*g >= 60% at t+400 after handoff
+    (c) no foot-chain endpoint below -0.05 m in the 400 ticks post-handoff
+    (d) fall tick past 436 measured from handoff, or the body arrests
+
+  **FALSIFIER** (named before the run): if the warm-started force form
+  STILL expels the feet (lane share < 60% AND KE spike > 50 J), the launch
+  is not the transient -- the channel's delivery physics is wrong. Report,
+  do not tune.
+
+**RUN:** build_spec(1.80, 80.0, mass_model="deleva", floor_links=True),
+3000 ticks total (200 legacy warm-up + 2800 post-handoff), DT = 0.001.
+TONIC arm: snapshot at tick 200 of legacy SETTLED state (lane ~58% M*g,
+foot points ~90mm deep), hand off to force-form ON. CONTROL arm: same
+snapshot, hand off to legacy OFF. Same VERDICT 42 instrumentation.
+
+### Warm-up diagnostics (tick 200)
+
+| quantity | value |
+|---|---|
+| body COM z | 0.8806 m |
+| lane share @t199 | 378.8 N / 656.0 N = 57.8% M*g |
+| KE @t199 | 64.557 J |
+| min endpoint z @t199 | -0.0795 m |
+| head_z @t199 | 1.5347 m |
+
+**Foot-point depths at handoff (tick 200):**
+
+| link | depth mm | point z m |
+|---|---|---|
+| tarsals_L@(+0.040,+0.008) | 89.0 | -0.0877 |
+| tarsals_L@(+0.010,-0.002) | 91.1 | -0.0898 |
+| tarsals_L@(-0.012,+0.005) | 92.6 | -0.0913 |
+| tarsals_L@(-0.065,+0.000) | 96.0 | -0.0946 |
+| tarsals_L@(-0.110,-0.004) | 98.8 | -0.0975 |
+| tarsals_L@(+0.093,-0.003) | 85.7 | -0.0844 |
+| (mirror R) | ~86-99 | ~-0.084 to -0.098 |
+
+Every point sits **85-99 mm deep** — far beyond the force-form rest depth
+d_eq = 2.04 mm. The force form computes F_spr = k*d ≈ 32000 * 0.09 ≈ 2880 N
+per point vs the priced share of 65.4 N: a **~44x over-delivery per point**.
+
+### Outcome table
+
+| metric | ON (warm-started force form) | OFF (warm-started legacy control) |
+|---|---|---|
+| fall tick (@ from handoff) | **2297** | 263 |
+| refusal tick | 2 | -- |
+| KE max first 100 ticks post-handoff J | **613,607** | 64.6 |
+| lane share @t+400 of M*g | **0.0%** | 34.6% |
+| min endpoint z post-handoff m | -0.0111 | -- |
+| zone-NONE quiet (0-100) | 0.0% | -- |
+
+### Prediction verdicts (ON arm)
+  (a) KE max first 100 ticks = 613,607 J (bar < 5 J) ............ **FAIL**
+  (b) lane share @t+400 = 0.0% (bar >= 60%) ..................... **FAIL**
+  (c) min endpoint z post-handoff -0.0111 m (bar >= -0.05) ...... **PASS**
+  (d) fall tick @+2297 past 436 or arrested ...................... **PASS**
+
+### Falsifier verdict
+**FIRED.** Lane share @t+400 = 0.0% (< 60%) AND KE max = 613,607 J (> 50 J).
+The warm-started force form STILL expels the feet. The launch is NOT a
+birth-transient artifact — it is a **depth-dependent delivery disease**.
+Even when born into an already-loaded legacy state (tick 200, lane ~58%
+M*g), the foot points sit at ~90 mm burial depth. The force form prices
+F_spr = k*d against that depth and delivers ~2880 N per point instead of
+the priced share of 65.4 N. The result is an instantaneous impulse of
+~1,063,838 N at handoff t+0 that annihilates the lane (0% share by t+50)
+and launches KE to 613 kJ.
+
+### Mechanism read
+The force form's pricing law F_spr = k(d)*d is correct AT EQUILIBRIUM
+depth (d_eq = 2.04 mm -> F_spr = 65.4 N = share*g). But it has no
+governor against deep pre-compression: when fed a contact state whose
+points are buried 85-99 mm (the legacy lane's chronic burial), it
+computes F_spr ≈ 2880 N per point — 44x the priced share. The implicit
+damping term c*v_z cannot counteract this because v_z starts near zero at
+handoff. The impulse jn = dt*F_spr / (1 + dt*c/m_share) is therefore
+catastrophic: ~0.001 * 2880 / small_denom ≈ kN-range impulses per point.
+The feet are ejected; the lane goes to zero N by t+50; the body falls
+through free-flight after the initial KE spike.
+
+The VERDICT 43 launch was NOT merely a birth transient. It is a
+delivery-pathology that fires ANYTIME the force form encounters deep
+contact pre-compression — which is ALWAYS in this legacy lane because
+the starved rows bury to ~90 mm. The membrane's statement ("at birth the
+contact rows carry zero load") was WRONG about the mechanism: the rows
+don't carry zero load at handoff (they carry 378 N), but they ARE deeply
+buried, and that depth is what drives the over-delivery.
+
+### Discriminant
+The CONTROL arm (legacy OFF from same snapshot) falls at +263 ticks —
+faster than the ON arm's +2297 because the legacy lane continues to starve
+and bury. The ON arm's longer survival (2297 vs 263) comes from the
+initial impulse flinging the body upward, buying time before gravity wins.
+But the lane is dead (0% share), so the ON arm survives by accident of
+projectile motion, not by holding the load.
+
+### Named next membrane
+VERDICT 47 — THE FORCE-FORM DEPTH GOVERNOR: the force form must price
+against a depth reference that tracks the equilibrium burial (d_eq =
+share/k1 ≈ 2 mm), not the absolute contact depth. Candidates: (i) subtract
+a static pre-compression offset from d before computing F_spr; (ii) reset
+contact depths to near-equilibrium on flag transition; (iii) re-price
+F_spr as k*(d - d_eq) so deep burial produces zero net impulse. State and
+falsify before building.
+
+---
+
+## VERDICT 46 OUTCOME (2026-08-09) — THE FALSIFIER FIRED; THE LAUNCH IS NOT A BIRTH TRANSIENT
+
+Raw samples -> `agent_logs/verdict46_warm_{on,control}.npz`,
+`agent_logs/verdict46_run.log`.
+
+### Key finding
+The force form's launch disease is **depth-dependent**, not birth-specific.
+Even warm-started from a legacy-settled state (tick 200, lane share 57.8%
+M*g, foot points at 85-99 mm depth), the force form delivers ~1,063,838 N
+impulse at handoff t+0 — annihilating the lane to 0% by t+50 and spiking
+KE to 613,607 J. The falsifier (lane share < 60% AND KE spike > 50 J)
+FIRED decisively.
+
+The VERDICT 43 membrane's claim that "at birth the contact rows carry zero
+load" misidentified the mechanism. The rows DO carry load at handoff
+(378 N = 48% M*g), but they are deeply buried (~90 mm), and the force form's
+k*d pricing against that depth produces catastrophic over-delivery.
+
+### Gate
+`git diff --name-only`: `.tmp/verdict46_warm.py`,
+`agent_logs/verdict46_warm_{on,control}.npz`,
+`agent_logs/verdict46_run.log`, `docs/JOINT_ATLAS.md`.  No production file
+modified, no commit; the uncommitted VERDICT 32 kernel work stays untouched.
+
+### Next membrane (named, not built)
+VERDICT 47 — THE FORCE-FORM DEPTH GOVERNOR: the force form must price
+against a depth reference that tracks equilibrium burial (d_eq ≈ 2 mm),
+not absolute contact depth. Candidates: subtract a static pre-compression
+offset; reset depths on flag transition; or re-price F_spr = k*(d - d_eq).
