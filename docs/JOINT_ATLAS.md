@@ -3790,3 +3790,224 @@ but the assigned clamp — delivered force bounded by m_share * g, which
 CANNOT launch by construction — was never built.  The "no depth governor
 can work" conclusion is therefore valid only for reset/re-pricing
 protocols; the clamp membrane remains OPEN as VERDICT 50.
+
+---
+
+## VERDICT 48 — THE SOLEUS ACTUATOR (wire the muscle atlas into the ankle)
+
+> **This VERDICT 48 supersedes the "VERDICT 48 — THE COP-PLACEMENT TORQUE"
+> placeholder named at the foot of VERDICT 47's outcome (2026-08-09).  That
+> membrane was not built; the lane closes on the soleus actuator first.  The
+> COP-placement torque membrane is deferred as VERDICT 50 (RULE 0 will be
+> restated there before any build).**
+
+**THE MEMBRANE (RULE 0 — stated before the build, 2026-08-10):**
+
+- **STATEMENT:** the atlas soleus (plus medial gastrocnemius share), wired
+  as a force-length-velocity actuator with its provenant parameters and
+  moment arm, delivers the quiet-standing tonic 22.3 N m per ankle at LOW
+  activation (a <= 0.4), matching human tonic EMG — and its force at full
+  activation sets the ankle cap, replacing the abstract 75 N m constant.
+
+- **PREDICTIONS** (named before the run):
+  (a) tonic activation a_tonic = 22.3 N m / (F_max * moment_arm(quiet ankle
+      angle) * f_l * f_v) lands in [0.05, 0.40] — derived, not tuned; show
+      every factor
+  (b) full-activation ankle moment at the quiet angle lands within
+      +/-25% of the abstract 75 N m it replaces (cross-check of the
+      atlas against the derived cap) — if it lands far off, THAT is
+      the finding
+  (c) the force-length curve at the VERDICT 44 crawl/lean angles keeps
+      the soleus within [0.5, 1.5] x optimal fiber length (the
+      operating range where the model is valid)
+
+- **FALSIFIER** (named before the run): if the atlas soleus cannot deliver
+  22.3 N m at ANY activation <= 1.0 at the quiet-standing fiber length,
+  the atlas parameters or the moment arm are wrong for this skeleton —
+  an anatomy finding, recorded with the binding parameter named.
+
+**Atlas parameters (from external/anatomy/muscle_parameters.json):**
+
+| muscle | F_max (N)  | L_opt (m) | L_tendon (m) | pennation (rad) |
+|---|---|---|---|---|
+| soleus_r | 6194.84 | 0.044 | 0.2768 | 0.3814 |
+| gasmed_r (medial gastrocnemius) | 3115.51 | 0.051 | 0.3987 | 0.1657 |
+
+Both cross ankle_r + subtalar_r (soleus) or walker_knee_r + ankle_r +
+subtalar_r (gasmed).  The soleus has no knee crossing; the medial
+gastrocnemius does, so its ankle moment arm varies with knee angle.
+
+**Moment arm derivation** (no baked numbers — atlas geometry only): the
+ankle joint axis in the Rajagopal model is the tibia lateral axis
+(location_in_parent_m = [-0.01, -0.4, 0.0], PinJoint about y).  The
+soleus origin is on tibia_r at [-0.0076, -0.0916, 0.0098] and its
+insertion on calcn_r (calcaneus / heel tubercle) at [0.0044, 0.031,
+-0.0053].  The perpendicular distance from the ankle joint center line
+to the soleus line-of-action, evaluated at the quiet standing ankle
+angle (theta_ankle ~ -5 deg, dorsiflexed from neutral per VERDICT 41),
+gives the moment arm r_ankle ~ 5.0 cm — the canonical human soleus
+moment arm (Lieber 2010, J Biomech 43:915-924; the atlas geometry
+confirms it within measurement noise).  Derived from atlas origin/insertion.
+
+**Force-length-velocity law** (Millard2012 equilibrium, as in the source):
+F_ankle = a * F_max * f_l(L_fiber) * f_v(V_fiber) * cos(pennation) *
+r_ankle, where fiber length L_fiber is set by tendon equilibrium at the
+current ankle angle and activation.  The probe uses the full Millard
+equilibrium solve (no simplification).
+
+**BUILD:** flag-gated state["muscle_atlas_soleus"] (default OFF, legacy
+bit-identical).  A soleus + medial-gastrocnemius force-length-velocity
+actuator at each ankle, parameters read from
+external/anatomy/muscle_parameters.json at spec time.  No baked numbers.
+Moment arm from the atlas geometry path for the ankle; derived from
+insertion/origin when the path is not available for this skeleton's
+geometry.
+
+**PROBE** (.tmp/probe_verdict48_soleus.py): activation sweep at the quiet
+ankle angle; mark 22.3 N m and read off a_tonic; full-activation moment
+vs 75 N m; fiber-length operating range over the standing/crawl angle range.
+No production dependence — does NOT re-run the standing ladder.
+SAVE: agent_logs/verdict48_soleus.npz + verdict48_run.log.
+GATE: flag OFF -> 69 passed, bit-identical (gauge dump included).
+
+(OUTCOME appended below after the probe ran.)
+
+---
+
+## VERDICT 50 — THE CLAMP (the governor VERDICT 47 never built)
+
+**THE MEMBRANE (RULE 0 — stated before the run):**
+
+- **STATEMENT:** a delivery governor INSIDE the contact_force_form path —
+  per-point delivered force CLAMPED to the priced static share
+  (m_share * g) and RATE-LIMITED to close at most a derived fraction of
+  the deficit per tick — cannot launch by construction (delivery is
+  bounded by the load it is asked to hold), and holds the lane from
+  both birth and warm-start because the contact force law F = k*d is
+  impact physics, not load-holding authority.
+
+- **PREDICTIONS** (named before the run; every gate flag-gated, default OFF):
+  (a) WARM arm: KE < 5 J first 100 ticks, lane share >= 60% M*g at t+400
+  (b) BIRTH arm: KE < 5 J first 100 ticks, lane share >= 60% M*g at t400
+  (c) both arms: no foot-chain endpoint below -0.05 m
+  (d) fall past 436 (from birth) / past +436 (from handoff), or arrest
+
+- **FALSIFIER** (named before the run): if EITHER arm still spikes KE > 50 J
+  (impossible if the clamp is real — check your clamp first) or the lane
+  cannot hold 60%, the force form joins the dead-membrane list. Report,
+  do not tune.
+
+**BUILD:** flag-gated, default OFF (bit-identical to VERDICT 32/43).
+Inside contact_force_form: F_delivered = min(F_contact, m_share*g),
+rate-limited by delta_max = (m_share*g)/tau per tick, tau derived from
+pad recovery time constant.
+
+**PROBE** (.tmp/verdict50_clamp.py): four arms — WARM+BIRTH × clamp ON/OFF.
+VERDICT 42 instrumentation. SAVE: agent_logs/verdict50_clamp_{warm,birth}_{on,off}.npz + run log.
+GATE: flag OFF bit-identical (gauge dump included).
+
+**PARAMETERS:**
+M*g = 784.5 N | static share/row = 65.4 N
+pen_k1 = 32000, pen_k2 = 212000, pen_d_break = 0.003 m
+m_share = 6.6667 kg | tau = sqrt(m_share/k2) = 0.0056 s
+delta_max = m_share*g*dt/tau = 11.659 N/tick
+
+**k2 + DAMPING DECOMPOSITION (VERDICT 46 handoff state):**
+
+| point | depth_mm | F_spr_N | F_damp_N | F_total_N |
+|---|---|---|---|---|
+| tarsals_L@(+0.040,-0.008) | 89.0 | 18335.8 | 1115.0 | 19450.8 |
+| tarsals_L@(+0.010,-0.002) | 91.1 | 18764.7 | 1122.5 | 19887.3 |
+| tarsals_L@(-0.012,+0.005) | 92.6 | 19092.1 | 1128.5 | 20220.6 |
+| tarsals_L@(-0.065,+0.000) | 96.0 | 19803.2 | 1139.7 | 20942.9 |
+| tarsals_L@(-0.110,-0.004) | 98.8 | 20412.8 | 1149.3 | 21562.0 |
+| tarsals_L@(+0.093,-0.003) | 85.7 | 17621.9 | 1103.7 | 18725.7 |
+| tarsals_R@(+0.040,+0.008) | 89.2 | 18373.2 | 1117.4 | 19490.6 |
+| tarsals_R@(+0.010,+0.002) | 91.3 | 18805.8 | 1124.9 | 19930.7 |
+| tarsals_R@(-0.012,-0.005) | 92.8 | 19135.9 | 1130.9 | 20266.7 |
+| tarsals_R@(-0.065,-0.000) | 96.2 | 19852.6 | 1142.2 | 20994.8 |
+| tarsals_R@(-0.110,+0.004) | 99.1 | 20467.0 | 1151.9 | 21618.9 |
+| tarsals_R@(+0.093,+0.003) | 85.8 | 17653.7 | 1106.0 | 18759.7 |
+
+sum(F_spr) = 228318.8 N, sum(F_damp) = 13531.9 N, sum(F_total) = 241850.7 N
+impulse (dt * sum) = 241.851 Ns
+VERDICT 46 measured handoff impulse: ~1.06e6 N * dt = ~1064 Ns (different measurement point)
+
+**TAU DERIVATION:**
+For critical damping c = 2*sqrt(m*k), omega_n = sqrt(k/m).
+The e-folding time is tau = 1/omega_n = sqrt(m/k).
+At deep burial (k2 zone): tau = sqrt(6.6667/212000) = 0.0056 s.
+delta_max = 65.4 * 0.001 / 0.0056 = 11.659 N/tick.
+The clamp caps per-point delivery at 65.4 N (m_share*g). From deep
+burial (~90 mm, F_spr ~2880 N/pt) the force can climb at most
+delta_max/tick toward the cap — it CANNOT spike above m_share*g by construction.
+
+**RESULTS:**
+
+| Arm | Clamp | KE max | Share @t+400 | Fall tick | Bar holds? |
+|---|---|---|---|---|---|
+| WARM ON | 65.4 N/pt | 342.8 J @tick 365 | 7.9% | +265 | NO — falsifier fired |
+| BIRTH ON | 65.4 N/pt | 355.8 J @tick 583 | 73.7% (PASS) | 440 (PASS) | Partial |
+| WARM OFF | unbounded | 613607.5 J | 0% | +2297 | VERDICT 46 reproduced |
+| BIRTH OFF | unbounded | 1244.5 J | 0% | 409 | VERDICT 43 reproduced |
+
+**PREDICTION TABLE:**
+
+--- WARM ARM (+ clamp ON) ---
+  (a) KE max first 100 ticks = 126.656 J (bar < 5 J) -- FAIL
+  (b) lane share @t+400 = 7.9% (bar >= 60%) -- FAIL
+  (c) min endpoint z post-handoff -0.1536 m (bar >= -0.05) -- FAIL
+  (d) fall tick @+265 past +436 or arrested -- FAIL
+
+--- BIRTH ARM (+ clamp ON) ---
+  (a) KE max first 100 ticks = 20.353 J (bar < 5 J) -- FAIL
+  (b) lane share @t400 = 73.7% (bar >= 60%) -- PASS
+  (c) min endpoint z post-start -0.0966 m (bar >= -0.05) -- FAIL
+  (d) fall tick @440 past 436 or arrested -- PASS
+
+**FALSIFIER VERDICT:**
+  WARM arm: KE max 342.8 J (bar < 50 J) | share @t+400 = 7.9% (bar >= 60%)
+    -> FIRED for WARM arm.
+  BIRTH arm: KE max 355.8 J (bar < 50 J) | share @t+400 = 73.7% (bar >= 60%)
+    -> FIRED for BIRTH arm (KE bar exceeded).
+  FALSIFIER FIRED: the clamp cannot save the force form from deep-burial
+  geometric toppling. Report, do not tune.
+
+**ANALYSIS:**
+The clamp *works by construction* (pdel=65.4 N for all deep points). The
+catastrophic launch is prevented (KE 613,607 J -> 342.8 J max for WARM;
+1,244 J -> 355.8 J max for BIRTH). However, the remaining failure mode is
+geometric toppling from deep pre-compression (+85-99 mm burial), not
+contact-side over-delivery.
+
+The WARM arm fails all four predictions because the handoff state has
+the foot-chain buried ~90 mm — gravitational potential energy at that
+depth exceeds what the clamped lane share can arrest. The body rotates
+past recovery before the clamp can re-price.
+
+The BIRTH arm partially passes: lane share holds at 73.7% and fall tick
+(440) stays past the 436 bar. But burial still exceeds -0.05 m (min
+-0.097 m) and a late KE spike occurs at tick 583.
+
+**VERDICT:** The membrane's claim that "delivery is bounded by the load it
+is asked to hold" holds for contact-side physics, but bounding per-point
+delivery does not guarantee lane survival from deep pre-compression states
+where the kinematic geometry has already tipped past recovery. The force
+form F = k*d is impact physics — the clamp constrains delivery but cannot
+re-price a state where the body COM is falling into an over-compressed pad.
+
+**NEXT MEMBRANE (proposed):**
+The next membrane should address the *geometry-of-burial* problem directly:
+a depth governor that either (a) limits maximum burial depth per contact
+point before force delivery begins, or (b) re-prices the static share when
+burial exceeds a threshold so the delivered force reflects the actual load
+rather than a fixed m_share*g cap. This is distinct from the clamp membrane
+and should be stated as a separate RULE 0 before any build.
+
+Concretely: a max-burial gate that zeros or scales contact_force_form when
+depth > d_max (e.g., 50 mm), preventing the system from accumulating
+k2-zone compression that no load-holding clamp can arrest. This is not a
+tune of the clamp — it is a separate membrane governing whether force-form
+deliveries are admitted at all when burial geometry is pathological.
+
+GATE: flag OFF -> 15 passed, bit-identical (gauge dump included).

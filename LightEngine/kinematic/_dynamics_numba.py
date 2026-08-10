@@ -788,6 +788,8 @@ def step_core_direct(
     contact_loaded_mass,
     contact_load_rhs,
     contact_force_form,
+    contact_force_clamp,
+    contact_force_prev,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -1133,6 +1135,18 @@ def step_core_direct(
         # kernel entry (.tmp/verdict32_1dof.py: d_eq = 6.155 mm rest, KE
         # -> 0, no launch from 0/5/20 mm penetration).
         if contact_force_form != 0 and loaded_share_mass > 0.0:
+            # VERDICT 50 — THE CLAMP (governor):
+            # F_delivered is clamped to the priced static share (m_share*g)
+            # and rate-limited so |dF/dt| <= (m_share*g)/tau per tick.
+            # tau derives from the pad's recovery time constant:
+            #   For critical damping c = 2*sqrt(m*k), omega_n = sqrt(k/m).
+            #   The e-folding time is tau = 1/omega_n = sqrt(m/k).
+            #   Equivalently, using c_eff = 2*sqrt(m_share*k_loc):
+            #     tau = c_eff / (2.0 * k_loc)
+            #           = 2.0*sqrt(m_share*k_loc) / (2.0*k_loc)
+            #           = sqrt(m_share/k_loc).
+            # At deep burial (k2 zone) this is the relevant timescale.
+            share_force = loaded_share_mass * GRAVITY
             for ci in range(n_contacts):
                 if contact_is_floor[ci] != 0:
                     continue
@@ -1149,15 +1163,33 @@ def step_core_direct(
                     k_loc = pen_k1
                     F_spr = pen_k1 * depth
                 else:
-                    # MEASURED bilinear law, CONTINUED at k2 below the pad
-                    # (run-13 membrane: the literal 2e8 rigid segment is
-                    # poison in every form; the pad is not rigid).
+                    # MEASURED bilinear law, CONTINUED at k2 below the pad.
                     k_loc = pen_k2
                     F_spr = pen_k1 * pen_d_break \
                         + pen_k2 * (depth - pen_d_break)
                 c_eff = 2.0 * math.sqrt(loaded_share_mass * k_loc)
                 v_p = lin_vel[li] + _cross3(ang_vel[li], r)
-                jn = dt * (F_spr - c_eff * v_p[2]) \
+                F_raw = F_spr - c_eff * v_p[2]
+                # Clamp: never deliver more than the static share.
+                if contact_force_clamp != 0:
+                    F_delivered = min(F_raw, share_force)
+                    if F_delivered < 0.0:
+                        F_delivered = 0.0
+                    # Rate-limit: |F(t) - F(t-1)| <= share_force / tau.
+                    tau = c_eff / (2.0 * k_loc) if k_loc > 0.0 \
+                        else float('inf')
+                    delta_max = share_force * dt / tau if tau > 0.0 \
+                        else float('inf')
+                    F_prev_pt = contact_force_prev[ci]
+                    F_delivered = max(F_prev_pt - delta_max,
+                                      min(F_prev_pt + delta_max, F_delivered))
+                    contact_force_prev[ci] = F_delivered
+                else:
+                    F_delivered = F_raw
+                    if F_delivered < 0.0:
+                        F_delivered = 0.0
+                    contact_force_prev[ci] = F_delivered
+                jn = dt * F_delivered \
                     / (1.0 + dt * c_eff / loaded_share_mass)
                 if jn <= 0.0:
                     continue

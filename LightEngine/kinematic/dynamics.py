@@ -503,6 +503,9 @@ def init_state(spec: dict[str, Any], joint_angles: dict[str, Any] | None = None)
         "lig_impulses_ang": np.zeros((len(lig_records), 3), dtype=np.float64),
         "contact_impulses": np.zeros((len(contact_records), 3), dtype=np.float64),
         "contact_forces_ext": np.zeros((len(contact_records), 3), dtype=np.float64),
+        # VERDICT 50: previous-tick delivered force per contact point, for
+        # rate-limiting inside the force-clamp governor. Zero on init.
+        "contact_force_prev": np.zeros((len(contact_records),), dtype=np.float64),
         "dt": 0.0,
     }
     return state
@@ -766,7 +769,17 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 # FORCE-FORM (VERDICT 32): foot-polygon points are replaced
                 # by a direct per-point bilinear pad force through the link
                 # (default off = legacy unilateral rows, bit-identical).
-                int(state.get("contact_force_form", False)))
+                int(state.get("contact_force_form", False)),
+                # FORCE-CLAMP (VERDICT 50): clamp+rate-limit governor
+                # inside the contact_force_form path. Default off = force
+                # form un-governed (bit-identical to VERDICT 32 build).
+                int(state.get("contact_force_clamp", False)),
+                # Previous-tick delivered force per contact point, for
+                # rate-limiting. Initialized to zeros by init_state when
+                # the flag is first seen; updated in-place each tick.
+                state.get("contact_force_prev",
+                          np.zeros((n_contacts,), dtype=np.float64)),
+            )
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin
