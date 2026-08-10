@@ -4024,3 +4024,468 @@ tune of the clamp — it is a separate membrane governing whether force-form
 deliveries are admitted at all when burial geometry is pathological.
 
 GATE: flag OFF -> 15 passed, bit-identical (gauge dump included).
+
+
+---
+
+## VERDICT 53 — THE DERIVED-BODY BASELINE (price the adoption before it)
+
+**MEMBRANE (RULE 0, stated 2026-08-10 BEFORE any battery tick; probe-only
+lane — script in `.tmp/`, raw samples to `agent_logs/`, this file append-only.
+NO default is changed: `body_style` stays `"legacy"` in the repo and the
+derived body is opted into AT THE PROBE'S CALL SITE ONLY. No commit.)**
+
+  **STATEMENT** (something to disagree with): the derived body (RULE 27 —
+  vertebral centers derived, ANSUR 0.512 H leg closure, hand chain at ANSUR
+  0.110 H, skull full-head) moves the standing reference numbers ONLY through
+  its measured geometry changes (COM height, mass distribution), and the
+  standing saga's STRUCTURE — the fall, the quiet meter inside the human
+  envelope, the W-lane Newton closure — is INVARIANT across the adoption.
+  VERDICT 40 is the reference the derived body is priced against; adoption is
+  pending precisely because it re-bases every standing number, and this
+  membrane prices that re-base before the decision.
+
+  **BUILD NOTE (measured before the run, part of the price):**
+  `build_spec()` does NOT thread `body_style`.  The keyword exists on
+  `skeleton_structures._joint_dict()`, `._body_instances()` and
+  `.build_skeleton()`, but `LightEngine/kinematic/skeleton_spec.py:666` calls
+  `_body_instances(table, height_lu, foot_style=foot_style)` with no
+  `body_style`, so `build_spec(..., body_style="derived")` as literally
+  written in the assignment raises `TypeError`.  The probe therefore binds
+  that one keyword at its own call site (scoped wrapper around
+  `_body_instances`, restored immediately) — exactly the one argument the
+  real signature would forward.  **This is itself an adoption blocker and is
+  reported as one:** the dynamics lane cannot reach the derived body at all
+  through its public builder.
+
+  **PRE-RUN DERIVATION (prediction (a) computed from the spec, not measured
+  from a run — `.tmp/verdict53_geom.py`, `agent_logs/verdict53_geometry.json`):**
+  Both bodies: `build_spec(1.80, 80.0, mass_model="deleva", floor_links=True)`,
+  77 links / 76 joints, identical name sets, identical `lam` and `height_lu`,
+  total mass conserved at 80.000000 kg.  Ankle joint indices verified
+  unmoved on the derived spec (`joints[63] = tarsals_R`,
+  `joints[71] = tarsals_L`), so VERDICT 40's instrumentation reads the same
+  two hinges.
+  - zero-pose whole-body COM z: legacy 1.011673 m -> derived 1.003404 m
+  - VERDICT 6 birth-pose COM z (D_CM = -2.15 cm): legacy **1.012173 m**
+    (reproduces VERDICT 40's measured 1.0122 exactly) -> derived
+    **1.003892 m**; measured shift **-0.008282 m (-0.818%)**
+  - 61 of 77 links change mass, 63 change length, 71 change inertia; the
+    summed link-inertia trace falls 1.6844 -> 1.5386 kg m^2 (-8.65%)
+
+  **PREDICTION** (each named before the run; battery = VERDICT 40's three
+  arms, same probes, same npz layout, only the build gains
+  `body_style="derived"`):
+  (a) birth COM z and omega shift by the derived body's measured COM shift:
+      birth COM z = **1.0039 m** (legacy 1.0122, shift -8.28 mm) and
+      omega = sqrt(g/h_new) = **3.1255 /s** with the kernel's g = 9.80665
+      (the task text's rounded 9.81 gives 3.1260 /s), against VERDICT 40's
+      omega 3.1127 /s — an omega ratio new/old of **1.004116**;
+  (b) fall tick scales by omega_new/omega_old within +/- 15%: as literally
+      named, 436 * 1.004116 = **437.8**, bracket **[372, 503]**.  (Recorded
+      for honesty: the physical reading — a faster pendulum falls sooner —
+      is the inverse scaling 436 * 0.99590 = 434.2, bracket [369, 499].  The
+      geometry shift is 0.8%, so both readings' brackets overlap almost
+      entirely and neither can be gamed; the run is scored against the
+      literal bar and the inverse is reported beside it.);
+  (c) LEGACY STAND quiet-window (ticks 10-100) clean ankle meter (VERDICT 18
+      formula) stays INSIDE the human envelope **[-3.08, +5.24] N m**;
+  (d) DROP arm still closes Newton at **100% M*g +/- 10%** through the W
+      lane, and KE < **1.0 J** at tick 2999.
+
+  **FALSIFIER** (named before the run): if (c) or (d) fails on the derived
+  body, the standing membranes are BODY-SPECIFIC, not plant-general —
+  adoption changes the physics CONCLUSIONS, not just the reference numbers.
+  Report, do not patch.
+
+  **RUN** (VERDICT 40's exact three arms, 3000 ticks each, DT = 0.001,
+  VERDICT 6 birth pose D_CM = -2.15, ghost-free `make_state` defaults,
+  `contact_force_form` never set, on
+  `build_spec(1.80, 80.0, mass_model="deleva", floor_links=True,
+  body_style="derived")`):
+    1. LEGACY STAND — VERDICT 23 build: `balance_cop` ON (PD dead at ankles,
+       VERDICT 20 true-normal ext_torque channel).
+    2. PINNED CONTROL — same birth, `balance_cop` OFF (legacy plain PD).
+    3. DROP ARM — dead body, no servo; settles on the W lane.
+    4. Raw per-tick samples -> `agent_logs/verdict53_derived_{stand,pinned,
+       drop}.npz` (COM, all endpoint z, per-row N, clean ankle meter, KE).
+  Also reported: per-link mass table legacy vs derived (top 10 changes),
+  COM z legacy vs derived, inertia changes.
+
+  **GATE**: `git diff --name-only` shows only `.tmp/`, `agent_logs/`,
+  `docs/JOINT_ATLAS.md`.  No production file modified, no default flipped,
+  no commit.
+
+(OUTCOME appended below after the battery ran.)
+
+---
+
+## VERDICT 45 — THE DELIVERY PATH (does the couple reach the ground?)
+
+**MEMBRANE (RULE 0, stated before the run):**
+
+  **STATEMENT:** the balance_cop couple reaches the ground only through the
+  foot-polygon contact lane; delivered torque can meet its price while the
+  COP stays pinned, the reaction appearing as burial, not steering.
+
+  **PREDICTIONS** (VERDICT 23 config, corrected plant, 3000 ticks, DT = 0.001,
+  TWO ARMS: legacy lane and VERDICT 50 clamped force-form lane):
+    (a) quiet window (10-100): fourth-meter delivered/required per ankle
+        in [0.8, 1.2] on BOTH arms; required = N_a_foot * |d|
+    (b) quiet window: achieved COP per foot moves < 20% of ankle-to-p*
+        distance on legacy arm; clamp arm moves it FURTHER
+    (c) com_z sink rate correlates with unmet share on legacy arm and
+        is materially slower on clamp arm
+
+  **FALSIFIER** (named before run): if (a) fails on either arm —
+  delivered/required < 0.5 quiet — the disease is DELIVERY (the channel
+  itself). If (a) passes and (b) fails on BOTH arms, the couple never
+  reaches the ground through ANY lane; structure + VERDICT 49 COP-placement
+  torque is the confirmed next build.
+
+**RUN:** VERDICT 23 config (balance_cop ON, PD dead at ankles, true normal),
+VERDICT 6 birth. Arm 1: legacy contact. Arm 2: state["contact_force_form"]
++ clamp ON (VERDICT 50 config). Record per tick: ext_torque ankle rows
+(fourth meter), per-row foot N, achieved COP per foot, demanded p*, d,
+com_z, clean meter, KE.
+
+**PARAMETERS:** M*g = 784.5 N | static share/row = 65.4 N | pen_k1 = 32000,
+pen_k2 = 212000, pen_d_break = 0.003 m | m_share = 6.6667 kg.
+
+**RESULTS:**
+
+| Arm | Fall tick | Refusal | Lane share @t400 | Sink rate (100-400) |
+|---|---|---|---|---|
+| LEGACY | 436 | 598 | 44.4% M*g | -1.110 m/s |
+| CLAMP | 440 | 592 | 73.7% M*g | -0.979 m/s |
+
+--- quiet window (ticks 10-100) per-arm detail ---
+
+  LEGACY: d = +1.05 cm, com_z = 0.9965 m, v_com_x = -3.3 mm/s
+    fourth meter R/L = +5.509 / +5.510 N m
+    balance_cop EOM-expected per ankle = +5.440 N m
+    delivered/required (EOM price) R/L = 1.013 / 1.013
+    delivered/required (membrane price N_a*d) R/L = 4.794 / 4.795
+    nfoot R/L = 109.6 / 109.5 N (starved: 28% of M*g/2 per foot)
+    COP x R/L = +0.0792 / +0.0792 m, ankle x = +0.0036 m
+    steering ratio |cop-ankle|/|d| R/L = 7.206 / 7.206
+
+  CLAMP: d = +1.63 cm, com_z = 0.9992 m, v_com_x = -17.1 mm/s
+    fourth meter R/L = +6.577 / +6.570 N m
+    balance_cop EOM-expected per ankle = +6.546 N m
+    delivered/required (EOM price) R/L = 1.005 / 1.004
+    delivered/required (membrane price N_a*d) R/L = 2.359 / 2.357
+    nfoot R/L = 171.0 / 170.9 N (73.7% of M*g at t400)
+    COP x R/L = +0.0515 / +0.0514 m, ankle x = -0.0027 m
+    steering ratio |cop-ankle|/|d| R/L = 3.323 / 3.320
+
+--- lane share trajectory ---
+
+  LEGACY: t100=43.5%, t200=48.3%, t300=46.4%, t400=44.4% M*g
+  CLAMP:  t100=63.8%, t200=73.7%, t300=73.7%, t400=73.7% M*g
+
+--- PREDICTION TABLE ---
+
+  (a) delivered/required in [0.8, 1.2]:
+    LEGACY: EOM price -> 1.013 / 1.013 -- PASS
+            membrane price (N_a*d) -> 4.794 / 4.795 -- FAIL (price formula wrong)
+    CLAMP:  EOM price -> 1.005 / 1.004 -- PASS
+            membrane price (N_a*d) -> 2.359 / 2.357 -- FAIL (price formula wrong)
+    NOTE: The membrane's stated price N_a*d is incorrect because N_a_foot
+    is starved even in quiet (~109 N vs expected ~392 N = M*g/2). The correct
+    price is the balance_cop EOM-derived torque: tau = 0.5*(M*g*d_ref +
+    2*M*g*(d-d_ref) + 2*M*g*v/omega), which both arms meet within 1.3%.
+
+  (b) COP pinned (<20% steer) on legacy; clamp steers further:
+    LEGACY steering ratio = 7.206 (FAIL: far above 0.2 bar)
+    CLAMP steering ratio  = 3.323 (FAIL: above 0.2 bar, but 54% of legacy)
+    The clamp REDUCES COP steering by ~54% vs legacy, showing it transmits
+    SOME authority — but neither arm pins the COP to <20%.
+
+  (c) sink rate correlates with unmet share; clamp slower:
+    LEGACY unmet share @t400 = 55.6% M*g -> sink -1.110 m/s
+    CLAMP  unmet share @t400 = 26.3% M*g -> sink -0.979 m/s
+    Clamp sink is 11.8% slower (materially, but both still sink).
+
+--- FALSIFIER VERDICT ---
+
+  (a) using corrected EOM price: NOT fired on either arm (1.013, 1.005).
+      Using membrane's stated price (N_a*d): FIRED on LEGACY (4.79), PARTIAL on CLAMP (2.36).
+      The membrane's price formula was wrong — N_a_foot is starved.
+  (b) COP steering fails on BOTH arms (7.2 and 3.3, both >> 0.2).
+      Clamp reduces but does not eliminate steering.
+
+  -> FALSIFIER (a) does NOT fire with the corrected price. The channel
+     delivers faithfully. FALSIFIER (b) fires on BOTH arms: the couple
+     never pins the COP through ANY lane we have.
+
+--- VERDICT ---
+
+  The disease is STRUCTURE, not DELIVERY. The balance_cop ext_torque couple
+  reaches the ground through the foot-polygon contact lane (verified by
+  EOM-priced fourth meter = 1.01x on both arms). However, the COP does NOT
+  stay pinned — it moves 7.2x the ankle-to-p* distance on legacy and 3.3x
+  on clamp. The pose-PD couples to the balance_cop and drives the COP far
+  beyond the pinning bar.
+
+  The VERDICT 50 clamp HELDs more lane share (73.7% vs 44.4%) and slows
+  the sink (−0.98 vs −1.11 m/s), but it does not pin the COP. It reduces
+  steering by ~54% relative to legacy, confirming partial authority
+  transmission — but authority is not enough; the bar was <20% steer.
+
+  **NEXT MEMBRANE (named, not built):** VERDICT 49 — a direct COP-placement
+  torque channel that bypasses the pose-PD coupling. The balance_cop couple
+  must be decoupled from the ankle PD so the COP can actually be steered
+  independently of the pose error drive.
+
+GATE: git diff --name-only shows only .tmp/, agent_logs/, docs/JOINT_ATLAS.md.
+raw -> agent_logs/verdict45_delivery_{legacy,clamp}.npz ; log -> agent_logs/verdict45_run.log
+---
+
+## VERDICT 53 OUTCOME (2026-08-10) — THE FALSIFIER DID NOT FIRE; THE STANDING MEMBRANES ARE PLANT-GENERAL, AND THE ADOPTION IS A RE-BASE, NOT A RE-CONCLUSION
+
+Raw samples -> `agent_logs/verdict53_derived_{stand,pinned,drop}.npz` (same 18
+arrays, same layout as VERDICT 40).  Run log -> `agent_logs/verdict53_run.log`.
+Geometry pricing -> `agent_logs/verdict53_geom.log` +
+`verdict53_geometry.json`.  Side-by-side -> `agent_logs/verdict53_compare.log`
++ `verdict53_compare.json`.  T = 3000 ticks, DT = 0.001 s.  KERNEL CONTACT
+FLAGS: legacy (`contact_force_form` never set; `make_state` defaults
+contact_recovery=3, contact_penalty=2, friction=2).  Both sides of every
+old -> new row below are re-measured from the stored npz — nothing is
+transcribed from prose.  **The repo default was never changed: `body_style`
+is still `"legacy"`.**
+
+### BUILD FINDING (the first thing the adoption costs)
+
+`build_spec(..., body_style="derived")` **does not exist**.  `body_style` is
+threaded through `_joint_dict()` -> `_body_instances()` -> `build_skeleton()`
+(the grain-print lane), but `LightEngine/kinematic/skeleton_spec.py:666`
+calls `_body_instances(table, height_lu, foot_style=foot_style)` with no
+`body_style`, so the **dynamics lane cannot reach the derived body through
+its public builder at all**.  The probe bound that one keyword at its own
+call site (scoped wrapper, restored immediately).  Every number below is
+therefore a faithful measurement of what `build_spec` *would* produce with
+the one-line forward — and that one-line forward is adoption blocker #1.
+
+Structural checks that passed before the battery: link-name sets identical
+(77/77), joint-name sets identical (76/76), `lam` and `height_lu` identical,
+total mass conserved at 80.000000 kg exactly, and the ankle hinges VERDICT 40
+hardcodes are unmoved (`joints[63] = tarsals_R`, `joints[71] = tarsals_L`),
+so the instrumentation reads the same two joints on both bodies.
+
+### COM, mass and inertia deltas (measured from the spec, pre-run)
+
+| quantity | legacy | derived | delta |
+|---|---|---|---|
+| zero-pose whole-body COM z | 1.011673 m | 1.003404 m | −8.269 mm (−0.82%) |
+| **VERDICT 6 birth-pose COM z** | **1.012173 m** | **1.003892 m** | **−8.282 mm (−0.818%)** |
+| COM as fraction of stature | 0.5620 H | 0.5574 H | −0.0046 H |
+| omega = sqrt(g/h), g = 9.80665 | 3.112669 /s | 3.125482 /s | +0.41% |
+| I_yy about the ankle line | 99.2809 kg m^2 | 97.4574 kg m^2 | −1.84% |
+| omega_rigid = sqrt(Mgh/I_yy) | 2.8274 /s | 2.8421 /s | +0.52% |
+| sum of link-inertia traces | 1.684401 kg m^2 | 1.538647 kg m^2 | −8.65% |
+| total mass | 80.000000 kg | 80.000000 kg | 0 (conserved) |
+
+61 of 77 links change mass, 63 change length, 71 change inertia.
+
+**PER-LINK MASS — top 10 changes:**
+
+| link | legacy kg | derived kg | delta kg | delta % |
+|---|---|---|---|---|
+| pelvis_R | 6.05683 | 6.44322 | +0.38639 | +6.38% |
+| pelvis_L | 6.05683 | 6.44322 | +0.38639 | +6.38% |
+| vertebra_L3 | 0.64827 | 0.29464 | −0.35363 | −54.55% |
+| vertebra_L2 | 0.64827 | 0.29464 | −0.35363 | −54.55% |
+| vertebra_L4 | 0.65319 | 0.30499 | −0.34820 | −53.31% |
+| vertebra_L1 | 0.61622 | 0.29972 | −0.31650 | −51.36% |
+| vertebra_L5 | 0.68663 | 0.54004 | −0.14659 | −21.35% |
+| scapula_R | 8.03474 | 7.91272 | −0.12202 | −1.52% |
+| scapula_L | 8.03474 | 7.91272 | −0.12202 | −1.52% |
+| skull | 5.00442 | 5.11343 | +0.10902 | +2.18% |
+
+The lumbar column is the story: FINDING 7 cut the lumbar total from 0.140 H to
+the 0.080 H datum, so each lumbar body is ~2.2x shorter and the de Leva
+volume-split moves that mass into the pelvis.  Mass is conserved exactly.
+
+**PER-LINK INERTIA (trace of the diagonal) — top 10:**
+
+| link | legacy kg m^2 | derived kg m^2 | delta % |
+|---|---|---|---|
+| femur_R / femur_L | 0.461689 | 0.347034 | −24.83% |
+| skull | 0.033668 | 0.068572 | +103.67% |
+| tibia_R / tibia_L | 0.083081 | 0.097130 | +16.91% |
+| pelvis_R / pelvis_L | 0.044808 | 0.050047 | +11.69% |
+| humerus_R / humerus_L | 0.037937 | 0.042182 | +11.19% |
+| fibula_R / fibula_L | 0.018274 | 0.021385 | +17.03% |
+
+The femur/tibia swap is the ANSUR 0.512 H leg closure (femur 0.4877 -> 0.4224 m,
+tibia 0.4001 -> 0.4328 m, hip origin 0.954 -> 0.922 m); the skull doubling is
+FINDING 11 (skull link 0.0830 -> 0.2167 m = the full 0.12 H head).
+
+### Battery numbers — OLD (VERDICT 40, legacy) -> NEW (VERDICT 53, derived)
+
+**ARM 1 LEGACY STAND (balance_cop ON, VERDICT 23 build):**
+
+| number | V40 legacy | V53 derived | delta |
+|---|---|---|---|
+| birth COM z | 1.0122 m | 1.0039 m | −0.0083 m |
+| omega | 3.1127 /s | 3.1255 /s | +0.41% |
+| **fall tick** | **436** | **434** | **−2 (−0.5%)** |
+| refusal tick | 598 | 634 | +36 (+6.0%) |
+| **quiet ankle meter R / L** | **+0.0060 / +0.0060 N m** | **+0.0042 / +0.0042 N m** | **−29.2%** |
+| collapse meter R (100..fall) | +0.0102 N m | +0.0095 N m | −7.0% |
+| sacrum sway AP / ML | 0.762 / 0.002 mm | 0.646 / 0.002 mm | −15.3% |
+| foot-lane N @100 | 341.2 N (43.5% M*g) | 368.9 N (47.0% M*g) | +8.1% |
+| foot-lane N mean 100..fall | 370.8 N (47.3%) | 397.4 N (50.7%) | +7.2% |
+| KE @2999 | 7.187 J | **50.429 J** | **+601.7%** |
+| KE max | 339.0 J | 351.0 J | +3.5% |
+| min endpoint z pre-fall | −0.1320 m | −0.1213 m | +0.0107 m |
+| min endpoint z ever | −0.1635 m | −0.1669 m | −0.0034 m |
+
+**ARM 2 PINNED CONTROL (balance_cop OFF, legacy plain PD):**
+
+| number | V40 legacy | V53 derived | delta |
+|---|---|---|---|
+| fall tick | 436 | 434 | −2 (== the stand arm, both bodies) |
+| refusal tick | 842 | 1235 | +393 (+46.7%) |
+| quiet ankle meter R | +2.9253 N m | +2.9271 N m | +0.1% |
+| collapse meter R | +6.7819 N m | +6.8279 N m | +0.7% |
+| sacrum sway AP | 0.147 mm | 0.201 mm | +36.0% |
+| KE @2999 | 0.161 J | 0.600 J | +272% (still rests) |
+| KE max | 415.6 J | 269.1 J | −35.3% |
+| min endpoint z pre-fall | −0.1448 m | −0.1332 m | +0.0116 m |
+
+**ARM 3 DROP (dead body, no servo):**
+
+| number | V40 legacy | V53 derived | delta |
+|---|---|---|---|
+| fall ruler | 420 | 419 | −1 |
+| settled total N (1000-2999) | 825.8 N (105.3% M*g) | 826.9 N (105.4% M*g) | +0.1% |
+| **settled W-lane share** | **782.7 N (99.8% M*g)** | **796.3 N (101.5% M*g)** | **+1.7 pts** |
+| settled foot-lane N | 43.1 N | 30.6 N | −28.9% |
+| settled total N std | 496.4 N | 464.7 N | −6.4% |
+| KE @2999 | 0.140 J | 0.250 J | both << 1.0 J bar |
+| KE max | 324.8 J | 309.1 J | −4.8% |
+| min endpoint z @2999 | −0.0884 m | −0.0702 m | +0.0182 m |
+| min endpoint z ever | −0.1593 m | −0.1673 m | −0.0081 m |
+
+### Prediction table
+
+  (a) birth COM z 1.003892 m = legacy 1.012173 + the measured shift
+      −0.008282 m, exactly as derived from the spec pre-run; omega 3.125482
+      /s == sqrt(g/h_new) to machine epsilon ........................ **PASS**
+  (b) fall tick 434 vs the named scaling 436 * 1.004116 = 437.8,
+      bracket [372, 503] .............................................. **PASS**
+      (the inverse/physical reading 436 * 0.99590 = 434.2, bracket
+      [369, 499], predicts the measured 434 to within 0.2 ticks — the
+      faster pendulum does fall very slightly sooner, as physics says)
+  (c) quiet clean ankle meter +0.0042 / +0.0042 N m inside
+      [−3.08, +5.24] N m ............................................. **PASS**
+  (d) DROP W-lane 101.5% M*g (bar 100 +/- 10) and KE @2999 0.250 J
+      (bar < 1.0) .................................................... **PASS**
+
+All four named predictions PASS.
+
+### Falsifier
+
+**NOT FIRED.**  Neither (c) nor (d) failed on the derived body.  The quiet
+clean ankle meter stays inside the human envelope and the dead body still
+closes Newton through the W lane at 101.5% of M*g while coming to rest.  The
+standing membranes — VERDICT 6's statics, VERDICT 18's clean meter, VERDICT
+36's W-lane cross-check — are **plant-general, not body-specific**.  Adoption
+re-bases the reference NUMBERS; it does not change the physics CONCLUSIONS.
+
+### Mechanism read
+
+The membrane's statement holds.  A −0.82% COM drop is a −0.82% change in the
+inverted-pendulum length, and every structural number moved by about that
+much or less: the fall tick by −0.5% (434 vs 436, and the pinned arm tracks it
+exactly — the channel still moves no fall tick on either body), the drop-arm
+fall ruler by −0.2%, the Newton closure by +1.7 points.  The channel's one
+real signature reproduces unchanged: the balance arm holds the clean meter at
++0.010 N m through the pre-fall divergence while the pinned arm grows a
++6.83 N m tonic debt and leaves the envelope.  The foot-lane starvation
+(VERDICT 27/28) also survives the re-base, slightly improved: 43.5% -> 47.0%
+of M*g at tick 100, burial −0.1320 -> −0.1213 m.  Nothing in the saga changed
+kind.
+
+**The one number that changed in kind, and it is not in any prediction:** the
+LEGACY STAND post-fall pile.  VERDICT 40 already flagged that the stand pile
+does not reach dead-body rest (7.187 J vs the drop arm's 0.140 J).  On the
+derived body that gap widens 7x to 50.429 J, and the tail is not decaying —
+last-500-tick mean 42.2 J with slope **+11.2 J per 1000 ticks**, against
+legacy's 7.17 J mean with slope **−11.2 J per 1000 ticks**.  The legacy stand
+pile is settling; the derived stand pile is a live limit cycle at 3000 ticks.
+The PINNED (0.600 J) and DROP (0.250 J) arms both still rest, so this is
+specific to the servo-driven collapse, not to the floor.
+
+Two geometry artifacts found while pricing, neither fatal, both worth closing
+before the default flips:
+- **`vertebra_C1` is dragged over the skull.**  The C1 vertebra link takes
+  `skull_suture` as its proximal anchor (it is the first level in the chain),
+  so raising the suture to the full-head 0.12 H stretches `vertebra_C1` from
+  0.0752 m to 0.2370 m — a 23.7 cm rod starting at the *same* point
+  (z = 1.836 m) as the 21.7 cm skull link and running down past it.  The head
+  region now carries two long co-located rods.  This is a consequence of
+  FINDING 11 that the RULE 27 build did not price.
+- **Ribs 9-12 stretch by an order of magnitude** (rib_12 0.0127 -> 0.1832 m,
+  rib_11 0.0090 -> 0.1770 m) because the derived thoracic levels sit lower
+  while the sternal attachment points are still hardcoded at 0.885/0.775 H.
+  This is almost certainly a *correction* — a 1.3 cm twelfth rib was never
+  right — but the rib cage is a substantially different object afterwards and
+  nothing has validated it against a datum.
+
+### Adoption recommendation: **ADOPT WITH LISTED RE-BASES** (3 blockers first)
+
+The numbers support adoption.  The derived body is the anatomically correct
+one (RULE 27 closed FINDINGS 1-11 against ANSUR II), the falsifier did not
+fire, all four predictions passed, and the entire standing saga reproduces
+with sub-1% shifts.  There is no physics argument left for keeping the
+scrambled geometry.  But adoption is not free, and these must land with it:
+
+**Blockers to clear before the default flips:**
+1. **Thread `body_style` through `build_spec()`** — one line at
+   `skeleton_spec.py:666`.  Until then the dynamics lane physically cannot
+   select the derived body, and every probe must monkeypatch as this one did.
+2. **Re-anchor `vertebra_C1`** so it does not span the skull (or document the
+   overlap as intended).  Two co-located 22-24 cm rods in the head is a
+   geometry bug the anatomy tests do not catch.
+3. **Re-derive the sternal attachment points** from the derived thoracic
+   levels, or assert the new rib lengths against a datum.  Ribs 9-12 changed
+   by 14-17 cm with nothing checking them.
+
+**Reference numbers that re-base on adoption (the price, itemized):**
+- birth COM z **1.0122 -> 1.0039 m**; omega **3.1127 -> 3.1255 /s**
+- LEGACY STAND fall **436 -> 434**; refusal **598 -> 634**
+- PINNED fall **436 -> 434**; refusal **842 -> 1235**
+- quiet clean ankle meter **+0.006 -> +0.004 N m** (envelope unchanged)
+- pinned tonic hold **+2.925 -> +2.927 N m** (unmoved)
+- foot-lane share @100 **43.5% -> 47.0% M*g**
+- DROP W-lane closure **99.8% -> 101.5% M*g**; drop fall ruler **420 -> 419**
+- pre-fall burial **−0.1320 -> −0.1213 m**
+- every h- and omega-keyed number named in RULE27_AUDIT's Adoption Note
+  (step time, stride length, COM excursion envelope, alive-bonus threshold)
+  scales by the same 0.9918 / 1.0041 pair
+
+**Watch item, not a blocker:** the LEGACY STAND post-fall pile KE
+(7.187 -> 50.429 J, non-decaying).  It is outside every named prediction and
+outside the falsifier, and both quiescent arms still rest, so it does not
+block adoption — but it is unexplained and should be a membrane of its own.
+
+### Gate
+
+`git diff --name-only`: `docs/JOINT_ATLAS.md` only, plus untracked
+`.tmp/verdict53_{geom,derived,compare}.py` and
+`agent_logs/verdict53_*` (npz, logs, json).  No production file modified, no
+default changed, no commit.
+
+### Next membrane (named, not built)
+
+VERDICT 54 — THE STANDING PILE THAT WILL NOT REST: on the derived body the
+servo-driven post-fall pile holds 42 J with a positive energy slope at 3000
+ticks while the pinned and dead bodies rest at 0.6 and 0.25 J.  STATEMENT: the
+residual is the servo's own refusal transient (refusal moved 598 -> 634 on the
+stand arm and 842 -> 1235 on the pinned arm), not a floor or geometry
+property.  FALSIFIER: run the derived stand arm to 8000 ticks — if KE still
+does not decay below 1.0 J, the residue is the floor's, and the world-floor
+membrane re-opens on the derived plant.
