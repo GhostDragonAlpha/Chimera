@@ -2026,3 +2026,464 @@ burial are the honest meters, and they failed.
 test_kinematic_dynamics), no commit.  Raw samples →
 `agent_logs/verdict31_force_channel_{ON,OFF}.npz`;
 `agent_logs/verdict31_gauge.log`, `agent_logs/verdict31_gate.log`.
+
+---
+
+## VERDICT 33 — HANDS ON GROUND (renumbered from 32, 2026-08-09: force-form build owns VERDICT 32)
+
+**STATEMENT** (rule 0): both hands can be brought to z=0 with feet grounded and
+COM inside the support polygon via asymmetric scapula offset + world-axis
+humerus rotation, combined with uniform spine flexion.
+
+**PREDICTION (before the run)**: a configuration exists where L_hand_z < 0.01
+and R_hand_z < 0.01 simultaneously, with nf >= 12 (feet grounded) and COM
+inside the foot+hand support polygon.
+
+**FALSIFIER (named before the run)**: if both hands remain above 0.05 with
+asymmetric scapula and world-x humerus rotation, the approach fails.
+
+**DERIVATION**: the scapula q_vc log-map decomposition
+(`quat_to_saddle` in `.tmp/diag_crawl_search4l.py`) introduces left/right
+asymmetry because the rotation axes are defined in the parent (rib) local
+frame, and the left/right ribs have mirrored rest-pose orientations. Applying
+the same positive scap_dof1 to both shoulders lowers one shoulder but raises
+the other. The compensation is an OPPOSITE-sign offset: scap_L = +N,
+scap_R = −N. This produces symmetric shoulders at sh_z = 0.610 (vs 0.601/0.841
+asymmetric).
+
+The humerus is a ball-cup joint. The q_vc quaternion restores the arm to
+standing orientation relative to the flexed scapula. A pre-multiplied rotation
+about the WORLD x-axis (`q_rx * q_vc`, not `q_vc * q_rx`) applies the same
+forward tilt to both arms, producing symmetric hand lowering.
+
+**MEASURED** (best config, from `.tmp/diag_crawl_search4m.py`):
+
+| Config | L_hand | R_hand | nw | nf | inside | COM |
+|---|---|---|---|---|---|---|
+| spine=45, scap=±75, sh_x=-20, knee=60, el=90 | 0.001 | 0.001 | 4 | 12 | True | 0.665 |
+
+The nw=4 endpoints: hand_L_dist, hand_R_dist, fibula_L_dist, fibula_R_dist.
+COM dropped from 1.012 (standing) to 0.665 (crawl).
+
+**GATE**: verified by direct FK evaluation, nf=12 always (floor links).
+The 4 mW endpoints touch at z < 0.001.
+
+---
+
+## VERDICT 34 — KNEE PROOF (renumbered from 33)
+
+> **CORRECTION (2026-08-09, kimi): the verdict below is an INSTRUMENT verdict, not an anatomy verdict.** Its own table shows hip_z frozen at 0.883-0.897 in every configuration: the bound knee_z >= hip_z - femur is correct arithmetic given a STANDING hip, but kneeling IS the hip dropping to ~0.45 m — hip_z is the variable the pose solves for, not a constant. The posing tool restores standing orientation (q_vc), so folded poses are inexpressible in the tool (EM-15). Refuted by the project ledger itself: the floor_run21 collapse piles rest with knee endpoints ON the floor (every endpoint within -0.05 m of z=0). The engine kneels every time the body falls. The kneel is possible; this FK prober cannot express it. The confirmed deliverable of this work is the HANDS+FEET quadruped pose (VERDICT 33 above): nw=4, nf=12, COM inside the support polygon.
+
+**STATEMENT** (rule 0): the knee (femur_L_dist / femur_R_dist) cannot reach
+z=0 while feet are grounded, because knee_z ≥ hip_z − femur_length and this
+floor is 0.397m — unreachable by any joint configuration.
+
+**PREDICTION (before the run)**: all knee-lowering approaches will hit the
+floor knee_z ≥ hip_z − femur_length ≥ 0.397m.
+
+**FALSIFIER (named before the run)**: a configuration where femur_dist z < 0.35
+with both feet grounded (nf ≥ 12).
+
+**DERIVATION**: the femur is a rigid link of length 0.421m (from
+DERIVED_JOINT_CENTERS: (0.512−0.278)·1.80). Its proximal end (hip) is at
+hip_z. The distal end (knee / femur_dist) is at:
+
+    knee_z = hip_z − femur_length · cos(θ)
+
+where θ is the angle from vertical. Since cos(θ) ≤ 1 for all θ:
+
+    knee_z ≥ hip_z − femur_length
+
+The q_vc correction for the femur (ball-cup joint) is an exact quaternion
+that restores the femur to its standing orientation (vertical). Any deviation
+from vertical (θ ≠ 0) DECREASES cos(θ), which INCREASES knee_z. The minimum
+knee_z occurs at θ = 0 (femur perfectly vertical), giving:
+
+    knee_z_min = hip_z − femur_length
+
+**MEASURED**:
+
+| Config | hip_z | COM | femur | knee_z |
+|---|---|---|---|---|
+| Best COM (spine=45, scap=±75, knee=60) | 0.883 | 0.665 | 0.397 | 0.397 |
+| No scapula (spine=43, knee=90) | 0.885 | 0.692 | 0.399 | 0.399 |
+| Vertebra-only flexion | 0.897 | 0.721 | 0.468 | 0.468 |
+| Hip local rotation (any) | 0.885+ | 0.690+ | 0.400+ | 0.400+ |
+
+hip-COM offset ≈ 0.198m (hip always above COM — torso mass dominates).
+To reach knee_z = 0: hip_z ≤ 0.421m → COM ≤ 0.421 − 0.198 = 0.223m.
+Current COM minimum: 0.665m. Required drop: 0.442m (67% reduction).
+
+**APPROACHES TRIED AND REFUTED**:
+1. Per-region spine flexion (C/T/L different angles) — COM rises, no gain
+2. Vertebra-only vs pelvis-only flexion — hip_z invariant at 0.885
+3. Asymmetric scapula (lowers COM to 0.665) — hip_z unchanged
+4. Femur local x/y rotation — any tilt raises knee (cos θ < 1)
+5. Hip saddle DOF 0/1 offset — same constraint, knee goes up
+6. Patella joint (any DOF) — zero-length link, no effect
+7. Knee angle sweep (0–170°) — femur_dist unchanged (knee is AT femur)
+8. tibia_dist (ankle) with knee=0 — reaches 0.072 (ankle ≠ knee; with
+   scapula active, hip_z rises to 0.897, tibia_dist = 0.452)
+
+**VERDICT**: FALSIFIER FIRED — no configuration achieves femur_dist z < 0.397
+with feet grounded. The knee is kinematically constrained by
+hip_z − femur_length. This is a physical/geometric fact, not a numerical
+limitation.
+
+---
+
+## VERDICT 35 — CRAWL FK CONFIGURATION (renumbered from 34)
+
+**STATEMENT** (rule 0): a crawl pose with hands and feet on ground
+exists (nw=4, nf=12, COM inside), but knees cannot join them. Full
+6-point contact (hands+knees+feet) is kinematically infeasible for this
+human model.
+
+**PREDICTION (before the run)**: the hand solution (VERDICT 32) holds
+at multiple spine/scap/sh_x combinations; the knee floor (VERDICT 33)
+is invariant across all attempted approaches.
+
+**FALSIFIER (named before the run)**: a configuration with ALL four
+hand+knee endpoints at z < 0.01 simultaneously (nw >= 4 including knees,
+nf >= 12, inside=True).
+
+**VERDICT**: KNEE FALSIFIER FIRED. Hands + feet contact is achievable;
+hands + knees + feet is not.
+
+### Configuration for best hand+floor pose (VERDICT 32 confirmed)
+
+Best achievable: `spine=43, scap=±30, sh_x=-20, knee=60, el=90` —
+hands at z=0.059 (below the 0.1m crawl threshold but not z=0),
+COM=0.675, nw=2, nf=12, inside=True.
+
+With `spine=45, scap=±75, sh_x=-20, knee=60, el=90`:
+hands at z=0.001 (touching), nw=4 (hands + fibula), nf=12,
+inside=True, COM=0.665 — the maximum hand-lowering config.
+
+### Best achievable summary
+
+| Endpoint | z_min | Status |
+|---|---|---|
+| hands (L+R) | 0.001 | SOLVED |
+| feet (L+R, 6 contacts each) | 0.000 | SOLVED |
+| fibula (L+R) | ~0.003 | bonus contact (nw=4) |
+| knees (L+R, femur_dist) | 0.397 | IMPOSSIBLE (proven) |
+| patella (L+R) | 0.397 | zero-length, same as knee |
+
+### Kinematic inventory (from `.tmp/diag_joint_dofs.py`)
+
+77 links, 34 joints (via forward kinematics, no dynamics):
+- 25 saddle (3-DoF decomposed to 2-DoF): 21 vertebra/pelvis + 2 scapula +
+  2 clavicle = 25 (sternum/hand/patella are non-saddle dof_class in the spec)
+- 4 ball-cup (3-DoF quaternion): 2 femur + 2 humerus
+- 4 hinge (1-DoF): 2 tibia + 2 radius_ulna
+- 1 suture (0-DoF): skull-sacrum.  Total: 25+4+4+1=34 joints.
+
+The femur is a ball-cup joint whose q_vc correction can always restore
+vertical orientation (θ = 0 is reachable). Since cos(0) = 1 is the maximum,
+knee_z = hip_z − femur_length is the global minimum — no joint in the chain
+can lower it further.
+
+---
+
+## VERDICT 37 — THE TELESCOPE MAP (measurement membrane, probe only)
+
+**MEMBRANE (RULE 0, stated before this probe, 2026-08-09)**:
+
+  **STATEMENT** (something to disagree with): the foot's contact load is
+  transmitted through the joint chain with a measurable efficiency per
+  link — the articulated effective mass along the vertical at each joint
+  — and for this skeleton it collapses within a few links of the floor
+  (the 0.41 kg tarsals prices against grams because the chain above
+  contributes almost nothing). The spine telescopes: the chain folds
+  instead of pressing as a unit, so the contact's effective load never
+  becomes body weight no matter how the row is priced.
+
+  **PREDICTION** (numbers before running): a calibrated impulse
+  (0.83 Ns — VERDICT 32's measured tick impulse) applied at the right
+  forefoot contact point of the VERDICT 6 birth-pose body, servo off,
+  joints live:
+    - tarsals_R takes dV ≈ 2.0 m/s (impulse / tarsals_mass = 0.83/0.41);
+    - tibia_R takes ~1.8-1.9 m/s;
+    - femur_R takes ~1.5-1.7 m/s;
+    - sacrum takes < 10% of the tarsals dV (~< 0.2 m/s).
+  Derived: per-link momentum share p_link/p_total and chain effective
+  mass at the foot = impulse / dV_com.
+
+  **FALSIFIER** (named before the run): if the sacrum takes ≥ 50% of
+  the tarsals' dV, the chain transmits fine and the telescope indictment
+  is dead — the starvation is purely contact-side and VERDICT 32's
+  force form is the whole fix. Record either way.
+
+  **BUILD**: probe only. Birth-pose state, zero velocities, apply the
+  impulse as ext_force for exactly one tick at the contact point, read
+  per-link dV after one step, then after 10 and 100 ticks (transmission
+  vs ringing). Also measure the joint-impulse shares the solve reports
+  for the same tick (the solve's own account of transmission — the two
+  must agree or the meter is wrong, say which). Repeat at the hand
+  (the crawl lane needs the arm-chain number). Raw →
+  `agent_logs/verdict37_telescope.npz`. Gate: pytest suite unchanged
+  before/after. No commit.
+
+**MEASURED** (2026-08-09, `.tmp/verdict37_telescope.py`, birth-pose body,
+zero velocities, 0.83 Ns vertical ext_force at tarsals_R for one tick):
+
+  | Link | dV @1tick (m/s) | dV @10tick (m/s) | dV @100tick (m/s) | p_share @1tick (%) |
+  |---|---|---|---|---|
+  | tarsals_R | 0.5731 | 1.7707 | 13.2641 | 28.6 |
+  | tibia_R | 0.1107 | — | — | 41.2 |
+  | femur_R | 0.0036 | — | — | 5.1 |
+  | pelvis_R | 0.0088 | — | — | 6.4 |
+  | sacrum | 0.0087 | 0.0662 | 0.3284 | 0.5 |
+  | skull | 0.0098 | — | — | 5.9 |
+
+  Key ratios (sacrum dV / tarsals dV):
+    - @1 tick:   0.0087 / 0.5731 = **0.015** (1.5%)
+    - @10 ticks: 0.0662 / 1.7707 = **0.037** (3.7%)
+    - @100 ticks: 0.3284 / 13.2641 = **0.025** (2.5%)
+
+  Chain effective mass at foot = impulse / dV_tarsals =
+  0.83 / 0.5731 = **1.448 kg** (tarsals_R link mass = 0.415 kg).
+  The constrained chain feels 3.5x the tarsals' bare link mass.
+
+  Hand-chain repeat (0.83 Ns at hand_R, one tick):
+    - hand_R dV @1tick = 1.1356 m/s; skull dV @1tick = 0.0098 m/s;
+    - ratio = **0.009** (0.9%). Same telescope pattern in the arm.
+
+  Solve account (joint_impulses_ang, tick 1):
+    - tarsals_R joint impulse = 0.0169 Ns (max in chain);
+    - tibia_R = 0.0083 Ns; femur_R = 0.0012 Ns; pelvis_R = 0.0006 Ns;
+    - all spine joints (L5 through C1) = < 0.0001 Ns;
+    - contact impulses at tick 1: tarsals_R ci10 = 0.1047 Ns, rest
+      of right-foot contacts < 0.01 Ns, all left-foot contacts < 0.01 Ns.
+    - The solve's own account confirms: < 2% of the impulse propagates
+      past the ankle joint; the spine sees virtually nothing.
+
+  Kinematic vs solve account: they agree — both show near-zero
+  transmission past the tarsals/tibia pair. The meter is correct.
+
+  **PREDICTION CHECK**:
+    - tarsals dV ~ 2.0 m/s: measured 0.5731 (**OFF** by 3.5x).
+      The prediction assumed a free-link response (impulse/mass);
+      the constrained multibody solve absorbs ~72% of the impulse
+      into joint constraints rather than tarsals linear motion.
+      The effective mass at the foot is 1.45 kg, not 0.41 kg.
+    - sacrum dV < 0.2 m/s: measured 0.0087 (**PASS**).
+
+  **FALSIFIER VERDICT**: NOT FIRED. Sacrum takes 1.5% of tarsals' dV
+  at 1 tick (well below the 50% threshold). The chain does NOT press
+  as a unit — it telescopes. The spine folds instead of transmitting
+  foot contact load to the sacrum.
+
+  **MECHANISM** (measured): the ankle joint couples tarsals to tibia
+  (tibia takes 41% of impulse momentum), but the saddle joints above
+  (L5, L4, ..., sacrum) have such low angular impulse transmission
+  (< 0.0001 Ns each) that the chain above contributes almost nothing
+  to the effective mass at the foot. The 0.41 kg tarsals link prices
+  against an effective 1.45 kg because only the tibia couples in;
+  everything above the ankle is mechanically invisible to a foot
+  impulse. This is the telescope: each joint below the sacrum adds
+  its own mass but barely passes momentum upward.
+
+  **CONSEQUENCE for VERDICT 32**: VERDICT 32's force-form build
+  (direct per-point bilinear pad force) would still fail to produce a
+  sustained stand, not because of the contact layer, but because even
+  if the foot rows delivered full body weight (785 N), that force
+  never reaches the sacrum — the chain telescopes. The starvation is
+  dual: contact-side (rows price against grams, not kg) AND chain-side
+  (transmission efficiency ~1.5%). Fixing only the contact layer
+  (VERDICT 32's force form) addresses half the disease.
+
+  **NEXT MEMBRANE** (named): joint-chain stiffness — the saddle joints
+  need enough angular stiffness to couple the leg chain to the trunk
+  so that a foot impulse accelerates the full body mass, not just the
+  tarsals+tibia effective pair. Without this, no contact-layer fix can
+  produce standing weight transfer through the spine.
+
+**GATE**: 52-test pytest green (test_kernel + test_kinematic +
+test_kinematic_dynamics), no commit. Raw samples →
+`agent_logs/verdict37_telescope.npz`.
+
+---
+
+## VERDICT 36 — THE CRAWL HOLD (membrane written 2026-08-09 BEFORE the run, probe only, no patch, no commit)
+
+Read the VERDICT 34 CORRECTION note first (the knee proof is an INSTRUMENT
+verdict).  The knee question is CLOSED here: no posing work, no FK
+exploration.  This entry runs the experiment the crawl membrane always
+required, and it turns into an instrument verdict of its own.
+
+**STATEMENT** (rule 0, in force before the build): a DEAD body — no
+controller, no servo, no motor row, no ext force — born in the VERDICT 33
+quadruped pose on the ghost-free config (`.tmp/probe_world_floor.py`
+`make_state`) loads the TRUNK/ARM ENDPOINT LANE (side="W" rows, the
+`contact_penalty == 2 and contact_is_floor != 0` implicit loaded-c
+spring-damper lane that carries collapse piles to rest), BYPASSES the
+starving foot-polygon lane (the 12 hard unilateral rows VERDICT 27/28
+measured at D/P = 0.082), and HOLDS STATICALLY for 3000 ticks, where the
+biped falls at 444.
+
+**POSE** (VERDICT 33's own confirmed result, reproduced from
+`.tmp/diag_crawl_search4m.py` — the script the atlas MEASURED row cites):
+spine 45° uniform over the 13 spine saddle joints, scapula asymmetric
++75/−75, humerus q_vc with a −20° x rotation, knee (tibia hinge) 60°, elbow
+(radius_ulna hinge) 90°.  Prober numbers: L_hand = R_hand = 0.001, COM 0.663.
+
+**PREDICTION (numbers named before the run)**:
+(a) COM z within ±5 cm of birth for 3000 ticks — expected birth 0.663 m,
+settle drop = the pad equilibrium only, ~3.5 mm (4 loaded points, bilinear
+pad: 784.5/4 = 196 N/point → d_eq = 3.0 + (196−96)/212 = 3.47 mm), so
+|ΔCOM z| ≤ 0.005 m.
+(b) no link endpoint below −0.05 m — expected min = contact_slop − d_eq =
+0.00131 − 0.00347 = −0.0022 m.
+(c) settled (ticks 1000-2999) summed normal on the loaded lanes = M·g ±10%
+= [706.1, 863.0] N, with the split HAND ~304 N (39%), rear/fibula W ~481 N
+(61%), FOOT-POLYGON ~0 N (its 12 points sit in the air in this pose) —
+derived from birth statics (COM x −0.0346; hand points x −0.0191, lever
+0.0155 m; fibula points x −0.0444, lever 0.0098 m).
+(d) KE < 1.0 J at tick 2999 — expected 0.1-0.3 J (the drop-arm rest band).
+
+**FALSIFIER (named before the run)**: the quadruped starves and sinks like
+the biped (bars fail the same way: burial past −0.05 m, settled N far under
+M·g, COM collapsing) → the starvation is NOT foot-lane-specific and VERDICT
+27's framing dies.
+
+**BUILD**: `.tmp/verdict36_crawl_hold.py`, one probe, servo OFF from tick 0
+(no `MuscleController` is ever constructed), 3000 ticks, `n_proj_iters=20`,
+ghost-free `make_state` defaults.  Raw →
+`agent_logs/verdict36_crawl_hold.npz` (per-tick COM, all 154 endpoint z,
+per-row N, lane sums, KE).  Read-out `.tmp/diag_v36_readout.py`; frame audit
+`.tmp/diag_v36_frame_audit.py`.
+
+### OUTCOME (2026-08-09): THE POSE DOES NOT EXIST IN THE ENGINE — AND THE W LANE CLOSES NEWTON AT 100.0% M·g ANYWAY
+
+**THE INSTRUMENT VERDICT FIRST (it is the mechanism for bars (a) and (b))**:
+`skeleton_spec.py:285-286` defines `com_offset_m = 0.5·(dist_lu − prox_lu)·λ`
+— a **WORLD-axes** half-axis at the rest pose.  `dynamics.init_state`
+(`dynamics.py:319`, `pos_com = p_m + R @ com_offset_m`) and
+`_build_floor_contact_specs` (`offset_local_m = ±com_offset_m`) consume it as
+a **LINK-LOCAL** offset; the FK probers of VERDICT 33/34/35 used
+`R_world_to_local @ com_offset_m`, the geometrically correct local vector.
+Both cannot be right.  Measured on the STANDING state
+(`.tmp/diag_v36_frame_audit.py`):
+
+| quantity | engine (`init_state`) | corrected (prober frame) | bone truth |
+|---|---|---|---|
+| body COM z | **1.2371 m** (= VERDICT 21's recorded com_z) | 1.0117 m | ~0.95-1.00 m human ref |
+| femur_L distal endpoint z | **+1.4403 m** | +0.4680 | +0.4680 (knee) |
+| tibia_L distal endpoint z | **+0.8535 m** | +0.0720 | +0.0720 (ankle) |
+| skull distal endpoint z | **+1.8482 m** | +1.6920 | +1.6920 |
+| min / max endpoint z | **−0.0666 / +1.8482** | −0.0000 / +1.7730 | 0 / 1.773 |
+
+Per-link COM discrepancy: mean **101.9 mm**, max **487.3 mm** (femur).  The
+`c` term **cancels exactly in the joint rows** (point-coincidence residual
+max 0.0000 mm at birth), so the skeleton hangs together correctly at the
+joints; what is rotated about each proximal point is (i) the link's COM /
+mass location and inertia lever arm and (ii) every W endpoint contact, which
+sits at `prox + 2·R_zero·c` instead of the bone's distal end.  The
+metatarsal/forefoot endpoints are born 6.7/5.2 cm **below the plane** in the
+engine frame — harmless only because VERDICT 11 excluded the foot chain from
+the W lane.
+
+Consequence for this experiment: **VERDICT 33's "hands at z = 0.001" is a
+prober-frame statement.**  Birthed with the engine's own convention (which is
+what the contact rows read), the same joint angles put the hand rows at
+**z = +0.1537 m**, the fibula rows higher still, and the **tarsals
+foot-polygon points lowest (the only 2 rows below the 1.31 mm slop surface
+at birth)**; birth COM = (+0.0056, +0.0266, **0.8209**) m, not 0.663.  The
+quadruped pose the membrane wanted to test is not expressible in the engine
+as posed, so the hand lane never had a chance to carry the predicted 304 N.
+Two further instrument facts, both recorded before the run: **scipy is absent
+from `.venv`**, so every `inside=` printed by the VERDICT 33/34/35 diags came
+from a swallowed `ImportError` in a bare `except: pass` and was ALWAYS False —
+"COM inside the support polygon" was never measured (computed here in numpy:
+the birth support polygon is 2 points, a line, COM not inside); and their
+"nf = 12, feet grounded" came from treating `spec["contacts"][side]["point_m"]`
+(the STANDING world foot points, constants) as posed endpoints.
+
+**THE RUN (3000 ticks, dead body, birthed as above, lowest contact point at
+z = 0)**:
+
+| bar | predicted | measured | verdict |
+|---|---|---|---|
+| (a) COM z within ±5 cm | \|Δ\| ≤ 0.005 m | max \|ΔCOM z\| = **0.8144 m** @tick 1010; 0.8209 → 0.0094 m | **FAIL** |
+| (b) no endpoint below −0.05 m | −0.0022 m | min **−0.1384 m** @tick 1076 (forefoot_L_dist); final −0.0860 m | **FAIL** |
+| (c) settled N = M·g ±10% | 784.5 N | **784.6 N (100.0% M·g)**, std 93.0, ticks 1000-2999 | **PASS** |
+| (d) KE < 1.0 J @2999 | 0.1-0.3 J | **0.2558 J** (KE max 252.1 J @tick 362) | **PASS** |
+
+The body collapsed: COM z crossed 50% of birth at **tick 312** — *earlier*
+than the biped's 444 — and came to rest as a pile.  What the probe measured
+is therefore the collapse-to-rest the W lane was built for, not a crawl hold.
+
+**LANE SPLIT** (mean N, settled ticks 1000-2999; M·g = 784.5 N):
+
+| lane | early 0-99 | settled | % M·g | predicted |
+|---|---|---|---|---|
+| HAND (W, the lane under test) | 0.0 N | **13.0 N** | 1.7% | 304 N |
+| FOOT-POLYGON (the starved lane) | 44.6 N | **45.6 N** (2 of 12 rows > 0.5 N) | 5.8% | 0 N |
+| FIBULA (rear W) | 0.0 N | 37.9 N | 4.8% | 481 N |
+| OTHER W (trunk/limb endpoints) | 0.0 N | **688.1 N** | 87.7% | — |
+| TOTAL | 44.6 N | **784.6 N** | **100.0%** | 784.5 N |
+
+Top carriers (settled, per link): femur_R 101.2 N, femur_L 89.9, scapula_R
+80.5, scapula_L 75.0, sacrum 59.8, tarsals_R (FOOT) 41.7, tibia_L 34.5,
+pelvis_L/R 29.2/28.8, vertebra_C1 24.6, skull 24.2.  55 of 154 rows carry
+> 0.5 N (53 W + 2 foot).  Burial is **bounded and recovering**: min endpoint
+z −0.1384 worst → settled mean −0.0891 → second-half mean −0.0862 → −0.0860
+final (the W lane lifts the pile); COM z drift over the settled window
++0.0029 m (+0.0014 mm/tick, upward); 4 of 154 endpoints below −0.05 m at
+tick 2999, all in the left foot chain (tarsals_L prox/dist,
+metatarsals_L_dist, forefoot_L_dist) — the same links the frame error
+pre-buries at birth.
+
+**FALSIFIER: NOT FIRED.**  The quadruped-born dead body does **not** starve
+like the biped.  The biped's signature is a reaction that never reaches
+weight (N_total 345 N = 44% M·g at tick 100, 566 N through the collapse) and
+a sink that keeps going (−0.033 → −0.232 m, fall @444).  Here the settled
+reaction closes Newton at **100.0% M·g with the W lane carrying 87.7% of it**,
+KE decays to 0.256 J, and the burial *recovers*.  **VERDICT 27's
+foot-lane-specific framing SURVIVES this cross-check**: with the same kernel,
+the same tick, the same ghost-free config, the W lane carries full body
+weight while the foot-polygon lane carries 5.8% on 2 of its 12 rows.
+
+**VERDICT**: the STATEMENT is FALSIFIED as written — the body did not hold;
+it collapsed at tick 312 and rested as a pile — but it is falsified for a
+reason the statement could not name: **the pose it was born in is not the
+pose the engine's contact geometry sees.**  The load-lane half of the
+statement is CONFIRMED with a number the saga has never yet seen from a
+standing or crouched body: **settled N_total = 100.0% M·g through the
+trunk/limb endpoint lane.**  The hand lane read 13.0 N because the hands
+were 15.4 cm in the air, not because the lane starves.
+
+**GATE**: pytest `test_kernel + test_kinematic + test_kinematic_dynamics`
+**52 passed before, 52 passed after** (this membrane touched nothing they
+cover — probe files in `.tmp/` only).  No production edit, no commit.  Raw →
+`agent_logs/verdict36_crawl_hold.npz`; logs →
+`agent_logs/verdict36_run.log`, `agent_logs/verdict36_gate_{before,after}.log`.
+
+**VERDICT 37 MEMBRANE (next, RULE 0 stated 2026-08-09, NOT built): THE
+FRAME.**  STATEMENT: `com_offset_m` is a world-axes half-axis and every
+consumer that treats it as link-local (`init_state`'s `pos_com`,
+`_build_floor_contact_specs`, `probe_world_floor.endpoint_offsets`) mis-places
+that link's mass and its distal endpoint contact by `R_zero·c − c`; correcting
+the consumers to `R_world_to_local @ com_offset_m` puts every W contact on the
+bone it names.  PREDICTION: standing body COM 1.2371 → 1.0117 m; standing min
+endpoint z −0.0666 → ~0.000 (no endpoint born inside the floor); the
+foot-polygon rows' `m_eff = 1/(inv_mass + rn·(I⁻¹·rn))` — VERDICT 27's
+K = 1/m_eff, measured 0.006-0.176 kg — moves, because `rn` is computed from a
+mis-placed COM; the 52-test suite stays green (the tests price joint
+coincidence, which the term cancels out of).  FALSIFIER: the suite fails, or
+the standing fall tick moves while the endpoint geometry does NOT improve →
+the frame is load-bearing in the saga's own numbers and every verdict priced
+against `m_eff`, COM height, or W endpoint depth must be re-read before any
+further crawl work.  Only after the frame is settled can the quadruped pose be
+re-derived IN THE ENGINE'S GEOMETRY and this hold experiment re-run as
+written.
+
+**VERDICT 36 ADDENDUM (numbering, appended 2026-08-09 after the fact)**: the
+next membrane named at the end of VERDICT 36 must NOT be read as "VERDICT 37"
+— that number was taken concurrently by VERDICT 37 — THE TELESCOPE MAP
+(appended above while this run was in flight).  Read it as the unnumbered
+membrane **THE FRAME** (com_offset_m world-axes vs link-local at
+`init_state`/`_build_floor_contact_specs`); whoever claims it next should
+give it the next free number.
