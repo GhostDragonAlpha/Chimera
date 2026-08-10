@@ -762,7 +762,11 @@ def step(spec: dict[str, Any], state: dict[str, Any], dt: float,
                 # the foot-polygon rows' rhs as a force channel, so the
                 # solve's impulse carries the load (1-DOF gate passed).
                 # Default off = legacy rhs = bias - vr, bit-identical.
-                int(state.get("contact_load_rhs", False)))
+                int(state.get("contact_load_rhs", False)),
+                # FORCE-FORM (VERDICT 32): foot-polygon points are replaced
+                # by a direct per-point bilinear pad force through the link
+                # (default off = legacy unilateral rows, bit-identical).
+                int(state.get("contact_force_form", False)))
         else:
             _numba_step_core(*args, int(state.get("pos_pass_mode", 0)))
         state["joint_impulses_lin"] = joint_impulses_lin

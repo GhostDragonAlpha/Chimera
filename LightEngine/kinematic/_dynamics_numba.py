@@ -787,6 +787,7 @@ def step_core_direct(
     contact_static_share,
     contact_loaded_mass,
     contact_load_rhs,
+    contact_force_form,
 ):
     """One tick, in place.  Impulse arrays are zeroed by the caller and filled
     from the solved lambdas (lambda IS the impulse along its row).
@@ -1107,7 +1108,7 @@ def step_core_direct(
         # rows are re-priced at.  VERDICT 31 (contact_load_rhs) needs the
         # same share as the force channel's drive.
         loaded_share_mass = 0.0
-        if contact_loaded_mass or contact_load_rhs:
+        if contact_loaded_mass or contact_load_rhs or contact_force_form:
             M_total = 0.0
             for i in range(n_links):
                 M_total = M_total + mass[i]
@@ -1117,9 +1118,61 @@ def step_core_direct(
                     n_poly = n_poly + 1
             if n_poly > 0:
                 loaded_share_mass = M_total / n_poly
+        # FORCE-FORM (VERDICT 32): foot-polygon points are REPLACED, not
+        # layered -- each point below the slop surface applies the measured
+        # bilinear pad force directly to its link through the implicit-
+        # damped impulse (the run-18/penalty-spring linearization):
+        #   F_spr = k(d)*d,  c = 2*sqrt(loaded_share_mass*k_loc),
+        #   jn = dt*(F_spr - c*v_z) / (1 + dt*c/loaded_share_mass)
+        # so at rest F_spr = share*g exactly -- d_eq = share/k1 = 2.04 mm
+        # (VERDICT 21), the body resting ON the pad, not buried in it.  The
+        # unilateral rows for these points never enter the solve (skipped
+        # in the assembly loop below); the impulse is recorded in
+        # contact_impulses so the mode-2 friction sweep reads it as the
+        # cone bound like any solved normal.  1-DOF gate passed before
+        # kernel entry (.tmp/verdict32_1dof.py: d_eq = 6.155 mm rest, KE
+        # -> 0, no launch from 0/5/20 mm penetration).
+        if contact_force_form != 0 and loaded_share_mass > 0.0:
+            for ci in range(n_contacts):
+                if contact_is_floor[ci] != 0:
+                    continue
+                li = contact_link_idx[ci]
+                if mass[li] <= 0.0:
+                    continue
+                R = _qmat(quat[li])
+                r = R @ contact_off_local[ci]
+                p_w = pos[li] + r
+                depth = contact_slop - p_w[2]
+                if depth <= 0.0:
+                    continue
+                if depth < pen_d_break:
+                    k_loc = pen_k1
+                    F_spr = pen_k1 * depth
+                else:
+                    # MEASURED bilinear law, CONTINUED at k2 below the pad
+                    # (run-13 membrane: the literal 2e8 rigid segment is
+                    # poison in every form; the pad is not rigid).
+                    k_loc = pen_k2
+                    F_spr = pen_k1 * pen_d_break \
+                        + pen_k2 * (depth - pen_d_break)
+                c_eff = 2.0 * math.sqrt(loaded_share_mass * k_loc)
+                v_p = lin_vel[li] + _cross3(ang_vel[li], r)
+                jn = dt * (F_spr - c_eff * v_p[2]) \
+                    / (1.0 + dt * c_eff / loaded_share_mass)
+                if jn <= 0.0:
+                    continue
+                jv = jn * z_hat
+                lin_vel[li] = lin_vel[li] + inv_mass[li] * jv
+                ang_vel[li] = ang_vel[li] + I_inv[li] @ _cross3(r, jv)
+                contact_impulses[ci] = contact_impulses[ci] + jv
         for ci in range(n_contacts):
             li = contact_link_idx[ci]
             if mass[li] <= 0.0:
+                continue
+            # FORCE-FORM (VERDICT 32): the foot-polygon rows are REPLACED
+            # by the direct force above -- never layer, or the pad and the
+            # row double-support (the VERDICT 15 lesson).
+            if contact_force_form != 0 and contact_is_floor[ci] == 0:
                 continue
             # GATE + SPRING (run 9): world-floor endpoints assemble a
             # PURE GATE row (no bias -- the run-4 impact brake) while

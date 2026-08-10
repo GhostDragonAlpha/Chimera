@@ -3202,7 +3202,108 @@ LightEngine/tests/test_kinematic_dynamics.py LightEngine/tests/test_kinematic.py
 LightEngine/tests/test_skeleton.py LightEngine/tests/test_skeleton_anatomy.py -q
 -> 69 passed, flag OFF bit-identical (gauge).  No commit.
 
-(OUTCOME appended below after the run.)
+## VERDICT 43 OUTCOME (2026-08-09) — THE FORCE FORM HOLDS THE BURIAL BAR AND ANNIHILATES THE LANE (share 0% of M*g, fall @409, controller refused @13)
+
+Raw samples -> `agent_logs/verdict43_forceform_{ON,OFF}.npz`,
+`agent_logs/verdict43_gauge_{current,master}.npz`, `agent_logs/verdict43_run.log`.
+
+### Gauge (bit-identical flag OFF, run before each arm)
+
+Both trees (current working tree vs `git stash`ed committed master) ran the
+SAME legacy harness: fall 436 / refusal 598 both; all 17 snap arrays
+(snap_t100/200/400 impulses, lin/ang velocities, skull pos, n_foot/n_total
+at t100/200/400, fall, refusal, BW) `np.array_equal` -> PASS.  VERDICT
+40/42 reproduce EXACTLY on the current tree with the flag OFF: the
+force-form build is a flag on a bit-identical base.
+
+### ARM OFF (legacy rows) — VERDICT 42 reproduced exactly
+
+  fall tick @436 | refusal @598
+  quiet 10-100 clean ankle meter R +0.006 / L +0.006 N m (std 0.001/0.001)
+    -- INSIDE envelope [-3.08, 5.24]
+  sacrum sway AP 0.762 mm (human band [3.8, 9.5])
+  lane share of M*g: t50 26.2% | t100 43.5% | t150 57.2% | t200 48.3% |
+    t300 46.4% | t400 44.4% | t435 36.7%  (348.0 N @t400)
+  per-row del@100 34.9/31.0/28.2/20.2/13.3/42.9 N (L) mirror R
+    (== VERDICT 42, row-identical)
+  D/P quiet 0.028; pre-fall ZERO pad-zone row-ticks
+  zone-NONE: 7.3% quiet / 0.0% pre-fall
+  min endpoint z pre-fall -0.1320 m @412; min ever -0.1635 m @758
+  KE max 339.0 J @594 | KE @2999 7.187 J
+
+### ARM ON (force form)
+
+  fall tick @409 | refusal @13  (the controller latches off 13 ticks in)
+  quiet 10-100 clean ankle meter R -0.594 / L -0.595 N m
+    (std 10.692/10.691) -- INSIDE the envelope but LOUD (std vs OFF's 0.001)
+  sacrum sway AP 15.433 mm -- ABOVE the human band [3.8, 9.5]
+  lane share of M*g: t50..t400 all 0.0 N = 0.0%; t400 total 3.8 N; the
+    body carries NO ground reaction through the whole quiet phase
+  per-row del@100 / del@400 all 0.0 N; zone 0 (NONE) on every row
+  D/P quiet 32.177 over just 4 pad-zone row-ticks (99.5% of rows floating);
+    pre-fall ZERO pad-zone row-ticks
+  zone-NONE: 99.5% quiet / 100.0% pre-fall  -- the plantar points hang
+    ABOVE the slop surface, the foot lane is air
+  min endpoint z pre-fall -0.0384 m (bar >= -0.05 HELD); min ever
+    -0.1813 m @1184 (post-fall pile)
+  KE max 1244.5 J @tick 10 (birth impulse pumped by the stiff spring);
+    KE @2999 41.356 J (bar < 1e4 held)
+
+### Outcome table
+
+| metric | ON (force form) | OFF (legacy) |
+|---|---|---|
+| fall tick | **409** | **436** |
+| refusal tick | 13 | 598 |
+| lane share @t400 | **0.0%** | 44.4% |
+| quiet ankle R/L N·m | -0.594 / -0.595 (std 10.69) | +0.006 / +0.006 (std 0.001) |
+| sacrum sway AP mm | 15.43 (above band) | 0.76 |
+| min endpoint z pre-fall m | -0.0384 (bar held) | -0.1320 |
+| zone-NONE quiet | 99.5% | 7.3% |
+
+### Prediction table
+  (a) flag OFF bit-identical reproduction .......... PASS (gauge, 17/17 arrays;
+      fall @436, share @t400 44.4%, lane 341.2/378.8/348.0 N)
+  (b) flag ON lane share @t400 >= 60% ............... FAIL (0.0%)
+  (c) flag ON no endpoint below -0.05 pre-fall ...... PASS (-0.0384)
+  (d) flag ON fall > 436 or arrest .................. FAIL (@409)
+
+### Falsifier verdict
+NOT fired, by the conjunctive wording: the force form leaves the lane share
+< 60% at t400 (TRUE — 0.0%) AND buries past -0.05 m (FALSE — the bar held
+at -0.0384).  The force form demonstrably prices force through depth at
+d_eq and stops the burial that VERDICT 42 flagged.  But this is survival by
+the escape clause: the STATEMENT's central claim — "holds the foot lane's
+share of M*g ... because it prices force directly" — is contradicted by the
+measurement.  The share is not merely < 60%; it is 0%.  The stiff force lane
+does not carry the load; it deletes the lane.
+
+### Mechanism read
+The force form replaces the velocity-row gate with an implicit-damped spring
+through the link velocity.  At birth the CM shift (D_CM = -2.15 cm) drives
+the body; the stiff spring-damper pumps KE to 1244.5 J @tick 10, the
+MuscleController latches off at tick 13, and the plantar rows lift clear of
+the slop surface (zone-NONE 99.5% quiet; total ground reaction ~0 N through
+t300).  With no ground reaction and no controller, the body free-tips and
+falls @409 — 27 ticks EARLIER than the starved legacy lane, with sway above
+the human band and an ankle meter 4 orders of magnitude noisier than OFF.
+The force form holds exactly one bar and it is the one the membrane priced
+it for (no burial); it fails the lane claim, the fall-tick claim, and every
+quiet-stand envelope it was expected to preserve.  VERDICT 45's candidate
+(i) — "stiff foot lane" — is measured: a stiff per-point force lane does not
+heal the delivery; it annihilates the lane and destabilizes the stand.  The
+disease the force form exposes is that the load leaves the foot entirely —
+the chain above the foot is not the question; the lane geometry itself
+cannot hold 78.5 kg in quiet stance.
+
+### Gate
+`git diff --name-only`: `.tmp/verdict43_*.py`, `agent_logs/verdict43_*.npz`,
+`agent_logs/verdict43_run.log`, `docs/JOINT_ATLAS.md`.  No production file
+modified, no commit; the VERDICT 32 kernel work stays uncommitted and the
+flag stays OFF by default.  The atlas's chain already advanced past this
+membrane (VERDICT 44 stated its own membrane and outcome; VERDICT 45 —
+THE DELIVERY PATH — is named below it).  This OUTCOME's sole amendment to
+that chain: candidate (i) of VERDICT 45 is now measured dead.
 
 ---
 
