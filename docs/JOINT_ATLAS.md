@@ -2687,3 +2687,171 @@ support polygon with the COM marked.
 
 **GATE**: prober self-checks pass; `git diff --name-only` shows only `.tmp/`,
 `agent_logs/`, `docs/JOINT_ATLAS.md`.  No commit.
+
+---
+
+## VERDICT 40 — THE NEW BASELINE (standing battery on the corrected plant)
+
+**MEMBRANE (RULE 0, stated 2026-08-09 before any run; probe-only lane — `.tmp/`
+scripts, raw samples to `agent_logs/`, this file append-only.  The uncommitted
+VERDICT 32 kernel work in `LightEngine/kinematic/dynamics.py` /
+`_dynamics_numba.py` (`contact_force_form` flag, default OFF) is UNTOUCHED —
+the legacy path is bit-identical, the flag stays off.)**
+
+  **STATEMENT** (something to disagree with): the corrected plant (VERDICT 38
+  THE FRAME — birth COM z 1.2371 -> 1.0117 m, omega 2.8156 -> 3.1135 /s)
+  reproduces the VERDICT 6-23 standing saga with numbers that differ from the
+  old references only by the geometry re-base — same fall structure, re-priced
+  rates and torques.  Every pre-38 standing number was measured on a plant whose
+  COM sat 22% too high; the balance-channel ladder (VERDICTs 18-23: clean ankle
+  meter, true-normal ext_torque, settle kick, free sway) is re-baselined here on
+  the plant it was always about.
+
+  **PREDICTION** (each named before the run):
+  (a) birth COM z = 1.0117 m ± 1 mm; omega = sqrt(g/h) = 3.1135 /s
+      (VERDICT 38's re-anchor, re-measured at the top of the run);
+  (b) LEGACY STAND fall tick in **[400, 470]** — the old reference fall 444
+      scaled by the omega ratio 0.904 (2.8156/3.1135) gives 401, VERDICT 38's
+      own re-measure read 436; the ±10% bracket around the scaled value covers
+      both;
+  (c) LEGACY STAND quiet-window (ticks 10-100) clean ankle meter (VERDICT 18
+      formula: joint_impulses_ang[ji] − cross(r_c, joint_impulses_lin[ji]), r_c
+      = child COM -> joint center, /DT @ axes[ji][0]) reads INSIDE the human
+      envelope [-3.08, +5.24] N m — VERDICT 6's statics must survive the
+      re-base;
+  (d) min endpoint z over the run never below −0.05 m BEFORE the fall tick
+      (nothing born buried, nothing ratcheting early — the corrected frame's
+      birth min endpoint z = −0.0000 m is the floor that bar starts from).
+
+  **FALSIFIER** (named before the run): if the LEGACY STAND quiet-window ankle
+  meter reads OUTSIDE the human envelope [-3.08, +5.24] N m on the corrected
+  plant, VERDICT 6's statics membrane was an artifact of the scrambled geometry
+  — the whole balance ladder re-opens.  Report, do not patch.
+
+  **RUN** (the full battery, 3000 ticks each, DT = 0.001, VERDICT 6 birth pose
+  D_CM = −2.15, ghost-free `make_state` defaults, `contact_force_form` never
+  set):
+    1. LEGACY STAND — VERDICT 23 build: balance_cop ON (PD dead at ankles,
+       VERDICT 20 true-normal ext_torque channel).  Record: fall tick, refusal
+       tick, clean ankle meter (ticks 10-100 mean/std, collapse window
+       100..fall SEPARATE), sacrum sway AP/ML std (quiet), settled N vs M*g,
+       KE at end, min endpoint z trace.
+    2. PINNED CONTROL — same birth, balance_cop OFF (legacy plain PD
+       everywhere), the reference arm that discriminates channel vs plant.
+       Same measurements.
+    3. DROP ARM — dead body, no servo; settles on the W lane.  Record settled
+       N (expect 100% M*g per VERDICT 36's cross-check), KE < 1.0 J at 2999,
+       burial depth (min endpoint z @2999 and min ever).
+    4. Raw per-tick samples -> agent_logs/verdict40_baseline_{stand,pinned,
+       drop}.npz (COM, all endpoint z, per-row N, clean ankle meter, KE).
+
+  **GATE**: `git diff --name-only` shows only `.tmp/`, `agent_logs/`,
+  `docs/JOINT_ATLAS.md`.  No production file modified, no commit.
+
+(OUTCOME appended below after the battery ran.)
+
+---
+
+## VERDICT 40 OUTCOME (2026-08-09) — THE NEW BASELINE HOLDS; THE ONE FAIL IS THE FOOT-LANE STARVATION, RE-PRICED
+
+Raw samples -> `agent_logs/verdict40_baseline_{stand,pinned,drop}.npz`.  T =
+3000 ticks, DT = 0.001 s.  KERNEL CONTACT FLAGS: legacy (contact_force_form
+never set; make_state defaults contact_recovery=3, contact_penalty=2,
+friction=2).  Uncommitted VERDICT 32 kernel untouched.
+
+### Battery numbers
+
+ARM 1 LEGACY STAND (balance_cop ON, VERDICT 23 build):
+  birth COM z 1.0122 m ; omega 3.1127 /s (both PASS prediction a, bar
+  1.0117 +/- 0.001 / 3.1135)
+  fall tick @436  (prediction b [400,470] PASS - EXACTLY VERDICT 38's own
+  re-measure on the same build; the omega-ratio forecast ~401 was too
+  aggressive, 436 lands between old 444 and 401)
+  refusal tick @598 (servo-domain latch; apply() returns at
+  `muscle_controller.py:198`, balance block never runs after)
+  quiet window 10-100 clean ankle meter R +0.006 / L +0.006 N m (std 0.001)
+  - INSIDE [-3.08, +5.24], reproduces VERDICT 38's +0.006 exactly (c) PASS
+  collapse window 100..435 clean ankle meter R +0.010 / L +0.010 (std 0.011)
+  - the free/balance arm keeps the meter clean THROUGH the pre-fall divergence
+  sacrum sway AP 0.762 mm, ML 0.002 mm (human band AP [3.8, 9.5])
+  settled N (foot lane) @100 341.2 N (43.5% M*g), mean 100..435 370.8 N
+  (47.3%) - the polygon lane carries under half the weight (VERDICT 20 caveat)
+  KE @2999 7.187 J (post-fall pile; the servo drove the collapse until the
+  refusal at 598, KE max 339 J @594, so the stand pile does NOT reach the
+  dead-body rest - the pinned and drop arms do)
+  min endpoint z before fall tick -0.1320 m @412 (prediction d FAIL); min
+  ever -0.1635 m @758
+
+ARM 2 PINNED CONTROL (balance_cop OFF, legacy plain PD):
+  fall tick @436  (== LEGACY STAND: the channel does not move the fall tick,
+  VERDICT 22/23's finding reproduces on the corrected plant)
+  refusal tick @842
+  quiet window clean ankle meter R +2.925 / L +2.925 N m (std 1.911) -
+  INSIDE the envelope (the tonic gravity hold ~2.9 N m, VERDICT 6 family)
+  collapse window 100..435 clean ankle meter R +6.782 / L +6.775 (std 0.626)
+  - OUTSIDE the envelope: the pinned build grows the tonic debt as it tips
+  sacrum sway AP 0.147 mm, ML 0.001 mm (the statue)
+  KE @2999 0.161 J (post-fall pile rests cleanly, like the dead body)
+
+ARM 3 DROP (dead body, no servo):
+  fall ruler @420 (head collapse, not a standing fall)
+  settled (1000-2999) total N mean 825.8 N = 105.3% M*g (std 496 N, 5-95 pct
+  654-1000 N - the pile breathes); W-lane share 782.7 N = 99.8% M*g - Newton
+  closes through the W lane (VERDICT 36-style cross-check PASS); the starved
+  foot lane adds ~43 N on top
+  KE @2999 0.140 J (bar < 1.0 PASS); KE max 324.8 J
+  burial: min endpoint z @2999 -0.0884 m (forefoot_L_dist), min ever
+  -0.1593 m - one endpoint below -0.05 at rest (VERDICT 36 rest family: the
+  left forefoot rod end, -0.0860 there vs -0.0884 here)
+
+### Prediction table
+  (a) birth COM z 1.0122 within 1.0117 +/- 0.001 ......... PASS
+      omega 3.1127 vs 3.1135 ................................. PASS
+  (b) LEGACY STAND fall @436 in [400, 470] ................. PASS
+  (c) quiet clean ankle meter +0.006 inside [-3.08, +5.24] . PASS
+  (d) min endpoint z before fall -0.1320 >= -0.05 .......... FAIL
+
+### Falsifier
+NOT fired.  The LEGACY STAND quiet-window clean ankle meter is INSIDE the
+human envelope on the corrected plant.  VERDICT 6's statics membrane SURVIVES
+the geometry re-base - the balance ladder (VERDICTs 6-28) was NOT an artifact
+of the scrambled frame.
+
+### Mechanism read
+The corrected plant reproduces the VERDICT 6-23 standing saga with re-priced
+numbers, as the membrane stated.  The one FAIL is the foot-lane burial: every
+endpoint below -0.05 m before the fall tick is a foot-chain rod end
+(metatarsals/forefoot/tarsals prox+dist, min -0.132 m @tick 412; tibia/fibula
+dist only reach -0.082 m on the last pre-fall tick 435).  This is VERDICT
+27/28's starved-lane disease (K = 1/m_eff polygon rows carrying 43-47% of
+body weight) persisting on the corrected frame, re-priced to about half the
+old-frame depth (old: -0.232 m @440; new: -0.130 m @412).  Fall tick 436 ==
+VERDICT 38's own re-measure and the pinned arm's 436: the channel moves no
+fall tick, and the channel's one real signature - keeping the clean ankle
+meter inside the envelope through the pre-fall divergence (R +0.010 vs the
+pinned +6.78) - reproduces.
+
+### Gate
+`git diff --name-only`: `.tmp/verdict40_baseline.py`, `.tmp/verdict40_analyze.py`,
+`docs/JOINT_ATLAS.md` (plus the pre-existing dirty tree).  No production file
+modified, no commit.
+
+### Next membrane (named, not built)
+VERDICT 41 - THE FOOT-LANE ON THE CORRECTED FRAME: the starved non-W polygon
+lane (K = 1/m_eff rows) still carries 43-47% of body weight and buries the
+foot chain ~13 cm before the fall tick.  Falsifier: on the corrected plant the
+lane's share of M*g is still < 60% at tick 400 -> the starvation is intrinsic
+to the re-based rn geometry, and the burial is a lane failure, not the frame's.
+(That is the falsifier for the corrected plant; whether a stiffer lane heals
+the fall is a SECOND membrane and must be stated separately.)
+
+---
+
+## NUMBERING ADDENDUM (2026-08-09)
+
+The "next membrane" named at the end of VERDICT 40 as "VERDICT 41 - THE
+FOOT-LANE ON THE CORRECTED FRAME" collides with an already-assigned
+VERDICT 41 (THE NEW BIRTH — standing birth pose re-derived on the corrected
+plant, assigned to a concurrent lane before VERDICT 40 reported).  The
+foot-lane membrane is **VERDICT 42**.  VERDICT 40's own text is unchanged;
+read its "VERDICT 41" reference as VERDICT 42.
