@@ -353,11 +353,14 @@ class Engine:
                     # format: PHYSICS#path/to/numbers.json#key
                     parts = assignment.split("#", 2)
                     if len(parts) != 3 or parts[0] != "PHYSICS":
-                        return f"REFUSED (S3): `{assignment}` is not a valid terminal+pointer. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
+                        return f"REFUSED (S3): `{assignment}` is not a valid terminal+pointer. Only PHYSICS, PHYSICS#path/to/numbers.json#key, or THE HUMAN."
                     pointer = f"{parts[1]}#{parts[2]}"
                     t["classification"][v] = {"terminal": "PHYSICS", "pointer": pointer}
+                elif assignment == "PHYSICS":
+                    # bare terminal shorthand (no measurement pointer)
+                    t["classification"][v] = {"terminal": "PHYSICS"}
                 else:
-                    return f"REFUSED (S3): `{assignment}` is not a terminal. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
+                    return f"REFUSED (S3): `{assignment}` is not a terminal. Only PHYSICS, PHYSICS#path/to/numbers.json#key, or THE HUMAN."
             else:
                 # backward compatibility: dict format
                 term = assignment.get("terminal", assignment)
