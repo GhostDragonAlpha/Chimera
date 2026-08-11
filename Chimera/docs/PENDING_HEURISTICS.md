@@ -768,3 +768,15 @@ Wait, looking at the
 - evidence: observation_8a8bfdb0aa23971b
 - sample: Values between parents: False for all tested recombinations. Success rate: 40.0%
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-08-11T07:15:02Z -->
+## H-74: surprise: atom atom_6fca5cb0478c commit fix
+- status: pending
+- kind: surprise  |  count: 3  |  last_seen: 2026-08-10T07:15:57
+- proposed_organ: claude_md
+- evidence: surprise_e27259a1e48e0170, surprise_1d9edc17625ec504, surprise_c80324215ef941b5
+- sample: expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: a8106d4 the wave: seven '
+- sample: expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: e5872c1 PHASE A DONE: 12'
+- sample: expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: 96f2bbe VERDICTs 14-23: '
+- possible_conflict_with: H-61  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

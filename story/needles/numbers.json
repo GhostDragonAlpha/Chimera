@@ -1,0 +1,13 @@
+{
+  "n_needles": 1000000,
+  "seed": 7,
+  "k_start": 2.0,
+  "k_end": 35.0,
+  "frames": 34,
+  "extent_m": 15.0,
+  "needle_size": 0.045,
+  "live_throw_n": 150000,
+  "wallet_ms": 200,
+  "_units": "pass clock k, 2..35 (the run's clock); lu = run units, radius ~14 max",
+  "_matrix": "seed grooves (make_grooves(seed)) + switches.json timeline; grooves.npz is the final-frame reference"
+}

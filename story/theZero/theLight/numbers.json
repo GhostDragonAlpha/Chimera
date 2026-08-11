@@ -1,0 +1,17 @@
+{
+  "n_total": 2000,
+  "n_seed": 32,
+  "r_seed_lu": 0.12,
+  "r_rain_lu": 2.2,
+  "t_ff_count": 2.5,
+  "sample_every": 50,
+  "dt": 0.0005,
+  "t_total_ticks": 8105,
+  "t_total_units": 4.053,
+  "extent_m": 2.5,
+  "grain_size": 0.07,
+  "seed": 20260806,
+  "rng_rain": 7,
+  "_units": "lu = light units (R_WALL=0.05); t in ticks; m=q=1",
+  "_derived_from": "LightEngine.constants G, R_WALL, R_BOND, R_C, DT"
+}

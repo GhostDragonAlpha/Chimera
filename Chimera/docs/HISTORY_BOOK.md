@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1732 entries** across 8 chapters.
+**1742 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*638 entries; showing 40.*
+*642 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*460 entries; showing 40.*
+*463 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1238,7 +1238,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*50 entries; showing 40.*
+*53 entries; showing 40.*
 
 ### Ground_Sand_Sound promoted to tier 1
 <sub>`promo:Ground_Sand_Sound:1`</sub>
@@ -1330,115 +1330,115 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### subsystem/Inventory promoted to tier 1
+<sub>`promo:subsystem/Inventory:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### audio_visual_sync/telemetry_accessors promoted to tier 1
+<sub>`promo:audio_visual_sync/telemetry_accessors:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### subsystem/VFX promoted to tier 1
+<sub>`promo:subsystem/VFX:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> ADotCharacter                          30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> AErisaidActor                          30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     22 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     30 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry     11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
+> audio_visual_sync/report_telemetry     15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access     77 reps  100%  streak  8  battery  10 (3 pie)  tier 0/1
+> audio_visual_sync/telemetry_access    105 reps  100%  streak  8  battery  10 (3 pie)  tier 1/1
 
 ### Beat_Scripts_Tautology_Fix — ledger standing
 <sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
 
-> Beat_Scripts_Tautology_Fix             11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Beat_Scripts_Tautology_Fix             15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                             11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Demo_Level                             15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Diagnose — ledger standing
 <sub>`repstat:Diagnose`</sub>
 
-> Diagnose WeightShift 2/4 test fail     11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Diagnose WeightShift 2/4 test fail     15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### FFootstepEvent — ledger standing
 <sub>`repstat:FFootstepEvent`</sub>
 
-> FFootstepEvent                         22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> FFootstepEvent                         30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### FStar — ledger standing
 <sub>`repstat:FStar`</sub>
 
-> FStar                                  22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> FStar                                  30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                              22 reps  100%  streak  8  battery   5 (0 pie)  tier 0/3
+> Game_Feel                              30 reps  100%  streak  8  battery   5 (0 pie)  tier 0/3
 
 ### granular_matter — ledger standing
 <sub>`repstat:granular_matter`</sub>
 
-> granular_matter                        22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> granular_matter                        30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     374 reps  100%  streak  8  battery  34 (0 pie)  READY
+> Ground_Sand_Sound                     510 reps  100%  streak  8  battery  34 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                    11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Ground_Sand_Surface                    15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Malcolm_Envelope — ledger standing
 <sub>`repstat:Malcolm_Envelope`</sub>
 
-> Malcolm_Envelope                       77 reps   96%  streak  3  battery  18 (8 pie)  tier 0/2
+> Malcolm_Envelope                      105 reps   96%  streak  1  battery  18 (8 pie)  tier 0/2
 
 ### materialization — ledger standing
 <sub>`repstat:materialization`</sub>
 
-> materialization                        22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> materialization                        30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### matter_library — ledger standing
 <sub>`repstat:matter_library`</sub>
 
-> matter_library                         22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> matter_library                         30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### MCP_Pathways — ledger standing
 <sub>`repstat:MCP_Pathways`</sub>
 
-> MCP_Pathways                           11 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> MCP_Pathways                           15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### planet_averages — ledger standing
 <sub>`repstat:planet_averages`</sub>
 
-> planet_averages                        22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
-
-### Shelter_Habitat_Lighting — ledger standing
-<sub>`repstat:Shelter_Habitat_Lighting`</sub>
-
-> Shelter_Habitat_Lighting               22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
-
-### Shelter_Habitat_Materials — ledger standing
-<sub>`repstat:Shelter_Habitat_Materials`</sub>
-
-> Shelter_Habitat_Materials              22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
-
-### Sky_Atmosphere_Scattering — ledger standing
-<sub>`repstat:Sky_Atmosphere_Scattering`</sub>
-
-> Sky_Atmosphere_Scattering              22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> planet_averages                        30 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1590,7 +1590,7 @@
 - **X** — 11 entries: `professor_grade_ac905fba474a25d0`, `professor_grade_82edc8d7f573c657`, `professor_grade_b938fb4036ab29b8`, `professor_grade_09a3128fe31df8dd`, `professor_grade_ce42b26ebc8e6140`, `professor_grade_350c4b5e69351cc1` ...
 - **audio_visual_sync/report_telemetry** — 4 entries: `observation_153fd8cfaaf2cae1`, `elim_b39ca7951a8cd8f8`, `observation_727df84d60f7d526`, `repstat:audio_visual_sync/report_telemetry`
 - **audio_visual_sync/telemetry_access** — 1 entry: `repstat:audio_visual_sync/telemetry_access`
-- **audio_visual_sync/telemetry_accessors** — 4 entries: `observation_b7a437ed43c79e13`, `elim_65f84a195c149377`, `elim_71b935361cee2319`, `elim_043bb7affad30ff4`
+- **audio_visual_sync/telemetry_accessors** — 5 entries: `observation_b7a437ed43c79e13`, `elim_65f84a195c149377`, `elim_71b935361cee2319`, `elim_043bb7affad30ff4`, `promo:audio_visual_sync/telemetry_accessors:1`
 - **audio_visual_sync_report_telemetry_fix** — 1 entry: `observation_700fa185592de247`
 - **audio_visual_sync_telemetry_fix** — 1 entry: `observation_5df7cfceb2a42bff`
 - **granular_matter** — 1 entry: `repstat:granular_matter`
@@ -1605,12 +1605,14 @@
 - **subsystem/Economy** — 1 entry: `promo:subsystem/Economy:1`
 - **subsystem/Environment** — 1 entry: `promo:subsystem/Environment:1`
 - **subsystem/Flight** — 1 entry: `promo:subsystem/Flight:1`
+- **subsystem/Inventory** — 1 entry: `promo:subsystem/Inventory:1`
 - **subsystem/Materials** — 1 entry: `promo:subsystem/Materials:1`
 - **subsystem/PCG** — 1 entry: `promo:subsystem/PCG:1`
 - **subsystem/Ships** — 1 entry: `promo:subsystem/Ships:1`
 - **subsystem/Stations** — 1 entry: `promo:subsystem/Stations:1`
 - **subsystem/Suit** — 1 entry: `promo:subsystem/Suit:1`
 - **subsystem/Travel** — 1 entry: `promo:subsystem/Travel:1`
+- **subsystem/VFX** — 1 entry: `promo:subsystem/VFX:1`
 - **subsystem/root** — 1 entry: `promo:subsystem/root:1`
 - **visual_validation_phenotypic_analysis** — 1 entry: `observation_3a35d3db21c10a8a`
 - **witness_rig** — 1 entry: `elim_41064db78ef9a045`

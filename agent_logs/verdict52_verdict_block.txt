@@ -1,0 +1,25 @@
+### VERDICT 52 — THE REAL ANKLE (EOM-derived transient cap)
+
+Static clamp: 65.4 N/row. Mean derived caps across 12 rows:
+
+| Row | Mean C_j (N) | Std (N) |
+| tarsals_L[0] | 138 | 166 |
+| tarsals_L[1] | 141 | 177 |
+| tarsals_L[2] | 146 | 206 |
+| tarsals_L[3] | 162 | 295 |
+| tarsals_L[4] | 146 | 208 |
+| tarsals_L[5] | 133 | 166 |
+| tarsals_R[6] | 153 | 203 |
+| tarsals_R[7] | 150 | 196 |
+| tarsals_R[8] | 147 | 189 |
+| tarsals_R[9] | 137 | 166 |
+| tarsals_R[10] | 132 | 164 |
+| tarsals_R[11] | 151 | 192 |
+
+Fall ticks: A=87, B=87. Burial: A=0.0%, B=0.0%
+
+FALSIFIER NOT FIRED. Mean caps (132-162 N) exceed 80 N prediction by 2x+. Both chains topple at tick 87 with zero burial, confirming the pose is marginally unstable regardless of contact-force budget.
+
+**INHERITANCE:** Per-point force capacity is not the binding constraint for crawl stability. The binding constraint is POSTURAL: COM sits too far forward relative to the support polygon. VERDICT 53 (COP placement analysis) feeds into VERDICT 49 (COP-placement torque bounds).
+
+GATE: git diff --name-only shows only .tmp/, agent_logs/, docs/JOINT_ATLAS.md.

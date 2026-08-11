@@ -221,10 +221,14 @@ dark and no blind reader is possible. **"Which term?"** is never legal — `next
 ## 1 · ORIENT — read the state, never guess it
 
 ```bash
-python story/grow.py --read --depth 2     # the universe in three sentences
-python story/timeline.py                  # the story in the order it happens
-python tools/methodology_gate.py          # all 42 membranes, 8 columns
+python tools/orient.py              # THE one live read: engine tree + verdict ledger + git
+python tools/verdict.py status      # the Rule-0 biomechanics membranes, open + closed
 ```
+
+Through the engine (MCP — `ChimeraEngine/MCP_ENGINE.md`, registered for opencode in
+`opencode.json`): `orient` first, every time; `next` hands you the term — you do not pick it.
+(The older `story/grow.py --read`/`story/timeline.py` reads were removed with the retired
+story/task-board lane; `tools/orient.py` reads the LIVE stores instead.)
 
 Piece #109 of the inventory, and it governs this whole document: **a claim about INTENT does not
 rot; a claim about STATE rots by construction.** So nothing here copies a command's output — it
@@ -541,24 +545,19 @@ that failed to publish; it walks the last good file on disk and reports green. `
 while `chain_witness` reported *"42 working, 0 broken."*
 
 ```bash
-python story/grow.py                  # 1. the GENERATOR must exit clean. Never pipe it to /dev/null
-python tools/chain_witness.py         # 2. every membrane derives, emits, moves, closes
-python story/folding.py audit         # 3. units: what a law may connect to
+python tools/chain_witness.py         # 1. every membrane derives, emits, moves, closes
+python tools/port_tests.py && python tools/primitive_tests.py && python tools/action_tests.py
+                                      # 2. one instruction at a time, against a closed form
+python tools/verdict.py status        # 3. the Rule-0 membranes: statement/prediction/falsifier
 python tools/methodology_gate.py      # 4. form / derives / emits / free / units / one-name / typed / predicts
-python story/timeline.py --write      # 5. containment vs chronology — AND RE-STAMP
-python tools/slider.py                # 6. move a free number — whatever does not move is TYPED
+python tools/orient.py                # 5. the engine gates + the hierarchy, as they stand
 ```
 
-**Step 5 must come after step 1, and it is not a preference either.** `grow.py` and
-`timeline.py --write` are **two writers to one file**: `grow` rebuilds every `numbers.json` from
-`derive()`, which does not know about `timeline_serial`, so **every `grow.py` run silently strips
-the timeline stamps off all 42 membranes.** Nothing complains — the numbers are still correct, the
-witness still passes, the gate still scores 42/42, and the story's chapter order has quietly lost
-its consumer. Measured while consolidating these documents, on the very run that produced them.
-
-**When a membrane fails a column, suspect the COLUMN once before suspecting the membrane.** The
-gate written to catch forty-two membranes made **four of its own bugs in a day**, every one of them
-a check applied outside the shape it was written for. There is no exemption for tools.
+**Step 5 must come after the rest, and it is not a preference either.** The gate that scores the
+live engine must see the tree as the work left it. When a membrane fails a column, suspect the
+COLUMN once before suspecting the membrane — the gate written to catch forty-two membranes made
+**four of its own bugs in a day**, every one of them a check applied outside the shape it was
+written for. There is no exemption for tools.
 
 **And a systematic pattern is ONE decision, not N edits.** Forty-five flagged pairs across the tree
 were a single choice. Count the pattern before fixing instances.

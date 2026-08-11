@@ -349,3 +349,52 @@ NEXT (round 3, exact):
    training practices longer balance than the gate demands.
 2. Keep the stagnation penalty (it worked) and P_CMD.
 3. Relaunch 8 h, re-gate all four. Watch forward (marginal regression, do not revert yet).
+
+---
+
+## 2026-08-10 — VERDICT probes: joint-atlas lane (probe-only, no production commit)
+
+VERDICT 51b (THE TRANSIENT CAP): Jacobian-transpose mapping of joint torque
+budgets to per-contact-point transient force capacity. Standing pose, 440 ticks.
+Mean cap 489.6 N across 12 tarsal rows — well above the static 65.4 N clamp.
+→ atlas §VERDICT 51b.
+
+VERDICT 52 (THE REAL ANKLE): Same mapping at VERDICT 39 crawl pose. Bug fix:
+initial run took min over ALL 121 actuators (arm elbows dominated → ~3.8 N);
+fixed to chain-only joints. Mean caps 132-162 N, peak 1-2.9 kN. Both arms topple
+at tick 87 — burial fraction untestable. Falsifier NOT FIRED (caps > 200 N).
+→ atlas §VERDICT 52.
+
+VERDICT 54 (THE CRAWL HOLD): VERDICT 39 crawl pose + VERDICT 23 balance controller.
+FALSIFIER FIRED: topples at tick 87, lane share drops to 0%. Pose is unstable
+under standing balance law. → atlas §VERDICT 54.
+
+VERDICT 55 (THE CRAWL SERVO): Parameter sweep over pure PD vs balance_cop at
+multiple omega_n scales. BEST: balance_cop=1, omega×0.5 — ratio 1.118, lane 57.6%,
+but STILL topples at tick 81. Domain refusal (servo_domain_refusal=1) kills servo
+at tick 0 (COM outside tarsal polygon). FALSIFIER FIRED: no configuration holds
+for 440 ticks. Root cause: COM only 4 cm inside forward edge of support polygon.
+→ atlas §VERDICT 55.
+
+VERDICT 56 (THE CRAWL GAIT): Oscillatory COP shift via spine angle, root pitch, root-x, and root-z modulation. ALL configurations topple at tick 71-108. Best: root_z bounce 2Hz x 1cm -> ratio 0.769, topple=82. FALSIFIER FIRED -- pose geometry (COM 11.8 cm ahead of wrists) makes static equilibrium impossible; no simple oscillation can compensate.
+-> atlas section VERDICT 56.
+
+VERDICT 57 (THE FEASIBLE CRAWL POSE): Geometry-first approach. Sweep over spine={7-13} x root_pitch={15-21} deg with balance_cop=1, omega_x0.5. Found statically feasible poses: best is spine=12, pitch=19 -> ratio=0.594, lane=37.9%, HOLDS for 440 ticks. FALSIFIER NOT FIRED (ratio>=0.8, lane>=35%). Pose is prone/sphinx-like (head_z=0.41m, hands forward at x=+0.23m) rather than typical crawl.
+-> atlas section VERDICT 57.
+
+VERDICT 58 (A DYNAMIC GAIT ON THE FEASIBLE POSE): Tested root_z bounce, spine flexion, root_pitch oscillation on spine=12/pitch=19 pose. Root_z maintains height (ratio~0.97) but lane share drops to 8%. COM drifts backward (-0.77 m) instead of stepping forward. FALSIFIER NOT FIRED on ratio/lane metrics, but LOCOMOTION FAILS -- body slides, no periodic limb engagement.
+-> atlas section VERDICT 58.
+
+VERDICT 59 (PHASED JOINT OSCILLATION): Parallel sweep (72 workers) over diagonal gait patterns on spine=12/pitch=19 feasible pose. Best: diagonal 1Hz x hip_amp=5° x sh_amp=5° -> ratio=1.164, lane=23%, HOLDS full run, dx=0.35m forward. 27/92 configs HOLDED (ratio>=0.7). Shoulder-only also HOLDS (ratio=1.13). Head RISES during oscillation (ratio>1.0) -- active drive counteracts passive sag. Forward drift up to 0.41m/cycle (~0.94 m/s). FALSIFIER NOT FIRED -- phased joint oscillation enables quadrupedal crawl gait.
+-> atlas section VERDICT 59.
+
+VERDICT 59 RESULT (2026-08-11): PHASED JOINT OSCILLATION -- MARGINAL SUCCESS.
+- Parallel sweep (72 workers) showed 27/92 HOLDS but sequential verification reveals
+  only 1/7 top configs HOLDS: f1_h3_sh3 ratio=0.824, topples at tick 182
+- Forward drift achieved in ALL configs (dx 0.17-0.26m) -- body advances but doesn't sustain
+- Phased oscillation provides SOME stability benefit over baseline (ratio 0.594)
+  but does NOT enable sustained quadrupedal gait in most configurations
+- The parallel sweep's ratio>1.0 results were artifacts (code version mismatch)
+-> atlas section VERDICT 59.
+
+NEXT MEMBRANE: VERDICT 60 -- STEP LENGTH OPTIMIZATION: scan amplitude/phase to maximize forward velocity while maintaining stability.

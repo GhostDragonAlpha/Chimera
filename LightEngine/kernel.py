@@ -769,9 +769,13 @@ class VelocityVerlet:
     wall pair.
     """
 
-    def __init__(self, n: int, use_cuda: bool | None = None):
+    def __init__(self, n: int, use_cuda: bool | None = None,
+                 use_modifier: bool = False):
         self.n = int(n)
         self.use_cuda = (use_cuda if use_cuda is not None else _cuda_available)
+        # THE MODIFIER: evaluate DRAW + RESISTANCE in ONE tree walk instead of
+        # two passes (LightEngine.modifier.compute_forces_mod).
+        self.use_modifier = bool(use_modifier)
         self.pos = np.zeros((n, 3), dtype=np.float32)
         self.vel = np.zeros((n, 3), dtype=np.float32)
         self.acc = np.zeros((n, 3), dtype=np.float32)
@@ -803,6 +807,12 @@ class VelocityVerlet:
 
     def compute_acceleration(self):
         """Compute a = F(x, v) at the current state."""
+        if self.use_modifier:
+            from LightEngine.modifier import compute_forces_mod
+            self.acc, power = compute_forces_mod(
+                self.pos, self.vel, use_cuda=self.use_cuda)
+            self.last_radiated_power = float(power)
+            return self.acc
         if self.use_cuda:
             threads = 256
             blocks = (self.n + threads - 1) // threads
@@ -827,6 +837,21 @@ class VelocityVerlet:
     def step(self, dt: float = DT):
         """Advance one velocity-Verlet tick and account for radiated energy."""
         dt = float(dt)
+        if self.use_modifier:
+            from LightEngine.modifier import compute_forces_mod
+            free = ~self.pin_mask
+            # 1. half-kick + drift using a(t)
+            self.vel[free] += 0.5 * dt * self.acc[free]
+            self.pos[free] += dt * self.vel[free]
+            # 2. ONE modified tree walk: DRAW + RESISTANCE at new positions
+            self.acc, power = compute_forces_mod(
+                self.pos, self.vel, use_cuda=self.use_cuda)
+            # 3. final half-kick using a(t+dt)
+            self.vel[free] += 0.5 * dt * self.acc[free]
+            self.vel[~free] = 0.0
+            self.last_radiated_power = float(power)
+            self.radiated_energy += float(power) * dt
+            return
         if self.use_cuda:
             threads = 256
             blocks = (self.n + threads - 1) // threads

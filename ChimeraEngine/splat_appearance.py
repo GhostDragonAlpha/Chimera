@@ -164,6 +164,8 @@ def membrane_buffer(term: str, t: float = 1.0) -> np.ndarray | None:
     key = (term, round(t, 6))  # round to avoid float-key noise
     if key in _TCACHE:
         return _TCACHE[key].copy()
+    if len(_TCACHE) > 4096:          # safety net under the playback prune; never unbounded
+        _TCACHE.clear()
 
     membranes = _discover()
     folder = membranes.get(term)
@@ -222,6 +224,74 @@ def sun_direction(term: str, t: float = 1.0) -> tuple | None:
             float(s[2]) / float(np.linalg.norm(s)))
 
 
+def membrane_module(term: str):
+    """The loaded physics module for a membrane, or None. Triggers discovery once."""
+    _discover()
+    return _MODULES.get(term)
+
+
+def membrane_keymap(term: str) -> dict:
+    """The membrane's deck KEYMAP (keycode -> (action, label)), or {} for a quiet membrane."""
+    mod = membrane_module(term)
+    if mod is None:
+        return {}
+    return dict(getattr(mod, "KEYMAP", None) or {})
+
+
+def membrane_state(term: str, t: float = 1.0) -> dict | None:
+    """The matrix state machine's readout at t: per-state row counts, or None."""
+    mod = membrane_module(term)
+    if mod is None or not hasattr(mod, "state_readout"):
+        return None
+    try:
+        return mod.state_readout(_NUMBERS.get(term, {}), t)
+    except Exception:
+        return None
+
+
+def membrane_handle_key(term: str, code: str, down: bool = True,
+                        t: float = 1.0) -> dict | None:
+    """Forward one key to a membrane's deck controller. Returns its command, or None."""
+    mod = membrane_module(term)
+    if mod is None or not hasattr(mod, "handle_key"):
+        return None
+    try:
+        return mod.handle_key(code, down=down, t=t, nums=_NUMBERS.get(term, {}))
+    except Exception:
+        return None
+
+
+def solo(term: str, state) -> dict:
+    """Set a membrane's solo channel WITHOUT dropping its loaded module.
+
+    `invalidate(term)` pops the module, which would wipe the very state we are setting
+    (the module is re-imported fresh next call). The solo lives in the module, so the
+    buffer caches are dropped and the module is kept -- the next emit re-classifies and
+    re-colours with the new channel.
+    """
+    mod = membrane_module(term)
+    if mod is None or not hasattr(mod, "set_solo"):
+        return {"applied": False, "term": term}
+    mod.set_solo(state)
+    _CACHE.pop(term, None)
+    for k in [k for k in _TCACHE if k[0] == term]:
+        del _TCACHE[k]
+    return {"applied": True, "term": term, "solo": state}
+
+
+def prune_time_cache(term: str, keep: int = 8):
+    """Keep only the `keep` most recent t-samples cached for a membrane.
+
+    Playback re-emits at a new t every frame, and every new (term, t) pair lands in
+    `_TCACHE`; a ten-second play at 60 fps would otherwise grow the cache by hundreds of
+    buffers the needle will never revisit. Keeping the nearest t's preserves fast
+    scrub-back while bounding memory.
+    """
+    keys = sorted((k for k in _TCACHE if k[0] == term), key=lambda k: k[1])
+    for k in keys[:-keep]:
+        del _TCACHE[k]
+
+
 def invalidate(term: str | None = None):
     """Clear caches so the next call re-imports and re-emits. None = clear all.
 
@@ -258,6 +328,22 @@ def invalidate(term: str | None = None):
         _MODULES.pop(term, None)
         _NUMBERS.pop(term, None)
         _CAM_DIST.pop(term, None)
+        # A dropped module must be REPLACED, not just removed. The discovery cache
+        # stays warm, so the next scene_buffer() would find the folder but no module
+        # and render nothing (black frame). Re-import the term's module right here
+        # so its FILE-BACKED state -- the solo channel, switches.json -- reloads on
+        # the next emit, which is exactly what a membrane that mutates its own
+        # matrix needs after an operator key.
+        folder = _discover().get(term)
+        if folder is not None:
+            mod = _load_module(folder)
+            if mod is not None:
+                _MODULES[term] = mod
+                nj = folder / "numbers.json"
+                try:
+                    _NUMBERS[term] = json.loads(nj.read_text()) if nj.exists() else {}
+                except Exception:
+                    _NUMBERS[term] = {}
     return dropped
 
 

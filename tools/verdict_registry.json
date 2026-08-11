@@ -1,0 +1,32 @@
+{
+  "next": 63,
+  "verdicts": {
+    "61": {
+      "closed_at": "2026-08-10T22:05:45+00:00",
+      "created_at": "2026-08-10T21:56:15+00:00",
+      "evidence": "tools/probes/state_change_economy.py: zero-topple settled frame does >=10W element-touches (occ mask, flatnonzero, top_crit fill, d_l/d_r, masks, rng.random(W)); at W=1281 ~12810 touches to confirm nothing moved. Wall-clock flat (12->17us) is numpy call-overhead masking the O(W) scan, not the economy. Physics side PASSES: wake = <=26 sweeps, <=9 topples, ~flat in W -- avalanche is local.",
+      "falsifier": "steady-state cost scales with N instead of with change, or waking one grain wakes the whole field",
+      "note": "Economy is achievable but not delivered: the fix is a dirty-set sweep that skips quiet columns. Next verdict names that mechanism and proves it.",
+      "number": 61,
+      "prediction": "a million settled grains hold at >200 FPS with zero per-frame force work, and resuming from rest costs only the wake region's neighbors",
+      "probe": "tools/probes/state_change_economy.py",
+      "result": "FALSIFIED",
+      "statement": "a grain field's steady state costs ~nothing to hold; only state changes spend compute, so the settled world renders free at high frame rate",
+      "status": "CLOSED",
+      "term": ""
+    },
+    "62": {
+      "closed_at": null,
+      "created_at": "2026-08-10T22:05:53+00:00",
+      "evidence": null,
+      "falsifier": "a dirty-set hold still touches O(W) columns, or the dirty-set sweep produces different physics (topple counts, settled field) than the full-field reference on the same seed",
+      "number": 62,
+      "prediction": "a dirty-set hold on a settled field touches <1% of columns and costs ~constant wall-clock across W (161->1281), while a wake of k topples touches only its neighborhood -- total topple/state semantics identical to the full-field sweep",
+      "probe": "tools/probes/dirty_set_economy.py",
+      "result": null,
+      "statement": "a dirty-set grain sweep makes the settled world hold at ~0 cost: a frame touches only the wake mask's columns, so the settled field renders O(change) not O(W)",
+      "status": "OPEN",
+      "term": ""
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+ "probe": "measured_floor_1dof",
+ "M_EFF": 16.0,
+ "crush_per_point_N": 3922.66,
+ "D_PAD": 0.0104,
+ "D_BREAK_note": "Wearing reports endpoints only; break at midpoint of travel -- recorded not tuned",
+ "results": {
+  "a_constant_32kN_m": {
+   "crush_25xBW": {
+    "peak_penetration_m": 0.1702,
+    "rest_ke_tail_max_J": null
+   },
+   "rest_settle": {
+    "peak_penetration_m": 0.0049,
+    "rest_ke_tail_max_J": 0.0
+   }
+  },
+  "b_constant_212kN_m": {
+   "crush_25xBW": {
+    "peak_penetration_m": 0.0508,
+    "rest_ke_tail_max_J": null
+   },
+   "rest_settle": {
+    "peak_penetration_m": 0.0007,
+    "rest_ke_tail_max_J": 0.0
+   }
+  },
+  "c_measured_bilinear_rigid": {
+   "crush_25xBW": {
+    "peak_penetration_m": 0.0155,
+    "rest_ke_tail_max_J": null
+   },
+   "rest_settle": {
+    "peak_penetration_m": 0.0033,
+    "rest_ke_tail_max_J": 0.0
+   }
+  }
+ }
+}

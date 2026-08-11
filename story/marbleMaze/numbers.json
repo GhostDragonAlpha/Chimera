@@ -1,0 +1,19 @@
+{
+  "tilt_max_passes": 240,
+  "dt": 0.08,
+  "substeps": 4,
+  "damp": 0.985,
+  "gravity": 9.81,
+  "max_tilt_deg": 26,
+  "tilt_step_deg": 6,
+  "bounce": 0.5,
+  "speed_cap": 1.6,
+  "extent_m": 2.6,
+  "marble_r": 0.16,
+  "wall_t": 0.05,
+  "goal_r": 0.30,
+  "start": [0.0, 2.6],
+  "goal": [0.0, -2.6],
+  "_units": "lu = table units (table is 6.2 x 6.2); t = marble passes, dt s each",
+  "_record": "tilt.json is the operator's input timeline -- the record IS the matrix"
+}

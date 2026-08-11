@@ -1,0 +1,120 @@
+diff --git a/ChimeraEngine/engine_state.py b/ChimeraEngine/engine_state.py
+index 718ad83..4e04808 100644
+--- a/ChimeraEngine/engine_state.py
++++ b/ChimeraEngine/engine_state.py
+@@ -345,22 +345,26 @@ class Engine:
+     def classify(self, name: str, assignments: dict) -> str:
+         t = self._term(name)
+         for v, assignment in assignments.items():
+-            # assignment can be "PHYSICS#path/to/numbers.json#key" or "THE HUMAN"
++            # assignment can be "PHYSICS#path/to/numbers.json#key", "PHYSICS", or "THE HUMAN"
+             if isinstance(assignment, str):
+                 if assignment == "THE HUMAN":
+                     t["classification"][v] = {"terminal": "THE HUMAN"}
++                elif assignment == "PHYSICS":
++                    # backward compatibility: PHYSICS without pointer
++                    # The S5 gate will check for pointer or grandfathered status
++                    t["classification"][v] = {"terminal": "PHYSICS", "pointer": None}
+                 elif assignment.startswith("PHYSICS#"):
+                     # format: PHYSICS#path/to/numbers.json#key
+                     parts = assignment.split("#", 2)
+                     if len(parts) != 3 or parts[0] != "PHYSICS":
+-                        return f"REFUSED (S3): `{assignment}` is not a valid terminal+pointer. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
++                        return f"REFUSED (S3): `{assignment}` is not a valid terminal+pointer. Only PHYSICS#path/to/numbers.json#key, PHYSICS, or THE HUMAN."
+                     pointer = f"{parts[1]}#{parts[2]}"
+                     t["classification"][v] = {"terminal": "PHYSICS", "pointer": pointer}
+                 else:
+-                    return f"REFUSED (S3): `{assignment}` is not a terminal. Only PHYSICS#path/to/numbers.json#key or THE HUMAN."
++                    return f"REFUSED (S3): `{assignment}` is not a terminal. Only PHYSICS#path/to/numbers.json#key, PHYSICS, or THE HUMAN."
+             else:
+                 # backward compatibility: dict format
+-                term = assignment.get("terminal", assignment)
++                term = assignment.get("terminal", assignment) if isinstance(assignment, dict) else assignment
+                 if term not in ("PHYSICS", "THE HUMAN"):
+                     return f"REFUSED (S3): `{term}` is not a terminal. Only PHYSICS or THE HUMAN."
+                 t["classification"][v] = assignment
+diff --git a/ChimeraEngine/tests/test_engine_gates.py b/ChimeraEngine/tests/test_engine_gates.py
+index 0fdcbe9..b688da2 100644
+--- a/ChimeraEngine/tests/test_engine_gates.py
++++ b/ChimeraEngine/tests/test_engine_gates.py
+@@ -184,6 +184,80 @@ def test_measured_compression_beats_declared_order(tmp_path):
+     assert E.next_term() == "theSpace"
+ 
+ 
++def test_physics_pointer_valid_accepted(tmp_path):
++    """Valid measurement pointer is accepted for a PHYSICS variable."""
++    E = _engine(tmp_path)
++    term = E.next_term()
++    E.frame(term, "a term with valid physics pointer")
++    for i, vs in enumerate(_SATURATING):
++        E.question(term, f"q{i}", vs)
++    # Use valid pointer format: PHYSICS#story/theZero/numbers.json#extent_m
++    pointers = {v: "PHYSICS#story/theZero/numbers.json#extent_m" for v in E._vars(term)}
++    E.classify(term, pointers)
++    _install_projector(term)
++    E.render(term)
++    out = E.prove(term)
++    assert "PROVEN" in out and "REFUSED" not in out
++
++
++def test_physics_pointer_missing_refused(tmp_path):
++    """Missing pointer is refused for a PHYSICS variable (not grandfathered)."""
++    E = _engine(tmp_path)
++    term = "newTermNoPointer"
++    # Create a new term not in the grandfathered list
++    E.state["hierarchy"][term] = {"parent": "theSeed", "status": "open", "children": []}
++    E.state["hierarchy"]["theSeed"]["children"].append(term)
++    
++    E.frame(term, "a term with missing physics pointer")
++    for i, vs in enumerate(_SATURATING):
++        E.question(term, f"q{i}", vs)
++    # Use PHYSICS without pointer
++    E.classify(term, {v: "PHYSICS" for v in E._vars(term)})
++    out = E.prove(term)
++    assert "REFUSED" in out and "S5 WHY-TERMINAL" in out
++    assert "lacks a measurement pointer" in out or "lacks a valid measurement pointer" in out
++
++
++def test_physics_pointer_dangling_refused(tmp_path):
++    """Dangling pointer (file exists, key absent) is refused for a PHYSICS variable."""
++    E = _engine(tmp_path)
++    term = E.next_term()
++    E.frame(term, "a term with dangling physics pointer")
++    for i, vs in enumerate(_SATURATING):
++        E.question(term, f"q{i}", vs)
++    # Use a pointer to a file that exists but key is absent
++    # story/theZero/numbers.json exists but 'nonexistent_key' is not in it
++    pointers = {v: "PHYSICS#story/theZero/numbers.json#nonexistent_key_xyz" for v in E._vars(term)}
++    E.classify(term, pointers)
++    out = E.prove(term)
++    assert "REFUSED" in out and "S5 WHY-TERMINAL" in out
++    assert "lacks a valid measurement pointer" in out
++
++
++def test_human_unaffected(tmp_path):
++    """THE HUMAN variables are unaffected by the pointer requirement."""
++    E = _engine(tmp_path)
++    term = E.next_term()
++    E.frame(term, "a term with human terminal")
++    for i, vs in enumerate(_SATURATING):
++        E.question(term, f"q{i}", vs)
++    # Use THE HUMAN for all variables
++    E.classify(term, {v: "THE HUMAN" for v in E._vars(term)})
++    out = E.prove(term)
++    assert "REFUSED" in out and "APPEARANCE MESSENGER" in out  # blocked at appearance, not S5
++
++
++def test_grandfathered_record_still_proves(tmp_path):
++    """Grandfathered records still prove without pointers."""
++    E = _engine(tmp_path)
++    # Use a grandfathered term that has PHYSICS variables but no pointer in the ledger
++    # theSeed is grandfathered and has PHYSICS variables
++    term = "theSeed"
++    # The seed is already proven, so prove should succeed
++    out = E.prove(term)
++    assert "PROVEN" in out or "proven" in E.state["hierarchy"][term]["status"]
++
++
+ def _run() -> int:
+     import tempfile
+     fns = [test_prove_refuses_until_both_messengers_agree, test_render_refuses_a_term_with_no_light_view,

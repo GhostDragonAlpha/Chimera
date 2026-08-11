@@ -9,13 +9,18 @@ plain-words line, its derived numbers, and a link to its live view. Zero hand-ed
 
 FALSIFIER: A proven term is missing from the gallery — the regeneration missed a membrane.
 
-Run: python ChimeraEngine/gallery.py
-Output: ChimeraEngine/gallery.html
+Run: python ChimeraEngine/gallery.py [port]       (default 8765)
+The index is regenerated from the ledger, then served -- `/` is the gallery, `/live` is the
+LIVE interactive viewer (live_viewer.handle), both on 127.0.0.1 ONLY (the studio's bind rule:
+reaches the agent + the browser, nobody else).  The density-lane rewrite (272f87c) stripped
+the server; this restores it so `tools/gallery_env.ps1` and the /live route work again.
 
 Author: Agent (DeepSeek V4 Pro — density lane, 2026-08-04)
 """
 from __future__ import annotations
 
+import functools
+import http.server
 import json
 import sys
 from pathlib import Path
@@ -24,6 +29,12 @@ _HERE = Path(__file__).resolve().parent
 _OUT = _HERE / "gallery.html"
 sys.path.insert(0, str(_HERE.parent))
 sys.path.insert(0, str(_HERE))
+
+try:
+    import live_viewer                                        # the LIVE interactive viewer (mounted below)
+except Exception as _e:
+    live_viewer = None
+    print(f"[gallery] live viewer unavailable: {_e}")
 
 import splat_appearance as sa
 
@@ -150,3 +161,26 @@ def _fmt(v):
 
 if __name__ == "__main__":
     build()
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
+    _HERE.mkdir(parents=True, exist_ok=True)
+
+    class _Handler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            if live_viewer and live_viewer.handle(self):      # /live /stream /input /scene /key /terms ...
+                return
+            if self.path.split("?")[0] in ("/", "/index.html", "/gallery.html"):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                self.wfile.write(_OUT.read_bytes())
+                return
+            return super().do_GET()
+
+        def log_message(self, *a):                             # quiet: one server, no per-request noise
+            pass
+
+    handler = functools.partial(_Handler, directory=str(_HERE))
+    with http.server.ThreadingHTTPServer(("127.0.0.1", port), handler) as srv:
+        print(f"gallery at http://127.0.0.1:{port}   (index + /live; serving {_HERE})")
+        srv.serve_forever()

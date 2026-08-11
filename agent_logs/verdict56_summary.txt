@@ -1,0 +1,12 @@
+VERDICT 56 SUMMARY
+======================================================================
+
+Static equilibrium: NOT FEASIBLE (tarsals_L needs -89 N)
+All oscillatory strategies FAIL — topple at tick 71-108
+Best: root_z bounce 2Hz x 1cm -> ratio 0.769, topple=82
+
+INHERITANCE: The VERDICT 39 crawl pose is geometrically unsuitable for
+any static or simple-oscillation hold. A viable quadrupedal stance requires
+COM within the support polygon (behind wrist contacts). Feeds into VERDICT 49
+(COP-placement torque bounds) and the broader question of what pose geometry
+allows stable crawl equilibrium.

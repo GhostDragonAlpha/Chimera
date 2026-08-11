@@ -66,13 +66,15 @@ The day is `docs/THE_WORKFLOW.md`'s loop: **ORIENT → NEXT → PROVE(X) → CHE
 The live state is printed by code that reads the actual store:
 
 ```bash
-python story/grow.py --read --depth 2    # the tree as it stands
-python story/timeline.py                 # containment vs chronology
-python tools/methodology_gate.py         # every membrane against the workflow
+python tools/orient.py              # THE one live read: engine tree + verdict ledger + git
+python tools/verdict.py status      # the Rule-0 biomechanics membranes, open + closed
 ```
 
 Through the engine (MCP — `ChimeraEngine/MCP_ENGINE.md`): `orient` first, every time;
-`next` hands you the term — you do not pick it.
+`next` hands you the term — you do not pick it. The engine MCP is registered for opencode
+in `opencode.json` (`chimera-engine`). The older `story/grow.py`/`story/timeline.py`
+commands were removed with the retired task-board session; `tools/orient.py` is the
+replacement that reads the LIVE stores (engine_state.json + verdict_registry.json + git).
 
 ---
 

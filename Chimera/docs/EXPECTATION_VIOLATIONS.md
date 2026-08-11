@@ -225,3 +225,27 @@ coverage 4/18 cells (22%)   QD-score 29.0
 - **assumption:** Players will assume they must sprint or roll through each corridor in sequence, expecting gravity to flip at the boundary and needing to orient their movement accordingly as a continuous forward progression.
 - **violation:** Gravity does not flip at corridor boundaries; instead, it flips on a 3-second countdown timer that is independent of position, and the UI shows an inverted hourglass icon when a flip is imminent — players who time their sprints to hallway transitions will fall mid-stride into walls or ceilings.
 - **why it works:** It replaces a spatial mental model with a temporal one, creating deep timing-based mastery that rewards pattern recognition and anticipation. The UI cue (inverted hourglass) gives players the tools to adapt rather than leaving them feeling cheated.
+
+## Run (fast judge) - 2 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     8/10     8/10
+coupling         .       8/10     6/10
+delay            .        .        .  
+scarcity         .        .        .  
+agency           .       8/10      .  
+identity         .        .        .  
+
+coverage 6/18 cells (33%)   QD-score 45.0
+```
+
+### UCostlessLifeEndingDiagnostic  (8/10)  `inversion|scope2`
+- **assumption:** Dying is completely safe and has no permanent consequences, because the system explicitly labels life-ending events as "costless" and merely diagnostic rather than punitive.
+- **violation:** Each life-ending event permanently degrades the game's metadata layer — subsequent playthroughs begin with one fewer starting item slot, reduced maximum HP by 5% (stacking multiplicatively), and a progressively cracking UI border; after three deaths in the same run, the game refuses to load any prior save entirely, forcing a true fresh start on an already-corrupted profile.
+- **why it works:** The rule inverts the player's assumption that death is harmless, creating a new mental model where each life-ending event becomes a calculated risk with compounding consequences — rewarding careful play and strategic planning rather than reckless experimentation.
+
+### FStationMarket  (8/10)  `agency|scope1`
+- **assumption:** The market is a static reference tool for checking item values rather than an active place where prices change based on supply, demand, or player action.
+- **violation:** Every item listed on the market has a hidden "supply score" that shifts with each transaction; if too many players sell the same item within one station cycle, its buy price drops by up to 40% due to oversaturation, forcing sellers to time their listings strategically rather than treating posted values as permanent.
+- **why it works:** The market transforms from a passive reference into an active system that responds to player behavior, rewarding strategic timing and observation of supply patterns. This opens genuine emergent depth without being arbitrary or frustrating.

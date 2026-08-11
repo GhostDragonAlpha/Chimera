@@ -1,0 +1,2 @@
+verdict28_OFF.npz    flag 0 fall 444 | D/P 0.0817 | m_load quiet mean 1.220 (all-mean 0.136) | K(1/m_eff) mean 56.5 | N@100 344.9 | burial@100 -0.0326 | burial@440 -0.2322
+verdict28_ON.npz     flag 1 fall 444 | D/P 0.0817 | m_load quiet mean 6.667 (all-mean 0.841) | K(1/m_eff) mean 56.5 | N@100 344.9 | burial@100 -0.0326 | burial@440 -0.2322

@@ -84,6 +84,13 @@ class LiveViewer:
         self._paused = False       # True = time is FROZEN (the render thread keeps producing the same frame)
         self._step_requested = False  # True -> advance ONE tick then re-freeze
         self._ticks = 0            # granted render ticks -- the observable /step is measured against
+        # ── THE RECORD PLAYER: the 4th dimension, RUNNING (the play button's engine) ──
+        # `_playing` advances story-time t every frame while it is true -- the membrane's
+        # movie plays, the reload branch re-emits at each new t, and the fps HUD proves
+        # what re-rendering the complex body costs per frame. `_play_rate` gears it
+        # (0.5x / 2x from the deck's N / M keys); the wrap at t=1 cycles the record.
+        self._playing = False
+        self._play_rate = 1.0
         # LOD state, declared here rather than conjured by getattr in the loop: a reader should be
         # able to see every field the render thread owns without running it.
         self._lod_base = None      # the full-detail buffer the pyramid was built from
@@ -178,6 +185,14 @@ class LiveViewer:
                         self._ticks += 1
                 if frozen:
                     time.sleep(0.05); continue
+                # ── THE 4TH DIMENSION, ADVANCED ───────────────────────────────────────────
+                # When the record is PLAYING the story time walks forward here, every frame,
+                # and the reload branch below sees `_t != _loaded_t` and re-emits at the new
+                # t. The wrap makes the record a loop -- a cycle of the membrane's movie,
+                # the "initialization of the 4th dimension" the play button starts.
+                if self._playing:
+                    with self._lock:
+                        self._t = (self._t + dt * self._play_rate) % 1.0
                 if self._sim is not None:
                     # ── THE MUJOCO STAND SIM -- the real body, standing under its policy. ──────
                     # The StandSimulator owns the physics; the viewer's only job is to step it at
@@ -348,6 +363,10 @@ class LiveViewer:
                             pipe.set_light(_sun, (1.0, 1.0, 1.0))
                         else:
                             pipe.set_light(None)
+                # THE PLAYING CACHE IS PRUNED WHERE IT IS WRITTEN: playback emits a fresh t
+                # every frame, so the (term, t) cache would otherwise grow without bound.
+                if self._playing and self._loaded:
+                    self._sa.prune_time_cache(self._loaded, keep=16)
                 # apply input + auto-spin, then place the camera on the orbit sphere aimed at origin
                 with self._lock:
                     self._azim += self._in["dazim"] + _AUTO_SPIN * dt
@@ -815,6 +834,7 @@ def get_viewer() -> LiveViewer:
 #  HTTP routing -- gallery.py delegates here; returns True if it handled the path
 # ═══════════════════════════════════════════════════════════════════════
 def handle(handler) -> bool:
+    import json
     path = urlparse(handler.path).path
     qs = parse_qs(urlparse(handler.path).query)
     if path in ("/live", "/live.html"):
@@ -1011,6 +1031,84 @@ def handle(handler) -> bool:
             v.set_scene(term)
         v.set_time(t)
         _send(handler, 204, "text/plain", b""); return True
+    if path == "/key":
+        # THE DECK'S KEYBOARD. `/key?code=KeyW&down=1&t=0.42` forwards one keypress to the
+        # loaded membrane's state machine (its KEYMAP in physics.py). The membrane answers
+        # with a command -- toggle_play / time / solo / rate -- and this endpoint APPLIES
+        # it to the viewer. This is the same architecture as the walk controller: keys map
+        # onto named states, and the states drive the process. For a membrane with no
+        # KEYMAP the answer is handled:false and nothing moves.
+        import json as _json
+        import splat_appearance as _sa
+        code = (qs.get("code") or [""])[0]
+        down = (qs.get("down") or ["1"])[0] == "1"
+        v = get_viewer()
+        term = (qs.get("term") or [""])[0] or v.term
+        # THE KEY ACTS AT THE PLAYHEAD, NOT THE SLIDER. The browser sends the time
+        # slider's t, which is stale during playback and stays at 1.0 after a reset
+        # -- arrow keys would land at pass 241 (past the 240-pass record) and die.
+        # The viewer's own `_t` IS the live playhead, so a key acts where the marble
+        # actually is. For the walk deck (no `_t` playhead) the slider value is kept.
+        with v._lock:
+            t = v._t if (v._playing or v._loaded == term) else _f(qs, "t")
+        cmd = _sa.membrane_handle_key(term, code, down, t)
+        if cmd is None:
+            _send(handler, 200, "application/json",
+                  _json.dumps({"handled": False, "code": code}).encode())
+            return True
+        kind = cmd.get("cmd")
+        if kind == "toggle_play":
+            with v._lock:
+                v._playing = not v._playing
+                if v._playing:
+                    v._paused = False
+                    if v._t >= 1.0:                       # a finished record replays from the top
+                        v._t = 0.0
+                    r = cmd.get("rate")                  # the deck's requested pace on play
+                    if r is not None and abs(v._play_rate - 1.0) < 1e-9:
+                        v._play_rate = max(0.005, min(8.0, float(r)))
+        elif kind == "time":
+            v.set_time(cmd.get("t", t))
+        elif kind == "solo":
+            _sa.solo(term, cmd.get("state"))
+            v.force_reload()
+        elif kind == "rate":
+            with v._lock:
+                v._play_rate = max(0.005, min(8.0, v._play_rate * float(cmd.get("x", 1.0))))
+        elif kind == "switch":
+            # THE OPERATOR THROWS A SWITCH. The membrane already rewrote its own
+            # timeline (switches.json); the deck's only job is to drop the cached
+            # buffers so the next frame re-emits under the new matrix -- a switch
+            # is an event in the record, not a camera change.
+            _sa.invalidate(term)
+            if "t" in cmd:
+                v.set_time(float(cmd.get("t", 0.0)))   # board reset: marble back to the start
+                with v._lock:
+                    v._playing = False                 # reset hands the board back to the operator
+                    v._paused = False
+            v.force_reload()
+        with v._lock:
+            deck = {"playing": v._playing, "paused": v._paused,
+                    "t": v._t, "rate": v._play_rate}
+        _send(handler, 200, "application/json",
+              _json.dumps({"handled": True, "cmd": cmd, "state": deck}).encode())
+        return True
+    if path == "/state":
+        # THE MATRIX AS A STATE MACHINE, READ OFF THE NEEDLE. The membrane classifies every
+        # grain row (seed / wall / bond / far) at the current t and returns the counts, so
+        # the deck HUD can show what state the matrix is in while the keys move it.
+        import json as _json
+        import splat_appearance as _sa
+        v = get_viewer()
+        term = (qs.get("term") or [""])[0] or v.term
+        t = _f(qs, "t")
+        if "t" not in qs:
+            t = v._t
+        ro = _sa.membrane_state(term, t)
+        with v._lock:
+            body = {"readout": ro, "playing": v._playing, "paused": v._paused,
+                    "t": v._t, "rate": v._play_rate, "term": v.term}
+        _send(handler, 200, "application/json", _json.dumps(body).encode()); return True
     if path == "/frame":
         # ONE REQUEST = ONE PICTURE. It is a web server; you ask it for the page.
         # `/frame?term=theCooling` sets the scene, waits for the renderer to actually produce that
@@ -1138,6 +1236,11 @@ def _tree_of(folder, t: float = 1.0):
                     nm = getattr(st.targets[0], "id", "")
                     if nm in ("FREE", "LENS"):
                         node[nm.lower()] = _ast.literal_eval(st.value)
+                    # A membrane that declares a KEYMAP is a DECK: it listens for the
+                    # operator's keyboard. The keymap itself is read live from the module
+                    # (see membrane_keymap); this flag only says the keys do something.
+                    if nm == "KEYMAP":
+                        node["deck"] = bool(getattr(st.value, "keys", None) or st.value)
         except Exception:
             pass
     # THE SUN, DERIVED -- a READOUT, never a dial (Stage 21). A membrane that declares
@@ -1298,8 +1401,21 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
  #walkhud{margin-top:9px;font:11px ui-monospace,Menlo,monospace;color:#9fb0d0;line-height:1.6;
           text-shadow:0 1px 6px #000;display:none}
  #walkhud i{color:#e8a05c;font-style:normal}
- #walkhud.on{display:block}
- #stage.walking{cursor:none}
+  #walkhud.on{display:block}
+  /* THE DECK HUD -- a membrane that listens for the operator's keyboard (a KEYMAP in its
+     physics). Shows the MATRIX AS A STATE MACHINE: how many grain rows are in each state
+     (seed/wall/bond/far) at the needle's current t, and which state is soloed. */
+  #deckhud{position:absolute;left:16px;bottom:66px;max-width:46%;background:#0b0e17cc;
+        border:1px solid var(--line);border-radius:10px;padding:9px 12px;pointer-events:none;
+        font:11px ui-monospace,Menlo,monospace;color:#9fb0d0;line-height:1.65;
+        text-shadow:0 1px 6px #000;display:none}
+  #deckhud.on{display:block}
+  #deckhud b{color:#fff;font-weight:650}
+  #deckhud i{color:var(--hot);font-style:normal}
+  #deckhud .st{color:var(--law)}
+  #deckhud .solo{color:var(--inst);text-decoration:underline}
+  #deckhud .legend{color:#4d587a}
+  #stage.walking{cursor:none}
 </style>
 <aside>
   <h1>Chimera</h1>
@@ -1343,6 +1459,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera</title>
       <div id=freebox></div>
       <div id=lensbox></div>
     </div>
+    <div id=deckhud></div>
     <div id=body>
       <button id=standbtn>&#9654; play</button>
       <div id=walkhud></div>
@@ -1497,6 +1614,7 @@ function pick(t){
      `on` class is applied by row() from `term`, so the highlight has one source of truth. */
   openTo(t); paintTree();
   const n=INDEX[t]||{}, live=(KINDS[t]==='membrane');
+  DECK=!!n.deck;                                  /* var (hoisted): this membrane listens for keys */
   const inst=(t[0]==='a'&&t[1]===t[1].toUpperCase());
   document.getElementById('nm').textContent=t;
   const tg=document.getElementById('tag');
@@ -1543,6 +1661,7 @@ function pick(t){
   const nums=n.numbers||{};
   paintFree();
   if(typeof showStand==='function') showStand();
+  if(typeof showDeck==='function') showDeck();
   tval.textContent=(tsl.value/1000).toFixed(3)+elapsed(tsl.value/1000);
   document.getElementById('nums').innerHTML=Object.keys(nums).slice(0,7).map(k=>{
     let v=nums[k]; if(typeof v==='number') v=(Math.abs(v)>=1e5||(v!==0&&Math.abs(v)<1e-3))?v.toExponential(3):(+v.toFixed(4));
@@ -1556,7 +1675,7 @@ function pick(t){
 // existed. The page LOOKED alive because pick's first lines -- set the term, fetch the scene --
 // run before the throw: scenes switched while the script was a corpse from here down.
 const tsl=document.getElementById('tslider'), tval=document.getElementById('tval');
-let tTimer=null;
+let tTimer=null, tslDrag=false;
 pick(TERMS.includes('theSolarSystem')?'theSolarSystem':TERMS[0]);
 function elapsed(frac){
   const n=INDEX[term]||{}, d=n.duration_s;
@@ -1565,8 +1684,8 @@ function elapsed(frac){
   for(const [u,nm] of U){ if(v>=u) return '  =  '+(v/u).toPrecision(3)+' '+nm; }
   return '  =  '+v.toExponential(2)+' s';
 }
-tsl.oninput=()=>{ const f=tsl.value/1000; tval.textContent=f.toFixed(3)+elapsed(f);
-  clearTimeout(tTimer); tTimer=setTimeout(()=>fetch('/time?t='+f.toFixed(4)),90); };
+tsl.oninput=()=>{ tslDrag=true; const f=tsl.value/1000; tval.textContent=f.toFixed(3)+elapsed(f);
+  clearTimeout(tTimer); tTimer=setTimeout(()=>{ tslDrag=false; fetch('/time?t='+f.toFixed(4)); },90); };
 
 // ── FREE PARAMETERS: the only other handles, and moving one re-derives the whole subtree ──
 function paintFree(){
@@ -1684,6 +1803,8 @@ stage.addEventListener('wheel',e=>{if(WALKING)return;e.preventDefault();pend.zoo
    load order.
    ========================================================================== */
 var KEY={}, WALKING=false, mdx=0, mdy=0, jumped=false, used=false, clockDrag=false, clockTimer=null;
+/* THE DECK -- var like the rest, so pick() at load can set DECK before this block runs. */
+var DECK=false, DECK_KEYS={}, DECK_PLAYING=false, DECK_RATE=1;
 var standbtn=document.getElementById('standbtn'),
     walkhud=document.getElementById('walkhud'),
     hint=document.getElementById('hint'),
@@ -1725,14 +1846,17 @@ if(latslider){
   placeLabels(); askPlace();
 }
 
-function canStand(){ return term===WALK_TERM; }
+function canStand(){ return term===WALK_TERM || DECK; }
 function showStand(){ if(!standbtn) return;
   var on = canStand()||WALKING;
   standbtn.style.display = on ? '' : 'none';
+  /* a deck membrane's play button is the RECORD PLAYER: it starts the 4th dimension */
+  if(DECK && !WALKING) standbtn.textContent = DECK_PLAYING ? '\u23F8 pause' : '\u25B6 play';
   /* the date+time pickers belong to play: visible from the moment play is possible, so WHEN is
      chosen before you enter, and still live afterwards */
-  if(walkclock) walkclock.style.display = on ? '' : 'none'; }
-standbtn.onclick=()=>{ WALKING ? sitDown() : standUp(); };
+  if(walkclock) walkclock.style.display = (term===WALK_TERM||WALKING) ? '' : 'none'; }
+standbtn.onclick=()=>{ if(DECK && !WALKING){ deckTogglePlay(); return; }
+                       WALKING ? sitDown() : standUp(); };
 
 function lockMouse(){ try{ stage.requestPointerLock(); }catch(e){} }
 function enterWalkUI(){
@@ -1783,6 +1907,18 @@ window.addEventListener('keydown',e=>{
      is the arbiter: the sliders are type=range and unaffected (they use arrows, which are not
      bound here), and pointer-locked play never has a text box focused. */
   if(e.target&&e.target.tagName==='INPUT'&&e.target.type==='text') return;
+  /* THE DECK'S KEYS: a membrane that declares a KEYMAP is a state machine you key against.
+     Edge-triggered (one keydown = one command -- e.repeat would storm the /key endpoint and a
+     held arrow key would double-advance). Sliders and buttons own their own keys too, so a
+     focused play button's Space is the button, not a second toggle. */
+  if(!WALKING && DECK){
+    if(e.repeat) return;
+    if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON')) return;
+    fetch('/key?term='+encodeURIComponent(term)+'&code='+encodeURIComponent(e.code)+'&down=1&t='+(tsl.value/1000).toFixed(4))
+      .then(r=>r.json()).then(applyDeck);
+    if(DECK_KEYS[e.code]) e.preventDefault();
+    return;
+  }
   if(!WALKING) return;
   if(e.code==='Space'){ jumped=true; e.preventDefault(); }
   /* E IS EDGE-TRIGGERED LIKE SPACE: one press, one use=1 -- GRAB is a toggle, not a hold. */
@@ -1880,6 +2016,59 @@ setInterval(async()=>{
           '&jump='+(j?1:0)+'&crouch='+((KEY['ControlLeft']||KEY['KeyC'])?1:0)+'&use='+(u?1:0)+'&mx='+mx+'&my='+my;
   try{ paintWalk(await fetch(q).then(x=>x.json())); }catch(e){}
 },33);
+
+/* ==========================================================================
+   THE DECK -- the matrix as a state machine, keyed from the keyboard.
+   A membrane whose physics declares a KEYMAP (theLight does) is not just looked
+   at: its ROWS are states (seed / wall / bond / far), its transitions are the
+   modifier M between them, and the operator's keys drive it. The play button
+   is the initialization of the 4th dimension -- it starts story-time t running
+   -- and the fps in the footer is what the state changes cost to render.
+   ========================================================================== */
+function applyDeck(r){
+  if(!r) return;
+  if(r.state){ DECK_PLAYING=r.state.playing; DECK_RATE=r.state.rate; }
+  if(r.cmd && r.cmd.cmd==='solo') setTimeout(deckPoll,150);   /* the re-emit is async */
+  if(typeof showStand==='function') showStand();
+  deckPoll();
+}
+async function deckTogglePlay(){
+  try{ const r=await fetch('/key?term='+encodeURIComponent(term)+'&code=Space&down=1&t='+(tsl.value/1000).toFixed(4)).then(x=>x.json());
+       applyDeck(r); }catch(e){}
+}
+function deckPoll(){
+  if(!DECK) return;
+  fetch('/state?term='+encodeURIComponent(term))   /* no t: the server reads the LIVE playhead */
+    .then(r=>r.json()).then(s=>{
+      if(!s || s.term!==term || !s.readout) return;
+      DECK_PLAYING=s.playing; DECK_RATE=s.rate;
+      if(typeof tsl!=='undefined' && tsl && !tslDrag){       /* the needle follows the playhead */
+        tsl.value=Math.round(s.t*1000);
+        if(tval) tval.textContent=(tsl.value/1000).toFixed(3)+elapsed(tsl.value/1000);
+      }
+      const ro=s.readout, el=document.getElementById('deckhud');
+      const st=ro.states||{};
+      DECK_KEYS={}; (ro.keymap||[]).forEach(k=>{ DECK_KEYS[k.key]=true; });
+      const cells=['seed','wall','bond','far'].map(k=>
+        '<span class="'+(ro.solo===k?'solo':'st')+'">'+k+' <i>'+st[k]+'</i></span>').join(' &nbsp; ');
+      el.classList.add('on');
+      el.innerHTML='<b>'+term+'</b> &mdash; the matrix as a state machine &nbsp;&middot;&nbsp; '
+        +'t <i>'+s.t.toFixed(3)+'</i> &nbsp;&middot;&nbsp; '
+        +(DECK_PLAYING?'&#9654; '+DECK_RATE+'x':'&#10074;&#10074; paused')+'<br>'+cells
+        +'<br><span class=legend>'+ro.keymap.map(k=>k.key+' '+k.label).join(' &middot; ')+'</span>';
+      if(typeof showStand==='function') showStand();
+    }).catch(()=>{});
+}
+function showDeck(){
+  if(hint) hint.textContent = DECK
+    ? 'space play &middot; &larr;/&rarr; scrub &middot; R start &middot; S W B F solo a state &middot; X all &middot; N/M speed &middot; drag to orbit &middot; scroll to zoom'
+    : 'drag to orbit &middot; scroll to zoom &middot; it turns on its own';
+  const el=document.getElementById('deckhud');
+  if(el) el.classList.toggle('on', !!DECK);
+  if(DECK) deckPoll();
+  if(typeof showStand==='function') showStand();
+}
+setInterval(deckPoll,1000);   /* 1 Hz -- the readout and the fps move no faster than that */
 
 </script>
 """
