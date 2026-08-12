@@ -19,7 +19,7 @@
 > · 26 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
-> **Status: DESIGN.** Nothing here is built yet. Written 2026-07-26 after measuring v1's ceiling.
+> **Status: SPIKE COMPLETE.** The WebGPU renderer spike (`engine/spike.html`) is working — single-file, zero dependencies, running in-browser on ANGLE/D3D12. See [engine/CHECKLIST.md](../engine/CHECKLIST.md) for full feature inventory (178/178 items). Written 2026-07-26 after measuring v1's ceiling.
 > v1 = `ParticleEngine/gpu_pipeline.py` (numba-CUDA + CuPy, Python frame loop, MJPEG to the browser).
 > It is not slow because of a bad kernel. It is slow because of its **shape**.
 
