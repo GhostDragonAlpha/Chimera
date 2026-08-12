@@ -103,11 +103,11 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Deliverable: Multi-body system with player ship navigating orbits (Hohmann dV verified)
 
 ### Phase 2: Planetary Surface
-- [ ] Atmospheric thin-shell model (scale height ~8km for Earth-like)
-- [ ] Terrain generation: fractal Brownian motion (fBm) on sphere
-- [ ] Landing physics: thrust-to-weight ratio, touchdown velocity limits
-- [ ] Day/night cycle: shadow mapping from star direction
-- [ ] Deliverable: Land on a planet, take off again
+- [x] Atmospheric thin-shell model (scale height ~85km for Earth-like, multi-layer temp)
+- [x] Terrain generation: fractal Brownian motion (fBm) on sphere
+- [x] Landing physics: thrust-to-weight ratio, touchdown velocity limits, bounce
+- [x] Day/night cycle: star angle control with day/dawn/night modes
+- [x] Deliverable: Land on a planet, take off again (auto-land + manual thrust)
 
 ### Phase 3: Multi-System
 - [ ] Procedural star system generation (spectral types, habitable zone)
