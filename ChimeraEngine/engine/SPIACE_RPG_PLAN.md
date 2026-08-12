@@ -110,10 +110,10 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Deliverable: Land on a planet, take off again (auto-land + manual thrust)
 
 ### Phase 3: Multi-System
-- [ ] Procedural star system generation (spectral types, habitable zone)
-- [ ] Warp/faster-than-light travel (skip between systems, preserve momentum)
+- [x] Procedural star system generation (spectral types, habitable zone)
+- [x] Warp/faster-than-light travel (skip between systems, preserve momentum)
 - [ ] Multiple player ships (local co-op first, then networked)
-- [ ] Deliverable: Travel between two star systems
+- [x] Deliverable: Travel between two star systems
 
 ### Phase 4: Multiplayer & Scale
 - [ ] Authoritative server model (physics runs on server)
