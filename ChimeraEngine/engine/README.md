@@ -238,6 +238,22 @@ window.__shaderParamDocs       // Hover tooltips for shader uniforms
 
 Open `spike.html` directly in Chrome 113+/Edge 113+ with `--enable-unsafe-webgpu`. No build step, no dependencies — just double-click.
 
+## SPIACE RPG — Next Major Direction
+
+A Star Citizen-like space RPG built on top of the WebGPU spike engine, with **100% physics accuracy** from first principles (N-body gravity, Keplerian orbits, ray-marched void rendering). See [SPIACE_RPG_PLAN.md](SPIACE_RPG_PLAN.md) for the full plan.
+
+### Key Differentiators vs. Traditional Engines
+
+- **First-principles physics**: No gameplay approximations — real orbital mechanics verified per layer
+- **Custom Physics DSL** (`.chimera` files): AI writes readable physics; compiler generates WGSL shaders
+- **Ray-marched void rendering**: Space is mostly empty — SDFs instead of meshes, analytical intersections
+- **AI-driven development**: Glass-box, hot-reload, each phase independently testable via Playwright
+- **Minimal system boundary**: No fluid dynamics, no quantum mechanics, no GR — just what matters for space simulation
+
+See [SPIACE_RPG_PLAN.md](SPIACE_RPG_PLAN.md) for the full phased roadmap (Phase 0 through Phase 4).
+
+---
+
 ## Future Work
 
 - **Vulkan → WebGPU full migration** — port the production rendering pipeline from C++/Vulkan to the WebGPU spike
