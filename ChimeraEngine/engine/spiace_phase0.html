@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SPIACE RPG — Phase 0: Kepler Solver + DSL</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050510; display: flex; flex-direction: column; align-items: center; height: 100vh; font-family: monospace; color: #aaa; overflow: hidden; }
+  canvas { image-rendering: pixelated; border: 1px solid #222; background: #050510; }
+  #hud { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,.8); padding: 8px 12px; border-radius: 4px; font-size: 12px; line-height: 1.6; pointer-events: none; z-index: 10; }
+  #hud .fps { color: #7f7; }
+  #hud .ms { color: #ff7; }
+  #hud .info { color: #7bf; }
+  #hud .warn { color: #fa7; }
+  #err { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #f77; font-size: 16px; text-align: center; display: none; z-index: 100; }
+  #dsl-panel { position: fixed; bottom: 10px; right: 10px; background: rgba(5,5,20,.95); border: 1px solid #333; border-radius: 4px; padding: 8px 12px; font-size: 11px; line-height: 1.5; color: #aaa; z-index: 20; max-width: 360px; }
+  #dsl-panel h3 { color: #7f7; margin-bottom: 4px; font-size: 12px; }
+  #dsl-panel pre { background: #0a0a1a; padding: 4px 6px; border-radius: 3px; overflow-x: auto; white-space: pre; color: #8cf; max-height: 180px; overflow-y: auto; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div class="fps" id="fps">-- fps</div>
+  <div class="ms" id="times">-- ms</div>
+  <div class="info" id="sys-info">SPIACE Phase 0 -- Kepler Solver + Physics DSL</div>
+  <div class="warn" id="ship-info"></div>
+  <div class="info" id="orbit-info"></div>
+</div>
+<div id="err"></div>
+<div id="dsl-panel">
+  <h3>Physics DSL (.chimera)</h3>
+  <pre id="dsl-display"># star_system.chimera -- Phase 0
+physics kepler {
+  body star:    mass=1.989e30, pos=(0,0,0)
+  body earth:   mass=5.972e24, pos=(1.5e11,0,0), vel=(0,29780,0)
+  body mars:    mass=6.39e23, pos=(2.28e11,0,0), vel=(0,24077,0)
+  force gravity { G = 6.674e-11; F=G*m1*m2/r^2 }
+  integrator symplectic_euler { dt=60; v+=a*dt; p+=v*dt }
+}</pre>
+</div>
+
+<script>
+// ============================================================
+// SPIACE Phase 0 -- First-Principles Space Simulator
+// Canvas 2D renderer (WebGPU fallback) + Kepler solver + DSL
+// ============================================================
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// ---- PHYSICS DSL PARSER ----
+class ChimeraDSL {
+  constructor() { this.bodies = []; this.forces = []; this.integrator = null; this.name = ''; }
+  parse(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+    for (const line of lines) {
+      if (line.startsWith('physics ')) { this.name = line.replace('physics','').replace('{','').trim(); continue; }
+      if (line === '{' || line === '}') continue;
+      const bm = line.match(/^body\s+(\w+)\s*:\s*(.+)$/);
+      if (bm) { this.bodies.push(this._parseBody(bm[2])); continue; }
+      const fm = line.match(/^force\s+(\w+)/);
+      if (fm) { this.forces.push({ name: fm[1] }); continue; }
+      const im = line.match(/^integrator\s+(\w+)\s*\{?\s*(.+)\}?$/);
+      if (im) this.integrator = { name: im[1], dt: 1/60 };
+    }
+    return this;
+  }
+  _parseBody(s) {
+    const b = { name:'', mass:0, pos:[0,0,0], vel:[0,0,0] };
+    for (const p of s.split(',').map(x=>x.trim())) {
+      const kv = p.match(/(\w+)\s*=\s*(.+)/);
+      if (!kv) continue;
+      const [,k,v] = kv;
+      if (k==='mass') b.mass=parseFloat(v);
+      else if (k==='pos'||k==='vel') { const a=v.replace(/\(/g,'[').replace(/\)/g,']'); try{b[k]=JSON.parse(a);}catch(e){} }
+      else if (k==='name') b.name=v;
+    }
+    return b;
+  }
+  toWGSL() {
+    let w = `// Auto-generated from ${this.name||'physics'}.chimera\n`;
+    w += `// Bodies: ${this.bodies.length}\n\n`;
+    w += `struct BodyState { pos: vec3<f32>, vel: vec3<f32>, acc: vec3<f32>, mass: f32 };\n\n`;
+    w += `@group(0) @binding(0) var<storage, read_write> states: array<BodyState>;\n`;
+    w += `@group(0) @binding(1) var<uniform> params: vec3<f32>;\n\n`;
+    w += `@compute @workgroup_size(64)\nfn solve(@builtin(global_invocation_id) gid: vec3<u32>) {\n`;
+    w += `  let idx = gid.x;\n  if (idx >= arrayLength(&states)) return;\n  var s = states[idx];\n  var acc = vec3<f32>(0.0);\n`;
+    for (let i=0;i<this.bodies.length;i++) {
+      if(i===0) continue;
+      w += `  if(idx==${i}){\n`;
+      w += `    let rv = states[0].pos - s.pos;\n    let rm = length(rv);\n`;
+      w += `    acc = params.x * states[0].mass * rv / (rm*rm*rm);\n  }\n`;
+    }
+    if(this.integrator && this.integrator.name==='symplectic_euler') {
+      w += `  s.vel += acc * params.y;\n  s.pos += s.vel * params.y;\n`;
+    }
+    w += `  states[idx] = s;\n}\n`;
+    return w;
+  }
+}
+
+// ---- ANALYTICAL KEPLER SOLVER ----
+class KeplerSolver {
+  constructor() { this.G = 6.674e-11; }
+  solveKepler(M, e, tol=1e-10) {
+    let E = M;
+    for(let i=0;i<50;i++) {
+      const dE = (E - e*Math.sin(E) - M)/(1 - e*Math.cos(E));
+      E -= dE;
+      if(Math.abs(dE)<tol) break;
+    }
+    return E;
+  }
+  orbitState(a, e, inc, Omega, omega, tau, GM, t) {
+    const n = Math.sqrt(GM/(a*a*a));
+    const M = ((n*t + tau*Math.PI/180)%(2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+    const E = this.solveKepler(M, e);
+    const nu = 2*Math.atan2(Math.sqrt(1+e)*Math.sin(E/2), Math.sqrt(1-e)*Math.cos(E/2));
+    const r = a*(1 - e*Math.cos(E));
+    const xOrb = r*Math.cos(nu), yOrb = r*Math.sin(nu);
+    const ic=inc*Math.PI/180, Oc=Omega*Math.PI/180, oc=omega*Math.PI/180;
+    const cO=Math.cos(Omega),sO=Math.sin(Omega),ci=Math.cos(ic),si=Math.sin(ic);
+    const cx=Math.cos(omega),sx=Math.sin(omega);
+    const x=(cO*cx-sO*sx*ci)*xOrb+(-cO*sx-sO*cx*ci)*yOrb;
+    const y=(sO*cx+cO*sx*ci)*xOrb+(-sO*sx+cO*cx*ci)*yOrb;
+    const z=sx*si*xOrb+cx*si*yOrb;
+    return {pos:[x,y,z],nu,r};
+  }
+  rocketDeltaV(Isp, g0, m0, mf) { return Isp*g0*Math.log(m0/mf); }
+}
+
+// ---- INIT PHYSICS ----
+const dsl = new ChimeraDSL();
+dsl.parse(`physics star_system {
+  body star: mass=1.989e30, pos=(0,0,0)
+  body earth: mass=5.972e24, pos=(1.5e11,0,0), vel=(0,29780,0)
+  body mars: mass=6.39e23, pos=(2.28e11,0,0), vel=(0,24077,0)
+  force gravity { G = 6.674e-11 }
+  integrator symplectic_euler { dt=60 }
+}`);
+
+const kepler = new KeplerSolver();
+const GM_star = 1.327e20;
+
+// Orbital bodies (analytical positions)
+const bodies = [
+  { name:'star', color:'#ffdd44', radius:8, a:0, e:0, inc:0, Omega:0, omega:0, tau:0 },
+  { name:'earth', color:'#4488ff', radius:5, a:1.5e11, e:0.0167, inc:0, Omega:0, omega:0, tau:0 },
+  { name:'mars', color:'#dd5522', radius:4, a:2.28e11, e:0.0934, inc:1.85, Omega:49.6, omega:286.5, tau:19.4 },
+];
+
+// Ship state (rocket equation)
+let ship = {
+  pos: [1.5e11, 0, 0],
+  vel: [0, 29780, 0],
+  mass: 1000, fuelMass: 500, Isp: 300, thrust: 5000,
+  maxDeltaV: kepler.rocketDeltaV(300, 9.81, 1000, 500)
+};
+
+// Camera
+let cam = { pos: [1.5e11+8e6, 3e6, 0], target: [1.5e11, 0, 0] };
+let keys = {};
+let mouseDX = 0, mouseDY = 0;
+
+// Scale: pixels per meter (auto-fit to screen)
+function getScale() {
+  const w = canvas.width, h = canvas.height;
+  const viewRange = Math.max(w, h) * 1.5; // show ~1.5x screen in meters
+  return viewRange / Math.max(w, h);
+}
+
+// Center of screen in world coords (focus on ship)
+function toScreen(worldPos) {
+  const scale = getScale();
+  const cx = canvas.width/2, cy = canvas.height/2;
+  return [
+    cx + (worldPos[0] - cam.pos[0]) / scale,
+    cy - (worldPos[1] - cam.pos[1]) / scale  // flip Y for screen coords
+  ];
+}
+
+// ---- INPUT ----
+document.addEventListener('keydown', e => keys[e.code] = true);
+document.addEventListener('keyup', e => keys[e.code] = false);
+canvas.addEventListener('click', () => canvas.requestPointerLock?.());
+document.addEventListener('mousemove', e => {
+  if(document.pointerLockElement === canvas) { mouseDX += e.movementX; mouseDY += e.movementY; }
+});
+
+// ---- MATH ----
+function add(a,b){return[a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+function sub(a,b){return[a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+function scale(v,s){return[v[0]*s,v[1]*s,v[2]*s];}
+function len(v){return Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);}
+function norm(v){const l=len(v);return l>0?[v[0]/l,v[1]/l,v[2]/l]:[0,0,1];}
+function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+function dist(a,b){return len(sub(a,b));}
+
+// ---- UPDATE ----
+let simTime = 0;
+function update(dt) {
+  // Camera movement
+  const speed = 3e4 * dt;
+  const fwd = norm(sub(cam.target, cam.pos));
+  const right = norm(cross(fwd, [0,1,0]));
+  const up = cross(right, fwd);
+  if(keys['KeyW']) cam.pos = add(cam.pos, scale(fwd, speed));
+  if(keys['KeyS']) cam.pos = add(cam.pos, scale(fwd, -speed));
+  if(keys['KeyA']) cam.pos = add(cam.pos, scale(right, -speed));
+  if(keys['KeyD']) cam.pos = add(cam.pos, scale(right, speed));
+  if(keys['Space']) cam.pos = add(cam.pos, scale(up, speed));
+  if(keys['ShiftLeft']) cam.pos = add(cam.pos, scale(up, -speed));
+  // Mouse look
+  if(document.pointerLockElement === canvas) {
+    const sens = 0.002;
+    const yaw = -mouseDX * sens, pitch = -mouseDY * sens;
+    mouseDX = mouseDY = 0;
+    const fwdNew = [fwd[0]*Math.cos(yaw)+fwd[2]*Math.sin(yaw), fwd[1], -fwd[0]*Math.sin(yaw)+fwd[2]*Math.cos(yaw)];
+    const newFwd = norm(add(scale(fwdNew, Math.cos(pitch)), scale(up, Math.sin(pitch))));
+    cam.target = add(cam.pos, scale(newFwd, dist(cam.pos, cam.target)));
+  }
+
+  // Ship physics
+  if(keys['KeyX'] && ship.fuelMass > 0) {
+    const thrustDir = norm(sub(cam.target, cam.pos));
+    const accel = ship.thrust / ship.mass;
+    ship.vel = add(ship.vel, scale(thrustDir, accel * dt));
+    ship.fuelMass -= ship.thrust * dt / (ship.Isp * 9.81);
+    if(ship.fuelMass < 0) ship.fuelMass = 0;
+    ship.mass = 1000 + ship.fuelMass;
+  }
+  // Gravity from star
+  const rVec = sub([0,0,0], ship.pos);
+  const rMag = len(rVec);
+  const gravAccel = GM_star / (rMag * rMag);
+  ship.vel = add(ship.vel, scale(norm(rVec), -gravAccel * dt));
+  ship.pos = add(ship.pos, scale(ship.vel, dt));
+  simTime += dt;
+
+  // Update HUD
+  const speed_ms = len(ship.vel);
+  document.getElementById('ship-info').textContent =
+    `Ship: ${speed_ms.toFixed(0)} m/s | Mass: ${ship.mass.toFixed(0)}kg | Fuel: ${ship.fuelMass.toFixed(0)}kg | DV: ${(ship.maxDeltaV/1000).toFixed(1)} km/s`;
+  document.getElementById('orbit-info').textContent =
+    `Dist from star: ${(rMag/1e9).toFixed(1)} Gm | Time: ${simTime.toFixed(1)}s | Bodies: ${bodies.length}`;
+}
+
+// ---- RENDER ----
+function render() {
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050510';
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw stars background (static)
+  ctx.fillStyle = '#ffffff';
+  for(let i=0;i<200;i++){
+    const x = ((i*137.5)%W), y = ((i*97.3)%H);
+    const b = 0.3 + 0.7*Math.sin(simTime*0.5 + i);
+    ctx.globalAlpha = b * 0.6;
+    ctx.fillRect(x, y, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Draw orbital paths
+  for(const b of bodies) {
+    if(b.a === 0) continue;
+    ctx.strokeStyle = b.color + '33';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for(let t=0;t<=360;t+=5) {
+      const s = kepler.orbitState(b.a, b.e, b.inc, b.Omega, b.omega, b.tau, GM_star, t*86400/6);
+      const [sx, sy] = toScreen(s.pos);
+      if(t===0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  // Draw bodies
+  for(const b of bodies) {
+    const t = simTime;
+    let pos;
+    if(b.a === 0) pos = [0,0,0];
+    else { const s = kepler.orbitState(b.a, b.e, b.inc, b.Omega, b.omega, b.tau, GM_star, t); pos = s.pos; }
+    const [sx, sy] = toScreen(pos);
+    // Glow
+    const grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, b.radius * 3);
+    grad.addColorStop(0, b.color);
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(sx, sy, b.radius * 3, 0, Math.PI*2);
+    ctx.fill();
+    // Core
+    ctx.fillStyle = b.color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, b.radius, 0, Math.PI*2);
+    ctx.fill();
+    // Label
+    ctx.fillStyle = '#aaa';
+    ctx.font = '10px monospace';
+    ctx.fillText(b.name, sx + b.radius + 3, sy - 3);
+  }
+
+  // Draw ship
+  const [ssx, ssy] = toScreen(ship.pos);
+  const speed_ms = len(ship.vel);
+  ctx.fillStyle = '#7f7';
+  ctx.beginPath();
+  ctx.arc(ssx, ssy, 4, 0, Math.PI*2);
+  ctx.fill();
+  // Velocity vector
+  const vScale = 0.0001;
+  ctx.strokeStyle = '#7f7';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(ssx, ssy);
+  ctx.lineTo(ssx + ship.vel[0]*vScale, ssy - ship.vel[1]*vScale);
+  ctx.stroke();
+  ctx.fillStyle = '#7f7';
+  ctx.font = '10px monospace';
+  ctx.fillText('SHIP', ssx + 6, ssy - 6);
+
+  // Scale indicator
+  ctx.fillStyle = '#555';
+  ctx.font = '10px monospace';
+  ctx.fillText(`Scale: 1px = ${(getScale()).toExponential(1)}m`, 10, H - 10);
+}
+
+// ---- MAIN LOOP ----
+function resize() {
+  canvas.width = Math.min(window.innerWidth, 1280);
+  canvas.height = Math.min(window.innerHeight, 720);
+}
+window.addEventListener('resize', resize);
+resize();
+
+let lastTime = performance.now(), frameCount = 0, fps = 0;
+function loop(now) {
+  const dt = Math.min((now - lastTime)/1000, 0.05);
+  lastTime = now;
+  frameCount++;
+  if(frameCount % 15 === 0) { fps = Math.round(1/dt); document.getElementById('fps').textContent = fps + ' fps'; }
+  update(dt);
+  render();
+  document.getElementById('fps').textContent = fps + ' fps';
+  document.getElementById('times').textContent = (dt*1000).toFixed(1) + ' ms';
+  _rafId = requestAnimationFrame(loop);
+  if(!_rafId) setInterval(()=>loop(performance.now()), 16);
+}
+// Start loop (RAF with setInterval fallback for headless environments)
+let _rafId = null;
+function startLoop() {
+  function tick(now) {
+    const dt = Math.min((now - lastTime)/1000, 0.05);
+    lastTime = now; frameCount++;
+    if(frameCount % 15 === 0) { fps = Math.round(1/dt); document.getElementById('fps').textContent = fps + ' fps'; }
+    update(dt); render();
+    _rafId = requestAnimationFrame(tick);
+    if(!_rafId) setTimeout(tick, 16);
+  }
+  tick(performance.now());
+}
+startLoop();
+
+// Log DSL output for verification
+console.log('DSL parsed:', dsl.name, '| Bodies:', dsl.bodies.map(b=>b.name));
+console.log('WGSL preview (first 200 chars):', dsl.toWGSL().substring(0, 200));
+</script>
+</body>
+</html>
