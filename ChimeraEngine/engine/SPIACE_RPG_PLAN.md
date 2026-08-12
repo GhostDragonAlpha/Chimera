@@ -116,10 +116,10 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Deliverable: Travel between two star systems
 
 ### Phase 4: Multiplayer & Scale
-- [ ] Authoritative server model (physics runs on server)
-- [ ] Client prediction + interpolation
-- [ ] Persistent universe (save/load system state)
-- [ ] Deliverable: Two clients in the same system, physics-synced
+- [x] Authoritative server model (physics runs on server)
+- [x] Client prediction + interpolation
+- [x] Persistent universe (save/load system state)
+- [x] Deliverable: Two clients in the same system, physics-synced
 
 ---
 
