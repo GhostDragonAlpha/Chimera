@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SPIACE RPG — Phase 3: Multi-System</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050510; display: flex; flex-direction: column; align-items: center; height: 100vh; font-family: monospace; color: #aaa; overflow: hidden; }
+  canvas { image-rendering: pixelated; border: 1px solid #222; background: #050510; }
+  #hud { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,.85); padding: 8px 12px; border-radius: 4px; font-size: 11px; line-height: 1.6; pointer-events: none; z-index: 10; }
+  #hud .fps { color: #7f7; font-size: 14px; }
+  #hud .ms { color: #ff7; }
+  #hud .info { color: #7bf; }
+  #hud .warn { color: #fa7; }
+  .panel { position: fixed; background: rgba(5,5,20,.95); border: 1px solid #333; border-radius: 4px; padding: 8px 12px; font-size: 11px; line-height: 1.5; color: #aaa; z-index: 20; }
+  .panel h3 { color: #7f7; margin-bottom: 4px; font-size: 12px; border-bottom: 1px solid #222; padding-bottom: 3px; }
+  .panel button { background: #1a1a2e; color: #7f7; border: 1px solid #333; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; margin: 2px 2px 2px 0; }
+  .panel button:hover { background: #2a2a4e; }
+  .panel button.active { background: #7f7; color: #000; }
+  .row { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; gap: 8px; }
+  .val { color: #ff7; min-width: 60px; text-align: right; font-size: 10px; }
+  #nav-panel { bottom: 10px; left: 10px; max-width: 260px; }
+  #sys-panel { bottom: 10px; right: 10px; max-width: 300px; }
+  #star-map { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(5,5,20,.97); border: 1px solid #333; border-radius: 8px; padding: 16px; z-index: 30; display: none; }
+  #star-map h2 { color: #7f7; margin-bottom: 8px; font-size: 14px; }
+  .star-btn { display: inline-block; background: #1a1a2e; color: #7bf; border: 1px solid #333; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; margin: 3px; }
+  .star-btn:hover { background: #2a2a4e; border-color: #7f7; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div class="fps" id="fps">-- fps</div>
+  <div class="ms" id="times">-- ms</div>
+  <div class="info" id="sys-info">SPIACE Phase 3 -- Multi-System + Warp Travel</div>
+  <div class="warn" id="ship-info"></div>
+  <div class="info" id="warp-info"></div>
+</div>
+<div class="panel" id="nav-panel">
+  <h3>Navigation</h3>
+  <div class="row"><button id="btn-map">Star Map [M]</button><button id="btn-warp">Warp [W]</button></div>
+  <div class="row"><label>Warp Status:</label><span class="val" id="warp-status">IDLE</span></div>
+  <div class="row"><label>Current System:</label><span class="val" id="curr-sys">Sol</span></div>
+  <div class="row"><label>Velocity:</label><span class="val" id="velocity">0 m/s</span></div>
+  <div class="row"><label>Dist to Jump:</label><span class="val" id="dist-jump">-- ly</span></div>
+</div>
+<div class="panel" id="sys-panel">
+  <h3>Current System</h3>
+  <div class="row"><label>Star Type:</label><span class="val" id="star-type">G2V</span></div>
+  <div class="row"><label>Bodies:</label><span class="val" id="body-count">5</span></div>
+  <div class="row"><label>Hab Zone:</label><span class="val" id="hab-zone">0.9-1.5 AU</span></div>
+  <div class="row"><label>System Age:</label><span class="val" id="sys-age">4.6 Gyr</span></div>
+</div>
+<div id="star-map">
+  <h2>Stellar Neighborhood</h2>
+  <div id="star-list"></div>
+  <button onclick="document.getElementById('star-map').style.display='none'" style="margin-top:8px;background:#1a1a2e;color:#7f7;border:1px solid #333;padding:4px 12px;border-radius:3px;cursor:pointer;font-size:11px;">Close [M]</button>
+</div>
+
+<script>
+// SPIACE Phase 3 -- Multi-System with Warp Travel
+var canvas = document.getElementById('c');
+var ctx = canvas.getContext('2d');
+
+var C_LIGHT = 299792458;
+var FTL_THRESHOLD = C_LIGHT / 10;
+
+// Spectral types
+var SPECTRAL_TYPES = [
+  { name: 'O', temp: 30000, color: '#9bb0ff', mass: 40, lum: 75000, habInner: 15, habOuter: 30 },
+  { name: 'B', temp: 20000, color: '#aabfff', mass: 10, lum: 5000, habInner: 5, habOuter: 12 },
+  { name: 'A', temp: 8500, color: '#f8f8ff', mass: 3, lum: 40, habInner: 4, habOuter: 8 },
+  { name: 'F', temp: 6500, color: '#fff4ea', mass: 2, lum: 6, habInner: 2.5, habOuter: 5 },
+  { name: 'G', temp: 5500, color: '#ffd283', mass: 1, lum: 1, habInner: 1.5, habOuter: 3 },
+  { name: 'K', temp: 4500, color: '#ffcc6c', mass: 0.7, lum: 0.3, habInner: 1, habOuter: 2 },
+  { name: 'M', temp: 3000, color: '#ffcc00', mass: 0.3, lum: 0.02, habInner: 0.2, habOuter: 0.6 },
+];
+
+function hash(s) {
+  var h = 0;
+  for (var i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h) / 0x7fffffff;
+}
+
+function generateSystem(seed) {
+  var s = hash(seed);
+  var typeIdx = s < 0.4 ? 6 : s < 0.7 ? 5 : s < 0.85 ? 4 : s < 0.92 ? 3 : s < 0.96 ? 2 : s < 0.99 ? 1 : 0;
+  var type = SPECTRAL_TYPES[typeIdx];
+  var numPlanets = 3 + Math.floor(s * 8);
+  var bodies = [];
+  var dist = type.habInner * 50e9;
+  var colors = ['#888888','#cc9966','#4488cc','#aa6644','#6688aa','#ddaa77','#556677','#998877'];
+
+  for (var i = 0; i < numPlanets; i++) {
+    var planetS = hash(seed + i);
+    var radius = (0.3 + planetS * 2.5) * 6.371e6;
+    var mass = Math.pow(radius / 6.371e6, 3) * 5.972e24;
+    var colorIdx = Math.floor(planetS * 8);
+    var auDist = dist / 1.5e11;
+    var inHabZone = auDist >= type.habInner && auDist <= type.habOuter;
+    var orbitalPeriod = Math.sqrt(dist*dist*dist / (1.327e20)) * 2 * Math.PI;
+
+    bodies.push({
+      name: 'Planet ' + String.fromCharCode(65+i),
+      mass: mass, radius: radius, color: colors[colorIdx % colors.length],
+      orbitRadius: dist, orbitalPeriod: orbitalPeriod, inHabZone: inHabZone
+    });
+    dist += (30 + planetS * 80) * 1e9;
+  }
+
+  return {
+    seed: seed, name: seed,
+    star: { mass: type.mass * 1.989e30, lum: type.lum * 3.828e26, temp: type.temp, color: type.color, spectralType: type.name },
+    bodies: bodies,
+    habZoneInner: type.habInner, habZoneOuter: type.habOuter,
+    age: (2 + s * 12).toFixed(1) + ' Gyr'
+  };
+}
+
+var starSystems = [
+  { name: 'Sol', seed: 'Sol', distLy: 0 },
+  { name: 'Alpha Centauri', seed: 'AlpCen', distLy: 4.37 },
+  { name: 'Sirius', seed: 'Sirius', distLy: 8.6 },
+  { name: 'Proxima', seed: 'Prox', distLy: 4.24 },
+  { name: 'Wolf 359', seed: 'Wolf359', distLy: 7.86 },
+  { name: 'Lalande 21185', seed: 'Lal21185', distLy: 8.29 },
+  { name: 'Ross 154', seed: 'Ross154', distLy: 9.68 },
+  { name: 'Epsilon Eridani', seed: 'EpsEri', distLy: 10.5 },
+];
+
+var currentSystem = generateSystem('Sol');
+var ship = {
+  pos: [0, 0, 0], vel: [0, 0, 0],
+  mass: 1000, fuelMass: 5000, Isp: 4500, thrust: 50000,
+  warpActive: false, warpTarget: null, warpProgress: 0
+};
+var cam = { pos: [0, 2e9, 3e9], target: [0, 0, 0] };
+var keys = {};
+var simTime = 0, lastTime = performance.now();
+var frameCount = 0, fps = 0;
+
+document.addEventListener('keydown', function(e) { keys[e.code] = true; if(e.code === 'KeyM') toggleStarMap(); });
+document.addEventListener('keyup', function(e) { keys[e.code] = false; });
+
+function toggleStarMap() {
+  var map = document.getElementById('star-map');
+  if (map.style.display === 'none' || !map.style.display) { renderStarMap(); map.style.display = 'block'; }
+  else { map.style.display = 'none'; }
+}
+
+function renderStarMap() {
+  var list = document.getElementById('star-list');
+  list.innerHTML = '';
+  for (var i = 0; i < starSystems.length; i++) {
+    var sys = starSystems[i];
+    var btn = document.createElement('button');
+    btn.className = 'star-btn';
+    var isCurrent = sys.name === currentSystem.seed;
+    btn.textContent = sys.name + ' (' + sys.distLy.toFixed(1) + ' ly)' + (isCurrent ? ' [HERE]' : '');
+    btn.style.opacity = isCurrent ? '0.5' : '1';
+    if (!isCurrent) {
+      btn.onclick = (function(s) { return function() { warpToSystem(s); }; })(sys);
+    }
+    list.appendChild(btn);
+  }
+}
+
+function warpToSystem(targetSys) {
+  ship.warpTarget = targetSys;
+  ship.warpActive = true;
+  ship.warpProgress = 0;
+  document.getElementById('star-map').style.display = 'none';
+}
+
+document.getElementById('btn-warp').onclick = function() {
+  ship.warpActive = !ship.warpActive;
+  document.getElementById('btn-warp').classList.toggle('active', ship.warpActive);
+  if (ship.warpActive && !ship.warpTarget) {
+    var nearest = null, minDist = Infinity;
+    for (var i = 0; i < starSystems.length; i++) {
+      if (starSystems[i].name === currentSystem.seed) continue;
+      if (starSystems[i].distLy < minDist) { minDist = starSystems[i].distLy; nearest = starSystems[i]; }
+    }
+    ship.warpTarget = nearest;
+  }
+};
+document.getElementById('btn-map').onclick = toggleStarMap;
+
+function add(a,b){return[a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+function sub(a,b){return[a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+function scale(v,s){return[v[0]*s,v[1]*s,v[2]*s];}
+function len(v){return Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);}
+function norm(v){var l=len(v);return l>0?[v[0]/l,v[1]/l,v[2]/l]:[0,0,1];}
+
+function update(dt) {
+  // Thrust
+  if (keys['KeyX'] && ship.fuelMass > 0) {
+    var fwd = norm(sub(cam.target, cam.pos));
+    var accel = ship.thrust / ship.mass;
+    ship.vel = add(ship.vel, scale(fwd, accel * dt));
+    ship.fuelMass -= ship.thrust * dt / (ship.Isp * 9.81);
+    if (ship.fuelMass < 0) ship.fuelMass = 0;
+    ship.mass = 1000 + ship.fuelMass;
+  }
+
+  // Gravity
+  var rMag = len(ship.pos);
+  if (rMag > 1e6) {
+    var gravAccel = 1.327e20 / (rMag * rMag);
+    ship.vel = add(ship.vel, scale(norm(sub([0,0,0], ship.pos)), -gravAccel * dt));
+  }
+
+  // Warp
+  if (ship.warpActive && ship.warpTarget) {
+    ship.warpProgress += dt * 0.5;
+    var progress = Math.min(1, ship.warpProgress);
+    if (progress >= 1) {
+      currentSystem = generateSystem(ship.warpTarget.seed);
+      ship.pos = [0, 0, 0];
+      ship.vel = [0, 0, 0];
+      ship.warpActive = false;
+      ship.warpTarget = null;
+      ship.warpProgress = 0;
+      document.getElementById('btn-warp').classList.remove('active');
+      updateSystemInfo();
+    }
+  }
+
+  ship.pos = add(ship.pos, scale(ship.vel, dt));
+  cam.target = [ship.pos[0], ship.pos[1] + 1e8, ship.pos[2]];
+  cam.pos = add(cam.target, [0, 5e8, 5e8]);
+  simTime += dt;
+
+  // HUD
+  var speed = len(ship.vel);
+  var isFTL = speed > FTL_THRESHOLD;
+  document.getElementById('ship-info').textContent =
+    'Speed: ' + (speed/1000).toFixed(0) + ' km/s | Fuel: ' + (ship.fuelMass/50).toFixed(0) + '%';
+  document.getElementById('velocity').textContent = (speed/1000).toFixed(0) + ' km/s';
+  if (ship.warpActive) {
+    document.getElementById('warp-info').textContent =
+      'WARP TO ' + ship.warpTarget.name + ' (' + (ship.warpProgress*100).toFixed(0) + '%)';
+  } else if (isFTL) {
+    document.getElementById('warp-info').textContent = '>>> FTL CAPABLE <<<';
+  } else {
+    document.getElementById('warp-info').textContent = '';
+  }
+  document.getElementById('warp-status').textContent = ship.warpActive ? 'ACTIVE' : 'IDLE';
+  document.getElementById('warp-status').style.color = ship.warpActive ? '#f77' : '#888';
+}
+
+function updateSystemInfo() {
+  document.getElementById('curr-sys').textContent = currentSystem.seed;
+  document.getElementById('star-type').textContent = currentSystem.star.spectralType + 'V';
+  document.getElementById('body-count').textContent = currentSystem.bodies.length;
+  document.getElementById('hab-zone').textContent =
+    currentSystem.habZoneInner.toFixed(1) + '-' + currentSystem.habZoneOuter.toFixed(1) + ' AU';
+  document.getElementById('sys-age').textContent = currentSystem.age;
+}
+
+function project3D(pos, W, H, scale) {
+  return [W/2 + pos[0]*scale, H/2 - pos[2]*scale];
+}
+
+function render() {
+  var W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050510';
+  ctx.fillRect(0, 0, W, H);
+
+  // Warp streaks
+  if (ship.warpActive) {
+    var cx = W/2, cy = H/2;
+    var speed = len(ship.vel);
+    var streakCount = Math.min(100, Math.floor(speed / C_LIGHT * 500));
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    for (var i = 0; i < streakCount; i++) {
+      var angle = Math.random() * Math.PI * 2;
+      var innerR = 10 + Math.random() * 30;
+      var outerR = 100 + Math.random() * 300;
+      ctx.globalAlpha = 0.3 + Math.random() * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(angle)*innerR, cy + Math.sin(angle)*innerR);
+      ctx.lineTo(cx + Math.cos(angle)*outerR, cy + Math.sin(angle)*outerR);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Stars
+  ctx.fillStyle = '#ffffff';
+  for (var i = 0; i < 300; i++) {
+    var seed = i * 7919;
+    var x = ((seed*137.5)%W+W)%W;
+    var y = ((seed*97.3)%H+H)%H;
+    ctx.globalAlpha = 0.3 + 0.4*Math.sin(simTime*0.3 + i);
+    ctx.fillRect(x, y, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  var scale = Math.min(W,H) * 0.3 / 5e12;
+
+  // Star
+  var [sx, sy] = project3D([0,0,0], W, H, scale);
+  var starGrad = ctx.createRadialGradient(sx,sy,0,sx,sy,40);
+  starGrad.addColorStop(0, currentSystem.star.color);
+  starGrad.addColorStop(0.3, currentSystem.star.color + '88');
+  starGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = starGrad;
+  ctx.beginPath();
+  ctx.arc(sx,sy,40,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(sx,sy,8,0,Math.PI*2);
+  ctx.fill();
+
+  // Planets
+  for (var i = 0; i < currentSystem.bodies.length; i++) {
+    var body = currentSystem.bodies[i];
+    var angle = (simTime / body.orbitalPeriod) * Math.PI * 2;
+    var px = Math.cos(angle) * body.orbitRadius;
+    var pz = Math.sin(angle) * body.orbitRadius;
+    var [bx, by] = project3D([px, 0, pz], W, H, scale);
+    ctx.fillStyle = body.color;
+    ctx.beginPath();
+    ctx.arc(bx, by, Math.max(2, body.radius * scale * 0.5), 0, Math.PI*2);
+    ctx.fill();
+    if (body.inHabZone) {
+      ctx.strokeStyle = '#7f74';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(bx, by, 6, 0, Math.PI*2);
+      ctx.stroke();
+    }
+  }
+
+  // Ship
+  var [ssx, ssy] = project3D(ship.pos, W, H, scale);
+  ctx.fillStyle = '#7f7';
+  ctx.beginPath();
+  ctx.arc(ssx, ssy, 4, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#7f7';
+  ctx.font = '10px monospace';
+  ctx.fillText('SHIP', ssx+6, ssy-5);
+
+  // Distance to nearest system
+  var nearestDist = Infinity, nearestName = '';
+  for (var i = 0; i < starSystems.length; i++) {
+    if (starSystems[i].name === currentSystem.seed) continue;
+    if (starSystems[i].distLy < nearestDist) { nearestDist = starSystems[i].distLy; nearestName = starSystems[i].name; }
+  }
+  document.getElementById('dist-jump').textContent =
+    ship.warpTarget ? ship.warpTarget.distLy.toFixed(1) + ' ly -> ' + ship.warpTarget.name :
+    nearestDist < Infinity ? nearestDist.toFixed(1) + ' ly -> ' + nearestName : '--';
+}
+
+function resize() {
+  canvas.width = Math.min(window.innerWidth, 1280);
+  canvas.height = Math.min(window.innerHeight, 720);
+}
+window.addEventListener('resize', resize);
+resize();
+
+function loop(now) {
+  var dt = Math.max(Math.min((now-lastTime)/1000, 0.05), 0.016);
+  lastTime = now; frameCount++;
+  if (frameCount%10===0) { fps=Math.round(1/dt); document.getElementById('fps').textContent=fps+' fps'; }
+  update(dt); render();
+  document.getElementById('times').textContent=(dt*1000).toFixed(1)+' ms';
+  requestAnimationFrame(loop);
+}
+
+setInterval(function(){ loop(performance.now()); }, 16);
+updateSystemInfo();
+console.log('SPIACE Phase 3 loaded | Systems:', starSystems.map(function(s){return s.name;}));
+</script>
+</body>
+</html>
