@@ -87,12 +87,12 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 ## Phase Breakdown
 
 ### Phase 0: Foundation (Physics DSL + Kepler Solver)
-- [ ] Design and implement .chimera DSL parser (Python to WGSL)
-- [ ] Keplerian two-body orbital solver (analytical, not numerical)
-- [ ] Single star + single planet system with proper elliptical orbits
-- [ ] Ship physics: rocket equation (Tsiolkovsky), mass changes as fuel burns
-- [ ] Basic camera: free-fly in void, velocity-based movement
-- [ ] Deliverable: Playwright-screenshot-verified single-system demo
+- [x] Design and implement .chimera DSL parser (Python -> WGSL)
+- [x] Keplerian two-body orbital solver (analytical, not numerical)
+- [x] Single star + single planet system with proper elliptical orbits
+- [x] Ship physics: rocket equation (Tsiolkovsky), mass changes as fuel burns
+- [x] Basic camera: free-fly in void, velocity-based movement
+- [x] Deliverable: Playwright-screenshot-verified single-system demo (238 fps, 29780 m/s circular orbit)
 
 ### Phase 1: Orbital Space
 - [ ] N-body gravity on GPU (extend Chimera's existing compute shader)
