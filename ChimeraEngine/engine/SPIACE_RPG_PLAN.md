@@ -96,11 +96,11 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 
 ### Phase 1: Orbital Space
 - [ ] N-body gravity on GPU (extend Chimera's existing compute shader)
-- [ ] Multiple planets with proper orbital periods (Kepler's third law verified)
-- [ ] Transfer orbits: Hohmann, bi-elliptic, gravity assists
-- [ ] Render: ray-marched void + point-sprite bodies + star glow
-- [ ] UI: orbital map, velocity readout, delta-v calculator
-- [ ] Deliverable: Multi-body system with player ship navigating orbits
+- [x] Multiple planets with proper orbital periods (Kepler's third law verified)
+- [x] Transfer orbits: Hohmann, bi-elliptic, gravity assists
+- [x] Render: ray-marched void + point-sprite bodies + star glow
+- [x] UI: orbital map, velocity readout, delta-v calculator
+- [x] Deliverable: Multi-body system with player ship navigating orbits (Hohmann dV verified)
 
 ### Phase 2: Planetary Surface
 - [ ] Atmospheric thin-shell model (scale height ~8km for Earth-like)
