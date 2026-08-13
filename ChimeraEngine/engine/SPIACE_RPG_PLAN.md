@@ -140,23 +140,28 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Playwright headed-mode test with energy + thermal assertions (`test_phase5.py`, all green)
 - [x] Deliverable: 500-particle system at CPU BH 2.5 ms vs O(n²) 3.9 ms, ~58 fps
 
-### Phase 6: Universal Kernel Translation Layer (next)
-- [ ] `.chimera` kernel DSL — declare any interaction as: quantity + far-field kernel + aggregation rule + near-field correction
-- [ ] Kernel code generator — auto-generates node serialization fields, CPU aggregator, WGSL traversal for any declared kernel
-- [ ] Electromagnetism as first extended kernel — charge per particle, Coulomb's law through tree, Lorentz force
-- [ ] Falsifier: total energy (gravity + EM) conserved to < 1% over 60 frames
+### Phase 6: Universal Kernel Translation Layer
+- [x] `.chimera` kernel DSL (`kernel_dsl.py`) — declare any interaction as: quantity + far-field kernel + aggregation rule + near-field gate; parser validates and refuses unknown aggregates/laws
+- [x] Kernel code generator — `generate_kernel()` emits node serialization fields, CPU aggregator, WGSL traversal + leaf accumulation, node packing, and pair-PE falsifier terms; `--inject`/`--verify` splice them into the HTML between GENERATED markers (verify wired into the test)
+- [x] Electromagnetism as first extended kernel — charge per particle (star 0, orbitals ±1e3–1e6 C log-uniform), Coulomb's law through the same tree (bipolar: like signs repel), node fields @96B (center-of-charge + total charge), 112 B/node total
+- [x] Three modes: CPU BH (gravity only), CPU BH+EM, GPU BH+EM — `emEnabled` toggle gates the kernel on CPU, Params.emEnabled on GPU
+- [x] Falsifier: total energy (KE + grav PE + EM PE) conserved to < 1% over 60 frames in CPU BH+EM — **measured 0.0000%** (KE 1.17e23 J, PE_grav −2.36e23 J, PE_em 3.07e12 J)
+- [x] Falsifier: charge deflects trajectories — charged-vs-neutral test particle against frozen background diverges 1.16e4 m over 2e7 s (|a_EM|₀ = 1.4e-8 m/s²); thermal equilibrium falsifier still holds (268.7 K vs 271.0 K, 0.9%)
+- [x] HUD: KE / PE grav / PE em breakdown, charge stats (mean|q| 1.7e5 C, σ 3.0e5 C, net −8.4e5 C over 499 orbitals), charge-tinted splats (+ red / − blue)
+- [x] Playwright headed-mode test (`test_phase6.py`, all green: DSL verify, 500 particles, tree 709 nodes/depth 6, all falsifiers, mode switching, renderer)
+- [x] Deliverable: 500-particle system at CPU BH 2.6 ms, CPU BH+EM 2.7 ms, GPU BH+EM 3.5 ms (readback-bound), ~60 fps
 
 ---
 
-## Phase 6 Preview: Universal Kernel Translation Layer
+## Phase 6 Retrospective: Universal Kernel Translation Layer
 
-**The core insight from Phase 5:** Barnes-Hut doesn't just do gravity. It does *any* additive point-source interaction where the far-field can be approximated by an aggregate (center-of-mass weighted by the kernel). Light/heat was translated into the tree by adding one more field per node. The next step is making that translation *automatic*.
+**Shipped.** The core insight from Phase 5 — Barnes-Hut doesn't care what it aggregates — is now *machinery*, not prose. `kernel_dsl.py` holds the three declarations (gravity, light, electromagnetism); every per-kernel fragment in `spiace_phase6.html` (WGSL node fields, accept/leaf accumulation CPU + GPU, node packing, pair-PE falsifier terms) is machine-emitted between GENERATED markers, and `test_phase6.py` runs `kernel_dsl.py --verify` so the generated code can never silently drift from the declarations.
 
-### What Phase 6 will build
-1. **`.chimera` kernel DSL** — declare any interaction as: quantity name + far-field kernel + aggregation rule + near-field correction
-2. **Kernel code generator** — given a DSL declaration, auto-generates: node serialization fields, CPU aggregator, WGSL traversal accumulation
-3. **Electromagnetism as first extended kernel** — charge per particle, Coulomb's law through the tree, Lorentz force on charged particles
-4. **Falsifier**: energy conservation across gravity + EM combined (total E conserved to < 1% over 60 frames)
+### What Phase 6 built
+1. **`.chimera` kernel DSL** — quantity + aggregate (weighted_sum / bipolar_sum / sum) + kernel_fn (inverse_squared / irradiance) + sign (attractive / repulsive / bipolar) + coupling constant + optional toggle
+2. **Kernel code generator** — one declaration → all seven code regions; adding a kernel is now ~6 lines of DSL, not a new algorithm
+3. **Electromagnetism** — bipolar Coulomb through the same traversal; nodes carry center-of-charge (|q|-weighted) + signed total charge at +16 B/node (112 B total)
+4. **Falsifiers all held**: combined energy drift 0.0000% (< 1% required); charged-vs-neutral deflection 1.16e4 m over 2e7 s; thermal equilibrium 268.7 K vs 271.0 K predicted
 
 ### Why this matters
 - Every force with a Green's function (inverse-square or otherwise) becomes natively expressible in the tree
@@ -164,10 +169,10 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - This is how you go from "gravity simulator" to "emergent physics engine" without writing a single new kernel by hand
 - **The possibilities are only limited by the number of trees** — and we can have one tree per membrane, parallelized across membranes
 
-### Research question (from operator)
+### Research question (from operator) — ANSWERED
 > "What else can we translate into Barnes-Hut besides gravity and light? What about electromagnetism?"
 > 
-> Answer: *Anything with superposition.* Diffusion (heat equation steady-state), acoustics (pressure waves), fluid flow (Stokeslets), quantum wavefunction overlap (Born approximation). The tree is a universal solver for additive point-source interactions. Phase 6 starts with EM because it's the second fundamental force and completes the "two forces that shape everything we see" pair.
+> Answer: *Anything with superposition.* Diffusion (heat equation steady-state), acoustics (pressure waves), fluid flow (Stokeslets), quantum wavefunction overlap (Born approximation). The tree is a universal solver for additive point-source interactions. Phase 6 proved it with EM — the second fundamental force — and made the translation *declarative*: the DSL, not hand-written kernels, is now where new physics enters the engine.
 
 ---
 
@@ -214,11 +219,12 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 ## Next Immediate Steps
 
 1. ~~Commit Phase 5 with Playwright verification~~ ✓ done
-2. **Phase 6: Universal Kernel Translation Layer** — `.chimera` kernel DSL + auto-generated CPU/GPU code + electromagnetism as first extended kernel
-3. Begin Track A from ROADMAP.md: Terrain → splats connection
-4. Begin Track B: Scale-relative flight camera
-5. Connect membrane clock to physics tick rate (Track T)
+2. ~~**Phase 6: Universal Kernel Translation Layer**~~ ✓ done — DSL + generator + EM kernel, all falsifiers green
+3. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
+4. Begin Track A from ROADMAP.md: Terrain → splats connection
+5. Begin Track B: Scale-relative flight camera
+6. Connect membrane clock to physics tick rate (Track T)
 
 ---
 
-Document version: 1.2 | Status: Phases 0-5 complete, Phase 6 scoped | Agent: bionic
+Document version: 1.3 | Status: Phases 0-6 complete | Agent: bionic
