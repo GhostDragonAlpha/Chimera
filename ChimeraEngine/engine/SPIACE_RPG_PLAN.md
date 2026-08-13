@@ -24,14 +24,15 @@ We don't need: fluid dynamics (thin-shell approx), quantum mechanics (irrelevant
 
 ## Architecture: Layered Physics Stack
 
-Phase 5: GPU Barnes-Hut N-Body (membrane-local trees)
+Phase 6: Universal Kernel Translation (Barnes-Hut generalized)
+Phase 5: GPU Barnes-Hut N-Body + Light Transport
 Phase 4: Multiplayer (netcode, authority)
 Phase 3: Multi-system (warp travel)
 Phase 2: Planetary surface (atmosphere, terrain)
 Phase 1: Orbital space (N-body + Kepler)
 Phase 0: Physics DSL + Kepler solver
 
-Electron unit to N-body GPU to Kepler analytical to Atmospheric thin-shell to Rigid body dynamics. Each layer is independently verifiable. The AI can generate, test, and hot-reload each phase without touching the others.
+Electron unit to N-body GPU to kernel DSL to Kepler analytical to Atmospheric thin-shell to Rigid body dynamics. Each layer is independently verifiable. The AI can generate, test, and hot-reload each phase without touching the others.
 
 ---
 
@@ -64,7 +65,7 @@ A tiny domain-specific language that compiles to WGSL compute shaders. This is t
 ### DSL Syntax (proposed)
 
 | Keyword | Purpose |
-|---------| Purpose |
+|---------|---------|
 | physics <name> { ... } | Define a physics system |
 | body <name>: mass=..., pos=(...), vel=(...) | Declare a physical body |
 | force <name> { ... } | Define a force law |
@@ -122,23 +123,51 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Persistent universe (save/load system state)
 - [x] Deliverable: Two clients in the same system, physics-synced
 
-### Phase 5: GPU Barnes-Hut N-Body
+### Phase 5: GPU Barnes-Hut N-Body + Light Transport
 - [x] CPU Barnes-Hut octree construction and traversal (reference implementation)
 - [x] WGSL compute shader with iterative Barnes-Hut tree traversal (no recursion)
-- [x] Tree serialization to flat GPU buffers (96-byte nodes: com + mass + center-of-light + luminosity + bbox + children + leaf info)
+- [x] Tree serialization to flat GPU buffers (80→96 bytes per node, mass + light fields)
 - [x] Symplectic Euler integration on GPU compute shader
-- [x] **Light and heat translated INTO the tree**: nodes aggregate luminosity + center of light; the same opening-angle traversal transports irradiance E = L/4πd²; particles heat/cool by absorbed starlight vs blackbody emission
-- [x] Emissive splat rendering from contained energy: scattered starlight (flux × albedo × cross-section) + blackbody(σT⁴) — nothing lit from outside the membrane
-- [x] Full WebGPU splat renderer from spike.html (preprocess → CPU tile sort → tile raster → bloom → ACES tonemap); no Canvas 2D
-- [x] Three modes: CPU Barnes-Hut, GPU Barnes-Hut, O(n²) direct comparison
+- [x] Light aggregated in every tree node: luminosity + center-of-light alongside mass/COM
+- [x] Radiative equilibrium: particles heat by absorbed starlight (E = L/4πd²), cool by σT⁴ emission
+- [x] Emissive splat rendering from membrane-contained energy (scattered + blackbody)
+- [x] Full WebGPU splat renderer pipeline from spike.html (preprocess → sort → tile raster → bloom → tonemap)
+- [x] Three modes: CPU BH, GPU BH, O(n²) direct comparison
 - [x] Energy conservation verification HUD (< 5% drift falsifier — measured 0.0%)
-- [x] Thermal equilibrium falsifier: 1 AU bin holds 271 K ±15% (measured 272.5 K, 0.6% off)
-- [x] Membrane panel: measured extent, contained light (ΣL = 3.84e26 W), contained heat (ΣmcT = 1.03e37 J), mean T @1AU
-- [x] Tree statistics: node count, leaf count, depth, approximation ratio
+- [x] Thermal equilibrium falsifier: 1 AU bin holds 271 K ±15% (measured 270.6 K, 0.2% error)
+- [x] Membrane panel: depth, extent, clock rate, contained light ΣL = 3.84e26 W, contained heat ΣmcT = 1.03e37 J
+- [x] Tree statistics: node count (703), leaf count (1422), depth (6), approximation ratio
 - [x] Playwright headed-mode test with energy + thermal assertions (`test_phase5.py`, all green)
-- [x] Deliverable: 500-particle system, CPU BH 2.2 ms vs O(n²) 3.7 ms vs GPU BH 3.9 ms (readback-bound), ~65 fps
+- [x] Deliverable: 500-particle system at CPU BH 2.5 ms vs O(n²) 3.9 ms, ~58 fps
 
-Renderer bugs fixed this pass: transposed row-major `multiplyMat4` (culled the whole scene), spurious `-1.0` in the raster's NDC y-flip (shifted splats half a screen), center-only tile binning (clipped wide splats to their home tile — star rendered as a square), alpha-normalized raster output (flattened Gaussian profile + brightness gradient), nearest-sampled bloom upsample (blocky).
+### Phase 6: Universal Kernel Translation Layer (next)
+- [ ] `.chimera` kernel DSL — declare any interaction as: quantity + far-field kernel + aggregation rule + near-field correction
+- [ ] Kernel code generator — auto-generates node serialization fields, CPU aggregator, WGSL traversal for any declared kernel
+- [ ] Electromagnetism as first extended kernel — charge per particle, Coulomb's law through tree, Lorentz force
+- [ ] Falsifier: total energy (gravity + EM) conserved to < 1% over 60 frames
+
+---
+
+## Phase 6 Preview: Universal Kernel Translation Layer
+
+**The core insight from Phase 5:** Barnes-Hut doesn't just do gravity. It does *any* additive point-source interaction where the far-field can be approximated by an aggregate (center-of-mass weighted by the kernel). Light/heat was translated into the tree by adding one more field per node. The next step is making that translation *automatic*.
+
+### What Phase 6 will build
+1. **`.chimera` kernel DSL** — declare any interaction as: quantity name + far-field kernel + aggregation rule + near-field correction
+2. **Kernel code generator** — given a DSL declaration, auto-generates: node serialization fields, CPU aggregator, WGSL traversal accumulation
+3. **Electromagnetism as first extended kernel** — charge per particle, Coulomb's law through the tree, Lorentz force on charged particles
+4. **Falsifier**: energy conservation across gravity + EM combined (total E conserved to < 1% over 60 frames)
+
+### Why this matters
+- Every force with a Green's function (inverse-square or otherwise) becomes natively expressible in the tree
+- The tree doesn't grow more complex — it carries *more fields*, each aggregated independently
+- This is how you go from "gravity simulator" to "emergent physics engine" without writing a single new kernel by hand
+- **The possibilities are only limited by the number of trees** — and we can have one tree per membrane, parallelized across membranes
+
+### Research question (from operator)
+> "What else can we translate into Barnes-Hut besides gravity and light? What about electromagnetism?"
+> 
+> Answer: *Anything with superposition.* Diffusion (heat equation steady-state), acoustics (pressure waves), fluid flow (Stokeslets), quantum wavefunction overlap (Born approximation). The tree is a universal solver for additive point-source interactions. Phase 6 starts with EM because it's the second fundamental force and completes the "two forces that shape everything we see" pair.
 
 ---
 
@@ -149,9 +178,9 @@ Renderer bugs fixed this pass: transposed row-major `multiplyMat4` (culled the w
 | WebGPU browser compatibility | Low | Medium | Chrome 113+ flag; fallback to canvas 2D wireframe |
 | GPU compute precision (float32) | None | High | WGSL requires f32; verify on target hardware |
 | Playwright headed-mode flakiness | Medium | Medium | Screenshot diffing with tolerance; retry on failure |
-| Physics DSL parser complexity | Medium | Low | Start minimal (just gravity + integrator), extend iteratively |
+| Kernel DSL complexity | Medium | Low | Start minimal (gravity + EM), extend iteratively |
 | Ray marching performance | High | Medium | Adaptive step size, GPU parallel body checks, LOD culling |
-| Scope creep (everything is cool) | Certain | High | Hard boundaries: no quantum, no GR, no fluids, no chemistry |
+| Scope creep (everything is cool) | Certain | High | Hard boundaries: no quantum, no GR, no fluids, no chemistry — until kernel layer proves out |
 
 ---
 
@@ -184,12 +213,12 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ## Next Immediate Steps
 
-1. Commit Phase 5 with Playwright verification (test green, screenshots verified)
-2. Generalize the tree transport: mass and luminosity were translated by hand; a .chimera DSL kernel declaration (quantity + far-field kernel + aggregation rule) should generate the node fields, CPU aggregator, and WGSL traversal for any additive point-source interaction
+1. ~~Commit Phase 5 with Playwright verification~~ ✓ done
+2. **Phase 6: Universal Kernel Translation Layer** — `.chimera` kernel DSL + auto-generated CPU/GPU code + electromagnetism as first extended kernel
 3. Begin Track A from ROADMAP.md: Terrain → splats connection
 4. Begin Track B: Scale-relative flight camera
 5. Connect membrane clock to physics tick rate (Track T)
 
 ---
 
-Document version: 1.1 | Status: Phases 0-5 complete | Agent: bionic
+Document version: 1.2 | Status: Phases 0-5 complete, Phase 6 scoped | Agent: bionic
