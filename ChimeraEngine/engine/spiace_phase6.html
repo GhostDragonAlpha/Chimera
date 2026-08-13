@@ -671,8 +671,14 @@ let B_field = [0, 0, B_FIELD_DEFAULT]; // global uniform magnetic field (Tesla)
 // otherwise lose all sub-1e4 m precision in f32 buffers.
 const WORLD_SCALE = 1e-11;
 const TILE_SIZE = 16;
-const MAX_PARTICLES = 8192; // bumped from 4096: HiDPI (2× DPR) doubles r_px,
-// LOD law wants 4× more fracture splats — cap was hitting the wall at close range.
+// TARGET_RESOLUTION: the single resolution this renderer targets for
+// visual quality. 4K UHD (3840×2160) is where splat-based terrain stops
+// looking like blobs and starts resolving into surface features. This is
+// NOT hardware-dependent — it's our design target, same as a game engine
+// targeting "4K" regardless of whether the player has a 1080p or 5K display.
+const TARGET_RESOLUTION_W = 3840;
+const TARGET_RESOLUTION_H = 2160;
+const MAX_PARTICLES = 8192; // bumped from 4096: enough headroom for fracture at 4K
 const MAX_TREE_NODES = 2_000_000; // tree size cap (~288 MB of 144-byte nodes)
 
 // ---- BARNES-HUT TREE (CPU) ----
@@ -1393,11 +1399,11 @@ function spawnPlanet(pi = 0, terrainDEM = null) {
     // ~5e6 m (sigma ~1.3e6) tiles the surface. (The old 8e6 m floor made
     // every splat larger than the planet itself: 300 stacked planet-sized
     // splats rendered as a uniform blue wash at ~30x overdraw, 7 fps.)
-    // Splat radius scaled to canvas resolution: higher-res displays need
-    // smaller splats or they blur into each other. At 1280×720, 0.2 gave
-    // ~3-4 bloated blobs across the planet; at native-HiDPI we halve it.
-    const dpr = Math.min(window.devicePixelRatio || 1, 3);
-    const renderRadius = R_PL * (0.2 / Math.max(dpr, 1)); // ~1.27e6 m @ 1×, ~635 km @ 2× DPR
+    // Splat radius set for the TARGET resolution (4K). At 4K, R_PL × 0.1
+    // gives ~637 km per splat — enough grains to resolve terrain features
+    // without bloating into each other. The LOD law (N = ρ·r_px²) will
+    // automatically select coarser or finer levels based on screen distance.
+    const renderRadius = R_PL * 0.1; // ~637 km at Earth radius, targets 4K quality
 
     // Color from elevation band (set as display color via temp/lum hack)
     const col = terrainColor(elev);
@@ -2603,11 +2609,10 @@ window.addEventListener('mouseup', () => {
 });
 
 function resize() {
-  // HiDPI: multiply by device pixel ratio (Retina = 2×, some displays = 3×)
-  // Cap at 4K to avoid memory blowup on ultrawide monitors.
-  const dpr = Math.min(window.devicePixelRatio || 1, 3);
-  canvas.width  = Math.min(Math.round(window.innerWidth  * dpr), 3840);
-  canvas.height = Math.min(Math.round(window.innerHeight * dpr), 2160);
+  // Target: 4K UHD (3840×2160). Canvas fills the window up to this size.
+  // This is our single design target — not hardware-dependent, not incremental.
+  canvas.width  = Math.min(window.innerWidth,  TARGET_RESOLUTION_W);
+  canvas.height = Math.min(window.innerHeight, TARGET_RESOLUTION_H);
 }
 window.addEventListener('resize', resize);
 resize();

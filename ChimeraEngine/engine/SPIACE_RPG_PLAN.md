@@ -467,10 +467,13 @@ kernel), or the C++ port of the verified kernel layer.
 ---
 
 ### Renderer Quality Fixes (bionic)
-- [x] HiDPI canvas: DPR-scaled resolution (capped at 3× / 4K) instead of 1280×720 hard cap
-- [x] Terrain splat radius scaled inversely with DPR (~635 km @ 2× vs ~1270 km @ 1×)
-- [x] MAX_PARTICLES bumped 4096 → 8192 for HiDPI fracture headroom (7692 slots)
-- All falsifiers pass unchanged; test viewport at DPR=1 keeps distances identical
+- [x] **Single design target: 4K UHD (3840×2160)** — not hardware-dependent, not incremental.
+  Canvas fills the window up to this size regardless of display hardware.
+  Same philosophy as any game engine targeting '4K' — it's a design contract.
+- [x] Terrain splat radius set for 4K: R_PL × 0.1 (~637 km at Earth). The LOD law
+  (N = ρ·r_px²) automatically selects coarser or finer levels based on screen distance.
+- [x] MAX_PARTICLES bumped 4096 → 8192 for 4K fracture headroom (7692 slots)
+- All falsifiers pass; test viewport at 1280×720 keeps distances identical
 
 ---
 
