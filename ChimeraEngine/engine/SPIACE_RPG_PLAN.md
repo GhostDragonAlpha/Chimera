@@ -227,6 +227,23 @@ Each phase is an independent commit. Each commit is independently testable.
 
 **Falsifiers all held:** cyclotron frequency non-zero (ω_c > 0); gyroradius finite; combined energy drift < 1% with B-field active.
 
+### Phase 8: Heat Diffusion Steady-State Kernel
+- [x] `potential_1r` added to the kernel DSL vocabulary — scalar field T = Q·(1/4πκ)/d, accumulates `theat` (WGSL) / `fluxOut.t` (JS), carries no pair PE
+- [x] `kernel heat` declared (quantity=heat, aggregate=weighted_sum, coupling=KAPPA_INV_4PI, toggle=heatEnabled) — all 7 generated regions re-injected, `--verify` green
+- [x] κ DERIVED, not tuned: 1/(4πκ) = T_EQ_1AU·AU/L_STAR = 1.0576e-13 K·m/W — the membrane-medium conductivity that makes steady-state diffusion equal radiative equilibrium at 1 AU. Prediction: T_field @1AU ≈ 271 K. Measured: 270.7 K (0.1% off)
+- [x] Per-particle `heat` quantity (= thermal emission power, synced from lum); GPU rides new binding-9 buffer, temperature field comes home in the unused vel.w slot (no new output binding, no extra readback)
+- [x] Falsifier 6: two-source analytic superposition through the AGGREGATED node path — measured rel err 0.0001% (limit 2%)
+- [x] Falsifier 7: energy drift 0.0000% with heat kernel active (a field does no work)
+- [x] Falsifier 8: thermal equilibrium unchanged — 255.6 K @1AU (5.7%, limit 15%)
+- [x] HUD: `T_field @1AU` row in the membrane panel + Heat toggle button
+- [x] GPU BH+EM+heat: 3.4 ms, 68 fps
+
+**Two WebGPU bugs found and fixed while wiring Phase 8:**
+1. Phase 7 shipped `ArrayBuffer(32)` for a 44-byte Params struct — the `pf[8..10]` B-field writes were out of bounds and silently dropped, so GPU Lorentz always read B=0. Params upload is now 64 B.
+2. The ninth storage binding (heats) crossed the DEFAULT `maxStorageBuffersPerShaderStage: 8`, invalidating the whole BH bind group layout. The device now requests the limit explicitly (`requiredLimits`), with a CPU-only fallback. Also: this Chrome build's `GPUSupportedLimits` has no `.get()` — property access only. **Note for the fifth kernel: pack mass/lum/charge/heat into one `vec4f` quantities buffer instead of adding another binding.**
+
+**Why heat matters more than heat:** the DSL now spans both radial profiles of the 3D Green's-function family — 1/d² fields (gravity, EM, irradiance) and 1/d potentials (heat). Anything superposable with a known Green's function is now a 6-line declaration.
+
 ---
 
 ## Success Criteria (vs. Unreal Engine)
@@ -335,4 +352,4 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-Document version: 1.5 | Status: Phases 0-6 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3
+Document version: 2.0 | Status: Phases 0-8 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3

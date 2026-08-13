@@ -26,6 +26,11 @@ Tests:
 12. Track T: LOD-of-time toggle works; witness falsifier — LOD-gated
     positions within 1% of full-rate over 60 frames
 13. Screenshots at start and end; console collected; no page errors
+14. PHASE 8: heat diffusion steady-state kernel — WGSL heat fields,
+    FALSIFIER 6 (two-source analytic superposition within 2% via the
+    aggregated-node path), T_field @1AU ~= 271 K (the kappa derivation's
+    prediction, <15%), heat toggle, FALSIFIERS 7-8 (energy drift and
+    thermal equilibrium unchanged with the heat kernel active)
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -90,6 +95,9 @@ def test_spiace_phase6_kernels():
         page.screenshot(path=SCREENSHOT_START, full_page=False)
         assert os.path.exists(SCREENSHOT_START), "Start screenshot not saved"
         print(f"Screenshot saved: {SCREENSHOT_START}")
+        # Surface WebGPU init state early — a failure here shows #err and
+        # otherwise only trips an assertion 30 s later in the LOD section
+        print(f"gpu-info @load: {text(page, '#gpu-info')} | err: {err_visible(page)}")
 
         # ---- 3. Tree stats populate in CPU mode ----
         page.wait_for_function(
@@ -139,6 +147,56 @@ def test_spiace_phase6_kernels():
         assert rel_err < 0.15, \
             f"FALSIFIER 2 TRIPPED: 1AU bin mean T {thermal['meanT']:.1f} K vs " \
             f"predicted {thermal['predicted']:.1f} K"
+
+        # ---- PHASE 8: HEAT DIFFUSION STEADY-STATE KERNEL ----
+        # WGSL TreeNode must carry the heat fields (DSL injected)
+        assert "heat_c" in wgsl and "heat_q" in wgsl, \
+            "WGSL TreeNode missing heat fields (kernel DSL not injected?)"
+        print("WGSL TreeNode carries heat_c/_q OK")
+
+        # FALSIFIER 6: two point heat sources superpose analytically.
+        # The probe is far enough that the tree ACCEPTS the aggregated
+        # node — this tests the approximation path, not just leaf sums.
+        hw = page.evaluate("window.__heatWitness()")
+        print(f"Heat witness: T_tree={hw['tTree']:.4e} K vs "
+              f"T_analytic={hw['tAnalytic']:.4e} K, rel err {hw['relErr']*100:.4f}% "
+              f"({hw['approximatedNodes']} accepted nodes, {hw['directLeaves']} leaves)")
+        assert hw["approximatedNodes"] > 0, \
+            "heat witness exercised no aggregated nodes — approximation path untested"
+        assert hw["relErr"] < 0.02, \
+            f"FALSIFIER 6 TRIPPED: heat superposition rel err {hw['relErr']*100:.3f}% >= 2%"
+
+        # The kappa derivation's prediction: the diffusive temperature
+        # field at 1 AU equals radiative equilibrium (271 K) by construction
+        page.wait_for_function(
+            "window.__heatStats && window.__heatStats.count > 0 && window.__heatStats.enabled",
+            timeout=15000)
+        hs = page.evaluate("window.__heatStats")
+        tf_err = abs(hs["meanTfield"] - hs["predicted"]) / hs["predicted"]
+        print(f"Heat field: mean T_field @1AU = {hs['meanTfield']:.1f} K over "
+              f"{hs['count']} bodies (predicted {hs['predicted']:.1f} K, "
+              f"rel err {tf_err*100:.1f}%)")
+        assert tf_err < 0.15, \
+            f"HEAT DERIVATION WRONG: T_field @1AU {hs['meanTfield']:.1f} K vs " \
+            f"predicted {hs['predicted']:.1f} K"
+
+        # Toggle: button flips the kernel and the HUD reports it
+        # (membrane panel updates every 60 frames — poll, don't fixed-sleep)
+        page.click("#btn-heat")
+        assert text(page, "#btn-heat") == "Heat: off"
+        page.wait_for_function(
+            "document.getElementById('mem-tfield').textContent === 'off'",
+            timeout=15000)
+        page.click("#btn-heat")
+        assert text(page, "#btn-heat") == "Heat: on"
+        page.wait_for_function(
+            "window.__heatStats && window.__heatStats.enabled",
+            timeout=15000)
+        print("Heat kernel toggle OK")
+        # Falsifiers 7 & 8 are the EXISTING energy and thermal checks run
+        # with the heat kernel active (default on): heat is a field, not a
+        # force — it does no work and touches no dynamics, so drift must
+        # stay < 1% and the 1 AU bin must hold equilibrium.
 
         # ---- 5. FALSIFIER 1: combined energy drift < 1% (CPU BH+EM) ----
         # Switch to EM mode and reset: btn-reset nulls prevEnergy, so the
@@ -235,7 +293,7 @@ def test_spiace_phase6_kernels():
         page.wait_for_timeout(400)
         f1 = page.evaluate("window.__frames || 0")
         assert f1 > f0, "frames stalled with LOD time on"
-        assert err_visible(page) is None
+        assert err_visible(page) is None, f"#err shown: {err_visible(page)} | gpu-info: {text(page, '#gpu-info')}"
         page.click("#btn-lod")
         assert text(page, "#btn-lod") == "LOD Time: off"
         print("LOD time toggle OK")
@@ -358,7 +416,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 + Phase 7 assertions passed! ===")
+        print("\n=== All Phase 6 + 7 + 8 assertions passed! ===")
         browser.close()
 
 

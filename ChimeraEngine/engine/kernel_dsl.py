@@ -18,7 +18,14 @@ Node layout (must match the WGSL TreeNode struct and packTree exactly):
   base 64 B: bb_min @0 (12) | bb_max @12 (12) | children @24 (8 x u32)
              | leaf_offset @56 | leaf_count @60
   then 16 B per kernel, in declaration order: center vec3f + quantity f32
-  gravity @64 | light @80 | electromagnetism @96  ->  112 B/node
+  gravity @64 | light @80 | electromagnetism @96 | heat @112  ->  128 B/node
+
+kernel_fn vocabulary:
+  inverse_squared  - force-like, F ~ q1 q2 / d^2 along the displacement
+  irradiance       - scalar flux field, E = L/(4 pi d^2)  -> accumulates `flux`
+  potential_1r     - scalar potential field, T = Q * coupling / d (steady-state
+                     diffusion Green's function)  -> accumulates `theat` (WGSL)
+                     / `fluxOut.t` (JS). A field, not a force: no pair PE.
 """
 
 import re
@@ -52,10 +59,19 @@ kernel electromagnetism {
     coupling  = "K_E"
     toggle    = "emEnabled"
 }
+
+kernel heat {
+    quantity  = "heat"            # per-particle heat source (W) = thermal emission
+    aggregate = "weighted_sum"    # total = sum(Q), center = Q-weighted (sources >= 0)
+    kernel_fn = "potential_1r"    # T = Q/(4 pi kappa d) — steady-state diffusion Green's fn
+    sign      = "attractive"      # positive sources raise the temperature field
+    coupling  = "KAPPA_INV_4PI"   # 1/(4 pi kappa), host-derived (diffusion == radiation @1AU)
+    toggle    = "heatEnabled"
+}
 '''
 
 AGGREGATES = {"weighted_sum", "bipolar_sum", "sum"}
-KERNEL_FNS = {"inverse_squared", "irradiance"}
+KERNEL_FNS = {"inverse_squared", "irradiance", "potential_1r"}
 SIGNS = {"attractive", "repulsive", "bipolar"}
 REQUIRED = ("quantity", "aggregate", "kernel_fn", "sign", "coupling")
 
@@ -115,6 +131,18 @@ def _wgsl_accept(k: dict) -> str:
                 "      let d_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;\n"
                 f"      flux += n.{nm}_q / (FOUR_PI * d_sq);\n"
                 "    }")
+    if k["kernel_fn"] == "potential_1r":
+        gate = k.get("toggle")
+        body = (f"      let dx = n.{nm}_c[0] - tgt.x;\n"
+                f"      let dy = n.{nm}_c[1] - tgt.y;\n"
+                f"      let dz = n.{nm}_c[2] - tgt.z;\n"
+                "      let d_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;\n"
+                f"      theat += n.{nm}_q * {k['coupling']} / sqrt(d_sq); // T field, 1/d\n")
+        head = (f"    // kernel {nm}: potential_1r from center of {k['quantity']} (scalar temperature field)\n"
+                "    {\n")
+        if gate:
+            return head + f"      if (params.{gate} == 1u) {{\n" + body + "      }\n    }"
+        return head + body + "    }"
     head = (f"    // kernel {nm}: {k['sign']} {k['kernel_fn']} from center of {k['quantity']}\n"
             "    {\n")
     if k["sign"] == "bipolar":
@@ -144,6 +172,12 @@ def _wgsl_leaf(k: dict) -> str:
     nm = k["name"]
     if k["kernel_fn"] == "irradiance":
         return f"        flux += {k['quantity']}s[pid] / (FOUR_PI * dist_sq); // kernel {nm}"
+    if k["kernel_fn"] == "potential_1r":
+        stmt = f"theat += {k['quantity']}s[pid] * {k['coupling']} / dist;"
+        gate = k.get("toggle")
+        if gate:
+            return f"        if (params.{gate} == 1u) {{ {stmt} }} // kernel {nm}"
+        return f"        {stmt} // kernel {nm}"
     if k["sign"] == "bipolar":
         return (f"        if (params.emEnabled == 1u) {{ // kernel {nm} (bipolar)\n"
                 f"          let f_{nm} = {k['coupling']} * charges[idx] * charges[pid] / (masses[idx] * dist_sq * dist);\n"
@@ -194,6 +228,16 @@ def _js_accept(k: dict) -> str:
                 f"    const dz = node.k_{nm}_c[2] - targetPos[2];\n"
                 f"    fluxOut.v += node.k_{nm}_q / (FOUR_PI * (dx*dx + dy*dy + dz*dz + SOFT_SQ));\n"
                 "  }")
+    if k["kernel_fn"] == "potential_1r":
+        gate = k.get("toggle")
+        body = (f"    const dx = node.k_{nm}_c[0] - targetPos[0];\n"
+                f"    const dy = node.k_{nm}_c[1] - targetPos[1];\n"
+                f"    const dz = node.k_{nm}_c[2] - targetPos[2];\n"
+                f"    fluxOut.t += node.k_{nm}_q * {k['coupling']} / Math.sqrt(dx*dx + dy*dy + dz*dz + SOFT_SQ);")
+        head = f"  // kernel {nm}: potential_1r (scalar temperature field)"
+        if gate:
+            return f"{head} (gated by {gate})\n  if ({gate}) {{\n{body}\n  }}"
+        return f"{head}\n  {{\n{body}\n  }}"
     if k["sign"] == "bipolar":
         body = (f"    const dx = node.k_{nm}_c[0] - targetPos[0];\n"
                 f"    const dy = node.k_{nm}_c[1] - targetPos[1];\n"
@@ -224,6 +268,12 @@ def _js_leaf(k: dict) -> str:
     nm = k["name"]
     if k["kernel_fn"] == "irradiance":
         return f"  fluxOut.v += p.{k['quantity']} / (FOUR_PI * distSq); // kernel {nm}"
+    if k["kernel_fn"] == "potential_1r":
+        stmt = f"fluxOut.t += p.{k['quantity']} * {k['coupling']} / dist;"
+        gate = k.get("toggle")
+        if gate:
+            return f"  if ({gate}) {{ {stmt} }} // kernel {nm}"
+        return f"  {stmt} // kernel {nm}"
     if k["sign"] == "bipolar":
         body = (f"  const f = {k['coupling']} * target.{k['quantity']} * p.{k['quantity']} / (target.mass * distSq * dist);\n"
                 "  acc[0] -= f * dx; acc[1] -= f * dy; acc[2] -= f * dz;")
@@ -238,7 +288,7 @@ def _js_leaf(k: dict) -> str:
 
 def _js_energy_pe(k: dict) -> str:
     """One statement: the pair PE term of this kernel (empty for radiative)."""
-    if k["kernel_fn"] == "irradiance":
+    if k["kernel_fn"] in ("irradiance", "potential_1r"):
         return ""
     name = k["name"][0].upper() + k["name"][1:]
     if k["sign"] == "bipolar":
@@ -281,13 +331,14 @@ REGIONS = [
 def _assemble_energy_pe(kernels: list[dict], gen: list[dict]) -> str:
     """kernelPairPE: one named const per conservative kernel, object return."""
     cons = [(k, g) for k, g in zip(kernels, gen)
-            if k["kernel_fn"] != "irradiance"]
+            if k["kernel_fn"] not in ("irradiance", "potential_1r")]
     lines = [g["falsifier_check"] for _, g in cons]
     names = ["pe" + k["name"][0].upper() + k["name"][1:] for k, _ in cons]
     keys = ", ".join(f"{k['name']}: {n}" for (k, _), n in zip(cons, names))
     total = " + ".join(names) if names else "0"
     return ("// Potential energy of one pair across all conservative kernels.\n"
-            "// (irradiance kernels transport energy; they carry no pair PE)\n"
+            "// (irradiance/potential kernels transport energy or a field;\n"
+            "//  they carry no pair PE)\n"
             "function kernelPairPE(pi, pj, dist) {\n"
             + "\n".join(lines) +
             f"\n  return {{ {keys}, total: {total} }};\n}}")
