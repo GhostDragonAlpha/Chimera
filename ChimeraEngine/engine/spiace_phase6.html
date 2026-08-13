@@ -41,12 +41,22 @@
   <div class="row"><input type="range" id="theta-slider" min="1" max="10" value="5" style="width:120px;accent-color:#7f7"></div>
   <div class="row"><label>Time Scale:</label><span class="val" id="time-scale">1x</span></div>
   <div class="row"><input type="range" id="tslider" min="0" max="100" value="50" style="width:120px;accent-color:#7f7"></div>
-  <div class="row"><button id="btn-reset">Reset</button><button id="btn-center">Center View</button></div>
+  <div class="row"><button id="btn-reset">Reset</button><button id="btn-center">Center View</button><button id="btn-terrain">Terrain: Procedural</button></div>
   <div class="row"><label>Modes:</label>
     <button id="btn-cpu" class="active">CPU BH</button>
     <button id="btn-cpuem">CPU BH+EM</button>
     <button id="btn-gpu">GPU BH+EM</button>
   </div>
+</div>
+<div class="panel" id="inspect-panel" style="top:56px; right:10px; display:none;">
+  <h3>Selected Particle</h3>
+  <div class="row"><label>ID:</label><span class="val" id="insp-id">--</span></div>
+  <div class="row"><label>Pos:</label><span class="val" id="insp-pos">--</span></div>
+  <div class="row"><label>Vel:</label><span class="val" id="insp-vel">--</span></div>
+  <div class="row"><label>Mass:</label><span class="val" id="insp-mass">--</span></div>
+  <div class="row"><label>Charge:</label><span class="val" id="insp-q">--</span></div>
+  <div class="row"><label>Temp:</label><span class="val" id="insp-temp">--</span></div>
+  <div class="row"><label>Flux:</label><span class="val" id="insp-flux">--</span></div>
 </div>
 <div class="panel" id="info-panel">
   <h3>Barnes-Hut Stats</h3>
@@ -741,15 +751,16 @@ const SCATTER_REF = E_1AU * Math.PI * 400 * 400 * ALBEDO; // W
 const STAR_HDR = 8.0;
 function displayColor(p) {
   if (p.isStar) return [STAR_TINT[0] * STAR_HDR, STAR_TINT[1] * STAR_HDR, STAR_TINT[2] * STAR_HDR];
-  // Track A1: terrain splats carry a pre-computed height-band color.
-  // They scatter starlight (flux from tree) on top of that base color.
+  // Track C2: selected particle gets a bright white highlight overlay
+  const isSelected = (particles.indexOf(p) === selectedParticleIdx);
   if (p._terrainCol) {
     const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
     const bb = blackbodyRGB(p.temp);
     const e = Math.pow(p.temp / T_STAR, 4) * STAR_HDR;
-    let r = p._terrainCol[0] * (1 + s) + bb[0] * e * 0.1; // terrain color dominates
+    let r = p._terrainCol[0] * (1 + s) + bb[0] * e * 0.1;
     let g = p._terrainCol[1] * (1 + s) + bb[1] * e * 0.1;
     let b = p._terrainCol[2] * (1 + s) + bb[2] * e * 0.1;
+    if (isSelected) { r = Math.min(1, r + 0.5); g = Math.min(1, g + 0.5); b = Math.min(1, b + 0.5); }
     return [r, g, b];
   }
   const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
@@ -764,6 +775,7 @@ function displayColor(p) {
   const t = 0.35 * Math.abs(qs);
   if (qs > 0) { r *= (1 + t); g *= (1 - t / 2); b *= (1 - t); }
   else        { b *= (1 + t); g *= (1 - t / 2); r *= (1 - t); }
+  if (isSelected) { r = Math.min(1, r + 0.5); g = Math.min(1, g + 0.5); b = Math.min(1, b + 0.5); }
   return [r, g, b];
 }
 
@@ -844,6 +856,32 @@ const PLANET_MASS = 5.972e24;     // kg, Earth mass
 const SEA_THRESHOLD = 0.45;       // noise threshold for sea level (tuned for land fraction ~29%)
 const SHELF_WIDTH = 0.18;
 
+// Track A2: terrain source — 'procedural' or a pre-computed equirectangular DEM
+let terrainSource = 'procedural'; // toggled by btn-earth mode button
+
+// Generate an equirectangular DEM (lat 90..-90, lon 0..360) for Track A2.
+// Same noise + bimodal transfer as procedural, but on a proper grid so it
+// can be swapped in later with real Earth data via from_topo_grid().
+function generateSyntheticDEM(nlat = 180, nlon = 360) {
+  const elev = new Float32Array(nlat * nlon);
+  for (let i = 0; i < nlat; i++) {
+    const lat = (Math.PI / 2) - (i / (nlat - 1)) * Math.PI; // +90..-90 rad
+    for (let j = 0; j < nlon; j++) {
+      const lon = (j / nlon) * 2 * Math.PI;                 // 0..2pi
+      const nx = (lon / (2 * Math.PI)) * 64;
+      const ny = ((lat / Math.PI) + 0.5) * 32;
+      let n = fbm(nx + 10.0, ny + 10.0, 6);
+      n = (n - 0.5) * 2.0;
+      elev[i * nlon + j] = elevFromNoise(n, SEA_THRESHOLD, SHELF_WIDTH);
+    }
+  }
+  return elev;
+}
+
+// Track C1: picking state
+let selectedParticleIdx = -1; // index into particles[]
+const PICK_RADIUS_SQ = 9.0;   // px^2 — splat must be within 3px of cursor
+
 // Height band colors (HDR linear-ish): ocean deep/shallow, beach, forest, rock, snow.
 function terrainColor(elev) {
   // elev in metres; negative = ocean depth, positive = land height
@@ -861,13 +899,22 @@ function terrainColor(elev) {
 // Planckian blackbody for the planet — cold surface, scatters starlight.
 const PLANET_ALBEDO = 0.3; // bond albedo (Earth-like)
 
-function spawnPlanet() {
+function spawnPlanet(terrainDEM = null) {
+  // Track A2: accept an optional equirectangular DEM (lat 90..-90 top-to-bottom,
+  // lon 0..360). If provided, sample it instead of procedural noise. This is the
+  // same interface as PlanetOnion.from_topo_grid() in the Python module.
   // Place ~800 surface splats on a sphere using a Fibonacci lattice
   // (uniform coverage, no poles clustering). Each splat carries elevation,
   // physical radius from planet mass, and height-band color.
   const nSurface = 300;
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   const planetParticles = [];
+
+  // Pre-build DEM if needed for procedural mode
+  let dem = terrainDEM;
+  if (!dem && terrainSource === 'procedural') {
+    dem = generateSyntheticDEM(180, 360);
+  }
 
   for (let i = 0; i < nSurface; i++) {
     const y = 1 - (i / (nSurface - 1)) * 2;         // -1 .. +1 (z axis)
@@ -877,16 +924,32 @@ function spawnPlanet() {
     const py = y;
     const pz = Math.sin(theta) * radiusAtY;
 
-    // Sample terrain elevation from noise (bilinear on a 64x32 noise grid)
-    // Map (px,py,pz) -> lat/lon -> noise coords
-    const lat = Math.asin(py);                      // radians -pi/2 .. +pi/2
-    const lon = Math.atan2(pz, px);                 // radians 0 .. 2pi
-    const nx = (lon / (2 * Math.PI)) * 64;
-    const ny = ((lat / Math.PI) + 0.5) * 32;
-    let elev = fbm(nx + 10.0, ny + 10.0, 6);
-    // Normalize noise to ~[-1, +1] range then apply bimodal transfer
-    elev = (elev - 0.5) * 2.0;                       // now roughly [-1, 1]
-    elev = elevFromNoise(elev, SEA_THRESHOLD, SHELF_WIDTH); // metres
+    // Sample terrain elevation
+    let elev;
+    if (dem) {
+      // Equirectangular DEM: lat +90..-90 maps to row 0..nlat-1, lon 0..360 to col 0..nlon-1
+      const lat = Math.asin(py);                      // radians -pi/2 .. +pi/2
+      const lon = Math.atan2(pz, px);                 // radians 0 .. 2pi
+      const nlat = dem.length > 0 ? Math.sqrt(dem.length * 2) | 0 : 180;
+      const nlon = dem.length > 0 ? (dem.length / nlat) | 0 : 360;
+      const fi = ((Math.PI / 2) - lat) / Math.PI * (nlat - 1);
+      const fj = (lon / (2 * Math.PI)) * nlon;
+      const i0 = Math.max(0, Math.min(nlat - 2, Math.floor(fi)));
+      const j0 = Math.max(0, Math.min(nlon - 1, Math.floor(fj)));
+      const di = fi - i0, dj = fj - j0;
+      const j1 = Math.min(nlon - 1, j0 + 1);
+      elev = dem[i0 * nlon + j0] * (1-di)*(1-dj) + dem[i0 * nlon + j1] * (1-di)*dj
+           + dem[(i0+1) * nlon + j0] * di*(1-dj) + dem[(i0+1) * nlon + j1] * di*dj;
+    } else {
+      // Procedural: same noise as before
+      const lat = Math.asin(py);
+      const lon = Math.atan2(pz, px);
+      const nx = (lon / (2 * Math.PI)) * 64;
+      const ny = ((lat / Math.PI) + 0.5) * 32;
+      let n = fbm(nx + 10.0, ny + 10.0, 6);
+      elev = (n - 0.5) * 2.0;
+      elev = elevFromNoise(elev, SEA_THRESHOLD, SHELF_WIDTH); // metres
+    }
 
     const r3 = R_PLANET + elev;
     const pos = [r3 * px, r3 * py, r3 * pz];
@@ -1776,7 +1839,51 @@ $('btn-add').onclick = () => {
   }
 };
 $('btn-reset').onclick = () => { particles = []; nextId = 0; spawnSystem(500); prevEnergy = null; };
+// Track A2: toggle terrain source between procedural and synthetic DEM
+$('btn-terrain').onclick = () => {
+  if (terrainSource === 'procedural') { terrainSource = 'dem'; $('btn-terrain').textContent = 'Terrain: Synthetic DEM'; }
+  else { terrainSource = 'procedural'; $('btn-terrain').textContent = 'Terrain: Procedural'; }
+  particles = []; nextId = 0; spawnSystem(500); prevEnergy = null;
+};
 $('btn-center').onclick = () => { camPos = [0, 2.5e7, 1.5e7]; }; // Track A1: frame the planet
+// Track C1: picking - click canvas to select nearest splat
+let mousePos = { x: 0, y: 0 };
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  // Find nearest visible splat to cursor
+  let bestIdx = -1, bestDist2 = PICK_RADIUS_SQ;
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (!p._terrainCol && !p.isStar) continue; // only terrain for now
+    // Approximate screen position from world pos (cheap, no full projection)
+    const eye = [camPos[0]*WORLD_SCALE, camPos[1]*WORLD_SCALE, camPos[2]*WORLD_SCALE];
+    const rx = p.pos[0]*WORLD_SCALE - eye[0];
+    const ry = p.pos[1]*WORLD_SCALE - eye[1];
+    const rz = p.pos[2]*WORLD_SCALE - eye[2];
+    // Quick distance check in camera space
+    const d2 = rx*rx + ry*ry + rz*rz;
+    if (d2 > 1e16) continue; // too far
+    // Project to screen for distance check
+    const viewRot = lookAt([0,0,0], [CAM_TARGET[0]-eye[0], CAM_TARGET[1]-eye[1], CAM_TARGET[2]-eye[2]], CAM_UP);
+    const W = canvas.width, H = canvas.height;
+    const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
+    const vp = multiplyMat4(proj, viewRot);
+    const cw = vp[3]*rx + vp[7]*ry + vp[11]*rz;
+    if (cw <= 0) continue;
+    const sx = (vp[0]*rx + vp[4]*ry + vp[8]*rz) / cw * 0.5 * W + 0.5 * W;
+    const sy = (1 - (vp[1]*rx + vp[5]*ry + vp[9]*rz) / cw) * 0.5 * H;
+    const dx = sx - mx, dy = sy - my;
+    const dist2 = dx*dx + dy*dy;
+    if (dist2 < bestDist2) { bestDist2 = dist2; bestIdx = i; }
+  }
+  selectedParticleIdx = bestIdx;
+});
+// Track C2: Escape clears selection
+ document.addEventListener('keydown', (e) => {
+   if (e.code === 'Escape') { selectedParticleIdx = -1; }
+ });
 $('theta-slider').oninput = (e) => {
   theta = parseInt(e.target.value) / 10;
   $('theta-val').textContent = theta.toFixed(1);
@@ -1928,6 +2035,22 @@ async function main() {
     if (keys['KeyS']) camPos[1] -= speed;
     if (keys['KeyA']) camPos[0] -= speed;
     if (keys['KeyD']) camPos[0] += speed;
+
+    // Track C2: update inspector panel
+    if (selectedParticleIdx >= 0 && selectedParticleIdx < particles.length) {
+      const sp = particles[selectedParticleIdx];
+      $('inspect-panel').style.display = '';
+      $('insp-id').textContent = sp.id + (sp._terrainCol ? ' [terrain]' : '');
+      $('insp-pos').textContent = sp.pos.map(v => v.toExponential(2)).join(', ');
+      $('insp-vel').textContent = sp.vel.map(v => v.toExponential(2)).join(', ');
+      $('insp-mass').textContent = sp.mass.toExponential(2) + ' kg';
+      $('insp-q').textContent = sp.charge.toExponential(2) + ' C';
+      $('insp-temp').textContent = sp.temp.toFixed(1) + ' K';
+      $('insp-flux').textContent = sp.flux.toExponential(2) + ' W/m2';
+      $('stat-n').textContent = selectedParticleIdx + ' (sel)';
+    } else {
+      $('inspect-panel').style.display = 'none';
+    }
 
     // WebGPU splat render (never Canvas 2D)
     if (gpuReady) {

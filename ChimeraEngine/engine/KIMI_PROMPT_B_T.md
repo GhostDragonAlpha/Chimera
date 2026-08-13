@@ -1,25 +1,32 @@
 # SPIACE Track B + T - Scale-Relative Flight + LOD of Time
 
-## Context: What is Already Built
+## Context: What is Already Built (Updated by bionic)
 
 You are the lead developer on SPIACE, a first-principles space RPG engine. The following is already complete and verified:
 
 **Phases 0-6:** Full WebGPU splat renderer (preprocess -> tile raster -> bloom -> tonemap), GPU Barnes-Hut N-body with universal kernel translation layer (gravity + light + electromagnetism via .chimera DSL), energy/thermal/falsifier verification all green.
 
-**Track A1 (just completed):** Planet terrain connected to splats - 300 surface splats on Fibonacci lattice, FBM noise elevation + bimodal hypsometry transfer, height-band coloring (ocean/beach/forest/rock/snow). Terrain particles are fixed membrane anchors (exert gravity, do not move). Camera frames planet at ~4 planetary radii.
+**Track A1 (completed by bionic):** Planet terrain connected to splats - 300 surface splats on Fibonacci lattice, FBM noise elevation + bimodal hypsometry transfer, height-band coloring (ocean/beach/forest/rock/snow). Terrain particles are fixed membrane anchors (exert gravity, do not move). Camera frames planet at ~4 planetary radii.
 
-**The file you will modify:** engine/spiace_phase6.html -- single standalone HTML file, no external dependencies, WebGPU via script type module.
+**Track A2/C1/C2 groundwork (completed by bionic just now):**
+- spawnPlanet() accepts an optional equirectangular DEM parameter (same interface as PlanetOnion.from_topo_grid()) - real Earth data can be dropped in without code changes
+- generateSyntheticDEM() pre-builds a 180x360 equirectangular grid from the same noise pipeline
+- Track C1 picking state: selectedParticleIdx tracks cursor-click selection, PICK_RADIUS_SQ=9px
+- displayColor() has isSelected highlight overlay (white boost) for Track C2
 
-**Test harness:** engine/test_phase6.py -- Playwright headed-mode, runs kernel_dsl.py --verify first, then asserts particle count, tree stats, charge fields, thermal equilibrium (0.7% error), energy drift (<1%), deflection (>10m), mode switching, renderer type. All currently passing.
+**The file you will modify:** engine/spiace_phase6.html -- single standalone HTML file, no external dependencies, WebGPU via script type module. (~2100 lines now)
 
-**Key architecture:
+**Test harness:** engine/test_phase6.py -- Playwright headed-mode, runs kernel_dsl.py --verify first, then asserts particle count, tree stats, charge fields, thermal equilibrium (<1% error), energy drift (<1%), deflection (>10m), mode switching, renderer type. All currently passing.
+
+**Key architecture:**
 - Particles carry per-kernel quantities: mass, lum, charge
 - Barnes-Hut tree aggregates one (center, quantity) pair per kernel per node
 - Rendering: WebGPU Gaussian splats, CPU cull+bin+sort, GPU tile raster
 - Camera currently: fixed orbit view at [0, 2.5e7, 1.5e7], WASD movement at 5e9 m/s
 - Planet: fixed anchor at origin, R = 6.371e6 m, 300 terrain splats
 - Orbitals: ~199 bodies at 5e10-3.5e11 m from star
----
+- Terrain particles marked with _terrainCol and _origPos (fixed anchors)
+
 
 ## TRACK B - Scale-Relative Flight Camera
 

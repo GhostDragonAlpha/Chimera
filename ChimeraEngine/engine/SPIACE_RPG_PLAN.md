@@ -221,9 +221,37 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 1. ~~Commit Phase 5 with Playwright verification~~ ✓ done
 2. ~~**Phase 6: Universal Kernel Translation Layer**~~ ✓ done — DSL + generator + EM kernel, all falsifiers green
 3. ~~**Track A1: Terrain → splats**~~ ✓ done — planet surface rendered as height-mapped sphere (300 Fibonacci-lattice splats, bimodal hypsometry via noise + transfer function, terrain color bands)
-4. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
-5. Begin Track B: Scale-relative flight camera
-6. Connect membrane clock to physics tick rate (Track T)
+4. ~~**Track A2: Real Earth option**~~ ✓ done — `spawnPlanet(terrainDEM)` accepts equirectangular DEM, same interface as `PlanetOnion.from_topo_grid()`; `generateSyntheticDEM()` for procedural mode; toggle button in HUD
+5. ~~**Track C1/C2: Picking + Highlight**~~ ✓ done — click canvas to select nearest splat (3px radius), Escape clears, white highlight overlay via displayColor(), inspector panel shows pos/vel/mass/charge/temp/flux
+7. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
+8. Begin Track B: Scale-relative flight camera + LOD of time (handed off to Kimi K3)
+
+---
+
+## Track A2 — Real Earth Option (Completed)
+
+**What was built:**
+- `spawnPlanet(terrainDEM)` accepts optional equirectangular DEM parameter (lat 90→-90, lon 0→360), same interface as `PlanetOnion.from_topo_grid()` in Python
+- `generateSyntheticDEM(180, 360)` pre-builds full-resolution grid from procedural noise for the 'procedural' mode path
+- Bilinear interpolation on DEM grid for per-splat elevation sampling
+- Toggle button in HUD: `Terrain: Procedural` ↔ `Terrain: Real Earth (DEM)` — resets system with new terrain source
+- Drop-in seam: pass a real ETOPO/SRTM .npy or flat array to `spawnPlanet(demArray)` and the planet renders from actual topography
+
+**Design invariant:** The same `elevFromNoise` bimodal transfer runs on both procedural noise and loaded DEM data, so the terrain reads as Earth-like regardless of source.
+
+---
+
+## Track C1/C2 — Picking + Highlight (Completed)
+
+**What was built:**
+- Canvas click handler: projects all terrain/star particles to screen space, finds nearest within 3px radius (`PICK_RADIUS_SQ = 9`)
+- `selectedParticleIdx` tracks current selection (-1 = none)
+- `displayColor()` applies white highlight overlay (+0.5 to each channel) on selected particle
+- Escape key clears selection
+- Inspector panel (top-right): shows ID, position, velocity, mass, charge, temperature, flux for selected particle; hidden when nothing selected
+- Only terrain and star particles are pickable currently (orbitals can be added next)
+
+**Falsifier:** Selection must visually change the splat color within one frame of click.
 
 ---
 
