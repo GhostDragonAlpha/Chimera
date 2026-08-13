@@ -484,6 +484,35 @@ kernel), or the C++ port of the verified kernel layer.
 - [ ] Consider smaller TILE_SIZE (8px) vs larger (32px) tradeoff analysis
 - [ ] All existing falsifiers must stay green
 
+### Phase 11: Ship-to-Foot Narrative Arc with Atmospheric Re-Entry (Pending — Kimi K3)
+- [ ] Tsiolkovsky rocket equation: ship mass, fuel, thrust, Δv budget
+- [ ] Atmospheric thin-shell model: density profile ρ(h) = ρ₀·exp(−h/H), scale height per planet
+- [ ] Re-entry heating: q̇ ∝ ρ(v³), skin temperature, thermal limits
+- [ ] Complete narrative arc: surface takeoff → orbit → interplanetary transfer → atmospheric entry → landing → character mode on second planet
+- [ ] Falsifier 14: Tsiolkovsky Δv budget within 5%
+- [ ] Falsifier 15: peak skin temp matches analytic estimate within 10%
+- [ ] Falsifier 16: complete arc succeeds, gap < 0.01m on Planet B
+- [ ] Falsifier 17: energy conservation (including fuel chemical energy) within 2%
+
+### Phase 12: Kernel Translation Expansion — What Else Can We Map? (Pending — Kimi K3)
+- [ ] Full electromagnetic force: Biot-Savart for moving charges, full Lorentz F = q(E + v×B) as a kernel
+- [ ] Gravitational radiation reaction (post-Newtonian corrections, optional bonus)
+- [ ] Drag / collisional friction via local density estimation from tree leaf counts
+- [ ] New DSL declarations verified; at least one new falsifier passes
+
+### Phase 13: C++ Port of the Kernel Layer (Pending — Kimi K3)
+- [ ] Barnes-Hut tree construction and traversal in native C++
+- [ ] Kernel DSL parser (.chimera → WGSL or native compute shaders)
+- [ ] Splat renderer pipeline (Vulkan/DX12/WGPU)
+- [ ] Character controller + multi-membrane context ported
+- [ ] Same falsifier results as browser version within numerical tolerance
+
+### Phase 14: Multi-Ship Co-op + Persistent Universe (Pending — Kimi K3)
+- [ ] Two-ship local co-op with shared N-body tree
+- [ ] Save/load full system state with 0% position divergence on reload
+- [ ] Lightweight mission system (waypoint navigation, trigger events)
+- [ ] All falsifiers green; save roundtrip verified
+
 ---
 
-Document version: 2.5 (Phase 10.5 pending) | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
+Document version: 3.0 (Phases 10.5–14 pending) | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
