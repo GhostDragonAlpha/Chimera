@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SPIACE Phase 5 — GPU Barnes-Hut N-Body</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050510; display: flex; flex-direction: column; align-items: center; height: 100vh; font-family: monospace; color: #aaa; overflow: hidden; }
+  canvas { border: 1px solid #222; background: #050510; }
+  #hud { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,.85); padding: 8px 12px; border-radius: 4px; font-size: 11px; line-height: 1.6; pointer-events: none; z-index: 10; }
+  #hud .fps { color: #7f7; font-size: 14px; }
+  #hud .ms { color: #ff7; }
+  #hud .info { color: #7bf; }
+  #err { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #f77; font-size: 16px; text-align: center; display: none; z-index: 100; }
+  .panel { position: fixed; background: rgba(5,5,20,.95); border: 1px solid #333; border-radius: 4px; padding: 8px 12px; font-size: 11px; line-height: 1.5; color: #aaa; z-index: 20; }
+  .panel h3 { color: #7f7; margin-bottom: 4px; font-size: 12px; border-bottom: 1px solid #222; padding-bottom: 3px; }
+  .row { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; gap: 8px; }
+  .val { color: #ff7; min-width: 60px; text-align: right; font-size: 10px; }
+  button { background: #1a1a2e; color: #7f7; border: 1px solid #333; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; margin: 2px 2px 2px 0; }
+  button:hover { background: #2a2a4e; }
+  button.active { background: #7f7; color: #000; }
+  #ctrl-panel { bottom: 10px; left: 10px; max-width: 340px; }
+  #info-panel { bottom: 10px; right: 10px; max-width: 280px; }
+  #membrane-panel { top: 56px; left: 10px; max-width: 260px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div class="fps" id="fps">-- fps</div>
+  <div class="ms" id="times">-- ms</div>
+  <div class="info" id="sys-info">SPIACE Phase 5 — GPU Barnes-Hut N-Body</div>
+  <div class="warn" id="gpu-info"></div>
+  <div class="info" id="phys-info"></div>
+</div>
+<div id="err"></div>
+<div class="panel" id="ctrl-panel">
+  <h3>Barnes-Hut Controls</h3>
+  <div class="row"><button id="btn-add">Add Particles (+100)</button><span class="val" id="particle-count">0</span></div>
+  <div class="row"><label>Theta:</label><span class="val" id="theta-val">0.5</span></div>
+  <div class="row"><input type="range" id="theta-slider" min="1" max="10" value="5" style="width:120px;accent-color:#7f7"></div>
+  <div class="row"><label>Time Scale:</label><span class="val" id="time-scale">1x</span></div>
+  <div class="row"><input type="range" id="tslider" min="0" max="100" value="50" style="width:120px;accent-color:#7f7"></div>
+  <div class="row"><button id="btn-reset">Reset</button><button id="btn-center">Center View</button></div>
+  <div class="row"><label>Modes:</label>
+    <button id="btn-cpu" class="active">CPU BH</button>
+    <button id="btn-gpu">GPU BH</button>
+    <button id="btn-direct">O(n²)</button>
+  </div>
+</div>
+<div class="panel" id="info-panel">
+  <h3>Barnes-Hut Stats</h3>
+  <div class="row"><label>Particles:</label><span class="val" id="stat-n">0</span></div>
+  <div class="row"><label>Tree Nodes:</label><span class="val" id="stat-nodes">0</span></div>
+  <div class="row"><label>Leaves:</label><span class="val" id="stat-leaves">0</span></div>
+  <div class="row"><label>Depth:</label><span class="val" id="stat-depth">0</span></div>
+  <div class="row"><label>Approx %:</label><span class="val" id="stat-approx">--%</span></div>
+  <div class="row"><label>Gravity ms:</label><span class="val" id="stat-grav">--</span></div>
+  <div class="row"><label>Total ms:</label><span class="val" id="stat-total">--</span></div>
+  <div class="row"><label>Energy Δ:</label><span class="val" id="stat-energy">--</span></div>
+</div>
+<div class="panel" id="membrane-panel">
+  <h3>Membrane: Sol System</h3>
+  <div class="row"><label>Depth:</label><span class="val" id="mem-depth">0</span></div>
+  <div class="row"><label>Extent:</label><span class="val" id="mem-extent">--</span></div>
+  <div class="row"><label>Clock Rate:</label><span class="val" id="mem-clock">1.0x</span></div>
+  <div class="row"><label>Light (&Sigma;L):</label><span class="val" id="mem-light">--</span></div>
+  <div class="row"><label>Heat (&Sigma;mcT):</label><span class="val" id="mem-heat">--</span></div>
+  <div class="row"><label>Mean T @1AU:</label><span class="val" id="mem-temp">--</span></div>
+</div>
+
+<!-- ===============================================================
+     WGSL SHADERS (inline - no external fetch needed)
+     Renderer pipeline ported from spike.html (minimal vertical slice):
+     preprocess -> CPU depth sort into overlapping tiles ->
+     tile raster (HDR) -> bloom (downsample + separable blur) ->
+     post (tonemap) -> canvas.
+     Perf targets: see ChimeraEngine/RENDERER_V2.md
+     (120fps @ 2560x1440, WebGPU reference ~2.1 ms/frame).
+     =============================================================== -->
+
+<script id="sh-preprocess" type="x-shader/x-wgsl">
+// preprocess.wgsl — project camera-relative particles to screen-space splats.
+// Camera-relative rebasing is done on the CPU in f64 (positions are ~1e11 m,
+// far beyond f32 relative precision); pos[] arrives already rebased and scaled.
+// Culled particles (behind camera / off-screen / sub-pixel) have w=0 on upload.
+struct Params {
+  view_proj   : mat4x4f,
+  resolution  : vec2f,
+  n_particles : f32,
+  _pad        : f32,
+}
+@group(0) @binding(0) var<storage, read>       pos     : array<vec4f>; // xyz=rebased pos, w=radius (scaled units)
+@group(0) @binding(1) var<storage, read_write> out_pos : array<vec4f>; // clip-space position
+@group(0) @binding(2) var<storage, read_write> out_cov : array<vec4f>; // (radius_px, cos, sin, 0) — isotropic splat
+@group(0) @binding(3) var<uniform>             params  : Params;
+
+@compute @workgroup_size(256)
+fn main(@builtin(global_invocation_id) gid: vec3u) {
+  let i = gid.x;
+  let n = u32(params.n_particles);
+  if (i >= n) { return; }
+  let p = pos[i];
+  if (p.w <= 0.0f) { // CPU-culled
+    out_pos[i] = vec4f(0.0f, 0.0f, 0.0f, 0.0f);
+    return;
+  }
+  // Project camera-relative position (standard projection: clip w = view depth > 0)
+  let hp = params.view_proj * vec4f(p.x, p.y, p.z, 1.0f);
+  out_pos[i] = hp;
+  // Screen-space splat radius in pixels (fov=45deg: tan(22.5)=0.414).
+  // Mip-Splatting: clamp Gaussian scale to Nyquist limit (0.5px minimum).
+  let r_px = max(p.w * params.resolution.y / (2.0f * max(hp.w, 1e-8f) * 0.414f), 0.5f);
+  out_cov[i] = vec4f(r_px, cos(0.785f), sin(0.785f), 0.0f); // isotropic, AA-clamped
+}
+</script>
+
+<script id="sh-raster" type="x-shader/x-wgsl">
+// raster.wgsl — tile-based splat rasterizer, HDR output + Mip-Splatting AA
+const TILE_SIZE: u32 = 16u;
+const MAX_PTILE : u32 = 64u;
+const EPS       : f32 = 1e-8f;
+
+struct Params {
+  resolution: vec2f,
+}
+
+@group(0) @binding(0) var<storage, read> pos          : array<vec4f>; // clip-space, ORIGINAL particle order
+@group(0) @binding(1) var<storage, read> cov          : array<vec4f>; // (radius, cos, sin, 0), original order
+@group(0) @binding(2) var<storage, read> colors       : array<vec4f>; // original particle order
+@group(0) @binding(3) var<storage, read> sorted_idx   : array<u32>;   // sorted slot -> original particle index
+@group(0) @binding(4) var<storage, read> tile_counts  : array<u32>;
+@group(0) @binding(5) var<storage, read> tile_offsets : array<u32>;
+@group(0) @binding(6) var<uniform>       rparams      : Params;
+
+@fragment
+fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
+  let px  = u32(frag.x);
+  let py  = u32(frag.y);
+  let res = rparams.resolution;
+
+  let tw  = (u32(res.x) + TILE_SIZE - 1u) / TILE_SIZE;
+  let tx  = px / TILE_SIZE;
+  let ty  = py / TILE_SIZE;
+  let tid = ty * tw + tx;
+
+  let n = tile_counts[tid];
+  if (n == 0u) { return vec4f(0.0f, 0.0f, 0.0f, 1.0f); } // empty tile: black
+  let base = tile_offsets[tid];
+
+  var r: f32 = 0.0f;
+  var g: f32 = 0.0f;
+  var b: f32 = 0.0f;
+  var occ: f32 = 1.0f;
+
+  for (var k: u32 = 0u; k < n && k < MAX_PTILE; k += 1u) {
+    let slot = base + k;
+    let pi   = sorted_idx[slot]; // slots repeat across overlapping tiles — resolve to the particle
+    let p    = pos[pi];
+    if (p.w <= EPS) { continue; }
+    let inv_w = 1.0f / p.w;
+    let sx = (p.x * inv_w + 1.0f) * 0.5f * res.x;
+    let sy = (1.0f - p.y * inv_w) * 0.5f * res.y; // NDC y-flip (was: spurious -1.0, shifted every splat half a screen)
+    let dx = f32(px) - sx;
+    let dy = f32(py) - sy;
+    let c  = cov[pi];
+    let rx =  dx * c.y + dy * c.z;
+    let ry = -dx * c.z + dy * c.y;
+    let d2 = (rx*rx + ry*ry) / (c.x * c.x);
+    if (d2 > 4.0f) { continue; }
+
+    // Mip-Splatting 2D box filter: convolve Gaussian with 1x1 pixel box
+    let d2_filtered = d2 + (d2 / (c.x * c.x));
+    if (d2_filtered > 4.0f) { continue; }
+
+    let alpha = exp(-0.5f * d2_filtered) * clamp(c.x / 8.0f, 0.0f, 1.0f);
+    if (alpha < 0.004f) { continue; }
+    let col = colors[pi].rgb;
+    r += col.x * alpha * occ;
+    g += col.y * alpha * occ;
+    b += col.z * alpha * occ;
+    occ *= (1.0f - alpha);
+    if (occ < 0.01f) { break; }
+  }
+  // Emissive splats: output ACCUMULATED radiance. No alpha normalization —
+  // dividing by accumulated alpha flattened every lone splat to full
+  // brightness, destroying both the Gaussian profile and the 1/r^2
+  // starlight falloff that the tree's light transport encodes in `colors`.
+  return vec4f(r, g, b, 1.0f); // HDR linear
+}
+</script>
+
+<script id="sh-downsample" type="x-shader/x-wgsl">
+// downsample.wgsl — 2x2 box filter from HDR -> bloom texture
+@group(0) @binding(0) var src : texture_2d<f32>;
+@group(0) @binding(1) var sampler_nearest : sampler;
+@fragment fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
+  let res = vec2f(textureDimensions(src));
+  let px = i32(frag.x);
+  let py = i32(frag.y);
+  var acc = vec3f(0.0f);
+  for (var dy: i32 = 0; dy < 2; dy++) {
+    for (var dx: i32 = 0; dx < 2; dx++) {
+      let sx = px * 2 + dx;
+      let sy = py * 2 + dy;
+      if (sx >= i32(res.x) || sy >= i32(res.y)) { continue; }
+      acc += textureSampleLevel(src, sampler_nearest,
+        vec2f(f32(sx), f32(sy)) / res, 0.0f).rgb;
+    }
+  }
+  return vec4f(acc * 0.25f, 1.0f);
+}
+</script>
+
+<script id="sh-blurh" type="x-shader/x-wgsl">
+// blurh.wgsl — separable Gaussian blur, horizontal (9-tap)
+@group(0) @binding(0) var src : texture_2d<f32>;
+@group(0) @binding(1) var sampler_nearest : sampler;
+@fragment fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
+  let res = vec2f(textureDimensions(src));
+  let px = f32(i32(frag.x)); let py = f32(i32(frag.y));
+  var acc = vec3f(0.0f);
+  const K: array<f32, 9> = array<f32, 9>(0.05f, 0.08f, 0.12f, 0.16f, 0.18f, 0.16f, 0.12f, 0.08f, 0.05f);
+  for (var k: u32 = 0u; k < 9u; k++) {
+    let ox = f32(k) - 4.0f;
+    acc += textureSampleLevel(src, sampler_nearest,
+      vec2f((px + ox) / res.x, py / res.y), 0.0f).rgb * K[k];
+  }
+  return vec4f(acc, 1.0f);
+}
+</script>
+
+<script id="sh-blurv" type="x-shader/x-wgsl">
+// blurv.wgsl — separable Gaussian blur, vertical (9-tap)
+@group(0) @binding(0) var src : texture_2d<f32>;
+@group(0) @binding(1) var sampler_nearest : sampler;
+@fragment fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
+  let res = vec2f(textureDimensions(src));
+  let px = f32(i32(frag.x)); let py = f32(i32(frag.y));
+  var acc = vec3f(0.0f);
+  const K: array<f32, 9> = array<f32, 9>(0.05f, 0.08f, 0.12f, 0.16f, 0.18f, 0.16f, 0.12f, 0.08f, 0.05f);
+  for (var k: u32 = 0u; k < 9u; k++) {
+    let oy = f32(k) - 4.0f;
+    acc += textureSampleLevel(src, sampler_nearest,
+      vec2f(px / res.x, (py + oy) / res.y), 0.0f).rgb * K[k];
+  }
+  return vec4f(acc, 1.0f);
+}
+</script>
+
+<script id="sh-post" type="x-shader/x-wgsl">
+// post.wgsl — bloom composite + ACES tonemap + sRGB gamma -> display
+struct PostParams {
+  exposure        : f32,
+  bloom_intensity : f32,
+  _pad            : vec2f,
+}
+@group(0) @binding(0) var hdr_tex      : texture_2d<f32>;
+@group(0) @binding(1) var samp_nearest : sampler;
+@group(0) @binding(2) var bloom_tex    : texture_2d<f32>;
+@group(0) @binding(3) var samp_bloom   : sampler;
+@group(0) @binding(4) var<uniform>     params : PostParams;
+
+fn aces(x: f32) -> f32 {
+  return clamp((x * (2.51f * x + 0.03f)) / (x * (2.43f * x + 0.59f) + 0.14f), 0.0f, 1.0f);
+}
+
+@fragment
+fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
+  let res = vec2f(textureDimensions(hdr_tex));
+  let uv = vec2f(f32(i32(frag.x)), f32(i32(frag.y))) / res;
+  var color = textureSampleLevel(hdr_tex, samp_nearest, uv, 0.0f).rgb;
+  color += textureSampleLevel(bloom_tex, samp_bloom, uv, 0.0f).rgb * params.bloom_intensity;
+  color *= params.exposure;
+  let tm = vec3f(aces(color.x), aces(color.y), aces(color.z));
+  return vec4f(pow(max(tm, vec3f(0.0f)), vec3f(1.0f/2.2f)), 1.0f);
+}
+</script>
+
+<script id="sh-grav-bh" type="x-shader/x-wgsl">
+// grav_bh.wgsl — GPU Barnes-Hut: iterative (stack-based, NO recursion)
+// octree traversal, one thread per particle, then symplectic Euler.
+// The CPU builds the tree each frame and serializes it to flat buffers:
+// 96-byte nodes + a separate leaf particle-index buffer.
+//
+// THE TREE CARRIES LIGHT AS WELL AS MASS. Each node aggregates luminosity
+// (lum) and a luminosity-weighted center of light (col), and the SAME
+// opening-angle traversal that approximates gravity also accumulates
+// irradiance E = L / 4*pi*d^2 — the membrane's contained light, transported
+// by the tree. acc.w returns the irradiance; the CPU integrates temperature.
+//
+// TreeNode layout (96 bytes, matches the CPU serializer exactly):
+//   com         array<f32,3>  @ 0
+//   mass        f32           @ 12
+//   col         array<f32,3>  @ 16  (center of light)
+//   lum         f32           @ 28  (W)
+//   bb_min      array<f32,3>  @ 32
+//   bb_max      array<f32,3>  @ 44
+//   children    array<u32,8>  @ 56  (0xFFFFFFFF = empty)
+//   leaf_offset u32           @ 88
+//   leaf_count  u32           @ 92
+struct TreeNode {
+  com         : array<f32, 3>,
+  mass        : f32,
+  col         : array<f32, 3>,
+  lum         : f32,
+  bb_min      : array<f32, 3>,
+  bb_max      : array<f32, 3>,
+  children    : array<u32, 8>,
+  leaf_offset : u32,
+  leaf_count  : u32,
+}
+
+struct Params {
+  G            : f32,
+  theta        : f32,
+  softening_sq : f32,
+  dt           : f32,
+  count        : u32,
+  _pad0        : u32,   // scalar pads only — a vec3u here would align to 16
+  _pad1        : u32,   // and silently grow the struct past the buffer size
+  _pad2        : u32,
+};
+
+@group(0) @binding(0) var<storage, read_write> pos      : array<vec4f>;
+@group(0) @binding(1) var<storage, read_write> vel      : array<vec4f>;
+@group(0) @binding(2) var<storage, read_write> acc      : array<vec4f>; // xyz = m/s^2, w = irradiance W/m^2
+@group(0) @binding(3) var<storage, read>       masses   : array<f32>;
+@group(0) @binding(4) var<storage, read>       tree     : array<TreeNode>;
+@group(0) @binding(5) var<storage, read>       leaf_ids : array<u32>;
+@group(0) @binding(6) var<uniform>             params   : Params;
+@group(0) @binding(7) var<storage, read>       lums     : array<f32>;   // per-particle luminosity (W)
+
+const EMPTY: u32 = 0xFFFFFFFFu;
+const STACK_CAP: u32 = 64u;
+const FOUR_PI: f32 = 12.566370614359172f;
+
+@compute @workgroup_size(64)
+fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
+  let idx = gid.x;
+  if (idx >= params.count) { return; }
+
+  let tgt = pos[idx];
+  var a = vec3f(0.0f);
+  var flux: f32 = 0.0f;
+
+  // Iterative Barnes-Hut traversal with a thread-local stack
+  var stack: array<u32, STACK_CAP>;
+  var sp: u32 = 0u;
+  stack[0] = 0u; // root
+  sp = 1u;
+
+  while (sp > 0u) {
+    sp -= 1u;
+    let node_idx = stack[sp];
+    if (node_idx >= arrayLength(&tree)) { continue; }
+    let n = tree[node_idx];
+
+    if (n.leaf_count > 0u) {
+      // Leaf: direct forces + direct irradiance, skip self
+      for (var li = 0u; li < n.leaf_count; li++) {
+        let pid = leaf_ids[n.leaf_offset + li];
+        if (pid == idx) { continue; }
+        let other = pos[pid];
+        let dx = other.x - tgt.x;
+        let dy = other.y - tgt.y;
+        let dz = other.z - tgt.z;
+        let dist_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;
+        let dist = sqrt(dist_sq);
+        let fmag = params.G * masses[pid] / (dist_sq * dist);
+        a += fmag * vec3f(dx, dy, dz);
+        flux += lums[pid] / (FOUR_PI * dist_sq);
+      }
+    } else {
+      // Internal node: Barnes-Hut opening-angle criterion (gravity uses com)
+      let extent = max(max(n.bb_max[0] - n.bb_min[0],
+                           n.bb_max[1] - n.bb_min[1]),
+                           n.bb_max[2] - n.bb_min[2]);
+      let dx = n.com[0] - tgt.x;
+      let dy = n.com[1] - tgt.y;
+      let dz = n.com[2] - tgt.z;
+      let dist_sq = dx*dx + dy*dy + dz*dz;
+      let dist = sqrt(dist_sq);
+
+      if (dist > 0.0f && extent / dist < params.theta) {
+        // COM approximation for gravity, center-of-light for irradiance
+        let fmag = params.G * n.mass / (dist_sq * dist);
+        a += fmag * vec3f(dx, dy, dz);
+        let lx = n.col[0] - tgt.x;
+        let ly = n.col[1] - tgt.y;
+        let lz = n.col[2] - tgt.z;
+        let ld_sq = lx*lx + ly*ly + lz*lz + params.softening_sq;
+        flux += n.lum / (FOUR_PI * ld_sq);
+      } else {
+        // Push children (reverse order); drop overflow (bounded approx)
+        for (var c = 7u; c < 8u; c--) {
+          let child_idx = n.children[c];
+          if (child_idx != EMPTY && sp < STACK_CAP) {
+            stack[sp] = child_idx;
+            sp += 1u;
+          }
+        }
+      }
+    }
+  }
+
+  acc[idx] = vec4f(a, flux);
+}
+
+@compute @workgroup_size(64)
+fn integrate(@builtin(global_invocation_id) gid: vec3u) {
+  let idx = gid.x;
+  if (idx >= params.count) { return; }
+  // Symplectic Euler: update velocity then position
+  vel[idx] += acc[idx] * params.dt;
+  pos[idx] += vel[idx] * params.dt;
+}
+</script>
+
+<script type="module">
+// ============================================================
+// SPIACE Phase 5 — GPU Barnes-Hut N-Body Gravity + Light/Heat
+//
+// THE MEMBRANE CONTAINS ALL OF LIGHT AND HEAT. The Sol-system
+// membrane (core/membranes.py) is not dust illuminated by a lamp:
+// its light and heat live IN the tree. Every Barnes-Hut node
+// aggregates luminosity and a center of light next to mass and COM,
+// and the SAME opening-angle traversal transports irradiance
+// E = L / 4*pi*d^2 to every particle. Splats render emissively from
+// that contained energy: scattered starlight (flux x albedo x
+// cross-section) plus blackbody emission (sigma*T^4). Nothing is
+// lit from outside the membrane.
+//
+// Architecture: CPU builds octree -> serializes to flat GPU buffers
+// (96-byte nodes + leaf index buffer) -> GPU compute traverses
+// iteratively (one thread/particle) -> symplectic Euler on GPU.
+// Rendering: WebGPU Gaussian-splat pipeline ported from spike.html
+// (preprocess -> CPU sort into overlapping tiles -> tile raster via
+// sorted_idx indirection -> bloom -> tonemap). NO Canvas 2D particles.
+//
+// FALSIFIERS (named before the run, per Rule 0):
+// 1. Energy conservation must stay within 5% drift over 60 frames
+//    in CPU mode. If it doesn't, the BH gravity has a bug.
+// 2. Particles initialized at radiative equilibrium must STAY there:
+//    mean temperature of the 1.3e11-1.7e11 m bin must remain within
+//    15% of T_eq = [E_1AU*(1-albedo)/(4*sigma)]^1/4 = 271 K. If the
+//    tree's light transport is wrong, the bin drifts off equilibrium.
+// ============================================================
+
+const canvas = document.getElementById('c');
+
+// ---- PHYSICS CONSTANTS (CODATA 2018) ----
+const G = 6.67430e-11;
+const SOFTENING = 1e9; // meters — prevents singularity
+// Falsifier: if softening=0, test particles within 1e9m show unphysical deflection
+const SOFT_SQ = SOFTENING * SOFTENING;
+const FOUR_PI = 4 * Math.PI;
+
+// Light and heat (the membrane's contained radiation field)
+const SIGMA   = 5.670374419e-8;        // Stefan-Boltzmann W m^-2 K^-4 (CODATA 2018)
+const T_STAR  = 5778;                  // K, solar photosphere
+const R_STAR  = 6.957e8;               // m, solar radius
+const L_STAR  = FOUR_PI * R_STAR * R_STAR * SIGMA * Math.pow(T_STAR, 4); // 3.83e26 W
+const AU      = 1.5e11;                // m (this demo's reference orbit)
+const E_1AU   = L_STAR / (FOUR_PI * AU * AU);  // ~1356 W/m^2 solar flux at 1 AU
+const ALBEDO  = 0.1;                   // dark silicate (bond albedo)
+const C_P     = 900;                   // J/kg/K, silicate-ish specific heat
+const RHO_BODY = 3000;                 // kg/m^3, asteroid density -> physical radius from mass
+// Radiative equilibrium: absorbed pi r^2 E (1-A) = emitted 4 pi r^2 sigma T^4
+const T_EQ_1AU = Math.pow(E_1AU * (1 - ALBEDO) / (4 * SIGMA), 0.25); // ~271 K
+
+let theta = 0.5;       // opening angle — derived from accuracy requirement
+let timeScale = 1.0;
+let simTime = 0;
+let mode = 'cpu';      // 'cpu' | 'gpu' | 'direct'
+
+// ---- RENDERING CONSTANTS ----
+// Physics stays in real units (meters) for the energy check. Rendering
+// divides by WORLD_SCALE (1 unit = 1e11 m) and rebases camera-relative
+// in f64 on the CPU before uploading f32 — positions of ~1e11 m would
+// otherwise lose all sub-1e4 m precision in f32 buffers.
+const WORLD_SCALE = 1e-11;
+const TILE_SIZE = 16;
+const MAX_PARTICLES = 4096;
+const MAX_TREE_NODES = 2_000_000; // tree size cap (~160 MB of 80-byte nodes)
+
+// ---- BARNES-HUT TREE (CPU) ----
+// A node aggregates BOTH conserved quantities the membrane transports:
+//   mass + com  -> gravity        (G * m / d^2)
+//   lum  + col  -> light and heat (L / 4 pi d^2)
+class BHNode {
+  constructor() {
+    this.mass = 0;
+    this.com = [0, 0, 0];
+    this.lum = 0;            // W — total luminosity contained in this node
+    this.col = [0, 0, 0];    // center of light (luminosity-weighted position)
+    this.bboxMin = [Infinity, Infinity, Infinity];
+    this.bboxMax = [-Infinity, -Infinity, -Infinity];
+    this.children = null; // 8 children or null for leaf
+    this.particles = [];  // stored at leaf nodes
+  }
+}
+
+function octantIndex(pos, center) {
+  let idx = 0;
+  if (pos[0] >= center[0]) idx |= 1;
+  if (pos[1] >= center[1]) idx |= 2;
+  if (pos[2] >= center[2]) idx |= 4;
+  return idx;
+}
+
+function buildTree(particles, depth = 0, maxDepth = 14) {
+  if (particles.length === 0) return null;
+  const node = new BHNode();
+  let totalMass = 0, com = [0, 0, 0];
+  let totalLum = 0, col = [0, 0, 0];
+
+  for (const p of particles) {
+    for (let d = 0; d < 3; d++) {
+      if (p.pos[d] < node.bboxMin[d]) node.bboxMin[d] = p.pos[d];
+      if (p.pos[d] > node.bboxMax[d]) node.bboxMax[d] = p.pos[d];
+      com[d] += p.mass * p.pos[d];
+      col[d] += p.lum * p.pos[d];
+    }
+    totalMass += p.mass;
+    totalLum += p.lum;
+  }
+
+  node.mass = totalMass;
+  if (totalMass > 0) for (let d = 0; d < 3; d++) com[d] /= totalMass;
+  node.com = com;
+  node.lum = totalLum;
+  if (totalLum > 0) for (let d = 0; d < 3; d++) col[d] /= totalLum;
+  node.col = col;
+
+  // Leaf: either single particle or depth limit reached
+  const size = Math.max(
+    node.bboxMax[0] - node.bboxMin[0],
+    node.bboxMax[1] - node.bboxMin[1],
+    node.bboxMax[2] - node.bboxMin[2]
+  );
+  if (particles.length === 1 || depth >= maxDepth || size < 1e6) {
+    node.particles = particles.slice();
+    return node;
+  }
+
+  // Internal: subdivide
+  const center = [
+    (node.bboxMin[0] + node.bboxMax[0]) / 2,
+    (node.bboxMin[1] + node.bboxMax[1]) / 2,
+    (node.bboxMin[2] + node.bboxMax[2]) / 2
+  ];
+  node.children = new Array(8).fill(null);
+
+  for (const p of particles) {
+    const idx = octantIndex(p.pos, center);
+    if (!node.children[idx]) node.children[idx] = new BHNode();
+    node.children[idx].particles.push(p);
+  }
+
+  for (let i = 0; i < 8; i++) {
+    if (node.children[i]) {
+      node.children[i] = buildTree(node.children[i].particles, depth + 1, maxDepth);
+    }
+  }
+
+  return node;
+}
+
+function countNodes(node) {
+  if (!node) return 0;
+  let c = 1;
+  if (node.children) for (let i = 0; i < 8; i++) c += countNodes(node.children[i]);
+  return c;
+}
+
+function countLeaves(node) {
+  if (!node || !node.children) return 1;
+  let c = 0;
+  for (let i = 0; i < 8; i++) c += countLeaves(node.children[i]);
+  return c;
+}
+
+function getDepth(node, d = 0) {
+  if (!node || !node.children) return d;
+  let m = d;
+  for (let i = 0; i < 8; i++) { const cd = getDepth(node.children[i], d + 1); if (cd > m) m = cd; }
+  return m;
+}
+
+// Counts force-evaluation work for one target: COM approximations vs
+// direct leaf-node visits. Returns [approximations, direct leaf visits].
+function countWork(node, targetPos, thetaVal) {
+  if (!node) return [0, 0];
+  if (!node.children || (node.particles && node.particles.length > 0)) {
+    return [0, 1]; // leaf: direct forces
+  }
+  const size = Math.max(
+    node.bboxMax[0] - node.bboxMin[0],
+    node.bboxMax[1] - node.bboxMin[1],
+    node.bboxMax[2] - node.bboxMin[2]
+  );
+  const dx = node.com[0] - targetPos[0];
+  const dy = node.com[1] - targetPos[1];
+  const dz = node.com[2] - targetPos[2];
+  const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+  if (dist > 0 && size / dist < thetaVal) return [1, 0]; // COM approximation
+  let a = 0, d = 0;
+  for (let i = 0; i < 8; i++) {
+    const [ca, cd] = countWork(node.children[i], targetPos, thetaVal);
+    a += ca; d += cd;
+  }
+  return [a, d];
+}
+
+// ---- PARTICLE DATA ----
+// Each particle is a cell of the membrane carrying mass AND heat:
+//   temp        K      — its contained heat (U = m * c_p * T)
+//   lum         W      — its contained light: blackbody emission 4 pi r^2 sigma T^4
+//   radiusPhys  m      — physical radius from mass at RHO_BODY (sets cross-section)
+//   radius      m      — DISPLAY-ONLY splat radius (inflated; real bodies are sub-pixel)
+//   flux        W/m^2  — irradiance the tree delivered this frame (render + heating)
+let particles = [];
+let nextId = 0;
+
+function createParticle(pos, vel, mass, renderRadius, isStar = false) {
+  const radiusPhys = isStar ? R_STAR : Math.cbrt(3 * mass / (FOUR_PI * RHO_BODY));
+  return { id: nextId++, pos: [...pos], vel: [...vel], acc: [0,0,0], mass,
+           radius: renderRadius, radiusPhys, isStar,
+           temp: isStar ? T_STAR : 0, lum: 0, flux: 0, albedo: ALBEDO };
+}
+
+// Initialize heat at radiative equilibrium with the contained starlight,
+// so the falsifier (falsifier 2, header) tests whether the TREE's light
+// transport HOLDS that equilibrium — a wrong flux walks T off it.
+function initTemps() {
+  for (const p of particles) {
+    if (p.isStar) { p.temp = T_STAR; p.lum = L_STAR; continue; }
+    const r = Math.hypot(p.pos[0], p.pos[1], p.pos[2]);
+    const e = L_STAR / (FOUR_PI * Math.max(r * r, R_STAR * R_STAR));
+    p.temp = Math.pow(e * (1 - p.albedo) / (4 * SIGMA), 0.25);
+    p.lum = FOUR_PI * p.radiusPhys * p.radiusPhys * SIGMA * Math.pow(p.temp, 4);
+  }
+}
+
+// Planckian locus -> RGB (Tanner Helland fit, valid ~1000-12000 K).
+// Below 1000 K a blackbody emits effectively nothing visible — correct:
+// cold cells of the membrane are seen by the starlight they SCATTER.
+function blackbodyRGB(t) {
+  const x = Math.max(1000, Math.min(12000, t)) / 100;
+  const cl = (v) => Math.min(255, Math.max(0, v)) / 255;
+  const r = x <= 66 ? 255 : 329.698727446 * Math.pow(x - 60, -0.1332047592);
+  const g = x <= 66 ? 99.4708025861 * Math.log(x) - 161.1195681661
+                    : 288.1221695283 * Math.pow(x - 60, -0.0755148492);
+  const b = x >= 66 ? 255 : (x <= 19 ? 0 : 138.5177312231 * Math.log(x - 10) - 305.0447927307);
+  return [cl(r), cl(g), cl(b)];
+}
+const STAR_TINT = blackbodyRGB(T_STAR);
+
+// Emissive display color from the membrane's contained light and heat:
+//   scattered starlight  flux * pi r^2 * albedo   (W of light AT this cell)
+//   thermal emission     blackbody(T) * (T/T*)^4  (negligible below ~1000 K — honest)
+// HDR radiance for ACES; normalized so a 400 m body at 1 AU lands near 1.0.
+const SCATTER_REF = E_1AU * Math.PI * 400 * 400 * ALBEDO; // W
+const STAR_HDR = 8.0;
+function displayColor(p) {
+  if (p.isStar) return [STAR_TINT[0] * STAR_HDR, STAR_TINT[1] * STAR_HDR, STAR_TINT[2] * STAR_HDR];
+  const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
+  const bb = blackbodyRGB(p.temp);
+  const e = Math.pow(p.temp / T_STAR, 4) * STAR_HDR;
+  return [STAR_TINT[0] * s + bb[0] * e,
+          STAR_TINT[1] * s + bb[1] * e,
+          STAR_TINT[2] * s + bb[2] * e];
+}
+
+// Thermal step (CPU, all modes, after p.flux is filled by the traversal):
+// absorbed starlight heats; blackbody emission cools. dT = (Pin-Pout) dt / (m c_p).
+// The star is held at T_STAR — fusion replenishes what it radiates; the
+// membrane model treats it as the source term, not a cooling body.
+function thermalUpdate(dt) {
+  for (const p of particles) {
+    if (p.isStar) { p.lum = L_STAR; continue; }
+    const area = Math.PI * p.radiusPhys * p.radiusPhys;
+    const pIn = p.flux * area * (1 - p.albedo);
+    const pOut = 4 * area * SIGMA * Math.pow(p.temp, 4);
+    p.temp += (pIn - pOut) * dt / (p.mass * C_P);
+    p.lum = pOut; // a cell's contained light IS its thermal emission
+  }
+}
+
+function makeOrbital(starMass) {
+  const r = 5e10 + Math.random() * 3e11;
+  const vCirc = Math.sqrt(G * starMass / r);
+  const angle = Math.random() * Math.PI * 2;
+  const inc = (Math.random() - 0.5) * 0.4;
+  const pos = [Math.cos(angle) * r, (Math.random()-0.5) * r * 0.08, Math.sin(angle) * r];
+  const vel = [-Math.sin(angle) * vCirc, 0, Math.cos(angle) * vCirc * Math.cos(inc)];
+  const mass = 1e10 + Math.random() * 1e12;
+  return createParticle(pos, vel, mass, 2e9);
+}
+
+function spawnSystem(count) {
+  const starMass = 1.989e30;
+  // Exactly `count` particles total: 1 star + count-1 orbitals
+  particles = [createParticle([0, 0, 0], [0, 0, 0], starMass, 1.5e10, true)];
+  for (let i = 0; i < count - 1; i++) particles.push(makeOrbital(starMass));
+  initTemps();
+}
+
+// ---- CPU BARNES-HUT (reference implementation) ----
+// One traversal, two transports: gravity from mass/com, irradiance from
+// lum/col. fluxOut.v accumulates W/m^2 at the target — the light the
+// membrane contains AT that point.
+function traverseAndAccum(node, targetPos, targetId, acc, fluxOut) {
+  if (!node) return;
+
+  const dx = node.com[0] - targetPos[0];
+  const dy = node.com[1] - targetPos[1];
+  const dz = node.com[2] - targetPos[2];
+  const distSq = dx*dx + dy*dy + dz*dz;
+  const dist = Math.sqrt(distSq);
+
+  const size = Math.max(
+    node.bboxMax[0] - node.bboxMin[0],
+    node.bboxMax[1] - node.bboxMin[1],
+    node.bboxMax[2] - node.bboxMin[2]
+  );
+
+  if (node.particles && node.particles.length > 0) {
+    // Leaf: direct forces + direct irradiance, skip self
+    for (const p of node.particles) {
+      if (p.id === targetId) continue;
+      const pdx = p.pos[0] - targetPos[0];
+      const pdy = p.pos[1] - targetPos[1];
+      const pdz = p.pos[2] - targetPos[2];
+      const pDistSq = pdx*pdx + pdy*pdy + pdz*pdz + SOFT_SQ;
+      const pDist = Math.sqrt(pDistSq);
+      const fmag = G * p.mass / (pDistSq * pDist);
+      acc[0] += fmag * pdx; acc[1] += fmag * pdy; acc[2] += fmag * pdz;
+      fluxOut.v += p.lum / (FOUR_PI * pDistSq);
+    }
+  } else if (dist > 0 && size / dist < theta) {
+    // Approximation: center of mass pulls, center of light shines
+    const fmag = G * node.mass / (distSq * dist);
+    acc[0] += fmag * dx; acc[1] += fmag * dy; acc[2] += fmag * dz;
+    const lx = node.col[0] - targetPos[0];
+    const ly = node.col[1] - targetPos[1];
+    const lz = node.col[2] - targetPos[2];
+    const ldSq = lx*lx + ly*ly + lz*lz + SOFT_SQ;
+    fluxOut.v += node.lum / (FOUR_PI * ldSq);
+  } else if (node.children) {
+    // Recurse into children
+    for (let i = 0; i < 8; i++) traverseAndAccum(node.children[i], targetPos, targetId, acc, fluxOut);
+  }
+}
+
+function integrateParticle(p, dt) {
+  // Symplectic Euler: update velocity then position
+  p.vel[0] += p.acc[0] * dt;
+  p.vel[1] += p.acc[1] * dt;
+  p.vel[2] += p.acc[2] * dt;
+  p.pos[0] += p.vel[0] * dt;
+  p.pos[1] += p.vel[1] * dt;
+  p.pos[2] += p.vel[2] * dt;
+}
+
+function cpuBarnesHut(dt) {
+  const tree = buildTree(particles);
+  const fluxOut = { v: 0 };
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].acc = [0, 0, 0];
+    fluxOut.v = 0;
+    traverseAndAccum(tree, particles[i].pos, particles[i].id, particles[i].acc, fluxOut);
+    particles[i].flux = fluxOut.v;
+    integrateParticle(particles[i], dt);
+  }
+  thermalUpdate(dt);
+  return tree;
+}
+
+function cpuDirect(dt) {
+  const n = particles.length;
+  for (let i = 0; i < n; i++) {
+    particles[i].acc = [0, 0, 0];
+    let flux = 0;
+    for (let j = 0; j < n; j++) {
+      if (i === j) continue;
+      const dx = particles[j].pos[0] - particles[i].pos[0];
+      const dy = particles[j].pos[1] - particles[i].pos[1];
+      const dz = particles[j].pos[2] - particles[i].pos[2];
+      const distSq = dx*dx + dy*dy + dz*dz + SOFT_SQ;
+      const dist = Math.sqrt(distSq);
+      const fmag = G * particles[j].mass / (distSq * dist);
+      particles[i].acc[0] += fmag * dx;
+      particles[i].acc[1] += fmag * dy;
+      particles[i].acc[2] += fmag * dz;
+      flux += particles[j].lum / (FOUR_PI * distSq);
+    }
+    particles[i].flux = flux;
+    integrateParticle(particles[i], dt);
+  }
+  thermalUpdate(dt);
+  return null;
+}
+
+// ---- ENERGY COMPUTATION (for verification) ----
+function computeEnergy() {
+  let KE = 0, PE = 0;
+  const n = particles.length;
+  for (let i = 0; i < n; i++) {
+    const p = particles[i];
+    const v2 = p.vel[0]*p.vel[0] + p.vel[1]*p.vel[1] + p.vel[2]*p.vel[2];
+    KE += 0.5 * p.mass * v2;
+    for (let j = i+1; j < n; j++) {
+      const q = particles[j];
+      const dx = q.pos[0]-p.pos[0], dy = q.pos[1]-p.pos[1], dz = q.pos[2]-p.pos[2];
+      const dist = Math.sqrt(dx*dx + dy*dy + dz*dz + SOFTENING*SOFTENING);
+      PE -= G * p.mass * q.mass / dist;
+    }
+  }
+  return { KE, PE, total: KE + PE };
+}
+
+// ---- MATRIX MATH (ported from spike.html; column-major for WGSL) ----
+function perspective(fovY, aspect, near, far, reversedZ = true) {
+  const f = 1.0 / Math.tan(fovY * 0.5);
+  const out = new Float32Array(16);
+  out[0]  = f / aspect; out[5]  = f;
+  if (reversedZ) {
+    out[10] = (far + near) / (far - near);
+    out[11] = 1.0;
+  } else {
+    out[10] = (far + near) / (near - far);
+    out[11] = -1.0;
+  }
+  out[14] = (2 * far * near) / (reversedZ ? (far - near) : (near - far));
+  return out;
+}
+
+function lookAt(eye, center, up) {
+  let zx=eye[0]-center[0], zy=eye[1]-center[1], zz=eye[2]-center[2];
+  let len = Math.sqrt(zx*zx+zy*zy+zz*zz); zx/=len; zy/=len; zz/=len;
+  let xx=up[1]*zz-up[2]*zy, xy=up[2]*zx-up[0]*zz, xz=up[0]*zy-up[1]*zx;
+  len = Math.sqrt(xx*xx+xy*xy+xz*xz);
+  if (len > 1e-6) { xx/=len; xy/=len; xz/=len; } else { xx=1; xy=0; xz=0; }
+  let yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+  const out = new Float32Array(16);
+  out[0]=xx; out[1]=yx; out[2]=zx;  out[3]=0;
+  out[4]=xy; out[5]=yy; out[6]=zy;  out[7]=0;
+  out[8]=xz; out[9]=yz; out[10]=zz; out[11]=0;
+  out[12]=-(xx*eye[0]+xy*eye[1]+xz*eye[2]);
+  out[13]=-(yx*eye[0]+yy*eye[1]+yz*eye[2]);
+  out[14]=-(zx*eye[0]+zy*eye[1]+zz*eye[2]);
+  out[15]=1;
+  return out;
+}
+
+function multiplyMat4(a, b) { // out = a * b, column-major storage
+  // out(col c, row r) = sum_k a(col k, row r) * b(col c, row k)
+  const out = new Float32Array(16);
+  for (let c = 0; c < 4; c++)
+    for (let r = 0; r < 4; r++)
+      out[c*4+r] = a[r]*b[c*4] + a[4+r]*b[c*4+1] + a[8+r]*b[c*4+2] + a[12+r]*b[c*4+3];
+  return out;
+}
+
+// ---- WEBGPU STATE ----
+let device = null, gpuCtx = null, displayFormat = 'bgra8unorm', hdrFormat = 'rgba16float';
+let gpuReady = false;
+
+// Renderer buffers/pipelines (spike.html vertical slice)
+let rPosBuf, outPosBuf, outCovBuf;
+let sortedIdxBuf, tileCountsBuf, tileOffsetsBuf, colBuf;
+let paramsBuf, rparamsBuf, postParamsBuf;
+let preProcPipeline, rasterPipeline;
+let downsamplePipeline, blurHPipeline, blurVPipeline, postPipeline;
+let hdrTex, hdrView, bloomTex, bloomView, blurA, blurB, blurAV, blurBV;
+let nearestSampler, linearSampler;
+let COLS = 0, ROWS = 0;
+
+// GPU Barnes-Hut buffers/pipelines
+let gPosBuf, gVelBuf, gAccBuf, gMassBuf, gLumBuf, gTreeBuf, gLeafBuf, gParamsBuf;
+let gravBHModule, gBHLayout, gravPipeline, intPipeline;
+
+const $ = (id) => document.getElementById(id);
+
+function shaderSrc(id) {
+  const el = document.getElementById(id);
+  if (!el) throw new Error('missing shader block #' + id);
+  return el.textContent;
+}
+
+function createBuf(size, usage, data) {
+  const b = device.createBuffer({ size: Math.max(16, size), usage });
+  if (data) device.queue.writeBuffer(b, 0, data);
+  return b;
+}
+
+// ---- TREE SERIALIZATION FOR GPU ----
+// 96-byte nodes: com(12) + mass(4) + col(12) + lum(4) + bbMin(12)
+// + bbMax(12) + children(32) + leafOffset(4) + leafCount(4).
+// Leaf buffer holds particle indices. col/lum: the node's contained
+// light (center of light + total luminosity), aggregated in buildTree.
+function serializeTreeForGPU(tree) {
+  const nodes = [];
+  const leafParticles = [];
+  let nodeIdx = 0;
+  const offsets = new Map();
+
+  function getOrCreateOffset(node) {
+    if (offsets.has(node)) return offsets.get(node);
+    if (nodeIdx >= MAX_TREE_NODES) throw new Error('tree exceeds 2M-node cap');
+    offsets.set(node, nodeIdx++);
+    return offsets.get(node);
+  }
+
+  function serializeNode(node) {
+    const idx = getOrCreateOffset(node);
+    while (nodes.length <= idx) nodes.push(null);
+    if (nodes[idx]) return idx;
+
+    if (node.particles && node.particles.length > 0) {
+      const leafOffset = leafParticles.length;
+      for (const p of node.particles) leafParticles.push(p.id);
+      nodes[idx] = { com: node.com, mass: node.mass, col: node.col, lum: node.lum,
+                     bbMin: node.bboxMin, bbMax: node.bboxMax,
+                     children: new Array(8).fill(0xFFFFFFFF), leafOffset, leafCount: node.particles.length };
+    } else if (node.children) {
+      const childIndices = [];
+      for (let i = 0; i < 8; i++) {
+        if (node.children[i]) childIndices.push(serializeNode(node.children[i]));
+        else childIndices.push(0xFFFFFFFF);
+      }
+      nodes[idx] = { com: node.com, mass: node.mass, col: node.col, lum: node.lum,
+                     bbMin: node.bboxMin, bbMax: node.bboxMax,
+                     children: childIndices, leafOffset: 0, leafCount: 0 };
+    }
+    return idx;
+  }
+
+  serializeNode(tree);
+  return { nodes, leafParticles };
+}
+
+function packTree(ser) {
+  const nodeSize = 96;
+  const data = new ArrayBuffer(ser.nodes.length * nodeSize);
+  const view = new DataView(data);
+  for (let i = 0; i < ser.nodes.length; i++) {
+    const n = ser.nodes[i];
+    const base = i * nodeSize;
+    view.setFloat32(base + 0,  n.com[0], true);
+    view.setFloat32(base + 4,  n.com[1], true);
+    view.setFloat32(base + 8,  n.com[2], true);
+    view.setFloat32(base + 12, n.mass, true);
+    view.setFloat32(base + 16, n.col[0], true);
+    view.setFloat32(base + 20, n.col[1], true);
+    view.setFloat32(base + 24, n.col[2], true);
+    view.setFloat32(base + 28, n.lum, true);
+    view.setFloat32(base + 32, n.bbMin[0], true);
+    view.setFloat32(base + 36, n.bbMin[1], true);
+    view.setFloat32(base + 40, n.bbMin[2], true);
+    view.setFloat32(base + 44, n.bbMax[0], true);
+    view.setFloat32(base + 48, n.bbMax[1], true);
+    view.setFloat32(base + 52, n.bbMax[2], true);
+    for (let c = 0; c < 8; c++) view.setUint32(base + 56 + c * 4, n.children[c], true);
+    view.setUint32(base + 88, n.leafOffset, true);
+    view.setUint32(base + 92, n.leafCount, true);
+  }
+  return data;
+}
+
+// ---- WEBGPU INIT ----
+async function initWebGPU() {
+  if (!navigator.gpu) throw new Error('navigator.gpu missing (needs --enable-unsafe-webgpu)');
+  const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+  if (!adapter) throw new Error('No GPU adapter found');
+  device = await adapter.requestDevice();
+  displayFormat = navigator.gpu.getPreferredCanvasFormat();
+  gpuCtx = canvas.getContext('webgpu');
+  gpuCtx.configure({ device, format: displayFormat, alphaMode: 'premultiplied' });
+
+  const W = canvas.width, H = canvas.height;
+  COLS = Math.ceil(W / TILE_SIZE);
+  ROWS = Math.ceil(H / TILE_SIZE);
+
+  // -- Textures --
+  hdrTex = device.createTexture({ size: [W, H], format: hdrFormat,
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC });
+  hdrView = hdrTex.createView();
+  const bw = Math.ceil(W / 4), bh = Math.ceil(H / 4);
+  bloomTex = device.createTexture({ size: [bw, bh], format: hdrFormat,
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.RENDER_ATTACHMENT });
+  bloomView = bloomTex.createView();
+  const pw = Math.ceil(bw / 2), ph = Math.ceil(bh / 2);
+  blurA = device.createTexture({ size: [pw, ph], format: hdrFormat,
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.RENDER_ATTACHMENT });
+  blurB = device.createTexture({ size: [pw, ph], format: hdrFormat,
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.RENDER_ATTACHMENT });
+  blurAV = blurA.createView(); blurBV = blurB.createView();
+  nearestSampler = device.createSampler({ magFilter: 'nearest', minFilter: 'nearest' });
+  linearSampler = device.createSampler({ magFilter: 'linear', minFilter: 'linear' }); // bloom upsample
+
+  // -- Buffers --
+  rPosBuf        = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  outPosBuf      = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
+  outCovBuf      = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
+  sortedIdxBuf   = createBuf(MAX_PARTICLES*4*4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC); // grows on demand (multi-tile slots)
+  colBuf         = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  tileCountsBuf  = createBuf(COLS*ROWS*4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  tileOffsetsBuf = createBuf(COLS*ROWS*4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  paramsBuf      = createBuf(128, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+  rparamsBuf     = createBuf(16,  GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+  postParamsBuf  = createBuf(16,  GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+  device.queue.writeBuffer(rparamsBuf, 0, new Float32Array([W, H, 1/W, 1/H]));
+
+  // -- Preprocess pipeline --
+  const preProcLayout = device.createBindGroupLayout({ entries: [
+    { binding:0, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} },
+    { binding:1, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },
+    { binding:2, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },
+    { binding:3, visibility: GPUShaderStage.COMPUTE, buffer:{type:'uniform'} },
+  ]});
+  preProcPipeline = device.createComputePipeline({
+    layout: device.createPipelineLayout({ bindGroupLayouts: [preProcLayout] }),
+    compute: { module: device.createShaderModule({ code: shaderSrc('sh-preprocess') }), entryPoint: 'main' },
+  });
+
+  // -- Raster pipeline (fragment -> HDR texture) --
+  const rasterLayout = device.createBindGroupLayout({ entries: [
+    { binding:0, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:1, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:2, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:3, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:4, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:5, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'read-only-storage'} },
+    { binding:6, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'uniform'} },
+  ]});
+  const fsQuadVert = `@vertex fn main(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4f {
+    return vec4f(f32(vi & 1)*2.0 - 1.0, f32((vi>>1)&1)*2.0 - 1.0, 0.0, 1.0);
+  }`;
+  rasterPipeline = device.createRenderPipeline({
+    layout: device.createPipelineLayout({ bindGroupLayouts: [rasterLayout] }),
+    vertex: { module: device.createShaderModule({ code: fsQuadVert }), entryPoint: 'main' },
+    fragment: { module: device.createShaderModule({ code: shaderSrc('sh-raster') }), entryPoint: 'main',
+                targets: [{ format: hdrFormat }] },
+    primitive: { topology: 'triangle-strip' },
+  });
+
+  // -- Bloom + post pipelines --
+  const texLayout = () => device.createBindGroupLayout({ entries: [
+    { binding:0, visibility: GPUShaderStage.FRAGMENT, texture:{sampleType:'float'} },
+    { binding:1, visibility: GPUShaderStage.FRAGMENT, sampler:{} },
+  ]});
+  const mkFragPipeline = (shaderId, layout, format) => device.createRenderPipeline({
+    layout: device.createPipelineLayout({ bindGroupLayouts: [layout] }),
+    vertex: { module: device.createShaderModule({ code: fsQuadVert }), entryPoint: 'main' },
+    fragment: { module: device.createShaderModule({ code: shaderSrc(shaderId) }), entryPoint: 'main',
+                targets: [{ format }] },
+    primitive: { topology: 'triangle-strip' },
+  });
+  downsamplePipeline = mkFragPipeline('sh-downsample', texLayout(), hdrFormat);
+  blurHPipeline      = mkFragPipeline('sh-blurh', texLayout(), hdrFormat);
+  blurVPipeline      = mkFragPipeline('sh-blurv', texLayout(), hdrFormat);
+  const postLayout = device.createBindGroupLayout({ entries: [
+    { binding:0, visibility: GPUShaderStage.FRAGMENT, texture:{sampleType:'float'} },
+    { binding:1, visibility: GPUShaderStage.FRAGMENT, sampler:{} },
+    { binding:2, visibility: GPUShaderStage.FRAGMENT, texture:{sampleType:'float'} },
+    { binding:3, visibility: GPUShaderStage.FRAGMENT, sampler:{} },
+    { binding:4, visibility: GPUShaderStage.FRAGMENT, buffer:{type:'uniform'} },
+  ]});
+  postPipeline = mkFragPipeline('sh-post', postLayout, displayFormat);
+
+  // -- GPU Barnes-Hut buffers/pipelines --
+  gPosBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  gVelBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  gAccBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
+  gMassBuf  = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  gLumBuf   = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  gTreeBuf  = createBuf(4096*96, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // grows on demand
+  gLeafBuf  = createBuf(4096*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  gParamsBuf = createBuf(32, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+  gravBHModule = device.createShaderModule({ code: shaderSrc('sh-grav-bh') });
+  // One explicit layout shared by both entry points — 'auto' would fail here
+  // because gravity_solve and integrate statically use different binding
+  // subsets, so their auto layouts would each reject the full 8-entry group.
+  gBHLayout = device.createBindGroupLayout({ entries: [
+    { binding:0, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // pos rw
+    { binding:1, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // vel rw
+    { binding:2, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // acc rw (xyz=accel, w=irradiance)
+    { binding:3, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // masses
+    { binding:4, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // tree
+    { binding:5, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // leaf ids
+    { binding:6, visibility: GPUShaderStage.COMPUTE, buffer:{type:'uniform'} },           // params
+    { binding:7, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // luminosities
+  ]});
+  const gBHPipeLayout = device.createPipelineLayout({ bindGroupLayouts: [gBHLayout] });
+  gravPipeline = device.createComputePipeline({
+    layout: gBHPipeLayout, compute: { module: gravBHModule, entryPoint: 'gravity_solve' },
+  });
+  intPipeline = device.createComputePipeline({
+    layout: gBHPipeLayout, compute: { module: gravBHModule, entryPoint: 'integrate' },
+  });
+
+  gpuReady = true;
+  console.log('WebGPU initialized: splat renderer + GPU Barnes-Hut (mass + light)');
+
+  // Glass-box verification hook: read back HDR texels + key GPU buffers.
+  window.__readHDR = async (x, y) => {
+    const rb = device.createBuffer({ size: 256, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+    const enc = device.createCommandEncoder();
+    enc.copyTextureToBuffer({ texture: hdrTex, origin: [x, y] }, { buffer: rb, bytesPerRow: 256 }, [1, 1, 1]);
+    device.queue.submit([enc.finish()]);
+    await rb.mapAsync(GPUMapMode.READ);
+    const h = new Uint16Array(rb.getMappedRange());
+    const hf = (v) => { const s=(v&0x8000)?-1:1, e=(v>>10)&0x1f, m=v&0x3ff;
+      return e===0 ? s*m*2**-24 : e===31 ? (m?NaN:s*Infinity) : s*(1+m/1024)*2**(e-15); };
+    const px = [hf(h[0]), hf(h[1]), hf(h[2]), hf(h[3])];
+    rb.unmap(); rb.destroy();
+    const rb2 = device.createBuffer({ size: 80, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+    const enc2 = device.createCommandEncoder();
+    enc2.copyBufferToBuffer(outPosBuf, 0, rb2, 0, 16);      // particle 0 clip pos
+    enc2.copyBufferToBuffer(outCovBuf, 0, rb2, 16, 16);     // particle 0 cov
+    enc2.copyBufferToBuffer(sortedIdxBuf, 0, rb2, 32, 16);  // first sorted slots
+    enc2.copyBufferToBuffer(colBuf, 0, rb2, 48, 16);        // star color
+    enc2.copyBufferToBuffer(tileCountsBuf, 22*COLS*4 + 40*4, rb2, 64, 4); // center tile count
+    device.queue.submit([enc2.finish()]);
+    await rb2.mapAsync(GPUMapMode.READ);
+    const mr = rb2.getMappedRange();
+    const f = new Float32Array(mr);
+    const u = new Uint32Array(mr);
+    const out = { outPos0: [f[0],f[1],f[2],f[3]], outCov0: [f[4],f[5],f[6],f[7]],
+                  sortedSlots0_3: [u[8],u[9],u[10],u[11]], starCol: [f[12],f[13],f[14],f[15]],
+                  centerTileCount: u[16] };
+    rb2.unmap(); rb2.destroy();
+    return { hdrPixel: px, ...out };
+  };
+}
+
+// ---- GPU BARNES-HUT STEP (per-frame readback keeps CPU array authoritative) ----
+let gpuBusy = false;
+
+async function gpuBarnesHut(dt) {
+  const n = particles.length;
+  const t0 = performance.now();
+
+  // Upload particles (separate vec4f buffers — no packed-struct alignment traps)
+  const posArr = new Float32Array(n * 4);
+  const velArr = new Float32Array(n * 4);
+  const massArr = new Float32Array(n);
+  const lumArr = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const p = particles[i];
+    posArr[i*4] = p.pos[0]; posArr[i*4+1] = p.pos[1]; posArr[i*4+2] = p.pos[2]; posArr[i*4+3] = 0;
+    velArr[i*4] = p.vel[0]; velArr[i*4+1] = p.vel[1]; velArr[i*4+2] = p.vel[2]; velArr[i*4+3] = 0;
+    massArr[i] = p.mass;
+    lumArr[i] = p.lum;
+  }
+  device.queue.writeBuffer(gPosBuf, 0, posArr);
+  device.queue.writeBuffer(gVelBuf, 0, velArr);
+  device.queue.writeBuffer(gMassBuf, 0, massArr);
+  device.queue.writeBuffer(gLumBuf, 0, lumArr);
+
+  // CPU builds the tree, serialize + upload
+  const tree = buildTree(particles);
+  const ser = serializeTreeForGPU(tree);
+  const treeData = packTree(ser);
+  if (treeData.byteLength > gTreeBuf.size) {
+    gTreeBuf.destroy();
+    gTreeBuf = createBuf(treeData.byteLength * 2, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  }
+  device.queue.writeBuffer(gTreeBuf, 0, treeData);
+  const leafData = new Uint32Array(ser.leafParticles);
+  if (leafData.byteLength > gLeafBuf.size) {
+    gLeafBuf.destroy();
+    gLeafBuf = createBuf(leafData.byteLength * 2, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  }
+  device.queue.writeBuffer(gLeafBuf, 0, leafData);
+
+  const paramsBytes = new ArrayBuffer(32);
+  const pf = new Float32Array(paramsBytes);
+  const pu = new Uint32Array(paramsBytes);
+  pf[0] = G; pf[1] = theta; pf[2] = SOFTENING * SOFTENING; pf[3] = dt;
+  pu[4] = n;
+  device.queue.writeBuffer(gParamsBuf, 0, paramsBytes);
+
+  const bindGroup = device.createBindGroup({
+    layout: gBHLayout,
+    entries: [
+      { binding:0, resource:{buffer: gPosBuf} },
+      { binding:1, resource:{buffer: gVelBuf} },
+      { binding:2, resource:{buffer: gAccBuf} },
+      { binding:3, resource:{buffer: gMassBuf} },
+      { binding:4, resource:{buffer: gTreeBuf} },
+      { binding:5, resource:{buffer: gLeafBuf} },
+      { binding:6, resource:{buffer: gParamsBuf} },
+      { binding:7, resource:{buffer: gLumBuf} },
+    ]
+  });
+
+  const rbPos = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+  const rbVel = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+  const rbAcc = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+
+  // ONE command encoder per submit: compute passes AND the readback copies
+  // are all encoded BEFORE finish() (the old file encoded the copy after
+  // finish() and double-submitted a spent encoder — that was the GPU bug).
+  const enc = device.createCommandEncoder();
+  const wg = Math.ceil(n / 64);
+  const pass1 = enc.beginComputePass();
+  pass1.setPipeline(gravPipeline);
+  pass1.setBindGroup(0, bindGroup);
+  pass1.dispatchWorkgroups(wg);
+  pass1.end();
+  const pass2 = enc.beginComputePass();
+  pass2.setPipeline(intPipeline);
+  pass2.setBindGroup(0, bindGroup);
+  pass2.dispatchWorkgroups(wg);
+  pass2.end();
+  enc.copyBufferToBuffer(gPosBuf, 0, rbPos, 0, n*16);
+  enc.copyBufferToBuffer(gVelBuf, 0, rbVel, 0, n*16);
+  enc.copyBufferToBuffer(gAccBuf, 0, rbAcc, 0, n*16);
+  device.queue.submit([enc.finish()]);
+
+  await Promise.all([rbPos.mapAsync(GPUMapMode.READ), rbVel.mapAsync(GPUMapMode.READ), rbAcc.mapAsync(GPUMapMode.READ)]);
+  const pv = new Float32Array(rbPos.getMappedRange());
+  const vv = new Float32Array(rbVel.getMappedRange());
+  const av = new Float32Array(rbAcc.getMappedRange());
+  for (let i = 0; i < n; i++) {
+    particles[i].pos[0] = pv[i*4]; particles[i].pos[1] = pv[i*4+1]; particles[i].pos[2] = pv[i*4+2];
+    particles[i].vel[0] = vv[i*4]; particles[i].vel[1] = vv[i*4+1]; particles[i].vel[2] = vv[i*4+2];
+    particles[i].flux = av[i*4+3]; // irradiance, from the tree's light transport
+  }
+  rbPos.unmap(); rbVel.unmap(); rbAcc.unmap();
+  rbPos.destroy(); rbVel.destroy(); rbAcc.destroy();
+  thermalUpdate(dt);
+  return { ms: performance.now() - t0, tree };
+}
+
+// ---- RENDERING (WebGPU Gaussian-splat pipeline, ported from spike.html) ----
+let camPos = [0, 9e11, 5e10]; // meters — above the orbital plane, looking down
+const CAM_TARGET = [0, 0, 0];
+const CAM_UP = [0, 0, 1]; // screen-up ≈ world -z, so the xz-plane disk is face-on
+let keys = {};
+
+document.addEventListener('keydown', e => { if (!keys[e.code]) keys[e.code] = true; });
+document.addEventListener('keyup', e => keys[e.code] = false);
+
+function resize() {
+  canvas.width = Math.min(window.innerWidth, 1280);
+  canvas.height = Math.min(window.innerHeight, 720);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Per-frame CPU work for the splat pipeline: rebase positions
+// camera-relative (f64) + scale, project, cull, bin into tiles,
+// depth-sort back-to-front within each tile, build the scatter
+// permutation. Returns everything the GPU passes need.
+const relPosArr = new Float32Array(MAX_PARTICLES * 4);
+function prepareSplats() {
+  const n = particles.length;
+  const W = canvas.width, H = canvas.height;
+  const eye = [camPos[0]*WORLD_SCALE, camPos[1]*WORLD_SCALE, camPos[2]*WORLD_SCALE];
+
+  // Pure-rotation view (positions are already camera-relative) * projection.
+  // Non-reversed-Z: visible points get clip w > 0, which both the CPU cull
+  // test and the rasterizer's 1/w projection rely on. (No depth buffer is
+  // used anywhere in this pipeline, so reversed-Z buys nothing here.)
+  const viewRot = lookAt([0,0,0], [CAM_TARGET[0]-eye[0], CAM_TARGET[1]-eye[1], CAM_TARGET[2]-eye[2]], CAM_UP);
+  const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
+  // clip = proj * view * pos. multiplyMat4(a, b) returns a*b, so the
+  // projection must be the LEFT factor — (viewRot * proj) * v applies the
+  // projection to untransformed world coords and garbage-culls everything.
+  const vp = multiplyMat4(proj, viewRot);
+
+  // Upload preprocess uniforms (Params: mat4 @0..63, resolution @64..71,
+  // n_particles @72 — float index 18, NOT 20: spike.html's struct had a
+  // vec3f camera_pos there; ours is packed tighter)
+  const pb = new Float32Array(32);
+  pb.set(vp, 0);
+  pb[16] = W; pb[17] = H;
+  pb[18] = n;
+  device.queue.writeBuffer(paramsBuf, 0, pb);
+
+  // Project every particle on the CPU (f64) for culling + tile binning
+  const buckets = new Array(COLS * ROWS);
+  const culled = [];
+  for (let i = 0; i < n; i++) {
+    const p = particles[i];
+    const rx = p.pos[0]*WORLD_SCALE - eye[0];
+    const ry = p.pos[1]*WORLD_SCALE - eye[1];
+    const rz = p.pos[2]*WORLD_SCALE - eye[2];
+    const cw = vp[3]*rx + vp[7]*ry + vp[11]*rz; // view depth (reversed-Z: larger = closer)
+    const rScaled = p.radius * WORLD_SCALE;
+    let ok = cw > 0.01;
+    let sx = 0, sy = 0, rpx = 0;
+    if (ok) {
+      const cx = vp[0]*rx + vp[4]*ry + vp[8]*rz;
+      const cy = vp[1]*rx + vp[5]*ry + vp[9]*rz;
+      sx = (cx/cw + 1) * 0.5 * W;
+      sy = (1 - cy/cw) * 0.5 * H;
+      rpx = rScaled * H / (2 * cw * 0.414);
+      if (rpx < 0.25 || sx < -64 || sx > W+64 || sy < -64 || sy > H+64) ok = false;
+    }
+    relPosArr[i*4]   = rx;
+    relPosArr[i*4+1] = ry;
+    relPosArr[i*4+2] = rz;
+    relPosArr[i*4+3] = ok ? rScaled : 0; // w=0 -> preprocess culls it
+    if (i === 0) window.__starProj = { cw, sx, sy, rpx, ok }; // debug probe
+    if (!ok) { culled.push(i); continue; }
+    // Bin into EVERY tile the splat footprint overlaps (cutoff at 2 sigma,
+    // matching the raster's d2>4 reject). Center-only binning clipped wide
+    // splats to their home 16px tile — the star rendered as a square.
+    const rad = 2 * rpx;
+    const tx0 = Math.max(0, Math.floor((sx - rad) / TILE_SIZE));
+    const tx1 = Math.min(COLS - 1, Math.floor((sx + rad) / TILE_SIZE));
+    const ty0 = Math.max(0, Math.floor((sy - rad) / TILE_SIZE));
+    const ty1 = Math.min(ROWS - 1, Math.floor((sy + rad) / TILE_SIZE));
+    for (let ty = ty0; ty <= ty1; ty++) {
+      for (let tx = tx0; tx <= tx1; tx++) {
+        const tid = ty * COLS + tx;
+        if (!buckets[tid]) buckets[tid] = [];
+        buckets[tid].push({ i, depth: cw });
+      }
+    }
+  }
+
+  // Tile-grouped order, back-to-front (far first) within each tile
+  const counts = new Uint32Array(COLS * ROWS);
+  const offsets = new Uint32Array(COLS * ROWS);
+  const order = [];       // sorted slot -> original particle index
+  for (let t = 0; t < COLS*ROWS; t++) {
+    offsets[t] = order.length;
+    const b = buckets[t];
+    if (b) {
+      b.sort((a, b2) => b2.depth - a.depth); // far first (back-to-front)
+      for (const e of b) order.push(e.i);
+      counts[t] = b.length;
+    }
+  }
+  for (const i of culled) order.push(i); // overflow slots past all tiles
+  window.__dbgRender = { n, visible: n - culled.length, eye,
+    starRel: [relPosArr[0], relPosArr[1], relPosArr[2], relPosArr[3]],
+    countsTotal: counts.reduce((a, b) => a + b, 0) };
+
+  device.queue.writeBuffer(rPosBuf, 0, relPosArr, 0, n * 4);
+  // Slots outnumber particles (a splat sits in every tile its footprint
+  // overlaps), so sortedIdxBuf grows on demand; the raster resolves
+  // slot -> particle via sorted_idx and reads the ORIGINAL-order buffers.
+  if (order.length * 4 > sortedIdxBuf.size) {
+    sortedIdxBuf.destroy();
+    sortedIdxBuf = createBuf(order.length * 8, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+  }
+  device.queue.writeBuffer(sortedIdxBuf, 0, new Uint32Array(order));
+  device.queue.writeBuffer(tileCountsBuf, 0, counts);
+  device.queue.writeBuffer(tileOffsetsBuf, 0, offsets);
+
+  // Colors every frame: each splat's emissive color IS the membrane's
+  // contained light and heat at that cell (scattered starlight from the
+  // tree-delivered flux + blackbody emission from temperature).
+  const colArr = new Float32Array(n * 4);
+  for (let i = 0; i < n; i++) {
+    const c = displayColor(particles[i]);
+    colArr[i*4]   = c[0];
+    colArr[i*4+1] = c[1];
+    colArr[i*4+2] = c[2];
+    colArr[i*4+3] = 1;
+  }
+  device.queue.writeBuffer(colBuf, 0, colArr, 0, n * 4);
+
+  // Bloom + post uniforms
+  device.queue.writeBuffer(postParamsBuf, 0, new Float32Array([1.5, 0.45, 0, 0]));
+  return n;
+}
+
+function renderFrame(n) {
+  const W = canvas.width, H = canvas.height;
+  const wg = Math.ceil(n / 256);
+  const enc = device.createCommandEncoder();
+
+  // Pass 1: preprocess (project + Mip-Splatting AA)
+  const pPass = enc.beginComputePass();
+  pPass.setPipeline(preProcPipeline);
+  pPass.setBindGroup(0, device.createBindGroup({
+    layout: preProcPipeline.getBindGroupLayout(0),
+    entries: [
+      { binding:0, resource:{buffer: rPosBuf} },
+      { binding:1, resource:{buffer: outPosBuf} },
+      { binding:2, resource:{buffer: outCovBuf} },
+      { binding:3, resource:{buffer: paramsBuf} },
+    ]
+  }));
+  pPass.dispatchWorkgroups(wg);
+  pPass.end();
+
+  // Pass 2: (multi-tile binning made the one-to-one reorder scatter
+  // obsolete — the raster resolves slot -> particle via sorted_idx
+  // and reads the original-order preprocess buffers directly.)
+
+  // Pass 3: tile raster -> HDR texture
+  const rPass = enc.beginRenderPass({
+    colorAttachments: [{ view: hdrView, clearValue: {r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
+  });
+  rPass.setPipeline(rasterPipeline);
+  rPass.setBindGroup(0, device.createBindGroup({
+    layout: rasterPipeline.getBindGroupLayout(0),
+    entries: [
+      { binding:0, resource:{buffer: outPosBuf} },
+      { binding:1, resource:{buffer: outCovBuf} },
+      { binding:2, resource:{buffer: colBuf} },
+      { binding:3, resource:{buffer: sortedIdxBuf} },
+      { binding:4, resource:{buffer: tileCountsBuf} },
+      { binding:5, resource:{buffer: tileOffsetsBuf} },
+      { binding:6, resource:{buffer: rparamsBuf} },
+    ]
+  }));
+  rPass.draw(4, 1, 0, 0);
+  rPass.end();
+
+  // Pass 4-6: bloom (downsample -> H-blur -> V-blur)
+  const texBG = (pipeline, view) => device.createBindGroup({
+    layout: pipeline.getBindGroupLayout(0),
+    entries: [{ binding:0, resource: view }, { binding:1, resource: nearestSampler }]
+  });
+  const dsPass = enc.beginRenderPass({
+    colorAttachments: [{ view: bloomView, clearValue:{r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
+  });
+  dsPass.setPipeline(downsamplePipeline);
+  dsPass.setBindGroup(0, texBG(downsamplePipeline, hdrView));
+  dsPass.draw(4, 1, 0, 0);
+  dsPass.end();
+  const hbPass = enc.beginRenderPass({
+    colorAttachments: [{ view: blurAV, clearValue:{r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
+  });
+  hbPass.setPipeline(blurHPipeline);
+  hbPass.setBindGroup(0, texBG(blurHPipeline, bloomView));
+  hbPass.draw(4, 1, 0, 0);
+  hbPass.end();
+  const vbPass = enc.beginRenderPass({
+    colorAttachments: [{ view: blurBV, clearValue:{r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
+  });
+  vbPass.setPipeline(blurVPipeline);
+  vbPass.setBindGroup(0, texBG(blurVPipeline, blurAV));
+  vbPass.draw(4, 1, 0, 0);
+  vbPass.end();
+
+  // Pass 7: post (bloom composite + ACES tonemap + gamma) -> canvas
+  const postPass = enc.beginRenderPass({
+    colorAttachments: [{ view: gpuCtx.getCurrentTexture().createView(),
+      clearValue:{r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
+  });
+  postPass.setPipeline(postPipeline);
+  postPass.setBindGroup(0, device.createBindGroup({
+    layout: postPipeline.getBindGroupLayout(0),
+    entries: [
+      { binding:0, resource: hdrView },
+      { binding:1, resource: nearestSampler },
+      { binding:2, resource: blurBV },
+      { binding:3, resource: linearSampler }, // linear: bloom is 1/4-res, nearest upsamples to visible blocks
+      { binding:4, resource: {buffer: postParamsBuf} },
+    ]
+  }));
+  postPass.draw(4, 1, 0, 0);
+  postPass.end();
+
+  device.queue.submit([enc.finish()]);
+}
+
+// ---- UI HANDLERS ----
+$('btn-add').onclick = () => {
+  const starMass = particles.length ? particles[0].mass : 1.989e30;
+  const before = particles.length;
+  for (let i = 0; i < 100 && particles.length < MAX_PARTICLES; i++) particles.push(makeOrbital(starMass));
+  // New cells enter at radiative equilibrium with the contained starlight
+  for (let i = before; i < particles.length; i++) {
+    const p = particles[i];
+    const r = Math.hypot(p.pos[0], p.pos[1], p.pos[2]);
+    const e = L_STAR / (FOUR_PI * Math.max(r * r, R_STAR * R_STAR));
+    p.temp = Math.pow(e * (1 - p.albedo) / (4 * SIGMA), 0.25);
+    p.lum = FOUR_PI * p.radiusPhys * p.radiusPhys * SIGMA * Math.pow(p.temp, 4);
+  }
+};
+$('btn-reset').onclick = () => { particles = []; nextId = 0; spawnSystem(500); prevEnergy = null; };
+$('btn-center').onclick = () => { camPos = [0, 9e11, 5e10]; };
+$('theta-slider').oninput = (e) => {
+  theta = parseInt(e.target.value) / 10;
+  $('theta-val').textContent = theta.toFixed(1);
+};
+$('tslider').oninput = (e) => {
+  timeScale = Math.pow(10, (parseInt(e.target.value) - 50) / 20);
+  $('time-scale').textContent = timeScale.toFixed(1) + 'x';
+  $('mem-clock').textContent = timeScale.toFixed(1) + 'x';
+};
+
+$('btn-cpu').onclick = () => { mode = 'cpu'; setModeButtons(); };
+$('btn-gpu').onclick = () => {
+  if (!gpuReady) {
+    $('gpu-info').textContent = 'GPU BH unavailable: WebGPU not initialized';
+    return;
+  }
+  mode = 'gpu'; setModeButtons();
+};
+$('btn-direct').onclick = () => { mode = 'direct'; setModeButtons(); };
+
+function setModeButtons() {
+  ['cpu','gpu','direct'].forEach(m => {
+    $('btn-'+m).classList.toggle('active', mode === m);
+  });
+}
+
+// ---- MAIN LOOP ----
+let lastTime = performance.now();
+let frameCount = 0, fps = 0;
+let prevEnergy = null;
+let gravMs = 0;
+
+async function main() {
+  try {
+    await initWebGPU();
+    $('gpu-info').textContent = 'WebGPU: OK';
+    window.__renderer = 'webgpu-splat';
+  } catch(e) {
+    console.error(e);
+    window.__renderer = 'unavailable: ' + e.message;
+    $('gpu-info').textContent = 'WebGPU unavailable: ' + e.message;
+    $('err').textContent = 'WebGPU Error: ' + e.message + ' (physics/HUD still run; canvas stays black)';
+    $('err').style.display = 'block';
+  }
+
+  spawnSystem(500);
+  // Membrane panel (static display for this single-membrane demo)
+  $('mem-depth').textContent = '0';
+  $('mem-extent').textContent = '7.0e11 m';
+  $('mem-clock').textContent = timeScale.toFixed(1) + 'x';
+
+  function loop(now) {
+    const rawDt = (now - lastTime) / 1000;
+    const dt = Math.max(Math.min(rawDt, 0.05), 0.016) * timeScale;
+    lastTime = now; frameCount++;
+    window.__frames = frameCount;
+    window.__sample = () => ({ p1: [...particles[1].pos], v1: [...particles[1].vel] });
+    if (frameCount % 10 === 0) {
+      fps = Math.round(1 / Math.max(rawDt, 1e-6));
+      $('fps').textContent = fps + ' fps';
+    }
+
+    const t0 = performance.now();
+
+    let tree = null;
+    if (mode === 'cpu') {
+      tree = cpuBarnesHut(dt);
+      gravMs = performance.now() - t0;
+    } else if (mode === 'gpu') {
+      if (gpuReady && !gpuBusy) {
+        gpuBusy = true;
+        const gt0 = performance.now();
+        gpuBarnesHut(dt).then(({ tree: t2 }) => {
+          gravMs = performance.now() - gt0;
+          gpuBusy = false;
+          updateTreeStats(t2);
+        }).catch(e => {
+          gpuBusy = false;
+          console.error('GPU BH error:', e);
+          $('gpu-info').textContent = 'GPU BH error: ' + e.message;
+          mode = 'cpu'; setModeButtons();
+        });
+      }
+    } else {
+      cpuDirect(dt);
+      gravMs = performance.now() - t0;
+    }
+
+    simTime += dt;
+
+    // Stats
+    if (tree) updateTreeStats(tree);
+    const totalMs = performance.now() - t0;
+    $('stat-grav').textContent = gravMs.toFixed(1) + ' ms';
+    $('stat-total').textContent = totalMs.toFixed(1) + ' ms';
+    $('times').textContent = `grav ${gravMs.toFixed(1)} ms | total ${totalMs.toFixed(1)} ms`;
+    $('particle-count').textContent = particles.length;
+    $('stat-n').textContent = particles.length;
+
+    // Energy check every 60 frames — plus the membrane's contained
+    // light and heat totals, and the thermal-equilibrium falsifier probe.
+    if (frameCount % 60 === 0) {
+      const energy = computeEnergy();
+      if (prevEnergy !== null && Math.abs(prevEnergy) > 0) {
+        const dE = Math.abs((energy.total - prevEnergy) / Math.abs(prevEnergy)) * 100;
+        $('stat-energy').textContent = dE.toFixed(3) + '%';
+        $('stat-energy').style.color = dE < 1 ? '#7f7' : dE < 5 ? '#ff7' : '#f77';
+      }
+      prevEnergy = energy.total;
+
+      // What the membrane contains: total luminosity (light) and
+      // total thermal energy (heat). Falsifier 2: the 1 AU bin must
+      // HOLD its initialized equilibrium (271 K) — if the tree's light
+      // transport were wrong, flux would walk the bin off it.
+      let totLum = 0, totHeat = 0, binT = 0, binN = 0;
+      for (const p of particles) {
+        totLum += p.lum;
+        totHeat += p.mass * C_P * p.temp;
+        const r = Math.hypot(p.pos[0], p.pos[1], p.pos[2]);
+        if (!p.isStar && r > 1.3e11 && r < 1.7e11) { binT += p.temp; binN++; }
+      }
+      const meanT = binN > 0 ? binT / binN : NaN;
+      $('mem-light').textContent = totLum.toExponential(2) + ' W';
+      $('mem-heat').textContent = totHeat.toExponential(2) + ' J';
+      $('mem-temp').textContent = binN > 0 ? meanT.toFixed(0) + ' K (' + binN + ' bodies)' : '--';
+      window.__thermal = { meanT, count: binN, predicted: T_EQ_1AU };
+    }
+
+    // Camera
+    const speed = 5e9 * dt;
+    if (keys['KeyW']) camPos[1] += speed;
+    if (keys['KeyS']) camPos[1] -= speed;
+    if (keys['KeyA']) camPos[0] -= speed;
+    if (keys['KeyD']) camPos[0] += speed;
+
+    // WebGPU splat render (never Canvas 2D)
+    if (gpuReady) {
+      try {
+        const n = prepareSplats();
+        renderFrame(n);
+      } catch(e) {
+        console.error('RENDER ERROR:', e);
+        $('err').textContent = 'Render Error: ' + e.message;
+        $('err').style.display = 'block';
+        gpuReady = false;
+      }
+    }
+  }
+
+  // setInterval is the PRIMARY timer — requestAnimationFrame does not
+  // fire reliably under Playwright automation (Phases 0-4 convention).
+  setInterval(() => { loop(performance.now()); }, 16);
+}
+
+function updateTreeStats(tree) {
+  if (!tree) return;
+  $('stat-nodes').textContent = countNodes(tree) + ' nodes';
+  $('stat-leaves').textContent = countLeaves(tree);
+  $('stat-depth').textContent = getDepth(tree);
+
+  // Measured membrane extent: the root cell of the tree
+  const ext = Math.max(tree.bboxMax[0] - tree.bboxMin[0],
+                       tree.bboxMax[1] - tree.bboxMin[1],
+                       tree.bboxMax[2] - tree.bboxMin[2]);
+  $('mem-extent').textContent = ext.toExponential(1) + ' m';
+
+  // Approximation ratio: share of force evaluations served by a COM
+  // approximation instead of descending to leaves (sampled over 20 particles)
+  let approx = 0, direct = 0;
+  const sampleSize = Math.min(20, particles.length);
+  for (let i = 0; i < sampleSize; i++) {
+    const [a, d] = countWork(tree, particles[i].pos, theta);
+    approx += a; direct += d;
+  }
+  const total = approx + direct;
+  const approxPct = total > 0 ? Math.round(approx / total * 100) : 0;
+  $('stat-approx').textContent = approxPct + '%';
+}
+
+main();
+console.log('SPIACE Phase 5 loaded — GPU Barnes-Hut N-Body | WebGPU splat renderer | Mode:', mode);
+</script>
+</body>
+</html>

@@ -24,6 +24,7 @@ We don't need: fluid dynamics (thin-shell approx), quantum mechanics (irrelevant
 
 ## Architecture: Layered Physics Stack
 
+Phase 5: GPU Barnes-Hut N-Body (membrane-local trees)
 Phase 4: Multiplayer (netcode, authority)
 Phase 3: Multi-system (warp travel)
 Phase 2: Planetary surface (atmosphere, terrain)
@@ -63,7 +64,7 @@ A tiny domain-specific language that compiles to WGSL compute shaders. This is t
 ### DSL Syntax (proposed)
 
 | Keyword | Purpose |
-|---------|---------|
+|---------| Purpose |
 | physics <name> { ... } | Define a physics system |
 | body <name>: mass=..., pos=(...), vel=(...) | Declare a physical body |
 | force <name> { ... } | Define a force law |
@@ -95,7 +96,7 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Deliverable: Playwright-screenshot-verified single-system demo (238 fps, 29780 m/s circular orbit)
 
 ### Phase 1: Orbital Space
-- [ ] N-body gravity on GPU (extend Chimera's existing compute shader)
+- [x] N-body gravity on GPU (extend Chimera's existing compute shader)
 - [x] Multiple planets with proper orbital periods (Kepler's third law verified)
 - [x] Transfer orbits: Hohmann, bi-elliptic, gravity assists
 - [x] Render: ray-marched void + point-sprite bodies + star glow
@@ -120,6 +121,24 @@ Key optimization: Bodies are SDFs, not meshes. A sphere is length(pos - center) 
 - [x] Client prediction + interpolation
 - [x] Persistent universe (save/load system state)
 - [x] Deliverable: Two clients in the same system, physics-synced
+
+### Phase 5: GPU Barnes-Hut N-Body
+- [x] CPU Barnes-Hut octree construction and traversal (reference implementation)
+- [x] WGSL compute shader with iterative Barnes-Hut tree traversal (no recursion)
+- [x] Tree serialization to flat GPU buffers (96-byte nodes: com + mass + center-of-light + luminosity + bbox + children + leaf info)
+- [x] Symplectic Euler integration on GPU compute shader
+- [x] **Light and heat translated INTO the tree**: nodes aggregate luminosity + center of light; the same opening-angle traversal transports irradiance E = L/4πd²; particles heat/cool by absorbed starlight vs blackbody emission
+- [x] Emissive splat rendering from contained energy: scattered starlight (flux × albedo × cross-section) + blackbody(σT⁴) — nothing lit from outside the membrane
+- [x] Full WebGPU splat renderer from spike.html (preprocess → CPU tile sort → tile raster → bloom → ACES tonemap); no Canvas 2D
+- [x] Three modes: CPU Barnes-Hut, GPU Barnes-Hut, O(n²) direct comparison
+- [x] Energy conservation verification HUD (< 5% drift falsifier — measured 0.0%)
+- [x] Thermal equilibrium falsifier: 1 AU bin holds 271 K ±15% (measured 272.5 K, 0.6% off)
+- [x] Membrane panel: measured extent, contained light (ΣL = 3.84e26 W), contained heat (ΣmcT = 1.03e37 J), mean T @1AU
+- [x] Tree statistics: node count, leaf count, depth, approximation ratio
+- [x] Playwright headed-mode test with energy + thermal assertions (`test_phase5.py`, all green)
+- [x] Deliverable: 500-particle system, CPU BH 2.2 ms vs O(n²) 3.7 ms vs GPU BH 3.9 ms (readback-bound), ~65 fps
+
+Renderer bugs fixed this pass: transposed row-major `multiplyMat4` (culled the whole scene), spurious `-1.0` in the raster's NDC y-flip (shifted splats half a screen), center-only tile binning (clipped wide splats to their home tile — star rendered as a square), alpha-normalized raster output (flattened Gaussian profile + brightness gradient), nearest-sampled bloom upsample (blocky).
 
 ---
 
@@ -165,12 +184,12 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ## Next Immediate Steps
 
-1. Write this plan to SPIACE_RPG_PLAN.md (currently empty)
-2. Update engine/README.md to reference SPIACE as the next major direction
-3. Commit both files with Agent: bionic trailer
-4. Push to origin/master
-5. Begin Phase 0: Physics DSL prototype
+1. Commit Phase 5 with Playwright verification (test green, screenshots verified)
+2. Generalize the tree transport: mass and luminosity were translated by hand; a .chimera DSL kernel declaration (quantity + far-field kernel + aggregation rule) should generate the node fields, CPU aggregator, and WGSL traversal for any additive point-source interaction
+3. Begin Track A from ROADMAP.md: Terrain → splats connection
+4. Begin Track B: Scale-relative flight camera
+5. Connect membrane clock to physics tick rate (Track T)
 
 ---
 
-Document version: 1.0 | Status: Approved for implementation | Agent: bionic
+Document version: 1.1 | Status: Phases 0-5 complete | Agent: bionic
