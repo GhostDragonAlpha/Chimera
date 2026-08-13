@@ -251,7 +251,9 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 3. ~~**Track A1: Terrain → splats**~~ ✓ done — planet surface rendered as height-mapped sphere (300 Fibonacci-lattice splats, bimodal hypsometry via noise + transfer function, terrain color bands)
 4. ~~**Track A2: Real Earth option**~~ ✓ done — `spawnPlanet(terrainDEM)` accepts equirectangular DEM, same interface as `PlanetOnion.from_topo_grid()`; `generateSyntheticDEM()` for procedural mode; toggle button in HUD
 5. ~~**Track C1/C2: Picking + Highlight**~~ ✓ done — click canvas to select nearest splat (3px radius), Escape clears, white highlight overlay via displayColor(), inspector panel shows pos/vel/mass/charge/temp/flux
-7. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
+7. ~~**Phase 7: Lorentz Force + Magnetic Field Kernel**~~ ✓ done — uniform B-field, F=q(v×B) post-tree correction, cyclotron falsifier, energy conservation with B-field active
+8. **Track D1/D2**: LOD port to v2 renderer + surface fracture (infinite detail)
+9. **Track E**: Character standing/walking on planet
 8. ~~**Track B/T: Scale-relative flight camera + LOD of time**~~ ✓ done — see section below
 
 ---
