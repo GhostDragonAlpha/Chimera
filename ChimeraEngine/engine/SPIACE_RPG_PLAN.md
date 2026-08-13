@@ -24,6 +24,7 @@ We don't need: fluid dynamics (thin-shell approx), quantum mechanics (irrelevant
 
 ## Architecture: Layered Physics Stack
 
+Phase 10: Multi-planet star system (dynamic Keplerian orbits, multi-membrane context)
 Phase 9: Quantity packing + fifth kernel (acoustic) — architecture scaling proof
 Phase 8: Heat diffusion steady-state kernel
 Phase 7: Lorentz force + magnetic field (post-tree correction)
@@ -400,16 +401,69 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-### Phase 10: Multi-Planet Star System (Pending — Kimi K3)
-- [ ] Procedural generation of 1 star + 3–5 planets with habitable-zone-appropriate orbits
-- [ ] Planets as dynamic N-body participants (currently fixed anchors)
-- [ ] Multi-membrane context system: auto-transition between planetary membranes
-- [ ] Interplanetary flight: surface → orbit → trajectory → landing on second planet
-- [ ] Falsifier 10: Keplerian period ratio within 5%
-- [ ] Falsifier 11: character lands on second planet, gap < 0.01m
-- [ ] Falsifier 12: energy drift < 1% with multi-planet tree
-- [ ] Falsifier 13: thermal equilibrium at each planet's distance within 15%
+### Phase 10: Multi-Planet Star System (Completed — Kimi K3)
+
+**Rule 0:** The N-body tree already handles multiple massive bodies, so planets can be DYNAMIC
+particles on Keplerian orbits (not fixed anchors), and the membrane context can reframe to
+whichever planet is nearest. Prediction: measured orbital periods match Kepler's third law,
+and the character can fly planet-to-planet and land. Falsifiers 10–13 named below, all green.
+
+**What was built:**
+- `PLANET_SPECS`: 1 star + 4 planets (A: 1.00 AU / 1.0 M_e, B: 0.95 AU / 0.5 M_e,
+  C: 1.30 AU / 2.0 M_e, D: 1.67 AU / 5.0 M_e) — all inside the habitable zone band
+  [0.95, 1.67] AU derived from T_eq = 271/√(d_AU) K. Radius from Zeng-style
+  mass-radius R = R_e·(M/M_e)^0.27; relief amplitude ~ 1/g clamped to [0.5, 3].
+- Planet cores are DYNAMIC tree particles with tangential Keplerian velocity
+  v = √(GM_star/a), prograde. Only planet A keeps the 300 placed terrain splats
+  (renderer budget); B/C/D terrain is fracture-born from their DEMs (Track D2).
+- Per-planet DEMs: `generateSyntheticDEM(nlat, nlon, seedX, seedY, amp, primary)` —
+  seeds shift the fbm lattice per planet; `primary` guards the NOISE_* globals so
+  planet A's DEM stays byte-identical to the pre-Phase-10 world.
+- `heightAt(lat, lon, pi)` / `groundNormal(lat, lon, pi)` — per-planet ground truth.
+- Terrain re-anchoring: `reanchorTerrain()` runs at the top of every frame, rigidly
+  attaching the 300 placed splats to their (moving) core via the planet-local
+  `_offset`. One-frame lag ~480 m at timeScale 1 — 0.008% of R_e, invisible.
+- Multi-membrane context: `nearestPlanetTo(pos)` drives `activeMembrane`;
+  transitions are logged to `window.__membraneLog`. Character controller reframes
+  per-planet (`character.planet`): gravity g = G·M_pl/r², local up, ground query
+  all resolve against the active planet's live core position.
+- Track D generalized: LOD plan targets the NEAREST planet; fracture shells are
+  born from that planet's DEM; extras carry planet-local `_relDir`/`_elev` and
+  re-resolve against the live core each frame (cached absolute pos would detach).
+- HUD: interplanetary transfer row (nearest OTHER planet: distance, relative
+  speed, time-to-closest-approach), per-membrane extent/clock.
+- Witnesses: `window.__systemStats` (planet count, masses, radii, a, T_kepler,
+  T_eq predicted vs measured), `window.__keplerWitness` (side-effect-free
+  34.7-day fast-forward measuring swept angle), `window.__debugGround`.
+
+**Falsifier results (all green, headed Playwright, `--enable-unsafe-webgpu`):**
+
+| Check | Measured | Limit |
+|---|---|---|
+| F10 Kepler period ratio (A/B/C/D) | 0.9989 / 0.9987 / 0.9995 / 0.9997 (max err 0.13%) | 5% |
+| F11 land on planet B | gap −0.0000 m, rest after 684 frames, finite pos | gap < 0.01 m |
+| F12 multi-planet energy drift | 0.0000% over 125 frames | < 1% |
+| F13 thermal @A/B/C/D | 271.0 / 278.1 / 237.7 / 209.7 K — all 0.0% off predicted | < 15% |
+| Membrane transitions | logged −1→0 (frame 1288), 0→1 (frame 1431); activeMembrane=1 | ≥ 1 transition |
+| E1 ground roundtrip | max err 7.7e-07 m over 300 splats | < 1 m |
+| F1–F9 + Tracks D/E | all previously-green assertions unchanged | — |
+
+Measured system: A (5.972e24 kg, 6.371e6 m, T=3.168e7 s) · B (2.986e24 kg, 5.284e6 m,
+2.933e7 s) · C (1.194e25 kg, 7.682e6 m, 4.696e7 s) · D (2.986e25 kg, 9.839e6 m, 6.837e7 s).
+GPU mode: 60 fps, 8.5 ms gravity (readback-bound), 3596 visible splats at D2 cap.
+
+**Bugs fixed this pass:**
+- Duplicate `const AU` (already declared @615) — load-time SyntaxError, page dead.
+- E1 pole degeneracy: with the planet orbiting, the f64 roundtrip through a
+  1.5e11 m world position leaves ~1e-4 m noise in the witness's pos-minus-core
+  direction — at the south pole (px,pz ≈ 0) that swings lon by ~π/2 and sampled
+  a phantom DEM cell (3.9 km error). The witness now roundtrips the planet-local
+  `_offset` anchor, which IS the placement ground truth: 7.7e-07 m.
+
+**Next steps:** Phase 11 — ship-to-foot narrative arc with atmospheric re-entry
+(membrane depth already drives the transitions; re-entry adds a thin-shell aero
+kernel), or the C++ port of the verified kernel layer.
 
 ---
 
-Document version: 2.3 (Phase 10 pending) | Status: Phases 0–9 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
+Document version: 2.3 | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3

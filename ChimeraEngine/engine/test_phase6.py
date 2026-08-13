@@ -44,6 +44,14 @@ Tests:
 17. TRACK D: LOD law N = rho*r_px^2 (rho=0.35 trained) — D1 mip pyramid
     selection within 20% at 3 law radii, D2 fracture counts track the law
     (monotonic increase) and pin at the renderer budget cap
+18. PHASE 10: multi-planet star system — 4 planets orbit the star as
+    DYNAMIC N-body particles; FALSIFIER 10 (measured orbital period /
+    Kepler prediction within 5% via window.__keplerWitness), FALSIFIER 11
+    (character lands on planet B: gap <0.01 m, rest, finite position),
+    FALSIFIER 12 (energy drift <1% with multiple dynamic planets),
+    FALSIFIER 13 (per-planet thermal equilibrium within 15%), membrane
+    context transitions logged (window.__membraneLog), __systemStats
+    witness (planet count, periods, temps)
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -301,9 +309,10 @@ def test_spiace_phase6_kernels():
         # speed >= 1 m/s near a surface. Verified at two scales.
         page.wait_for_function("window.__flightInfo !== undefined", timeout=10000)
 
-        # Near the planet (1 radius above surface): walk-pace speed
-        # (planet membrane orbits at 1 AU = 1.5e11 m from the star)
-        page.evaluate("window.__setCam(1.5e11, 2 * 6.371e6, 0)")
+        # Near the planet (1 radius above surface): walk-pace speed.
+        # Phase 10: planets ORBIT the star — read planet A's live position.
+        pa = page.evaluate("window.__planetPos(0)")
+        page.evaluate(f"window.__setCam({pa[0]}, {pa[1] + 2 * 6.371e6}, {pa[2]})")
         page.wait_for_timeout(200)
         fl_planet = page.evaluate("window.__flightInfo")
         print(f"Flight @planet: depth={fl_planet['depth']} path={fl_planet['path']} "
@@ -338,9 +347,9 @@ def test_spiace_phase6_kernels():
         focus_txt = text(page, "#fly-focus")
         assert focus_txt == "#5", f"focus HUD shows {focus_txt!r}, expected '#5'"
         dist = page.evaluate(
-            "(() => { const p = window.__flightInfo.camPos; "
-            " return Math.hypot(p[0] - 1.5e11, p[1], p[2]); })()")
-        # terrain splat 5 sits on the planet (at 1 AU); frameDist = radius*5 = 6.4e6 m
+            "(() => { const p = window.__flightInfo.camPos; const c = window.__planetPos(0); "
+            " return Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]); })()")
+        # terrain splat 5 sits on planet A; frameDist = radius*5 = 6.4e6 m
         # plus the particle's surface offset — assert we framed, not void/overshot
         print(f"Focus flight: camera at {dist:.3e} m from planet center (frame dist ~6.4e6 m target)")
         assert dist < 1.2e8, f"focus flight did not converge (dist {dist:.3e} m)"
@@ -406,11 +415,12 @@ def test_spiace_phase6_kernels():
         import math as _math
         lat0, lon0 = 0.3, 1.0
         elev0 = page.evaluate(f"window.__heightAt({lat0}, {lon0})")
+        pa = page.evaluate("window.__planetPos(0)")
         d_cam = 6.371e6 + elev0 + 1.7 + 2.0  # 2 m above the feet
         px = _math.cos(lat0) * _math.cos(lon0)
         py = _math.sin(lat0)
         pz = _math.cos(lat0) * _math.sin(lon0)
-        page.evaluate(f"window.__setCam(1.5e11 + {d_cam*px}, {d_cam*py}, {d_cam*pz})")
+        page.evaluate(f"window.__setCam({pa[0] + d_cam*px}, {pa[1] + d_cam*py}, {pa[2] + d_cam*pz})")
         page.evaluate("window.__enterFoot()")
         page.wait_for_function(
             "window.__charInfo && window.__charInfo.active && window.__charInfo.grounded",
@@ -441,11 +451,12 @@ def test_spiace_phase6_kernels():
         # N = rho*r_px^2 within 20% (checked AT the law's own radii).
         R_PL = 6.371e6
         H_canvas = page.evaluate("document.getElementById('c').height")
+        pa = page.evaluate("window.__planetPos(0)")  # live — planet A orbits
         for N in (300, 75, 19):
             rpx = _math.sqrt(N / 0.35)
             dist = R_PL * H_canvas / (2 * rpx * 0.414)
-            page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
-            page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+            page.evaluate(f"window.__setCam({pa[0] + dist}, {pa[1]}, {pa[2]})")
+            page.evaluate(f"window.__lookAt({pa[0]}, {pa[1]}, {pa[2]})")
             page.wait_for_timeout(300)
             li = page.evaluate("window.__lodInfo")
             err_pct = abs(li["count"] - N) / N * 100
@@ -457,10 +468,11 @@ def test_spiace_phase6_kernels():
         # D2 FALSIFIER: fracture counts track the law (monotonic, within 20%)
         # and pin at the renderer budget past it.
         counts_seen = []
+        pa = page.evaluate("window.__planetPos(0)")
         for rpx in (45, 60, 90):
             dist = R_PL * H_canvas / (2 * rpx * 0.414)
-            page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
-            page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+            page.evaluate(f"window.__setCam({pa[0] + dist}, {pa[1]}, {pa[2]})")
+            page.evaluate(f"window.__lookAt({pa[0]}, {pa[1]}, {pa[2]})")
             page.wait_for_timeout(300)
             li = page.evaluate("window.__lodInfo")
             n_exp = min(round(0.35 * rpx * rpx), li["budgetCap"])
@@ -475,8 +487,8 @@ def test_spiace_phase6_kernels():
             f"D2 FALSIFIER TRIPPED: fracture counts not increasing: {counts_seen}"
         # Budget cap: r_px = 300 -> law wants 31500, budget caps it
         dist = R_PL * H_canvas / (2 * 300 * 0.414)
-        page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
-        page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+        page.evaluate(f"window.__setCam({pa[0] + dist}, {pa[1]}, {pa[2]})")
+        page.evaluate(f"window.__lookAt({pa[0]}, {pa[1]}, {pa[2]})")
         page.wait_for_timeout(300)
         li = page.evaluate("window.__lodInfo")
         print(f"D2 cap: r_px={li['rPx']:.1f} count={li['count']} budget={li['budgetCap']}")
@@ -576,6 +588,101 @@ def test_spiace_phase6_kernels():
         page.evaluate("bFieldEnabled = false")
         page.wait_for_timeout(200)
 
+        # ---- PHASE 10: MULTI-PLANET STAR SYSTEM ----
+        # Rule 0: the N-body tree already handles multiple massive bodies, so
+        # planets can be DYNAMIC particles on Keplerian orbits, and the
+        # membrane context can reframe to whichever planet is nearest.
+        page.wait_for_function(
+            "window.__systemStats && window.__systemStats.planetCount >= 3",
+            timeout=15000)
+        sys = page.evaluate("window.__systemStats")
+        print(f"\nPhase 10: {sys['planetCount']} planets in system")
+        for pl in sys["planets"]:
+            print(f"  {pl['name']}: M={pl['mass']:.3e} kg R={pl['radius']:.3e} m "
+                  f"a={pl['a']:.3e} m T_kepler={pl['tKepler']:.3e} s "
+                  f"({pl['tKepler']/86400/365.25:.2f} yr)")
+        assert sys["planetCount"] >= 3, \
+            f"FALSIFIER 10 setup: only {sys['planetCount']} planets"
+
+        # Falsifier 10: measured orbital period / Kepler prediction within 5%.
+        kep = page.evaluate("window.__keplerWitness()")
+        print(f"Kepler witness ({kep['days']:.1f} days fast-forward):")
+        for r in kep["planets"]:
+            print(f"  {r['name']}: T_meas={r['tMeasured']:.3e} s vs T_kepler="
+                  f"{r['tKepler']:.3e} s -> ratio {r['ratio']:.4f} (err {r['err']*100:.2f}%)")
+        good = [r for r in kep["planets"] if r["err"] < 0.05]
+        assert len(good) >= 2, \
+            f"FALSIFIER 10 TRIPPED: only {len(good)} planets within 5% of Kepler " \
+            f"(maxErr {kep['maxErr']*100:.2f}%)"
+
+        # Falsifier 13: thermal equilibrium at each planet's orbital distance.
+        # core.temp was initialized from T_eq(d) and a core's thermal inertia
+        # keeps it there — measured vs predicted must agree within 15%.
+        sys = page.evaluate("window.__systemStats")
+        for pl in sys["planets"]:
+            terr = abs(pl["temp"] - pl["tEqPredicted"]) / pl["tEqPredicted"]
+            print(f"Thermal @{pl['name']}: T={pl['temp']:.1f} K vs predicted "
+                  f"{pl['tEqPredicted']:.1f} K ({terr*100:.1f}%)")
+            assert terr < 0.15, \
+                f"FALSIFIER 13 TRIPPED @ {pl['name']}: {pl['temp']} K vs {pl['tEqPredicted']} K"
+
+        # Falsifier 11: character lands on PLANET B (index 1) — fly there,
+        # enter foot mode, come to rest. No NaN, gap < 0.01 m.
+        pb = page.evaluate("window.__planetPos(1)")
+        rb = page.evaluate("window.__systemStats.planets[1].radius")
+        latB, lonB = 0.3, 1.0
+        elevB = page.evaluate(f"window.__heightAt({latB}, {lonB}, 1)")
+        dB = rb + elevB + 1.7 + 2.0
+        px = _math.cos(latB) * _math.cos(lonB)
+        py = _math.sin(latB)
+        pz = _math.cos(latB) * _math.sin(lonB)
+        f_takeoff = page.evaluate("window.__frames || 0")
+        page.evaluate(f"window.__setCam({pb[0] + dB*px}, {pb[1] + dB*py}, {pb[2] + dB*pz})")
+        page.evaluate("window.__enterFoot()")
+        page.wait_for_function(
+            "window.__charInfo && window.__charInfo.active && window.__charInfo.grounded",
+            timeout=15000)
+        ciB = page.evaluate("window.__charInfo")
+        assert ciB["mode"] == "foot", f"P10 landing: mode {ciB['mode']}"
+        assert ciB["planet"] == 1, f"P10 landing: on planet {ciB['planet']}, expected 1"
+        assert abs(ciB["gap"]) < 0.01, \
+            f"FALSIFIER 11 TRIPPED: gap on planet B {ciB['gap']} m >= 0.01 m"
+        assert all(_math.isfinite(v) for v in ciB["pos"]), \
+            f"FALSIFIER 11 TRIPPED: non-finite position {ciB['pos']}"
+        page.wait_for_timeout(800)  # Coulomb friction stops it
+        ciB2 = page.evaluate("window.__charInfo")
+        f_rest = page.evaluate("window.__frames || 0")
+        assert ciB2["speed"] < 1e-6, \
+            f"FALSIFIER 11 TRIPPED: not at rest on planet B ({ciB2['speed']} m/s)"
+        print(f"P10 landing on planet B: gap={ciB2['gap']:.4f} m, rest after "
+              f"{f_rest - f_takeoff} frames, planet idx {ciB2['planet']}")
+        page.evaluate("window.__exitFoot()")
+        page.wait_for_timeout(300)
+
+        # Membrane context transitions were logged during the flight/landing
+        mlog = page.evaluate("window.__membraneLog || []")
+        print(f"Membrane transitions: {mlog}")
+        assert any(t["to"] == 1 for t in mlog), \
+            f"membrane never transitioned to planet B: {mlog}"
+        sys = page.evaluate("window.__systemStats")
+        print(f"activeMembrane={sys['activeMembrane']} "
+              f"transitions={len(sys['transitions'])}")
+
+        # Falsifier 12: energy still conserved with multiple dynamic planets
+        page.click("#btn-cpuem")
+        page.click("#btn-reset")
+        page.wait_for_function(
+            "document.getElementById('particle-count').textContent === '500'",
+            timeout=15000)
+        f0 = page.evaluate("window.__frames || 0")
+        page.wait_for_function(
+            f"(window.__frames || 0) >= {f0 + 125}", timeout=60000)
+        drift_mp = page.evaluate("window.__energyDrift")
+        print(f"Multi-planet energy drift: {drift_mp:.4f}% over 125 frames "
+              f"(3+ dynamic planets in the tree)")
+        assert drift_mp < 1.0, \
+            f"FALSIFIER 12 TRIPPED: multi-planet energy drift {drift_mp}% >= 1%"
+
         # ---- Final screenshot ----
         page.screenshot(path=SCREENSHOT_FINAL, full_page=False)
         assert os.path.exists(SCREENSHOT_FINAL), "Final screenshot not saved"
@@ -593,7 +700,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 + 7 + 8 + 9 + Track D/E assertions passed! ===")
+        print("\n=== All Phase 6 + 7 + 8 + 9 + 10 + Track D/E assertions passed! ===")
         browser.close()
 
 

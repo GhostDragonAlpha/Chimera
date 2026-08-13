@@ -46,6 +46,7 @@
   <div class="row"><label>Mode:</label><span class="val" id="fly-mode">flight (G to land)</span></div>
   <div class="row"><label>Gap:</label><span class="val" id="fly-gap">--</span></div>
   <div class="row"><label>Char speed:</label><span class="val" id="fly-cspeed">--</span></div>
+  <div class="row"><label>Transfer:</label><span class="val" id="fly-transfer">--</span></div>
 </div>
 <div id="err"></div>
 <div class="panel" id="ctrl-panel">
@@ -921,6 +922,26 @@ function displayColor(p) {
   // match the "nothing selected" sentinel and white-boosted EVERY extra.
   const isSelected = (selectedParticleIdx >= 0) &&
                      (particles.indexOf(p) === selectedParticleIdx);
+  // Phase 10: a planet core is the distant visual for planets without placed
+  // terrain (B/C/D). The scatter formula below is calibrated for 400 m
+  // bodies — at planet radius it returns ~1e8 (a white bomb). Instead: the
+  // planet's MEAN terrain color under a phase term — N points from the
+  // planet center to the camera, so the disc reads full/crescent correctly.
+  if (p._planetCore !== undefined) {
+    const pl = planets[p._planetCore];
+    const vx = camPos[0] - p.pos[0], vy = camPos[1] - p.pos[1], vz = camPos[2] - p.pos[2];
+    const vL = Math.hypot(vx, vy, vz) || 1;
+    const lx = -p.pos[0], ly = -p.pos[1], lz = -p.pos[2]; // star at origin
+    const lL = Math.hypot(lx, ly, lz) || 1;
+    const NL = Math.max(0, (vx*lx + vy*ly + vz*lz) / (vL * lL));
+    const diffuse = DIFFUSE_BASE + (1 - DIFFUSE_BASE) * NL;
+    const tEqBoost = Math.pow(pl.tEq / T_EQ_1AU, 2); // colder planets dimmer
+    let r = pl.meanCol[0] * diffuse * tEqBoost;
+    let g = pl.meanCol[1] * diffuse * tEqBoost;
+    let b = pl.meanCol[2] * diffuse * tEqBoost;
+    if (isSelected) { r = Math.min(1, r + 0.5); g = Math.min(1, g + 0.5); b = Math.min(1, b + 0.5); }
+    return [r, g, b];
+  }
   if (p._terrainCol) {
     // Track A3: N·L diffuse + water specular
     const lightDir = p._lightDir || _lightDirW;
@@ -1041,6 +1062,54 @@ const EARTH_LAND_MODE = 300.0;    // m, continental platform modal height
 const PLANET_MASS = 5.972e24;     // kg, Earth mass
 const EARTH_LAND_FRACTION = 0.291; // the number the surface is tuned to hit (planet_membrane.py:45)
 const SHELF_WIDTH = 0.18;
+
+// ---- PHASE 10: MULTI-PLANET STAR SYSTEM ----
+// Rule 0 statement: a star system is one star plus N planets, each planet a
+// SINGLE dynamic point-mass core in the same Barnes-Hut tree (terrain cells
+// are ~5e10 kg rock anchors — 12 orders of magnitude below a planet — so a
+// planet's gravity, orbit, and thermal mass all live in its core). Terrain,
+// the character, and the flight membrane are re-parameterized per planet;
+// nothing about the tree, kernels, or renderer changes.
+//   Prediction: with v = sqrt(G*M_star/a) tangential initial velocities,
+//   each planet's measured angular rate gives T within 5% of Kepler's
+//   2*pi*sqrt(a^3/GM), and a character standing on ANY planet measures
+//   gap < 0.01 m because heightAt samples THAT planet's own DEM.
+//   Falsifiers (named before the run):
+//     F10: measured period ratio != (a1/a2)^1.5 within 5% -> orbits wrong
+//     F11: landing on a second planet leaves gap > 0.01 m or NaN -> the
+//          multi-membrane reframe is wrong
+//     F12: energy drift >= 1% over 60 frames with 4 dynamic planets
+//     F13: a planet's measured temperature deviates >= 15% from the
+//          radiative-equilibrium prediction at its orbital distance
+// Habitable zone from the spec's equilibrium model: T_eq(d) =
+// T_star*sqrt(R_star/2d)*(1-A)^(1/4) = 271/sqrt(d_AU) K, so the HZ band
+// [210 K, 278 K] spans 0.95..1.67 AU. All four planets sit inside it.
+// Mass-radius: R = R_earth*(M/M_earth)^0.27 (Zeng-style super-Earth/
+// mini-Neptune scaling). Geology: relief amplitude ~ 1/g (low-gravity
+// worlds hold taller mountains — Olympus Mons vs Everest), clamped.
+const M_EARTH = 5.972e24, R_EARTH = 6.371e6; // AU already declared @615
+const HZ_INNER_AU = 0.95, HZ_OUTER_AU = 1.67; // T_eq 278 K .. 210 K
+const PLANET_SPECS = [
+  // name, a (m), mass (kg), theta0 (rad), dem seed offsets — deterministic
+  { name: 'A', a: 1.00 * AU, mass: 1.0 * M_EARTH, theta0: 0.0, seed: [10.0, 10.0] },
+  { name: 'B', a: 0.95 * AU, mass: 0.5 * M_EARTH, theta0: 1.9, seed: [137.3, 291.7] },
+  { name: 'C', a: 1.30 * AU, mass: 2.0 * M_EARTH, theta0: 3.8, seed: [533.9, 87.1] },
+  { name: 'D', a: 1.67 * AU, mass: 5.0 * M_EARTH, theta0: 5.0, seed: [941.5, 613.7] },
+];
+for (const s of PLANET_SPECS) {
+  s.radius = R_EARTH * Math.pow(s.mass / M_EARTH, 0.27);
+  s.g = G * s.mass / (s.radius * s.radius);
+  s.elevAmp = Math.max(0.5, Math.min(3.0, (G * M_EARTH / (R_EARTH * R_EARTH)) / s.g));
+  s.tKepler = 2 * Math.PI * Math.sqrt(s.a * s.a * s.a / (G * 1.989e30));
+  // Same expression initTemps applies to the core at distance a — F13
+  // compares the measured core temperature against exactly this.
+  s.tEq = T_EQ_1AU / Math.sqrt(s.a / AU); // 271 K @1AU, albedo folded in
+}
+// The live registry, rebuilt by spawnSystem. planets[i] =
+// { name, spec fields..., core (particle), dem, meanCol, terrainIdx[] }.
+let planets = [];
+function planetPos(i) { return planets[i].core.pos; }
+window.__planetPos = (i) => [...planets[i].core.pos]; // test hook
 // Sea level is DERIVED, never tuned (mirrors PlanetOnion._tune_sea_level):
 // generateSyntheticDEM normalizes the noise potential, then sets the
 // threshold at the area-weighted (1 - EARTH_LAND_FRACTION) quantile minus
@@ -1061,7 +1130,11 @@ let terrainSource = 'procedural'; // toggled by btn-earth mode button
 // Generate an equirectangular DEM (lat 90..-90, lon 0..360) for Track A2.
 // Same noise + bimodal transfer as procedural, but on a proper grid so it
 // can be swapped in later with real Earth data via from_topo_grid().
-function generateSyntheticDEM(nlat = 180, nlon = 360) {
+// Phase 10: (seedX, seedY) shift the noise lattice per planet and amp scales
+// relief (~1/g geology). primary = planet A: only the primary DEM sets the
+// NOISE_* module vars and drives the land-fraction falsifier — its pipeline
+// is byte-identical to the pre-Phase-10 one (seed 10/10, amp 1).
+function generateSyntheticDEM(nlat = 180, nlon = 360, seedX = 10.0, seedY = 10.0, amp = 1.0, primary = true) {
   // Raw continent potential from fbm over the equirectangular grid.
   const pot = new Float32Array(nlat * nlon);
   for (let i = 0; i < nlat; i++) {
@@ -1070,7 +1143,7 @@ function generateSyntheticDEM(nlat = 180, nlon = 360) {
       const lon = (j / nlon) * 2 * Math.PI;                 // 0..2pi
       const nx = (lon / (2 * Math.PI)) * 64;
       const ny = ((lat / Math.PI) + 0.5) * 32;
-      pot[i * nlon + j] = fbm(nx + 10.0, ny + 10.0, 6);
+      pot[i * nlon + j] = fbm(nx + seedX, ny + seedY, 6);
     }
   }
   // Normalize the potential like PlanetOnion does (pot / std) — but the JS
@@ -1083,7 +1156,7 @@ function generateSyntheticDEM(nlat = 180, nlon = 360) {
   for (let k = 0; k < pot.length; k++) variance += (pot[k] - mean) * (pot[k] - mean);
   const std = Math.sqrt(variance / pot.length) || 1.0;
   for (let k = 0; k < pot.length; k++) pot[k] = (pot[k] - mean) / std;
-  NOISE_MEAN = mean; NOISE_STD = std;
+  if (primary) { NOISE_MEAN = mean; NOISE_STD = std; }
   // Derive sea level for EARTH_LAND_FRACTION. With no roughness term the
   // zero crossing is exact: elev > 0  <=>  s > 0.925  <=>
   // pot > sea_thr + SHELF_WIDTH*ln(0.925/0.075). So sea_thr is the
@@ -1099,10 +1172,11 @@ function generateSyntheticDEM(nlat = 180, nlon = 360) {
     acc += Math.cos(latOf(order[oi]));
     if (acc >= targetW) { q = pot[order[oi]]; break; }
   }
-  NOISE_SEA_THR = q - SHELF_WIDTH * Math.log(0.925 / 0.075);
+  const seaThr = q - SHELF_WIDTH * Math.log(0.925 / 0.075);
+  if (primary) NOISE_SEA_THR = seaThr;
   const elev = new Float32Array(nlat * nlon);
   for (let k = 0; k < pot.length; k++) {
-    elev[k] = elevFromNoise(pot[k], NOISE_SEA_THR, SHELF_WIDTH);
+    elev[k] = amp * elevFromNoise(pot[k], seaThr, SHELF_WIDTH);
   }
   return elev;
 }
@@ -1150,41 +1224,78 @@ function latLonFromDir(px, py, pz) {
   return [lat, lon];
 }
 
-// E1 ground query: elevation (m above the R_PLANET sphere) + unit surface
-// normal at (lat, lon). Cheap, exact (DEM + central differences), no render.
-function heightAt(lat, lon) {
+// E1 ground query: elevation (m above the planet's reference sphere) + unit
+// surface normal at (lat, lon). Cheap, exact (DEM + central differences), no
+// render. Phase 10: pi selects the planet — each planet's DEM is its own
+// ground truth; default 0 keeps every pre-Phase-10 call site on planet A.
+function heightAt(lat, lon, pi = 0) {
+  const pl = planets[pi];
+  if (pl && pl.dem) return sampleDEMElev(pl.dem, lat, lon);
   if (!currentDEM) currentDEM = generateSyntheticDEM(180, 360);
   return sampleDEMElev(currentDEM, lat, lon);
 }
-function groundNormal(lat, lon) {
+function groundNormal(lat, lon, pi = 0) {
+  const R = (planets[pi] && planets[pi].radius) || R_PLANET;
   const h = 1e-5; // rad (~64 m at the surface) — central-difference step
-  const dEdLat = (heightAt(lat + h, lon) - heightAt(lat - h, lon)) / (2 * h);
+  const dEdLat = (heightAt(lat + h, lon, pi) - heightAt(lat - h, lon, pi)) / (2 * h);
   const cosLat = Math.max(Math.cos(lat), 1e-6);
-  const dEdLon = (heightAt(lat, lon + h) - heightAt(lat, lon - h)) / (2 * h * cosLat);
+  const dEdLon = (heightAt(lat, lon + h, pi) - heightAt(lat, lon - h, pi)) / (2 * h * cosLat);
   const d = dirFromLatLon(lat, lon);
   const north = [-Math.sin(lat) * Math.cos(lon), Math.cos(lat), -Math.sin(lat) * Math.sin(lon)];
   const east = [-Math.sin(lon), 0, Math.cos(lon)];
-  // N = sphere_normal - (dE/dlat * north + dE/dlon * east) / R_PLANET
-  const nx = d[0] - (dEdLon * east[0] + dEdLat * north[0]) / R_PLANET;
-  const ny = d[1] - (dEdLon * east[1] + dEdLat * north[1]) / R_PLANET;
-  const nz = d[2] - (dEdLon * east[2] + dEdLat * north[2]) / R_PLANET;
+  // N = sphere_normal - (dE/dlat * north + dE/dlon * east) / R
+  const nx = d[0] - (dEdLon * east[0] + dEdLat * north[0]) / R;
+  const ny = d[1] - (dEdLon * east[1] + dEdLat * north[1]) / R;
+  const nz = d[2] - (dEdLon * east[2] + dEdLat * north[2]) / R;
   const L = Math.hypot(nx, ny, nz) || 1;
   return [nx / L, ny / L, nz / L];
 }
 
 // E1 witness (lazy; called by test_phase6.py): roundtrip every terrain
-// splat through the ground query and report the worst divergence.
+// splat through the ground query and report the worst divergence. Planet A
+// holds all 300 placed terrain splats; B/C/D's ground is fracture-born.
 window.__groundWitness = () => {
   let maxErr = 0, checked = 0;
   for (const p of particles) {
     if (!p._terrainCol) continue;
-    const d = [p.pos[0] - PLANET_POS[0], p.pos[1] - PLANET_POS[1], p.pos[2] - PLANET_POS[2]];
-    const [lat, lon] = latLonFromDir(d[0], d[1], d[2]);
-    const err = Math.abs(heightAt(lat, lon) - p._elev);
+    // Phase 10: use the planet-LOCAL anchor (_offset), not pos-core. At the
+    // poles px,pz ~ 0 and the f64 roundtrip through a 1.5e11 m world position
+    // leaves ~1e-4 m of noise in d — enough to swing lon by ~pi/2 at the
+    // pole (measured: 3.9 km phantom elevation error). _offset IS the
+    // placement ground truth; the witness still proves query == placement.
+    const o = p._offset;
+    const [lat, lon] = latLonFromDir(o[0], o[1], o[2]);
+    const err = Math.abs(heightAt(lat, lon, p._planet || 0) - p._elev);
     if (err > maxErr) maxErr = err;
     checked++;
   }
   return { maxErr, checked };
+};
+
+// Debug probe for E1 divergence hunts (test-only introspection).
+window.__debugGround = () => {
+  const pp = planetPos(0);
+  let worst = null, worstErr = -1;
+  for (const p of particles) {
+    if (!p._terrainCol) continue;
+    const d = [p.pos[0]-pp[0], p.pos[1]-pp[1], p.pos[2]-pp[2]];
+    const [lat, lon] = latLonFromDir(d[0], d[1], d[2]);
+    const h = heightAt(lat, lon, p._planet || 0);
+    const err = Math.abs(h - p._elev);
+    if (err > worstErr) {
+      worstErr = err;
+      const [lat2, lon2] = latLonFromDir(p._offset[0], p._offset[1], p._offset[2]);
+      worst = { id: p.id, lat, lon, h, elev: p._elev,
+                latOff: lat2, lonOff: lon2,
+                hOff: sampleDEMElev(planets[0].dem, lat2, lon2),
+                dLen: Math.hypot(d[0], d[1], d[2]),
+                offLen: Math.hypot(p._offset[0], p._offset[1], p._offset[2]) };
+    }
+  }
+  return { worst, worstErr,
+           sameDem: planets[0].dem === currentDEM,
+           demLen: planets[0].dem ? planets[0].dem.length : null,
+           amp0: planets[0].elevAmp };
 };
 
 // Track C1: picking state
@@ -1209,23 +1320,39 @@ function terrainColor(elev) {
 // Planckian blackbody for the planet — cold surface, scatters starlight.
 const PLANET_ALBEDO = 0.3; // bond albedo (Earth-like)
 
-function spawnPlanet(terrainDEM = null) {
+function spawnPlanet(pi = 0, terrainDEM = null) {
   // Track A2: accept an optional equirectangular DEM (lat 90..-90 top-to-bottom,
   // lon 0..360). If provided, sample it instead of procedural noise. This is the
   // same interface as PlanetOnion.from_topo_grid() in the Python module.
-  // Place ~800 surface splats on a sphere using a Fibonacci lattice
-  // (uniform coverage, no poles clustering). Each splat carries elevation,
-  // physical radius from planet mass, and height-band color.
+  // Phase 10: pi selects the planet. Only planet A gets 300 placed surface
+  // splats (the renderer-budget base level); B/C/D build their DEM here and
+  // their terrain is FRACTURE-BORN (Track D2) when the camera approaches.
+  const pl = planets[pi];
+  const R_PL = pl.radius;          // this planet's reference sphere
+  const C0 = pl.core.pos;          // spawn-time center (core at theta0)
   const nSurface = 300;
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   const planetParticles = [];
 
   // Pre-build DEM if needed for procedural mode
   let dem = terrainDEM;
-  if (!dem && terrainSource === 'procedural') {
-    dem = generateSyntheticDEM(180, 360);
+  if (!dem && (pi > 0 || terrainSource === 'procedural')) {
+    dem = generateSyntheticDEM(180, 360, pl.seed[0], pl.seed[1], pl.elevAmp, pi === 0);
   }
-  currentDEM = dem; // E1: the ground query samples THE SAME DEM (one truth)
+  if (pi === 0) currentDEM = dem; // E1: the ground query samples THE SAME DEM (one truth)
+  pl.dem = dem;
+
+  // Mean surface color for the core's distant-splat appearance (planet-phase
+  // lit in displayColor). Only needed where there is no placed terrain.
+  if (dem) {
+    let mr = 0, mg = 0, mb = 0;
+    for (let k = 0; k < dem.length; k++) {
+      const c = terrainColor(dem[k]); mr += c[0]; mg += c[1]; mb += c[2];
+    }
+    pl.meanCol = [mr / dem.length, mg / dem.length, mb / dem.length];
+  }
+
+  if (pi > 0) return []; // B/C/D: no base splats — terrain is fracture-born
 
   let landCount = 0; // Rule-0 witness: derived sea level must yield EARTH_LAND_FRACTION
   for (let i = 0; i < nSurface; i++) {
@@ -1254,8 +1381,8 @@ function spawnPlanet(terrainDEM = null) {
       elev = elevFromNoise((n - NOISE_MEAN) / NOISE_STD, NOISE_SEA_THR, SHELF_WIDTH); // metres
     }
 
-    const r3 = R_PLANET + elev;
-    const pos = [PLANET_POS[0] + r3 * px, PLANET_POS[1] + r3 * py, PLANET_POS[2] + r3 * pz];
+    const r3 = R_PL + elev;
+    const pos = [C0[0] + r3 * px, C0[1] + r3 * py, C0[2] + r3 * pz];
 
     // Physical radius: same density as orbitals (RHO_BODY = 3000 kg/m^3)
     const mass = RHO_BODY * (4.0 / 3.0) * Math.PI * 500 * 500 * 500; // ~5e10 kg, 500 m radius cells
@@ -1265,7 +1392,7 @@ function spawnPlanet(terrainDEM = null) {
     // ~5e6 m (sigma ~1.3e6) tiles the surface. (The old 8e6 m floor made
     // every splat larger than the planet itself: 300 stacked planet-sized
     // splats rendered as a uniform blue wash at ~30x overdraw, 7 fps.)
-    const renderRadius = R_PLANET * 0.2; // 1.27e6 m
+    const renderRadius = R_PL * 0.2; // 1.27e6 m at R_earth
 
     // Color from elevation band (set as display color via temp/lum hack)
     const col = terrainColor(elev);
@@ -1299,8 +1426,8 @@ function spawnPlanet(terrainDEM = null) {
       const fi2 = ((Math.PI/2)-latNext)/Math.PI*(nlatD-1);
       const fj2 = (lonWrapped/(2*Math.PI))*nlonD;
       // Simplified: use analytic gradient from the DEM indices around this cell
-      const dEdLat_approx = (e10 - e00) * (nlatD - 1) / (Math.PI/2) * R_PLANET; // m/rad · m per rad lat
-      const dEdLon_approx = (e01 - e00 + e11 - e10) * 0.5 * nlonD / (2*Math.PI) * R_PLANET * Math.cos(Math.asin(py));
+      const dEdLat_approx = (e10 - e00) * (nlatD - 1) / (Math.PI/2) * R_PL; // m/rad · m per rad lat
+      const dEdLon_approx = (e01 - e00 + e11 - e10) * 0.5 * nlonD / (2*Math.PI) * R_PL * Math.cos(Math.asin(py));
       dEdLat = dEdLat_approx;
       dEdLon = dEdLon_approx;
     } else {
@@ -1325,7 +1452,7 @@ function spawnPlanet(terrainDEM = null) {
       const nxP = (lonR/(2*Math.PI))*64, nyP = ((latR/Math.PI)+0.5)*32;
       const nPrev = fbm(nxP - bestDlon/(2*Math.PI)*64 + 10, nyP + 2*goldenAngle/(Math.PI/2)*32 + 10, 6);
       const nNext = fbm(nxP + bestDlon/(2*Math.PI)*64 + 10, nyP - 2*goldenAngle/(Math.PI/2)*32 + 10, 6);
-      dEdLat = ((nNext - nPrev) / (4*goldenAngle/Math.PI)) * (R_PLANET * Math.PI/180) * 2; // rough
+      dEdLat = ((nNext - nPrev) / (4*goldenAngle/Math.PI)) * (R_PL * Math.PI/180) * 2; // rough
       dEdLon = 0;
     }
     // Perturb sphere normal by terrain slope
@@ -1334,25 +1461,25 @@ function spawnPlanet(terrainDEM = null) {
     const north = [-Math.sin(latDeg*Math.PI/180)*Math.cos(lonDeg*Math.PI/180),
                     Math.cos(latDeg*Math.PI/180),
                     -Math.sin(latDeg*Math.PI/180)*Math.sin(lonDeg*Math.PI/180)];
-    // Normal = sphere_normal - (dE/dlat * north + dE/dlon * east) / R_PLANET
-    const slopeX = snorm[0] - (dEdLon * east[0] + dEdLat * north[0]) / R_PLANET;
-    const slopeY = snorm[1] - (dEdLon * east[1] + dEdLat * north[1]) / R_PLANET;
-    const slopeZ = snorm[2] - (dEdLon * east[2] + dEdLat * north[2]) / R_PLANET;
+    // Normal = sphere_normal - (dE/dlat * north + dE/dlon * east) / R_PL
+    const slopeX = snorm[0] - (dEdLon * east[0] + dEdLat * north[0]) / R_PL;
+    const slopeY = snorm[1] - (dEdLon * east[1] + dEdLat * north[1]) / R_PL;
+    const slopeZ = snorm[2] - (dEdLon * east[2] + dEdLat * north[2]) / R_PL;
     const tLen = Math.hypot(slopeX, slopeY, slopeZ);
 
     planetParticles.push({
       id: nextId++,
       pos: [...pos],
-      vel: [0, 0, 0], // planet is stationary at origin — it's the world frame
+      vel: [...pl.core.vel], // rides its planet core through the tree's dynamics
       acc: [0, 0, 0],
       mass,
       radius: renderRadius,
       radiusPhys,
       isStar: false,
       charge: 0,       // no EM for terrain cells
-      temp: T_EQ_1AU,  // ~271 K — initialized at radiative equilibrium
-      lum: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(T_EQ_1AU, 4),
-      heat: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(T_EQ_1AU, 4), // Phase 8: = lum
+      temp: pl.tEq,    // radiative equilibrium at this planet's distance
+      lum: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(pl.tEq, 4),
+      heat: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(pl.tEq, 4), // Phase 8: = lum
       heatField: 0,
       pressure: 0,     // Phase 9: terrain is not an acoustic source
       pressField: 0,
@@ -1361,7 +1488,9 @@ function spawnPlanet(terrainDEM = null) {
       _terrainCol: col,     // custom field for displayColor override
       _origPos: [...pos],   // restore after GPU readback
       _normal: [slopeX/tLen, slopeY/tLen, slopeZ/tLen],  // Track A3: surface normal
-      _elev: elev                                         // Track A3: for isOcean check
+      _elev: elev,                                     // Track A3: for isOcean check
+      _planet: pi,                                     // Phase 10: owning membrane
+      _offset: [pos[0] - C0[0], pos[1] - C0[1], pos[2] - C0[2]] // planet-local anchor
     });
   }
   // Executable falsifier for the derived sea level: the test reads this.
@@ -1377,13 +1506,73 @@ function spawnPlanet(terrainDEM = null) {
 
 function spawnSystem(count) {
   const starMass = 1.989e30;
-  // Exactly `count` particles total: 1 star + ~300 planet surface splats + remaining orbitals
+  // Exactly `count` particles total: 1 star + 300 planet-A surface splats +
+  // 4 planet cores + remaining orbitals. The cores are DYNAMIC point masses
+  // on Keplerian circular orbits (Phase 10); terrain splats ride their core.
   const nPlanetSurface = 300;
-  const nOrbitals = Math.max(0, count - 1 - nPlanetSurface);
+  const nCores = PLANET_SPECS.length;
+  const nOrbitals = Math.max(0, count - 1 - nPlanetSurface - nCores);
   particles = [createParticle([0, 0, 0], [0, 0, 0], starMass, 1.5e10, true)];
-  particles.push(...spawnPlanet());
+  // Planet cores — one tree particle per planet, tangential Keplerian
+  // velocity v = sqrt(G*M_star/a), prograde like makeOrbital. Planet A's
+  // core renders nothing (its terrain is the visual); B/C/D render as a
+  // single phase-lit splat until the camera is close enough to fracture.
+  planets = [];
+  const coreParticles = [];
+  for (let i = 0; i < PLANET_SPECS.length; i++) {
+    const s = PLANET_SPECS[i];
+    const pos = [Math.cos(s.theta0) * s.a, 0, Math.sin(s.theta0) * s.a];
+    const vC = Math.sqrt(G * starMass / s.a);
+    const vel = [-Math.sin(s.theta0) * vC, 0, Math.cos(s.theta0) * vC];
+    const core = createParticle(pos, vel, s.mass, i === 0 ? 0 : s.radius, false, 0, 0);
+    core.radiusPhys = s.radius; // mini-Neptunes are puffier than RHO_BODY rock
+    core._planetCore = i;
+    planets.push({ ...s, core, dem: null, meanCol: [0.1, 0.2, 0.3], terrainIdx: [] });
+    coreParticles.push(core);
+  }
+
+  const terrainA = spawnPlanet(0);       // 300 placed splats (Tracks A1/D1 base)
+  for (let i = 1; i < PLANET_SPECS.length; i++) spawnPlanet(i); // DEMs only
+  particles.push(...terrainA, ...coreParticles);
   for (let i = 0; i < nOrbitals; i++) particles.push(makeOrbital(starMass));
+  planets[0].terrainIdx = terrainA.map(t => particles.indexOf(t));
+  activeMembrane = -1;
+  window.__membraneLog = [];
   initTemps();
+}
+
+// ---- PHASE 10: TERRAIN RE-ANCHORING + MEMBRANE CONTEXT ----
+// Planet cores orbit (tree-integrated); terrain splats are rigidly attached
+// to their core. Re-anchor at the START of the frame so the tree, the
+// renderer, and the ground query all see a coherent planet this frame. The
+// one-frame lag vs the core's fresh integration is v_orbital * dt_frame
+// (~480 m at timeScale 1) — 0.008% of the planet radius, invisible.
+let activeMembrane = -1; // planet index whose membrane the camera is in, -1 = void
+function reanchorTerrain() {
+  for (const pl of planets) {
+    if (pl.terrainIdx.length === 0) continue;
+    const c = pl.core.pos, cv = pl.core.vel;
+    for (const ti of pl.terrainIdx) {
+      const p = particles[ti];
+      const o = p._offset;
+      p.pos[0] = c[0] + o[0]; p.pos[1] = c[1] + o[1]; p.pos[2] = c[2] + o[2];
+      p.vel[0] = cv[0]; p.vel[1] = cv[1]; p.vel[2] = cv[2];
+      if (p._origPos) { p._origPos[0] = p.pos[0]; p._origPos[1] = p.pos[1]; p._origPos[2] = p.pos[2]; }
+    }
+  }
+}
+
+// Nearest planet to a point, by SURFACE distance. Returns
+// { i, dist, surf } — surf = dist - radius (negative inside).
+function nearestPlanetTo(pos) {
+  let best = -1, bestSurf = Infinity, bestDist = Infinity;
+  for (let i = 0; i < planets.length; i++) {
+    const c = planets[i].core.pos;
+    const d = Math.hypot(pos[0] - c[0], pos[1] - c[1], pos[2] - c[2]);
+    const s = d - planets[i].radius;
+    if (s < bestSurf) { bestSurf = s; bestDist = d; best = i; }
+  }
+  return { i: best, dist: bestDist, surf: bestSurf };
 }
 
 // ---- CPU BARNES-HUT (reference implementation) ----
@@ -2136,22 +2325,36 @@ setCamLookAt(PLANET_POS); // initial: look at the planet
 
 // Per-frame flight measurement: nearest membrane surface, depth, clock,
 // speed — everything the HUD and the B/T falsifiers read.
+// Phase 10: the membrane is the NEAREST planet's (by surface distance), not
+// a hardcoded one. activeMembrane tracks it; every transition is logged to
+// window.__membraneLog (the F11/interplanetary witness reads this).
+let prevCamPos = null; // for camera velocity (transfer HUD)
+let lastRawDt = 1 / 60;  // wall dt of the previous frame, set by loop()
 function measureFlight() {
-  // Planet-relative distance drives membrane depth, local up, and (near
-  // the planet) the escape-velocity clamp; the star dominates in void.
-  const distPlanet = Math.hypot(camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]);
+  const near = nearestPlanetTo(camPos);
+  const pl = planets[near.i];
+  const distPlanet = near.dist;
   const distStar = Math.hypot(camPos[0], camPos[1], camPos[2]);
 
-  // Distance to nearest membrane surface. Inside the planet membrane this
-  // is TERRAIN-EXACT via the E1 ground query — the 300 terrain splats are
-  // 500 m-radius cells ~2300 km apart, so particle-distance altitude would
-  // read ~1000 km at eye level and the near-cull would erase the ground
-  // underfoot. In void, fall back to nearest particle (star excluded: it
-  // is a system-scale object, not a surface to land on).
+  // Membrane context transition: entering/leaving a planet's 10 R shell.
+  const inMembrane = near.surf < 9 * pl.radius ? near.i : -1;
+  if (inMembrane !== activeMembrane) {
+    (window.__membraneLog = window.__membraneLog || []).push(
+      { frame: window.__frames || 0, from: activeMembrane, to: inMembrane });
+    activeMembrane = inMembrane;
+  }
+
+  // Distance to nearest membrane surface. Inside a planet membrane this
+  // is TERRAIN-EXACT via the E1 ground query on THAT planet's DEM — the
+  // terrain splats are 500 m-radius cells thousands of km apart, so
+  // particle-distance altitude would misread at eye level and the
+  // near-cull would erase the ground underfoot. In void, fall back to
+  // nearest particle (star excluded: a system-scale object, not a surface).
   let minDist;
-  if (distPlanet < 10 * R_PLANET) {
-    const [lat, lon] = latLonFromDir(camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]);
-    minDist = distPlanet - (R_PLANET + heightAt(lat, lon));
+  if (activeMembrane >= 0) {
+    const c = pl.core.pos;
+    const [lat, lon] = latLonFromDir(camPos[0]-c[0], camPos[1]-c[1], camPos[2]-c[2]);
+    minDist = distPlanet - (pl.radius + heightAt(lat, lon, activeMembrane));
   } else {
     minDist = Infinity;
     for (const p of particles) {
@@ -2165,13 +2368,14 @@ function measureFlight() {
 
   // B2 membrane depth: 2 = on surface, 1 = planet membrane, 0 = system void
   let depth, path, clock;
-  if (distPlanet < 1.5 * R_PLANET)      { depth = 2; path = 'sol->planet->surface'; clock = PLANET_CLOCK; }
-  else if (distPlanet < 10 * R_PLANET)  { depth = 1; path = 'sol->planet';          clock = PLANET_CLOCK; }
-  else                                  { depth = 0; path = 'sol';                  clock = SYSTEM_CLOCK; }
+  const pClock = clockRateForExtent(pl.radius); // ~1.0 for any planet
+  if (activeMembrane < 0)           { depth = 0; path = 'sol';                                       clock = SYSTEM_CLOCK; }
+  else if (distPlanet < 1.5 * pl.radius) { depth = 2; path = 'sol->planet' + pl.name + '->surface'; clock = pClock; }
+  else                              { depth = 1; path = 'sol->planet' + pl.name;                     clock = pClock; }
 
-  // Local escape velocity of the dominant body (planet near, star far)
-  const nearPlanet = distPlanet < 50 * R_PLANET;
-  const mLocal = nearPlanet ? PLANET_MASS : 1.989e30;
+  // Local escape velocity of the dominant body (nearest planet near, star far)
+  const nearPlanet = activeMembrane >= 0 && distPlanet < 50 * pl.radius;
+  const mLocal = nearPlanet ? pl.mass : 1.989e30;
   const rLocal = Math.max(nearPlanet ? distPlanet : distStar, 1);
   const vesc = Math.sqrt(2 * G * mLocal / rLocal);
 
@@ -2182,12 +2386,40 @@ function measureFlight() {
   speed = Math.max(speed, 1.0);       // falsifier floor (near surfaces)
 
   // B2: local up follows the surface normal inside the planet membrane
+  const c = pl.core.pos;
   curUp = (depth >= 1 && distPlanet > 1)
-    ? [(camPos[0]-PLANET_POS[0])/distPlanet, (camPos[1]-PLANET_POS[1])/distPlanet, (camPos[2]-PLANET_POS[2])/distPlanet]
+    ? [(camPos[0]-c[0])/distPlanet, (camPos[1]-c[1])/distPlanet, (camPos[2]-c[2])/distPlanet]
     : [0, 1, 0];
 
+  // Phase 10: interplanetary transfer info — nearest OTHER planet, camera
+  // velocity from finite differences, linear-extrapolation time to
+  // closest approach (Infinity when not closing).
+  let transfer = null;
+  if (planets.length > 1) {
+    let j = -1, dj = Infinity;
+    for (let i = 0; i < planets.length; i++) {
+      if (i === activeMembrane) continue;
+      const cc = planets[i].core.pos;
+      const d = Math.hypot(camPos[0]-cc[0], camPos[1]-cc[1], camPos[2]-cc[2]);
+      if (d < dj) { dj = d; j = i; }
+    }
+    const tp = planets[j].core;
+    const dx = camPos[0]-tp.pos[0], dy = camPos[1]-tp.pos[1], dz = camPos[2]-tp.pos[2];
+    const L = Math.hypot(dx, dy, dz) || 1;
+    const cvx = prevCamPos ? (camPos[0]-prevCamPos[0]) / lastRawDt : 0;
+    const cvy = prevCamPos ? (camPos[1]-prevCamPos[1]) / lastRawDt : 0;
+    const cvz = prevCamPos ? (camPos[2]-prevCamPos[2]) / lastRawDt : 0;
+    // closing speed = -(d/dist)/dt = -(relVel . dir); rel = cam - planet
+    const rvx = cvx - tp.vel[0], rvy = cvy - tp.vel[1], rvz = cvz - tp.vel[2];
+    const closing = -(rvx*dx + rvy*dy + rvz*dz) / L;
+    transfer = { planet: j, name: planets[j].name, dist: dj,
+                 relSpeed: Math.hypot(rvx, rvy, rvz),
+                 tca: closing > 0 ? dj / closing : Infinity };
+  }
+
   return { speed, alt: minDist, depth, path, clock, vesc, clampedEsc,
-           up: [...curUp], camPos: [...camPos] };
+           up: [...curUp], camPos: [...camPos], membrane: activeMembrane,
+           transfer };
 }
 
 // B4: nearest particle to the camera's forward ray (for F-focus)
@@ -2229,20 +2461,26 @@ const EYE_HEIGHT = 1.7;   // m — camera above the feet in foot mode
 const WALK_SPEED = 1.4;   // m/s — measured human comfortable walking pace
 const FRICTION_MU = 1.0;  // rubber-on-rock order; Coulomb: decel = mu * g
 let footMode = false;
-const character = { lat: 0.3, lon: 1.0, alt: 0, velN: 0, velE: 0, velU: 0, grounded: false };
+// Phase 10: `planet` selects the membrane — the character's lat/lon/alt are
+// relative to THAT planet's core, which orbits. Planet-local state means
+// the character rides a moving planet for free (no world-frame drag).
+const character = { lat: 0.3, lon: 1.0, alt: 0, velN: 0, velE: 0, velU: 0, grounded: false, planet: 0 };
 
 function charWorldPos() {
+  const pl = planets[character.planet];
   const d = dirFromLatLon(character.lat, character.lon);
-  const r = R_PLANET + heightAt(character.lat, character.lon) + character.alt;
-  return [PLANET_POS[0] + r * d[0], PLANET_POS[1] + r * d[1], PLANET_POS[2] + r * d[2]];
+  const r = pl.radius + heightAt(character.lat, character.lon, character.planet) + character.alt;
+  const c = pl.core.pos;
+  return [c[0] + r * d[0], c[1] + r * d[1], c[2] + r * d[2]];
 }
 
 // One character physics step. moveN/moveE: input direction in the local
 // tangent plane ({-1,0,1} each). Shared by the live loop and the witnesses.
 function stepCharacter(dt, moveN, moveE) {
-  const elev = heightAt(character.lat, character.lon);
-  const r = R_PLANET + elev + character.alt;
-  const g = G * PLANET_MASS / (r * r); // local gravity, DERIVED from planet mass
+  const pl = planets[character.planet];
+  const elev = heightAt(character.lat, character.lon, character.planet);
+  const r = pl.radius + elev + character.alt;
+  const g = G * pl.mass / (r * r); // local gravity, DERIVED from planet mass
   if (character.grounded) {
     if (moveN || moveE) {
       const L = Math.hypot(moveN, moveE);
@@ -2269,34 +2507,42 @@ function stepCharacter(dt, moveN, moveE) {
 }
 
 function charGap() { // absolute roundtrip: world pos vs the queried ground
+  const pl = planets[character.planet];
   const p = charWorldPos();
-  const rActual = Math.hypot(p[0] - PLANET_POS[0], p[1] - PLANET_POS[1], p[2] - PLANET_POS[2]);
-  return rActual - (R_PLANET + heightAt(character.lat, character.lon));
+  const c = pl.core.pos;
+  const rActual = Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]);
+  return rActual - (pl.radius + heightAt(character.lat, character.lon, character.planet));
 }
 
-// E3: scale handoff. Enter foot mode from the flight camera (depth >= 1):
-// the character inherits the camera's lat/lon and altitude above terrain,
-// then gravity takes over. Exit returns to free flight in place.
+// E3: scale handoff. Enter foot mode from the flight camera — the character
+// joins the membrane the camera is IN (nearest planet within its 10 R
+// shell, Phase 10), inherits the camera's lat/lon and altitude above THAT
+// planet's terrain, then gravity takes over. Exit returns to free flight.
 function enterFootMode() {
-  const d = [camPos[0] - PLANET_POS[0], camPos[1] - PLANET_POS[1], camPos[2] - PLANET_POS[2]];
-  const dist = Math.hypot(d[0], d[1], d[2]);
+  const near = nearestPlanetTo(camPos);
+  if (near.i < 0 || near.surf > 9 * planets[near.i].radius) return false;
+  const pl = planets[near.i];
+  const c = pl.core.pos;
+  const d = [camPos[0] - c[0], camPos[1] - c[1], camPos[2] - c[2]];
   const [lat, lon] = latLonFromDir(d[0], d[1], d[2]);
+  character.planet = near.i;
   character.lat = lat; character.lon = lon;
-  character.alt = Math.max(dist - (R_PLANET + heightAt(lat, lon)) - EYE_HEIGHT, 0);
+  character.alt = Math.max(near.dist - (pl.radius + heightAt(lat, lon, near.i)) - EYE_HEIGHT, 0);
   character.velN = 0; character.velE = 0; character.velU = 0;
   character.grounded = character.alt <= 0;
   footMode = true; focusIdx = -1;
+  return true;
 }
 function exitFootMode() { footMode = false; }
 window.__enterFoot = () => enterFootMode();   // test hook
 window.__exitFoot = () => exitFootMode();     // test hook
-window.__heightAt = (lat, lon) => heightAt(lat, lon); // test hook (E3 placement)
+window.__heightAt = (lat, lon, pi = 0) => heightAt(lat, lon, pi); // test hook (E3 placement)
 
 // Local tangent basis at the character: up = terrain normal (E1), and
 // north/east complete the frame. Foot-mode yaw is measured from north
 // toward east; pitch is above the horizon.
 function charBasis() {
-  const up = groundNormal(character.lat, character.lon);
+  const up = groundNormal(character.lat, character.lon, character.planet);
   const north = [-Math.sin(character.lat) * Math.cos(character.lon), Math.cos(character.lat),
                  -Math.sin(character.lat) * Math.sin(character.lon)];
   const east = [-Math.sin(character.lon), 0, Math.cos(character.lon)];
@@ -2321,7 +2567,7 @@ window.__charWalkWitness = (secs = 5) => {
   const steps = Math.round(secs * 60);
   for (let s = 0; s < steps; s++) stepCharacter(1 / 60, 1, 0); // walk north
   // Ground track: arc length along the surface (not chord).
-  const r0 = R_PLANET + heightAt(lat0, lon0);
+  const r0 = planets[character.planet].radius + heightAt(lat0, lon0, character.planet);
   const dLat = character.lat - lat0;
   const dLon = (character.lon - lon0) * Math.cos(lat0);
   const track = r0 * Math.hypot(dLat, dLon);
@@ -2389,7 +2635,9 @@ function buildTerrainPyramid() {
   const base = [];
   for (const p of particles) {
     if (!p._terrainCol) continue;
-    const d = [p.pos[0] - PLANET_POS[0], p.pos[1] - PLANET_POS[1], p.pos[2] - PLANET_POS[2]];
+    // Phase 10: use the planet-LOCAL anchor (_offset) — planet A orbits now,
+    // so pos - const would drift by the core's displacement and skew the dir.
+    const d = p._offset;
     const L = Math.hypot(d[0], d[1], d[2]) || 1;
     base.push({ dir: [d[0]/L, d[1]/L, d[2]/L], col: p._terrainCol, radius: p.radius });
   }
@@ -2427,14 +2675,19 @@ function buildTerrainPyramid() {
     cur = next;
   }
   // Re-ground each coarse splat on the terrain + resolve to render objects.
+  // Phase 10: extras store the planet-LOCAL direction (_relDir/_elev) and
+  // their absolute pos is resolved live in prepareSplats — the planet orbits
+  // and a cached absolute position would detach from it.
   return levels.map(level => level.map(s => {
     const [lat, lon] = latLonFromDir(s.dir[0], s.dir[1], s.dir[2]);
-    const elev = heightAt(lat, lon);
+    const elev = heightAt(lat, lon, 0);
     const d = dirFromLatLon(lat, lon);
-    const r = R_PLANET + elev;
-    return { id: -1, pos: [PLANET_POS[0] + r*d[0], PLANET_POS[1] + r*d[1], PLANET_POS[2] + r*d[2]],
+    const c = planets[0].core.pos;
+    const r = planets[0].radius + elev;
+    return { id: -1, pos: [c[0] + r*d[0], c[1] + r*d[1], c[2] + r*d[2]],
              radius: s.radius, _terrainCol: s.col, _normal: d, _elev: elev,
-             temp: T_EQ_1AU, lum: 0, flux: 0, albedo: PLANET_ALBEDO,
+             _planet: 0, _relDir: d,
+             temp: planets[0].tEq, lum: 0, flux: 0, albedo: PLANET_ALBEDO,
              radiusPhys: 500, isStar: false, charge: 0 };
   }));
 }
@@ -2443,10 +2696,12 @@ function buildTerrainPyramid() {
 let fractureSplats = [];
 let fractureKey = { count: 0, axis: [0, 0, 0] };
 
-function buildFracture(count, axis) {
+function buildFracture(count, axis, pi = 0) {
   // Fibonacci lattice on the camera-facing hemisphere (cos-angle y in
-  // [-0.05, 1] — slight past-limb margin for terrain relief), oriented on
-  // the axis planet->camera. Each splat is born from the ground query.
+  // [0, 1] — the cap ends AT the limb), oriented on the axis
+  // planet->camera. Each splat is born from THAT planet's ground query.
+  const pl = planets[pi];
+  const C0 = pl.core.pos;
   const tmp = Math.abs(axis[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
   let u = [axis[1]*tmp[2]-axis[2]*tmp[1], axis[2]*tmp[0]-axis[0]*tmp[2], axis[0]*tmp[1]-axis[1]*tmp[0]];
   const uL = Math.hypot(u[0], u[1], u[2]) || 1; u = [u[0]/uL, u[1]/uL, u[2]/uL];
@@ -2458,7 +2713,7 @@ function buildFracture(count, axis) {
   // shines through them as a double rim with chevron gaps. Ending the cap
   // AT the limb puts only black sky behind the dark rim.
   const Y0 = 0.0;
-  const spacing = Math.sqrt(2 * Math.PI * R_PLANET * R_PLANET * (1 - Y0) / count);
+  const spacing = Math.sqrt(2 * Math.PI * pl.radius * pl.radius * (1 - Y0) / count);
   const out = new Array(count);
   for (let i = 0; i < count; i++) {
     const y = Y0 + ((i + 0.5) / count) * (1 - Y0);
@@ -2469,61 +2724,73 @@ function buildFracture(count, axis) {
                u[1]*lx + axis[1]*y + v[1]*lz,
                u[2]*lx + axis[2]*y + v[2]*lz];
     const [lat, lon] = latLonFromDir(d[0], d[1], d[2]);
-    const elev = heightAt(lat, lon);
-    const r = R_PLANET + elev;
-    out[i] = { id: -1, pos: [PLANET_POS[0] + r*d[0], PLANET_POS[1] + r*d[1], PLANET_POS[2] + r*d[2]],
+    const elev = heightAt(lat, lon, pi);
+    const r = pl.radius + elev;
+    out[i] = { id: -1, pos: [C0[0] + r*d[0], C0[1] + r*d[1], C0[2] + r*d[2]],
                radius: spacing, _terrainCol: terrainColor(elev), _normal: d, _elev: elev,
-               temp: T_EQ_1AU, lum: 0, flux: 0, albedo: PLANET_ALBEDO,
+               _planet: pi, _relDir: d,
+               temp: pl.tEq, lum: 0, flux: 0, albedo: PLANET_ALBEDO,
                radiusPhys: 500, isStar: false, charge: 0 };
   }
   return out;
 }
 
-// Per-frame LOD decision for the planet membrane. Returns the render plan:
-// which terrain representation draws this frame (base | mip level | fracture).
+// Per-frame LOD decision for the NEAREST planet membrane (Phase 10: any
+// planet, not just A). Returns the render plan: which terrain representation
+// draws this frame (base | mip level | fracture). Only planet A has placed
+// base splats and a mip pyramid; B/C/D go core-splat -> fracture directly
+// (their base level IS the fracture — born from their DEM at screen-needed
+// resolution, which is the whole point of the ground query).
 function planPlanetLOD(nPhysics) {
   // Debug/test hook: 'base' | 'mip:N' | 'fracture' pins the LOD decision so
   // probes can A/B representations at the SAME camera (regression hunts).
   const force = window.__lodForce;
-  const dist = Math.hypot(camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]);
+  const near = nearestPlanetTo(camPos);
+  const pi = near.i, pl = planets[pi];
+  const dist = near.dist;
   const H = canvas.height;
-  const rPx = R_PLANET * H / (2 * Math.max(dist, 1) * 0.414); // tan(fov/2), fov=pi/4
+  const rPx = pl.radius * H / (2 * Math.max(dist, 1) * 0.414); // tan(fov/2), fov=pi/4
   const nTarget = Math.max(LOD_N_MIN, Math.round(LOD_RHO * rPx * rPx));
   const budget = MAX_PARTICLES - nPhysics; // fracture cap: renderer budget minus physics
-  if (!terrainPyramid) terrainPyramid = buildTerrainPyramid();
-  const counts = terrainPyramid.map(l => l.length);
+  if (pi === 0 && !terrainPyramid) terrainPyramid = buildTerrainPyramid();
+  const counts = pi === 0 ? terrainPyramid.map(l => l.length) : [300];
+  const baseCount = counts[0];
   if (force === 'base' || (force && force.startsWith('mip:'))) {
     const level = force === 'base' ? 0
       : Math.min(counts.length - 1, parseInt(force.slice(4), 10) || 0);
     fractureSplats = []; fractureKey.count = 0;
-    return { mode: level === 0 ? 'base' : 'mip', level,
-             extras: level === 0 ? [] : terrainPyramid[level],
-             rPx, nTarget, count: counts[level], budgetCap: budget };
+    return { mode: (level === 0 || pi > 0) ? 'base' : 'mip', level,
+             extras: (level === 0 || pi > 0) ? [] : terrainPyramid[level],
+             rPx, nTarget, count: counts[Math.min(level, counts.length - 1)],
+             budgetCap: budget, planet: pi };
   }
-  if (force === 'fracture' || nTarget >= counts[0]) {
-    if (force !== 'fracture' && nTarget === counts[0]) {
+  if (force === 'fracture' || nTarget >= baseCount) {
+    if (force !== 'fracture' && nTarget === baseCount) {
       fractureSplats = []; fractureKey.count = 0;
-      return { mode: 'base', extras: [], rPx, nTarget, count: counts[0], budgetCap: budget };
+      return { mode: 'base', extras: [], rPx, nTarget, count: baseCount,
+               budgetCap: budget, planet: pi };
     }
     // D2 fracture: finer than base. Cap at the renderer budget.
     const count = Math.min(nTarget, budget);
-    const ax = [camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]];
+    const c = pl.core.pos;
+    const ax = [camPos[0]-c[0], camPos[1]-c[1], camPos[2]-c[2]];
     const aL = Math.hypot(ax[0], ax[1], ax[2]) || 1;
     const axis = [ax[0]/aL, ax[1]/aL, ax[2]/aL];
-    // Hysteresis: rebuild only on >10% count change or >5 deg axis rotation
-    // — rebuilding every frame would pop AND cost a DEM query per splat.
-    const drift = fractureKey.count > 0
+    // Hysteresis: rebuild only on >10% count change, >5 deg axis rotation,
+    // or a planet switch — rebuilding every frame would pop AND cost a DEM
+    // query per splat.
+    const drift = fractureKey.count > 0 && fractureKey.planet === pi
       ? Math.abs(count - fractureKey.count) / count : Infinity;
-    const rot = fractureKey.count > 0
+    const rot = fractureKey.count > 0 && fractureKey.planet === pi
       ? Math.acos(Math.max(-1, Math.min(1,
           axis[0]*fractureKey.axis[0] + axis[1]*fractureKey.axis[1] + axis[2]*fractureKey.axis[2])))
       : Infinity;
     if (drift > 0.1 || rot > 0.09) {
-      fractureSplats = buildFracture(count, axis);
-      fractureKey = { count, axis };
+      fractureSplats = buildFracture(count, axis, pi);
+      fractureKey = { count, axis, planet: pi };
     }
     return { mode: 'fracture', extras: fractureSplats, rPx, nTarget,
-             count: fractureSplats.length, budgetCap: budget };
+             count: fractureSplats.length, budgetCap: budget, planet: pi };
   }
   // D1 mip: nearest level in log space (levels quantize by ~4x)
   let level = 0, best = Infinity;
@@ -2532,9 +2799,9 @@ function planPlanetLOD(nPhysics) {
     if (e < best) { best = e; level = l; }
   }
   fractureSplats = []; fractureKey.count = 0;
-  return { mode: level === 0 ? 'base' : 'mip', level,
-           extras: level === 0 ? [] : terrainPyramid[level],
-           rPx, nTarget, count: counts[level], budgetCap: budget };
+  return { mode: (level === 0 || pi > 0) ? 'base' : 'mip', level,
+           extras: (level === 0 || pi > 0) ? [] : terrainPyramid[level],
+           rPx, nTarget, count: counts[level], budgetCap: budget, planet: pi };
 }
 
 // Per-frame CPU work for the splat pipeline: rebase positions
@@ -2576,7 +2843,8 @@ function prepareSplats() {
   device.queue.writeBuffer(paramsBuf, 0, pb);
   window.__lodInfo = { rPx: lodPlan.rPx, nTarget: lodPlan.nTarget,
                        mode: lodPlan.mode, level: lodPlan.level || 0,
-                       count: lodPlan.count, budgetCap: lodPlan.budgetCap };
+                       count: lodPlan.count, budgetCap: lodPlan.budgetCap,
+                       planet: lodPlan.planet };
 
   // Scale-relative near cull (Track B): the fixed 0.01 cutoff (1e9 m)
   // was derived for the system-scale camera; a flight camera at
@@ -2594,7 +2862,9 @@ function prepareSplats() {
     const p = particles[i];
     // Track D: when a mip level or fracture shell draws the planet, the 300
     // base terrain splats hide (they still exist in `particles` for the tree).
-    if (p._terrainCol && lodReplaces) {
+    // Phase 10: only hide terrain belonging to the planet being replaced —
+    // fracturing B must not blank A's terrain.
+    if (p._terrainCol && lodReplaces && (p._planet ?? 0) === lodPlan.planet) {
       relPosArr[i*4+3] = 0;
       culled.push(i);
       continue;
@@ -2642,6 +2912,14 @@ function prepareSplats() {
   for (let j = 0; j < extras.length; j++) {
     const p = extras[j];
     const i = n + j;
+    // Phase 10: extras ride their planet — resolve the planet-local
+    // (_relDir, _elev) against the core's LIVE position each frame; a pos
+    // cached at build time would detach as the planet orbits.
+    if (p._planet !== undefined) {
+      const plx = planets[p._planet];
+      const cx = plx.core.pos, rr = plx.radius + p._elev, dd = p._relDir;
+      p.pos[0] = cx[0] + rr*dd[0]; p.pos[1] = cx[1] + rr*dd[1]; p.pos[2] = cx[2] + rr*dd[2];
+    }
     const rx = p.pos[0]*WORLD_SCALE - eye[0];
     const ry = p.pos[1]*WORLD_SCALE - eye[1];
     const rz = p.pos[2]*WORLD_SCALE - eye[2];
@@ -2858,6 +3136,13 @@ function fmtSpeed(v) {
   if (v < 1e6) return (v / 1e3).toFixed(2) + ' km/s';
   return v.toExponential(2) + ' m/s';
 }
+function fmtTime(t) { // seconds -> human scale (Phase 10 transfer HUD)
+  if (!isFinite(t)) return '--';
+  if (t < 3600) return t.toFixed(0) + ' s';
+  if (t < 86400) return (t / 3600).toFixed(1) + ' h';
+  if (t < 3.15e7) return (t / 86400).toFixed(1) + ' d';
+  return (t / 3.15e7).toFixed(2) + ' yr';
+}
 
 // B3: axis gizmo — the camera basis drawn as world axes in the corner.
 // (UI chrome on a separate canvas; the particle renderer is never 2D.)
@@ -2899,8 +3184,10 @@ $('btn-terrain').onclick = () => {
   terrainPyramid = null; fractureSplats = []; fractureKey = { count: 0, axis: [0, 0, 0] };
 };
 $('btn-center').onclick = () => {
-  camPos = [PLANET_POS[0], 2.5e7, 1.5e7]; // Track A1: frame the planet
-  setCamLookAt(PLANET_POS);
+  // Phase 10: frame planet A at its LIVE orbital position (it moves now)
+  const c = planets[0].core.pos;
+  camPos = [c[0], c[1] + 2.5e7, c[2] + 1.5e7]; // ~4 planetary radii, angled
+  setCamLookAt([...c]);
   focusIdx = -1;
 };
 // Track T: LOD-of-time toggle (CPU modes only — GPU mode integrates in the
@@ -2976,13 +3263,10 @@ canvas.addEventListener('click', (e) => {
  document.addEventListener('keydown', (e) => {
    if (e.code === 'Escape') { selectedParticleIdx = -1; focusIdx = -1; if (footMode) exitFootMode(); }
    if (e.code === 'KeyG') {
-     // Track E3: land / take off. Landing requires the planet membrane
-     // (depth >= 1: within 10 R_PLANET) — in system void there is no ground.
+     // Track E3: land / take off. Phase 10: enterFootMode finds the NEAREST
+     // planet and refuses the void itself (returns false), so no local check.
      if (footMode) exitFootMode();
-     else {
-       const d = Math.hypot(camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]);
-       if (d < 10 * R_PLANET) enterFootMode();
-     }
+     else enterFootMode();
    }
    if (e.code === 'KeyF') {
      if (focusIdx >= 0) focusIdx = -1; // toggle off
@@ -3047,6 +3331,8 @@ async function main() {
     const dt = Math.max(Math.min(rawDt, 0.05), 0.016) * timeScale;
     lastTime = now; frameCount++;
     window.__frames = frameCount;
+    lastRawDt = Math.max(rawDt, 1e-3); // wall dt for camera-velocity estimate
+    reanchorTerrain(); // Phase 10: terrain rides its (possibly moved) core
     window.__sample = () => ({ p1: [...particles[1].pos], v1: [...particles[1].vel] });
     if (frameCount % 10 === 0) {
       fps = Math.round(1 / Math.max(rawDt, 1e-6));
@@ -3172,13 +3458,14 @@ async function main() {
       if (keys['KeyA']) { moveN += Math.sin(camYaw); moveE -= Math.cos(camYaw); }
       stepCharacter(Math.min(rawDt, 0.05), moveN, moveE);
       const wp = charWorldPos();
-      const up = groundNormal(character.lat, character.lon);
+      const up = groundNormal(character.lat, character.lon, character.planet);
       curUp = up;
       camPos = [wp[0] + up[0] * EYE_HEIGHT, wp[1] + up[1] * EYE_HEIGHT, wp[2] + up[2] * EYE_HEIGHT];
       const speed = Math.hypot(character.velN, character.velE, character.velU);
       window.__charInfo = { active: true, lat: character.lat, lon: character.lon,
                             alt: character.alt, gap: charGap(), speed,
-                            grounded: character.grounded, mode: 'foot' };
+                            grounded: character.grounded, mode: 'foot',
+                            planet: character.planet, pos: charWorldPos() };
     } else {
       window.__charInfo = { active: false, mode: 'flight' };
     }
@@ -3210,6 +3497,8 @@ async function main() {
       }
     } else if (focusIdx >= particles.length) focusIdx = -1;
 
+    prevCamPos = [...camPos]; // Phase 10: for next frame's camera velocity
+
     // B3: membrane-native flight HUD + axis gizmo (every 10 frames)
     if (frameCount % 10 === 0) {
       $('fly-path').textContent = fl.path;
@@ -3225,6 +3514,25 @@ async function main() {
       $('fly-gap').textContent = footMode && ci ? ci.gap.toFixed(4) + ' m' : '--';
       $('fly-cspeed').textContent = footMode && ci ? ci.speed.toFixed(2) + ' m/s' : '--';
       $('mem-clock').textContent = fl.clock.toFixed(2) + 'x';
+      // Phase 10: interplanetary transfer row + membrane panel reframing
+      const tr = fl.transfer;
+      $('fly-transfer').textContent = tr
+        ? 'planet' + tr.name + ' ' + fmtDist(tr.dist) +
+          ' | dv ' + fmtSpeed(tr.relSpeed) +
+          ' | TCA ' + (isFinite(tr.tca) ? fmtTime(tr.tca) : 'receding')
+        : '--';
+      $('mem-extent').textContent = (fl.membrane >= 0 ? planets[fl.membrane].radius : SYSTEM_EXTENT).toExponential(2) + ' m';
+      // Phase 10 witness: the system snapshot the test polls
+      window.__systemStats = {
+        planetCount: planets.length,
+        planets: planets.map(pl => ({
+          name: pl.name, mass: pl.mass, radius: pl.radius, a: pl.a,
+          tKepler: pl.tKepler, tEqPredicted: pl.tEq,
+          temp: pl.core.temp, pos: [...pl.core.pos], vel: [...pl.core.vel],
+        })),
+        transitions: (window.__membraneLog || []).slice(),
+        activeMembrane,
+      };
       drawGizmo();
     }
 
@@ -3431,6 +3739,43 @@ window.__lodWitness = (frames = 60, dtFixed = 0.016) => {
   }
   return { divergence: maxDiv, relDivergence: maxRel, index: idx, frames,
            clockRate: SYSTEM_CLOCK, systemTicks: ticks };
+};
+
+// ---- KEPLER WITNESS (lazy; called by test_phase6.py, not at load) ----
+// Falsifier 10: planets on Keplerian orbits must sweep angle at the rate
+// Kepler's third law predicts: T = 2*pi*sqrt(a^3 / G*M_star).
+// Prediction: measured period / predicted period = 1.00 +/- 0.05.
+// Method: fast-forward the sim by ~35 days (150 steps x 2e4 s) and measure
+// each planet's swept angle around the star. Two endpoints, < pi sweep, so
+// no unwrap ambiguity. State is snapshotted and restored — side-effect free.
+window.__keplerWitness = (steps = 150, dtBig = 2e4) => {
+  const snap = particles.map(p => ({
+    pos: [...p.pos], vel: [...p.vel], acc: [...p.acc],
+    temp: p.temp, lum: p.lum, flux: p.flux }));
+  const savedLod = lodTime;
+  lodTime = false; // full-rate ticking for a clean measurement
+
+  const th0 = planets.map(pl => Math.atan2(pl.core.pos[2], pl.core.pos[0]));
+  for (let s = 0; s < steps; s++) cpuBarnesHut(dtBig);
+  const out = planets.map((pl, k) => {
+    const th1 = Math.atan2(pl.core.pos[2], pl.core.pos[0]);
+    let dth = th1 - th0[k];
+    if (dth < 0) dth += 2 * Math.PI; // prograde orbits always advance
+    const omega = dth / (steps * dtBig);
+    const tMeasured = 2 * Math.PI / omega;
+    const ratio = tMeasured / pl.tKepler;
+    return { name: pl.name, a: pl.a, tKepler: pl.tKepler,
+             tMeasured, ratio, err: Math.abs(ratio - 1) };
+  });
+  const maxErr = out.reduce((m, r) => Math.max(m, r.err), 0);
+
+  particles.forEach((p, i) => {
+    const s = snap[i];
+    p.pos = [...s.pos]; p.vel = [...s.vel]; p.acc = [...s.acc];
+    p.temp = s.temp; p.lum = s.lum; p.flux = s.flux;
+  });
+  lodTime = savedLod;
+  return { planets: out, maxErr, days: steps * dtBig / 86400 };
 };
 
 function updateTreeStats(tree) {
