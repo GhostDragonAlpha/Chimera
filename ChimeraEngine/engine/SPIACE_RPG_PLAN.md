@@ -477,4 +477,13 @@ kernel), or the C++ port of the verified kernel layer.
 
 ---
 
-Document version: 2.4 | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
+### Phase 10.5: Tile Artifact Elimination (Pending — Kimi K3)
+- [ ] Diagnose and fix visible seams between adjacent tiles in the splat rasterizer
+- [ ] Fix per-tile sort-order divergence causing edge artifacts
+- [ ] Increase MAX_PTILE or redesign to eliminate hard caps on tile contributions
+- [ ] Consider smaller TILE_SIZE (8px) vs larger (32px) tradeoff analysis
+- [ ] All existing falsifiers must stay green
+
+---
+
+Document version: 2.5 (Phase 10.5 pending) | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
