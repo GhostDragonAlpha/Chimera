@@ -671,7 +671,8 @@ let B_field = [0, 0, B_FIELD_DEFAULT]; // global uniform magnetic field (Tesla)
 // otherwise lose all sub-1e4 m precision in f32 buffers.
 const WORLD_SCALE = 1e-11;
 const TILE_SIZE = 16;
-const MAX_PARTICLES = 4096;
+const MAX_PARTICLES = 8192; // bumped from 4096: HiDPI (2× DPR) doubles r_px,
+// LOD law wants 4× more fracture splats — cap was hitting the wall at close range.
 const MAX_TREE_NODES = 2_000_000; // tree size cap (~288 MB of 144-byte nodes)
 
 // ---- BARNES-HUT TREE (CPU) ----
