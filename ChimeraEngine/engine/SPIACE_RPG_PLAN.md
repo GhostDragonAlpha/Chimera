@@ -466,4 +466,12 @@ kernel), or the C++ port of the verified kernel layer.
 
 ---
 
-Document version: 2.3 | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
+### Renderer Quality Fixes (bionic)
+- [x] HiDPI canvas: DPR-scaled resolution (capped at 3× / 4K) instead of 1280×720 hard cap
+- [x] Terrain splat radius scaled inversely with DPR (~635 km @ 2× vs ~1270 km @ 1×)
+- [x] MAX_PARTICLES bumped 4096 → 8192 for HiDPI fracture headroom (7692 slots)
+- All falsifiers pass unchanged; test viewport at DPR=1 keeps distances identical
+
+---
+
+Document version: 2.4 | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
