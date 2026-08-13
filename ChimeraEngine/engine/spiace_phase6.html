@@ -58,6 +58,7 @@
   <div class="row"><label>B (µT):</label><span class="val" id="b-val">1.0</span></div>
   <div class="row"><input type="range" id="b-slider" min="0" max="1000" value="1" style="width:120px;accent-color:#f77"></div>
   <div class="row"><button id="btn-heat" class="active">Heat: on</button><span class="val" id="heat-info">Phase 8</span></div>
+  <div class="row"><button id="btn-acoustic" class="active">Acoustic: on</button><span class="val" id="acoustic-info">Phase 9</span></div>
   <div class="row"><label>Modes:</label>
     <button id="btn-cpu" class="active">CPU BH</button>
     <button id="btn-cpuem">CPU BH+EM</button>
@@ -99,6 +100,7 @@
   <div class="row"><label>Heat (&Sigma;mcT):</label><span class="val" id="mem-heat">--</span></div>
   <div class="row"><label>Mean T @1AU:</label><span class="val" id="mem-temp">--</span></div>
   <div class="row"><label>T_field @1AU:</label><span class="val" id="mem-tfield">--</span></div>
+  <div class="row"><label>Pressure @1AU:</label><span class="val" id="mem-press">--</span></div>
 </div>
 
 <!-- ===============================================================
@@ -313,23 +315,24 @@ fn main(@builtin(position) frag: vec4f) -> @location(0) vec4f {
 // grav_bh.wgsl — GPU Barnes-Hut: iterative (stack-based, NO recursion)
 // octree traversal, one thread per particle, then symplectic Euler.
 // The CPU builds the tree each frame and serializes it to flat buffers:
-// 128-byte nodes + a separate leaf particle-index buffer.
+// 144-byte nodes + a separate leaf particle-index buffer.
 //
 // THE TREE CARRIES EVERY DECLARED KERNEL. Each node aggregates one
 // (center, quantity) pair per kernel in kernel_dsl.py — mass/COM for
 // gravity, luminosity/center-of-light for light+heat, charge/center-of-
-// charge for electromagnetism. The SAME opening-angle traversal serves
-// all of them: the per-kernel accumulation code between the GENERATED
-// markers is emitted by kernel_dsl.py — do not hand-edit it.
+// charge for electromagnetism, pressure monopole for acoustics. The SAME
+// opening-angle traversal serves all of them: the per-kernel accumulation
+// code between the GENERATED markers is emitted by kernel_dsl.py — do not
+// hand-edit it.
 //
-// TreeNode layout (128 bytes, matches the CPU serializer exactly):
+// TreeNode layout (144 bytes, matches the CPU serializer exactly):
 //   bb_min      array<f32,3>  @ 0
 //   bb_max      array<f32,3>  @ 12
 //   children    array<u32,8>  @ 24  (0xFFFFFFFF = empty)
 //   leaf_offset u32           @ 56
 //   leaf_count  u32           @ 60
 //   then 16 B per kernel (center vec3f + quantity f32):
-//   gravity @64 | light @80 | electromagnetism @96
+//   gravity @64 | light @80 | electromagnetism @96 | heat @112 | acoustic @128
 struct TreeNode {
   bb_min      : array<f32, 3>,
   bb_max      : array<f32, 3>,
@@ -345,6 +348,8 @@ struct TreeNode {
     electromagnetism_q : f32,           // @108 total charge
     heat_c : array<f32, 3>, // @112 center of heat
     heat_q : f32,           // @124 total heat
+    acoustic_c : array<f32, 3>, // @128 center of pressure
+    acoustic_q : f32,           // @140 total pressure
   // </GENERATED:NODE_FIELDS_WGSL>
 }
 
@@ -360,24 +365,30 @@ struct Params {
   Bx           : f32,   // Phase 7: B-field components (Tesla)
   By           : f32,
   Bz           : f32,
+  acousticEnabled : u32, // Phase 9: 1 = acoustic kernel active
 };
 
+// Phase 9 quantity packing: mass/lum/charge/heat ride ONE vec4f buffer
+// `quants` (x,y,z,w). WebGPU's default maxStorageBuffersPerShaderStage is
+// 8 — separate f32 arrays put this bind group at 9 storage buffers and
+// invalidated the whole layout. With packing: pos, vel, acc, quants, tree,
+// leaf_ids, pressures, fields = 8 storage = exactly the default limit.
 @group(0) @binding(0) var<storage, read_write> pos      : array<vec4f>;
 @group(0) @binding(1) var<storage, read_write> vel      : array<vec4f>;
 @group(0) @binding(2) var<storage, read_write> acc      : array<vec4f>; // xyz = m/s^2, w = irradiance W/m^2
-@group(0) @binding(3) var<storage, read>       masses   : array<f32>;
+@group(0) @binding(3) var<storage, read>       quants   : array<vec4f>; // x=mass, y=lum, z=charge, w=heat
 @group(0) @binding(4) var<storage, read>       tree     : array<TreeNode>;
 @group(0) @binding(5) var<storage, read>       leaf_ids : array<u32>;
 @group(0) @binding(6) var<uniform>             params   : Params;
-@group(0) @binding(7) var<storage, read>       lums     : array<f32>;   // per-particle luminosity (W)
-@group(0) @binding(8) var<storage, read>       charges  : array<f32>;   // per-particle charge (C)
-@group(0) @binding(9) var<storage, read>       heats    : array<f32>;   // per-particle heat source (W)
+@group(0) @binding(7) var<storage, read>       pressures : array<f32>;  // per-particle acoustic monopole (Pa m^2)
+@group(0) @binding(8) var<storage, read_write> fields    : array<vec4f>; // out: x = pressure field (Pa)
 
 const EMPTY: u32 = 0xFFFFFFFFu;
 const STACK_CAP: u32 = 64u;
 const G: f32 = 6.67430e-11;
 const K_E: f32 = 8.9875517923e9;
 const FOUR_PI: f32 = 12.566370614359172f;
+const ONE: f32 = 1.0f; // acoustic coupling — p = Q/d^2 exactly, no constant
 // Phase 8: 1/(4 pi kappa) for the heat kernel. DERIVED, not tuned: kappa is
 // the membrane medium conductivity that makes steady-state diffusion agree
 // with radiative equilibrium at 1 AU — T_EQ_1AU * AU / L_STAR =
@@ -394,6 +405,7 @@ fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
   var a = vec3f(0.0f);
   var flux: f32 = 0.0f;
   var theat: f32 = 0.0f; // Phase 8: temperature field (heat kernel, K)
+  var pacc: f32 = 0.0f;  // Phase 9: pressure field (acoustic kernel, Pa)
 
   // Iterative Barnes-Hut traversal with a thread-local stack
   var stack: array<u32, STACK_CAP>;
@@ -419,14 +431,15 @@ fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
         let dist_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;
         let dist = sqrt(dist_sq);
         // <GENERATED:LEAF_WGSL>
-                { let f_gravity = G * masses[pid] / (dist_sq * dist);
+                { let f_gravity = G * quants[pid].x / (dist_sq * dist);
                   a += f_gravity * vec3f(dx, dy, dz); } // kernel gravity
-                flux += lums[pid] / (FOUR_PI * dist_sq); // kernel light
+                flux += quants[pid].y / (FOUR_PI * dist_sq); // kernel light
                 if (params.emEnabled == 1u) { // kernel electromagnetism (bipolar)
-                  let f_electromagnetism = K_E * charges[idx] * charges[pid] / (masses[idx] * dist_sq * dist);
+                  let f_electromagnetism = K_E * quants[idx].z * quants[pid].z / (quants[idx].x * dist_sq * dist);
                   a -= f_electromagnetism * vec3f(dx, dy, dz);
                 }
-                if (params.heatEnabled == 1u) { theat += heats[pid] * KAPPA_INV_4PI / dist; } // kernel heat
+                if (params.heatEnabled == 1u) { theat += quants[pid].w * KAPPA_INV_4PI / dist; } // kernel heat
+                if (params.acousticEnabled == 1u) { pacc += pressures[pid] * ONE / dist_sq; } // kernel acoustic
         // </GENERATED:LEAF_WGSL>
       }
     } else {
@@ -470,7 +483,7 @@ fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
                 let dz_electromagnetism = n.electromagnetism_c[2] - tgt.z;
                 let d_sq_electromagnetism = dx_electromagnetism*dx_electromagnetism + dy_electromagnetism*dy_electromagnetism + dz_electromagnetism*dz_electromagnetism + params.softening_sq;
                 let dist_electromagnetism = sqrt(d_sq_electromagnetism);
-                let f_electromagnetism = K_E * charges[idx] * n.electromagnetism_q / (masses[idx] * d_sq_electromagnetism * dist_electromagnetism);
+                let f_electromagnetism = K_E * quants[idx].z * n.electromagnetism_q / (quants[idx].x * d_sq_electromagnetism * dist_electromagnetism);
                 a -= f_electromagnetism * vec3f(dx_electromagnetism, dy_electromagnetism, dz_electromagnetism); // like signs repel
               }
             }
@@ -482,6 +495,16 @@ fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
               let dz = n.heat_c[2] - tgt.z;
               let d_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;
               theat += n.heat_q * KAPPA_INV_4PI / sqrt(d_sq); // T field, 1/d
+              }
+            }
+            // kernel acoustic: scalar_inverse_squared from center of pressure (scalar field)
+            {
+              if (params.acousticEnabled == 1u) {
+              let dx = n.acoustic_c[0] - tgt.x;
+              let dy = n.acoustic_c[1] - tgt.y;
+              let dz = n.acoustic_c[2] - tgt.z;
+              let d_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;
+              pacc += n.acoustic_q * ONE / d_sq; // scalar field, 1/d^2
               }
             }
         // </GENERATED:ACCEPT_WGSL>
@@ -502,6 +525,8 @@ fn gravity_solve(@builtin(global_invocation_id) gid: vec3u) {
   // Phase 8: the temperature field rides home in vel.w (unused slot) —
   // no new output binding, integrate() preserves it below.
   vel[idx] = vec4f(vel[idx].xyz, theat);
+  // Phase 9: the pressure field rides home in fields[idx].x (binding 8).
+  fields[idx] = vec4f(pacc, 0.0f, 0.0f, 0.0f);
 }
 
 @compute @workgroup_size(64)
@@ -512,9 +537,9 @@ fn integrate(@builtin(global_invocation_id) gid: vec3u) {
   var v = vel[idx].xyz;
   // Phase 7: Lorentz force F = q(v x B), a = F/m — does no work, conserves KE
   if (params.bFieldEnabled > 0u) {
-    let q = charges[idx];
+    let q = quants[idx].z;
     if (q != 0.0f) {
-      let m = masses[idx];
+      let m = quants[idx].x;
       let Bx = params.Bx;
       let By = params.By;
       let Bz = params.Bz;
@@ -546,10 +571,13 @@ fn integrate(@builtin(global_invocation_id) gid: vec3u) {
 // light (lum, irradiance — scalar flux, no force), electromagnetism
 // (charge, inverse-square, BIPOLAR — like signs repel, gated by the
 // emEnabled toggle). Phase 8 added the heat kernel (potential_1r,
-// heatEnabled toggle). Node size: 64 B base + 4 x 16 B = 128 B.
+// heatEnabled toggle). Phase 9 adds the acoustic kernel
+// (scalar_inverse_squared, acousticEnabled toggle) and packs
+// mass/lum/charge/heat into ONE vec4f GPU buffer — the WebGPU storage-
+// buffer limit (8/stage) demanded it. Node size: 64 B base + 5 x 16 B = 144 B.
 //
 // Architecture: CPU builds octree -> serializes to flat GPU buffers
-// (128-byte nodes + leaf index buffer) -> GPU compute traverses
+// (144-byte nodes + leaf index buffer) -> GPU compute traverses
 // iteratively (one thread/particle) -> symplectic Euler on GPU.
 // Rendering: WebGPU Gaussian-splat pipeline (preprocess -> CPU sort
 // into overlapping tiles -> tile raster -> bloom -> tonemap).
@@ -602,6 +630,22 @@ const T_EQ_1AU = Math.pow(E_1AU * (1 - ALBEDO) / (4 * SIGMA), 0.25); // ~271 K
 const KAPPA_INV_4PI = T_EQ_1AU * AU / L_STAR; // ~1.057e-13 K m / W
 let heatEnabled = true; // the heat kernel's toggle (DSL: toggle = "heatEnabled")
 
+// ---- PHASE 9: ACOUSTIC PRESSURE KERNEL (fifth kernel — proves the packing scales) ----
+// Rule 0 statement: a scalar monopole field p = Q/d^2 (bipolar: compression +,
+// rarefaction -) is the same superposable point-source interaction as gravity
+// with the direction discarded. The tree transports it by carrying one more
+// (center, quantity) pair per node — no new algorithm, one DSL declaration.
+// CALIBRATION, DERIVED not tuned: the solar wind's dynamic pressure at 1 AU
+// is measured at ~2 nPa. Treating the star as an acoustic monopole with
+// coupling ONE (p = Q/d^2 exactly): Q_star = P_1AU * AU^2 = 4.5e13 Pa m^2.
+//   Prediction: mean pressure field over the 1 AU bin ~= 2e-9 Pa (+/-15%).
+//   Falsifier 9: two monopoles superpose analytically within 2% through the
+//   aggregated-node path (__acousticWitness).
+const ONE = 1.0;                    // acoustic coupling — no constant
+const P_WIND_1AU = 2e-9;            // Pa, measured solar-wind dynamic pressure
+const Q_STAR_ACOUSTIC = P_WIND_1AU * AU * AU; // 4.5e13 Pa m^2
+let acousticEnabled = true; // the acoustic kernel's toggle (DSL: toggle = "acousticEnabled")
+
 let theta = 0.5;       // opening angle — derived from accuracy requirement
 let timeScale = 1.0;
 let simTime = 0;
@@ -624,7 +668,7 @@ let B_field = [0, 0, B_FIELD_DEFAULT]; // global uniform magnetic field (Tesla)
 const WORLD_SCALE = 1e-11;
 const TILE_SIZE = 16;
 const MAX_PARTICLES = 4096;
-const MAX_TREE_NODES = 2_000_000; // tree size cap (~256 MB of 128-byte nodes)
+const MAX_TREE_NODES = 2_000_000; // tree size cap (~288 MB of 144-byte nodes)
 
 // ---- BARNES-HUT TREE (CPU) ----
 // A node carries the base geometry (bbox, children, leaf span) plus one
@@ -684,6 +728,18 @@ function aggregateKernels(node, particles) {
       node.k_heat_c[2] += p.heat * p.pos[2];
     }
     if (node.k_heat_q > 0) for (let d = 0; d < 3; d++) node.k_heat_c[d] /= node.k_heat_q;
+
+    // kernel acoustic: bipolar_sum -> total = signed sum, center = |q|-weighted
+    node.k_acoustic_q = 0; node.k_acoustic_w = 0; node.k_acoustic_c = [0, 0, 0];
+    for (const p of particles) {
+      const w = Math.abs(p.pressure);
+      node.k_acoustic_q += p.pressure;
+      node.k_acoustic_w += w;
+      node.k_acoustic_c[0] += w * p.pos[0];
+      node.k_acoustic_c[1] += w * p.pos[1];
+      node.k_acoustic_c[2] += w * p.pos[2];
+    }
+    if (node.k_acoustic_w > 0) for (let d = 0; d < 3; d++) node.k_acoustic_c[d] /= node.k_acoustic_w;
   // </GENERATED:AGGREGATE_JS>
 }
 
@@ -802,12 +858,13 @@ function countWork(node, targetPos, thetaVal) {
 let particles = [];
 let nextId = 0;
 
-function createParticle(pos, vel, mass, renderRadius, isStar = false, charge = 0) {
+function createParticle(pos, vel, mass, renderRadius, isStar = false, charge = 0, pressure = 0) {
   const radiusPhys = isStar ? R_STAR : Math.cbrt(3 * mass / (FOUR_PI * RHO_BODY));
   return { id: nextId++, pos: [...pos], vel: [...vel], acc: [0,0,0], mass,
            radius: renderRadius, radiusPhys, isStar, charge,
            temp: isStar ? T_STAR : 0, lum: 0, flux: 0, albedo: ALBEDO,
-           heat: isStar ? L_STAR : 0, heatField: 0 };
+           heat: isStar ? L_STAR : 0, heatField: 0,
+           pressure, pressField: 0 };
 }
 
 // Initialize heat at radiative equilibrium with the contained starlight,
@@ -815,7 +872,8 @@ function createParticle(pos, vel, mass, renderRadius, isStar = false, charge = 0
 // transport HOLDS that equilibrium — a wrong flux walks T off it.
 function initTemps() {
   for (const p of particles) {
-    if (p.isStar) { p.temp = T_STAR; p.lum = L_STAR; p.heat = L_STAR; continue; }
+    if (p.isStar) { p.temp = T_STAR; p.lum = L_STAR; p.heat = L_STAR;
+                    p.pressure = Q_STAR_ACOUSTIC; continue; } // Phase 9: calibrated monopole
     const r = Math.hypot(p.pos[0], p.pos[1], p.pos[2]);
     const e = L_STAR / (FOUR_PI * Math.max(r * r, R_STAR * R_STAR));
     p.temp = Math.pow(e * (1 - p.albedo) / (4 * SIGMA), 0.25);
@@ -921,7 +979,12 @@ function makeOrbital(starMass) {
   // Space-environment charge: log-uniform 1e3..1e6 C, random sign
   const qmag = Math.pow(10, 3 + Math.random() * 3);
   const charge = (Math.random() < 0.5 ? -1 : 1) * qmag;
-  return createParticle(pos, vel, mass, 2e9, false, charge);
+  // Phase 9: small bipolar acoustic monopole — log-uniform 1e6..1e9 Pa m^2,
+  // random sign (compression/rarefaction). Negligible at 1 AU: ~1e-13 Pa vs
+  // the star's 2e-9 Pa, but non-zero so the bipolar path is exercised.
+  const pmag = Math.pow(10, 6 + Math.random() * 3);
+  const pressure = (Math.random() < 0.5 ? -1 : 1) * pmag;
+  return createParticle(pos, vel, mass, 2e9, false, charge, pressure);
 }
 
 // ---- TERRAIN GENERATION (Track A1: planet as height-mapped sphere) ----
@@ -1218,6 +1281,8 @@ function spawnPlanet(terrainDEM = null) {
       lum: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(T_EQ_1AU, 4),
       heat: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(T_EQ_1AU, 4), // Phase 8: = lum
       heatField: 0,
+      pressure: 0,     // Phase 9: terrain is not an acoustic source
+      pressField: 0,
       flux: 0,         // will be filled by tree traversal
       albedo: PLANET_ALBEDO,
       _terrainCol: col,     // custom field for displayColor override
@@ -1294,6 +1359,14 @@ function kernelAccept(node, targetPos, target, acc, fluxOut) {
     const dz = node.k_heat_c[2] - targetPos[2];
     fluxOut.t += node.k_heat_q * KAPPA_INV_4PI / Math.sqrt(dx*dx + dy*dy + dz*dz + SOFT_SQ);
   }
+
+  // kernel acoustic: scalar_inverse_squared (scalar field) (gated by acousticEnabled)
+  if (acousticEnabled) {
+    const dx = node.k_acoustic_c[0] - targetPos[0];
+    const dy = node.k_acoustic_c[1] - targetPos[1];
+    const dz = node.k_acoustic_c[2] - targetPos[2];
+    fluxOut.p += node.k_acoustic_q * ONE / (dx*dx + dy*dy + dz*dz + SOFT_SQ);
+  }
 }
 
 // Per-kernel direct accumulation from one leaf particle.
@@ -1311,6 +1384,7 @@ function kernelLeaf(p, targetPos, target, acc, fluxOut) {
   acc[0] -= f * dx; acc[1] -= f * dy; acc[2] -= f * dz;
   }
   if (heatEnabled) { fluxOut.t += p.heat * KAPPA_INV_4PI / dist; } // kernel heat
+  if (acousticEnabled) { fluxOut.p += p.pressure * ONE / distSq; } // kernel acoustic
 }
 // </GENERATED:KERNEL_FNS_JS>
 
@@ -1370,7 +1444,7 @@ const lodAccum = { frames: 0, dt: 0 };
 
 function cpuBarnesHut(dt) {
   const tree = buildTree(particles);
-  const fluxOut = { v: 0, t: 0 }; // v = irradiance (light kernel), t = temperature field (heat kernel)
+  const fluxOut = { v: 0, t: 0, p: 0 }; // v = irradiance (light), t = temperature field (heat), p = pressure field (acoustic)
   // The system membrane's tick this frame (deep membranes always fire)
   let tick = true, tickDt = dt;
   if (lodTime) {
@@ -1388,9 +1462,11 @@ function cpuBarnesHut(dt) {
     particles[i].acc = [0, 0, 0];
     fluxOut.v = 0;
     fluxOut.t = 0;
+    fluxOut.p = 0;
     traverseAndAccum(tree, particles[i], particles[i].acc, fluxOut);
     particles[i].flux = fluxOut.v;
     particles[i].heatField = fluxOut.t; // Phase 8: temperature field (K)
+    particles[i].pressField = fluxOut.p; // Phase 9: pressure field (Pa)
     // Phase 7: Lorentz force F = q(v x B) — post-tree correction.
     // The tree carries position-only kernels; velocity-dependent forces
     // are applied after traversal. Lorentz does no work (F·v = 0),
@@ -1420,8 +1496,8 @@ function cpuBarnesHut(dt) {
 
 // <GENERATED:ENERGY_PE_JS>
 // Potential energy of one pair across all conservative kernels.
-// (irradiance/potential kernels transport energy or a field;
-//  they carry no pair PE)
+// (irradiance/potential/scalar kernels transport energy or a
+//  field; they carry no pair PE)
 function kernelPairPE(pi, pj, dist) {
   const peGravity = -(G * pi.mass * pj.mass) / dist;
   const peElectromagnetism = (K_E * pi.charge * pj.charge) / dist; // sign rides on the charges
@@ -1511,7 +1587,9 @@ let nearestSampler, linearSampler;
 let COLS = 0, ROWS = 0;
 
 // GPU Barnes-Hut buffers/pipelines
-let gPosBuf, gVelBuf, gAccBuf, gMassBuf, gLumBuf, gChargeBuf, gHeatBuf, gTreeBuf, gLeafBuf, gParamsBuf;
+// Phase 9: gMassBuf/gLumBuf/gChargeBuf/gHeatBuf -> ONE gQuantsBuf (vec4f)
+// + gPressBuf (acoustic quantity) + gFieldsBuf (field output readback).
+let gPosBuf, gVelBuf, gAccBuf, gQuantsBuf, gPressBuf, gFieldsBuf, gTreeBuf, gLeafBuf, gParamsBuf;
 let gravBHModule, gBHLayout, gravPipeline, intPipeline;
 
 const $ = (id) => document.getElementById(id);
@@ -1529,7 +1607,7 @@ function createBuf(size, usage, data) {
 }
 
 // ---- TREE SERIALIZATION FOR GPU ----
-// 128-byte nodes: base 64 B (bbMin 12 + bbMax 12 + children 32
+// 144-byte nodes: base 64 B (bbMin 12 + bbMax 12 + children 32
 // + leafOffset 4 + leafCount 4) + 16 B per declared kernel
 // (center vec3f + quantity f32), packed by the GENERATED region below.
 // Leaf buffer holds particle indices.
@@ -1584,7 +1662,7 @@ function serializeTreeForGPU(tree) {
 }
 
 function packTree(ser) {
-  const nodeSize = 128; // 64 B base + 16 B x 4 declared kernels (kernel_dsl.py)
+  const nodeSize = 144; // 64 B base + 16 B x 5 declared kernels (kernel_dsl.py)
   const data = new ArrayBuffer(ser.nodes.length * nodeSize);
   const view = new DataView(data);
   for (let i = 0; i < ser.nodes.length; i++) {
@@ -1616,6 +1694,10 @@ function packTree(ser) {
         view.setFloat32(base + 116,  n.k_heat_c[1], true);
         view.setFloat32(base + 120,  n.k_heat_c[2], true);
         view.setFloat32(base + 124, n.k_heat_q,  true); // kernel heat
+        view.setFloat32(base + 128,      n.k_acoustic_c[0], true);
+        view.setFloat32(base + 132,  n.k_acoustic_c[1], true);
+        view.setFloat32(base + 136,  n.k_acoustic_c[2], true);
+        view.setFloat32(base + 140, n.k_acoustic_q,  true); // kernel acoustic
     // </GENERATED:PACK_JS>
   }
   return data;
@@ -1626,18 +1708,10 @@ async function initWebGPU() {
   if (!navigator.gpu) throw new Error('navigator.gpu missing (needs --enable-unsafe-webgpu)');
   const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
   if (!adapter) throw new Error('No GPU adapter found');
-  // Phase 8: the BH bind group now has 9 storage-buffer bindings (pos, vel,
-  // acc, masses, tree, leaves, lums, charges, heats) — one over the DEFAULT
-  // maxStorageBuffersPerShaderStage (8). Request 9 explicitly; if the
-  // adapter can't, GPU mode stays off (the CPU reference is authoritative).
-  const needStorage = 9;
-  const haveStorage = adapter.limits.maxStorageBuffersPerShaderStage || 8;
-  if (haveStorage < needStorage) {
-    throw new Error(`adapter supports only ${haveStorage} storage buffers/stage, need ${needStorage}`);
-  }
-  device = await adapter.requestDevice({
-    requiredLimits: { maxStorageBuffersPerShaderStage: needStorage }
-  });
+  // Phase 9 quantity packing: the BH bind group is back to exactly 8 storage
+  // buffers/stage (pos, vel, acc, quants, tree, leaves, pressures, fields) —
+  // the WebGPU default limit. No requiredLimits needed.
+  device = await adapter.requestDevice();
   displayFormat = navigator.gpu.getPreferredCanvasFormat();
   gpuCtx = canvas.getContext('webgpu');
   gpuCtx.configure({ device, format: displayFormat, alphaMode: 'premultiplied' });
@@ -1737,28 +1811,28 @@ async function initWebGPU() {
   gPosBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
   gVelBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
   gAccBuf   = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
-  gMassBuf  = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-  gLumBuf   = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-  gChargeBuf = createBuf(MAX_PARTICLES*4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-  gHeatBuf  = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // Phase 8
-  gTreeBuf  = createBuf(4096*128, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // grows on demand
+  // Phase 9: mass/lum/charge/heat packed into one vec4f buffer (x,y,z,w).
+  gQuantsBuf = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+  gPressBuf = createBuf(MAX_PARTICLES*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // Phase 9: acoustic monopoles
+  gFieldsBuf = createBuf(MAX_PARTICLES*16, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC); // Phase 9: field outputs (x=pressure)
+  gTreeBuf  = createBuf(4096*144, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // grows on demand
   gLeafBuf  = createBuf(4096*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   gParamsBuf = createBuf(64, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST); // Phase 7: grew to hold B_field
   gravBHModule = device.createShaderModule({ code: shaderSrc('sh-grav-bh') });
   // One explicit layout shared by both entry points — 'auto' would fail here
   // because gravity_solve and integrate statically use different binding
-  // subsets, so their auto layouts would each reject the full 10-entry group.
+  // subsets, so their auto layouts would each reject the full 9-entry group.
+  // Phase 9 packing: 8 storage buffers = the default per-stage limit exactly.
   gBHLayout = device.createBindGroupLayout({ entries: [
     { binding:0, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // pos rw
     { binding:1, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // vel rw (w carries heat field home)
     { binding:2, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // acc rw (xyz=accel, w=irradiance)
-    { binding:3, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // masses
+    { binding:3, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // quants vec4f (mass,lum,charge,heat)
     { binding:4, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // tree
     { binding:5, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // leaf ids
     { binding:6, visibility: GPUShaderStage.COMPUTE, buffer:{type:'uniform'} },           // params
-    { binding:7, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // luminosities
-    { binding:8, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // charges
-    { binding:9, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // heat sources
+    { binding:7, visibility: GPUShaderStage.COMPUTE, buffer:{type:'read-only-storage'} }, // acoustic monopoles
+    { binding:8, visibility: GPUShaderStage.COMPUTE, buffer:{type:'storage'} },           // fields rw (x=pressure out)
   ]});
   const gBHPipeLayout = device.createPipelineLayout({ bindGroupLayouts: [gBHLayout] });
   gravPipeline = device.createComputePipeline({
@@ -1810,28 +1884,24 @@ async function gpuBarnesHut(dt) {
   const n = particles.length;
   const t0 = performance.now();
 
-  // Upload particles (separate vec4f buffers — no packed-struct alignment traps)
+  // Upload particles. Phase 9: mass/lum/charge/heat pack into ONE vec4f
+  // array (x=mass, y=lum, z=charge, w=heat); acoustic monopoles ride their
+  // own f32 array. (Separate vec4f buffers — no packed-struct alignment traps)
   const posArr = new Float32Array(n * 4);
   const velArr = new Float32Array(n * 4);
-  const massArr = new Float32Array(n);
-  const lumArr = new Float32Array(n);
-  const chargeArr = new Float32Array(n);
-  const heatArr = new Float32Array(n); // Phase 8: heat kernel quantity
+  const quantsArr = new Float32Array(n * 4);
+  const pressArr = new Float32Array(n); // Phase 9: acoustic kernel quantity
   for (let i = 0; i < n; i++) {
     const p = particles[i];
     posArr[i*4] = p.pos[0]; posArr[i*4+1] = p.pos[1]; posArr[i*4+2] = p.pos[2]; posArr[i*4+3] = 0;
     velArr[i*4] = p.vel[0]; velArr[i*4+1] = p.vel[1]; velArr[i*4+2] = p.vel[2]; velArr[i*4+3] = 0;
-    massArr[i] = p.mass;
-    lumArr[i] = p.lum;
-    chargeArr[i] = p.charge;
-    heatArr[i] = p.heat;
+    quantsArr[i*4] = p.mass; quantsArr[i*4+1] = p.lum; quantsArr[i*4+2] = p.charge; quantsArr[i*4+3] = p.heat;
+    pressArr[i] = p.pressure;
   }
   device.queue.writeBuffer(gPosBuf, 0, posArr);
   device.queue.writeBuffer(gVelBuf, 0, velArr);
-  device.queue.writeBuffer(gMassBuf, 0, massArr);
-  device.queue.writeBuffer(gLumBuf, 0, lumArr);
-  device.queue.writeBuffer(gChargeBuf, 0, chargeArr);
-  device.queue.writeBuffer(gHeatBuf, 0, heatArr);
+  device.queue.writeBuffer(gQuantsBuf, 0, quantsArr);
+  device.queue.writeBuffer(gPressBuf, 0, pressArr);
 
   // CPU builds the tree, serialize + upload
   const tree = buildTree(particles);
@@ -1849,9 +1919,9 @@ async function gpuBarnesHut(dt) {
   }
   device.queue.writeBuffer(gLeafBuf, 0, leafData);
 
-  // Params struct is 48 B (4 f32 + 4 u32 + 3 f32 B-field). Phase 7 shipped
-  // ArrayBuffer(32): the pf[8..10] B-field writes landed OUT OF BOUNDS and
-  // were silently dropped — GPU Lorentz read a zero field. 64 B fixes it.
+  // Params struct is 48 B (4 f32 + 4 u32 + 3 f32 B-field + 1 u32 acoustic
+  // toggle). Phase 7 shipped ArrayBuffer(32): the pf[8..10] B-field writes
+  // landed OUT OF BOUNDS and were silently dropped — 64 B fixes it.
   const paramsBytes = new ArrayBuffer(64);
   const pf = new Float32Array(paramsBytes);
   const pu = new Uint32Array(paramsBytes);
@@ -1861,6 +1931,7 @@ async function gpuBarnesHut(dt) {
   pu[6] = bFieldEnabled ? 1 : 0; // Phase 7: Lorentz force toggle
   pu[7] = heatEnabled ? 1 : 0;   // Phase 8: heat kernel toggle
   pf[8] = B_field[0]; pf[9] = B_field[1]; pf[10] = B_field[2]; // B-field (Tesla)
+  pu[11] = acousticEnabled ? 1 : 0; // Phase 9: acoustic kernel toggle
   device.queue.writeBuffer(gParamsBuf, 0, paramsBytes);
 
   const bindGroup = device.createBindGroup({
@@ -1869,19 +1940,19 @@ async function gpuBarnesHut(dt) {
       { binding:0, resource:{buffer: gPosBuf} },
       { binding:1, resource:{buffer: gVelBuf} },
       { binding:2, resource:{buffer: gAccBuf} },
-      { binding:3, resource:{buffer: gMassBuf} },
+      { binding:3, resource:{buffer: gQuantsBuf} },
       { binding:4, resource:{buffer: gTreeBuf} },
       { binding:5, resource:{buffer: gLeafBuf} },
       { binding:6, resource:{buffer: gParamsBuf} },
-      { binding:7, resource:{buffer: gLumBuf} },
-      { binding:8, resource:{buffer: gChargeBuf} },
-      { binding:9, resource:{buffer: gHeatBuf} }, // Phase 8
+      { binding:7, resource:{buffer: gPressBuf} },
+      { binding:8, resource:{buffer: gFieldsBuf} }, // Phase 9: field outputs
     ]
   });
 
   const rbPos = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
   const rbVel = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
   const rbAcc = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+  const rbFields = device.createBuffer({ size: n*16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ }); // Phase 9
 
   // ONE command encoder per submit: compute passes AND the readback copies
   // are all encoded BEFORE finish() (the old file encoded the copy after
@@ -1901,12 +1972,15 @@ async function gpuBarnesHut(dt) {
   enc.copyBufferToBuffer(gPosBuf, 0, rbPos, 0, n*16);
   enc.copyBufferToBuffer(gVelBuf, 0, rbVel, 0, n*16);
   enc.copyBufferToBuffer(gAccBuf, 0, rbAcc, 0, n*16);
+  enc.copyBufferToBuffer(gFieldsBuf, 0, rbFields, 0, n*16);
   device.queue.submit([enc.finish()]);
 
-  await Promise.all([rbPos.mapAsync(GPUMapMode.READ), rbVel.mapAsync(GPUMapMode.READ), rbAcc.mapAsync(GPUMapMode.READ)]);
+  await Promise.all([rbPos.mapAsync(GPUMapMode.READ), rbVel.mapAsync(GPUMapMode.READ),
+                     rbAcc.mapAsync(GPUMapMode.READ), rbFields.mapAsync(GPUMapMode.READ)]);
   const pv = new Float32Array(rbPos.getMappedRange());
   const vv = new Float32Array(rbVel.getMappedRange());
   const av = new Float32Array(rbAcc.getMappedRange());
+  const fv = new Float32Array(rbFields.getMappedRange());
   for (let i = 0; i < n; i++) {
     if (particles[i]._terrainCol) {
       // Track A1: restore terrain splat positions — GPU should not move them
@@ -1918,9 +1992,10 @@ async function gpuBarnesHut(dt) {
     }
     particles[i].flux = av[i*4+3]; // irradiance, from the tree's light transport
     particles[i].heatField = vv[i*4+3]; // Phase 8: temperature field, via vel.w
+    particles[i].pressField = fv[i*4]; // Phase 9: pressure field, via fields.x
   }
-  rbPos.unmap(); rbVel.unmap(); rbAcc.unmap();
-  rbPos.destroy(); rbVel.destroy(); rbAcc.destroy();
+  rbPos.unmap(); rbVel.unmap(); rbAcc.unmap(); rbFields.unmap();
+  rbPos.destroy(); rbVel.destroy(); rbAcc.destroy(); rbFields.destroy();
   thermalUpdate(dt);
   return { ms: performance.now() - t0, tree };
 }
@@ -2377,6 +2452,13 @@ $('btn-heat').onclick = () => {
   $('btn-heat').textContent = 'Heat: ' + (heatEnabled ? 'on' : 'off');
   $('btn-heat').classList.toggle('active', heatEnabled);
 };
+// Phase 9: acoustic kernel toggle — the pressure field is pure information
+// (it does no work), so toggling it cannot affect dynamics or energy.
+$('btn-acoustic').onclick = () => {
+  acousticEnabled = !acousticEnabled;
+  $('btn-acoustic').textContent = 'Acoustic: ' + (acousticEnabled ? 'on' : 'off');
+  $('btn-acoustic').classList.toggle('active', acousticEnabled);
+};
 $('b-slider').oninput = (e) => {
   const microT = parseInt(e.target.value);
   B_field = [0, 0, microT * 1e-6]; // store in Tesla
@@ -2559,17 +2641,18 @@ async function main() {
       // total thermal energy (heat). Falsifier 2: the 1 AU bin must
       // HOLD its initialized equilibrium (271 K) — if the tree's light
       // transport were wrong, flux would walk the bin off it.
-      let totLum = 0, totHeat = 0, binT = 0, binN = 0, binTf = 0;
+      let totLum = 0, totHeat = 0, binT = 0, binN = 0, binTf = 0, binP = 0;
       for (const p of particles) {
         totLum += p.lum;
         totHeat += p.mass * C_P * p.temp;
         const r = Math.hypot(p.pos[0], p.pos[1], p.pos[2]);
         if (!p.isStar && r > 1.3e11 && r < 1.7e11) {
-          binT += p.temp; binTf += p.heatField || 0; binN++;
+          binT += p.temp; binTf += p.heatField || 0; binP += p.pressField || 0; binN++;
         }
       }
       const meanT = binN > 0 ? binT / binN : NaN;
       const meanTf = binN > 0 ? binTf / binN : NaN;
+      const meanPf = binN > 0 ? binP / binN : NaN;
       $('mem-light').textContent = totLum.toExponential(2) + ' W';
       $('mem-heat').textContent = totHeat.toExponential(2) + ' J';
       $('mem-temp').textContent = binN > 0 ? meanT.toFixed(0) + ' K (' + binN + ' bodies)' : '--';
@@ -2579,9 +2662,16 @@ async function main() {
       $('mem-tfield').textContent = heatEnabled
         ? (binN > 0 ? meanTf.toFixed(0) + ' K (predicted ' + T_EQ_1AU.toFixed(0) + ')' : '--')
         : 'off';
+      // Phase 9: the acoustic kernel's prediction — Q_star was DERIVED from
+      // the measured solar-wind pressure at 1 AU. mean p_field @1AU ~= 2 nPa.
+      $('mem-press').textContent = acousticEnabled
+        ? (binN > 0 ? meanPf.toExponential(2) + ' Pa (predicted ' + P_WIND_1AU.toExponential(0) + ')' : '--')
+        : 'off';
       window.__thermal = { meanT, count: binN, predicted: T_EQ_1AU };
       window.__heatStats = { meanTfield: meanTf, count: binN, predicted: T_EQ_1AU,
                              kappaInv4pi: KAPPA_INV_4PI, enabled: heatEnabled };
+      window.__pressureStats = { meanPfield: meanPf, count: binN, predicted: P_WIND_1AU,
+                                 qStar: Q_STAR_ACOUSTIC, enabled: acousticEnabled };
     }
 
     // Track B/T: scale-relative flight — speed derived from the nearest
@@ -2751,6 +2841,37 @@ window.__heatWitness = () => {
   particles = saved;
   heatEnabled = savedHeat; emEnabled = savedEm;
   return { tTree: fluxOut.t, tAnalytic, relErr, approximatedNodes: approx,
+           directLeaves: direct };
+};
+
+// ---- ACOUSTIC KERNEL WITNESS (lazy; called by test_phase6.py, not at load) ----
+// Falsifier 9: a bipolar scalar monopole field p = Q/d^2 rides the tree.
+// Two monopoles Q1, Q2 at +-1e9 m, probed from 1e12 m — far enough that the
+// tree ACCEPTS the aggregated source node (the approximation path). The
+// traversal pressure must match analytic superposition
+// p = Q1/(R+D)^2 + Q2/(R-D)^2  (coupling ONE — no constant) within 2%.
+// A bipolar_sum node's aggregate is the SIGNED sum; the probe sits far
+// outside the source pair, so the aggregated path is exercised.
+window.__acousticWitness = () => {
+  const saved = particles;
+  const savedAc = acousticEnabled, savedHeat = heatEnabled, savedEm = emEnabled;
+  acousticEnabled = true; heatEnabled = false; emEnabled = false; // isolate acoustic
+  const Q1 = 1e20, Q2 = -3e20;      // Pa m^2 — bipolar: compression + rarefaction
+  const D = 1e9, R = 1e12;          // source half-separation, probe distance
+  const mk = (x, q, id) => ({ id, pos: [x, 0, 0], vel: [0, 0, 0], acc: [0, 0, 0],
+    mass: 1e10, lum: 0, charge: 0, heat: 0, pressure: q, radiusPhys: 1, radius: 1,
+    temp: 0, flux: 0, heatField: 0, pressField: 0, albedo: 0, isStar: false });
+  particles = [mk(-D, Q1, 9001), mk(D, Q2, 9002), mk(R, 0, 9003)];
+  const tree = buildTree(particles);
+  const probe = particles[2];
+  const [approx, direct] = countWork(tree, probe.pos, theta);
+  const fluxOut = { v: 0, t: 0, p: 0 };
+  traverseAndAccum(tree, probe, probe.acc, fluxOut);
+  const pAnalytic = Q1 / ((R + D) * (R + D)) + Q2 / ((R - D) * (R - D));
+  const relErr = Math.abs(fluxOut.p - pAnalytic) / Math.abs(pAnalytic);
+  particles = saved;
+  acousticEnabled = savedAc; heatEnabled = savedHeat; emEnabled = savedEm;
+  return { pTree: fluxOut.p, pAnalytic, relErr, approximatedNodes: approx,
            directLeaves: direct };
 };
 

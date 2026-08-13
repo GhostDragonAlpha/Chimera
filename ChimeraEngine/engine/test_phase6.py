@@ -31,6 +31,12 @@ Tests:
     aggregated-node path), T_field @1AU ~= 271 K (the kappa derivation's
     prediction, <15%), heat toggle, FALSIFIERS 7-8 (energy drift and
     thermal equilibrium unchanged with the heat kernel active)
+15. PHASE 9: acoustic pressure kernel + quantity packing — WGSL acoustic
+    fields + packed quants vec4f (mass/lum/charge/heat in ONE buffer,
+    8 storage buffers = the default WebGPU limit), FALSIFIER 9 (two
+    bipolar monopoles superpose within 2% via the aggregated-node path),
+    p_field @1AU ~= 2 nPa (the solar-wind calibration's prediction, <15%),
+    acoustic toggle
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -197,6 +203,60 @@ def test_spiace_phase6_kernels():
         # with the heat kernel active (default on): heat is a field, not a
         # force — it does no work and touches no dynamics, so drift must
         # stay < 1% and the 1 AU bin must hold equilibrium.
+
+        # ---- PHASE 9: ACOUSTIC PRESSURE KERNEL + QUANTITY PACKING ----
+        # WGSL TreeNode must carry the acoustic fields (DSL injected), and
+        # the packed quants vec4f buffer must replace the per-kernel arrays.
+        assert "acoustic_c" in wgsl and "acoustic_q" in wgsl, \
+            "WGSL TreeNode missing acoustic fields (kernel DSL not injected?)"
+        assert "quants" in wgsl and "pressures" in wgsl, \
+            "WGSL missing packed quants/pressures buffers (Phase 9 packing?)"
+        assert "masses" not in wgsl and "charges[" not in wgsl, \
+            "WGSL still references unpacked quantity arrays"
+        print("WGSL TreeNode carries acoustic_c/_q + packed quants OK")
+
+        # FALSIFIER 9: two bipolar monopoles superpose analytically through
+        # the AGGREGATED-node path (probe far enough that the tree accepts).
+        aw = page.evaluate("window.__acousticWitness()")
+        print(f"Acoustic witness: p_tree={aw['pTree']:.4e} Pa vs "
+              f"p_analytic={aw['pAnalytic']:.4e} Pa, rel err {aw['relErr']*100:.4f}% "
+              f"({aw['approximatedNodes']} accepted nodes, {aw['directLeaves']} leaves)")
+        assert aw["approximatedNodes"] > 0, \
+            "acoustic witness exercised no aggregated nodes — approximation path untested"
+        assert aw["relErr"] < 0.02, \
+            f"FALSIFIER 9 TRIPPED: acoustic superposition rel err {aw['relErr']*100:.3f}% >= 2%"
+
+        # The calibration derivation's prediction: Q_star was DERIVED from
+        # the measured solar-wind pressure at 1 AU (2 nPa), so the pressure
+        # field at 1 AU must equal it.
+        page.wait_for_function(
+            "window.__pressureStats && window.__pressureStats.count > 0 && window.__pressureStats.enabled",
+            timeout=15000)
+        ps = page.evaluate("window.__pressureStats")
+        pf_err = abs(ps["meanPfield"] - ps["predicted"]) / ps["predicted"]
+        print(f"Pressure field: mean p_field @1AU = {ps['meanPfield']:.3e} Pa over "
+              f"{ps['count']} bodies (predicted {ps['predicted']:.1e} Pa, "
+              f"rel err {pf_err*100:.1f}%)")
+        assert pf_err < 0.15, \
+            f"ACOUSTIC CALIBRATION WRONG: p_field @1AU {ps['meanPfield']:.3e} Pa vs " \
+            f"predicted {ps['predicted']:.1e} Pa"
+
+        # Toggle: button flips the kernel and the HUD reports it
+        # (membrane panel updates every 60 frames — poll, don't fixed-sleep)
+        page.click("#btn-acoustic")
+        assert text(page, "#btn-acoustic") == "Acoustic: off"
+        page.wait_for_function(
+            "document.getElementById('mem-press').textContent === 'off'",
+            timeout=15000)
+        page.click("#btn-acoustic")
+        assert text(page, "#btn-acoustic") == "Acoustic: on"
+        page.wait_for_function(
+            "window.__pressureStats && window.__pressureStats.enabled",
+            timeout=15000)
+        print("Acoustic kernel toggle OK")
+        # Energy/thermal falsifiers (below) run with the acoustic kernel
+        # active (default on): pressure is a field, not a force — it does
+        # no work, so drift must stay < 1%.
 
         # ---- 5. FALSIFIER 1: combined energy drift < 1% (CPU BH+EM) ----
         # Switch to EM mode and reset: btn-reset nulls prevEnergy, so the
@@ -416,7 +476,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 + 7 + 8 assertions passed! ===")
+        print("\n=== All Phase 6 + 7 + 8 + 9 assertions passed! ===")
         browser.close()
 
 

@@ -24,6 +24,9 @@ We don't need: fluid dynamics (thin-shell approx), quantum mechanics (irrelevant
 
 ## Architecture: Layered Physics Stack
 
+Phase 9: Quantity packing + fifth kernel (acoustic) — architecture scaling proof
+Phase 8: Heat diffusion steady-state kernel
+Phase 7: Lorentz force + magnetic field (post-tree correction)
 Phase 6: Universal Kernel Translation (Barnes-Hut generalized)
 Phase 5: GPU Barnes-Hut N-Body + Light Transport
 Phase 4: Multiplayer (netcode, authority)
@@ -244,6 +247,19 @@ Each phase is an independent commit. Each commit is independently testable.
 
 **Why heat matters more than heat:** the DSL now spans both radial profiles of the 3D Green's-function family — 1/d² fields (gravity, EM, irradiance) and 1/d potentials (heat). Anything superposable with a known Green's function is now a 6-line declaration.
 
+### Phase 9: Quantity Packing + Acoustic Pressure Kernel (fifth kernel)
+- [x] **Quantity packing**: mass/lum/charge/heat ride ONE `vec4f quants` buffer (binding 3 replaces bindings 3/7/8/9); the acoustic quantity gets its own f32 `pressures` buffer (binding 7); field outputs ride a new `fields` vec4f buffer (binding 8, x = pressure). Bind group: 8 storage buffers = the WebGPU default `maxStorageBuffersPerShaderStage` EXACTLY — the Phase 8 `requiredLimits` workaround reverted to plain `requestDevice()`
+- [x] `scalar_inverse_squared` added to the kernel DSL vocabulary — scalar field p = Q/d² (bipolar monopole: compression +, rarefaction −), accumulates `pacc` (WGSL) / `fluxOut.p` (JS), carries no pair PE
+- [x] `kernel acoustic` declared (quantity=pressure, aggregate=bipolar_sum, coupling=ONE, toggle=acousticEnabled) — all 7 generated regions re-injected, `--verify` green. Node size: 64 B base + 5×16 B = **144 B/node**
+- [x] Q_star DERIVED, not tuned: solar-wind dynamic pressure at 1 AU is measured at ~2 nPa, so the star's monopole Q = P_1AU·AU² = 4.5e13 Pa·m². Prediction: p_field @1AU ≈ 2 nPa. Measured: 2.004e-9 Pa (0.2% off)
+- [x] Falsifier 9: two bipolar monopoles superpose analytically through the AGGREGATED node path — measured rel err 0.299% (limit 2%)
+- [x] Energy drift 0.0000% with all five kernels active (a pressure field does no work)
+- [x] HUD: `Pressure @1AU` row in the membrane panel + Acoustic toggle button
+- [x] GPU BH with all kernels: 3.9 ms, 60 fps — no WebGPU validation warnings
+
+**Why Phase 9 is the scaling proof:** the fifth kernel cost one DSL declaration + 16 B/node + one f32 buffer. The tree traversal code did not change — `kernel_dsl.py` emitted the difference. The vec4f packing means the next kernels ride the spare y/z/w slots of `fields`-style buffers or additional f32 arrays within the 8-binding budget; the architecture is now "one membrane = one tree = one traversal for N simultaneous fields," linear in N.
+
+
 ---
 
 ## Success Criteria (vs. Unreal Engine)
@@ -269,9 +285,10 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 4. ~~**Track A2: Real Earth option**~~ ✓ done — `spawnPlanet(terrainDEM)` accepts equirectangular DEM, same interface as `PlanetOnion.from_topo_grid()`; `generateSyntheticDEM()` for procedural mode; toggle button in HUD
 5. ~~**Track C1/C2: Picking + Highlight**~~ ✓ done — click canvas to select nearest splat (3px radius), Escape clears, white highlight overlay via displayColor(), inspector panel shows pos/vel/mass/charge/temp/flux
 7. ~~**Phase 7: Lorentz Force + Magnetic Field Kernel**~~ ✓ done — uniform B-field, F=q(v×B) post-tree correction, cyclotron falsifier, energy conservation with B-field active
-8. **Track D1/D2**: LOD port to v2 renderer + surface fracture (infinite detail)
-9. **Track E**: Character standing/walking on planet
-8. ~~**Track B/T: Scale-relative flight camera + LOD of time**~~ ✓ done — see section below
+8. ~~**Phase 9: Quantity Packing + Acoustic Kernel**~~ ✓ done — vec4f quants packing (8 storage = WebGPU default limit), fifth DSL kernel (scalar_inverse_squared bipolar monopole), falsifier 9 green (0.299%), p_field @1AU 0.2% off the solar-wind calibration
+9. **Track D1/D2**: LOD port to v2 renderer + surface fracture (infinite detail)
+10. **Track E**: Character standing/walking on planet
+11. ~~**Track B/T: Scale-relative flight camera + LOD of time**~~ ✓ done — see section below
 
 ---
 
@@ -352,4 +369,4 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-Document version: 2.0 | Status: Phases 0-8 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3
+Document version: 2.1 | Status: Phases 0-9 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3

@@ -18,7 +18,13 @@ Node layout (must match the WGSL TreeNode struct and packTree exactly):
   base 64 B: bb_min @0 (12) | bb_max @12 (12) | children @24 (8 x u32)
              | leaf_offset @56 | leaf_count @60
   then 16 B per kernel, in declaration order: center vec3f + quantity f32
-  gravity @64 | light @80 | electromagnetism @96 | heat @112  ->  128 B/node
+  gravity @64 | light @80 | electromagnetism @96 | heat @112 | acoustic @128
+  ->  144 B/node
+
+GPU quantity packing (Phase 9): mass/lum/charge/heat ride ONE vec4f buffer
+`quants` (x,y,z,w); later quantities get their own f32 `<quantity>s` buffer.
+WebGPU's default maxStorageBuffersPerShaderStage is 8 — the packing keeps the
+BH bind group at exactly 8.
 
 kernel_fn vocabulary:
   inverse_squared  - force-like, F ~ q1 q2 / d^2 along the displacement
@@ -26,6 +32,8 @@ kernel_fn vocabulary:
   potential_1r     - scalar potential field, T = Q * coupling / d (steady-state
                      diffusion Green's function)  -> accumulates `theat` (WGSL)
                      / `fluxOut.t` (JS). A field, not a force: no pair PE.
+  scalar_inverse_squared - scalar field, p = Q/d^2 (bipolar source, no force)
+                     -> accumulates `pacc` (WGSL) / `fluxOut.p` (JS). No pair PE.
 """
 
 import re
@@ -68,12 +76,36 @@ kernel heat {
     coupling  = "KAPPA_INV_4PI"   # 1/(4 pi kappa), host-derived (diffusion == radiation @1AU)
     toggle    = "heatEnabled"
 }
+
+kernel acoustic {
+    quantity  = "pressure"        # monopole strength (Pa m^2): compression +, rarefaction -
+    aggregate = "bipolar_sum"     # total = signed sum, center = |q|-weighted
+    kernel_fn = "scalar_inverse_squared"  # p = Q/d^2 — scalar field, no force
+    sign      = "bipolar"         # sign rides on Q (compression vs rarefaction)
+    coupling  = "ONE"             # no coupling constant — p = Q/d^2 exactly
+    toggle    = "acousticEnabled"
+}
 '''
 
 AGGREGATES = {"weighted_sum", "bipolar_sum", "sum"}
-KERNEL_FNS = {"inverse_squared", "irradiance", "potential_1r"}
+KERNEL_FNS = {"inverse_squared", "irradiance", "potential_1r", "scalar_inverse_squared"}
 SIGNS = {"attractive", "repulsive", "bipolar"}
 REQUIRED = ("quantity", "aggregate", "kernel_fn", "sign", "coupling")
+
+# GPU quantity packing (Phase 9): the four original per-particle quantities
+# ride ONE vec4f buffer `quants` (x=mass, y=lum, z=charge, w=heat). WebGPU
+# allows only 8 storage buffers per shader stage by default — separate f32
+# arrays put the Phase-8 bind group at 9 and invalidated the whole layout.
+# Quantities past the 4 slots get their own f32 buffer named <quantity>s.
+PACKED_QUANTITIES = ("mass", "lum", "charge", "heat")
+
+
+def _gpu_ref(quantity: str, idx: str) -> str:
+    """WGSL lvalue for a per-particle quantity, honoring the vec4f packing."""
+    if quantity in PACKED_QUANTITIES:
+        comp = "xyzw"[PACKED_QUANTITIES.index(quantity)]
+        return f"quants[{idx}].{comp}"
+    return f"{quantity}s[{idx}]"
 
 
 # --- parser -------------------------------------------------------------------
@@ -143,18 +175,35 @@ def _wgsl_accept(k: dict) -> str:
         if gate:
             return head + f"      if (params.{gate} == 1u) {{\n" + body + "      }\n    }"
         return head + body + "    }"
+    if k["kernel_fn"] == "scalar_inverse_squared":
+        gate = k.get("toggle")
+        body = (f"      let dx = n.{nm}_c[0] - tgt.x;\n"
+                f"      let dy = n.{nm}_c[1] - tgt.y;\n"
+                f"      let dz = n.{nm}_c[2] - tgt.z;\n"
+                "      let d_sq = dx*dx + dy*dy + dz*dz + params.softening_sq;\n"
+                f"      pacc += n.{nm}_q * {k['coupling']} / d_sq; // scalar field, 1/d^2\n")
+        head = (f"    // kernel {nm}: scalar_inverse_squared from center of {k['quantity']} (scalar field)\n"
+                "    {\n")
+        if gate:
+            return head + f"      if (params.{gate} == 1u) {{\n" + body + "      }\n    }"
+        return head + body + "    }"
     head = (f"    // kernel {nm}: {k['sign']} {k['kernel_fn']} from center of {k['quantity']}\n"
             "    {\n")
     if k["sign"] == "bipolar":
-        body = (f"      if (params.emEnabled == 1u) {{\n"
-                f"        let dx_{nm} = n.{nm}_c[0] - tgt.x;\n"
+        gate = k.get("toggle")
+        q_tgt = _gpu_ref(k["quantity"], "idx")
+        m_tgt = _gpu_ref("mass", "idx")
+        inner = (f"        let dx_{nm} = n.{nm}_c[0] - tgt.x;\n"
                 f"        let dy_{nm} = n.{nm}_c[1] - tgt.y;\n"
                 f"        let dz_{nm} = n.{nm}_c[2] - tgt.z;\n"
                 f"        let d_sq_{nm} = dx_{nm}*dx_{nm} + dy_{nm}*dy_{nm} + dz_{nm}*dz_{nm} + params.softening_sq;\n"
                 f"        let dist_{nm} = sqrt(d_sq_{nm});\n"
-                f"        let f_{nm} = {k['coupling']} * charges[idx] * n.{nm}_q / (masses[idx] * d_sq_{nm} * dist_{nm});\n"
-                f"        a -= f_{nm} * vec3f(dx_{nm}, dy_{nm}, dz_{nm}); // like signs repel\n"
-                "      }\n")
+                f"        let f_{nm} = {k['coupling']} * {q_tgt} * n.{nm}_q / ({m_tgt} * d_sq_{nm} * dist_{nm});\n"
+                f"        a -= f_{nm} * vec3f(dx_{nm}, dy_{nm}, dz_{nm}); // like signs repel\n")
+        if gate:
+            body = f"      if (params.{gate} == 1u) {{\n" + inner + "      }\n"
+        else:
+            body = inner
     else:
         op = "+=" if k["sign"] == "attractive" else "-="
         body = (f"      let dx_{nm} = n.{nm}_c[0] - tgt.x;\n"
@@ -171,20 +220,32 @@ def _wgsl_leaf(k: dict) -> str:
     """Direct accumulation from one leaf particle (dx/dy/dz/dist_sq/dist in scope)."""
     nm = k["name"]
     if k["kernel_fn"] == "irradiance":
-        return f"        flux += {k['quantity']}s[pid] / (FOUR_PI * dist_sq); // kernel {nm}"
+        return f"        flux += {_gpu_ref(k['quantity'], 'pid')} / (FOUR_PI * dist_sq); // kernel {nm}"
     if k["kernel_fn"] == "potential_1r":
-        stmt = f"theat += {k['quantity']}s[pid] * {k['coupling']} / dist;"
+        stmt = f"theat += {_gpu_ref(k['quantity'], 'pid')} * {k['coupling']} / dist;"
+        gate = k.get("toggle")
+        if gate:
+            return f"        if (params.{gate} == 1u) {{ {stmt} }} // kernel {nm}"
+        return f"        {stmt} // kernel {nm}"
+    if k["kernel_fn"] == "scalar_inverse_squared":
+        stmt = f"pacc += {_gpu_ref(k['quantity'], 'pid')} * {k['coupling']} / dist_sq;"
         gate = k.get("toggle")
         if gate:
             return f"        if (params.{gate} == 1u) {{ {stmt} }} // kernel {nm}"
         return f"        {stmt} // kernel {nm}"
     if k["sign"] == "bipolar":
-        return (f"        if (params.emEnabled == 1u) {{ // kernel {nm} (bipolar)\n"
-                f"          let f_{nm} = {k['coupling']} * charges[idx] * charges[pid] / (masses[idx] * dist_sq * dist);\n"
-                f"          a -= f_{nm} * vec3f(dx, dy, dz);\n"
-                "        }")
+        gate = k.get("toggle")
+        q_tgt = _gpu_ref(k["quantity"], "idx")
+        q_src = _gpu_ref(k["quantity"], "pid")
+        m_tgt = _gpu_ref("mass", "idx")
+        body = (f"          let f_{nm} = {k['coupling']} * {q_tgt} * {q_src} / ({m_tgt} * dist_sq * dist);\n"
+                f"          a -= f_{nm} * vec3f(dx, dy, dz);")
+        if gate:
+            return (f"        if (params.{gate} == 1u) {{ // kernel {nm} (bipolar)\n"
+                    + body + "\n        }")
+        return f"        // kernel {nm} (bipolar)\n" + body
     op = "+=" if k["sign"] == "attractive" else "-="
-    return (f"        {{ let f_{nm} = {k['coupling']} * {k['quantity']}es[pid] / (dist_sq * dist);\n"
+    return (f"        {{ let f_{nm} = {k['coupling']} * {_gpu_ref(k['quantity'], 'pid')} / (dist_sq * dist);\n"
             f"          a {op} f_{nm} * vec3f(dx, dy, dz); }} // kernel {nm}")
 
 
@@ -238,6 +299,16 @@ def _js_accept(k: dict) -> str:
         if gate:
             return f"{head} (gated by {gate})\n  if ({gate}) {{\n{body}\n  }}"
         return f"{head}\n  {{\n{body}\n  }}"
+    if k["kernel_fn"] == "scalar_inverse_squared":
+        gate = k.get("toggle")
+        body = (f"    const dx = node.k_{nm}_c[0] - targetPos[0];\n"
+                f"    const dy = node.k_{nm}_c[1] - targetPos[1];\n"
+                f"    const dz = node.k_{nm}_c[2] - targetPos[2];\n"
+                f"    fluxOut.p += node.k_{nm}_q * {k['coupling']} / (dx*dx + dy*dy + dz*dz + SOFT_SQ);")
+        head = f"  // kernel {nm}: scalar_inverse_squared (scalar field)"
+        if gate:
+            return f"{head} (gated by {gate})\n  if ({gate}) {{\n{body}\n  }}"
+        return f"{head}\n  {{\n{body}\n  }}"
     if k["sign"] == "bipolar":
         body = (f"    const dx = node.k_{nm}_c[0] - targetPos[0];\n"
                 f"    const dy = node.k_{nm}_c[1] - targetPos[1];\n"
@@ -274,6 +345,12 @@ def _js_leaf(k: dict) -> str:
         if gate:
             return f"  if ({gate}) {{ {stmt} }} // kernel {nm}"
         return f"  {stmt} // kernel {nm}"
+    if k["kernel_fn"] == "scalar_inverse_squared":
+        stmt = f"fluxOut.p += p.{k['quantity']} * {k['coupling']} / distSq;"
+        gate = k.get("toggle")
+        if gate:
+            return f"  if ({gate}) {{ {stmt} }} // kernel {nm}"
+        return f"  {stmt} // kernel {nm}"
     if k["sign"] == "bipolar":
         body = (f"  const f = {k['coupling']} * target.{k['quantity']} * p.{k['quantity']} / (target.mass * distSq * dist);\n"
                 "  acc[0] -= f * dx; acc[1] -= f * dy; acc[2] -= f * dz;")
@@ -288,7 +365,7 @@ def _js_leaf(k: dict) -> str:
 
 def _js_energy_pe(k: dict) -> str:
     """One statement: the pair PE term of this kernel (empty for radiative)."""
-    if k["kernel_fn"] in ("irradiance", "potential_1r"):
+    if k["kernel_fn"] in ("irradiance", "potential_1r", "scalar_inverse_squared"):
         return ""
     name = k["name"][0].upper() + k["name"][1:]
     if k["sign"] == "bipolar":
@@ -331,14 +408,15 @@ REGIONS = [
 def _assemble_energy_pe(kernels: list[dict], gen: list[dict]) -> str:
     """kernelPairPE: one named const per conservative kernel, object return."""
     cons = [(k, g) for k, g in zip(kernels, gen)
-            if k["kernel_fn"] not in ("irradiance", "potential_1r")]
+            if k["kernel_fn"] not in ("irradiance", "potential_1r",
+                                      "scalar_inverse_squared")]
     lines = [g["falsifier_check"] for _, g in cons]
     names = ["pe" + k["name"][0].upper() + k["name"][1:] for k, _ in cons]
     keys = ", ".join(f"{k['name']}: {n}" for (k, _), n in zip(cons, names))
     total = " + ".join(names) if names else "0"
     return ("// Potential energy of one pair across all conservative kernels.\n"
-            "// (irradiance/potential kernels transport energy or a field;\n"
-            "//  they carry no pair PE)\n"
+            "// (irradiance/potential/scalar kernels transport energy or a\n"
+            "//  field; they carry no pair PE)\n"
             "function kernelPairPE(pi, pj, dist) {\n"
             + "\n".join(lines) +
             f"\n  return {{ {keys}, total: {total} }};\n}}")
