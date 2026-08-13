@@ -286,9 +286,40 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 5. ~~**Track C1/C2: Picking + Highlight**~~ ✓ done — click canvas to select nearest splat (3px radius), Escape clears, white highlight overlay via displayColor(), inspector panel shows pos/vel/mass/charge/temp/flux
 7. ~~**Phase 7: Lorentz Force + Magnetic Field Kernel**~~ ✓ done — uniform B-field, F=q(v×B) post-tree correction, cyclotron falsifier, energy conservation with B-field active
 8. ~~**Phase 9: Quantity Packing + Acoustic Kernel**~~ ✓ done — vec4f quants packing (8 storage = WebGPU default limit), fifth DSL kernel (scalar_inverse_squared bipolar monopole), falsifier 9 green (0.299%), p_field @1AU 0.2% off the solar-wind calibration
-9. **Track D1/D2**: LOD port to v2 renderer + surface fracture (infinite detail)
-10. **Track E**: Character standing/walking on planet
+9. ~~**Track D1/D2**: LOD port to v2 renderer + surface fracture (infinite detail)~~ ✓ done — mip pyramid + trained law N=ρ·r_px² (ρ=0.35) + Fibonacci-hemisphere fracture shell, all law-exact
+10. ~~**Track E**: Character standing/walking on planet~~ ✓ done — ground query + local-frame character controller + scale handoff, gap 5.9e-7 m at rest
 11. ~~**Track B/T: Scale-relative flight camera + LOD of time**~~ ✓ done — see section below
+
+---
+
+## Track D/E — Infinite Detail + Character on Planet (Completed)
+
+**What was built (Track E — character):**
+- **E1 ground query**: `heightAt(lat, lon)` — one bilinear DEM sample (`sampleDEMElev`, module-level `currentDEM` set by `spawnPlanet`) shared by terrain spawn, fracture, and the character; `groundNormal` from finite differences; `latLonFromDir`/`dirFromLatLon` helpers
+- **E2 character controller**: `stepCharacter` integrates in the planet-local frame (lat, lon, alt in f64 — no float32 precision loss at 1 AU); gravity derived from g = G·M/r² (not the tree); Coulomb friction with exact rest (no jitter); EYE_HEIGHT 1.7 m, WALK_SPEED 1.4 m/s, FRICTION_MU 1.0; WASD in the local tangent plane
+- **E3 scale handoff**: foot mode via G key / Land button / `__enterFoot`/`__exitFoot`; `camForward()` branches to the character's look direction; altitude/speed HUD rows switch to foot-mode readouts (gap, surface speed)
+
+**What was built (Track D — LOD + fracture):**
+- **D1 mip pyramid**: `buildTerrainPyramid()` — greedy 4:1 nearest-neighbor clustering of the 300 base splats (radius ×2 per level, averaged colors, re-grounded via `heightAt`) → levels 300/75/19/5/2; `planPlanetLOD()` picks base | mip | fracture per frame from the trained law N = ρ·r_px² with ρ = 0.35 from `lod.trained.json` (NOT the 0.45 docstring value)
+- **D2 surface fracture**: when the law wants finer than base, `buildFracture()` grows a Fibonacci lattice cap (y ∈ [0, 1]) on the planet→camera axis, every splat born from the ground query; render-only extras append at indices n..nRender-1 through the same cull/bin/sort path in `prepareSplats` — the tree never sees them; hysteresis rebuilds only on >10% count change or >5° axis rotation; capped at MAX_PARTICLES − 500 = 3596
+- `window.__lodInfo` (live LOD state) and `window.__lodForce` ('base' | 'mip:N' | 'fracture') for A/B regression probes
+
+**Measured (test_phase6.py, headed, all green):**
+- E1: 300 splats roundtripped through the ground query, max err 7.70e-07 m
+- E2 rest witness: speed 0.00e+00 m/s, gap to surface 5.87e-07 m (falsifier: < 0.01 m)
+- E2b walk witness: 7.000 m track vs 7.0 m commanded (0.00%), gap 2.24e-06 m
+- E3 live: land → walk (1.40 m/s, gap 0) → rest → takeoff, all pass
+- D1: law error 0.0% at r_px 29.3/14.6/7.4 (N = 300/75/19, base/mip/mip)
+- D2: fracture counts 709/1260/2835 law-exact (0.0%); budget cap 3596 at r_px 300
+- GPU BH+EM 2.8 ms at 60 fps with fracture active; visible splats 3596
+- All prior falsifiers unchanged: energy drift 0.0000%, LOD-time divergence 0.0000%, cyclotron/thermal/acoustic green
+
+**Bugs found and fixed this pass:**
+1. **The white-out**: `displayColor()` computed `isSelected` as `particles.indexOf(p) === selectedParticleIdx`. Render-only extras are not in `particles[]` → indexOf returns −1 → matched the "nothing selected" sentinel (−1 === −1) → EVERY mip/fracture splat got the +0.5 white highlight overlay. HDR at planet center measured 0.51 (flat grey-white, all terrain bands washed out) vs 0.046 for base terrain at the same camera. Fixed with a `selectedParticleIdx >= 0` guard (which also short-circuits the O(n) indexOf when nothing is selected).
+2. **Limb double-rim**: the fracture cap's past-limb margin (y < 0) placed a star-lit ring ~0.1·R behind the limb; dark limb splats are nearly transparent in this renderer (alpha ∝ color), so the ring shone through as chevron arcs. Margin removed (Y0 = 0) — only black sky behind the dark rim now.
+3. `measureFlight` altitude was nearest-particle distance; terrain cells (~500 m radius, ~2300 km apart) made the near-cull erase the ground at eye level. Altitude is terrain-exact via `heightAt` inside 10·R_PLANET.
+
+**Honest limitation:** the fracture cap (3596 splats) is budget-limited, not law-limited — at eye level the law wants finer detail than the budget affords, so foot-mode ground cells sit ~266 km apart. Closing that needs the renderer budget raised or a second-level fracture, both out of scope here.
 
 ---
 
@@ -369,4 +400,4 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-Document version: 2.1 | Status: Phases 0-9 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3
+Document version: 2.2 | Status: Phases 0-9 + Tracks A1/A2/C1/C2/B/T/D/E complete | Agent: bionic + Kimi K3

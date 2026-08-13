@@ -37,6 +37,13 @@ Tests:
     bipolar monopoles superpose within 2% via the aggregated-node path),
     p_field @1AU ~= 2 nPa (the solar-wind calibration's prediction, <15%),
     acoustic toggle
+16. TRACK E: character on planet — E1 ground-query roundtrip (<1 m over
+    300 splats), E2 rest falsifier (speed 0, gap <0.01 m after 1 s),
+    E2b walk falsifier (track within 10% of WALK_SPEED*t), E3 scale
+    handoff (land -> walk -> rest -> takeoff via __enterFoot/__exitFoot)
+17. TRACK D: LOD law N = rho*r_px^2 (rho=0.35 trained) — D1 mip pyramid
+    selection within 20% at 3 law radii, D2 fracture counts track the law
+    (monotonic increase) and pin at the renderer budget cap
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -368,6 +375,116 @@ def test_spiace_phase6_kernels():
         assert wit["relDivergence"] < 0.01, \
             f"T FALSIFIER TRIPPED: LOD divergence {wit['relDivergence']*100:.3f}% >= 1%"
 
+        # ---- TRACK E: CHARACTER STANDING ON PLANET (the north star) ----
+        # E1 FALSIFIER: the ground query roundtrips every placed terrain
+        # splat — query and placement are the same theory of ground.
+        gw = page.evaluate("window.__groundWitness()")
+        print(f"E1 ground query: {gw['checked']} splats roundtripped, "
+              f"max err {gw['maxErr']:.2e} m")
+        assert gw["checked"] == 300, f"ground witness checked {gw['checked']} splats"
+        assert gw["maxErr"] < 1.0, \
+            f"E1 FALSIFIER TRIPPED: heightAt diverges {gw['maxErr']} m from placed splats"
+
+        # E2 FALSIFIERS: rest (speed = 0, gap < 0.01 m) and walk (track
+        # within 10% of WALK_SPEED*t, still on the surface).
+        cw = page.evaluate("window.__charWitness()")
+        print(f"E2 rest witness: speed={cw['restSpeed']:.2e} m/s, gap={cw['gap']:.2e} m")
+        assert cw["restSpeed"] < 1e-6, \
+            f"E2 FALSIFIER TRIPPED: character not at rest after 1 s ({cw['restSpeed']} m/s)"
+        assert abs(cw["gap"]) < 0.01, \
+            f"E2 FALSIFIER TRIPPED: gap {cw['gap']} m >= 0.01 m"
+        ww = page.evaluate("window.__charWalkWitness()")
+        print(f"E2b walk witness: track={ww['track']:.3f} m vs {ww['expected']:.1f} m "
+              f"({ww['relErr']*100:.2f}%), gap={ww['gap']:.2e} m")
+        assert ww["relErr"] < 0.10, \
+            f"E2b FALSIFIER TRIPPED: walk track off by {ww['relErr']*100:.1f}%"
+        assert abs(ww["gap"]) < 0.01, \
+            f"E2b FALSIFIER TRIPPED: walked off the surface (gap {ww['gap']} m)"
+
+        # E3: scale handoff — fly to 2 m above the ground, land (foot mode),
+        # walk, stop, take off. lat/lon 0.3/1.0 with the in-page ground query.
+        import math as _math
+        lat0, lon0 = 0.3, 1.0
+        elev0 = page.evaluate(f"window.__heightAt({lat0}, {lon0})")
+        d_cam = 6.371e6 + elev0 + 1.7 + 2.0  # 2 m above the feet
+        px = _math.cos(lat0) * _math.cos(lon0)
+        py = _math.sin(lat0)
+        pz = _math.cos(lat0) * _math.sin(lon0)
+        page.evaluate(f"window.__setCam(1.5e11 + {d_cam*px}, {d_cam*py}, {d_cam*pz})")
+        page.evaluate("window.__enterFoot()")
+        page.wait_for_function(
+            "window.__charInfo && window.__charInfo.active && window.__charInfo.grounded",
+            timeout=15000)
+        ci = page.evaluate("window.__charInfo")
+        print(f"E3 land: mode={ci['mode']} gap={ci['gap']:.4f} m speed={ci['speed']:.2e} m/s")
+        assert ci["mode"] == "foot"
+        assert abs(ci["gap"]) < 0.01, f"E3: landed with gap {ci['gap']} m"
+        page.keyboard.down("w")
+        page.wait_for_timeout(1000)
+        page.keyboard.up("w")
+        ci2 = page.evaluate("window.__charInfo")
+        assert ci2["speed"] > 0.5, f"E3: WASD did not move the character ({ci2['speed']} m/s)"
+        print(f"E3 walk: speed={ci2['speed']:.2f} m/s gap={ci2['gap']:.4f} m")
+        page.wait_for_timeout(800)  # Coulomb friction stops it
+        ci3 = page.evaluate("window.__charInfo")
+        assert ci3["speed"] < 1e-6, \
+            f"E3 FALSIFIER: character did not stop ({ci3['speed']} m/s after 0.8 s no input)"
+        assert abs(ci3["gap"]) < 0.01
+        page.evaluate("window.__exitFoot()")
+        page.wait_for_timeout(200)
+        ci4 = page.evaluate("window.__charInfo")
+        assert ci4["mode"] == "flight", f"E3: takeoff failed ({ci4['mode']})"
+        print("E3 scale handoff: land -> walk -> rest -> takeoff OK")
+
+        # ---- TRACK D: INFINITE DETAIL (LOD law + fracture) ----
+        # D1 FALSIFIER: at r_px = sqrt(N/rho) the rendered count matches
+        # N = rho*r_px^2 within 20% (checked AT the law's own radii).
+        R_PL = 6.371e6
+        H_canvas = page.evaluate("document.getElementById('c').height")
+        for N in (300, 75, 19):
+            rpx = _math.sqrt(N / 0.35)
+            dist = R_PL * H_canvas / (2 * rpx * 0.414)
+            page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
+            page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+            page.wait_for_timeout(300)
+            li = page.evaluate("window.__lodInfo")
+            err_pct = abs(li["count"] - N) / N * 100
+            print(f"D1: r_px={li['rPx']:.1f} N_target={li['nTarget']} mode={li['mode']} "
+                  f"level={li['level']} count={li['count']} (law err {err_pct:.1f}%)")
+            assert err_pct <= 20, \
+                f"D1 FALSIFIER TRIPPED at N={N}: rendered {li['count']} splats"
+
+        # D2 FALSIFIER: fracture counts track the law (monotonic, within 20%)
+        # and pin at the renderer budget past it.
+        counts_seen = []
+        for rpx in (45, 60, 90):
+            dist = R_PL * H_canvas / (2 * rpx * 0.414)
+            page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
+            page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+            page.wait_for_timeout(300)
+            li = page.evaluate("window.__lodInfo")
+            n_exp = min(round(0.35 * rpx * rpx), li["budgetCap"])
+            err_pct = abs(li["count"] - n_exp) / n_exp * 100
+            counts_seen.append(li["count"])
+            print(f"D2: r_px={li['rPx']:.1f} fracture count={li['count']} vs law {n_exp} "
+                  f"({err_pct:.1f}%)")
+            assert li["mode"] == "fracture", f"D2: expected fracture mode, got {li['mode']}"
+            assert err_pct <= 20, \
+                f"D2 FALSIFIER TRIPPED at r_px={rpx}: count {li['count']} vs law {n_exp}"
+        assert counts_seen[0] < counts_seen[1] < counts_seen[2], \
+            f"D2 FALSIFIER TRIPPED: fracture counts not increasing: {counts_seen}"
+        # Budget cap: r_px = 300 -> law wants 31500, budget caps it
+        dist = R_PL * H_canvas / (2 * 300 * 0.414)
+        page.evaluate(f"window.__setCam(1.5e11 + {dist}, 0, 0)")
+        page.evaluate("window.__lookAt(1.5e11, 0, 0)")
+        page.wait_for_timeout(300)
+        li = page.evaluate("window.__lodInfo")
+        print(f"D2 cap: r_px={li['rPx']:.1f} count={li['count']} budget={li['budgetCap']}")
+        assert li["count"] == li["budgetCap"], \
+            f"D2: budget cap not applied ({li['count']} != {li['budgetCap']})"
+        page.click("#btn-center")
+        page.wait_for_timeout(300)
+
         # ---- 8a. Back to CPU BH (gravity only) ----
         page.click("#btn-cpu")
         page.wait_for_timeout(500)
@@ -476,7 +593,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 + 7 + 8 + 9 assertions passed! ===")
+        print("\n=== All Phase 6 + 7 + 8 + 9 + Track D/E assertions passed! ===")
         browser.close()
 
 
