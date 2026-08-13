@@ -400,4 +400,16 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-Document version: 2.2 | Status: Phases 0-9 + Tracks A1/A2/C1/C2/B/T/D/E complete | Agent: bionic + Kimi K3
+### Phase 10: Multi-Planet Star System (Pending — Kimi K3)
+- [ ] Procedural generation of 1 star + 3–5 planets with habitable-zone-appropriate orbits
+- [ ] Planets as dynamic N-body participants (currently fixed anchors)
+- [ ] Multi-membrane context system: auto-transition between planetary membranes
+- [ ] Interplanetary flight: surface → orbit → trajectory → landing on second planet
+- [ ] Falsifier 10: Keplerian period ratio within 5%
+- [ ] Falsifier 11: character lands on second planet, gap < 0.01m
+- [ ] Falsifier 12: energy drift < 1% with multi-planet tree
+- [ ] Falsifier 13: thermal equilibrium at each planet's distance within 15%
+
+---
+
+Document version: 2.3 (Phase 10 pending) | Status: Phases 0–9 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
