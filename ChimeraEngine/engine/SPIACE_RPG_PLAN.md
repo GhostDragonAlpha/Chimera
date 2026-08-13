@@ -220,10 +220,32 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 1. ~~Commit Phase 5 with Playwright verification~~ ✓ done
 2. ~~**Phase 6: Universal Kernel Translation Layer**~~ ✓ done — DSL + generator + EM kernel, all falsifiers green
-3. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
-4. Begin Track A from ROADMAP.md: Terrain → splats connection
+3. ~~**Track A1: Terrain → splats**~~ ✓ done — planet surface rendered as height-mapped sphere (300 Fibonacci-lattice splats, bimodal hypsometry via noise + transfer function, terrain color bands)
+4. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
 5. Begin Track B: Scale-relative flight camera
 6. Connect membrane clock to physics tick rate (Track T)
+
+---
+
+## Track A1 — Terrain → Splats (Completed)
+
+**What was built:**
+- `spawnPlanet()` in JS: 300 surface splats on a Fibonacci lattice, elevation from FBM noise + bimodal transfer (`elevFromNoise` mirrors `PlanetOnion._elev_from`), height-band coloring (abyssal/deep/shallow ocean, beach, forest, rock, snow)
+- Terrain particles are **fixed anchors** in the planet membrane: they exert gravity on orbitals but don't move (`integrateParticle` skips them, GPU readback restores `_origPos`)
+- `displayColor()` uses pre-computed `_terrainCol` for terrain splats (base color + scattered starlight overlay)
+- Camera repositioned to frame the planet at ~4 planetary radii
+- Energy computation excludes terrain-terrain pairs and terrain KE
+
+**Falsifier results (all green):**
+- Particle count: 500 (1 star + 300 terrain + 199 orbitals)
+- Tree: 644 nodes, 1212 leaves, depth 8
+- Charge: 499 charged orbitals (terrain has q=0)
+- Thermal equilibrium @1AU: 270.1 K vs 271.0 K predicted (0.3% error, limit 15%)
+- Energy drift CPU BH+EM: 0.0000% (limit 1%)
+- Deflection delta: 3.85e4 m >> 10 m threshold
+- GPU mode: 61 fps, tree healthy after GPU→CPU handoff
+
+**Key design decision:** Terrain splats are membrane-fixed anchors, not free particles. This means the planet's gravity field is present in the tree (orbitals feel it) but the planet itself doesn't orbit — it defines the local frame. Future work: give the planet orbital velocity around the star so it participates dynamically.
 
 ---
 

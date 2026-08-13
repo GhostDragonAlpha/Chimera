@@ -741,6 +741,17 @@ const SCATTER_REF = E_1AU * Math.PI * 400 * 400 * ALBEDO; // W
 const STAR_HDR = 8.0;
 function displayColor(p) {
   if (p.isStar) return [STAR_TINT[0] * STAR_HDR, STAR_TINT[1] * STAR_HDR, STAR_TINT[2] * STAR_HDR];
+  // Track A1: terrain splats carry a pre-computed height-band color.
+  // They scatter starlight (flux from tree) on top of that base color.
+  if (p._terrainCol) {
+    const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
+    const bb = blackbodyRGB(p.temp);
+    const e = Math.pow(p.temp / T_STAR, 4) * STAR_HDR;
+    let r = p._terrainCol[0] * (1 + s) + bb[0] * e * 0.1; // terrain color dominates
+    let g = p._terrainCol[1] * (1 + s) + bb[1] * e * 0.1;
+    let b = p._terrainCol[2] * (1 + s) + bb[2] * e * 0.1;
+    return [r, g, b];
+  }
   const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
   const bb = blackbodyRGB(p.temp);
   const e = Math.pow(p.temp / T_STAR, 4) * STAR_HDR;
@@ -785,11 +796,138 @@ function makeOrbital(starMass) {
   return createParticle(pos, vel, mass, 2e9, false, charge);
 }
 
+// ---- TERRAIN GENERATION (Track A1: planet as height-mapped sphere) ----
+// Simple value noise for terrain — ported from the Python PlanetOnion's
+// SH synthesis concept. The Python module uses real spherical harmonics;
+// this JS approximation is sufficient for visual terrain at ~1000 splats.
+// The key invariant: bimodal hypsometry (ocean floor vs land platform).
+
+function hash2D(x, y) {
+  let h = (x * 374761393 + y * 668265263) | 0;
+  h = ((h ^ (h >> 13)) * 1274126177) | 0;
+  return ((h ^ (h >> 16)) >>> 0) / 4294967296.0;
+}
+
+function smoothNoise(x, y) {
+  const ix = Math.floor(x), iy = Math.floor(y);
+  const fx = x - ix, fy = y - iy;
+  const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+  const n00 = hash2D(ix, iy), n10 = hash2D(ix + 1, iy);
+  const n01 = hash2D(ix, iy + 1), n11 = hash2D(ix + 1, iy + 1);
+  const nx0 = n00 * (1 - sx) + n10 * sx;
+  const nx1 = n01 * (1 - sx) + n11 * sx;
+  return nx0 * (1 - sy) + nx1 * sy;
+}
+
+function fbm(x, y, octaves) {
+  let val = 0, amp = 1, freq = 1, total = 0;
+  for (let i = 0; i < octaves; i++) {
+    val += smoothNoise(x * freq, y * freq) * amp;
+    total += amp;
+    amp *= 0.5; freq *= 2.0;
+  }
+  return val / total;
+}
+
+// Bimodal height transfer (mirrors PlanetOnion._elev_from):
+// continent potential -> ocean floor vs land platform with shelf slope.
+function elevFromNoise(n, seaThr, shelfW) {
+  const s = 1.0 / (1.0 + Math.exp(-(n - seaThr) / shelfW));
+  return EARTH_OCEAN_MODE * (1 - s) + EARTH_LAND_MODE * s;
+}
+
+// Earth-like constants for terrain (from planet_membrane.py)
+const R_PLANET = 6.371e6; // m, Earth radius
+const EARTH_OCEAN_MODE = -3700.0; // m, abyssal plain modal depth
+const EARTH_LAND_MODE = 300.0;    // m, continental platform modal height
+const PLANET_MASS = 5.972e24;     // kg, Earth mass
+const SEA_THRESHOLD = 0.45;       // noise threshold for sea level (tuned for land fraction ~29%)
+const SHELF_WIDTH = 0.18;
+
+// Height band colors (HDR linear-ish): ocean deep/shallow, beach, forest, rock, snow.
+function terrainColor(elev) {
+  // elev in metres; negative = ocean depth, positive = land height
+  if (elev <= -2000) return [0.01, 0.02, 0.08];         // abyssal plain — dark blue
+  if (elev <= -500)  return [0.02, 0.06, 0.18];         // deep ocean
+  if (elev <= -100)  return [0.03, 0.12, 0.30];         // shallow ocean
+  if (elev <= 0)     return [0.35, 0.30, 0.20];         // beach/sand
+  if (elev <= 200)   return [0.15, 0.40, 0.12];         // lowland forest
+  if (elev <= 800)   return [0.10, 0.30, 0.08];         // forest
+  if (elev <= 2000)  return [0.35, 0.28, 0.20];         // rock/mountain
+  if (elev <= 4000)  return [0.60, 0.55, 0.50];         // high rock
+  return [0.90, 0.92, 0.95];                            // snow/ice
+}
+
+// Planckian blackbody for the planet — cold surface, scatters starlight.
+const PLANET_ALBEDO = 0.3; // bond albedo (Earth-like)
+
+function spawnPlanet() {
+  // Place ~800 surface splats on a sphere using a Fibonacci lattice
+  // (uniform coverage, no poles clustering). Each splat carries elevation,
+  // physical radius from planet mass, and height-band color.
+  const nSurface = 300;
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const planetParticles = [];
+
+  for (let i = 0; i < nSurface; i++) {
+    const y = 1 - (i / (nSurface - 1)) * 2;         // -1 .. +1 (z axis)
+    const radiusAtY = Math.sqrt(1 - y * y);
+    const theta = goldenAngle * i;
+    const px = Math.cos(theta) * radiusAtY;
+    const py = y;
+    const pz = Math.sin(theta) * radiusAtY;
+
+    // Sample terrain elevation from noise (bilinear on a 64x32 noise grid)
+    // Map (px,py,pz) -> lat/lon -> noise coords
+    const lat = Math.asin(py);                      // radians -pi/2 .. +pi/2
+    const lon = Math.atan2(pz, px);                 // radians 0 .. 2pi
+    const nx = (lon / (2 * Math.PI)) * 64;
+    const ny = ((lat / Math.PI) + 0.5) * 32;
+    let elev = fbm(nx + 10.0, ny + 10.0, 6);
+    // Normalize noise to ~[-1, +1] range then apply bimodal transfer
+    elev = (elev - 0.5) * 2.0;                       // now roughly [-1, 1]
+    elev = elevFromNoise(elev, SEA_THRESHOLD, SHELF_WIDTH); // metres
+
+    const r3 = R_PLANET + elev;
+    const pos = [r3 * px, r3 * py, r3 * pz];
+
+    // Physical radius: same density as orbitals (RHO_BODY = 3000 kg/m^3)
+    const mass = RHO_BODY * (4.0 / 3.0) * Math.PI * 500 * 500 * 500; // ~5e10 kg, 500 m radius cells
+    const radiusPhys = 500; // m — each splat is a surface cell
+    const renderRadius = Math.max(radiusPhys * 3, 8e6); // inflated for visibility
+
+    // Color from elevation band (set as display color via temp/lum hack)
+    const col = terrainColor(elev);
+
+    planetParticles.push({
+      id: nextId++,
+      pos: [...pos],
+      vel: [0, 0, 0], // planet is stationary at origin — it's the world frame
+      acc: [0, 0, 0],
+      mass,
+      radius: renderRadius,
+      radiusPhys,
+      isStar: false,
+      charge: 0,       // no EM for terrain cells
+      temp: T_EQ_1AU,  // ~271 K — initialized at radiative equilibrium
+      lum: FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(T_EQ_1AU, 4),
+      flux: 0,         // will be filled by tree traversal
+      albedo: PLANET_ALBEDO,
+      _terrainCol: col,     // custom field for displayColor override
+      _origPos: [...pos]    // restore after GPU readback
+    });
+  }
+  return planetParticles;
+}
+
 function spawnSystem(count) {
   const starMass = 1.989e30;
-  // Exactly `count` particles total: 1 star + count-1 orbitals
+  // Exactly `count` particles total: 1 star + ~300 planet surface splats + remaining orbitals
+  const nPlanetSurface = 300;
+  const nOrbitals = Math.max(0, count - 1 - nPlanetSurface);
   particles = [createParticle([0, 0, 0], [0, 0, 0], starMass, 1.5e10, true)];
-  for (let i = 0; i < count - 1; i++) particles.push(makeOrbital(starMass));
+  particles.push(...spawnPlanet());
+  for (let i = 0; i < nOrbitals; i++) particles.push(makeOrbital(starMass));
   initTemps();
 }
 
@@ -882,6 +1020,9 @@ function traverseAndAccum(node, target, acc, fluxOut) {
 }
 
 function integrateParticle(p, dt) {
+  // Track A1: terrain splats are part of the planet membrane — fixed anchors.
+  // They exert gravity on orbitals but do not move themselves.
+  if (p._terrainCol) return;
   // Symplectic Euler: update velocity then position
   p.vel[0] += p.acc[0] * dt;
   p.vel[1] += p.acc[1] * dt;
@@ -926,10 +1067,14 @@ function computeEnergy() {
   const n = particles.length;
   for (let i = 0; i < n; i++) {
     const p = particles[i];
+    // Track A1: terrain splats are fixed — no KE contribution
+    if (p._terrainCol) continue;
     const v2 = p.vel[0]*p.vel[0] + p.vel[1]*p.vel[1] + p.vel[2]*p.vel[2];
     KE += 0.5 * p.mass * v2;
     for (let j = i+1; j < n; j++) {
       const q = particles[j];
+      // Skip terrain-terrain pairs (fixed, no dynamics)
+      if (p._terrainCol && q._terrainCol) continue;
       const dx = q.pos[0]-p.pos[0], dy = q.pos[1]-p.pos[1], dz = q.pos[2]-p.pos[2];
       const dist = Math.sqrt(dx*dx + dy*dy + dz*dz + SOFT_SQ);
       const pe = kernelPairPE(p, q, dist);
@@ -1369,8 +1514,14 @@ async function gpuBarnesHut(dt) {
   const vv = new Float32Array(rbVel.getMappedRange());
   const av = new Float32Array(rbAcc.getMappedRange());
   for (let i = 0; i < n; i++) {
-    particles[i].pos[0] = pv[i*4]; particles[i].pos[1] = pv[i*4+1]; particles[i].pos[2] = pv[i*4+2];
-    particles[i].vel[0] = vv[i*4]; particles[i].vel[1] = vv[i*4+1]; particles[i].vel[2] = vv[i*4+2];
+    if (particles[i]._terrainCol) {
+      // Track A1: restore terrain splat positions — GPU should not move them
+      const orig = particles[i]._origPos;
+      if (orig) { particles[i].pos[0] = orig[0]; particles[i].pos[1] = orig[1]; particles[i].pos[2] = orig[2]; }
+    } else {
+      particles[i].pos[0] = pv[i*4]; particles[i].pos[1] = pv[i*4+1]; particles[i].pos[2] = pv[i*4+2];
+      particles[i].vel[0] = vv[i*4]; particles[i].vel[1] = vv[i*4+1]; particles[i].vel[2] = vv[i*4+2];
+    }
     particles[i].flux = av[i*4+3]; // irradiance, from the tree's light transport
   }
   rbPos.unmap(); rbVel.unmap(); rbAcc.unmap();
@@ -1380,9 +1531,10 @@ async function gpuBarnesHut(dt) {
 }
 
 // ---- RENDERING (WebGPU Gaussian-splat pipeline, ported from spike.html) ----
-let camPos = [0, 9e11, 5e10]; // meters — above the orbital plane, looking down
+// Track A1: camera frames the planet (not the whole system)
+let camPos = [0, 2.5e7, 1.5e7]; // meters — ~4 planetary radii away, angled
 const CAM_TARGET = [0, 0, 0];
-const CAM_UP = [0, 0, 1]; // screen-up ≈ world -z, so the xz-plane disk is face-on
+const CAM_UP = [0, 1, 0];     // screen-up ≈ world +y for planet view
 let keys = {};
 
 document.addEventListener('keydown', e => { if (!keys[e.code]) keys[e.code] = true; });
@@ -1624,7 +1776,7 @@ $('btn-add').onclick = () => {
   }
 };
 $('btn-reset').onclick = () => { particles = []; nextId = 0; spawnSystem(500); prevEnergy = null; };
-$('btn-center').onclick = () => { camPos = [0, 9e11, 5e10]; };
+$('btn-center').onclick = () => { camPos = [0, 2.5e7, 1.5e7]; }; // Track A1: frame the planet
 $('theta-slider').oninput = (e) => {
   theta = parseInt(e.target.value) / 10;
   $('theta-val').textContent = theta.toFixed(1);
@@ -1671,9 +1823,9 @@ async function main() {
   }
 
   spawnSystem(500);
-  // Membrane panel (static display for this single-membrane demo)
+  // Membrane panel (Track A1: planet membrane info)
   $('mem-depth').textContent = '0';
-  $('mem-extent').textContent = '7.0e11 m';
+  $('mem-extent').textContent = R_PLANET.toExponential(2) + ' m';
   $('mem-clock').textContent = timeScale.toFixed(1) + 'x';
 
   function loop(now) {
@@ -1826,10 +1978,13 @@ window.__deflectionCheck = () => {
     return Math.hypot(ae[0], ae[1], ae[2]);
   };
 
-  // Most EM-driven orbital among the first 50 (star excluded)
+  // Track A1: terrain splats (indices 1..~300) have charge=0.
+  // Scan past them to find a charged orbital for the deflection test.
   let best = 1, bestA = -1;
-  const scan = Math.min(50, bg.length);
-  for (let i = 1; i < scan; i++) {
+  const scanStart = Math.max(1, particles.findIndex(p => !p._terrainCol && p.charge !== 0));
+  const scanEnd = Math.min(bg.length, scanStart + 200);
+  for (let i = scanStart; i < scanEnd; i++) {
+    if (bg[i].charge === 0) continue;
     const a = accel(bg[i].pos, bg[i].charge, bg[i].mass, tmpA, i);
     if (a > bestA) { bestA = a; best = i; }
   }
