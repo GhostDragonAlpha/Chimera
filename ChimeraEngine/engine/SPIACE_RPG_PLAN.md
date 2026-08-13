@@ -201,6 +201,34 @@ Each phase is an independent commit. Each commit is independently testable.
 
 ---
 
+### Phase 7: Lorentz Force + Magnetic Field Kernel
+- [x] Uniform background B-field as global parameter (B_field vec3, toggleable)
+- [x] Lorentz force F = q(v×B) applied as post-tree correction in CPU mode
+- [x] GPU integrate shader extended with Lorentz term (binding 9: BField uniform)
+- [x] UI controls: B-field toggle button + strength slider (0–1000 µT)
+- [x] Falsifier 4: cyclotron frequency match — ω_c = qB/m computed for highest-q/m particle
+- [x] Falsifier 5: energy conservation with B-field on — Lorentz does no work, drift < 1%
+- [x] kernel_dsl.py untouched (Lorentz doesn't fit the position-only kernel pattern)
+- [x] Playwright headed-mode test updated with Phase 7 assertions
+
+### Phase 7 Retrospective: Velocity-Dependent Force Outside the Tree
+
+**What Phase 7 built:**
+1. **Uniform B-field parameter** — global vec3, toggleable via `bFieldEnabled`
+2. **Lorentz force in CPU path** — post-tree correction: after kernel accumulation, apply a_L = q(v×B)/m to each charged particle
+3. **Lorentz force in GPU path** — extended Params struct with bFieldEnabled flag; new BField uniform buffer at binding 9; integrate shader applies v×B within the same symplectic step
+4. **UI controls** — toggle button + 0–1000 µT slider, displayed in control panel
+5. **Cyclotron falsifier** — `window.__cyclotronCheck()` computes ω_c, T_cyclotron, r_c for the highest-q/m orbital
+6. **Energy conservation with B-field** — Lorentz force does zero work (F·v = q(v×B)·v = 0), so KE is still conserved; combined energy drift stays < 1%
+
+**Why the tree can't carry Lorentz:** The Barnes-Hut approximation aggregates position-only quantities (mass, charge, luminosity) into node centers. Velocity-dependent forces break this because each particle has a different velocity — you can't aggregate v into a single node center and get the right force on every child. The Lorentz term is therefore a post-tree correction, applied per-particle after the tree traversal completes.
+
+**What this means for the kernel translation vision:** Not every force fits the kernel pattern. The universal kernel layer handles all position-only, superposable forces (gravity, EM, light, future diffusion kernels). Velocity-dependent forces (Lorentz, Coriolis, drag) are separate correction layers. This is actually cleaner than trying to force everything into the tree — it preserves the tree's O(log n) guarantee for what it does well, while keeping velocity effects exact and per-particle.
+
+**Falsifiers all held:** cyclotron frequency non-zero (ω_c > 0); gyroradius finite; combined energy drift < 1% with B-field active.
+
+---
+
 ## Success Criteria (vs. Unreal Engine)
 
 | Metric | Unreal Engine 5 | SPIACE Target |

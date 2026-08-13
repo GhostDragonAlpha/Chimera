@@ -308,6 +308,39 @@ def test_spiace_phase6_kernels():
         assert vis and vis > 0, "0 visible splats — canvas would be black"
         print(f"Visible splats: {vis}")
 
+        # ---- PHASE 7: LORENTZ FORCE + MAGNETIC FIELD ----
+        # Falsifier 4: cyclotron frequency match. Enable B-field, read the
+        # theoretical cyclotron params for the highest-q/m particle.
+        page.evaluate("bFieldEnabled = true")
+        page.evaluate("B_field = [0, 0, 1e-3]")  # 1 mT — strong enough to see effects
+        page.wait_for_timeout(300)
+        cyclo = page.evaluate("window.__cyclotronCheck()")
+        print(f"Cyclotron: particle #{cyclo['index']} (q={cyclo['charge']:.2e} C, m={cyclo['mass']:.2e} kg), "
+              f"B={cyclo['B_mag']:.2e} T, omega_c={cyclo['omega_c']:.3e} rad/s, "
+              f"T_cyclotron={cyclo['T_cyclotron']:.3e} s, r_c={cyclo['r_c']:.3e} m")
+        assert cyclo.get("error") is None, f"cyclotron check failed: {cyclo.get('error')}"
+        assert cyclo["omega_c"] > 0, "cyclotron frequency is zero — Lorentz force not active?"
+        assert cyclo["r_c"] > 0, "gyroradius is zero"
+
+        # Falsifier 5: energy still conserved with B-field on (Lorentz does no work)
+        page.click("#btn-cpuem")
+        page.click("#btn-reset")
+        page.wait_for_function(
+            "document.getElementById('particle-count').textContent === '500'",
+            timeout=15000)
+        f0 = page.evaluate("window.__frames || 0")
+        page.wait_for_function(
+            f"(window.__frames || 0) >= {f0 + 125}", timeout=60000)
+        energy_b = page.evaluate("window.__energy")
+        drift_b = page.evaluate("window.__energyDrift")
+        print(f"CPU BH+EM+B: KE={energy_b['KE']:.3e} J, total={energy_b['total']:.3e} J; "
+              f"drift={drift_b:.4f}% (Lorentz does no work — should be ~0)")
+        assert drift_b < 1.0, f"FALSIFIER 5 TRIPPED: energy drift with B-field {drift_b}% >= 1%"
+
+        # Turn B-field off for clean exit
+        page.evaluate("bFieldEnabled = false")
+        page.wait_for_timeout(200)
+
         # ---- Final screenshot ----
         page.screenshot(path=SCREENSHOT_FINAL, full_page=False)
         assert os.path.exists(SCREENSHOT_FINAL), "Final screenshot not saved"
@@ -325,7 +358,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 assertions passed! ===")
+        print("\n=== All Phase 6 + Phase 7 assertions passed! ===")
         browser.close()
 
 

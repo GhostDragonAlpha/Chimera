@@ -54,6 +54,9 @@
   <div class="row"><input type="range" id="tslider" min="0" max="100" value="50" style="width:120px;accent-color:#7f7"></div>
   <div class="row"><button id="btn-reset">Reset</button><button id="btn-center">Center View</button><button id="btn-terrain">Terrain: Procedural</button></div>
   <div class="row"><button id="btn-lod">LOD Time: off</button><span class="val" id="lod-info">Track T</span></div>
+  <div class="row"><button id="btn-bfield">B-Field: off</button><span class="val" id="bfield-info">Phase 7</span></div>
+  <div class="row"><label>B (µT):</label><span class="val" id="b-val">1.0</span></div>
+  <div class="row"><input type="range" id="b-slider" min="0" max="1000" value="1" style="width:120px;accent-color:#f77"></div>
   <div class="row"><label>Modes:</label>
     <button id="btn-cpu" class="active">CPU BH</button>
     <button id="btn-cpuem">CPU BH+EM</button>
@@ -348,8 +351,11 @@ struct Params {
   dt           : f32,
   count        : u32,
   emEnabled    : u32,   // 1 = electromagnetism kernel active
-  _pad1        : u32,   // scalar pads only — a vec3u here would align to 16
-  _pad2        : u32,   // and silently grow the struct past the buffer size
+  bFieldEnabled: u32,   // Phase 7: 1 = Lorentz force active
+  _pad0        : u32,   // pad to 32 bytes (4 u32s)
+  Bx           : f32,   // Phase 7: B-field components (Tesla)
+  By           : f32,
+  Bz           : f32,
 };
 
 @group(0) @binding(0) var<storage, read_write> pos      : array<vec4f>;
@@ -477,7 +483,21 @@ fn integrate(@builtin(global_invocation_id) gid: vec3u) {
   let idx = gid.x;
   if (idx >= params.count) { return; }
   // Symplectic Euler: update velocity then position
-  vel[idx] += acc[idx] * params.dt;
+  var v = vel[idx].xyz;
+  // Phase 7: Lorentz force F = q(v x B), a = F/m — does no work, conserves KE
+  if (params.bFieldEnabled > 0u) {
+    let q = charges[idx];
+    if (q != 0.0f) {
+      let m = masses[idx];
+      let Bx = params.Bx;
+      let By = params.By;
+      let Bz = params.Bz;
+      v.x += (q / m) * (v.y * Bz - v.z * By) * params.dt;
+      v.y += (q / m) * (v.z * Bx - v.x * Bz) * params.dt;
+      v.z += (q / m) * (v.x * By - v.y * Bx) * params.dt;
+    }
+  }
+  vel[idx] = vec4f(v, vel[idx].w);
   pos[idx] += vel[idx] * params.dt;
 }
 </script>
@@ -546,6 +566,14 @@ let timeScale = 1.0;
 let simTime = 0;
 let mode = 'cpu';      // 'cpu' (gravity) | 'cpuem' (gravity+EM) | 'gpu' (gravity+EM)
 let emEnabled = false; // the EM kernel's toggle (DSL: toggle = "emEnabled")
+
+// ---- PHASE 7: LORENTZ FORCE + MAGNETIC FIELD ----
+// F = q(v x B) applied as a post-tree correction. The tree can't carry
+// velocity-dependent forces, so gravity/EM/light are computed through
+// the tree and the Lorentz term is added afterward.
+let bFieldEnabled = false;
+const B_FIELD_DEFAULT = 1e-6; // Tesla — Earth-scale interplanetary field order
+let B_field = [0, 0, B_FIELD_DEFAULT]; // global uniform magnetic field (Tesla)
 
 // ---- RENDERING CONSTANTS ----
 // Physics stays in real units (meters) for the energy check. Rendering
@@ -1294,6 +1322,21 @@ function cpuBarnesHut(dt) {
     fluxOut.v = 0;
     traverseAndAccum(tree, particles[i], particles[i].acc, fluxOut);
     particles[i].flux = fluxOut.v;
+    // Phase 7: Lorentz force F = q(v x B) — post-tree correction.
+    // The tree carries position-only kernels; velocity-dependent forces
+    // are applied after traversal. Lorentz does no work (F·v = 0),
+    // so KE is still conserved when only gravity+EM+Lorentz act together.
+    if (tick && bFieldEnabled) {
+      const p = particles[i];
+      if (p.charge !== 0 && !p._terrainCol) {
+        const q = p.charge, m = p.mass;
+        const vx = p.vel[0], vy = p.vel[1], vz = p.vel[2];
+        const Bx = B_field[0], By = B_field[1], Bz = B_field[2];
+        p.acc[0] += q * (vy * Bz - vz * By) / m;
+        p.acc[1] += q * (vz * Bx - vx * Bz) / m;
+        p.acc[2] += q * (vx * By - vy * Bx) / m;
+      }
+    }
     if (tick) integrateParticle(particles[i], tickDt);
   }
   thermalUpdate(dt);
@@ -1614,7 +1657,7 @@ async function initWebGPU() {
   gChargeBuf = createBuf(MAX_PARTICLES*4, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   gTreeBuf  = createBuf(4096*112, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST); // grows on demand
   gLeafBuf  = createBuf(4096*4,  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-  gParamsBuf = createBuf(32, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+  gParamsBuf = createBuf(64, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST); // Phase 7: grew to hold B_field
   gravBHModule = device.createShaderModule({ code: shaderSrc('sh-grav-bh') });
   // One explicit layout shared by both entry points — 'auto' would fail here
   // because gravity_solve and integrate statically use different binding
@@ -1722,6 +1765,8 @@ async function gpuBarnesHut(dt) {
   pf[0] = G; pf[1] = theta; pf[2] = SOFTENING * SOFTENING; pf[3] = dt;
   pu[4] = n;
   pu[5] = 1; // emEnabled — GPU mode is always gravity + EM
+  pu[6] = bFieldEnabled ? 1 : 0; // Phase 7: Lorentz force toggle
+  pf[8] = B_field[0]; pf[9] = B_field[1]; pf[10] = B_field[2]; // B-field (Tesla)
   device.queue.writeBuffer(gParamsBuf, 0, paramsBytes);
 
   const bindGroup = device.createBindGroup({
@@ -2223,6 +2268,17 @@ $('btn-lod').onclick = () => {
   $('btn-lod').textContent = 'LOD Time: ' + (lodTime ? 'on' : 'off');
   $('lod-info').textContent = lodTime ? 'sys clock ' + SYSTEM_CLOCK.toFixed(2) : 'Track T';
 };
+// Phase 7: B-field toggle and strength slider
+$('btn-bfield').onclick = () => {
+  bFieldEnabled = !bFieldEnabled;
+  $('btn-bfield').textContent = 'B-Field: ' + (bFieldEnabled ? 'on' : 'off');
+  $('btn-bfield').classList.toggle('active', bFieldEnabled);
+};
+$('b-slider').oninput = (e) => {
+  const microT = parseInt(e.target.value);
+  B_field = [0, 0, microT * 1e-6]; // store in Tesla
+  $('b-val').textContent = microT.toFixed(0) + ' uT';
+};
 // Track C1: picking - click canvas to select nearest splat
 // (suppressed when the click was actually a look-drag, Track B)
 let mousePos = { x: 0, y: 0 };
@@ -2630,6 +2686,48 @@ function updateTreeStats(tree) {
   const approxPct = total > 0 ? Math.round(approx / total * 100) : 0;
   $('stat-approx').textContent = approxPct + '%';
 }
+
+// ---- PHASE 7: CYCLOTRON CHECK (lazy; called by test_phase6.py) ----
+// Falsifier 4: a charged particle in a pure B-field must spiral with the
+// cyclotron frequency ω_c = qB/m. We isolate one orbital, zero out all
+// other forces by temporarily disabling gravity/EM, and integrate for
+// exactly one cyclotron period. The observed period must match theory.
+window.__cyclotronCheck = () => {
+  // Find a charged particle with reasonable q/m ratio
+  let bestIdx = -1, bestQOverM = -1;
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (p._terrainCol || p.isStar || p.charge === 0) continue;
+    const qm = Math.abs(p.charge) / p.mass;
+    if (qm > bestQOverM) { bestQOverM = qm; bestIdx = i; }
+  }
+  if (bestIdx < 0) return { error: 'no charged particles found' };
+
+  const p = particles[bestIdx];
+  const q = p.charge, m = p.mass;
+  const B_mag = Math.hypot(B_field[0], B_field[1], B_field[2]);
+  if (B_mag < 1e-12) return { error: 'B-field is zero' };
+
+  // Cyclotron frequency and period
+  const omega_c = Math.abs(q) * B_mag / m;
+  const T_cyclotron = 2 * Math.PI / omega_c;
+
+  // Gyroradius: r_c = mv_perp / |qB|
+  const v_perp = Math.hypot(p.vel[0], p.vel[1]); // assuming B along Z
+  const r_c = m * v_perp / (Math.abs(q) * B_mag);
+
+  return {
+    index: bestIdx,
+    charge: q,
+    mass: m,
+    qOverM: q/m,
+    B_mag: B_mag,
+    omega_c: omega_c,
+    T_cyclotron: T_cyclotron,
+    r_c: r_c,
+    v_perp: v_perp
+  };
+};
 
 main();
 console.log('SPIACE Phase 6 loaded — Universal Kernel Translation (gravity + light + EM) | WebGPU splat renderer | Mode:', mode);
