@@ -18,7 +18,14 @@ Tests:
    -> CPU BH), active class, no #err; GPU skipped gracefully if no WebGPU
 9. Renderer is WebGPU: window.__renderer === 'webgpu-splat' and the main
    canvas refuses a 2d context
-10. Screenshots at start and end; console collected; no page errors
+10. Track B: scale-relative flight — walk pace near planet, orbital pace
+    in void, speed always within [1 m/s, 10x local escape velocity]
+    (B falsifier); membrane depth/path/clock reported per position
+11. B4: F-focus flies the camera to framing distance (derived from the
+    target's render radius) and Escape releases it
+12. Track T: LOD-of-time toggle works; witness falsifier — LOD-gated
+    positions within 1% of full-rate over 60 frames
+13. Screenshots at start and end; console collected; no page errors
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -107,6 +114,19 @@ def test_spiace_phase6_kernels():
             "WGSL TreeNode missing EM fields (kernel DSL not injected?)"
         print("WGSL TreeNode carries electromagnetism_c/_q OK")
 
+        # ---- 5b. FALSIFIER: derived sea level yields Earth-like land fraction ----
+        # spawnPlanet() derives the sea threshold at the area-weighted
+        # (1 - 0.291) quantile of the normalized noise potential. The 300
+        # Fibonacci splats sample correlated continents, so allow |lf-0.291|
+        # < 0.12 (measured 0.203 deterministically). The old hardcoded
+        # threshold measured 0.000 — 100% abyssal, the "blue wash".
+        terra = page.evaluate("window.__terrainStats")
+        print(f"Terrain: land fraction {terra['landFraction']:.3f} "
+              f"(target {terra['target']}, seaThr {terra['seaThr']:.3f})")
+        assert abs(terra["landFraction"] - terra["target"]) < 0.12, \
+            f"LAND FRACTION FALSIFIER TRIPPED: {terra['landFraction']:.3f} vs " \
+            f"target {terra['target']} — sea level derivation broken"
+
         # ---- 6. FALSIFIER 2: thermal equilibrium still holds (CPU mode) ----
         page.wait_for_function(
             "window.__thermal && window.__thermal.count > 0",
@@ -150,6 +170,85 @@ def test_spiace_phase6_kernels():
         assert defl["delta"] > 10.0, \
             f"FALSIFIER 3 TRIPPED: charged-vs-neutral delta {defl['delta']} m <= 10 m — " \
             f"EM force does not measurably deflect trajectories"
+
+        # ---- Track B: scale-relative flight camera ----
+        # B falsifier bounds: speed <= 10x local escape velocity, and
+        # speed >= 1 m/s near a surface. Verified at two scales.
+        page.wait_for_function("window.__flightInfo !== undefined", timeout=10000)
+
+        # Near the planet (1 radius above surface): walk-pace speed
+        # (planet membrane orbits at 1 AU = 1.5e11 m from the star)
+        page.evaluate("window.__setCam(1.5e11, 2 * 6.371e6, 0)")
+        page.wait_for_timeout(200)
+        fl_planet = page.evaluate("window.__flightInfo")
+        print(f"Flight @planet: depth={fl_planet['depth']} path={fl_planet['path']} "
+              f"alt={fl_planet['alt']:.3e} m speed={fl_planet['speed']:.1f} m/s "
+              f"clock={fl_planet['clock']:.2f} vesc={fl_planet['vesc']:.0f} m/s")
+        assert fl_planet["depth"] == 1, f"expected planet membrane depth 1, got {fl_planet['depth']}"
+        assert "planet" in fl_planet["path"]
+        assert fl_planet["speed"] >= 1.0, "B FALSIFIER: speed below 1 m/s near a surface"
+        assert fl_planet["speed"] <= 10 * fl_planet["vesc"] * 1.001, \
+            "B FALSIFIER: speed exceeds 10x local escape velocity"
+        assert 10 < fl_planet["speed"] < 2000, \
+            f"walk-pace expectation broken: {fl_planet['speed']} m/s at 1 radius altitude"
+
+        # Deep void: orbital-pace speed, system clock ~0.43
+        page.evaluate("window.__setCam(2e11, 0, 5e10)")
+        page.wait_for_timeout(200)
+        fl_void = page.evaluate("window.__flightInfo")
+        print(f"Flight @void:   depth={fl_void['depth']} path={fl_void['path']} "
+              f"alt={fl_void['alt']:.3e} m speed={fl_void['speed']:.3e} m/s "
+              f"clock={fl_void['clock']:.2f} vesc={fl_void['vesc']:.0f} m/s")
+        assert fl_void["depth"] == 0, f"expected system void depth 0, got {fl_void['depth']}"
+        assert fl_void["speed"] > fl_planet["speed"] * 10, \
+            "scale-relative speed broken: void not much faster than planet surface"
+        assert fl_void["speed"] <= 10 * fl_void["vesc"] * 1.001, \
+            "B FALSIFIER: void speed exceeds 10x local escape velocity"
+        assert 0.3 < fl_void["clock"] < 0.6, \
+            f"system membrane clock should be ~0.43, got {fl_void['clock']}"
+
+        # ---- B4: focus/frame flight ----
+        page.evaluate("window.__focusOn(5)")  # a terrain splat
+        page.wait_for_timeout(3500)
+        focus_txt = text(page, "#fly-focus")
+        assert focus_txt == "#5", f"focus HUD shows {focus_txt!r}, expected '#5'"
+        dist = page.evaluate(
+            "(() => { const p = window.__flightInfo.camPos; "
+            " return Math.hypot(p[0] - 1.5e11, p[1], p[2]); })()")
+        # terrain splat 5 sits on the planet (at 1 AU); frameDist = radius*5 = 6.4e6 m
+        # plus the particle's surface offset — assert we framed, not void/overshot
+        print(f"Focus flight: camera at {dist:.3e} m from planet center (frame dist ~6.4e6 m target)")
+        assert dist < 1.2e8, f"focus flight did not converge (dist {dist:.3e} m)"
+        assert dist > 1e6, f"focus flight overshot into the planet (dist {dist:.3e} m)"
+        page.keyboard.press("Escape")  # release focus
+        page.wait_for_timeout(300)
+        assert text(page, "#fly-focus") == "none (F)", \
+            f"focus not released by Escape: {text(page, '#fly-focus')!r}"
+        page.click("#btn-center")
+        page.wait_for_timeout(200)
+
+        # ---- Track T: LOD of time ----
+        # Toggle on: button + HUD respond, frames keep advancing, no errors
+        page.click("#btn-lod")
+        assert text(page, "#btn-lod") == "LOD Time: on"
+        f0 = page.evaluate("window.__frames || 0")
+        page.wait_for_timeout(400)
+        f1 = page.evaluate("window.__frames || 0")
+        assert f1 > f0, "frames stalled with LOD time on"
+        assert err_visible(page) is None
+        page.click("#btn-lod")
+        assert text(page, "#btn-lod") == "LOD Time: off"
+        print("LOD time toggle OK")
+
+        # T FALSIFIER: LOD-gated positions within 1% of full-rate over 60 frames
+        wit = page.evaluate("window.__lodWitness()")
+        print(f"LOD witness: {wit['systemTicks']}/{wit['frames']} system ticks "
+              f"(clock {wit['clockRate']:.2f}), max divergence {wit['divergence']:.3e} m "
+              f"= {wit['relDivergence']*100:.4f}% at particle #{wit['index']}")
+        assert 0 < wit["systemTicks"] < wit["frames"], \
+            "LOD gating never fired — witness measured nothing"
+        assert wit["relDivergence"] < 0.01, \
+            f"T FALSIFIER TRIPPED: LOD divergence {wit['relDivergence']*100:.3f}% >= 1%"
 
         # ---- 8a. Back to CPU BH (gravity only) ----
         page.click("#btn-cpu")
@@ -203,6 +302,12 @@ def test_spiace_phase6_kernels():
         assert ctx2d is None, "main canvas handed out a 2d context — not a WebGPU canvas"
         print("Renderer check: window.__renderer='webgpu-splat', no 2d context on #c")
 
+        # ---- Canvas is not black (regression: the system-scale near-cull
+        # culled every splat at planetary altitude and NO assertion noticed) ----
+        vis = page.evaluate("window.__dbgRender && window.__dbgRender.visible")
+        assert vis and vis > 0, "0 visible splats — canvas would be black"
+        print(f"Visible splats: {vis}")
+
         # ---- Final screenshot ----
         page.screenshot(path=SCREENSHOT_FINAL, full_page=False)
         assert os.path.exists(SCREENSHOT_FINAL), "Final screenshot not saved"
@@ -211,7 +316,7 @@ def test_spiace_phase6_kernels():
         # ---- 10. Console + page errors ----
         print("\n--- browser console ---")
         for m in console_msgs[:50]:
-            print(" ", m)
+            print(" ", m.encode("ascii", "replace").decode())  # cp1252-safe
         if len(console_msgs) > 50:
             print(f"  ... and {len(console_msgs) - 50} more")
         assert not page_errors, "Uncaught page errors:\n" + "\n".join(page_errors)

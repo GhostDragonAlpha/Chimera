@@ -224,7 +224,35 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 4. ~~**Track A2: Real Earth option**~~ ✓ done — `spawnPlanet(terrainDEM)` accepts equirectangular DEM, same interface as `PlanetOnion.from_topo_grid()`; `generateSyntheticDEM()` for procedural mode; toggle button in HUD
 5. ~~**Track C1/C2: Picking + Highlight**~~ ✓ done — click canvas to select nearest splat (3px radius), Escape clears, white highlight overlay via displayColor(), inspector panel shows pos/vel/mass/charge/temp/flux
 7. **Phase 7 candidates**: magnetic field (Lorentz v×B term), or a third kernel from the superposition family (heat diffusion steady-state, acoustic pressure)
-8. Begin Track B: Scale-relative flight camera + LOD of time (handed off to Kimi K3)
+8. ~~**Track B/T: Scale-relative flight camera + LOD of time**~~ ✓ done — see section below
+
+---
+
+## Track B/T — Scale-Relative Flight + LOD of Time (Completed)
+
+**What was built:**
+- **B1 scale-relative speed**: `speed = k * dist_to_nearest_surface`, k = 1.57e-5 /s derived from 100 m/s at 1 planetary radius; clamped to the falsifier bounds [1 m/s, 10x local escape velocity] — the 1 AU raw derivation (~1e6 m/s) exceeds 10x v_esc (4.2e5 m/s), so the clamp is load-bearing
+- **B2 membrane depth**: planet-relative distance -> depth 0 (system) / 1 (planet) / 2 (surface); depth drives clock rate and local up (surface normal near planet, world +Y in void)
+- **B3 flight HUD**: membrane path (`sol->planet->surface`), altitude, scale-adaptive speed units, clock rate, local-up vector, focus target; axis gizmo on a separate 2D canvas (UI chrome — the particle renderer stays pure WebGPU)
+- **B4 focus/frame**: F (or `__focusOn(i)`) flies to `frame_dist = max(renderRadius*5, 1000)` with exponential approach and tracks the particle; drag-look or Escape releases; click-pick suppressed after drags
+- **T1 per-membrane tick**: `clock_rate = min(1, ref_extent/extent)` (the brief's worked values pin this direction: planet 1.0, system 0.43); forces evaluate every frame, only INTEGRATION is clock-gated with full accumulated dt; CPU modes only (GPU integration lives in the shader, untouched per constraints)
+- **T2**: camera speed multiplies by the current membrane's clock rate — at 1 AU this lands at ~1e6 m/s before clamping, closer to the B1 target than B1 alone
+- **T3 witness**: `__lodWitness()` runs 60 frames full-rate vs LOD-gated from the same snapshot and reports max relative position divergence
+
+**Measured (test_phase6.py, headed, all green):**
+- Flight: 100.1 m/s at 1 planetary radius altitude (derivation target: 100), 1.1e5 m/s in void (< 10x v_esc = 3.6e5), clock 1.00 planet / 0.43 void
+- Focus flight converged: 8.27e6 m from planet center vs 6.4e6 m framing target (terrain splat, frameDist = R_PLANET)
+- LOD witness: 25/60 system ticks, max divergence 797 m = 0.0000% over 60 frames (falsifier: < 1%)
+- All Phase 6 falsifiers still green: energy drift 0.0000%, thermal 255.8 K (5.6% — planet membrane joined the 1 AU bin, albedo 0.3), deflection 3.2e3 m
+- GPU BH+EM: 3.5 ms, 64 fps (recovered from 7 fps after the splat-size fix)
+
+**Inherited bugs found and fixed (Track A1 shipped them silently — no pixel assertion existed):**
+1. The near-cull `cw > 0.01` (1e9 m) was derived for the system-scale camera; at planetary altitude it culled EVERY splat — the canvas rendered black and the green test never noticed. Now scale-relative: cull at half the nearest-surface altitude. New test assertion: `__dbgRender.visible > 0`.
+2. The planet was co-located with the star at the origin, putting the flight camera inside the star's physical radius (and its splat filled the sky). Planet membrane now orbits at 1 AU (`PLANET_POS = [1.5e11, 0, 0]`).
+3. Terrain splat render floor (8e6 m) exceeded the planet's own radius — 300 planet-sized splats rendered as a uniform blue wash at ~30x overdraw (7 fps in GPU mode). Splat radius now derives from the lattice cell: 300 Fibonacci cells -> ~2.3e6 m spacing -> sigma 1.27e6 m (`R_PLANET * 0.2`).
+4. The terrain noise was double-rescaled: `(n-0.5)*2` before `elevFromNoise` (which expects raw [0,1] noise against seaThr 0.45), and the hash-lattice fbm is biased low (mean 0.25, max 0.47) — EVERY cell signed to the ocean mode; land fraction measured 0.000. Now mirrors `PlanetOnion` (`core/planet_membrane.py:189-221`): potential normalized (mean/std), sea level DERIVED at the area-weighted (1-0.291) quantile minus the shelf zero-crossing offset — no tuned threshold. New executable falsifier: `window.__terrainStats.landFraction` within 0.12 of 0.291 (measured 0.203; DEM grid itself hits 0.291 exactly by construction).
+5. Negative longitudes from `atan2` indexed DEM column < 0; clamping made the bilinear weights EXTRAPOLATE, manufacturing phantom rock/snow cells above the land mode's +300 m ceiling. Longitude now wrapped to [0, 2pi) in both DEM and fallback paths.
+6. DEM grid dims were inferred as `nlat = sqrt(N*2)` = 360x180 — TRANSPOSED from the actual 180x360, scrambling every sample (land fraction 0.123, caught by the new falsifier on its first run). Fixed: `sqrt(N/2)`.
 
 ---
 
@@ -277,4 +305,4 @@ Our edge: The AI-driven method means we can build and verify more accurate physi
 
 ---
 
-Document version: 1.3 | Status: Phases 0-6 complete | Agent: bionic
+Document version: 1.5 | Status: Phases 0-6 + Tracks A1/A2/C1/C2/B/T complete | Agent: bionic + Kimi K3

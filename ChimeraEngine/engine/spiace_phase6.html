@@ -26,12 +26,23 @@
 </head>
 <body>
 <canvas id="c"></canvas>
+<canvas id="gizmo" width="90" height="90" style="position:fixed; top:10px; right:10px; z-index:15; pointer-events:none;"></canvas>
 <div id="hud">
   <div class="fps" id="fps">-- fps</div>
   <div class="ms" id="times">-- ms</div>
-  <div class="info" id="sys-info">SPIACE Phase 6 — Universal Kernel Translation + EM</div>
+  <div class="info" id="sys-info">SPIACE Phase 6 — Universal Kernel Translation + EM + Tracks B/T</div>
   <div class="warn" id="gpu-info"></div>
   <div class="info" id="phys-info"></div>
+</div>
+<div class="panel" id="flight-panel" style="top:190px; left:10px; max-width:280px;">
+  <h3>Flight (Track B/T)</h3>
+  <div class="row"><label>Path:</label><span class="val" id="fly-path">sol</span></div>
+  <div class="row"><label>Depth:</label><span class="val" id="fly-depth">0</span></div>
+  <div class="row"><label>Altitude:</label><span class="val" id="fly-alt">void</span></div>
+  <div class="row"><label>Speed:</label><span class="val" id="fly-speed">--</span></div>
+  <div class="row"><label>Clock rate:</label><span class="val" id="fly-clock">--</span></div>
+  <div class="row"><label>Local up:</label><span class="val" id="fly-up">--</span></div>
+  <div class="row"><label>Focus:</label><span class="val" id="fly-focus">none (F)</span></div>
 </div>
 <div id="err"></div>
 <div class="panel" id="ctrl-panel">
@@ -42,6 +53,7 @@
   <div class="row"><label>Time Scale:</label><span class="val" id="time-scale">1x</span></div>
   <div class="row"><input type="range" id="tslider" min="0" max="100" value="50" style="width:120px;accent-color:#7f7"></div>
   <div class="row"><button id="btn-reset">Reset</button><button id="btn-center">Center View</button><button id="btn-terrain">Terrain: Procedural</button></div>
+  <div class="row"><button id="btn-lod">LOD Time: off</button><span class="val" id="lod-info">Track T</span></div>
   <div class="row"><label>Modes:</label>
     <button id="btn-cpu" class="active">CPU BH</button>
     <button id="btn-cpuem">CPU BH+EM</button>
@@ -853,8 +865,21 @@ const R_PLANET = 6.371e6; // m, Earth radius
 const EARTH_OCEAN_MODE = -3700.0; // m, abyssal plain modal depth
 const EARTH_LAND_MODE = 300.0;    // m, continental platform modal height
 const PLANET_MASS = 5.972e24;     // kg, Earth mass
-const SEA_THRESHOLD = 0.45;       // noise threshold for sea level (tuned for land fraction ~29%)
+const EARTH_LAND_FRACTION = 0.291; // the number the surface is tuned to hit (planet_membrane.py:45)
 const SHELF_WIDTH = 0.18;
+// Sea level is DERIVED, never tuned (mirrors PlanetOnion._tune_sea_level):
+// generateSyntheticDEM normalizes the noise potential, then sets the
+// threshold at the area-weighted (1 - EARTH_LAND_FRACTION) quantile minus
+// the shelf zero-crossing offset SHELF_WIDTH*ln(0.925/0.075). These module
+// vars are filled on first DEM build and reused by the non-DEM fallback.
+// (The old hardcoded SEA_THRESHOLD = 0.45 was never reachable: fbm here has
+// mean ~0.25, max ~0.47, and a spurious (n-0.5)*2 rescale pushed it further
+// down — every cell signed to the ocean mode, land fraction measured 0.0%.)
+let NOISE_MEAN = 0.0, NOISE_STD = 1.0, NOISE_SEA_THR = 0.0;
+// Track B fix: the planet membrane orbits at 1 AU — it is NOT co-located
+// with the star. (Track A1 placed both at the origin; that put the flight
+// camera inside the star's physical radius and its splat filled the sky.)
+const PLANET_POS = [1.5e11, 0, 0];
 
 // Track A2: terrain source — 'procedural' or a pre-computed equirectangular DEM
 let terrainSource = 'procedural'; // toggled by btn-earth mode button
@@ -863,17 +888,47 @@ let terrainSource = 'procedural'; // toggled by btn-earth mode button
 // Same noise + bimodal transfer as procedural, but on a proper grid so it
 // can be swapped in later with real Earth data via from_topo_grid().
 function generateSyntheticDEM(nlat = 180, nlon = 360) {
-  const elev = new Float32Array(nlat * nlon);
+  // Raw continent potential from fbm over the equirectangular grid.
+  const pot = new Float32Array(nlat * nlon);
   for (let i = 0; i < nlat; i++) {
     const lat = (Math.PI / 2) - (i / (nlat - 1)) * Math.PI; // +90..-90 rad
     for (let j = 0; j < nlon; j++) {
       const lon = (j / nlon) * 2 * Math.PI;                 // 0..2pi
       const nx = (lon / (2 * Math.PI)) * 64;
       const ny = ((lat / Math.PI) + 0.5) * 32;
-      let n = fbm(nx + 10.0, ny + 10.0, 6);
-      n = (n - 0.5) * 2.0;
-      elev[i * nlon + j] = elevFromNoise(n, SEA_THRESHOLD, SHELF_WIDTH);
+      pot[i * nlon + j] = fbm(nx + 10.0, ny + 10.0, 6);
     }
+  }
+  // Normalize the potential like PlanetOnion does (pot / std) — but the JS
+  // fbm is NOT zero-mean (hash lattice bias, measured mean ~0.25), so the
+  // mean must be subtracted too or the threshold semantics break.
+  let mean = 0;
+  for (let k = 0; k < pot.length; k++) mean += pot[k];
+  mean /= pot.length;
+  let variance = 0;
+  for (let k = 0; k < pot.length; k++) variance += (pot[k] - mean) * (pot[k] - mean);
+  const std = Math.sqrt(variance / pot.length) || 1.0;
+  for (let k = 0; k < pot.length; k++) pot[k] = (pot[k] - mean) / std;
+  NOISE_MEAN = mean; NOISE_STD = std;
+  // Derive sea level for EARTH_LAND_FRACTION. With no roughness term the
+  // zero crossing is exact: elev > 0  <=>  s > 0.925  <=>
+  // pot > sea_thr + SHELF_WIDTH*ln(0.925/0.075). So sea_thr is the
+  // area-weighted (1 - land) quantile of pot, minus that offset.
+  const order = Array.from({ length: pot.length }, (_, k) => k);
+  order.sort((a, b) => pot[a] - pot[b]);
+  const latOf = (k) => (Math.PI / 2) - (((k / nlon) | 0) / (nlat - 1)) * Math.PI;
+  let totalW = 0;
+  for (let k = 0; k < pot.length; k++) totalW += Math.cos(latOf(k));
+  const targetW = (1 - EARTH_LAND_FRACTION) * totalW;
+  let acc = 0, q = pot[order[order.length - 1]];
+  for (let oi = 0; oi < order.length; oi++) {
+    acc += Math.cos(latOf(order[oi]));
+    if (acc >= targetW) { q = pot[order[oi]]; break; }
+  }
+  NOISE_SEA_THR = q - SHELF_WIDTH * Math.log(0.925 / 0.075);
+  const elev = new Float32Array(nlat * nlon);
+  for (let k = 0; k < pot.length; k++) {
+    elev[k] = elevFromNoise(pot[k], NOISE_SEA_THR, SHELF_WIDTH);
   }
   return elev;
 }
@@ -916,6 +971,7 @@ function spawnPlanet(terrainDEM = null) {
     dem = generateSyntheticDEM(180, 360);
   }
 
+  let landCount = 0; // Rule-0 witness: derived sea level must yield EARTH_LAND_FRACTION
   for (let i = 0; i < nSurface; i++) {
     const y = 1 - (i / (nSurface - 1)) * 2;         // -1 .. +1 (z axis)
     const radiusAtY = Math.sqrt(1 - y * y);
@@ -929,8 +985,15 @@ function spawnPlanet(terrainDEM = null) {
     if (dem) {
       // Equirectangular DEM: lat +90..-90 maps to row 0..nlat-1, lon 0..360 to col 0..nlon-1
       const lat = Math.asin(py);                      // radians -pi/2 .. +pi/2
-      const lon = Math.atan2(pz, px);                 // radians 0 .. 2pi
-      const nlat = dem.length > 0 ? Math.sqrt(dem.length * 2) | 0 : 180;
+      const lonRaw = Math.atan2(pz, px);              // radians -pi .. +pi
+      // Wrap to [0, 2pi): negative lon used to index column < 0, and the
+      // clamp + negative dj made bilinear weights EXTRAPOLATE — phantom
+      // rock/snow cells (elev > +300 m, above the land mode itself).
+      const lon = lonRaw < 0 ? lonRaw + 2 * Math.PI : lonRaw;
+      // Grid is nlat x nlon with nlon = 2*nlat (equirectangular 2:1), so
+      // nlat = sqrt(N/2) — the old sqrt(N*2) TRANSPOSED the grid (360x180)
+      // and sampled every splat at swapped lat/lon (land fraction 0.123).
+      const nlat = dem.length > 0 ? Math.sqrt(dem.length / 2) | 0 : 180;
       const nlon = dem.length > 0 ? (dem.length / nlat) | 0 : 360;
       const fi = ((Math.PI / 2) - lat) / Math.PI * (nlat - 1);
       const fj = (lon / (2 * Math.PI)) * nlon;
@@ -941,26 +1004,32 @@ function spawnPlanet(terrainDEM = null) {
       elev = dem[i0 * nlon + j0] * (1-di)*(1-dj) + dem[i0 * nlon + j1] * (1-di)*dj
            + dem[(i0+1) * nlon + j0] * di*(1-dj) + dem[(i0+1) * nlon + j1] * di*dj;
     } else {
-      // Procedural: same noise as before
+      // Procedural: same noise pipeline, normalized with the DEM-derived stats
       const lat = Math.asin(py);
-      const lon = Math.atan2(pz, px);
+      const lonRaw = Math.atan2(pz, px);
+      const lon = lonRaw < 0 ? lonRaw + 2 * Math.PI : lonRaw; // [0, 2pi) — no antimeridian seam
       const nx = (lon / (2 * Math.PI)) * 64;
       const ny = ((lat / Math.PI) + 0.5) * 32;
-      let n = fbm(nx + 10.0, ny + 10.0, 6);
-      elev = (n - 0.5) * 2.0;
-      elev = elevFromNoise(elev, SEA_THRESHOLD, SHELF_WIDTH); // metres
+      const n = fbm(nx + 10.0, ny + 10.0, 6);
+      elev = elevFromNoise((n - NOISE_MEAN) / NOISE_STD, NOISE_SEA_THR, SHELF_WIDTH); // metres
     }
 
     const r3 = R_PLANET + elev;
-    const pos = [r3 * px, r3 * py, r3 * pz];
+    const pos = [PLANET_POS[0] + r3 * px, PLANET_POS[1] + r3 * py, PLANET_POS[2] + r3 * pz];
 
     // Physical radius: same density as orbitals (RHO_BODY = 3000 kg/m^3)
     const mass = RHO_BODY * (4.0 / 3.0) * Math.PI * 500 * 500 * 500; // ~5e10 kg, 500 m radius cells
     const radiusPhys = 500; // m — each splat is a surface cell
-    const renderRadius = Math.max(radiusPhys * 3, 8e6); // inflated for visibility
+    // Splat radius from the LATTICE CELL, not a fixed floor: 300 Fibonacci
+    // cells over 4 pi R^2 -> ~2.3e6 m spacing, so a 2-sigma footprint of
+    // ~5e6 m (sigma ~1.3e6) tiles the surface. (The old 8e6 m floor made
+    // every splat larger than the planet itself: 300 stacked planet-sized
+    // splats rendered as a uniform blue wash at ~30x overdraw, 7 fps.)
+    const renderRadius = R_PLANET * 0.2; // 1.27e6 m
 
     // Color from elevation band (set as display color via temp/lum hack)
     const col = terrainColor(elev);
+    if (elev > 0) landCount++;
 
     planetParticles.push({
       id: nextId++,
@@ -980,6 +1049,14 @@ function spawnPlanet(terrainDEM = null) {
       _origPos: [...pos]    // restore after GPU readback
     });
   }
+  // Executable falsifier for the derived sea level: the test reads this.
+  window.__terrainStats = {
+    landFraction: landCount / nSurface,
+    target: EARTH_LAND_FRACTION,
+    seaThr: NOISE_SEA_THR,
+    noiseMean: NOISE_MEAN,
+    noiseStd: NOISE_STD
+  };
   return planetParticles;
 }
 
@@ -1095,15 +1172,38 @@ function integrateParticle(p, dt) {
   p.pos[2] += p.vel[2] * dt;
 }
 
+// ---- TRACK T1: PER-MEMBRANE TICK (LOD of time) ----
+// Forces evaluate every frame for every particle (the tree is cheap and
+// the flux must stay current); only INTEGRATION is clock-gated. Shallow
+// membranes (system, clock ~0.43) integrate in coarse accumulated steps;
+// deep membranes (planet, clock 1.0) tick every frame. When a membrane's
+// tick fires it integrates with the full accumulated dt — total sim time
+// is identical to full-rate; only the discretization is coarser.
+let lodTime = false;
+const lodAccum = { frames: 0, dt: 0 };
+
 function cpuBarnesHut(dt) {
   const tree = buildTree(particles);
   const fluxOut = { v: 0 };
+  // The system membrane's tick this frame (deep membranes always fire)
+  let tick = true, tickDt = dt;
+  if (lodTime) {
+    lodAccum.frames += SYSTEM_CLOCK;
+    lodAccum.dt += dt;
+    if (lodAccum.frames >= 1) {
+      lodAccum.frames -= 1;
+      tickDt = lodAccum.dt;
+      lodAccum.dt = 0;
+    } else {
+      tick = false;
+    }
+  }
   for (let i = 0; i < particles.length; i++) {
     particles[i].acc = [0, 0, 0];
     fluxOut.v = 0;
     traverseAndAccum(tree, particles[i], particles[i].acc, fluxOut);
     particles[i].flux = fluxOut.v;
-    integrateParticle(particles[i], dt);
+    if (tick) integrateParticle(particles[i], tickDt);
   }
   thermalUpdate(dt);
   return tree;
@@ -1595,13 +1695,134 @@ async function gpuBarnesHut(dt) {
 
 // ---- RENDERING (WebGPU Gaussian-splat pipeline, ported from spike.html) ----
 // Track A1: camera frames the planet (not the whole system)
-let camPos = [0, 2.5e7, 1.5e7]; // meters — ~4 planetary radii away, angled
-const CAM_TARGET = [0, 0, 0];
-const CAM_UP = [0, 1, 0];     // screen-up ≈ world +y for planet view
+let camPos = [PLANET_POS[0], 2.5e7, 1.5e7]; // meters — ~4 planetary radii away, angled
 let keys = {};
 
 document.addEventListener('keydown', e => { if (!keys[e.code]) keys[e.code] = true; });
 document.addEventListener('keyup', e => keys[e.code] = false);
+
+// ---- TRACK B/T: SCALE-RELATIVE FLIGHT + LOD OF TIME ----
+// Rule 0 statement: a fly camera whose speed is DERIVED from the distance
+// to the nearest membrane surface needs no speed slider; the same distance
+// selects the membrane depth, and each membrane's clock rate falls out of
+// its extent. FALSIFIERS (named before the run):
+//   B: if speed exceeds 10x local escape velocity or drops below 1 m/s
+//      near a surface, the derivation is wrong.
+//   T: if LOD-of-time positions diverge > 1% from full-rate over 60
+//      frames, the clock rate derivation is wrong.
+const K_SPEED = 1.57e-5;      // /s — derived: 100 m/s at 1 planetary radius altitude
+const REF_EXTENT = 1.5e11;    // m — 1 AU reference scale
+const SYSTEM_EXTENT = 3.5e11; // m — orbital band outer edge
+// clock_rate = min(1, ref/extent): deep membranes (small extent) tick at
+// full rate, shallow (system) membranes tick coarse. Pinned values:
+// planet 6.371e6 m -> 1.0, system 3.5e11 m -> ~0.43.
+const clockRateForExtent = (extent) => Math.min(1.0, REF_EXTENT / extent);
+const SYSTEM_CLOCK = clockRateForExtent(SYSTEM_EXTENT); // ~0.43
+const PLANET_CLOCK = clockRateForExtent(R_PLANET);      // 1.0
+
+let camYaw = 0, camPitch = 0;
+let curUp = [0, 1, 0];   // B2: radially out near a planet, world +Y in void
+let focusIdx = -1;       // B4: framed particle (-1 = free flight)
+let lastFlight = null;   // last measureFlight() result (drives render cull)
+
+function camForward() {
+  const cp = Math.cos(camPitch);
+  return [cp * Math.sin(camYaw), Math.sin(camPitch), cp * Math.cos(camYaw)];
+}
+function camRight() { // forward x up
+  const f = camForward(), u = curUp;
+  return [f[1]*u[2]-f[2]*u[1], f[2]*u[0]-f[0]*u[2], f[0]*u[1]-f[1]*u[0]];
+}
+function setCamLookAt(target) {
+  const dx = target[0]-camPos[0], dy = target[1]-camPos[1], dz = target[2]-camPos[2];
+  const L = Math.hypot(dx, dy, dz);
+  if (L < 1e-9) return;
+  camPitch = Math.asin(Math.max(-1, Math.min(1, dy / L)));
+  camYaw = Math.atan2(dx, dz);
+}
+setCamLookAt(PLANET_POS); // initial: look at the planet
+
+// Per-frame flight measurement: nearest membrane surface, depth, clock,
+// speed — everything the HUD and the B/T falsifiers read.
+function measureFlight() {
+  // Distance to nearest membrane surface. The star is excluded: it is a
+  // system-scale object, not a surface to land on — its physical radius
+  // would dominate the altitude of anything flying inside the system.
+  let minDist = Infinity;
+  for (const p of particles) {
+    if (p.isStar) continue;
+    const d = Math.hypot(p.pos[0]-camPos[0], p.pos[1]-camPos[1], p.pos[2]-camPos[2]) - p.radiusPhys;
+    if (d < minDist) minDist = d;
+  }
+  if (!isFinite(minDist)) minDist = 1e11;
+  minDist = Math.max(minDist, 1); // falsifier floor: never below 1 m
+
+  // Planet-relative distance drives membrane depth, local up, and (near
+  // the planet) the escape-velocity clamp; the star dominates in void.
+  const distPlanet = Math.hypot(camPos[0]-PLANET_POS[0], camPos[1]-PLANET_POS[1], camPos[2]-PLANET_POS[2]);
+  const distStar = Math.hypot(camPos[0], camPos[1], camPos[2]);
+  // B2 membrane depth: 2 = on surface, 1 = planet membrane, 0 = system void
+  let depth, path, clock;
+  if (distPlanet < 1.5 * R_PLANET)      { depth = 2; path = 'sol->planet->surface'; clock = PLANET_CLOCK; }
+  else if (distPlanet < 10 * R_PLANET)  { depth = 1; path = 'sol->planet';          clock = PLANET_CLOCK; }
+  else                                  { depth = 0; path = 'sol';                  clock = SYSTEM_CLOCK; }
+
+  // Local escape velocity of the dominant body (planet near, star far)
+  const nearPlanet = distPlanet < 50 * R_PLANET;
+  const mLocal = nearPlanet ? PLANET_MASS : 1.989e30;
+  const rLocal = Math.max(nearPlanet ? distPlanet : distStar, 1);
+  const vesc = Math.sqrt(2 * G * mLocal / rLocal);
+
+  // T2: speed = k * dist_to_surface * clock_rate, clamped to falsifier bounds
+  let speed = K_SPEED * minDist * clock;
+  const clampedEsc = speed > 10 * vesc;
+  speed = Math.min(speed, 10 * vesc); // falsifier ceiling
+  speed = Math.max(speed, 1.0);       // falsifier floor (near surfaces)
+
+  // B2: local up follows the surface normal inside the planet membrane
+  curUp = (depth >= 1 && distPlanet > 1)
+    ? [(camPos[0]-PLANET_POS[0])/distPlanet, (camPos[1]-PLANET_POS[1])/distPlanet, (camPos[2]-PLANET_POS[2])/distPlanet]
+    : [0, 1, 0];
+
+  return { speed, alt: minDist, depth, path, clock, vesc, clampedEsc,
+           up: [...curUp], camPos: [...camPos] };
+}
+
+// B4: nearest particle to the camera's forward ray (for F-focus)
+function nearestToForwardRay() {
+  const f = camForward();
+  let best = -1, bestPerp = Infinity;
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    const dx = p.pos[0]-camPos[0], dy = p.pos[1]-camPos[1], dz = p.pos[2]-camPos[2];
+    const along = dx*f[0] + dy*f[1] + dz*f[2];
+    if (along <= 0) continue;
+    const perpSq = dx*dx + dy*dy + dz*dz - along*along;
+    if (perpSq < bestPerp) { bestPerp = perpSq; best = i; }
+  }
+  return best;
+}
+window.__focusOn = (i) => { focusIdx = (i >= 0 && i < particles.length) ? i : -1; };
+window.__setCam = (x, y, z) => { camPos = [x, y, z]; focusIdx = -1; }; // test hook
+
+// Mouse drag = look (click = pick, handled below with drag suppression)
+let dragState = null, suppressPick = false;
+canvas.addEventListener('mousedown', e => { dragState = { x: e.clientX, y: e.clientY, moved: 0 }; });
+window.addEventListener('mousemove', e => {
+  if (!dragState) return;
+  const dx = e.clientX - dragState.x, dy = e.clientY - dragState.y;
+  dragState.x = e.clientX; dragState.y = e.clientY;
+  dragState.moved += Math.abs(dx) + Math.abs(dy);
+  if (dragState.moved > 4) {
+    camYaw += dx * 0.004;
+    camPitch = Math.max(-1.55, Math.min(1.55, camPitch - dy * 0.004));
+    focusIdx = -1; // manual look releases focus tracking
+  }
+});
+window.addEventListener('mouseup', () => {
+  if (dragState && dragState.moved > 4) suppressPick = true;
+  dragState = null;
+});
 
 function resize() {
   canvas.width = Math.min(window.innerWidth, 1280);
@@ -1624,7 +1845,7 @@ function prepareSplats() {
   // Non-reversed-Z: visible points get clip w > 0, which both the CPU cull
   // test and the rasterizer's 1/w projection rely on. (No depth buffer is
   // used anywhere in this pipeline, so reversed-Z buys nothing here.)
-  const viewRot = lookAt([0,0,0], [CAM_TARGET[0]-eye[0], CAM_TARGET[1]-eye[1], CAM_TARGET[2]-eye[2]], CAM_UP);
+  const viewRot = lookAt([0,0,0], camForward(), curUp);
   const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
   // clip = proj * view * pos. multiplyMat4(a, b) returns a*b, so the
   // projection must be the LEFT factor — (viewRot * proj) * v applies the
@@ -1640,6 +1861,15 @@ function prepareSplats() {
   pb[18] = n;
   device.queue.writeBuffer(paramsBuf, 0, pb);
 
+  // Scale-relative near cull (Track B): the fixed 0.01 cutoff (1e9 m)
+  // was derived for the system-scale camera; a flight camera at
+  // planetary altitude sits far closer. Cull at half the altitude above
+  // the nearest surface — closer geometry is behind/inside us anyway.
+  // (No depth buffer exists in this pipeline; the perspective near/far
+  // planes only feed clip z, which the raster never reads — this cw
+  // test IS the near plane.)
+  const nearW = Math.max((lastFlight ? lastFlight.alt : 1e9) * 0.5, 1) * WORLD_SCALE;
+
   // Project every particle on the CPU (f64) for culling + tile binning
   const buckets = new Array(COLS * ROWS);
   const culled = [];
@@ -1650,7 +1880,7 @@ function prepareSplats() {
     const rz = p.pos[2]*WORLD_SCALE - eye[2];
     const cw = vp[3]*rx + vp[7]*ry + vp[11]*rz; // view depth (reversed-Z: larger = closer)
     const rScaled = p.radius * WORLD_SCALE;
-    let ok = cw > 0.01;
+    let ok = cw > nearW;
     let sx = 0, sy = 0, rpx = 0;
     if (ok) {
       const cx = vp[0]*rx + vp[4]*ry + vp[8]*rz;
@@ -1825,6 +2055,35 @@ function renderFrame(n) {
 }
 
 // ---- UI HANDLERS ----
+// Scale-adaptive unit formatting for the flight HUD (B3)
+function fmtDist(d) {
+  if (d < 1e3) return d.toFixed(0) + ' m';
+  if (d < 1e6) return (d / 1e3).toFixed(1) + ' km';
+  return d.toExponential(2) + ' m';
+}
+function fmtSpeed(v) {
+  if (v < 1e3) return v.toFixed(1) + ' m/s';
+  if (v < 1e6) return (v / 1e3).toFixed(2) + ' km/s';
+  return v.toExponential(2) + ' m/s';
+}
+
+// B3: axis gizmo — the camera basis drawn as world axes in the corner.
+// (UI chrome on a separate canvas; the particle renderer is never 2D.)
+const gizmo2d = document.getElementById('gizmo').getContext('2d');
+function drawGizmo() {
+  if (!gizmo2d) return;
+  const r = camRight(), u = curUp;
+  gizmo2d.clearRect(0, 0, 90, 90);
+  gizmo2d.font = '9px monospace';
+  for (const [a, col, lbl] of [[[1,0,0], '#f55', 'X'], [[0,1,0], '#5f5', 'Y'], [[0,0,1], '#58f', 'Z']]) {
+    const sx = a[0]*r[0] + a[1]*r[1] + a[2]*r[2];
+    const sy = a[0]*u[0] + a[1]*u[1] + a[2]*u[2];
+    gizmo2d.strokeStyle = col; gizmo2d.fillStyle = col;
+    gizmo2d.beginPath(); gizmo2d.moveTo(45, 45); gizmo2d.lineTo(45 + sx*30, 45 - sy*30); gizmo2d.stroke();
+    gizmo2d.fillText(lbl, 45 + sx*38 - 3, 45 - sy*38 + 3);
+  }
+}
+
 $('btn-add').onclick = () => {
   const starMass = particles.length ? particles[0].mass : 1.989e30;
   const before = particles.length;
@@ -1845,10 +2104,24 @@ $('btn-terrain').onclick = () => {
   else { terrainSource = 'procedural'; $('btn-terrain').textContent = 'Terrain: Procedural'; }
   particles = []; nextId = 0; spawnSystem(500); prevEnergy = null;
 };
-$('btn-center').onclick = () => { camPos = [0, 2.5e7, 1.5e7]; }; // Track A1: frame the planet
+$('btn-center').onclick = () => {
+  camPos = [PLANET_POS[0], 2.5e7, 1.5e7]; // Track A1: frame the planet
+  setCamLookAt(PLANET_POS);
+  focusIdx = -1;
+};
+// Track T: LOD-of-time toggle (CPU modes only — GPU mode integrates in the
+// shader, which Track T leaves untouched per the no-WGSL-change constraint)
+$('btn-lod').onclick = () => {
+  lodTime = !lodTime;
+  lodAccum.frames = 0; lodAccum.dt = 0;
+  $('btn-lod').textContent = 'LOD Time: ' + (lodTime ? 'on' : 'off');
+  $('lod-info').textContent = lodTime ? 'sys clock ' + SYSTEM_CLOCK.toFixed(2) : 'Track T';
+};
 // Track C1: picking - click canvas to select nearest splat
+// (suppressed when the click was actually a look-drag, Track B)
 let mousePos = { x: 0, y: 0 };
 canvas.addEventListener('click', (e) => {
+  if (suppressPick) { suppressPick = false; return; }
   const rect = canvas.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
@@ -1866,7 +2139,7 @@ canvas.addEventListener('click', (e) => {
     const d2 = rx*rx + ry*ry + rz*rz;
     if (d2 > 1e16) continue; // too far
     // Project to screen for distance check
-    const viewRot = lookAt([0,0,0], [CAM_TARGET[0]-eye[0], CAM_TARGET[1]-eye[1], CAM_TARGET[2]-eye[2]], CAM_UP);
+    const viewRot = lookAt([0,0,0], camForward(), curUp);
     const W = canvas.width, H = canvas.height;
     const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
     const vp = multiplyMat4(proj, viewRot);
@@ -1880,9 +2153,16 @@ canvas.addEventListener('click', (e) => {
   }
   selectedParticleIdx = bestIdx;
 });
-// Track C2: Escape clears selection
+// Track C2: Escape clears selection; Track B4: F focuses/frames a particle
  document.addEventListener('keydown', (e) => {
-   if (e.code === 'Escape') { selectedParticleIdx = -1; }
+   if (e.code === 'Escape') { selectedParticleIdx = -1; focusIdx = -1; }
+   if (e.code === 'KeyF') {
+     if (focusIdx >= 0) focusIdx = -1; // toggle off
+     else {
+       const t = selectedParticleIdx >= 0 ? selectedParticleIdx : nearestToForwardRay();
+       if (t >= 0) focusIdx = t;
+     }
+   }
  });
 $('theta-slider').oninput = (e) => {
   theta = parseInt(e.target.value) / 10;
@@ -1891,7 +2171,6 @@ $('theta-slider').oninput = (e) => {
 $('tslider').oninput = (e) => {
   timeScale = Math.pow(10, (parseInt(e.target.value) - 50) / 20);
   $('time-scale').textContent = timeScale.toFixed(1) + 'x';
-  $('mem-clock').textContent = timeScale.toFixed(1) + 'x';
 };
 
 $('btn-cpu').onclick = () => { mode = 'cpu'; emEnabled = false; setModeButtons(); };
@@ -1930,10 +2209,10 @@ async function main() {
   }
 
   spawnSystem(500);
-  // Membrane panel (Track A1: planet membrane info)
+  // Membrane panel (Track A1: planet membrane info; clock is per-frame
+  // from measureFlight — Track T — set in the loop)
   $('mem-depth').textContent = '0';
   $('mem-extent').textContent = R_PLANET.toExponential(2) + ' m';
-  $('mem-clock').textContent = timeScale.toFixed(1) + 'x';
 
   function loop(now) {
     const rawDt = (now - lastTime) / 1000;
@@ -2029,12 +2308,52 @@ async function main() {
       window.__thermal = { meanT, count: binN, predicted: T_EQ_1AU };
     }
 
-    // Camera
-    const speed = 5e9 * dt;
-    if (keys['KeyW']) camPos[1] += speed;
-    if (keys['KeyS']) camPos[1] -= speed;
-    if (keys['KeyA']) camPos[0] -= speed;
-    if (keys['KeyD']) camPos[0] += speed;
+    // Track B/T: scale-relative flight — speed derived from the nearest
+    // membrane surface distance and the current membrane clock rate.
+    // WASD/Space/Shift move in the CAMERA frame, not world axes.
+    const fl = measureFlight();
+    lastFlight = fl;
+    window.__flightInfo = fl;
+    {
+      const f = camForward(), r = camRight(), u = curUp;
+      const step = fl.speed * rawDt;
+      let mx = 0, my = 0, mz = 0;
+      if (keys['KeyW']) { mx += f[0]; my += f[1]; mz += f[2]; }
+      if (keys['KeyS']) { mx -= f[0]; my -= f[1]; mz -= f[2]; }
+      if (keys['KeyD']) { mx += r[0]; my += r[1]; mz += r[2]; }
+      if (keys['KeyA']) { mx -= r[0]; my -= r[1]; mz -= r[2]; }
+      if (keys['Space'])      { mx += u[0]; my += u[1]; mz += u[2]; }
+      if (keys['ShiftLeft'])  { mx -= u[0]; my -= u[1]; mz -= u[2]; }
+      camPos[0] += mx * step; camPos[1] += my * step; camPos[2] += mz * step;
+    }
+
+    // B4: focus/frame — fly to framing distance and track the particle
+    if (focusIdx >= 0 && focusIdx < particles.length) {
+      const p = particles[focusIdx];
+      const frameDist = Math.max(p.radius * 5, 1000);
+      const dx = p.pos[0]-camPos[0], dy = p.pos[1]-camPos[1], dz = p.pos[2]-camPos[2];
+      const L = Math.hypot(dx, dy, dz);
+      if (L > 1e-9) {
+        const t = Math.min(1, 3.5 * rawDt); // smooth exponential approach
+        camPos[0] += (p.pos[0] - dx/L*frameDist - camPos[0]) * t;
+        camPos[1] += (p.pos[1] - dy/L*frameDist - camPos[1]) * t;
+        camPos[2] += (p.pos[2] - dz/L*frameDist - camPos[2]) * t;
+        setCamLookAt(p.pos);
+      }
+    } else if (focusIdx >= particles.length) focusIdx = -1;
+
+    // B3: membrane-native flight HUD + axis gizmo (every 10 frames)
+    if (frameCount % 10 === 0) {
+      $('fly-path').textContent = fl.path;
+      $('fly-depth').textContent = fl.depth;
+      $('fly-alt').textContent = fl.depth === 0 ? 'void' : fmtDist(fl.alt);
+      $('fly-speed').textContent = fmtSpeed(fl.speed);
+      $('fly-clock').textContent = fl.clock.toFixed(2) + (lodTime ? ' (LOD on)' : '');
+      $('fly-up').textContent = fl.up.map(v => v.toFixed(2)).join(', ');
+      $('fly-focus').textContent = focusIdx >= 0 ? '#' + focusIdx : 'none (F)';
+      $('mem-clock').textContent = fl.clock.toFixed(2) + 'x';
+      drawGizmo();
+    }
 
     // Track C2: update inspector panel
     if (selectedParticleIdx >= 0 && selectedParticleIdx < particles.length) {
@@ -2128,6 +2447,57 @@ window.__deflectionCheck = () => {
   const pc = run(true), pn = run(false);
   const delta = Math.hypot(pc[0]-pn[0], pc[1]-pn[1], pc[2]-pn[2]);
   return { delta, index: best, aEM0: bestA, charge: bg[best].charge };
+};
+
+// ---- LOD-OF-TIME WITNESS (lazy; called by test_phase6.py, not at load) ----
+// Falsifier T: advancing the system membrane at its coarse clock rate for
+// 60 frames must produce positions within 1% of a full-rate simulation.
+// Method: snapshot state -> run full-rate -> restore -> run LOD-gated ->
+// restore -> report max relative divergence over the moving bodies.
+window.__lodWitness = (frames = 60, dtFixed = 0.016) => {
+  const snap = particles.map(p => ({
+    pos: [...p.pos], vel: [...p.vel], acc: [...p.acc],
+    temp: p.temp, lum: p.lum, flux: p.flux }));
+  const restore = () => {
+    particles.forEach((p, i) => {
+      const s = snap[i];
+      p.pos = [...s.pos]; p.vel = [...s.vel]; p.acc = [...s.acc];
+      p.temp = s.temp; p.lum = s.lum; p.flux = s.flux;
+    });
+  };
+  const savedLod = lodTime;
+  const savedMode = mode;
+  const savedEm = emEnabled;
+  emEnabled = true; // witness runs with ALL force kernels active
+
+  lodTime = false;
+  for (let f = 0; f < frames; f++) cpuBarnesHut(dtFixed);
+  const posA = particles.map(p => [...p.pos]);
+
+  restore();
+  lodTime = true; lodAccum.frames = 0; lodAccum.dt = 0;
+  let ticks = 0;
+  for (let f = 0; f < frames; f++) {
+    const before = lodAccum.dt;
+    cpuBarnesHut(dtFixed);
+    if (lodAccum.dt === 0 && before !== 0) ticks++; // a tick fired this frame
+  }
+  const posB = particles.map(p => [...p.pos]);
+
+  restore();
+  lodTime = savedLod; mode = savedMode; emEnabled = savedEm;
+  lodAccum.frames = 0; lodAccum.dt = 0;
+
+  let maxDiv = 0, maxRel = 0, idx = -1;
+  for (let i = 0; i < particles.length; i++) {
+    if (particles[i]._terrainCol || particles[i].isStar) continue;
+    const d = Math.hypot(posA[i][0]-posB[i][0], posA[i][1]-posB[i][1], posA[i][2]-posB[i][2]);
+    const r = Math.hypot(posA[i][0], posA[i][1], posA[i][2]);
+    const rel = d / Math.max(r, 1);
+    if (rel > maxRel) { maxRel = rel; maxDiv = d; idx = i; }
+  }
+  return { divergence: maxDiv, relDivergence: maxRel, index: idx, frames,
+           clockRate: SYSTEM_CLOCK, systemTicks: ticks };
 };
 
 function updateTreeStats(tree) {
