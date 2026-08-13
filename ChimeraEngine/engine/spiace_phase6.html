@@ -1392,7 +1392,11 @@ function spawnPlanet(pi = 0, terrainDEM = null) {
     // ~5e6 m (sigma ~1.3e6) tiles the surface. (The old 8e6 m floor made
     // every splat larger than the planet itself: 300 stacked planet-sized
     // splats rendered as a uniform blue wash at ~30x overdraw, 7 fps.)
-    const renderRadius = R_PL * 0.2; // 1.27e6 m at R_earth
+    // Splat radius scaled to canvas resolution: higher-res displays need
+    // smaller splats or they blur into each other. At 1280×720, 0.2 gave
+    // ~3-4 bloated blobs across the planet; at native-HiDPI we halve it.
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const renderRadius = R_PL * (0.2 / Math.max(dpr, 1)); // ~1.27e6 m @ 1×, ~635 km @ 2× DPR
 
     // Color from elevation band (set as display color via temp/lum hack)
     const col = terrainColor(elev);
@@ -2598,8 +2602,11 @@ window.addEventListener('mouseup', () => {
 });
 
 function resize() {
-  canvas.width = Math.min(window.innerWidth, 1280);
-  canvas.height = Math.min(window.innerHeight, 720);
+  // HiDPI: multiply by device pixel ratio (Retina = 2×, some displays = 3×)
+  // Cap at 4K to avoid memory blowup on ultrawide monitors.
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  canvas.width  = Math.min(Math.round(window.innerWidth  * dpr), 3840);
+  canvas.height = Math.min(Math.round(window.innerHeight * dpr), 2160);
 }
 window.addEventListener('resize', resize);
 resize();
