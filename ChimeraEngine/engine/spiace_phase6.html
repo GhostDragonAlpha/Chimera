@@ -761,17 +761,37 @@ const STAR_TINT = blackbodyRGB(T_STAR);
 // HDR radiance for ACES; normalized so a 400 m body at 1 AU lands near 1.0.
 const SCATTER_REF = E_1AU * Math.PI * 400 * 400 * ALBEDO; // W
 const STAR_HDR = 8.0;
+
+// Track A3: N·L diffuse + specular lighting
+// Star direction (world space) — computed each frame from planet pos to star.
+let _lightDirW = [1, 0, 0]; // updated in prepareSplats
+const SPECULAR_SHININESS = 80.0;
+const SPECULAR_INTENSITY = 0.3;
+const DIFFUSE_BASE = 0.15;   // minimum illumination (no pure black shadows)
+
 function displayColor(p) {
   if (p.isStar) return [STAR_TINT[0] * STAR_HDR, STAR_TINT[1] * STAR_HDR, STAR_TINT[2] * STAR_HDR];
   // Track C2: selected particle gets a bright white highlight overlay
   const isSelected = (particles.indexOf(p) === selectedParticleIdx);
   if (p._terrainCol) {
+    // Track A3: N·L diffuse + water specular
+    const lightDir = p._lightDir || _lightDirW;
+    const n = p._normal || [0, 0, 1];
+    const NL = Math.max(0, n[0]*lightDir[0] + n[1]*lightDir[1] + n[2]*lightDir[2]);
+    // Diffuse: base color * (ambient + diffuse * N·L)
+    const isOcean = p._elev <= 0;
+    let diffuse = DIFFUSE_BASE + (1 - DIFFUSE_BASE) * NL;
+    // Specular on water only (Blinn-Phong): viewDir approx -camera direction
+    // For simplicity, use half-vector between light and "up" as proxy for viewer
+    const h = [lightDir[0]+n[0], lightDir[1]+n[1], lightDir[2]+n[2]];
+    const hLen = Math.hypot(...h) || 1;
+    const spec = isOcean ? SPECULAR_INTENSITY * Math.pow(Math.max(0, (lightDir[0]*n[0]+lightDir[1]*n[1]+lightDir[2]*n[2] + 1)/2 / hLen), SPECULAR_SHININESS) : 0;
     const s = p.flux * Math.PI * p.radiusPhys * p.radiusPhys * p.albedo / SCATTER_REF;
     const bb = blackbodyRGB(p.temp);
     const e = Math.pow(p.temp / T_STAR, 4) * STAR_HDR;
-    let r = p._terrainCol[0] * (1 + s) + bb[0] * e * 0.1;
-    let g = p._terrainCol[1] * (1 + s) + bb[1] * e * 0.1;
-    let b = p._terrainCol[2] * (1 + s) + bb[2] * e * 0.1;
+    let r = p._terrainCol[0] * diffuse + spec * (isOcean ? 1.0 : 0.1) + bb[0] * e * 0.1;
+    let g = p._terrainCol[1] * diffuse + spec * (isOcean ? 0.9 : 0.1) + bb[0] * e * 0.1;
+    let b = p._terrainCol[2] * diffuse + spec * (isOcean ? 0.8 : 0.1) + bb[0] * e * 0.1;
     if (isSelected) { r = Math.min(1, r + 0.5); g = Math.min(1, g + 0.5); b = Math.min(1, b + 0.5); }
     return [r, g, b];
   }
@@ -1031,6 +1051,75 @@ function spawnPlanet(terrainDEM = null) {
     const col = terrainColor(elev);
     if (elev > 0) landCount++;
 
+    // Track A3: surface normal from sphere + finite-difference slope on DEM.
+    // Sphere normal: pos / |pos|. Perturbation from local gradient in lat/lon
+    // drives the facet tilt so N·L produces a real terminator.
+    const norm = [px, py, pz];
+    const nLen = Math.hypot(...norm);
+    const snorm = norm.map(v => v / nLen);
+    // Gradient on sphere: dE/dlat and dE/dlon from neighbors
+    const latDeg = Math.asin(py) * 180 / Math.PI;
+    const lonDeg = (Math.atan2(pz, px) < 0 ? Math.atan2(pz, px) + 2*Math.PI : Math.atan2(pz, px)) * 180 / Math.PI;
+    let dEdLat = 0, dEdLon = 0;
+    if (dem) {
+      const nlatD = dem.length > 0 ? Math.sqrt(dem.length / 2) | 0 : 180;
+      const nlonD = dem.length > 0 ? (dem.length / nlatD) | 0 : 360;
+      const fi = ((Math.PI/2) - Math.asin(py)) / Math.PI * (nlatD - 1);
+      const fj = (lonDeg / 360) * nlonD;
+      const i0 = Math.max(0, Math.min(nlatD-2, Math.floor(fi)));
+      const j0 = Math.max(0, Math.min(nlonD-1, Math.floor(fj)));
+      const di = fi-i0, dj = fj-j0;
+      const j1 = Math.min(nlonD-1, j0+1);
+      const e00 = dem[i0*nlonD+j0], e10 = dem[(i0+1)*nlonD+j0];
+      const e01 = dem[i0*nlonD+j1], e11 = dem[(i0+1)*nlonD+j1];
+      const eCenter = e00*(1-di)*(1-dj) + e10*di*(1-dj) + e01*(1-di)*dj + e11*di*dj;
+      // Central difference for gradient (m per radian)
+      const latNext = Math.asin(Math.min(1, py + 2/(nSurface))) ;
+      const lonWrapped = (lonDeg + 5) % 360 * Math.PI / 180;
+      const fi2 = ((Math.PI/2)-latNext)/Math.PI*(nlatD-1);
+      const fj2 = (lonWrapped/(2*Math.PI))*nlonD;
+      // Simplified: use analytic gradient from the DEM indices around this cell
+      const dEdLat_approx = (e10 - e00) * (nlatD - 1) / (Math.PI/2) * R_PLANET; // m/rad · m per rad lat
+      const dEdLon_approx = (e01 - e00 + e11 - e10) * 0.5 * nlonD / (2*Math.PI) * R_PLANET * Math.cos(Math.asin(py));
+      dEdLat = dEdLat_approx;
+      dEdLon = dEdLon_approx;
+    } else {
+      // Procedural: finite difference on Fibonacci neighbors
+      const iPrev = Math.max(0, i - 1), iNext = Math.min(nSurface-1, i + 1);
+      const yPrev = 1 - (iPrev/(nSurface-1))*2, yNext = 1 - (iNext/(nSurface-1))*2;
+      const rPrev = Math.sqrt(1-yPrev*yPrev), rNext = Math.sqrt(1-yNext*yNext);
+      const thPrev = goldenAngle*iPrev, thNext = goldenAngle*iNext;
+      // Find closest neighbor in longitude (handle wrap)
+      let bestDlon = 2*Math.PI, dLonBest = 0;
+      for (let dd = 1; dd <= 5; dd++) {
+        const idxP = ((i - dd) % nSurface + nSurface) % nSurface;
+        const idxN = (i + dd) % nSurface;
+        const yP = 1-(idxP/(nSurface-1))*2, rP = Math.sqrt(1-yP*yP);
+        const thP = goldenAngle*idxP;
+        let dLon = Math.abs(Math.atan2(Math.sin(thP-th), Math.cos(thP-th)));
+        if (dLon < bestDlon) { bestDlon = dLon; dLonBest = dLon; }
+      }
+      // Rough gradient estimate
+      const latR = Math.asin(py);
+      const lonR = Math.atan2(pz, px);
+      const nxP = (lonR/(2*Math.PI))*64, nyP = ((latR/Math.PI)+0.5)*32;
+      const nPrev = fbm(nxP - bestDlon/(2*Math.PI)*64 + 10, nyP + 2*goldenAngle/(Math.PI/2)*32 + 10, 6);
+      const nNext = fbm(nxP + bestDlon/(2*Math.PI)*64 + 10, nyP - 2*goldenAngle/(Math.PI/2)*32 + 10, 6);
+      dEdLat = ((nNext - nPrev) / (4*goldenAngle/Math.PI)) * (R_PLANET * Math.PI/180) * 2; // rough
+      dEdLon = 0;
+    }
+    // Perturb sphere normal by terrain slope
+    // Tangent vectors: east (d/dlon) and north (d/dlat)
+    const east = [-Math.sin(lonDeg*Math.PI/180), 0, Math.cos(lonDeg*Math.PI/180)];
+    const north = [-Math.sin(latDeg*Math.PI/180)*Math.cos(lonDeg*Math.PI/180),
+                    Math.cos(latDeg*Math.PI/180),
+                    -Math.sin(latDeg*Math.PI/180)*Math.sin(lonDeg*Math.PI/180)];
+    // Normal = sphere_normal - (dE/dlat * north + dE/dlon * east) / R_PLANET
+    const slopeX = snorm[0] - (dEdLon * east[0] + dEdLat * north[0]) / R_PLANET;
+    const slopeY = snorm[1] - (dEdLon * east[1] + dEdLat * north[1]) / R_PLANET;
+    const slopeZ = snorm[2] - (dEdLon * east[2] + dEdLat * north[2]) / R_PLANET;
+    const tLen = Math.hypot(slopeX, slopeY, slopeZ);
+
     planetParticles.push({
       id: nextId++,
       pos: [...pos],
@@ -1046,7 +1135,9 @@ function spawnPlanet(terrainDEM = null) {
       flux: 0,         // will be filled by tree traversal
       albedo: PLANET_ALBEDO,
       _terrainCol: col,     // custom field for displayColor override
-      _origPos: [...pos]    // restore after GPU readback
+      _origPos: [...pos],   // restore after GPU readback
+      _normal: [slopeX/tLen, slopeY/tLen, slopeZ/tLen],  // Track A3: surface normal
+      _elev: elev                                         // Track A3: for isOcean check
     });
   }
   // Executable falsifier for the derived sea level: the test reads this.
@@ -1942,6 +2033,21 @@ function prepareSplats() {
   device.queue.writeBuffer(sortedIdxBuf, 0, new Uint32Array(order));
   device.queue.writeBuffer(tileCountsBuf, 0, counts);
   device.queue.writeBuffer(tileOffsetsBuf, 0, offsets);
+
+  // Track A3: compute light direction per terrain splat each frame.
+  // Star is at origin (or PLANET_POS-relative for the planet's own star).
+  // Direction FROM splat TO star = normalize(starPos - splatPos).
+  const starWorld = [0, 0, 0]; // star at origin
+  for (let i = 0; i < n; i++) {
+    const p = particles[i];
+    if (p._terrainCol) {
+      const dx = starWorld[0] - p.pos[0], dy = starWorld[1] - p.pos[1], dz = starWorld[2] - p.pos[2];
+      const dLen = Math.hypot(dx, dy, dz) || 1;
+      p._lightDir = [dx/dLen, dy/dLen, dz/dLen];
+    }
+  }
+  // Update global light dir for non-terrain particles (orbitals)
+  _lightDirW = [0, 0, 0]; // will be overwritten per-particle
 
   // Colors every frame: each splat's emissive color IS the membrane's
   // contained light and heat at that cell (scattered starlight from the
