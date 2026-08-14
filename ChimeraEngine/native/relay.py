@@ -37,8 +37,9 @@ def ensure_proc():
         if proc is not None:
             return
         LOG.write_text("", encoding="utf-8")
-        proc = subprocess.Popen([str(EXE), TICK_MS, GENOME], stdout=subprocess.PIPE,
-                                text=True, bufsize=1)
+        proc = subprocess.Popen([str(EXE), TICK_MS, GENOME],
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE, text=True, bufsize=1)
         threading.Thread(target=reader, daemon=True).start()
 
 
@@ -92,10 +93,31 @@ class Handler(BaseHTTPRequestHandler):
                         return
                     self.wfile.write(f"data: {line}\n\n".encode())
                     self.wfile.flush()
-                    if json.loads(line).get("done"):
+                    m = json.loads(line)
+                    # cut only on a growth FRAME's done — embodiment genomes
+                    # keep streaming anim frames after the final ledger
+                    if m.get("type") == "frame" and m.get("done"):
                         return
             except (BrokenPipeError, ConnectionResetError):
                 return
+            return
+        self.send_response(404)
+        self.end_headers()
+
+    def do_POST(self):
+        if self.path.startswith("/cmd"):
+            n = int(self.headers.get("Content-Length") or 0)
+            cmd = self.rfile.read(n).decode().strip()
+            if proc is not None and proc.poll() is None and cmd:
+                try:
+                    proc.stdin.write(cmd + "\n")
+                    proc.stdin.flush()
+                    self.send_response(204)
+                except (BrokenPipeError, OSError):
+                    self.send_response(503)
+            else:
+                self.send_response(503)
+            self.end_headers()
             return
         self.send_response(404)
         self.end_headers()

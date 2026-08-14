@@ -43,6 +43,21 @@
 #   F-N3c HEADED: relay + viewer on the creature genome — the page reports
 #          kind=creature, done, and its cellCount equals the wire ledger's
 #          final frame count exactly (the browser believed the wire)
+# N4 falsifiers (named before the run; JS reference numbers probed
+# synchronously from spiace_grow.html?genome=bear):
+#   F-N4a bear growth bit-identical to creature growth (same table) · F-N4b
+#          rig: 4 chains x (pathLen 6, elbow 3), 8 joints, 2 ears, waveCh =
+#          fore/+z · F-N4c wave minResidual == 0.04881518056285238 at
+#          raiseIters 15 / iters 230 · F-N4d gait diagonal in phase /
+#          ipsilateral anti-phase (Fourier), bodyX == 400*4*2/60 · F-N4e
+#          Python-oracle FK segment audit < 1e-6 at thetaFinal and at probe
+#          pose [0.4,-0.3] · F-N4f no NaN, theta <= 2.6 · F-N4g senses
+#          1/3/2/5/0 · F-N4h 320 episodes: visits == [9450,89,93,92,1736,1888,
+#          1958], last30 > first30+0.3, greedy == [0,1,1,1,2,2,2], Q within
+#          1e-9, minResAuto < 0.35 · F-N4i bodyXfinal == 789.8666666666321 ·
+#          F-N4j HEADED: WAVE button -> C++ core (page observes cmd=wave;
+#          wire ledger holds the wave frames: res<0.35, waveDone), page
+#          posed == wire posed
 import json
 import math
 import subprocess
@@ -447,6 +462,256 @@ try:
               f"tick={st['tick']}")
     finally:
         relay2.terminate()
+
+    # ---- N4: EMBODIMENT (G4 rig/IK + G5 learner) in the native core --------
+    # Falsifiers named before the run (mirroring F-G4/F-G5; the JS reference
+    # numbers come from the synchronous probe of spiace_grow.html?genome=bear,
+    # dumped to .tmp_bear_ref.json and inlined here):
+    #   F-N4a: bear growth is BIT-IDENTICAL to creature growth (same table)
+    #   F-N4b: rig — 4 chains x (pathLen 6, elbow 3), 8 joints, 2 ears,
+    #          waveCh = first fore/+z chain
+    #   F-N4c: wave converges — minResidual < 0.35 AND == JS reference,
+    #          raiseIters == 15, iters == 230 (bit-faithful)
+    #   F-N4d: gait — Fourier at the gait frequency: diagonal pairs in phase
+    #          (|dphi|<0.5), ipsilateral anti-phase (||dphi|-pi|<0.5); bodyX
+    #          after 400 ticks == 400*4*2/60 within 1e-6
+    #   F-N4e: FK rigidity — Python-oracle FK on the wire's own paths:
+    #          posed segments == grown lengths at thetaFinal AND at the probe
+    #          pose theta=[0.4,-0.3], segErr < 1e-6
+    #   F-N4f: no NaN, |theta| <= 2.6 ever
+    #   F-N4g: senses — absent=0, nearPlus=1, nearMinus=3, nearCenter=2,
+    #          farCenter=5 exactly
+    #   F-N4h: learning — 320 episodes; visits == JS exactly; last30 >
+    #          first30+0.3; greedy == [0,1,1,1,2,2,2] on visited states;
+    #          Q within 1e-9 of JS; minResAuto < 0.35
+    #   F-N4i: final bodyX == JS 789.8666666666321 within 1e-6
+    #   F-N4j: HEADED — relay+viewer on bear.chimera: the WAVE button drives
+    #          cmd=wave on the wire (res<0.35, waveDone), and the page's
+    #          posed cells == the wire's posed cells exactly
+    rb = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                         str(NATIVE / "genomes" / "bear.chimera"), "selftest"],
+                        capture_output=True, text=True, timeout=300)
+    bmsgs = [json.loads(l) for l in rb.stdout.splitlines() if l.strip()]
+    bmeta = next((m for m in bmsgs if m.get("type") == "meta"), None)
+    bfin = next((m for m in bmsgs if m.get("type") == "final"), None)
+    brig = next((m for m in bmsgs if m.get("type") == "rig"), None)
+    bst = next((m for m in bmsgs if m.get("type") == "selftest"), None)
+    check("F-N4a bear selftest: clean exit, meta creature + embodiment",
+          rb.returncode == 0 and bmeta and bmeta["kind"] == "creature"
+          and bmeta.get("embodiment") == 1 and bfin and brig and bst,
+          f"rc={rb.returncode} meta={bmeta}")
+    bear_cells = {tuple(c[:3]) for c in bfin["cells"]}
+    crit_cells = {tuple(c[:3]) for c in cfin["cells"]}
+    check("F-N4a bear growth BIT-IDENTICAL to creature growth",
+          bear_cells == crit_cells and bfin["tick"] == cfin["tick"],
+          f"bear {len(bear_cells)}@{bfin['tick']} vs creature "
+          f"{len(crit_cells)}@{cfin['tick']}")
+    chains = brig["chains"]
+    check("F-N4b rig: 4 chains (pathLen 6, elbow 3), 8 joints, 2 ears, "
+          "waveCh fore/+z",
+          len(chains) == 4
+          and all(len(c["path"]) == 6 and c["elbow"] == 3 for c in chains)
+          and all(len(c["digits"]) == 3 for c in chains)
+          and len(brig["ears"]) == 2
+          and chains[brig["waveCh"]]["fore"]
+          and chains[brig["waveCh"]]["side"] > 0,
+          f"chains={[(c['fore'], c['side'], len(c['path']), c['elbow']) for c in chains]} "
+          f"ears={brig['ears']} waveCh={brig['waveCh']}")
+    wv = bst["wave"]
+    JS_WAVE_RES = 0.04881518056285238
+    check("F-N4c wave: converged, bit-faithful to the JS reference",
+          wv["waveDone"] and wv["minResidual"] < 0.35
+          and abs(wv["minResidual"] - JS_WAVE_RES) < 1e-12
+          and wv["raiseIters"] == 15 and wv["iters"] == 230,
+          f"minRes={wv['minResidual']} raiseIters={wv['raiseIters']} "
+          f"iters={wv['iters']} (JS {JS_WAVE_RES} / 15 / 230)")
+    gait = bst["walk"]["gait"]           # [[t, [[x,y,z] x4]], ...]
+    wg = 2 * math.pi / 60                # gait frequency per anim tick
+    phases = []
+    for i in range(len(chains)):
+        re = sum(e[1][i][0] * math.cos(wg * e[0]) for e in gait)
+        im = -sum(e[1][i][0] * math.sin(wg * e[0]) for e in gait)
+        phases.append(math.atan2(im, re))
+    def wrap(d):
+        return math.atan2(math.sin(d), math.cos(d))
+    def cidx(fore, side):
+        return next(i for i, c in enumerate(chains)
+                    if c["fore"] == fore and c["side"] == side)
+    d_diag = [abs(wrap(phases[cidx(True, 1)] - phases[cidx(False, -1)])),
+              abs(wrap(phases[cidx(True, -1)] - phases[cidx(False, 1)]))]
+    d_ipsi = [abs(abs(wrap(phases[cidx(True, 1)] - phases[cidx(True, -1)]))
+                  - math.pi),
+              abs(abs(wrap(phases[cidx(False, 1)] - phases[cidx(False, -1)]))
+                  - math.pi)]
+    check("F-N4d gait: diagonal in phase, ipsilateral anti-phase",
+          len(gait) == 400 and max(d_diag) < 0.5 and max(d_ipsi) < 0.5,
+          f"samples={len(gait)} diag={['%.3f' % d for d in d_diag]} "
+          f"ipsi={['%.3f' % d for d in d_ipsi]}")
+    check("F-N4d walk translates the body (no-slip mean stride, exact)",
+          abs(bst["walk"]["bodyX"] - 400 * 4 * 2 / 60) < 1e-6,
+          f"bodyX={bst['walk']['bodyX']}")
+    # Python-oracle FK — recomputed HERE from the wire's paths, mirroring the
+    # JS/C++ fkPoint exactly (shoulder pitch about [1,0,0], elbow swing about
+    # the theta0-carried [0,1,0])
+    def rot3(v, a, th):
+        c, s = math.cos(th), math.sin(th)
+        d = a[0]*v[0] + a[1]*v[1] + a[2]*v[2]
+        return [v[0]*c + (a[1]*v[2]-a[2]*v[1])*s + a[0]*d*(1-c),
+                v[1]*c + (a[2]*v[0]-a[0]*v[2])*s + a[1]*d*(1-c),
+                v[2]*c + (a[0]*v[1]-a[1]*v[0])*s + a[2]*d*(1-c)]
+    def fk_py(chain, k, th0, th1):
+        P, el = chain["path"], chain["elbow"]
+        P0, Pe0 = P[0], P[el]
+        Pe = [P0[i] + r for i, r in
+              enumerate(rot3([Pe0[i]-P0[i] for i in range(3)],
+                             [1, 0, 0], th0))]
+        if k <= el:
+            return [P0[i] + r for i, r in
+                    enumerate(rot3([P[k][i]-P0[i] for i in range(3)],
+                                   [1, 0, 0], th0))]
+        r1 = rot3([P[k][i]-Pe0[i] for i in range(3)], [0, 1, 0], th1)
+        r2 = rot3(r1, [1, 0, 0], th0)
+        return [Pe[i] + r for i, r in enumerate(r2)]
+    def seg_audit(th_pairs):
+        worst = 0.0
+        for chain, (t0, t1) in zip(chains, th_pairs):
+            P = chain["path"]
+            for k in range(1, len(P)):
+                rest = math.dist(P[k], P[k-1])
+                posed = math.dist(fk_py(chain, k, t0, t1),
+                                  fk_py(chain, k-1, t0, t1))
+                worst = max(worst, abs(posed - rest))
+        return worst
+    seg_final = seg_audit(bst["thetaFinal"])
+    seg_probe = seg_audit([[0.4, -0.3]] * len(chains))
+    check("F-N4e FK rigidity (oracle FK, thetaFinal + probe pose)",
+          seg_final < 1e-6 and seg_probe < 1e-6 and bst["segErr"] < 1e-6,
+          f"oracleFinal={seg_final:.2e} oracleProbe={seg_probe:.2e} "
+          f"wireSegErr={bst['segErr']:.2e}")
+    check("F-N4f no NaN, |theta| <= 2.6 ever",
+          not bst["nan"] and bst["thetaMaxEver"] <= 2.6,
+          f"nan={bst['nan']} thetaMaxEver={bst['thetaMaxEver']:.3f}")
+    sns = bst["senses"]
+    check("F-N4g senses: retinal state map exact",
+          sns == {"nearPlus": 1, "nearMinus": 3, "nearCenter": 2,
+                  "farCenter": 5, "absent": 0},
+          f"senses={sns}")
+    lk = bst["learn"]
+    JS_VISITS = [9450, 89, 93, 92, 1736, 1888, 1958]
+    JS_Q = [[1.9999999999934557, 1.8799999999906352, 1.959999999987697],
+            [0.24708321, 0.9999999999994209, -0.255],
+            [0.27987854103, 0.9999999978841239, -0.3285],
+            [0.692897534700734, 0.9999999999856497, -0.41596500000000003],
+            [0.9305069083942927, 0.8345299388421381, 0.9501470551563476],
+            [0.9920661634681632, 0.8920481832025281, 1.0017710071372883],
+            [0.9284599963794984, 0.8354488565453602, 0.9501473844443387]]
+    greedy = [0 if q[0] >= q[1] and q[0] >= q[2]
+              else (1 if q[1] >= q[2] else 2) for q in lk["Q"]]
+    STRUCT5 = [0, 1, 1, 1, 2, 2, 2]
+    struct_match = sum(g == s5 for g, s5, v in
+                       zip(greedy, STRUCT5, JS_VISITS) if v >= 10)
+    n_visited = sum(1 for v in JS_VISITS if v >= 10)
+    q_diff = max(abs(a - b) for row, ref in zip(lk["Q"], JS_Q)
+                 for a, b in zip(row, ref))
+    check("F-N4h learning: 320 episodes, visits bit-faithful, reward up",
+          lk["episode"] == 320 and lk["visits"] == JS_VISITS
+          and abs(lk["first30"] - 0.6477821468674461) < 1e-9
+          and abs(lk["last30"] - 1.2353410441105135) < 1e-9
+          and lk["last30"] > lk["first30"] + 0.3
+          and abs(lk["eps"] - 0.05) < 1e-12,
+          f"ep={lk['episode']} visits={lk['visits']} "
+          f"first30={lk['first30']:.4f} last30={lk['last30']:.4f}")
+    check("F-N4h greedy policy matches reward structure on visited states "
+          "and Q is bit-faithful",
+          struct_match == n_visited and q_diff < 1e-9
+          and lk["minResAuto"] < 0.35
+          and abs(lk["minResAuto"] - 0.00030705036396531444) < 1e-12,
+          f"greedy={greedy} match={struct_match}/{n_visited} "
+          f"qDiff={q_diff:.2e} minResAuto={lk['minResAuto']}")
+    check("F-N4i final bodyX bit-faithful to the JS reference",
+          abs(lk["bodyXfinal"] - 789.8666666666321) < 1e-6,
+          f"bodyXfinal={lk['bodyXfinal']}")
+    print(f"N4 SELFTEST MEASURED: waveRes={wv['minResidual']:.4f} "
+          f"raiseIters={wv['raiseIters']} diag={['%.3f' % d for d in d_diag]} "
+          f"ipsi={['%.3f' % d for d in d_ipsi]} "
+          f"thetaMax={bst['thetaMaxEver']:.3f} "
+          f"first30={lk['first30']:.4f} last30={lk['last30']:.4f} "
+          f"qDiff={q_diff:.2e} bodyX={lk['bodyXfinal']:.4f}")
+
+    # ---- F-N4j: HEADED — relay + viewer + WAVE button on the bear genome ---
+    PORT3 = 8802
+    relay3 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
+                               str(PORT3),
+                               str(NATIVE / "genomes" / "bear.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT3}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            check("F-N4j headed: bear grown + rigged (wire-driven)",
+                  st["done"] and st.get("rigged") and st["kind"] == "creature",
+                  f"done={st['done']} rigged={st.get('rigged')} "
+                  f"tick={st['tick']}")
+            page.screenshot(path="_native_bear_rest.png")
+            page.click("#bwave")           # the button POSTs /cmd wave
+            saw_wave = False
+            t0 = time.time()
+            while time.time() - t0 < 30:
+                st = page.evaluate("window.__growthStats")
+                if st.get("cmd") == "wave":
+                    saw_wave = True         # the command round-tripped
+                if st.get("waveDone"):
+                    break                  # NB: cmd flips back to 'rest' AT
+                time.sleep(0.1)            # completion — waveDone is the flag
+            # the wire log is the ledger: wave-phase anim frames, residuals
+            wire_anim = [m for m in
+                         (json.loads(l) for l in LOG.read_text().splitlines()
+                          if l.strip()) if m.get("type") == "anim"]
+            wave_frames = [m for m in wire_anim if m["cmd"] == "wave"]
+            wave_res = [m["res"] for m in wave_frames if m["res"] is not None]
+            check("F-N4j headed: WAVE command executed by the C++ core "
+                  "(page saw cmd=wave; wire: wave frames, res < 0.35, done)",
+                  saw_wave and st.get("waveDone") and len(wave_frames) > 0
+                  and min(wave_res) < 0.35
+                  and any(m["waveDone"] for m in wire_anim),
+                  f"sawWave={saw_wave} waveDone={st.get('waveDone')} "
+                  f"waveFrames={len(wave_frames)} minRes="
+                  f"{min(wave_res) if wave_res else None}")
+            page.screenshot(path="_native_bear_wave.png")
+            page_poses = dict((tuple(map(int, k.split(","))), v)
+                              for k, v in page.evaluate(
+                                  "window.__growthCheck().posed"))
+            renderer = page.evaluate("window.__renderer")
+            browser.close()
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_posed = {(p[0], p[1], p[2]): p[3:] for p in wire_anim[-1]["posed"]}
+        same_posed = (page_poses == wire_posed)
+        check("F-N4j headed: page's posed cells == wire's posed cells",
+              same_posed and len(wire_posed) > 0
+              and renderer == "webgpu-splat",
+              f"page {len(page_poses)} vs wire {len(wire_posed)} "
+              f"renderer={renderer}")
+        print(f"N4 HEADED MEASURED: posed={len(wire_posed)} "
+              f"waveFrames={len(wave_frames)} "
+              f"minWaveRes={min(wave_res) if wave_res else None}")
+    finally:
+        relay3.terminate()
 finally:
     relay.terminate()
 

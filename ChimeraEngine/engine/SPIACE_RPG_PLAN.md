@@ -711,7 +711,51 @@ simplest genome.
   my own was also removed and documented: a post-completion auxin
   far-window assertion measures trail decay, not dominance (the healthy JS
   reference reads auxFar 0.352 > θ at done).
+- **N4 — embodiment in the native core (G4 rig/IK + G5 learner ported):**
+  COMPLETE, all falsifiers green headed (F-N4a…j) in the same run as the
+  N1–N3 regressions. `native/genomes/bear.chimera` = the creature table PLUS
+  the B4 rig/IK, L5 learner, and R5 reward constants as data (every
+  derivation cited from the G4/G5 headers of spiace_grow.html). The core now
+  tracks each limb tip's GROWN path (`CTip.path` — the chain ledger G4 rigs
+  onto), and after growth runs the full embodiment layer: Rodrigues FK
+  (shoulder pitch + elbow swing, axes carried by upstream rotations), damped
+  pseudoinverse IK (Δθ = Jᵀ(JJᵀ+λI)⁻¹e, λ = L²/4, Δθ clamp 0.08, θ ≤ 2.6),
+  the wave phase machine (raise/hold-40/lower), the diagonal gait at T=60
+  with the no-slip stride 4A/T, the retinal senses (eye-normal dot products,
+  frame sloppiness preserved verbatim), and the Q-learner (7 situations ×
+  rest/wave/walk, LCG seed 1337, α=0.3 γ=0.99 ε 0.25→0.05). New wire lines:
+  `rig` (chains/ears/waveCh) and interactive `anim` frames (cmd, residual,
+  body, visitor, FK-posed limb/digit cells); relay.py gained POST /cmd →
+  core stdin (buttons + keys 1–4 in the viewer) and only cuts the SSE stream
+  on a growth frame's done. The viewer renders posed cells + the visitor +
+  body-drift camera tracking — still zero simulation logic. **Measured, C++
+  vs the synchronous JS probe — bit-faithful everywhere:** growth 1070
+  ticks/711 cells == creature exactly; wave minResidual 0.04881518056285238
+  at raiseIters 15, iters 230 (JS: same to the last digit); gait Fourier
+  diag |Δφ| 0.085/0.094 rad, ipsi |Δφ−π| 0.121/0.059 rad; bodyX after 400
+  ticks 53.33333333333319 (= 400·4A/T); Python-oracle FK segment audit
+  6.7e-16 at θ_final and 2.2e-16 at probe pose [0.4,−0.3]; senses
+  1/3/2/5/0 exact; learner visits == JS [9450,89,93,92,1736,1888,1958]
+  exactly, Q max |Δ| = 0.0, first30 0.6478 → last30 1.2353, greedy ==
+  [0,1,1,1,2,2,2] on 7/7 visited states, minResAuto 0.000307, final bodyX
+  789.8666666666321 — and the tick-level trace (episode, state, action,
+  reward, terminal, rng) is IDENTICAL for all 15,306 learner ticks. F-N4j
+  headed: the WAVE button drove the C++ core (45 wave frames on the wire,
+  page observed cmd=wave → waveDone, res 0.0488), page posed == wire posed
+  (48 cells), screenshots verified. **Two port bugs the oracle caught,
+  documented:** (1) `learnReset` was never called on the selftest path —
+  ε started at 0 instead of EPS0 0.25 (pure exploitation; first30 1.015 vs
+  0.648). (2) THE JS LCG IS LOSSY: `rng*1103515245+12345` exceeds 2⁵³ once
+  rng ~ 1e8, so the double product ROUNDS before the `& 0x7fffffff` mask
+  (measured: exact-int64 gives rng 1460962527 where JS reads 1460962528
+  after tick 1 — a one-count RNG-stream shift that rewrote the whole
+  learning trajectory). The port replicates the double rounding; it does
+  not "fix" it — the JS page is the reference by definition. One test-side
+  mis-instrumentation also fixed and documented: F-N4j first asserted
+  cmd=='wave' AFTER completion, but the core flips cmd to 'rest' at
+  waveDone by design — the check now records the round-trip live and reads
+  residuals from the wire ledger.
 
 ---
 
-Document version: 3.8 (G1–G5 + N1–N3 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3 complete | Agent: bionic + Kimi K3
+Document version: 3.9 (G1–G5 + N1–N4 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4 complete | Agent: bionic + Kimi K3

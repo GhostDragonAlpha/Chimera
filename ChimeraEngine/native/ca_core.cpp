@@ -24,7 +24,33 @@
 //              "violations":0,"phase":"P","limbs":L,"eyes":E,"done":B}
 //   at done:  {"type":"final", kind-specific ledgers the oracle recomputes
 //              from (phyllo/aux/tips | morphA/turingU/surf/limbRoots/eyes)}
+//   embodiment genomes (bear): after the final ledger —
+//              {"type":"rig","chains":[{limbIdx,fore,side,elbow,path,digits,
+//              rest}...],"ears":[[x,y,z]...],"waveCh":W}
+//              then either one {"type":"selftest",...} line (argv[3]) or an
+//              interactive anim loop driven by stdin commands (wave/walk/
+//              rest/auto) emitting {"type":"anim","tick":N,"cmd":C,"res":R,
+//              "body":[bx,0,0],"visitor":[x,y,z]|null,"posed":[[x,y,z,px,py,
+//              pz],...],...} — posed = FK-rigged limb/digit cells, cell units.
+//              Growth frames carry done:false on embodiment genomes so the
+//              relay does not cut the stream before the anim frames.
 // 3D cell identity is the integer triple — oracles need no float compares.
+//
+// N4 Rule 0 (stated before the build):
+//   STATEMENT:  the G4 embodiment layer (FK chains read off the grown limb
+//               ledger, damped-pseudoinverse IK, gait, wave) and the G5
+//               learner (retinal senses -> Q-learning over rest/wave/walk)
+//               are language-independent: this core reproduces the JS
+//               reference (spiace_grow.html ?genome=bear) number for number.
+//   PREDICTION: rig 4 chains x 2 joints + 2 ears, waveCh = fore/+z; wave
+//               minResidual 0.04881518056285238 at raiseIters 15, iters 230;
+//               400-tick walk: bodyX += 400*4*2/60, diagonal gait in phase,
+//               ipsilateral anti-phase; senses 1/3/2/5/0; 320 episodes:
+//               visits [9450,89,93,92,1736,1888,1958], last30 > first30+0.3,
+//               greedy == [0,1,1,1,2,2,2], final bodyX 789.8666666666321.
+//   FALSIFIER:  any of those off (beyond 1e-9 float dust) in the selftest
+//               ledger, or the Python-oracle FK segment audit > 1e-6, kills
+//               the port claim (test_native.py F-N4a..j).
 //
 // Exit codes: 2 = stalled, 3 = dead wave, 4 = genome file error.
 //
@@ -40,10 +66,12 @@
 //      value.
 //
 // Build: g++ -O2 -std=c++17 -o ca_core.exe ca_core.cpp
-// Run:   ./ca_core.exe [tick_ms] [genome_path]
+// Run:   ./ca_core.exe [tick_ms] [genome_path] [selftest]
 //          tick_ms default = the genome's tickMs; genome_path default =
-//          <exe dir>/genomes/wall.chimera
+//          <exe dir>/genomes/wall.chimera; selftest = embodiment genomes run
+//          the synchronous G4/G5 protocol and print one ledger line
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <cmath>
@@ -51,7 +79,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <map>
+#include <mutex>
 #include <set>
 #include <string>
 #include <thread>
@@ -79,6 +109,17 @@ struct Genome {
       digitLen = 0, digits = 0, limbSpace = 0, limbFieldDelay = 0,
       patternTicks = 0, growDeadline = 0, tSteps = 0, turingTicks = 0;
   std::vector<double> foreBand, hindBand, dvBand;
+  // embodiment (G4 rig/IK + G5 learner) — creature kind, required when
+  // embodiment = 1; every constant's derivation is in the genome file
+  int embodiment = 0;
+  double b4A = 0, b4Lam = 0, b4Dth = 0, b4ThMax = 0, b4WaveRes = 0,
+         b4WaveTh = 0, b4LowerRes = 0;
+  int b4T = 0, b4Iters = 0, b4Hold = 0;
+  double l5Near = 0, l5Far = 0, l5BearEps = 0, l5Alpha = 0, l5Gamma = 0,
+         l5Eps0 = 0, l5EpsDecay = 0, l5EpsMin = 0;
+  int l5EpTicks = 0;
+  double r5WaveNear = 0, r5WaveFar = 0, r5WaveAbsent = 0, r5WalkTick = 0,
+         r5Beckon = 0, r5Startle = 0, r5RestAbsent = 0, r5RestPresent = 0;
 };
 
 static void die4(const std::string& msg) {
@@ -170,6 +211,28 @@ static Genome loadGenome(const std::string& path) {
     if (g.cell <= 0 || g.ballR <= 0 || g.foreBand.size() != 2 ||
         g.hindBand.size() != 2 || g.dvBand.size() != 2 || g.digits <= 0)
       die4("INVALID: creature sanity bounds failed in " + path);
+    if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1) {
+      g.embodiment = 1;
+      g.b4A = needD("b4A"); g.b4Lam = needD("b4Lam"); g.b4Dth = needD("b4Dth");
+      g.b4ThMax = needD("b4ThMax"); g.b4WaveRes = needD("b4WaveRes");
+      g.b4WaveTh = needD("b4WaveTh"); g.b4LowerRes = needD("b4LowerRes");
+      g.b4T = needI("b4T"); g.b4Iters = needI("b4Iters");
+      g.b4Hold = needI("b4Hold");
+      g.l5Near = needD("l5Near"); g.l5Far = needD("l5Far");
+      g.l5BearEps = needD("l5BearEps"); g.l5Alpha = needD("l5Alpha");
+      g.l5Gamma = needD("l5Gamma"); g.l5Eps0 = needD("l5Eps0");
+      g.l5EpsDecay = needD("l5EpsDecay"); g.l5EpsMin = needD("l5EpsMin");
+      g.l5EpTicks = needI("l5EpTicks");
+      g.r5WaveNear = needD("r5WaveNear"); g.r5WaveFar = needD("r5WaveFar");
+      g.r5WaveAbsent = needD("r5WaveAbsent"); g.r5WalkTick = needD("r5WalkTick");
+      g.r5Beckon = needD("r5Beckon"); g.r5Startle = needD("r5Startle");
+      g.r5RestAbsent = needD("r5RestAbsent");
+      g.r5RestPresent = needD("r5RestPresent");
+      if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
+          g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
+          g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1)
+        die4("INVALID: embodiment sanity bounds failed in " + path);
+    }
   } else die4("INVALID: unknown kind '" + g.kind + "' in " + path);
   return g;
 }
@@ -526,7 +589,8 @@ struct CCell { int x, y, z, mat, born; };
 struct CTip {
   int id; int cell[3]; double dir[3]; int steps; bool alive, digit;
   int limbIdx;
-};
+  std::vector<std::array<int, 3>> path;   // G4 chain ledger: root + each
+};                                        // stepped cell (digits: spawn cell)
 struct CLimb { int root[3]; int side; bool fore; int born; };
 
 static std::vector<CCell> cCellsV;
@@ -693,6 +757,7 @@ static void cSproutLimbs() {
     t.cell[0] = L.root[0]; t.cell[1] = L.root[1]; t.cell[2] = L.root[2];
     norm3v(d, t.dir);
     t.steps = 0; t.alive = true; t.digit = false; t.limbIdx = i;
+    t.path.push_back({L.root[0], L.root[1], L.root[2]});   // G4 chain ledger
     cTips.push_back(t);
   }
 }
@@ -715,6 +780,7 @@ static void cStepTips() {
     cAddCell(bx, by, bz, 1);                // limb tissue
     t.cell[0] = bx; t.cell[1] = by; t.cell[2] = bz;
     t.steps++;
+    t.path.push_back({bx, by, bz});         // G4 chain ledger
     if (!t.digit && t.steps >= W.limbLen) {
       // COPY before push_back: a vector reallocation would leave the
       // reference `t` dangling, and the next digit would read freed heap
@@ -729,6 +795,7 @@ static void cStepTips() {
         dt.cell[0] = cc[0]; dt.cell[1] = cc[1]; dt.cell[2] = cc[2];
         perp3(cd, j * W.golden, dt.dir);
         dt.steps = 0; dt.alive = true; dt.digit = true; dt.limbIdx = limbIdx;
+        dt.path.push_back({cc[0], cc[1], cc[2]});   // digits start at spawn
         cTips.push_back(dt);
       }
     } else if (t.digit && t.steps >= W.digitLen) {
@@ -805,7 +872,8 @@ static void cTuringStep() {
   cTU = std::move(nU); cTV = std::move(nV);
 }
 
-static const char* cMat(int m) { return m == 1 ? "limb" : m == 2 ? "eye" : "skin"; }
+static const char* cMat(int m) { return m == 1 ? "limb" : m == 2 ? "eye"
+                                           : m == 3 ? "ear" : "skin"; }
 
 static void cEmitFrame(bool done) {
   int minX = 1 << 30;
@@ -823,7 +891,14 @@ static void cEmitFrame(bool done) {
   std::fflush(stdout);
 }
 
-static int runCrit(int tickMs) {
+// G4/G5 embodiment layer (defined below runCrit): rig, wire emitters, modes
+static void bearRig();
+static void learnReset();
+static void emitRig();
+static void emitSelftest();
+static int runEmbodiment(int tickMs);
+
+static int runCrit(int tickMs, bool selftest) {
   cAddCell(0, 0, 0, 0);                     // the zygote
   bool done = false;
   while (!done) {
@@ -863,7 +938,10 @@ static int runCrit(int tickMs) {
       cDiffuse(cB, cOrgVentKey);            // oracle reads the STEADY gradient
       if (++cTuringT >= W.turingTicks) { cPhase = "done"; done = true; }
     }
-    cEmitFrame(done);
+    // embodiment genomes keep done:false on growth frames so the relay does
+    // not cut the SSE stream before the anim frames (the final ledger still
+    // carries done:true; the viewer marks COMPLETE from that)
+    cEmitFrame(done && !W.embodiment);
     if (tickMs > 0)
       std::this_thread::sleep_for(std::chrono::milliseconds(tickMs));
     if (cTick > 200000) {
@@ -919,6 +997,603 @@ static int runCrit(int tickMs) {
               cOrgVent[0], cOrgVent[1], cOrgVent[2],
               cOrgBall[0], cOrgBall[1], cOrgBall[2]);
   std::fflush(stdout);
+  if (W.embodiment) {
+    bearRig();                 // G4: rig the finished body off the ledger
+    learnReset();              // G5: fresh learner (eps = EPS0, rng = 1337)
+    if (selftest) { emitRig(); emitSelftest(); return 0; }
+    return runEmbodiment(tickMs);   // G4/G5: interactive stdin-driven anim
+  }
+  return 0;
+}
+// Ported verbatim from spiace_grow.html lines 1019-1430 (the JS reference).
+// Statement/prediction/falsifier for this layer live in the file header (N4).
+// ============================ EMBODIMENT (G4 rig/IK + G5 learner) ============
+// Ported verbatim from spiace_grow.html lines 1019-1430 (the JS reference).
+// Math.hypot is the ECMAScript spec algorithm (max * sqrt(sum (n/max)^2)),
+// NOT sqrt(x^2+y^2+z^2) — the learner's float trail depends on the rounding.
+static double hypot3(double a, double b, double c) {
+  a = std::fabs(a); b = std::fabs(b); c = std::fabs(c);
+  const double mx = std::fmax(a, std::fmax(b, c));
+  if (mx == 0) return 0;
+  const double s = (a/mx)*(a/mx) + (b/mx)*(b/mx) + (c/mx)*(c/mx);
+  return mx * std::sqrt(s);
+}
+static void bnorm3(const double v[3], double out[3]) {   // JS norm3 (hypot)
+  double l = hypot3(v[0], v[1], v[2]);
+  if (l == 0) l = 1.0;
+  out[0] = v[0]/l; out[1] = v[1]/l; out[2] = v[2]/l;
+}
+// rotate v about unit axis a by th (Rodrigues) — the T_joint of the product
+static void rot3(const double v[3], const double a[3], double th,
+                 double out[3]) {
+  const double c = std::cos(th), s = std::sin(th);
+  const double d = a[0]*v[0] + a[1]*v[1] + a[2]*v[2];
+  out[0] = v[0]*c + (a[1]*v[2]-a[2]*v[1])*s + a[0]*d*(1-c);
+  out[1] = v[1]*c + (a[2]*v[0]-a[0]*v[2])*s + a[1]*d*(1-c);
+  out[2] = v[2]*c + (a[0]*v[1]-a[1]*v[0])*s + a[2]*d*(1-c);
+}
+static void sub3(const double u[3], const double v[3], double out[3]) {
+  out[0] = u[0]-v[0]; out[1] = u[1]-v[1]; out[2] = u[2]-v[2];
+}
+static void add3(const double u[3], const double v[3], double out[3]) {
+  out[0] = u[0]+v[0]; out[1] = u[1]+v[1]; out[2] = u[2]+v[2];
+}
+static void cross3(const double a[3], const double b[3], double out[3]) {
+  out[0] = a[1]*b[2]-a[2]*b[1]; out[1] = a[2]*b[0]-a[0]*b[2];
+  out[2] = a[0]*b[1]-a[1]*b[0];
+}
+
+struct BChain {
+  int limbIdx; bool fore; int side;
+  std::vector<std::array<int, 3>> path;                 // the GROWN ledger
+  int elbow;
+  double theta[2] = {0, 0};
+  std::vector<std::vector<std::array<int, 3>>> digits;  // digit paths
+  double rest[3] = {0, 0, 0};                           // theta=0 IS grown
+};
+struct Bear {
+  bool rigged = false;
+  std::vector<BChain> rig;
+  std::string cmd = "rest";
+  long cmdTick = 0, iters = 0, raiseIters = -1;         // -1 = JS null
+  double minResidual = 0; bool hasMinRes = false;
+  double lastRes = 0; bool hasLastRes = false;
+  bool waveDone = false;
+  std::string wavePhase;                                // "" = JS null
+  long holdUntil = 0;
+  double thetaMaxEver = 0;
+  bool nan = false;
+  double body[3] = {0, 0, 0};
+  std::vector<std::pair<long, std::vector<std::array<double, 3>>>> gaitLog;
+  int waveCh = -1, nEars = 0;
+};
+static Bear bear;
+
+// posed lattice position of chain cell path[k]: T(theta) = prod T_joint,
+// joint axes carried by upstream rotations (matrix product, not parallel)
+static void fkPoint(const BChain& ch, int k, double out[3]) {
+  const auto& P = ch.path;
+  const double t0 = ch.theta[0], t1 = ch.theta[1];
+  const double a0[3] = {1, 0, 0}, a1r[3] = {0, 1, 0};   // shoulder pitch /
+  const double P0[3] = {(double)P[0][0], (double)P[0][1], (double)P[0][2]};
+  const double Pe0[3] = {(double)P[ch.elbow][0], (double)P[ch.elbow][1],
+                         (double)P[ch.elbow][2]};       // elbow swing
+  double Pe[3];
+  { double d[3], r[3]; sub3(Pe0, P0, d); rot3(d, a0, t0, r); add3(P0, r, Pe); }
+  const double Pk[3] = {(double)P[k][0], (double)P[k][1], (double)P[k][2]};
+  if (k <= ch.elbow) {
+    double d[3], r[3]; sub3(Pk, P0, d); rot3(d, a0, t0, r); add3(P0, r, out);
+  } else {
+    double d[3], r1[3], r2[3];
+    sub3(Pk, Pe0, d); rot3(d, a1r, t1, r1); rot3(r1, a0, t0, r2);
+    add3(Pe, r2, out);
+  }
+}
+static void fkDigit(const BChain& ch,
+                    const std::vector<std::array<int, 3>>& dp, int j,
+                    double out[3]) {                    // digits ride wrist
+  const auto& w0i = ch.path[ch.path.size() - 1];
+  const double a0[3] = {1, 0, 0}, a1r[3] = {0, 1, 0};
+  double Pw[3]; fkPoint(ch, (int)ch.path.size() - 1, Pw);
+  const double d[3] = {(double)dp[j][0] - w0i[0], (double)dp[j][1] - w0i[1],
+                       (double)dp[j][2] - w0i[2]};
+  double r1[3], r2[3];
+  rot3(d, a1r, ch.theta[1], r1);
+  rot3(r1, a0, ch.theta[0], r2);
+  add3(Pw, r2, out);
+}
+static void solve3(const double M[3][3], const double b[3], double out[3]) {
+  auto d3 = [](const double N[3][3]) {                // Cramer, no library
+    return N[0][0]*(N[1][1]*N[2][2]-N[1][2]*N[2][1])
+         - N[0][1]*(N[1][0]*N[2][2]-N[1][2]*N[2][0])
+         + N[0][2]*(N[1][0]*N[2][1]-N[1][1]*N[2][0]);
+  };
+  const double det = d3(M);
+  if (std::fabs(det) < 1e-12) { out[0] = out[1] = out[2] = 0; return; }
+  for (int c = 0; c < 3; c++) {
+    double N[3][3];
+    for (int r = 0; r < 3; r++)
+      for (int cc = 0; cc < 3; cc++) N[r][cc] = cc == c ? b[r] : M[r][cc];
+    out[c] = d3(N) / det;
+  }
+}
+// one damped-pseudoinverse correction: dtheta = Jt (J Jt + lam I)^-1 e
+static double ikStep(BChain& ch, const double T[3]) {
+  const double P0[3] = {(double)ch.path[0][0], (double)ch.path[0][1],
+                        (double)ch.path[0][2]};
+  double tip[3]; fkPoint(ch, (int)ch.path.size() - 1, tip);
+  double e[3]; sub3(T, tip, e);
+  const double res = hypot3(e[0], e[1], e[2]);
+  const double a0[3] = {1, 0, 0};
+  double a1w[3]; { const double y[3] = {0, 1, 0}; rot3(y, a0, ch.theta[0], a1w); }
+  double Pe[3]; fkPoint(ch, ch.elbow, Pe);
+  double j0[3], j1[3], r0[3], r1[3];
+  sub3(tip, P0, r0); cross3(a0, r0, j0);        // dtip/dtheta = a x r (exact)
+  sub3(tip, Pe, r1); cross3(a1w, r1, j1);
+  const double M[3][3] = {
+    {j0[0]*j0[0]+j1[0]*j1[0]+W.b4Lam, j0[0]*j0[1]+j1[0]*j1[1],
+     j0[0]*j0[2]+j1[0]*j1[2]},
+    {j0[1]*j0[0]+j1[1]*j1[0], j0[1]*j0[1]+j1[1]*j1[1]+W.b4Lam,
+     j0[1]*j0[2]+j1[1]*j1[2]},
+    {j0[2]*j0[0]+j1[2]*j1[0], j0[2]*j0[1]+j1[2]*j1[1],
+     j0[2]*j0[2]+j1[2]*j1[2]+W.b4Lam}};
+  double w[3]; solve3(M, e, w);
+  const double* J[2] = {j0, j1};
+  for (int j = 0; j < 2; j++) {
+    double d = J[j][0]*w[0] + J[j][1]*w[1] + J[j][2]*w[2];
+    d = std::fmax(-W.b4Dth, std::fmin(W.b4Dth, d));
+    ch.theta[j] = std::fmax(-W.b4ThMax, std::fmin(W.b4ThMax, ch.theta[j] + d));
+  }
+  const double tm = std::fmax(std::fabs(ch.theta[0]), std::fabs(ch.theta[1]));
+  if (tm > bear.thetaMaxEver) bear.thetaMaxEver = tm;
+  if (!std::isfinite(ch.theta[0]) || !std::isfinite(ch.theta[1]) ||
+      !std::isfinite(res))
+    bear.nan = true;
+  bear.iters++;
+  return res;
+}
+// the rig: chains read off the GROWN ledger — roots, elbows, wrists, digits,
+// rest tips all measured, nothing placed by hand
+static void bearRig() {
+  bear.rig.clear();
+  for (int i = 0; i < (int)cLimbs.size(); i++) {
+    const CTip* main = nullptr;
+    for (const auto& t : cTips)
+      if (!t.digit && t.limbIdx == i && !t.path.empty()) { main = &t; break; }
+    if (!main || main->path.size() < 3) continue;
+    BChain ch; ch.limbIdx = i; ch.fore = cLimbs[i].fore; ch.side = cLimbs[i].side;
+    ch.path = main->path;
+    ch.elbow = (int)main->path.size() / 2;
+    for (const auto& t : cTips)
+      if (t.digit && t.limbIdx == i && !t.path.empty()) ch.digits.push_back(t.path);
+    fkPoint(ch, (int)ch.path.size() - 1, ch.rest);
+    bear.rig.push_back(ch);
+  }
+  bear.rigged = true;
+  int w = -1;
+  for (int i = 0; i < (int)bear.rig.size(); i++)
+    if (bear.rig[i].fore && bear.rig[i].side > 0) { w = i; break; }
+  if (w < 0)
+    for (int i = 0; i < (int)bear.rig.size(); i++)
+      if (bear.rig[i].fore) { w = i; break; }
+  bear.waveCh = w;
+  // ears: the two highest skin cells of the head bulb (derived, not drawn)
+  std::vector<int> cand;
+  for (int i = 0; i < (int)cCellsV.size(); i++)
+    if (cCellsV[i].mat == 0 && cCellsV[i].x >= cOrgBall[0] + W.eyeXMin)
+      cand.push_back(i);
+  std::stable_sort(cand.begin(), cand.end(),   // JS sort is stable (ES2019)
+                   [](int a, int b) { return cCellsV[a].y > cCellsV[b].y; });
+  for (int i = 0; i < 2 && i < (int)cand.size(); i++) {
+    cCellsV[cand[i]].mat = 3; bear.nEars++;
+  }
+}
+
+// ============================ G5 LEARNER (situations -> goals) ===============
+static const int STRUCT5[7] = {0, 1, 1, 1, 2, 2, 2};   // reward structure
+static bool visitorPresent = false;
+static double visitorPos[3] = {0, 0, 0};
+static int visitorWaveBack = 0;
+struct Learn {
+  double Q[7][3] = {};
+  double eps = 0; long episode = 0, epTick = 0; double epReward = 0;
+  std::vector<double> rewards;
+  long long rng = 1337;
+  long stateVisits[7] = {};
+  double minResAuto = 0; bool hasMinResAuto = false;
+  long gaitT = 0;
+};
+static Learn L;
+static void learnReset() {
+  L = Learn();
+  L.eps = W.l5Eps0; L.rng = 1337;
+  visitorPresent = false; visitorPos[0] = visitorPos[1] = visitorPos[2] = 0;
+  visitorWaveBack = 0;
+}
+static double rnd() {                 // LCG — deterministic per body
+  // JS does this arithmetic in DOUBLES: rng*1103515245 exceeds 2^53 once
+  // rng ~ 1e8, so the product rounds to the nearest double BEFORE the mask
+  // (measured: exact-int64 math gives rng=1460962527 where the JS reference
+  // reads 1460962528 after the first tick — the port replicates the rounding,
+  // it does not "fix" it; the JS page is the reference by definition)
+  const double x = (double)L.rng * 1103515245.0 + 12345.0;
+  const double m = std::fmod(x, 4294967296.0);        // ToInt32 mod 2^32, x>0
+  L.rng = (long long)m & 0x7fffffff;
+  return (double)L.rng / 0x7fffffff;
+}
+// the senses: range from the head, bearing from WHICH EYE wins — retinal
+// activation = dot(unit(to visitor), eye outward normal) on grown geometry.
+// The JS frame sloppiness is DELIBERATE and preserved: `to` mixes the world
+// rel vector with the eye's local lattice coords (norm3(rel - e)).
+static int senseState() {
+  if (!visitorPresent) return 0;
+  const double rel[3] = {visitorPos[0] - bear.body[0], visitorPos[1],
+                         visitorPos[2]};
+  const double d = hypot3(rel[0], rel[1], rel[2]);
+  const int zc = (int)std::lround(cOrgBall[2]);
+  double actPlus = -2, actMinus = -2;
+  for (const auto& e : cEyes) {
+    const double e0[3] = {(double)e[0], (double)e[1], (double)e[2]};
+    double t1[3], out[3], t2[3], to[3];
+    sub3(e0, cOrgHead, t1); bnorm3(t1, out);
+    sub3(rel, e0, t2); bnorm3(t2, to);
+    const double a = out[0]*to[0] + out[1]*to[1] + out[2]*to[2];
+    if (e[2] > zc) actPlus = std::fmax(actPlus, a);
+    else actMinus = std::fmax(actMinus, a);
+  }
+  int bearing = 1;                                    // center
+  if (actPlus > actMinus + W.l5BearEps) bearing = 0;  // +z flank
+  else if (actMinus > actPlus + W.l5BearEps) bearing = 2;
+  return (d <= W.l5Near ? 1 : 4) + bearing;
+}
+static void spawnEpisode() {
+  const double r = rnd();
+  if (r < 1.0 / 3.0) visitorPresent = false;
+  else {
+    const bool near = r < 2.0 / 3.0;
+    const double b = rnd();
+    visitorPresent = true;
+    visitorPos[0] = bear.body[0] + (near ? W.l5Near - 2 : W.l5Far);
+    visitorPos[1] = 0;
+    visitorPos[2] = b < 1.0 / 3.0 ? 3 : b < 2.0 / 3.0 ? 0 : -3;
+  }
+  visitorWaveBack = 0;
+  L.epTick = 0; L.epReward = 0;
+}
+static void gaitTick() {                  // one gait step through G4 physics
+  L.gaitT++;
+  const double phi = 2 * 3.14159265358979323846 * L.gaitT / W.b4T;
+  for (auto& ch : bear.rig) {
+    const double ph = (ch.fore == (ch.side > 0)) ? 0 : 3.14159265358979323846;
+    const double T[3] = {ch.rest[0] + W.b4A * std::sin(phi + ph),
+                         ch.rest[1] + 0.6 * W.b4A *
+                           std::fmax(0.0, std::cos(phi + ph)),
+                         ch.rest[2]};
+    for (int i = 0; i < W.b4Iters; i++) ikStep(ch, T);
+  }
+  bear.body[0] += 4 * W.b4A / W.b4T;      // the no-slip mean stride
+}
+static void autoTick() {
+  const int s = senseState();
+  L.stateVisits[s]++;
+  int a;
+  if (rnd() < L.eps) a = (int)std::floor(rnd() * 3);
+  else { const double* q = L.Q[s];
+         a = q[0] >= q[1] && q[0] >= q[2] ? 0 : q[1] >= q[2] ? 1 : 2; }
+  double d0 = 0;
+  if (visitorPresent) {
+    const double dv[3] = {visitorPos[0] - bear.body[0], visitorPos[1],
+                          visitorPos[2]};
+    d0 = hypot3(dv[0], dv[1], dv[2]);
+  }
+  double r = 0; bool terminal = false;
+  if (a == 1) {                      // wave, executed by the G4 IK stack
+    BChain& ch = bear.rig[bear.waveCh];
+    const double P0[3] = {(double)ch.path[0][0], (double)ch.path[0][1],
+                          (double)ch.path[0][2]};
+    double off[3], rr[3], up[3];
+    sub3(ch.rest, P0, off);
+    const double x[3] = {1, 0, 0};
+    rot3(off, x, -W.b4WaveTh * ch.side, rr);
+    add3(P0, rr, up);
+    double res = 0;
+    for (int i = 0; i < W.b4Iters; i++) res = ikStep(ch, up);
+    if (!L.hasMinResAuto || res < L.minResAuto) {
+      L.minResAuto = res; L.hasMinResAuto = true;
+    }
+    bear.lastRes = res; bear.hasLastRes = true;
+    if (!visitorPresent) r = W.r5WaveAbsent;
+    else if (d0 <= W.l5Near) { r = W.r5WaveNear; visitorWaveBack = 30;
+                               terminal = true; }
+    else r = W.r5WaveFar;
+  } else if (a == 2) {               // walk, executed by the G4 gait
+    if (!visitorPresent) { gaitTick(); r = W.r5WalkTick; }
+    else if (d0 <= W.l5Near) { r = W.r5Startle; terminal = true; }
+    else {
+      gaitTick();
+      const double dv[3] = {visitorPos[0] - bear.body[0], visitorPos[1],
+                            visitorPos[2]};
+      const double d1 = hypot3(dv[0], dv[1], dv[2]);
+      r = W.r5WalkTick + W.r5Beckon * (d0 - d1);   // the beckoning gradient
+    }
+  } else r = visitorPresent ? W.r5RestPresent : W.r5RestAbsent;
+  L.epReward += r; L.epTick++;
+  const int s2 = senseState();
+  double* q = L.Q[s];
+  const double mx = std::fmax(L.Q[s2][0], std::fmax(L.Q[s2][1], L.Q[s2][2]));
+  q[a] += W.l5Alpha * (r + (terminal ? 0 : W.l5Gamma * mx) - q[a]);
+  if (std::getenv("CA_TRACE"))              // N4 debug: tick-level ledger
+    std::fprintf(stderr, "TR %ld %ld s=%d a=%d r=%.17g t=%d p=%d dx=%.17g "
+                 "dz=%.17g rng=%lld\n", L.episode, L.epTick, s, a, r,
+                 terminal ? 1 : 0, visitorPresent ? 1 : 0,
+                 visitorPos[0] - bear.body[0], visitorPos[2], L.rng);
+  if (terminal || L.epTick >= W.l5EpTicks) {
+    L.rewards.push_back(L.epReward);
+    L.episode++;
+    L.eps = std::fmax(W.l5EpsMin, L.eps * W.l5EpsDecay);
+    spawnEpisode();
+  }
+}
+
+// the embodiment clock — separate from the growth clock
+static void bearAnim() {
+  if (!bear.rigged) return;
+  bear.cmdTick++;
+  if (visitorWaveBack > 0) visitorWaveBack--;   // G5 visitor bob clock
+  bear.hasLastRes = false;
+  double res = 0;
+  if (bear.cmd == "wave" && bear.waveCh >= 0) {
+    BChain& ch = bear.rig[bear.waveCh];
+    const double P0[3] = {(double)ch.path[0][0], (double)ch.path[0][1],
+                          (double)ch.path[0][2]};
+    double off[3], rr[3], up[3];
+    sub3(ch.rest, P0, off);
+    const double x[3] = {1, 0, 0};
+    rot3(off, x, -W.b4WaveTh * ch.side, rr);
+    add3(P0, rr, up);
+    const bool lower = bear.wavePhase == "lower";
+    for (int i = 0; i < W.b4Iters; i++) res = ikStep(ch, lower ? ch.rest : up);
+    bear.hasLastRes = true;
+    if (bear.wavePhase == "raise") {
+      if (!bear.hasMinRes || res < bear.minResidual) {
+        bear.minResidual = res; bear.hasMinRes = true;
+      }
+      if (res < W.b4WaveRes) {
+        bear.wavePhase = "hold";
+        bear.holdUntil = bear.cmdTick + W.b4Hold;
+        bear.raiseIters = bear.iters;
+      }
+    } else if (bear.wavePhase == "hold") {
+      if (bear.cmdTick >= bear.holdUntil) bear.wavePhase = "lower";
+    } else if (bear.wavePhase == "lower") {
+      if (res < W.b4LowerRes) {
+        bear.cmd = "rest"; bear.waveDone = true; bear.wavePhase = "";
+      }
+    }
+  } else if (bear.cmd == "walk") {
+    const double phi = 2 * 3.14159265358979323846 * bear.cmdTick / W.b4T;
+    for (auto& ch : bear.rig) {
+      // diagonal pairs in phase: (fore,+z) & (hind,-z) at 0, others at pi
+      const double ph = (ch.fore == (ch.side > 0)) ? 0 : 3.14159265358979323846;
+      const double T[3] = {ch.rest[0] + W.b4A * std::sin(phi + ph),
+                           ch.rest[1] + 0.6 * W.b4A *
+                             std::fmax(0.0, std::cos(phi + ph)),
+                           ch.rest[2]};
+      double r = 0;
+      for (int i = 0; i < W.b4Iters; i++) r = ikStep(ch, T);
+      if (!bear.hasLastRes || r > res) { res = r; bear.hasLastRes = true; }
+    }
+    bear.body[0] += 4 * W.b4A / W.b4T;    // the no-slip mean stride
+    std::vector<std::array<double, 3>> tips(bear.rig.size());
+    for (size_t i = 0; i < bear.rig.size(); i++) {
+      double tp[3]; fkPoint(bear.rig[i], (int)bear.rig[i].path.size() - 1, tp);
+      tips[i] = {tp[0], tp[1], tp[2]};
+    }
+    bear.gaitLog.push_back({bear.cmdTick, std::move(tips)});
+    if (bear.gaitLog.size() > 400)
+      bear.gaitLog.erase(bear.gaitLog.begin());
+  } else if (bear.cmd == "auto") {
+    autoTick();                           // G5: the learner drives
+  }
+  if (bear.hasLastRes) bear.lastRes = res;
+}
+static void bearCommand(const std::string& c) {
+  if (!bear.rigged) return;
+  if (c == "wave") {
+    bear.cmd = "wave"; bear.cmdTick = 0; bear.iters = 0;
+    bear.hasMinRes = false; bear.raiseIters = -1; bear.waveDone = false;
+    bear.wavePhase = "raise";
+  } else if (c == "walk") {
+    bear.cmd = "walk"; bear.cmdTick = 0; bear.gaitLog.clear();
+  } else bear.cmd = c == "auto" ? "auto" : "rest";
+}
+
+// ---------- embodiment wire emitters -----------------------------------------
+static void jArr3(const double v[3]) {
+  std::printf("[%.17g,%.17g,%.17g]", v[0], v[1], v[2]);
+}
+static void emitRig() {
+  std::printf("{\"type\":\"rig\",\"chains\":[");
+  for (size_t i = 0; i < bear.rig.size(); i++) {
+    const BChain& ch = bear.rig[i];
+    std::printf("%s{\"limbIdx\":%d,\"fore\":%s,\"side\":%d,\"elbow\":%d,"
+                "\"path\":[", i ? "," : "", ch.limbIdx,
+                ch.fore ? "true" : "false", ch.side, ch.elbow);
+    for (size_t k = 0; k < ch.path.size(); k++)
+      std::printf("%s[%d,%d,%d]", k ? "," : "", ch.path[k][0], ch.path[k][1],
+                  ch.path[k][2]);
+    std::printf("],\"digits\":[");
+    for (size_t d = 0; d < ch.digits.size(); d++) {
+      std::printf("%s[", d ? "," : "");
+      for (size_t j = 0; j < ch.digits[d].size(); j++)
+        std::printf("%s[%d,%d,%d]", j ? "," : "", ch.digits[d][j][0],
+                    ch.digits[d][j][1], ch.digits[d][j][2]);
+      std::printf("]");
+    }
+    std::printf("],\"rest\":");
+    jArr3(ch.rest);
+    std::printf("}");
+  }
+  std::printf("],\"ears\":[");
+  int n = 0;
+  for (const CCell& c : cCellsV)
+    if (c.mat == 3) std::printf("%s[%d,%d,%d]", n++ ? "," : "", c.x, c.y, c.z);
+  std::printf("],\"waveCh\":%d}\n", bear.waveCh);
+  std::fflush(stdout);
+}
+static void emitAnim() {
+  std::printf("{\"type\":\"anim\",\"tick\":%ld,\"cmd\":\"%s\",\"res\":",
+              bear.cmdTick, bear.cmd.c_str());
+  if (bear.hasLastRes) std::printf("%.17g", bear.lastRes);
+  else std::printf("null");
+  std::printf(",\"body\":[%.17g,0,0],\"visitor\":", bear.body[0]);
+  if (visitorPresent) jArr3(visitorPos);
+  else std::printf("null");
+  std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
+              "\"waveDone\":%s,\"posed\":[", visitorWaveBack, L.episode,
+              L.eps, bear.waveDone ? "true" : "false");
+  bool first = true;
+  for (const BChain& ch : bear.rig) {
+    for (size_t k = 0; k < ch.path.size(); k++) {
+      double p[3]; fkPoint(ch, (int)k, p);
+      std::printf("%s[%d,%d,%d,%.17g,%.17g,%.17g]", first ? "" : ",",
+                  ch.path[k][0], ch.path[k][1], ch.path[k][2],
+                  p[0], p[1], p[2]);
+      first = false;
+    }
+    for (const auto& dp : ch.digits)
+      for (size_t j = 0; j < dp.size(); j++) {
+        double p[3]; fkDigit(ch, dp, (int)j, p);
+        std::printf("%s[%d,%d,%d,%.17g,%.17g,%.17g]", first ? "" : ",",
+                    dp[j][0], dp[j][1], dp[j][2], p[0], p[1], p[2]);
+        first = false;
+      }
+  }
+  std::printf("],\"done\":false}\n");
+  std::fflush(stdout);
+}
+
+// ---------- selftest: the synchronous G4/G5 protocol, one ledger line --------
+// Mirrors engine/probe_bear_ref.py exactly: wave until waveDone (<= 2000
+// anim ticks), walk 400 anim ticks, rest, segment audit, five sense probes,
+// then 320 learning episodes. The oracle in test_native.py compares every
+// number against the JS reference run.
+static void emitSelftest() {
+  bearCommand("wave");
+  for (int i = 0; i < 2000 && !bear.waveDone; i++) bearAnim();
+  const double waveMinRes = bear.minResidual;
+  const long waveRaise = bear.raiseIters, waveIters = bear.iters;
+  const bool waveDone = bear.waveDone;
+  bearCommand("walk");
+  for (int i = 0; i < 400; i++) bearAnim();
+  const double bodyAfterWalk = bear.body[0];
+  const long walkIters = bear.iters;
+  const double walkLastRes = bear.lastRes;
+  bearCommand("rest");
+  // F-G4f segment audit: posed segments must equal grown lengths
+  double segErr = -1;
+  for (const BChain& ch : bear.rig)
+    for (size_t k = 1; k < ch.path.size(); k++) {
+      const double rest = hypot3(ch.path[k][0] - (double)ch.path[k-1][0],
+                                 ch.path[k][1] - (double)ch.path[k-1][1],
+                                 ch.path[k][2] - (double)ch.path[k-1][2]);
+      double pa[3], pb[3], dd[3];
+      fkPoint(ch, (int)k, pa); fkPoint(ch, (int)k - 1, pb); sub3(pa, pb, dd);
+      const double posed = hypot3(dd[0], dd[1], dd[2]);
+      const double err = std::fabs(posed - rest);
+      segErr = segErr < 0 ? err : std::fmax(segErr, err);
+    }
+  // sense probes (same sequence as the JS probe)
+  visitorPresent = true;
+  visitorPos[0] = bear.body[0] + 4; visitorPos[1] = 0; visitorPos[2] = 3;
+  const int sNearPlus = senseState();
+  visitorPos[2] = -3; const int sNearMinus = senseState();
+  visitorPos[2] = 0;  const int sNearCenter = senseState();
+  visitorPos[0] = bear.body[0] + 12; const int sFarCenter = senseState();
+  // JS __setVisitor(false, 0, 0): pos = [body0, 0, 0] — not stale
+  visitorPresent = false;
+  visitorPos[0] = bear.body[0]; visitorPos[1] = 0; visitorPos[2] = 0;
+  const int sAbsent = senseState();
+  // 320 learning episodes
+  const long target = L.episode + 320;
+  long guard = 0;
+  while (L.episode < target && guard++ < 320L * W.l5EpTicks * 3) autoTick();
+  double first30 = 0, last30 = 0;
+  for (int i = 0; i < 30 && i < (int)L.rewards.size(); i++)
+    first30 += L.rewards[i];
+  first30 /= 30;
+  for (size_t i = L.rewards.size() > 30 ? L.rewards.size() - 30 : 0;
+       i < L.rewards.size(); i++)
+    last30 += L.rewards[i];
+  last30 /= 30;
+  std::printf("{\"type\":\"selftest\",\"wave\":{\"minResidual\":%.17g,"
+              "\"raiseIters\":%ld,\"iters\":%ld,\"waveDone\":%s},",
+              waveMinRes, waveRaise, waveIters, waveDone ? "true" : "false");
+  std::printf("\"walk\":{\"iters\":%ld,\"lastRes\":%.17g,\"bodyX\":%.17g,"
+              "\"gait\":[", walkIters, walkLastRes, bodyAfterWalk);
+  for (size_t i = 0; i < bear.gaitLog.size(); i++) {
+    std::printf("%s[%ld,[", i ? "," : "", bear.gaitLog[i].first);
+    for (size_t c = 0; c < bear.gaitLog[i].second.size(); c++) {
+      const auto& t = bear.gaitLog[i].second[c];
+      std::printf("%s[%.17g,%.17g,%.17g]", c ? "," : "", t[0], t[1], t[2]);
+    }
+    std::printf("]]");
+  }
+  std::printf("]},\"thetaFinal\":[");
+  for (size_t i = 0; i < bear.rig.size(); i++)
+    std::printf("%s[%.17g,%.17g]", i ? "," : "", bear.rig[i].theta[0],
+                bear.rig[i].theta[1]);
+  std::printf("],\"segErr\":%.17g,\"thetaMaxEver\":%.17g,\"nan\":%s,",
+              segErr, bear.thetaMaxEver, bear.nan ? "true" : "false");
+  std::printf("\"senses\":{\"nearPlus\":%d,\"nearMinus\":%d,"
+              "\"nearCenter\":%d,\"farCenter\":%d,\"absent\":%d},",
+              sNearPlus, sNearMinus, sNearCenter, sFarCenter, sAbsent);
+  std::printf("\"learn\":{\"episode\":%ld,\"eps\":%.17g,\"first30\":%.17g,"
+              "\"last30\":%.17g,\"rewards\":[", L.episode, L.eps, first30,
+              last30);
+  for (size_t i = 0; i < L.rewards.size(); i++)
+    std::printf("%s%.17g", i ? "," : "", L.rewards[i]);
+  std::printf("],\"Q\":[");
+  for (int s = 0; s < 7; s++)
+    std::printf("%s[%.17g,%.17g,%.17g]", s ? "," : "", L.Q[s][0], L.Q[s][1],
+                L.Q[s][2]);
+  std::printf("],\"visits\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld],"
+              "\"minResAuto\":%.17g,\"bodyXfinal\":%.17g}}\n",
+              L.stateVisits[0], L.stateVisits[1], L.stateVisits[2],
+              L.stateVisits[3], L.stateVisits[4], L.stateVisits[5],
+              L.stateVisits[6], L.minResAuto, bear.body[0]);
+  std::fflush(stdout);
+}
+
+// ---------- interactive anim loop (relay mode): stdin commands, anim frames --
+static int runEmbodiment(int tickMs) {
+  emitRig();
+  static std::mutex cmdMu;
+  static std::vector<std::string> cmdQ;
+  static bool stdinDone = false;
+  std::thread reader([] {
+    std::string l;
+    while (std::getline(std::cin, l)) {
+      if (l.empty()) continue;
+      std::lock_guard<std::mutex> g(cmdMu);
+      cmdQ.push_back(l);
+    }
+    std::lock_guard<std::mutex> g(cmdMu);
+    stdinDone = true;
+  });
+  reader.detach();
+  while (true) {
+    {
+      std::lock_guard<std::mutex> g(cmdMu);
+      for (const auto& c : cmdQ) bearCommand(c);
+      cmdQ.clear();
+      if (stdinDone) break;
+    }
+    bearAnim();
+    emitAnim();
+    if (tickMs > 0)
+      std::this_thread::sleep_for(std::chrono::milliseconds(tickMs));
+  }
   return 0;
 }
 
@@ -934,11 +1609,13 @@ int main(int argc, char** argv) {
       argc > 2 ? argv[2] : exeDir + "/genomes/wall.chimera";
   W = loadGenome(genomePath);
   const int tickMs = argc > 1 ? std::atoi(argv[1]) : W.tickMs;
+  const bool selftest = argc > 3 && std::string(argv[3]) == "selftest";
   const double cellOut = W.kind == "wall" ? 0 : W.cell;
   std::printf("{\"type\":\"meta\",\"kind\":\"%s\",\"name\":\"%s\","
-              "\"cell\":%.17g}\n", W.kind.c_str(), W.name.c_str(), cellOut);
+              "\"cell\":%.17g,\"embodiment\":%d}\n", W.kind.c_str(),
+              W.name.c_str(), cellOut, W.embodiment);
   std::fflush(stdout);
   if (W.kind == "oak") return runOak(tickMs);
-  if (W.kind == "creature") return runCrit(tickMs);
+  if (W.kind == "creature") return runCrit(tickMs, selftest);
   return runWall(tickMs);
 }

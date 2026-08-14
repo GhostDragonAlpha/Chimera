@@ -16,6 +16,11 @@
 <canvas id="c"></canvas>
 <div id="hud">booting…</div>
 <div id="tag">C++ ca_core.exe → SSE → splats · this page holds ZERO simulation logic</div>
+<div id="ctl" style="display:none;position:fixed;bottom:10px;right:10px;
+                    font:12px monospace">
+  <button id="bwave">WAVE (1)</button> <button id="bwalk">WALK (2)</button>
+  <button id="brest">REST (3)</button> <button id="bauto">AUTO (4)</button>
+</div>
 <script type="module">
 // ============================================================================
 // SPIACE NATIVE VIEWER — the browser is the EYES, not the brain. The structure
@@ -49,14 +54,38 @@ let finalLedger = null;
 const histCells = [], histViol = [];
 let splatsDirty = true;
 const splatData = [];
+// G4/G5 embodiment wire state (bear genomes) — presentation only: the C++
+// core owns the rig, the IK, the gait, and the learner; this page renders
+let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
+    waveDone = false, episode = 0, eps = 0, waveBack = 0, visitorPos = null;
+const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
+const earKeys = new Set();       // "x,y,z" of the two derived ear cells
 
 const es = new EventSource('/stream');
 es.onmessage = e => {
   const m = JSON.parse(e.data);
   if (m.type === 'meta') {
-    KIND = m.kind; GENOME = m.name;
+    KIND = m.kind; GENOME = m.name; EMB = m.embodiment || 0;
     PRES = PRESENT[KIND] || PRESENT.wall;
     if (m.cell > 0) PRES.cell = m.cell;      // the core reports its cell size
+    if (EMB) document.getElementById('ctl').style.display = 'block';
+    window.__growthStats = stats();
+    return;
+  }
+  if (m.type === 'rig') {
+    rigged = true; earKeys.clear();
+    for (const e2 of m.ears) earKeys.add(e2.join(','));
+    window.__growthStats = stats();
+    return;
+  }
+  if (m.type === 'anim') {
+    lastCmd = m.cmd; lastRes = m.res; bodyX = m.body[0];
+    waveDone = m.waveDone; episode = m.episode; eps = m.eps;
+    waveBack = m.waveBack; visitorPos = m.visitor;
+    posedMap.clear();
+    for (const p of m.posed)
+      posedMap.set(p[0] + ',' + p[1] + ',' + p[2], [p[3], p[4], p[5]]);
+    splatsDirty = true;
     window.__growthStats = stats();
     return;
   }
@@ -85,12 +114,33 @@ function stats() {
     s.height = lastHeight; s.leaves = lastLeaves; s.tips = lastTips;
   } else if (KIND === 'creature') {
     s.phase = lastPhase; s.limbs = lastLimbs; s.eyes = lastEyes;
+    if (EMB) {
+      s.rigged = rigged; s.cmd = lastCmd; s.res = lastRes; s.bodyX = bodyX;
+      s.waveDone = waveDone; s.episode = episode; s.eps = eps;
+    }
   }
   return s;
 }
 window.__growthCheck = () => ({ kind: KIND, cells, histCells, histViol,
                                 violations: lastViol, done, tick: lastTick,
-                                final: finalLedger });
+                                final: finalLedger,
+                                posed: [...posedMap.entries()] });
+
+// ---------- embodiment commands (buttons + 1-4 -> POST /cmd -> core stdin) ---
+function bearCmd(c) { fetch('/cmd', { method: 'POST', body: c }); }
+document.getElementById('bwave').onclick = () => bearCmd('wave');
+document.getElementById('bwalk').onclick = () =>
+  bearCmd(lastCmd === 'walk' ? 'rest' : 'walk');
+document.getElementById('brest').onclick = () => bearCmd('rest');
+document.getElementById('bauto').onclick = () =>
+  bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
+window.addEventListener('keydown', e => {
+  if (!EMB) return;
+  if (e.key === '1') bearCmd('wave');
+  else if (e.key === '2') bearCmd(lastCmd === 'walk' ? 'rest' : 'walk');
+  else if (e.key === '3') bearCmd('rest');
+  else if (e.key === '4') bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
+});
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------
 function hash01(n) { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
@@ -135,14 +185,32 @@ function oakSplats() {
 }
 function critSplats() {
   const s0 = PRES.cell;
+  const bx = EMB ? bodyX * s0 : 0;         // the walking bear's drift
   for (const [x, y, z, mat] of cells) {
     const h = hash01(x * 7 + y * 31 + z * 13);
-    const p = [x * s0, y * s0, z * s0];
+    let lp = [x, y, z];
+    if (EMB && rigged) {                   // G4: limb/digit cells render at
+      const posed = posedMap.get(x + ',' + y + ',' + z);   // FK-posed pos
+      if (posed) lp = posed;
+    }
+    const p = [lp[0] * s0 + bx, lp[1] * s0, lp[2] * s0];
     let col;
     if (mat === 'eye') col = [0.10, 0.15, 0.50, 1];
-    else if (mat === 'limb') col = [0.60 + 0.06*h, 0.40, 0.32, 1];
-    else col = [0.72 + 0.06*h, 0.52 + 0.04*h, 0.42, 1];   // skin
+    else if (EMB && (mat === 'ear' || earKeys.has(x + ',' + y + ',' + z)))
+      col = [0.80, 0.58, 0.46, 1];
+    else if (mat === 'limb')
+      col = EMB ? [0.50 + 0.05*h, 0.35, 0.26, 1]          // darker fur
+                : [0.60 + 0.06*h, 0.40, 0.32, 1];
+    else col = EMB ? [0.58 + 0.05*h, 0.40 + 0.03*h, 0.28, 1]   // fur
+                   : [0.72 + 0.06*h, 0.52 + 0.04*h, 0.42, 1];
     splatData.push({ p, s: s0 * 0.62, col });
+  }
+  if (EMB && visitorPos) {                 // G5: the visitor, in world space
+    const bob = waveBack > 0 ? 0.12 * Math.abs(Math.sin(waveBack * 0.3)) : 0;
+    splatData.push({ p: [visitorPos[0] * s0, 0.06 + bob, visitorPos[2] * s0],
+                     s: 0.10, col: [0.75, 0.20, 0.18, 1] });
+    splatData.push({ p: [visitorPos[0] * s0, 0.17 + bob, visitorPos[2] * s0],
+                     s: 0.075, col: [0.85, 0.35, 0.25, 1] });
   }
   ground(PRES.groundY);
 }
@@ -252,10 +320,11 @@ function render() {
   }
   const t = performance.now() / 1000;
   const ang = PRES.focus.ang0 + 0.10 * Math.sin(t * 0.15);
-  const eye = [PRES.focus.cx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY,
+  const fx = PRES.focus.cx + (EMB ? bodyX * PRES.cell : 0);   // track the walk
+  const eye = [fx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY,
                PRES.focus.R * Math.cos(ang)];
   const proj = perspective(0.85, w / h, 0.05, 50);
-  const view = lookAt(eye[0], eye[1], eye[2], PRES.focus.cx, PRES.focus.cy, 0);
+  const view = lookAt(eye[0], eye[1], eye[2], fx, PRES.focus.cy, 0);
   const u32 = new Float32Array(32); u32.set(proj, 0); u32.set(view, 16);
   device.queue.writeBuffer(ubuf, 0, u32);
   const enc = device.createCommandEncoder();
@@ -280,9 +349,14 @@ function hud() {
   if (KIND === 'oak')
     body = `tick    ${s.tick}\ncells   ${s.cellCount}\nheight  ${s.height}\n` +
            `leaves  ${s.leaves}\ntips    ${s.tips}\ndominance viol ${s.violations}`;
-  else if (KIND === 'creature')
+  else if (KIND === 'creature') {
     body = `tick    ${s.tick}\ncells   ${s.cellCount}\nphase   ${s.phase}\n` +
            `limbs   ${s.limbs}\neyes    ${s.eyes}`;
+    if (EMB) body += `\ncmd     ${s.cmd}${s.waveDone ? ' (wave done)' : ''}` +
+           `\nres     ${s.res === null ? '—' : s.res.toFixed(4)}` +
+           `\nbodyX   ${s.bodyX.toFixed(1)} cells` +
+           `\nepisode ${s.episode}  eps ${s.eps.toFixed(3)}`;
+  }
   else
     body = `tick    ${s.tick}\nbricks  ${s.cellCount} / ${s.blueprintCount || 210}` +
            `\ncourse  ${(s.maxCourse ?? -1) + 1} / ${WALL.courses}` +

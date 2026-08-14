@@ -1398,6 +1398,11 @@ function autoTick() {
   const q = learn.Q[s];
   q[a] += L5.ALPHA * (r + (terminal ? 0 : L5.GAMMA * Math.max(...learn.Q[s2]))
                       - q[a]);
+  if (window.__TRACE)                       // N4 debug: tick-level ledger
+    window.__TRACE.push([learn.episode, learn.epTick, s, a, r,
+                         terminal ? 1 : 0, visitor.present ? 1 : 0,
+                         visitor.pos[0] - bear.body[0], visitor.pos[2],
+                         learn.rng]);
   if (terminal || learn.epTick >= L5.EP_TICKS) {
     learn.rewards.push(learn.epReward);
     learn.episode++;
@@ -1422,9 +1427,10 @@ window.__setVisitor = (present, dx, dz) => {      // sense audit hook
 window.__learnStats = () => {
   const m = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length
                               : null;
-  return { episode: learn.episode, eps: learn.eps,
+  return { episode: learn.episode, eps: learn.eps, rng: learn.rng,
            first30: m(learn.rewards.slice(0, 30)),
            last30: m(learn.rewards.slice(-30)),
+           rewards: learn.rewards,          // N4 debug: full episode ledger
            Q: learn.Q, visits: learn.stateVisits, struct: STRUCT5,
            minResAuto: learn.minResAuto };
 };
