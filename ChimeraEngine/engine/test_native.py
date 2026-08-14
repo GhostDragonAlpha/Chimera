@@ -49,12 +49,17 @@
 #          rig: 4 chains x (pathLen 6, elbow 3), 8 joints, 2 ears, waveCh =
 #          fore/+z · F-N4c wave minResidual == 0.04881518056285238 at
 #          raiseIters 15 / iters 230 · F-N4d gait diagonal in phase /
-#          ipsilateral anti-phase (Fourier), bodyX == 400*4*2/60 · F-N4e
+#          ipsilateral anti-phase (Fourier); bodyX == the N7 oracle's
+#          discrete stride sum (pre-N7: 400*4*2/60 — retired) · F-N4e
 #          Python-oracle FK segment audit < 1e-6 at thetaFinal and at probe
 #          pose [0.4,-0.3] · F-N4f no NaN, theta <= 2.6 · F-N4g senses
-#          1/3/2/5/0 · F-N4h 320 episodes: visits == [9450,89,93,92,1736,1888,
-#          1958], last30 > first30+0.3, greedy == [0,1,1,1,2,2,2], Q within
-#          1e-9, minResAuto < 0.35 · F-N4i bodyXfinal == 789.8666666666321 ·
+#          1/3/2/5/0 · F-N4h 320 episodes: visits/Q/first30/last30/minResAuto
+#          == the N7 oracle's full learner replication within 1e-9 (pre-N7 JS
+#          ledger: visits [9450,89,93,92,1736,1888,1958], greedy
+#          [0,1,1,1,2,2,2] — retired with the imposed stride), last30 >
+#          first30+0.3, greedy still matches the reward structure ·
+#          F-N4i bodyXfinal == the N7 oracle within 1e-9 (pre-N7 JS:
+#          789.8666666666321 — retired) ·
 #          F-N4j HEADED: WAVE button -> C++ core (page observes cmd=wave;
 #          wire ledger holds the wave frames: res<0.35, waveDone), page
 #          posed == wire posed
@@ -87,6 +92,29 @@
 #          2H/g; ground == the oracle's footprint max at the drop site
 #   F-N6e HEADED: WALK over the grown hills — bodyY tracks terrain on the
 #          wire, every contact frame satisfies bodyY == ground + 4
+# N7 falsifiers (named before the run; earned traction — the stride is the
+# stance-foot sweep A*w*|cos phi| gated by contact, whose cycle-mean is
+# exactly the retired 4A/T constant; the JS-imposed-stride learner reference
+# is RETIRED and replaced by the full Python oracle replication below):
+#   F-N7a airwalk: legs cycling in free fall translate the body EXACTLY zero
+#          cells (bit-exact, not epsilon — the wire measures airMoved == 0)
+#   F-N7b the 400-tick flat walk's bodyX == the oracle's discrete sum
+#          sum_t A*(2*pi/T)*|cos(2*pi*t/T)| in the same IEEE op order, and
+#          the airwalk landing tick == the discrete drop law (n(n+1) >= 2H/g)
+#   F-N7c one full gait cycle sums to 4A within the |cos| Riemann-sum
+#          quadrature error (< 1%) — the old constant is the mean of the
+#          new law, not an independent choice
+#   F-N7d the G5 learner ledger under the new law (visits, Q, first30, last30,
+#          minResAuto, bodyXfinal) == the oracle's full replication of the
+#          wave+walk+learn protocol within 1e-9 — and the oracle's WAVE
+#          numbers must still hit the untouched JS anchors (0.04881518056285238
+#          / 15 / 230), which pins the port before its divergent output is
+#          trusted
+#   F-N7e HILLS: the body-local ledgers (growth, wave, gait, theta, senses)
+#          stay bit-identical to flat, but the translation-coupled ledgers
+#          (walk bodyX/trace, learner) now legitimately DIFFER — downhill
+#          crest exits break contact and the stride slips. They must match
+#          the terrain-mode oracle run instead of the flat wire.
 import json
 import math
 import subprocess
@@ -546,6 +574,395 @@ try:
           and chains[brig["waveCh"]]["side"] > 0,
           f"chains={[(c['fore'], c['side'], len(c['path']), c['elbow']) for c in chains]} "
           f"ears={brig['ears']} waveCh={brig['waveCh']}")
+
+    # ---- the N7 oracle: a full replication of ca_core's emitSelftest --------
+    # protocol (wave -> 400-tick walk -> sense probes -> 320 learning episodes
+    # -> airwalk) under the EARNED-TRACTION law, given the wire's rig and the
+    # SAME genome file. Every float op mirrors the C++ order; the LCG keeps
+    # JS's lossy-double rounding; hypot3 is the ECMAScript spec algorithm.
+    # The wave phase must still hit the untouched JS anchors — that pins the
+    # IK port before its (deliberately divergent) learner ledger is trusted.
+    def bear_oracle(gd, brig_, bfin_, terrain=None, tsc=1):
+        PI = math.pi
+        A, T = float(gd["b4A"]), float(gd["b4T"])
+        LAM, DTH, THMAX = (float(gd["b4Lam"]), float(gd["b4Dth"]),
+                           float(gd["b4ThMax"]))
+        ITERS = int(gd["b4Iters"])
+        WAVERES, WAVETH = float(gd["b4WaveRes"]), float(gd["b4WaveTh"])
+        HOLD, LOWERRES = int(gd["b4Hold"]), float(gd["b4LowerRes"])
+        LNEAR, LFAR = float(gd["l5Near"]), float(gd["l5Far"])
+        EPTICKS, BEAREPS = int(gd["l5EpTicks"]), float(gd["l5BearEps"])
+        ALPHA, GAMMA = float(gd["l5Alpha"]), float(gd["l5Gamma"])
+        EPS0, EPSDECAY, EPSMIN = (float(gd["l5Eps0"]), float(gd["l5EpsDecay"]),
+                                  float(gd["l5EpsMin"]))
+        RWNEAR, RWFAR, RWABS = (float(gd["r5WaveNear"]), float(gd["r5WaveFar"]),
+                                float(gd["r5WaveAbsent"]))
+        RWTICK, RBECK = float(gd["r5WalkTick"]), float(gd["r5Beckon"])
+        RSTART = float(gd["r5Startle"])
+        RRABS, RRPRES = float(gd["r5RestAbsent"]), float(gd["r5RestPresent"])
+        G = float(gd["gravity"]) / (float(gd["tickHz"]) ** 2
+                                    * float(gd["cell"]))
+        cells_ = bfin_["cells"]
+        loY = float(min(c[1] for c in cells_))
+        hiY = float(max(c[1] for c in cells_))
+        loX, hiX = min(c[0] for c in cells_), max(c[0] for c in cells_)
+        bodyH = hiY - loY
+        eyes = bfin_["eyes"]
+        orgHead = bfin_["organizers"]["head"]
+        ballZ = bfin_["organizers"]["ball"][2]
+        zc = (int(math.floor(ballZ + 0.5)) if ballZ >= 0
+              else -int(math.floor(-ballZ + 0.5)))        # lround
+
+        def hypot3(a, b, c):                     # ECMAScript spec algorithm
+            a, b, c = abs(a), abs(b), abs(c)
+            mx = max(a, b, c)
+            if mx == 0:
+                return 0.0
+            s = (a / mx) * (a / mx) + (b / mx) * (b / mx) + (c / mx) * (c / mx)
+            return mx * math.sqrt(s)
+
+        def bnorm3(v):
+            l = hypot3(*v)
+            if l == 0:
+                l = 1.0
+            return [v[0] / l, v[1] / l, v[2] / l]
+
+        def rot3o(v, a, th):
+            c, s = math.cos(th), math.sin(th)
+            d = a[0] * v[0] + a[1] * v[1] + a[2] * v[2]
+            return [v[0] * c + (a[1] * v[2] - a[2] * v[1]) * s + a[0] * d * (1 - c),
+                    v[1] * c + (a[2] * v[0] - a[0] * v[2]) * s + a[1] * d * (1 - c),
+                    v[2] * c + (a[0] * v[1] - a[1] * v[0]) * s + a[2] * d * (1 - c)]
+
+        def cross3(a, b):
+            return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2],
+                    a[0] * b[1] - a[1] * b[0]]
+
+        def solve3(M, b):                        # Cramer, no library
+            def d3(N):
+                return (N[0][0] * (N[1][1] * N[2][2] - N[1][2] * N[2][1])
+                        - N[0][1] * (N[1][0] * N[2][2] - N[1][2] * N[2][0])
+                        + N[0][2] * (N[1][0] * N[2][1] - N[1][1] * N[2][0]))
+            det = d3(M)
+            if abs(det) < 1e-12:
+                return [0.0, 0.0, 0.0]
+            out = []
+            for c in range(3):
+                N = [[b[r] if cc == c else M[r][cc] for cc in range(3)]
+                     for r in range(3)]
+                out.append(d3(N) / det)
+            return out
+
+        chains = [{"fore": c["fore"], "side": c["side"], "path": c["path"],
+                   "elbow": c["elbow"], "theta": [0.0, 0.0]}
+                  for c in brig_["chains"]]
+
+        def fk(ch, k):
+            th = ch["theta"]
+            P = ch["path"]
+            P0 = [float(x) for x in P[0]]
+            Pe0 = [float(x) for x in P[ch["elbow"]]]
+            Pe = [P0[i] + r for i, r in enumerate(rot3o(
+                [Pe0[i] - P0[i] for i in range(3)], [1.0, 0.0, 0.0], th[0]))]
+            Pk = [float(x) for x in P[k]]
+            if k <= ch["elbow"]:
+                return [P0[i] + r for i, r in enumerate(rot3o(
+                    [Pk[i] - P0[i] for i in range(3)], [1.0, 0.0, 0.0], th[0]))]
+            r1 = rot3o([Pk[i] - Pe0[i] for i in range(3)], [0.0, 1.0, 0.0],
+                       th[1])
+            r2 = rot3o(r1, [1.0, 0.0, 0.0], th[0])
+            return [Pe[i] + r for i, r in enumerate(r2)]
+
+        for ch in chains:
+            ch["rest"] = fk(ch, len(ch["path"]) - 1)    # theta=0 IS grown
+        waveCh = brig_["waveCh"]
+        thetaMaxEver = [0.0]
+        nanFlag = [False]
+
+        def ikstep(ch, Tg):
+            th = ch["theta"]
+            P0 = [float(x) for x in ch["path"][0]]
+            tip = fk(ch, len(ch["path"]) - 1)
+            e = [Tg[i] - tip[i] for i in range(3)]
+            res = hypot3(*e)
+            a1w = rot3o([0.0, 1.0, 0.0], [1.0, 0.0, 0.0], th[0])
+            Pe = fk(ch, ch["elbow"])
+            j0 = cross3([1.0, 0.0, 0.0], [tip[i] - P0[i] for i in range(3)])
+            j1 = cross3(a1w, [tip[i] - Pe[i] for i in range(3)])
+            M = [[j0[0] * j0[0] + j1[0] * j1[0] + LAM,
+                  j0[0] * j0[1] + j1[0] * j1[1],
+                  j0[0] * j0[2] + j1[0] * j1[2]],
+                 [j0[1] * j0[0] + j1[1] * j1[0],
+                  j0[1] * j0[1] + j1[1] * j1[1] + LAM,
+                  j0[1] * j0[2] + j1[1] * j1[2]],
+                 [j0[2] * j0[0] + j1[2] * j1[0],
+                  j0[2] * j0[1] + j1[2] * j1[1],
+                  j0[2] * j0[2] + j1[2] * j1[2] + LAM]]
+            w = solve3(M, e)
+            for jj, J in enumerate((j0, j1)):
+                d = J[0] * w[0] + J[1] * w[1] + J[2] * w[2]
+                d = max(-DTH, min(DTH, d))
+                th[jj] = max(-THMAX, min(THMAX, th[jj] + d))
+            tm = max(abs(th[0]), abs(th[1]))
+            if tm > thetaMaxEver[0]:
+                thetaMaxEver[0] = tm
+            if not (math.isfinite(th[0]) and math.isfinite(th[1])
+                    and math.isfinite(res)):
+                nanFlag[0] = True
+            return res
+
+        def ground_at(bx_):
+            if terrain is None:
+                return loY
+            g = None
+            for x in range(math.floor(bx_) + loX, math.floor(bx_) + hiX + 1):
+                h = terrain.get(x, 0)
+                g = h if g is None else max(g, h)
+            return loY + g / tsc
+
+        def phys(y_, v_, bx_):
+            v_ -= G
+            y_ += v_
+            gr = ground_at(bx_)
+            pen = gr - (y_ + loY)
+            ct = False
+            if pen >= 0:
+                y_ += pen
+                v_ = 0.0
+                ct = True
+            return y_, v_, ct, gr
+
+        y = v = 0.0
+        contact = True
+        bx = 0.0
+        iters = 0
+        # -- wave (the untouched JS anchors pin this port) --
+        cmdTick = 0
+        phase = "raise"
+        minRes = None
+        holdUntil = 0
+        waveDone = False
+        raiseIters = -1
+        chw = chains[waveCh]
+        P0w = [float(x) for x in chw["path"][0]]
+        rrw = rot3o([chw["rest"][j] - P0w[j] for j in range(3)],
+                    [1.0, 0.0, 0.0], -WAVETH * chw["side"])
+        upw = [P0w[j] + rrw[j] for j in range(3)]
+        for _ in range(2000):
+            if waveDone:
+                break
+            cmdTick += 1
+            y, v, contact, _gr = phys(y, v, bx)
+            lower = phase == "lower"
+            res = 0.0
+            for _ in range(ITERS):
+                res = ikstep(chw, chw["rest"] if lower else upw)
+                iters += 1
+            if phase == "raise":
+                if minRes is None or res < minRes:
+                    minRes = res
+                if res < WAVERES:
+                    phase = "hold"
+                    holdUntil = cmdTick + HOLD
+                    raiseIters = iters
+            elif phase == "hold":
+                if cmdTick >= holdUntil:
+                    phase = "lower"
+            elif phase == "lower":
+                if res < LOWERRES:
+                    waveDone = True
+                    phase = ""
+        waveIters = iters
+        # -- 400-tick walk (earned stride, gated by this tick's contact) --
+        trace = []
+        for t in range(1, 401):
+            cmdTick = t
+            y, v, contact, gr = phys(y, v, bx)
+            phi = 2 * PI * cmdTick / T
+            for ch in chains:
+                ph = 0.0 if (ch["fore"] == (ch["side"] > 0)) else PI
+                Tg = [ch["rest"][0] + A * math.sin(phi + ph),
+                      ch["rest"][1] + 0.6 * A * max(0.0, math.cos(phi + ph)),
+                      ch["rest"][2]]
+                for _ in range(ITERS):
+                    ikstep(ch, Tg)
+            if contact:
+                bx += A * (2 * PI / T) * abs(math.cos(phi))
+            trace.append([float(t), y, gr])
+        walkBodyX = bx
+        # -- 320 learning episodes (the G5 learner under the new law) --
+        Q = [[0.0, 0.0, 0.0] for _ in range(7)]
+        eps = EPS0
+        rng = 1337
+        visits = [0] * 7
+        present = False
+        vpos = [bx, 0.0, 0.0]               # the probe reset: [body0, 0, 0]
+        epTick = 0
+        epReward = 0.0
+        episode = 0
+        rewards = []
+        gaitT = 0
+        minResAuto = None
+
+        def rnd():
+            nonlocal rng
+            x = rng * 1103515245.0 + 12345.0      # JS lossy-double LCG
+            m = math.fmod(x, 4294967296.0)
+            rng = int(m) & 0x7fffffff
+            return rng / 0x7fffffff
+
+        def sense():
+            if not present:
+                return 0
+            rel = [vpos[0] - bx, vpos[1], vpos[2]]
+            d = hypot3(*rel)
+            actPlus, actMinus = -2.0, -2.0
+            for e in eyes:
+                e0 = [float(e[0]), float(e[1]), float(e[2])]
+                out = bnorm3([e0[j] - orgHead[j] for j in range(3)])
+                to = bnorm3([rel[j] - e0[j] for j in range(3)])
+                a = out[0] * to[0] + out[1] * to[1] + out[2] * to[2]
+                if e[2] > zc:
+                    actPlus = max(actPlus, a)
+                else:
+                    actMinus = max(actMinus, a)
+            bearing = 1
+            if actPlus > actMinus + BEAREPS:
+                bearing = 0
+            elif actMinus > actPlus + BEAREPS:
+                bearing = 2
+            return (1 if d <= LNEAR else 4) + bearing
+
+        def gait_tick(ct):
+            nonlocal gaitT, bx
+            gaitT += 1
+            phi = 2 * PI * gaitT / T
+            for ch in chains:
+                ph = 0.0 if (ch["fore"] == (ch["side"] > 0)) else PI
+                Tg = [ch["rest"][0] + A * math.sin(phi + ph),
+                      ch["rest"][1] + 0.6 * A * max(0.0, math.cos(phi + ph)),
+                      ch["rest"][2]]
+                for _ in range(ITERS):
+                    ikstep(ch, Tg)
+            if ct:                              # N7: traction is EARNED
+                bx += A * (2 * PI / T) * abs(math.cos(phi))
+
+        def spawn():
+            nonlocal present, vpos, epTick, epReward
+            r = rnd()
+            if r < 1.0 / 3.0:
+                present = False
+            else:
+                near = r < 2.0 / 3.0
+                b = rnd()
+                present = True
+                vpos = [bx + (LNEAR - 2 if near else LFAR), 0.0,
+                        3.0 if b < 1.0 / 3.0 else (0.0 if b < 2.0 / 3.0
+                                                   else -3.0)]
+            epTick = 0
+            epReward = 0.0
+
+        guard = 0
+        while episode < 320 and guard < 320 * EPTICKS * 3:
+            guard += 1
+            y, v, contact, _gr = phys(y, v, bx)
+            s = sense()
+            visits[s] += 1
+            if rnd() < eps:
+                a = math.floor(rnd() * 3)
+            else:
+                q = Q[s]
+                a = (0 if (q[0] >= q[1] and q[0] >= q[2])
+                     else (1 if q[1] >= q[2] else 2))
+            d0 = 0.0
+            if present:
+                d0 = hypot3(vpos[0] - bx, vpos[1], vpos[2])
+            r = 0.0
+            terminal = False
+            if a == 1:                       # wave (single-shot, target up)
+                res = 0.0
+                for _ in range(ITERS):
+                    res = ikstep(chw, upw)
+                if minResAuto is None or res < minResAuto:
+                    minResAuto = res
+                if not present:
+                    r = RWABS
+                elif d0 <= LNEAR:
+                    r = RWNEAR
+                    terminal = True
+                else:
+                    r = RWFAR
+            elif a == 2:                     # walk
+                if not present:
+                    gait_tick(contact)
+                    r = RWTICK
+                elif d0 <= LNEAR:
+                    r = RSTART
+                    terminal = True
+                else:
+                    gait_tick(contact)
+                    d1 = hypot3(vpos[0] - bx, vpos[1], vpos[2])
+                    r = RWTICK + RBECK * (d0 - d1)   # the beckoning gradient
+            else:
+                r = RRPRES if present else RRABS
+            epReward += r
+            epTick += 1
+            s2 = sense()
+            mx = max(Q[s2])
+            Q[s][a] += ALPHA * (r + (0.0 if terminal else GAMMA * mx)
+                                - Q[s][a])
+            if terminal or epTick >= EPTICKS:
+                rewards.append(epReward)
+                episode += 1
+                eps = max(EPSMIN, eps * EPSDECAY)
+                spawn()
+        first30 = 0.0
+        for rw in rewards[:30]:
+            first30 += rw
+        first30 /= 30
+        last30 = 0.0
+        for rw in (rewards[-30:] if len(rewards) > 30 else rewards):
+            last30 += rw
+        last30 /= 30
+        bodyXfinal = bx
+        # -- airwalk: the earned-traction falsifier, replicated --------------
+        # (the selftest's drop+rest block in between settles y exactly at the
+        # local support; airwalk then raises 8 body heights and walks 400)
+        y = ground_at(bx) - loY               # settled at the local support
+        v = 0.0
+        y += 8 * bodyH
+        contact = False
+        airTicks = 0
+        landTick = -1
+        for n in range(1, 401):
+            y, v, contact, _gr = phys(y, v, bx)
+            phi = 2 * PI * n / T
+            if contact:
+                bx += A * (2 * PI / T) * abs(math.cos(phi))
+                if landTick < 0:
+                    landTick = n
+            else:
+                airTicks += 1
+        return {"wave": {"minResidual": minRes, "raiseIters": raiseIters,
+                         "iters": waveIters, "waveDone": waveDone},
+                "walkBodyX": walkBodyX, "trace": trace,
+                "learn": {"episode": episode, "eps": eps, "first30": first30,
+                          "last30": last30, "Q": Q, "visits": visits,
+                          "minResAuto": minResAuto, "bodyXfinal": bodyXfinal},
+                "thetaFinal": [list(ch["theta"]) for ch in chains],
+                "thetaMaxEver": thetaMaxEver[0], "nan": nanFlag[0],
+                "airwalk": {"airTicks": airTicks, "landTick": landTick,
+                            "bodyX": bx}}
+
+    bg = read_chimera(NATIVE / "genomes" / "bear.chimera")
+    orc = bear_oracle(bg, brig, bfin)
+    # the port pin: the oracle's WAVE must still hit the untouched JS anchors
+    check("F-N7d oracle port pin: wave anchors bit-faithful to the JS "
+          "reference (the law change never touched the wave)",
+          orc["wave"]["waveDone"] and orc["wave"]["raiseIters"] == 15
+          and orc["wave"]["iters"] == 230
+          and abs(orc["wave"]["minResidual"] - 0.04881518056285238) < 1e-12,
+          f"oracleWave={orc['wave']}")
     wv = bst["wave"]
     JS_WAVE_RES = 0.04881518056285238
     check("F-N4c wave: converged, bit-faithful to the JS reference",
@@ -576,9 +993,10 @@ try:
           len(gait) == 400 and max(d_diag) < 0.5 and max(d_ipsi) < 0.5,
           f"samples={len(gait)} diag={['%.3f' % d for d in d_diag]} "
           f"ipsi={['%.3f' % d for d in d_ipsi]}")
-    check("F-N4d walk translates the body (no-slip mean stride, exact)",
-          abs(bst["walk"]["bodyX"] - 400 * 4 * 2 / 60) < 1e-6,
-          f"bodyX={bst['walk']['bodyX']}")
+    check("F-N4d/F-N7b walk translates the body (earned stride == oracle "
+          "discrete sum; pre-N7 imposed constant was 400*4*2/60 = 53.3333)",
+          abs(bst["walk"]["bodyX"] - orc["walkBodyX"]) < 1e-9,
+          f"bodyX={bst['walk']['bodyX']} oracle={orc['walkBodyX']}")
     # Python-oracle FK — recomputed HERE from the wire's paths, mirroring the
     # JS/C++ fkPoint exactly (shoulder pitch about [1,0,0], elbow swing about
     # the theta0-carried [0,1,0])
@@ -620,46 +1038,58 @@ try:
     check("F-N4f no NaN, |theta| <= 2.6 ever",
           not bst["nan"] and bst["thetaMaxEver"] <= 2.6,
           f"nan={bst['nan']} thetaMaxEver={bst['thetaMaxEver']:.3f}")
+    tf_diff = max(abs(w - o) for crow, orow in zip(bst["thetaFinal"],
+                                                   orc["thetaFinal"])
+                  for w, o in zip(crow, orow))
+    check("F-N7d post-learn IK state (thetaFinal / thetaMaxEver / nan) == "
+          "the oracle — thetaFinal is read AFTER the 320 episodes, so it is "
+          "learn-coupled, not walk-local",
+          tf_diff < 1e-9
+          and abs(bst["thetaMaxEver"] - orc["thetaMaxEver"]) < 1e-9
+          and bst["nan"] == orc["nan"] == False,
+          f"thetaFinalDiff={tf_diff:.2e} "
+          f"thetaMaxEver={bst['thetaMaxEver']:.6f} "
+          f"(oracle {orc['thetaMaxEver']:.6f})")
     sns = bst["senses"]
     check("F-N4g senses: retinal state map exact",
           sns == {"nearPlus": 1, "nearMinus": 3, "nearCenter": 2,
                   "farCenter": 5, "absent": 0},
           f"senses={sns}")
     lk = bst["learn"]
-    JS_VISITS = [9450, 89, 93, 92, 1736, 1888, 1958]
-    JS_Q = [[1.9999999999934557, 1.8799999999906352, 1.959999999987697],
-            [0.24708321, 0.9999999999994209, -0.255],
-            [0.27987854103, 0.9999999978841239, -0.3285],
-            [0.692897534700734, 0.9999999999856497, -0.41596500000000003],
-            [0.9305069083942927, 0.8345299388421381, 0.9501470551563476],
-            [0.9920661634681632, 0.8920481832025281, 1.0017710071372883],
-            [0.9284599963794984, 0.8354488565453602, 0.9501473844443387]]
+    ol = orc["learn"]
+    # pre-N7 JS reference ledger (retired with the imposed stride, kept as
+    # provenance): visits [9450,89,93,92,1736,1888,1958], first30
+    # 0.6477821468674461, last30 1.2353410441105135, minResAuto
+    # 0.00030705036396531444, bodyXfinal 789.8666666666321
     greedy = [0 if q[0] >= q[1] and q[0] >= q[2]
               else (1 if q[1] >= q[2] else 2) for q in lk["Q"]]
     STRUCT5 = [0, 1, 1, 1, 2, 2, 2]
     struct_match = sum(g == s5 for g, s5, v in
-                       zip(greedy, STRUCT5, JS_VISITS) if v >= 10)
-    n_visited = sum(1 for v in JS_VISITS if v >= 10)
-    q_diff = max(abs(a - b) for row, ref in zip(lk["Q"], JS_Q)
+                       zip(greedy, STRUCT5, ol["visits"]) if v >= 10)
+    n_visited = sum(1 for v in ol["visits"] if v >= 10)
+    q_diff = max(abs(a - b) for row, ref in zip(lk["Q"], ol["Q"])
                  for a, b in zip(row, ref))
-    check("F-N4h learning: 320 episodes, visits bit-faithful, reward up",
-          lk["episode"] == 320 and lk["visits"] == JS_VISITS
-          and abs(lk["first30"] - 0.6477821468674461) < 1e-9
-          and abs(lk["last30"] - 1.2353410441105135) < 1e-9
+    check("F-N4h/F-N7d learning: 320 episodes, ledger == the oracle's full "
+          "replication under the earned-stride law",
+          lk["episode"] == 320 and lk["visits"] == ol["visits"]
+          and abs(lk["first30"] - ol["first30"]) < 1e-9
+          and abs(lk["last30"] - ol["last30"]) < 1e-9
           and lk["last30"] > lk["first30"] + 0.3
           and abs(lk["eps"] - 0.05) < 1e-12,
           f"ep={lk['episode']} visits={lk['visits']} "
+          f"oracleVisits={ol['visits']} "
           f"first30={lk['first30']:.4f} last30={lk['last30']:.4f}")
-    check("F-N4h greedy policy matches reward structure on visited states "
-          "and Q is bit-faithful",
+    check("F-N4h/F-N7d greedy policy matches reward structure on visited "
+          "states and Q/minResAuto match the oracle",
           struct_match == n_visited and q_diff < 1e-9
           and lk["minResAuto"] < 0.35
-          and abs(lk["minResAuto"] - 0.00030705036396531444) < 1e-12,
+          and abs(lk["minResAuto"] - ol["minResAuto"]) < 1e-9,
           f"greedy={greedy} match={struct_match}/{n_visited} "
-          f"qDiff={q_diff:.2e} minResAuto={lk['minResAuto']}")
-    check("F-N4i final bodyX bit-faithful to the JS reference",
-          abs(lk["bodyXfinal"] - 789.8666666666321) < 1e-6,
-          f"bodyXfinal={lk['bodyXfinal']}")
+          f"qDiff={q_diff:.2e} minResAuto={lk['minResAuto']} "
+          f"oracle={ol['minResAuto']}")
+    check("F-N4i/F-N7d final bodyX == the oracle's replication",
+          abs(lk["bodyXfinal"] - ol["bodyXfinal"]) < 1e-9,
+          f"bodyXfinal={lk['bodyXfinal']} oracle={ol['bodyXfinal']}")
     print(f"N4 SELFTEST MEASURED: waveRes={wv['minResidual']:.4f} "
           f"raiseIters={wv['raiseIters']} diag={['%.3f' % d for d in d_diag]} "
           f"ipsi={['%.3f' % d for d in d_ipsi]} "
@@ -676,7 +1106,6 @@ try:
     #   F-N5c: free-fall energy matches the symplectic ledger E_n=gH-g^2n/2
     #          to 1e-12; terminal drift < 2% (derived expectation ~1.85%)
     #   F-N5d: rest equilibrium — 300 ticks, |velY| == 0, penetration < 1e-12
-    bg = read_chimera(NATIVE / "genomes" / "bear.chimera")
     check("F-N5a genome declares the physics membrane (SI gravity + tickHz)",
           float(bg["gravity"]) == 9.81 and float(bg["tickHz"]) == 60,
           f"gravity={bg.get('gravity')} tickHz={bg.get('tickHz')}")
@@ -703,6 +1132,33 @@ try:
           f"ground={ph['ground']} dropH={ph['dropH']} "
           f"contact@{ph['contactTick']} (analytic {ph['analyticTick']:.2f}) "
           f"ledgerErr={ph['ledgerErr']:.1e} drift={ph['termDrift']:.4%}")
+
+    # ---- F-N7a..c: earned traction — the airwalk falsifier, live ------------
+    awk = bst["airwalk"]
+    oawk = orc["airwalk"]
+    check("F-N7a airwalk: legs cycling in free fall move the body EXACTLY "
+          "zero cells (bit-exact)",
+          awk["airMoved"] == 0.0 and awk["airTicks"] == oawk["airTicks"]
+          and awk["airTicks"] == awk["landTick"] - 1,
+          f"airMoved={awk['airMoved']} airTicks={awk['airTicks']} "
+          f"(oracle {oawk['airTicks']})")
+    check("F-N7b airwalk landing tick == the discrete drop law == the oracle",
+          awk["landTick"] == n_pred and oawk["landTick"] == n_pred,
+          f"landTick={awk['landTick']} oracle={oawk['landTick']} "
+          f"discrete={n_pred}")
+    check("F-N7b airwalk post-landing bodyX == the oracle's earned sum",
+          abs(awk["bodyX"] - oawk["bodyX"]) < 1e-9,
+          f"bodyX={awk['bodyX']} oracle={oawk['bodyX']}")
+    cyc = sum(2 * (2 * math.pi / 60) * abs(math.cos(2 * math.pi * t / 60))
+              for t in range(1, 61))
+    check("F-N7c one gait cycle sums to 4A within the |cos| quadrature error "
+          "(< 1%) — the old constant is the new law's mean",
+          abs(cyc - 8) / 8 < 0.01,
+          f"cycleSum={cyc:.6f} vs 4A=8 ({(cyc - 8) / 8:+.3%})")
+    print(f"N7 SELFTEST MEASURED: airMoved={awk['airMoved']} "
+          f"airTicks={awk['airTicks']} landTick={awk['landTick']} "
+          f"cycleSum={cyc:.6f} (4A=8, {(cyc - 8) / 8:+.3%}) "
+          f"walk400={bst['walk']['bodyX']:.6f}")
 
     # ---- F-N4j: HEADED — relay + viewer + WAVE button on the bear genome ---
     PORT3 = 8802
@@ -902,44 +1358,67 @@ try:
           f"iters={hrig['terrainIters']} (oracle {ter_iters}) "
           f"maxSlope={ter_ms / TSC:.4f} cells")
     hill_cells = {tuple(c[:3]) for c in hfin["cells"]}
-    n4_fields = ["wave", "thetaFinal", "segErr", "thetaMaxEver",
-                 "nan", "senses", "learn"]
-    walk_body = {k: v for k, v in hst["walk"].items() if k != "trace"}
-    walk_flat = {k: v for k, v in bst["walk"].items() if k != "trace"}
-    n4_same = (all(hst[k] == bst[k] for k in n4_fields)
-               and walk_body == walk_flat)
-    check("F-N6b N4-invariance on hills: every body-local ledger bit-"
-          "identical to flat (growth, wave, gait, senses, learner)",
-          hill_cells == bear_cells and n4_same,
+    # N7 revision (documented law change): under EARNED traction the walk,
+    # learner, AND post-learn IK state (thetaFinal is printed after the 320
+    # episodes, so it rides the diverged action sequence) are translation-/
+    # learn-coupled — downhill crest exits break contact, the stride slips,
+    # the beckon gradient oscillates per tick. What stays bit-identical to
+    # flat is everything truly body-local: growth, wave, gait log, the
+    # post-walk segment audit, senses. The coupled ledgers must instead match
+    # the terrain-mode oracle run.
+    orc_h = bear_oracle(tg, hrig, hfin, terrain=ter, tsc=TSC)
+    olh = orc_h["learn"]
+    local_fields = ["wave", "segErr", "senses"]
+    walk_local = {k: v for k, v in hst["walk"].items()
+                  if k not in ("trace", "bodyX")}
+    walk_local_flat = {k: v for k, v in bst["walk"].items()
+                       if k not in ("trace", "bodyX")}
+    local_same = (all(hst[k] == bst[k] for k in local_fields)
+                  and walk_local == walk_local_flat)
+    check("F-N6b/F-N7e hills: body-local ledgers bit-identical to flat "
+          "(growth, wave, gait, post-walk segErr, senses)",
+          hill_cells == bear_cells and local_same,
           f"cells=={hill_cells == bear_cells} "
-          f"moved={[k for k in n4_fields if hst[k] != bst[k]]}"
-          f" walkMoved={walk_body != walk_flat}")
-    # the walk-trace oracle: same IEEE ops in the same order (the N4 LCG
-    # trick) — walk-start state is analytic (settled: y0 = footprint max,
-    # v0 = 0)
+          f"moved={[k for k in local_fields if hst[k] != bst[k]]}"
+          f" walkLocalMoved={walk_local != walk_local_flat}")
+    lh = hst["learn"]
+    qh_diff = max(abs(a - b) for row, ref in zip(lh["Q"], olh["Q"])
+                  for a, b in zip(row, ref))
+    tfh_diff = max(abs(w - o) for crow, orow in zip(hst["thetaFinal"],
+                                                    orc_h["thetaFinal"])
+                   for w, o in zip(crow, orow))
+    check("F-N7e hills: translation/learn-coupled ledgers match the terrain-"
+          "mode oracle (walk bodyX, learner, thetaFinal, airwalk)",
+          abs(hst["walk"]["bodyX"] - orc_h["walkBodyX"]) < 1e-9
+          and lh["visits"] == olh["visits"]
+          and abs(lh["first30"] - olh["first30"]) < 1e-9
+          and abs(lh["last30"] - olh["last30"]) < 1e-9
+          and abs(lh["bodyXfinal"] - olh["bodyXfinal"]) < 1e-9
+          and abs(lh["minResAuto"] - olh["minResAuto"]) < 1e-9
+          and qh_diff < 1e-9
+          and tfh_diff < 1e-9
+          and abs(hst["thetaMaxEver"] - orc_h["thetaMaxEver"]) < 1e-9
+          and hst["nan"] == orc_h["nan"] == False
+          and hst["airwalk"]["airMoved"] == 0.0
+          and hst["airwalk"]["landTick"] == orc_h["airwalk"]["landTick"]
+          and abs(hst["airwalk"]["bodyX"] - orc_h["airwalk"]["bodyX"]) < 1e-9,
+          f"walkBodyX={hst['walk']['bodyX']:.6f} (oracle "
+          f"{orc_h['walkBodyX']:.6f}, flat {orc['walkBodyX']:.6f}) "
+          f"visits=={lh['visits'] == olh['visits']} qDiff={qh_diff:.2e} "
+          f"tfDiff={tfh_diff:.2e} "
+          f"hillAirwalk={hst['airwalk']} oracle={orc_h['airwalk']}")
+    # the walk-trace oracle is the full protocol replication (wave included,
+    # so the 1-ULP settle residue is now MODELLED, not waived)
+    tr = hst["walk"]["trace"]
+    trace_maxd = max(max(abs(w[1] - o[1]), abs(w[2] - o[2]))
+                     for w, o in zip(tr, orc_h["trace"]))
+    check("F-N6c walk contact ledger replicated by the oracle (400 ticks)",
+          len(tr) == 400 and trace_maxd < 1e-12,
+          f"maxDelta={trace_maxd:.2e}")
+    bxf = hst["learn"]["bodyXfinal"]
     xs = [c[0] for c in hfin["cells"]]
     lo_x, hi_x = min(xs), max(xs)
     g_sim6 = 9.81 / (60 * 60 * 0.06)
-    y = max(ter.get(x, 0) for x in range(lo_x, hi_x + 1)) / TSC
-    v, bx, trace_maxd = 0.0, 0.0, 0.0
-    tr = hst["walk"]["trace"]
-    for t in range(1, 401):
-        ground = -4 + max(ter.get(x, 0)
-                          for x in range(math.floor(bx) + lo_x,
-                                         math.floor(bx) + hi_x + 1)) / TSC
-        v -= g_sim6
-        y += v
-        pen = ground - (y + (-4.0))
-        if pen >= 0:
-            y += pen
-            v = 0.0
-        trace_maxd = max(trace_maxd, abs(tr[t - 1][1] - y),
-                         abs(tr[t - 1][2] - ground))
-        bx += 4 * 2 / 60
-    check("F-N6c walk contact ledger replicated by the oracle (400 ticks)",
-          len(tr) == 400 and trace_maxd < 1e-12,
-          f"maxDelta={trace_maxd:.2e} (1-ULP wave-settle residue)")
-    bxf = hst["learn"]["bodyXfinal"]
     fp_max = max(ter.get(x, 0)
                  for x in range(math.floor(bxf) + lo_x,
                                 math.floor(bxf) + hi_x + 1))

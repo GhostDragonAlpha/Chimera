@@ -814,7 +814,38 @@ simplest genome.
   wire said ground −4.000 where the terrain reads −4.037109); caught by the
   walk-trace oracle at tick 1, fixed by per-column support with the
   0-outside-domain rule applied per column, never clamping the max.
+- **N7 — earned traction (locomotion is EARNED, not imposed):** the imposed
+  no-slip stride `bodyX += 4A/T` is retired. The body advances at the
+  stance-foot sweep rate A·(2π/T)·|cos φ| while ground contact holds, and not
+  at all while airborne — in both the walk command and the learner's gait.
+  The old constant is exactly the new rate's cycle-mean (mean |cos| = 2/π, so
+  A·(2π/T)·(2/π) = 4A/T): a documented law change, not a tweak. The
+  JS-imposed-stride learner reference is retired with it; a full Python
+  oracle in `test_native.py` now replicates the entire emitSelftest protocol
+  (wave → 400-tick walk → probes → 320 learning episodes → airwalk) under
+  the new law — lossy-double LCG, spec hypot, a full IK port — and is pinned
+  by the untouched JS wave anchors (0.04881518056285238 / 15 / 230, matched
+  to 1e-12) before its divergent output is trusted. **Measured (F-N7a…e):**
+  airwalk — legs cycling in free fall translate the body EXACTLY 0.0 cells
+  over 52 airborne ticks (bit-exact, not epsilon); landing at tick 53 == the
+  discrete drop law == the oracle; post-landing bodyX 780.5796712540172 ==
+  the oracle's earned sum bit-exactly. One gait cycle sums to 7.992688 vs
+  4A = 8 (−0.091% — the |cos| Riemann-sum quadrature error, inside the 1%
+  bound). Flat walk 400 ticks: 53.630578797028534, oracle diff 0.0 (UCRT and
+  mingw libm trig agree bit-for-bit). The learner ledger diverged as
+  predicted — visits [10530,78,98,63,1983,1913,1489], bodyXfinal
+  733.4222005869983 — and matches the oracle with qDiff 0.00e+00. On hills
+  the law shows its physics: the walk slips to 52.675537 (flat 53.630579) as
+  downhill crest exits break contact — and the hill ledger matches the
+  terrain-mode oracle exactly (airTicks 60 there: more airtime, still zero
+  airborne translation). **One honest misclassification, caught by the test:**
+  thetaFinal was filed as body-local, but it is printed after the 320
+  learning episodes, so it rides the diverged action sequence — moved to the
+  oracle-verified set (hill vs flat: tfDiff 0.00e+00 against their
+  respective oracles). The walk-trace oracle now models the wave-phase
+  physics too: trace delta 0.00e+00 (the 1-ULP residue waived in N6 is
+  modeled, not waived).
 
 ---
 
-Document version: 4.1 (G1–G5 + N1–N6 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6 complete | Agent: bionic + Kimi K3
+Document version: 4.2 (G1–G5 + N1–N7 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7 complete | Agent: bionic + Kimi K3

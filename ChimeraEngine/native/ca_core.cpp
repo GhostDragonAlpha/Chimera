@@ -93,6 +93,33 @@
 //               contact tick off the discrete prediction kills the claim
 //               (test_native.py F-N6a..e).
 //
+// N7 Rule 0 (stated before the build):
+//   STATEMENT:  locomotion is EARNED, not imposed — the body advances at the
+//               stance-foot sweep rate A*w*|cos phi| (w = 2*pi/T) while ground
+//               contact holds, and not at all while airborne. The retired
+//               no-slip constant 4A/T is exactly the cycle-mean of the earned
+//               rate: the continuous mean of |cos| over a cycle is 2/pi, so
+//               A*(2*pi/T)*(2/pi) = 4A/T. Flat-ground steady walking is
+//               unchanged ON AVERAGE, but each tick now carries the gait's
+//               true oscillation, and flight carries none.
+//   PREDICTION: (a) a walking bear in free fall translates EXACTLY zero
+//               cells while contact is false (bit-exact, not epsilon); (b)
+//               the 400-tick flat walk's bodyX equals the discrete sum
+//               sum_t A*(2*pi/T)*|cos(2*pi*t/T)| computed in the same IEEE
+//               op order; (c) one full gait cycle sums to 4A within the
+//               quadrature error of the |cos| Riemann sum (< 1%).
+//   FALSIFIER:  any nonzero airborne translation, bodyX off the oracle's
+//               discrete sum by > 1e-9, or the cycle mean off 4A by > 1%
+//               kills the claim (test_native.py F-N7a..c).
+//   KNOWN CONSEQUENCE (deliberate, documented): the G5 learner ledger
+//               diverges from the JS reference — the beckon gradient d0-d1
+//               now oscillates per tick with the stride, so visits/Q/
+//               first30/last30/minResAuto/bodyXfinal all move. The
+//               JS-imposed-stride reference is RETIRED; the Python oracle in
+//               test_native.py replicates the full wave+walk+learn protocol
+//               under the new law (lossy-double LCG, spec hypot, IK port)
+//               and becomes the reference of record.
+//
 // Exit codes: 2 = stalled, 3 = dead wave, 4 = genome file error.
 //
 // Port bugs FOUND BY THE ORACLE (test_native.py N3, documented honestly):
@@ -1417,7 +1444,12 @@ static void gaitTick() {                  // one gait step through G4 physics
                          ch.rest[2]};
     for (int i = 0; i < W.b4Iters; i++) ikStep(ch, T);
   }
-  bear.body[0] += 4 * W.b4A / W.b4T;      // the no-slip mean stride
+  // N7: traction is EARNED — the stance pair sweeps at A*w*|cos phi|; the
+  // cycle-mean of that rate is exactly the retired 4A/T constant. Airborne,
+  // the legs cycle and the body goes nowhere.
+  if (bear.contact)
+    bear.body[0] += W.b4A * (2 * 3.14159265358979323846 / W.b4T) *
+                    std::fabs(std::cos(phi));
 }
 static void autoTick() {
   physTick();                             // N5: gravity acts on every tick
@@ -1551,7 +1583,10 @@ static void bearAnim() {
       for (int i = 0; i < W.b4Iters; i++) r = ikStep(ch, T);
       if (!bear.hasLastRes || r > res) { res = r; bear.hasLastRes = true; }
     }
-    bear.body[0] += 4 * W.b4A / W.b4T;    // the no-slip mean stride
+    // N7: earned traction — stance sweep A*w*|cos phi|, gated by contact
+    if (bear.contact)
+      bear.body[0] += W.b4A * (2 * 3.14159265358979323846 / W.b4T) *
+                      std::fabs(std::cos(phi));
     std::vector<std::array<double, 3>> tips(bear.rig.size());
     for (size_t i = 0; i < bear.rig.size(); i++) {
       double tp[3]; fkPoint(bear.rig[i], (int)bear.rig[i].path.size() - 1, tp);
@@ -1789,10 +1824,30 @@ static void emitSelftest() {
               L.stateVisits[6], L.minResAuto, bear.body[0]);
   std::printf(",\"phys\":{\"g\":%.17g,\"ground\":%.17g,\"dropH\":%.17g,"
               "\"contactTick\":%ld,\"analyticTick\":%.17g,\"ledgerErr\":%.17g,"
-              "\"termDrift\":%.17g,\"restVyMax\":%.17g,\"restPenMax\":%.17g}}\n",
+              "\"termDrift\":%.17g,\"restVyMax\":%.17g,\"restPenMax\":%.17g}",
               gSim, bear.lastGround, H, contactTick,
               std::sqrt(2 * H / gSim), ledgerErr, termDrift,
               restVyMax, restPenMax);
+  // ---------- N7: the earned-traction falsifier, run live -------------------
+  // Legs cycling while airborne must move the body EXACTLY nowhere; the
+  // landing tick must match the discrete drop law; strides resume on contact.
+  bearCommand("walk");                          // legs cycle from cmdTick 0
+  bear.bodyY += 8 * bear.bodyH;                 // airborne at the drop height
+  bear.velY = 0; bear.contact = false;
+  double airMoved = 0, bxPrev = bear.body[0];
+  long airTicks = 0, landTick = -1;
+  for (long n = 1; n <= 400; n++) {
+    bearAnim();
+    if (!bear.contact) {
+      airMoved += std::fabs(bear.body[0] - bxPrev);
+      airTicks++;
+    } else if (landTick < 0)
+      landTick = n;
+    bxPrev = bear.body[0];
+  }
+  std::printf(",\"airwalk\":{\"airTicks\":%ld,\"airMoved\":%.17g,"
+              "\"landTick\":%ld,\"bodyX\":%.17g}}\n",
+              airTicks, airMoved, landTick, bear.body[0]);
   std::fflush(stdout);
 }
 
