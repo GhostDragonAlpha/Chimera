@@ -1,0 +1,16 @@
+# SPIACE genome table — G1 brick wall (DATA, not code)
+# Parsed by native/ca_core.cpp at startup. Edit this file and the wall changes
+# with NO recompile — the genome is the DNA, the core is the reader.
+# Values mirror the WALL table in engine/spiace_grow.html exactly.
+
+kind       = wall
+genome     = brick-wall-v1
+brickLen   = 0.22
+brickH     = 0.075
+brickD     = 0.11
+gap        = 0.012
+courses    = 12
+wide       = 18
+minSupport = 0.30
+seedI      = 9
+tickMs     = 120

@@ -1,7 +1,7 @@
 # SPIACE native relay — stdlib only. Serves the viewer HTML and streams the
 # C++ core's NDJSON frames to it over Server-Sent Events.
 #
-#   python relay.py [tick_ms] [port]
+#   python relay.py [tick_ms] [port] [genome.chimera]
 #
 # The exe is spawned lazily on the FIRST /stream connection (the sim starts
 # when a viewer arrives), and every frame is also appended to
@@ -23,6 +23,7 @@ LOG = HERE / "native_stream.log"
 
 TICK_MS = sys.argv[1] if len(sys.argv) > 1 else "30"
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8799
+GENOME = sys.argv[3] if len(sys.argv) > 3 else str(HERE / "genomes" / "wall.chimera")
 
 frames = []                 # full replay buffer (a wall is 210 cells; tiny)
 frames_cv = threading.Condition()
@@ -36,7 +37,7 @@ def ensure_proc():
         if proc is not None:
             return
         LOG.write_text("", encoding="utf-8")
-        proc = subprocess.Popen([str(EXE), TICK_MS], stdout=subprocess.PIPE,
+        proc = subprocess.Popen([str(EXE), TICK_MS, GENOME], stdout=subprocess.PIPE,
                                 text=True, bufsize=1)
         threading.Thread(target=reader, daemon=True).start()
 

@@ -1,0 +1,33 @@
+# SPIACE genome table — G2 oak (DATA, not code)
+# The field-coupled genome: auxin deposit trail + phyllotaxis + apical
+# dominance + light-gated leaves + tropisms with lignification. Values mirror
+# the OAK table in engine/spiace_grow.html exactly; derivations live in the
+# G2 section header there.
+
+kind          = oak
+genome        = oak-v1
+tickMs        = 120
+cell          = 0.05
+tipPeriod     = 4
+maxSteps      = 48
+maxCells      = 9000
+auxDeposit    = 3.0
+auxD          = 0.08
+auxDecay      = 0.06
+domTheta      = 0.15
+domZone       = 8
+budMinAge     = 6
+branchAngle   = 0.6981317007977318   # 40 deg IN RADIANS — JS stores
+                                     # 40*PI/180; a degrees value here bent
+                                     # every branch downward (measured: first
+                                     # branch dir (-0.82,-0.57,-0.09) vs the
+                                     # correct (-0.50,+0.86,-0.10))
+golden        = 2.399963229728653   # 137.5077640 deg in rad
+budEvery      = 3
+grav          = 0.09
+photo         = 0.18
+lightMin      = 0.30
+leafLightMin  = 0.45      # no leaf where it's dark
+lignify       = 8         # branch tropism half-life (steps)
+sunDir        = 0.75,0.66,0
+leafShade     = 2.0       # one foliage cell intercepts ~86% of direct sun

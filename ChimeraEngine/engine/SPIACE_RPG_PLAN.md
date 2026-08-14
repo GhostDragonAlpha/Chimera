@@ -663,10 +663,55 @@ simplest genome.
   unsupported, page cells == wire cells (210==210). Screenshot verified: full
   12-course running-bond wall, HUD `brick-wall-v1-cpp`, `source C++
   ca_core.exe (SSE)`.
-- **Next (N2):** kernel-DSL table reader — genomes ship as data (a `.chimera`
-  genome file parsed by the C++ core) instead of hardcoded constants, so the
-  HTML/JS table stops being the source of truth.
+- **N2 — genomes as data:** COMPLETE, all falsifiers green headed in the same
+  run as the N1 regressions. `native/genomes/wall.chimera` holds the genome
+  table as key=value data; `ca_core.cpp` parses it at startup (sanity bounds,
+  loud exit 4 on missing/invalid — never a silent default; default path
+  resolved from the exe's own directory so relay.py is unchanged). The
+  test_native.py oracle now reads the SAME `.chimera` file — data is the
+  single source of truth. Measured: data-driven wire log identical to the
+  hardcoded reference (14 ticks, 210 bricks, 0 violations); an edited genome
+  (courses 12→6) grew the exact 105-brick blueprint in 11 ticks from the
+  SAME BINARY — no recompile (F-N2b, the architectural claim); missing
+  genome → exit 4 with GENOME on stderr (F-N2c).
+- **N3 — oak + creature engines in the C++ core:** COMPLETE, all falsifiers
+  green headed (F-N3a/b/c) with the N1/N2 regressions in the same run.
+  `native/genomes/oak.chimera` + `creature.chimera` hold the G2/G3 rule
+  tables as data; one binary dispatches wall/oak/creature on `kind`. The
+  wire opens with a `meta` line; the viewer (`spiace_native.html`) is now
+  genome-agnostic — meta selects a PRESENTATION table (palettes/cameras
+  copied from spiace_grow.html), still zero simulation logic. The oracle
+  recomputes every G2/G3 witness from the wire in Python, including an
+  independent lattice-dispersion λ_pred (never read from the wire's own
+  claim). **Measured, C++ vs live JS reference (headed probe): per-tick
+  (cells, leaves, tips) identical for all 192 oak ticks — final
+  [192, 228 cells, 35 leaves, 13 tips] both — and tick-64…68 cell sets
+  identical.** Oak: height 48, dominance ledger clean (max 0 over 192
+  frames), phyllotaxis err 0.000° over 32 pairs, tipSunMean 0.5477 (JS
+  0.5477), leafCentroid 1.343 (JS 1.3429), auxNear 1.5241 (JS 1.52407791 —
+  16-digit match). Creature: 1070 ticks, 711 cells, all six phases,
+  symmetry 1.0000, corrLogAX 0.9053, limbs 4, digits 12, eyes 2, connected,
+  22 Turing spots, λ_meas 3.321 vs Python-recomputed λ_pred 4.5863 (27.6%,
+  inside the 30% band). F-N3c headed: the page's body == the wire's final
+  body (711 == 711), renderer webgpu-splat, screenshot verified.
+  **The oracle EARNED its keep — three real bugs caught, documented in the
+  ca_core.cpp header:** (1) `cStepTips` held `CTip&` across a vector
+  push_back (digit spawning) — reallocation left it dangling; wild limb
+  cells at x≈528…648, y≈−1e9, run-to-run garbage, costing symmetry
+  (1.0→0.993), connectivity, and the corrLogAX sign (+0.905→−0.60 via
+  outlier leverage). Fixed by copying cell/dir/limbIdx by value. (2) Same
+  hazard in `oActivateBuds` (`const OTip* lead`) — fixed by capturing
+  leadId by value. (3) `oak.chimera` carried `branchAngle = 40` with a
+  "degrees" comment while JS stores radians (40·π/180) — every branch
+  ignited pointing down (measured: first branch dir (−0.82,−0.57,−0.09)
+  vs correct (−0.50,+0.86,−0.10)); the leader was untouched, which is why
+  auxNear matched to 16 digits while the crown diverged. First-divergence
+  bisection (synchronous `window.__step()` trace vs wire frames) localized
+  it to the first bud ignition at tick 57. One mis-scoped oracle check of
+  my own was also removed and documented: a post-completion auxin
+  far-window assertion measures trail decay, not dominance (the healthy JS
+  reference reads auxFar 0.352 > θ at done).
 
 ---
 
-Document version: 3.6 (G1–G5 + N1 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1 complete | Agent: bionic + Kimi K3
+Document version: 3.8 (G1–G5 + N1–N3 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3 complete | Agent: bionic + Kimi K3

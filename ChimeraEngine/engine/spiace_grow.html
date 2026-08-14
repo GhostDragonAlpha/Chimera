@@ -456,6 +456,8 @@ window.__oakDump = () => ({                 // geometry witness (F-G2e hunt)
   tips: oTips.filter(t => t.alive)
              .map(t => ({ cell: t.cell, dir: t.dir, leader: t.leader })),
   sun: SUN });
+window.__oakCells = () => [...oCells.values()]   // full tissue ledger (debug)
+  .map(c => [c.x, c.y, c.z, c.mat, c.born, c.stem]);
 window.__pruneLeader = () => {
   const l = oTips.find(t => t.leader && t.alive);
   if (!l) return null;

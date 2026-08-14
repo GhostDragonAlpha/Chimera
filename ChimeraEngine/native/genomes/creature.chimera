@@ -1,0 +1,40 @@
+# SPIACE genome table — G3 creature (DATA, not code)
+# The morphogen genome: zygote -> cleavage ball -> organizer axes (gravity
+# sets DV) -> blastula prepattern -> fate-directed growth -> limbs -> digits
+# -> eyes -> Schnakenberg Turing pigmentation. Values mirror the CRIT table
+# in engine/spiace_grow.html exactly; every constant's derivation lives in
+# the G3 section header there (bands measured off the steady ball prepattern).
+
+kind           = creature
+genome         = creature-v1
+tickMs         = 120
+cell           = 0.06
+maxCells       = 1200
+ballR          = 3
+growPeriod     = 2
+tailLen        = 10
+mP             = 1.0
+mD             = 0.15
+mDecay         = 0.012
+foreBand       = 0.085,0.105
+hindBand       = 0.054,0.060
+dvBand         = 0.062,0.080
+headMin        = 0.20
+tailMax        = 0.070
+eyeMin         = 0.09
+eyeXMin        = 2
+limbLen        = 5
+digitLen       = 2
+digits         = 3
+limbSpace      = 4
+limbFieldDelay = 2
+golden         = 2.399963229728653   # digit fan spacing (phyllotaxis angle)
+patternTicks   = 600
+growDeadline   = 900
+tA             = 0.1
+tB             = 0.9
+tDu            = 0.2
+tDv            = 2.0
+tDt            = 0.05
+tSteps         = 5
+turingTicks    = 450
