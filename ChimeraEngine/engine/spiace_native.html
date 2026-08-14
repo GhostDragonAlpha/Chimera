@@ -20,6 +20,7 @@
                     font:12px monospace">
   <button id="bwave">WAVE (1)</button> <button id="bwalk">WALK (2)</button>
   <button id="brest">REST (3)</button> <button id="bauto">AUTO (4)</button>
+  <button id="bdrop">DROP (5)</button>
 </div>
 <script type="module">
 // ============================================================================
@@ -57,7 +58,8 @@ const splatData = [];
 // G4/G5 embodiment wire state (bear genomes) — presentation only: the C++
 // core owns the rig, the IK, the gait, and the learner; this page renders
 let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
-    waveDone = false, episode = 0, eps = 0, waveBack = 0, visitorPos = null;
+    waveDone = false, episode = 0, eps = 0, waveBack = 0, visitorPos = null,
+    bodyY = 0, velY = 0, inContact = true, groundWire = null;   // N5 physics
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
 
@@ -75,11 +77,13 @@ es.onmessage = e => {
   if (m.type === 'rig') {
     rigged = true; earKeys.clear();
     for (const e2 of m.ears) earKeys.add(e2.join(','));
+    if (m.ground !== undefined) groundWire = m.ground;   // N5: derived plane
     window.__growthStats = stats();
     return;
   }
   if (m.type === 'anim') {
     lastCmd = m.cmd; lastRes = m.res; bodyX = m.body[0];
+    bodyY = m.body[1]; velY = m.vy; inContact = m.contact;   // N5 physics
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
     posedMap.clear();
@@ -117,6 +121,8 @@ function stats() {
     if (EMB) {
       s.rigged = rigged; s.cmd = lastCmd; s.res = lastRes; s.bodyX = bodyX;
       s.waveDone = waveDone; s.episode = episode; s.eps = eps;
+      s.bodyY = bodyY; s.vy = velY; s.contact = inContact;   // N5 physics
+      s.ground = groundWire;
     }
   }
   return s;
@@ -134,18 +140,21 @@ document.getElementById('bwalk').onclick = () =>
 document.getElementById('brest').onclick = () => bearCmd('rest');
 document.getElementById('bauto').onclick = () =>
   bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
+document.getElementById('bdrop').onclick = () => bearCmd('drop');   // N5
 window.addEventListener('keydown', e => {
   if (!EMB) return;
   if (e.key === '1') bearCmd('wave');
   else if (e.key === '2') bearCmd(lastCmd === 'walk' ? 'rest' : 'walk');
   else if (e.key === '3') bearCmd('rest');
   else if (e.key === '4') bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
+  else if (e.key === '5') bearCmd('drop');
 });
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------
 function hash01(n) { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
-function ground(y0) {
-  for (let gx = -8; gx <= 8; gx++) for (let gz = -8; gz <= 8; gz++) {
+function ground(y0, x0 = 0) {              // N5: the grid scrolls with the bear
+  const gx0 = Math.round(x0 / 0.24);
+  for (let gx = gx0 - 8; gx <= gx0 + 8; gx++) for (let gz = -8; gz <= 8; gz++) {
     const h = hash01(gx * 13 + gz * 41);
     splatData.push({ p: [gx * 0.24, y0, gz * 0.24], s: 0.16,
                      col: [0.14 + 0.05*h, 0.13 + 0.05*h, 0.11 + 0.04*h, 1] });
@@ -193,7 +202,7 @@ function critSplats() {
       const posed = posedMap.get(x + ',' + y + ',' + z);   // FK-posed pos
       if (posed) lp = posed;
     }
-    const p = [lp[0] * s0 + bx, lp[1] * s0, lp[2] * s0];
+    const p = [lp[0] * s0 + bx, (lp[1] + bodyY) * s0, lp[2] * s0];   // N5: y rides physics
     let col;
     if (mat === 'eye') col = [0.10, 0.15, 0.50, 1];
     else if (EMB && (mat === 'ear' || earKeys.has(x + ',' + y + ',' + z)))
@@ -212,7 +221,8 @@ function critSplats() {
     splatData.push({ p: [visitorPos[0] * s0, 0.17 + bob, visitorPos[2] * s0],
                      s: 0.075, col: [0.85, 0.35, 0.25, 1] });
   }
-  ground(PRES.groundY);
+  // N5: the ground is the core's DERIVED plane (wire), scrolled to the bear
+  ground(EMB && groundWire !== null ? groundWire * s0 : PRES.groundY, bx);
 }
 function rebuildSplats() {
   splatData.length = 0;
@@ -321,10 +331,11 @@ function render() {
   const t = performance.now() / 1000;
   const ang = PRES.focus.ang0 + 0.10 * Math.sin(t * 0.15);
   const fx = PRES.focus.cx + (EMB ? bodyX * PRES.cell : 0);   // track the walk
-  const eye = [fx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY,
+  const fy = PRES.focus.cy + (EMB ? bodyY * PRES.cell : 0);   // track the fall
+  const eye = [fx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY + (EMB ? bodyY * PRES.cell : 0),
                PRES.focus.R * Math.cos(ang)];
   const proj = perspective(0.85, w / h, 0.05, 50);
-  const view = lookAt(eye[0], eye[1], eye[2], fx, PRES.focus.cy, 0);
+  const view = lookAt(eye[0], eye[1], eye[2], fx, fy, 0);
   const u32 = new Float32Array(32); u32.set(proj, 0); u32.set(view, 16);
   device.queue.writeBuffer(ubuf, 0, u32);
   const enc = device.createCommandEncoder();
@@ -355,6 +366,8 @@ function hud() {
     if (EMB) body += `\ncmd     ${s.cmd}${s.waveDone ? ' (wave done)' : ''}` +
            `\nres     ${s.res === null ? '—' : s.res.toFixed(4)}` +
            `\nbodyX   ${s.bodyX.toFixed(1)} cells` +
+           `\nbodyY   ${(s.bodyY ?? 0).toFixed(2)} cells  vy ${(s.vy ?? 0).toFixed(4)}` +
+           `\ncontact ${s.contact ? 'GROUND' : 'AIR'}    ground ${s.ground ?? '—'}` +
            `\nepisode ${s.episode}  eps ${s.eps.toFixed(3)}`;
   }
   else

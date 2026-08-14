@@ -84,3 +84,12 @@ r5Beckon       = 0.22556390977443608
 r5Startle      = -0.5
 r5RestAbsent   = 0.02
 r5RestPresent  = 0.0
+
+# --- N5: physics membrane (gravity kernel + rigid COM + ground contact) ------
+# SI gravity in; the core derives sim units: g_sim = gravity/(tickHz^2*cell)
+# cells/tick^2 = 9.81/(60^2*0.06) = 9.81/216. tickHz = 60: one anim tick is
+# 1/60 s — the gait period b4T=60 is one second, the viewer runs 60 fps.
+# The ground plane is NOT declared: the core derives it from the grown body
+# (the lowest rest cell's y) — the ground is where the body already stands.
+gravity        = 9.81
+tickHz         = 60

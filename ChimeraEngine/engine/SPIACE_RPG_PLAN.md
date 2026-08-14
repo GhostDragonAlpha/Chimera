@@ -755,7 +755,35 @@ simplest genome.
   cmd=='wave' AFTER completion, but the core flips cmd to 'rest' at
   waveDone by design — the check now records the round-trip live and reads
   residuals from the wire ledger.
+- **N5 — the physics membrane (gravity kernel + rigid COM + ground contact
+  in the native core):** the bear no longer floats in cell space — a
+  genome-declared gravity kernel (`gravity = 9.81` SI, `tickHz = 60`) drives
+  rigid-body vertical dynamics with velocity-projection ground contact, one
+  physTick per anim tick, symplectic Euler (the project's integrator).
+  **Everything derived, nothing chosen:** g_sim = 9.81/(60²·0.06) = 9.81/216
+  cells/tick²; the ground plane is the grown body's lowest rest cell
+  (measured y = −4 — the bear rests on its belly; its limbs are lateral
+  paddles at y = 0, a morphology fact the physics inherits honestly); the
+  drop height is 8 body heights (64 cells) so the predicted terminal drift
+  lands under the 2% bound. Contact is a projection, not a spring — no
+  tuning knobs exist. **Measured (selftest + headed, F-N5a…e all green):**
+  contact at tick 53 == the discrete prediction (first n with n(n+1) ≥
+  2H/g), continuous √(2H/g) = 53.088; free-fall energy matches the
+  symplectic ledger E_n = gH − g²n/2 to 3.1e-16 (per unit mass — M cancels);
+  terminal drift 1.845% < 2% (the derived expectation, not a failure — the
+  integrator conserves its shadow energy exactly); rest equilibrium 300
+  ticks: |velY| == 0 exactly, penetration ≤ 4.4e-16 (1 ULP of projection
+  rounding, documented). **F-N5a is the headline:** the entire N4 protocol
+  (wave/gait/senses/learner, all 15,306 learner ticks) is bit-identical
+  WITH physics on — the projection restores bodyY and velY to exactly 0
+  every tick at equilibrium (IEEE 0 − g + g == 0), so gravity is always on
+  and costs nothing at rest. Headed (F-N5e): the DROP button (or key 5)
+  raises the bear 64 cells via /cmd → stdin; the wire ledger shows the peak
+  (63.95 after tick 1) and the landing (contact, bodyY == 0, vy == 0); the
+  viewer renders the core's DERIVED ground plane (not the old cosmetic
+  preset), scrolls it with the walking bear, and tracks bodyY with the
+  camera. HUD shows bodyY / vy / contact / ground.
 
 ---
 
-Document version: 3.9 (G1–G5 + N1–N4 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4 complete | Agent: bionic + Kimi K3
+Document version: 4.0 (G1–G5 + N1–N5 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5 complete | Agent: bionic + Kimi K3

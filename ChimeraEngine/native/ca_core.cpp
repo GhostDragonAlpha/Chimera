@@ -52,6 +52,27 @@
 //               ledger, or the Python-oracle FK segment audit > 1e-6, kills
 //               the port claim (test_native.py F-N4a..j).
 //
+// N5 Rule 0 (stated before the build):
+//   STATEMENT:  a genome-declared gravity kernel (SI in, sim units derived)
+//               with rigid-body COM dynamics and velocity-projection ground
+//               contact carries the grown bear at EXACT rest equilibrium —
+//               and free fall under it follows the symplectic-Euler ledger
+//               E_n = gH - g^2 n/2 exactly. Physics is numerically INERT at
+//               equilibrium: every N4 number stays bit-identical with it ON.
+//   PREDICTION: g_sim = 9.81/(60^2*0.06) = 9.81/216 cells/tick^2; the ground
+//               plane is DERIVED from the grown body (lowest rest cell,
+//               y = -4) — nothing placed by hand; a drop from H = 8 body
+//               heights (64 cells; the 8 puts the predicted terminal drift
+//               ~1.8% under the 2% bound) contacts at the first tick n with
+//               n(n+1) >= 2H/g  (n = 53; continuous sqrt(2H/g) = 53.09);
+//               free-fall energy matches the ledger to 1e-12; after landing,
+//               300 ticks hold velY == 0 exactly and penetration within 1 ULP
+//               (measured 4.4e-16 — the projection's add/subtract rounding).
+//   FALSIFIER:  contact tick off by more than 1 from the discrete/analytic
+//               prediction, ledger mismatch > 1e-12, any post-landing jitter,
+//               or ANY N4 number moving kills the physics claim
+//               (test_native.py F-N5a..e).
+//
 // Exit codes: 2 = stalled, 3 = dead wave, 4 = genome file error.
 //
 // Port bugs FOUND BY THE ORACLE (test_native.py N3, documented honestly):
@@ -120,6 +141,9 @@ struct Genome {
   int l5EpTicks = 0;
   double r5WaveNear = 0, r5WaveFar = 0, r5WaveAbsent = 0, r5WalkTick = 0,
          r5Beckon = 0, r5Startle = 0, r5RestAbsent = 0, r5RestPresent = 0;
+  // N5 physics membrane — SI in, sim units derived (see bear.chimera); the
+  // ground plane itself is derived from the grown body, never declared
+  double gravity = 0, tickHz = 0;
 };
 
 static void die4(const std::string& msg) {
@@ -228,9 +252,11 @@ static Genome loadGenome(const std::string& path) {
       g.r5Beckon = needD("r5Beckon"); g.r5Startle = needD("r5Startle");
       g.r5RestAbsent = needD("r5RestAbsent");
       g.r5RestPresent = needD("r5RestPresent");
+      g.gravity = needD("gravity"); g.tickHz = needD("tickHz");
       if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
           g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
-          g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1)
+          g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
+          g.gravity <= 0 || g.tickHz <= 0)
         die4("INVALID: embodiment sanity bounds failed in " + path);
     }
   } else die4("INVALID: unknown kind '" + g.kind + "' in " + path);
@@ -897,6 +923,7 @@ static void learnReset();
 static void emitRig();
 static void emitSelftest();
 static int runEmbodiment(int tickMs);
+static void physTick();                   // N5: defined with the N5 block
 
 static int runCrit(int tickMs, bool selftest) {
   cAddCell(0, 0, 0, 0);                     // the zygote
@@ -1064,10 +1091,15 @@ struct Bear {
   double thetaMaxEver = 0;
   bool nan = false;
   double body[3] = {0, 0, 0};
+  // N5 physics state — bodyY is the vertical offset ABOVE the derived rest
+  // contact (groundY == groundMinY, so rest bodyY == 0 exactly); cell units
+  double bodyY = 0, velY = 0, groundY = 0, groundMinY = 0, bodyH = 0;
+  bool contact = true;
   std::vector<std::pair<long, std::vector<std::array<double, 3>>>> gaitLog;
   int waveCh = -1, nEars = 0;
 };
 static Bear bear;
+static double gSim = 0;                   // N5: derived gravity, cells/tick^2
 
 // posed lattice position of chain cell path[k]: T(theta) = prod T_joint,
 // joint axes carried by upstream rotations (matrix product, not parallel)
@@ -1187,6 +1219,15 @@ static void bearRig() {
   for (int i = 0; i < 2 && i < (int)cand.size(); i++) {
     cCellsV[cand[i]].mat = 3; bear.nEars++;
   }
+  // N5: derive the physics membrane from the GROWN body — the ground plane is
+  // where the body's lowest cell already rests; the drop height is 8 body
+  // heights (the selftest's energy-ledger bound drives the 8, see header)
+  double loY = 1e300, hiY = -1e300;
+  for (const auto& c : cCellsV) {
+    loY = std::fmin(loY, (double)c.y); hiY = std::fmax(hiY, (double)c.y);
+  }
+  bear.groundMinY = loY; bear.groundY = loY; bear.bodyH = hiY - loY;
+  gSim = W.gravity / (W.tickHz * W.tickHz * W.cell);   // SI -> cells/tick^2
 }
 
 // ============================ G5 LEARNER (situations -> goals) ===============
@@ -1274,6 +1315,7 @@ static void gaitTick() {                  // one gait step through G4 physics
   bear.body[0] += 4 * W.b4A / W.b4T;      // the no-slip mean stride
 }
 static void autoTick() {
+  physTick();                             // N5: gravity acts on every tick
   const int s = senseState();
   L.stateVisits[s]++;
   int a;
@@ -1335,10 +1377,29 @@ static void autoTick() {
   }
 }
 
+// ============================ N5 PHYSICS MEMBRANE =============================
+// One gravity kernel, rigid-body COM, velocity-projection ground contact —
+// symplectic Euler (the project's integrator), no springs, nothing to tune.
+// At equilibrium the projection restores bodyY/velY to 0 EXACTLY each tick
+// (IEEE: 0 - g + g == 0), which is why the N4 ledger is untouched with
+// physics ON. Free fall follows E_n = gH - g^2 n/2 (derived in the header).
+static void physTick() {
+  bear.velY -= gSim;
+  bear.bodyY += bear.velY;
+  bear.contact = false;
+  const double pen = bear.groundY - (bear.bodyY + bear.groundMinY);
+  if (pen >= 0) {                         // touching or penetrating: project
+    bear.bodyY += pen;                    // -> sole exactly on the plane
+    bear.velY = 0;                        // inelastic: no bounce, no energy in
+    bear.contact = true;
+  }
+}
+
 // the embodiment clock — separate from the growth clock
 static void bearAnim() {
   if (!bear.rigged) return;
   bear.cmdTick++;
+  if (bear.cmd != "auto") physTick();     // auto's physTick rides autoTick
   if (visitorWaveBack > 0) visitorWaveBack--;   // G5 visitor bob clock
   bear.hasLastRes = false;
   double res = 0;
@@ -1405,6 +1466,10 @@ static void bearCommand(const std::string& c) {
     bear.wavePhase = "raise";
   } else if (c == "walk") {
     bear.cmd = "walk"; bear.cmdTick = 0; bear.gaitLog.clear();
+  } else if (c == "drop") {               // N5: 8 body-heights, from contact
+    if (bear.contact) {                   // airborne drops stack nothing
+      bear.bodyY += 8 * bear.bodyH; bear.velY = 0; bear.contact = false;
+    }
   } else bear.cmd = c == "auto" ? "auto" : "rest";
 }
 
@@ -1438,7 +1503,8 @@ static void emitRig() {
   int n = 0;
   for (const CCell& c : cCellsV)
     if (c.mat == 3) std::printf("%s[%d,%d,%d]", n++ ? "," : "", c.x, c.y, c.z);
-  std::printf("],\"waveCh\":%d}\n", bear.waveCh);
+  std::printf("],\"waveCh\":%d,\"ground\":%.17g,\"bodyH\":%.17g,\"g\":%.17g}\n",
+              bear.waveCh, bear.groundY, bear.bodyH, gSim);
   std::fflush(stdout);
 }
 static void emitAnim() {
@@ -1446,7 +1512,9 @@ static void emitAnim() {
               bear.cmdTick, bear.cmd.c_str());
   if (bear.hasLastRes) std::printf("%.17g", bear.lastRes);
   else std::printf("null");
-  std::printf(",\"body\":[%.17g,0,0],\"visitor\":", bear.body[0]);
+  std::printf(",\"body\":[%.17g,%.17g,0],\"vy\":%.17g,\"contact\":%s,"
+              "\"visitor\":", bear.body[0], bear.bodyY, bear.velY,
+              bear.contact ? "true" : "false");
   if (visitorPresent) jArr3(visitorPos);
   else std::printf("null");
   std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
@@ -1553,15 +1621,46 @@ static void emitSelftest() {
               last30);
   for (size_t i = 0; i < L.rewards.size(); i++)
     std::printf("%s%.17g", i ? "," : "", L.rewards[i]);
+  // ---------- N5 physics protocol: drop from 8 body-heights, then rest ------
+  // Free fall: velY = -g*n, bodyY = H - g*n(n+1)/2 after n ticks, so the
+  // energy ledger is E_n = gH - g^2 n/2 EXACTLY (per unit mass — M cancels).
+  const double H = 8 * bear.bodyH;
+  bear.bodyY = H; bear.velY = 0; bear.contact = false;
+  const double E0 = gSim * H;
+  double ledgerErr = 0, lastE = E0;
+  long contactTick = -1;
+  for (long n = 1; n < 100000; n++) {
+    physTick();
+    if (bear.contact) { contactTick = n; break; }
+    lastE = 0.5 * bear.velY * bear.velY + gSim * bear.bodyY;
+    const double Eexp = gSim * H - 0.5 * gSim * gSim * n;   // the ledger
+    const double err = std::fabs(lastE - Eexp) / E0;
+    if (err > ledgerErr) ledgerErr = err;
+  }
+  const double termDrift = (E0 - lastE) / E0;
+  double restVyMax = 0, restPenMax = 0;
+  for (int i = 0; i < 300; i++) {
+    physTick();
+    const double av = std::fabs(bear.velY);
+    const double ap = std::fabs(bear.groundY - (bear.bodyY + bear.groundMinY));
+    if (av > restVyMax) restVyMax = av;
+    if (ap > restPenMax) restPenMax = ap;
+  }
   std::printf("],\"Q\":[");
   for (int s = 0; s < 7; s++)
     std::printf("%s[%.17g,%.17g,%.17g]", s ? "," : "", L.Q[s][0], L.Q[s][1],
                 L.Q[s][2]);
   std::printf("],\"visits\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld],"
-              "\"minResAuto\":%.17g,\"bodyXfinal\":%.17g}}\n",
+              "\"minResAuto\":%.17g,\"bodyXfinal\":%.17g}",
               L.stateVisits[0], L.stateVisits[1], L.stateVisits[2],
               L.stateVisits[3], L.stateVisits[4], L.stateVisits[5],
               L.stateVisits[6], L.minResAuto, bear.body[0]);
+  std::printf(",\"phys\":{\"g\":%.17g,\"ground\":%.17g,\"dropH\":%.17g,"
+              "\"contactTick\":%ld,\"analyticTick\":%.17g,\"ledgerErr\":%.17g,"
+              "\"termDrift\":%.17g,\"restVyMax\":%.17g,\"restPenMax\":%.17g}}\n",
+              gSim, bear.groundY, H, contactTick,
+              std::sqrt(2 * H / gSim), ledgerErr, termDrift,
+              restVyMax, restPenMax);
   std::fflush(stdout);
 }
 

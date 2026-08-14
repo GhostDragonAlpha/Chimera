@@ -58,6 +58,20 @@
 #          F-N4j HEADED: WAVE button -> C++ core (page observes cmd=wave;
 #          wire ledger holds the wave frames: res<0.35, waveDone), page
 #          posed == wire posed
+# N5 falsifiers (named before the run; physics membrane — gravity kernel,
+# rigid COM, velocity-projection ground contact, all constants derived):
+#   F-N5a genome declares SI gravity + tickHz; physics is numerically INERT
+#          at equilibrium (the whole F-N4 block above ran with physTick live)
+#   F-N5b drop from 8 body-heights (64 cells): contact at the first tick n
+#          with n(n+1) >= 2H/g (= 53), within 1 tick of sqrt(2H/g) (= 53.09);
+#          ground plane derived from the grown body (lowest rest cell = -4),
+#          never declared
+#   F-N5c free-fall energy matches the symplectic-Euler ledger
+#          E_n = gH - g^2 n/2 to 1e-12; terminal drift < 2%
+#   F-N5d rest equilibrium: 300 ticks, |velY| == 0 exactly, penetration
+#          < 1e-12 (1-ULP projection rounding allowed)
+#   F-N5e HEADED: DROP button -> C++ core: bodyY rises 64 cells, falls, lands
+#          (contact, bodyY == 0, vy == 0); the wire ledger carries the peak
 import json
 import math
 import subprocess
@@ -638,6 +652,43 @@ try:
           f"first30={lk['first30']:.4f} last30={lk['last30']:.4f} "
           f"qDiff={q_diff:.2e} bodyX={lk['bodyXfinal']:.4f}")
 
+    # ---- F-N5a..d: N5 physics membrane (gravity kernel + ground contact) ----
+    #   F-N5a: physics declared in the genome (SI) and numerically INERT at
+    #          equilibrium — every N4 number above stayed bit-identical with
+    #          physTick live on every anim tick (that IS the F-N4a..i block)
+    #   F-N5b: drop contact at the first tick n with n(n+1) >= 2H/g, within
+    #          1 tick of the continuous sqrt(2H/g); ground derived = -4
+    #   F-N5c: free-fall energy matches the symplectic ledger E_n=gH-g^2n/2
+    #          to 1e-12; terminal drift < 2% (derived expectation ~1.85%)
+    #   F-N5d: rest equilibrium — 300 ticks, |velY| == 0, penetration < 1e-12
+    bg = read_chimera(NATIVE / "genomes" / "bear.chimera")
+    check("F-N5a genome declares the physics membrane (SI gravity + tickHz)",
+          float(bg["gravity"]) == 9.81 and float(bg["tickHz"]) == 60,
+          f"gravity={bg.get('gravity')} tickHz={bg.get('tickHz')}")
+    ph = bst["phys"]
+    g_sim = 9.81 / (60 * 60 * 0.06)
+    n_pred = 1
+    while n_pred * (n_pred + 1) < 2 * ph["dropH"] / g_sim:
+        n_pred += 1
+    check("F-N5b drop: contact at the derived tick (discrete + analytic)",
+          ph["contactTick"] == n_pred
+          and abs(ph["contactTick"] - math.sqrt(2 * ph["dropH"] / g_sim)) <= 1
+          and abs(ph["g"] - g_sim) < 1e-15 and ph["ground"] == -4
+          and ph["dropH"] == 64,
+          f"contactTick={ph['contactTick']} pred={n_pred} "
+          f"analytic={ph['analyticTick']:.2f} g={ph['g']:.6f} "
+          f"ground={ph['ground']}")
+    check("F-N5c free-fall energy follows the symplectic ledger exactly",
+          ph["ledgerErr"] < 1e-12 and ph["termDrift"] < 0.02,
+          f"ledgerErr={ph['ledgerErr']:.2e} termDrift={ph['termDrift']:.4%}")
+    check("F-N5d rest equilibrium: |velY| == 0, penetration < 1e-12, 300 ticks",
+          ph["restVyMax"] == 0 and ph["restPenMax"] < 1e-12,
+          f"restVyMax={ph['restVyMax']} restPenMax={ph['restPenMax']:.2e}")
+    print(f"N5 SELFTEST MEASURED: g={ph['g']:.6f} cells/tick^2 "
+          f"ground={ph['ground']} dropH={ph['dropH']} "
+          f"contact@{ph['contactTick']} (analytic {ph['analyticTick']:.2f}) "
+          f"ledgerErr={ph['ledgerErr']:.1e} drift={ph['termDrift']:.4%}")
+
     # ---- F-N4j: HEADED — relay + viewer + WAVE button on the bear genome ---
     PORT3 = 8802
     relay3 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
@@ -712,6 +763,75 @@ try:
               f"minWaveRes={min(wave_res) if wave_res else None}")
     finally:
         relay3.terminate()
+
+    # ---- F-N5e: HEADED — relay + viewer + DROP button on the bear genome ----
+    # tickMs=30 so the page (and the human) can actually SEE the 53-tick fall
+    PORT4 = 8803
+    relay4 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "30",
+                               str(PORT4),
+                               str(NATIVE / "genomes" / "bear.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT4}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            check("F-N5e headed: derived ground on the wire, bear rests on it",
+                  st["done"] and st.get("rigged") and st.get("ground") == -4
+                  and st.get("contact") is True
+                  and abs(st.get("bodyY") or 1) < 1e-12,
+                  f"ground={st.get('ground')} contact={st.get('contact')} "
+                  f"bodyY={st.get('bodyY')}")
+            page.click("#bdrop")           # POSTs /cmd drop -> core stdin
+            peak, saw_air, landed = 0.0, False, False
+            t0 = time.time()
+            while time.time() - t0 < 30:
+                st = page.evaluate("window.__growthStats")
+                by = st.get("bodyY") or 0
+                peak = max(peak, by)
+                if by > 1 and st.get("contact") is False:
+                    saw_air = True
+                if saw_air and st.get("contact") is True and abs(by) < 1e-9:
+                    landed = True
+                    break
+                time.sleep(0.05)
+            page.screenshot(path="_native_bear_ground.png")
+            browser.close()
+        # the wire ledger: peak height and landing state, from the core itself
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_peak = max((m["body"][1] for m in wire_anim), default=0)
+        wire_last = wire_anim[-1]
+        check("F-N5e headed: DROP executed by the C++ core — rose 64 cells, "
+              "fell, landed (contact, bodyY == 0, vy == 0)",
+              saw_air and landed and peak > 1
+              and 63 < wire_peak <= 64.0001
+              and wire_last["contact"] is True
+              and abs(wire_last["body"][1]) < 1e-9
+              and abs(wire_last["vy"]) < 1e-12,
+              f"sawAir={saw_air} landed={landed} pagePeak={peak:.2f} "
+              f"wirePeak={wire_peak:.2f} finalBodyY={wire_last['body'][1]:.2e} "
+              f"vy={wire_last['vy']}")
+        print(f"N5 HEADED MEASURED: pagePeak={peak:.2f} "
+              f"wirePeak={wire_peak:.2f} cells "
+              f"finalBodyY={wire_last['body'][1]:.2e} "
+              f"contact={wire_last['contact']}")
+    finally:
+        relay4.terminate()
 finally:
     relay.terminate()
 
