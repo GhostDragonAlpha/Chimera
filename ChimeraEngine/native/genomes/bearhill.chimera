@@ -1,0 +1,117 @@
+# SPIACE genome table — G4/G5 bear (DATA, not code)
+# The creature morphogen genome PLUS the embodiment layer: the same growth
+# table as creature.chimera (the C++ core's bear growth is bit-identical to
+# the creature's — the oracle asserts the final cell sets are equal), plus
+# the B4 rig/IK constants, the L5 learner constants, and the R5 reward
+# rules. Every constant's derivation lives in the G4/G5 section headers of
+# engine/spiace_grow.html (lines 995-1296) — named falsifiers, no sweeps.
+
+kind           = creature
+genome         = bear-hill-v1
+embodiment     = 1
+tickMs         = 120
+cell           = 0.06
+maxCells       = 1200
+ballR          = 3
+growPeriod     = 2
+tailLen        = 10
+mP             = 1.0
+mD             = 0.15
+mDecay         = 0.012
+foreBand       = 0.085,0.105
+hindBand       = 0.054,0.060
+dvBand         = 0.062,0.080
+headMin        = 0.20
+tailMax        = 0.070
+eyeMin         = 0.09
+eyeXMin        = 2
+limbLen        = 5
+digitLen       = 2
+digits         = 3
+limbSpace      = 4
+limbFieldDelay = 2
+golden         = 2.399963229728653   # digit fan spacing (phyllotaxis angle)
+patternTicks   = 600
+growDeadline   = 900
+tA             = 0.1
+tB             = 0.9
+tDu            = 0.2
+tDv            = 2.0
+tDt            = 0.05
+tSteps         = 5
+turingTicks    = 450
+
+# --- B4: FK/IK rig (derived in the G4 header) --------------------------------
+# LAM = L^2/4 on the 7-cell lever (5 limb + 2 digit); DTH clamps each
+# correction so 5 iters/tick move at most 0.4 rad; THMAX = anatomical bound;
+# the wave target is the rest tip ROTATED -1.05*side rad about the shoulder
+# (pure rotation -> the target lies exactly on the reach sphere).
+b4A            = 2              # gait swing amplitude, cells
+b4T            = 60             # gait period, anim ticks
+b4Lam          = 12.25          # = 7*7/4 damping
+b4Dth          = 0.08           # rad per IK iteration
+b4ThMax        = 2.6            # joint bound, rad
+b4Iters        = 5              # IK iterations per anim tick per chain
+b4WaveRes      = 0.35           # wave convergence residual, cells
+b4WaveTh       = 1.05           # wave raise angle, rad
+b4Hold         = 40             # wave hold, anim ticks
+b4LowerRes     = 0.2            # wave lower convergence residual, cells
+
+# --- L5: learner (derived in the G5 header) -----------------------------------
+# NEAR just inside the 7-cell workspace sphere; FAR = 2x NEAR; EP_TICKS = 1.5
+# gait cycles so the far->walk->wave chain is reachable; GAMMA = 0.99 puts the
+# credit horizon (~100 ticks) at the episode length (the gamma=0.9 run FAILED
+# F-G5c — documented in the header).
+l5Near         = 6
+l5Far          = 12
+l5EpTicks      = 90
+l5BearEps      = 0.05           # bearing tie margin
+l5Alpha        = 0.3
+l5Gamma        = 0.99
+l5Eps0         = 0.25
+l5EpsDecay     = 0.99
+l5EpsMin       = 0.05
+
+# --- R5: the environment's reward rules (the game world, stated openly) -------
+# BECKON pays k*(d_prev - d_now) with k = 0.03/0.133 (the no-slip stride) so
+# walking toward the visitor nets +0.01/tick over the -0.02 energy cost; the
+# exact double below is 0.03/0.133.
+r5WaveNear     = 1.0
+r5WaveFar      = -0.1
+r5WaveAbsent   = -0.1
+r5WalkTick     = -0.02
+r5Beckon       = 0.22556390977443608
+r5Startle      = -0.5
+r5RestAbsent   = 0.02
+r5RestPresent  = 0.0
+
+# --- N5: physics membrane (gravity kernel + rigid COM + ground contact) ------
+# SI gravity in; the core derives sim units: g_sim = gravity/(tickHz^2*cell)
+# cells/tick^2 = 9.81/(60^2*0.06) = 9.81/216. tickHz = 60: one anim tick is
+# 1/60 s — the gait period b4T=60 is one second, the viewer runs 60 fps.
+# The ground plane is NOT declared: the core derives it from the grown body
+# (the lowest rest cell's y) — the ground is where the body already stands.
+gravity        = 9.81
+tickHz         = 60
+
+# --- N6: terrain membrane (CA-grown heightfield, fixed-point cells) ----------
+# A seeded INTEGER LCG (no double rounding — pure int arithmetic, the Python
+# oracle replicates it exactly) lays down noise h0 in [-amp, +amp]; a
+# relaxation CA h' = trunc((h[x-1] + 2*h[x] + h[x+1]) / 4) in FIXED POINT
+# (heights are k/1024 cells — division by a power of 2 stays IEEE-exact)
+# smooths it until the WALKABILITY CONTRACT holds: max |slope| <= 0.5
+# cells/column, measured across the domain AND both flat-world edges. The CA
+# runs to the contract, not to a chosen iteration count (the count rides the
+# wire). NB: an earlier integer-cell form with (s+2)>>2 rounding FAILED —
+# the quantization has slope-2 attractors (measured: stuck at 2 from
+# iteration 2 through 60); truncation is symmetric and contractive.
+# Heights are offsets from the body's own derived ground (groundMinY) — the
+# flat world of bear-v1 IS h == 0 everywhere. Domain covers the learner's
+# full ~790-cell walk plus margin.
+terrain        = 1
+terrainSeed    = 2026
+terrainAmp     = 3
+terrainX0      = -64
+terrainX1      = 1024
+terrainScale   = 1024
+terrainSlope   = 512

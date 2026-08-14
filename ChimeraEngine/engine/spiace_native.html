@@ -59,7 +59,8 @@ const splatData = [];
 // core owns the rig, the IK, the gait, and the learner; this page renders
 let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
     waveDone = false, episode = 0, eps = 0, waveBack = 0, visitorPos = null,
-    bodyY = 0, velY = 0, inContact = true, groundWire = null;   // N5 physics
+    bodyY = 0, velY = 0, inContact = true, groundWire = null,   // N5 physics
+    groundNow = null, terrainWire = null, terrainScale = 1024;  // N6 terrain
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
 
@@ -78,12 +79,17 @@ es.onmessage = e => {
     rigged = true; earKeys.clear();
     for (const e2 of m.ears) earKeys.add(e2.join(','));
     if (m.ground !== undefined) groundWire = m.ground;   // N5: derived plane
+    if (m.terrain) {                                     // N6: grown world
+      terrainWire = new Map(m.terrain);
+      terrainScale = m.terrainScale || 1024;
+    }
     window.__growthStats = stats();
     return;
   }
   if (m.type === 'anim') {
     lastCmd = m.cmd; lastRes = m.res; bodyX = m.body[0];
     bodyY = m.body[1]; velY = m.vy; inContact = m.contact;   // N5 physics
+    groundNow = m.ground;                                    // N6 per-frame
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
     posedMap.clear();
@@ -122,7 +128,7 @@ function stats() {
       s.rigged = rigged; s.cmd = lastCmd; s.res = lastRes; s.bodyX = bodyX;
       s.waveDone = waveDone; s.episode = episode; s.eps = eps;
       s.bodyY = bodyY; s.vy = velY; s.contact = inContact;   // N5 physics
-      s.ground = groundWire;
+      s.ground = groundNow !== null ? groundNow : groundWire;  // N6 dynamic
     }
   }
   return s;
@@ -221,8 +227,22 @@ function critSplats() {
     splatData.push({ p: [visitorPos[0] * s0, 0.17 + bob, visitorPos[2] * s0],
                      s: 0.075, col: [0.85, 0.35, 0.25, 1] });
   }
-  // N5: the ground is the core's DERIVED plane (wire), scrolled to the bear
-  ground(EMB && groundWire !== null ? groundWire * s0 : PRES.groundY, bx);
+  // N5/N6: the ground is the core's DERIVED support (wire), scrolled to the
+  // bear — the grown terrain heightfield when the genome carries one
+  if (EMB && terrainWire) {
+    const base = groundWire !== null ? groundWire : -4;
+    const cx0 = Math.floor(bodyX);
+    for (let cx = cx0 - 32; cx <= cx0 + 32; cx++) {
+      const h = (terrainWire.get(cx) || 0) / terrainScale;
+      const y = (base + h) * s0;
+      const g2 = 0.13 + 0.04 * hash01(cx * 7 + 3);
+      for (let gz = -8; gz <= 8; gz++)
+        splatData.push({ p: [cx * s0, y, gz * 0.24], s: 0.16,
+                         col: [g2 + 0.03, g2, g2 - 0.02, 1] });
+    }
+  } else {
+    ground(EMB && groundWire !== null ? groundWire * s0 : PRES.groundY, bx);
+  }
 }
 function rebuildSplats() {
   splatData.length = 0;

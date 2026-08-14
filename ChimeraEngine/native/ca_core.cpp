@@ -73,6 +73,26 @@
 //               or ANY N4 number moving kills the physics claim
 //               (test_native.py F-N5a..e).
 //
+// N6 Rule 0 (stated before the build):
+//   STATEMENT:  the world the bear stands on is GROWN, not placed — a
+//               seeded integer LCG + Jacobi relaxation CA
+//               (h' = (a+2b+c+2)>>2) produces a deterministic heightfield,
+//               and the N5 contact law generalizes from a flat plane to
+//               "the highest terrain under the grown footprint" without
+//               touching a single body-local number.
+//   PREDICTION: the CA terminates when the walkability contract holds (max
+//               |slope| <= 1 cell/column, edges included) — the iteration
+//               count is an output, not an input; the ENTIRE N4 ledger
+//               (wave/gait/senses/Q/visits/bodyX) is bit-identical on the
+//               hills; the 400-tick walk's per-tick bodyY trace is
+//               replicable by an oracle running the same IEEE ops to 0.0;
+//               the drop law (contact at the first n with n(n+1) >= 2H/g)
+//               holds on any terrain height.
+//   FALSIFIER:  wire terrain != Python-oracle terrain on ANY column, any N4
+//               field moving on the hills, walk-trace divergence > 0, or a
+//               contact tick off the discrete prediction kills the claim
+//               (test_native.py F-N6a..e).
+//
 // Exit codes: 2 = stalled, 3 = dead wave, 4 = genome file error.
 //
 // Port bugs FOUND BY THE ORACLE (test_native.py N3, documented honestly):
@@ -144,6 +164,11 @@ struct Genome {
   // N5 physics membrane — SI in, sim units derived (see bear.chimera); the
   // ground plane itself is derived from the grown body, never declared
   double gravity = 0, tickHz = 0;
+  // N6 terrain membrane — optional; a CA-grown fixed-point heightfield over
+  // [terrainX0, terrainX1], heights k/terrainScale cells as offsets from the
+  // body's ground; terrainSlope is the walkability contract (scale units)
+  int terrain = 0, terrainSeed = 0, terrainAmp = 0, terrainX0 = 0,
+      terrainX1 = 0, terrainScale = 1024, terrainSlope = 0;
 };
 
 static void die4(const std::string& msg) {
@@ -253,6 +278,19 @@ static Genome loadGenome(const std::string& path) {
       g.r5RestAbsent = needD("r5RestAbsent");
       g.r5RestPresent = needD("r5RestPresent");
       g.gravity = needD("gravity"); g.tickHz = needD("tickHz");
+      if (kv.count("terrain") && std::stoi(kv["terrain"]) == 1) {
+        g.terrain = 1;                            // N6: grow the world too
+        g.terrainSeed = needI("terrainSeed");
+        g.terrainAmp = needI("terrainAmp");
+        g.terrainX0 = needI("terrainX0"); g.terrainX1 = needI("terrainX1");
+        g.terrainSlope = needI("terrainSlope");
+        if (kv.count("terrainScale"))
+          g.terrainScale = std::stoi(kv["terrainScale"]);
+        if (g.terrainAmp < 0 || g.terrainX1 <= g.terrainX0 ||
+            g.terrainSlope < 1 || g.terrainScale < 1 ||
+            (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
+          die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
+      }                                                   // division is exact
       if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
           g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
           g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
@@ -1095,6 +1133,10 @@ struct Bear {
   // contact (groundY == groundMinY, so rest bodyY == 0 exactly); cell units
   double bodyY = 0, velY = 0, groundY = 0, groundMinY = 0, bodyH = 0;
   bool contact = true;
+  // N6 terrain state — grown footprint x-range and the support under it
+  int bodyLoX = 0, bodyHiX = 0;
+  double lastGround = 0;                            // groundAt() at physTick
+  std::vector<std::array<double, 3>> walkTrace;     // {tick, bodyY, ground}
   std::vector<std::pair<long, std::vector<std::array<double, 3>>>> gaitLog;
   int waveCh = -1, nEars = 0;
 };
@@ -1184,6 +1226,65 @@ static double ikStep(BChain& ch, const double T[3]) {
   bear.iters++;
   return res;
 }
+// ============================ N6 TERRAIN MEMBRANE =============================
+// The world is GROWN, not placed: a seeded integer LCG lays down noise, then
+// a relaxation CA smooths it in FIXED POINT (heights are k/terrainScale
+// cells; the scale is a power of 2 so h/scale stays IEEE-exact) until the
+// walkability contract holds (max |slope| <= terrainSlope, flat-world edges
+// included) — the iteration count is an OUTPUT, never an input. The update
+// h' = trunc((a+2b+c)/4) truncates toward zero: symmetric and contractive.
+// (An earlier integer-cell form with (s+2)>>2 rounding FAILED the contract —
+// the quantization has slope-2 attractors, measured stuck from iteration 2
+// through 60. Documented in the genome and the plan.) The Python oracle in
+// test_native.py replicates every op exactly (pure ints).
+static bool terrainOn = false;
+static std::map<int, int> terrH;                  // column -> fixed-point h
+static int terrIters = 0;
+static void genTerrain() {
+  if (!W.terrain) return;
+  terrainOn = true;
+  const int S = W.terrainScale;
+  long long st = W.terrainSeed;                   // integer LCG (no doubles)
+  auto nx = [&]() { st = (st * 1103515245 + 12345) & 0x7fffffff; return st; };
+  for (int x = W.terrainX0; x <= W.terrainX1; x++)
+    terrH[x] = (int)(nx() % (2 * W.terrainAmp * S + 1)) - W.terrainAmp * S;
+  auto at = [](const std::map<int, int>& h, int x) {
+    const auto it = h.find(x); return it == h.end() ? 0 : it->second; };
+  for (;;) {
+    const std::map<int, int> prev = terrH;        // Jacobi snapshot
+    for (int x = W.terrainX0; x <= W.terrainX1; x++) {
+      const int s = at(prev, x - 1) + 2 * at(prev, x) + at(prev, x + 1);
+      terrH[x] = s >= 0 ? s >> 2 : -((-s) >> 2);  // trunc toward zero
+    }
+    int maxSlope = 0;
+    for (int x = W.terrainX0; x <= W.terrainX1 + 1; x++)
+      maxSlope = std::max(maxSlope,
+                          std::abs(at(terrH, x) - at(terrH, x - 1)));
+    if (++terrIters > 1000) die4("TERRAIN: relaxation did not converge");
+    if (maxSlope <= W.terrainSlope) break;
+  }
+}
+// the body's support height: the highest terrain column under the grown
+// footprint (the belly rests on a hilltop honestly); flat membrane == N5.
+// h/terrainScale is exact (the scale is a power of 2).
+static double groundAt() {
+  if (!terrainOn) return bear.groundY;
+  // per-column support with the 0-outside-domain rule; NB: `g` must NOT be
+  // clamped at 0 — an all-negative footprint inside the domain is a real
+  // depression (the oracle caught a phantom flat floor at bodyX=0: the wire
+  // said ground -4.000 where the terrain reads -4.037109)
+  int g = 0;
+  bool first = true;
+  const int bx = (int)std::floor(bear.body[0]);
+  for (int x = bx + bear.bodyLoX; x <= bx + bear.bodyHiX; x++) {
+    const auto it = terrH.find(x);
+    const int h = it == terrH.end() ? 0 : it->second;
+    g = first ? h : std::max(g, h);
+    first = false;
+  }
+  return bear.groundMinY + (double)g / W.terrainScale;
+}
+
 // the rig: chains read off the GROWN ledger — roots, elbows, wrists, digits,
 // rest tips all measured, nothing placed by hand
 static void bearRig() {
@@ -1223,11 +1324,15 @@ static void bearRig() {
   // where the body's lowest cell already rests; the drop height is 8 body
   // heights (the selftest's energy-ledger bound drives the 8, see header)
   double loY = 1e300, hiY = -1e300;
+  int loX = cCellsV[0].x, hiX = cCellsV[0].x;
   for (const auto& c : cCellsV) {
     loY = std::fmin(loY, (double)c.y); hiY = std::fmax(hiY, (double)c.y);
+    loX = std::min(loX, c.x); hiX = std::max(hiX, c.x);
   }
   bear.groundMinY = loY; bear.groundY = loY; bear.bodyH = hiY - loY;
+  bear.bodyLoX = loX; bear.bodyHiX = hiX;         // N6: the grown footprint
   gSim = W.gravity / (W.tickHz * W.tickHz * W.cell);   // SI -> cells/tick^2
+  genTerrain();                         // N6: grow the world (if declared)
 }
 
 // ============================ G5 LEARNER (situations -> goals) ===============
@@ -1387,9 +1492,11 @@ static void physTick() {
   bear.velY -= gSim;
   bear.bodyY += bear.velY;
   bear.contact = false;
-  const double pen = bear.groundY - (bear.bodyY + bear.groundMinY);
+  const double ground = groundAt();                 // N6: terrain support
+  bear.lastGround = ground;
+  const double pen = ground - (bear.bodyY + bear.groundMinY);
   if (pen >= 0) {                         // touching or penetrating: project
-    bear.bodyY += pen;                    // -> sole exactly on the plane
+    bear.bodyY += pen;                    // -> sole exactly on the support
     bear.velY = 0;                        // inelastic: no bounce, no energy in
     bear.contact = true;
   }
@@ -1453,6 +1560,12 @@ static void bearAnim() {
     bear.gaitLog.push_back({bear.cmdTick, std::move(tips)});
     if (bear.gaitLog.size() > 400)
       bear.gaitLog.erase(bear.gaitLog.begin());
+    // N6: per-tick contact ledger — bodyY/ground AFTER this tick's physTick
+    // (which ran pre-stride at the top of bearAnim); the oracle replicates
+    bear.walkTrace.push_back(
+        {(double)bear.cmdTick, bear.bodyY, bear.lastGround});
+    if (bear.walkTrace.size() > 400)
+      bear.walkTrace.erase(bear.walkTrace.begin());
   } else if (bear.cmd == "auto") {
     autoTick();                           // G5: the learner drives
   }
@@ -1466,6 +1579,7 @@ static void bearCommand(const std::string& c) {
     bear.wavePhase = "raise";
   } else if (c == "walk") {
     bear.cmd = "walk"; bear.cmdTick = 0; bear.gaitLog.clear();
+    bear.walkTrace.clear();                       // N6
   } else if (c == "drop") {               // N5: 8 body-heights, from contact
     if (bear.contact) {                   // airborne drops stack nothing
       bear.bodyY += 8 * bear.bodyH; bear.velY = 0; bear.contact = false;
@@ -1503,8 +1617,19 @@ static void emitRig() {
   int n = 0;
   for (const CCell& c : cCellsV)
     if (c.mat == 3) std::printf("%s[%d,%d,%d]", n++ ? "," : "", c.x, c.y, c.z);
-  std::printf("],\"waveCh\":%d,\"ground\":%.17g,\"bodyH\":%.17g,\"g\":%.17g}\n",
+  std::printf("],\"waveCh\":%d,\"ground\":%.17g,\"bodyH\":%.17g,\"g\":%.17g",
               bear.waveCh, bear.groundY, bear.bodyH, gSim);
+  if (terrainOn) {                        // N6: the grown world, on the wire
+    std::printf(",\"terrain\":[");
+    bool firstT = true;
+    for (const auto& kv : terrH) {
+      std::printf("%s[%d,%d]", firstT ? "" : ",", kv.first, kv.second);
+      firstT = false;
+    }
+    std::printf("],\"terrainIters\":%d,\"terrainScale\":%d", terrIters,
+                W.terrainScale);
+  }
+  std::printf("}\n");
   std::fflush(stdout);
 }
 static void emitAnim() {
@@ -1513,8 +1638,8 @@ static void emitAnim() {
   if (bear.hasLastRes) std::printf("%.17g", bear.lastRes);
   else std::printf("null");
   std::printf(",\"body\":[%.17g,%.17g,0],\"vy\":%.17g,\"contact\":%s,"
-              "\"visitor\":", bear.body[0], bear.bodyY, bear.velY,
-              bear.contact ? "true" : "false");
+              "\"ground\":%.17g,\"visitor\":", bear.body[0], bear.bodyY,
+              bear.velY, bear.contact ? "true" : "false", bear.lastGround);
   if (visitorPresent) jArr3(visitorPos);
   else std::printf("null");
   std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
@@ -1607,6 +1732,10 @@ static void emitSelftest() {
     }
     std::printf("]]");
   }
+  std::printf("],\"trace\":[");           // N6: per-tick contact ledger
+  for (size_t i = 0; i < bear.walkTrace.size(); i++)
+    std::printf("%s[%.17g,%.17g,%.17g]", i ? "," : "", bear.walkTrace[i][0],
+                bear.walkTrace[i][1], bear.walkTrace[i][2]);
   std::printf("]},\"thetaFinal\":[");
   for (size_t i = 0; i < bear.rig.size(); i++)
     std::printf("%s[%.17g,%.17g]", i ? "," : "", bear.rig[i].theta[0],
@@ -1621,18 +1750,20 @@ static void emitSelftest() {
               last30);
   for (size_t i = 0; i < L.rewards.size(); i++)
     std::printf("%s%.17g", i ? "," : "", L.rewards[i]);
-  // ---------- N5 physics protocol: drop from 8 body-heights, then rest ------
-  // Free fall: velY = -g*n, bodyY = H - g*n(n+1)/2 after n ticks, so the
-  // energy ledger is E_n = gH - g^2 n/2 EXACTLY (per unit mass — M cancels).
+  // ---------- N5/N6 physics protocol: drop from 8 body-heights, then rest ---
+  // Free fall: velY = -g*n, bodyY = yRest + H - g*n(n+1)/2 after n ticks, so
+  // the energy ledger is E_n = gH - g^2 n/2 EXACTLY (per unit mass — M
+  // cancels). N6: yRest is whatever support the bear stands on (terrain).
   const double H = 8 * bear.bodyH;
-  bear.bodyY = H; bear.velY = 0; bear.contact = false;
+  const double yRest = bear.bodyY;              // the local support offset
+  bear.bodyY = yRest + H; bear.velY = 0; bear.contact = false;
   const double E0 = gSim * H;
   double ledgerErr = 0, lastE = E0;
   long contactTick = -1;
   for (long n = 1; n < 100000; n++) {
     physTick();
     if (bear.contact) { contactTick = n; break; }
-    lastE = 0.5 * bear.velY * bear.velY + gSim * bear.bodyY;
+    lastE = 0.5 * bear.velY * bear.velY + gSim * (bear.bodyY - yRest);
     const double Eexp = gSim * H - 0.5 * gSim * gSim * n;   // the ledger
     const double err = std::fabs(lastE - Eexp) / E0;
     if (err > ledgerErr) ledgerErr = err;
@@ -1642,7 +1773,8 @@ static void emitSelftest() {
   for (int i = 0; i < 300; i++) {
     physTick();
     const double av = std::fabs(bear.velY);
-    const double ap = std::fabs(bear.groundY - (bear.bodyY + bear.groundMinY));
+    const double ap = std::fabs(bear.lastGround -
+                                (bear.bodyY + bear.groundMinY));
     if (av > restVyMax) restVyMax = av;
     if (ap > restPenMax) restPenMax = ap;
   }
@@ -1658,7 +1790,7 @@ static void emitSelftest() {
   std::printf(",\"phys\":{\"g\":%.17g,\"ground\":%.17g,\"dropH\":%.17g,"
               "\"contactTick\":%ld,\"analyticTick\":%.17g,\"ledgerErr\":%.17g,"
               "\"termDrift\":%.17g,\"restVyMax\":%.17g,\"restPenMax\":%.17g}}\n",
-              gSim, bear.groundY, H, contactTick,
+              gSim, bear.lastGround, H, contactTick,
               std::sqrt(2 * H / gSim), ledgerErr, termDrift,
               restVyMax, restPenMax);
   std::fflush(stdout);

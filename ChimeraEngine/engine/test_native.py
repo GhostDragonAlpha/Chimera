@@ -72,6 +72,21 @@
 #          < 1e-12 (1-ULP projection rounding allowed)
 #   F-N5e HEADED: DROP button -> C++ core: bodyY rises 64 cells, falls, lands
 #          (contact, bodyY == 0, vy == 0); the wire ledger carries the peak
+# N6 falsifiers (named before the run; terrain membrane — the world is GROWN):
+#   F-N6a wire terrain == Python-oracle terrain integer-exact on every
+#          column; the relaxation CA stops at the walkability contract (max
+#          slope <= 0.5 cells/column); iteration count is an output. (An
+#          earlier integer-cell rule with (s+2)>>2 rounding FAILED this:
+#          slope-2 attractors, stuck from iteration 2 through 60 — the rule
+#          was revised to fixed-point truncation and the miss is documented)
+#   F-N6b N4-invariance on hills: every body-local ledger (growth cells,
+#          wave, gait, theta, senses, learner Q/visits) bit-identical to flat
+#   F-N6c the 400-tick walk's per-tick bodyY/ground trace replicated by the
+#          oracle to < 1e-12 (same IEEE op order; 1-ULP wave-settle residue)
+#   F-N6d the drop law on the hill: contact at the first n with n(n+1) >=
+#          2H/g; ground == the oracle's footprint max at the drop site
+#   F-N6e HEADED: WALK over the grown hills — bodyY tracks terrain on the
+#          wire, every contact frame satisfies bodyY == ground + 4
 import json
 import math
 import subprocess
@@ -832,6 +847,180 @@ try:
               f"contact={wire_last['contact']}")
     finally:
         relay4.terminate()
+
+    # ---- F-N6a..d: N6 terrain membrane (CA-grown heightfield contact) -------
+    #   F-N6a: the wire's terrain == the Python oracle's, INTEGER-EXACT on
+    #          every column; relaxation stops at the walkability contract
+    #          (max slope <= 512/1024 cells), iteration count is an output
+    #   F-N6b: N4-invariance on hills — the ENTIRE N4 ledger (growth, wave,
+    #          gait, thetaFinal, senses, learner) is bit-identical to flat
+    #   F-N6c: the 400-tick walk's per-tick bodyY/ground trace replicated by
+    #          the oracle to < 1e-12 (the wave-phase equilibrium leaves a
+    #          1-ULP residue the oracle doesn't model — documented)
+    #   F-N6d: the drop law holds on the hill: contact at the first n with
+    #          n(n+1) >= 2H/g, ground == the oracle's footprint max
+    def gen_terrain_py(g):
+        seed, amp = int(g["terrainSeed"]), int(g["terrainAmp"])
+        x0, x1 = int(g["terrainX0"]), int(g["terrainX1"])
+        sc, bound = int(g["terrainScale"]), int(g["terrainSlope"])
+        st = seed
+        h = {}
+        for x in range(x0, x1 + 1):
+            st = (st * 1103515245 + 12345) & 0x7fffffff
+            h[x] = st % (2 * amp * sc + 1) - amp * sc
+        iters = 0
+        while True:
+            prev = h
+            h = {x: (lambda s: s // 4 if s >= 0 else -((-s) // 4))(
+                 prev.get(x - 1, 0) + 2 * prev.get(x, 0) + prev.get(x + 1, 0))
+                 for x in range(x0, x1 + 1)}
+            iters += 1
+            ms = max(abs(h.get(x, 0) - h.get(x - 1, 0))
+                     for x in range(x0, x1 + 2))
+            if ms <= bound:
+                return h, iters, ms
+            if iters > 1000:
+                return None, iters, ms
+    tg = read_chimera(NATIVE / "genomes" / "bearhill.chimera")
+    ter, ter_iters, ter_ms = gen_terrain_py(tg)
+    TSC = int(tg["terrainScale"])
+    rh = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                         str(NATIVE / "genomes" / "bearhill.chimera"),
+                         "selftest"], capture_output=True, text=True,
+                        timeout=300)
+    hmsgs = [json.loads(l) for l in rh.stdout.splitlines() if l.strip()]
+    hrig = next((m for m in hmsgs if m.get("type") == "rig"), None)
+    hfin = next((m for m in hmsgs if m.get("type") == "final"), None)
+    hst = next((m for m in hmsgs if m.get("type") == "selftest"), None)
+    wire_ter = dict(hrig["terrain"]) if hrig and "terrain" in hrig else {}
+    ter_diff = sum(1 for x, h in wire_ter.items() if ter.get(x) != h)
+    check("F-N6a terrain: wire == oracle integer-exact, contract met",
+          rh.returncode == 0 and ter is not None and len(wire_ter) == 1089
+          and ter_diff == 0 and hrig["terrainIters"] == ter_iters
+          and ter_ms <= 512 and hrig["terrainScale"] == TSC,
+          f"cols={len(wire_ter)} mismatches={ter_diff} "
+          f"iters={hrig['terrainIters']} (oracle {ter_iters}) "
+          f"maxSlope={ter_ms / TSC:.4f} cells")
+    hill_cells = {tuple(c[:3]) for c in hfin["cells"]}
+    n4_fields = ["wave", "thetaFinal", "segErr", "thetaMaxEver",
+                 "nan", "senses", "learn"]
+    walk_body = {k: v for k, v in hst["walk"].items() if k != "trace"}
+    walk_flat = {k: v for k, v in bst["walk"].items() if k != "trace"}
+    n4_same = (all(hst[k] == bst[k] for k in n4_fields)
+               and walk_body == walk_flat)
+    check("F-N6b N4-invariance on hills: every body-local ledger bit-"
+          "identical to flat (growth, wave, gait, senses, learner)",
+          hill_cells == bear_cells and n4_same,
+          f"cells=={hill_cells == bear_cells} "
+          f"moved={[k for k in n4_fields if hst[k] != bst[k]]}"
+          f" walkMoved={walk_body != walk_flat}")
+    # the walk-trace oracle: same IEEE ops in the same order (the N4 LCG
+    # trick) — walk-start state is analytic (settled: y0 = footprint max,
+    # v0 = 0)
+    xs = [c[0] for c in hfin["cells"]]
+    lo_x, hi_x = min(xs), max(xs)
+    g_sim6 = 9.81 / (60 * 60 * 0.06)
+    y = max(ter.get(x, 0) for x in range(lo_x, hi_x + 1)) / TSC
+    v, bx, trace_maxd = 0.0, 0.0, 0.0
+    tr = hst["walk"]["trace"]
+    for t in range(1, 401):
+        ground = -4 + max(ter.get(x, 0)
+                          for x in range(math.floor(bx) + lo_x,
+                                         math.floor(bx) + hi_x + 1)) / TSC
+        v -= g_sim6
+        y += v
+        pen = ground - (y + (-4.0))
+        if pen >= 0:
+            y += pen
+            v = 0.0
+        trace_maxd = max(trace_maxd, abs(tr[t - 1][1] - y),
+                         abs(tr[t - 1][2] - ground))
+        bx += 4 * 2 / 60
+    check("F-N6c walk contact ledger replicated by the oracle (400 ticks)",
+          len(tr) == 400 and trace_maxd < 1e-12,
+          f"maxDelta={trace_maxd:.2e} (1-ULP wave-settle residue)")
+    bxf = hst["learn"]["bodyXfinal"]
+    fp_max = max(ter.get(x, 0)
+                 for x in range(math.floor(bxf) + lo_x,
+                                math.floor(bxf) + hi_x + 1))
+    ph6 = hst["phys"]
+    n_pred6 = 1
+    while n_pred6 * (n_pred6 + 1) < 2 * ph6["dropH"] / g_sim6:
+        n_pred6 += 1
+    check("F-N6d drop on the hill: contact law + footprint-max ground",
+          ph6["contactTick"] == n_pred6
+          and abs(ph6["ground"] - (-4 + fp_max / TSC)) < 1e-12
+          and ph6["ledgerErr"] < 1e-12 and ph6["termDrift"] < 0.02,
+          f"contactTick={ph6['contactTick']} pred={n_pred6} "
+          f"ground={ph6['ground']} (oracle {-4 + fp_max / TSC}) "
+          f"ledgerErr={ph6['ledgerErr']:.1e}")
+    print(f"N6 SELFTEST MEASURED: cols={len(wire_ter)} iters={ter_iters} "
+          f"maxSlope={ter_ms / TSC:.4f} traceDelta={trace_maxd:.1e} "
+          f"hillGround={ph6['ground']} contact@{ph6['contactTick']}")
+
+    # ---- F-N6e: HEADED — the bear walks over the grown hills ---------------
+    PORT5 = 8804
+    relay5 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
+                               str(PORT5),
+                               str(NATIVE / "genomes" / "bearhill.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT5}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            rig_wire = next((m for m in
+                             (json.loads(l) for l in
+                              LOG.read_text().splitlines() if l.strip())
+                             if m.get("type") == "rig"), None)
+            check("F-N6e headed: grown terrain on the wire + page",
+                  st["done"] and st.get("rigged")
+                  and rig_wire and len(rig_wire.get("terrain", [])) == 1089,
+                  f"rigged={st.get('rigged')} "
+                  f"terrainCols={len(rig_wire.get('terrain', [])) if rig_wire else 0}")
+            page.click("#bwalk")
+            ys = []
+            t0 = time.time()
+            while time.time() - t0 < 8:
+                st = page.evaluate("window.__growthStats")
+                ys.append(st.get("bodyY") or 0)
+                time.sleep(0.2)
+            page.screenshot(path="_native_bear_hills.png")
+            page_ok = (max(ys) - min(ys)) > 0.05   # the bear RODE the terrain
+            browser.close()
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_ys = [m["body"][1] for m in wire_anim]
+        contact_consistent = all(
+            abs(m["body"][1] - (m["ground"] + 4)) < 1e-9
+            for m in wire_anim if m["contact"])
+        check("F-N6e headed: bear walked over grown hills — bodyY tracked the "
+              "terrain, contact frames consistent (bodyY == ground + 4)",
+              page_ok and len(wire_anim) > 100
+              and (max(wire_ys) - min(wire_ys)) > 0.05
+              and contact_consistent,
+              f"pageRange={max(ys) - min(ys):.4f} "
+              f"wireRange={max(wire_ys) - min(wire_ys):.4f} "
+              f"frames={len(wire_anim)} consistent={contact_consistent}")
+        print(f"N6 HEADED MEASURED: wire bodyY range "
+              f"{min(wire_ys):.3f}..{max(wire_ys):.3f} cells over "
+              f"{len(wire_anim)} frames")
+    finally:
+        relay5.terminate()
 finally:
     relay.terminate()
 

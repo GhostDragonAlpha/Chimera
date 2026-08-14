@@ -783,7 +783,38 @@ simplest genome.
   viewer renders the core's DERIVED ground plane (not the old cosmetic
   preset), scrolls it with the walking bear, and tracks bodyY with the
   camera. HUD shows bodyY / vy / contact / ground.
+- **N6 — the terrain membrane (the world is GROWN, not placed):**
+  `bearhill.chimera` = the bear-v1 table PLUS a terrain block — a seeded
+  integer LCG noise field smoothed by a relaxation CA in fixed point
+  (heights k/1024 cells, power-of-2 scale so h/1024 stays IEEE-exact;
+  update h′ = trunc((a+2b+c)/4), Jacobi snapshots). The CA runs to a
+  **walkability contract** — max |slope| ≤ 0.5 cells/column, flat-world
+  edges included — not to a chosen iteration count; the count (11) is an
+  output on the wire. Contact generalizes from the flat plane to "the
+  highest terrain under the grown footprint" (measured x-range −11..5);
+  terrain heights are offsets from the body's own derived ground, so the
+  flat world IS h ≡ 0 and `bear.chimera` stays bit-identical. **Measured
+  (F-N6a…e):** wire terrain == Python-oracle terrain integer-exact on all
+  1089 columns (pure-int replication, the N4 LCG trick); N4-invariance on
+  hills — the ENTIRE N4 ledger (growth 711 cells, wave residual
+  0.04881518056285238, gait, θ, senses, Q/visits, bodyXfinal
+  789.8666666666321) bit-identical to flat; the 400-tick walk's per-tick
+  bodyY/ground trace replicated by the oracle to 8.6e-16 (the 1-ULP
+  wave-settle residue, documented); the drop law holds on the hill (contact
+  at tick 53 == the discrete prediction; ground −3.25 == the oracle's
+  footprint max at the post-learning site; ledger err 6.1e-16). Headed:
+  WALK rides the grown hills, every contact frame satisfies
+  bodyY == ground + 4 exactly. **Two honest failures, found by the oracle
+  and documented:** (1) the first terrain rule — integer cells with
+  (s+2)>>2 rounding — FAILED the contract: the quantization has slope-2
+  attractors (measured stuck at max slope 2 from iteration 2 through 60);
+  the rule was revised to fixed-point truncation (symmetric, contractive)
+  and converged at iteration 11. (2) `groundAt()` initialized the footprint
+  max at 0, so an all-negative footprint read as a phantom flat floor (the
+  wire said ground −4.000 where the terrain reads −4.037109); caught by the
+  walk-trace oracle at tick 1, fixed by per-column support with the
+  0-outside-domain rule applied per column, never clamping the max.
 
 ---
 
-Document version: 4.0 (G1–G5 + N1–N5 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5 complete | Agent: bionic + Kimi K3
+Document version: 4.1 (G1–G5 + N1–N6 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6 complete | Agent: bionic + Kimi K3
