@@ -1,0 +1,1697 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SPIACE GROW — membrane DNA (G1 wall · G2 oak · G3 creature · G4 bear)</title>
+<style>
+  html, body { margin:0; height:100%; background:#07080c; overflow:hidden; }
+  canvas { display:block; width:100vw; height:100vh; }
+  #hud { position:fixed; top:10px; left:10px; color:#9fd; font:12px/1.5 monospace;
+         white-space:pre; text-shadow:0 0 4px #000; pointer-events:none; }
+  #tag { position:fixed; bottom:10px; left:10px; color:#567; font:11px monospace;
+         pointer-events:none; }
+  #ctl { position:fixed; bottom:10px; right:10px; display:none; }
+  #ctl button { background:#123; color:#9fd; border:1px solid #345;
+                font:12px monospace; padding:6px 12px; margin-left:6px;
+                cursor:pointer; }
+  #ctl button:hover { background:#234; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">booting…</div>
+<div id="tag">CA genomes on splat cells · s(x,t+1) = R(neighbors, Φ) · ?genome=wall|oak|creature|bear</div>
+<div id="ctl">
+  <button id="bwave">WAVE [1]</button><button id="bwalk">WALK [2]</button><button id="brest">REST [3]</button><button id="bauto">AUTO [4]</button>
+</div>
+<script type="module">
+// ============================================================================
+// SPIACE GROW — Phase G: membrane DNA. One substrate, genomes as data.
+//
+//   s(x, t+1) = R(neighbors, Φ)     R = the genome. Φ = fields.
+//
+// G1 WALL (genome=wall): the ZERO-FIELD template genome. R reads only neighbor
+//   states + an external blueprint. Falsifiers: no brick without ≥30% support
+//   overlap (re-verified from scratch every tick), grown set == blueprint set.
+//   STATUS: COMPLETE, all green (14 ticks, 210 bricks, 0 violations).
+//
+// G2 OAK (genome=oak): the FIELD-COUPLED genome. Theory, stated before the run:
+//   STATEMENT:  tree architecture emerges from meristem tips + TWO fields —
+//               auxin (a tissue-borne diffusion field: produced at tips,
+//               diffuses between cells, decays — discrete Poisson) and light
+//               (directional sun + self-shading). Branching, phyllotaxis,
+//               dominance and crown shape are all READS of those fields.
+//   PREDICTION: (b) bud azimuths advance by the golden angle 137.508°
+//               (measured in real meristems: Douady & Couder 1992); (c) no
+//               lateral activates within the dominance zone below the apex
+//               while the leader lives (Sachs auxin canalization); (d) leaf
+//               mass concentrates on the sun side; (e) the structure stays
+//               connected; (f) PRUNING the leader releases a lateral — the
+//               causal proof that auxin dominance is what the genome does.
+//   FALSIFIER:  any of b–f failing on the measured ledger kills the genome.
+//   Genome constants below are DERIVED, not swept: auxin is a DEPOSIT trail
+//   (q=3 per tip-formed cell) with decay δ=0.06, so a bud cell reads
+//   a(t) = a₀·e^(−δt), a₀ ≈ 2.05 (measured at the crossing, = q minus the
+//   diffusion share). θ = 0.15 ⇒ ignition at t* = ln(a₀/θ)/δ ≈ 43.6 ticks
+//   ⇒ r* ≈ t*/tipPeriod ≈ 10.9 cells below the apex — 1.36× outside the
+//   domZone (8). The witness (auxNear/auxFar in growthCheck) measures the
+//   real profile each run; the test asserts θ sits inside it. Stability of
+//   the explicit diffusion step: 1 − 6D − δ > 0 → D=0.08, δ=0.06 holds.
+//
+// G3 CREATURE (genome=creature): the MORPHOGEN genome. One zygote cell →
+//   cleavage ball → two organizer fields (head + ventral; gravity sets the
+//   DV axis) → fate-band-directed growth (head/tail/radial) → 4 limbs ignite
+//   where the A-bands cross the DV-band on free flanks → digits fan at
+//   golden-angle spacing → 2 lateral eyes → Schnakenberg Turing pigmentation
+//   on the finished surface. Full theory + constant derivations in the G3
+//   section header below. Falsifiers F-G3b..i in test_grow.py.
+// ============================================================================
+
+// ---------- genomes (R as data; the C++ core will read these same tables) --
+const WALL = { name:'brick-wall-v1', brickLen:0.22, brickH:0.075, brickD:0.11,
+               gap:0.012, courses:12, wide:18, minSupport:0.30, seedI:9,
+               tickMs:120 };
+const OAK  = { name:'oak-v1', tickMs:120,
+               cell:0.05, tipPeriod:4, maxSteps:48, maxCells:9000,
+               auxDeposit:3.0, auxD:0.08, auxDecay:0.06, domTheta:0.15,
+               domZone:8,
+               budMinAge:6, branchAngle:40*Math.PI/180,
+               golden:2.399963229728653,          // 137.5077640…° in rad
+               budEvery:3, grav:0.09, photo:0.18, lightMin:0.30,
+               leafLightMin:0.45,                  // no leaf where it's dark
+               lignify:8,                          // branch tropism half-life
+               sunDir:[0.75, 0.66, 0], leafShade:2.0 };  // one foliage cell
+               // intercepts ~86% of direct sun — real leaves transmit 5-10%
+// G3 creature genome — every constant derived in the G3 section header below;
+// mDecay/foreBand/hindBand/dvBand/eye-threshold/turingTicks all carry their
+// derivations there (three first-draft values were rejected on PAPER by the
+// geometry before any run — that is Rule 1 working as intended)
+const CRIT = { name:'creature-v1', tickMs:120, cell:0.06, maxCells:1200,
+               ballR:3, growPeriod:2, tailLen:10,
+               mP:1.0, mD:0.15, mDecay:0.012,
+               foreBand:[0.085,0.105], hindBand:[0.054,0.060],
+               dvBand:[0.062,0.080],
+               headMin:0.20, tailMax:0.070, eyeMin:0.09, eyeXMin:2,
+               limbLen:5, digitLen:2, digits:3, limbSpace:4, limbFieldDelay:2,
+               // sprout at growth+2: founders are marked at PATTERN end, so
+               // no field-settling wait remains; the tip claims its flank
+               // column by tick +4, before head-bulb growth can chain two
+               // divisions into it (v3 headless run: delay 10 -> fore tips
+               // died boxed in at step 0; delay is vestigial otherwise)
+               patternTicks:600, growDeadline:900,
+               tA:0.1, tB:0.9, tDu:0.2, tDv:2.0, tDt:0.05, tSteps:5,
+               turingTicks:450 };
+const WHICH = new URLSearchParams(location.search).get('genome') || 'wall';
+const ISBEAR = WHICH === 'bear';          // G4: creature body + embodiment layer
+const ISCRIT = WHICH === 'creature' || ISBEAR;   // same growth, same DNA table
+const GENOME = WHICH === 'oak' ? OAK : ISCRIT ? CRIT : WALL;
+document.title = 'SPIACE GROW — ' + (ISBEAR ? 'bear-v1' : GENOME.name);
+
+// ============================ G1 WALL =======================================
+function buildBlueprint(g) {
+  const xp = g.brickLen + g.gap, bp = [];
+  for (let y = 0; y < g.courses; y++) {
+    const n = (y % 2 === 0) ? g.wide : g.wide - 1;
+    const off = (y % 2 === 0) ? 0 : xp / 2;
+    for (let i = 0; i < n; i++)
+      bp.push({ y, i, x0: i * xp + off, x1: i * xp + off + g.brickLen });
+  }
+  return bp;
+}
+const BP = buildBlueprint(WALL);
+const bKey = b => b.y + ':' + b.i;
+const placed = new Map();
+let tickN = 0, violations = 0, wallDone = false;
+const hist = { cells: [], viol: [] };
+
+function overlap(a0, a1, b0, b1) { return Math.max(0, Math.min(a1, b1) - Math.max(a0, b0)); }
+function isSupported(b, set) {
+  if (b.y === 0) return true;
+  for (const c of set.values())
+    if (c.y === b.y - 1 &&
+        overlap(b.x0, b.x1, c.x0, c.x1) > WALL.minSupport * WALL.brickLen)
+      return true;
+  return false;
+}
+function eligible(b) {
+  if (!isSupported(b, placed)) return false;
+  if (b.y === 0) {
+    if (b.i === WALL.seedI) return true;
+    return placed.has(b.y + ':' + (b.i - 1)) || placed.has(b.y + ':' + (b.i + 1));
+  }
+  return true;
+}
+function stepWall() {
+  if (wallDone) return;
+  tickN++;
+  const wave = [];
+  for (const b of BP)
+    if (!placed.has(bKey(b)) && eligible(b)) wave.push(b);
+  for (const b of wave) placed.set(bKey(b), { ...b, tick: tickN });
+  let v = 0;
+  for (const c of placed.values()) if (!isSupported(c, placed)) v++;
+  violations = v;
+  hist.cells.push(placed.size); hist.viol.push(v);
+  if (placed.size === BP.length) wallDone = true;
+  splatsDirty = true;
+  window.__growthStats = statsWall();
+}
+function statsWall() {
+  let maxCourse = -1;
+  for (const c of placed.values()) maxCourse = Math.max(maxCourse, c.y);
+  return { genome: WALL.name, tick: tickN, cellCount: placed.size,
+           blueprintCount: BP.length, maxCourse, violations, done: wallDone };
+}
+function checkWall() {
+  let unsupported = 0;
+  for (const c of placed.values()) if (!isSupported(c, placed)) unsupported++;
+  let exact = null;
+  if (wallDone) {
+    exact = placed.size === BP.length;
+    if (exact) for (const b of BP) if (!placed.has(bKey(b))) { exact = false; break; }
+  }
+  return { cellCount: placed.size, blueprintCount: BP.length, unsupported,
+           violations, done: wallDone, matchesBlueprint: exact,
+           histCells: hist.cells, histViol: hist.viol };
+}
+if (WHICH === 'wall') {
+  const s = BP.find(b => b.y === 0 && b.i === WALL.seedI);
+  placed.set(bKey(s), { ...s, tick: 0 });
+}
+
+// ============================ G2 OAK ========================================
+const ok = (x, y, z) => x + ',' + y + ',' + z;
+const N6 = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+const SUN = (() => { const l = Math.hypot(...OAK.sunDir);
+                     return OAK.sunDir.map(v => v / l); })();
+const oCells = new Map();      // key -> {x,y,z,mat,az,born,dir0,par,stem}
+const oTips = [];              // {id,pos,dir,az,steps,alive,leader}
+const oLeaves = [];            // keys of leaf cells (light queries)
+const oPhyllo = [];            // {stem, az} in creation order
+const oHist = { cells: [], dom: [] };
+let oAux = new Map();
+let oTick = 0, oDone = false, oHeight = 0, oDomViolTick = 0;
+const oDomEvents = [];           // every in-zone ignition, with its auxin read
+let prunedAt = null, prunedY = null, recoveredAt = null;
+
+function norm3(v) { const l = Math.hypot(v[0], v[1], v[2]) || 1;
+                    return [v[0]/l, v[1]/l, v[2]/l]; }
+function perp3(d, az) {
+  let u = Math.abs(d[1]) > 0.95 ? [1, 0, 0]
+        : norm3([-d[2], 0, d[0]]);                 // d x up? use u ⟂ d, up-ish
+  const v = [d[1]*u[2]-d[2]*u[1], d[2]*u[0]-d[0]*u[2], d[0]*u[1]-d[1]*u[0]];
+  const c = Math.cos(az), s = Math.sin(az);
+  return norm3([u[0]*c + v[0]*s, u[1]*c + v[1]*s, u[2]*c + v[2]*s]);
+}
+// light = sun exposure attenuated by leaf tissue along the SUN RAY — a soft
+// shadow tube, not a vertical column (measured bug: column shading punishes
+// the side the crown leans TOWARD, inverting phototropism: sunFrac 0.43)
+function oLight(x, y, z) {
+  let shade = 0;
+  for (const k of oLeaves) {
+    const c = oCells.get(k);
+    if (!c) continue;
+    const dx = c.x - x, dy = c.y - y, dz = c.z - z;
+    const t = dx*SUN[0] + dy*SUN[1] + dz*SUN[2];    // distance along the ray
+    if (t <= 0) continue;                           // not toward the sun
+    const p2 = dx*dx + dy*dy + dz*dz - t*t;         // off-ray distance²
+    if (p2 < 2.25) shade++;                         // 1.5-cell shadow tube
+  }
+  return Math.exp(-OAK.leafShade * shade);
+}
+function axisSnap(v) {   // continuous direction -> face-neighbor offset
+  const ax = Math.abs(v[0]) > Math.abs(v[1])
+           ? (Math.abs(v[0]) > Math.abs(v[2]) ? 0 : 2)
+           : (Math.abs(v[1]) > Math.abs(v[2]) ? 1 : 2);
+  const o = [0, 0, 0]; o[ax] = Math.sign(v[ax]) || 1; return o;
+}
+function oStepTip(t) {
+  const L = oLight(t.cell[0], t.cell[1], t.cell[2]);
+  const period = Math.max(1, Math.ceil(OAK.tipPeriod / Math.max(L, 0.25)));
+  if (oTick % period !== 0) return;                 // shaded tips grow slower
+  // tropisms: shoots are negatively gravitropic (+Y) and phototropic (sun) —
+  // but only green wood responds: branches LIGNIFY (secondary growth locks
+  // the angle, real botany), so tropism strength decays with tip age. The
+  // leader never lignifies (it must stay vertical). Without this the crown
+  // collapses into a column — measured: every branch converged vertical.
+  const lign = t.leader ? 1 : Math.exp(-t.steps / OAK.lignify);
+  t.dir = norm3([t.dir[0] + SUN[0]*OAK.photo*L*lign,
+                 t.dir[1] + OAK.grav*lign + SUN[1]*OAK.photo*L*lign,
+                 t.dir[2] + SUN[2]*OAK.photo*L*lign]);
+  t.pos = [t.pos[0] + t.dir[0], t.pos[1] + t.dir[1], t.pos[2] + t.dir[2]];
+  // occupancy: the FREE face-neighbor of the current cell best aligned with
+  // the growth direction — face-adjacent by construction, so the tissue is
+  // connected by construction (F-G2f then audits the claim independently)
+  let best = null, ba = -2;
+  for (const d of N6) {
+    const x = t.cell[0]+d[0], y = t.cell[1]+d[1], z = t.cell[2]+d[2];
+    if (y < 0) continue;
+    const k = ok(x, y, z);
+    if (oCells.has(k)) continue;
+    const a = d[0]*t.dir[0] + d[1]*t.dir[1] + d[2]*t.dir[2];
+    if (a > ba) { ba = a; best = { x, y, z, k }; }
+  }
+  if (!best) { t.alive = false; return; }           // crowded out
+  oCells.set(best.k, { x: best.x, y: best.y, z: best.z, mat: 'wood',
+                       born: oTick, stem: t.id });
+  // auxin DEPOSIT: the meristem charges each cell it forms (per-cell, not
+  // per-tick — a moving point source measured at ~0.1 amplitude dilutes with
+  // tree size and can never sustain a dominance zone; a deposit trail has a
+  // decay-set length: a(r) = q·exp(−δ·age(r)), age = r·tipPeriod)
+  oAux.set(best.k, (oAux.get(best.k) || 0) + OAK.auxDeposit);
+  t.cell = [best.x, best.y, best.z];
+  t.steps++;
+  // phyllotaxis: a lateral bud every budEvery steps, azimuth += golden angle;
+  // the bud CELL is the face-neighbor most aligned with the continuous azimuth
+  if (t.steps % OAK.budEvery === 0) {
+    const azNext = t.az + OAK.golden;               // candidate primordium
+    const p = perp3(t.dir, azNext);
+    const off = axisSnap(p);
+    const bx = t.cell[0]+off[0], by = t.cell[1]+off[1], bz = t.cell[2]+off[2],
+          bk = ok(bx, by, bz);
+    if (by >= 0 && !oCells.has(bk)) {
+      // the azimuth IS the position of the last formed primordium — it only
+      // advances when a bud actually forms (no phantom advances; the golden
+      // angle is measured between REAL buds)
+      t.az = azNext;
+      oCells.set(bk, { x: bx, y: by, z: bz, mat: 'bud', az: t.az, born: oTick,
+                       dir0: p, par: [...t.dir], stem: t.id });
+      oPhyllo.push({ stem: t.id, az: t.az });
+    }
+  }
+  // leaves on branch tips — but a leaf is an INVESTMENT: the genome does not
+  // build a solar panel in the dark (leaf economics: light-gated placement)
+  if (!t.leader && t.steps % 2 === 1) {
+    const p = perp3(t.dir, t.az + OAK.golden / 2);
+    const off = axisSnap(p);
+    const lx = t.cell[0]+off[0], ly = t.cell[1]+off[1], lz = t.cell[2]+off[2],
+          lk = ok(lx, ly, lz);
+    if (ly >= 0 && !oCells.has(lk) && oLight(lx, ly, lz) > OAK.leafLightMin) {
+      oCells.set(lk, { x: lx, y: ly, z: lz, mat: 'leaf', born: oTick, stem: t.id });
+      oLeaves.push(lk);
+    }
+  }
+}
+function oAuxStep() {
+  // diffusion + decay over tissue; the SOURCE is the deposit trail (oStepTip)
+  const next = new Map();                           // Jacobi step + decay
+  for (const [k, c] of oCells) {
+    const a = oAux.get(k) || 0;
+    let sum = 0, n = 0;
+    for (const d of N6) {
+      const na = oAux.get(ok(c.x+d[0], c.y+d[1], c.z+d[2]));
+      if (na !== undefined) { sum += na; n++; }
+    }
+    next.set(k, Math.max(0, a + OAK.auxD*(sum - n*a) - OAK.auxDecay*a));
+  }
+  oAux = next;
+}
+function oActivateBuds() {
+  // Apical dominance, defined honestly: the claim is about where a bud
+  // IGNITES, not where a grown branch later wanders (a branch that activated
+  // low on the trunk and climbed beside the leader is no violation — real
+  // oaks do that). And the claim is about the LEADER'S OWN strand: a young
+  // branch's tip field takes ~1/δ ticks to establish, so its first buds can
+  // break immediately — that is syllepsis, a real and named phenomenon, not
+  // a dominance failure. A violation is a leader-strand bud igniting within
+  // domZone of the leader's apex while the leader lives.
+  const lead = oTips.find(t => t.leader && t.alive);
+  const apexY = lead ? lead.pos[1] : null;
+  for (const c of oCells.values()) {
+    if (c.mat !== 'bud' || oTick - c.born <= OAK.budMinAge) continue;
+    const a = oAux.get(ok(c.x, c.y, c.z)) || 0;
+    if (a < OAK.domTheta && oLight(c.x, c.y, c.z) > OAK.lightMin) {
+      c.mat = 'wood';                               // bud ignites -> new tip
+      // tissue distance below the apex: the apex passed this bud's cell
+      // (oTick - born)/tipPeriod cells ago — honest even when the leader
+      // bends toward the sun (a y-distance window misreads curvature)
+      if (apexY !== null && c.stem === lead.id &&
+          (oTick - c.born) / OAK.tipPeriod < OAK.domZone) {
+        oDomViolTick++;
+        oDomEvents.push({ tick: oTick, y: c.y, apexY, age: oTick - c.born,
+                          aux: a, light: oLight(c.x, c.y, c.z) });
+      }
+      const ca = Math.cos(OAK.branchAngle), sa = Math.sin(OAK.branchAngle);
+      const d = norm3([c.par[0]*ca + c.dir0[0]*sa,
+                       c.par[1]*ca + c.dir0[1]*sa,
+                       c.par[2]*ca + c.dir0[2]*sa]);
+      oTips.push({ id: oTips.length, pos: [c.x, c.y, c.z], cell: [c.x, c.y, c.z],
+                   dir: d, az: c.az, steps: 0, alive: true, leader: false });
+    }
+  }
+}
+function stepOak() {
+  if (oDone) return;
+  oTick++;
+  oDomViolTick = 0;
+  for (const t of oTips) if (t.alive) oStepTip(t);
+  oAuxStep();
+  oActivateBuds();
+  oHist.dom.push(oDomViolTick);                     // violating ignitions/tick
+  oHist.cells.push(oCells.size);
+  let maxY = 0;
+  for (const c of oCells.values()) maxY = Math.max(maxY, c.y);
+  oHeight = maxY;
+  if (prunedAt !== null && recoveredAt === null) {
+    for (const t of oTips)
+      if (t.alive && !t.leader && t.pos[1] >= prunedY - 2) { recoveredAt = oTick; break; }
+  }
+  if (prunedAt === null &&
+      (maxY >= OAK.maxSteps || oCells.size >= OAK.maxCells)) oDone = true;
+  splatsDirty = true;
+  window.__growthStats = statsOak();
+}
+function statsOak() {
+  return { genome: OAK.name, tick: oTick, cellCount: oCells.size,
+           height: oHeight, tips: oTips.filter(t => t.alive).length,
+           leaves: oLeaves.length, done: oDone,
+           violations: oHist.dom.length ? Math.max(...oHist.dom) : 0 };
+}
+function checkOak() {
+  // phyllotaxis: successive bud azimuths per stem vs the golden angle
+  const byStem = new Map();
+  for (const b of oPhyllo) {
+    if (!byStem.has(b.stem)) byStem.set(b.stem, []);
+    byStem.get(b.stem).push(b.az);
+  }
+  let errSum = 0, pairs = 0;
+  for (const azs of byStem.values())
+    for (let i = 1; i < azs.length; i++) {
+      const d = ((azs[i] - azs[i-1]) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+      const e = Math.abs(((d - OAK.golden + Math.PI) % (2*Math.PI) + 2*Math.PI)
+                         % (2*Math.PI) - Math.PI);
+      errSum += e; pairs++;
+    }
+  // phototropism witnesses (F-G2e, corrected): the original metric — leaf
+  // COUNT fraction on the sun side — was geometrically naive: leaves snap
+  // trunkward of sun-leaning tips (perp of a +X-leaning dir has a −X
+  // component), so counting leaf signs measured the snap, not the tropism.
+  // The honest measures of "growth orients toward light":
+  //   tipSunMean: mean horizontal direction of live branch tips dotted with
+  //               the sun azimuth — tropism in the growth itself
+  //   leafCentroid: foliage mass centroid projected on the sun azimuth
+  let tipSunSum = 0, tipN = 0;
+  const sunAz = Math.hypot(SUN[0], SUN[2]) || 1;
+  for (const t of oTips) {
+    if (!t.alive || t.leader) continue;
+    tipSunSum += (t.dir[0]*SUN[0] + t.dir[2]*SUN[2]) / sunAz;
+    tipN++;
+  }
+  let cx = 0, cz = 0, cn = 0;
+  for (const k of oLeaves) {
+    const c = oCells.get(k);
+    if (c) { cx += c.x; cz += c.z; cn++; }
+  }
+  const leafCentroid = cn ? (cx/cn * SUN[0] + cz/cn * SUN[2]) / sunAz : null;
+  // connectedness: flood fill from the lowest wood cell over face adjacency
+  let seed = null;
+  for (const c of oCells.values()) if (!seed || c.y < seed.y) seed = c;
+  let connected = null;
+  if (seed) {
+    const seen = new Set([ok(seed.x, seed.y, seed.z)]);
+    const q = [seed];
+    while (q.length) {
+      const c = q.pop();
+      for (const d of N6) {
+        const nk = ok(c.x+d[0], c.y+d[1], c.z+d[2]);
+        if (!seen.has(nk) && oCells.has(nk)) { seen.add(nk); q.push(oCells.get(nk)); }
+      }
+    }
+    connected = seen.size === oCells.size;
+  }
+  // auxin profile witness: mean strand concentration by TISSUE distance
+  // (deposit age — the leader advances ~1 cell per tipPeriod ticks, so cell
+  // age / tipPeriod IS the distance along the strand; a y-distance window
+  // misreads a sun-bent leader). θ is honest only if auxFar < θ < auxNear.
+  const lead2 = oTips.find(t => t.leader && t.alive);
+  let auxNear = null, auxFar = null;
+  if (lead2) {
+    let ns = 0, nn = 0, fs = 0, fn = 0;
+    for (const c of oCells.values()) {
+      if (c.stem !== 0 || c.mat !== 'wood') continue;
+      const r = (oTick - c.born) / OAK.tipPeriod,
+            a = oAux.get(ok(c.x, c.y, c.z)) || 0;
+      if (r >= 1 && r <= 3) { ns += a; nn++; }
+      if (r >= 10 && r <= 14) { fs += a; fn++; }
+    }
+    auxNear = nn ? ns / nn : null; auxFar = fn ? fs / fn : null;
+  }
+  return { tick: oTick, cellCount: oCells.size, height: oHeight, done: oDone,
+           auxNear, auxFar, domTheta: OAK.domTheta,
+           leafCount: oLeaves.length,
+           tipSunMean: tipN ? tipSunSum / tipN : null,
+           leafCentroid,
+           tipCount: tipN,
+           phylloMeanErrDeg: pairs ? errSum / pairs * 180 / Math.PI : null,
+           phylloPairs: pairs,
+           dominanceMax: oHist.dom.length ? Math.max(...oHist.dom) : 0,
+           domEvents: oDomEvents,
+           connected,
+           pruned: prunedAt !== null,
+           recovered: recoveredAt !== null,
+           ticksSincePrune: prunedAt !== null ? oTick - prunedAt : null };
+}
+window.__oakDump = () => ({                 // geometry witness (F-G2e hunt)
+  leaves: oLeaves.map(k => { const c = oCells.get(k); return [c.x, c.y, c.z]; }),
+  tips: oTips.filter(t => t.alive)
+             .map(t => ({ cell: t.cell, dir: t.dir, leader: t.leader })),
+  sun: SUN });
+window.__pruneLeader = () => {
+  const l = oTips.find(t => t.leader && t.alive);
+  if (!l) return null;
+  l.alive = false;
+  prunedAt = oTick; prunedY = l.pos[1];
+  oDone = false;          // a pruned tree is not a finished tree — growth,
+                          // decay and lateral release must resume (F-G2g)
+  return prunedY;
+};
+if (WHICH === 'oak') {
+  oCells.set(ok(0, 0, 0), { x: 0, y: 0, z: 0, mat: 'wood', born: 0, stem: 0 });
+  oTips.push({ id: 0, pos: [0, 0, 0], cell: [0, 0, 0], dir: [0, 1, 0], az: 0.6,
+               steps: 0, alive: true, leader: true });
+}
+
+// splat-store declarations live ABOVE the genomes: cReset() runs at load time
+// for genome=creature and writes splatsDirty — with the declarations below the
+// genome that is a TDZ ReferenceError and the whole module dies (measured: G3
+// page never set __growthStats on the first run)
+let splatsDirty = true;
+const splatData = [];
+
+// ============================ G3 CREATURE =====================================
+// Theory, stated before the run:
+//   STATEMENT:  animal body architecture emerges from the SAME substrate with
+//               a new rule table — morphogen prepatterns (Wolpert positional
+//               information: pinned organizer sources + diffusion + decay)
+//               read by fate bands, then a Turing reaction-diffusion system
+//               (Schnakenberg) on the finished surface for pigmentation.
+//               Bilateral symmetry is NOT coded — it falls out of z-neutral
+//               initial conditions and mirror-symmetric rules.
+//   PREDICTION: (b) mirror symmetry through the midline >= 85%; (c) the head
+//               morphogen correlates with x at r > 0.85 and the body
+//               elongates head-to-tail > 3 cells; (d) exactly 4 limbs ignite
+//               (one per A-band x DV-band intersection per flank); (e) 12
+//               digits, 3 per limb fanned at golden-angle spacing —
+//               phyllotaxis is a general pattern generator, not a plant
+//               trick; (f) one connected tissue; (g) nSpots >= 3 with mean
+//               spot spacing within 30% of the numerically predicted
+//               fastest-growing wavelength; (h) flipping gravity re-specifies
+//               the DV axis on regrowth (the FIELD is causal, the axis is
+//               not hardcoded); (i) exactly 2 eyes, lateral on the head.
+//   FALSIFIER:  any of b-i failing on the measured ledger kills the genome.
+//   Constants DERIVED — v3, from the MEASURED instrument (oak precedent: the
+//   dominance threshold came from the measured deposit-trail crossing; here
+//   every band comes from the measured steady-state ball prepattern, dumped
+//   headless via window.__critDump — the continuum e^{-x/lam} sketch used in
+//   v1/v2 was the WRONG MODEL of this update rule: a Dirichlet pin couples
+//   to the lattice with a first-step factor D/(6D+d) = 0.16, and no-flux
+//   boundaries on the r=3 ball flatten the far field (lam_eff ~ 7 cells).
+//   v1 run: blob filled the envelope before the field existed (corrAX 0.266,
+//   limbs 0). v2 run: pattern phase added but bands aimed at the wrong
+//   model's values (limbs 0, eyes 0, corrAX 0.667). v3 measures first.)
+//     PATTERN PHASE = 600 ticks: the blastula is patterned BEFORE
+//       gastrulation; founders are marked from the STEADY ball field.
+//       600 vs 2000 ticks changes site values < 0.1% (measured) — true fixed
+//       point, so bands below are exact, not lucky.
+//     Founder bands (measured steady values, z=±2 flank ring):
+//       fore cluster x=2: a = 0.091-0.097 → foreBand [0.085, 0.105]
+//       (x=1 max 0.0821 excluded, gap 4%; per-band spacing dedups to 1/side)
+//       hind cluster x in {-1,-2}: a = 0.055-0.060 → hindBand [0.054, 0.060]
+//       (x=0 min 0.0651 excluded; x=-3 = 0.0510 excluded)
+//       DV field reads y not x: b = 0.055 (dorsal y=2) .. 0.065-0.078 (y=0/-1)
+//       .. 0.091+ (ventral y=-2) → dvBand [0.062, 0.080] = ventro-lateral
+//       flank only. Exactly 4 founders, mirror-symmetric by construction.
+//     Fate thresholds (measured): head > 0.20 sits in the gap (2,0,0)=0.272
+//       vs (2,0,±1)=0.133; tail < 0.070 splits x=-1 (max 0.0619) from x=0
+//       (min 0.0651... midriff 0.0725-0.0777). (The v1/v2 thresholds 0.75 /
+//       0.25 were unreachable: NOTHING but the pin exceeds 0.28 — every cell
+//       read tail-fate, which is why v2 grew a uniform tube.)
+//     Daughter cells INHERIT the parent's morphogen level (cytoplasmic
+//       determinants — a newborn head cell must not read a=0 and believe it
+//       is tail; that transient filled the v1 blob).
+//     Envelope: body tube |y|,|z| <= 2 behind the ball centre, head bulb
+//       r <= 4 ahead (v1's uniform r<=4 envelope was a 1458-cell box).
+//     Eyes: per side, max-|z| among head-region (x >= 2) cells with a >=
+//       0.09 — guaranteed candidates (2,0,±2) at a = 0.0973. Exactly 2.
+//     Turing (Schnakenberg a=0.1, b=0.9 => u0=1.0, v0=0.9, J=[[0.8,1],
+//       [-1.8,-1]], Du=0.2, Dv=2.0): fu+gv=-0.2 < 0, det(J)=1.0 > 0,
+//       Dv*fu+Du*gv=1.4 > 0 — inside Turing space. The lambda* PREDICTION
+//       scans the LATTICE dispersion s_eff(k) = 4 sin^2(k/2) — the surface
+//       graph runs lattice physics, so the prediction must too. Stability:
+//       dt*Dv*deg = 0.6 < 1. turingTicks = 450 (~6 e-folds at the peak
+//       growth rate mu ~ 0.055/unit) so losing modes have decayed.
+// ============================================================================
+const cCells = new Map();        // key -> {x,y,z,mat,born}  mat: skin|limb|eye
+let cA = new Map(), cB = new Map();      // head / ventral morphogen fields
+const cTips = [];                // limb + digit growth tips (permanent ledger)
+const cLimbs = [];               // {root:[x,y,z], side, fore, born}
+const cEyes = [];                // [x,y,z] per side
+let cPhase = 'cleavage';         // cleavage -> axes -> pattern -> growth -> turing -> done
+let cTick = 0, cTuringT = 0, cLambdaPred = null, cGrowthStart = null;
+let cOrg = null;                 // {head, ventral, ball, headKey, ventKey, tick}
+let cGravity = [0, -1, 0];       // gravity SETS the DV axis (real biology)
+let cTuringU = new Map(), cTuringV = new Map();
+const cSurf = [];                // keys of surface cells (Turing domain)
+const cHist = { cells: [] };
+
+function cReset() {
+  cCells.clear();
+  cCells.set(ok(0, 0, 0), { x: 0, y: 0, z: 0, mat: 'skin', born: 0 });
+  cA = new Map(); cB = new Map();
+  cTips.length = 0; cLimbs.length = 0; cEyes.length = 0;
+  cPhase = 'cleavage'; cTick = 0; cTuringT = 0; cLambdaPred = null;
+  cGrowthStart = null;
+  cOrg = null;
+  cTuringU = new Map(); cTuringV = new Map(); cSurf.length = 0;
+  cHist.cells.length = 0;
+  if (ISBEAR) bearReset();               // G4: regrowth un-rigs the body
+  splatsDirty = true;
+  window.__growthStats = statsCrit();
+}
+window.__regrow = gy => { cGravity = [0, gy, 0]; cReset(); return true; };
+window.__organizers = () => cOrg;
+window.__CRIT = CRIT;
+window.__critDump = () => ({                 // field witness (band derivation)
+  phase: cPhase, tick: cTick,
+  A: [...cA], B: [...cB],
+  cells: [...cCells.values()].map(c => [c.x, c.y, c.z, c.mat]),
+  limbs: cLimbs.map(L => ({ root: L.root, fore: L.fore, born: L.born })),
+  tips: cTips.map(t => ({ cell: t.cell, steps: t.steps, alive: t.alive,
+                          digit: t.digit, limbIdx: t.limbIdx })),
+  org: cOrg });
+
+// --- cleavage: fill the r <= ballR+0.1 ball by max-radius division ----------
+function cCleavage() {
+  const order = [...cCells.values()];
+  let grew = false;
+  for (const c of order) {
+    let best = null, br = -1;
+    for (const d of N6) {
+      const x = c.x+d[0], y = c.y+d[1], z = c.z+d[2];
+      const r = Math.hypot(x, y, z);
+      if (r > CRIT.ballR + 0.1) continue;
+      const k = ok(x, y, z);
+      if (cCells.has(k)) continue;
+      if (r > br) { br = r; best = { x, y, z, k }; }
+    }
+    if (best) {
+      cCells.set(best.k, { x: best.x, y: best.y, z: best.z, mat: 'skin', born: cTick });
+      grew = true;
+    }
+  }
+  if (!grew) cPhase = 'axes';
+}
+
+// --- axes: organizers from geometry + gravity (Wolpert) ----------------------
+function cAxes() {
+  let cx = 0, cy = 0, cz = 0;
+  for (const c of cCells.values()) { cx += c.x; cy += c.y; cz += c.z; }
+  const n = cCells.size; cx /= n; cy /= n; cz /= n;
+  let head = null, vent = null, hd = -Infinity, vd = -Infinity;
+  for (const c of cCells.values()) {
+    // head: max x; tie-break min |z - cz| so z-symmetry survives the pick
+    if (c.x > hd || (c.x === hd && head &&
+        Math.abs(c.z - cz) < Math.abs(head.z - cz))) { hd = c.x; head = c; }
+    const d = (c.x-cx)*cGravity[0] + (c.y-cy)*cGravity[1] + (c.z-cz)*cGravity[2];
+    if (d > vd) { vd = d; vent = c; }
+  }
+  cOrg = { head: [head.x, head.y, head.z], ventral: [vent.x, vent.y, vent.z],
+           ball: [cx, cy, cz], headKey: ok(head.x, head.y, head.z),
+           ventKey: ok(vent.x, vent.y, vent.z), tick: cTick };
+  cPhase = 'pattern';            // pattern the blastula BEFORE gastrulation
+}
+
+// --- morphogens: pinned Dirichlet sources + Jacobi diffusion + decay --------
+// (fixed sources don't dilute — the oak deposit-trail lesson; pinned at 1.0
+//  so the raw value IS the normalized value, max is always the source)
+function cDiffuse(field, srcKey) {
+  const next = new Map();
+  for (const [k, c] of cCells) {
+    const a = field.get(k) || 0;
+    let sum = 0, n = 0;
+    for (const d of N6) {
+      const na = field.get(ok(c.x+d[0], c.y+d[1], c.z+d[2]));
+      if (na !== undefined) { sum += na; n++; }
+    }
+    next.set(k, Math.max(0, a + CRIT.mD*(sum - n*a) - CRIT.mDecay*a));
+  }
+  next.set(srcKey, CRIT.mP);
+  return next;
+}
+
+// --- growth: fate-band-directed division inside a fixed envelope ------------
+function cGrow() {
+  const [cx0, cy0, cz0] = cOrg.ball;
+  const grown = [];
+  for (const [k, c] of cCells) {
+    // differentiated tissue (limb founders, eyes) has EXITED the cell
+    // cycle — v3's first headless run: the fore founder divided into its
+    // own limb's path and blocked it (digits 6, not 12)
+    if (c.mat !== 'skin') continue;
+    // parity gate: coefficients are ODD so (x,y,z) -> (x,y,-z) keeps the
+    // same parity — the division schedule itself is mirror-symmetric
+    if ((cTick + c.x*3 + c.y*5 + c.z*7) % CRIT.growPeriod !== 0) continue;
+    const a = cA.get(k) || 0;
+    let pref;
+    if (a > CRIT.headMin) pref = [0.6, 0, 0];       // head fate: forward
+    else if (a < CRIT.tailMax) pref = [-1.5, 0, 0]; // tail fate: backward
+    else pref = [0, (c.y - cy0) * 0.15, (c.z - cz0) * 0.15];  // radial
+    // head bulb ahead of the ball centre, slim body tube behind it
+    const cap = c.x >= cx0 + 1 ? CRIT.ballR + 1 : 2;
+    let best = null, ba = -2;
+    for (const d of N6) {
+      const x = c.x+d[0], y = c.y+d[1], z = c.z+d[2];
+      if (Math.abs(y - cy0) > cap) continue;
+      if (Math.abs(z - cz0) > cap) continue;
+      if (x < cx0 - (CRIT.ballR + CRIT.tailLen) ||
+          x > cx0 + CRIT.ballR + 2) continue;
+      const kk = ok(x, y, z);
+      if (cCells.has(kk)) continue;
+      const al = d[0]*pref[0] + d[1]*pref[1] + d[2]*pref[2];
+      if (al > ba) { ba = al; best = { x, y, z, k: kk }; }
+    }
+    if (best) grown.push(best);
+  }
+  for (const g of grown) {
+    if (cCells.has(g.k)) continue;
+    cCells.set(g.k, { x: g.x, y: g.y, z: g.z, mat: 'skin', born: cTick });
+    // the daughter INHERITS the mean of its tissue neighbours' morphogen
+    // levels (cytoplasmic determinants) — a newborn head cell must not read
+    // a = 0 and spend two ticks believing it is tail (the v1 blob failure)
+    let sa = 0, sb = 0, nn = 0;
+    for (const d of N6) {
+      const nk = ok(g.x+d[0], g.y+d[1], g.z+d[2]);
+      if (!cCells.has(nk)) continue;
+      sa += cA.get(nk) || 0; sb += cB.get(nk) || 0; nn++;
+    }
+    if (nn) { cA.set(g.k, sa / nn); cB.set(g.k, sb / nn); }
+  }
+}
+
+// --- limb founders: marked from the STEADY ball prepattern (the limb field --
+// is specified in the embryo before the body elongates — real development) ---
+function cMarkFounders() {
+  const zc = Math.round(cOrg.ball[2]);
+  for (const [k, c] of cCells) {
+    if (c.mat !== 'skin' || c.z === zc) continue;   // no midline limbs
+    const a = cA.get(k) || 0, b = cB.get(k) || 0;
+    const fore = a >= CRIT.foreBand[0] && a <= CRIT.foreBand[1];
+    const hind = !fore && a >= CRIT.hindBand[0] && a <= CRIT.hindBand[1];
+    if ((!fore && !hind) || b < CRIT.dvBand[0] || b > CRIT.dvBand[1]) continue;
+    let dirZ = 0;                                   // needs a free flank face
+    if (c.z > zc && !cCells.has(ok(c.x, c.y, c.z+1))) dirZ = 1;
+    else if (c.z < zc && !cCells.has(ok(c.x, c.y, c.z-1))) dirZ = -1;
+    if (!dirZ) continue;
+    let clear = true;      // suppression is PER BAND: a limb field inhibits
+    for (const L of cLimbs) {  // locally — fore and hind never suppress each
+      if (L.fore !== fore) continue;   // other across the body (v1 bug)
+      const dx = L.root[0]-c.x, dy = L.root[1]-c.y, dz = L.root[2]-c.z;
+      if (dx*dx + dy*dy + dz*dz < CRIT.limbSpace*CRIT.limbSpace) {
+        clear = false; break;
+      }
+    }
+    if (!clear) continue;
+    c.mat = 'limb';                  // the founder IS limb tissue from now on
+    cLimbs.push({ root: [c.x, c.y, c.z], side: dirZ, fore, born: cTick });
+  }
+}
+function cSproutLimbs() {
+  for (let i = 0; i < cLimbs.length; i++) {
+    const L = cLimbs[i];
+    cTips.push({ id: cTips.length, cell: [...L.root],
+                 dir: norm3([0, -0.15, L.side]), steps: 0, alive: true,
+                 digit: false, limbIdx: i, path: [[...L.root]] });
+                 // path: the GROWN chain — G4 rigs joints onto this ledger
+  }
+}
+
+// --- limb/digit tips: extend, then fan digits at golden-angle spacing -------
+function cStepTips() {
+  for (const t of [...cTips]) {                     // snapshot: digits are
+    if (!t.alive) continue;                         // pushed during iteration
+    let best = null, ba = -2;
+    for (const d of N6) {
+      const x = t.cell[0]+d[0], y = t.cell[1]+d[1], z = t.cell[2]+d[2];
+      const k = ok(x, y, z);
+      if (cCells.has(k)) continue;
+      const al = d[0]*t.dir[0] + d[1]*t.dir[1] + d[2]*t.dir[2];
+      if (al > ba) { ba = al; best = { x, y, z, k }; }
+    }
+    if (!best) { t.alive = false; continue; }
+    cCells.set(best.k, { x: best.x, y: best.y, z: best.z, mat: 'limb',
+                         born: cTick });
+    t.cell = [best.x, best.y, best.z];
+    t.steps++;
+    if (t.path) t.path.push([best.x, best.y, best.z]);   // G4 chain ledger
+    if (!t.digit && t.steps >= CRIT.limbLen) {
+      t.alive = false;
+      for (let j = 0; j < CRIT.digits; j++)
+        cTips.push({ id: cTips.length, cell: [...t.cell],
+                     dir: perp3(t.dir, j * OAK.golden), steps: 0, alive: true,
+                     digit: true, limbIdx: t.limbIdx, path: [[...t.cell]] });
+    } else if (t.digit && t.steps >= CRIT.digitLen) {
+      t.alive = false;
+    }
+  }
+}
+
+// --- eyes: one per side — the most lateral head-region cell still reading --
+//     the head field. Sites derived from the measured steady prepattern: ------
+//     (3,0,±1) does NOT exist (r = sqrt(10) > ballR+0.1 — the head organizer is
+//     a one-cell snout); the guaranteed candidates are (2,0,±2) at a = 0.0973,
+//     so eyeMin = 0.09 sits below them and above the x = 1 flank (0.0821).
+function cPickEyes() {
+  cEyes.length = 0;
+  const zc = Math.round(cOrg.ball[2]);
+  for (const side of [1, -1]) {
+    let best = null, bz = 0, ba = -1;
+    for (const [k, c] of cCells) {
+      if (c.mat !== 'skin') continue;      // never repaint a limb founder
+      if ((c.z - zc) * side <= 0) continue;
+      if (c.x < cOrg.ball[0] + CRIT.eyeXMin) continue;
+      const a = cA.get(k) || 0;
+      if (a < CRIT.eyeMin) continue;
+      const az = Math.abs(c.z - zc);
+      if (az > bz || (az === bz && a > ba)) { bz = az; ba = a; best = c; }
+    }
+    if (best) { best.mat = 'eye'; cEyes.push([best.x, best.y, best.z]); }
+  }
+}
+
+// --- Turing pigmentation (Schnakenberg) on the finished surface -------------
+function cTuringInit() {
+  cSurf.length = 0; cTuringU = new Map(); cTuringV = new Map();
+  const u0 = CRIT.tA + CRIT.tB, v0 = CRIT.tB / (u0 * u0);
+  for (const [k, c] of cCells) {
+    let boundary = false;
+    for (const d of N6)
+      if (!cCells.has(ok(c.x+d[0], c.y+d[1], c.z+d[2]))) { boundary = true; break; }
+    if (!boundary) continue;
+    const h = c.x*31 + c.y*57 + c.z*101;
+    cTuringU.set(k, u0 + (hash01(h) - 0.5) * 0.02);
+    cTuringV.set(k, v0 + (hash01(h + 7) - 0.5) * 0.02);
+    cSurf.push(k);
+  }
+  // lambda* prediction: scan the LATTICE dispersion relation (s_eff =
+  // 4 sin^2(k/2), the 1D lattice Laplacian symbol) — the surface graph runs
+  // lattice physics, so the prediction must too. Keep the k maximizing
+  // Re mu — the measurement answers to THIS number, named before the run.
+  const fu = 2*CRIT.tB/u0 - 1, fv = u0*u0, gu = -2*CRIT.tB/u0, gv = -u0*u0;
+  let bestK = 0.05, bestMu = -Infinity;
+  for (let k = 0.05; k < 4; k += 0.01) {
+    const s = 4 * Math.sin(k / 2) ** 2;
+    const tr = fu + gv - (CRIT.tDu + CRIT.tDv) * s;
+    const det = (fu - CRIT.tDu*s) * (gv - CRIT.tDv*s) - fv*gu;
+    const disc = tr*tr - 4*det;
+    const mu = disc >= 0 ? (tr + Math.sqrt(disc)) / 2 : tr / 2;
+    if (mu > bestMu) { bestMu = mu; bestK = k; }
+  }
+  cLambdaPred = 2 * Math.PI / bestK;
+}
+function cTuringStep() {
+  const nU = new Map(), nV = new Map();
+  for (const k of cSurf) {
+    const c = cCells.get(k);
+    const u = cTuringU.get(k), v = cTuringV.get(k);
+    let lu = 0, lv = 0;
+    for (const d of N6) {                 // no-flux BC: missing neighbors
+      const nk = ok(c.x+d[0], c.y+d[1], c.z+d[2]);   // contribute nothing
+      if (cTuringU.has(nk)) { lu += cTuringU.get(nk) - u; lv += cTuringV.get(nk) - v; }
+    }
+    const uvv = u*u*v;
+    nU.set(k, u + CRIT.tDt * (CRIT.tA - u + uvv + CRIT.tDu * lu));
+    nV.set(k, v + CRIT.tDt * (CRIT.tB - uvv + CRIT.tDv * lv));
+  }
+  cTuringU = nU; cTuringV = nV;
+}
+
+function cFinishBody() {
+  cPickEyes();
+  cTuringInit();
+  cPhase = 'turing';
+  cTuringT = 0;
+}
+
+function stepCreature() {
+  if (cPhase === 'done') return;
+  cTick++;
+  if (cPhase === 'cleavage') cCleavage();
+  else if (cPhase === 'axes') cAxes();
+  else if (cPhase === 'pattern') {
+    // the blastula is patterned BEFORE gastrulation: pure diffusion, no
+    // division, until the organizer fields reach steady state on the ball
+    cA = cDiffuse(cA, cOrg.headKey);
+    cB = cDiffuse(cB, cOrg.ventKey);
+    if (cTick - cOrg.tick >= CRIT.patternTicks) {
+      cMarkFounders();
+      cGrowthStart = cTick;
+      cPhase = 'growth';
+    }
+  } else if (cPhase === 'growth') {
+    if (cTick === cGrowthStart + CRIT.limbFieldDelay) cSproutLimbs();
+    cStepTips();          // limb buds step EVERY tick and BEFORE body division
+    cGrow();              // claims cells: a bud grows at the front's speed or
+    cA = cDiffuse(cA, cOrg.headKey);   // the head bulb boxes it in (v3: fore
+    cB = cDiffuse(cB, cOrg.ventKey);   // tips died boxed at step 4 of 5)
+    let minX = Infinity;
+    for (const c of cCells.values()) minX = Math.min(minX, c.x);
+    const tailDone = minX <= cOrg.ball[0] - (CRIT.ballR + CRIT.tailLen - 2);
+    const tipsDead = cTips.length > 0 && !cTips.some(t => t.alive);
+    if ((tailDone && cLimbs.length >= 4 && tipsDead) ||
+        cTick >= CRIT.growDeadline || cCells.size >= CRIT.maxCells)
+      cFinishBody();
+  } else if (cPhase === 'turing') {
+    for (let i = 0; i < CRIT.tSteps; i++) cTuringStep();
+    // morphogens keep relaxing while pigmentation develops — the check then
+    // reads the STEADY gradient, not a transient (v1: corrAX = 0.266)
+    cA = cDiffuse(cA, cOrg.headKey);
+    cB = cDiffuse(cB, cOrg.ventKey);
+    if (++cTuringT >= CRIT.turingTicks) {
+      cPhase = 'done';
+      if (ISBEAR && !bear.rig) bearRig();   // G4: rig the finished body
+    }
+  }
+  cHist.cells.push(cCells.size);
+  splatsDirty = true;
+  window.__growthStats = statsCrit();
+}
+function statsCrit() {
+  return { genome: ISBEAR ? 'bear-v1' : CRIT.name, tick: cTick,
+           cellCount: cCells.size,
+           phase: cPhase, limbs: cLimbs.length, eyes: cEyes.length,
+           done: cPhase === 'done', violations: 0 };
+}
+function checkCreature() {
+  if (!cOrg) return { phase: cPhase, tick: cTick, cellCount: cCells.size,
+                      done: false };
+  let minX = Infinity;
+  for (const c of cCells.values()) minX = Math.min(minX, c.x);
+  // (b) mirror symmetry through z = cz0, Chebyshev-1 acceptance
+  const mz0 = Math.round(2 * cOrg.ball[2]);
+  let match = 0;
+  for (const c of cCells.values()) {
+    const mz = mz0 - c.z;
+    let hit = false;
+    for (let dx = -1; dx <= 1 && !hit; dx++)
+      for (let dy = -1; dy <= 1 && !hit; dy++)
+        for (let dz = -1; dz <= 1 && !hit; dz++)
+          if (cCells.has(ok(c.x+dx, c.y+dy, mz+dz))) hit = true;
+    if (hit) match++;
+  }
+  // (c) Pearson correlation of the head morphogen with x — reported RAW and
+  // LOG: the design claim is an EXPONENTIAL gradient a ~ e^{-x/lam}, whose
+  // natural linear statistic is corr(x, log a); raw Pearson on a heavy-tailed
+  // exponential dominated by the pinned source is a misspecified instrument
+  let n = 0, sx = 0, sa = 0, sxx = 0, saa = 0, sxa = 0;
+  let sl = 0, sll = 0, sxl = 0;
+  for (const [k, c] of cCells) {
+    const a = cA.get(k) || 0, lg = Math.log(Math.max(a, 1e-6));
+    n++; sx += c.x; sa += a; sxx += c.x*c.x; saa += a*a; sxa += c.x*a;
+    sl += lg; sll += lg*lg; sxl += c.x*lg;
+  }
+  const cov = sxa/n - (sx/n)*(sa/n);
+  const vx = sxx/n - (sx/n)*(sx/n), va = saa/n - (sa/n)*(sa/n);
+  const corrAX = (vx > 0 && va > 0) ? cov / Math.sqrt(vx*va) : null;
+  const covl = sxl/n - (sx/n)*(sl/n), vl = sll/n - (sl/n)*(sl/n);
+  const corrLogAX = (vx > 0 && vl > 0) ? covl / Math.sqrt(vx*vl) : null;
+  // (f) connectedness: flood fill from the lowest cell
+  let seed = null;
+  for (const c of cCells.values()) if (!seed || c.y < seed.y) seed = c;
+  let connected = null;
+  if (seed) {
+    const seen = new Set([ok(seed.x, seed.y, seed.z)]);
+    const q = [seed];
+    while (q.length) {
+      const c = q.pop();
+      for (const d of N6) {
+        const nk = ok(c.x+d[0], c.y+d[1], c.z+d[2]);
+        if (!seen.has(nk) && cCells.has(nk)) { seen.add(nk); q.push(cCells.get(nk)); }
+      }
+    }
+    connected = seen.size === cCells.size;
+  }
+  // (g) spots: surface cells above mean+0.5 sd, clustered face-adjacent;
+  // lambda_meas = mean nearest-centroid distance (3D chord on the surface)
+  let lambdaMeas = null, nSpots = 0;
+  if (cPhase === 'done' || cPhase === 'turing') {
+    const us = cSurf.map(k => cTuringU.get(k));
+    const mean = us.reduce((s, v) => s + v, 0) / us.length;
+    const sd = Math.sqrt(us.reduce((s, v) => s + (v-mean)*(v-mean), 0) / us.length);
+    const spotSet = new Set(cSurf.filter(k => cTuringU.get(k) > mean + 0.5*sd));
+    const seen = new Set(), cents = [];
+    for (const k of spotSet) {
+      if (seen.has(k)) continue;
+      const cl = []; const q = [k]; seen.add(k);
+      while (q.length) {
+        const kk = q.pop(); cl.push(kk);
+        const c = cCells.get(kk);
+        for (const d of N6) {
+          const nk = ok(c.x+d[0], c.y+d[1], c.z+d[2]);
+          if (spotSet.has(nk) && !seen.has(nk)) { seen.add(nk); q.push(nk); }
+        }
+      }
+      if (cl.length >= 2) {
+        let x = 0, y = 0, z = 0;
+        for (const kk of cl) { const c = cCells.get(kk); x += c.x; y += c.y; z += c.z; }
+        cents.push([x/cl.length, y/cl.length, z/cl.length]);
+      }
+    }
+    nSpots = cents.length;
+    if (cents.length >= 2) {
+      let sum = 0;
+      for (let i = 0; i < cents.length; i++) {
+        let dmin = Infinity;
+        for (let j = 0; j < cents.length; j++) {
+          if (i === j) continue;
+          const d = Math.hypot(cents[i][0]-cents[j][0], cents[i][1]-cents[j][1],
+                               cents[i][2]-cents[j][2]);
+          if (d < dmin) dmin = d;
+        }
+        sum += dmin;
+      }
+      lambdaMeas = sum / cents.length;
+    }
+  }
+  return { phase: cPhase, tick: cTick, cellCount: cCells.size,
+           symmetry: match / cCells.size,
+           corrAX, corrLogAX, headTailDx: cOrg.head[0] - minX,
+           limbCount: cLimbs.length,
+           limbRoots: cLimbs.map(L => L.root),
+           digitCount: cTips.filter(t => t.digit).length,
+           eyeCount: cEyes.length, connected,
+           lambdaPred: cLambdaPred, lambdaMeas, nSpots,
+           organizers: { head: cOrg.head, ventral: cOrg.ventral,
+                         centroid: cOrg.ball, tick: cOrg.tick },
+           done: cPhase === 'done' };
+}
+// ============================ G4 BEAR (embodiment) ===========================
+// Theory, stated before the run:
+//   STATEMENT:  a kinematic chain rigged onto the CA-grown body at the
+//               MEASURED limb roots reaches commanded goal poses via damped
+//               Jacobian pseudoinverse corrections dθ = Jᵀ(JJᵀ+λI)⁻¹e. Growth
+//               builds the body; a matrix product T(θ) = Π T_joint moves it;
+//               the grown tissue ledger (cTips[].path) stays the source of
+//               truth — the rig is READ OFF the body, never drawn by hand.
+//   PREDICTION: (a) rig = 4 chains x 2 joints anchored on grown limb cells;
+//               (b) wave converges tip residual < 0.35 cell within 300 IK
+//               iterations; (c) walk gait: diagonal limb pairs in phase
+//               (|Δφ| < 0.5 rad), ipsilateral pairs anti-phase (|Δφ−π| < 0.5);
+//               (d) no NaN, |θ| ≤ 2.6 rad throughout.
+//   FALSIFIER:  any of a–d failing on the measured ledger kills the claim.
+//   Constants DERIVED (Rule 1 — no sweeps):
+//     λ = L²/4 with L = 7-cell lever (5 limb + 2 digit): damping at half the
+//       squared lever arm conditions JJᵀ without freezing the chain.
+//     Δθ clamp 0.08 rad/iter, 5 iters per 30 ms anim tick → ≤ 0.4 rad/tick
+//       (smooth visible motion); 300 iters × 0.08 = 24 rad ≫ the ≤ 1.05 the
+//       wave needs.
+//     θ bound ±2.6 rad (150°) — anatomical sanity, named in the falsifier.
+//     Gait: T = 60 anim ticks (1.8 s stride at 30 ms — an amble scaled to the
+//       render clock); swing A = 2 cells on a 5-cell lever ≈ 0.4 rad peak
+//       joint angle, far under the bound; body speed v = 4A/T cells/tick =
+//       the no-slip mean of a stance foot's backward speed A·ω·(2/π).
+//     Wave target: the rest tip ROTATED about the shoulder by −1.05·side rad
+//       around the AP axis — a pure rotation, so the target lies exactly on
+//       the reach sphere (the command is derived from workspace geometry,
+//       not placed by taste).
+// ============================================================================
+const B4 = { A: 2, T: 60, LAM: 7 * 7 / 4, DTH: 0.08, THMAX: 2.6, ITERS: 5,
+             WAVE_RES: 0.35, WAVE_TH: 1.05, HOLD: 40, LOWER_RES: 0.2 };
+const bear = { rig: null, cmd: 'rest', cmdTick: 0, iters: 0, raiseIters: null,
+               minResidual: null, lastRes: null, waveDone: false,
+               wavePhase: null, holdUntil: 0, thetaMaxEver: 0, nan: false,
+               body: [0, 0, 0], gaitLog: [], cellMap: new Map(), waveCh: -1,
+               nEars: 0 };
+function bearReset() {
+  bear.rig = null; bear.cmd = 'rest'; bear.cmdTick = 0; bear.iters = 0;
+  bear.raiseIters = null; bear.minResidual = null; bear.lastRes = null;
+  bear.waveDone = false; bear.wavePhase = null; bear.holdUntil = 0;
+  bear.thetaMaxEver = 0; bear.nan = false; bear.body = [0, 0, 0];
+  bear.gaitLog.length = 0; bear.cellMap = new Map(); bear.waveCh = -1;
+  bear.nEars = 0;
+  learnReset();                            // G5: new body, fresh learner
+}
+// rotate v about unit axis a by th (Rodrigues) — the T_joint of the product
+function rot3(v, a, th) {
+  const c = Math.cos(th), s = Math.sin(th);
+  const d = a[0]*v[0] + a[1]*v[1] + a[2]*v[2];
+  return [v[0]*c + (a[1]*v[2]-a[2]*v[1])*s + a[0]*d*(1-c),
+          v[1]*c + (a[2]*v[0]-a[0]*v[2])*s + a[1]*d*(1-c),
+          v[2]*c + (a[0]*v[1]-a[1]*v[0])*s + a[2]*d*(1-c)];
+}
+const sub3 = (u, v) => [u[0]-v[0], u[1]-v[1], u[2]-v[2]];
+const add3 = (u, v) => [u[0]+v[0], u[1]+v[1], u[2]+v[2]];
+const cross3 = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2],
+                          a[0]*b[1]-a[1]*b[0]];
+// posed lattice position of chain cell path[k]: T(θ) = Π T_joint, joint axes
+// carried by upstream rotations (the matrix product, not parallel rotations)
+function fkPoint(ch, k) {
+  const P = ch.path, t0 = ch.theta[0], t1 = ch.theta[1];
+  const a0 = [1, 0, 0], a1r = [0, 1, 0];   // shoulder: pitch about AP axis;
+  const P0 = P[0], Pe0 = P[ch.elbow];      // elbow: swing about vertical axis
+  const Pe = add3(P0, rot3(sub3(Pe0, P0), a0, t0));
+  if (k <= ch.elbow) return add3(P0, rot3(sub3(P[k], P0), a0, t0));
+  return add3(Pe, rot3(rot3(sub3(P[k], Pe0), a1r, t1), a0, t0));
+}
+function fkDigit(ch, dp, j) {              // digits ride the wrist frame
+  const w0 = ch.path[ch.path.length - 1];
+  const Pw = fkPoint(ch, ch.path.length - 1);
+  const r = rot3(rot3(sub3(dp[j], w0), [0, 1, 0], ch.theta[1]),
+                 [1, 0, 0], ch.theta[0]);
+  return add3(Pw, r);
+}
+function solve3(M, b) {                    // Cramer — 3 equations, no library
+  const d3 = N => N[0][0]*(N[1][1]*N[2][2]-N[1][2]*N[2][1])
+                - N[0][1]*(N[1][0]*N[2][2]-N[1][2]*N[2][0])
+                + N[0][2]*(N[1][0]*N[2][1]-N[1][1]*N[2][0]);
+  const det = d3(M);
+  if (Math.abs(det) < 1e-12) return [0, 0, 0];
+  return [0, 1, 2].map(c =>
+    d3(M.map((row, r) => row.map((x, cc) => cc === c ? b[r] : x))) / det);
+}
+// one damped-pseudoinverse correction: Δθ = Jᵀ(JJᵀ + λI)⁻¹ e, step-clamped
+function ikStep(ch, T) {
+  const P0 = ch.path[0];
+  const tip = fkPoint(ch, ch.path.length - 1);
+  const e = sub3(T, tip);
+  const res = Math.hypot(e[0], e[1], e[2]);
+  const a0 = [1, 0, 0];
+  const a1w = rot3([0, 1, 0], a0, ch.theta[0]);
+  const Pe = fkPoint(ch, ch.elbow);
+  const j0 = cross3(a0, sub3(tip, P0));        // ∂tip/∂θ = a × r (exact, not
+  const j1 = cross3(a1w, sub3(tip, Pe));       // finite-differenced)
+  const M = [
+    [j0[0]*j0[0]+j1[0]*j1[0]+B4.LAM, j0[0]*j0[1]+j1[0]*j1[1], j0[0]*j0[2]+j1[0]*j1[2]],
+    [j0[1]*j0[0]+j1[1]*j1[0], j0[1]*j0[1]+j1[1]*j1[1]+B4.LAM, j0[1]*j0[2]+j1[1]*j1[2]],
+    [j0[2]*j0[0]+j1[2]*j1[0], j0[2]*j0[1]+j1[2]*j1[1], j0[2]*j0[2]+j1[2]*j1[2]+B4.LAM]];
+  const w = solve3(M, e);
+  for (const [j, dJ] of [[0, j0], [1, j1]]) {
+    let d = dJ[0]*w[0] + dJ[1]*w[1] + dJ[2]*w[2];
+    d = Math.max(-B4.DTH, Math.min(B4.DTH, d));
+    ch.theta[j] = Math.max(-B4.THMAX, Math.min(B4.THMAX, ch.theta[j] + d));
+  }
+  const tm = Math.max(Math.abs(ch.theta[0]), Math.abs(ch.theta[1]));
+  if (tm > bear.thetaMaxEver) bear.thetaMaxEver = tm;
+  if (!isFinite(ch.theta[0]) || !isFinite(ch.theta[1]) || !isFinite(res))
+    bear.nan = true;
+  bear.iters++;
+  return res;
+}
+// the rig: chains read off the GROWN ledger — roots, elbows, wrists, digits,
+// rest tips all measured, nothing placed by hand
+function bearRig() {
+  bear.cellMap = new Map();
+  const chains = [];
+  for (let i = 0; i < cLimbs.length; i++) {
+    const main = cTips.find(t => !t.digit && t.limbIdx === i && t.path);
+    if (!main || main.path.length < 3) continue;
+    const ch = { limbIdx: i, fore: cLimbs[i].fore, side: cLimbs[i].side,
+                 path: main.path, elbow: Math.floor(main.path.length / 2),
+                 theta: [0, 0],
+                 digits: cTips.filter(t => t.digit && t.limbIdx === i && t.path)
+                              .map(t => t.path) };
+    ch.rest = fkPoint(ch, ch.path.length - 1);   // θ=0 IS the grown pose
+    chains.push(ch);
+  }
+  bear.rig = chains;
+  chains.forEach((ch, ci) => {
+    ch.path.forEach((p, k) =>
+      bear.cellMap.set(ok(p[0], p[1], p[2]), { ci, kind: 0, k }));
+    ch.digits.forEach(dp => dp.forEach((p, j) =>
+      bear.cellMap.set(ok(p[0], p[1], p[2]), { ci, kind: 1, dp, k: j })));
+  });
+  let w = chains.findIndex(c => c.fore && c.side > 0);   // wave: a fore paw,
+  if (w < 0) w = chains.findIndex(c => c.fore);          // +z flank preferred
+  bear.waveCh = w;
+  // ears: the two highest skin cells of the head bulb (derived, not drawn)
+  if (cOrg) {
+    const headCells = [...cCells.values()]
+      .filter(c => c.mat === 'skin' && c.x >= cOrg.ball[0] + CRIT.eyeXMin)
+      .sort((p, q) => q.y - p.y);
+    for (const c of headCells.slice(0, 2)) { c.mat = 'ear'; bear.nEars++; }
+  }
+}
+// the embodiment clock — separate from the growth clock
+function bearAnim() {
+  if (!bear.rig) return;
+  bear.cmdTick++;
+  if (visitor.waveBack > 0) visitor.waveBack--;   // G5 visitor bob clock
+  let res = null;
+  if (bear.cmd === 'wave' && bear.waveCh >= 0) {
+    const ch = bear.rig[bear.waveCh];
+    const off = sub3(ch.rest, ch.path[0]);
+    const r = rot3(off, [1, 0, 0], -B4.WAVE_TH * ch.side);
+    const up = add3(ch.path[0], r);
+    const T = bear.wavePhase === 'lower' ? ch.rest : up;
+    for (let i = 0; i < B4.ITERS; i++) res = ikStep(ch, T);
+    if (bear.wavePhase === 'raise') {
+      if (bear.minResidual === null || res < bear.minResidual)
+        bear.minResidual = res;
+      if (res < B4.WAVE_RES) { bear.wavePhase = 'hold';
+                               bear.holdUntil = bear.cmdTick + B4.HOLD;
+                               bear.raiseIters = bear.iters; }
+    } else if (bear.wavePhase === 'hold') {
+      if (bear.cmdTick >= bear.holdUntil) bear.wavePhase = 'lower';
+    } else if (bear.wavePhase === 'lower') {
+      if (res < B4.LOWER_RES) { bear.cmd = 'rest'; bear.waveDone = true;
+                                bear.wavePhase = null; }
+    }
+  } else if (bear.cmd === 'walk') {
+    const phi = 2 * Math.PI * bear.cmdTick / B4.T;
+    for (const ch of bear.rig) {
+      // diagonal pairs in phase: (fore,+z) & (hind,−z) at 0, the others at π
+      const ph = (ch.fore === (ch.side > 0)) ? 0 : Math.PI;
+      const T = [ch.rest[0] + B4.A * Math.sin(phi + ph),
+                 ch.rest[1] + 0.6 * B4.A * Math.max(0, Math.cos(phi + ph)),
+                 ch.rest[2]];
+      let r = null;
+      for (let i = 0; i < B4.ITERS; i++) r = ikStep(ch, T);
+      if (res === null || r > res) res = r;
+    }
+    bear.body[0] += 4 * B4.A / B4.T;        // the no-slip mean stride
+    bear.gaitLog.push({ t: bear.cmdTick,
+      tips: bear.rig.map(ch => fkPoint(ch, ch.path.length - 1)) });
+    if (bear.gaitLog.length > 400) bear.gaitLog.shift();
+  } else if (bear.cmd === 'auto') {
+    autoTick();                            // G5: the learner drives
+  }
+  bear.lastRes = res;
+  splatsDirty = true;
+}
+window.__bearCommand = c => {
+  if (!bear.rig) return false;
+  if (c === 'wave') {
+    bear.cmd = 'wave'; bear.cmdTick = 0; bear.iters = 0;
+    bear.minResidual = null; bear.raiseIters = null; bear.waveDone = false;
+    bear.wavePhase = 'raise';
+  } else if (c === 'walk') {
+    bear.cmd = 'walk'; bear.cmdTick = 0; bear.gaitLog.length = 0;
+  } else bear.cmd = c === 'auto' ? 'auto' : 'rest';
+  return true;
+};
+window.__bearStats = () => ({
+  rigged: !!bear.rig, chains: bear.rig ? bear.rig.length : 0,
+  joints: bear.rig ? 2 * bear.rig.length : 0,
+  chainMeta: bear.rig ? bear.rig.map(c => ({ fore: c.fore, side: c.side,
+    pathLen: c.path.length, elbow: c.elbow })) : [],
+  cmd: bear.cmd, cmdTick: bear.cmdTick, iters: bear.iters,
+  raiseIters: bear.raiseIters, minResidual: bear.minResidual,
+  lastRes: bear.lastRes, waveDone: bear.waveDone, wavePhase: bear.wavePhase,
+  thetaMaxEver: bear.thetaMaxEver, nan: bear.nan,
+  body: bear.body, gaitLen: bear.gaitLog.length, ears: bear.nEars });
+window.__bearGait = () => bear.gaitLog;
+window.__bearAnim = bearAnim;      // single-step hook (headless IK runs)
+window.__bearCheck = () => {
+  // F-G4f: FK is a product of RIGID rotations — every POSED segment must equal
+  // its GROWN length (all 1-cell face steps). (End-to-end reach is NOT the
+  // audit: bending the elbow legitimately changes it — the first-draft reach
+  // check measured 0.305 on a correct rig; the segment audit is the rigid
+  // one. A mis-stated instrument, documented, not hidden.)
+  let segErr = null;
+  if (bear.rig) {
+    for (const ch of bear.rig) {
+      const audit = path => {
+        for (let k = 1; k < path.length; k++) {
+          const rest = Math.hypot(...sub3(path[k], path[k - 1]));
+          const posed = Math.hypot(...sub3(fkPoint(ch, k), fkPoint(ch, k - 1)));
+          segErr = segErr === null ? Math.abs(posed - rest)
+            : Math.max(segErr, Math.abs(posed - rest));
+        }
+      };
+      audit(ch.path);
+    }
+  }
+  return { rigged: !!bear.rig, chains: bear.rig ? bear.rig.length : 0,
+           joints: bear.rig ? 2 * bear.rig.length : 0,
+           waveCh: bear.waveCh, ears: bear.nEars, segErr,
+           nan: bear.nan, thetaMaxEver: bear.thetaMaxEver };
+};
+setInterval(bearAnim, 30);
+if (ISBEAR) {
+  document.getElementById('ctl').style.display = 'block';
+  document.getElementById('bwave').onclick = () => window.__bearCommand('wave');
+  document.getElementById('bwalk').onclick = () =>
+    window.__bearCommand(bear.cmd === 'walk' ? 'rest' : 'walk');
+  document.getElementById('brest').onclick = () => window.__bearCommand('rest');
+  document.getElementById('bauto').onclick = () =>
+    window.__bearCommand(bear.cmd === 'auto' ? 'rest' : 'auto');
+  window.addEventListener('keydown', e => {
+    if (e.key === '1') window.__bearCommand('wave');
+    else if (e.key === '2')
+      window.__bearCommand(bear.cmd === 'walk' ? 'rest' : 'walk');
+    else if (e.key === '3') window.__bearCommand('rest');
+    else if (e.key === '4')
+      window.__bearCommand(bear.cmd === 'auto' ? 'rest' : 'auto');
+  });
+}
+
+// ============================ G5 LEARNER (situations → goals) ================
+// Theory, stated before the run:
+//   STATEMENT:  a visitor stimulus sensed THROUGH THE GROWN EYES (retinal dot
+//               products against each eye's outward normal — never direct
+//               state access) drives Q-learning over 7 discrete situations ×
+//               the 3 G4 options (rest/wave/walk). Learning PROPOSES the
+//               option; the G4 FK/IK stack EXECUTES it with its physics
+//               guarantees intact (residual/θ/NaN ledgers stay live).
+//   PREDICTION: (a) sensed situation matches geometric truth (near/far from
+//               range, bearing from which eye wins); (b) mean episode reward,
+//               last 30 vs first 30 episodes, improves by ≥ 0.3; (c) the
+//               greedy policy matches the environment's reward structure
+//               (absent→rest, near→wave, far→walk) on ≥ 80% of sufficiently
+//               visited states after 300 episodes; (d) learner-issued waves
+//               still converge (min residual < 0.35 cell) with θ ≤ 2.6 and
+//               no NaN.
+//   FALSIFIER:  no reward improvement, or < 80% structure match after 300
+//               episodes, kills the layer.
+//   Constants DERIVED (Rule 1):
+//     NEAR = 6 cells — just inside the 7-cell workspace sphere: a raised paw
+//       is visible to a visitor who can be reached. FAR = 12 = 2×NEAR.
+//     EP_TICKS = 90 = 1.5 gait cycles: closing far→near (6 cells at the
+//       no-slip stride 4A/T = 0.133 c/tick) takes 45 ticks + wave
+//       convergence ~5 + slack. Fewer ticks would make the far→walk→wave
+//       chain unreachable — the episode length is derived from the stride.
+//     γ = 0.99 — DERIVED FROM THE EPISODE, not swept: the first run with
+//       γ = 0.9 FAILED F-G5c (far states learned rest: Q_walk ≈ −0.02·(1−γ⁴⁵)/
+//       (1−γ) + γ⁴⁵·1.5 ≈ −0.19 < 0 = Q_rest — the credit horizon ~10 ticks
+//       could not reach across the 45-tick far→near walk, and the falsifier
+//       caught a real mis-specification). γ = 0.99 puts the horizon at
+//       ~100 ticks ≈ EP_TICKS: γ⁹⁰ ≈ 0.40, so the terminal reward can reach
+//       back across the whole episode.
+//     BECKON = 0.226 per cell closed — the second mis-specification the
+//       falsifier caught: even with γ = 0.99 the far→walk value never
+//       propagated, because arriving requires 45 CONSECUTIVE-ish walks and
+//       ε-greedy exploration strings ~30 per 90-tick episode — arrival was
+//       never sampled, so Q[far][walk] sat at its pre-arrival fixed point
+//       (measured: exactly −0.02 = the raw walk cost). The environment now
+//       pays a dense difference reward k·(d_prev − d_now) — the visitor
+//       beckons: closing a cell pays +0.03, opening one costs −0.03, rest
+//       pays exactly 0 (no potential-shaping artifact). k = 0.03/0.133, the
+//       stride: walking toward nets +0.01/tick over the −0.02 energy cost.
+//     Rewards are the ENVIRONMENT's rules, stated openly (the game world,
+//     not a label): wave near +1 terminal (the visitor waves back); wave at
+//     nobody −0.1; walk −0.02/tick energy; walking INTO a near visitor
+//     startles it: −0.5 terminal; rest while absent +0.02/tick (energy
+//     conserved); rest while present 0 (missed chance, no penalty).
+// ============================================================================
+const L5 = { NEAR: 6, FAR: 12, EP_TICKS: 90, BEAR_EPS: 0.05,
+             ALPHA: 0.3, GAMMA: 0.99, EPS0: 0.25, EPSDECAY: 0.99, EPSMIN: 0.05 };
+const R5 = { WAVE_NEAR: 1.0, WAVE_FAR: -0.1, WAVE_ABSENT: -0.1,
+             WALK_TICK: -0.02, BECKON: 0.03 / 0.133, STARTLE: -0.5,
+             REST_ABSENT: 0.02, REST_PRESENT: 0.0 };
+const STRUCT5 = [0, 1, 1, 1, 2, 2, 2];     // the reward structure, for audit
+const visitor = { present: false, pos: [0, 0, 0], waveBack: 0 };
+const learn = { Q: [], eps: L5.EPS0, episode: 0, epTick: 0, epReward: 0,
+                rewards: [], rng: 1337, stateVisits: [0,0,0,0,0,0,0],
+                minResAuto: null, gaitT: 0 };
+function learnReset() {
+  learn.Q = Array.from({ length: 7 }, () => [0, 0, 0]);
+  learn.eps = L5.EPS0; learn.episode = 0; learn.epTick = 0; learn.epReward = 0;
+  learn.rewards = []; learn.rng = 1337; learn.stateVisits = [0,0,0,0,0,0,0];
+  learn.minResAuto = null; learn.gaitT = 0;
+  visitor.present = false; visitor.pos = [0, 0, 0]; visitor.waveBack = 0;
+}
+learnReset();
+function rnd() {                 // LCG — deterministic per body (reproducible)
+  learn.rng = (learn.rng * 1103515245 + 12345) & 0x7fffffff;
+  return learn.rng / 0x7fffffff;
+}
+// the senses: range from the head, bearing from WHICH EYE wins — retinal
+// activation = dot(unit(to visitor), eye outward normal) on the grown geometry
+function senseState() {
+  if (!visitor.present) return 0;
+  const rel = sub3(visitor.pos, [bear.body[0], 0, 0]);
+  const d = Math.hypot(rel[0], rel[1], rel[2]);
+  const zc = cOrg ? Math.round(cOrg.ball[2]) : 0;
+  const hc = cOrg ? cOrg.head : [0, 0, 0];
+  let actPlus = -2, actMinus = -2;
+  for (const e of cEyes) {
+    const out = norm3(sub3(e, hc));
+    const to = norm3(sub3(rel, e));
+    const a = out[0]*to[0] + out[1]*to[1] + out[2]*to[2];
+    if (e[2] > zc) actPlus = Math.max(actPlus, a);
+    else actMinus = Math.max(actMinus, a);
+  }
+  let bearing = 1;                                       // center
+  if (actPlus > actMinus + L5.BEAR_EPS) bearing = 0;     // +z flank
+  else if (actMinus > actPlus + L5.BEAR_EPS) bearing = 2;
+  return (d <= L5.NEAR ? 1 : 4) + bearing;
+}
+function spawnEpisode() {
+  const r = rnd();
+  if (r < 1 / 3) visitor.present = false;
+  else {
+    const near = r < 2 / 3, b = rnd();
+    visitor.present = true;
+    visitor.pos = [bear.body[0] + (near ? L5.NEAR - 2 : L5.FAR), 0,
+                   b < 1 / 3 ? 3 : b < 2 / 3 ? 0 : -3];
+  }
+  visitor.waveBack = 0;
+  learn.epTick = 0; learn.epReward = 0;
+}
+function gaitTick() {                  // one gait step through G4 physics
+  learn.gaitT++;
+  const phi = 2 * Math.PI * learn.gaitT / B4.T;
+  for (const ch of bear.rig) {
+    const ph = (ch.fore === (ch.side > 0)) ? 0 : Math.PI;
+    const T = [ch.rest[0] + B4.A * Math.sin(phi + ph),
+               ch.rest[1] + 0.6 * B4.A * Math.max(0, Math.cos(phi + ph)),
+               ch.rest[2]];
+    for (let i = 0; i < B4.ITERS; i++) ikStep(ch, T);
+  }
+  bear.body[0] += 4 * B4.A / B4.T;     // the no-slip mean stride
+}
+function autoTick() {
+  const s = senseState();
+  learn.stateVisits[s]++;
+  let a;
+  if (rnd() < learn.eps) a = Math.floor(rnd() * 3);
+  else { const q = learn.Q[s];
+         a = q[0] >= q[1] && q[0] >= q[2] ? 0 : q[1] >= q[2] ? 1 : 2; }
+  const d0 = visitor.present
+    ? Math.hypot(...sub3(visitor.pos, [bear.body[0], 0, 0])) : null;
+  let r = 0, terminal = false;
+  if (a === 1) {                       // wave, executed by the G4 IK stack
+    const ch = bear.rig[bear.waveCh];
+    const up = add3(ch.path[0],
+      rot3(sub3(ch.rest, ch.path[0]), [1, 0, 0], -B4.WAVE_TH * ch.side));
+    let res = null;
+    for (let i = 0; i < B4.ITERS; i++) res = ikStep(ch, up);
+    if (learn.minResAuto === null || res < learn.minResAuto)
+      learn.minResAuto = res;
+    bear.lastRes = res;
+    if (!visitor.present) r = R5.WAVE_ABSENT;
+    else if (d0 <= L5.NEAR) { r = R5.WAVE_NEAR; visitor.waveBack = 30;
+                              terminal = true; }
+    else r = R5.WAVE_FAR;
+  } else if (a === 2) {                // walk, executed by the G4 gait
+    if (!visitor.present) { gaitTick(); r = R5.WALK_TICK; }
+    else if (d0 <= L5.NEAR) { r = R5.STARTLE; terminal = true; }
+    else {
+      gaitTick();
+      const d1 = Math.hypot(...sub3(visitor.pos, [bear.body[0], 0, 0]));
+      r = R5.WALK_TICK + R5.BECKON * (d0 - d1);   // the beckoning gradient
+    }
+  } else r = visitor.present ? R5.REST_PRESENT : R5.REST_ABSENT;
+  learn.epReward += r; learn.epTick++;
+  const s2 = senseState();
+  const q = learn.Q[s];
+  q[a] += L5.ALPHA * (r + (terminal ? 0 : L5.GAMMA * Math.max(...learn.Q[s2]))
+                      - q[a]);
+  if (terminal || learn.epTick >= L5.EP_TICKS) {
+    learn.rewards.push(learn.epReward);
+    learn.episode++;
+    learn.eps = Math.max(L5.EPSMIN, learn.eps * L5.EPSDECAY);
+    spawnEpisode();
+  }
+  splatsDirty = true;
+}
+window.__bearLearn = n => {            // batch episodes, synchronous (tests)
+  if (!bear.rig) return false;
+  const target = learn.episode + n;
+  let guard = 0;
+  while (learn.episode < target && guard++ < n * L5.EP_TICKS * 3) autoTick();
+  splatsDirty = true;
+  return learn.episode;
+};
+window.__setVisitor = (present, dx, dz) => {      // sense audit hook
+  visitor.present = present;
+  visitor.pos = [bear.body[0] + dx, 0, dz];
+  return senseState();
+};
+window.__learnStats = () => {
+  const m = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length
+                              : null;
+  return { episode: learn.episode, eps: learn.eps,
+           first30: m(learn.rewards.slice(0, 30)),
+           last30: m(learn.rewards.slice(-30)),
+           Q: learn.Q, visits: learn.stateVisits, struct: STRUCT5,
+           minResAuto: learn.minResAuto };
+};
+
+if (ISCRIT) cReset();
+
+// ---------- dispatch ---------------------------------------------------------
+function stepCA() { WHICH === 'oak' ? stepOak()
+                  : ISCRIT ? stepCreature() : stepWall(); }
+function stats() { return WHICH === 'oak' ? statsOak()
+                 : ISCRIT ? statsCrit() : statsWall(); }
+window.__growthCheck = () => WHICH === 'oak' ? checkOak()
+                           : ISCRIT ? checkCreature() : checkWall();
+window.__growthStats = stats();
+let caTimer = 0;
+window.__setTickMs = ms => { clearInterval(caTimer); caTimer = setInterval(stepCA, ms); };
+window.__step = stepCA;          // single-step hook (headless derivation runs)
+
+// ---------- splats ------------------------------------------------------------
+function hash01(n) { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
+function wallSplats() {
+  const cy = WALL.brickH / 2;
+  for (const c of placed.values()) {
+    const h = hash01(c.y * 31 + c.i * 7);
+    const r = 0.58 + 0.10 * h, g = 0.24 + 0.06 * h, b = 0.16 + 0.04 * h;
+    const y = c.y * (WALL.brickH + WALL.gap) + cy;
+    for (let k = -1; k <= 1; k++)
+      splatData.push({ p: [(c.x0 + c.x1) / 2 + k * WALL.brickLen * 0.28, y, 0],
+                       s: 0.075, col: [r, g, b, 1] });
+  }
+  for (let gx = -2; gx < 22; gx++) for (let gz = -3; gz <= 3; gz++) {
+    const h = hash01(gx * 13 + gz * 41);
+    splatData.push({ p: [gx * 0.24, -0.09, gz * 0.24], s: 0.16,
+                     col: [0.16 + 0.04*h, 0.15 + 0.04*h, 0.14 + 0.03*h, 1] });
+  }
+}
+function oakSplats() {
+  const s0 = OAK.cell;
+  for (const c of oCells.values()) {
+    const h = hash01(c.x * 7 + c.y * 31 + c.z * 13);
+    const p = [c.x * s0, c.y * s0, c.z * s0];
+    if (c.mat === 'wood')
+      splatData.push({ p, s: s0 * 0.62, col: [0.36 + 0.08*h, 0.22 + 0.05*h, 0.12, 1] });
+    else if (c.mat === 'leaf')
+      splatData.push({ p, s: s0 * 0.72, col: [0.13 + 0.06*h, 0.44 + 0.14*h, 0.14, 1] });
+    else if (c.mat === 'bud')
+      splatData.push({ p, s: s0 * 0.5, col: [0.55, 0.62 + 0.1*h, 0.18, 1] });
+  }
+  for (const t of oTips) if (t.alive)               // the meristems, glowing
+    splatData.push({ p: [t.pos[0]*s0, t.pos[1]*s0, t.pos[2]*s0],
+                     s: s0 * 0.55,
+                     col: t.leader ? [0.95, 0.9, 0.55, 1] : [0.8, 0.75, 0.35, 1] });
+  for (let gx = -8; gx <= 8; gx++) for (let gz = -8; gz <= 8; gz++) {
+    const h = hash01(gx * 13 + gz * 41);
+    splatData.push({ p: [gx * 0.24, -0.06, gz * 0.24], s: 0.16,
+                     col: [0.14 + 0.05*h, 0.13 + 0.05*h, 0.11 + 0.04*h, 1] });
+  }
+}
+function critSplats() {
+  const s0 = CRIT.cell;
+  const bx = ISBEAR ? bear.body[0] * s0 : 0;   // the walking bear's drift
+  for (const c of cCells.values()) {
+    const h = hash01(c.x * 7 + c.y * 31 + c.z * 13);
+    let lp = [c.x, c.y, c.z];
+    if (ISBEAR && bear.rig) {              // G4: limb cells render at their
+      const reg = bear.cellMap.get(ok(c.x, c.y, c.z));   // FK-posed position
+      if (reg) {
+        const ch = bear.rig[reg.ci];
+        lp = reg.kind === 0 ? fkPoint(ch, reg.k) : fkDigit(ch, reg.dp, reg.k);
+      }
+    }
+    const p = [lp[0] * s0 + bx, lp[1] * s0, lp[2] * s0];
+    let col;
+    if (c.mat === 'eye') col = [0.10, 0.15, 0.50, 1];
+    else if (c.mat === 'ear') col = [0.80, 0.58, 0.46, 1];
+    else if (c.mat === 'limb')
+      col = ISBEAR ? [0.50 + 0.05*h, 0.35, 0.26, 1]      // darker fur
+                   : [0.60 + 0.06*h, 0.40, 0.32, 1];
+    else col = ISBEAR ? [0.58 + 0.05*h, 0.40 + 0.03*h, 0.28, 1]   // fur
+                      : [0.72 + 0.06*h, 0.52 + 0.04*h, 0.42, 1];
+    if (cPhase === 'pattern') {                 // watch the prepattern form:
+      const a = cA.get(ok(c.x, c.y, c.z)) || 0; // head morphogen glows warm,
+      const b = cB.get(ok(c.x, c.y, c.z)) || 0; // ventral glows cool
+      const wa = Math.min(1, a * 4), wb = Math.min(1, b * 4);
+      col = [col[0]*(1-wa) + 0.95*wa, col[1]*(1-wa)*(1-wb) + 0.25*wa*(1-wb) + 0.35*wb,
+             col[2]*(1-wa)*(1-wb) + 0.15*wa*(1-wb) + 0.75*wb, 1];
+    }
+    if (cPhase === 'turing' || cPhase === 'done') {   // pigmentation overlay
+      const k = ok(c.x, c.y, c.z);
+      if (cTuringU.has(k)) {
+        const w = Math.min(1, Math.max(0, (cTuringU.get(k) - 1.0) * 1.5));
+        const sp = [0.25, 0.12, 0.28];
+        col = [col[0]*(1-w) + sp[0]*w, col[1]*(1-w) + sp[1]*w,
+               col[2]*(1-w) + sp[2]*w, 1];
+      }
+    }
+    splatData.push({ p, s: s0 * 0.62, col });
+  }
+  if (ISBEAR && visitor.present) {         // G5: the visitor, in world space
+    const bob = visitor.waveBack > 0
+      ? 0.12 * Math.abs(Math.sin(visitor.waveBack * 0.3)) : 0;
+    const vp = [visitor.pos[0] * s0, visitor.pos[2] * s0];
+    splatData.push({ p: [vp[0], 0.06 + bob, vp[1]], s: 0.10,
+                     col: [0.75, 0.20, 0.18, 1] });
+    splatData.push({ p: [vp[0], 0.17 + bob, vp[1]], s: 0.075,
+                     col: [0.85, 0.35, 0.25, 1] });
+  }
+  for (let gx = -8; gx <= 8; gx++) for (let gz = -8; gz <= 8; gz++) {
+    const h = hash01(gx * 13 + gz * 41);
+    splatData.push({ p: [gx * 0.24, -0.30, gz * 0.24], s: 0.16,
+                     col: [0.14 + 0.05*h, 0.12 + 0.04*h, 0.12 + 0.03*h, 1] });
+  }
+}
+function rebuildSplats() {
+  splatData.length = 0;
+  WHICH === 'oak' ? oakSplats() : ISCRIT ? critSplats() : wallSplats();
+  splatsDirty = false;
+}
+
+// ---------- WebGPU Gaussian billboard splat renderer -------------------------
+const canvas = document.getElementById('c');
+window.__renderer = 'none';
+let device, ctx, pipeline, ubuf, ibuf, depthTex, bindGroup, cap = 0;
+
+const WGSL = `
+struct U { proj: mat4x4f, view: mat4x4f };
+@group(0) @binding(0) var<uniform> u: U;
+struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1) col: vec4f };
+@vertex fn vs(@builtin(vertex_index) vi: u32,
+              @location(0) center: vec3f, @location(1) size: f32,
+              @location(2) col: vec4f) -> VOut {
+  var corners = array<vec2f, 4>(vec2f(-1.0, -1.0), vec2f(1.0, -1.0),
+                                vec2f(-1.0, 1.0), vec2f(1.0, 1.0));
+  let cr = corners[vi];
+  let vp = u.view * vec4f(center, 1.0);
+  let p = vp.xyz + vec3f(cr * size, 0.0);
+  var o: VOut;
+  o.pos = u.proj * vec4f(p, 1.0);
+  o.uv = cr; o.col = col;
+  return o;
+}
+@fragment fn fs(inp: VOut) -> @location(0) vec4f {
+  let r2 = dot(inp.uv, inp.uv);
+  if (r2 > 1.0) { discard; }
+  let g = exp(-4.0 * r2);            // Gaussian falloff — the cell's body
+  let shade = 0.45 + 0.55 * g;       // self-shaded core, no external light
+  return vec4f(inp.col.rgb * shade, 1.0);
+}`;
+
+async function initGPU() {
+  if (!navigator.gpu) throw new Error('no WebGPU');
+  const adapter = await navigator.gpu.requestAdapter();
+  device = await adapter.requestDevice();
+  ctx = canvas.getContext('webgpu');
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  ctx.configure({ device, format, alphaMode: 'opaque' });
+  pipeline = device.createRenderPipeline({
+    layout: 'auto',
+    vertex: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'vs',
+      buffers: [{ arrayStride: 32, stepMode: 'instance', attributes: [
+        { shaderLocation: 0, offset: 0, format: 'float32x3' },
+        { shaderLocation: 1, offset: 12, format: 'float32' },
+        { shaderLocation: 2, offset: 16, format: 'float32x4' }] }] },
+    fragment: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'fs',
+      targets: [{ format }] },
+    primitive: { topology: 'triangle-strip', cullMode: 'none' },
+    depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' },
+  });
+  ubuf = device.createBuffer({ size: 128, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0),
+    entries: [{ binding: 0, resource: { buffer: ubuf } }] });
+  window.__renderer = 'webgpu-splat';
+}
+
+// ---------- camera -------------------------------------------------------------
+function perspective(fovY, aspect, near, far) {
+  const f = 1 / Math.tan(fovY / 2), m = new Float32Array(16);
+  m[0] = f / aspect; m[5] = f; m[10] = far / (near - far); m[11] = -1;
+  m[14] = far * near / (near - far);
+  return m;
+}
+function lookAt(ex, ey, ez, tx, ty, tz) {
+  let fx = tx - ex, fy = ty - ey, fz = tz - ez;
+  let fl = Math.hypot(fx, fy, fz); fx /= fl; fy /= fl; fz /= fl;
+  let rx = -fz, ry = 0, rz = fx;                       // s = f x up(0,1,0)
+  let rl = Math.hypot(rx, ry, rz); rx /= rl; rz /= rl;
+  const ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx;
+  return new Float32Array([
+    rx, ux, -fx, 0,  ry, uy, -fy, 0,  rz, uz, -fz, 0,
+    -(rx * ex + ry * ey + rz * ez), -(ux * ex + uy * ey + uz * ez),
+    (fx * ex + fy * ey + fz * ez), 1]);
+}
+
+// ---------- main loops (setInterval — Playwright-safe, project law) ------------
+let frames = 0, fpsT = performance.now(), fps = 0;
+const FOCUS = WHICH === 'oak'
+  ? { cx: 0, cy: 1.05, R: 3.0, eyeY: 1.35, ang0: 0.6 }
+  : ISCRIT
+  ? { cx: -0.2, cy: 0, R: 1.8, eyeY: 0.45, ang0: 0.6 }
+  : { cx: WALL.wide * (WALL.brickLen + WALL.gap) / 2,
+      cy: WALL.courses * (WALL.brickH + WALL.gap) / 2, R: 3.4, eyeY: 1.35, ang0: 0.42 };
+
+function render() {
+  if (!device) return;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; depthTex = null; }
+  if (!depthTex) depthTex = device.createTexture({ size: [w, h], format: 'depth24plus',
+    usage: GPUTextureUsage.RENDER_ATTACHMENT });
+  if (splatsDirty) {
+    rebuildSplats();
+    const n = splatData.length;
+    if (n > cap) {
+      cap = Math.max(4096, n * 2);
+      ibuf = device.createBuffer({ size: cap * 32,
+        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
+    }
+    const f32 = new Float32Array(n * 8);
+    splatData.forEach((s, i) =>
+      f32.set([s.p[0], s.p[1], s.p[2], s.s, s.col[0], s.col[1], s.col[2], s.col[3]], i * 8));
+    device.queue.writeBuffer(ibuf, 0, f32);
+  }
+  const t = performance.now() / 1000;
+  const ang = FOCUS.ang0 + 0.10 * Math.sin(t * 0.15);
+  const bx = ISBEAR && bear.rig ? bear.body[0] * CRIT.cell : 0;  // track the
+  const eye = [FOCUS.cx + bx + FOCUS.R * Math.sin(ang), FOCUS.eyeY,
+               FOCUS.R * Math.cos(ang)];                          // walking bear
+  const proj = perspective(0.85, w / h, 0.05, 50);
+  const view = lookAt(eye[0], eye[1], eye[2], FOCUS.cx + bx, FOCUS.cy, 0);
+  const u32 = new Float32Array(32); u32.set(proj, 0); u32.set(view, 16);
+  device.queue.writeBuffer(ubuf, 0, u32);
+  const enc = device.createCommandEncoder();
+  const pass = enc.beginRenderPass({
+    colorAttachments: [{ view: ctx.getCurrentTexture().createView(),
+      clearValue: { r: 0.027, g: 0.031, b: 0.047, a: 1 }, loadOp: 'clear', storeOp: 'store' }],
+    depthStencilAttachment: { view: depthTex.createView(),
+      depthClearValue: 1, depthLoadOp: 'clear', depthStoreOp: 'store' } });
+  pass.setPipeline(pipeline);
+  pass.setBindGroup(0, bindGroup);
+  if (ibuf && splatData.length) { pass.setVertexBuffer(0, ibuf); pass.draw(4, splatData.length); }
+  pass.end();
+  device.queue.submit([enc.finish()]);
+  frames++;
+  const now = performance.now();
+  if (now - fpsT > 1000) { fps = frames * 1000 / (now - fpsT); frames = 0; fpsT = now; }
+}
+
+function hud() {
+  const s = stats();
+  let txt = `GENOME  ${s.genome}\ntick    ${s.tick}\ncells   ${s.cellCount}` +
+    (s.blueprintCount !== undefined ? ` / ${s.blueprintCount}` : '') +
+    (s.height !== undefined ? `\nheight  ${s.height} cells (${(s.height * OAK.cell).toFixed(2)} m)` : '') +
+    (s.maxCourse !== undefined ? `\ncourse  ${s.maxCourse + 1} / ${WALL.courses}` : '') +
+    (s.tips !== undefined ? `\ntips    ${s.tips} active, ${s.leaves} leaves` : '') +
+    (s.phase !== undefined ? `\nphase   ${s.phase}\nlimbs   ${s.limbs}, eyes ${s.eyes}` : '') +
+    (ISBEAR ? `\npose    ${bear.cmd}${bear.rig ? '' : ' (growing)'}` +
+      ` res=${bear.lastRes === null ? '—' : bear.lastRes.toFixed(2)}` +
+      ` θmax=${bear.thetaMaxEver.toFixed(2)} x=${bear.body[0].toFixed(1)}c` +
+      `\nlearn   ep=${learn.episode} ε=${learn.eps.toFixed(2)}` +
+      ` R30=${learn.rewards.length ? (learn.rewards.slice(-30).reduce((s, v) => s + v, 0) / Math.min(30, learn.rewards.length)).toFixed(2) : '—'}` : '') +
+    `\nviolations ${s.violations}` +
+    `\nstatus  ${s.done ? (WHICH === 'oak' ? 'MATURE' : ISCRIT ? (ISBEAR ? 'ADULT — rigged, press 1/2/3' : 'ADULT') : 'BLUEPRINT COMPLETE') : 'growing'}` +
+    `\nfps     ${fps.toFixed(0)}\nrenderer ${window.__renderer}`;
+  document.getElementById('hud').textContent = txt;
+}
+
+initGPU().catch(e => { window.__renderer = 'unavailable: ' + e.message; });
+setTimeout(() => { caTimer = setInterval(stepCA, GENOME.tickMs); }, 1000); // founder rests 1 s
+setInterval(render, 16);
+setInterval(hud, 250);
+</script>
+</body>
+</html>

@@ -221,3 +221,6 @@ clay_exports/
 # source and nothing reads it. Kept out of the tree so `git status` stays a true signal --
 # a repo whose status is never clean is a repo where a real stray file is invisible.
 .tmp/
+
+# Phase N build artifact (rebuilt by test_native.py)
+ChimeraEngine/native/ca_core.exe

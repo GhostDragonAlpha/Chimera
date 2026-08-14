@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SPIACE NATIVE VIEWER — C++ core, browser eyes</title>
+<style>
+  html, body { margin:0; height:100%; background:#07080c; overflow:hidden; }
+  canvas { display:block; width:100vw; height:100vh; }
+  #hud { position:fixed; top:10px; left:10px; color:#9fd; font:12px/1.5 monospace;
+         white-space:pre; text-shadow:0 0 4px #000; pointer-events:none; }
+  #tag { position:fixed; bottom:10px; left:10px; color:#567; font:11px monospace;
+         pointer-events:none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">booting…</div>
+<div id="tag">C++ ca_core.exe → SSE → splats · this page holds ZERO simulation logic</div>
+<script type="module">
+// ============================================================================
+// SPIACE NATIVE VIEWER — the browser is the EYES, not the brain. The wall is
+// grown by native/ca_core.cpp (the same genome table as G1); this page only
+// turns the streamed (course, index) brick identities into splats. Geometry
+// constants below are PRESENTATION (how a brick looks), never simulation.
+// ============================================================================
+const WALL = { brickLen:0.22, brickH:0.075, gap:0.012, courses:12, wide:18 };
+
+// ---------- stream -----------------------------------------------------------
+let cells = [], lastTick = 0, lastViol = 0, done = false;
+const histCells = [], histViol = [];
+let splatsDirty = true;
+const splatData = [];
+
+const es = new EventSource('/stream');
+es.onmessage = e => {
+  const m = JSON.parse(e.data);
+  if (m.type !== 'frame') return;
+  cells = m.cells; lastTick = m.tick; lastViol = m.violations; done = m.done;
+  histCells.push(cells.length); histViol.push(m.violations);
+  splatsDirty = true;
+  window.__growthStats = stats();
+};
+function stats() {
+  let maxCourse = -1;
+  for (const c of cells) maxCourse = Math.max(maxCourse, c[0]);
+  return { genome: 'brick-wall-v1-cpp', tick: lastTick, cellCount: cells.length,
+           blueprintCount: 210,   // 6 even rows of 18 + 6 odd rows of 17
+           maxCourse, violations: lastViol, done };
+}
+window.__growthCheck = () => ({ cells, histCells, histViol,
+                                violations: lastViol, done, tick: lastTick });
+
+// ---------- splats -------------------------------------------------------------
+function hash01(n) { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
+function rebuildSplats() {
+  splatData.length = 0;
+  const xp = WALL.brickLen + WALL.gap, cy = WALL.brickH / 2;
+  for (const [y, i] of cells) {
+    const off = (y % 2 === 0) ? 0 : xp / 2;
+    const x0 = i * xp + off;
+    const h = hash01(y * 31 + i * 7);
+    const r = 0.58 + 0.10 * h, g = 0.24 + 0.06 * h, b = 0.16 + 0.04 * h;
+    const yy = y * (WALL.brickH + WALL.gap) + cy;
+    for (let k = -1; k <= 1; k++)
+      splatData.push({ p: [x0 + WALL.brickLen / 2 + k * WALL.brickLen * 0.28, yy, 0],
+                       s: 0.075, col: [r, g, b, 1] });
+  }
+  for (let gx = -2; gx < 22; gx++) for (let gz = -3; gz <= 3; gz++) {
+    const h = hash01(gx * 13 + gz * 41);
+    splatData.push({ p: [gx * 0.24, -0.09, gz * 0.24], s: 0.16,
+                     col: [0.16 + 0.04*h, 0.15 + 0.04*h, 0.14 + 0.03*h, 1] });
+  }
+  splatsDirty = false;
+}
+
+// ---------- WebGPU Gaussian billboard splat renderer (same pipe as GROW) -----
+const canvas = document.getElementById('c');
+window.__renderer = 'none';
+let device, ctx, pipeline, ubuf, ibuf, depthTex, bindGroup, cap = 0;
+
+const WGSL = `
+struct U { proj: mat4x4f, view: mat4x4f };
+@group(0) @binding(0) var<uniform> u: U;
+struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1) col: vec4f };
+@vertex fn vs(@builtin(vertex_index) vi: u32,
+              @location(0) center: vec3f, @location(1) size: f32,
+              @location(2) col: vec4f) -> VOut {
+  var corners = array<vec2f, 4>(vec2f(-1.0, -1.0), vec2f(1.0, -1.0),
+                                vec2f(-1.0, 1.0), vec2f(1.0, 1.0));
+  let cr = corners[vi];
+  let vp = u.view * vec4f(center, 1.0);
+  let p = vp.xyz + vec3f(cr * size, 0.0);
+  var o: VOut;
+  o.pos = u.proj * vec4f(p, 1.0);
+  o.uv = cr; o.col = col;
+  return o;
+}
+@fragment fn fs(inp: VOut) -> @location(0) vec4f {
+  let r2 = dot(inp.uv, inp.uv);
+  if (r2 > 1.0) { discard; }
+  let g = exp(-4.0 * r2);
+  let shade = 0.45 + 0.55 * g;
+  return vec4f(inp.col.rgb * shade, 1.0);
+}`;
+
+async function initGPU() {
+  if (!navigator.gpu) throw new Error('no WebGPU');
+  const adapter = await navigator.gpu.requestAdapter();
+  device = await adapter.requestDevice();
+  ctx = canvas.getContext('webgpu');
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  ctx.configure({ device, format, alphaMode: 'opaque' });
+  pipeline = device.createRenderPipeline({
+    layout: 'auto',
+    vertex: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'vs',
+      buffers: [{ arrayStride: 32, stepMode: 'instance', attributes: [
+        { shaderLocation: 0, offset: 0, format: 'float32x3' },
+        { shaderLocation: 1, offset: 12, format: 'float32' },
+        { shaderLocation: 2, offset: 16, format: 'float32x4' }] }] },
+    fragment: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'fs',
+      targets: [{ format }] },
+    primitive: { topology: 'triangle-strip', cullMode: 'none' },
+    depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' },
+  });
+  ubuf = device.createBuffer({ size: 128, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0),
+    entries: [{ binding: 0, resource: { buffer: ubuf } }] });
+  window.__renderer = 'webgpu-splat';
+}
+
+// ---------- camera -------------------------------------------------------------
+function perspective(fovY, aspect, near, far) {
+  const f = 1 / Math.tan(fovY / 2), m = new Float32Array(16);
+  m[0] = f / aspect; m[5] = f; m[10] = far / (near - far); m[11] = -1;
+  m[14] = far * near / (near - far);
+  return m;
+}
+function lookAt(ex, ey, ez, tx, ty, tz) {
+  let fx = tx - ex, fy = ty - ey, fz = tz - ez;
+  let fl = Math.hypot(fx, fy, fz); fx /= fl; fy /= fl; fz /= fl;
+  let rx = -fz, ry = 0, rz = fx;
+  let rl = Math.hypot(rx, ry, rz); rx /= rl; rz /= rl;
+  const ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx;
+  return new Float32Array([
+    rx, ux, -fx, 0,  ry, uy, -fy, 0,  rz, uz, -fz, 0,
+    -(rx * ex + ry * ey + rz * ez), -(ux * ex + uy * ey + uz * ez),
+    (fx * ex + fy * ey + fz * ez), 1]);
+}
+
+// ---------- main loops (setInterval — Playwright-safe, project law) ------------
+let frames = 0, fpsT = performance.now(), fps = 0;
+const FOCUS = { cx: WALL.wide * (WALL.brickLen + WALL.gap) / 2,
+                cy: WALL.courses * (WALL.brickH + WALL.gap) / 2,
+                R: 3.4, eyeY: 1.35, ang0: 0.42 };
+
+function render() {
+  if (!device) return;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; depthTex = null; }
+  if (!depthTex) depthTex = device.createTexture({ size: [w, h], format: 'depth24plus',
+    usage: GPUTextureUsage.RENDER_ATTACHMENT });
+  if (splatsDirty) {
+    rebuildSplats();
+    const n = splatData.length;
+    if (n > cap) {
+      cap = Math.max(4096, n * 2);
+      ibuf = device.createBuffer({ size: cap * 32,
+        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
+    }
+    const f32 = new Float32Array(n * 8);
+    splatData.forEach((s, i) =>
+      f32.set([s.p[0], s.p[1], s.p[2], s.s, s.col[0], s.col[1], s.col[2], s.col[3]], i * 8));
+    device.queue.writeBuffer(ibuf, 0, f32);
+  }
+  const t = performance.now() / 1000;
+  const ang = FOCUS.ang0 + 0.10 * Math.sin(t * 0.15);
+  const eye = [FOCUS.cx + FOCUS.R * Math.sin(ang), FOCUS.eyeY, FOCUS.R * Math.cos(ang)];
+  const proj = perspective(0.85, w / h, 0.05, 50);
+  const view = lookAt(eye[0], eye[1], eye[2], FOCUS.cx, FOCUS.cy, 0);
+  const u32 = new Float32Array(32); u32.set(proj, 0); u32.set(view, 16);
+  device.queue.writeBuffer(ubuf, 0, u32);
+  const enc = device.createCommandEncoder();
+  const pass = enc.beginRenderPass({
+    colorAttachments: [{ view: ctx.getCurrentTexture().createView(),
+      clearValue: { r: 0.027, g: 0.031, b: 0.047, a: 1 }, loadOp: 'clear', storeOp: 'store' }],
+    depthStencilAttachment: { view: depthTex.createView(),
+      depthClearValue: 1, depthLoadOp: 'clear', depthStoreOp: 'store' } });
+  pass.setPipeline(pipeline);
+  pass.setBindGroup(0, bindGroup);
+  if (ibuf && splatData.length) { pass.setVertexBuffer(0, ibuf); pass.draw(4, splatData.length); }
+  pass.end();
+  device.queue.submit([enc.finish()]);
+  frames++;
+  const now = performance.now();
+  if (now - fpsT > 1000) { fps = frames * 1000 / (now - fpsT); frames = 0; fpsT = now; }
+}
+
+function hud() {
+  const s = stats();
+  document.getElementById('hud').textContent =
+    `GENOME  ${s.genome}\ntick    ${s.tick}\nbricks  ${s.cellCount} / 210` +
+    `\ncourse  ${s.maxCourse + 1} / ${WALL.courses}` +
+    `\nviolations ${s.violations}` +
+    `\nstatus  ${s.done ? 'BLUEPRINT COMPLETE' : 'growing'}` +
+    `\nfps     ${fps.toFixed(0)}\nrenderer ${window.__renderer}\nsource  C++ ca_core.exe (SSE)`;
+}
+
+initGPU().catch(e => { window.__renderer = 'unavailable: ' + e.message; });
+setInterval(render, 16);
+setInterval(hud, 250);
+</script>
+</body>
+</html>

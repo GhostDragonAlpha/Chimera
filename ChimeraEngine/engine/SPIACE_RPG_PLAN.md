@@ -477,12 +477,29 @@ kernel), or the C++ port of the verified kernel layer.
 
 ---
 
-### Phase 10.5: Tile Artifact Elimination (Pending — Kimi K3)
-- [ ] Diagnose and fix visible seams between adjacent tiles in the splat rasterizer
-- [ ] Fix per-tile sort-order divergence causing edge artifacts
-- [ ] Increase MAX_PTILE or redesign to eliminate hard caps on tile contributions
-- [ ] Consider smaller TILE_SIZE (8px) vs larger (32px) tradeoff analysis
-- [ ] All existing falsifiers must stay green
+### Phase 10.5: Tile Artifact Elimination (Completed — Kimi K3)
+
+**Rule 0:** seams come from (a) per-tile independent depth sorts inverting a shared splat
+pair across adjacent tiles, (b) MAX_PTILE=64 truncating dense-tile contributions, (c)
+bin-margin rounding dropping edge tiles. Prediction: one global depth rank + MAX_PTILE=256
++ 1 px bin margin brings tile-boundary brightness steps to interior parity. Falsifiers:
+boundary/interior gradient ratio >= 1.3 (seams persist), or GPU < 50 fps at 4K.
+
+- [x] Global depth rank: `visIdx` sorted once per frame, every tile's list emitted in
+  rank order — all tiles compose a shared splat pair identically (the actual seam fix)
+- [x] Allocation-free two-pass counting-scatter binning (tile ranges → counts →
+  prefix-sum → scatter in rank order); 67 ms → ~10 ms CPU at 4K
+- [x] MAX_PTILE 64 → 256 (dense-tile staircase eliminated)
+- [x] +1 px binning margin on all footprints
+- [x] TILE_SIZE evaluated 8 vs 16 as specced: 8 measured 35 fps at 4K (1.5M slots) —
+  falsifier tripped; 16 keeps seams fixed at 4× fewer slots. TILE_SIZE stays 16
+- [x] Adaptive detail budget: EMA fps < 55 shrinks fracture budget 3%/frame, headroom
+  regrows it; the 4K fracture law (~114k splats) exceeded the frame budget and adapts
+  to ~68k. Inert at 720p60 — D1/D2 law assertions untouched
+- [x] `__seamCheck()` does a true GPU readback (COPY_SRC canvas, same-encoder copy to
+  MAP_READ buffer) — the first version read a blank post-present canvas and false-passed
+- [x] Measured: seam ratio col 0.962 / row 1.010 (limit 1.3); GPU 4K 56.0 fps (limit ≥ 50);
+  falsifiers 1–13 + Tracks D/E all green
 
 ### Phase 11: Ship-to-Foot Narrative Arc with Atmospheric Re-Entry (Pending — Kimi K3)
 - [ ] Tsiolkovsky rocket equation: ship mass, fuel, thrust, Δv budget
@@ -515,4 +532,141 @@ kernel), or the C++ port of the verified kernel layer.
 
 ---
 
-Document version: 3.0 (Phases 10.5–14 pending) | Status: Phases 0–10 + Tracks A/B/C/T/D/E complete | Agent: bionic + Kimi K3
+## Phase G: Membrane DNA — Cellular Automata as Genomes (G1–G3 complete — Kimi K3)
+
+**Theory (stated before the run):** every membrane's structure is generatable by the
+cellular rule `s(x, t+1) = R(neighbors, Φ_tree)`, membranes differing only in the rule
+table R and the founder cell. The Barnes-Hut tree and the CA are the two poles of the
+engine: the tree talks across distance (fields), the CA decides what to be (structure).
+The splat IS the cell; the tree's leaf level doubles as the CA's neighbor search.
+
+**The ladder (each rung falsifies the one above it if it fails):**
+- **G1 — the wall (zero-field template genome):** COMPLETE. `spiace_grow.html` +
+  `test_grow.py`, all green headed. Running-bond wall, 18+17 alternating courses,
+  12 courses, 210 bricks, one seed brick. Measured: complete in 14 ticks (predicted
+  O(W+H) ≈ 30 — the wave beat the bound), cells 5→210 monotonic across the full
+  per-tick ledger, support violations 0 (≥30% overlap rule, re-verified from scratch
+  every tick), grown set == blueprint set exactly. Renderer: WebGPU instanced Gaussian
+  billboards (no Canvas 2D), 63 fps. Falsifiers F-G1a…e all pass.
+- **G2 — the oak (field-coupled genome):** COMPLETE. Same page, `?genome=oak`,
+  all 8 falsifiers green headed (F-G2a…g). Meristem tips + TWO fields: auxin
+  (deposit trail q=3 per tip-formed cell, tissue diffusion D=0.08, decay
+  δ=0.06 — the deposit model replaced per-tick tip injection after measurement
+  showed a moving point source dilutes with tree size and can never hold a
+  dominance zone) and light (sun-ray shadow tube through foliage, leaf
+  opacity τ=2.0/cell — a vertical-column proxy was measured to INVERT the
+  tropism, 0.43 sun fraction). Measured: phyllotaxis error 5.7e-14° over 53
+  bud pairs (azimuth advances only on formed primordia — no phantom
+  advances); dominance ledger clean with θ=0.15 derived from the measured
+  crossing a₀≈2.05 ⇒ r*≈10.9 cells vs domZone 8; phototropism tipSunMean
+  0.548, leaf centroid +1.34 cells sunward (the leaf-COUNT metric was
+  replaced after measurement showed axis-snap places leaves trunkward of
+  sun-leaning tips — the metric was wrong, not the tree); structure connected
+  by face-adjacent construction; pruning the leader releases a lateral in 37
+  ticks (syllepsis named and scoped out of the dominance ledger). Branch
+  lignification (tropism half-life 8 steps) keeps the 40° spread — without it
+  the crown collapses columnar.
+- **G3 — the creature (morphogen axes):** COMPLETE. Same page,
+  `?genome=creature`, all 9 falsifiers green headed (F-G3a…i) in one run with
+  the G1/G2 regressions. One zygote → cleavage ball (r≤3) → organizer axes
+  (head = max-x, ventral = gravity pole — gravity SETS the DV axis) → 600-tick
+  blastula patterning (Wolpert: pinned Dirichlet organizers + lattice
+  diffusion D=0.15 + decay δ=0.012) → fate-directed elongation (head/tail/
+  radial reads of the field; daughters inherit parental morphogen —
+  cytoplasmic determinants) → 4 limb founders marked from the STEADY ball
+  prepattern (fore/hind A-bands × ventro-lateral DV band × free flank,
+  per-band local inhibition) → limbs grow at the front's speed (a bud boxed
+  in by the head bulb dies — differentiated tissue exits the cell cycle) →
+  3 digits per limb fanned at golden-angle spacing → 2 lateral eyes →
+  Schnakenberg Turing pigmentation on the finished surface. Measured:
+  bilateral symmetry 1.0 (emergent — never coded; the parity gate uses odd
+  coefficients so the division schedule itself is mirror-symmetric); adult
+  corr(x, log a) = 0.905 (the gradient IS exponential; raw Pearson 0.626
+  reported alongside — the log statistic is the linear instrument for an
+  exponential law, refinement documented in the header); limbs exactly 4 at
+  the derived sites (2,0,±2) / (−1,0,±2); digits 12; eyes 2; connected
+  tissue; 22 Turing spots, λ_meas 3.32 vs lattice-dispersion λ_pred 4.59
+  (27.6%, inside the named 30% band); gravity flip re-specifies the DV axis
+  on regrowth (ventral pole −3 → +3). Developmental ordering measured, not
+  assumed: v1 filled its envelope before the field existed (corrAX 0.266);
+  v2 patterned first but aimed bands at the wrong (continuum) model of its
+  own update rule — a Dirichlet pin couples to the lattice at D/(6D+δ)≈0.16
+  and no-flux boundaries flatten the far field (λ_eff≈7, not 3.54). v3's
+  bands are read off the measured steady prepattern (600 vs 2000 ticks differ
+  <0.1% — true fixed point), the oak deposit-trail precedent. Adult at tick
+  1070, 711 cells, 60 fps.
+- **G4 — the embodied genome (robot layer):** COMPLETE. Same page,
+  `?genome=bear`, all falsifiers green headed (F-G4a…f) in one run with the
+  G1/G2/G3 regressions. The creature body grows from the SAME DNA table
+  (1070 ticks, 711 cells), then the rig is READ OFF the grown ledger —
+  `cTips[].path` (recorded during growth) gives 4 chains x 2 joints
+  (shoulder at the grown root, elbow at the measured midpoint), rest pose =
+  θ=0 IS the grown shape, ears = the two highest head-bulb cells (derived,
+  not drawn). Pose is a matrix product T(θ) = Π T_joint with joint axes
+  carried by upstream rotations; goals are reached by damped Jacobian
+  pseudoinverse corrections Δθ = Jᵀ(JJᵀ+λI)⁻¹e with J columns exact
+  (a × r, no finite differences) and λ = L²/4 derived from the 7-cell lever.
+  Commands: WAVE / WALK / REST (buttons or keys 1/2/3). Measured: wave
+  converged to residual 0.0488 cells in 15 iterations (bound: 0.35 / 300);
+  gait diagonal pairs in phase (|Δφ| = 0.033/0.039 rad) and ipsilateral
+  pairs anti-phase (err 0.047/0.026 rad) under a Goertzel read of the logged
+  tip series at the gait frequency; body translated 35.7 cells at the
+  no-slip mean stride v = 4A/T; θmax = 1.05 rad (bound 2.6); no NaN; FK
+  segment rigidity exact to machine epsilon (segErr 5.6e-16). One instrument
+  correction documented in-code: the first reach audit was mis-stated
+  (elbow flexion legitimately changes end-to-end reach) — the rigid
+  invariant is per-segment length. situations→goals remains the learned
+  layer (options framework) — learning proposes, physics verifies.
+- **G5 — the learned situations→goals layer:** COMPLETE, same page, all
+  falsifiers green headed (F-G5a…d) in one run with the G1–G4 regressions.
+  A visitor stimulus is sensed THROUGH THE GROWN EYES (retinal dot products
+  against each eye's outward normal — never direct state access) and drives
+  Q-learning over 7 discrete situations (absent/near/far × bearing L/C/R)
+  × the 3 G4 options (rest/wave/walk). Learning proposes; the FK/IK stack
+  executes with its ledgers live. Measured after 300 episodes: reward
+  first30 0.648 → last30 1.267 (margin +0.62, bound +0.3); greedy policy
+  matches the environment's reward structure (absent→rest, near→wave,
+  far→walk) on 7/7 visited states; learner-issued waves converge to
+  0.0002 cells; θmax 1.05; no NaN; FK segErr 3.3e-16. TWO falsifier-driven
+  corrections, both fixed by derivation, not sweeps (documented in the G5
+  header): γ = 0.9 → 0.99 (credit horizon must span the 45-tick far→near
+  walk: 0.9⁴⁵ ≈ 0.009 made walking honestly worse than resting) and the
+  dense beckoning difference-reward +0.03 per cell closed (ε-greedy never
+  strings the 45 walks needed to sample the arrival bonus — sparse terminal
+  reward was unlearnable; the dense gradient is the visitor's world-rule,
+  k = 0.03/0.133 derived from the no-slip stride). The bear walks TO the
+  visitor and waves when it arrives — sensed, learned, and verified.
+
+## Phase N: Native Core Skeleton (N1 complete — Kimi K3)
+
+The standing architecture: physics develops in C++; the HTML page is a pure
+viewer that the core is piped into. N1 proves the pipe end-to-end with the
+simplest genome.
+
+- **N1 — C++ core + SSE relay + zero-logic viewer:** COMPLETE, all falsifiers
+  green headed (F-N1a…e) in one run. `native/ca_core.cpp` (C++17, no deps,
+  MinGW g++ 15.2.0, `-O2`): the G1 wall genome ported verbatim from the JS
+  WALL table, emitting one NDJSON frame per tick on stdout
+  (`{"tick","cells":[[y,i],...],"violations","done"}`); brick identity is the
+  integer (y,i) so oracles need no float compares; self-audits supports every
+  tick; stall guard exit 2, dead-wave exit 3. `native/relay.py` (stdlib-only
+  ThreadingHTTPServer, 127.0.0.1:8799): serves `engine/spiace_native.html`,
+  SSE at `/stream`, lazy exe spawn, replay buffer for late joiners, appends
+  every frame to `native/native_stream.log`. The viewer holds ZERO simulation
+  logic — EventSource feed → splats on the same WGSL Gaussian-billboard
+  pipeline as spiace_grow.html.
+- **Verification is 3-way:** the JS reference (Phase G), the C++ core, and an
+  independent Python oracle in `engine/test_native.py` that recomputes the
+  blueprint from the genome table and audits the **wire log** — not the
+  page's self-report. Measured: 14 ticks, cells 5→210 monotonic, max
+  violations 0, final set == blueprint (diff 0), oracle support audit 0
+  unsupported, page cells == wire cells (210==210). Screenshot verified: full
+  12-course running-bond wall, HUD `brick-wall-v1-cpp`, `source C++
+  ca_core.exe (SSE)`.
+- **Next (N2):** kernel-DSL table reader — genomes ship as data (a `.chimera`
+  genome file parsed by the C++ core) instead of hardcoded constants, so the
+  HTML/JS table stops being the source of truth.
+
+---
+
+Document version: 3.6 (G1–G5 + N1 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1 complete | Agent: bionic + Kimi K3
