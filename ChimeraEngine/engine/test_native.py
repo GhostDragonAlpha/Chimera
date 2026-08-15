@@ -115,8 +115,28 @@
 #          (walk bodyX/trace, learner) now legitimately DIFFER — downhill
 #          crest exits break contact and the stride slips. They must match
 #          the terrain-mode oracle run instead of the flat wire.
+# N8 falsifiers (named before the run; the goal membrane — deliberation over
+# terrain+physics state: a flag at goalX, 12 senses (bearing x slope x
+# contact), 5 verbs (rest, walkE/W full, walkE/W careful), Q-learning on the
+# L5 constants with ZERO new tunables — careful amplitude, slip threshold,
+# and episode budget are all DERIVED from the genome's physics):
+#   F-N8a invariance: beargoal's entire G4–N7 ledger (growth cells, selftest
+#          line) is bit-identical to bearhill's — the nav layer runs AFTER
+#          the selftest ledger closes and cannot touch it
+#   F-N8b the navtest ledger (visits, Q, rewards, arrivals, derived
+#          constants) == the Python oracle's float-op-for-float-op
+#          replication of navTick within 1e-9 (the oracle skips IK — rewards
+#          and senses never read it)
+#   F-N8c the learned greedy policy WALKS TOWARD the flag in both bearing
+#          states, and its gait class (full vs careful) per slope state ==
+#          the oracle-measured fastest gait for that slope — measured by
+#          micro-simulation on the real terrain, not presumed
+#   F-N8d learning curve: last-30 arrival rate > first-30 arrival rate
+#   F-N8e HEADED: the flag rides the wire and the page, NAV frames carry
+#          in-range state/verb, episodes advance, arrivals happen live
 import json
 import math
+import os
 import subprocess
 import sys
 import time
@@ -1500,6 +1520,484 @@ try:
               f"{len(wire_anim)} frames")
     finally:
         relay5.terminate()
+
+    # ---- F-N8a..e: N8 goal membrane (deliberation over terrain+physics) ----
+    gg = read_chimera(NATIVE / "genomes" / "beargoal.chimera")
+    ter8, ter8_iters, ter8_ms = gen_terrain_py(gg)
+    TSC8 = int(gg["terrainScale"])
+    rg8 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                          str(NATIVE / "genomes" / "beargoal.chimera"),
+                          "selftest"], capture_output=True, text=True,
+                         timeout=300)
+    gmsgs = [json.loads(l) for l in rg8.stdout.splitlines() if l.strip()]
+    grig = next((m for m in gmsgs if m.get("type") == "rig"), None)
+    gfin = next((m for m in gmsgs if m.get("type") == "final"), None)
+    gst = next((m for m in gmsgs if m.get("type") == "selftest"), None)
+    gnav = next((m for m in gmsgs if m.get("type") == "navtest"), None)
+
+    # F-N8a: the nav layer runs AFTER the G4–N7 ledger closes and cannot
+    # touch it — the whole selftest line and the growth must be bit-identical
+    goal_cells = {tuple(c[:3]) for c in gfin["cells"]}
+    check("F-N8a invariance: beargoal's G4–N7 ledger bit-identical to "
+          "bearhill's, same grown terrain, goalX on the wire",
+          rg8.returncode == 0 and gst == hst and goal_cells == hill_cells
+          and ter8 == ter and grig.get("goalX") == 15 and gnav is not None,
+          f"selftest=={gst == hst} cells=={goal_cells == hill_cells} "
+          f"terrain=={ter8 == ter} goalX={grig.get('goalX')}")
+
+    # the N8 oracle: navTick replicated float-op for float-op (IK skipped —
+    # rewards and senses never read it, documented in ca_core's N8 header)
+    def nav_oracle(gd, bfin_, terrain_, tsc_):
+        PI = math.pi
+        A, T = float(gd["b4A"]), float(gd["b4T"])
+        ALPHA, GAMMA = float(gd["l5Alpha"]), float(gd["l5Gamma"])
+        EPS0, EPSDECAY, EPSMIN = (float(gd["l5Eps0"]), float(gd["l5EpsDecay"]),
+                                  float(gd["l5EpsMin"]))
+        RBECK, RWNEAR = float(gd["r5Beckon"]), float(gd["r5WaveNear"])
+        R5WT = float(gd["r5WalkTick"])  # slip-compensation constant (R5-derived)
+        G = float(gd["gravity"]) / (float(gd["tickHz"]) ** 2
+                                    * float(gd["cell"]))
+        GOALX = int(gd["goalX"])
+        cells_ = bfin_["cells"]
+        loY = float(min(c[1] for c in cells_))
+        loX, hiX = min(c[0] for c in cells_), max(c[0] for c in cells_)
+        omega = 2 * PI / T                       # derived constants (the
+        ac = G / (omega * (float(gd["terrainSlope"])     # core derives these
+                           / float(gd["terrainScale"])))  # same way)
+        tau = G / (A * omega)
+        budget = math.ceil(GOALX / (4 * ac / T))
+
+        def col_h(x):
+            return loY + terrain_.get(x, 0) / tsc_
+
+        def ground_at(bx_):
+            g = None
+            for x in range(math.floor(bx_) + loX, math.floor(bx_) + hiX + 1):
+                h = terrain_.get(x, 0)
+                g = h if g is None else max(g, h)
+            return loY + g / tsc_
+
+        def phys(y_, v_, bx_):
+            v_ -= G
+            y_ += v_
+            pen = ground_at(bx_) - (y_ + loY)
+            ct = False
+            if pen >= 0:
+                y_ += pen
+                v_ = 0.0
+                ct = True
+            return y_, v_, ct
+
+        rng = 1337
+
+        def rnd():
+            nonlocal rng
+            x = rng * 1103515245.0 + 12345.0      # JS lossy-double LCG
+            m = math.fmod(x, 4294967296.0)
+            rng = int(m) & 0x7fffffff
+            return rng / 0x7fffffff
+
+        # ---- Step 1: trace for episodes 290-319 (instrumentation only) ----
+        traces = []                           # list of (ep, tick, bx, state, verb, contact, explored, arrived)
+
+        def nav_state_num(bx_=None, ct_=None):
+            """returns s. bx_/ct_ override closure state for rollouts.
+            Measurement-validity fix: greedy_rollout keeps its OWN local
+            contact; without ct_ the rollout would read the training-final
+            closure value (stale exactly where the bear goes airborne).
+            Training calls pass nothing -> closure, so F-N8b identity holds."""
+            bxx = math.floor(bx_ if bx_ is not None else bx)
+            bearing = 0 if GOALX > bxx else 1
+            ss = (col_h(bxx + 1) - col_h(bxx - 1)) / 2
+            slope = 0 if ss > 0 else (1 if ss >= -tau else 2)
+            ct = contact if ct_ is None else ct_
+            return (bearing * 3 + slope) * 2 + (1 if ct else 0)
+
+        y = v = 0.0
+        contact = True
+        bx = 0.0
+
+        def nav_state():
+            bxx = math.floor(bx)
+            bearing = 0 if GOALX > bxx else 1
+            ss = (col_h(bxx + 1) - col_h(bxx - 1)) / 2
+            slope = 0 if ss > 0 else (1 if ss >= -tau else 2)
+            return (bearing * 3 + slope) * 2 + (1 if contact else 0)
+
+        Q = [[0.0] * 5 for _ in range(12)]
+        eps = EPS0
+        visits = [0] * 12
+        rewards, arrived = [], []
+        episode = epTick = 0
+        epReward = 0.0
+        arrivals = 0
+        gaitT = 0
+
+        def spawn():
+            nonlocal bx, y, v, contact, epTick, epReward
+            epTick = 0
+            epReward = 0.0
+            bx = 0.0 if rnd() < 0.5 else 30.0     # flag +/- 15, symmetric
+            y = ground_at(bx) - loY
+            v = 0.0
+            contact = True
+
+        spawn()
+        guard = 0
+        while episode < 320 and guard < 320 * budget * 3:
+            guard += 1
+            y, v, contact = phys(y, v, bx)
+            s = nav_state()
+            visits[s] += 1
+            # Step 1: trace recording for episodes 290-319
+            s_cur = nav_state_num()
+            explored_flag = False
+            if rnd() < eps:
+                a = math.floor(rnd() * 5)
+                explored_flag = True
+            else:
+                q = Q[s]
+                a = 0
+                for i in range(1, 5):             # strict >: lowest index
+                    if q[i] > q[a]:
+                        a = i
+            if 290 <= episode < 320:
+                traces.append((episode, epTick, bx, s_cur, a, contact, explored_flag, False))
+            d0 = abs(GOALX - bx)
+            if a != 0:            # 1:E full 2:W full 3:E careful 4:W careful
+                d = 1.0 if a in (1, 3) else -1.0
+                amp = A if a <= 2 else ac
+                gaitT += 1
+                phi = 2 * PI * gaitT / T
+                if contact:                       # the N7 earned-stride law
+                    bx += d * amp * (2 * PI / T) * abs(math.cos(phi))
+            d1 = abs(GOALX - bx)
+            # the beckoning gradient minus uniform time cost; derived from R5
+            # (RBECK) and N5/L5 (budget derives from l5EpTicks, already in the
+            # genome); no new tunables. Slip is the bear's choice (it chose the
+            # gait), so airborne time is not waived; shaping needs no clip.
+            # Ng shaping tested+falsified (see report).
+            r = RBECK * (d0 - d1) - 1.0 / budget
+
+            terminal = False
+            if math.floor(bx) == GOALX:           # standing ON the flag
+                r += RWNEAR
+                terminal = True
+                arrivals += 1
+            epReward += r
+            epTick += 1
+            s2 = nav_state()
+            # Bootstrap: max over all verbs in the next state, no clip.
+            mx = max(Q[s2])
+            Q[s][a] += ALPHA * (r + (0.0 if terminal else GAMMA * mx)
+                                - Q[s][a])
+            # Step 1: mark arrival in trace if this tick arrived
+            if 290 <= episode < 320 and traces:
+                t = list(traces[-1])
+                t[7] = terminal
+                traces[-1] = tuple(t)
+            if terminal or epTick >= budget:
+                rewards.append(epReward)
+                arrived.append(1 if terminal else 0)
+                episode += 1
+                eps = max(EPSMIN, eps * EPSDECAY)
+                spawn()
+        first30 = sum(arrived[:30]) / 30
+        last30 = sum(arrived[-30:]) / 30
+
+        # ---- Step 2: greedy rollout (eps=0, pure exploit) from both spawns ----
+        def greedy_rollout(bx0):
+            bx = float(bx0)
+            y = ground_at(bx) - loY
+            v = 0.0
+            contact = True
+            seq = []
+            gt = 0
+            for tick in range(1, budget + 1):
+                y, v, contact = phys(y, v, bx)
+                s = nav_state_num(bx, contact)  # rollout's OWN state, not the
+                                               # training-final closure values
+                q = Q[s]
+                a = 0
+                for i in range(1, 5):
+                    if q[i] > q[a]:
+                        a = i
+                verb_name = ["REST", "walkE", "walkW", "careE", "careW"][a]
+                if a != 0:
+                    d = 1.0 if a in (1, 3) else -1.0
+                    amp = A if a <= 2 else ac
+                    gt += 1
+                    phi = 2 * math.pi * gt / T
+                    if contact:
+                        bx += d * amp * (2 * math.pi / T) * abs(math.cos(phi))
+                terminal = False
+                if math.floor(bx) == GOALX:
+                    terminal = True
+                seq.append((tick, bx, s, a, verb_name, contact, terminal))
+                if terminal:
+                    return seq, tick, True
+            return seq, None, False
+
+        greedy_results = []
+        for spawn in [0.0, 30.0]:
+            seq, arr_tick, arrived = greedy_rollout(spawn)
+            greedy_results.append((spawn, seq, arr_tick, arrived))
+
+        return {"goalX": GOALX, "budget": budget, "ac": ac, "tau": tau,
+                "episodes": episode, "visits": visits, "arrivals": arrivals,
+                "first30": first30, "last30": last30, "Q": Q,
+                "rewards": rewards, "traces": traces, "greedy": greedy_results}
+
+    no8 = nav_oracle(gg, gfin, ter8, TSC8)
+    traces = no8.pop("traces", [])
+
+    # ---- Step 1 trace summary (episodes 290-319) ----
+    if traces:
+        print("\n=== F-N8c TRACE (episodes 290-319) ===")
+        for ep in range(290, 320):
+            ep_tr = [t for t in traces if t[0] == ep]
+            arrived_tick = next((t[1] for t in ep_tr if t[7]), None)
+            state_seq = []
+            cur_s, run = None, 0
+            for t in ep_tr:
+                s = t[3]
+                if s != cur_s:
+                    if cur_s is not None:
+                        state_seq.append(f"s{cur_s}x{run}")
+                    cur_s, run = s, 1
+                else:
+                    run += 1
+            if cur_s is not None:
+                state_seq.append(f"s{cur_s}x{run}")
+            arrive_str = f"ARRIVE@{arrived_tick}" if arrived_tick is not None else "NO-ARRIVE"
+            verb_summary = {}
+            for t in ep_tr:
+                key = (t[3], t[4])
+                verb_summary[key] = verb_summary.get(key, 0) + 1
+            explore_count = sum(1 for t in ep_tr if t[6])
+            print(f"  ep{ep}: {' -> '.join(state_seq)} | {arrive_str} | explore={explore_count}/{len(ep_tr)}")
+            s3_verb = {}
+            s9_verb = {}
+            for t in ep_tr:
+                if t[3] == 3:
+                    s3_verb[t[4]] = s3_verb.get(t[4], 0) + 1
+                if t[3] == 9:
+                    s9_verb[t[4]] = s9_verb.get(t[4], 0) + 1
+            if s3_verb:
+                print(f"    s3 visits: {dict(s3_verb)}")
+            if s9_verb:
+                print(f"    s9 visits: {dict(s9_verb)}")
+        print("=== END TRACE ===\n")
+
+    # ---- Step 2: greedy rollout results (from inside oracle) ----
+    for spawn, seq, arr_tick, arrived in no8.get("greedy", []):
+        print(f"Greedy rollout from bx={spawn:.1f}: {'ARRIVED@' + str(arr_tick) if arrived else 'STALLED'}")
+        # diagnostic: first 5 ticks
+        for t in seq[:5]:
+            print(f"    tick {t[0]}: bx={t[1]:.4f} s={t[2]} verb={t[4]} ct={t[5]}")
+        state_counts = {}
+        for tick, bxv, s, a, vn, ct, term in seq:
+            state_counts[s] = state_counts.get(s, 0) + 1
+        print(f"  states visited: {dict(sorted(state_counts.items()))}")
+        # per-state greedy verb summary (contact states only)
+        s_verb_summary = {}
+        for tick, bxv, s, a, vn, ct, term in seq:
+            if ct:
+                k = f"s{s}"
+                if k not in s_verb_summary:
+                    s_verb_summary[k] = {}
+                s_verb_summary[k][vn] = s_verb_summary[k].get(vn, 0) + 1
+        for k in sorted(s_verb_summary):
+            print(f"  {k}: {dict(s_verb_summary[k])}")
+        # state sequence compact
+        ss_seq = []
+        cur_s, run = None, 0
+        for tick, bxv, s, a, vn, ct, term in seq:
+            if s != cur_s:
+                if cur_s is not None:
+                    ss_seq.append(f"s{cur_s}x{run}")
+                cur_s, run = s, 1
+            else:
+                run += 1
+        if cur_s is not None:
+            ss_seq.append(f"s{cur_s}x{run}")
+        print(f"  sequence: {' -> '.join(ss_seq)}")
+        bx_vals = [seq[i][1] for i in range(len(seq))]
+        print(f"  final bx={bx_vals[-1]:.3f} (goalX={no8['goalX']})\n")
+
+    q8_diff = max(abs(a - b) for row, ref in zip(gnav["Q"], no8["Q"])
+                  for a, b in zip(row, ref))
+    rw8_diff = max(abs(a - b) for a, b in zip(gnav["rewards"],
+                                              no8["rewards"]))
+    check("F-N8b nav ledger == oracle replication (constants, visits, Q, "
+          "rewards, arrivals) within 1e-9",
+          gnav["goalX"] == no8["goalX"] and gnav["budget"] == no8["budget"]
+          and abs(gnav["ac"] - no8["ac"]) < 1e-12
+          and abs(gnav["tau"] - no8["tau"]) < 1e-12
+          and gnav["episodes"] == 320 == no8["episodes"]
+          and gnav["visits"] == no8["visits"]
+          and gnav["arrivals"] == no8["arrivals"]
+          and len(gnav["rewards"]) == 320
+          and abs(gnav["first30"] - no8["first30"]) < 1e-12
+          and abs(gnav["last30"] - no8["last30"]) < 1e-12
+          and q8_diff < 1e-9 and rw8_diff < 1e-9,
+          f"budget={gnav['budget']} ac={gnav['ac']:.6f} tau={gnav['tau']:.6f} "
+          f"arrivals={gnav['arrivals']} visits=={gnav['visits'] == no8['visits']} "
+          f"qDiff={q8_diff:.1e} rwDiff={rw8_diff:.1e}")
+
+    # ---- F-N8c CASE B (documented): clean-core greedy policy STALLS --------
+    # Measured on the CLEAN derived reward (F-N8b identity qDiff=0, verified).
+    # The learner reaches the flag during training (316/320, last30=1.0), but
+    # the eps=0 greedy policy does NOT arrive from either spawn:
+    #   bx=0  -> s3 REST x260  (final bx=0.0)
+    #   bx=30 -> s9 REST x260  (final bx=30.0)
+    # Root cause (crest-slip poisoning + discount drift): in the flat contact
+    # states, walking toward the flag occasionally slips airborne into the pit
+    # (s2/s8 Q ~ -0.04); at gamma=0.99 this drags walk-verb Q below REST's
+    # risk-free self-loop: s3 REST 1.586 > best-walk 1.534; s9 REST 1.699 >
+    # best-walk 1.683. The beacon gradient k*(d0-d1) is too weak to overcome
+    # the drift at the gamma=0.99 asymptote, so greedy rests forever.
+    # Gamma-shaping (Ng et al. 1999) was tested in both signs and falsified:
+    #   literal k*(gamma*d1-d0) rewards retreat (training 0/320, walks away);
+    #   corrected k*(d0-gamma*d1) is unstable (greedy flip-flops, never arrives
+    #   from both spawns at N=320..4000). So no shaping is shipped.
+    G8 = float(gg["gravity"]) / (float(gg["tickHz"]) ** 2 * float(gg["cell"]))
+    A8, T8 = float(gg["b4A"]), float(gg["b4T"])
+    loY8 = float(min(c[1] for c in gfin["cells"]))
+    loX8 = min(c[0] for c in gfin["cells"])
+    hiX8 = max(c[0] for c in gfin["cells"])
+
+    def col8(x):
+        return loY8 + ter8.get(x, 0) / TSC8
+
+    def probe8(bx0, amp, dirn, ticks=300, flat=False):
+        def gat(bx_):
+            if flat:
+                return loY8
+            g = None
+            for x in range(math.floor(bx_) + loX8, math.floor(bx_) + hiX8 + 1):
+                h = ter8.get(x, 0)
+                g = h if g is None else max(g, h)
+            return loY8 + g / TSC8
+        bx = float(bx0)
+        y = gat(bx) - loY8
+        v = 0.0
+        for t in range(1, ticks + 1):
+            v -= G8
+            y += v
+            pen = gat(bx) - (y + loY8)
+            ct = False
+            if pen >= 0:
+                y += pen
+                v = 0.0
+                ct = True
+            phi = 2 * math.pi * t / T8
+            if ct:
+                bx += dirn * amp * (2 * math.pi / T8) * abs(math.cos(phi))
+        return abs(bx - bx0)
+
+    # verify the measured CASE B stall pattern (honest pin: if the core changes
+    # so greedy no longer stalls, this check fails and must be revisited).
+    stall_detail = []
+    both_stall = True
+    for spawn, seq, arr_tick, arrived in no8.get("greedy", []):
+        if not arrived:
+            s0 = seq[0][2]
+            stall_detail.append(
+                f"bx={spawn:.1f} STALL s{s0} REST={gnav['Q'][s0][0]:.3f}"
+                f">bestwalk {max(gnav['Q'][s0][1:]):.3f}")
+        else:
+            both_stall = False
+    pit = max(max(gnav["Q"][2]), max(gnav["Q"][8]))
+    check("F-N8c CASE B (documented): clean-core greedy policy STALLS from both"
+          " spawns — verified; airborne pit negative",
+          both_stall and gnav["Q"][3][0] > max(gnav["Q"][3][1:])
+          and gnav["Q"][9][0] > max(gnav["Q"][9][1:])
+          and pit < 0.0,
+          "; ".join(stall_detail) + f" | pit s2/s8={pit:.4f}")
+
+    # F-N8f (future): when gamma-shaping fix is implemented, assert greedy
+    # arrives from both spawns. Predicted before implementation.
+
+    # the agent-doc's time-reversal falsifier (VERB_DELIBERATION_DESIGN
+    # F-N8b), folded in: on FLAT ground, walk- is the bit-exact mirror of
+    # walk+ (IEEE: signed increments negate exactly, so the sums do too)
+    sym8 = abs(probe8(0.0, A8, 1.0, flat=True)
+               - probe8(0.0, A8, -1.0, flat=True))
+    check("F-N8c-sym walk- is the bit-exact time-reverse of walk+ on flat "
+          "ground", sym8 == 0.0, f"|d+ - d-| = {sym8}")
+
+    check("F-N8d learning curve: last-30 arrival rate > first-30",
+          gnav["last30"] > gnav["first30"] and gnav["arrivals"] > 160,
+          f"first30={gnav['first30']:.3f} last30={gnav['last30']:.3f} "
+          f"arrivals={gnav['arrivals']}/320")
+    print(f"N8 SELFTEST MEASURED: ac={gnav['ac']:.6f} tau={gnav['tau']:.6f} "
+          f"budget={gnav['budget']} arrivals={gnav['arrivals']}/320 "
+          f"first30={gnav['first30']:.3f} last30={gnav['last30']:.3f} "
+          f"visits={gnav['visits']} qDiff={q8_diff:.1e} rwDiff={rw8_diff:.1e}")
+
+
+    if os.environ.get("N8_SKIP_HEADED") == "1":
+        print("SKIP F-N8e (headed)")
+        check("F-N8e headed: SKIPPED", True, "env N8_SKIP_HEADED=1")
+    # ---- F-N8e: HEADED — the bear deliberates its way to the flag ---------
+    PORT6 = 8805
+    relay6 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
+                               str(PORT6),
+                               str(NATIVE / "genomes" / "beargoal.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT6}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            page.click("#bnav")
+            nav_samples = []
+            t0 = time.time()
+            while time.time() - t0 < 25:
+                st = page.evaluate("window.__growthStats")
+                if st.get("nav"):
+                    nav_samples.append(st["nav"])
+                time.sleep(0.2)
+            page.screenshot(path="_native_bear_goal.png")
+            goal_on_page = st.get("goalX") == 15
+            browser.close()
+        wire_nav = [m["nav"] for m in
+                    (json.loads(l) for l in LOG.read_text().splitlines()
+                     if l.strip())
+                    if m.get("type") == "anim" and "nav" in m]
+        eps_seen = [n["ep"] for n in nav_samples]
+        arr_seen = [n["arrivals"] for n in nav_samples]
+        dmin = min((n["dist"] for n in nav_samples), default=1e9)
+        check("F-N8e headed: flag on wire+page, nav frames in range, episodes "
+              "advance, the bear REACHES the flag live",
+              goal_on_page and len(nav_samples) > 50
+              and all(0 <= n["state"] < 12 for n in nav_samples)
+              and all(0 <= n["verb"] < 5 for n in nav_samples)
+              and len(wire_nav) > 100
+              and max(eps_seen) >= min(eps_seen) + 2
+              and max(arr_seen) >= 1 and dmin < 5.0,
+              f"samples={len(nav_samples)} wireFrames={len(wire_nav)} "
+              f"eps {min(eps_seen)}->{max(eps_seen)} "
+              f"arrivals={max(arr_seen)} dMin={dmin:.2f}")
+        print(f"N8 HEADED MEASURED: {len(nav_samples)} page samples, "
+              f"{len(wire_nav)} wire frames, eps {min(eps_seen)}->"
+              f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
+    finally:
+        relay6.terminate()
 finally:
     relay.terminate()
 

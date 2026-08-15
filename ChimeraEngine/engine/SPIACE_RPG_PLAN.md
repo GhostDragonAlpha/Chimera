@@ -845,7 +845,47 @@ simplest genome.
   respective oracles). The walk-trace oracle now models the wave-phase
   physics too: trace delta 0.00e+00 (the 1-ULP residue waived in N6 is
   modeled, not waived).
+- **N8 — the goal membrane (deliberation over terrain+physics state):**
+  `beargoal.chimera` = the bearhill table PLUS one declared constant — the
+  flag at goalX=15; everything else is derived by the core from the genome's
+  physics. The navigator reads a 12-state sense — binary goal bearing × slope
+  class (uphill / walkable / steep, classified against the DERIVED slip
+  threshold tau = g_sim/(b4A·ω) = 0.216849 cells/column; ω = 2π/b4T) × contact
+  bit — and chooses among five verbs: rest, walkE/W full at b4A=2, walkE/W
+  careful at the DERIVED A_c = g_sim/(ω·contractSlope) = 0.867394 (the largest
+  gait that keeps contact at the contract slope). Q-learning on the pure L5/R5
+  constants — zero new genome tunables; episode budget n8EpTicks =
+  ceil(goalX/(4·A_c/b4T)) = 260, the flag distance at the careful gait's
+  cycle-mean rate. **Measured (F-N8a…e):** invariance — beargoal's entire
+  G4–N7 ledger bit-identical to bearhill's (same grown terrain, goalX on the
+  wire); oracle replication of navTick float-op-for-float-op (IK skipped —
+  rewards and senses never read it) qDiff=0.0e+00 rwDiff=0.0e+00; walk- is the
+  bit-exact time-reverse of walk+ on flat ground (|d+−d−| = 0.0); learning
+  curve first30=0.967 → last30=1.000, arrivals 316/320; headed: 123 page
+  samples, 1496 wire frames, eps 0→9, 8 live arrivals, dMin 0.08. **THE HONEST
+  FINDING (CASE B, pinned):** the eps=0 greedy policy STALLS on REST from both
+  spawns — bx=0: s3 REST ×260; bx=30: s9 REST ×260 — even though training
+  arrives 316/320. Mechanism, measured: crest slips drop the walker into the
+  airborne pit (s2/s8 Q = −0.0413); at γ=0.99 that drags the walk-verb Q below
+  REST's risk-free self-loop (s3 REST 1.586 > 1.534; s9 REST 1.699 > 1.683).
+  Late-episode traces show arrivals at 115–160 ticks with only 2–11
+  exploration ticks — the REST flip happens in the final Q-updates, a
+  convergence-edge artifact. Ng et al. potential shaping was tested in BOTH
+  signs and falsified by measurement: literal k*(γ·d1−d0) collapses training
+  (0/320); corrected k*(d0−γ·d1) makes greedy flip-flop across N=320..4000,
+  never arriving from both spawns. F-N8f is named for the future derived fix:
+  the greedy policy arrives from both spawns — predicted before
+  implementation. **Reconciliation with
+  research_references/VERB_DELIBERATION_DESIGN.md:** adopted its walk-
+  time-reversal falsifier; diverged on the state space (binary goal bearing,
+  not the retinal 3-way — the flag sits at z=0, so the retinal bearing would
+  be a dead dimension; slip-threshold slope classes, not contract/2 buckets;
+  the contact bit is load-bearing) and on the verb set (the careful gait is
+  the physically interesting deliberation; wave is a dead verb against a
+  flag). **Known flake (honest note):** F-N5e's headed drop check raced once
+  in the agent's run 1 of 3 (bear sampled mid-fall); pre-existing timing
+  race, unrelated to N8 — passed runs 2–3 and Kimi's verification run.
 
 ---
 
-Document version: 4.2 (G1–G5 + N1–N7 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7 complete | Agent: bionic + Kimi K3
+Document version: 4.3 (G1–G5 + N1–N8 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 complete | Agent: bionic + Kimi K3

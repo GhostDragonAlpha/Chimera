@@ -20,7 +20,7 @@
                     font:12px monospace">
   <button id="bwave">WAVE (1)</button> <button id="bwalk">WALK (2)</button>
   <button id="brest">REST (3)</button> <button id="bauto">AUTO (4)</button>
-  <button id="bdrop">DROP (5)</button>
+  <button id="bdrop">DROP (5)</button> <button id="bnav">NAV (6)</button>
 </div>
 <script type="module">
 // ============================================================================
@@ -60,7 +60,8 @@ const splatData = [];
 let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
     waveDone = false, episode = 0, eps = 0, waveBack = 0, visitorPos = null,
     bodyY = 0, velY = 0, inContact = true, groundWire = null,   // N5 physics
-    groundNow = null, terrainWire = null, terrainScale = 1024;  // N6 terrain
+    groundNow = null, terrainWire = null, terrainScale = 1024,  // N6 terrain
+    goalWire = null, lastNav = null;                           // N8 goal+state
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
 
@@ -79,6 +80,7 @@ es.onmessage = e => {
     rigged = true; earKeys.clear();
     for (const e2 of m.ears) earKeys.add(e2.join(','));
     if (m.ground !== undefined) groundWire = m.ground;   // N5: derived plane
+    if (m.goalX !== undefined) goalWire = m.goalX;         // N8: flag position
     if (m.terrain) {                                     // N6: grown world
       terrainWire = new Map(m.terrain);
       terrainScale = m.terrainScale || 1024;
@@ -90,6 +92,7 @@ es.onmessage = e => {
     lastCmd = m.cmd; lastRes = m.res; bodyX = m.body[0];
     bodyY = m.body[1]; velY = m.vy; inContact = m.contact;   // N5 physics
     groundNow = m.ground;                                    // N6 per-frame
+    lastNav = m.nav || null;                                 // N8 nav state
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
     posedMap.clear();
@@ -129,6 +132,8 @@ function stats() {
       s.waveDone = waveDone; s.episode = episode; s.eps = eps;
       s.bodyY = bodyY; s.vy = velY; s.contact = inContact;   // N5 physics
       s.ground = groundNow !== null ? groundNow : groundWire;  // N6 dynamic
+      if (goalWire !== null) s.goalX = goalWire;              // N8 flag pos
+      if (lastNav) s.nav = lastNav;                           // N8 nav state
     }
   }
   return s;
@@ -147,6 +152,8 @@ document.getElementById('brest').onclick = () => bearCmd('rest');
 document.getElementById('bauto').onclick = () =>
   bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
 document.getElementById('bdrop').onclick = () => bearCmd('drop');   // N5
+(document.getElementById('bnav')).onclick = () =>
+  bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');                // N8 toggle
 window.addEventListener('keydown', e => {
   if (!EMB) return;
   if (e.key === '1') bearCmd('wave');
@@ -154,6 +161,7 @@ window.addEventListener('keydown', e => {
   else if (e.key === '3') bearCmd('rest');
   else if (e.key === '4') bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
   else if (e.key === '5') bearCmd('drop');
+  else if (e.key === '6') bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');
 });
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------
@@ -226,6 +234,19 @@ function critSplats() {
                      s: 0.10, col: [0.75, 0.20, 0.18, 1] });
     splatData.push({ p: [visitorPos[0] * s0, 0.17 + bob, visitorPos[2] * s0],
                      s: 0.075, col: [0.85, 0.35, 0.25, 1] });
+  }
+  // N8: flag pole (6 splats) + pennant (4 splats) at goalWire
+  if (EMB && goalWire !== null && terrainWire) {
+    const base = groundWire !== null ? groundWire : -4;
+    const gx = goalWire;
+    const h = (terrainWire.get(gx) || 0) / terrainScale;
+    const fy = (base + h) * s0;
+    for (let k = 0; k < 6; k++)
+      splatData.push({ p: [gx * s0, fy + 0.06 + k * 0.09, 0],
+                       s: 0.05, col: [0.85, 0.82, 0.70, 1] });
+    for (let k = 0; k < 4; k++)
+      splatData.push({ p: [gx * s0 + 0.06 + k * 0.07, fy + 0.55 - k * 0.03, 0],
+                       s: 0.06, col: [0.90, 0.25, 0.15, 1] });
   }
   // N5/N6: the ground is the core's DERIVED support (wire), scrolled to the
   // bear — the grown terrain heightfield when the genome carries one
@@ -389,6 +410,9 @@ function hud() {
            `\nbodyY   ${(s.bodyY ?? 0).toFixed(2)} cells  vy ${(s.vy ?? 0).toFixed(4)}` +
            `\ncontact ${s.contact ? 'GROUND' : 'AIR'}    ground ${s.ground ?? '—'}` +
            `\nepisode ${s.episode}  eps ${s.eps.toFixed(3)}`;
+    if (EMB && s.nav) body +=
+      `\nNAV     st${s.nav.state} v${s.nav.verb} d=${s.nav.dist.toFixed(2)} ep${s.nav.ep} arr${s.nav.arrivals}` +
+      (s.goalX !== undefined ? `  flag@${s.goalX}` : '');
   }
   else
     body = `tick    ${s.tick}\nbricks  ${s.cellCount} / ${s.blueprintCount || 210}` +

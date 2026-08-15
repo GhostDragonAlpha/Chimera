@@ -196,6 +196,10 @@ struct Genome {
   // body's ground; terrainSlope is the walkability contract (scale units)
   int terrain = 0, terrainSeed = 0, terrainAmp = 0, terrainX0 = 0,
       terrainX1 = 0, terrainScale = 1024, terrainSlope = 0;
+  // N8 goal membrane — optional, requires terrain; a flag at goalX. The core
+  // derives everything else (careful amplitude, slip threshold, episode
+  // budget) from the physics constants — the genome declares only the flag.
+  int goal = 0, goalX = 0;
 };
 
 static void die4(const std::string& msg) {
@@ -318,6 +322,14 @@ static Genome loadGenome(const std::string& path) {
             (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
           die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
       }                                                   // division is exact
+      if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
+        g.goal = 1;                                     // N8: the flag
+        g.goalX = needI("goalX");
+        if (!g.terrain)
+          die4("INVALID: goal requires the terrain membrane in " + path);
+        if (g.goalX <= g.terrainX0 || g.goalX >= g.terrainX1)
+          die4("INVALID: goalX outside the terrain domain in " + path);
+      }
       if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
           g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
           g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
@@ -989,6 +1001,7 @@ static void emitRig();
 static void emitSelftest();
 static int runEmbodiment(int tickMs);
 static void physTick();                   // N5: defined with the N5 block
+static void navInit();                    // N8: defined with the N8 block
 
 static int runCrit(int tickMs, bool selftest) {
   cAddCell(0, 0, 0, 0);                     // the zygote
@@ -1360,6 +1373,7 @@ static void bearRig() {
   bear.bodyLoX = loX; bear.bodyHiX = hiX;         // N6: the grown footprint
   gSim = W.gravity / (W.tickHz * W.tickHz * W.cell);   // SI -> cells/tick^2
   genTerrain();                         // N6: grow the world (if declared)
+  navInit();                            // N8: derive the navigator (if declared)
 }
 
 // ============================ G5 LEARNER (situations -> goals) ===============
@@ -1534,11 +1548,135 @@ static void physTick() {
   }
 }
 
+// ============================ N8 GOAL MEMBRANE ================================
+// Deliberation over the terrain+physics state: a flag at goalX, a 12-state
+// sense (bearing x slope x contact), five verbs (rest, walkE/W full, walkE/W
+// careful), Q-learning on the L5 constants. ZERO new tunables — every number
+// below is derived from the genome's physics (see beargoal.chimera's N8
+// header): the careful amplitude A_c is the largest gait that keeps contact
+// at the walkability-contract slope, the slip threshold tau is the slope
+// where the N7 stride law can no longer pay, and the episode budget is the
+// flag distance at the careful cycle-mean rate (4*A_c/T).
+struct Nav {
+  double Q[12][5] = {};
+  double eps = 0; long episode = 0, epTick = 0; double epReward = 0;
+  std::vector<double> rewards;
+  std::vector<int> arrived;                       // per-episode arrival flag
+  long long rng = 1337;                           // own LCG (G5 precedent)
+  long visits[12] = {};
+  long arrivals = 0, gaitT = 0;
+  int lastState = 0, lastVerb = 0; double lastDist = 0;   // wire (emitAnim)
+};
+static Nav N;
+static double navAc = 0, navTau = 0;              // careful amplitude, slip
+static int n8EpTicks = 0;                         // episode budget
+static void navReset() {
+  N = Nav();
+  N.eps = W.l5Eps0; N.rng = 1337;
+}
+static double navRnd() {              // the same lossy-double LCG as rnd()
+  const double x = (double)N.rng * 1103515245.0 + 12345.0;
+  const double m = std::fmod(x, 4294967296.0);
+  N.rng = (long long)m & 0x7fffffff;
+  return (double)N.rng / 0x7fffffff;
+}
+static void navInit() {               // called from bearRig, post-terrain
+  if (!W.goal) return;
+  const double omega = 2 * 3.14159265358979323846 / W.b4T;
+  navAc = gSim / (omega * ((double)W.terrainSlope / W.terrainScale));
+  navTau = gSim / (W.b4A * omega);
+  n8EpTicks = (int)std::ceil(W.goalX / (4 * navAc / W.b4T));
+  navReset();
+}
+// terrain column height (cells) for the slope sense — the raw grown column,
+// not the footprint support: the bear smells the slope AHEAD of its feet
+static double colHeightAt(int x) {
+  const auto it = terrH.find(x);
+  const int h = it == terrH.end() ? 0 : it->second;   // 0 outside the domain
+  return bear.groundMinY + (double)h / W.terrainScale;
+}
+// the sense: s = (bearing*3 + slope)*2 + contact. Bearing: is the flag east?
+// Slope: the central difference over the column under the body's center,
+// classified against the slip threshold tau (uphill / walkable / steep).
+static int navState() {
+  const int bx = (int)std::floor(bear.body[0]);
+  const int bearing = W.goalX > bx ? 0 : 1;
+  const double ss = (colHeightAt(bx + 1) - colHeightAt(bx - 1)) / 2;
+  const int slope = ss > 0 ? 0 : ss >= -navTau ? 1 : 2;
+  return (bearing * 3 + slope) * 2 + (bear.contact ? 1 : 0);
+}
+static void navSpawn() {              // symmetric spawns: flagX +/- 15
+  N.epTick = 0; N.epReward = 0;
+  bear.body[0] = navRnd() < 0.5 ? 0.0 : 30.0;
+  bear.bodyY = groundAt() - bear.groundMinY;      // sole exactly on support
+  bear.velY = 0; bear.contact = true;
+}
+static void navTick() {
+  physTick();                         // gravity first (the autoTick precedent)
+  const int s = navState();
+  N.visits[s]++;
+  int a;
+  if (navRnd() < N.eps) a = (int)std::floor(navRnd() * 5);
+  else { const double* q = N.Q[s]; a = 0;         // strict >: lowest index
+         for (int i = 1; i < 5; i++) if (q[i] > q[a]) a = i; }
+  const double d0 = std::fabs(W.goalX - bear.body[0]);
+  if (a != 0) {      // walk verbs: 1 = E full, 2 = W full, 3 = E careful,
+    const double dir = (a == 1 || a == 3) ? 1.0 : -1.0;   // 4 = W careful
+    const double amp = a <= 2 ? W.b4A : navAc;
+    N.gaitT++;
+    const double phi = 2 * 3.14159265358979323846 * N.gaitT / W.b4T;
+    // the legs honestly cycle (viewer honesty); the oracle reads no IK —
+    // rewards and senses never touch it
+    for (auto& ch : bear.rig) {
+      const double ph = (ch.fore == (ch.side > 0)) ? 0 : 3.14159265358979323846;
+      const double T[3] = {ch.rest[0] + amp * std::sin(phi + ph),
+                           ch.rest[1] + 0.6 * amp *
+                             std::fmax(0.0, std::cos(phi + ph)),
+                           ch.rest[2]};
+      for (int i = 0; i < W.b4Iters; i++) ikStep(ch, T);
+    }
+    // the N7 earned-stride law, directed; airborne the stride pays nothing
+    if (bear.contact)
+      bear.body[0] += dir * amp * (2 * 3.14159265358979323846 / W.b4T) *
+                      std::fabs(std::cos(phi));
+  }
+  const double d1 = std::fabs(W.goalX - bear.body[0]);
+  // the beckoning gradient minus uniform time cost; derived from R5 (r5Beckon)
+  // and the episode budget n8EpTicks <- goalX via A_c = gSim/(omega * contractSlope),
+  // omega = 2*pi/b4T — the flag distance at the careful gait's cycle-mean rate.
+  // Slip is the bear's choice (it chose the gait), so airborne time
+  // is not waived; shaping needs no clip. Ng et al. potential shaping was
+  // tested and falsified (see report).
+  double r = W.r5Beckon * (d0 - d1) - 1.0 / n8EpTicks;
+
+  bool terminal = false;
+  if ((int)std::floor(bear.body[0]) == W.goalX) {         // standing ON it
+    r += W.r5WaveNear; terminal = true; N.arrivals++;
+  }
+  N.epReward += r; N.epTick++;
+  N.lastState = s; N.lastVerb = a; N.lastDist = d1;
+  const int s2 = navState();
+  double* q = N.Q[s];
+  // Bootstrap: max over all verbs in the next state, no clip — the learner
+  // must face the full consequences of its gait choices including slip.
+  double mx = std::fmax(
+      N.Q[s2][0], std::fmax(N.Q[s2][1],
+        std::fmax(N.Q[s2][2], std::fmax(N.Q[s2][3], N.Q[s2][4]))));
+  q[a] += W.l5Alpha * (r + (terminal ? 0 : W.l5Gamma * mx) - q[a]);
+  if (terminal || N.epTick >= n8EpTicks) {
+    N.rewards.push_back(N.epReward);
+    N.arrived.push_back(terminal ? 1 : 0);
+    N.episode++;
+    N.eps = std::fmax(W.l5EpsMin, N.eps * W.l5EpsDecay);
+    navSpawn();
+  }
+}
+
 // the embodiment clock — separate from the growth clock
 static void bearAnim() {
   if (!bear.rigged) return;
   bear.cmdTick++;
-  if (bear.cmd != "auto") physTick();     // auto's physTick rides autoTick
+  if (bear.cmd != "auto" && bear.cmd != "nav") physTick();  // they ride their own ticks
   if (visitorWaveBack > 0) visitorWaveBack--;   // G5 visitor bob clock
   bear.hasLastRes = false;
   double res = 0;
@@ -1603,6 +1741,8 @@ static void bearAnim() {
       bear.walkTrace.erase(bear.walkTrace.begin());
   } else if (bear.cmd == "auto") {
     autoTick();                           // G5: the learner drives
+  } else if (bear.cmd == "nav") {
+    navTick();                            // N8: the navigator drives
   }
   if (bear.hasLastRes) bear.lastRes = res;
 }
@@ -1619,6 +1759,8 @@ static void bearCommand(const std::string& c) {
     if (bear.contact) {                   // airborne drops stack nothing
       bear.bodyY += 8 * bear.bodyH; bear.velY = 0; bear.contact = false;
     }
+  } else if (c == "nav" && W.goal) {      // N8: walk to the flag (Q persists)
+    bear.cmd = "nav"; bear.cmdTick = 0; navSpawn();
   } else bear.cmd = c == "auto" ? "auto" : "rest";
 }
 
@@ -1664,6 +1806,8 @@ static void emitRig() {
     std::printf("],\"terrainIters\":%d,\"terrainScale\":%d", terrIters,
                 W.terrainScale);
   }
+  if (W.goal)                                     // N8: the flag rides the rig
+    std::printf(",\"goalX\":%d", W.goalX);
   std::printf("}\n");
   std::fflush(stdout);
 }
@@ -1677,6 +1821,10 @@ static void emitAnim() {
               bear.velY, bear.contact ? "true" : "false", bear.lastGround);
   if (visitorPresent) jArr3(visitorPos);
   else std::printf("null");
+  if (bear.cmd == "nav")                  // N8: the deliberation rides the wire
+    std::printf(",\"nav\":{\"state\":%d,\"verb\":%d,\"dist\":%.17g,"
+                "\"ep\":%ld,\"arrivals\":%ld}", N.lastState, N.lastVerb,
+                N.lastDist, N.episode, N.arrivals);
   std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
               "\"waveDone\":%s,\"posed\":[", visitorWaveBack, L.episode,
               L.eps, bear.waveDone ? "true" : "false");
@@ -1849,6 +1997,40 @@ static void emitSelftest() {
               "\"landTick\":%ld,\"bodyX\":%.17g}}\n",
               airTicks, airMoved, landTick, bear.body[0]);
   std::fflush(stdout);
+  // ---------- N8: the goal membrane — 320 deliberation episodes -------------
+  // A SEPARATE ledger line (the G4-G7 ledger above stays byte-identical).
+  if (W.goal) {
+    navReset();
+    navSpawn();
+    long guard = 0;
+    while (N.episode < 320 && guard++ < 320L * n8EpTicks * 3) navTick();
+    double first30 = 0, last30 = 0;               // arrival RATES, not reward
+    for (int i = 0; i < 30 && i < (int)N.arrived.size(); i++)
+      first30 += N.arrived[i];
+    first30 /= 30;
+    for (size_t i = N.arrived.size() > 30 ? N.arrived.size() - 30 : 0;
+         i < N.arrived.size(); i++)
+      last30 += N.arrived[i];
+    last30 /= 30;
+    std::printf("{\"type\":\"navtest\",\"goalX\":%d,\"budget\":%d,"
+                "\"ac\":%.17g,\"tau\":%.17g,\"episodes\":%ld,\"visits\":[",
+                W.goalX, n8EpTicks, navAc, navTau, N.episode);
+    for (int s = 0; s < 12; s++)
+      std::printf("%s%ld", s ? "," : "", N.visits[s]);
+    std::printf("],\"arrivals\":%ld,\"first30\":%.17g,\"last30\":%.17g,"
+                "\"Q\":[", N.arrivals, first30, last30);
+    for (int s = 0; s < 12; s++) {
+      std::printf("%s[", s ? "," : "");
+      for (int a = 0; a < 5; a++)
+        std::printf("%s%.17g", a ? "," : "", N.Q[s][a]);
+      std::printf("]");
+    }
+    std::printf("],\"rewards\":[");
+    for (size_t i = 0; i < N.rewards.size(); i++)
+      std::printf("%s%.17g", i ? "," : "", N.rewards[i]);
+    std::printf("]}\n");
+    std::fflush(stdout);
+  }
 }
 
 // ---------- interactive anim loop (relay mode): stdin commands, anim frames --
