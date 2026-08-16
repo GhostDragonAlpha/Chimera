@@ -9,13 +9,65 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Phase 11, Stage 2 of 3 (below).** Stage 1 verified complete
-(baseline 96/96 green; derivation sheet `engine/scratch/_phase11_derivations.md`,
-F-S1a/b/c all PASS; nothing to commit — verify-only stage, scratch is gitignored).
+**LIVE TASK — Teddy pipeline T4 (immediately below).** Teddy-thread shipped:
+T2 structure (splat pyramid + density-law ground, `2263659`) and T3 rig
+(voxel-muscle CA gait — no FK/IK, `e0af946`; suite ALL GREEN incl. F-T3a–d).
+Phase 11 Stage 2 (browser engine) is **PARKED at the bottom of this slot** —
+prompt intact, ready for an agent when the operator returns to that thread.
 
 ---
 
-# SPIACE Phase 11, Stage 2 of 3: ship + atmosphere + re-entry physics (wire+prove)
+# Teddy pipeline, T4: trained gait refinement (headless, fast)
+
+**TASK:** Refine the T3 voxel-muscle gait by training — a headless sweep of
+the gait's free knobs with the DERIVED T3 values as the baseline to beat.
+The gait stays CA-native (cell add/remove on the lattice; FK/IK is forbidden
+on this path — T3 measured `iters=0` and it stays 0).
+
+**STATE:** T3 (`e0af946`) — hexapod alternating-tripod gait on
+`genomes/teddymuscle.chimera` (vmGait=1), all constants derived off
+`teddy.cells` (6 chains × 8 cells, hip y=+3, paw y=−4 = groundMinY):
+VM_STEP=2, VM_LIFT=1, budget = grown manhattan + 2 = 9, parity tripods.
+Measured baseline: 82 cells/400 ticks, slips 0, connMin 1, count [354,370],
+airDX 0. Suite ALL GREEN 81 checks (F-T3a–d included).
+
+**Rule 0 for the training itself (stated before the run):** the derived gait
+is the hypothesis. Prediction: the trained optimum matches it or beats it by
+< 20% speed. Falsifier: if the trained winner needs a falsifier broken to
+win, the derived gait stands and T4 reports that as the result (CASE B
+model — measured numbers, not a patched pass).
+
+**What to wire first:** the knobs are `static const` in `ca_core.cpp`
+(VM_STEP, VM_LIFT, the parity-t tripod partition). Move them to genome keys
+(`vmStep`, `vmLift`, `vmTripod`) parsed by the vox loader next to `vmGait`,
+defaulting to the derived values so `teddymuscle.chimera` is unchanged in
+behavior. Then a scratch sweep script runs `ca_core.exe 0 <variant>
+selftest` per genome variant (≈2 s per run — no browser, no recompile).
+
+**Objective:** maximize `walk.bodyX` over 400 ticks SUBJECT TO the F-T3
+falsifiers (connMin=1, slips=0, count within 5% of 370, airDX==0,
+contactTick == drop-law prediction). A variant that breaks a falsifier is
+disqualified, not averaged.
+
+**FALSIFIERS:** F-T3a–d must stay green on the final chosen parameters, plus
+the training report includes the full measured table (knob values → bodyX,
+slips, connMin, count range) so the win is auditable.
+
+**CONSTRAINTS:** no git commits; non-vm code paths in `ca_core.cpp` frozen;
+all other genomes untouched; suite green before report
+(`T_HEADED=T1d python test_native.py` for iteration, one full run at the
+end); scratch in `engine/scratch/` only.
+
+**DONE MEANS:** report with (1) the measured sweep table, (2) derived-vs-
+trained verdict with numbers, (3) suite PASS/FAIL + log path, (4) diff
+summary. Then STOP.
+
+---
+
+# SPIACE Phase 11, Stage 2 of 3 (PARKED): ship + atmosphere + re-entry physics (wire+prove)
+
+**PARKED 2026-08-16 — the operator pivoted to the teddy/CA thread (T2–T4).
+This prompt is complete and ready to hand to an agent unchanged.**
 
 **TASK:** Give the Phase 10 world a flyable ship with real propellant physics,
 per-planet atmospheres, and re-entry heating — and prove it with F14, F15, F17.
@@ -124,6 +176,8 @@ mean to ship. If you create scratch elsewhere, delete it before session end.
 | Browser test harness | `ChimeraEngine/engine/test_phase6.py` |
 | The plan / ledger (append-only) | `ChimeraEngine/engine/SPIACE_RPG_PLAN.md` |
 | TRELLIS image→3D runtime + weights | `models/trellis/` (needs `out/` dir to exist for `--voxply`) |
+| Teddy splat pyramid (T2) | `ChimeraEngine/native/teddy_pyramid.py` → `genomes/teddy_shell.json` |
+| Teddy voxel bodies (T1/T3) | `genomes/teddy.cells` (370 cells, 6 leg chains); `teddy.chimera` FK/IK · `teddymuscle.chimera` voxel-muscle |
 
 Standard verify commands:
 ```bash
