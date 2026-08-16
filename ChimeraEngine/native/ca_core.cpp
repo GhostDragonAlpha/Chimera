@@ -375,6 +375,23 @@ static Genome loadGenome(const std::string& path) {
     if (kv.count("vmLift")) g.vmLift = std::stoi(kv["vmLift"]);
     if (g.vmStride < 1 || g.vmStride > 8 || g.vmLift < 1 || g.vmLift > 4)
       die4("INVALID: vmStride/vmLift out of bounds in " + path);
+    if (kv.count("terrain") && std::stoi(kv["terrain"]) == 1) {
+      // N6 terrain for an imported body — T7 hoisted this OUT of the goal
+      // block (it used to load only when goal=1, silently ignoring terrain
+      // otherwise): the world is a membrane, not a reward accessory. Same
+      // declarations the creature loader reads.
+      g.terrain = 1;
+      g.terrainSeed = needI("terrainSeed");
+      g.terrainAmp = needI("terrainAmp");
+      g.terrainX0 = needI("terrainX0"); g.terrainX1 = needI("terrainX1");
+      g.terrainSlope = needI("terrainSlope");
+      if (kv.count("terrainScale"))
+        g.terrainScale = std::stoi(kv["terrainScale"]);
+      if (g.terrainAmp < 0 || g.terrainX1 <= g.terrainX0 ||
+          g.terrainSlope < 1 || g.terrainScale < 1 ||
+          (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
+        die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
+    }                                                   // division is exact
     if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
       // N8 goal membrane for an imported body — the SAME declarations the
       // creature loader reads (goal requires the N6 terrain membrane).
@@ -388,19 +405,6 @@ static Genome loadGenome(const std::string& path) {
       g.r5Beckon = needD("r5Beckon"); g.r5Startle = needD("r5Startle");
       g.r5RestAbsent = needD("r5RestAbsent");
       g.r5RestPresent = needD("r5RestPresent");
-      if (kv.count("terrain") && std::stoi(kv["terrain"]) == 1) {
-        g.terrain = 1;                            // N6: grow the world too
-        g.terrainSeed = needI("terrainSeed");
-        g.terrainAmp = needI("terrainAmp");
-        g.terrainX0 = needI("terrainX0"); g.terrainX1 = needI("terrainX1");
-        g.terrainSlope = needI("terrainSlope");
-        if (kv.count("terrainScale"))
-          g.terrainScale = std::stoi(kv["terrainScale"]);
-        if (g.terrainAmp < 0 || g.terrainX1 <= g.terrainX0 ||
-            g.terrainSlope < 1 || g.terrainScale < 1 ||
-            (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
-          die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
-      }                                                   // division is exact
       g.goal = 1;                                     // N8: the flag
       g.goalX = needI("goalX");
       if (!g.terrain)
@@ -2079,13 +2083,24 @@ static void vmWalkTick() {
       vmRelayLeg(L);
     }
     if (++vmSwingN >= vmStep) vmPhase = 3;
-  } else if (vmPhase == 3) {       // PLANT: extend to the ground plane
-    const int gy = (int)std::lround(bear.groundMinY);
+  } else if (vmPhase == 3) {       // PLANT: extend to the local support column
     bool done = true;
+    const int bx = (int)std::floor(bear.body[0]);
     for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
       VMLeg& L = vmLegs[i];
       if (!L.planted) {
         L.paw[1] -= 1;
+        // T7: AT CONTACT the plant target is the terrain column under THIS
+        // paw, read in the body frame (paw world y = bodyY + paw[1]; target
+        // world y = colHeightAt). Flat membrane: colHeightAt == groundMinY
+        // and bodyY == 0 at contact -> gy == lround(groundMinY), the N5/T3
+        // line, bit-exact. AIRBORNE there is no support to plant on: legs
+        // keep the T3 body-frame plane (measured: a world-frame target while
+        // airborne grows legs unboundedly toward the distant ground — count
+        // +6.1% and 4 slips on the flat regression vs trained 0/375).
+        const int gy = bear.contact
+            ? (int)std::lround(colHeightAt(bx + L.paw[0]) - bear.bodyY)
+            : (int)std::lround(bear.groundMinY);
         if (L.paw[1] <= gy) { L.paw[1] = gy; L.planted = true; }
         else done = false;
       }

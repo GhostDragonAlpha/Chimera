@@ -1,0 +1,45 @@
+# SPIACE genome table — T7 teddy (voxel-muscle gait on GROWN HILLS)
+# teddymuscle.chimera + the N6 terrain membrane (same seed/params as
+# bearhill.chimera — the SAME grown world the bear navigated, so the
+# Python oracle can pin the teddy's terrain integer-exact against the
+# bear's). The only code change T7 needed: the vm PLANT beat reads the
+# terrain column under EACH paw (colHeightAt) instead of the flat
+# groundMinY plane; on flat (terrH empty, bodyY == 0) that expression
+# collapses to the old line bit-exactly. The body's vertical ride is
+# unchanged — physTick's footprint-max support (groundAt) is N6-verbatim.
+# Slips (budget clamps) are counted on the wire, never hidden.
+
+kind           = vox
+genome         = teddy-muscle-hills-v1
+embodiment     = 1
+tickMs         = 30
+cell           = 0.06
+cellsFile      = teddy_s1.cells   # SHAPE-TRAINED body (frozen — T7 changes
+                                  # the WORLD, not the shape)
+vmGait         = 1
+vmStride       = 2              # T4-trained pair — held fixed; the hills
+vmLift         = 1              # probe measures the SAME gait on slopes
+
+# --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------
+b4A            = 2
+b4T            = 60
+b4Lam          = 12.25
+b4Dth          = 0.08
+b4ThMax        = 2.6
+b4Iters        = 5
+
+# --- N5: physics membrane (SI in, sim units derived) ------------------------
+gravity        = 9.81
+tickHz         = 60
+
+# --- N6: terrain membrane (verbatim from bearhill.chimera — seed 2026) ------
+# Integer LCG noise in [-3,+3] cells, fixed-point relaxation CA (k/1024
+# cells) to the walkability contract max |slope| <= 0.5 cells/column.
+# Heights are offsets from the body's own derived ground (groundMinY).
+terrain        = 1
+terrainSeed    = 2026
+terrainAmp     = 3
+terrainX0      = -64
+terrainX1      = 1024
+terrainScale   = 1024
+terrainSlope   = 512

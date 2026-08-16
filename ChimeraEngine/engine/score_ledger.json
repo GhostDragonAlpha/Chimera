@@ -39,6 +39,19 @@
         "v:face-not-discernible",
         "v:limbs-stubby-small"
       ]
+    },
+    {
+      "task": "T7",
+      "P": 92.0,
+      "V": 82.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:legs-illegible",
+        "v:face-not-discernible",
+        "v:limbs-stubby-small",
+        "v:terrain-ridge-lines"
+      ]
     }
   ]
 }

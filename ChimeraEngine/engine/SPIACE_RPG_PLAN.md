@@ -1092,6 +1092,62 @@ saturated. **Current state (T4, measured): P = 92**
   density 5/10 — 375 cells is far under the 0.5–2 splats/px law). The rubric
   lives in AGENT_PROTOCOL rule 8; every headed report carries both numbers.
 
+### Phase T7: The Teddy Walks the Grown Hills (Completed — Kimi K3)
+
+**Rule 0:** the voxel-muscle gait's PLANT beat was trained against a flat
+plane (`lround(groundMinY)`); on the N6 terrain membrane each paw must meet
+the column under IT, not the global plane. Prediction: making the plant
+target per-column at contact leaves the flat ledger bit-identical (the flat
+expression collapses to the old line) and lets the trained gait walk the
+bear's seed-2026 world with no shape retraining. Falsifiers F-T7a…d named
+below, all green in the fast net.
+
+**What was built:**
+- `native/genomes/teddymusclehills.chimera` = teddymuscle + the N6 terrain
+  block VERBATIM from bearhill (seed 2026, amp 3, domain −64..1024, scale
+  1024, contract slope 512/1024) — the same grown world the bear navigated,
+  so the oracle pins the teddy's terrain integer-exact against the bear's.
+- `ca_core.cpp` vm PLANT beat: at contact, the plant target is
+  `colHeightAt(worldX of the paw) − bodyY` in the body frame; airborne legs
+  keep the T3 body-frame plane. **Measured why the airborne branch must
+  differ:** a world-frame target while airborne grows legs unboundedly
+  toward the distant ground — the flat regression went count +6.1% / slips 4
+  vs the trained 375 / 0. Physically honest: airborne = no support, legs
+  don't seek ground.
+- Vox loader fix (architectural): the terrain block loaded only under
+  `goal=1` and was SILENTLY IGNORED otherwise — hoisted out of the goal
+  block, mirroring the creature loader. The world is a membrane, not a
+  reward accessory.
+
+**Measured (fast net, ALL GREEN, F-T7a…d):**
+- F-T7a: wire terrain == Python oracle integer-exact, 1089 columns, 11
+  relaxation iters, `sameAsBear=True` (the exact bearhill field).
+- F-T7b: drop law on the hill — contactTick 53 == discrete prediction,
+  restPenMax 0.00e+00, termDrift 1.8451% (the named shadow-drift deficiency,
+  unchanged).
+- F-T7c: hill walk bodyX 106 cells/400t (flat 116, −8.6% — slopes cost,
+  same direction as the bear's 52.68 vs 53.63), zero IK, conn 1, count
+  [357,387]/375 (+3.2% max, inside 5%), airDX bit-exact 0, gatedAir 8
+  (flat 7 — crest exits break contact, the N7 physics showing), slips 0
+  reported on the wire.
+- F-T7c2 anti-placebo: the hill ledger DIFFERS from flat (106 ≠ 116).
+- F-T7d flat bit-regression: bodyX 116, slips 0, shifts 58, gatedAir 7,
+  count [358,375] — the pre-T7 core's exact numbers, pinned.
+
+**Visual (rule 7, strip `scratch/_proof_t7_strip.png`, read at native res):**
+bodyY rides the terrain on the wire (0.645 → −0.061 → +0.257); paws meet
+the slopes across all 6 frames — no floating, no burial. Legs still read as
+a blur mass at gait speed (persisting v:legs-illegible). NEW deficiency
+discovered: v:terrain-ridge-lines — the world is a 1D heightfield extruded
+along z; column-boundary lines read as artifacts and there is no z variation
+(a 2D terrain membrane is future work).
+
+**Scores (rule 8):** P = 92 (flat ledger bit-identical, all hill falsifiers
+green, drop law and airwalk exact). V = 82 (+2: the environment response the
+operator asked to SEE is now visible — the body rides and meets the grown
+world; legs-illegible / face / stubby-limbs persist). Ledger round 4:
+discovery 7→4→1→1, completeness 0.289, NOT saturated.
+
 ---
 
-Document version: 4.8 (G1–G5 + N1–N8 + T1–T6 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4/T5/T6 (PART A) complete | Agent: bionic + Kimi K3
+Document version: 4.9 (G1–G5 + N1–N8 + T1–T7 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4/T5/T6 (PART A)/T7 complete | Agent: bionic + Kimi K3

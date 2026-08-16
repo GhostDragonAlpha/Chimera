@@ -2469,6 +2469,87 @@ try:
           f"conn={vm3['connMin']} count=[{vm3['countMin']},{vm3['countMax']}] "
           f"shifts={vm3['shifts']} slips={vm3['slips']} "
           f"gatedAir={vm3['gatedAir']} airDX={vm3['airDX']}")
+
+    # ---- F-T7: the voxel-muscle gait WALKS THE GROWN HILLS -------------------
+    # teddymusclehills.chimera = teddymuscle + the N6 terrain membrane (seed
+    # 2026 — the SAME world the bear navigated). One core change: the vm
+    # PLANT beat reads the terrain column under each paw AT CONTACT; airborne
+    # legs keep the T3 body-frame plane (measured: a world-frame target while
+    # airborne grew legs unboundedly toward the distant ground — flat
+    # regression count +6.1%/slips 4 vs trained 375/0, so the airborne path
+    # is the old line verbatim). The loader also hoisted the vox terrain
+    # block OUT of goal=1 — the world is a membrane, not a reward accessory.
+    #   F-T7a: the teddy's grown world == the oracle == the bear's field
+    #   F-T7b: the drop law holds on the hill (contact tick == prediction)
+    #   F-T7c: the trained gait WALKS the slopes — displacement, integrity,
+    #          airDX bit-exact 0, slips REPORTED on the wire (never hidden)
+    #   F-T7d: the flat membrane is bit-unchanged (the T3 ledger above is
+    #          pinned to the pre-T7 core's exact numbers)
+    rt7 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                          str(NATIVE / "genomes" / "teddymusclehills.chimera"),
+                          "selftest"], capture_output=True, text=True,
+                         timeout=300)
+    t7msgs = [json.loads(l) for l in rt7.stdout.splitlines() if l.strip()]
+    t7rig = next((m for m in t7msgs if m.get("type") == "rig"), None)
+    t7fin = next((m for m in t7msgs if m.get("type") == "final"), None)
+    t7vox = next((m for m in t7msgs if m.get("type") == "voxtest"), None)
+    tg7 = read_chimera(NATIVE / "genomes" / "teddymusclehills.chimera")
+    ter7, ter7_iters, ter7_ms = gen_terrain_py(tg7)
+    wire_ter7 = dict(t7rig["terrain"]) if t7rig and "terrain" in t7rig else {}
+    ter7_diff = sum(1 for x, h in wire_ter7.items() if ter7.get(x) != h)
+    check("F-T7a hills world: wire terrain == the oracle integer-exact and "
+          "== the bear's grown field (seed 2026)",
+          rt7.returncode == 0 and ter7 is not None and len(wire_ter7) == 1089
+          and ter7_diff == 0 and t7rig["terrainIters"] == ter7_iters
+          and ter7 == ter,
+          f"cols={len(wire_ter7)} mismatches={ter7_diff} "
+          f"iters={t7rig and t7rig.get('terrainIters')}/{ter7_iters} "
+          f"sameAsBear={ter7 == ter}")
+    st7 = t7vox["stand"]
+    g7 = float(tg7["gravity"]) / (float(tg7["tickHz"]) ** 2
+                                  * float(tg7["cell"]))
+    n_pred7 = 1
+    while n_pred7 * (n_pred7 + 1) < 2 * st7["dropH"] / g7:
+        n_pred7 += 1
+    check("F-T7b physics membrane on the hill: contact tick == the discrete "
+          "drop law, rest equilibrium exact",
+          st7["contactTick"] == n_pred7 and st7["restVyMax"] == 0
+          and st7["restPenMax"] < 1e-12 and st7["termDrift"] < 0.02,
+          f"contactTick={st7['contactTick']} pred={n_pred7} "
+          f"restVyMax={st7['restVyMax']} restPenMax={st7['restPenMax']:.2e} "
+          f"termDrift={st7['termDrift']:.4%}")
+    w7 = t7vox["walk"]
+    vm7 = t7vox["vm"]
+    grown7 = len(t7fin["cells"]) if t7fin else 0
+    check("F-T7c WALKS THE SLOPES: 400-tick displacement >= 40 cells with "
+          "zero IK, single component, count within 5%, airDX bit-exact 0, "
+          "slips reported on the wire",
+          w7["bodyX"] >= 40 and w7["iters"] == 0 and w7["nan"] == False
+          and vm7["connMin"] == 1
+          and vm7["countMin"] >= grown7 * 0.95
+          and vm7["countMax"] <= grown7 * 1.05
+          and vm7["airDX"] == 0 and "slips" in vm7,
+          f"bodyX={w7['bodyX']} iters={w7['iters']} conn={vm7['connMin']} "
+          f"count=[{vm7['countMin']},{vm7['countMax']}]/{grown7} "
+          f"slips={vm7['slips']} airDX={vm7['airDX']} "
+          f"gatedAir={vm7['gatedAir']}")
+    check("F-T7c2 the hills are LOAD-BEARING: the hill walk ledger differs "
+          "from the flat walk (not a placebo world)",
+          w7["bodyX"] != w3["bodyX"],
+          f"hills={w7['bodyX']} flat={w3['bodyX']}")
+    check("F-T7d flat membrane bit-unchanged by T7: the T3 ledger above == "
+          "the pre-T7 core's exact numbers",
+          w3["bodyX"] == 116 and vm3["slips"] == 0 and vm3["shifts"] == 58
+          and vm3["gatedAir"] == 7 and vm3["countMin"] == 358
+          and vm3["countMax"] == 375,
+          f"bodyX={w3['bodyX']} slips={vm3['slips']} shifts={vm3['shifts']} "
+          f"gatedAir={vm3['gatedAir']} count=[{vm3['countMin']},"
+          f"{vm3['countMax']}]")
+    print(f"T7 MEASURED: hills walk bodyX={w7['bodyX']} (flat {w3['bodyX']}, "
+          f"{(w7['bodyX'] / w3['bodyX'] - 1) * 100:+.1f}%) shifts={vm7['shifts']} "
+          f"slips={vm7['slips']} gatedAir={vm7['gatedAir']} "
+          f"count=[{vm7['countMin']},{vm7['countMax']}]/{grown7} "
+          f"terrainCols={len(wire_ter7)} iters={ter7_iters}")
 finally:
     relay.terminate()
 

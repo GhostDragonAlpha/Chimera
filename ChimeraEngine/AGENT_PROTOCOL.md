@@ -9,63 +9,80 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Teddy pipeline T7 (immediately below).** Teddy-thread shipped:
+**LIVE TASK — Teddy pipeline T8 (immediately below).** Teddy-thread shipped:
 T2 structure (`2263659`), T3 voxel-muscle gait (`e0af946`), T3.5 shape
 training (`080bf4b`), T4 trained gait (stride L=2, +41.5%), T5 visual pass
-(V 58 → 74), T6 PART A (structure + ROM, V 74 → 80, all 6 chains swept to
-A=1.3 rad, F-T6a/b green). **Current dual score: P = 92, V = 80** —
-persisting species: face, walk-blur legs, stubby limbs; saturation
-completeness 0.27 with discovery decelerating 7→4→1 (NOT saturated — the
-band is not set). Phase 11 Stage 2 (browser engine) is **PARKED at the
-bottom of this slot** — prompt intact, ready for an agent when the
-operator returns to that thread.
+(V 58 → 74), T6 PART A (structure + ROM, V 74 → 80), T7 hills
+(teddymusclehills.chimera, walks the bear's seed-2026 world, hills 106 vs
+flat 116 cells/400t, flat ledger bit-unchanged, F-T7a…d green).
+**Current dual score: P = 92, V = 82** — persisting species: face,
+walk-blur legs, stubby limbs, terrain-ridge-lines (1D heightfield extruded
+along z — no z variation yet); saturation completeness 0.289, discovery
+7→4→1→1 (NOT saturated — the band is not set). Phase 11 Stage 2 (browser
+engine) is **PARKED at the bottom of this slot** — prompt intact, ready for
+an agent when the operator returns to that thread.
 
 ---
 
-# Teddy pipeline, T7: PART B stage 1 — the teddy responds to terrain
+# Teddy pipeline, T8: PART B stage 2 — control: walk BOTH ways on command
 
-**TASK:** The operator's Part B: "can I control the teddy bear and does it
-respond to its environment the way a real creature would." Stage 1 is the
-environment half: the voxel-muscle gait must walk the GROWN terrain (N6
-hills), not the flat plane — legs plant on the local ground, the body
-rides the support, contact is kept or the slip is counted.
+**TASK:** The operator's Part B has two halves; T7 shipped the environment
+half ("does it respond to its environment"). Stage 2 is the CONTROL half:
+"can I control the teddy bear." Today the vm gait walks +x only — the
+beat machine (LIFT/SWING/PLANT/SHIFT) has no direction parameter, and the
+viewer has WAVE/WALK/REST but no way to choose a heading. Give the gait a
+direction and the operator the keys.
 
-**STATE:** T6 shipped (`spiace_native.html` front camera + ROM; core `rom`
-command; F-T6a/b in the fast net). The muscle gait (`teddymuscle.chimera`,
-vmGait=1) plants on `groundMinY` — a FLAT assumption; the N6 terrain
-membrane (grown LCG hills, walkability contract max slope 0.5,
-`groundAt()` = max over the footprint) already exists for the bear/teddy
-goal genomes (beargoal/teddygoal) and is integer-exact to the Python
-oracle. The teddy's terrain genome variant does NOT exist yet.
+**STATE:** T7 shipped. `ca_core.cpp` vmWalkTick (~line 2065): SWING does
+`paw[0] += 1`, SHIFT does `bear.body[0] += W.vmStride` and repays planted
+paws by `−vmStride` — both are +x-hardcoded. The bear's N8 nav already
+proved directional verbs on the FK gait (walk+/walk− bit-exact time-reverse,
+F-N8). The viewer (`spiace_native.html`) maps keys 1/2/3 → wave/walk/rest
+via POST /cmd; `relay.py` forwards any `cmd:` line to core stdin. The cmd
+parser in `ca_core.cpp` accepts a fixed verb set — extending it is a loader
+change, not an architecture change.
 
-**Rule 0 (stated before the run):** the PLANT beat's ground query is the
-only terrain coupling the gait needs — `groundMinY` becomes per-column
-(`colHeightAt(x)` under each paw, the same query the nav membrane uses)
-and SHIFT keeps the N7 gate (contact + ≥3 planted). Prediction: the teddy
-walks the seed-2026 hills with penetration ≤ 1 ULP-class residue, airDX
-still bit-exact 0 on the drop, and slips counted (not hidden) — the bear's
-hill ledger (N6: walk slips to 52.68 vs flat 53.63) repeats within the
-same mechanism. Falsifier: the gait floats or penetrates on the hills, or
-the flat-world ledger moves → the terrain coupling is wrong; report.
+**Rule 0 (stated before the run):** reversing a cyclic beat machine is a
+sign flip, not a redesign — SWING steps −1, SHIFT advances −vmStride, the
+planted-paw repay flips sign, and the PLANT/LIFT beats are direction-free
+(vertical only). Prediction: on FLAT, walk-west over 400 ticks is the
+bit-exact mirror of walk-east (bodyX == −116, same conn/count/slips ledger);
+on the seed-2026 hills, west-bound walks the mirror descent with the world
+integer-exact the same field. Falsifier: west ≠ −(east) on flat → the
+sign flip leaked an asymmetry; report, don't patch around it.
 
-**What to wire:** (1) a `teddymusclehills.chimera` = teddymuscle + the N6
-terrain block copied verbatim from `bearhill.chimera` (seed 2026 — the
-SAME world the bear walks, per the T1 body-interchange precedent); (2) the
-vm PLANT beat reads `colHeightAt(pawX)` instead of the flat `groundMinY`;
-(3) `test_native.py` F-T7: terrain integer-exact to the oracle, walk
-ledger replicated, flat `teddymuscle.chimera` untouched (regression), and
-the slip count is ON the wire (not averaged away).
+**What to wire:**
+1. `cmd` verbs `walk` (east, unchanged default) + `walkw` (west) in the
+   core's cmd parser; a `vmDir` (+1/−1) threaded through SWING/SHIFT.
+   No new genome keys — direction is a COMMAND, not a genome fact.
+2. Viewer: key 4 (or ←/→ arrows) → POST `cmd:walk` / `cmd:walkw`; the
+   button row gains WALK-W. HUD shows the commanded direction.
+3. `test_native.py` F-T8: flat west == −east bit-exact (bodyX, vm ledger);
+   hills west-bound walks ≥ 40 cells with the same integrity gates; the
+   flat east regression (F-T3/F-T7d numbers) unchanged.
+4. Proof strip (rule 7): teddy walks east, reverses, walks back west —
+   one strip, both directions, terrain contact visible throughout.
 
-**FALSIFIERS:** fast net ALL GREEN (incl. the F-T3 flat regression and
-F-T6 ROM); the hills strip (rule 7, full-frame) shows the teddy walking
-UP and DOWN a hill with the paws meeting the slope; the round logged.
+**FALSIFIERS:** fast net ALL GREEN (incl. F-T3/F-T6/F-T7 regressions);
+west == −east bit-exact on flat; the strip (rule 7) shows a CONTROLLED
+reversal, and your visual verdict says whether the turn-around reads as a
+creature reversing or a tape rewinding (honest answer required — a
+teleporting paw order is a deficiency, name it).
 
 **CONSTRAINTS:** no git commits; scratch in `engine/scratch/` only;
-`teddy_s1.cells` frozen (shape is trained; terrain does not re-shape).
+`teddy_s1.cells` frozen; no new genome keys; the vm beat machine's phase
+order (LIFT→SWING→PLANT→SHIFT) is untouchable — only signs flip.
 
-**DONE MEANS:** (1) F-T7 numbers + the flat regression, (2) the hills
-strip + your visual verdict (rule 7), (3) ledger round + `status`, (4)
-diff summary. Then STOP.
+**DONE MEANS:** (1) F-T8 numbers + all regressions, (2) the reversal strip
++ your visual verdict (rule 7), (3) ledger round + `status`, (4) diff
+summary. Then STOP.
+
+**LOOKAHEAD (not this task):** stage 3 is heading (z-axis turning) — the
+honest open problem is that rotating a live lattice body leaks cells; the
+CA-native answer is probably "grow the turn" (differential paw-plant columns
+per side, like a tracked vehicle) rather than rotating the cell set. Stage 4
+is the 2D terrain membrane (the v:terrain-ridge-lines deficiency: the world
+is a 1D profile extruded along z).
 
 ---
 
