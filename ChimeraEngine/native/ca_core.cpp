@@ -1260,6 +1260,7 @@ struct Bear {
   std::vector<std::array<double, 3>> walkTrace;     // {tick, bodyY, ground}
   std::vector<std::pair<long, std::vector<std::array<double, 3>>>> gaitLog;
   int waveCh = -1, nEars = 0;
+  int romChain = 0; bool romDone = false;   // PART A: range-of-motion demo
 };
 static Bear bear;
 static double gSim = 0;                   // N5: derived gravity, cells/tick^2
@@ -1828,6 +1829,30 @@ static void bearAnim() {
         {(double)bear.cmdTick, bear.bodyY, bear.lastGround});
     if (bear.walkTrace.size() > 400)
       bear.walkTrace.erase(bear.walkTrace.begin());
+  } else if (bear.cmd == "rom" && !W.vmGait && !bear.rig.empty()) {
+    // PART A: range of motion — every moving part swept through its legal
+    // envelope, one chain at a time, so a human can SEE the complete
+    // structure. Direct-joint (no IK): the joint IS the DOF; FK posing from
+    // theta is exact (fkPoint, no residual). Amplitude A = b4ThMax/2 =
+    // 1.3 rad = 74.5 deg: the full envelope short of the fold-through-the-
+    // body extreme the clamp exists to forbid. Quadrature sweep shows both
+    // joints at both extremes per chain. P = 90 ticks = 3 s at tickMs 30.
+    // physTick still ran above — the body stays planted during ROM.
+    const double P = 90, A = W.b4ThMax * 0.5;
+    const double phi = 2 * 3.14159265358979323846 * bear.cmdTick / P;
+    for (auto& ch : bear.rig) { ch.theta[0] = 0; ch.theta[1] = 0; }
+    BChain& ch = bear.rig[bear.romChain];
+    ch.theta[0] = A * std::sin(phi);
+    ch.theta[1] = A * std::sin(phi + 3.14159265358979323846 / 2);
+    bear.hasLastRes = false;                 // no solver -> no residual
+    if (bear.cmdTick >= (long)P) {
+      ch.theta[0] = ch.theta[1] = 0;
+      bear.romChain++;
+      bear.cmdTick = 0;
+      if (bear.romChain >= (int)bear.rig.size()) {
+        bear.cmd = "rest"; bear.romDone = true;
+      }
+    }
   } else if (bear.cmd == "auto") {
     autoTick();                           // G5: the learner drives
   } else if (bear.cmd == "nav") {
@@ -1848,6 +1873,10 @@ static void bearCommand(const std::string& c) {
     if (bear.contact) {                   // airborne drops stack nothing
       bear.bodyY += 8 * bear.bodyH; bear.velY = 0; bear.contact = false;
     }
+  } else if (c == "rom") {                // PART A: range-of-motion demo
+    bear.cmd = "rom"; bear.cmdTick = 0; bear.romChain = 0;
+    bear.romDone = false;
+    for (auto& ch : bear.rig) { ch.theta[0] = 0; ch.theta[1] = 0; }
   } else if (c == "nav" && W.goal) {      // N8: walk to the flag (Q persists)
     bear.cmd = "nav"; bear.cmdTick = 0; navSpawn();
   } else bear.cmd = c == "auto" ? "auto" : "rest";
@@ -2164,6 +2193,11 @@ static void emitAnim() {
     std::printf(",\"nav\":{\"state\":%d,\"verb\":%d,\"dist\":%.17g,"
                 "\"ep\":%ld,\"arrivals\":%ld}", N.lastState, N.lastVerb,
                 N.lastDist, N.episode, N.arrivals);
+  if (bear.cmd == "rom" && bear.romChain < (int)bear.rig.size())  // PART A
+    std::printf(",\"rom\":{\"chain\":%d,\"chains\":%d,\"th0\":%.17g,"
+                "\"th1\":%.17g}", bear.romChain, (int)bear.rig.size(),
+                bear.rig[bear.romChain].theta[0],
+                bear.rig[bear.romChain].theta[1]);
   std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
               "\"waveDone\":%s,\"posed\":[", visitorWaveBack, L.episode,
               L.eps, bear.waveDone ? "true" : "false");
@@ -2563,6 +2597,30 @@ static void emitVoxTest() {
       bxPrev = bear.body[0];
     }
   }
+  // PART A: ROM selftest — run AFTER the walk ledger (thetas end at 0, the
+  // body never shifts: no state leaks into the other ledgers). Every chain
+  // must reach the derived amplitude A = b4ThMax/2 within the sin-sampling
+  // error (max over 90 quadrature samples is A*cos(pi/90) = A*0.99939).
+  double romMaxAll = 0;
+  std::vector<double> romPerChain;
+  bool romNaN = false;
+  if (!W.vmGait && bear.rigged && !bear.rig.empty()) {
+    bearCommand("rom");
+    romPerChain.assign(bear.rig.size(), 0);
+    long guard = 0;
+    while (!bear.romDone && guard++ < 100000) {
+      bearAnim();
+      if (bear.romChain < (int)bear.rig.size()) {
+        const BChain& ch = bear.rig[bear.romChain];
+        const double m = std::fmax(std::fabs(ch.theta[0]),
+                                   std::fabs(ch.theta[1]));
+        if (m > romPerChain[bear.romChain]) romPerChain[bear.romChain] = m;
+        if (!std::isfinite(ch.theta[0]) || !std::isfinite(ch.theta[1]))
+          romNaN = true;
+      }
+    }
+    for (double m : romPerChain) romMaxAll = std::fmax(romMaxAll, m);
+  }
   std::printf("{\"type\":\"voxtest\",\"stand\":{\"dropH\":%.17g,"
               "\"contactTick\":%ld,\"analyticTick\":%.17g,"
               "\"ledgerErr\":%.17g,\"termDrift\":%.17g,"
@@ -2573,6 +2631,14 @@ static void emitVoxTest() {
               "\"thetaMaxEver\":%.17g}",
               bear.body[0] - bxStart, bear.iters,
               bear.nan ? "true" : "false", bear.thetaMaxEver);
+  if (!romPerChain.empty()) {
+    std::printf(",\"rom\":{\"chains\":%d,\"maxTh\":[",
+                (int)romPerChain.size());
+    for (size_t i = 0; i < romPerChain.size(); i++)
+      std::printf("%s%.17g", i ? "," : "", romPerChain[i]);
+    std::printf("],\"done\":%s,\"nan\":%s}",
+                bear.romDone ? "true" : "false", romNaN ? "true" : "false");
+  }
   if (W.vmGait)
     std::printf(",\"vm\":{\"connMin\":%d,\"countMin\":%d,\"countMax\":%d,"
                 "\"shifts\":%ld,\"slips\":%ld,\"gatedAir\":%ld,"

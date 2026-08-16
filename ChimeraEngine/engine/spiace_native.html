@@ -23,6 +23,7 @@
    <button id="bdrop">DROP (5)</button> <button id="bnav">NAV (6)</button>
    <button id="bteddy">TEDDY (7)</button>
    <button id="bmuscle">MUSCLE (8)</button>
+   <button id="brom">ROM (9)</button>
 
 </div>
 <script type="module">
@@ -70,6 +71,8 @@ const newCellKeys = new Set();   // voxels ADDED this tick (the CA action)
 let prevCellKeys = new Set();
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
+let romState = null;             // PART A: {chain, chains, th0, th1} or null
+const romChainKeys = [];         // per-chain Sets of cKey ints (rig wire)
 let SHELL = null;              // T2: teddy render pyramid — appearance only
 const FLAT = location.search.includes('flat');   // T2 debug: uniform shell color
 let teddyFramed = false;       // T5: camera distance DERIVED from body bounds
@@ -80,6 +83,7 @@ es.onmessage = e => {
   const m = JSON.parse(e.data);
   if (m.type === 'meta') {
     KIND = m.kind; GENOME = m.name; EMB = m.embodiment || 0; camLagX = 0;
+    romState = null;
     PRES = structuredClone(PRESENT[KIND] || PRESENT.wall);   // T5: clone — the
     // teddy's derived framing must never mutate the shared presentation table
     teddyFramed = false;
@@ -87,7 +91,11 @@ es.onmessage = e => {
     if (EMB) document.getElementById('ctl').style.display = 'block';
     if (GENOME.startsWith('teddy') && !SHELL)
       fetch('/genomes/teddy_shell.json').then(r => r.json()).then(j => {
-        SHELL = j; splatsDirty = true;
+        for (const L of j.levels)      // T6: the shell payload is DISPLAY-
+          L.coll = L.col.map(c => [Math.pow(c[0], 2.2),      // REFERRED sRGB —
+                                   Math.pow(c[1], 2.2),      // decode once so
+                                   Math.pow(c[2], 2.2)]);    // the pipe's
+        SHELL = j; splatsDirty = true;   // encode round-trips the scan's color
       }).catch(() => {});
     window.__growthStats = stats();
     return;
@@ -95,6 +103,26 @@ es.onmessage = e => {
   if (m.type === 'rig') {
     rigged = true; earKeys.clear();
     for (const e2 of m.ears) earKeys.add(e2.join(','));
+    romChainKeys.length = 0;                     // PART A: chain membership
+    for (const ch of m.chains || [])
+      romChainKeys.push(new Set(ch.path.map(p => cKey(p[0], p[1], p[2]))));
+    if (GENOME.startsWith('teddy') && !GENOME.includes('muscle') && m.chains) {
+      // derived front view (PART A): the face points from the hind-chain
+      // roots toward the fore-chain roots — the camera looks down that
+      // axis. Measured on the survey strip: the fore end carries the ear
+      // and reads as the teddy's front. The muscle genome keeps its side
+      // view — gait readability is ACROSS the frame there.
+      let fx = 0, fz = 0, nf = 0, hx = 0, hz = 0, nh = 0;
+      for (const ch of m.chains) {
+        const r = ch.path[0];
+        if (ch.fore) { fx += r[0]; fz += r[2]; nf++; }
+        else { hx += r[0]; hz += r[2]; nh++; }
+      }
+      if (nf && nh) {
+        const dx = fx / nf - hx / nh, dz = fz / nf - hz / nh;
+        PRES.focus.ang0 = Math.atan2(dx, dz);
+      }
+    }
     if (m.ground !== undefined) groundWire = m.ground;   // N5: derived plane
     if (m.goalX !== undefined) goalWire = m.goalX;         // N8: flag position
     if (m.terrain) {                                     // N6: grown world
@@ -109,6 +137,7 @@ es.onmessage = e => {
     bodyY = m.body[1]; velY = m.vy; inContact = m.contact;   // N5 physics
     groundNow = m.ground;                                    // N6 per-frame
     lastNav = m.nav || null;                                 // N8 nav state
+    romState = m.rom || null;                                // PART A: ROM demo
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
     if (m.cells) {
@@ -158,6 +187,7 @@ function stats() {
       s.ground = groundNow !== null ? groundNow : groundWire;  // N6 dynamic
       if (goalWire !== null) s.goalX = goalWire;              // N8 flag pos
       if (lastNav) s.nav = lastNav;                           // N8 nav state
+      if (romState) s.rom = romState;                         // PART A: ROM
     }
   }
   return s;
@@ -166,6 +196,7 @@ window.__growthCheck = () => ({ kind: KIND, cells, histCells, histViol,
                                 violations: lastViol, done, tick: lastTick,
                                 final: finalLedger,
                                 posed: [...posedMap.entries()] });
+window.__setAng = a => { if (PRES) PRES.focus.ang0 = a; };   // probe: orbit
 
 // ---------- embodiment commands (buttons + 1-4 -> POST /cmd -> core stdin) ---
 function bearCmd(c) { fetch('/cmd', { method: 'POST', body: c }); }
@@ -182,6 +213,7 @@ function teddyCmd() { fetch('/cmd', { method: 'POST', body: 'genome:teddy' }); }
 (document.getElementById('bteddy')).onclick = () => teddyCmd();   // T1 vox genome
 function muscleCmd() { fetch('/cmd', { method: 'POST', body: 'genome:teddymuscle' }); }
 (document.getElementById('bmuscle')).onclick = () => muscleCmd();  // T3 voxel-muscle
+(document.getElementById('brom')).onclick = () => bearCmd('rom');  // PART A: ROM demo
 window.addEventListener('keydown', e => {
   if (!EMB) return;
   if (e.key === '1') bearCmd('wave');
@@ -192,6 +224,7 @@ window.addEventListener('keydown', e => {
   else if (e.key === '6') bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');
   else if (e.key === '7') teddyCmd();
   else if (e.key === '8') muscleCmd();
+  else if (e.key === '9') bearCmd('rom');
 });
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------
@@ -321,7 +354,9 @@ const BINDS = new Map();   // L.h -> { key: Int32Array, off: Float32Array }
 const cKey = (x, y, z) => (x + 64) + (y + 64) * 128 + (z + 64) * 16384;
 function shellSplats() {
   const L = shellLevel();
-  const s0 = PRES.cell, size = L.cell * 1.9, bx = EMB ? bodyX * s0 : 0;
+  const s0 = PRES.cell, size = L.cell * 0.6, bx = EMB ? bodyX * s0 : 0;   // T6:
+  // splat disc = level spacing + 20% overlap (was 1.9x = 17px discs on 4.5px
+  // spacing — 3.8x overlap, the measured popcorn-mush cause)
   let B = BINDS.get(L.h);
   if (!B || B.key.length !== L.n) {
     B = { key: new Int32Array(L.n).fill(-1), off: new Float32Array(L.n * 3) };
@@ -332,8 +367,8 @@ function shellSplats() {
              && GENOME.startsWith("teddy");
   if (live) for (const c of cells) occ.add(cKey(c[0], c[1], c[2]));
   for (let i = 0; i < L.n; i++) {
-    const p = L.pos[i], c = L.col[i];
-    let wx, wy, wz, legZ = false, hot = false;
+    const p = L.pos[i], c = L.coll ? L.coll[i] : L.col[i];   // T6: decoded
+    let wx, wy, wz, legZ = false, hot = false, rommed = false;
     if (live) {
       const hx = Math.round(p[0] * L.cell / s0), hy = Math.round(p[1] * L.cell / s0),
             hz = Math.round(p[2] * L.cell / s0);
@@ -364,8 +399,16 @@ function shellSplats() {
               cz = (Math.floor(k / 16384)) - 64;
         wx = cx * s0 + B.off[i * 3]; wy = cy * s0 + B.off[i * 3 + 1];
         wz = cz * s0 + B.off[i * 3 + 2];
+        const pd = posedMap.get(cx + ',' + cy + ',' + cz);
+        if (pd) {                          // PART A: FK pose
+          wx += (pd[0] - cx) * s0;         // displaces the cell;
+          wy += (pd[1] - cy) * s0;         // the shell rides the
+          wz += (pd[2] - cz) * s0;         // pose delta (offset
+        }                                  // rigid: ROM strip)
         legZ = cy <= -2;                 // the stepping zone reads darker
         hot = newCellKeys.has(k);        // voxels born this tick read HOT
+        rommed = !!(romState && romChainKeys[romState.chain] &&
+                    romChainKeys[romState.chain].has(k));
       } else {                             // orphan: hold the grown pose
         wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
       }
@@ -374,6 +417,8 @@ function shellSplats() {
     }
     let cc = FLAT ? [0.55, 0.42, 0.30] : c;
     if (legZ) cc = [cc[0] * 0.55, cc[1] * 0.55, cc[2] * 0.62];
+    if (rommed)                    // PART A: swept chain reads CYAN
+      cc = [cc[0] * 0.45 + 0.05, cc[1] * 0.6 + 0.25, Math.min(1, cc[2] * 0.5 + 0.55)];
     if (hot)
       cc = [Math.min(1, cc[0] * 1.4 + 0.45), cc[1] * 0.55 + 0.12, cc[2] * 0.3];
     splatData.push({ p: [wx + bx, wy + bodyY * s0, wz], s: size,
@@ -607,6 +652,10 @@ function hud() {
     if (EMB && s.nav) body +=
       `\nNAV     st${s.nav.state} v${s.nav.verb} d=${s.nav.dist.toFixed(2)} ep${s.nav.ep} arr${s.nav.arrivals}` +
       (s.goalX !== undefined ? `  flag@${s.goalX}` : '');
+    if (EMB && romState)
+      body += `\nROM     chain ${romState.chain + 1}/${romState.chains}` +
+              `  th0 ${romState.th0 >= 0 ? '+' : ''}${romState.th0.toFixed(2)}` +
+              `  th1 ${romState.th1 >= 0 ? '+' : ''}${romState.th1.toFixed(2)} rad`;
   }
   else
     body = `tick    ${s.tick}\nbricks  ${s.cellCount} / ${s.blueprintCount || 210}` +

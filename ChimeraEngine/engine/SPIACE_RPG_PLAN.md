@@ -1031,6 +1031,44 @@ with zero changes to ca_core.cpp's physics/gait/nav layers.
   v:ground-band-strip (discovered and fixed in-round — counted, the
   curve measures discovery). Saturation: 11 classes observed, Chao2
   completeness 0.25 → 0.51 — NOT saturated; the band is not set yet.
+- **T6 — PART A: the complete structure, rigged, with range of motion
+  (operator directive):** COMPLETE, all falsifiers green (F-T6a/b in the
+  fast net). Part A defined by the operator: the human must see the FINAL
+  structure of the object, rigged, with the full range of motion of
+  anything that moves. Three layers shipped:
+  (a) **Surface truth** — the washout was measured as DOUBLE GAMMA: the
+  shell payload is display-referred sRGB scan data (mean 0.53/0.37/0.25 =
+  rich brown) and T5's encode lifted it to pastel cream (0.79/0.67/0.56);
+  the shell now decodes once at load so the pipe's encode round-trips the
+  scan's authored color. The popcorn mush was OVERLAP: billboards at
+  1.9× level spacing = 17 px discs on 4.5 px spacing (3.8× overlap,
+  low-passing the scan); splat disc = spacing + 20% overlap by law.
+  (b) **ROM mode** — new core command (`rom`, button ROM (9)): every rig
+  chain swept one at a time through its legal envelope, direct-joint
+  (θ set directly — the joint IS the DOF, FK exact, no IK residual),
+  amplitude A = b4ThMax/2 = 1.3 rad = 74.5°, quadrature so both joints
+  show both extremes per chain, P = 90 ticks/chain; the swept chain reads
+  CYAN on the live surface (shell splats ride their bound cell's FK pose
+  delta — the muscle walk is untouched: posed deltas are 0 there) and the
+  HUD reads the joint angles live (`ROM chain 3/6 th0 +0.76 th1 +1.05`).
+  F-T6a: all 6 chains reach A within the sin-sampling bound (measured
+  1.3000/1.3000); F-T6b: zero state residue (stand/walk ledgers measured
+  before the sweep, thetas end at 0).
+  (c) **Derived front camera** — the face points from hind-chain roots
+  toward fore-chain roots (measured on a 4-angle survey strip: the fore
+  end carries the ear); `PRES.focus.ang0 = atan2(dx, dz)` off the rig
+  wire, muscle genome keeps its side view (gait reads ACROSS the frame).
+  **Measured: V 74 → 80** (recognizability 13 → 15: brown fur + ear +
+  front view; motion 15 → 17: every joint's range is explicit, tinted,
+  labeled; renderer 11 → 12; scene 13 → 14; grounding 14, density 8
+  unchanged). P flat at 92 (fast net ALL GREEN; muscle-genome strip
+  regression-clean). **New species discovered:** v:limbs-stubby-small
+  (the 8-cell chains are short relative to the torso — visible now that
+  ROM isolates them); persisting: v:face-not-discernible (the import
+  carries eyes=0), v:legs-illegible (walk blur, not ROM). Resolved:
+  v:body-washed-out-pastel, v:surface-popcorn-mush. Ledger round 3:
+  12 classes, per-round discovery 7→4→1 (the hump is forming), Chao2
+  completeness 0.27 (singleton-heavy, conservative) — NOT saturated.
 - **The dual score (operator directive 2026-08-16):** every deliverable now
   ships TWO scores, each /100, 100 acknowledged theoretically impossible —
   **P (physics)** = conservation 20 + analytic-law agreement 20 + oracle
@@ -1056,4 +1094,4 @@ saturated. **Current state (T4, measured): P = 92**
 
 ---
 
-Document version: 4.7 (G1–G5 + N1–N8 + T1–T5 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4/T5 complete | Agent: bionic + Kimi K3
+Document version: 4.8 (G1–G5 + N1–N8 + T1–T6 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4/T5/T6 (PART A) complete | Agent: bionic + Kimi K3

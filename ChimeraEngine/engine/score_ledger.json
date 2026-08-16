@@ -27,6 +27,18 @@
         "v:surface-popcorn-mush",
         "v:ground-band-strip-fixed-in-round"
       ]
+    },
+    {
+      "task": "T6-PartA",
+      "P": 92.0,
+      "V": 80.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:legs-illegible",
+        "v:face-not-discernible",
+        "v:limbs-stubby-small"
+      ]
     }
   ]
 }

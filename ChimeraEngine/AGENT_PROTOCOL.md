@@ -9,67 +9,63 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Teddy pipeline T6 (immediately below).** Teddy-thread shipped:
+**LIVE TASK — Teddy pipeline T7 (immediately below).** Teddy-thread shipped:
 T2 structure (`2263659`), T3 voxel-muscle gait (`e0af946`), T3.5 shape
 training (`080bf4b`), T4 trained gait (stride L=2, +41.5%), T5 visual pass
-(V 58 → 74, wire bit-identical, fps 62). **Current dual score: P = 92,
-V = 74** — the persisting species are surface mush, pastel washout, no
-readable face, illegible legs; saturation completeness 0.51 (NOT saturated
-— the band is not set). Phase 11 Stage 2 (browser engine) is **PARKED at
-the bottom of this slot** — prompt intact, ready for an agent when the
+(V 58 → 74), T6 PART A (structure + ROM, V 74 → 80, all 6 chains swept to
+A=1.3 rad, F-T6a/b green). **Current dual score: P = 92, V = 80** —
+persisting species: face, walk-blur legs, stubby limbs; saturation
+completeness 0.27 with discovery decelerating 7→4→1 (NOT saturated — the
+band is not set). Phase 11 Stage 2 (browser engine) is **PARKED at the
+bottom of this slot** — prompt intact, ready for an agent when the
 operator returns to that thread.
 
 ---
 
-# Teddy pipeline, T6: surface fidelity — mush, washout, and the face
+# Teddy pipeline, T7: PART B stage 1 — the teddy responds to terrain
 
-**TASK:** Attack the four persisting visual species (rule 8 ledger, round
-2): `v:surface-popcorn-mush`, `v:body-washed-out-pastel`,
-`v:face-not-discernible`, `v:legs-illegible`. Viewer/render-pipeline only —
-the physics stays exactly where T4 pinned it.
+**TASK:** The operator's Part B: "can I control the teddy bear and does it
+respond to its environment the way a real creature would." Stage 1 is the
+environment half: the voxel-muscle gait must walk the GROWN terrain (N6
+hills), not the flat plane — legs plant on the local ground, the body
+rides the support, contact is kept or the slip is counted.
 
-**STATE:** T5 shipped: sRGB encode in the fragment shader, derived framing
-(fillFrac 0.45, R=1.33, measured by `__dbgFrame()`), ground ring-march at
-the rho/4 count budget (71k splats, fps 62). The shell binds at level
-h=64 (56802 splats, cell 0.0075 ≈ 4.5 px at R=1.33 — the FINEST level the
-pyramid has, and it is COARSER than the 2.5-px law wants). Splat billboard
-size is `L.cell * 1.9` (≈ 8.5 px) with falloff exp(-4r²) and flat
-0.8+0.2g shading — the mush hypothesis. Strip pattern:
-`engine/scratch/_proof_t5.py` (full-frame, per-frame probes).
+**STATE:** T6 shipped (`spiace_native.html` front camera + ROM; core `rom`
+command; F-T6a/b in the fast net). The muscle gait (`teddymuscle.chimera`,
+vmGait=1) plants on `groundMinY` — a FLAT assumption; the N6 terrain
+membrane (grown LCG hills, walkability contract max slope 0.5,
+`groundAt()` = max over the footprint) already exists for the bear/teddy
+goal genomes (beargoal/teddygoal) and is integer-exact to the Python
+oracle. The teddy's terrain genome variant does NOT exist yet.
 
-**Rule 0 (stated before the run):** the mush is an OVERLAP artifact —
-billboards 1.9× the lattice spacing with a shallow Gaussian add energy
-between texels and low-pass the scan's surface detail; the washout is the
-gamma encode applied to the scan's ALREADY-display-referred vertex colors
-(double gamma: the PLY colors were authored for sRGB display, we encode
-again → pastel lift). Prediction: treating shell colors as
-display-referred (skip the second encode for the shell; keep it for the
-procedural palettes which are authored linear) + sizing billboards to the
-2.5-px law at subject depth (not 1.9×cell) + a steeper falloff restores
-the scan's surface — V recognizability 13 → 18+, with P flat.
-Falsifier: V does not rise (or any wire number moves) → the hypothesis is
-wrong; report which and stop.
+**Rule 0 (stated before the run):** the PLANT beat's ground query is the
+only terrain coupling the gait needs — `groundMinY` becomes per-column
+(`colHeightAt(x)` under each paw, the same query the nav membrane uses)
+and SHIFT keeps the N7 gate (contact + ≥3 planted). Prediction: the teddy
+walks the seed-2026 hills with penetration ≤ 1 ULP-class residue, airDX
+still bit-exact 0 on the drop, and slips counted (not hidden) — the bear's
+hill ledger (N6: walk slips to 52.68 vs flat 53.63) repeats within the
+same mechanism. Falsifier: the gait floats or penetrates on the hills, or
+the flat-world ledger moves → the terrain coupling is wrong; report.
 
-**Candidate knobs, in order of derivation strength:** (1) display-referred
-vs linear color provenance per splat source (shell = sRGB payload, decode
-to linear ONCE if the pipe is linear; procedural palettes stay as authored
-— MEASURE both ways on the strip, keep the honest one); (2) billboard
-size from `lodSpacing(R)` directly; (3) falloff exponent; (4) ONLY if the
-law demands finer than h=64: a new pyramid level from `teddy_pyramid.py`
-(data change, not code-path change — check rebuild cost at 33 Hz before
-accepting).
+**What to wire:** (1) a `teddymusclehills.chimera` = teddymuscle + the N6
+terrain block copied verbatim from `bearhill.chimera` (seed 2026 — the
+SAME world the bear walks, per the T1 body-interchange precedent); (2) the
+vm PLANT beat reads `colHeightAt(pawX)` instead of the flat `groundMinY`;
+(3) `test_native.py` F-T7: terrain integer-exact to the oracle, walk
+ledger replicated, flat `teddymuscle.chimera` untouched (regression), and
+the slip count is ON the wire (not averaged away).
 
-**FALSIFIERS:** wire ledger bit-identical to the T4/T5 pins
-(`scratch/_proof_t5_ledger_before.txt`); fast net ALL GREEN; fps ≥ 55 on
-the strip; V breakdown reported before/after with the strip READ (rule 7);
-the round logged (`score_saturation.py add T6 <P> <V> <ids...>`).
+**FALSIFIERS:** fast net ALL GREEN (incl. the F-T3 flat regression and
+F-T6 ROM); the hills strip (rule 7, full-frame) shows the teddy walking
+UP and DOWN a hill with the paws meeting the slope; the round logged.
 
-**CONSTRAINTS:** no git commits; `ca_core.cpp`, genomes, `test_native.py`
-frozen; scratch in `engine/scratch/` only.
+**CONSTRAINTS:** no git commits; scratch in `engine/scratch/` only;
+`teddy_s1.cells` frozen (shape is trained; terrain does not re-shape).
 
-**DONE MEANS:** (1) strips + V breakdown before/after, (2) which knobs
-moved the score and which were falsified, (3) ledger round + `status`
-output, (4) diff summary. Then STOP.
+**DONE MEANS:** (1) F-T7 numbers + the flat regression, (2) the hills
+strip + your visual verdict (rule 7), (3) ledger round + `status`, (4)
+diff summary. Then STOP.
 
 ---
 
@@ -284,6 +280,7 @@ you report** (rule 1).
 | TRELLIS image→3D runtime + weights | `models/trellis/` (needs `out/` dir to exist for `--voxply`) |
 | Score ledger + saturation instrument | `ChimeraEngine/engine/score_saturation.py` → `score_ledger.json` (rule 8) |
 | Proof-strip pattern (full-frame + probes) | `ChimeraEngine/engine/scratch/_proof_t5.py` (rule 7) |
+| ROM strip pattern (Part A) | `ChimeraEngine/engine/scratch/_proof_rom.py` — survey + per-chain extremes |
 | Teddy splat pyramid (T2) | `ChimeraEngine/native/teddy_pyramid.py` → `genomes/teddy_shell.json` |
 | Teddy voxel bodies (T1/T3) | `genomes/teddy.cells` (370 cells, 6 leg chains); `teddy.chimera` FK/IK · `teddymuscle.chimera` voxel-muscle |
 

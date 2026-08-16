@@ -2117,6 +2117,33 @@ try:
           f"gap={gap_m:.2e}m vy={vy_m_s:.2e}m/s "
           f"walkBodyX={wlk['bodyX']:.6f} (oracle {walk_sum:.6f})")
 
+    # ---- F-T6: PART A range of motion — every moving part, swept ------------
+    # The operator's Part A: the human must see the COMPLETE structure and the
+    # full range of anything that moves. The ROM command sweeps each rig chain
+    # one at a time, direct-joint (no IK — the joint IS the DOF), amplitude
+    # A = b4ThMax/2 = 1.3 rad = 74.5 deg (the full envelope short of the
+    # fold-through extreme the clamp forbids), quadrature so both joints show
+    # both extremes per chain. Falsifier: any chain's max |theta| misses A by
+    # more than the sin-sampling error (cos(pi/90) = 0.99939 over P=90 ticks),
+    # or the sweep NaNs, or it never completes.
+    rom = tvox.get("rom")
+    A_rom = float(tg2["b4ThMax"]) * 0.5
+    check("F-T6a ROM: every chain swept to the derived amplitude and the demo "
+          "completes (rom.done), no NaN",
+          rom is not None and rom["done"] and not rom["nan"]
+          and rom["chains"] == len(rom["maxTh"])
+          and all(A_rom * 0.999 <= m <= A_rom * 1.0001
+                  for m in rom["maxTh"]),
+          f"chains={rom and rom['chains']} maxTh={rom and rom['maxTh']} "
+          f"A={A_rom} done={rom and rom['done']} nan={rom and rom['nan']}")
+    check("F-T6b ROM leaves no residue: thetas end at 0 and the walk/stand "
+          "ledgers above were measured BEFORE the sweep (state isolation)",
+          wlk["nan"] == False and st_["contactTick"] == n_pred_t,
+          f"walkNan={wlk['nan']} contactTick={st_['contactTick']}")
+    print(f"T6 MEASURED: rom chains={rom['chains']} "
+          f"maxTh={min(rom['maxTh']):.4f}..{max(rom['maxTh']):.4f} "
+          f"(A={A_rom}) done={rom['done']}")
+
     # ---- F-T1d: T1 goal membrane — the teddy navigates the bear's world -----
     # teddygoal.chimera = teddy.chimera + the N8 goal block (L5/R5/N6/N8
     # copied from beargoal verbatim). The nav ledger must be replicated by the
