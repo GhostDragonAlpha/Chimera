@@ -28,7 +28,30 @@ GENOME = sys.argv[3] if len(sys.argv) > 3 else str(HERE / "genomes" / "wall.chim
 frames = []                 # full replay buffer (a wall is 210 cells; tiny)
 frames_cv = threading.Condition()
 proc = None
-proc_lock = threading.Lock()
+proc_lock = threading.RLock()
+gen = 0                      # generation: bumped on every (re)spawn so a stale
+                            # reader thread never injects its EOF marker
+
+
+def spawn_proc(genome_path):
+    """(re)spawn the core with the given genome. Same spawn the startup uses,
+    exposed so the viewer can switch genomes at runtime (the genome is data;
+    the core is the reader). Plumbing only — never touches ca_core physics."""
+    global proc, gen
+    with proc_lock:
+        if proc is not None and proc.poll() is None:
+            try:
+                proc.terminate()
+                proc.wait(timeout=2)
+            except Exception:
+                pass
+        gen += 1
+        frames.clear()
+        LOG.write_text("", encoding="utf-8")
+        proc = subprocess.Popen([str(EXE), TICK_MS, genome_path],
+                                 stdin=subprocess.PIPE,
+                                 stdout=subprocess.PIPE, text=True, bufsize=1)
+        threading.Thread(target=reader, daemon=True).start()
 
 
 def ensure_proc():
@@ -36,26 +59,26 @@ def ensure_proc():
     with proc_lock:
         if proc is not None:
             return
-        LOG.write_text("", encoding="utf-8")
-        proc = subprocess.Popen([str(EXE), TICK_MS, GENOME],
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE, text=True, bufsize=1)
-        threading.Thread(target=reader, daemon=True).start()
+        spawn_proc(GENOME)
 
 
 def reader():
+    my_gen = gen
     for line in proc.stdout:
         line = line.strip()
         if not line:
             continue
         with frames_cv:
+            if my_gen != gen:      # a newer spawn superseded this reader
+                return
             frames.append(line)
             frames_cv.notify_all()
         with LOG.open("a", encoding="utf-8") as f:
             f.write(line + "\n")
     with frames_cv:           # EOF marker so late joiners see the end
-        frames.append("")
-        frames_cv.notify_all()
+        if my_gen == gen:     # only if this reader is still the current one
+            frames.append("")
+            frames_cv.notify_all()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -108,15 +131,33 @@ class Handler(BaseHTTPRequestHandler):
         if self.path.startswith("/cmd"):
             n = int(self.headers.get("Content-Length") or 0)
             cmd = self.rfile.read(n).decode().strip()
-            if proc is not None and proc.poll() is None and cmd:
-                try:
-                    proc.stdin.write(cmd + "\n")
-                    proc.stdin.flush()
-                    self.send_response(204)
-                except (BrokenPipeError, OSError):
+            # genome switch (runtime reload): the viewer posts "genome:<name>"
+            # and the relay respawns the core on that genome file. SAME spawn
+            # the startup uses — the genome is data, the core is the reader.
+            if cmd.startswith("genome:"):
+                name = cmd[len("genome:"):].strip()
+                if not name:
+                    name = GENOME
+                path = name if name.endswith(".chimera") else str(HERE / "genomes" / (name + ".chimera"))
+                if not Path(path).exists():
+                    self.send_response(404)
+                    self.end_headers()
+                    return
+                spawn_proc(path)
+                self.send_response(204)
+                self.end_headers()
+                return
+            with proc_lock:
+                live = proc is not None and proc.poll() is None
+                if live and cmd:
+                    try:
+                        proc.stdin.write(cmd + "\n")
+                        proc.stdin.flush()
+                        self.send_response(204)
+                    except (BrokenPipeError, OSError):
+                        self.send_response(503)
+                else:
                     self.send_response(503)
-            else:
-                self.send_response(503)
             self.end_headers()
             return
         self.send_response(404)

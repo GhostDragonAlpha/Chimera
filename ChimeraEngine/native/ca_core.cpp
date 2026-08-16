@@ -200,6 +200,10 @@ struct Genome {
   // derives everything else (careful amplitude, slip threshold, episode
   // budget) from the physics constants — the genome declares only the flag.
   int goal = 0, goalX = 0;
+  // T1 vox membrane — an IMPORTED cell set (kind=vox): the body is DATA
+  // (genomes/<cellsFile>), not grown. The rig chains ride that same data file;
+  // physics/gait/nav are unchanged (the shape-agnostic claim).
+  std::string cellsFile;
 };
 
 static void die4(const std::string& msg) {
@@ -336,6 +340,19 @@ static Genome loadGenome(const std::string& path) {
           g.gravity <= 0 || g.tickHz <= 0)
         die4("INVALID: embodiment sanity bounds failed in " + path);
     }
+  } else if (g.kind == "vox") {
+    // T1: an imported cell set — the body is DATA, not grown. Only the B4
+    // gait constants and the N5 physics membrane are declared; the rig
+    // chains ride the cellsFile. L5/R5/N6/N8 are absent (stand/walk only).
+    g.cell = needD("cell"); g.cellsFile = need("cellsFile");
+    g.b4A = needD("b4A"); g.b4Lam = needD("b4Lam"); g.b4Dth = needD("b4Dth");
+    g.b4ThMax = needD("b4ThMax"); g.b4Iters = needI("b4Iters");
+    g.b4T = needI("b4T"); g.gravity = needD("gravity"); g.tickHz = needD("tickHz");
+    if (g.cell <= 0 || g.b4A <= 0 || g.b4T <= 0 || g.b4Iters <= 0 ||
+        g.b4Lam <= 0 || g.gravity <= 0 || g.tickHz <= 0)
+      die4("INVALID: vox sanity bounds failed in " + path);
+    if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1)
+      g.embodiment = 1;
   } else die4("INVALID: unknown kind '" + g.kind + "' in " + path);
   return g;
 }
@@ -1002,6 +1019,8 @@ static void emitSelftest();
 static int runEmbodiment(int tickMs);
 static void physTick();                   // N5: defined with the N5 block
 static void navInit();                    // N8: defined with the N8 block
+// T1 vox membrane (defined near main): an imported cell set, rig off that data
+static int runVox(int tickMs, bool selftest);
 
 static int runCrit(int tickMs, bool selftest) {
   cAddCell(0, 0, 0, 0);                     // the zygote
@@ -2065,6 +2084,153 @@ static int runEmbodiment(int tickMs) {
   return 0;
 }
 
+// ============================ T1 VOX MEMBRANE (imported cell set) ==============
+// The body is DATA, not grown: loadVox reads genomes/<cellsFile> and populates
+// cCellsV + the rig chains (cLimbs/cTips), then bearRig() runs UNCHANGED off
+// that same data — the physics/gait/nav layers never see a "shape" flag. The
+// cell set is occupancy-mapped onto the CA lattice by native/voxelize_teddy.py;
+// the rig chains are its leg columns (hip->paw). No new physics.
+static std::string voxCellsPath;                 // resolved in main()
+static void loadVox() {
+  cCellsV.clear(); cLimbs.clear(); cTips.clear(); cEyes.clear();
+  std::ifstream f(voxCellsPath);
+  if (!f) die4("MISSING vox cells file " + voxCellsPath);
+  auto toks = [](const std::string& l) {
+    std::vector<std::string> v; size_t i = 0;
+    while (i < l.size()) {
+      while (i < l.size() && (l[i] == ' ' || l[i] == '\t')) i++;
+      if (i >= l.size()) break;
+      size_t j = i; while (j < l.size() && l[j] != ' ' && l[j] != '\t') j++;
+      v.push_back(l.substr(i, j - i)); i = j;
+    }
+    return v;
+  };
+  std::vector<std::string> lines; std::string line;
+  while (std::getline(f, line)) {
+    const size_t h = line.find('#');
+    if (h != std::string::npos) line = line.substr(0, h);
+    if (!line.empty()) lines.push_back(line);
+  }
+  size_t i = 0;
+  auto next = [&]() {
+    if (i >= lines.size()) die4("vox: truncated cells file");
+    return toks(lines[i++]);
+  };
+  { const std::vector<std::string> h = next();   // CELLS <n>
+    if (h.empty() || h[0] != "CELLS") die4("vox: expected CELLS header");
+    const int ncells = std::stoi(h[1]);
+    for (int j = 0; j < ncells; j++) {
+      const std::vector<std::string> c = next();   // x y z
+      if (c.size() != 3) die4("vox: bad cell line");
+      cAddCell(std::stoi(c[0]), std::stoi(c[1]), std::stoi(c[2]), 0);
+    }
+  }
+  { const std::vector<std::string> h = next();   // CHAINS <m>
+    if (h.empty() || h[0] != "CHAINS") die4("vox: expected CHAINS header");
+    const int nchains = std::stoi(h[1]);
+    for (int j = 0; j < nchains; j++) {
+      const std::vector<std::string> hd = next();   // fore side nx
+      if (hd.size() != 3) die4("vox: bad chain header");
+      const int fore = std::stoi(hd[0]), side = std::stoi(hd[1]);
+      const int nx = std::stoi(hd[2]);
+      CLimb L; L.side = side; L.fore = (fore == 1); L.born = 0;
+      L.root[0] = L.root[1] = L.root[2] = 0;
+      cLimbs.push_back(L);
+      CTip t; t.id = (int)cTips.size(); t.limbIdx = j; t.digit = false;
+      t.alive = true; t.dir[0] = t.dir[1] = t.dir[2] = 0; t.steps = nx - 1;
+      for (int k = 0; k < nx; k++) {
+        const std::vector<std::string> p = next();   // x y z
+        if (p.size() != 3) die4("vox: bad chain cell line");
+        t.path.push_back({std::stoi(p[0]), std::stoi(p[1]), std::stoi(p[2])});
+      }
+      cLimbs[j].root[0] = t.path[0][0]; cLimbs[j].root[1] = t.path[0][1];
+      cLimbs[j].root[2] = t.path[0][2];
+      cTips.push_back(t);
+    }
+  }
+  // organizers -> centroid (ears/waveCh selection stays sensible on the data)
+  double cx = 0, cy = 0, cz = 0;
+  for (const CCell& c : cCellsV) { cx += c.x; cy += c.y; cz += c.z; }
+  const double n = (double)cCellsV.size();
+  cOrgBall[0] = cx / n; cOrgBall[1] = cy / n; cOrgBall[2] = cz / n;
+}
+// the final ledger for an imported body: cells + limb roots, no CA fields
+static void emitVoxFinal() {
+  std::printf("{\"type\":\"final\",\"kind\":\"creature\",\"tick\":0,");
+  std::printf("\"cells\":[");
+  bool first = true;
+  for (const CCell& c : cCellsV) {
+    std::printf("%s[%d,%d,%d,\"skin\"]", first ? "" : ",",
+                c.x, c.y, c.z);
+    first = false;
+  }
+  std::printf("],\"morphA\":{},\"turingU\":{},\"surf\":[],\"limbRoots\":[");
+  for (size_t i = 0; i < cLimbs.size(); i++)
+    std::printf("%s[%d,%d,%d]", i ? "," : "",
+                cLimbs[i].root[0], cLimbs[i].root[1], cLimbs[i].root[2]);
+  std::printf("],\"eyes\":[],\"digits\":0,\"lambdaPred\":0.0,");
+  std::printf("\"organizers\":{\"head\":[%.17g,%.17g,%.17g],"
+              "\"ventral\":[%.17g,%.17g,%.17g],"
+              "\"ball\":[%.17g,%.17g,%.17g]},\"done\":true}\n",
+              cOrgBall[0], cOrgBall[1], cOrgBall[2],
+              cOrgBall[0], cOrgBall[1], cOrgBall[2],
+              cOrgBall[0], cOrgBall[1], cOrgBall[2]);
+  std::fflush(stdout);
+}
+// the stand+walk ledger (F-T1b/c): mirrors the bear's N5 physics section
+// minus the wave/sense/learner bits (bear-specific). Stand = drop from 8 body-
+// heights, land on the derived ground, rest to equilibrium. Walk = 400-tick
+// flat-ground walk; the displacement is the N7 earned-stride sum.
+static void emitVoxTest() {
+  const double H = 8 * bear.bodyH;
+  const double yRest = bear.bodyY;   // local support offset (0 on flat ground)
+  bear.bodyY = yRest + H; bear.velY = 0; bear.contact = false;
+  const double E0 = gSim * H;
+  double ledgerErr = 0, lastE = E0;
+  long contactTick = -1;
+  for (long n = 1; n < 100000; n++) {
+    physTick();
+    if (bear.contact) { contactTick = n; break; }
+    lastE = 0.5 * bear.velY * bear.velY + gSim * (bear.bodyY - yRest);
+    const double Eexp = gSim * H - 0.5 * gSim * gSim * n;
+    const double err = std::fabs(lastE - Eexp) / E0;
+    if (err > ledgerErr) ledgerErr = err;
+  }
+  const double termDrift = (E0 - lastE) / E0;
+  double restVyMax = 0, restPenMax = 0;
+  for (int i = 0; i < 300; i++) {
+    physTick();
+    const double av = std::fabs(bear.velY);
+    const double ap = std::fabs(bear.lastGround -
+                                (bear.bodyY + bear.groundMinY));
+    if (av > restVyMax) restVyMax = av;
+    if (ap > restPenMax) restPenMax = ap;
+  }
+  bearCommand("walk");
+  const double bxStart = bear.body[0];
+  for (int i = 0; i < 400; i++) bearAnim();
+  std::printf("{\"type\":\"voxtest\",\"stand\":{\"dropH\":%.17g,"
+              "\"contactTick\":%ld,\"analyticTick\":%.17g,"
+              "\"ledgerErr\":%.17g,\"termDrift\":%.17g,"
+              "\"restVyMax\":%.17g,\"restPenMax\":%.17g},",
+              H, contactTick, std::sqrt(2 * H / gSim), ledgerErr,
+              termDrift, restVyMax, restPenMax);
+  std::printf("\"walk\":{\"bodyX\":%.17g,\"iters\":%ld,\"nan\":%s,"
+              "\"thetaMaxEver\":%.17g}}\n",
+              bear.body[0] - bxStart, bear.iters,
+              bear.nan ? "true" : "false", bear.thetaMaxEver);
+  std::fflush(stdout);
+}
+static int runVox(int tickMs, bool selftest) {
+  loadVox();                    // populate cCellsV + rig chains from data
+  cEmitFrame(false);            // one static frame: the viewer renders the body
+  emitVoxFinal();               // final ledger (done=true)
+  bearRig();                    // G4 rig + N5 physics init (UNCHANGED)
+  learnReset();                 // fresh learner (harmless for stand/walk)
+  if (selftest) { emitRig(); emitVoxTest(); return 0; }
+  return runEmbodiment(tickMs);
+}
+
 // ============================ main ============================================
 int main(int argc, char** argv) {
   std::string exeDir = ".";
@@ -2076,14 +2242,24 @@ int main(int argc, char** argv) {
   const std::string genomePath =
       argc > 2 ? argv[2] : exeDir + "/genomes/wall.chimera";
   W = loadGenome(genomePath);
+  if (W.kind == "vox") {                 // T1: cellsFile is relative to the
+    const size_t slash = genomePath.find_last_of("/\\");   // genome's directory
+    const std::string dir = slash == std::string::npos ? "." :
+                            genomePath.substr(0, slash);
+    voxCellsPath = dir + "/" + W.cellsFile;
+  }
   const int tickMs = argc > 1 ? std::atoi(argv[1]) : W.tickMs;
   const bool selftest = argc > 3 && std::string(argv[3]) == "selftest";
   const double cellOut = W.kind == "wall" ? 0 : W.cell;
+  // T1: an imported body presents as a creature (the viewer's PRESENT table +
+  // buttons are keyed by this kind); the sim still dispatches on W.kind.
+  const std::string metaKind = (W.kind == "vox") ? "creature" : W.kind;
   std::printf("{\"type\":\"meta\",\"kind\":\"%s\",\"name\":\"%s\","
-              "\"cell\":%.17g,\"embodiment\":%d}\n", W.kind.c_str(),
+              "\"cell\":%.17g,\"embodiment\":%d}\n", metaKind.c_str(),
               W.name.c_str(), cellOut, W.embodiment);
   std::fflush(stdout);
   if (W.kind == "oak") return runOak(tickMs);
   if (W.kind == "creature") return runCrit(tickMs, selftest);
+  if (W.kind == "vox") return runVox(tickMs, selftest);
   return runWall(tickMs);
 }

@@ -20,7 +20,9 @@
                     font:12px monospace">
   <button id="bwave">WAVE (1)</button> <button id="bwalk">WALK (2)</button>
   <button id="brest">REST (3)</button> <button id="bauto">AUTO (4)</button>
-  <button id="bdrop">DROP (5)</button> <button id="bnav">NAV (6)</button>
+   <button id="bdrop">DROP (5)</button> <button id="bnav">NAV (6)</button>
+   <button id="bteddy">TEDDY (7)</button>
+
 </div>
 <script type="module">
 // ============================================================================
@@ -154,6 +156,8 @@ document.getElementById('bauto').onclick = () =>
 document.getElementById('bdrop').onclick = () => bearCmd('drop');   // N5
 (document.getElementById('bnav')).onclick = () =>
   bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');                // N8 toggle
+function teddyCmd() { fetch('/cmd', { method: 'POST', body: 'genome:teddy' }); }
+(document.getElementById('bteddy')).onclick = () => teddyCmd();   // T1 vox genome
 window.addEventListener('keydown', e => {
   if (!EMB) return;
   if (e.key === '1') bearCmd('wave');
@@ -162,6 +166,7 @@ window.addEventListener('keydown', e => {
   else if (e.key === '4') bearCmd(lastCmd === 'auto' ? 'rest' : 'auto');
   else if (e.key === '5') bearCmd('drop');
   else if (e.key === '6') bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');
+  else if (e.key === '7') teddyCmd();
 });
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------

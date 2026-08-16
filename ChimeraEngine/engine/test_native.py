@@ -1998,6 +1998,75 @@ try:
               f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
     finally:
         relay6.terminate()
+
+    # ---- F-T1a..c: T1 stand/walk on the vox (imported) teddy genome ----------
+    #   F-T1a: full-suite invariance — the N5/N7 physics membrane is
+    #          shape-agnostic: teddy's stand ledger (drop law, symplectic
+    #          energy, rest equilibrium) reproduces the bear's predicted N5
+    #          numbers exactly, with the SAME genome-declared constants
+    #   F-T1b: stand — teddy at rest: ground gap < 0.01 m and velocity -> 0
+    #          after 1 s no-input (mirrors the bear's N5d rest check)
+    #   F-T1c: walk — earned-traction displacement over 400 ticks == the N7
+    #          oracle's discrete |cos| sum within 1e-9 (reuses F-N7b structure,
+    #          pointed at teddy.chimera instead of bear.chimera)
+    rt = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                         str(NATIVE / "genomes" / "teddy.chimera"), "selftest"],
+                        capture_output=True, text=True, timeout=120)
+    tmsgs = [json.loads(l) for l in rt.stdout.splitlines() if l.strip()]
+    tmeta = next((m for m in tmsgs if m.get("type") == "meta"), None)
+    tfin = next((m for m in tmsgs if m.get("type") == "final"), None)
+    tvox = next((m for m in tmsgs if m.get("type") == "voxtest"), None)
+    check("F-T1a teddy genome loads as an embodied creature (kind=vox)",
+          rt.returncode == 0 and tmeta and tmeta["kind"] == "creature"
+          and tmeta.get("embodiment") == 1 and tfin and tvox,
+          f"rc={rt.returncode} kind={tmeta and tmeta.get('kind')} "
+          f"name={tmeta and tmeta.get('name')}")
+    tg2 = read_chimera(NATIVE / "genomes" / "teddy.chimera")
+    cell_t = float(tg2["cell"])
+    tickHz_t = float(tg2["tickHz"])
+    g_sim_t = float(tg2["gravity"]) / (tickHz_t ** 2 * cell_t)
+    st_ = tvox["stand"]
+    H = st_["dropH"]
+    # the SAME discrete drop-law prediction the bear's F-N5b check uses
+    n_pred_t = 1
+    while n_pred_t * (n_pred_t + 1) < 2 * H / g_sim_t:
+        n_pred_t += 1
+    check("F-T1a invariance: teddy stand reproduces the bear's N5 drop law, "
+          "symplectic energy ledger, and rest equilibrium (shape-agnostic)",
+          st_["contactTick"] == n_pred_t
+          and abs(st_["contactTick"] - math.sqrt(2 * H / g_sim_t)) <= 1
+          and st_["ledgerErr"] < 1e-12 and st_["termDrift"] < 0.02
+          and st_["restVyMax"] == 0 and st_["restPenMax"] < 1e-12,
+          f"contactTick={st_['contactTick']} pred={n_pred_t} "
+          f"g={g_sim_t:.6f} ledgerErr={st_['ledgerErr']:.2e} "
+          f"termDrift={st_['termDrift']:.4%} "
+          f"restVyMax={st_['restVyMax']} restPenMax={st_['restPenMax']:.2e}")
+    # F-T1b: stand gap < 0.01 m, velocity -> 0 after >= 1 s no-input
+    gap_m = st_["restPenMax"] * cell_t
+    vy_m_s = st_["restVyMax"] * cell_t * tickHz_t
+    check("F-T1b teddy at rest: ground gap < 0.01 m and velocity -> 0 after "
+          ">= 1 s no-input (mirrors the bear's N5d equilibrium)",
+          gap_m < 0.01 and abs(vy_m_s) < 1e-9,
+          f"gap={gap_m:.4e} m  |velY|={vy_m_s:.4e} m/s "
+          f"(restPenMax={st_['restPenMax']:.2e} cells, "
+          f"restVyMax={st_['restVyMax']} cells/tick)")
+    # F-T1c: earned-traction walk == N7 oracle discrete sum (mirrors F-N7b)
+    A_t, T_t = float(tg2["b4A"]), float(tg2["b4T"])
+    walk_sum = sum(A_t * (2 * math.pi / T_t) * abs(math.cos(2 * math.pi * t / T_t))
+                   for t in range(1, 401))
+    wlk = tvox["walk"]
+    check("F-T1c teddy earned-traction walk: 400-tick displacement == N7 "
+          "oracle |cos| sum within 1e-9 (same tolerance band as bear N7)",
+          abs(wlk["bodyX"] - walk_sum) < 1e-9 and wlk["iters"] > 0
+          and wlk["nan"] == False and wlk["thetaMaxEver"] <= 2.6,
+          f"bodyX={wlk['bodyX']:.6f} oracle={walk_sum:.6f} "
+          f"iters={wlk['iters']} nan={wlk['nan']} "
+          f"thetaMax={wlk['thetaMaxEver']:.3f}")
+    print(f"T1 MEASURED: rc={rt.returncode} kind={tmeta['kind']} "
+          f"contact@{st_['contactTick']} (pred {n_pred_t}) "
+          f"ledgerErr={st_['ledgerErr']:.1e} drift={st_['termDrift']:.4%} "
+          f"gap={gap_m:.2e}m vy={vy_m_s:.2e}m/s "
+          f"walkBodyX={wlk['bodyX']:.6f} (oracle {walk_sum:.6f})")
 finally:
     relay.terminate()
 
