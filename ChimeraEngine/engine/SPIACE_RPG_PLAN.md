@@ -961,7 +961,57 @@ with zero changes to ca_core.cpp's physics/gait/nav layers.
   teddy. **What T3 proves:** locomotion can be pure cellular automata — no
   kinematic chain, no solver, just voxels appearing and disappearing under a
   support-and-traction contract.
+- **T3.5 — shape before gait (the construction-order gate):** COMPLETE
+  (`080bf4b`). The raw scan's COM projected 1.63 cells OUTSIDE its paw hull —
+  a doll that tips; no rig or gait could fix that. `native/shape_train.py`
+  grows support pillars (the trainable DOF is support placement — never trim
+  the scan) until the margin clears 1 cell → `teddy_s1.cells`, 375 cells,
+  9 legs, margin +2.21. F-T3a-shape recomputes the margin from the cells
+  file; the trainer is never trusted. Same commit: the full suite was DELETED
+  (96% of its time was browser waiting that decided nothing new) — the
+  default net is the 7.8 s headless `python test_native.py`, headed blocks
+  opt-in via `T_HEADED=<tag>`; and rule 7 (the visual-critique gate) was
+  earned: T3's ledger said WALKS while the strip showed a jiggling blob —
+  the critique, not the assertions, produced the fixes (lagged follow camera,
+  leg-zone tint, new-voxel hot highlight).
+- **T4 — the gait is TRAINED, not guessed (sweep under the falsifier gate):**
+  COMPLETE, fast net ALL GREEN. Rule 0 stated before the run: stride L is the
+  free DOF; each leg leans 2L per cycle, the swing repays 2L, budget =
+  manhattan+2L, rate = L/(2L+3) cells/tick. Prediction: L=2 or 3 wins gated.
+  Falsifier: every L>1 breaks the gate → the derived L=1 stands. The knobs
+  moved from `static const` to genome keys (`vmStride`, `vmLift`) defaulting
+  to the derived values; `engine/scratch/_t4_sweep.py` ran 8 variants
+  headless (≈2 s each, no browser, no recompile). **Measured table (bodyX
+  over 400 ticks):** s1/l1 82 (baseline) · s1/l2 67 · **s2/l1 116 —
+  GATED-OK, +41.5%, prediction 114 (1.8% off)** · s2/l2 102 GATE-FAIL ·
+  s3/l1 135 GATE-FAIL · s3/l2 123 GATE-FAIL · s4/l1 144 GATE-FAIL · s4/l2
+  136 GATE-FAIL. The faster raw strides are exactly the ones the gate kills:
+  budget manhattan+2L grows the mid-cycle body past the 5% count bound
+  (countMax 391/404 vs the 375-cell shape) — the falsifier fired and the
+  table shows where. ACCEPTED: `vmStride=2, vmLift=1` in
+  `teddymuscle.chimera`; pinned selftest: bodyX=116, iters=0, conn 1,
+  count [358,375], slips 0, airDX 0, contactTick 53 == prediction.
+  F-T3a–d all green unchanged. **What T4 proves:** training under a
+  falsifier gate finds the real optimum (L=2, +41.5%) AND explains why the
+  apparently-faster variants are illegal — a sweep without the gate would
+  have shipped L=4 and a body that inflates 8% every stride.
+- **The dual score (operator directive 2026-08-16):** every deliverable now
+  ships TWO scores, each /100, 100 acknowledged theoretically impossible —
+  **P (physics)** = conservation 20 + analytic-law agreement 20 + oracle
+  replication 15 + integrity gates 15 + contact/traction 15 + control layer
+  10 + falsifier discipline 5; **V (visual)** = subject recognizability 25 +
+  motion legibility 20 + grounding 15 + renderer fidelity 15 + scene
+  legibility 15 + splat-density law 10. The quality band is set by the
+  operator from these baselines. **Current state (T4, measured): P = 92**
+  (−2 symplectic shadow drift 1.845% on the drop ledger, derived-but-real;
+  −6 CASE B: the greedy nav policy stalls east-bound on bear AND teddy —
+  measured, pinned with Q-values, unfixed) **· V = 58** (recognizability
+  8/25 — a walking lump, not yet a teddy at canonical framing; motion 14/20
+  — translation + muscle churn visible, individual legs not; grounding 12/15;
+  renderer 10/15 — dark, low contrast; scene 9/15 — subject small in frame;
+  density 5/10 — 375 cells is far under the 0.5–2 splats/px law). The rubric
+  lives in AGENT_PROTOCOL rule 8; every headed report carries both numbers.
 
 ---
 
-Document version: 4.5 (G1–G5 + N1–N8 + T1–T3 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3 complete | Agent: bionic + Kimi K3
+Document version: 4.6 (G1–G5 + N1–N8 + T1–T4 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4 complete | Agent: bionic + Kimi K3

@@ -18,6 +18,13 @@ cellsFile      = teddy_s1.cells   # SHAPE-TRAINED body (shape_train.py): the
                                   # hull (margin -1.63 — a doll that tips);
                                   # 3 grown pillars -> margin +2.21 cells
 vmGait         = 1
+vmStride       = 2              # T4 TRAINED: sweep s1..4 x lift1..2 gated on
+                                # (conn, 0 slips, count ±5%, airDX=0, stand
+                                # law). Winner 116 cells/400t (+41.5% vs the
+                                # derived L=1's 82); pred 114 (lean=2L/cycle,
+                                # rate L/(2L+3)). L>=3 gate-fails: budget
+                                # manhattan+2L grows the body >5% mid-cycle.
+vmLift         = 1
 
 # --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------
 b4A            = 2              # gait swing amplitude, cells

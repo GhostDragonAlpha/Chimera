@@ -2330,9 +2330,10 @@ try:
     # flow. Headless and fast: one selftest run, all checks off the wire.
     #   F-T3a: physics membrane intact under vmGait (the drop law holds)
     #   F-T3b: WALKS or DOESN'T — displacement >= 40 cells over 400 ticks
-    #          (derived prediction 80: one SHIFT per 5-tick half-cycle)
+    #          (T4-trained stride L=2: prediction 114 = 400·L/(2L+3); the
+    #          sweep gated L>=3 out — budget manhattan+2L breaks the count)
     #   F-T3c: body integrity every tick — single face-connected component,
-    #          cell count within 5% of the grown 370, zero traction slips
+    #          cell count within 5% of the shape-trained 375, zero traction slips
     #   F-T3d: airwalk — legs cycling in free fall move the body EXACTLY
     #          nowhere (airDX bit-exact 0, SHIFT requests denied: gatedAir)
     rt3 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
@@ -2416,9 +2417,9 @@ try:
           f"restVyMax={st3['restVyMax']} restPenMax={st3['restPenMax']:.2e} "
           f"termDrift={st3['termDrift']:.4%}")
     w3 = t3vox["walk"]
-    check("F-T3b WALKS: 400-tick displacement >= 40 cells (derived "
-          "prediction ~80: one SHIFT per 5-tick half-cycle) with ZERO IK "
-          "iterations — the gait is pure CA",
+    check("F-T3b WALKS: 400-tick displacement >= 40 cells (T4-TRAINED "
+          "stride L=2: prediction 114 = 400·L/(2L+3), lean repaid per cycle) "
+          "with ZERO IK iterations — the gait is pure CA",
           w3["bodyX"] >= 40 and w3["iters"] == 0 and w3["nan"] == False,
           f"bodyX={w3['bodyX']} iters={w3['iters']} nan={w3['nan']}")
     vm3 = t3vox["vm"]
@@ -2437,7 +2438,7 @@ try:
           vm3["airDX"] == 0 and vm3["gatedAir"] > 0,
           f"airDX={vm3['airDX']} gatedAir={vm3['gatedAir']} "
           f"gatedSupport={vm3['gatedSupport']}")
-    print(f"T3 MEASURED: walk bodyX={w3['bodyX']} (pred ~80) iters={w3['iters']} "
+    print(f"T3 MEASURED: walk bodyX={w3['bodyX']} (T4-trained pred 114) iters={w3['iters']} "
           f"conn={vm3['connMin']} count=[{vm3['countMin']},{vm3['countMax']}] "
           f"shifts={vm3['shifts']} slips={vm3['slips']} "
           f"gatedAir={vm3['gatedAir']} airDX={vm3['airDX']}")

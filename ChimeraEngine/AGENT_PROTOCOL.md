@@ -9,59 +9,62 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Teddy pipeline T4 (immediately below).** Teddy-thread shipped:
-T2 structure (splat pyramid + density-law ground, `2263659`) and T3 rig
-(voxel-muscle CA gait — no FK/IK, `e0af946`; suite ALL GREEN incl. F-T3a–d).
-Phase 11 Stage 2 (browser engine) is **PARKED at the bottom of this slot** —
-prompt intact, ready for an agent when the operator returns to that thread.
+**LIVE TASK — Teddy pipeline T5 (immediately below).** Teddy-thread shipped:
+T2 structure (splat pyramid + density-law ground, `2263659`), T3 rig
+(voxel-muscle CA gait — no FK/IK, `e0af946`), T3.5 shape training
+(`080bf4b`, COM margin −1.63 → +2.21), T4 trained gait (stride L=2,
++41.5% under the falsifier gate). **Current dual score: P = 92, V = 58** —
+physics is in band, VISUAL is the deficit; T5 attacks it. Phase 11 Stage 2
+(browser engine) is **PARKED at the bottom of this slot** — prompt intact,
+ready for an agent when the operator returns to that thread.
 
 ---
 
-# Teddy pipeline, T4: trained gait refinement (headless, fast)
+# Teddy pipeline, T5: visual quality — make the walk READ as a teddy walking
 
-**TASK:** Refine the T3 voxel-muscle gait by training — a headless sweep of
-the gait's free knobs with the DERIVED T3 values as the baseline to beat.
-The gait stays CA-native (cell add/remove on the lattice; FK/IK is forbidden
-on this path — T3 measured `iters=0` and it stays 0).
+**TASK:** Raise the V-score (58/100, rubric in rule 8) without regressing
+the P-score (92/100). The physics is measured-correct; the picture is not
+skeptic-proof: at canonical framing the teddy is a small dark lump, the legs
+are not individually readable, and 375 raw cells is far under the
+0.5–2 splats/px density law.
 
-**STATE:** T3 (`e0af946`) + shape training (teddy_s1.cells) — hexapod
-alternating-tripod gait on `genomes/teddymuscle.chimera` (vmGait=1), now on
-the SHAPE-TRAINED body: 9 legs (6 original + 3 grown pillars), COM margin
-+2.21 cells (was −1.63 — the raw scan tips). Gait constants derived off the
-trained chains: VM_STEP=2, VM_LIFT=1, budget = leg manhattan + 2, parity
-tripods. Measured baseline on the trained body: 82 cells/400 ticks, slips 0,
-connMin 1, count [359,375], airDX 0, shape gate green. Suite ALL GREEN.
+**STATE:** T4 (`vmStride=2, vmLift=1` in `teddymuscle.chimera`): walk 116
+cells/400 t (pred 114), iters=0, conn 1, count [358,375], slips 0, airDX 0,
+contactTick 53 == prediction. Fast net ALL GREEN in 7.8 s. Strip pattern:
+`engine/scratch/_proof_t3.py` (headed, port 8914, 6 frames + ledger).
 
-**Rule 0 for the training itself (stated before the run):** the derived gait
-is the hypothesis. Prediction: the trained optimum matches it or beats it by
-< 20% speed. Falsifier: if the trained winner needs a falsifier broken to
-win, the derived gait stands and T4 reports that as the result (CASE B
-model — measured numbers, not a patched pass).
+**Rule 0 (stated before the run):** the V deficit is dominated by THREE
+measurable causes — (a) framing: the subject fills < 15% of the strip
+frame; (b) density: the viewer binds the 375-cell raw lattice, not the T2
+pyramid shell (`teddy_shell.json`, up to 56802 splats — the machinery
+exists and is camera-driven); (c) lighting/exposure: the body renders dark
+against a dark ground. Prediction: subject ≥ 40% of frame height + the
+pyramid level picked by the 2.5-px footprint law + an exposure pass lifts
+V into the 70s with ZERO physics edits. Falsifier: any variant that raises
+the strip's readability but changes ONE wire number (bodyX, count, slips,
+contactTick) is disqualified — P must not move.
 
-**What to wire first:** the knobs are `static const` in `ca_core.cpp`
-(VM_STEP, VM_LIFT, the parity-t tripod partition). Move them to genome keys
-(`vmStep`, `vmLift`, `vmTripod`) parsed by the vox loader next to `vmGait`,
-defaulting to the derived values so `teddymuscle.chimera` is unchanged in
-behavior. Then a scratch sweep script runs `ca_core.exe 0 <variant>
-selftest` per genome variant (≈2 s per run — no browser, no recompile).
+**What to wire:** viewer-only (`spiace_native.html` + maybe relay frame
+packing). Camera: canonical strip framing derived from the body's bounding
+radius (subject ≥ 40% frame height at walk start, lagged follow stays).
+Density: bind the pyramid shell to the live cells (the T2 rebinding already
+keeps stable bindings byte-identical — extend it to level selection by
+camera depth). Exposure: a display-space gain, never touching cell data.
 
-**Objective:** maximize `walk.bodyX` over 400 ticks SUBJECT TO the F-T3
-falsifiers (connMin=1, slips=0, count within 5% of 370, airDX==0,
-contactTick == drop-law prediction). A variant that breaks a falsifier is
-disqualified, not averaged.
+**Objective:** V-score up, P-score flat. Both numbers reported with the
+category breakdown, before AND after.
 
-**FALSIFIERS:** F-T3a–d must stay green on the final chosen parameters, plus
-the training report includes the full measured table (knob values → bodyX,
-slips, connMin, count range) so the win is auditable.
+**FALSIFIERS:** F-T3a–d green on the untouched genome; the strip shows the
+claimed improvement (a strip that can't show the claim is a FAIL, rule 7);
+wire numbers bit-identical to the T4 pins above.
 
-**CONSTRAINTS:** no git commits; non-vm code paths in `ca_core.cpp` frozen;
-all other genomes untouched; suite green before report
-(`T_HEADED=T1d python test_native.py` for iteration, one full run at the
-end); scratch in `engine/scratch/` only.
+**CONSTRAINTS:** no git commits; `ca_core.cpp`, all genomes, and
+`test_native.py` FROZEN (this is a viewer task); scratch in
+`engine/scratch/` only; headed runs only for your strip captures.
 
-**DONE MEANS:** report with (1) the measured sweep table, (2) derived-vs-
-trained verdict with numbers, (3) suite PASS/FAIL + log path, (4) diff
-summary. Then STOP.
+**DONE MEANS:** report with (1) before/after strips + V-score category
+breakdown both times, (2) P-score confirmation (fast net log path), (3)
+diff summary. Then STOP.
 
 ---
 
@@ -134,7 +137,7 @@ You are an implementation agent on SPIACE. Kimi K3 (or the operator) verifies yo
 work and commits it. **You never run git commit/push.** Every rule below was earned
 by a real failure — the incident is cited so you know why it exists.
 
-## THE SEVEN RULES
+## THE EIGHT RULES
 
 **1. Green baseline BEFORE you edit; green fast net BEFORE you report.**
 Run `python test_native.py` before writing a line (seconds now — the headed
@@ -188,6 +191,40 @@ highlight — `engine/scratch/_proof_t3.py` is the reusable strip pattern).
 Two more earned notes: check `pageerror` on every probe (a scope error threw
 inside the splat builder and the suite's numeric checks never noticed), and a
 strip that can't show the claim being made is a FAIL, however green the log.
+
+**8. Two scores, every report — P and V, each /100.**
+Operator directive 2026-08-16. Every deliverable ships a PHYSICS score and a
+VISUAL score. 100 is theoretically impossible on both; the operator sets the
+acceptable band from measured baselines (first baselines: P = 92, V = 58 at
+T4). Each category is measurable — no vibes. If you cannot name the
+instrument a category is measured with, the category scores 0.
+
+P (physics), /100:
+- Conservation ledgers (20): measured energy/momentum drift vs the named
+  bound. Derived-but-nonzero drift (e.g. symplectic shadow) costs points.
+- Analytic-law agreement (20): every closed-form prediction (drop tick,
+  Kepler, thermal, cyclotron, stride rate) inside its PRE-STATED band.
+- Oracle replication (15): C++ vs the independent Python oracle — bit-exact
+  is full marks; every epsilon-waiver costs.
+- Integrity gates (15): connectivity, count bounds, no NaN, zero slips.
+- Contact & traction (15): gap, rest equilibrium, airDX, earned traction.
+- Control layer (10): learner/deliberation consistent with the physics
+  (an unfixed CASE B stall costs — measured and pinned, not patched).
+- Falsifier discipline (5): every claim named its falsifier before the run.
+
+V (visual), /100 — judged off the strip/screenshot YOU read (rule 7):
+- Subject recognizability (25): a skeptic names the object at canonical
+  framing without being told.
+- Motion legibility (20): the claimed motion reads as that motion (a walk
+  reads as walking, not sliding or jiggling).
+- Grounding (15): contact, shadow, no floating or sinking.
+- Renderer fidelity (15): no seams, flicker, or artifacts; splat pipeline.
+- Scene legibility (15): framing (subject ≥ 40% of frame), lighting,
+  contrast, HUD honesty.
+- Density law (10): splats-per-pixel inside the 0.5–2/px capture law at
+  canonical framing (T2 measured this off real 3DGS scans).
+
+A P regression to buy V (or vice versa) is disqualified, not traded.
 
 ## KEY PATHS (go here first; do not explore blindly)
 

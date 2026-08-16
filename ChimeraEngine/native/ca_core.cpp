@@ -210,6 +210,13 @@ struct Genome {
   // fires) -> body shift (earned: gated on planted paws + ground contact).
   // 0 = FK/IK gait (default, unchanged); 1 = voxel-muscle.
   int vmGait = 0;
+  // T4: the trainable gait knobs (genome data, swept headless by
+  // engine/scratch/_t4_sweep.py). Stride L: cells the body earns per SHIFT;
+  // the swing must repay the 2L lean (two shifts per leg cycle) and the leg
+  // budget grows to manhattan+2L — the physics of the CA substrate, derived
+  // in the T3 header below. Defaults are the T3-derived values.
+  int vmStride = 1;
+  int vmLift = 1;
 };
 
 static void die4(const std::string& msg) {
@@ -364,6 +371,10 @@ static Genome loadGenome(const std::string& path) {
     if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1)
       g.embodiment = 1;
     if (kv.count("vmGait")) g.vmGait = std::stoi(kv["vmGait"]);   // T3
+    if (kv.count("vmStride")) g.vmStride = std::stoi(kv["vmStride"]);  // T4
+    if (kv.count("vmLift")) g.vmLift = std::stoi(kv["vmLift"]);
+    if (g.vmStride < 1 || g.vmStride > 8 || g.vmLift < 1 || g.vmLift > 4)
+      die4("INVALID: vmStride/vmLift out of bounds in " + path);
     if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
       // N8 goal membrane for an imported body — the SAME declarations the
       // creature loader reads (goal requires the N6 terrain membrane).
@@ -1888,8 +1899,8 @@ static std::vector<VMLeg> vmLegs;
 static int vmActiveTripod = 0;             // legs index%2 == vmActiveTripod
 static int vmPhase = 0;                    // 0 LIFT, 2 SWING, 3 PLANT, 4 SHIFT
 static int vmSwingN = 0;
-static const int VM_STEP = 2;   // derived: repays the 2-cell lean per cycle
-static const int VM_LIFT = 1;   // the minimum that clears the ground lattice
+static int vmStep = 2;      // = 2 * W.vmStride: repays the 2L lean per cycle
+static int vmLiftN = 1;     // = W.vmLift: cells the muscle shortens on LIFT
 struct VMAudit {
   long ticks = 0, shifts = 0, gatedAir = 0, gatedSupport = 0, slips = 0;
   int minConn = 1, minCount = 1 << 30, maxCount = 0;
@@ -2027,7 +2038,7 @@ static void vmWalkTick() {
   if (vmPhase == 0) {              // LIFT: the active tripod's muscles
     for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
       VMLeg& L = vmLegs[i];        // shorten by removing end voxels
-      L.paw[1] += VM_LIFT;
+      L.paw[1] += vmLiftN;
       L.planted = false;
       vmRelayLeg(L);
     }
@@ -2038,7 +2049,7 @@ static void vmWalkTick() {
       L.paw[0] += 1;
       vmRelayLeg(L);
     }
-    if (++vmSwingN >= VM_STEP) vmPhase = 3;
+    if (++vmSwingN >= vmStep) vmPhase = 3;
   } else if (vmPhase == 3) {       // PLANT: extend to the ground plane
     const int gy = (int)std::lround(bear.groundMinY);
     bool done = true;
@@ -2054,10 +2065,10 @@ static void vmWalkTick() {
     if (done) vmPhase = 4;
   } else {                         // SHIFT: the earned stride (N7 in CA form)
     if (vmPlanted() >= 3 && bear.contact) {
-      bear.body[0] += 1;                       // earned: the body advances
+      bear.body[0] += W.vmStride;              // earned: the body advances L
       for (VMLeg& L : vmLegs) {
         if (!L.planted) continue;
-        const int wantX = L.paw[0] - 1;        // world-fixed paw
+        const int wantX = L.paw[0] - W.vmStride;  // world-fixed paw
         L.paw[0] = wantX;
         vmRelayLeg(L);
         if (L.paw[0] != wantX) vmA.slips++;    // budget clamp = traction slip
@@ -2073,6 +2084,8 @@ static void vmWalkTick() {
 
 static void vmInit() {
   vmLegs.clear(); vmActiveTripod = 0; vmPhase = 0; vmSwingN = 0;
+  vmStep = 2 * W.vmStride;               // the swing repays both shifts' lean
+  vmLiftN = W.vmLift;
   vmA = VMAudit();
   for (const CTip& t : cTips) {          // the rig chains ARE the leg columns
     VMLeg L;
@@ -2084,7 +2097,7 @@ static void vmInit() {
       L.cells.push_back(t.path[i]);      // adopted: the leg owns its column
       L.line.push_back(t.path[i]);
     }
-    L.budget = (int)t.path.size() + 1;   // manhattan(path)=size-1, +2 lean
+    L.budget = (int)t.path.size() - 1 + 2 * W.vmStride;  // manhattan + 2L lean
     L.planted = true;
     vmLegs.push_back(L);
   }
