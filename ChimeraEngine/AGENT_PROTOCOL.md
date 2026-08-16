@@ -9,64 +9,67 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Teddy pipeline T5 (immediately below).** Teddy-thread shipped:
-T2 structure (splat pyramid + density-law ground, `2263659`), T3 rig
-(voxel-muscle CA gait — no FK/IK, `e0af946`), T3.5 shape training
-(`080bf4b`, COM margin −1.63 → +2.21), T4 trained gait (stride L=2,
-+41.5% under the falsifier gate). **Current dual score: P = 92, V = 58** —
-physics is in band, VISUAL is the deficit; T5 attacks it. Phase 11 Stage 2
-(browser engine) is **PARKED at the bottom of this slot** — prompt intact,
-ready for an agent when the operator returns to that thread.
+**LIVE TASK — Teddy pipeline T6 (immediately below).** Teddy-thread shipped:
+T2 structure (`2263659`), T3 voxel-muscle gait (`e0af946`), T3.5 shape
+training (`080bf4b`), T4 trained gait (stride L=2, +41.5%), T5 visual pass
+(V 58 → 74, wire bit-identical, fps 62). **Current dual score: P = 92,
+V = 74** — the persisting species are surface mush, pastel washout, no
+readable face, illegible legs; saturation completeness 0.51 (NOT saturated
+— the band is not set). Phase 11 Stage 2 (browser engine) is **PARKED at
+the bottom of this slot** — prompt intact, ready for an agent when the
+operator returns to that thread.
 
 ---
 
-# Teddy pipeline, T5: visual quality — make the walk READ as a teddy walking
+# Teddy pipeline, T6: surface fidelity — mush, washout, and the face
 
-**TASK:** Raise the V-score (58/100, rubric in rule 8) without regressing
-the P-score (92/100). The physics is measured-correct; the picture is not
-skeptic-proof: at canonical framing the teddy is a small dark lump, the legs
-are not individually readable, and 375 raw cells is far under the
-0.5–2 splats/px density law.
+**TASK:** Attack the four persisting visual species (rule 8 ledger, round
+2): `v:surface-popcorn-mush`, `v:body-washed-out-pastel`,
+`v:face-not-discernible`, `v:legs-illegible`. Viewer/render-pipeline only —
+the physics stays exactly where T4 pinned it.
 
-**STATE:** T4 (`vmStride=2, vmLift=1` in `teddymuscle.chimera`): walk 116
-cells/400 t (pred 114), iters=0, conn 1, count [358,375], slips 0, airDX 0,
-contactTick 53 == prediction. Fast net ALL GREEN in 7.8 s. Strip pattern:
-`engine/scratch/_proof_t3.py` (headed, port 8914, 6 frames + ledger).
+**STATE:** T5 shipped: sRGB encode in the fragment shader, derived framing
+(fillFrac 0.45, R=1.33, measured by `__dbgFrame()`), ground ring-march at
+the rho/4 count budget (71k splats, fps 62). The shell binds at level
+h=64 (56802 splats, cell 0.0075 ≈ 4.5 px at R=1.33 — the FINEST level the
+pyramid has, and it is COARSER than the 2.5-px law wants). Splat billboard
+size is `L.cell * 1.9` (≈ 8.5 px) with falloff exp(-4r²) and flat
+0.8+0.2g shading — the mush hypothesis. Strip pattern:
+`engine/scratch/_proof_t5.py` (full-frame, per-frame probes).
 
-**Rule 0 (stated before the run):** the V deficit is dominated by THREE
-measurable causes — (a) framing: the subject fills < 15% of the strip
-frame; (b) density: the viewer binds the 375-cell raw lattice, not the T2
-pyramid shell (`teddy_shell.json`, up to 56802 splats — the machinery
-exists and is camera-driven); (c) lighting/exposure: the body renders dark
-against a dark ground. Prediction: subject ≥ 40% of frame height + the
-pyramid level picked by the 2.5-px footprint law + an exposure pass lifts
-V into the 70s with ZERO physics edits. Falsifier: any variant that raises
-the strip's readability but changes ONE wire number (bodyX, count, slips,
-contactTick) is disqualified — P must not move.
+**Rule 0 (stated before the run):** the mush is an OVERLAP artifact —
+billboards 1.9× the lattice spacing with a shallow Gaussian add energy
+between texels and low-pass the scan's surface detail; the washout is the
+gamma encode applied to the scan's ALREADY-display-referred vertex colors
+(double gamma: the PLY colors were authored for sRGB display, we encode
+again → pastel lift). Prediction: treating shell colors as
+display-referred (skip the second encode for the shell; keep it for the
+procedural palettes which are authored linear) + sizing billboards to the
+2.5-px law at subject depth (not 1.9×cell) + a steeper falloff restores
+the scan's surface — V recognizability 13 → 18+, with P flat.
+Falsifier: V does not rise (or any wire number moves) → the hypothesis is
+wrong; report which and stop.
 
-**What to wire:** viewer-only (`spiace_native.html` + maybe relay frame
-packing). Camera: canonical strip framing derived from the body's bounding
-radius (subject ≥ 40% frame height at walk start, lagged follow stays).
-Density: bind the pyramid shell to the live cells (the T2 rebinding already
-keeps stable bindings byte-identical — extend it to level selection by
-camera depth). Exposure: a display-space gain, never touching cell data.
+**Candidate knobs, in order of derivation strength:** (1) display-referred
+vs linear color provenance per splat source (shell = sRGB payload, decode
+to linear ONCE if the pipe is linear; procedural palettes stay as authored
+— MEASURE both ways on the strip, keep the honest one); (2) billboard
+size from `lodSpacing(R)` directly; (3) falloff exponent; (4) ONLY if the
+law demands finer than h=64: a new pyramid level from `teddy_pyramid.py`
+(data change, not code-path change — check rebuild cost at 33 Hz before
+accepting).
 
-**Objective:** V-score up, P-score flat. Both numbers reported with the
-category breakdown, before AND after.
+**FALSIFIERS:** wire ledger bit-identical to the T4/T5 pins
+(`scratch/_proof_t5_ledger_before.txt`); fast net ALL GREEN; fps ≥ 55 on
+the strip; V breakdown reported before/after with the strip READ (rule 7);
+the round logged (`score_saturation.py add T6 <P> <V> <ids...>`).
 
-**FALSIFIERS:** F-T3a–d green on the untouched genome; the strip shows the
-claimed improvement (a strip that can't show the claim is a FAIL, rule 7);
-wire numbers bit-identical to the T4 pins above.
+**CONSTRAINTS:** no git commits; `ca_core.cpp`, genomes, `test_native.py`
+frozen; scratch in `engine/scratch/` only.
 
-**CONSTRAINTS:** no git commits; `ca_core.cpp`, all genomes, and
-`test_native.py` FROZEN (this is a viewer task); scratch in
-`engine/scratch/` only; headed runs only for your strip captures.
-
-**DONE MEANS:** report with (1) before/after strips + V-score category
-breakdown both times, (2) P-score confirmation (fast net log path), (3)
-diff summary, (4) the round logged to the score ledger
-(`python score_saturation.py add T5 <P> <V> <def-id>...` — rule 8's
-saturation instrument; new deficiency classes get new stable ids). Then STOP.
+**DONE MEANS:** (1) strips + V breakdown before/after, (2) which knobs
+moved the score and which were falsified, (3) ledger round + `status`
+output, (4) diff summary. Then STOP.
 
 ---
 
@@ -193,6 +196,10 @@ highlight — `engine/scratch/_proof_t3.py` is the reusable strip pattern).
 Two more earned notes: check `pageerror` on every probe (a scope error threw
 inside the splat builder and the suite's numeric checks never noticed), and a
 strip that can't show the claim being made is a FAIL, however green the log.
+Third earned note (T5, 2026-08-16): the strip must show the CANONICAL view —
+the T4 strip's tight crop masked the framing deficiency it was meant to
+judge. Full-frame capture + a measured fill probe (`__dbgFrame()`), never a
+hand-picked crop.
 
 **8. Two scores, every report — P and V, each /100.**
 Operator directive 2026-08-16. Every deliverable ships a PHYSICS score and a
@@ -246,6 +253,21 @@ round (T4-baseline): 7 classes found, Chao2 estimates ~28, completeness
 rubric's categories are wrong, not incomplete: re-frame, don't keep
 scoring.
 
+## THE METHODOLOGY IN ONE PASSAGE (2026-08-16 consolidation)
+
+Every task runs the same loop, and the loop is the rules above:
+**Rule 0 first** — statement, prediction, falsifier named BEFORE the run.
+**Derive, don't tune** — a number you chose is a broken chain; train under
+a falsifier gate instead (T4: the sweep found L=2 at +41.5% AND showed why
+the raw-faster L≥3 were illegal). **Construction order** (rule 6): shape →
+rig → gait; never train movement on an unphysical body. **Judge what you
+see** (rule 7): the strip is a first-class artifact, full-frame, with the
+claim measured by a probe. **Two scores** (rule 8): P and V, each /100,
+every report, logged to the ledger; the band emerges from taste-driven
+saturation, not from a number anyone picked. **Done is a log** (rule 2),
+**docs last, append-only** (rule 3), **green before you edit and before
+you report** (rule 1).
+
 ## KEY PATHS (go here first; do not explore blindly)
 
 | What | Where |
@@ -261,6 +283,7 @@ scoring.
 | The plan / ledger (append-only) | `ChimeraEngine/engine/SPIACE_RPG_PLAN.md` |
 | TRELLIS image→3D runtime + weights | `models/trellis/` (needs `out/` dir to exist for `--voxply`) |
 | Score ledger + saturation instrument | `ChimeraEngine/engine/score_saturation.py` → `score_ledger.json` (rule 8) |
+| Proof-strip pattern (full-frame + probes) | `ChimeraEngine/engine/scratch/_proof_t5.py` (rule 7) |
 | Teddy splat pyramid (T2) | `ChimeraEngine/native/teddy_pyramid.py` → `genomes/teddy_shell.json` |
 | Teddy voxel bodies (T1/T3) | `genomes/teddy.cells` (370 cells, 6 leg chains); `teddy.chimera` FK/IK · `teddymuscle.chimera` voxel-muscle |
 

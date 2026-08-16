@@ -13,6 +13,20 @@
         "v:legs-illegible",
         "v:shadow-faint"
       ]
+    },
+    {
+      "task": "T5",
+      "P": 92.0,
+      "V": 74.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:legs-illegible",
+        "v:body-washed-out-pastel",
+        "v:face-not-discernible",
+        "v:surface-popcorn-mush",
+        "v:ground-band-strip-fixed-in-round"
+      ]
     }
   ]
 }

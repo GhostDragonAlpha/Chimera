@@ -995,6 +995,42 @@ with zero changes to ca_core.cpp's physics/gait/nav layers.
   falsifier gate finds the real optimum (L=2, +41.5%) AND explains why the
   apparently-faster variants are illegal — a sweep without the gate would
   have shipped L=4 and a body that inflates 8% every stride.
+- **T5 — visual quality is trained under the same discipline as physics:**
+  COMPLETE, viewer-only (`spiace_native.html`; core, genomes, and tests
+  FROZEN — the falsifier was a bit-identical wire). Rule 0: the V deficit
+  decomposes into three measurable causes — framing, density, exposure —
+  prediction: fixing them lifts V into the 70s with zero physics edits.
+  **Measured: V 58 → 74, P flat at 92, prediction landed.** (a) EXPOSURE:
+  the pipe wrote linear color to an sRGB canvas — the missing transfer
+  function put everything ~2 stops dark (the muddy-teddy bug); the fix is
+  the sRGB standard encode in the fragment shader, not a brightness knob.
+  (b) FRAMING: a scan's camera is held where the subject fills the frame —
+  so camera distance now DERIVES from the body's measured bounds (fill
+  target 45% of frame height, margin for gait lift; the bear/wall/oak
+  presentation tables are cloned, never mutated). `__dbgFrame()` measures
+  the claim: fillFrac 0.45, R 1.33. (c) DENSITY: two real bugs measured
+  and fixed — uniform subject-depth ground spacing cost 259k splats and
+  20 fps at close framing; the first per-depth march still spent 140k
+  (the near-field patch is huge relative to camera distance); the final
+  law: per-depth ring march around the subject (rings, not rows — the
+  row march spent the budget on a runway band along z=0, strip #2) with
+  the background's rho/4 rule applied to COUNT (ground budget = shell
+  level n/4 ≈ 14.2k), fade to zero at the disc edge. Result: 71k splats
+  total, fps 62 (was 60 before T5 — no cost). **Instrument correction,
+  documented:** the T4 strip's tight clip masked the framing deficiency
+  itself — proof strips are now FULL-FRAME (the canonical view), and the
+  proof script reports fillFrac / shell level / splat count per frame.
+  V category breakdown (before → after): recognizability 8 → 13 (plush
+  silhouette + ear cluster now read; still pastel, no face), motion
+  14 → 15 (orange hot voxels mark the stepping paws), grounding 12 → 14
+  (contact pool under the subject), renderer 10 → 11 (fps 62, gamma
+  fixed; splat-overlap mush remains), scene 9 → 13, density 5 → 8.
+  **Remaining discovered species** (logged to the score ledger, round 2):
+  v:body-washed-out-pastel, v:surface-popcorn-mush,
+  v:face-not-discernible, v:legs-illegible (persisting),
+  v:ground-band-strip (discovered and fixed in-round — counted, the
+  curve measures discovery). Saturation: 11 classes observed, Chao2
+  completeness 0.25 → 0.51 — NOT saturated; the band is not set yet.
 - **The dual score (operator directive 2026-08-16):** every deliverable now
   ships TWO scores, each /100, 100 acknowledged theoretically impossible —
   **P (physics)** = conservation 20 + analytic-law agreement 20 + oracle
@@ -1020,4 +1056,4 @@ saturated. **Current state (T4, measured): P = 92**
 
 ---
 
-Document version: 4.6 (G1–G5 + N1–N8 + T1–T4 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4 complete | Agent: bionic + Kimi K3
+Document version: 4.7 (G1–G5 + N1–N8 + T1–T5 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3/T4/T5 complete | Agent: bionic + Kimi K3
