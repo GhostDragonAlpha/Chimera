@@ -89,14 +89,23 @@ es.onmessage = e => {
     teddyFramed = false;
     if (m.cell > 0) PRES.cell = m.cell;      // the core reports its cell size
     if (EMB) document.getElementById('ctl').style.display = 'block';
-    if (GENOME.startsWith('teddy') && !SHELL)
-      fetch('/genomes/teddy_shell.json').then(r => r.json()).then(j => {
+    if (GENOME.startsWith('teddy') && !SHELL) {
+      // T9: the shell is per-BODY data — the canonical honey bear carries
+      // teddy_honey_shell.json (H=28 scale); the T1 teddy keeps
+      // teddy_shell.json. Genome name -> stem: 'teddy-honey-muscle-v1' ->
+      // 'teddy_honey'. Unknown bodies fall back to the T1 shell.
+      const stem = GENOME.replace(/-v\d+$/, '').replace(/-muscle$/, '')
+                         .replace(/-/g, '_');
+      fetch(`/genomes/${stem}_shell.json`).then(r => r.ok ? r.json()
+          : fetch('/genomes/teddy_shell.json').then(r2 => r2.json()))
+        .then(j => {
         for (const L of j.levels)      // T6: the shell payload is DISPLAY-
           L.coll = L.col.map(c => [Math.pow(c[0], 2.2),      // REFERRED sRGB —
                                    Math.pow(c[1], 2.2),      // decode once so
                                    Math.pow(c[2], 2.2)]);    // the pipe's
         SHELL = j; splatsDirty = true;   // encode round-trips the scan's color
       }).catch(() => {});
+    }
     window.__growthStats = stats();
     return;
   }

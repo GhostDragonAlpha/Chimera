@@ -4,7 +4,11 @@
 # the skin the viewer draws, with the level picked by the camera LOD law
 # (3DGS invariant: splat footprint ~2.5 px at current depth).
 #
-#   python teddy_pyramid.py
+#   python teddy_pyramid.py [ply] [sim_body_h] [out_stem]
+#
+# T9: parametrized — sim_body_h defaults to 8 (T1 teddy); the canonical honey
+# bear stands 28 sim cells (voxelize_teddy's derived H), and the pyramid
+# levels scale with it so the LOD law sees the same per-level footprint.
 #
 # Emits genomes/teddy_shell.json:
 #   { "levels": [ { "h": <grid height in cells>, "cell": <world units>,
@@ -19,11 +23,16 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 GENOMES = HERE / "genomes"
-PLY = HERE.parent.parent / "models" / "trellis" / "teddy.ply"
+import sys
+PLY = Path(sys.argv[1]) if len(sys.argv) > 1 else (
+    HERE.parent.parent / "models" / "trellis" / "teddy.ply")
 
-BEAR_BODYH = 8          # the sim's teddy stands 8 sim-cells tall (voxelize_teddy)
+BEAR_BODYH = int(sys.argv[2]) if len(sys.argv) > 2 else 8
+                          # sim cells tall (voxelize_teddy); T9 honey = 28
+OUT_STEM = sys.argv[3] if len(sys.argv) > 3 else "teddy_shell"
 CELL = 0.06             # sim cell world size
-LEVELS = [16, 24, 32, 48, 64]      # pyramid: grid heights in shell cells
+LEVELS = [round(h * BEAR_BODYH / 8) for h in [16, 24, 32, 48, 64]]
+                          # pyramid heights scale with the body's sim height
 
 
 def read_ply_verts(path):
@@ -144,7 +153,7 @@ def main():
                        "pos": pos.tolist(), "col": col.tolist()})
         print(f"level h={h:3d}  cell={cell_world:.4f} units  splats={n}")
 
-    out = GENOMES / "teddy_shell.json"
+    out = GENOMES / f"{OUT_STEM}.json"
     out.write_text(json.dumps({"levels": levels}, separators=(",", ":")),
                    encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size / 1e6:.1f} MB)")

@@ -23,8 +23,9 @@ import json, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SRC = HERE / "genomes" / "teddy.cells"
-DST = HERE / "genomes" / "teddy_s1.cells"
+STEM = sys.argv[1] if len(sys.argv) > 1 else "teddy"   # T9: stem param —
+SRC = HERE / "genomes" / f"{STEM}.cells"               # teddy stays frozen
+DST = HERE / "genomes" / f"{STEM}_s1.cells"
 MARGIN_REQ = 1.0          # derived: one lattice step of discretization slack
 D6 = [(1,0,0),(-1,0,0),(0,1,0),(0,-1,0),(0,0,1),(0,0,-1)]
 
@@ -170,7 +171,7 @@ def main():
             f.write(f"{fore} {side} {len(path)}\n")
             for p in path:
                 f.write(f"{p[0]} {p[1]} {p[2]}\n")
-    print(f"WROTE {DST.name}: {len(cur_cells)} cells (+{len(cur_cells)-370}), "
+    print(f"WROTE {DST.name}: {len(cur_cells)} cells (+{len(cur_cells)-len(cells)} grown), "
           f"{len(cur_chains)} legs, margin {final['margin']:.3f}")
 
 if __name__ == "__main__":

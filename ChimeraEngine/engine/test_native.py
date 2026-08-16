@@ -2550,6 +2550,93 @@ try:
           f"slips={vm7['slips']} gatedAir={vm7['gatedAir']} "
           f"count=[{vm7['countMin']},{vm7['countMax']}]/{grown7} "
           f"terrainCols={len(wire_ter7)} iters={ter7_iters}")
+
+    # ---- F-T9: the CANONICAL teddy (T9) — a trained model made the body -----
+    # The T1 teddy's source was a MUTATED TRELLIS blob (measured: its base
+    # texture is brown noise — the pipeline faithfully animated a bad statue).
+    # T9: SDXL-Turbo image (ambient-lit, shadowless) -> TRELLIS res-512 ->
+    # voxelize at H=28 (derived: canon proportions put the eye at H*0.45/6
+    # cells; an eye needs >= 2 cells to exist -> H >= 26.7) -> shape_train
+    # (1 pillar, margin -3.081 -> +3.100). Old teddy files are FROZEN — the
+    # T3/T7 regressions above pin them.
+    #   F-T9a: shape gate on the trained body (recomputed from the cells
+    #          file, never trusted from the trainer)
+    #   F-T9b: the drop law holds at the new scale (contact tick == discrete
+    #          prediction; dropH scales with bodyH)
+    #   F-T9c: the scale-free stride law — the T4-trained gait walks the new
+    #          body with displacement in the SAME band as the old (the law
+    #          L/(2L+3) is in cell units, so scale cancels)
+    #   F-T9d: integrity + airwalk (conn, count ±5%, airDX bit-exact 0)
+    rt9 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                          str(NATIVE / "genomes" / "teddyhoneymuscle.chimera"),
+                          "selftest"], capture_output=True, text=True,
+                         timeout=300)
+    t9msgs = [json.loads(l) for l in rt9.stdout.splitlines() if l.strip()]
+    t9fin = next((m for m in t9msgs if m.get("type") == "final"), None)
+    t9vox = next((m for m in t9msgs if m.get("type") == "voxtest"), None)
+    tg9 = read_chimera(NATIVE / "genomes" / "teddyhoneymuscle.chimera")
+    s9r = [l.split("#")[0].split() for l in
+           open(NATIVE / "genomes" / tg9["cellsFile"])]
+    s9r = [l for l in s9r if l]
+    n_s9 = int(s9r[0][1])
+    cells_s9 = [tuple(map(int, s9r[1 + j])) for j in range(n_s9)]
+    i_s9 = 1 + n_s9
+    m_s9 = int(s9r[i_s9][1]); i_s9 += 1
+    paws_s9 = []
+    for _ in range(m_s9):
+        nx_s9 = int(s9r[i_s9][2]); i_s9 += 1
+        paws_s9.append(tuple(map(int, s9r[i_s9 + nx_s9 - 1])))
+        i_s9 += nx_s9
+    gy_s9 = min(c[1] for c in cells_s9)
+    cx_s9 = sum(c[0] for c in cells_s9) / n_s9
+    cz_s9 = sum(c[2] for c in cells_s9) / n_s9
+    H_s9 = hull2_s1([(p[0], p[2]) for p in paws_s9])
+    marg_s9 = 1e9
+    for a, b in zip(H_s9, H_s9[1:] + H_s9[:1]):
+        ex, ey = b[0] - a[0], b[1] - a[1]
+        marg_s9 = min(marg_s9,
+                      (ex * (cz_s9 - a[1]) - ey * (cx_s9 - a[0]))
+                      / math.hypot(ex, ey))
+    coplanar_s9 = all(p[1] == gy_s9 for p in paws_s9)
+    grown9 = len(t9fin["cells"]) if t9fin else 0
+    check("F-T9a canonical body is physically correct BEFORE movement — paws "
+          "coplanar, COM projection inside the paw hull with margin >= 1 cell "
+          "(recomputed from teddy_honey_s1.cells)",
+          coplanar_s9 and marg_s9 >= 1.0 and grown9 == n_s9 and n_s9 > 3000,
+          f"legs={m_s9} COM=({cx_s9:.3f},{cz_s9:.3f}) hull={H_s9} "
+          f"margin={marg_s9:.3f} cells={grown9}/{n_s9} (density: H=28 scale)")
+    st9 = t9vox["stand"]
+    g9 = float(tg9["gravity"]) / (float(tg9["tickHz"]) ** 2
+                                  * float(tg9["cell"]))
+    n_pred9 = 1
+    while n_pred9 * (n_pred9 + 1) < 2 * st9["dropH"] / g9:
+        n_pred9 += 1
+    check("F-T9b drop law at the new scale: contact tick == discrete "
+          "prediction, rest equilibrium exact",
+          st9["contactTick"] == n_pred9 and st9["restVyMax"] == 0
+          and st9["restPenMax"] < 1e-12 and st9["termDrift"] < 0.02,
+          f"contactTick={st9['contactTick']} pred={n_pred9} "
+          f"dropH={st9['dropH']} termDrift={st9['termDrift']:.4%}")
+    w9 = t9vox["walk"]
+    vm9 = t9vox["vm"]
+    check("F-T9c the stride law is SCALE-FREE: T4-trained gait on the new "
+          "body lands within 10% of the old body's 116 cells/400t",
+          abs(w9["bodyX"] - 116) <= 12 and w9["iters"] == 0
+          and w9["nan"] == False,
+          f"bodyX={w9['bodyX']} (old 116) iters={w9['iters']} "
+          f"nan={w9['nan']}")
+    check("F-T9d integrity + airwalk: single component, count within 5%, "
+          "airDX bit-exact 0, slips reported",
+          vm9["connMin"] == 1 and vm9["countMin"] >= grown9 * 0.95
+          and vm9["countMax"] <= grown9 * 1.05 and vm9["airDX"] == 0
+          and "slips" in vm9,
+          f"conn={vm9['connMin']} count=[{vm9['countMin']},{vm9['countMax']}]/"
+          f"{grown9} slips={vm9['slips']} airDX={vm9['airDX']} "
+          f"gatedAir={vm9['gatedAir']}")
+    print(f"T9 MEASURED: canonical honey teddy — cells={grown9} legs={m_s9} "
+          f"margin={marg_s9:.3f} contact@{st9['contactTick']} (pred {n_pred9}) "
+          f"walk bodyX={w9['bodyX']} (old-body 116) slips={vm9['slips']} "
+          f"count=[{vm9['countMin']},{vm9['countMax']}]")
 finally:
     relay.terminate()
 

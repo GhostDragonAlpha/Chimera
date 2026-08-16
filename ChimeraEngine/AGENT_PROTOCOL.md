@@ -9,18 +9,46 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**LIVE TASK — Teddy pipeline T8 (immediately below).** Teddy-thread shipped:
-T2 structure (`2263659`), T3 voxel-muscle gait (`e0af946`), T3.5 shape
-training (`080bf4b`), T4 trained gait (stride L=2, +41.5%), T5 visual pass
-(V 58 → 74), T6 PART A (structure + ROM, V 74 → 80), T7 hills
-(teddymusclehills.chimera, walks the bear's seed-2026 world, hills 106 vs
-flat 116 cells/400t, flat ledger bit-unchanged, F-T7a…d green).
-**Current dual score: P = 92, V = 82** — persisting species: face,
-walk-blur legs, stubby limbs, terrain-ridge-lines (1D heightfield extruded
-along z — no z variation yet); saturation completeness 0.289, discovery
-7→4→1→1 (NOT saturated — the band is not set). Phase 11 Stage 2 (browser
+**LIVE TASK — Teddy pipeline T8 (immediately below), now on the HONEY body.**
+Teddy-thread shipped: T2 structure (`2263659`), T3 voxel-muscle gait
+(`e0af946`), T3.5 shape training (`080bf4b`), T4 trained gait (stride L=2,
++41.5%), T5 visual pass (V 58 → 74), T6 PART A (structure + ROM, V 74 → 80),
+T7 hills (teddymusclehills.chimera, walks the bear's seed-2026 world, hills
+106 vs flat 116 cells/400t, flat ledger bit-unchanged, F-T7a…d green), **T9
+canonical re-import**: the T1 teddy's source was a mutated TRELLIS blob — the
+physics was faithfully animating a bad statue. New pipeline: SDXL-Turbo
+ambient-lit candidates (`models/imagegen/sd-cli.exe`, 4-step turbo, ambient
+light only — shadows pollute shape capture) → operator pick sheet → **HONEY**
+→ TRELLIS (`models/trellis/runtime/trellis-cli.exe`, cwd MUST be
+models/trellis or it dies silently at [3/6] rc=127) → `voxelize_teddy.py
+<ply> teddy_honey 28` (H=28 derived: head≈0.45H, eye≥2 cells ⇒ H≥26.7) →
+3673 cells → `shape_train.py teddy_honey` → 3678 cells, 3 legs, connected
+3678/3678 → `teddyhoneymuscle.chimera` + `teddy_pyramid.py` shell
+(342k splats, levels h=56…224). F-T9a…d green in the fast net: shape gate,
+drop law (contactTick 99 == pred 99, drift 0.9935%), scale-free stride
+(bodyX=114 vs old 116, |Δ|≤12), integrity+airwalk (airDX 0). Turntable
+(`scratch/_proof_t9.py` → `_t9_turntable.mp4`) + walk strip
+(`_proof_t9_walk.py`: bodyX 24→100, contact GROUND, vy 0) read by me;
+Qwen 3.8 judge (`scratch/_judge_t9.py` — reasoning model: budget 4096 tokens
+and read `reasoning_content` when `content` is empty).
+**Current dual score: P = 92, V = 68** (ledger round 5 — V anchored on the
+Qwen 3.8 judge's REAL verdict, `scratch/_t9_verdict.txt`: face/bow/proportions
+right; see-through ghosting, floating paw pads, torso seam, lumpy hip bulge,
+bow visible from behind, grainy surface = the defect list. The first judge
+runs returned EMPTY content — qwen3 spends its budget on reasoning_content;
+fixed in `_judge_t9.py`: max_tokens 4096 + reasoning_content fallback +
+utf-8 stdout/file writes). Resolved by T9:
+face-not-discernible, density-below-capture-law, limbs-stubby. Persisting:
+shadow-drift, Case-B stall, terrain-ridge-lines; new (Qwen-measured):
+splat-ghosting-translucency (BIGGEST — no occlusion in the renderer),
+floating-paw-pads, shell-level-banding (torso seam), lumpy-asymmetric-body,
+bow-misplaced-3d, fur-texture-noise, gait-motion-subtle, fps-23-at-max-shell.
+Saturation completeness 0.272 (NOT saturated). **T8 runs on teddyhoneymuscle now** — the
+old teddy.* / teddymuscle*.* files are FROZEN fossils pinned by T3/T7
+regressions; never regenerate in place. Phase 11 Stage 2 (browser
 engine) is **PARKED at the bottom of this slot** — prompt intact, ready for
-an agent when the operator returns to that thread.
+an agent when the operator returns to that thread. **T10 (lighting-direction
+contrast sampler) is filed after T8** — the operator's current interest.
 
 ---
 

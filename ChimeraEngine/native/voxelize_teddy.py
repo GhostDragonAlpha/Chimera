@@ -5,11 +5,17 @@
 # nav layers. This tool only DECIDES the scale and ORIENTATION of that mapping;
 # it does not touch the simulation.
 #
-#   python voxelize_teddy.py [models/trellis/teddy.ply]
+#   python voxelize_teddy.py [models/trellis/teddy.ply] [stem] [body_h]
 #
-# Emits, next to this file:
-#   genomes/teddy.cells    — the occupancy cell set + rig chains (DATA)
-#   genomes/teddy.chimera  — kind=vox genome table pointing at teddy.cells
+# Emits, next to this file (stem defaults to "teddy"):
+#   genomes/<stem>.cells    — the occupancy cell set + rig chains (DATA)
+#   genomes/<stem>.chimera  — kind=vox genome table pointing at <stem>.cells
+#
+# body_h (default 8, T1's bear-matching scale): the import resolution. T9
+# DERIVES it from feature legibility instead of scale-matching: canon teddy
+# proportions put the head at ~0.45 of height and the eye at ~1/6 of the
+# head, so an eye spans H*0.45/6 cells; an eye needs >= 2 cells to exist on
+# the lattice at all -> H >= 26.7. H=28 gives a 2.1-cell eye.
 #
 # SCALE IS DERIVED, NOT PICKED. The bear body stands 8 cells tall (bodyH = 8,
 # groundMinY = -4, measured from the beargoal selftest). We size the teddy so
@@ -25,8 +31,12 @@ HERE = Path(__file__).resolve().parent
 GENOMES = HERE / "genomes"
 PLY = Path(sys.argv[1]) if len(sys.argv) > 1 else (
     HERE.parent.parent / "models" / "trellis" / "teddy.ply")
+STEM = sys.argv[2] if len(sys.argv) > 2 else "teddy"   # T9: output stem —
+                                   # teddy.cells stays frozen as T1's fossil
 
-BEAR_BODYH = 8          # bear standing height in cells (beargoal selftest)
+BEAR_BODYH = int(sys.argv[3]) if len(sys.argv) > 3 else 8
+                          # default 8 = T1 bear-matching; T9 honey uses 28
+                          # (2.1-cell eye — see the header derivation)
 CELL = 0.06             # CA lattice cell size (cells are integer indices)
 
 
@@ -99,22 +109,46 @@ def main():
           f"y(up)[{min(c[1] for c in cells)}, {max(c[1] for c in cells)}] "
           f"z[{min(c[2] for c in cells)}, {max(c[2] for c in cells)}]")
 
-    # Rig chains: the leg-like columns are those touching the ground (y=-4).
-    # Each is declared as a chain from its topmost cell (hip) down to its
-    # ground cell (paw) — the contiguous run starting at y=-4. This posed
-    # teddy has all of them clustered on one side; that asymmetry IS the shape.
+    # Rig chains: the leg-like columns are those touching the ground plane
+    # (gy = the body's own lowest cell — derived, not the bear's hardcoded -4;
+    # T9 imports at H=28 where the ground is wherever the body says it is).
+    # A sitting bear touches ground with its whole bottom RIM, so raw
+    # ground-touching columns overcount legs (honey: 30). T9 clusters
+    # face-adjacent ground columns into REGIONS and rigs one chain per region
+    # (its tallest contiguous run) — a foot cluster is one leg, not nine.
+    gy = min(b for (_, b, _) in cells)
     cols = {}
     for (a, b, c) in cells:
         cols.setdefault((a, c), set()).add(b)
-    chains = []
-    for (ax, az) in sorted(cols):
-        if -4 not in cols[(ax, az)]:
+    ground_cols = {k for k, v in cols.items() if gy in v}
+    # face-adjacency clustering over (a, c)
+    clusters = []
+    seen = set()
+    for k in sorted(ground_cols):
+        if k in seen:
             continue
-        run = [-4]
-        while (run[-1] + 1) in cols[(ax, az)]:
-            run.append(run[-1] + 1)
-        if len(run) >= 3:
-            chains.append((ax, az, run))
+        stack, comp = [k], []
+        seen.add(k)
+        while stack:
+            cur = stack.pop()
+            comp.append(cur)
+            for da, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nb = (cur[0] + da, cur[1] + dc)
+                if nb in ground_cols and nb not in seen:
+                    seen.add(nb)
+                    stack.append(nb)
+        clusters.append(comp)
+    chains = []
+    for comp in clusters:
+        best = None
+        for (ax, az) in comp:
+            run = [gy]
+            while (run[-1] + 1) in cols[(ax, az)]:
+                run.append(run[-1] + 1)
+            if len(run) >= 3 and (best is None or len(run) > len(best[2])):
+                best = (ax, az, run)
+        if best:
+            chains.append(best)
 
     # gait flags by column position (phase variety); the displacement law is
     # independent of them — see ca_core.cpp's N7 earned-stride comment.
@@ -127,10 +161,12 @@ def main():
         path = [(ax, yy, az) for yy in reversed(run)]   # hip(top)->paw(bottom)
         chain_defs.append((fore, side, path))
 
-    print(f"rig chains: {len(chain_defs)} (leg columns touching ground y=-4)")
+    print(f"rig chains: {len(chain_defs)} (one per face-adjacent ground "
+          f"region; {len(ground_cols)} ground columns in "
+          f"{len(clusters)} regions, ground y={gy})")
 
-    # ---- emit teddy.cells ---------------------------------------------------
-    lines = ["# teddy.cells — generated by voxelize_teddy.py (do not hand-edit)",
+    # ---- emit <stem>.cells --------------------------------------------------
+    lines = [f"# {STEM}.cells — generated by voxelize_teddy.py (do not hand-edit)",
              f"# scale s = {s:.6f} cells/unit (bear bodyH={BEAR_BODYH}); "
              f"CA y(up)=model z, CA x=model x, CA z=model y",
              f"CELLS {len(cells)}"]
@@ -141,25 +177,25 @@ def main():
         lines.append(f"{fore} {side} {len(path)}")
         for (px, py, pz) in path:
             lines.append(f"{px} {py} {pz}")
-    (GENOMES / "teddy.cells").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (GENOMES / f"{STEM}.cells").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     # ---- emit teddy.chimera --------------------------------------------------
     # kind=vox: the cell set is DATA (teddy.cells), not grown. Same B4/N5
     # conventions as beargoal; L5/R5/N6/N8 are omitted because F-T1 stand/walk
     # does not use them (they drive learner/terrain/goal).
-    ch = """# SPIACE genome table — T1 teddy (voxelized TRELLIS body, DATA)
-# The cell set is imported (genomes/teddy.cells), NOT grown: kind=vox loads
+    ch = f"""# SPIACE genome table — {STEM} (voxelized TRELLIS body, DATA)
+# The cell set is imported (genomes/{STEM}.cells), NOT grown: kind=vox loads
 # it directly and rigs the leg columns off that same data. Every B4/N5
 # constant is copied from beargoal.chimera — the physics membrane is UNCHANGED
-# (the shape-agnostic claim). L5/R5/N6/N8 are omitted: F-T1 stand/walk does not
-# use them; teddygoal.chimera adds the goal membrane for F-T1d.
+# (the shape-agnostic claim). L5/R5/N6/N8 are omitted: stand/walk does not
+# use them; the goal variant adds the goal membrane.
 
 kind           = vox
-genome         = teddy-v1
+genome         = {STEM}-v1
 embodiment     = 1
 tickMs         = 120
 cell           = 0.06
-cellsFile      = teddy.cells
+cellsFile      = {STEM}.cells
 
 # --- B4: FK/IK rig (copied from beargoal — the gait is shape-agnostic) ------
 b4A            = 2              # gait swing amplitude, cells
@@ -173,9 +209,9 @@ b4Iters        = 5              # IK iterations per anim tick per chain
 gravity        = 9.81
 tickHz         = 60
 """
-    (GENOMES / "teddy.chimera").write_text(ch, encoding="utf-8")
+    (GENOMES / f"{STEM}.chimera").write_text(ch, encoding="utf-8")
 
-    print(f"wrote {GENOMES/'teddy.cells'} and {GENOMES/'teddy.chimera'}")
+    print(f"wrote {GENOMES/(STEM + '.cells')} and {GENOMES/(STEM + '.chimera')}")
 
 
 if __name__ == "__main__":

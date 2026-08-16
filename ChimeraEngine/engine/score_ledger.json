@@ -52,6 +52,24 @@
         "v:limbs-stubby-small",
         "v:terrain-ridge-lines"
       ]
+    },
+    {
+      "task": "T9",
+      "P": 92.0,
+      "V": 68.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:terrain-ridge-lines",
+        "v:splat-ghosting-translucency",
+        "v:floating-paw-pads",
+        "v:shell-level-banding",
+        "v:lumpy-asymmetric-body",
+        "v:bow-misplaced-3d",
+        "v:fur-texture-noise",
+        "v:gait-motion-subtle",
+        "perf:fps-23-at-max-shell"
+      ]
     }
   ]
 }
