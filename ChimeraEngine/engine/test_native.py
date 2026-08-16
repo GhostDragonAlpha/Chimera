@@ -159,14 +159,15 @@ LOG6 = NATIVE / "native_stream_8805.log"   # F-N8e relay
 LOG9 = NATIVE / "native_stream_8806.log"   # F-T1d relay
 fails = []
 
-# selective headed blocks: T_HEADED=N3c,N8e runs only those headed blocks;
-# unset = all. The headed blocks are 96% of suite time (audit 2026-08-16:
-# 179s of 187s); the selftest/oracle sections always run — they're the ~8s
-# invariance net.
+# Headed browser blocks are OPT-IN ONLY (operator directive 2026-08-16: the
+# full suite is deleted as a practice — measured 179s of 187s was browser
+# time, and sitting through it accomplishes nothing). T_HEADED=N3c,N4j runs
+# just those headed blocks; unset runs NONE. The headless selftests + Python
+# oracles always run — seconds, not minutes; they are the invariance net.
 _HEADED = os.environ.get("T_HEADED", "")
 
 def want(tag):
-    return not _HEADED or tag in {t.strip() for t in _HEADED.split(",")}
+    return tag in {t.strip() for t in _HEADED.split(",")}
 
 def check(name, ok, detail=""):
     print(f"  {'PASS' if ok else 'FAIL'}  {name}  {detail}")
@@ -2344,11 +2345,61 @@ try:
     t3vox = next((m for m in t3msgs if m.get("type") == "voxtest"), None)
     tg4 = read_chimera(NATIVE / "genomes" / "teddymuscle.chimera")
     grown_n = len(t3fin["cells"]) if t3fin else 0
+    # F-T3a-shape: the construction order's FIRST gate — the body must be
+    # physically correct before any movement is trained. Recomputed from the
+    # cells file (never trusted from the trainer): paws coplanar + COM ground
+    # projection inside the paw support hull with margin >= 1 cell (one
+    # lattice step of discretization slack — the derived bound).
+    s1r = [l.split("#")[0].split() for l in
+           open(NATIVE / "genomes" / tg4["cellsFile"])]
+    s1r = [l for l in s1r if l]
+    n_s1 = int(s1r[0][1])
+    cells_s1 = [tuple(map(int, s1r[1 + j])) for j in range(n_s1)]
+    i_s1 = 1 + n_s1
+    m_s1 = int(s1r[i_s1][1]); i_s1 += 1
+    paws_s1 = []
+    for _ in range(m_s1):
+        nx_s1 = int(s1r[i_s1][2]); i_s1 += 1
+        paws_s1.append(tuple(map(int, s1r[i_s1 + nx_s1 - 1])))
+        i_s1 += nx_s1
+    gy_s1 = min(c[1] for c in cells_s1)
+    cx_s1 = sum(c[0] for c in cells_s1) / n_s1
+    cz_s1 = sum(c[2] for c in cells_s1) / n_s1
+
+    def hull2_s1(ps):
+        ps = sorted(set(ps))
+        def cr(o, a, b):
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+        lo = []
+        for p in ps:
+            while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
+                lo.pop()
+            lo.append(p)
+        hi = []
+        for p in reversed(ps):
+            while len(hi) >= 2 and cr(hi[-2], hi[-1], p) <= 0:
+                hi.pop()
+            hi.append(p)
+        return lo[:-1] + hi[:-1]
+
+    H_s1 = hull2_s1([(p[0], p[2]) for p in paws_s1])
+    marg_s1 = 1e9
+    for a, b in zip(H_s1, H_s1[1:] + H_s1[:1]):
+        ex, ey = b[0] - a[0], b[1] - a[1]
+        marg_s1 = min(marg_s1,
+                      (ex * (cz_s1 - a[1]) - ey * (cx_s1 - a[0]))
+                      / math.hypot(ex, ey))
+    coplanar_s1 = all(p[1] == gy_s1 for p in paws_s1)
+    check("F-T3a-shape: the body is physically correct BEFORE movement — "
+          "paws coplanar, COM projection inside the paw hull with margin "
+          ">= 1 cell (recomputed from the cells file)",
+          coplanar_s1 and marg_s1 >= 1.0 and grown_n == n_s1,
+          f"legs={m_s1} COM=({cx_s1:.3f},{cz_s1:.3f}) hull={H_s1} "
+          f"margin={marg_s1:.3f} cells={grown_n}/{n_s1}")
     check("F-T3a teddymuscle genome loads (kind=vox, vmGait=1) and the stand "
           "ledger is intact",
           rt3.returncode == 0 and t3meta and t3meta["kind"] == "creature"
-          and tg4.get("vmGait") == "1" and t3vox and "vm" in t3vox
-          and grown_n == 370,
+          and tg4.get("vmGait") == "1" and t3vox and "vm" in t3vox,
           f"rc={rt3.returncode} name={t3meta and t3meta.get('name')} "
           f"vmGait={tg4.get('vmGait')} grownCells={grown_n}")
     st3 = t3vox["stand"]
@@ -2372,7 +2423,7 @@ try:
           f"bodyX={w3['bodyX']} iters={w3['iters']} nan={w3['nan']}")
     vm3 = t3vox["vm"]
     check("F-T3c body integrity: single face-connected component every tick, "
-          "cell count within 5% of the grown 370, no traction slips",
+          "cell count within 5% of the grown shape, no traction slips",
           vm3["connMin"] == 1
           and vm3["countMin"] >= grown_n * 0.95
           and vm3["countMax"] <= grown_n * 1.05

@@ -65,6 +65,9 @@ let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
     bodyY = 0, velY = 0, inContact = true, groundWire = null,   // N5 physics
     groundNow = null, terrainWire = null, terrainScale = 1024,  // N6 terrain
     goalWire = null, lastNav = null;                           // N8 goal+state
+let camLagX = 0;              // lagged follow — translation must be VISIBLE
+const newCellKeys = new Set();   // voxels ADDED this tick (the CA action)
+let prevCellKeys = new Set();
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
 let SHELL = null;              // T2: teddy render pyramid — appearance only
@@ -74,7 +77,7 @@ const es = new EventSource('/stream');
 es.onmessage = e => {
   const m = JSON.parse(e.data);
   if (m.type === 'meta') {
-    KIND = m.kind; GENOME = m.name; EMB = m.embodiment || 0;
+    KIND = m.kind; GENOME = m.name; EMB = m.embodiment || 0; camLagX = 0;
     PRES = PRESENT[KIND] || PRESENT.wall;
     if (m.cell > 0) PRES.cell = m.cell;      // the core reports its cell size
     if (EMB) document.getElementById('ctl').style.display = 'block';
@@ -104,7 +107,14 @@ es.onmessage = e => {
     lastNav = m.nav || null;                                 // N8 nav state
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
-    if (m.cells) cells = m.cells;   // T3: the live lattice rides anim frames
+    if (m.cells) {
+      cells = m.cells;   // T3: the live lattice rides anim frames
+      newCellKeys.clear();
+      const cur = new Set();
+      for (const c of cells) cur.add(cKey(c[0], c[1], c[2]));
+      for (const k of cur) if (!prevCellKeys.has(k)) newCellKeys.add(k);
+      prevCellKeys = cur;
+    }
     posedMap.clear();
     for (const p of m.posed)
       posedMap.set(p[0] + ',' + p[1] + ',' + p[2], [p[3], p[4], p[5]]);
@@ -309,7 +319,7 @@ function shellSplats() {
   if (live) for (const c of cells) occ.add(cKey(c[0], c[1], c[2]));
   for (let i = 0; i < L.n; i++) {
     const p = L.pos[i], c = L.col[i];
-    let wx, wy, wz;
+    let wx, wy, wz, legZ = false, hot = false;
     if (live) {
       const hx = Math.round(p[0] * L.cell / s0), hy = Math.round(p[1] * L.cell / s0),
             hz = Math.round(p[2] * L.cell / s0);
@@ -340,14 +350,20 @@ function shellSplats() {
               cz = (Math.floor(k / 16384)) - 64;
         wx = cx * s0 + B.off[i * 3]; wy = cy * s0 + B.off[i * 3 + 1];
         wz = cz * s0 + B.off[i * 3 + 2];
+        legZ = cy <= -2;                 // the stepping zone reads darker
+        hot = newCellKeys.has(k);        // voxels born this tick read HOT
       } else {                             // orphan: hold the grown pose
         wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
       }
     } else {
       wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
     }
+    let cc = FLAT ? [0.55, 0.42, 0.30] : c;
+    if (legZ) cc = [cc[0] * 0.55, cc[1] * 0.55, cc[2] * 0.62];
+    if (hot)
+      cc = [Math.min(1, cc[0] * 1.4 + 0.45), cc[1] * 0.55 + 0.12, cc[2] * 0.3];
     splatData.push({ p: [wx + bx, wy + bodyY * s0, wz], s: size,
-                     col: FLAT ? [0.55, 0.42, 0.30, 1] : [c[0], c[1], c[2], 1] });
+                     col: [cc[0], cc[1], cc[2], 1] });
   }
 }
 function groundSplats(s0, bx) {
@@ -476,7 +492,8 @@ function render() {
   }
   const t = performance.now() / 1000;
   const ang = PRES.focus.ang0 + 0.10 * Math.sin(t * 0.15);
-  const fx = PRES.focus.cx + (EMB ? bodyX * PRES.cell : 0);   // track the walk
+  camLagX += (bodyX - camLagX) * 0.05;              // ease toward the body:
+  const fx = PRES.focus.cx + (EMB ? camLagX * PRES.cell : 0);  // it drifts in-frame
   const fy = PRES.focus.cy + (EMB ? bodyY * PRES.cell : 0);   // track the fall
   const eye = [fx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY + (EMB ? bodyY * PRES.cell : 0),
                PRES.focus.R * Math.cos(ang)];

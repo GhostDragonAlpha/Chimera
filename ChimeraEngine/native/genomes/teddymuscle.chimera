@@ -13,7 +13,10 @@ genome         = teddy-muscle-v1
 embodiment     = 1
 tickMs         = 30
 cell           = 0.06
-cellsFile      = teddy.cells
+cellsFile      = teddy_s1.cells   # SHAPE-TRAINED body (shape_train.py): the
+                                  # raw scan's COM projected OUTSIDE its paw
+                                  # hull (margin -1.63 — a doll that tips);
+                                  # 3 grown pillars -> margin +2.21 cells
 vmGait         = 1
 
 # --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------

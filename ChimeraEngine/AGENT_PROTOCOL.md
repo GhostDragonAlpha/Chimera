@@ -24,12 +24,13 @@ the gait's free knobs with the DERIVED T3 values as the baseline to beat.
 The gait stays CA-native (cell add/remove on the lattice; FK/IK is forbidden
 on this path — T3 measured `iters=0` and it stays 0).
 
-**STATE:** T3 (`e0af946`) — hexapod alternating-tripod gait on
-`genomes/teddymuscle.chimera` (vmGait=1), all constants derived off
-`teddy.cells` (6 chains × 8 cells, hip y=+3, paw y=−4 = groundMinY):
-VM_STEP=2, VM_LIFT=1, budget = grown manhattan + 2 = 9, parity tripods.
-Measured baseline: 82 cells/400 ticks, slips 0, connMin 1, count [354,370],
-airDX 0. Suite ALL GREEN 81 checks (F-T3a–d included).
+**STATE:** T3 (`e0af946`) + shape training (teddy_s1.cells) — hexapod
+alternating-tripod gait on `genomes/teddymuscle.chimera` (vmGait=1), now on
+the SHAPE-TRAINED body: 9 legs (6 original + 3 grown pillars), COM margin
++2.21 cells (was −1.63 — the raw scan tips). Gait constants derived off the
+trained chains: VM_STEP=2, VM_LIFT=1, budget = leg manhattan + 2, parity
+tripods. Measured baseline on the trained body: 82 cells/400 ticks, slips 0,
+connMin 1, count [359,375], airDX 0, shape gate green. Suite ALL GREEN.
 
 **Rule 0 for the training itself (stated before the run):** the derived gait
 is the hypothesis. Prediction: the trained optimum matches it or beats it by
@@ -133,14 +134,15 @@ You are an implementation agent on SPIACE. Kimi K3 (or the operator) verifies yo
 work and commits it. **You never run git commit/push.** Every rule below was earned
 by a real failure — the incident is cited so you know why it exists.
 
-## THE FIVE RULES
+## THE SEVEN RULES
 
-**1. Green baseline BEFORE you edit; green suite BEFORE you report.**
-Build and run the existing suite before writing a line (that baseline tells you the
-tree was sane when you arrived), and run it again after your last edit. A refactor
-that ships untested ships broken — the relay genome-switch refactor deadlocked the
-whole viewer on its first request (`Lock` re-acquired → `RLock` fix) because the
-session ended before one suite run.
+**1. Green baseline BEFORE you edit; green fast net BEFORE you report.**
+Run `python test_native.py` before writing a line (seconds now — the headed
+browser blocks are opt-in only) and again after your last edit. If your task
+touches the viewer, run ONLY the headed blocks you touched, once, via
+`T_HEADED=<tag>` — never the whole browser fleet. There is no full-suite run
+anymore; it was deleted 2026-08-16 after the audit showed 96% of its time
+was browser waiting that decided nothing new.
 
 **2. "Done" is a log file, not a claim.**
 Your final report includes: the command you ran, PASS/FAIL counts, the measured
@@ -162,6 +164,31 @@ with no note. The N8 relay refactor was found deadlocked with zero explanation.
 Probe scripts, logs, dumps — all of it. `git status` should show only files you
 mean to ship. If you create scratch elsewhere, delete it before session end.
 
+**6. Order of construction: SHAPE before RIG before GAIT.**
+A body's physical correctness is trained FIRST — `native/shape_train.py`: COM
+ground projection inside the paw support hull with margin >= 1 cell (one
+lattice step of discretization slack), paws coplanar, scan untouched (the
+trainable DOF is support placement: grow pillars, never trim). The rig is
+DERIVED from the corrected shape. Gait work runs only on a body that passes
+the shape gate — F-T3a-shape recomputes it from the cells file, never trusts
+the trainer. Earned 2026-08-16: the raw teddy scan's COM projected 1.63
+cells OUTSIDE its paw hull — a doll that tips — and no other ground-touching
+columns existed, so no re-rig or gait could have made it stand. Three grown
+pillars later: margin +2.21 cells, then movement.
+
+**7. Judge what you see — the visual-critique gate.**
+Every headed deliverable requires you to capture a screenshot or frame strip,
+READ it (ReadMediaFile), and write a VISUAL VERDICT in your report: what a
+skeptic would see, with named deficiencies. Numbers without a visual verdict
+are unverified. Earned 2026-08-16: T3's ledger said WALKS while the strip
+showed an unreadable jiggling blob — the camera's perfect body lock hid the
+translation, and the dense shell hid the legs. The critique, not the
+assertions, produced the fixes (lagged follow, leg-zone tint, new-voxel
+highlight — `engine/scratch/_proof_t3.py` is the reusable strip pattern).
+Two more earned notes: check `pageerror` on every probe (a scope error threw
+inside the splat builder and the suite's numeric checks never noticed), and a
+strip that can't show the claim being made is a FAIL, however green the log.
+
 ## KEY PATHS (go here first; do not explore blindly)
 
 | What | Where |
@@ -182,24 +209,24 @@ mean to ship. If you create scratch elsewhere, delete it before session end.
 Standard verify commands:
 ```bash
 cd ChimeraEngine/native && g++ -O2 -std=c++17 -Wall -o ca_core.exe ca_core.cpp   # zero warnings
-cd ChimeraEngine/engine && python test_native.py                                # full native suite (~3 min)
+cd ChimeraEngine/engine && python test_native.py                                # fast net (seconds)
 cd ChimeraEngine/engine && python kernel_dsl.py --verify spiace_phase6.html     # DSL gate
 ```
 
-## RUN ONLY THE TESTS YOUR TASK TOUCHES (earned by the T1 harness audit)
+## RUN ONLY THE TESTS YOUR TASK TOUCHES (the full suite is DELETED)
 
-Headed browser blocks were measured at 96% of suite time (179s of 187s). Do NOT
-sit through the full suite on every iteration — gate the headed blocks:
+`python test_native.py` with no env runs in seconds: the headless selftests
+and Python oracles — the invariance net. Headed browser blocks are opt-in,
+named by tag, and you run only the ones your task touches, once, before
+commit:
 
 ```bash
-T_HEADED=T1d python test_native.py          # only your block; selftests/oracles always run
-T_HEADED=N3c,N4j python test_native.py      # comma-separated block tags
+python test_native.py                       # the fast net — ALWAYS this
+T_HEADED=T1d python test_native.py          # + your headed block, ONCE
 ```
 
-The selftests and Python oracles are NOT gated — they are the invariance net and
-always run (they cost ~8s total). Rule 1 still stands: one FULL suite run before
-your first edit (baseline) and one FULL suite run before your final report.
-Between those two, iterate with `T_HEADED=<your block>` only.
+Rule 1 still stands in its new form: fast net green before your first edit
+(baseline) and before your final report. Between those, iterate headless.
 
 Debugging a headed block? Each relay writes its own wire log —
 `native/native_stream_<port>.log` (ports 8799, 8801–8806). Read that, not the
