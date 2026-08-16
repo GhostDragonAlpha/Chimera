@@ -1,0 +1,76 @@
+# SPIACE genome table — T1 teddy, goal membrane (voxelized TRELLIS body, DATA)
+# teddy.chimera + the N8 goal membrane: the SAME L5/R5/N6/N8 blocks beargoal
+# declares, copied verbatim — the shape-agnostic claim is that the UNCHANGED
+# nav stack drives an imported body. The vox loader reads these blocks only
+# when goal=1 (loader plumbing; the nav physics is shared, not duplicated).
+#
+# TERRAIN (DERIVED, not picked): the nav senses read terrain heights as
+# offsets from the body's OWN ground — colHeightAt(x) = groundMinY +
+# terrH[x]/scale for the slope sense, groundAt(bx) = groundMinY + max over
+# the footprint for support. The teddy stands on the SAME ground as the bear
+# (groundMinY = -4, bodyH = 8, scale s = 11.784098 cells/unit) — so the same
+# seed-2026 field is the SAME world to both bodies, and the ONLY body property
+# that enters the nav is the footprint width (13 cells here vs the bear's 17,
+# both measured off their cell sets). A flat world (amp=0) would be a NEW
+# world the bear never faced — a weaker falsifier of shape-agnosticism. So the
+# goal block declares beargoal's exact N6 terrain: same crest at x=11, same
+# east descent 18->20, same slip threshold tau = gSim/(b4A*omega) = 0.2169
+# cells/col. PREDICTION (named pre-run): the teddy's training arrives (the
+# bear's was 316/320) and the eps=0 greedy policy REST-stalls exactly like the
+# F-N8 CASE B pin (same gamma=0.99 discount drift, same crest-slip poison) —
+# a repeated stall is a VALID result (it pins the membrane's body-agnosticism),
+# not a teddy defect. Falsifier F-T1d: navigator arrives per the F-N8d/e
+# criteria; an honest stall is pinned with measured Q-values.
+
+kind           = vox
+genome         = teddy-goal-v1
+embodiment     = 1
+tickMs         = 120
+cell           = 0.06
+cellsFile      = teddy.cells
+
+# --- B4: FK/IK rig (copied from beargoal — the gait is shape-agnostic) ------
+b4A            = 2              # gait swing amplitude, cells
+b4T            = 60             # gait period, anim ticks
+b4Lam          = 12.25          # = 7*7/4 damping
+b4Dth          = 0.08           # rad per IK iteration
+b4ThMax        = 2.6            # joint bound, rad
+b4Iters        = 5              # IK iterations per anim tick per chain
+
+# --- N5: physics membrane (copied from beargoal — SI in, sim units derived) --
+gravity        = 9.81
+tickHz         = 60
+
+# --- L5: learner (copied from beargoal — the nav rides the L5 constants) -----
+l5Near         = 6
+l5Far          = 12
+l5EpTicks      = 90
+l5BearEps      = 0.05
+l5Alpha        = 0.3
+l5Gamma        = 0.99
+l5Eps0         = 0.25
+l5EpsDecay     = 0.99
+l5EpsMin       = 0.05
+
+# --- R5: the environment's reward rules (copied from beargoal) ---------------
+r5WaveNear     = 1.0
+r5WaveFar      = -0.1
+r5WaveAbsent   = -0.1
+r5WalkTick     = -0.02
+r5Beckon        = 0.22556390977443608
+r5Startle      = -0.5
+r5RestAbsent   = 0.02
+r5RestPresent  = 0.0
+
+# --- N6: terrain membrane (copied from beargoal — the SAME world, see header)
+terrain        = 1
+terrainSeed    = 2026
+terrainAmp     = 3
+terrainX0      = -64
+terrainX1      = 1024
+terrainScale   = 1024
+terrainSlope   = 512
+
+# --- N8: goal membrane (copied from beargoal — a flag at x=15) ---------------
+goal           = 1
+goalX          = 15

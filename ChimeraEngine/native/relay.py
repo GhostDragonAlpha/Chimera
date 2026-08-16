@@ -19,11 +19,15 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 EXE = HERE / "ca_core.exe"
 VIEWER = HERE.parent / "engine" / "spiace_native.html"
-LOG = HERE / "native_stream.log"
 
 TICK_MS = sys.argv[1] if len(sys.argv) > 1 else "30"
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8799
 GENOME = sys.argv[3] if len(sys.argv) > 3 else str(HERE / "genomes" / "wall.chimera")
+
+# per-port wire log: the test harness runs several relays in sequence; a shared
+# log let a dying relay's late writes interleave with the next relay's stream
+# (torn NDJSON line → JSONDecodeError in F-N8e's wire audit)
+LOG = HERE / f"native_stream_{PORT}.log"
 
 frames = []                 # full replay buffer (a wall is 210 cells; tiny)
 frames_cv = threading.Condition()

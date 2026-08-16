@@ -888,4 +888,43 @@ simplest genome.
 
 ---
 
-Document version: 4.3 (G1–G5 + N1–N8 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 complete | Agent: bionic + Kimi K3
+## Phase T: Imported Membranes (T1 complete — bionic + Kimi K3)
+
+**Theory (stated before the run):** the N-stack is shape-agnostic — a membrane is
+a cell set with a rig declaration, so a body generated OUTSIDE the engine
+(TRELLIS.2 image→3D, voxelized onto the CA lattice) stands, walks, and navigates
+with zero changes to ca_core.cpp's physics/gait/nav layers.
+
+- **T1 — the teddy (imported cell set):** COMPLETE, all falsifiers green headed
+  (F-T1a…d). Pipeline: TRELLIS.2 GGUF (pwilkin/trellis.cpp v0.5.4 CUDA build,
+  RTX 4090, 221.6 s at res-1024 cascade) turned a bear render into
+  `models/trellis/teddy.glb` + a 16.7M-voxel PLY; `native/voxelize_teddy.py`
+  occupancy-maps it onto the CA lattice at the DERIVED scale
+  s = 11.784098 cells/unit (bear bodyH=8 cells is the contract; orientation
+  CA y(up)=model z, recorded in the file header). Result: `genomes/teddy.cells`
+  (370 cells + 6 rig chains, 8 cells each), `genomes/teddy.chimera`
+  (kind=vox: the body is DATA, B4/N5 constants copied from beargoal — the
+  physics membrane unchanged), and a vox loader in ca_core.cpp (plumbing only;
+  N5–N8 logic frozen). The viewer gained TEDDY (7) → POST /cmd genome:teddy →
+  relay respawn (RLock — the first refactor deadlocked the SSE handler on a
+  non-reentrant Lock re-acquire; found by Kimi's verify run, fixed one word).
+  **Measured (F-T1a…c):** stand — contact tick 53 == the discrete drop-law
+  prediction, ledgerErr 3.06e-16, termDrift 1.8451% (the bear's N5 number to
+  four digits), rest gap 2.6645e-17 m, |velY| = 0; walk — 400-tick
+  earned-traction displacement 53.630579 == the N7 oracle |cos| sum bit-for-bit.
+  **F-T1d (teddygoal.chimera = teddy + the N8 goal block):** terrain is the
+  bear's seed-2026 field (contract iters 11, maxSlope 0.4941); nav ledger ==
+  the body-agnostic oracle qDiff=0.0e+00; learning first30 0.867 → last30
+  1.000, arrivals 314/320; headed — the teddy reaches the flag live (123 page
+  samples, 1452 wire frames, eps 0→7, arrivals 6, dMin 0.20). **CASE B repeats,
+  with a twist the bear didn't show:** greedy stalls east-bound (s3 REST 1.671
+  > best-walk 1.612 — the crest-slip poison, same mechanism as N8) but ARRIVES
+  west-bound at tick 230. Not patched; pinned with the Q-values, per protocol.
+  **What T1 proves:** the engine's bodies are interchangeable cell sets — grow
+  one from DNA (G3) or import one from a generative model (T1); the physics
+  cannot tell the difference. The image→teddy→walking-creature pipeline is now
+  a tool, not a demo.
+
+---
+
+Document version: 4.4 (G1–G5 + N1–N8 + T1 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1 complete | Agent: bionic + Kimi K3

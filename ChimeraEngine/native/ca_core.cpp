@@ -341,9 +341,13 @@ static Genome loadGenome(const std::string& path) {
         die4("INVALID: embodiment sanity bounds failed in " + path);
     }
   } else if (g.kind == "vox") {
-    // T1: an imported cell set — the body is DATA, not grown. Only the B4
-    // gait constants and the N5 physics membrane are declared; the rig
-    // chains ride the cellsFile. L5/R5/N6/N8 are absent (stand/walk only).
+    // T1: an imported cell set — the body is DATA, not grown. The B4 gait
+    // constants + N5 physics membrane are always declared; the rig chains
+    // ride the cellsFile. L5/R5/N6/N8 are declared only by the goal genome
+    // (teddygoal) — the loader reads them when goal=1 and wires them into the
+    // SAME nav path the creature uses: bearRig's genTerrain()/navInit() see
+    // only the genome fields, never the kind flag, so the nav physics is
+    // shared, not duplicated. teddy.chimera (no goal block) reads as before.
     g.cell = needD("cell"); g.cellsFile = need("cellsFile");
     g.b4A = needD("b4A"); g.b4Lam = needD("b4Lam"); g.b4Dth = needD("b4Dth");
     g.b4ThMax = needD("b4ThMax"); g.b4Iters = needI("b4Iters");
@@ -353,6 +357,44 @@ static Genome loadGenome(const std::string& path) {
       die4("INVALID: vox sanity bounds failed in " + path);
     if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1)
       g.embodiment = 1;
+    if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
+      // N8 goal membrane for an imported body — the SAME declarations the
+      // creature loader reads (goal requires the N6 terrain membrane).
+      g.l5Near = needD("l5Near"); g.l5Far = needD("l5Far");
+      g.l5BearEps = needD("l5BearEps"); g.l5Alpha = needD("l5Alpha");
+      g.l5Gamma = needD("l5Gamma"); g.l5Eps0 = needD("l5Eps0");
+      g.l5EpsDecay = needD("l5EpsDecay"); g.l5EpsMin = needD("l5EpsMin");
+      g.l5EpTicks = needI("l5EpTicks");
+      g.r5WaveNear = needD("r5WaveNear"); g.r5WaveFar = needD("r5WaveFar");
+      g.r5WaveAbsent = needD("r5WaveAbsent"); g.r5WalkTick = needD("r5WalkTick");
+      g.r5Beckon = needD("r5Beckon"); g.r5Startle = needD("r5Startle");
+      g.r5RestAbsent = needD("r5RestAbsent");
+      g.r5RestPresent = needD("r5RestPresent");
+      if (kv.count("terrain") && std::stoi(kv["terrain"]) == 1) {
+        g.terrain = 1;                            // N6: grow the world too
+        g.terrainSeed = needI("terrainSeed");
+        g.terrainAmp = needI("terrainAmp");
+        g.terrainX0 = needI("terrainX0"); g.terrainX1 = needI("terrainX1");
+        g.terrainSlope = needI("terrainSlope");
+        if (kv.count("terrainScale"))
+          g.terrainScale = std::stoi(kv["terrainScale"]);
+        if (g.terrainAmp < 0 || g.terrainX1 <= g.terrainX0 ||
+            g.terrainSlope < 1 || g.terrainScale < 1 ||
+            (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
+          die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
+      }                                                   // division is exact
+      g.goal = 1;                                     // N8: the flag
+      g.goalX = needI("goalX");
+      if (!g.terrain)
+        die4("INVALID: goal requires the terrain membrane in " + path);
+      if (g.goalX <= g.terrainX0 || g.goalX >= g.terrainX1)
+        die4("INVALID: goalX outside the terrain domain in " + path);
+      if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
+          g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
+          g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
+          g.gravity <= 0 || g.tickHz <= 0)
+        die4("INVALID: embodiment sanity bounds failed in " + path);
+    }
   } else die4("INVALID: unknown kind '" + g.kind + "' in " + path);
   return g;
 }
@@ -1019,6 +1061,7 @@ static void emitSelftest();
 static int runEmbodiment(int tickMs);
 static void physTick();                   // N5: defined with the N5 block
 static void navInit();                    // N8: defined with the N8 block
+static void navSelftest();                // N8: 320-episode ledger line
 // T1 vox membrane (defined near main): an imported cell set, rig off that data
 static int runVox(int tickMs, bool selftest);
 
@@ -2018,38 +2061,45 @@ static void emitSelftest() {
   std::fflush(stdout);
   // ---------- N8: the goal membrane — 320 deliberation episodes -------------
   // A SEPARATE ledger line (the G4-G7 ledger above stays byte-identical).
-  if (W.goal) {
-    navReset();
-    navSpawn();
-    long guard = 0;
-    while (N.episode < 320 && guard++ < 320L * n8EpTicks * 3) navTick();
-    double first30 = 0, last30 = 0;               // arrival RATES, not reward
-    for (int i = 0; i < 30 && i < (int)N.arrived.size(); i++)
-      first30 += N.arrived[i];
-    first30 /= 30;
-    for (size_t i = N.arrived.size() > 30 ? N.arrived.size() - 30 : 0;
-         i < N.arrived.size(); i++)
-      last30 += N.arrived[i];
-    last30 /= 30;
-    std::printf("{\"type\":\"navtest\",\"goalX\":%d,\"budget\":%d,"
-                "\"ac\":%.17g,\"tau\":%.17g,\"episodes\":%ld,\"visits\":[",
-                W.goalX, n8EpTicks, navAc, navTau, N.episode);
-    for (int s = 0; s < 12; s++)
-      std::printf("%s%ld", s ? "," : "", N.visits[s]);
-    std::printf("],\"arrivals\":%ld,\"first30\":%.17g,\"last30\":%.17g,"
-                "\"Q\":[", N.arrivals, first30, last30);
-    for (int s = 0; s < 12; s++) {
-      std::printf("%s[", s ? "," : "");
-      for (int a = 0; a < 5; a++)
-        std::printf("%s%.17g", a ? "," : "", N.Q[s][a]);
-      std::printf("]");
-    }
-    std::printf("],\"rewards\":[");
-    for (size_t i = 0; i < N.rewards.size(); i++)
-      std::printf("%s%.17g", i ? "," : "", N.rewards[i]);
-    std::printf("]}\n");
-    std::fflush(stdout);
+  navSelftest();
+}
+
+// N8 selftest ledger: 320 episodes of the SAME navigator (navTick) the anim
+// loop drives, emitted as its own NDJSON line. Shared by the creature selftest
+// and the T1 vox selftest — both bodies drive the identical nav path (the body
+// is data). Extraction is byte-identical to the inline block it replaces.
+static void navSelftest() {
+  if (!W.goal) return;
+  navReset();
+  navSpawn();
+  long guard = 0;
+  while (N.episode < 320 && guard++ < 320L * n8EpTicks * 3) navTick();
+  double first30 = 0, last30 = 0;               // arrival RATES, not reward
+  for (int i = 0; i < 30 && i < (int)N.arrived.size(); i++)
+    first30 += N.arrived[i];
+  first30 /= 30;
+  for (size_t i = N.arrived.size() > 30 ? N.arrived.size() - 30 : 0;
+       i < N.arrived.size(); i++)
+    last30 += N.arrived[i];
+  last30 /= 30;
+  std::printf("{\"type\":\"navtest\",\"goalX\":%d,\"budget\":%d,"
+              "\"ac\":%.17g,\"tau\":%.17g,\"episodes\":%ld,\"visits\":[",
+              W.goalX, n8EpTicks, navAc, navTau, N.episode);
+  for (int s = 0; s < 12; s++)
+    std::printf("%s%ld", s ? "," : "", N.visits[s]);
+  std::printf("],\"arrivals\":%ld,\"first30\":%.17g,\"last30\":%.17g,"
+              "\"Q\":[", N.arrivals, first30, last30);
+  for (int s = 0; s < 12; s++) {
+    std::printf("%s[", s ? "," : "");
+    for (int a = 0; a < 5; a++)
+      std::printf("%s%.17g", a ? "," : "", N.Q[s][a]);
+    std::printf("]");
   }
+  std::printf("],\"rewards\":[");
+  for (size_t i = 0; i < N.rewards.size(); i++)
+    std::printf("%s%.17g", i ? "," : "", N.rewards[i]);
+  std::printf("]}\n");
+  std::fflush(stdout);
 }
 
 // ---------- interactive anim loop (relay mode): stdin commands, anim frames --
@@ -2227,7 +2277,11 @@ static int runVox(int tickMs, bool selftest) {
   emitVoxFinal();               // final ledger (done=true)
   bearRig();                    // G4 rig + N5 physics init (UNCHANGED)
   learnReset();                 // fresh learner (harmless for stand/walk)
-  if (selftest) { emitRig(); emitVoxTest(); return 0; }
+  if (selftest) {
+    emitRig(); emitVoxTest();
+    navSelftest();                // N8: 320-episode ledger (if goal declared)
+    return 0;
+  }
   return runEmbodiment(tickMs);
 }
 
