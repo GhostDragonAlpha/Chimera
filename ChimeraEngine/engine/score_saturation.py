@@ -31,12 +31,19 @@ the engine's S1 uses):
 Usage:
   python score_saturation.py add <task> <P> <V> <def-id> [def-id...]
   python score_saturation.py status
+  python score_saturation.py render        # rewrite scoreboard.html
+
+scoreboard.html is regenerated on every `add` — it is never stale. Open it
+in any browser; no server. The latest proof strips are inlined from
+scratch/ when present (missing images hide themselves).
 """
+import html
 import json
 import sys
 from pathlib import Path
 
 LEDGER = Path(__file__).resolve().parent / "score_ledger.json"
+BOARD = Path(__file__).resolve().parent / "scoreboard.html"
 DRY_TAIL = 3
 COMPLETENESS_MIN = 0.9
 
@@ -80,6 +87,85 @@ def stats(rounds):
     }
 
 
+def render(led):
+    """Write scoreboard.html — the human-facing P/V page (operator directive
+    2026-08-16: the human needs easy access to the two numbers, every round).
+    Self-contained, no JS deps, no server. Latest proof strips inline."""
+    rounds = led["rounds"]
+    s = stats(rounds)
+    last = rounds[-1] if rounds else {"task": "—", "P": 0, "V": 0,
+                                      "deficiencies": []}
+    # per-species sighting table, first/last round
+    seen = {}
+    for i, r in enumerate(rounds):
+        for d in r["deficiencies"]:
+            e = seen.setdefault(d, {"n": 0, "first": i, "last": i})
+            e["n"] += 1
+            e["last"] = i
+    rows = "".join(
+        f"<tr class='{'persist' if e['last'] == len(rounds) - 1 else 'resolved'}'>"
+        f"<td>{html.escape(d)}</td><td>{e['n']}</td>"
+        f"<td>{html.escape(rounds[e['first']]['task'])}</td>"
+        f"<td>{html.escape(rounds[e['last']]['task'])}</td>"
+        f"<td>{'ACTIVE' if e['last'] == len(rounds) - 1 else 'not seen this round'}</td></tr>"
+        for d, e in sorted(seen.items(), key=lambda kv: (-kv[1]["last"], -kv[1]["n"])))
+    hist = "".join(
+        f"<tr><td>{html.escape(r['task'])}</td><td class='p'>{r['P']:.0f}</td>"
+        f"<td class='v'>{r['V']:.0f}</td><td>{len(r['deficiencies'])} "
+        f"(+{s['per_round_new'][i]} new)</td></tr>"
+        for i, r in enumerate(rounds))
+    # P/V history sparkline (inline SVG, 2 polylines)
+    W, H = 560, 120
+    def pts(key):
+        if len(rounds) < 2:
+            return ""
+        return " ".join(f"{i * W / (len(rounds) - 1):.0f},"
+                        f"{H - (r[key] / 100) * H:.0f}"
+                        for i, r in enumerate(rounds))
+    spark = (f"<svg width='{W}' height='{H}'>"
+             f"<polyline points='{pts('P')}' fill='none' stroke='#6cf' "
+             f"stroke-width='3'/><polyline points='{pts('V')}' fill='none' "
+             f"stroke='#fc6' stroke-width='3'/></svg>") if len(rounds) > 1 else ""
+    strips = "".join(
+        f"<figure><img src='scratch/_proof_{t}_strip.png' "
+        f"onerror=\"this.parentNode.style.display='none'\">"
+        f"<figcaption>{html.escape(t)} proof strip</figcaption></figure>"
+        for t in (["t7", "t5"] if last["task"].lower().startswith("t7")
+                  else ["t5"]))
+    sat = ("SATURATED — the band floor is set"
+           if s["saturated"] else
+           f"NOT saturated — completeness {s['completeness']} (need ≥ "
+           f"{COMPLETENESS_MIN}), dry tail {s['dry_tail']} (need ≥ {DRY_TAIL})")
+    BOARD.write_text(f"""<!doctype html><html><head><meta charset="utf-8">
+<title>SPIACE quality band</title><style>
+body{{background:#111;color:#eee;font-family:system-ui;margin:32px}}
+h1{{font-size:20px;font-weight:600;color:#aaa;margin:0 0 4px}}
+.scores{{display:flex;gap:48px;margin:16px 0}}
+.score{{text-align:center}}
+.num{{font-size:96px;font-weight:700;line-height:1}}
+.p .num,.p{{color:#6cf}} .v .num,.v{{color:#fc6}}
+.lbl{{font-size:14px;color:#aaa;letter-spacing:2px}}
+table{{border-collapse:collapse;margin:12px 0;font-size:14px}}
+td,th{{border:1px solid #333;padding:4px 10px;text-align:left}}
+th{{color:#aaa}} .persist td{{color:#eee}} .resolved td{{color:#777}}
+.sat{{font-size:15px;padding:8px 12px;border:1px solid #444;display:inline-block}}
+img{{max-width:900px;display:block;border:1px solid #333}}
+figure{{margin:16px 0}} figcaption{{color:#888;font-size:13px}}
+</style></head><body>
+<h1>SPIACE quality band — {html.escape(last['task'])} (round {len(rounds)})</h1>
+<div class="scores">
+<div class="score p"><div class="num">{last['P']:.0f}</div><div class="lbl">PHYSICS</div></div>
+<div class="score v"><div class="num">{last['V']:.0f}</div><div class="lbl">VISUAL</div></div>
+</div>
+<div class="sat">{html.escape(sat)}</div>
+<h2 style="font-size:15px;color:#aaa">history (blue=P, gold=V)</h2>{spark}
+<table><tr><th>round</th><th>P</th><th>V</th><th>deficiencies</th></tr>{hist}</table>
+<h2 style="font-size:15px;color:#aaa">deficiency species (sighting counts are the Chao2 evidence)</h2>
+<table><tr><th>species</th><th>sightings</th><th>first</th><th>last</th><th>state</th></tr>{rows}</table>
+{strips}
+</body></html>""", encoding="utf-8")
+
+
 def main():
     args = sys.argv[1:]
     if not args:
@@ -91,9 +177,13 @@ def main():
         defs = args[4:]
         led["rounds"].append({"task": task, "P": p, "V": v, "deficiencies": defs})
         LEDGER.write_text(json.dumps(led, indent=2) + "\n")
+        render(led)                 # the board is never stale
         s = stats(led["rounds"])
         print(f"logged {task}: P={p} V={v} deficiencies={len(defs)} "
-              f"({s['per_round_new'][-1]} new)")
+              f"({s['per_round_new'][-1]} new) — scoreboard.html rewritten")
+    elif args[0] == "render":
+        render(led)
+        print(f"scoreboard.html rewritten ({len(led['rounds'])} rounds)")
     elif args[0] == "status":
         s = stats(led["rounds"])
         print(json.dumps(s, indent=2))
