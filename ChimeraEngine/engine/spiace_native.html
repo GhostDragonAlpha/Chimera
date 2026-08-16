@@ -44,7 +44,7 @@ const PRESENT = {
               groundY: -0.09, cell: 0.05 },
   oak:      { focus: { cx: 0, cy: 1.05, R: 3.0, eyeY: 1.35, ang0: 0.6 },
               groundY: -0.06, cell: 0.05 },   // focus copied from spiace_grow
-  creature: { focus: { cx: -0.2, cy: 0, R: 1.8, eyeY: 0.45, ang0: 0.6 },
+  creature: { focus: { cx: -0.2, cy: 0, R: 2.6, eyeY: 0.8, ang0: 0.6 },
               groundY: -0.30, cell: 0.06 },
 };
 
@@ -66,6 +66,8 @@ let EMB = 0, rigged = false, bodyX = 0, lastCmd = 'rest', lastRes = null,
     goalWire = null, lastNav = null;                           // N8 goal+state
 const posedMap = new Map();      // "x,y,z" -> [px,py,pz] (cell units)
 const earKeys = new Set();       // "x,y,z" of the two derived ear cells
+let SHELL = null;              // T2: teddy render pyramid — appearance only
+const FLAT = location.search.includes('flat');   // T2 debug: uniform shell color
 
 const es = new EventSource('/stream');
 es.onmessage = e => {
@@ -75,6 +77,10 @@ es.onmessage = e => {
     PRES = PRESENT[KIND] || PRESENT.wall;
     if (m.cell > 0) PRES.cell = m.cell;      // the core reports its cell size
     if (EMB) document.getElementById('ctl').style.display = 'block';
+    if (GENOME.startsWith('teddy') && !SHELL)
+      fetch('/genomes/teddy_shell.json').then(r => r.json()).then(j => {
+        SHELL = j; splatsDirty = true;
+      }).catch(() => {});
     window.__growthStats = stats();
     return;
   }
@@ -222,17 +228,19 @@ function critSplats() {
       if (posed) lp = posed;
     }
     const p = [lp[0] * s0 + bx, (lp[1] + bodyY) * s0, lp[2] * s0];   // N5: y rides physics
+    if (SHELL) continue;              // T2: the shell IS the teddy's skin
     let col;
-    if (mat === 'eye') col = [0.10, 0.15, 0.50, 1];
+    if (mat === 'eye') col = [0.16, 0.26, 0.78, 1];
     else if (EMB && (mat === 'ear' || earKeys.has(x + ',' + y + ',' + z)))
-      col = [0.80, 0.58, 0.46, 1];
+      col = [0.86, 0.62, 0.50, 1];
     else if (mat === 'limb')
-      col = EMB ? [0.50 + 0.05*h, 0.35, 0.26, 1]          // darker fur
-                : [0.60 + 0.06*h, 0.40, 0.32, 1];
-    else col = EMB ? [0.58 + 0.05*h, 0.40 + 0.03*h, 0.28, 1]   // fur
-                   : [0.72 + 0.06*h, 0.52 + 0.04*h, 0.42, 1];
-    splatData.push({ p, s: s0 * 0.62, col });
+      col = EMB ? [0.56 + 0.05*h, 0.40, 0.30, 1]          // darker fur
+                : [0.64 + 0.06*h, 0.45, 0.35, 1];
+    else col = EMB ? [0.66 + 0.05*h, 0.47 + 0.03*h, 0.34, 1]   // fur
+                   : [0.74 + 0.06*h, 0.54 + 0.04*h, 0.43, 1];
+    splatData.push({ p, s: s0 * 0.72, col });
   }
+  if (SHELL) shellSplats();
   if (EMB && visitorPos) {                 // G5: the visitor, in world space
     const bob = waveBack > 0 ? 0.12 * Math.abs(Math.sin(waveBack * 0.3)) : 0;
     splatData.push({ p: [visitorPos[0] * s0, 0.06 + bob, visitorPos[2] * s0],
@@ -253,23 +261,60 @@ function critSplats() {
       splatData.push({ p: [gx * s0 + 0.06 + k * 0.07, fy + 0.55 - k * 0.03, 0],
                        s: 0.06, col: [0.90, 0.25, 0.15, 1] });
   }
-  // N5/N6: the ground is the core's DERIVED support (wire), scrolled to the
-  // bear — the grown terrain heightfield when the genome carries one
-  if (EMB && terrainWire) {
-    const base = groundWire !== null ? groundWire : -4;
-    const cx0 = Math.floor(bodyX);
-    for (let cx = cx0 - 32; cx <= cx0 + 32; cx++) {
-      const h = (terrainWire.get(cx) || 0) / terrainScale;
-      const y = (base + h) * s0;
-      const g2 = 0.13 + 0.04 * hash01(cx * 7 + 3);
-      for (let gz = -8; gz <= 8; gz++)
-        splatData.push({ p: [cx * s0, y, gz * 0.24], s: 0.16,
-                         col: [g2 + 0.03, g2, g2 - 0.02, 1] });
-    }
-  } else {
-    ground(EMB && groundWire !== null ? groundWire * s0 : PRES.groundY, bx);
+  groundSplats(s0, bx);   // T2: density-law ground (below) — meatballs retired
+}
+// ---------- T2: camera-driven density (the measured 3DGS law) -------------
+// Real scans carry ~0.5-2 splats per screen PIXEL; per-cm density is that law
+// x camera distance. So density here is never a constant: level/spacing are
+// picked so one splat covers ~2.5 px at the subject's depth.
+function lodSpacing(depth) {
+  const hPx = canvas.clientHeight || 720, f = 1 / Math.tan(0.85 / 2);
+  return 2.5 * Math.max(0.5, depth) / ((hPx / 2) * f);
+}
+function shellLevel() {
+  const sp = lodSpacing(PRES.focus.R);
+  let best = SHELL.levels[0];
+  for (const L of SHELL.levels)
+    if (L.cell >= sp * 0.55) best = L;      // finest level still covering
+  return best;
+}
+window.__dbgShell = () => ({
+  loaded: !!SHELL,
+  levels: SHELL ? SHELL.levels.map(L => [L.h, L.n, L.cell]) : null,
+  picked: SHELL ? shellLevel().h : null,
+  spacing: PRES ? lodSpacing(PRES.focus.R) : null,
+  splatCount: splatData.length,
+});
+function shellSplats() {
+  const L = shellLevel();
+  const s0 = PRES.cell, size = L.cell * 1.9, bx = EMB ? bodyX * s0 : 0;
+  for (let i = 0; i < L.n; i++) {
+    const p = L.pos[i], c = L.col[i];
+    splatData.push({ p: [p[0] * L.cell + bx, p[1] * L.cell + bodyY * s0,
+                         p[2] * L.cell], s: size,
+                     col: FLAT ? [0.55, 0.42, 0.30, 1] : [c[0], c[1], c[2], 1] });
   }
 }
+function groundSplats(s0, bx) {
+  const sp = lodSpacing(PRES.focus.R) * 2;  // background runs rho/4 (2x spacing)
+  const base = EMB && groundWire !== null ? groundWire : -4;
+  const cx0 = EMB ? bodyX : 0;
+  const x0 = (cx0 - 48) * s0, x1 = (cx0 + 48) * s0, z1 = 26 * s0;
+  const fadeR = 48 * s0;
+  for (let x = x0; x <= x1; x += sp) {
+    const col2 = Math.round(x / s0);
+    const hh = terrainWire ? ((terrainWire.get(col2) || 0) / terrainScale) : 0;
+    const y = (base + hh) * s0 - 0.012;
+    for (let z = -z1; z <= z1; z += sp) {
+      const d = Math.hypot(x - cx0 * s0, z);
+      const fade = Math.max(0, 1 - d / fadeR);
+      const h2 = hash01(Math.round(x * 997) + Math.round(z * 613));
+      const k = (0.10 + 0.20 * fade) * (0.9 + 0.2 * h2);
+      splatData.push({ p: [x, y, z], s: sp * 0.62, col: [k, k * 0.97, k * 0.85, 1] });
+    }
+  }
+}
+
 function rebuildSplats() {
   splatData.length = 0;
   if (KIND === 'oak') oakSplats();
@@ -304,8 +349,8 @@ struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1
   let r2 = dot(inp.uv, inp.uv);
   if (r2 > 1.0) { discard; }
   let g = exp(-4.0 * r2);
-  let shade = 0.45 + 0.55 * g;
-  return vec4f(inp.col.rgb * shade, 1.0);
+  let shade = 0.80 + 0.20 * g;      // T2: flat-ish — no dark rims between splats
+  return vec4f(inp.col.rgb * shade * 1.12, 1.0);
 }`;
 
 async function initGPU() {
