@@ -4,6 +4,11 @@
 
 ## ★ CURRENT TASK — do this (rewritten per stage by Kimi; read everything below first)
 
+<!-- House rule: when a task completes satisfactorily, this file is updated the
+     SAME day — this slot is cleared/rewritten AND any lessons the task earned
+     (harness fixes, new gates, new flake patterns) are folded into the rules
+     below, so the next agent inherits them instead of re-paying for them. -->
+
 **No live task.** T1 is complete (committed `e2edc66`, suite 76 PASS / 0 FAIL).
 Awaiting the operator's pick: Phase 11 ship-to-foot, frame-time instrumentation,
 or a new membrane. If you were pointed here by a prompt, that prompt IS the
@@ -64,9 +69,31 @@ mean to ship. If you create scratch elsewhere, delete it before session end.
 Standard verify commands:
 ```bash
 cd ChimeraEngine/native && g++ -O2 -std=c++17 -Wall -o ca_core.exe ca_core.cpp   # zero warnings
-cd ChimeraEngine/engine && python test_native.py                                # native suite (headed)
+cd ChimeraEngine/engine && python test_native.py                                # full native suite (~3 min)
 cd ChimeraEngine/engine && python kernel_dsl.py --verify spiace_phase6.html     # DSL gate
 ```
+
+## RUN ONLY THE TESTS YOUR TASK TOUCHES (earned by the T1 harness audit)
+
+Headed browser blocks were measured at 96% of suite time (179s of 187s). Do NOT
+sit through the full suite on every iteration — gate the headed blocks:
+
+```bash
+T_HEADED=T1d python test_native.py          # only your block; selftests/oracles always run
+T_HEADED=N3c,N4j python test_native.py      # comma-separated block tags
+```
+
+The selftests and Python oracles are NOT gated — they are the invariance net and
+always run (they cost ~8s total). Rule 1 still stands: one FULL suite run before
+your first edit (baseline) and one FULL suite run before your final report.
+Between those two, iterate with `T_HEADED=<your block>` only.
+
+Debugging a headed block? Each relay writes its own wire log —
+`native/native_stream_<port>.log` (ports 8799, 8801–8806). Read that, not the
+shared one; concurrent relays tear lines in a shared file (that race crashed
+F-N8e with a JSONDecodeError before per-port logs existed). If a headed check
+flaps, poll the wire log for the frame you need — never read `wire_anim[-1]`
+and hope (the F-N5e mid-fall flake).
 
 ## HOW YOU'LL BE TASKED (the staged pattern)
 
