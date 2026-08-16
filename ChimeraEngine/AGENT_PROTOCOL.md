@@ -9,10 +9,80 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**No live task.** T1 is complete (committed `e2edc66`, suite 76 PASS / 0 FAIL).
-Awaiting the operator's pick: Phase 11 ship-to-foot, frame-time instrumentation,
-or a new membrane. If you were pointed here by a prompt, that prompt IS the
-task — this file supplies the rules, paths, and prompt shape it speaks in.
+**LIVE TASK — Phase 11, Stage 1 of 3 (below).** T1 is complete (committed
+`e2edc66`, suite 76 PASS / 0 FAIL).
+
+---
+
+# SPIACE Phase 11, Stage 1 of 3: ship-to-foot baseline + derivations (verify-only)
+
+**The arc (context for all three stages):** Phase 11 gives the Phase 10
+multi-planet world (`spiace_phase6.html`) a flyable ship and closes the loop:
+surface takeoff on planet A → orbit → Hohmann transfer → atmospheric entry →
+landing on planet B → character/foot mode (Track E handoff). Stage 1 (this
+prompt) = verify baseline + derive every constant. Stage 2 = ship mass/fuel/
+thrust + per-planet atmosphere + re-entry heating, falsifiers F14/F15/F17.
+Stage 3 = the full arc end-to-end + F16 + PLAN.md append. Stages 2 and 3 get
+rewritten into this slot after the previous stage commits.
+
+**TASK:** Prove the tree is green, then produce the derivation sheet Phase 11
+will be built from. Zero production edits — the only file you write is
+`engine/scratch/_phase11_derivations.md`.
+
+**STATE:** Browser engine complete through Phase 10.5 + Tracks A/B/C/T/D/E —
+see `engine/SPIACE_RPG_PLAN.md` v4.4 (Phase 10, Track B/T, Phase 10.5, and the
+Phase 11 spec with falsifiers F14–F17). Last browser suite: `test_phase6.py`
+all green headed. Native arc (N1–N8, T1) is separate and done — do not touch it.
+
+**FILES (read in this order):**
+- `ChimeraEngine/engine/SPIACE_RPG_PLAN.md` — Phase 10, Track B/T, Phase 10.5,
+  and the Phase 11 checklist. F14–F17 are your contract.
+- `ChimeraEngine/engine/spiace_phase6.html` — the engine. Know these before you
+  design anything: `PLANET_SPECS` + `spawnPlanet` (multi-planet world,
+  per-planet DEMs), `heightAt`/`groundNormal`, `stepCharacter` +
+  `__enterFoot`/`__exitFoot` (Track E foot mode), `measureFlight` + membrane
+  depth/clock (Track B/T), `reanchorTerrain`, and the energy-ledger code the
+  F12 multi-planet energy check uses.
+- `ChimeraEngine/engine/test_phase6.py` — the harness your Stage 2/3 checks
+  will join. (It has no `T_HEADED` gating yet; headed blocks run as written.)
+- Do NOT modify `kernel_dsl.py` — Phase 11 declares no new tree kernel.
+  Drag/heating are post-tree corrections (the Phase 7 Lorentz precedent:
+  velocity-dependent forces live outside the tree).
+
+**DERIVE (into `engine/scratch/_phase11_derivations.md`; every number traced
+to an engine constant or a cited physical value — nothing tuned):**
+1. **Ship Δv budget (Tsiolkovsky):** pick an exhaust velocity from a cited real
+   propellant class, then the mass ratios for: A-surface→A-orbit
+   (v_circ = √(GM_A/R_A)), A-orbit→B Hohmann transfer (from the live
+   `PLANET_SPECS` semi-major axes), and B-entry→B-surface. These are the
+   numbers F14's 5% bound judges in Stage 2.
+2. **Per-planet atmosphere:** ρ(h) = ρ₀·exp(−h/H), H = R_specific·T_eq/g per
+   planet — T_eq from the Phase 10 thermal table and g = GM/R², both already in
+   the engine. ρ₀ = 1.225 kg/m³ is the Earth reference class; state your
+   scaling rule for planet B explicitly.
+3. **Re-entry heating:** stagnation relation q̇ = k·√(ρ/r_nose)·v³
+   (Fay–Riddell form; cite k's source), peak skin temperature from the
+   radiative equilibrium σT⁴ = q̇. This produces F15's analytic estimate.
+4. **Energy ledger extension:** exactly where fuel chemical energy enters the
+   existing KE + PE_grav + PE_em ledger (the F12 code path), so Stage 2 extends
+   one ledger instead of inventing a second one.
+
+**FALSIFIERS (this stage's own):**
+- **F-S1a:** `cd ChimeraEngine/engine && python test_phase6.py` is green BEFORE
+  any edit. If red, stop and report — do not build Phase 11 on a broken tree.
+- **F-S1b:** every constant Stage 2/3 will need exists in the derivation sheet
+  with its full chain. A number with no chain fails this stage.
+- **F-S1c:** the live planets' specific orbital energy from vis-viva on their
+  actual positions/velocities matches the closed-form value from `PLANET_SPECS`
+  (G, M_star, a) to < 0.1% — proves the running system still IS the spec sheet.
+
+**CONSTRAINTS:** no production file edits (only `engine/scratch/`); no git
+commits; `kernel_dsl.py` and all `spiace_phase6.html` physics constants frozen.
+
+**DONE MEANS:** a report with (1) the baseline suite command, PASS/FAIL counts,
+and log path in `engine/scratch/`; (2) the derivation sheet path; (3) F-S1a/b/c
+verdicts with measured numbers. Then STOP — the Stage 2 prompt lands in this
+slot after Kimi verifies and commits Stage 1.
 
 ---
 
