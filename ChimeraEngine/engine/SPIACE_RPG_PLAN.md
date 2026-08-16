@@ -925,6 +925,43 @@ with zero changes to ca_core.cpp's physics/gait/nav layers.
   cannot tell the difference. The image→teddy→walking-creature pipeline is now
   a tool, not a demo.
 
+- **T2 — structure first (the measured splat-density law):** COMPLETE (`2263659`).
+  The operator's demand: numbers MEASURED, not asserted. Real 3DGS scans carry
+  ~1–10 splats/cm² because densification stops at ~1–3 screen-px per Gaussian —
+  the universal law is screen-space (~0.5–2 splats/px); per-cm density falls out
+  of it × camera distance. So the viewer's density is camera-driven, never a
+  constant: `native/teddy_pyramid.py` builds a 5-level splat pyramid from
+  `models/trellis/teddy.ply` (2.4M verts, per-vertex RGB → `teddy_shell.json`,
+  levels h=16/24/32/48/64 → 2015/5645/11475/30604/56802 splats), and the viewer
+  picks the level whose splat footprint ≈ 2.5 px at subject depth. The ground is
+  the same law at ρ/4 (dense splats with distance fade — meatball grid retired).
+- **T3 — the rig is CA-native (voxel-muscle gait):** COMPLETE (`e0af946`), all
+  falsifiers green headed (F-T3a…d). The operator's design: a muscle is a cell
+  column that shortens by REMOVING voxels; a joint is an oblong pivot re-laid by
+  circular cell flow. `teddymuscle.chimera` = teddy + `vmGait=1`; WALK runs a
+  hexapod alternating-tripod beat machine (LIFT/SWING/PLANT/SHIFT) on the
+  lattice — FK/IK never executes (iters=0 measured). Every constant is measured
+  off teddy.cells: 6 disjoint leg chains × 8 cells, hip y=+3, paw y=−4 =
+  groundMinY (legs reach the ground BY CONSTRUCTION); leaning a vertical column
+  costs manhattan +1/cell and each leg endures TWO shifts per cycle (own
+  tripod's + the other's) → budget = grown+2 = 9 cells, VM_STEP = 2 repays both.
+  SHIFT is the N7 traction law in CA form: body +1 only while ≥3 paws planted
+  AND ground contact holds. **Two v1 bugs found by measurement, fixed by
+  derivation:** (1) planted paws ran away −1 cell/shift with no reach limit
+  (countMax 533 vs grown 370) → the budget clamp drags the paw (a counted slip;
+  the steady gait slips 0); (2) borrowed body cells were load-bearing in leg
+  lines and their owners removed them (connMin 0) → ownership TRANSFERS to the
+  borrower instead of removal. **Measured (F-T3a…d):** walk 82 cells/400 ticks
+  (derived prediction ~80: one shift per 5-tick half-cycle), connMin 1 every
+  tick, cell count [354,370] vs grown 370 (4.3% < 5% bound), slips 0, airwalk
+  bit-exact (airDX == 0 with gatedAir 10), drop law intact (contactTick 53 ==
+  prediction). Viewer: the live lattice rides anim frames and the shell REBINDS
+  to moving cells (stable bindings are byte-identical to the static shell);
+  MUSCLE (8) button. Headed look-test: bodyX 0→15→32 live, teddy reads as a
+  teddy. **What T3 proves:** locomotion can be pure cellular automata — no
+  kinematic chain, no solver, just voxels appearing and disappearing under a
+  support-and-traction contract.
+
 ---
 
-Document version: 4.4 (G1–G5 + N1–N8 + T1 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1 complete | Agent: bionic + Kimi K3
+Document version: 4.5 (G1–G5 + N1–N8 + T1–T3 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1/N2/N3/N4/N5/N6/N7/N8 + T1/T2/T3 complete | Agent: bionic + Kimi K3
