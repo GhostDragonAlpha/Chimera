@@ -75,6 +75,25 @@ if command -v python >/dev/null 2>&1 && [ "${CHIMERA_SKIP_PERF:-}" != "1" ]; the
   fi
 fi
 
+# --- doc-guard: PLAN.md must not silently shrink ----------------------------
+# An agent session died mid-write and left SPIACE_RPG_PLAN.md at 0 lines; recovery
+# needed git history (AGENT_PROTOCOL.md rule 3). Refuse a staged PLAN.md losing
+# >50 lines vs HEAD. Deliberate shrink: CHIMERA_ALLOW_PLAN_SHRINK=1 and say why
+# in the commit message — same escape-hatch shape as perf-guard.
+PLAN=ChimeraEngine/engine/SPIACE_RPG_PLAN.md
+if git diff --cached --name-only | grep -qx "$PLAN"; then
+  read -r added deleted _ < <(git diff --cached --numstat -- "$PLAN")
+  added=${added:-0}; deleted=${deleted:-0}
+  lost=$((deleted - added))
+  if [ "$lost" -gt 50 ] && [ "${CHIMERA_ALLOW_PLAN_SHRINK:-}" != "1" ]; then
+    echo "[doc-guard] REFUSED: $PLAN loses $lost lines (wipe protection)."
+    echo "  if deliberate: CHIMERA_ALLOW_PLAN_SHRINK=1 git commit ... and say why in the message"
+    fail=1
+  else
+    echo "[doc-guard] PASS: PLAN.md intact."
+  fi
+fi
+
 # --- delegate to shazam ----------------------------------------------------
 if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
   .git/hooks/pre-commit "$@" || fail=1

@@ -224,3 +224,11 @@ clay_exports/
 
 # Phase N build artifact (rebuilt by test_native.py)
 ChimeraEngine/native/ca_core.exe
+
+# Agent scratch quarantine (AGENT_PROTOCOL.md rule 5): probe scripts, logs, and
+# dumps from agent sessions live here or nowhere. Loose _-prefixed scratch in
+# engine/ is also ignored so `git status` stays a true signal.
+ChimeraEngine/engine/scratch/
+ChimeraEngine/engine/_*.py
+ChimeraEngine/engine/_*.txt
+ChimeraEngine/engine/_*.json

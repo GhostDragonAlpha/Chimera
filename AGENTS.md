@@ -113,6 +113,11 @@ terminals.** Taste bottoms out in them and nowhere else — it is EARNED
 (`core/trainables/attunement.py: HUMAN_TEST_BAR`), never requested to dodge work. Refusing
 to ask about a MEASURABLE thing is right; refusing to ask about FUN is just guessing.
 
+**SPIACE implementation agents run under `ChimeraEngine/AGENT_PROTOCOL.md`** — the
+session contract (green baseline, done-is-a-log, docs-last-append-only, handoff on
+context exhaustion, scratch quarantine), key paths, and the staged-prompt pattern.
+Paste it or point at it at the top of every SPIACE task prompt.
+
 ---
 
 ## THE THING TO ACTUALLY UNDERSTAND
