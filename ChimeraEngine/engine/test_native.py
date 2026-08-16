@@ -2321,6 +2321,75 @@ try:
                   f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
         finally:
             relay9.terminate()
+
+    # ---- F-T3: voxel-muscle gait — CA-native movement, no FK/IK --------------
+    # teddymuscle.chimera = teddy.chimera + vmGait=1. WALK drives the tripod
+    # beat machine (LIFT/SWING/PLANT/SHIFT) on the lattice itself: muscles
+    # shorten by REMOVING voxels, joints are oblong pivots re-laid by cell
+    # flow. Headless and fast: one selftest run, all checks off the wire.
+    #   F-T3a: physics membrane intact under vmGait (the drop law holds)
+    #   F-T3b: WALKS or DOESN'T — displacement >= 40 cells over 400 ticks
+    #          (derived prediction 80: one SHIFT per 5-tick half-cycle)
+    #   F-T3c: body integrity every tick — single face-connected component,
+    #          cell count within 5% of the grown 370, zero traction slips
+    #   F-T3d: airwalk — legs cycling in free fall move the body EXACTLY
+    #          nowhere (airDX bit-exact 0, SHIFT requests denied: gatedAir)
+    rt3 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
+                          str(NATIVE / "genomes" / "teddymuscle.chimera"),
+                          "selftest"], capture_output=True, text=True,
+                         timeout=120)
+    t3msgs = [json.loads(l) for l in rt3.stdout.splitlines() if l.strip()]
+    t3meta = next((m for m in t3msgs if m.get("type") == "meta"), None)
+    t3fin = next((m for m in t3msgs if m.get("type") == "final"), None)
+    t3vox = next((m for m in t3msgs if m.get("type") == "voxtest"), None)
+    tg4 = read_chimera(NATIVE / "genomes" / "teddymuscle.chimera")
+    grown_n = len(t3fin["cells"]) if t3fin else 0
+    check("F-T3a teddymuscle genome loads (kind=vox, vmGait=1) and the stand "
+          "ledger is intact",
+          rt3.returncode == 0 and t3meta and t3meta["kind"] == "creature"
+          and tg4.get("vmGait") == "1" and t3vox and "vm" in t3vox
+          and grown_n == 370,
+          f"rc={rt3.returncode} name={t3meta and t3meta.get('name')} "
+          f"vmGait={tg4.get('vmGait')} grownCells={grown_n}")
+    st3 = t3vox["stand"]
+    g3 = float(tg4["gravity"]) / (float(tg4["tickHz"]) ** 2
+                                  * float(tg4["cell"]))
+    n_pred3 = 1
+    while n_pred3 * (n_pred3 + 1) < 2 * st3["dropH"] / g3:
+        n_pred3 += 1
+    check("F-T3a physics membrane intact under vmGait: contact tick == the "
+          "discrete drop law, rest equilibrium exact",
+          st3["contactTick"] == n_pred3 and st3["restVyMax"] == 0
+          and st3["restPenMax"] < 1e-12 and st3["termDrift"] < 0.02,
+          f"contactTick={st3['contactTick']} pred={n_pred3} "
+          f"restVyMax={st3['restVyMax']} restPenMax={st3['restPenMax']:.2e} "
+          f"termDrift={st3['termDrift']:.4%}")
+    w3 = t3vox["walk"]
+    check("F-T3b WALKS: 400-tick displacement >= 40 cells (derived "
+          "prediction ~80: one SHIFT per 5-tick half-cycle) with ZERO IK "
+          "iterations — the gait is pure CA",
+          w3["bodyX"] >= 40 and w3["iters"] == 0 and w3["nan"] == False,
+          f"bodyX={w3['bodyX']} iters={w3['iters']} nan={w3['nan']}")
+    vm3 = t3vox["vm"]
+    check("F-T3c body integrity: single face-connected component every tick, "
+          "cell count within 5% of the grown 370, no traction slips",
+          vm3["connMin"] == 1
+          and vm3["countMin"] >= grown_n * 0.95
+          and vm3["countMax"] <= grown_n * 1.05
+          and vm3["slips"] == 0,
+          f"connMin={vm3['connMin']} count=[{vm3['countMin']},"
+          f"{vm3['countMax']}]/{grown_n} slips={vm3['slips']} "
+          f"shifts={vm3['shifts']}")
+    check("F-T3d airwalk: legs cycling in free fall translate the body "
+          "EXACTLY nowhere (airDX bit-exact 0) and SHIFT requests are denied "
+          "while airborne (gatedAir > 0)",
+          vm3["airDX"] == 0 and vm3["gatedAir"] > 0,
+          f"airDX={vm3['airDX']} gatedAir={vm3['gatedAir']} "
+          f"gatedSupport={vm3['gatedSupport']}")
+    print(f"T3 MEASURED: walk bodyX={w3['bodyX']} (pred ~80) iters={w3['iters']} "
+          f"conn={vm3['connMin']} count=[{vm3['countMin']},{vm3['countMax']}] "
+          f"shifts={vm3['shifts']} slips={vm3['slips']} "
+          f"gatedAir={vm3['gatedAir']} airDX={vm3['airDX']}")
 finally:
     relay.terminate()
 

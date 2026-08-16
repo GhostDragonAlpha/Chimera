@@ -204,6 +204,12 @@ struct Genome {
   // (genomes/<cellsFile>), not grown. The rig chains ride that same data file;
   // physics/gait/nav are unchanged (the shape-agnostic claim).
   std::string cellsFile;
+  // T3 voxel-muscle gait — movement IS cell add/remove (the CA way): a step
+  // is lift (remove paw cells = the muscle shortens) -> swing (circular
+  // re-lay around the hip pivot) -> plant (extend until the support rule
+  // fires) -> body shift (earned: gated on planted paws + ground contact).
+  // 0 = FK/IK gait (default, unchanged); 1 = voxel-muscle.
+  int vmGait = 0;
 };
 
 static void die4(const std::string& msg) {
@@ -357,6 +363,7 @@ static Genome loadGenome(const std::string& path) {
       die4("INVALID: vox sanity bounds failed in " + path);
     if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1)
       g.embodiment = 1;
+    if (kv.count("vmGait")) g.vmGait = std::stoi(kv["vmGait"]);   // T3
     if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
       // N8 goal membrane for an imported body — the SAME declarations the
       // creature loader reads (goal requires the N6 terrain membrane).
@@ -1058,6 +1065,7 @@ static void bearRig();
 static void learnReset();
 static void emitRig();
 static void emitSelftest();
+static void vmWalkTick();        // T3: voxel-muscle gait (defined below)
 static int runEmbodiment(int tickMs);
 static void physTick();                   // N5: defined with the N5 block
 static void navInit();                    // N8: defined with the N8 block
@@ -1770,6 +1778,14 @@ static void bearAnim() {
         bear.cmd = "rest"; bear.waveDone = true; bear.wavePhase = "";
       }
     }
+  } else if (bear.cmd == "walk" && W.vmGait) {
+    // T3: the voxel-muscle gait — movement is cell add/remove on the lattice,
+    // no FK/IK. physTick still ran above; SHIFT is gated on bear.contact.
+    vmWalkTick();
+    bear.walkTrace.push_back(
+        {(double)bear.cmdTick, bear.bodyY, bear.lastGround});
+    if (bear.walkTrace.size() > 400)
+      bear.walkTrace.erase(bear.walkTrace.begin());
   } else if (bear.cmd == "walk") {
     const double phi = 2 * 3.14159265358979323846 * bear.cmdTick / W.b4T;
     for (auto& ch : bear.rig) {
@@ -1824,6 +1840,254 @@ static void bearCommand(const std::string& c) {
   } else if (c == "nav" && W.goal) {      // N8: walk to the flag (Q persists)
     bear.cmd = "nav"; bear.cmdTick = 0; navSpawn();
   } else bear.cmd = c == "auto" ? "auto" : "rest";
+}
+
+// ======================= T3: voxel-muscle gait (CA-native movement) =========
+// The operator's design: a muscle is a cell column — contraction REMOVES
+// voxels from its end; a joint is an oblong pivot — rotation is circular
+// cell add/remove around it. No FK/IK on this path: the lattice itself is
+// the state. The gait is a TRIPOD (legs {0,2,4} vs {1,3,5} — hexapod
+// alternating tripods), four beats per half-cycle:
+//   LIFT  — remove cells from the paw end (the muscle shortens)
+//   SWING — re-lay the column hip->paw (circular flow around the hip pivot;
+//           face-connected supercover line)
+//   PLANT — extend the column until the ground plane (legs reach the ground
+//           BY CONSTRUCTION: groundMinY IS the grown paw height)
+//   SHIFT — the body earns +1x ONLY while >=3 paws are planted and ground
+//           contact holds (the N7 traction law in CA form); planted paws
+//           stay world-fixed, i.e. lean back one cell in the body frame
+// MEASURED on teddy.cells (the numbers that size everything below):
+//   6 leg chains, 8 cells each, disjoint, hip y=+3, paw y=-4 = groundMinY,
+//   grown column manhattan = 7 — the leg reaches the ground with ZERO slack.
+//   Leaning a vertical column back by 1 cell costs manhattan +1, so the cell
+//   budget per leg is grown+2 = 9: with tripods alternating and one shift per
+//   half-cycle, each leg endures exactly TWO shifts between its own plants
+//   (the shift after its own plant, and the shift after the other tripod's),
+//   so lean reaches 2 cells and the swing must repay both -> VM_STEP = 2.
+//   (v1 measured this the hard way: VM_STEP=1 slipped 294/306 leans — the
+//   under-swinging legs hit the budget clamp on every second shift.)
+//   Steady state per leg: plant at +2 ahead of the hip, lean back to 0, lift,
+//   swing +2, plant. Column length oscillates 6..9 cells; whole-body count
+//   stays within +/-9 of the grown 370.
+// OWNERSHIP: a leg owns only cells it added (plus the chain cells it adopts
+// at init). A line cell landing on a pre-existing cell is BORROWED — never
+// removed. If the owner removes a cell another leg's line borrows, ownership
+// TRANSFERS to the borrower (v1 without transfer: measured connMin=0 — the
+// borrowed cell was load-bearing). Budget clamp: a shift that would stretch
+// a leg past its budget drags the paw (counted as a slip — traction loss).
+// Validators ride the selftest ledger: single face-connected component,
+// count bounds, traction-gate counts. vmGait=0 genomes never enter here.
+struct VMLeg {
+  int hip[3], paw[3];
+  std::vector<std::array<int, 3>> cells;   // OWNED column cells (hip excl.)
+  std::vector<std::array<int, 3>> line;    // full hip->paw line incl. borrowed
+  int budget;                              // grown column length + 1 (lean)
+  bool planted;
+};
+static std::vector<VMLeg> vmLegs;
+static int vmActiveTripod = 0;             // legs index%2 == vmActiveTripod
+static int vmPhase = 0;                    // 0 LIFT, 2 SWING, 3 PLANT, 4 SHIFT
+static int vmSwingN = 0;
+static const int VM_STEP = 2;   // derived: repays the 2-cell lean per cycle
+static const int VM_LIFT = 1;   // the minimum that clears the ground lattice
+struct VMAudit {
+  long ticks = 0, shifts = 0, gatedAir = 0, gatedSupport = 0, slips = 0;
+  int minConn = 1, minCount = 1 << 30, maxCount = 0;
+};
+static VMAudit vmA;
+
+static void cRemoveCell(int x, int y, int z) {
+  auto it = cIdx.find(k3(x, y, z));
+  if (it == cIdx.end()) return;
+  const int i = it->second;
+  cIdx.erase(it);
+  const int j = (int)cCellsV.size() - 1;
+  if (i != j) {
+    cCellsV[i] = cCellsV[j];
+    cIdx[k3(cCellsV[i].x, cCellsV[i].y, cCellsV[i].z)] = i;
+  }
+  cCellsV.pop_back();
+}
+
+static bool vmIsHip(int x, int y, int z) {
+  for (const VMLeg& L : vmLegs)
+    if (L.hip[0] == x && L.hip[1] == y && L.hip[2] == z) return true;
+  return false;
+}
+
+// face-connected integer line hip->paw (hip excluded — the body owns it):
+// axis-stepped supercover, so every emitted cell touches the previous one
+static std::vector<std::array<int, 3>> vmLine(const int a[3], const int b[3]) {
+  std::vector<std::array<int, 3>> out;
+  const int dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2];
+  const int n = std::max(std::abs(dx), std::max(std::abs(dy), std::abs(dz)));
+  if (n == 0) return out;
+  int p[3] = {a[0], a[1], a[2]};
+  for (int i = 1; i <= n; i++) {
+    const int c[3] = {a[0] + (int)std::lround(dx * (double)i / n),
+                      a[1] + (int)std::lround(dy * (double)i / n),
+                      a[2] + (int)std::lround(dz * (double)i / n)};
+    while (p[0] != c[0] || p[1] != c[1] || p[2] != c[2]) {
+      if (p[0] != c[0]) p[0] += (c[0] > p[0]) ? 1 : -1;
+      else if (p[1] != c[1]) p[1] += (c[1] > p[1]) ? 1 : -1;
+      else p[2] += (c[2] > p[2]) ? 1 : -1;
+      out.push_back({p[0], p[1], p[2]});
+    }
+  }
+  return out;
+}
+
+// A leg OWNS only the cells it added (plus the chain cells it adopts at
+// vmInit). A line cell that lands on a pre-existing body cell is BORROWED:
+// it renders as body, stays out of L.cells, and is never removed — without
+// this guard a lifted paw crossing the belly would tear a hole in the body.
+// The budget clamp drags the paw toward the hip until the line fits — a leg
+// cannot stretch past its cell count (v1 without it: measured countMax 533,
+// planted paws running away one cell per shift with nothing to stop them).
+static void vmRelayLeg(VMLeg& L) {
+  auto want = vmLine(L.hip, L.paw);
+  while ((int)want.size() > L.budget) {    // reach limit: drag the paw back
+    if (L.paw[0] != L.hip[0]) L.paw[0] += (L.hip[0] > L.paw[0]) ? 1 : -1;
+    else if (L.paw[1] != L.hip[1]) L.paw[1] += (L.hip[1] > L.paw[1]) ? 1 : -1;
+    else if (L.paw[2] != L.hip[2]) L.paw[2] += (L.hip[2] > L.paw[2]) ? 1 : -1;
+    else break;                            // paw == hip: empty line, fits
+    want = vmLine(L.hip, L.paw);
+  }
+  std::vector<std::array<int, 3>> newOwned;
+  for (const auto& c : want) {           // add first: the union stays
+    const int k = k3(c[0], c[1], c[2]);  // connected through the hip
+    if (!cIdx.count(k)) {
+      cAddCell(c[0], c[1], c[2], 1);
+      newOwned.push_back(c);
+    } else {
+      bool mine = false;                 // occupied: ours from last tick?
+      for (const auto& o : L.cells) if (o == c) { mine = true; break; }
+      if (mine) newOwned.push_back(c);   // else borrowed — never owned
+    }
+  }
+  for (const auto& c : L.cells) {
+    bool keep = false;
+    for (const auto& w : newOwned) if (w == c) { keep = true; break; }
+    if (keep) continue;
+    // load-bearing in ANOTHER leg's line (borrowed there): transfer the
+    // ownership instead of removing — removing it orphans the borrower's
+    // downstream cells (the v1 connMin=0 mechanism, measured)
+    bool transferred = false;
+    for (VMLeg& O : vmLegs) {
+      if (&O == &L) continue;
+      bool inLine = false;
+      for (const auto& w : O.line) if (w == c) { inLine = true; break; }
+      if (inLine) { O.cells.push_back(c); transferred = true; break; }
+    }
+    if (!transferred && !vmIsHip(c[0], c[1], c[2]))
+      cRemoveCell(c[0], c[1], c[2]);
+  }
+  L.cells = newOwned;
+  L.line = want;
+}
+
+static int vmPlanted() {
+  int n = 0;
+  for (const VMLeg& L : vmLegs) if (L.planted) n++;
+  return n;
+}
+
+// single face-connected component? BFS over the live index
+static bool vmConnected() {
+  if (cCellsV.empty()) return true;
+  std::unordered_map<int, char> seen;
+  seen.reserve(cCellsV.size() * 2);
+  std::vector<int> st;
+  const int k0 = k3(cCellsV.back().x, cCellsV.back().y, cCellsV.back().z);
+  seen[k0] = 1;
+  st.push_back((int)cCellsV.size() - 1);
+  static const int D[6][3] = {{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1}};
+  size_t reached = 0;
+  while (!st.empty()) {
+    const CCell c = cCellsV[st.back()]; st.pop_back(); reached++;
+    for (const auto& d : D) {
+      const int k = k3(c.x + d[0], c.y + d[1], c.z + d[2]);
+      auto it = cIdx.find(k);
+      if (it != cIdx.end() && !seen.count(k)) { seen[k] = 1; st.push_back(it->second); }
+    }
+  }
+  return reached == cCellsV.size();
+}
+
+static void vmAudit() {
+  vmA.ticks++;
+  if (!vmConnected()) vmA.minConn = 0;
+  const int n = (int)cCellsV.size();
+  if (n < vmA.minCount) vmA.minCount = n;
+  if (n > vmA.maxCount) vmA.maxCount = n;
+}
+
+static void vmWalkTick() {
+  if (vmLegs.empty()) { vmAudit(); return; }
+  if (vmPhase == 0) {              // LIFT: the active tripod's muscles
+    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
+      VMLeg& L = vmLegs[i];        // shorten by removing end voxels
+      L.paw[1] += VM_LIFT;
+      L.planted = false;
+      vmRelayLeg(L);
+    }
+    vmSwingN = 0; vmPhase = 2;
+  } else if (vmPhase == 2) {       // SWING: circular flow around the hips
+    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
+      VMLeg& L = vmLegs[i];
+      L.paw[0] += 1;
+      vmRelayLeg(L);
+    }
+    if (++vmSwingN >= VM_STEP) vmPhase = 3;
+  } else if (vmPhase == 3) {       // PLANT: extend to the ground plane
+    const int gy = (int)std::lround(bear.groundMinY);
+    bool done = true;
+    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
+      VMLeg& L = vmLegs[i];
+      if (!L.planted) {
+        L.paw[1] -= 1;
+        if (L.paw[1] <= gy) { L.paw[1] = gy; L.planted = true; }
+        else done = false;
+      }
+      vmRelayLeg(L);
+    }
+    if (done) vmPhase = 4;
+  } else {                         // SHIFT: the earned stride (N7 in CA form)
+    if (vmPlanted() >= 3 && bear.contact) {
+      bear.body[0] += 1;                       // earned: the body advances
+      for (VMLeg& L : vmLegs) {
+        if (!L.planted) continue;
+        const int wantX = L.paw[0] - 1;        // world-fixed paw
+        L.paw[0] = wantX;
+        vmRelayLeg(L);
+        if (L.paw[0] != wantX) vmA.slips++;    // budget clamp = traction slip
+      }
+      vmA.shifts++;
+    } else if (!bear.contact) vmA.gatedAir++;
+    else vmA.gatedSupport++;
+    vmActiveTripod ^= 1;
+    vmPhase = 0;
+  }
+  vmAudit();
+}
+
+static void vmInit() {
+  vmLegs.clear(); vmActiveTripod = 0; vmPhase = 0; vmSwingN = 0;
+  vmA = VMAudit();
+  for (const CTip& t : cTips) {          // the rig chains ARE the leg columns
+    VMLeg L;
+    for (int i = 0; i < 3; i++) {
+      L.hip[i] = t.path[0][i];
+      L.paw[i] = t.path.back()[i];
+    }
+    for (size_t i = 1; i < t.path.size(); i++) {
+      L.cells.push_back(t.path[i]);      // adopted: the leg owns its column
+      L.line.push_back(t.path[i]);
+    }
+    L.budget = (int)t.path.size() + 1;   // manhattan(path)=size-1, +2 lean
+    L.planted = true;
+    vmLegs.push_back(L);
+  }
 }
 
 // ---------- embodiment wire emitters -----------------------------------------
@@ -1907,7 +2171,17 @@ static void emitAnim() {
         first = false;
       }
   }
-  std::printf("],\"done\":false}\n");
+  std::printf("]");
+  if (W.vmGait) {                     // T3: the live lattice rides the wire
+    std::printf(",\"cells\":[");
+    bool fc = true;
+    for (const CCell& c : cCellsV) {
+      std::printf("%s[%d,%d,%d,%d]", fc ? "" : ",", c.x, c.y, c.z, c.mat);
+      fc = false;
+    }
+    std::printf("]");
+  }
+  std::printf(",\"done\":false}\n");
   std::fflush(stdout);
 }
 
@@ -2259,6 +2533,23 @@ static void emitVoxTest() {
   bearCommand("walk");
   const double bxStart = bear.body[0];
   for (int i = 0; i < 400; i++) bearAnim();
+  // ---------- T3: the voxel-muscle airwalk falsifier, run live --------------
+  // Legs cycling in FREE FALL must shift the body exactly nowhere — the SHIFT
+  // beat is gated on bear.contact. Drop from 8 body-heights and walk 60
+  // ticks: the discrete drop law keeps the bear airborne ~53 of them, so
+  // nearly every SHIFT request must be denied (gatedAir) and the AIRBORNE
+  // displacement must be bit-exact 0 (movement after landing is legitimate).
+  double vmAirDX = 0;
+  if (W.vmGait) {
+    bearCommand("drop");
+    bearCommand("walk");
+    double bxPrev = bear.body[0];
+    for (int i = 0; i < 60; i++) {
+      bearAnim();
+      if (!bear.contact) vmAirDX += std::fabs(bear.body[0] - bxPrev);
+      bxPrev = bear.body[0];
+    }
+  }
   std::printf("{\"type\":\"voxtest\",\"stand\":{\"dropH\":%.17g,"
               "\"contactTick\":%ld,\"analyticTick\":%.17g,"
               "\"ledgerErr\":%.17g,\"termDrift\":%.17g,"
@@ -2266,9 +2557,16 @@ static void emitVoxTest() {
               H, contactTick, std::sqrt(2 * H / gSim), ledgerErr,
               termDrift, restVyMax, restPenMax);
   std::printf("\"walk\":{\"bodyX\":%.17g,\"iters\":%ld,\"nan\":%s,"
-              "\"thetaMaxEver\":%.17g}}\n",
+              "\"thetaMaxEver\":%.17g}",
               bear.body[0] - bxStart, bear.iters,
               bear.nan ? "true" : "false", bear.thetaMaxEver);
+  if (W.vmGait)
+    std::printf(",\"vm\":{\"connMin\":%d,\"countMin\":%d,\"countMax\":%d,"
+                "\"shifts\":%ld,\"slips\":%ld,\"gatedAir\":%ld,"
+                "\"gatedSupport\":%ld,\"airDX\":%.17g}",
+                vmA.minConn, vmA.minCount, vmA.maxCount, vmA.shifts,
+                vmA.slips, vmA.gatedAir, vmA.gatedSupport, vmAirDX);
+  std::printf("}\n");
   std::fflush(stdout);
 }
 static int runVox(int tickMs, bool selftest) {
@@ -2276,6 +2574,7 @@ static int runVox(int tickMs, bool selftest) {
   cEmitFrame(false);            // one static frame: the viewer renders the body
   emitVoxFinal();               // final ledger (done=true)
   bearRig();                    // G4 rig + N5 physics init (UNCHANGED)
+  if (W.vmGait) vmInit();       // T3: adopt the rig chains as leg columns
   learnReset();                 // fresh learner (harmless for stand/walk)
   if (selftest) {
     emitRig(); emitVoxTest();

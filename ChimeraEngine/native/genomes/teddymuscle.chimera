@@ -1,0 +1,29 @@
+# SPIACE genome table — T3 teddy (voxel-muscle gait, CA-native movement)
+# teddy.chimera + vmGait=1. The body is the SAME imported cell set
+# (genomes/teddy.cells), but the walk command never touches FK/IK: a leg is a
+# cell column, a muscle contraction REMOVES voxels from its end, a joint is an
+# oblong pivot re-laid by circular cell flow around the hip. Movement is the
+# cellular-automata substrate itself. The N5 physics membrane is unchanged —
+# physTick still derives ground contact, and the SHIFT beat (body advance) is
+# gated on it: the N7 earned-traction law in CA form. B4 constants stay
+# declared because the vox loader requires them; they are inert on this path.
+
+kind           = vox
+genome         = teddy-muscle-v1
+embodiment     = 1
+tickMs         = 30
+cell           = 0.06
+cellsFile      = teddy.cells
+vmGait         = 1
+
+# --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------
+b4A            = 2              # gait swing amplitude, cells
+b4T            = 60             # gait period, anim ticks
+b4Lam          = 12.25          # = 7*7/4 damping
+b4Dth          = 0.08           # rad per IK iteration
+b4ThMax        = 2.6            # joint bound, rad
+b4Iters        = 5              # IK iterations per anim tick per chain
+
+# --- N5: physics membrane (copied from beargoal — SI in, sim units derived) --
+gravity        = 9.81
+tickHz         = 60

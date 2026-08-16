@@ -22,6 +22,7 @@
   <button id="brest">REST (3)</button> <button id="bauto">AUTO (4)</button>
    <button id="bdrop">DROP (5)</button> <button id="bnav">NAV (6)</button>
    <button id="bteddy">TEDDY (7)</button>
+   <button id="bmuscle">MUSCLE (8)</button>
 
 </div>
 <script type="module">
@@ -103,6 +104,7 @@ es.onmessage = e => {
     lastNav = m.nav || null;                                 // N8 nav state
     waveDone = m.waveDone; episode = m.episode; eps = m.eps;
     waveBack = m.waveBack; visitorPos = m.visitor;
+    if (m.cells) cells = m.cells;   // T3: the live lattice rides anim frames
     posedMap.clear();
     for (const p of m.posed)
       posedMap.set(p[0] + ',' + p[1] + ',' + p[2], [p[3], p[4], p[5]]);
@@ -164,6 +166,8 @@ document.getElementById('bdrop').onclick = () => bearCmd('drop');   // N5
   bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');                // N8 toggle
 function teddyCmd() { fetch('/cmd', { method: 'POST', body: 'genome:teddy' }); }
 (document.getElementById('bteddy')).onclick = () => teddyCmd();   // T1 vox genome
+function muscleCmd() { fetch('/cmd', { method: 'POST', body: 'genome:teddymuscle' }); }
+(document.getElementById('bmuscle')).onclick = () => muscleCmd();  // T3 voxel-muscle
 window.addEventListener('keydown', e => {
   if (!EMB) return;
   if (e.key === '1') bearCmd('wave');
@@ -173,6 +177,7 @@ window.addEventListener('keydown', e => {
   else if (e.key === '5') bearCmd('drop');
   else if (e.key === '6') bearCmd(lastCmd === 'nav' ? 'rest' : 'nav');
   else if (e.key === '7') teddyCmd();
+  else if (e.key === '8') muscleCmd();
 });
 
 // ---------- splats (palettes copied from spiace_grow.html) --------------------
@@ -285,13 +290,63 @@ window.__dbgShell = () => ({
   spacing: PRES ? lodSpacing(PRES.focus.R) : null,
   splatCount: splatData.length,
 });
+// T3: shell splats are bound to sim cells; when the voxel-muscle gait moves
+// a cell, its shell splats follow (rebind = home cell, else nearest within
+// +/-2 — searched only for splats whose bound cell vanished this frame).
+const BINDS = new Map();   // L.h -> { key: Int32Array, off: Float32Array }
+const cKey = (x, y, z) => (x + 64) + (y + 64) * 128 + (z + 64) * 16384;
 function shellSplats() {
   const L = shellLevel();
   const s0 = PRES.cell, size = L.cell * 1.9, bx = EMB ? bodyX * s0 : 0;
+  let B = BINDS.get(L.h);
+  if (!B || B.key.length !== L.n) {
+    B = { key: new Int32Array(L.n).fill(-1), off: new Float32Array(L.n * 3) };
+    BINDS.set(L.h, B);
+  }
+  const occ = new Set();
+  const live = cells.length && typeof cells[0][0] === "number" && cells[0].length >= 3
+             && GENOME.startsWith("teddy");
+  if (live) for (const c of cells) occ.add(cKey(c[0], c[1], c[2]));
   for (let i = 0; i < L.n; i++) {
     const p = L.pos[i], c = L.col[i];
-    splatData.push({ p: [p[0] * L.cell + bx, p[1] * L.cell + bodyY * s0,
-                         p[2] * L.cell], s: size,
+    let wx, wy, wz;
+    if (live) {
+      const hx = Math.round(p[0] * L.cell / s0), hy = Math.round(p[1] * L.cell / s0),
+            hz = Math.round(p[2] * L.cell / s0);
+      let k = B.key[i];
+      if (k < 0 || !occ.has(k)) {          // (re)bind: home, else nearest +-2
+        k = occ.has(cKey(hx, hy, hz)) ? cKey(hx, hy, hz) : -1;
+        if (k < 0) {
+          let best = 1e9;
+          for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++)
+            for (let dz = -2; dz <= 2; dz++) {
+              const k2 = cKey(hx + dx, hy + dy, hz + dz);
+              if (!occ.has(k2)) continue;
+              const d2 = dx * dx + dy * dy + dz * dz;
+              if (d2 < best) { best = d2; k = k2; }
+            }
+        }
+        if (k >= 0) {
+          B.key[i] = k;
+          const bx2 = (k % 128) - 64, by2 = (Math.floor(k / 128) % 128) - 64,
+                bz2 = Math.floor(k / 16384) - 64;
+          B.off[i * 3] = p[0] * L.cell - bx2 * s0;   // offset rides the
+          B.off[i * 3 + 1] = p[1] * L.cell - by2 * s0;   // BOUND cell
+          B.off[i * 3 + 2] = p[2] * L.cell - bz2 * s0;
+        }
+      }
+      if (k >= 0) {                        // bound: follow the live cell
+        const cx = (k % 128) - 64, cy = (Math.floor(k / 128) % 128) - 64,
+              cz = (Math.floor(k / 16384)) - 64;
+        wx = cx * s0 + B.off[i * 3]; wy = cy * s0 + B.off[i * 3 + 1];
+        wz = cz * s0 + B.off[i * 3 + 2];
+      } else {                             // orphan: hold the grown pose
+        wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
+      }
+    } else {
+      wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
+    }
+    splatData.push({ p: [wx + bx, wy + bodyY * s0, wz], s: size,
                      col: FLAT ? [0.55, 0.42, 0.30, 1] : [c[0], c[1], c[2], 1] });
   }
 }
