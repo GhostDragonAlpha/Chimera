@@ -64,7 +64,9 @@ wire numbers bit-identical to the T4 pins above.
 
 **DONE MEANS:** report with (1) before/after strips + V-score category
 breakdown both times, (2) P-score confirmation (fast net log path), (3)
-diff summary. Then STOP.
+diff summary, (4) the round logged to the score ledger
+(`python score_saturation.py add T5 <P> <V> <def-id>...` — rule 8's
+saturation instrument; new deficiency classes get new stable ids). Then STOP.
 
 ---
 
@@ -226,6 +228,24 @@ V (visual), /100 — judged off the strip/screenshot YOU read (rule 7):
 
 A P regression to buy V (or vice versa) is disqualified, not traded.
 
+The band is set by SATURATION, driven by taste (operator directive
+2026-08-16): a taste judgment — the human's or the LLM's, **equally
+valuable, no hierarchy** — is the discovery instrument. Each critique round
+(whoever issues it) names what offends; each offense is a deficiency class
+with a stable id (repeat sightings are the SAME species, whoever spotted
+it). Rounds log to the ledger —
+`cd ChimeraEngine/engine && python score_saturation.py add <task> <P> <V>
+<def-id>...` — and `status` computes the species-accumulation curve: Chao2
+completeness = S_obs/(S_obs + f1²/2f2) plus the dry tail (consecutive
+rounds with zero NEW deficiency classes). SATURATED at completeness ≥ 0.9
+with a 3-round dry tail — the standard stopping rule, the same math as the
+engine's S1 question saturation — and the scores at that point are the
+band floor, presented to the operator for the accept/reject call. Baseline
+round (T4-baseline): 7 classes found, Chao2 estimates ~28, completeness
+0.25 — NOT saturated; keep discovering. If the curve never humps, the
+rubric's categories are wrong, not incomplete: re-frame, don't keep
+scoring.
+
 ## KEY PATHS (go here first; do not explore blindly)
 
 | What | Where |
@@ -240,6 +260,7 @@ A P regression to buy V (or vice versa) is disqualified, not traded.
 | Browser test harness | `ChimeraEngine/engine/test_phase6.py` |
 | The plan / ledger (append-only) | `ChimeraEngine/engine/SPIACE_RPG_PLAN.md` |
 | TRELLIS image→3D runtime + weights | `models/trellis/` (needs `out/` dir to exist for `--voxply`) |
+| Score ledger + saturation instrument | `ChimeraEngine/engine/score_saturation.py` → `score_ledger.json` (rule 8) |
 | Teddy splat pyramid (T2) | `ChimeraEngine/native/teddy_pyramid.py` → `genomes/teddy_shell.json` |
 | Teddy voxel bodies (T1/T3) | `genomes/teddy.cells` (370 cells, 6 leg chains); `teddy.chimera` FK/IK · `teddymuscle.chimera` voxel-muscle |
 

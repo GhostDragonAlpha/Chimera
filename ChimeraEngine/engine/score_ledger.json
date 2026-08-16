@@ -1,0 +1,18 @@
+{
+  "rounds": [
+    {
+      "task": "T4-baseline",
+      "P": 92.0,
+      "V": 58.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:subject-under-framed",
+        "v:density-below-capture-law",
+        "v:low-exposure",
+        "v:legs-illegible",
+        "v:shadow-faint"
+      ]
+    }
+  ]
+}

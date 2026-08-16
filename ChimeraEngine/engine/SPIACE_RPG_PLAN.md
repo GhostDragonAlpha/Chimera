@@ -1001,8 +1001,14 @@ with zero changes to ca_core.cpp's physics/gait/nav layers.
   replication 15 + integrity gates 15 + contact/traction 15 + control layer
   10 + falsifier discipline 5; **V (visual)** = subject recognizability 25 +
   motion legibility 20 + grounding 15 + renderer fidelity 15 + scene
-  legibility 15 + splat-density law 10. The quality band is set by the
-  operator from these baselines. **Current state (T4, measured): P = 92**
+  legibility 15 + splat-density law 10. The band is set by saturation, driven by taste (human or LLM,
+equally valuable): each critique round's newly offended classes log to
+`engine/score_ledger.json` via `score_saturation.py`, and when the
+deficiency-discovery curve saturates (Chao2 completeness ≥ 0.9 + 3-round
+dry tail — the S1 stopping rule) the scores at that point are the band
+floor, presented to the operator for accept/reject. Baseline round logged:
+T4, 7 classes found, Chao2 estimates ~28, completeness 0.25 — not
+saturated. **Current state (T4, measured): P = 92**
   (−2 symplectic shadow drift 1.845% on the drop ledger, derived-but-real;
   −6 CASE B: the greedy nav policy stalls east-bound on bear AND teddy —
   measured, pinned with Q-values, unfixed) **· V = 58** (recognizability
