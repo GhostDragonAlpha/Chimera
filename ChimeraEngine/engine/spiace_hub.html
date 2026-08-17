@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>SPIACE — operator window</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0e14;color:#cfd8e3;
+    font:13px/1.4 ui-monospace,Consolas,monospace}
+  #wrap{display:flex;height:100%}
+  #sim{flex:1;border:0;background:#000}
+  #side{width:380px;min-width:380px;display:flex;flex-direction:column;
+    border-left:1px solid #333;background:#0e1219}
+  #side h1{font-size:14px;margin:10px 12px 4px;color:#e8c15a}
+  .pad{padding:0 12px}
+  #bodies{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+  #bodies button{background:#1c2534;color:#cfd8e3;border:1px solid #3a4a63;
+    padding:5px 10px;cursor:pointer;font:inherit}
+  #bodies button:hover{background:#2a3a55}
+  #bodies button.live{border-color:#e8c15a;color:#e8c15a}
+  #scores{font-size:26px;padding:6px 12px}
+  #scores b{color:#e8c15a}
+  #verdict{flex:0 0 auto;max-height:38%;overflow:auto;white-space:pre-wrap;
+    border-top:1px solid #333;padding:8px 12px;color:#9fb0c3}
+  #proofs{flex:1;overflow:auto;border-top:1px solid #333;padding:8px 12px}
+  #proofs img{max-width:100%;border:1px solid #333;margin:4px 0;display:block}
+  #proofs .cap{color:#7c8aa0;font-size:12px}
+</style></head><body>
+<div id="wrap">
+  <iframe id="sim" src="/" title="live simulation"></iframe>
+  <div id="side">
+    <h1>SPIACE — OPERATOR WINDOW</h1>
+    <div class="pad" id="scores">P ? / V ?</div>
+    <div id="bodies"></div>
+    <div id="verdict">(latest judge verdict loads here)</div>
+    <div id="proofs"></div>
+  </div>
+</div>
+<script>
+// The hub is a FRAME, not a brain: the sim iframe is the unchanged viewer,
+// the side panel reads the scoreboard + the latest proof artifacts.
+const BODIES = [
+  ['teddyhoneymuscle', 'TEDDY · sitting (honey)'],
+  ['teddystandmuscle', 'TEDDY · standing'],
+  ['bear',             'BEAR (G4/G5)'],
+  ['bearhill',         'BEAR · hills'],
+  ['beargoal',         'BEAR · goal nav'],
+  ['wall',             'WALL (G1)'],
+  ['oak',              'OAK (G2)'],
+  ['creature',         'CREATURE (G3)'],
+];
+let live = '';
+function switchBody(name, btn) {
+  fetch('/cmd', { method: 'POST', body: 'genome:' + name })
+    .then(r => { if (!r.ok && r.status !== 204) return;
+      live = name;
+      for (const b of document.querySelectorAll('#bodies button'))
+        b.classList.toggle('live', b === btn);
+      const sim = document.getElementById('sim');
+      sim.src = '/?t=' + Date.now();          // reconnect to the fresh stream
+    });
+}
+const bb = document.getElementById('bodies');
+for (const [name, label] of BODIES) {
+  const b = document.createElement('button');
+  b.textContent = label;
+  b.onclick = () => switchBody(name, b);
+  bb.appendChild(b);
+}
+// scores: parse scoreboard.html for the latest round
+fetch('/scoreboard').then(r => r.text()).then(t => {
+  const m = t.match(/<h1[^>]*>SPIACE quality band — (\S+)[\s\S]*?<div class="num">(\d+)<\/div><div class="lbl">PHYSICS[\s\S]*?<div class="num">(\d+)<\/div><div class="lbl">VISUAL/);
+  if (m) document.getElementById('scores').innerHTML =
+    'P <b>' + m[2] + '</b> · V <b>' + m[3] + '</b> <span style="font-size:12px;color:#7c8aa0">(' + m[1] + ')</span>';
+}).catch(() => {});
+// latest verdict text
+fetch('/proof/_t11_verdict.txt').then(r => r.ok ? r.text() : '')
+  .then(t => { if (t) document.getElementById('verdict').textContent = t; })
+  .catch(() => {});
+// latest proofs (newest first)
+const PROOFS = [
+  ['_t11_front_live.png', 'T11 standing teddy — front'],
+  ['_t11_side_live.png',  'T11 standing teddy — side'],
+  ['_t10_fixed_front.png','T10 lit, shadow line fixed'],
+  ['_t10_dragged.png',    'T10 mouse orbit (dragged)'],
+  ['_t9_turntable_strip.png', 'T9 sitting teddy turntable'],
+  ['_t9_walk_strip.png',  'T9 walk strip'],
+];
+const pr = document.getElementById('proofs');
+for (const [f, cap] of PROOFS) {
+  const d = document.createElement('div');
+  d.innerHTML = '<div class="cap">' + cap + '</div>';
+  const img = document.createElement('img');
+  img.src = '/proof/' + f;
+  img.onerror = () => d.remove();
+  d.appendChild(img);
+  pr.appendChild(d);
+}
+</script>
+</body></html>

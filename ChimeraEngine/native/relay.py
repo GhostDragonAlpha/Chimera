@@ -19,6 +19,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 EXE = HERE / "ca_core.exe"
 VIEWER = HERE.parent / "engine" / "spiace_native.html"
+HUB = HERE.parent / "engine" / "spiace_hub.html"
+SCOREBOARD = HERE.parent / "engine" / "scoreboard.html"
+SCRATCH = HERE.parent / "engine" / "scratch"
 
 TICK_MS = sys.argv[1] if len(sys.argv) > 1 else "30"
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8799
@@ -90,6 +93,43 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def do_GET(self):
+        if self.path == "/hub":
+            # the unified human window: live viewer + scoreboard + latest
+            # proof images, one page (operator entry point)
+            body = HUB.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if self.path == "/scoreboard":
+            body = SCOREBOARD.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if self.path.startswith("/proof/"):
+            # proof artifacts (judge verdicts, live-render PNGs) — read-only,
+            # suffix-locked, no path escape (same pattern as /genomes/)
+            name = self.path[len("/proof/"):].split("?")[0]
+            p = (SCRATCH / name).resolve()
+            if (p.parent == SCRATCH.resolve()
+                    and p.suffix in (".png", ".txt", ".mp4") and p.exists()):
+                body = p.read_bytes()
+                ctype = {".png": "image/png", ".mp4": "video/mp4"}.get(
+                    p.suffix, "text/plain; charset=utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            self.send_response(404)
+            self.end_headers()
+            return
         if self.path == "/" or self.path.startswith("/?"):
             body = VIEWER.read_bytes()
             self.send_response(200)
