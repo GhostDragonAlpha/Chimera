@@ -47,7 +47,7 @@ operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a ter
 You build THROUGH the engine.
 
 Then the reading list `CLAUDE.md` owns — `docs/THE_LAW.md` → `docs/THE_WORKFLOW.md` →
-`docs/THE_COMPILER.md` → `docs/THE_PIECES.md` → `story/README.md` — then `CLAUDE.md` itself
+`docs/THE_COMPILER.md` → `docs/THE_PIECES.md` — then `CLAUDE.md` itself
 for Key Paths, hardware traps, and conventions. **The rule index is `docs/THE_LAW.md`'s
 last section** — every rule, one line, with its enforcer and its canonical home.
 
@@ -72,8 +72,8 @@ python tools/verdict.py status      # the Rule-0 biomechanics membranes, open + 
 
 Through the engine (MCP — `ChimeraEngine/MCP_ENGINE.md`): `orient` first, every time;
 `next` hands you the term — you do not pick it. The engine MCP is registered for opencode
-in `opencode.json` (`chimera-engine`). The older `story/grow.py`/`story/timeline.py`
-commands were removed with the retired task-board session; `tools/orient.py` is the
+in `opencode.json` (`chimera-engine`). The older story-lane read and timeline commands
+were removed with the retired task-board session; `tools/orient.py` is the
 replacement that reads the LIVE stores (engine_state.json + verdict_registry.json + git).
 
 ---

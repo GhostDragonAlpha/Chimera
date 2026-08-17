@@ -16,7 +16,8 @@ fail=0
 # --- network exposure ------------------------------------------------------
 # Three of this project's servers were found answering the whole LAN, none of it a
 # decision. See core/bind_guard.py and docs/LOCAL_SERVERS.md.
-if command -v python >/dev/null 2>&1; then
+# Guard on the module's existence: a missing optional gate must not block every commit.
+if command -v python >/dev/null 2>&1 && [ -f Chimera/core/bind_guard.py ]; then
   if ! python -m core.bind_guard --staged; then
     fail=1
   fi
@@ -26,7 +27,8 @@ fi
 # A trainer objective the optimiser can exploit is a bug you find after a retrain cycle.
 # Enforce the mechanically-checkable rules on staged objectives. New work must comply;
 # the 47 pre-existing satisficers are only checked if you touch them.
-if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
+# Guard on the module's existence: a missing optional gate must not block every commit.
+if command -v python >/dev/null 2>&1 && [ -f Chimera/core/objective_lint.py ]; then
   if ! ( cd Chimera && python -m core.objective_lint --staged ); then
     fail=1
   fi
@@ -35,7 +37,8 @@ fi
 # --- one-writer rule for the genome library (THE_ORDER #4) -----------------
 # recovered_genomes.json has ONE atomic owner (export_genome.save_library). Refuse a
 # staged file that writes it directly and would race the owner.
-if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
+# Guard on the module's existence: a missing optional gate must not block every commit.
+if command -v python >/dev/null 2>&1 && [ -f Chimera/core/library_guard.py ]; then
   if ! ( cd Chimera && python -m core.library_guard --staged ); then
     fail=1
   fi
@@ -91,6 +94,20 @@ if git diff --cached --name-only | grep -qx "$PLAN"; then
     fail=1
   else
     echo "[doc-guard] PASS: PLAN.md intact."
+  fi
+fi
+
+# --- doc-guard: the method must not drift from the tooling ------------------
+# A doc that duplicates a fact drifts from it. The broken-pointer linter refuses
+# any reference (in staged files) to a tool or file that does not exist on disk,
+# and validates .roomodes structure. Only staged files are checked, so pre-existing
+# prose is not a wall -- but you cannot COMMIT a new broken pointer.
+if command -v python >/dev/null 2>&1 && [ -f tools/doc_lint.py ]; then
+  if [ "${CHIMERA_SKIP_DOCLINT:-}" != "1" ]; then
+    if ! python tools/doc_lint.py --staged; then
+      echo "  fix or: git commit --no-verify (and then you own the drift)"
+      fail=1
+    fi
   fi
 fi
 
