@@ -236,3 +236,9 @@ ChimeraEngine/engine/_*.json
 # native viewer build artifacts (sources + vendored 3rd party ARE tracked)
 ChimeraEngine/native/ChimeraEngine.exe
 ChimeraEngine/native/wgpu_native.dll
+
+# relay wire logs (per-port, unbounded while a session runs — the test oracle
+# reads fresh ones; long-session logs are gigabytes and never an artifact)
+ChimeraEngine/native/native_stream*.log
+ChimeraEngine/native/_relay_dbg.log
+ChimeraEngine/native/nul

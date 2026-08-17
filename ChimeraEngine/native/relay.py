@@ -161,8 +161,35 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-cache")
             self.send_header("Connection", "keep-alive")
             self.end_headers()
-            idx = 0
+            # Late-joiner backlog skip: an embodiment session emits an anim
+            # frame every tick forever (measured: 12.5 GB wire log after one
+            # 6 h session). Replaying that from frame 0 buries the viewer
+            # millions of frames behind the sim — the page renders the deep
+            # past and looks frozen while the core walks on without it. So a
+            # connecting client gets the HEADER (meta/static frame/final/rig
+            # — everything before the first anim frame), then the NEWEST
+            # anim frame, then follows live. Growth sessions (wall/oak/
+            # creature growth frames are type "frame") have no anim frames
+            # and replay in full, unchanged.
+            with frames_cv:
+                n = len(frames)
+                hdr = 0
+                while hdr < n:
+                    try:
+                        if json.loads(frames[hdr]).get("type") == "anim":
+                            break
+                    except ValueError:
+                        pass
+                    hdr += 1
+                skip_to = n - 1 if n - hdr > 600 else hdr
+                header = frames[:hdr] + ([frames[skip_to]] if skip_to > hdr else [])
+                idx = skip_to + 1 if skip_to > hdr else hdr
             try:
+                for line in header:
+                    if line == "":
+                        return
+                    self.wfile.write(f"data: {line}\n\n".encode())
+                self.wfile.flush()
                 while True:
                     with frames_cv:
                         while idx >= len(frames):
