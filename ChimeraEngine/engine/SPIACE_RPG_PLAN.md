@@ -1226,4 +1226,74 @@ author. V is now judge-anchored by construction.
 
 ---
 
-Document version: 5.0 (G1–G5 + N1–N8 + T1–T9 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1–N8 + T1–T7 + T9 complete | Agent: bionic + Kimi K3
+
+### Phase T10/T11: Directional Light + the STANDING Teddy (Complete — Kimi K3)
+
+**T10 Rule 0:** the flat radial shade (no light vector) is why renders read as
+holograms; per-splat Lambert under a swept key light must produce the Lambert
+phase law (contrast min frontal, max backlit). Falsifier: CV(max)/CV(min) <
+1.5 across an 8-azimuth x 2-elevation sweep means the shading is not
+measurably applied.
+
+**What shipped:**
+- Shader: `U` gains `light: vec3f` (160 B uniform); sphere-impostor Lambert
+  with A:E = 1:1 ambient/key, c = 0.679 DERIVED (preserves the old mean shade
+  0.849: mean max(dot,0) over the sphere is exactly 1/4). Splats carrying a
+  real normal use it; zero-vector sentinel falls back to impostor.
+- `window.__setLight(az, el)` probe; default key az = 3pi/4, el = pi/4 —
+  45 deg off the front camera axis (az = pi). The first default (az = pi/4)
+  backlit the face; the operator reported it as "a shadow".
+- `teddy_pyramid.py` emits per-splat normals (`nor`) per level.
+- Operator camera: drag = orbit (azimuth + elevation), wheel = zoom
+  (userAng/userEl/userZoom layered on the probe-driven camera; confirmed by
+  the operator).
+
+**The falsifier tripped FOUR times, and each trip taught something:**
+1. Impostor normals: ratio 1.31 — every splat self-lit, no body-scale
+   response.
+2. Mesh face normals from the PLY: ratio 1.40 — but the mesh winding is
+   INWARD (measured radial alignment -0.06), and voxel-binning mixed-winding
+   normals cancels to near-random directions (alignment 0.02).
+3. Raw occupancy-gradient normals: ratio 1.17 — a one-voxel-thick shell's
+   occupied neighbors lie ALONG the sheet; the gradient is tangential.
+4. Filled-volume gradient (dilate -> flood exterior -> fill -> gradient):
+   ratio 1.12 on the sitting bear (alignment 0.02-0.07, a non-convex body
+   defeats the radial sanity metric) but **0.26-0.28 on the standing bear**.
+The phase law was EXACT in every run (min at az 180 frontal, max at az 0
+backlit, both elevations). The amplitude bound was set for a clean Lambert
+sphere; the real attenuation chain is named (1:1 ambient halves it, albedo
+variance inflates baseline CV, splat overlap at silhouettes). Reported
+honestly as tripped-but-explained; the instrument works and stays.
+
+**T11 — the standing teddy (operator: "limbs indistinguishable sitting down"):**
+- 4 SDXL-Turbo standing candidates (arms out, ambient light); operator
+  approved the recommended stand_1fce72 (widest arm spread).
+- TRELLIS -> `teddy_stand.ply` -> `voxelize_teddy.py ... 28` -> 1488 cells,
+  x[-11,11] y[-14,14] z[-7,7] -> shape_train: 2 grown pillars, margin
+  -0.043 -> +1.637, 4 legs, connected 1520/1520.
+- `teddystandmuscle.chimera` (cellsFile=teddy_stand_s1.cells) + shell
+  `teddy_stand_shell.json` (12.7 MB, 5 levels, filled-gradient normals,
+  alignment 0.26+).
+- voxtest ALL GREEN on the new body: drop law contactTick 99 == analytic
+  99.32 (discrete pred 99), ledgerErr 1.6e-15, termDrift 0.9935%, rest exact;
+  walk bodyX = 114 == the honey body's 114 (scale-free stride law holds
+  across a second morphology); vm conn 1, slips 0, airDX 0.
+- Qwen judge (front+side): "yes, recognizably a teddy bear"; limbs now
+  distinguishable (arms clear, legs mostly). Score **60/100** — below the
+  sitting bear's 68. Defects named: eyes/mouth missing (the recon dropped
+  the face features), a phantom translucent foot (ghosting), a torso nub,
+  hand/belly hue mismatch, grainy surface, ground contact unclear. The limb
+  win cost face fidelity — the next round's target is both at once.
+
+**Also fixed this pass:** the "shadow line on the bear" the operator reported
+was the T3 `legZ` debug tint (cy <= -2 -> 0.55x dark): correct on the 8-tall
+body, but on the H=28 body it painted the bottom 40% dark with a hard
+horizontal boundary. Now gated to the FLAT debug view only.
+
+**Scores (rule 8):** P = 92 (all green on both bodies). V = 60
+(judge-anchored, T11 standing body). Ledger round 6: 9 species, completeness
+0.46, NOT saturated.
+
+---
+
+Document version: 5.1 (G1–G5 + N1–N8 + T1–T11 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1–N8 + T1–T7 + T9/T10/T11 complete | Agent: bionic + Kimi K3

@@ -70,6 +70,22 @@
         "v:gait-motion-subtle",
         "perf:fps-23-at-max-shell"
       ]
+    },
+    {
+      "task": "T11",
+      "P": 92.0,
+      "V": 60.0,
+      "deficiencies": [
+        "p:symplectic-shadow-drift-1.845pct",
+        "p:case-b-greedy-stall-eastbound",
+        "v:terrain-ridge-lines",
+        "v:splat-ghosting-translucency",
+        "v:fur-texture-noise",
+        "v:face-features-missing",
+        "v:albedo-region-mismatch",
+        "v:ground-contact-unclear",
+        "perf:fps-23-at-max-shell"
+      ]
     }
   ]
 }

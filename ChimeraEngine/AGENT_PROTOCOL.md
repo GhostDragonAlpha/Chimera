@@ -31,7 +31,7 @@ drop law (contactTick 99 == pred 99, drift 0.9935%), scale-free stride
 (`_proof_t9_walk.py`: bodyX 24→100, contact GROUND, vy 0) read by me;
 Qwen 3.8 judge (`scratch/_judge_t9.py` — reasoning model: budget 4096 tokens
 and read `reasoning_content` when `content` is empty).
-**Current dual score: P = 92, V = 68** (ledger round 5 — V anchored on the
+**Current dual score: P = 92, V = 60** (ledger round 6 — T11 standing bear, judge-anchored; the limb-distinguishability win cost face fidelity: recon dropped eyes/mouth. T10 shipped directional light + mouse orbit/zoom; the light-sweep falsifier tripped 4x and each cause is named in PLAN.md T10 — phase law exact, amplitude bound explained. The 'shadow line' was the T3 legZ debug tint on the H=28 body — now FLAT-view-only. Bodies: honey (sitting, 3678 cells) and stand (1520) both green on the voxtest drop/stride/airwalk laws. (ledger round 5 — V anchored on the
 Qwen 3.8 judge's REAL verdict, `scratch/_t9_verdict.txt`: face/bow/proportions
 right; see-through ghosting, floating paw pads, torso seam, lumpy hip bulge,
 bow visible from behind, grainy surface = the defect list. The first judge

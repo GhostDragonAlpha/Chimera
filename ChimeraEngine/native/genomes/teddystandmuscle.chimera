@@ -1,0 +1,31 @@
+# SPIACE genome table — T11 STANDING teddy (voxel-muscle gait, CA-native movement)
+# The CANONICAL teddy: SDXL-Turbo image (ambient-lit) -> TRELLIS (res 512,
+# ambient capture) -> voxelize_teddy.py at H=28 (derived: canon proportions
+# put the eye at H*0.45/6 cells; an eye needs >= 2 cells to exist -> H>=26.7)
+# -> shape_train.py (1 pillar, margin -3.081 -> +3.100). Replaces the T1
+# teddy, whose SOURCE was a mutated TRELLIS blob (measured: teddy_base.png
+# is brown noise, not a bear) — the physics was faithfully animating a bad
+# statue. vmStride/vmLift are the T4-trained pair; they may re-train at this
+# scale (the leg budget derivation is scale-relative), T9 measures first.
+
+kind           = vox
+genome         = teddy-stand-muscle-v1
+embodiment     = 1
+tickMs         = 30
+cell           = 0.06
+cellsFile      = teddy_stand_s1.cells
+vmGait         = 1
+vmStride       = 2
+vmLift         = 1
+
+# --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------
+b4A            = 2
+b4T            = 60
+b4Lam          = 12.25
+b4Dth          = 0.08
+b4ThMax        = 2.6
+b4Iters        = 5
+
+# --- N5: physics membrane (SI in, sim units derived) ------------------------
+gravity        = 9.81
+tickHz         = 60

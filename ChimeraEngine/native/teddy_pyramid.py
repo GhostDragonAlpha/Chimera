@@ -37,7 +37,13 @@ LEVELS = [round(h * BEAR_BODYH / 8) for h in [16, 24, 32, 48, 64]]
 
 def read_ply_verts(path):
     """binary_little_endian PLY -> x, y, z (f64) + r, g, b (f64 0..1).
-    Reads exactly the vertex element (faces follow it in the file)."""
+    Reads exactly the vertex element (faces follow it in the file).
+    T10 NOTE: mesh face normals were tried first and FALSIFIED as a normal
+    source — winding was inward (radial alignment -0.06) and, worse, the
+    per-voxel mean of mixed-winding normals cancels to a random direction
+    (alignment 0.02 — the light sweep stayed flat, CV ratio 1.40 < 1.5).
+    The derived replacement is the occupancy-gradient normal computed on the
+    voxel grid itself (below) — winding-free by construction."""
     with open(path, "rb") as f:
         vcount = 0
         while True:
@@ -149,9 +155,98 @@ def main():
         cb = np.clip(cb * lift * 1.22, 0, 1)
         pos = np.stack([cx, cy, cz], axis=1).round(3)
         col = np.stack([cr, cg, cb], axis=1).round(3)
+        # T10: per-splat normal. First attempt (occupancy gradient of the raw
+        # shell) was FALSIFIED: the shell is one voxel thick, so a surface
+        # voxel's occupied 26-neighbors lie mostly ALONG the sheet — the
+        # offset sum points tangentially, normals came out near-random
+        # (radial alignment 0.05-0.09 across two variants, light-sweep CV
+        # ratio 1.17-1.40, bound 1.5). The derived fix: FILL the volume
+        # first. Close pinholes with one 6-connected dilation, flood the
+        # exterior by repeated dilation from the grid boundary, interior =
+        # not exterior; then the occupancy gradient on the FILLED volume has
+        # interior voxels on the inside of every surface cell and the negated
+        # sum points cleanly outward.
+        nxg = int(kx.max()) + 1; nyg = int(ky.max()) + 1; nzg = int(kz.max()) + 1
+        occ = np.zeros((nxg, nyg, nzg), dtype=bool)
+        occ[kx, ky, kz] = True
+        dil = occ.copy()
+        for ax in range(3):
+            for sh in (1, -1):
+                dil |= np.roll(occ, sh, axis=ax)
+        # np.roll wraps; the bear never touches the wrap boundary (shifted
+        # non-negative with a margin from floor()), so wrap fill is harmless.
+        ext = np.zeros_like(dil)
+        ext[0, :, :] = ext[-1, :, :] = True
+        ext[:, 0, :] = ext[:, -1, :] = True
+        ext[:, :, 0] = ext[:, :, -1] = True
+        ext &= ~dil
+        while True:
+            grown = ext.copy()
+            for ax in range(3):
+                for sh in (1, -1):
+                    grown |= np.roll(ext, sh, axis=ax)
+            grown &= ~dil
+            if (grown == ext).all():
+                break
+            ext = grown
+        filled = dil | ~ext
+        print(f"  fill: surface {n}, interior {int((~ext & ~dil).sum())}, "
+              f"grid {nxg}x{nyg}x{nzg}")
+        # gradient of the FILLED occupancy per surface voxel, via the idx map
+        # plus a filled-grid probe for neighbors outside the surface set
+        snx = np.zeros(n); sny = np.zeros(n); snz = np.zeros(n)
+        for i in range(n):
+            bx0, by0, bz0 = int(kx[i]), int(ky[i]), int(kz[i])
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    for dz in (-1, 0, 1):
+                        if dx == 0 and dy == 0 and dz == 0:
+                            continue
+                        if 0 <= bx0+dx < nxg and 0 <= by0+dy < nyg \
+                                and 0 <= bz0+dz < nzg \
+                                and filled[bx0+dx, by0+dy, bz0+dz]:
+                            snx[i] += dx; sny[i] += dy; snz[i] += dz
+        ln = np.sqrt(snx * snx + sny * sny + snz * snz)
+        ok = ln > 1e-9
+        nnx = np.where(ok, -snx / np.maximum(ln, 1e-9), 0.0)
+        nny = np.where(ok, -sny / np.maximum(ln, 1e-9), 1.0)
+        nnz = np.where(ok, -snz / np.maximum(ln, 1e-9), 0.0)
+        # thin-shell gradient normals are noisy (measured: radial alignment
+        # 0.05 — each surface voxel sees few occupied neighbors). Two 50/50
+        # neighbor-mean smoothing passes, same schedule as the color low-pass
+        # above, then re-unit. Measured after the fix: alignment ~0.5+.
+        for _pass in range(2):
+            tx = np.zeros(n); ty = np.zeros(n); tz = np.zeros(n); tc = np.zeros(n)
+            for i in range(n):
+                bx0, by0, bz0 = int(kx[i]), int(ky[i]), int(kz[i])
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        for dz in (-1, 0, 1):
+                            if dx == 0 and dy == 0 and dz == 0:
+                                continue
+                            j = idx.get((bx0 + dx, by0 + dy, bz0 + dz))
+                            if j is not None:
+                                tx[i] += nnx[j]; ty[i] += nny[j]; tz[i] += nnz[j]
+                                tc[i] += 1
+            has = tc > 0
+            nnx = np.where(has, 0.5 * nnx + 0.5 * tx / np.maximum(tc, 1), nnx)
+            nny = np.where(has, 0.5 * nny + 0.5 * ty / np.maximum(tc, 1), nny)
+            nnz = np.where(has, 0.5 * nnz + 0.5 * tz / np.maximum(tc, 1), nnz)
+            ln = np.sqrt(nnx * nnx + nny * nny + nnz * nnz)
+            ok = ln > 1e-9
+            nnx = np.where(ok, nnx / np.maximum(ln, 1e-9), 0.0)
+            nny = np.where(ok, nny / np.maximum(ln, 1e-9), 1.0)
+            nnz = np.where(ok, nnz / np.maximum(ln, 1e-9), 0.0)
+        nor = np.stack([nnx, nny, nnz], axis=1).round(3)
+        # measured sanity: outward alignment vs centroid-radial
+        rad = pos - pos.mean(axis=0)
+        rad /= np.linalg.norm(rad, axis=1, keepdims=True)
+        align = float((nor * rad).sum(axis=1).mean())
         levels.append({"h": h, "cell": round(cell_world, 5), "n": n,
-                       "pos": pos.tolist(), "col": col.tolist()})
-        print(f"level h={h:3d}  cell={cell_world:.4f} units  splats={n}")
+                       "pos": pos.tolist(), "col": col.tolist(),
+                       "nor": nor.tolist()})
+        print(f"level h={h:3d}  cell={cell_world:.4f} units  splats={n}  "
+              f"normal-radial alignment {align:.3f}")
 
     out = GENOMES / f"{OUT_STEM}.json"
     out.write_text(json.dumps({"levels": levels}, separators=(",", ":")),

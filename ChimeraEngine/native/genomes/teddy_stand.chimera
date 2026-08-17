@@ -1,0 +1,25 @@
+# SPIACE genome table — teddy_stand (voxelized TRELLIS body, DATA)
+# The cell set is imported (genomes/teddy_stand.cells), NOT grown: kind=vox loads
+# it directly and rigs the leg columns off that same data. Every B4/N5
+# constant is copied from beargoal.chimera — the physics membrane is UNCHANGED
+# (the shape-agnostic claim). L5/R5/N6/N8 are omitted: stand/walk does not
+# use them; the goal variant adds the goal membrane.
+
+kind           = vox
+genome         = teddy_stand-v1
+embodiment     = 1
+tickMs         = 120
+cell           = 0.06
+cellsFile      = teddy_stand.cells
+
+# --- B4: FK/IK rig (copied from beargoal — the gait is shape-agnostic) ------
+b4A            = 2              # gait swing amplitude, cells
+b4T            = 60             # gait period, anim ticks
+b4Lam          = 12.25          # = 7*7/4 damping
+b4Dth          = 0.08           # rad per IK iteration
+b4ThMax        = 2.6            # joint bound, rad
+b4Iters        = 5              # IK iterations per anim tick per chain
+
+# --- N5: physics membrane (copied from beargoal — SI in, sim units derived) --
+gravity        = 9.81
+tickHz         = 60

@@ -77,6 +77,11 @@ let SHELL = null;              // T2: teddy render pyramid — appearance only
 const FLAT = location.search.includes('flat');   // T2 debug: uniform shell color
 let teddyFramed = false;       // T5: camera distance DERIVED from body bounds
 let exposure = 1.0;            // T5: display gain (the sRGB encode is the fix)
+// T10: key light. az measured on the SAME orbit axis as the camera; the
+// front camera sits at ang=pi (the -z side), so a portrait key 45 deg off
+// the camera axis is az = pi - pi/4. (First default, az=pi/4, put the light
+// BEHIND the bear — the operator saw the backlit face as "a shadow".)
+let lightAz = 3 * Math.PI / 4, lightEl = Math.PI / 4;
 
 const es = new EventSource('/stream');
 es.onmessage = e => {
@@ -206,6 +211,8 @@ window.__growthCheck = () => ({ kind: KIND, cells, histCells, histViol,
                                 final: finalLedger,
                                 posed: [...posedMap.entries()] });
 window.__setAng = a => { if (PRES) PRES.focus.ang0 = a; };   // probe: orbit
+window.__setLight = (az, el) => { lightAz = az; lightEl = el; };  // probe: key light
+
 
 // ---------- embodiment commands (buttons + 1-4 -> POST /cmd -> core stdin) ---
 function bearCmd(c) { fetch('/cmd', { method: 'POST', body: c }); }
@@ -425,13 +432,14 @@ function shellSplats() {
       wx = p[0] * L.cell; wy = p[1] * L.cell; wz = p[2] * L.cell;
     }
     let cc = FLAT ? [0.55, 0.42, 0.30] : c;
-    if (legZ) cc = [cc[0] * 0.55, cc[1] * 0.55, cc[2] * 0.62];
+    if (legZ && FLAT) cc = [cc[0] * 0.55, cc[1] * 0.55, cc[2] * 0.62];
     if (rommed)                    // PART A: swept chain reads CYAN
       cc = [cc[0] * 0.45 + 0.05, cc[1] * 0.6 + 0.25, Math.min(1, cc[2] * 0.5 + 0.55)];
     if (hot)
       cc = [Math.min(1, cc[0] * 1.4 + 0.45), cc[1] * 0.55 + 0.12, cc[2] * 0.3];
+    const nn = L.nor ? L.nor[i] : null;    // T10: mesh-derived normal
     splatData.push({ p: [wx + bx, wy + bodyY * s0, wz], s: size,
-                     col: [cc[0], cc[1], cc[2], 1] });
+                     col: [cc[0], cc[1], cc[2], 1], n: nn });
   }
 }
 function groundSplats(s0, bx) {
@@ -491,15 +499,33 @@ function rebuildSplats() {
 // ---------- WebGPU Gaussian billboard splat renderer (same pipe as GROW) -----
 const canvas = document.getElementById('c');
 window.__renderer = 'none';
+const ZERO3 = [0, 0, 0];   // normal sentinel -> sphere impostor in the shader
+
+// ---------- operator camera: drag to orbit, wheel to zoom ----------------
+// The camera's own orbit (PRES.focus.ang0) stays authoritative; the mouse
+// adds offsets on top so probes and scripts are unaffected.
+let userAng = 0, userEl = 0, userZoom = 1, dragging = false, lastMX = 0, lastMY = 0;
+canvas.addEventListener('mousedown', e => { dragging = true; lastMX = e.clientX; lastMY = e.clientY; });
+window.addEventListener('mouseup', () => { dragging = false; });
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  userAng += (e.clientX - lastMX) * 0.008;          // ~125 px per radian
+  userEl = Math.max(-1.2, Math.min(1.2, userEl - (e.clientY - lastMY) * 0.008));
+  lastMX = e.clientX; lastMY = e.clientY;
+});
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  userZoom = Math.max(0.2, Math.min(8, userZoom * Math.exp(e.deltaY * 0.001)));
+}, { passive: false });
 let device, ctx, pipeline, ubuf, ibuf, depthTex, bindGroup, cap = 0;
 
 const WGSL = `
-struct U { proj: mat4x4f, view: mat4x4f, exposure: f32 };
+struct U { proj: mat4x4f, view: mat4x4f, exposure: f32, light: vec3f };
 @group(0) @binding(0) var<uniform> u: U;
-struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1) col: vec4f };
+struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1) col: vec4f, @location(2) nrm: vec3f };
 @vertex fn vs(@builtin(vertex_index) vi: u32,
               @location(0) center: vec3f, @location(1) size: f32,
-              @location(2) col: vec4f) -> VOut {
+              @location(2) col: vec4f, @location(3) nrm: vec3f) -> VOut {
   var corners = array<vec2f, 4>(vec2f(-1.0, -1.0), vec2f(1.0, -1.0),
                                 vec2f(-1.0, 1.0), vec2f(1.0, 1.0));
   let cr = corners[vi];
@@ -507,14 +533,28 @@ struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1
   let p = vp.xyz + vec3f(cr * size, 0.0);
   var o: VOut;
   o.pos = u.proj * vec4f(p, 1.0);
-  o.uv = cr; o.col = col;
+  o.uv = cr; o.col = col; o.nrm = nrm;
   return o;
 }
 @fragment fn fs(inp: VOut) -> @location(0) vec4f {
   let r2 = dot(inp.uv, inp.uv);
   if (r2 > 1.0) { discard; }
   let g = exp(-4.0 * r2);
-  let shade = 0.80 + 0.20 * g;      // T2: flat-ish — no dark rims between splats
+  // T10: Lambert under a world key light + equal ambient (A:E = 1:1, the
+  // neutral reference). Splats that carry a REAL normal (teddy shell: mesh
+  // face normals binned per voxel) use it; the zero-vector sentinel falls
+  // back to the sphere-impostor normal (wall/oak/ground look right with it).
+  // c = 0.679 is DERIVED, not tuned: preserve the old mean shade 0.849 =
+  // 0.80 + 0.20*(1-e^-4)/4 over the disc, and mean max(dot(n,l),0) over the
+  // sphere is exactly 1/4, so c * (1 + 1/4) = 0.849.
+  var n: vec3f;
+  if (dot(inp.nrm, inp.nrm) < 0.5) {
+    n = normalize(vec3f(inp.uv, sqrt(max(0.0, 1.0 - r2))));   // impostor
+  } else {
+    n = normalize((u.view * vec4f(inp.nrm, 0.0)).xyz);        // mesh normal
+  }
+  let lv = normalize((u.view * vec4f(u.light, 0.0)).xyz);
+  let shade = 0.679 * (1.0 + max(dot(n, lv), 0.0)) * (0.80 + 0.20 * g);
   // T5: the canvas is sRGB but the pipe wrote LINEAR values — the missing
   // transfer function put everything ~2 stops dark (the muddy-teddy bug).
   // The encode is derived (the sRGB standard), not a tuned brightness knob.
@@ -532,16 +572,17 @@ async function initGPU() {
   pipeline = device.createRenderPipeline({
     layout: 'auto',
     vertex: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'vs',
-      buffers: [{ arrayStride: 32, stepMode: 'instance', attributes: [
+      buffers: [{ arrayStride: 44, stepMode: 'instance', attributes: [
         { shaderLocation: 0, offset: 0, format: 'float32x3' },
         { shaderLocation: 1, offset: 12, format: 'float32' },
-        { shaderLocation: 2, offset: 16, format: 'float32x4' }] }] },
+        { shaderLocation: 2, offset: 16, format: 'float32x4' },
+        { shaderLocation: 3, offset: 32, format: 'float32x3' }] }] },
     fragment: { module: device.createShaderModule({ code: WGSL }), entryPoint: 'fs',
       targets: [{ format }] },
     primitive: { topology: 'triangle-strip', cullMode: 'none' },
     depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' },
   });
-  ubuf = device.createBuffer({ size: 144, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  ubuf = device.createBuffer({ size: 160, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
   bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0),
     entries: [{ binding: 0, resource: { buffer: ubuf } }] });
   window.__renderer = 'webgpu-splat';
@@ -607,25 +648,37 @@ function render() {
     const n = splatData.length;
     if (n > cap) {
       cap = Math.max(4096, n * 2);
-      ibuf = device.createBuffer({ size: cap * 32,
+      ibuf = device.createBuffer({ size: cap * 44,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
     }
-    const f32 = new Float32Array(n * 8);
-    splatData.forEach((s, i) =>
-      f32.set([s.p[0], s.p[1], s.p[2], s.s, s.col[0], s.col[1], s.col[2], s.col[3]], i * 8));
+    const f32 = new Float32Array(n * 11);
+    splatData.forEach((s, i) => {
+      const nn = s.n || ZERO3;
+      f32.set([s.p[0], s.p[1], s.p[2], s.s, s.col[0], s.col[1], s.col[2], s.col[3],
+               nn[0], nn[1], nn[2]], i * 11);
+    });
     device.queue.writeBuffer(ibuf, 0, f32);
   }
   const t = performance.now() / 1000;
-  const ang = PRES.focus.ang0 + 0.10 * Math.sin(t * 0.15);
+  const ang = PRES.focus.ang0 + 0.10 * Math.sin(t * 0.15) + userAng;
+  const Ro = PRES.focus.R * userZoom;               // wheel zoom
   camLagX += (bodyX - camLagX) * 0.05;              // ease toward the body:
   const fx = PRES.focus.cx + (EMB ? camLagX * PRES.cell : 0);  // it drifts in-frame
   const fy = PRES.focus.cy + (EMB ? bodyY * PRES.cell : 0);   // track the fall
-  const eye = [fx + PRES.focus.R * Math.sin(ang), PRES.focus.eyeY + (EMB ? bodyY * PRES.cell : 0),
-               PRES.focus.R * Math.cos(ang)];
+  const eye0y = PRES.focus.eyeY + (EMB ? bodyY * PRES.cell : 0);
+  const eye = [fx + Ro * Math.cos(userEl) * Math.sin(ang),
+               eye0y + Ro * Math.sin(userEl),
+               Ro * Math.cos(userEl) * Math.cos(ang)];
   const proj = perspective(0.85, w / h, 0.05, 50);
   const view = lookAt(eye[0], eye[1], eye[2], fx, fy, 0);
-  const u32 = new Float32Array(36); u32.set(proj, 0); u32.set(view, 16);
+  const u32 = new Float32Array(40); u32.set(proj, 0); u32.set(view, 16);
   u32[32] = exposure;
+  // T10: world-space direction TO the key light (same sin/cos orbit
+  // convention as the camera). Default az=45° el=45° — the portrait key
+  // convention. __setLight sweeps it.
+  u32[36] = Math.cos(lightEl) * Math.sin(lightAz);
+  u32[37] = Math.sin(lightEl);
+  u32[38] = Math.cos(lightEl) * Math.cos(lightAz);
   device.queue.writeBuffer(ubuf, 0, u32);
   const enc = device.createCommandEncoder();
   const pass = enc.beginRenderPass({
