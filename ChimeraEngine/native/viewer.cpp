@@ -11,7 +11,7 @@
 //
 // Build (from ChimeraEngine/native):
 //   g++ -O2 -std=c++17 viewer.cpp -I viewer3rd -o viewer.exe
-//       viewer3rd/wgpu_native.dll -lws2_32 -luser32 -lgdi32
+//       viewer3rd/wgpu_native.dll -lws2_32 -luser32 -lgdi32 -lcomctl32
 //   cp viewer3rd/wgpu_native.dll .        # runtime lookup is the exe's dir
 
 #define NOMINMAX
@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <commctrl.h>
 
 #include <array>
 #include <atomic>
@@ -361,23 +362,61 @@ static void makePipeline(const std::string& wgsl) {
 }
 
 // ------------------------------------------------------------- window -----
-static HWND g_hwnd;
+static HWND g_hwnd, g_gl, g_sb;
 static bool g_drag = false;
 static POINT g_last{ 0, 0 };
 static float g_userAng = 0, g_userEl = 0, g_userZoom = 1.0f;
 
-static LRESULT CALLBACK WndProc(HWND h, UINT msg, WPARAM w, LPARAM l) {
-    switch (msg) {
-    case WM_DESTROY: g_running = false; PostQuitMessage(0); return 0;
-    case WM_SIZE:
-        g_winW = LOWORD(l); g_winH = HIWORD(l);
-        if (g_surf && g_winW > 0 && g_winH > 0) {
-            g_sc.width = g_winW; g_sc.height = g_winH;
-            wgpuSurfaceConfigure(g_surf, &g_sc);
-            if (g_depth) { wgpuTextureRelease(g_depth); g_depth = nullptr; }
+// -------------------------------------------------------- score bar -------
+// Live scoreboard: re-read engine/score_ledger.json every ~2 s so new judge
+// rounds appear in the window without a restart. Part 1 = scores + round,
+// part 2 = the judge's current defect list.
+static std::string g_scoreTitle;      // title-bar suffix, set by loadScores
+static std::string g_scoreDir;        // exe dir, for locating the ledger
+static void loadScores() {
+    std::ifstream lf(g_scoreDir + "/../engine/score_ledger.json");
+    if (!lf) return;
+    json led = json::parse(lf, nullptr, false);
+    if (led.is_discarded() || !led.contains("rounds") || led["rounds"].empty())
+        return;
+    auto& rounds = led["rounds"];
+    auto& r = rounds.back();
+    int P = (int)r.value("P", 0.0), V = (int)r.value("V", 0.0);
+    std::string task = r.value("task", std::string("?"));
+    char b[160];
+    snprintf(b, sizeof b, "  P %d / V %d (%s)", P, V, task.c_str());
+    g_scoreTitle = b;
+    snprintf(b, sizeof b, "P %d / V %d  -  round %d: %s",
+        P, V, (int)rounds.size(), task.c_str());
+    std::string defs;
+    if (r.contains("deficiencies"))
+        for (auto& d : r["deficiencies"]) {
+            if (!defs.empty()) defs += " | ";
+            defs += d.get<std::string>();
+            if (defs.size() > 220) { defs = defs.substr(0, 220) + "..."; break; }
         }
+    if (g_sb) {
+        SendMessageA(g_sb, SB_SETTEXTA, 0, (LPARAM)b);
+        SendMessageA(g_sb, SB_SETTEXTA, 1, (LPARAM)defs.c_str());
+    }
+}
+
+static void handleKey(WPARAM w) {
+    if (w == VK_ESCAPE) { g_running = false; PostQuitMessage(0); }
+    if (w == '1') httpPost(g_port, "/cmd", "wave");
+    if (w == '2') httpPost(g_port, "/cmd", "walk");
+    if (w == '3') httpPost(g_port, "/cmd", "rest");
+}
+
+// Render-host child window: the wgpu surface lives HERE, the status bar on
+// the parent — a GPU surface and a GDI control must not share a client area
+// (flicker/clipping). Mouse lives here; keys forward to the shared handler.
+static LRESULT CALLBACK GlProc(HWND h, UINT msg, WPARAM w, LPARAM l) {
+    switch (msg) {
+    case WM_LBUTTONDOWN:
+        g_drag = true; g_last = { (short)LOWORD(l), (short)HIWORD(l) };
+        SetCapture(h); SetFocus(h);
         return 0;
-    case WM_LBUTTONDOWN: g_drag = true; g_last = { (short)LOWORD(l), (short)HIWORD(l) }; SetCapture(h); return 0;
     case WM_LBUTTONUP: g_drag = false; ReleaseCapture(); return 0;
     case WM_MOUSEMOVE:
         if (g_drag) {
@@ -390,12 +429,31 @@ static LRESULT CALLBACK WndProc(HWND h, UINT msg, WPARAM w, LPARAM l) {
     case WM_MOUSEWHEEL:
         g_userZoom = (float)fmax(0.2, fmin(8, g_userZoom * exp(GET_WHEEL_DELTA_WPARAM(w) * -0.001)));
         return 0;
-    case WM_KEYDOWN:
-        if (w == VK_ESCAPE) { g_running = false; PostQuitMessage(0); }
-        if (w == '1') httpPost(g_port, "/cmd", "wave");
-        if (w == '2') httpPost(g_port, "/cmd", "walk");
-        if (w == '3') httpPost(g_port, "/cmd", "rest");
+    case WM_KEYDOWN: handleKey(w); return 0;
+    }
+    return DefWindowProc(h, msg, w, l);
+}
+
+static LRESULT CALLBACK WndProc(HWND h, UINT msg, WPARAM w, LPARAM l) {
+    switch (msg) {
+    case WM_DESTROY: g_running = false; PostQuitMessage(0); return 0;
+    case WM_SIZE:
+        if (g_sb && g_gl) {
+            SendMessage(g_sb, WM_SIZE, 0, 0);      // status bar docks itself
+            RECT rc; GetClientRect(h, &rc);
+            RECT sr; GetWindowRect(g_sb, &sr);
+            int sbh = sr.bottom - sr.top;
+            g_winW = rc.right; g_winH = rc.bottom - sbh;
+            if (g_winH < 1) g_winH = 1;
+            MoveWindow(g_gl, 0, 0, g_winW, g_winH, TRUE);
+            if (g_surf && g_winW > 0 && g_winH > 0) {
+                g_sc.width = g_winW; g_sc.height = g_winH;
+                wgpuSurfaceConfigure(g_surf, &g_sc);
+                if (g_depth) { wgpuTextureRelease(g_depth); g_depth = nullptr; }
+            }
+        }
         return 0;
+    case WM_KEYDOWN: handleKey(w); return 0;
     }
     return DefWindowProc(h, msg, w, l);
 }
@@ -575,33 +633,43 @@ int main(int argc, char** argv) {
             Sleep(100);
     }
 
-    // scores for the title bar: read the ledger file directly (no parsing
-    // of the rendered scoreboard HTML — the ledger is the live truth)
-    std::string scoreTxt = "";
-    {
-        std::ifstream lf(dir + "/../engine/score_ledger.json");
-        if (lf) {
-            json led = json::parse(lf, nullptr, false);
-            if (!led.is_discarded() && led.contains("rounds") && !led["rounds"].empty()) {
-                auto& r = led["rounds"].back();
-                char b[64];
-                snprintf(b, sizeof b, "  P %d / V %d (%s)",
-                    r.value("P", 0), r.value("V", 0),
-                    r.value("task", std::string("?")).c_str());
-                scoreTxt = b;
-            }
-        }
-    }
+    // scores: read the ledger file directly (the ledger is the live truth),
+    // then keep re-reading it every 2 s from the main loop
+    g_scoreDir = dir;
+    loadScores();
 
     SetProcessDPIAware();
-    WNDCLASSA wc{}; wc.lpfnWndProc = WndProc; wc.hInstance = GetModuleHandle(NULL);
+    INITCOMMONCONTROLSEX icc{ sizeof icc, ICC_BAR_CLASSES };
+    InitCommonControlsEx(&icc);
+    HINSTANCE hInst = GetModuleHandle(NULL);
+    WNDCLASSA wc{}; wc.lpfnWndProc = WndProc; wc.hInstance = hInst;
     wc.lpszClassName = "SpiaceViewer"; wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     RegisterClassA(&wc);
+    WNDCLASSA glc{}; glc.lpfnWndProc = GlProc; glc.hInstance = hInst;
+    glc.lpszClassName = "SpiaceGL"; glc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    RegisterClassA(&glc);
     g_hwnd = CreateWindowExA(0, "SpiaceViewer", "SPIACE native",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,
-        g_winW, g_winH, NULL, NULL, wc.hInstance, NULL);
+        g_winW, g_winH, NULL, NULL, hInst, NULL);
 
-    initGPU(g_hwnd);
+    // status bar: [ scores + round | judge defect list ]
+    g_sb = CreateWindowExA(0, STATUSCLASSNAMEA, "",
+        WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP,
+        0, 0, 0, 0, g_hwnd, NULL, hInst, NULL);
+    int parts[2] = { 300, -1 };
+    SendMessageA(g_sb, SB_SETPARTS, 2, (LPARAM)parts);
+
+    // render-host child gets the client area above the status bar
+    SendMessage(g_sb, WM_SIZE, 0, 0);
+    RECT rc; GetClientRect(g_hwnd, &rc);
+    RECT sr; GetWindowRect(g_sb, &sr);
+    g_winW = rc.right; g_winH = rc.bottom - (sr.bottom - sr.top);
+    if (g_winH < 1) g_winH = 1;
+    g_gl = CreateWindowExA(0, "SpiaceGL", "", WS_CHILD | WS_VISIBLE,
+        0, 0, g_winW, g_winH, g_hwnd, NULL, hInst, NULL);
+    loadScores();   // now that g_sb exists, fill the bar
+
+    initGPU(g_gl);
     makePipeline(wgsl);
     deriveFraming();
     std::thread(streamThread, g_port).detach();
@@ -632,9 +700,11 @@ int main(int argc, char** argv) {
             std::string genome; { std::lock_guard<std::mutex> lk(g_sim.m); genome = g_sim.genome; }
             char title[256];
             snprintf(title, sizeof title, "SPIACE native - %s - %.0f fps - %d splats%s",
-                genome.c_str(), g_fps, (int)g_drawCount, scoreTxt.c_str());
+                genome.c_str(), g_fps, (int)g_drawCount, g_scoreTitle.c_str());
             SetWindowTextA(g_hwnd, title);
         }
+        static ULONGLONG scoreT = 0;
+        if (now - scoreT > 2000) { scoreT = now; loadScores(); }
         wgpuInstanceProcessEvents(g_inst);
     }
     WSACleanup();

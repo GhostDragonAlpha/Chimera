@@ -20,10 +20,19 @@ The window is now `native/viewer.cpp` → ChimeraEngine.exe: Win32 +
 wgpu-native (the Phase-13 API; vendored in native/viewer3rd — DLL + headers
 match wgpu 0.32), the WGSL extracted from spiace_native.html at startup
 (one shader, two frontends), the sim streamed from the relay over loopback
-HTTP, scores in the title bar from score_ledger.json. Build:
-`cd native && g++ -O2 -std=c++17 viewer.cpp -I viewer3rd -o
-ChimeraEngine.exe viewer3rd/wgpu_native.dll -lws2_32 -luser32 -lgdi32 &&
-cp viewer3rd/wgpu_native.dll .` **wgpu-native v25 traps:**
+HTTP, scores live in a Win32 status bar (part 1: P/V + round + task; part 2:
+the judge's current defect list), re-read from engine/score_ledger.json every
+2 s so new judge rounds appear without a restart. Build:
+`cd native && g++ -O2 -std=c++17 -static -static-libstdc++ -static-libgcc
+viewer.cpp -I viewer3rd -o
+ChimeraEngine.exe viewer3rd/wgpu_native.dll -lws2_32 -luser32 -lgdi32
+-lcomctl32 && cp viewer3rd/wgpu_native.dll .` **STATIC LINKING IS MANDATORY**:
+the exe otherwise loads `C:\Program Files\Git\mingw64\bin\libstdc++-6.dll`
+(first on PATH) which ABI-mismatches the ProgramData g++ 15.2.0 that compiles
+it — verified segfault inside the std::ifstream ctor at -O2 (-O0 masked it).
+The wgpu surface lives on a CHILD render-host window (class SpiaceGL); a GPU
+surface and the GDI status bar must not share one client area. **wgpu-native
+v25 traps:**
 `wgpuInstanceWaitAny` (WaitAnyOnly) and `wgpuShaderModuleGetCompilationInfo`
 are `unimplemented.rs` PANICS — use AllowProcessEvents + a ProcessEvents
 pump loop; `WGPUVertexAttribute` gained a leading nextInChain. Agents OPEN
