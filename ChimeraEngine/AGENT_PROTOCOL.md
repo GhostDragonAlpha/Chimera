@@ -488,6 +488,44 @@ Tasks over ~300 lines of diff arrive as STAGES, each < 150k tokens of context:
 in a commit by Kimi, so a dead session costs at most one stage. Your prompt names
 exact files and line numbers — use them; exploration is for when they're wrong.
 
+## DELEGATION (Kimi-only): firing a bionic session with no copy-paste
+
+A "bionic session" is the `pi` CLI agent harness (node-portable) driven by
+LM Studio — `.pi/settings.json` sets `defaultProvider: lmstudio`. Kimi writes
+the staged prompt (the template below), launches it as a background process,
+monitors the transcript, verifies with the fast net, and commits. The operator
+never pastes a prompt. The recipe (proven 2026-08-17, PONG/42/54 probes):
+
+```bash
+cd E:/PythonChimera && pi --print --mode json --no-session \
+  --provider lmstudio --model <a LOADED model> \
+  --tools read,bash,edit,write \
+  --append-system-prompt ChimeraEngine/AGENT_PROTOCOL.md \
+  "<the staged task prompt>" > ChimeraEngine/engine/scratch/<task>_pi.log 2>&1
+```
+
+- **Name a LOADED model** — `curl -s localhost:1234/v1/models` lists them; a
+  model that isn't resident either JIT-loads a second copy or fails.
+- **`--tools read,bash,edit,write` is MANDATORY, not a style choice.** The
+  full extension stack (chimera-tools, readSeek, memory, subagents, loops)
+  inflates the system prompt to ~25k tokens; the operator's judge model is
+  loaded with n_ctx = 16128 (deliberate, for speed), so the request 400s —
+  and pi SWALLOWS the SSE error frame and reports an empty assistant message
+  with exit 0 (measured on the wire via MITM tap, `scratch/_pi_tap.log`).
+  Lean tool set + default prompt ≈ 4–5k tokens, leaving ~11k for the task.
+  If a task needs more window, ASK the operator to raise the model's context
+  in LM Studio — never reload their model yourself.
+- pi's lmstudio provider lives in `C:/Users/allen/.pi/agent/models.json`
+  (fixed 2026-08-17: was pointed at the LAN IP 192.168.3.169, dead because
+  LM Studio binds localhost only; backup `models.json.bak-kimi`). Add new
+  model ids to its catalog there or pi warns "not found" (non-fatal).
+- `--mode json` gives a parseable event stream (agent_start/turn/tool calls);
+  grep it for `message_end` assistant events to read the final answer.
+- pi sessions are implementation agents: **they never commit.** Kimi verifies
+  (fast net + falsifiers) and commits, same as any staged task.
+- Long tasks: drop `--no-session`, pass `--session-id <task-name>` so a dead
+  session resumes with `pi --resume <id>` instead of restarting.
+
 ## YOU WERE POINTED HERE BY A TASK PROMPT — START HERE
 
 The prompt that sent you has this shape. Read it fully before touching anything:
