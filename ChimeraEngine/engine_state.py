@@ -99,7 +99,8 @@ class Engine:
     def _load(self) -> dict:
         if not self.path.exists():
             return {"seed": "theStory", "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
-                    "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"]}
+                    "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"],
+                    "nights": [], "rules": []}
         return self._reconcile(json.loads(self.path.read_text(encoding="utf-8")))
 
     def _reconcile(self, state: dict) -> dict:
@@ -128,6 +129,8 @@ class Engine:
         state["seed"] = "theStory"
         state.setdefault("terms", {})
         state.setdefault("codebook", ["theStory"])
+        state.setdefault("nights", [])
+        state.setdefault("rules", [])
         if state.get("current") not in tree:
             state["current"] = "theSolarSystem"
         return state
@@ -471,6 +474,7 @@ class Engine:
         failing = [(g, d) for g, ok, d in gs if not ok]
         if failing:
             g, d = failing[0]
+            self._record_failure(name, g, d)
             return (f"PROVE REFUSED for `{name}` -- blocked at {g}.\n{report}\n\n"
                     f"The engine will NOT record `{name}` as proven until every gate passes.\n"
                     f"Do this next: {GATE_FIX.get(g, g)}")
@@ -492,6 +496,26 @@ class Engine:
                     f"system: one half of the dyad measuring itself. Re-run `prove` through the MCP "
                     f"tool to complete the dyadAnalysis -- a monad is not proof.")
         return f"{head}\n{report}"
+
+    # --- the NIGHT gate: capture failure, distill it into a rule with a scar --------
+    def _record_failure(self, name: str, gate: str, detail: str) -> None:
+        self.state.setdefault("nights", []).append(
+            {"term": name, "gate": gate, "detail": detail, "when": _now()})
+        self._save()
+
+    def earn_rule(self, name: str, text: str, falsifier: str, forbids: str = "") -> dict:
+        rules = self.state.setdefault("rules", [])
+        rule = {"id": f"R{len(rules) + 1:02d}", "term": name, "text": text,
+                "falsifier": falsifier, "forbids": forbids, "when": _now()}
+        rules.append(rule)
+        self._save()
+        return rule
+
+    def nights(self) -> list:
+        return self.state.get("nights", [])
+
+    def rules(self) -> list:
+        return self.state.get("rules", [])
 
     def orient(self) -> str:
         cur = self.state.get("current")

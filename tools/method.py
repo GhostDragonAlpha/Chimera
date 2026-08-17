@@ -236,6 +236,8 @@ def main() -> int:
     p.add_argument("term")
     p = sub.add_parser("view", help="open the live gallery (optionally a term's frame)")
     p.add_argument("term", nargs="?")
+    p = sub.add_parser("night", help="the NIGHT gate: failures -> rules")
+    p.add_argument("rest", nargs=argparse.REMAINDER, help="passed to tools/night.py")
 
     a = ap.parse_args()
 
@@ -259,6 +261,8 @@ def main() -> int:
         return _shot(a.term)
     if a.cmd == "view":
         return _view(a.term)
+    if a.cmd == "night":
+        return _run(["tools/night.py"] + a.rest)
     return 1
 
 

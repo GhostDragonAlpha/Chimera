@@ -76,6 +76,11 @@ in `opencode.json` (`chimera-engine`). The older story-lane read and timeline co
 were removed with the retired task-board session; `tools/orient.py` is the
 replacement that reads the LIVE stores (engine_state.json + verdict_registry.json + git).
 
+The open decision membrane is **what renders**: `docs/THE_RENDERER_DECISION.md` frames it
+as a RULE-0 theory (statement / prediction / falsifier) — the C++ Vulkan engine
+(`ChimeraEngine/engine/engine.cpp`) versus the Python `ChimeraEngine/splat_appearance.py`
+path. Settle it before proving the playable verbs.
+
 ---
 
 ## WHAT ONLY THIS FILE HOLDS
