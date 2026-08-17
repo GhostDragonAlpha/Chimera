@@ -86,6 +86,24 @@
         "v:ground-contact-unclear",
         "perf:fps-23-at-max-shell"
       ]
+    },
+    {
+      "task": "T12-anisotropic-shell",
+      "P": 92.0,
+      "V": 65.0,
+      "deficiencies": [
+        "gaps-closed",
+        "surface-grain-halved",
+        "patchy-scalp",
+        "lumpy-ear-rim",
+        "caterpillar-arm-rim",
+        "flat-slab-feet",
+        "woven-lattice-texture",
+        "flat-lighting-no-AO",
+        "jagged-silhouette-rims",
+        "back-seam-banding",
+        "judge-saw-one-image"
+      ]
     }
   ]
 }

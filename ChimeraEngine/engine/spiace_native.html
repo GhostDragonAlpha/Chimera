@@ -343,7 +343,7 @@ function shellLevel() {
   const sp = lodSpacing(PRES.focus.R);
   let best = SHELL.levels[0];
   for (const L of SHELL.levels)
-    if (L.cell >= sp * 0.55) best = L;      // finest level still covering
+    if (L.cell >= sp * 0.45) best = L;      // finest level still covering
   return best;
 }
 window.__dbgShell = () => ({
@@ -530,7 +530,43 @@ struct VOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f, @location(1
                                 vec2f(-1.0, 1.0), vec2f(1.0, 1.0));
   let cr = corners[vi];
   let vp = u.view * vec4f(center, 1.0);
-  let p = vp.xyz + vec3f(cr * size, 0.0);
+  // T12: surface-conforming splats. A splat with a real normal (teddy shell)
+  // is an ANISOTROPIC Gaussian: stretched along the tangent plane, thin across
+  // it — EWA-projected to the screen (the 3DGS surfel, not a ball). The
+  // screen ellipse is the eigen-frame of the 2x2 view-xy covariance of
+  // Sigma = R diag(st^2, st^2, sn^2) R^T; the quad is the unit circle in that
+  // frame, so the fragment profile (exp(-4 r^2)) is unchanged. Axes DERIVED:
+  // the worst interior gap is the cell-grid diagonal (0.707 cell from the
+  // nearest center); the visible radius of exp(-4r^2) is 0.865 x semi-axis,
+  // so st = 1.58 x size = 0.95 cell gives visible radius 0.82 cell >= 0.707
+  // (closed, with margin); sn = 0.67 x size = 0.40 cell keeps the shell one
+  // voxel thin. Sentinel normals keep the old circle (walls/oak/ground).
+  var ax1 = vec2f(size, 0.0);
+  var ax2 = vec2f(0.0, size);
+  if (dot(nrm, nrm) >= 0.5) {
+    let nv = normalize((u.view * vec4f(nrm, 0.0)).xyz);
+    var upv = vec3f(0.0, 0.0, 1.0);
+    if (abs(dot(nv, upv)) > 0.9) { upv = vec3f(0.0, 1.0, 0.0); }
+    let t1 = normalize(cross(upv, nv));
+    let t2 = cross(nv, t1);
+    let a1 = t1 * (size * 1.58);
+    let a2 = t2 * (size * 1.58);
+    let a3 = nv * (size * 0.67);
+    let c00 = a1.x * a1.x + a2.x * a2.x + a3.x * a3.x;
+    let c01 = a1.x * a1.y + a2.x * a2.y + a3.x * a3.y;
+    let c11 = a1.y * a1.y + a2.y * a2.y + a3.y * a3.y;
+    let tr = 0.5 * (c00 + c11);
+    let dt = sqrt(max(0.0, 0.25 * (c00 - c11) * (c00 - c11) + c01 * c01));
+    let l1 = tr + dt;
+    let l2 = max(tr - dt, 1e-10);
+    var e1 = vec2f(c01, l1 - c00);
+    if (dot(e1, e1) < 1e-12) { e1 = vec2f(1.0, 0.0); }
+    e1 = normalize(e1);
+    let e2 = vec2f(-e1.y, e1.x);
+    ax1 = e1 * sqrt(l1);
+    ax2 = e2 * sqrt(l2);
+  }
+  let p = vp.xyz + vec3f(ax1 * cr.x + ax2 * cr.y, 0.0);
   var o: VOut;
   o.pos = u.proj * vec4f(p, 1.0);
   o.uv = cr; o.col = col; o.nrm = nrm;
@@ -726,8 +762,17 @@ function hud() {
   document.getElementById('hud').textContent =
     `GENOME  ${s.genome}  [${s.kind || '?'}]\n${body}` +
     `\nstatus  ${s.done ? 'COMPLETE' : 'growing'}` +
-    `\nfps     ${fps.toFixed(0)}\nrenderer ${window.__renderer}\nsource  C++ ca_core.exe (SSE)`;
+    `\nfps     ${fps.toFixed(0)}\nrenderer ${window.__renderer}\nsource  C++ ca_core.exe (SSE)` +
+    (SCORE_TXT ? `\nSCORE   ${SCORE_TXT}` : '');
 }
+
+// Scoreboard IN the viewer: the dual score rides the HUD, same origin as the
+// relay; silently absent over file:// or when the route isn't there.
+let SCORE_TXT = '';
+fetch('/scoreboard').then(r => r.ok ? r.text() : '').then(t => {
+  const m = t && t.match(/<h1[^>]*>SPIACE quality band — (\S+)[\s\S]*?<div class="num">(\d+)<\/div><div class="lbl">PHYSICS[\s\S]*?<div class="num">(\d+)<\/div><div class="lbl">VISUAL/);
+  if (m) SCORE_TXT = `P ${m[2]} / V ${m[3]}  (${m[1]})`;
+}).catch(() => {});
 
 initGPU().catch(e => { window.__renderer = 'unavailable: ' + e.message; });
 setInterval(render, 16);

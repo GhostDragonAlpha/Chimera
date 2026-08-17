@@ -69,12 +69,14 @@ fetch('/scoreboard').then(r => r.text()).then(t => {
   if (m) document.getElementById('scores').innerHTML =
     'P <b>' + m[2] + '</b> · V <b>' + m[3] + '</b> <span style="font-size:12px;color:#7c8aa0">(' + m[1] + ')</span>';
 }).catch(() => {});
-// latest verdict text
-fetch('/proof/_t11_verdict.txt').then(r => r.ok ? r.text() : '')
+// latest verdict text (newest judge round wins when present)
+fetch('/proof/_t12_verdict.txt').then(r => r.ok ? r.text() : fetch('/proof/_t11_verdict.txt').then(r2 => r2.ok ? r2.text() : ''))
   .then(t => { if (t) document.getElementById('verdict').textContent = t; })
   .catch(() => {});
 // latest proofs (newest first)
 const PROOFS = [
+  ['_t12_aniso.png',      'T12 surface splats (anisotropic)'],
+  ['_t12_circle.png',     'T12 A/B: old spherical splats'],
   ['_t11_front_live.png', 'T11 standing teddy — front'],
   ['_t11_side_live.png',  'T11 standing teddy — side'],
   ['_t10_fixed_front.png','T10 lit, shadow line fixed'],

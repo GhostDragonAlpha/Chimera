@@ -39,7 +39,36 @@ drop law (contactTick 99 == pred 99, drift 0.9935%), scale-free stride
 (`_proof_t9_walk.py`: bodyX 24→100, contact GROUND, vy 0) read by me;
 Qwen 3.8 judge (`scratch/_judge_t9.py` — reasoning model: budget 4096 tokens
 and read `reasoning_content` when `content` is empty).
-**Current dual score: P = 92, V = 60** (ledger round 6 — T11 standing bear, judge-anchored; the limb-distinguishability win cost face fidelity: recon dropped eyes/mouth. T10 shipped directional light + mouse orbit/zoom; the light-sweep falsifier tripped 4x and each cause is named in PLAN.md T10 — phase law exact, amplitude bound explained. The 'shadow line' was the T3 legZ debug tint on the H=28 body — now FLAT-view-only. Bodies: honey (sitting, 3678 cells) and stand (1520) both green on the voxtest drop/stride/airwalk laws. (ledger round 5 — V anchored on the
+**Current dual score: P = 92, V = 65** (ledger round 7 — T12 anisotropic
+surface splats, judge-anchored. The operator's complaint: "gaps through
+giant balls" + "more splat types than just balls". Fix shipped in
+`spiace_native.html` vs(): shell splats with real normals render as
+EWA-projected ANISOTROPIC Gaussians — tangent-stretched (st = 1.58×size =
+0.95 cell, derived: visible radius 0.82 cell ≥ the 0.707 cell grid-diagonal
+gap), normal-thin (sn = 0.67×size) — plus the LOD level threshold 0.55→0.45
+(3DGS law floor: ≥0.5 splats/px; picks h=224, 98.5k splats at default
+framing). Measured on the RTX 4090 via wgpu-py offscreen (EXACT shader +
+layout + camera port, `scratch/_render_t12.py`): torso interior dark gaps
+0.0006 → 0.0000, surface grain (lum-std) 56.6 → 32.6 (−42%). Judge:
+"continuous fabric, not separate balls, no through-holes" — V 60 → 65.
+New defect list: patchy-scalp, lumpy-ear-rim, caterpillar-arm-rim,
+flat-slab-feet, woven-lattice-texture (the tangent ridges read as 3D-print
+lattice at h=224 — next lever), flat-lighting-no-AO, jagged rims, back seam.
+**T12 lessons, earned the hard way:** (1) `ref` is a RESERVED WGSL keyword —
+the first aniso shader failed pipeline creation silently and the canvas went
+black; compile-check WGSL changes with wgpu-py BEFORE any browser run:
+`.venv/Scripts/python -X utf8` + `wgpu.utils.get_default_device()` +
+`create_shader_module` on the regex-extracted WGSL (this caught it in 5 s).
+(2) Headed Playwright navigation to localhost BROKE mid-session on this
+machine (curl instant, headless instant, headed/Playwright-launched-Chrome
+hangs pre-commit — even CDP-attached real Chrome wedges; NOT our code,
+repro on a static file on a plain http.server). The fallback verification
+path is wgpu-py offscreen render on the real GPU — bit-exact shader/layout
+check plus actual pixels. (3) dxil.dll/dxcompiler.dll were copied from
+Chrome 151 into ms-playwright/chromium-1200 chasing headless WebGPU;
+chromium was reinstalled (`python -m playwright install chromium`) to
+restore the original dxcompiler.dll; the leftover dxil.dll is byte-identical
+to chromium-1228's, harmless. (ledger round 6 — T11 standing bear, judge-anchored; the limb-distinguishability win cost face fidelity: recon dropped eyes/mouth. T10 shipped directional light + mouse orbit/zoom; the light-sweep falsifier tripped 4x and each cause is named in PLAN.md T10 — phase law exact, amplitude bound explained. The 'shadow line' was the T3 legZ debug tint on the H=28 body — now FLAT-view-only. Bodies: honey (sitting, 3678 cells) and stand (1520) both green on the voxtest drop/stride/airwalk laws. (ledger round 5 — V anchored on the
 Qwen 3.8 judge's REAL verdict, `scratch/_t9_verdict.txt`: face/bow/proportions
 right; see-through ghosting, floating paw pads, torso seam, lumpy hip bulge,
 bow visible from behind, grainy surface = the defect list. The first judge
