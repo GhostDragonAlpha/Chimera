@@ -7,7 +7,9 @@
 //
 //   viewer.exe [port] [shell.json]
 //
-// Mouse: drag = orbit, wheel = zoom. Keys: 1 wave, 2 walk, 3 rest, Esc quit.
+// Mouse: drag = orbit, wheel = zoom. Keys: A/D (or ←/→) walk west/east,
+// S stop, Space drop, 1 wave, 2 walk east, 3 rest, Esc quit.
+// The camera follows the bear (third-person).
 //
 // Build (from ChimeraEngine/native):
 //   g++ -O2 -std=c++17 viewer.cpp -I viewer3rd -o viewer.exe
@@ -33,6 +35,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <unordered_set>
 #include <vector>
 
 #include "webgpu.h"
@@ -57,6 +60,13 @@ struct SimState {
     bool done = false;
     bool hasAnim = false;
     uint64_t animSeq = 0;             // bumped when body pose changes
+    std::vector<std::array<int, 3>> cells;   // T3: the live lattice (vmGait)
+    // N6 terrain off the rig wire line: columns x0..x0+size-1, fixed-point
+    // heights (h / terrainScale cells, offset from ground). Empty = flat.
+    std::vector<int> terrain;
+    int terrainX0 = 0;
+    int terrainScale = 1024;
+    int dir = 1;                      // T8: facing (+1 east / -1 west)
 };
 static SimState g_sim;
 static std::atomic<bool> g_running{ true };
@@ -142,14 +152,46 @@ static void streamThread(int port) {
                     g_sim.cell = m.value("cell", 0.06);
                 } else if (m.value("type", "") == "frame") {
                     g_sim.done = m.value("done", false);
+                } else if (m.value("type", "") == "rig") {
+                    // N6 terrain rides the rig line once, at connect:
+                    // [[x, h], ...] with h in fixed-point 1/terrainScale cells
+                    if (m.contains("terrain") && m["terrain"].is_array()) {
+                        auto& T = m["terrain"];
+                        if (!T.empty()) {
+                            int x0 = T[0][0].get<int>();
+                            int x1 = T[T.size() - 1][0].get<int>();
+                            g_sim.terrain.assign(x1 - x0 + 1, 0);
+                            for (auto& c : T) {
+                                int x = c[0].get<int>();
+                                if (x >= x0 && x <= x1)
+                                    g_sim.terrain[x - x0] = c[1].get<int>();
+                            }
+                            g_sim.terrainX0 = x0;
+                            g_sim.terrainScale = m.value("terrainScale", 1024);
+                            g_sim.animSeq++;      // ground must rebuild
+                        }
+                    }
                 } else if (m.contains("bodyX")) {
                     double bx = m.value("bodyX", 0.0), by = m.value("bodyY", 0.0);
                     if (bx != g_sim.bodyX || by != g_sim.bodyY) {
                         g_sim.bodyX = bx; g_sim.bodyY = by; g_sim.animSeq++;
                     }
                     g_sim.hasAnim = true;
+                    if (m.contains("dir") && m["dir"].is_number())
+                        g_sim.dir = m["dir"].get<int>();
                     if (m.contains("ground") && m["ground"].is_number())
                         g_sim.ground = m["ground"].get<double>();
+                    // T3: the live lattice — vmGait anim frames carry every
+                    // sim cell [x,y,z,mat]; the shell splats bind to these
+                    if (m.contains("cells") && m["cells"].is_array()) {
+                        g_sim.cells.clear();
+                        g_sim.cells.reserve(m["cells"].size());
+                        for (auto& c : m["cells"])
+                            g_sim.cells.push_back({ c[0].get<int>(),
+                                                    c[1].get<int>(),
+                                                    c[2].get<int>() });
+                        g_sim.animSeq++;
+                    }
                 }
             }
         }
@@ -302,6 +344,16 @@ static void initGPU(HWND hwnd) {
     memset(&g_sc, 0, sizeof g_sc);
     g_sc.device = g_dev;
     g_sc.format = caps.formats[0];
+    // The WGSL gamma-encodes once, in the shader (the T5 sRGB fix, derived
+    // for the browser canvas). An sRGB surface would hardware-encode a
+    // SECOND time — measured: the brown bear (albedo 0.84) washed out to
+    // white. Prefer the linear format so the shader's encode is the only one.
+    for (size_t i = 0; i < caps.formatCount; i++)
+        if (caps.formats[i] == WGPUTextureFormat_BGRA8Unorm ||
+            caps.formats[i] == WGPUTextureFormat_RGBA8Unorm) {
+            g_sc.format = caps.formats[i];
+            break;
+        }
     g_sc.usage = WGPUTextureUsage_RenderAttachment;
     g_sc.width = g_winW; g_sc.height = g_winH;
     g_sc.presentMode = WGPUPresentMode_Fifo;
@@ -403,6 +455,11 @@ static void loadScores() {
 
 static void handleKey(WPARAM w) {
     if (w == VK_ESCAPE) { g_running = false; PostQuitMessage(0); }
+    // T8/third-person: A/D (or arrows) walk west/east, S stops, Space drops.
+    if (w == 'A' || w == VK_LEFT)  httpPost(g_port, "/cmd", "walkw");
+    if (w == 'D' || w == VK_RIGHT) httpPost(g_port, "/cmd", "walke");
+    if (w == 'S' || w == VK_DOWN)  httpPost(g_port, "/cmd", "rest");
+    if (w == VK_SPACE)             httpPost(g_port, "/cmd", "drop");
     if (w == '1') httpPost(g_port, "/cmd", "wave");
     if (w == '2') httpPost(g_port, "/cmd", "walk");
     if (w == '3') httpPost(g_port, "/cmd", "rest");
@@ -493,8 +550,26 @@ static void rebuildInstances() {
     auto& L = g_levels[li];
     double s0 = CELL;
     double bx, by, ground;
+    std::vector<int> terrain; int terrX0 = 0, terrScale = 1024;
+    std::vector<std::array<int, 3>> liveCells;
     { std::lock_guard<std::mutex> lk(g_sim.m);
-      bx = g_sim.bodyX; by = g_sim.bodyY; ground = g_sim.ground; }
+      bx = g_sim.bodyX; by = g_sim.bodyY; ground = g_sim.ground;
+      terrain = g_sim.terrain; terrX0 = g_sim.terrainX0;
+      terrScale = g_sim.terrainScale;
+      liveCells = g_sim.cells; }
+    // N6: the ground visual follows the grown terrain (was: flat plane port).
+    // Column heights are fixed-point offsets from the body's derived ground.
+    auto groundYAt = [&](double xWorld, double sp) -> double {
+        // the disc bulges one visible radius (0.62*sp) toward the camera —
+        // sink the center by that radius so the SURFACE sits at terrain
+        // height (was: center at terrain height -> paws buried in the bulge)
+        const double sink = 0.62 * sp + 0.012;
+        if (terrain.empty()) return ground * s0 - sink;
+        int col = (int)llround(xWorld / s0) - terrX0;
+        if (col < 0) col = 0;
+        if (col >= (int)terrain.size()) col = (int)terrain.size() - 1;
+        return (ground + terrain[col] / (double)terrScale) * s0 - sink;
+    };
     // body splats (rigid bodyX/bodyY translation — pose binding is a
     // follow-up; the standing teddy reads correctly at rest)
     size_t nB = L.n;
@@ -520,7 +595,7 @@ static void rebuildInstances() {
     }
     for (auto& pt : pts) {
         double x = pt[0], z = pt[1], sp = pt[2];
-        double y = ground * s0 - 0.012;
+        double y = groundYAt(x, sp);
         double d = hypot(x - bx * s0, z);
         double fade = std::max(0.0, 1 - d / fadeEff);
         float k = (float)(0.30 * fade * (0.9 + 0.2 * hash01((int)llround(x * 997) + (int)llround(z * 613))));
@@ -532,6 +607,60 @@ static void rebuildInstances() {
     memcpy(all.data(), L.inst.data(), nB * 11 * sizeof(float));
     float ox = (float)(bx * s0), oy = (float)(by * s0);
     for (size_t i = 0; i < nB; i++) { all[i * 11] += ox; all[i * 11 + 1] += oy; }
+    // T3 pose binding (port of spiace_native.html shellSplats): each shell
+    // splat binds to its home sim cell (else nearest within +-2 cells) and
+    // rides it — the voxel-muscle gait's cell add/remove ARTICULATES the
+    // legs. Orphans hold the grown pose (the rigid translation above).
+    if (!liveCells.empty()) {
+        static int bH = -1, bN = -1;
+        static std::vector<int> bKey;
+        static std::vector<float> bOff;
+        if (bH != L.h || bN != L.n) {
+            bH = L.h; bN = L.n;
+            bKey.assign(L.n, -1); bOff.assign((size_t)L.n * 3, 0);
+        }
+        std::unordered_set<int> occ;
+        occ.reserve(liveCells.size() * 2);
+        for (auto& c : liveCells)
+            occ.insert((c[0] + 64) + (c[1] + 64) * 128 + (c[2] + 64) * 16384);
+        for (int i = 0; i < L.n; i++) {
+            const float px = L.inst[(size_t)i * 11],
+                        py = L.inst[(size_t)i * 11 + 1],
+                        pz = L.inst[(size_t)i * 11 + 2];
+            const int hx = (int)llround(px / s0), hy = (int)llround(py / s0),
+                      hz = (int)llround(pz / s0);
+            int k = bKey[i];
+            if (k < 0 || !occ.count(k)) {          // (re)bind
+                k = occ.count((hx + 64) + (hy + 64) * 128 + (hz + 64) * 16384)
+                        ? (hx + 64) + (hy + 64) * 128 + (hz + 64) * 16384 : -1;
+                if (k < 0) {
+                    int best = 1 << 29;
+                    for (int dx = -2; dx <= 2; dx++)
+                        for (int dy = -2; dy <= 2; dy++)
+                            for (int dz = -2; dz <= 2; dz++) {
+                                int k2 = (hx + dx + 64) + (hy + dy + 64) * 128
+                                       + (hz + dz + 64) * 16384;
+                                if (!occ.count(k2)) continue;
+                                int d2 = dx * dx + dy * dy + dz * dz;
+                                if (d2 < best) { best = d2; k = k2; }
+                            }
+                }
+                if (k >= 0) {
+                    bKey[i] = k;
+                    bOff[(size_t)i * 3]     = px - ((k % 128) - 64) * (float)s0;
+                    bOff[(size_t)i * 3 + 1] = py - (((k / 128) % 128) - 64) * (float)s0;
+                    bOff[(size_t)i * 3 + 2] = pz - ((k / 16384) - 64) * (float)s0;
+                }
+            }
+            if (k >= 0) {                          // bound: follow the cell
+                const int cx = (k % 128) - 64, cy = ((k / 128) % 128) - 64,
+                          cz = (k / 16384) - 64;
+                all[(size_t)i * 11]     = (float)(cx * s0 + bOff[(size_t)i * 3])     + ox;
+                all[(size_t)i * 11 + 1] = (float)(cy * s0 + bOff[(size_t)i * 3 + 1]) + oy;
+                all[(size_t)i * 11 + 2] = (float)(cz * s0 + bOff[(size_t)i * 3 + 2]);
+            }
+        }
+    }
     memcpy(all.data() + nB * 11, extra.data(), extra.size() * sizeof(float));
 
     if (n > g_ibufCap) {
@@ -560,12 +689,18 @@ static void render(double t) {
     }
     float u[40] = {};
     perspective(0.85f, (float)g_winW / g_winH, 0.05f, 50.0f, u);
+    // Third-person follow: the camera's look-at target IS the bear (the body
+    // splats translate by bodyX/bodyY — the camera translates with them).
+    // Orbit/zoom stay user-controlled relative to the bear.
+    double bx, by;
+    { std::lock_guard<std::mutex> lk(g_sim.m); bx = g_sim.bodyX; by = g_sim.bodyY; }
+    double tx = g_cx + bx * CELL, ty = g_cy + by * CELL;
     double ang = 0.6 + 0.10 * sin(t * 0.15) + g_userAng;
     double Ro = g_R * g_userZoom;
-    double eye[3] = { g_cx + Ro * cos(g_userEl) * sin(ang),
-                      g_eyeY + Ro * sin(g_userEl),
+    double eye[3] = { tx + Ro * cos(g_userEl) * sin(ang),
+                      ty + (g_eyeY - g_cy) + Ro * sin(g_userEl),
                       Ro * cos(g_userEl) * cos(ang) };
-    lookAt((float)eye[0], (float)eye[1], (float)eye[2], g_cx, g_cy, 0, u + 16);
+    lookAt((float)eye[0], (float)eye[1], (float)eye[2], (float)tx, (float)ty, 0, u + 16);
     u[32] = 1.0f;
     double lA = 3 * 3.14159265358979 / 4, lE = 3.14159265358979 / 4;
     u[36] = (float)(cos(lE) * sin(lA)); u[37] = (float)sin(lE); u[38] = (float)(cos(lE) * cos(lA));
@@ -627,7 +762,7 @@ int main(int argc, char** argv) {
         STARTUPINFOA si{}; si.cb = sizeof si;
         PROCESS_INFORMATION pi{};
         std::string cmd = "cmd /c start /min python relay.py 30 " +
-            std::to_string(g_port) + " genomes\\teddystandmuscle.chimera";
+            std::to_string(g_port) + " genomes\\teddywalk.chimera";
         CreateProcessA(NULL, cmd.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
         for (int i = 0; i < 100 && httpGet(g_port, "/scoreboard").empty(); i++)
             Sleep(100);

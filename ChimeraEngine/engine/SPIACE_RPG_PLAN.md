@@ -1296,4 +1296,82 @@ horizontal boundary. Now gated to the FLAT debug view only.
 
 ---
 
-Document version: 5.1 (G1–G5 + N1–N8 + T1–T11 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1–N8 + T1–T7 + T9/T10/T11 complete | Agent: bionic + Kimi K3
+
+
+---
+
+## Phase R1: Full ROM Rig — Two-Segment Limbs, Skinned Bundles, Measured Envelopes (Complete — Kimi K3)
+
+**Rule 0:** a limb is not its axis column — it is the WHOLE bundle of body
+cells around the axis, moving as a rigid lattice body. Prediction: sweeping a
+single-column chain inside a 5-thick arm bar measures a ~3-degree envelope
+(the limb's own meat, not anatomy); skinning the bundle and measuring the
+collision-bounded envelope per joint gives the true ROM. Falsifiers: connMin
+must stay 1 through every sweep (a tear = bug), walk ledgers bit-exact, the
+arm wave completes raise/hold/lower.
+
+**What was built (native/ca_core.cpp, vmGait path):**
+- Every limb is TWO segments: hip->joint->paw, joint at the grown chain's
+  measured midpoint (the G4 precedent); `vmLegLine` re-lays both segments.
+- Arm/leg split is DERIVED: a chain whose grown paw reaches within 1 cell of
+  the ground plane is a leg (it plants); anything else is an arm (it swings,
+  never plants). teddy_stand_r1: 4 legs + 2 arms, 1520 cells, faces east.
+- R1 skinning (rom/wave): every body cell assigned to its NEAREST limb axis
+  past the shoulder blend zone (first quarter of the limb's span — a
+  fraction, so big and small bodies behave alike). `vmStamp` poses the bundle
+  rigidly (Rodrigues about hip / joint), plus the "comb": every skin cell is
+  bridged to the nearest POSED axis-line cell (lattice rotation does not
+  preserve face-connectivity).
+- **Poses are pure set diffs**: target = S0 - (unpinned self) + stamp,
+  applied as remove/add against the live lattice. S0 = the grown body at
+  vmInit. No ownership bags on the stamp path — the v1 three-bag ownership
+  scheme leaked a 2-cell island at (-1,0,-1)/(0,0,-1) (probe-pinned);
+  a diff cannot leak, and the rest pose restores S0 bit-exactly (walk-lean
+  residue erased too).
+- **Articulation guard** (`vmPinGuard`): a limb may not vacate a cell whose
+  removal disconnects the body — measured need: the R1 teddy's head hung off
+  the arm bar, the first wave tore it at 27 deg. Bridging cells are PINNED
+  (body keeps them); the check iterates components to a fixed point.
+- **ROM command** sweeps every limb one at a time (proximal +/-, distal +/-,
+  3 deg/tick) to its ANATOMICAL bound: the first pose whose stamp collides
+  with cells outside its own rest flesh (blend-zone root exempt — the pivot
+  rides inside body meat by anatomy), clamp b4ThMax. The measured table
+  rides the voxtest wire (`vmrom.bounds`).
+- **Wave** (vmGait): the last arm rotates rigidly about its shoulder,
+  raise to vmWaveTh=1.05 -> hold vmWaveHold=40 -> lower; same
+  raise/hold/lower + waveDone contract as the FK wave. New genome keys
+  vmWaveTh/vmWaveHold (the FK b4WaveTh/b4Hold are not read by the vox
+  loader).
+- Walk: arms counter-swing anti-phase with the active tripod (position-set
+  from rest anchors each beat — no drift); legs unchanged, bit-exact.
+- Judge: `engine/judge.py` — the shared visual-critique endpoint, Ollama
+  qwen3.8 (:11434, vision verified) primary, LM Studio (:1234) fallback,
+  env-overridable. First live verdict on the standing teddy: V=50 ("coarse,
+  blobby") — matches the operator's density complaint.
+
+**Measured (headed/selftest, both green):**
+- teddystandmuscle flat regression BIT-EXACT: bodyX=114/400t, shifts 57,
+  slips 0, gatedAir 8, airDX 0, connMin 1.
+- teddywalk (hills, R1 rig): connMin 1 through walk + full ROM + wave;
+  countMin/Max 1500/1762; walk 106 cells/400t east, 0 slips; romDone; wave
+  82 ticks (20 raise + 40 hold + 20 lower + 2).
+- Measured envelopes (rad, [prox+, prox-, dist+, dist-]): leg0
+  [0.10, 0.05, 0.05, 0.05], leg3 [0.26, 0, 0, 0.68], arms ~0.05 — the fossil
+  teddy's limbs are densely packed against the torso; the envelope is
+  MEASURED, not assumed. The 60-degree wave clears it (fixed-angle command).
+- Zero build warnings; zero VM DISCONNECT events post-fix.
+
+**Bugs found by instrumentation (all documented in ca_core.cpp):** (1) the
+lerped comb anchor lands off the axis line — comb floats, head-size island
+tore at wave th=0.262 (fixed: anchor snapped to nearest emitted line cell);
+(2) 1L<<60 UB on 32-bit Windows long made the anchor search degenerate;
+(3) ownership-bag leak (above); (4) sweeps collided with the ghost of the
+post-walk leaned pose -> all-zero envelopes (fixed: restStamp apply at rom
+start); (5) connMin diag now names tick/limb/phase + the torn fragment's
+members on stderr.
+
+**Next:** R2 force closure (planted-leg reaction drives the body, F=ma +
+friction cone; learned gait on top); joints-as-data block in the .cells
+format (operator directive: the joint database matches the CA substrate).
+
+Document version: 5.2 (G1–G5 + N1–N8 + T1–T11 + R1 green) | Status: Phases 0–10.5 + Tracks A/B/C/T/D/E + G1–G5 + N1–N8 + T1–T7 + T9/T10/T11 + R1 complete | Agent: bionic + Kimi K3

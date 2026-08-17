@@ -1,0 +1,43 @@
+# SPIACE genome table — DEMO teddy (standing H=28 body on grown hills)
+# The engine demo: teddystandmuscle.chimera (the T11 canonical standing
+# teddy: SDXL-Turbo ambient image -> TRELLIS -> voxelize H=28 -> shape_train
+# support margin -0.043 -> +1.637) + the N6 terrain membrane (the SAME grown
+# world as bearhill.chimera / teddymusclehills.chimera — seed 2026, so the
+# Python oracle pins this teddy's terrain integer-exact against the bear's).
+# Walk is DIRECTIONAL on command (T8: walkw/walke verbs, vmDir in the core);
+# the PLANT beat reads the terrain column under each paw (T7), so slopes are
+# felt, slips are counted on the wire, never hidden.
+
+kind           = vox
+genome         = teddy-walk-hills-v1
+embodiment     = 1
+tickMs         = 30
+cell           = 0.06
+cellsFile      = teddy_stand_r1.cells
+vmGait         = 1
+vmStride       = 2              # T4-trained pair; flat selftest at H=28:
+vmLift         = 1              # 114 cells/400 ticks, 0 slips (2026-08-17)
+
+# --- B4: FK/IK rig (INERT under vmGait — kept for the loader) --------------
+b4A            = 2
+b4T            = 60
+b4Lam          = 12.25
+b4Dth          = 0.08
+b4ThMax        = 2.6
+b4Iters        = 5
+
+# --- N5: physics membrane (SI in, sim units derived) ------------------------
+gravity        = 9.81
+tickHz         = 60
+
+# --- N6: terrain membrane (verbatim from bearhill.chimera — seed 2026) ------
+# Integer LCG noise in [-3,+3] cells, fixed-point relaxation CA (k/1024
+# cells) to the walkability contract max |slope| <= 0.5 cells/column.
+# Heights are offsets from the body's own derived ground (groundMinY).
+terrain        = 1
+terrainSeed    = 2026
+terrainAmp     = 3
+terrainX0      = -64
+terrainX1      = 1024
+terrainScale   = 1024
+terrainSlope   = 512
