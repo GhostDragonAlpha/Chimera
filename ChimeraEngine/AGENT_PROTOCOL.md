@@ -360,6 +360,11 @@ scoring.
 
 ## THE METHODOLOGY IN ONE PASSAGE (2026-08-16 consolidation)
 
+**The full construction pipeline (image → 3D → voxels → shape-train → genome
+→ run → falsify), with the teddy as the worked example and the earned-traps
+list: `ChimeraEngine/docs/HOW_TO_MAKE_A_THING.md`.** Read it before any task
+that adds an object/creature/mechanism.
+
 Every task runs the same loop, and the loop is the rules above:
 **Rule 0 first** — statement, prediction, falsifier named BEFORE the run.
 **Derive, don't tune** — a number you chose is a broken chain; train under
