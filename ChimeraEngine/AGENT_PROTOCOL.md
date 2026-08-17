@@ -526,6 +526,33 @@ cd E:/PythonChimera && pi --print --mode json --no-session \
 - Long tasks: drop `--no-session`, pass `--session-id <task-name>` so a dead
   session resumes with `pi --resume <id>` instead of restarting.
 
+**Windowed variant (operator-preferred default, 2026-08-17):** run the session
+NON-headless so the operator can watch and steer the TUI live, while Kimi
+keeps control through the side channels:
+
+```bash
+# 1. Kimi writes a per-task launcher (scratch): the bionic.cmd pattern with
+#    the prompt inline (never pass the prompt through `start`/Start-Process
+#    argument lists — the quoting chains mangle it; MSYS also eats `cmd /c`).
+# 2. Launch visible:
+powershell -NoProfile -Command "Start-Process -FilePath '<launcher>.cmd'"
+```
+
+- The TUI runs in its own console window; the OPERATOR can type steering
+  messages directly into it. Kimi cannot inject keystrokes — Kimi's control
+  is launch / monitor / taskkill / relaunch-with-amended-prompt.
+- Kimi's output channel is the session transcript, live-written at
+  `C:/Users/allen/.pi/agent/sessions/--E--PythonChimera--/<ts>_<session-id>.jsonl`
+  (the `--session-id` names the file; it appears once the first model
+  message completes, then grows live).
+- To put the window in front of the operator: screen-capture verify +
+  SetForegroundWindow (`engine/scratch/_raise.ps1 <pid>` pattern).
+- Canonical launcher template: `E:/PythonChimera/bionic.cmd` (takes
+  session-id + task pointer; the generated per-task copy inlines the prompt).
+- Note: a GUI app literally named "Bionic" also runs on this machine
+  (`Bionic - PythonChimera`). If it grows a CLI/API, prefer it; until then
+  pi-over-lmstudio is the scriptable bionic path.
+
 ## YOU WERE POINTED HERE BY A TASK PROMPT — START HERE
 
 The prompt that sent you has this shape. Read it fully before touching anything:
