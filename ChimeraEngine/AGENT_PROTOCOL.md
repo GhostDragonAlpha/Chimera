@@ -9,13 +9,31 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
-**OPERATOR WINDOW (ea95efb):** the human entry point is
-`python ChimeraEngine/START_VIEWER.py [genome]` — starts the relay on :8799
-if down, opens `http://127.0.0.1:8799/hub`: live sim + P/V scores + body
-switcher + latest judge verdict + proof images, ONE window. Agents OPEN it
-themselves after a finding (never hand the operator a path). New proof
-images land in `engine/scratch/` and are added to the PROOFS list in
-`engine/spiace_hub.html`.
+**OPERATOR WINDOW (cc1d169 → native):** the human entry point is
+`python ChimeraEngine/START_VIEWER.py` (or double-click
+`ChimeraEngine/native/ChimeraEngine.exe` — it self-starts the relay).
+**The browser hub is RETIRED as the viewer frontend** (2026-08-16: Chromium
+wedged machine-wide — every Chrome/Edge/Playwright instance hung on ALL
+navigation incl. example.com while curl/Python flew; never our code, fix
+attempts [WPAD off, fresh profiles] documented in this session's ledger).
+The window is now `native/viewer.cpp` → ChimeraEngine.exe: Win32 +
+wgpu-native (the Phase-13 API; vendored in native/viewer3rd — DLL + headers
+match wgpu 0.32), the WGSL extracted from spiace_native.html at startup
+(one shader, two frontends), the sim streamed from the relay over loopback
+HTTP, scores in the title bar from score_ledger.json. Build:
+`cd native && g++ -O2 -std=c++17 viewer.cpp -I viewer3rd -o
+ChimeraEngine.exe viewer3rd/wgpu_native.dll -lws2_32 -luser32 -lgdi32 &&
+cp viewer3rd/wgpu_native.dll .` **wgpu-native v25 traps:**
+`wgpuInstanceWaitAny` (WaitAnyOnly) and `wgpuShaderModuleGetCompilationInfo`
+are `unimplemented.rs` PANICS — use AllowProcessEvents + a ProcessEvents
+pump loop; `WGPUVertexAttribute` gained a leading nextInChain. Agents OPEN
+the window themselves after a finding (never hand the operator a path) and
+verify via screen capture
+(`PowerShell CopyFromScreen → engine/scratch/_screen.png` — works for
+native windows). New proof images land in `engine/scratch/`. v1 limits
+(honest): shell rides bodyX/bodyY rigidly (limb pose binding not yet
+ported), ground is the flat-plane ring march (terrain-wire not ported),
+genome switch = restart with a different shell arg.
 
 **LIVE TASK — Teddy pipeline T8 (immediately below), now on the HONEY body.**
 Teddy-thread shipped: T2 structure (`2263659`), T3 voxel-muscle gait
