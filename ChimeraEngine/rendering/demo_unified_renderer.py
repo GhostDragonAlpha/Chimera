@@ -167,8 +167,8 @@ def main():
     print("\nNext steps:")
     print("1. Implement full CUDA kernels in gpu_rasterizer.py")
     print("2. Create test scenes and golden images")
-    print("3. Run quality gates: pytest ChimeraEngine/tests/test_rendering_pipeline.py -v")
-    print("4. Profile performance: python ChimeraEngine/benchmarks/performance_profile.py")
+    print("3. Run quality gates: pytest ChimeraEngine/rendering/tests/test_rendering_pipeline.py -v")
+    print("4. Profile performance: python ChimeraEngine/rendering/benchmarks/performance_profile.py")
     
     return cloud, selected, pool, rasterizer
 

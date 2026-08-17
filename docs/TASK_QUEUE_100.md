@@ -81,7 +81,7 @@ Every item traces to a specific file, measurement, or gap found in today's sessi
 51. Read `terms_data.py` for all 46 declared-only terms — rank by architectural importance
 52. Build emit stubs for the top 10 most important declared-only terms
 53. Assign each new emit stub its correct parent membrane in `story/`
-54. Re-run `story/grow.py` after adding stubs
+54. Re-run `Chimera/core/grow.py` after adding stubs
 55. Re-bake all terms after grow (`bake_splats.py --verify`)
 56. Update `docs/TERM_INVENTORY.md` with new counts
 57. Build `term_inventory()` bridge in `splat_appearance.py`
@@ -137,7 +137,7 @@ Every item traces to a specific file, measurement, or gap found in today's sessi
 ### Testing (7)
 87. Run `ChimeraEngine/test_perf_guard.py` — 11 tests, all must pass
 88. Run `ChimeraEngine/test_render_pipeline.py` — 47/47 against baseline
-89. Run `python story/grow.py` — must complete with 0 broken membranes
+89. Run `python Chimera/core/grow.py` — must complete with 0 broken membranes
 90. Run `python -m core.why --feature X --loop` on a representative membrane
 91. Run `python story/folding.py audit` — must report 0 impossible values
 92. Run `python tools/port_tests.py` — must report 19/19

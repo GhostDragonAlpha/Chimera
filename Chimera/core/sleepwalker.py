@@ -754,7 +754,7 @@ class Sleepwalker:
 
     def _finish(self) -> dict:
         # THE CONTAINER's sensor wire (tuning pass 2026-07-12): every walk
-        # refreshes docs/world/telemetry_last.json so malcolm's hardware walls
+        # refreshes Chimera/telemetry_last.json so malcolm's hardware walls
         # (frame_time_ms, system_memory_gb) stay measured, not admission-only.
         try:
             import re as _re

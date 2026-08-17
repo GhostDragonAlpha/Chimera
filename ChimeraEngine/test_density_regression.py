@@ -5,7 +5,7 @@ has a derived minimum splat count and per-object screen coverage floor. A regres
 emit() that silently drops detail — the way _tree_buffers did — is caught by asserting
 these floors after every grow.
 
-PREDICTION: Running this test after `python story/grow.py` will pass for all 38 terms,
+PREDICTION: Running this test after `python Chimera/core/grow.py` will pass for all 38 terms,
 guaranteeing that detail cannot silently rot.
 
 FALSIFIER: Any term falls below its derived floor — the test fails, naming the term
@@ -50,7 +50,7 @@ DERIVED_FLOORS: dict[str, int] = {
 }
 
 # SPHERE surface coverage target: at least 58% projected-area coverage (the cover constant
-# from story/matter.py surface_grain). Coverage = projected_area_covered / total_disk_area.
+# from ChimeraEngine/core/matter.py surface_grain). Coverage = projected_area_covered / total_disk_area.
 # A term below this has visible black gaps between grains.
 MIN_COVERAGE = 0.58  # 58% — below this, grain gaps are visible at judgment distance
 

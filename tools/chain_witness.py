@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STORY = ROOT / "story"
 sys.path.insert(0, str(STORY))
 
-# The splat buffer's columns, as story/matter.py lays them out.
+# The splat buffer's columns, as ChimeraEngine/core/matter.py lays them out.
 PX, PY, PZ = 0, 1, 2
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 

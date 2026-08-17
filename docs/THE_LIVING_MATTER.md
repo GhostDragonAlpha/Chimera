@@ -86,7 +86,7 @@ H = Σ_<i,j> J[τ(i),τ(j)] + λ·Σ_t (area_t − target_t)²
 interface energies between the materials it sorts, fixed up to ONE scale constant by
 measurements that already exist in the literature (tissue surface tensions, soil
 cohesion, fracture surface energies). The rung-1 J matrix, hand-iterated and then
-back-labelled `"provenance": "researched"` in `Chimera/docs/matter/matter_library.json`,
+back-labelled `"provenance": "researched"` in `Chimera/docs/rep_batteries/matter_library.json`,
 is a typed number set wearing a researched tag — and it can be replaced by a derivation.
 
 Someone can disagree: the differential-adhesion mapping may not survive contact with
@@ -1433,7 +1433,7 @@ widened the schedule *along the swap axis*; it did not ask what happens when the
 
 - `ChimeraEngine/core/matter.py` is a stale clone of `Chimera/core/matter.py` that
   **raises FileNotFoundError at import** (`matter.py:130` — its library path
-  `ChimeraEngine/docs/matter/matter_library.json` does not exist). The live tree is
+  `Chimera/docs/rep_batteries/matter_library.json` does not exist). The live tree is
   `Chimera/`; the clone should be deleted or the path fixed. A module that crashes on
   import is a lie of omission in the folder map.
 - `WorldModel/simulation/cave_karst_generation.py` is a syntax error (method body

@@ -3,7 +3,7 @@
 THE DECLARED MODEL (docs/THE_TWO_FORCES.md Part II Stage 8). Two grains are two density packets
 rho_i(x) = rho0 * exp(-|x - c_i|^2 / (2 s_i^2)). Superposing them compresses matter, and
 compressing matter costs energy at the rate the material itself publishes -- its bulk modulus B
-(story/matter.py BULK_MODULUS_PA, cited measured constants). To lowest order in the overlap, the
+(ChimeraEngine/core/matter.py BULK_MODULUS_PA, cited measured constants). To lowest order in the overlap, the
 elastic energy of the superposition is the CROSS TERM of the quadratic compression energy:
 
     U(d) = (B / rho0^2) * O(d),      O(d) = INT rho_1 rho_2 dV

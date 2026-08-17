@@ -86,7 +86,7 @@ and "assets". A law (`theX`) is a recipe; an instance (`aX`) is a grown child of
 A child is legal in exactly two ways, and one gate makes both honest:
 
 - **RE-SEED.** Same recipe, different seed. The story's grow is deterministic per seed
-  (`story/grow.py`), and the genomes carry measured distributions (mean/std/p10/p90 from
+  (`Chimera/core/grow.py`), and the genomes carry measured distributions (mean/std/p10/p90 from
   real scans), so a re-seeded child *looks different with the same characteristics* while
   every sampled value stays inside measured reality. This is already the law/instance
   mechanism: `theX` is the recipe, `aX` is one grown child.

@@ -1,6 +1,6 @@
 """gallery.py — every proven term's end still + its RULE 0 one-liner in one browseable page.
 
-STATEMENT: A gallery regenerated from the ledger (story/grow.py's output and each membrane's
+STATEMENT: A gallery regenerated from the ledger (Chimera/core/grow.py's output and each membrane's
 story.md) is always correct because it reads the FILESYSTEM, not a hand-maintained index. Adding
 a membrane adds its page automatically.
 

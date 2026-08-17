@@ -42,7 +42,7 @@ human's consent). tb-0175 hit the identical wall before this task even started (
 own closure said "reference scan downloads not performed"). So the corpus shipped
 here under `docs/matter/reference_scans/synthetic_placeholder/` is NOT photography —
 it is code-generated (numpy/scipy, this file, `ensure_synthetic_corpus()`), calibrated
-against the REAL numbers already sitting in `docs/matter/matter_library.json`
+against the REAL numbers already sitting in `Chimera/docs/rep_batteries/matter_library.json`
 (`sand`/`rock`/`metal`/`ice` appearance entries — albedo means, roughness, mottle
 variance, grain_size_mm — all `researched` or `provisional` provenance already, not
 invented here), clearly tagged `synthetic-placeholder` everywhere it appears in
@@ -155,7 +155,7 @@ BANK = build_filter_bank()
 
 # ============================================================ synthetic placeholder corpus ====
 # Every base_albedo / roughness / grain-scale-ordering choice below is READ from
-# docs/matter/matter_library.json (not invented) — see the per-function citation.
+# Chimera/docs/rep_batteries/matter_library.json (not invented) — see the per-function citation.
 
 def synth_regolith(rng: np.random.Generator, size: int = 320) -> np.ndarray:
     """Fine, isotropic, matte granular texture. Calibrated to matter_library.json
@@ -251,7 +251,7 @@ own closure report states "reference scan downloads not performed."
 ## What these stand in for, and how they're grounded
 
 Each image's base albedo, roughness-driven micro-variance, and qualitative grain
-scale are read directly from `docs/matter/matter_library.json`'s existing
+scale are read directly from `Chimera/docs/rep_batteries/matter_library.json`'s existing
 `researched`/`provisional` appearance entries (sand, rock, metal, ice) — not
 invented. See each `synth_*` function's docstring in `material_harvester.py` for the
 exact library fields cited.

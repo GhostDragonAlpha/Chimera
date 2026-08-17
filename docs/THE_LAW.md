@@ -2,7 +2,7 @@
 
 > Every document in this repository carries a banner pointing here. There is one reason for that:
 > the rule below was written as *rule 24*, at the back of a file, and was therefore read last and
-> applied never — and the one document guaranteed to be read first, `story/README.md`, was the one
+> applied never — and the one document guaranteed to be read first, `README.md`, was the one
 > document that did not carry it at all.
 
 ---

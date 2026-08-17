@@ -84,7 +84,7 @@ This station resists gaming because verification is against **live system state*
 Task: tb-0042
 
 I researched two sources:
-- docs/CLAUDE.md
+- CLAUDE.md
 - research_corpus/anything.md
 
 Target criterion: 60 fps

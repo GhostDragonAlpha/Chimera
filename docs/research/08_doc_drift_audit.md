@@ -10,7 +10,7 @@ existence, command execution, and enforcer presence in the actual repo.
 
 | # | Claim (source) | What was checked | Verdict | Evidence |
 |---|----------------|-----------------|---------|----------|
-| 1 | `python story/grow.py --read --depth 2` (AGENTS.md, "THE SESSION") | File exists + command runs | PASS | File exists. Runs, outputs tree structure |
+| 1 | `python Chimera/core/grow.py --read --depth 2` (AGENTS.md, "THE SESSION") | File exists + command runs | PASS | File exists. Runs, outputs tree structure |
 | 2 | `python story/timeline.py` (AGENTS.md, "THE SESSION") | File exists + command runs | PASS | File exists. Runs, outputs timeline report |
 | 3 | `python tools/methodology_gate.py` (AGENTS.md + THE_LAW.md EM-23) | File exists + command runs | PASS | File exists. Runs, outputs 42 membranes, 8 columns |
 | 4 | `python tools/training_gate.py` (THE_LAW.md EM-1/EM-25) | File exists + command runs | PASS | File exists. Runs; PASS with derived targets, REFUSE with Earth targets |

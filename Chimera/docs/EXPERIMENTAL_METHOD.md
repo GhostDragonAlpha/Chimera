@@ -583,7 +583,7 @@ so the epoch is exact as an ORDERING and approximate as an absolute time.
 A witness that reads published numbers **cannot see a generator that failed to publish**. It walks
 the last good file on disk and reports everything green.
 
-This cost twice in one afternoon. `story/grow.py` was dying on a retired key while `chain_witness`
+This cost twice in one afternoon. `Chimera/core/grow.py` was dying on a retired key while `chain_witness`
 reported *"42 working, 0 stubs, 0 broken"* — because the witness was reading `numbers.json` files
 written before the change. The second time, `grow` was piped to `/dev/null` and the failure was
 invisible entirely.
@@ -733,7 +733,7 @@ context that starts it will not be the context that finishes it.
 3. **ONE MEMBRANE AT A TIME, AND EACH RENAME TRAVELS WITH ITS CONSUMERS IN ONE COMMIT.** Grep for
    `parent["<key>"]` before retiring anything. A rename that lands without its readers breaks the
    tree eight membranes downstream, and the witness will not tell you.
-4. **AFTER EVERY CHANGE:** `story/grow.py` exits clean → `chain_witness` → `folding.py audit` →
+4. **AFTER EVERY CHANGE:** `Chimera/core/grow.py` exits clean → `chain_witness` → `folding.py audit` →
    the gate. In that order, every time (rule 23).
 5. **WHEN A MEMBRANE FAILS A COLUMN, SUSPECT THE COLUMN ONCE** before suspecting the membrane
    (rule 24). Two of `theZero`'s four failures were the gate's.

@@ -6,13 +6,13 @@ where it is declared, what it is used for, and any inconsistencies or gaps.
 
 ## Source Files Surveyed
 ```
-story/.../theGround/physics.py                       (aHuman's parent layer)
-story/.../theGround/theHuman/physics.py               (aHuman's own constants)
-story/.../theGround/theHuman/aHuman/numbers.json      (derived output)
-story/.../theHuman/theHand/physics.py
-story/.../theHuman/theAnkle/physics.py
-story/.../theHuman/theGrip/physics.py
-story/.../theFoot/physics.py
+story/marbleMaze/physics.py                       (aHuman's parent layer)
+story/marbleMaze/physics.py               (aHuman's own constants)
+story/marbleMaze/numbers.json      (derived output)
+story/marbleMaze/physics.py
+story/marbleMaze/physics.py
+story/marbleMaze/physics.py
+story/marbleMaze/physics.py
 ChimeraEngine/walker.py
 ChimeraEngine/lod.py
 docs/research/ledger.json (new citations)

@@ -227,7 +227,7 @@ python tools/verdict.py status      # the Rule-0 biomechanics membranes, open + 
 
 Through the engine (MCP — `ChimeraEngine/MCP_ENGINE.md`, registered for opencode in
 `opencode.json`): `orient` first, every time; `next` hands you the term — you do not pick it.
-(The older `story/grow.py --read`/`story/timeline.py` reads were removed with the retired
+(The older `Chimera/core/grow.py --read`/`story/timeline.py` reads were removed with the retired
 story/task-board lane; `tools/orient.py` reads the LIVE stores instead.)
 
 Piece #109 of the inventory, and it governs this whole document: **a claim about INTENT does not
@@ -647,8 +647,8 @@ two orderings and the human-readable one loses silently.
 |---|---|---|
 | **`docs/THE_LAW.md`** | Rule 1, alone, in one page | first, always |
 | **this file** | the whole method as one sequence | before touching anything |
-| `story/README.md` | how the game is built — chapters, the two authors | before writing a chapter |
-| `story/ONBOARDING.md` | the procedure, the viewer, and the 45-row failure catalogue | before your first membrane |
+| `README.md` | how the game is built — chapters, the two authors | before writing a chapter |
+| `ChimeraEngine/ONBOARDING.md` | the procedure, the viewer, and the 45-row failure catalogue | before your first membrane |
 | `story/LANGUAGE.md` | the grammar — four verbs, articles, units, the visibility model | when writing `physics.py` |
 | `Chimera/docs/EXPERIMENTAL_METHOD.md` | 24 rules for not fooling yourself | before debugging **or reporting** |
 | `Chimera/docs/THE_GROWTH.md` | what the game IS — the five rulings, the corpus, D0–D4 | to know the standard |

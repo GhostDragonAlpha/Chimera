@@ -165,7 +165,7 @@ def derive_walk_port() -> dict:
     """
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == "theHuman"]
     if not hits:
-        raise SystemExit("theHuman publishes nothing -- run `python story/grow.py`. Refusing to "
+        raise SystemExit("theHuman publishes nothing -- run `python Chimera/core/grow.py`. Refusing to "
                          "invent the gait this port is meant to produce (rule 20).")
     L = json.loads(hits[0].read_text(encoding="utf8"))
     need = ("g", "comfortable_speed_ms", "step_time_s", "duty_factor", "step_length_m",

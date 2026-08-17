@@ -4,16 +4,16 @@
 
 What is on trial (docs/THE_TWO_FORCES.md; plan: two-forces-gaussian-splat-light):
 
-  T1  STAGE 0 CLOSURE -- density alone, pushed through Lorentz-Lorenz (story/matter.py), must land
+  T1  STAGE 0 CLOSURE -- density alone, pushed through Lorentz-Lorenz (ChimeraEngine/core/matter.py), must land
       on numbers it was never fitted to: pure water's literature n, and aSaltOcean's OWN published
       sunglint (the membrane derived its glint from a sourced n = 1.34; we re-derive n from its
-      published density and must meet it). Tolerances pre-registered in core/optics.py.
+      published density and must meet it). Tolerances pre-registered in ChimeraEngine/core/optics.py.
   T2  ONE SOURCE OF TRUTH -- the referee module defines no refraction law of its own (ast-checked),
       and the column contract between story.matter and the GPU pipeline agrees bit-for-bit.
   T3  KERNEL vs REFEREE -- the float32 GPU specular term against the float64 CPU referee, same
       declared model, two implementations, on BOTH falsifier membranes' published numbers
       (aSaltOcean water; aTerrain slope statistic + theGround bulk density). |max| and median
-      gates pre-registered in core/optics.py BEFORE the first comparison ran.
+      gates pre-registered in ChimeraEngine/core/optics.py BEFORE the first comparison ran.
   T4  THE CLAY CONTROLS -- zeroed specular columns under a light, and populated columns under NO
       light, must both render BIT-IDENTICAL to the baseline: the instrument must be silent before
       it may convict or acquit (the 2026-08-01 lesson).
@@ -124,7 +124,7 @@ def t2_one_source():
     check("T2 referee defines no refraction law of its own (ast)",
           "refractive_index" not in defs and "fresnel_f0" not in defs,
           f"functions defined: {sorted(defs)}")
-    check("T2 referee imports the one source (story/matter.py)",
+    check("T2 referee imports the one source (ChimeraEngine/core/matter.py)",
           "from matter import" in src and '_STORY = _ROOT / "story"' in src)
     check("T2 column contract: SPEC_F0 is the pipeline's PROP0, SPEC_SLOPE its PROP1",
           matter.SPEC_F0 == gp.PROP0 and matter.SPEC_SLOPE == gp.PROP1,

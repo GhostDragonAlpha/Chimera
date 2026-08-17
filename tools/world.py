@@ -47,7 +47,7 @@ def gravity() -> float:
             if p.parent.name == LEDGER_MEMBRANE]
     if not hits:
         raise WorldUnknown(
-            f"no {LEDGER_MEMBRANE}/numbers.json under story/ -- run `python story/grow.py`. "
+            f"no {LEDGER_MEMBRANE}/numbers.json under story/ -- run `python Chimera/core/grow.py`. "
             f"Refusing to assume Earth.")
     led = json.loads(hits[0].read_text(encoding="utf8"))
     if "g" not in led:
@@ -172,7 +172,7 @@ def _ledger() -> dict:
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == LEDGER_MEMBRANE]
     if not hits:
         raise WorldUnknown(f"no {LEDGER_MEMBRANE}/numbers.json under story/ -- run "
-                           f"`python story/grow.py`. Refusing to assume Earth.")
+                           f"`python Chimera/core/grow.py`. Refusing to assume Earth.")
     return json.loads(hits[0].read_text(encoding="utf8"))
 
 

@@ -95,7 +95,7 @@ _KILL_RATIO = 2.0
 # opaque." AMBIENT is a flat fill term so unlit surfaces are not pure black.
 #
 # --- rung B.5: optics from the matter library ----------------------------------
-# The OPTICAL dict is READ FROM docs/matter/matter_library.json's appearance fields.
+# The OPTICAL dict is READ FROM Chimera/docs/rep_batteries/matter_library.json's appearance fields.
 # Each tissue entry has:
 #   - albedo_mean_rgb: [R, G, B] base colour
 #   - roughness_mean: surface roughness (0-1)
@@ -201,7 +201,7 @@ AMBIENT = 0.18
 def _anisotropy_kind(tissue_name: str) -> str | None:
     """Read the library's declared per-material anisotropy kind
     (physical.anisotropy.value — e.g. muscle's 'along_fiber',
-    docs/matter/matter_library.json, provenance='design': 'muscle is directional — the
+    Chimera/docs/rep_batteries/matter_library.json, provenance='design': 'muscle is directional — the
     appearance AND the mechanics share the fiber axis'). None = no declared axis; the
     tissue's footprint shape comes from local surface geometry alone."""
     mat = _LIB.get("materials", {}).get(tissue_name, {})

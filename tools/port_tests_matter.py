@@ -55,7 +55,7 @@ def _published(membrane: str) -> dict:
     """
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == membrane]
     if not hits:
-        raise md.Uncited(f"no {membrane}/numbers.json under story/ -- run `python story/grow.py`. "
+        raise md.Uncited(f"no {membrane}/numbers.json under story/ -- run `python Chimera/core/grow.py`. "
                          f"Refusing to assume a value for a membrane that has not been grown.")
     import json
     return json.loads(hits[0].read_text(encoding="utf8"))

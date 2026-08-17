@@ -3,7 +3,7 @@
 WHY THIS EXISTS. The derivation rule was written on 2026-07-28, lived in CLAUDE.md, and was
 violated on 2026-08-02 by a four-variant parameter sweep. The post-mortem found the mechanism:
 the rule was in ONE paragraph of ONE long file, and the document a new context reads FIRST --
-`story/README.md` -- did not carry it at all. Documentation that is not where you are looking is
+`README.md` -- did not carry it at all. Documentation that is not where you are looking is
 documentation that does not exist.
 
 So the fix is not "write it better". It is: every authored document in this repository carries the
@@ -51,7 +51,7 @@ ROOTS = ["docs", "Chimera/docs", "ChimeraEngine", "story", "Construction", "Worl
 
 # generated or regenerated: stamping them is a lie that lasts until the next build.
 # `contents.md` is the sharp case -- `grow.py` rewrites it every run from the children's
-# plain-words lines, so a banner in one survives until the next `python story/grow.py`.
+# plain-words lines, so a banner in one survives until the next `python Chimera/core/grow.py`.
 GENERATED = {
     "DREAM_REPORT.md", "HERALD.md", "HISTORY_BOOK.md", "TASK_BOARD.md", "PENDING_HEURISTICS.md",
     "EXPECTATION_VIOLATIONS.md", "MASTER_DEVELOPMENT_DASHBOARD.md", "THE_BACKLOG.md",

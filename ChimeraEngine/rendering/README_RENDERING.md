@@ -111,18 +111,18 @@ image = rasterizer.render(cloud, camera, clusters=clusters)
 
 ```bash
 # Run all quality gates
-pytest ChimeraEngine/tests/test_rendering_pipeline.py -v
+pytest ChimeraEngine/rendering/tests/test_rendering_pipeline.py -v
 
 # Run specific gate tests
-pytest ChimeraEngine/tests/test_rendering_pipeline.py::TestRenderingPipeline::test_performance_1080p -v
-pytest ChimeraEngine/tests/test_rendering_pipeline.py::TestRenderingPipeline::test_determinism -v
+pytest ChimeraEngine/rendering/tests/test_rendering_pipeline.py::TestRenderingPipeline::test_performance_1080p -v
+pytest ChimeraEngine/rendering/tests/test_rendering_pipeline.py::TestRenderingPipeline::test_determinism -v
 ```
 
 ### Profiling Performance
 
 ```bash
 # Measure current performance baseline
-python ChimeraEngine/benchmarks/performance_profile.py
+python ChimeraEngine/rendering/benchmarks/performance_profile.py
 
 # Compare before/after consolidation
 ```
@@ -195,7 +195,7 @@ from ChimeraEngine.renderers.gpu_rasterizer import GPUSplatRasterizer
 
 1. Create gate module in `ChimeraEngine/gates/`
 2. Implement `check_XXX()` function returning `GateResult`
-3. Add test in `ChimeraEngine/tests/test_rendering_pipeline.py`
+3. Add test in `ChimeraEngine/rendering/tests/test_rendering_pipeline.py`
 4. Document in this README
 
 ### Performance Optimization Checklist

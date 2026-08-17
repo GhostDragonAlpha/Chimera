@@ -199,7 +199,7 @@ def measure_axis(name: str, graph_nodes: list = None, board_state: dict = None) 
     if name == "frame_time_ms":
         fps = tel.get("fps")
         if not fps:
-            return (None, "unmeasured — run telemetry_probe --foreground, writes docs/world/telemetry_last.json")
+            return (None, "unmeasured — run telemetry_probe --foreground, writes Chimera/telemetry_last.json")
         if not tel.get("foregrounded"):
             # fps sampled with the editor UNFOCUSED: Windows/GPU throttles background
             # windows to ~3fps, freezing Niagara+anim too. That is a measurement

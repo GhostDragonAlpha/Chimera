@@ -20,7 +20,7 @@
 <!-- CHIMERA-LAW -->
 
 Cached citations for the `provisional` -> `researched` upgrades applied to
-`docs/matter/matter_library.json`. Access date for every source below: **2026-07-18**
+`Chimera/docs/rep_batteries/matter_library.json`. Access date for every source below: **2026-07-18**
 (live WebSearch/WebFetch). Two sessions on record: the original tb-0172 pass
 (sub-24/fable-1) and a follow-up (tb-0181, sub-27) that repaired encoding damage
 the first pass left behind, resolved one more provisional debt, corrected a

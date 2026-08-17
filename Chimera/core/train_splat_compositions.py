@@ -22,7 +22,7 @@ from core.splat_types import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-LIB_PATH = ROOT / 'docs/matter/matter_library.json'
+LIB_PATH = ROOT / 'Chimera/docs/rep_batteries/matter_library.json'
 RECOVERED_PATH = ROOT / 'docs/matter/recovered_genomes.json'
 SPLAT_NAMES = ['surface', 'fiber', 'point', 'shell', 'beam', 'cloud', 'glow']
 N_TYPES = len(SPLAT_NAMES)

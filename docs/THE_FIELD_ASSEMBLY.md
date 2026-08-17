@@ -69,7 +69,7 @@ and re-derives.
 | sections interact through gravity only | the folded Barnes-Hut walk — the tree cells ARE the sections; the only cross-section interaction is the one inverse-square rule | the walk; `docs/THE_TWO_FORCES.md` scope declaration 2 |
 | same rule, different direction/magnitude | one walk + per-grain couplings (MASS, CHARGE/PROP, TYPE columns) | buffer layout, `docs/RENDER_PIPELINE_DATA_FLOW.md` |
 | the gravity that holds matter together | **saturated-density contact** — matter held by a DERIVED rest-volume potential (stiffness linear in cited bulk modulus; seam closes at 1.2 nm; sound speed 1463.5 vs published 1474.78 m/s) | `docs/THE_TWO_FORCES.md` Stage 8 v2, Stage 9–15 |
-| membrane | a folder in `story/` — a membrane is a folder with `derive()` and `emit()` | `story/README.md`, `docs/THE_WORKFLOW.md` |
+| membrane | a folder in `story/` — a membrane is a folder with `derive()` and `emit()` | `README.md`, `docs/THE_WORKFLOW.md` |
 | master algorithm for a membrane | the record: `derive() -> numbers.json`, `emit(nums, t) -> buffer` | `story/theZero/theLight/` |
 | events triggering chains that change forces | the groove + needle: story-time t, the deck's solo dial | `story/theZero/theLight/physics.py` `emit()` / `_DECK` |
 | train color + shape, one at a time | per-membrane `derive()`/`emit()`, recovered genomes, heritability per material, composition fitting | `Construction/`, `docs/THE_PIPELINE.md` §4 |

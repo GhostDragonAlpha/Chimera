@@ -165,7 +165,7 @@ import os as _os  # noqa: E402
 # before the parents[2] ROOT fix, the loader returned None even when asked). The
 # domain now self-loads its reference at import: the scan named by
 # CHIMERA_MATAPP_SCAN (default regolith — the real downloaded corpus,
-# docs/matter/reference_scans/SOURCES.md). Loud print either way: training
+# Chimera/Content/Audio/Footsteps/SOURCES.md). Loud print either way: training
 # against reality and training blind must never look alike again.
 _SCAN = _os.environ.get("CHIMERA_MATAPP_SCAN", "regolith")
 REFERENCE = None

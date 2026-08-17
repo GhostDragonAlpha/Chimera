@@ -56,7 +56,7 @@ BODIES = {"pelvis": "pelvis", "calcn_r": "calcn_r", "calcn_l": "calcn_l",
 def ledger() -> dict:
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == "theHuman"]
     if not hits:
-        raise SystemExit("theHuman publishes nothing -- run `python story/grow.py`.")
+        raise SystemExit("theHuman publishes nothing -- run `python Chimera/core/grow.py`.")
     L = json.loads(hits[0].read_text(encoding="utf8"))
     need = ("g", "comfortable_speed_ms", "step_time_s", "duty_factor", "gait_envelope_deg")
     missing = [k for k in need if k not in L]

@@ -497,7 +497,7 @@ place in the stack — and where the live research happens.
 > looks like even know it is not a surface but more of an average!"*
 
 The substrate engine's data is not datasets. It is **the periodic table of the game** —
-`docs/matter/matter_library.json` — three columns, exactly as commissioned:
+`Chimera/docs/rep_batteries/matter_library.json` — three columns, exactly as commissioned:
 
 1. **Types of matter** — the brick identities. Ten now (tendon joined 2026-07-14's
    nine), derived from what the game already reads: the seed's six environment

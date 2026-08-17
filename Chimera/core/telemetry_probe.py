@@ -416,7 +416,7 @@ def _editor_memory_gb() -> float:
 
 def _write_malcolm_snapshot(telemetry: dict, foregrounded: bool = False) -> None:
     """Feed THE CONTAINER (core.malcolm): every foregrounded soak refreshes
-    docs/world/telemetry_last.json with the axes malcolm can read — the
+    Chimera/telemetry_last.json with the axes malcolm can read — the
     sensors that turn hardware walls from admission-only into gated. Only
     honestly-measured keys are written; absent keys stay UNMEASURED.
 

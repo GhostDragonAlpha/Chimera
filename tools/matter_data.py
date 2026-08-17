@@ -16,7 +16,7 @@ raises rather than assume Earth; `lm_gateway` raises rather than load a model no
 
     A NUMBER WITHOUT A SOURCE IS A NUMBER SOMEONE CHOSE.
 
-THREE PROVENANCE CLASSES, matching `Chimera/docs/matter/matter_library.json`:
+THREE PROVENANCE CLASSES, matching `Chimera/docs/rep_batteries/matter_library.json`:
 
     parent      already published by a membrane of this world -- read through, never re-typed
     researched  a citable external measurement, with the citation stored beside the number
@@ -52,7 +52,7 @@ class Uncited(RuntimeError):
 def _lib() -> dict:
     """The world's own researched materials library, read through -- never copied.
 
-    `Chimera/docs/matter/matter_library.json` already holds researched density, friction angle,
+    `Chimera/docs/rep_batteries/matter_library.json` already holds researched density, friction angle,
     cohesion and Young's modulus with the citations attached. Re-typing any of them here would
     make this file a stale copy, which is the defect the instrument rules name four convictions
     for in one day: THE INSTRUMENT MUST MOVE WITH THE MEMBRANE AND KEEP NO COPY OF IT.

@@ -161,7 +161,7 @@ class DerivationFailed(RuntimeError):
 def read_ledger() -> dict:
     """Reach UP into the parent membrane and read what this world published about itself.
 
-    `theHuman`'s `numbers.json` is written by `story/grow.py` from `derive(parent, free)`, and its
+    `theHuman`'s `numbers.json` is written by `Chimera/core/grow.py` from `derive(parent, free)`, and its
     `g` arrives down an unbroken chain from `aBlueWorld`'s mass -- which is itself derived, all the
     way back to the constants that fence `theZero`. We do not compute it here and we do not choose
     it. We read it. A membrane may read only its parent, and for this trainer the body IS the parent.
@@ -172,7 +172,7 @@ def read_ledger() -> dict:
         raise DerivationFailed(
             f'Derivation failed: no {LEDGER_MEMBRANE}/numbers.json anywhere under story/. '
             f'The ledger does not exist, so this world has not said what its gravity is. '
-            f'Run `python story/grow.py` and try again. Refusing to assume Earth.')
+            f'Run `python Chimera/core/grow.py` and try again. Refusing to assume Earth.')
     led = json.loads(hits[0].read_text(encoding='utf8'))
     missing = [k for k in LEDGER_REQUIRED if k not in led]
     if missing:
@@ -275,7 +275,7 @@ def confirm_targets(speeds, strides, earth, assume_yes: bool = False) -> None:
     print('=' * 94)
     print('  THE DERIVATION -- READ FROM THE PARENT MEMBRANE, NOT ASSUMED')
     print('=' * 94)
-    print(f'  ledger        {LEDGER_MEMBRANE}/numbers.json   (written by story/grow.py)')
+    print(f'  ledger        {LEDGER_MEMBRANE}/numbers.json   (written by Chimera/core/grow.py)')
     print(f'  GRAVITY       {GRAVITY:.6f} m/s^2      ({GRAVITY / G_EARTH:.4f} of Earth,'
           f' derived from aBlueWorld mass)')
     print(f'  leg length    {LEG_L:.6f} m           (anatomy, ANSUR II proportions)')
@@ -462,7 +462,7 @@ def main() -> int:
         raise DerivationFailed(
             'Derivation failed: theHuman publishes no gait_envelope_deg. The tracking term would '
             'fall back to an Earth walk at a different Froude number, which is the defect this '
-            'exists to remove. Run `python story/grow.py`. Refusing to assume Earth.')
+            'exists to remove. Run `python Chimera/core/grow.py`. Refusing to assume Earth.')
     _env = LEDGER['gait_envelope_deg']
     # keep the file's shape -- build_ref_table reads envelopes_deg[j]['mean'] -- so the swap is
     # a swap of DATA, not of structure. `close_curve` then closes 100 -> 101 as it always did.

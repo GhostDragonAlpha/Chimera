@@ -28,7 +28,7 @@ from pathlib import Path
 import numpy as np
 
 _HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(_HERE.parent))  # repo root for story/matter.py
+sys.path.insert(0, str(_HERE.parent))  # repo root for ChimeraEngine/core/matter.py
 sys.path.insert(0, str(_HERE))         # ChimeraEngine for splat_appearance
 
 import splat_appearance as sa

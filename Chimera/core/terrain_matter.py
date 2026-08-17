@@ -24,7 +24,7 @@ FRACTURES a local region INSTANTLY: those atoms become free rigid bodies (MuJoCo
 CPU, a SINGLE world — this is not the trainer's population-batch use case, so
 mujoco-warp buys nothing here; plain `mujoco` is the honest, correct tool for one
 dig event). They fall, collide, and settle under gravity + Coulomb friction sourced
-from the sand entry of docs/matter/matter_library.json. Once ALL freed grains have
+from the sand entry of Chimera/docs/rep_batteries/matter_library.json. Once ALL freed grains have
 been below a velocity threshold for a HELD duration (hysteresis: instant fracture,
 slow merge — SS6's own words), they RE-COALESCE: their individual final positions
 are resampled into the coarse heightfield — this is where SS6's "merging forgets
@@ -108,7 +108,7 @@ SAND_TRACTION = 0.75
 
 
 def _sand_physical() -> dict:
-    """docs/matter/matter_library.json materials.sand.physical — cited, not invented."""
+    """Chimera/docs/rep_batteries/matter_library.json materials.sand.physical — cited, not invented."""
     return load_library()["materials"]["sand"]["physical"]
 
 

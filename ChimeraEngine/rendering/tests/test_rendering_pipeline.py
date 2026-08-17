@@ -26,7 +26,7 @@ class TestRenderingPipeline:
         """Performance gate: 16.6ms at 1080p"""
         
         # TODO: Implement actual render function for testing
-        # This will use ChimeraEngine/renderers/gpu_rasterizer.py
+        # This will use ChimeraEngine/rendering/renderers/gpu_rasterizer.py
         
         # Example placeholder:
         # def render_test():

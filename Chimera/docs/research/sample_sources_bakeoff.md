@@ -22,7 +22,7 @@
 > The human's frame correction on the Lead, 2026-07-18, verbatim: *"the research now
 > involves sampling and where we get our samples from — we must have multiple avenues
 > to explore the optimal source or sources."* This supersedes tb-0175's single-avenue
-> photo-acquisition framing (`docs/matter/reference_scans/SOURCES.md`, which catalogued
+> photo-acquisition framing (`Chimera/Content/Audio/Footsteps/SOURCES.md`, which catalogued
 > candidates in prose but never live-verified licensing, never scored per material, and
 > never separated "clean to download" from "needs an account"). This document does all
 > three, and produces a defended, per-material verdict — never a single assumed source.
@@ -63,7 +63,7 @@ checkable. Descriptor-richness numbers were **re-measured live** on this box (RT
 this reproduces tb-0180's own KILL-criterion and Julesz-probe numbers exactly (see §3),
 plus a NEW per-material richness statistic no prior session computed.
 
-Every verdict is cross-checked against `docs/matter/matter_library.json`'s own existing
+Every verdict is cross-checked against `Chimera/docs/rep_batteries/matter_library.json`'s own existing
 appearance provenance — which turns out to matter a great deal (§4.1).
 
 ## 2. The five avenues, live-verified
@@ -410,7 +410,7 @@ per-file layer this document's own §6 flagged as unconfirmed — real byte size
 real direct-download URLs via each site's own public metadata API (ambientCG's
 `/api/v2/full_json`, Poly Haven's `/files/<slug>`), and reachability checks for every
 avenue §6 had left unverified. Full per-file ledger:
-`docs/matter/reference_scans/SOURCES.md` §2–4. Highlights:
+`Chimera/Content/Audio/Footsteps/SOURCES.md` §2–4. Highlights:
 
 - **ambientCG**: 4 real assets confirmed by API (not estimated) — Rock026 (rock,
   7.29 MB), Ground037 (regolith-analog, 10.57 MB), Snow004 (ice, 6.37 MB), Metal049A
@@ -452,7 +452,7 @@ baseline, and the separation/Julesz probes re-run on real data — could NOT be
 performed**, for the identical reason it could not be performed when this document was
 first written: no real pixels exist yet to feed `core.material_harvester.
 iter_corpus_images()`. The synthetic baseline in §3 above stands as the only number
-either session has been able to produce. No entry in `docs/matter/matter_library.json`
+either session has been able to produce. No entry in `Chimera/docs/rep_batteries/matter_library.json`
 was changed by tb-0190 — the recipe's library-update instruction ("where a real source
 pins an appearance value, record the finding with citation, never change the mean")
 did not trigger, because no real source produced a measured value this session; the

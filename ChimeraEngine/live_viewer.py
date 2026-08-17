@@ -991,7 +991,7 @@ def handle(handler) -> bool:
               json.dumps({"paused": v._paused, "t": v._t, "ticks": v._ticks}).encode()); return True
     if path == "/invalidate" or path == "/reload":
         # THE CACHES ARE KEYED ON THE TERM ALONE and nothing in the key mentions the numbers the
-        # buffer was emitted from, so after `story/grow.py` the viewer keeps serving the buffer
+        # buffer was emitted from, so after `Chimera/core/grow.py` the viewer keeps serving the buffer
         # built from the PREVIOUS numbers. The operator moves a slider, the world does not move,
         # and the slider looks broken. A stale render is a wrong answer that looks finished.
         import splat_appearance as _sa

@@ -45,7 +45,7 @@ measured, cited inputs. The theory is scoped, and the scope is the next section.
 ## THE THREE SCOPE DECLARATIONS (decided by the operator, 2026-08-05)
 
 1. **Light v1 = specular reflection only.** Transmission was already proven code (the
-   compositor's Beer-Lambert walk); diffuse already exists (`story/matter.py:lit()`). Refraction,
+   compositor's Beer-Lambert walk); diffuse already exists (`ChimeraEngine/core/matter.py:lit()`). Refraction,
    caustics, interreflection, dispersion: Part II, unbuilt, falsifiers pre-written.
 2. **Gravity reads aggregate density; light and contact read local density.** Gravity's reader is
    the membrane tree (analytic wells; the parent carries `g` and the child consumes it —
@@ -60,7 +60,7 @@ measured, cited inputs. The theory is scoped, and the scope is the next section.
 
 | piece | where | what it is |
 |---|---|---|
-| density declared once | `story/matter.py` — `MASS` col, `grain_mass`/`grain_density`, `SPECIFIC_REFRACTION_CM3_G`, `refractive_index`, `fresnel_f0`, `paint_specular`, `SPEC_F0`/`SPEC_SLOPE` cols | the ρ → n → F₀ chain, one source; specific refractions are cited measured constants (water CRC 3.712 cm³/mol / 18.015 g/mol; silicate = quartz's measured n at its measured ρ restated through the law) |
+| density declared once | `ChimeraEngine/core/matter.py` — `MASS` col, `grain_mass`/`grain_density`, `SPECIFIC_REFRACTION_CM3_G`, `refractive_index`, `fresnel_f0`, `paint_specular`, `SPEC_F0`/`SPEC_SLOPE` cols | the ρ → n → F₀ chain, one source; specific refractions are cited measured constants (water CRC 3.712 cm³/mol / 18.015 g/mol; silicate = quartz's measured n at its measured ρ restated through the law) |
 | the specular term | `ParticleEngine/gpu_pipeline.py` — `_smith_g1`, the block in `_p2s`, `set_light()` | per-GRAIN Cook-Torrance: one grain = one facet = one light slot. Beckmann D (a Gaussian slope distribution — exactly what Cox-Munk measured on a real sea), Schlick F on the membrane's derived F₀, EXACT Smith-Beckmann G via `erfc` (no fitted rational anywhere). Runs ONLY under an explicitly set light; zero in either column disables the grain (absence refuses, never defaults) |
 | the referee | `ChimeraEngine/core/optics.py` | the same declared model, independent float64 implementation, with the pre-registered tolerances (`EPS_*`) written before the first comparison ran. The renderer was Lambertian-only and could not judge specular — the referee had to be BUILT |
 | the falsifier gate | `ChimeraEngine/test_optics.py` (31 checks) | closure, one-source (ast), kernel-vs-referee on both membranes, clay controls, slider, PNG artifacts |
@@ -166,7 +166,7 @@ diffuse receive only; specular-to-specular chains remain unbuilt.
 
 ### Stage 7 — Dispersion — **BUILT, PASSED** (consumes Stage 4)
 STATEMENT: dispersion is the same lensing pass with three measured indices
-(`story/matter.py:WATER_N_BY_CHANNEL`, Fraunhofer C/D/F lines, restated through Lorentz-Lorenz so
+(`ChimeraEngine/core/matter.py:WATER_N_BY_CHANNEL`, Fraunhofer C/D/F lines, restated through Lorentz-Lorenz so
 the density slider still moves all three). MEASURED: η_R > η_G > η_B as the literature orders
 them; kernel vs per-channel referee max |diff| **3.3e-08**; R and B rays land **0.0059** scene
 units apart — the exact magnitude water's Δn ≈ 0.006 commands at this geometry. THE INSTRUMENT
@@ -177,7 +177,7 @@ Frame: `agent_logs/optics_dispersion_on.png`.
 
 ### Stage 8 — Overlap-pressure contact — **MACHINERY BUILT · MODEL v1 REFUTED, ON PURPOSE**
 STATEMENT: contact is the overlap integral of density packets; the energy scale comes from the
-material's cited bulk modulus (`story/matter.py:BULK_MODULUS_PA`) — **no picked stiffness
+material's cited bulk modulus (`ChimeraEngine/core/matter.py:BULK_MODULUS_PA`) — **no picked stiffness
 anywhere**, which is exactly why the model could lose. THE MACHINERY PASSED: closed-form overlap
 = brute-force 3D integral to **4e-15** (Gaussians close, proven not assumed); the force is
 −dU/dd to **5e-11** (conservative); repulsive and monotone. THE PHYSICS FIRED THE FALSIFIER:
@@ -312,7 +312,7 @@ a number is the same error class as matching names instead of definitions.
 The refinement Stage 9 named, and the tangential half the seam was missing.
 
 **TWO CITED MODULI, AND EXACTLY TWO.** An isotropic elastic solid needs two independent moduli;
-bulk alone cannot produce a contact theory. `story/matter.py` now publishes **G** alongside B (both
+bulk alone cannot produce a contact theory. `ChimeraEngine/core/matter.py` now publishes **G** alongside B (both
 measured, entering as theStar's fusion constants do) and E, ν follow — α-quartz's unusually low
 **ν = 0.0742** among them. **Water is deliberately absent and `hertz.py` REFUSES it**: a fluid has
 no shear modulus, so Hertzian contact does not apply, and that is a scope boundary rather than a
@@ -433,7 +433,7 @@ Stage 12 added radiation (energy leaving as sound), Stage 13 added contact micro
 annulus at the rim). This is the one acting *inside* the material: compress a solid and it warms,
 the warm region conducts heat outward, and on the return stroke that heat does not come back —
 Zener's thermoelastic damping, which needs **no loss tangent handed to it**, only thermal
-constants (α, c_p, k, newly cited in `story/matter.py` the way B and G were).
+constants (α, c_p, k, newly cited in `ChimeraEngine/core/matter.py` the way B and G were).
 
 **IT READS THE WORLD'S OWN TEMPERATURE.** `Δ = Eα²T/(ρc_p) = 1.96e-03` at aBlueWorld's published
 `T_surface = 279.19 K`, and doubling T doubles Δ exactly — **a colder world's rock is a better
@@ -704,7 +704,7 @@ light and the baked diffuse must agree on. **No light set, no glint rendered —
   e. the clay controls hold on the real buffer: zeroed columns under the sun, and populated columns
      under no light, are both bit-identical to the emitted baseline.
 
-**THE ONE DECLARATION, now a law:** `story/matter.py` holds the world's single star —
+**THE ONE DECLARATION, now a law:** `ChimeraEngine/core/matter.py` holds the world's single star —
 `sun_direction(tt, obliquity)` in the equatorial frame, `local_sun(tt, obliquity, latitude, hour)`
 for surface scenes, `sun_altitude_deg` for the number a membrane publishes, and the declination
 `sin(decl) = sin(obliquity)·cos(phase)` that is the whole of a season. **Every day-lit membrane is a

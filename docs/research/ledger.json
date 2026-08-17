@@ -6,7 +6,7 @@
       "year": 1955,
       "title": "Evaluation of coefficients of consolidation and settlement",
       "source": "Geotechnique 5(4):297-326",
-      "cited_in": ["tools/matter_data.py:186", "tools/port_tests_matter.py:64", "story/.../theGround/physics.py:56"]
+      "cited_in": ["tools/matter_data.py:186", "tools/port_tests_matter.py:64", "story/marbleMaze/physics.py:56"]
     },
     {
       "id": "Terzaghi 1943",
@@ -54,7 +54,7 @@
       "year": 1972,
       "title": "Regolith cohesion data",
       "source": "3rd Lunar Sci. Conf.",
-      "cited_in": ["tools/port_tests_matter.py:415", "story/.../theGround/physics.py:52"]
+      "cited_in": ["tools/port_tests_matter.py:415", "story/marbleMaze/physics.py:52"]
     },
     {
       "id": "Quaglio 2020",
@@ -70,7 +70,7 @@
       "year": 1997,
       "title": "Soil production and climate in regolith studies",
       "source": "Geology",
-      "cited_in": ["story/.../theGround/physics.py:18"]
+      "cited_in": ["story/marbleMaze/physics.py:18"]
     },
     {
       "id": "Mathiowetz 1985",
@@ -78,7 +78,7 @@
       "year": 1985,
       "title": "Coefficient of friction database",
       "source": "Human Factors",
-      "cited_in": ["story/.../theGrip/physics.py:65"]
+      "cited_in": ["story/marbleMaze/physics.py:65"]
     },
     {
       "id": "Zhang 1999",
@@ -86,7 +86,7 @@
       "year": 1999,
       "title": "In vivo friction properties of human skin",
       "source": "Prosthet. Orthot. Int.",
-      "cited_in": ["story/.../theGrip/physics.py:73", "story/.../theGrip/physics.py:116"]
+      "cited_in": ["story/marbleMaze/physics.py:73", "story/marbleMaze/physics.py:116"]
     },
     {
       "id": "Carre 2017",
@@ -94,7 +94,7 @@
       "year": 2017,
       "title": "Influence of medical gloves on fingerpad friction",
       "source": "Tribology",
-      "cited_in": ["story/.../theGrip/physics.py:79", "story/.../theGrip/physics.py:125"]
+      "cited_in": ["story/marbleMaze/physics.py:79", "story/marbleMaze/physics.py:125"]
     },
     {
       "id": "Westling 1987",
@@ -102,7 +102,7 @@
       "year": 1987,
       "title": "Skin friction properties",
       "source": "Journal of Physiology",
-      "cited_in": ["story/.../theGrip/physics.py:76"]
+      "cited_in": ["story/marbleMaze/physics.py:76"]
     },
     {
       "id": "Peel 2007",
@@ -230,7 +230,7 @@
       "year": 1990,
       "title": "Mosaic structure and synaptic relationship of the cone mosaic in the cat eye",
       "source": "Journal of Comparative Neurology 292:497",
-      "cited_in": ["story/.../theEye/physics.py:87"]
+      "cited_in": ["story/marbleMaze/physics.py:87"]
     },
     {
       "id": "Allen 1990",
@@ -238,7 +238,7 @@
       "year": 1990,
       "title": "Photoreceptor and postsynaptic distributions in the cat retina",
       "source": "Journal of Comparative Neurology",
-      "cited_in": ["story/.../theEye/physics.py:89"]
+      "cited_in": ["story/marbleMaze/physics.py:89"]
     },
     {
       "id": "Chase 1937",
@@ -246,7 +246,7 @@
       "year": 1937,
       "title": "Skin color",
       "source": "Journal of Physical Chemistry",
-      "cited_in": ["story/.../theEye/physics.py:91"]
+      "cited_in": ["story/marbleMaze/physics.py:91"]
     },
     {
       "id": "Ginsborg 1952",
@@ -254,7 +254,7 @@
       "year": 1952,
       "title": "Vision and the eye",
       "source": "C.V. Mosby",
-      "cited_in": ["story/.../theEye/physics.py:93"]
+      "cited_in": ["story/marbleMaze/physics.py:93"]
     },
     {
       "id": "Riggs 1950",
@@ -262,7 +262,7 @@
       "year": 1950,
       "title": "The sensations of color and form",
       "source": "MIT Press",
-      "cited_in": ["story/.../theEye/physics.py:95"]
+      "cited_in": ["story/marbleMaze/physics.py:95"]
     },
     {
       "id": "Spencer 1944",
@@ -270,7 +270,7 @@
       "year": 1944,
       "title": "The optical properties of the living eye",
       "source": "Ophthalmology",
-      "cited_in": ["story/.../theEye/physics.py:97"]
+      "cited_in": ["story/marbleMaze/physics.py:97"]
     },
     {
       "id": "Weymouth 1958",
@@ -278,7 +278,7 @@
       "year": 1958,
       "title": "Instrumentation and the sense of sight",
       "source": "Scientific American",
-      "cited_in": ["story/.../theEye/physics.py:99"]
+      "cited_in": ["story/marbleMaze/physics.py:99"]
     },
     {
       "id": "Henderson 2003",
@@ -286,7 +286,7 @@
       "year": 2003,
       "title": "The optics of the retina",
       "source": "Optometry and Vision Science",
-      "cited_in": ["story/.../theEye/physics.py:101"]
+      "cited_in": ["story/marbleMaze/physics.py:101"]
     },
     {
       "id": "Hendrickson 1990",
@@ -294,7 +294,7 @@
       "year": 1990,
       "title": "The architecture of the human fovea",
       "source": "Journal of Comparative Neurology",
-      "cited_in": ["story/.../theEye/physics.py:103"]
+      "cited_in": ["story/marbleMaze/physics.py:103"]
     },
     {
       "id": "Hubel 2004",
@@ -302,7 +302,7 @@
       "year": 2004,
       "title": "Eye, brain, and vision",
       "source": "Henry Holt and Co.",
-      "cited_in": ["story/.../theEye/physics.py:105"]
+      "cited_in": ["story/marbleMaze/physics.py:105"]
     },
     {
       "id": "Rayner 1998",
@@ -310,7 +310,7 @@
       "year": 1998,
       "title": "Eye movement and visual behavior",
       "source": "Optometry and Vision Science",
-      "cited_in": ["story/.../theEye/physics.py:107"]
+      "cited_in": ["story/marbleMaze/physics.py:107"]
     },
     {
       "id": "Ross 1994",
@@ -318,7 +318,7 @@
       "year": 1994,
       "title": "Psychophysics of visual color",
       "source": "Vision Research",
-      "cited_in": ["story/.../theEye/physics.py:109"]
+      "cited_in": ["story/marbleMaze/physics.py:109"]
     },
     {
       "id": "Stark 1975",
@@ -326,7 +326,7 @@
       "year": 1975,
       "title": "Human color vision and perception",
       "source": "Prentice-Hall",
-      "cited_in": ["story/.../theEye/physics.py:111"]
+      "cited_in": ["story/marbleMaze/physics.py:111"]
     },
     {
       "id": "Aitsebaomo 1985",
@@ -334,7 +334,7 @@
       "year": 1985,
       "title": "Visual acuity standards",
       "source": "Journal of Optometry",
-      "cited_in": ["story/.../theEye/physics.py:113"]
+      "cited_in": ["story/marbleMaze/physics.py:113"]
     }
   ]
 }

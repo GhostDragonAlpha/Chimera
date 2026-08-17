@@ -15,7 +15,7 @@ RULE 0, stated before the run:
                 gravity, and "it memorised the training condition" is not the explanation for
                 anything.
 
-IT DOES NOT REGROW THE STORY, and that is deliberate. `story/grow.py` with a different `g` would
+IT DOES NOT REGROW THE STORY, and that is deliberate. `Chimera/core/grow.py` with a different `g` would
 re-derive every membrane from theZero down -- the star, the planet, the terrain, theHuman's own
 mass and leg length -- so the body, the target height and the base of support would ALL move
 together and the experiment would no longer be about gravity. It would be about a different

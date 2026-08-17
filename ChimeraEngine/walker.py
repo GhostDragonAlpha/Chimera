@@ -502,7 +502,7 @@ def scene_around(w: Walker, t: float = None):
     the fractal size distribution its law derived). That is LOD of meaning at walking scale -- the
     same derivation read at the resolution a body needs.
     """
-    from matter import blank, lit, SOLID          # story/matter.py, already on the path
+    from matter import blank, lit, SOLID          # ChimeraEngine/core/matter.py, already on the path
     (zf, dx, patch, acc, slope), nums = _load()
     gnd = nums["ground"]
     S_rel = float(nums["terrain"]["S_earth"])

@@ -55,7 +55,7 @@ NAMES = {MEDIUM: "medium", BONE: "bone", MUSCLE: "muscle", SKIN: "skin"}
 TISSUES = (BONE, MUSCLE, SKIN)
 
 # --- rung 0.5: adhesion profile from the matter library -----------------------
-# The J matrix is READ FROM docs/matter/matter_library.json's adhesion fields.
+# The J matrix is READ FROM Chimera/docs/rep_batteries/matter_library.json's adhesion fields.
 # Each tissue entry has:
 #   - medium_contact: how much this tissue hates being exposed to empty space
 #   - self_cohesion: how strongly it sticks to itself (lower = more adhesive)

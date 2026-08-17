@@ -43,7 +43,7 @@ from pathlib import Path
 
 import numpy as np
 
-# The house idiom for reaching story/matter.py (walker.py:55): the story DIRECTORY goes on the
+# The house idiom for reaching ChimeraEngine/core/matter.py (walker.py:55): the story DIRECTORY goes on the
 # path and `matter` is imported as itself. A plain `from story import matter` loses to
 # ChimeraEngine/story.py whenever a script runs from inside ChimeraEngine/, because a regular
 # module beats a namespace package no matter where each sits on sys.path.

@@ -311,7 +311,7 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
                             if ch > 0.0:
                                 ch2 = ch * ch
                                 tt = (1.0 - ch2) / (ch2 * sg * sg)
-                                if tt <= 40.0:            # EXP_CUTOFF -- derived, core/optics.py
+                                if tt <= 40.0:            # EXP_CUTOFF -- derived, ChimeraEngine/core/optics.py
                                     dd = math.exp(-tt) / (math.pi * sg * sg * ch2 * ch2)
                                     cvh = wx2*hx + wy2*hy + wz2*hz
                                     if cvh < 0.0: cvh = 0.0
@@ -329,8 +329,8 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
     # with three measured indices), straight to the membrane-published floor plane, floor colour
     # through a cell grid, Beer-Lambert over the refracted path, weighted by the energy the
     # specular term did NOT reflect: (1 - F(cos_v)). The refracted direction eta*d + (eta*c1-c2)*n
-    # is EXACTLY unit length (|t|^2 = 1, algebra in core/optics.py), so the plane parameter IS the
-    # path length -- no normalisation. rpar layout + float64 referee + tolerances: core/optics.py.
+    # is EXACTLY unit length (|t|^2 = 1, algebra in ChimeraEngine/core/optics.py), so the plane parameter IS the
+    # path length -- no normalisation. rpar layout + float64 referee + tolerances: ChimeraEngine/core/optics.py.
     # Gated like specular: no set_refraction() -> rpar[0] = 0 -> not one bit changes anywhere.
     if rpar[0] > 0.0:
         rf2 = dp[o + PROP2]                   # story matter.REFRACT: > 0 marks an interface
@@ -379,7 +379,7 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
                                                 # recomputes identically and all pre-Stage-18
                                                 # callers stay bit-identical. Residual is second
                                                 # order (slope x height deviation); the exact
-                                                # referee lives in core/interfaces.py.
+                                                # referee lives in ChimeraEngine/core/interfaces.py.
                                                 ss = (gz[gi] - dp[o + PZ]) / tz2
                                                 if ss > 0.0:
                                                     hx2 = dp[o + PX] + tx2 * ss

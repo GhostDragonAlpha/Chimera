@@ -38,7 +38,7 @@ def _library() -> tuple[dict, dict]:
         from pathlib import Path
         root = Path(__file__).resolve().parents[1]
         _CACHE['gen'] = json.loads((root / 'docs/matter/recovered_genomes.json').read_text())['genomes']
-        _CACHE['lib'] = json.loads((root / 'docs/matter/matter_library.json').read_text())
+        _CACHE['lib'] = json.loads((root / 'Chimera/docs/rep_batteries/matter_library.json').read_text())
     return _CACHE['gen'], _CACHE['lib']
 
 # Which genomes may serve which kind of stud. A port is typed by WHAT FLOWS, so this is

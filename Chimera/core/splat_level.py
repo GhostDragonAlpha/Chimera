@@ -38,7 +38,7 @@ from core.splat_types import (
 )
 
 # Load material splat compositions from the library
-with open(ROOT / 'docs/matter/matter_library.json') as f:
+with open(ROOT / 'Chimera/docs/rep_batteries/matter_library.json') as f:
     _MATTER_LIB = json.load(f)
 
 

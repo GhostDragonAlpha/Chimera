@@ -83,7 +83,7 @@ Items marked ✅ are committed and verified.
 49. Read `terms_data.py` for all 46 declared-only terms — rank by architectural importance based on parent membrane and concept description
 50. Build emit stubs for top 10 most important declared-only terms (5 exist as placeholders — add 10 more)
 51. Assign each new emit stub its correct parent membrane in `story/` with minimal `story.md`
-52. Re-run `story/grow.py`, re-bake, verify chain_witness after adding stubs
+52. Re-run `Chimera/core/grow.py`, re-bake, verify chain_witness after adding stubs
 53. Update `docs/TERM_INVENTORY.md` with new counts after stub addition
 54. Build `term_inventory()` function in `splat_appearance.py` returning `{renderable, declared_only, scene_without_term}`
 55. Add `/inventory` HTTP endpoint to `live_viewer.py` exposing gap counts as JSON

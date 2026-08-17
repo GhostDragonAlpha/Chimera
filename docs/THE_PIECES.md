@@ -31,7 +31,7 @@
 > Sources read in full: `Chimera/docs/THE_WORKFLOW.md` · `THE_METHOD.md` · `THE_FORMULA.md` ·
 > `THE_LINE.md` · `WORKFLOW_RULES.md` · `THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md` ·
 > `GENERATION_PROTOCOL.md` · `EXPERIMENTAL_METHOD.md` · `THE_GROWTH.md` · `docs/THE_WORKFLOW.md` ·
-> `docs/THE_ORDER.md` · `story/README.md` · `story/ONBOARDING.md` · `story/LANGUAGE.md` ·
+> `docs/THE_ORDER.md` · `README.md` · `ChimeraEngine/ONBOARDING.md` · `story/LANGUAGE.md` ·
 > `ChimeraEngine/ONBOARDING.md` · plus the retired `sequential_orchestrator.py`, `run_sequential.py`
 > and `agents/*.py` recovered from git history.
 

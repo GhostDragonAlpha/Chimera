@@ -6,7 +6,7 @@ was recorded as the honest tell and Hertz was named as the refinement. This is t
 plus the tangential force the seam needed to hold a body on a slope.
 
 TWO CITED CONSTANTS, AND EXACTLY TWO. An isotropic elastic solid is specified by two independent
-moduli; bulk modulus alone cannot produce a contact theory. So `story/matter.py` publishes B and
+moduli; bulk modulus alone cannot produce a contact theory. So `ChimeraEngine/core/matter.py` publishes B and
 G (both measured) and E, nu follow. Water has no G and this module REFUSES it rather than
 substituting a number -- a fluid has no Hertzian contact, and that is a scope boundary, not a gap.
 

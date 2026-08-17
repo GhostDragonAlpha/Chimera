@@ -46,7 +46,7 @@ helper or a duplicate.
  3  COMPOSE      Chimera/core/train_splat_compositions.py
                  train which splat TYPES reproduce each material's measured
                  distribution; writes the winner back into
-                 -> Chimera/docs/matter/matter_library.json  (splat_composition.layers)
+                 -> Chimera/docs/rep_batteries/matter_library.json  (splat_composition.layers)
 
  4  BUILD        pick ONE of the six directions (docs/THE_WORKFLOW.md section 6)
                  objects : Chimera/core/progeny.py

@@ -44,7 +44,7 @@ OUTDIR = ROOT / "ChimeraEngine" / "output" / "ports"
 def read(name: str, keys) -> dict:
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == name]
     if not hits:
-        raise SystemExit(f"{name} publishes nothing -- run `python story/grow.py`. Refusing.")
+        raise SystemExit(f"{name} publishes nothing -- run `python Chimera/core/grow.py`. Refusing.")
     d = json.loads(hits[0].read_text(encoding="utf8"))
     missing = [k for k in keys if k not in d]
     if missing:

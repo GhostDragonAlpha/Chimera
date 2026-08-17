@@ -49,7 +49,7 @@ by nothing.
 | §7 the gates | `docs/THE_PIECES.md` §8 — the full gate table with wiring status |
 | §7b the six rules that decide whether a result is real | `Chimera/docs/EXPERIMENTAL_METHOD.md` rules 12–17 |
 | §8 the reading order | `docs/THE_WORKFLOW.md` §8 — the map |
-| §9 the build as it stands | **deleted deliberately.** It was STATE in prose, and it had gone stale: it drew `theStory → theSolarSystem → theStation → theGoal`, a tree that does not exist on disk. Run `python story/grow.py --read` and `python tools/methodology_gate.py` |
+| §9 the build as it stands | **deleted deliberately.** It was STATE in prose, and it had gone stale: it drew `theStory → theSolarSystem → theStation → theGoal`, a tree that does not exist on disk. Run `python Chimera/core/grow.py --read` and `python tools/methodology_gate.py` |
 | §10 the honest bounds | `docs/THE_WORKFLOW.md` §9 |
 
 **The deep docs this file used to introduce are unchanged and still worth reading:**

@@ -91,7 +91,7 @@ These are two nearly-disjoint vocabularies, and the gap is not a naming problem.
 
 ## SCENE WITHOUT TERM — renders but is not declared (29)
 
-These are the grown story tree: instances (`a…`) and membranes the design vocabulary never named. They are not errors — they are what `story/grow.py` actually produced.
+These are the grown story tree: instances (`a…`) and membranes the design vocabulary never named. They are not errors — they are what `Chimera/core/grow.py` actually produced.
 
 `aActiveInterior` · `aBlueWorld` · `aHuman` · `aNitrogenAtmosphere` · `aRockyPlanet` · `aSaltOcean` · `aSteppeBiomes` · `aTerraceMine` · `aTerrain` · `aYellowStar` · `theAnkle` · `theBreath` · `theClock` · `theCloud` · `theCooling` · `theEmptying` · `theEye` · `theGalaxy` · `theGrip` · `theHand` · `theHorizon` · `theHuman` · `theHumanClock` · `theLoad` · `theRockyPlanet` · `theSkin` · `theStance` · `theSweep` · `theZero`
 

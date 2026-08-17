@@ -87,8 +87,8 @@ Ran `python tools/methodology_gate.py` (all 42 membranes, tree order).
 
 | Membrane | Blind key | Physics location | Nature of value |
 |----------|-----------|-------------------|-----------------|
-| theGround | reference_load_vs_threshold | story/.../theGround/physics.py:389 | `press / q0` — dimensionless ratio |
-| theHuman | footprint_deeper_on_earth_by | story/.../theHuman/physics.py:1193 | `print_earth / print_depth` — dimensionless ratio |
+| theGround | reference_load_vs_threshold | story/marbleMaze/physics.py:389 | `press / q0` — dimensionless ratio |
+| theHuman | footprint_deeper_on_earth_by | story/marbleMaze/physics.py:1193 | `print_earth / print_depth` — dimensionless ratio |
 
 ### Root cause
 

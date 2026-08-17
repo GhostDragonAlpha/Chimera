@@ -1,6 +1,6 @@
 """orient.py -- the ONE live read: engine tree + verdict ledger + git, together.
 
-The session used to start with `python story/grow.py --read --depth 2` -- a command
+The session used to start with `python Chimera/core/grow.py --read --depth 2` -- a command
 that does not exist. The engine's ORIENT (mcp `orient`) reads the engine store but
 not the verdict lane, and the verdict lane (LightEngine/JOINT_ATLAS) has no single
 read at all. This is the replacement: both halves of the dyad, one command, machine-

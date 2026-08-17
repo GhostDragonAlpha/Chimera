@@ -66,7 +66,7 @@ def derive_grab_port() -> dict:
     import json
     hits = [p for p in (ROOT / "story").rglob("numbers.json") if p.parent.name == "theHuman"]
     if not hits:
-        raise SystemExit("theHuman publishes nothing -- run `python story/grow.py`. Refusing to "
+        raise SystemExit("theHuman publishes nothing -- run `python Chimera/core/grow.py`. Refusing to "
                          "invent the frame this load is priced against (rule 20).")
     H = json.loads(hits[0].read_text(encoding="utf8"))
     g = gravity()

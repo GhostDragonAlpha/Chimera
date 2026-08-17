@@ -7,12 +7,12 @@ with identified issues, budgets, and unit-system hazards.
 ## Data Flow Path
 
 ```
-story/grow.py
+Chimera/core/grow.py
   |  derive(parent_nums, free) -> numbers.json
   |  emit(nums, t) -> (N, 28) float32 buffer (local units, radius ~1)
   |
   v
-story/physics.py (per membrane)
+story/marbleMaze/physics.py (per membrane)
   ├─ derive()   — produces numbers.json with extent_m, scale, etc.
   ├─ emit()     — produces (N, 28) float32 numpy array
   └─ SIZE col = 20 (grain size in local units)

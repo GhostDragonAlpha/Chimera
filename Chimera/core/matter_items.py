@@ -7,7 +7,7 @@ THE METHOD (THE_COMPOSITIONAL_WORLD_MODEL.md PART II sections 11/12/16):
     library entry  ->  voxel shape  ->  splat emission (per-particle optics SAMPLED
     from the entry's DISTRIBUTIONS)  ->  relight under a moving directional light.
 
-Everything optical comes from docs/matter/matter_library.json — nothing is authored
+Everything optical comes from Chimera/docs/rep_batteries/matter_library.json — nothing is authored
 per-item. An item is a SHAPE plus library entries; "what the surface looks like" is the
 per-particle average the human named: albedo mottle is sqrt(albedo_mottle_var) sampled
 per splat, so no two rocks are the same rock and nobody painted either of them.
