@@ -373,10 +373,69 @@ saturation, not from a number anyone picked. **Done is a log** (rule 2),
 **docs last, append-only** (rule 3), **green before you edit and before
 you report** (rule 1).
 
+## THE WORKFLOW, STEP BY STEP (the procedural form of the passage above)
+
+Follow these in order. Skipping a step is how every recorded failure started.
+
+1. **READ the task.** The CURRENT TASK slot at the top of this file (or the
+   staged prompt you were handed) — TASK / STATE / FILES / FALSIFIERS /
+   CONSTRAINTS / DONE MEANS. Any piece missing and material: stop, ask.
+2. **ORIENT green.** Run the fast net (`cd ChimeraEngine/engine && python
+   test_native.py` — seconds) BEFORE writing a line. If the baseline is red,
+   report that; do not build on it. Then go straight to FILES — exact paths
+   and line numbers; explore only when they're wrong.
+3. **RULE 0 before any run.** Write the statement, the prediction, and the
+   falsifier you have not measured yet. No falsifier, no build. A number you
+   cannot trace to a derivation or a citation is a broken chain — if the
+   derivation sheet doesn't have it, STOP and report the gap; never tune.
+4. **CONSTRUCTION ORDER.** Shape → rig → gait → control. Never train
+   movement on an unphysical body; never re-rig an unbalanced one
+   (rule 6 — the teddy's COM was 1.63 cells outside its paw hull; three
+   grown pillars came before any gait work).
+5. **BUILD the minimal diff.** Respect every CONSTRAINT. All probes, logs,
+   and proof scripts go in `engine/scratch/` (gitignored). C++ core changes
+   compile with zero warnings (`-Wall`); WGSL changes are compile-checked
+   with wgpu-py BEFORE any window run (5 s — `ref` is a reserved keyword and
+   a silent shader failure costs a black canvas and an hour).
+6. **TEST only what you touched.** Fast net ALWAYS. Headed blocks: only the
+   tags your task touches, once — `T_HEADED=<tag> python test_native.py`.
+   The full suite is DELETED; do not resurrect it. Iterate headless between
+   the two green runs.
+7. **SEE it yourself.** Every headed/visual deliverable: capture the proof
+   (full-frame strip or screenshot — never a hand-picked crop), then READ it
+   with ReadMediaFile and write the visual verdict: what a skeptic sees,
+   deficiencies named with stable ids. For the native window, screen-capture
+   (`PowerShell CopyFromScreen → engine/scratch/_screen.png`). Check
+   `pageerror`/stderr on every probe. Numbers without a visual verdict are
+   unverified (rule 7).
+8. **SCORE both axes.** P and V, each /100, per the rule-8 rubric — no
+   vibes; if you can't name the instrument, the category scores 0. For V,
+   the judge is the LM Studio model (`_judge_*.py` pattern: ONE image per
+   call, max_tokens 4096, read `reasoning_content` when `content` is empty,
+   utf-8 writes). Log the round: `cd ChimeraEngine/engine && python
+   score_saturation.py add <task> <P> <V> <def-id>...`, then `status` for
+   the saturation curve.
+9. **SHOW the human — you open the window.** After any finding over the
+   threshold, launch/raise `ChimeraEngine/native/ChimeraEngine.exe` yourself
+   (it self-starts the relay; verify by screen capture). Never hand the
+   operator a path or a port number. The status bar picks up your new ledger
+   round within 2 s — the operator sees P/V and your defect list in the same
+   window as the result.
+10. **REPORT in the DONE MEANS format.** Command run, PASS/FAIL counts,
+    measured numbers, log path in `engine/scratch/`, diff summary, visual
+    verdict, both scores. "All green" without a log path = unverified.
+11. **IF YOU'RE DYING, hand off first.** Append to
+    `engine/scratch/HANDOFF.md`: done/unverified/next-command. Then stop.
+12. **(Verifier only — Kimi/operator.)** Commit + push with `Agent:` trailer,
+    stage only the task's files, then SAME DAY: rewrite the CURRENT TASK
+    slot with the next stage and fold the task's earned lessons into these
+    rules so the next agent inherits them.
+
 ## KEY PATHS (go here first; do not explore blindly)
 
 | What | Where |
 |---|---|
+| **Operator window (unified human view)** | `ChimeraEngine/native/ChimeraEngine.exe` ← `viewer.cpp` (scores in the status bar) |
 | Native core (C++ CA/physics/rig/nav) | `ChimeraEngine/native/ca_core.cpp` |
 | Genomes (data, key=value) | `ChimeraEngine/native/genomes/*.chimera` |
 | Native↔viewer relay (SSE, port 8799) | `ChimeraEngine/native/relay.py` |
