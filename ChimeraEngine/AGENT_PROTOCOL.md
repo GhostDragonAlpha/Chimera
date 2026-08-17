@@ -9,6 +9,14 @@
      (harness fixes, new gates, new flake patterns) are folded into the rules
      below, so the next agent inherits them instead of re-paying for them. -->
 
+**OPERATOR WINDOW (ea95efb):** the human entry point is
+`python ChimeraEngine/START_VIEWER.py [genome]` — starts the relay on :8799
+if down, opens `http://127.0.0.1:8799/hub`: live sim + P/V scores + body
+switcher + latest judge verdict + proof images, ONE window. Agents OPEN it
+themselves after a finding (never hand the operator a path). New proof
+images land in `engine/scratch/` and are added to the PROOFS list in
+`engine/spiace_hub.html`.
+
 **LIVE TASK — Teddy pipeline T8 (immediately below), now on the HONEY body.**
 Teddy-thread shipped: T2 structure (`2263659`), T3 voxel-muscle gait
 (`e0af946`), T3.5 shape training (`080bf4b`), T4 trained gait (stride L=2,
