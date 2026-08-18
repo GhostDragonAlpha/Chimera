@@ -1,378 +1,455 @@
 {
  "view": "front",
- "n_membranes": 31,
  "membranes": {
-  "MEM-000001": {
-   "label": "ankle_left",
+  "ankle_left": {
    "side": "left",
-   "bbox_front": [
-    0.43,
-    0.77,
-    0.47,
-    0.79
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.46,
+     0.79
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 2123
   },
-  "MEM-000002": {
-   "label": "ankle_right",
+  "ankle_right": {
    "side": "right",
-   "bbox_front": [
-    0.53,
-    0.77,
-    0.57,
-    0.79
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.54,
+     0.79
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 1218
   },
-  "MEM-000003": {
-   "label": "back",
+  "belly": {
    "side": "center",
-   "bbox_front": [
-    0.43,
-    0.4,
-    0.57,
-    0.7
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.55
+    ],
+    "radii": [
+     0.06,
+     0.08
+    ]
+   },
+   "n_splats": 35520
   },
-  "MEM-000004": {
-   "label": "belly",
+  "chest": {
    "side": "center",
-   "bbox_front": [
-    0.45,
-    0.5,
-    0.55,
-    0.68
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.45
+    ],
+    "radii": [
+     0.07,
+     0.05
+    ]
+   },
+   "n_splats": 34223
   },
-  "MEM-000005": {
-   "label": "chest",
+  "ear_left": {
+   "side": "left",
+   "region": {
+    "type": "oval",
+    "center": [
+     0.46,
+     0.27
+    ],
+    "radii": [
+     0.03,
+     0.03
+    ]
+   },
+   "n_splats": 13133
+  },
+  "ear_right": {
+   "side": "right",
+   "region": {
+    "type": "oval",
+    "center": [
+     0.54,
+     0.27
+    ],
+    "radii": [
+     0.03,
+     0.03
+    ]
+   },
+   "n_splats": 11947
+  },
+  "elbow_left": {
+   "side": "left",
+   "region": {
+    "type": "oval",
+    "center": [
+     0.37,
+     0.46
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 3486
+  },
+  "elbow_right": {
+   "side": "right",
+   "region": {
+    "type": "oval",
+    "center": [
+     0.63,
+     0.46
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 2026
+  },
+  "face": {
    "side": "center",
-   "bbox_front": [
-    0.46,
-    0.43,
-    0.54,
-    0.52
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.33
+    ],
+    "radii": [
+     0.05,
+     0.06
+    ]
+   },
+   "n_splats": 22836
   },
-  "MEM-000006": {
-   "label": "ear_left",
+  "foot_left": {
    "side": "left",
-   "bbox_front": [
-    0.43,
-    0.23,
-    0.47,
-    0.28
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.46,
+     0.8
+    ],
+    "radii": [
+     0.03,
+     0.03
+    ]
+   },
+   "n_splats": 1073
   },
-  "MEM-000007": {
-   "label": "ear_right",
+  "foot_right": {
    "side": "right",
-   "bbox_front": [
-    0.53,
-    0.23,
-    0.57,
-    0.28
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.54,
+     0.8
+    ],
+    "radii": [
+     0.03,
+     0.03
+    ]
+   },
+   "n_splats": 612
   },
-  "MEM-000008": {
-   "label": "elbow_left",
+  "forearm_left": {
    "side": "left",
-   "bbox_front": [
-    0.36,
-    0.45,
-    0.4,
-    0.49
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.38,
+     0.47
+    ],
+    "radii": [
+     0.03,
+     0.02
+    ]
+   },
+   "n_splats": 2199
   },
-  "MEM-000009": {
-   "label": "elbow_right",
+  "forearm_right": {
    "side": "right",
-   "bbox_front": [
-    0.6,
-    0.45,
-    0.64,
-    0.49
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.62,
+     0.47
+    ],
+    "radii": [
+     0.03,
+     0.02
+    ]
+   },
+   "n_splats": 1449
   },
-  "MEM-000010": {
-   "label": "face",
+  "head": {
    "side": "center",
-   "bbox_front": [
-    0.45,
-    0.28,
-    0.55,
-    0.4
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.3
+    ],
+    "radii": [
+     0.08,
+     0.09
+    ]
+   },
+   "n_splats": 18140
   },
-  "MEM-000011": {
-   "label": "foot_left",
+  "knee_left": {
    "side": "left",
-   "bbox_front": [
-    0.42,
-    0.75,
-    0.48,
-    0.79
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.46,
+     0.7
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 3928
   },
-  "MEM-000012": {
-   "label": "foot_right",
+  "knee_right": {
    "side": "right",
-   "bbox_front": [
-    0.52,
-    0.73,
-    0.57,
-    0.78
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.54,
+     0.7
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 3730
   },
-  "MEM-000013": {
-   "label": "forearm_left",
-   "side": "left",
-   "bbox_front": [
-    0.36,
-    0.42,
-    0.39,
-    0.53
-   ],
-   "n_splats": null,
-   "region_3d": null
-  },
-  "MEM-000014": {
-   "label": "forearm_right",
-   "side": "right",
-   "bbox_front": [
-    0.61,
-    0.42,
-    0.64,
-    0.5
-   ],
-   "n_splats": null,
-   "region_3d": null
-  },
-  "MEM-000015": {
-   "label": "head",
+  "muzzle": {
    "side": "center",
-   "bbox_front": [
-    0.43,
-    0.23,
-    0.57,
-    0.42
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.37
+    ],
+    "radii": [
+     0.03,
+     0.03
+    ]
+   },
+   "n_splats": 7399
   },
-  "MEM-000016": {
-   "label": "knee_left",
-   "side": "left",
-   "bbox_front": [
-    0.45,
-    0.66,
-    0.48,
-    0.7
-   ],
-   "n_splats": null,
-   "region_3d": null
-  },
-  "MEM-000017": {
-   "label": "knee_right",
-   "side": "right",
-   "bbox_front": [
-    0.52,
-    0.66,
-    0.55,
-    0.7
-   ],
-   "n_splats": null,
-   "region_3d": null
-  },
-  "MEM-000018": {
-   "label": "muzzle",
+  "neck": {
    "side": "center",
-   "bbox_front": [
-    0.47,
-    0.32,
-    0.53,
-    0.39
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.5,
+     0.4
+    ],
+    "radii": [
+     0.04,
+     0.02
+    ]
+   },
+   "n_splats": 11122
   },
-  "MEM-000019": {
-   "label": "neck",
-   "side": "center",
-   "bbox_front": [
-    0.46,
-    0.4,
-    0.54,
-    0.46
-   ],
-   "n_splats": null,
-   "region_3d": null
-  },
-  "MEM-000020": {
-   "label": "paw_left",
+  "paw_left": {
    "side": "left",
-   "bbox_front": [
-    0.36,
-    0.48,
-    0.39,
-    0.53
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.38,
+     0.49
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 6942
   },
-  "MEM-000021": {
-   "label": "paw_right",
+  "paw_right": {
    "side": "right",
-   "bbox_front": [
-    0.6,
-    0.43,
-    0.63,
-    0.48
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.62,
+     0.47
+    ],
+    "radii": [
+     0.02,
+     0.02
+    ]
+   },
+   "n_splats": 1156
   },
-  "MEM-000022": {
-   "label": "shin_left",
+  "shin_left": {
    "side": "left",
-   "bbox_front": [
-    0.43,
-    0.7,
-    0.47,
-    0.78
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.46,
+     0.75
+    ],
+    "radii": [
+     0.02,
+     0.04
+    ]
+   },
+   "n_splats": 12751
   },
-  "MEM-000023": {
-   "label": "shin_right",
+  "shin_right": {
    "side": "right",
-   "bbox_front": [
-    0.53,
-    0.7,
-    0.57,
-    0.78
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.54,
+     0.75
+    ],
+    "radii": [
+     0.02,
+     0.04
+    ]
+   },
+   "n_splats": 13269
   },
-  "MEM-000024": {
-   "label": "shoulder_left",
+  "shoulder_left": {
    "side": "left",
-   "bbox_front": [
-    0.39,
-    0.38,
-    0.44,
-    0.46
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.42,
+     0.43
+    ],
+    "radii": [
+     0.02,
+     0.03
+    ]
+   },
+   "n_splats": 7736
   },
-  "MEM-000025": {
-   "label": "shoulder_right",
+  "shoulder_right": {
    "side": "right",
-   "bbox_front": [
-    0.56,
-    0.38,
-    0.61,
-    0.46
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.58,
+     0.43
+    ],
+    "radii": [
+     0.02,
+     0.03
+    ]
+   },
+   "n_splats": 7358
   },
-  "MEM-000026": {
-   "label": "thigh_left",
+  "thigh_left": {
    "side": "left",
-   "bbox_front": [
-    0.44,
-    0.6,
-    0.48,
-    0.7
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.47,
+     0.65
+    ],
+    "radii": [
+     0.03,
+     0.05
+    ]
+   },
+   "n_splats": 13170
   },
-  "MEM-000027": {
-   "label": "thigh_right",
+  "thigh_right": {
    "side": "right",
-   "bbox_front": [
-    0.52,
-    0.6,
-    0.56,
-    0.7
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.53,
+     0.65
+    ],
+    "radii": [
+     0.03,
+     0.05
+    ]
+   },
+   "n_splats": 14400
   },
-  "MEM-000028": {
-   "label": "toes_left",
+  "toes_left": {
    "side": "left",
-   "bbox_front": [
-    0.43,
-    0.76,
-    0.46,
-    0.78
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.45,
+     0.81
+    ],
+    "radii": [
+     0.02,
+     0.01
+    ]
+   },
+   "n_splats": 0
   },
-  "MEM-000029": {
-   "label": "toes_right",
+  "toes_right": {
    "side": "right",
-   "bbox_front": [
-    0.54,
-    0.74,
-    0.57,
-    0.77
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.55,
+     0.81
+    ],
+    "radii": [
+     0.02,
+     0.01
+    ]
+   },
+   "n_splats": 0
   },
-  "MEM-000030": {
-   "label": "upper_arm_left",
+  "upper_arm_left": {
    "side": "left",
-   "bbox_front": [
-    0.36,
-    0.39,
-    0.42,
-    0.46
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.4,
+     0.45
+    ],
+    "radii": [
+     0.04,
+     0.02
+    ]
+   },
+   "n_splats": 4990
   },
-  "MEM-000031": {
-   "label": "upper_arm_right",
+  "upper_arm_right": {
    "side": "right",
-   "bbox_front": [
-    0.58,
-    0.39,
-    0.64,
-    0.46
-   ],
-   "n_splats": null,
-   "region_3d": null
+   "region": {
+    "type": "oval",
+    "center": [
+     0.6,
+     0.45
+    ],
+    "radii": [
+     0.04,
+     0.02
+    ]
+   },
+   "n_splats": 4208
   }
  }
 }
