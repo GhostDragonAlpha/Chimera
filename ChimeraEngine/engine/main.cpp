@@ -1,0 +1,424 @@
+// main.cpp — Bootstrap + Main Loop
+// Initializes Engine, Physics; runs the simulation loop with GPU rendering.
+// Also serves /frame (PNG of the current render) and /membrane (load a story membrane
+// scene into the Vulkan renderer) so the engine is the emission target the dyad points at.
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#include "engine.hpp"
+#include "physics.hpp"
+#include "shared_mem.hpp"
+#include "http_server.hpp"
+#include "png_encoder.hpp"
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+static Engine* g_engine = nullptr;
+static Physics g_physics;
+static SharedRing g_ring("ChimeraPhysicsRing");
+
+// ── Pending membrane request (Vulkan work must stay on the main/render thread) ───────
+struct MembraneRequest {
+    std::string term;
+    std::vector<float> pos;      // 7 floats per particle: x,y,z,r,g,b,size
+    uint32_t count = 0;
+    float cam_radius = 12.0f;
+    float cam_theta  = 0.0f;
+    float cam_phi    = 0.3f;
+    bool camera_only = false;    // true: only move the camera, keep the loaded membrane
+    bool valid = false;
+};
+static MembraneRequest g_mem_req;
+static std::mutex g_mem_mutex;
+static std::condition_variable g_mem_cv;
+static bool g_mem_pending = false;
+static bool g_mem_applied = false;
+static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
+
+// ── Minimal JSON helpers (no external deps) ───────────────────────────────────────
+static std::string fmt_float(float f) {
+    char buf[32];
+    if (f == static_cast<float>(static_cast<int>(f)))
+        sprintf(buf, "%d", static_cast<int>(f));
+    else
+        sprintf(buf, "%.6g", f);
+    return std::string(buf);
+}
+
+static size_t find_colon_after(const std::string& body, const char* key) {
+    std::string needle = std::string("\"") + key + "\"";
+    size_t pos = body.find(needle);
+    if (pos == std::string::npos) return std::string::npos;
+    size_t after_key = pos + needle.size();
+    while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
+    if (after_key >= body.size() || body[after_key] != ':') return std::string::npos;
+    return after_key + 1;
+}
+
+static float get_float(const std::string& body, const char* key, float def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    try { return std::stof(body.substr(p)); } catch (...) { return def; }
+}
+
+static uint32_t get_uint(const std::string& body, const char* key, uint32_t def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    try { return static_cast<uint32_t>(std::stoul(body.substr(p))); } catch (...) { return def; }
+}
+
+static std::string get_string(const std::string& body, const char* key) {
+    std::string needle = std::string("\"") + key + "\"";
+    size_t pos = body.find(needle);
+    if (pos == std::string::npos) return "";
+    size_t p = pos + needle.size();
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != ':') return "";
+    p++; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != '"') return "";
+    p++;
+    size_t start = p;
+    while (p < body.size() && body[p] != '"') ++p;
+    return body.substr(start, p - start);
+}
+
+static bool parse_float_array(const std::string& body, const char* key, std::vector<float>& out) {
+    std::string needle = std::string("\"") + key + "\"";
+    size_t pos = body.find(needle);
+    if (pos == std::string::npos) return false;
+    size_t p = pos + needle.size();
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != ':') return false;
+    p++; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != '[') return false;
+    p++;
+    out.clear();
+    while (p < body.size() && body[p] != ']') {
+        char c = body[p];
+        if (c == ',' || c == ' ' || c == '\t' || c == '\n' || c == '\r') { p++; continue; }
+        size_t start = p;
+        while (p < body.size() && (std::isdigit(static_cast<unsigned char>(body[p])) ||
+               body[p] == '-' || body[p] == '+' || body[p] == '.' || body[p] == 'e' || body[p] == 'E')) ++p;
+        if (p == start) { p++; continue; }
+        try { out.push_back(std::stof(body.substr(start, p - start))); } catch (...) { /* skip */ }
+    }
+    return !out.empty();
+}
+
+// Signal handler for graceful shutdown
+#ifdef _WIN32
+BOOL WINAPI handleCtrlC(DWORD) { return TRUE; }
+#else
+void handleSignal(int) { exit(0); }
+#endif
+
+int main(int argc, char** argv) {
+    // Config
+    EngineConfig cfg;
+    cfg.width  = 1920;
+    cfg.height = 1080;
+    cfg.n_particles = 1200;
+    cfg.G      = 1.0f;
+    cfg.dt     = 0.02f;
+
+    // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
+    int http_port = 8080;
+    if (argc > 1) { http_port = atoi(argv[1]); if (http_port <= 0) http_port = 8080; }
+
+    // Physics init (passes cfg so it can set physical params)
+    g_physics.init(cfg.n_particles, cfg);
+
+    // Engine init (creates Win32 window + Vulkan)
+    Engine engine;
+    if (!engine.init(cfg)) {
+        fprintf(stderr, "Failed to initialize Vulkan engine\n");
+        return 1;
+    }
+    g_engine = &engine;
+
+    // ── HTTP server for Python shim communication ───────────────────────────────
+    HttpServer server;
+    bool http_ok = server.start(http_port, [&](const std::string& method, const std::string& path,
+                                          const std::string& req_body, std::string& body, std::string& content_type) {
+        // strip query string
+        size_t q = path.find('?');
+        std::string p = (q == std::string::npos) ? path : path.substr(0, q);
+
+        if (p == "/state" && method == "GET") {
+            auto& parts = g_physics.particles();
+            std::string json; json.reserve(200u * parts.size() + 64);
+            json += "{\"n\":" + std::to_string(parts.size()) + ",\"particles\":[";
+            for (size_t i = 0; i < parts.size(); ++i) {
+                if (i) json += ',';
+                json += '['
+                    + fmt_float(parts[i].x)   + ',' + fmt_float(parts[i].y)   + ',' + fmt_float(parts[i].z)
+                    + ',' + fmt_float(parts[i].vx)  + ',' + fmt_float(parts[i].vy)  + ',' + fmt_float(parts[i].vz)
+                    + ',' + fmt_float(parts[i].cr)  + ',' + fmt_float(parts[i].cg)  + ',' + fmt_float(parts[i].cb)
+                    + ',' + fmt_float(parts[i].size)
+                    + ']';
+            }
+            json += ']}';
+            body = std::move(json);
+            content_type = "application/json";
+        } else if (p == "/control" && method == "POST") {
+            float G      = get_float(req_body, "G",           cfg.G);
+            float rw     = get_float(req_body, "rw",          cfg.rw);
+            float rb     = get_float(req_body, "rb",          cfg.rb);
+            float rc     = get_float(req_body, "rc",          cfg.rc);
+            float kw     = get_float(req_body, "kw",          cfg.kw);
+            float kb     = get_float(req_body, "kb",          cfg.kb);
+            float gamma_w= get_float(req_body, "gamma_w",     cfg.gamma_w);
+            float dt     = get_float(req_body, "dt",          cfg.dt);
+
+            g_physics.set_params(G, rw, rb, rc, kw, kb, gamma_w, dt);
+            if (g_engine) g_engine->mark_dirty();
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/membrane" && method == "POST") {
+            std::string term = get_string(req_body, "term");
+            uint32_t count = get_uint(req_body, "count", 0);
+            std::vector<float> pos;
+            parse_float_array(req_body, "particles", pos);
+            float cam_radius = get_float(req_body, "cam_radius", 12.0f);
+            float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
+            float cam_phi    = get_float(req_body, "cam_phi", 0.3f);
+
+            if (term.empty() || pos.empty()) {
+                body = "{\"ok\":false,\"error\":\"bad request\"}";
+            } else {
+                {
+                    std::lock_guard<std::mutex> lk(g_mem_mutex);
+                    g_mem_req.term = term;
+                    g_mem_req.pos = std::move(pos);
+                    g_mem_req.count = count ? count : static_cast<uint32_t>(g_mem_req.pos.size() / 7);
+                    g_mem_req.cam_radius = cam_radius;
+                    g_mem_req.cam_theta  = cam_theta;
+                    g_mem_req.cam_phi    = cam_phi;
+                    g_mem_req.valid = true;
+                    g_mem_pending = true;
+                    g_mem_applied = false;
+                }
+            std::unique_lock<std::mutex> lk(g_mem_mutex);
+            bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+            body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/membrane_bin" && method == "POST") {
+            // Binary protocol (application/octet-stream), little-endian:
+            //   [u32 count][f32 cam_radius][f32 cam_theta][f32 cam_phi][f32 * count * 14]
+            // 14 floats per splat: x,y,z, r,g,b, a, sx,sy,sz, qw,qx,qy,qz. No JSON: raw float32.
+            if (req_body.size() < 16) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t count = 0; float cr = 12.0f, ct = 0.0f, cp = 0.3f;
+                std::memcpy(&count, req_body.data() + 0, 4);
+                std::memcpy(&cr,    req_body.data() + 4, 4);
+                std::memcpy(&ct,    req_body.data() + 8, 4);
+                std::memcpy(&cp,    req_body.data() + 12, 4);
+                size_t expect = 16 + static_cast<size_t>(count) * 14 * 4;
+                if (req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    std::vector<float> pos(count * 14);
+                    std::memcpy(pos.data(), req_body.data() + 16, count * 14 * 4);
+                    {
+                        std::lock_guard<std::mutex> lk(g_mem_mutex);
+                        g_mem_req.term = "theTeddy";
+                        g_mem_req.pos = std::move(pos);
+                        g_mem_req.count = count;
+                        g_mem_req.cam_radius = cr;
+                        g_mem_req.cam_theta  = ct;
+                        g_mem_req.cam_phi    = cp;
+                        g_mem_req.camera_only = false;
+                        g_mem_req.valid = true;
+                        g_mem_pending = true;
+                        g_mem_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_mem_mutex);
+                    bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_mem_applied; });
+                    body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/camera" && method == "POST") {
+            float cam_radius = get_float(req_body, "cam_radius", 12.0f);
+            float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
+            float cam_phi    = get_float(req_body, "cam_phi", 0.3f);
+            {
+                std::lock_guard<std::mutex> lk(g_mem_mutex);
+                g_mem_req.cam_radius = cam_radius;
+                g_mem_req.cam_theta  = cam_theta;
+                g_mem_req.cam_phi    = cam_phi;
+                g_mem_req.camera_only = true;
+                g_mem_req.valid = true;
+                g_mem_pending = true;
+                g_mem_applied = false;
+            }
+            std::unique_lock<std::mutex> lk(g_mem_mutex);
+            bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+            body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+            content_type = "application/json";
+        } else if ((p == "/frame" || p == "/stream") && method == "GET") {
+            if (g_engine) {
+                g_engine->request_capture();
+                auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+                while (!g_engine->capture_ready()) {
+                    if (std::chrono::steady_clock::now() > deadline) { body = "{\"ok\":false,\"error\":\"capture timeout\"}"; break; }
+                    Sleep(5);
+                }
+                if (g_engine->capture_ready()) {
+                    std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                    if (g_engine->capture_frame(rgba, w, h)) {
+                        std::vector<uint8_t> encoded = png::encode_rgba(rgba.data(), w, h);
+                        body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
+                        content_type = "image/png";
+                    } else {
+                        body = "{\"ok\":false,\"error\":\"no frame\"}";
+                        content_type = "application/json";
+                    }
+                } else {
+                    content_type = "application/json";
+                }
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+                content_type = "application/json";
+            }
+        } else if (p == "/debug" && method == "GET") {
+            body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
+                 + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
+            content_type = "application/json";
+        } else {
+            body = "Not found";
+        }
+    });
+    if (!http_ok) {
+        fprintf(stderr, "Warning: Failed to start HTTP server on port %d\n", http_port);
+    }
+
+    printf("Chimera Engine running at http://localhost:%d/state\n", http_port);
+    printf("  /frame  -> PNG of the current render (membrane if one is loaded)\n");
+    printf("  /membrane (POST) -> load a story membrane scene\n");
+    printf("Window: %ux%u, Press Ctrl+C to stop.\n", cfg.width, cfg.height);
+    printf("Controls: Left-drag orbit | Scroll zoom | Right-drag pan\n");
+    printf("          WASD move | Q/E up-down | Space/Ctrl zoom | R reset\n");
+
+#ifdef _WIN32
+    SetConsoleCtrlHandler(handleCtrlC, TRUE);
+#else
+    signal(SIGINT, handleSignal);
+    signal(SIGTERM, handleSignal);
+#endif
+
+    // Main loop — hybrid GPU compute / CPU integrate (or membrane display)
+    auto last_time = std::chrono::high_resolution_clock::now();
+    int frame_count = 0;
+    bool use_compute = false;  // compute path disabled: the N-body sim is a placeholder; the membrane/teddy render is the target
+
+    while (true) {
+        // Process Windows messages (allows window to close gracefully)
+        MSG msg;
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT || msg.message == WM_CLOSE) break;
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        // Apply a pending membrane request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_mem_mutex);
+            if (g_mem_pending && g_mem_req.valid) {
+                if (g_mem_req.camera_only) {
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                } else {
+                    engine.load_membrane(g_mem_req.term, g_mem_req.pos, g_mem_req.count);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    g_membrane_active = true;
+                }
+                g_mem_req.camera_only = false;
+                g_mem_pending = false;
+                g_mem_applied = true;
+                g_mem_cv.notify_all();
+            }
+        }
+
+        // Run the N-body simulation only when no membrane is loaded
+        if (!g_membrane_active) {
+            auto& particles = g_physics.particles();
+            uint32_t count = static_cast<uint32_t>(particles.size());
+
+            // Build position buffer for GPU upload: [x,y,z, r,g,b, size] per particle
+            std::vector<float> pos_buf(count * 7, 0.f);
+            // Build velocity buffer for GPU compute input: [vx,vy,vz, 0] per particle
+            std::vector<float> vel_buf(count * 4, 0.f);
+            for (uint32_t i = 0; i < count; ++i) {
+                const auto& p = particles[i];
+                pos_buf[i*7+0] = p.x;     pos_buf[i*7+1] = p.y;     pos_buf[i*7+2] = p.z;
+                pos_buf[i*7+3] = p.cr;    pos_buf[i*7+4] = p.cg;    pos_buf[i*7+5] = p.cb;
+                pos_buf[i*7+6] = p.size;
+                vel_buf[i*4+0] = p.vx;    vel_buf[i*4+1] = p.vy;    vel_buf[i*4+2] = p.vz;
+                vel_buf[i*4+3] = 0.0f;
+            }
+
+            if (!engine.push_state(pos_buf, vel_buf, count)) {
+                fprintf(stderr, "Failed to push state to GPU\n");
+                break;
+            }
+
+            // GPU compute dispatch: reads pos/vel, writes new velocities to acc buffer
+            std::vector<float> readback_vels;
+            if (use_compute && !engine.dispatch_compute(readback_vels)) {
+                fprintf(stderr, "Compute dispatch failed — falling back to CPU-only\n");
+                use_compute = false;
+            }
+
+            if (use_compute && !readback_vels.empty()) {
+                for (uint32_t i = 0; i < count; ++i) {
+                    particles[i].vx = readback_vels[i*4+0];
+                    particles[i].vy = readback_vels[i*4+1];
+                    particles[i].vz = readback_vels[i*4+2];
+                }
+            }
+
+            // CPU integrate positions (semi-implicit Euler — velocities already include acceleration)
+            for (auto& p : particles) {
+                p.x += p.vx * cfg.dt;
+                p.y += p.vy * cfg.dt;
+                p.z += p.vz * cfg.dt;
+            }
+        }
+
+        // Render one frame
+        if (!engine.frame()) {
+            fprintf(stderr, "Frame failed\n");
+            break;
+        }
+
+        // No frame-rate cap — the loop is GPU-bound: the per-frame fence wait + MAILBOX present
+        // mode let the renderer run as fast as the GPU finishes each frame ("unlimited" fps).
+        frame_count++;
+
+        auto now = std::chrono::high_resolution_clock::now();
+        double elapsed_s = std::chrono::duration_cast<std::chrono::microseconds>(now - last_time).count() / 1e6;
+        if (elapsed_s >= 1.0) {
+            printf("FPS: %.0f (frame %d)\n", frame_count / elapsed_s, frame_count);
+            fflush(stdout);
+            frame_count = 0;
+            last_time = now;
+        }
+    }
+
+    printf("Shutting down...\n");
+    engine.shutdown();
+    return 0;
+}

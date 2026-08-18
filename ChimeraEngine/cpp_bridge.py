@@ -1,0 +1,480 @@
+"""cpp_bridge.py -- point the appearance dyad at the C++ Vulkan engine's /frame.
+
+The C++ engine is the emission target (docs/THE_RENDERER_DECISION.md). This module is the glue:
+it reads a membrane's particle buffer from `splat_appearance.movie_buffers` (the Python story
+membranes the C++ engine cannot run -- `story/*/physics.py` emit() functions), converts the
+28-float splat buffer to the C++ engine's 7-float vertex layout, POSTs it to the engine's
+`/membrane` endpoint (which frames the camera and loads the buffer into the Vulkan renderer), then
+GETs the rendered PNG from `/frame`. The dyad judges THAT PNG -- so the C++ Vulkan engine is the
+rasterizer the proof points at, not `splat_appearance`'s own GPU path.
+"""
+from __future__ import annotations
+
+import json
+import math
+import os
+import urllib.request
+from pathlib import Path
+
+import numpy as np
+
+ENGINE_URL = os.environ.get("CHIMERA_ENGINE_URL", "http://localhost:8080")
+
+# C++ vertex layout: [x,y,z, r,g,b, size] (7 floats). The membrane buffer is (N,28) with
+# position 0..2, color 16..18, size 20 (ParticleEngine.core.COL).
+CPP_POS = (0, 1, 2)
+CPP_RGB = (16, 17, 18)
+CPP_SIZE = 20
+
+
+def engine_available(timeout: float = 0.5) -> bool:
+    try:
+        with urllib.request.urlopen(f"{ENGINE_URL}/state", timeout=timeout) as r:
+            return r.status == 200
+    except Exception:
+        return False
+
+
+def _to_cpp7(buf: np.ndarray) -> list:
+    buf = np.ascontiguousarray(buf, dtype=np.float32)
+    n = buf.shape[0]
+    pos = np.empty(n * 7, dtype=np.float32)
+    pos[0::7] = buf[:, CPP_POS[0]]
+    pos[1::7] = buf[:, CPP_POS[1]]
+    pos[2::7] = buf[:, CPP_POS[2]]
+    pos[3::7] = buf[:, CPP_RGB[0]]
+    pos[4::7] = buf[:, CPP_RGB[1]]
+    pos[5::7] = buf[:, CPP_RGB[2]]
+    pos[6::7] = buf[:, CPP_SIZE]
+    return pos.tolist()
+
+
+def _spherical(cam_pos) -> tuple:
+    """Convert a Cartesian eye position (aiming at origin) to the C++ engine's orbit
+    (radius, theta, phi), matching the spherical decomposition used in engine.cpp frame()."""
+    cx, cy, cz = cam_pos
+    r = math.sqrt(cx * cx + cy * cy + cz * cz)
+    if r <= 0:
+        return 12.0, 0.0, 0.3
+    phi = math.asin(max(-1.0, min(1.0, cy / r)))
+    h = math.hypot(cx, cz)
+    theta = math.atan2(cx, -cz) if h > 1e-6 else 0.0
+    return r, theta, phi
+
+
+def _post_membrane(term: str, pos7, count: int, cam_pos, timeout: float = 10.0) -> bool:
+    """POST an already-7-float particle array (x,y,z,r,g,b,size) to the engine's /membrane."""
+    r, theta, phi = _spherical(cam_pos)
+    payload = json.dumps({
+        "term": term,
+        "count": count,
+        "particles": pos7,
+        "cam_radius": r,
+        "cam_theta": theta,
+        "cam_phi": phi,
+    }).encode("utf-8")
+    req = urllib.request.Request(f"{ENGINE_URL}/membrane", data=payload,
+                                 headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.status == 200
+
+
+def load_membrane(term: str, buf: np.ndarray, cam_pos, timeout: float = 10.0) -> bool:
+    pos = _to_cpp7(buf)
+    return _post_membrane(term, pos, int(buf.shape[0]), cam_pos, timeout=timeout)
+
+
+def _set_camera(radius: float, theta: float, phi: float, timeout: float = 10.0) -> bool:
+    payload = json.dumps({"cam_radius": radius, "cam_theta": theta, "cam_phi": phi}).encode("utf-8")
+    req = urllib.request.Request(f"{ENGINE_URL}/camera", data=payload,
+                                 headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.status == 200
+
+
+def _shell_cache_path(shell_json, level: int) -> Path:
+    return Path(str(shell_json)).with_name(Path(shell_json).stem + f"_l{level}.f32")
+
+
+def _shell_level_buf(shell_json, level: int, size_scale: float):
+    """Load one LOD level of the teddy shell as a (n,7) float32 array [x,y,z,r,g,b,size].
+
+    Reads a binary cache (`<stem>_l<level>.f32`) when present, else parses the JSON ONCE and writes
+    the cache. The cache is `[f32 cell][f32*n*6]` — positions in world units, colors 0..1 — so the
+    size (cell * size_scale) stays tunable at render time without re-parsing the 40MB JSON.
+    Returns (buf7, cell).
+    """
+    import numpy as _np
+    shell = Path(shell_json)
+    cache = _shell_cache_path(shell_json, level)
+    if cache.exists():
+        raw = _np.fromfile(cache, dtype=_np.float32)
+        cell = float(raw[0])
+        pos_col = raw[1:].reshape(-1, 6)
+    else:
+        import json as _json
+        lv = _json.loads(shell.read_text(encoding="utf-8"))["levels"][level]
+        cell = lv["cell"]
+        pos = _np.asarray(lv["pos"], dtype=_np.float32) * cell   # cell units -> world
+        col = _np.asarray(lv["col"], dtype=_np.float32)
+        pos_col = _np.hstack([pos, col])
+        header = _np.array([cell], dtype=_np.float32)
+        _np.concatenate([header, pos_col.ravel()]).astype(_np.float32).tofile(cache)
+    n = pos_col.shape[0]
+    buf7 = _np.empty((n, 7), dtype=_np.float32)
+    buf7[:, 0:6] = pos_col
+    buf7[:, 6] = _np.full(n, cell * size_scale, dtype=_np.float32)
+    return buf7, cell
+
+
+def _post_membrane_bin(count: int, cam_pos, buf7, timeout: float = 60.0) -> bool:
+    """POST the particle buffer as raw float32 bytes to /membrane_bin (no JSON for 100k+ splats)."""
+    import struct
+    r, theta, phi = _spherical(cam_pos)
+    header = struct.pack("<I3f", count, r, theta, phi)
+    payload = header + buf7.astype(np.float32).tobytes()
+    req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=payload,
+                                 headers={"Content-Type": "application/octet-stream"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.status == 200
+
+
+def fetch_frame(timeout: float = 10.0) -> bytes:
+    with urllib.request.urlopen(f"{ENGINE_URL}/frame", timeout=timeout) as r:
+        return r.read()
+
+
+def render_term(term: str, out_dir) -> dict | None:
+    """Render a term THROUGH the C++ engine -> {"begin": path, "end": path} PNGs, or None."""
+    if not engine_available():
+        return None
+    import splat_appearance as sa
+    bufs = sa.movie_buffers(term)
+    if bufs is None:
+        return None
+    begin_buf, end_buf, cam_pos = bufs
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    paths = {}
+    for label, buf in (("begin", begin_buf), ("end", end_buf)):
+        if not load_membrane(term, buf, cam_pos):
+            return None
+        png = out / f"cpp_{term}_{label}.png"
+        png.write_bytes(fetch_frame())
+        paths[label] = str(png)
+    return paths
+
+
+def render_teddy(shell_json, out_dir, level: int = 1, size_scale: float = 1.5,
+                 timeout: float = 90.0) -> dict | None:
+    """Render the TEDDY bear's splat shell THROUGH the C++ Vulkan engine.
+
+    The teddy is not a `story/` membrane (it has no physics.py emit()) — it is the SPIACE native
+    body: a splat pyramid (`native/teddy_pyramid.py` -> `genomes/teddy_*_shell.json`) whose levels
+    carry `pos` (cell units), `col` (0..1), `nor`. This converts one LOD level to the engine's
+    7-float vertex layout (x,y,z,r,g,b,size), frames the camera from the body's extent, POSTs
+    `/membrane`, and GETs `/frame`. Returns {"path": ...} or None.
+    """
+    if not engine_available():
+        return None
+    import numpy as _np
+
+    buf7, cell = _shell_level_buf(shell_json, level, size_scale)
+    extent = float(_np.linalg.norm(buf7[:, 0:3], axis=1).max()) or 1.0
+    cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+
+    if not _post_membrane_bin(int(len(buf7)), cam_pos, buf7, timeout=timeout):
+        return None
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    png = out / f"cpp_teddy_l{level}.png"
+    png.write_bytes(fetch_frame(timeout=timeout))
+    return {"path": str(png)}
+
+
+def render_teddy_movie(shell_json, out_dir, level: int = 1, frames: int = 72,
+                       size_scale: float = 1.5, timeout: float = 30.0,
+                       elevations=None) -> list | None:
+    """Render a ROTATION MOVIE of the teddy through the C++ engine -> list of PNG paths.
+
+    The dyad needs the MOVIE, not a still, and it needs MULTIPLE ELEVATIONS, not one flat orbit: a
+    single horizontal turntable misses the top of the head (patchy scalp) and the soles (flat-slab
+    feet). `elevations` is a list of camera elevation angles (phi: negative = looking up from
+    below, 0 = level, positive = looking down from above). By default it sweeps below → level →
+    above, splitting `frames` evenly across the elevations. Feed the returned paths to
+    `senses.watch()`.
+    """
+    if not engine_available():
+        return None
+    import numpy as _np
+
+    buf7, cell = _shell_level_buf(shell_json, level, size_scale)
+    extent = float(_np.linalg.norm(buf7[:, 0:3], axis=1).max()) or 1.0
+    cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+    radius, _, base_phi = _spherical(cam_pos)
+    if elevations is None:
+        # below (look up at the soles), level (face/body), above (look down on the head)
+        elevations = (base_phi, 0.0, -base_phi)
+
+    if not _post_membrane_bin(int(len(buf7)), cam_pos, buf7, timeout=timeout):
+        return None
+
+    per_orbit = max(1, frames // len(elevations))
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    paths = []
+    idx = 0
+    for phi in elevations:
+        for i in range(per_orbit):
+            theta = 2.0 * math.pi * i / per_orbit
+            if not _set_camera(radius, theta, phi, timeout=timeout):
+                return None
+            png = out / f"teddy_f{idx:03d}.png"
+            png.write_bytes(fetch_frame(timeout=timeout))
+            paths.append(str(png))
+            idx += 1
+    return paths
+
+
+def encode_movie(frames, out_mp4, fps: int = 24) -> str:
+    """Encode an ordered list of PNG frames -> H.264 MP4 (the dyad's MOVIE). Requires ffmpeg.
+
+    The dyad's eye watches a MOVIE, not a still — a single frame hides the defects that a rotating
+    object reveals. `render_teddy_movie` produces the frames; this turns them into the movie file
+    the operator/dyad consumes.
+    """
+    import shutil
+    import subprocess
+    import tempfile
+
+    out = Path(out_mp4)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as td:
+        for i, f in enumerate(frames):
+            shutil.copy(f, Path(td) / f"f{i:04d}.png")
+        cmd = ["ffmpeg", "-y", "-framerate", str(fps),
+               "-i", str(Path(td) / "f%04d.png"),
+               "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", str(out)]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode != 0:
+            raise RuntimeError(f"ffmpeg failed: {r.stderr[-500:]}")
+    return str(out)
+
+
+# ── real 3DGS (TripoSplat) — photoreal Gaussian splats ──────────────────────────────
+
+C0 = 0.28209479177387814  # SH DC -> RGB basis constant
+
+
+def _quat_to_matrix(q):
+    q = q / np.linalg.norm(q, axis=-1, keepdims=True)
+    w, x, y, z = q[:, 0], q[:, 1], q[:, 2], q[:, 3]
+    return np.stack([
+        1 - 2*(y*y + z*z), 2*(x*y - w*z),     2*(x*z + w*y),
+        2*(x*y + w*z),     1 - 2*(x*x + z*z), 2*(y*z - w*x),
+        2*(x*z - w*y),     2*(y*z + w*x),     1 - 2*(x*x + y*y),
+    ], axis=-1).reshape(-1, 3, 3)
+
+
+def _matrix_to_quat(R):
+    """Full Shepperd's method (all four trace branches — the tr<=0 branches are what the
+    triposplat.py copy omitted, which produced NaN and wrecked the rotation remap)."""
+    n = R.shape[0]
+    q = np.zeros((n, 4), dtype=np.float64)
+    for i in range(n):
+        m00, m11, m22 = R[i, 0, 0], R[i, 1, 1], R[i, 2, 2]
+        tr = m00 + m11 + m22
+        if tr > 0:
+            s = np.sqrt(tr + 1.0) * 2
+            q[i] = [0.25*s, (R[i,2,1]-R[i,1,2])/s, (R[i,0,2]-R[i,2,0])/s, (R[i,1,0]-R[i,0,1])/s]
+        elif m00 > m11 and m00 > m22:
+            s = np.sqrt(1.0 + m00 - m11 - m22) * 2
+            q[i] = [(R[i,2,1]-R[i,1,2])/s, 0.25*s, (R[i,0,1]+R[i,1,0])/s, (R[i,0,2]+R[i,2,0])/s]
+        elif m11 > m22:
+            s = np.sqrt(1.0 + m11 - m00 - m22) * 2
+            q[i] = [(R[i,0,2]-R[i,2,0])/s, (R[i,0,1]+R[i,1,0])/s, 0.25*s, (R[i,1,2]+R[i,2,1])/s]
+        else:
+            s = np.sqrt(1.0 + m22 - m00 - m11) * 2
+            q[i] = [(R[i,1,0]-R[i,0,1])/s, (R[i,0,2]+R[i,2,0])/s, (R[i,1,2]+R[i,2,1])/s, 0.25*s]
+    return q
+
+
+def load_3dgs(ply_path, opacity_gain: float = 1.6) -> np.ndarray:
+    """Load a 3DGS PLY (TripoSplat output) -> (n,14) float32 [x,y,z,r,g,b,a,sx,sy,sz,qw,qx,qy,qz].
+
+    Decodes the raw PLY (SH->RGB, sigmoid opacity, exp scale) and remaps the splats from the
+    PLY's Z-up frame (TripoSplat's default transform) to the engine's Y-up frame, remapping the
+    rotation quaternion through the same coordinate transform so the anisotropic shape stays
+    aligned with the position. `opacity_gain` sharpens alpha toward opaque (the raw sigmoid mean
+    is ~0.77, which reads as see-through; 1.6 closes the surface to solid).
+    """
+    shell = Path(ply_path)
+    with open(shell, "rb") as f:
+        while True:
+            if f.readline().strip() == b"end_header":
+                break
+        off = f.tell()
+    dt = np.dtype([("x", "<f4"), ("y", "<f4"), ("z", "<f4"), ("nx", "<f4"), ("ny", "<f4"), ("nz", "<f4"),
+                   ("f0", "<f4"), ("f1", "<f4"), ("f2", "<f4"), ("opacity", "<f4"),
+                   ("s0", "<f4"), ("s1", "<f4"), ("s2", "<f4"),
+                   ("r0", "<f4"), ("r1", "<f4"), ("r2", "<f4"), ("r3", "<f4")])
+    v = np.fromfile(open(shell, "rb"), dtype=dt, offset=off)
+    rgb = np.clip(0.5 + C0 * np.stack([v["f0"], v["f1"], v["f2"]], axis=1), 0, 1).astype(np.float32)
+    alpha = (1.0 / (1.0 + np.exp(-v["opacity"].astype(np.float64)))).astype(np.float32)
+    alpha = np.clip(alpha * opacity_gain, 0, 1)
+    scale = np.exp(np.stack([v["s0"], v["s1"], v["s2"]], axis=1)).astype(np.float32)
+    rot = np.stack([v["r0"], v["r1"], v["r2"], v["r3"]], axis=1)
+    rot = (rot / np.linalg.norm(rot, axis=1, keepdims=True)).astype(np.float64)
+    ply_pos = np.stack([v["x"], v["y"], v["z"]], axis=1).astype(np.float32)
+
+    # remap PLY (Z-up) -> engine (Y-up): T = [[1,0,0],[0,0,1],[0,-1,0]]
+    T = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]], dtype=np.float32)
+    pos = (ply_pos @ T.T).astype(np.float32)
+    R_eng = T @ _quat_to_matrix(rot).astype(np.float32)
+    rot_eng = _matrix_to_quat(R_eng)
+    rot_eng = (rot_eng / np.linalg.norm(rot_eng, axis=1, keepdims=True)).astype(np.float32)
+
+    return np.hstack([pos, rgb, alpha[:, None], scale, rot_eng]).astype(np.float32)
+
+
+def render_3dgs(ply_path, out_dir, opacity_gain: float = 1.6, timeout: float = 60.0) -> dict | None:
+    """Render a real 3DGS PLY (TripoSplat) through the C++ engine -> {"path": PNG} or None."""
+    if not engine_available():
+        return None
+    import struct as _struct
+    buf14 = load_3dgs(ply_path, opacity_gain=opacity_gain)
+    pos = buf14[:, 0:3]
+    extent = float(np.linalg.norm(pos, axis=1).max()) or 1.0
+    # farther camera: a close camera makes the near parts (sitting bear's feet/legs) balloon when
+    # viewed from above. ~5x extent flattens the perspective.
+    cam_pos = (0.0, -5.0 * extent, 1.3 * extent)
+    # sort back-to-front by VIEW-DIRECTION depth (not Euclidean distance): the perspective
+    # camera's correct sort key is the depth along the forward axis, else off-axis splats get
+    # mis-ordered and the surface 'flips' at certain angles (the curtain artifact).
+    eye = np.array(cam_pos, dtype=np.float32)
+    forward = -eye / np.linalg.norm(eye)
+    depth = (pos - eye) @ forward
+    buf14 = buf14[np.argsort(-depth)]
+    r, th, ph = _spherical(cam_pos)
+    header = _struct.pack("<I3f", int(len(buf14)), r, th, ph)
+    payload = header + buf14.tobytes()
+    req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=payload,
+                                 headers={"Content-Type": "application/octet-stream"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        if resp.status != 200:
+            return None
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    png = out / f"cpp_3dgs_{Path(ply_path).stem}.png"
+    png.write_bytes(fetch_frame(timeout=timeout))
+    return {"path": str(png)}
+
+
+def render_3dgs_movie(ply_path, out_dir, frames: int = 72, elevations=None,
+                      opacity_gain: float = 1.6, timeout: float = 60.0) -> list | None:
+    """Render a rotation MOVIE of a 3DGS PLY through the engine -> list of PNG paths.
+
+    Re-sorts the splats back-to-front for EVERY camera angle (the depth order changes as the
+    camera orbits, so a single pre-sort would produce the 'curtain flip' at some angle).
+    `elevations` = camera elevation angles (phi): negative looks up from below, ~1.1 looks down on
+    the top of the head. Feed the returned paths to `senses.watch()`.
+    """
+    if not engine_available():
+        return None
+    import struct as _struct
+    buf = load_3dgs(ply_path, opacity_gain=opacity_gain)
+    pos = buf[:, 0:3]
+    extent = float(np.linalg.norm(pos, axis=1).max()) or 1.0
+    radius = 5.0 * extent   # farther camera — flattens the perspective on the sitting bear
+    if elevations is None:
+        elevations = (-0.35, 0.0, 1.1)   # below, level, top-of-head
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    per = max(1, frames // len(elevations))
+    paths = []
+    idx = 0
+    for phi in elevations:
+        for i in range(per):
+            theta = 2.0 * math.pi * i / per
+            c, s = math.cos(phi), math.sin(phi)
+            cx, sx = math.cos(theta), math.sin(theta)
+            eye = np.array([radius * c * sx, radius * s, -radius * c * cx], dtype=np.float32)
+            forward = -eye / np.linalg.norm(eye)      # toward the origin
+            depth = (pos - eye) @ forward             # view-direction depth (correct sort key)
+            b = buf[np.argsort(-depth)]               # back-to-front for THIS camera
+            header = _struct.pack("<I3f", int(len(b)), radius, theta, phi)
+            req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=header + b.tobytes(),
+                                         headers={"Content-Type": "application/octet-stream"}, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                if resp.status != 200:
+                    return None
+            png = out / f"teddy3dgs_f{idx:03d}.png"
+            png.write_bytes(fetch_frame(timeout=timeout))
+            paths.append(str(png))
+            idx += 1
+    return paths
+
+
+# ── TripoSplat .splat (the web viewer's native format — THIS is the teddy) ──────────────
+
+# viewer.html re-orients DEG's -Y-up .splat output to Three.js +Y-up with
+#   splat.rotation.y = PI/2; splatRoot.rotation.x = PI   =>  M = Rx(PI) @ Ry(PI/2)
+SPLAT_ORIENT = np.array([[0, 0, 1], [0, -1, 0], [1, 0, 0]], dtype=np.float64)
+
+
+def load_splat(splat_path) -> np.ndarray:
+    """Load a TripoSplat `.splat` -> (n,14) float32 [x,y,z, r,g,b, a, sx,sy,sz, qw,qx,qy,qz].
+
+    `.splat` is the compact 32-byte/splat 3DGS format the web viewer consumes
+    (`viewer.html?ply=teddy.splat`): [f32 xyz][f32 scale][u8 rgba][u8 rot]. The color bytes are
+    ALREADY linear RGB (the SH DC term is baked in as `(f_dc*C0 + 0.5)*255`), alpha is the sigmoid
+    opacity, and rot is a normalized [w,x,y,z] quaternion packed as `u8 = q*128 + 128`. This
+    applies the same orientation transform as viewer.html so the C++ engine matches the viewer.
+    """
+    raw = np.fromfile(splat_path, dtype=np.uint8)
+    n = len(raw) // 32
+    rec = raw[: n * 32].reshape(n, 32)
+    pos = rec[:, 0:12].view(np.float32).reshape(n, 3).astype(np.float64)
+    scale = rec[:, 12:24].view(np.float32).reshape(n, 3).astype(np.float32)
+    rgba = rec[:, 24:28].astype(np.float32)
+    rot_u8 = rec[:, 28:32].astype(np.float32)
+
+    rgb = rgba[:, 0:3] / 255.0
+    alpha = rgba[:, 3:4] / 255.0
+    rot = (rot_u8 - 128.0) / 128.0
+    rot = rot / np.linalg.norm(rot, axis=1, keepdims=True)
+
+    world_pos = (pos @ SPLAT_ORIENT.T).astype(np.float32)
+    R = _quat_to_matrix(rot)
+    R_world = np.einsum("ij,njk->nik", SPLAT_ORIENT, R)
+    rot_world = _matrix_to_quat(R_world).astype(np.float32)
+    rot_world = rot_world / np.linalg.norm(rot_world, axis=1, keepdims=True)
+
+    return np.concatenate([world_pos, rgb, alpha, scale, rot_world], axis=1).astype(np.float32)
+
+
+def render_splat(splat_path, out_dir, cam_pos=(0.0, 0.3, 1.8), timeout: float = 60.0) -> dict | None:
+    """Render a TripoSplat `.splat` through the C++ engine -> {"path": PNG} or None.
+
+    Uses the web viewer's camera `(0, 0.3, 1.8)` at 45 deg FOV (the engine already uses a 45 deg
+    vertical FOV), so the engine frame matches `viewer.html?ply=<splat>`.
+    """
+    if not engine_available():
+        return None
+    import struct as _struct
+    buf14 = load_splat(splat_path)
+    r, th, ph = _spherical(cam_pos)
+    header = _struct.pack("<I3f", int(len(buf14)), r, th, ph)
+    payload = header + buf14.tobytes()
+    req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=payload,
+                                 headers={"Content-Type": "application/octet-stream"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        if resp.status != 200:
+            return None
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    png = out / f"cpp_splat_{Path(splat_path).stem}.png"
+    png.write_bytes(fetch_frame(timeout=timeout))
+    return {"path": str(png)}
