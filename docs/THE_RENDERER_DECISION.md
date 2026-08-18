@@ -98,3 +98,7 @@ two bones), or rotating one bone moves another's splats, the grouping is wrong.
 
 Status: vision-model photogrammetry in progress — joint locations read from front / side / top
 views (qwen3.8 via `senses.see`), then triangulated to 3D.
+
+> The full splat-source / generation / verification / rigging workflow — including WHY the
+> 14-float TripoSplat layout is used and WHY TRELLIS's 7-float splats were rejected — is in
+> [`THE_BEAR_PIPELINE.md`](THE_BEAR_PIPELINE.md).

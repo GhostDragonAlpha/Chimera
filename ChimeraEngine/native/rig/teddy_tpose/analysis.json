@@ -1,0 +1,70 @@
+{
+ "splat": "models/triposplat/static/viewer/teddy_tpose.splat",
+ "n": 262144,
+ "bbox": {
+  "x": [
+   -0.4426,
+   0.4453
+  ],
+  "y": [
+   -0.4957,
+   0.5473
+  ],
+  "z": [
+   -0.1649,
+   0.2171
+  ]
+ },
+ "views": {
+  "0": {
+   "theta": 0.0,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear positioned in a T-pose, with its arms extended straight out to the sides and its legs hanging down."
+  },
+  "1": {
+   "theta": 0.785,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear standing upright with its arms slightly out to the sides."
+  },
+  "2": {
+   "theta": 1.571,
+   "phi": 0.1,
+   "description": "A tan stuffed animal stands upright with its head tilted back and arms raised towards its chest."
+  },
+  "3": {
+   "theta": 2.356,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear standing upright with its arms out to the sides."
+  },
+  "4": {
+   "theta": 3.142,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear that is standing upright with its arms out to the sides."
+  },
+  "5": {
+   "theta": 3.927,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear standing upright with its arms raised slightly out to the sides."
+  },
+  "6": {
+   "theta": 4.712,
+   "phi": 0.1,
+   "description": "The 3D object is a brown teddy bear in a side-profile view, with its arms held close to its body and legs positioned in a relaxed, slightly bent stance."
+  },
+  "7": {
+   "theta": 5.498,
+   "phi": 0.1,
+   "description": "The 3D object is a light brown teddy bear in a standing upright pose with its arms out to the sides."
+  },
+  "8": {
+   "theta": 0.0,
+   "phi": 0.5,
+   "description": "The 3D object is a brown teddy bear in a standing upright pose with its arms out to the sides."
+  },
+  "9": {
+   "theta": 1.571,
+   "phi": 0.5,
+   "description": "A clay figurine of a small teddy bear is standing upright, facing left, with its arms resting down at its sides."
+  }
+ }
+}
