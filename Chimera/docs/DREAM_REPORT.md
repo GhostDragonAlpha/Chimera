@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-08-11T07:15:01Z
+consolidated: 2026-08-18T07:15:02Z
 
 ## Awaiting your approval
 15 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -13,12 +13,12 @@ consolidated: 2026-08-11T07:15:01Z
 - H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
 
 ## Open phantom pains
-- phase_4d2da4e032a4aa07:P1 [35d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_3414a5cc1ff49e30:P1 [35d] Phase 2 dependencies may still block Phase 3 wiring
-- phase_33cc2d55125bc551:P1 [35d] sleepwalker may still attempt PIE if runtime_report is not checked properly
-- phase_a06bc8140bd62718:P1 [35d] phase_da55128aec6d109a:P1
-- phase_0ddffb52d2d75240:P1 [35d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
-- phase_3baeff0ccd0f4556:P1 [35d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
+- phase_4d2da4e032a4aa07:P1 [42d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_3414a5cc1ff49e30:P1 [42d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_33cc2d55125bc551:P1 [42d] sleepwalker may still attempt PIE if runtime_report is not checked properly
+- phase_a06bc8140bd62718:P1 [42d] phase_da55128aec6d109a:P1
+- phase_0ddffb52d2d75240:P1 [42d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
+- phase_3baeff0ccd0f4556:P1 [42d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 1 **Hierarchical_Membrane_System** (system-verified 2026-07-22T00:52:10)
@@ -39,17 +39,15 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 82 batteries, 914 atoms, 884 reps this pass (11 failing), 28 PIE atoms exported
-[rep] PROMOTED: audio_visual_sync/telemetry_accessors: tier 0 -> 1 (behaves)
-[rep] PROMOTED: subsystem/VFX: tier 0 -> 1 (behaves)
+[rep] 82 batteries, 914 atoms, 884 reps this pass (12 failing), 28 PIE atoms exported
 [rep] failing: subsystem_AErisaid (4 atoms red)
 [rep] failing: Any_position-dependent_beat_against_chimeradefault (1 atoms red)
-[rep] failing: Substrate_Engine (1 atoms red)
+[rep] failing: Malcolm_Envelope (1 atoms red)
 ```
 
 ## Tonight's distillation
 ```
-clusters >= 3: 79  |  suppressed (covered/pending): 78  |  staged: 1
+clusters >= 3: 79  |  suppressed (covered/pending): 79  |  staged: 0
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -118,6 +116,8 @@ clusters >= 3: 79  |  suppressed (covered/pending): 78  |  staged: 1
   covered   [  4x] surprise: candidate expectation score uweathersubsystem  <- PENDING_HEURISTICS.md
   covered   [  4x] surprise: beat chimera_complete discovered expected  <- PENDING_HEURISTICS.md
   covered   [  4x] surprise: beat discovered expected full_game_loop  <- PENDING_HEURISTICS.md
+  covered   [  4x] surprise: atom atom_6fca5cb0478c commit fix  <- PENDING_HEURISTICS.md
+  covered   [  4x] surprise: candidate expectation score ucostlesslifeendingdiagnostic  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
   covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- PENDING_HEURISTICS.md
@@ -127,28 +127,24 @@ clusters >= 3: 79  |  suppressed (covered/pending): 78  |  staged: 1
   covered   [  3x] surprise: fixes generationsubsystem pipeline research  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: gate postflight refused shelter_habitat_materials  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: atom beat_scripts_tautology_fix fix red  <- PENDING_HEURISTICS.md
-  covered   [  3x] surprise: candidate expectation score ucostlesslifeendingdiagnostic  <- PENDING_HEURISTICS.md
-  CANDIDATE [  3x] surprise: atom atom_6fca5cb0478c commit fix
-
-staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
+nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 3950  |  archivable (>30d, superseded, unreferenced): 86
-      20x mutation:dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_directio
+live nodes: 3955  |  archivable (>30d, superseded, unreferenced): 112
+      22x mutation:dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_directio
+      16x mutation:code_generation_unknown
       15x pathway:unblock:ensure_editor
-      11x mutation:code_generation_unknown
-      11x mutation:visual_verification/screenshot_analysis
-      10x mutation:E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated
+      15x mutation:visual_verification/screenshot_analysis
+      15x mutation:E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated
        6x pathway:sleepwalker:beat_run
+       6x mutation:dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_directio
        4x pathway:system_control.execute_python:connect_material_property
        2x pathway:control_actor:get_component_property
        2x pathway:animation_physics:get_anim_sequence_info
+       2x mutation:core/game_code_generator.py
        1x pathway:control_actor:set_component_property
-       1x pathway:control_actor:set_material
-       1x pathway:control_editor:simulate_input
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

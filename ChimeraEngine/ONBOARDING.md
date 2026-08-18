@@ -106,10 +106,12 @@ cannot see — that is the monad trap wearing overalls.
    + Chao2 completeness). Inventing variables in your head is already a failure.
 4. **`classify` every variable** to `PHYSICS` (a measurable fact — yours) or `THE HUMAN` (taste — the
    operator's `decide`). No other terminal is legal.
-5. **`render`, then let the DYAD judge it.** Render the term's splat movie (beginning→end); the human
-   side (LM Studio vision + operator) reads it and cross-references to the physics → an alignment.
-   Below threshold ⇒ the render is wrong, redo it (fix the physics, never the tolerance). No render =
-   nothing to judge = cannot be proven.
+5. **`render`, then let the DYAD judge it — as a MOVIE, not a still.** The dyad watches a
+   rotation (a single frame hides the defects a turning object reveals). Render the C++ engine's
+   frames (`cpp_bridge.render_teddy_movie` → `encode_movie` → MP4); the eye (`senses.watch`,
+   Ollama qwen3.8, `think:false` + sized `num_ctx`) reads it and cross-references to the physics →
+   an alignment. Below threshold ⇒ the render is wrong, redo it (fix the physics, never the
+   tolerance). No render = nothing to judge = cannot be proven.
 6. **`prove` is the only way to mark a term done — through the MCP tool, never a driver.** A driver
    scripting the `Engine` is a MONAD (your own system measuring itself), recorded `[~]`; it does not
    count. Only a proof through the engine, dyadAnalysis complete, counts (`[x]`). Read the refusal; do
@@ -119,7 +121,7 @@ cannot see — that is the monad trap wearing overalls.
 **The loop:**
 
 ```
-orient → next → frame → question × N → classify → render(splat movie) → [human dyad] → prove
+orient → next → frame → question × N → classify → render(movie) → [human dyad] → prove
 ```
 
 **When you're stuck:** the `prove` refusal names the gate and the fix — follow it. Legal stops:
@@ -168,14 +170,15 @@ than the retraction.
 
 ---
 
-**Honest state (2026-07-25):** the splat-movie appearance + the human dyad ARE now wired into the
-engine — `render` produces a `ParticleEngine` splat movie (beginning→end) and `prove` gates on the
-APPEARANCE MESSENGER = `human_messenger`'s vision dyad holding. `appearance.py`/`convergence.py` remain
-only as a matplotlib FALLBACK for terms without a splat scene yet. Verified end-to-end: `theStar`'s
-dyad held at 0.900 (a vision model, blind, read the splat star as "a distant star"). STILL IN PROGRESS:
-a good splat scene per term (several are rough — the dyad loop drives their fixing), and the *pure
-form* (running with only the MCP tools removed of Bash/Write). A vision model MUST be loaded in LM
-Studio for the dyad to run; with none, `render`/`prove` FAIL and summon the operator (by design).
+**Honest state (2026-08-17):** the renderer is **settled — the C++ Vulkan engine**
+(`docs/THE_RENDERER_DECISION.md`). `render`/`render_teddy_movie` produce a rotation MOVIE through
+`engine.cpp` (`/membrane` + `/frame`, depth-corrected front/back), encoded to MP4
+(`cpp_bridge.encode_movie`), and `prove` gates on the APPEARANCE MESSENGER = `human_messenger`'s
+vision dyad holding. The eye is Ollama's qwen3.8, run with `think:false` and `num_ctx` sized to the
+frames (`senses.py`) — a 72-frame movie returns a defect report in ~30 s. `splat_appearance.py`
+remains the fallback for `story/` membranes; `appearance.py`/`convergence.py` remain a matplotlib
+fallback for terms with no scene at all. A vision model MUST be resident for the dyad to run; with
+none, `render`/`prove` FAIL and summon the operator (by design).
 
 ---
 

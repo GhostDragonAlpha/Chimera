@@ -122,37 +122,18 @@ def main():
             cr = np.where(has, 0.5 * cr + 0.5 * sr / np.maximum(sc, 1), cr)
             cg = np.where(has, 0.5 * cg + 0.5 * sg / np.maximum(sc, 1), cg)
             cb = np.where(has, 0.5 * cb + 0.5 * sb / np.maximum(sc, 1), cb)
-        # deviation clamp: a splat may differ from its neighborhood mean by at
-        # most 0.15/channel — regional features (ribbon, muzzle) survive
-        # because their neighborhood shares them; isolated specks get reeled in
-        sr = np.zeros(n); sg = np.zeros(n); sb = np.zeros(n)
-        for i in range(n):
-            bx0, by0, bz0 = int(kx[i]), int(ky[i]), int(kz[i])
-            for dx in (-1, 0, 1):
-                for dy in (-1, 0, 1):
-                    for dz in (-1, 0, 1):
-                        if dx == 0 and dy == 0 and dz == 0:
-                            continue
-                        j = idx.get((bx0 + dx, by0 + dy, bz0 + dz))
-                        if j is not None:
-                            sr[i] += cr[j]; sg[i] += cg[j]; sb[i] += cb[j]
-        has = sc > 0
-        mr = np.where(has, sr / np.maximum(sc, 1), cr)
-        mg = np.where(has, sg / np.maximum(sc, 1), cg)
-        mb = np.where(has, sb / np.maximum(sc, 1), cb)
-        D = 0.15
-        cr = mr + np.clip(cr - mr, -D, D)
-        cg = mg + np.clip(cg - mg, -D, D)
-        cb = mb + np.clip(cb - mb, -D, D)
-        # luminance floor + gain: TRELLIS bakes crevice shadow into the vertex
-        # colors (measured: dark tail renders as holes). Lift hue-preservingly
-        # to L>=0.20, then global gain 1.22 toward the flat-debug tan that
-        # read correctly on screen (0.55/0.42/0.30 pre-shading).
+        # deviation clamp REMOVED (2026-08-17): it reeled isolated DARK features (the black
+        # eyes/nose) up toward the brown neighborhood mean — the other half of why the face was
+        # missing. The 2-pass smoothing above already kills the bright sparkle.
+        # luminance floor: TRELLIS bakes crevice shadow into the vertex colors, and
+        # the OLD floor (L>=0.20 + gain 1.22) lifted the BLACK eyes/nose to tan —
+        # that is why the face was missing. Lift only near-black (pure-black reads
+        # as a hole) and leave the eyes dark; drop the flat-debug gain entirely.
         lum = 0.299 * cr + 0.587 * cg + 0.114 * cb
-        lift = np.maximum(1.0, 0.20 / np.maximum(lum, 1e-3))
-        cr = np.clip(cr * lift * 1.22, 0, 1)
-        cg = np.clip(cg * lift * 1.22, 0, 1)
-        cb = np.clip(cb * lift * 1.22, 0, 1)
+        lift = np.maximum(1.0, 0.02 / np.maximum(lum, 1e-3))
+        cr = np.clip(cr * lift, 0, 1)
+        cg = np.clip(cg * lift, 0, 1)
+        cb = np.clip(cb * lift, 0, 1)
         pos = np.stack([cx, cy, cz], axis=1).round(3)
         col = np.stack([cr, cg, cb], axis=1).round(3)
         # T10: per-splat normal. First attempt (occupancy gradient of the raw

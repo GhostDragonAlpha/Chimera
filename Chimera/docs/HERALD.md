@@ -1,6 +1,6 @@
-# The Herald — 2026-08-11
+# The Herald — 2026-08-18
 
-**Good news:** 16 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/AI, subsystem/Combat and more.
+**Good news:** 18 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/AI, subsystem/Combat and more.
 **Watch:** 8 feature(s) failed some checks recently (Any position-dependent beat against chimeradefault, Substrate_Engine, Substrate_Terrain); they are on the work board with evidence attached.
 **The queue:** 24 task(s) open for agents; 170 old worries await a confirm-or-refute verdict.
 **The container proposes:** tighten the 'generated_loc' limit — it waits for a yes/no (edit docs/envelope.json, status field).

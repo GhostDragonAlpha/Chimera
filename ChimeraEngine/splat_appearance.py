@@ -597,6 +597,29 @@ def _movie_instants(nums: dict) -> tuple[float, float]:
     return mid_push, apex
 
 
+def movie_buffers(term: str):
+    """The two frame buffers (begin, end) + camera position for a term's movie, or None if it has
+    no scene. Shared by `project_movie` (Python render) and `cpp_bridge` (C++ Vulkan render) so the
+    two paths can never disagree about WHICH frames a term's claim lives in."""
+    if term in _discover():                                          # THE FOLDER WINS, always
+        t_begin, t_end = _movie_instants(_NUMBERS.get(term, {}))
+        end_buf = membrane_buffer(term, t_end)
+        begin_buf = membrane_buffer(term, t_begin)
+        if end_buf is None or begin_buf is None:
+            return None
+        extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0
+        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+        return begin_buf, end_buf, cam_pos
+    spec = _DESIGN_SCENES.get(term)
+    if not spec:
+        return None
+    builder = _DESIGN_BUILDERS.get(spec["kind"])
+    if not builder:
+        return None
+    end_buf, begin_buf = builder(spec, term)
+    return begin_buf, end_buf, spec["cam"]
+
+
 def project_movie(term: str, out_dir) -> dict | None:
     """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene.
 
@@ -609,23 +632,10 @@ def project_movie(term: str, out_dir) -> dict | None:
 
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
 
-    if term in _discover():                                          # THE FOLDER WINS, always
-        t_begin, t_end = _movie_instants(_NUMBERS.get(term, {}))
-        end_buf = membrane_buffer(term, t_end)
-        begin_buf = membrane_buffer(term, t_begin)
-        if end_buf is None or begin_buf is None:
-            return None
-        extent = float(np.linalg.norm(end_buf[:, PX:PZ + 1], axis=1).max()) or 1.0
-        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
-    else:
-        spec = _DESIGN_SCENES.get(term)
-        if not spec:
-            return None
-        builder = _DESIGN_BUILDERS.get(spec["kind"])
-        if not builder:
-            return None
-        end_buf, begin_buf = builder(spec, term)
-        cam_pos = spec["cam"]
+    bufs = movie_buffers(term)
+    if bufs is None:
+        return None
+    begin_buf, end_buf, cam_pos = bufs
 
     cx, cy, cz = cam_pos                                            # AIM at the body (origin)
     cam = FirstPersonCamera(cam_pos, yaw=float(np.arctan2(-cy, -cx)),

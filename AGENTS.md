@@ -76,10 +76,13 @@ in `opencode.json` (`chimera-engine`). The older story-lane read and timeline co
 were removed with the retired task-board session; `tools/orient.py` is the
 replacement that reads the LIVE stores (engine_state.json + verdict_registry.json + git).
 
-The open decision membrane is **what renders**: `docs/THE_RENDERER_DECISION.md` frames it
-as a RULE-0 theory (statement / prediction / falsifier) — the C++ Vulkan engine
-(`ChimeraEngine/engine/engine.cpp`) versus the Python `ChimeraEngine/splat_appearance.py`
-path. Settle it before proving the playable verbs.
+The renderer decision is **settled — the C++ Vulkan engine is the renderer**
+(`docs/THE_RENDERER_DECISION.md` records the verdict): `ChimeraEngine/engine/engine.cpp`
+renders the teddy (splat shell → `/membrane` + `/frame`) with a depth buffer for correct
+front/back occlusion. **The dyad watches a MOVIE, not a still** — render a rotation
+(`ChimeraEngine/cpp_bridge.py::render_teddy_movie`), encode it (`encode_movie` → MP4), and
+judge it with `senses.watch()` running Ollama's qwen3.8 with `think:false` and `num_ctx`
+sized to the frames (see `ChimeraEngine/senses.py`).
 
 ---
 

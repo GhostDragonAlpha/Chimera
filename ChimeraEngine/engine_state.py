@@ -32,21 +32,23 @@ from terms_data import TERMS as _DECL        # noqa: E402
 # Terms with substrate already built/measured elsewhere (the ~): prove THROUGH the engine, not from
 # scratch. Not part of the hierarchy shape -- a planning note for the generated doc.
 BUILT = {
-    "theDeterminism", "aPlanet", "theTerrain", "theBiomes", "theGround", "theInterior",
-    "theGarden", "theTree", "theTreeForm", "thePlanting", "theDensityClock", "theStanding",
-    "theBlackHole", "theVerbs", "theThrust", "theDig", "theBalance", "theGrow", "theLoop",
-    "thePlayer", "theState",
+    "theDeterminism", "theShape", "theBalance", "theMuscle", "theRig", "theStand", "theWorld",
+    "theScan", "theChoose",
 }
 
 # The story's movements -> the top-level pillars they open (section headers for the generated doc).
 MOVEMENTS = {
-    "theSeed":        ("I. The Seed",               "in the beginning, a number -- this universe is true"),
-    "theSolarSystem": ("II. Arrival",               "the solar system is the first room (the Garden, Movement IV, grows deep inside it)"),
-    "theShip":        ("II. Arrival -- the vessel", "a ship, a cold start, the dark between worlds"),
-    "theDescent":     ("III. Descent",              "orbit -> atmosphere -> ground -> grain; stand, dig, scan"),
-    "theVerbs":       ("How you act (threads every movement)", "verb over nouns"),
-    "theLoop":        ("The loop (threads every movement)",    "world + player + input -> verbs -> state -> tick"),
-    "theMeaning":     ("V. The Gift -- meaning",    "the knowledge of good and evil -- you decide what things mean"),
+    "theSeed":       ("I. The Seed",           "in the beginning, a number -- the genome grows the lattice"),
+    "theShape":      ("II. The Body",          "the voxel lattice -- TRELLIS gives the base; the CA owns it after"),
+    "theMuscle":     ("III. The Muscle",       "a column that shortens -- movement is cells added/removed"),
+    "theRig":        ("IV. The Rig",           "the chains the muscle rides on, derived from the shape"),
+    "theGait":       ("V. The Walk",           "the beat machine (LIFT/SWING/PLANT/SHIFT) -- each joint verified"),
+    "theScan":       ("VI. The Senses",        "the retinal senses read the field (ground, goal bearing, reach)"),
+    "theChoose":     ("VII. The Policy",       "Q-learning over rest/wave/walk picks the steps (sense -> plan -> act)"),
+    "theControl":    ("VIII. Control",         "third-person -- the operator steers, or hands over to the policy"),
+    "theWorld":      ("IX. The World",         "the training environment: terrain, contact, gravity, the goal"),
+    "theAppearance": ("X. The Surface",        "the splat skin -- SPL markers so the outer surface transforms smoothly"),
+    "theMeaning":    ("XI. The Meaning",       "is it recognizably a teddy bear -- the eye judges each movement"),
 }
 
 
@@ -61,6 +63,22 @@ def _build_hierarchy():
 
 _SEED_HIERARCHY = _build_hierarchy()
 
+
+def _root_term() -> str:
+    """The outermost membrane (the seed) -- the first term the story declares with no parent."""
+    for n, p, *_ in _DECL:
+        if p is None:
+            return n
+    return "theStory"
+
+
+def _first_open() -> str:
+    """The first membrane to prove -- the root's first child, or the root if it has none."""
+    root = _root_term()
+    kids = _SEED_HIERARCHY.get(root, {}).get("children") or []
+    return kids[0] if kids else root
+
+
 GATE_FIX = {
     "S0 FRAME":        "frame(term, claim)  -- state it as exactly one claim",
     "S2a PROVENANCE":  "question(term, ...) -- discover variables by asking, never declare them",
@@ -71,18 +89,10 @@ GATE_FIX = {
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
 }
 
-# GRANDFATHERED terms: 41 existing proven/decided terms in the ledger. Their records stay valid
-# without PHYSICS measurement pointers. Do not rewrite engine_state.json for these.
-GRANDFATHERED_TERMS = {
-    "theStory", "theSeed", "theDeterminism", "theLaws", "theTruth",
-    "theSolarSystem", "theStar", "thePlanets", "aPlanet", "theTerrain",
-    "theAtmosphere", "theOcean", "theBiomes", "theGround", "theInterior",
-    "theMining", "theGarden", "theEcosystem", "theTree", "theTreeForm",
-    "theFruit", "thePlanting", "theFarming", "thePlanetaryFarm", "theLunarFarm",
-    "theOrbitalFarm", "theSpace", "theDensityClock", "theShip", "theFlight",
-    "theShipPower", "theShipCombat", "theShields", "theWarpDrive", "theShipView",
-    "theSalvage", "theDescent", "theStanding", "theBlackHole", "theVerbs", "theThrust",
-}
+# GRANDFATHERED terms: terms whose existing records stay valid without PHYSICS measurement pointers.
+# Empty on a fresh story -- every new membrane must earn its pointer. (Name a term here only when a
+# ledger survives a story migration and its proofs were verified under the old pointer regime.)
+GRANDFATHERED_TERMS = set()
 
 
 def _now() -> float:
@@ -98,8 +108,8 @@ class Engine:
 
     def _load(self) -> dict:
         if not self.path.exists():
-            return {"seed": "theStory", "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
-                    "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"],
+            return {"seed": _root_term(), "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
+                    "current": _first_open(), "terms": {}, "codebook": [_root_term()],
                     "nights": [], "rules": []}
         return self._reconcile(json.loads(self.path.read_text(encoding="utf-8")))
 
@@ -126,13 +136,13 @@ class Engine:
             print(f"[engine] the story no longer declares proven term(s) {dropped}; their records are "
                   f"kept in `terms`, but they have left the hierarchy")
         state["hierarchy"] = tree
-        state["seed"] = "theStory"
+        state["seed"] = _root_term()
         state.setdefault("terms", {})
-        state.setdefault("codebook", ["theStory"])
+        state.setdefault("codebook", [_root_term()])
         state.setdefault("nights", [])
         state.setdefault("rules", [])
         if state.get("current") not in tree:
-            state["current"] = "theSolarSystem"
+            state["current"] = _first_open()
         return state
 
     def _save(self) -> None:
@@ -166,7 +176,7 @@ class Engine:
                         if v.get("status") in ("proven", "decided"))
         return (f"WORLD RELOADED from the story: {len(_SEED_HIERARCHY)} terms"
                 + (f"; {len(added)} NEW -> {added}" if added else "; no new terms")
-                + f". Proofs preserved: {proven}. Next: {self.next_action(self.state.get('current') or 'theSolarSystem')}")
+                + f". Proofs preserved: {proven}. Next: {self.next_action(self.state.get('current') or _first_open())}")
 
     def _term(self, name: str) -> dict:
         return self.state["terms"].setdefault(name, {
@@ -434,7 +444,21 @@ class Engine:
 
     def _appearance(self, name: str):
         """The term's appearance: a splat MOVIE (beginning->end) if it has a scene, else the matplotlib
-        placeholder. Returns {"begin": path, "end": path} or None. Rendering is physics -- owned here."""
+        placeholder. Returns {"begin": path, "end": path} or None. Rendering is physics -- owned here.
+
+        The C++ Vulkan engine is the emission target (docs/THE_RENDERER_DECISION.md): when it is
+        running, the membrane is rasterized BY the engine and served through its `/frame` endpoint
+        (via cpp_bridge), and the dyad judges THAT. `splat_appearance` (the Python GPU path) is the
+        fallback only until the C++ engine can render a proven membrane's scene."""
+        try:
+            import importlib
+            import cpp_bridge
+            importlib.reload(cpp_bridge)
+            m = cpp_bridge.render_term(name, _HERE / "output")
+            if m:
+                return m
+        except Exception as e:
+            print(f"[engine] cpp bridge render failed for `{name}`: {e}")
         try:
             import importlib
             import splat_appearance
