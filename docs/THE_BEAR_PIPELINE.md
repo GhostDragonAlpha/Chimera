@@ -104,7 +104,28 @@ python ChimeraEngine/native/skeleton.py assign       <splat> --skeleton <workdir
 The camera model in `skeleton.py` matches the C++ engine exactly, so a mark the eye places
 is a ray in the same frame the renderer uses — no reprojection drift.
 
-## 5. State (2026-08-18)
+## 5. THE SERIES — ordered steps, each gated
+
+Do them IN ORDER. Do not proceed past a FAILED gate. A step is not "done" until its
+gate passes; "looks okay" is not a pass.
+
+1. **SOURCE a valid bear** — 2 NORMAL arms (not two fused into one per side), front and back
+   identical in texture AND color.
+   - GATE: the eye reports exactly 2 arms, and front texture == back texture.
+   - STATUS (2026-08-18): **FAILED** — arms melded (2 fused per side), back texture mismatched.
+2. **EXTRACT materials** — vision marks the materials; extract average color AND the texture
+   genome (`log_size`, `aniso`, `opacity` distributions) from the front splats.
+   - GATE: the codebook separates into distinct materials (not one grey).
+   - STATUS: **DONE** — 6 materials, color genome + texture genome extracted (§3, §5).
+3. **REAPPLY** — recolor every splat to its material average (done), then resample the back's
+   splat scale/density to the front's texture distribution (relocate splats within the shape).
+   - GATE: front and back agree in color AND in log_size/opacity distribution.
+   - STATUS: color done; texture relocation **NOT done**.
+4. **RIG** — mark joints → triangulate → assign bones (`skeleton.py`).
+   - GATE: static verification passes (2 normal arms, coherent limb assignment).
+5. **DRIVE** — the CA/force dynamics (gravity field + muscle/contact forces); pose emerges.
+
+## 6. State (2026-08-18)
 
 - Sitting teddy `teddy.splat` renders correctly; its rig attempt failed (limbs too tangled
   — that is why we moved to a T-pose).
