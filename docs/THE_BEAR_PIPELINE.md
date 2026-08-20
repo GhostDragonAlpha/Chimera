@@ -1,5 +1,11 @@
 # THE BEAR PIPELINE — splat source, generation, verification, rigging
 
+> **2026-08-20: superseded as the generation path.** The authored pipeline —
+> CAD body → gravity-settled coat → spray-painted appearance → regions — is now the
+> governing architecture: [`THE_AUTHORED_PIPELINE.md`](THE_AUTHORED_PIPELINE.md).
+> This file still owns the splat FORMAT (§1), the verification GATES (§3), and the
+> captured-source history. Single-image generation (§2) is rejected as a source.
+
 Settled decisions and the repeatable workflow for producing a riggable teddy bear.
 Written 2026-08-18 after an agent burned a session re-discovering each of these. If you
 are about to re-investigate a step, it is answered here. The renderer itself lives in
@@ -131,6 +137,16 @@ gate passes; "looks okay" is not a pass.
   — that is why we moved to a T-pose).
 - T-pose teddy `teddy_tpose.splat` renders but **failed static verification** (4 arms,
   front/back mismatch). Do not rig it.
-- Next: regenerate to a valid T-pose, pass §3, then run §4.
+- **T-pose teddy `tpose2_640.splat` PASSED static verification** (eye: exactly 2 arms,
+  front/back fur agrees; data: single-layer arms, back ~8–11% darker not 40–50%). This is
+  the bear to rig (§4).
+- Engine fix (same day): `engine.cpp` alpha accumulation `dstAlphaBlendFactor`
+  ZERO → ONE_MINUS_SRC_ALPHA — the old state let each splat's alpha *replace* the
+  destination's, and low-alpha skirts composited to white on readback. Also
+  `cpp_bridge.render_splat_movie()` (orbit movie of a `.splat`, no CPU pre-sort — the
+  GPU bitonic sort is authoritative) and `_post_membrane_bin` now checks the response
+  body (`"ok":true`), not just HTTP 200 — the engine answers 200 + `{"ok":false}` on a
+  payload-size mismatch, which silently kept the previous buffer on screen.
+- Next: rig `tpose2_640.splat` (§4), then DRIVE.
 
 Agent: Kilo (chimera-code)

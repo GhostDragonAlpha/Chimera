@@ -79,9 +79,29 @@ def _post_membrane(term: str, pos7, count: int, cam_pos, timeout: float = 10.0) 
         return resp.status == 200
 
 
-def load_membrane(term: str, buf: np.ndarray, cam_pos, timeout: float = 10.0) -> bool:
-    pos = _to_cpp7(buf)
-    return _post_membrane(term, pos, int(buf.shape[0]), cam_pos, timeout=timeout)
+def load_membrane(term: str, buf: np.ndarray, cam_pos, timeout: float = 60.0) -> bool:
+    """Upload a membrane's (N,28) buffer through the BINARY 14-float path.
+
+    The legacy /membrane JSON route kills the engine process at ~64k particles
+    (measured 2026-08-19: WinError 10054 mid-POST, process death, reproduced
+    twice on story/theSeed's 64,309-grain buffer). /membrane_bin was built for
+    exactly this ("no JSON for 100k+ splats"). The grain row expands to the
+    14-float splat layout exactly as _shell_level_buf does: alpha=1, isotropic
+    sigma=SIZE, identity rotation. `term` is only a label and is not sent."""
+    buf = np.ascontiguousarray(buf, dtype=np.float32)
+    n = int(buf.shape[0])
+    buf14 = np.empty((n, 14), dtype=np.float32)
+    buf14[:, 0] = buf[:, CPP_POS[0]]
+    buf14[:, 1] = buf[:, CPP_POS[1]]
+    buf14[:, 2] = buf[:, CPP_POS[2]]
+    buf14[:, 3] = buf[:, CPP_RGB[0]]
+    buf14[:, 4] = buf[:, CPP_RGB[1]]
+    buf14[:, 5] = buf[:, CPP_RGB[2]]
+    buf14[:, 6] = 1.0                    # alpha — opaque
+    buf14[:, 7:10] = buf[:, CPP_SIZE:CPP_SIZE + 1]   # sigma (isotropic)
+    buf14[:, 10] = 1.0                   # quat w
+    buf14[:, 11:14] = 0.0                # quat x,y,z
+    return _post_membrane_bin(n, cam_pos, buf14, timeout=timeout)
 
 
 def _set_camera(radius: float, theta: float, phi: float, timeout: float = 10.0) -> bool:
@@ -97,12 +117,14 @@ def _shell_cache_path(shell_json, level: int) -> Path:
 
 
 def _shell_level_buf(shell_json, level: int, size_scale: float):
-    """Load one LOD level of the teddy shell as a (n,7) float32 array [x,y,z,r,g,b,size].
+    """Load one LOD level of the teddy shell as an (n,14) float32 splat buffer
+    [x,y,z, r,g,b, a, sx,sy,sz, qw,qx,qy,qz] — the engine's /membrane_bin format.
 
     Reads a binary cache (`<stem>_l<level>.f32`) when present, else parses the JSON ONCE and writes
     the cache. The cache is `[f32 cell][f32*n*6]` — positions in world units, colors 0..1 — so the
     size (cell * size_scale) stays tunable at render time without re-parsing the 40MB JSON.
-    Returns (buf7, cell).
+    The 7-float shell row expands to 14 floats with alpha=1, isotropic sigma=size,
+    identity rotation. Returns (buf14, cell).
     """
     import numpy as _np
     shell = Path(shell_json)
@@ -121,22 +143,30 @@ def _shell_level_buf(shell_json, level: int, size_scale: float):
         header = _np.array([cell], dtype=_np.float32)
         _np.concatenate([header, pos_col.ravel()]).astype(_np.float32).tofile(cache)
     n = pos_col.shape[0]
-    buf7 = _np.empty((n, 7), dtype=_np.float32)
-    buf7[:, 0:6] = pos_col
-    buf7[:, 6] = _np.full(n, cell * size_scale, dtype=_np.float32)
-    return buf7, cell
+    size = cell * size_scale
+    buf14 = _np.empty((n, 14), dtype=_np.float32)
+    buf14[:, 0:6] = pos_col
+    buf14[:, 6] = 1.0                    # alpha — opaque
+    buf14[:, 7:10] = size                # sigma (isotropic)
+    buf14[:, 10] = 1.0                   # quat w
+    buf14[:, 11:14] = 0.0                # quat x,y,z
+    return buf14, cell
 
 
-def _post_membrane_bin(count: int, cam_pos, buf7, timeout: float = 60.0) -> bool:
-    """POST the particle buffer as raw float32 bytes to /membrane_bin (no JSON for 100k+ splats)."""
+def _post_membrane_bin(count: int, cam_pos, buf14, timeout: float = 60.0) -> bool:
+    """POST the (n,14) splat buffer as raw float32 bytes to /membrane_bin (no JSON for 100k+
+    splats). The engine validates the byte count (16 + count*14*4) and answers 200 with
+    {"ok":false,"error":...} on mismatch — so check the BODY, not just the status."""
     import struct
     r, theta, phi = _spherical(cam_pos)
     header = struct.pack("<I3f", count, r, theta, phi)
-    payload = header + buf7.astype(np.float32).tobytes()
+    payload = header + buf14.astype(np.float32).tobytes()
     req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=payload,
                                  headers={"Content-Type": "application/octet-stream"}, method="POST")
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.status == 200
+        if resp.status != 200:
+            return False
+        return b'"ok":true' in resp.read()
 
 
 def fetch_frame(timeout: float = 10.0) -> bytes:
@@ -163,6 +193,55 @@ def render_term(term: str, out_dir) -> dict | None:
         png = out / f"cpp_{term}_{label}.png"
         png.write_bytes(fetch_frame())
         paths[label] = str(png)
+    return paths
+
+
+def render_term_movie(term: str, out_dir, frames: int = 12, timeout: float = 60.0) -> list | None:
+    """Render a membrane's WHOLE TIMELINE as an N-frame movie through the C++ engine
+    -> ordered list of PNG paths, or None.
+
+    WHY NOT [begin, end]: the dyad's blind eye was given exactly two frames and read
+    them as "the scene stays the same" / "only one frame is provided" (measured
+    2026-08-19 on theSeed — the front and back of the same teddy bear are legitimately
+    similar, so a 2-frame 'movie' is illegible as change). A membrane's movie is its
+    timeline; sampling `frames` instants across t=0..1 gives the eye an actual
+    unfolding to watch. Story membranes only (design scenes have just two states and
+    keep the 2-frame path).
+    """
+    if not engine_available():
+        return None
+    import splat_appearance as sa
+    if term not in sa.membrane_terms():
+        return None
+    settled = sa.membrane_buffer(term, 1.0)
+    if settled is None:
+        return None
+    extent = float(np.linalg.norm(settled[:, 0:3], axis=1).max()) or 1.0
+    cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    paths = []
+    ts = np.linspace(0.0, 1.0, int(frames))
+    for i, t in enumerate(ts):
+        buf = sa.membrane_buffer(term, float(t))
+        if buf is None:
+            return None
+        if not load_membrane(term, buf, cam_pos, timeout=timeout):
+            return None
+        png = out / f"cpp_{term}_movie_{i:02d}.png"
+        png.write_bytes(fetch_frame())
+        # The eye is calibrated at 384px wide (senses.FRAME_TOKENS = 86 tokens/frame, measured);
+        # full-res 1920x1080 frames are ~25x the pixels and ~8MB each -- a 12-frame payload kills
+        # the watch POST (measured 2026-08-19: the dyad reported the eye DARK on a live server).
+        from PIL import Image
+        im = Image.open(png)
+        w, h = im.size
+        if w > 384:
+            im = im.resize((384, round(h * 384 / w)), Image.LANCZOS)
+        small = out / f"cpp_{term}_movie_{i:02d}_384.png"
+        im.save(small)
+        paths.append(str(small))
     return paths
 
 
@@ -455,6 +534,30 @@ def load_splat(splat_path) -> np.ndarray:
     return np.concatenate([world_pos, rgb, alpha, scale, rot_world], axis=1).astype(np.float32)
 
 
+def save_splat(splat_path, buf: np.ndarray) -> None:
+    """Inverse of load_splat: (n,14) [x,y,z, r,g,b, a, sx,sy,sz, qw,qx,qy,qz] (WORLD space,
+    the space load_splat returns) -> 32-byte/splat .splat file. Applies the inverse of
+    SPLAT_ORIENT so a load_splat(save_splat(x)) round-trip is the identity up to u8 packing."""
+    import struct as _struct  # noqa: F401 (kept for symmetry with load_splat's readers)
+    buf = np.asarray(buf, dtype=np.float64)
+    n = len(buf)
+    pos_raw = buf[:, 0:3] @ SPLAT_ORIENT                       # world = raw @ S.T  =>  raw = world @ S
+    R_world = _quat_to_matrix(buf[:, 10:14])
+    R_raw = np.einsum("ij,njk->nik", SPLAT_ORIENT.T, R_world)  # R_world = S R_raw => R_raw = S.T R_world
+    rot_raw = _matrix_to_quat(R_raw)
+    rot_raw = rot_raw / np.linalg.norm(rot_raw, axis=1, keepdims=True)
+
+    dt = np.dtype([("pos", "<f4", 3), ("scale", "<f4", 3), ("rgba", "u1", 4), ("rot", "u1", 4)])
+    arr = np.zeros(n, dtype=dt)
+    arr["pos"] = pos_raw.astype(np.float32)
+    arr["scale"] = buf[:, 7:10].astype(np.float32)
+    arr["rgba"][:, 0:3] = (np.clip(buf[:, 3:6], 0, 1) * 255.0).round().astype(np.uint8)
+    arr["rgba"][:, 3] = (np.clip(buf[:, 6], 0, 1) * 255.0).round().astype(np.uint8)
+    arr["rot"] = (np.clip(rot_raw, -1, 1) * 128.0 + 128.0).round().astype(np.uint8)
+    Path(splat_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(splat_path).write_bytes(arr.tobytes())
+
+
 def render_splat(splat_path, out_dir, cam_pos=(0.0, 0.3, 1.8), timeout: float = 60.0) -> dict | None:
     """Render a TripoSplat `.splat` through the C++ engine -> {"path": PNG} or None.
 
@@ -478,3 +581,45 @@ def render_splat(splat_path, out_dir, cam_pos=(0.0, 0.3, 1.8), timeout: float = 
     png = out / f"cpp_splat_{Path(splat_path).stem}.png"
     png.write_bytes(fetch_frame(timeout=timeout))
     return {"path": str(png)}
+
+
+def render_splat_movie(splat_path, out_dir, frames: int = 36, elevations=None,
+                       radius_mult: float = 5.0, timeout: float = 60.0) -> list | None:
+    """Orbit MOVIE of a TripoSplat `.splat` through the C++ engine -> list of PNG paths.
+
+    Same buffer as `render_splat` (load_splat's 14-float, viewer-oriented). The engine's GPU
+    bitonic sort is authoritative (it re-sorts every frame as the camera orbits), so there is
+    NO per-camera CPU pre-sort here — unlike the legacy `render_3dgs_movie`. `elevations`
+    defaults to below → level → above (soles, body, top of head). Feed the paths to
+    `senses.watch()` — the dyad judges the movie, not a still.
+    """
+    if not engine_available():
+        return None
+    import struct as _struct
+    buf14 = load_splat(splat_path)
+    pos = buf14[:, 0:3]
+    extent = float(np.linalg.norm(pos, axis=1).max()) or 1.0
+    radius = radius_mult * extent
+    if elevations is None:
+        elevations = (-0.35, 0.0, 1.1)
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    per = max(1, frames // len(elevations))
+    payload_buf = buf14.tobytes()
+    paths = []
+    idx = 0
+    for phi in elevations:
+        for i in range(per):
+            theta = 2.0 * math.pi * i / per
+            header = _struct.pack("<I3f", int(len(buf14)), radius, theta, phi)
+            req = urllib.request.Request(f"{ENGINE_URL}/membrane_bin", data=header + payload_buf,
+                                         headers={"Content-Type": "application/octet-stream"}, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                if resp.status != 200 or b'"ok":true' not in resp.read():
+                    return None
+            png = out / f"splat_f{idx:03d}.png"
+            png.write_bytes(fetch_frame(timeout=timeout))
+            paths.append(str(png))
+            idx += 1
+    return paths
