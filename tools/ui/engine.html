@@ -61,6 +61,16 @@ const VIEWS = {
 
   async source(){
     let out = `<h2>SOURCE GATE</h2><div class="note">Question: "how much does this look like a complete, intact, FURRY teddy bear?" -- score = MIN over sampled views. A hole anywhere disqualifies the source.</div>`;
+    // current donor under judgement: 6-view sheet + the live splat, same page
+    try {
+      const gate = await fetchJSON("ui/donor_gate.json");
+      const rows = (gate.views||[]).map(v=>`<tr><td>${v.view}</td><td class="score ${cls(v.score)}">${v.score}</td></tr>`).join("");
+      out += `<h3>DONOR UNDER REVIEW: ${gate.splat||"?"}</h3><table><tr><th>view</th><th>eye</th></tr>${rows}<tr><td><b>min</b></td><td class="score ${cls(gate.min)}"><b>${gate.min}</b></td></tr></table>`;
+    } catch {}
+    try { await fetch("ui/donor_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<img class="sheet" src="ui/donor_sheet.png">`; } catch {}
+    try { await fetch("ui/donor.splat",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<h3>ORBIT THE DONOR</h3><iframe style="width:100%;height:70vh;border:0" src="viewer.html?ply=ui/donor.splat&orient=0&az=0&el=0.15&r=0.55"></iframe>`; } catch {}
     let furry = null, plain = null;
     try { furry = await fetchJSON("ui/sources_furry.json"); } catch {}
     try { plain = await fetchJSON("ui/sources.json"); } catch {}

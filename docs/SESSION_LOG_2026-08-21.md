@@ -132,3 +132,21 @@ report.json is written incrementally every 10 patches (a crash loses nothing).
 
 NEXT: train bear 598 (dataset ready, 202 images) with DefaultStrategy tuned for
 density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.
+
+## Source-hunt lane (evening, operator ruling)
+- OPERATOR RULING: candidates are judged as FINISHED 3DGS files (.ply/.splat), never raw
+  photogrammetry. "We can't sort through people's photogrammetry -- we sort through people's
+  end results." CO3D self-training lane demoted to fallback.
+- PLAYWRIGHT IS MANDATORY in the hunt lane: the AI never judges what it has not seen; the
+  human sees the same pixels through the same viewer. Built: tools/hunt_shot.js
+  (page|splat modes) + MCP tools hunt_view / hunt_fetch / hunt_stage in
+  ChimeraEngine/mcp_server.py. Documented in MCP_ENGINE.md ("The source hunt").
+- Engine UI SOURCE tab now carries the DONOR UNDER REVIEW section: 6-view sheet + eye table
+  + orbitable donor.splat iframe (same page for human and AI).
+- orient_splat extrinsic-up bug found+fixed: the file must store camtoworld 3x4 blocks
+  (columns = camera axes in world); I had saved them transposed. Also gsplat
+  normalize_world_space reorients the frame AFTER COLMAP -- raw extrinsics never apply;
+  recompute the Parser normalization and take up from normalized cameras.
+- Donor 246 dense retrain (grow_grad2d 1e-4): 195,887 splats (was 94k), loss 0.002,
+  6.5 min. Oriented upright via fixed extrinsic-up + --flip-up. Eye is NOISY on the source
+  gate (front scored 90 then 0 on identical geometry) -- human terminal rules this gate.

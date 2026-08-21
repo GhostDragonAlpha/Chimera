@@ -21,6 +21,9 @@ ARTIFACTS = [
     ROOT / ".tmp/qualify/sources_furry.png",                # furry pass WINS the sheet
     ROOT / ".tmp/qualify/full/scores.json",
     ROOT / ".tmp/qualify/full/scored_sheet.png",
+    ROOT / ".tmp/qualify/source246_sheet.png",              # -> donor_sheet.png
+    ROOT / ".tmp/qualify/source_co3d_246/source_score.json",  # -> donor_gate.json
+    ROOT / "models/triposplat/static/viewer/_qualify/co3d246_dense.splat",  # -> donor.splat
     ROOT / "tools/specs/bear34_parts_plan.json",            # -> parts_plan.json
     ROOT / "Chimera/docs/THE_STORY.md",
     ROOT / "ChimeraEngine/docs_THE_STORY.md",
@@ -29,6 +32,9 @@ ARTIFACTS = [
 RENAMES = {
     "sources.png": "sources_sheet.png",
     "sources_furry.png": "sources_sheet.png",
+    "source246_sheet.png": "donor_sheet.png",
+    "source_score.json": "donor_gate.json",
+    "co3d246_dense.splat": "donor.splat",
     "bear34_parts_plan.json": "parts_plan.json",
     "docs_THE_STORY.md": "THE_STORY.md",  # fallback if Chimera/docs copy missing
 }

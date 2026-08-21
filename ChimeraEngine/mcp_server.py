@@ -220,5 +220,67 @@ def parts_status() -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------------------
+# THE SOURCE HUNT -- candidates are judged as FINISHED 3DGS files, never as
+# raw photogrammetry (operator ruling 2026-08-21: "we can't sort through
+# people's photogrammetry; we sort through people's end results"). Playwright
+# is MANDATORY: the AI never judges what it has not seen, and the human sees
+# the same pixels through the same viewer. Three moves: view a web page,
+# fetch a candidate file, stage it through the real viewer (6-view sheet).
+# ---------------------------------------------------------------------------
+HUNT_DIR = REPO / ".tmp" / "hunt"
+QUALIFY_DIR = REPO / "models" / "triposplat" / "static" / "viewer" / "_qualify"
+
+
+def _run_node(script: str, *args: str, timeout: int = 300) -> str:
+    try:
+        r = subprocess.run(["node", str(REPO / "tools" / script), *args],
+                           capture_output=True, text=True, timeout=timeout,
+                           cwd=str(REPO))
+        out = (r.stdout + r.stderr).strip()
+        return out[-4000:] if out else f"(exit {r.returncode}, no output)"
+    except subprocess.TimeoutExpired:
+        return f"FAILED: {script} timed out after {timeout}s"
+
+
+@mcp.tool()
+def hunt_view(url: str, name: str) -> str:
+    """Screenshot ANY web page through Playwright (a gallery render, an HF
+    viewer, a listing) and return the PNG path. The AI must then READ the
+    image before saying anything about the candidate -- no blind claims."""
+    HUNT_DIR.mkdir(parents=True, exist_ok=True)
+    out = HUNT_DIR / f"{name}.png"
+    return _run_node("hunt_shot.js", "page", url, str(out))
+
+
+@mcp.tool()
+def hunt_fetch(url: str, name: str) -> str:
+    """Download a candidate FINISHED 3DGS file (.ply/.splat) into the viewer's
+    _qualify dir so it can be staged. Returns the staged file name."""
+    import urllib.request
+    QUALIFY_DIR.mkdir(parents=True, exist_ok=True)
+    ext = ".ply" if ".ply" in url.lower() else ".splat"
+    dst = QUALIFY_DIR / f"hunt_{name}{ext}"
+    try:
+        urllib.request.urlretrieve(url, dst)
+    except Exception as e:
+        return f"FAILED: {e}"
+    return f"staged: {dst.name} ({dst.stat().st_size // 1024}KB)"
+
+
+@mcp.tool()
+def hunt_stage(name: str, r: str = "1.0") -> str:
+    """Stage a fetched candidate through the REAL viewer: canonical 6-view
+    sheet (front/back/left/right/top/bottom) via Playwright. The sheet and
+    per-view PNGs land in .tmp/hunt/<name>/ -- read them, then the human
+    rules. A hole anywhere disqualifies the source."""
+    matches = sorted(QUALIFY_DIR.glob(f"hunt_{name}.*"))
+    if not matches:
+        return f"FAILED: no staged candidate named hunt_{name}.* -- hunt_fetch first"
+    out = HUNT_DIR / name
+    out.mkdir(parents=True, exist_ok=True)
+    return _run_node("hunt_shot.js", "splat", matches[0].name, str(out), r)
+
+
 if __name__ == "__main__":
     mcp.run()

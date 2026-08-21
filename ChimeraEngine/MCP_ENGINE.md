@@ -130,6 +130,24 @@ disagreeing means the **physics is wrong — start over**; only the operator's o
 dark eye. And the render the human judges is the **Gaussian-splat engine** movie (`ParticleEngine`,
 beginning→end frames as a timeline slice unfolds), NOT a matplotlib diagram — those were placeholders.
 
+## The source hunt (added 2026-08-21)
+
+**Candidates are judged as FINISHED 3DGS files (`.ply`/`.splat`), never as raw photogrammetry.**
+The operator's ruling: we sort through people's *end results*, not their footage — a source is
+viewed before it is believed. **Playwright is mandatory in this lane** (`tools/hunt_shot.js`):
+the AI never judges a source it has not SEEN, and the human is shown the same pixels through the
+same viewer (`viewer.html`, served on :8081). Three tools:
+
+| Tool | Does |
+|---|---|
+| `hunt_view(url, name)` | screenshot any web page (gallery, HF viewer, listing) → `.tmp/hunt/<name>.png`. The AI must READ the image before claiming anything about the candidate. |
+| `hunt_fetch(url, name)` | download a finished `.ply`/`.splat` into the viewer's `_qualify/` as `hunt_<name>.*`. |
+| `hunt_stage(name, r)` | render the staged candidate through the REAL viewer — canonical 6-view sheet (front/back/left/right/top/bottom) → `.tmp/hunt/<name>/`. A hole anywhere disqualifies. |
+
+The gate is unchanged: eye scores each view 0–100 against the story term ("complete, intact,
+FURRY teddy bear"), score = MIN over views, and the human terminal authorizes before the
+candidate becomes a donor.
+
 ## Honest scope (V2 — what forces now, what's next)
 
 **Forces now:** `prove` cannot be faked — the engine owns "proven" at the state layer; real
