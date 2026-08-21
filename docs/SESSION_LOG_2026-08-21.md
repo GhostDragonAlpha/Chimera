@@ -93,3 +93,42 @@
   conditioned point-field generator (flow matching over attributed splat patches).
 - Fix eye/nose label bleed (rod fits), leg bones for the sitting pose.
 - Remaining parts one at a time; exploded parts diagram.
+
+## Qualification gate calibrated (evening)
+
+The eye rejected 100% of corpus patches across three renderer attempts; each
+failure was traced to PRESENTATION, not data:
+
+1. Hard-polygon renderer -> shards (renderer artifact; replaced by render_soft,
+   a numpy Gaussian-falloff rasterizer).
+2. render_soft at 4cm/640px -> still rejected. Ground truth through the REAL
+   viewer (patch_gt.splat in viewer.html) showed a soft fur tuft: the numpy
+   renderer was the liar. Rule: qualification renders go through the real
+   viewer, always (`--via viewer`, tools/qualify_shots.js, one headless browser
+   session for the whole batch; #loading/#hud hidden via addInitScript).
+3. Even truthful renders rejected when the window is shown past NATIVE
+   resolution. gsplat trains at ~1 px per splat footprint (~0.8mm); presenting
+   a 10cm window at 640px shows gaps the data never had. Verified by cropping a
+   fur region from the whole-bear render at native scale: eye said YES
+   immediately ("dense, fuzzy texture consistent with teddy bear fur").
+   Presentation is now native-res (window ~150px) + crop + upscale.
+4. Patch ISOLATION removed the backing layer: H_MIN was -3mm, so gaps had no
+   backing and read as holes. H_MIN now -10mm (the full fur column; zero is
+   still the membrane, backing gives opacity on application).
+5. Corpus labeling bug: torso/arm/leg regions on bear 34 are the red floral
+   PAJAMA, not fur. Fur corpus = head, ears, snout, paws, feet only.
+6. Needle outliers: SCALE_CAP 3mm at cut time (tip-line for size).
+
+Corpus re-cut: PATCH_HALF 0.020->0.050 (10cm material-scale windows, the
+operator's "larger patches read better"), N_PTS 512->2048, 60% 2D-occupancy
+gate (6x6 grid) kills edge-band windows. bear34: 20 patches; bear187: 30.
+
+co3d_34_mcmc (520k splats) is GARBAGE: median scale ~0 (point dust), whole-bear
+render is a dark fragment with red interior bleed. Its donor directory exists
+but is excluded from qualification. Recorded so nobody trusts it.
+
+Full eye qualification of the 50-patch corpus runs through the real viewer;
+report.json is written incrementally every 10 patches (a crash loses nothing).
+
+NEXT: train bear 598 (dataset ready, 202 images) with DefaultStrategy tuned for
+density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.

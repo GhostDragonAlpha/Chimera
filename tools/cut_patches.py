@@ -30,10 +30,13 @@ sys.path.insert(0, str(ROOT / "tools"))
 from extract_genomes import core_frames  # noqa: E402
 from train_material import tip_line  # noqa: E402
 
-PATCH_HALF = 0.020   # 40 mm square window
-STRIDE = 0.020       # overlapping seeds
-N_PTS = 512          # fixed patch cardinality (pad/subsample)
-H_MIN, H_MAX = -0.003, 0.015
+PATCH_HALF = 0.050   # 100 mm square window (eye needs material-scale context)
+STRIDE = 0.050       # overlapping seeds
+N_PTS = 2048         # fixed patch cardinality (pad/subsample)
+H_MIN, H_MAX = -0.010, 0.015  # full fur column: backing below zero = opacity
+COVER_MIN = 0.60     # 2D occupancy floor: fraction of u-v grid cells with >=1 splat
+COVER_GRID = 6       # 6x6 = 36 cells over the window
+SCALE_CAP = 0.003    # drop needle outliers: max sigma 3 mm (tip-line for SIZE)
 
 
 def decode_world(genome: dict, shells) -> np.ndarray:
@@ -97,6 +100,13 @@ def patches_from_region(genome: dict, shells, rng) -> np.ndarray:
         if m.sum() < 64:
             continue
         idx = np.nonzero(m)[0]
+        # occupancy gate: the window must be a full sheet, not an edge band --
+        # a half-empty window reads as "clumps", not fur (smoke test 2026-08-21)
+        cell = np.floor((uvz[idx, :2] + PATCH_HALF) / (2 * PATCH_HALF) * COVER_GRID)
+        cell = np.clip(cell, 0, COVER_GRID - 1).astype(int)
+        cover = len(np.unique(cell[:, 0] * COVER_GRID + cell[:, 1])) / (COVER_GRID ** 2)
+        if cover < COVER_MIN:
+            continue
         if len(idx) > N_PTS:
             idx = rng.choice(idx, size=N_PTS, replace=False)
         feat = np.zeros((N_PTS, 14), dtype=np.float32)
@@ -118,6 +128,11 @@ def main() -> int:
     ap.add_argument("--genomes", required=True)
     ap.add_argument("--regions", nargs="+", required=True)
     ap.add_argument("--material", default="fur_brown", help="corpus label")
+    ap.add_argument("--clusters", type=int, default=0,
+                    help="chromaticity k-means over each genome BEFORE patching "
+                         "(unlabeled donors: select the material, not the region)")
+    ap.add_argument("--only", type=int, nargs="+", default=None,
+                    help="cluster indices to keep (requires --clusters)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -130,11 +145,23 @@ def main() -> int:
         need = {"core_idx", "h", "u", "v", "q_local", "scale", "rgb", "alpha"}
         if need - set(g):
             raise SystemExit(f"REFUSED: {reg} genome missing {sorted(need - set(g))}")
+        if a.clusters:
+            if a.only is None:
+                raise SystemExit("REFUSED: --clusters needs --only <cluster indices>")
+            from train_material import chroma_features
+            sys.path.insert(0, str(ROOT / "ChimeraEngine"))
+            from native.extract_materials import kmeans
+            lab, _ = kmeans(chroma_features(g["rgb"].astype(np.float64)), a.clusters)
+            keep = np.isin(lab, a.only)
+            g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
+                 for k, v in g.items()}
+            print(f"{reg:9s} chroma clusters {a.only}: kept {keep.sum()}")
         tip = tip_line(g["h"])  # density cutoff: fur ends, floaters begin
         keep = g["h"] <= tip
+        keep &= g["scale"].max(1) <= SCALE_CAP  # needle splats render as streaks
         g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
              for k, v in g.items()}
-        print(f"{reg:9s} tip line {tip*1000:5.1f}mm, dropped {int((~keep).sum())} floaters")
+        print(f"{reg:9s} tip line {tip*1000:5.1f}mm, dropped {int((~keep).sum())} floaters/needles")
         p = patches_from_region(g, shells, rng)
         print(f"{reg:9s} genome n={len(g['rgb']):6d} -> {len(p):4d} patches")
         all_p.append(p)
