@@ -44,7 +44,11 @@ def main() -> int:
         # keep the mask mapping by new name
     print(f"frames <- {len(imgs)} images")
 
-    stage_sfm(workdir)  # COLMAP: feature -> sequential match -> map -> undistort
+    stage = workdir / "data" / "images"
+    if stage.exists():
+        print("sfm output exists -- skipping COLMAP")
+    else:
+        stage_sfm(workdir)  # COLMAP: feature -> sequential match -> map -> undistort
 
     # black-mask the undistorted training images (CO3D mask per original frame)
     data_imgs = workdir / "data" / "images"
@@ -54,7 +58,7 @@ def main() -> int:
         mask_p = src / "masks" / (orig.stem + ".png")
         if not mask_p.exists():
             continue
-        img = np.asarray(Image.open(f).convert("RGB"))
+        img = np.array(Image.open(f).convert("RGB"))  # np.array: writable copy
         msk = np.asarray(Image.open(mask_p).convert("L").resize(img.shape[1::-1])) > 127
         img[~msk] = 0
         Image.fromarray(img).save(f)
