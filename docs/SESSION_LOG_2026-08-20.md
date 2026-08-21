@@ -103,3 +103,29 @@ are addressable and repaintable. The bear is the demo; **this is the game-asset 
   generation, splat, CAD, trained coat); manual method proven before the dyad is
   applied; every process becomes an MCP tool on the server that controls Chimera
   Engine. Written to `docs/THE_METHOD.md`; viewer enhancement (stage slots) follows.
+
+## 2026-08-21 (late) — the build-our-own orbit lane, first real-photo run
+
+- **Provenance saga closed.** The "good bear" = TripoSplat `teddy.splat` from
+  `cand_classic.png` (262,144 splats exactly). The million-plus artifacts the operator
+  remembered were TRELLIS *meshes* from the same image. `genbear_front.splat` (Seedance
+  movie → COLMAP → 3DGS, Aug 19) is the shard-fur method the operator pointed at;
+  abandoned then for generated-video camera drift (double-image ghost).
+- **The fur law** (settled, written into THE_METHOD): fur relief needs multi-view
+  disagreement; every single-image feed-forward model is a membrane by construction.
+- **Operator directive:** build our own CAT3D-class lane from local pieces (SV3D +
+  gsplat), after the survey found the described technique (1°-increment generative
+  orbit + additive fusion + loop closure) is Google's closed CAT3D/ReconFusion.
+- **Run:** source = the operator's real plush photo (`models/imagegen/real_plush.jpg`,
+  OneDrive). New tools: `tools/cut_anchor.py` (rembg cutout → 1024² RGBA anchor),
+  `tools/assemble_ring_poses.py` (ring dirs → poses.json; frame_00 of non-eq rings
+  dropped — duplicate anchor view). `gen_ring.py` parameterized (`--anchor`/`--out`).
+- 5 rings × 21 frames generated (eq, ±20, ±40; flip trick for negatives). Agent
+  inspected frames at multiple azimuths/elevations: coherent back, correct flip,
+  no ghosting visible in the views themselves.
+- Focal calibration: best f=750px, interior of the 300–1500 grid, median reprojection
+  2.97px at 576² — RULE 0 falsifier did not fire. Dataset: 101 images, r=1.562.
+- Training traps re-hit and recorded for good: bash eats backslashes in absolute
+  `--data_dir` (use forward slashes); the in-repo examples copy defaults
+  `data_factor 4` (proven run used `--data_factor 1`); torch's extension loader needs
+  `ninja` ON PATH even for the cached build (prepend `.venv-gs/Scripts` to PATH).

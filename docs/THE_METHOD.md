@@ -22,11 +22,41 @@ artifact; each artifact is presented in its slot before any downstream work runs
 | Slot | Artifact | Tooling that fills it |
 |------|----------|-----------------------|
 | **SOURCE** | the 2D picture | shown FIRST, before any generation run |
-| **SPLAT** | the 3DGS cloud from the source | TripoSplat (`models/triposplat/gen_teddy_apose.py`) |
+| **SPLAT** | the 3DGS cloud from the source | **multi-view orbit lane** (below) — fallback: TripoSplat single-image (`models/triposplat/gen_teddy_apose.py`) |
 | **CAD** | the authored body fit to the splat | `tools/teddy_catalog.py` · `tools/fit_body_to_splat.py` |
 | **COAT** | the trained/settled painted result | `tools/teddy_skin.py` · `tools/paint_from_splat.py` |
 | **SCENE** | the composed scene | not built — encompasses the others when it lands |
 | **STORY** | the narrative layer | not built — a slot reserved, per the declaration |
+
+### The SPLAT stage: multi-view orbit lane (declared 2026-08-21)
+
+**The fur law (measured, settled):** single-image feed-forward generators
+(TripoSplat, DiffSplat, LGM) produce surface-membrane pancake splats — fur relief is
+unobservable from one view, so the model paints a flat shell. Shard-type stand-up fur
+splats come only from multi-view photogrammetric optimization, where views disagree and
+force the splats off the surface. The operator identified this on sight in
+`genbear_front.splat` ("I can see the shards"). The conclusion, operator-declared:
+*build our own CAT3D-class lane from local $0 pieces* — no closed model.
+
+The lane (every step local, commanded, recorded):
+
+1. `tools/cut_anchor.py` — source photo → rembg RGBA cutout, centered, black-ready
+   (SV3D is image-conditioned; the anchor IS frame_00 of every ring).
+2. `external/sv3d-diffusers/gen_ring.py --elev E --name N [--flip]` — SV3D commanded
+   orbit rings (eq, ±20°, ±40°; negative elevations via the verified flip trick).
+   Loop-closed by construction: ring frame_00 = frame_21, drift impossible.
+3. `tools/assemble_ring_poses.py` — ring dirs → `poses.json` (the commanded orbit IS
+   ground truth; no pose estimation, hence no ghosting).
+4. `tools/sv3d_to_colmap.py` — poses + SIFT focal calibration (RULE 0: interior minimum
+   or the run is void) → gsplat COLMAP-format dataset.
+5. gsplat `simple_trainer.py default --data_factor 1 --max_steps 30000 --disable_viewer`
+   in `.venv-gs` (ninja on PATH; cached `gsplat_cuda.pyd`, `TORCH_CUDA_ARCH_LIST=8.9`).
+6. `tools/orient_splat.py` — PLY → PCA-upright, recentered `.splat`
+   (head/front sign decided by an eye-check render, never assumed).
+7. `tools/densify_splat.py` — smart clip (8th-NN distance > 3× median = floater) +
+   modest growth. **Never a global alpha floor** (proven by A/B to arm TripoSplat's
+   background shell and blow out the bear).
+8. Six-angle shots (`tools/http_shots.js`), agent self-inspection, then the SPLAT gate.
 
 ## The gates (mandatory checklist, every asset, every time)
 
