@@ -168,3 +168,36 @@ density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.
   models/littlebear/*.
 - Eye on the 6-view gate: front 95 / back 95 / left 90 / right 95 / top 0 / bottom 5
   (top/bottom are the known framing artifact + the waived butt hole).
+
+## Region cutting + patch corpus (night, operator-authorized)
+- METHOD (operator, locked): RGB on a hue wheel, take angular sections, then
+  cross-reference with the splat pattern (aniso separates knit from fur where hues
+  collide); regions = hue sections + spatial volumes + pattern. Per-region statistical
+  distributions (color, log_size, aniso, opacity) ARE the training targets.
+- GROUND MARGIN (operator): the bottom 5% of the donor's Y range is excluded from
+  EVERY region forever -- contact shadow and static live where the bear touches ground.
+- `tools/littlebear_regions.py` cuts models/littlebear/genomes/{fur,sweater,cream,dark}.npz
+  (full 14-var attributes + hue/sat/val/aniso) + paints a verification splat
+  (_qualify/regions.splat: fur red, sweater green, cream white, dark gray, else faded).
+  Counts: fur 111,523 / sweater 17,167 / cream 3,464 / dark 537. Operator AUTHORIZED
+  the paint after orbiting it ("You picked smart ones").
+- FRAME TRAP (measured, cost a cycle): donor.splat raw bytes ARE the canonical frame
+  (+Y up, face +Z); cpp_bridge.load_splat applies SPLAT_ORIENT ON TOP (loaded =
+  (raw.z, -raw.y, raw.x)) -- probes run in loaded space measured the LEGS thinking
+  they were the head, and the verification paint landed upside-down on the bear.
+  littlebear_regions.py now parses .splat bytes directly and never calls cpp_bridge.
+- `tools/cut_patches.py --raw`: patches from region genomes without shells -- local
+  sheet plane from the window's own splats (SVD), normal flipped so the relief tail
+  points OUT, zero shifted to the p5 height (backing floor = inner-membrane stand-in).
+  WINDOW-SIZE LESSON: the 5cm half-window was tuned for a ~0.6m bear; on the 0.3m
+  littlebear it spanned the head's curvature radius and every patch rendered as a
+  RING (flat slab through a curved shell). Scale the window to the donor: half=0.025.
+- Corpus (operator-reviewed preview sheet, "everything looks good ... begin training"):
+  fur 274 patches (2048 splats each), sweater 165 (~660 median), cream 85.
+- `tools/qualify_corpus.py --half`: presentation zoom now matches the cut window.
+  Fur qualification (274 patches, qwen3.8 YES/NO + reason, rejects sheet for operator
+  audit) running at commit time.
+- `tools/preview_corpus.py`: the corpus contact sheet is a real tool now (was heredoc).
+- Engine UI MATERIAL tab: regions table (color swatch, n, aniso, opacity, definition)
+  + orbitable verification paint + regions sheet + patch preview + qualification
+  verdicts + rejects audit sheet. sync_ui.py carries the littlebear artifacts.

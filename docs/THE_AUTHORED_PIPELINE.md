@@ -90,15 +90,27 @@ Both authored layers are LEARNED from real scans, not hand-tuned. Under
 
 Materials are extracted from REAL photogrammetry 3DGS scans (CO3D teddies first —
 real fur, real adaptive-density statistics; `splat_genome.py` proved the size/aniso
-fingerprint exists ONLY in ADC-trained clouds). **Before extraction, the donor is
+fingerprint exists ONLY in ADC-trained clouds). The working donor is **littleBear**
+(SuperSplat dcb0a76d, a real scan): sectioned NOT by chalk but by the operator's
+color-wheel method — hue sections + spatial volumes + a 5% ground margin, painted
+and orbit-verified (`tools/littlebear_regions.py`; genomes in
+`models/littlebear/genomes/`). **Frame trap, measured:** donor `.splat` raw bytes are
+already canonical (+Y up, face +Z) — `cpp_bridge.load_splat` adds SPLAT_ORIENT on
+top, so any probe in "loaded" space measures the bear upside-down. Parse the bytes.
+**Before extraction, the donor is
 sectioned by [`THE_SECTIONING_METHOD.md`](THE_SECTIONING_METHOD.md)** (declared
 2026-08-21): chalk-drawn hierarchical regions + a triangulated stick figure, both
 eye-verified on the real object — genomes are extracted PER REGION, relative to the
 inner core. The unit of extraction is the
-**patch**: a ~2cm surface disc carrying its full splat population (count, sizes,
+**patch**: a surface window carrying its full splat population (count, sizes,
 anisotropies, orientations, colors, relief heights) plus a **context key**
 (part-relative position, tone, curvature, **nap direction** — fur lies along a grain;
 the orientation field is extracted with the patch or sprayed fur reads as noise).
+**Scale the window to the donor**: 5cm half-window per 0.6m of object height —
+larger spans the curvature radius and a flat slab through a curved shell renders as
+a RING, not a sheet (measured on littlebear, 0.3m → 2.5cm). Every patch faces the
+eye before it may teach (`tools/qualify_corpus.py`: qwen3.8 YES/NO + reason, rejects
+sheet for operator audit); patch value = its real splat count.
 
 Spraying is **conditional transplant**: target locations on the CAD body retrieve
 patches whose context matches, transplant with jitter, blend seams. Variation is

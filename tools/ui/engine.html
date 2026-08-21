@@ -99,16 +99,43 @@ const VIEWS = {
   },
 
   async material(){
-    let out = `<h2>MATERIAL GATE</h2><div class="note">Question: "0-100, how much does this look like real teddy bear fur?" Rendered through the real viewer at native splat resolution. Threshold set by the human's own scores.</div>`;
+    let out = `<h2>MATERIAL GATE</h2><div class="note">The donor, cut into material regions (hue wheel + spatial volumes + ground margin), then into patch sheets; the eye qualifies every patch before it may teach.</div>`;
+    // 1. REGIONS: the verification paint, orbitable + 6-view sheet + per-region stats
+    try {
+      const reg = await fetchJSON("ui/regions.json");
+      const rows = Object.entries(reg).map(([n,v])=>{
+        const c = (v.color_mean||[]).map(x=>Math.round(x*255));
+        const sw = c.length?`<span style="display:inline-block;width:12px;height:12px;background:rgb(${c});border:1px solid #555;vertical-align:-2px"></span>`:"";
+        return `<tr><td>${sw} ${n}</td><td>${v.n}</td><td>${v.aniso_mean?.toFixed(1)??""}</td><td>${v.opacity_mean?.toFixed(2)??""}</td><td style="color:#8a8698;font-size:12px">${v.definition||""}</td></tr>`;
+      }).join("");
+      out += `<h3>REGIONS</h3><table><tr><th>region</th><th>splats</th><th>aniso</th><th>opacity</th><th>definition</th></tr>${rows}</table>`;
+    } catch {}
+    try { await fetch("ui/regions.splat",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<iframe style="width:100%;height:60vh;border:0" src="viewer.html?ply=ui/regions.splat&orient=0&az=0&el=0.15&r=0.55"></iframe>`; } catch {}
+    try { await fetch("ui/regions_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<img class="sheet" src="ui/regions_sheet.png">`; } catch {}
+    // 2. PATCH CORPUS: the sheets the operator approved
+    try { await fetch("ui/patches_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<h3>PATCH CORPUS (preview)</h3><img class="sheet" src="ui/patches_sheet.png">`; } catch {}
+    // 3. QUALIFICATION: the eye's verdicts + the rejects sheet (audit trail)
+    try {
+      const q = await fetchJSON("ui/fur_qualify.json");
+      out += `<h3>FUR QUALIFICATION</h3><div class="note">${q.question||""}</div>` +
+             `<table><tr><th>examined</th><th>qualified</th><th>rejected</th></tr>` +
+             `<tr><td>${q.examined??"?"}</td><td class="score hi">${q.qualified??"?"}</td><td class="score lo">${q.rejected??"?"}</td></tr></table>`;
+    } catch {}
+    try { await fetch("ui/fur_rejects.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out += `<h3>REJECTS (operator audit)</h3><img class="sheet" src="ui/fur_rejects.png">`; } catch {}
+    // 4. legacy scores lane (co3d) if present
     try {
       const scores = await fetchJSON("ui/scores.json");
       const med = Object.entries(scores).map(([n,v])=>[n, v.slice().sort((a,b)=>a-b)[Math.floor(v.length/2)]])
         .sort((a,b)=>b[1]-a[1]);
-      out += `<table><tr><th>patch</th><th>score</th></tr>` +
+      out += `<h3>LEGACY SCORES</h3><table><tr><th>patch</th><th>score</th></tr>` +
         med.map(([n,s])=>`<tr><td>${n}</td><td class="score ${cls(s)}">${s}</td></tr>`).join("") + `</table>`;
-    } catch { out += `<div class="empty">no material scores yet</div>`; }
+    } catch {}
     try { await fetch("ui/scored_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
-          out = `<img class="sheet" src="ui/scored_sheet.png">` + out; } catch {}
+          out += `<img class="sheet" src="ui/scored_sheet.png">`; } catch {}
     return out;
   },
 

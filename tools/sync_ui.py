@@ -24,6 +24,12 @@ ARTIFACTS = [
     ROOT / ".tmp/qualify/source246_sheet.png",              # -> donor_sheet.png
     ROOT / ".tmp/qualify/source_donor/source_score.json",   # -> donor_gate.json
     ROOT / "models/littlebear/donor.splat",                 # -> donor.splat (APPROVED DONOR: littleBear, SuperSplat dcb0a76d)
+    ROOT / "models/triposplat/static/viewer/_qualify/regions.splat",  # -> ui/regions.splat (verification paint)
+    ROOT / ".tmp/hunt/regions_sheet.png",                   # -> ui/regions_sheet.png
+    ROOT / "models/littlebear/genomes/regions.json",        # -> ui/regions.json (region stats = training targets)
+    ROOT / ".tmp/preview/patches_sheet.png",                # -> ui/patches_sheet.png (operator-approved corpus preview)
+    ROOT / ".tmp/qualify_littlebear_fur/report.json",       # -> ui/fur_qualify.json (the eye's verdicts)
+    ROOT / ".tmp/qualify_littlebear_fur/rejects_sheet.png", # -> ui/fur_rejects.png (operator audit)
     ROOT / "tools/specs/bear34_parts_plan.json",            # -> parts_plan.json
     ROOT / "Chimera/docs/THE_STORY.md",
     ROOT / "ChimeraEngine/docs_THE_STORY.md",
@@ -36,6 +42,8 @@ RENAMES = {
     "source_score.json": "donor_gate.json",
     "co3d246_dense.splat": "donor.splat",
     "bear34_parts_plan.json": "parts_plan.json",
+    "report.json": "fur_qualify.json",
+    "rejects_sheet.png": "fur_rejects.png",
     "docs_THE_STORY.md": "THE_STORY.md",  # fallback if Chimera/docs copy missing
 }
 
