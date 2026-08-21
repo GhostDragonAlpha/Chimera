@@ -111,6 +111,10 @@ def main() -> int:
                     help="viewer = the REAL renderer (playwright screenshot of "
                          "viewer.html); soft = the numpy mini-rasterizer (fast, "
                          "approximate -- never for a final verdict)")
+    ap.add_argument("--half", type=float, default=0.050,
+                    help="patch half-window the corpus was cut with (cut_patches --half); "
+                         "the presentation zoom must match or the eye sees a postage "
+                         "stamp in a black field")
     a = ap.parse_args()
 
     if not senses.available():
@@ -120,7 +124,8 @@ def main() -> int:
 
     work = Path(a.workdir)
     work.mkdir(parents=True, exist_ok=True)
-    from cut_patches import PATCH_HALF, N_PTS
+    from cut_patches import N_PTS
+    PATCH_HALF = a.half
     # NATIVE-RESOLUTION presentation (2026-08-21, eye-verified): splats are
     # trained at ~1 px per splat footprint (~0.8 mm); zooming past that reads
     # as sparse dust and the eye is RIGHT to reject it. Present the window at

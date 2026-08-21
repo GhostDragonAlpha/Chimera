@@ -16,6 +16,10 @@ Usage:
   .venv-gs/Scripts/python.exe tools/cut_patches.py --shells models/co3d/bear34_shells.npz \
       --genomes models/co3d/genomes --regions head ear_L ear_R snout paw_L foot_L foot_R \
       --out models/co3d/corpus/fur.npz
+  # littlebear (raw region genomes, no shells):
+  .venv-gs/Scripts/python.exe tools/cut_patches.py --raw \
+      --genomes models/littlebear/genomes --regions fur --material fur_brown \
+      --out models/littlebear/corpus/fur.npz
 """
 from __future__ import annotations
 
@@ -27,7 +31,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
-from extract_genomes import core_frames  # noqa: E402
+from extract_genomes import core_frames, quat_mul  # noqa: E402
 from train_material import tip_line  # noqa: E402
 
 PATCH_HALF = 0.050   # 100 mm square window (eye needs material-scale context)
@@ -122,9 +126,83 @@ def patches_from_region(genome: dict, shells, rng) -> np.ndarray:
     return np.stack(out) if out else np.zeros((0, N_PTS, 14), np.float32)
 
 
+def patches_from_raw(genome: dict, rng) -> np.ndarray:
+    """Raw mode (littlebear region genomes -- no shells/membrane exists for this
+    donor yet). The window's own splats define the local sheet plane (SVD); the
+    normal is oriented so the relief's long tail (fur tips) points OUT, and the
+    plane zero is shifted down to the p5 height so zero = the backing floor --
+    the inner-membrane stand-in (operator: extraction zero = the thin sheet's
+    inner surface). Positions/quats are the raw canonical frame (+Y up, face +Z)
+    -- NEVER cpp_bridge.load_splat space (SPLAT_ORIENT flips this donor's Y)."""
+    sys.path.insert(0, str(ROOT / "ChimeraEngine"))
+    from cpp_bridge import _matrix_to_quat  # full Shepperd -- frame_quat's tr>0-only branch NaNs
+    from scipy.spatial import cKDTree
+    from extract_genomes import quat_conj
+
+    pos = genome["pos"].astype(np.float64)
+    tree = cKDTree(pos)
+    picked, seen = [], set()
+    for i, p in enumerate(pos):
+        cell = tuple((p / STRIDE).astype(int))
+        if cell not in seen:
+            seen.add(cell)
+            picked.append(i)
+    out = []
+    for s in picked:
+        widx = np.array(tree.query_ball_point(pos[s], PATCH_HALF * 1.5))
+        if len(widx) < 64:
+            continue
+        P = pos[widx]
+        c = P.mean(0)
+        _, _, Vt = np.linalg.svd(P - c, full_matrices=False)
+        n = Vt[2]
+        h0 = (P - c) @ n
+        # fur relief is right-skewed (long tip tail); flip the normal until it is
+        sk = ((h0 - h0.mean()) ** 3).mean() / max(h0.std(), 1e-12) ** 3
+        if sk < 0:
+            n = -n
+            h0 = -h0
+        c = c + n * np.percentile(h0, 5)  # zero = backing floor, not mid-fur
+        ref = np.array([0.0, 1.0, 0.0]) if abs(n[1]) < 0.9 else np.array([1.0, 0.0, 0.0])
+        t1 = np.cross(n, ref)
+        t1 /= np.linalg.norm(t1)
+        t2 = np.cross(n, t1)
+        frame = np.stack([t1, t2, n], 1)
+        rel = P - c
+        uvz = np.stack([rel @ t1, rel @ t2, rel @ n], 1)
+        m = ((np.abs(uvz[:, 0]) <= PATCH_HALF) & (np.abs(uvz[:, 1]) <= PATCH_HALF)
+             & (uvz[:, 2] >= H_MIN) & (uvz[:, 2] <= H_MAX))
+        if m.sum() < 64:
+            continue
+        idx = widx[np.nonzero(m)[0]]
+        cell = np.floor((uvz[m, :2] + PATCH_HALF) / (2 * PATCH_HALF) * COVER_GRID)
+        cell = np.clip(cell, 0, COVER_GRID - 1).astype(int)
+        cover = len(np.unique(cell[:, 0] * COVER_GRID + cell[:, 1])) / (COVER_GRID ** 2)
+        if cover < COVER_MIN:
+            continue
+        if len(idx) > N_PTS:
+            idx = rng.choice(idx, size=N_PTS, replace=False)
+        qf = _matrix_to_quat(frame[None]).repeat(len(idx), 0)
+        q = quat_mul(quat_conj(qf), genome["rot"][idx].astype(np.float64))
+        q[q[:, 0] < 0] *= -1  # canonical hemisphere
+        feat = np.zeros((N_PTS, 14), dtype=np.float32)
+        feat[:len(idx), 0:3] = (pos[idx] - c) @ frame
+        feat[:len(idx), 3:6] = genome["rgb"][idx]
+        feat[:len(idx), 6] = genome["alpha"][idx]
+        feat[:len(idx), 7:10] = np.log(np.clip(genome["scale"][idx], 1e-6, None))
+        feat[:len(idx), 10:14] = q
+        feat[len(idx):, 6] = 0.0  # padding: alpha 0 -> invisible, harmless
+        out.append(feat)
+    return np.stack(out) if out else np.zeros((0, N_PTS, 14), np.float32)
+
+
 def main() -> int:
+    global STRIDE, PATCH_HALF
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--shells", required=True)
+    ap.add_argument("--shells", default=None, help="bear34-style shells npz; omit with --raw")
+    ap.add_argument("--raw", action="store_true",
+                    help="raw region genomes (pos/rgb/alpha/scale/rot, canonical frame) "
+                         "-- no shells; local sheet plane from the window's own splats")
     ap.add_argument("--genomes", required=True)
     ap.add_argument("--regions", nargs="+", required=True)
     ap.add_argument("--material", default="fur_brown", help="corpus label")
@@ -134,15 +212,25 @@ def main() -> int:
     ap.add_argument("--only", type=int, nargs="+", default=None,
                     help="cluster indices to keep (requires --clusters)")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--stride", type=float, default=STRIDE,
+                    help="seed grid stride (m); smaller = more overlapping patches")
+    ap.add_argument("--half", type=float, default=PATCH_HALF,
+                    help="patch half-window (m). Scale it to the donor: 0.05 was tuned "
+                         "for a ~0.6 m bear; littlebear is 0.3 m so 0.025 keeps the "
+                         "window flat against the surface curvature (a window the size "
+                         "of the head's curvature radius renders as a RING, not a sheet)")
     a = ap.parse_args()
+    STRIDE = a.stride
+    PATCH_HALF = a.half
 
-    shells = np.load(a.shells)
+    shells = None if a.raw else np.load(a.shells)
     rng = np.random.default_rng(0)
     all_p = []
     for reg in a.regions:
         g = dict(np.load(Path(a.genomes) / f"{reg}.npz"))
         # 14-var provenance gate (operator: mandatory)
-        need = {"core_idx", "h", "u", "v", "q_local", "scale", "rgb", "alpha"}
+        need = {"pos", "rot", "scale", "rgb", "alpha"} if a.raw else \
+               {"core_idx", "h", "u", "v", "q_local", "scale", "rgb", "alpha"}
         if need - set(g):
             raise SystemExit(f"REFUSED: {reg} genome missing {sorted(need - set(g))}")
         if a.clusters:
@@ -156,13 +244,20 @@ def main() -> int:
             g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
                  for k, v in g.items()}
             print(f"{reg:9s} chroma clusters {a.only}: kept {keep.sum()}")
-        tip = tip_line(g["h"])  # density cutoff: fur ends, floaters begin
-        keep = g["h"] <= tip
-        keep &= g["scale"].max(1) <= SCALE_CAP  # needle splats render as streaks
-        g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
-             for k, v in g.items()}
-        print(f"{reg:9s} tip line {tip*1000:5.1f}mm, dropped {int((~keep).sum())} floaters/needles")
-        p = patches_from_region(g, shells, rng)
+        if a.raw:
+            keep = g["scale"].max(1) <= SCALE_CAP  # needle splats render as streaks
+            g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
+                 for k, v in g.items()}
+            print(f"{reg:9s} dropped {int((~keep).sum())} needles")
+            p = patches_from_raw(g, rng)
+        else:
+            tip = tip_line(g["h"])  # density cutoff: fur ends, floaters begin
+            keep = g["h"] <= tip
+            keep &= g["scale"].max(1) <= SCALE_CAP  # needle splats render as streaks
+            g = {k: (v[keep] if isinstance(v, np.ndarray) and len(v) == len(keep) else v)
+                 for k, v in g.items()}
+            print(f"{reg:9s} tip line {tip*1000:5.1f}mm, dropped {int((~keep).sum())} floaters/needles")
+            p = patches_from_region(g, shells, rng)
         print(f"{reg:9s} genome n={len(g['rgb']):6d} -> {len(p):4d} patches")
         all_p.append(p)
     P = np.concatenate(all_p)

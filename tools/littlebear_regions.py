@@ -75,11 +75,13 @@ def load_raw(path: Path):
     pos = a[:, 0:12].copy().view(np.float32).reshape(n, 3).astype(np.float64)
     scale = a[:, 12:24].copy().view(np.float32).reshape(n, 3).astype(np.float64)
     rgba = a[:, 24:28].astype(np.float64) / 255.0
-    return a, pos, scale, rgba
+    rot = (a[:, 28:32].astype(np.float64) - 128.0) / 128.0  # [w,x,y,z] packed u8
+    rot = rot / np.linalg.norm(rot, axis=1, keepdims=True)
+    return a, pos, scale, rgba, rot
 
 
 def main() -> int:
-    raw, pos, scale, rgba = load_raw(DONOR)
+    raw, pos, scale, rgba, rot = load_raw(DONOR)
     rgb, alpha = rgba[:, :3], rgba[:, 3]
 
     mx, mn = rgb.max(1), rgb.min(1)
@@ -150,7 +152,7 @@ def main() -> int:
         sel = np.where(mask)[0]
         np.savez(OUTDIR / f"{name}.npz",
                  idx=sel, pos=pos[sel], rgb=rgb[sel], alpha=alpha[sel],
-                 scale=scale[sel], aniso=aniso[sel], geo=geo[sel],
+                 scale=scale[sel], rot=rot[sel], aniso=aniso[sel], geo=geo[sel],
                  hue=h[sel], sat=sat[sel], val=val[sel])
         meta[name] = {
             "definition": defn,
