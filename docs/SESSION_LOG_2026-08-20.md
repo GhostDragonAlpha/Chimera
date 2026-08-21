@@ -183,3 +183,19 @@ are addressable and repaintable. The bear is the demo; **this is the game-asset 
   (circular mean of member splat major axes on the tangent plane). Metric
   libraries: `models/patch_library/co3d_{34,187}_metric.json` (1399 / 1597 patches,
   median 22 / 18 splats per patch). These are the first REAL fur genomes.
+
+## 2026-08-21 (night, cont.) — MCMC density experiment: FALSIFIED by the eye
+
+- MCMC crash root-caused with a standalone repro: torch.multinomial on an EMPTY
+  weights tensor = "CUDA error: invalid configuration argument". The mcmc path had
+  driven ALL 1M opacities <= min_opacity (mass extinction; opacity_reg 0.01 is the
+  pressure). Fix: empty-alive guard patched into .venv-gs gsplat mcmc.py (recorded
+  here; site-packages, not committed) + --opacity-reg 0. Rerun held 1,000,000 GSs
+  to step 30k, loss 0.007.
+- VERDICT, headless six-side inspection: the MCMC bear is WORSE than the
+  default-strategy bear -- fur dissolved to lint-like speckle, pajama blotchy,
+  colors washed. 1M semi-transparent splats < 84k crisp ones. More splats is not
+  more quality; the default strategy + envelope stands as the reference export
+  (models/co3d/co3d_34.splat). The densify pass (footprint grow + alpha sharpen,
+  models/co3d/co3d_34_dense.splat) remains the cheap hole-closer.
+- train_rings.bat: TRAIN_SUBCMD env selects the strategy subcommand (a0e6ec0).
