@@ -1,0 +1,36 @@
+{
+  "joints": [
+    {"name": "pelvis", "parent": null, "marks": [
+      {"tile": "front", "px": [318, 268]}, {"tile": "right", "px": [360, 255]}, {"tile": "left", "px": [300, 250]}]},
+    {"name": "chest", "parent": "pelvis", "marks": [
+      {"tile": "front", "px": [318, 205]}, {"tile": "right", "px": [335, 185]}, {"tile": "left", "px": [320, 185]}]},
+    {"name": "neck", "parent": "chest", "marks": [
+      {"tile": "front", "px": [318, 158]}, {"tile": "right", "px": [300, 145]}, {"tile": "left", "px": [330, 150]}]},
+    {"name": "head", "parent": "neck", "marks": [
+      {"tile": "front", "px": [300, 95]}, {"tile": "right", "px": [280, 90]}, {"tile": "left", "px": [320, 110]}]},
+    {"name": "shoulder_L", "parent": "chest", "marks": [
+      {"tile": "front", "px": [250, 178]}, {"tile": "left", "px": [330, 175]}]},
+    {"name": "elbow_L", "parent": "shoulder_L", "marks": [
+      {"tile": "front", "px": [212, 210]}, {"tile": "left", "px": [360, 205]}]},
+    {"name": "wrist_L", "parent": "elbow_L", "marks": [
+      {"tile": "front", "px": [212, 232]}, {"tile": "left", "px": [375, 222]}]},
+    {"name": "shoulder_R", "parent": "chest", "marks": [
+      {"tile": "front", "px": [385, 165]}, {"tile": "right", "px": [310, 158]}]},
+    {"name": "elbow_R", "parent": "shoulder_R", "marks": [
+      {"tile": "front", "px": [415, 185]}, {"tile": "right", "px": [325, 195]}]},
+    {"name": "wrist_R", "parent": "elbow_R", "marks": [
+      {"tile": "front", "px": [418, 208]}, {"tile": "right", "px": [330, 215]}]},
+    {"name": "hip_L", "parent": "pelvis", "marks": [
+      {"tile": "front", "px": [285, 270]}, {"tile": "left", "px": [300, 245]}]},
+    {"name": "knee_L", "parent": "hip_L", "marks": [
+      {"tile": "front", "px": [300, 262]}, {"tile": "left", "px": [340, 240]}]},
+    {"name": "ankle_L", "parent": "knee_L", "marks": [
+      {"tile": "front", "px": [315, 285]}, {"tile": "left", "px": [360, 268]}]},
+    {"name": "hip_R", "parent": "pelvis", "marks": [
+      {"tile": "front", "px": [360, 262]}, {"tile": "right", "px": [350, 262]}]},
+    {"name": "knee_R", "parent": "hip_R", "marks": [
+      {"tile": "front", "px": [375, 255]}, {"tile": "right", "px": [315, 245]}]},
+    {"name": "ankle_R", "parent": "knee_R", "marks": [
+      {"tile": "front", "px": [388, 272]}, {"tile": "right", "px": [285, 280]}]}
+  ]
+}
