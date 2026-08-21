@@ -124,15 +124,17 @@ import subprocess
 
 REPO = Path(__file__).resolve().parent.parent
 GS_PY = REPO / ".venv-gs" / "Scripts" / "python.exe"
-DONOR = {  # the approved donor (CO3D bear 34) and its derived artifacts
-    "splat": "models/co3d/co3d_34.splat",
-    "labels": "models/co3d/bear34_labels.json",
-    "skel": "models/co3d/bear34_skeleton_solved.json",
-    "shells": "models/co3d/bear34_shells.npz",
-    "parts_json": "models/co3d/bear34_parts.json",
-    "genomes": "models/co3d/genomes",
-    "materials": "models/co3d/materials",
-    "parts_out": "models/co3d/parts",
+DONOR = {  # the approved donor: littleBear (SuperSplat scene dcb0a76d, real scan,
+           # 241k gaussians, 3 SH bands). Operator-authorized 2026-08-21: sample fur from
+           # HEAD and HANDS only (no clipped regions -- clipping is noise); the CAD inner
+           # core fills transparency in a DARKER shade of each surface material.
+    "splat": "models/littlebear/donor.splat",
+    "ply": "models/littlebear/donor_full.ply",
+    "genomes": "models/littlebear/genomes",
+    "materials": "models/littlebear/materials",
+    "parts_out": "models/littlebear/parts",
+    # labels / skel / shells / parts_json: NOT BUILT yet for this donor -- add the
+    # path here only when the artifact exists (doc_lint refuses broken pointers).
 }
 
 

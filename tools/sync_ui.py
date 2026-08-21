@@ -22,8 +22,8 @@ ARTIFACTS = [
     ROOT / ".tmp/qualify/full/scores.json",
     ROOT / ".tmp/qualify/full/scored_sheet.png",
     ROOT / ".tmp/qualify/source246_sheet.png",              # -> donor_sheet.png
-    ROOT / ".tmp/qualify/source_co3d_246/source_score.json",  # -> donor_gate.json
-    ROOT / "models/triposplat/static/viewer/_qualify/co3d246_dense.splat",  # -> donor.splat
+    ROOT / ".tmp/qualify/source_donor/source_score.json",   # -> donor_gate.json
+    ROOT / "models/littlebear/donor.splat",                 # -> donor.splat (APPROVED DONOR: littleBear, SuperSplat dcb0a76d)
     ROOT / "tools/specs/bear34_parts_plan.json",            # -> parts_plan.json
     ROOT / "Chimera/docs/THE_STORY.md",
     ROOT / "ChimeraEngine/docs_THE_STORY.md",

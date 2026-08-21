@@ -150,3 +150,21 @@ density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.
 - Donor 246 dense retrain (grow_grad2d 1e-4): 195,887 splats (was 94k), loss 0.002,
   6.5 min. Oriented upright via fixed extrinsic-up + --flip-up. Eye is NOISY on the source
   gate (front scored 90 then 0 on identical geometry) -- human terminal rules this gate.
+
+## DONOR ADOPTED: littleBear (SuperSplat dcb0a76d)
+- Hunted via the Playwright lane: Sketchfab had zero downloadable teddy splats; SuperSplat
+  gallery search "teddy" -> littleBear by mosheca, a REAL SCAN ("Fluffy brown bear, approx
+  10x10cm"), 241,251 gaussians, 3 SH bands, served as a SOG v2 bundle (CloudFront meta.json
+  + 7 webp planes). Decoded with @playcanvas/splat-transform (zip dir -> .sog -> .ply).
+- Operator ruling (the human terminal): ACCEPTED as donor. Slight transparency is FINE --
+  fibers are see-through; the CAD inner core fills it in a DARKER shade of each surface
+  (darker brown under fur, darker green under the shirt). Hole on butt/back-of-legs waived:
+  sample fur ONLY from head and hands -- where there's clipping there's noise.
+- Materials by COLOR SORT (operator): brown fur / green knit / cream snout+feet / black
+  eyes+nose -- color defines regions; one scan yields four labeled materials.
+- Canonical frame: pinned, --ry -90 (face = +Z front), height 0.3m, blob-keep ->
+  models/littlebear/donor.splat (+ donor.space.json sidecar, donor_full.ply with full SH).
+  Engine UI SOURCE tab now carries this donor; mcp_server DONOR paths moved to
+  models/littlebear/*.
+- Eye on the 6-view gate: front 95 / back 95 / left 90 / right 95 / top 0 / bottom 5
+  (top/bottom are the known framing artifact + the waived butt hole).
