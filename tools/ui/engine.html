@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chimera Engine</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0b10;color:#d8d4c8;
+            font:14px/1.45 "Segoe UI",system-ui,sans-serif}
+  #tabs{display:flex;gap:2px;background:#12121a;border-bottom:1px solid #2a2a38;
+        padding:6px 10px 0}
+  .tab{padding:8px 18px;cursor:pointer;border:1px solid #2a2a38;border-bottom:none;
+       border-radius:6px 6px 0 0;background:#181822;color:#8a8698;user-select:none}
+  .tab.active{background:#0b0b10;color:#ffd87a;border-color:#4a4258}
+  .tab .rung{font-size:10px;color:#6a6680;display:block}
+  #page{height:calc(100% - 44px);overflow:auto;padding:14px}
+  iframe{width:100%;height:100%;border:0;background:#000}
+  img.sheet{max-width:100%;image-rendering:auto;background:#000}
+  table{border-collapse:collapse;margin-top:10px}
+  td,th{padding:3px 10px;border-bottom:1px solid #22222e;text-align:left}
+  th{color:#ffd87a}
+  .score{font-weight:700}
+  .hi{color:#7ae08a}.mid{color:#ffd87a}.lo{color:#e07a7a}
+  .empty{color:#6a6680;padding:30px;text-align:center}
+  h2{color:#ffd87a;font-size:16px;margin:6px 0 10px}
+  .note{color:#8a8698;font-size:12px;margin-bottom:10px}
+  pre{white-space:pre-wrap;color:#b8b4a8;font-size:13px}
+</style>
+</head>
+<body>
+<div id="tabs"></div>
+<div id="page"></div>
+<script>
+// Chimera Engine UI -- the human and the AI read the SAME page.
+// Tabs follow the qualification hierarchy: STORY -> SOURCE -> PARTS ->
+// MATERIAL -> SCENE. Data comes from JSON artifacts synced into this
+// directory by tools/sync_ui.py; the AI deep-links with ?tab=source and
+// screenshots exactly what the human sees.
+const TABS = [
+  ["story",    "STORY",    "the terms"],
+  ["source",   "SOURCE",   "is it a furry teddy bear? 0-100"],
+  ["parts",    "PARTS",    "is it a head / ear / bow tie?"],
+  ["material", "MATERIAL", "is it fur? 0-100"],
+  ["scene",    "SCENE",    "the assembled object"],
+];
+
+const tabsEl = document.getElementById("tabs");
+const pageEl = document.getElementById("page");
+const params = new URLSearchParams(location.search);
+
+function cls(s){ return s>=70 ? "hi" : s>=40 ? "mid" : "lo"; }
+async function fetchJSON(url){ const r = await fetch(url); if(!r.ok) throw 0; return r.json(); }
+
+const VIEWS = {
+  async story(){
+    let txt;
+    try { txt = await (await fetch("ui/THE_STORY.md")).text(); }
+    catch { return `<div class="empty">no story synced yet</div>`; }
+    const esc = txt.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+    return `<h2>THE STORY</h2><div class="note">The terms every gate below is scored against.</div><pre>${esc}</pre>`;
+  },
+
+  async source(){
+    let out = `<h2>SOURCE GATE</h2><div class="note">Question: "how much does this look like a complete, intact, FURRY teddy bear?" -- score = MIN over sampled views. A hole anywhere disqualifies the source.</div>`;
+    let furry = null, plain = null;
+    try { furry = await fetchJSON("ui/sources_furry.json"); } catch {}
+    try { plain = await fetchJSON("ui/sources.json"); } catch {}
+    const data = furry || plain;
+    if (data){
+      const rows = Object.entries(data).sort((a,b)=>b[1].min-a[1].min)
+        .map(([n,v])=>`<tr><td>${n}</td><td class="score ${cls(v.min)}">${v.min}</td><td>${(v.views||[]).join(" / ")}</td></tr>`).join("");
+      out += `<table><tr><th>sequence</th><th>min</th><th>views</th></tr>${rows}</table>`;
+      if (furry) out = out.replace("FURRY teddy bear?\"","FURRY teddy bear?\" (furry pass)");
+    } else out += `<div class="empty">no source scores yet</div>`;
+    try { await fetch("ui/sources_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out = `<img class="sheet" src="ui/sources_sheet.png">` + out; } catch {}
+    return out;
+  },
+
+  async parts(){
+    let out = `<h2>PARTS GATE</h2><div class="note">Each CAD part faces its own question: "is this a teddy bear head / ear / bow tie?" Nothing here yet -- the rung is built, the data is not.</div>`;
+    try {
+      const plan = await fetchJSON("ui/parts_plan.json");
+      out += `<table><tr><th>part</th><th>primitive</th><th>material</th></tr>` +
+        (plan.parts||[]).map(p=>`<tr><td>${p.name}</td><td>${p.primitive||""}</td><td>${p.material||""}</td></tr>`).join("") + `</table>`;
+    } catch { out += `<div class="empty">no parts plan synced</div>`; }
+    try { await fetch("ui/parts_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out = `<img class="sheet" src="ui/parts_sheet.png">` + out; } catch {}
+    return out;
+  },
+
+  async material(){
+    let out = `<h2>MATERIAL GATE</h2><div class="note">Question: "0-100, how much does this look like real teddy bear fur?" Rendered through the real viewer at native splat resolution. Threshold set by the human's own scores.</div>`;
+    try {
+      const scores = await fetchJSON("ui/scores.json");
+      const med = Object.entries(scores).map(([n,v])=>[n, v.slice().sort((a,b)=>a-b)[Math.floor(v.length/2)]])
+        .sort((a,b)=>b[1]-a[1]);
+      out += `<table><tr><th>patch</th><th>score</th></tr>` +
+        med.map(([n,s])=>`<tr><td>${n}</td><td class="score ${cls(s)}">${s}</td></tr>`).join("") + `</table>`;
+    } catch { out += `<div class="empty">no material scores yet</div>`; }
+    try { await fetch("ui/scored_sheet.png",{method:"HEAD"}).then(r=>{if(!r.ok)throw 0});
+          out = `<img class="sheet" src="ui/scored_sheet.png">` + out; } catch {}
+    return out;
+  },
+
+  async scene(){
+    const ply = params.get("ply") || "torso.splat";
+    pageEl.style.padding = "0";
+    pageEl.innerHTML = `<iframe src="viewer.html?ply=${encodeURIComponent(ply)}&orient=1&r=0.9"></iframe>`;
+    return null;
+  },
+};
+
+async function show(name){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.name===name));
+  pageEl.style.padding = "14px";
+  pageEl.innerHTML = `<div class="empty">loading…</div>`;
+  const html = await VIEWS[name]();
+  if (html !== null) pageEl.innerHTML = html;
+  history.replaceState(null,"",`?tab=${name}`);
+}
+
+for (const [name,label,rung] of TABS){
+  const el = document.createElement("div");
+  el.className = "tab"; el.dataset.name = name;
+  el.innerHTML = `${label}<span class="rung">${rung}</span>`;
+  el.onclick = ()=>show(name);
+  tabsEl.appendChild(el);
+}
+show(params.get("tab") || "source");
+</script>
+</body>
+</html>
