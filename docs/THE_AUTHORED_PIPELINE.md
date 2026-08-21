@@ -90,7 +90,11 @@ Both authored layers are LEARNED from real scans, not hand-tuned. Under
 
 Materials are extracted from REAL photogrammetry 3DGS scans (CO3D teddies first —
 real fur, real adaptive-density statistics; `splat_genome.py` proved the size/aniso
-fingerprint exists ONLY in ADC-trained clouds). The unit of extraction is the
+fingerprint exists ONLY in ADC-trained clouds). **Before extraction, the donor is
+sectioned by [`THE_SECTIONING_METHOD.md`](THE_SECTIONING_METHOD.md)** (declared
+2026-08-21): chalk-drawn hierarchical regions + a triangulated stick figure, both
+eye-verified on the real object — genomes are extracted PER REGION, relative to the
+inner core. The unit of extraction is the
 **patch**: a ~2cm surface disc carrying its full splat population (count, sizes,
 anisotropies, orientations, colors, relief heights) plus a **context key**
 (part-relative position, tone, curvature, **nap direction** — fur lies along a grain;
