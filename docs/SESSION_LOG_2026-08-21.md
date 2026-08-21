@@ -201,3 +201,15 @@ density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.
 - Engine UI MATERIAL tab: regions table (color swatch, n, aniso, opacity, definition)
   + orbitable verification paint + regions sheet + patch preview + qualification
   verdicts + rejects audit sheet. sync_ui.py carries the littlebear artifacts.
+
+## fur_brown TRAINED (night)
+- Eye qualification: 136/274 patches PASS (biased toward rejection by design; rejects
+  sheet synced to the MATERIAL tab for operator audit). 276,763 qualified splats.
+- `train_material.py --corpus`: 12-component GMM over [rgb, log scale, h_mm, alpha],
+  likelihood floor -7.3, mean color (0.71, 0.60, 0.45), real color box clamped.
+  models/littlebear/materials/fur_brown.npz + library.json.
+- Synthesis smoke test (GMM sample + q_local bootstrap on a flat 5cm membrane,
+  2048 splats, h clamped to the model's measured -2.1..14.7mm): renders as a full
+  fur-textured sheet with standing relief in the real viewer. Known limit: per-splat
+  independence cannot grow correlated lock structure (the wavy tufts) -- that is the
+  v2 pattern-conditioned generator.
