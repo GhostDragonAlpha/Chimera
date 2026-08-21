@@ -94,6 +94,15 @@ built in this order:
   shell line
 - `authorize(stage, verdict)` → records the human's gate decision beside the artifact
 
+## The reference asset: the teddy bear (declared 2026-08-21)
+
+The first object made by this method is the teddy bear, and it stays the worked
+example forever: the first occupant of every slot (SOURCE → SPLAT → CAD → COAT →
+SCENE → STORY), the first asset with a `space.json` sidecar, the beginning of the
+scene and of every story told in it. New pipeline capabilities are proven on the bear
+first; when the bear's workflow is settled, it is the template every later object
+copies.
+
 ## Standing orders confirmed alongside this declaration
 
 - No paid APIs. Local models only.

@@ -129,3 +129,27 @@ are addressable and repaintable. The bear is the demo; **this is the game-asset 
   `--data_dir` (use forward slashes); the in-repo examples copy defaults
   `data_factor 4` (proven run used `--data_factor 1`); torch's extension loader needs
   `ninja` ON PATH even for the cached build (prepend `.venv-gs/Scripts` to PATH).
+
+## 2026-08-21 (later still) — canonical space + the trainable-layers architecture
+
+- **"Alignment is off" diagnosed at the root:** THREE stacked statistical rotations —
+  the trainer's `normalize_world_space` (camera-align + PCA over the RANDOM init cloud)
+  and then PCA again at export. Fix: `--no-normalize-world-space` + `orient_splat.py
+  --pinned` (identity rotation; the commanded orbit IS the frame). Pinned bear exported:
+  `models/sv3d_real/sv3d_real_pinned.splat` (58,019 splats, 0.35m, sidecar written).
+  Trap recorded: `http_shots.js` defaults orient=0; save_splat-written files need
+  orient=1 — mixed views scrambled the first orientation A/B.
+- **THE SPACE declared** (`docs/THE_SPACE.md`): meters, +Y universe up, gravity-up
+  declared equal for dev, OBJECT_UP as per-asset metadata; no silent normalization;
+  every conversion writes its transform; capture density standard = hundreds of
+  agreeing views, single-pass consistency over multi-pass count.
+- **The bear declared the reference asset** (THE_METHOD): first occupant of every
+  slot, the template all later objects copy.
+- **Lane decisions, operator-gated:** 2D-only novel-view generators REJECTED (no object
+  memory -> cross-view drift, measured 0.030 vs 0.004). The render->edit->retrain loop
+  (Instruct-GS2GS/GaussCtrl class) survives as the TOUCH-UP pass, not the main lane.
+- **The main lane became the trainable-layers architecture** (THE_AUTHORED_PIPELINE):
+  trainable COAT = context-keyed patch genomes extracted from real ADC-trained scans
+  (distribution, never the average; nap direction field included) + trainable BODY =
+  parametric shape space over CAD fits of real scans (SMAL precedent). Build order:
+  CO3D bears -> full 3DGS -> extract_patches.py -> spray upgrade.

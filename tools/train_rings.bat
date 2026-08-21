@@ -9,4 +9,4 @@ set TORCH_CUDA_ARCH_LIST=8.9
 set DISTUTILS_USE_SDK=1
 set PATH=E:\PythonChimera\.venv-gs\Scripts;%PATH%
 cd /d E:\PythonChimera\tools\gsplat\examples
-E:\PythonChimera\.venv-gs\Scripts\python.exe simple_trainer.py default --data_dir %1 --result_dir %2 --max_steps %3 --disable_viewer --data_factor 1
+E:\PythonChimera\.venv-gs\Scripts\python.exe simple_trainer.py default --data_dir %1 --result_dir %2 --max_steps %3 --disable_viewer --data_factor 1 --no-normalize-world-space --save_ply

@@ -81,6 +81,42 @@ A region is a **named predicate over (part_id, uv)** — the pencil drawing on t
 - This is the membrane granularity the engine wants: body → parts → regions → materials,
   every level addressable without touching the rest.
 
+## The trainable layers (declared 2026-08-21)
+
+Both authored layers are LEARNED from real scans, not hand-tuned. Under
+[`THE_SPACE.md`](THE_SPACE.md) everything trains in the canonical metric frame.
+
+### Trainable COAT — the patch genome library
+
+Materials are extracted from REAL photogrammetry 3DGS scans (CO3D teddies first —
+real fur, real adaptive-density statistics; `splat_genome.py` proved the size/aniso
+fingerprint exists ONLY in ADC-trained clouds). The unit of extraction is the
+**patch**: a ~2cm surface disc carrying its full splat population (count, sizes,
+anisotropies, orientations, colors, relief heights) plus a **context key**
+(part-relative position, tone, curvature, **nap direction** — fur lies along a grain;
+the orientation field is extracted with the patch or sprayed fur reads as noise).
+
+Spraying is **conditional transplant**: target locations on the CAD body retrieve
+patches whose context matches, transplant with jitter, blend seams. Variation is
+guaranteed because every patch is a real observed instance — the system learns the
+DISTRIBUTION, never the average (averaging collapses to the blur we keep rejecting).
+Multiple scans of the same material class teach cross-instance variation (what "plush
+torso" is as a class vs one bear's belly). A small conditional sampler trained on the
+library then generates NOVEL combinations/series (v2).
+
+### Trainable BODY — the parametric shape space
+
+Every real scan gets its CAD body fitted to it (`tools/fit_body_to_cloud.py`); each
+fit is one point in the class's shape space (teddy: limb lengths, torso profile,
+head/body ratio, ear placement). PCA (then a small neural net) over those fits gives a
+samplable body model — the SMAL precedent (a learned animal body trained on toy scans,
+a teddy bear among them) proves the shape. A sampled body is born posable: the rig
+hangs off the parametric parts. Scan in → fit → shape space grows; sample out → new
+legal body → pose → spray.
+
+The full machine: **sample a body → pose it → spray fresh material combinations →
+all in canonical metric space.** Nothing hallucinated flat; every layer measured.
+
 ## Verification contract
 
 Every stage shows its output before the next begins: the raw settled coat is inspected at

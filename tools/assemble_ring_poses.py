@@ -23,11 +23,14 @@ RINGS = {"eq": 0.0, "el20": 20.0, "elm20": -20.0, "top": 40.0, "bot": -40.0}
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", required=True)
+    ap.add_argument("--rings", default=",".join(RINGS), help="comma-separated ring subset (eq,el20,elm20,top,bot)")
     args = ap.parse_args()
     src = Path(args.src)
 
     poses = []
     for ring, elev in RINGS.items():
+        if ring not in args.rings.split(","):
+            continue
         ring_dir = src / f"ring_{ring}"
         frames = sorted(ring_dir.glob("frame_*.png"))
         if not frames:
