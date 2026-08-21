@@ -79,7 +79,12 @@ def main() -> int:
     ap.add_argument("--alpha-min", type=float, default=0.5, help="surface splats only")
     args = ap.parse_args()
 
-    splats = load_3dgs_ply(args.ply)  # (n,14): xyz rgb a sxsy sz q
+    if args.ply.endswith(".splat"):
+        sys.path.insert(0, str(ROOT / "ChimeraEngine"))
+        import cpp_bridge as cb
+        splats = cb.load_splat(args.ply).astype(np.float64)
+    else:
+        splats = load_3dgs_ply(args.ply).astype(np.float64)  # (n,14): xyz rgb a sxsy sz q
     pos = splats[:, 0:3].astype(np.float64)
     height = float(pos[:, 1].max() - pos[:, 1].min())
     scale = 1.0

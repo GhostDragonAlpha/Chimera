@@ -153,3 +153,33 @@ are addressable and repaintable. The bear is the demo; **this is the game-asset 
   (distribution, never the average; nap direction field included) + trainable BODY =
   parametric shape space over CAD fits of real scans (SMAL precedent). Build order:
   CO3D bears -> full 3DGS -> extract_patches.py -> spray upgrade.
+
+## 2026-08-21 (night) — CO3D real-scan bears trained; first real genomes
+
+- `tools/co3d_to_colmap.py` (d236a60): CO3D sequence -> gsplat COLMAP dataset with
+  MEASURED cameras, masked-to-black images, and the real SfM pointcloud as init.
+  Built for teddybear 34_1479_4753 + 187_20215_38541 (202 views each, 100k real
+  init points). 598_91820_182418 is UNUSABLE: upstream SfM failed -- no
+  pointcloud.ply and all 202 depth maps are all-zero (measured, not assumed).
+- Both bears trained to full 3DGS (30k steps, final loss ~0.009, ~10.5 min each on
+  the 4090): `capture/co3d/train_{34_1479_4753,187_20215_38541}/ply/point_cloud_29999.ply`
+  (160k / 186k splats). gsplat Parser accepted 202 distinct camera entries fine.
+- Export: `orient_splat.py --pinned --rx 180 --height 0.35` (CO3D world has head at
+  -y; the flip is recorded in each `.space.json` sidecar). Envelope cut removed
+  47.5k / 40.7k needle splats -> `models/co3d/co3d_{34,187}.splat` (84.6k / 103k).
+- SELF-VERIFIED via headless shots before any presentation: co3d_34 is photoreal --
+  worn-matted plush fur with real relief, correct face, polka-dot pajamas, and
+  front/back/left/right/top/bottom all coherent (same real object; the SOURCE gate
+  passes by construction on real scans). co3d_187 front coherent, back noisier.
+- **Falsifier FIRED (recorded honestly):** the prediction "real multi-view training
+  fixes needle splats" is FALSE -- raw CO3D-trained clouds show patch anisotropy
+  median 342 (bear 34) and 1432 (bear 187) vs sv3d_real's 1044. Needles are an
+  ADC-training-regime product, NOT a view-count product. BUT the measured healthy
+  envelope (aniso<=50, from the known-good teddy.splat) separates them: after the
+  envelope cut the genome populations sit at aniso median 12.7 / 9.4, p95 ~20 --
+  squarely in the known-good teddy regime (99% under 11, max 47).
+- `tools/extract_patches.py` (f80cafd, +.splat input): 2cm-disc patch genomes with
+  context keys (bbox-rel pos, tone, planarity, anisotropy) + nap direction
+  (circular mean of member splat major axes on the tangent plane). Metric
+  libraries: `models/patch_library/co3d_{34,187}_metric.json` (1399 / 1597 patches,
+  median 22 / 18 splats per patch). These are the first REAL fur genomes.
