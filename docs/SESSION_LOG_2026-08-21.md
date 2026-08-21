@@ -213,3 +213,18 @@ density; unzip teddybear_002 (19GB, ~40 bears) for the donor pool.
   fur-textured sheet with standing relief in the real viewer. Known limit: per-splat
   independence cannot grow correlated lock structure (the wavy tufts) -- that is the
   v2 pattern-conditioned generator.
+
+## furgen v1 SAMPLED + OPERATOR PASS (night)
+- Sampled 8 patches from models/littlebear/furgen.pt (flow-matching transformer,
+  20k steps, conditioning borrowed from random real patches).
+- First sample run: 2/8 eye PASS -- white blowout streaks. Added sample-time
+  physical cleanup to tools/train_furgen.py (--euler 100 --material fur_brown.npz:
+  rgb clamped to the measured color box, scales to scale_cap, alpha<0.05 -> padding).
+  Re-sampled: 3/8 eye PASS (gen0, gen2, gen6). Real corpus passes at ~50%, so v1 is
+  below the real-data gate; known levers: more donor data, classifier-free guidance.
+- tools/stage_furgen_grid.py: all 8 gen patches as ONE orbitable 3D scene
+  (_qualify/furgen_grid.splat, 15,902 splats, 4x2 grid, patch_buffer frame change +
+  save_splat). hunt_shot.js splat lane needs the .splat EXTENSION in the name arg
+  (qualify_shots.js appends it; hunt_shot does not) -- extensionless name 404s black.
+- OPERATOR RULING: the 3D grid is a PASS ("borderline but a pass"). The human is the
+  terminal; recorded. Next gate: CAD inner core (darker shade per material) + parts.
