@@ -55,3 +55,41 @@
 - Per-label margin genome extraction (patches relative to the inner core).
 - Spray: rebuild bear 34 from its own genomes onto its own core (reconstruction
   test — must pass before any novel body).
+
+## Late session — the Authored Parts pipeline (operator-directed, locked)
+
+1. **Parts plan** (`tools/specs/bear34_parts_plan.json`): one part at a time, each =
+   analytic primitive + material + connection point. Exploded parts diagram at the end.
+2. **Material concept training** (`tools/train_material.py`): selection by chromaticity +
+   log-intensity k-means (extract_materials' law: never raw RGB); GMM over
+   [rgb, log scale, h, alpha]; likelihood floor (p1) + per-channel color box (p1/p99) +
+   fiber-length cap (p99) + real q_local bootstrap. `fur_brown` trained from head cluster 6
+   (lit tan fur, n=1623). Registry: `models/co3d/materials/library.json`.
+3. **Zero convention (operator)**: zero = the INNER MEMBRANE along its average normal.
+   fit_parts now fits primitives to `shells["inner"]` (hard beads eyes/nose keep shell
+   fit — they sit proud); cut_patches flattens each patch to a robust plane through the
+   membrane points of the window; application zero = extraction zero by construction.
+4. **Tip line (operator)**: per-material elevation cutoff where the h-histogram drops
+   below 2% of peak — covers the tips, deletes floaters. Measured: head 8.5mm,
+   ears ~3mm, feet ~11.5mm. Wired through extraction -> training -> spray clamp.
+5. **14-variable gate is code**: loaders REFUSE any sample without full 14-var 3DGS
+   (anisotropic scale + unit quats). "Find a different sample."
+6. **Corpus** (`tools/cut_patches.py`): 281 flat reference-plane patches from bear 34
+   fur regions, (N=512, 14 feats), membrane-plane zero.
+7. **Donor pipeline** (`tools/donor_corpus.py`): one command per donor (14-var gate ->
+   shells -> whole genome). Bear 187 processed: 59,571 splats — but it is a DIRTY donor
+   (black background clouds; 25k-splat pure-red interior artifact, invisible from
+   outside, auto-excluded by the patch h-window). Recoverable materials: grey fur,
+   magenta fabric.
+8. **MCP integration**: parts pipeline exposed on the chimera-engine server —
+   `parts_fit`, `part_spray`, `material_clusters`, `material_train`, `corpus_cut`,
+   `parts_status` (subprocess wrappers over tools/*.py under .venv-gs).
+9. Torso sprayed from the fur_brown concept on the membrane zero: 16,195 splats,
+   uniform tan, no decal bleed, verified six-view sheet.
+
+## Next
+
+- Large corpus: more donors (52GB CO3D teddybear category; gs-library), then the
+  conditioned point-field generator (flow matching over attributed splat patches).
+- Fix eye/nose label bleed (rod fits), leg bones for the sitting pose.
+- Remaining parts one at a time; exploded parts diagram.

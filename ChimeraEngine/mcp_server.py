@@ -113,5 +113,112 @@ def reload() -> str:
     return ENG.reload_world()
 
 
+# ---------------------------------------------------------------------------
+# THE PARTS PIPELINE -- the CAD-body + trained-material workflow as tools.
+# These wrap tools/*.py (which run under .venv-gs) so the manual method is
+# callable through the server: fit the inner-membrane primitives, train
+# material concepts into the library, cut the corpus, spray one part at a
+# time. The dyad still judges the renders; these just move the machinery.
+# ---------------------------------------------------------------------------
+import subprocess
+
+REPO = Path(__file__).resolve().parent.parent
+GS_PY = REPO / ".venv-gs" / "Scripts" / "python.exe"
+DONOR = {  # the approved donor (CO3D bear 34) and its derived artifacts
+    "splat": "models/co3d/co3d_34.splat",
+    "labels": "models/co3d/bear34_labels.json",
+    "skel": "models/co3d/bear34_skeleton_solved.json",
+    "shells": "models/co3d/bear34_shells.npz",
+    "parts_json": "models/co3d/bear34_parts.json",
+    "genomes": "models/co3d/genomes",
+    "materials": "models/co3d/materials",
+    "parts_out": "models/co3d/parts",
+}
+
+
+def _run_tool(script: str, *args: str, timeout: int = 900) -> str:
+    try:
+        r = subprocess.run([str(GS_PY), str(REPO / "tools" / script), *args],
+                           capture_output=True, text=True, timeout=timeout,
+                           cwd=str(REPO))
+        out = (r.stdout + r.stderr).strip()
+        return out[-4000:] if out else f"(exit {r.returncode}, no output)"
+    except subprocess.TimeoutExpired:
+        return f"FAILED: {script} timed out after {timeout}s"
+
+
+@mcp.tool()
+def parts_fit() -> str:
+    """Fit the analytic CAD primitives to the donor's INNER MEMBRANE (zero of
+    application = zero of extraction). Skeleton-anchored capsules for limbs,
+    ellipsoids for body parts. Rewrites bear34_parts.json + the colored viz."""
+    return _run_tool("fit_parts.py", "--splat", DONOR["splat"], "--labels", DONOR["labels"],
+                     "--skel", DONOR["skel"], "--shells", DONOR["shells"],
+                     "--out", DONOR["parts_json"], "--viz", "models/co3d/bear34_parts.splat")
+
+
+@mcp.tool()
+def part_spray(part: str, material: str = "", lumband: str = "") -> str:
+    """Spray ONE part from the plan (tools/specs/bear34_parts_plan.json). With
+    `material` (a trained library name) the coat is SYNTHESIZED from the
+    concept -- likelihood floor + color box + tip-line clamp. Else genome tiles."""
+    args = ["--part", part, "--shells", DONOR["shells"], "--outdir", DONOR["parts_out"]]
+    if material:
+        args += ["--material", material, "--materialdir", DONOR["materials"]]
+    if lumband:
+        lo, hi = lumband.split()
+        args += ["--lumband", lo, hi]
+    return _run_tool("spray_parts.py", *args)
+
+
+@mcp.tool()
+def material_clusters(genome: str, clusters: int = 8) -> str:
+    """List the material clusters a genome contains (chromaticity + log intensity,
+    never raw RGB). genome = region name under the donor's genomes dir, or path."""
+    g = genome if genome.endswith(".npz") else f"{DONOR['genomes']}/{genome}.npz"
+    return _run_tool("train_material.py", "--genome", g, "--clusters", str(clusters),
+                     "--outdir", DONOR["materials"])
+
+
+@mcp.tool()
+def material_train(genome: str, pick: int, name: str, clusters: int = 8) -> str:
+    """Train a named MATERIAL CONCEPT from one cluster of a genome: GMM over
+    [rgb, log scale, h, alpha] + likelihood floor + color box + tip line +
+    real fiber tilts. Registered in the library with provenance."""
+    g = genome if genome.endswith(".npz") else f"{DONOR['genomes']}/{genome}.npz"
+    return _run_tool("train_material.py", "--genome", g, "--clusters", str(clusters),
+                     "--pick", str(pick), "--name", name, "--outdir", DONOR["materials"])
+
+
+@mcp.tool()
+def corpus_cut(regions: str, out: str = "models/co3d/corpus/fur.npz") -> str:
+    """Cut flat reference-plane training patches (membrane-plane zero, tip-line
+    filtered, full 14-var record per splat). regions = space-separated genome names."""
+    return _run_tool("cut_patches.py", "--shells", DONOR["shells"], "--genomes",
+                     DONOR["genomes"], "--regions", *regions.split(), "--out", out)
+
+
+@mcp.tool()
+def parts_status() -> str:
+    """The parts pipeline at a glance: library materials, built parts, corpus files."""
+    lines = []
+    lib = REPO / DONOR["materials"] / "library.json"
+    if lib.exists():
+        mats = json.loads(lib.read_text())["materials"]
+        lines.append(f"materials ({len(mats)}):")
+        for m in mats:
+            lines.append(f"  {m['name']}: cluster {m['cluster']} of "
+                         f"{Path(m['source_genome']).stem}, n_train={m['n_train']}")
+    else:
+        lines.append("materials: none trained yet")
+    pdir = REPO / DONOR["parts_out"]
+    built = sorted(p.stem for p in pdir.glob("*.splat")) if pdir.exists() else []
+    lines.append(f"parts built: {', '.join(built) if built else 'none'}")
+    cdir = REPO / "models/co3d/corpus"
+    corp = sorted(f"{p.name} ({p.stat().st_size//1024}KB)" for p in cdir.glob("*.npz")) if cdir.exists() else []
+    lines.append(f"corpus: {', '.join(corp) if corp else 'none'}")
+    return "\n".join(lines)
+
+
 if __name__ == "__main__":
     mcp.run()
