@@ -1,0 +1,17 @@
+{
+  "extent_m": 1.0,
+  "azimuth_schedule": "0.03..359.98 deg across 64 views (measured from capture/genbear2/anysplat64_extrinsic.npy; mid-band |el|<60 max gap 178.6 deg -- a top-heavy ring, recorded not hidden)",
+  "elevation_schedule": "-20.9..+88.3 deg, mean +48.2 (49/64 views above +30 deg; 0 below -30)",
+  "view_count": 64,
+  "background_color": "black (engine render background); dark unlit capture background",
+  "blob_clip": "largest 26-connected voxel blob kept (union-find smart-clip, orient_splat.py --blob-keep; kills refinement-resurrected junk smears)",
+  "cleanup_thresholds": "--opacity-raw --alpha-min 0.1 --lum-min 0.10 --density-k 3 --no-envelope (envelope filter eats the face on this lane, measured)",
+  "coverage_metric": "6-angle HTTP inspection stills + 12-frame turntable movie dyad; alignment 0.85",
+  "lighting_consistency": "fixed studio light, camera-only motion, one continuous shot (the capture protocol IS the prompt)",
+  "reconstruction_model": "AnySplat lhjiang/anysplat (VGGT backbone + gaussian head), one feed-forward pass, no SfM",
+  "refinement_steps": "3000 gsplat photometric steps -> SSIM 0.93, PSNR 28",
+  "splat_format": "14-float 3DGS, 32-byte packed .splat; 182724 splats in the final engine asset",
+  "verification_angles": "front/right/back/left/top/bottom -- 6 stills via tools/http_shots.js",
+  "view_consistency": "orbit radius mean 1.346, cv 0.402 (measured from the AnySplat cam2world ring)",
+  "view_resolution": "1440x1440 @ 24fps AI-orbit source (721 frames), 250 PNGs extracted, K=64 reconstructed"
+}

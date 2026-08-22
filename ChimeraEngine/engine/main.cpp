@@ -44,6 +44,24 @@ static bool g_mem_pending = false;
 static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
 
+// ── Pending skin/pose request (same handoff: Vulkan work stays on the render thread) ────
+struct SkinRequest {
+    int kind = 0;                    // 1 = skin_bin load, 2 = pose_store, 3 = pose_apply
+    std::vector<float> rest;         // kind 1: N*14 rest splat
+    std::vector<float> weights;      // kind 1: N*4 [bone0, w0, bone1, w1]
+    std::vector<float> pose;         // kind 2: B*7 [qw,qx,qy,qz, tx,ty,tz] per bone
+    uint32_t n = 0, bones = 0, slot = 0;
+    float cam_radius = 2.2f;
+    float cam_theta  = 0.0f;
+    float cam_phi    = 0.15f;
+    bool ok = false;                 // result of the engine call
+};
+static SkinRequest g_skin_req;
+static std::mutex g_skin_mutex;
+static std::condition_variable g_skin_cv;
+static bool g_skin_pending = false;
+static bool g_skin_applied = false;
+
 // ── Minimal JSON helpers (no external deps) ───────────────────────────────────────
 static std::string fmt_float(float f) {
     char buf[32];
@@ -251,6 +269,93 @@ int main(int argc, char** argv) {
                 }
             }
             content_type = "application/json";
+        } else if (p == "/skin_bin" && method == "POST") {
+            // Binary protocol (application/octet-stream), little-endian:
+            //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
+            //   [f32 * N * 14 rest splat][f32 * N * 4 weights: bone0, w0, bone1, w1]
+            if (req_body.size() < 20) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t n = 0, nb = 0; float cr = 2.2f, ct = 0.0f, cp = 0.15f;
+                std::memcpy(&n,  req_body.data() + 0,  4);
+                std::memcpy(&nb, req_body.data() + 4,  4);
+                std::memcpy(&cr, req_body.data() + 8,  4);
+                std::memcpy(&ct, req_body.data() + 12, 4);
+                std::memcpy(&cp, req_body.data() + 16, 4);
+                size_t expect = 20 + static_cast<size_t>(n) * 14 * 4 + static_cast<size_t>(n) * 4 * 4;
+                if (req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    std::vector<float> rest(static_cast<size_t>(n) * 14);
+                    std::vector<float> wts(static_cast<size_t>(n) * 4);
+                    std::memcpy(rest.data(), req_body.data() + 20, rest.size() * 4);
+                    std::memcpy(wts.data(),  req_body.data() + 20 + rest.size() * 4, wts.size() * 4);
+                    {
+                        std::lock_guard<std::mutex> lk(g_skin_mutex);
+                        g_skin_req.kind = 1;
+                        g_skin_req.rest = std::move(rest);
+                        g_skin_req.weights = std::move(wts);
+                        g_skin_req.n = n;
+                        g_skin_req.bones = nb;
+                        g_skin_req.cam_radius = cr;
+                        g_skin_req.cam_theta  = ct;
+                        g_skin_req.cam_phi    = cp;
+                        g_skin_pending = true;
+                        g_skin_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_skin_mutex);
+                    bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_skin_applied; });
+                    body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/pose_store" && method == "POST") {
+            // Binary protocol: [u32 slot][u32 B][f32 * B * 7] — per bone [qw,qx,qy,qz, tx,ty,tz]
+            if (req_body.size() < 8) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t slot = 0, nb = 0;
+                std::memcpy(&slot, req_body.data() + 0, 4);
+                std::memcpy(&nb,   req_body.data() + 4, 4);
+                size_t expect = 8 + static_cast<size_t>(nb) * 7 * 4;
+                if (req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    std::vector<float> pose(static_cast<size_t>(nb) * 7);
+                    std::memcpy(pose.data(), req_body.data() + 8, pose.size() * 4);
+                    {
+                        std::lock_guard<std::mutex> lk(g_skin_mutex);
+                        g_skin_req.kind = 2;
+                        g_skin_req.slot = slot;
+                        g_skin_req.pose = std::move(pose);
+                        g_skin_pending = true;
+                        g_skin_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_skin_mutex);
+                    bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(5), []{ return g_skin_applied; });
+                    body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"store failed or timeout\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/pose_apply" && method == "POST") {
+            // Binary protocol: [u32 slot] — copy the stored slot into pose_buf_, pose next frame
+            if (req_body.size() < 4) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t slot = 0;
+                std::memcpy(&slot, req_body.data() + 0, 4);
+                {
+                    std::lock_guard<std::mutex> lk(g_skin_mutex);
+                    g_skin_req.kind = 3;
+                    g_skin_req.slot = slot;
+                    g_skin_pending = true;
+                    g_skin_applied = false;
+                }
+                std::unique_lock<std::mutex> lk(g_skin_mutex);
+                bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(5), []{ return g_skin_applied; });
+                body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/camera" && method == "POST") {
             float cam_radius = get_float(req_body, "cam_radius", 12.0f);
             float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
@@ -311,7 +416,7 @@ int main(int argc, char** argv) {
     printf("  /membrane (POST) -> load a story membrane scene\n");
     printf("Window: %ux%u, Press Ctrl+C to stop.\n", cfg.width, cfg.height);
     printf("Controls: Left-drag orbit | Scroll zoom | Right-drag pan\n");
-    printf("          WASD move | Q/E up-down | Space/Ctrl zoom | R reset\n");
+    printf("          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle\n");
 
 #ifdef _WIN32
     SetConsoleCtrlHandler(handleCtrlC, TRUE);
@@ -349,6 +454,31 @@ int main(int argc, char** argv) {
                 g_mem_pending = false;
                 g_mem_applied = true;
                 g_mem_cv.notify_all();
+            }
+        }
+
+        // Apply a pending skin/pose request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_skin_mutex);
+            if (g_skin_pending) {
+                bool ok = false;
+                if (g_skin_req.kind == 1) {
+                    ok = engine.load_skinned(g_skin_req.rest, g_skin_req.weights,
+                                             g_skin_req.n, g_skin_req.bones);
+                    if (ok) {
+                        engine.set_camera(g_skin_req.cam_radius, g_skin_req.cam_theta,
+                                          g_skin_req.cam_phi);
+                        g_membrane_active = true;
+                    }
+                } else if (g_skin_req.kind == 2) {
+                    ok = engine.store_pose(g_skin_req.slot, g_skin_req.pose);
+                } else if (g_skin_req.kind == 3) {
+                    ok = engine.apply_pose(g_skin_req.slot);
+                }
+                g_skin_req.ok = ok;
+                g_skin_pending = false;
+                g_skin_applied = true;
+                g_skin_cv.notify_all();
             }
         }
 

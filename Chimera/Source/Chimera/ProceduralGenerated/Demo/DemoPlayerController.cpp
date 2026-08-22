@@ -1,6 +1,6 @@
+#include "DemoPlayerController.h"
 #include "../Save/StarMemorialComponent.h"
 #include "../Subsystems/GenerationSubsystem.h"
-#include "DemoPlayerController.h"
 #pragma warning(disable: 4996)
 #pragma warning(disable: 5038)
 #include "GameFramework/Character.h"

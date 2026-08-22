@@ -274,3 +274,14 @@ ChimeraEngine/native/nul
 
 # Encoded binary blobs (probe payloads)
 /ChimeraEngine/engine/_*.b64
+
+# Local-only bulk data and vendor binaries (2026-08-22, operator full-commit):
+# GitHub hard-rejects >100MB files and the repo cannot carry 50GB of captures.
+# capture/   - raw photogrammetry captures (derived, regenerable)
+# pretrained/ - downloadable model weights
+# MLSLabsRenderer ThirdParty - vendored libtorch CUDA binaries (5.7G plugin,
+#   of which the source we authored is kept; only the vendor binaries excluded)
+/capture/
+/pretrained/
+/Chimera/Plugins/MLSLabsRenderer/Source/ThirdParty/
+/tools/colmap/bin/

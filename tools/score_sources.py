@@ -100,11 +100,19 @@ def score_splat(splat: Path, out: Path) -> None:
     dst = ROOT / "models/triposplat/static/viewer/_qualify" / splat.name
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(splat, dst)
+    # frame the object: the gate judges the bear, not the camera distance --
+    # r from the actual splat extent so a 30cm bear fills the view
+    import numpy as np
+    sys.path.insert(0, str(ROOT / "ChimeraEngine"))
+    import cpp_bridge as cb
+    buf = cb.load_splat(str(splat))
+    extent = float(np.ptp(buf[:, 0:3], axis=0).max())
+    r = max(0.25, 1.35 * extent / (2 * math.tan(math.radians(22.5))))
     names = ["front", "back", "left", "right", "top", "bottom"]  # source_shots.js
-    r = subprocess.run(
+    r_shots = subprocess.run(
         ["node", str(ROOT / "tools/source_shots.js"), splat.name,
-         work.as_posix(), "1.0"], cwd=str(ROOT))
-    if r.returncode != 0:
+         work.as_posix(), f"{r:.3f}"], cwd=str(ROOT))
+    if r_shots.returncode != 0:
         raise SystemExit("FAILED: source shots")
     vals = []
     for name in names:

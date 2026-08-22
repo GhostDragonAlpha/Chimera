@@ -5,9 +5,9 @@ timeline into the game. Re-run `python ChimeraEngine/gen_decl.py` after changing
 
 TERMS = [
     ('theStory', None, 'H', 'the teddy bear -- a third-person character, trained like a robot, run by CA rules'),
-    ('theSeed', 'theStory', 'P', 'the genome + TRELLIS base: one number grows the whole lattice, deterministically'),
+    ('theSeed', 'theStory', 'P', 'the genome + the GENERATED base: one AI-authored still -> controlled multi-view imagery (azimuth AND elevation) -> feed-forward 3DGS (AnySplat) -> 14-float cloud; one seed grows the same bear, deterministically'),
     ('theDeterminism', 'theSeed', 'P', "same genome -> same cells, bit-identical -- the seed's only law"),
-    ('theShape', 'theStory', 'P', 'the voxel lattice body -- TRELLIS gives the base representation; the CA owns it after'),
+    ('theShape', 'theStory', 'P', 'the voxel lattice body -- the generated 3DGS cloud gives the base representation; the CA owns it after'),
     ('theBalance', 'theShape', 'P', 'center of mass inside the paw support hull (margin >= 1 cell) -- the standing gate'),
     ('theMuscle', 'theStory', 'P', 'a column that shortens -- movement is cells added/removed on the lattice'),
     ('theRig', 'theStory', 'P', 'the chains the muscle rides on, derived from the shape (never the reverse)'),

@@ -22,6 +22,16 @@ layout(location = 4) out float vPointSize;
 void main() {
     vec4 viewPos = ubo.uView * vec4(aPos, 1.0);
     vec4 clip    = ubo.uProj * viewPos;
+
+    // Near-plane fix: point primitives are clipped by their CENTER, so a splat whose
+    // center crosses the near plane vanishes whole (the "head disappears" bug). Clamp:
+    // in-front splats keep clip.z >= 0 (drawn at the near plane, not culled); only
+    // behind-the-camera splats (w <= 0) are pushed out of the clip volume.
+    if (clip.w > 0.0) {
+        clip.z = max(clip.z, 0.0);
+    } else {
+        clip = vec4(0.0, 0.0, 2.0, 1.0);   // z/w = 2 -> clipped away
+    }
     gl_Position  = clip;
 
     // quaternion (w, x, y, z) -> rotation matrix
@@ -45,7 +55,8 @@ void main() {
     // projection Jacobian J (2x3) and 2D covariance = J SigmaCam J^T
     float fx = ubo.uProj[0][0] * ubo.uResolution.x * 0.5;
     float fy = ubo.uProj[1][1] * ubo.uResolution.y * 0.5;
-    float zc = max(-viewPos.z, 1e-4);
+    float zc = max(-viewPos.z, 0.05);   // floor at ~near-plane scale: closer splats render
+                                        // as bounded soft blobs, not screen-filling garbage
     float xc = viewPos.x, yc = viewPos.y;
     vec3 j0 = vec3(fx / zc, 0.0, -fx * xc / (zc * zc));
     vec3 j1 = vec3(0.0, fy / zc, -fy * yc / (zc * zc));

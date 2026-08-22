@@ -1,0 +1,3 @@
+[submodule "tools/gsplat"]
+	path = tools/gsplat
+	url = https://github.com/nerfstudio-project/gsplat.git

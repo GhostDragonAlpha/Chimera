@@ -83,6 +83,9 @@ def main() -> int:
     ap.add_argument("--sample", type=int, default=0, help="sample N patches, no training")
     ap.add_argument("--sampledir", default=".tmp/furgen")
     ap.add_argument("--euler", type=int, default=50)
+    ap.add_argument("--material", default=None,
+                    help="trained material npz: clamp samples to its measured color box "
+                         "and scale cap (the same hard bounds the spray lane uses)")
     a = ap.parse_args()
 
     import torch
@@ -131,7 +134,7 @@ def main() -> int:
     model = FurGen().to(dev)
     ckpt = a.ckpt or (a.out if Path(a.out).exists() and a.sample else None)
     if ckpt and Path(ckpt).exists():
-        model.load_state_dict(torch.load(ckpt, map_location=dev)["model"])
+        model.load_state_dict(torch.load(ckpt, map_location=dev, weights_only=False)["model"])
         print(f"loaded {ckpt}")
 
     tmu = torch.tensor(mu, dtype=torch.float32, device=dev)
@@ -159,6 +162,12 @@ def main() -> int:
                 gen[:, QUAT] = q
                 gen[:, ALPHA] = np.clip(gen[:, ALPHA], 0, 1)
                 gen[:, RGB] = np.clip(gen[:, RGB], 0, 1)
+                if a.material:
+                    m = dict(np.load(a.material))
+                    gen[:, RGB] = np.clip(gen[:, RGB], m["rgb_lo"][None, :], m["rgb_hi"][None, :])
+                    gen[:, LOGS] = np.clip(gen[:, LOGS], np.log(1e-6),
+                                           np.log(float(m["scale_cap"][0])))
+                    gen[gen[:, ALPHA] < 0.05, ALPHA] = 0.0  # haze rows -> padding
                 np.save(out_dir / f"gen{k:03d}.npy", gen)
                 print(f"gen{k:03d}: cond from patch #{pi} -> {out_dir / f'gen{k:03d}.npy'}")
         return 0

@@ -29,6 +29,7 @@ static CameraState g_cam;
 static bool       g_mouse_captured = false;
 static int        g_last_mx = 0, g_last_my = 0;
 static bool       g_keys[256] = {};     // current frame key state
+static Engine*    g_key_engine = nullptr;  // set in Engine::init so WndProc can reach pose toggles
 
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
@@ -71,6 +72,11 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     // Track key state for frame-by-frame polling
     if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN) {
         g_keys[wp & 0xFF] = true;
+        // 'P' toggles rest (slot 0) <-> wave (slot 1) on a skinned splat. Edge-triggered
+        // (bit 30 of lParam = previous key state) so key autorepeat doesn't double-toggle.
+        if ((wp & 0xFF) == 'P' && !(lp & 0x40000000) && g_key_engine) {
+            g_key_engine->toggle_pose();
+        }
     } else if (msg == WM_KEYUP || msg == WM_SYSKEYUP) {
         g_keys[wp & 0xFF] = false;
     }
@@ -266,6 +272,7 @@ static const uint32_t MAX_FRAMES_IN_FLIGHT = 2;
 
 bool Engine::init(const EngineConfig& cfg) {
     cfg_ = cfg;
+    g_key_engine = this;   // WndProc ('P' pose toggle) reaches the engine through this
 
     // ── 1. Win32 window ──────────────────────────────────────────────────────────────
     if (!create_window(cfg.width, cfg.height)) {
@@ -475,6 +482,9 @@ bool Engine::init(const EngineConfig& cfg) {
     // ── 12.5 GPU radix sort (back-to-front splat ordering) ──────────────────────────
     if (!create_sort_pipeline()) return false;
 
+    // ── 12.6 GPU skinning (LBS pose over the splats) ────────────────────────────────
+    if (!create_skin_pipeline()) return false;
+
 
     // ── 13. Buffers (will be resized in push_state) ──────────────────────────────────
     // pos_buf_, vel_buf_, acc_buf_ are created lazily on first push_state
@@ -523,6 +533,7 @@ void Engine::shutdown() {
     if (comp_params_buf_) { vkDestroyBuffer(device_, comp_params_buf_, nullptr); vkFreeMemory(device_, comp_params_mem_, nullptr); }
     if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
     destroy_sort_resources();
+    destroy_skin_resources();
 
     if (compute_desc_pool_)     vkDestroyDescriptorPool(device_,     compute_desc_pool_,      nullptr);
     if (compute_desc_layout_)   vkDestroyDescriptorSetLayout(device_, compute_desc_layout_,   nullptr);
@@ -724,16 +735,20 @@ bool Engine::compile_shaders() {
     auto frag_spv = read_file((base + "/shaders/render.frag.spv").c_str());
     auto comp_spv = read_file((base + "/shaders/compute.spv").c_str());
     auto sort_spv = read_file((base + "/shaders/sort.spv").c_str());
+    auto skin_spv = read_file((base + "/shaders/skin.spv").c_str());
 
     if (vert_spv.empty()) { fprintf(stderr, "Failed to load render.vert.spv\n"); return false; }
     if (frag_spv.empty()) { fprintf(stderr, "Failed to load render.frag.spv\n"); return false; }
     if (sort_spv.empty()) { fprintf(stderr, "Failed to load sort.spv\n"); return false; }
+    if (skin_spv.empty()) { fprintf(stderr, "Failed to load skin.spv\n"); return false; }
     // compute is optional for first pass (CPU physics path)
 
     vert_mod_ = create_shader_module(device_, vert_spv);
     frag_mod_ = create_shader_module(device_, frag_spv);
     sort_mod_ = create_shader_module(device_, sort_spv);
-    if (vert_mod_ == VK_NULL_HANDLE || frag_mod_ == VK_NULL_HANDLE || sort_mod_ == VK_NULL_HANDLE) return false;
+    skin_mod_ = create_shader_module(device_, skin_spv);
+    if (vert_mod_ == VK_NULL_HANDLE || frag_mod_ == VK_NULL_HANDLE || sort_mod_ == VK_NULL_HANDLE
+        || skin_mod_ == VK_NULL_HANDLE) return false;
 
     if (!comp_spv.empty()) {
         comp_mod_ = create_shader_module(device_, comp_spv);
@@ -828,7 +843,10 @@ bool Engine::create_pipeline() {
     blend.dstColorBlendFactor  = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
     blend.colorBlendOp   = VK_BLEND_OP_ADD;
     blend.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-    blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;  // accumulate coverage:
+    // a_out = a_src + a_dst(1-a_src). ZERO here let each splat's alpha REPLACE the
+    // destination's — a low-alpha skirt turned the pixel translucent, and the PNG
+    // composite-over-white readback washed every overlap to white.
     blend.alphaBlendOp       = VK_BLEND_OP_ADD;
 
     VkPipelineColorBlendStateCreateInfo cb{};
@@ -1575,9 +1593,234 @@ void Engine::destroy_sort_resources() {
     sort_ready_ = false;
 }
 
+// ── GPU skinning (LBS over the 3DGS splats — skin.comp) ─────────────────────────────────
+
+// Staging -> device-local buffer upload (same pattern as push_state / ensure_sort_buffers).
+// Destroys any previous buffer first. Call only when the GPU is idle (vkDeviceWaitIdle).
+void Engine::upload_buffer(const void* data, VkDeviceSize size, VkBufferUsageFlags usage,
+                           VkBuffer& buf, VkDeviceMemory& mem) {
+    if (buf) { vkDestroyBuffer(device_, buf, nullptr); vkFreeMemory(device_, mem, nullptr); buf = VK_NULL_HANDLE; }
+
+    VkBufferCreateInfo bci{};
+    bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bci.size        = size;
+    bci.usage       = usage | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    vkCreateBuffer(device_, &bci, nullptr, &buf);
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, buf, &mr);
+    VkMemoryAllocateInfo ai{};
+    ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai.allocationSize  = mr.size;
+    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    vkAllocateMemory(device_, &ai, nullptr, &mem);
+    vkBindBufferMemory(device_, buf, mem, 0);
+
+    VkBufferCreateInfo sci{};
+    sci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    sci.size        = size;
+    sci.usage       = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    sci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    VkBuffer sb; vkCreateBuffer(device_, &sci, nullptr, &sb);
+    VkMemoryRequirements mr_s; vkGetBufferMemoryRequirements(device_, sb, &mr_s);
+    VkMemoryAllocateInfo ai_s{};
+    ai_s.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai_s.allocationSize  = mr_s.size;
+    ai_s.memoryTypeIndex = find_mem_type(mr_s.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    VkDeviceMemory sm; vkAllocateMemory(device_, &ai_s, nullptr, &sm);
+    vkBindBufferMemory(device_, sb, sm, 0);
+    void* mapped; vkMapMemory(device_, sm, 0, size, 0, &mapped);
+    std::memcpy(mapped, data, size);
+    vkUnmapMemory(device_, sm);
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy bc{}; bc.size = size;
+    vkCmdCopyBuffer(cb, sb, buf, 1, &bc);
+    end_single_time_cmd(cb);
+    vkDestroyBuffer(device_, sb, nullptr);
+    vkFreeMemory(device_, sm, nullptr);
+}
+
+bool Engine::create_skin_pipeline() {
+    if (skin_mod_ == VK_NULL_HANDLE) { fprintf(stderr, "skin.spv not loaded\n"); return false; }
+
+    VkDescriptorSetLayoutBinding bindings[4] = {};
+    for (uint32_t i = 0; i < 4; ++i) {
+        bindings[i].binding            = i;
+        bindings[i].descriptorType     = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        bindings[i].descriptorCount    = 1;
+        bindings[i].stageFlags         = VK_SHADER_STAGE_COMPUTE_BIT;
+    }
+    VkDescriptorSetLayoutCreateInfo dslci{};
+    dslci.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount  = 4;
+    dslci.pBindings     = bindings;
+    if (vkCreateDescriptorSetLayout(device_, &dslci, nullptr, &skin_desc_layout_) != VK_SUCCESS) return false;
+
+    VkDescriptorPoolSize pool_size{};
+    pool_size.type            = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    pool_size.descriptorCount = 4;
+    VkDescriptorPoolCreateInfo dpci{};
+    dpci.sType            = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    dpci.maxSets          = 1;
+    dpci.poolSizeCount    = 1;
+    dpci.pPoolSizes       = &pool_size;
+    if (vkCreateDescriptorPool(device_, &dpci, nullptr, &skin_desc_pool_) != VK_SUCCESS) return false;
+
+    VkDescriptorSetAllocateInfo dai{};
+    dai.sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dai.descriptorPool     = skin_desc_pool_;
+    dai.descriptorSetCount = 1;
+    dai.pSetLayouts        = &skin_desc_layout_;
+    if (vkAllocateDescriptorSets(device_, &dai, &skin_desc_set_) != VK_SUCCESS) return false;
+
+    VkPushConstantRange pcr{};
+    pcr.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    pcr.offset     = 0;
+    pcr.size       = 8;   // count, n_bones
+
+    VkPipelineLayoutCreateInfo plci{};
+    plci.sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    plci.setLayoutCount         = 1;
+    plci.pSetLayouts            = &skin_desc_layout_;
+    plci.pushConstantRangeCount = 1;
+    plci.pPushConstantRanges    = &pcr;
+    if (vkCreatePipelineLayout(device_, &plci, nullptr, &skin_layout_) != VK_SUCCESS) return false;
+
+    VkPipelineShaderStageCreateInfo stage{};
+    stage.sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stage.stage  = VK_SHADER_STAGE_COMPUTE_BIT;
+    stage.module = skin_mod_;
+    stage.pName  = "main";
+
+    VkComputePipelineCreateInfo cpci{};
+    cpci.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    cpci.stage  = stage;
+    cpci.layout = skin_layout_;
+    if (vkCreateComputePipelines(device_, VK_NULL_HANDLE, 1, &cpci, nullptr, &skin_pipe_) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create skin compute pipeline\n");
+        return false;
+    }
+    return true;
+}
+
+void Engine::destroy_skin_resources() {
+    if (rest_buf_)   { vkDestroyBuffer(device_, rest_buf_, nullptr);   vkFreeMemory(device_, rest_mem_, nullptr);   rest_buf_ = VK_NULL_HANDLE; }
+    if (skin_w_buf_) { vkDestroyBuffer(device_, skin_w_buf_, nullptr); vkFreeMemory(device_, skin_w_mem_, nullptr); skin_w_buf_ = VK_NULL_HANDLE; }
+    if (pose_buf_)   { vkDestroyBuffer(device_, pose_buf_, nullptr);   vkFreeMemory(device_, pose_mem_, nullptr);   pose_buf_ = VK_NULL_HANDLE; }
+    if (skin_pipe_)  { vkDestroyPipeline(device_, skin_pipe_, nullptr); skin_pipe_ = VK_NULL_HANDLE; }
+    if (skin_layout_) { vkDestroyPipelineLayout(device_, skin_layout_, nullptr); skin_layout_ = VK_NULL_HANDLE; }
+    if (skin_desc_pool_) { vkDestroyDescriptorPool(device_, skin_desc_pool_, nullptr); skin_desc_pool_ = VK_NULL_HANDLE; }
+    if (skin_desc_layout_) { vkDestroyDescriptorSetLayout(device_, skin_desc_layout_, nullptr); skin_desc_layout_ = VK_NULL_HANDLE; }
+    if (skin_mod_)   { vkDestroyShaderModule(device_, skin_mod_, nullptr); skin_mod_ = VK_NULL_HANDLE; }
+    pose_slots_.clear();
+    skin_count_ = 0;
+    skin_bones_ = 0;
+    skin_cur_slot_ = 0;
+    skinned_active_ = false;
+    skin_pose_dirty_ = false;
+}
+
+bool Engine::load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
+                          uint32_t n, uint32_t n_bones) {
+    if (skin_pipe_ == VK_NULL_HANDLE || n == 0 || n_bones == 0) return false;
+    if (rest.size() != static_cast<size_t>(n) * 14 || weights.size() != static_cast<size_t>(n) * 4) return false;
+    vkDeviceWaitIdle(device_);   // the old buffers are still referenced by the last frame's cmdbuf
+
+    // pos_buf_ (vertex + sort binding 0) + sort buffers come from the existing upload path.
+    std::vector<float> no_vel;
+    if (!push_state(rest, no_vel, n)) return false;
+    dirty_ = false;
+
+    // rest splat, per-splat weights (N*4), and the pose buffer (B*7, starts at identity)
+    upload_buffer(rest.data(),    static_cast<VkDeviceSize>(n) * 14 * sizeof(float),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, rest_buf_, rest_mem_);
+    upload_buffer(weights.data(), static_cast<VkDeviceSize>(n) * 4 * sizeof(float),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, skin_w_buf_, skin_w_mem_);
+    std::vector<float> ident(static_cast<size_t>(n_bones) * 7, 0.0f);
+    for (uint32_t b = 0; b < n_bones; ++b) ident[b * 7] = 1.0f;   // qw = 1
+    upload_buffer(ident.data(), static_cast<VkDeviceSize>(n_bones) * 7 * sizeof(float),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, pose_buf_, pose_mem_);
+
+    skin_count_ = n;
+    skin_bones_ = n_bones;
+    skin_cur_slot_ = 0;
+    pose_slots_.clear();
+
+    // (Re)bind the skin descriptor set — pos_buf_ may be a NEW buffer after push_state.
+    VkDescriptorBufferInfo infos[4] = {};
+    infos[0].buffer = rest_buf_;   infos[0].offset = 0; infos[0].range = VK_WHOLE_SIZE;
+    infos[1].buffer = skin_w_buf_; infos[1].offset = 0; infos[1].range = VK_WHOLE_SIZE;
+    infos[2].buffer = pose_buf_;   infos[2].offset = 0; infos[2].range = VK_WHOLE_SIZE;
+    infos[3].buffer = pos_buf_;    infos[3].offset = 0; infos[3].range = VK_WHOLE_SIZE;
+    VkWriteDescriptorSet writes[4] = {};
+    for (uint32_t i = 0; i < 4; ++i) {
+        writes[i].sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writes[i].dstSet          = skin_desc_set_;
+        writes[i].dstBinding      = i;
+        writes[i].dstArrayElement = 0;
+        writes[i].descriptorCount = 1;
+        writes[i].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        writes[i].pBufferInfo     = &infos[i];
+    }
+    vkUpdateDescriptorSets(device_, 4, writes, 0, nullptr);
+
+    skinned_active_  = true;
+    skin_pose_dirty_ = true;   // first frame runs skin.comp with the identity pose (== rest)
+    printf("Skinned splat loaded: %u splats, %u bones\n", n, n_bones);
+    return true;
+}
+
+bool Engine::store_pose(uint32_t slot, const std::vector<float>& pose) {
+    if (!skinned_active_) { fprintf(stderr, "store_pose: no skinned splat loaded\n"); return false; }
+    if (pose.size() != static_cast<size_t>(skin_bones_) * 7) {
+        fprintf(stderr, "store_pose: got %zu floats, expected %u (B=%u bones * 7)\n",
+                pose.size(), skin_bones_ * 7, skin_bones_);
+        return false;
+    }
+    pose_slots_[slot] = pose;
+    return true;
+}
+
+bool Engine::apply_pose(uint32_t slot) {
+    if (!skinned_active_) { fprintf(stderr, "apply_pose: no skinned splat loaded\n"); return false; }
+    auto it = pose_slots_.find(slot);
+    if (it == pose_slots_.end()) { fprintf(stderr, "apply_pose: slot %u not stored\n", slot); return false; }
+    vkDeviceWaitIdle(device_);   // pose_buf_ may be read by the in-flight frame's skin dispatch
+    upload_buffer(it->second.data(), static_cast<VkDeviceSize>(it->second.size()) * sizeof(float),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, pose_buf_, pose_mem_);
+    // upload_buffer recreated pose_buf_ -> rebind binding 2
+    VkDescriptorBufferInfo info{};
+    info.buffer = pose_buf_; info.offset = 0; info.range = VK_WHOLE_SIZE;
+    VkWriteDescriptorSet w{};
+    w.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    w.dstSet          = skin_desc_set_;
+    w.dstBinding      = 2;
+    w.dstArrayElement = 0;
+    w.descriptorCount = 1;
+    w.descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    w.pBufferInfo     = &info;
+    vkUpdateDescriptorSets(device_, 1, &w, 0, nullptr);
+
+    skin_pose_dirty_ = true;   // posed on the next frame; the posed buffer persists after that
+    skin_cur_slot_   = slot;
+    printf("Pose slot %u applied (%u bones)\n", slot, skin_bones_);
+    return true;
+}
+
+void Engine::toggle_pose() {
+    if (!skinned_active_) return;
+    uint32_t next = (skin_cur_slot_ == 0) ? 1 : 0;
+    if (pose_slots_.find(next) == pose_slots_.end()) {
+        printf("Pose toggle: slot %u not stored (only slot %u loaded)\n", next, skin_cur_slot_);
+        return;
+    }
+    apply_pose(next);
+}
+
 bool Engine::load_membrane(const std::string& term, const std::vector<float>& pos, uint32_t count) {
     membrane_term_ = term;
     vkDeviceWaitIdle(device_);   // the old buffers are still referenced by the last frame's cmdbuf
+    skinned_active_ = false;     // a plain membrane upload leaves the skinned path
     std::vector<float> no_vel;   // a membrane is static — no velocity to upload
     bool ok = push_state(pos, no_vel, count);
     if (ok) dirty_ = false;
@@ -1721,6 +1964,29 @@ bool Engine::frame() {
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     vkResetCommandBuffer(cmd_bufs_[img_idx], 0);
     vkBeginCommandBuffer(cmd_bufs_[img_idx], &bbi);
+
+    // GPU skinning: pose the splats (rest + weights + pose -> pos_buf_) when a pose was applied.
+    // Runs BEFORE the sort so the depth keys are computed from the posed positions. Dirty-flag
+    // gated: the posed buffer persists while the camera orbits (only the sort re-runs per frame).
+    if (skinned_active_ && skin_pose_dirty_ && skin_pipe_ != VK_NULL_HANDLE && n_ > 0) {
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, skin_pipe_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, skin_layout_,
+                                0, 1, &skin_desc_set_, 0, nullptr);
+        struct SkinPC { uint32_t count, n_bones; } spc{ n_, skin_bones_ };
+        vkCmdPushConstants(cmd_bufs_[img_idx], skin_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                           0, sizeof(spc), &spc);
+        vkCmdDispatch(cmd_bufs_[img_idx], (n_ + 255) / 256, 1, 1);
+        // skin (compute write) -> sort (compute read) AND -> vertex attribute read at draw
+        VkMemoryBarrier smb{};
+        smb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        smb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        smb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+            0, 1, &smb, 0, nullptr, 0, nullptr);
+        skin_pose_dirty_ = false;
+    }
 
     // GPU bitonic sort: back-to-front splat ordering (compute passes) — no CPU in the per-frame path.
     if (sort_ready_ && n_ > 0) {

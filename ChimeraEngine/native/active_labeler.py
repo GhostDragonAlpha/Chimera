@@ -61,7 +61,19 @@ class ActiveLabeler:
         self.scale = self.buf[:, 7:10]
         self.n = self.pos.shape[0]
 
+    def _upload(self, radius=2.2):
+        """Put the ORIGINAL splats back in the engine. `look()` must never show a prior
+        color-coded/repainted upload — the eye has to see the clean bear every time."""
+        import struct
+        import cpp_bridge as cb
+        r, th, ph = cb._spherical((0.0, 0.0, radius))
+        payload = struct.pack("<I3f", self.n, r, th, ph) + self.buf.astype(np.float32).tobytes()
+        req = urllib.request.Request(ENGINE + "/membrane_bin", data=payload,
+                                     headers={"Content-Type": "application/octet-stream"}, method="POST")
+        urllib.request.urlopen(req, timeout=60).read()
+
     def look(self, theta, phi, radius=2.2, path=None):
+        self._upload(radius)   # guarantee the engine shows the ORIGINAL bear, not a prior color-code
         payload = json.dumps({"cam_radius": radius, "cam_theta": theta, "cam_phi": phi}).encode()
         req = urllib.request.Request(ENGINE + "/camera", data=payload,
                                      headers={"Content-Type": "application/json"}, method="POST")

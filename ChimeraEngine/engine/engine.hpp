@@ -5,6 +5,7 @@
 #include <mutex>
 #include <atomic>
 #include <cstdint>
+#include <map>
 
 struct EngineConfig {
     uint32_t width  = 1920;
@@ -37,6 +38,14 @@ public:
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
 
+    // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
+    bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
+                      uint32_t n, uint32_t n_bones);
+    bool store_pose(uint32_t slot, const std::vector<float>& pose);  // B*7 floats: [qw,qx,qy,qz, tx,ty,tz] per bone
+    bool apply_pose(uint32_t slot);   // upload stored slot to pose_buf_, pose on next frame
+    void toggle_pose();               // 'P' key: rest (slot 0) <-> wave (slot 1)
+    bool skinned_active() const { return skinned_active_; }
+
 private:
     bool create_instance();
     bool create_device();
@@ -56,6 +65,10 @@ private:
     bool create_sort_pipeline();
     void ensure_sort_buffers(uint32_t count);
     void destroy_sort_resources();
+    bool create_skin_pipeline();
+    void destroy_skin_resources();
+    void upload_buffer(const void* data, VkDeviceSize size, VkBufferUsageFlags usage,
+                       VkBuffer& buf, VkDeviceMemory& mem);
     void create_depth_resources();
     void destroy_depth_resources();
     void create_offscreen();
@@ -155,4 +168,20 @@ private:
     uint32_t sort_count_ = 0;   // real N
     uint32_t sort_padded_ = 0;  // padded N (power of two)
     bool sort_ready_ = false;
+
+    // ── GPU skinning state (skin.comp: rest + weights + pose -> pos_buf_) ─────────
+    VkShaderModule        skin_mod_ = VK_NULL_HANDLE;
+    VkPipeline            skin_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout      skin_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout skin_desc_layout_ = VK_NULL_HANDLE;
+    VkDescriptorPool      skin_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet       skin_desc_set_ = VK_NULL_HANDLE;
+    VkBuffer rest_buf_ = VK_NULL_HANDLE, skin_w_buf_ = VK_NULL_HANDLE, pose_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory rest_mem_ = VK_NULL_HANDLE, skin_w_mem_ = VK_NULL_HANDLE, pose_mem_ = VK_NULL_HANDLE;
+    std::map<uint32_t, std::vector<float>> pose_slots_;  // slot -> B*7 pose deltas
+    uint32_t skin_count_ = 0;      // N (matches the loaded skin)
+    uint32_t skin_bones_ = 0;      // B
+    uint32_t skin_cur_slot_ = 0;   // last applied slot (for the 'P' toggle)
+    bool skinned_active_ = false;  // true after load_skinned; /membrane_bin clears it
+    bool skin_pose_dirty_ = false; // dispatch skin.comp on the next frame
 };

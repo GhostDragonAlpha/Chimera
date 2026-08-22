@@ -780,3 +780,15 @@ Wait, looking at the
 - sample: expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: 96f2bbe VERDICTs 14-23: '
 - possible_conflict_with: H-61  (Gardener: reconcile)
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-08-22T07:15:01Z -->
+## H-75: sim_rejection: regolith_yard/sand_basin_dwell_and_frame
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-08-22T06:00:37
+- proposed_organ: claude_md
+- evidence: simtest_26952ede18597de8, simtest_1d75735165b76345, simtest_0b481b2537770a60
+- sample: blocked: [{"error": "reset_position failed: no possessed pawn found in runtime_report"}]
+- sample: blocked: [{"error": "inspect.runtime_report: failed"}]
+- sample: failed: [{"expect": {"is_pie": true}, "ok": true, "note": "isPIE=True"}]
+- possible_conflict_with: heuristic_52e2728aa88ab00a (Probe jumps by timed pawn_z read-back, not log_contains — an); heuristic_66e973934c7b5322 (Compound beats fail for shifting root causes (frozen input, ); heuristic_040256f8f18a3de0 (Verify beat spawn location distances and pawn navigation con); heuristic_fd052ff001f27417 (Verify beat spawn location distances and pawn navigation con)  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

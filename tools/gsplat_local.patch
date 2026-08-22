@@ -1,0 +1,39 @@
+diff --git a/examples/datasets/colmap.py b/examples/datasets/colmap.py
+index 6c21f2c..5acfaf9 100644
+--- a/examples/datasets/colmap.py
++++ b/examples/datasets/colmap.py
+@@ -7,7 +7,11 @@ import imageio.v2 as imageio
+ import numpy as np
+ import torch
+ from PIL import Image
+-from pycolmap import SceneManager
++try:
++    from pycolmap import SceneManager
++except ImportError:
++    # pycolmap >= 3.12 removed SceneManager; use the Reconstruction-backed shim.
++    from .pycolmap_shim import SceneManager
+ from tqdm import tqdm
+ from typing_extensions import assert_never
+ 
+diff --git a/examples/simple_trainer.py b/examples/simple_trainer.py
+index 6a30be7..93841e5 100644
+--- a/examples/simple_trainer.py
++++ b/examples/simple_trainer.py
+@@ -21,7 +21,16 @@ from datasets.traj import (
+     generate_interpolated_path,
+     generate_spiral_path,
+ )
+-from fused_ssim import fused_ssim
++try:
++    from fused_ssim import fused_ssim
++except ImportError:
++    # fused-ssim needs a CUDA source build that fails on this toolchain
++    # (Windows rpcndr.h `small` macro collides with a torch 2.11 header).
++    # Fall back to torchmetrics SSIM; same signature surface used here.
++    from torchmetrics.functional import structural_similarity_index_measure
++
++    def fused_ssim(preds, targets, padding="valid"):
++        return structural_similarity_index_measure(preds, targets)
+ from torch import Tensor
+ from torch.nn.parallel import DistributedDataParallel as DDP
+ from torch.utils.tensorboard import SummaryWriter

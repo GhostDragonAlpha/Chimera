@@ -22,8 +22,9 @@
 > **SECURED 2026-08-17** — the story is now the **teddy bear**: a third-person game character trained like a
 > robot, run on cellular-automaton rules. This is not a game-narrative (the old solar-system timeline is
 > archived below); it is the **membrane decomposition** of one controllable creature. The decomposition
-> names the MEMBRANES and how they interact — *what the bear looks like is trained, not written* (TRELLIS:
-> image → 3D → voxel base representation), *how it moves is rule, not keyframe* (cellular automaton: a
+> names the MEMBRANES and how they interact — *what the bear looks like is generated, not written* (one
+> AI still → controlled multi-view imagery, azimuth AND elevation → feed-forward 3DGS — AnySplat —
+> a 14-float cloud base), *how it moves is rule, not keyframe* (cellular automaton: a
 > muscle is a column that shortens; motion is cells added and removed), and *how it decides is a learned
 > policy, not a script* (retinal senses → Q-learning → a chosen step). Read the construction method before
 > touching any term: [`ChimeraEngine/docs/HOW_TO_MAKE_A_THING.md`](../../ChimeraEngine/docs/HOW_TO_MAKE_A_THING.md).
@@ -34,7 +35,7 @@
 ## The one idea
 
 **A creature is grown, not sculpted.** The teddy bear is not a model dragged into the world; it is a
-lattice of cells grown from one number — the genome — given a base shape by TRELLIS, moved by
+lattice of cells grown from one number — the genome — given a base shape by the generated 3DGS cloud, moved by
 cellular-automaton rules, and judged by an eye. The engine has exactly two poles:
 
 - **The Barnes-Hut tree** talks across distance — every additive point-source field (gravity, light,
@@ -50,19 +51,25 @@ you have left the engine.
 
 The decomposition below is the membranes, in construction order. Each is a theory: it is proven when
 its falsifier is measured — a NUMBER at the PHYSICS terminal, a JUDGMENT at THE HUMAN terminal. The
-appearance of the bear is NOT a term — it is trained (TRELLIS) and only ever *verified* by the eye.
+appearance of the bear is NOT a term — it is generated (multi-view → AnySplat 3DGS) and only ever *verified* by the eye.
 
 ### theSeed — the genome
 
-In the beginning is a number. One genome — a table of key=value DATA — plus the TRELLIS base
-representation, grows the whole lattice, deterministically: the same genome grows the same cells,
+In the beginning is a number. One genome — a table of key=value DATA — plus the generated base
+representation (an AI-authored still, expanded to views at controlled azimuth AND elevation so the
+top and bottom are observed, reconstructed feed-forward by AnySplat into a 14-float 3DGS cloud,
+then photometrically refined against those views), grows the whole lattice, deterministically: the
+same genome grows the same cells,
 bit-identical, forever. The genome is data; the core is the reader. You never touch C++ to change the
-creature. Its only law is `theDeterminism`: same seed → same cells.
+creature. Its only law is `theDeterminism`: same seed → same cells. The quality bar is TripoSplat's
+sitting teddy (262,144 fourteen-float splats — photoreal, but single-image: its back is hallucinated,
+rejected as a source); the generated bear must match that fidelity AND be complete from every
+direction — that completeness is the whole point of the multi-view lane.
 
 ### theShape — the voxel lattice body
 
-The body is a cell set (occupancy + rig chains) carried as DATA. TRELLIS gives the base
-representation; the CA owns it from that moment on. Before it can move it must STAND — its center of
+The body is a cell set (occupancy + rig chains) carried as DATA. The generated 3DGS cloud gives the
+base representation; the CA owns it from that moment on. Before it can move it must STAND — its center of
 mass must project inside the paw support hull with **margin ≥ 1 cell** (one lattice step of
 discretization slack). A doll that tips is not a body; it is a bad statue, and the physics that
 animates it is faithfully animating a bad statue. `theBalance` is the gate that separates the two.
@@ -138,9 +145,9 @@ qwen3.8), asked one specific question per movement, BLIND to the numbers.
 
 ```chimera-terms
 theStory [H] the teddy bear -- a third-person character, trained like a robot, run by CA rules
-  theSeed [P] the genome + TRELLIS base: one number grows the whole lattice, deterministically
+  theSeed [P] the genome + the GENERATED base: one AI-authored still -> controlled multi-view imagery (azimuth AND elevation) -> feed-forward 3DGS (AnySplat) -> 14-float cloud; one seed grows the same bear, deterministically
     theDeterminism [P] same genome -> same cells, bit-identical -- the seed's only law
-  theShape [P] the voxel lattice body -- TRELLIS gives the base representation; the CA owns it after
+  theShape [P] the voxel lattice body -- the generated 3DGS cloud gives the base representation; the CA owns it after
     theBalance [P] center of mass inside the paw support hull (margin >= 1 cell) -- the standing gate
   theMuscle [P] a column that shortens -- movement is cells added/removed on the lattice
   theRig [P] the chains the muscle rides on, derived from the shape (never the reverse)

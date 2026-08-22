@@ -30,6 +30,7 @@ if(GLSL_VALIDATOR)
         "${SPIRV_DIR}/render.frag.spv"
         "${SPIRV_DIR}/compute.spv"
         "${SPIRV_DIR}/sort.spv"
+        "${SPIRV_DIR}/skin.spv"
     )
 
     add_custom_command(
@@ -62,6 +63,14 @@ if(GLSL_VALIDATOR)
         COMMAND "${GLSL_VALIDATOR}" -S comp -V "${SHADER_DIR}/sort.comp" -o "${SPIRV_DIR}/sort.spv"
         DEPENDS "${SHADER_DIR}/sort.comp"
         COMMENT "Compiling sort.comp -> sort.spv"
+    )
+
+    add_custom_command(
+        OUTPUT "${SPIRV_DIR}/skin.spv"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${SPIRV_DIR}"
+        COMMAND "${GLSL_VALIDATOR}" -S comp -V "${SHADER_DIR}/skin.comp" -o "${SPIRV_DIR}/skin.spv"
+        DEPENDS "${SHADER_DIR}/skin.comp"
+        COMMENT "Compiling skin.comp -> skin.spv"
     )
 
     add_custom_target(all_shaders ALL DEPENDS ${COMPILED_SHADERS})

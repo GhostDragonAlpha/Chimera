@@ -99,10 +99,10 @@ PHYSICS_READING = {
                 "with a few larger circular objects -- distant planets -- suspended among "
                 "the stars: deep empty space, the dark medium itself, NO ground or "
                 "horizon anywhere",
-    "theSeed": "small dots connected by lines to larger circular nodes, with one large "
-               "bright node at the center of the network against a dark background -- a "
-               "world unfolded from a single origin, every colored node a world attached "
-               "to the one central seed",
+    "theSeed": "a soft fluffy tan-brown teddy bear against a dark background, ROTATING on the spot "
+               "like a turntable inspection over a dim dark ground that stays STILL: the same stuffed "
+               "bear seen from many angles as it turns -- front, sides, and back -- staying one solid "
+               "bear (head, ears, body, limbs) at every angle, with no hollow, flat, or missing side",
     "theDeterminism": "two identical networks side by side against a dark background -- "
                       "the same pattern of threads and colored nodes twice, mirror twins "
                       "with every detail matching: one world unfolded twice from the same "
@@ -292,6 +292,22 @@ def dyad(term: str, png: str, threshold: float = 0.6, human_override: dict | Non
     if not expected:
         return {"verdict": "FAIL", "pass": False, "term": term,
                 "detail": f"no physics reading authored for `{term}` yet -- build it before proving"}
+
+    # A 2-path [begin, end] list is the engine's movie shorthand; a blind eye reads two stills of a
+    # symmetric subject as "the scene stays the same" or "only one frame is provided" (measured
+    # 2026-08-19 on theSeed -- front and back of the same teddy bear are legitimately similar, so a
+    # 2-frame 'movie' is illegible as an unfolding). When the term is a story membrane with a real
+    # timeline, the messenger watches the TIMELINE ITSELF: N engine frames across t=0..1. Any failure
+    # falls back to the 2 stills. (Lives here, not in engine_state, because this module is hot-
+    # reloaded by /reload while engine_state is not.)
+    if isinstance(png, (list, tuple)) and len(png) == 2 and human_override is None:
+        try:
+            import cpp_bridge
+            frames = cpp_bridge.render_term_movie(term, str(Path(png[1]).parent))
+            if frames:
+                png = frames
+        except Exception:
+            pass
 
     if human_override is not None:                          # OVERRIDE: the operator supplies the human side
         observed = str(human_override.get("reading", "")).strip()

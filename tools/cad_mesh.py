@@ -37,7 +37,7 @@ RING = 32  # pole to pole   ate half the inertia tolerance by itself)
 # ---------------------------------------------------------------- tessellation
 def uv_ellipsoid(c, r, sole=None):
     c, r = np.asarray(c, float), np.asarray(r, float)
-    vs, ns = [], []
+    vs, ns, uv = [], [], []
     if sole is None:
         phi_max = np.pi
         cap = False
@@ -49,21 +49,30 @@ def uv_ellipsoid(c, r, sole=None):
         cap = True
     for i in range(RING + 1):
         phi = phi_max * i / RING       # 0..phi_max, +Y pole to cut/pole
-        for j in range(SEG):
-            th = 2 * np.pi * j / SEG
+        for j in range(SEG + 1):       # SEG+1 cols: j=SEG duplicates j=0 as
+            th = 2 * np.pi * j / SEG   # the u=1.0 side of the UV cut (A3)
             d = np.array([np.sin(phi) * np.cos(th), np.cos(phi), np.sin(phi) * np.sin(th)])
             vs.append(c + d * r)
             ns.append(d / (r * r))
+            uv.append((j / SEG, 0.0))  # placeholder v, set after nrows known
     nrows = RING + 1
     if cap:
-        for j in range(SEG):           # cap center row (flat face, normal -Y)
+        for j in range(SEG + 1):       # cap center row (flat face, normal -Y)
             vs.append(c + np.array([0.0, -sole * r[1], 0.0]))
             ns.append(np.array([0.0, -1.0, 0.0]))
+            uv.append((j / SEG, 0.0))
         nrows += 1
+    # analytic UV (THE_UV_METHOD link 1): u = theta wrap; v = EQUAL-AREA per
+    # row, measured from this tessellation (TEST A2 -- uniform-v fired its
+    # falsifier: pole strip density blew the bound by ~40x)
     v = np.asarray(vs, np.float32)
     nrm = np.asarray(ns, np.float32)
     nrm /= np.linalg.norm(nrm, axis=1, keepdims=True)
-    return v, nrm, _grid_indices(nrows, SEG)
+    idx = _grid_indices(nrows, SEG + 1)
+    vv = _strip_area_v(v, idx, nrows, SEG + 1)
+    uv = np.asarray([(u, vv[k // (SEG + 1)]) for k, (u, _) in enumerate(uv)],
+                    np.float32)
+    return v, nrm, idx, uv
 
 
 def capsule(a, b, rad):
@@ -74,41 +83,60 @@ def capsule(a, b, rad):
     ref = np.array([0.0, 0.0, 1.0]) if abs(w[2]) < 0.9 else np.array([1.0, 0.0, 0.0])
     u = np.cross(w, ref); u /= np.linalg.norm(u)
     v2 = np.cross(w, u)
-    vs, ns = [], []
+    vs, ns, uv = [], [], []
     rows = RING // 2  # hemisphere rings per cap
     # Row order is one continuous surface -- NO duplicated seam rings
     # (run-1 bug: duplicated equator rings made a spurious interior cone,
-    # silently eating ~25% of the volume while rendering fine):
-    #   bottom cap pole -> equator@a | cylinder wall (one band) | equator@b -> top pole
+    # silently eating ~25% of the volume while rendering fine; A2 found a
+    # second copy: the explicit ring@b == top cap's first row -> zero-area
+    # strip. The wall band is the single strip equator@a -> equator@b):
+    #   bottom cap pole -> equator@a | wall (one strip) | equator@b -> top pole
+    # Columns: SEG+1 (j=SEG duplicates j=0 as the u=1.0 side of the UV cut).
     for i in range(rows + 1):                       # bottom cap: phi pi -> pi/2
         phi = np.pi - (np.pi / 2) * i / rows
-        for j in range(SEG):
+        for j in range(SEG + 1):
             th = 2 * np.pi * j / SEG
             d = np.cos(phi) * w + np.sin(phi) * (np.cos(th) * u + np.sin(th) * v2)
-            vs.append(a + rad * d); ns.append(d)
-    for j in range(SEG):                            # cylinder end ring at b
-        th = 2 * np.pi * j / SEG
-        d = np.cos(th) * u + np.sin(th) * v2
-        vs.append(b + rad * d); ns.append(d)
-    for i in range(rows + 1):                       # top cap: phi pi/2 -> 0
+            vs.append(a + rad * d); ns.append(d); uv.append((j / SEG, 0.0))
+    for i in range(rows + 1):                       # equator@b -> top pole
         phi = np.pi / 2 - (np.pi / 2) * i / rows
-        for j in range(SEG):
+        for j in range(SEG + 1):
             th = 2 * np.pi * j / SEG
             d = np.cos(phi) * w + np.sin(phi) * (np.cos(th) * u + np.sin(th) * v2)
-            vs.append(b + rad * d); ns.append(d)
+            vs.append(b + rad * d); ns.append(d); uv.append((j / SEG, 0.0))
+    nrows = 2 * (rows + 1)
     v = np.asarray(vs, np.float32)
     nrm = np.asarray(ns, np.float32)
     nrm /= np.linalg.norm(nrm, axis=1, keepdims=True)
-    nrows = 2 * (rows + 1) + 1
-    return v, nrm, _grid_indices(nrows, SEG)
+    idx = _grid_indices(nrows, SEG + 1)
+    vv = _strip_area_v(v, idx, nrows, SEG + 1)
+    uv = np.asarray([(uu, vv[k // (SEG + 1)]) for k, (uu, _) in enumerate(uv)],
+                    np.float32)
+    return v, nrm, idx, uv
 
 
-def _grid_indices(nrows, seg):
+def _strip_area_v(v, idx, nrows, ncols):
+    """Per-row v from cumulative MEASURED strip area (TEST A3, THE_UV_METHOD).
+    Strip i = triangles whose lowest-index vertex sits in row i; its share of
+    the total area sets dv_i, so texel density is constant across strips."""
+    t = idx.reshape(-1, 3)
+    a = 0.5 * np.linalg.norm(np.cross(v[t[:, 1]] - v[t[:, 0]],
+                                      v[t[:, 2]] - v[t[:, 0]]), axis=1)
+    strip = (t.min(1) // ncols)
+    area = np.zeros(nrows - 1)
+    np.add.at(area, strip, a)
+    cum = np.concatenate([[0.0], np.cumsum(area)])
+    return cum / cum[-1]
+
+
+def _grid_indices(nrows, ncols):
+    """Quad grid over (nrows x ncols) vertices, NO theta wrap -- column
+    ncols-1 is the duplicated seam (the u=1.0 side of the cut, TEST A3)."""
     idx = []
     for i in range(nrows - 1):
-        for j in range(seg):
-            j2 = (j + 1) % seg
-            a, b_, c_, d = i * seg + j, i * seg + j2, (i + 1) * seg + j2, (i + 1) * seg + j
+        for j in range(ncols - 1):
+            a, b_, c_, d = (i * ncols + j, i * ncols + j + 1,
+                            (i + 1) * ncols + j + 1, (i + 1) * ncols + j)
             idx += [a, c_, b_, a, d, c_]
     return np.asarray(idx, np.uint32)
 
@@ -132,7 +160,7 @@ PARENT = {
 
 
 # ---------------------------------------------------------------- GLB writer
-def build_glb(path: Path) -> None:
+def build_glb(path: Path, with_uv: bool = False) -> None:
     bin_chunks: list[bytes] = []
     accessors, bufviews, materials, prims_out = [], [], [], []
     nodes, joints = [], []
@@ -187,9 +215,17 @@ def build_glb(path: Path) -> None:
 
     for p in PRIMS:
         if p["kind"] == "ell":
-            v, nrm, idx = uv_ellipsoid(p["c"], p["r"], p.get("sole"))
+            v, nrm, idx, uv = uv_ellipsoid(p["c"], p["r"], p.get("sole"))
         else:
-            v, nrm, idx = capsule(p["a"], p["b"], p["rad"])
+            v, nrm, idx, uv = capsule(p["a"], p["b"], p["rad"])
+        if with_uv:
+            uv = np.asarray(uv, np.float32)
+            # atlas packing (THE_UV_METHOD link 1): one tile per part,
+            # 5 cols x 4 rows, 2% gutter; tile index = PRIMS order
+            k = name2joint[p["name"]]
+            g = 0.02
+            uv[:, 0] = (k % 5 + g + uv[:, 0] * (1 - 2 * g)) / 5
+            uv[:, 1] = (k // 5 + g + uv[:, 1] * (1 - 2 * g)) / 4
 
         j = np.zeros((len(v), 4), np.uint16)
         j[:, 0] = name2joint[p["name"]]
@@ -207,8 +243,11 @@ def build_glb(path: Path) -> None:
         materials.append({"name": p["name"], "pbrMetallicRoughness": {
             "baseColorFactor": [col[0], col[1], col[2], 1.0],
             "metallicFactor": 0.0, "roughnessFactor": 0.9}})
-        prims_out.append({"attributes": {"POSITION": pa, "NORMAL": na,
-                                         "JOINTS_0": ja, "WEIGHTS_0": wa},
+        attrs = {"POSITION": pa, "NORMAL": na, "JOINTS_0": ja, "WEIGHTS_0": wa}
+        if with_uv:
+            ta = acc(push(uv.tobytes(), ARR34962), FLOAT, len(uv), "VEC2")
+            attrs["TEXCOORD_0"] = ta
+        prims_out.append({"attributes": attrs,
                           "indices": ia, "material": len(materials) - 1})
 
     skin = {"inverseBindMatrices": ibm_acc, "joints": joints,
@@ -246,8 +285,15 @@ def build_glb(path: Path) -> None:
 
 
 def main() -> int:
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
-    build_glb(out)
+    # --uv: also export analytic TEXCOORD_0 (atlas-packed, THE_UV_METHOD
+    # link 1) to cad_bear_uv.glb. Default path is byte-unchanged.
+    with_uv = "--uv" in sys.argv
+    args = [a for a in sys.argv[1:] if a != "--uv"]
+    if with_uv:
+        out = Path(args[0]) if args else OUT.with_name("cad_bear_uv.glb")
+    else:
+        out = Path(args[0]) if args else OUT
+    build_glb(out, with_uv=with_uv)
     return 0
 
 
