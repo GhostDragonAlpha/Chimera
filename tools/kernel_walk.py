@@ -2117,6 +2117,30 @@ M3-STEP-2 (the gait) PRE-REGISTERED before its run:
   policy). train() fixed to save the actual best sample; honest retrain
   (RUN 35) per the pre-authorized RUN 33 procedure follows. Full entry:
   docs/SESSION_LOG_2026-08-22.md "RUN 34 RESULT + ERRATUM".
+  RUN 35 RESULT (F2-c round 2 + diagnosis, 2026-08-23): honest retrain
+  DONE per the pre-authorized RUN 33 procedure -- best sample reward
+  +0.999878 @ gen 38 (frozen min gap 0.0068 mm; npz label = its own
+  measured reward, eval-verified; mislabeled artifact preserved as
+  policy_run33_gen39_mean_mislabeled.npz). Reference replay of the honest
+  theta, after fixing one real harness bug found by the pre-registered
+  successor diagnosis: the injection fed the policy the CURRENT-tick Fn
+  channels; port BatchBear.obs() sees the PREVIOUS physics tick's floor
+  normals (zero at episode start) -- now mirrored with a lagged Fn_obs
+  shadow. Result: reference tracks port row-for-row over the sweep (com_x
+  within ~0.1 mm at every 50 ms tick t=0..0.55 s; min gap printed 0.0 mm vs
+  port 0.0068 mm; corridor-breach tick t=0.55 s on both) -- harness
+  equivalence under control HOLDS, no chaotic divergence. FALSIFIER STILL
+  FIRES AS WRITTEN (tilt max 63.4 deg > 17.2; FELL t=0.72 s): the pre-
+  registered "no fall over the entire horizon" was miscalibrated for this
+  policy class -- the best policy is a knife-edge sweep that passes X_R
+  within 0.0068 mm EXACTLY AS IT BREACHES THE CORRIDOR ON THE PORT ITSELF,
+  so that bound can never pass for this theta even with perfect equivalence;
+  what fired is a bound-calibration artifact, and the FALSIFIER's stated
+  interpretation ("port verification does not extend to control") is refuted
+  by measurement. Corrected F2-c' proposal (pre-registration + operator
+  sign-off required -- NOT run): reference min gap within 1 mm of port AND
+  equal breach tick; this replay already meets both. Full entry:
+  docs/SESSION_LOG_2026-08-23.md "RUN 35 RESULT".
   STEP-2 RUN 11 LAUNCH RECORD:
     Build measurements (gait init): ankle networks healthy (n = 8531 /
       9857 packets, k_rot = 17.3 N.m/rad each from K_ROT_ANKLE = W *
@@ -3302,6 +3326,12 @@ def main() -> int:
     bandidx = {id(b): np.nonzero(b.band)[0] for b in (footL, footR)}
     Fn = {id(footL): 0.0, id(footR): 0.0}
     Fcent = {id(footL): np.zeros(3), id(footR): np.zeros(3)}
+    # RUN 35b erratum (2026-08-23): lagged Fn shadow -- mirrors port
+    # BatchBear.obs() exactly: the policy sees the PREVIOUS physics
+    # tick's floor normals (zero at episode start), never the current
+    # tick's value computed below. RUN 34 replay fed the current-tick
+    # value; that was a harness bug, not a transfer failure.
+    Fn_obs = {id(footL): 0.0, id(footR): 0.0}
     d2_rec: list[tuple] = []
     rec2 = max(1, int(0.05 / dt))
     ref_t: list[float] = []
@@ -3594,11 +3624,16 @@ def main() -> int:
                     _ob += [float(_b.com[0]) * 1e3, float(_b.com[2]) * 1e3]
                 _ob += [float(trunk.v[0]) * 1e3, float(trunk.v[2]) * 1e3,
                         float(trunk.wv[0]), float(trunk.wv[2]),
-                        Fn[id(footL)] / W, Fn[id(footR)] / W]
+                        Fn_obs[id(footL)] / W, Fn_obs[id(footR)] / W]
                 pol_act = POL_CLIP * np.tanh(POL_W @ np.array(_ob) + POL_B)
             cmdk[:] = [pol_act[0], pol_act[1], pol_act[4], pol_act[5]]
             ankle_cmd["L"][:] = (pol_act[3], pol_act[2])   # (th, phi_s)
             ankle_cmd["R"][:] = (pol_act[7], pol_act[6])
+        # RUN 35b erratum: advance the lagged shadow AFTER the policy
+        # read it -- port BatchBear.obs() semantics (self.Fn as written
+        # by the previous step(); zero at episode start).
+        for _ft in (footL, footR):
+            Fn_obs[id(_ft)] = Fn[id(_ft)]
         for name, net in nets.items():
             parent, child = net["parent"], net["child"]
             jf = net["JP"] - parent.com
