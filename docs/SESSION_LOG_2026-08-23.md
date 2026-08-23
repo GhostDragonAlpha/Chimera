@@ -77,3 +77,85 @@ problems are now visible, and they are not the same:
 Consequence: next step is NOT "retrain harder" (forbidden retraining-to-fit). Order:
 achievability diagnosis as one Rule-0 claim before any training; then reward v2
 pre-registration (falling unprofitable), conditional on operator sign-off.
+
+## SUCCESSOR SESSION (2026-08-23): orientation findings + achievability membrane
+
+**Step 1 already landed -- no duplicate append.** The handoff was written at HEAD
+b6d000a; disk now carries fe72a89 (the handoff doc itself) and 8599a35, which appended
+exactly the required operator-verdict entry above. Verified against disk per protocol;
+nothing re-recorded.
+
+**Reconciliation finding (engine store vs git narrative).** `engine_state.json` is a
+gitignored RUNTIME ledger (`ChimeraEngine/MCP_ENGINE.md` states this) -- it has no
+commit history by design, so "store vs HEAD" is not corruption but two lanes. The
+kernel-bear lane NEVER entered the engine store: no term has records except theSeed
+(proven via MCP vision proxy, its own graphics lane), `current=theSeed ->
+theDeterminism` is where the ENGINE's story lane stands, untouched. Per
+`terms_data.py` declarations the walking work maps to **theGait > theStand** ("rest
+equilibrium: paws planted" = M2, falsifier record PASSED, operator eyes still
+pending) and **theGait > theWalk** ("the stride" = M3, operator verdict FAIL). V61/V62
+belong to the grain-rendering lane -- left alone as instructed. Action taken:
+this entry IS the reconciliation record. The shared store is not mutated mid-failure;
+whether/when the bear chain enters the engine gates (frame() theStand/theWalk) is an
+operator call -- the natural moment is when M2 gets operator eyes.
+
+**STEP 3 -- ACHIEVABILITY MEMBRANE (Rule 0, stated before any run).**
+
+Sources read in full: .tmp/run30_gait.log, .tmp/run31_gait.log,
+tools/kernel_walk.py docstring (RUN 25--31 pre-registrations + results),
+physics prints in both logs.
+
+STATEMENT: An upright transfer IS physically achievable with this physics +
+geometry -- but ONLY as a deliberate RELEASE-AND-CATCH dynamic transfer, not the
+quasi-static weight shift every failing controller attempted. All three falls share
+one structural cause, derived BEFORE any run and confirmed by both control families:
+the ankle-centroid channel (lambda = 0.40 rad/s measured, RUN 30) cannot regulate a
+MOVING COM (u_ss = D_c - v/lambda dies above v ~ 2.6 mm/s), so holding the transfer
+static guarantees the topple the hold is trying to prevent. The FSM died of it
+(RUN 30/31 identical traces; RUN 31's PI hold windup-capped at ~10% of need, brake
+trigger unreachable on approach / out of scope in the fall); the learned policy died
+of the same edge differently (RUN 35 knife-edge sweep, breach tick = pass tick).
+
+THE DYNAMIC BUDGET CLOSES (all numbers from measured constants, closed form):
+release at the left sole's inner edge (com_x = 39.5 mm; soles L [39.5, 76.5],
+R [-16.5, 20.5], gap 19 mm, x_L=58/x_R=2/hx=18.5 measured) and let the pendulum run.
+Transit to the R sole's outer edge: theta = asin(19/157) = 6.95 deg, arrival
+v_arr = omega_n*h*sin(theta)/(1-cos... ) closed form = 150.5 mm/s (omega_n = 7.90
+rad/s -- matches the build's measured print). The RUN 31 hip brake (a_brake = 1.14
+m/s^2 derived, reaction 0.45 N.m vs W*l_fore = 0.50 N.m drain) stops it in
+v^2/2a = 9.9 mm -> stop point com_x ~ 10.6 mm: INSIDE the R sole, 27 mm from the far
+edge, 4 mm short of com_xt[R] = 14.5 (undershoot side, clause-(b) territory if it
+even materializes). Peak tilt through the whole maneuver ~10.6 deg < the 17.2 deg
+catchable corridor with ~6.6 deg margin. The hip bandwidth (omega_hr = 20.6 rad/s)
+exceeds everything the catch asks. THE KEY UNLOCK: RUN 31's brake never engaged
+because its trigger presupposed an arrival speed the lambda-capped channel could
+never develop on the approach -- release-and-catch GENERATES that speed deliberately,
+so the original speed-dependent trigger becomes reachable IN SCOPE. RUN 31's own
+derivation said it first: "the transfer IS a controlled fall"; "THE HIP IS THE
+CATCH." The tree died one step short of acting on it.
+
+PREDICTION: a controller implementing release-and-catch (hold upright -> stop
+resisting the inward tip at inner-edge crossing -> fire the hip brake + load the far
+foot under the speed trigger evaluated EVERY TICK WHILE THE XFER WINDOW IS OPEN)
+crosses the first transfer with tilt_T max <= 17.2 deg, majority exit CONTROLLED
+(both Fn > 0 within 25% of W), com settling near com_xt[R] +- basin margin.
+
+FALSIFIER (named before any run): if a deliberate-release transfer breaches the
+corridor (tilt_T > 17.2 deg) BEFORE majority contact, or overshoots the basin
+(com_x past -16.5 mm), or arrives at > 2x the closed-form v_arr (channel dynamics
+not following pendulum energy), the dynamic budget above is wrong BY MEASUREMENT and
+upright transfer is NOT achievable at THIS geometry. Successor then = gait DESIGN
+(build-level FOOT_SEP re-derivation: bigger basin / narrower gap) or physics params
+-- NOT reward shaping, NOT policy retraining.
+
+Note the convergence: RUN 35's optimizer independently rode the same boundary --
+without a survival incentive it had no reason to CATCH. Reward v2 (survival gate:
+zero/negative on ANY corridor violation in horizon, so +1 requires passing X_R AND
+staying upright) aligns the objective with the physics this membrane states. The two
+fixes compose; neither substitutes for the other.
+
+PENDING OPERATOR SIGN-OFF (gate before any run): (A) proceed to reward-v2
+pre-registration + RUN 36 policy training as pre-planned; (B) first spend ONE cheap
+hand-authored release-and-catch probe through the existing harness (no training --
+minutes, direct falsifier test, reopens the superseded hand lane for one run only);
+(C) reject the membrane. Choice recorded here when made.
