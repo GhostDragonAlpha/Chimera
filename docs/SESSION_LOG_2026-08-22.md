@@ -139,3 +139,59 @@ default GLB at md5 640626a3... verified BEFORE the A3 tessellation change;
 post-A3 geometry conserved to machine epsilon), tools/cad_uv.py (A3+B2
 runner), tools/uv_sheet.py (TEST C), docs/THE_UV_METHOD.md (results below
 the line, all failures recorded).
+
+## INCIDENT (2026-08-22 ~15:45) -- orphaned CUDA workers wedged the GPU driver
+
+Root cause (mine): .venv-gs's python is a 3.13 REDIRECTOR that spawns the
+base interpreter (AppData\...\Python313\python.exe) as a separate process.
+Timeout kills (task-level and subprocess.run) terminated the launcher but
+orphaned the real workers. Five zombie SD3.5 worker processes ended up stuck
+in uninterruptible GPU-driver calls -- taskkill /F /T cannot reap them; one
+holds 14 GB RAM. nvidia-smi now hangs; RUN 33 slowed to ~18 min/gen (from
+~5). C4 (four fur sheets) failed twice as collateral: falsifier recorded,
+but the honest cause is the wedged machine, not the method.
+
+What is SAFE: policy_run33.npz checkpoints ON NEW BEST -- best policy
+r=+0.6794 (min-gap ~18.0 mm vs the 28 mm bar) is on disk (12:50). A reboot
+loses only the CMA-ES search state, not the result. Code+docs pushed
+(8ddcd93..85e788c).
+
+Operational lesson recorded for all future GPU work: never rely on timeout
+kills for venv-python GPU processes on Windows; find the base-interpreter
+child via tasklist and kill by WINPID, or design runs so workers exit
+cleanly themselves (single-shot processes that return, as TEST C/C2 did).
+
+## RUN 34 RESULT + ERRATUM (F2-c, 2026-08-22 ~18:40) -- FALSIFIER FIRED; the label was a bug
+
+RUN 34 ("gait policy", reference harness, the policy as the ONLY command
+source): FALSIFIER FIRED per pre-registration. Fell at t=0.58 s; corridor
+breach ~t=0.43 s (table rows: t=0.40 tilt 11.75 deg / com_x 30.1 mm, t=0.45
+20.85 deg / 22.8 mm); com_x swept 59.1 -> 3.8 mm in 0.55 s; FnL unloaded
+24.6 -> 0.5 N; tilt max 48.18 deg. Full-trace min |com_x - X_R| = 1.8 mm at
+t=0.55 s -- achieved while falling (the pre-registered referee is full-trace
+min + no-fall + tilt <= 17.2 deg; the fall alone fires it). Evidence:
+.tmp/run34_f2c.log, filmstrips .tmp/kernel_walk_gait{,_side}.png.
+
+ERRATUM -- retraction of the "port best 16.4 mm / reward +0.7076" claim in
+the RUN 34 pre-registration and the npz label: it was an artifact-labeling
+bug, not a result. train() saved the gen-39 population MEAN m labeled with
+a transient best SAMPLE's reward (+0.7076 / min gap 16.4 mm); that sample
+was never persisted (m and sig at gen 39 are not on disk). The new eval mode
+measures the saved theta's true reward through a port episode: +0.5427,
+frozen min gap 25.61 mm -- and the reference replay brackets it (~25.6 mm
+before corridor breach in BOTH harnesses). No chaotic divergence: under
+identical commands the two implementations agree; transfer holds for this
+policy, it just is not the 16.4 mm one. The pre-registered successor
+diagnostic (obs channel mapping) ran first and found nothing wrong -- the
+mapping is channel-for-channel identical to BatchBear.obs()/step().
+
+Fix: train() now saves thetas[order[0]] (the actual best sample), not m;
+new "eval [npz]" mode measures any artifact's true reward. Provenance: the
+mislabeled gen-39 mean preserved as
+models/cad_bear/policy_run33_gen39_mean_mislabeled.npz before overwrite.
+
+Successor (pre-authorized RUN 33 procedure, not a new decision): honest
+retrain -- E=20, hours=6 cap, OUT path policy_run33.npz now honestly
+labeled; then re-run the reference referee and bring M1+M2+M3 dyad views to
+the operator TOGETHER. His verdict is the gate on the walking milestone;
+M1/M2 verdicts still pending.

@@ -39,6 +39,14 @@ Modes:
 Usage:
   .venv-gs/Scripts/python.exe -u tools/kernel_policy.py sweep
   .venv-gs/Scripts/python.exe -u tools/kernel_policy.py train [E] [hours]
+  .venv-gs/Scripts/python.exe -u tools/kernel_policy.py eval [npz]
+
+RUN 34 (F2-c) ERRATUM (2026-08-22): the reference-harness replay of
+policy_run33.npz fell at t=0.58 s (trunk tilt 48 deg > corridor 17.2).
+Post-run audit: train() saved m labeled with a SAMPLE's reward -- the
+npz 'reward' field is not the saved theta's own score. Fixed: train now
+saves the actual best sample; eval mode MEASURES any npz's true reward
+through the port episode instead of trusting the label.
 """
 
 import sys
@@ -179,7 +187,10 @@ def train(n_env: int, hours: float) -> int:
         sig = sig * torch.exp(
             c_sig * ((w.unsqueeze(1) * eps_s[:mu] ** 2).sum(0) - 1.0) / 2)
         if float(r[0]) > best_r:
-            best_r, best_th = float(r[0]), m.clone()
+            # RUN 34 erratum (2026-08-22): save the ACTUAL best sample
+            # -- the old code saved m labeled with a sample's reward.
+            best_r = float(r[0])
+            best_th = thetas[order[0]].clone()
             np.savez(OUT, theta=best_th.cpu().numpy(), reward=best_r,
                      gen=gen)
         el = time.time() - t0
@@ -200,6 +211,25 @@ def train(n_env: int, hours: float) -> int:
     return 0
 
 
+def evaluate(npz_path: str | None = None) -> int:
+    """RUN 34 erratum (2026-08-22): measure a SAVED theta's true reward
+    through the port episode -- E=1 deterministic replay. The npz
+    'reward' field must be verified, not trusted."""
+    p = Path(npz_path) if npz_path else OUT
+    d = np.load(p)
+    th = torch.as_tensor(d["theta"], dtype=DTYPE, device=DEV).unsqueeze(0)
+    bear = BatchBear(BUILD_GAIT, 1)
+    r = episode(bear, th)
+    gap = BASE_GAP * (1.0 - float(r[0]))
+    print(f"eval {p.name}: measured reward={float(r[0]):+.4f} "
+          f"(frozen min gap {gap * 1000:.2f} mm) vs npz label "
+          f"{float(d['reward']):+.4f} (gen {int(d['gen'])})")
+    ok = abs(float(r[0]) - float(d["reward"])) < 1e-4
+    print("RUN 34 EVAL:", "label verified"
+          if ok else "LABEL MISMATCH -- npz reward does not belong to its theta")
+    return 0 if ok else 2
+
+
 def main() -> int:
     mode = sys.argv[1] if len(sys.argv) > 1 else "sweep"
     if mode == "sweep":
@@ -208,6 +238,8 @@ def main() -> int:
         n_env = int(sys.argv[2]) if len(sys.argv) > 2 else 20
         hours = float(sys.argv[3]) if len(sys.argv) > 3 else 6.0
         return train(n_env, hours)
+    if mode == "eval":
+        return evaluate(sys.argv[2] if len(sys.argv) > 2 else None)
     print(f"unknown mode {mode!r}")
     return 2
 

@@ -2076,6 +2076,47 @@ M3-STEP-2 (the gait) PRE-REGISTERED before its run:
   the physically derived expectation (+phi_s -> com_x +) and
   rerun to green below; training proceeds on the verified
   channel.
+  STEP-3 FORK-2 RUN 34 PRE-REGISTRATION (2026-08-22): F2-c, the
+  OFFICIAL PROOF -- the RUN 33 policy as the command source through
+  THIS harness (the reference implementation the port was verified
+  against). Build BEFORE run, per Rule 0.
+  MODE: "gait policy" loads models/cad_bear/policy_run33.npz (CMA-ES
+  best, port reward +0.7076 = min gap 16.4 mm). The policy is the ONLY
+  command source: the FSM/PD/brake block is bypassed; every rec2
+  (50 ms) the 18-dim obs is computed channel-for-channel as
+  kernel_batch.BatchBear.obs() defines it (up x,z of trunk/leg_L/leg_R;
+  com x,z in mm of trunk/foot_L/foot_R; trunk v x,z in mm/s; trunk wv
+  x,z; Fn_L,Fn_R as fractions of W) and act = CMD_CLIP*tanh(W obs + b)
+  is held zero-order between ticks. Action mapping per the F2-b
+  interface: hips cmdk[2i]=phi_s, cmdk[2i+1]=th; ankles ac=(th,phi_s);
+  NET_NAMES order (hip_L, ankle_L, hip_R, ankle_R). Horizon H = 2.0 s
+  from the prestressed state -- the training episode exactly.
+  STATEMENT: a control policy is a function of measured state; RUN 32
+  verified the port reproduces this harness's physics to checkpoint
+  tolerance, so a policy that transfers on the port must transfer here
+  -- the two implementations differ only in float noise, and the
+  corridor (17.2 deg) is wide compared to that noise.
+  PREDICTION: min_t |com_x - X_R| <= 28 mm (the frozen RUN 33 bar;
+  port best 16.4 mm), trunk tilt <= 17.2 deg for the whole horizon,
+  not fallen, zero floor tunneling (wall by construction). Referee
+  output: the frozen metrics + the 0.05 s trajectory table + front and
+  side filmstrips for the dyad.
+  FALSIFIER: min gap > 28 mm, corridor breach, or a fall -> the port's
+  verification does NOT extend to control (chaotic divergence between
+  implementations). Successor: diagnose the obs channel mapping FIRST
+  (print both harnesses' obs at t=0 on the same state; a channel
+  permutation is the prime suspect) -- never retrain to fit the
+  reference.
+  RUN 34 RESULT (F2-c, 2026-08-22): FALSIFIER FIRED -- fell at t=0.58 s
+  (corridor breach ~t=0.43 s; tilt max 48.18 deg). ERRATUM: the +0.7076 /
+  16.4 mm label above was a train() bug -- it saved the gen-39 population
+  MEAN with a transient best sample's reward (never persisted); the saved
+  theta's true reward is +0.5427 (frozen min gap 25.61 mm, measured by the
+  new eval mode), and the reference replay brackets it (~25.6 mm before
+  breach in both harnesses -- no chaotic divergence; transfer holds for this
+  policy). train() fixed to save the actual best sample; honest retrain
+  (RUN 35) per the pre-authorized RUN 33 procedure follows. Full entry:
+  docs/SESSION_LOG_2026-08-22.md "RUN 34 RESULT + ERRATUM".
   STEP-2 RUN 11 LAUNCH RECORD:
     Build measurements (gait init): ankle networks healthy (n = 8531 /
       9857 packets, k_rot = 17.3 N.m/rad each from K_ROT_ANKLE = W *
@@ -2257,6 +2298,11 @@ class Body:
 def main() -> int:
     gait = len(sys.argv) > 1 and sys.argv[1] in ("gait", "gait_dump")
     diag2 = gait and len(sys.argv) > 2 and sys.argv[2] == "diag2"
+    # STEP-3 FORK-2 RUN 34 (F2-c, pre-registered above): "gait policy"
+    # runs the gait build + step loop with the RUN 33 policy as the ONLY
+    # command source (FSM/PD/brake bypassed), horizon H = 2.0 s.
+    pol_mode = (len(sys.argv) > 2 and sys.argv[1] == "gait"
+                and sys.argv[2] == "policy")
     # STEP-3 FORK-2 (RUN 32, pre-registered above): "stand_dump" runs
     # the PROVEN stand scenario unchanged (gait stays False) and
     # additionally dumps the t=0 build state + the 50 ms checkpoint
@@ -3230,6 +3276,21 @@ def main() -> int:
                   "docstring clause (a): FOOT_SEP.")
             sys.exit(2)
 
+    if pol_mode:
+        # RUN 34 (F2-c, pre-registered above): load the RUN 33 policy;
+        # it becomes the ONLY command source in the step loop below.
+        _pol = np.load(ROOT / "models" / "cad_bear" / "policy_run33.npz")
+        _thp = _pol["theta"].astype(np.float64)
+        POL_W = _thp[:8 * 18].reshape(8, 18)
+        POL_B = _thp[8 * 18:]
+        POL_CLIP = float(np.deg2rad(17.0))     # CMD_CLIP (RUN 28 clip)
+        steps = int(2.0 / dt)                  # H, the training horizon
+        pol_act = np.zeros(8)
+        print(f"RUN 34 (F2-c): policy loaded (port reward "
+              f"{float(_pol['reward']):+.4f}); H=2.0 s, control cadence "
+              f"50 ms; FSM/PD/brake BYPASSED -- the policy is the only "
+              f"command source")
+
     track = []
     rec_t, rec_com, rec_up, rec_fnL, rec_fnR = [], [], [], [], []
     snaps = []
@@ -3345,7 +3406,7 @@ def main() -> int:
             ankle_cmd[stance][0] = np.clip(e_z / Gz,
                                            -cmd_max["x"], cmd_max["x"])
             ankle_cmd["L" if stance == "R" else "R"][:] = 0.0
-            if not diag2:
+            if not diag2 and not pol_mode:
                 # RUN 18/19 FSM (pre-registered in the docstring): the
                 # schedule is evaluated AT RUNTIME, starting at the end
                 # of the settle second (RUN 18 measured the missing
@@ -3519,6 +3580,25 @@ def main() -> int:
             else:
                 cmdk[i_pd * 2] += (KP * (-upT[0]) + KD["z"] * trunk.wv[2]) / gz
             cmdk[i_pd * 2 + 1] += (KP * upT[2] + KD["x"] * trunk.wv[0]) / gx
+        if pol_mode:
+            # RUN 34 (F2-c): the policy is the ONLY command source --
+            # everything the FSM/PD/brake computed above is overwritten.
+            # 50 ms zero-order hold; obs channels exactly as
+            # kernel_batch.BatchBear.obs() defines them.
+            if k % rec2 == 0:
+                _ob: list[float] = []
+                for _b in (trunk, legL, legR):
+                    _u = _b.R @ np.array([0.0, 1.0, 0.0])
+                    _ob += [float(_u[0]), float(_u[2])]
+                for _b in (trunk, footL, footR):
+                    _ob += [float(_b.com[0]) * 1e3, float(_b.com[2]) * 1e3]
+                _ob += [float(trunk.v[0]) * 1e3, float(trunk.v[2]) * 1e3,
+                        float(trunk.wv[0]), float(trunk.wv[2]),
+                        Fn[id(footL)] / W, Fn[id(footR)] / W]
+                pol_act = POL_CLIP * np.tanh(POL_W @ np.array(_ob) + POL_B)
+            cmdk[:] = [pol_act[0], pol_act[1], pol_act[4], pol_act[5]]
+            ankle_cmd["L"][:] = (pol_act[3], pol_act[2])   # (th, phi_s)
+            ankle_cmd["R"][:] = (pol_act[7], pol_act[6])
         for name, net in nets.items():
             parent, child = net["parent"], net["child"]
             jf = net["JP"] - parent.com
@@ -3729,32 +3809,60 @@ def main() -> int:
         sym = min(roll_pos, roll_neg) / max(roll_pos, roll_neg, 1e-9)
         i0 = int(np.argmax(rec_t >= settle)) if gm.any() else 0
         forward = float(coms[-1, 2] - coms[i0, 2])
-        print("FSM windows (actual):",
-              {k: (round(a, 2), round(b, 2))
-               for k, (a, b) in windows.items()})
-        wR = windows.get("xfer_R")
-        wL = windows.get("xfer_L")
-        mR = ((rec_t >= wR[0]) & (rec_t <= wR[1])) if wR else np.zeros_like(
-            rec_t, dtype=bool)
-        mL = ((rec_t >= wL[0]) & (rec_t <= wL[1])) if wL else np.zeros_like(
-            rec_t, dtype=bool)
-        plantR = float(fnR[mR].mean()) > 0.05 * W if mR.any() else False
-        plantL = float(fnL[mL].mean()) > 0.05 * W if mL.any() else False
-        ok = (not fallen and tilt_max < 10.0 and tilt_end < 5.0
-              and min_nonband > 0.0 and forward >= 0.010
-              and plantR and plantL and sym >= 0.8)
-        print(f"fallen          = {fallen}")
-        print(f"tilt max / end  = {tilt_max:.2f} / {tilt_end:.2f} deg  (<10 / <5)")
-        print(f"non-band floor  = {min_nonband*1000:.2f} mm  (>0)")
-        print(f"forward z       = {forward*1000:.1f} mm  (>=10)")
-        print(f"plant R mean Fn = {float(fnR[mR].mean()) if mR.any() else 0.0:.2f} N "
-              f"(>{0.05*W:.2f})  detected={plantR}")
-        print(f"plant L mean Fn = {float(fnL[mL].mean()) if mL.any() else 0.0:.2f} N "
-              f"(>{0.05*W:.2f})  detected={plantL}")
-        print(f"roll sym        = {sym:.2f}  (>=0.80; L-peak {roll_pos:.1f}, "
-              f"R-peak {roll_neg:.1f} deg)")
-        print("M3-STEP-2:", "PASS -- THE BEAR WALKED 2 STEPS ON KERNEL FORCES"
-              if ok else "FALSIFIER FIRED -- gait wrong; see metrics for WHERE")
+        if pol_mode:
+            # RUN 34 (F2-c) referee: the frozen RUN 33 metrics on the
+            # REFERENCE harness -- whole-body com_x from the 0.05 s
+            # diagnostic trace (d2_rec), corridor, fall. Bounds per the
+            # pre-registration: min gap <= 28 mm, tilt <= 17.2 deg.
+            X_R34 = 0.0020                       # m, RUN 25 geometry
+            t34 = np.array([e[0] for e in d2_rec])
+            cx34 = np.array([e[1][0] for e in d2_rec])
+            tl34 = np.array([e[2]["trunk"] for e in d2_rec])
+            gap34 = np.abs(cx34 - X_R34)
+            min_gap34 = float(gap34.min())
+            t_best34 = float(t34[int(np.argmin(gap34))])
+            tilt_max34 = float(tl34.max()) if len(tl34) else float("nan")
+            ok = (not fallen and min_gap34 <= 0.028 and tilt_max34 <= 17.2)
+            print(f"RUN 34 (F2-c) referee: min |com_x - X_R| = "
+                  f"{min_gap34*1000:.1f} mm at t={t_best34:.2f} s "
+                  f"(bound 28 mm; port best 16.4 mm)")
+            print(f"  com_x start={cx34[0]*1000:.1f} mm  end="
+                  f"{cx34[-1]*1000:.1f} mm  tilt max={tilt_max34:.2f} deg "
+                  f"(<=17.2)  fallen={fallen}")
+            print("RUN 34 (F2-c):",
+                  "PASS -- the port-trained policy transfers through the "
+                  "REFERENCE harness"
+                  if ok else
+                  "FALSIFIER FIRED -- port verification does not extend to "
+                  "control; successor: obs-mapping diagnostic FIRST, never "
+                  "retrain to fit the reference")
+        else:
+            print("FSM windows (actual):",
+                  {k: (round(a, 2), round(b, 2))
+                   for k, (a, b) in windows.items()})
+            wR = windows.get("xfer_R")
+            wL = windows.get("xfer_L")
+            mR = ((rec_t >= wR[0]) & (rec_t <= wR[1])) if wR else np.zeros_like(
+                rec_t, dtype=bool)
+            mL = ((rec_t >= wL[0]) & (rec_t <= wL[1])) if wL else np.zeros_like(
+                rec_t, dtype=bool)
+            plantR = float(fnR[mR].mean()) > 0.05 * W if mR.any() else False
+            plantL = float(fnL[mL].mean()) > 0.05 * W if mL.any() else False
+            ok = (not fallen and tilt_max < 10.0 and tilt_end < 5.0
+                  and min_nonband > 0.0 and forward >= 0.010
+                  and plantR and plantL and sym >= 0.8)
+            print(f"fallen          = {fallen}")
+            print(f"tilt max / end  = {tilt_max:.2f} / {tilt_end:.2f} deg  (<10 / <5)")
+            print(f"non-band floor  = {min_nonband*1000:.2f} mm  (>0)")
+            print(f"forward z       = {forward*1000:.1f} mm  (>=10)")
+            print(f"plant R mean Fn = {float(fnR[mR].mean()) if mR.any() else 0.0:.2f} N "
+                  f"(>{0.05*W:.2f})  detected={plantR}")
+            print(f"plant L mean Fn = {float(fnL[mL].mean()) if mL.any() else 0.0:.2f} N "
+                  f"(>{0.05*W:.2f})  detected={plantL}")
+            print(f"roll sym        = {sym:.2f}  (>=0.80; L-peak {roll_pos:.1f}, "
+                  f"R-peak {roll_neg:.1f} deg)")
+            print("M3-STEP-2:", "PASS -- THE BEAR WALKED 2 STEPS ON KERNEL FORCES"
+                  if ok else "FALSIFIER FIRED -- gait wrong; see metrics for WHERE")
 
         nsn = len(snaps)
         cols = 6
