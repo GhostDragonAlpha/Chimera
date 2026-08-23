@@ -159,3 +159,47 @@ pre-registration + RUN 36 policy training as pre-planned; (B) first spend ONE ch
 hand-authored release-and-catch probe through the existing harness (no training --
 minutes, direct falsifier test, reopens the superseded hand lane for one run only);
 (C) reject the membrane. Choice recorded here when made.
+
+## OPERATOR DECISION (2026-08-23): option B -- hand probe first
+
+Operator chose B. Renumbering note: the probe is RUN 36; reward-v2 training (if it
+ever happens on this geometry) becomes RUN 37. Pre-registration written into
+tools/kernel_walk.py's docstring BEFORE the run (STATEMENT / DERIVATION /
+PREDICTION / FALSIFIER, every changed number derived): release at the left sole's
+inner edge +1.5 mm, centroid pinned AT the pivot line, cmd_geo authority in
+release/catch only, hold terms dropped during release, the UNCHANGED RUN 31
+speed-triggered brake now in scope, timeout 4xT_xfer, everything else frozen.
+
+## RUN 36 RESULT (probe): FALSIFIER FIRED -- the race is lost on the APPROACH
+
+Log .tmp/run36_probe.log. The march reproduced RUN 30/31 verbatim through t=2.60
+(com_x 59.2 -> 43.5 mm, row-for-row). Then:
+- tilt_T crossed the 17.2 deg corridor between t=2.50 (16.56) and t=2.55 (22.23);
+  no-return trip t=2.52, identical to RUN 30/31 -- all DURING the march.
+- RELEASE fired t=2.62 (com_x=41.0 mm), ~100 ms after the corridor was already
+  gone. The release-and-catch phase never operated inside its design envelope.
+- BRAKE never printed: need(v) stayed microscopic through the creep, and the
+  tumble-transient "majority" exit (Fn 13.11 vs 13.10 N, SIXTH sighting) advanced
+  the FSM out of scope at t=2.63. RUN 31's circularity returned in a new form.
+- Post-exit: swing_L lifted the loaded leg (standing harness note), both feet
+  unloaded by t=2.65, airborne tumble, forward -833 mm; tilt max 110.7 deg.
+  Quirk: `fallen` stayed False -- the bear SLID past the detector's trunk-height
+  test with leg tilts >120 deg.
+
+**The sharper structural fact the probe bought:** the membrane asked "can the catch
+stop the fall?" The measurement answers a prior question first: NO approach reaches
+the release point inside the corridor. Moving com_x ~18 mm on the lambda-capped
+ankle channel REQUIRES the pro-fall trunk lean (the lean is the drive mechanism),
+and that lean alone carries trunk tilt past 17.2 deg before com_x covers the
+distance to the pivot edge. Upright transfer fails at THIS geometry during the
+approach, under ANY controller that must use these channels -- hand or learned.
+
+Consequence per the pre-named successor rule (fired exactly as written): gait
+DESIGN / build-level re-derivation -- sole half-width hx sets geometric authority,
+support band, and basin simultaneously; FOOT_SEP and stride geometry to be
+re-derived from the measured race. Reward shaping and policy retraining against
+this objective are BOTH ruled out by the pre-registration. A learned-policy route
+is not automatically dead -- but it now owes its own Rule-0 membrane naming WHY it
+would escape the measured race (e.g., trunk/leg counter-rotation holding trunk tilt
+low while the legs carry the COM) before a single training step runs. That choice
+is the operator's.

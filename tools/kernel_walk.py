@@ -2141,6 +2141,114 @@ M3-STEP-2 (the gait) PRE-REGISTERED before its run:
   sign-off required -- NOT run): reference min gap within 1 mm of port AND
   equal breach tick; this replay already meets both. Full entry:
   docs/SESSION_LOG_2026-08-23.md "RUN 35 RESULT".
+  STEP-3 ACHIEVABILITY PROBE -- RUN 36 PRE-REGISTERED (2026-08-23,
+  operator-authorized option B: ONE hand-authored run to physically test
+  the achievability membrane BEFORE any training; the hand lane reopens
+  for this run only; reward-v2 training becomes RUN 37):
+    BACKGROUND (docs/SESSION_LOG_2026-08-23.md "achievability membrane"):
+    all three falls share one derived cause -- the ankle channel cannot
+    regulate a MOVING COM (u_ss = D_c - v/lambda) -- and the dynamic
+    budget closes on measured constants. This run tests that membrane's
+    PREDICTION directly.
+    STATEMENT: an upright first transfer is achievable by release-and-
+    catch -- drive the centroid outward (the verified march IS this),
+    stop fighting the tip once the COM nears the pivot line (left sole's
+    inner edge), let the pendulum carry the COM across the inter-sole
+    gap, and fire the EXISTING RUN 31 speed-triggered hip brake IN SCOPE
+    (it was unreachable only because the quasi-static approach never
+    developed speed; release generates it deliberately).
+    DERIVATION (every changed number, no sweeps):
+      RELEASE_X = pivot edge + 1.5 mm margin (x_L - hx + 1.5 mm = 41.0
+        mm): starting the dynamic clock 1.5 mm early only lowers v_arr
+        (<0.5% of the closed-form 150.5 mm/s) while giving the
+        lambda-lagged servo headroom; margin chosen from the servo time
+        constant 1/lambda = 2.5 s x the measured creep ~10-20 mm/s near
+        release -> sub-mm positioning error, so 1.5 mm covers it.
+      p_des := pivot edge exactly (39.5 mm) during release -- contact
+        forces cannot act outside the sole, so commanding beyond the
+        edge saturates identically; pinning AT the edge holds maximum
+        lawful drive torque about the COM.
+      authority cmd_geo (1.42 deg) replaces cmd_xfer (0.75 deg) in
+        release/catch ONLY: the RUN 30 refusal ("refusal stands") bound
+        the QUASI-STATIC crossing; release-and-catch WANTS the fall, and
+        pinning the centroid needs (P_edge - P_live)/|Gx| ~ 1.4-1.6 deg,
+        i.e. full geometric authority -- derived, not tuned.
+      hold terms DROPPED during release (K_hold*upS + K_HOLD_I*int):
+        RUN 31 proved they cannot close the shortfall (I-term windup-
+        capped at ~10%) and clause (b) named their fatigue as the whip
+        source; under release the leg SHOULD tilt with the body.
+      CATCH = the UNCHANGED RUN 31 trigger (remaining <= |v|*2/omega_hr
+        + v^2/2a_brake) now reachable: at the closed-form v_arr = 150
+        mm/s, need = 14.5 + 9.9 = 24.4 mm -> fires just past the edge
+        (com_x ~ 38.5 mm). On fire, additionally p_des := com_xt[side]
+        at cmd_geo -- the docstring's own "fast full-sole move"
+        (tau/Fn = 18.3 mm shift in ~1/omega_hr = 48 ms) delivered under
+        the arriving COM.
+      TIMEOUT 4x T_xfer (release mode only; was 2x): measured march pace
+        (RUN 30: 59->43.5 mm in 1.3 s, accelerating) puts com_x at the
+        release point in ~2.5 s; transit 0.35 s + catch settle <= 0.7 s;
+        4.0 s bounds it with >25% slack. The step cap already runs to
+        6.45 s, unchanged.
+      UNCHANGED: build, prestress, settle, plant_R windows, composite
+        lean channel (pro-fall; never opposed the tip), majority exit
+        rule, corridor 17.2 deg, referee metrics.
+    PREDICTION: RELEASE prints near t~2.3-2.8 s; BRAKE prints within the
+      window with need ~20-30 mm; tilt_T max over the whole episode
+      <= 17.2 deg (expected ~11-14 deg: transit 6.95 deg + brake
+      overshoot ~3.6 deg + trunk composition); majority exit CONTROLLED
+      (Fn new > Fn old with BOTH > 0 within 25% of W); com settles inside
+      the R sole (>= -16.5 mm + margin); FELL stays False through the
+      cap. Second half recorded best-effort -- THE BAR IS THE FIRST
+      TRANSFER (the membrane's scope).
+    FALSIFIER (from the membrane, named before the run): (i) tilt_T >
+      17.2 deg BEFORE majority -> geometry cannot transfer, successor =
+      gait DESIGN / physics params (FOOT_SEP), never reward shaping or
+      policy retraining; (ii) com_x past -16.5 mm -> the brake budget is
+      wrong by measurement, same successor; (iii) arrival speed > 2x the
+      closed-form 150.5 mm/s -> the channel does not follow pendulum
+      energy, same successor; (iv) the whip (tilt_LL runaway) returns
+      even with holds dropped -> the tip is unstable beyond the model,
+      same successor. If NONE fire: upright transfer is PROVEN
+      achievable on this geometry and reward-v2 training (RUN 37)
+      proceeds on proven ground.
+  STEP-3 ACHIEVABILITY PROBE -- RUN 36 RESULT (2026-08-23,
+  .tmp/run36_probe.log): FALSIFIER FIRED, clause (i) -- and the
+  measurement locates the failure EARLIER in the pipeline than the
+  membrane assumed:
+    - The march reproduced RUN 30/31 verbatim through t = 2.60 (com_x
+      59.2 -> 43.5 mm, row-for-row) -- expected, machinery unchanged.
+    - THE CORRIDOR WAS LOST DURING THE MARCH, before release: tilt_T
+      crossed 17.2 deg between t = 2.50 (16.56) and t = 2.55 (22.23);
+      the RUN 26 no-return trip printed t = 2.52, identical to RUN 30/31.
+      RELEASE fired t = 2.62 (com_x = 41.0 mm) -- ~100 ms AFTER the
+      corridor was already gone; the release-and-catch phase never ran
+      inside its design envelope.
+    - BRAKE never printed: need(v) stayed microscopic through the creep,
+      and the tumble-transient "majority" exit (Fn 13.11 vs 13.10 N --
+      SIXTH sighting) advanced the FSM out of scope at t = 2.63. The
+      RUN 31 circularity returned in a new form: the phase exits on a
+      tumble artifact before the catch dynamics can develop.
+    - Post-exit: swing_L lifted the loaded leg (the standing harness
+      note), both feet unloaded by t = 2.65, airborne tumble, forward
+      -833 mm. Referee: FALSIFIER FIRED (tilt max 110.7 deg). Quirk
+      recorded: `fallen` stayed False -- the bear SLID past the
+      detector's trunk-height test while its leg tilts exceeded 120 deg.
+    MEASURED STRUCTURAL FACT (sharper than the membrane's claim): the
+    corridor-vs-progress race is lost on the APPROACH. Moving com_x
+    ~18 mm on the lambda-capped channel REQUIRES the pro-fall trunk lean
+    -- the lean IS the drive mechanism -- and that lean alone carries
+    tilt_T past 17.2 deg before com_x reaches the pivot line. The
+    question was never "can the catch stop the fall"; it is "no approach
+    can reach the release point inside the corridor."
+    VERDICT per the pre-named successor rule: gait DESIGN / build-level
+    re-derivation -- the sole half-width hx sets geometric authority
+    (cmd_geo = hx/|Gx|), the support band, and the basin simultaneously;
+    FOOT_SEP and stride geometry re-derived from the measured race.
+    NEVER reward shaping; NEVER policy retraining against this
+    objective. A learned-policy route would need its OWN Rule-0 membrane
+    naming WHY it escapes the measured race (e.g., trunk/leg counter-
+    rotation holding tilt_T low while the legs carry the COM) before any
+    training -- operator's call whether that membrane is worth stating.
   STEP-2 RUN 11 LAUNCH RECORD:
     Build measurements (gait init): ankle networks healthy (n = 8531 /
       9857 packets, k_rot = 17.3 N.m/rad each from K_ROT_ANKLE = W *
@@ -2327,6 +2435,12 @@ def main() -> int:
     # command source (FSM/PD/brake bypassed), horizon H = 2.0 s.
     pol_mode = (len(sys.argv) > 2 and sys.argv[1] == "gait"
                 and sys.argv[2] == "policy")
+    # ACHIEVABILITY PROBE RUN 36 (pre-registered in the docstring):
+    # "gait release" = the release-and-catch transfer -- the hand lane's
+    # one authorized run to physically test the membrane before any
+    # training.
+    rel_mode = (len(sys.argv) > 2 and sys.argv[1] == "gait"
+                and sys.argv[2] == "release")
     # STEP-3 FORK-2 (RUN 32, pre-registered above): "stand_dump" runs
     # the PROVEN stand scenario unchanged (gait stays False) and
     # additionally dumps the t=0 build state + the 50 ms checkpoint
@@ -3128,7 +3242,8 @@ def main() -> int:
                   "L": float([p[3] for p in phases if p[0] == "plant_L"][0])}
         fsm = {"i": 0, "t_state": 0.0, "t_enter": settle,
                "prev": np.zeros(4), "acmd_exit": {"R": 0.0, "L": 0.0},
-               "lean_f": 0.0, "hold_int": 0.0, "brake": False}
+               "lean_f": 0.0, "hold_int": 0.0, "brake": False,
+               "relphase": "march"}
         # RUN 25 (pre-registered in the docstring): the lateral
         # transfer moves the RUN 11 steering channel's REFERENCE --
         # the one channel measured stable through the real physics
@@ -3173,6 +3288,17 @@ def main() -> int:
         print(f"RUN 25 FSM: plant-end hip refs th_ref=(L "
               f"{np.rad2deg(th_ref['L']):.1f}, R {np.rad2deg(th_ref['R']):.1f}) "
               f"deg  xfer timeout=2xT_xfer={2*T_xfer:.2f} s")
+        # ACHIEVABILITY PROBE RUN 36 (pre-registered in the docstring):
+        # release-and-catch constants -- closed-form on measured
+        # quantities only.
+        P_edge = {"R": x_L - hx, "L": x_R + hx}   # pivot lines (inner edges)
+        REL_MARGIN = 0.0015                       # m, servo-headroom margin
+        rel_timeout = 4.0 if rel_mode else 2.0    # x T_xfer
+        if rel_mode:
+            print(f"RUN 36 probe: P_edge=(R {P_edge['R']*1000:.1f}, "
+                  f"L {P_edge['L']*1000:.1f}) mm  REL_X="
+                  f"edge+/-{REL_MARGIN*1000:.1f} mm  timeout="
+                  f"{rel_timeout:.0f}xT_xfer={rel_timeout*T_xfer:.1f} s")
         # RUN 26 (pre-registered in the docstring): derived numbers for
         # the dynamic transfer -- seed margin, fall crossing time,
         # fall speed at crossing, arrest distance/deceleration, and
@@ -3471,19 +3597,64 @@ def main() -> int:
                         # with the active lean target (see the PD
                         # block below).
                         fsm["hold_int"] += float(upS[0]) * dt
-                        p_des = (com_xt["R"]
-                                 + 2.0 * (com_b[0] - com_xt["R"])
-                                 + 2.0 * com_v[0] / omega_n
-                                 + K_hold * float(upS[0])
-                                 + K_HOLD_I * fsm["hold_int"])
-                        # RUN 29/31: + the stance-leg PI hold -- the
-                        # reaction drained through the verified Gx
-                        # sign (leg +x -> centroid +x -> COM -x); the
-                        # I term (gamma*K_hold) out-builds the creep's
-                        # measured self-reinforcement rate.
-                        ankle_cmd[stance][1] = float(np.clip(
-                            (p_des - P_live[0]) / Gx,
-                            -cmd_xfer, cmd_xfer))
+                        if rel_mode:
+                            # ACHIEVABILITY PROBE RUN 36 (pre-registered):
+                            # march -> release -> catch, per the
+                            # docstring's derivation.
+                            _tgt = "R" if name == "xfer_R" else "L"
+                            if (fsm["relphase"] == "march"
+                                    and ((name == "xfer_R"
+                                          and com_b[0] <= P_edge[_tgt]
+                                          + REL_MARGIN)
+                                         or (name == "xfer_L"
+                                             and com_b[0] >= P_edge[_tgt]
+                                             - REL_MARGIN))):
+                                fsm["relphase"] = "release"
+                                print(f"    RUN 36 RELEASE t={k*dt:.2f} "
+                                      f"{name} com_x={com_b[0]*1000:.1f} "
+                                      f"mm (pivot edge reached)")
+                            if fsm["brake"]:
+                                # CATCH: centroid slammed forward under
+                                # the arriving COM -- the docstring's
+                                # fast full-sole move, cmd_geo authority.
+                                p_des = com_xt[_tgt]
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_geo, cmd_geo))
+                            elif fsm["relphase"] == "release":
+                                # RELEASE: stop fighting the tip -- the
+                                # holds are dropped (RUN 31 proved they
+                                # cannot close the shortfall anyway) and
+                                # the centroid pins AT the pivot line.
+                                p_des = P_edge[_tgt]
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_geo, cmd_geo))
+                            else:
+                                # MARCH: the verified RUN 30 approach,
+                                # unchanged.
+                                p_des = (com_xt[_tgt]
+                                         + 2.0 * (com_b[0] - com_xt[_tgt])
+                                         + 2.0 * com_v[0] / omega_n
+                                         + K_hold * float(upS[0])
+                                         + K_HOLD_I * fsm["hold_int"])
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_xfer, cmd_xfer))
+                        else:
+                            p_des = (com_xt["R"]
+                                     + 2.0 * (com_b[0] - com_xt["R"])
+                                     + 2.0 * com_v[0] / omega_n
+                                     + K_hold * float(upS[0])
+                                     + K_HOLD_I * fsm["hold_int"])
+                            # RUN 29/31: + the stance-leg PI hold -- the
+                            # reaction drained through the verified Gx
+                            # sign (leg +x -> centroid +x -> COM -x); the
+                            # I term (gamma*K_hold) out-builds the creep's
+                            # measured self-reinforcement rate.
+                            ankle_cmd[stance][1] = float(np.clip(
+                                (p_des - P_live[0]) / Gx,
+                                -cmd_xfer, cmd_xfer))
                     elif name == "swing_L":
                         ur = min(fsm["t_state"] / T_plant, 1.0)
                         aR = (fsm["acmd_exit"]["R"]
@@ -3500,16 +3671,48 @@ def main() -> int:
                         # form restored (velocity term back; see
                         # xfer_R above).
                         fsm["hold_int"] += float(upS[0]) * dt
-                        p_des = (com_xt["L"]
-                                 + 2.0 * (com_b[0] - com_xt["L"])
-                                 + 2.0 * com_v[0] / omega_n
-                                 + K_hold * float(upS[0])
-                                 + K_HOLD_I * fsm["hold_int"])
-                        # RUN 29/31: the mirrored stance-leg PI hold
-                        # (see xfer_R above).
-                        ankle_cmd[stance][1] = float(np.clip(
-                            (p_des - P_live[0]) / Gx,
-                            -cmd_xfer, cmd_xfer))
+                        if rel_mode:
+                            # ACHIEVABILITY PROBE RUN 36: mirrored phases
+                            # (see xfer_R above).
+                            _tgt = "L"
+                            if (fsm["relphase"] == "march"
+                                    and com_b[0] >= P_edge[_tgt]
+                                    - REL_MARGIN):
+                                fsm["relphase"] = "release"
+                                print(f"    RUN 36 RELEASE t={k*dt:.2f} "
+                                      f"{name} com_x={com_b[0]*1000:.1f} "
+                                      f"mm (pivot edge reached)")
+                            if fsm["brake"]:
+                                p_des = com_xt[_tgt]
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_geo, cmd_geo))
+                            elif fsm["relphase"] == "release":
+                                p_des = P_edge[_tgt]
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_geo, cmd_geo))
+                            else:
+                                p_des = (com_xt[_tgt]
+                                         + 2.0 * (com_b[0] - com_xt[_tgt])
+                                         + 2.0 * com_v[0] / omega_n
+                                         + K_hold * float(upS[0])
+                                         + K_HOLD_I * fsm["hold_int"])
+                                ankle_cmd[stance][1] = float(np.clip(
+                                    (p_des - P_live[0]) / Gx,
+                                    -cmd_xfer, cmd_xfer))
+                        else:
+                            p_des = (com_xt["L"]
+                                     + 2.0 * (com_b[0] - com_xt["L"])
+                                     + 2.0 * com_v[0] / omega_n
+                                     + K_hold * float(upS[0])
+                                     + K_HOLD_I * fsm["hold_int"])
+                            # RUN 27: the mirrored reference move, RUN 25
+                            # form restored (velocity term back; see
+                            # xfer_R above).
+                            ankle_cmd[stance][1] = float(np.clip(
+                                (p_des - P_live[0]) / Gx,
+                                -cmd_xfer, cmd_xfer))
                     ankle_cmd["L"][0] += aL
                     ankle_cmd["R"][0] += aR
                     t_now = k * dt
@@ -3535,7 +3738,8 @@ def main() -> int:
                                   f"majority (Fn new={fn_new:.2f} "
                                   f"old={fn_old:.2f} N)")
                         advance = ((fn_new > fn_old)
-                                   or (fsm["t_state"] >= 2 * T))
+                                   or (fsm["t_state"]
+                                       >= rel_timeout * T))
                         if advance:
                             print(f"    {name} exit t={t_now:.2f}: "
                                   f"{'majority' if fn_new > fn_old else 'TIMEOUT'} "
@@ -3555,6 +3759,7 @@ def main() -> int:
                             fsm["lean_f"] = 0.0  # RUN 27 filter reset
                             fsm["hold_int"] = 0.0  # RUN 31 PI reset
                             fsm["brake"] = False   # RUN 31 brake reset
+                            fsm["relphase"] = "march"  # RUN 36 probe reset
                         if fsm["i"] >= len(phases):
                             break  # gait complete -- post-loop metrics run
                     fsm["t_state"] += dt
