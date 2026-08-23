@@ -194,6 +194,19 @@ and that lean alone carries trunk tilt past 17.2 deg before com_x covers the
 distance to the pivot edge. Upright transfer fails at THIS geometry during the
 approach, under ANY controller that must use these channels -- hand or learned.
 
+## OPERATOR PROTOCOL DIRECTIVE (2026-08-23): engineering is ours; his eyes judge pixels
+
+Operator, after being offered the post-RUN-36 fork menu: "a choice that doesn't
+matter is not really a choice at all ... I don't choose words, I only decide on the
+quality of pictures and 3D objects." Recorded as standing protocol: strategy/
+design/gate decisions that follow from MEASUREMENT are the PHYSICS side's to derive
+and take -- never presented to the operator as option menus. THE HUMAN terminal is
+invoked for what only he can judge: visual quality of renders/images/3D (the dyad),
+per AGENTS.md's taste clause. Concretely: the successor lane (gait/build
+re-derivation from the RUN 36 race measurement) proceeds on derivation alone; the
+operator next sees FILMSTRIPS/renders -- e.g., a rebuilt bear standing/walking --
+and his PASS/FAIL on those is the milestone gate.
+
 Consequence per the pre-named successor rule (fired exactly as written): gait
 DESIGN / build-level re-derivation -- sole half-width hx sets geometric authority,
 support band, and basin simultaneously; FOOT_SEP and stride geometry to be
