@@ -62,3 +62,18 @@ suspect is the remaining channel-for-channel obs diff, never retraining to fit.
 M2 .tmp/kernel_stand.png + M3 gait filmstrips (.tmp/kernel_walk_gait.png /
 _kernel_walk_gait_side.png, regenerated from the corrected replay) -- the numbers
 above are the aligned terms.
+
+## OPERATOR VERDICT (2026-08-23): M3 = FAIL
+
+M3 dyad presented 2026-08-23. Operator verdict: **FAIL** -- "I believe you that it
+fell ... that's a fail." The walking milestone does NOT advance on this evidence.
+Harness equivalence under control stands proven to sub-mm (that part is solid and is
+not re-litigated); what failed is the BEHAVIOR itself: the bear fell. Two distinct
+problems are now visible, and they are not the same:
+1. Reward v1 is gameable -- min-gap is recorded BEFORE freeze-on-corridor-violation,
+   so sweep-then-fall scores +1; falling costs nothing in the objective.
+2. Upright transfer is NOT yet proven physically achievable: the hand-designed FSM
+   gait (RUN 30/31) ALSO fell (.tmp/run30_gait.log, .tmp/run31_gait.log).
+Consequence: next step is NOT "retrain harder" (forbidden retraining-to-fit). Order:
+achievability diagnosis as one Rule-0 claim before any training; then reward v2
+pre-registration (falling unprofitable), conditional on operator sign-off.
