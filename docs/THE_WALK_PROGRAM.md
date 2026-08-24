@@ -796,3 +796,41 @@ not a raise. Walking is composed over standing, so it inherits the roll block ex
   fiction and this file could not hide it.
 - `tools/f4_walk.py` — the harness, with the ablation as *the same code path* (`gain=0.0` inside
   `walk_formula`), so it cannot drift away from the thing it ablates.
+
+---
+
+# THE DURATION MEMBRANE — RULE 0 SHELL (2026-08-23, pre-registered BEFORE build)
+
+**STATEMENT.** F4's binding failure is DURATION, not mechanism: every ingredient of a gait is
+present and measurable; none survives past the seconds. Two candidates stand, both named in this
+document and NEITHER yet measured:
+1. **The stand θ has no moving-base term.** It was trained to stand STILL — pelvis height and
+   pitch only — and F3 showed it holds position by hanging on joint stops (`subtalar` 60.8%,
+   `mtp` 97.6% of phase 1 past their limits). A posture braced against its own stops cannot absorb
+   a step.
+2. **Nothing ends a swing when the foot arrives.** Contact entrains the phase, but there is no
+   swing-terminating stop condition — the same defect one level down that this document's control
+   law already states: *apply effort → stop when a sensor says stop.*
+The stop-condition structure is DERIVED in this document and never judged end-to-end: *a leg may
+not enter swing while the contralateral leg is unloaded*, gated on the **swing half only**
+(`s > 0`), with `duty_factor = 0.6027` published by theHuman — a duty above 0.5 is what makes a gait
+a WALK: two feet at 60% each means both feet are never airborne, and the measured failure is
+exactly the one that arithmetic forbids.
+
+**PREDICTION.** The composed walk — stand term TRAINED WITH the moving base (hypothesis nine's
+lesson stands: a roll/frontal term only works trained in jointly, never bolted on) plus the
+swing-terminating stop condition — judged under the multiplicative score at the launch metric,
+forward = 0.5 (`docs/THE_LEVERS.md`): **held ≥ 60 s** (his word "minutes" made one number),
+periodicity ≥ 0.35, travel positive, duty inside the published 0.6027 ± named band.
+
+**FALSIFIER.** Both terms present and held < 10× the current best (< ~31 s) ⇒ the upright/travel
+exchange is NOT broken by these two terms; successor named in advance: per-stride reward structure
+(the hypothesis that died on its own construction — it needs several surviving strides before it
+can differ from a per-sample one), or plant structure no ladder has yet named. One term present
+and the other absent is not tested here and cannot be reported as such.
+
+**SCOPE.** This membrane is the deferred one this document earned: "Whoever takes the deferred
+membrane has to make it." It builds AFTER `docs/THE_LEVERS.md` (the lever→lean chain, so forward =
+0.5 exists as an address) and `docs/THE_TRIANGLE_CARRIER.md` (the strain field, so compliance is
+read from balance rather than braced on stops). No number in this section is a result; every bar
+is named here, before the run.

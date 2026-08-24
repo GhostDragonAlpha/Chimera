@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1754 entries** across 8 chapters.
+**1758 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*648 entries; showing 40.*
+*652 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -1363,82 +1363,82 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                          56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     52 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     56 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry     26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry     28 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access    182 reps  100%  streak  8  battery  10 (3 pie)  tier 1/1
+> audio_visual_sync/telemetry_access    196 reps  100%  streak  8  battery  10 (3 pie)  tier 1/1
 
 ### Beat_Scripts_Tautology_Fix — ledger standing
 <sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
 
-> Beat_Scripts_Tautology_Fix             26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Beat_Scripts_Tautology_Fix             28 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                             26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Demo_Level                             28 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Diagnose — ledger standing
 <sub>`repstat:Diagnose`</sub>
 
-> Diagnose WeightShift 2/4 test fail     26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Diagnose WeightShift 2/4 test fail     28 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### FFootstepEvent — ledger standing
 <sub>`repstat:FFootstepEvent`</sub>
 
-> FFootstepEvent                         52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> FFootstepEvent                         56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### FStar — ledger standing
 <sub>`repstat:FStar`</sub>
 
-> FStar                                  52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> FStar                                  56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                              54 reps   94%  streak  0  battery   5 (0 pie)  tier 0/3
+> Game_Feel                              64 reps   79%  streak  0  battery   5 (0 pie)  tier 0/3
 
 ### granular_matter — ledger standing
 <sub>`repstat:granular_matter`</sub>
 
-> granular_matter                        52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> granular_matter                        56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     884 reps  100%  streak  8  battery  34 (0 pie)  READY
+> Ground_Sand_Sound                     952 reps  100%  streak  8  battery  34 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                    26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Ground_Sand_Surface                    28 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Malcolm_Envelope — ledger standing
 <sub>`repstat:Malcolm_Envelope`</sub>
 
-> Malcolm_Envelope                      185 reps   93%  streak  0  battery  18 (8 pie)  tier 0/2
+> Malcolm_Envelope                      202 reps   90%  streak  0  battery  18 (8 pie)  tier 0/2
 
 ### materialization — ledger standing
 <sub>`repstat:materialization`</sub>
 
-> materialization                        52 reps  100%  streak  8  battery   2 (0 pie)  READY
+> materialization                        56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 

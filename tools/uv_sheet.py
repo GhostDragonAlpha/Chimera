@@ -92,54 +92,75 @@ def main() -> int:
               f"{'PASS' if ok else 'FAIL (falsifier fired)'}")
         return 0 if ok else 1
 
+    if "--seeds4" in sys.argv:  # TEST C4: parent process, one SUBPROCESS per
+        # seed (the in-process loop hung twice at generation end -- under a
+        # pegged-RAM machine, re-entering the pipeline in one process stalls;
+        # single-shot processes are the proven path: TEST C and C2)
+        import subprocess
+        from PIL import Image
+        sheets, ok_all = [], True
+        for seed in (0, 1, 2, 3):
+            out_path = OUT / f"fur_sd35_c4_s{seed}.png"
+            try:
+                subprocess.run(
+                    [sys.executable, "-u", str(Path(__file__).resolve()),
+                     "--seed", str(seed)],
+                    timeout=600, check=False)
+            except subprocess.TimeoutExpired:
+                print(f"  seed={seed}  SUBPROCESS TIMEOUT (600s) -- killed, "
+                      f"continuing with next seed")
+            if not out_path.exists():
+                print(f"  seed={seed}  no sheet produced")
+                ok_all = False
+                continue
+            a = np.asarray(Image.open(out_path).convert("RGB"))
+            wrap, internal = tileability(a)
+            ok = wrap < internal
+            ok_all &= ok
+            sheets.append((seed, Image.open(out_path).resize((512, 512))))
+            print(f"  seed={seed}  wrap={wrap * 255:.2f} internal="
+                  f"{internal * 255:.2f} ratio={wrap / internal:.2f}  "
+                  f"{'OK' if ok else 'FAIL'}  -> {out_path}")
+        if sheets:
+            contact = Image.new("RGB", (1024, 1024))
+            for i, (_seed, s) in enumerate(sheets[:4]):
+                contact.paste(s, ((i % 2) * 512, (i // 2) * 512))
+            contact_path = OUT / "fur_sd35_c4_contact.png"
+            contact.save(contact_path)
+            print(f"WROTE {contact_path} (row-major by seed order)")
+        print(f"TEST C4: {'PASS' if ok_all and len(sheets) == 4 else 'FAIL (falsifier fired)'}")
+        return 0 if ok_all and len(sheets) == 4 else 1
+
     import torch
     from diffusers import StableDiffusion3Pipeline
 
     circular = "--circular" in sys.argv  # TEST C2
-    seeds4 = "--seeds4" in sys.argv      # TEST C4
+    seed_arg = None
+    if "--seed" in sys.argv:             # TEST C4 worker
+        seed_arg = int(sys.argv[sys.argv.index("--seed") + 1])
+        circular = True
     print(f"torch {torch.__version__}, cuda={torch.cuda.is_available()}, "
           f"vram free ~{(torch.cuda.mem_get_info()[0] / 2**20):.0f} MiB")
     pipe = StableDiffusion3Pipeline.from_pretrained(
         "stabilityai/stable-diffusion-3.5-medium",
         torch_dtype=torch.float16)
-    if circular or seeds4:
+    if circular:
         print(f"circular padding: flipped {make_circular(pipe)} conv layers")
     pipe.to("cuda")
     print(f"loaded; vram used "
           f"{(torch.cuda.memory_allocated() / 2**20):.0f} MiB")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    if seeds4:
-        from PIL import Image
-        sheets, ok_all = [], True
-        for seed in (0, 1, 2, 3):
-            g = torch.Generator("cuda").manual_seed(seed)
-            img = pipe(PROMPT, negative_prompt=NEG, width=SIZE, height=SIZE,
-                       num_inference_steps=28, guidance_scale=4.5,
-                       generator=g).images[0]
-            out_path = OUT / f"fur_sd35_c4_s{seed}.png"
-            img.save(out_path)
-            a = np.asarray(img.convert("RGB"))
-            wrap, internal = tileability(a)
-            ok = wrap < internal
-            ok_all &= ok
-            sheets.append(img.resize((512, 512)))
-            print(f"  seed={seed}  wrap={wrap * 255:.2f} internal="
-                  f"{internal * 255:.2f} ratio={wrap / internal:.2f}  "
-                  f"{'OK' if ok else 'FAIL'}  -> {out_path}")
-        contact = Image.new("RGB", (1024, 1024))
-        for i, s in enumerate(sheets):
-            contact.paste(s, ((i % 2) * 512, (i // 2) * 512))
-        contact_path = OUT / "fur_sd35_c4_contact.png"
-        contact.save(contact_path)
-        print(f"WROTE {contact_path} (seeds 0,1 top; 2,3 bottom)")
-        print(f"TEST C4: {'PASS' if ok_all else 'FAIL (falsifier fired)'}")
-        return 0 if ok_all else 1
-
+    gen_kw = {}
+    if seed_arg is not None:
+        gen_kw["generator"] = torch.Generator("cuda").manual_seed(seed_arg)
     img = pipe(PROMPT, negative_prompt=NEG, width=SIZE, height=SIZE,
-               num_inference_steps=28, guidance_scale=4.5).images[0]
-    out_path = OUT / ("fur_sd35_testc2.png" if circular
-                      else "fur_sd35_testc.png")
+               num_inference_steps=28, guidance_scale=4.5, **gen_kw).images[0]
+    if seed_arg is not None:
+        out_path = OUT / f"fur_sd35_c4_s{seed_arg}.png"
+    else:
+        out_path = OUT / ("fur_sd35_testc2.png" if circular
+                          else "fur_sd35_testc.png")
     img.save(out_path)
     print(f"WROTE {out_path}")
 

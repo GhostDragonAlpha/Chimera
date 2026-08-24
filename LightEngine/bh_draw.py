@@ -229,6 +229,23 @@ def build_octree(positions: np.ndarray, leaf_size: int = 1) -> dict:
         _partition_and_bounds(pos, order, start, end, mid,
                               child_starts, child_ends, child_mins, child_maxs)
 
+        # Guard against coincident-point cells.  If every point lands in a
+        # single octant the cell is a single point (min == max in all axes);
+        # subdividing it would create an identical child and recurse forever
+        # (CPU spin).  Make it a leaf and let the kernel's softened direct
+        # sum handle the coincident cluster.  For any non-degenerate cell
+        # (min < max in some axis) at least two octants are non-empty, so
+        # this never changes valid-input output.
+        n_nonempty = 0
+        for code in range(8):
+            if child_starts[code] != child_ends[code]:
+                n_nonempty += 1
+        if n_nonempty == 1:
+            cell_is_leaf[c] = True
+            cell_leaf_start[c] = int(start)
+            cell_leaf_count[c] = int(m)
+            continue
+
         for code in range(8):
             child_start = int(child_starts[code])
             child_end = int(child_ends[code])

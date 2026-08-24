@@ -286,6 +286,27 @@ not the filter. Successor as named: TEST C4.
   seed-luck, remeasure; if NONE please his eye -> DreamMat mesh-fitted
   route, or prompt surgery (pile length terms) and another seed set.
 
+### TEST C4, RUN — **FAIL** (falsifier fired) 2026-08-22
+
+Seed 2 wrap ratio 1.12 (bound 1.0). Seeds 0/1/3 pass: 0.97 / 0.95 / 0.92.
+The strict prediction (every candidate passes) failed, but the architecture
+claim survives the remeasure the falsifier demanded: across C2 + C4, circular
+padding is 4-for-5 (0.83, 0.97, 0.95, 1.12, 0.92) — mostly reliable, not
+seed-luck, not a guarantee. Seed 2 is disqualified from selection regardless
+of looks. Successor per the falsifier's second branch: the operator judges
+the three PASSING sheets (0, 1, 3) by eye; if none please him, prompt surgery
+and another seed set. Contact sheet: `models/materials/fur_sd35_c4_contact.png`
+(row-major seed order: 0 top-left, 1 top-right, 2 bottom-left [DISQUALIFIED],
+3 bottom-right).
+
+### LINK-2 SEED SELECTED — OPERATOR DELEGATION (continuation)
+Operator delegated the pick, verbatim: **"you can pick … they all look good."** Taste is neutralized,
+so the three passing sheets {0: 0.97, 1: 0.95, 3: 0.92} are tied on eye and I break the tie on the
+RECORDED physics gate (no free number): **lowest wrap ratio = most headroom under the ≤1.0 bound =
+farthest from the falsifier line** that disqualified seed 2 at 1.12 → **SEED 3 (wrap 0.92)** selected.
+This CLEARS link-2's operator gate: the frosting path (T7) is unblocked; no other thread was gated on
+it. Flagged as my tie-break, not a taste call; his words above are the delegation of record.
+
 
 
 

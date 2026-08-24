@@ -179,3 +179,57 @@ together from density-derived cohesion alone, contact at any orientation, a reco
 a membrane while the needle runs, per-membrane training — is most of the theory already standing.
 The unbuilt part is the grammar that fits trained membranes together and the groove that modulates
 their laws. That is the next build, and it answers to THIS file.
+
+---
+
+## THE MILLION — ENVELOPE PRE-REGISTERED (2026-08-23, NOT yet measured)
+
+**STATEMENT.** The budget is a conservation law, not a benchmark (`THE_LIGHT_SEED`):
+one million conserved points/frame, both force passes over ONE tree walk. THE_MILLION's
+frame-rate envelope has never been measured; it must be before any build claims the budget.
+
+**PREDICTION.** Envelope run, method per `docs/MEASURED_RENDER_BUDGETS.md` convention
+(12 frames, first two discarded as warm-up, mean ± σ of the remaining ten): both passes
+drawn at exactly 1,000,000 elements on the operator's RTX 4090. The number to be printed by
+the run — this section names no fps, because naming one now would be a free parameter.
+
+**FALSIFIER.** Measured ms/frame breaches `MAX_RENDER_MS = 200` at 1M ⇒ THE_MILLION is not
+hardware-true; successor named in advance: the LOD reallocation doctrine already written in
+`THE_LIGHT_SEED` ("the tree reallocates points toward the player's light — near points
+carry rich membranes, far points aggregate") is the response, and it is not a new system.
+
+**HONESTY LINE.** No number yet exists for this measurement. This section makes "unmeasured
+≠ solved" executable: every membrane that claims THE_MILLION cites this run's print, or it
+cites nothing.
+
+## THE MILLION — ENVELOPE MEASURED (2026-08-23 continuation; FALSIFIER FIRED)
+
+**Run:** `python tools/envelope_million.py` on the operator's RTX 4090 (driver 610.47,
+numba.cuda 0.63.1). Exactly N = 1,000,000; scene uniform in [0, 15)^3 with
+L = R_BOND·N^(1/3) so the mean inter-point distance equals the derived bond equilibrium;
+theta = DEFAULT_THETA (0.3), leaf_size 16, seed 7, velocities zero. One modified tree
+walk per frame — `LightEngine.modifier.compute_forces_mod` computing DRAW + RESISTANCE
+(both force passes) over ONE octree, as delivered on the GPU. Method exactly as
+pre-registered: 12 frames, first two discarded (JIT warm-up), mean ± σ of the remaining
+ten.
+
+**RESULT — FALSIFIER FIRED.** Mean **1422.04 ms/frame ± 35.44**, worst 1472.11
+(~0.7 fps at the mean) vs wall `MAX_RENDER_MS = 200` → **THE_MILLION is not
+hardware-true as walked.** Deltas are ~7× the wall; every one of the ten measured
+frames breaches individually, so this is an envelope result, not a spike.
+Finiteness of delivered accelerations HOLDS (no NaN leak at 1M). Evidence:
+`agent_logs/envelope_million.json`; run print above in that record's session.
+
+**HONESTY LINES (not judged by the falsifier, printed for the record):** octree build
+on CPU took **3489 ms** for 293,478 cells — a live frame's tree moves with its points,
+so a true per-frame cost carries that rebuild too; this number names it and leaves it.
+The measured call is the walk as delivered by the interface (kernel + bookkeeping);
+tree arrays are re-uploaded each call in this harness, which is an interface artifact
+of millisecond order against a ~1.4 s kernel — stated, not hidden.
+
+**SUCCESSION (pre-named, now active):** the LOD reallocation doctrine of
+`THE_LIGHT_SEED` — "the tree reallocates points toward the player's light: near points
+carry rich membranes, far points aggregate" — is the response to this firing. It is not a
+new system; it is the written successor taking over as the load-bearing path.
+Every membrane that claims THE_MILLION from now on cites THIS run's print
+(`agent_logs/envelope_million.json`) or it cites nothing.

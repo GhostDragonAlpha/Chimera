@@ -66,7 +66,7 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
                   theta: float, G_val: float, eps2: float,
                   rw: float, rb: float, rc: float, p: float, kw: float,
                   kb: float, gamma_w: float, s_wall: float,
-                  out: np.ndarray, power_out: np.ndarray):
+                  out: np.ndarray, power_out: np.ndarray, pot_out: np.ndarray):
     """
     ONE tree walk computing DRAW + RESISTANCE for every point.
 
@@ -90,6 +90,7 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
         ay = 0.0
         az = 0.0
         power = 0.0
+        pot = 0.0
         sp = 0
         stack[sp] = 0
         sp += 1
@@ -113,6 +114,8 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
                     ax += f * dx
                     ay += f * dy
                     az += f * dz
+                    # conservative draw PE: U = -G/r (softened); half per visit
+                    pot += -0.5 * G_val / math.sqrt(r2d)
                     # RESISTANCE (the modifier M) within the cutoff
                     r2 = dx * dx + dy * dy + dz * dz
                     if r2 > rc2 or r2 < 1e-18:
@@ -128,6 +131,8 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
                         ax += fw * (-ux)
                         ay += fw * (-uy)
                         az += fw * (-uz)
+                        # conservative wall PE: U = K_WALL*R_WALL^P/(P*r_eff^P)
+                        pot += 0.5 * kw * ((rw / r_eff) ** p) / p
                         dvx = vel[pidx, 0] - vxi
                         dvy = vel[pidx, 1] - vyi
                         dvz = vel[pidx, 2] - vzi
@@ -143,6 +148,8 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
                         ax += fb * dx
                         ay += fb * dy
                         az += fb * dz
+                        # conservative bond PE: U = 0.5*(K_BOND/R_BOND)*(r-R_BOND)^2
+                        pot += 0.5 * kb * (r - rb) * (r - rb) / rb
                 continue
 
             # internal node
@@ -186,6 +193,8 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
                 ax += f * dx
                 ay += f * dy
                 az += f * dz
+                # far-node draw PE: U = -G*M/r (softened); half per visit
+                pot += -0.5 * G_val * cell_mass[c] / math.sqrt(r2)
             else:
                 # near for draw, or possibly holding resistance partners:
                 # descend
@@ -198,6 +207,7 @@ def _mod_walk_cpu(pos: np.ndarray, vel: np.ndarray,
         out[i, 1] = ay
         out[i, 2] = az
         power_out[i] = power
+        pot_out[i] = pot
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -208,8 +218,8 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
                    cell_min, cell_max, cell_com, cell_mass, cell_child,
                    cell_is_leaf, cell_leaf_start, cell_leaf_count,
                    theta, G_val, eps2, rw, rb, rc, p, kw, kb, gamma_w,
-                   s_wall, power_dev, n):
-    """ONE modified Barnes-Hut walk on the GPU (DRAW + RESISTANCE)."""
+                   s_wall, power_dev, pot_dev, n):
+    """ONE modified Barnes-Hut walk on the GPU (DRAW + RESISTANCE + PE)."""
     i = cuda.grid(1)
     if i >= n:
         return
@@ -225,6 +235,7 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
     ay = 0.0
     az = 0.0
     power = 0.0
+    pot = 0.0
     rc2 = rc * rc
     sp = 0
     stack[sp] = 0
@@ -249,6 +260,7 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
                 ax += f * dx
                 ay += f * dy
                 az += f * dz
+                pot += -0.5 * G_val / math.sqrt(r2d)
                 r2 = dx * dx + dy * dy + dz * dz
                 if r2 > rc2 or r2 < 1e-18:
                     continue
@@ -263,6 +275,7 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
                     ax += fw * (-ux)
                     ay += fw * (-uy)
                     az += fw * (-uz)
+                    pot += 0.5 * kw * ((rw / r_eff) ** p) / p
                     dvx = vel[pidx, 0] - vxi
                     dvy = vel[pidx, 1] - vyi
                     dvz = vel[pidx, 2] - vzi
@@ -277,6 +290,7 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
                     ax += fb * dx
                     ay += fb * dy
                     az += fb * dz
+                    pot += 0.5 * kb * (r - rb) * (r - rb) / rb
             continue
 
         dx = cell_com[c, 0] - xi
@@ -320,6 +334,7 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
             ax += f * dx
             ay += f * dy
             az += f * dz
+            pot += -0.5 * G_val * cell_mass[c] / math.sqrt(r2)
         else:
             for k in range(8):
                 child = cell_child[c, k]
@@ -337,11 +352,64 @@ def _mod_walk_cuda(pos, vel, sorted_pos, sorted_idx, out,
     out[i, 2] = az
     if power != 0.0:
         cuda.atomic.add(power_dev, 0, power)
+    if pot != 0.0:
+        cuda.atomic.add(pot_dev, 0, pot)
 
 
 # ═══════════════════════════════════════════════════════════════════
 #  Public merged interface
 # ═══════════════════════════════════════════════════════════════════
+def _dev_get(dev, key, src):
+    """Build-once device-buffer reuse (operator directive: no per-call waste).
+
+    Returns a CuPy/numba device array holding ``src``. Allocates only on first
+    use or when the shape/dtype changes; otherwise copies in place into the
+    cached buffer so steady-state memory is flat instead of climbing each tick.
+    Bit-exact: only WHERE the device array comes from changes, never its data.
+    """
+    if dev is None:
+        return cuda.to_device(src)
+    buf = dev.get(key)
+    if buf is None or tuple(buf.shape) != src.shape or buf.dtype != src.dtype:
+        buf = cuda.to_device(src)
+        dev[key] = buf
+    else:
+        buf.copy_to_device(src)
+    return buf
+
+
+def _dev_get_cap(dev, key, src, growth=1.5):
+    """Capacity-grow (never per-tick) device-buffer reuse for variable-size tree arrays.
+
+    build_octree's n_cells jitters tick-to-tick (points move). The exact-shape
+    ``_dev_get`` reallocated a fresh device buffer on every size change, and the
+    numba CUDA caching allocator peak-holds each distinct size class -> device VRAM
+    climbs over a long run (the RUN B memory-leak suspect #2). Here we allocate once
+    at the observed n_cells and only GROW (1.5x) if a later tick needs more; steady
+    state copies the used [0:n_cells] slice into the fixed-capacity buffer, so VRAM
+    is flat. The walk only ever traverses cells reachable from root 0 (indices
+    < n_cells), so the unused tail is never read -- bit-exact with the fresh path.
+    """
+    if dev is None:
+        return cuda.to_device(src)
+    buf = dev.get(key)
+    if buf is None or buf.dtype != src.dtype:
+        buf = cuda.to_device(src)
+        dev[key] = buf
+        return buf
+    cap = buf.shape[0]
+    need = src.shape[0]
+    if cap >= need:
+        buf[:need].copy_to_device(src)
+        return buf
+    new_cap = int(max(need * growth, need + 1))
+    new_shape = (new_cap,) + src.shape[1:]
+    new_buf = cuda.device_array(new_shape, dtype=src.dtype)
+    new_buf[:need].copy_to_device(src)
+    dev[key] = new_buf
+    return new_buf
+
+
 def compute_forces_mod(positions: np.ndarray,
                        velocities: np.ndarray,
                        theta: float | None = None,
@@ -349,7 +417,8 @@ def compute_forces_mod(positions: np.ndarray,
                        tree: dict | None = None,
                        out: np.ndarray | None = None,
                        use_cuda: bool | None = None,
-                       ) -> tuple[np.ndarray, float]:
+                        dev: dict | None = None,
+                        ) -> tuple[np.ndarray, float, float]:
     """
     Compute DRAW + RESISTANCE in ONE modified Barnes-Hut tree walk.
 
@@ -366,12 +435,16 @@ def compute_forces_mod(positions: np.ndarray,
     leaf_size : particles per leaf (default 16)
     tree : optional prebuilt octree from ``build_octree``
     out : optional (N, 3) float array to fill
+    dev : optional dict for build-once device-buffer reuse across ticks;
+        when given, steady-state VRAM is flat instead of climbing each call.
+        Bit-exact with the fresh-allocation path (same data, same math).
     use_cuda : if True, require GPU; if False, force CPU; if None, auto
 
     Returns
     -------
     acc : (N, 3) float array of DRAW + RESISTANCE accelerations
     power : float total radiated wall power this tick
+    pot : float total conservative potential energy (draw + wall + bond)
     """
     positions = np.asarray(positions, dtype=np.float32)
     velocities = np.asarray(velocities, dtype=np.float32)
@@ -390,20 +463,24 @@ def compute_forces_mod(positions: np.ndarray,
 
     gpu = (use_cuda is True) or (use_cuda is None and _cuda_available)
     if gpu:
-        d_pos = cuda.to_device(positions)
-        d_vel = cuda.to_device(velocities)
-        d_sorted_pos = cuda.to_device(tree["sorted_pos"])
-        d_sorted_idx = cuda.to_device(tree["sorted_idx"])
-        d_out = cuda.to_device(out)
-        d_cell_min = cuda.to_device(tree["cell_min"])
-        d_cell_max = cuda.to_device(tree["cell_max"])
-        d_cell_com = cuda.to_device(tree["cell_com"])
-        d_cell_mass = cuda.to_device(tree["cell_mass"])
-        d_cell_child = cuda.to_device(tree["cell_child"])
-        d_cell_is_leaf = cuda.to_device(tree["cell_is_leaf"])
-        d_cell_leaf_start = cuda.to_device(tree["cell_leaf_start"])
-        d_cell_leaf_count = cuda.to_device(tree["cell_leaf_count"])
-        d_power = cuda.device_array(1, dtype=np.float32)
+        # Build-once device buffers: reuse across ticks (flat memory), not fresh each call.
+        d_pos = _dev_get(dev, "pos", positions)
+        d_vel = _dev_get(dev, "vel", velocities)
+        d_sorted_pos = _dev_get(dev, "sorted_pos", tree["sorted_pos"])
+        d_sorted_idx = _dev_get(dev, "sorted_idx", tree["sorted_idx"])
+        d_out = _dev_get(dev, "out", out)
+        # Capacity-grow reuse: n_cells varies tick-to-tick; fixed-capacity buffers
+        # keep device VRAM flat across a long run (no per-tick realloc peak-hold).
+        d_cell_min = _dev_get_cap(dev, "cell_min", tree["cell_min"])
+        d_cell_max = _dev_get_cap(dev, "cell_max", tree["cell_max"])
+        d_cell_com = _dev_get_cap(dev, "cell_com", tree["cell_com"])
+        d_cell_mass = _dev_get_cap(dev, "cell_mass", tree["cell_mass"])
+        d_cell_child = _dev_get_cap(dev, "cell_child", tree["cell_child"])
+        d_cell_is_leaf = _dev_get_cap(dev, "cell_is_leaf", tree["cell_is_leaf"])
+        d_cell_leaf_start = _dev_get_cap(dev, "cell_leaf_start", tree["cell_leaf_start"])
+        d_cell_leaf_count = _dev_get_cap(dev, "cell_leaf_count", tree["cell_leaf_count"])
+        d_power = _dev_get(dev, "power", np.zeros(1, dtype=np.float32))
+        d_pot = _dev_get(dev, "pot", np.zeros(1, dtype=np.float32))
         threads = 256
         blocks = (n + threads - 1) // threads
         _mod_walk_cuda[blocks, threads](
@@ -412,13 +489,15 @@ def compute_forces_mod(positions: np.ndarray,
             d_cell_is_leaf, d_cell_leaf_start, d_cell_leaf_count,
             float(theta), float(G), EPS2, float(R_WALL), float(R_BOND),
             float(R_C), float(P_WALL), float(K_WALL), float(K_BOND),
-            float(GAMMA_W), float(S_WALL), d_power, n,
+            float(GAMMA_W), float(S_WALL), d_power, d_pot, n,
         )
         cuda.synchronize()
         d_out.copy_to_host(out)
         power = float(d_power.copy_to_host()[0])
+        pot = float(d_pot.copy_to_host()[0])
     else:
         power_per = np.empty(n, dtype=np.float32)
+        pot_per = np.empty(n, dtype=np.float32)
         _mod_walk_cpu(
             positions, velocities,
             tree["sorted_pos"], tree["sorted_idx"],
@@ -428,11 +507,12 @@ def compute_forces_mod(positions: np.ndarray,
             tree["cell_leaf_start"], tree["cell_leaf_count"],
             float(theta), float(G), EPS2, float(R_WALL), float(R_BOND),
             float(R_C), float(P_WALL), float(K_WALL), float(K_BOND),
-            float(GAMMA_W), float(S_WALL), out, power_per,
+            float(GAMMA_W), float(S_WALL), out, power_per, pot_per,
         )
         power = float(np.sum(power_per))
+        pot = float(np.sum(pot_per))
 
     if not np.all(np.isfinite(out)):
         raise RuntimeError("MODIFIER walk produced non-finite output; "
                            "increase _STACK_SIZE or reduce theta.")
-    return out, power
+    return out, power, pot

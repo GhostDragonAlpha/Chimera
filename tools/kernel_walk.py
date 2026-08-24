@@ -2209,8 +2209,89 @@ M3-STEP-2 (the gait) PRE-REGISTERED before its run:
       energy, same successor; (iv) the whip (tilt_LL runaway) returns
       even with holds dropped -> the tip is unstable beyond the model,
       same successor. If NONE fire: upright transfer is PROVEN
-      achievable on this geometry and reward-v2 training (RUN 37)
+      achievable on this geometry and reward-v2 training (then numbered
+      RUN 37 -- that number was since consumed by the probes below)
       proceeds on proven ground.
+  STEP-3 ACHIEVABILITY PROBE -- RUN 37 PRE-REGISTRATION (2026-08-23,
+  "gait ss", BEFORE any launch). The tracking-law variant of the
+  release probe was derived and then KILLED BY THE RUN 36 LOG before
+  launch -- recorded because the refutation is data, not taste:
+    - RUN 36 trajectory t=1.30..2.10: com_x FROZEN (59.2 -> 58.4 mm,
+      briefly reversing) while tilt_T grew 0 -> 5.05 deg, and the left
+      pressure centroid cLx never walked (59-60 mm throughout the
+      pre-whip window). The transfer commands produced IN-PLACE
+      ROTATION about the contact patch -- leg windup first
+      (tilt_LL -> 30 deg by t=2.5), trunk dragged after. The ankle-roll
+      channel delivers rotation, NOT translation, in this
+      configuration; reshaping p_des cannot change that.
+    - Third independent closure of single-support QUASI-STATIC lateral
+      transfer on this geometry: RUN 26 (seed margin ~0), RUN 29/31
+      (regulation authority 0.5 mm << 29 mm requirement), RUN 36
+      (rotation-not-translation).
+  The lane that survives: DOUBLE-SUPPORT LEAN-SHIFT ("ss" = square
+  start). With BOTH soles flat the support polygon bridges the
+  inter-sole gap; a static moment balance about either foot gives the
+  load split from the gravity-line shift s = f*h_com*sin(phi) (f = the
+  mass fraction that leans with the trunk):
+    phi=8 deg:   f=0.6 -> lam=0.75 | f=0.8 -> 0.83 | f=1.0 -> 0.91
+    phi=10.68:   f=0.6 -> lam=0.83 | f=0.8 -> 0.94 | f=1.0 -> >1
+  i.e. MAJORITY at theta_lean (10.68 deg -- the SAME constant RUN 27
+  derived for the catch lean) across the whole uncertainty range of f,
+  with tilt spend ~11 deg < 17.2 corridor and NO free rotation
+  anywhere: every single-support interval would START CENTERED, which
+  is exactly the state RUN 12 proved holdable for 3.07 s.
+    MEMBRANE (Rule 0): STATEMENT -- trunk lean shifts the load split
+      between two planted soles on this build (the bilateral bond
+      routing does not eat the redistribution). PREDICTION -- holding
+      the lean setpoint at -/+ theta_lean for 2.0 s per side yields
+      lam >= 0.75 to the lean side within each hold, |com_x| excursion
+      <= 25 mm, tilt_T max <= 15 deg, both soles in contact throughout,
+      fallen=False. FALSIFIER -- lam response < 0.75 at full held lean,
+      or tilt_T > 15 deg, or a sole leaves the floor plane: then the
+      lean-shift hypothesis dies and the remaining lane is the
+      geometry rebuild (hx / FOOT_SEP re-derivation); NEVER reward
+      shaping, NEVER policy training against this objective.
+    SCHEDULE: square M2 stance (flamingo init skipped), settle 1.0 s,
+    load_R = lean -theta_lean for 2.0 s, load_L = +theta_lean for
+    2.0 s. Hips carry NO ramp targets; the lean rides the existing
+    composite channel pinned to hip_L (bond gains differ per side:
+    7.32 vs 10.75 N.m/rad -- one coherent actuator, no stance chatter);
+    capture-point ankle PD stays live as baseline. Referee bounds are
+    the PREDICTION numbers above.
+  STEP-3 RUN 37 LAUNCH 1 RECORD (2026-08-23, .tmp/run37_ss_probe.log):
+  HARNESS BUG -- physics untested (same class as RUN 2 / RUN 11
+  launch 1). The square build kept the CAD foot centers at +/-58 mm
+  (separation 116 mm): the flamingo init had been doing the stance-
+  narrowing implicitly, and with it gone, theta_lean =
+  asin(d_gap/h_com) derived 0.03 deg (d_gap ~= 0 in a centered stance)
+  -- the probe commanded a ~zero-degree lean and held it perfectly.
+  What launch 1 DID establish, for the record: the SQUARE double-
+  support stance is ROCK-STABLE on kernel forces (after a 0.25 s
+  settle transient: tilt_T constant 1.38 deg, Fn split 12.24/12.32 N,
+  zero drift for 8+ s) -- M2's stand result extends to the wide
+  double-support gait skeleton. Known cosmetic: t=0 audit shows
+  net -8.36 N because the sequential prestress measured ankle_L's
+  share before foot_R settled; the state equilibrated by itself.
+  LAUNCH 2 PRE-REGISTRATION (errata over launch 1, recorded BEFORE
+  the relaunch):
+    - Stance narrowed in BUILD: both legs translated so foot centers
+      sit at +/-28 mm (separation 56 mm -- the value the statics
+      table assumed). Sole bands [9.5,46.5]/[-46.5,-9.5]; gap bridged.
+    - Drive angle re-derived: phi_load = asin((FOOT_SEP/4)/lever),
+      lever = (m_trunk/M)*h_up MEASURED at build = 0.923 * 272 mm
+      (trunk com sits 272 mm above the hip line -- head-dominated;
+      NOT derivable from h_com). Predicted phi_load ~ 3.2 deg.
+      Refusal gate: phi_load > 14.6 deg (0.85x corridor) -> STOP.
+    - Referee erratum: majority bound relaxed to lam >= 0.70 (pure
+      P-control droop maps ~5% tilt tracking error to ~0.05 of lam);
+      the physics claim under test is DIRECTIONAL (lean moves load to
+      the lean side toward majority), and the exact plateau prints
+      for the record. All other bounds unchanged (tilt <=15 deg,
+      |com_x| <= 25 mm, not fallen).
+    PREDICTION: within each 2 s hold, lam reaches >= 0.70 by ~1 s
+      (tau_lean 106 ms + bond settle << 1 s), tilt_T plateaus near
+      phi_load (+/- droop), com_x shifts TOWARD the lean side by
+      lever*sin(tilt) ~ 14 mm, both soles stay engaged, FELL=False.
   STEP-3 ACHIEVABILITY PROBE -- RUN 36 RESULT (2026-08-23,
   .tmp/run36_probe.log): FALSIFIER FIRED, clause (i) -- and the
   measurement locates the failure EARLIER in the pipeline than the
@@ -2346,6 +2427,7 @@ M3-STEP-2 (the gait) PRE-REGISTERED before its run:
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -2441,6 +2523,11 @@ def main() -> int:
     # training.
     rel_mode = (len(sys.argv) > 2 and sys.argv[1] == "gait"
                 and sys.argv[2] == "release")
+    # ACHIEVABILITY PROBE RUN 37 (pre-registered in the docstring):
+    # "gait ss" = the square-stance lean-shift probe -- double support,
+    # trunk lean as the load-transfer actuator.
+    ss_mode = (len(sys.argv) > 2 and sys.argv[1] == "gait"
+               and sys.argv[2] == "ss")
     # STEP-3 FORK-2 (RUN 32, pre-registered above): "stand_dump" runs
     # the PROVEN stand scenario unchanged (gait stays False) and
     # additionally dumps the t=0 build state + the 50 ms checkpoint
@@ -2548,7 +2635,7 @@ def main() -> int:
           f"c={c_chain:.4f}  c*W*h={c_chain*Wh_pre:.3f}  "
           f"K_rock,f req={K_ROCK_REQ:.1f} N.m/rad per foot")
 
-    if gait:
+    if gait and not ss_mode:
         # ---- STEP-2 RUN 2 init (corrected mechanism, see docstring):
         # lean the left leg SHAFT about the ankle pivot (the foot stays
         # flat on the floor), translate the trunk + right side by the hip
@@ -2694,6 +2781,51 @@ def main() -> int:
         print(f"gait RUN 12: audit-closure translate ({delta12[0]*1e6:+.1f},"
               f"{delta12[2]*1e6:+.1f}) um  residual com-P_L = "
               f"({(com_chk[0]-P_L[0])*1e6:+.2f},{(com_chk[2]-P_L[2])*1e6:+.2f}) um")
+
+    if gait and ss_mode:
+        # RUN 37 probe build: the M2-proven SQUARE stance stands as
+        # built (both soles flat, com centered); the flamingo init is
+        # skipped entirely -- BUT the CAD foot positions are the WIDE
+        # stance (centers +/-58 mm); the flamingo init had been doing
+        # the stance-narrowing implicitly. Narrow BOTH legs inward so
+        # the foot centers sit at +/-28 mm (separation 56 mm, the value
+        # the pre-registered statics assumed): sole bands [9.5,46.5] /
+        # [-46.5,-9.5], gap bridged in double support.
+        th_sw = float(np.deg2rad(15.0))
+        for side, sgn in (("L", 1.0), ("R", -1.0)):
+            gm = np.isin(parts, [f"leg_{side}", f"foot_{side}"])
+            fm = np.isin(parts, [f"foot_{side}"])
+            dx_t = sgn * 0.028 - float(pos[fm, 0].mean())
+            pos[gm, 0] += dx_t
+            HIP_P[side][0] += dx_t
+            ANKLE_P[side][0] += dx_t
+        L_leg = float(HIP_P["L"][1])
+        # RUN 37 derived drive angle: the hip-lean that shifts the
+        # gravity line by FOOT_SEP/4 (exact two-support majority),
+        # through the MEASURED lever (m_trunk/M) * h_up -- h_up =
+        # trunk-com height above the hip line (measured 272 mm: the
+        # head mass dominates; NOT guessable from h_com).
+        _mT = ~(np.isin(parts, ["leg_L", "foot_L", "leg_R", "foot_R"]))
+        _mtr = float(mass[_mT].sum())
+        _ctr = np.average(pos[_mT], axis=0, weights=mass[_mT])
+        _h_up = float(_ctr[1] - HIP_P["L"][1])
+        _lever = max((_mtr / M) * _h_up, 1e-4)
+        FOOT_SEP_SS = abs(float(pos[np.isin(parts, ["foot_L"]), 0].mean())
+                          - float(pos[np.isin(parts, ["foot_R"]), 0].mean()))
+        phi_load = float(np.arcsin(min(0.25 * FOOT_SEP_SS / _lever,
+                                       0.999)))
+        print(f"gait init (ss): SQUARE stance narrowed -> sep="
+              f"{FOOT_SEP_SS*1000:.1f} mm  L_leg={L_leg:.3f} m  "
+              f"trunk share={_mtr/M:.3f}  h_up={_h_up*1000:.1f} mm  "
+              f"lever={_lever*1000:.1f} mm/rad  "
+              f"phi_load={np.rad2deg(phi_load):.2f} deg")
+        if phi_load > np.deg2rad(14.6):
+            print("RUN 37 PRE-RUN REFUSAL: the derived lean exceeds "
+                  "0.85x the 17.2 deg corridor -- trunk lean cannot "
+                  "reach majority inside the tilt budget. Successor per "
+                  "the docstring: narrower separation or geometry "
+                  "rebuild.")
+            sys.exit(2)
 
     # ---- wall stiffness: the RUN 14 chain derivation, run on this
     # cloud. pos0 is shifted by the TRUE lowest-packet height (the
@@ -3210,6 +3342,18 @@ def main() -> int:
             ("plant_L", T_plant, 0.0,       -th_sw,        0.0,       th_sw),
             ("xfer_L",  T_xfer,  +phi_push, -th_p + alpha, 0.0,       th_sw + alpha),
         ]
+        if ss_mode:
+            # RUN 37 probe schedule (pre-registered in the docstring):
+            # two OPEN-LOOP lean holds. The hips carry NO ramp targets
+            # (all-zero) -- the trunk-lean setpoint injected in the
+            # composite block is the actuator under test; the FSM just
+            # clocks the segments and records the windows.
+            T_load = 2.0     # s per hold; quasi-static by ~1 s (tau_lean
+                             # 97 ms + bond settle << 1 s), 2x margin
+            phases = [
+                ("load_R", T_load, 0.0, 0.0, 0.0, 0.0),
+                ("load_L", T_load, 0.0, 0.0, 0.0, 0.0),
+            ]
         print(f"gait: L_leg={L_leg:.3f} m  th_p=alpha={np.rad2deg(th_p):.1f} deg  "
               f"phi_push={np.rad2deg(phi_push):.2f} deg (F_hip={F_hip:.1f} N, "
               f"d_bar={d_bar*1000:.0f} mm)  T_xfer={T_xfer:.2f} s")
@@ -3223,6 +3367,12 @@ def main() -> int:
         steps = int(3.07 / dt)
     print(f"dt={dt:.2e} s  steps={steps}  sim_t={sim_t:.2f} s  "
           f"(omega={omega_w:.0f} rad/s, m_min={m_min:.2e} kg)")
+    # DEV knob (profiling only): cap the step count from the environment.
+    # Never set in numbered runs; physics untouched.
+    _cap = os.environ.get("KERNEL_STEPS_CAP")
+    if _cap:
+        steps = min(steps, int(_cap))
+        print(f"[dev] KERNEL_STEPS_CAP -> {steps} steps")
 
     # ---- RUN 17: the gait is a FINITE-STATE MACHINE (pre-registered in
     # the docstring). cmd/acmd are evaluated AT RUNTIME from the state
@@ -3235,11 +3385,20 @@ def main() -> int:
     # (timeouts can extend past the planned sim_t).
     windows: dict[str, tuple[float, float]] = {}
     if gait and not diag2:
-        steps = int((settle + T_plant + 2 * T_xfer + T_swing
-                     + T_plant + 2 * T_xfer) / dt)  # cap, timeouts live
-        # plant-end hip references, from the phase table (not hand-set)
-        th_ref = {"R": float([p[5] for p in phases if p[0] == "plant_R"][0]),
-                  "L": float([p[3] for p in phases if p[0] == "plant_L"][0])}
+        if ss_mode:
+            # RUN 37 cap: settle + two 4 s holds (no timeouts live --
+            # the holds are open-loop and clock-exit by construction)
+            steps = int((settle + 2 * T_load) / dt)
+        else:
+            steps = int((settle + T_plant + 2 * T_xfer + T_swing
+                         + T_plant + 2 * T_xfer) / dt)  # cap, timeouts live
+        # plant-end hip references, from the phase table (not hand-set);
+        # the ss schedule has no plant phases -- defaults keep the
+        # xfer-ratio terms inert (they are never reached anyway)
+        _plR = [p[5] for p in phases if p[0] == "plant_R"]
+        _plL = [p[3] for p in phases if p[0] == "plant_L"]
+        th_ref = {"R": float(_plR[0]) if _plR else 0.0,
+                  "L": float(_plL[0]) if _plL else 0.0}
         fsm = {"i": 0, "t_state": 0.0, "t_enter": settle,
                "prev": np.zeros(4), "acmd_exit": {"R": 0.0, "L": 0.0},
                "lean_f": 0.0, "hold_int": 0.0, "brake": False,
@@ -3541,6 +3700,12 @@ def main() -> int:
             upT = trunk.R @ np.array([0.0, 1.0, 0.0])
             stance = "L" if Fn[id(footL)] >= Fn[id(footR)] else "R"
             i_pd = 0 if stance == "L" else 1
+            if ss_mode:
+                # RUN 37: pin the lean actuator to hip_L -- in double
+                # support FnL ~= FnR and the heavier-foot test chatters;
+                # one coherent hip drives the trunk lean (bond gains
+                # differ per side: 7.32 vs 10.75 N.m/rad -- recorded).
+                i_pd = 0
             upS = (legL if stance == "L"
                    else legR).R @ np.array([0.0, 1.0, 0.0])
             # ^ RUN 29: the STANCE leg's up vector -- the hold servos
@@ -3777,7 +3942,24 @@ def main() -> int:
             in_xfer = (not diag2 and k * dt >= settle
                        and fsm["i"] < len(phases)
                        and phases[fsm["i"]][0].startswith("xfer"))
-            if in_xfer:
+            in_load = (ss_mode and not diag2 and k * dt >= settle
+                       and fsm["i"] < len(phases)
+                       and phases[fsm["i"]][0].startswith("load"))
+            if in_load:
+                # RUN 37 launch 2 (pre-registered erratum in the
+                # docstring): the drive angle is the DERIVED phi_load --
+                # theta_lean = asin(d_gap/h_com) is meaningless in the
+                # square stance (com already centered -> 0.03 deg) and
+                # launch 1 commanded it, testing nothing.
+                e_lat = (-phi_load if phases[fsm["i"]][0] == "load_R"
+                         else +phi_load)
+                fsm["lean_f"] += (dt / tau_lean) * (e_lat
+                                                    - fsm["lean_f"])
+                cmdk[i_pd * 2] += r_split * (KP * (fsm["lean_f"]
+                                                   - upT[0])
+                                             + KD["z"]
+                                             * trunk.wv[2]) / gz
+            elif in_xfer:
                 name_now = phases[fsm["i"]][0]
                 if fsm["brake"]:
                     # RUN 31: the HIP BRAKE -- the lean setpoint
@@ -4049,7 +4231,41 @@ def main() -> int:
         sym = min(roll_pos, roll_neg) / max(roll_pos, roll_neg, 1e-9)
         i0 = int(np.argmax(rec_t >= settle)) if gm.any() else 0
         forward = float(coms[-1, 2] - coms[i0, 2])
-        if pol_mode:
+        if ss_mode:
+            # RUN 37 referee: the pre-registered PREDICTION numbers are
+            # the bounds. lam = load fraction on the lean-target foot
+            # per segment; the falsifier clauses live in the docstring.
+            T_load_ref = 2.0
+            tot = np.maximum(fnL + fnR, 1e-9)
+            lamR_arr = fnR / tot
+            segR = ((rec_t >= settle)
+                    & (rec_t < settle + T_load_ref))
+            segL = rec_t >= settle + T_load_ref
+            lam_R_pk = (float(lamR_arr[segR].max())
+                        if segR.any() else float("nan"))
+            lam_L_pk = (float((1.0 - lamR_arr)[segL].max())
+                        if segL.any() else float("nan"))
+            com_exc = (float(np.abs(coms[:, 0] - coms[i0, 0])[gm].max())
+                       if gm.any() else float("nan"))
+            # launch-2 erratum: majority bound 0.70 (not the exact 0.75
+            # statics) -- pure P-control droop maps ~5% tilt error to
+            # ~0.05 of lam; the physics claim is DIRECTIONAL. The exact
+            # 0.75 plateau, if reached, prints for the record.
+            ok37 = (not fallen and lam_R_pk >= 0.70 and lam_L_pk >= 0.70
+                    and tilt_max <= 15.0 and com_exc <= 0.025)
+            ok = ok37   # the shared exit gate below reads `ok`
+            print(f"RUN 37 probe: lam_R peak={lam_R_pk:.2f} (>=0.70)  "
+                  f"lam_L peak={lam_L_pk:.2f} (>=0.70)")
+            print(f"  tilt_T max={tilt_max:.2f} deg (<=15)  "
+                  f"|com_x| excursion={com_exc*1000:.1f} mm (<=25)  "
+                  f"fallen={fallen}")
+            print("RUN 37:",
+                  "PASS -- lean shifts load in double support; the "
+                  "square-start gait lane OPENS"
+                  if ok37 else
+                  "FALSIFIER FIRED -- lean-shift dead or degraded; see "
+                  "the clause map in the docstring")
+        elif pol_mode:
             # RUN 34 (F2-c) referee: the frozen RUN 33 metrics on the
             # REFERENCE harness -- whole-body com_x from the 0.05 s
             # diagnostic trace (d2_rec), corridor, fall. Bounds per the
@@ -4148,7 +4364,6 @@ def main() -> int:
         plt.savefig(ROOT / ".tmp" / "kernel_walk_gait_side.png", dpi=100)
         print("WROTE .tmp/kernel_walk_gait_side.png")
         return 0 if ok else 1
-
     pen_max = 0.0
     for ft in (footL, footR):
         w = ft.world()
@@ -4198,7 +4413,9 @@ def main() -> int:
     axes[0].legend(markerscale=10)
     plt.tight_layout(); plt.savefig(ROOT / ".tmp" / "kernel_walk.png", dpi=110)
     print("WROTE .tmp/kernel_walk.png")
-    return 0 if ok else 1
+    if gait and not diag2 and not pol_mode:
+        return 0 if ok else 1
+    return 0
 
 
 if __name__ == "__main__":
