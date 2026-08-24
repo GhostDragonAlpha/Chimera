@@ -62,6 +62,30 @@ Each force is a **vector and a magnitude**. That is the entire physics statement
 world. Everything else — solidity, pressure, terrain, bodies, oceans — is what the balance
 looks like when enough identical points are doing it at once.
 
+## THE SURFACE AXIS (rest-constraints on the triangle carrier)
+
+*Amendment, 2026-08-24 (Rule-0 finding: a solid sheet needs an outside).* The two forces
+above are the **point-to-point interior** forces — every point reads every other point.
+That is not the whole story of a body. A triangle mesh that is about to be rendered as
+solid also carries **rest-constraints on its own surface** — geometry it holds without
+reading anyone else:
+
+- **rest AREA** — each triangle resists change of its own area (R7b).
+- **rest BENDING** — each dihedral resists folding away from its rest angle (R7c).
+- **outward EXTERIOR** — a closed mesh resists change of its enclosed volume `V0`; the
+  body holds an *outside* (the pressure that keeps a balloon a balloon). For an open shell
+  (the bear) `V0` is undefined, so the exterior constraint is not yet applied — the closed
+  blob comes first.
+
+These are **not a third force**. They are rest-state geometry on the triangle carrier:
+derived stiffnesses tied to the one physical constant `K_BOND` (no free numbers), and a
+rest configuration derived from the import (no free numbers). **"Two forces, and only
+two" names the limit of the *interior* interaction; it is not immutable.** The SURFACE
+axis is the mesh remembering its own shape. A body is then `DRAW + RESISTANCE` (interior)
+**plus** `area + bending + exterior` (surface memory) — and the surface memory is what
+makes a closed thing genuinely a *thing with an inside and an outside*, held the same way
+a vertex's timeline is its identity.
+
 ## THE MILLION (the budget doctrine — the operator, 2026-08-06)
 
 **One million splats per frame. That is the budget, and the budget is a conservation

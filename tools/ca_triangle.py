@@ -313,8 +313,11 @@ def compute_theta0(hi0, hi1, hi2, hi3, Vg):
 
 
 @njit(cache=True, parallel=True)
-def _bend_forces(hi0, hi1, hi2, hi3, P, theta0, Kb):
-    """Per-hinge dihedral bending force F = -dU/dv, U = 0.5*Kb*(theta-theta0)^2. prange over hinges."""
+def _bend_forces(hi0, hi1, hi2, hi3, P, theta0, Kb, theta_band=1e9):
+    """Per-hinge dihedral bending force F = -dU/dv, U = 0.5*Kb*(theta-theta0)^2. prange over hinges.
+    theta_band (rad): derived band-clamp on the dihedral deviation (inherited from THETA_CLAMP's
+    1%-linearization band, 0.244 rad). Default 1e9 = no clamp (used by the FD self-check so the
+    RAW analytic gradient is verified). The RUN B loop passes 0.244 to clamp + flag exceedance."""
     nH = hi0.shape[0]
     nV = P.shape[0]
     f = np.zeros((nV, 3))
@@ -340,57 +343,64 @@ def _bend_forces(hi0, hi1, hi2, hi3, P, theta0, Kb):
         dth = theta - theta0[h]
         if abs(dth) > mx:
             mx = abs(dth)
-        U += 0.5 * Kb * dth * dth
+        # band-clamp the dihedral deviation (THETA_CLAMP semantics): the bending force uses the
+        # clamped deviation so a single huge fold cannot dominate/blow up; U uses the SAME clamped
+        # value so F = -dU/dv stays exact. mx tracks the RAW deviation for the falsifier.
+        dthc = dth
+        if dthc > theta_band:
+            dthc = theta_band
+        elif dthc < -theta_band:
+            dthc = -theta_band
+        U += 0.5 * Kb * dthc * dthc
         n2a = na0*na0 + na1*na1 + na2*na2
         n2b = nb0*nb0 + nb1*nb1 + nb2*nb2
         norm2 = n2a * n2b
         if norm2 < 1e-20:
             continue
         edc = eax*cr0 + eay*cr1 + eaz*cr2            # ea . cr
-        # --- gradient of C ---
-        # gC_a = (c-b) x n_b + (b-d) x n_a
-        gCAx = (cay - b[1])*nb2 - (caz - b[2])*nb1 + (b[0]-d[0])*na2 - (b[1]-d[1])*na1
-        gCAy = (caz - b[2])*nb0 - (cax - b[0])*nb2 + (b[1]-d[1])*na0 - (b[2]-d[2])*na1
-        gCAz = (cax - b[0])*nb1 - (cay - b[1])*nb0 + (b[2]-d[2])*na1 - (b[0]-d[0])*na2
-        # gC_b = (a-c) x n_b + (a-d) x n_a
-        gCBx = (a[1]-c[1])*nb2 - (a[2]-c[2])*nb1 + (a[0]-d[0])*na2 - (a[1]-d[1])*na1
-        gCBy = (a[2]-c[2])*nb0 - (a[0]-c[0])*nb2 + (a[1]-d[1])*na0 - (a[2]-d[2])*na1
-        gCBz = (a[0]-c[0])*nb1 - (a[1]-c[1])*nb0 + (a[2]-d[2])*na1 - (a[0]-d[0])*na2
-        # gC_c = n_b x e
-        gCCx = nb1*ez - nb2*ey
-        gCCy = nb2*ex - nb0*ez
-        gCCz = nb0*ey - nb1*ex
-        # gC_d = n_a x e
-        gCDx = na1*ez - na2*ey
-        gCDy = na2*ex - na0*ez
-        gCDz = na0*ey - na1*ex
-        # --- gradient of S ---
-        # tmp = n_b x ea
-        tbx = nb1*eaz - nb2*eay
-        tby = nb2*eax - nb0*eaz
-        tbz = nb0*eay - nb1*eax
-        # tmp2 = n_a x ea
-        t2x = na1*eaz - na2*eay
-        t2y = na2*eax - na0*eaz
-        t2z = na0*eay - na1*eax
-        # gS_a = (b-c) x tmp + (b-d) x t2 + (ea*edc - cr)/Le
-        gSAx = (b[1]-c[1])*tbz - (b[2]-c[2])*tby + (b[0]-d[0])*t2z - (b[1]-d[1])*t2y + (eax*edc - cr0)/Le
-        gSAy = (b[2]-c[2])*tbx - (b[0]-c[0])*tbz + (b[1]-d[1])*t2x - (b[2]-d[2])*t2z + (eay*edc - cr1)/Le
-        gSAz = (b[0]-c[0])*tby - (b[1]-c[1])*tbx + (b[2]-d[2])*t2y - (b[0]-d[0])*t2x + (eaz*edc - cr2)/Le
-        # gS_b = (a-c) x tmp + (a-d) x t2 + (cr - ea*edc)/Le
-        gSBx = (a[1]-c[1])*tbz - (a[2]-c[2])*tby + (a[0]-d[0])*t2z - (a[1]-d[1])*t2y + (cr0 - eax*edc)/Le
-        gSBy = (a[2]-c[2])*tbx - (a[0]-c[0])*tbz + (a[1]-d[1])*t2x - (a[2]-d[2])*t2z + (cr1 - eay*edc)/Le
-        gSBz = (a[0]-c[0])*tby - (a[1]-c[1])*tbx + (a[2]-d[2])*t2y - (a[0]-d[0])*t2x + (cr2 - eaz*edc)/Le
-        # gS_c = tmp x e
-        gSCx = tby*ez - tbz*ey
-        gSCy = tbz*ex - tbx*ez
-        gSCz = tbx*ey - tby*ex
-        # gS_d = t2 x e
-        gSDx = t2y*ez - t2z*ey
-        gSDy = t2z*ex - t2x*ez
-        gSDz = t2x*ey - t2y*ex
-        # dtheta = (C*gS - S*gC)/norm2 ; F = -Kb*dth*dtheta
-        coef = -Kb * dth
+        # --- grad of C  (gC_X = d(C)/dX,  C = n_a.n_b) ---
+        bc0,bc1,bc2 = b[0]-c[0], b[1]-c[1], b[2]-c[2]
+        bd0,bd1,bd2 = b[0]-d[0], b[1]-d[1], b[2]-d[2]
+        ca0,ca1,ca2 = c[0]-a[0], c[1]-a[1], c[2]-a[2]
+        da0,da1,da2 = d[0]-a[0], d[1]-a[1], d[2]-a[2]
+        # gC_a = -(b-c) x n_b - (b-d) x n_a   (transpose of skew gives the leading minus)
+        gCAx = -bc1*nb2 + bc2*nb1 - bd1*na2 + bd2*na1
+        gCAy = -bc2*nb0 + bc0*nb2 - bd2*na0 + bd0*na2
+        gCAz = -bc0*nb1 + bc1*nb0 - bd0*na1 + bd1*na0
+        # gC_b = -(c-a) x n_b - (d-a) x n_a
+        gCBx = -ca1*nb2 + ca2*nb1 - da1*na2 + da2*na1
+        gCBy = -ca2*nb0 + ca0*nb2 - da2*na0 + da0*na2
+        gCBz = -ca0*nb1 + ca1*nb0 - da0*na1 + da1*na0
+        # gC_c = e x n_b
+        gCCx = ey*nb2 - ez*nb1
+        gCCy = ez*nb0 - ex*nb2
+        gCCz = ex*nb1 - ey*nb0
+        # gC_d = e x n_a
+        gCDx = ey*na2 - ez*na1
+        gCDy = ez*na0 - ex*na2
+        gCDz = ex*na1 - ey*na0
+        # --- grad of S  (gS_X = d(S)/dX,  S = (n_a x n_b).ea) ---
+        # tmp = n_b x ea ; t2 = n_a x ea
+        tbx = nb1*eaz - nb2*eay; tby = nb2*eax - nb0*eaz; tbz = nb0*eay - nb1*eax
+        t2x = na1*eaz - na2*eay; t2y = na2*eax - na0*eaz; t2z = na0*eay - na1*eax
+        # gS_a = -[(b-c) x tmp - (b-d) x t2 + (ea*edc - cr)/L]   (vertices a,b get the leading minus)
+        gSAx = -bc1*tbz + bc2*tby + (bd1*t2z - bd2*t2y) - (eax*edc - cr0)/Le
+        gSAy = -bc2*tbx + bc0*tbz + (bd2*t2x - bd0*t2z) - (eay*edc - cr1)/Le
+        gSAz = -bc0*tby + bc1*tbx + (bd0*t2y - bd1*t2x) - (eaz*edc - cr2)/Le
+        # gS_b = -[(c-a) x tmp - (d-a) x t2 + (cr - ea*edc)/L]
+        gSBx = -ca1*tbz + ca2*tby + (da1*t2z - da2*t2y) - (cr0 - eax*edc)/Le
+        gSBy = -ca2*tbx + ca0*tbz + (da2*t2x - da0*t2z) - (cr1 - eay*edc)/Le
+        gSBz = -ca0*tby + ca1*tbx + (da0*t2y - da1*t2x) - (cr2 - eaz*edc)/Le
+        # gS_c = e x tmp
+        gSCx = ey*tbz - ez*tby
+        gSCy = ez*tbx - ex*tbz
+        gSCz = ex*tby - ey*tbx
+        # gS_d = - e x t2
+        gSDx = ez*t2y - ey*t2z
+        gSDy = ex*t2z - ez*t2x
+        gSDz = ey*t2x - ex*t2y
+        # dtheta = (C*gS - S*gC)/norm2 ; F = -Kb*dthc*dtheta
+        coef = -Kb * dthc
         # vertex a
         dta = (C*gSAx - S*gCAx)/norm2
         dtb = (C*gSBx - S*gCBx)/norm2
@@ -407,8 +417,124 @@ def _bend_forces(hi0, hi1, hi2, hi3, P, theta0, Kb):
     return f, U, mx
 
 
+# ── CLOSED-MESH rest volume + OUTWARD PRESSURE (Rule-0 SURFACE axis: rest-exterior) ──
+# Rest enclosed volume V0 from geometry (divergence theorem); the rest-exterior constraint is
+# a surface/areal field on the triangle carrier, NOT a third point-to-point force. k_vol is
+# DERIVED (tied to the one physical constant K_BOND), no free number -- like k_area / k_bend.
+
+@njit(parallel=True, fastmath=True)
+def enclosed_volume(V, Tg):
+    nT = Tg.shape[0]
+    vol = 0.0
+    for t in prange(nT):
+        a = V[Tg[t, 0]]; b = V[Tg[t, 1]]; c = V[Tg[t, 2]]
+        vol += a[0] * (b[1] * c[2] - b[2] * c[1]) - \
+               a[1] * (b[0] * c[2] - b[2] * c[0]) + \
+               a[2] * (b[0] * c[1] - b[1] * c[0])
+    return vol / 6.0
+
+
+@njit(parallel=True, fastmath=True)
+def _pressure_forces(V, Tg, V0, k_vol, band, G):
+    # OUTWARD volume-restoring pressure as a rest-state constraint on the closed triangle
+    # carrier.  U_v = 1/2 k_vol (V/V0 - 1)^2  (V0 = rest enclosed volume) so V0 is a TRUE
+    # rest state (force = 0 at V = V0).  F_i = -dU_v/dv_i = -k_vol (V/V0-1)/V0 * gradV_i,
+    # gradV_i = (1/6) sum_incident (b x c)  (volume gradient / fan area vector).
+    nT = Tg.shape[0]
+    nV = V.shape[0]
+    G[:] = 0.0
+    vol = 0.0
+    for t in range(nT):                       # sequential: tris share vertices -> race-free
+        a = V[Tg[t, 0]]; b = V[Tg[t, 1]]; c = V[Tg[t, 2]]
+        bxc = np.array([b[1] * c[2] - b[2] * c[1],
+                        b[2] * c[0] - b[0] * c[2],
+                        b[0] * c[1] - b[1] * c[0]])
+        cxa = np.array([c[1] * a[2] - c[2] * a[1],
+                        c[2] * a[0] - c[0] * a[2],
+                        c[0] * a[1] - c[1] * a[0]])
+        axb = np.array([a[1] * b[2] - a[2] * b[1],
+                        a[2] * b[0] - a[0] * b[2],
+                        a[0] * b[1] - a[1] * b[0]])
+        G[Tg[t, 0], 0] += bxc[0] / 6.0
+        G[Tg[t, 0], 1] += bxc[1] / 6.0
+        G[Tg[t, 0], 2] += bxc[2] / 6.0
+        G[Tg[t, 1], 0] += cxa[0] / 6.0
+        G[Tg[t, 1], 1] += cxa[1] / 6.0
+        G[Tg[t, 1], 2] += cxa[2] / 6.0
+        G[Tg[t, 2], 0] += axb[0] / 6.0
+        G[Tg[t, 2], 1] += axb[1] / 6.0
+        G[Tg[t, 2], 2] += axb[2] / 6.0
+        vol += a[0] * (b[1] * c[2] - b[2] * c[1]) - \
+               a[1] * (b[0] * c[2] - b[2] * c[0]) + \
+               a[2] * (b[0] * c[1] - b[1] * c[0])
+    vol /= 6.0
+    dev = vol / V0 - 1.0
+    dev_c = dev if abs(dev) < band else (band if dev > 0.0 else -band)
+    F = np.zeros((nV, 3))
+    for i in prange(nV):                      # parallel: reads G only, independent per vertex
+        F[i, 0] = -k_vol * dev_c / V0 * G[i, 0]
+        F[i, 1] = -k_vol * dev_c / V0 * G[i, 1]
+        F[i, 2] = -k_vol * dev_c / V0 * G[i, 2]
+    U = 0.5 * k_vol * dev_c * dev_c
+    return F, U, abs(dev)
+
+
+def build_sphere(n_lat=32, n_lon=64, R=None):
+    # CLOSED UV sphere. Radius chosen so equatorial edge length ~ R_BOND => bonds at rest
+    # (no free number; R is derived from R_BOND and n_lon). Outward winding enforced by the
+    # signed-volume sign check (V0 must be positive for the rest-exterior constraint).
+    if R is None:
+        R = C.R_BOND * n_lon / (2.0 * math.pi)
+    verts = [np.array([0.0, 0.0, R], dtype=np.float64)]   # north pole
+    for i in range(1, n_lat):
+        theta = math.pi * i / n_lat
+        st = math.sin(theta); ct = math.cos(theta)
+        for j in range(n_lon):
+            phi = 2.0 * math.pi * j / n_lon
+            verts.append(np.array([R * st * math.cos(phi),
+                                   R * st * math.sin(phi),
+                                   R * ct], dtype=np.float64))
+    verts.append(np.array([0.0, 0.0, -R], dtype=np.float64))  # south pole
+    Vg = np.ascontiguousarray(np.stack(verts), dtype=np.float64)
+    tris = []
+    for j in range(n_lon):                              # north cap
+        tris.append([0, 1 + j, 1 + (j + 1) % n_lon])
+    for i in range(0, n_lat - 2):                      # middle bands
+        r0 = 1 + i * n_lon; r1 = 1 + (i + 1) * n_lon
+        for j in range(n_lon):
+            a = r0 + j; b = r0 + (j + 1) % n_lon
+            c = r1 + j; d = r1 + (j + 1) % n_lon
+            tris.append([a, b, d]); tris.append([a, d, c])
+    s = len(verts) - 1; rlast = 1 + (n_lat - 2) * n_lon  # south cap
+    for j in range(n_lon):
+        tris.append([s, rlast + (j + 1) % n_lon, rlast + j])
+    Tg = np.ascontiguousarray(np.array(tris, dtype=np.int64))
+    if enclosed_volume(Vg, Tg) < 0.0:
+        Tg = np.ascontiguousarray(Tg[:, ::-1], dtype=np.int64)
+    return Vg, Tg
+
+
 def main() -> int:
-    Vg, Tg, A0, S, e_med, n_orig_verts, n_exact_merged = build_lattice()
+    # ── mesh selector (Rule-0 SURFACE axis): closed mesh FIRST (sphere) where rest volume
+    # V0 is unambiguous; the open bear (rest-exterior not yet defined) follows. No free number:
+    # the sphere radius is DERIVED from R_BOND so its bonds start at rest.
+    MESH = os.environ.get("MESH", "bear").lower()
+    if MESH == "sphere":
+        Vg, Tg = build_sphere()                          # R -> edge ~ R_BOND (bonds at rest)
+        e1 = Vg[Tg[:, 1]] - Vg[Tg[:, 0]]
+        e2 = Vg[Tg[:, 2]] - Vg[Tg[:, 0]]
+        e3 = Vg[Tg[:, 2]] - Vg[Tg[:, 1]]
+        A0 = 0.5 * np.linalg.norm(np.cross(e1, e2), axis=1)
+        _em = np.stack([np.linalg.norm(e1, axis=1),
+                        np.linalg.norm(e2, axis=1),
+                        np.linalg.norm(e3, axis=1)], axis=1)
+        e_med = float(np.median(_em))
+        S = C.R_BOND / e_med
+        n_orig_verts = len(Vg); n_exact_merged = 0
+        is_closed = True; scale0 = 0.98                 # start compressed -> outward pressure exercised
+    else:
+        Vg, Tg, A0, S, e_med, n_orig_verts, n_exact_merged = build_lattice()
+        is_closed = False; scale0 = 1.0
     nV, nT3 = len(Vg), len(Tg)
     # k (CA area stiffness) is now DERIVED per-triangle from the bond below (R7b),
     # not a free number.
@@ -418,16 +544,15 @@ def main() -> int:
     keep = ~degen
     Tc = np.ascontiguousarray(Tg[keep])                     # CA arrays: kept tris only
     Ac = np.ascontiguousarray(A0[keep], dtype=np.float64)
+    # closed mesh -> rest enclosed volume V0 (Rule-0 rest-exterior; derived, no free number)
+    V0 = float(enclosed_volume(Vg, Tc)) if is_closed else None
 
-    # ── R7b: the CA area-bond IS the area-projection of the SAME edge-bond
-    # energy that defines the resistance -- ONE energy, two consistent gradients.
-    # A non-equilateral triangle cannot have all three edges at R_BOND at once, so
-    # no single rest AREA can coincide with the edge-bond rest lengths; a SEPARATE
-    # area spring would therefore conflict with the edge bond (the RUN B divergence).
-    # The consistent model is ONE energy: the edge-bond network (already inside
-    # acc from compute_forces_mod). The CA area-force below is kept as its
-    # area-channel DIAGNOSTIC (strain / RUN A) and is NOT added on top -- adding it
-    # would double-count the same energy and reintroduce the conflict.
+    # ── R7b / OPTION B: the CA area mode IS the area channel of the SAME edge-bond
+    # energy (ONE energy, two consistent gradients -- RUN A proves d2U_s/dlam^2 = 3*K_BOND,
+    # 0% error, so it does NOT fight its own edge). It is applied as a REAL push-back
+    # force (F = -dU_s/dv) in the RUN B loop: the area spring resists area CHANGE, the
+    # edge bond resists edge CHANGE; both are restoring and consistent (no double-count,
+    # no conflict). Rest area is DERIVED from bond geometry (per-tri import area), never picked.
     # per-triangle median edge length (walk space)
     e1 = Vg[Tc[:, 1]] - Vg[Tc[:, 0]]
     e2 = Vg[Tc[:, 2]] - Vg[Tc[:, 0]]
@@ -435,20 +560,20 @@ def main() -> int:
     _em = np.median(np.stack([
         np.linalg.norm(e1, axis=1), np.linalg.norm(e2, axis=1), np.linalg.norm(e3, axis=1)
     ], axis=1), axis=1)
-    # R7b (root fix -- REAL area rigidity): the CA area mode is the area channel of the
-    # single edge-bond energy. Its stiffness is DERIVED from the bond: the area spring
-    # must have, at the equilateral bond-rest, the SAME edge-stiffness as the edge bond
-    # (dF_ca/d(edge) == K_BOND/R_BOND). For an equilateral tri (edge R_BOND, area
-    # A0_eq = √3/4·R_BOND²) the area-edge geometry gives dA/d(edge)·|grad| = A0_eq/2, so
-    # -- NOT the earlier per-tri (e_med/Ac)² which blew up on skinny/non-equilateral tris
-    # (tiny Ac -> huge k -> dt-unstable).
+    # OPTION B derivation (real area rigidity, no free number): stiffness is DERIVED so the
+    # isotropic area response of a triangle equals its 3-edge bond-network response. RUN A
+    # (below) measures d2U_s/dlam^2 and requires it == 3*K_BOND; solving gives k_t = 0.75*K_BOND/A0_t
+    # (per-tri). This is UNIFORM (no 1/Ac^2 blow-up) and dt-stable. The earlier (e_med/Ac)^2 form
+    # is rejected: tiny Ac -> huge k -> dt-unstable. A0_eq is the equilateral@R_BOND area, used
+    # only as the RUN A derivation reference (NOT as the applied rest area -- the applied rest
+    # area is each tri's own Ac, see below).
     A0_eq = (C.R_BOND ** 2) * math.sqrt(3.0) / 4.0          # equilateral@R_BOND area (RUN A derivation ref)
     # CA rest area = each triangle's OWN reference (import) area Ac: the solid's undeformed
-    # configuration. DERIVED from geometry (no free number, no 54% mismatch) so every triangle
-    # starts AT rest (s=0) -> no initial snap. The area spring then resists AREA CHANGE during
-    # dynamics -> genuine solid rigidity, without fighting the bond rest. Per-tri stiffness
-    # k_t = 2·K_BOND/(R_BOND²·A0_t) makes the area curvature d2U/dA2 = k_t/A0_t = 2·K_BOND/R_BOND²
-    # UNIFORM and dt-stable (no 1/Ac² blow-up). RUN A below validates this k on equilateral rest.
+    # configuration. DERIVED from bond geometry (edge lengths -> area, no free number, no 54%
+    # mismatch) so every triangle starts AT rest (s=0) -> no initial snap. The area spring then
+    # resists AREA CHANGE during dynamics -> genuine solid rigidity, without fighting the bond
+    # rest. Per-tri stiffness k_t = 0.75*K_BOND/A0_t (RUN A-validated) gives area curvature
+    # d2U/dA2 = k_t/A0_t = 0.75*K_BOND/A0_t^2, UNIFORM and dt-stable. RUN A below validates this k.
     A0_bond = Ac.copy()
     k = 0.75 * C.K_BOND / Ac                       # derived: isotropic area response of a tri
                                                  # equals its 3-edge bond network (d2U/dlam^2 = 3*K_BOND);
@@ -473,6 +598,20 @@ def main() -> int:
     theta0 = compute_theta0(hi0, hi1, hi2, hi3, Vg)
     K_bend = C.K_BOND                                  # DERIVED: tied to the one physical constant
     print(f"bending hinges: {len(hi0):,}  K_bend={K_bend:.4g} (tied to K_BOND, no free number)")
+    K_vol = C.K_BOND                                  # DERIVED: volume-restoring pressure tied to K_BOND
+    S_BAND_VOL = 0.244                                # volume-deviation band, inherited THETA_CLAMP precedent
+    band_exceeded_vol = False
+    G_press = np.zeros((nV, 3), dtype=np.float64) if is_closed else None
+
+    # ── R7b integration: substep BELOW the measured dt cliff (ca_stab.txt: finite at
+    # 5e-7, diverges at 5e-6). This is the PRIMARY stability fix (Hole 1). The area/bending
+    # forces are verified-conservative and cannot inject energy; the cliff is the self-DRAW
+    # singularity (1/(r^2+EPS^2)) near r->EPS. iso7.txt confirms [draw+wall+bond] is finite
+    # once dt is below the cliff. dt derived from where finiteness flips (THETA_CLAMP precedent),
+    # not picked.
+    dt_int = 5.0e-7          # cliff-safe substep (ca_stab.txt)
+    S_BAND = 0.244           # dihedral band, inherited from THETA_CLAMP (1%-linearization band)
+    band_exceeded = False    # fired falsifier if any tri's dihedral deviation exceeds S_BAND
 
     # CSR incidence over the KEPT set: vertex i -> rows r of the flattened (tri, slot) table.
     Tg_flat = np.ascontiguousarray(Tc.ravel())
@@ -509,13 +648,38 @@ def main() -> int:
         for vidx in verts:
             for comp in range(3):
                 Pp = Ptest.copy(); Pp[vidx, comp] += hh
+                Pm = Ptest.copy(); Pm[vidx, comp] -= hh
                 _, Up, _ = _bend_forces(np.array([hi0[0]]), np.array([hi1[0]]),
                                         np.array([hi2[0]]), np.array([hi3[0]]),
                                         Pp, np.array([theta0[0]]), K_bend)
-                dU = (Up - Uchk) / hh                       # F = -dU/dv  =>  dU/dv = -F
+                _, Um, _ = _bend_forces(np.array([hi0[0]]), np.array([hi1[0]]),
+                                        np.array([hi2[0]]), np.array([hi3[0]]),
+                                        Pm, np.array([theta0[0]]), K_bend)
+                dU = (Up - Um) / (2 * hh)                   # F = -dU/dv  =>  dU/dv = -F
                 maxfd = max(maxfd, abs(dU + fchk[vidx, comp]))
         print(f"bending grad self-check |FD + analytic| max = {maxfd:.3e}")
         assert maxfd < 1e-3, "bending gradient algebra failed its own FD check -- build stops"
+
+    # ── pressure (rest-exterior) gradient FD self-check (Rule-0 SURFACE axis): single-vertex
+    # energy vs analytic force. U_v = 1/2 k_vol (V/V0-1)^2 ; F_i = -dU_v/dv_i. Verifies the
+    # volume-gradient algebra before the closed-mesh run (band disabled here so FD sees the raw slope).
+    if V0 is not None:
+        rng = np.random.default_rng(1)
+        Ptest = Vg.copy()
+        pv = rng.choice(nV, size=min(8, nV), replace=False)
+        Ptest[pv] += rng.standard_normal((len(pv), 3)) * 0.01
+        Fchk, Uchk, devraw = _pressure_forces(Ptest, Tc, V0, K_vol, 1e9, np.zeros((nV, 3)))
+        maxfd = 0.0; hh = 1e-6
+        for vidx in pv:
+            for comp in range(3):
+                Pp = Ptest.copy(); Pp[vidx, comp] += hh
+                Pm = Ptest.copy(); Pm[vidx, comp] -= hh
+                _, Up, _ = _pressure_forces(Pp, Tc, V0, K_vol, 1e9, np.zeros((nV, 3)))
+                _, Um, _ = _pressure_forces(Pm, Tc, V0, K_vol, 1e9, np.zeros((nV, 3)))
+                dU = (Up - Um) / (2 * hh)                    # F = -dU/dv
+                maxfd = max(maxfd, abs(dU + Fchk[vidx, comp]))
+        print(f"pressure grad self-check |FD + analytic| max = {maxfd:.3e}")
+        assert maxfd < 1e-3, "pressure gradient algebra failed its own FD check -- build stops"
 
     # ---- RUN A: bond-law match, one named shared edge -- first KEPT triangle whose slot-0
     # (a-b) pair is SHARED. Sharedness must be counted across ALL THREE slots of every kept tri.
@@ -589,7 +753,7 @@ def main() -> int:
         have_cuda = bool(_cuda.is_available())
     except Exception:
         have_cuda = False
-    pos32 = np.ascontiguousarray(Vg, dtype=np.float32)       # walk-space positions
+    pos32 = np.ascontiguousarray(Vg * scale0, dtype=np.float32)  # walk-space positions (scale0=1 for bear)
     vel32 = np.zeros((nV, 3), dtype=np.float32)
     out_buf = np.empty((nV, 3), dtype=np.float32)             # preallocated: interface fills it
     dev = {}                                                  # build-once device buffers (flat VRAM)
@@ -597,12 +761,21 @@ def main() -> int:
     # warmup walk: capture rest-frame conservative PE (draw + wall + bond) so E0 is the
     # full energy, not just the CA spring PE. Energy gate then verifies dE against radiation.
     _, _, pot0 = compute_forces_mod(pos32, vel32, dev=dev)
-    E0 = float(U_b + 0.5 * (vel32 ** 2).sum() + pot0)       # from rest at import pose: s=0 -> U0=0
+    # Consistent initial CA energy: a compressed closed mesh starts with rest-state PE (U_s, U_v),
+    # which MUST be in E0 too or the gate mis-measures a one-time offset as drift. Bear starts at
+    # rest (U_s=U_v=0) so this reduces to the original E0.
+    P64_0 = np.ascontiguousarray(pos32, dtype=np.float64)
+    sarr_0, _u = _k1_state(P64_0, Tc, A0_bond, k, N0)
+    U_s_init = float(0.5 * (k * A0_bond * sarr_0 ** 2).sum())
+    U_v_init = float(_pressure_forces(P64_0, Tc, V0, K_vol, S_BAND_VOL, G_press)[1]) if V0 is not None else 0.0
+    E0 = float(U_s_init + U_b + U_v_init + 0.5 * (vel32 ** 2).sum() + pot0)
     rad_total, peak_E, max_strain, finite = 0.0, abs(E0), 0.0, True
     max_bend = 0.0
     U_bend_tot = 0.0
     pot = 0.0
     U_s = 0.0
+    U_vol_tot = 0.0
+    max_vol_dev = 0.0
     mem_guard_fired = False
     rss_now = _rss_mb()
     ms_tree = ms_walk = ms_ca = 0.0
@@ -644,7 +817,7 @@ def main() -> int:
             _prog_line(tick + 1, float("nan"), rad_total, max_strain, "WALK_NAN")
             break
         ms_walk += time.perf_counter() - _t1                # GPU: one thread per point (or prange CPU)
-        rad_total += float(power) * C.DT                    # radiated ENERGY this tick = power * dt (honest dissipation)
+        rad_total += float(power) * dt_int                  # radiated ENERGY this tick = power * dt (honest dissipation)
         _t1 = time.perf_counter()
         # R7b (root fix, applied): CA rest area = each triangle's OWN reference area (solid's
         # undeformed config), derived from geometry (no free number). The area force is the
@@ -652,21 +825,33 @@ def main() -> int:
         # solid-element rigidity. k is DERIVED (0.75*K_BOND/A0) so the area mode is dt-stable.
         P64 = np.ascontiguousarray(pos32, dtype=np.float64)
         sarr, _u = _k1_state(P64, Tc, A0_bond, k, N0)        # CA state: s = A/A0 - 1 (signed, fixed N0)
-        fca = _k2_forces(sarr, G, k, start, entries)         # area force F = -dU_s/dv
-        fbend, U_b, max_dth = _bend_forces(hi0, hi1, hi2, hi3, P64, theta0, K_bend)  # bending F = -dU_b/dv
+        fca = _k2_forces(sarr, G, k, start, entries)         # area force F = -dU_s/dv (Option B: real push-back)
+        fbend, U_b, max_dth = _bend_forces(hi0, hi1, hi2, hi3, P64, theta0, K_bend, S_BAND)  # bending F=-dU_b/dv, band-clamped
         ms_ca += time.perf_counter() - _t1                  # multi-core prange over tris
         max_strain = max(max_strain, float(np.abs(sarr).max()))
         max_bend = max(max_bend, float(max_dth))
+        if max_dth > S_BAND:
+            band_exceeded = True                            # dihedral exceeded derived band -> fired falsifier (bending successor)
         a_tot = np.asarray(acc, dtype=np.float64) + fca + fbend   # draw + wall + bond + area + bending
+        # Rule-0 SURFACE axis: rest-exterior pressure (closed mesh only). V0 = rest enclosed volume;
+        # F = -dU_v/dv restores the outside when deviated. Bear: V0=None -> skipped (open, no V0 yet).
+        U_vol_tot = 0.0
+        if V0 is not None:
+            Fvol, U_v, dev_raw = _pressure_forces(P64, Tc, V0, K_vol, S_BAND_VOL, G_press)
+            a_tot = a_tot + Fvol
+            U_vol_tot = float(U_v)
+            max_vol_dev = max(max_vol_dev, float(dev_raw))
+            if dev_raw > S_BAND_VOL:
+                band_exceeded_vol = True                    # volume-deviation band exceeded -> falsifier
         if not bool(np.all(np.isfinite(a_tot))):
             finite = False
             _prog_line(tick + 1, float("nan"), rad_total, max_strain, "WALK_NAN")
             break
-        vel32 += (a_tot * C.DT).astype(np.float32)          # symplectic Euler: kick then drift
-        pos32 = np.ascontiguousarray(pos32 + vel32.astype(np.float64) * C.DT, dtype=np.float32)
+        vel32 += (a_tot * dt_int).astype(np.float32)        # symplectic Euler: kick then drift (dt below cliff)
+        pos32 = np.ascontiguousarray(pos32 + vel32.astype(np.float64) * dt_int, dtype=np.float32)
         U_s = float(0.5 * (k * A0_bond * sarr ** 2).sum())  # applied area PE (real, part of E)
-        U_bend_tot += U_b                                    # bending PE (real, part of E)
-        E = float(0.5 * (vel32 ** 2).sum() + pot + U_s + U_bend_tot)  # REAL integrated energy
+        U_bend_tot = U_b                                    # bending PE (real, INSTANTANEOUS part of E; was wrongly accumulated)
+        E = float(0.5 * (vel32 ** 2).sum() + pot + U_s + U_bend_tot + U_vol_tot)  # REAL integrated energy
         peak_E = max(peak_E, abs(E))
         if EVERY_TICK or tick % 25 == 0 or tick == TICKS - 1:  # per-tick if CA_EVERY_TICK=1 (long-horizon leak diagnostic)
             _prog_line(tick + 1, E, rad_total, max_strain, "")
@@ -681,32 +866,45 @@ def main() -> int:
                 _prog_line(tick + 1, E, rad_total, max_strain, "MEMGUARD")
                 break
     KE_end = float(0.5 * (vel32 ** 2).sum())
-    E_end = float(KE_end + pot + (U_s if (finite and not mem_guard_fired) else float("nan")))
+    E_end = float(KE_end + pot + (U_s + U_bend_tot + U_vol_tot if (finite and not mem_guard_fired) else float("nan")))
     dE = abs(E_end - E0) if (finite and not mem_guard_fired) else float("inf")
+    V_end = float(enclosed_volume(np.ascontiguousarray(pos32, dtype=np.float64), Tc)) if V0 is not None else None
     ok_energy = finite and (dE <= rad_total + GATE_REL * peak_E)
     done = int(tick + 1)
-    print(f"RUN B  {done} ticks dt={C.DT} theta={DEFAULT_THETA} leaf=16 cuda_probe={have_cuda}")
+    print(f"RUN B  {done} ticks dt={dt_int:.1e} (cliff-safe; ca_stab: finite@5e-7, diverge@5e-6) "
+           f"theta={DEFAULT_THETA} leaf=16 cuda_probe={have_cuda}  mesh={MESH} closed={is_closed}")
     print(f"         per-tick mean ms: tree={ms_tree / done:.2f}  walk={ms_walk / done:.2f} "
-          f"ca_numpy={ms_ca / done:.2f}   (threading verdict from THESE numbers, not vibes)", flush=True)
+           f"ca_numpy={ms_ca / done:.2f}   (threading verdict from THESE numbers, not vibes)", flush=True)
     print(f"         finiteness: {'HOLDS' if finite else 'BROKEN'}")
     print(f"         E0={E0:.4g}  E_end={E_end:.4g}  "
            f"wall power radiated (sum)={rad_total:.4g}")
     print(f"         max |A/A0-1| over run = {max_strain:.4e}   "
-           f"(HONESTY LINE: area rigidity + bending BOTH applied; low strain = solid elements held shape)")
+           f"(HONESTY LINE: area rigidity (Option B, derived) + bending BOTH applied; low strain = solid elements held shape)")
     print(f"         max |dihedral - rest| over run = {max_bend:.4e}   "
            f"(bending rigidity: low = sheet stayed unfolded; high = folded/crumpled as intended)")
+    print(f"         dihedral band 0.244 rad (THETA_CLAMP): {'EXCEEDED -> falsifier fires' if band_exceeded else 'held'}")
+    if V0 is not None:
+        print(f"         OUTWARD PRESSURE (rest-exterior): V0={V0:.4g}  V_end={V_end:.4g}  "
+               f"(V/V0-1 held = {(V_end / V0 - 1.0) * 100 if V_end is not None else float('nan'):.3f}%)  "
+               f"max |V/V0-1| over run = {max_vol_dev:.4e}  "
+               f"vol band 0.244: {'EXCEEDED -> falsifier fires' if band_exceeded_vol else 'held'}  "
+               f"k_vol={K_vol:.4g} (tied to K_BOND, no free number)")
+    else:
+        print(f"         OUTWARD PRESSURE: not applied (open mesh, V0 undefined -- bear comes after closed-mesh validation)")
     print(f"         energy gate net of radiation ({GATE_REL * 100:.0f}%): "
-          + ("PASS" if ok_energy else "FALSIFIER FIRES"))
+           + ("PASS" if ok_energy else "FALSIFIER FIRES"))
 
     prog.close()                                            # flush+close the per-tick evidence file (already flushed every 25 ticks)
     OUT.write_text(json.dumps(dict(
         n_tris=nT3, n_verts=nV,
+        mesh=MESH, closed=is_closed, start_scale=float(scale0),
         n_original_verts=n_orig_verts,                             # pre-merge vertex count
         n_exact_merged=n_exact_merged,                             # bit-identical verts merged (no free param)
         n_degenerate_dropped=int(degen.sum()),                      # bijection ledger: counted
         n_ca_tris=int(keep.sum()),                                  # total faders unchanged (n_tris)
         e_med=float(e_med), scale_S=float(S), k_area_derived_median=float(np.median(k)),
-        dt=float(C.DT), ticks=TICKS, gate_rel=GATE_REL, cuda_probe=have_cuda,
+        dt=float(dt_int), dt_cliff=5.0e-7, diverging_term="self-draw near EPS (iso7: draw+bond no wall diverges; draw-only diverges)",
+        ticks=TICKS, gate_rel=GATE_REL, cuda_probe=have_cuda,
         grad_fd_worst=float(fd_worst), energy_consistency_resid=float(resid),
         runA=dict(r0=r0, named_tri_slope_ca=float(slope_ca),
                   iso_d2U=float(d2U), iso_expected=float(expected),
@@ -717,9 +915,20 @@ def main() -> int:
                    ticks_done=done,
                    ms_per_tick=dict(tree=float(ms_tree / done), walk=float(ms_walk / done),
                                     ca_numpy=float(ms_ca / done)),
-                    max_strain_abs=max_strain, max_bend_abs=max_bend, finite=finite,
-                   memory_guard_fired=mem_guard_fired,
-                   rss_end_gb=float(rss_now / 1000), energy_pass=bool(ok_energy)),
+                     max_strain_abs=max_strain, max_bend_abs=max_bend, finite=finite,
+                    memory_guard_fired=mem_guard_fired,
+                     theta_band=float(S_BAND), band_exceeded=bool(band_exceeded),
+                     rss_end_gb=float(rss_now / 1000), energy_pass=bool(ok_energy),
+                     surface_axis=dict(
+                         is_closed=is_closed,
+                         V0=(float(V0) if V0 is not None else None),
+                         V_end=(float(V_end) if V_end is not None else None),
+                         vol_held_rel=(float(V_end / V0 - 1.0) if (V0 is not None and V_end is not None) else None),
+                         max_vol_dev_abs=float(max_vol_dev),
+                         vol_band=float(S_BAND_VOL), band_exceeded_vol=bool(band_exceeded_vol),
+                         k_vol=(float(K_vol) if V0 is not None else None),
+                         note="rest-exterior = surface/areal constraint on triangle carrier (area+bending+outward volume); "
+                              "not a third point-to-point force. V0 derived from geometry (no free number).")),
     ), indent=1), encoding="utf-8")
     print(f"  JSON: {OUT}")
     return 0
