@@ -514,6 +514,60 @@ def build_sphere(n_lat=32, n_lon=64, R=None):
     return Vg, Tg
 
 
+# ── SURFACE AXIS, open-shell generalization: rest MEAN-CURVATURE exterior (Young-Laplace) ──
+# Unifies sphere(V0, closed) + bear(H0, open) under one areal rest-state. The discrete mean
+# curvature normal K_i = (1/2) sum_edges w_e (x_i - x_j) with w_e = cot a + cot b (REST weights,
+# so the gradient is exact). Rest state K0 = L0 x0 (x0 = import). Deviation DK = K - K0 = L0(x-x0).
+# Surface energy U = 1/2 gamma |DK|^2 (exact quadratic in x for rest weights) -> force
+# F = -grad U = -gamma L0 DK, a conserving rest-curvature restoring force. gamma = K_BOND (derived).
+def _cotangent(p, q, r):
+    a = p - r; b = q - r
+    cross = np.cross(a, b); denom = float(np.linalg.norm(cross))
+    if denom < 1e-12:
+        return 0.0
+    return float(np.dot(a, b) / denom)
+
+
+def build_cot_edges(V, Tg):
+    E = {}
+    for t in range(Tg.shape[0]):
+        a, b, c = int(Tg[t, 0]), int(Tg[t, 1]), int(Tg[t, 2])
+        for (p, q, rr) in ((a, b, c), (b, c, a), (c, a, b)):
+            w = _cotangent(V[p], V[q], V[rr])
+            key = (p, q) if p < q else (q, p)
+            E[key] = E.get(key, 0.0) + w
+    ei = np.array([k[0] for k in E], dtype=np.int64)
+    ej = np.array([k[1] for k in E], dtype=np.int64)
+    ew = np.array([E[k] for k in E], dtype=np.float64)
+    return ei, ej, ew
+
+
+@njit(fastmath=True)
+def _mean_curv_norm(V, ei, ej, ew, K):
+    nE = ei.shape[0]
+    for e in range(nE):                       # sequential: edges share vertices -> race-free
+        i = ei[e]; j = ej[e]; w = ew[e]
+        dx = V[i, 0] - V[j, 0]; dy = V[i, 1] - V[j, 1]; dz = V[i, 2] - V[j, 2]
+        K[i, 0] += 0.5 * w * dx; K[i, 1] += 0.5 * w * dy; K[i, 2] += 0.5 * w * dz
+        K[j, 0] -= 0.5 * w * dx; K[j, 1] -= 0.5 * w * dy; K[j, 2] -= 0.5 * w * dz
+    return K
+
+
+@njit(fastmath=True)
+def _curv_force(K, K0, ei, ej, ew, gamma, F):
+    nE = ei.shape[0]
+    for e in range(nE):                       # sequential: edges share vertices -> race-free
+        i = ei[e]; j = ej[e]; w = ew[e]
+        dkx = K[i, 0] - K0[i, 0]; dky = K[i, 1] - K0[i, 1]; dkz = K[i, 2] - K0[i, 2]
+        dkxx = K[j, 0] - K0[j, 0]; dkyy = K[j, 1] - K0[j, 1]; dkzz = K[j, 2] - K0[j, 2]
+        vx = -gamma * 0.5 * w * (dkx - dkxx)
+        vy = -gamma * 0.5 * w * (dky - dkyy)
+        vz = -gamma * 0.5 * w * (dkz - dkzz)
+        F[i, 0] += vx; F[i, 1] += vy; F[i, 2] += vz
+        F[j, 0] -= vx; F[j, 1] -= vy; F[j, 2] -= vz
+    return F
+
+
 def main() -> int:
     # ── mesh selector (Rule-0 SURFACE axis): closed mesh FIRST (sphere) where rest volume
     # V0 is unambiguous; the open bear (rest-exterior not yet defined) follows. No free number:
@@ -602,6 +656,18 @@ def main() -> int:
     S_BAND_VOL = 0.244                                # volume-deviation band, inherited THETA_CLAMP precedent
     band_exceeded_vol = False
     G_press = np.zeros((nV, 3), dtype=np.float64) if is_closed else None
+    # SURFACE AXIS (open-shell): rest mean-curvature exterior (Young-Laplace) -- unified for ALL
+    # meshes. Rest cotangent weights (fixed -> exact gradient); rest curvature normal K0. F = -grad U.
+    ei, ej, ew = build_cot_edges(Vg, Tc)
+    K0 = np.zeros((nV, 3), dtype=np.float64); _mean_curv_norm(Vg, ei, ej, ew, K0)
+    K_curv = C.K_BOND                                # gamma = K_BOND (derived, no free number)
+    S_BAND_CURV = 0.244                             # curvature-deviation band, inherited THETA_CLAMP precedent
+    band_exceeded_curv = False
+    K_buf = np.zeros((nV, 3), dtype=np.float64)         # current mean-curvature normal (reused per tick)
+    _k0nrm = np.linalg.norm(K0, axis=1)               # rest curvature-normal magnitude per vertex
+    k0_scale = float(np.median(_k0nrm))              # characteristic rest-curvature scale (mirrors e_med)
+    curv_keep = _k0nrm >= k0_scale                    # domain: exclude near-flat verts where |K|/|K0|-1 is ill-conditioned
+    n_curv_flat_excluded = int((~curv_keep).sum())   # bijection-ledger count, mirrors n_degenerate_dropped
 
     # ── R7b integration: substep BELOW the measured dt cliff (ca_stab.txt: finite at
     # 5e-7, diverges at 5e-6). This is the PRIMARY stability fix (Hole 1). The area/bending
@@ -680,6 +746,29 @@ def main() -> int:
                 maxfd = max(maxfd, abs(dU + Fchk[vidx, comp]))
         print(f"pressure grad self-check |FD + analytic| max = {maxfd:.3e}")
         assert maxfd < 1e-3, "pressure gradient algebra failed its own FD check -- build stops"
+
+    # ── curvature (rest mean-curvature exterior) gradient FD self-check (Rule-0 SURFACE axis):
+    # U = 1/2 K_curv |DK|^2, DK = K - K0, F = -grad U = -K_curv L0 DK (exact for REST weights).
+    # Verifies the cotangent-gradient algebra before the run.
+    rng2 = np.random.default_rng(7)
+    pv2 = rng2.choice(nV, size=min(8, nV), replace=False)
+    Ptest2 = Vg.copy()
+    Ptest2[pv2] += rng2.standard_normal((len(pv2), 3)) * 0.01
+    Kc = np.zeros((nV, 3)); _mean_curv_norm(Ptest2, ei, ej, ew, Kc)
+    Fchk2 = np.zeros((nV, 3)); _curv_force(Kc, K0, ei, ej, ew, K_curv, Fchk2)
+    maxfd = 0.0; hh = 1e-6
+    for vidx in pv2:
+        for comp in range(3):
+            Pp = Ptest2.copy(); Pp[vidx, comp] += hh      # FD around the SAME base as Fchk2 (quadratic energy)
+            Pm = Ptest2.copy(); Pm[vidx, comp] -= hh
+            Kp = np.zeros((nV, 3)); _mean_curv_norm(Pp, ei, ej, ew, Kp)
+            Km = np.zeros((nV, 3)); _mean_curv_norm(Pm, ei, ej, ew, Km)
+            Up = 0.5 * K_curv * float(np.sum((Kp - K0) ** 2))
+            Um = 0.5 * K_curv * float(np.sum((Km - K0) ** 2))
+            dU = (Up - Um) / (2 * hh)                    # F = -dU/dv
+            maxfd = max(maxfd, abs(dU + Fchk2[vidx, comp]))
+    print(f"curvature grad self-check |FD + analytic| max = {maxfd:.3e}")
+    assert maxfd < 1e-3, "curvature gradient algebra failed its own FD check -- build stops"
 
     # ---- RUN A: bond-law match, one named shared edge -- first KEPT triangle whose slot-0
     # (a-b) pair is SHARED. Sharedness must be counted across ALL THREE slots of every kept tri.
@@ -768,7 +857,9 @@ def main() -> int:
     sarr_0, _u = _k1_state(P64_0, Tc, A0_bond, k, N0)
     U_s_init = float(0.5 * (k * A0_bond * sarr_0 ** 2).sum())
     U_v_init = float(_pressure_forces(P64_0, Tc, V0, K_vol, S_BAND_VOL, G_press)[1]) if V0 is not None else 0.0
-    E0 = float(U_s_init + U_b + U_v_init + 0.5 * (vel32 ** 2).sum() + pot0)
+    K_buf0 = np.zeros((nV, 3), dtype=np.float64); _mean_curv_norm(P64_0, ei, ej, ew, K_buf0)
+    U_curv_init = float(0.5 * K_curv * np.sum((K_buf0 - K0) ** 2))   # curvature rest-state PE (closed+bear)
+    E0 = float(U_s_init + U_b + U_v_init + U_curv_init + 0.5 * (vel32 ** 2).sum() + pot0)
     rad_total, peak_E, max_strain, finite = 0.0, abs(E0), 0.0, True
     max_bend = 0.0
     U_bend_tot = 0.0
@@ -776,6 +867,9 @@ def main() -> int:
     U_s = 0.0
     U_vol_tot = 0.0
     max_vol_dev = 0.0
+    U_curv_tot = 0.0
+    max_curv_dev = 0.0
+    max_curv_dev_raw = 0.0
     mem_guard_fired = False
     rss_now = _rss_mb()
     ms_tree = ms_walk = ms_ca = 0.0
@@ -843,6 +937,23 @@ def main() -> int:
             max_vol_dev = max(max_vol_dev, float(dev_raw))
             if dev_raw > S_BAND_VOL:
                 band_exceeded_vol = True                    # volume-deviation band exceeded -> falsifier
+        # SURFACE AXIS curvature exterior (all meshes): rest mean-curvature restoring force
+        # (Young-Laplace, rest weights -> exact gradient, conserving). Holds the open shell's outside.
+        K_buf[:] = 0.0
+        _mean_curv_norm(P64, ei, ej, ew, K_buf)
+        Fcurv = np.zeros((nV, 3))
+        _curv_force(K_buf, K0, ei, ej, ew, K_curv, Fcurv)
+        a_tot = a_tot + Fcurv
+        DK = K_buf - K0
+        U_curv_tot = float(0.5 * K_curv * np.sum(DK ** 2))
+        _nrm = np.linalg.norm(K_buf, axis=1); _nrm0 = np.linalg.norm(K0, axis=1)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            _dev = np.where(_nrm0 > 1e-9, _nrm / _nrm0 - 1.0, 0.0)
+        max_curv_dev_raw = max(max_curv_dev_raw, float(np.max(np.abs(_dev))))   # ALL verts (honesty line)
+        _md = float(np.max(np.where(curv_keep, np.abs(_dev), 0.0))) if curv_keep.any() else 0.0   # DOMAIN only
+        max_curv_dev = max(max_curv_dev, _md)
+        if _md > S_BAND_CURV:
+            band_exceeded_curv = True                    # curvature-deviation band exceeded -> falsifier
         if not bool(np.all(np.isfinite(a_tot))):
             finite = False
             _prog_line(tick + 1, float("nan"), rad_total, max_strain, "WALK_NAN")
@@ -851,7 +962,7 @@ def main() -> int:
         pos32 = np.ascontiguousarray(pos32 + vel32.astype(np.float64) * dt_int, dtype=np.float32)
         U_s = float(0.5 * (k * A0_bond * sarr ** 2).sum())  # applied area PE (real, part of E)
         U_bend_tot = U_b                                    # bending PE (real, INSTANTANEOUS part of E; was wrongly accumulated)
-        E = float(0.5 * (vel32 ** 2).sum() + pot + U_s + U_bend_tot + U_vol_tot)  # REAL integrated energy
+        E = float(0.5 * (vel32 ** 2).sum() + pot + U_s + U_bend_tot + U_vol_tot + U_curv_tot)  # REAL integrated energy
         peak_E = max(peak_E, abs(E))
         if EVERY_TICK or tick % 25 == 0 or tick == TICKS - 1:  # per-tick if CA_EVERY_TICK=1 (long-horizon leak diagnostic)
             _prog_line(tick + 1, E, rad_total, max_strain, "")
@@ -866,7 +977,7 @@ def main() -> int:
                 _prog_line(tick + 1, E, rad_total, max_strain, "MEMGUARD")
                 break
     KE_end = float(0.5 * (vel32 ** 2).sum())
-    E_end = float(KE_end + pot + (U_s + U_bend_tot + U_vol_tot if (finite and not mem_guard_fired) else float("nan")))
+    E_end = float(KE_end + pot + (U_s + U_bend_tot + U_vol_tot + U_curv_tot if (finite and not mem_guard_fired) else float("nan")))
     dE = abs(E_end - E0) if (finite and not mem_guard_fired) else float("inf")
     V_end = float(enclosed_volume(np.ascontiguousarray(pos32, dtype=np.float64), Tc)) if V0 is not None else None
     ok_energy = finite and (dE <= rad_total + GATE_REL * peak_E)
@@ -891,6 +1002,11 @@ def main() -> int:
                f"k_vol={K_vol:.4g} (tied to K_BOND, no free number)")
     else:
         print(f"         OUTWARD PRESSURE: not applied (open mesh, V0 undefined -- bear comes after closed-mesh validation)")
+    print(f"         CURVATURE EXTERIOR (rest mean-curvature, Young-Laplace): k_curv={K_curv:.4g} "
+          f"(tied to K_BOND, no free number)  domain max |K|/|K0|-1 = {max_curv_dev:.4e}  "
+          f"raw all-vert max = {max_curv_dev_raw:.4e}  n_flat_excluded={n_curv_flat_excluded} (k0_scale={k0_scale:.3g})  "
+          f"curv band 0.244: {'EXCEEDED -> falsifier fires' if band_exceeded_curv else 'held'}  "
+          f"(unified: sphere(V0) + bear(H0) under one areal rest-state)")
     print(f"         energy gate net of radiation ({GATE_REL * 100:.0f}%): "
            + ("PASS" if ok_energy else "FALSIFIER FIRES"))
 
@@ -927,8 +1043,12 @@ def main() -> int:
                          max_vol_dev_abs=float(max_vol_dev),
                          vol_band=float(S_BAND_VOL), band_exceeded_vol=bool(band_exceeded_vol),
                          k_vol=(float(K_vol) if V0 is not None else None),
-                         note="rest-exterior = surface/areal constraint on triangle carrier (area+bending+outward volume); "
-                              "not a third point-to-point force. V0 derived from geometry (no free number).")),
+                         k_curv=float(K_curv), max_curv_dev_abs=float(max_curv_dev),
+                         max_curv_dev_raw=float(max_curv_dev_raw), curv_k0_scale=float(k0_scale),
+                         n_curv_flat_excluded=int(n_curv_flat_excluded),
+                         curv_band=float(S_BAND_CURV), band_exceeded_curv=bool(band_exceeded_curv),
+                         note="rest-exterior = surface/areal constraint on triangle carrier (area+bending+outward volume+rest mean-curvature); "
+                              "not a third point-to-point force. V0 and K0 derived from geometry (no free number).")),
     ), indent=1), encoding="utf-8")
     print(f"  JSON: {OUT}")
     return 0
