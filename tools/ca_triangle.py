@@ -44,7 +44,8 @@ from numba import njit, prange
 
 from cad_sample import load_glb_triangles                     # bit-exact import chain
 from LightEngine import constants as C                        # noqa: E402
-from LightEngine.bh_draw import build_octree, DEFAULT_THETA   # noqa: E402
+from LightEngine.bh_draw import DEFAULT_THETA                  # noqa: E402
+from LightEngine.bh_octree_njit import build_octree_njit       # noqa: E402  (T13 B1 byte-identical drop-in)
 from LightEngine.modifier import compute_forces_mod           # noqa: E402
 
 GLB = ROOT / "models" / "cad_bear" / "cad_bear.glb"
@@ -899,7 +900,9 @@ def main() -> int:
     _prog_line(0, E0, 0.0, 0.0, "START")
     for tick in range(TICKS):
         _t1 = time.perf_counter()
-        tree = build_octree(pos32, leaf_size=16)            # live frame: tree moves with points
+        tree = build_octree_njit(pos32, leaf_size=16)       # live frame: tree moves with points
+                                                        # T13 B1: byte-identical njit drop-in (gate_octree_njit PASS both scenes)
+                                                        # -- kills the per-tick Python BFS that pinned one core
         ms_tree += time.perf_counter() - _t1
         _t1 = time.perf_counter()
         try:
