@@ -45,8 +45,10 @@ from numba import njit, prange
 from cad_sample import load_glb_triangles                     # bit-exact import chain
 from LightEngine import constants as C                        # noqa: E402
 from LightEngine.bh_draw import DEFAULT_THETA                  # noqa: E402
-from LightEngine.bh_octree_njit import build_octree_njit       # noqa: E402  (T13 B1 byte-identical drop-in)
+from LightEngine.bh_octree_njit import OctreePool, build_octree_njit   # noqa: E402  (T13 B1 byte-identical drop-in)
 from LightEngine.modifier import compute_forces_mod           # noqa: E402
+
+_OCTREE_POOL = OctreePool()    # T13 persistent buffer pool: re-fill not re-alloc per tick (gate_octree_pool PASS)
 
 GLB = ROOT / "models" / "cad_bear" / "cad_bear.glb"
 OUT = ROOT / "models" / "cad_bear" / "ca_run.json"
@@ -900,9 +902,9 @@ def main() -> int:
     _prog_line(0, E0, 0.0, 0.0, "START")
     for tick in range(TICKS):
         _t1 = time.perf_counter()
-        tree = build_octree_njit(pos32, leaf_size=16)       # live frame: tree moves with points
-                                                        # T13 B1: byte-identical njit drop-in (gate_octree_njit PASS both scenes)
-                                                        # -- kills the per-tick Python BFS that pinned one core
+        tree = build_octree_njit(pos32, leaf_size=16, pool=_OCTREE_POOL)  # live frame: tree moves with points
+                                                        # T13 B1 byte-identical njit drop-in (gate_octree_njit PASS both scenes)
+                                                        # + persistent buffer pool (gate_octree_pool PASS): re-fill not re-alloc per tick
         ms_tree += time.perf_counter() - _t1
         _t1 = time.perf_counter()
         try:

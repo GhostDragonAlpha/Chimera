@@ -8,11 +8,19 @@ same FIFO BFS order (root=0, children in parent-id x code order), same pad formu
 
 bh_draw.py is NOT modified (referee; T4 measured on it) -- we import from it. No hand-rolled
 partition/sort: the counting sort and bottom-up com/mass are the referee's own compiled fns.
+
+PERSISTENT BUFFER POOL (continuation-14): ``OctreePool`` + ``build_octree_njit(..., pool=...)``
+re-fill preallocated buffers instead of re-allocating ~168 MB per call at T4-1M scale -- the
+per-tick wrapper remainder (~36.7 ms measured) is pure waste when the tree is rebuilt every
+tick. Pooled outputs are VIEWS valid until the next call on the same pool (CA walk consumes
+within-tick; gate compares immediately). ``pool=None`` keeps today's fresh-alloc+copy behavior
+exactly, so no existing caller changes semantics. See THE_TRIANGLE_CARRIER.md §PERSISTENT
+BUFFER POOL for the Rule-0 membrane + falsifier.
 """
 from __future__ import annotations
 
 import numpy as np
-from numba import njit
+from numba import njit, prange
 
 from LightEngine.bh_draw import _partition_and_bounds, _compute_com_mass
 
@@ -107,11 +115,61 @@ def _build_core(pos, order, leaf_size, max_cells,
     return ncells
 
 
-def build_octree_njit(positions: np.ndarray, leaf_size: int = 16) -> dict:
+@njit(cache=True, parallel=True)
+def _fill_arange(buf, n):
+    """Re-fill a persistent order buffer with arange(n) -- no per-call allocation."""
+    for i in prange(n):
+        buf[i] = np.int32(i)
+
+
+class OctreePool:
+    """Persistent buffers for ``build_octree_njit`` (continuation-14).
+
+    Grows to the largest n seen, never shrinks; every build re-FILLS these buffers instead of
+    allocating fresh ones. Outputs handed back are VIEWS into them -- valid until the next call
+    on this pool (documented contract hazard; see THE_TRIANGLE_CARRIER.md §PERSISTENT BUFFER
+    POOL). A caller that must hold results across later builds uses ``pool=None`` (fresh path)
+    or copies.
+    """
+
+    def __init__(self):
+        self.cap = 0          # point capacity currently allocated
+        self.order = None
+        self.cell_min = None; self.cell_max = None
+        self.cell_child = None; self.cell_is_leaf = None
+        self.cell_leaf_start = None; self.cell_leaf_count = None
+        self.pstart = None; self.pend = None
+        self.com = None; self.mass = None
+        self.sorted_pos = None
+
+    def ensure(self, n: int) -> None:
+        if n <= self.cap:
+            return
+        max_cells = 2 * n     # universal bound (#cells <= 2N-1); one batch alloc, not per-cell
+        self.order = np.empty(n, np.int32)
+        self.cell_min = np.empty((max_cells, 3), np.float32)
+        self.cell_max = np.empty((max_cells, 3), np.float32)
+        self.cell_child = np.empty((max_cells, 8), np.int32)
+        self.cell_is_leaf = np.empty(max_cells, np.int32)
+        self.cell_leaf_start = np.empty(max_cells, np.int32)
+        self.cell_leaf_count = np.empty(max_cells, np.int32)
+        self.pstart = np.empty(max_cells, np.int64)
+        self.pend = np.empty(max_cells, np.int64)
+        self.com = np.empty((max_cells, 3), np.float32)
+        self.mass = np.empty(max_cells, np.float32)
+        self.sorted_pos = np.empty((n, 3), np.float32)
+        self.cap = n
+
+
+def build_octree_njit(positions: np.ndarray, leaf_size: int = 16, pool: "OctreePool | None" = None) -> dict:
     """Single-njit adaptive octree build, byte-identical to ``bh_draw.build_octree``.
 
     Returns a dict with exactly the same keys/values as ``build_octree``. The whole BFS runs in
     one compiled function (no per-cell Python); scratch is preallocated once (not per cell).
+
+    ``pool=None`` (default): fresh allocation + output copies, exactly the original behavior.
+    ``pool=OctreePool()``: re-fill persistent buffers; returned arrays are VIEWS into the pool,
+    valid until the next call on the same pool.
     """
     pos = np.asarray(positions, dtype=np.float32)
     n = pos.shape[0]
@@ -119,31 +177,60 @@ def build_octree_njit(positions: np.ndarray, leaf_size: int = 16) -> dict:
         from LightEngine.bh_draw import build_octree
         return build_octree(pos, leaf_size=leaf_size)
 
-    order = np.arange(n, dtype=np.int32)
-    max_cells = 2 * n   # universal bound (#cells <= 2N-1); one batch alloc, not per-cell
+    if pool is None:
+        order = np.arange(n, dtype=np.int32)
+        max_cells = 2 * n   # universal bound (#cells <= 2N-1); one batch alloc, not per-cell
 
-    cell_min = np.zeros((max_cells, 3), np.float32); cell_max = np.zeros((max_cells, 3), np.float32)
-    cell_child = np.full((max_cells, 8), -1, np.int32)
-    cell_is_leaf = np.zeros(max_cells, np.int32)
-    cell_leaf_start = np.full(max_cells, -1, np.int32)
-    cell_leaf_count = np.zeros(max_cells, np.int32)
-    pstart = np.zeros(max_cells, np.int64); pend = np.zeros(max_cells, np.int64)
+        cell_min = np.zeros((max_cells, 3), np.float32); cell_max = np.zeros((max_cells, 3), np.float32)
+        cell_child = np.full((max_cells, 8), -1, np.int32)
+        cell_is_leaf = np.zeros(max_cells, np.int32)
+        cell_leaf_start = np.full(max_cells, -1, np.int32)
+        cell_leaf_count = np.zeros(max_cells, np.int32)
+        pstart = np.zeros(max_cells, np.int64); pend = np.zeros(max_cells, np.int64)
+        cs = np.empty(8, np.int32); ce = np.empty(8, np.int32)
+        cm = np.full((8, 3), np.inf, np.float32); cx = np.full((8, 3), -np.inf, np.float32)
+
+        ncells = _build_core(pos, order, leaf_size, max_cells, cell_min, cell_max, cell_child,
+                             cell_is_leaf, cell_leaf_start, cell_leaf_count, pstart, pend, cs, ce, cm, cx)
+
+        # com/mass via the referee's njit on the exact slice (byte-identical by construction).
+        com = np.zeros((ncells, 3), np.float32); mass = np.zeros(ncells, np.float32)
+        _compute_com_mass(pos, order, cell_is_leaf[:ncells], cell_leaf_start[:ncells],
+                          cell_leaf_count[:ncells], cell_child[:ncells], com, mass)
+
+        sorted_pos = pos[order]
+        return {
+            "cell_min": cell_min[:ncells].copy(), "cell_max": cell_max[:ncells].copy(),
+            "cell_com": com, "cell_mass": mass, "cell_child": cell_child[:ncells].copy(),
+            "cell_is_leaf": cell_is_leaf[:ncells].copy(), "cell_leaf_start": cell_leaf_start[:ncells].copy(),
+            "cell_leaf_count": cell_leaf_count[:ncells].copy(),
+            "sorted_pos": sorted_pos, "sorted_idx": order, "order": order, "n_cells": ncells,
+        }
+
+    # -- pooled path: re-fill persistent buffers, return views (contract hazard documented) --
+    pool.ensure(n)
+    max_cells = 2 * n
+    _fill_arange(pool.order, n)                  # order must start as arange(n); build permutes it
     cs = np.empty(8, np.int32); ce = np.empty(8, np.int32)
     cm = np.full((8, 3), np.inf, np.float32); cx = np.full((8, 3), -np.inf, np.float32)
 
-    ncells = _build_core(pos, order, leaf_size, max_cells, cell_min, cell_max, cell_child,
-                         cell_is_leaf, cell_leaf_start, cell_leaf_count, pstart, pend, cs, ce, cm, cx)
+    ncells = _build_core(pos, pool.order, leaf_size, max_cells, pool.cell_min, pool.cell_max,
+                         pool.cell_child, pool.cell_is_leaf, pool.cell_leaf_start,
+                         pool.cell_leaf_count, pool.pstart, pool.pend, cs, ce, cm, cx)
 
     # com/mass via the referee's njit on the exact slice (byte-identical by construction).
-    com = np.zeros((ncells, 3), np.float32); mass = np.zeros(ncells, np.float32)
-    _compute_com_mass(pos, order, cell_is_leaf[:ncells], cell_leaf_start[:ncells],
-                      cell_leaf_count[:ncells], cell_child[:ncells], com, mass)
+    _compute_com_mass(pos, pool.order, pool.cell_is_leaf[:ncells], pool.cell_leaf_start[:ncells],
+                      pool.cell_leaf_count[:ncells], pool.cell_child[:ncells],
+                      pool.com[:ncells], pool.mass[:ncells])
 
-    sorted_pos = pos[order]
+    # sorted_pos = pos[order] written DIRECTLY into the pooled buffer (no temp fancy-index copy);
+    # exact-shape slices because a grown pool may hold more rows than this n.
+    np.take(pos, pool.order[:n], axis=0, out=pool.sorted_pos[:n])
     return {
-        "cell_min": cell_min[:ncells].copy(), "cell_max": cell_max[:ncells].copy(),
-        "cell_com": com, "cell_mass": mass, "cell_child": cell_child[:ncells].copy(),
-        "cell_is_leaf": cell_is_leaf[:ncells].copy(), "cell_leaf_start": cell_leaf_start[:ncells].copy(),
-        "cell_leaf_count": cell_leaf_count[:ncells].copy(),
-        "sorted_pos": sorted_pos, "sorted_idx": order, "order": order, "n_cells": ncells,
+        "cell_min": pool.cell_min[:ncells], "cell_max": pool.cell_max[:ncells],
+        "cell_com": pool.com[:ncells], "cell_mass": pool.mass[:ncells],
+        "cell_child": pool.cell_child[:ncells], "cell_is_leaf": pool.cell_is_leaf[:ncells],
+        "cell_leaf_start": pool.cell_leaf_start[:ncells], "cell_leaf_count": pool.cell_leaf_count[:ncells],
+        "sorted_pos": pool.sorted_pos[:n], "sorted_idx": pool.order[:n], "order": pool.order[:n],
+        "n_cells": ncells,
     }
