@@ -16,16 +16,17 @@
       "term": ""
     },
     "62": {
-      "closed_at": null,
+      "closed_at": "2026-08-26T00:40:27+00:00",
       "created_at": "2026-08-10T22:05:53+00:00",
-      "evidence": null,
+      "evidence": "tools/probes/dirty_set_economy.py (corrected draft): gate u=splitmix64(seed,sweep,col) uniform[0,1) (mean 0.5001, std 0.288), [u<p] Bernoulli(0.6) (freq 0.6002, std 0.490, rho~0); full-field ref vs dirty sweep bit-identical on W=161..1281 (2000 hold sweeps + 5 pokes each); settled hold touches 0 columns, wall-clock flat 1.07x across widths; grain-drop wake touches 4-9% of W",
       "falsifier": "a dirty-set hold still touches O(W) columns, or the dirty-set sweep produces different physics (topple counts, settled field) than the full-field reference on the same seed",
+      "note": "First draft was flawed: masked path dropped metastable eligible columns, Phase 1 never exercised the mask branch, Phase 2 timed the full-sweep branch. Corrected design: gate is a pure function of (seed,sweep,col) so eligibility is skippable; d_best=max(d_l,d_r) is parity-independent so E survives sweep boundaries.",
       "number": 62,
       "prediction": "a dirty-set hold on a settled field touches <1% of columns and costs ~constant wall-clock across W (161->1281), while a wake of k topples touches only its neighborhood -- total topple/state semantics identical to the full-field sweep",
       "probe": "tools/probes/dirty_set_economy.py",
-      "result": null,
+      "result": "PASS",
       "statement": "a dirty-set grain sweep makes the settled world hold at ~0 cost: a frame touches only the wake mask's columns, so the settled field renders O(change) not O(W)",
-      "status": "OPEN",
+      "status": "CLOSED",
       "term": ""
     }
   }
