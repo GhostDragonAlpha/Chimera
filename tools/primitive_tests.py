@@ -319,35 +319,47 @@ def p_stiffness(_):
 # ------------------------------------------------------------------------------------------------
 @primitive_test(
     "end_stop", ["joint_limit", "passive_force", "tendon_elasticity"],
-    "ligament and constraint SHARE the end-range load, and the tissue takes enough of it that the "
-    "hard stop stops behaving like a wall the joint bounces off. The constraint alone enforces a "
-    "limit; it does not make reaching one physical",
-    "the joint overshoots its published limit by as much with passive tissue as without, meaning "
-    "the ligament carries none of the load")
+    "ligament and constraint SHARE the end-range load, and the tissue takes an increasing share as "
+    "the joint approaches its stop -- so reaching one is physical, not a wall. A bare constraint can "
+    "enforce a limit; it does not make reaching one physical",
+    "the passive share does not grow as the joint approaches its stop, or it survives with the "
+    "ligaments removed -- either of which means the end-range load falls on the constraint alone")
 def p_end_stop(_):
-    def over(tissue):
+    # The knee has no derived ligament (derive_ligaments emits none for it), so its stop is a bare
+    # constraint -- the wrong joint to test sharing on, and why an earlier version read ~11.7 N.m of
+    # 'passive share' that was really the muscle's own intrinsic force, present with or without tissue.
+    # The subtalar angle DOES have flex/ext ligaments, and their force lives in qfrc_passive: it grows
+    # toward the limit and is exactly zero when the tissue is removed. That is what 'sharing' must look like.
+    def share(tissue):
         m, g = load_body(MYOBODY, mujoco, tissue=tissue)
         d = mujoco.MjData(m)
-        j, adr, dof = joint(m, "knee_angle_r")
-        hi = float(m.jnt_range[j][1])
-        mujoco.mj_resetDataKeyframe(m, d, 0)
-        mujoco.mj_forward(m, d)
-        for _ in range(1000):
-            d.ctrl[:] = 0.0
-            d.qfrc_applied[:] = 0.0
-            d.qfrc_applied[dof] = 400.0
-            mujoco.mj_step(m, d)
-        return (max(0.0, float(d.qpos[adr]) - hi),
-                abs(float(d.qfrc_passive[dof]) + float(d.qfrc_actuator[dof])))
+        j, adr, dof = joint(m, "subtalar_angle_r")
+        lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
 
-    on, carried = over(True)
-    off, _ = over(False)                          # ABLATION: the same body with no ligament
-    ok = on < 0.5 * off and carried > 1.0
+        def passive():
+            return abs(float(d.qfrc_passive[dof]))   # ligament force; 0 with no tissue
+
+        # The share at four points approaching and reaching the extension stop, actuators silent.
+        out = []
+        for frac in (0.5, 0.8, 0.95, 1.0):
+            mujoco.mj_resetDataKeyframe(m, d, 0)
+            d.ctrl[:] = 0.0
+            if m.na:
+                d.act[:] = 0.0
+            d.qpos[adr] = lo + frac * (hi - lo)
+            d.qvel[:] = 0.0
+            mujoco.mj_forward(m, d)
+            out.append(passive())
+        return out
+
+    s_on, s_off = share(True), share(False)
+    grows = s_on[-1] > s_on[0] and max(s_on) > 1.0          # increasing share toward the stop
+    gone = max(s_off) < 0.05 * max(max(s_on), 1e-9)         # nothing without it
+    ok = grows and gone
     return dict(pass_=ok, ablation="the identical body loaded identically, ligaments removed",
-                detail=f"knee driven 400 N.m past a 120 deg stop: overshoot {math.degrees(on):.3f} "
-                       f"deg with tissue vs {math.degrees(off):.3f} without "
-                       f"({math.degrees(off - on):.3f} deg recovered); tissue carries "
-                       f"{carried:.1f} N.m at the stop")
+                detail=f"subtalar passive share at 50/80/95/100% of range: {s_on[0]:.1f} / "
+                       f"{s_on[1]:.1f} / {s_on[2]:.1f} / {s_on[-1]:.1f} N.m (grows toward the stop) "
+                       f"vs max {max(s_off):.2f} N.m with no ligament")
 
 
 # ------------------------------------------------------------------------------------------------
