@@ -206,3 +206,191 @@ Run after all changes (outputs recorded in the commit message): `python tools/or
 `cd Chimera && python -c "import core.matter_items, core.splat_emit"`,
 `cd Chimera && python -m py_compile core/splat_level.py`, and a fresh negative check that
 nothing imports the three deleted engine names.
+
+---
+
+# A3 PHASE 3 — matter merge proposal (2026-08-26)
+
+READY-TO-APPLY plan for the last genuinely diverged pair. Re-verified from scratch — phase 2's
+"engine copy STALE but INERT" verdict survives contact with a deeper scan, but the scan also
+found rot neither phase had named. Doc-only: no code changed in this phase.
+
+## Method
+
+Both files parsed with `ast`; every top-level node (def/class/import/assign/if-guard) hashed
+per-span twice — raw text sha256 and CRLF-normalized sha256 — then diffed. Importer census re-run
+with `git grep` over TRACKED files only (the `.ignore` trap from phase 2 does not apply to
+git grep), extended beyond phase 2's `(from|import) core.X` pattern to **bare-name**
+`from matter import …` / `import matter` bindings, dynamic-construction patterns
+(`getattr`, `import_module`, `__import__`), string references, untracked-but-live dirs
+(`Chimera/Python/`, `tools/mesh_view.py`, `Saved/mesh_view/`), and `attic/**`
+(tracked: `attic/retired_island/…`; zero untracked files under `attic/`).
+
+## 1. Per-symbol equality matrix
+
+File level: chimera sha256 `38a0be7bc111` (748 lines) vs engine sha256 `4be5227b9d7a`
+(650 lines). Every span below BYTE-EQUAL means raw-sha256 equal (EOLs included).
+
+| symbol | chimera | engine | delta |
+|---|---|---|---|
+| imports (`__future__`, argparse, json, math, pathlib, numpy) | :40–47 | :40–47 | BYTE-EQUAL |
+| tissue constants + `NAMES`, `TISSUES` | :53–55 | :53–55 | BYTE-EQUAL |
+| `_build_J_from_library` | :66–115 | :66–115 | BYTE-EQUAL |
+| `J_PROVEN_DIFFERENTIAL/_UNIFORM(+[M,M])/J_DIFFERENTIAL/J_UNIFORM` assigns | :119–131 | :119–131 | BYTE-EQUAL |
+| `TENDON`, `NAMES[TENDON]` | :148–149 | :148–149 | BYTE-EQUAL |
+| `_build_J_3d_from_library` | :151–192 | :151–192 | BYTE-EQUAL |
+| `J_PROVEN_DIFFERENTIAL_3D/_UNIFORM_3D(+[M,M])/J_DIFFERENTIAL_3D/J_UNIFORM_3D` | :195–208 | :195–208 | BYTE-EQUAL |
+| `_OFFS` | :216 | :216 | BYTE-EQUAL |
+| `init_blob` | :219–236 | :219–236 | BYTE-EQUAL |
+| `assemble` | :239–286 | :239–286 | BYTE-EQUAL |
+| `metrics` | :289–308 | :289–308 | BYTE-EQUAL |
+| `is_sorted` | :311–317 | :311–317 | BYTE-EQUAL |
+| `_COLORS` | :320–322 | :320–322 | BYTE-EQUAL |
+| `render` | :325–350 | :325–350 | BYTE-EQUAL |
+| `_nd_offsets` | :359–374 | :359–374 | BYTE-EQUAL |
+| `init_limb_3d` | :377–399 | :377–399 | BYTE-EQUAL |
+| `assemble_3d` | :402–452 | :402–452 | BYTE-EQUAL |
+| `assemble_3d_swaps` | :455–539 | — | **CHIMERA-ONLY** |
+| `metrics_3d` | :542–599 | :455–501 | **DIFFERS** (below) |
+| `render_3d` | :602–633 | :504–535 | BYTE-EQUAL |
+| `_row` | :636–639 | :538–541 | BYTE-EQUAL |
+| `_prove_cross2d` | :642–684 | :544–586 | BYTE-EQUAL |
+| `_prove_limb3d` | :687–733 | :589–635 | BYTE-EQUAL |
+| `main` | :736–744 | :638–646 | BYTE-EQUAL |
+| `if __name__ == "__main__"` guard | :747–748 | :649–650 | BYTE-EQUAL |
+
+`metrics_3d` full body diff (normalized): chimera adds the `types=None` parameter; default
+path sets `types=(BONE, MUSCLE, SKIN)` and `tendon_mode=True` — i.e. the engine body verbatim;
+explicit `types` loops over those ids and early-returns before the tendon block. The engine
+loop literal `(BONE, MUSCLE, SKIN)` and tendon block are otherwise character-identical. So:
+every 2-arg call behaves identically under both signatures; every `types=` call TypeErrors on
+the engine copy. **The engine file contains zero symbols absent from the chimera file — the
+chimera copy is a strict superset. There is nothing to PORT, which collapses option (b) to a
+null set before the binding question even starts.**
+
+## 2. `assemble_3d_swaps` caller census — CONFIRMED ZERO (not refuted)
+
+- `git grep -n "assemble_3d_swaps"` over ALL tracked files: the def line
+  (`Chimera/core/matter.py:455`) and PROSE only — `docs/THE_LIVING_MATTER.md:1308,1358`,
+  this table's own phase-1/2 rows. Nothing in `attic/retired_island/**` (tracked, therefore
+  inside the grep; zero untracked files exist under `attic/`). No hit anywhere executes it.
+- Broader net, `assemble_3d*` (to catch partial/dynamic construction) plus
+  `getattr(…assemble…)` / `import_module(…matter…)` / `__import__(…matter…)`: every hit
+  resolves to `assemble_3d` (limb.py:109, rig.py:82, rebuild_world.py:152,
+  splat_gpu_emit.py:177, grown_arrangement.py:258, matter.py internal :690/691,
+  `assemble_3d_gpu` in matter_gpu.py + its callers) — never `_swaps`. The only `_swaps`
+  string outside the def is its own docstring cross-reference (:458).
+- Untracked-but-live (`Chimera/Python/`, `tools/*.py` incl. `mesh_view.py`,
+  `Saved/mesh_view/`): zero hits.
+- String references `matter.assemble_3d_swaps`: prose only (THE_LIVING_MATTER.md, above).
+
+## 3. The binding reality — including what phase 2 missed
+
+Package-name importers of `core.matter` (complete list): bake.py:38, limb.py:34–35,
+rebuild_world.py:35,145, rig.py:25–26, splat_emit.py:76, splat_gpu_emit.py:173,
+test_pipeline.py:31, trainables/generated/ground_terrain.py:161,184,
+trainables/grown_arrangement.py:44, matter_derive.py (internal), matter_gpu.py:570,
+tools/phase8_repeat.py:53 (inserts `ROOT/"Chimera"` explicitly). **All resolve to
+`Chimera/core/matter.py`** — wired freeze or explicit insert. Zero package-name importers
+exist under `ChimeraEngine/` (grep exit 1), and the seven known engine-binding scripts
+(physics, physics_articulated, fields_witness, gravity_witness, sdf_body, demo_sdf_show,
+master_loop_sdf) contain only prose mentions of "matter" — their engine bindings are
+`core.membranes`/`core.terrarium`, which import stdlib+numpy only: no transitive chain into
+matter exists.
+
+Per differing symbol:
+
+- `metrics_3d(grid, shape, types=…)`: matter_derive.py:593 and matter_gpu.py:582–585 ONLY.
+  Both modules exist solely in Chimera/core, so any process running them at all has frozen
+  `core.__path__` there; the engine copy could not serve them (TypeError). The 2-arg callers
+  (matter.py internal :692, matter_derive :266/:299/:656, phase8_repeat:79) are signature-
+  compatible with both copies and all bind Chimera anyway.
+- `assemble_3d_swaps`: no callers through ANY binding (§2).
+- Old-metrics_3d-behavior dependency: NONE. No file binds the engine tree and calls
+  `metrics_3d`; no engine-tree file calls it at all.
+
+**What phase 2 missed — the ~30 bare-name `matter` importers are NOT engine-twin binders.**
+walker.py, live_viewer.py, touchables.py, the hertz/optics/overlap/viscoelastic chain (+12
+`test_*.py`), and ten `tools/*` scripts do `from matter import lit, blank, SOLID, …`. Their
+sys.path setups point at repo root, `story/`, or `ChimeraEngine/` — **never
+`ChimeraEngine/core/`** — and they were written against the STORY TREE's own `matter.py`
+(path written split here: the file is gone), a THIRD file that merely shares the name:
+provenance check shows that deleted file (2fb2f75f^) shares ZERO defs with the engine twin
+(story = the light/appearance API: `lit`, `paint`, `youngs_modulus`, `BULK_MODULUS_PA`,
+sun geometry; engine twin defines none of these — grep count 0). So the bare-name census
+never reached either copy of the adhesion module, past or present. The engine copy's total
+lifetime binder count: **zero**.
+
+**Rot finding (pre-existing, NOT created by this proposal):** both twins are unimportable
+TODAY. Module-level `_build_J_from_library()` opens the library JSON under each parent's
+`docs/matter/` directory (file name `matter_library.json`; path split here because the file
+is deliberately gone); it was deleted from Chimera in 2fb2f75f ("THE LIGHT SEED: the matter
+era ends") and never existed under ChimeraEngine. Verified live: `cd Chimera && python -c
+"import core.matter"` and `cd ChimeraEngine && python -c "import core.matter"` BOTH raise
+FileNotFoundError. The port battery still reads 18/21 because `tools/matter_data.py` REFUSES
+by design when the library is missing. Every `core.matter` importer therefore dies at import
+in any process — the divergence is real but neither copy executes anywhere.
+
+## 4. THE PROPOSAL — DECIDED: option (a), with option (b) ruled out as empty
+
+**Adopt `Chimera/core/matter.py` as canonical everywhere; delete
+`ChimeraEngine/core/matter.py`.**
+
+Rule-0 triad:
+
+> **STATEMENT:** the engine twin has zero binders of any kind — package-name (all fourteen
+> resolve to Chimera), bare-name (built against the story-tree matter module, dead since
+> 2fb2f75f), and direct-execution (no `python …/engine…/matter.py` invocation strings) — so
+> deleting it changes no process's behavior.
+>
+> **PREDICTION:** after deletion, `python tools/orient.py` output is unchanged;
+> `python tools/port_tests.py` stays 18/21 with the same three drifts
+> (joint_limit −2.83%, force_velocity +0.15%, plantar_pressure +100.83%);
+> `cd Chimera && python -c "import core.matter"` still fails with FileNotFoundError on the
+> same missing library JSON (unchanged failure mode);
+> `cd ChimeraEngine && python -c "import core.matter"` fails with ModuleNotFoundError (it
+> already failed — FileNotFoundError — before);
+> `git ls-files "**/core/matter.py"` returns exactly one file.
+>
+> **FALSIFIER:** any of those six checks deviating — ports off 18/21 or a fourth drift;
+> orient raising; a Chimera-bound importer's exception class changing (only possible if some
+> caller catches FileNotFoundError narrowly around the import: none exists in the census);
+> or any NEW ImportError appearing in a process that previously got past that line. Any one
+> fires ⇒ revert (below) and re-adjudicate.
+
+Exact end-state content strategy:
+
+1. `git rm ChimeraEngine/core/matter.py` — the ONLY change. `Chimera/core/matter.py` stays
+   byte-for-byte `38a0be7bc111`; no edit to any survivor (option (b)'s port step has nothing
+   to port: strict-superset proof in §1).
+2. Do NOT touch `ChimeraEngine/core/__init__.py` (phase-1 rule: package machinery survives);
+   the engine `core` package simply loses one stale member.
+3. Do NOT "fix" the import rot here. Restoring/generating the missing library JSON under
+   Chimera `docs/matter/` (see §3 for the exact name)
+   or formally retiring the matter-era callers is an operator decision (2fb2f75f retired the
+   era deliberately); unification neither worsens nor repairs it, and bundling it would make
+   this change unverifiable.
+
+Verification battery (run in order, record outputs):
+
+```bash
+python tools/orient.py                                   # unchanged tree/ledger/git read
+python tools/port_tests.py                               # tail MUST stay 18/21, same 3 drifts
+cd Chimera && python -c "import core.matter"             # expect FileNotFoundError (unchanged)
+cd ChimeraEngine && python -c "import core.matter"       # expect ModuleNotFoundError (was FNFE)
+git ls-files "*core/matter.py"                           # exactly: Chimera/core/matter.py
+git grep -n "assemble_3d_swaps" -- "*.py"                # def line only
+```
+
+Rollback: single-file revert, no dependencies —
+
+```bash
+git revert <this-commit>        # restores ChimeraEngine/core/matter.py verbatim (4be5227b9d7a)
+```
+
+No other file references the deleted path (grep-proven §3), so revert is complete by itself.
+
+## Phase-3 status
+
+PROPOSED, not applied — this commit is documentation-only (this section). The apply commit,
+when an operator green-lights it, should carry this battery's outputs in its message.
