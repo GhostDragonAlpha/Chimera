@@ -56,7 +56,7 @@ the old disk exactly — a superset, not a replacement). `_local_fiber_axis` add
 aligns muscle's major axis with the bone shaft it wraps, reading the library's own
 declared anisotropy kind (matter_library.json: muscle.physical.anisotropy.value ==
 "along_fiber") rather than hardcoding "muscle" — a material with no declared axis gets
-shape from its surface alone. Engine-side, core.splat_to_ue5.quad_cloud consumes the
+shape from its surface alone. Engine-side, core.splat_mesh.quad_cloud consumes the
 new per-splat t1/t2/r1/r2 fields to build a non-square quad, and the GLB material gains
 an embedded radial-falloff texture (MASK) so a quad renders as a soft ellipse.
 """
@@ -196,7 +196,7 @@ AMBIENT = 0.18
 # tangent radii are equal. The disk previously emitted here was a circle wearing an
 # ellipse-shaped data structure. These two helpers derive a REAL per-splat shape from
 # data, so the rasterizers' existing capability finally has something to render, and
-# core.splat_to_ue5.quad_cloud has real axes+radii to build a non-square quad from.
+# core.splat_mesh.quad_cloud has real axes+radii to build a non-square quad from.
 
 def _anisotropy_kind(tissue_name: str) -> str | None:
     """Read the library's declared per-material anisotropy kind

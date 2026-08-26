@@ -157,19 +157,19 @@ to Carrier/Lunar Sourcebook); this rule promotes that habit to LAW. Practical fo
 `declare(value, ology="kinesiology", source="<published anchor>")` — and a declaration whose
 ology field is empty does not pass S2 PROVENANCE.
 
-## 11 · ALLOMETRY — STRENGTH SCALES WITH THE BODY DOING THE LIFTING
+## 11 - ALLOMETRY - STRENGTH SCALES WITH THE BODY DOING THE LIFTING
 
-> "You can't just use human knee strength, because it's a teddy bear — you have to figure out
+> "You can't just use human knee strength, because it's a teddy bear -- you have to figure out
 > the knee strength that's proportional to the object the legs are lifting. Those are the
 > rules of Mother Nature, whatever they are. There are thousands of billions of them, but
-> that's how we guide ourselves." — the operator
+> that's how we guide ourselves." - the operator
 
 No strength, stiffness, or torque may be copied from a human table onto a non-human body.
 Declared forces dock into the body's OWN mass and geometry through Mother Nature's scaling
-laws — allometry (Hill's scaling, McMahon's elastic similarity, dynamic similarity via
-Froude `Fr = v²/(gL)`): muscle stress is roughly constant across animals, so available
-torque scales with lever length × cross-sectional area while the load scales with volume.
-"There are thousands of billions of them" — the rules exist whether or not we have named
+laws -- allometry (Hill's scaling, McMahon's elastic similarity, dynamic similarity via
+Froude `Fr = v^2/(gL)`): muscle stress is roughly constant across animals, so available
+torque scales with lever length x cross-sectional area while the load scales with volume.
+"There are thousands of billions of them" -- the rules exist whether or not we have named
 them yet; an unnamed one is still binding, which is why honest measures (worst-of-N,
 periodicity, contact-truth) keep convicting bodies that violate a law nobody wrote down.
 
@@ -177,3 +177,19 @@ Practical consequence: a test that drives a joint must drive it with THAT body's
 torque, and a body whose stop leaks under sustained scaled load has a defect in the body,
 not an excuse in the load.
 
+## 12 - TRIANGLE MESH IS PRIMARY; SPLATS ARE FROSTING (2026-08-25, operator)
+
+> "The splat system is going to be sort of like a visual frosting layer that we will be putting
+> over the static mesh (well, not really static, but the triangle mesh). The triangle mesh is
+> primary; that's what we were working on. Static meshes are all triangles basically." - the operator
+
+PRIORITY ORDER SETTLED: the **triangle carrier is the body** -- geometry, physics, bone rig,
+the thing CA interaction fills between ROM extremes (sections 4-5). The **splats are a coating**
+-- per-splat anisotropic ellipses layered OVER the triangle surface for visual richness,
+applied after the mesh works, not instead of it. Consequence for lanes: the CAD / static-mesh /
+triangle system is the active front; ALL splat-lane work (bake-offs, splat-to-GLB pipelines,
+splat rendering) is DEFERRED until that front lands, unless someone brings a concrete proposal
+for how splat-frosting should bind to the mesh. Housekeeping note recorded the same day: the
+engine-agnostic splat-to-quad-mesh GLB geometry survives in `ChimeraEngine/core/splat_mesh.py` (extracted
+from the retired UE exporter) so the frosting, when it returns, starts from kept provenance
+rather than a rebuild.

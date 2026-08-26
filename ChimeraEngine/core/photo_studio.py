@@ -46,6 +46,7 @@ SLOT_SPACING = 400.0                             # cm between subject slots
 GROUND = "Studio_Ground"
 FOV_H_DEG = 90.0                                 # editor perspective default
 SETTLE_S = 2.2
+DEST = "/Game/Grown/"    # editor content path for imported GLBs (formerly splat_to_ue5.DEST)
 
 
 def _ok(resp):
@@ -83,7 +84,7 @@ class Studio:
               rotation=(90.0, 0.0, 0.0), z_lift: float | None = None):
         """Put a KNOWN-extent subject at a slot. extent_cm = its bounding radius,
         known from export — never estimated visually. Pivot must be centered
-        (splat_to_ue5.quad_cloud centers; bake recentres per tissue)."""
+        (splat_mesh.quad_cloud centers; bake recentres per tissue)."""
         pos = STAGE + np.array([slot * SLOT_SPACING, 0.0, 0.0])
         pos[2] = STAGE[2] + (z_lift if z_lift is not None else extent_cm * 0.55)
         ok, msg = _ok(self.c.call("control_actor", {
@@ -148,7 +149,7 @@ def main() -> int:
     subjects in the studio, portrait + pair. Extents come from the DATA."""
     from core import bake, limb
     from core.splat_emit import MEDIUM, emit_limb
-    from core.splat_to_ue5 import DEST, TARGET_CM, quad_cloud
+    from core.splat_mesh import TARGET_CM, quad_cloud
 
     print("re-exporting centered splat cloud ...")
     _s, fleshed, shape, _t = limb.grow_limb(limb.bent_limb(), seed=0)
