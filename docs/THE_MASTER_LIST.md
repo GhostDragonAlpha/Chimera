@@ -278,3 +278,15 @@ Full action suite: 14 primitives, no regression (PUSH/PULL/LAND pre-existing FAI
 **P9 SPLIT CREATURE (41893558, done by ox-alpha -- the swarm gap):** tools/split_creature.py builds teddy/monkey 50-50 midline split, boots engine, runs the dyad -> alignment 0.65 (reads a COMPOSITE, falsifier 'single lineage' not tripped). Monkey = procedural stand-in; pipeline proven. Seeds the first-Chimera goal.
 **P4 PUBLISHEDOLOGY LEDGER -- STILL RUNNING (operator-confirmed in progress); held out of the integration commit. docs/PUBLISHEDOLOGY_LEDGER.md expected on completion.**
 Excluded from commits: live-chronicle docs (DREAM_REPORT/HERALD/HISTORY_BOOK) and the gsplat submodule (left dirty on purpose).
+
+## 31 - CONTINUATION-19 - P4 LANDED (publishedology ledger complete)
+**P4 committed (ae344818).** Read-only audit, no source touched. ~500 ALL_CAPS constants across tools/ + Chimera/ + ChimeraEngine/ each docked to exactly one of P/D/W/H/C/M. Verified the headline docks against code: G_EARTH=9.80665 -> CGPM 3rd Res (1901)/SI Brochure sec5.2 (its 'CODATA' comment in train_myobody_directional is a genuine misattribution -- defined standard, not a measurement); PPO gamma/lam/clip -> Schulman arXiv:1707.06347; FR_TRANSITION Froude -> Alexander 1977; RUN 25/29/30 kernels + PAIRWISE_COEF + H_MAX -> W (witnessed). The ledger's honesty discipline holds: flagged != un-docked -- every M names its required fix.
+
+**Follow-ups the ledger raised (fix on next touch, not silently):**
+- `tools/world.py` lumbar/off-sag/MTP envelope edges (LUMBAR_EXT_EDGE_DEG, LUMBAR_LAT_EDGE_DEG, LUMBAR_GRAIN_DEG, off-sag/MTP) cite "the literature" with no author/year/table -> M until cited (THE_TRUNK_TISSUE.md has the prose; a paper citation must land).
+- `train_myobody_directional.py:145` "CODATA standard gravity" comment -> correct to "CGPM 1901 defined standard gravity" (1-line comment fix, no behavior change).
+- Material densities PLUSH_STUFFED/KNIT -> need a real weighing of the bear (currently assumed).
+- `ALLOMETRIC_STRAIN_RATE=1.5`, `FR_PREFERRED=0.25` (surname-only), controller `BACKWARD_FACTOR` ('Winter' surname only) + `TURN_RATE` (none), RL arch hyperparams (HID, EPOCHS=5 vs paper's 10, ENT) -> all M; per-value rows on next touch per the doc's VERIFY section.
+- gsplat vendoring explicitly scoped out (upstream API conventions, not this repo's physics).
+
+**All 10 swarm tasks now landed and committed (P1-P10).** Working tree clean except live-chronicle docs + gsplat submodule (intentionally excluded). Not pushed (operator call).
