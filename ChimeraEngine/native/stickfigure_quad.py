@@ -47,7 +47,7 @@ import cpp_bridge as cb                     # noqa: E402
 from active_labeler import project          # noqa: E402  (the engine's exact camera)
 from stickfigure import hinge_axes, _dash   # noqa: E402  (mechanical axis lines)
 
-ENGINE = "http://localhost:8080"
+ENGINE = "http://localhost:8090"
 
 
 # ── MEASURE ---------------------------------------------------------------------------

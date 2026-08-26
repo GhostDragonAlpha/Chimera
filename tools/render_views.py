@@ -1,4 +1,4 @@
-"""Render N standard views of a .splat through the running engine (HTTP :8080).
+"""Render N standard views of a .splat through the running engine (HTTP :8090).
 
 Uploads once via /membrane_bin, then moves the camera with /camera per view.
 """

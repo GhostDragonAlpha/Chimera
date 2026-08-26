@@ -43,7 +43,7 @@ if str(_CHIMERA_ENGINE) not in sys.path:
 import cpp_bridge as cb                     # noqa: E402
 from active_labeler import project          # noqa: E402  (the engine's exact camera)
 
-ENGINE = "http://localhost:8080"
+ENGINE = "http://localhost:8090"
 
 
 # ── MEASURE -----------------------------------------------------------------------

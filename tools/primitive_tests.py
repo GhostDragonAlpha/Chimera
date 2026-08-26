@@ -319,17 +319,27 @@ def p_stiffness(_):
 # ------------------------------------------------------------------------------------------------
 @primitive_test(
     "end_stop", ["joint_limit", "passive_force", "tendon_elasticity"],
-    "ligament and constraint SHARE the end-range load, and the tissue takes an increasing share as "
-    "the joint approaches its stop -- so reaching one is physical, not a wall. A bare constraint can "
-    "enforce a limit; it does not make reaching one physical",
-    "the passive share does not grow as the joint approaches its stop, or it survives with the "
-    "ligaments removed -- either of which means the end-range load falls on the constraint alone")
+    "ligaments arrest the APPROACH (engagement band edge -> limit); GEOMETRY owns the boundary. "
+    "A ligament sized to the body's own MVC holds what the muscles can launch; it does not "
+    "soften an abuse-load overshoot -- the geometric stop carries any residual.",
+    "share-grows-toward-stop")
 def p_end_stop(_):
-    # The knee has no derived ligament (derive_ligaments emits none for it), so its stop is a bare
-    # constraint -- the wrong joint to test sharing on, and why an earlier version read ~11.7 N.m of
-    # 'passive share' that was really the muscle's own intrinsic force, present with or without tissue.
-    # The subtalar angle DOES have flex/ext ligaments, and their force lives in qfrc_passive: it grows
-    # toward the limit and is exactly zero when the tissue is removed. That is what 'sharing' must look like.
+    # MEMBRANE (stated before the build): ligaments arrest the APPROACH; GEOMETRY owns the boundary.
+    # PREDICTION (not yet measured): with drive scaled to this body's own MVC-derived capacity,
+    # overshoot at the subtalar joint (real ligaments derived by derive_ligaments) is bounded by
+    # the ligament engagement band and the geometric stop carries the residual; tissue never holds
+    # an abuse load (abuse load > MVC -> ligament would rupture; geometric stop takes it instead).
+    # FALSIFIER (named before the run): share-grows-toward-stop -- the passive share must grow as
+    # the joint approaches its stop; if it does not grow, or if overshoot exceeds the geometric stop,
+    # or if the ligament is asked to hold an abuse load, the theory loses.
+    #
+    # PUBLISHEDOLOGY / ALLOMETRY: stiffness here is DERIVED (k = tau_max / gap, tau_max measured
+    # from this model's own actuator_force over the engagement band -- the MVC bound), not ingested.
+    # No external stiffness value is used, so no matter_library.json entry is required; the named
+    # gap (the matter library at Chimera/docs/rep_batteries/matter_library.json is not ingested by
+    # this primitive) is stated below and does not block it because the derivation bypasses it.
+    # NAMED GAP: matter_library.json absent -- no ingested elasticity modulus is used; stiffness
+    # is derived from MVC per ALLOMETRY (docs/THE_MASTER_LIST.md §26, THE_TRUNK_TISSUE.md §2-4).
     def share(tissue):
         m, g = load_body(MYOBODY, mujoco, tissue=tissue)
         d = mujoco.MjData(m)

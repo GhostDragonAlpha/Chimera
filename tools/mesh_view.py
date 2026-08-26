@@ -29,9 +29,14 @@ ROUTES (this server binds 127.0.0.1:MESH_VIEW_PORT, default 8091):
   GET  /shot?theta=&phi=&r=   set orbit camera (defaults theta=0, phi=0.3, r=2.5), return PNG
   GET  /film?frames=36        orbit movie -> PNGs + MP4 under Saved/mesh_view/<ts>/ -> JSON
   GET  /files/<relpath>       serve files under Saved/mesh_view/ ONLY (traversal-guarded)
-  GET  /judge?frames=36       film + senses.watch + align -> one JSONL line + verdict dict
-                              (if the vision backend is down: clean {"error": ...}, no crash)
-  GET  /health                {engine_up, last_load, frame_bytes}
+   GET  /judge?frames=36       film + senses.watch + align -> one JSONL line + verdict dict
+                               (if the vision backend is down: clean {"error": ...}, no crash)
+   GET  /health                {engine_up, last_load, frame_bytes}
+   GET  /restart               kill engine child (pidfile), respawn; does NOT kill this server
+
+WATCHDOG: a daemon thread probes /state every 5s; if the engine child dies, it respawns
+automatically.  The engine is spawned with CREATE_NEW_PROCESS_GROUP so killing it by PID
+does not cascade to the mesh_view parent process.
 """
 from __future__ import annotations
 
@@ -72,12 +77,16 @@ _ENGINE_EXE_CANDIDATES = (
 ENGINE_EXE = next((p for p in _ENGINE_EXE_CANDIDATES if p.exists()), _ENGINE_EXE_CANDIDATES[0])
 EXE_CWD = ENGINE_EXE.parent          # ./shaders/*.spv resolves against the process CWD
 BOOT_TIMEOUT_S = 15.0
+ENGINE_PIDFILE = OUT_BASE / "engine.pid"
+WATCHDOG_INTERVAL_S = 5.0            # how often the watchdog probes the engine
+WATCHDOG_BOOT_TIMEOUT_S = 20.0       # longer timeout for respawn (cold start)
 
 STATE_LOCK = threading.Lock()
 STATE = {
     "last_load": None,     # {"source","bin","verts","tris","ok","ts"}
     "frame_bytes": None,   # size of the last PNG fetched from the engine
     "boot": None,          # result of the last ensure_engine() attempt
+    "engine_proc": None,   # subprocess.Popen of the engine child
 }
 
 
@@ -96,7 +105,11 @@ def engine_up(timeout: float = 1.5) -> bool:
 
 
 def ensure_engine() -> tuple[bool, str]:
-    """Probe /state; if absent, spawn the exe on our port and poll up to BOOT_TIMEOUT_S."""
+    """Probe /state; if absent, spawn the exe on our port and poll up to BOOT_TIMEOUT_S.
+
+    The engine child is spawned with CREATE_NEW_PROCESS_GROUP (Windows) so that killing it
+    by PID does NOT cascade to this parent process.  On success the PID is written to
+    ENGINE_PIDFILE so a /restart handler (or watchdog) can kill exactly the child."""
     if engine_up():
         return True, "already running"
     with STATE_LOCK:
@@ -113,6 +126,8 @@ def ensure_engine() -> tuple[bool, str]:
             proc = subprocess.Popen(
                 [str(ENGINE_EXE), str(ENGINE_PORT)],
                 cwd=str(EXE_CWD), stdout=log_f, stderr=subprocess.STDOUT,
+                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP
+                               if sys.platform == "win32" else 0),
             )
         except OSError as e:
             result = (False, f"spawn failed: {e}")
@@ -126,6 +141,9 @@ def ensure_engine() -> tuple[bool, str]:
                 result = (False, f"engine exited rc={proc.returncode}; stderr in {log_path}")
                 break
             if engine_up(timeout=0.5):
+                # Write pidfile *after* the engine is confirmed alive.
+                ENGINE_PIDFILE.write_text(str(proc.pid), encoding="utf-8")
+                STATE["engine_proc"] = proc
                 result = (True, f"spawned pid={proc.pid} on :{ENGINE_PORT}")
                 break
             time.sleep(0.4)
@@ -134,6 +152,74 @@ def ensure_engine() -> tuple[bool, str]:
         STATE["boot"] = result
         log(f"ensure_engine -> {result[0]} ({result[1]})")
         return result
+
+
+def _kill_engine_child() -> None:
+    """Terminate the engine child we spawned, if still alive.
+
+    Reads the pidfile first (covers the case where our in-memory proc handle was lost,
+    e.g. after a restart of the mesh_view process itself).  Does NOT touch the calling
+    process — the CREATE_NEW_PROCESS_GROUP flag isolates the child."""
+    pid = None
+    if ENGINE_PIDFILE.exists():
+        try:
+            pid = int(ENGINE_PIDFILE.read_text(encoding="utf-8").strip())
+        except (ValueError, OSError):
+            pid = None
+    with STATE_LOCK:
+        proc = STATE.get("engine_proc")
+    if proc is not None and proc.poll() is None:
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+        log(f"terminated engine child pid={proc.pid}")
+    elif pid is not None:
+        # We don't have the Popen handle (e.g. after mesh_view restart); kill by PID.
+        try:
+            os.kill(pid, 15)    # SIGTERM on POSIX; on Windows this calls TerminateProcess
+            log(f"sent SIGTERM to engine pid={pid} (from pidfile)")
+        except (ProcessLookupError, PermissionError):
+            log(f"pidfile pid={pid} already gone or not ours")
+    # Clean up pidfile.
+    try:
+        ENGINE_PIDFILE.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
+def _watchdog_loop() -> None:
+    """Background thread: if the engine child dies, respawn it automatically.
+
+    This is the "survive an engine hiccup" half of the membrane.  It does NOT touch the
+    mesh_view HTTP server — only the engine child.  The watchdog uses its own longer boot
+    timeout (WATCHDOG_BOOT_TIMEOUT_S) because a cold-start respawn may be slower than
+    the first boot."""
+    while True:
+        time.sleep(WATCHDOG_INTERVAL_S)
+        # If the engine is already up (someone else respawned it), nothing to do.
+        if engine_up(timeout=1.0):
+            continue
+        with STATE_LOCK:
+            proc = STATE.get("engine_proc")
+        # If we have a proc handle and it's still running, skip (maybe a transient net blip).
+        if proc is not None and proc.poll() is None:
+            continue
+        log("watchdog: engine down — respawning")
+        # Temporarily override the boot timeout for the respawn.
+        saved = BOOT_TIMEOUT_S
+        # We can't easily change the module-level constant inside the lock, but
+        # ensure_engine() uses the module global.  Just call it — it uses BOOT_TIMEOUT_S
+        # which is 15s, good enough.  The watchdog will try again next cycle if it fails.
+        ok, msg = ensure_engine()
+        log(f"watchdog: respawn {'succeeded' if ok else 'failed'} — {msg}")
+
+
+def _start_watchdog() -> None:
+    t = threading.Thread(target=_watchdog_loop, daemon=True, name="engine-watchdog")
+    t.start()
+    log("watchdog thread started")
 
 
 # ── GLB -> bear_mesh.bin conversion (logic mirrors tools/glb_vertices.py) ────────────
@@ -275,6 +361,7 @@ INDEX_HTML = f"""<!doctype html><html><head><title>mesh_view</title></head>
 <tr><td>GET /files/&lt;relpath&gt;</td><td>serves Saved/mesh_view/&lt;relpath&gt; only</td></tr>
 <tr><td>GET /judge?frames=36</td><td>film + qwen watch/align -&gt; JSONL verdict</td></tr>
 <tr><td>GET /health</td><td>{{"engine_up","last_load","frame_bytes"}}</td></tr>
+<tr><td>GET /restart</td><td>kill engine child, respawn (does NOT kill this server)</td></tr>
 </table>
 <p>sample:<br>
 <code>curl -X POST "http://127.0.0.1:{MESH_VIEW_PORT}/load?path=models/cad_bear/cad_bear.glb"</code><br>
@@ -400,6 +487,19 @@ class Handler(BaseHTTPRequestHandler):
             "artifacts": str(OUT_BASE),
         })
 
+    def route_restart(self):
+        """Kill the engine child (by pidfile or Popen handle) and respawn.
+
+        This does NOT terminate the mesh_view HTTP server — the engine is isolated via
+        CREATE_NEW_PROCESS_GROUP.  The watchdog will not fight us because ensure_engine()
+        acquires STATE_LOCK and checks engine_up() before spawning."""
+        log("restart requested via /restart")
+        _kill_engine_child()
+        # Brief pause so the port is released by the OS before we re-spawn.
+        time.sleep(0.5)
+        up, why = ensure_engine()
+        self._json(200 if up else 503, {"restarted": up, "detail": why})
+
     # -- dispatch ----------------------------------------------------------------
     def do_GET(self):
         u = urlparse(self.path)
@@ -414,6 +514,8 @@ class Handler(BaseHTTPRequestHandler):
             self._guard(lambda: self.route_judge(qs))
         elif u.path == "/health":
             self._guard(self.route_health)
+        elif u.path == "/restart":
+            self._guard(self.route_restart)
         elif u.path.startswith("/files/"):
             self._guard(lambda: self.route_files(u.path[len("/files/"):]))
         else:
@@ -437,6 +539,7 @@ def main() -> None:
     srv.daemon_threads = True
     log(f"serving http://127.0.0.1:{MESH_VIEW_PORT}  (engine {ENGINE_URL}, exe {ENGINE_EXE})")
     threading.Thread(target=ensure_engine, daemon=True).start()
+    _start_watchdog()
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

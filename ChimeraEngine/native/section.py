@@ -33,7 +33,7 @@ STAGES (each writes JSON artifacts to the workdir; run in order, re-run any alon
     verify   recolor by part, orbit, the eye judges bleed/coherence   -> <dir>/verdict.txt
     isolate  render ONE part alone (debugging a bleed report)         -> <dir>/isolate_<part>/fXX.png
 
-Requires: the C++ engine on :8080 and Ollama qwen3.8 (the eye). Neither is started here.
+Requires: the C++ engine on :8090 and Ollama qwen3.8 (the eye). Neither is started here.
 
 Usage (from the repo root):
     python ChimeraEngine/native/section.py movie   models/imagegen/tpose2_640.splat
@@ -68,7 +68,7 @@ import cpp_bridge as cb          # noqa: E402
 import senses                    # noqa: E402
 from skeleton import _ray, _set_camera, _fetch_frame   # noqa: E402  (the engine's EXACT camera)
 
-ENGINE = "http://localhost:8080"
+ENGINE = "http://localhost:8090"
 
 # ── the orbit every stage uses ---------------------------------------------------
 FRAMES = 16                       # one level ring; frame i -> theta = 2*pi*i/FRAMES

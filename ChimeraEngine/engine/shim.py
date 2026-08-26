@@ -14,7 +14,7 @@ import time
 from urllib.request import urlopen, Request
 
 
-ENGINE_URL = "http://localhost:8080"
+ENGINE_URL = os.environ.get("CHIMERA_ENGINE_URL", "http://localhost:8090")
 
 
 def get_state() -> dict:

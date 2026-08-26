@@ -56,6 +56,8 @@ import numpy as np
 import port_tests                                   # noqa: F401  ports 1-4
 import port_tests_more                              # noqa: F401  ports 5-12
 import primitive_tests                              # noqa: F401  the 7 mechanism primitives
+import action_rhythm                                # noqa: F401  action 13: RHYTHM_DRIVE
+import action_upright                               # noqa: F401  action 14: UPRIGHT
 from port_registry import ACTIONS, MYOBODY, action_test, expect_actions
 from primitive_tests import seat_on_floor, spanning
 from world import load_body
@@ -841,7 +843,7 @@ def a_crouch(_):
 
 # ------------------------------------------------------------------------------------------------
 def main():
-    expect_actions(12)
+    expect_actions(14)
     print("=" * 100)
     print(f"  {len(ACTIONS)} ACTION PRIMITIVES -- one thing the body DOES, as a program over "
           f"validated ports")

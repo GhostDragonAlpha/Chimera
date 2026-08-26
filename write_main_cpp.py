@@ -75,12 +75,12 @@ int main(int argc, char** argv) {
         resp.body = "Not found";
         return true;
     })) {
-        fprintf(stderr, "Failed to start HTTP server on port 8080\n");
+        fprintf(stderr, "Failed to start HTTP server on port %d\n", port);
         engine.shutdown();
         return 1;
     }
 
-    printf("Chimera Engine running at http://localhost:8080/stream\n");
+    printf("Chimera Engine running at http://localhost:%d/stream\n", port);
     printf("Press Ctrl+C to stop.\n");
 
 #ifdef _WIN32

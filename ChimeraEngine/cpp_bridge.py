@@ -20,7 +20,7 @@ from pathlib import Path
 
 import numpy as np
 
-ENGINE_URL = os.environ.get("CHIMERA_ENGINE_URL", "http://localhost:8080")
+ENGINE_URL = os.environ.get("CHIMERA_ENGINE_URL", "http://localhost:8090")
 
 # C++ vertex layout: [x,y,z, r,g,b, size] (7 floats). The membrane buffer is (N,28) with
 # position 0..2, color 16..18, size 20 (ParticleEngine.core.COL).

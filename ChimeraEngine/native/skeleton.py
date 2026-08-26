@@ -41,7 +41,7 @@ if str(_CHIMERA_ENGINE) not in sys.path:
 import cpp_bridge as cb          # noqa: E402
 import senses                     # noqa: E402
 
-ENGINE = "http://localhost:8080"
+ENGINE = "http://localhost:8090"
 W, H = 1920.0, 1080.0
 FOV = math.radians(45.0)
 ASPECT = W / H
