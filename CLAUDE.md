@@ -81,6 +81,7 @@ belongs to, and cannot trust the ledger without knowing what "validated" was mad
 
 | # | document | what it gives you |
 |---|---|---|
+| 0 | **[`docs/THE_WOLFRAM_FRAME.md`](docs/THE_WOLFRAM_FRAME.md)** | **THE OPERATOR'S ARCHITECTURE, AS GIVEN (2026-08-25)** — the Wolfram lineage, membranes as railroad switches into the fourth dimension, tissue as separate triangle systems, determinism = ROM extremes + CA-filled interior, the trained in-between, Earth gravity, open-source doctrine. **Where this conflicts with older prose, it wins.** |
 | 1 | **[`docs/THE_LAW.md`](docs/THE_LAW.md)** | **RULE 0** — statement · prediction · falsifier, before any build. **RULE 1** — derive it before you train it. |
 | 2 | **[`docs/THE_WORKFLOW.md`](docs/THE_WORKFLOW.md)** | the method as one sequence, **now beginning at S-1 VALIDATE** — every port tested alone before anything is framed. |
 | 3 | **[`docs/THE_COMPILER.md`](docs/THE_COMPILER.md)** | **the operating model.** ports → primitives → programs → parser → runtime → calibration, and `dx/dt = f(x,u,p,w)` where `f` is PROGRAMMED and `p` is never chosen. Includes **passive tissue is universal** — the same ports for grass, rock, tree, wall, hull. |
