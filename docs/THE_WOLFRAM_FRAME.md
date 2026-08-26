@@ -157,3 +157,23 @@ to Carrier/Lunar Sourcebook); this rule promotes that habit to LAW. Practical fo
 `declare(value, ology="kinesiology", source="<published anchor>")` — and a declaration whose
 ology field is empty does not pass S2 PROVENANCE.
 
+## 11 · ALLOMETRY — STRENGTH SCALES WITH THE BODY DOING THE LIFTING
+
+> "You can't just use human knee strength, because it's a teddy bear — you have to figure out
+> the knee strength that's proportional to the object the legs are lifting. Those are the
+> rules of Mother Nature, whatever they are. There are thousands of billions of them, but
+> that's how we guide ourselves." — the operator
+
+No strength, stiffness, or torque may be copied from a human table onto a non-human body.
+Declared forces dock into the body's OWN mass and geometry through Mother Nature's scaling
+laws — allometry (Hill's scaling, McMahon's elastic similarity, dynamic similarity via
+Froude `Fr = v²/(gL)`): muscle stress is roughly constant across animals, so available
+torque scales with lever length × cross-sectional area while the load scales with volume.
+"There are thousands of billions of them" — the rules exist whether or not we have named
+them yet; an unnamed one is still binding, which is why honest measures (worst-of-N,
+periodicity, contact-truth) keep convicting bodies that violate a law nobody wrote down.
+
+Practical consequence: a test that drives a joint must drive it with THAT body's scaled
+torque, and a body whose stop leaks under sustained scaled load has a defect in the body,
+not an excuse in the load.
+
