@@ -298,3 +298,7 @@ ChimeraEngine/native/nul
 *.spv
 /ChimeraEngine/native/bear_shell.json
 /ChimeraEngine/native/bear_shell_l0.f32
+
+# mesh_view artifacts + regenerated mesh input (derived, rebuildable)
+/Saved/mesh_view/
+/Chimera/Python/
