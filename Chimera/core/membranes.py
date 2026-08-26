@@ -1,3 +1,4 @@
+# TWIN: kept byte-equal with the same-named module in the sibling core/ tree; edit both or consolidate deliberately -- see docs/THE_TWIN_TABLE.md.
 """membranes — THE PRIMITIVE. A membrane is a boundary, and a boundary is a scale.
 
     THE MEMBRANE IS THE HIERARCHY. Each nested membrane is the next scale down.

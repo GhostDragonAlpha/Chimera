@@ -92,3 +92,117 @@ commit): re-pointed to `( cd Chimera && python -m core.saturation --staged )` �
 canonical copy, content-identical (EOL-equal) to what the hook had been measuring all along.
 Verified: gate PASSes from the Chimera tree (`complete 1.00/dry 4; declared refused at
 0.50/dry 0`).
+
+---
+
+# A3 PHASE 2 — the six survivors adjudicated (2026-08-26)
+
+**Method correction first (it changes the evidence base).** `Chimera/.ignore` contains the
+line `/core` — so every ripgrep-based tree scan silently skips **all of `Chimera/core/`**
+(git still tracks every file there; explicit-path searches still work). Phase 1's rg importer
+scan could not see ANY Chimera/core-internal importer. Phase 2 re-derived every importer
+verdict with `git grep -E "(from|import) core\.X" -- "*.py"` over TRACKED files
+(ignore-immune). The corrected scan is what all verdicts below rest on.
+
+## 1+4. splat trio (`photo_studio`, `splat_level`, `splat_emit`) — engine copies DELETED; one surgical fix ported into `Chimera/core/splat_level.py`
+
+**Phase 1's DANGER premise was FALSE for the wired tree.** b7528218 deleted only the ENGINE
+copy of `core.splat_to_ue5`; `Chimera/core/splat_to_ue5.py` survives untouched (restored in
+6412e7f8, last touched before b7528218) and carries everything its callers need:
+`DEST`, `TARGET_CM`, `quad_cloud(splats, scale, tangent_scale=…)`, `write_splat_glb(splats,
+scale, path, soft_edge=…, **kw)`, `_inject_material`. Every Chimera-side caller checks out
+against it: photo_studio.main (`DEST/TARGET_CM/quad_cloud`), rebuild_world:138/157 and
+test_pipeline:99 (`write_splat_glb(world, scale=, path=)` — correct shape), materialize:259
+(`_inject_material`). Wired processes were NOT importing a deleted module.
+
+**The one genuinely dead spot on the wired side**: `Chimera/core/splat_level.py`'s
+`--save-glb` branch still had the tb-0183 dead-by-signature call
+(`verts, colors = quad_cloud(...)` — quad_cloud returns a Scene, not a tuple — then
+`write_splat_glb(str(path), verts, colors)`), soft-swallowed by try/except. FIXED here by
+porting b7528218's exact call shape — `write_splat_glb(world, 1.0, str(glb_path),
+tangent_scale=1.0, soft_edge=False)` — which is valid against THIS tree because
+`write_splat_glb(**kw)` forwards `tangent_scale` into `quad_cloud`.
+
+**Wholesale port of the engine copies was REJECTED, and phase 1's "port the fix" framing
+was a trap**: the engine copies import `core.splat_mesh`, which does NOT exist in
+Chimera/core (b7528218 created it engine-side only). Copying them over the Chimera copies
+would have broken photo_studio.main and splat_level's import at run time. Doing it
+"properly" means re-homing the geometry API in the canonical tree (keep-or-delete
+`splat_to_ue5` vs adopt `splat_mesh`) — precisely the operator Q1 that b7528218's commit
+message deferred. Not an unambiguous fix; not done.
+
+**Deletion evidence for the three ENGINE copies** (per the task's own criterion — no live
+binding can reach them):
+
+- Corrected importer scan: zero importers of `core.photo_studio` / `core.splat_level` /
+  `core.splat_emit` anywhere outside the trio itself and dead `archive/old_stacks/
+  splat_gpu.py`.
+- All seven known engine-binding scripts (`physics.py`, `physics_articulated.py`,
+  `fields_witness.py`, `gravity_witness.py`, `sdf_body.py`, `demo_sdf_show.py`,
+  `master_loop_sdf.py`) reference none of the three names (rg on those files).
+- No dynamic-import path reaches them: repo-wide `importlib`/`__import__`/`runpy` uses are
+  unrelated (`dream_loop`, `model_auditor`, `train_loop`, `engine_state`'s reload,
+  `splat_appearance`'s file-location loads); the only `python -m core.<trio>` strings are
+  docstrings inside the copies themselves; the pre-commit hook runs `cd Chimera && python
+  -m core.saturation --staged`.
+- Untracked-but-live files checked too: `tools/mesh_view.py`, `tools/gsplat`,
+  `Chimera/Python/` — clean.
+- Chain health after deletion: engine `splat_emit`'s only importer was engine
+  `photo_studio` (deleted in the same action); `matter_items` now exists ONLY in
+  `Chimera/core`, imports its sibling `splat_emit` there, so any process that resolves
+  `matter_items` at all binds the Chimera pair. `cd Chimera && python -c "import
+  core.matter_items, core.splat_emit"` verified below.
+- `ChimeraEngine/core/splat_mesh.py` KEPT: not a twin (never existed in Chimera/core);
+  its only code importers were the trio just deleted, but docs cite it and it is
+  b7528218's deliberate artifact. Now zero code importers — noted for the next sweep.
+- `splat_emit`'s divergence WAS comment-only (2 lines), and each side's wording was true
+  FOR ITS OWN TREE ("core.splat_mesh" engine-side, "core.splat_to_ue5" Chimera-side — the
+  module is alive there). With the engine copy deleted the question dissolves.
+
+## 2. `matter` — divergence documented, NOT merged, NO code changes
+
+AST comparison of top-level defs:
+
+| def | verdict |
+|---|---|
+| `_row`, `main`, `render_3d`, `_prove_cross2d`, `_prove_limb3d` | byte-IDENTICAL text both sides (spans shifted +98/+100 by the insertion below) |
+| `assemble_3d_swaps` | CHIMERA-ONLY (matter.py:455, +~98 lines incl. docstring). **Zero callers in tracked files on either side** — not invoked by `main` (byte-identical both sides proves it), no dynamic-import construction of the name |
+| `metrics_3d` | signature differs: engine `(grid, shape)` :455 vs chimera `(grid, shape, types=None)` :542. Chimera adds a tendon-mode branch: `types=None` → historical `(BONE,MUSCLE,SKIN)` radii + tendon block; explicit `types` → radii for exactly those ids, NO tendon block, early return. Backward-compatible: every 2-arg call behaves identically under both signatures |
+
+Callers of the differing defs, with binding trees (corrected scan):
+
+- `metrics_3d(..., types=…)` — REQUIRED by `Chimera/core/matter_derive.py:593`
+  (`types=mats`) and `Chimera/core/matter_gpu.py:582-585` (`types=types`). Both modules
+  exist ONLY in Chimera/core (no engine twin — never was one), so they bind the Chimera
+  copy in any process that resolves them at all. The engine copy could not serve them.
+- `metrics_3d(grid, shape)` 2-arg — `Chimera/core/matter.py` internal (:692),
+  `matter_derive.py:266/299/656`, and `tools/phase8_repeat.py:79` (which inserts
+  `ROOT/"Chimera"` at sys.path[0], line 41 → binds the CHIMERA copy explicitly).
+  Compatible with both signatures anyway.
+- `assemble_3d_swaps` — no callers either side.
+
+Verdict: engine copy is STALE but INERT — nothing outside Chimera/core + tools binds
+`core.matter` from the engine tree (zero importers per corrected scan). Deletion candidate
+for a future evidence-gated pass, exactly like phase 1's byte-equal set; deliberately NOT
+executed here (pair instruction: document, don't merge).
+
+## 3. `membranes`, `terrarium` — cross-referenced, both copies kept
+
+Re-verified BYTE-EQUAL (sha256). Added one identical path-agnostic comment line at the top
+of each of the four files —
+
+`# TWIN: kept byte-equal with the same-named module in the sibling core/ tree; edit both or consolidate deliberately -- see docs/THE_TWIN_TABLE.md.`
+
+— chosen path-agnostic so each pair REMAINS byte-equal after the edit (a comment naming
+the other path would have broken the very invariant it documents). Post-edit sha256:
+still equal within each pair.
+
+## Phase-2 verification battery
+
+Run after all changes (outputs recorded in the commit message): `python tools/orient.py`;
+`cd ChimeraEngine && python -c "import engine_state"` (must bind Chimera/core);
+`python tools/port_tests.py` tail must stay 18/21 with the accepted drift set;
+`curl http://127.0.0.1:8091/health` must stay engine_up; plus
+`cd Chimera && python -c "import core.matter_items, core.splat_emit"`,
+`cd Chimera && python -m py_compile core/splat_level.py`, and a fresh negative check that
+nothing imports the three deleted engine names.

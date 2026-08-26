@@ -1,3 +1,4 @@
+# TWIN: kept byte-equal with the same-named module in the sibling core/ tree; edit both or consolidate deliberately -- see docs/THE_TWIN_TABLE.md.
 """terrarium — STAGE 0. Grow an organism from a genome.
 
 A pure function. No engine, no graph, no gate, no pipeline. Genome in, geometry

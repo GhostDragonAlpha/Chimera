@@ -392,15 +392,19 @@ def main():
         render_preview(world)
     
     if world and args.save_glb:
-        from core.splat_to_ue5 import write_splat_glb, quad_cloud
+        from core.splat_to_ue5 import write_splat_glb
         from core.matter_items import frame_of
         center, radius = frame_of(world)
         glb_path = OUT_DIR / 'splat_world.glb'
         try:
-            # Build quad mesh and write GLB
-            verts, colors = quad_cloud(world, scale=1.0, tangent_scale=1.0)
-            write_splat_glb(str(glb_path), verts, colors, soft_edge=False)
-            print(f'GLB exported: {glb_path} ({len(verts):,} verts)')
+            # Build quad mesh and write GLB. NOTE 2026-08-25: this branch had been dead by
+            # signature since tb-0183 -- quad_cloud returns a Scene, not (verts, colors), and
+            # write_splat_glb takes (splats, scale, path); the except below swallowed it.
+            # Fixed 2026-08-26 against THIS tree's splat_to_ue5 (alive here; only the engine
+            # copy was deleted in b7528218) -- same call shape as that commit's engine-side
+            # fix; tangent_scale reaches quad_cloud through write_splat_glb's **kw.
+            write_splat_glb(world, 1.0, str(glb_path), tangent_scale=1.0, soft_edge=False)
+            print(f'GLB exported: {glb_path} ({len(world["pos"]) * 4:,} verts)')
         except Exception as e:
             print(f'GLB export failed: {e}')
 
