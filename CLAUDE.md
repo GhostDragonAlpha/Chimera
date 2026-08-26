@@ -94,10 +94,16 @@ belongs to, and cannot trust the ledger without knowing what "validated" was mad
 > `ChimeraEngine/engine_state.json` (the story, proven through the engine), and the live
 > session read is `python tools/orient.py` (engine + verdict ledger + git).
 
-**WHERE IT STANDS (2026-08-04): 21/21 ports (12 human + 9 non-human matter) · 7/7 mechanism
-primitives · 8/11 action primitives (1 REFUSED as absent structure) · parser/runtime/calibration
-not built · the universal object framework now has ONE validated port each for plant, rock, tree,
-terrain, fabric, vehicle, granular and BUILDING — the table has no zeros left.** One port per object is a
+**WHERE IT STANDS (2026-08-25, re-measured after the doctrine session): 18/21 ports validated
+under Earth-standard gravity (the 3 non-passing are missing-data refusals, not physics failures:
+`terrain_footprint` + `granular_repose` await an un-grown `story/theGround` membrane,
+`rock_fracture` awaits the materials library) · hard joint stops landed in `world.py::load_body`
+(JOINT_LIMIT overshoot 3.555° → ~0.05°) · primitives 4/7 with END_STOP being re-derived to the
+Mother-Nature division of labor (ligaments arrest the approach, geometry owns the boundary) and
+UPRIGHT/RHYTHM_DRIVE in diagnosis · actions 7/11 · theDeterminism FRAMED at S0 — "in-between
+motion emerges from CA interaction under published gravity, never from interpolation" — next gate
+S2a PROVENANCE · canon: `docs/THE_WOLFRAM_FRAME.md` (publishedology, allometry, Earth gravity,
+open-source doctrine) outranks older prose where they conflict.** One port per object is a
 beginning, not a passive-tissue model. The ledger is the ledger; do not cite the specification as
 proof.
 
