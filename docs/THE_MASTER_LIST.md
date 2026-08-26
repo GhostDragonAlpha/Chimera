@@ -262,3 +262,19 @@ The dead "session island" is archived (2026-08-26): the 15 retired-session modul
 **SWING PASS** (06656727, build agent; audited cold by ox-alpha, numbers reproduce): root cause was a weld with no `solref` -> the heavy pelvis sagged ~16 cm off its pivot under gravity, a MOVING pivot corrupted the period (read 15.4% fast -> FAIL). Fix: weld stiffened to the codebase's established bond value `solref="1e-5 1" solimp="0.9999 0.99999 1e-6 0.5 2"` (port_tests_matter.py:1011) AND the 1.5 m hang baked into qpos0 before compile (MuJoCo bakes the weld reference from qpos0 at compile time, so a runtime lift was dragged back to floor = fake "free fall"). a_swing resets via mj_resetData (qpos0, the welded pose), not a keyframe, and drops the per-step kinematic pin.
 **Verified:** predicted T = 1.5228 s vs measured 1.3333 s = **12.4% off, under the 15% falsifier**. Full action suite clean (SWING/BALANCE/STANCE/THROW/STEP/TURN/CROUCH PASS, GRIP REFUSED no-arm, PUSH/PULL/LAND pre-existing FAILs unrelated to the weld path). load_body gained fix_body/hang_z (defaulted, backward-compatible); the hang_z bump is asserted to land before compile so a silent regex miss cannot masquerade as physics.
 **Honesty flag (carried, not blocking):** the stated ~1 cm residual sag cannot alone explain 12% period error (~1% expected); a real unexplained gap remains inside the bar -- follow-up: recheck the derived I or the period measurement. UPRIGHT/RHYTHM_DRIVE now unblocked.
+
+## 30 - CONTINUATION-19 - 10-TASK PARALLEL SWARM INTEGRATED (9/10 landed; P4 running)
+Operator dispatched 10 parallel complex tasks (prompts in chat; branch-per-agent protocol given). Agents wrote straight into the working tree (no branches); ox-alpha audited each cold before integrating.
+**Landed + verified (3155b9f2, integration commit):**
+- P1 UPRIGHT PASS -- CoM in base of support, all joint torque ratios <=1.0, torques allometric (no human-table number). tools/action_upright.py + reg (expect_actions 12->14).
+- P2 RHYTHM_DRIVE PASS -- measured f=0.305 Hz vs derived 0.328 Hz (7.1%), stable limit cycle; cadence derived, never tuned. tools/action_rhythm.py + reg.
+- P3 END_STOP PASS -- subtalar passive share grows toward stop (0->64 N.m), 0.00 under ligament ablation; allometric MVC-scale drive + publishedology citation. tools/primitive_tests.py (doc_lint broken-pointer fixed: repointed matter_library.json to the populated Chimera/docs/rep_batteries/ path).
+- P5 ALLOMETRY AUDIT -- docs/ALLOMETRY_AUDIT.md (220 lines, 21 findings).
+- P6 TISSUE SYSTEMS PASS -- three separate triangle systems (skin/muscle/bone) hold interface continuity. ChimeraEngine/tissue_systems.py + coupling test.
+- P7 BONE RIG PASS (12/12) -- ROM + CA interior slaved to a bone rig; mesh follows LBS exactly. tools/bone_rig.py + test + native/* ENGINE_URL fix.
+- P8 IN-BETWEEN HARNESS PASS -- 27/27 in-range configs physical. tools/train_inbetween.py + report.json.
+- P10 VIEWER HARDENING -- ENGINE_URL 8080->8090 everywhere; watchdog respawns dead engine; /restart via pidfile; CREATE_NEW_PROCESS_GROUP (no cascade). cpp_bridge + mesh_view + native/* + render_views + write_main_cpp.
+Full action suite: 14 primitives, no regression (PUSH/PULL/LAND pre-existing FAILs untouched).
+**P9 SPLIT CREATURE (41893558, done by ox-alpha -- the swarm gap):** tools/split_creature.py builds teddy/monkey 50-50 midline split, boots engine, runs the dyad -> alignment 0.65 (reads a COMPOSITE, falsifier 'single lineage' not tripped). Monkey = procedural stand-in; pipeline proven. Seeds the first-Chimera goal.
+**P4 PUBLISHEDOLOGY LEDGER -- STILL RUNNING (operator-confirmed in progress); held out of the integration commit. docs/PUBLISHEDOLOGY_LEDGER.md expected on completion.**
+Excluded from commits: live-chronicle docs (DREAM_REPORT/HERALD/HISTORY_BOOK) and the gsplat submodule (left dirty on purpose).
