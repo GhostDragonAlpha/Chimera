@@ -465,27 +465,75 @@ def _tissue_xml(xml_path, emit) -> "Path":
     return dst
 
 
-def _pivot_xml(xml_path, body, anchor) -> "Path":
-    """Write the body + one `<connect>` equality as a sibling file: a BALL JOINT TO THE WORLD.
+def _pivot_xml(xml_path, body, anchor, kind="connect", hang_z=0.0) -> "Path":
+    """Write the body + one world equality as a sibling file: a pivot INSIDE THE SOLVER.
 
-    A pendulum needs its pivot INSIDE the solver. A kinematic pin (restoring qpos each step)
+    A pendulum needs its pivot INSIDE THE SOLVER. A kinematic pin (restoring qpos each step)
     only projects the position afterwards -- the constraint force that turns gravity into
     torque about the pivot never enters the dynamics, and the "pendulum" reads 0.42 rad/s of
-    brace sway against a 2.76 prediction. The connect equality makes the solver supply that
-    force. `anchor` is in the body's LOCAL frame; the world-side point is wherever that point
-    sits at qpos0, which is exactly where a pivot belongs.
+    brace sway against a 2.76 prediction. The equality makes the solver supply that force.
+
+    TWO KINDS, for two different pendulums:
+      connect -- a BALL JOINT to the world at `anchor` (body-local). Fixes the point's POSITION,
+                  leaves it free to rotate. That is an INVERTED PENDULUM pivoting on a foot: the
+                  whole body must be able to tip about that point (`a_balance`).
+      weld -- fixes the body's position AND orientation to the world. The pivot cannot move or
+                turn at all, so only the joints you leave free can move. That is a COMPOUND
+                PENDULUM hung from a rigid point: `a_swing` welds the pelvis and frees one hip,
+                because a ball joint there lets the pelvis counter-rotate against the swinging leg
+                (measured 17% fast) while a kinematic pin reads 16% slow -- the truth is only
+                reachable with a pivot that is rigid in the solver. `anchor` is unused for welds.
+
+    `hang_z` (welds only): MuJoCo bakes an equality's reference transform from qpos0 AT COMPILE
+    TIME, and qpos0 is the body standing on the floor -- so a weld compiled there drags any
+    runtime lift back down to floor level (the "free fall" that looked like a rigidity failure).
+    The hang height must therefore be baked into qpos0 itself: this bumps the root free-joint
+    body's `pos z` by `hang_z` before compiling, so the weld's reference IS the lifted pose and
+    holds it rigidly. The test then resets with mj_resetData (qpos0), never a keyframe -- the
+    authored keyframe is an independent pose that does not track this bump.
     """
     import hashlib
     import os
+    import re
 
     src = Path(xml_path)
-    block = ("  <!-- PIVOT. A ball joint to the world for the inverted-pendulum measurement;\n"
-             "       injected by tools/world.py -- do not edit the file, edit the call. -->\n"
-             "  <equality>\n"
-             f'    <connect body1="{body}" body2="world" '
-             f'anchor="{anchor[0]:.6f} {anchor[1]:.6f} {anchor[2]:.6f}"/>\n'
-             "  </equality>\n")
-    text = src.read_text(encoding="utf8")
+    expected_root_z = None
+    if kind == "weld" and hang_z:
+        # Bump the FIRST <body ... pos="x y z"> inside worldbody -- the free root whose pos IS
+        # qpos[0:3]. Everything hangs below it, so lifting it lifts the whole body clear of the
+        # floor without touching any joint angle or the welded (child) body's local frame.
+        m = re.search(
+            r'(<worldbody>.*?<body\b[^>]*?\bpos=")([-+]?\d*\.?\d+)( [-+]?\d*\.?\d+)'
+            r'( [-+]?\d*\.?\d+)(")', src.read_text(encoding='utf8'), re.S)
+        if not m:
+            raise WorldUnknown(f"{src} has no root <body pos> to hang {hang_z:+.3f} m from")
+        z = float(m.group(4)) + float(hang_z)
+        expected_root_z = z          # what the free-joint body's qpos0 z MUST read back as
+        text = (src.read_text(encoding='utf8')[:m.start()]
+                + m.group(1) + m.group(2) + m.group(3) + f" {z:.6f}" + m.group(5)
+                + src.read_text(encoding='utf8')[m.end():])
+    else:
+        text = src.read_text(encoding='utf8')
+    if kind == "weld":
+        # THE WELD MUST BE STIFF, AND MUJOCO'S DEFAULT IS NOT. An equality is a soft constraint
+        # (solref/solimp like a contact); at the default solref 0.02 this heavy body sags ~16 cm
+        # off its pivot under gravity even at rest, and a moving pivot corrupts the period
+        # (a_swing read 15.4% fast). Stiffen to the codebase's bond value (port_tests_matter.py):
+        # solref 1e-5 -> ~1 cm residual, and the swing reads its true period (12.4%, under bar).
+        block = ("  <!-- PIVOT (WELD). The body is welded to the world -- position AND orientation\n"
+                 "       fixed, so only the joints left free can move. Injected by tools/world.py;\n"
+                 "       do not edit the file, edit the call. -->\n"
+                 "  <equality>\n"
+                 f'    <weld body1="{body}" body2="world" solref="1e-5 1"\n'
+                 '         solimp="0.9999 0.99999 1e-6 0.5 2"/>\n'
+                 "  </equality>\n")
+    else:
+        block = ("  <!-- PIVOT. A ball joint to the world for the inverted-pendulum measurement;\n"
+                 "       injected by tools/world.py -- do not edit the file, edit the call. -->\n"
+                 "  <equality>\n"
+                 f'    <connect body1="{body}" body2="world" '
+                 f'anchor="{anchor[0]:.6f} {anchor[1]:.6f} {anchor[2]:.6f}"/>\n'
+                 "  </equality>\n")
     i = text.rfind("</mujoco>")
     if i < 0:
         raise WorldUnknown(f"{src} has no </mujoco> to insert a pivot before")
@@ -495,17 +543,23 @@ def _pivot_xml(xml_path, body, anchor) -> "Path":
         tmp = dst.with_suffix(f".tmp{os.getpid()}")
         tmp.write_text(out, encoding="utf8")
         os.replace(tmp, dst)
-    return dst
+    return dst, expected_root_z
 
 
-def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
+def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None, fix_body=None,
+              hang_z=0.0):
     """Load an MJCF and put it in this world, with its passive tissue. Returns `(model, g)`.
 
     Prints what it changed, because a silent world change is how the original defect survived:
     nothing in the logs ever said which gravity a run had used, so nothing could contradict it.
 
     `pivot=(body_name, anchor_local)` injects a ball-joint-to-the-world equality constraint at
-    that point on that body -- the inverted-pendulum instrument. See `_pivot_xml`.
+    that point on that body -- the inverted-pendulum instrument (position fixed, rotation free).
+    `fix_body=body_name` welds that body to the world instead -- position AND orientation fixed,
+    so only joints you leave free can move; the compound-pendulum instrument. See `_pivot_xml`.
+    `hang_z` (with fix_body) lifts the whole body that far above the floor by baking it into
+    qpos0 before the weld is compiled, so the weld holds the lifted pose rigidly instead of
+    dragging a runtime lift back to floor level. Reset with mj_resetData, never a keyframe.
     """
     if mujoco is None:
         import mujoco  # local import: this module is useful without it (see `gravity()`)
@@ -540,9 +594,27 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
                 for jn, side, why in refused:
                     print(f"[tissue] REFUSED {jn}/{side}: {why}")
     if pivot is not None:
-        xml_path = _pivot_xml(xml_path, pivot[0], pivot[1])
+        xml_path, _ = _pivot_xml(xml_path, pivot[0], pivot[1])
         m = mujoco.MjModel.from_xml_path(str(xml_path))
         print(f"[world] pivot: ball joint to world at {pivot[0]} {pivot[1]}")
+    if fix_body is not None:
+        xml_path, expected_root_z = _pivot_xml(
+            xml_path, fix_body, (0.0, 0.0, 0.0), kind="weld", hang_z=hang_z)
+        m = mujoco.MjModel.from_xml_path(str(xml_path))
+        if expected_root_z is not None:
+            # THE BUMP MUST HAVE LANDED. A regex that hit the wrong <body> -- or a compile that
+            # dropped it -- would leave qpos0 at floor level and the weld would drag any lift back
+            # down, indistinguishable from a physics result without this check. The free-joint
+            # body's world z in qpos0 is exactly what we bumped (jnt_type 0 = FREE; 1 is BALL), so assert it.
+            landed = any(
+                abs(float(m.qpos0[int(m.jnt_qposadr[jj]) + 2]) - expected_root_z) < 1e-3
+                for jj in range(m.njnt) if m.jnt_type[jj] == 0)
+            if not landed:
+                raise WorldUnknown(
+                    f"hang_z bump did not land: no free-joint body has qpos0 z = "
+                    f"{expected_root_z:.6f} -- the root <body pos> regex hit the wrong element")
+        print(f"[world] pivot: {fix_body} WELDED to world (position + orientation fixed)"
+              + (f", hung {hang_z:+.3f} m above floor (baked into qpos0, verified)" if hang_z else ""))
     # SEATED AFTER THE TISSUE RELOAD, and the order is load-bearing. It ran BEFORE first:
     # it clamped key_qpos on the model that the tissue reload then THREW AWAY, and printed
     # a confident 'seated 1' while changing nothing -- the plantar sensor read back

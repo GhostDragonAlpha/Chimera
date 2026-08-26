@@ -255,12 +255,19 @@ def a_stance(_):
     "the measured free-swing period differs from the derived pendulum period by more than 15%, "
     "which would mean cadence cannot be derived from the body at all")
 def a_swing(_):
-    m, g = load_body(MYOBODY, mujoco)
+    # WELD THE PELVIS INTO THE SOLVER AND HANG IT 1.5 m CLEAR OF THE FLOOR -- baked into qpos0,
+    # because MuJoCo bakes the weld's reference transform from qpos0 at compile time and a runtime
+    # lift would be dragged back down to floor level (the "free fall" that looked like rigidity).
+    m, g = load_body(MYOBODY, mujoco, fix_body="pelvis", hang_z=1.5)
     d = mujoco.MjData(m)
     j = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, "hip_flexion_r")
     adr, dof = int(m.jnt_qposadr[j]), int(m.jnt_dofadr[j])
-    mujoco.mj_resetDataKeyframe(m, d, 0)
-    d.qpos[2] += 1.5                                   # hang it clear of the floor
+    # Reset to qpos0 -- the pose the weld was BAKED at (pelvis hung 1.5 m). Never a keyframe: the
+    # authored keyframe is an independent, un-lifted pose that would violate the weld and drag the
+    # body back down. Then seat the joints neutral so the derivation below matches the config the
+    # leg actually swings in; keep only the lifted root from qpos0.
+    mujoco.mj_resetData(m, d)
+    d.qpos[7:] = m.key_qpos[0][7:]
     mujoco.mj_forward(m, d)
 
     # THE PREDICTION, from the model and nothing else.
@@ -300,9 +307,7 @@ def a_swing(_):
     ts, qs = [], []
     for i in range(6000):
         d.ctrl[:] = 0.0
-        d.qpos[0:7] = q0[0:7]
-        d.qvel[0:6] = 0.0                              # hung from a fixed point
-        mujoco.mj_step(m, d)
+        mujoco.mj_step(m, d)          # the weld supplies the pivot force; no per-step pin
         ts.append(d.time)
         qs.append(float(d.qpos[adr]))
     qs = np.array(qs) - np.mean(qs)
