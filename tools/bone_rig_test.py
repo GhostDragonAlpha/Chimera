@@ -222,6 +222,89 @@ def main() -> int:
           lbs_err < EPS_LBS,
           f"max LBS err {lbs_err:.2e}")
 
+    # ═══ D9 — REAL TEDDY MESH: LBS on the actual bear ════════════════════════
+    try:
+        import trimesh
+        teddy_path = Path(_HERE).parent / ".tmp" / "cad_bear_rebuild.glb"
+        if teddy_path.exists():
+            scene = trimesh.load(str(teddy_path), force="mesh")
+            teddy_verts = np.asarray(scene.vertices, dtype=float)
+            teddy_faces = np.asarray(scene.faces, dtype=int)
+            print(f"  loaded teddy: {len(teddy_verts)} verts, {len(teddy_faces)} faces")
+
+            rig_real = BoneRig(m, d, BONE_NAMES)
+            rig_real.load_external_mesh(teddy_verts, teddy_faces, radius=0.15)
+            rig_real.bind()
+
+            verts_rest_real = rig_real.vertices_rest.copy()
+            T_inv_real = rig_real._rest_inv.copy()
+            N_real = len(verts_rest_real)
+
+            # D9a: LBS at rest is identity
+            verts_skin_real = rig_real.skin()
+            max_err_real = float(np.max(np.abs(verts_skin_real - verts_rest_real)))
+            check("D9a real teddy: LBS at rest is identity",
+                  max_err_real < 1e-6,
+                  f"max err {max_err_real:.2e}, {N_real} verts")
+
+            # D9b: determinism — same pose -> bit-identical mesh
+            mujoco.mj_resetData(m, d)
+            d.qpos[7] = 0.3
+            d.qpos[8] = -0.2
+            mujoco.mj_forward(m, d)
+            verts_a_real = rig_real.skin()
+            verts_b_real = rig_real.skin()
+            diff_ab_real = float(np.max(np.abs(verts_a_real - verts_b_real)))
+            check("D9b real teddy: determinism — same pose -> bit-identical",
+                  diff_ab_real == 0.0,
+                  f"max diff {diff_ab_real:.2e}")
+
+            # D9c: every vertex follows LBS formula
+            T_new_real = rig_real.bone_transforms()
+            manual_new_real = np.empty_like(verts_rest_real)
+            for i in range(N_real):
+                v = np.zeros(3)
+                for b in range(K):
+                    delta = T_new_real[b] @ T_inv_real[b]
+                    v += rig_real.weights[i, b] * (delta[:3, :3] @ verts_rest_real[i] + delta[:3, 3])
+                manual_new_real[i] = v
+            lbs_err_real = float(np.max(np.abs(verts_a_real - manual_new_real)))
+            check("D9c real teddy: every vertex follows LBS",
+                  lbs_err_real < 1e-6,
+                  f"max LBS err {lbs_err_real:.2e}")
+
+            # D9d: mesh follows rig — rig moves, mesh moves identically
+            d.qpos[7] = 0.5
+            d.qpos[8] = 0.4
+            mujoco.mj_forward(m, d)
+            verts_moved = rig_real.skin()
+            T_moved = rig_real.bone_transforms()
+            manual_moved = np.empty_like(verts_rest_real)
+            for i in range(N_real):
+                v = np.zeros(3)
+                for b in range(K):
+                    delta = T_moved[b] @ T_inv_real[b]
+                    v += rig_real.weights[i, b] * (delta[:3, :3] @ verts_rest_real[i] + delta[:3, 3])
+                manual_moved[i] = v
+            lbs_err_moved = float(np.max(np.abs(verts_moved - manual_moved)))
+            check("D9d real teddy: mesh follows rig at new pose (no independent movement)",
+                  lbs_err_moved < 1e-6,
+                  f"max LBS err {lbs_err_moved:.2e}")
+
+            # D9e: zero joints -> skinned rest (rig is sole authority for the skinning)
+            mujoco.mj_resetData(m, d)
+            mujoco.mj_forward(m, d)
+            verts_zero_real = rig_real.skin()
+            verts_rest_skin = rig_real.skin()
+            delta_zero_real = float(np.max(np.abs(verts_zero_real - verts_rest_skin)))
+            check("D9e real teddy: zero joints -> skinned rest (rig is sole authority)",
+                  delta_zero_real < 1e-6,
+                  f"max delta {delta_zero_real:.2e}")
+        else:
+            print(f"  [SKIP] teddy not found at {teddy_path}")
+    except ImportError:
+        print("  [SKIP] trimesh not installed")
+
     # ═══ SUMMARY ══════════════════════════════════════════════════════════════
     n_verts = N
     n_faces = len(rig.faces)

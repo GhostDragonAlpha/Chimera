@@ -102,6 +102,25 @@ class BoneRig:
 
     # -- mesh --
 
+    def load_external_mesh(self, vertices: np.ndarray, faces: np.ndarray,
+                           radius: float = 0.15) -> None:
+        """Load an external triangle mesh (e.g., the real teddy) and compute
+        skinning weights from vertex-to-bone distances."""
+        import mujoco
+        mujoco.mj_forward(self.m, self.d)
+        self.vertices_rest = np.asarray(vertices, dtype=float).copy()
+        self.faces = np.asarray(faces, dtype=int).copy()
+        ids = self.bone_ids
+        K = len(ids)
+        bone_pos = np.array([self.d.xpos[bid] for bid in ids])
+        N = len(self.vertices_rest)
+        self.weights = np.zeros((N, K))
+        for i in range(N):
+            for k in range(K):
+                self.weights[i, k] = 1.0 / (np.linalg.norm(self.vertices_rest[i] - bone_pos[k]) + 1e-6)
+            self.weights[i] /= self.weights[i].sum()
+        self._build_interior(bone_pos, radius)
+
     def build_mesh(self, n_rings: int = 3, n_segs: int = 8,
                    radius: float = 0.15) -> None:
         """Build a tube mesh around the bone chain and assign skinning weights."""
