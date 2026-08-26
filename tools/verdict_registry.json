@@ -13,7 +13,7 @@
       "result": "FALSIFIED",
       "statement": "a grain field's steady state costs ~nothing to hold; only state changes spend compute, so the settled world renders free at high frame rate",
       "status": "CLOSED",
-      "term": ""
+      "term": "theSeed"
     },
     "62": {
       "closed_at": "2026-08-26T00:40:27+00:00",
@@ -27,7 +27,7 @@
       "result": "PASS",
       "statement": "a dirty-set grain sweep makes the settled world hold at ~0 cost: a frame touches only the wake mask's columns, so the settled field renders O(change) not O(W)",
       "status": "CLOSED",
-      "term": ""
+      "term": "theSeed"
     }
   }
 }
