@@ -35,7 +35,7 @@ VALID_RESULTS = ("PASS", "FALSIFIED", "MARGINAL")
 
 # Sources the auto-numberer scans for the highest existing VERDICT number, so
 # a new verdict can never collide with one already recorded in the prose lane.
-_SCAN_PATHS = [ROOT / "docs" / "JOINT_ATLAS.md", ROOT / "task_progress.md"]
+_SCAN_PATHS = [ROOT / "docs" / "JOINT_ATLAS.md"]
 _SCAN_RE = re.compile(r"\bVERDICT\s*(\d+)\b")
 
 
@@ -55,7 +55,7 @@ class VerdictLedger:
 
     # -- numbering ----------------------------------------------------------
     def highest_recorded(self) -> int:
-        """Highest VERDICT number anywhere in the repo: ledger + atlas + progress."""
+        """Highest VERDICT number anywhere in the repo: ledger + atlas."""
         nums = set()
         for p in _SCAN_PATHS:
             if p.exists():
@@ -82,7 +82,7 @@ class VerdictLedger:
                                           f"(highest recorded anywhere: {self.highest_recorded()})"}
         if n <= self.highest_recorded():
             return {"ok": False, "error": f"REFUSED: VERDICT {n} already exists in the prose lane "
-                                          f"(atlas/task_progress). Highest recorded: {self.highest_recorded()}"}
+                                          f"(atlas). Highest recorded: {self.highest_recorded()}"}
         rec = {
             "number": n,
             "statement": statement,

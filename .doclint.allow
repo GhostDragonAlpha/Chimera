@@ -6,7 +6,6 @@ Chimera/Source/Chimera/ProceduralGenerated/Sound/SandSound.cpp
 Chimera/Source/b.cpp
 Chimera/config/ue_config.json
 Chimera/core/gait.py
-Chimera/core/game_code_generator.py
 Chimera/core/x.py
 Chimera/docs/ASSET_PROVIDERS_AND_STATIC_ANALYSIS.md
 Chimera/docs/CYCLE_PROMPT.md
@@ -36,12 +35,10 @@ THE_WORKFLOW.md
 core/a.py
 core/art_director.py
 core/asset_config.json
-core/build_orchestrator.py
 core/ds.py
 core/ds4_brain.py
 core/gait.py
 core/gait_mj.py
-core/game_code_generator.py
 core/game_generation_orchestrator.py
 core/mjcf.py
 core/research_agent.py
@@ -100,3 +97,26 @@ tools/probes/x.py
 web/index.h
 tools/ue_door_known_pose.py
 tools/ue_door_triangle_ledger.py
+# ISLAND RETIRED (B1) 2026-08-26: the retired-session cluster moved to attic/retired_island/;
+# these refs appear only inside the archived files' own prose + dated history entries.
+Chimera/core/task_board.py
+Chimera/telemetry_last.json
+ChimeraEngine/core/splat_to_ue5.py
+core/agent_tunnel.py
+core/closure_report.py
+core/curriculum.py
+core/fractal_spiral.py
+core/game_code_generator.py
+core/gauntlet.py
+core/preflight.py
+core/task_board.py
+core/task_board_state.json
+core/test_agent_tunnel.py
+core/test_closure_report.py
+core/test_curriculum.py
+core/test_fractal_spiral.py
+core/test_gauntlet.py
+core/test_malcolm.py
+core/test_rep_engine.py
+core/test_task_board.py
+core/test_wave.py
