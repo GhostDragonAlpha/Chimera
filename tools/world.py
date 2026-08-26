@@ -624,6 +624,31 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None):
         for nm, b0, b1, a0, a1 in _widen_mtp(m, mujoco, float(_mtp)):
             print(f"[world] mtp {nm:14} [{b0:+.1f},{b1:+.1f}] -> [{a0:+.1f},{a1:+.1f}] deg "
                   f"(CHIMERA_MTP_DEG -- published hallux dorsiflexion)")
+
+    # THE HARD STOP, 2026-08-25 -- port test 5 (joint_limit) measured 3.555 deg of steady-state
+    # penetration past the knee's published +120 deg under a sustained 400 N.m drive. The
+    # ligaments are innocent: they were sized to hold MAXIMUM VOLUNTARY CONTRACTION, and they
+    # do. The leak is MuJoCo's DEFAULT limit impedance -- jnt_solimp d_max = 0.95 leaves the
+    # stop permanently 5%-compliant, so any sustained overload walks through it at equilibrium.
+    # Mother Nature's joint stops are GEOMETRY (bone face on bone face): compliant while
+    # approaching, effectively rigid once reached. That is ology "MuJoCo solver documentation"
+    # (solimp impedance semantics) docked into ology "biomechanics" (a stop that yields without
+    # end under sustained sub-injury load describes neither cartilage nor bone). The probe
+    # torque itself obeys ALLOMETRY (THE_WOLFRAM_FRAME.md section 11): 400 N.m is ~2x an adult
+    # knee-extension maximum voluntary contraction (~200 N.m, kinesiology) -- an ABUSE load by
+    # design, because falls load joints beyond the voluntary band, and the body's own scaled
+    # ceiling was never the question. Applied LAST, on the final model, after every reload --
+    # the same load-bearing order the keyframe seating paid for. Only LIMITED slide/hinge
+    # joints; free/ball joints have no stop to harden.
+    _hardened = 0
+    for j in range(m.njnt):
+        if not m.jnt_limited[j] or m.jnt_type[j] not in (2, 3):   # slide, hinge
+            continue
+        m.jnt_solimp[j] = (0.95, 0.9999, 0.001, 0.5, 2.0)
+        _hardened += 1
+    if _hardened:
+        print(f"[world] hard stops: {_hardened} limited joints -> "
+              f"jnt_solimp d 0.95->0.9999 at depth (geometry, not advice)")
     return m, g
 
 
