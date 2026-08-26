@@ -47,7 +47,8 @@ from port_registry import TESTS, MYOBODY, port_test, expect
 @port_test(
     "rigid_body",
     "an unsupported mass falls as z = z0 - 0.5*g*t^2, with g the value theHuman publishes",
-    "the fall does not match the closed form to 0.1%, or it matches EARTH's 9.81 instead of 7.076")
+    "the fall does not match the closed form to 0.1%, or it matches a value other than the "
+    "published ledger g (Earth-standard 9.80665 since 2026-08-25)")
 def t_rigid_body(mujoco):
     """The instruction: F = m*a. Predicted BEFORE the step, from g alone."""
     g = gravity()

@@ -19,6 +19,14 @@
 > · 27 rules: `Chimera/docs/EXPERIMENTAL_METHOD.md` · gate: `python tools/training_gate.py`
 <!-- CHIMERA-LAW -->
 
+> **GRAVITY AMENDMENT (2026-08-25, operator decree): the world constant is Earth-standard
+> `g = 9.80665 m/s²`.** The derived-world chain that produced `g = 7.076` (`aBlueWorld` mass →
+> Froude) is RETIRED HISTORY — its stories stay because they earned their rules, but no live
+> constant comes from them. The one source of truth is the published ledger
+> `story/theHuman/numbers.json`, read dynamically by `tools/world.py::gravity()`; nothing
+> hardcodes either number. Wherever older prose says "this world is 0.722 Earth", read it as
+> a record of the retired regime.
+
 > # HIERARCHY × PHYSICS × HUMAN = a complete 4-dimensional video game experience
 >
 > **A product, not a sum** — any factor at zero takes the whole result to zero, and the other two

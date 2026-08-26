@@ -188,11 +188,13 @@ none, `render`/`prove` FAIL and summon the operator (by design).
 
 A walker that would not walk was met, on 2026-08-02, with a four-variant parameter sweep. It looked
 like method — one variable each, run in parallel, fair comparison. **Every variant was asking the
-body for a speed it physically cannot walk at.**
+body for a speed it physically cannot walk at.** (Constant below is RETIRED HISTORY: since
+2026-08-25 the world is Earth-standard `g = 9.80665 m/s²` by operator decree; the ledger
+`story/theHuman/numbers.json` publishes the live value.)
 
-    this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m
+    this world     g = 7.076 m/s2 (0.722 Earth),  leg 0.9201 m   <- retired derived-world era
     the body derives its own comfortable speed:    0.9924 m/s
-    the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH
+    the trainer targeted:                          1.285  m/s   <- MEASURED ON EARTH, NOW CANONICAL
 
 Froude settles it. `Fr = v^2/(gL)`, and equal Fr is a dynamically similar gait: 1.285 m/s is
 Fr 0.183 on Earth and **Fr 0.254 here** — 39% higher, heading toward the walk-run transition. The
