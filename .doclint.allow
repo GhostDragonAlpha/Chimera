@@ -98,3 +98,5 @@ story/skin_optics.py
 story/timeline.py
 tools/probes/x.py
 web/index.h
+tools/ue_door_known_pose.py
+tools/ue_door_triangle_ledger.py
