@@ -134,8 +134,8 @@ LIGAMENT_JOINTS = {
 # (+4.8 deg) sits INSIDE the ~15 deg per-segment performed envelope (Adams & Hutton 1982;
 # Pearcy et al. 1984), so there is no gap to derive across -- named, not fitted.
 LUMBAR_FE_JOINTS = ("L1_L2_FE", "L2_L3_FE", "L3_L4_FE", "L4_L5_FE")
-LUMBAR_EXT_EDGE_DEG = -5.0       # the published in-vivo extension envelope edge
-LUMBAR_GRAIN_DEG = 1.0           # 3-D radiography resolution: a gap under this is invisible
+LUMBAR_EXT_EDGE_DEG = -5.0       # the published in-vivo extension envelope edge (Pearcy & Tibrewal 1984)
+LUMBAR_GRAIN_DEG = 1.0           # 3-D radiography resolution: a gap under this is invisible (Pearcy & Tibrewal 1984)
 
 # LATERAL BENDING, same membrane, same citation, added 2026-08-04 when the leak moved:
 # with the extension ligament in, the retrained stand policy stopped arching and started
@@ -145,7 +145,7 @@ LUMBAR_GRAIN_DEG = 1.0           # 3-D radiography resolution: a gap under this 
 # 1984)". Both directions get the ligament where a gap exists; a level whose own stop
 # sits inside the performed envelope (L1_L2_LB is +-4.7 deg) is refused, not fitted.
 LUMBAR_LB_JOINTS = ("lat_bending", "L1_L2_LB", "L2_L3_LB", "L3_L4_LB", "L4_L5_LB")
-LUMBAR_LAT_EDGE_DEG = 5.0        # the published in-vivo lateral-tilt envelope edge, each way
+LUMBAR_LAT_EDGE_DEG = 5.0        # the published in-vivo lateral-tilt envelope edge, each way (Bakke 1931; Pearcy & Tibrewal 1984, per Miller 1986)
 
 # THE FOOT & HIP, 2026-08-04 -- docs/THE_FOOT_TISSUE.md: the off-sagittal joints the gait
 # envelope does not publish. Edges from the literature (the membrane's research section);
@@ -400,7 +400,7 @@ def derive_ligaments(m, mujoco) -> tuple[list, list]:
 # the model's own 30 deg, which is inside the published 30-40 deg. Taken from the literature
 # exactly as the trunk membrane took its ligament edge, because theHuman's `gait_envelope_deg`
 # publishes hip, knee and ankle only -- it has no curve for the toe.
-MTP_DORSIFLEX_DEG = 65.0
+MTP_DORSIFLEX_DEG = 65.0         # hallux dorsiflexion ROM, clinical gait literature (Root et al. 1977; Perry 1992)
 MTP_SIDE_SIGN = {"mtp_angle_r": +1.0, "mtp_angle_l": -1.0}   # measured above, not assumed
 
 
