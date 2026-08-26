@@ -1,5 +1,0 @@
-{
-  "name": "unreal-engine",
-  "version": "0.5.30",
-  "instructions": "Unreal Engine 5.8 project 'Chimera' — Vehicle Game Template. All automation requests operate on the currently open editor session. Use relative paths for assets (e.g., /Game/Characters). Console commands are validated before execution."
-}

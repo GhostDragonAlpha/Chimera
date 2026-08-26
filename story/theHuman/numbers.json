@@ -1,0 +1,26 @@
+{
+ "g": 9.80665,
+ "comfortable_speed_ms": 0.9924,
+ "step_time_s": 0.55,
+ "step_length_m": 0.54582,
+ "duty_factor": 0.6027,
+ "leg_length_m": 1.0144,
+ "thigh_frac": 0.5,
+ "shank_frac": 0.5,
+ "height_m": 1.75,
+ "ankle_drop_frac": 0.0,
+ "gait_envelope_deg": {
+  "hip": [
+   -22.5,
+   112.5
+  ],
+  "knee": [
+   6.0,
+   114.0
+  ],
+  "ankle": [
+   -36.5,
+   26.5
+  ]
+ }
+}

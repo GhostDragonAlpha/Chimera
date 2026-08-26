@@ -1,0 +1,14 @@
+{
+ "hip_to_ankle_m": 0.9644,
+ "ankle_height_m": 0.05,
+ "com_height_m": 1.0144,
+ "foot_length_m": 0.2,
+ "together_half_width_m": 0.102,
+ "together_half_length_m": 0.135,
+ "fall_rate_rad_s": 3.1093,
+ "time_to_fall_s": 0.5052,
+ "weight_N": 804.546,
+ "g": 9.80665,
+ "mass_kg": 82.0409,
+ "hip_separation_m": 0.16
+}

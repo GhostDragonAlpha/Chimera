@@ -285,3 +285,16 @@ ChimeraEngine/native/nul
 /pretrained/
 /Chimera/Plugins/MLSLabsRenderer/Source/ThirdParty/
 /tools/colmap/bin/
+
+# ─── UE removal + repo reorganization (2026-08-25) ────────────────────────────────
+# The Unreal Engine 5 pipeline is retired (CLAUDE.md). Deleted: Chimera.uproject,
+# Chimera/{Config,Content,Plugins,Source,Binaries,Intermediate,DerivedDataCache,
+# Saved,Screenshots,ValidationReports,Backup_Combat_Files,RestoredCode,templates,
+# workflows,scripts(UE)}, Build/, GeneratedProjects/. History retains everything.
+# attic/ holds the swept root scratch (probe outputs/logs/one-off scripts);
+# nothing in it is source. agent_logs/ is live run logging.
+/attic/
+/agent_logs/
+*.spv
+/ChimeraEngine/native/bear_shell.json
+/ChimeraEngine/native/bear_shell_l0.f32
