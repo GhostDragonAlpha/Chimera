@@ -135,3 +135,25 @@ make what the operator sees *honest*, never to replace the seeing.
 4. The operator decides what runs and judges what appears; agents prove and build.
 5. When this file conflicts with older prose, this file wins; flag the conflict where found.
 
+## 10 · PUBLISHEDOLOGY — THE MEMBERSHIP REQUIREMENT FOR DECLARATIONS
+
+> "All declared items must fit within publishedology. An ology is anything that you can use
+> the word 'ology' behind." — the operator
+
+**Publishedology** (n.) — the union of every published body of organized knowledge: any
+discipline whose name admits "-ology" (biomechanics, tribology, geology, kinesiology…) plus
+the published codifications that behave like one (ACI design codes, Cordage Institute
+standards, the Lunar Sourcebook).
+
+**The law**: every DECLARED item — a constant, a range, a limit, a term's claim — is legal
+only if it docks into a named ology. A declaration must say WHICH body of knowledge it comes
+from and, where possible, where in that literature it sits. A number declared from nothing
+is not conservative, not safe, not provisional — it is MINTED, and minting is the defect
+this project exists to kill.
+
+This is provenance as membership, not decoration. The repo's strongest ports were already
+obeying it (splice retention cited to Cordage Institute, ρ_b capped by ACI, regolith angles
+to Carrier/Lunar Sourcebook); this rule promotes that habit to LAW. Practical form:
+`declare(value, ology="kinesiology", source="<published anchor>")` — and a declaration whose
+ology field is empty does not pass S2 PROVENANCE.
+
