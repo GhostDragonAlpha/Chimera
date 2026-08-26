@@ -5,12 +5,14 @@ THE MEMBRANE (Rule 0):
               a localhost pixel bridge over the C++ engine's /mesh_bin + /frame closes that loop.
   PREDICTION: A GLB converted to bear_mesh.bin format, loaded through /mesh_bin, yields valid
               PNG frames whose pixels change as the camera orbits -- measurable as nonzero,
-              distinct frame files under Saved/mesh_view/.
+              distinct frame files (differing MD5) under Saved/mesh_view/.
   FALSIFIER:  /shot returns a zero-byte or non-PNG body, /film produces identical-looking
-              frames (byte-identical across different thetas), or /health reports engine_up
-              false after a clean spawn. Any of these kills the membrane.
+              frames (byte-identical across different thetas -- was a real bug, fixed in
+              cpp_bridge._settle_capture: /frame returns the LAST captured buffer, so the
+              camera move must be allowed to land before capture), or /health reports
+              engine_up false after a clean spawn. Any of these kills the membrane.
 
-stdlib http.server + cpp_bridge (numpy/PIL) + senses (Ollama, optional). No new third-party deps.
+stdlib http.server + cpp_bridge (numpy/PIL) + senses (LM Studio resident model via core/lm_gateway; Ollama fallback). No new third-party deps.
 
 ENGINE FACTS THIS IS BUILT ON (verified in source):
   - chimera_engine.exe: argv[1] = HTTP port (main.cpp:160-162); GET /state, GET /frame -> PNG,
@@ -28,7 +30,7 @@ ROUTES (this server binds 127.0.0.1:MESH_VIEW_PORT, default 8091):
   GET  /film?frames=36        orbit movie -> PNGs + MP4 under Saved/mesh_view/<ts>/ -> JSON
   GET  /files/<relpath>       serve files under Saved/mesh_view/ ONLY (traversal-guarded)
   GET  /judge?frames=36       film + senses.watch + align -> one JSONL line + verdict dict
-                              (if Ollama is down: clean {"error": ...}, no crash)
+                              (if the vision backend is down: clean {"error": ...}, no crash)
   GET  /health                {engine_up, last_load, frame_bytes}
 """
 from __future__ import annotations
@@ -245,7 +247,8 @@ def do_film(frames: int) -> dict:
 def do_judge(frames: int) -> dict:
     film = do_film(frames)
     if not senses.available(timeout=3.0):
-        return {"error": (f"vision backend down: Ollama at {senses.VISION_URL} unreachable "
+        return {"error": (f"vision backend down: LM Studio resident model absent at "
+                          f"{senses.LMSTUDIO_URL} (or Ollama if CHIMERA_VISION_BACKEND=ollama) "
                           f"-- judge skipped cleanly"), "film": film}
     observed = senses.watch(film["frames"], WATCH_PROMPT)
     if observed is None:

@@ -14,6 +14,7 @@ import json
 import math
 import os
 import struct
+import time
 import urllib.request
 from pathlib import Path
 
@@ -175,6 +176,21 @@ def fetch_frame(timeout: float = 10.0) -> bytes:
         return r.read()
 
 
+def _settle_capture(prev_bytes, timeout: float = 5.0) -> bytes:
+    """The render loop applies a /camera change on its NEXT iteration, but /frame returns the LAST
+    captured buffer immediately -- so fetching straight after a camera move captures the PREVIOUS
+    view, which is exactly the bug that made whole movies byte-identical across thetas. Wait until a
+    frame that actually DIFFERS from the one we last saved appears (proving the new camera took),
+    up to `timeout`; then capture. No C++ change needed."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        b = fetch_frame(timeout=timeout)
+        if b != prev_bytes:
+            return b
+        time.sleep(0.02)
+    return fetch_frame(timeout=timeout)
+
+
 def render_term(term: str, out_dir) -> dict | None:
     """Render a term THROUGH the C++ engine -> {"begin": path, "end": path} PNGs, or None."""
     if not engine_available():
@@ -305,13 +321,16 @@ def render_teddy_movie(shell_json, out_dir, level: int = 1, frames: int = 72,
     out.mkdir(parents=True, exist_ok=True)
     paths = []
     idx = 0
+    prev = None
     for phi in elevations:
         for i in range(per_orbit):
             theta = 2.0 * math.pi * i / per_orbit
             if not _set_camera(radius, theta, phi, timeout=timeout):
                 return None
             png = out / f"teddy_f{idx:03d}.png"
-            png.write_bytes(fetch_frame(timeout=timeout))
+            b = _settle_capture(prev, timeout=timeout)
+            png.write_bytes(b)
+            prev = b
             paths.append(str(png))
             idx += 1
     return paths
@@ -713,13 +732,16 @@ def render_mesh_movie(bin_path, out_dir, frames: int = 36, elevations=(0.3, 0.0,
     per = max(1, frames // len(elevations))
     paths = []
     idx = 0
+    prev = None
     for phi in elevations:
         for i in range(per):
             theta = 2.0 * math.pi * i / per
             if not _set_camera(radius, theta, phi, timeout=timeout):
                 return None
             png = out / f"mesh_f{idx:03d}.png"
-            png.write_bytes(fetch_frame(timeout=timeout))
+            b = _settle_capture(prev, timeout=timeout)
+            png.write_bytes(b)
+            prev = b
             paths.append(str(png))
             idx += 1
     return paths
