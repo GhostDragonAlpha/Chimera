@@ -303,7 +303,7 @@ def muscle_groups(m, d, mujoco, verbose=False) -> dict:
     model, not of the run. The cache is keyed by the model's actuator count so a different body
     cannot silently read another body's muscles.
     """
-    import primitive_tests as PT
+    import tools.primitive_tests as PT
 
     key = f"{m.nu}x{m.njnt}"
     if GROUPS_CACHE.exists():
