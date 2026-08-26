@@ -44,6 +44,13 @@ static bool g_mem_pending = false;
 static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
 
+// ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
+struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; bool valid=false; };
+static MeshReq g_mesh_req;
+static std::mutex g_mesh_mutex;
+static std::condition_variable g_mesh_cv;
+static bool g_mesh_pending = false, g_mesh_applied = false;
+
 // ── Pending skin/pose request (same handoff: Vulkan work stays on the render thread) ────
 struct SkinRequest {
     int kind = 0;                    // 1 = skin_bin load, 2 = pose_store, 3 = pose_apply
@@ -269,6 +276,43 @@ int main(int argc, char** argv) {
                 }
             }
             content_type = "application/json";
+        } else if (p == "/mesh_bin" && method == "POST") {
+            // Binary protocol (application/octet-stream), little-endian:
+            //   [u32 N][u32 idxCount][f32 cam_radius][f32 cam_theta][f32 cam_phi]
+            //   [f32 * N * 9  vertices: pos3, normal3, color3]
+            //   [u32 * idxCount  triangle indices]
+            if (req_body.size() < 24) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t N = 0, idxCount = 0; float cr = 12.0f, ct = 0.0f, cp = 0.3f;
+                std::memcpy(&N, req_body.data() + 0, 4);
+                std::memcpy(&idxCount, req_body.data() + 4, 4);
+                std::memcpy(&cr, req_body.data() + 8, 4);
+                std::memcpy(&ct, req_body.data() + 12, 4);
+                std::memcpy(&cp, req_body.data() + 16, 4);
+                size_t expect = 24 + static_cast<size_t>(N) * 9 * 4 + static_cast<size_t>(idxCount) * 4;
+                if (req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    std::vector<float> verts(static_cast<size_t>(N) * 9);
+                    std::vector<uint32_t> indices(idxCount);
+                    std::memcpy(verts.data(), req_body.data() + 24, static_cast<size_t>(N) * 9 * 4);
+                    std::memcpy(indices.data(), req_body.data() + 24 + static_cast<size_t>(N) * 9 * 4, static_cast<size_t>(idxCount) * 4);
+                    {
+                        std::lock_guard<std::mutex> lk(g_mesh_mutex);
+                        g_mesh_req.verts = std::move(verts);
+                        g_mesh_req.indices = std::move(indices);
+                        g_mesh_req.N = N;
+                        g_mesh_req.idxCount = idxCount;
+                        g_mesh_req.cam_radius = cr; g_mesh_req.cam_theta = ct; g_mesh_req.cam_phi = cp;
+                        g_mesh_pending = true; g_mesh_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_mesh_mutex);
+                    bool ok = g_mesh_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_mesh_applied; });
+                    body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                }
+            }
+            content_type = "application/json";
         } else if (p == "/skin_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
             //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
@@ -454,6 +498,16 @@ int main(int argc, char** argv) {
                 g_mem_pending = false;
                 g_mem_applied = true;
                 g_mem_cv.notify_all();
+            }
+        }
+
+        // Apply a pending mesh request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_mesh_mutex);
+            if (g_mesh_pending) {
+                engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
+                engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
         }
 

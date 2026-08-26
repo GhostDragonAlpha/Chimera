@@ -72,10 +72,10 @@ reading anyone else:
 
 - **rest AREA** — each triangle resists change of its own area (R7b).
 - **rest BENDING** — each dihedral resists folding away from its rest angle (R7c).
-- **outward EXTERIOR** — a closed mesh resists change of its enclosed volume `V0`; the
-  body holds an *outside* (the pressure that keeps a balloon a balloon). For an open shell
-  (the bear) `V0` is undefined, so the exterior constraint is not yet applied — the closed
-  blob comes first.
+- **outward EXTERIOR** — a closed mesh resists change of its enclosed volume `V0`; an open
+  shell resists deviation of its rest mean curvature `H0` (Young–Laplace `p = 2γH`,
+  `γ` tied to `K_BOND`). `sphere(V0)` + `bear(H0)` are the two faces of ONE areal rest-state:
+  the body holds an *outside* (the pressure/curvature that keeps a balloon, or a bear, a thing).
 
 These are **not a third force**. They are rest-state geometry on the triangle carrier:
 derived stiffnesses tied to the one physical constant `K_BOND` (no free numbers), and a

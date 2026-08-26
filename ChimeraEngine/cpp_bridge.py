@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import struct
 import urllib.request
 from pathlib import Path
 
@@ -619,6 +620,105 @@ def render_splat_movie(splat_path, out_dir, frames: int = 36, elevations=None,
                 if resp.status != 200 or b'"ok":true' not in resp.read():
                     return None
             png = out / f"splat_f{idx:03d}.png"
+            png.write_bytes(fetch_frame(timeout=timeout))
+            paths.append(str(png))
+            idx += 1
+    return paths
+
+
+# ── Triangle mesh rendering (the new /mesh_bin path) ────────────────────────────────
+
+def _read_bear_mesh(bin_path):
+    """Read the SPIACE bear mesh bin: int32 N, int32 M, then N*3 float32 vertices (LE),
+    then M*3 uint32 triangle indices (LE). Return (verts_np, tris_np)."""
+    with open(bin_path, "rb") as f:
+        N, M = struct.unpack("<ii", f.read(8))
+        verts = np.fromfile(f, dtype=np.float32, count=int(N) * 3).reshape(int(N), 3)
+        tris = np.fromfile(f, dtype=np.uint32, count=int(M) * 3).reshape(int(M), 3)
+    return verts, tris
+
+
+def _mesh_normals(verts: np.ndarray, tris: np.ndarray) -> np.ndarray:
+    """Area-weighted per-vertex normals (accumulate each triangle's cross product)."""
+    v0, v1, v2 = verts[tris[:, 0]], verts[tris[:, 1]], verts[tris[:, 2]]
+    fn = np.cross(v1 - v0, v2 - v0)            # (M,3) — unnormalized face normal
+    n = np.zeros_like(verts)
+    np.add.at(n, tris[:, 0], fn)
+    np.add.at(n, tris[:, 1], fn)
+    np.add.at(n, tris[:, 2], fn)
+    ln = np.linalg.norm(n, axis=1, keepdims=True)
+    ln[ln == 0] = 1.0
+    return n / ln
+
+
+def load_mesh_bin(bin_path, cam_pos=None, timeout: float = 60.0):
+    """POST a mesh through the new /mesh_bin endpoint.
+
+    Reads the bear mesh, computes area-weighted normals, interleaves [pos3, normal3, color3]
+    (teddy brown), frames the camera from the body's extent, and POSTs the binary protocol
+    `[u32 N][u32 idxCount][f32 r][f32 theta][f32 phi][f32 * N*9 verts][u32 * idxCount tris]`.
+    Returns (ok, r, theta, phi)."""
+    if not engine_available():
+        return (False, 12.0, 0.0, 0.3)
+    verts, tris = _read_bear_mesh(bin_path)
+    verts = np.ascontiguousarray(verts, dtype=np.float32)
+    tris = np.ascontiguousarray(tris, dtype=np.uint32)
+    n = int(verts.shape[0])
+    m = int(tris.shape[0])
+    normals = _mesh_normals(verts, tris)
+    color = np.full((n, 3), (0.8, 0.55, 0.35), dtype=np.float32)
+    verts9 = np.hstack([verts, normals, color]).astype(np.float32)
+
+    extent = float(np.linalg.norm(verts, axis=1).max()) or 1.0
+    if cam_pos is None:
+        cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+    r, theta, phi = _spherical(cam_pos)
+
+    # C++ /mesh_bin expects a 24-byte header: [u32 N][u32 idxCount][f32 r][f32 theta][f32 phi]
+    # plus one trailing f32 (read as part of the 24-byte prefix). `idxCount` is the TOTAL number
+    # of uint32 indices (= M*3), not the triangle count — the endpoint reads `idxCount` uint32s.
+    header = struct.pack("<II4f", n, int(tris.size), r, theta, phi, 0.0)
+    payload = header + verts9.tobytes() + tris.astype(np.uint32).tobytes()
+    req = urllib.request.Request(f"{ENGINE_URL}/mesh_bin", data=payload,
+                                 headers={"Content-Type": "application/octet-stream"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            if resp.status != 200:
+                return (False, r, theta, phi)
+            ok = b'"ok":true' in resp.read()
+            return (ok, r, theta, phi)
+    except Exception:
+        return (False, r, theta, phi)
+
+
+def render_mesh_movie(bin_path, out_dir, frames: int = 36, elevations=(0.3, 0.0, -0.3),
+                      timeout: float = 30.0) -> list | None:
+    """Render a ROTATION MOVIE of a triangle mesh through the C++ engine -> list of PNG paths.
+
+    Mirrors render_teddy_movie: load once with /mesh_bin, then orbit the camera over
+    `elevations` (phi) and `frames` total angles, capturing a frame at each stop. Feed the
+    returned paths to `senses.watch()` so the dyad can judge the mesh as real geometry."""
+    if not engine_available():
+        return None
+    verts, _ = _read_bear_mesh(bin_path)
+    extent = float(np.linalg.norm(verts, axis=1).max()) or 1.0
+    cam_pos = (0.0, -2.7 * extent, 0.72 * extent)
+
+    ok, radius, _, _ = load_mesh_bin(bin_path, cam_pos, timeout=timeout)
+    if not ok:
+        return None
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    per = max(1, frames // len(elevations))
+    paths = []
+    idx = 0
+    for phi in elevations:
+        for i in range(per):
+            theta = 2.0 * math.pi * i / per
+            if not _set_camera(radius, theta, phi, timeout=timeout):
+                return None
+            png = out / f"mesh_f{idx:03d}.png"
             png.write_bytes(fetch_frame(timeout=timeout))
             paths.append(str(png))
             idx += 1

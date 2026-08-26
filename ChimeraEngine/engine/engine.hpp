@@ -38,6 +38,10 @@ public:
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
 
+    // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
+    bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
+                   uint32_t vcount, uint32_t icount);
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);
@@ -184,4 +188,18 @@ private:
     uint32_t skin_cur_slot_ = 0;   // last applied slot (for the 'P' toggle)
     bool skinned_active_ = false;  // true after load_skinned; /membrane_bin clears it
     bool skin_pose_dirty_ = false; // dispatch skin.comp on the next frame
+
+    // ── triangle mesh rendering ──────────────────────────────────────────────
+    bool create_triangle_pipeline();
+    VkShaderModule tri_vert_mod_ = VK_NULL_HANDLE, tri_frag_mod_ = VK_NULL_HANDLE;
+    VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
+    VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  tri_vmem_, tri_imem_;
+    uint32_t        tri_idx_count_ = 0;
+    bool            has_mesh_ = false;
+    // Offscreen depth attachment (for triangle depth testing)
+    VkImage         rt_depth_image_ = VK_NULL_HANDLE;
+    VkDeviceMemory  rt_depth_mem_   = VK_NULL_HANDLE;
+    VkImageView     rt_depth_view_  = VK_NULL_HANDLE;
+    void destroy_triangle_resources();
 };

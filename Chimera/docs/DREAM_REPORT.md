@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-08-24T07:15:01Z
+consolidated: 2026-08-25T07:15:01Z
 
 ## Awaiting your approval
 16 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -13,12 +13,12 @@ consolidated: 2026-08-24T07:15:01Z
 - H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
 
 ## Open phantom pains
-- phase_4d2da4e032a4aa07:P1 [48d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_3414a5cc1ff49e30:P1 [48d] Phase 2 dependencies may still block Phase 3 wiring
-- phase_33cc2d55125bc551:P1 [48d] sleepwalker may still attempt PIE if runtime_report is not checked properly
-- phase_a06bc8140bd62718:P1 [48d] phase_da55128aec6d109a:P1
-- phase_0ddffb52d2d75240:P1 [48d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
-- phase_3baeff0ccd0f4556:P1 [48d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
+- phase_4d2da4e032a4aa07:P1 [49d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_3414a5cc1ff49e30:P1 [49d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_33cc2d55125bc551:P1 [49d] sleepwalker may still attempt PIE if runtime_report is not checked properly
+- phase_a06bc8140bd62718:P1 [49d] phase_da55128aec6d109a:P1
+- phase_0ddffb52d2d75240:P1 [49d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
+- phase_3baeff0ccd0f4556:P1 [49d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 1 **Hierarchical_Membrane_System** (system-verified 2026-07-22T00:52:10)
@@ -72,10 +72,10 @@ clusters >= 3: 80  |  suppressed (covered/pending): 80  |  staged: 0
   covered   [ 26x] sim_rejection: verb_interactions/weapon_tool_examine  <- PENDING_HEURISTICS.md
   covered   [ 26x] sim_rejection: verb_interactions/verb_shovel_rock_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 26x] sim_rejection: verb_interactions/verb_shovel_sand_surface_location  <- PENDING_HEURISTICS.md
-  covered   [ 25x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
+  covered   [ 26x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
   covered   [ 21x] sim_rejection: verb_interactions/verb_shovel_metal_surface_location  <- PENDING_HEURISTICS.md
-  covered   [ 20x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
-  covered   [ 15x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
+  covered   [ 21x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
+  covered   [ 16x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [ 10x] sim_rejection: audio_visual_sync/walk_fast_on_sand  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: travel_vehicle_basic/vehicle_component_initialized  <- PENDING_HEURISTICS.md
@@ -94,7 +94,7 @@ clusters >= 3: 80  |  suppressed (covered/pending): 80  |  staged: 0
   covered   [  3x] sim_rejection: verb_interactions/verb_drop_location  <- PENDING_HEURISTICS.md
   covered   [  3x] sim_rejection: chimera_complete/generation_transition  <- PENDING_HEURISTICS.md
   covered   [  3x] sim_rejection: regolith_yard/sand_basin_dwell_and_frame  <- PENDING_HEURISTICS.md
-  covered   [265x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [268x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [169x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [131x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
@@ -133,7 +133,7 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 3966  |  archivable (>30d, superseded, unreferenced): 245
+live nodes: 3970  |  archivable (>30d, superseded, unreferenced): 245
       81x mutation:dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_directio
       37x mutation:code_generation_unknown
       36x mutation:E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated

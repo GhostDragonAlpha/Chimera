@@ -414,7 +414,8 @@ class WalkOscillator:
 
 
 def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain=1.0,
-                 phases=None, swing_gate=None, roll=0.0, stand_class=None, chan=None):
+                 phases=None, swing_gate=None, roll=0.0, stand_class=None, chan=None,
+                  forward=0.0, theta_step=0.0):
     """THE BUTTON'S CONTENT: the stand formula, plus one oscillator, and nothing else.
 
     `stand_class` / `chan` (2026-08-04, task 7): the STAND SUBSTRATE AS A PARAMETER. Walking is
@@ -452,8 +453,13 @@ def walk_formula(theta_stand, theta_walk, groups, z, pitch, phase, nu, tgt, gain
                 "policy's numbers by zero for every arm it ever judged).")
         return _oscillate(stand_class.control(theta_stand, nu, chan), theta_walk, groups, gain,
                           phase, phases, swing_gate)
+    # THE FORWARD LEVER (THE_LEVERS.md) enters as a PITCH-SETPOINT BIAS on the stand substrate,
+    # reusing `kp`: the body drives to cancel `pitch - forward*theta_step`. `theta_step` is derived
+    # from this body's geometry (asin(fore_edge / com_h)); `forward = 0` leaves `pitch` unchanged
+    # and reproduces the pre-lever formula bit-identically. The bias IS the commanded lean
+    # (theta = |d|*theta_step); the WalkOscillator supplies the step that realizes it.
     u = np.clip(theta_stand[:nu] + theta_stand[nu:2 * nu] * (tgt - z)
-                + theta_stand[2 * nu:3 * nu] * pitch
+                + theta_stand[2 * nu:3 * nu] * (pitch - forward * theta_step)
                 # THE STAND PORT GAINED A ROLL BLOCK (2026-08-04, parser.py + train_stand.py):
                 # its theta is now 4*nu, and `theta_stand[2*nu:]` -- what this line used to say --
                 # would take kp AND kr together and multiply 2*nu numbers by one pitch. It would
@@ -535,7 +541,9 @@ def move_formula_fn(theta_stand, theta_walk, groups, tgt, nu, P, gain=1.0, stand
         return walk_formula(theta_stand, theta_walk, groups, obs["z"], obs["pitch"],
                             P["OUT omega_rad_s"] * obs["t"], nu, tgt, gain=gain * float(value),
                             phases=obs.get("phases"), swing_gate=obs.get("swing_gate"),
-                            roll=obs["roll"], stand_class=stand_class, chan=obs.get("chan"))
+                            roll=obs["roll"], stand_class=stand_class, chan=obs.get("chan"),
+                            forward=obs.get("forward", 0.0),
+                            theta_step=P.get("theta_step", 0.0))
     return fn
 
 

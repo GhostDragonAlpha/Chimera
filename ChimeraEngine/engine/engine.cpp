@@ -474,6 +474,7 @@ bool Engine::init(const EngineConfig& cfg) {
 
     // ── 11. Pipeline ─────────────────────────────────────────────────────────────────
     if (!create_pipeline()) return false;
+    if (!create_triangle_pipeline()) return false;
 
 
     // ── 12. Compute pipeline ───────────────────────────────────────────────────────
@@ -534,6 +535,7 @@ void Engine::shutdown() {
     if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
     destroy_sort_resources();
     destroy_skin_resources();
+    destroy_triangle_resources();
 
     if (compute_desc_pool_)     vkDestroyDescriptorPool(device_,     compute_desc_pool_,      nullptr);
     if (compute_desc_layout_)   vkDestroyDescriptorSetLayout(device_, compute_desc_layout_,   nullptr);
@@ -750,6 +752,14 @@ bool Engine::compile_shaders() {
     if (vert_mod_ == VK_NULL_HANDLE || frag_mod_ == VK_NULL_HANDLE || sort_mod_ == VK_NULL_HANDLE
         || skin_mod_ == VK_NULL_HANDLE) return false;
 
+    auto trivert_spv = read_file((base + "/shaders/render_tri.vert.spv").c_str());
+    auto trifrag_spv = read_file((base + "/shaders/render_tri.frag.spv").c_str());
+    if (trivert_spv.empty()) { fprintf(stderr, "Failed to load render_tri.vert.spv\n"); return false; }
+    if (trifrag_spv.empty()) { fprintf(stderr, "Failed to load render_tri.frag.spv\n"); return false; }
+    tri_vert_mod_ = create_shader_module(device_, trivert_spv);
+    tri_frag_mod_ = create_shader_module(device_, trifrag_spv);
+    if (tri_vert_mod_ == VK_NULL_HANDLE || tri_frag_mod_ == VK_NULL_HANDLE) return false;
+
     if (!comp_spv.empty()) {
         comp_mod_ = create_shader_module(device_, comp_spv);
     }
@@ -911,6 +921,161 @@ bool Engine::create_pipeline() {
     vkDestroyPipelineCache(device_, cache, nullptr);
 
     return true;
+}
+
+bool Engine::create_triangle_pipeline() {
+    // Vertex input — matches render_tri.vert: 9 floats = pos(3) normal(3) color(3)
+    VkVertexInputBindingDescription binding{};
+    binding.binding   = 0;
+    binding.stride    = sizeof(float) * 9;  // x,y,z, nx,ny,nz, r,g,b
+    binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    VkVertexInputAttributeDescription attrs[3] = {};
+    attrs[0].location = 0;  attrs[0].binding = 0;
+    attrs[0].format   = VK_FORMAT_R32G32B32_SFLOAT;
+    attrs[0].offset   = 0;            // xyz
+
+    attrs[1].location = 1;  attrs[1].binding = 0;
+    attrs[1].format   = VK_FORMAT_R32G32B32_SFLOAT;
+    attrs[1].offset   = sizeof(float) * 3;   // normal
+
+    attrs[2].location = 2;  attrs[2].binding = 0;
+    attrs[2].format   = VK_FORMAT_R32G32B32_SFLOAT;
+    attrs[2].offset   = sizeof(float) * 6;   // color
+
+    // Pipeline stages
+    VkPipelineShaderStageCreateInfo stages[2] = {};
+    stages[0].sType           = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[0].stage           = VK_SHADER_STAGE_VERTEX_BIT;
+    stages[0].module          = tri_vert_mod_;
+    stages[0].pName           = "main";
+
+    stages[1].sType           = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[1].stage           = VK_SHADER_STAGE_FRAGMENT_BIT;
+    stages[1].module          = tri_frag_mod_;
+    stages[1].pName           = "main";
+
+    // Input assembly — triangle list
+    VkPipelineInputAssemblyStateCreateInfo ia{};
+    ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
+    // Viewport + scissor (dynamic)
+    VkViewport viewport{};
+    viewport.width  = static_cast<float>(extent_.width);
+    viewport.height = static_cast<float>(extent_.height);
+    viewport.maxDepth = 1.0f;
+
+    VkRect2D scissor{};
+    scissor.extent = extent_;
+
+    VkPipelineViewportStateCreateInfo vp{};
+    vp.sType               = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    vp.viewportCount       = 1;
+    vp.pViewports          = &viewport;
+    vp.scissorCount        = 1;
+    vp.pScissors           = &scissor;
+
+    // Rasterization
+    VkPipelineRasterizationStateCreateInfo ras{};
+    ras.sType               = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    ras.depthClampEnable    = VK_FALSE;
+    ras.rasterizerDiscardEnable = VK_FALSE;
+    ras.polygonMode         = VK_POLYGON_MODE_FILL;
+    ras.cullMode            = VK_CULL_MODE_NONE;
+    ras.frontFace           = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    ras.depthBiasEnable     = VK_FALSE;
+    ras.lineWidth           = 1.0f;
+
+    // Multisampling — disabled
+    VkPipelineMultisampleStateCreateInfo ms{};
+    ms.sType                = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    ms.sampleShadingEnable  = VK_FALSE;
+
+    // Color blend — opaque
+    VkPipelineColorBlendAttachmentState blend{};
+    blend.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                           VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    blend.blendEnable    = VK_FALSE;
+
+    VkPipelineColorBlendStateCreateInfo cb{};
+    cb.sType                = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    cb.attachmentCount      = 1;
+    cb.pAttachments         = &blend;
+
+    // Dynamic state
+    VkPipelineDynamicStateCreateInfo dyn{};
+    dyn.sType              = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dyn.dynamicStateCount  = 2;
+    static const VkDynamicState dyn_states[] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+    dyn.pDynamicStates     = dyn_states;
+
+    // Depth stencil — enable depth test/write for triangle occlusion
+    VkPipelineDepthStencilStateCreateInfo ds{};
+    ds.sType             = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    ds.depthTestEnable   = VK_TRUE;
+    ds.depthWriteEnable  = VK_TRUE;
+    ds.depthCompareOp    = VK_COMPARE_OP_LESS;
+    ds.depthBoundsTestEnable = VK_FALSE;
+    ds.stencilTestEnable = VK_FALSE;
+
+    // Graphics pipeline — reuse the existing pipeline_layout_ (UBO binding 0)
+    VkGraphicsPipelineCreateInfo gpci{};
+    gpci.sType                        = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    gpci.stageCount                   = 2;
+    gpci.pStages                      = stages;
+    gpci.pVertexInputState            = nullptr;  // set below
+    gpci.pInputAssemblyState          = &ia;
+    gpci.pViewportState               = &vp;
+    gpci.pRasterizationState          = &ras;
+    gpci.pMultisampleState            = &ms;
+    gpci.pDepthStencilState           = &ds;
+    gpci.pColorBlendState             = &cb;
+    gpci.pDynamicState                = &dyn;
+    gpci.layout                       = pipeline_layout_;
+    gpci.renderPass                   = rt_render_pass_;
+    gpci.subpass                      = 0;
+
+    VkPipelineVertexInputStateCreateInfo vi{};
+    vi.sType            = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vi.vertexBindingDescriptionCount = 1;
+    vi.pVertexBindingDescriptions    = &binding;
+    vi.vertexAttributeDescriptionCount = 3;
+    vi.pVertexAttributeDescriptions  = attrs;
+    gpci.pVertexInputState = &vi;
+
+    VkPipelineCache cache{};
+    if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_pipeline_) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create triangle graphics pipeline\n");
+        return false;
+    }
+    vkDestroyPipelineCache(device_, cache, nullptr);
+
+    return true;
+}
+
+bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
+                       uint32_t vcount, uint32_t icount) {
+    vkDeviceWaitIdle(device_);
+    upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
+                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, tri_vbuf_, tri_vmem_);
+    upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
+                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
+    tri_idx_count_ = icount;
+    has_mesh_ = true;
+    return true;
+}
+
+void Engine::destroy_triangle_resources() {
+    if (tri_pipeline_) { vkDestroyPipeline(device_, tri_pipeline_, nullptr); tri_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
+    if (tri_frag_mod_) { vkDestroyShaderModule(device_, tri_frag_mod_, nullptr); tri_frag_mod_ = VK_NULL_HANDLE; }
+    if (tri_vbuf_) { vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
+    if (tri_ibuf_) { vkDestroyBuffer(device_, tri_ibuf_, nullptr); vkFreeMemory(device_, tri_imem_, nullptr); tri_ibuf_ = VK_NULL_HANDLE; }
+    if (rt_depth_view_)  { vkDestroyImageView(device_, rt_depth_view_, nullptr); rt_depth_view_ = VK_NULL_HANDLE; }
+    if (rt_depth_image_) { vkDestroyImage(device_, rt_depth_image_, nullptr); rt_depth_image_ = VK_NULL_HANDLE; }
+    if (rt_depth_mem_)   { vkFreeMemory(device_, rt_depth_mem_, nullptr); rt_depth_mem_ = VK_NULL_HANDLE; }
 }
 
 bool Engine::create_descriptor_sets() {
@@ -1847,7 +2012,7 @@ bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
-    if (n_ == 0) return true;
+    if (n_ == 0 && !has_mesh_) return true;
     // Offscreen: render to rt_framebuffer_ and capture from rt_image_. No swapchain acquire, so
     // the /frame endpoint works even when the window is minimized (or entirely headless).
     vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
@@ -2041,13 +2206,14 @@ bool Engine::frame() {
     rpb.renderPass        = rt_render_pass_;
     rpb.framebuffer       = rt_framebuffer_;
     rpb.renderArea.extent = extent_;
-    rpb.clearValueCount   = 1;
-    VkClearValue clear{};
-    clear.color.float32[0] = 0.015f;
-    clear.color.float32[1] = 0.02f;
-    clear.color.float32[2] = 0.06f;
-    clear.color.float32[3] = 1.0f;
-    rpb.pClearValues       = &clear;
+    VkClearValue clears[2] = {};
+    clears[0].color.float32[0] = 0.015f;
+    clears[0].color.float32[1] = 0.02f;
+    clears[0].color.float32[2] = 0.06f;
+    clears[0].color.float32[3] = 1.0f;
+    clears[1].depthStencil.depth = 1.0f;
+    rpb.clearValueCount   = 2;
+    rpb.pClearValues       = clears;
 
     vkCmdBeginRenderPass(cmd_bufs_[img_idx], &rpb, VK_SUBPASS_CONTENTS_INLINE);
     {
@@ -2060,18 +2226,27 @@ bool Engine::frame() {
         sc.extent = extent_;
         vkCmdSetScissor(cmd_bufs_[img_idx], 0, 1, &sc);
     }
-    vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);
-    vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
-
-    // Bind vertex buffer and draw points (depth-sorted back-to-front via the GPU sort's index buffer)
-    VkBuffer buf = pos_buf_;
-    VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &buf, &offset);
-    if (sort_idx_buf_ != VK_NULL_HANDLE) {
-        vkCmdBindIndexBuffer(cmd_bufs_[img_idx], sort_idx_buf_, 0, VK_INDEX_TYPE_UINT32);
-        vkCmdDrawIndexed(cmd_bufs_[img_idx], n_, 1, 0, 0, 0);
+    if (has_mesh_ && tri_pipeline_ != VK_NULL_HANDLE && tri_idx_count_ > 0) {
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+        VkBuffer vb = tri_vbuf_; VkDeviceSize off = 0;
+        vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+        vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
     } else {
-        vkCmdDraw(cmd_bufs_[img_idx], n_, 1, 0, 0);
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+
+        // Bind vertex buffer and draw points (depth-sorted back-to-front via the GPU sort's index buffer)
+        VkBuffer buf = pos_buf_;
+        VkDeviceSize offset = 0;
+        vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &buf, &offset);
+        if (sort_idx_buf_ != VK_NULL_HANDLE) {
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], sort_idx_buf_, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], n_, 1, 0, 0, 0);
+        } else {
+            vkCmdDraw(cmd_bufs_[img_idx], n_, 1, 0, 0);
+        }
     }
 
     vkCmdEndRenderPass(cmd_bufs_[img_idx]);
@@ -2271,15 +2446,31 @@ void Engine::create_offscreen() {
     color_ref.attachment = 0;
     color_ref.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+    VkAttachmentDescription depth{};
+    depth.format         = VK_FORMAT_D32_SFLOAT;
+    depth.samples        = VK_SAMPLE_COUNT_1_BIT;
+    depth.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depth.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
+    depth.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    depth.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depth.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
+    depth.finalLayout    = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference depth_ref{};
+    depth_ref.attachment = 1;
+    depth_ref.layout     = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
     VkSubpassDescription subpass{};
     subpass.pipelineBindPoint    = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments    = &color_ref;
+    subpass.pDepthStencilAttachment = &depth_ref;
 
+    VkAttachmentDescription attachments[2] = { color, depth };
     VkRenderPassCreateInfo rpci{};
     rpci.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    rpci.attachmentCount = 1;
-    rpci.pAttachments    = &color;
+    rpci.attachmentCount = 2;
+    rpci.pAttachments    = attachments;
     rpci.subpassCount    = 1;
     rpci.pSubpasses      = &subpass;
     vkCreateRenderPass(device_, &rpci, nullptr, &rt_render_pass_);
@@ -2314,11 +2505,39 @@ void Engine::create_offscreen() {
     vci.subresourceRange.layerCount = 1;
     vkCreateImageView(device_, &vci, nullptr, &rt_view_);
 
+    // Depth attachment for triangle depth testing
+    VkImageCreateInfo di{};
+    di.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    di.imageType     = VK_IMAGE_TYPE_2D;
+    di.format        = VK_FORMAT_D32_SFLOAT;
+    di.extent        = {extent_.width, extent_.height, 1};
+    di.mipLevels     = 1; di.arrayLayers = 1; di.samples = VK_SAMPLE_COUNT_1_BIT;
+    di.tiling        = VK_IMAGE_TILING_OPTIMAL;
+    di.usage         = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    di.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    vkCreateImage(device_, &di, nullptr, &rt_depth_image_);
+    VkMemoryRequirements dmr; vkGetImageMemoryRequirements(device_, rt_depth_image_, &dmr);
+    VkMemoryAllocateInfo dai{};
+    dai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    dai.allocationSize = dmr.size;
+    dai.memoryTypeIndex = find_mem_type(dmr.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    vkAllocateMemory(device_, &dai, nullptr, &rt_depth_mem_);
+    vkBindImageMemory(device_, rt_depth_image_, rt_depth_mem_, 0);
+    VkImageViewCreateInfo dvi{};
+    dvi.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    dvi.image    = rt_depth_image_;
+    dvi.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    dvi.format   = VK_FORMAT_D32_SFLOAT;
+    dvi.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+    dvi.subresourceRange.levelCount = 1; dvi.subresourceRange.layerCount = 1;
+    vkCreateImageView(device_, &dvi, nullptr, &rt_depth_view_);
+
     VkFramebufferCreateInfo fci{};
     fci.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     fci.renderPass      = rt_render_pass_;
-    fci.attachmentCount = 1;
-    fci.pAttachments    = &rt_view_;
+    fci.attachmentCount = 2;
+    VkImageView off_attach[2] = { rt_view_, rt_depth_view_ };
+    fci.pAttachments    = off_attach;
     fci.width           = extent_.width;
     fci.height          = extent_.height;
     fci.layers          = 1;

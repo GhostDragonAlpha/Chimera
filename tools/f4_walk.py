@@ -73,7 +73,7 @@ SEEDS = 10                    # the headline is the median of these
 
 
 def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, frames=0,
-            entrained=False, seed=0, stand_class=None, w0=None):
+            entrained=False, seed=0, stand_class=None, w0=None, forward=0.0):
     """One life THROUGH THE PARSER. `gain=0.0` is the ablation, same code path.
 
     `seed = 0` is the UNPERTURBED control; every other seed nudges qpos by `NUDGE` after the
@@ -151,7 +151,8 @@ def run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, gain, fra
             # in it, so it cannot recur silently.
             roll = float(np.arctan2(2 * (q[0] * q[1] + q[2] * q[3]),
                                     1 - 2 * (q[1] ** 2 + q[2] ** 2)))
-            obs = {"z": z, "pitch": pitch, "roll": roll, "t": float(d.time)}
+            obs = {"z": z, "pitch": pitch, "roll": roll, "t": float(d.time),
+                   "forward": forward}
             if observer is not None:
                 # THE SUBSTRATE'S OWN SENSE OF ITS STATE. A PD stand policy needs rates, and a
                 # rate needs a past; the observer is the judge's, at the judge's cadence, so the
@@ -263,6 +264,21 @@ def run() -> int:
     groups = muscle_groups(m, d, mujoco)
     tgt, nu = S["OUT pelvis_target_m"], m.nu
     vt = P["OUT target_speed_ms"]
+    # DERIVE theta_step FROM THE BODY (no free number): rigid inverted pendulum about the contact
+    # centre, THE_LEVERS' own formula. Reset to neutral, read CoM height and the fore BoS edge.
+    mujoco.mj_resetDataKeyframe(m, d, 0)
+    mujoco.mj_forward(m, d)
+    _com_x, _com_h = float(d.qpos[0]), float(d.qpos[2])
+    _xs = []
+    for _b in ("r_foot", "l_foot", "r_toes", "l_toes"):
+        try:
+            _xs.append(float(d.xpos[m.body(_b).id][0]))
+        except Exception:
+            pass
+    _fore = (max(_xs) - _com_x) if _xs else 0.0
+    P["theta_step"] = (float(np.arcsin(min(1.0, _fore / _com_h)))
+                       if _com_h > 1e-6 else 0.0)
+    P["forward_lever"] = forward
 
     # THE SUBSTRATE'S SHAPE, CHECKED AGAINST THE MODEL'S OWN nu (never against a block count
     # divided out of the file -- `parser.check_theta_shape`'s rule, and the substitution that
@@ -286,13 +302,20 @@ def run() -> int:
     seed_ids = ([s for s in range(nseeds) if s not in (0, 1, 2)] if "--held-out" in sys.argv
                 else list(range(nseeds)))
     nseeds = len(seed_ids)
+    # THE FORWARD LEVER (THE_LEVERS.md, chain lever -> lean). Only T5's launch metric needs it;
+    # default 0 keeps every historical run bit-identical. Measured from THIS body at reset, never
+    # assumed: theta_step = asin(fore_edge / com_h), the operator's rigid-inverted-pendulum formula.
+    forward = (float(sys.argv[sys.argv.index("--forward") + 1]) if "--forward" in sys.argv
+               else 0.0)
 
     # THE SAME SEEDS FOR BOTH ARMS. The ablation is the walk's control, and a control
     # run from a different initial condition than the thing it controls is not a control.
     lives = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0,
-                     entrained=entrained, seed=s, stand_class=stand_class, w0=w0) for s in seed_ids]
+                     entrained=entrained, seed=s, stand_class=stand_class, w0=w0,
+                     forward=forward) for s in seed_ids]
     abls = [run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 0.0,
-                    entrained=entrained, seed=s, stand_class=stand_class, w0=w0) for s in seed_ids]
+                    entrained=entrained, seed=s, stand_class=stand_class, w0=w0,
+                    forward=forward) for s in seed_ids]
 
     def med(rows, key):
         return float(np.median([r[key] for r in rows]))
@@ -304,7 +327,8 @@ def run() -> int:
     med_per = float(np.median(per_all))
     rep_i = int(np.argmin(np.abs(per_all - med_per)))
     live = run_one(m, d, mujoco, P, theta_stand, theta_walk, groups, tgt, nu, 1.0, frames=8,
-                   entrained=entrained, seed=lives[rep_i]["seed"], stand_class=stand_class, w0=w0)
+                   entrained=entrained, seed=lives[rep_i]["seed"], stand_class=stand_class, w0=w0,
+                   forward=forward)
     abl = abls[rep_i]
 
     spd_all = np.array([r["speed"] for r in lives])
@@ -337,6 +361,8 @@ def run() -> int:
     print(f"  parser driver: {live['driver']}   (MOVE was a named Refusal until this rung)")
     print(f"  DERIVED, not searched: omega {P['OUT omega_rad_s']:.4f} rad/s "
           f"(stride {P['OUT stride_s']:.4f} s), antiphase pi, target {vt:.4f} m/s")
+    print(f"  forward lever: {forward:.3f}  (theta_step {P['theta_step']:.4f} rad from body "
+          f"geometry; fore_edge {_fore:.4f} m, com_h {_com_h:.4f} m)")
     # N_FREE, not a re-derived `2*len(OSC_JOINTS)`: that expression was correct until the
     # oscillator gained eps and kappa, and then it silently reported 6 for an 8-number search.
     # An instrument that recomputes a fact instead of reading it will disagree with the thing
@@ -468,6 +494,7 @@ def run() -> int:
     _out = LOGDIR / f"f4_walk_{_stem}.json"
     _out.write_text(json.dumps(dict(
         theta=_wt.name, stand_theta=_st.name, stand_class=_sc_name or "p_only",
+        forward_lever=forward, theta_step_rad=float(P["theta_step"]),
         held_out_only=bool("--held-out" in sys.argv), seed_ids=seed_ids,
         entrained=bool(entrained), seeds=nseeds, nudge=NUDGE, g=g,
         target_speed_ms=vt, stride_s=P["OUT stride_s"],

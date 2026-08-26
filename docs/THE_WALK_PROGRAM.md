@@ -834,3 +834,31 @@ membrane has to make it." It builds AFTER `docs/THE_LEVERS.md` (the lever→lean
 0.5 exists as an address) and `docs/THE_TRIANGLE_CARRIER.md` (the strain field, so compliance is
 read from balance rather than braced on stops). No number in this section is a result; every bar
 is named here, before the run.
+
+---
+
+# APPENDIX — T5 INSTRUMENT WIRED (2026-08-24, instrument-first half of the membrane)
+
+The membrane's SCOPE said it builds AFTER `THE_LEVERS.md` so `forward = 0.5` "exists as an address."
+It did not: `kernel_dsl.py` carried no lever wiring and the walk harness fed no `forward`. The address
+now exists as an INPUT, derived — no free number.
+
+- **Wired:** `walk_formula` (`tools/walk_port.py`) gained `forward` + `theta_step` params. The forward
+  lever enters as a PITCH-SETPOINT BIAS reusing the existing `kp` term: `kp·(pitch − forward·θ_step)`,
+  where `θ_step = asin(fore_edge / com_h)` is THE_LEVERS' own rigid-inverted-pendulum formula, measured
+  from THIS body at reset in `tools/f4_walk.py`'s `run()`. `forward = 0` leaves `pitch` unchanged and
+  reproduces the pre-lever formula **bit-identically** (unit-checked: `fwd0 == ref` for both `roll=0`
+  and `roll=0.05`; bias `= −kp·forward·θ_step`, exactly). `move_formula_fn` threads `obs["forward"]`
+  and `P["theta_step"]` through; `f4_walk.py --forward F` drives it and logs `theta_step_rad`.
+- **Why this is instrument-first, not the membrane's claim.** Only one of the two required terms is in:
+  the lever makes `forward = 0.5` MEASURABLE, but the stand θ was NOT yet trained WITH a moving base
+  (membrane candidate 1). Until that training lands, the frozen stand θ merely drives forward to
+  cancel the lean error — which is the walk drive, but not the trained-in compliance the membrane
+  predicts will hold ≥ 60 s. The swing-terminating stop + interlock (candidate 2) was already DERIVED
+  and coded (`WalkOscillator.swing_allowed` + `swing_gate` on the swing half only).
+- **Machine blocker on this box:** `story/theHuman/numbers.json` is ABSENT here, so `load_body('myobody')`
+  refuses (same root cause as T1's BLOCKED "hollow story ledgers"). The T5 run must execute where
+  `theHuman` exists. Code change is complete and unit-verified; the duration measurement is deferred
+  to that machine.
+- **Next:** train the moving-base stand term IN JOINTLY (candidate 1), then run `f4_walk.py --forward 0.5`
+  to measure hold ≥ 60 s; if both terms in and held < ~31 s ⇒ successor named.
