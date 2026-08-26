@@ -142,7 +142,7 @@ CMDS = ('forward', 'backward', 'left', 'right')
 # are derived from it SECOND, and only what is left over is allowed anywhere near an optimiser.
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-G_EARTH = 9.80665           # CODATA standard gravity. Not this world's -- kept ONLY as the label
+G_EARTH = 9.80665           # CGPM 1901 defined standard gravity (SI Brochure §5.2). Not this world's -- kept ONLY as the label
                             # on the mocap datasets, which were recorded in it.
 LEDGER_MEMBRANE = 'theHuman'
 LEDGER_REQUIRED = ('g', 'leg_length_m', 'comfortable_speed_ms', 'step_time_s')
