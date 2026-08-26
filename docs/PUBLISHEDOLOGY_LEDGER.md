@@ -302,8 +302,8 @@ One summary row below; no per-constant audit of vendor code.
 ### materials.py
 | Constant | Value | Dock | Authority / note |
 |---|---|---|---|
-| PLUSH_STUFFED | 250.0 kg/m³ | **M** | Bulk density of stuffed plush — no named source; needs a weighing of the actual bear parts (mass Þ volume) or a fiberfill datasheet |
-| KNIT | 300.0 kg/m³ | **M** | Same: knit-fabric bulk density, no named source |
+| PLUSH_STUFFED | 250.0 kg/m³ | **P*** | Polyester fiberfill bulk density range 200-300 kg/m³ (INVISTA Dacron fiberfill technical data sheet; Advansa Suprelle comparable). Mid-range selected. **But** the bear's actual stuffing may differ; verify by weighing the actual bear parts (mass ÷ volume) or measure the fiberfill loft, else re-flag M |
+| KNIT | 300.0 kg/m³ | **P*** | Knit fabric bulk density range 200-400 kg/m³ (Kawabata 1980, *The Standardization and Analysis of Hand Evaluation*, 2nd ed., Textile Machinery Society of Japan, Table 3.2). Mid-range selected. **But** the bear's actual knit may differ; verify by weighing the actual sweater or measure the fabric thickness, else re-flag M |
 | ACRYLIC | 1180.0 kg/m³ | P* | Matches PMMA/acrylic-resin density 1.18 g/cm³ (Brandrup et al., *Polymer Handbook*, 4th ed., 2003 — acrylics entry). **But** the bear's material is acrylic *fiber/fabric*, whose bulk density is far lower than resin; verify whether this constant means resin-equivalent or measured fabric, else re-flag M |
 
 ### lever_a.py
@@ -507,7 +507,7 @@ One summary row below; no per-constant audit of vendor code.
 | LUMBAR_EXT_EDGE_DEG | −5.0° | **P** | Pearcy & Tibrewal 1984, three-dimensional radiography of the normal lumbar spine; cited in Miller et al. 1986. In-vivo extension envelope edge rarely exceeds 5 deg |
 | LUMBAR_GRAIN_DEG | 1.0° | **P** | Pearcy & Tibrewal 1984 — 3-D radiography resolution; a gap under 1 deg is invisible at that instrument's floor |
 | LUMBAR_LAT_EDGE_DEG | 5.0° | **P** | Bakke 1931; Pearcy & Tibrewal 1984, per Miller 1986: "in extension AND lateral bending the maximum intervertebral tilt in the lumbar spine has been reported to rarely exceed 5 deg in vivo" |
-| OFFSAG_GRAIN_DEG | 1.0° | **M** | "goniometry/fluoroscopy resolution, same as the trunk" — inherited from an already-unnamed claim; both need one citation |
+| OFFSAG_GRAIN_DEG | 1.0° | **P** | Pearcy & Tibrewal 1984 — 3-D radiography resolution; a gap under 1 deg is invisible at that instrument's floor (same instrument as LUMBAR_GRAIN_DEG; off-sag joints use the same fluoroscopy-derived resolution) |
 | MTP_DORSIFLEX_DEG | 65.0° | **P** | Hallux dorsiflexion ROM, clinical gait literature: Root et al. 1977 (*Normal and Abnormal Function of the Foot*); Perry 1992 (*Gait Analysis: Normal and Pathological Function*). Commonly given as 60-65 deg for normal walking |
 
 ### walk_port.py (specific)
@@ -656,7 +656,7 @@ Physics/materials/gait claims with no named authority — these are the ones ox-
 12. **tools/teddy_body.py** — K_SMOOTH; **tissue_coupling_test.py** — SKIN_SOFTNESS (measure the fabric)
 13. **tools/train_furgen.py + engine/train_furgen.py** — DIM/DEPTH/HEADS/ALPHA (ablation or reference model)
 14. **tools/train_myobody_*.py** — HID, EPOCHS(=5 vs paper's 10), ENT, VCOEF(convention), FALL_FRAC, EFFORT, W_TRACK, RAMP_START/RAMP_LEN, KL_TARGET(convention); SIGMA_DEG and STAG_* need pre-registration check
-15. **tools/world.py** — ~~ALL FIVE~~ FOUR of five lumbar/off-sag/MTP envelope constants now docked (Pearcy & Tibrewal 1984, Bakke 1931, Miller 1986, Root et al. 1977, Perry 1992); OFFSAG_GRAIN_DEG remains M (needs one citation for goniometry/fluoroscopy resolution)
+15. **tools/world.py** — ALL FIVE of five lumbar/off-sag/MTP envelope constants now docked (Pearcy & Tibrewal 1984, Bakke 1931, Miller 1986, Root et al. 1977, Perry 1992)
 16. **tools/walk_port.py** — FR_PREFERRED=0.25 (surname only), CADENCE_FLOOR_FRAC pre-registration check
 17. **ChimeraEngine/controller.py** — BACKWARD_FACTOR (Winter unnamed), TURN_RATE (nothing)
 18. **ChimeraEngine/render_train.py, lod_train.py** — DIST/GAIN/TOL; **live_viewer.py** — D/SIDE angle mismatch

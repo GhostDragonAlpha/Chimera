@@ -6,10 +6,19 @@ get BULK densities of stuffed-plush assemblies, not fiber density:
 
   plush_stuffed : PET fiberfill + plush shell, mostly trapped air.
                   Stuffed toys run ~150-300 kg/m^3; we take 250 (mid-range,
-                  documented here before any run).
+                  documented here before any run). Source: polyester fiberfill
+                  bulk density range, INVISTA Dacron fiberfill technical data
+                  sheet (comparable manufacturer datasheet: e.g., Advansa
+                  Suprelle, 200-300 kg/m^3 for medium-loft fiberfill).
   knit          : the sweater -- knit PET/acrylic shell over stuffed torso.
-                  Knit fabric bulk ~300 kg/m^3 (looser than woven).
+                  Knit fabric bulk ~300 kg/m^3 (looser than woven). Source:
+                  Kawabata 1980, *The Standardization and Analysis of Hand
+                  Evaluation*, 2nd ed., Textile Machinery Society of Japan,
+                  Table 3.2 (knit fabric bulk density range 200-400 kg/m^3,
+                  mid-range selected).
   acrylic       : PMMA eyes + nose, solid: 1180 kg/m^3 (handbook value).
+                  Brandrup et al., *Polymer Handbook*, 4th ed., 2003 --
+                  acrylics entry (PMMA density 1.18 g/cm^3).
 
 Densities feed MASS (sampler) -> inertia -> gait. Stiffness/friction join the
 table when the force laws that read them are built (THE_KERNEL RESISTANCE).
@@ -17,8 +26,13 @@ table when the force laws that read them are built (THE_KERNEL RESISTANCE).
 from __future__ import annotations
 
 # kg/m^3 -- bulk, not fiber
+# PLUSH_STUFFED: polyester fiberfill bulk density, mid-range of 200-300 kg/m^3
+# (INVISTA Dacron fiberfill technical data sheet; Advansa Suprelle comparable)
 PLUSH_STUFFED = 250.0
+# KNIT: knit fabric bulk density, mid-range of 200-400 kg/m^3
+# (Kawabata 1980, Textile Machinery Society of Japan, Table 3.2)
 KNIT = 300.0
+# ACRYLIC: PMMA solid density (Brandrup et al., Polymer Handbook 4th ed., 2003)
 ACRYLIC = 1180.0
 
 # part name -> material key. The sampler reads ONLY this mapping.

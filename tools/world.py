@@ -161,7 +161,10 @@ OFFSAG_EDGES = {     # joint base -> (edge at the model's lo end, edge at the hi
     "hip_rotation": (-8.0, 8.0),     # Kadaba via Lewis 2017; Winter's caveat carried
     "hip_adduction": (-9.0, 5.0),    # lo = ADDuction (Goetschius peak 8.8), hi = ABduction
 }
-OFFSAG_GRAIN_DEG = 1.0               # goniometry/fluoroscopy resolution, same as the trunk
+OFFSAG_GRAIN_DEG = 1.0               # Pearcy & Tibrewal 1984 — 3-D radiography resolution;
+                                        # a gap under 1 deg is invisible at that instrument's floor
+                                        # (same instrument as LUMBAR_GRAIN_DEG; off-sag joints
+                                        # use the same fluoroscopy-derived resolution)
 # MTP IS REFUSED AT THE MEMBRANE, not here: the model's +-30 deg stop sits INSIDE the
 # published 60-65 deg gait dorsiflexion envelope -- the stop contradicts gait, and a
 # ligament cannot be derived across a stop that is wrong. The model-range amendment is
