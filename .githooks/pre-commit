@@ -47,8 +47,10 @@ fi
 # --- the completeness gate must not rot (docs/THE_FORMULA.md S2b/S7) --------
 # DRY is a MEASURED saturation (Chao2 completeness + dry tail), proven every run -- never an
 # assertion. If you touch the gate, it must still refuse an incomplete (hand-declared) set.
-if command -v python >/dev/null 2>&1 && [ -d ChimeraEngine/core ]; then
-  if ! ( cd ChimeraEngine && python -m core.saturation --staged ); then
+# A3 PHASE 1: runs the WIRED copy (Chimera/core) -- this hook was silently executing the stale
+# ChimeraEngine/core twin via cwd binding, which died when that duplicate set was deduped.
+if command -v python >/dev/null 2>&1 && [ -f Chimera/core/saturation.py ]; then
+  if ! ( cd Chimera && python -m core.saturation --staged ); then
     fail=1
   fi
 fi

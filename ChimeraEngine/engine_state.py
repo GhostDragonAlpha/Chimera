@@ -18,6 +18,9 @@ from pathlib import Path
 _HERE = Path(__file__).resolve().parent
 _REPO = _HERE.parent
 sys.path.insert(0, str(_REPO / "Chimera"))       # reach the real S2b gate
+import core as _core_pkg                         # noqa: E402
+assert "Chimera" in Path(_core_pkg.__file__).parts, (
+    f"core package shadowed to {_core_pkg.__file__} - wired processes must bind Chimera/core")
 from core.saturation import measure as _measure   # noqa: E402
 
 STATE_PATH = _HERE / "engine_state.json"
