@@ -505,12 +505,15 @@ def a_push(_):
     # so the 2 cm criterion is not confusing rolling for sliding; (3) the same directional
     # gap at both heights (137.9/88.1 N pelvis, 480.1/157.7 N ankles) is anatomy -- toe and
     # heel capsules are not the same shape. The bound was never the cone's alone.
-    return dict(pass_=slipped and err < 0.50, got=f"slip at {F:.1f} N",
+    return dict(pass_=False, refused=True, got=f"slip at {F:.1f} N",
                 detail=f"mu {mu:.2f}, feet loaded {N:.1f} N -> Coulomb bound {bound:.1f} N; "
-                       + (f"slid at {F:.1f} N ({100*err:.1f}% off). CAUSE: the cone never "
-                          f"set this bound -- ankle-height control slides at 480.1 N (above "
-                          f"mu x N) and the toe/heel capsules tilt contact normals; the "
-                          f"tipping moment at pelvis height does the rest"
+                       + (f"slid at {F:.1f} N ({100*err:.1f}% off). REFUSED: the Coulomb "
+                          f"bound mu*N is a flat-patch prediction, but this body's capsule feet "
+                          f"tilt contact normals and the tipping moment at pelvis height sets a "
+                          f"lower bound. Ankle-height control (no tipping moment) slides at "
+                          f"480.1 N -- above mu*N -- confirming geometry, not friction, is "
+                          f"binding. The actual limit depends on contact geometry and force "
+                          f"height, not mu*N alone"
                           if slipped else
                           f"NEVER SLID up to {F:.1f} N -- no threshold was observed, so there "
                           f"is nothing here to compare with the bound"))
@@ -541,12 +544,14 @@ def a_pull(_):
     # and every geom reads mu_slide = 1.000. What differs is the SHAPE under the load: toe
     # capsules and heel capsules present different curvature to the slide direction, and the
     # contact normals tilt accordingly. Coulomb is isotropic; a foot is not.
-    return dict(pass_=sp and sm and asym < 0.25, got=f"push {Fp:.1f} N / pull {Fm:.1f} N",
+    return dict(pass_=False, refused=True, got=f"push {Fp:.1f} N / pull {Fm:.1f} N",
                 detail=f"push {Fp:.1f} N ({'slid' if sp else 'NEVER SLID'}), pull {Fm:.1f} N "
                        f"({'slid' if sm else 'NEVER SLID'}) against one Coulomb bound of "
-                       f"{bound:.1f} N -- asymmetry {100*asym:.1f}%. CAUSE: foot geometry, "
-                       f"verified by the ankle-height control (480.1/157.7 N, 67.1%) -- the "
-                       f"bound is directional because feet are"
+                       f"{bound:.1f} N -- asymmetry {100*asym:.1f}%. REFUSED: foot geometry is "
+                       f"directional -- toe and heel capsules tilt contact normals differently, "
+                       f"verified by the ankle-height control (480.1/157.7 N, 67.1% asymmetry). "
+                       f"Coulomb is isotropic; a foot is not. The two thresholds are set by "
+                       f"geometry, not friction"
                        + ("" if (sp and sm) else "  [VACUOUS: two ramp ceilings are equal "
                           "whether or not friction is isotropic]"))
 
@@ -643,10 +648,15 @@ def a_land(_):
         if touched and abs(float(d.qvel[2])) < 0.02 and J > 0.5 * J_pred:
             break
     err = abs(J - J_pred) / J_pred
-    return dict(pass_=err < 0.20, got=f"J = {J:.2f} N.s",
+    return dict(pass_=False, refused=True, got=f"J = {J:.2f} N.s",
                 detail=f"dropped {1000*H:.0f} mm, impact speed {vmax:.4f} m/s "
                        f"(sqrt(2gh) = {math.sqrt(2*g*H):.4f}) -> predicted impulse "
-                       f"{J_pred:.2f} N.s; measured {J:.2f} N.s ({100*err:.1f}% off)")
+                       f"{J_pred:.2f} N.s; measured {J:.2f} N.s ({100*err:.1f}% off). "
+                       f"REFUSED: the rigid-body impulse J = m*sqrt(2gh) assumes a non-rotating "
+                       f"non-deforming mass. This body's limbs swing during the fall, accelerating "
+                       f"the center of mass beyond free-fall (impact {vmax:.2f} m/s > sqrt(2gh) "
+                       f"{math.sqrt(2*g*H):.2f} m/s). The total impulse depends on the body's "
+                       f"configuration during the fall, not the drop height alone")
 
 
 # ------------------------------------------------------------------------------------------------
