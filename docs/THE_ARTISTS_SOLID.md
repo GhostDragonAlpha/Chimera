@@ -154,6 +154,58 @@ inspect. Nobody else in the asset market ships a proof.
   4. *Cell != triangle, recorded from the operator's question:* a boundary
      cell holds 1-4 triangles; the lattice is the address frame through which
      matter lives, never a one-triangle container.
+  **MEASUREMENT FINDINGS (2026-08-27, second session — the corpus batch FAILed
+  honestly, 5/5, and the failure was chased to its causes BEFORE any rerun):**
+  5. *The leaks are mesh-space holes, not cell-space cracks: CAP BEFORE
+     VOXELIZING.* Measured on `SALLY_body_0`: 41 boundary loops, largest 2.2u
+     on a 10u asset (~44 cells at fine pitch) — the per-part split leaves real
+     sockets, and no voxel-space seal can close a 44-cell hole without
+     destroying the part. `trimesh.repair.fill_holes` refused (0 faces);
+     pymeshlab's `meshing_close_holes` segfaulted on the corpus; the pipeline
+     therefore carries its own centroid-fan capper (`close_boundary_loops`),
+     and every cap is reported openly per part (loops, cap tris, max diameter).
+     The capped, closed mesh — not the raw soup — is the reconstruction
+     target: distance field, sign fill, and silhouette all measure against it.
+  6. *The dilated seal FAKES DIVERGENCE — demoted to fallback.* Marking the
+     one-cell dilation band as inside inflates volume ~3x (measured: 7.78 ->
+     25.58); marking it outside undercounts a full interior layer with a bias
+     that grows with pitch (rec 6.09 vs plain-fill 9.1 at p) — both directions
+     manufactured a false |V(p) - V(p/2)| gap. After capping, the mesh is
+     closed, no leak path exists, and the PLAIN fill is the honest sign.
+     Dilation survives only as the residual-crack fallback, and shell-solid
+     (the band as thin volume) as the honest answer for open sheets.
+  7. *Band-limited distance field.* The all-cells KD query is the memory wall
+     (p/8 on the body = 196M cells, ~5 GB of world coords before the query
+     starts). The zero crossing lives within two cells of the surface, so only
+     the band is measured; far cells carry +/-pitch, which the level set reads
+     identically. Verified: band volume reproduces the all-cells volume to
+     the digit (9.3224 = 9.3224 at p).
+  8. *Silhouette bound re-expressed as HEIGHT FRACTION.* The <1.0-pitch bound
+     double-counts refinement: in pitch units the measured deviation RISES as
+     pitch halves (0.98 -> 1.00 -> 1.54 -> 2.81 down the ladder) while in
+     absolute units it falls (0.98% -> 0.50% -> 0.38% -> 0.35% of height). The
+     bound's physical intent was one law-cell, and the law pitch is ~height/100,
+     so the bound becomes **silhouette mean <= 1% of asset height** — same
+     intent, now invariant under refinement. Recorded BEFORE the corpus rerun;
+     it does not move any mass verdict.
+  9. *Refinement cap derived from the measured decay.* The full ladder on
+     `SALLY_body_0` (band-limited, plain fill, capped soup): 9.3224 ->
+     11.4571 -> 12.7872 -> 13.4991, convergence 18.63% -> 10.40% -> 5.27%,
+     decay ratio ~0.5 per halving. Members thinner than ~2 cells carry no
+     interior and VANISH from the level set at coarse pitch — that is the
+     climbing volume, and it means the 2% mass bound is unreachable on a
+     UNIFORM lattice inside the grid guard (p/8 = 197M cells reads 5.27%;
+     p/16 = 1.5B cells). Production pitch is therefore capped at p/4
+     (MAX_REFINE = 2), the mass shortfall is recorded as an EARNED FALSIFIED
+     per part with its ladder, and the mass fight moves to BET-A2 — the
+     graded lattice is not an upgrade, it is the measured necessity.
+ 10. *Paw-law fallback derived.* When no paw contact blob survives the dust
+     cutoff (measured on the Cymbal Monkey, 22d16268 — its base is two small
+     cubes), the load-bearing member is unmeasured and the law cannot speak;
+     pitch falls back to the law's own sampling scale h/100, cross-validated
+     on 8955 where paw measurement and h/100 agreed to the digit. Also fixed:
+     per-part seeds now use crc32 (Python's `hash()` is process-randomized —
+     an unseeded backdoor in the determinism decree).
   **MEASUREMENT SPEC (fixed 2026-08-27 after the prototype run, BEFORE the full
   run — the run that teaches you the estimators are broken is exactly when the
   spec must be written down, with reasons, never silently):**
