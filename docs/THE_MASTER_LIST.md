@@ -1,321 +1,154 @@
 # THE MASTER LIST — everything this is for, one page
 
-*2026-08-23. This file IS the context: it survives any compression because nothing
-else does. Every thread below has a home doc named; when docs fight, run records
-beat prose, and `python tools/orient.py` prints live state.*
+*Rewritten 2026-08-27 by operator decree ("change the master list to fit my
+vision"). The 32-continuation history is compressed, not erased: every claim
+below names its run record or commit. When docs fight, run records beat prose;
+`python tools/orient.py` prints live state.*
 
 ## 1 · THE ONE CLAIM (what this is for)
 
-**Matter that remembers its history, controlled by levers, at the cost of one
-buffer.** The simulation owns the clock — it keeps running on the GPU. The CPU
-is only an operator device: *"a person operating a Rubik's Cube"* (his words).
-One buffer = physics + picture + control — no shipping engine has this topology;
-the parts are standard, the weld is ours.
+**A holographic engine: the triangle is BOTH the structure of reality AND the
+mirror.** One database row per triangle — it occludes, collides, carries mass,
+runs in the CA — and it answers light *from the perspective of the viewer*,
+the only perspective that matters. Cellular automata give the matter life and
+movement; a trained per-triangle light field gives it frost. The product is
+**the game** — art so perfect in the reality of its light that people ask
+*"how did he make something so beautiful with just triangles alone?"*
 
-## 2 · THE LINES (every thread, state, gate)
+**The economics (operator doctrine):** the engine is open-sourced for
+humanity — AI unlocks all doors, so there is no durable money in *how* a
+thing is done; the machine will be absorbed into the membrane of ML within a
+year or two. The only value is the art that comes out of it, and that value
+is the artist's taste, amplified. Taste is the one input no absorption can
+copy, which is why the human is a terminal of this system, not a user of it.
 
-| # | Line | State | Gate / next action | Home doc |
-|---|------|-------|--------------------|----------|
-| T1 | **The levers** — one f32 per intent ∈ [0..1]; lever→lean chain; LEAD address detection on jointless fields | membrane written 2026-08-23 (recording + synthesis, flagged) | P-A pinned but BLOCKED in this checkout: story ledgers hollow (`git ls-files story/` = 19 files; `theStance/` dir empty; `derive_stand_port()` refuses per rule 20). First agent on a machine with the grown ledger runs it — no numbers to quote until then | `docs/THE_LEVERS.md` |
-| T2 | **The triangle carrier** — triangles as matter elements; CA = strain scalar aᵢ/A₀ + k; shared-edge springs; k with memory | membrane written 2026-08-23 (Rule-0 shell) | pre-registered + harness built (tools/ca_triangle.py); run pending completion — see §11 | `docs/THE_TRIANGLE_CARRIER.md` |
-| T3 | **The door** — UE as adaptation device (load + display, computes no truth); /100 + axis-swap known local distortion in export C++ | contract proven method exists (TEST B2 bit-exact) | known-pose test DONE (cont-16, tools/ue_door_known_pose.py all PASS); triangle ledger+checksum DONE headless (tools/ue_door_triangle_ledger.py) — editor cross-check pending on live machine | `docs/THE_TRANSLATION.md` (law), UE plugin cpp |
-| T4 | **THE_MILLION** — 1M conserved points/frame, both force passes, on the 4090 | MEASURED 2026-08-23 cont. — FALSIFIER FIRED: 1422 ms ± 35 @ exactly 1M vs wall 200 (~7×, ~0.7 fps); finiteness holds; tree-build honesty line 3489 ms | LOD reallocation doctrine (THE_LIGHT_SEED) is now the load-bearing successor; every THE_MILLION claim cites `agent_logs/envelope_million.json` | `docs/THE_FIELD_ASSEMBLY.md` §ENVELOPE MEASURED, `tools/envelope_million.py` |
-| T5 | **The DURATION gap** — F4 FIRED: walks then falls; binding failure = duration, not mechanism | live best held 3.10 s over roll-trained stand (travel −23%); peak speed 62% of derived for 1.44 s | Rule-0 shell appended to THE_WALK_PROGRAM; build after T1+T2 land | `docs/THE_WALK_PROGRAM.md` |
-| T6 | **V62 dirty-set** — settled world renders O(change) not O(W); the lever-write attention model | OPEN verdict, falsifier named in orient | measure; wires levers at step ⑥ (stage through AGENT_PROTOCOL first) | `tools/verdict.py` ledger |
-| T7 | **Frosting (the splats)** — splat readout on triangles as derived light; "we morph light" | parked, long way off per operator | link-2 CLEARED (seed 3) — frosting path OPEN, long way off, build vs kernel DSL | `docs/THE_UV_METHOD.md`, `web/renderer/splat.wgsl` |
-| T8 | **The bear lane** — M1 translation PASS / M2 stand PASS / M3 gait (spring-bond hips, k_rot 23.5 N.m/rad derived); FORK-2 evolved policy RUN 34 FALSIFIED + erratum recorded; best r=+0.6794 on disk | operator dyad verdict PENDING (M1/M2 images presented) | honest relabel retrain per RUN 34 successor, then referee | `docs/SESSION_LOG_2026-08-22.md` |
-| T9 | **The walk lane** — 290-muscle human body; ligaments 32; roll term trained-in (F3 restored); multiplicative score proven form | F4 still FIRED on "sustained" | T5's membrane is its next rung | `docs/THE_WALK_PROGRAM.md` |
-| T10 | **The UV ladder** — links 1/3/4/5 PROVEN bit-exact; link 2 open at TEST C4: seeds 0/1/3 pass wrap (0.97/0.95/0.92), seed 2 disqualified by number | parked on HIS eye; contact sheet `models/materials/fur_sd35_c4_contact.png` | **DELEGATED** (op: "they all look good") — **seed 3** selected; link-2 CLEARED | `docs/THE_UV_METHOD.md` |
-| T11 | **The TEDDY lane** — voxel-muscle gait bear, T9 canonical re-import on HONEY body | Kimi's CURRENT TASK slot (worker authority) | do not step on it; Kimi rewrites the slot per stage | `ChimeraEngine/AGENT_PROTOCOL.md` |
-| T12 | **The term ladder** — current term `theSeed`; V61 closed-FALSIFIED unlinked + V62 open twin (both dirty-set lane) | orient prints live state; supersedes this list where they disagree | NEXT MOVE = frame `theDeterminism` as exactly one claim (blocked S0 FRAME); link V61 needs the operator's term call | `tools/orient.py`, `docs/THE_HIERARCHY.md` |
-| T13 | **The parallel octree** — SFC-keyed tree build per operator directive: integer coords → 3D Hilbert/Z key → parallel radix sort → prefix-sum leaf cells → GPU upward link; output = bh_draw's exact tree-dict format, walk unchanged | **option (a) v1 — BYTE-IDENTITY ACHIEVED / SPEEDUP FALSIFIED (continuation-12)** — operator picked (a): keep `build_octree` referee, make ITS build multi-core. v1 (`LightEngine/bh_octree_mt.build_octree_mt`) is BYTE-IDENTICAL to serial on both scenes → force 0.0% by construction (GPU rel err 0.0%). BUT no net speedup: cad_bear 0.83×, T4-1M 0.97×. PROFILE corrects the "root spike" assumption: root partition only 18ms + com/mass 8ms of ~2405ms; **Python BFS orchestration ≈ 2398ms DOMINATES** → v1 parallelizes only the small njit-partition fraction, threading overhead ≥ gain | **B1 MEASURED PASS + B2-A MEASURED (continuation-13)** — single-njit `build_octree_njit` BYTE-IDENTICAL both scenes, T4-1M 2097.6→**138.1 ms**; prange level-sync split (`bh_octree_prange`) byte-identical but **0.93× vs its own serial** (FALSIFIED: staging allocs + barriers + false sharing; threads confirmed engaged); candidate B retired by SFC measurement (24× truncation). **CA-WALK SWAP LANDED+VERIFIED (continuation-14)**: live RUN B now runs `build_octree_njit` — physics verdicts identical to prior pass (energy PASS net of radiation, max strain 2.19%, finite), per-tick tree build **3.69 ms** (~12× drop from ~44.5 ms Python BFS). Next: **persistent buffer pool** (~37 ms/tick wrapper kill inside `build_octree_njit`, no parallelism) → T4-1M 138.1→~101 ms floor | `docs/THE_TRIANGLE_CARRIER.md` §PARALLEL OCTREE + §CA-WALK SWAP MEASURED |
+## 2 · THE ARCHITECTURE (operator decrees — settled, do not reopen)
 
-## 3 · THE LAWS LAYER (beats everything unless amended)
+- **Triangles ARE the CA substrate.** The cubes are invisible Cartesian
+  address scaffolding; **each cube is its own Gaussian space**. The cubes
+  give every triangle an address; the triangles are what we want.
+- **A triangle IS a Gaussian.** Covariance identity verified numerically
+  (max err 0.0016 vs Monte Carlo). 10 of the 14 splat parameters are DERIVED
+  from the geometry (address, frame, extent); 4 are free — the material
+  state, the only numbers a model ever learns per triangle.
+- **Consume-to-recreate.** Eat a mesh, decompose it into the triangle
+  database, regrow it CA-friendly with a bone axis. **Openings stay open**
+  (sockets, mouth) — closing a true opening is the defect.
+- **The bone axis.** Voxels are only scaffolding to grow the stick figure;
+  triangles are addressed relative to bones. Determinism = ROM extremities +
+  CA-filled interior, harnessed by the bone rig.
+- **Hinge arrays.** A joint is not an object; it is a region where the
+  substrate's law changes. Flexion axes DERIVED from bone geometry; muscles
+  are CA contraction signals; gait is a standing wave, not a keyframed clip.
+- **Water.** The cube columns hold height + flow; a CA exchange rule moves
+  it; mass conservation is the falsifier. Creatures interact for free —
+  occupied columns exclude water; the wading monkey is the same rows meeting.
+- **The frost is distilled ray tracing.** Train the light answer offline
+  (path tracer or photographs), run it at lookup cost. "Ray tracing without
+  ray tracing cores." Held-out LIGHT directions are the door, not held-out
+  views — novel views alone make a texture, not a NeRF.
+- **The dyad.** Silicon builds; a separate vision eye (LM Studio's resident
+  model via `core/lm_gateway`) judges blind orbit movies; disagreements get
+  measured; taste bottoms out in the operator and nowhere else.
+- **Rule 0.** Statement / prediction / falsifier BEFORE the build. Derived,
+  never chosen. Honest about the unmeasured. Docs append-only (this page's
+  rewrite is by decree).
 
-- **THE_LIGHT_SEED** — two forces only; M folded into ONE Barnes–Hut walk
-  (M→1 far, M=0 bond, M<0 wall); THE_MILLION budget is a conservation law;
-  splat shape derived never stored; "we do not morph matter; we morph light."
-- **THE_TRANSLATION** — triangles are authoring, the field is the truth; mass/
-  inertia conserved to named tolerances; any code path that edits mesh after
-  translation = violation. Run record: mass err 0.000%, iner ≤1.921% vs tol 2%.
-- **THE_LAW** — Rule 0 (statement/prediction/falsifier before build), no free
-  parameters, docs append-only, honesty about unmeasured.
+## 3 · THE LINES (every thread, state, next gate)
 
-## 4 · THE METRIC
+| # | Line | State | Next action | Home |
+|---|------|-------|-------------|------|
+| L1 | **The corpus** — 5 license-verified monkeys as watertight per-part contract GLBs | DONE (gate 5/5, `d7a8655e`, `d142f207`) | consumed by L3 | `docs/THE_ARTISTS_SOLID.md` |
+| L2 | **The substrate view** — one-mask skin+bone, engine 1px wireframe + overlay slot | DONE — dyad **NO COMPLAINTS 0.95** (`34938671`) | reference pipeline for every later visual | `docs/THE_ARTISTS_SOLID.md` |
+| L3 | **THE REGISTRY** (Phase 4a) — triangle centers = Cartesian addresses; cube edge DERIVED from max edge-adjacent center distance; dual graph; cube index must reproduce the neighborhood 100% | membrane pre-written, goal paused one step from run | RUN IT — falsifier: any neighbor not found through the 26-cube ring | `docs/THE_ARTISTS_SOLID.md` |
+| L4 | **THE BIRTH RULE** (Phase 4b) — triangle-native wound repair, no voxel rasterization; 8955's 41 boundary loops close, sockets measured OPEN | membrane pre-written | after L3 — falsifier: any true opening closed | same |
+| L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`) | needs L3+L4; then train on a corpus part, held-out LIGHT falsifier | same |
+| L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`) | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection | same |
+| L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`) | needs L3's cubes; downhill flow + level + mass bound | same |
+| L8 | **THE FIRST CHIMERA** — teddy-bear / monkey 50-50 split down the midline | pipeline proven at dyad 0.65 with a procedural stand-in (P9, `41893558`); real creature awaits the substrate | the creature the whole stack points at | `docs/THE_MASTER_LIST.md` §heritage |
+| L9 | **THE GAME** | the artifact of value | arrives when L1–L8 produce a world | — |
 
-**Seconds held at forward = 0.5.** Today's number: 3.10 s (provenance in T5).
-Every membrane between here and shipping is judged against that timer — not FPS,
-not particle count. The top of the lever range is a physical event (the fall
-line), so the metric has no free parameter.
+## 4 · LANDED FOUNDATIONS (verified — do not redo)
 
-## 5 · THE ATTACK ORDER (gates only)
+- **T2 triangle carrier LANDED:** the triangle is a SOLID element — area
+  rigidity `k = 0.75·K_BOND/A0` (derived, zero free numbers) + R7c bending.
+  RUN A rel err 2.5e-9; 1000 ticks finite; energy drift 0.5% ≤ 1% net of
+  radiation; max strain 2.19% honesty line; curvature-exterior
+  domain-restricted, BOTH meshes pass (`models/cad_bear/ca_run.json`).
+- **Octree lane:** B1 njit build byte-identical to the referee, 44.5→3.5 ms;
+  persistent pool landed (`3ee05fb`); the live CA walk uses it (~12×). The
+  visible pinned core the operator kept killing runs for is GONE.
+- **Bone rig PASS 12/12 (P7):** ROM + CA interior slaved to a rig; mesh
+  follows LBS exactly — J1's direct ancestor. **Tissue systems PASS (P6):**
+  skin/muscle/bone as separate triangle systems with interface continuity.
+  **In-between harness 27/27 (P8).**
+- **Physics body lane CLOSED (Phase 0, 2026-08-27):** ports 19/19+2 REFUSED,
+  primitives 7/7, actions 9/10 + RHYTHM_DRIVE's earned FALSIFIED (the test
+  left failing, mechanism proven, no tolerance widened); S4 determinism
+  52,472 stepped states bit-identical; theDeterminism PROVEN via MCP.
+  Doctrine that carries forward into J1: allometry (no human-table number on
+  another body), hard stops own the boundary, ligaments arrest the approach.
+- **The dyad machinery:** LM Studio resident vision judge (adopt-never-pin),
+  settle-capture fix (movies are real movies), `senses.watch` orbit protocol.
 
-1. ~~T10~~ **CLEARED** — seed pick DELEGATED ("they all look good") → **seed 3** selected on
-   the recorded wrap tie-break (lowest ratio 0.92, most headroom under ≤1.0). T7 frosting path
-   unblocked; nothing else gates on it. NEXT actionable = step 2.
-2. **T1 statics run P-A/P-B** — cheapest falsifier in the list; one stand θ, no dynamics. **BLOCKED in this checkout** (story ledgers hollow — see T1 row); first ledgered machine runs it.
-3. ~~T4 envelope measurement~~ **DONE 2026-08-23 cont.** FALSIFIER FIRED (1422 ms @ 1M vs wall 200). Consequence per pre-registration: LOD reallocation doctrine takes over as the path; no build may claim THE_MILLION at full walk cost.
-4. **T2 first CA run** — cad_bear strain field vs bond law + energy gate; band clamp derived like THETA_CLAMP 0.24 rad.
-5. **T5 DURATION build** — the big one: moving-base stand term (trained in, never bolted on) + swing-terminating stop condition; judge at forward=0.5 for minutes.
-6. **⑥ wire levers into `kernel_dsl.py` universal layer** — mechanical only; V62's dirty-set IS the attention model (O(change)); stage through AGENT_PROTOCOL slot before any kernel touch.
+## 5 · HONEST NEGATIVES (recorded, never papered)
 
-## 6 · THE RULES OF THIS PAGE
+- **T13 SFC octree FALSIFIED** — structurally valid, 24× less accurate than
+  the adaptive referee and slower; not a drop-in (`gate_octree_sfc.json`).
+- **B2-A prange octree FALSIFIED 0.93×** — threads engaged, still no win;
+  the 24-core build question stays OPEN.
+- **RHYTHM_DRIVE (action) FALSIFIED as stated** — the drive CAN move the
+  frequency in this regime; successor theory (cadence + the ligament wall)
+  parked for the physics lane.
+- **Substrate-view bugs that were mine, not geometry's:** two-centroid
+  overlay misalignment; contaminated dyad reference frame. Both recorded in
+  `THE_ARTISTS_SOLID.md` with the lesson: when instrument and eye disagree,
+  suspect the display transform first.
 
-- This list is a MAP, not evidence: when it disagrees with orient or a run record,
-  the newer fired falsifier wins and this row rots — amend this line, do not argue.
-- Every thread above has a home doc; no second source of truth lives anywhere else.
-- Written so that any agent, after any compression, can read ONLY this file and
-  know what is for, what is proven, what is unmeasured, and who owns the next gate.
+## 6 · RETIRED / PARKED
 
-## 7 · THE WHOLE TRIANGLE — every thing this is for, end-to-end (post-compress continuation)
+- **UE pipeline EXCISED** (doctrine: nothing closed-source; ~1000 files,
+  history retains all).
+- **P-A stand lane PARKED** — blocked structurally (story ledgers hollow in
+  this checkout); not dead, not gating anything above.
+- **"Seconds held at forward = 0.5" RETIRED as THE metric** — that was the
+  walk-first era. Every membrane now carries its own falsifier as the gate;
+  the project's north star is the operator's sentence in §1.
 
-One pipeline, one direction: **mesh → triangles-as-matter → levered field → picture.**
-1. **The door** (T3): static meshes cross into UE as adaptation device; load + display only,
-   computes no truth. Contract: bijection ledger + vertex checksum + mass/inertia inside
-   `THE_TRANSLATION` tolerances.
-2. **The carrier** (T2): each triangle = one matter element — the rigid-in-plane minimum with
-   one free mode left: area → strain scalar aᵢ/A₀ + k; springs on shared edges = RESISTANCE at
-   element scale; solidity is the shared-edge law; k with memory flagged until he signs it.
-3. **The field** (laws): elements run inside ONE Barnes–Hut walk, M folded in (M→1 far /
-   M=0 bond / M<0 wall); THE_MILLION conserved per frame; derived never stored.
-4. **The levers** (T1): CPU writes one f32 of intent ∈ [0..1] to a SUBSET of addresses —
-   attention, not authoring; the matrix stays silent unless woken (V62's O(change)).
-5. **Frosting** (T7, parked): splats as derived light on triangles — "a long way off";
-   unblocked only by T10's seed pick (his eye).
-Nothing in this list has a second state buffer; every stage reads the one it shares.
+## 7 · THE ATTACK ORDER
 
-## 8 · VERIFICATION LEDGER + STATUS (post-compress continuation)
+1. **L3+L4 — Phase 4** (registry + birth rule): falsifiers pre-written,
+   everything else stands on this.
+2. **L6 — hinge arrays** (the monkey bends its knee; life begins).
+3. **L5 — the frost** (the mirror answers light; beauty begins).
+4. **L7 — water** (the world gets a river).
+5. **L8 — the chimera** (the first creature, dyad-judged).
+6. **L9 — the game.**
 
-No shell in this environment (bash.exe ENOENT, retried) — no runs possible here; live-state
-claims are file-read evidence only. Next executable agent runs `python tools/orient.py`
-FIRST and supersedes wherever it disagrees. Verified at source, not memory: Splat struct =
-16 f32 in `web/renderer/splat.wgsl`; THETA_CLAMP 0.24 + ≤1% derivation comment
-(`LightEngine/kinematic/dynamics.py`); k_rot 23.5 N.m/rad from moment + 1° deflection bound
-(`tools/kernel_walk.py` docstring); UE door `/100` + Y/Z swap in OUR export C++ (L536–538)
-with the SceneProxy caller chain read end-to-end — both ends of the pipe are ours;
-`Chimera/Chimera.uproject`: **UE 5.8, PCG plugin enabled**; cad_bear Run 3 ALL PASS
-(mass err 0.000%, iner ≤1.921% vs tol 2%). CORRECTION: h_c = 0.157 m lives at
-`tools/kernel_policy.py` L74 — whole-BEAR COM height; `kernel_walk.py` holds no such number
-(prior attribution rots per the authority rule). Fresh web recheck: no shipping engine has
-the welded topology; nearest neighbors unchanged (Avalanche / Houdini per-point attrs
-offline / Flex+GEM / DeepMind joint-space line); UE5 Chaos "GPU simulation" named as the part
-most likely to be mistaken for this — it offloads stepping, does not hand over the clock or
-make state addressable inside one buffer. NOT done: no runs, no code, no git ops; V61 still
-unlinked (operator's term call); T10 seed pick pending his eye.
+**Division of labor (operator decree 2026-08-27):** Kimi holds project
+context and writes elaborate prompts IN CHAT (never in docs) for transfer to
+Open Code, where local agents run long construction loops. This file is the
+guide for BOTH sides: the prompter writes from it, the builder reads it
+first and runs `python tools/orient.py` second. The operator ratifies,
+steers, and is the human terminal of every dyad.
 
-## 9 · CONTINUATION RE-CHECK (no-shell again)
-This continuation session had no shell either (`bash.exe ENOENT`) — still file-read evidence only;
-live state stays with the next executable agent. Re-verified ALL SIX load-bearing claims AT SOURCE:
-16-f32 Splat; THETA_CLAMP 0.24 derivation (dynamics.py L173); k_rot 23.5 derived + kernel_walk holds no
-h_c; H_C=0.157 whole-bear home in `tools/kernel_policy.py` (~L88, not the prior L74); UE `/100`+axis-swap
-in OUR C++ **L529–536** with caller chain end-to-end (both pipe ends ours); `.uproject`=UE 5.8 + PCG.
-Line refs corrected in `THE_TRIANGLE_CARRIER.md`. Nearest-neighbor recheck UNCHANGED, **Newton** named
-as concrete current academic neighbor (on Warp). Concrete UE 5.x feature map now in `THE_TRIANGLE_
-CARRIER.md` (Nanite/Lumen=display via `U.light`; PCG/World Partition=authoring pre-translation;
-Netcode+ML=operator levers not state. Order for next executable agent UNCHANGED (§5); his two calls
-still pending.
+## 8 · THE RULES OF THIS PAGE
 
-## 10 · CONTINUATION-3 — FIRST EXECUTABLE SESSION (shell available)
-This session had a working shell + RTX 4090 (driver 610.47, numba.cuda 0.63.1) and ran what the
-no-shell sessions could not: **T4 measured** (`tools/envelope_million.py` → FALSIFIER FIRED,
-1422 ms ± 35 @ exactly 1M vs wall 200; evidence `agent_logs/envelope_million.json`; full text in
-`THE_FIELD_ASSEMBLY.md` §ENVELOPE MEASURED). It also found the walk lane hard-blocked here:
-`git ls-files story/` = 19 files, `story/.../theStance/` is an EMPTY directory (aHuman holds only
-`theBreath/`), so `stand_port.derive_stand_port()` refuses per rule 20 — P-A's h_c
-(`com_height_m`) and the whole f3/f4/stance toolchain cannot run in THIS checkout until the
-story ledgers are regrown wherever they grow. No number from that lane is quoted anywhere;
-the first ledgered agent runs P-A as pinned (fore-edge print + ±2% band). Not done this
-session: V61 link (operator term call — his thread, unguessed); UE known-pose test (needs the
-UE editor machine; expected-values table stands in `THE_TRIANGLE_CARRIER.md`); T2 CA build
-(biggest remaining membrane — its Rule-0 shell is written, band-clamp still derived-not-invented
-per the sub-gate). Order for next executable agent: P-A on a ledgered machine → T2 first CA run
-cad_bear → T5 DURATION after 3+4 land → ⑥ levers into kernel_dsl (stage through Kimi's CURRENT
-TASK slot FIRST — that slot is still the TEDDY T8 stage-2 task, not ours).
+- This list is a MAP, not evidence: when it disagrees with orient or a run
+  record, the newer fired falsifier wins and the row rots — amend, don't argue.
+- Every thread has a home doc; no second source of truth lives anywhere else.
+- Written so any agent, after any compression, can read ONLY this file and
+  know what this is for, what is proven, what is unmeasured, and who owns
+  the next gate.
 
-## 11 · CONTINUATION-4 — build session (no completed run yet)
-Shell present: repo root on disk = `E:\PythonChimera` (bash with workdir null fails ENOENT → always pass explicit absolute paths). Live state at start matched continuation-3's handoff exactly (T4 FIRED; P-A blocked here; seed 3 CLEARED; V61 unlinked; TEDDY T8 still in Kimi slot).
-Done: (a) T2 first CA run PRE-REGISTERED in `THE_TRIANGLE_CARRIER.md` §T2 FIRST CA RUN before build — lattice 59,712 tris / 30,768 verts / 19 per-part shells; S=R_BOND/e_med named ratio; k=K_BOND/R_BOND² (seed-derived in constants.py GAMMA_W block — zero new free numbers); RUN A bond-law slope gate ≤1% (derivation by construction, labeled as implementation check); RUN B 1000 ticks, energy accounting net of radiated wall power (dE ≤ W_rad + 1%·peak), finiteness, max|A/A₀−1| honesty line feeding the band-clamp sub-gate. (b) `tools/ca_triangle.py` built: bit-exact GLB parse (`cad_sample.load_glb_triangles`); signed-area gradients with FD self-check + F=−dU/dv consistency on tri 0; CSR incidence vertex→(tri,slot); CA state/force ported to numba prange kernels after operator's single-core observation (see threading log); RSS guard 8GB dumping partial JSON; per-tick ms breakdown tree/walk/ca; preallocated out buffer.
-NO RESULTS RECORDED: the run never completed — operator killed it four times watching Task Manager ("still only running on one CPU"). No `ca_run.json` exists. Operator's ~50 GB memory observation stands unexplained; guard + tick telemetry added but never observed to fire. Treat both as open falsifier candidates, not solved.
-Threading log (operator asked why 1 core — answered at source): Barnes–Hut walk = GPU one-thread-per-point, INVISIBLE in CPU usage; the visible pinned core is `LightEngine/bh_draw.py`'s octree build (njit kernels carry NO prange) rebuilt per tick by my pre-registration, plus earlier single-thread numpy bookkeeping. Not landed yet — exact spec: `os.environ.setdefault("NUMBA_NUM_THREADS","24")` at top of ca_triangle.py BEFORE any numba import + print effective threading layer; line-buffered progress file `agent_logs/ca_run_progress.txt` every 25 ticks so killed runs leave tick-level evidence.
-Operator directive (supersedes perf assumptions): parallel octree build per his algorithm — membrane at `THE_TRIANGLE_CARRIER.md` §PARALLEL OCTREE (thread T13). Until it passes: no build claims per-tick rebuild at scale; do NOT touch bh_draw.py (referee; T4 measured on it).
-Order for next agent: ① land the two micro-fixes above, run `python tools/ca_triangle.py` to completion (do not kill on CPU usage — GPU walk shows in the GPU panel, not CPU), record results into THE_TRIANGLE_CARRIER.md + this T2 row; ② T13 SFC octree per operator's algorithm (membrane already written); ③ then derive the band-clamp number from RUN B's max|A/A₀−1| honesty line (sub-gate). P-A remains blocked in this checkout (story ledgers hollow — structural, unchanged). V61 term link + `theDeterminism` framing = operator's threads only.
-User order in force: push all changes to the repo after work is done when context has room (supersedes worker-no-commit for these sessions).
+## 9 · HERITAGE LEDGER (the 32 continuations, compressed)
 
-## 12 · REUSABLE MULTI-THREADED PRIMITIVES — off-the-shelf, do NOT hand-roll (operator directive)
-Operator rule: EVERY build must be multi-threaded by default; if the primitive is missing, BUILD IT ONCE and reuse it — never per-case "simple method" patches. He's right that these are named off-the-shelf tools; stop inventing them case-by-case.
-Measured at source (this session): repo python has **CuPy 14.1.1**; GPU stable sort `cp.argsort(kind='stable')` and prefix-sum `cp.cumsum` → exclusive scan BOTH verified correct on-GPU just now (sort [5,3,9,1,7]→[1,3,5,7,9]; cumsum incl→[5,8,17,18,25], excl→[0,5,8,17,18]). nvcc/CCCL present at CUDA v12.8 (`C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/nvcc.exe`) → CUB `DeviceRadixSort` + `ExclusiveSum` available as the canonical gold-standard fallback (small compiled ext ONLY if we need segmented sort / tighter perf).
-Decision: ONE reusable facade **LightEngine/parlib.py** (NOT yet built — next agent builds it; NO hand-rolled sort/scan):
-  - `stable_sort_by_key(keys, *vals)` → pack keys to int64 then `cp.argsort(kind='stable')` (= CUB StableRadixSort equivalent); returns perm + reordered vals.
-  - `parallel_scan(x, mode='exclusive')` → `cp.cumsum` (inclusive) / shifted (exclusive) on-GPU (= CUB DeviceScan).
-Express **T13 octree** per operator's algorithm ON TOP of parlib: map→int cell keys → `stable_sort_by_key` (his step 2) → `parallel_scan(exclusive)` to carve leaf slots (step 3) → link leaves upward into internal nodes (GPU kernel; MUST equal bh_draw tree-dict format so compute_forces_mod consumes unchanged). Gate ≤1% rel force vs build_octree on cad_bear 31k AND T4 1M scene + nesting/com-mass invariants. Every future data-parallel build composes from parlib — this is now the standard for all builds; zero new toolchain (CuPy path needs no nvcc).
-
-## 13 · T2 EVIDENCE — threading VERIFIED; degenerate-triangle nan is the real gate (next agent)
-This session's kill left disk evidence (`agent_logs/ca_run_progress.txt` + `ca_run_stdout.txt`). Two facts, both measured at source:
-- **Multi-threading fix #1 WORKS:** live print `NUMBA_NUM_THREADS_env=24  numba_active_pool=24  os_cpu_count=32`. CA prange kernels will now engage all 24 cores. The one pinned core the operator keeps seeing is still the single-threaded octree build (bh_draw) — that's exactly what parlib+T13 removes permanently.
-- **BLOCKER before any perf claim:** cad_bear has **zero-area (degenerate) triangles** → `A0` contains 0.0 → divide-by-zero. At source: `nhat=nrm/|nrm|=nan`, `s=A/A0-1=inf/nan`, energy-consistency residual = nan, **RUN A fires FALSIFIER at nan**, E0=nan before the RUN B loop starts. Run killed during tick 0 (progress file holds only START line). Do NOT re-run expecting a pass — it will nan again.
-- **Next-agent gate (correctness, not perf):** make CA robust to / filter zero-A0 tris from the area-mode arrays and COUNT them in the bijection ledger (`n_degenerate_dropped` into ca_run.json; total faders unchanged) so `s=A/A0-1`, U, F are finite. THEN re-run T2 to completion + record max_strain honesty line. Lattice numbers confirmed at source: 59,712 tris / 30,768 verts, e_med=0.00284593, S=R_BOND/e_med=52.7069, k_area=K_BOND/R_BOND²=44.4444 (R_BOND=0.15, K_BOND=1.0, DT=5e-4).
-
-## 14 · CONTINUATION-5 — T2 LANDED (RUN B pass, leak fixed) + triangle-system design thread + media cleanup
-**T2 is DONE and PASSES** (§13 "never completed / will nan" state resolved): `models/cad_bear/ca_run.json` written. RUN A bond-law match **PASS 0.000%**; RUN B **1000 ticks FINITE, memory flat** (rss ~0.34 GB, VRAM stable); energy gate **PASS net of radiation** (E0=−8.33e5 → E_end=−1.374e6, dE 5.41e5 ≈ radiated 5.73e5, ≤1%). The ~75 MB/tick leak is FIXED; multi-threaded/GPU per operator directive (24-core CA prange + GPU walk). §13 degenerate-nan gate resolved: 2400 zero-A0 tris filtered from area-mode arrays, counted `n_degenerate_dropped`, total faders unchanged.
-**CA = the area-channel DIAGNOSTIC of the single bond energy (R7b) — NOT a second force.** Reverted the wrong "second spring" turn: an independent area spring FIGHTS the edge bond on any non-equilateral triangle → exponential blow-up (proven in `debug_ca.py`). Signed-area fix kept in `area_grads`/`_k1_state` (FD 6.7e-11).
-**HONESTY LINE / OPEN:** max|A/A0−1| = **2.14e3** — the open-shell bear SHEARS under edge-bonds alone (no area rigidity → shell flattens/stretches). Genuine membrane physics, now MEASURED not masked. This is the fork below.
-**Operator design thread (ACTIVE, pending his ratify) — carried forward:**
-- **Area-rigidity decision = Option B STAGED** (my rec, flagged): make CA a real force again with rest area DERIVED from bond geometry (no free number); if non-equilateral tris still tear → record falsifier + add bending energy. NOT built.
-- **Bounding/malleability:** "corners bound to neighbor" = shared-vertex connectivity — ALREADY TRUE via exact-vertex merge (30,768→28,917). Missing piece is fold/area resistance. Direction: per-shared-edge VARIABLE bend stiffness (one scalar per shared edge = uniform CA), a [0..1] malleability lever; this IS RESISTANCE at element scale. **Pyramids/tetrahedral bracing REJECTED** — breaks the uniform triangle CA.
-- **Why RUN A originally fired 54% rel err:** naive area spring vs bond algebra on a non-equilateral shared edge — geometry factor not folded in → WHY Option B must DERIVE rest area from bond geometry, never pick it.
-**MEDIA CLEANUP complete (~51.4 GB freed):** deleted `capture/` (50 G) + `output/` (1.2 G) [gitignored, 0 tracked] + 51 root test renders (~0.2 G). Preserved `models/cad_bear/` — ca_triangle's ONLY asset; it reads `cad_bear.glb`, writes `ca_run.json` + an agent_logs text log → **ZERO media in/out**, so nothing of it lived in the bloat. Left untouched: `WorldModel/training_data/` (1.3 G training data), `external/*` (vendored), 11 tracked root `.jpg`.
-**PUSH landed:** `bf59f2f → origin/master` (T2 CA run work, 20 files; gsplat submodule pointer NOT swept in; scratch diagnostics + agent_logs left untracked).
-Order for next agent: ratify Option B (area rigidity) before any build — it's the one open physics fork. V61 term link + `theDeterminism` framing = operator's threads only. P-A still blocked here (story ledgers hollow, structural, unchanged).
-
-## 15 · CONTINUATION-6 — run-record audit + Option B ratify framing (no build this turn)
-**Honesty finding (run records beat prose):** the committed `models/cad_bear/ca_run.json` is NOT §14's "pass" — it is a DIVERGED CA-as-force run: tick 47, `max_strain_abs=3.7e+40`, `finite=false`, `energy_pass=false`. The exact §14 numbers (E_end −1.374e6, dE 5.41e5) are in NO log/JSON on disk (grepped). A finite small-dt diagnostic run evidently produced the "pass" then was clobbered by later force/dt experiments; per the authority rule I do not parrot "T2 passes." Three distinct runs live in `agent_logs/`: `ca_run_stdout.txt` (oldest, RUN A fired 54%, killed tick 100), `runb_out.txt` (area+bending applied → diverged), `ca_run_progress.txt`+JSON (latest, WALK_NAN tick 47).
-**Load-bearing physics on disk:** `agent_logs/iso7.txt` force-combination table — **bond-only = finite/stable**; draw without wall/bond = DIVERGES (draw+bond no-wall AND draw-only both finite=False); full draw+wall+bond = finite. Confirms the two-force law in numbers: DRAW alone tears; RESISTANCE (bond/wall) closes the loop. `agent_logs/ca_stab.txt` timestep cliff — dt=5e-7 → finite, peak_strain 8.3e-2; dt=5e-6 → diverges to 5.4e+46. A stability threshold exists below which shape holds.
-**Option B reframed (my rec, flagged NOT user-signed):** the fork is not an "A vs B" coin-flip — it's WHERE area/shape resistance lives. A = diagnostic-only (finite but floppy). B = real force; the NAIVE form is measured-dead on disk (3.7e+40) for two FIXABLE reasons: (a) dt above the cliff, (b) rest-area picked not derived → fights its own edge on non-equilateral tris (§13's 54% RUN A). Buildable B = CA as real force with **rest area DERIVED from bond geometry** + below-dt-cliff.
-**Bounding/malleability (his design thread, verdicted):** "bound the corners to the mating surface" = per-shared-edge bend stiffness, one scalar/edge = uniform CA preserved, [0..1] malleability lever = RESISTANCE at element scale — HIS second thought IS the buildable path. Pyramids/tet bracing REJECTED (a tet has more free modes than a triangle's single area mode → breaks one-lever-per-element). "Bounded geometry using only edges" = YES, that is exactly the shared-edge law; it keeps the CA uniform.
-**Order for next agent:** ratify Option B in DERIVED form (not the naive dead-on-disk one) before any build — still the one open physics fork. V61 link + `theDeterminism` framing = operator's threads only. P-A still blocked here (story ledgers hollow, structural).
-
-## 15b · Option B decode — two independent bugs, four-choice verdict (continuation-6, pre-ratify)
-**The divergence is TWO independent leaks, not one:** (1) **base-draw integrator instability** — blind DRAW makes symplectic-Euler time-stepping unstable above a measured dt cliff (`agent_logs/ca_stab.txt`: dt=5e-7 finite/strain 8.3e-2; dt=5e-6 → 5.4e+46); RUN B used dt=5e-4 = ABOVE the cliff, so part of "still diverges" is NOT Option B's fault. (2) **area-force self-fighting** — naive rest-area picked not derived → fights its own edge on non-equilateral tris (§13 54% RUN A). `agent_logs/iso7.txt` confirms: bond-only finite; draw w/o wall/bond diverges; full combo finite.
-**Four-choice verdict (my rec, flagged NOT user-signed):** Reduce DT/substep = PRIMARY fix for bug (1), derived from the measured cliff not picked (THETA_CLAMP precedent); derive rest-area from bonds = Option B proper, fixes bug (2) + the 54%; cap draw near EPS = DERIVED fallback only if draw still runs away after substep (invasive to two-force law → last resort); **strengthen bending = WRONG tool** — a stiffer spring at too-big dt is MORE unstable + free-parameter risk (bending becomes relevant only AFTER the derived area force is confirmed tearing on non-equilateral tris, per standard membrane theory). Report-as-finding = do REGARDLESS (Rule 0: name the falsifier before building). "Run B still diverges?" = yes at dt=5e-4 (measured); below cliff + derived rest-area = UNKNOWN until run → pre-register as the falsifier. NOT re-run this turn; on-disk state is still the diverged one.
-
-## 17 · CONTINUATION-7 — T2 verified-landed + boundary-pressure thread converges (no build)
-**T2 FULLY LANDED & VERIFIED (supersedes §14/§15 stale "diverged" state):** on-disk `ca_run.json` matches the construction-AI report to every number — dt=5e-7 (=dt_cliff), E0=-832759.94→E_end=-828529.57 (drift +4230 = 0.5% ≤1%), max_strain 2.19%, finite=true, no NaN, band held @0.244, RUN A rel-err 2.5e-9. Triangle is now a SOLID element (area rigidity + bending). The "k=0.75·K_BOND/A0" is DERIVED not picked: source L447 — RUN A requires d²U_s/dλ²=3·K_BOND; solving gives k_t=0.75·K_BOND/A0_t; applied rest area = each tri's own import area Ac (never equilateral). No free number. Durability: `ca_run.json` is gitignored (`/models/`), `tools/ca_triangle.py` modified-uncommitted → not durable until commit+push (confirm before push per operator rule).
-**Boundary hydraulic-pressure thread (operator idea, converging):** "outer membrane needs outward pressure — the math of the outside of the material, meaning the edge." Operator correction: it fits under RESISTANCE ONLY IF resistance acts on a FLAT SURFACE, not point-to-point. VERIFIED at source: `LightEngine/modifier.py` computes "exact pairwise draw AND exact pairwise resistance" per leaf pair = POINT-TO-POINT (no surface object) → pressure does NOT currently live in resistance. BUT the flat-surface structure ALREADY EXISTS in the triangle carrier: `tools/ca_triangle.py` L153 area A0 + L161 FIXED reference normal n0 (areal element). So pressure belongs on that AREAL element — extension of what we made solid, turned to face its own exterior.
-**Direction (my rec, flagged NOT user-signed):** drop "test resistance first"; make outward pressure a FIRST-CLASS AREAL rest-state on the triangle surface. Amend THE_LIGHT_SEED PRINCIPLED: interior = point-to-point DRAW+RESISTANCE; surface/areal rest-constraints live on triangles (area, bending, now outward exterior) — adds a SURFACE axis, not a pockmark. Operator: "the LAW is flexible because we're developing the methodology" → amendment permitted. "Constraints as parameters" = rest-exterior (rest area+normal field; rest volume for closed) is the CONSTRAINT, p derived from K_BOND is the PARAMETER, one scalar/triangle = uniform CA, malleability lever addresses it (soft bulges/rigid holds). Open-shell caveat: bear has no enclosed V0 → cleanest first test on a CLOSED mesh. Rule-0 membrane before build; NOT built yet.
-
-## 18 · CONTINUATION-8 — SURFACE-PRESSURE PROMPT v2 delivered (no build; ratify gate on operator)
-v2 prompt handed to operator IN CHAT (not in docs, per his rule). Stacks ON the LANDED Option B (A0 area rigidity + R7c bending = passing `ca_run.json`, do NOT redo) — installs: **rest mean-curvature H0 + derived p0=2γH0** (Young–Laplace; γ tied to K_BOND, no free number) as the SURFACE axis; **closed-volume V0 gate** (open bear has none → closed mesh FIRST); **tear-as-derived-event at 0.244 band edge** (break→open boundary, not clamp); **surface-surface contact** (RESISTANCE on a flat face, not point-to-point — where his hydraulic intuition lives); **k-with-memory** [OPERATOR THREAD, unsigned]; **CA birth/death** Rule-0 shell; gates = dt-cliff 5e-7→1e6× cost (symplectic/implicit separate membrane), instantaneous PE + FD self-check every term, parallel-from-day-one via parlib; UE vertex-stream door display-only. Discrete ops named: area-weighted vertex normal → cotan-Laplacian mean-curvature vector → per-tri H0_t signed by n0. Research grounded (Young–Laplace Δp=−2γH sphere 2γ/R; area-weighted normals; dihedral bending = existing R7c). Ratify-or-override still the operator's one human call; nothing builds until ratified. Uncommitted: `ca_triangle.py` + this file modified (confirm before push per his rule); gsplat submodule pointer NOT swept in.
-
-## 19 · CONTINUATION-9 — curvature-exterior domain-restriction LANDED + VERIFIED (both meshes pass)
-**Closed the failed edit from continuation-8's handoff.** The rest mean-curvature exterior (§17/§18 SURFACE axis) was already wired into `tools/ca_triangle.py`; its band fired spuriously on the bear because near-flat verts have |K0|→0, so |K|/|K0|−1 is ill-conditioned (divides by ~0). Fix = DOMAIN-RESTRICT the curvature band, mirroring the existing `n_degenerate_dropped` bijection-ledger precedent:
-- `_k0nrm=|K0|`; `k0_scale=median(_k0nrm)` (mirrors `e_med`); `curv_keep=_k0nrm>=k0_scale`; `n_curv_flat_excluded=int((~curv_keep).sum())`.
-- Band (`S_BAND_CURV`=0.244) now computed on the DOMAIN only; `max_curv_dev_raw` tracks ALL verts as the honesty line (never hidden).
-- JSON `surface_axis` + print gained `max_curv_dev_raw`, `curv_k0_scale`, `n_curv_flat_excluded`. Reverted the temp `CA_CURV_DUMP` diagnostic block.
-**VERIFIED at source, both meshes, all gates PASS:**
-- **sphere (closed):** finiteness HOLDS; energy gate PASS net of radiation; curv domain max 2.0e-2 held (raw 2.14e-2); n_flat_excluded=993/1986 (k0_scale=0.0208). V/V0−1 = −5.88% held.
-- **bear (open):** finiteness HOLDS; energy gate PASS net of radiation (E0=−8.328e5→E_end=−8.285e5, ~0.5%, ≤1%); curv domain max 9.76e-3 held while **raw all-vert max = 0.364 (> band 0.244) is now EXCLUDED from the falsifier** — 14,458/28,917 near-flat verts counted in ledger; raw still recorded for honesty. This is exactly the fix: pre-fix the bear would have FIRED on 0.364.
-**State:** `tools/ca_triangle.py` modified-UNCOMMITTED (worker does not commit); confirm before push per operator rule; gsplat submodule pointer NOT swept in. No new free numbers — k0_scale is a median of derived |K0|, band inherited from THETA_CLAMP 0.244.
-
-## 20 · CONTINUATION-10 — T13 parallel octree gate FIRES (honest negative; NO per-tick-rebuild-at-scale claim)
-**T13 SFC-keyed octree = FALSIFIED, recorded not papered over.** Built the corrected `LightEngine/bh_sfc.build_octree_sfc` per the operator's verbatim algorithm (int coords → 3D Hilbert/Z key → parallel radix sort → prefix-sum leaf cells → GPU upward link), ran `tools/gate_octree_sfc.py`. Two real bugs found+fixed on the way: (1) coincident-data occupancy overflow — cad_bear has **3,431 exact float32 duplicates** whose max run plateaus at 43; a grid can never split identical points, so refine-until-plateau not bump-until-≤16; (2) bottom-up level off-by-one + local/global com-mass id mixup. After both fixes the tree is STRUCTURALLY VALID on both scenes (partition=n exact, root mass exact, zero nesting violations, com/mass to f32 eps) — but the gate FIRES on force:
-- cad_bear **9.04%** rel vs `build_octree` (gate ≤1%); T4-1M **2.97%**. Both `ok_force=false`. Root cause measured against an O(n²) ground-truth sum: referee ~0.1% from truth at θ=0.3; SFC tree **~24× less accurate** — uniform-depth fixed-grid nodes make different (s,d) theta decisions than the adaptive referee, inherent to the verbatim algorithm, not fixable without making it adaptive. Both →0 as θ→0, so it's a VALID convergent Barnes-Hut tree with ~24× higher truncation constant.
-- Build cost WORSE: T4-1M sfc 18.2s vs ref 2.1s (uniform grid builds deep structure in sparse regions the adaptive tree skips → 2.06M cells vs 293k); cad_bear 0.79s vs 0.34s.
-**Verdict:** T13-as-specified does NOT hold — SFC build is neither a ≤1% drop-in for `build_octree` nor faster than the single-core BFS it was meant to replace. The "one core" pain is NOT solved by this construction.
-**Operator fork (his one human call, I do not pick):** (a) keep `build_octree` as referee and make ITS build parallel/GPU instead of swapping trees [my rec — solves the single-core pain without sacrificing the ≤1% adaptive accuracy]; (b) run SFC at lower θ for accuracy (changes THE law's knob — a named parameter, not free); (c) accept the CPU-build cost.
-**Full detail:** `docs/THE_TRIANGLE_CARRIER.md` §PARALLEL OCTREE → MEASURED RESULT (continuation-10). Gate record: `agent_logs/gate_octree_sfc.json`. Uncommitted this turn: `LightEngine/bh_sfc.py` (corrected builder, runs + structurally valid) + `tools/gate_octree_sfc.py`; gsplat submodule pointer NOT swept in.
-
-## 21 · CONTINUATION-12 — option-(a) v1 built: BYTE-IDENTITY ACHIEVED / SPEEDUP FALSIFIED; diagnosis CORRECTED
-Operator picked **(a)** (continuation-10 fork). Built `LightEngine/bh_octree_mt.build_octree_mt` (level-synchronous BFS, thread-pool over cells/level, reusing the referee's exact njit `_partition_and_bounds`) + gate `tools/gate_octree_mt.py`. Ran on cad_bear 28,917 + T4-1M 1,000,000 (`agent_logs/gate_octree_mt.json`).
-- **BYTE-IDENTITY PASS both scenes** — every output array key `np.array_equal` to serial `build_octree`; GPU force rel err **0.0%** (bit-identical) through the same kernel. The accuracy half of option-(a) is DONE: v1 builds the *same* tree, so `_bh_cuda`/`compute_forces_mod` consume it unchanged.
-- **SPEEDUP FALSIFIER FIRES** — cad_bear 0.83× (slower), T4-1M 0.97× (break-even). No net multi-core win → membrane line "secretly still single-threaded" fires.
-- **PROFILE corrects continuation-11's "root spike caps it":** full serial build 2405ms; `_compute_com_mass` 7.9ms; single root partition of 1M pts 17.9ms (≈0.75%); **BFS + per-cell Python overhead ≈ 2398ms DOMINATES**. Root spike and com/mass are both negligible.
-- **Why v1 can't win:** it parallelizes only the small njit-partition fraction (~60–100ms of 2405); the ~2398ms Python orchestration (per-cell scratch allocs + list appends + njit call overhead over ~293k cells) runs serially in the main thread. Threading overhead ≥ gain.
-- **Phase B' corrected membrane** (`THE_TRIANGLE_CARRIER.md` §PHASE B'): original within-cell parallel partition RETIRED (mis-scoped — not the bottleneck). **B1 first:** de-Python the BFS into ONE `@njit` (byte-identical, drop 2405ms toward compute floor; preallocate scratch — njit already resets child_mins/maxs each call). FALSIFIER: any array differs OR no large serial drop. **B2 after B1:** split across cores via GPU parlib sort-based build (needs its OWN byte-identity proof) OR CPU multi-process over disjoint root sub-ranges with byte-identical merge; PREDICTION W× on 24-core box.
-**Next agent: build B1 first.** Do NOT build within-cell partitioning. NO per-tick-rebuild-at-scale claim until speedup passes. Uncommitted this turn: `LightEngine/bh_octree_mt.py` + `tools/gate_octree_mt.py`; gsplat submodule pointer NOT swept in.
-
-## 22 · CONTINUATION-13 — B1 MEASURED: BYTE-IDENTITY PASS; serial build drops to ~6.6% of referee (single-core win)
-Built `LightEngine/bh_octree_njit.build_octree_njit` (ONE `_build_core` @njit mirroring the BFS exactly; reuses referee's njit `_partition_and_bounds` + `_compute_com_mass`; scratch preallocated once at `max_cells=2n`) + gate `tools/gate_octree_njit.py`. Numbers: `agent_logs/gate_octree_njit.json` (+ run log).
-- **BYTE-IDENTITY PASS both scenes** — all 12 output keys agree in value+dtype+shape (cad_bear 28,917; T4-1M 1,000,000). Force = 0.0% by construction.
-- **SERIAL DROP PASS:** cad_bear ref 44.5 → njit **3.5 ms**; T4-1M ref 2097.6 → njit **138.1 ms** (~15×; 6.6% of referee). The ~2398 ms Python orchestration is gone, as the profile predicted.
-- **Falsifier fired+fixed (recorded):** first gate run MISMATCHED `cell_min`/`cell_max` — `_pad_bounds` eps is f64-multiply-then-cast in numpy; pure-f32 mirror diverged 1 ulp. Fix: `eps = f32(f64(1e-6) * max(f64(1.0), span))`. Re-run byte-identical.
-- **Scope honesty:** B1 is SINGLE-CORE (one @njit = one thread). The "24 cores" pain is still open — that is exactly what B2 exists for, and its gate condition (B1 byte-identical AND fast-on-one-core) is now MET. **Next: B2** per §PHASE B' membrane; each candidate needs its OWN byte-identity proof.
-- **B2 PRE-REGISTERED** (`THE_TRIANGLE_CARRIER.md` §B2 PRE-REGISTERED): T4-1M floor breakdown measured — partition 98.2 ms / com-mass 3.2 ms / wrapper ~36.7 ms → W× prediction CORRECTED to a **~3.1× ceiling** (derived, not picked). Cheaper win first: persistent buffer pool kills the per-tick ~37 ms wrapper waste (CA walk rebuilds every tick) — no parallelism needed. B2 candidate A = level-synchronous `prange` restructure (no Python dispatch; prefix-sum child-id merge for byte-identity).
-- **B2-A MEASURED** (`THE_TRIANGLE_CARRIER.md` §B2 (A) MEASURED): built + gated — BYTE-IDENTITY PASS both scenes (id-merge machinery = proven reusable asset); speedup FALSIFIED vs its own serial: prange 149.3 vs B1 njit 138.1 ms = **0.93×** (the gate's "14×" is vs Python BFS = B1's win, NOT multi-core). Threads confirmed engaged (24); loss = per-level staging allocs + barriers + false sharing on a floor already only 98 ms partition. Candidate B RETIRED by continuation-10 SFC measurement. **NEXT: persistent buffer pool** (~37 ms/tick wrapper kill → ~101 ms serial floor; no parallelism).
-Committed+pushed this turn: `LightEngine/bh_octree_njit.py` + `tools/gate_octree_njit.py` (219293a) + `LightEngine/bh_octree_prange.py` + `tools/gate_octree_prange.py` + these doc updates; gsplat submodule pointer NOT swept in.
-
-## 23 · CONTINUATION-14 — CA-walk swap VALIDATED + LANDED (the pinned-core pain is gone from the live walk)
-Picked up continuation-13's in-progress item: `tools/ca_triangle.py` L903 now calls `build_octree_njit` (import L47) instead of referee `build_octree`. Ran to completion (RUN A + RUN B, 1000 ticks) — **all gates pass and physics verdicts are identical** to the prior verified-landed pass: RUN A rel err 2.5e-9; finiteness HOLDS; energy gate PASS net of radiation (`E0=−832760 → E_end=−828509`, dE 4251 ≈ 0.5% ≤1%); max strain **2.19%** (same honesty line); band held; curv domain 9.76e-3 / raw 0.364 excluded per §19 ledger (n_curv_flat_excluded=14,458). `ms_per_tick.tree = 3.69 ms` — the ~44.5 ms Python BFS is gone from the live walk (**~12×**, matches B1 gate's 44.5→3.5 ms prediction). RSS flat 0.49 GB; memory guard never fired. `models/cad_bear/ca_run.json` on disk = this run.
-**Honesty:** single-core win (one @njit burst/tick) — it removes the visible pinned core the operator kept killing runs for, at zero physics cost. The 24-core question stays open exactly where B2 left it (B2-A FALSIFIED 0.93×; candidate B retired). **NEXT = persistent buffer pool** (~37 ms/tick wrapper kill inside `build_octree_njit` → T4-1M floor 138.1→~101 ms serial) — preallocated max_cells arrays + persistent `order`/`sorted_pos` scratch, re-fill not re-alloc per tick; gate byte-identity again (`tools/gate_octree_njit.py` template) before any claim.
-Committed+pushed this turn: `tools/ca_triangle.py` (two hunks only) + both doc updates; gsplat submodule pointer NOT swept in; agent_logs/* left untracked.
-
-## 24 · CONTINUATION-15 — pool LANDED+pushed; advanced prompt delivered in chat (no build this turn)
-**Pool is durable on master (`3ee05fb`):** `OctreePool` + pooled path of `build_octree_njit` committed with its gate. Gate PASS both scenes, byte-identical + finite: cad_bear 28,917 fresh-njit→pooled **3.57→2.53 ms**; T4-1M 1,000,000 **142.88→125.19 ms** (drop ~17.7 ms = the measured wrapper remainder; NOT the idealized ~36.7 ceiling — `np.take` real data copy + prange arange fill remain). CA walk wired to pool (`tools/ca_triangle.py` import L47 area + call site passing `pool=_OCTREE_POOL`). `agent_logs/gate_octree_pool.json` = pass_all=true.
-**Held, not swept in:** `docs/THE_LIGHT_SEED.md` H0/Young–Laplace open-shell clause is the CONCURRENT advanced AI's SURFACE-axis work — left uncommitted on purpose (worker does not entangle another agent's doc edits). gsplat submodule pointer + `agent_logs/*` + `_memdiag2.py`/`memdiag_leak.py` untouched.
-**Advanced prompt delivered IN CHAT** (his rule: prompts go in chat, not docs) — self-contained handoff for the second/construction AI: read `THE_MASTER_LIST.md` + run `python tools/orient.py`, then attack H1–H4 in order; laws encoded (Rule 0 / no free params / multi-threaded+parlib-reuse / docs append-only / honesty / metric = seconds held at forward=0.5 / authority rule). Landed-don't-redo: T13 octree (B1 + pool), T2 carrier RUN A/B, SURFACE axis both meshes. Operator's own threads (record, don't decide): V61 term link, `theDeterminism` framing (S0 FRAME blocked), k-with-memory sign-off, T8 bear-lane dyad verdict.
-**Live state re-confirmed via orient this turn:** term theSeed; NEXT MOVE = frame `theDeterminism` (blocked S0 FRAME); V61 closed-FALSIFIED unlinked / V62 open / next 63.
-
-## 25 · CONTINUATION-16 — UE door seen at source + known-pose test LANDED + triangle ledger LANDED (T3 gates)
-**UE project read at source (not memory):** `Chimera/Chimera.uproject` = UE 5.8, PCG + PythonScriptPlugin + McpAutomationBridge enabled. Display door = **MLSLabsRenderer** plugin (Gaussian-Splatting renderer; C API in `GaussianSplatingRendererCExport.h`: LoadSplatFile / SetSplatNodeTransform / GetSplatNodeBoundingBox). Components derive `UNoPhysicsPrimitiveComponent` (never creates UE physics state) = "computes no truth." Live export path today = `core/splat_to_ue5.py` **quad-per-splat GLB** (each Gaussian → oriented double-sided quad, COLOR_0 vertex colors), MCP-driven into editor. `Content/CAD/cad_bear/` = bear in as SkeletalMeshes + Materials. GAP: no code path takes OUR triangles through the door yet — splat-only so far.
-**T3 known-pose test LANDED + PASS:** `tools/ue_door_known_pose.py` re-encodes SetSplatNodeTransform (C++ L526-536) + GetSplatNodeBoundingBox inverse (L590-598) EXACTLY; G1 known-pose forward, G2 round-trip identity (worst 8.9e-16), G3 /100 unit scale exact, G4 axis remap named — ALL PASS. Door transform TRUSTED for triangle driving. Contract: splat.x=UE.Y/100, splat.y=-UE.Z/100 (sign flip), splat.z=UE.X/100; scale cyclic (Sy,Sz,Sx) no factor; rot Euler→rad relabel.
-**T3 triangle ledger LANDED + PASS (headless):** `tools/ue_door_triangle_ledger.py` reuses bit-exact `cad_sample.load_glb_triangles` + the PROVEN transform. cad_bear: 19 parts / **30,768 verts / 59,712 tris** (matches §13 CA lattice to the digit) / **2,400 degenerate** counted. L1 bijection in==out PASS; L2 vertex checksum sha256 `7655367dde8d46f6…` = REFERENCE for editor cross-check; L3 centroid round-trip through proven transform worst 1.39e-17 PASS. Answers "can we get around UE being a black box?" — YES: the checksum is the falsifier; any drift not produced by our sampler → box is a participant (THE_TRANSLATION). Editor cross-check runs on the live machine, flagged.
-**NEXT on the door:** editor-machine cross-check of L2 against UE's own import parse (needs live editor); per-node ORIENTATION convention for triangle nodes = OPEN, needs operator call — NOT invented here. **Committed this turn:** `tools/ue_door_known_pose.py` + `tools/ue_door_triangle_ledger.py` + this doc ONLY. NOT swept in: concurrent advanced AI's `docs/THE_LIGHT_SEED.md`, walk-lane `tools/f4_walk.py`+`walk_port.py`, gsplat submodule pointer, agent_logs/* (all untouched per §24 entanglement rule).
-
-## 26 - CONTINUATION-17 - DOCTRINE SESSION: UE excised, Earth gravity canonical, THE_WOLFRAM_FRAME canon, hard stops LANDED (ports 18/21)
-**THE_WOLFRAM_FRAME.md is slot #0 (2026-08-25, operator as-given; outranks older prose where they conflict):** Wolfram lineage (rules RUN not authored; irreducibility tamed = V62 dirty-set economy); membranes = railroad switches / initializer clips into the fourth dimension; tissue = SEPARATE triangle systems (skin/muscle/bone) coupling at interfaces (engine consequence: load_mesh generic on purpose, N slots + cross-system constraints later); determinism = ROM extremities + CA-filled interior harnassed by a bone rig (bones tell triangles what to do); the in-between must be TRAINED (physics AND structure across the range) - the live failure list IS that lane. **PUBLISHEDOLOGY**: every declared item docks into a NAMED published ology or it is minting (refuse + name the missing measurement). **ALLOMETRY**: strength scales with the body doing the lifting; never copy a human-table number onto another body; unnamed Mother-Nature rules are still binding.
-**GRAVITY AMENDMENT:** g = 9.80665 Earth-standard canonical BY OPERATOR DECREE (no sensor will exist). Single source: story/theHuman/numbers.json via world.py::gravity(). All g=7.076 prose = retired history, dated stories intact. Port baseline re-recorded post-regime-change (18 ports), reasons named in 76c189c6.
-**HARD STOP fix LANDED in world.py::load_body (applied LAST, order load-bearing):** limited slide/hinge joints jnt_solimp d_max 0.95->0.9999 (MuJoCo default left stops permanently 5% compliant -> steady-state walk-through under sustained load). Measured: JOINT_LIMIT overshoot 3.555 deg -> ~0.05 deg (60x). Ports 17/21 -> **18/21 validated**; remaining 3 are missing-data ERRORS (theGround membrane un-grown; matter_library.json absent; plant turgor refused pending primary source) - zero true physics failures. Accepted intended drift: joint_limit -2.8% (the fix), force_velocity +0.15% (coupling), plantar_pressure +100.8% = CORRECTION (soft stops had been silently absorbing foot load; doubled reading is the honest number).
-**END_STOP diagnosed, re-derivation queued:** primitive still FAILS on a STALE ANTI-Mother-Nature claim (demanded ligament soften an abuse-load overshoot; with geometric stops both arms penetrate identically ~0.05 deg, tissue carries 11.5 N.m of 400). Division of labor per frame: ligaments arrest the APPROACH (engagement band envelope-edge->limit), GEOMETRY owns the boundary, a ligament asked to hold abuse load ruptures. Handoff prompt delivered to build agent: rewrite p_end_stop w/ allometric MVC-scale drive from the body's own actuators + share-grows-toward-stop falsifier; then UPRIGHT/RHYTHM_DRIVE, SWING/LAND actions, missing-data legalizations, baseline re-record LAST.
-**UE PIPELINE EXCISED FROM TREE (doctrine: "anything that's not closed source"):** uproject + Config/Content/Plugins(Incl. MLSlabsRenderer door + McpAutomationBridge)/Source/Binaries/Intermediate/DDC/Saved/Screenshots/ValidationReports + root Build/+GeneratedProjects/ + ~100 retired-lane scripts deleted (~1000 tracked files, ~21 GB working tree; HISTORY RETAINS ALL). **25's T3 door lane RETIRED by this doctrine**: editor cross-check impossible (no editor exists); tools/ue_door_known_pose.py + ue_door_triangle_ledger.py removed this turn. KEPT: ChimeraEngine/core/splat_to_ue5.py - its quad_cloud/write_splat_glb geometry half is imported live by photo_studio/splat_level/splat_emit; UE-export half is dead and should be split out into a neutral module when someone next touches those callers (operator call on name).
-**Repo hygiene:** git gc --prune=now: .git 18.67 GB (28k loose objects, 0 packs, 4 tmp_obj garbage) -> 944 MB single pack, fsck clean, history complete. Root swept: 14 stale report MDs -> docs/archive/, probe/log litter -> attic/ (ignored), cookies.txt/nul/=0.2.3 gone, .gitignore extended. Verdicts V61+V62 linked to term theSeed. 7 commits ahead of origin, NOT pushed (operator decides).
-
-## 27 - CONTINUATION-18 - ISLAND RETIRED (B1)
-The dead "session island" is archived (2026-08-26): the 15 retired-session modules that existed as twins in BOTH trees — task_board, preflight, rehearsal, editor_scheduler, closure_report, rep_engine, wellspring, ripener, malcolm, gauntlet, horizon, agent_tunnel, curriculum, fractal_spiral, coin_verifier — moved by `git mv` to `attic/retired_island/chimera_core/` and `attic/retired_island/chimeraengine_core/` (collision-flattened by tree prefix); their tests (the 9 island test files living inside Chimera/core, incl. test_wave) to `attic/retired_island/tests/`, and the runtime stores (task_board_state.json + .bak + .lock, editor_scheduler_state.json + .lock, all gitignored machine-local state) to `attic/retired_island/stores/`. Safety re-verified before the move: zero live entry points reach the island (mcp_server/__main__/orient/night/method/root-*/tools/* sweep + full AST import-closure from all 327 entry points); the only apparent chains root at capcom's try/except-wrapped brief() helpers and human_messenger's try/except-wrapped CAPCOM summon — both degrade gracefully ("(unavailable)" / surfacing locally), matching the documented exceptions (capcom stays; tools/training_gate.py standalone). build_orchestrator.py + game_code_generator.py exist nowhere in the tree yet were still string-blessed in .doclint.allow — those three blessing lines pruned. tools/verdict.py drops task_progress.md from _SCAN_PATHS (auto-numberer now scans atlas only): measured numerically inert — registry next=63 > prose max=60, so no collision behavior changes. The store itself moved to docs/archive/task_progress.md. UE editor checks die with the pipeline (section 26's excision); capcom.brief degrades gracefully via its existing per-line try/except.
-
-## 28 - CONTINUATION-19 - THE FIRST CHIMERA (GOAL) + APPEARANCE MESSENGER LANDED
-**GOAL (operator, 2026-08-26; not an immediate task):** the first Chimera creature will be a TEDDY-BEAR / MONKEY 50-50 genetic split, straight down the midline - left half one lineage, right half the other. This is the eventual target of `theSeed` (V61/V62 linked): the creature the dyad ultimately judges. It anchors the downstream lane (tissue = separate triangle systems coupling at interfaces; the in-between must be trained across the range; determinism = ROM extremities + CA interior + bone rig). No action scheduled yet - recorded so the membrane stack points at it.
-**APPEARANCE MESSENGER (theDeterminism gate S3 APPEARANCE):** the dyad's eye now routes through LM Studio's RESIDENT model (operator decree: "Vision Judge = whatever LM Studio currently has loaded", 68k ctx) via core/lm_gateway (single-endpoint fair queue, adopt-never-pin, NoModelLoaded == eye dark == fail-not-skip). senses.py VISION_BACKEND env (default 'lmstudio'; 'ollama' restores retired qwen3.8). lm_gateway loaded by PATH (immune to dual-core shadow; only Chimera/core post-A3).
-**THE BUG THE DYAD EXISTS TO CATCH, now fixed:** render_mesh_movie / render_teddy_movie POST /camera then GET /frame with no wait; /frame returns the LAST captured buffer, so every frame captured the PRE-rotation view -> whole movies were byte-identical (the mesh_view header's own falsifier). cpp_bridge._settle_capture() waits (poll 20ms) until a frame DIFFERS from the last saved one, proving the camera landed. No C++ change. Verified: cad_bear 6-frame movie -> 6 distinct MD5s; /judge alignment 0.75 -> 0.95 once the orbit through three elevations is visible.
-**Note:** cpp_bridge ENGINE_URL default is stale :8080; mesh_view spawns the engine on :8090 and passes CHIMERA_ENGINE_URL. Server restart to pick up the new cpp_bridge import is out-of-band (kill cascades the tool wrapper) - code fix verified standalone.
-**Committed:** 98179d45 (senses.py + cpp_bridge.py + mesh_view.py). PRIOR: 0512a99d (mesh_view source tracked), 235a881c (matter twin unified).
-
-## 29 - CONTINUATION-19 - SWING LANDED (the active blocker, closed)
-**SWING PASS** (06656727, build agent; audited cold by ox-alpha, numbers reproduce): root cause was a weld with no `solref` -> the heavy pelvis sagged ~16 cm off its pivot under gravity, a MOVING pivot corrupted the period (read 15.4% fast -> FAIL). Fix: weld stiffened to the codebase's established bond value `solref="1e-5 1" solimp="0.9999 0.99999 1e-6 0.5 2"` (port_tests_matter.py:1011) AND the 1.5 m hang baked into qpos0 before compile (MuJoCo bakes the weld reference from qpos0 at compile time, so a runtime lift was dragged back to floor = fake "free fall"). a_swing resets via mj_resetData (qpos0, the welded pose), not a keyframe, and drops the per-step kinematic pin.
-**Verified:** predicted T = 1.5228 s vs measured 1.3333 s = **12.4% off, under the 15% falsifier**. Full action suite clean (SWING/BALANCE/STANCE/THROW/STEP/TURN/CROUCH PASS, GRIP REFUSED no-arm, PUSH/PULL/LAND pre-existing FAILs unrelated to the weld path). load_body gained fix_body/hang_z (defaulted, backward-compatible); the hang_z bump is asserted to land before compile so a silent regex miss cannot masquerade as physics.
-**Honesty flag (carried, not blocking):** the stated ~1 cm residual sag cannot alone explain 12% period error (~1% expected); a real unexplained gap remains inside the bar -- follow-up: recheck the derived I or the period measurement. UPRIGHT/RHYTHM_DRIVE now unblocked.
-
-## 30 - CONTINUATION-19 - 10-TASK PARALLEL SWARM INTEGRATED (9/10 landed; P4 running)
-Operator dispatched 10 parallel complex tasks (prompts in chat; branch-per-agent protocol given). Agents wrote straight into the working tree (no branches); ox-alpha audited each cold before integrating.
-**Landed + verified (3155b9f2, integration commit):**
-- P1 UPRIGHT PASS -- CoM in base of support, all joint torque ratios <=1.0, torques allometric (no human-table number). tools/action_upright.py + reg (expect_actions 12->14).
-- P2 RHYTHM_DRIVE PASS -- measured f=0.305 Hz vs derived 0.328 Hz (7.1%), stable limit cycle; cadence derived, never tuned. tools/action_rhythm.py + reg.
-- P3 END_STOP PASS -- subtalar passive share grows toward stop (0->64 N.m), 0.00 under ligament ablation; allometric MVC-scale drive + publishedology citation. tools/primitive_tests.py (doc_lint broken-pointer fixed: repointed matter_library.json to the populated Chimera/docs/rep_batteries/ path).
-- P5 ALLOMETRY AUDIT -- docs/ALLOMETRY_AUDIT.md (220 lines, 21 findings).
-- P6 TISSUE SYSTEMS PASS -- three separate triangle systems (skin/muscle/bone) hold interface continuity. ChimeraEngine/tissue_systems.py + coupling test.
-- P7 BONE RIG PASS (12/12) -- ROM + CA interior slaved to a bone rig; mesh follows LBS exactly. tools/bone_rig.py + test + native/* ENGINE_URL fix.
-- P8 IN-BETWEEN HARNESS PASS -- 27/27 in-range configs physical. tools/train_inbetween.py + report.json.
-- P10 VIEWER HARDENING -- ENGINE_URL 8080->8090 everywhere; watchdog respawns dead engine; /restart via pidfile; CREATE_NEW_PROCESS_GROUP (no cascade). cpp_bridge + mesh_view + native/* + render_views + write_main_cpp.
-Full action suite: 14 primitives, no regression (PUSH/PULL/LAND pre-existing FAILs untouched).
-**P9 SPLIT CREATURE (41893558, done by ox-alpha -- the swarm gap):** tools/split_creature.py builds teddy/monkey 50-50 midline split, boots engine, runs the dyad -> alignment 0.65 (reads a COMPOSITE, falsifier 'single lineage' not tripped). Monkey = procedural stand-in; pipeline proven. Seeds the first-Chimera goal.
-**P4 PUBLISHEDOLOGY LEDGER -- STILL RUNNING (operator-confirmed in progress); held out of the integration commit. docs/PUBLISHEDOLOGY_LEDGER.md expected on completion.**
-Excluded from commits: live-chronicle docs (DREAM_REPORT/HERALD/HISTORY_BOOK) and the gsplat submodule (left dirty on purpose).
-
-## 31 - CONTINUATION-19 - P4 LANDED (publishedology ledger complete)
-**P4 committed (ae344818).** Read-only audit, no source touched. ~500 ALL_CAPS constants across tools/ + Chimera/ + ChimeraEngine/ each docked to exactly one of P/D/W/H/C/M. Verified the headline docks against code: G_EARTH=9.80665 -> CGPM 3rd Res (1901)/SI Brochure sec5.2 (its 'CODATA' comment in train_myobody_directional is a genuine misattribution -- defined standard, not a measurement); PPO gamma/lam/clip -> Schulman arXiv:1707.06347; FR_TRANSITION Froude -> Alexander 1977; RUN 25/29/30 kernels + PAIRWISE_COEF + H_MAX -> W (witnessed). The ledger's honesty discipline holds: flagged != un-docked -- every M names its required fix.
-
-**Follow-ups the ledger raised (fix on next touch, not silently):**
-- `tools/world.py` lumbar/off-sag/MTP envelope edges (LUMBAR_EXT_EDGE_DEG, LUMBAR_LAT_EDGE_DEG, LUMBAR_GRAIN_DEG, off-sag/MTP) cite "the literature" with no author/year/table -> M until cited (THE_TRUNK_TISSUE.md has the prose; a paper citation must land).
-- `train_myobody_directional.py:145` "CODATA standard gravity" comment -> correct to "CGPM 1901 defined standard gravity" (1-line comment fix, no behavior change).
-- Material densities PLUSH_STUFFED/KNIT -> need a real weighing of the bear (currently assumed).
-- `ALLOMETRIC_STRAIN_RATE=1.5`, `FR_PREFERRED=0.25` (surname-only), controller `BACKWARD_FACTOR` ('Winter' surname only) + `TURN_RATE` (none), RL arch hyperparams (HID, EPOCHS=5 vs paper's 10, ENT) -> all M; per-value rows on next touch per the doc's VERIFY section.
-- gsplat vendoring explicitly scoped out (upstream API conventions, not this repo's physics).
-
-**All 10 swarm tasks now landed and committed (P1-P10).** Working tree clean except live-chronicle docs + gsplat submodule (intentionally excluded). Not pushed (operator call).
-
-## 32 - CONTINUATION-20 - PHASE 0 CLOSED: theDeterminism PROVEN, CHECK order green except 2 pre-existing primitive FAILs
-**Goal-mode Phase 0 (operator-commissioned roadmap `docs/THE_ROADMAP.md`).** Five-part closure: S4 experiment, theDeterminism proof, doc rot, allometry F-1/F-2/F-3, full CHECK order. No commits (operator approval required); no tolerances widened anywhere.
-
-**S4 bit-identical trajectories — the membrane HOLDS.** `tools/ci_determinism.py` wraps `mj_step`, digests 10 named state streams per step (blake2b-16), two full recorded passes compared exactly: **21/21 verdicts stable, 55,949 stepped states bit-identical, max |delta| = 0.** Per-stream record published to `docs/determinism_s4_record.json` (run_digest 00da948f…). Logs: agent_logs/phase0_ci_determinism_r2/r3.txt. Instrument lesson recorded in THE_DETERMINISM_S4.md: a recorder that can capture an empty stream must assert its count.
-
-**theDeterminism PROVEN via MCP (all six gates, dyad 0.85).** Reconciliation first: the S4 doc's "S3 APPEARANCE completed" was FALSE (engine dyad = null) and the doc had substituted a bit-reproducibility claim for the engine's framed CA claim — amendment appended to THE_DETERMINISM_S4.md. Scene authored to the engine's OWN expected reading (two bit-identical networks, mirror twins; `splat_appearance._determinism_buffers` — a duplicate PHYSICS_READING entry had shadowed it, removed). **Pipeline bug fixed:** `cpp_bridge.render_term`/`render_term_movie` imported `splat_appearance` from the long-lived MCP server's module cache — re-authored scenes rendered as their OLD blob (the exact bug the engine_state fallback comment describes, on the cpp path it bypassed). cpp_bridge now reloads the module; that is why two dyads failed at 0.1 describing a scene that no longer existed on disk. S5 why-terminal: 7 PHYSICS variables given honest pointers — 4 to the new S4 record (contact forces, warm-start, activation, FP order), friction to theStance's newly-published `ground_friction_mu` (derived from the loaded model, mu=1.0, matches the PUSH measurement), mass distribution to `#com_height_m`, tissue coupling to `#gait_envelope_deg`.
-
-**Doc rot fixed.** matter_library.json restored from tag `matter-era-end` (rock_fracture passes); the two theGround ports in `tools/port_tests_matter.py` legalized as REFUSED-when-absent (matter-era membrane deleted with THE_LIGHT_SEED); `tools/port_tests.py` main handles refusals. Wolfram §5 + compiler tables carry dated STALE SNAPSHOT amendments. Port suite: **19/19 + 2 REFUSED, exit 0** (3 documented drift warnings from §26's accepted hard-stop regime). Action suite: **10/10 + 4 REFUSED, exit 0** (its sys.path fixed).
-
-**Allometry F-1/F-2/F-3 landed per ALLOMETRY_AUDIT's pre-registered replacements:** joint_limit abuse = 2x THIS body's peak knee torque over ROM (PASS, drift −2.83% = the accepted hard-stop drift); a_turn drive = max(I_z*5, 1) (PASS, control 85x internal); p_upright T0 = 0.5x peak lumbar torque (verified NOT the cause of UPRIGHT failing — identical failure signature before and after).
-
-**chain_witness green: 6 working, 0 broken, exit 0** (was 0 working / 6 broken, pre-existing). Each membrane earned its size+clock from its OWN law: marbleMaze 240 passes x dt x substeps = 76.8 s; needles k_end−k_start = 33.0 s; theSeed half-orbit at 24 fps = 15.02 s; theLight 8105 ticks x dt = 4.053 s; theHuman physics.py CREATED (extent 1.75 m = height_m, clock 1.1 s = 2x step_time_s; no emit — a dynamics body, not a splat membrane); theStance physics.py CREATED (extent = com_height_m, clock = time_to_fall_s, plus the friction publication above).
-
-**OPEN — Phase 1 head, honestly reported (criterion-5 gap): primitives 5/7.** UPRIGHT + RHYTHM_DRIVE FAIL, load-independent and PRE-EXISTING (§30's PASS prose refers to the ACTION layer, not these). Probes this session: hard stops ELIMINATED as UPRIGHT's cause (softened stops: 19.86 vs 17.70 deg — unchanged); gravity ELIMINATED (g=7.076: identical signature). The trunk holds 19.9 deg under a 40 N.m sweep vs 10.6 deg under 150 N.m at e5872c1d — the body is dramatically softer/less stiff than at the last known pass; world/body-side regression between e5872c1d and HEAD (suspects: 4ab0863f trunk tissue, 7989105d ligaments, c19941b6/b433e8f0 lumbar constants); bisection in flight. RHYTHM_DRIVE: hard stops IMPLICATED (softening hip stops moved L/R corr +0.116 -> −0.412, swing 40.5 -> 86.9 deg) but not sufficient alone (bar is corr < −0.5; keyframe seats hip_flexion_l AT its lower limit — "left alone 10 (out of range)" in world.py's own print). **Baseline re-record DEFERRED with §26's queue: it comes LAST, after these two lanes close.**
-
-**§32 ADDENDUM (same day, later) — RHYTHM_DRIVE CLOSED; primitives 6/7.** Root cause: myobody's shipped keyframe is a GAIT FRAME — hip_flexion_l clamped to −30.00 deg (its published edge, from −40.39) against hip_flexion_r at −15.99 deg: a 14 deg mid-stride split frozen into the standing pose. The antiphase drive needs a symmetric stand; measured L/R corr +0.116 asymmetric vs −0.738 symmetric. THE SEAT IS DERIVED, NOT PICKED: feasible band = intersection of the body's own constraints (inside ROM; off the hard stop; a_upright equilibrium holds: passes −18.75, fails −17.5; STIFFNESS length-loop holds: passes −23.75, fails −25) -> passing interval [−23.75, −18.75], seat = its CENTER **−21.25 deg** (maximin margin to every boundary). Falsified before landing: symmetric −30 (broke STIFFNESS), anatomical 0 (broke a_upright — CoM exits support). Landed in tools/world.py as THE SYMMETRIC STAND. Full CHECK at the seat: chain 0 broken, ports 19/19+2 REFUSED, **primitives 6/7**, actions 10/10+4 REFUSED — zero regressions. The walk-lane (f3_stand/f4_walk/f5_step/training) shares keyframe-0 and starts from the symmetric stand by design. ONLY UPRIGHT remains open; bisection running.
-
-**§32 CLOSE-OUT (2026-08-27) — UPRIGHT root-caused + fixed; RHYTHM_DRIVE (action) FALSIFIED with evidence; Phase 0 closes at ports 19/19+2 REFUSED, primitives 7/7, actions 9/10 + one earned falsification, chain 6/0.**
-
-**UPRIGHT root cause = commit a4c8810e** (bisection, agent-6): it created `gait_envelope_deg` as a flat 2-point curve, and `derive_ligaments` read its "grain" as 135 deg — coarser than every gap — so EVERY hip/knee/ankle ligament was silently refused. The body went soft; the trunk held 19.9 deg under a 40 N.m sweep vs 10.6 deg at e5872c1d. Fix: restored the measured 101-sample Van Criekinge envelope (from `git show e5872c1d:.../theHuman/numbers.json`, CC BY 4.0, provenance keys published: gait_source/gait_is_measured/gait_group m_30-39/gait_speed_condition comf/gait_envelope_samples 101) into `story/theHuman/numbers.json`, current values elsewhere kept. Ligaments derived again -> **primitives 7/7**.
-
-**The seat cannot absorb the restored tissue (agent-7 grid, 9 seats x 4 constraints).** With the hip extension ligament real again (edge -10.59 deg, the performed envelope's own min), no HIP_STAND passes all four of {prim STIFFNESS, prim RHYTHM_DRIVE, action UPRIGHT, action RHYTHM_DRIVE}: UPRIGHT wants <= -18.75 (CoM over support), and action RHYTHM_DRIVE fails at EVERY seat with the same 0.3980 Hz vs 0.3284 Hz predicted (21.2%, bar 15%). The intersection is empty and the seat stays at the derived -21.25 deg.
-
-**RHYTHM_DRIVE (action layer) is FALSIFIED as stated — the membrane died honestly, the test is left failing.** Mechanism proven, not argued (.tmp/rhythm_fix/): (1) the driven swing bounces off the extension wall every cycle (cycle [-13.88, +31.16] deg); (2) the membrane's core claim "the drive cannot move the frequency" is MEASURED FALSE in this regime — G x {0.5,1,2} -> T {1.1462, 1.2562, 1.3630} s, Q x {0.8,1,1.25} -> T {1.3542, 1.2562, 1.1177} s; (3) G0/I = 11.3 s^-1 vs omega = 4.1 rad/s — the body's own muscle torque scale is not the weak drive the van-der-Pol frequency theorem needs; (4) the cycle is not iso-energetic (the drive pumps near the turning points), so no conservative backbone (free in-band 1.3350 s, turning-point backbones 1.02-1.10 s, linear 1.5228 s) is its reference. The only passes on offer were widening GAIT_TOL or tuning K_G — taste, not derivation; refused. Dated FALSIFIED addendum in `tools/action_rhythm.py`. SUCCESSOR THEORY for Phase 1: cadence = pendulum period SHORTENED BY THE LIGAMENT WALL the gait envelope just touches — the envelope's extension edge IS the ligament's engagement edge by construction, so elastic return at terminal swing is a cadence term, not an edge case. Instrument lesson: qfrc_bias enters with a MINUS (M qdd = passive + applied + constraint - bias); a torque scan that adds bias builds an inverted potential and predicts plausible nonsense.
-
-**S4 re-recorded on the ligamented body (r4):** 21 items stable across 3 runs, **52,472 stepped states bit-identical, max |delta| = 0, run_digest 4d15ddc1...** (record republished; amendment in THE_DETERMINISM_S4.md). **Port baseline re-recorded LAST, per §26's queue:** `python tools/port_tests.py --baseline` -> 19/19 + 2 REFUSED, and the verification pass against the new baseline reads ZERO drift — the +527.8% plantar-pressure number was the honest restored tissue and is now the reference, not a warning.
-
-**FINAL CHECK (2026-08-27):** ports 19/19+2 REFUSED (zero drift, zero missing-data errors) · primitives 7/7 · actions 9/10 + 4 REFUSED with RHYTHM_DRIVE's falsifier shown · chain_witness 6 working 0 broken · verdict ledger 2 closed 0 open · methodology_gate exit 0 · orient exit 0 (codebook: theStory, theSeed, theDeterminism; next term theShape). No tolerances widened anywhere; no commits (operator's call). Phase 1 opens with two lanes: theShape (engine) and the cadence-with-the-wall theory (physics), then the monkey chimera (research shortlist already on disk at `docs/research/2026-08-26_monkey_geometry_sources.md`).
+Key run records behind §4/§5, newest last: T2 CA pre-registration →
+degenerate-nan gate → T2 landed → run-record audit ("pass" prose corrected)
+→ Option B derived rest-area → curvature exterior landed both meshes → T13
+SFC falsified → octree option-(a): byte-identity, B1 njit 15×, pool, CA-walk
+swap → doctrine: Wolfram frame, Earth gravity canonical, UE excised, island
+retired → appearance messenger + dyad movie fix → SWING/UPRIGHT/RHYTHM_DRIVE
+closed → 10-task swarm (P1–P10) integrated → Phase 0 closed → corpus 5/5 →
+THE ARTIST'S SOLID (CAD-first decree) → substrate view dyad-closed 0.95 →
+build queue BET-F2/J1/W1 specced. Full text: git history of this file.
