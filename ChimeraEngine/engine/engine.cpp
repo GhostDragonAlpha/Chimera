@@ -30,6 +30,12 @@ static bool       g_mouse_captured = false;
 static int        g_last_mx = 0, g_last_my = 0;
 static bool       g_keys[256] = {};     // current frame key state
 static Engine*    g_key_engine = nullptr;  // set in Engine::init so WndProc can reach pose toggles
+// Bounding-sphere radius of the posted triangle mesh, measured at upload.
+// The zoom floor: below 1.02x this radius the eye enters the mesh and the
+// near plane SLICES it (operator report: "the nose and one hand are severed
+// at the wall of deletion"). Derived from the geometry, never a constant.
+static float      g_mesh_sphere = 0.0f;
+static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
 
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
@@ -51,14 +57,15 @@ static void update_camera_input(CameraState& cam, float dt) {
     if (g_keys['E']) cam.target[1] += move_speed;
 
     // Space / Ctrl → zoom
-    if (g_keys[' ']) cam.radius = fmaxf(1.0f, cam.radius - zoom_speed);
+    if (g_keys[' ']) cam.radius = fmaxf(radius_floor(), cam.radius - zoom_speed);
     if (g_keys[VK_CONTROL]) cam.radius = fminf(100.0f, cam.radius + zoom_speed);
 
-    // Hold R → reset view
+    // Hold R → reset view (radius frames the whole mesh when one is loaded:
+    // 45° FOV needs >= sphere/tan(22.5°) ≈ 2.41x; 2.7x leaves margin)
     if (g_keys['R']) {
         cam.theta   = 0.0f;
         cam.phi     = 0.3f;
-        cam.radius  = 12.0f;
+        cam.radius  = fmaxf(12.0f, 2.7f * g_mesh_sphere);
         cam.pan_x   = 0.0f;
         cam.pan_y   = 0.0f;
         cam.target[0] = cam.target[1] = cam.target[2] = 0.0f;
@@ -131,7 +138,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     // Scroll wheel → zoom
     if (msg == WM_MOUSEWHEEL) {
         float delta = static_cast<float>(GET_WHEEL_DELTA_WPARAM(wp)) / 120.0f;
-        g_cam.radius = fmaxf(1.0f, fminf(100.0f, g_cam.radius + delta * 2.0f));
+        g_cam.radius = fmaxf(radius_floor(), fminf(100.0f, g_cam.radius + delta * 2.0f));
         return 0;
     }
 
@@ -1072,6 +1079,16 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
                   VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
     tri_idx_count_ = icount;
     has_mesh_ = true;
+    // Measure the bounding sphere about the origin (the camera target) — the
+    // zoom floor derives from THIS, so the near plane can never slice the
+    // mesh no matter how far in the operator scrolls. Vertex stride = 9
+    // (pos3 + normal3 + color3).
+    float r2max = 0.0f;
+    for (size_t i = 0; i + 2 < verts.size(); i += 9) {
+        float r2 = verts[i] * verts[i] + verts[i + 1] * verts[i + 1] + verts[i + 2] * verts[i + 2];
+        if (r2 > r2max) r2max = r2;
+    }
+    g_mesh_sphere = sqrtf(r2max);
     return true;
 }
 
@@ -2016,7 +2033,7 @@ bool Engine::load_membrane(const std::string& term, const std::vector<float>& po
 }
 
 void Engine::set_camera(float radius, float theta, float phi) {
-    g_cam.radius = fmaxf(1.0f, radius);
+    g_cam.radius = fmaxf(radius_floor(), radius);
     g_cam.theta  = theta;
     g_cam.phi    = phi;   // free spin — the camera up vector handles any elevation
     g_cam.target[0] = g_cam.target[1] = g_cam.target[2] = 0.0f;

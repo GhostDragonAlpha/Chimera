@@ -512,3 +512,24 @@ J1 needs the repaired bone-addressed mesh, W1 needs the cube scaffolding.
   bound — the exchange law is wrong. Open by admission: spray (sheet tear)
   needs a sub-grid law we do not have yet; shore foam is cosmetic frost
   work, last.*
+
+**2D-SPLAT AMENDMENT (operator decree 2026-08-27, supersedes any 3DGS reading
+of the anchor above):** the frost is **2D Gaussian splatting ONLY** — each
+splat is a 2D Gaussian on its triangle's own plane, never a volumetric 3D
+blob. Consequence that makes the anchor STRONGER: the splat's normal/frame is
+the triangle's normal/frame outright (the 2DGS paper's worst problem — surfel
+orientation drift — cannot exist here), and because the mirror's tilt is
+KNOWN at every moment, view-dependent reflection is simulated from the
+geometry's angle, not fitted from data. A triangle is a 2D splat at zero
+normal thickness; the 2D splat is that triangle taught to answer light.
+
+**VIEW-VOLUME FIX (same day, operator report: "the nose and one hand are
+severed at the wall of deletion"):** two causes, both fixed in the engine.
+(1) Framing: at radius 13.5 a 45° FOV shows ~11.2 vertical units; the upright
+monkey is ~15.2 tall — the feet left the FRAME (not a clip). Camera radius
+for whole-body views is DERIVED: >= sphere/tan(22.5°) ~= 2.41x the bounding
+sphere (2.7x with margin). (2) Zoom floor: the interactive camera could
+scroll INSIDE the mesh (min radius 1.0 vs sphere 7.6) where the near plane
+slices whatever it touches. The floor is now measured at upload from the
+vertex data itself (max |v| about the target) — zoom stops at 1.02x the
+bounding sphere, so no part can ever be deleted by the near plane again.

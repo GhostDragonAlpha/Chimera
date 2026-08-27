@@ -43,10 +43,14 @@ copy, which is why the human is a terminal of this system, not a user of it.
 - **Water.** The cube columns hold height + flow; a CA exchange rule moves
   it; mass conservation is the falsifier. Creatures interact for free —
   occupied columns exclude water; the wading monkey is the same rows meeting.
-- **The frost is distilled ray tracing.** Train the light answer offline
-  (path tracer or photographs), run it at lookup cost. "Ray tracing without
-  ray tracing cores." Held-out LIGHT directions are the door, not held-out
-  views — novel views alone make a texture, not a NeRF.
+- **The frost is distilled ray tracing — 2D splats only (operator decree:
+  "we're only going to be working on the 2D version").** Not volumetric 3DGS:
+  each splat is a 2D Gaussian living ON its triangle's plane — a surfel whose
+  angle IS the triangle's angle, which is exactly what makes reflection
+  simulation derivable (the mirror's tilt is known, never fitted). Train the
+  light answer offline (path tracer or photographs), run it at lookup cost.
+  "Ray tracing without ray tracing cores." Held-out LIGHT directions are the
+  door, not held-out views — novel views alone make a texture, not a NeRF.
 - **The dyad.** Silicon builds; a separate vision eye (LM Studio's resident
   model via `core/lm_gateway`) judges blind orbit movies; disagreements get
   measured; taste bottoms out in the operator and nowhere else.
