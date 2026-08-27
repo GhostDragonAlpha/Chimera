@@ -418,6 +418,133 @@ each entry names what it gives us and what would falsify it for our use.
   advancing volumetric/Gaussian-splat extensions — we document selective
   support or silently contradict the 2D-only decree.
 
+### Rounds 11–16 (second swarm — engineering, training, evolution)
+
+**R11 — inside/outside, erosion, vegetation.**
+- **Generalized winding numbers** (Jacobson 2013,
+  [project](https://igl.ethz.ch/projects/winding-number/); fast tree
+  version Barill 2018) answer inside/outside on BROKEN soups — graceful
+  degradation near defects instead of failure. This is the volumetric
+  prior the birth rule votes against. THREAT: a naive threshold seals
+  true openings — the winding field may inform births, never veto the
+  opening classifier.
+- **Virtual-pipes erosion (Mei 2007) is a CA by another name** — height,
+  water, sediment, 4 outflow fluxes per cell, local update passes; 65
+  iterations/sec on 2007 GPU hardware (Jákó 2011). The river line's
+  direct ancestor. Multi-layer heightmaps (VMV 2024) add overhangs and
+  caves but go volumetric — re-derive on the triangle dual graph or stay
+  flat; recorded as the open derivation.
+- **Shipped vegetation is baked, not grown:** SpeedTree (Academy Award,
+  20 years of titles) ships pre-baked meshes/textures; Horizon Zero
+  Dawn's GPU placement built a whole wilderness with THREE artists —
+  artist rules, GPU scatter, seeded determinism. Pure runtime L-systems:
+  not shipped anywhere. Our chance to be first is real; the bar is
+  placement quality, not growth novelty.
+
+**R12 — Vulkan reality, GI without RT.**
+- **Memory layout is a 12× question:** for coherent 2D neighbor reads,
+  storage images/texel buffers beat flat SSBOs (NVIDIA engineer, measured
+  on driver forum); subgroup shuffles replace shared-memory atomics and
+  cut atomic count 32–64× ([Khronos tutorial](https://www.khronos.org/blog/vulkan-subgroup-tutorial))
+  — and fewer atomics = fewer determinism holes. Async compute on
+  tile-based GPUs can serialize the whole frame if barriered wrong; an
+  AMD transfer-queue WAW crash in the wild ([llama.cpp #25195](https://github.com/ggml-org/llama.cpp/issues/25195))
+  says: synchronization gets driver-tested, not just validation-tested.
+- **Mesh shaders are fragmented:** AMDVLK disables `taskShader` on
+  RDNA2/3 ([AMDVLK #341](https://github.com/GPUOpen-Drivers/AMDVLK/issues/341)),
+  Intel Arc is Vulkan-only, NVIDIA needed beta drivers at launch.
+  Verdict for us: NOT a load-bearing default. Classic vertex pipeline +
+  compute stays; mesh shaders are an optional fast path behind a
+  capability probe.
+- **No-RT GI is proven by Lumen's software path** — screen-space traces +
+  mesh SDF marching, no RT cores, default in UE5. DDGI and EA's GIBS
+  (surfels, shipped at 60fps on consoles) both lean on hardware RT —
+  contradiction for us, but GIBS proves the SURFEL CACHE is
+  production-ready; our variant replaces its ray casts with known
+  triangle mirrors. Baked irradiance volumes (Treyarch) are the static
+  floor — useless for a living substrate.
+
+**R13 — the light field gets its architecture and its datasets.**
+- **Real-Time Neural Appearance Models (Zeltner, TOG 2024,
+  [arXiv:2305.02678](https://arxiv.org/abs/2305.02678)):** an 8-channel
+  latent + a 3×64 MLP maps (latent, light, view) → BRDF, 10× faster than
+  the layered graph it bakes. That is f(point, view, light) with a
+  published parameter budget. Falsifier: train it on a corpus part and
+  measure PSNR against Mitsuba ground truth — the frost's first number.
+- **Directional encoding:** spherical Gaussians carry a lobe in 10–15
+  numbers vs 48 SH coefficients (SG-Splatting, [arXiv:2501.00342](https://arxiv.org/abs/2501.00342))
+  — borrow the encoding only; the paper is volumetric 3DGS, doctrine
+  violation if adopted whole. NVIDIA's NTC proves per-material tiny-MLP
+  decoders ship in SDKs (threat: `VK_NV_cooperative_vector` is
+  vendor-locked; DP4a fallback exists).
+- **Training ground truth exists:** DiLiGenT (96 calibrated lights,
+  laser-scanned normals), OpenIllumination (64 objects, 108K images),
+  and DiLiGenRT (translucency/roughness — the boundary where a local
+  mirror MUST fail; if we fail there, that's the measurement that sends
+  subsurface effects to the CA substrate, exactly as the doctrine says).
+
+**R14 — evolution of creatures and rules.**
+- **Sims 1994 + Framsticks:** co-evolving body and control produces
+  swimmers/walkers/fighters — and evolution is the best BUG-FINDER ever
+  built (both projects report creatures exploiting simulator flaws).
+  Lesson: our physics must be exploitable-proof before we let anything
+  evolve on it, or we'll breed beautiful cheats.
+- **CA rules can be DISCOVERED, not just designed:** Crutchfield &
+  Mitchell (PNAS 1995) evolved 1D CA rules that coordinate globally via
+  particle-like signals from purely local updates. Known trap: rules
+  overfit the training distribution — every evolved rule faces held-out
+  initial conditions as its falsifier. Lenia + IMGEP ([arXiv:1908.06663](https://arxiv.org/abs/1908.06663))
+  auto-discovers diverse self-organizing phenomena — the chimera
+  menagerie's search engine.
+- **MAP-Elites/POET/NEAT** give the catalog machinery (niches of elites,
+  self-generating curricula). Rule 0 friction recorded: pure novelty
+  search has no falsifier and can never be a gate — it generates
+  candidates, membranes judge them.
+
+**R15 — fracture, sound, cloth.**
+- **Fracture modes (Sellan 2021, [arXiv:2111.05249](https://arxiv.org/pdf/2111.05249v2)):**
+  eigen-analysis of a shape's natural breaking patterns — derived
+  fracture, not Voronoi's telltale convex chunks; precomputed modes cost
+  nothing at runtime. Shipped practice (BF3 pre-fracture swaps, R6 Siege
+  2D projection) confirms: pre-computed = cheap + deterministic, runtime
+  = pretty + spiky. DMM (Force Unleashed) deliberately CAPPED element
+  splitting for predictability — the industry's own determinism
+  trade-off, documented.
+- **Sound-from-mesh is real but volumetric:** modal synthesis is an
+  eigenproblem over the VOLUME (threat to surface-only doctrine);
+  DeepModal/NeuralSound compress it to <1s inference. No shipped
+  middleware does mesh-driven modal audio — honest gap: if we ship it,
+  it's a first, and it needs its own membrane.
+- **Shipped cloth ceiling is cosmetic:** PBD/XPBD is the standard; AAA
+  uses it for capes, hair, flags — not flesh. Our chimera's skin/fur
+  falsifiers must aim at what shipping games actually achieve, then
+  exceed it via the substrate — not at film-VFX flesh nobody does in
+  real time.
+
+**R16 — determinism, verification, and the gradient wall.**
+- **Determinism is engineered, never assumed.** NVIDIA CCCL ships
+  determinism tiers (`run_to_run`; `gpu_to_gpu` at 20–30% cost);
+  CERN ALICE's deterministic mode (no FMA, no fast-math, total-order
+  sorts, [arXiv:2511.17018](https://cds.cern.ch/record/2946680/files/2511.17018.pdf))
+  costs 1.5–10× and FOUND long-standing bugs blamed on parallelism.
+  Gaffer-on-Games scope: bit-exactness claims must name toolchain +
+  hardware family. GPU atomics are the enemy — tree reductions or
+  prefix scans everywhere the CA accumulates.
+- **Metamorphic testing is the right oracle** (NIST, MET 2021): physics
+  has no exact oracle, so test RELATIONS — "rotating the cube
+  scaffolding must not change total energy", "sealed mesh + N CA steps
+  ⇒ triangle-count-minus-openings invariant". Hypothesis-style PBT
+  automates the input generation. This is how Rule 0 falsifiers become
+  a test SUITE instead of a document.
+- **The gradient wall is proven math:** backprop through long chaotic
+  rollouts explodes/vanishes exponentially (Metz et al.,
+  [arXiv:2111.05803](https://arxiv.org/pdf/2111.05803)); contact
+  on/off discontinuities (hinges! collisions!) break gradient quality
+  ([arXiv:2603.16478](https://arxiv.org/html/2603.16478v1)). Doctrine
+  consequence: CA rules and light fields train SHORT-HORIZON or
+  BLACK-BOX (ES/REINFORCE), never naive long BPTT. The maximum usable
+  horizon is itself a membrane to be measured, not assumed.
+
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
