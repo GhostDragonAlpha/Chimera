@@ -66,9 +66,9 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | L2 | **The substrate view** — one-mask skin+bone, engine 1px wireframe + overlay slot | DONE — dyad **NO COMPLAINTS 0.95** (`34938671`) | reference pipeline for every later visual | `docs/THE_ARTISTS_SOLID.md` |
 | L3 | **THE REGISTRY** (Phase 4a) — triangle centers = Cartesian addresses; cube edge DERIVED from max edge-adjacent center distance; dual graph; cube index must reproduce the neighborhood 100% | membrane pre-written, goal paused one step from run | RUN IT — falsifier: any neighbor not found through the 26-cube ring | `docs/THE_ARTISTS_SOLID.md` |
 | L4 | **THE BIRTH RULE** (Phase 4b) — triangle-native wound repair, no voxel rasterization; 8955's 41 boundary loops close, sockets measured OPEN | membrane pre-written | after L3 — falsifier: any true opening closed | same |
-| L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`) | needs L3+L4; then train on a corpus part, held-out LIGHT falsifier | same |
-| L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`) | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection | same |
-| L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`) | needs L3's cubes; downhill flow + level + mass bound | same |
+| L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`); falsifier experiment SPECCED by Big Pickle (`agent_logs/bigpickle/frost_packet_01.md`): 8-D latent/triangle + 3×64 MLP, 128 lights, 16 held-out, ≥30 dB PSNR vs Mitsuba | needs L3+L4 (or runs scratch-only on one corpus part); held-out LIGHT is the door; BRDF-vs-relightable-radiance transfer must be measured, not assumed | same |
+| L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`); physics packet SPECCED by hy3 (`agent_logs/hy3/physics_packet_01.md`): ring-as-Dirichlet + smooth-ARAP skin (bi-Laplacian kills the hinge crease), T_vol≈4.4e-4 DERIVED, self-intersection=0; CPG phase→hinge cell states (Owaki load entrainment) | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection; λ CHOSEN-UNVERIFIED, names its experiment | same |
+| L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`); pipe port DERIVED by hy3 (same packet): per-edge signed flux q_ji=−q_ij ⇒ exact mass conservation at ANY valence; barycentric dual for positivity; CFL Δt from l_min,g | needs L3's cubes; downhill flow + level + mass bound; MaCE rejected as redundant (packet Q3) | same |
 | L8 | **THE FIRST CHIMERA** — teddy-bear / monkey 50-50 split down the midline | pipeline proven at dyad 0.65 with a procedural stand-in (P9, `41893558`); real creature awaits the substrate | the creature the whole stack points at | `docs/THE_MASTER_LIST.md` §heritage |
 | L9 | **THE GAME** | the artifact of value | arrives when L1–L8 produce a world | — |
 
@@ -657,6 +657,29 @@ virtual-pipes + MaCE (L7 water), ARAP lineage (L6 hinges), GGPO sync-test
 (multiplayer gate). Research annex CLOSED unless the operator opens a
 new territory; the falsifiers from here on are numbers we produce, not
 papers we find.
+
+### AGENT PACKETS (the prescribed deep-reads, executed)
+
+- **FROST PACKET 01 — Big Pickle, `agent_logs/bigpickle/frost_packet_01.md`
+  (audited, ACCEPTED 2026-08-27).** RTXNTC decode architecture + integer
+  DP4a as the only determinism-lawful path; Zeltner 8-D latent + 3×64 MLP
+  mapped to one latent per triangle row; Mitsuba `llvm` CPU backend viable
+  (GLB→PLY via trimesh, no blender add-on needed); OpenIllumination CC BY
+  4.0 as the held-out-light validator (DiLiGenT license UNVERIFIED).
+  Debunked honestly: the "10×" figure belongs to the 2×32 model; real
+  3×64 speedup ~1.6–2.3×. Named target mismatch: BRDF-fit ≠ relightable
+  radiance — the falsifier measures the transfer. L5 falsifier: 128
+  lights, 16 held-out, ≥30 dB PSNR vs Mitsuba.
+- **PHYSICS PACKET 01 — hy3, `agent_logs/hy3/physics_packet_01.md`
+  (audited, ACCEPTED 2026-08-27).** DEC cotan-Laplacian on our dual graph;
+  barycentric dual DERIVED for positivity (no negative water); virtual
+  pipes ported to per-edge signed flux — exact mass conservation at any
+  valence, boundary = no edge; MaCE REJECTED as redundant + float-family;
+  hinge = Dirichlet ring + smooth-ARAP skin, T_vol≈4.4e-4 derived from
+  (1−2ν)ε_max, λ CHOSEN-UNVERIFIED; Owaki decentralized CPG mapped to
+  hinge cell phases with measurable gait falsifiers.
+- **Cross-audit STAGED:** each packet's author audits the other's packet
+  adversarially; disagreements get measured, not argued.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
