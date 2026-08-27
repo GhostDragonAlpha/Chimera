@@ -206,6 +206,33 @@ inspect. Nobody else in the asset market ships a proof.
      on 8955 where paw measurement and h/100 agreed to the digit. Also fixed:
      per-part seeds now use crc32 (Python's `hash()` is process-randomized —
      an unseeded backdoor in the determinism decree).
+  **CORPUS VERDICTS (2026-08-27, second session — batch v3, SEED=20260827,
+  production pitch = law/4, reports `.tmp/monkey_assets/recon/*_report.json`,
+  gate `*_gate.json`):** the geometry door is OPEN — **gate 5/5 PASS** (all
+  contract GLBs watertight, `load_glb_triangles` parses, `inside_mask`
+  ray-parity accepts; probe accuracy per part in the gate files) — and the
+  mass bound is an EARNED FALSIFIED for the uniform lattice, 0/37 parts at
+  <=2% (best: 9906 Object_0 at 5.00%). Per asset, no verdict without numbers:
+  - `8955fb5b` (SALLY): body conv 10.41% FAIL, silhouette 0.39% h PASS,
+    41 caps (max 4.27u); eyes conv 17.10% FAIL, silhouette 0.15% h.
+    Seen live in the engine: 2 parts, 409k tris, smooth at p/4.
+  - `1534c1b1`: Object_1 conv 8.72% FAIL + silhouette 1.20% h FAIL (the one
+    silhouette breach besides f4783); Object_0 conv 43.26% FAIL. 150 caps.
+  - `22d16268` (Cymbal Monkey, law fallback h/100 = 1.966): 15/22 parts
+    SUB-LAW (cells across at law pitch 0.1-2.8 — the asset is a box of tiny
+    parts), 7 FAIL incl. pCube12 at 9068% and r_ear_helix3 at 3624%
+    (thin-walled parts whose interior collapses under refinement).
+  - `9906e586`: 5/9 SUB-LAW, 4 FAIL (5.00-35.46%).
+  - `f4783633`: BOTH bounds fail on both parts — conv 55.99% / 274.82%,
+    silhouette 2.47% / 10.13% h. Cause named, not hidden: the soup carries
+    **3,027 boundary loops** (1,412 + 1,615); the capper closes them, the
+    solid is watertight and gate-accepted, but a soup that shredded is not a
+    reconstruction target — this asset is a candidate for corpus exclusion
+    or manual repair, and the operator sees it as it is.
+  Reading for the roadmap: the geometry door (consume any soup -> watertight
+  per-part solid) WORKS at corpus scale; the mass law needs the graded
+  lattice (BET-A2), exactly as the decay measurement predicted. This is not
+  a tolerance story — the 2% bound never moved.
   **MEASUREMENT SPEC (fixed 2026-08-27 after the prototype run, BEFORE the full
   run — the run that teaches you the estimators are broken is exactly when the
   spec must be written down, with reasons, never silently):**
