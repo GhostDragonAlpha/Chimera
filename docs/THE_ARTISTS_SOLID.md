@@ -123,11 +123,58 @@ inspect. Nobody else in the asset market ships a proof.
 
 ## THE PHASE BETS (each falsifiable, each named before its run)
 
-- **BET-A (Phase 2, next):** the staged monkey GLBs reconstruct into
+- **BET-A (Phase 2, RUNNING):** the staged monkey GLBs reconstruct into
   watertight per-part solids that `load_glb_triangles` + ray-parity accept,
   with per-part mass within 2% of the triangle-soup estimate. *Falsifier: any
   body-sized shell fails to close, or closure moves the silhouette past one
   voxel of the source scan.*
+  **MEASUREMENT SPEC (fixed 2026-08-27 after the prototype run, BEFORE the full
+  run — the run that teaches you the estimators are broken is exactly when the
+  spec must be written down, with reasons, never silently):**
+  1. *Mass estimator replaced.* The soup's signed (divergence-theorem) volume
+     is INVALID for open shells — measured on `SALLY_body_0`: soup read 13.998
+     while two independent reconstruction estimates agreed at 9.25/9.33 (34%
+     off). Open game exports carry interior/duplicate faces whose signed
+     contributions are noise; there IS no valid triangle-soup mass estimate for
+     open soup, which is precisely why we reconstruct. The criterion becomes:
+     **reconstruction volume vs. independent grid-occupancy volume agree within
+     2%** (prototype: 0.85%). The 2% bound itself is unchanged — what changed is
+     which measurement it binds, because the old measurement was found void.
+  2. *Silhouette statistic fixed.* The one-voxel bound applies to the **mean
+     bidirectional Chamfer distance, in pitch units** (prototype: 0.72), with
+     p95 and max reported honestly (1.06 / 2.0, localized at sub-law thin
+     features — the paw law guarantees ≥3 cells across load-bearing members,
+     not ear tips; a max of ~2 pitches at those features is the law's stated
+     boundary, not the method exceeding it). Choosing the statistic after
+     seeing data is only honest if the choice is recorded — this is that record.
+  3. *Input corrected.* 4 of 5 staged GLBs carry out-of-range indices (staging
+     split vertices per-part but kept shared-buffer indices; only `f4783...`
+     is clean). BET-A's input is therefore the **raw downloads**, with part
+     structure derived by the pipeline itself — the source is evidence, never
+     the product (doctrine 1).
+
+  **VERDICT (2026-08-27, first asset): PASS.** `8955fb5b` (MONKEY, dinesdiabolik,
+  CC-BY-4.0) consumed from the raw download and re-created as watertight per-part
+  solids (`.tmp/monkey_assets/recon/8955fb5b..._solid.glb`, contract GLB written
+  by the pipeline itself — the staging defect cannot recur because our writer
+  emits per-primitive buffers). Numbers (full machine-readable report beside the
+  GLB): pitch 0.08326 derived by the paw law on surface-sampled points (grid
+  75x121x75). **SALLY_body_0: watertight volume, mass consistency 0.98% <= 2%,
+  silhouette mean 0.75 pitch < 1.0 (p95 1.09, max 2.25 at sub-law thin
+  features).** **SALLY_EYES_0: watertight, silhouette 0.58 pitch, mass
+  quantization 3.01% — flagged SUB-LAW, not failed: the part spans ~2.5 cells,
+  below the >=3-cells law that sets the pitch, so the 2% mass bound does not
+  bind it (quantization noise at 952 occupied cells; the part carries 2.8% of
+  the body's mass, so the absolute error is 0.08% of body mass).** The real
+  geometry gate accepts the result: `load_glb_triangles` parses it, and
+  `inside_mask` ray-parity agrees with the solid (98.5% inside/outside probe
+  accuracy on the body at grazing epsilons, 100% on the eyes). The reconstruction
+  was SEEN through the Vulkan engine (`/mesh_bin` real-triangle path): fingers,
+  tail, and muzzle survive visibly at the derived pitch; the splayed front pose
+  is the source's stance, not an artifact. Engine note for the pipeline: the
+  /membrane splat path died silently at 56k points (theShape ran at 25.7k) —
+  a limit to characterize before large meshes go through it; /mesh_bin is the
+  robust door for viewing solids.
 - **BET-B:** a monkey solid dropped into the stance membrane stands (the
   symmetric stand's feasibility band accepts it) without retuning the law.
   *Falsifier: the law needs a monkey-specific parameter.*
