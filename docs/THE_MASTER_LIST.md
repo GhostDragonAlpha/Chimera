@@ -131,8 +131,11 @@ copy, which is why the human is a terminal of this system, not a user of it.
 
 **Division of labor (operator decree 2026-08-27):** Kimi holds project
 context and writes elaborate prompts IN CHAT (never in docs) for transfer to
-Open Code, where local agents run long construction loops. This file is the
-guide for BOTH sides: the prompter writes from it, the builder reads it
+Open Code, where local agents run long construction loops. **HARD BOUNDARY
+(same day): Kimi edits ONLY this file** — every other file in the repo
+(engine, docs, tools, .tmp) is the construction agents' domain; if Kimi wants
+a change anywhere else, it goes into a prompt, never an edit. This file is
+the guide for BOTH sides: the prompter writes from it, the builder reads it
 first and runs `python tools/orient.py` second. The operator ratifies,
 steers, and is the human terminal of every dyad.
 
