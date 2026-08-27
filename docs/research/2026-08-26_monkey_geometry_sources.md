@@ -106,3 +106,98 @@ Single best recommendation: **Objaverse / Objaverse-XL via HuggingFace**, becaus
 - **Exact file format and license terms of the Oku et al. supplementary model files** — paper is open access, but the supplementary data's specific terms were not opened this session.
 - **Primate Phenotypes per-deposit license terms** — repository is free/open (NSF-funded), but individual deposit terms should be checked before redistribution.
 - **Academic macaque head CT/MRI** — no specific dataset URL verified; listed as a category, not a confirmed source.
+
+---
+
+## RESULTS — 2026-08-27 Objaverse monkey shortlist + staging run
+
+Method: queried the original Objaverse LVIS annotations (`objaverse.load_lvis_annotations()`) for categories `monkey` and `baboon`, giving 99 downloadable UIDs.  Per-model license verified from the Objaverse annotation (sourced from the Sketchfab API), not the dataset-level CC-BY-4.0. 12 candidates were downloaded via `objaverse.load_objects()` into `.tmp/monkey_assets/raw/`, inspected with `trimesh`, repaired with `trimesh.repair.fill_holes/fix_winding/fix_inversion`, then exported as **single-mesh, multi-primitive GLBs** into `.tmp/monkey_assets/staged/`. Each primitive carries the original geometry name on its material, matching the consumption shape of `tools/cad_sample.py::load_glb_triangles`. All staged files were verified to load through that function.
+
+### License verification
+
+All Objaverse/Sketchfab candidates in this run carried per-model `license: "by"`, which Sketchfab maps to **Creative Commons Attribution 4.0 International (CC-BY-4.0)**.  Evidence is the Objaverse annotation record (itself pulled from the Sketchfab API) and the live Sketchfab model page.  Two non-CC-BY candidates (`by-nc-sa`, `by-nc`) were present in the 99-UID pool and were excluded from download.
+
+### Staged survivors (5)
+
+| # | Objaverse UID | Sketchfab name | Author | Per-model license | Source URL | Staged GLB | Total tris | # parts |
+|---|---------------|----------------|--------|-------------------|------------|------------|------------|---------|
+| 1 | `22d1626853964fc995cda04814792ae5` | Cymbal Monkey | muneto_bm | CC-BY-4.0 | https://sketchfab.com/3d-models/22d1626853964fc995cda04814792ae5 | `.tmp/monkey_assets/staged/22d1626853964fc995cda04814792ae5.glb` | 54,234 | 22 |
+| 2 | `8955fb5b9c9b4e169456ccbae7c465f7` | MONKEY | dinesdiabolik | CC-BY-4.0 | https://sketchfab.com/3d-models/8955fb5b9c9b4e169456ccbae7c465f7 | `.tmp/monkey_assets/staged/8955fb5b9c9b4e169456ccbae7c465f7.glb` | 34,176 | 2 |
+| 3 | `1534c1b10378454697ea2f2aa888270c` | King Monkey | TdoubleU8 | CC-BY-4.0 | https://sketchfab.com/3d-models/1534c1b10378454697ea2f2aa888270c | `.tmp/monkey_assets/staged/1534c1b10378454697ea2f2aa888270c.glb` | 42,511 | 2 |
+| 4 | `9906e5863a89474da4ee4e178a2daa28` | Monkey | saranav | CC-BY-4.0 | https://sketchfab.com/3d-models/9906e5863a89474da4ee4e178a2daa28 | `.tmp/monkey_assets/staged/9906e5863a89474da4ee4e178a2daa28.glb` | 8,436 | 9 |
+| 5 | `f4783633129a433abf0d2b313db86f43` | Monkey scan with improvements | gooseman | CC-BY-4.0 | https://sketchfab.com/3d-models/f4783633129a433abf0d2b313db86f43 | `.tmp/monkey_assets/staged/f4783633129a433abf0d2b313db86f43.glb` | 147,229 | 2 |
+
+Attribution text (same form for all five): `<Model Name> by <Author> on Sketchfab, licensed under CC-BY-4.0`.
+
+### Per-part counts from `load_glb_triangles`
+
+```
+22d1626853964fc995cda04814792ae5.glb (Cymbal Monkey) — 22 parts, 54,234 tris
+  pSphere42_lambert5_0: 2,247 verts, 4,262 tris
+  polySurface5_blinn1_0: 2,188 verts, 4,224 tris
+  pSphere25_blinn11_0: 3,237 verts, 6,400 tris
+  polySurface9_blinn1_0: 1,146 verts, 2,232 tris
+  pCube14_blinn3_0: 1,255 verts, 2,480 tris
+  pSphere40_blinn10_0: 2,282 verts, 4,560 tris
+  pCube12_blinn4_0: 991 verts, 1,952 tris
+  pSphere43_blinn10_0: 2,282 verts, 4,560 tris
+  pCube23_blinn3_0: 1,255 verts, 2,480 tris
+  pCube13_lambert2_0: 448 verts, 896 tris
+  pSphere35_lambert4_0: 725 verts, 1,344 tris
+  r_ear_helix3_lambert7_0: 1,998 verts, 3,884 tris
+  pSphere36_blinn6_0: 1,369 verts, 2,400 tris
+  pSphere36_blinn9_0: 740 verts, 1,120 tris
+  pSphere36_lambert6_0: 42 verts, 48 tris
+  pSphere30_lambert4_0: 2,575 verts, 4,960 tris
+  pSphere33_blinn12_0: 356 verts, 704 tris
+  pCube21_blinn4_0: 991 verts, 1,952 tris
+  pSphere27_lambert6_0: 164 verts, 324 tris
+  pCube22_lambert2_0: 448 verts, 896 tris
+  pSphere28_lambert6_0: 164 verts, 324 tris
+  polySurface10_blinn1_0: 1,146 verts, 2,232 tris
+
+8955fb5b9c9b4e169456ccbae7c465f7.glb (MONKEY) — 2 parts, 34,176 tris
+  SALLY_body_0: 16,154 verts, 32,128 tris
+  SALLY_EYES_0: 1,050 verts, 2,048 tris
+
+1534c1b10378454697ea2f2aa888270c.glb (King Monkey) — 2 parts, 42,511 tris
+  Object_0: 17,776 verts, 35,257 tris
+  Object_1: 3,615 verts, 7,254 tris
+
+9906e5863a89474da4ee4e178a2daa28.glb (Monkey) — 9 parts, 8,436 tris
+  Object_0: 2,115 verts, 4,040 tris
+  Object_1: 39 verts, 64 tris
+  Object_2: 876 verts, 1,704 tris
+  Object_3: 70 verts, 96 tris
+  Object_4: 472 verts, 920 tris
+  Object_5: 28 verts, 36 tris
+  Object_6: 469 verts, 910 tris
+  Object_7: 32 verts, 42 tris
+  Object_8: 377 verts, 624 tris
+
+f4783633129a433abf0d2b313db86f43.glb (Monkey scan with improvements) — 2 parts, 147,229 tris
+  Object_0: 62,229 verts, 118,313 tris
+  Object_1: 20,096 verts, 28,916 tris
+```
+
+### Rejections (7)
+
+| UID | Name | Reason |
+|-----|------|--------|
+| `c488eebd284a49178c764d9cad0c0ecb` | Rafiki the baboon | 1,042,436 tris — exceeds 200 k tri budget |
+| `6805de96391f4ad7b1933c041d756d27` | Japanese Monkey | 438,519 tris — exceeds 200 k tri budget |
+| `ec43bd941ecc447e86a89b442a1f344a` | Free Base Chimp | Chimp, not monkey/macaque; superseded by `f478...` real-monkey scan |
+| `a7005fad11824d4199b952f45384d226` | Monkey- Free | Single-part mesh, 6,826 tris; poor part separation |
+| `059ddf8d773748a0aa32c778897e711e` | Kako | 2,736 tris — below 5 k tri minimum |
+| `b7cd9d66f1fd446ba47bf43b9b2fb9ec` | Big monkey | 95,826 tris but single-part mesh; not per-part/segmentable |
+| `8bf18c30f52142c58229728492f58016` | Baboon | 507,202 tris — exceeds 200 k tri budget |
+
+### Watertight / repairability note
+
+Repair was attempted on every geometry with `trimesh.repair.fill_holes`, `fix_winding`, and `fix_inversion`. A follow-up pass with `pymeshlab` `meshing_close_holes` was also tried on the Cymbal Monkey. **No body-sized shell became fully watertight.** A few small accessory parts did (e.g., `pSphere40_blinn10_0`, `pCube13_lambert2_0` in Cymbal Monkey; `Object_1` in King Monkey), but the main body shells retain boundary edges and are not watertight. This is typical for Sketchfab game-character exports and photogrammetry scans. The staged GLBs are therefore pipeline-loadable and per-part, but **not yet physics-legal for `cad_sample.py` volume sampling** without a more aggressive reconstruction step (e.g., Poisson / SDF shrink-wrap or manual re-topo). This was reported honestly rather than fabricating watertight status.
+
+### Files on disk
+
+- Raw downloads: `.tmp/monkey_assets/raw/*.glb` (5 files)
+- Staged per-part GLBs: `.tmp/monkey_assets/staged/*.glb` (5 files)
+- Machine-readable stage report: `.tmp/monkey_assets/staged/_stage_results.json`

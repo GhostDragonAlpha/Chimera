@@ -107,6 +107,11 @@ PHYSICS_READING = {
                       "the same pattern of threads and colored nodes twice, mirror twins "
                       "with every detail matching: one world unfolded twice from the same "
                       "seed, bit-identical, NOT two different worlds",
+    "theShape": "a BLOCKY, voxel-built teddy bear -- the same bear as the smooth cloud, but "
+                "made of visible cubes like a 3D cross-stitch -- ROTATING on the spot like a "
+                "turntable inspection over a dim dark ground that stays STILL: one solid "
+                "voxel animal (head, ears, body, limbs) at every angle, front and back, "
+                "NOT hollow, NOT flat, NOT a different object",
     "theLaws": "blue dots forming an intricate geometric pattern against a dark "
                "background -- a perfect regular lattice of glowing nodes connected by "
                "straight edges, the same pattern repeating everywhere: pure order, a "
