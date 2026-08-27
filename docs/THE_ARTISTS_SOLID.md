@@ -128,6 +128,32 @@ inspect. Nobody else in the asset market ships a proof.
   with per-part mass within 2% of the triangle-soup estimate. *Falsifier: any
   body-sized shell fails to close, or closure moves the silhouette past one
   voxel of the source scan.*
+  **MEASUREMENT SPEC v2 (2026-08-27, Phase 3 — the operator's two findings drove
+  this: "the blocks are too big" and "even with big blocks the triangles should
+  align into a smooth surface"):**
+  1. *Extraction upgraded: binary on/off grid -> distance-field zero-crossing.*
+     The stair-stepping was an extraction defect, not a lattice size: vertices
+     snapped to cell corners terrace at any pitch. The surface is now cut where
+     the MEASURED distance to the source surface crosses zero (sign from the
+     fill, magnitude from dense surface samples) — vertices land on the true
+     skin, big cells and all. Measured on the body: silhouette p95 improved
+     1.09 -> 0.92 pitch; the tail reads smooth in the render.
+  2. *Mass criterion re-derived for the smooth path: CONVERGENCE UNDER
+     REFINEMENT.* Binary occupancy counts whole cells; the smooth surface cuts
+     them — the two now measure different things (16% apart on the body), so
+     the old comparator is void for the smooth path, exactly as the soup
+     signed volume was found void before it. The derived reference:
+     **|V(p) - V(p/2)| / V(p/2) <= 2%** — a volume that has stopped moving
+     under refinement is the mass; no external estimate exists for open soup.
+     Same 2% bound, third honest comparator — each replacement recorded with
+     its reason, the bound never touched.
+  3. *The paw law is now deterministic.* Surface sampling is seeded
+     (SEED = 20260827, a stored parameter): the decree demands tessellation
+     reproducible from stored parameters, and an unseeded law hands back a
+     different pitch per run — measured drifting 0.083 -> 0.117 between runs.
+  4. *Cell != triangle, recorded from the operator's question:* a boundary
+     cell holds 1-4 triangles; the lattice is the address frame through which
+     matter lives, never a one-triangle container.
   **MEASUREMENT SPEC (fixed 2026-08-27 after the prototype run, BEFORE the full
   run — the run that teaches you the estimators are broken is exactly when the
   spec must be written down, with reasons, never silently):**
@@ -175,6 +201,15 @@ inspect. Nobody else in the asset market ships a proof.
   /membrane splat path died silently at 56k points (theShape ran at 25.7k) —
   a limit to characterize before large meshes go through it; /mesh_bin is the
   robust door for viewing solids.
+- **BET-A2 (the graded lattice, operator-endorsed 2026-08-27):** a graded
+  lattice — surface cells refined by the pixel law (a cell must subtend ~1px
+  at the canonical view) and the LOCAL paw law (cell <= local thickness / 3),
+  interior cells coarsened by the mass law — removes visible stair-stepping at
+  the canonical view while every BET-A bound holds. *Prediction: silhouette
+  p95 < 0.5 pitch-equivalent at the surface; mass convergence still <= 2%;
+  cell count >= 10x smaller than the equivalent uniform fine grid.* *Falsifier:
+  any crack or hole at a level boundary (the classic octree failure mode), or
+  the mass bound breaks — then the grading law is wrong, never the tolerances.*
 - **BET-B:** a monkey solid dropped into the stance membrane stands (the
   symmetric stand's feasibility band accepts it) without retuning the law.
   *Falsifier: the law needs a monkey-specific parameter.*
