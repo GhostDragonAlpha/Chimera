@@ -207,6 +207,65 @@ each entry names what it gives us and what would falsify it for our use.
   network ever reads the substrate (frost trainer, chimera parts classifier),
   this is how it sees triangles without depending on tessellation luck.
 
+### Round 2–3 additions (same day)
+
+- **The birth rule's wound/feature problem is industry-wide and the answer
+  is classification + curvature.** Scan-repair literature is blunt: no tool
+  auto-tells a wound from an intentional opening — the practical pattern is
+  *label the openings, constrain fills to labeled regions, and fill
+  curvature-guided patches that extrapolate along principal directions
+  rather than naive triangulation* (scan-to-CAD surveys; MeshInspector's
+  "repair without closing holes"). Our birth rule gets two upgrades: (a) the
+  opening classifier is a first-class membrane, not a heuristic; (b) birthed
+  triangles must extrapolate the local curvature field, not just span the
+  gap. Falsifier unchanged: any true opening closed — now joined by "any
+  birthed patch that flattens the curvature it should continue."
+- **The chimera (L8) has a grafting cousin already: MeshNCA grafting** —
+  two trained NCA models cooperate across a boundary at test time to grow a
+  hybrid texture ([meshnca.github.io](https://meshnca.github.io/)). Texture
+  grafting across a seam on one mesh = the teddy/monkey 50-50 split's
+  appearance layer. For geometry: Muses ([arXiv:2601.03256](https://arxiv.org/html/2601.03256v1),
+  training-free creature composition) and PartCrafter (NeurIPS 2025,
+  compositional part-level mesh generation) show part composition is hot —
+  but none of them run on a CA substrate. Ours would be the first.
+- **Training the frost runs on this PC.** nvdiffrast (PyTorch, NVIDIA
+  consumer GPUs) is the differentiable rasterizer; Mitsuba 3 (Dr.Jit,
+  CUDA + LLVM-CPU backends) is the ground-truth path tracer for the light
+  answers. No RTX required for the CPU/LLVM fallback — slower, but the
+  falsifier doesn't care how long the run took. OptiX/RTX paths
+  ([arXiv:2103.15208](https://arxiv.org/html/2103.15208v3)) are the upgrade
+  if the hardware is there.
+- **The engine's future architecture has a name: visibility-buffer
+  rendering.** Nanite's core trick — one 64-bit (triangle ID + instance)
+  value per pixel via atomic depth max, then shade each visible pixel ONCE
+  with deferred materials — is *literally our database*: the pixel stores
+  the triangle's database row. Picking, CA state, and material lookup all
+  become one indirection. Mesh shaders (VK_EXT_mesh_shader) emit
+  meshlet clusters; two-pass HiZ occlusion culling kills the rest. The
+  "one row per triangle" doctrine and the renderer converge on the same
+  integer. (Refs: [Nanite mental model](https://unbiasedgamer.com/the-mental-model-for-unreal-engines-nanite-virtualized-geometry-and-cluster-culling/), [nanite-webgpu](https://github.com/Scthe/nanite-webgpu), [Granite mesh rendering](https://themaister.net/blog/2024/01/17/modernizing-granites-mesh-rendering/).)
+- **"Scaled triangles" is a birth rule.** Loop/√3 subdivision = a
+  deterministic CA birth rule on triangles (one triangle → four children,
+  positions by stencil); view-dependent refinement (Hoppe's progressive
+  meshes, [vdrpm](https://hhoppe.com/vdrpm.pdf)) = the rule keyed on
+  screen-space footprint. The operator's complaint about blocky voxels maps
+  to: voxel scale is scaffolding-only; triangle scale refines where the eye
+  looks. The CA doesn't just repair meshes — it *resolves* them.
+- **Gait as a standing wave has a 25-year-old name: CPGs.**
+  Central pattern generators — coupled oscillators entrained by LOCAL load
+  feedback — produce walk/trot/pace/bound and spontaneous gait transitions
+  with no central clock (Ijspeert's salamander; Owaki & Ishiguro's
+  decentralized entrainment, [Ryu & Kuo 2021](https://pmc.ncbi.nlm.nih.gov/articles/PMC8222298/)).
+  A decentralized CPG IS a cellular automaton: phases are cell states,
+  entrainment is the local rule. The hinge arrays' contraction signals
+  (§2) get their waveform from biology, not keyframes.
+- **Planar mirrors + splats is now published:** TR-Gaussians
+  ([arXiv:2511.13009](https://arxiv.org/html/2511.13009v1)) renders planar
+  transmission/reflection with splatting; NeRF-casting (SIGGRAPH Asia 2024)
+  keeps reflections view-consistent. They fit the mirror's tilt. Ours never
+  fits — the triangle's normal IS the mirror tilt. That's the frost's
+  unfair advantage, and it is now a race, not a fantasy.
+
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
