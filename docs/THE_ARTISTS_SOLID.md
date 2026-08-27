@@ -457,3 +457,58 @@ honest numbers, and the two bugs that were NOT geometry:
   shape).
 - Known cosmetic residual, stated not hidden: MC banding is the pitch; the
   knob is span/192 and can be turned when beauty outranks speed.
+
+---
+
+## THE BUILD QUEUE — three membranes specced 2026-08-27 (operator session)
+
+Named before any run, per Rule 0. Order of attack: registry + birth rule
+first (Phase 4), then these in dependency order — F2 needs the substrate,
+J1 needs the repaired bone-addressed mesh, W1 needs the cube scaffolding.
+
+- **BET-F2 — the frost is distilled ray tracing (operator decree: "train ray
+  tracing without ray tracing cores"; the mirror answers light FROM THE
+  PERSPECTIVE OF THE VIEWER, the only thing that matters).** *Statement: a
+  per-triangle light-response field, anchored to the substrate (10 derived
+  parameters owned by geometry: address, frame, extent), reproduces an
+  offline path-traced reference at runtime lookup cost.* *Prediction: train
+  against path-traced renders of a corpus part over view x light
+  combinations; the field matches held-out views AND held-out light
+  directions within a stated image bound.* *Falsifier: any novel-LIGHT
+  deviation beyond the bound — novel views alone make it a texture, not ray
+  tracing; the falsifier is light generalization. Capacity starts at SH band
+  0-1 per triangle; more channels are earned by the measured error floor,
+  never by taste. Neighboring triangles share response across dual-graph
+  edges (the graph owns the bandwidth).*
+
+- **BET-J1 — hinge arrays (operator decree: elbows and knees are designated
+  hinge arrays of triangles; joint state is CA state).** *Statement: a joint
+  is a region where the substrate's law changes, not an object: triangles
+  carry addresses relative to bone segments, the hinge array is the overlap
+  band with dual addresses, the flexion axis is DERIVED from the two
+  segments' geometry (never placed), and motion is a CA contraction signal
+  through bone-adjacent columns (muscles) torquing the array — gait as a
+  standing wave, not a keyframed clip.* *Prediction: flex the monkey's knee
+  0 -> 140 deg (range from the primate CT reference in the research doc);
+  the hinge-array skin deforms with zero self-intersection and volume loss
+  inside a stated bound.* *Falsifier: interpenetration or candy-wrapper
+  collapse beyond the bound — the deformation law is wrong. Open by
+  admission: the contraction LAW's source (hand-tuned vs consumed mocap) is
+  a bet, stated here as one.*
+
+- **BET-W1 — water on the scaffolding (operator decree: a river is the same
+  idea as the hinge array).** *Statement: the bed and banks are consumed
+  substrate; each cube column holds water height + flow velocity; the update
+  is a CA exchange between neighbor columns proportional to height
+  difference and bed slope; the surface triangle sheet is addressed to the
+  columns; depth = surface minus bed (derived from two rows, never stored);
+  creature interaction is free (occupied columns exclude water — the wading
+  monkey is the same rows meeting, not a special case); the frost (F2) is
+  what makes it answer light like water.* *Prediction: pour a volume onto a
+  sloped consumed bed — it flows downhill, fills the basin, goes flat; a
+  poke radiates rings; total volume conserved within a stated bound. The
+  tick is DERIVED: shorter than a wave's crossing time of one cube.*
+  *Falsifier: any uphill flow, or mass created or destroyed beyond the
+  bound — the exchange law is wrong. Open by admission: spray (sheet tear)
+  needs a sub-grid law we do not have yet; shore foam is cosmetic frost
+  work, last.*
