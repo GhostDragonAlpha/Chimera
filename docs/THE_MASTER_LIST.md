@@ -148,7 +148,66 @@ steers, and is the human terminal of every dyad.
   know what this is for, what is proven, what is unmeasured, and who owns
   the next gate.
 
-## 9 · HERITAGE LEDGER (the 32 continuations, compressed)
+## 9 · RESEARCH ANNEX (2026-08-27 — concepts for the next prompts, not yet built)
+
+External art that connects to our lines. Nothing here is measured by us yet;
+each entry names what it gives us and what would falsify it for our use.
+
+- **The CA's physics has a rigorous home: Discrete Exterior Calculus.**
+  Diffusion, waves, and flow on a triangle mesh are exact discrete operators
+  (cotan Laplacian, Hodge star over the circumcentric/barycentric dual) — our
+  dual graph IS DEC's dual mesh. The CA rules stop being hand-tuned and
+  become discrete PDEs with conservation laws. Water (L7) = the wave/shallow
+  equation on this operator; mass conservation is built in, not asserted.
+  Falsifier for us: any CA rule we keep that cannot be written as a DEC
+  operator is a smell, not a law.
+- **CA shallow water is proven to converge with finite-volume solvers**
+  ([J. Hydrology 2018](https://www.sciencedirect.com/science/article/pii/S0022169418304438)):
+  CA is not a toy for L7 — same equations, same answers, local updates only.
+- **MeshNCA ([arXiv:2311.02820](https://arxiv.org/abs/2311.02820))** — neural
+  CA living directly on a mesh, real-time, no UV maps, steerable at test
+  time. Proof our substrate idea is state of the art — and the
+  differentiator: theirs runs per-VERTEX; ours runs per-TRIANGLE (the
+  triangle is the substrate, the cell, and the mirror). Their learned rule
+  is the frost-texture lane's closest neighbor.
+- **The 2D splat's correct ancestor is the surface light field, not NeRF.**
+  Radiance as f(surface point, view direction) with geometry carrying
+  parallax (Wood et al. 2000; TU Wien/Eurographics surveys). A BTF
+  (Dana 1999) adds the light direction: f(point, view, light) — a 6D field,
+  exactly "train ray tracing without ray tracing cores." Held-out light
+  directions as the door (already in §2). Neural BTF compression (Kautz,
+  GPU Gems 2 ch.11) is the lookup-cost runtime. 2DGS
+  ([arXiv:2403.17888](https://arxiv.org/abs/2403.17888)) confirms the
+  primitive: a planar disk whose normal is its steepest density direction —
+  one disk per triangle, normal never fitted.
+- **The frost as a differential appearance equation**
+  ([Neural Differential Appearance Equations, arXiv:2410.07128](https://arxiv.org/html/2410.07128v2)):
+  weathering/corrosion modeled as a neural PDE over a surface's appearance.
+  Frost growing on fur is the same math — appearance evolving locally over
+  the substrate, seeded by the CA state.
+- **Hinge arrays (L6) get their deformation law from ARAP, not LBS.**
+  As-rigid-as-possible keeps the skin smooth while a region rotates;
+  pseudo-skeleton ARAP (Zollhöfer 2013) decouples edit handles from mesh
+  complexity; Mesh Puppetry (Shi et al.) adds joint-limit constraints;
+  higher-order ARAP ([arXiv:2501.10335](https://arxiv.org/html/2501.10335v1))
+  removes the crease at the hinge boundary. Our hinge array = a designated
+  triangle ring carrying a rotation field, the surrounding skin solved ARAP.
+  Falsifier unchanged: volume loss or self-intersection inside the ROM.
+- **Skeletons can drive simplices directly, no vertex weights**
+  (Tsinghua simplex-transform deformation): the bone rig drives triangles,
+  not vertices — no skinning weights, no candy-wrapper collapse. Matches
+  the decree "triangles are the substrate" for L6's rig binding.
+- **Rules must be E(3)-equivariant**
+  ([E(n)-equivariant GNCA, arXiv:2301.10497](https://arxiv.org/html/2301.10497v2)):
+  a CA rule that behaves differently after rotating the world is not physics.
+  Constraint for every learned rule on the substrate: rotate the input, the
+  output must rotate with it. Cheap falsifier, high doctrine value.
+- **DiffusionNet ([arXiv:2012.00888](https://arxiv.org/abs/2012.00888))** —
+  learned heat-diffusion features on meshes, discretization-agnostic. If a
+  network ever reads the substrate (frost trainer, chimera parts classifier),
+  this is how it sees triangles without depending on tessellation luck.
+
+## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
 degenerate-nan gate → T2 landed → run-record audit ("pass" prose corrected)
