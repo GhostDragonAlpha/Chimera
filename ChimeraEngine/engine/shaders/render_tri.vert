@@ -12,6 +12,8 @@ layout(location = 1) out vec3 vColor;
 void main() {
     vec4 viewPos = ubo.uView * vec4(aPos, 1.0);
     gl_Position = ubo.uProj * viewPos;
-    vNormal = mat3(ubo.uView) * aNormal;
+    vNormal = aNormal;   // WORLD space: the light is anchored to the world,
+                         // not glued to the camera (was mat3(uView) * aNormal,
+                         // which made brightness change as the camera orbits)
     vColor = aColor;
 }

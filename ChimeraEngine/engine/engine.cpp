@@ -1050,6 +1050,14 @@ bool Engine::create_triangle_pipeline() {
         fprintf(stderr, "Failed to create triangle graphics pipeline\n");
         return false;
     }
+    // Wireframe twin: identical in every state except polygon mode — the GPU
+    // rasterizes the triangle EDGES as constant 1px lines (device has
+    // fillModeNonSolid). Hairlines at any zoom; no world-space rod geometry.
+    ras.polygonMode = VK_POLYGON_MODE_LINE;
+    if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_wire_pipeline_) != VK_SUCCESS) {
+        fprintf(stderr, "Failed to create triangle wireframe pipeline\n");
+        return false;
+    }
     vkDestroyPipelineCache(device_, cache, nullptr);
 
     return true;
@@ -1067,12 +1075,27 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     return true;
 }
 
+bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
+                          uint32_t vcount, uint32_t icount) {
+    vkDeviceWaitIdle(device_);
+    upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
+                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, ov_vbuf_, ov_vmem_);
+    upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
+                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT, ov_ibuf_, ov_imem_);
+    ov_idx_count_ = icount;
+    has_overlay_ = true;
+    return true;
+}
+
 void Engine::destroy_triangle_resources() {
     if (tri_pipeline_) { vkDestroyPipeline(device_, tri_pipeline_, nullptr); tri_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
     if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
     if (tri_frag_mod_) { vkDestroyShaderModule(device_, tri_frag_mod_, nullptr); tri_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_vbuf_) { vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
     if (tri_ibuf_) { vkDestroyBuffer(device_, tri_ibuf_, nullptr); vkFreeMemory(device_, tri_imem_, nullptr); tri_ibuf_ = VK_NULL_HANDLE; }
+    if (ov_vbuf_) { vkDestroyBuffer(device_, ov_vbuf_, nullptr); vkFreeMemory(device_, ov_vmem_, nullptr); ov_vbuf_ = VK_NULL_HANDLE; }
+    if (ov_ibuf_) { vkDestroyBuffer(device_, ov_ibuf_, nullptr); vkFreeMemory(device_, ov_imem_, nullptr); ov_ibuf_ = VK_NULL_HANDLE; }
     if (rt_depth_view_)  { vkDestroyImageView(device_, rt_depth_view_, nullptr); rt_depth_view_ = VK_NULL_HANDLE; }
     if (rt_depth_image_) { vkDestroyImage(device_, rt_depth_image_, nullptr); rt_depth_image_ = VK_NULL_HANDLE; }
     if (rt_depth_mem_)   { vkFreeMemory(device_, rt_depth_mem_, nullptr); rt_depth_mem_ = VK_NULL_HANDLE; }
@@ -2227,12 +2250,28 @@ bool Engine::frame() {
         vkCmdSetScissor(cmd_bufs_[img_idx], 0, 1, &sc);
     }
     if (has_mesh_ && tri_pipeline_ != VK_NULL_HANDLE && tri_idx_count_ > 0) {
-        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
         VkBuffer vb = tri_vbuf_; VkDeviceSize off = 0;
-        vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
-        vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
-        vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
+        // mesh_mode_: 0 = fill, 1 = wire only, 2 = fill then wire overlay
+        if (mesh_mode_ != 1) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
+        }
+        if (mesh_mode_ >= 1 && tri_wire_pipeline_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_wire_pipeline_);
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
+        }
+        if (has_overlay_ && ov_idx_count_ > 0) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
+            VkBuffer ovb = ov_vbuf_; VkDeviceSize ooff = 0;
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &ovb, &ooff);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ov_ibuf_, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], ov_idx_count_, 1, 0, 0, 0);
+        }
     } else {
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);

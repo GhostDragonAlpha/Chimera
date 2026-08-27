@@ -233,6 +233,43 @@ inspect. Nobody else in the asset market ships a proof.
   per-part solid) WORKS at corpus scale; the mass law needs the graded
   lattice (BET-A2), exactly as the decay measurement predicted. This is not
   a tolerance story — the 2% bound never moved.
+
+**THE TRIANGLE SUBSTRATE (operator decree 2026-08-27, Phase 4 — an
+architecture correction, accepted):** *triangles are the CA substrate; the
+cubes are invisible scaffolding — a Cartesian address frame, never the
+matter. Every triangle has a center; the center is its Cartesian address;
+the cube that holds the center only tells the automaton who the triangle's
+neighbors are and lines up with the neighboring cubes. Each cube is its own
+Gaussian space (the frost hook: the cube holds the local frame, the triangle
+centers inside it are the anchors). The Phase-3 voxel automaton acted on the
+scaffolding and let triangles fall out — that era's repair (centroid-fan
+caps) is exactly where the corpus bled, and the substrate below replaces it.*
+Two membranes, theory BEFORE code per Rule 0:
+
+- **BET-T1 (the registry / the address law).** *Statement: an object can be
+  stored as a bare triangle list where every triangle is reachable through
+  the cube index and every edge-adjacent neighbor lives within the 26-cube
+  ring — the cubes give the automaton its Cartesian order without
+  quantizing the matter.* The cube edge is DERIVED, never chosen: it must
+  cover the worst edge-adjacent center-to-center distance in the mesh
+  (measured per part from the dual graph), else a neighbor could hide
+  outside the ring. *Prediction: on all 5 corpus GLBs, cube-ring neighbor
+  queries reproduce the dual graph 100%, and 100% of triangles are
+  reachable.* *Falsifier: any edge-adjacent neighbor missed by the ring,
+  or any unreachable triangle — then the cube derivation is wrong, and it
+  is the derivation that gets fixed, never the 100%.*
+- **BET-T2 (the birth rule — triangle-native repair).** *Statement: a wound
+  (split artifact) can be closed by birthing triangles at the triangle
+  level — a boundary edge births when the triangle on the far side of the
+  wound is within voting range — while true openings (sockets, mouth) stay
+  open because no far-side triangle votes.* No rasterization: the pitch
+  disease (thin members vanishing, the measured 0/37 mass FALSIFIED) cannot
+  exist on this substrate. *Prediction: on 8955's raw body soup (41 boundary
+  loops, NO caps), the boundary-edge count falls to ~0 at the split seams
+  and the result passes the same ray-parity gate.* *Falsifier: any true
+  opening measured closed (the eye sockets must remain open) — then the
+  rule cannot tell wounds from features, and the voting range law, not the
+  requirement, is what gets re-derived.*
   **MEASUREMENT SPEC (fixed 2026-08-27 after the prototype run, BEFORE the full
   run — the run that teaches you the estimators are broken is exactly when the
   spec must be written down, with reasons, never silently):**
@@ -323,3 +360,100 @@ inspect. Nobody else in the asset market ships a proof.
 3. **The brush UX** — layers 1/3/4 exist; the interactive authoring surface
    does not. It is deliberately last: tools built before the corpus guess at
    the workflow; tools built after it know.
+
+**THE HOLOGRAPHIC ANCHOR (operator decree 2026-08-27 — "a holographic engine:
+the triangles are the mirrors AND the structure of reality; they will be both,
+and easily expressible by AI").** Theory BEFORE code, Rule 0. The identity that
+makes it a law instead of a metaphor, verified numerically today (max rel. err
+0.0016 vs 2M-sample Monte Carlo, three arbitrary triangles):
+
+- **A triangle IS a Gaussian.** A uniform measure over a triangle has
+  covariance exactly `Sigma_2 = (1/12) * sum_i (v_i - m)(v_i - m)^T`, m the
+  centroid. Not fitted, not approximate: identity. A Gaussian splat is a
+  triangle given a measure; a triangle is a splat at zero normal thickness.
+- **The 14 splat parameters decompose 10 derived + 4 free.** Standard 3DGS:
+  position(3) + rotation(4) + scale(3) + opacity(1) + color(3) = 14. On this
+  substrate: position = the BET-T1 Cartesian address; rotation = quaternion
+  with z->normal and the in-plane twist FIXED by the major eigenvector of
+  Sigma_2 (derived, never chosen; equilateral degeneracy -> canonical fallback,
+  stated here before any run); scale = sqrt of Sigma_2's two eigenvalues
+  (in-plane extent IS the triangle's shape) plus a normal thickness from the
+  local-thickness law. That is 10 parameters the geometry owns outright. The
+  remaining 4 (opacity + RGB / SH-0) are the material state — the ONLY numbers
+  the CA ever evolves. A model learns 4 numbers per triangle on a fixed graph:
+  that is what "easily expressible by AI" costs.
+- **The mirror.** View-dependence anchors to the normal hemisphere: higher SH
+  bands attach at the derived frame, and energy shared across a dual-graph
+  edge is weighted by the dihedral angle — the fold between two mirrors is a
+  measurement, not a parameter.
+- **Both at once, one row.** The database row per triangle holds the 3
+  vertices (reality: it occludes, collides, carries mass — the BET-A gates)
+  and the 4 state variables (the image). No conversion, no duplicate
+  representation: holography = the image is a function of the matter and the
+  viewpoint, and nothing else is stored.
+
+- **BET-F1 (the frost anchor).** *Statement: a mesh rendered as its derived
+  per-triangle Gaussians reproduces the hard-triangle render from any
+  viewpoint, with ZERO trained parameters.* *Prediction: on a corpus part, the
+  derived-Gaussian render and the triangle render agree within a stated image
+  bound, from held-out viewpoints.* *Falsifier: any novel-view deviation
+  beyond the bound — then the anchor (covariance / rotation / thickness
+  derivation) is wrong, and it is the derivation that gets re-derived, never
+  the bound. Needle and equilateral triangles must be enumerated by the
+  derivation BEFORE the run, not patched after.*
+
+---
+
+## SESSION VERDICTS — the bone/skin substrate view (2026-08-27, dyad-closed)
+
+The visualization membrane for the substrate (skin + bone over the live Vulkan
+engine, port 8090) iterated under the AI dyad until zero complaints. Record,
+honest numbers, and the two bugs that were NOT geometry:
+
+- **Construction.** One filled voxel mask per part (voxelize original
+  watertight GLB at pitch span/192; `binary_fill_holes`, closing-seal retry on
+  leak). SKIN = marching cubes on the dilated mask after a gaussian pre-pass
+  (sigma 0.7 voxels — melts the voxel staircase; dilation closes 1-voxel
+  diagonal pinholes). BONE = 3D skeleton of the SAME mask, X-filtered, drawn
+  as rods. Containment by construction, then measured by two instruments.
+- **THE CONTAINMENT MEMBRANE.** *Statement: the bone axis is strictly inside
+  the skin.* *Instruments: (1) mask test — every skeleton endpoint inside a
+  filled voxel; (2) ray parity (Möller–Trumbore, fixed irrational direction,
+  no rtree) of bone points against the rendered MC skin.* *Falsifier: any
+  bone endpoint outside on both instruments, or any red visible against empty
+  background in the depth-tested fill render.* Measured on 8955: mask
+  100.00%, ray 99.85% (body, residual = single-direction grazing flips on
+  thin walls — ruled instrument noise against the depth-tested render, which
+  shows zero red outside openings), eyes part 100%/100%.
+- **Clearance cut (derived, not chosen).** The worst measured escape before
+  the cut was 0.06 world units (~0.5 voxel); skeleton voxels within 1.5
+  voxels of the mask boundary are pruned (3x the measurement). Bone stops
+  before thin extremities instead of poking through — anatomically true:
+  bone does not reach skin.
+- **Bug 1 (display, not geometry): the two-centroid misalignment.** The
+  posting tool recentered each GLB to its own centroid; skin and bone have
+  different centroids, so the overlay floated off the body and EVERY angle
+  showed "escapes" the instruments denied. Fix: one shared center for both
+  slots. Lesson recorded: when the instrument and the eye disagree, suspect
+  the display transform before the geometry.
+- **Bug 2 (protocol, not geometry): a contaminated reference frame.** The
+  reference stills of the original mesh were captured with a STALE bone
+  overlay still in its engine slot; the dyad correctly flagged the red it
+  saw — in the reference, not the reconstruction. Fix: purge the overlay
+  slot (off-screen center) before any capture; the reference is now clean.
+- **The mouth ruling (operator law confirmed).** The muzzle has a genuine
+  surface opening (present with the bone removed entirely). Red seen THROUGH
+  it is anatomy through a hole — LEGAL. Openings stay open; closing one
+  would be the defect. The dyad accepted the ruling and classified it (c).
+- **DYAD LEDGER (senses.watch orbit movies, LM Studio vision model):**
+  round 1: 0.5 (stipple lines, blob eyes, X-mark skeleton — all fixed:
+  1px GPU wireframe pipeline + overlay slot in the engine, world-space
+  normals in render_tri.vert so light stops being glued to the camera);
+  round 2 (technical consult): 0.75, ranked the one-mask construction first
+  among fixes — built; round 3: 0.65 — flagged red that lived in the
+  contaminated reference frame (bug 2); round 4: **NO COMPLAINTS, 0.95** —
+  containment clean, fidelity holds across the orbit, residuals cosmetic
+  (marching-cubes banding on skull/torso, blobby fingers: resolution, not
+  shape).
+- Known cosmetic residual, stated not hidden: MC banding is the pitch; the
+  knob is span/192 and can be turned when beauty outranks speed.

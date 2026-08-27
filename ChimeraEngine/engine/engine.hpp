@@ -41,6 +41,11 @@ public:
     // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
     bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                    uint32_t vcount, uint32_t icount);
+    // Overlay slot: a second mesh drawn after the main one, always FILL
+    // (used for the bone axis while the main mesh is in wireframe mode).
+    bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
+                      uint32_t vcount, uint32_t icount);
+    void set_mesh_mode(uint32_t m) { mesh_mode_ = m; }
 
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
@@ -193,10 +198,17 @@ private:
     bool create_triangle_pipeline();
     VkShaderModule tri_vert_mod_ = VK_NULL_HANDLE, tri_frag_mod_ = VK_NULL_HANDLE;
     VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
+    VkPipeline      tri_wire_pipeline_ = VK_NULL_HANDLE; // same shaders, VK_POLYGON_MODE_LINE
+    uint32_t        mesh_mode_ = 0;   // 0 = fill, 1 = wire only, 2 = fill + wire overlay
     VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  tri_vmem_, tri_imem_;
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
+    // Overlay slot (e.g. the bone axis): always FILL, drawn after the main mesh.
+    VkBuffer        ov_vbuf_ = VK_NULL_HANDLE, ov_ibuf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  ov_vmem_, ov_imem_;
+    uint32_t        ov_idx_count_ = 0;
+    bool            has_overlay_ = false;
     // Offscreen depth attachment (for triangle depth testing)
     VkImage         rt_depth_image_ = VK_NULL_HANDLE;
     VkDeviceMemory  rt_depth_mem_   = VK_NULL_HANDLE;

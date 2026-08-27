@@ -45,7 +45,7 @@ static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
 
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
-struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; bool valid=false; };
+struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool valid=false; };
 static MeshReq g_mesh_req;
 static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
@@ -278,18 +278,21 @@ int main(int argc, char** argv) {
             content_type = "application/json";
         } else if (p == "/mesh_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
-            //   [u32 N][u32 idxCount][f32 cam_radius][f32 cam_theta][f32 cam_phi]
+            //   [u32 N][u32 idxCount][f32 cam_radius][f32 cam_theta][f32 cam_phi][f32 slotmode]
             //   [f32 * N * 9  vertices: pos3, normal3, color3]
             //   [u32 * idxCount  triangle indices]
+            // slotmode = slot*10 + mode: slot 0 = main mesh, 1 = overlay;
+            // mode 0 = fill, 1 = wireframe (1px GPU line edges), 2 = fill + wire.
             if (req_body.size() < 24) {
                 body = "{\"ok\":false,\"error\":\"short header\"}";
             } else {
-                uint32_t N = 0, idxCount = 0; float cr = 12.0f, ct = 0.0f, cp = 0.3f;
+                uint32_t N = 0, idxCount = 0; float cr = 12.0f, ct = 0.0f, cp = 0.3f, slotmode = 0.0f;
                 std::memcpy(&N, req_body.data() + 0, 4);
                 std::memcpy(&idxCount, req_body.data() + 4, 4);
                 std::memcpy(&cr, req_body.data() + 8, 4);
                 std::memcpy(&ct, req_body.data() + 12, 4);
                 std::memcpy(&cp, req_body.data() + 16, 4);
+                std::memcpy(&slotmode, req_body.data() + 20, 4);
                 size_t expect = 24 + static_cast<size_t>(N) * 9 * 4 + static_cast<size_t>(idxCount) * 4;
                 if (req_body.size() != expect) {
                     body = "{\"ok\":false,\"error\":\"size mismatch\"}";
@@ -305,6 +308,8 @@ int main(int argc, char** argv) {
                         g_mesh_req.N = N;
                         g_mesh_req.idxCount = idxCount;
                         g_mesh_req.cam_radius = cr; g_mesh_req.cam_theta = ct; g_mesh_req.cam_phi = cp;
+                        uint32_t sm = static_cast<uint32_t>(slotmode < 0 ? 0 : slotmode + 0.5f);
+                        g_mesh_req.slot = sm / 10; g_mesh_req.mode = sm % 10;
                         g_mesh_pending = true; g_mesh_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_mesh_mutex);
@@ -505,7 +510,12 @@ int main(int argc, char** argv) {
         {
             std::lock_guard<std::mutex> lk(g_mesh_mutex);
             if (g_mesh_pending) {
-                engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
+                if (g_mesh_req.slot == 1) {
+                    engine.load_overlay(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
+                } else {
+                    engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
+                    engine.set_mesh_mode(g_mesh_req.mode);
+                }
                 engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
