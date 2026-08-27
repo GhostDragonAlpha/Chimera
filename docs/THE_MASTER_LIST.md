@@ -545,6 +545,119 @@ each entry names what it gives us and what would falsify it for our use.
   BLACK-BOX (ES/REINFORCE), never naive long BPTT. The maximum usable
   horizon is itself a membrane to be measured, not assumed.
 
+### Rounds 17–22 (third swarm — the operational layer)
+
+**R17 — networking, player editing, saves.**
+- **GGPO's sync-test IS our determinism gate pattern** ([ggpo doc](https://github.com/pond3r/ggpo/blob/master/doc/README.md)):
+  rollback netcode is viable only after the simulation proves save/restore
+  + re-execute to the same checksum. Our stepped-states-bit-identical
+  doctrine is exactly the prerequisite — multiplayer costs us nothing NEW,
+  it consumes what we already prove. Lockstep sends inputs, not state
+  (Fiedler) — CA local rules + deterministic stepping is the lockstep
+  dream substrate; cross-machine float determinism is the gate before
+  networking is even discussed.
+- **Player sculpting has two shipped shapes:** Dreams (SDF + flecks —
+  contradicts triangles outright, noted as the thing we must beat) and
+  runtime CSG on polygon meshes (the player-facing behavior our
+  birth/death rules must reproduce). Teardown networks DESTRUCTION AS
+  DETERMINISTIC COMMANDS, not mesh snapshots — edits as inputs fits the
+  lockstep substrate perfectly.
+- **Save format template:** Noita serializes per-chunk material grids +
+  bodies, FastLZ-compressed, chunk-addressed, with a coarse density map
+  for cheap queries ([Noita wiki](https://noita.wiki.gg/wiki/Technical:_File_Formats));
+  Dwarf Fortress ships custom zlib block binaries. Our world saves the
+  same way: per-cube-addressed chunks of triangle-cell state +
+  a coarse acceleration map.
+
+**R18 — retargeting, motion matching, UV-free texturing.**
+- **Cross-topology retargeting exists neurally (2025, literally tested on
+  a monkey skeleton, [arXiv:2508.13139](https://arxiv.org/html/2508.13139v1))**
+  — but derive-before-train flags it. The deterministic path: Blender
+  constraint-based retargeting (inspectable, no training).
+- **Motion matching (For Honor, GDC 2016) is the shipped alternative to
+  CPG gait** — database search per frame, no state machine. Learned MM
+  (Ubisoft La Forge 2020) compresses it with networks = determinism
+  threat. Verdict: CPG stays the derived route; motion matching is the
+  fallback if the dyad rejects oscillator gaits. The hard part is mocap
+  DATA for a monkey, not code.
+- **Triplanar mapping is the doctrine-clean texturing path** — world
+  position + normal drive the lookup, no UVs, ships as a built-in in
+  engines. Runtime Virtual Texturing/MegaTexture: mutable caches +
+  streaming = determinism threats; recorded, not adopted.
+
+**R19 — the CA substrate's frontier, honestly.**
+- **Our face-centered cells need their own kernel:** MeshNCA lives on
+  VERTICES; our cells live at triangle CENTERS — the perception
+  neighborhood must be re-derived face-to-face (the dual graph does this
+  naturally; nobody has published face-cell NCA — white space, ours).
+- **Conservation can be WRAPPED, not learned:** MaCE ([arXiv:2507.12306](https://arxiv.org/abs/2507.12306))
+  attaches exact mass conservation to existing CA rules — the
+  derivation-first answer to "the river must not invent water."
+  Lenia/Flow-Lenia are continuous-state — beautiful, but contradict the
+  discrete bit-identical substrate; recorded as the road not taken.
+- **Crowds on meshes:** geodesic distance fields over the dual graph
+  (I3D 2010); per-triangle LSCM charts + planar RVO2 = 140,000 agents
+  real-time (SIBGRAPI 2015); CA-boids hit 1M on GPU but on grids —
+  porting boids to the dual graph is an open derivation, named.
+
+**R20 — eating the real world.**
+- **The capture pipeline exists end-to-end:** photos → COLMAP/Meshroom
+  (SfM+MVS) → 2DGS → TSDF mesh → OUR substrate. 2DGS mesh export feeds
+  the 2D-only doctrine (capture → surfels → triangles is OUR direction).
+  Threats catalogued: screened Poisson is watertight-BY-CONSTRUCTION
+  (closes true openings — mask it); SuGaR/GOF are volumetric 3DGS
+  (rejected); COLMAP's RANSAC/matching must be seed-pinned for
+  reproducibility.
+- **NKSR ([arXiv:2305.19590](https://arxiv.org/abs/2305.19590))** meshes
+  millions of noisy points in seconds, learned — fast front-end,
+  determinism risk; use for exploration, gate with measurements.
+
+**R21 — sky, clouds, wind.**
+- **The frost's reference illuminant is analytic:** Preetham 1999 /
+  Hošek-Wilkie 2012 sky models + O'Neil LUT scattering give a
+  deterministic time-of-day lighting rig with zero ray tracing — the
+  sun the per-triangle light field trains against.
+- **Clouds are the doctrine's hard case:** every shipped solution
+  (HZD/Nubis ~2ms on PS4, Frostbite) is volumetric raymarching —
+  contradicts 2D-only. Verdict recorded: clouds enter as surfel shells
+  or not at all; nobody has done surfel clouds — white space, flagged.
+- **Crysis-style vertex-shader wind is triangle-native and stateless**
+  ([GPU Gems 3 ch.16](https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-16-vegetation-procedural-animation-and-shading-crysis)) —
+  deterministic by construction, drives fur/vegetation/cloth. GPU
+  particle gust fields (Ghost of Tsushima) need seed-pinning.
+
+**R22 — where the MLP actually runs.**
+- **The frost's runtime SHIPS AS AN SDK:** NVIDIA RTXNTC evaluates a
+  small MLP inside pixel shaders today — `VK_NV_cooperative_vector`
+  (2–4× on Ada/Blackwell) with a DP4a fallback for any SM6 GPU
+  ([RTXNTC](https://github.com/NVIDIA-RTX/RTXNTC)). f(point, view,
+  light) in the render pipeline is not speculative; it's an existing
+  Vulkan path. Constraint: quantization + vendor math paths threaten
+  bit-identical results — spec-defined math only, measured per-GPU.
+- **NPUs: rejected as primary.** DirectML/OpenVINO NPU paths are
+  Windows-gated, allow-listed, static-shape-only — wrong for per-pixel
+  dynamic input. Possible training helper, never the runtime.
+- **WebGPU = the demo layer, not the engine:** 4KB demoscene intros run
+  3D fluid sims in-browser via WebGPU compute — our marketing demo can
+  too. But dispatch overhead is ~24–36µs vs native Vulkan and Firefox
+  rate-limits — the C++ Vulkan engine stays primary.
+
+### SATURATION VERDICT (the research curve, honestly measured)
+
+Three swarms, 22 rounds, ~45 searches direct + ~130 by agents. The curve
+has flattened: swarm 3 repeated ~30% of prior findings (MeshNCA, Growing
+NCA, Cells-to-Pixels recurring across topics), and new items arrived as
+operational confirmations (RTXNTC ships the frost runtime; GGPO consumes
+our determinism) rather than new directions. **Searching more would be
+re-paying for what is already named.** What remains is not search but
+READING and MEASURING: the primary sources worth reading cover-to-cover
+before their lines start are — Nanite's SIGGRAPH course notes (L-engine),
+RTXNTC SDK + Zeltner TOG 2024 (L5 frost), Growing NCA + MeshNCA (L4/L8),
+virtual-pipes + MaCE (L7 water), ARAP lineage (L6 hinges), GGPO sync-test
+(multiplayer gate). Research annex CLOSED unless the operator opens a
+new territory; the falsifiers from here on are numbers we produce, not
+papers we find.
+
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
