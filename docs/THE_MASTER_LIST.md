@@ -266,6 +266,41 @@ each entry names what it gives us and what would falsify it for our use.
   fits — the triangle's normal IS the mirror tilt. That's the frost's
   unfair advantage, and it is now a race, not a fantasy.
 
+### Round 4 additions (same day)
+
+- **Frost growth itself is a CA rule — literally.** Frost on glass is the
+  canonical example of diffusion-limited aggregation (Witten–Sander DLA);
+  constrained 3D DLA already grows believable root/branch systems
+  ([C&G 2006](https://www.sciencedirect.com/science/article/pii/S0097849306000896));
+  lattice-Boltzmann enthalpy models simulate frost-layer growth for
+  engineering. So the frost has TWO layers, both ours: a GROWTH rule (DLA
+  walking the dual graph — particles diffuse on triangles, stick where they
+  land) and a LIGHT answer (the trained field from round 1). Growth is
+  physics; sparkle is lookup. Nobody else has the pair.
+- **Muscles driving a meshed body is published and it locomotes.**
+  Soft Body Locomotion (Tan/Liu/Turk, Georgia Tech 2012): creatures as
+  corotational-FEM meshes with muscle force terms produce walking gaits.
+  Our "muscles are CA contraction signals" (§2) has a direct ancestor —
+  swap their FEM elements for our triangle carrier (T2, already landed:
+  area rigidity k = 0.75·K_BOND/A0) and their muscle signal for our CA
+  state. XPBD gives the unconditionally-stable real-time solver
+  ([morphogenesis-resources](https://github.com/jasonwebb/morphogenesis-resources)
+  catalogues the space; GPU XPBD already uses spatial hashing — our cube
+  scaffolding doubles as the collision hash for free).
+- **Growing NCA = consume-to-recreate, with healing.** GNCA
+  (Mordvintsev 2020; Mixtures of NCA 2025, [arXiv:2506.20486](https://arxiv.org/html/2506.20486v1))
+  grows an organism from one cell and REGENERATES it after damage. Mapped
+  to the substrate: a chimera grown from a seed rule can re-heal wounds
+  in-game — damage is not a texture swap, it's the CA re-growing lost
+  triangles. The birth rule (L4) is the static version of this membrane.
+- **The money dot exists and it is a CA game.** Noita — "every pixel
+  simulated," literally a falling-sand cellular automaton — is a
+  commercial hit built by a tiny team over ~7 years
+  ([80.lv](https://80.lv/articles/noita-a-game-based-on-falling-sand-simulation)).
+  The market has already proven it pays for simulation depth as the core
+  aesthetic. Noita is 2D pixels. Nobody has shipped the 3D triangle
+  holographic successor. That is the gap L9 stands in.
+
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
