@@ -301,6 +301,123 @@ each entry names what it gives us and what would falsify it for our use.
   aesthetic. Noita is 2D pixels. Nobody has shipped the 3D triangle
   holographic successor. That is the gap L9 stands in.
 
+### Rounds 5–10 (research swarm, same day — threats included on purpose)
+
+**R5 — patterns, stability, streaming.**
+- **The fur's PATTERN is a CA too.** Turk 1991 ran reaction-diffusion
+  directly on surface meshes — leopard rosettes, zebra stripes, no UVs
+  ([paper](https://sites.cc.gatech.edu/people/home/turk/my_papers/reaction_diffusion.pdf)).
+  Staddon 2023 ([arXiv:2312.00637](https://arxiv.org/abs/2312.00637))
+  shows CURVATURE-dependent diffusion orients stripes correctly around
+  torsos and legs — local triangle curvature steers the global pattern.
+  Coat, frost, and water are all the same class of rule on our substrate.
+- **Learned CA stability is a solved recipe, not a hope:** sample pools +
+  damage augmentation ([Distill, Growing NCA](https://distill.pub/2020/growing-ca)),
+  coarse time sampling beats frame-locked updates (Richardson 2024, PLOS
+  CompBio), pool-free diffusion-style training ([arXiv:2410.02651](https://arxiv.org/pdf/2410.02651v1)).
+- **Coarse CA → fine appearance:** NCA-from-Cells-to-Pixels
+  ([arXiv:2506.22899](https://arxiv.org/html/2506.22899v3)) pairs a coarse
+  NCA with a tiny local decoder for high-res appearance — the architecture
+  our frost wants: dynamics on triangles, detail at render resolution.
+- **Streaming at scale:** Nanite's own course notes
+  ([Karis, SIGGRAPH 2021](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf))
+  prove triangles stream to billions — and explicitly REJECT voxels and
+  points. Out-of-core mesh compression (Isenburg/Gumhold 2003) and Chunked
+  LOD (Ulrich 2002, public domain) are the compatible recipes; both assume
+  static topology, which our birth rules violate — streaming a LIVING mesh
+  is our open problem. THREAT: geometry images (Hoppe 2002) resample the
+  surface into a regular image and would dissolve the triangle cell
+  identity. Noted, rejected by doctrine.
+
+**R6 — collision, GPU speed, training tricks.**
+- **Collision against deforming triangles is real-time.** Kavan & Žára
+  refit a sphere BVH under skeletal deformation (0.36 ms/frame two-model,
+  650k-tri crowd at 52.8 ms — [paper](https://users.cs.utah.edu/~ladislav/kavan05fast/kavan05fast.pdf));
+  modified GJK returns exact colliding triangle PAIRS and costs nothing
+  when triangles are born or die at runtime ([HAL](https://hal.science/hal-00342935v1/document))
+  — the birth rule's collision partner. THREAT: learned shallow-SDF
+  collision (Epic, [arXiv:2411.06719](https://arxiv.org/html/2411.06719v1))
+  answers collision with implicit fields — accurate, shipped, and not
+  triangles. Our falsifier if we ever borrow it.
+- **GPU budget measured:** dense CUDA Game-of-Life runs 182M cells at
+  729 generations/sec on an RTX 3080 ([repo](https://github.com/bryanoliveira/cellular-automata)) —
+  the ceiling for our substrate on this class of hardware. OctreeNCA
+  ([arXiv:2508.06993](https://arxiv.org/html/2508.06993v1)) fuses a whole
+  neural CA step into one CUDA kernel at ~90% less VRAM than a UNet.
+- **Two cheap stabilizers with chimera written on them:** noisy-seed
+  training makes NCA robust to timestep AND resolution changes
+  ([arXiv:2404.06279](https://arxiv.org/html/2404.06279v3)); an "identity
+  channel" keeps separate organisms from bleeding into each other where
+  they touch ([arXiv:2508.06389](https://arxiv.org/html/2508.06389v2)) —
+  the teddy/monkey seam needs exactly this.
+
+**R7 — fur, eyes, subsurface.**
+- **Shells-and-fins fur is doctrine-compatible** (Lengyel/Hoppe 2001,
+  [project page](https://hhoppe.com/proj/fur/)): concentric surface-bound
+  shells + silhouette fins, interactive, controllable — displaced triangle
+  layers, not strands. THREATS: hair meshes (SIGGRAPH 2024, patented) and
+  NeuralFur are strand geometry — outside the doctrine.
+- **Eyes sell realism through corneal refraction** — production leans on
+  RT (Animal Logic SIGGRAPH 2024), but image-space caustics (Wyman &
+  Davis 2006, [I3D](https://cwyman.org/supplement/InteractiveISCaustics/I3D06.pdf))
+  fake refraction with rasterization only. The per-triangle light field
+  must reproduce: refraction, caustics, pupil dilation, sclera vascularity
+  (Unity HDRP's checklist is the requirement spec).
+- **Subsurface fits the light field:** wrap lighting is a free term in
+  f(point, view, light); pre-integrated skin shading (Penner/Borshukov)
+  is a 2D LUT indexed by N·L AND surface curvature — curvature we already
+  compute. Screen-space SSS (Jimenez 2015) is fast but a post-process —
+  outside the per-triangle model. Rejected, recorded.
+
+**R8 — rigging, segmentation, materials.**
+- **Auto-rigging exists (Pinocchio, RigNet, ASMR 2025) but every one
+  outputs LBS skeletons** — a translation layer to hinge arrays is
+  required, and the falsifier is mechanical: does the auto-rig deform
+  acceptably when LBS is replaced by hinge constraints?
+- **LMSeg ([arXiv:2407.04326](https://arxiv.org/abs/2407.04326)) segments
+  meshes ON the barycentric dual graph — one node per face.** It thinks in
+  our native data structure. Falsifier for use: do its part boundaries
+  coincide with mechanical hinges, or only with human-semantic labels?
+- **Materials:** MatSynth (4,069 CC0/CC-BY 4K PBR materials,
+  [matsynth](https://www.gvecchio.com/matsynth)) is legal training data
+  for the frost; DreamMat (SIGGRAPH 2024) explicitly avoids baked-in
+  shading — the doctrinally cleanest text-to-material. TRAP RECORDED:
+  DiffMat is non-commercial + Substance-dependent — incompatible with a
+  commercial game. Never let it into the build.
+
+**R9 — the market (numbers, not vibes).**
+- **Noita:** 3 people, ~2.2M copies, ~$26M gross (est).
+  **Teardown:** 2→6 people, 1.1M copies by 2022, studio ACQUIRED by
+  Embracer — but its identity is ray-traced voxel lighting: Teardown's
+  look is the benchmark our no-RT frost must match. **Besiege:** ~3
+  people, 1M copies / $7M in five months at $6.99. **Dwarf Fortress:**
+  2 devs, 20 years, then 160k Steam copies in 24 HOURS and $7.2M in one
+  month — depth monetized retroactively; retention comes from shareable
+  emergent stories ("Losing is Fun"), not graphics.
+- **The honest threat:** every commercial CA success is pixel, voxel, or
+  tile. No shipped game has proven triangle-substrate CA gameplay. That
+  is precisely our bet — recorded as unproven, not as fact.
+
+**R10 — the economics and the door out.**
+- **Donations don't fund engines:** Blender FY2024 ran at a LOSS on €3.1M
+  income ([annual report](https://www.blender.org/news/blender-foundation-annual-report-2024/));
+  Godot spends more per month than it takes in. Confirms the doctrine:
+  the GAME carries the revenue; the engine is the gift.
+- **Creator-economy benchmarks:** Roblox paid creators >$1B in a year;
+  UEFN pays 40% of net revenue into an engagement pool ($352M in 2024);
+  marketplace splits run 88/12 (Epic Fab) to 70/30 (Unity); Steam's 25%
+  paid-mod split is the exploitative floor. IF a Chimera marketplace ever
+  exists: 70–88% to creators or don't bother. THREAT: platform economics
+  contradict "the game is the artifact" — chase the game, not the platform.
+- **The door out is glTF.** Blender→glTF→Godot is production-proven
+  ([Project Dogwalk](https://www.khronos.org/blog/project-dogwalk-stress-testing-blender-to-godot-interoperability-with-gltf));
+  glTF is an ISO standard with a vendor-extension mechanism — our
+  per-triangle light-field params, hinge arrays, and CA rules ride as
+  named metadata (e.g. `CHIMERA_lightfield`) inside a standard container.
+  Artists keep Blender; we keep the substrate. THREAT: Khronos is
+  advancing volumetric/Gaussian-splat extensions — we document selective
+  support or silently contradict the 2D-only decree.
+
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
 Key run records behind §4/§5, newest last: T2 CA pre-registration →
