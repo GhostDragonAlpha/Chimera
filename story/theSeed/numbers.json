@@ -1,5 +1,6 @@
 {
   "extent_m": 1.0,
+  "duration_s": 15.0208,
   "azimuth_schedule": "0.03..359.98 deg across 64 views (measured from capture/genbear2/anysplat64_extrinsic.npy; mid-band |el|<60 max gap 178.6 deg -- a top-heavy ring, recorded not hidden)",
   "elevation_schedule": "-20.9..+88.3 deg, mean +48.2 (49/64 views above +30 deg; 0 below -30)",
   "view_count": 64,

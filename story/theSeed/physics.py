@@ -32,6 +32,8 @@ in the membrane buffer layout. Two derivations, no chosen numbers:
   - opacity cut at alpha >= 0.5: the 7-float grain path cannot blend,
     so carrying a sub-half-opacity splat as an opaque grain FABRICATES
     matter the asset does not claim. Half-opacity is the honest cut.
+  - duration_s = (721-frame AI-orbit source @ 24 fps) / 2: the membrane
+    law turns a half-circle (front -> back), half the capture orbit.
 """
 from __future__ import annotations
 

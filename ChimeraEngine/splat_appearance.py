@@ -543,8 +543,61 @@ def _verbs_buffers(spec: dict, term: str):
 
 # the authored compositions for the declared terms that have no story membrane. A term with a
 # membrane is ALWAYS rendered from its own emit() -- the folder wins -- and these are the fallback.
+def _determinism_buffers(spec, term):
+    """theDeterminism's scene: ONE network drawn TWICE, side by side -- mirror twins, every
+    node and thread matching, because that is the claim: same seed, same law, same world,
+    bit-identical, never two different worlds.
+
+    The network itself is grown from the term's OWN seed (_seed(term)) -- one seed, one
+    pattern, stamped twice at +-DX. Begin and end frames are the same pair: a deterministic
+    world does not drift between looks. Nothing here is authored past the seed."""
+    rng = np.random.default_rng(_seed(term))
+    n_nodes = 26
+    nodes = rng.uniform(-1.0, 1.0, size=(n_nodes, 2))          # the one pattern, in the panel plane
+    palette = np.array([[0.95, 0.85, 0.35],                    # the colored nodes: a fixed handful
+                        [0.35, 0.75, 0.95],                    # of warm/cool colors, assigned by
+                        [0.90, 0.45, 0.55],                    # the seed -- the twins carry the
+                        [0.45, 0.90, 0.60],                    # same colors at the same places
+                        [0.80, 0.65, 0.95]])
+    colors = palette[rng.integers(0, len(palette), size=n_nodes)]
+    # threads: each node tied to its two nearest neighbors -- the pattern's structure
+    edges = set()
+    for i in range(n_nodes):
+        d = np.hypot(*(nodes - nodes[i]).T)
+        for j in np.argsort(d)[1:3]:
+            edges.add((min(i, j), max(i, j)))
+    edges = sorted(edges)
+
+    DX = 1.35                                                  # the twins' separation
+
+    def panel(xoff):
+        grains = []
+        b = np.zeros((n_nodes, NCOLS), dtype=np.float32)
+        b[:, PX] = nodes[:, 0] + xoff
+        b[:, PZ] = nodes[:, 1]
+        b[:, TYPE] = 3.0
+        b[:, ALPHA] = 0.95; b[:, SIZE] = 0.055                 # sigma in WORLD units
+        b[:, CR:CB + 1] = colors
+        grains.append(b)
+        seg = np.linspace(0.0, 1.0, 24)
+        for i, j in edges:
+            pts = nodes[i][None, :] + seg[:, None] * (nodes[j] - nodes[i])[None, :]
+            t = np.zeros((len(seg), NCOLS), dtype=np.float32)
+            t[:, PX] = pts[:, 0] + xoff
+            t[:, PZ] = pts[:, 1]
+            t[:, TYPE] = 3.0
+            t[:, ALPHA] = 0.55; t[:, SIZE] = 0.012
+            t[:, CR], t[:, CG], t[:, CB] = (0.55, 0.60, 0.70)  # the threads: one quiet color
+            grains.append(t)
+        return np.vstack(grains)
+
+    twins = np.vstack([panel(-DX), panel(+DX)])                # the SAME arrays, twice
+    return twins.copy(), twins.copy()                          # begin = end: no drift
+
+
 _DESIGN_SCENES = {
     "theVerbs": {"kind": "verbs", "cam": (0.0, -95.0, 30.0)},
+    "theDeterminism": {"kind": "determinism", "cam": (0.0, -6.0, 0.0)},
     # Non-meaning terms with PHYSICS_READING but no real membrane
     "theScan": {"kind": "scan", "cam": (0.0, -10.0, 5.0)},
     "theNavigate": {"kind": "navigate", "cam": (0.0, -20.0, 10.0)},
@@ -557,6 +610,7 @@ _DESIGN_SCENES = {
 }
 _DESIGN_BUILDERS = {
     "verbs": _verbs_buffers,
+    "determinism": _determinism_buffers,
     # Scene builders for terms without real membranes
     "scan": lambda spec, term: (_dots((0, 0, 0), 2.0, 100, (0.3, 0.6, 0.9), np.random.default_rng(_seed(term))),
                                   _dots((0, 0, 0), 2.0, 100, (0.3, 0.6, 0.9), np.random.default_rng(_seed(term)))),

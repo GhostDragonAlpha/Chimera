@@ -11,6 +11,7 @@ rasterizer the proof points at, not `splat_appearance`'s own GPU path.
 from __future__ import annotations
 
 import json
+import importlib
 import math
 import os
 import struct
@@ -196,6 +197,7 @@ def render_term(term: str, out_dir) -> dict | None:
     if not engine_available():
         return None
     import splat_appearance as sa
+    importlib.reload(sa)      # the scene on disk NOW, not the module cached at server start
     bufs = sa.movie_buffers(term)
     if bufs is None:
         return None
@@ -228,6 +230,7 @@ def render_term_movie(term: str, out_dir, frames: int = 12, timeout: float = 60.
     if not engine_available():
         return None
     import splat_appearance as sa
+    importlib.reload(sa)      # the scene on disk NOW, not the module cached at server start
     if term not in sa.membrane_terms():
         return None
     settled = sa.membrane_buffer(term, 1.0)

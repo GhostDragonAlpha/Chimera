@@ -34,6 +34,32 @@ that emerges is the pendulum's own, set by I, m, g, d. G is a single derived con
 torque scale ~ the body-weight torque), and it cannot move the frequency: a van der Pol limit
 cycle sits at its linear natural frequency for any G that sustains it. So the cadence is pinned
 by the body, and the drive is what keeps the pendulum from damping out, not what tells it how fast.
+
+FALSIFIED, 2026-08-27 -- the falsifier fired honestly and this addendum records why.
+The day the measured Van Criekinge gait envelope was restored to theHuman/numbers.json (UPRIGHT
+repair), the hip extension ligament came back with it (edge -10.59 deg, k = tau_max/gap from the
+body's own muscles). The driven swing [keyframe -21.25 deg + drive] now bounces off that wall
+every cycle, and the membrane's core claim -- "the drive cannot move the frequency" -- is
+MEASURED FALSE in this regime (probe: .tmp/rhythm_fix/sensitivity.py):
+
+    G x 0.5 -> T 1.1462 s | G x 1.0 -> T 1.2562 s | G x 2.0 -> T 1.3630 s
+    Q x 0.8 -> T 1.3542 s | Q x 1.0 -> T 1.2562 s | Q x 1.25 -> T 1.1177 s
+
+G0/I = 11.3 s^-1 against omega = 4.1 rad/s: the body's own muscle torque scale is NOT the weak
+drive the van-der-Pol frequency theorem needs, and with the wall present the settled cadence
+(1.2562 s) answers to G and Q as much as to the pendulum (linear 1.5228 s, free in-band 1.3350 s,
+iso-energy backbone at the cycle's turning points ~1.02-1.10 s -- the driven cycle sits between
+them because the drive pumps energy near the turning points, so no single-energy backbone is its
+reference). No hip seat repairs it: agent-7's 9-seat grid measured the same 0.3980 Hz at every
+seat -- the wall engagement is amplitude-set, not offset-set. The membrane is left FAILING: the
+suite reports 9/10 with this falsifier shown, because the only "fixes" on offer were widening
+GAIT_TOL or tuning K_G to the weak regime -- both are taste, not derivation, and Rule 0/Rule 1
+forbid them. The successor theory for Phase 1: human cadence is the pendulum period SHORTENED BY
+THE LIGAMENT WALL the gait envelope just touches (the envelope's extension edge IS the ligament's
+engagement edge by construction -- elastic return at terminal swing is a cadence term, not an
+edge case). Instrument lesson, recorded the way the S4 recorder's was: qfrc_bias enters the
+equations of motion with a MINUS (M qdd = passive + applied + constraint - bias); a torque scan
+that ADDS bias builds an inverted potential and "predicts" nonsense that still looks plausible.
 """
 from __future__ import annotations
 

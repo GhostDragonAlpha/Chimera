@@ -10,5 +10,8 @@
  "weight_N": 804.546,
  "g": 9.80665,
  "mass_kg": 82.0409,
- "hip_separation_m": 0.16
+ "hip_separation_m": 0.16,
+ "extent_m": 1.0144,
+ "duration_s": 0.5052,
+ "ground_friction_mu": 1.0
 }

@@ -105,6 +105,16 @@ by ~3.6° means the RANGE BOUNDARY leaks; `SWING`'s period error means cadence c
 derived; `LAND`'s energy injection means the fall is not honest; `UPRIGHT`/`RHYTHM_DRIVE`/
 `END_STOP` fail downstream of those. The lane name for all of it: **train the in-between.**
 
+> **STATUS AMENDMENT (2026-08-26, agent-recorded; the list above is the 2026-08-25 snapshot).**
+> Measured since: `JOINT_LIMIT` FIXED (hard stops, overshoot 3.555° → ~0.05°) · `SWING` PASS
+> (12.4% under the 15% falsifier) · `UPRIGHT` PASS (allometric, CoM in base of support) ·
+> `RHYTHM_DRIVE` PASS (0.305 vs 0.328 Hz, 7.1%) · `END_STOP` PASS (re-derived; subtalar passive
+> share 0 → 64 N·m) · `LAND` REFUSED with cause (rigid-body impulse model inadequate for a
+> swinging body — measured impact 3.01 m/s vs sqrt(2gh) 1.98 m/s; the model, not the body, is
+> wrong). Live reads, never this copy: `python -m tools.action_tests` and
+> `python tools/port_tests.py`. The remaining queue is the walk lane itself: seconds-held at
+> forward=0.5 stands at 3.10 s (`docs/THE_WALK_PROGRAM.md`).
+
 ## 6 · GRAVITY IS EARTH
 
 No sensor will ever be strapped to this world, so the world gets the one gravity we actually

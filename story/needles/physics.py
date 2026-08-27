@@ -102,6 +102,7 @@ def _seed_grooves(nums: dict) -> np.ndarray:
 
 
 def _clock(nums: dict, t: float) -> float:
+    # duration_s = k_end - k_start = 33.0 s; the pass clock k IS the membrane's clock.
     return float(nums.get("k_start", 2.0)) + float(np.clip(t, 0.0, 1.0)) * (
         float(nums.get("k_end", 35.0)) - float(nums.get("k_start", 2.0)))
 

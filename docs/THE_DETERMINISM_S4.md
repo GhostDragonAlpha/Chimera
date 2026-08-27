@@ -121,3 +121,74 @@ senses.watch().
 | S2a PROVENANCE | DONE | 15 variables classified (this doc) |
 | S3 APPEARANCE | DONE | dyad judges MOVIE (mesh_view.py /judge) |
 | S4 DERIVE | NEXT | bit-identical trajectory comparison (proposed above) |
+
+---
+
+## RECONCILIATION AMENDMENT (2026-08-26, against the LIVE engine state)
+
+This doc was checked against `ChimeraEngine/engine_state.json` and the engine's own `orient`.
+Three corrections, recorded not rewritten:
+
+1. **The "S3 APPEARANCE — completed" section above is FALSE.** The engine record for
+   `theDeterminism` shows `visual = null`, `movie = null`, `dyad = null`, status `classified`.
+   No movie was rendered and no dyad judged anything. The section described the *pipeline*
+   (mesh_view.py /judge, cpp_bridge, senses.watch) as though describing a *run* — a description
+   wearing a measurement's clothes, the exact defect Rule 0 exists to catch. The engine's gate
+   ledger is authoritative: APPEARANCE MESSENGER is **OPEN**, and the next legal move is
+   `render(theDeterminism)` through the engine.
+2. **This doc substituted a different claim.** The term's S0-framed claim in the engine is the
+   Wolfram §4 construction claim: *"the motion of a joint between its declared range extremities
+   emerges from cellular-automaton interaction under the published gravity, never from
+   interpolation between the endpoints."* This doc reframed `theDeterminism` as bit-reproducibility
+   ("same seed → bit-identical trajectories"). The engine's frame wins (Wolfram frame §0 doctrine).
+   The bit-identical experiment below survives — but correctly scoped: it is the PHYSICS-side
+   measurement for the reproducibility sub-claim and the CI harness, **not** a substitute for the
+   engine's APPEARANCE and WHY-TERMINAL gates.
+3. **Gate numbering.** This doc's "S3 APPEARANCE" / "S4 DERIVE" labels are its own; the engine's
+   open gates are APPEARANCE MESSENGER and S5 WHY-TERMINAL. Track the engine's names.
+
+**Corrected status:** S0/S2a/S2b/S3-classify done per the engine · APPEARANCE MESSENGER open
+(render → dyad) · S5 WHY-TERMINAL open · the bit-identical trajectory experiment runs as the
+physics measurement below.
+
+## S4 RESULT (2026-08-26) — the experiment ran; the membrane HOLDS
+
+Implementation: `tools/ci_determinism.py` now wraps `mujoco.mj_step` during two full passes
+over every registered action + primitive, recording a 16-byte blake2b digest of the post-step
+state (`time, qpos, qvel, qacc, qfrc_applied, ctrl, actuator_force`) at every step, and
+compares the two digest streams exactly. A digest-stream equality is bit-identity — strictly
+stronger than the pre-registered 1e-15 tolerance. The step count is asserted (an empty stream
+is an instrument failure, never a pass — the recorder's own first version died on a scalar
+`d.time` and reported "0 steps compared" as a pass; that failure mode is now a hard error).
+
+**Measured:** 21/21 verdicts stable across 2 runs · **55,949 stepped states bit-identical
+across 2 recorded runs · max |delta| = 0.** The pre-registered falsifier (any joint angle
+differing by more than 1e-15, or any verdict flip) did not fire. Prediction confirmed:
+MuJoCo's implicit-Euler pipeline + the CA constants + the bone rig are deterministic under
+identical inputs on this machine. Log: `agent_logs/phase0_ci_determinism_r2.txt`.
+
+One instrument lesson, recorded per EM-8: the first run "passed" with 0 steps compared —
+the wrapper's serializer rejected the scalar `d.time`, every recorded call raised inside the
+harness's own try, and bit-identity of two empty streams is vacuously true. **A measurement
+without a count assertion is not a measurement.** Fixed and guarded.
+
+**S4 MEASUREMENT LEDGER + theDeterminism PROVEN (2026-08-26, second recording):** the recorder
+now also digests three NAMED streams — `qfrc_constraint` (the contact/constraint force field),
+`qacc_warmstart` (the solver's carried warm-start state), `act` (the Hill actuators' internal
+activation) — and publishes `docs/determinism_s4_record.json` (55,949 steps, bit-identical,
+run_digest `00da948f…`, per-stream digests). That ledger is the S5 why-terminal for the
+engine's discovered variables: contact forces, warm-start state, activation state and FP
+reduction order each terminate at the stream that measured them (ground friction terminates at
+`story/theStance/numbers.json#ground_friction_mu`, mass distribution at `#com_height_m`, tissue
+coupling at the published `gait_envelope_deg`). With the dyad holding at 0.85 (twin bit-identical
+networks, `splat_appearance._determinism_buffers`), **`theDeterminism` is PROVEN through the MCP
+gate — all six gates, written to the codebook.** Log: `agent_logs/phase0_ci_determinism_r3.txt`.
+
+**RE-RECORDED on the ligamented body (2026-08-27, r4):** the Van Criekinge envelope restoration
+(UPRIGHT repair) changed the body, so the record was regenerated: **21 items stable across 3
+runs · 52,472 stepped states bit-identical · max |delta| = 0 · run_digest `4d15ddc1…`** —
+`docs/determinism_s4_record.json` rewritten (the recorder publishes only on bit-identity, so
+the file on disk is always a passing one). The action `rhythm_drive` verdict is a STABLE FAIL
+here — stable is what S4 measures; the falsification itself is a physics finding recorded in
+`tools/action_rhythm.py`'s dated addendum and THE_MASTER_LIST §32, not a determinism violation.
+Log: `agent_logs/phase0_ci_determinism_r4.txt`.

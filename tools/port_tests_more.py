@@ -62,18 +62,32 @@ def t_joint_limit(mujoco):
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
     j, adr, dof, _, _ = _muscle_at(m, d, mujoco, "knee_angle_r")
-    hi = float(m.jnt_range[j][1])
+    lo, hi = float(m.jnt_range[j][0]), float(m.jnt_range[j][1])
+    # ALLOMETRY (Wolfram frame section 11; ALLOMETRY_AUDIT F-1): the abuse load is derived
+    # from THIS body's own peak knee-extension torque over the ROM, x2 for the margin falls
+    # demand -- never a human-table MVC (the 400 N.m this replaces was ~2x an adult human's).
+    tau_peak = 0.0
+    for frac in np.linspace(0.0, 1.0, 20):
+        mujoco.mj_resetDataKeyframe(m, d, 0)
+        d.qpos[adr] = lo + frac * (hi - lo)
+        d.ctrl[:] = 1.0
+        if m.na:
+            d.act[:] = 1.0
+        mujoco.mj_forward(m, d)
+        tau_peak = max(tau_peak, abs(float(d.qfrc_actuator[dof])))
+    abuse = 2.0 * tau_peak
     mujoco.mj_resetDataKeyframe(m, d, 0)
     mujoco.mj_forward(m, d)
     for _ in range(1000):
         d.ctrl[:] = 0.0
         d.qfrc_applied[:] = 0.0
-        d.qfrc_applied[dof] = 400.0
+        d.qfrc_applied[dof] = abuse
         mujoco.mj_step(m, d)
     q = float(d.qpos[adr])
     over = max(0.0, q - hi)
     return dict(pass_=math.degrees(over) < 2.0, pred=hi, got=q,
-                detail=f"knee driven at 400 N.m for 1 s: limit {math.degrees(hi):+.1f} deg, "
+                detail=f"knee driven at {abuse:.1f} N.m (2x the body's own peak "
+                       f"{tau_peak:.1f} N.m) for 1 s: limit {math.degrees(hi):+.1f} deg, "
                        f"reached {math.degrees(q):+.1f} deg, overshoot {math.degrees(over):.3f} deg")
 
 

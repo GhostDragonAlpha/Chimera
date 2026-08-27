@@ -1,0 +1,18 @@
+{
+ "experiment": "theDeterminism S4 -- two full-suite recorded passes, compared exactly",
+ "recorded_steps": 52472,
+ "bit_identical": true,
+ "max_abs_delta": 0.0,
+ "digest_algorithm": "blake2b-16",
+ "run_digest": "4d15ddc178fce35db3b51180e151b93e",
+ "time_digest": "d1791501ff97b1e6bdc1a32ce29e714d",
+ "qpos_digest": "1494d06e6640a6bd1a28c912d00d7a62",
+ "qvel_digest": "b33f65a8cb772bbb245ae9261f7fd3a7",
+ "qacc_digest": "7afe89b25029b784439dd326029aee6e",
+ "qacc_warmstart_digest": "7afe89b25029b784439dd326029aee6e",
+ "qfrc_applied_digest": "0a0e8a65fd4c1116326f63cdc77b6371",
+ "qfrc_constraint_digest": "14d2b7f5e7f4a7727449db467434b596",
+ "ctrl_digest": "5a279e77810d0bd1772c90caca5bec1c",
+ "act_digest": "a6ca3cea72c5d883a26ceb01d222b613",
+ "actuator_force_digest": "21757296851a5b6fd481582df47de004"
+}

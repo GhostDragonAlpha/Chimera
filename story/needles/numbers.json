@@ -5,6 +5,7 @@
   "k_end": 35.0,
   "frames": 34,
   "extent_m": 15.0,
+  "duration_s": 33.0,
   "needle_size": 0.045,
   "live_throw_n": 150000,
   "wallet_ms": 200,

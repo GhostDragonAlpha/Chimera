@@ -148,6 +148,11 @@ stated.
 
 ### Status — `tools/primitive_tests.py`, 4 of 7
 
+> **STALE SNAPSHOT (amended 2026-08-26).** This table is a dated record, not the live state:
+> `END_STOP` has since been re-derived and passes with body-scaled loads; `UPRIGHT` passes
+> (allometric, CoM in base of support). The live read is `python -m tools.primitive_tests` —
+> trust it over any table, including this one.
+
 | primitive | ports | measured | |
 |---|---|---|---|
 | **END_STOP** | joint_limit + passive_force + tendon_elasticity | 0.860° overshoot vs **3.574°** with ligaments removed; tissue carries 306.9 N·m | PASS |
@@ -191,6 +196,13 @@ An action is a **program in the port instruction set**, and `action_test()` enfo
 Rule 0 the other registries let slip: **PREDICTION is a required registration argument**, declared
 at import, which is necessarily before the test can have run. A prediction written after the
 measurement is a description.
+
+> **STALE SNAPSHOT (amended 2026-08-26).** The table below is a dated record. Live state
+> (2026-08-26, `python -m tools.action_tests`): 10/10 validated, 4 REFUSED as absent structure —
+> PUSH, PULL, GRIP, LAND. LAND's refusal is earned: the rigid-body impulse model `J = m√(2gh)`
+> assumes a non-rotating mass; this body's limbs swing during the fall (measured impact 3.01 m/s
+> vs √(2gh) 1.98 m/s), so the *model*, not the body, is inadequate. This resolves the
+> PASS-here vs FAIL-in-`THE_MASTER_LIST` §30 conflict: both were stale; the suite is the read.
 
 | | prediction (closed form, computed before the run) | measured | |
 |---|---|---|---|

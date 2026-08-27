@@ -652,6 +652,33 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None, fix
                 seated.append((nm, q, float(m.key_qpos[k][a])))
             else:
                 noted.append(nm)
+    # THE SYMMETRIC STAND, 2026-08-26 -- the keyframe is a GAIT FRAME: myobody ships mid-stride,
+    # hip_flexion_l at -40.39 deg against hip_flexion_r at -15.99 deg. A stand is symmetric --
+    # theStance's own base of support is -- and a 14 deg split between the hips is a stride
+    # instant frozen into the standing pose, the same species as the off-sagittal deadband
+    # below. RHYTHM_DRIVE measured it: L/R antiphase correlation +0.116 on the asymmetric key
+    # vs -0.738 symmetric.
+    #
+    # THE SEAT IS DERIVED, NOT PICKED: the feasible band is the intersection of the body's OWN
+    # constraints, measured at 1.25-2.5 deg resolution -- inside the published ROM [-30, +120];
+    # off the hard stop (the antiphase drive clips at the edge); the standing equilibrium holds
+    # (a_upright: CoM inside the support polygon, passes -18.75, fails -17.5); the ankle
+    # length-loop holds (STIFFNESS: passes -23.75, fails -25). Seat = the CENTER of the measured
+    # passing interval [-23.75, -18.75] = -21.25 deg, the maximin point: >=2.5 deg of margin to
+    # every constraint boundary, no boundary closer than any other.
+    jL = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, "hip_flexion_l")
+    jR = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, "hip_flexion_r")
+    if jL >= 0 and jR >= 0:
+        import math as _math3
+        HIP_STAND = _math3.radians(-21.25)
+        for k in range(m.nkey):
+            for jj in (jL, jR):
+                a = int(m.jnt_qposadr[jj])
+                was = float(m.key_qpos[k][a])
+                if abs(was - HIP_STAND) > 1e-12:
+                    m.key_qpos[k][a] = HIP_STAND
+                    nm = mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_JOINT, jj)
+                    seated.append((nm, was, HIP_STAND))
     # THE OFF-SAGITTAL DEADBAND, 2026-08-04 -- the foot membrane's falsifier 2 fired and
     # taught this: a keyframe INSIDE the range but PAST a ligament's engagement edge starts
     # the body with the spring taut, and the range-clamp above never sees it. Measured:
@@ -709,10 +736,10 @@ def load_body(xml_path, mujoco=None, tissue=True, verbose=False, pivot=None, fix
     # approaching, effectively rigid once reached. That is ology "MuJoCo solver documentation"
     # (solimp impedance semantics) docked into ology "biomechanics" (a stop that yields without
     # end under sustained sub-injury load describes neither cartilage nor bone). The probe
-    # torque itself obeys ALLOMETRY (THE_WOLFRAM_FRAME.md section 11): 400 N.m is ~2x an adult
-    # knee-extension maximum voluntary contraction (~200 N.m, kinesiology) -- an ABUSE load by
-    # design, because falls load joints beyond the voluntary band, and the body's own scaled
-    # ceiling was never the question. Applied LAST, on the final model, after every reload --
+    # torque obeys ALLOMETRY (THE_WOLFRAM_FRAME.md section 11): port 5 now derives it from the body's OWN peak
+    # knee-extension torque over the ROM, x2 for abuse margin (falls load joints beyond the
+    # voluntary band) -- no human-table MVC cited onto this body (ALLOMETRY_AUDIT F-1).
+    # Applied LAST, on the final model, after every reload --
     # the same load-bearing order the keyframe seating paid for. Only LIMITED slide/hinge
     # joints; free/ball joints have no stop to harden.
     _hardened = 0

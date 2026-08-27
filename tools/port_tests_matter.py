@@ -460,7 +460,18 @@ def t_terrain_footprint(mujoco):
     and saying so is worth more than publishing 3.1 mm as though it were known. What IS resolvable
     is the elastic branch, which needs no cohesion at all.
     """
-    ground, human = _published("theGround"), _published("theHuman")
+    try:
+        ground = _published("theGround")
+    except md.Uncited as e:
+        return dict(pass_=False, refused=True, pred=0.0, got=0.0,
+                    detail=(f"REFUSED: {e}\n"
+                            f"    theGround was a MATTER-ERA membrane, deleted with story/ on "
+                            f"2026-08-06 (THE_LIGHT_SEED); it is not a membrane of the light-era "
+                            f"world. This port stays as the regression guard for when terrain "
+                            f"returns (roadmap Phase 2, passive tissue) -- the typed-cohesion "
+                            f"conviction and the two-literatures check are earned and kept, not "
+                            f"re-run against a substitute value."))
+    human = _published("theHuman")
     for who, tab, keys in (("theGround", ground, ("bulk_density", "g", "sinkage_m", "repose_deg")),
                            ("theHuman", human, ("weight_N", "foot_area_m2", "mass_kg"))):
         miss = [k for k in keys if k not in tab]
@@ -602,7 +613,17 @@ def t_granular_repose(mujoco):
     g, so the angle is g-invariant. Using Earth's here would have given the same number and would
     have been a lie about which world this is.
     """
-    ground = _published("theGround")
+    try:
+        ground = _published("theGround")
+    except md.Uncited as e:
+        return dict(pass_=False, refused=True, pred=0.0, got=0.0,
+                    detail=(f"REFUSED: {e}\n"
+                            f"    theGround was a MATTER-ERA membrane, deleted with story/ on "
+                            f"2026-08-06 (THE_LIGHT_SEED); it is not a membrane of the light-era "
+                            f"world. This port stays as the regression guard for when terrain "
+                            f"returns (roadmap Phase 2, passive tissue) -- the shape-ablation "
+                            f"bracket and the monolayer falsifier are earned and kept, not re-run "
+                            f"against a substitute value."))
     g = float(ground["g"])
     phi = md.cite("sand", "friction_angle_deg")["value"]
     mu = math.tan(math.radians(phi))

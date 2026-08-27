@@ -99,6 +99,7 @@ def derive(parent_nums=None, free=None):
         "dt": DT,
         "t_total_ticks": t_total_ticks,
         "t_total_units": round(t_total_ticks * DT, 3),
+        "duration_s": round(t_total_ticks * DT, 3),  # the integration window IS the clock
         "extent_m": 2.5,          # camera framing: extent * 2.8
         "grain_size": 0.07,       # splat radius ~ half bond spacing
         "seed": 20260806,         # the light-era family seed

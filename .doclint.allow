@@ -120,3 +120,4 @@ core/test_malcolm.py
 core/test_rep_engine.py
 core/test_task_board.py
 core/test_wave.py
+core/rehearsal.py

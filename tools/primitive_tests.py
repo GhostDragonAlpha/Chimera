@@ -622,7 +622,18 @@ def p_upright(_):
     # THE DISTURBANCE IS DYNAMIC, because a loop's advantage only exists while the error is
     # CHANGING: at constant load the equilibrium identity above erases it. A slow torque sweep
     # through the lumbar joints keeps the error moving, as standing on moving ground does.
-    T0, PERIOD = 150.0, 900
+    # ALLOMETRY (ALLOMETRY_AUDIT F-3): the sweep amplitude is half THIS body's own peak lumbar
+    # torque -- the 150 N.m it replaces sat squarely in the human lumbar-MVC band.
+    T0 = 0.0
+    for _nm, _a, _df, _p, _n in chain:
+        mujoco.mj_resetDataKeyframe(m, d, 0)
+        d.ctrl[:] = 1.0
+        if m.na:
+            d.act[:] = 1.0
+        mujoco.mj_forward(m, d)
+        T0 = max(T0, abs(float(d.qfrc_actuator[_df])))
+    T0 *= 0.5
+    PERIOD = 900
 
     def run(gain, invert=False):
         mujoco.mj_resetDataKeyframe(m, d, 0)

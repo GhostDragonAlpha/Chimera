@@ -100,6 +100,7 @@ KEYMAP = {
 # marble time and the record is 240 passes, so 1:1 playback needs rate
 # 1/(240*0.32) = 0.0130. Play rolls the recorded win at marble speed; N/M
 # gear it up or down from there (the viewer clamps >= 0.005).
+# duration_s is the same record span: 240 * 0.08 * 4 = 76.8 s.
 DEFAULT_PLAY_RATE = 0.0130
 
 _STATE = {"verify": None}

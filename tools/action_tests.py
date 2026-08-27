@@ -49,6 +49,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root: `import tools.x` works as script AND as module
 
 import mujoco
 import numpy as np
@@ -729,6 +730,12 @@ def a_turn(_):
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
 
+    # ALLOMETRY (ALLOMETRY_AUDIT F-2): the external control torque is derived from the body's
+    # own inertia about z -- I_z x a characteristic angular acceleration -- never a round
+    # number from taste. Floored at 1 N.m so a light body's control stays measurable.
+    I_z = float(m.body_inertia[1][2])
+    t_ext = max(I_z * 5.0, 1.0)
+
     def flight(external):
         mujoco.mj_resetDataKeyframe(m, d, 0)
         d.qpos[2] += 8.0
@@ -741,7 +748,7 @@ def a_turn(_):
                 d.ctrl[k] = 0.5 + 0.5 * math.sin(6.0 * d.time + k)
             d.xfrc_applied[:] = 0.0
             if external:
-                d.xfrc_applied[1][5] = 60.0            # a torque about z from OUTSIDE
+                d.xfrc_applied[1][5] = t_ext             # a torque about z from OUTSIDE
             mujoco.mj_step(m, d)
         return L0, angmom_z(m, d)
 

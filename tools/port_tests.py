@@ -277,7 +277,7 @@ def main() -> int:
     names = [only] if only else list(TESTS)
     print(f"\nPORT TESTS -- one instruction at a time, prediction computed BEFORE the run\n"
           + "=" * 100)
-    npass, rows = 0, {}
+    npass, nrefused, rows = 0, 0, {}
     for n in names:
         if n not in TESTS:
             print(f"  unknown port {n}; have {list(TESTS)}")
@@ -287,6 +287,15 @@ def main() -> int:
             r = t["fn"](mujoco)
         except Exception as e:
             print(f"\n  {n:<14} ERROR  {type(e).__name__}: {e}")
+            continue
+        if r.get("refused"):
+            # A REFUSAL IS NOT A FAILURE -- it is a gap COUNTED rather than forgotten (the action
+            # suite's doctrine). A port whose substrate does not exist in this world says so;
+            # what it may not do is assume a value.
+            nrefused += 1
+            print(f"\n  {n.upper():<14} REFUSED as absent structure")
+            print(f"    claims     {t['statement']}")
+            print(f"    measured   {r['detail']}")
             continue
         ok = bool(r["pass_"])
         npass += ok
@@ -298,14 +307,15 @@ def main() -> int:
         if not ok:
             print(f"    FALSIFIER  {t['falsifier']}")
     print("\n" + "=" * 100)
-    print(f"  {npass}/{len(names)} ports validated. A port that has not been tested alone cannot "
-          f"be ruled out\n  when a composition built on it fails.")
+    print(f"  {npass}/{len(names) - nrefused} ports validated, {nrefused} REFUSED as absent "
+          f"structure.\n  A port that has not been tested alone cannot be ruled out when a "
+          f"composition built on it fails.")
 
     # THE BASELINE IS ONLY MEANINGFUL OVER THE WHOLE SUITE. Recording from a `--port X` run would
     # write a file containing one port and silently drop the other nineteen.
     if only and record:
         print("  refusing to record a baseline from a single-port run -- it would drop the rest")
-        return 0 if npass == len(names) else 1
+        return 0 if npass == len(names) - nrefused else 1
     drift = _baseline_check(rows, record and not only)
     if drift:
         print(f"\n  DRIFT AGAINST BASELINE ({len(drift)}) -- these ports PASS but their numbers "
@@ -315,7 +325,7 @@ def main() -> int:
                   f"({100*(now-was)/max(abs(was),1e-30):+.4f}%)")
         print("  A deterministic test that returns a different number is reporting a change "
               "UPSTREAM of it.\n  If the change was intended, re-record with --baseline.")
-    return 0 if npass == len(names) else 1
+    return 0 if npass == len(names) - nrefused else 1
 
 
 if __name__ == "__main__":

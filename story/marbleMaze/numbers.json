@@ -9,6 +9,7 @@
   "bounce": 0.5,
   "speed_cap": 1.6,
   "extent_m": 2.6,
+  "duration_s": 76.8,
   "marble_r": 0.16,
   "wall_t": 0.05,
   "goal_r": 0.30,
