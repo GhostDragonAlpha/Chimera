@@ -111,6 +111,16 @@ copy, which is why the human is a terminal of this system, not a user of it.
   on this box); **probe-02's VRAM table and workgroup counts REJECTED as
   misparse** (42 GB process entry on a 24.6 GB card; count=3 absurd —
   re-measure issued).
+  **Probe 03 (`agent_logs/freeagent/env_probe_03.md`), the remediation —
+  ACCEPTED:** compute limits real (workGroupCount [2³¹−1, 65535, 65535],
+  size [1024, 1024, 64], invocations 1024, shared 48 KB); **Vulkan SDK
+  1.4.328.1 PRESENT** (glslangValidator + glslc); VRAM instruments
+  disagree HONESTLY — nvidia-smi physical: 0.66 GB free; torch: 23.3 GB
+  free of a 25.8 GB "total" (> physical ⇒ CUDA-on-WDDM counts shared
+  memory in its pool). **Operational law: nvidia-smi PHYSICAL is the
+  number; while the 27B eye is resident the trainer gets ~0.7 GB —
+  training runs either with the model paged out, paged (slow), or
+  shrunk.**
 - **LICENSE LEDGER (freeagent2 probe, 2026-08-28,
   `agent_logs/freeagent2/teddy_license_01.md`):** 5 corpus monkeys CC-BY-4.0
   and OpenIllumination CC BY 4.0 — commercial OK but **attribution REQUIRED:
