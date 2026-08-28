@@ -761,7 +761,14 @@ papers we find.
   Windows (fast referee = an install, not a build); nvdiffrast =
   source build from GitHub, CUDA 12.8 toolkit present; OpenIllumination
   879 GB total but ungated with a download script — take ONE object's
-  OLAT subset (~14 GB); disk fine (~1.4 TB free).**
+  OLAT subset (~14 GB); disk fine (~1.4 TB free). **VERIFIED
+  (`agent_logs/freeagent/verify_01.md`): `cuda_ad_rgb.cp311-win_amd64.pyd`
+  physically in the wheel (zip listing, 45 MB wheel preserved in
+  scratch, NOT installed); OI subset fetch = `--light OLAT --obj_id N`,
+  OLAT/ separate from lighting_patterns/, no gate; per-object size
+  UNVERIFIED (~13.7 GB avg estimate). Frost experiment fully
+  de-risked: referee, optimizer, validation, disk, machine — all
+  measured green.**
 - **PHYSICS PACKET 01 — hy3, `agent_logs/hy3/physics_packet_01.md`
   (audited, ACCEPTED-WITH-AMENDMENTS 2026-08-27).** DEC cotan-Laplacian
   on our dual graph; virtual pipes ported to per-edge signed flux;
