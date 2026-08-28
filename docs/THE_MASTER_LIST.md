@@ -64,8 +64,8 @@ copy, which is why the human is a terminal of this system, not a user of it.
 |---|------|-------|-------------|------|
 | L1 | **The corpus** — 5 license-verified monkeys as watertight per-part contract GLBs | DONE (gate 5/5, `d7a8655e`, `d142f207`) | consumed by L3 | `docs/THE_ARTISTS_SOLID.md` |
 | L2 | **The substrate view** — one-mask skin+bone, engine 1px wireframe + overlay slot | DONE — dyad **NO COMPLAINTS 0.95** (`34938671`) | reference pipeline for every later visual | `docs/THE_ARTISTS_SOLID.md` |
-| L3 | **THE REGISTRY** (Phase 4a) — triangle centers = Cartesian addresses; cube edge DERIVED from max edge-adjacent center distance; dual graph; cube index must reproduce the neighborhood 100% | membrane pre-written, goal paused one step from run | RUN IT — falsifier: any neighbor not found through the 26-cube ring | `docs/THE_ARTISTS_SOLID.md` |
-| L4 | **THE BIRTH RULE** (Phase 4b) — triangle-native wound repair, no voxel rasterization; 8955's 41 boundary loops close, sockets measured OPEN | membrane pre-written | after L3 — falsifier: any true opening closed | same |
+| L3 | **THE REGISTRY** (Phase 4a) — triangle centers = Cartesian addresses; cube edge DERIVED from max edge-adjacent center distance; dual graph; cube index must reproduce the neighborhood 100% | **DONE — PASS 100%/100% agreement+reachability on all 5 contract GLBs** (`994bb4e0`, report `.tmp/monkey_assets/recon/tri_ca_report.json`); derived cube edges span four decades across the corpus (0.0068–0.39 per part) from geometry alone; falsifier never fired | consumed by L5/L6/L7 — the substrate exists | `docs/THE_ARTISTS_SOLID.md` |
+| L4 | **THE BIRTH RULE** (Phase 4b) — triangle-native wound repair, no voxel rasterization; 8955's 41 boundary loops close, sockets measured OPEN | **DONE — literal wording FALSIFIED, occupant-veto derivative PASS** (`994bb4e0`): no separating voting range exists (first socket closes at 0.0074, all wounds need 0.0523; 4/6 sockets die); veto scale = loop's own median edge, measured separation 0.35 vs 3.3; born 2,454, sockets open by vertex-edge identity, ray-parity 0.965/0.955 body + 1.0/1.0 eyes, gate green; dyad 3 rounds NO COMPLAINTS 0.95/0.96 | the repaired bone-addressed mesh now feeds L6; divergence recorded: the far-side vote needed a range the asset says doesn't exist — veto by identity is the derived substitute | same |
 | L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`); falsifier SPECCED by Big Pickle packet, AMENDED by hy3 audit (`agent_logs/hy3/frost_audit_01.md`): 8-D latent/triangle + 3×64 MLP; bar = MEASURED baseline (not a literature floor); ≥32–64 equal-area stratified held-out lights, PSNR reported per AO/polar band; referee SPP ≥8k (else the gate measures Monte-Carlo noise); weight int-quantization for bit-exactness UNVERIFIED | needs L3+L4 (or runs scratch-only on one corpus part); held-out LIGHT is the door; per-triangle field cannot see self-shadowing — AO stratification makes the limit measurable | same |
 | L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`); physics dyad CLOSED (hy3 packet 02 + Big Pickle confirmation audit `physics_audit_02.md`): ring-as-Dirichlet + smooth-ARAP skin CONFIRMED; ν=0.49 openly CHOSEN; per-pair phase bands + hysteresis gait transition CONFIRMED; **T_vol rides to construction as a MEASUREMENT — claimed O(ε²)≈4.8e-4, honest bound 3ε_max≈6.6e-2, decided by measured C_iso over one ROM ARAP solve** | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection; δ integer-quantized for bit-exactness | same |
 | L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`); physics dyad CLOSED (same audit): clamp `clamp(δ,−V_j,+V_i)` with P2+F2 CONFIRMED; celerity √(gd) + subcycled dt CONFIRMED; **C_sw rides to construction as a MEASUREMENT — audit corrected 0.76→≈0.56 (honeycomb λ_max=(3+√6)κ/A), decided by power-iterated λ_max of the actual dual**; R4 one-liner units slip (m/s vs m) → reference-run verification; Alexa–Wardetzky trade named | needs L3's cubes; mass conservation CONFIRMED valence-independent under manifoldness + A_i>0 | same |
@@ -104,10 +104,21 @@ copy, which is why the human is a terminal of this system, not a user of it.
 - **RHYTHM_DRIVE (action) FALSIFIED as stated** — the drive CAN move the
   frequency in this regime; successor theory (cadence + the ligament wall)
   parked for the physics lane.
+- **BET-T2 literal birth-rule wording FALSIFIED by its own predicted
+  falsifier** (`tri_birth_literal.json`): no separating voting range
+  exists on the raw 8955 soup — closing all 35 wounds (r=0.0523) seals
+  4 of 6 eye sockets (first closes at r=0.0074). Wounds-vs-features is
+  not a distance question, exactly as the research annex predicted; the
+  occupant-veto derivative (identity, not distance) earned the PASS.
 - **Substrate-view bugs that were mine, not geometry's:** two-centroid
   overlay misalignment; contaminated dyad reference frame. Both recorded in
   `THE_ARTISTS_SOLID.md` with the lesson: when instrument and eye disagree,
   suspect the display transform first.
+- **Engine presentation bugs QUEUED for the construction crew:** frozen
+  window with the render loop alive at ~800 FPS (present/swapchain stall,
+  not a dead sim — operator closed it, relaunched clean); teardown leaks
+  a VkPipelineLayout + debug messenger on every exit (validation layer
+  fires on each rebuild).
 
 ## 6 · RETIRED / PARKED
 
@@ -121,9 +132,11 @@ copy, which is why the human is a terminal of this system, not a user of it.
 
 ## 7 · THE ATTACK ORDER
 
-1. **L3+L4 — Phase 4** (registry + birth rule): falsifiers pre-written,
-   everything else stands on this.
-2. **L6 — hinge arrays** (the monkey bends its knee; life begins).
+1. ~~L3+L4 — Phase 4~~ **DONE (`994bb4e0`)** — the substrate stands;
+   everything below now builds on it.
+2. **L6 — hinge arrays** (the monkey bends its knee; life begins). NEXT —
+   physics dyad law + three named measurements ride in (C_iso, C_sw,
+   R4 units reference-run).
 3. **L5 — the frost** (the mirror answers light; beauty begins).
 4. **L7 — water** (the world gets a river).
 5. **L8 — the chimera** (the first creature, dyad-judged).
@@ -736,4 +749,8 @@ swap → doctrine: Wolfram frame, Earth gravity canonical, UE excised, island
 retired → appearance messenger + dyad movie fix → SWING/UPRIGHT/RHYTHM_DRIVE
 closed → 10-task swarm (P1–P10) integrated → Phase 0 closed → corpus 5/5 →
 THE ARTIST'S SOLID (CAD-first decree) → substrate view dyad-closed 0.95 →
-build queue BET-F2/J1/W1 specced. Full text: git history of this file.
+build queue BET-F2/J1/W1 specced → research annex 22 rounds saturated →
+frost + physics packets cross-audited to law → **Phase 4 landed
+(`994bb4e0`): registry 100/100 on 5 GLBs, birth rule literal FALSIFIED /
+occupant-veto PASS, dyad NO COMPLAINTS 0.96**. Full text: git history of
+this file.
