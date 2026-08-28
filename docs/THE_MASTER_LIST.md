@@ -888,6 +888,18 @@ papers we find.
   lattice Debye/carrier cutoff (air 343 m/s was the wrong speed);
   Weyl storage estimate must quantify the patch share. hy3 revisions
   issued for all three packets.
+  **REVISIONS DELIVERED + ACCEPTED 2026-08-28:** frost-growth 02
+  (D3 closed — ∇(frost_height) normals via R4 weights, one shared
+  CHOSEN roughness, cluster IDs from min-id; RNG reconciled to per-id
+  partitioned stream; honeycomb D_f baseline experiment added);
+  runtime 02 (V4 honestly renamed "conservative first-order-at-
+  interface" with O(Δt_slow) bound + sub-Q stalling quantified, M from
+  measured budget; float Tier-1b ULP-exact same-GPU; bench = all
+  three kernels, aggregate frame time); sound 02 (S1 closed —
+  D∝K_BOND·t³ ⇒ ω∝t; S5 F3 = global-mode convergence measurement
+  with expected FEM rate; Nyquist from lattice Debye speed; Weyl
+  re-checked with patch share). Confirmation audits queued behind
+  Big Pickle's eye packet.
 - **FUR PACKET 01 — Big Pickle, `agent_logs/bigpickle/fur_packet_01.md`
   (ACCEPTED 2026-08-28):** the chimera's surface. Shells = displaced
   triangle copies bound to the ARAP solve by re-displacement along the
