@@ -101,8 +101,16 @@ copy, which is why the human is a terminal of this system, not a user of it.
   in `.venv-hy3d`; mitsuba 3.9.1+drjit installs clean (dry-run PASS);
   mujoco 3.10 on system python; LM Studio ALIVE serving qwen3.8 27B;
   32 cores, 1.3 TB free. CONTENTION NOTE: the resident 27B model holds
-  ~23 GB VRAM — training jobs schedule around it or shrink. Ground truth
+  ~21.5 GB VRAM (llama-server) + ~1.15 GB engine — training jobs schedule
+  around it or shrink. Ground truth
   no longer needs the llvm-CPU fallback: CUDA/OptiX is the fast referee.
+  **Probe 02 (`agent_logs/freeagent/env_probe_02.md`):** cooperative-vector
+  rev 4, subgroup 32, nvdiffrast ABSENT, torch CUDA confirmed;
+  **Blender MISSING** (winget candidates: Blender 5.2.1 / LTS 4.2.16 /
+  MS Store — install is an operator decision, the R10 artist door is not
+  on this box); **probe-02's VRAM table and workgroup counts REJECTED as
+  misparse** (42 GB process entry on a 24.6 GB card; count=3 absurd —
+  re-measure issued).
 - **LICENSE LEDGER (freeagent2 probe, 2026-08-28,
   `agent_logs/freeagent2/teddy_license_01.md`):** 5 corpus monkeys CC-BY-4.0
   and OpenIllumination CC BY 4.0 — commercial OK but **attribution REQUIRED:
