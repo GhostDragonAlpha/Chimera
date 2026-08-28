@@ -988,5 +988,29 @@ THE ARTIST'S SOLID (CAD-first decree) → substrate view dyad-closed 0.95 →
 build queue BET-F2/J1/W1 specced → research annex 22 rounds saturated →
 frost + physics packets cross-audited to law → **Phase 4 landed
 (`994bb4e0`): registry 100/100 on 5 GLBs, birth rule literal FALSIFIED /
-occupant-veto PASS, dyad NO COMPLAINTS 0.96**. Full text: git history of
-this file.
+occupant-veto PASS, dyad NO COMPLAINTS 0.96** → **L6 torn-leg fix (`90ad2a2e`):
+geodesic sets both knees, TORN-SHEET earned, F1 placebo exposed**. Full text:
+git history of this file.
+
+## 11 · THE MAIN-AGENT METHOD (2026-08-28 — written after the torn-leg fix, binding on main-agent construction work)
+
+How the "unfixable" right leg was actually closed; the sequence any agent
+inherits when the local agents stall. Full version:
+`agent_logs/kimi/leg_fix_01.md` §"The method".
+
+1. **Reproduce from evidence, not testimony** — trace which script staged
+   which set into the view the operator saw; never debug an unsourced render.
+2. **Classify before solving** — colored-set diagnostic at REST (rigid/ring/
+   free/pinned) before believing anything about the dynamics.
+3. **Measure the root cause, name it with numbers** — a cause you can't point
+   at (triangle count, weld-group id, coordinates, spread) isn't a cause.
+4. **Fix with the ratified law, not a patch** — geodesic-on-dual-graph, weld
+   scan over ALL weld groups; extents derived from the working side, never
+   chosen (hop limit H=42 came from the left set, not taste).
+5. **Earn new checks from the failure** — TORN-SHEET + global split-weld-group
+   count exist because this bug taught us what to measure; they gate now.
+6. **Cross-check against known-good** — the new law must reproduce the one
+   working case exactly (left set symmetric diff 0) or the law is wrong.
+7. **Record the honest negatives with the win** — placebo exposed, rest
+   baseline named, model limitation named; verify the render with your own
+   read before claiming; commit with the evidence trail.
