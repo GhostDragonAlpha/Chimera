@@ -167,7 +167,10 @@ copy, which is why the human is a terminal of this system, not a user of it.
   window with the render loop alive at ~800 FPS (present/swapchain stall,
   not a dead sim — operator closed it, relaunched clean); teardown leaks
   a VkPipelineLayout + debug messenger on every exit (validation layer
-  fires on each rebuild).
+  fires on each rebuild); **B3 zero-allocation CRASH (2026-08-28):
+  vkAllocateMemory with allocationSize=0 on an empty upload (zero-triangle
+  mesh or overlay) cascades invalid-memory errors and kills the process —
+  guard: reject/guard empty uploads before allocation.**
 
 ## 6 · RETIRED / PARKED
 
@@ -924,6 +927,40 @@ papers we find.
   effect tagged CHOSEN-UNVERIFIED at our tri sizes; LOD from
   screen-space triangle size; hinge-sweep falsifier: zero shell/skin
   separation at the ring across the full ROM. hy3 audits.
+- **KIMI-SUBAGENT DELIVERABLES (2026-08-28 — the operator's "how far can
+  your own subagents go" test, 3/3 landed, all ACCEPTED):**
+  **TEDDY PACKET 01 (`agent_logs/kimi/teddy_packet_01.md`, 465 lines):**
+  candidate 33ef76f2 NOT on disk (web record only; fitted parts
+  LEGACY-UNMEASURABLE — best on-disk kin teddy_honey.glb chamfer 0.035);
+  **one-mask skeletonization FAILS on plush — falsifier FIRED and
+  standing (164 components vs ≥0.95 bound, 310 rods vs ~15, no σ
+  plateau — morphological, not parametric); lawful substitute = the
+  recorded capsule fit (15 primitives)**; 9 hinge sites measured
+  (plush ROM is belly-contact-limited); CHOSEN-FROM-DERIVED-CANDIDATES
+  formalized (table hash, row, interval); corrections to the record:
+  cad_bear NOT watertight as claimed (pole pinches + exactly 2,400
+  degenerate tris — vertex weld, not birth), teddy_honey = wounded
+  soup (36% boundary edges); C_sw measured (honey 0.0822, cad_bear
+  0.239–0.269); T4 plane rule hardened (recorded head axis = degenerate
+  eigenvector, retired; bilateral witnesses win; mirror-minimization
+  instrument validated exact on cad_bear).
+  **EYE PACKET 01 ×2 — a divergence, recorded:** `agent_logs/kimi/
+  eye_packet_01.md` (PRIMARY — measured the actual sockets first:
+  lip r=0.240/throat r=0.212 at 0.132 depth, brow clearance 0.004 the
+  honest weak point; E1 = registrations of existing triangles; E2 =
+  closed-form Snell remap + caustics via flux conservation ∫(C−1)dA=0;
+  E4 pupil integer-quantized, bands derived) vs
+  `agent_logs/bigpickle/eye_packet_01.md` (ALTERNATE — excludes eyes
+  from frost GT as "tiny high-curved blobs"; kimi packet instead:
+  cornea analytic GT + Mitsuba scene of the registered stack, frost's
+  128/64/SPP-8192 bar inherited). The blind A/B dyad arbitrates the
+  contested choices (η=1.376 both).
+  **ATTRIBUTION DRAFT (`agent_logs/kimi/attribution_draft_01.md`):**
+  all 5 monkeys with authors (muneto_bm, dinesdiabolik, TdoubleU8,
+  saranav, gooseman — CC-BY-4.0 each, per-model URLs) + teddy (CC0) +
+  OpenIllumination + MatSynth BibTeX — the ship-required file drafted;
+  TEDDY BENCH ×3 (hectopod 34.8k CC-BY, sharetextures 14k CC0, Mathias
+  199.7k CC-BY) as backups to the single candidate.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
