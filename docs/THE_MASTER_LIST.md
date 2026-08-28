@@ -811,6 +811,17 @@ papers we find.
   cube-veto, non-conservation, part-seam continuity; shedding stretch
   tagged CHOSEN-UNVERIFIED. Big Pickle audits — the D3 handshake is its
   special hunt.
+- **RUNTIME PACKET 01 — hy3, `agent_logs/hy3/runtime_packet_01.md`
+  (ACCEPTED 2026-08-28):** the substrate's GPU law. SSBO default gated
+  by a falsifiable ≥2× microbenchmark (not the forum anecdote);
+  canonical order (part → triangle index → edge key),
+  subgroup-independent; conserved mass integer (Q/Q_f), floats pinned
+  no-FMA fixed-order; all three kernels atomic-free (2-pass water,
+  min-id DLA claim, Jacobi ARAP); **the fast/slow subcycle seam SOLVED
+  by the integer design itself — antisymmetric δ cancels at any step
+  count**; GGPO-style sync-test against the golden CPU reference gates
+  rendering; probe table: coop-vec frost path, DP4a fallback, mesh
+  shaders OFF by default. Big Pickle audits.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
