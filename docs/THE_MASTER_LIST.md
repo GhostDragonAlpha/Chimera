@@ -201,6 +201,16 @@ the guide for BOTH sides: the prompter writes from it, the builder reads it
 first and runs `python tools/orient.py` second. The operator ratifies,
 steers, and is the human terminal of every dyad.
 
+**ROSTER (2026-08-28, operator report):** the free model supply was cut;
+Big Pickle and hy3 are RETIRED with their service (their packets/audits
+stand — the work is independent of the worker). Active: **CatCoder 2.5**
+(construction lane — inherits Quinn's L6 corrections: F2 ledger fix +
+Stage D closure, both specced) and **Ling 3.0 Flash FIN** (bounded
+verification lane — inherits the 3 confirmation audits of hy3's
+revisions; open-derivation packets (teddy, eye) HELD until it earns them
+on audit quality). Quinn 3.8's fate unconfirmed — if Quinn = CatCoder,
+it already holds its steering.
+
 ## 8 · THE RULES OF THIS PAGE
 
 - This list is a MAP, not evidence: when it disagrees with orient or a run
