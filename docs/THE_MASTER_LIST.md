@@ -753,6 +753,20 @@ papers we find.
   5 disputes adopted into L5 (no packet rewrite needed — design params).
   Physics side: packet 01 → audit → packet 02 (above) → confirmation
   audit, then closed.
+- **WATER PACKET 03 — hy3, `agent_logs/hy3/water_packet_03.md`
+  (ACCEPTED 2026-08-28):** L7 construction membrane, decision-free —
+  recorded in row L7.
+- **GAIT PACKET 01 — hy3, `agent_logs/hy3/gait_packet_01.md`
+  (ACCEPTED 2026-08-28):** the L6-successor membrane. Phase map from
+  the MEASURED ROM literals (L θ_mid=71.22°/θ_amp=73.72°; R 55.60°/
+  59.22° — arithmetic re-verified against THE_ARTISTS_SOLID.md:619);
+  per-pair bands = a reference-run measurement, not a tolerance; load
+  = contact impulse from the deterministic Baumgarte solve with the
+  estimator family picked by a named experiment; ω-sweep [π,4π] with
+  hysteresis + transition-time falsifiers, metamorphic rotate-world,
+  ULP-identical two-seed phase series; energy honesty = bounded
+  mechanical work per stride, COT anchor CHOSEN-UNVERIFIED. Awaits
+  Quinn's hinge to drive; Big Pickle audits next.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
