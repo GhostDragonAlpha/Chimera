@@ -613,3 +613,83 @@ downstream limit, not an attention artifact) — verified by delivery probes.
 5 corpus contract GLBs; the birth rule as worded is FALSIFIED with its own
 numbers, and the derived occupant-veto variant repairs the raw soup with the
 sockets OPEN and the corpus gate green; a dyad with no complaints saw it.
+
+---
+
+## L6 CONSTRUCTION MEMBRANE — BET-J1 THE HINGE ARRAYS (quinn-3.8, 2026-08-27)
+
+Recorded BEFORE any build, per Rule 0. Law: `agent_logs/hy3/physics_packet_02.md`
+(dyad-closed) + confirmation audit `agent_logs/bigpickle/physics_audit_02.md`.
+Substrate input: the repaired birth GLB
+`.tmp/monkey_assets/recon/8955fb5b9c9b4e169456ccbae7c465f7_birth.glb`
+(SALLY_body_0, 34,538 tris, sockets open) + the substrate-pipeline bone rods
+(`.tmp/monkey_assets/recon/8955_bone.glb`, skeleton of the same filled mask).
+
+**Statement.** A joint is not an object; it is a region where the substrate's law
+changes: a designated ring of triangles (a cylindrical band around the flexion
+axis) carries a rigid rotation field, and the surrounding skin is solved by
+smooth ARAP — local SVD rotations + global Poisson solve with a bi-Laplacian
+term on the Laplacian coordinates. The ring's extent, the knee's flexion axis,
+and the ROM limits are all DERIVED from the bone-rod geometry and local mesh
+scale; nothing is placed by taste.
+
+**Prediction.** Bending the repaired 8955 monkey's knee through its derived ROM
+produces a smooth bend: no crease spike at the ring boundary, no self-
+intersection anywhere in the sweep, volume drift inside T_vol.
+
+**Falsifiers (all measurable, none movable after the run):**
+- **F1 — self-intersection count = 0 across the whole sweep**, BVH check per
+  step (AABB tree + exact triangle-pair test; no rtree in this venv).
+- **F2 — volume drift** `|V(θ)−V(0)|/V(0) ≤ T_vol` where `T_vol = C_iso·ε_max²`,
+  `C_iso` MEASURED by this run over one ROM sweep (per-element Jacobian from
+  the SVD residual, ε_max = 0.0219 per the T2 carrier honesty line). The audit
+  left two live numbers: claimed O(ε²) ⇒ ~4.8e-4 if C_iso is O(1); honest first-
+  order bound 3·ε_max ≈ 6.6e-2 if C_iso comes out O(1/ε_max)≈45. **The measured
+  C_iso IS the deliverable** — it decides which of the two bounds is true; this
+  section records whichever fires, and a fired falsifier is recorded failing,
+  never widened.
+- **F3 — derivation audit:** the knee's flexion axis (cross product of the two
+  adjacent bone-segment directions at the joint) and its ROM limits (hard stop =
+  first capsule contact between non-adjacent rods under rotation, per the
+  doctrine "hard stops own the boundary") must be computed from the bone rods,
+  not chosen. The report prints the derivation chain with numbers.
+
+**Openly CHOSEN design constants (stated where used):** ν = 0.49 (near-
+incompressible soft solid; does NOT enter the ARAP solve or T_vol — severed per
+packet R3). The bi-Laplacian weight is set by dimensional analysis to carry no
+free coefficient (recorded in `.tmp/tri_hinge.py`); if a free number appears it
+is named CHOSEN here, not hidden.
+
+**SIDE TASKS (same commit) — two engine bugs, measured:**
+- **B1 presentation freeze.** Statement: the render loop is alive (~800 FPS
+  logged) while the window image freezes; the fault is in the present/
+  swapchain path, not the sim. Prediction: fixing the re-present/swapchain-
+  recreate logic keeps the window image advancing under load. Falsifier:
+  two captures ≥500 ms apart during continuous rendering are pixel-identical
+  while the FPS counter advances → still frozen.
+- **B2 teardown leaks.** Statement: exit leaks a VkPipelineLayout and the debug
+  messenger (validation fires on every rebuild). Prediction: destroying device
+  resources before `vkDestroyDevice` and the messenger with the instance makes
+  exit validation-clean. Falsifier: any validation error/warning at shutdown →
+  not done.
+
+---
+
+**STAGE A+B RESULTS (probe16, 2026-08-28): honest negative — ring-band derivation**
+
+**Stage A PASS** (edge-length invariance under rotation, 1e-6 threshold):
+  Lower-leg triangle set: 944 triangles (probe14 z-cut).
+  Max edge-length drift across full ROM: 2.11e-14 (machine epsilon floor).
+  Rotation field is exact. Axis J/a/ROM are verified F3 inputs.
+
+**Stage B PARTIAL** (ring-band derivation, amber):
+  Derived: r_ring = 5.608 (median knee-skin rho), s range [-0.300, 0.300].
+  Ring-band triangles: 5,882 — but 6 disconnected components (should be 1),
+  and 183 bone-adjacent triangles (should be 0). The ring-band shell is too
+  loose because the axis a ≈ [0.859, -0.065, 0.508] is not aligned with the
+  mesh-local leg column. A rho bound of 5.6 captures the whole body.
+  **Fix direction:** project vertices onto the local leg-column axis (nearest
+  tibia rod direction) and measure radial distance there; r_ring should be
+  O(0.2) (skin thickness), not O(5.6) (body half-width). Stages C–D are
+  blocked on this fix.
+

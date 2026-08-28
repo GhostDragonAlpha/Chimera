@@ -122,13 +122,21 @@ copy, which is why the human is a terminal of this system, not a user of it.
   training runs either with the model paged out, paged (slow), or
   shrunk.**
 - **LICENSE LEDGER (freeagent2 probe, 2026-08-28,
-  `agent_logs/freeagent2/teddy_license_01.md`):** 5 corpus monkeys CC-BY-4.0
-  and OpenIllumination CC BY 4.0 — commercial OK but **attribution REQUIRED:
+  `agent_logs/freeagent2/teddy_license_01.md` + follow-up
+  `license_followup_01.md`):** 5 corpus monkeys CC-BY-4.0
+  and OpenIllumination CC BY 4.0 (credit line: `liu2024openillumination`)
+  — commercial OK but **attribution REQUIRED:
   the game must ship an attribution file** (release requirement, recorded);
-  MatSynth + Hunyuan3D licenses UNVERIFIED (retrieval failed, NOT answered —
-  Hunyuan3D's terms decide whether hy3-generated creatures can ever ship;
-  follow-up issued with exact URLs); cellular-automata-as-mechanic: no IP
-  issue. Teddy candidate: see L8.
+  MatSynth per-material via `metadata.license` (CC0+CC-BY mix; CC0 subset
+  is frost-training-safe); **Hunyuan3D RESOLVED: commercial YES but
+  TERRITORY-EXCLUDES EU/UK/South Korea + >1M MAU triggers a Tencent
+  license; Tencent claims no rights in outputs (§6b) ⇒ doctrine:
+  hy3-generated creatures are RESEARCH/STRESS-TEST ONLY — the shipped
+  chimera builds from license-clean consumed assets (CC0 teddy, CC-BY
+  monkeys)**; cellular-automata-as-mechanic: no IP issue.
+  **Teddy page-confirmed CC0, 94.3k tris / 40.9k verts, author Gabriel
+  Ryan / New Horizon Homes Inc — download needs the operator's Sketchfab
+  login, then qualification (6-view + holes) through the real viewer.**
 
 ## 5 · HONEST NEGATIVES (recorded, never papered)
 
