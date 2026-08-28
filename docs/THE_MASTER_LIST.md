@@ -756,7 +756,12 @@ papers we find.
   neighborhood-context latents; miss >3 dB ⇒ per-triangle premise
   FALSIFIED. No further audit round — the experiment is the arbiter.
   Awaits a construction slot (needs `pip install mitsuba` into
-  `.venv-hy3d`, verified absent).
+  `.venv-hy3d`, verified absent). **Stack probe (`agent_logs/freeagent/frost_stack_01.md`,
+  2026-08-28): mitsuba pip wheel ships `cuda_ad_rgb` PREBUILT on
+  Windows (fast referee = an install, not a build); nvdiffrast =
+  source build from GitHub, CUDA 12.8 toolkit present; OpenIllumination
+  879 GB total but ungated with a download script — take ONE object's
+  OLAT subset (~14 GB); disk fine (~1.4 TB free).**
 - **PHYSICS PACKET 01 — hy3, `agent_logs/hy3/physics_packet_01.md`
   (audited, ACCEPTED-WITH-AMENDMENTS 2026-08-27).** DEC cotan-Laplacian
   on our dual graph; virtual pipes ported to per-edge signed flux;
