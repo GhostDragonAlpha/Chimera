@@ -888,6 +888,20 @@ papers we find.
   lattice Debye/carrier cutoff (air 343 m/s was the wrong speed);
   Weyl storage estimate must quantify the patch share. hy3 revisions
   issued for all three packets.
+- **FUR PACKET 01 — Big Pickle, `agent_logs/bigpickle/fur_packet_01.md`
+  (ACCEPTED 2026-08-28):** the chimera's surface. Shells = displaced
+  triangle copies bound to the ARAP solve by re-displacement along the
+  transformed normal (fur follows the hinge band, never left behind);
+  density = curvature-weighted reaction-diffusion CA grown from the
+  genome (Turk/Staddon line; dyad falsifier: "teddy reads plush,
+  monkey reads monkey"); frost grows on the OUTERMOST shell (cube
+  columns seed it there — fur × frost × light field compose); one
+  shared latent across shells via packet-02 decode; **falsifier:
+  fur that eats the frost's view-dependence (fuzzy lambert) = FAIL —
+  the mirror doctrine survives the pelt**; rim fins derived, visual
+  effect tagged CHOSEN-UNVERIFIED at our tri sizes; LOD from
+  screen-space triangle size; hinge-sweep falsifier: zero shell/skin
+  separation at the ring across the full ROM. hy3 audits.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
