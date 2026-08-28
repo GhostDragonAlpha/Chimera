@@ -69,7 +69,7 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`); falsifier SPECCED by Big Pickle packet, AMENDED by hy3 audit (`agent_logs/hy3/frost_audit_01.md`): 8-D latent/triangle + 3×64 MLP; bar = MEASURED baseline (not a literature floor); ≥32–64 equal-area stratified held-out lights, PSNR reported per AO/polar band; referee SPP ≥8k (else the gate measures Monte-Carlo noise); weight int-quantization for bit-exactness UNVERIFIED | needs L3+L4 (or runs scratch-only on one corpus part); held-out LIGHT is the door; per-triangle field cannot see self-shadowing — AO stratification makes the limit measurable | same |
 | L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`); physics dyad CLOSED (hy3 packet 02 + Big Pickle confirmation audit `physics_audit_02.md`): ring-as-Dirichlet + smooth-ARAP skin CONFIRMED; ν=0.49 openly CHOSEN; per-pair phase bands + hysteresis gait transition CONFIRMED; **T_vol rides to construction as a MEASUREMENT — claimed O(ε²)≈4.8e-4, honest bound 3ε_max≈6.6e-2, decided by measured C_iso over one ROM ARAP solve** | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection; δ integer-quantized for bit-exactness | same |
 | L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`); physics dyad CLOSED; **all three named measurements LANDED on the real 37 corpus parts** (`agent_logs/hy3/water_measure_01.md`, data `.tmp/hy3_water/`): C_sw MEASURED per part ∈ [0.047, 0.493], median 0.18 — audit's 0.56 eigenvalue correction confirmed, but 0.56 AND 0.76 both died to data (irregularity, not just slivers, drives it down; per-part values mandatory); slivers real (lmin/med down to 0.022, 4 parts throttle 15–45×) ⇒ BUILD SUBCYCLING with per-part C_local; integer quantum Q=A_min·L_part, corrected leapfrog verified on a 2-triangle dual (drift 3.3e-15, clamp load-bearing, bit-constant ΣV) | needs L3's cubes (exists); **construction-ready AND decision-free** — membrane written (`agent_logs/hy3/water_packet_03.md`, ACCEPTED): test case SALLY_body_0 with its measured C_sw=0.07121/Q=5.1e-9, mass drift falsified bit-exact, level tolerance traced to Q, metamorphic downhill-on-rotate, canonical edge order for bit-identity; CHOSEN-UNVERIFIED (α, ΔT, g, H, S, C_AW) each name their experiment; queued behind L6 per attack order | same |
-| L8 | **THE FIRST CHIMERA** — teddy-bear / monkey 50-50 split down the midline | pipeline proven at dyad 0.65 with a procedural stand-in (P9, `41893558`); **CHIMERA PACKET 01 ACCEPTED 2026-08-28** (`agent_logs/bigpickle/chimera_packet_01.md`): seam = dual-graph edge-cut on DERIVED sagittal planes (teddy x=0.0358, NOT x=0 — P9 cut the shoulder; monkey δ = first experiment); identity = discrete per-triangle scalar (Stovold Model B), blend in perception weights only; occupant-veto classifies the fused seam as OPENING (genomes can't birth into each other); mass-balance may DERIVE split ratio x* over the 50-50 decree | the creature the whole stack points at; hy3 audit queued; honest gaps: monkey δ, kernel R (needs L6), latent blend compatibility | `docs/THE_MASTER_LIST.md` §heritage |
+| L8 | **THE FIRST CHIMERA** — teddy-bear / monkey 50-50 split down the midline | pipeline proven at dyad 0.65 with a procedural stand-in (P9, `41893558`); **CHIMERA PACKET 01 ACCEPTED 2026-08-28** (`agent_logs/bigpickle/chimera_packet_01.md`): seam = dual-graph edge-cut on DERIVED sagittal planes (teddy x=0.0358, NOT x=0 — P9 cut the shoulder; monkey δ = first experiment); identity = discrete per-triangle scalar (Stovold Model B), blend in perception weights only; occupant-veto classifies the fused seam as OPENING (genomes can't birth into each other); mass-balance may DERIVE split ratio x* over the 50-50 decree. **TEDDY CANDIDATE FOUND (freeagent2, 2026-08-28):** Sketchfab UID `33ef76f2cd5d43aa9fea7779ea8041ce`, CC0, 94k tris, plush silhouette — CANDIDATE ONLY, must pass the same 6-view + hole + topology qualification the monkeys passed before it enters the corpus | the creature the whole stack points at; hy3 audit queued; honest gaps: monkey δ, kernel R (needs L6), latent blend compatibility | `docs/THE_MASTER_LIST.md` §heritage |
 | L9 | **THE GAME** | the artifact of value | arrives when L1–L8 produce a world | — |
 
 ## 4 · LANDED FOUNDATIONS (verified — do not redo)
@@ -94,9 +94,32 @@ copy, which is why the human is a terminal of this system, not a user of it.
   another body), hard stops own the boundary, ligaments arrest the approach.
 - **The dyad machinery:** LM Studio resident vision judge (adopt-never-pin),
   settle-capture fix (movies are real movies), `senses.watch` orbit protocol.
+- **THE MACHINE, probed 2026-08-28 (`agent_logs/freeagent/env_probe_01.md`):**
+  RTX 4090 24 GB (driver 610.47, Vulkan 1.4.341); **all three frost-relevant
+  extensions PRESENT — VK_NV_cooperative_vector (2–4× decode path), DP4a
+  (deterministic fallback), VK_EXT_mesh_shader**; torch 2.5.1+cu124 CUDA-ON
+  in `.venv-hy3d`; mitsuba 3.9.1+drjit installs clean (dry-run PASS);
+  mujoco 3.10 on system python; LM Studio ALIVE serving qwen3.8 27B;
+  32 cores, 1.3 TB free. CONTENTION NOTE: the resident 27B model holds
+  ~23 GB VRAM — training jobs schedule around it or shrink. Ground truth
+  no longer needs the llvm-CPU fallback: CUDA/OptiX is the fast referee.
+- **LICENSE LEDGER (freeagent2 probe, 2026-08-28,
+  `agent_logs/freeagent2/teddy_license_01.md`):** 5 corpus monkeys CC-BY-4.0
+  and OpenIllumination CC BY 4.0 — commercial OK but **attribution REQUIRED:
+  the game must ship an attribution file** (release requirement, recorded);
+  MatSynth + Hunyuan3D licenses UNVERIFIED (retrieval failed, NOT answered —
+  Hunyuan3D's terms decide whether hy3-generated creatures can ever ship;
+  follow-up issued with exact URLs); cellular-automata-as-mechanic: no IP
+  issue. Teddy candidate: see L8.
 
 ## 5 · HONEST NEGATIVES (recorded, never papered)
 
+- **Real primate mocap does not exist publicly** (free-agent probe
+  2026-08-28): every open "monkey/gorilla" clip (CMU subjects 28/80/120)
+  is a HUMAN actor pantomiming. The CPG-derived gait was already the
+  doctrinal route — it is now the ONLY route, and the dyad + the gait
+  packet's phase/energy falsifiers are the only gait judges we will
+  ever have. No mocap reference will bail us out.
 - **T13 SFC octree FALSIFIED** — structurally valid, 24× less accurate than
   the adaptive referee and slower; not a drop-in (`gate_octree_sfc.json`).
 - **B2-A prange octree FALSIFIED 0.93×** — threads engaged, still no win;
