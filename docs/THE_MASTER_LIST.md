@@ -67,8 +67,8 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | L3 | **THE REGISTRY** (Phase 4a) — triangle centers = Cartesian addresses; cube edge DERIVED from max edge-adjacent center distance; dual graph; cube index must reproduce the neighborhood 100% | membrane pre-written, goal paused one step from run | RUN IT — falsifier: any neighbor not found through the 26-cube ring | `docs/THE_ARTISTS_SOLID.md` |
 | L4 | **THE BIRTH RULE** (Phase 4b) — triangle-native wound repair, no voxel rasterization; 8955's 41 boundary loops close, sockets measured OPEN | membrane pre-written | after L3 — falsifier: any true opening closed | same |
 | L5 | **THE FROST** (BET-F2) — distilled relighting on the substrate | specced (`8b36e2b6`); falsifier SPECCED by Big Pickle packet, AMENDED by hy3 audit (`agent_logs/hy3/frost_audit_01.md`): 8-D latent/triangle + 3×64 MLP; bar = MEASURED baseline (not a literature floor); ≥32–64 equal-area stratified held-out lights, PSNR reported per AO/polar band; referee SPP ≥8k (else the gate measures Monte-Carlo noise); weight int-quantization for bit-exactness UNVERIFIED | needs L3+L4 (or runs scratch-only on one corpus part); held-out LIGHT is the door; per-triangle field cannot see self-shadowing — AO stratification makes the limit measurable | same |
-| L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`); physics packet 02 by hy3 (`agent_logs/hy3/physics_packet_02.md`) — revisions ADOPTED: ring-as-Dirichlet + smooth-ARAP skin; T_vol=O(ε²)≈4.8e-4 via the Jacobian argument ((1−2ν)ε withdrawn); ν=0.49 openly CHOSEN design constant; per-joint-PAIR phase bands replace the ill-posed global std; gait transition = hysteresis width + τ_trans | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection; pending one confirmation audit, then disputes become experiments | same |
-| L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`); physics packet 02 by hy3 — revisions ADOPTED: clamp corrected `clamp(δ,−V_j,+V_i)` with P2+F2 proven together; CFL re-derived on gravity celerity c=√(gd) with local subcycled dt (0.76·l/c regular-mesh; irregular C_sw measured from dual-graph λ_max); integer volumes + pinned float schedule for determinism; Alexa–Wardetzky named — positivity kept, linear-exactness surrendered with O(h·μ) hydrostatic bias | needs L3's cubes; mass conservation CONFIRMED valence-independent under manifoldness + A_i>0 preconditions | same |
+| L6 | **HINGE ARRAYS** (BET-J1) — CA-state joints, derived flexion axes | specced (`8b36e2b6`); physics dyad CLOSED (hy3 packet 02 + Big Pickle confirmation audit `physics_audit_02.md`): ring-as-Dirichlet + smooth-ARAP skin CONFIRMED; ν=0.49 openly CHOSEN; per-pair phase bands + hysteresis gait transition CONFIRMED; **T_vol rides to construction as a MEASUREMENT — claimed O(ε²)≈4.8e-4, honest bound 3ε_max≈6.6e-2, decided by measured C_iso over one ROM ARAP solve** | needs the repaired bone-addressed mesh; monkey knee 0→140°, zero self-intersection; δ integer-quantized for bit-exactness | same |
+| L7 | **WATER** (BET-W1) — river on the cube scaffolding | specced (`8b36e2b6`); physics dyad CLOSED (same audit): clamp `clamp(δ,−V_j,+V_i)` with P2+F2 CONFIRMED; celerity √(gd) + subcycled dt CONFIRMED; **C_sw rides to construction as a MEASUREMENT — audit corrected 0.76→≈0.56 (honeycomb λ_max=(3+√6)κ/A), decided by power-iterated λ_max of the actual dual**; R4 one-liner units slip (m/s vs m) → reference-run verification; Alexa–Wardetzky trade named | needs L3's cubes; mass conservation CONFIRMED valence-independent under manifoldness + A_i>0 | same |
 | L8 | **THE FIRST CHIMERA** — teddy-bear / monkey 50-50 split down the midline | pipeline proven at dyad 0.65 with a procedural stand-in (P9, `41893558`); real creature awaits the substrate | the creature the whole stack points at | `docs/THE_MASTER_LIST.md` §heritage |
 | L9 | **THE GAME** | the artifact of value | arrives when L1–L8 produce a world | — |
 
@@ -708,6 +708,18 @@ papers we find.
   formulas fixed; R5 per-pair phase lag bands + hysteresis-width gait
   transition. Awaits one confirmation audit; the audit loop TERMINATES
   when remaining disputes are experiments, not proofs.
+  **PHYSICS DYAD CLOSED — Big Pickle confirmation audit
+  (`agent_logs/bigpickle/physics_audit_02.md`), 2026-08-27:** C1 clamp
+  CONFIRMED (caveat: δ must be integer-quantized with integer V);
+  C4 dual trade + C5 gait falsifiers CONFIRMED (R4 one-liner has a
+  units slip, m/s vs m → reference-run verification); C2 CFL prefactor
+  CORRECTED 0.76→≈0.56 (honeycomb λ_max=(3+√6)κ/A≈5.45κ/A, not 3κ/A) —
+  DISPUTED-WITH-EXPERIMENT, decided by power-iterated λ_max of the
+  actual dual; C3 T_vol mechanism right but tr(ε)=O(ε²) was asserted —
+  honest bound 3ε_max≈6.6e-2 vs claimed 4.8e-4 —
+  DISPUTED-WITH-EXPERIMENT, decided by measured C_iso over one ROM ARAP
+  solve. No new proof-level FATAL; the loop closed per its own rule,
+  and three named measurements ride into the L6/L7 construction prompts.
 - **Cross-audit PROTOCOL:** each packet's author audits the other's work
   adversarially; disagreements get measured, not argued. Frost side:
   5 disputes adopted into L5 (no packet rewrite needed — design params).
