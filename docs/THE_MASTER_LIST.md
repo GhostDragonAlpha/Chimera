@@ -767,6 +767,19 @@ papers we find.
   ULP-identical two-seed phase series; energy honesty = bounded
   mechanical work per stride, COT anchor CHOSEN-UNVERIFIED. Awaits
   Quinn's hinge to drive; Big Pickle audits next.
+- **FROST-GROWTH PACKET 01 — hy3, `agent_logs/hy3/frost_growth_packet_01.md`
+  (ACCEPTED 2026-08-28):** the frost's GROWTH half (L5 split: Big Pickle
+  owns the light answer, hy3 owns the rule). DLA walkers diffuse on the
+  triangle dual graph via the SAME R4 conductance Laplacian as water
+  (one Laplacian, not two); stick p=1 (DLA; <1 = DBM — harmonic-measure
+  limit honestly stated); seeded xoshiro256** + fixed-point thresholds ⇒
+  bit-identical; frost lives in the cube column above each triangle and
+  writes {frost_coverage, frost_height, frost_blend} into the triangle
+  row — the interface to Big Pickle's light half; integer-exact
+  conservation Q_f=A_min·e_cube; falsifiers = D_f literature band,
+  cube-veto, non-conservation, part-seam continuity; shedding stretch
+  tagged CHOSEN-UNVERIFIED. Big Pickle audits — the D3 handshake is its
+  special hunt.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 
