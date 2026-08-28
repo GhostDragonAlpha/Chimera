@@ -912,7 +912,14 @@ papers we find.
   D∝K_BOND·t³ ⇒ ω∝t; S5 F3 = global-mode convergence measurement
   with expected FEM rate; Nyquist from lattice Debye speed; Weyl
   re-checked with patch share). Confirmation audits queued behind
-  Big Pickle's eye packet.
+  Big Pickle's eye packet. **LING CONFIRMATION AUDITS
+  (`agent_logs/ling/confirm_audits_01.md`, 2026-08-28): all three
+  pairs CONFIRMED, zero FATALs — the frost-growth/runtime/sound
+  revision cycles are CLOSED.** Ling's own catch recorded: the sound
+  audit's 14 kHz Nyquist cited l_scale_med=0.012259 but the real JSON
+  says 0.04835 — the audit was wrong, the revision's Debye approach
+  right; a Flash-class model catching a heavyweight's misread
+  validates the bounded-verification lane.
 - **FUR PACKET 01 — Big Pickle, `agent_logs/bigpickle/fur_packet_01.md`
   (ACCEPTED 2026-08-28):** the chimera's surface. Shells = displaced
   triangle copies bound to the ARAP solve by re-displacement along the
