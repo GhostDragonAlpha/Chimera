@@ -94,6 +94,12 @@ copy, which is why the human is a terminal of this system, not a user of it.
   another body), hard stops own the boundary, ligaments arrest the approach.
 - **The dyad machinery:** LM Studio resident vision judge (adopt-never-pin),
   settle-capture fix (movies are real movies), `senses.watch` orbit protocol.
+  **The operator's web viewer (2026-08-28, `.tmp/webviewer/`):** three.js
+  orbit viewer + live `/engine_frame` pane on http://localhost:8088/
+  (server: `.venv-hy3d/Scripts/python.exe .tmp/webviewer/server.py`;
+  vendored three.js r170, offline-capable; self-tested screenshot shows
+  the repaired monkey, 36,630 tris). The native Vulkan window is no
+  longer the development viewport.
 - **THE MACHINE, probed 2026-08-28 (`agent_logs/freeagent/env_probe_01.md`):**
   RTX 4090 24 GB (driver 610.47, Vulkan 1.4.341); **all three frost-relevant
   extensions PRESENT — VK_NV_cooperative_vector (2–4× decode path), DP4a
