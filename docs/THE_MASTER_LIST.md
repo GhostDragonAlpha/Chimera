@@ -693,6 +693,21 @@ papers we find.
   ~27–30 dB noise floor = the bar itself — as specced the falsifier
   measured Monte-Carlo error, not the model (fix: SPP ≥8k, integrator
   pinned).** Doctrinal intent CONFIRMED; experiment design amended.
+  **FROST PACKET 02 (`agent_logs/bigpickle/frost_packet_02.md`) —
+  ACCEPTED 2026-08-27, experiment now decision-free:** SPP=8192 derived
+  (10·log₁₀(SPP)≈39 dB ceiling, >10 dB over the expected baseline);
+  integrator pinned path+RR, `direct` quarantined; Fibonacci-sphere 128
+  train + 64 held-out lights with an 8° separation gate; AO = 1024
+  rays/triangle (binomial-std derivation), ε=1e-4·D, pass cursor = the
+  OCCLUDED band only; bar = measured baseline B0_occl (prediction
+  B0∈[29,35] tagged as prediction); weight-int-quantization cost X=1.0
+  dB openly labeled a policy anchor inside the proven 0–3 bound;
+  OpenIllumination validated separately, DiLiGenT EXCLUDED on license.
+  Dispatch table: PASS ⇒ engine integration; miss ≤3 dB ⇒ dual-graph
+  neighborhood-context latents; miss >3 dB ⇒ per-triangle premise
+  FALSIFIED. No further audit round — the experiment is the arbiter.
+  Awaits a construction slot (needs `pip install mitsuba` into
+  `.venv-hy3d`, verified absent).
 - **PHYSICS PACKET 01 — hy3, `agent_logs/hy3/physics_packet_01.md`
   (audited, ACCEPTED-WITH-AMENDMENTS 2026-08-27).** DEC cotan-Laplacian
   on our dual graph; virtual pipes ported to per-edge signed flux;
