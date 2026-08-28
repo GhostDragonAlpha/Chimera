@@ -857,6 +857,30 @@ papers we find.
   synthesis, ~1.2 GB; monopole Rayleigh transfer; falsifiers = pitch
   band, Weyl mode-count bound, and the refinement-chirp (modes must
   converge under 2× refinement — discretization-agnostic or FAIL).
+- **BIG PICKLE AUDITS ×3 (2026-08-28, all ADOPTED with one downgrade):**
+  **frost-growth audit (`bigpickle/frost_growth_audit_01.md`) — D3
+  handshake FATAL ADOPTED:** {coverage,height,blend} starves the light
+  half; the lawful fix is DERIVATION, not more fields — normal
+  perturbation = ∇(frost_height) on the dual graph, ONE shared frost
+  material (snow is optically uniform), cluster IDs from the runtime's
+  min-id claim scheme; RNG model disagreement between packets must
+  reconcile to the runtime's per-id partitioned stream; D_f band gets
+  a honeycomb-baseline validation experiment. **Runtime audit
+  (`runtime_audit_01.md`) — 3 DISPUTED ADOPTED:** V4 is
+  conserved-but-WRONG at the time-lagged interface (O(Δt_slow) error +
+  sub-Q stalling — quantify vs sync interval M); the sync-test has a
+  FLOAT blind spot (integer checksums pass sub-ULP ARAP ordering bugs —
+  add a float-state tier); the SSBO bench must cover all three kernels
+  on aggregate frame time. **Sound audit (`sound_audit_01.md`) — S1
+  FATAL ADOPTED** (t-free bending + t-mass ⇒ ω∝t^(−1/2), backwards
+  plate physics; re-derive D∝t³); **S5 F3 DOWNGRADED to
+  DISPUTED-WITH-EXPERIMENT** — the audit's scaling argument is
+  element-level (k∝1/A₀, M∝A); what matters is GLOBAL-mode convergence
+  under refinement, which IS the packet's own F3 — the measurement
+  arbitrates, not either mind's prose; Nyquist re-derived from the
+  lattice Debye/carrier cutoff (air 343 m/s was the wrong speed);
+  Weyl storage estimate must quantify the patch share. hy3 revisions
+  issued for all three packets.
 
 ## 10 · HERITAGE LEDGER (the 32 continuations, compressed)
 

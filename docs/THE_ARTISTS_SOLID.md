@@ -693,3 +693,28 @@ is named CHOSEN here, not hidden.
   O(0.2) (skin thickness), not O(5.6) (body half-width). Stages C–D are
   blocked on this fix.
 
+**Stage B fix (probe17, 2026-08-28):** Green — ring-band re-derived as a
+  SHELL around the LEG COLUMN (not a cylinder about the global flexion axis a).
+  - Leg-column axis: normalize(tibia_dir + femur_dir) at J = [0.14, 0.99, -0.04]
+  - Shell coords: s = signed distance along leg column; rho = perpendicular
+    distance from leg-column axis
+  - r_ring: MEASURED from skin rho histogram in knee window. Bins
+    [0.1,0.15,0.2,0.25,0.3,0.4,0.6,0.8,1.0,1.5] → counts [11,34,30,23,2,gap,
+    10,32,48]. 98% of skin at rho < 0.3; natural cutoff at 0.3 (gap
+    0.3-0.6, arm mass >0.6). rho_shell = 0.3, inner bound = r_rod = 0.0564.
+  - ACCEPTANCE: 1 component ✓; 0 bone-adjacent ✓; s spans J with margin
+    (0.943 below, 0.943 above) ✓; 474 ring triangles.
+  - rho range [0.061, 0.299] — skin shell thickness ≈ 4× median edge length,
+    physically reasonable.
+
+**tri_hinge.py line-154 broadcasting bug (honest negative):**
+  What: `perp = V[F] - J - np.outer(s, a)` — shapes (36630,3,3) and
+  (36630,3) won't broadcast because V[F] is (M,3,3) (triangle vertices) but
+  J is (3,) and the subtraction must be on triangle CENTROIDS, not vertices.
+  Why: build_ring_mask indexes V[F] (per-triangle vertices) but computes
+  s = (cent - J)·a from centroids on the previous line; the perp subtraction
+  must use the centroid (M,3), not V[F] (M,3,3). Fix: use cent in the
+  subtraction, not V[F]. This bug was caught by a real ValueError
+  (not a silent wrong result) — it is the kind of error the doctrine
+  rewards: found before shipping a fabricated result.
+
