@@ -5,11 +5,39 @@
       "options": {
         "baseURL": "http://localhost:1234/v1/",
         "apiKey": "not-needed"
+      },
+      "models": {
+        "dirk-qwen3.8-27b@q5_k_xl": {
+          "name": "Qwen3.8 27B (q5_k_xl)",
+          "tool_call": true,
+          "attachment": true,
+          "modalities": { "input": ["text", "image", "audio", "video"], "output": ["text"] },
+          "limit": { "context": 40960, "output": 8192 }
+        },
+        "dirk-qwen3.8-27b@q4_k_s": {
+          "name": "Qwen3.8 27B (q4_k_s)",
+          "tool_call": true,
+          "attachment": true,
+          "modalities": { "input": ["text", "image", "audio", "video"], "output": ["text"] },
+          "limit": { "context": 40960, "output": 8192 }
+        },
+        "dirk-qwen3.8-27b@iq4_xs": {
+          "name": "Qwen3.8 27B (iq4_xs)",
+          "tool_call": true,
+          "attachment": true,
+          "modalities": { "input": ["text", "image", "audio", "video"], "output": ["text"] },
+          "limit": { "context": 40960, "output": 8192 }
+        },
+        "kwaipilot_kat-coder-v2.5-dev": {
+          "name": "Kwaipilot Kat Coder v2.5 (dev)",
+          "tool_call": true,
+          "limit": { "context": 32768, "output": 8192 }
+        }
       }
     }
   },
-  "model": "openai/qwen-agentworld-35b-a3b-mtp-apex",
-  "small_model": "openai/qwen-agentworld-35b-a3b-mtp-apex",
+  "model": "openai/dirk-qwen3.8-27b@q5_k_xl",
+  "small_model": "openai/dirk-qwen3.8-27b@q4_k_s",
   "permission": {
     "edit": "allow",
     "bash": "allow",

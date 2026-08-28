@@ -1,4 +1,4 @@
-# The Herald — 2026-08-27
+# The Herald — 2026-08-28
 
 **Progress:** the nightly checks ran; trust is accumulating quietly, nothing graduated yet.
 **Broken:** nothing the checks can see.
