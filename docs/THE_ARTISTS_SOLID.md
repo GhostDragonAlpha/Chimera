@@ -533,3 +533,83 @@ scroll INSIDE the mesh (min radius 1.0 vs sphere 7.6) where the near plane
 slices whatever it touches. The floor is now measured at upload from the
 vertex data itself (max |v| about the target) — zoom stops at 1.02x the
 bounding sphere, so no part can ever be deleted by the near plane again.
+
+---
+
+## PHASE 4 MEASURED — the triangle-substrate membranes (2026-08-27)
+
+Order of attack from the build queue: registry + birth rule first. Both ran
+against operator-defined gates only; no number was chosen (Rule 1). Every
+threshold below is derived from the asset or inherited from the corpus gate.
+Machine-readable reports sit beside the GLBs; this is the human ledger.
+
+**BET-T1 (the registry / the address law) — measured on all 5 contract GLBs:
+PASS, 100% / 100%.** `.tmp/tri_ca.py`, report
+`.tmp/monkey_assets/recon/tri_ca_report.json` (102 s). Each triangle center is
+its Cartesian address; the cube edge is DERIVED as the maximum center-to-center
+distance over edge-adjacent pairs within a part — a generating function of the
+mesh, not a chosen pitch — and the dual graph links shared-edge triangles. The
+26-cube ring then reproduces the dual graph EXACTLY: neighbor agreement 100%
+and reachability 100% for every part of every GLB, with zero boundary edges
+(perfectly closed dual graphs). Corpus spreads, all derived, per part:
+1534c1b (2 parts, 5,274,694 tris, cube edge 0.0780/0.0793); 22d16268 (22 parts,
+62,182 tris, 0.3717–0.3912); 8955fb (2 parts, 409,218 tris, 0.0199/0.0199);
+9906e (9 parts, 227,934 tris, 0.0068–0.0072); f4783 (2 parts, 39,444 tris,
+0.0159/0.0167). The law derives a four-decade span of cube edges across the
+corpus from geometry alone. Corpus gate (gate_summary.json): all 5
+`_solid_smooth` PASS — the retained duplicates of the RAW capped soups the
+staging shuffled out (corpus_summary.json: every raw staged part FAIL or
+SUB-LAW).
+
+**BET-T2 (the birth rule) — measured on the raw UNCAPNED soup
+`raw/8955fb5...glb` (41 body boundary loops: 35 seam wounds + 6 open eye
+sockets; eyes mesh carries its own 2 rim wounds). Two membranes were
+measured, one passed.**
+
+1. **Literal wording — FALSIFIED, the falsifier the rule itself predicted.**
+   `.tmp/tri_birth_literal.py` (report `tri_birth_literal.json`,
+   K=1000 far-side votes): NO separating voting range exists. The range that
+   closes all 35 wounds (`r_all_wounds_closed` 0.0523) also closes 4 of the 6
+   sockets; the first socket closes at `r_first_opening_closed` 0.0074
+   (`separating_range_exists=false`, `openings_closed_at_r_all_wounds=4/6`).
+   The vocal membrane as worded CANNOT close the seams without sealing the
+   sockets — it would have to manufacture a range, and no range that exists
+   does the job. Eyes part: vacuous PASS (falsifier names no opening).
+
+2. **Occupant-veto implementation — PASS, gate probes green.** `.tmp/tri_birth.py`
+   (report `tri_birth_report.json`, 1.6 s). Discriminator: other-part matter
+   within ONE local scale (scale = the loop's own median edge length) vetoes
+   the birth. Threshold derived from the asset; measured separation on this
+   mesh: openings `d_other/scale <= 0.35`, wounds `>= 3.3` — an order of
+   magnitude apart. Every wound closed by advancing apex birth (no vertex
+   moved, none invented); every opening verified STILL OPEN after birth by
+   vertex-edge identity, not by count. SALLY_body_0: loops 41 -> 6, boundary
+   edges 2672 -> 192 (the 192 = exactly the 6 socket loops, 32 edges each),
+   wounds 35, openings 6, born 2410, sockets_open=true. SALLY_EYES_0: loops
+   2 -> 0, boundary edges 48 -> 0, born 44, watertight after births. Gate
+   probes, bit-identical closure of `.tmp/gate_corpus.py` (load_glb_triangles
+   parse + inside_mask ray parity, seed 7, eps = ext*1e-3): eyes 1.0/1.0
+   inside/outside (watertight); body 0.965/0.955 (essentially watertight —
+   watertightness reported as a MEASUREMENT, not a pass input: sockets OPEN
+   is the requirement, a hermetically sealed body would be the failure).
+   gate_pass=true against the corpus 0.95 bar.
+
+**Mechanism divergence, recorded as the rule demands (not hidden):** the
+canonical BET-T2 wording ("the far side votes") would require a voting RANGE,
+which is a chosen number the asset says does not exist. Occupant veto is the
+derived substitute. The dyad judged the RESULT visually, not the wording.
+
+**DYAD (2026-08-27, three rounds, engine port 8090):** repaired birth GLB as
+main fill + exactly the 2,454 born triangles (44 eyes + 2410 body) as a red
+wireframe overlay + raw-soup reference frames, one full 6-frame orbit at camera
+R = 15.87 = 2.7x the measured extent (5.879). Round 1: alignment 0.85, two
+uncertain complaints (pose + hairline slits; the eye received only 4 of 8
+frames that round). Round 2: **NO COMPLAINTS**, 0.95. Round 3: **NO COMPLAINTS**,
+0.96. The final repaired view was left live in the operator's window. Caveat
+recorded: the vision pipeline delivers about half of the frames sent (a
+downstream limit, not an attention artifact) — verified by delivery probes.
+
+**Phase 4 clocks out:** the substrate is a closed, reachable dual graph on all
+5 corpus contract GLBs; the birth rule as worded is FALSIFIED with its own
+numbers, and the derived occupant-veto variant repairs the raw soup with the
+sockets OPEN and the corpus gate green; a dyad with no complaints saw it.
