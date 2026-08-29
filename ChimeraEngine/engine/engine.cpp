@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <atomic>
 
 // ── Minimal GLFW-free Win32 window helpers ─────────────────────────────────────────────
 
@@ -30,6 +31,11 @@ static bool       g_mouse_captured = false;
 static int        g_last_mx = 0, g_last_my = 0;
 static bool       g_keys[256] = {};     // current frame key state
 static Engine*    g_key_engine = nullptr;  // set in Engine::init so WndProc can reach pose toggles
+// B1: WndProc records a pending window resize; frame() consumes it and rebuilds the
+// swapchain. Before this, WM_SIZE was never handled — resize() was dead code, and the
+// first OUT_OF_DATE froze the window forever while the loop kept logging FPS.
+static std::atomic<uint32_t> g_pending_resize_w{0};
+static std::atomic<uint32_t> g_pending_resize_h{0};
 // Bounding-sphere radius of the posted triangle mesh, measured at upload.
 // The zoom floor: below 1.02x this radius the eye enters the mesh and the
 // near plane SLICES it (operator report: "the nose and one hand are severed
@@ -75,6 +81,14 @@ static void update_camera_input(CameraState& cam, float dt) {
 static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     if (msg == WM_CLOSE)  { DestroyWindow(hwnd); return 0; }
     if (msg == WM_DESTROY){ PostQuitMessage(0); return 0; }
+
+    // B1: tell the render thread the window size changed (0x0 = minimized; frame()
+    // skips the rebuild until a real extent arrives).
+    if (msg == WM_SIZE) {
+        g_pending_resize_w.store((uint32_t)LOWORD(lp));
+        g_pending_resize_h.store((uint32_t)HIWORD(lp));
+        return 0;
+    }
 
     // Track key state for frame-by-frame polling
     if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN) {
@@ -1073,6 +1087,14 @@ bool Engine::create_triangle_pipeline() {
 bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                        uint32_t vcount, uint32_t icount) {
     vkDeviceWaitIdle(device_);
+    // B3: an empty POST clears the mesh slot (was: 0-byte buffer -> NULL-handle crash).
+    if (verts.empty() || indices.empty() || icount == 0) {
+        upload_buffer(nullptr, 0, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, tri_vbuf_, tri_vmem_);
+        upload_buffer(nullptr, 0, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
+        tri_idx_count_ = 0;
+        has_mesh_ = false;
+        return true;
+    }
     upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
                   VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, tri_vbuf_, tri_vmem_);
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
@@ -1095,6 +1117,15 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                           uint32_t vcount, uint32_t icount) {
     vkDeviceWaitIdle(device_);
+    // B3: an empty POST clears the overlay slot (stage scripts use it to clear the
+    // wireframe; was: 0-byte buffer -> NULL-handle crash).
+    if (verts.empty() || indices.empty() || icount == 0) {
+        upload_buffer(nullptr, 0, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, ov_vbuf_, ov_vmem_);
+        upload_buffer(nullptr, 0, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, ov_ibuf_, ov_imem_);
+        ov_idx_count_ = 0;
+        has_overlay_ = false;
+        return true;
+    }
     upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
                   VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, ov_vbuf_, ov_vmem_);
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
@@ -1805,6 +1836,9 @@ void Engine::destroy_sort_resources() {
 void Engine::upload_buffer(const void* data, VkDeviceSize size, VkBufferUsageFlags usage,
                            VkBuffer& buf, VkDeviceMemory& mem) {
     if (buf) { vkDestroyBuffer(device_, buf, nullptr); vkFreeMemory(device_, mem, nullptr); buf = VK_NULL_HANDLE; }
+    // B3: an empty upload CLEARS the slot. A 0-byte vkCreateBuffer is a validation error
+    // and the NULL buffer that followed crashed the engine on the next call.
+    if (size == 0) return;
 
     VkBufferCreateInfo bci{};
     bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -2052,6 +2086,13 @@ bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
+    // B1: consume a pending window resize BEFORE anything else — the swapchain must
+    // track the window or every acquire/present goes OUT_OF_DATE from here on.
+    {
+        uint32_t prw = g_pending_resize_w.exchange(0);
+        uint32_t prh = g_pending_resize_h.exchange(0);
+        if (prw != 0 && prh != 0) resize(prw, prh);
+    }
     if (n_ == 0 && !has_mesh_) return true;
     // Offscreen: render to rt_framebuffer_ and capture from rt_image_. No swapchain acquire, so
     // the /frame endpoint works even when the window is minimized (or entirely headless).
@@ -2162,7 +2203,18 @@ bool Engine::frame() {
     uint32_t sc_idx = 0;
     VkResult acquire_res = vkAcquireNextImageKHR(device_, swapchain_, 100000000ULL,  // 100 ms
                                                  draw_sem_[img_idx], VK_NULL_HANDLE, &sc_idx);
+    // B1: OUT_OF_DATE means the swapchain is dead (resize, occlusion, driver). Rebuild it
+    // NOW instead of skipping presents forever — the old code left the window frozen
+    // at the last presented image while the loop ran at full FPS.
+    if (acquire_res == VK_ERROR_OUT_OF_DATE_KHR) {
+        VkSurfaceCapabilitiesKHR caps{};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+            resize(caps.currentExtent.width, caps.currentExtent.height);
+        return true;  // next frame presents on the fresh swapchain
+    }
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
+    bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
 
     // Record command buffer
     VkCommandBufferBeginInfo bbi{};
@@ -2384,7 +2436,11 @@ bool Engine::frame() {
         pi.swapchainCount     = 1;
         pi.pSwapchains        = &swapchain_;
         pi.pImageIndices      = &sc_idx;
-        vkQueuePresentKHR(queue_, &pi);
+        // B1: the present result is a swapchain-health signal, not noise — a swapchain
+        // that goes stale here would otherwise never be rebuilt.
+        VkResult pres_res = vkQueuePresentKHR(queue_, &pi);
+        if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
+            recreate_after_frame = true;
     }
 
     // Read back the captured frame (BGRA -> RGBA) into the shared CPU buffer
@@ -2408,6 +2464,14 @@ bool Engine::frame() {
         }
         vkUnmapMemory(device_, capture_staging_mem_);
         capture_ready_.store(true);
+    }
+    // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
+    // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
+    if (recreate_after_frame) {
+        VkSurfaceCapabilitiesKHR caps{};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+            resize(caps.currentExtent.width, caps.currentExtent.height);
     }
     image_idx_ = (image_idx_ + 1) % MAX_FRAMES_IN_FLIGHT;
     return true;  // a present failure (minimized window) is not fatal — skip, retry next frame

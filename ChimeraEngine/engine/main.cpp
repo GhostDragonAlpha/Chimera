@@ -516,7 +516,10 @@ int main(int argc, char** argv) {
                     engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
                     engine.set_mesh_mode(g_mesh_req.mode);
                 }
-                engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                // cam_radius <= 0 = "keep the current camera": animation drivers stream
+                // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
+                if (g_mesh_req.cam_radius > 0.0f)
+                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
         }
