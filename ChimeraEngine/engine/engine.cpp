@@ -1162,6 +1162,90 @@ bool Engine::update_mesh(const std::vector<float>& verts9, uint32_t vcount) {
     return true;
 }
 
+// ── The hinge lives in the engine ────────────────────────────────────────────
+// Same skin-moving law the operator approved on the Python march: each vertex
+// rotates by theta(t) * w_i about (J, axis), w fading to 0 at the joint's
+// measured extent. Computed here, on the engine's clock, at render rate.
+
+bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& wR,
+                       const float JL[3], const float JR[3], const float axis[3],
+                       float romL, float romR, float period, float phaseR) {
+    if (!has_mesh_ || tri_vmap_ == nullptr) return false;
+    size_t nv = tri_vfloats_ / 9;
+    if (wL.size() != nv || wR.size() != nv) {
+        fprintf(stderr, "set_hinge: weight count mismatch (%zu/%zu vs %zu verts)\n",
+                wL.size(), wR.size(), nv);
+        return false;
+    }
+    vkDeviceWaitIdle(device_);
+    // snapshot the rest state (the CURRENT mapped buffer is the rest pose by contract)
+    hinge_rest_.assign(static_cast<const float*>(tri_vmap_),
+                       static_cast<const float*>(tri_vmap_) + tri_vfloats_);
+    hinge_wL_ = wL; hinge_wR_ = wR;
+    std::memcpy(hinge_JL_, JL, 12); std::memcpy(hinge_JR_, JR, 12);
+    std::memcpy(hinge_axis_, axis, 12);
+    hinge_romL_ = romL; hinge_romR_ = romR;
+    hinge_period_ = period; hinge_phaseR_ = phaseR;
+    hinge_t0_ = std::chrono::steady_clock::now();
+    hinge_active_ = true;
+    printf("Hinge engaged: %zu verts, period %.1fs, ROM L %.1f R %.1f deg\n",
+           nv, period, romL, romR);
+    return true;
+}
+
+void Engine::stop_hinge() {
+    if (!hinge_active_) return;
+    hinge_active_ = false;
+    // restore the rest pose so the mesh doesn't freeze mid-bend
+    if (tri_vmap_ && !hinge_rest_.empty()) {
+        vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
+        std::memcpy(tri_vmap_, hinge_rest_.data(), hinge_rest_.size() * sizeof(float));
+    }
+    printf("Hinge disengaged, rest pose restored\n");
+}
+
+// Per-frame pose, called right after the fence wait in frame() (previous draw
+// is done reading the buffer). Rodrigues per vertex about (J, axis) by
+// theta * w; normals rotate identically (records are pos3 nrm3 col3, stride 9).
+void Engine::pose_hinge() {
+    float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+    const float two_pi = 6.28318530718f;
+    float ph = fmodf(t, hinge_period_) / hinge_period_;
+    float bL = 0.5f - 0.5f * cosf(two_pi * ph);
+    float bR = 0.5f - 0.5f * cosf(two_pi * ph + hinge_phaseR_);
+    float thL = bL * hinge_romL_ * 0.01745329251f;   // deg -> rad
+    float thR = bR * hinge_romR_ * 0.01745329251f;
+
+    float* buf = static_cast<float*>(tri_vmap_);
+    const float* rest = hinge_rest_.data();
+    size_t nv = hinge_wL_.size();
+    const float ax = hinge_axis_[0], ay = hinge_axis_[1], az = hinge_axis_[2];
+    for (size_t i = 0; i < nv; ++i) {
+        float wL = hinge_wL_[i], wR = hinge_wR_[i];
+        if (wL == 0.0f && wR == 0.0f) continue;     // never moves: rest is already correct
+        float th = thL * wL + thR * wR;             // bands are disjoint by construction
+        const float* J = (wL >= wR) ? hinge_JL_ : hinge_JR_;
+        float c = cosf(th), s = sinf(th);
+        float* dst = buf + i * 9;
+        const float* src = rest + i * 9;
+        for (int k = 0; k < 2; ++k) {               // 0 = position, 1 = normal
+            const float* base = (k == 0) ? J : nullptr;
+            float vx = src[k * 3 + 0] - (base ? base[0] : 0.f);
+            float vy = src[k * 3 + 1] - (base ? base[1] : 0.f);
+            float vz = src[k * 3 + 2] - (base ? base[2] : 0.f);
+            float cx = ay * vz - az * vy, cy = az * vx - ax * vz, cz = ax * vy - ay * vx;
+            float d = ax * vx + ay * vy + az * vz;
+            float rx = vx * c + cx * s + ax * d * (1.f - c);
+            float ry = vy * c + cy * s + ay * d * (1.f - c);
+            float rz = vz * c + cz * s + az * d * (1.f - c);
+            dst[k * 3 + 0] = rx + (base ? base[0] : 0.f);
+            dst[k * 3 + 1] = ry + (base ? base[1] : 0.f);
+            dst[k * 3 + 2] = rz + (base ? base[2] : 0.f);
+        }
+        // colors (src[6..8]) pass through untouched — dst already holds them
+    }
+}
+
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                           uint32_t vcount, uint32_t icount) {
     vkDeviceWaitIdle(device_);
@@ -2146,6 +2230,10 @@ bool Engine::frame() {
     // the /frame endpoint works even when the window is minimized (or entirely headless).
     vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
     vkResetFences(device_, 1, &fences_[0]);
+    // The engine-internal hinge: pose the knees on the engine's clock, before any
+    // command recording — the previous draw is done (fence), so the mapped vertex
+    // buffer is safe to rewrite.
+    if (hinge_active_ && tri_vmap_ != nullptr) pose_hinge();
     uint32_t img_idx = 0;
 
     // Upload uniform buffer (camera matrices + resolution)

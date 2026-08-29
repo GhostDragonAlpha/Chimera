@@ -4,6 +4,7 @@
 #include <string>
 #include <mutex>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <map>
 
@@ -49,6 +50,18 @@ public:
     // streaming poses at driver rate never stalls the render/input loop.
     // Returns false if the mesh layout changed (caller must full-load).
     bool update_mesh(const std::vector<float>& verts9, uint32_t vcount);
+    // ── THE HINGE LIVES IN THE ENGINE (operator decree 2026-08-28) ─────────
+    // The knee pose is an engine-internal state on the engine's own clock,
+    // not a Python stream: per frame, each vertex near the joint rotates by
+    // theta(t) * w_i about the measured joint (J, n) — the same skin-moving
+    // law the operator approved, computed at render rate with zero network
+    // in the loop. Python's whole job is ONE setup POST with the weights.
+    bool set_hinge(const std::vector<float>& wL, const std::vector<float>& wR,
+                   const float JL[3], const float JR[3], const float axis[3],
+                   float romL, float romR, float period, float phaseR);
+    void stop_hinge();
+    void pose_hinge();   // per-frame, after the frame fence wait
+    bool hinge_active() const { return hinge_active_; }
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -213,6 +226,14 @@ private:
     VkDeviceMemory  tri_vmem_, tri_imem_;
     void*           tri_vmap_ = nullptr;      // persistent map of tri_vbuf_ (host-visible)
     size_t          tri_vfloats_ = 0;         // floats in the current vertex payload
+    // hinge state (engine-internal knee pose — see set_hinge)
+    bool            hinge_active_ = false;
+    std::vector<float> hinge_rest_;           // rest vertex records (stride 9)
+    std::vector<float> hinge_wL_, hinge_wR_;  // per-vertex blend weights
+    float           hinge_JL_[3] = {}, hinge_JR_[3] = {}, hinge_axis_[3] = {};
+    float           hinge_romL_ = 0.f, hinge_romR_ = 0.f;
+    float           hinge_period_ = 4.f, hinge_phaseR_ = 3.14159265f;
+    std::chrono::steady_clock::time_point hinge_t0_{};
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
     // Overlay slot (e.g. the bone axis): always FILL, drawn after the main mesh.

@@ -53,6 +53,13 @@ static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
 static bool g_mesh_pending = false, g_mesh_applied = false;
 
+// ── Pending hinge request (the engine-internal knee pose; same handoff) ──────
+struct HingeReq { std::vector<float> wL, wR; float JL[3]={}, JR[3]={}, axis[3]={}; float romL=0, romR=0, period=4.f, phaseR=3.14159265f; uint32_t n=0; };
+static HingeReq g_hinge_req;
+static std::mutex g_hinge_mutex;
+static std::condition_variable g_hinge_cv;
+static bool g_hinge_pending = false, g_hinge_applied = false;
+
 // ── Pending skin/pose request (same handoff: Vulkan work stays on the render thread) ────
 struct SkinRequest {
     int kind = 0;                    // 1 = skin_bin load, 2 = pose_store, 3 = pose_apply
@@ -326,6 +333,50 @@ int main(int argc, char** argv) {
                 }
             }
             content_type = "application/json";
+        } else if (p == "/hinge_bin" && method == "POST") {
+            // Binary protocol (little-endian):
+            //   [u32 nvert][f32 JL(3)][f32 JR(3)][f32 axis(3)][f32 romL,romR,period,phaseR]
+            //   [f32 wL * nvert][f32 wR * nvert]
+            // nvert == 0 -> disengage the hinge and restore the rest pose.
+            if (req_body.size() < 4) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t n = 0;
+                std::memcpy(&n, req_body.data(), 4);
+                if (n == 0) {
+                    {
+                        std::lock_guard<std::mutex> lk(g_hinge_mutex);
+                        g_hinge_req = HingeReq{};
+                        g_hinge_pending = true; g_hinge_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_hinge_mutex);
+                    bool ok = g_hinge_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
+                    body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                } else {
+                    size_t expect = 4 + 13 * 4 + static_cast<size_t>(n) * 2 * 4;
+                    if (req_body.size() != expect) {
+                        body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                    } else {
+                        const float* f = reinterpret_cast<const float*>(req_body.data() + 4);
+                        {
+                            std::lock_guard<std::mutex> lk(g_hinge_mutex);
+                            g_hinge_req.n = n;
+                            std::memcpy(g_hinge_req.JL, f + 0, 12);
+                            std::memcpy(g_hinge_req.JR, f + 3, 12);
+                            std::memcpy(g_hinge_req.axis, f + 6, 12);
+                            g_hinge_req.romL = f[9]; g_hinge_req.romR = f[10];
+                            g_hinge_req.period = f[11]; g_hinge_req.phaseR = f[12];
+                            g_hinge_req.wL.assign(f + 13, f + 13 + n);
+                            g_hinge_req.wR.assign(f + 13 + n, f + 13 + 2 * n);
+                            g_hinge_pending = true; g_hinge_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_hinge_mutex);
+                        bool ok = g_hinge_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
+                        body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                    }
+                }
+            }
+            content_type = "application/json";
         } else if (p == "/skin_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
             //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
@@ -567,6 +618,22 @@ int main(int argc, char** argv) {
             }
         }
 
+        // Apply a pending hinge request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_hinge_mutex);
+            if (g_hinge_pending) {
+                if (g_hinge_req.n == 0) {
+                    engine.stop_hinge();
+                } else {
+                    engine.set_hinge(g_hinge_req.wL, g_hinge_req.wR,
+                                     g_hinge_req.JL, g_hinge_req.JR, g_hinge_req.axis,
+                                     g_hinge_req.romL, g_hinge_req.romR,
+                                     g_hinge_req.period, g_hinge_req.phaseR);
+                }
+                g_hinge_pending = false; g_hinge_applied = true; g_hinge_cv.notify_all();
+            }
+        }
+
         // Run the N-body simulation only when no membrane is loaded
         if (!g_membrane_active) {
             auto& particles = g_physics.particles();
@@ -637,7 +704,7 @@ int main(int argc, char** argv) {
         // the GPU predictably and paces display delivery. timeBeginPeriod(1) is set
         // in main() so these short sleeps land at ~1 ms granularity, not 15.6.
         {
-            const double target_ms = 1000.0 / 144.0;
+            const double target_ms = 1000.0 / 240.0;
             double busy_ms = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::high_resolution_clock::now() - ft0).count() / 1e3;
             if (busy_ms < target_ms) {
