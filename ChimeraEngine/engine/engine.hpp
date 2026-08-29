@@ -41,6 +41,11 @@ public:
     // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
     bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                    uint32_t vcount, uint32_t icount);
+    // Animation driver path: memcpy new posed vertices into the persistently
+    // mapped host-visible vertex buffer — no GPU idle, no buffer recreate, so
+    // streaming poses at driver rate never stalls the render/input loop.
+    // Returns false if the mesh layout changed (caller must full-load).
+    bool update_mesh(const std::vector<float>& verts9, uint32_t vcount);
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -202,6 +207,8 @@ private:
     uint32_t        mesh_mode_ = 0;   // 0 = fill, 1 = wire only, 2 = fill + wire overlay
     VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  tri_vmem_, tri_imem_;
+    void*           tri_vmap_ = nullptr;      // persistent map of tri_vbuf_ (host-visible)
+    size_t          tri_vfloats_ = 0;         // floats in the current vertex payload
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
     // Overlay slot (e.g. the bone axis): always FILL, drawn after the main mesh.

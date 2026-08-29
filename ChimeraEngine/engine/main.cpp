@@ -45,7 +45,7 @@ static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
 
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
-struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool valid=false; };
+struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
 static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
@@ -309,6 +309,10 @@ int main(int argc, char** argv) {
                         g_mesh_req.idxCount = idxCount;
                         g_mesh_req.cam_radius = cr; g_mesh_req.cam_theta = ct; g_mesh_req.cam_phi = cp;
                         uint32_t sm = static_cast<uint32_t>(slotmode < 0 ? 0 : slotmode + 0.5f);
+                        // slotmode >= 100: vertex-update only (animation streaming) —
+                        // memcpy into the mapped vertex buffer, no reload, no camera.
+                        g_mesh_req.update_only = (sm >= 100);
+                        if (g_mesh_req.update_only) sm -= 100;
                         g_mesh_req.slot = sm / 10; g_mesh_req.mode = sm % 10;
                         g_mesh_pending = true; g_mesh_applied = false;
                     }
@@ -515,7 +519,9 @@ int main(int argc, char** argv) {
         {
             std::lock_guard<std::mutex> lk(g_mesh_mutex);
             if (g_mesh_pending) {
-                if (g_mesh_req.slot == 1) {
+                if (g_mesh_req.update_only) {
+                    engine.update_mesh(g_mesh_req.verts, g_mesh_req.N);
+                } else if (g_mesh_req.slot == 1) {
                     engine.load_overlay(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
                 } else {
                     engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
@@ -523,8 +529,9 @@ int main(int argc, char** argv) {
                 }
                 // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
-                if (g_mesh_req.cam_radius > 0.0f)
+                if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
                     engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                g_mesh_req.update_only = false;
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
         }

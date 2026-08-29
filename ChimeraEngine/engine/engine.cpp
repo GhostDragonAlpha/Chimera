@@ -1095,8 +1095,36 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         has_mesh_ = false;
         return true;
     }
-    upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
-                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, tri_vbuf_, tri_vmem_);
+    // Vertex buffer: HOST_VISIBLE + COHERENT, persistently mapped. The animation
+    // driver streams posed vertices every frame via update_mesh (memcpy-only);
+    // a DEVICE_LOCAL + staging upload here would force a GPU idle per frame and
+    // stall the render/input loop (operator: rotation dead, motion not smooth).
+    if (tri_vbuf_) {
+        vkUnmapMemory(device_, tri_vmem_);
+        vkDestroyBuffer(device_, tri_vbuf_, nullptr);
+        vkFreeMemory(device_, tri_vmem_, nullptr);
+        tri_vbuf_ = VK_NULL_HANDLE; tri_vmap_ = nullptr;
+    }
+    {
+        VkDeviceSize sz = static_cast<VkDeviceSize>(verts.size()) * sizeof(float);
+        VkBufferCreateInfo bci{};
+        bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size        = sz;
+        bci.usage       = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &tri_vbuf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, tri_vbuf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize  = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &tri_vmem_);
+        vkBindBufferMemory(device_, tri_vbuf_, tri_vmem_, 0);
+        vkMapMemory(device_, tri_vmem_, 0, sz, 0, &tri_vmap_);
+        std::memcpy(tri_vmap_, verts.data(), sz);
+        tri_vfloats_ = verts.size();
+    }
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
                   VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
     tri_idx_count_ = icount;
@@ -1111,6 +1139,17 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         if (r2 > r2max) r2max = r2;
     }
     g_mesh_sphere = sqrtf(r2max);
+    return true;
+}
+
+bool Engine::update_mesh(const std::vector<float>& verts9, uint32_t vcount) {
+    if (!has_mesh_ || tri_vmap_ == nullptr) return false;
+    if (verts9.size() != tri_vfloats_) return false;  // layout changed -> full load
+    // Sync: the previous frame's draw may still be reading the buffer. Wait for
+    // ITS fence only (not device idle) — cheap, and it does not stall the loop.
+    vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
+    std::memcpy(tri_vmap_, verts9.data(), verts9.size() * sizeof(float));
+    (void)vcount;
     return true;
 }
 
@@ -1140,7 +1179,7 @@ void Engine::destroy_triangle_resources() {
     if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
     if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
     if (tri_frag_mod_) { vkDestroyShaderModule(device_, tri_frag_mod_, nullptr); tri_frag_mod_ = VK_NULL_HANDLE; }
-    if (tri_vbuf_) { vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
+    if (tri_vbuf_) { if (tri_vmap_) vkUnmapMemory(device_, tri_vmem_); tri_vmap_ = nullptr; vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
     if (tri_ibuf_) { vkDestroyBuffer(device_, tri_ibuf_, nullptr); vkFreeMemory(device_, tri_imem_, nullptr); tri_ibuf_ = VK_NULL_HANDLE; }
     if (ov_vbuf_) { vkDestroyBuffer(device_, ov_vbuf_, nullptr); vkFreeMemory(device_, ov_vmem_, nullptr); ov_vbuf_ = VK_NULL_HANDLE; }
     if (ov_ibuf_) { vkDestroyBuffer(device_, ov_ibuf_, nullptr); vkFreeMemory(device_, ov_imem_, nullptr); ov_ibuf_ = VK_NULL_HANDLE; }
