@@ -14,5 +14,10 @@ void main() {
              * (5.0 / 65536.0);   // x5 DISPLAY gain only (GT radiance p99.9 = 0.16 —
                                   //  purely presentational, outside the bit-exact
                                   //  boundary; the stored Q16 ints are untouched)
+    // Contrast fix (operator 2026-08-29: "too much contrast in the shading"):
+    // display-side gamma lift 1/1.8 — shadows rise, highlights compress; the
+    // decode and the stored ints are untouched (presentation-only, same class
+    // as the x5 gain).
+    c = pow(max(c, vec3(0.0)), vec3(1.0 / 1.8));
     fragColor = vec4(clamp(c, 0.0, 1.0), 1.0);
 }
