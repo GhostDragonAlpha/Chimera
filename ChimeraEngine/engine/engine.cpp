@@ -549,6 +549,18 @@ bool Engine::init(const EngineConfig& cfg) {
                                                 VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
         if (ui_.init(device_, phys_dev_, swap_fmt_, extent_.width, extent_.height, host_mt)) {
             ui_.create_swap_resources(img_views_, extent_);
+            // D1: the timeline panel issues intents; the engine owns the clock.
+            ui_.cb_play_toggle_ = [this] { show_playing_.store(!show_playing_.load()); };
+            ui_.cb_step_ = [this](int n) {
+                double t = show_time_.load() + n / 240.0;   // exactly one 240fps frame
+                show_scrub_.store(t < 0.0 ? 0.0 : t);
+            };
+            ui_.cb_speed_cycle_ = [this] {
+                double s = show_speed_.load();
+                s = (s < 0.5) ? 0.5 : (s < 1.0) ? 1.0 : (s < 2.0) ? 2.0 : (s < 4.0) ? 4.0 : 0.25;
+                show_speed_.store(s);
+            };
+            ui_.cb_scrub_ = [this](double t) { show_scrub_.store(t < 0.0 ? 0.0 : t); };
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
             fprintf(stderr, "studio: overlay init failed — continuing without UI\n");
@@ -2536,7 +2548,7 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
 
 std::string Engine::joints_status() const {
     if (!joints_loaded_) return "{\"loaded\":false}";
-    float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - joints_t0_).count();
+    float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
     float per = j_sweep_period_;
     uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / per) % j_n_joints_ : 0;
     std::string s = std::string("{\"loaded\":true,\"on\":") + (joints_on_.load() ? "true" : "false")
@@ -2544,6 +2556,25 @@ std::string Engine::joints_status() const {
         + ",\"current\":\"" + (cur < j_names_.size() ? j_names_[cur] : std::string("?")) + "\""
         + ",\"t\":" + std::to_string(t) + "}";
     return s;
+}
+
+// D1: the current joint's live theta (degrees) — the timeline's pose readout and
+// the scrub gate's verification channel (j_state_map_ stride 8: theta at +7, rad).
+double Engine::show_current_theta() {
+    if (!joints_loaded_ || j_state_map_ == nullptr) return 0.0;
+    float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
+    uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / j_sweep_period_) % j_n_joints_ : 0;
+    const float* st = static_cast<const float*>(j_state_map_);
+    return st[cur * 8 + 7] * 57.29577951308232;
+}
+
+void Engine::show_current_rom(float& ext, float& flex) const {
+    ext = flex = 0.0f;
+    if (!joints_loaded_ || j_rom_.empty()) return;
+    float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
+    uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / j_sweep_period_) % j_n_joints_ : 0;
+    ext  = j_rom_[cur * 2 + 0];   // degrees (the sweep kernel converts to radians)
+    flex = j_rom_[cur * 2 + 1];
 }
 
 void Engine::frost_rebind() {
@@ -3565,7 +3596,34 @@ bool Engine::frame() {
         if (ui_.visible && ui_.ok()) return frame_idle_ui();
         return true;
     }
+    // D1: push the show clock's view to the timeline panel (the UI never owns time)
+    {
+        double t = show_time_.load(std::memory_order_relaxed);
+        float per = show_period();
+        uint32_t nj = show_joint_count();
+        uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
+        ui_.set_show_clock(t, nj * static_cast<double>(per), show_playing_.load(),
+                           show_speed_.load(), nj, cur, per, show_joint_name(cur),
+                           show_current_theta());
+    }
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
+
+    // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
+    // The joints SHOW below poses from show_time_ — pause freezes the pose,
+    // scrub lands an exact pose, frame-step is exactly 1/240 s.
+    {
+        double scrub = show_scrub_.exchange(-1.0, std::memory_order_relaxed);
+        if (scrub >= 0.0) show_time_.store(scrub, std::memory_order_relaxed);
+        if (show_time_.load(std::memory_order_relaxed) < 0.0)
+            show_time_.store(0.0, std::memory_order_relaxed);   // the clock has no negative time
+        auto now = std::chrono::steady_clock::now();
+        if (show_last_.time_since_epoch().count() != 0 && show_playing_.load(std::memory_order_relaxed)) {
+            show_time_.store(show_time_.load(std::memory_order_relaxed)
+                + std::chrono::duration<double>(now - show_last_).count()
+                * show_speed_.load(std::memory_order_relaxed), std::memory_order_relaxed);
+        }
+        show_last_ = now;
+    }
     // Offscreen: render to rt_framebuffer_ and capture from rt_image_. No swapchain acquire, so
     // the /frame endpoint works even when the window is minimized (or entirely headless).
     // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
@@ -3722,9 +3780,10 @@ bool Engine::frame() {
 
     if (joints_on_.load(std::memory_order_relaxed) && joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
         // H15: THE SHOW — sweep every joint through its derived ROM, one at a
-        // time, on the engine clock. 4 s per joint: 0 -> flex (1.5 s), back
-        // (0.5 s), -> ext (1.5 s), back (0.5 s). Cosine ramps.
-        float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - joints_t0_).count();
+        // time, on THE STUDIO CLOCK (D1: a parameter — play/pause/scrub/step).
+        // 4 s per joint: 0 -> flex (1.5 s), back (0.5 s), -> ext (1.5 s), back
+        // (0.5 s). Cosine ramps.
+        float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
         float per = j_sweep_period_;
         uint32_t cur = static_cast<uint32_t>(t / per) % j_n_joints_;
         float ph = fmodf(t, per);
@@ -4285,6 +4344,29 @@ bool Engine::frame() {
 // agent-onboarding view, so it must present even when every 3D path idles.
 // Same per-slot sync discipline as frame(); no offscreen pass, no capture.
 bool Engine::frame_idle_ui() {
+    // D1: the clock ticks here too — idle must not freeze the studio's time
+    {
+        double scrub = show_scrub_.exchange(-1.0, std::memory_order_relaxed);
+        if (scrub >= 0.0) show_time_.store(scrub, std::memory_order_relaxed);
+        if (show_time_.load(std::memory_order_relaxed) < 0.0)
+            show_time_.store(0.0, std::memory_order_relaxed);
+        auto now = std::chrono::steady_clock::now();
+        if (show_last_.time_since_epoch().count() != 0 && show_playing_.load(std::memory_order_relaxed)) {
+            show_time_.store(show_time_.load(std::memory_order_relaxed)
+                + std::chrono::duration<double>(now - show_last_).count()
+                * show_speed_.load(std::memory_order_relaxed), std::memory_order_relaxed);
+        }
+        show_last_ = now;
+    }
+    {
+        double t = show_time_.load(std::memory_order_relaxed);
+        float per = show_period();
+        uint32_t nj = show_joint_count();
+        uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
+        ui_.set_show_clock(t, nj * static_cast<double>(per), show_playing_.load(),
+                           show_speed_.load(), nj, cur, per, show_joint_name(cur),
+                           show_current_theta());
+    }
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);

@@ -17,6 +17,7 @@
 #include <vector>
 #include <chrono>
 #include <cstdint>
+#include <functional>
 
 struct StudioStage {
     std::string id;       // "B0" .. "B10"
@@ -83,11 +84,42 @@ private:
     Panel strip_{ 92.f, 26.f, 0.30f, false };   // B1: the stage strip (top, full width)
     Panel left_ { 300.f, 26.f, 0.45f, false };  // STUDIO panel (left, below the strip)
     Panel right_{ 330.f, 26.f, 0.45f, false };  // STATUS panel (right, below the strip)
-    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left border, 3 right border
+    Panel bottom_{118.f, 26.f, 0.35f, false };  // D1: the TIMELINE (bottom, between left/right)
+    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead
     bool  hit_strip_title(int x, int y) const;
     bool  hit_left_title(int x, int y) const;
     bool  hit_right_title(int x, int y) const;
-    void  layout(uint32_t w, uint32_t h, float out_rects[3][4]) const;  // strip, left, right
+    bool  hit_bottom_title(int x, int y) const;
+    void  layout(uint32_t w, uint32_t h, float out_rects[4][4]) const;  // strip, left, right, bottom
+
+    // ── clickable controls (D1: rebuilt every frame by prepare, hit-tested on click) ──
+    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed
+    std::vector<Hot> hots_;
+    float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
+
+    // ── the show clock's view (D1: pushed by the Engine every frame — the UI never owns it) ──
+    double clk_t_ = 0.0, clk_total_ = 0.0, clk_speed_ = 1.0, clk_theta_ = 0.0;
+    bool   clk_playing_ = true;
+    uint32_t clk_n_ = 0, clk_cur_ = 0;
+    float  clk_period_ = 4.0f;
+    std::string clk_name_;
+
+public:
+    // callbacks into the Engine (wired in Engine::init — the panel issues, the engine owns)
+    std::function<void()>     cb_play_toggle_;
+    std::function<void(int)>  cb_step_;          // ±1 frames of 1/240 s
+    std::function<void()>     cb_speed_cycle_;
+    std::function<void(double)> cb_scrub_;       // absolute time target
+
+    void set_show_clock(double t, double total, bool playing, double speed,
+                        uint32_t n, uint32_t cur, float period,
+                        const std::string& name, double theta) {
+        clk_t_ = t; clk_total_ = total; clk_playing_ = playing; clk_speed_ = speed;
+        clk_n_ = n; clk_cur_ = cur; clk_period_ = period; clk_name_ = name; clk_theta_ = theta;
+    }
+    float scrub_time_at(int x) const;            // map a cursor x to a time on the bar
+
+private:
 
     // ── board file polling (the repo's gate truth, read never owned) ──
     std::string board_path_ = "studio_board.json";   // relative to the engine CWD

@@ -137,3 +137,39 @@ It is the engine drawing its own state and the repo's own truth over the viewpor
 - **Files:** `engine/ui.{hpp,cpp}`, `engine/shaders/ui.{vert,frag}`, hooks in
   `engine/engine.{hpp,cpp}` + `engine/main.cpp`, `tools/studio_board.py`.
 - **Next per the menu:** D1 timeline + D3 reel, then B3 stage panels.
+
+## SHIPPED — D1: THE TIMELINE (2026-08-29)
+
+The show clock is a **parameter**, not a wall clock. The joints SHOW (H15) no
+longer reads `steady_clock`; it reads `show_time_` — an engine-owned atomic the
+TIMELINE panel issues intents against (play/pause, speed 0.25–4x, ±1/240 s
+steps, direct scrub). The UI proposes; the engine's tick consumes, clamps,
+advances. A bottom panel (118 px, drag-resizable like the rest) carries the
+transport buttons, the scrub bar with per-joint marker ticks (current joint in
+blue), the looping playhead, and the live readout `t / total | joint θ | state`.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_timeline_verify.{py,log}`,
+  screenshots `_d1_rest_shot.png` / `_d1_flex_shot.png`):
+  - **A — freeze:** paused at T=10.73, t and θ bit-identical across 60+ frames. PASS
+  - **B — scrub = law:** θ at a scrubbed T matches the sweep law recomputed in
+    Python to 0.000° (tolerance was ±0.5°). PASS at T=10.73, 10.734, 17.0
+  - **C — step:** +1f advances t by exactly 1/240 s; θ follows the law. PASS
+  - **D — markers:** scrub to T=17.0 switches the current joint to idx 4
+    (spine_lower); the marker tick under the playhead turns blue. PASS
+  - **speed:** measured dt/dwall = 2.000 at 2x. PASS · UI cost inside frame-time
+    noise (ft avg 0.38 ms, budget 0.5 ms). PASS
+  - **visual:** rest (T=16.0, θ=0) vs spine_lower full flex (T=17.5, θ=+152.51°):
+    25405 pixels differ, torso fold unambiguous. PASS
+- **Found while verifying (pre-existing, not D1's):** 10 of the 19 pack joints
+  own zero skin verts (knees, ankles, wrists, elbows, jaw, tail_mid,
+  shoulder_R) — the skeleton factory assigned by nearest rod and those rods had
+  no skin near them. The clock still sweeps them; the mesh just can't show it.
+  The ligament line owns the weights; flagged here so B5 doesn't re-discover it.
+- **Load order note:** `load_joints` requires the hinge's rest state, so the
+  driver POSTs a scaffold `/hinge_bin` (zero weights) before `/joints_bin`;
+  the SHOW's dispatch supersedes the hinge the moment `/joints on` lands.
+- **Endpoint:** `POST/GET /show` — `{playing, speed, time, step}` in;
+  `{playing, time, speed, n_joints, period, total, current, theta, rom_ext,
+  rom_flex, joints_loaded}` out. The dyad can now pose the body by name and
+  number, exactly.
+- **Next per the menu:** D3 reel (capture → filmstrip with metadata), then B3.

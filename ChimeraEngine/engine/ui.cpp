@@ -61,18 +61,29 @@ void StudioUI::on_mouse_move(int x, int y) {
         float ns = static_cast<float>(ext_.width) - static_cast<float>(x);
         float mx = ext_.width * right_.max_frac;
         right_.size = ns < right_.min_size ? right_.min_size : (ns > mx ? mx : ns);
+    } else if (drag_kind_ == 4) {   // bottom panel top border: height follows (from the bottom edge)
+        float ns = static_cast<float>(ext_.height) - static_cast<float>(y);
+        float mx = ext_.height * bottom_.max_frac;
+        bottom_.size = ns < bottom_.min_size ? bottom_.min_size : (ns > mx ? mx : ns);
+    } else if (drag_kind_ == 5) {   // D1: dragging the playhead — every move is a scrub
+        if (cb_scrub_) cb_scrub_(scrub_time_at(x));
     }
 }
 
-void StudioUI::layout(uint32_t w, uint32_t h, float R[3][4]) const {
-    // strip: top, full width. left/right: below the strip, docked to their edge.
+void StudioUI::layout(uint32_t w, uint32_t h, float R[4][4]) const {
+    // strip: top, full width. bottom: between left/right, docked low.
+    // left/right: between strip and bottom, docked to their edges.
     float sh = strip_.collapsed ? 22.f : strip_.size;
     if (sh > h) sh = static_cast<float>(h);
-    R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
+    float bh = bottom_.collapsed ? 22.f : bottom_.size;
+    if (bh > h - sh) bh = static_cast<float>(h) - sh;
+    if (bh < 22.f) bh = 22.f;
     float lw = left_.collapsed  ? 22.f : left_.size;
     float rw = right_.collapsed ? 22.f : right_.size;
-    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh;
-    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh;
+    R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
+    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh - bh;
+    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh - bh;
+    R[3][0] = lw; R[3][1] = static_cast<float>(h) - bh; R[3][2] = static_cast<float>(w) - lw - rw; R[3][3] = bh;
 }
 
 bool StudioUI::hit_strip_title(int x, int y) const {
@@ -86,11 +97,24 @@ bool StudioUI::hit_right_title(int x, int y) const {
     float sh = strip_.collapsed ? 22.f : strip_.size;
     return x >= static_cast<int>(ext_.width) - 22 && y >= static_cast<int>(sh);
 }
+bool StudioUI::hit_bottom_title(int x, int y) const {
+    float R[4][4]; layout(ext_.width, ext_.height, R);
+    return y >= static_cast<int>(R[3][1]) && y < static_cast<int>(R[3][1] + 22)
+        && x >= static_cast<int>(R[3][0]) && x < static_cast<int>(R[3][0] + R[3][2]);
+}
+
+float StudioUI::scrub_time_at(int x) const {
+    if (clk_total_ <= 0.0 || scrub_rect_[2] <= 0.f) return 0.0;
+    float f = (static_cast<float>(x) - scrub_rect_[0]) / scrub_rect_[2];
+    if (f < 0.f) f = 0.f;
+    if (f > 1.f) f = 1.f;
+    return f * clk_total_;
+}
 
 bool StudioUI::wants_mouse(int x, int y) {
     if (!visible) return false;
-    float R[3][4]; layout(ext_.width, ext_.height, R);
-    for (int i = 0; i < 3; ++i) {
+    float R[4][4]; layout(ext_.width, ext_.height, R);
+    for (int i = 0; i < 4; ++i) {
         if (x >= R[i][0] && x < R[i][0] + R[i][2] && y >= R[i][1] && y < R[i][1] + R[i][3]) return true;
     }
     return false;
@@ -103,15 +127,35 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
         drag_kind_ = 0;
         return had;
     }
-    float R[3][4]; layout(ext_.width, ext_.height, R);
+    float R[4][4]; layout(ext_.width, ext_.height, R);
     // resize borders first (a 6 px grab band on the panel's inner edge)
     if (!strip_.collapsed && y >= R[0][3] - 3 && y <= R[0][3] + 3) { drag_kind_ = 1; return true; }
-    if (!left_.collapsed  && x >= R[1][2] - 3 && x <= R[1][2] + 3 && y >= R[1][1]) { drag_kind_ = 2; return true; }
-    if (!right_.collapsed && x >= R[2][0] - 3 && x <= R[2][0] + 3 && y >= R[2][1]) { drag_kind_ = 3; return true; }
+    if (!left_.collapsed  && x >= R[1][2] - 3 && x <= R[1][2] + 3 && y >= R[1][1] && y < R[1][1] + R[1][3]) { drag_kind_ = 2; return true; }
+    if (!right_.collapsed && x >= R[2][0] - 3 && x <= R[2][0] + 3 && y >= R[2][1] && y < R[2][1] + R[2][3]) { drag_kind_ = 3; return true; }
+    if (!bottom_.collapsed && y >= R[3][1] - 3 && y <= R[3][1] + 3 && x >= R[3][0] && x < R[3][0] + R[3][2]) { drag_kind_ = 4; return true; }
+    // D1: the scrub bar — press grabs the playhead (drags scrub; a click lands one)
+    if (!bottom_.collapsed && clk_total_ > 0.0
+        && x >= scrub_rect_[0] && x <= scrub_rect_[0] + scrub_rect_[2]
+        && y >= scrub_rect_[1] - 4 && y <= scrub_rect_[1] + scrub_rect_[3] + 4) {
+        drag_kind_ = 5;
+        if (cb_scrub_) cb_scrub_(scrub_time_at(x));
+        return true;
+    }
+    // D1: the timeline's buttons (play/pause, frame-step, speed)
+    for (const Hot& h : hots_) {
+        if (x >= h.x && x < h.x + h.w && y >= h.y && y < h.y + h.h) {
+            if (h.id == 1 && cb_play_toggle_) cb_play_toggle_();
+            if (h.id == 2 && cb_step_) cb_step_(-1);
+            if (h.id == 3 && cb_step_) cb_step_(+1);
+            if (h.id == 4 && cb_speed_cycle_) cb_speed_cycle_();
+            return true;
+        }
+    }
     // title bars toggle collapse (Blender's area header law: every area collapses)
     if (hit_strip_title(x, y)) { strip_.collapsed = !strip_.collapsed; return true; }
     if (hit_left_title(x, y))  { left_.collapsed  = !left_.collapsed;  return true; }
     if (hit_right_title(x, y)) { right_.collapsed = !right_.collapsed; return true; }
+    if (hit_bottom_title(x, y)){ bottom_.collapsed = !bottom_.collapsed; return true; }
     // anywhere else inside a panel: consume (never leak a camera orbit through the UI)
     return wants_mouse(x, y);
 }
@@ -233,7 +277,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     verts_.reserve(8192);
     if (!visible) return;
 
-    float R[3][4]; layout(win_w, win_h, R);
+    float R[4][4]; layout(win_w, win_h, R);
+    hots_.clear();
     const float lh = cell_h_;                       // one text line
     const float TR = 0.86f, TG = 0.88f, TB = 0.92f; // text color
 
@@ -316,6 +361,67 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         for (const std::string& line : status_lines_) {
             text(x, y, line, TR, TG, TB, 0.95f); y += lh;
             if (y > R[2][1] + R[2][3] - lh) break;
+        }
+    }
+
+    // ── the TIMELINE (D1: the show clock, drawn; the engine owns the time) ──
+    rect(R[3][0], R[3][1], R[3][2], R[3][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[3][0], R[3][1], R[3][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    text(R[3][0] + 8, R[3][1] + (22 - lh) * 0.5f,
+         bottom_.collapsed ? "+" : "TIMELINE (D1) - the show clock is a parameter",
+         0.62f, 0.66f, 0.74f, 1.f);
+    if (!bottom_.collapsed) {
+        float x = R[3][0] + 10, y = R[3][1] + 28;
+        // buttons: [PAUSE/PLAY] [-1f] [+1f] [speed] — ASCII glyphs (the atlas is ASCII)
+        auto button = [&](float& bx, const std::string& label, int id, bool hot) {
+            float bw = label.size() * advance_ + 14;
+            rect(bx, y, bw, 20, 0.16f, 0.17f, 0.22f, 0.95f);
+            rect_outline(bx, y, bw, 20, 1.f, hot ? 0.30f : 0.45f, hot ? 0.60f : 0.47f,
+                         hot ? 1.00f : 0.52f, 1.f);
+            text(bx + 7, y + (20 - lh) * 0.5f, label, TR, TG, TB, 1.f);
+            hots_.push_back({ bx, y, bw, 20, id });
+            bx += bw + 8;
+        };
+        float bx = x;
+        button(bx, clk_playing_ ? "PAUSE" : "PLAY ", 1, true);
+        button(bx, " -1f ", 2, false);
+        button(bx, " +1f ", 3, false);
+        char spb[16]; snprintf(spb, sizeof(spb), " %.2gx ", clk_speed_);
+        button(bx, spb, 4, false);
+
+        // the readout: time / loop, joint, theta, state — the engine's own rows
+        char tb[192];
+        snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s  |  %s theta = %+.2f deg  |  %s",
+                 clk_t_, clk_total_, clk_name_.c_str(), clk_theta_,
+                 clk_playing_ ? "PLAYING" : "PAUSED (scrub/step = exact poses)");
+        text(bx + 10, y + (20 - lh) * 0.5f, tb, 1.0f, 0.85f, 0.40f, 1.f);
+
+        // the scrub bar: joint markers auto from the show clock (D2's seed)
+        float bar_y = y + 30;
+        float bar_h = 16.f;
+        scrub_rect_[0] = x; scrub_rect_[1] = bar_y;
+        scrub_rect_[2] = R[3][0] + R[3][2] - 10 - x; scrub_rect_[3] = bar_h;
+        if (clk_n_ == 0 || clk_total_ <= 0.0) {
+            text(x, bar_y, "no joints pack - POST .tmp/skeleton/joints_pack.bin to /joints_bin, then /joints on",
+                 0.85f, 0.55f, 0.30f, 1.f);
+        } else {
+            rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.12f, 0.13f, 0.17f, 0.95f);
+            rect_outline(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 1.f, 0.35f, 0.37f, 0.42f, 1.f);
+            for (uint32_t i = 0; i < clk_n_; ++i) {
+                float fx = scrub_rect_[0] + (i * clk_period_ / clk_total_) * scrub_rect_[2];
+                bool cur = (i == clk_cur_);
+                rect(fx, bar_y + 2, 2.f, bar_h - 4,
+                     cur ? 0.30f : 0.45f, cur ? 0.60f : 0.47f, cur ? 1.00f : 0.52f, 1.f);
+            }
+            // the playhead (loops over the show's total)
+            double lt = clk_total_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : 0.0;
+            float px = scrub_rect_[0] + static_cast<float>(lt / clk_total_) * scrub_rect_[2];
+            rect(px - 1, bar_y - 2, 3, bar_h + 4, 1.f, 1.f, 1.f, 1.f);
+            // per-loop marker labels: current joint's name over its window
+            char jb[96];
+            snprintf(jb, sizeof(jb), "joint %u/%u: %s  (%.1f s windows)", clk_cur_ + 1, clk_n_,
+                     clk_name_.c_str(), clk_period_);
+            text(x, bar_y + bar_h + 6, jb, 0.62f, 0.66f, 0.74f, 1.f);
         }
     }
 }

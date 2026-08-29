@@ -1089,6 +1089,56 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/show" && method == "POST") {
+            // THE STUDIO CLOCK (D1): the timeline's HTTP twin.
+            // {"playing":bool, "time":T, "speed":S, "step":N} — step is N frames
+            // of exactly 1/240 s relative to the current time (pause first to
+            // step deterministically; the decree: every frame, not just extremes).
+            if (g_engine) {
+                if (req_body.find("\"playing\"") != std::string::npos)
+                    g_engine->show_playing_.store(get_bool(req_body, "playing", true));
+                if (req_body.find("\"speed\"") != std::string::npos) {
+                    double sp = get_double(req_body, "speed", 1.0);
+                    if (sp > 0.0 && sp <= 16.0) g_engine->show_speed_.store(sp);
+                }
+                if (req_body.find("\"time\"") != std::string::npos) {
+                    double t = get_double(req_body, "time", 0.0);
+                    if (t < 0.0) t = 0.0;
+                    g_engine->show_scrub_.store(t);
+                }
+                if (req_body.find("\"step\"") != std::string::npos) {
+                    double n = get_double(req_body, "step", 0.0);
+                    double t = g_engine->show_time_.load() + n / 240.0;
+                    if (t < 0.0) t = 0.0;
+                    g_engine->show_scrub_.store(t);
+                }
+            }
+            body = std::string("{\"ok\":true,\"time\":")
+                 + std::to_string(g_engine ? g_engine->show_time_.load() : 0.0) + "}";
+            content_type = "application/json";
+        } else if (p == "/show" && method == "GET") {
+            if (g_engine) {
+                double t = g_engine->show_time_.load();
+                float per = g_engine->show_period();
+                uint32_t nj = g_engine->show_joint_count();
+                uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
+                body = std::string("{\"playing\":") + (g_engine->show_playing_.load() ? "true" : "false")
+                     + ",\"time\":" + std::to_string(t)
+                     + ",\"speed\":" + std::to_string(g_engine->show_speed_.load())
+                     + ",\"n_joints\":" + std::to_string(nj)
+                     + ",\"period\":" + std::to_string(per)
+                     + ",\"total\":" + std::to_string(nj * static_cast<double>(per))
+                     + ",\"current\":\"" + g_engine->show_joint_name(cur) + "\""
+                     + ",\"theta\":" + std::to_string(g_engine->show_current_theta())
+                     + ",\"joints_loaded\":" + (g_engine->joints_loaded() ? "true" : "false");
+                float re_ = 0.f, rf_ = 0.f;
+                g_engine->show_current_rom(re_, rf_);
+                body += ",\"rom_ext\":" + std::to_string(re_)
+                     +  ",\"rom_flex\":" + std::to_string(rf_) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/studio" && method == "POST") {
             // THE ENGINE STUDIO: the F1 toggle's HTTP twin (agents can't press keys)
             if (g_engine) {

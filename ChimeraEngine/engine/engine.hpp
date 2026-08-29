@@ -188,6 +188,26 @@ public:
     StudioUI ui_;
     void ui_toggle() { ui_.visible = !ui_.visible; }
 
+    // ── THE STUDIO CLOCK (D1 — the timeline) ────────────────────────────────
+    // The show's time is a PARAMETER, not a wall clock: play/pause/speed are
+    // atomics set from the HTTP thread; show_time_ accumulates on the render
+    // thread inside frame(); a scrub is a pending target the render thread
+    // consumes. The joints SHOW poses from show_time_ — a paused clock is a
+    // frozen pose, a scrubbed clock is an exact pose (the "every frame, not
+    // just extremes" decree: frame-step is exactly 1/240 s).
+    std::atomic<bool>     show_playing_{true};
+    std::atomic<double>   show_speed_{1.0};
+    std::atomic<double>   show_time_{0.0};
+    std::atomic<double>   show_scrub_{-1.0};         // >= 0: pending scrub target
+    // Show metadata for the timeline panel + /show (render-thread owned reads):
+    uint32_t    show_joint_count() const { return j_n_joints_; }
+    float       show_period() const { return j_sweep_period_; }
+    std::string show_joint_name(uint32_t i) const {
+        return i < j_names_.size() ? j_names_[i] : std::string("?");
+    }
+    double      show_current_theta();                // current joint's theta, degrees
+    void        show_current_rom(float& ext, float& flex) const;  // current joint's ROM, degrees
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);
@@ -215,6 +235,7 @@ private:
     VkDescriptorPool joints_desc_pool_ = VK_NULL_HANDLE;
     VkDescriptorSet joints_desc_set_ = VK_NULL_HANDLE;
     std::chrono::steady_clock::time_point joints_t0_;
+    std::chrono::steady_clock::time_point show_last_{};   // D1: last frame's stamp (render thread)
     float           j_sweep_period_ = 4.0f;      // seconds per joint in the show
 
 private:
