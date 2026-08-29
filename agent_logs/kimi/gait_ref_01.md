@@ -130,3 +130,116 @@ Torque is unavailable in CPU (no hinge solve), so the packet's own direct proxy 
 - **G4 transition/hysteresis re-run** with real λ — the membrane's walk→trot prediction lives or dies there.
 - **COT anchor + W_stride judgement** — needs mass, stride distance, hinge torque.
 - **w's real experiment** — footfall-direction variance from real contacts.
+
+---
+
+# H7 Stage 2 — Engine Port: the march becomes a walk (2026-08-29, kimi-code k3-256k)
+
+**Spec:** H7 stage-2 brief — port the stage-1 golden run (`.tmp/gait_ref.py`) to the
+engine bit-exactly, drive the knees from it, B15-style gate, one time-stream.
+
+## Step 0 — which component was driving the pose
+
+TWO time-streams were live (the duplicate-driver fight the brief warned about):
+
+1. **The engine's `hinge.comp` kernel** — engaged at engine boot via
+   `.tmp/hinge_setup.py` (`Hinge engaged: 18459 verts, period 4.0s, ROM L 144.9
+   R 114.8 deg` in `engine_v12.log` — note the **stale pre-H6 ROM**; the hinge
+   kernel rewrites every vertex each frame *after* any driver write, so it owned
+   the visible pose).
+2. **`.tmp/leg_move_v2.py` (driver_v15)** — posting `/mesh_bin` vertex updates at
+   84/s that were clobbered every frame by (1): pure waste, plus the fight risk.
+
+Both were killed for the restart; after the rebuild the ONLY time-stream is the
+engine's (hinge engaged with the current H6 ROM 145.39/140.75, gait driving it).
+
+## The transcendental problem — and its solution
+
+The pinned schedule (fixed dt = 1e-3, fixed-order RK4, fixed edge order, seeded
+ICs, pairwise-sum tree measured `((s0+s1)+(s2+s3))+((s4+s5)+(s6+s7))`) is
+correctly-rounded-op replication — the B15 pattern. The one hard wall: `sin`/`cos`
+are **not** correctly rounded by anyone. Measured on this box:
+
+- `np.sin` ≡ `math.sin`, `np.cos` ≡ `math.cos` (0 mismatches / 200k) — one
+  implementation: **ucrtbase.dll's**, and it is **not correctly rounded**
+  (~3% of inputs 1 ULP off mpmath-CR) and **not fdlibm** (~3.4% off musl's
+  kernel). A correctly-rounded or fdlibm shader loses the gate by construction.
+- The DLL ships no source, but the machine code is the spec. `sin @0xaba70`,
+  `cos @0xa7730`, reduction `@0xab910`: an ISA-flag branch (runtime value 3)
+  selects an **FMA path** — Cody-Waite reduction (magic-number rounding,
+  3-word π/2, exact error terms) + degree-6 FMA Horner polynomials. Transcribed
+  op-for-op: Python twin `.tmp/ucrt_trig.py` validated **0 mismatches over
+  2,000,010 values** across every code path (tiny/small/med/big/edges, |x| to
+  1e6) against the live DLL, then ported to GLSL f64 (`fma()`, `precise`,
+  constants uploaded as raw f64 bits). Boundary named: the [2e7, ∞) Payne-Hanek
+  path is not ported — φ passes 2e7 rad only after ~30 days of continuous gait
+  at ω = 2.5π.
+
+## What was built
+
+- **`ChimeraEngine/engine/shaders/gait.comp`** — the CPG as a CA-field kernel:
+  one workgroup × 8 invocations = one RK4 step (barrier-synced stages), Owaki
+  surrogate load + Sakaguchi coupling in fixed edge order, phase ring record +
+  θ mirror out. The UCRT trig above.
+- **Engine integration** (`engine.cpp/.hpp`, `main.cpp`): the **gait clock** on
+  the water clock's pattern — `/gait_bin` (constants + seeded φ₀, bit-exact
+  upload), POST `/gait {on, omega, steps}` (omega parsed as **double** — a
+  32-bit round would break the gate), GET `/gait`, GET `/gait_state` (16 MiB
+  ring readback). Steps recorded into the frame's command buffer before the
+  hinge dispatch; `hinge.comp` gained a theta mode (`flags&1`: pose from
+  θ_L/θ_R instead of the open-loop cosine — the gait replaces the hinge's
+  phase source; CPU fallback `pose_hinge` same). Hips/elbows placeholder-inert
+  per stage 1.
+- **`.tmp/gait_setup.py`** (constants + ICs upload) and **`.tmp/gait_verify.py`**
+  (the gate + walk captures).
+
+## The gate (B15-style)
+
+Engine gait, fresh from the golden seed, ω = 2.5π, N = 25,000 steps (25 s,
+~30 strides) vs `.tmp/gait_ref.py` run for the same N/seed/ω:
+
+**max ULP over 25,000 × 8 phases = 0 — PASS, bit-identical.** Machine JSON:
+`.tmp/gait_ref_out/engine_gate.json`.
+
+## The walk
+
+- θ series over a stride (engine status reads): **θ_L 2.2…130.0°, θ_R 0.4…124.7°,
+  antiphase** — the canonical lateral-sequence walk in the two measured hind
+  knees, no gallop, no in-phase march.
+- `/frame` captures (`.tmp/gait_walk/walk_00…09.png`, operator's camera
+  untouched — tight on the legs): the visible leg cycles full extension
+  (foot planted) → deep flexion (heel-to-butt) over the stride; the antiphase
+  alternation is the numeric series above.
+- **FPS 299–300 at the cap, ft avg 0.26 ms** with the gait stepping 3 steps/frame
+  — identical to the pre-port baseline (the frost GT batch was running
+  concurrently throughout; brief FPS dips only during the 16 MiB gate readback).
+
+## Honest status of G3 (load feedback) — still BLOCKED, named
+
+Unchanged from stage 1, and now the membrane's critical path: G3's real
+`N_i` = sole-polygon normal impulse λ from the **deterministic contact solve
+does not exist yet**. The stance-depth surrogate (`N_i = N0·s_i/Σs`,
+`N0 = 2ω_ref/σ` derived) still stands in, flagged. Waiting on it: the estimator
+A-vs-B experiment (impulse vs penetration proxy), band re-measurement, the
+mandatory G4 ω-sweep re-run (stage-1 falsification of Δω_h > 0 was at the CPU
+tier with the surrogate — the walk→trot prediction lives or dies on real λ),
+the w-selection experiment with real footfalls, and the COT anchor.
+
+## Contradictions / notices found this stage
+
+1. **The live engine marched on stale pre-H6 ROM** (144.9/114.8 engaged at boot)
+   while H6's corrected 145.39/140.75 was the law — fixed by the re-engage;
+   noted because any visual judgment of "the march" before today was of the old
+   ROM.
+2. **UCRT's sin/cos are ~1 ULP implementations that are neither correctly
+   rounded nor fdlibm** — any "use a good libm in the shader" plan would have
+   silently failed the 0-ULP gate; the disassembly was the only honest path.
+3. **The dead-code trap in reverse engineering:** UCRT's tiny-|x| path computes
+   `x·(1−2⁻⁵³)+1.0` into xmm1 purely to raise FP flags — the return value
+   (xmm0) is just `x`. Reading the flags-only computation as the result would
+   have produced a "sin(1e-9) = 1.0" port.
+4. **`cos` takes its big path at |x| > π/4 (strict) while `sin` uses ≥** — a
+   one-bit boundary asymmetry that matters exactly at π/4.
+5. The gate's naive (branch-cut-blind) hind-knee lag statistic reads
+   −0.0075 ± 2.9 rad on a π-locked pair — the same artifact stage 1 documented;
+   circular stats give the true −0.4997 cyc. Not re-litigated.

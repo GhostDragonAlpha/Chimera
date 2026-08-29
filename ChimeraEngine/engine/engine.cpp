@@ -589,6 +589,21 @@ void Engine::shutdown() {
     if (hinge_wL_buf_)    { vkDestroyBuffer(device_, hinge_wL_buf_, nullptr);   vkFreeMemory(device_, hinge_wL_mem_, nullptr); }
     if (hinge_wR_buf_)    { vkDestroyBuffer(device_, hinge_wR_buf_, nullptr);   vkFreeMemory(device_, hinge_wR_mem_, nullptr); }
 
+    // gait CPG resources
+    if (gait_pipe_)        vkDestroyPipeline(device_, gait_pipe_, nullptr);
+    if (gait_layout_)      vkDestroyPipelineLayout(device_, gait_layout_, nullptr);
+    if (gait_desc_layout_) vkDestroyDescriptorSetLayout(device_, gait_desc_layout_, nullptr);
+    if (gait_desc_pool_)   vkDestroyDescriptorPool(device_, gait_desc_pool_, nullptr);
+    if (gait_mod_)         vkDestroyShaderModule(device_, gait_mod_, nullptr);
+    if (gait_consts_buf_) { vkDestroyBuffer(device_, gait_consts_buf_, nullptr); vkFreeMemory(device_, gait_consts_mem_, nullptr); }
+    if (gait_edges_buf_)  { vkDestroyBuffer(device_, gait_edges_buf_, nullptr);  vkFreeMemory(device_, gait_edges_mem_, nullptr); }
+    if (gait_phase_buf_)  { vkDestroyBuffer(device_, gait_phase_buf_, nullptr);  vkFreeMemory(device_, gait_phase_mem_, nullptr); }
+    if (gait_ring_buf_)   { vkDestroyBuffer(device_, gait_ring_buf_, nullptr);   vkFreeMemory(device_, gait_ring_mem_, nullptr); }
+    if (gait_theta_buf_)  { if (gait_theta_map_) vkUnmapMemory(device_, gait_theta_mem_);
+                            vkDestroyBuffer(device_, gait_theta_buf_, nullptr);  vkFreeMemory(device_, gait_theta_mem_, nullptr); }
+    if (gait_ring_rb_buf_){ if (gait_ring_rb_map_) vkUnmapMemory(device_, gait_ring_rb_mem_);
+                            vkDestroyBuffer(device_, gait_ring_rb_buf_, nullptr);vkFreeMemory(device_, gait_ring_rb_mem_, nullptr); }
+
     if (desc_pool_)  vkDestroyDescriptorPool(device_, desc_pool_, nullptr);
     if (desc_layout_) vkDestroyDescriptorSetLayout(device_, desc_layout_, nullptr);
 
@@ -1264,7 +1279,7 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                 VkPushConstantRange pcr{};
                 pcr.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
                 pcr.offset = 0;
-                pcr.size = 3 * 16 + 6 * 4;   // vec4 JL/JR/axis + 5 floats + uint
+                pcr.size = 3 * 16 + 9 * 4;   // vec4 JL/JR/axis + 7 floats + 2 uints
                 VkPipelineLayoutCreateInfo plci{};
                 plci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
                 plci.setLayoutCount = 1;
@@ -1338,12 +1353,18 @@ void Engine::stop_hinge() {
 // theta * w; normals rotate identically (records are pos3 nrm3 col3, stride 9).
 void Engine::pose_hinge() {
     float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
-    const float two_pi = 6.28318530718f;
-    float ph = fmodf(t, hinge_period_) / hinge_period_;
-    float bL = 0.5f - 0.5f * cosf(two_pi * ph);
-    float bR = 0.5f - 0.5f * cosf(two_pi * ph + hinge_phaseR_);
-    float thL = bL * hinge_romL_ * 0.01745329251f;   // deg -> rad
-    float thR = bR * hinge_romR_ * 0.01745329251f;
+    float thL_deg, thR_deg;
+    if (gait_on_.load(std::memory_order_relaxed) && gait_loaded_) {
+        double tL, tR; gait_theta(tL, tR);          // H7: the gait CPG commands the knees
+        thL_deg = static_cast<float>(tL); thR_deg = static_cast<float>(tR);
+    } else {
+        const float two_pi = 6.28318530718f;
+        float ph = fmodf(t, hinge_period_) / hinge_period_;
+        thL_deg = (0.5f - 0.5f * cosf(two_pi * ph)) * hinge_romL_;
+        thR_deg = (0.5f - 0.5f * cosf(two_pi * ph + hinge_phaseR_)) * hinge_romR_;
+    }
+    float thL = thL_deg * 0.01745329251f;   // deg -> rad
+    float thR = thR_deg * 0.01745329251f;
 
     float* buf = static_cast<float*>(tri_vmap_);
     const float* rest = hinge_rest_.data();
@@ -1378,6 +1399,148 @@ void Engine::pose_hinge() {
     VkBufferCopy bc{}; bc.size = hinge_rest_.size() * sizeof(float);
     vkCmdCopyBuffer(cb, tri_staging_buf_, tri_vbuf_, 1, &bc);
     end_single_time_cmd(cb);
+}
+
+// ── THE GAIT CPG ON THE CA FIELD (H7 stage 2) ────────────────────────────────
+// Port of .tmp/gait_ref.py (the golden CPU reference). Schedule: per engine
+// tick, one workgroup of 8 invocations runs one fixed-order RK4 step
+// (barrier-synced stages) and records the 8 phases into the ring. The hinge
+// pose path reads thetaL/thetaR from the host-visible mirror the kernel
+// maintains — the gait replaces the hinge's open-loop cosine clock.
+
+static bool w_make_pipeline(VkDevice device, const char* spv_path, uint32_t n_bindings,
+                            uint32_t pc_size, VkShaderModule& mod,
+                            VkDescriptorSetLayout& dsl, VkPipelineLayout& layout,
+                            VkPipeline& pipe);
+
+void Engine::gait_theta(double& tL, double& tR) const {
+    if (gait_theta_map_) {
+        const volatile double* m = static_cast<const volatile double*>(gait_theta_map_);
+        tL = m[0]; tR = m[1];
+    } else {
+        tL = tR = 0.0;
+    }
+}
+
+bool Engine::load_gait(const std::vector<double>& consts, const std::vector<int32_t>& edges,
+                       const double phi0[8], const double theta0[2]) {
+    if (consts.size() < 37 || edges.size() < 16) {
+        fprintf(stderr, "gait: bad setup (%zu consts, %zu edges)\n", consts.size(), edges.size());
+        return false;
+    }
+    vkDeviceWaitIdle(device_);
+
+    upload_buffer(consts.data(), consts.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, gait_consts_buf_, gait_consts_mem_);
+    upload_buffer(edges.data(), edges.size() * sizeof(int32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, gait_edges_buf_, gait_edges_mem_);
+    upload_buffer(phi0, 8 * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, gait_phase_buf_, gait_phase_mem_);
+
+    // record ring (device-local) + host-visible readback
+    VkDeviceSize ring_sz = static_cast<VkDeviceSize>(gait_ring_cap_) * 8 * sizeof(double);
+    {
+        std::vector<double> zeros(static_cast<size_t>(gait_ring_cap_) * 8, 0.0);
+        upload_buffer(zeros.data(), ring_sz,
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                      gait_ring_buf_, gait_ring_mem_);
+    }
+    {
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = ring_sz;
+        bci.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        if (gait_ring_rb_buf_) { if (gait_ring_rb_map_) vkUnmapMemory(device_, gait_ring_rb_mem_);
+                                 vkDestroyBuffer(device_, gait_ring_rb_buf_, nullptr);
+                                 vkFreeMemory(device_, gait_ring_rb_mem_, nullptr); }
+        vkCreateBuffer(device_, &bci, nullptr, &gait_ring_rb_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, gait_ring_rb_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &gait_ring_rb_mem_);
+        vkBindBufferMemory(device_, gait_ring_rb_buf_, gait_ring_rb_mem_, 0);
+        vkMapMemory(device_, gait_ring_rb_mem_, 0, ring_sz, 0, &gait_ring_rb_map_);
+    }
+    // theta mirror: host-visible coherent, the kernel writes it every step
+    {
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = 16;
+        bci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        if (gait_theta_buf_) { if (gait_theta_map_) vkUnmapMemory(device_, gait_theta_mem_);
+                               vkDestroyBuffer(device_, gait_theta_buf_, nullptr);
+                               vkFreeMemory(device_, gait_theta_mem_, nullptr); }
+        vkCreateBuffer(device_, &bci, nullptr, &gait_theta_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, gait_theta_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &gait_theta_mem_);
+        vkBindBufferMemory(device_, gait_theta_buf_, gait_theta_mem_, 0);
+        vkMapMemory(device_, gait_theta_mem_, 0, 16, 0, &gait_theta_map_);
+        std::memcpy(gait_theta_map_, theta0, 16);   // theta(phi0): no snap-to-rest on enable
+    }
+
+    if (!w_make_pipeline(device_, "shaders/gait.spv", 5, 16,
+                         gait_mod_, gait_desc_layout_, gait_layout_, gait_pipe_)) return false;
+    {
+        VkDescriptorPoolSize ps{};
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        ps.descriptorCount = 5;
+        VkDescriptorPoolCreateInfo dpci{};
+        dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        dpci.maxSets = 1;
+        dpci.poolSizeCount = 1;
+        dpci.pPoolSizes = &ps;
+        vkCreateDescriptorPool(device_, &dpci, nullptr, &gait_desc_pool_);
+        VkDescriptorSetAllocateInfo dsai{};
+        dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        dsai.descriptorPool = gait_desc_pool_;
+        dsai.descriptorSetCount = 1;
+        dsai.pSetLayouts = &gait_desc_layout_;
+        vkAllocateDescriptorSets(device_, &dsai, &gait_desc_set_);
+
+        VkDescriptorBufferInfo infos[5] = {};
+        infos[0].buffer = gait_consts_buf_; infos[0].range = VK_WHOLE_SIZE;
+        infos[1].buffer = gait_edges_buf_;  infos[1].range = VK_WHOLE_SIZE;
+        infos[2].buffer = gait_phase_buf_;  infos[2].range = VK_WHOLE_SIZE;
+        infos[3].buffer = gait_ring_buf_;   infos[3].range = VK_WHOLE_SIZE;
+        infos[4].buffer = gait_theta_buf_;  infos[4].range = VK_WHOLE_SIZE;
+        VkWriteDescriptorSet w[5] = {};
+        for (int k = 0; k < 5; ++k) {
+            w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            w[k].dstSet = gait_desc_set_;
+            w[k].dstBinding = k;
+            w[k].descriptorCount = 1;
+            w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            w[k].pBufferInfo = &infos[k];
+        }
+        vkUpdateDescriptorSets(device_, 5, w, 0, nullptr);
+    }
+    gait_steps_total_.store(0);
+    gait_loaded_ = true;
+    printf("Gait CPG loaded: 8 oscillators, ring cap %u steps\n", gait_ring_cap_);
+    return true;
+}
+
+bool Engine::gait_download(std::vector<double>& out_ring) {
+    if (!gait_loaded_) return false;
+    VkDeviceSize ring_sz = static_cast<VkDeviceSize>(gait_ring_cap_) * 8 * sizeof(double);
+    vkDeviceWaitIdle(device_);
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy bc{}; bc.size = ring_sz;
+    vkCmdCopyBuffer(cb, gait_ring_buf_, gait_ring_rb_buf_, 1, &bc);
+    end_single_time_cmd(cb);
+    out_ring.resize(static_cast<size_t>(gait_ring_cap_) * 8);
+    std::memcpy(out_ring.data(), gait_ring_rb_map_, ring_sz);
+    return true;
 }
 
 // ── THE WATER SOLVER ON THE CA FIELD (B15) ──────────────────────────────────
@@ -3158,14 +3321,51 @@ bool Engine::frame() {
 
     // GPU hinge kernel — the first CA-field pass: per-vertex weight SSBO + engine
     // clock -> posed vertices, before the render pass reads the vertex buffer.
+
+    // ── THE GAIT CLOCK (H7 stage 2) — RK4 steps on the engine's own clock,
+    // recorded into THIS frame's command buffer (the water clock's pattern).
+    // The kernel's theta mirror feeds the hinge pose below; the phase ring is
+    // the /gait_state verification endpoint (B15-style bit-exactness gate).
+    if (gait_on_.load(std::memory_order_relaxed) && gait_loaded_) {
+        uint32_t nsteps = gait_steps_per_frame_.load(std::memory_order_relaxed);
+        double om = gait_omega_.load(std::memory_order_relaxed);
+        for (uint32_t s = 0; s < nsteps; ++s) {
+            struct GaitPC { double omega; uint32_t rec_index, pad; } gpc{};
+            gpc.omega = om;
+            gpc.rec_index = static_cast<uint32_t>(gait_steps_total_.load(std::memory_order_relaxed)
+                                                  % gait_ring_cap_);
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, gait_pipe_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, gait_layout_,
+                                    0, 1, &gait_desc_set_, 0, nullptr);
+            vkCmdPushConstants(cmd_bufs_[img_idx], gait_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                               0, sizeof(gpc), &gpc);
+            vkCmdDispatch(cmd_bufs_[img_idx], 1, 1, 1);
+            VkMemoryBarrier gmb{};
+            gmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            gmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            gmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+            vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                0, 1, &gmb, 0, nullptr, 0, nullptr);
+            gait_steps_total_.fetch_add(1, std::memory_order_relaxed);
+        }
+    }
+
     if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
-        struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time; uint32_t n; } hpc{};
+        struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;
+                         float thetaL, thetaR; uint32_t flags; uint32_t n; } hpc{};
         hpc.JL[0] = hinge_JL_[0]; hpc.JL[1] = hinge_JL_[1]; hpc.JL[2] = hinge_JL_[2];
         hpc.JR[0] = hinge_JR_[0]; hpc.JR[1] = hinge_JR_[1]; hpc.JR[2] = hinge_JR_[2];
         hpc.axis[0] = hinge_axis_[0]; hpc.axis[1] = hinge_axis_[1]; hpc.axis[2] = hinge_axis_[2];
         hpc.romL = hinge_romL_; hpc.romR = hinge_romR_;
         hpc.period = hinge_period_; hpc.phaseR = hinge_phaseR_;
         hpc.time = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+        bool gait_drives = gait_on_.load(std::memory_order_relaxed) && gait_loaded_;
+        if (gait_drives) {
+            double tL, tR; gait_theta(tL, tR);
+            hpc.thetaL = static_cast<float>(tL); hpc.thetaR = static_cast<float>(tR);
+        }
+        hpc.flags = gait_drives ? 1u : 0u;
         hpc.n = static_cast<uint32_t>(hinge_wL_.size());
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_layout_,

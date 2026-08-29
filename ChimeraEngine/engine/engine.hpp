@@ -101,6 +101,25 @@ public:
     // DEBUG: read back the indirect command + a slice of the water vertex buffer
     // (packed: [4 u32 indirect][floats...] as int32) — the W4 bring-up probe.
     bool water_vis_debug(std::vector<int32_t>& out, uint32_t max_floats);
+
+    // ── THE GAIT CPG ON THE CA FIELD (H7 stage 2 — port of .tmp/gait_ref.py) ──
+    // 8 oscillators, Owaki surrogate load + Sakaguchi coupling, fixed-order RK4
+    // at dt = 1e-3, float64 pinned schedule — the bit-exactness gate compares
+    // the recorded phase ring against the golden CPU run. The shader's sin/cos
+    // is an op-for-op port of ucrtbase.dll's FMA path (what np.sin/np.cos/
+    // math.sin all execute on this machine — measured).
+    bool load_gait(const std::vector<double>& consts, const std::vector<int32_t>& edges,
+                   const double phi0[8], const double theta0[2]);
+    // Copies the whole phase-record ring to the readback buffer and out.
+    bool gait_download(std::vector<double>& out_ring);
+    std::atomic<bool>     gait_on_{false};
+    std::atomic<uint32_t> gait_steps_per_frame_{3};
+    std::atomic<double>   gait_omega_{7.853981633974483};   // 2.5*pi (omega_ref)
+    std::atomic<uint64_t> gait_steps_total_{0};
+    bool gait_loaded() const { return gait_loaded_; }
+    // Latest commanded knee angles (deg), written by the gait kernel into a
+    // host-visible mirror; read per frame for the hinge pose + /gait status.
+    void gait_theta(double& tL, double& tR) const;
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -362,6 +381,24 @@ private:
     VkDescriptorSet  hinge_desc_set_ = VK_NULL_HANDLE;
     VkBuffer        hinge_rest_buf_ = VK_NULL_HANDLE, hinge_wL_buf_ = VK_NULL_HANDLE, hinge_wR_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  hinge_rest_mem_ = VK_NULL_HANDLE, hinge_wL_mem_ = VK_NULL_HANDLE, hinge_wR_mem_ = VK_NULL_HANDLE;
+
+    // gait CPG state (H7 stage 2)
+    bool            gait_loaded_ = false;
+    uint32_t        gait_ring_cap_ = 262144;      // 262144 steps * 8 f64 = 16 MiB
+    VkShaderModule  gait_mod_ = VK_NULL_HANDLE;
+    VkPipeline      gait_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout gait_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout gait_desc_layout_ = VK_NULL_HANDLE;
+    VkDescriptorPool gait_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet  gait_desc_set_ = VK_NULL_HANDLE;
+    VkBuffer        gait_consts_buf_ = VK_NULL_HANDLE, gait_edges_buf_ = VK_NULL_HANDLE;
+    VkBuffer        gait_phase_buf_ = VK_NULL_HANDLE, gait_ring_buf_ = VK_NULL_HANDLE;
+    VkBuffer        gait_theta_buf_ = VK_NULL_HANDLE, gait_ring_rb_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  gait_consts_mem_ = VK_NULL_HANDLE, gait_edges_mem_ = VK_NULL_HANDLE;
+    VkDeviceMemory  gait_phase_mem_ = VK_NULL_HANDLE, gait_ring_mem_ = VK_NULL_HANDLE;
+    VkDeviceMemory  gait_theta_mem_ = VK_NULL_HANDLE, gait_ring_rb_mem_ = VK_NULL_HANDLE;
+    void*           gait_theta_map_ = nullptr;    // host-visible f64[2]
+    void*           gait_ring_rb_map_ = nullptr;  // host-visible ring readback
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
     // ── FROST decode (H9) resources ──

@@ -68,6 +68,16 @@ static std::mutex g_water_mutex;
 static std::condition_variable g_water_cv;
 static bool g_water_pending = false, g_water_applied = false;
 
+// ── Pending gait request (H7 stage 2 CPG; same handoff) ─────────────────────
+struct GaitReq { int kind = 0;                       // 1 = load (gait_bin), 2 = download ring
+                 std::vector<double> consts; std::vector<int32_t> edges;
+                 double phi0[8] = {}; double theta0[2] = {};
+                 std::vector<double> ring; bool ok = false; };
+static GaitReq g_gait_req;
+static std::mutex g_gait_mutex;
+static std::condition_variable g_gait_cv;
+static bool g_gait_pending = false, g_gait_applied = false;
+
 // ── Pending frost request (H9 decode; same handoff) ─────────────────────────
 struct FrostReq { int kind = 0; std::vector<uint8_t> blob; std::vector<int32_t> data; bool ok = false; };
 static FrostReq g_frost_req;
@@ -125,6 +135,13 @@ static uint32_t get_uint(const std::string& body, const char* key, uint32_t def)
     if (p == std::string::npos) return def;
     while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
     try { return static_cast<uint32_t>(std::stoul(body.substr(p))); } catch (...) { return def; }
+}
+
+static double get_double(const std::string& body, const char* key, double def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    try { return std::stod(body.substr(p)); } catch (...) { return def; }
 }
 
 static std::string get_string(const std::string& body, const char* key) {
@@ -569,6 +586,106 @@ int main(int argc, char** argv) {
             }
             body = "{\"ok\":true}";
             content_type = "application/json";
+        } else if (p == "/gait_bin" && method == "POST") {
+            // Binary protocol (little-endian), H7 stage 2 CPG setup:
+            //   [u32 n_consts][u32 n_edges][f64 theta0L][f64 theta0R][f64 phi0 * 8]
+            //   [f64 consts * n_consts][i32 edges * n_edges]
+            if (req_body.size() < 88) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                const uint8_t* d = reinterpret_cast<const uint8_t*>(req_body.data());
+                auto rd_u32 = [&](size_t off) { uint32_t v; std::memcpy(&v, d + off, 4); return v; };
+                uint32_t nc = rd_u32(0), ne = rd_u32(4);
+                size_t expect = 8 + 16 + 64 + static_cast<size_t>(nc) * 8 + static_cast<size_t>(ne) * 4;
+                if (req_body.size() != expect || nc < 37 || ne < 16) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    {
+                        std::lock_guard<std::mutex> lk(g_gait_mutex);
+                        g_gait_req = GaitReq{};
+                        g_gait_req.kind = 1;
+                        std::memcpy(g_gait_req.theta0, d + 8, 16);
+                        std::memcpy(g_gait_req.phi0, d + 24, 64);
+                        g_gait_req.consts.resize(nc);
+                        std::memcpy(g_gait_req.consts.data(), d + 88, static_cast<size_t>(nc) * 8);
+                        g_gait_req.edges.resize(ne);
+                        std::memcpy(g_gait_req.edges.data(), d + 88 + static_cast<size_t>(nc) * 8,
+                                    static_cast<size_t>(ne) * 4);
+                        g_gait_pending = true; g_gait_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_gait_mutex);
+                    bool ok = g_gait_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_gait_applied; });
+                    body = ok && g_gait_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/gait" && method == "POST") {
+            // JSON {"on":bool, "steps":N, "omega":W} — flags only (atomics); the
+            // stepping happens on the render thread inside frame() (the water
+            // clock's pattern). "omega" parses as double: the bit-exactness gate
+            // needs the exact float64 omega_ref, not a 32-bit round.
+            auto find_bool = [&](const char* key, bool def) {
+                size_t pos = find_colon_after(req_body, key);
+                if (pos == std::string::npos) return def;
+                while (pos < req_body.size() && (req_body[pos] == ' ' || req_body[pos] == '\t')) ++pos;
+                if (req_body.compare(pos, 4, "true") == 0) return true;
+                if (req_body.compare(pos, 5, "false") == 0) return false;
+                return def;
+            };
+            bool on = find_bool("on", false);
+            uint32_t steps = get_uint(req_body, "steps", 3);
+            double omega = get_double(req_body, "omega", 7.853981633974483);
+            if (g_engine) {
+                bool was = g_engine->gait_on_.load();
+                g_engine->gait_steps_per_frame_.store(steps ? steps : 1);
+                g_engine->gait_omega_.store(omega);
+                if (on && !was) g_engine->gait_steps_total_.store(0);   // a fresh run
+                g_engine->gait_on_.store(on);
+            }
+            body = std::string("{\"ok\":true,\"steps_total\":")
+                 + std::to_string(g_engine ? g_engine->gait_steps_total_.load() : 0) + "}";
+            content_type = "application/json";
+        } else if (p == "/gait" && method == "GET") {
+            if (g_engine) {
+                double tL = 0, tR = 0; g_engine->gait_theta(tL, tR);
+                body = std::string("{\"loaded\":") + (g_engine->gait_loaded() ? "true" : "false")
+                     + ",\"on\":" + (g_engine->gait_on_.load() ? "true" : "false")
+                     + ",\"steps\":" + std::to_string(g_engine->gait_steps_per_frame_.load())
+                     + ",\"omega\":" + std::to_string(g_engine->gait_omega_.load())
+                     + ",\"steps_total\":" + std::to_string(g_engine->gait_steps_total_.load())
+                     + ",\"thetaL\":" + std::to_string(tL)
+                     + ",\"thetaR\":" + std::to_string(tR) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/gait_state" && method == "GET") {
+            // Binary: [u64 steps_total][u64 cap][f64 ring * cap * 8] — the phase
+            // series ring for the bit-exactness gate (B15 pattern).
+            {
+                std::lock_guard<std::mutex> lk(g_gait_mutex);
+                g_gait_req = GaitReq{};
+                g_gait_req.kind = 2;
+                g_gait_pending = true; g_gait_applied = false;
+            }
+            bool ok; std::vector<double> ring;
+            {
+                std::unique_lock<std::mutex> lk(g_gait_mutex);
+                g_gait_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_gait_applied; });
+                ok = g_gait_req.ok; ring = std::move(g_gait_req.ring);
+            }
+            if (ok && g_engine) {
+                uint64_t hdr[2] = { g_engine->gait_steps_total_.load(),
+                                    static_cast<uint64_t>(ring.size() / 8) };
+                std::string out(16 + ring.size() * 8, '\0');
+                std::memcpy(out.data(), hdr, 16);
+                std::memcpy(out.data() + 16, ring.data(), ring.size() * 8);
+                body = std::move(out);
+                content_type = "application/octet-stream";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no gait\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/water_vis_state" && method == "GET") {
             // DEBUG (W4 bring-up): [4 u32 indirect][floats of the water vertex buffer]
             {
@@ -949,6 +1066,21 @@ int main(int argc, char** argv) {
                                      g_hinge_req.period, g_hinge_req.phaseR);
                 }
                 g_hinge_pending = false; g_hinge_applied = true; g_hinge_cv.notify_all();
+            }
+        }
+
+        // Apply a pending gait request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_gait_mutex);
+            if (g_gait_pending) {
+                if (g_gait_req.kind == 1) {
+                    g_gait_req.ok = engine.load_gait(g_gait_req.consts, g_gait_req.edges,
+                                                     g_gait_req.phi0, g_gait_req.theta0);
+                    g_gait_req.consts.clear(); g_gait_req.consts.shrink_to_fit();
+                } else {
+                    g_gait_req.ok = engine.gait_download(g_gait_req.ring);
+                }
+                g_gait_pending = false; g_gait_applied = true; g_gait_cv.notify_all();
             }
         }
 
