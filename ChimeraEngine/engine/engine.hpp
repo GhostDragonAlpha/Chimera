@@ -80,6 +80,27 @@ public:
     // readback. Returns (final_sum, final_min).
     bool water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out);
     bool water_download(std::vector<int32_t>& out_states, uint32_t& n_states, uint32_t& n_cells);
+    // ── THE WATER CLOCK (H4: macro steps on the engine's clock, CA-field) ──
+    // Set from the HTTP thread, consumed on the render thread inside frame():
+    // while water_clock_on_, every frame records water_clock_steps_per_frame_
+    // macro steps with a CONSTANT source (a river's source doesn't stop — no
+    // finite upload table). States buffer slot 0 always holds the latest V so
+    // /water_state stays a verification endpoint; w_states_n_ never advances
+    // in clock mode (no cap exhaustion).
+    std::atomic<bool>     water_clock_on_{false};
+    std::atomic<uint32_t> water_clock_steps_per_frame_{1};
+    std::atomic<double>   water_clock_dt_{0.01};
+    std::atomic<int32_t>  water_clock_inj_target_{-1};
+    std::atomic<int32_t>  water_clock_inj_count_{0};
+    std::atomic<uint64_t> water_clock_steps_total_{0};   // bookkeeping (replaces w_states_n_)
+    // ── W4 surface displacement render (the visible river) ──
+    // The water surface IS the substrate triangulation, displaced: cell t ==
+    // whole-mesh face water_vis_tri_base_ + t (proven by .tmp/water_align_check.py).
+    std::atomic<bool>     water_vis_on_{false};
+    std::atomic<uint32_t> water_vis_tri_base_{0};
+    // DEBUG: read back the indirect command + a slice of the water vertex buffer
+    // (packed: [4 u32 indirect][floats...] as int32) — the W4 bring-up probe.
+    bool water_vis_debug(std::vector<int32_t>& out, uint32_t max_floats);
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -284,6 +305,22 @@ private:
     VkDescriptorPool w_desc_pool_ = VK_NULL_HANDLE;
     VkDescriptorSet w_depth_set_ = VK_NULL_HANDLE, w_color_set_ = VK_NULL_HANDLE, w_occ_set_ = VK_NULL_HANDLE;
     VkFence         w_fence_ = VK_NULL_HANDLE;
+    // Records ONE macro step (inject+depth pre-pass -> per-color Gauss-Seidel ->
+    // occ post-pass, barrier-separated) into an EXISTING command buffer — no
+    // submit/fence/readback. Shared by water_run (batch path) and the clock.
+    void water_record_macro_step(VkCommandBuffer cb, double dt_macro,
+                                 int32_t inj_target, int32_t inj_count);
+    // ── W4 water-vis resources (displaced-surface render) ──
+    VkShaderModule  w_vis_mod_ = VK_NULL_HANDLE;
+    VkPipeline      w_vis_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout w_vis_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout w_vis_dsl_ = VK_NULL_HANDLE;
+    VkDescriptorSet w_vis_set_ = VK_NULL_HANDLE;   // 4th set out of w_desc_pool_
+    VkBuffer        w_vis_vbuf_ = VK_NULL_HANDLE, w_vis_indirect_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  w_vis_vmem_ = VK_NULL_HANDLE, w_vis_indirect_mem_ = VK_NULL_HANDLE;
+    uint32_t        w_vis_cap_verts_ = 0;          // 3 * n_cells
+    bool            water_vis_desc_dirty_ = false; // mesh buffers recreated -> rebind
+    void            water_vis_rebind();            // (re)point the vis set at the live mesh buffers
     bool            hinge_active_ = false;
     std::vector<float> hinge_rest_;           // rest vertex records (stride 9)
     std::vector<float> hinge_wL_, hinge_wR_;  // per-vertex blend weights

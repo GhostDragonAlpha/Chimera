@@ -1160,9 +1160,10 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     mesh_cpu_ = verts;
     tri_vfloats_ = verts.size();
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
-                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
+                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, tri_ibuf_, tri_imem_);
     tri_idx_count_ = icount;
     has_mesh_ = true;
+    water_vis_desc_dirty_ = true;   // buffers recreated -> the water-vis set must rebind (H4)
     // Measure the bounding sphere about the origin (the camera target) — the
     // zoom floor derives from THIS, so the near plane can never slice the
     // mesh no matter how far in the operator scrolls. Vertex stride = 9
@@ -1503,27 +1504,50 @@ bool Engine::load_water(const WaterUpload& up) {
     if (!w_make_pipeline(device_, "shaders/water_depth.spv", 3, 24, w_depth_mod_, w_depth_dsl_, w_depth_layout_, w_depth_pipe_)) return false;
     if (!w_make_pipeline(device_, "shaders/water_color.spv", 9, 48, w_color_mod_, w_color_dsl_, w_color_layout_, w_color_pipe_)) return false;
     if (!w_make_pipeline(device_, "shaders/water_occ.spv", 2, 8, w_occ_mod_, w_occ_dsl_, w_occ_layout_, w_occ_pipe_)) return false;
+    // W4 surface displacement (optional: the solver must not depend on the vis path)
+    if (!w_make_pipeline(device_, "shaders/water_vis.spv", 6, 24, w_vis_mod_, w_vis_dsl_, w_vis_layout_, w_vis_pipe_)) {
+        fprintf(stderr, "water_vis: pipeline missing — vis disabled, solver unaffected\n");
+        w_vis_pipe_ = VK_NULL_HANDLE;
+    }
+
+    // W4 vis buffers: 3 verts (9 floats each) per potentially-wet cell + the
+    // indirect-draw command ({vertexCount=0, instanceCount=1, 0, 0} — frame()
+    // refills vertexCount via vkCmdFillBuffer; upload_buffer adds TRANSFER_DST).
+    w_vis_cap_verts_ = 3 * up.n_cells;
+    if (w_vis_pipe_ != VK_NULL_HANDLE) {
+        std::vector<float> vzeros(static_cast<size_t>(w_vis_cap_verts_) * 9, 0.0f);
+        upload_buffer(vzeros.data(), vzeros.size() * sizeof(float),
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                      w_vis_vbuf_, w_vis_vmem_);
+        uint32_t ind_init[4] = { 0, 1, 0, 0 };
+        upload_buffer(ind_init, sizeof(ind_init),
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT,
+                      w_vis_indirect_buf_, w_vis_indirect_mem_);
+    }
 
     // descriptor pool + sets
     VkDescriptorPoolSize ps{};
     ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    ps.descriptorCount = 14;
+    ps.descriptorCount = 20;
     if (w_desc_pool_) vkDestroyDescriptorPool(device_, w_desc_pool_, nullptr);
     VkDescriptorPoolCreateInfo dpci{};
     dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    dpci.maxSets = 3;
+    dpci.maxSets = 4;
     dpci.poolSizeCount = 1;
     dpci.pPoolSizes = &ps;
     vkCreateDescriptorPool(device_, &dpci, nullptr, &w_desc_pool_);
-    VkDescriptorSetLayout dsls[3] = { w_depth_dsl_, w_color_dsl_, w_occ_dsl_ };
-    VkDescriptorSet sets[3];
+    VkDescriptorSetLayout dsls[4] = { w_depth_dsl_, w_color_dsl_, w_occ_dsl_, w_vis_dsl_ };
+    VkDescriptorSet sets[4];
+    uint32_t n_sets = (w_vis_pipe_ != VK_NULL_HANDLE) ? 4 : 3;
     VkDescriptorSetAllocateInfo dsai{};
     dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     dsai.descriptorPool = w_desc_pool_;
-    dsai.descriptorSetCount = 3;
+    dsai.descriptorSetCount = n_sets;
     dsai.pSetLayouts = dsls;
     vkAllocateDescriptorSets(device_, &dsai, sets);
     w_depth_set_ = sets[0]; w_color_set_ = sets[1]; w_occ_set_ = sets[2];
+    w_vis_set_ = (n_sets == 4) ? sets[3] : VK_NULL_HANDLE;
+    water_vis_desc_dirty_ = true;   // mesh buffers not (yet) bound -> lazy rebind in frame()
 
     auto bind = [&](VkDescriptorSet set, uint32_t binding, VkBuffer buf) {
         VkDescriptorBufferInfo info{};
@@ -1564,6 +1588,50 @@ bool Engine::load_water(const WaterUpload& up) {
     return true;
 }
 
+void Engine::water_record_macro_step(VkCommandBuffer cb, double dt_macro,
+                                     int32_t inj_target, int32_t inj_count) {
+    auto barrier = [&]() {
+        VkMemoryBarrier mb{};
+        mb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        mb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        mb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+        vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &mb, 0, nullptr, 0, nullptr);
+    };
+
+    // 1. inject + depth pre-pass
+    struct { double Q; uint32_t n; int32_t inj_target, inj_count; uint32_t pad; } dpc{};
+    dpc.Q = w_Q_; dpc.n = w_n_cells_; dpc.inj_target = inj_target; dpc.inj_count = inj_count;
+    vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_pipe_);
+    vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_layout_, 0, 1, &w_depth_set_, 0, nullptr);
+    vkCmdPushConstants(cb, w_depth_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(dpc), &dpc);
+    vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
+    barrier();
+
+    // 2. per-color Gauss-Seidel dispatches in canonical color order
+    for (uint32_t c = 0; c < w_n_colors_; ++c) {
+        uint32_t e0 = w_color_start_[c], e1 = w_color_start_[c + 1];
+        if (e1 <= e0) continue;
+        struct { double dt, Q, g, cl; uint32_t off, tot, end, p1; } cpc{};
+        cpc.dt = dt_macro; cpc.Q = w_Q_; cpc.g = w_G_; cpc.cl = w_c_local_;
+        cpc.off = e0; cpc.tot = w_n_edges_; cpc.end = e1;
+        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_pipe_);
+        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_layout_, 0, 1, &w_color_set_, 0, nullptr);
+        vkCmdPushConstants(cb, w_color_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(cpc), &cpc);
+        vkCmdDispatch(cb, (e1 - e0 + 255) / 256, 1, 1);
+        barrier();
+    }
+
+    // 3. occ zero post-pass
+    struct { uint32_t n, pad; } opc{};
+    opc.n = w_n_cells_;
+    vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_pipe_);
+    vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_layout_, 0, 1, &w_occ_set_, 0, nullptr);
+    vkCmdPushConstants(cb, w_occ_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(opc), &opc);
+    vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
+    barrier();
+}
+
 bool Engine::water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out) {
     if (!water_loaded_) return false;
     if (w_states_n_ + n_macro > w_states_cap_) n_macro = w_states_cap_ - w_states_n_;
@@ -1580,54 +1648,17 @@ bool Engine::water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int6
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     vkBeginCommandBuffer(cb, &bbi);
 
-    auto barrier = [&]() {
-        VkMemoryBarrier mb{};
-        mb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-        mb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-        mb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
-        vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &mb, 0, nullptr, 0, nullptr);
-    };
-
     for (uint32_t step = 0; step < n_macro; ++step) {
-        // 1. inject + depth pre-pass
-        struct { double Q; uint32_t n; int32_t inj_target, inj_count; uint32_t pad; } dpc{};
-        dpc.Q = w_Q_; dpc.n = w_n_cells_; dpc.inj_target = -1; dpc.inj_count = 0;
+        // injection from the recorded upload table, indexed by absolute step
+        int32_t inj_target = -1, inj_count = 0;
         uint32_t inj_idx = (w_states_n_ - 1 + step);
         if (inj_idx * 2 + 1 < w_inj_.size()) {
-            dpc.inj_target = static_cast<int32_t>(w_inj_[inj_idx * 2]);
-            dpc.inj_count = static_cast<int32_t>(w_inj_[inj_idx * 2 + 1]);
+            inj_target = static_cast<int32_t>(w_inj_[inj_idx * 2]);
+            inj_count = static_cast<int32_t>(w_inj_[inj_idx * 2 + 1]);
         }
-        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_pipe_);
-        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_layout_, 0, 1, &w_depth_set_, 0, nullptr);
-        vkCmdPushConstants(cb, w_depth_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(dpc), &dpc);
-        vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
-        barrier();
+        water_record_macro_step(cb, dt_macro, inj_target, inj_count);
 
-        // 2. per-color Gauss-Seidel dispatches in canonical color order
-        for (uint32_t c = 0; c < w_n_colors_; ++c) {
-            uint32_t e0 = w_color_start_[c], e1 = w_color_start_[c + 1];
-            if (e1 <= e0) continue;
-            struct { double dt, Q, g, cl; uint32_t off, tot, end, p1; } cpc{};
-            cpc.dt = dt_macro; cpc.Q = w_Q_; cpc.g = w_G_; cpc.cl = w_c_local_;
-            cpc.off = e0; cpc.tot = w_n_edges_; cpc.end = e1;
-            vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_pipe_);
-            vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_layout_, 0, 1, &w_color_set_, 0, nullptr);
-            vkCmdPushConstants(cb, w_color_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(cpc), &cpc);
-            vkCmdDispatch(cb, (e1 - e0 + 255) / 256, 1, 1);
-            barrier();
-        }
-
-        // 3. occ zero post-pass
-        struct { uint32_t n, pad; } opc{};
-        opc.n = w_n_cells_;
-        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_pipe_);
-        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_layout_, 0, 1, &w_occ_set_, 0, nullptr);
-        vkCmdPushConstants(cb, w_occ_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(opc), &opc);
-        vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
-        barrier();
-
-        // 4. record the state
+        // record the state (batch verification path only)
         VkBufferCopy bc{};
         bc.srcOffset = 0;
         bc.dstOffset = static_cast<VkDeviceSize>(w_states_n_ + step) * w_n_cells_ * sizeof(int32_t);
@@ -1682,6 +1713,44 @@ bool Engine::water_download(std::vector<int32_t>& out_states, uint32_t& n_states
     return true;
 }
 
+// DEBUG readback for the W4 vis path: indirect draw command + a slice of the
+// water vertex buffer, packed into out (int32 view: [4 u32 indirect][floats...]).
+bool Engine::water_vis_debug(std::vector<int32_t>& out, uint32_t max_floats) {
+    if (!water_loaded_ || w_vis_indirect_buf_ == VK_NULL_HANDLE) return false;
+    VkDeviceSize vbytes = std::min<VkDeviceSize>(static_cast<VkDeviceSize>(max_floats) * 4,
+        static_cast<VkDeviceSize>(w_vis_cap_verts_) * 9 * sizeof(float));
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy c0{}; c0.size = 16;
+    vkCmdCopyBuffer(cb, w_vis_indirect_buf_, w_readback_buf_, 1, &c0);
+    VkBufferCopy c1{}; c1.srcOffset = 0; c1.dstOffset = 16; c1.size = vbytes;
+    vkCmdCopyBuffer(cb, w_vis_vbuf_, w_readback_buf_, 1, &c1);
+    end_single_time_cmd(cb);
+    const uint8_t* src = static_cast<const uint8_t*>(w_readback_map_);
+    const int32_t* as_i32 = reinterpret_cast<const int32_t*>(src);
+    out.assign(as_i32, as_i32 + 4 + vbytes / 4);
+    return true;
+}
+
+// (Re)point the water-vis descriptor set at the LIVE mesh buffers. /mesh_bin
+// full-loads recreate tri_vbuf_/tri_ibuf_; they set water_vis_desc_dirty_ and
+// frame() calls this lazily (only when both water and mesh are loaded).
+void Engine::water_vis_rebind() {
+    if (w_vis_set_ == VK_NULL_HANDLE || !water_loaded_ || !has_mesh_) return;
+    VkBuffer bufs[6] = { w_V_buf_, w_areas_buf_, tri_vbuf_, tri_ibuf_,
+                         w_vis_indirect_buf_, w_vis_vbuf_ };
+    VkWriteDescriptorSet w[6]{};
+    VkDescriptorBufferInfo infos[6]{};
+    for (uint32_t k = 0; k < 6; ++k) {
+        infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+        w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        w[k].dstSet = w_vis_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
+        w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        w[k].pBufferInfo = &infos[k];
+    }
+    vkUpdateDescriptorSets(device_, 6, w, 0, nullptr);
+    water_vis_desc_dirty_ = false;
+}
+
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                           uint32_t vcount, uint32_t icount) {
     vkDeviceWaitIdle(device_);
@@ -1713,6 +1782,8 @@ void Engine::destroy_triangle_resources() {
     if (tri_ibuf_) { vkDestroyBuffer(device_, tri_ibuf_, nullptr); vkFreeMemory(device_, tri_imem_, nullptr); tri_ibuf_ = VK_NULL_HANDLE; }
     if (ov_vbuf_) { vkDestroyBuffer(device_, ov_vbuf_, nullptr); vkFreeMemory(device_, ov_vmem_, nullptr); ov_vbuf_ = VK_NULL_HANDLE; }
     if (ov_ibuf_) { vkDestroyBuffer(device_, ov_ibuf_, nullptr); vkFreeMemory(device_, ov_imem_, nullptr); ov_ibuf_ = VK_NULL_HANDLE; }
+    if (w_vis_vbuf_) { vkDestroyBuffer(device_, w_vis_vbuf_, nullptr); vkFreeMemory(device_, w_vis_vmem_, nullptr); w_vis_vbuf_ = VK_NULL_HANDLE; }
+    if (w_vis_indirect_buf_) { vkDestroyBuffer(device_, w_vis_indirect_buf_, nullptr); vkFreeMemory(device_, w_vis_indirect_mem_, nullptr); w_vis_indirect_buf_ = VK_NULL_HANDLE; }
     if (rt_depth_view_)  { vkDestroyImageView(device_, rt_depth_view_, nullptr); rt_depth_view_ = VK_NULL_HANDLE; }
     if (rt_depth_image_) { vkDestroyImage(device_, rt_depth_image_, nullptr); rt_depth_image_ = VK_NULL_HANDLE; }
     if (rt_depth_mem_)   { vkFreeMemory(device_, rt_depth_mem_, nullptr); rt_depth_mem_ = VK_NULL_HANDLE; }
@@ -2801,6 +2872,76 @@ bool Engine::frame() {
             0, 1, &hmb, 0, nullptr, 0, nullptr);
     }
 
+    // ── THE WATER CLOCK (H4) — macro steps on the engine's own clock, recorded
+    // into THIS frame's command buffer (no submit/fence/readback per step, no
+    // HTTP). Constant source: a river's source doesn't stop. States slot 0
+    // always holds the latest V so /water_state stays the verification endpoint;
+    // w_states_n_ never advances here (no cap exhaustion).
+    if (water_clock_on_.load(std::memory_order_relaxed) && water_loaded_) {
+        uint32_t nsteps = water_clock_steps_per_frame_.load(std::memory_order_relaxed);
+        double cdt = water_clock_dt_.load(std::memory_order_relaxed);
+        int32_t it = water_clock_inj_target_.load(std::memory_order_relaxed);
+        int32_t ic = water_clock_inj_count_.load(std::memory_order_relaxed);
+        for (uint32_t s = 0; s < nsteps; ++s)
+            water_record_macro_step(cmd_bufs_[img_idx], cdt, it, ic);
+        water_clock_steps_total_.fetch_add(nsteps, std::memory_order_relaxed);
+        // copy the latest V into states slot 0 (transfer after the compute writes)
+        VkMemoryBarrier wmb{};
+        wmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        wmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        wmb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0, 1, &wmb, 0, nullptr, 0, nullptr);
+        VkBufferCopy wbc{};
+        wbc.size = static_cast<VkDeviceSize>(w_n_cells_) * sizeof(int32_t);
+        vkCmdCopyBuffer(cmd_bufs_[img_idx], w_V_buf_, w_states_buf_, 1, &wbc);
+        // transfer write -> shader read/write (next step / next frame reads V, not
+        // the states buffer — but water_vis below reads V this same frame)
+        VkMemoryBarrier wmb2{};
+        wmb2.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        wmb2.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        wmb2.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            0, 1, &wmb2, 0, nullptr, 0, nullptr);
+    }
+
+    // ── W4 surface displacement — build the water vertex buffer from the POSED
+    // mesh (runs after the hinge/clock compute, before the render pass reads it).
+    if (water_vis_on_.load(std::memory_order_relaxed) && water_loaded_ && has_mesh_
+        && w_vis_pipe_ != VK_NULL_HANDLE && w_vis_set_ != VK_NULL_HANDLE) {
+        if (water_vis_desc_dirty_) water_vis_rebind();
+        // zero indirect.vertexCount (instanceCount stays 1 from the init upload)
+        vkCmdFillBuffer(cmd_bufs_[img_idx], w_vis_indirect_buf_, 0, 4, 0);
+        VkMemoryBarrier fmb{};
+        fmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        fmb.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        fmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            0, 1, &fmb, 0, nullptr, 0, nullptr);
+        struct { double Q; uint32_t n, tri_base, cap; float tint; } vpc{};
+        vpc.Q = w_Q_; vpc.n = w_n_cells_;
+        vpc.tri_base = water_vis_tri_base_.load(std::memory_order_relaxed);
+        vpc.cap = w_vis_cap_verts_; vpc.tint = 0.0f;
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, w_vis_pipe_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, w_vis_layout_,
+                                0, 1, &w_vis_set_, 0, nullptr);
+        vkCmdPushConstants(cmd_bufs_[img_idx], w_vis_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                           0, sizeof(vpc), &vpc);
+        vkCmdDispatch(cmd_bufs_[img_idx], (w_n_cells_ + 255) / 256, 1, 1);
+        // compute write -> vertex attribute read + indirect-command read at the draw
+        VkMemoryBarrier vmb{};
+        vmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        vmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        vmb.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+            0, 1, &vmb, 0, nullptr, 0, nullptr);
+    }
+
     // GPU skinning: pose the splats (rest + weights + pose -> pos_buf_) when a pose was applied.
     // Runs BEFORE the sort so the depth keys are computed from the posed positions. Dirty-flag
     // gated: the posed buffer persists while the camera orbits (only the sort re-runs per frame).
@@ -2919,6 +3060,15 @@ bool Engine::frame() {
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &ovb, &ooff);
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ov_ibuf_, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], ov_idx_count_, 1, 0, 0, 0);
+        }
+        // W4 water surface: displaced substrate triangles (non-indexed, indirect —
+        // vertexCount was atomically compacted by water_vis.comp this frame).
+        if (water_vis_on_.load(std::memory_order_relaxed) && water_loaded_
+            && w_vis_pipe_ != VK_NULL_HANDLE && w_vis_vbuf_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
+            VkBuffer wvb = w_vis_vbuf_; VkDeviceSize woff = 0;
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &wvb, &woff);
+            vkCmdDrawIndirect(cmd_bufs_[img_idx], w_vis_indirect_buf_, 0, 1, 0);
         }
     } else {
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);

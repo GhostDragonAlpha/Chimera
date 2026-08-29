@@ -503,6 +503,87 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no water\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/water_clock" && method == "POST") {
+            // JSON {"on":bool, "steps":N, "dt":D, "inj_target":T, "inj_count":C} —
+            // flags only (atomics); the stepping itself happens on the render
+            // thread inside frame() (H4: the CA field runs on the engine's clock).
+            auto find_bool = [&](const char* key, bool def) {
+                size_t pos = find_colon_after(req_body, key);
+                if (pos == std::string::npos) return def;
+                while (pos < req_body.size() && (req_body[pos] == ' ' || req_body[pos] == '\t')) ++pos;
+                if (req_body.compare(pos, 4, "true") == 0) return true;
+                if (req_body.compare(pos, 5, "false") == 0) return false;
+                return def;
+            };
+            bool on = find_bool("on", false);
+            uint32_t steps = get_uint(req_body, "steps", 1);
+            double dt = static_cast<double>(get_float(req_body, "dt", 0.01f));
+            int32_t inj_target = static_cast<int32_t>(get_float(req_body, "inj_target", -1.0f));
+            int32_t inj_count  = static_cast<int32_t>(get_float(req_body, "inj_count", 0.0f));
+            if (g_engine) {
+                bool was = g_engine->water_clock_on_.load();
+                g_engine->water_clock_steps_per_frame_.store(steps ? steps : 1);
+                g_engine->water_clock_dt_.store(dt);
+                g_engine->water_clock_inj_target_.store(inj_target);
+                g_engine->water_clock_inj_count_.store(inj_count);
+                if (on && !was) g_engine->water_clock_steps_total_.store(0);  // a fresh run
+                g_engine->water_clock_on_.store(on);
+            }
+            body = std::string("{\"ok\":true,\"steps_total\":")
+                 + std::to_string(g_engine ? g_engine->water_clock_steps_total_.load() : 0) + "}";
+            content_type = "application/json";
+        } else if (p == "/water_clock" && method == "GET") {
+            if (g_engine) {
+                body = std::string("{\"on\":") + (g_engine->water_clock_on_.load() ? "true" : "false")
+                     + ",\"steps\":" + std::to_string(g_engine->water_clock_steps_per_frame_.load())
+                     + ",\"inj_target\":" + std::to_string(g_engine->water_clock_inj_target_.load())
+                     + ",\"inj_count\":" + std::to_string(g_engine->water_clock_inj_count_.load())
+                     + ",\"steps_total\":" + std::to_string(g_engine->water_clock_steps_total_.load()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/water_vis" && method == "POST") {
+            // JSON {"on":bool, "tri_base":B} — B = face offset of the water part
+            // inside the whole-mesh index buffer (proven by .tmp/water_align_check.py).
+            auto find_bool = [&](const char* key, bool def) {
+                size_t pos = find_colon_after(req_body, key);
+                if (pos == std::string::npos) return def;
+                while (pos < req_body.size() && (req_body[pos] == ' ' || req_body[pos] == '\t')) ++pos;
+                if (req_body.compare(pos, 4, "true") == 0) return true;
+                if (req_body.compare(pos, 5, "false") == 0) return false;
+                return def;
+            };
+            bool on = find_bool("on", false);
+            uint32_t tri_base = get_uint(req_body, "tri_base", 0);
+            if (g_engine) {
+                g_engine->water_vis_tri_base_.store(tri_base);
+                g_engine->water_vis_on_.store(on);
+            }
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/water_vis_state" && method == "GET") {
+            // DEBUG (W4 bring-up): [4 u32 indirect][floats of the water vertex buffer]
+            {
+                std::lock_guard<std::mutex> lk(g_water_mutex);
+                g_water_req = WaterReq{};
+                g_water_req.kind = 4;
+                g_water_pending = true; g_water_applied = false;
+            }
+            bool ok;
+            std::vector<int32_t> dbg;
+            {
+                std::unique_lock<std::mutex> lk(g_water_mutex);
+                g_water_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_water_applied; });
+                ok = g_water_req.ok; dbg = std::move(g_water_req.states);
+            }
+            if (ok) {
+                body.assign(reinterpret_cast<const char*>(dbg.data()), dbg.size() * 4);
+                content_type = "application/octet-stream";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no water vis\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/skin_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
             //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
@@ -769,6 +850,8 @@ int main(int argc, char** argv) {
                 } else if (g_water_req.kind == 2) {
                     g_water_req.ok = engine.water_run(g_water_req.n_macro, g_water_req.dt,
                                                       g_water_req.sum, g_water_req.mn);
+                } else if (g_water_req.kind == 4) {
+                    g_water_req.ok = engine.water_vis_debug(g_water_req.states, 512);
                 } else {
                     g_water_req.ok = engine.water_download(g_water_req.states,
                                                            g_water_req.ns, g_water_req.nc);
