@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdint>
 #include <map>
+#include "ui.hpp"
 
 struct EngineConfig {
     uint32_t width  = 1920;
@@ -180,6 +181,13 @@ public:
     bool frost_snapshot_pending() const { return frost_dbg_copy_recorded_; }
     bool frost_finish_snapshot(std::vector<int32_t>& out);  // [colors F*3][inputs F*14]
 
+    // ── THE ENGINE STUDIO (A1/A2/B1/B2 — docs/THE_ENGINE_STUDIO.md) ─────────
+    // The overlay: immediate-mode panels drawn ONLY into the swapchain pass
+    // (the dyad's /frame stays pixel-clean — the presentation-layer law).
+    // F1 toggles; the viewport stays live and orbitable underneath.
+    StudioUI ui_;
+    void ui_toggle() { ui_.visible = !ui_.visible; }
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);
@@ -190,6 +198,7 @@ public:
 
 private:
     // H15 joints kernel state
+    bool frame_idle_ui();   // THE STUDIO: present ONLY the overlay (nothing loaded — the onboarding case)
     bool            joints_loaded_ = false;
     uint32_t        j_n_verts_ = 0, j_n_joints_ = 0;
     std::vector<std::string> j_names_;

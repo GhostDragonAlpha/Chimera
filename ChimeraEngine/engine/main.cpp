@@ -232,6 +232,10 @@ int main(int argc, char** argv) {
     }
     g_engine = &engine;
 
+    // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
+    // in the CWD — tools/studio_board.py writes it next to the exe.
+    if (argc > 2) engine.ui_.set_board_file(argv[2]);
+
     // ── HTTP server for Python shim communication ───────────────────────────────
     HttpServer server;
     bool http_ok = server.start(http_port, [&](const std::string& method, const std::string& path,
@@ -1085,6 +1089,17 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/studio" && method == "POST") {
+            // THE ENGINE STUDIO: the F1 toggle's HTTP twin (agents can't press keys)
+            if (g_engine) {
+                bool on = get_bool(req_body, "on", !g_engine->ui_.visible);
+                g_engine->ui_.visible = on;
+            }
+            body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
+            content_type = "application/json";
+        } else if (p == "/studio" && method == "GET") {
+            body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
@@ -1103,6 +1118,7 @@ int main(int argc, char** argv) {
     printf("Window: %ux%u, Press Ctrl+C to stop.\n", cfg.width, cfg.height);
     printf("Controls: Left-drag orbit | Scroll zoom | Right-drag pan\n");
     printf("          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle\n");
+    printf("          F1 THE ENGINE STUDIO overlay (pipeline board + live status)\n");
 
 #ifdef _WIN32
     SetConsoleCtrlHandler(handleCtrlC, TRUE);
@@ -1387,10 +1403,47 @@ int main(int argc, char** argv) {
         auto now = std::chrono::high_resolution_clock::now();
         double elapsed_s = std::chrono::duration_cast<std::chrono::microseconds>(now - last_time).count() / 1e6;
         if (elapsed_s >= 1.0) {
+            double fps_now = frame_count / elapsed_s;
+            double ft_avg_now = frame_count ? ft_sum / frame_count : 0.0;
             printf("FPS: %.0f (frame %d) | ft ms avg %.2f max %.2f | >16.7ms: %d >33ms: %d\n",
-                   frame_count / elapsed_s, frame_count,
-                   frame_count ? ft_sum / frame_count : 0.0, ft_max, ft_over16, ft_over33);
+                   fps_now, frame_count, ft_avg_now, ft_max, ft_over16, ft_over33);
             fflush(stdout);
+
+            // THE STUDIO: feed the STATUS panel the engine's own live rows
+            // (1 Hz is enough — the panel is an honest readout, not an oscilloscope)
+            if (g_engine) {
+                g_engine->ui_.set_fps(static_cast<float>(fps_now),
+                                      static_cast<float>(ft_avg_now), static_cast<float>(ft_max));
+                std::vector<std::string> lines;
+                char lb[192];
+                snprintf(lb, sizeof(lb), "mesh: %s | splats: %u",
+                         "see viewport", g_engine->particle_count());
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "hinge: %s", g_engine->hinge_active() ? "ACTIVE" : "off");
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "joints show: %s%s", g_engine->joints_loaded() ? "loaded" : "no pack",
+                         g_engine->joints_on_.load() ? " | LIVE" : "");
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "gait CPG: %s%s | steps %llu",
+                         g_engine->gait_loaded() ? "loaded" : "no pack",
+                         g_engine->gait_on_.load() ? " | RUNNING" : "",
+                         (unsigned long long)g_engine->gait_steps_total_.load());
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "water clock: %s | macro steps %llu",
+                         g_engine->water_clock_on_.load() ? "RUNNING" : "off",
+                         (unsigned long long)g_engine->water_clock_steps_total_.load());
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "volp-ARAP: %s | mode %s",
+                         g_engine->volp_loaded() ? "loaded" : "no pack",
+                         g_engine->volp_mode_.load() == 1 ? "volp" : "blend");
+                lines.push_back(lb);
+                snprintf(lb, sizeof(lb), "frost decode: %s | frames %llu",
+                         g_engine->frost_on_.load() ? "ON" : "off",
+                         (unsigned long long)g_engine->frost_frame_.load());
+                lines.push_back(lb);
+                g_engine->ui_.set_status_lines(lines);
+            }
+
             frame_count = 0;
             last_time = now;
             ft_sum = ft_max = 0.0; ft_over16 = ft_over33 = 0;

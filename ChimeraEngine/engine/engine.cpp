@@ -31,6 +31,10 @@ static bool       g_mouse_captured = false;
 static int        g_last_mx = 0, g_last_my = 0;
 static bool       g_keys[256] = {};     // current frame key state
 static Engine*    g_key_engine = nullptr;  // set in Engine::init so WndProc can reach pose toggles
+// THE ENGINE STUDIO: ui.cpp's one-shot font upload needs the engine's queue + a
+// command pool; init() publishes them here before ui_.init runs.
+VkQueue       g_ui_queue    = VK_NULL_HANDLE;
+VkCommandPool g_ui_cmd_pool = VK_NULL_HANDLE;
 // B1: WndProc records a pending window resize; frame() consumes it and rebuilds the
 // swapchain. Before this, WM_SIZE was never handled — resize() was dead code, and the
 // first OUT_OF_DATE froze the window forever while the loop kept logging FPS.
@@ -98,8 +102,29 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         if ((wp & 0xFF) == 'P' && !(lp & 0x40000000) && g_key_engine) {
             g_key_engine->toggle_pose();
         }
+        // F1: THE ENGINE STUDIO overlay (same edge-trigger law)
+        if ((wp & 0xFF) == VK_F1 && !(lp & 0x40000000) && g_key_engine) {
+            g_key_engine->ui_toggle();
+        }
     } else if (msg == WM_KEYUP || msg == WM_SYSKEYUP) {
         g_keys[wp & 0xFF] = false;
+    }
+
+    // THE STUDIO: the UI always sees the cursor (panel hover/drag state), and a
+    // press that lands on a panel is CONSUMED — it must never start a camera
+    // orbit underneath (the Blender law: panels are not transparent to input).
+    if (msg == WM_MOUSEMOVE && g_key_engine && g_key_engine->ui_.visible) {
+        g_key_engine->ui_.on_mouse_move((int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+    }
+    if (msg == WM_LBUTTONDOWN && g_key_engine && g_key_engine->ui_.visible) {
+        int mx = (int)(short)LOWORD(lp), my = (int)(short)HIWORD(lp);
+        if (g_key_engine->ui_.on_lbutton(mx, my, true)) {
+            if (g_key_engine->ui_.mouse_captured()) SetCapture(hwnd);  // border drag
+            return 0;
+        }
+    }
+    if (msg == WM_LBUTTONUP && g_key_engine && g_key_engine->ui_.visible) {
+        if (g_key_engine->ui_.on_lbutton(0, 0, false)) { ReleaseCapture(); return 0; }
     }
 
     // Left-mouse drag → orbit rotation
@@ -515,6 +540,21 @@ bool Engine::init(const EngineConfig& cfg) {
     // ── 12.6 GPU skinning (LBS pose over the splats) ────────────────────────────────
     if (!create_skin_pipeline()) return false;
 
+    // ── 12.7 THE ENGINE STUDIO (the overlay: font atlas, UI pipeline, framebuffers) ──
+    // Non-fatal by design: a UI failure must never take the renderer down with it.
+    {
+        g_ui_queue = queue_;
+        g_ui_cmd_pool = cmd_pool_;
+        uint32_t host_mt = find_mem_type(~0u, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                                                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        if (ui_.init(device_, phys_dev_, swap_fmt_, extent_.width, extent_.height, host_mt)) {
+            ui_.create_swap_resources(img_views_, extent_);
+            printf("THE ENGINE STUDIO: overlay ready (F1)\n");
+        } else {
+            fprintf(stderr, "studio: overlay init failed — continuing without UI\n");
+        }
+    }
+
 
     // ── 13. Buffers (will be resized in push_state) ──────────────────────────────────
     // pos_buf_, vel_buf_, acc_buf_ are created lazily on first push_state
@@ -543,6 +583,7 @@ bool Engine::init(const EngineConfig& cfg) {
 void Engine::shutdown() {
     vkDeviceWaitIdle(device_);
 
+    ui_.shutdown();   // THE STUDIO: before any pool/device teardown
     if (cmd_pool_)    vkDestroyCommandPool(device_, cmd_pool_,   nullptr);
     destroy_depth_resources();
     if (rt_framebuffer_) vkDestroyFramebuffer(device_, rt_framebuffer_, nullptr);
@@ -3517,7 +3558,14 @@ bool Engine::frame() {
         uint32_t prh = g_pending_resize_h.exchange(0);
         if (prw != 0 && prh != 0) resize(prw, prh);
     }
-    if (n_ == 0 && !has_mesh_) return true;
+    if (n_ == 0 && !has_mesh_) {
+        // THE STUDIO: with nothing loaded the 3D paths all idle — but the board
+        // is exactly what an incoming agent needs to see, so the overlay still
+        // presents (clear + UI pass only).
+        if (ui_.visible && ui_.ok()) return frame_idle_ui();
+        return true;
+    }
+    ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
     // Offscreen: render to rt_framebuffer_ and capture from rt_image_. No swapchain acquire, so
     // the /frame endpoint works even when the window is minimized (or entirely headless).
     // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
@@ -4137,10 +4185,24 @@ bool Engine::frame() {
                        swap_imgs_[sc_idx], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &blit, VK_FILTER_LINEAR);
 
-        transition_image_layout(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
-                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                                VK_ACCESS_TRANSFER_WRITE_BIT, 0,
-                                VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+        if (ui_.visible && ui_.ok()) {
+            // THE STUDIO: draw the overlay straight into the swapchain image.
+            // The render pass takes it from TRANSFER_DST to PRESENT_SRC itself.
+            // rt_image_ is never touched — the dyad's /frame stays pixel-clean.
+            VkRenderPassBeginInfo urp{};
+            urp.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+            urp.renderPass        = ui_.render_pass();
+            urp.framebuffer       = ui_.fb(sc_idx);
+            urp.renderArea.extent = extent_;
+            vkCmdBeginRenderPass(cmd_bufs_[img_idx], &urp, VK_SUBPASS_CONTENTS_INLINE);
+            ui_.record(cmd_bufs_[img_idx]);
+            vkCmdEndRenderPass(cmd_bufs_[img_idx]);
+        } else {
+            transition_image_layout(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                                    VK_ACCESS_TRANSFER_WRITE_BIT, 0,
+                                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+        }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
 
@@ -4219,6 +4281,108 @@ bool Engine::frame() {
     return true;  // a present failure (minimized window) is not fatal — skip, retry next frame
 }
 
+// THE STUDIO: the overlay with nothing loaded — the pipeline board is the
+// agent-onboarding view, so it must present even when every 3D path idles.
+// Same per-slot sync discipline as frame(); no offscreen pass, no capture.
+bool Engine::frame_idle_ui() {
+    ui_.prepare(extent_.width, extent_.height);
+    uint32_t img_idx = image_idx_;
+    VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    if (fence_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at idle-ui fence wait\n");
+        fflush(stderr);
+        exit(2);
+    }
+    uint32_t sc_idx = 0;
+    VkResult acquire_res = vkAcquireNextImageKHR(device_, swapchain_, 100000000ULL,
+                                                 draw_sem_[img_idx], VK_NULL_HANDLE, &sc_idx);
+    if (acquire_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at idle-ui acquire\n");
+        fflush(stderr);
+        exit(2);
+    }
+    if (acquire_res == VK_ERROR_OUT_OF_DATE_KHR) {
+        VkSurfaceCapabilitiesKHR caps{};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+            resize(caps.currentExtent.width, caps.currentExtent.height);
+        return true;
+    }
+    bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
+    bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
+
+    VkCommandBufferBeginInfo bbi{};
+    bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    vkResetCommandBuffer(cmd_bufs_[img_idx], 0);
+    vkBeginCommandBuffer(cmd_bufs_[img_idx], &bbi);
+    if (can_present) {
+        transition_image_layout(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                0, VK_ACCESS_TRANSFER_WRITE_BIT,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        VkClearColorValue cc = {{0.015f, 0.02f, 0.06f, 1.0f}};
+        VkImageSubresourceRange sr{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        vkCmdClearColorImage(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &cc, 1, &sr);
+        VkRenderPassBeginInfo urp{};
+        urp.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        urp.renderPass        = ui_.render_pass();
+        urp.framebuffer       = ui_.fb(sc_idx);
+        urp.renderArea.extent = extent_;
+        vkCmdBeginRenderPass(cmd_bufs_[img_idx], &urp, VK_SUBPASS_CONTENTS_INLINE);
+        ui_.record(cmd_bufs_[img_idx]);
+        vkCmdEndRenderPass(cmd_bufs_[img_idx]);
+    }
+    vkEndCommandBuffer(cmd_bufs_[img_idx]);
+
+    VkSubmitInfo si{};
+    si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    si.commandBufferCount = 1;
+    si.pCommandBuffers = &cmd_bufs_[img_idx];
+    VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    if (can_present) {
+        si.waitSemaphoreCount = 1;
+        si.pWaitSemaphores = &draw_sem_[img_idx];
+        si.pWaitDstStageMask = &wait_stage;
+        si.signalSemaphoreCount = 1;
+        si.pSignalSemaphores = &flush_sem_[img_idx];
+    }
+    vkResetFences(device_, 1, &fences_[img_idx]);
+    VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
+    if (submit_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at idle-ui submit\n");
+        fflush(stderr);
+        exit(2);
+    }
+    if (can_present) {
+        VkPresentInfoKHR pi{};
+        pi.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+        pi.waitSemaphoreCount = 1;
+        pi.pWaitSemaphores = &flush_sem_[img_idx];
+        pi.swapchainCount = 1;
+        pi.pSwapchains = &swapchain_;
+        pi.pImageIndices = &sc_idx;
+        VkResult pres_res = vkQueuePresentKHR(queue_, &pi);
+        if (pres_res == VK_ERROR_DEVICE_LOST) {
+            fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at idle-ui present\n");
+            fflush(stderr);
+            exit(2);
+        }
+        if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
+            recreate_after_frame = true;
+    }
+    if (recreate_after_frame) {
+        VkSurfaceCapabilitiesKHR caps{};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+            resize(caps.currentExtent.width, caps.currentExtent.height);
+    }
+    image_idx_ = (image_idx_ + 1) % MAX_FRAMES_IN_FLIGHT;
+    Sleep(8);   // same pacing law as the idle path: never spin a core on nothing
+    return true;
+}
+
+
 void Engine::resize(uint32_t w, uint32_t h) {
     vkDeviceWaitIdle(device_);
     // A minimized window reports a 0x0 surface (min==max==0); a swapchain cannot be created for
@@ -4251,6 +4415,9 @@ void Engine::resize(uint32_t w, uint32_t h) {
     if (rt_mem_)         vkFreeMemory(device_, rt_mem_, nullptr);
     if (rt_image_)       vkDestroyImage(device_, rt_image_, nullptr);
     create_offscreen();
+
+    // THE STUDIO: the UI's per-image framebuffers die with the swapchain views
+    if (ui_.ok()) ui_.create_swap_resources(img_views_, extent_);
 }
 
 void Engine::create_depth_resources() {

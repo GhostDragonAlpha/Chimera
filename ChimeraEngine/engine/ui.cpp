@@ -1,0 +1,734 @@
+// ui.cpp — THE ENGINE STUDIO overlay (see ui.hpp for the law this file lives under)
+#include "ui.hpp"
+
+#include <windows.h>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <fstream>
+
+// ── local helpers (no external deps — the engine's standing rule) ─────────────
+
+static std::vector<char> ui_read_file(const char* path) {
+    std::ifstream f(path, std::ios::ate | std::ios::binary);
+    if (!f.is_open()) return {};
+    auto size = f.tellg();
+    std::vector<char> buf(static_cast<size_t>(size));
+    f.seekg(0); f.read(buf.data(), static_cast<std::streamsize>(size));
+    return buf;
+}
+
+static VkShaderModule ui_shader_module(VkDevice dev, const std::vector<char>& spv) {
+    if (spv.empty()) return VK_NULL_HANDLE;
+    VkShaderModuleCreateInfo ci{};
+    ci.sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    ci.codeSize = spv.size();
+    ci.pCode    = reinterpret_cast<const uint32_t*>(spv.data());
+    VkShaderModule m = VK_NULL_HANDLE;
+    vkCreateShaderModule(dev, &ci, nullptr, &m);
+    return m;
+}
+
+// Minimal JSON string-value reader (same philosophy as main.cpp's helpers:
+// the board file is written by our own tool — well-formed, flat, ASCII).
+static std::string ui_json_string(const std::string& body, const char* key, size_t from = 0) {
+    std::string needle = std::string("\"") + key + "\"";
+    size_t pos = body.find(needle, from);
+    if (pos == std::string::npos) return "";
+    size_t p = pos + needle.size();
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != ':') return "";
+    ++p; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != '"') return "";
+    ++p;
+    size_t start = p;
+    while (p < body.size() && body[p] != '"') ++p;
+    return body.substr(start, p - start);
+}
+
+// ── input ─────────────────────────────────────────────────────────────────────
+
+void StudioUI::on_mouse_move(int x, int y) {
+    if (drag_kind_ == 1) {          // strip bottom border: height follows the cursor
+        float ns = static_cast<float>(y);
+        float mx = ext_.height * strip_.max_frac;
+        strip_.size = ns < strip_.min_size ? strip_.min_size : (ns > mx ? mx : ns);
+    } else if (drag_kind_ == 2) {   // left panel right border: width follows
+        float ns = static_cast<float>(x);
+        float mx = ext_.width * left_.max_frac;
+        left_.size = ns < left_.min_size ? left_.min_size : (ns > mx ? mx : ns);
+    } else if (drag_kind_ == 3) {   // right panel left border: width follows (from the right edge)
+        float ns = static_cast<float>(ext_.width) - static_cast<float>(x);
+        float mx = ext_.width * right_.max_frac;
+        right_.size = ns < right_.min_size ? right_.min_size : (ns > mx ? mx : ns);
+    }
+}
+
+void StudioUI::layout(uint32_t w, uint32_t h, float R[3][4]) const {
+    // strip: top, full width. left/right: below the strip, docked to their edge.
+    float sh = strip_.collapsed ? 22.f : strip_.size;
+    if (sh > h) sh = static_cast<float>(h);
+    R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
+    float lw = left_.collapsed  ? 22.f : left_.size;
+    float rw = right_.collapsed ? 22.f : right_.size;
+    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh;
+    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh;
+}
+
+bool StudioUI::hit_strip_title(int x, int y) const {
+    return y >= 0 && y < 22 && x >= 0 && x < static_cast<int>(ext_.width);
+}
+bool StudioUI::hit_left_title(int x, int y) const {
+    float sh = strip_.collapsed ? 22.f : strip_.size;
+    return x >= 0 && x < 22 && y >= static_cast<int>(sh);
+}
+bool StudioUI::hit_right_title(int x, int y) const {
+    float sh = strip_.collapsed ? 22.f : strip_.size;
+    return x >= static_cast<int>(ext_.width) - 22 && y >= static_cast<int>(sh);
+}
+
+bool StudioUI::wants_mouse(int x, int y) {
+    if (!visible) return false;
+    float R[3][4]; layout(ext_.width, ext_.height, R);
+    for (int i = 0; i < 3; ++i) {
+        if (x >= R[i][0] && x < R[i][0] + R[i][2] && y >= R[i][1] && y < R[i][1] + R[i][3]) return true;
+    }
+    return false;
+}
+
+bool StudioUI::on_lbutton(int x, int y, bool down) {
+    if (!visible) return false;
+    if (!down) {
+        bool had = drag_kind_ != 0;
+        drag_kind_ = 0;
+        return had;
+    }
+    float R[3][4]; layout(ext_.width, ext_.height, R);
+    // resize borders first (a 6 px grab band on the panel's inner edge)
+    if (!strip_.collapsed && y >= R[0][3] - 3 && y <= R[0][3] + 3) { drag_kind_ = 1; return true; }
+    if (!left_.collapsed  && x >= R[1][2] - 3 && x <= R[1][2] + 3 && y >= R[1][1]) { drag_kind_ = 2; return true; }
+    if (!right_.collapsed && x >= R[2][0] - 3 && x <= R[2][0] + 3 && y >= R[2][1]) { drag_kind_ = 3; return true; }
+    // title bars toggle collapse (Blender's area header law: every area collapses)
+    if (hit_strip_title(x, y)) { strip_.collapsed = !strip_.collapsed; return true; }
+    if (hit_left_title(x, y))  { left_.collapsed  = !left_.collapsed;  return true; }
+    if (hit_right_title(x, y)) { right_.collapsed = !right_.collapsed; return true; }
+    // anywhere else inside a panel: consume (never leak a camera orbit through the UI)
+    return wants_mouse(x, y);
+}
+
+// ── board polling (read the repo's truth; never own it) ───────────────────────
+
+void StudioUI::poll_board() {
+    auto now = std::chrono::steady_clock::now();
+    if (std::chrono::duration<float>(now - last_poll_).count() < 1.0f) return;
+    last_poll_ = now;
+
+    WIN32_FILE_ATTRIBUTE_DATA fad{};
+    if (!GetFileAttributesExA(board_path_.c_str(), GetFileExInfoStandard, &fad)) return;
+    uint64_t mt = (static_cast<uint64_t>(fad.ftLastWriteTime.dwHighDateTime) << 32)
+                | fad.ftLastWriteTime.dwLowDateTime;
+    if (mt == last_mtime_) return;
+    last_mtime_ = mt;
+
+    std::ifstream f(board_path_, std::ios::binary);
+    if (!f.is_open()) return;
+    std::string body((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+
+    StudioBoard b;
+    b.standing = ui_json_string(body, "standing");
+    b.updated  = ui_json_string(body, "updated");
+    // stages: walk the flat "id"/"name"/"status" triples the tool writes
+    size_t cur = 0;
+    for (int i = 0; i < 32; ++i) {
+        size_t pos = body.find("\"id\"", cur);
+        if (pos == std::string::npos) break;
+        StudioStage s;
+        s.id     = ui_json_string(body, "id", pos);
+        s.name   = ui_json_string(body, "name", pos);
+        s.status = ui_json_string(body, "status", pos);
+        if (s.id.empty()) break;
+        b.stages.push_back(s);
+        cur = pos + 4;
+    }
+    b.loaded = !b.stages.empty();
+    board_ = std::move(b);
+}
+
+// ── draw list ─────────────────────────────────────────────────────────────────
+
+void StudioUI::uv_cell(int ch, float& u0, float& v0, float& u1, float& v1) const {
+    int idx = ch - 32;
+    if (idx < 0 || idx > 94) idx = 0;   // 95 is the white cell
+    float aw = cell_w_ * ATLAS_COLS, ah = cell_h_ * ATLAS_ROWS;
+    u0 = (idx % ATLAS_COLS) * cell_w_ / aw;
+    v0 = (idx / ATLAS_COLS) * cell_h_ / ah;
+    u1 = u0 + cell_w_ / aw;
+    v1 = v0 + cell_h_ / ah;
+}
+
+void StudioUI::uv_white(float& u0, float& v0, float& u1, float& v1) const {
+    // the DEL slot (index 95) is filled solid white; sample its center so rect
+    // edges never bleed glyph ink from the neighboring cell
+    float aw = cell_w_ * ATLAS_COLS, ah = cell_h_ * ATLAS_ROWS;
+    float cx = (15 + 0.5f) * cell_w_ / aw;
+    float cy = (5 + 0.5f) * cell_h_ / ah;
+    float mx = 1.5f / aw, my = 1.5f / ah;
+    u0 = cx - mx; v0 = cy - my; u1 = cx + mx; v1 = cy + my;
+}
+
+void StudioUI::rect(float x, float y, float w, float h, float r, float g, float b, float a) {
+    float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
+    Vert v[6] = {
+        {x,     y,     u0, v0, r, g, b, a},
+        {x + w, y,     u1, v0, r, g, b, a},
+        {x + w, y + h, u1, v1, r, g, b, a},
+        {x,     y,     u0, v0, r, g, b, a},
+        {x + w, y + h, u1, v1, r, g, b, a},
+        {x,     y + h, u0, v1, r, g, b, a},
+    };
+    verts_.insert(verts_.end(), v, v + 6);
+}
+
+void StudioUI::rect_outline(float x, float y, float w, float h, float t,
+                            float r, float g, float b, float a) {
+    rect(x, y, w, t, r, g, b, a);
+    rect(x, y + h - t, w, t, r, g, b, a);
+    rect(x, y, t, h, r, g, b, a);
+    rect(x + w - t, y, t, h, r, g, b, a);
+}
+
+void StudioUI::text(float x, float y, const std::string& s, float r, float g, float b, float a) {
+    float pen = x;
+    for (char c : s) {
+        float u0, v0, u1, v1; uv_cell(static_cast<unsigned char>(c), u0, v0, u1, v1);
+        float x0 = pen, y0 = y, x1 = pen + cell_w_, y1 = y + cell_h_;
+        Vert v[6] = {
+            {x0, y0, u0, v0, r, g, b, a},
+            {x1, y0, u1, v0, r, g, b, a},
+            {x1, y1, u1, v1, r, g, b, a},
+            {x0, y0, u0, v0, r, g, b, a},
+            {x1, y1, u1, v1, r, g, b, a},
+            {x0, y1, u0, v1, r, g, b, a},
+        };
+        verts_.insert(verts_.end(), v, v + 6);
+        pen += advance_;
+    }
+}
+
+static void status_color(const std::string& s, float& r, float& g, float& b) {
+    if      (s == "green")   { r = 0.25f; g = 0.75f; b = 0.35f; }
+    else if (s == "partial") { r = 0.90f; g = 0.70f; b = 0.20f; }
+    else if (s == "next")    { r = 0.30f; g = 0.60f; b = 1.00f; }
+    else if (s == "blocked") { r = 0.85f; g = 0.28f; b = 0.28f; }
+    else if (s == "rolling") { r = 0.60f; g = 0.45f; b = 0.90f; }
+    else                     { r = 0.42f; g = 0.44f; b = 0.50f; }  // pending / unknown
+}
+
+// ── per-frame build ───────────────────────────────────────────────────────────
+
+void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
+    ext_.width = win_w; ext_.height = win_h;
+    poll_board();
+    verts_.clear();
+    verts_.reserve(8192);
+    if (!visible) return;
+
+    float R[3][4]; layout(win_w, win_h, R);
+    const float lh = cell_h_;                       // one text line
+    const float TR = 0.86f, TG = 0.88f, TB = 0.92f; // text color
+
+    // ── the stage strip (B1: the pipeline map; B2: the standing rule, displayed) ──
+    rect(R[0][0], R[0][1], R[0][2], R[0][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[0][0], R[0][1], R[0][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    text(8, (22 - lh) * 0.5f, "THE ENGINE STUDIO - pipeline board (B0-B10)  [F1] hide  [click bar] collapse  [drag edge] resize",
+         0.62f, 0.66f, 0.74f, 1.f);
+    if (!strip_.collapsed) {
+        float y0 = 30.f;
+        float node_h = strip_.size - 30.f - lh - 12.f;
+        if (node_h < 14.f) node_h = 14.f;
+        if (!board_.loaded) {
+            text(8, y0 + 6, "no board file - run: python tools/studio_board.py  (the repo's gate truth, read never owned)",
+                 0.85f, 0.55f, 0.30f, 1.f);
+        } else {
+            size_t n = board_.stages.size();
+            float pad = 8.f, gap = 6.f;
+            float bw = (static_cast<float>(win_w) - 2 * pad - (n - 1) * gap) / n;
+            for (size_t i = 0; i < n; ++i) {
+                const StudioStage& s = board_.stages[i];
+                float x = pad + i * (bw + gap);
+                float cr, cg, cb; status_color(s.status, cr, cg, cb);
+                rect(x, y0, bw, node_h, cr * 0.35f, cg * 0.35f, cb * 0.35f, 0.92f);
+                rect_outline(x, y0, bw, node_h, s.status == "next" ? 3.f : 1.f, cr, cg, cb, 1.f);
+                // id centered, name under it (monospace: centering is arithmetic)
+                float idw = s.id.size() * advance_;
+                text(x + (bw - idw) * 0.5f, y0 + 4, s.id, 1.f, 1.f, 1.f, 1.f);
+                if (node_h > 2 * lh + 8) {
+                    std::string nm = s.name.size() * advance_ > bw - 4
+                                   ? s.name.substr(0, static_cast<size_t>((bw - 4) / advance_)) : s.name;
+                    float nw = nm.size() * advance_;
+                    text(x + (bw - nw) * 0.5f, y0 + 6 + lh, nm, TR, TG, TB, 0.85f);
+                }
+                if (node_h > 3 * lh + 10) {
+                    std::string st = s.status;
+                    float sw = st.size() * advance_;
+                    text(x + (bw - sw) * 0.5f, y0 + 8 + 2 * lh, st, cr, cg, cb, 1.f);
+                }
+            }
+            // B2: the standing rule, displayed - computed by the tool, never edited here
+            float sy = y0 + node_h + 4;
+            text(8, sy, board_.standing, 1.0f, 0.85f, 0.40f, 1.f);
+            std::string src = "docs/THE_BODY_PIPELINE.md " + board_.updated;
+            text(static_cast<float>(win_w) - src.size() * advance_ - 8, sy, src, 0.45f, 0.47f, 0.52f, 1.f);
+        }
+    }
+
+    // ── the STUDIO panel (left): the menu + the join's provenance ──
+    rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.07f, 0.08f, 0.11f, 0.85f);
+    rect(R[1][0], R[1][1], R[1][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f, left_.collapsed ? "+" : "STUDIO", TR, TG, TB, 1.f);
+    if (!left_.collapsed) {
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        text(x, y, "the JOIN of engine state + repo truth", 0.55f, 0.58f, 0.65f, 1.f); y += lh + 6;
+        text(x, y, board_.loaded ? "board: live (studio_board.json)" : "board: no file yet",
+             board_.loaded ? 0.25f : 0.85f, board_.loaded ? 0.75f : 0.55f, board_.loaded ? 0.35f : 0.30f, 1.f); y += lh;
+        text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
+        text(x, y, "workspaces (A3 - pending picks):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
+        const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - parked", "GAIT    - parked",
+                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - parked"};
+        for (int i = 0; i < 8; ++i) {
+            text(x + 8, y, ws[i], i == 0 ? 0.30f : 0.42f, i == 0 ? 0.60f : 0.44f, i == 0 ? 1.00f : 0.50f, 1.f);
+            y += lh;
+        }
+        y += 6;
+        text(x, y, "next per the menu: D1 timeline + D3 reel", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
+    }
+
+    // ── the STATUS panel (right): the engine's own live rows, honest ──
+    rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.07f, 0.08f, 0.11f, 0.85f);
+    rect(R[2][0], R[2][1], R[2][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    text(R[2][0] + 8, R[2][1] + (22 - lh) * 0.5f, right_.collapsed ? "+" : "STATUS (live)", TR, TG, TB, 1.f);
+    if (!right_.collapsed) {
+        float x = R[2][0] + 10, y = R[2][1] + 30;
+        char buf[128];
+        snprintf(buf, sizeof(buf), "FPS %.0f | ft avg %.2f ms | max %.2f ms", fps_, ft_avg_, ft_max_);
+        text(x, y, buf, 0.55f, 0.85f, 0.55f, 1.f); y += lh + 6;
+        for (const std::string& line : status_lines_) {
+            text(x, y, line, TR, TG, TB, 0.95f); y += lh;
+            if (y > R[2][1] + R[2][3] - lh) break;
+        }
+    }
+}
+
+// ── Vulkan: init / resources / record ─────────────────────────────────────────
+
+bool StudioUI::ensure_vbuf(VkDeviceSize bytes) {
+    if (vcap_ >= bytes) return true;
+    if (vbuf_ != VK_NULL_HANDLE) {
+        vkDeviceWaitIdle(dev_);
+        vkDestroyBuffer(dev_, vbuf_, nullptr);
+        vkFreeMemory(dev_, vmem_, nullptr);
+        vbuf_ = VK_NULL_HANDLE; vmap_ = nullptr;
+    }
+    VkDeviceSize cap = bytes * 2;
+    VkBufferCreateInfo bci{};
+    bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bci.size  = cap;
+    bci.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    if (vkCreateBuffer(dev_, &bci, nullptr, &vbuf_) != VK_SUCCESS) return false;
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(dev_, vbuf_, &mr);
+    VkMemoryAllocateInfo ai{};
+    ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai.allocationSize = mr.size;
+    ai.memoryTypeIndex = mem_type_host_;
+    if (vkAllocateMemory(dev_, &ai, nullptr, &vmem_) != VK_SUCCESS) return false;
+    vkBindBufferMemory(dev_, vbuf_, vmem_, 0);
+    vkMapMemory(dev_, vmem_, 0, cap, 0, &vmap_);
+    vcap_ = cap;
+    return true;
+}
+
+void StudioUI::record(VkCommandBuffer cb) {
+    if (verts_.empty() || !ok()) return;
+    VkDeviceSize bytes = verts_.size() * sizeof(Vert);
+    if (!ensure_vbuf(bytes)) return;
+    std::memcpy(vmap_, verts_.data(), bytes);
+
+    VkViewport vp{};
+    vp.width = static_cast<float>(ext_.width); vp.height = static_cast<float>(ext_.height);
+    vp.minDepth = 0.f; vp.maxDepth = 1.f;
+    vkCmdSetViewport(cb, 0, 1, &vp);
+    VkRect2D sc{}; sc.extent = ext_;
+    vkCmdSetScissor(cb, 0, 1, &sc);
+
+    vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe_);
+    vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, layout_, 0, 1, &dset_, 0, nullptr);
+    float pc[2] = { static_cast<float>(ext_.width), static_cast<float>(ext_.height) };
+    vkCmdPushConstants(cb, layout_, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pc), pc);
+    VkDeviceSize off = 0;
+    vkCmdBindVertexBuffers(cb, 0, 1, &vbuf_, &off);
+    vkCmdDraw(cb, static_cast<uint32_t>(verts_.size()), 1, 0, 0);
+}
+
+bool StudioUI::create_font_atlas() {
+    // GDI rasterization of the system monospace font — zero vendored assets.
+    HDC hdc = CreateCompatibleDC(nullptr);
+    if (!hdc) return false;
+    HFONT font = CreateFontW(-16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                             DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                             CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, L"Consolas");
+    if (!font) font = CreateFontW(-16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                                  DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                                  CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, L"Courier New");
+    HGDIOBJ old = SelectObject(hdc, font);
+    TEXTMETRICW tm{};
+    GetTextMetricsW(hdc, &tm);
+    cell_w_  = static_cast<float>(tm.tmAveCharWidth + 3);
+    cell_h_  = static_cast<float>(tm.tmHeight + 5);
+    advance_ = static_cast<float>(tm.tmAveCharWidth);
+    ascent_  = tm.tmAscent;
+
+    int aw = static_cast<int>(cell_w_ * ATLAS_COLS);
+    int ah = static_cast<int>(cell_h_ * ATLAS_ROWS);
+
+    BITMAPINFO bmi{};
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = aw;
+    bmi.bmiHeader.biHeight = -ah;          // top-down
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;
+    bmi.bmiHeader.biCompression = BI_RGB;
+    void* bits = nullptr;
+    HBITMAP bmp = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (!bmp) { DeleteObject(font); DeleteDC(hdc); return false; }
+    HGDIOBJ oldbmp = SelectObject(hdc, bmp);
+    std::memset(bits, 0, static_cast<size_t>(aw) * ah * 4);
+    SetTextColor(hdc, RGB(255, 255, 255));
+    SetBkMode(hdc, TRANSPARENT);
+    for (int ch = 32; ch < 127; ++ch) {
+        int idx = ch - 32;
+        int cx = (idx % ATLAS_COLS) * static_cast<int>(cell_w_);
+        int cy = (idx / ATLAS_COLS) * static_cast<int>(cell_h_);
+        wchar_t wc = static_cast<wchar_t>(ch);
+        TextOutW(hdc, cx + 1, cy + 2, &wc, 1);
+    }
+    // index 95 (the DEL slot): solid white cell for colored rects
+    {
+        int cx = 15 * static_cast<int>(cell_w_);
+        int cy = 5 * static_cast<int>(cell_h_);
+        uint8_t* px = static_cast<uint8_t*>(bits);
+        for (int y = 0; y < static_cast<int>(cell_h_); ++y)
+            for (int x = 0; x < static_cast<int>(cell_w_); ++x) {
+                size_t o = (static_cast<size_t>(cy + y) * aw + (cx + x)) * 4;
+                px[o + 0] = px[o + 1] = px[o + 2] = 255;
+            }
+    }
+    // pack to R8 (the text is white-on-black: any channel is coverage)
+    std::vector<uint8_t> r8(static_cast<size_t>(aw) * ah);
+    {
+        const uint8_t* px = static_cast<const uint8_t*>(bits);
+        for (size_t i = 0; i < r8.size(); ++i) r8[i] = px[i * 4];
+    }
+    SelectObject(hdc, oldbmp); DeleteObject(bmp);
+    SelectObject(hdc, old);    DeleteObject(font);
+    DeleteDC(hdc);
+
+    // upload: staging -> image (init-time only; one-shot command pool of our own)
+    VkBuffer stage; VkDeviceMemory smem;
+    VkBufferCreateInfo bci{};
+    bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bci.size  = r8.size();
+    bci.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    if (vkCreateBuffer(dev_, &bci, nullptr, &stage) != VK_SUCCESS) return false;
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(dev_, stage, &mr);
+    VkMemoryAllocateInfo ai{};
+    ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai.allocationSize = mr.size;
+    ai.memoryTypeIndex = mem_type_host_;
+    if (vkAllocateMemory(dev_, &ai, nullptr, &smem) != VK_SUCCESS) return false;
+    vkBindBufferMemory(dev_, stage, smem, 0);
+    void* mp = nullptr;
+    vkMapMemory(dev_, smem, 0, r8.size(), 0, &mp);
+    std::memcpy(mp, r8.data(), r8.size());
+    vkUnmapMemory(dev_, smem);
+
+    VkImageCreateInfo ici{};
+    ici.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    ici.imageType = VK_IMAGE_TYPE_2D;
+    ici.format = VK_FORMAT_R8_UNORM;
+    ici.extent = { static_cast<uint32_t>(aw), static_cast<uint32_t>(ah), 1 };
+    ici.mipLevels = 1; ici.arrayLayers = 1;
+    ici.samples = VK_SAMPLE_COUNT_1_BIT;
+    ici.tiling = VK_IMAGE_TILING_OPTIMAL;
+    ici.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    ici.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    if (vkCreateImage(dev_, &ici, nullptr, &font_img_) != VK_SUCCESS) return false;
+    VkMemoryRequirements imr; vkGetImageMemoryRequirements(dev_, font_img_, &imr);
+    VkMemoryAllocateInfo iai{};
+    iai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    iai.allocationSize = imr.size;
+    // device-local for the sampled image: find a DEVICE_LOCAL type
+    {
+        VkPhysicalDeviceMemoryProperties mp2{};
+        vkGetPhysicalDeviceMemoryProperties(phys_, &mp2);
+        iai.memoryTypeIndex = UINT32_MAX;
+        for (uint32_t i = 0; i < mp2.memoryTypeCount; ++i)
+            if ((imr.memoryTypeBits & (1u << i)) &&
+                (mp2.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+                iai.memoryTypeIndex = i; break;
+            }
+        if (iai.memoryTypeIndex == UINT32_MAX) iai.memoryTypeIndex = mem_type_host_;
+    }
+    if (vkAllocateMemory(dev_, &iai, nullptr, &font_mem_) != VK_SUCCESS) return false;
+    vkBindImageMemory(dev_, font_img_, font_mem_, 0);
+
+    // one-shot copy on a private pool (the engine's queue is shared; init is pre-loop)
+    extern VkQueue g_ui_queue;   // set by Engine::init before ui_.init
+    extern VkCommandPool g_ui_cmd_pool;
+    VkCommandBuffer cmd;
+    VkCommandBufferAllocateInfo cai{};
+    cai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    cai.commandPool = g_ui_cmd_pool;
+    cai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    cai.commandBufferCount = 1;
+    vkAllocateCommandBuffers(dev_, &cai, &cmd);
+    VkCommandBufferBeginInfo bbi{};
+    bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    bbi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    vkBeginCommandBuffer(cmd, &bbi);
+    auto barrier = [&](VkImageLayout oldl, VkImageLayout newl,
+                       VkAccessFlags srca, VkAccessFlags dsta,
+                       VkPipelineStageFlags srcs, VkPipelineStageFlags dsts) {
+        VkImageMemoryBarrier b{};
+        b.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        b.oldLayout = oldl; b.newLayout = newl;
+        b.srcAccessMask = srca; b.dstAccessMask = dsta;
+        b.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        b.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        b.image = font_img_;
+        b.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        vkCmdPipelineBarrier(cmd, srcs, dsts, 0, 0, nullptr, 0, nullptr, 1, &b);
+    };
+    barrier(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            0, VK_ACCESS_TRANSFER_WRITE_BIT,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+    VkBufferImageCopy cp{};
+    cp.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    cp.imageExtent = { static_cast<uint32_t>(aw), static_cast<uint32_t>(ah), 1 };
+    vkCmdCopyBufferToImage(cmd, stage, font_img_, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &cp);
+    barrier(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    vkEndCommandBuffer(cmd);
+    VkSubmitInfo si{};
+    si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    si.commandBufferCount = 1; si.pCommandBuffers = &cmd;
+    vkQueueSubmit(g_ui_queue, 1, &si, VK_NULL_HANDLE);
+    vkQueueWaitIdle(g_ui_queue);
+    vkFreeCommandBuffers(dev_, g_ui_cmd_pool, 1, &cmd);
+    vkDestroyBuffer(dev_, stage, nullptr);
+    vkFreeMemory(dev_, smem, nullptr);
+
+    VkImageViewCreateInfo vci{};
+    vci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    vci.image = font_img_;
+    vci.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    vci.format = VK_FORMAT_R8_UNORM;
+    vci.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    if (vkCreateImageView(dev_, &vci, nullptr, &font_view_) != VK_SUCCESS) return false;
+
+    VkSamplerCreateInfo sci{};
+    sci.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    sci.magFilter = VK_FILTER_LINEAR;
+    sci.minFilter = VK_FILTER_LINEAR;
+    sci.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    sci.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    sci.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    if (vkCreateSampler(dev_, &sci, nullptr, &font_samp_) != VK_SUCCESS) return false;
+    return true;
+}
+
+bool StudioUI::create_swap_resources(const std::vector<VkImageView>& views, VkExtent2D ext) {
+    for (VkFramebuffer fb : fbs_) vkDestroyFramebuffer(dev_, fb, nullptr);
+    fbs_.clear();
+    ext_ = ext;
+    fbs_.resize(views.size());
+    for (size_t i = 0; i < views.size(); ++i) {
+        VkImageView att[1] = { views[i] };
+        VkFramebufferCreateInfo fci{};
+        fci.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        fci.renderPass = rp_;
+        fci.attachmentCount = 1;
+        fci.pAttachments = att;
+        fci.width = ext.width; fci.height = ext.height; fci.layers = 1;
+        if (vkCreateFramebuffer(dev_, &fci, nullptr, &fbs_[i]) != VK_SUCCESS) return false;
+    }
+    return true;
+}
+
+bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
+                    uint32_t w, uint32_t h, uint32_t mem_type_host) {
+    dev_ = dev; phys_ = phys; mem_type_host_ = mem_type_host;
+    ext_ = { w, h };
+
+    // render pass: LOAD the blitted 3D frame, draw, leave it PRESENT-able.
+    // initialLayout matches the post-blit TRANSFER_DST (the idle path clears
+    // into the same layout first, so one pass serves both).
+    VkAttachmentDescription att{};
+    att.format = swap_fmt;
+    att.samples = VK_SAMPLE_COUNT_1_BIT;
+    att.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    att.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    att.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    att.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    att.initialLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    att.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    VkAttachmentReference ref{ 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+    VkSubpassDescription sub{};
+    sub.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    sub.colorAttachmentCount = 1;
+    sub.pColorAttachments = &ref;
+    VkSubpassDependency deps[2]{};
+    deps[0].srcSubpass = VK_SUBPASS_EXTERNAL; deps[0].dstSubpass = 0;
+    deps[0].srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    deps[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    deps[0].srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    deps[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    deps[1].srcSubpass = 0; deps[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+    deps[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    deps[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    deps[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    deps[1].dstAccessMask = 0;
+    VkRenderPassCreateInfo rci{};
+    rci.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    rci.attachmentCount = 1; rci.pAttachments = &att;
+    rci.subpassCount = 1; rci.pSubpasses = &sub;
+    rci.dependencyCount = 2; rci.pDependencies = deps;
+    if (vkCreateRenderPass(dev_, &rci, nullptr, &rp_) != VK_SUCCESS) return false;
+
+    if (!create_font_atlas()) { fprintf(stderr, "studio: font atlas failed\n"); return false; }
+
+    // descriptor: the font atlas
+    VkDescriptorSetLayoutBinding bind{};
+    bind.binding = 0;
+    bind.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    bind.descriptorCount = 1;
+    bind.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    VkDescriptorSetLayoutCreateInfo dci{};
+    dci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dci.bindingCount = 1; dci.pBindings = &bind;
+    if (vkCreateDescriptorSetLayout(dev_, &dci, nullptr, &dsl_) != VK_SUCCESS) return false;
+    VkDescriptorPoolSize ps{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 };
+    VkDescriptorPoolCreateInfo pci{};
+    pci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    pci.maxSets = 1; pci.poolSizeCount = 1; pci.pPoolSizes = &ps;
+    if (vkCreateDescriptorPool(dev_, &pci, nullptr, &dpool_) != VK_SUCCESS) return false;
+    VkDescriptorSetAllocateInfo dai{};
+    dai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dai.descriptorPool = dpool_; dai.descriptorSetCount = 1; dai.pSetLayouts = &dsl_;
+    if (vkAllocateDescriptorSets(dev_, &dai, &dset_) != VK_SUCCESS) return false;
+    VkDescriptorImageInfo ii{ font_samp_, font_view_, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
+    VkWriteDescriptorSet wr{};
+    wr.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wr.dstSet = dset_; wr.dstBinding = 0; wr.descriptorCount = 1;
+    wr.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wr.pImageInfo = &ii;
+    vkUpdateDescriptorSets(dev_, 1, &wr, 0, nullptr);
+
+    // pipeline
+    auto vert_spv = ui_read_file("shaders/ui.vert.spv");
+    auto frag_spv = ui_read_file("shaders/ui.frag.spv");
+    VkShaderModule vm = ui_shader_module(dev_, vert_spv);
+    VkShaderModule fm = ui_shader_module(dev_, frag_spv);
+    if (vm == VK_NULL_HANDLE || fm == VK_NULL_HANDLE) {
+        fprintf(stderr, "studio: ui shaders missing (shaders/ui.*.spv)\n");
+        return false;
+    }
+    VkPipelineShaderStageCreateInfo stages[2]{};
+    stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;   stages[0].module = vm; stages[0].pName = "main";
+    stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT; stages[1].module = fm; stages[1].pName = "main";
+
+    VkVertexInputBindingDescription vbd{ 0, sizeof(Vert), VK_VERTEX_INPUT_RATE_VERTEX };
+    VkVertexInputAttributeDescription vad[3]{};
+    vad[0] = { 0, 0, VK_FORMAT_R32G32_SFLOAT,       0  };
+    vad[1] = { 1, 0, VK_FORMAT_R32G32_SFLOAT,       8  };
+    vad[2] = { 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, 16 };
+    VkPipelineVertexInputStateCreateInfo vin{};
+    vin.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vin.vertexBindingDescriptionCount = 1; vin.pVertexBindingDescriptions = &vbd;
+    vin.vertexAttributeDescriptionCount = 3; vin.pVertexAttributeDescriptions = vad;
+    VkPipelineInputAssemblyStateCreateInfo ia{};
+    ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    VkPipelineViewportStateCreateInfo vps{};
+    vps.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    vps.viewportCount = 1; vps.scissorCount = 1;
+    VkDynamicState dyn[2] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo ds{};
+    ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    ds.dynamicStateCount = 2; ds.pDynamicStates = dyn;
+    VkPipelineRasterizationStateCreateInfo rs{};
+    rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rs.polygonMode = VK_POLYGON_MODE_FILL;
+    rs.cullMode = VK_CULL_MODE_NONE;
+    rs.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rs.lineWidth = 1.f;
+    VkPipelineMultisampleStateCreateInfo ms{};
+    ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    VkPipelineColorBlendAttachmentState cba{};
+    cba.blendEnable = VK_TRUE;
+    cba.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    cba.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    cba.colorBlendOp = VK_BLEND_OP_ADD;
+    cba.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    cba.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    cba.alphaBlendOp = VK_BLEND_OP_ADD;
+    cba.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                         VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    VkPipelineColorBlendStateCreateInfo cb{};
+    cb.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    cb.attachmentCount = 1; cb.pAttachments = &cba;
+
+    VkPushConstantRange pcr{ VK_SHADER_STAGE_VERTEX_BIT, 0, 8 };
+    VkPipelineLayoutCreateInfo lci{};
+    lci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    lci.setLayoutCount = 1; lci.pSetLayouts = &dsl_;
+    lci.pushConstantRangeCount = 1; lci.pPushConstantRanges = &pcr;
+    if (vkCreatePipelineLayout(dev_, &lci, nullptr, &layout_) != VK_SUCCESS) return false;
+
+    VkGraphicsPipelineCreateInfo gpi{};
+    gpi.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    gpi.stageCount = 2; gpi.pStages = stages;
+    gpi.pVertexInputState = &vin;
+    gpi.pInputAssemblyState = &ia;
+    gpi.pViewportState = &vps;
+    gpi.pDynamicState = &ds;
+    gpi.pRasterizationState = &rs;
+    gpi.pMultisampleState = &ms;
+    gpi.pColorBlendState = &cb;
+    gpi.layout = layout_;
+    gpi.renderPass = rp_;
+    VkResult pr = vkCreateGraphicsPipelines(dev_, VK_NULL_HANDLE, 1, &gpi, nullptr, &pipe_);
+    vkDestroyShaderModule(dev_, vm, nullptr);
+    vkDestroyShaderModule(dev_, fm, nullptr);
+    return pr == VK_SUCCESS;
+}
+
+void StudioUI::shutdown() {
+    if (dev_ == VK_NULL_HANDLE) return;
+    for (VkFramebuffer fb : fbs_) vkDestroyFramebuffer(dev_, fb, nullptr);
+    fbs_.clear();
+    if (vbuf_ != VK_NULL_HANDLE) { vkDestroyBuffer(dev_, vbuf_, nullptr); vkFreeMemory(dev_, vmem_, nullptr); }
+    if (pipe_ != VK_NULL_HANDLE) vkDestroyPipeline(dev_, pipe_, nullptr);
+    if (layout_ != VK_NULL_HANDLE) vkDestroyPipelineLayout(dev_, layout_, nullptr);
+    if (dpool_ != VK_NULL_HANDLE) vkDestroyDescriptorPool(dev_, dpool_, nullptr);
+    if (dsl_ != VK_NULL_HANDLE) vkDestroyDescriptorSetLayout(dev_, dsl_, nullptr);
+    if (font_samp_ != VK_NULL_HANDLE) vkDestroySampler(dev_, font_samp_, nullptr);
+    if (font_view_ != VK_NULL_HANDLE) vkDestroyImageView(dev_, font_view_, nullptr);
+    if (font_img_ != VK_NULL_HANDLE) { vkDestroyImage(dev_, font_img_, nullptr); vkFreeMemory(dev_, font_mem_, nullptr); }
+    if (rp_ != VK_NULL_HANDLE) vkDestroyRenderPass(dev_, rp_, nullptr);
+    dev_ = VK_NULL_HANDLE;
+}

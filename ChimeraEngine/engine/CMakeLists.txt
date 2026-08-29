@@ -31,6 +31,8 @@ if(GLSL_VALIDATOR)
         "${SPIRV_DIR}/compute.spv"
         "${SPIRV_DIR}/sort.spv"
         "${SPIRV_DIR}/skin.spv"
+        "${SPIRV_DIR}/ui.vert.spv"
+        "${SPIRV_DIR}/ui.frag.spv"
     )
 
     add_custom_command(
@@ -73,6 +75,22 @@ if(GLSL_VALIDATOR)
         COMMENT "Compiling skin.comp -> skin.spv"
     )
 
+    add_custom_command(
+        OUTPUT "${SPIRV_DIR}/ui.vert.spv"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${SPIRV_DIR}"
+        COMMAND "${GLSL_VALIDATOR}" -S vert -V "${SHADER_DIR}/ui.vert" -o "${SPIRV_DIR}/ui.vert.spv"
+        DEPENDS "${SHADER_DIR}/ui.vert"
+        COMMENT "Compiling ui.vert -> ui.vert.spv"
+    )
+
+    add_custom_command(
+        OUTPUT "${SPIRV_DIR}/ui.frag.spv"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${SPIRV_DIR}"
+        COMMAND "${GLSL_VALIDATOR}" -S frag -V "${SHADER_DIR}/ui.frag" -o "${SPIRV_DIR}/ui.frag.spv"
+        DEPENDS "${SHADER_DIR}/ui.frag"
+        COMMENT "Compiling ui.frag -> ui.frag.spv"
+    )
+
     add_custom_target(all_shaders ALL DEPENDS ${COMPILED_SHADERS})
 else()
     message(WARNING "No glslangValidator; copying .spv files if present")
@@ -83,6 +101,7 @@ add_executable(chimera_engine
     engine.cpp
     physics.cpp
     http_server.cpp
+    ui.cpp
 )
 
 target_include_directories(chimera_engine PRIVATE
@@ -97,6 +116,8 @@ target_link_libraries(chimera_engine PRIVATE
     crypt32
     ncrypt
     bcrypt
+    gdi32
+    user32
 )
 
 # Copy shaders (GLSL source + compiled SPIR-V) to build output

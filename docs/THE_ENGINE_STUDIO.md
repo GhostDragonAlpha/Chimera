@@ -114,3 +114,26 @@ that already answers "where are we and what's next" from inside the window.
 **What it deliberately is NOT:** not a second app, not a web page, not a wiki.
 It is the engine drawing its own state and the repo's own truth over the viewport
 — Blender's non-blocking panels + the video editor's timeline, and nothing else.
+
+---
+
+## SHIPPED 2026-08-29 — the spine (A1 + A2 + B1 + B2)
+
+- **A1 — the overlay.** Immediate-mode panels Vulkan-drawn into the swapchain
+  pass, F1 (or `POST /studio {"on":bool}`) toggles; the viewport stays live and
+  orbitable underneath. The presentation-layer law is enforced by architecture:
+  the UI never touches `rt_image_`, so the dyad's `/frame` is pixel-identical
+  with the overlay on or off (measured: md5 match, `engine/scratch/_studio_verify.log`).
+- **A2 — docked panels.** Top stage strip + left STUDIO + right STATUS panels;
+  click a title bar to collapse, drag an inner edge to resize, panel presses are
+  consumed (never leak a camera orbit). Round-trip verified by injected clicks.
+- **B1 — the stage strip.** B0–B10 nodes colored by gate status, live from
+  `studio_board.json` (mtime-polled, 1 Hz). **B2 — the standing rule, displayed.**
+- **The feed:** `python tools/studio_board.py` parses `docs/THE_BODY_PIPELINE.md`
+  (the status-board section outranks per-cell prose) and writes the JSON next to
+  the exe. The tool computes; the engine reads. Nothing in the overlay owns state.
+- **Rule 0 verdicts:** /frame parity PASS · toggle health PASS · overlay cost
+  inside ±0.05 ms noise at the 300 FPS cap (budget was 0.5 ms).
+- **Files:** `engine/ui.{hpp,cpp}`, `engine/shaders/ui.{vert,frag}`, hooks in
+  `engine/engine.{hpp,cpp}` + `engine/main.cpp`, `tools/studio_board.py`.
+- **Next per the menu:** D1 timeline + D3 reel, then B3 stage panels.
