@@ -480,13 +480,18 @@ int main(int argc, char** argv) {
     bool use_compute = false;  // compute path disabled: the N-body sim is a placeholder; the membrane/teddy render is the target
 
     while (true) {
-        // Process Windows messages (allows window to close gracefully)
+        // Process Windows messages (allows window to close gracefully).
+        // Drain the WHOLE queue per iteration: one-message-per-frame starves input
+        // whenever the frame rate drops (animation driver re-posting meshes at ~12 fps
+        // made orbit/zoom feel dead — the queue filled faster than it was pumped).
         MSG msg;
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT || msg.message == WM_CLOSE) break;
+        bool quit = false;
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT || msg.message == WM_CLOSE) { quit = true; break; }
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        if (quit) break;
 
         // Apply a pending membrane request (Vulkan work must stay on this thread)
         {
