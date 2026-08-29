@@ -120,6 +120,27 @@ public:
     // Latest commanded knee angles (deg), written by the gait kernel into a
     // host-visible mirror; read per frame for the hinge pose + /gait status.
     void gait_theta(double& tL, double& tR) const;
+
+    // ── VOLP-ARAP KNEE KERNEL (H13 — the blend's successor, agent_logs/kimi/volp_arap_01.md)
+    // The SHIP-path law as ONE compute dispatch per frame: bi-Laplacian smooth
+    // ARAP (lam=0.05, uniform Laplacian) + in-solve Lagrange multiplier on
+    // Sigma V = V_rest (Schur row inside the solve), unified two-knee system,
+    // precomputed dense inverse (A_ff is theta-independent), M fixed damped
+    // outer iterations (omega=0.5, derived). Tier-1b: fixed order, no atomics
+    // in the value path; f32 — not bit-exact vs the f64 CPU golden (boundary
+    // named; the gate measures the deviation). When volp_mode_ == 1 the hinge
+    // GPU dispatch is replaced by this kernel (blend stays behind the flag).
+    bool load_volp(const std::vector<uint8_t>& blob);
+    // Debug/verification readback: the full posed vertex buffer (stride 9).
+    bool volp_download_mesh(std::vector<float>& out);
+    std::atomic<int>      volp_mode_{1};            // 0 = blend, 1 = volp (default SHIP: H13 gates green)
+    std::atomic<bool>     volp_manual_{false};      // theta override (verification)
+    std::atomic<float>    volp_thL_{0.f}, volp_thR_{0.f};
+    std::atomic<uint32_t> volp_M_{8};               // derived default (volp_track.json)
+    std::atomic<bool>     volp_cold_{true};         // cold-start next dispatch
+    bool volp_loaded() const { return volp_loaded_; }
+    const float* volp_stats() const { return static_cast<const float*>(volp_stats_map_); }
+
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -399,6 +420,25 @@ private:
     VkDeviceMemory  gait_theta_mem_ = VK_NULL_HANDLE, gait_ring_rb_mem_ = VK_NULL_HANDLE;
     void*           gait_theta_map_ = nullptr;    // host-visible f64[2]
     void*           gait_ring_rb_map_ = nullptr;  // host-visible ring readback
+    // volp-ARAP kernel state (H13)
+    bool            volp_loaded_ = false;
+    uint32_t        volp_NF_ = 0, volp_NC_ = 0;
+    VkShaderModule  volp_mod_ = VK_NULL_HANDLE;
+    VkPipeline      volp_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout volp_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout volp_desc_layout_ = VK_NULL_HANDLE;
+    VkDescriptorPool volp_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet  volp_desc_set_ = VK_NULL_HANDLE;
+    VkBuffer        volp_hdr_buf_ = VK_NULL_HANDLE, volp_u_buf_ = VK_NULL_HANDLE,
+                    volp_f_buf_ = VK_NULL_HANDLE, volp_x_buf_ = VK_NULL_HANDLE,
+                    volp_sc_buf_ = VK_NULL_HANDLE, volp_st_buf_ = VK_NULL_HANDLE,
+                    volp_rb_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  volp_hdr_mem_ = VK_NULL_HANDLE, volp_u_mem_ = VK_NULL_HANDLE,
+                    volp_f_mem_ = VK_NULL_HANDLE, volp_x_mem_ = VK_NULL_HANDLE,
+                    volp_sc_mem_ = VK_NULL_HANDLE, volp_st_mem_ = VK_NULL_HANDLE,
+                    volp_rb_mem_ = VK_NULL_HANDLE;
+    void*           volp_stats_map_ = nullptr;    // host-visible f32[16]
+    float           volp_last_thL_ = 0.f, volp_last_thR_ = 0.f;
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
     // ── FROST decode (H9) resources ──

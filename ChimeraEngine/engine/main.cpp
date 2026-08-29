@@ -76,6 +76,14 @@ struct GaitReq { int kind = 0;                       // 1 = load (gait_bin), 2 =
 static GaitReq g_gait_req;
 static std::mutex g_gait_mutex;
 static std::condition_variable g_gait_cv;
+
+// ── Pending volp request (H13 volp-ARAP knee kernel; same handoff) ──────────
+struct VolpReq { int kind = 0;                       // 1 = load (volp_bin), 2 = download mesh
+                 std::vector<uint8_t> blob; std::vector<float> mesh; bool ok = false; };
+static VolpReq g_volp_req;
+static std::mutex g_volp_mutex;
+static std::condition_variable g_volp_cv;
+static bool g_volp_pending = false, g_volp_applied = false;
 static bool g_gait_pending = false, g_gait_applied = false;
 
 // ── Pending frost request (H9 decode; same handoff) ─────────────────────────
@@ -157,6 +165,15 @@ static std::string get_string(const std::string& body, const char* key) {
     size_t start = p;
     while (p < body.size() && body[p] != '"') ++p;
     return body.substr(start, p - start);
+}
+
+static bool get_bool(const std::string& body, const char* key, bool def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (body.compare(p, 4, "true") == 0) return true;
+    if (body.compare(p, 5, "false") == 0) return false;
+    return def;
 }
 
 static bool parse_float_array(const std::string& body, const char* key, std::vector<float>& out) {
@@ -686,6 +703,87 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no gait\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/volp_bin" && method == "POST") {
+            // H13: the volp-ARAP kernel payload (built by .tmp/volp_pack.py).
+            // Raw binary body = the 'VOLP' v2 blob; loaded on the render thread.
+            {
+                std::lock_guard<std::mutex> lk(g_volp_mutex);
+                g_volp_req = VolpReq{};
+                g_volp_req.kind = 1;
+                g_volp_req.blob.assign(req_body.begin(), req_body.end());
+                g_volp_pending = true; g_volp_applied = false;
+            }
+            std::unique_lock<std::mutex> lk(g_volp_mutex);
+            bool ok = g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+            body = ok && g_volp_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
+            content_type = "application/json";
+        } else if (p == "/volp" && method == "POST") {
+            // JSON {"mode":"volp"|"blend", "manual":bool, "thetaL":deg, "thetaR":deg,
+            //       "m":N} — flags only (atomics). A mode change cold-starts the
+            // solve (the kernel re-poses from the theta-exact blend pose).
+            if (g_engine) {
+                std::string mode = get_string(req_body, "mode");
+                if (mode == "volp")  { g_engine->volp_mode_.store(1); g_engine->volp_cold_.store(true); }
+                if (mode == "blend") { g_engine->volp_mode_.store(0); g_engine->volp_cold_.store(true); }
+                bool man = get_bool(req_body, "manual", g_engine->volp_manual_.load());
+                if (man != g_engine->volp_manual_.load()) {
+                    g_engine->volp_manual_.store(man);
+                    g_engine->volp_cold_.store(true);
+                }
+                if (man) {
+                    g_engine->volp_thL_.store((float)get_double(req_body, "thetaL", 0.0));
+                    g_engine->volp_thR_.store((float)get_double(req_body, "thetaR", 0.0));
+                }
+                uint32_t m = get_uint(req_body, "m", 0);
+                if (m >= 1 && m <= 64) g_engine->volp_M_.store(m);
+            }
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/volp" && method == "GET") {
+            if (g_engine) {
+                const float* st = g_engine->volp_stats();
+                body = std::string("{\"loaded\":") + (g_engine->volp_loaded() ? "true" : "false")
+                     + ",\"mode\":" + (g_engine->volp_mode_.load() == 1 ? "\"volp\"" : "\"blend\"")
+                     + ",\"manual\":" + (g_engine->volp_manual_.load() ? "true" : "false")
+                     + ",\"M\":" + std::to_string(g_engine->volp_M_.load())
+                     + (st ? std::string(",\"dV\":") + std::to_string(st[0])
+                           + ",\"mu\":" + std::to_string(st[1])
+                           + ",\"residual\":" + std::to_string(st[2])
+                           + ",\"v_cur\":" + std::to_string(st[3])
+                           + ",\"frames\":" + std::to_string(st[5])
+                           + ",\"thetaL\":" + std::to_string(st[6])
+                           + ",\"thetaR\":" + std::to_string(st[7]) : "")
+                     + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/volp_state" && method == "GET") {
+            // Binary: [u32 n_records][f32 verts * n_records * 9] — the full posed
+            // vertex buffer (the in-engine gate's readback; debug endpoint).
+            {
+                std::lock_guard<std::mutex> lk(g_volp_mutex);
+                g_volp_req = VolpReq{};
+                g_volp_req.kind = 2;
+                g_volp_pending = true; g_volp_applied = false;
+            }
+            bool ok; std::vector<float> mesh;
+            {
+                std::unique_lock<std::mutex> lk(g_volp_mutex);
+                g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+                ok = g_volp_req.ok; mesh = std::move(g_volp_req.mesh);
+            }
+            if (ok) {
+                uint32_t n = static_cast<uint32_t>(mesh.size() / 9);
+                std::string out(4 + mesh.size() * 4, '\0');
+                std::memcpy(out.data(), &n, 4);
+                std::memcpy(out.data() + 4, mesh.data(), mesh.size() * 4);
+                body = std::move(out);
+                content_type = "application/octet-stream";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no volp\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/water_vis_state" && method == "GET") {
             // DEBUG (W4 bring-up): [4 u32 indirect][floats of the water vertex buffer]
             {
@@ -1081,6 +1179,20 @@ int main(int argc, char** argv) {
                     g_gait_req.ok = engine.gait_download(g_gait_req.ring);
                 }
                 g_gait_pending = false; g_gait_applied = true; g_gait_cv.notify_all();
+            }
+        }
+
+        // Apply a pending volp request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_volp_mutex);
+            if (g_volp_pending) {
+                if (g_volp_req.kind == 1) {
+                    g_volp_req.ok = engine.load_volp(g_volp_req.blob);
+                    g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
+                } else {
+                    g_volp_req.ok = engine.volp_download_mesh(g_volp_req.mesh);
+                }
+                g_volp_pending = false; g_volp_applied = true; g_volp_cv.notify_all();
             }
         }
 

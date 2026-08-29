@@ -588,6 +588,20 @@ void Engine::shutdown() {
     if (hinge_rest_buf_)  { vkDestroyBuffer(device_, hinge_rest_buf_, nullptr); vkFreeMemory(device_, hinge_rest_mem_, nullptr); }
     if (hinge_wL_buf_)    { vkDestroyBuffer(device_, hinge_wL_buf_, nullptr);   vkFreeMemory(device_, hinge_wL_mem_, nullptr); }
     if (hinge_wR_buf_)    { vkDestroyBuffer(device_, hinge_wR_buf_, nullptr);   vkFreeMemory(device_, hinge_wR_mem_, nullptr); }
+    // volp-ARAP kernel resources (H13)
+    if (volp_pipe_)        vkDestroyPipeline(device_, volp_pipe_, nullptr);
+    if (volp_layout_)      vkDestroyPipelineLayout(device_, volp_layout_, nullptr);
+    if (volp_desc_layout_) vkDestroyDescriptorSetLayout(device_, volp_desc_layout_, nullptr);
+    if (volp_desc_pool_)   vkDestroyDescriptorPool(device_, volp_desc_pool_, nullptr);
+    if (volp_mod_)         vkDestroyShaderModule(device_, volp_mod_, nullptr);
+    if (volp_stats_map_)   vkUnmapMemory(device_, volp_st_mem_);
+    if (volp_hdr_buf_)   { vkDestroyBuffer(device_, volp_hdr_buf_, nullptr); vkFreeMemory(device_, volp_hdr_mem_, nullptr); }
+    if (volp_u_buf_)     { vkDestroyBuffer(device_, volp_u_buf_, nullptr);   vkFreeMemory(device_, volp_u_mem_, nullptr); }
+    if (volp_f_buf_)     { vkDestroyBuffer(device_, volp_f_buf_, nullptr);   vkFreeMemory(device_, volp_f_mem_, nullptr); }
+    if (volp_x_buf_)     { vkDestroyBuffer(device_, volp_x_buf_, nullptr);   vkFreeMemory(device_, volp_x_mem_, nullptr); }
+    if (volp_sc_buf_)    { vkDestroyBuffer(device_, volp_sc_buf_, nullptr);  vkFreeMemory(device_, volp_sc_mem_, nullptr); }
+    if (volp_st_buf_)    { vkDestroyBuffer(device_, volp_st_buf_, nullptr);  vkFreeMemory(device_, volp_st_mem_, nullptr); }
+    if (volp_rb_buf_)    { vkDestroyBuffer(device_, volp_rb_buf_, nullptr);  vkFreeMemory(device_, volp_rb_mem_, nullptr); }
 
     // gait CPG resources
     if (gait_pipe_)        vkDestroyPipeline(device_, gait_pipe_, nullptr);
@@ -1540,6 +1554,149 @@ bool Engine::gait_download(std::vector<double>& out_ring) {
     end_single_time_cmd(cb);
     out_ring.resize(static_cast<size_t>(gait_ring_cap_) * 8);
     std::memcpy(out_ring.data(), gait_ring_rb_map_, ring_sz);
+    return true;
+}
+
+// ── VOLP-ARAP KNEE KERNEL (H13) ─────────────────────────────────────────────
+// Blob layout (built by .tmp/volp_pack.py — the engine only consumes):
+//   [u32 'VOLP'][u32 version=2][64 u32 directory][ublob u32 * hd[6]][fblob f32 * hd[7]]
+// directory: counts at 0..7, f32 offsets 8..23, u32 offsets 24..47.
+bool Engine::load_volp(const std::vector<uint8_t>& blob) {
+    if (blob.size() < 8 + 256) { fprintf(stderr, "volp: short blob\n"); return false; }
+    const uint8_t* d = blob.data();
+    uint32_t magic, version;
+    std::memcpy(&magic, d, 4); std::memcpy(&version, d + 4, 4);
+    if (magic != 0x564F4C50u || version != 2) {
+        fprintf(stderr, "volp: bad magic/version (%08x v%u)\n", magic, version); return false;
+    }
+    std::vector<uint32_t> hd(64);
+    std::memcpy(hd.data(), d + 8, 256);
+    volp_NF_ = hd[0]; volp_NC_ = hd[1];
+    uint64_t nu = hd[6], nf = hd[7];
+    size_t expect = 8 + 256 + static_cast<size_t>(nu) * 4 + static_cast<size_t>(nf) * 4;
+    if (blob.size() != expect || volp_NF_ == 0 || volp_NC_ == 0) {
+        fprintf(stderr, "volp: size mismatch (%zu vs %zu)\n", blob.size(), expect); return false;
+    }
+    if (tri_vbuf_ == VK_NULL_HANDLE) { fprintf(stderr, "volp: no mesh\n"); return false; }
+    vkDeviceWaitIdle(device_);
+    const uint8_t* udata = d + 8 + 256;
+    const uint8_t* fdata = udata + static_cast<size_t>(nu) * 4;
+
+    upload_buffer(hd.data(), 256, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, volp_hdr_buf_, volp_hdr_mem_);
+    upload_buffer(udata, nu * 4, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, volp_u_buf_, volp_u_mem_);
+    upload_buffer(fdata, nf * 4, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, volp_f_buf_, volp_f_mem_);
+    // X state buffer, initialised from the packed X0 (fblob offset hd[22])
+    const float* x0 = reinterpret_cast<const float*>(fdata) + hd[22];
+    upload_buffer(x0, static_cast<size_t>(volp_NC_) * 3 * sizeof(float),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                  volp_x_buf_, volp_x_mem_);
+    // scratch: 12*NC + 18*NF floats (shader layout) — upload_buffer memcpys
+    // unconditionally, so stage zeros (nullptr + size crashed the live engine)
+    {
+        std::vector<float> zeros(static_cast<size_t>(12 * volp_NC_ + 18 * volp_NF_), 0.f);
+        upload_buffer(zeros.data(), zeros.size() * sizeof(float),
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, volp_sc_buf_, volp_sc_mem_);
+    }
+    // stats mirror: host-visible coherent f32[16]
+    {
+        if (volp_st_buf_) { if (volp_stats_map_) vkUnmapMemory(device_, volp_st_mem_);
+                            vkDestroyBuffer(device_, volp_st_buf_, nullptr);
+                            vkFreeMemory(device_, volp_st_mem_, nullptr); volp_stats_map_ = nullptr; }
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = 16 * sizeof(float);
+        bci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &volp_st_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, volp_st_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &volp_st_mem_);
+        vkBindBufferMemory(device_, volp_st_buf_, volp_st_mem_, 0);
+        vkMapMemory(device_, volp_st_mem_, 0, 16 * sizeof(float), 0, &volp_stats_map_);
+        std::memset(volp_stats_map_, 0, 16 * sizeof(float));
+    }
+    // mesh readback buffer (debug endpoint): full vertex buffer, host-visible
+    {
+        if (volp_rb_buf_) { vkDestroyBuffer(device_, volp_rb_buf_, nullptr);
+                            vkFreeMemory(device_, volp_rb_mem_, nullptr); }
+        VkDeviceSize sz = static_cast<VkDeviceSize>(hinge_rest_.size()) * sizeof(float);
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = sz;
+        bci.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &volp_rb_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, volp_rb_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &volp_rb_mem_);
+        vkBindBufferMemory(device_, volp_rb_buf_, volp_rb_mem_, 0);
+    }
+
+    if (!w_make_pipeline(device_, "shaders/volp.spv", 7, 16,
+                         volp_mod_, volp_desc_layout_, volp_layout_, volp_pipe_)) return false;
+    {
+        VkDescriptorPoolSize ps{};
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        ps.descriptorCount = 7;
+        VkDescriptorPoolCreateInfo dpci{};
+        dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        dpci.maxSets = 1;
+        dpci.poolSizeCount = 1;
+        dpci.pPoolSizes = &ps;
+        vkCreateDescriptorPool(device_, &dpci, nullptr, &volp_desc_pool_);
+        VkDescriptorSetAllocateInfo dsai{};
+        dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        dsai.descriptorPool = volp_desc_pool_;
+        dsai.descriptorSetCount = 1;
+        dsai.pSetLayouts = &volp_desc_layout_;
+        vkAllocateDescriptorSets(device_, &dsai, &volp_desc_set_);
+        VkDescriptorBufferInfo infos[7] = {};
+        infos[0].buffer = volp_hdr_buf_; infos[0].range = VK_WHOLE_SIZE;
+        infos[1].buffer = volp_u_buf_;   infos[1].range = VK_WHOLE_SIZE;
+        infos[2].buffer = volp_f_buf_;   infos[2].range = VK_WHOLE_SIZE;
+        infos[3].buffer = volp_x_buf_;   infos[3].range = VK_WHOLE_SIZE;
+        infos[4].buffer = volp_sc_buf_;  infos[4].range = VK_WHOLE_SIZE;
+        infos[5].buffer = volp_st_buf_;  infos[5].range = VK_WHOLE_SIZE;
+        infos[6].buffer = tri_vbuf_;     infos[6].range = VK_WHOLE_SIZE;
+        VkWriteDescriptorSet w[7] = {};
+        for (int k = 0; k < 7; ++k) {
+            w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            w[k].dstSet = volp_desc_set_;
+            w[k].dstBinding = k;
+            w[k].descriptorCount = 1;
+            w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            w[k].pBufferInfo = &infos[k];
+        }
+        vkUpdateDescriptorSets(device_, 7, w, 0, nullptr);
+    }
+    volp_cold_.store(true);
+    volp_last_thL_ = volp_last_thR_ = 0.f;
+    volp_loaded_ = true;
+    printf("Volp-ARAP loaded: NF %u NC %u (the H13 knee kernel)\n", volp_NF_, volp_NC_);
+    return true;
+}
+
+bool Engine::volp_download_mesh(std::vector<float>& out) {
+    if (!volp_loaded_ || hinge_rest_.empty()) return false;
+    VkDeviceSize sz = static_cast<VkDeviceSize>(hinge_rest_.size()) * sizeof(float);
+    vkDeviceWaitIdle(device_);
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy bc{}; bc.size = sz;
+    vkCmdCopyBuffer(cb, tri_vbuf_, volp_rb_buf_, 1, &bc);
+    end_single_time_cmd(cb);
+    void* p = nullptr;
+    vkMapMemory(device_, volp_rb_mem_, 0, sz, 0, &p);
+    out.resize(hinge_rest_.size());
+    std::memcpy(out.data(), p, sz);
+    vkUnmapMemory(device_, volp_rb_mem_);
     return true;
 }
 
@@ -3367,6 +3524,56 @@ bool Engine::frame() {
         }
         hpc.flags = gait_drives ? 1u : 0u;
         hpc.n = static_cast<uint32_t>(hinge_wL_.size());
+        // H13: the manual verification override applies to BOTH pose laws —
+        // hinge.comp's theta-mode (flags bit0) IS the blend law at a fixed
+        // angle, so the operator/dyad can compare volp vs blend at the same
+        // commanded theta.
+        if (volp_manual_.load(std::memory_order_relaxed)) {
+            hpc.thetaL = volp_thL_.load(std::memory_order_relaxed);
+            hpc.thetaR = volp_thR_.load(std::memory_order_relaxed);
+            hpc.flags |= 1u;
+        }
+        bool volp = volp_loaded_ && volp_pipe_ != VK_NULL_HANDLE
+                    && volp_mode_.load(std::memory_order_relaxed) == 1;
+        if (volp) {
+            // H13: the volp-ARAP kernel replaces the blend dispatch (same theta
+            // source; blend stays behind the flag). One workgroup, M fixed.
+            struct VolpPC { float thetaL, thetaR; uint32_t flags, M; } vpc{};
+            float thL_deg, thR_deg;
+            if (volp_manual_.load(std::memory_order_relaxed)) {
+                thL_deg = volp_thL_.load(std::memory_order_relaxed);
+                thR_deg = volp_thR_.load(std::memory_order_relaxed);
+            } else if (gait_drives) {
+                thL_deg = hpc.thetaL; thR_deg = hpc.thetaR;
+            } else {
+                const float two_pi = 6.28318530718f;
+                float ph = fmodf(hpc.time, hinge_period_) / hinge_period_;
+                thL_deg = (0.5f - 0.5f * cosf(two_pi * ph)) * hinge_romL_;
+                thR_deg = (0.5f - 0.5f * cosf(two_pi * ph + hinge_phaseR_)) * hinge_romR_;
+            }
+            uint32_t vflags = 0;
+            float dL = fabsf(thL_deg - volp_last_thL_), dR = fabsf(thR_deg - volp_last_thR_);
+            // 2.5 deg: outside the tracking derivation's domain (2 deg/frame,
+            // volp_track.json) -> cold-start from the theta-exact blend pose.
+            if (volp_cold_.exchange(false) || dL > 2.5f || dR > 2.5f) vflags |= 1u;
+            volp_last_thL_ = thL_deg; volp_last_thR_ = thR_deg;
+            vpc.thetaL = thL_deg; vpc.thetaR = thR_deg;
+            vpc.flags = vflags;
+            vpc.M = volp_M_.load(std::memory_order_relaxed);
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, volp_pipe_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, volp_layout_,
+                                    0, 1, &volp_desc_set_, 0, nullptr);
+            vkCmdPushConstants(cmd_bufs_[img_idx], volp_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                               0, sizeof(vpc), &vpc);
+            vkCmdDispatch(cmd_bufs_[img_idx], 1, 1, 1);
+            VkMemoryBarrier vmb{};
+            vmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            vmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            vmb.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+            vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+                0, 1, &vmb, 0, nullptr, 0, nullptr);
+        } else {
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_layout_,
                                 0, 1, &hinge_desc_set_, 0, nullptr);
@@ -3380,6 +3587,7 @@ bool Engine::frame() {
         vkCmdPipelineBarrier(cmd_bufs_[img_idx],
             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
             0, 1, &hmb, 0, nullptr, 0, nullptr);
+        }
     }
 
     // ── FROST decode (H9) — relight the mesh from the CURRENT camera view
