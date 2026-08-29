@@ -211,7 +211,7 @@ copy, which is why the human is a terminal of this system, not a user of it.
 
 | # | Item | Owner | State |
 |---|------|-------|-------|
-| B1 | **ARAP skin for the L-knee pinch band (92–108°)** — fold-side area redistribution; falsifiers F1–F4 specced | local agent (ARAP prompt issued 2026-08-28) | IN FLIGHT |
+| B1 | **ARAP skin for the L-knee pinch band (92–108°)** — fold-side area redistribution | main agent | **FALSIFIED 2026-08-28** (`agent_logs/kimi/arap_skin_01.md`): plain ARAP (welded-node graph, uniform Laplacian, batched-SVD local-global, derived arc-length band 0.759) flags PINCH at **all 7** band angles in the head-to-head dyad; the blend flags 3, cleans 3, borderlines 1. Plain ARAP's energy minimum IS a crease — the blend stays the shipping law. 0 broken welds every step (welded-graph structure holds). Residual blend flags narrow to ~88°/108–112° (±8° dyad noise). Next candidates if revisited: smooth ARAP bi-Laplacian (the membrane's actual spec), cotan weights, fold-side weight shaping |
 | B2 | **ROM re-sweep about the corrected inter-knee axis** — current limits were swept about the old tilted axes (CHOSEN-UNVERIFIED) | unassigned | OPEN — mechanical, good weak-agent task |
 | B3 | **Instant-center migration (four-bar linkage knee)** — the lawful deeper fix if ARAP redistribution is insufficient; derivable from the bone rods | unassigned | OPEN — future membrane |
 | B4 | **Engine B2 teardown leaks** — validation fires at shutdown (VkPipelineLayout + debug messenger) | main agent | **CLOSED 2026-08-28** — messenger stored + destroyed before the instance, graphics `pipeline_layout_` destroyed at shutdown |
