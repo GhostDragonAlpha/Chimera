@@ -1014,3 +1014,10 @@ inherits when the local agents stall. Full version:
 7. **Record the honest negatives with the win** — placebo exposed, rest
    baseline named, model limitation named; verify the render with your own
    read before claiming; commit with the evidence trail.
+
+**Operating layer for all agents (2026-08-28, operator decree):**
+`docs/THE_OPERATING_MANUAL.md` is the workflow — ownership boundaries, the
+six-step loop (READ → MEMBRANE → BUILD → MEASURE → REPORT → HAND BACK), the
+paste-back format, the earned-blocked rule, and the task-envelope template
+every legal task arrives in. `docs/THE_TRIANGLE_GUIDE.md` is the domain laws.
+Weaker agents operate by those two documents, pointed at from `AGENTS.md`.

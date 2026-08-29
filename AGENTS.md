@@ -46,6 +46,12 @@ onboarding: you are the PHYSICS (you own rendering + the workflow), the HUMAN si
 operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a term, aligned).
 You build THROUGH the engine.
 
+**Any agent taking a construction task: read `docs/THE_OPERATING_MANUAL.md` (the
+workflow — boundaries, the loop, the paste-back, the task envelope) and
+`docs/THE_TRIANGLE_GUIDE.md` (the domain laws, each with the failure that taught
+it).** Weaker agents operate by those two documents; tasks arrive in the manual's
+envelope or they are not legal tasks.
+
 Then the reading list `CLAUDE.md` owns — `docs/THE_LAW.md` → `docs/THE_WORKFLOW.md` →
 `docs/THE_COMPILER.md` → `docs/THE_PIECES.md` — then `CLAUDE.md` itself
 for Key Paths, hardware traps, and conventions. **The rule index is `docs/THE_LAW.md`'s
