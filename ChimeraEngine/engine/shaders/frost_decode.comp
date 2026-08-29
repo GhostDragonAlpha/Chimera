@@ -1,0 +1,193 @@
+// frost_decode.comp — H9: the trained frost MLP as an integer compute kernel.
+// BIT-EXACT PORT of .tmp/frost_decode_ref.py — every op below is integer and
+// replicates that file's definitions exactly (it is the reference; this is the
+// port). Integer state exact everywhere (runtime packet 02 doctrine); the only
+// float in the boundary is the POSED vertex buffer (Tier-1b, same-GPU) — from
+// those floats onward the whole pipeline is fixed-point.
+//
+// Formats (derived in frost_decode_ref.py's header, mirrored here):
+//   PP=12 position Q | QN=30 unit-vector Q | SD=14 dir-coord Q |
+//   SZ=12 hidden-act Q | R=24 rescale-mult Q | QO=16 output RGB Q | ACT_HI=64
+//
+// Per-triangle dispatch, one invocation per triangle, atomic-free, disjoint
+// writes (V3). MACs are scalar int32 (accumulator bounds PROVEN in the
+// reference: worst |ACC| = 2.13e9 < 2^31 under the ACT_HI clamp) — glslang
+// 1.4.328 exposes no GLSL integer-dot-product (DP4a) binding, so DP4a is
+// unavailable to shaders written in GLSL; scalar IMAD is the same exactness
+// class (integer, fixed order). VK_NV_cooperative_vector is probed at startup
+// and logged; left inactive (see engine.cpp load_frost).
+#version 460
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : require
+
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    ivec4 view_q;     // xyz: Q30 camera-forward (constant per frame); w: n_tris
+    ivec4 light_q;    // xyz: Q30 light; w: debug flag (1 -> write inputs to Dbg)
+} pc;
+
+layout(std430, binding = 0) readonly buffer Verts   { float   vbuf[]; };  // posed, stride 9
+layout(std430, binding = 1) readonly buffer Indices { uint    ibuf[]; };
+layout(std430, binding = 2) readonly buffer Latents { uint    lat[];  };  // 8 nibbles/tri
+layout(std430, binding = 3) readonly buffer Weights { int     w[];    };  // W0|W1|W2|W3
+                                                                          // (int8-valued ints —
+                                                                          //  int32 storage avoids the
+                                                                          //  8-bit-SSBO feature)
+layout(std430, binding = 4) readonly buffer AB      { int64_t ab[];   };  // [A,B] per row
+layout(std430, binding = 5) readonly buffer Mlat    { int     m_c[];  };  // 8 latent mults
+layout(std430, binding = 6) readonly buffer Lut     { int     lut[];  };
+layout(std430, binding = 7) writeonly buffer Color  { int     rgb[];  };  // F x 3 Q16
+layout(std430, binding = 8) writeonly buffer Dbg    { int     dbg[];  };  // F x 14
+
+const int PP = 15, QN = 30, SD = 14, SZ = 12, R = 24, QO = 16;
+const int ACT_HI_Q = 64 * (1 << SZ);      // 262144
+const int LUT_HALF = 8 * (1 << SZ);       // 32768
+// weight layer offsets (row-major [out][in]): 64x14 | 64x64 | 64x64 | 3x64
+const int W0_OFF = 0, W1_OFF = 896, W2_OFF = 4992, W3_OFF = 9088;
+// AB row offsets: L1 | L2 | L3 | L4(3 rows)
+const int AB0 = 0, AB1 = 64, AB2 = 128, AB3 = 192;
+
+// ── exact integer primitives (must match frost_decode_ref.py) ───────────────
+int64_t floordiv(int64_t a, int64_t b) {              // b > 0; GLSL '/' truncates
+    int64_t q = a / b;
+    if (a < 0 && a != q * b) q -= 1;
+    return q;
+}
+int64_t rdiv(int64_t x, int64_t d) {                  // floor((2x + d) / (2d))
+    return floordiv(2 * x + d, 2 * d);
+}
+int64_t isqrt(int64_t n) {                            // exact floor-sqrt (bitwise)
+    int64_t res = int64_t(0);
+    int64_t bit = int64_t(1) << 62;
+    while (bit > n) bit >>= 2;
+    while (bit != 0) {
+        if (n >= res + bit) { n -= res + bit; res = (res >> 1) + bit; }
+        else                  { res >>= 1; }
+        bit >>= 2;
+    }
+    return res;
+}
+int rhu_signed(float f) {                             // round-half-up, sign-symmetric
+    float a = abs(f);
+    int   q = int(floor(a + 0.5));                    // a+0.5 < 2^23: exact in f32
+    return (f < 0.0) ? -q : int(q);
+}
+int posq(float f) { return rhu_signed(f * 32768.0f); }  // x2^PP (PP=15), exact power of 2
+
+int gelu_q(int zq) {
+    if (zq >  LUT_HALF) return min(zq, ACT_HI_Q);     // GELU(x)=x past 8; the clamp
+    if (zq < -LUT_HALF) return 0;                     // GELU(x<-8) > -2.4e-15 -> 0
+    return lut[zq + LUT_HALF];
+}
+
+void main() {
+    uint t = gl_GlobalInvocationID.x;
+    if (t >= uint(pc.view_q.w)) return;
+
+    // ── front-end: posed floats -> Q30 basis (e42 conventions, integer) ──────
+    uint i0 = ibuf[3 * t], i1 = ibuf[3 * t + 1], i2 = ibuf[3 * t + 2];
+    int64_t px0 = posq(vbuf[i0 * 9 + 0]), py0 = posq(vbuf[i0 * 9 + 1]), pz0 = posq(vbuf[i0 * 9 + 2]);
+    int64_t e1x = int64_t(posq(vbuf[i1 * 9 + 0])) - px0;
+    int64_t e1y = int64_t(posq(vbuf[i1 * 9 + 1])) - py0;
+    int64_t e1z = int64_t(posq(vbuf[i1 * 9 + 2])) - pz0;
+    int64_t e2x = int64_t(posq(vbuf[i2 * 9 + 0])) - px0;
+    int64_t e2y = int64_t(posq(vbuf[i2 * 9 + 1])) - py0;
+    int64_t e2z = int64_t(posq(vbuf[i2 * 9 + 2])) - pz0;
+    int64_t cx = e1y * e2z - e1z * e2y;
+    int64_t cy = e1z * e2x - e1x * e2z;
+    int64_t cz = e1x * e2y - e1y * e2x;
+
+    const int64_t ONE = int64_t(1) << QN;
+    int64_t nx, ny, nz;
+    if (cx == 0 && cy == 0 && cz == 0) {              // == e42's |n|<1e-12 exactly
+        nx = 0; ny = ONE; nz = 0;
+    } else {
+        int64_t ln = isqrt(cx * cx + cy * cy + cz * cz);
+        nx = rdiv(cx * ONE, ln);
+        ny = rdiv(cy * ONE, ln);
+        nz = rdiv(cz * ONE, ln);
+    }
+    // largest-axis rule: ax = first index of min(|n_q|)  (e42 argmin, first-on-ties)
+    uint ax = 0;
+    int64_t axv = abs(nx);
+    if (abs(ny) < axv) { ax = 1; axv = abs(ny); }
+    if (abs(nz) < axv) { ax = 2; }
+    // t1_raw = cross(n, e_ax) — a signed permutation of n (exact)
+    int64_t t1x, t1y, t1z;
+    if (ax == 0)      { t1x = 0;   t1y = nz;  t1z = -ny; }
+    else if (ax == 1) { t1x = -nz; t1y = 0;   t1z = nx;  }
+    else              { t1x = ny;  t1y = -nx; t1z = 0;   }
+    int64_t l1 = isqrt(t1x * t1x + t1y * t1y + t1z * t1z);
+    int64_t t1qx, t1qy, t1qz;
+    if (l1 > 0) {
+        t1qx = rdiv(t1x * ONE, l1);
+        t1qy = rdiv(t1y * ONE, l1);
+        t1qz = rdiv(t1z * ONE, l1);
+    } else {                                          // unreachable (n != 0) but pinned
+        t1qx = ONE; t1qy = 0; t1qz = 0;
+    }
+    // t2_q = rdiv(cross(n, t1), 2^QN)
+    int64_t t2qx = rdiv(ny * t1qz - nz * t1qy, ONE);
+    int64_t t2qy = rdiv(nz * t1qx - nx * t1qz, ONE);
+    int64_t t2qz = rdiv(nx * t1qy - ny * t1qx, ONE);
+
+    // coords_i = rdiv(vec_i . dir_q, 2^(2QN-SD)) — the TANGENT-SPACE PROJECTION
+    // (t1.d, t2.d, n.d). e42/frost_b0: np.stack([t1,t2,n], axis=1) puts the
+    // vectors in the MIDDLE axis, so einsum('bij,bj->bi') = projection (verified
+    // numerically against frost_b0.py — the MLP trained on THIS).
+    int coords[6];
+    {
+        int64_t vx = pc.view_q.x, vy = pc.view_q.y, vz = pc.view_q.z;
+        coords[0] = int(rdiv(t1qx * vx + t1qy * vy + t1qz * vz, int64_t(1) << (2 * QN - SD)));
+        coords[1] = int(rdiv(t2qx * vx + t2qy * vy + t2qz * vz, int64_t(1) << (2 * QN - SD)));
+        coords[2] = int(rdiv(nx   * vx + ny   * vy + nz   * vz, int64_t(1) << (2 * QN - SD)));
+        int64_t lx = pc.light_q.x, ly = pc.light_q.y, lz = pc.light_q.z;
+        coords[3] = int(rdiv(t1qx * lx + t1qy * ly + t1qz * lz, int64_t(1) << (2 * QN - SD)));
+        coords[4] = int(rdiv(t2qx * lx + t2qy * ly + t2qz * lz, int64_t(1) << (2 * QN - SD)));
+        coords[5] = int(rdiv(nx   * lx + ny   * ly + nz   * lz, int64_t(1) << (2 * QN - SD)));
+    }
+
+    // latents: 8 nibbles
+    uint packed = lat[t];
+    int latq[8];
+    for (int c = 0; c < 8; ++c) latq[c] = int((packed >> (4 * c)) & 0xFu);
+
+    if (pc.light_q.w != 0) {
+        for (int c = 0; c < 8; ++c) dbg[t * 14 + c] = latq[c];
+        for (int k = 0; k < 6; ++k) dbg[t * 14 + 8 + k] = coords[k];
+    }
+
+    // ── the integer MLP (int32 MAC, int64 rescale — bounds proven in the ref) ─
+    // L1: 14 -> 64
+    int a[64];
+    for (int j = 0; j < 64; ++j) {
+        int acc = 0;
+        int wb = W0_OFF + j * 14;
+        for (int c = 0; c < 8; ++c)  acc += int(w[wb + c]) * (latq[c] * m_c[c]);
+        for (int k = 0; k < 6; ++k)  acc += int(w[wb + 8 + k]) * coords[k];
+        int64_t v = ab[2 * (AB0 + j)] * int64_t(acc) + ab[2 * (AB0 + j) + 1];
+        a[j] = gelu_q(int(rdiv(v, int64_t(1) << R)));
+    }
+    // L2, L3: 64 -> 64
+    for (int l = 0; l < 2; ++l) {
+        int woff = (l == 0) ? W1_OFF : W2_OFF;
+        int aboff = (l == 0) ? AB1 : AB2;
+        int a2[64];
+        for (int j = 0; j < 64; ++j) {
+            int acc = 0;
+            int wb = woff + j * 64;
+            for (int c = 0; c < 64; ++c) acc += int(w[wb + c]) * a[c];
+            int64_t v = ab[2 * (aboff + j)] * int64_t(acc) + ab[2 * (aboff + j) + 1];
+            a2[j] = gelu_q(int(rdiv(v, int64_t(1) << R)));
+        }
+        for (int j = 0; j < 64; ++j) a[j] = a2[j];
+    }
+    // L4: 64 -> 3
+    for (int j = 0; j < 3; ++j) {
+        int acc = 0;
+        int wb = W3_OFF + j * 64;
+        for (int c = 0; c < 64; ++c) acc += int(w[wb + c]) * a[c];
+        int64_t v = ab[2 * (AB3 + j)] * int64_t(acc) + ab[2 * (AB3 + j) + 1];
+        rgb[3 * t + j] = int(rdiv(v, int64_t(1) << R));
+    }
+}

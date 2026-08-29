@@ -68,6 +68,13 @@ static std::mutex g_water_mutex;
 static std::condition_variable g_water_cv;
 static bool g_water_pending = false, g_water_applied = false;
 
+// ── Pending frost request (H9 decode; same handoff) ─────────────────────────
+struct FrostReq { int kind = 0; std::vector<uint8_t> blob; std::vector<int32_t> data; bool ok = false; };
+static FrostReq g_frost_req;
+static std::mutex g_frost_mutex;
+static std::condition_variable g_frost_cv;
+static bool g_frost_pending = false, g_frost_applied = false;
+
 // ── Pending skin/pose request (same handoff: Vulkan work stays on the render thread) ────
 struct SkinRequest {
     int kind = 0;                    // 1 = skin_bin load, 2 = pose_store, 3 = pose_apply
@@ -584,6 +591,110 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no water vis\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/frost_bin" && method == "POST") {
+            // Binary: the raw .tmp/frost_gt/frost_engine.bin blob (see
+            // .tmp/frost_decode_ref.py::export_blob for the layout).
+            if (req_body.size() < 64) {
+                body = "{\"ok\":false,\"error\":\"short blob\"}";
+            } else {
+                {
+                    std::lock_guard<std::mutex> lk(g_frost_mutex);
+                    g_frost_req = FrostReq{};
+                    g_frost_req.kind = 1;
+                    g_frost_req.blob.assign(req_body.begin(), req_body.end());
+                    g_frost_pending = true; g_frost_applied = false;
+                }
+                std::unique_lock<std::mutex> lk(g_frost_mutex);
+                bool ok = g_frost_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_frost_applied; });
+                body = (ok && g_frost_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/frost" && method == "POST") {
+            // JSON {"on":bool, "light":[x,y,z]} — light is a world-space direction
+            // (normalized + quantized in-engine, correctly-rounded IEEE == Python).
+            auto find_bool2 = [&](const char* key, bool def) {
+                size_t pos = req_body.find(key);
+                if (pos == std::string::npos) return def;
+                pos = req_body.find(':', pos);
+                if (pos == std::string::npos) return def;
+                size_t a = req_body.find_first_not_of(" \t", pos + 1);
+                return a != std::string::npos && req_body.compare(a, 4, "true") == 0;
+            };
+            bool on = find_bool2("on", g_engine ? g_engine->frost_on_.load() : false);
+            if (g_engine) {
+                size_t lp = req_body.find("\"light\"");
+                if (lp != std::string::npos) {
+                    size_t ob = req_body.find('[', lp);
+                    if (ob != std::string::npos) {
+                        double lv[3]; int got = 0;
+                        const char* s = req_body.c_str() + ob + 1;
+                        char* end = nullptr;
+                        for (; got < 3; ++got) {
+                            lv[got] = strtod(s, &end);
+                            if (end == s) break;
+                            s = end;
+                            while (*s == ' ' || *s == ',') ++s;
+                        }
+                        if (got == 3) {
+                            g_engine->frost_light_x_.store(lv[0]);
+                            g_engine->frost_light_y_.store(lv[1]);
+                            g_engine->frost_light_z_.store(lv[2]);
+                        }
+                    }
+                }
+                g_engine->frost_on_.store(on);
+            }
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/frost" && method == "GET") {
+            if (g_engine && g_engine->frost_loaded_) {
+                char buf[512];
+                snprintf(buf, sizeof(buf),
+                    "{\"on\":%s,\"loaded\":true,\"n_tris\":%u,\"frame\":%llu,"
+                    "\"light\":[%.17g,%.17g,%.17g],"
+                    "\"view_q\":[%d,%d,%d],\"light_q\":[%d,%d,%d],"
+                    "\"kernel_path\":\"scalar-int32-imad\","
+                    "\"dp4a\":\"unavailable: no GLSL integer-dot-product binding in glslang 1.4.328\","
+                    "\"coopvec\":\"%s\"}",
+                    g_engine->frost_on_.load() ? "true" : "false",
+                    g_engine->frost_tris(),
+                    (unsigned long long)g_engine->frost_frame_.load(),
+                    g_engine->frost_light_x_.load(),
+                    g_engine->frost_light_y_.load(),
+                    g_engine->frost_light_z_.load(),
+                    g_engine->frost_vq_[0].load(), g_engine->frost_vq_[1].load(),
+                    g_engine->frost_vq_[2].load(),
+                    g_engine->frost_lq_[0].load(), g_engine->frost_lq_[1].load(),
+                    g_engine->frost_lq_[2].load(),
+                    g_engine->frost_coopvec_present_ ? "present-inactive" : "absent");
+                body = buf;
+            } else {
+                body = "{\"on\":false,\"loaded\":false}";
+            }
+            content_type = "application/json";
+        } else if (p == "/frost_debug" && method == "POST") {
+            // Bit-exactness snapshot: arms the debug write on the next dispatched
+            // frame; returns [i32 * F*3 colors][i32 * F*14 kernel inputs].
+            {
+                std::lock_guard<std::mutex> lk(g_frost_mutex);
+                g_frost_req = FrostReq{};
+                g_frost_req.kind = 2;
+                g_frost_pending = true; g_frost_applied = false;
+            }
+            bool ok; std::vector<int32_t> snap;
+            {
+                std::unique_lock<std::mutex> lk(g_frost_mutex);
+                ok = g_frost_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_frost_applied; });
+                snap = std::move(g_frost_req.data);
+                ok = ok && g_frost_req.ok;
+            }
+            if (ok) {
+                body.assign(reinterpret_cast<const char*>(snap.data()), snap.size() * 4);
+                content_type = "application/octet-stream";
+            } else {
+                body = "{\"ok\":false,\"error\":\"snapshot failed or timeout (frost on?)\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/skin_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
             //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
@@ -860,6 +971,25 @@ int main(int argc, char** argv) {
             }
         }
 
+        // Apply a pending frost request (Vulkan work must stay on this thread).
+        // kind 2 (snapshot) only ARMS here — it completes after the next frame
+        // (below), once the debug dispatch + readback copies have been recorded.
+        {
+            std::lock_guard<std::mutex> lk(g_frost_mutex);
+            if (g_frost_pending) {
+                if (g_frost_req.kind == 1) {
+                    g_frost_req.ok = engine.load_frost(g_frost_req.blob.data(),
+                                                       g_frost_req.blob.size());
+                    g_frost_req.blob.clear();
+                    g_frost_req.blob.shrink_to_fit();
+                    g_frost_pending = false; g_frost_applied = true; g_frost_cv.notify_all();
+                } else if (g_frost_req.kind == 2) {
+                    engine.frost_dbg_arm_.store(true);
+                    // leave pending: completed after engine.frame() below
+                }
+            }
+        }
+
         // Run the N-body simulation only when no membrane is loaded
         if (!g_membrane_active) {
             auto& particles = g_physics.particles();
@@ -913,6 +1043,17 @@ int main(int argc, char** argv) {
             break;
         }
         auto ft1 = std::chrono::high_resolution_clock::now();
+
+        // Complete an armed frost snapshot: the frame just submitted recorded the
+        // debug dispatch + readback copies; drain and hand the data back.
+        if (engine.frost_snapshot_pending()) {
+            std::vector<int32_t> snap;
+            bool ok = engine.frost_finish_snapshot(snap);
+            std::lock_guard<std::mutex> lk(g_frost_mutex);
+            g_frost_req.ok = ok;
+            if (ok) g_frost_req.data = std::move(snap);
+            g_frost_pending = false; g_frost_applied = true; g_frost_cv.notify_all();
+        }
         // B5: nothing loaded -> frame() returns immediately; pace the loop or it
         // spins a core at millions of FPS doing literally nothing.
         if (engine.idle()) Sleep(8);

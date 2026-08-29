@@ -439,6 +439,10 @@ bool Engine::init(const EngineConfig& cfg) {
     features.shaderFloat64 = VK_TRUE;     // the water solver's float math must
                                           // match the CPU reference's float64
                                           // bit-for-bit (RTX 4090 supports it)
+    features.shaderInt64 = VK_TRUE;       // H9 frost decode: the integer MLP's
+                                          // fixed-point rescale path (RTX 4090)
+    features.geometryShader = VK_TRUE;    // H9 frost display: gl_PrimitiveID in
+                                          // the fragment shader pulls Geometry
 
     VkDeviceCreateInfo device_info{};
     device_info.sType                     = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -1164,6 +1168,7 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     tri_idx_count_ = icount;
     has_mesh_ = true;
     water_vis_desc_dirty_ = true;   // buffers recreated -> the water-vis set must rebind (H4)
+    frost_desc_dirty_ = true;       // same for the frost decode set (H9)
     // Measure the bounding sphere about the origin (the camera target) — the
     // zoom floor derives from THIS, so the near plane can never slice the
     // mesh no matter how far in the operator scrolls. Vertex stride = 9
@@ -1750,6 +1755,301 @@ void Engine::water_vis_rebind() {
     vkUpdateDescriptorSets(device_, 6, w, 0, nullptr);
     water_vis_desc_dirty_ = false;
 }
+
+// ── THE FROST DECODE (H9) ────────────────────────────────────────────────────
+// The trained per-triangle relighting MLP as an integer compute kernel —
+// shaders/frost_decode.comp is a bit-exact port of .tmp/frost_decode_ref.py
+// (the golden fixed-point reference; IT defines the shipped decode). All state
+// downstream of the posed float32 vertex buffer is exact integer (Q formats
+// derived + budget-measured in the reference: C_total = 0.56 dB <= X = 1.0).
+//
+// Paths probed at load: DP4a is UNAVAILABLE to GLSL shaders (glslang 1.4.328
+// exposes no integer-dot-product binding), VK_NV_cooperative_vector is probed
+// and logged but left INACTIVE — the scalar int32 IMAD path is exact, atomic-
+// free, fixed-order, and meets render rate with headroom; a second exact path
+// would double the verification surface for no measured need (V5: determinism
+// outranks speed).
+
+static void quantize_dir_q30(const double v[3], int32_t out[3]) {
+    // IEEE float64, correctly rounded (+,*,/,sqrt) => bit-identical to the
+    // reference's numpy float64 path. round-half-away (rha) on |x|*2^30.
+    double n = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    if (n == 0.0) { out[0] = 0; out[1] = 1 << 30; out[2] = 0; return; }
+    for (int k = 0; k < 3; ++k) {
+        double d = v[k] / n;
+        double a = fabs(d) * 1073741824.0;          // 2^30
+        double q = floor(a + 0.5);
+        out[k] = static_cast<int32_t>((d < 0.0) ? -static_cast<int64_t>(q)
+                                                :  static_cast<int64_t>(q));
+    }
+}
+
+bool Engine::load_frost(const uint8_t* blob, size_t size) {
+    vkDeviceWaitIdle(device_);
+    // ── coop-vec probe (log only; see the block comment above) ──
+    {
+        uint32_t n_ext = 0;
+        vkEnumerateDeviceExtensionProperties(phys_dev_, nullptr, &n_ext, nullptr);
+        std::vector<VkExtensionProperties> exts(n_ext);
+        vkEnumerateDeviceExtensionProperties(phys_dev_, nullptr, &n_ext, exts.data());
+        for (const auto& e : exts)
+            if (strcmp(e.extensionName, "VK_NV_cooperative_vector") == 0)
+                frost_coopvec_present_ = true;
+        printf("FROST paths: scalar-int32 IMAD (PINNED, exact) | DP4a: no GLSL binding "
+               "(glslang 1.4.328) | VK_NV_cooperative_vector: %s (inactive)\n",
+               frost_coopvec_present_ ? "present" : "absent");
+    }
+    // ── parse the blob (layout: .tmp/frost_decode_ref.py::export_blob) ──
+    if (size < 64 || memcmp(blob, "FRO1", 4) != 0) {
+        fprintf(stderr, "frost: bad blob\n"); return false;
+    }
+    uint32_t F, lut_len;
+    memcpy(&F, blob + 4, 4);
+    memcpy(&lut_len, blob + 8, 4);
+    int32_t fmts[8];   // PP QN SD RM SZ R QO ACT_HI
+    memcpy(fmts, blob + 12, 32);
+    printf("FROST model: %u tris, lut %u | PP %d QN %d SD %d RM %d SZ %d R %d QO %d ACT_HI %d\n",
+           F, lut_len, fmts[0], fmts[1], fmts[2], fmts[3], fmts[4], fmts[5], fmts[6], fmts[7]);
+    const size_t w_bytes = (64 * 14 + 64 * 64 + 64 * 64 + 3 * 64) * 4;  // int8-valued int32s
+    const size_t ab_rows = 64 + 64 + 64 + 3;
+    size_t off = 64;
+    size_t expect = off + static_cast<size_t>(F) * 4 + 8 * 4 + w_bytes
+                  + ab_rows * 16 + static_cast<size_t>(lut_len) * 4;
+    if (size != expect) {
+        fprintf(stderr, "frost: blob size mismatch (%zu vs %zu)\n", size, expect);
+        return false;
+    }
+    const uint8_t* p_lat = blob + off;                       off += static_cast<size_t>(F) * 4;
+    const uint8_t* p_m   = blob + off;                       off += 8 * 4;
+    const uint8_t* p_w   = blob + off;                       off += w_bytes;
+    const uint8_t* p_ab  = blob + off;                       off += ab_rows * 16;
+    const uint8_t* p_lut = blob + off;
+
+    upload_buffer(p_lat, static_cast<size_t>(F) * 4, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_lat_buf_, f_lat_mem_);
+    upload_buffer(p_m, 8 * 4, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_m_buf_, f_m_mem_);
+    upload_buffer(p_w, w_bytes, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_w_buf_, f_w_mem_);
+    upload_buffer(p_ab, ab_rows * 16, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_ab_buf_, f_ab_mem_);
+    upload_buffer(p_lut, static_cast<size_t>(lut_len) * 4, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_lut_buf_, f_lut_mem_);
+    {
+        std::vector<int32_t> zeros(static_cast<size_t>(F) * 3, 0);
+        upload_buffer(zeros.data(), zeros.size() * 4,
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                      f_color_buf_, f_color_mem_);
+        std::vector<int32_t> z2(static_cast<size_t>(F) * 14, 0);
+        upload_buffer(z2.data(), z2.size() * 4,
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                      f_dbg_buf_, f_dbg_mem_);
+    }
+    // host-visible readbacks (snapshot path)
+    auto make_readback = [&](VkDeviceSize bytes, VkBuffer& buf, VkDeviceMemory& mem, void*& map) {
+        if (buf) { if (map) vkUnmapMemory(device_, mem); vkDestroyBuffer(device_, buf, nullptr); vkFreeMemory(device_, mem, nullptr); }
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = bytes; bci.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &buf);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, buf, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &mem);
+        vkBindBufferMemory(device_, buf, mem, 0);
+        vkMapMemory(device_, mem, 0, bytes, 0, &map);
+    };
+    make_readback(static_cast<size_t>(F) * 3 * 4, f_color_rb_, f_color_rb_mem_, f_color_rb_map_);
+    make_readback(static_cast<size_t>(F) * 14 * 4, f_dbg_rb_, f_dbg_rb_mem_, f_dbg_rb_map_);
+
+    // ── compute pipeline (9 SSBOs + 32 B push constants) ──
+    if (!w_make_pipeline(device_, "shaders/frost_decode.spv", 9, 32,
+                         frost_mod_, frost_dsl_, frost_layout_, frost_pipe_)) {
+        fprintf(stderr, "frost: compute pipeline failed\n"); return false;
+    }
+    // ── frost render pipeline: same vertex stage, frag reads the color SSBO ──
+    {
+        std::vector<char> spv = read_file("shaders/render_tri_frost.spv");
+        if (spv.empty()) { fprintf(stderr, "frost: render_tri_frost.spv missing\n"); return false; }
+        if (tri_frost_frag_mod_) vkDestroyShaderModule(device_, tri_frost_frag_mod_, nullptr);
+        VkShaderModuleCreateInfo smci{};
+        smci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        smci.codeSize = spv.size();
+        smci.pCode = reinterpret_cast<const uint32_t*>(spv.data());
+        vkCreateShaderModule(device_, &smci, nullptr, &tri_frost_frag_mod_);
+
+        // set 1: the per-triangle color SSBO (fragment)
+        if (!frost_frag_dsl_) {
+            VkDescriptorSetLayoutBinding b{};
+            b.binding = 0; b.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            b.descriptorCount = 1; b.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+            VkDescriptorSetLayoutCreateInfo dlci{};
+            dlci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            dlci.bindingCount = 1; dlci.pBindings = &b;
+            vkCreateDescriptorSetLayout(device_, &dlci, nullptr, &frost_frag_dsl_);
+            VkDescriptorSetLayout sets[2] = { desc_layout_, frost_frag_dsl_ };
+            VkPipelineLayoutCreateInfo plci{};
+            plci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            plci.setLayoutCount = 2; plci.pSetLayouts = sets;
+            vkCreatePipelineLayout(device_, &plci, nullptr, &frost_render_layout_);
+            VkDescriptorPoolSize ps{};
+            ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 1;
+            VkDescriptorPoolCreateInfo dpci{};
+            dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+            dpci.maxSets = 1; dpci.poolSizeCount = 1; dpci.pPoolSizes = &ps;
+            vkCreateDescriptorPool(device_, &dpci, nullptr, &frost_frag_pool_);
+            VkDescriptorSetAllocateInfo dsai{};
+            dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+            dsai.descriptorPool = frost_frag_pool_; dsai.descriptorSetCount = 1;
+            dsai.pSetLayouts = &frost_frag_dsl_;
+            vkAllocateDescriptorSets(device_, &dsai, &frost_frag_set_);
+        }
+
+        // graphics pipeline — identical state to create_triangle_pipeline's fill
+        VkVertexInputBindingDescription binding{};
+        binding.binding = 0; binding.stride = sizeof(float) * 9;
+        binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+        VkVertexInputAttributeDescription attrs[3] = {};
+        attrs[0].location = 0; attrs[0].binding = 0;
+        attrs[0].format = VK_FORMAT_R32G32B32_SFLOAT; attrs[0].offset = 0;
+        attrs[1].location = 1; attrs[1].binding = 0;
+        attrs[1].format = VK_FORMAT_R32G32B32_SFLOAT; attrs[1].offset = sizeof(float) * 3;
+        attrs[2].location = 2; attrs[2].binding = 0;
+        attrs[2].format = VK_FORMAT_R32G32B32_SFLOAT; attrs[2].offset = sizeof(float) * 6;
+        VkPipelineShaderStageCreateInfo stages[2] = {};
+        stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+        stages[0].module = tri_vert_mod_; stages[0].pName = "main";
+        stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+        stages[1].module = tri_frost_frag_mod_; stages[1].pName = "main";
+        VkPipelineInputAssemblyStateCreateInfo ia{};
+        ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+        ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        VkPipelineViewportStateCreateInfo vp{};
+        vp.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        vp.viewportCount = 1; vp.scissorCount = 1;
+        VkPipelineRasterizationStateCreateInfo ras{};
+        ras.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+        ras.polygonMode = VK_POLYGON_MODE_FILL;
+        ras.cullMode = VK_CULL_MODE_NONE;
+        ras.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+        ras.lineWidth = 1.0f;
+        VkPipelineMultisampleStateCreateInfo ms{};
+        ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+        ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+        VkPipelineColorBlendAttachmentState blend{};
+        blend.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                               VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+        VkPipelineColorBlendStateCreateInfo cb{};
+        cb.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+        cb.attachmentCount = 1; cb.pAttachments = &blend;
+        VkPipelineDynamicStateCreateInfo dyn{};
+        dyn.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        static const VkDynamicState dyn_states[] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+        dyn.dynamicStateCount = 2; dyn.pDynamicStates = dyn_states;
+        VkPipelineDepthStencilStateCreateInfo ds{};
+        ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        ds.depthTestEnable = VK_TRUE; ds.depthWriteEnable = VK_TRUE;
+        ds.depthCompareOp = VK_COMPARE_OP_LESS;
+        VkPipelineVertexInputStateCreateInfo vi{};
+        vi.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+        vi.vertexBindingDescriptionCount = 1; vi.pVertexBindingDescriptions = &binding;
+        vi.vertexAttributeDescriptionCount = 3; vi.pVertexAttributeDescriptions = attrs;
+        VkGraphicsPipelineCreateInfo gpci{};
+        gpci.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        gpci.stageCount = 2; gpci.pStages = stages;
+        gpci.pVertexInputState = &vi;
+        gpci.pInputAssemblyState = &ia; gpci.pViewportState = &vp;
+        gpci.pRasterizationState = &ras; gpci.pMultisampleState = &ms;
+        gpci.pDepthStencilState = &ds; gpci.pColorBlendState = &cb;
+        gpci.pDynamicState = &dyn;
+        gpci.layout = frost_render_layout_;
+        gpci.renderPass = rt_render_pass_; gpci.subpass = 0;
+        if (tri_frost_pipeline_) vkDestroyPipeline(device_, tri_frost_pipeline_, nullptr);
+        VkResult pr = vkCreateGraphicsPipelines(device_, VK_NULL_HANDLE, 1, &gpci,
+                                                nullptr, &tri_frost_pipeline_);
+        if (pr != VK_SUCCESS) {
+            fprintf(stderr, "frost: render pipeline failed (%d)\n", (int)pr); return false;
+        }
+        frost_render_ready_ = true;
+    }
+
+    // descriptor pool + set for the compute kernel
+    {
+        VkDescriptorPoolSize ps{};
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 9;
+        if (frost_desc_pool_) vkDestroyDescriptorPool(device_, frost_desc_pool_, nullptr);
+        VkDescriptorPoolCreateInfo dpci{};
+        dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        dpci.maxSets = 1; dpci.poolSizeCount = 1; dpci.pPoolSizes = &ps;
+        vkCreateDescriptorPool(device_, &dpci, nullptr, &frost_desc_pool_);
+        VkDescriptorSetAllocateInfo dsai{};
+        dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        dsai.descriptorPool = frost_desc_pool_; dsai.descriptorSetCount = 1;
+        dsai.pSetLayouts = &frost_dsl_;
+        vkAllocateDescriptorSets(device_, &dsai, &frost_desc_set_);
+        // static bindings 2..8 (model + outputs); 0/1 (mesh buffers) bind lazily
+        VkBuffer bufs[7] = { f_lat_buf_, f_w_buf_, f_ab_buf_, f_m_buf_,
+                             f_lut_buf_, f_color_buf_, f_dbg_buf_ };
+        VkWriteDescriptorSet w[7]{};
+        VkDescriptorBufferInfo infos[7]{};
+        for (uint32_t k = 0; k < 7; ++k) {
+            infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+            w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            w[k].dstSet = frost_desc_set_; w[k].dstBinding = 2 + k;
+            w[k].descriptorCount = 1;
+            w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            w[k].pBufferInfo = &infos[k];
+        }
+        vkUpdateDescriptorSets(device_, 7, w, 0, nullptr);
+        // the frost render set reads the same color buffer
+        VkDescriptorBufferInfo cinfo{};
+        cinfo.buffer = f_color_buf_; cinfo.range = VK_WHOLE_SIZE;
+        VkWriteDescriptorSet cw{};
+        cw.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        cw.dstSet = frost_frag_set_; cw.dstBinding = 0; cw.descriptorCount = 1;
+        cw.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        cw.pBufferInfo = &cinfo;
+        vkUpdateDescriptorSets(device_, 1, &cw, 0, nullptr);
+    }
+    f_n_tris_ = F;
+    f_lut_len_ = lut_len;
+    frost_loaded_ = true;
+    frost_desc_dirty_ = true;
+    frost_frame_.store(0);
+    printf("FROST loaded: %u triangles of relighting state\n", F);
+    return true;
+}
+
+void Engine::frost_rebind() {
+    if (frost_desc_set_ == VK_NULL_HANDLE || !frost_loaded_ || !has_mesh_) return;
+    VkBuffer bufs[2] = { tri_vbuf_, tri_ibuf_ };
+    VkWriteDescriptorSet w[2]{};
+    VkDescriptorBufferInfo infos[2]{};
+    for (uint32_t k = 0; k < 2; ++k) {
+        infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+        w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        w[k].dstSet = frost_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
+        w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        w[k].pBufferInfo = &infos[k];
+    }
+    vkUpdateDescriptorSets(device_, 2, w, 0, nullptr);
+    frost_desc_dirty_ = false;
+}
+
+bool Engine::frost_finish_snapshot(std::vector<int32_t>& out) {
+    if (!frost_loaded_ || !frost_dbg_copy_recorded_) return false;
+    vkDeviceWaitIdle(device_);   // one-off debug path — the frame that recorded
+                                 // the copies has submitted; drain it
+    size_t nc = static_cast<size_t>(f_n_tris_) * 3;
+    size_t nd = static_cast<size_t>(f_n_tris_) * 14;
+    out.resize(nc + nd);
+    memcpy(out.data(), f_color_rb_map_, nc * 4);
+    memcpy(out.data() + nc, f_dbg_rb_map_, nd * 4);
+    frost_dbg_copy_recorded_ = false;
+    return true;
+}
+
 
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                           uint32_t vcount, uint32_t icount) {
@@ -2882,6 +3182,83 @@ bool Engine::frame() {
             0, 1, &hmb, 0, nullptr, 0, nullptr);
     }
 
+    // ── FROST decode (H9) — relight the mesh from the CURRENT camera view
+    // direction + the configured light: after the pose, before the render pass.
+    bool frost_active = frost_loaded_ && has_mesh_ && f_n_tris_ > 0
+                        && f_n_tris_ == tri_idx_count_ / 3
+                        && frost_pipe_ != VK_NULL_HANDLE;
+    bool frost_want = frost_on_.load(std::memory_order_relaxed)
+                      || frost_dbg_arm_.load(std::memory_order_relaxed);
+    if (frost_active && frost_want) {
+        if (frost_desc_dirty_) frost_rebind();
+        // hinge pose (or any prior compute write) -> kernel SSBO read
+        VkMemoryBarrier fmb{};
+        fmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        fmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        fmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            0, 1, &fmb, 0, nullptr, 0, nullptr);
+        // view dir = toward the camera (e42's view_to_cam = eye - target); eye is
+        // the SAME float expression the camera UBO used above, widened to double.
+        double eye[3] = { (double)(g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x),
+                          (double)(g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y),
+                          (double)(g_cam.target[2] - g_cam.radius * c * cx) };
+        double vd[3] = { eye[0] - (double)g_cam.target[0],
+                         eye[1] - (double)g_cam.target[1],
+                         eye[2] - (double)g_cam.target[2] };
+        double ld[3] = { frost_light_x_.load(std::memory_order_relaxed),
+                         frost_light_y_.load(std::memory_order_relaxed),
+                         frost_light_z_.load(std::memory_order_relaxed) };
+        struct FrostPC { int32_t vq[4]; int32_t lq[4]; } fpc{};   // ivec4+ivec4: no
+        quantize_dir_q30(vd, fpc.vq);                            // std430 packing trap
+        quantize_dir_q30(ld, fpc.lq);
+        fpc.vq[3] = (int32_t)f_n_tris_;
+        fpc.lq[3] = frost_dbg_arm_.load(std::memory_order_relaxed) ? 1 : 0;
+        for (int k = 0; k < 3; ++k) {
+            frost_vq_[k].store(fpc.vq[k], std::memory_order_relaxed);
+            frost_lq_[k].store(fpc.lq[k], std::memory_order_relaxed);
+        }
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, frost_pipe_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, frost_layout_,
+                                0, 1, &frost_desc_set_, 0, nullptr);
+        vkCmdPushConstants(cmd_bufs_[img_idx], frost_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                           0, sizeof(fpc), &fpc);
+        vkCmdDispatch(cmd_bufs_[img_idx], (f_n_tris_ + 255) / 256, 1, 1);
+        frost_frame_.fetch_add(1, std::memory_order_relaxed);
+        if (fpc.lq[3]) {
+            VkMemoryBarrier smb{};
+            smb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            smb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            smb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+            vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                0, 1, &smb, 0, nullptr, 0, nullptr);
+            VkBufferCopy cc{}; cc.size = (VkDeviceSize)f_n_tris_ * 3 * 4;
+            vkCmdCopyBuffer(cmd_bufs_[img_idx], f_color_buf_, f_color_rb_, 1, &cc);
+            VkBufferCopy dc{}; dc.size = (VkDeviceSize)f_n_tris_ * 14 * 4;
+            vkCmdCopyBuffer(cmd_bufs_[img_idx], f_dbg_buf_, f_dbg_rb_, 1, &dc);
+            VkMemoryBarrier tmb{};
+            tmb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            tmb.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            tmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                0, 1, &tmb, 0, nullptr, 0, nullptr);
+            frost_dbg_copy_recorded_ = true;
+            frost_dbg_arm_.store(false, std::memory_order_relaxed);
+        }
+        // color SSBO write -> fragment shader read at the draw
+        VkMemoryBarrier cmb{};
+        cmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        cmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        cmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+            0, 1, &cmb, 0, nullptr, 0, nullptr);
+    }
+
     // ── THE WATER CLOCK (H4) — macro steps on the engine's own clock, recorded
     // into THIS frame's command buffer (no submit/fence/readback per step, no
     // HTTP). Constant source: a river's source doesn't stop. States slot 0
@@ -3052,8 +3429,17 @@ bool Engine::frame() {
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
         VkBuffer vb = tri_vbuf_; VkDeviceSize off = 0;
         // mesh_mode_: 0 = fill, 1 = wire only, 2 = fill then wire overlay
+        // H9: frost ON swaps the fill pipeline for the relit-color one (same
+        // vertex stage; frag reads the decode SSBO via gl_PrimitiveID).
+        bool frost_draw = frost_on_.load(std::memory_order_relaxed)
+                          && frost_active && frost_render_ready_;
+        if (frost_draw) {
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    frost_render_layout_, 1, 1, &frost_frag_set_, 0, nullptr);
+        }
         if (mesh_mode_ != 1) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_pipeline_);
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                              frost_draw ? tri_frost_pipeline_ : tri_pipeline_);
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);

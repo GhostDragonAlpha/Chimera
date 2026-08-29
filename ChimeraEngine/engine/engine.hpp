@@ -107,6 +107,30 @@ public:
                       uint32_t vcount, uint32_t icount);
     void set_mesh_mode(uint32_t m) { mesh_mode_ = m; }
 
+    // ── FROST decode (H9): the trained per-triangle MLP as an integer kernel ──
+    // .tmp/frost_decode_ref.py is the golden fixed-point reference;
+    // shaders/frost_decode.comp is its bit-exact port. The decoded per-triangle
+    // relit RGB (Q16 int32) lives in a dedicated color SSBO read by the frost
+    // fragment shader via gl_PrimitiveID — the mesh's welded/shared vertices
+    // cannot carry flat per-triangle colors, and the vertex color channel is
+    // load-bearing for the stock Lambert path.
+    bool load_frost(const uint8_t* blob, size_t size);
+    void frost_rebind();                     // mesh buffers recreated -> rebind (like W4)
+    // Arm + finish a debug snapshot (bit-exactness verification): the next
+    // dispatched frame also writes the 14 kernel inputs per triangle; after
+    // that frame, frost_finish_snapshot readbacks colors (F*3) + inputs (F*14).
+    std::atomic<bool>     frost_on_{false};
+    std::atomic<bool>     frost_dbg_arm_{false};
+    std::atomic<double>   frost_light_x_{0.35}, frost_light_y_{0.8}, frost_light_z_{0.45};
+    std::atomic<uint64_t> frost_frame_{0};   // decode dispatches since load
+    std::atomic<int32_t>  frost_vq_[3] = {{0},{0},{0}};   // published Q30 dirs
+    std::atomic<int32_t>  frost_lq_[3] = {{0},{0},{0}};   // (verification reads these)
+    bool frost_loaded_ = false;
+    uint32_t frost_tris() const { return f_n_tris_; }
+    bool frost_coopvec_present_ = false;     // probed at load_frost (logged, inactive)
+    bool frost_snapshot_pending() const { return frost_dbg_copy_recorded_; }
+    bool frost_finish_snapshot(std::vector<int32_t>& out);  // [colors F*3][inputs F*14]
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);
@@ -340,6 +364,35 @@ private:
     VkDeviceMemory  hinge_rest_mem_ = VK_NULL_HANDLE, hinge_wL_mem_ = VK_NULL_HANDLE, hinge_wR_mem_ = VK_NULL_HANDLE;
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
+    // ── FROST decode (H9) resources ──
+    uint32_t        f_n_tris_ = 0, f_lut_len_ = 0;
+    VkShaderModule  frost_mod_ = VK_NULL_HANDLE;
+    VkPipeline      frost_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout frost_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout frost_dsl_ = VK_NULL_HANDLE;
+    VkDescriptorPool frost_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet  frost_desc_set_ = VK_NULL_HANDLE;
+    VkBuffer        f_lat_buf_ = VK_NULL_HANDLE, f_m_buf_ = VK_NULL_HANDLE,
+                    f_w_buf_ = VK_NULL_HANDLE, f_ab_buf_ = VK_NULL_HANDLE,
+                    f_lut_buf_ = VK_NULL_HANDLE, f_color_buf_ = VK_NULL_HANDLE,
+                    f_dbg_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  f_lat_mem_ = VK_NULL_HANDLE, f_m_mem_ = VK_NULL_HANDLE,
+                    f_w_mem_ = VK_NULL_HANDLE, f_ab_mem_ = VK_NULL_HANDLE,
+                    f_lut_mem_ = VK_NULL_HANDLE, f_color_mem_ = VK_NULL_HANDLE,
+                    f_dbg_mem_ = VK_NULL_HANDLE;
+    VkBuffer        f_color_rb_ = VK_NULL_HANDLE, f_dbg_rb_ = VK_NULL_HANDLE;
+    VkDeviceMemory  f_color_rb_mem_ = VK_NULL_HANDLE, f_dbg_rb_mem_ = VK_NULL_HANDLE;
+    void*           f_color_rb_map_ = nullptr, *f_dbg_rb_map_ = nullptr;
+    bool            frost_desc_dirty_ = false;
+    bool            frost_dbg_copy_recorded_ = false;
+    // frost render path (frag reads the per-tri color SSBO via gl_PrimitiveID)
+    VkShaderModule  tri_frost_frag_mod_ = VK_NULL_HANDLE;
+    VkPipeline      tri_frost_pipeline_ = VK_NULL_HANDLE;
+    VkPipelineLayout frost_render_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout frost_frag_dsl_ = VK_NULL_HANDLE;
+    VkDescriptorPool frost_frag_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet  frost_frag_set_ = VK_NULL_HANDLE;
+    bool            frost_render_ready_ = false;
     // Overlay slot (e.g. the bone axis): always FILL, drawn after the main mesh.
     VkBuffer        ov_vbuf_ = VK_NULL_HANDLE, ov_ibuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  ov_vmem_, ov_imem_;
