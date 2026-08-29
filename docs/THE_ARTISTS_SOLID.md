@@ -764,3 +764,62 @@ action_tests, verdict.py status, methodology_gate, orient.py — all pass.
 Commit + push with trailer `Agent: catcoder-2.5 (local construction)`.
 Commit hygiene: no `tools/gsplat`, no `agent_logs/*` staged.
 
+---
+
+**ROM RE-SWEEP — CORRECTED INTER-KNEE AXIS (probe15, 2026-08-29)**
+
+The probe14 limits above were measured about per-side tilted axes
+(L [0.859,−0.066,0.508], R [0.664,−0.077,0.744]) and were tagged
+CHOSEN-UNVERIFIED because the tilted axes were ill-conditioned: the tibia
+was nearly parallel to the femur at rest, so the flexion-plane normal was
+noise-dominated. This re-sweep keeps probe14's capsule-contact method
+(lower-leg rod set below the z-gap cut at 0.39, stationary set = everything
+else minus a 0.12 rest-halo) but fixes the axis to the bilateral line.
+
+**Corrected axis law.** The knee joint centers were derived from the bone
+rods: J_L = [−0.4937, 1.819, 0.1299], J_R = [0.572, 1.793, 0.1299]. The
+inter-knee line is well-conditioned and is the lawful flexion axis:
+n = normalize(J_R − J_L) = [0.9997, −0.0244, 0]. Sign convention: anterior
+= +z (eye-socket centroid measured at z=+0.958, tail at z=−4.288), so
+flexion = foot moves posterior (−z) = +θ about n for both knees. The old
+per-side axes are superseded; the CHOSEN-UNVERIFIED tag is resolved.
+
+**Method.** `.tmp/_hinge_probe15.py` reuses probe14's rod parsing, lower-leg
+selection, and segment-segment capsule-distance search, but rotates the
+lower-leg rod set rigidly about (J, n). First contact (clearance < 2·r_rod,
+r_rod = 0.05645) is bracketed by a 2.5° coarse sweep and refined by 40
+bisection steps. The full min-clearance vs angle curve is recorded in
+`.tmp/_hinge_probe15_curve.json`; the summary is in
+`.tmp/_hinge_probe15_rom.json`.
+
+**New ROM limits (deg from rest pose, + = flexion):**
+
+| Knee | Axis | Extension stop | Pair (rot, stat) | Flexion stop | Pair (rot, stat) |
+|------|------|----------------|------------------|--------------|------------------|
+| L | [0.9997, −0.0244, 0] | −1.56° | 139 ↔ 142 | +145.39° | 189 ↔ 196 |
+| R | [0.9997, −0.0244, 0] | −2.33° | 557 ↔ 577 | +140.75° | 490 ↔ 494 |
+
+- L flexion: tibia rod 189 (mid [−0.494, 1.611, 0.078]) contacts femur rod
+  196 (mid [−0.494, 1.975, 0.182]).
+- L extension: toe-cluster rod 139 (mid [−0.754, 0.234, 0.364]) contacts
+  forelimb rod 142 (mid [−0.728, 0.260, 0.572]).
+- R flexion: tibia rod 490 (mid [0.572, 1.715, 0.130]) contacts femur rod
+  494 (mid [0.572, 1.923, 0.182]).
+- R extension: toe-cluster rod 557 (mid [0.832, 0.260, 0.364]) contacts
+  forelimb rod 577 (mid [0.987, 0.286, 0.468]).
+
+**Deltas vs old tilted-axis limits:**
+
+| Knee | Old extension | New extension | Δ | Old flexion | New flexion | Δ |
+|------|---------------|---------------|---|-------------|-------------|---|
+| L | −2.50° | −1.56° | +0.94° | +144.94° | +145.39° | +0.45° |
+| R | −3.62° | −2.33° | +1.29° | +114.82° | +140.75° | +25.93° |
+
+The R flexion limit changed substantially because the old R axis carried a
+large lateral component (z = 0.744); the shank swung out-and-back and hit
+the femur early. The corrected axis is nearly pure bilateral, so the shank
+flexes posteriorly and reaches a biomechanically deeper stop. The L axis
+was already close to the corrected one, so its flexion limit barely moved.
+The engine driver `.tmp/leg_move_v2.py` was updated to the new magnitudes
+and the hinge constants were re-posted to the live engine on :8090.
+
