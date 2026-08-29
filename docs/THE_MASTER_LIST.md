@@ -192,33 +192,55 @@ copy, which is why the human is a terminal of this system, not a user of it.
 
 1. ~~L3+L4 — Phase 4~~ **DONE (`994bb4e0`)** — the substrate stands;
    everything below now builds on it.
-2. **L6 — hinge arrays** (the monkey bends its knee; life begins). NEXT —
-   physics dyad law + three named measurements ride in (C_iso, C_sw,
-   R4 units reference-run).
+2. **L6 — hinge arrays** — the monkey bends both knees, live in the
+   operator's window, operator-approved ("both knees bend correctly now";
+   the fold is a skin-moving ball, all triangles drawn). Remaining before
+   close: the ARAP skin for the pinch band (in flight), ROM re-sweep about
+   the corrected axis (open measurement).
 3. **L5 — the frost** (the mirror answers light; beauty begins).
 4. **L7 — water** (the world gets a river).
 5. **L8 — the chimera** (the first creature, dyad-judged).
 6. **L9 — the game.**
 
-**Division of labor (operator decree 2026-08-27):** Kimi holds project
-context and writes elaborate prompts IN CHAT (never in docs) for transfer to
-Open Code, where local agents run long construction loops. **HARD BOUNDARY
-(same day): Kimi edits ONLY this file** — every other file in the repo
-(engine, docs, tools, .tmp) is the construction agents' domain; if Kimi wants
-a change anywhere else, it goes into a prompt, never an edit. This file is
-the guide for BOTH sides: the prompter writes from it, the builder reads it
-first and runs `python tools/orient.py` second. The operator ratifies,
-steers, and is the human terminal of every dyad.
+### THE BACKLOG (maintained — every open item, its owner, its state)
+
+| # | Item | Owner | State |
+|---|------|-------|-------|
+| B1 | **ARAP skin for the L-knee pinch band (92–108°)** — fold-side area redistribution; falsifiers F1–F4 specced | local agent (ARAP prompt issued 2026-08-28) | IN FLIGHT |
+| B2 | **ROM re-sweep about the corrected inter-knee axis** — current limits were swept about the old tilted axes (CHOSEN-UNVERIFIED) | unassigned | OPEN — mechanical, good weak-agent task |
+| B3 | **Instant-center migration (four-bar linkage knee)** — the lawful deeper fix if ARAP redistribution is insufficient; derivable from the bone rods | unassigned | OPEN — future membrane |
+| B4 | **Engine B2 teardown leaks** — validation fires at shutdown (VkPipelineLayout + debug messenger) | unassigned | OPEN |
+| B5 | **Engine idle spin** — no mesh loaded ⇒ busy loop at ~6M FPS burns a core; add a frame cap/sleep when nothing is loaded | unassigned | OPEN — small, real |
+| B6 | **Dyad scanner framing at high flexion** — pure-posterior camera occludes the fold past ~90°; R-knee fold leaves frame at high angles; use the posterior-3/4 view as the default | unassigned | OPEN — one-line fix in the scanner |
+| B7 | **L7 water reference solver** — CPU numpy, decision-free per `agent_logs/hy3/water_packet_03.md` | parallel agent (prompt issued) | UNKNOWN — check |
+| B8 | **Ling fur audit** — F1 fur×frost interface question | Ling | ASSIGNED, outstanding |
+| B9 | **Teddy download + Blender decision** — Sketchfab login (operator action), Blender install verdict | operator | WAITING ON OPERATOR |
+| B10 | **L5 frost experiment** — `agent_logs/bigpickle/frost_packet_02.md`, decision-free, stack verified (mitsuba wheel preserved, SPP=8192 bar) | unassigned | READY — next after L6 closes |
+| B11 | **L7 GPU port** — per runtime packet 02 (SSBO ping-pong, subcycle seam SOLVED) | unassigned | READY — after B7 lands |
+| B12 | **Chimera packet 02 construction** — static split/graft buildable now (Stage-1 falsifiers need no CA/frost) | unassigned | READY — after teddy qualifies |
+
+**Division of labor (operator decree 2026-08-27, AMENDED 2026-08-28):** Kimi
+holds project context and writes elaborate prompts IN CHAT (never in docs)
+for transfer to Open Code, where local agents run long construction loops.
+~~HARD BOUNDARY: Kimi edits ONLY this file~~ **AMENDED by the operator during
+the leg night (2026-08-28): when the local agents stall, the main agent
+constructs directly** — it fixed the torn leg, the engine (B1/B3/input/
+streaming), and the knee axis itself, by explicit operator instruction
+("I want you to do the work"). The master list remains Kimi's exclusive
+edit surface among docs; everything else now carries a workflow:
+`docs/THE_OPERATING_MANUAL.md` (boundaries, the loop, the task envelope) +
+`docs/THE_TRIANGLE_GUIDE.md` (the laws). This file is the guide for BOTH
+sides: the prompter writes from it, the builder reads it first and runs
+`python tools/orient.py` second. The operator ratifies, steers, and is the
+human terminal of every dyad.
 
 **ROSTER (2026-08-28, operator report):** the free model supply was cut;
 Big Pickle and hy3 are RETIRED with their service (their packets/audits
 stand — the work is independent of the worker). Active: **CatCoder 2.5**
-(construction lane — inherits Quinn's L6 corrections: F2 ledger fix +
-Stage D closure, both specced) and **Ling 3.0 Flash FIN** (bounded
-verification lane — inherits the 3 confirmation audits of hy3's
-revisions; open-derivation packets (teddy, eye) HELD until it earns them
-on audit quality). Quinn 3.8's fate unconfirmed — if Quinn = CatCoder,
-it already holds its steering.
+(construction lane) and **Ling 3.0 Flash FIN** (bounded verification lane).
+**Addendum (leg night, 2026-08-28):** the local agents stalled on the torn
+leg; the main agent closed it directly and now shares the construction lane
+per the amended division of labor above. Quinn 3.8's fate unconfirmed.
 
 ## 8 · THE RULES OF THIS PAGE
 
