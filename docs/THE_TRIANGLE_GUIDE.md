@@ -94,22 +94,37 @@ measured extent (ours is 0.3, the recorded ring-band slab half-width). Draw
 **all** triangles. Distance-to-set is computed against set *vertices*
 (cKDTree), which crosses welded seams for free — no disconnection.
 
-## 5 · The streaming law — never idle the GPU, never steal the camera
+## 5 · The CA-field law — runtime state lives on the GPU
 
-**Failures:** rotation died while animating (twice, for two different
-reasons), and motion stuttered.
+**Failure:** the knee pose was streamed from a Python driver over HTTP —
+81 updates/s against a render loop that wanted 240, plus delivery jitter,
+plus duplicate drivers fighting over the mesh ("the 4th dimension is
+random"), plus `vkDeviceWaitIdle` starving the operator's mouse. A second
+failure followed: the first GPU kernel wrote to a HOST-VISIBLE buffer and
+paid ~6 ms/frame in PCIe traffic until the vertex buffer moved to
+device-local VRAM with a staging buffer for CPU writes.
 
 **Laws:**
-- The animation driver posts **vertex updates into a persistently mapped,
-  host-visible vertex buffer** (`Engine::update_mesh` — memcpy only). A full
-  re-upload with `vkDeviceWaitIdle` per frame blocks the render thread on the
-  GPU queue; at 12 posts/s the operator's mouse starved. First post = full
-  load; every later post = update (`/mesh_bin` slotmode ≥ 100).
-- **Never set the camera from a driver.** `cam_radius ≤ 0` means keep the
-  operator's camera. The operator orbits while it moves; that is the point.
-- **Drain the whole OS message queue per frame**, not one message — one-per-
-  frame starves input at any render rate below the input rate.
-- Sync updates with the previous frame's **fence**, never device-idle.
+- **The runtime loop is GPU/CA-field only (mandatory, operator decree
+  2026-08-28).** Python is the derivation bench (measure constants once) and
+  the setup poster (upload them once, exit). It is never inside a per-frame
+  path. Reference implementation: `ChimeraEngine/engine/shaders/hinge.comp`
+  — per-vertex weight SSBO + engine clock → 18,459 vertices posed per frame
+  at 180–240 FPS with zero spikes; `hinge_setup.py` computes the weights once
+  and exits.
+- **Hot buffers are DEVICE_LOCAL.** CPU writes go through a persistent
+  host-visible staging buffer + one transfer copy (`Engine::mesh_upload`).
+  Never map the render vertex buffer host-visible for per-frame GPU writes.
+- **Never set the camera from a driver or kernel.** The operator orbits
+  while it moves; that is the point.
+- **Drain the whole OS message queue per frame**, and keep the frame cap +
+  1 ms timer (`timeBeginPeriod`) — uncapped loops fight whatever else owns
+  the GPU (a loaded LLM at 65% SM taught this).
+- Sync buffer rewrites with the previous frame's **fence**, never
+  device-idle in the loop.
+- Drivers that can't reach the engine **die**; they never retry forever
+  (duplicate drivers = rival time-streams on one mesh).
+
 
 ## 6 · Verification — measure, then look with your own eyes
 
@@ -150,7 +165,8 @@ one — inherits your pathway only if the negative space is mapped.
 3. Re-measure noisy fits against a stable proxy; sign from anatomy.
 4. The fold is many triangles rotating by a local falloff — a ball, not a
    crease. Hide nothing.
-5. Stream vertices through a mapped buffer; never idle the GPU; never touch
+5. Runtime is GPU/CA-field only: Python measures constants once, posts them
+   once, exits. Hot buffers device-local; staging for CPU writes; never touch
    the operator's camera.
 6. Prove checks can fail; view your renders; one picture per dyad call.
 7. Ship the honest negative with the win.

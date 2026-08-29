@@ -24,6 +24,11 @@ copy, which is why the human is a terminal of this system, not a user of it.
 
 ## 2 · THE ARCHITECTURE (operator decrees — settled, do not reopen)
 
+- **THE RUNTIME LAW (2026-08-28): the runtime loop is GPU / CA-field only.
+  Python is never inside a per-frame path.** Python's two legal roles: the
+  derivation bench (measuring static constants — sets, axes, weights) and
+  one-shot setup (posting them, then exiting). Runtime state lives in GPU
+  buffers; runtime math is compute shaders. Reference: `hinge.comp`.
 - **Triangles ARE the CA substrate.** The cubes are invisible Cartesian
   address scaffolding; **each cube is its own Gaussian space**. The cubes
   give every triangle an address; the triangles are what we want.
@@ -216,7 +221,8 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | B8 | **Ling fur audit** — F1 fur×frost interface question | Ling | NON-DELIVERY recorded; the interface answer stands in fur packet U3 (frost lives on the outermost shell; one latent shared across shells) — formal audit deferred to fur construction |
 | B9 | **Teddy download + Blender decision** — Sketchfab login (operator action), Blender install verdict | operator | Blender CLOSED as UNNEEDED — frost packet 02 E1 converts GLB→PLY with trimesh, no Blender in the pipeline; teddy download remains the one true operator action |
 | B13 | **Frame stutter / glitch diagnostics** — GPU contention + driver discipline | main agent | **CLOSED 2026-08-28** — measured: llama-server at 65% GPU (23.7/24.6GB VRAM) = the contention; glitching was duplicate drivers (drivers now DIE when the engine is unreachable); HTTP accept-loop death fixed (one transient accept error used to kill the listener forever); engine frame-cap + 1ms timer + frame-time histogram in the FPS line; driver at 1ms timer, steady ~81 posts/s |
-| B14 | **The hinge lives in the ENGINE, not Python** — operator decree ("why is it running off of Python"; "if my translation matrix system was working this would not be an issue") | main agent | **CLOSED 2026-08-28** — engine-internal hinge: `/hinge_bin` setup POST (weights + joint constants once), C++ `pose_hinge()` per frame after the fence wait, engine's own clock, zero Python in the loop; measured **238 FPS, ft avg 1.6 ms, max 3.2 ms, 0 spikes**, rotation live; Python's only role is `hinge_setup.py` (weights once, then exits); disengage = empty POST to `/hinge_bin` (rest pose restored) |
+| B14 | **The hinge lives in the ENGINE, not Python** — operator decree ("why is it running off of Python") | main agent | **CLOSED 2026-08-28, two stages:** (1) C++ `pose_hinge()` per frame — 238 FPS, ft 1.6ms; (2) **THE FIRST CA-FIELD KERNEL — `hinge.comp` compute shader**: per-vertex weight SSBO + engine clock poses 18,459 verts/frame on the GPU; hot buffers DEVICE_LOCAL + staging (the host-visible mistake cost ~6ms/frame PCIe, fixed); measured 180–198 FPS, ft avg 2.5–3.2ms, **0 spikes**, rotation live; Python = `hinge_setup.py` (weights once, exits) |
+| B15 | **Water GPU port as CA-field kernels** — per runtime packet 02 (SSBO ping-pong, subcycle seam solved, atomic-free, integer-exact mass) against the landed CPU golden reference (`.tmp/tri_water.py`, B7) | unassigned | READY — the reference exists and the hinge kernel is the pattern |
 | B10 | **L5 frost experiment** — `agent_logs/bigpickle/frost_packet_02.md`, decision-free, stack verified (mitsuba wheel preserved, SPP=8192 bar) | unassigned | READY — next after L6 closes |
 | B11 | **L7 GPU port** — per runtime packet 02 (SSBO ping-pong, subcycle seam SOLVED) | unassigned | READY — after B7 lands |
 | B12 | **Chimera packet 02 construction** — static split/graft buildable now (Stage-1 falsifiers need no CA/frost) | unassigned | READY — after teddy qualifies |

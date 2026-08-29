@@ -1,0 +1,58 @@
+// hinge.comp — the first CA-field kernel (operator decree 2026-08-28: develop
+// ON the CA field, not in Python). Per-vertex CA state: blend weights (static),
+// one global phase (the clock), Rodrigues about the measured joint — the same
+// skin-moving law the operator approved, executed on the GPU at render rate.
+// Atomic-free by construction (one invocation per vertex, disjoint writes);
+// fixed order; wave-size independent.
+#version 460
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    vec4  JL;
+    vec4  JR;
+    vec4  axis;
+    float romL;
+    float romR;
+    float period;
+    float phaseR;
+    float time_s;
+    uint  n;
+} pc;
+
+layout(std430, binding = 0) readonly  buffer Rest { float rest[]; };
+layout(std430, binding = 1) readonly  buffer WL   { float wL[];   };
+layout(std430, binding = 2) readonly  buffer WR   { float wR[];   };
+layout(std430, binding = 3) writeonly buffer Out  { float vout[]; };
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= pc.n) return;
+
+    float a = wL[i], b = wR[i];
+    if (a == 0.0 && b == 0.0) {
+        for (uint k = 0; k < 9; ++k) vout[i * 9 + k] = rest[i * 9 + k];
+        return;
+    }
+
+    float ph = fract(pc.time_s / pc.period);
+    float bL = 0.5 - 0.5 * cos(6.2831853 * ph);
+    float bR = 0.5 - 0.5 * cos(6.2831853 * ph + pc.phaseR);
+    float th = (bL * pc.romL * a + bR * pc.romR * b) * 0.0174533;
+    vec3 J = (a >= b) ? pc.JL.xyz : pc.JR.xyz;
+    float c = cos(th), s = sin(th);
+
+    for (uint kk = 0; kk < 2; ++kk) {              // 0 = position, 1 = normal
+        vec3 base = (kk == 0) ? J : vec3(0.0);
+        vec3 v = vec3(rest[i * 9 + kk * 3 + 0],
+                      rest[i * 9 + kk * 3 + 1],
+                      rest[i * 9 + kk * 3 + 2]) - base;
+        vec3 r = v * c + cross(pc.axis.xyz, v) * s + pc.axis.xyz * dot(pc.axis.xyz, v) * (1.0 - c);
+        vec3 o = r + base;
+        vout[i * 9 + kk * 3 + 0] = o.x;
+        vout[i * 9 + kk * 3 + 1] = o.y;
+        vout[i * 9 + kk * 3 + 2] = o.z;
+    }
+    vout[i * 9 + 6] = rest[i * 9 + 6];             // colors pass through
+    vout[i * 9 + 7] = rest[i * 9 + 7];
+    vout[i * 9 + 8] = rest[i * 9 + 8];
+}

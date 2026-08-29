@@ -224,8 +224,12 @@ private:
     uint32_t        mesh_mode_ = 0;   // 0 = fill, 1 = wire only, 2 = fill + wire overlay
     VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  tri_vmem_, tri_imem_;
-    void*           tri_vmap_ = nullptr;      // persistent map of tri_vbuf_ (host-visible)
+    void*           tri_vmap_ = nullptr;      // persistent map of the STAGING buffer (host-visible)
     size_t          tri_vfloats_ = 0;         // floats in the current vertex payload
+    VkBuffer        tri_staging_buf_ = VK_NULL_HANDLE;  // CPU writes here; copied to device-local tri_vbuf_
+    VkDeviceMemory  tri_staging_mem_ = VK_NULL_HANDLE;
+    std::vector<float> mesh_cpu_;             // CPU copy of the last full-loaded mesh (hinge rest snapshot)
+    void mesh_upload(const float* data, size_t floats);  // staging memcpy + transfer to device
     // hinge state (engine-internal knee pose — see set_hinge)
     bool            hinge_active_ = false;
     std::vector<float> hinge_rest_;           // rest vertex records (stride 9)
@@ -234,6 +238,16 @@ private:
     float           hinge_romL_ = 0.f, hinge_romR_ = 0.f;
     float           hinge_period_ = 4.f, hinge_phaseR_ = 3.14159265f;
     std::chrono::steady_clock::time_point hinge_t0_{};
+    // GPU hinge kernel (the CA-field path): rest state + weights as SSBOs,
+    // pose computed by hinge.comp into the vertex buffer each frame.
+    VkShaderModule  hinge_mod_ = VK_NULL_HANDLE;
+    VkPipeline      hinge_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout hinge_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout hinge_desc_layout_ = VK_NULL_HANDLE;
+    VkDescriptorPool hinge_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet  hinge_desc_set_ = VK_NULL_HANDLE;
+    VkBuffer        hinge_rest_buf_ = VK_NULL_HANDLE, hinge_wL_buf_ = VK_NULL_HANDLE, hinge_wR_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  hinge_rest_mem_ = VK_NULL_HANDLE, hinge_wL_mem_ = VK_NULL_HANDLE, hinge_wR_mem_ = VK_NULL_HANDLE;
     uint32_t        tri_idx_count_ = 0;
     bool            has_mesh_ = false;
     // Overlay slot (e.g. the bone axis): always FILL, drawn after the main mesh.

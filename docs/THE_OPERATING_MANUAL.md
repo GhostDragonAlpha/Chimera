@@ -27,6 +27,24 @@ placebos, and torn legs.
 If a task requires crossing a boundary, STOP and say so in your report. Do not
 route around a boundary because the task seems to need it.
 
+## 1a · THE RUNTIME LAW (operator decree 2026-08-28 — mandatory, not advisory)
+
+**The runtime loop is GPU / CA-field only. Python is never inside a per-frame
+path.** Python has exactly two legal roles:
+
+1. **The derivation bench** — measuring what becomes STATIC constants
+   (sets, axes, weights, extents). One-shot analysis, offline, unhurried.
+2. **One-shot setup** — posting those constants to the engine, then exiting.
+
+Runtime state lives in GPU buffers; runtime math is compute shaders (or C++
+inside the engine where a shader is not yet justified). The reference
+implementation is the hinge: Python measured the blend weights once
+(`hinge_setup.py`, then exits); `hinge.comp` poses 18,459 vertices per frame
+on the engine's clock — 180–240 FPS, zero spikes, zero Python. If your task
+seems to require Python in the loop, the task is framed wrong — bring it back
+and say so, do not build a Python runtime.
+
+
 ## 2 · The loop (six steps, in order, none skippable)
 
 1. **READ.** Your task lists the read-first files. Read them all before

@@ -564,6 +564,16 @@ void Engine::shutdown() {
     if (compute_pipeline_layout_) vkDestroyPipelineLayout(device_, compute_pipeline_layout_, nullptr);
     if (compute_pipeline_)      vkDestroyPipeline(device_,          compute_pipeline_,      nullptr);
 
+    // hinge kernel resources
+    if (hinge_pipe_)        vkDestroyPipeline(device_, hinge_pipe_, nullptr);
+    if (hinge_layout_)      vkDestroyPipelineLayout(device_, hinge_layout_, nullptr);
+    if (hinge_desc_layout_) vkDestroyDescriptorSetLayout(device_, hinge_desc_layout_, nullptr);
+    if (hinge_desc_pool_)   vkDestroyDescriptorPool(device_, hinge_desc_pool_, nullptr);
+    if (hinge_mod_)         vkDestroyShaderModule(device_, hinge_mod_, nullptr);
+    if (hinge_rest_buf_)  { vkDestroyBuffer(device_, hinge_rest_buf_, nullptr); vkFreeMemory(device_, hinge_rest_mem_, nullptr); }
+    if (hinge_wL_buf_)    { vkDestroyBuffer(device_, hinge_wL_buf_, nullptr);   vkFreeMemory(device_, hinge_wL_mem_, nullptr); }
+    if (hinge_wR_buf_)    { vkDestroyBuffer(device_, hinge_wR_buf_, nullptr);   vkFreeMemory(device_, hinge_wR_mem_, nullptr); }
+
     if (desc_pool_)  vkDestroyDescriptorPool(device_, desc_pool_, nullptr);
     if (desc_layout_) vkDestroyDescriptorSetLayout(device_, desc_layout_, nullptr);
 
@@ -1104,36 +1114,40 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         has_mesh_ = false;
         return true;
     }
-    // Vertex buffer: HOST_VISIBLE + COHERENT, persistently mapped. The animation
-    // driver streams posed vertices every frame via update_mesh (memcpy-only);
-    // a DEVICE_LOCAL + staging upload here would force a GPU idle per frame and
-    // stall the render/input loop (operator: rotation dead, motion not smooth).
-    if (tri_vbuf_) {
-        vkUnmapMemory(device_, tri_vmem_);
-        vkDestroyBuffer(device_, tri_vbuf_, nullptr);
-        vkFreeMemory(device_, tri_vmem_, nullptr);
-        tri_vbuf_ = VK_NULL_HANDLE; tri_vmap_ = nullptr;
-    }
+    // Vertex buffer: DEVICE_LOCAL (the hot path must stay in VRAM — a host-visible
+    // buffer cost ~6 ms/frame of PCIe traffic when the GPU hinge kernel wrote it).
+    // CPU-side writes (update_mesh, hinge restore) go through a persistent
+    // host-visible STAGING buffer + one transfer; the draw/compute path never
+    // leaves the GPU.
+    upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
+                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                  tri_vbuf_, tri_vmem_);
     {
+        if (tri_staging_buf_) {
+            vkUnmapMemory(device_, tri_staging_mem_);
+            vkDestroyBuffer(device_, tri_staging_buf_, nullptr);
+            vkFreeMemory(device_, tri_staging_mem_, nullptr);
+            tri_staging_buf_ = VK_NULL_HANDLE; tri_vmap_ = nullptr;
+        }
         VkDeviceSize sz = static_cast<VkDeviceSize>(verts.size()) * sizeof(float);
-        VkBufferCreateInfo bci{};
-        bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bci.size        = sz;
-        bci.usage       = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        vkCreateBuffer(device_, &bci, nullptr, &tri_vbuf_);
-        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, tri_vbuf_, &mr);
+        VkBufferCreateInfo sci{};
+        sci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        sci.size        = sz;
+        sci.usage       = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+        sci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &sci, nullptr, &tri_staging_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, tri_staging_buf_, &mr);
         VkMemoryAllocateInfo ai{};
         ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         ai.allocationSize  = mr.size;
         ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-        vkAllocateMemory(device_, &ai, nullptr, &tri_vmem_);
-        vkBindBufferMemory(device_, tri_vbuf_, tri_vmem_, 0);
-        vkMapMemory(device_, tri_vmem_, 0, sz, 0, &tri_vmap_);
-        std::memcpy(tri_vmap_, verts.data(), sz);
-        tri_vfloats_ = verts.size();
+        vkAllocateMemory(device_, &ai, nullptr, &tri_staging_mem_);
+        vkBindBufferMemory(device_, tri_staging_buf_, tri_staging_mem_, 0);
+        vkMapMemory(device_, tri_staging_mem_, 0, sz, 0, &tri_vmap_);
     }
+    mesh_cpu_ = verts;
+    tri_vfloats_ = verts.size();
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
                   VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
     tri_idx_count_ = icount;
@@ -1151,13 +1165,22 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     return true;
 }
 
-bool Engine::update_mesh(const std::vector<float>& verts9, uint32_t vcount) {
-    if (!has_mesh_ || tri_vmap_ == nullptr) return false;
-    if (verts9.size() != tri_vfloats_) return false;  // layout changed -> full load
+void Engine::mesh_upload(const float* data, size_t floats) {
+    if (tri_staging_buf_ == VK_NULL_HANDLE || floats != tri_vfloats_) return;
     // Sync: the previous frame's draw may still be reading the buffer. Wait for
     // ITS fence only (not device idle) — cheap, and it does not stall the loop.
     vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
-    std::memcpy(tri_vmap_, verts9.data(), verts9.size() * sizeof(float));
+    std::memcpy(tri_vmap_, data, floats * sizeof(float));
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy bc{}; bc.size = floats * sizeof(float);
+    vkCmdCopyBuffer(cb, tri_staging_buf_, tri_vbuf_, 1, &bc);
+    end_single_time_cmd(cb);
+}
+
+bool Engine::update_mesh(const std::vector<float>& verts9, uint32_t vcount) {
+    if (!has_mesh_ || tri_staging_buf_ == VK_NULL_HANDLE) return false;
+    if (verts9.size() != tri_vfloats_) return false;  // layout changed -> full load
+    mesh_upload(verts9.data(), verts9.size());
     (void)vcount;
     return true;
 }
@@ -1170,7 +1193,7 @@ bool Engine::update_mesh(const std::vector<float>& verts9, uint32_t vcount) {
 bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& wR,
                        const float JL[3], const float JR[3], const float axis[3],
                        float romL, float romR, float period, float phaseR) {
-    if (!has_mesh_ || tri_vmap_ == nullptr) return false;
+    if (!has_mesh_ || mesh_cpu_.empty()) return false;
     size_t nv = tri_vfloats_ / 9;
     if (wL.size() != nv || wR.size() != nv) {
         fprintf(stderr, "set_hinge: weight count mismatch (%zu/%zu vs %zu verts)\n",
@@ -1178,15 +1201,107 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
         return false;
     }
     vkDeviceWaitIdle(device_);
-    // snapshot the rest state (the CURRENT mapped buffer is the rest pose by contract)
-    hinge_rest_.assign(static_cast<const float*>(tri_vmap_),
-                       static_cast<const float*>(tri_vmap_) + tri_vfloats_);
+    // rest state = the CPU copy of the last full-loaded mesh (rest pose by contract)
+    hinge_rest_ = mesh_cpu_;
     hinge_wL_ = wL; hinge_wR_ = wR;
     std::memcpy(hinge_JL_, JL, 12); std::memcpy(hinge_JR_, JR, 12);
     std::memcpy(hinge_axis_, axis, 12);
     hinge_romL_ = romL; hinge_romR_ = romR;
     hinge_period_ = period; hinge_phaseR_ = phaseR;
     hinge_t0_ = std::chrono::steady_clock::now();
+
+    // ── GPU hinge kernel setup (the CA-field path) ─────────────────────────
+    // rest state + weights as SSBOs; hinge.comp poses into tri_vbuf_ per frame.
+    {
+        std::string spv_path = "shaders/hinge.spv";
+        std::vector<char> spv = read_file(spv_path.c_str());
+        if (!spv.empty()) {
+            if (hinge_mod_ == VK_NULL_HANDLE) {
+                VkShaderModuleCreateInfo smci{};
+                smci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+                smci.codeSize = spv.size();
+                smci.pCode = reinterpret_cast<const uint32_t*>(spv.data());
+                vkCreateShaderModule(device_, &smci, nullptr, &hinge_mod_);
+            }
+            upload_buffer(hinge_rest_.data(), hinge_rest_.size() * sizeof(float),
+                          VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_rest_buf_, hinge_rest_mem_);
+            upload_buffer(hinge_wL_.data(), hinge_wL_.size() * sizeof(float),
+                          VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_wL_buf_, hinge_wL_mem_);
+            upload_buffer(hinge_wR_.data(), hinge_wR_.size() * sizeof(float),
+                          VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_wR_buf_, hinge_wR_mem_);
+
+            if (hinge_pipe_ == VK_NULL_HANDLE && hinge_mod_ != VK_NULL_HANDLE) {
+                VkDescriptorSetLayoutBinding b[4] = {};
+                for (int k = 0; k < 4; ++k) {
+                    b[k].binding = k;
+                    b[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+                    b[k].descriptorCount = 1;
+                    b[k].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+                }
+                VkDescriptorSetLayoutCreateInfo dlci{};
+                dlci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+                dlci.bindingCount = 4;
+                dlci.pBindings = b;
+                vkCreateDescriptorSetLayout(device_, &dlci, nullptr, &hinge_desc_layout_);
+
+                VkPushConstantRange pcr{};
+                pcr.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+                pcr.offset = 0;
+                pcr.size = 3 * 16 + 6 * 4;   // vec4 JL/JR/axis + 5 floats + uint
+                VkPipelineLayoutCreateInfo plci{};
+                plci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+                plci.setLayoutCount = 1;
+                plci.pSetLayouts = &hinge_desc_layout_;
+                plci.pushConstantRangeCount = 1;
+                plci.pPushConstantRanges = &pcr;
+                vkCreatePipelineLayout(device_, &plci, nullptr, &hinge_layout_);
+
+                VkComputePipelineCreateInfo cpci{};
+                cpci.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+                cpci.stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+                cpci.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+                cpci.stage.module = hinge_mod_;
+                cpci.stage.pName = "main";
+                cpci.layout = hinge_layout_;
+                vkCreateComputePipelines(device_, VK_NULL_HANDLE, 1, &cpci, nullptr, &hinge_pipe_);
+
+                VkDescriptorPoolSize ps{};
+                ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+                ps.descriptorCount = 4;
+                VkDescriptorPoolCreateInfo dpci{};
+                dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+                dpci.maxSets = 1;
+                dpci.poolSizeCount = 1;
+                dpci.pPoolSizes = &ps;
+                vkCreateDescriptorPool(device_, &dpci, nullptr, &hinge_desc_pool_);
+                VkDescriptorSetAllocateInfo dsai{};
+                dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+                dsai.descriptorPool = hinge_desc_pool_;
+                dsai.descriptorSetCount = 1;
+                dsai.pSetLayouts = &hinge_desc_layout_;
+                vkAllocateDescriptorSets(device_, &dsai, &hinge_desc_set_);
+            }
+            if (hinge_desc_set_ != VK_NULL_HANDLE) {
+                VkDescriptorBufferInfo infos[4] = {};
+                infos[0].buffer = hinge_rest_buf_; infos[0].range = VK_WHOLE_SIZE;
+                infos[1].buffer = hinge_wL_buf_;   infos[1].range = VK_WHOLE_SIZE;
+                infos[2].buffer = hinge_wR_buf_;   infos[2].range = VK_WHOLE_SIZE;
+                infos[3].buffer = tri_vbuf_;       infos[3].range = VK_WHOLE_SIZE;
+                VkWriteDescriptorSet w[4] = {};
+                for (int k = 0; k < 4; ++k) {
+                    w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    w[k].dstSet = hinge_desc_set_;
+                    w[k].dstBinding = k;
+                    w[k].descriptorCount = 1;
+                    w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+                    w[k].pBufferInfo = &infos[k];
+                }
+                vkUpdateDescriptorSets(device_, 4, w, 0, nullptr);
+            }
+        } else {
+            fprintf(stderr, "hinge.spv missing — CPU pose fallback\n");
+        }
+    }
     hinge_active_ = true;
     printf("Hinge engaged: %zu verts, period %.1fs, ROM L %.1f R %.1f deg\n",
            nv, period, romL, romR);
@@ -1197,10 +1312,7 @@ void Engine::stop_hinge() {
     if (!hinge_active_) return;
     hinge_active_ = false;
     // restore the rest pose so the mesh doesn't freeze mid-bend
-    if (tri_vmap_ && !hinge_rest_.empty()) {
-        vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
-        std::memcpy(tri_vmap_, hinge_rest_.data(), hinge_rest_.size() * sizeof(float));
-    }
+    if (!hinge_rest_.empty()) mesh_upload(hinge_rest_.data(), hinge_rest_.size());
     printf("Hinge disengaged, rest pose restored\n");
 }
 
@@ -1244,6 +1356,11 @@ void Engine::pose_hinge() {
         }
         // colors (src[6..8]) pass through untouched — dst already holds them
     }
+    // CPU fallback wrote the STAGING map — push it to the device buffer.
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy bc{}; bc.size = hinge_rest_.size() * sizeof(float);
+    vkCmdCopyBuffer(cb, tri_staging_buf_, tri_vbuf_, 1, &bc);
+    end_single_time_cmd(cb);
 }
 
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -1272,7 +1389,8 @@ void Engine::destroy_triangle_resources() {
     if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
     if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
     if (tri_frag_mod_) { vkDestroyShaderModule(device_, tri_frag_mod_, nullptr); tri_frag_mod_ = VK_NULL_HANDLE; }
-    if (tri_vbuf_) { if (tri_vmap_) vkUnmapMemory(device_, tri_vmem_); tri_vmap_ = nullptr; vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
+    if (tri_vbuf_) { vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
+    if (tri_staging_buf_) { if (tri_vmap_) vkUnmapMemory(device_, tri_staging_mem_); tri_vmap_ = nullptr; vkDestroyBuffer(device_, tri_staging_buf_, nullptr); vkFreeMemory(device_, tri_staging_mem_, nullptr); tri_staging_buf_ = VK_NULL_HANDLE; }
     if (tri_ibuf_) { vkDestroyBuffer(device_, tri_ibuf_, nullptr); vkFreeMemory(device_, tri_imem_, nullptr); tri_ibuf_ = VK_NULL_HANDLE; }
     if (ov_vbuf_) { vkDestroyBuffer(device_, ov_vbuf_, nullptr); vkFreeMemory(device_, ov_vmem_, nullptr); ov_vbuf_ = VK_NULL_HANDLE; }
     if (ov_ibuf_) { vkDestroyBuffer(device_, ov_ibuf_, nullptr); vkFreeMemory(device_, ov_imem_, nullptr); ov_ibuf_ = VK_NULL_HANDLE; }
@@ -2230,10 +2348,9 @@ bool Engine::frame() {
     // the /frame endpoint works even when the window is minimized (or entirely headless).
     vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
     vkResetFences(device_, 1, &fences_[0]);
-    // The engine-internal hinge: pose the knees on the engine's clock, before any
-    // command recording — the previous draw is done (fence), so the mapped vertex
-    // buffer is safe to rewrite.
-    if (hinge_active_ && tri_vmap_ != nullptr) pose_hinge();
+    // CPU hinge fallback (only when the GPU kernel didn't build); the GPU path
+    // is recorded into the command buffer below.
+    if (hinge_active_ && hinge_pipe_ == VK_NULL_HANDLE && tri_vmap_ != nullptr) pose_hinge();
     uint32_t img_idx = 0;
 
     // Upload uniform buffer (camera matrices + resolution)
@@ -2357,6 +2474,32 @@ bool Engine::frame() {
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     vkResetCommandBuffer(cmd_bufs_[img_idx], 0);
     vkBeginCommandBuffer(cmd_bufs_[img_idx], &bbi);
+
+    // GPU hinge kernel — the first CA-field pass: per-vertex weight SSBO + engine
+    // clock -> posed vertices, before the render pass reads the vertex buffer.
+    if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
+        struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time; uint32_t n; } hpc{};
+        hpc.JL[0] = hinge_JL_[0]; hpc.JL[1] = hinge_JL_[1]; hpc.JL[2] = hinge_JL_[2];
+        hpc.JR[0] = hinge_JR_[0]; hpc.JR[1] = hinge_JR_[1]; hpc.JR[2] = hinge_JR_[2];
+        hpc.axis[0] = hinge_axis_[0]; hpc.axis[1] = hinge_axis_[1]; hpc.axis[2] = hinge_axis_[2];
+        hpc.romL = hinge_romL_; hpc.romR = hinge_romR_;
+        hpc.period = hinge_period_; hpc.phaseR = hinge_phaseR_;
+        hpc.time = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+        hpc.n = static_cast<uint32_t>(hinge_wL_.size());
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_pipe_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, hinge_layout_,
+                                0, 1, &hinge_desc_set_, 0, nullptr);
+        vkCmdPushConstants(cmd_bufs_[img_idx], hinge_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                           0, sizeof(hpc), &hpc);
+        vkCmdDispatch(cmd_bufs_[img_idx], (hpc.n + 255) / 256, 1, 1);
+        VkMemoryBarrier hmb{};
+        hmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        hmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        hmb.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+            0, 1, &hmb, 0, nullptr, 0, nullptr);
+    }
 
     // GPU skinning: pose the splats (rest + weights + pose -> pos_buf_) when a pose was applied.
     // Runs BEFORE the sort so the depth keys are computed from the posed positions. Dirty-flag
