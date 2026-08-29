@@ -553,6 +553,14 @@ void Engine::shutdown() {
     if (acc_buf_)  { vkDestroyBuffer(device_, acc_buf_,  nullptr);  vkFreeMemory(device_, acc_mem_,  nullptr); }
     if (img_buf_)  { vkDestroyBuffer(device_, img_buf_,  nullptr);  vkFreeMemory(device_, img_mem_,  nullptr); }
     if (params_buf_)   { vkDestroyBuffer(device_, params_buf_,   nullptr); vkFreeMemory(device_, params_mem_,   nullptr); }
+    for (int k = 0; k < 2; ++k) {
+        if (params_ubo_[k]) {
+            if (params_umap_[k]) vkUnmapMemory(device_, params_umem_[k]);
+            vkDestroyBuffer(device_, params_ubo_[k], nullptr);
+            vkFreeMemory(device_, params_umem_[k], nullptr);
+            params_ubo_[k] = VK_NULL_HANDLE; params_umap_[k] = nullptr;
+        }
+    }
     if (comp_params_buf_) { vkDestroyBuffer(device_, comp_params_buf_, nullptr); vkFreeMemory(device_, comp_params_mem_, nullptr); }
     if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
     destroy_sort_resources();
@@ -1167,9 +1175,9 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
 
 void Engine::mesh_upload(const float* data, size_t floats) {
     if (tri_staging_buf_ == VK_NULL_HANDLE || floats != tri_vfloats_) return;
-    // Sync: the previous frame's draw may still be reading the buffer. Wait for
-    // ITS fence only (not device idle) — cheap, and it does not stall the loop.
-    vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
+    // Sync: previous draws may still be reading the buffer. Wait ALL flight fences
+    // (not device idle) — cheap, and it does not stall the loop.
+    vkWaitForFences(device_, MAX_FRAMES_IN_FLIGHT, fences_.data(), VK_TRUE, UINT64_MAX);
     std::memcpy(tri_vmap_, data, floats * sizeof(float));
     VkCommandBuffer cb = begin_single_time_cmd();
     VkBufferCopy bc{}; bc.size = floats * sizeof(float);
@@ -2346,12 +2354,16 @@ bool Engine::frame() {
     if (n_ == 0 && !has_mesh_) return true;
     // Offscreen: render to rt_framebuffer_ and capture from rt_image_. No swapchain acquire, so
     // the /frame endpoint works even when the window is minimized (or entirely headless).
-    vkWaitForFences(device_, 1, &fences_[0], VK_TRUE, UINT64_MAX);
-    vkResetFences(device_, 1, &fences_[0]);
+    // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
+    // may still be drawing the previous slot. Per-slot fence/cmdbuf/descriptors/UBO.
+    uint32_t img_idx = image_idx_;
+    vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    // NOTE: the fence is NOT reset here — an early return (OUT_OF_DATE) would leave
+    // it reset-but-never-submitted and the next wait on this slot would hang.
+    // Reset happens at the submit site, immediately before vkQueueSubmit.
     // CPU hinge fallback (only when the GPU kernel didn't build); the GPU path
     // is recorded into the command buffer below.
     if (hinge_active_ && hinge_pipe_ == VK_NULL_HANDLE && tri_vmap_ != nullptr) pose_hinge();
-    uint32_t img_idx = 0;
 
     // Upload uniform buffer (camera matrices + resolution)
     float proj[16], view[16];
@@ -2390,54 +2402,31 @@ bool Engine::frame() {
     ubo.resolution[0] = static_cast<float>(extent_.width);
     ubo.resolution[1] = static_cast<float>(extent_.height);
 
-    if (params_buf_ == VK_NULL_HANDLE) {
+    // Per-slot camera UBO, host-visible + persistently mapped: create once, memcpy
+    // per frame. NO staging buffer, NO queue submit, NO vkQueueWaitIdle per frame —
+    // that was the frame-time killer (each end_single_time_cmd drained the pipe).
+    if (params_ubo_[img_idx] == VK_NULL_HANDLE) {
         VkBufferCreateInfo bci{};
         bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bci.size        = sizeof(Uniforms);
-        bci.usage       = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+        bci.usage       = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
         bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        vkCreateBuffer(device_, &bci, nullptr, &params_buf_);
-        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, params_buf_, &mr);
+        vkCreateBuffer(device_, &bci, nullptr, &params_ubo_[img_idx]);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, params_ubo_[img_idx], &mr);
         VkMemoryAllocateInfo ai{};
         ai.sType       = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         ai.allocationSize = mr.size;
-        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-        vkAllocateMemory(device_, &ai, nullptr, &params_mem_);
-        vkBindBufferMemory(device_, params_buf_, params_mem_, 0);
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &params_umem_[img_idx]);
+        vkBindBufferMemory(device_, params_ubo_[img_idx], params_umem_[img_idx], 0);
+        vkMapMemory(device_, params_umem_[img_idx], 0, sizeof(Uniforms), 0, &params_umap_[img_idx]);
     }
-
-    // Upload UBO via staging
-    VkBufferCreateInfo staging_ci{};
-    staging_ci.sType      = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    staging_ci.size       = sizeof(Uniforms);
-    staging_ci.usage      = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    staging_ci.sharingMode= VK_SHARING_MODE_EXCLUSIVE;
-    VkBuffer staging_buf;
-    vkCreateBuffer(device_, &staging_ci, nullptr, &staging_buf);
-    VkMemoryRequirements mr_s; vkGetBufferMemoryRequirements(device_, staging_buf, &mr_s);
-    VkMemoryAllocateInfo ai_s{};
-    ai_s.sType       = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    ai_s.allocationSize = mr_s.size;
-    ai_s.memoryTypeIndex = find_mem_type(mr_s.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    VkDeviceMemory staging_mem;
-    vkAllocateMemory(device_, &ai_s, nullptr, &staging_mem);
-    vkBindBufferMemory(device_, staging_buf, staging_mem, 0);
-
-    void* mapped;
-    vkMapMemory(device_, staging_mem, 0, sizeof(Uniforms), 0, &mapped);
-    std::memcpy(mapped, &ubo, sizeof(Uniforms));
-    vkUnmapMemory(device_, staging_mem);
-
-    VkCommandBuffer cb = begin_single_time_cmd();
-    VkBufferCopy bc{}; bc.size = sizeof(Uniforms);
-    vkCmdCopyBuffer(cb, staging_buf, params_buf_, 1, &bc);
-    end_single_time_cmd(cb);
-    vkDestroyBuffer(device_, staging_buf, nullptr);
-    vkFreeMemory(device_, staging_mem, nullptr);
+    std::memcpy(params_umap_[img_idx], &ubo, sizeof(Uniforms));
 
     // Update uniform descriptor
     VkDescriptorBufferInfo ubo_info{};
-    ubo_info.buffer = params_buf_;
+    ubo_info.buffer = params_ubo_[img_idx];
     ubo_info.offset = 0;
     ubo_info.range  = VK_WHOLE_SIZE;
     VkWriteDescriptorSet uw[1] = {};
@@ -2705,7 +2694,8 @@ bool Engine::frame() {
         si.signalSemaphoreCount = 1;
         si.pSignalSemaphores    = &flush_sem_[img_idx];
     }
-    vkQueueSubmit(queue_, 1, &si, fences_[0]);
+    vkResetFences(device_, 1, &fences_[img_idx]);
+    vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
 
     if (can_present) {
         VkPresentInfoKHR pi{};

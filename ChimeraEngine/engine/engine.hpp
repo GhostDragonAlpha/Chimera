@@ -161,6 +161,13 @@ private:
     EngineConfig cfg_;
     VkBuffer params_buf_     = VK_NULL_HANDLE;
     VkDeviceMemory params_mem_  = VK_NULL_HANDLE;
+    // Per-flight-slot camera UBOs, host-visible + persistently mapped: the old
+    // path created+destroyed a staging buffer and did vkQueueWaitIdle EVERY
+    // FRAME for the camera upload (the frame-time killer).
+    static const uint32_t MAX_SLOT = 2;
+    VkBuffer       params_ubo_[2]  = {VK_NULL_HANDLE, VK_NULL_HANDLE};
+    VkDeviceMemory params_umem_[2] = {VK_NULL_HANDLE, VK_NULL_HANDLE};
+    void*          params_umap_[2] = {nullptr, nullptr};
     VkBuffer comp_params_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory comp_params_mem_ = VK_NULL_HANDLE;
 

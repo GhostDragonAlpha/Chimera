@@ -704,7 +704,7 @@ int main(int argc, char** argv) {
         // the GPU predictably and paces display delivery. timeBeginPeriod(1) is set
         // in main() so these short sleeps land at ~1 ms granularity, not 15.6.
         {
-            const double target_ms = 1000.0 / 240.0;
+            const double target_ms = 1000.0 / 300.0;
             double busy_ms = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::high_resolution_clock::now() - ft0).count() / 1e3;
             if (busy_ms < target_ms) {
