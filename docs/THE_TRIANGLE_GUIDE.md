@@ -126,6 +126,15 @@ device-local VRAM with a staging buffer for CPU writes.
   (duplicate drivers = rival time-streams on one mesh).
 
 
+- **Bit-exact ports have four laws** (the water solver, B15a): (1) prove the
+  PARALLEL SCHEDULE on the CPU first (order-consistent coloring = sequential
+  Gauss-Seidel, verified before any shader ran); (2) `precise` on float64
+  shader math — FMA contraction flips rounding-boundary decisions the CPU
+  makes differently; (3) guard dispatch overruns — the rounded-up group count
+  spills into the next color's edges; (4) port masks AND tables, not just the
+  math — the cube veto's edge-activity half, and the injection table as data
+  (an unportable RNG is not an excuse, it's a data transform).
+
 ## 6 · Verification — measure, then look with your own eyes
 
 - **Classify before solving**: color the sets (rigid/ring/free/pinned) and

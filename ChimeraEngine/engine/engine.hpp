@@ -62,6 +62,24 @@ public:
     void stop_hinge();
     void pose_hinge();   // per-frame, after the frame fence wait
     bool hinge_active() const { return hinge_active_; }
+
+    // ── THE WATER SOLVER ON THE CA FIELD (B15 — port of .tmp/tri_water.py) ──
+    // Order-consistent Gauss-Seidel: per-color parallel dispatches, sequential
+    // across colors — provably identical to the CPU reference's sequential
+    // canonical sweep. float64 shader math, integer volumes, injection table
+    // as data (no RNG in the runtime).
+    struct WaterUpload {
+        uint32_t n_cells = 0, n_edges = 0, n_colors = 0;
+        double Q = 0, G = 0, c_local = 0;
+        std::vector<double> areas, bed, k_e, l_ij;
+        std::vector<int32_t> V0, eij;
+        std::vector<uint32_t> occ, color_start, inj, edge_active;  // inj: pairs (cell, count)
+    };
+    bool load_water(const WaterUpload& up);
+    // Runs n_macro macro-steps at dt_macro; records V after each step for
+    // readback. Returns (final_sum, final_min).
+    bool water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out);
+    bool water_download(std::vector<int32_t>& out_states, uint32_t& n_states, uint32_t& n_cells);
     // Overlay slot: a second mesh drawn after the main one, always FILL
     // (used for the bone axis while the main mesh is in wireframe mode).
     bool load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
@@ -237,7 +255,35 @@ private:
     VkDeviceMemory  tri_staging_mem_ = VK_NULL_HANDLE;
     std::vector<float> mesh_cpu_;             // CPU copy of the last full-loaded mesh (hinge rest snapshot)
     void mesh_upload(const float* data, size_t floats);  // staging memcpy + transfer to device
-    // hinge state (engine-internal knee pose — see set_hinge)
+    // water solver state (B15)
+    bool            water_loaded_ = false;
+    uint32_t        w_n_cells_ = 0, w_n_edges_ = 0, w_n_colors_ = 0;
+    double          w_Q_ = 0, w_G_ = 0, w_c_local_ = 0;
+    std::vector<uint32_t> w_color_start_;
+    std::vector<uint32_t> w_inj_;              // pairs (cell, count)
+    uint32_t        w_states_cap_ = 0, w_states_n_ = 0;
+    VkBuffer        w_V_buf_ = VK_NULL_HANDLE, w_depth_buf_ = VK_NULL_HANDLE,
+                    w_areas_buf_ = VK_NULL_HANDLE, w_bed_buf_ = VK_NULL_HANDLE,
+                    w_eij_buf_ = VK_NULL_HANDLE, w_ke_buf_ = VK_NULL_HANDLE,
+                    w_lij_buf_ = VK_NULL_HANDLE, w_qe_buf_ = VK_NULL_HANDLE,
+                    w_eactive_buf_ = VK_NULL_HANDLE,
+                    w_occ_buf_ = VK_NULL_HANDLE, w_states_buf_ = VK_NULL_HANDLE,
+                    w_readback_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  w_V_mem_ = VK_NULL_HANDLE, w_depth_mem_ = VK_NULL_HANDLE,
+                    w_areas_mem_ = VK_NULL_HANDLE, w_bed_mem_ = VK_NULL_HANDLE,
+                    w_eij_mem_ = VK_NULL_HANDLE, w_ke_mem_ = VK_NULL_HANDLE,
+                    w_lij_mem_ = VK_NULL_HANDLE, w_qe_mem_ = VK_NULL_HANDLE,
+                    w_eactive_mem_ = VK_NULL_HANDLE,
+                    w_occ_mem_ = VK_NULL_HANDLE, w_states_mem_ = VK_NULL_HANDLE,
+                    w_readback_mem_ = VK_NULL_HANDLE;
+    void*           w_readback_map_ = nullptr;
+    VkShaderModule  w_depth_mod_ = VK_NULL_HANDLE, w_color_mod_ = VK_NULL_HANDLE, w_occ_mod_ = VK_NULL_HANDLE;
+    VkPipeline      w_depth_pipe_ = VK_NULL_HANDLE, w_color_pipe_ = VK_NULL_HANDLE, w_occ_pipe_ = VK_NULL_HANDLE;
+    VkPipelineLayout w_depth_layout_ = VK_NULL_HANDLE, w_color_layout_ = VK_NULL_HANDLE, w_occ_layout_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout w_depth_dsl_ = VK_NULL_HANDLE, w_color_dsl_ = VK_NULL_HANDLE, w_occ_dsl_ = VK_NULL_HANDLE;
+    VkDescriptorPool w_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet w_depth_set_ = VK_NULL_HANDLE, w_color_set_ = VK_NULL_HANDLE, w_occ_set_ = VK_NULL_HANDLE;
+    VkFence         w_fence_ = VK_NULL_HANDLE;
     bool            hinge_active_ = false;
     std::vector<float> hinge_rest_;           // rest vertex records (stride 9)
     std::vector<float> hinge_wL_, hinge_wR_;  // per-vertex blend weights

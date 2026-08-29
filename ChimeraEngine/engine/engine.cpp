@@ -436,6 +436,9 @@ bool Engine::init(const EngineConfig& cfg) {
 
     VkPhysicalDeviceFeatures features{};
     features.fillModeNonSolid = VK_TRUE;  // needed for wireframe debugging
+    features.shaderFloat64 = VK_TRUE;     // the water solver's float math must
+                                          // match the CPU reference's float64
+                                          // bit-for-bit (RTX 4090 supports it)
 
     VkDeviceCreateInfo device_info{};
     device_info.sType                     = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -1369,6 +1372,314 @@ void Engine::pose_hinge() {
     VkBufferCopy bc{}; bc.size = hinge_rest_.size() * sizeof(float);
     vkCmdCopyBuffer(cb, tri_staging_buf_, tri_vbuf_, 1, &bc);
     end_single_time_cmd(cb);
+}
+
+// ── THE WATER SOLVER ON THE CA FIELD (B15) ──────────────────────────────────
+// Port of .tmp/tri_water.py (the golden CPU reference, B7). Schedule: per
+// macro step [inject+depth pre-pass] -> [per-color Gauss-Seidel dispatches in
+// canonical color order, barrier-separated] -> [occ zero post-pass] -> [record
+// V into the states buffer for readback]. float64 math everywhere, integer
+// volumes, roundEven == np.rint, R1 clamp — the same law, bit-for-bit.
+
+static bool w_make_pipeline(VkDevice device, const char* spv_path, uint32_t n_bindings,
+                            uint32_t pc_size, VkShaderModule& mod,
+                            VkDescriptorSetLayout& dsl, VkPipelineLayout& layout,
+                            VkPipeline& pipe) {
+    std::vector<char> spv = read_file(spv_path);
+    if (spv.empty()) { fprintf(stderr, "water: %s missing\n", spv_path); return false; }
+    VkShaderModuleCreateInfo smci{};
+    smci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    smci.codeSize = spv.size();
+    smci.pCode = reinterpret_cast<const uint32_t*>(spv.data());
+    vkCreateShaderModule(device, &smci, nullptr, &mod);
+
+    std::vector<VkDescriptorSetLayoutBinding> b(n_bindings);
+    for (uint32_t k = 0; k < n_bindings; ++k) {
+        b[k].binding = k;
+        b[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        b[k].descriptorCount = 1;
+        b[k].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    }
+    VkDescriptorSetLayoutCreateInfo dlci{};
+    dlci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dlci.bindingCount = n_bindings;
+    dlci.pBindings = b.data();
+    vkCreateDescriptorSetLayout(device, &dlci, nullptr, &dsl);
+
+    VkPushConstantRange pcr{};
+    pcr.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    pcr.offset = 0;
+    pcr.size = pc_size;
+    VkPipelineLayoutCreateInfo plci{};
+    plci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    plci.setLayoutCount = 1;
+    plci.pSetLayouts = &dsl;
+    plci.pushConstantRangeCount = pc_size ? 1u : 0u;
+    plci.pPushConstantRanges = pc_size ? &pcr : nullptr;
+    vkCreatePipelineLayout(device, &plci, nullptr, &layout);
+
+    VkComputePipelineCreateInfo cpci{};
+    cpci.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    cpci.stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    cpci.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+    cpci.stage.module = mod;
+    cpci.stage.pName = "main";
+    cpci.layout = layout;
+    VkResult pr = vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &cpci, nullptr, &pipe);
+    if (pr != VK_SUCCESS) fprintf(stderr, "water: pipeline %s failed (%d)\n", spv_path, (int)pr);
+    return pr == VK_SUCCESS;
+}
+
+bool Engine::load_water(const WaterUpload& up) {
+    vkDeviceWaitIdle(device_);
+    w_n_cells_ = up.n_cells; w_n_edges_ = up.n_edges; w_n_colors_ = up.n_colors;
+    w_Q_ = up.Q; w_G_ = up.G; w_c_local_ = up.c_local;
+    w_color_start_ = up.color_start;
+    w_inj_ = up.inj;
+
+    // buffers (V0 + q_e zeroed via initial upload)
+    upload_buffer(up.V0.data(), up.V0.size() * sizeof(int32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, w_V_buf_, w_V_mem_);
+    upload_buffer(up.areas.data(), up.areas.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_areas_buf_, w_areas_mem_);
+    upload_buffer(up.bed.data(), up.bed.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_bed_buf_, w_bed_mem_);
+    upload_buffer(up.eij.data(), up.eij.size() * sizeof(int32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_eij_buf_, w_eij_mem_);
+    upload_buffer(up.k_e.data(), up.k_e.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_ke_buf_, w_ke_mem_);
+    upload_buffer(up.l_ij.data(), up.l_ij.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_lij_buf_, w_lij_mem_);
+    upload_buffer(up.edge_active.data(), up.edge_active.size() * sizeof(uint32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_eactive_buf_, w_eactive_mem_);
+    std::vector<double> zeros_d(up.n_edges, 0.0);
+    upload_buffer(zeros_d.data(), zeros_d.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_qe_buf_, w_qe_mem_);
+    std::vector<double> zeros_c(up.n_cells, 0.0);
+    upload_buffer(zeros_c.data(), zeros_c.size() * sizeof(double),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_depth_buf_, w_depth_mem_);
+    upload_buffer(up.occ.data(), up.occ.size() * sizeof(uint32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_occ_buf_, w_occ_mem_);
+
+    // states buffer (cap 64 macro steps + the initial state) + host readback
+    w_states_cap_ = 65;
+    VkDeviceSize states_sz = static_cast<VkDeviceSize>(w_states_cap_) * up.n_cells * sizeof(int32_t);
+    {
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = states_sz;
+        bci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        if (w_states_buf_) { vkDestroyBuffer(device_, w_states_buf_, nullptr); vkFreeMemory(device_, w_states_mem_, nullptr); }
+        vkCreateBuffer(device_, &bci, nullptr, &w_states_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, w_states_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &w_states_mem_);
+        vkBindBufferMemory(device_, w_states_buf_, w_states_mem_, 0);
+    }
+    {
+        if (w_readback_buf_) { if (w_readback_map_) vkUnmapMemory(device_, w_readback_mem_); vkDestroyBuffer(device_, w_readback_buf_, nullptr); vkFreeMemory(device_, w_readback_mem_, nullptr); }
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = states_sz;
+        bci.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &w_readback_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, w_readback_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &w_readback_mem_);
+        vkBindBufferMemory(device_, w_readback_buf_, w_readback_mem_, 0);
+        vkMapMemory(device_, w_readback_mem_, 0, states_sz, 0, &w_readback_map_);
+    }
+
+    // pipelines
+    if (!w_make_pipeline(device_, "shaders/water_depth.spv", 3, 24, w_depth_mod_, w_depth_dsl_, w_depth_layout_, w_depth_pipe_)) return false;
+    if (!w_make_pipeline(device_, "shaders/water_color.spv", 9, 48, w_color_mod_, w_color_dsl_, w_color_layout_, w_color_pipe_)) return false;
+    if (!w_make_pipeline(device_, "shaders/water_occ.spv", 2, 8, w_occ_mod_, w_occ_dsl_, w_occ_layout_, w_occ_pipe_)) return false;
+
+    // descriptor pool + sets
+    VkDescriptorPoolSize ps{};
+    ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    ps.descriptorCount = 14;
+    if (w_desc_pool_) vkDestroyDescriptorPool(device_, w_desc_pool_, nullptr);
+    VkDescriptorPoolCreateInfo dpci{};
+    dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    dpci.maxSets = 3;
+    dpci.poolSizeCount = 1;
+    dpci.pPoolSizes = &ps;
+    vkCreateDescriptorPool(device_, &dpci, nullptr, &w_desc_pool_);
+    VkDescriptorSetLayout dsls[3] = { w_depth_dsl_, w_color_dsl_, w_occ_dsl_ };
+    VkDescriptorSet sets[3];
+    VkDescriptorSetAllocateInfo dsai{};
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = w_desc_pool_;
+    dsai.descriptorSetCount = 3;
+    dsai.pSetLayouts = dsls;
+    vkAllocateDescriptorSets(device_, &dsai, sets);
+    w_depth_set_ = sets[0]; w_color_set_ = sets[1]; w_occ_set_ = sets[2];
+
+    auto bind = [&](VkDescriptorSet set, uint32_t binding, VkBuffer buf) {
+        VkDescriptorBufferInfo info{};
+        info.buffer = buf; info.range = VK_WHOLE_SIZE;
+        VkWriteDescriptorSet w{};
+        w.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        w.dstSet = set; w.dstBinding = binding; w.descriptorCount = 1;
+        w.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        w.pBufferInfo = &info;
+        vkUpdateDescriptorSets(device_, 1, &w, 0, nullptr);
+    };
+    bind(w_depth_set_, 0, w_V_buf_); bind(w_depth_set_, 1, w_areas_buf_); bind(w_depth_set_, 2, w_depth_buf_);
+    bind(w_color_set_, 0, w_V_buf_); bind(w_color_set_, 1, w_areas_buf_); bind(w_color_set_, 2, w_depth_buf_);
+    bind(w_color_set_, 3, w_bed_buf_); bind(w_color_set_, 4, w_eij_buf_); bind(w_color_set_, 5, w_ke_buf_);
+    bind(w_color_set_, 6, w_lij_buf_); bind(w_color_set_, 7, w_qe_buf_);
+    bind(w_color_set_, 8, w_eactive_buf_);
+    bind(w_occ_set_, 0, w_V_buf_); bind(w_occ_set_, 1, w_occ_buf_);
+
+    if (w_fence_ == VK_NULL_HANDLE) {
+        VkFenceCreateInfo fi{};
+        fi.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fi.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        vkCreateFence(device_, &fi, nullptr, &w_fence_);
+    }
+
+    // record the initial state (states[0] = V0)
+    {
+        VkCommandBuffer cb = begin_single_time_cmd();
+        VkBufferCopy bc{};
+        bc.size = up.V0.size() * sizeof(int32_t);
+        vkCmdCopyBuffer(cb, w_V_buf_, w_states_buf_, 1, &bc);
+        end_single_time_cmd(cb);
+    }
+    w_states_n_ = 1;
+    water_loaded_ = true;
+    printf("Water loaded: %u cells, %u edges, %u colors, %zu injections\n",
+           w_n_cells_, w_n_edges_, w_n_colors_, w_inj_.size() / 2);
+    return true;
+}
+
+bool Engine::water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out) {
+    if (!water_loaded_) return false;
+    if (w_states_n_ + n_macro > w_states_cap_) n_macro = w_states_cap_ - w_states_n_;
+    if (n_macro == 0) return false;
+
+    VkCommandBufferAllocateInfo cbai{};
+    cbai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    cbai.commandPool = cmd_pool_;
+    cbai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    cbai.commandBufferCount = 1;
+    VkCommandBuffer cb;
+    vkAllocateCommandBuffers(device_, &cbai, &cb);
+    VkCommandBufferBeginInfo bbi{};
+    bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    vkBeginCommandBuffer(cb, &bbi);
+
+    auto barrier = [&]() {
+        VkMemoryBarrier mb{};
+        mb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        mb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        mb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+        vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &mb, 0, nullptr, 0, nullptr);
+    };
+
+    for (uint32_t step = 0; step < n_macro; ++step) {
+        // 1. inject + depth pre-pass
+        struct { double Q; uint32_t n; int32_t inj_target, inj_count; uint32_t pad; } dpc{};
+        dpc.Q = w_Q_; dpc.n = w_n_cells_; dpc.inj_target = -1; dpc.inj_count = 0;
+        uint32_t inj_idx = (w_states_n_ - 1 + step);
+        if (inj_idx * 2 + 1 < w_inj_.size()) {
+            dpc.inj_target = static_cast<int32_t>(w_inj_[inj_idx * 2]);
+            dpc.inj_count = static_cast<int32_t>(w_inj_[inj_idx * 2 + 1]);
+        }
+        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_pipe_);
+        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_depth_layout_, 0, 1, &w_depth_set_, 0, nullptr);
+        vkCmdPushConstants(cb, w_depth_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(dpc), &dpc);
+        vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
+        barrier();
+
+        // 2. per-color Gauss-Seidel dispatches in canonical color order
+        for (uint32_t c = 0; c < w_n_colors_; ++c) {
+            uint32_t e0 = w_color_start_[c], e1 = w_color_start_[c + 1];
+            if (e1 <= e0) continue;
+            struct { double dt, Q, g, cl; uint32_t off, tot, end, p1; } cpc{};
+            cpc.dt = dt_macro; cpc.Q = w_Q_; cpc.g = w_G_; cpc.cl = w_c_local_;
+            cpc.off = e0; cpc.tot = w_n_edges_; cpc.end = e1;
+            vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_pipe_);
+            vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_color_layout_, 0, 1, &w_color_set_, 0, nullptr);
+            vkCmdPushConstants(cb, w_color_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(cpc), &cpc);
+            vkCmdDispatch(cb, (e1 - e0 + 255) / 256, 1, 1);
+            barrier();
+        }
+
+        // 3. occ zero post-pass
+        struct { uint32_t n, pad; } opc{};
+        opc.n = w_n_cells_;
+        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_pipe_);
+        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_COMPUTE, w_occ_layout_, 0, 1, &w_occ_set_, 0, nullptr);
+        vkCmdPushConstants(cb, w_occ_layout_, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(opc), &opc);
+        vkCmdDispatch(cb, (w_n_cells_ + 255) / 256, 1, 1);
+        barrier();
+
+        // 4. record the state
+        VkBufferCopy bc{};
+        bc.srcOffset = 0;
+        bc.dstOffset = static_cast<VkDeviceSize>(w_states_n_ + step) * w_n_cells_ * sizeof(int32_t);
+        bc.size = static_cast<VkDeviceSize>(w_n_cells_) * sizeof(int32_t);
+        vkCmdCopyBuffer(cb, w_V_buf_, w_states_buf_, 1, &bc);
+        VkMemoryBarrier cmb{};
+        cmb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        cmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        cmb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                             VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &cmb, 0, nullptr, 0, nullptr);
+    }
+    vkEndCommandBuffer(cb);
+
+    vkResetFences(device_, 1, &w_fence_);
+    VkSubmitInfo si{};
+    si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    si.commandBufferCount = 1;
+    si.pCommandBuffers = &cb;
+    vkQueueSubmit(queue_, 1, &si, w_fence_);
+    vkWaitForFences(device_, 1, &w_fence_, VK_TRUE, UINT64_MAX);
+    vkFreeCommandBuffers(device_, cmd_pool_, 1, &cb);
+    w_states_n_ += n_macro;
+
+    // final sum/min from the last recorded state (host readback)
+    {
+        VkCommandBuffer cb2 = begin_single_time_cmd();
+        VkBufferCopy rc{};
+        rc.size = static_cast<VkDeviceSize>(w_states_n_) * w_n_cells_ * sizeof(int32_t);
+        vkCmdCopyBuffer(cb2, w_states_buf_, w_readback_buf_, 1, &rc);
+        end_single_time_cmd(cb2);
+    }
+    const int32_t* last = static_cast<const int32_t*>(w_readback_map_) +
+                          static_cast<size_t>(w_states_n_ - 1) * w_n_cells_;
+    int64_t s = 0, mn = INT64_MAX;
+    for (uint32_t i = 0; i < w_n_cells_; ++i) { s += last[i]; if (last[i] < mn) mn = last[i]; }
+    sum_out = s; min_out = mn;
+    return true;
+}
+
+bool Engine::water_download(std::vector<int32_t>& out_states, uint32_t& n_states, uint32_t& n_cells) {
+    if (!water_loaded_ || w_states_n_ == 0) return false;
+    VkCommandBuffer cb = begin_single_time_cmd();
+    VkBufferCopy rc{};
+    rc.size = static_cast<VkDeviceSize>(w_states_n_) * w_n_cells_ * sizeof(int32_t);
+    vkCmdCopyBuffer(cb, w_states_buf_, w_readback_buf_, 1, &rc);
+    end_single_time_cmd(cb);
+    const int32_t* src = static_cast<const int32_t*>(w_readback_map_);
+    out_states.assign(src, src + static_cast<size_t>(w_states_n_) * w_n_cells_);
+    n_states = w_states_n_;
+    n_cells = w_n_cells_;
+    return true;
 }
 
 bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uint32_t>& indices,

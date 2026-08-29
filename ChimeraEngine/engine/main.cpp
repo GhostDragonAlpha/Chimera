@@ -60,6 +60,14 @@ static std::mutex g_hinge_mutex;
 static std::condition_variable g_hinge_cv;
 static bool g_hinge_pending = false, g_hinge_applied = false;
 
+// ── Pending water request (the CA-field solver; same handoff) ───────────────
+struct WaterReq { Engine::WaterUpload up; int kind = 1; uint32_t n_macro = 1; double dt = 0.01;
+                  int64_t sum = 0, mn = 0; std::vector<int32_t> states; uint32_t ns = 0, nc = 0; bool ok = false; };
+static WaterReq g_water_req;
+static std::mutex g_water_mutex;
+static std::condition_variable g_water_cv;
+static bool g_water_pending = false, g_water_applied = false;
+
 // ── Pending skin/pose request (same handoff: Vulkan work stays on the render thread) ────
 struct SkinRequest {
     int kind = 0;                    // 1 = skin_bin load, 2 = pose_store, 3 = pose_apply
@@ -377,6 +385,124 @@ int main(int argc, char** argv) {
                 }
             }
             content_type = "application/json";
+        } else if (p == "/water_bin" && method == "POST") {
+            // Binary protocol (little-endian):
+            //   [u32 n_cells][u32 n_edges][u32 n_colors][u32 n_inj_pairs]
+            //   [f64 Q][f64 G][f64 c_local]
+            //   areas(n f64) | bed(n f64) | V0(n i32) | occ(n u32) |
+            //   eij(2e i32) | k_e(e f64) | l_ij(e f64) |
+            //   color_start(n_colors+1 u32) | inj(2*n_inj u32)
+            if (req_body.size() < 40) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                const uint8_t* d = reinterpret_cast<const uint8_t*>(req_body.data());
+                auto rd_u32 = [&](size_t off) { uint32_t v; std::memcpy(&v, d + off, 4); return v; };
+                auto rd_f64 = [&](size_t off) { double v; std::memcpy(&v, d + off, 8); return v; };
+                Engine::WaterUpload up{};
+                up.n_cells = rd_u32(0);
+                uint32_t ne = rd_u32(4);
+                up.n_edges = ne;
+                up.n_colors = rd_u32(8);
+                uint32_t n_inj = rd_u32(12);
+                up.Q = rd_f64(16); up.G = rd_f64(24); up.c_local = rd_f64(32);
+                size_t off = 40;
+                size_t n = up.n_cells;
+                size_t expect = off + n * 8 * 2 + n * 4 * 2 + static_cast<size_t>(ne) * 4 * 2
+                              + static_cast<size_t>(ne) * 8 * 2 + static_cast<size_t>(ne) * 4 + (up.n_colors + 1) * 4 + static_cast<size_t>(n_inj) * 8;
+                if (req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    up.areas.resize(n); up.bed.resize(n); up.V0.resize(n); up.occ.resize(n);
+                    up.eij.resize(static_cast<size_t>(ne) * 2);
+                    up.k_e.resize(ne); up.l_ij.resize(ne);
+                    up.color_start.resize(up.n_colors + 1);
+                    up.inj.resize(static_cast<size_t>(n_inj) * 2);
+                    std::memcpy(up.areas.data(), d + off, n * 8); off += n * 8;
+                    std::memcpy(up.bed.data(), d + off, n * 8); off += n * 8;
+                    std::memcpy(up.V0.data(), d + off, n * 4); off += n * 4;
+                    std::memcpy(up.occ.data(), d + off, n * 4); off += n * 4;
+                    std::memcpy(up.eij.data(), d + off, static_cast<size_t>(ne) * 8); off += static_cast<size_t>(ne) * 8;
+                    std::memcpy(up.k_e.data(), d + off, static_cast<size_t>(ne) * 8); off += static_cast<size_t>(ne) * 8;
+                    std::memcpy(up.l_ij.data(), d + off, static_cast<size_t>(ne) * 8); off += static_cast<size_t>(ne) * 8;
+                    up.edge_active.resize(ne);
+                    std::memcpy(up.edge_active.data(), d + off, static_cast<size_t>(ne) * 4); off += static_cast<size_t>(ne) * 4;
+                    std::memcpy(up.color_start.data(), d + off, (up.n_colors + 1) * 4); off += (up.n_colors + 1) * 4;
+                    std::memcpy(up.inj.data(), d + off, static_cast<size_t>(n_inj) * 8);
+                    {
+                        std::lock_guard<std::mutex> lk(g_water_mutex);
+                        g_water_req = WaterReq{};
+                        g_water_req.kind = 1;
+                        g_water_req.up = std::move(up);
+                        g_water_pending = true; g_water_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_water_mutex);
+                    bool ok = g_water_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_water_applied; });
+                    body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/water_step" && method == "POST") {
+            // JSON {"n_macro":N, "dt_macro":D} -> runs on the render thread
+            uint32_t n_macro = 1; double dt = 0.01;
+            {
+                auto find_num = [&](const char* key, std::string& out) {
+                    size_t pos = req_body.find(key);
+                    if (pos == std::string::npos) return false;
+                    pos = req_body.find(':', pos);
+                    if (pos == std::string::npos) return false;
+                    size_t a = req_body.find_first_of("-0123456789.", pos);
+                    size_t b = req_body.find_first_not_of("-0123456789.eE+", a);
+                    out = req_body.substr(a, b - a);
+                    return true;
+                };
+                std::string v;
+                if (find_num("n_macro", v)) n_macro = static_cast<uint32_t>(std::stoul(v));
+                if (find_num("dt_macro", v)) dt = std::stod(v);
+            }
+                    {
+                        std::lock_guard<std::mutex> lk(g_water_mutex);
+                        g_water_req = WaterReq{};
+                        g_water_req.kind = 2;
+                        g_water_req.n_macro = n_macro;
+                        g_water_req.dt = dt;
+                        g_water_pending = true; g_water_applied = false;
+                    }
+                    bool ok;
+                    int64_t sum, mn;
+                    {
+                        std::unique_lock<std::mutex> lk(g_water_mutex);
+                        g_water_cv.wait_for(lk, std::chrono::seconds(120), []{ return g_water_applied; });
+                        ok = g_water_req.ok; sum = g_water_req.sum; mn = g_water_req.mn;
+                    }
+            body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                 + ",\"sum\":" + std::to_string(sum) + ",\"min\":" + std::to_string(mn) + "}";
+            content_type = "application/json";
+        } else if (p == "/water_state" && method == "GET") {
+            {
+                std::lock_guard<std::mutex> lk(g_water_mutex);
+                g_water_req = WaterReq{};
+                g_water_req.kind = 3;
+                g_water_pending = true; g_water_applied = false;
+            }
+            bool ok;
+            std::vector<int32_t> states; uint32_t ns, nc;
+            {
+                std::unique_lock<std::mutex> lk(g_water_mutex);
+                g_water_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_water_applied; });
+                ok = g_water_req.ok; states = std::move(g_water_req.states);
+                ns = g_water_req.ns; nc = g_water_req.nc;
+            }
+            if (ok) {
+                std::string out(8 + states.size() * 4, '\0');
+                uint32_t hdr[2] = { ns, nc };
+                std::memcpy(out.data(), hdr, 8);
+                std::memcpy(out.data() + 8, states.data(), states.size() * 4);
+                body = std::move(out);
+                content_type = "application/octet-stream";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no water\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/skin_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
             //   [u32 N][u32 B][f32 cam_radius][f32 cam_theta][f32 cam_phi]
@@ -631,6 +757,23 @@ int main(int argc, char** argv) {
                                      g_hinge_req.period, g_hinge_req.phaseR);
                 }
                 g_hinge_pending = false; g_hinge_applied = true; g_hinge_cv.notify_all();
+            }
+        }
+
+        // Apply a pending water request (Vulkan work must stay on this thread)
+        {
+            std::lock_guard<std::mutex> lk(g_water_mutex);
+            if (g_water_pending) {
+                if (g_water_req.kind == 1) {
+                    g_water_req.ok = engine.load_water(g_water_req.up);
+                } else if (g_water_req.kind == 2) {
+                    g_water_req.ok = engine.water_run(g_water_req.n_macro, g_water_req.dt,
+                                                      g_water_req.sum, g_water_req.mn);
+                } else {
+                    g_water_req.ok = engine.water_download(g_water_req.states,
+                                                           g_water_req.ns, g_water_req.nc);
+                }
+                g_water_pending = false; g_water_applied = true; g_water_cv.notify_all();
             }
         }
 

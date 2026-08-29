@@ -1,0 +1,68 @@
+// water_color.comp â€” ONE COLOR of the order-consistent Gauss-Seidel sweep.
+// Within a color no two edges share a cell, so per-edge transfer application
+// is race-free without atomics; across colors the engine inserts barriers, so
+// every dependent edge pair sees the same state as the CPU reference's
+// sequential canonical sweep. Per-edge math is the reference's verbatim
+// (tri_water.py Solver.step): float64 everywhere, roundEven == np.rint,
+// R1 clamp clamp(delta, -V_j, +V_i), integer volumes.
+#version 460
+#extension GL_EXT_shader_explicit_arithmetic_types_float64 : require
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    double dt_macro;
+    double Q;
+    double g;
+    double c_local;
+    uint   edge_offset;
+    uint   n_edges_total;
+    uint   edge_end;    // dispatch overrun guard: the rounded-up group count
+    uint   pad1;        // can spill into the NEXT color's edges — must not run them
+} pc;
+
+layout(std430, binding = 0) buffer VBuf       { int    V[];      };
+layout(std430, binding = 1) readonly buffer Areas { double areas[]; };
+layout(std430, binding = 2) readonly buffer Depth { double depth[]; };
+layout(std430, binding = 3) readonly buffer Bed   { double bed[];   };
+layout(std430, binding = 4) readonly buffer EdgeIJ { ivec2 eij[];  };
+layout(std430, binding = 5) readonly buffer KE    { double k_e[];  };
+layout(std430, binding = 6) readonly buffer LIJ   { double l_ij[]; };
+layout(std430, binding = 7) buffer QE       { double q_e[];   };
+layout(std430, binding = 8) readonly buffer EActive { uint eactive[]; };
+
+void main() {
+    uint e = gl_GlobalInvocationID.x + pc.edge_offset;
+    if (e >= pc.n_edges_total) return;
+    if (e >= pc.edge_end) return;
+    if (eactive[e] == 0u) return;    // edge touches an occupied cell (cube veto)
+    int i = eij[e].x;
+    int j = eij[e].y;
+    if (areas[i] <= 0.0 || areas[j] <= 0.0) return;
+
+    // 'precise' forbids FMA contraction — the CPU reference (numpy) does plain
+    // IEEE mul/add; a fused qe += a*b*c would round differently and flip
+    // delta_count at rounding boundaries (the step-4 divergence).
+    precise double di = depth[i];
+    precise double dj = depth[j];
+    precise double c = sqrt(max(0.0, pc.g * 0.5 * (di + dj)));
+    precise double dt_ij = (c == 0.0) ? pc.dt_macro : pc.c_local * l_ij[e] / c;
+    int n_sub = max(1, int(floor(pc.dt_macro / dt_ij)));
+
+    precise double qe = q_e[e];
+    precise double head = (di - dj) + (bed[i] - bed[j]);
+    for (int s = 0; s < n_sub; ++s) {
+        qe += dt_ij * k_e[e] * head;
+        precise double delta_raw = dt_ij * qe;
+        int delta_count = int(roundEven(delta_raw / pc.Q));
+        // R1 clamp: source bounded by +V_i, destination by -V_j
+        if (delta_count > V[i])  delta_count = V[i];
+        if (-delta_count > V[j]) delta_count = -V[j];
+        V[i] -= delta_count;
+        V[j] += delta_count;
+        // recompute head after the transfer (depths changed)
+        di = double(V[i]) * pc.Q / areas[i];
+        dj = double(V[j]) * pc.Q / areas[j];
+        head = (di - dj) + (bed[i] - bed[j]);
+    }
+    q_e[e] = qe;
+}
