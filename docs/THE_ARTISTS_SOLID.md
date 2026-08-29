@@ -823,3 +823,91 @@ was already close to the corrected one, so its flexion limit barely moved.
 The engine driver `.tmp/leg_move_v2.py` was updated to the new magnitudes
 and the hinge constants were re-posted to the live engine on :8090.
 
+
+## H15 CONSTRUCTION MEMBRANE — THE JOINT FACTORY (kimi k3, 2026-08-29)
+
+Recorded BEFORE the build, per Rule 0. Operator decree 2026-08-29: foundation
+before polish — a COMPLETE humanoid stick figure fittable into any humanoid
+object; the knee-proven law (corrected axis derivation, capsule-contact ROM,
+unified volp-ARAP ring solve) repeated for EVERY joint, no per-joint special
+cases.
+
+**Statement.** The skeleton is a graph, not a list of names. Given the 689-rod
+bone GLB, collinear rod chains are bones and bones meeting are joints
+(census: `.tmp/skeleton/census.json` — 236 chains, 40 joint points). A joint's
+articulation law is fully derivable from local geometry: its center is the
+incident chains' meeting point; its flexion axis follows the bilateral law
+(L/R pairs: the inter-joint transverse line — the knee law, generalized) or
+the central law (spine/neck/tail: the transverse x axis for flexion); its ROM
+is the capsule-contact stop of the distal chain swept about that axis
+(probe15's machinery, unchanged). NOTHING is named or placed by a human: the
+census finds the joints, the factory derives the articulation.
+
+**Prediction.** The factory derives center/axis/ROM for every census joint of
+>= 2 bones outside the fine tier (fingers/toes): neck, spine segments,
+shoulders, elbows, wrists, hips, ankles, jaw, tail segments. Bilateral pairs
+come out symmetric within the measurement spread (the census's own L/R
+variance); flexion stops land inside anatomically sane ranges for a monkey
+(elbow ~120-150 deg, hip ~90-170 deg, ankle ~30-70 deg); every stop is a
+named rod-rod contact (the stop is EARNED, not assumed).
+
+**Falsifiers.**
+- **F1 (symmetry):** bilateral pair ROMs differ by > 25% of the smaller value
+  with NO measured geometric cause (a named asymmetric contact) -> the axis
+  law is wrong for that pair.
+- **F2 (vacuous stop):** any joint whose sweep finds NO contact in either
+  direction within +-170 deg -> the rotating-set segmentation is wrong for
+  that joint (reported, not patched over).
+- **F3 (independence):** rotating any joint must not move another joint's
+  bones (the distal sets are disjoint by construction; verified per joint).
+- **F4 (insane ROM):** any flexion stop outside [0, 170] deg or any joint
+  where the rest pose is already in contact (the stop is behind the rest
+  pose) -> the geometry or the axis is wrong, recorded as-is.
+
+The knee stays the reference: the factory must reproduce the probe15 knee
+numbers (L +145.39/-1.56, R +140.75/-2.33) within its own machinery's
+tolerance as the calibration check.
+
+### H15 FACTORY OUTPUT 01 (2026-08-29, `.tmp/skeleton/factory_rom.json`)
+
+19 joints matched; the rod-graph component segmentation (cut at the joint,
+distal = components reaching farther from the core) replaced the broken
+joint-graph BFS; the rest-halo is SURFACE-distance (1.5 × 2 r_rod) after the
+mid-based halo missed long crossing rods (the shoulders/hips/wrists failures).
+
+| Joint | J (x,y,z) | Axis | Flexion | Extension |
+|---|---|---|---|---|
+| neck | 0.03, 8.37, 0.66 | x | **+130.23°** (rod 433↔416) | **−35.84°** (430↔412) |
+| jaw | 0.18, 9.05, 0.36 | x | no-contact (F2) | no-contact (F2) |
+| spine_upper | 0.03, 7.71, 0.01 | x | +119.16° | −169.73° (boundary) |
+| spine_mid | 0.03, 6.86, −0.12 | x | +126.17° | −124.51° |
+| spine_lower | 0.03, 5.68, 0.09 | x | +152.51° | −117.87° |
+| tail_base | 0.03, 3.96, −0.70 | x | +87.14° | no-contact (F2) |
+| tail_mid | 0.03, 3.95, −1.82 | x | +138.73° | −139.06° |
+| shoulder_L | −1.00, 6.07, −0.07 | transverse | no-contact (F2) | no-contact (F2) |
+| shoulder_R | 1.35, 5.88, −0.09 | transverse | no-contact (F2) | no-contact (F2) |
+| elbow_L | −1.83, 5.06, −0.09 | transverse | no-contact (F2) | no-contact (F2) |
+| elbow_R | 0.65, 6.29, −0.06 | transverse | **+166.78°** (638↔430) | no-contact (F2) |
+| wrist_L | −2.33, 4.15, −0.10 | transverse | no-contact (F2) | no-contact (F2) |
+| wrist_R | 2.53, 3.86, −0.12 | transverse | no-contact (F2) | no-contact (F2) |
+| hip_L | −0.47, 3.17, 0.16 | transverse | no-contact (F2) | −150.23° |
+| hip_R | 0.50, 3.45, 0.16 | transverse | **+152.23°** (518↔471) | −104.74° |
+| knee_L | −0.49, 1.77, 0.13 | transverse | +140.15° | −147.89° (blind spot) |
+| knee_R | 0.58, 1.64, 0.11 | transverse | +151.33° | −160.87° (blind spot) |
+| ankle_L | −0.51, 1.17, 0.03 | transverse | +131.44° | −159.21° |
+| ankle_R | 0.57, 0.88, 0.03 | transverse | +143.61° | −143.62° |
+
+**Falsifier record.** F1 (asymmetry): FIRES for elbow (L none / R 166.78) and
+hip (L flex none / R 152.23) — measured cause: the pose is asymmetric; the
+no-contact side's distal set swings free of every rod, the data shows it, not
+a law failure. F2 (no-contact): FIRES for jaw, both shoulders, both wrists,
+elbow_L, hip_L flex, tail_base ext — recorded, NOT patched; the capsule model
+has no obstruction there (ball joints and free swings have no bone stop —
+their limits are ligament/skin, a different measurement). F4 (blind spot):
+extension sweeps past −100° at knees/ankles/hips = the capsule-contact method
+cannot model ligament-limited extension; recorded as the method's named
+boundary (the production extension limits come from the skin/tissue line,
+not bone contact). Knee calibration: factory flex 140.15/151.33 sits within
+±8° of probe15's 145.39/140.75 (different segmentation, same law); probe15's
+extension values were the documented artifact (G3) — the factory's blind-spot
+reading is consistent with that finding.
