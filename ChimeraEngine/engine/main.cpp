@@ -5,6 +5,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 #include "engine.hpp"
 #include "physics.hpp"
 #include "shared_mem.hpp"
@@ -149,6 +151,8 @@ void handleSignal(int) { exit(0); }
 #endif
 
 int main(int argc, char** argv) {
+    // 1 ms timer granularity for the frame-cap sleeps (Windows default is 15.6 ms).
+    timeBeginPeriod(1);
     // Config
     EngineConfig cfg;
     cfg.width  = 1920;
@@ -481,6 +485,8 @@ int main(int argc, char** argv) {
     // Main loop — hybrid GPU compute / CPU integrate (or membrane display)
     auto last_time = std::chrono::high_resolution_clock::now();
     int frame_count = 0;
+    double ft_sum = 0.0, ft_max = 0.0;   // frame-stutter instrument (per-second window)
+    int ft_over16 = 0, ft_over33 = 0;
     bool use_compute = false;  // compute path disabled: the N-body sim is a placeholder; the membrane/teddy render is the target
 
     while (true) {
@@ -607,10 +613,39 @@ int main(int argc, char** argv) {
             }
         }
 
-        // Render one frame
+        // Render one frame (timed — the frame-stutter instrument)
+        auto ft0 = std::chrono::high_resolution_clock::now();
         if (!engine.frame()) {
             fprintf(stderr, "Frame failed\n");
             break;
+        }
+        auto ft1 = std::chrono::high_resolution_clock::now();
+        // B5: nothing loaded -> frame() returns immediately; pace the loop or it
+        // spins a core at millions of FPS doing literally nothing.
+        if (engine.idle()) Sleep(8);
+
+        // Frame-time stats: averages hide stutter; spikes are the complaint.
+        double ft_ms = std::chrono::duration_cast<std::chrono::microseconds>(ft1 - ft0).count() / 1e3;
+        ft_sum += ft_ms;
+        if (ft_ms > ft_max) ft_max = ft_ms;
+        if (ft_ms > 16.7) ft_over16++;
+        if (ft_ms > 33.3) ft_over33++;
+
+        // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
+        // and fought llama-server (65%% GPU) for every slice — each inference burst
+        // delayed frames unpredictably = the stutter. A metronome at 144 FPS yields
+        // the GPU predictably and paces display delivery. timeBeginPeriod(1) is set
+        // in main() so these short sleeps land at ~1 ms granularity, not 15.6.
+        {
+            const double target_ms = 1000.0 / 144.0;
+            double busy_ms = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now() - ft0).count() / 1e3;
+            if (busy_ms < target_ms) {
+                double rem = target_ms - busy_ms;
+                if (rem > 2.0) Sleep((DWORD)(rem - 1.0));
+                while (std::chrono::duration_cast<std::chrono::microseconds>(
+                       std::chrono::high_resolution_clock::now() - ft0).count() / 1e3 < target_ms) {}
+            }
         }
 
         // No frame-rate cap — the loop is GPU-bound: the per-frame fence wait + MAILBOX present
@@ -620,10 +655,13 @@ int main(int argc, char** argv) {
         auto now = std::chrono::high_resolution_clock::now();
         double elapsed_s = std::chrono::duration_cast<std::chrono::microseconds>(now - last_time).count() / 1e6;
         if (elapsed_s >= 1.0) {
-            printf("FPS: %.0f (frame %d)\n", frame_count / elapsed_s, frame_count);
+            printf("FPS: %.0f (frame %d) | ft ms avg %.2f max %.2f | >16.7ms: %d >33ms: %d\n",
+                   frame_count / elapsed_s, frame_count,
+                   frame_count ? ft_sum / frame_count : 0.0, ft_max, ft_over16, ft_over33);
             fflush(stdout);
             frame_count = 0;
             last_time = now;
+            ft_sum = ft_max = 0.0; ft_over16 = ft_over33 = 0;
         }
     }
 

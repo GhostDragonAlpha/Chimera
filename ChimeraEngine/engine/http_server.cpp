@@ -67,7 +67,15 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
             sockaddr_in client_addr{};
             int addr_len = sizeof(client_addr);
             SOCKET client = accept(sock_, reinterpret_cast<sockaddr*>(&client_addr), &addr_len);
-            if (client == INVALID_SOCKET) break;
+            if (client == INVALID_SOCKET) {
+                // A transient accept error (port exhaustion, aborted handshake,
+                // contention) must NOT kill the listener — the old `break` here
+                // silently ended the HTTP server while the engine kept rendering
+                // (every driver then died on "connection refused").
+                if (!listen_) break;
+                Sleep(10);
+                continue;
+            }
 
             // Read until the end of headers (blank line), up to a sane cap.
             std::string req;

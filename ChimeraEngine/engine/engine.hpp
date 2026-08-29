@@ -30,6 +30,9 @@ public:
     bool dispatch_compute(std::vector<float>& out_velocities);  // GPU compute + velocity readback
     void mark_dirty() { dirty_ = true; }  // signal that params/count changed — next push_state reallocates
     uint32_t particle_count() const { return n_; }
+    // Nothing to draw: frame() early-returns in this state — the main loop must
+    // pace itself instead of spinning a core at millions of FPS (B5).
+    bool idle() const { return n_ == 0 && !has_mesh_; }
 
     // ── membrane streaming (the C++ engine is the emission target) ──────────────
     bool load_membrane(const std::string& term, const std::vector<float>& pos, uint32_t count);
@@ -91,6 +94,7 @@ private:
     uint32_t find_mem_type(uint32_t types, VkMemoryPropertyFlags flags);
 
     VkInstance         instance_      = VK_NULL_HANDLE;
+    VkDebugUtilsMessengerEXT debug_messenger_ = VK_NULL_HANDLE;
     VkPhysicalDevice   phys_dev_      = VK_NULL_HANDLE;
     VkDevice           device_        = VK_NULL_HANDLE;
     VkQueue            queue_         = VK_NULL_HANDLE;

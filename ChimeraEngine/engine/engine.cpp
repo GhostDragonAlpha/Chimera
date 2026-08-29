@@ -371,7 +371,9 @@ bool Engine::init(const EngineConfig& cfg) {
         return false;
     }
 
-    // Set up the debug messenger (leaked until instance teardown — dev tooling only)
+    // Set up the debug messenger (stored so shutdown can destroy it — B2: it was
+    // created into a local and leaked into instance teardown; validation fired
+    // on every exit).
     if (has_debug_utils) {
         auto pfn = (PFN_vkCreateDebugUtilsMessengerEXT)
             vkGetInstanceProcAddr(instance_, "vkCreateDebugUtilsMessengerEXT");
@@ -384,8 +386,7 @@ bool Engine::init(const EngineConfig& cfg) {
                               VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                               VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
             dci.pfnUserCallback = debug_utils_callback;
-            VkDebugUtilsMessengerEXT messenger;
-            pfn(instance_, &dci, nullptr, &messenger);
+            pfn(instance_, &dci, nullptr, &debug_messenger_);
         }
     }
 
@@ -567,6 +568,7 @@ void Engine::shutdown() {
     if (desc_layout_) vkDestroyDescriptorSetLayout(device_, desc_layout_, nullptr);
 
     if (pipeline_)  vkDestroyPipeline(device_, pipeline_,  nullptr);
+    if (pipeline_layout_) vkDestroyPipelineLayout(device_, pipeline_layout_, nullptr);  // B2: was leaked
     if (render_pass_) vkDestroyRenderPass(device_, render_pass_, nullptr);
 
     if (comp_mod_) vkDestroyShaderModule(device_, comp_mod_, nullptr);
@@ -579,6 +581,13 @@ void Engine::shutdown() {
 
     if (surface_)  vkDestroySurfaceKHR(instance_, surface_,  nullptr);
     if (device_)   vkDestroyDevice(device_,                  nullptr);
+    // B2: the messenger must die BEFORE the instance, or validation fires at exit.
+    if (debug_messenger_) {
+        auto pfn = (PFN_vkDestroyDebugUtilsMessengerEXT)
+            vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT");
+        if (pfn) pfn(instance_, debug_messenger_, nullptr);
+        debug_messenger_ = VK_NULL_HANDLE;
+    }
     if (instance_) vkDestroyInstance(instance_,              nullptr);
 
     if (g_hwnd) { DestroyWindow(g_hwnd); g_hwnd = nullptr; }
