@@ -2739,7 +2739,12 @@ bool Engine::frame() {
     // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
     // may still be drawing the previous slot. Per-slot fence/cmdbuf/descriptors/UBO.
     uint32_t img_idx = image_idx_;
-    vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    if (fence_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at frame fence wait (slot %u)\n", img_idx);
+        fflush(stderr);
+        exit(2);
+    }
     // NOTE: the fence is NOT reset here — an early return (OUT_OF_DATE) would leave
     // it reset-but-never-submitted and the next wait on this slot would hang.
     // Reset happens at the submit site, immediately before vkQueueSubmit.
@@ -2830,6 +2835,11 @@ bool Engine::frame() {
     // B1: OUT_OF_DATE means the swapchain is dead (resize, occlusion, driver). Rebuild it
     // NOW instead of skipping presents forever — the old code left the window frozen
     // at the last presented image while the loop ran at full FPS.
+    if (acquire_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at swapchain acquire\n");
+        fflush(stderr);
+        exit(2);
+    }
     if (acquire_res == VK_ERROR_OUT_OF_DATE_KHR) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
@@ -3156,7 +3166,12 @@ bool Engine::frame() {
         si.pSignalSemaphores    = &flush_sem_[img_idx];
     }
     vkResetFences(device_, 1, &fences_[img_idx]);
-    vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
+    VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
+    if (submit_res == VK_ERROR_DEVICE_LOST) {
+        fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at frame submit (slot %u)\n", img_idx);
+        fflush(stderr);
+        exit(2);
+    }
 
     if (can_present) {
         VkPresentInfoKHR pi{};
@@ -3169,6 +3184,11 @@ bool Engine::frame() {
         // B1: the present result is a swapchain-health signal, not noise — a swapchain
         // that goes stale here would otherwise never be rebuilt.
         VkResult pres_res = vkQueuePresentKHR(queue_, &pi);
+        if (pres_res == VK_ERROR_DEVICE_LOST) {
+            fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at present\n");
+            fflush(stderr);
+            exit(2);
+        }
         if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
             recreate_after_frame = true;
     }
