@@ -1,0 +1,50 @@
+// joints.comp — H15: the all-joints articulation kernel. The knee law,
+// generalized to the whole skeleton: per vertex, a dominant joint + weight
+// (built from the factory's distal bone sets), Rodrigues about that joint's
+// derived center/axis by theta[joint] * w. Atomic-free (one invocation per
+// vertex, disjoint writes), fixed order, wave-size independent.
+#version 460
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    uint n;
+    uint n_joints;
+} pc;
+
+layout(std430, binding = 0) readonly  buffer Rest    { float rest[]; };
+layout(std430, binding = 1) readonly  buffer Assign  { int   joint[]; };   // joint idx or -1
+layout(std430, binding = 2) readonly  buffer Weights { float w[]; };
+// joints state: 19 * [Jx Jy Jz Ax] (pos + axis packed as vec4s, axis w unused)
+// then 19 theta values (radians, full ROM deflection for this frame)
+layout(std430, binding = 3) readonly  buffer JState  { float js[]; };
+layout(std430, binding = 4) writeonly buffer Out     { float vout[]; };
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= pc.n) return;
+
+    int j = joint[i];
+    if (j < 0) {
+        for (uint k = 0; k < 9; ++k) vout[i * 9 + k] = rest[i * 9 + k];
+        return;
+    }
+    float th = js[uint(j) * 8u + 7u] * w[i];         // theta_j * w_i
+    vec3 J = vec3(js[uint(j) * 8u + 0u], js[uint(j) * 8u + 1u], js[uint(j) * 8u + 2u]);
+    vec3 a = vec3(js[uint(j) * 8u + 3u], js[uint(j) * 8u + 4u], js[uint(j) * 8u + 5u]);
+
+    float c = cos(th), s = sin(th);
+    for (uint kk = 0; kk < 2; ++kk) {                // 0 = position, 1 = normal
+        vec3 base = (kk == 0) ? J : vec3(0.0);
+        vec3 v = vec3(rest[i * 9 + kk * 3 + 0],
+                      rest[i * 9 + kk * 3 + 1],
+                      rest[i * 9 + kk * 3 + 2]) - base;
+        vec3 r = v * c + cross(a, v) * s + a * dot(a, v) * (1.0 - c);
+        vec3 o = r + base;
+        vout[i * 9 + kk * 3 + 0] = o.x;
+        vout[i * 9 + kk * 3 + 1] = o.y;
+        vout[i * 9 + kk * 3 + 2] = o.z;
+    }
+    vout[i * 9 + 6] = rest[i * 9 + 6];               // colors pass through
+    vout[i * 9 + 7] = rest[i * 9 + 7];
+    vout[i * 9 + 8] = rest[i * 9 + 8];
+}

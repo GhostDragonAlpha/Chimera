@@ -155,6 +155,15 @@ public:
     // cannot carry flat per-triangle colors, and the vertex color channel is
     // load-bearing for the stock Lambert path.
     bool load_frost(const uint8_t* blob, size_t size);
+    // E1: upload the measured eye classification (2092 u32; 0 sclera / 1 iris / 2 pupil).
+    bool set_eye_class(const std::vector<uint32_t>& cls);
+    // ── H15: the all-joints articulation (the skeleton SHOW) ────────────────
+    // Per-vertex dominant joint + weight (the factory's distal sets); the
+    // engine sweeps every joint through its derived ROM on the render clock.
+    bool load_joints(const std::vector<uint8_t>& blob);
+    std::atomic<int>      joints_on_{0};          // 1 = the show owns the pose
+    bool                  joints_loaded() const { return joints_loaded_; }
+    std::string           joints_status() const;
     void frost_rebind();                     // mesh buffers recreated -> rebind (like W4)
     // Arm + finish a debug snapshot (bit-exactness verification): the next
     // dispatched frame also writes the 14 kernel inputs per triangle; after
@@ -178,6 +187,26 @@ public:
     bool apply_pose(uint32_t slot);   // upload stored slot to pose_buf_, pose on next frame
     void toggle_pose();               // 'P' key: rest (slot 0) <-> wave (slot 1)
     bool skinned_active() const { return skinned_active_; }
+
+private:
+    // H15 joints kernel state
+    bool            joints_loaded_ = false;
+    uint32_t        j_n_verts_ = 0, j_n_joints_ = 0;
+    std::vector<std::string> j_names_;
+    std::vector<float> j_rom_;                  // per joint [ext, flex] (radians)
+    VkBuffer        j_assign_buf_ = VK_NULL_HANDLE, j_w_buf_ = VK_NULL_HANDLE,
+                    j_state_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
+                    j_state_mem_ = VK_NULL_HANDLE;
+    void*           j_state_map_ = nullptr;      // host-visible: J/axis/theta per joint
+    VkShaderModule  joints_mod_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout joints_dsl_ = VK_NULL_HANDLE;
+    VkPipelineLayout joints_layout_ = VK_NULL_HANDLE;
+    VkPipeline      joints_pipe_ = VK_NULL_HANDLE;
+    VkDescriptorPool joints_desc_pool_ = VK_NULL_HANDLE;
+    VkDescriptorSet joints_desc_set_ = VK_NULL_HANDLE;
+    std::chrono::steady_clock::time_point joints_t0_;
+    float           j_sweep_period_ = 4.0f;      // seconds per joint in the show
 
 private:
     bool create_instance();
@@ -460,6 +489,10 @@ private:
     VkBuffer        f_color_rb_ = VK_NULL_HANDLE, f_dbg_rb_ = VK_NULL_HANDLE;
     VkDeviceMemory  f_color_rb_mem_ = VK_NULL_HANDLE, f_dbg_rb_mem_ = VK_NULL_HANDLE;
     void*           f_color_rb_map_ = nullptr, *f_dbg_rb_map_ = nullptr;
+    // E1: the eye-class SSBO (2,092 u32: 0 sclera / 1 iris / 2 pupil)
+    VkBuffer        f_eye_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  f_eye_mem_ = VK_NULL_HANDLE;
+
     bool            frost_desc_dirty_ = false;
     bool            frost_dbg_copy_recorded_ = false;
     // frost render path (frag reads the per-tri color SSBO via gl_PrimitiveID)

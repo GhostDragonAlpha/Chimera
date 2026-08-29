@@ -2181,10 +2181,17 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
     make_readback(static_cast<size_t>(F) * 3 * 4, f_color_rb_, f_color_rb_mem_, f_color_rb_map_);
     make_readback(static_cast<size_t>(F) * 14 * 4, f_dbg_rb_, f_dbg_rb_mem_, f_dbg_rb_map_);
 
-    // ── compute pipeline (9 SSBOs + 32 B push constants) ──
-    if (!w_make_pipeline(device_, "shaders/frost_decode.spv", 9, 32,
+    // ── compute pipeline (10 SSBOs + 32 B push constants; binding 9 = eye class) ──
+    if (!w_make_pipeline(device_, "shaders/frost_decode.spv", 10, 32,
                          frost_mod_, frost_dsl_, frost_layout_, frost_pipe_)) {
         fprintf(stderr, "frost: compute pipeline failed\n"); return false;
+    }
+    // E1: the eye-class buffer (2,092 u32; 0=sclera 1=iris 2=pupil; default all
+    // sclera until /eye_bin uploads the measured classification).
+    if (f_eye_buf_ == VK_NULL_HANDLE) {
+        std::vector<uint32_t> zeros(2092, 0);
+        upload_buffer(zeros.data(), zeros.size() * sizeof(uint32_t),
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_eye_buf_, f_eye_mem_);
     }
     // ── frost render pipeline: same vertex stage, frag reads the color SSBO ──
     {
@@ -2297,7 +2304,7 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
     // descriptor pool + set for the compute kernel
     {
         VkDescriptorPoolSize ps{};
-        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 9;
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 10;
         if (frost_desc_pool_) vkDestroyDescriptorPool(device_, frost_desc_pool_, nullptr);
         VkDescriptorPoolCreateInfo dpci{};
         dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -2322,6 +2329,17 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
             w[k].pBufferInfo = &infos[k];
         }
         vkUpdateDescriptorSets(device_, 7, w, 0, nullptr);
+        // binding 9: the eye-class buffer (E1)
+        {
+            VkDescriptorBufferInfo einfo{};
+            einfo.buffer = f_eye_buf_; einfo.range = VK_WHOLE_SIZE;
+            VkWriteDescriptorSet ew{};
+            ew.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            ew.dstSet = frost_desc_set_; ew.dstBinding = 9; ew.descriptorCount = 1;
+            ew.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            ew.pBufferInfo = &einfo;
+            vkUpdateDescriptorSets(device_, 1, &ew, 0, nullptr);
+        }
         // the frost render set reads the same color buffer
         VkDescriptorBufferInfo cinfo{};
         cinfo.buffer = f_color_buf_; cinfo.range = VK_WHOLE_SIZE;
@@ -2339,6 +2357,152 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
     frost_frame_.store(0);
     printf("FROST loaded: %u triangles of relighting state\n", F);
     return true;
+}
+
+// E1: upload the measured eye classification (u32 per eye tri: shell tris then
+// appended cap tris; 0 sclera / 1 iris / 2 pupil). Size follows the mesh.
+bool Engine::set_eye_class(const std::vector<uint32_t>& cls) {
+    if (f_eye_buf_ == VK_NULL_HANDLE || cls.size() < 2092) {
+        fprintf(stderr, "eye class: count mismatch (%zu) or frost not loaded\n", cls.size());
+        return false;
+    }
+    vkDeviceWaitIdle(device_);
+    upload_buffer(cls.data(), cls.size() * sizeof(uint32_t),
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, f_eye_buf_, f_eye_mem_);
+    // upload_buffer recreates the buffer -> the frost compute set's binding 9
+    // must be re-pointed or every frost dispatch references a destroyed buffer
+    // (the pose froze when the command buffer choked on it, engine_v21).
+    if (frost_desc_set_ != VK_NULL_HANDLE) {
+        VkDescriptorBufferInfo einfo{};
+        einfo.buffer = f_eye_buf_; einfo.range = VK_WHOLE_SIZE;
+        VkWriteDescriptorSet ew{};
+        ew.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        ew.dstSet = frost_desc_set_; ew.dstBinding = 9; ew.descriptorCount = 1;
+        ew.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        ew.pBufferInfo = &einfo;
+        vkUpdateDescriptorSets(device_, 1, &ew, 0, nullptr);
+    }
+    printf("EYE class uploaded: %zu eye tris classified\n", cls.size());
+    return true;
+}
+
+// ── H15: the all-joints articulation ─────────────────────────────────────────
+// Blob 'JNT1': [magic][u32 n_verts][u32 n_joints][u32 names_len][names][assign
+// i32*n][w f32*n][J f32*3j][axis f32*3j][rom f32*2j (deg, ext|flex)].
+bool Engine::load_joints(const std::vector<uint8_t>& blob) {
+    if (!has_mesh_ || hinge_rest_.empty()) { fprintf(stderr, "joints: no mesh/hinge rest\n"); return false; }
+    if (blob.size() < 16 || memcmp(blob.data(), "JNT1", 4) != 0) {
+        fprintf(stderr, "joints: bad blob\n"); return false;
+    }
+    const uint8_t* p = blob.data() + 4;
+    uint32_t nv, nj, nl;
+    memcpy(&nv, p, 4); p += 4;
+    memcpy(&nj, p, 4); p += 4;
+    memcpy(&nl, p, 4); p += 4;
+    j_names_.clear();
+    {   // \0-separated names
+        const char* s = reinterpret_cast<const char*>(p);
+        size_t used = 0;
+        for (uint32_t k = 0; k < nj; ++k) {
+            size_t l = strnlen(s + used, nl - used);
+            j_names_.emplace_back(s + used, l);
+            used += l + 1;
+        }
+    }
+    p += nl;
+    const int32_t* assign = reinterpret_cast<const int32_t*>(p); p += nv * 4;
+    const float* w = reinterpret_cast<const float*>(p); p += nv * 4;
+    const float* J = reinterpret_cast<const float*>(p); p += nj * 12;
+    const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
+    const float* rom = reinterpret_cast<const float*>(p);
+    size_t nv_mesh = hinge_wL_.size();
+    if (nv != nv_mesh) {
+        fprintf(stderr, "joints: %u assignments vs %zu mesh verts\n", nv, nv_mesh);
+        return false;
+    }
+    vkDeviceWaitIdle(device_);
+    j_n_verts_ = nv; j_n_joints_ = nj;
+    j_rom_.assign(rom, rom + nj * 2);
+
+    upload_buffer(assign, nv * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_assign_buf_, j_assign_mem_);
+    upload_buffer(w, nv * sizeof(float), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_w_buf_, j_w_mem_);
+
+    // joints state: per joint 8 floats [Jx Jy Jz Ax Ay Az 0 theta(rad)], host-visible
+    {
+        if (j_state_map_) { vkUnmapMemory(device_, j_state_mem_); j_state_map_ = nullptr; }
+        if (j_state_buf_) { vkDestroyBuffer(device_, j_state_buf_, nullptr); vkFreeMemory(device_, j_state_mem_, nullptr); }
+        VkDeviceSize sz = static_cast<VkDeviceSize>(nj) * 8 * sizeof(float);
+        VkBufferCreateInfo bci{};
+        bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bci.size = sz;
+        bci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        vkCreateBuffer(device_, &bci, nullptr, &j_state_buf_);
+        VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, j_state_buf_, &mr);
+        VkMemoryAllocateInfo ai{};
+        ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai.allocationSize = mr.size;
+        ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai, nullptr, &j_state_mem_);
+        vkBindBufferMemory(device_, j_state_buf_, j_state_mem_, 0);
+        vkMapMemory(device_, j_state_mem_, 0, sz, 0, &j_state_map_);
+        float* st = static_cast<float*>(j_state_map_);
+        for (uint32_t k = 0; k < nj; ++k) {
+            st[k * 8 + 0] = J[k * 3 + 0]; st[k * 8 + 1] = J[k * 3 + 1]; st[k * 8 + 2] = J[k * 3 + 2];
+            st[k * 8 + 3] = ax[k * 3 + 0]; st[k * 8 + 4] = ax[k * 3 + 1]; st[k * 8 + 5] = ax[k * 3 + 2];
+            st[k * 8 + 6] = 0.0f;
+            st[k * 8 + 7] = 0.0f;         // theta = 0 (rest)
+        }
+    }
+
+    // pipeline (5 SSBOs + 8 B push constants)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 5, 8,
+                         joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
+        fprintf(stderr, "joints: pipeline failed\n"); return false;
+    }
+    {
+        VkDescriptorPoolSize ps{};
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 5;
+        if (joints_desc_pool_) vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr);
+        VkDescriptorPoolCreateInfo dpci{};
+        dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        dpci.maxSets = 1; dpci.poolSizeCount = 1; dpci.pPoolSizes = &ps;
+        vkCreateDescriptorPool(device_, &dpci, nullptr, &joints_desc_pool_);
+        VkDescriptorSetAllocateInfo dsai{};
+        dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        dsai.descriptorPool = joints_desc_pool_; dsai.descriptorSetCount = 1;
+        dsai.pSetLayouts = &joints_dsl_;
+        vkAllocateDescriptorSets(device_, &dsai, &joints_desc_set_);
+        VkBuffer bufs[5] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_ };
+        VkWriteDescriptorSet wr[5]{};
+        VkDescriptorBufferInfo infos[5]{};
+        for (uint32_t k = 0; k < 5; ++k) {
+            infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+            wr[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            wr[k].dstSet = joints_desc_set_; wr[k].dstBinding = k;
+            wr[k].descriptorCount = 1;
+            wr[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            wr[k].pBufferInfo = &infos[k];
+        }
+        vkUpdateDescriptorSets(device_, 5, wr, 0, nullptr);
+    }
+    joints_t0_ = std::chrono::steady_clock::now();
+    joints_loaded_ = true;
+    printf("JOINTS loaded: %u verts, %u joints (the show sweeps each through its ROM)\n", nv, nj);
+    return true;
+}
+
+std::string Engine::joints_status() const {
+    if (!joints_loaded_) return "{\"loaded\":false}";
+    float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - joints_t0_).count();
+    float per = j_sweep_period_;
+    uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / per) % j_n_joints_ : 0;
+    std::string s = std::string("{\"loaded\":true,\"on\":") + (joints_on_.load() ? "true" : "false")
+        + ",\"n_joints\":" + std::to_string(j_n_joints_)
+        + ",\"current\":\"" + (cur < j_names_.size() ? j_names_[cur] : std::string("?")) + "\""
+        + ",\"t\":" + std::to_string(t) + "}";
+    return s;
 }
 
 void Engine::frost_rebind() {
@@ -3508,7 +3672,41 @@ bool Engine::frame() {
         }
     }
 
-    if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
+    if (joints_on_.load(std::memory_order_relaxed) && joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
+        // H15: THE SHOW — sweep every joint through its derived ROM, one at a
+        // time, on the engine clock. 4 s per joint: 0 -> flex (1.5 s), back
+        // (0.5 s), -> ext (1.5 s), back (0.5 s). Cosine ramps.
+        float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - joints_t0_).count();
+        float per = j_sweep_period_;
+        uint32_t cur = static_cast<uint32_t>(t / per) % j_n_joints_;
+        float ph = fmodf(t, per);
+        auto ramp = [](float x) { x = x < 0 ? 0 : (x > 1 ? 1 : x); return 0.5f - 0.5f * cosf(3.14159265f * x); };
+        float flex = j_rom_[cur * 2 + 1] * 0.01745329251f;
+        float ext  = j_rom_[cur * 2 + 0] * 0.01745329251f;
+        float th;
+        if      (ph < 1.5f) th = flex * ramp(ph / 1.5f);
+        else if (ph < 2.0f) th = flex * (1.0f - ramp((ph - 1.5f) / 0.5f));
+        else if (ph < 3.5f) th = ext  * ramp((ph - 2.0f) / 1.5f);
+        else                th = ext  * (1.0f - ramp((ph - 3.5f) / 0.5f));
+        float* st = static_cast<float*>(j_state_map_);
+        for (uint32_t k = 0; k < j_n_joints_; ++k) st[k * 8 + 7] = 0.0f;
+        st[cur * 8 + 7] = th;
+
+        struct JointsPC { uint32_t n, nj; } jpc{ j_n_verts_, j_n_joints_ };
+        vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
+        vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,
+                                0, 1, &joints_desc_set_, 0, nullptr);
+        vkCmdPushConstants(cmd_bufs_[img_idx], joints_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                           0, sizeof(jpc), &jpc);
+        vkCmdDispatch(cmd_bufs_[img_idx], (j_n_verts_ + 255) / 256, 1, 1);
+        VkMemoryBarrier jmb{};
+        jmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+        jmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        jmb.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+        vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+            0, 1, &jmb, 0, nullptr, 0, nullptr);
+    } else if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
         struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;
                          float thetaL, thetaR; uint32_t flags; uint32_t n; } hpc{};
         hpc.JL[0] = hinge_JL_[0]; hpc.JL[1] = hinge_JL_[1]; hpc.JL[2] = hinge_JL_[2];

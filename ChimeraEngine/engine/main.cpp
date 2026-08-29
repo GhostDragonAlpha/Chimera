@@ -703,6 +703,30 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no gait\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/joints_bin" && method == "POST") {
+            // H15: the all-joints pack (JNT1 blob: assignments, weights, table)
+            {
+                std::lock_guard<std::mutex> lk(g_volp_mutex);
+                g_volp_req = VolpReq{};
+                g_volp_req.kind = 3;
+                g_volp_req.blob.assign(req_body.begin(), req_body.end());
+                g_volp_pending = true; g_volp_applied = false;
+            }
+            std::unique_lock<std::mutex> lk(g_volp_mutex);
+            bool ok = g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+            body = ok && g_volp_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
+            content_type = "application/json";
+        } else if (p == "/joints" && method == "POST") {
+            // JSON {"on":bool} — the show owns the pose while on.
+            if (g_engine) {
+                bool on = get_bool(req_body, "on", true);
+                g_engine->joints_on_.store(on ? 1 : 0);
+            }
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/joints" && method == "GET") {
+            body = g_engine ? g_engine->joints_status() : "{\"ok\":false}";
+            content_type = "application/json";
         } else if (p == "/volp_bin" && method == "POST") {
             // H13: the volp-ARAP kernel payload (built by .tmp/volp_pack.py).
             // Raw binary body = the 'VOLP' v2 blob; loaded on the render thread.
@@ -908,6 +932,27 @@ int main(int argc, char** argv) {
                 content_type = "application/octet-stream";
             } else {
                 body = "{\"ok\":false,\"error\":\"snapshot failed or timeout (frost on?)\"}";
+                content_type = "application/json";
+            }
+        } else if (p == "/eye_bin" && method == "POST") {
+            // E1: the measured eye classification — raw binary [u32 * N]
+            // (0 sclera / 1 iris / 2 pupil), built by .tmp/eye_build.py's classifier.
+            if (req_body.size() < 2092 * 4 || (req_body.size() % 4) != 0) {
+                body = "{\"ok\":false,\"error\":\"need >=2092 u32\"}";
+                content_type = "application/json";
+            } else {
+                const int32_t* src = reinterpret_cast<const int32_t*>(req_body.data());
+                size_t n_cls = req_body.size() / 4;
+                {
+                    std::lock_guard<std::mutex> lk(g_frost_mutex);
+                    g_frost_req = FrostReq{};
+                    g_frost_req.kind = 3;
+                    g_frost_req.data.assign(src, src + n_cls);
+                    g_frost_pending = true; g_frost_applied = false;
+                }
+                std::unique_lock<std::mutex> lk(g_frost_mutex);
+                bool ok = g_frost_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_frost_applied; });
+                body = (ok && g_frost_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
                 content_type = "application/json";
             }
         } else if (p == "/skin_bin" && method == "POST") {
@@ -1189,6 +1234,9 @@ int main(int argc, char** argv) {
                 if (g_volp_req.kind == 1) {
                     g_volp_req.ok = engine.load_volp(g_volp_req.blob);
                     g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
+                } else if (g_volp_req.kind == 3) {
+                    g_volp_req.ok = engine.load_joints(g_volp_req.blob);
+                    g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
                 } else {
                     g_volp_req.ok = engine.volp_download_mesh(g_volp_req.mesh);
                 }
@@ -1230,6 +1278,12 @@ int main(int argc, char** argv) {
                 } else if (g_frost_req.kind == 2) {
                     engine.frost_dbg_arm_.store(true);
                     // leave pending: completed after engine.frame() below
+                } else if (g_frost_req.kind == 3) {
+                    // E1: the eye-class upload (2092 u32 packed in `data`)
+                    std::vector<uint32_t> cls(g_frost_req.data.begin(), g_frost_req.data.end());
+                    g_frost_req.ok = engine.set_eye_class(cls);
+                    g_frost_req.data.clear(); g_frost_req.data.shrink_to_fit();
+                    g_frost_pending = false; g_frost_applied = true; g_frost_cv.notify_all();
                 }
             }
         }

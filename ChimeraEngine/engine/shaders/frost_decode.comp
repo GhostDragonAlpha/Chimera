@@ -38,6 +38,7 @@ layout(std430, binding = 5) readonly buffer Mlat    { int     m_c[];  };  // 8 l
 layout(std430, binding = 6) readonly buffer Lut     { int     lut[];  };
 layout(std430, binding = 7) writeonly buffer Color  { int     rgb[];  };  // F x 3 Q16
 layout(std430, binding = 8) writeonly buffer Dbg    { int     dbg[];  };  // F x 14
+layout(std430, binding = 9) readonly buffer EyeCls  { uint    eyecls[]; };  // E1: 2092 u32 (0 sclera/1 iris/2 pupil)
 
 const int PP = 15, QN = 30, SD = 14, SZ = 12, R = 24, QO = 16;
 const int ACT_HI_Q = 64 * (1 << SZ);      // 262144
@@ -189,5 +190,35 @@ void main() {
         for (int c = 0; c < 64; ++c) acc += int(w[wb + c]) * a[c];
         int64_t v = ab[2 * (AB3 + j)] * int64_t(acc) + ab[2 * (AB3 + j) + 1];
         rgb[3 * t + j] = int(rdiv(v, int64_t(1) << R));
+    }
+
+    // ── E1: analytic eye shading override. The eyes were EXCLUDED from frost
+    // training (frost packet 02: "tiny, high-curved blobs") — their latents
+    // are untrained noise (the appended cap tris carry zero padding). Layers:
+    // tris 0..2091 = the socket shells (sclera backing); tris 36630.. = the
+    // constructed cap layers (iris annulus + pupil disc, eye_geom.py). The
+    // classification is measured from the socket shells (eye_build.py); the
+    // shading is analytic (E3: cornea spec analytic, iris structural, sclera
+    // wrap). Iris brown = CHOSEN-UNVERIFIED (names its E5 dyad experiment).
+    if (t < 2092u || t >= 36630u) {
+        uint ci = (t < 2092u) ? t : (t - 36630u + 2092u);
+        float q = float(1 << QN);
+        vec3 nrm  = vec3(float(nx), float(ny), float(nz)) / q;
+        vec3 vdir = vec3(float(pc.view_q.x),  float(pc.view_q.y),  float(pc.view_q.z)) / q;
+        vec3 ldir = vec3(float(pc.light_q.x), float(pc.light_q.y), float(pc.light_q.z)) / q;
+        uint cls = eyecls[ci];
+        vec3 base = cls == 2u ? vec3(0.012, 0.010, 0.010)
+                  : cls == 1u ? vec3(0.30, 0.17, 0.08)
+                  :             vec3(0.92, 0.90, 0.87);
+        float wrap = clamp((dot(nrm, ldir) + 0.5) / 1.5, 0.0, 1.0);  // subsurface free term (E3)
+        vec3 col = base * (0.06 + 0.94 * wrap);
+        if (cls != 2u) {   // cornea specular (analytic, E2/E3: F0 ~ 0.028 at n=1.376, boosted for read)
+            vec3 hv = normalize(ldir + vdir);
+            col += vec3(0.9) * pow(clamp(dot(nrm, hv), 0.0, 1.0), 64.0) * 0.5;
+        }
+        col = min(col, vec3(0.25));   // the body's radiance range (display gain x5)
+        rgb[3 * t + 0] = int(col.x * 65536.0);
+        rgb[3 * t + 1] = int(col.y * 65536.0);
+        rgb[3 * t + 2] = int(col.z * 65536.0);
     }
 }
