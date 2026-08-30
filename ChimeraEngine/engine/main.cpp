@@ -728,8 +728,70 @@ int main(int argc, char** argv) {
             }
             body = "{\"ok\":true}";
             content_type = "application/json";
+        } else if (p == "/joint" && method == "POST") {
+            // C1: THE JOINTS EDITOR's HTTP twin. {"joint":name|index,"theta":deg}
+            // is an ownership claim — the editor takes the pose (clamped to the
+            // pack's derived ROM). {"select":name|index|-1} aims the gizmo +
+            // weight-paint without posing. The applied (post-clamp) theta comes
+            // back once the render thread has consumed the intent.
+            if (g_engine && g_engine->joints_loaded()) {
+                auto resolve = [&](const std::string& key, bool& present) -> int {
+                    present = req_body.find(std::string("\"") + key + "\"") != std::string::npos;
+                    if (!present) return -2;
+                    std::string nm = get_string(req_body, key.c_str());
+                    if (!nm.empty()) return g_engine->joint_index(nm);
+                    return static_cast<int>(get_float(req_body, key.c_str(), -1.0f));
+                };
+                bool has_sel = false, has_joint = false;
+                int sel = resolve("select", has_sel);
+                int jidx = resolve("joint", has_joint);
+                if (has_sel) {
+                    int prev = g_engine->selected_joint_.load();
+                    g_engine->selected_joint_.store(sel == prev ? -1 : (sel < 0 ? -1 : sel));
+                }
+                std::string applied;
+                if (has_joint && jidx >= 0 && req_body.find("\"theta\"") != std::string::npos) {
+                    g_engine->request_joint_edit(jidx, get_float(req_body, "theta", 0.0f));
+                    // wait for the render thread to consume (one frame is ~ms;
+                    // 2 s is a hang, not a latency)
+                    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+                    while (g_engine->edit_pending_.load()) {
+                        if (std::chrono::steady_clock::now() > deadline) break;
+                        Sleep(2);
+                    }
+                    applied = std::string(",\"theta_applied\":")
+                            + std::to_string(g_engine->edit_applied_deg_.load());
+                }
+                body = std::string("{\"ok\":true,\"owner\":\"")
+                     + (g_engine->joints_owner_.load() == 1 ? "edit" : "show")
+                     + "\",\"selected\":" + std::to_string(g_engine->selected_joint_.load())
+                     + applied + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no joints pack\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/project" && method == "POST") {
+            // C1: the gizmo's math channel, exposed for verification — world in,
+            // screen px out, through the same stashed VP the gizmo draws with.
+            if (g_engine) {
+                float wp[3] = { get_float(req_body, "x", 0.0f), get_float(req_body, "y", 0.0f),
+                                get_float(req_body, "z", 0.0f) };
+                float sx = 0.f, sy = 0.f;
+                bool ok = g_engine->project_world(wp, sx, sy);
+                float cam[8]; g_engine->camera_state(cam);
+                char cb[192];
+                snprintf(cb, sizeof(cb), "[%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f]",
+                         cam[0], cam[1], cam[2], cam[3], cam[4], cam[5], cam[6], cam[7]);
+                body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                     + ",\"sx\":" + std::to_string(sx) + ",\"sy\":" + std::to_string(sy)
+                     + ",\"cam\":" + cb + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/joints" && method == "GET") {
-            body = g_engine ? g_engine->joints_status() : "{\"ok\":false}";
+            // C1: the full editor document (owner, selected, per-joint ROM/theta/J/axis)
+            body = g_engine ? g_engine->joints_editor_json() : "{\"ok\":false}";
             content_type = "application/json";
         } else if (p == "/volp_bin" && method == "POST") {
             // H13: the volp-ARAP kernel payload (built by .tmp/volp_pack.py).
@@ -1095,8 +1157,11 @@ int main(int argc, char** argv) {
             // of exactly 1/240 s relative to the current time (pause first to
             // step deterministically; the decree: every frame, not just extremes).
             if (g_engine) {
-                if (req_body.find("\"playing\"") != std::string::npos)
-                    g_engine->show_playing_.store(get_bool(req_body, "playing", true));
+                if (req_body.find("\"playing\"") != std::string::npos) {
+                    bool pl = get_bool(req_body, "playing", true);
+                    g_engine->show_playing_.store(pl);
+                    if (pl) g_engine->joints_owner_.store(0);   // C1: play hands the pose to the show
+                }
                 if (req_body.find("\"speed\"") != std::string::npos) {
                     double sp = get_double(req_body, "speed", 1.0);
                     if (sp > 0.0 && sp <= 16.0) g_engine->show_speed_.store(sp);
@@ -1158,6 +1223,9 @@ int main(int argc, char** argv) {
                 std::string sel = g_engine->ui_.selected_stage_id();
                 body = std::string("{\"on\":") + (g_engine->ui_.visible ? "true" : "false")
                      + ",\"selected\":" + (sel.empty() ? "null" : "\"" + sel + "\"")
+                     + ",\"left_mode\":" + std::to_string(g_engine->ui_.left_mode())
+                     + ",\"lh\":" + std::to_string(g_engine->ui_.line_height())
+                     + ",\"advance\":" + std::to_string(g_engine->ui_.advance())
                      + ",\"w\":" + std::to_string(g_engine->win_w())
                      + ",\"h\":" + std::to_string(g_engine->win_h()) + "}";
             } else {

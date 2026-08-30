@@ -3,21 +3,35 @@
 // (built from the factory's distal bone sets), Rodrigues about that joint's
 // derived center/axis by theta[joint] * w. Atomic-free (one invocation per
 // vertex, disjoint writes), fixed order, wave-size independent.
+//
+// C1: WEIGHT-PAINT mode (pc.paint >= 0). Blender's weight-paint law: the
+// selected joint's band is colored by its own weight (blue 0 -> green ->
+// yellow -> red 1); every other vert dims to a quarter of its rest color.
+// The paint is the mesh's own vertex colors, not chrome — it is the pack's
+// w data made visible, nothing invented.
 #version 460
 layout(local_size_x = 256) in;
 
 layout(push_constant) uniform PC {
     uint n;
     uint n_joints;
+    int  paint;      // C1: joint index to weight-paint, -1 = off
+    uint pad;
 } pc;
 
 layout(std430, binding = 0) readonly  buffer Rest    { float rest[]; };
 layout(std430, binding = 1) readonly  buffer Assign  { int   joint[]; };   // joint idx or -1
 layout(std430, binding = 2) readonly  buffer Weights { float w[]; };
-// joints state: 19 * [Jx Jy Jz Ax] (pos + axis packed as vec4s, axis w unused)
-// then 19 theta values (radians, full ROM deflection for this frame)
+// joints state: per joint 8 floats [Jx Jy Jz Ax Ay Az 0 theta(rad)]
 layout(std430, binding = 3) readonly  buffer JState  { float js[]; };
 layout(std430, binding = 4) writeonly buffer Out     { float vout[]; };
+
+vec3 heat(float w) {                          // the standard weight ramp on [0,1]
+    w = clamp(w, 0.0, 1.0);
+    if (w < 1.0 / 3.0) return mix(vec3(0.0, 0.0, 1.0), vec3(0.0, 1.0, 0.0), w * 3.0);
+    if (w < 2.0 / 3.0) return mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 1.0, 0.0), w * 3.0 - 1.0);
+    return mix(vec3(1.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), w * 3.0 - 2.0);
+}
 
 void main() {
     uint i = gl_GlobalInvocationID.x;
@@ -26,6 +40,9 @@ void main() {
     int j = joint[i];
     if (j < 0) {
         for (uint k = 0; k < 9; ++k) vout[i * 9 + k] = rest[i * 9 + k];
+        if (pc.paint >= 0) {                  // unassigned verts dim like any non-band vert
+            vout[i * 9 + 6] *= 0.25; vout[i * 9 + 7] *= 0.25; vout[i * 9 + 8] *= 0.25;
+        }
         return;
     }
     float th = js[uint(j) * 8u + 7u] * w[i];         // theta_j * w_i
@@ -44,7 +61,15 @@ void main() {
         vout[i * 9 + kk * 3 + 1] = o.y;
         vout[i * 9 + kk * 3 + 2] = o.z;
     }
-    vout[i * 9 + 6] = rest[i * 9 + 6];               // colors pass through
-    vout[i * 9 + 7] = rest[i * 9 + 7];
-    vout[i * 9 + 8] = rest[i * 9 + 8];
+    if (pc.paint >= 0) {
+        vec3 col = (j == pc.paint) ? heat(w[i])
+                                   : vec3(rest[i * 9 + 6], rest[i * 9 + 7], rest[i * 9 + 8]) * 0.25;
+        vout[i * 9 + 6] = col.x;
+        vout[i * 9 + 7] = col.y;
+        vout[i * 9 + 8] = col.z;
+    } else {
+        vout[i * 9 + 6] = rest[i * 9 + 6];           // colors pass through
+        vout[i * 9 + 7] = rest[i * 9 + 7];
+        vout[i * 9 + 8] = rest[i * 9 + 8];
+    }
 }

@@ -551,7 +551,11 @@ bool Engine::init(const EngineConfig& cfg) {
         if (ui_.init(device_, phys_dev_, swap_fmt_, extent_.width, extent_.height, host_mt)) {
             ui_.create_swap_resources(img_views_, extent_);
             // D1: the timeline panel issues intents; the engine owns the clock.
-            ui_.cb_play_toggle_ = [this] { show_playing_.store(!show_playing_.load()); };
+            ui_.cb_play_toggle_ = [this] {
+                bool np = !show_playing_.load();
+                show_playing_.store(np);
+                if (np) joints_owner_.store(0);   // C1: play hands the pose back to the show
+            };
             ui_.cb_step_ = [this](int n) {
                 double t = show_time_.load() + n / 240.0;   // exactly one 240fps frame
                 show_scrub_.store(t < 0.0 ? 0.0 : t);
@@ -562,6 +566,12 @@ bool Engine::init(const EngineConfig& cfg) {
                 show_speed_.store(s);
             };
             ui_.cb_scrub_ = [this](double t) { show_scrub_.store(t < 0.0 ? 0.0 : t); };
+            // C1: the joints editor's intents — select (gizmo + paint target)
+            // toggles; a theta intent is an ownership claim (editor takes the pose).
+            ui_.cb_joint_select_ = [this](int idx) {
+                selected_joint_.store(selected_joint_.load() == idx ? -1 : idx);
+            };
+            ui_.cb_joint_theta_ = [this](int idx, float deg) { request_joint_edit(idx, deg); };
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
             fprintf(stderr, "studio: overlay init failed — continuing without UI\n");
@@ -2478,6 +2488,24 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     j_n_verts_ = nv; j_n_joints_ = nj;
     j_rom_.assign(rom, rom + nj * 2);
 
+    // C1: the gizmo's axis length is DERIVED, not picked — the RMS radius of
+    // the joint's own band (assign == k) about its center J. A big joint gets
+    // a long axis, a small joint a short one, from the pack's own geometry.
+    j_gizmo_len_.assign(nj, 0.5f);
+    if (hinge_rest_.size() >= static_cast<size_t>(nv) * 9) {
+        for (uint32_t k = 0; k < nj; ++k) {
+            double acc = 0.0; uint32_t cnt = 0;
+            for (uint32_t i = 0; i < nv; ++i) {
+                if (assign[i] != static_cast<int32_t>(k)) continue;
+                double dx = hinge_rest_[i * 9 + 0] - J[k * 3 + 0];
+                double dy = hinge_rest_[i * 9 + 1] - J[k * 3 + 1];
+                double dz = hinge_rest_[i * 9 + 2] - J[k * 3 + 2];
+                acc += dx * dx + dy * dy + dz * dz; ++cnt;
+            }
+            if (cnt) j_gizmo_len_[k] = static_cast<float>(sqrt(acc / cnt));
+        }
+    }
+
     upload_buffer(assign, nv * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_assign_buf_, j_assign_mem_);
     upload_buffer(w, nv * sizeof(float), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_w_buf_, j_w_mem_);
 
@@ -2510,8 +2538,8 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         }
     }
 
-    // pipeline (5 SSBOs + 8 B push constants)
-    if (!w_make_pipeline(device_, "shaders/joints.spv", 5, 8,
+    // pipeline (5 SSBOs + 16 B push constants: n, nj, paint, pad — C1)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 5, 16,
                          joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
         fprintf(stderr, "joints: pipeline failed\n"); return false;
     }
@@ -2576,6 +2604,81 @@ void Engine::show_current_rom(float& ext, float& flex) const {
     uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / j_sweep_period_) % j_n_joints_ : 0;
     ext  = j_rom_[cur * 2 + 0];   // degrees (the sweep kernel converts to radians)
     flex = j_rom_[cur * 2 + 1];
+}
+
+// ── C1: THE JOINTS EDITOR ────────────────────────────────────────────────────
+int Engine::joint_index(const std::string& name) const {
+    for (size_t i = 0; i < j_names_.size(); ++i)
+        if (j_names_[i] == name) return static_cast<int>(i);
+    return -1;
+}
+
+void Engine::request_joint_edit(int idx, float deg) {
+    // An edit intent is an ownership claim: the editor takes the pose, the show
+    // clock stops writing thetas (the clock itself keeps running — D1's readout
+    // stays honest). Pressing play hands the pose back to the show.
+    if (!joints_loaded_ || idx < 0 || idx >= static_cast<int>(j_n_joints_)) return;
+    joints_owner_.store(1, std::memory_order_relaxed);
+    edit_joint_.store(idx, std::memory_order_relaxed);
+    edit_theta_deg_.store(deg, std::memory_order_relaxed);
+    edit_pending_.store(true, std::memory_order_relaxed);
+}
+
+std::string Engine::joints_editor_json() {
+    if (!joints_loaded_) return "{\"loaded\":false}";
+    const float* st = static_cast<const float*>(j_state_map_);
+    int owner = joints_owner_.load(std::memory_order_relaxed);
+    int sel = selected_joint_.load(std::memory_order_relaxed);
+    float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
+    uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / j_sweep_period_) % j_n_joints_ : 0;
+    std::string s = std::string("{\"loaded\":true,\"on\":") + (joints_on_.load() ? "true" : "false")
+        + ",\"owner\":\"" + (owner == 1 ? "edit" : "show") + "\""
+        + ",\"selected\":" + std::to_string(sel)
+        + ",\"t\":" + std::to_string(t)
+        + ",\"current\":\"" + (cur < j_names_.size() ? j_names_[cur] : std::string("?")) + "\""
+        + ",\"n_joints\":" + std::to_string(j_n_joints_) + ",\"joints\":[";
+    char jb[320];
+    for (uint32_t k = 0; k < j_n_joints_; ++k) {
+        double th = st ? st[k * 8 + 7] * 57.29577951308232 : 0.0;
+        snprintf(jb, sizeof(jb),
+            "{\"name\":\"%s\",\"ext\":%.2f,\"flex\":%.2f,\"theta\":%.3f,"
+            "\"J\":[%.4f,%.4f,%.4f],\"axis\":[%.4f,%.4f,%.4f]}",
+            j_names_[k].c_str(), j_rom_[k * 2 + 0], j_rom_[k * 2 + 1], th,
+            st ? st[k * 8 + 0] : 0.f, st ? st[k * 8 + 1] : 0.f, st ? st[k * 8 + 2] : 0.f,
+            st ? st[k * 8 + 3] : 0.f, st ? st[k * 8 + 4] : 0.f, st ? st[k * 8 + 5] : 0.f);
+        s += jb;
+        if (k + 1 < j_n_joints_) s += ",";
+    }
+    s += "]}";
+    return s;
+}
+
+// C1: world -> screen through the SAME proj/view the mesh pass used this frame
+// (stashed in frame()). The gizmo and the /project verification channel share
+// this one math path, so a probe that checks /project checks the gizmo.
+void Engine::camera_state(float out[8]) const {
+    out[0] = g_cam.radius; out[1] = g_cam.theta; out[2] = g_cam.phi;
+    out[3] = g_cam.target[0]; out[4] = g_cam.target[1]; out[5] = g_cam.target[2];
+    out[6] = g_cam.pan_x;  out[7] = g_cam.pan_y;
+}
+bool Engine::project_world(const float p[3], float& sx, float& sy) const {
+    if (!last_vp_valid_) return false;
+    // view * p (column-major 4x4 as written by look_at)
+    float vx = last_view_[0] * p[0] + last_view_[4] * p[1] + last_view_[8]  * p[2] + last_view_[12];
+    float vy = last_view_[1] * p[0] + last_view_[5] * p[1] + last_view_[9]  * p[2] + last_view_[13];
+    float vz = last_view_[2] * p[0] + last_view_[6] * p[1] + last_view_[10] * p[2] + last_view_[14];
+    float vw = last_view_[3] * p[0] + last_view_[7] * p[1] + last_view_[11] * p[2] + last_view_[15];
+    float cx = last_proj_[0] * vx + last_proj_[4] * vy + last_proj_[8]  * vz + last_proj_[12] * vw;
+    float cy = last_proj_[1] * vx + last_proj_[5] * vy + last_proj_[9]  * vz + last_proj_[13] * vw;
+    float cw = last_proj_[3] * vx + last_proj_[7] * vy + last_proj_[11] * vz + last_proj_[15] * vw;
+    if (cw <= 1e-6f) return false;               // behind the camera
+    sx = (cx / cw * 0.5f + 0.5f) * static_cast<float>(extent_.width);
+    // NDC is Y-down already (perspective() negates the Y row for Vulkan):
+    // ndc -1 = framebuffer top = window top. No second flip — a point above
+    // the target lands ABOVE center (verified against the anatomy: the neck's
+    // +Y projects to a smaller sy than the hips').
+    sy = (cy / cw * 0.5f + 0.5f) * static_cast<float>(extent_.height);
+    return true;
 }
 
 void Engine::frost_rebind() {
@@ -3698,6 +3801,39 @@ bool Engine::frame() {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
         ui_.on_lbutton(0, 0, false);
     }
+    // C1: push the joints editor's view (the UI draws; the engine owns). The
+    // gizmo aims through last frame's stashed VP — one frame of latency at
+    // the frame cap is invisible, and the alternative is re-deriving the VP.
+    if (joints_loaded_) {
+        const float* st = static_cast<const float*>(j_state_map_);
+        joint_view_scratch_.resize(j_n_joints_);
+        for (uint32_t k = 0; k < j_n_joints_; ++k) {
+            joint_view_scratch_[k].name  = j_names_[k];
+            joint_view_scratch_[k].ext   = j_rom_[k * 2 + 0];
+            joint_view_scratch_[k].flex  = j_rom_[k * 2 + 1];
+            joint_view_scratch_[k].theta = st ? st[k * 8 + 7] * 57.29577951308232f : 0.0f;
+        }
+        ui_.set_joints_view(joint_view_scratch_, joints_owner_.load(std::memory_order_relaxed),
+                            selected_joint_.load(std::memory_order_relaxed));
+        int sel = selected_joint_.load(std::memory_order_relaxed);
+        bool drawn = false;
+        if (sel >= 0 && sel < static_cast<int>(j_n_joints_) && st && last_vp_valid_) {
+            float J[3] = { st[sel * 8 + 0], st[sel * 8 + 1], st[sel * 8 + 2] };
+            float L = (sel < static_cast<int>(j_gizmo_len_.size())) ? j_gizmo_len_[sel] : 0.5f;
+            float T[3] = { J[0] + st[sel * 8 + 3] * L, J[1] + st[sel * 8 + 4] * L,
+                           J[2] + st[sel * 8 + 5] * L };
+            float x0, y0, x1, y1;
+            if (project_world(J, x0, y0) && project_world(T, x1, y1)) {
+                ui_.set_gizmo(true, x0, y0, x1, y1, j_names_[sel].c_str());
+                drawn = true;
+            }
+        }
+        if (!drawn) ui_.set_gizmo(false, 0, 0, 0, 0, "");
+    } else {
+        joint_view_scratch_.clear();
+        ui_.set_joints_view(joint_view_scratch_, 0, -1);
+        ui_.set_gizmo(false, 0, 0, 0, 0, "");
+    }
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -3755,6 +3891,10 @@ bool Engine::frame() {
     // continuously over the top (free rotation on both axes) without the old +-1.55 rad stopper.
     float up_vec[3] = {-s * sx, c, s * cx};
     look_at(view, eye, g_cam.target, up_vec);
+    // C1: stash this frame's VP for the gizmo + the /project verification channel
+    std::memcpy(last_proj_, proj, sizeof(proj));
+    std::memcpy(last_view_, view, sizeof(view));
+    last_vp_valid_ = true;
 
     // Depth sort is done on the GPU (radix sort, recorded in the command buffer below). Stash the
     // view matrix's z-row, which the depth-key pass needs as push constants.
@@ -3870,28 +4010,52 @@ bool Engine::frame() {
         }
     }
 
-    if (joints_on_.load(std::memory_order_relaxed) && joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
-        // H15: THE SHOW — sweep every joint through its derived ROM, one at a
-        // time, on THE STUDIO CLOCK (D1: a parameter — play/pause/scrub/step).
-        // 4 s per joint: 0 -> flex (1.5 s), back (0.5 s), -> ext (1.5 s), back
-        // (0.5 s). Cosine ramps.
-        float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
-        float per = j_sweep_period_;
-        uint32_t cur = static_cast<uint32_t>(t / per) % j_n_joints_;
-        float ph = fmodf(t, per);
-        auto ramp = [](float x) { x = x < 0 ? 0 : (x > 1 ? 1 : x); return 0.5f - 0.5f * cosf(3.14159265f * x); };
-        float flex = j_rom_[cur * 2 + 1] * 0.01745329251f;
-        float ext  = j_rom_[cur * 2 + 0] * 0.01745329251f;
-        float th;
-        if      (ph < 1.5f) th = flex * ramp(ph / 1.5f);
-        else if (ph < 2.0f) th = flex * (1.0f - ramp((ph - 1.5f) / 0.5f));
-        else if (ph < 3.5f) th = ext  * ramp((ph - 2.0f) / 1.5f);
-        else                th = ext  * (1.0f - ramp((ph - 3.5f) / 0.5f));
+    // H15/C1: the joints kernel dispatches whenever EITHER pose owner is live —
+    // the SHOW (joints_on_, the D1 studio clock sweeps the ROMs) or the EDITOR
+    // (joints_owner_ == 1, thetas persist where intents put them). One owner
+    // at a time, observable in GET /joints; the show never overwrites an edit.
+    const bool edit_mode = joints_owner_.load(std::memory_order_relaxed) == 1;
+    if ((joints_on_.load(std::memory_order_relaxed) || edit_mode) &&
+        joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
         float* st = static_cast<float*>(j_state_map_);
-        for (uint32_t k = 0; k < j_n_joints_; ++k) st[k * 8 + 7] = 0.0f;
-        st[cur * 8 + 7] = th;
+        if (edit_mode) {
+            // C1: THE EDITOR owns the pose. Consume a pending intent (clamped
+            // to the pack's derived ROM — the slider's hard range is the law);
+            // every other theta stays exactly where the last intent left it.
+            if (edit_pending_.exchange(false, std::memory_order_relaxed)) {
+                int idx = edit_joint_.load(std::memory_order_relaxed);
+                float deg = edit_theta_deg_.load(std::memory_order_relaxed);
+                if (idx >= 0 && idx < static_cast<int>(j_n_joints_)) {
+                    float lo = j_rom_[idx * 2 + 0], hi = j_rom_[idx * 2 + 1];
+                    if (lo > hi) { float tmp = lo; lo = hi; hi = tmp; }
+                    float cl = deg < lo ? lo : (deg > hi ? hi : deg);
+                    st[idx * 8 + 7] = cl * 0.01745329251f;
+                    edit_applied_deg_.store(cl, std::memory_order_relaxed);
+                }
+            }
+        } else {
+            // H15: THE SHOW — sweep every joint through its derived ROM, one at
+            // a time, on THE STUDIO CLOCK (D1: a parameter — play/pause/scrub/
+            // step). 4 s per joint: 0 -> flex (1.5 s), back (0.5 s), -> ext
+            // (1.5 s), back (0.5 s). Cosine ramps.
+            float t = static_cast<float>(show_time_.load(std::memory_order_relaxed));
+            float per = j_sweep_period_;
+            uint32_t cur = static_cast<uint32_t>(t / per) % j_n_joints_;
+            float ph = fmodf(t, per);
+            auto ramp = [](float x) { x = x < 0 ? 0 : (x > 1 ? 1 : x); return 0.5f - 0.5f * cosf(3.14159265f * x); };
+            float flex = j_rom_[cur * 2 + 1] * 0.01745329251f;
+            float ext  = j_rom_[cur * 2 + 0] * 0.01745329251f;
+            float th;
+            if      (ph < 1.5f) th = flex * ramp(ph / 1.5f);
+            else if (ph < 2.0f) th = flex * (1.0f - ramp((ph - 1.5f) / 0.5f));
+            else if (ph < 3.5f) th = ext  * ramp((ph - 2.0f) / 1.5f);
+            else                th = ext  * (1.0f - ramp((ph - 3.5f) / 0.5f));
+            for (uint32_t k = 0; k < j_n_joints_; ++k) st[k * 8 + 7] = 0.0f;
+            st[cur * 8 + 7] = th;
+        }
 
-        struct JointsPC { uint32_t n, nj; } jpc{ j_n_verts_, j_n_joints_ };
+        struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t pad; }
+            jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed), 0 };
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,
                                 0, 1, &joints_desc_set_, 0, nullptr);
@@ -4465,6 +4629,12 @@ bool Engine::frame_idle_ui() {
     if (ui_click_pending_.exchange(false)) {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
         ui_.on_lbutton(0, 0, false);
+    }
+    // C1: idle means no pack and no mesh — the editor view is honestly empty
+    {
+        joint_view_scratch_.clear();
+        ui_.set_joints_view(joint_view_scratch_, 0, -1);
+        ui_.set_gizmo(false, 0, 0, 0, 0, "");
     }
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;

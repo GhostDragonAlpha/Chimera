@@ -266,3 +266,77 @@ extent and aim its own clicks.
   `engine.{hpp,cpp}`, `main.cpp`, this doc.
 - **Next per the menu:** C1 joints editor (theta sliders + gizmo + weight-paint
   heat overlay), then E1 docs browser, F2/F3.
+
+---
+
+## SHIPPED — C1: THE JOINTS EDITOR (2026-08-29)
+
+**Rule 0 — the editor poses any joint to any theta inside its derived ROM,
+from the window or from HTTP, and every number and pixel it shows is the
+engine's own state.**
+- **Statement:** with the pack live, an agent or the operator can set a joint's
+  theta (slider or endpoint), see the joint's center + axis on the mesh as a
+  gizmo, and see the joint's band as Blender-style weight-paint — and posing a
+  joint moves exactly that joint's band.
+- **Prediction:** set theta == reported theta; two thetas give two frames;
+  clamps land exactly on the pack ROM; the pose owner (show clock vs editor)
+  is single and observable; the gizmo's projection channel matches an
+  independent Python projection; paint changes exactly the band's colors and
+  unpaints bit-exact.
+- **Falsifiers (named before the build):** (A) theta mismatch > 0.5 deg or
+  shared frame md5 across thetas; (B) clamp overshoot > 0.01 deg; (C) an edit
+  drifting while owner==edit, or play not returning the pose to the show;
+  (D) projection error > 1 px; (E) paint on/off not md5-round-tripping, or
+  paint showing nothing; (F) a synthetic slider click off the linear map by
+  > 1 deg; (G) editor cost > 0.5 ms over the show.
+
+**What shipped.** One pose owner, observable: `joints_owner_` (0 show, 1
+edit) — a theta intent claims the pose, pressing play hands it back, and the
+joints kernel dispatches whenever EITHER owns it (in EDIT thetas persist
+where intents put them, clamped to the derived ROM). The JOINTS workspace
+(A3) is live: the left dock lists all 19 joints with the pack's derived ROM
+as each slider's hard range, the zero line, and the live theta thumb; click a
+name for gizmo + weight-paint (again to clear). The gizmo is the joint's J
+and J + axis * L, where L is DERIVED — the band's RMS radius about J from the
+pack's own geometry. Weight-paint folds into joints.comp as a push constant:
+the band colored by the standard heat ramp on the factory's w, everything
+else dimmed to a quarter — the mesh's own vertex colors, not chrome, off by
+default. New endpoints: `POST /joint` ({"joint","theta"} intent with
+post-clamp ack; {"select"} aims the gizmo+paint), `POST /project` (the
+gizmo's math channel + the camera state), `GET /joints` extended to the full
+editor document (owner, selected, per-joint name/ROM/theta/J/axis), and
+`GET /studio` extended with left_mode + the font metrics so agents can aim
+slider clicks.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_joints_verify.{py,log}`,
+  `_c1_editor_shot.png` — PrintWindow; the operator's game owned the screen):
+  - **A:** theta 60.000 reported/acked; md5s distinct at 60/0/-20, repeat-60
+    identical. PASS
+  - **B:** +999 -> 152.510 (flex), -999 -> -117.870 (ext), exact. PASS
+  - **C:** edit frozen 30.000 over 2.2 s; play -> owner show, current joint
+    drifted 131.5 deg; re-edit -> frozen. PASS
+  - **D:** worst projection error 0.000 px over 3 points (incl. the neck's J).
+    PASS
+  - **E:** paint on != off (4.74% of pixels repainted), paint off restores the
+    pre-paint md5 exactly. PASS
+  - **F:** click x=198 -> theta 85.955, want 85.955. PASS
+  - **G:** show 0.327 ms -> editor 0.353 ms (delta +0.027, budget 0.5). PASS
+  - **B3 regression:** `_stage_verify.py` re-run — ALL PASS.
+- **Found while verifying (fixed same session):** the projection had a double
+  Y-flip — NDC is already Y-down after perspective()'s Vulkan row negation,
+  and project_world flipped again. The D gate PASSED the wrong math because
+  the Python replica carried the same flip; framing the screenshot caught it
+  (the neck, anatomically +Y, projected below the window while the teddy
+  stands upright). Rule 7 (read the screenshot) caught what self-consistency
+  could not — the gate now verifies the CORRECT math (world-up = screen-up).
+- **Found while verifying (the probe's own bugs, documented so the next agent
+  doesn't re-pay):** clicks are integer pixels — aiming at a fractional x and
+  expecting the fraction's value fails by floor(x) (measured: x_eff ==
+  floor(sent x) exactly); and slice a growing log as BYTES then decode —
+  slicing decoded text at a byte offset lands past the end.
+- **Build note:** joints.spv is NOT in CMake's hardcoded shader list —
+  recompile by hand after editing joints.comp:
+  `glslangValidator -S comp -V shaders/joints.comp -o build/Release/shaders/joints.spv`
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`, `engine/ui.{hpp,cpp}`,
+  `engine/shaders/joints.comp`, this doc.
+- **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).

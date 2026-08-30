@@ -72,6 +72,9 @@ void StudioUI::on_mouse_move(int x, int y) {
         reel_.size = ns < reel_.min_size ? reel_.min_size : (ns > mx ? mx : ns);
     } else if (drag_kind_ == 5) {   // D1: dragging the playhead — every move is a scrub
         if (cb_scrub_) cb_scrub_(scrub_time_at(x));
+    } else if (drag_kind_ == 7) {   // C1: dragging a theta slider — every move is an intent
+        if (cb_joint_theta_ && drag_joint_ >= 0)
+            cb_joint_theta_(drag_joint_, slider_theta_at(drag_joint_, x));
     }
 }
 
@@ -140,6 +143,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
     if (!down) {
         bool had = drag_kind_ != 0;
         drag_kind_ = 0;
+        drag_joint_ = -1;
         return had;
     }
     float R[5][4]; layout(ext_.width, ext_.height, R);
@@ -157,6 +161,20 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
         if (cb_scrub_) cb_scrub_(scrub_time_at(x));
         return true;
     }
+    // C1: a theta slider's track — press grabs the thumb (a click lands one
+    // exact intent; drags stream them). Hit-tested before the Hot list because
+    // the tracks live inside the left dock's joint rows.
+    if (left_mode_ == 1 && !left_.collapsed) {
+        for (size_t i = 0; i < slider_tracks_.size(); ++i) {
+            const auto& tr = slider_tracks_[i];
+            if (x >= tr[0] && x <= tr[0] + tr[2] && y >= tr[1] - 6 && y <= tr[1] + tr[3] + 6) {
+                drag_kind_ = 7;
+                drag_joint_ = static_cast<int>(i);
+                if (cb_joint_theta_) cb_joint_theta_(drag_joint_, slider_theta_at(drag_joint_, x));
+                return true;
+            }
+        }
+    }
     // D1: the timeline's buttons (play/pause, frame-step, speed)
     // B3: the strip's stage nodes (id 100+i) select/deselect the stage panel
     for (const Hot& h : hots_) {
@@ -165,10 +183,17 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id == 2 && cb_step_) cb_step_(-1);
             if (h.id == 3 && cb_step_) cb_step_(+1);
             if (h.id == 4 && cb_speed_cycle_) cb_speed_cycle_();
-            if (h.id >= 100) {
+            if (h.id >= 100 && h.id < 300) {
                 int i = h.id - 100;
                 selected_stage_ = (selected_stage_ == i) ? -1 : i;
+                left_mode_ = 0;              // a stage click always shows its envelope (B3)
             }
+            if (h.id >= 300 && h.id < 400) {
+                int i = h.id - 300;          // the workspace rows (A3); only two are live so far
+                if (i == 0) { left_mode_ = 0; }                          // BOARD
+                if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
+            }
+            if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
             return true;
         }
     }
@@ -271,6 +296,39 @@ void StudioUI::rect_outline(float x, float y, float w, float h, float t,
     rect(x, y + h - t, w, t, r, g, b, a);
     rect(x, y, t, h, r, g, b, a);
     rect(x + w - t, y, t, h, r, g, b, a);
+}
+
+// C1: a line as a rotated quad (the draw list has no line primitive — the
+// gizmo's axis needs one). Solid white-UV like rect, thickness in px.
+void StudioUI::line(float x0, float y0, float x1, float y1, float th,
+                    float r, float g, float b, float a) {
+    float dx = x1 - x0, dy = y1 - y0;
+    float len = sqrtf(dx * dx + dy * dy);
+    if (len < 1e-4f) { rect(x0 - th * 0.5f, y0 - th * 0.5f, th, th, r, g, b, a); return; }
+    float nx = -dy / len * th * 0.5f, ny = dx / len * th * 0.5f;
+    float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
+    Vert v[6] = {
+        {x0 + nx, y0 + ny, u0, v0, r, g, b, a, 0.f},
+        {x1 + nx, y1 + ny, u1, v0, r, g, b, a, 0.f},
+        {x1 - nx, y1 - ny, u1, v1, r, g, b, a, 0.f},
+        {x0 + nx, y0 + ny, u0, v0, r, g, b, a, 0.f},
+        {x1 - nx, y1 - ny, u1, v1, r, g, b, a, 0.f},
+        {x0 - nx, y0 - ny, u0, v1, r, g, b, a, 0.f},
+    };
+    verts_.insert(verts_.end(), v, v + 6);
+}
+
+// C1: the slider law — a linear map from track x to theta over the joint's
+// DERIVED ROM [ext, flex], clamped at both ends. No tuning, no easing.
+float StudioUI::slider_theta_at(int row, int x) const {
+    if (row < 0 || row >= static_cast<int>(joints_.size()) ||
+        row >= static_cast<int>(slider_tracks_.size())) return 0.0f;
+    const auto& tr = slider_tracks_[row];
+    if (tr[2] <= 0.f) return 0.0f;
+    float f = (static_cast<float>(x) - tr[0]) / tr[2];
+    if (f < 0.f) f = 0.f;
+    if (f > 1.f) f = 1.f;
+    return joints_[row].ext + f * (joints_[row].flex - joints_[row].ext);
 }
 
 void StudioUI::text(float x, float y, const std::string& s, float r, float g, float b, float a) {
@@ -481,9 +539,66 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     const bool have_sel = selected_stage_ >= 0
                        && selected_stage_ < static_cast<int>(board_.stages.size());
     text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f,
-         left_.collapsed ? "+" : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"),
+         left_.collapsed ? "+" : (left_mode_ == 1 ? "JOINTS - the editor (C1)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")),
          TR, TG, TB, 1.f);
-    if (!left_.collapsed && have_sel) {
+    if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
+    if (!left_.collapsed && left_mode_ == 1) {
+        // C1: THE JOINTS EDITOR. Every row is the pack's own data: name, the
+        // derived ROM as the slider's hard range, the live theta from the
+        // joints state buffer. Click a name -> gizmo + weight-paint on that
+        // joint (the engine owns the selection); drag a slider -> an intent.
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        if (joints_.empty()) {
+            text(x, y, "no joints pack - POST .tmp/skeleton/joints_pack.bin", 0.85f, 0.55f, 0.30f, 1.f); y += lh;
+            text(x, y, "to /joints_bin, then /joints on", 0.85f, 0.55f, 0.30f, 1.f); y += lh;
+        } else {
+            char hb[128];
+            snprintf(hb, sizeof(hb), "pose owner: %s   [%zu joints]",
+                     joints_owner_ui_ == 1 ? "EDIT (sliders)" : "show (clock)", joints_.size());
+            text(x, y, hb, joints_owner_ui_ == 1 ? 0.55f : 0.62f,
+                     joints_owner_ui_ == 1 ? 0.85f : 0.66f, joints_owner_ui_ == 1 ? 0.55f : 0.74f, 1.f); y += lh;
+            text(x, y, "click a name = gizmo + weight-paint (again to clear)",
+                 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+            text(x, y, "drag a slider = pose intent (clamps to the derived ROM)",
+                 0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+            const float name_w = 15 * advance_;
+            const float val_w  = 8 * advance_;
+            float tx = x + name_w + 4;
+            float tw = R[1][0] + R[1][2] - 10 - val_w - 4 - tx;
+            slider_tracks_.assign(joints_.size(), {0, 0, 0, 0});
+            for (size_t i = 0; i < joints_.size(); ++i) {
+                if (y > y_max) {
+                    text(x, y_max, "... (clipped - widen this dock or collapse the reel to read on)",
+                         0.85f, 0.55f, 0.30f, 1.f);
+                    break;
+                }
+                const StudioJoint& jn = joints_[i];
+                bool sel = static_cast<int>(i) == joints_sel_ui_;
+                if (sel) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
+                text(x, y, jn.name, sel ? 0.45f : TR, sel ? 0.75f : TG, sel ? 1.00f : TB, 1.f);
+                hots_.push_back({ x - 2, y - 2, name_w + 6, lh + 4, 400 + static_cast<int>(i) });
+                // the track: ROM span, zero line, the theta thumb — all derived
+                float range = jn.flex - jn.ext;
+                float track_y = y + (lh - 6) * 0.5f;
+                rect(tx, track_y, tw, 6, 0.12f, 0.13f, 0.17f, 0.95f);
+                rect_outline(tx, track_y, tw, 6, 1.f, sel ? 0.30f : 0.35f,
+                             sel ? 0.60f : 0.37f, sel ? 1.00f : 0.42f, 1.f);
+                if (range > 0.f) {
+                    float zx = tx + (0.0f - jn.ext) / range * tw;      // theta = 0 (rest)
+                    rect(zx - 0.5f, track_y - 1, 1.f, 8, 0.45f, 0.47f, 0.52f, 1.f);
+                    float fx = tx + (jn.theta - jn.ext) / range * tw;  // the live theta
+                    rect(fx - 2.f, track_y - 3, 4.f, 12, sel ? 0.30f : 1.0f,
+                         sel ? 0.60f : 0.85f, sel ? 1.00f : 0.40f, 1.f);
+                }
+                slider_tracks_[i] = { tx, track_y, tw, 6.f };
+                char vb[32]; snprintf(vb, sizeof(vb), "%+7.2f", jn.theta);
+                text(tx + tw + 4, y, vb, 1.0f, 0.85f, 0.40f, 1.f);
+                y += lh + 6;
+            }
+        }
+    } else if (!left_.collapsed && have_sel) {
         // B3: the Operating Manual's task envelope, rendered. Every word below
         // is the pipeline doc's own; the panel invents nothing.
         const StudioStage& st = board_.stages[selected_stage_];
@@ -525,16 +640,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(x, y, board_.loaded ? "board: live (studio_board.json)" : "board: no file yet",
              board_.loaded ? 0.25f : 0.85f, board_.loaded ? 0.75f : 0.55f, board_.loaded ? 0.35f : 0.30f, 1.f); y += lh;
         text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
-        text(x, y, "workspaces (A3 - pending picks):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
-        const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - parked", "GAIT    - parked",
+        text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
+        const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - the editor (C1)", "GAIT    - parked",
                             "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - parked"};
         for (int i = 0; i < 8; ++i) {
-            text(x + 8, y, ws[i], i == 0 ? 0.30f : 0.42f, i == 0 ? 0.60f : 0.44f, i == 0 ? 1.00f : 0.50f, 1.f);
+            bool live = (i == 0 || i == 2);
+            text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
+            if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;
         }
         y += 6;
         text(x, y, "click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f, 1.f); y += lh;
-        text(x, y, "next per the menu: B3 stage panels", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "next per the menu: C1 joints editor (live), E1 docs", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
         text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
     }
 
@@ -652,6 +769,16 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                      clk_name_.c_str(), clk_period_);
             text(x, bar_y + bar_h + 6, jb, 0.62f, 0.66f, 0.74f, 1.f);
         }
+    }
+
+    // ── C1: THE GIZMO — the selected joint's center + axis over the viewport,
+    // projected by the engine through the mesh pass's own VP (drawn last, over
+    // everything — it is screen-space truth about the model underneath) ──
+    if (gizmo_vis_ && visible) {
+        line(gizmo_[0], gizmo_[1], gizmo_[2], gizmo_[3], 2.5f, 1.0f, 0.85f, 0.20f, 1.f);
+        rect(gizmo_[0] - 3, gizmo_[1] - 3, 6, 6, 1.0f, 0.85f, 0.20f, 1.f);   // J, the center
+        rect_outline(gizmo_[0] - 5, gizmo_[1] - 5, 10, 10, 1.f, 0.2f, 0.2f, 0.2f, 1.f);
+        text(gizmo_[0] + 8, gizmo_[1] - lh * 0.5f, gizmo_label_, 1.0f, 0.85f, 0.40f, 1.f);
     }
 }
 

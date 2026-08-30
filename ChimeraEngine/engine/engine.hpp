@@ -219,6 +219,22 @@ public:
     double      show_current_theta();                // current joint's theta, degrees
     void        show_current_rom(float& ext, float& flex) const;  // current joint's ROM, degrees
 
+    // ── C1: THE JOINTS EDITOR (θ sliders + gizmo + weight-paint) ────────────
+    // One pose owner, observable: 0 = the show clock (D1), 1 = the editor.
+    // An edit intent (HTTP /joint or a slider drag) flips the owner to EDIT;
+    // pressing play (show_playing_ -> true) flips it back to SHOW. The joints
+    // kernel dispatches whenever EITHER owns the pose; in EDIT thetas persist
+    // exactly where intents put them (clamped to the pack's derived ROM).
+    std::atomic<int>      joints_owner_{0};           // 0 show, 1 edit
+    std::atomic<int>      selected_joint_{-1};        // gizmo + paint target (-1 none)
+    std::atomic<bool>     edit_pending_{false};       // render thread consumes
+    std::atomic<float>    edit_applied_deg_{0.0f};    // post-clamp readback (HTTP ack)
+    std::string           joints_editor_json();       // GET /joints: the editor document
+    int                   joint_index(const std::string& name) const;  // -1 unknown
+    void                  request_joint_edit(int idx, float deg);      // HTTP/UI intent
+    bool                  project_world(const float p[3], float& sx, float& sy) const;
+    void                  camera_state(float out[8]) const;  // r,theta,phi,target xyz,pan xy
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);
@@ -233,7 +249,7 @@ private:
     bool            joints_loaded_ = false;
     uint32_t        j_n_verts_ = 0, j_n_joints_ = 0;
     std::vector<std::string> j_names_;
-    std::vector<float> j_rom_;                  // per joint [ext, flex] (radians)
+    std::vector<float> j_rom_;                  // per joint [ext, flex] (DEGREES)
     VkBuffer        j_assign_buf_ = VK_NULL_HANDLE, j_w_buf_ = VK_NULL_HANDLE,
                     j_state_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
@@ -248,6 +264,15 @@ private:
     std::chrono::steady_clock::time_point joints_t0_;
     std::chrono::steady_clock::time_point show_last_{};   // D1: last frame's stamp (render thread)
     float           j_sweep_period_ = 4.0f;      // seconds per joint in the show
+
+    // C1 editor internals (the public API is up with the show clock):
+    std::atomic<int>      edit_joint_{-1};            // pending intent: which joint
+    std::atomic<float>    edit_theta_deg_{0.0f};      // pending intent: requested theta
+    std::vector<float>    j_gizmo_len_;               // per joint: band RMS radius about J
+    std::vector<StudioJoint> joint_view_scratch_;     // per-frame UI feed (reused buffer)
+    float                 last_proj_[16]{};           // stashed per frame for the gizmo
+    float                 last_view_[16]{};           // (and the /project verification channel)
+    bool                  last_vp_valid_ = false;
 
 private:
     bool create_instance();

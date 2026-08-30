@@ -15,6 +15,7 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
+#include <array>
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -39,6 +40,13 @@ struct StudioBoard {
     std::string standing;     // the standing-rule line (computed by the tool, never edited)
     std::string updated;      // the pipeline doc's status-board date
     bool        loaded = false;
+};
+
+// C1: one row of the joints editor — the engine pushes this view every frame;
+// the UI never owns pose state (ext/flex = the pack's derived ROM, degrees).
+struct StudioJoint {
+    std::string name;
+    float ext = 0.f, flex = 0.f, theta = 0.f;
 };
 
 class StudioUI {
@@ -88,6 +96,8 @@ private:
     void rect(float x, float y, float w, float h, float r, float g, float b, float a);
     void rect_outline(float x, float y, float w, float h, float t, float r, float g, float b, float a);
     void text(float x, float y, const std::string& s, float r, float g, float b, float a);
+    void line(float x0, float y0, float x1, float y1, float th,
+              float r, float g, float b, float a);   // C1: the gizmo's axis (rotated quad)
     void thumb(float x, float y, float w, float h, int slot);   // D3: a reel tile's image
     // B3: greedy word-wrap at maxc columns (monospace: arithmetic); splits on
     // newlines first. Lines whose top is past y_max are NOT drawn, but the walk
@@ -107,7 +117,8 @@ private:
     Panel right_{ 330.f, 26.f, 0.45f, false };  // STATUS panel (right, below the strip)
     Panel bottom_{118.f, 26.f, 0.35f, false };  // D1: the TIMELINE (bottom, between left/right)
     Panel reel_ { 172.f, 26.f, 0.40f, false };  // D3: the REEL (above the timeline)
-    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead, 6 reel
+    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead,
+                            // 6 reel, 7 joint slider (C1)
     bool  hit_strip_title(int x, int y) const;
     bool  hit_left_title(int x, int y) const;
     bool  hit_right_title(int x, int y) const;
@@ -116,10 +127,26 @@ private:
     void  layout(uint32_t w, uint32_t h, float out_rects[5][4]) const;  // strip, left, right, bottom, reel
 
     // ── clickable controls (D1: rebuilt every frame by prepare, hit-tested on click) ──
-    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed; 100+i = strip node i (B3)
+    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed;
+                                                // 100+i = strip node i (B3); 300+i = workspace row i,
+                                                // 400+i = joint row i (C1: select = gizmo + paint)
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
     int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
+
+    // ── C1: THE JOINTS EDITOR (the JOINTS workspace's left-dock mode) ──
+    int   left_mode_ = 0;                       // 0 = board/menu (B3), 1 = joints editor
+    std::vector<StudioJoint> joints_;           // the engine's per-frame push
+    int   joints_owner_ui_ = 0;                 // 0 show, 1 edit (display only)
+    int   joints_sel_ui_ = -1;                  // the engine's selected (gizmo+paint) joint
+    std::vector<std::array<float, 4>> slider_tracks_;   // row i's track rect (prepare-owned)
+    int   drag_joint_ = -1;                     // drag_kind_ 7: which slider is grabbed
+    float slider_theta_at(int row, int x) const;        // linear map track-x -> theta (ROM-clamped)
+
+    // ── C1: the gizmo — the selected joint's center/axis, projected by the engine ──
+    bool        gizmo_vis_ = false;
+    float       gizmo_[4] = {0, 0, 0, 0};       // x0,y0 (J) -> x1,y1 (J + axis * band RMS)
+    std::string gizmo_label_;
 
     // ── the show clock's view (D1: pushed by the Engine every frame — the UI never owns it) ──
     double clk_t_ = 0.0, clk_total_ = 0.0, clk_speed_ = 1.0, clk_theta_ = 0.0;
@@ -134,6 +161,24 @@ public:
     std::function<void(int)>  cb_step_;          // ±1 frames of 1/240 s
     std::function<void()>     cb_speed_cycle_;
     std::function<void(double)> cb_scrub_;       // absolute time target
+    // C1: the joints editor's intents — select toggles the gizmo+paint target;
+    // a theta intent is an ownership claim (the editor takes the pose)
+    std::function<void(int)>         cb_joint_select_;
+    std::function<void(int, float)>  cb_joint_theta_;
+
+    // C1: the engine's per-frame pushes (render thread; the UI draws, never owns)
+    void set_joints_view(const std::vector<StudioJoint>& j, int owner, int selected) {
+        joints_ = j; joints_owner_ui_ = owner; joints_sel_ui_ = selected;
+    }
+    void set_gizmo(bool vis, float x0, float y0, float x1, float y1, const std::string& label) {
+        gizmo_vis_ = vis; gizmo_[0] = x0; gizmo_[1] = y0; gizmo_[2] = x1; gizmo_[3] = y1;
+        gizmo_label_ = label;
+    }
+    int  left_mode() const { return left_mode_; }
+    // C1: the layout space's font metrics — agents aim slider clicks from these
+    // (the same discipline as B3's w/h: the UI publishes, never hides)
+    float line_height() const { return cell_h_; }
+    float advance() const { return advance_; }
 
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,
