@@ -7,6 +7,10 @@
 #include <chrono>
 #include <cstdint>
 #include <map>
+#include <thread>
+#include <queue>
+#include <functional>
+#include <condition_variable>
 #include "ui.hpp"
 
 struct EngineConfig {
@@ -138,6 +142,29 @@ public:
     double gait_thm_l_ = 0.0, gait_tha_l_ = 1.0, gait_thm_r_ = 0.0, gait_tha_r_ = 1.0;
     // F3: push the chrome's HUD rows (gait/water) — called from both frame paths
     void push_hud_state();
+
+    // ── F1: THE CONSOLE's worker ──
+    // main wires the SAME api handler the HTTP server runs (set_api); the UI
+    // queues lines (console_exec); the worker thread parses `METHOD /path
+    // [json]` and invokes the handler — waiting endpoints (/mesh_bin and kin)
+    // behave exactly as they do over HTTP because the worker is NOT the
+    // render thread. Responses drain to the UI once per frame.
+    using ApiFn = std::function<void(const std::string&, const std::string&,
+                                     const std::string&, std::string&, std::string&)>;
+    void set_api(ApiFn fn) { std::lock_guard<std::mutex> lk(console_m_); api_ = std::move(fn); }
+    void console_exec(const std::string& line);
+    int  console_pending();
+    void console_drain();              // render thread: hand finished responses to the UI
+private:
+    ApiFn api_;
+    std::thread             console_thread_;
+    std::mutex              console_m_;
+    std::condition_variable console_cv_;
+    std::queue<std::string> console_q_;
+    std::vector<std::string> console_done_;
+    bool console_stop_ = false;
+    void console_worker();
+public:
 
     // ── VOLP-ARAP KNEE KERNEL (H13 — the blend's successor, agent_logs/kimi/volp_arap_01.md)
     // The SHIP-path law as ONE compute dispatch per frame: bi-Laplacian smooth

@@ -626,7 +626,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     hud_rows_.clear();
     // F2/F3: the chrome draws whether the overlay is open or not. With the
     // overlay closed it is the ONLY thing drawn — "always visible" is literal.
-    if (!visible) { build_chrome(); return; }
+    if (!visible) { build_chrome(); build_console(); return; }
 
     float R[5][4]; layout(win_w, win_h, R);
     const float lh = cell_h_;                       // one text line
@@ -995,6 +995,113 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     }
 
     build_chrome();   // F2/F3: the status bar + HUD draw over everything, always
+    build_console();  // F1: the console tops everything when it's open
+}
+
+// ── F1: THE CONSOLE — the HTTP API's interactive twin ──────────────────────
+// The UI collects the line and ISSUES it; the engine's worker executes it
+// through the same handler the HTTP server runs (the panels' law: the UI
+// never owns execution). Input is WM_CHAR-routed so shifted JSON punctuation
+// ('{', '"', ':') types exactly as the operator intends.
+
+void StudioUI::console_char(int c) {
+    if (c == '`') { console_toggle(); return; }         // the classic close
+    else if (c == 13) {                                 // CR — submit
+        console_submit_line(console_input_);
+        console_input_.clear();
+        console_hist_nav_ = -1;
+    } else if (c == 8) {                                // backspace
+        if (!console_input_.empty()) console_input_.pop_back();
+    } else if (c >= 32 && c < 127) {
+        console_input_.push_back(static_cast<char>(c));
+    }
+}
+
+void StudioUI::console_key(int vk) {
+    if (vk == 0x1B) { console_toggle(); return; }       // ESCAPE closes
+    if (vk == 0x26) {                                   // UP — recall older
+        if (console_history_.empty()) return;
+        if (console_hist_nav_ < 0) console_hist_nav_ = static_cast<int>(console_history_.size()) - 1;
+        else if (console_hist_nav_ > 0) --console_hist_nav_;
+        console_input_ = console_history_[console_hist_nav_];
+    } else if (vk == 0x28) {                            // DOWN — recall newer
+        if (console_hist_nav_ < 0) return;
+        ++console_hist_nav_;
+        if (console_hist_nav_ >= static_cast<int>(console_history_.size())) {
+            console_hist_nav_ = -1;
+            console_input_.clear();
+        } else {
+            console_input_ = console_history_[console_hist_nav_];
+        }
+    }
+}
+
+void StudioUI::console_submit_line(const std::string& line) {
+    std::string t = line;
+    size_t a = t.find_first_not_of(" \t"), b = t.find_last_not_of(" \t");
+    if (a == std::string::npos) return;                 // an empty line is a no-op
+    t = t.substr(a, b - a + 1);
+    console_history_.push_back(t);
+    console_log_.push_back({t, "", false});
+    if (console_log_.size() > 200) console_log_.erase(console_log_.begin());
+    if (cb_console_) cb_console_(t);                    // the engine owns execution
+}
+
+void StudioUI::console_result(const std::string& resp) {
+    // the worker completes in order — land the response on the oldest open entry
+    for (auto& e : console_log_) {
+        if (!e.done) { e.resp = resp; e.done = true; return; }
+    }
+}
+
+void StudioUI::build_console() {
+    if (!console_open_) return;
+    const float lh = cell_h_;
+    const float W = static_cast<float>(ext_.width);
+    const float H = static_cast<float>(ext_.height);
+    float ch = H * 0.42f;
+    rect(0, 0, W, ch, 0.04f, 0.05f, 0.08f, 0.93f);
+    rect(0, ch - 1, W, 1, 0.30f, 0.60f, 1.00f, 0.9f);
+    text(8, 4, "F1 CONSOLE - ` or ESC closes - METHOD /path [json] - enter runs - up/down history",
+         0.55f, 0.58f, 0.65f, 1.f);
+
+    // the prompt, with a steady underline cursor (honest — no blink clock)
+    float py = ch - lh - 6;
+    std::string prompt = "> " + console_input_;
+    text(8, py, prompt, 0.86f, 0.88f, 0.92f, 1.f);
+    rect(8 + static_cast<float>(prompt.size()) * advance_, py + lh - 4,
+         advance_, 3, 0.86f, 0.88f, 0.92f, 1.f);
+
+    // the scrollback, wrapped with the SAME greedy law as text_wrap, newest
+    // last — take the tail that fits above the prompt and draw top-down
+    size_t maxc = static_cast<size_t>((W - 16) / advance_);
+    if (maxc < 8) maxc = 8;
+    struct VLine { std::string s; bool resp; };
+    std::vector<VLine> flat;
+    for (const auto& e : console_log_) {
+        std::string head = "> " + e.cmd;
+        std::string body = e.done ? e.resp : "...";
+        for (int part = 0; part < 2; ++part) {
+            std::string para = part == 0 ? head : body;
+            bool is_resp = part == 1;
+            while (true) {
+                if (para.size() <= maxc) { flat.push_back({para, is_resp}); break; }
+                size_t cut = para.rfind(' ', maxc);
+                if (cut == std::string::npos || cut == 0) cut = maxc;
+                flat.push_back({para.substr(0, cut), is_resp});
+                para = para.substr(cut + (cut < para.size() && para[cut] == ' ' ? 1 : 0));
+            }
+        }
+    }
+    int fit = static_cast<int>((py - 6 - (lh + 6)) / lh);
+    if (fit < 0) fit = 0;
+    size_t start = flat.size() > static_cast<size_t>(fit) ? flat.size() - fit : 0;
+    float y = py - 6 - lh * static_cast<float>(flat.size() - start);
+    for (size_t i = start; i < flat.size(); ++i) {
+        if (flat[i].resp) text(8, y, flat[i].s, 0.55f, 0.90f, 0.65f, 1.f);
+        else              text(8, y, flat[i].s, 0.62f, 0.66f, 0.74f, 1.f);
+        y += lh;
+    }
 }
 
 // ── F2/F3: THE CHROME — the engine wearing its own vital signs ─────────────

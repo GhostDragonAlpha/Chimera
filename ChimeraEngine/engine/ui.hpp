@@ -263,13 +263,35 @@ public:
     }
     bool hud_show_on() const { return !joints_.empty() && clk_n_ > 0; }
     bool wants_chrome() const {
-        return bar_on_ || hud_show_on() || hud_gait_.on || hud_water_.on;
+        return bar_on_ || hud_show_on() || hud_gait_.on || hud_water_.on || console_open_;
     }
     std::string board_standing() const { return board_.standing; }
     void        build_chrome();               // the bar + HUD draw list (+ twin strings)
     float fps_f()    const { return fps_; }      // the twin reads the same
     float ft_avg_f() const { return ft_avg_; }   // numbers the bar draws
     float ft_max_f() const { return ft_max_; }
+
+    // ── F1: THE CONSOLE — the HTTP API's interactive twin ──
+    // A request line `METHOD /path [json]` — typed at the window or posted to
+    // /console — enters ONE path (history + scrollback + the engine's worker
+    // queue). The UI never executes; cb_console_ hands the line to the engine,
+    // whose worker runs the SAME handler the HTTP server runs and pushes the
+    // response back. While open the console captures the ENTIRE keyboard —
+    // nothing leaks to the camera, the pose key, or the overlay toggle.
+    bool        console_open_ = false;
+    std::string console_input_;
+    std::vector<std::string> console_history_;
+    int         console_hist_nav_ = -1;         // -1 = editing the current line
+    struct ConsoleEntry { std::string cmd, resp; bool done = false; };
+    std::vector<ConsoleEntry> console_log_;     // the scrollback (capped at 200)
+    std::function<void(const std::string&)> cb_console_;   // the engine owns execution
+    void console_toggle() { console_open_ = !console_open_; console_hist_nav_ = -1; }
+    bool console_open() const { return console_open_; }
+    void console_char(int c);                   // WM_CHAR route (printables, BS, CR)
+    void console_key(int vk);                   // UP/DOWN recall, ESCAPE closes
+    void console_submit_line(const std::string& line);  // Enter AND POST /console — one path
+    void console_result(const std::string& resp);       // engine -> UI, render thread
+    void build_console();                       // draw list (called when open)
 
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,

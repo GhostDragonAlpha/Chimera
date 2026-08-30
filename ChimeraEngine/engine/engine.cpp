@@ -50,6 +50,9 @@ static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
 
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
+    // F1: the console captures the ENTIRE keyboard while open — typing a
+    // command must never fly the camera (WASD/QE/space/ctrl/R all gated).
+    if (g_key_engine && g_key_engine->ui_.console_open()) return;
     const float move_speed = 4.0f * dt;   // units/sec
     const float rot_speed  = 1.5f * dt;   // radians/sec
     const float zoom_speed = 8.0f * dt;   // units/sec
@@ -98,6 +101,22 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     // Track key state for frame-by-frame polling
     if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN) {
         g_keys[wp & 0xFF] = true;
+        // F1 CONSOLE: ` toggles it (edge-triggered, overlay open or closed).
+        // While open it captures the ENTIRE keyboard — the pose key, the F1
+        // overlay toggle, and the camera poll (update_camera_input) are all
+        // gated on it, so a typed command can never leak into the scene.
+        bool con = g_key_engine && g_key_engine->ui_.console_open();
+        if ((wp & 0xFF) == VK_OEM_3 && !(lp & 0x40000000) && g_key_engine) {
+            g_key_engine->ui_.console_toggle();
+            return 0;
+        }
+        if (con && g_key_engine) {
+            // UP/DOWN recall history, ESCAPE closes — everything else waits
+            // for WM_CHAR (shifted JSON punctuation types exactly)
+            if ((wp & 0xFF) == VK_UP || (wp & 0xFF) == VK_DOWN || (wp & 0xFF) == VK_ESCAPE)
+                g_key_engine->ui_.console_key(static_cast<int>(wp & 0xFF));
+            return 0;
+        }
         // 'P' toggles rest (slot 0) <-> wave (slot 1) on a skinned splat. Edge-triggered
         // (bit 30 of lParam = previous key state) so key autorepeat doesn't double-toggle.
         if ((wp & 0xFF) == 'P' && !(lp & 0x40000000) && g_key_engine) {
@@ -109,6 +128,12 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         }
     } else if (msg == WM_KEYUP || msg == WM_SYSKEYUP) {
         g_keys[wp & 0xFF] = false;
+    }
+
+    // F1 CONSOLE: printable input lands here (the console's own keyboard)
+    if (msg == WM_CHAR && g_key_engine && g_key_engine->ui_.console_open()) {
+        g_key_engine->ui_.console_char(static_cast<int>(wp));
+        return 0;
     }
 
     // THE STUDIO: the UI always sees the cursor (panel hover/drag state), and a
@@ -584,6 +609,10 @@ bool Engine::init(const EngineConfig& cfg) {
                 selected_joint_.store(selected_joint_.load() == idx ? -1 : idx);
             };
             ui_.cb_joint_theta_ = [this](int idx, float deg) { request_joint_edit(idx, deg); };
+            // F1: the console issues request lines; the engine's worker owns
+            // execution through the SAME handler main wires to the HTTP server
+            ui_.cb_console_ = [this](const std::string& line) { console_exec(line); };
+            console_thread_ = std::thread([this] { console_worker(); });
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
             fprintf(stderr, "studio: overlay init failed — continuing without UI\n");
@@ -616,6 +645,14 @@ bool Engine::init(const EngineConfig& cfg) {
 }
 
 void Engine::shutdown() {
+    // F1: stop the console worker first — it may be inside the api handler,
+    // so give it the device-idle barrier before joining
+    {
+        std::lock_guard<std::mutex> lk(console_m_);
+        console_stop_ = true;
+    }
+    console_cv_.notify_all();
+    if (console_thread_.joinable()) console_thread_.join();
     vkDeviceWaitIdle(device_);
 
     ui_.shutdown();   // THE STUDIO: before any pool/device teardown
@@ -1510,6 +1547,74 @@ void Engine::gait_theta(double& tL, double& tR) const {
     } else {
         tL = tR = 0.0;
     }
+}
+
+// F1: the console's queue — the UI (or POST /console) hands a raw request
+// line; the worker parses and executes it through main's api handler.
+void Engine::console_exec(const std::string& line) {
+    {
+        std::lock_guard<std::mutex> lk(console_m_);
+        console_q_.push(line);
+    }
+    console_cv_.notify_one();
+}
+
+int Engine::console_pending() {
+    std::lock_guard<std::mutex> lk(console_m_);
+    return static_cast<int>(console_q_.size());
+}
+
+void Engine::console_worker() {
+    for (;;) {
+        std::string line;
+        {
+            std::unique_lock<std::mutex> lk(console_m_);
+            console_cv_.wait(lk, [&] { return console_stop_ || !console_q_.empty(); });
+            if (console_stop_) return;
+            line = console_q_.front();
+            console_q_.pop();
+        }
+        // parse: METHOD SP /path [SP json...]
+        std::string method, path, req_body, resp = "", ctype = "application/json";
+        size_t a = line.find_first_not_of(" \t");
+        size_t sp = a == std::string::npos ? a : line.find_first_of(" \t", a);
+        method = line.substr(a, sp == std::string::npos ? sp : sp - a);
+        size_t p0 = sp == std::string::npos ? sp : line.find_first_not_of(" \t", sp);
+        size_t p1 = p0 == std::string::npos ? p0 : line.find_first_of(" \t", p0);
+        path = p0 == std::string::npos ? "" : line.substr(p0, p1 == std::string::npos ? p1 : p1 - p0);
+        if (p1 != std::string::npos) {
+            size_t b0 = line.find_first_not_of(" \t", p1);
+            if (b0 != std::string::npos) req_body = line.substr(b0);
+        }
+        for (auto& c : method) c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
+        ApiFn api;
+        {
+            std::lock_guard<std::mutex> lk(console_m_);
+            api = api_;
+        }
+        if (path.empty() || path[0] != '/') {
+            resp = "console: want `METHOD /path [json]` — e.g. GET /studio";
+        } else if ((method == "GET" || method == "POST") && api) {
+            api(method, path, req_body, resp, ctype);   // the HTTP server's own handler
+        } else if (!api) {
+            resp = "console: no api handler wired";
+        } else {
+            resp = "console: method must be GET or POST";
+        }
+        {
+            std::lock_guard<std::mutex> lk(console_m_);
+            console_done_.push_back(resp);
+        }
+    }
+}
+
+void Engine::console_drain() {
+    std::vector<std::string> done;
+    {
+        std::lock_guard<std::mutex> lk(console_m_);
+        done.swap(console_done_);
+    }
+    for (const std::string& r : done) ui_.console_result(r);
 }
 
 // F3: the chrome's HUD rows, pushed from the engine's own state. The gait
@@ -3846,6 +3951,7 @@ bool Engine::frame() {
                            show_current_theta());
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
+    console_drain();    // F1: finished console responses land in the scrollback
     // B3: consume a queued synthetic click (agents drive the panels over HTTP —
     // input lands on the render thread, same discipline as the WndProc's)
     if (ui_click_pending_.exchange(false)) {
@@ -4678,6 +4784,7 @@ bool Engine::frame_idle_ui() {
                            show_current_theta());
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
+    console_drain();    // F1: the console answers even when every 3D path idles
     // B3: consume a queued synthetic click (idle path too — the Studio must
     // answer even when every 3D path idles)
     if (ui_click_pending_.exchange(false)) {

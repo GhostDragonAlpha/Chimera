@@ -486,3 +486,63 @@ the operator has an out). main pushes every frame's time into the ring.
   `engine/ui.{hpp,cpp}`, this doc.
 - **Next per the menu:** E2 deep links, F1 console, F4 recorder — and the
   rest by value.
+
+## SHIPPED — F1: THE CONSOLE (2026-08-29)
+
+- **Statement:** the console is the HTTP API's interactive twin. A request
+  line `METHOD /path [json]` — typed at the window or posted to /console —
+  enters ONE path (history + scrollback + the engine's worker queue) and
+  executes through the SAME handler the HTTP server runs; the scrollback
+  holds the command and the handler's verbatim response. While open, the
+  console captures the ENTIRE keyboard — nothing leaks to the camera, the
+  pose key, or the overlay toggle.
+- **Prediction (unmeasured at naming time):** a console GET /studio's
+  fields equal curl's; a console POST /show flips the served playing state
+  within 1 s; a /joint intent acks through the scrollback in < 10 s with
+  no deadlock; VK_UP recalls the last command verbatim and VK_DOWN clears;
+  F1 with the console open does NOT toggle the overlay while the control
+  (console closed) does; the open console costs < 0.5 ms.
+- **Falsifiers (named before the build):** (A) console GET != curl GET;
+  (B) show state not following a console POST; (C) /joint ack missing or
+  > 10 s; (D) keystrokes not landing (type/Enter/recall); (E) F1 leaking
+  while open, or the control F1 not toggling (which would mean the test's
+  keystrokes never landed); (G) console cost > 0.5 ms.
+
+**What shipped.** Backtick (or ESC) toggles the console — overlay open or
+closed (it is chrome: `wants_chrome()` includes it). Input is WM_CHAR-
+routed so shifted JSON punctuation types exactly; Enter submits; UP/DOWN
+recall history. The UI collects and ISSUES; the engine owns execution:
+`cb_console_` queues the line to a worker thread that parses
+`METHOD /path [json]` and invokes the SAME `Engine::ApiFn` main wires to
+the HTTP server — waiting endpoints (/mesh_bin and kin) behave exactly as
+over HTTP because the worker is not the render thread. Responses drain to
+the scrollback once per frame (both frame paths). While open, the pose
+key, the F1 overlay toggle, and the camera poll (`update_camera_input`)
+are all gated — the keyboard is the console's. The twin: `GET /console`
+(open, input, history count, the last 50 scrollback entries, escaped) and
+`POST /console` ({"line": ...} enters the same path as a typed Enter;
+{"open": bool} sets visibility absolutely). `get_string` learned to
+unescape — posted lines carry escaped JSON.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_console_verify.{py,log}`,
+  `f1_console.png` — PrintWindow; keystrokes via `_postmsg.ps1`
+  PostMessageW, so the operator's fullscreen game was never disturbed):
+  - **A:** console GET /studio's on/selected/left_mode/w/h == curl's. PASS
+  - **B:** POST /show false -> playing False; true -> True, each < 1 s. PASS
+  - **C:** POST /joint knee_L 30 -> `{"ok":true,"owner":"edit",...,
+    "theta_applied":30.000000}` in 0.00 s. PASS
+  - **D:** real keystrokes — "GET /debug" typed char-by-char landed
+    verbatim; Enter submitted (hist 9 -> 10, response in the scrollback);
+    VK_UP recalled it verbatim; VK_DOWN cleared. PASS
+  - **E:** F1 with the console open moved nothing (False -> False); the
+    control F1 with it closed toggled (False -> True) — the keystrokes
+    provably land, the capture provably holds. PASS
+  - **G:** closed 0.333 ms -> open 0.360 ms (delta +0.027, budget 0.5). PASS
+  - **B3/F2 regressions:** `_stage_verify.py` and `_chrome_verify.py` —
+    ALL PASS both.
+- **Found while verifying (the probe's own bug, documented):** the /joint
+  ack's field is `theta_applied`, not `theta` — the probe's first draft
+  failed a PASSING engine. Read the response before asserting its shape.
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`,
+  `engine/ui.{hpp,cpp}`, this doc.
+- **Next per the menu:** E2 deep links, F4 recorder — and the rest by value.

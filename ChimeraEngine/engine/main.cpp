@@ -162,9 +162,19 @@ static std::string get_string(const std::string& body, const char* key) {
     p++; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
     if (p >= body.size() || body[p] != '"') return "";
     p++;
-    size_t start = p;
-    while (p < body.size() && body[p] != '"') ++p;
-    return body.substr(start, p - start);
+    // F1: posted console lines carry escaped JSON (\" \\ \n) — unescape them
+    std::string out;
+    while (p < body.size() && body[p] != '"') {
+        if (body[p] == '\\' && p + 1 < body.size()) {
+            char e = body[p + 1];
+            if (e == '"' || e == '\\' || e == '/') { out += e; p += 2; continue; }
+            if (e == 'n') { out += '\n'; p += 2; continue; }
+            if (e == 't') { out += '\t'; p += 2; continue; }
+            if (e == 'r') { out += '\r'; p += 2; continue; }
+        }
+        out += body[p++];
+    }
+    return out;
 }
 
 static bool get_bool(const std::string& body, const char* key, bool def) {
@@ -237,9 +247,11 @@ int main(int argc, char** argv) {
     if (argc > 2) engine.ui_.set_board_file(argv[2]);
 
     // ── HTTP server for Python shim communication ───────────────────────────────
+    // F1: the handler is a NAMED function — the HTTP server and the console's
+    // worker run the SAME one (the console is the API's interactive twin).
     HttpServer server;
-    bool http_ok = server.start(http_port, [&](const std::string& method, const std::string& path,
-                                          const std::string& req_body, std::string& body, std::string& content_type) {
+    Engine::ApiFn api = [&](const std::string& method, const std::string& path,
+                            const std::string& req_body, std::string& body, std::string& content_type) {
         // strip query string
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
@@ -1343,6 +1355,54 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/console" && method == "GET") {
+            // F1: the console's HTTP twin — what the glass shows, served
+            if (g_engine) {
+                const StudioUI& u = g_engine->ui_;
+                auto jesc = [](const std::string& s) {   // the log holds raw JSON — escape it
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) {
+                        if (c == '"' || c == '\\') { o += '\\'; o += c; }
+                        else if (c == '\n') o += "\\n";
+                        else if (c == '\r') o += "\\r";
+                        else if (c == '\t') o += "\\t";
+                        else o += c;
+                    }
+                    return o;
+                };
+                std::string entries;
+                size_t n = u.console_log_.size();
+                size_t start = n > 50 ? n - 50 : 0;
+                for (size_t i = start; i < n; ++i) {
+                    const auto& e = u.console_log_[i];
+                    entries += (i > start ? "," : "");
+                    entries += std::string("{\"cmd\":\"") + jesc(e.cmd) + "\",\"done\":"
+                             + (e.done ? "true" : "false") + ",\"resp\":\"" + jesc(e.resp) + "\"}";
+                }
+                body = std::string("{\"open\":") + (u.console_open_ ? "true" : "false")
+                     + ",\"input\":\"" + jesc(u.console_input_) + "\""
+                     + ",\"hist_n\":" + std::to_string(u.console_history_.size())
+                     + ",\"pending\":" + std::to_string(g_engine->console_pending())
+                     + ",\"log\":[" + entries + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/console" && method == "POST") {
+            // F1: a posted line enters the SAME path as a typed Enter —
+            // history + scrollback + the worker queue. {"open":bool} sets the
+            // console's visibility absolutely (agents can't send `).
+            if (g_engine) {
+                if (req_body.find("\"line\"") != std::string::npos)
+                    g_engine->ui_.console_submit_line(get_string(req_body, "line"));
+                if (req_body.find("\"open\"") != std::string::npos)
+                    g_engine->ui_.console_open_ = get_bool(req_body, "open", true);
+                body = std::string("{\"ok\":true,\"open\":")
+                     + (g_engine->ui_.console_open_ ? "true" : "false") + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
@@ -1350,7 +1410,9 @@ int main(int argc, char** argv) {
         } else {
             body = "Not found";
         }
-    });
+    };
+    bool http_ok = server.start(http_port, api);
+    engine.set_api(api);   // F1: the console's worker runs the SAME handler
     if (!http_ok) {
         fprintf(stderr, "Warning: Failed to start HTTP server on port %d\n", http_port);
     }
