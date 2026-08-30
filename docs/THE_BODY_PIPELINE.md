@@ -20,7 +20,7 @@
 | **B3** | SKELETON | rod cage → collinear chains → joints (the skeleton is a graph, not a list of names) | chimera census | `skeleton/census.json` | any articulation with no census home | DONE (236 bones, 40 joints) |
 | **B4** | FACTORY | per-joint center, axis (bilateral/central law), capsule-contact ROM | chimera factory | `skeleton/factory_rom.json` | F1 symmetry, F2 no-contact, F4 blind spot — recorded, never patched | DONE (19 joints) |
 | **B5** | ANATOMY REFEREE | ligament/muscle ROM limits for the factory's blind spots (extension stops, ball joints); species-sane bands | **OpenSim** (limblab/monkeyArmModel, MIT — Oku 2021 falsified as a source: ODE, author-request only) | `anatomy_limits.json` | limits contradicting a measured bone stop = the model's pose is wrong, not the bone | DONE (forelimb limits; jaw, hip_L flexion, tail_base extension = earned no-data) |
-| **B6** | DYNAMICS REFEREE | MJCF skeleton from the factory; contact forces vs the substrate's λ; gait algorithm sandbox | **MuJoCo** | `*_mjcf.xml` + referee report | λ mismatch > the derived tolerance = our contact solve is wrong (not MuJoCo) | pending B5 |
+| **B6** | DYNAMICS REFEREE | MJCF skeleton from the factory; contact forces vs the substrate's λ; gait algorithm sandbox | **MuJoCo** | `*_mjcf.xml` + referee report | λ mismatch > the derived tolerance = our contact solve is wrong (not MuJoCo) | DONE (knees vs MuJoCo on the canonical march: R = 0.955 ≥ the derived band 0.601; MJCF sandbox exists at `.tmp/anatomy/monkey_b6.xml`) |
 | **B7** | ARTICULATE | generalized joints kernel (the SHOW) + volp-ARAP skin per joint | chimera engine (`joints.comp`, volp) | live articulation | any joint's skin tearing/spiking at mid-ROM | SHOW live; volp-generalization pending |
 | **B8** | BEHAVE | CPG gait + real load feedback + footstep planning from measured contact (H16) | chimera CPG + substrate λ | the walk, the footstep choices | metamorphic rotate-world; energy no-pump; referee (B6) agreement | CPG walks (knees); full-skeleton + footsteps pending |
 | **B9** | APPEAR | frost GT → B0 baseline → quantization → in-engine decode; eyes; water; fur | mitsuba GT + chimera frost | live relighting | bar = measured B0_occl; fixed-point budget ≤ X | DONE for the monkey (re-run per body) |
@@ -114,8 +114,8 @@ time: the earliest non-green gate.
 
 ## Monkey status board (2026-08-30)
 
-- B0–B5, B9: **green.**
-- B7: knees volp-green (H13); generalized SHOW live; **volp-generalization = B7b, next after B6.**
+- B0–B6, B9: **green.**
+- B7: knees volp-green (H13); generalized SHOW live; **volp-generalization = B7b, the next stage.**
 - B8: knees walk (bit-exact CPG, real λ at κ*, G4 verdict recorded); **full-skeleton + footsteps = H16.**
 - B5 landed 2026-08-30 (evidence `.tmp/anatomy/b5_extract.{py,log}`, artifact
   `.tmp/skeleton/anatomy_limits.json`): forelimb limits from limblab/monkeyArmModel
@@ -125,4 +125,19 @@ time: the earliest non-green gate.
   140° (from straight) — frames differ, the bone governs. Observation for B7b:
   side-R segment ratio (upper:fore 0.265) diverges from the model (0.883) and our
   own L side (1.255) — a factory-recheck candidate, not a B5 gate failure.
-- **B6 is the next stage.** Then B7b, B8, B10.
+- B6 landed 2026-08-30 (evidence `.tmp/anatomy/b6_mjcf.{py,log}`,
+  `b6_compare.{py,log}`, report `b6_report.json`, sandbox
+  `.tmp/anatomy/monkey_b6.xml`): the two hind legs as rigid hinge bodies
+  mirroring the substrate's mechanical tier — same sole vertex sets (M1 mirror
+  worst |dy| = 1e-6), same w² mass law, same canonical march, gravity off
+  (the substrate's N carries none). The referee gate is DERIVED: MuJoCo must
+  agree with estimator B at least as tightly as estimator A does. Result:
+  R(N_B, N_mjc) = 0.955/0.953 vs band 0.601/0.595 per foot; stance windows
+  10–11 samples vs the estimators' own 37–39; duty inside the spread;
+  correction-law (solref τ) provably irrelevant (1 − R = 0.000000). Two
+  amendments recorded with their evidence in b6_compare.py: exact state
+  prescription replaced the servo (it could not track through contact —
+  measured 143.8°), and peak-argmax timing was replaced by the stance
+  window (the channel's press is a measured 14%-of-stride plateau).
+  **Verdict: our G3 contact solve is NOT wrong** — no mismatch to assign.
+- **B7 is the next stage.** (B7b volp-generalization; then B8, B10.)
