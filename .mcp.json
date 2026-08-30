@@ -4,6 +4,11 @@
       "type": "stdio",
       "command": "python",
       "args": ["ChimeraEngine/mcp_server.py"]
+    },
+    "chimera-studio": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["ChimeraEngine/mcp_studio.py"]
     }
   }
 }

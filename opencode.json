@@ -55,6 +55,12 @@
       "args": ["ChimeraEngine/mcp_server.py"],
       "enabled": true
     },
+    "chimera-studio": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["ChimeraEngine/mcp_studio.py"],
+      "enabled": true
+    },
     "playwright": {
       "type": "stdio",
       "command": "C:\\Users\\allen\\node-portable\\node-v22.23.1-win-x64\\node.exe",

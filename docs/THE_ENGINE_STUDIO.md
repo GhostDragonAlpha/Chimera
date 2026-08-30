@@ -621,3 +621,57 @@ ascii-escaped soup.
   `engine/ui.{hpp,cpp}`, this doc.
 - **Next per the menu:** E2 deep links — and the board's own earliest
   non-green gate, B5 anatomy referee, is what the strip keeps naming.
+
+## SHIPPED — THE MCP TWIN + THE BRIEFING (2026-08-30)
+
+- **Statement:** an MCP twin over the studio HTTP API gives any MCP-speaking
+  AI full, sanctioned control of the RUNNING engine with ZERO new engine
+  surface — every tool routes through the existing endpoints (the F1 console
+  law at process scale: one path, no side channels) — and one call,
+  `briefing`, transfers complete working context (where the project stands,
+  what the engine shows, what just happened) to an AI that has never seen
+  this session. The human path is the same code: `python
+  ChimeraEngine/mcp_studio.py --briefing` prints it for a copy-paste.
+- **Prediction (unmeasured at naming time):** every tool's payload equals the
+  same-moment HTTP read modulo live-clock fields; the briefing carries the
+  standing rule verbatim + all 11 stage rows; a down engine answers "ENGINE
+  DOWN" plainly; a paused screenshot md5-matches a direct /frame grab.
+- **Falsifiers (named before the build):** (A) any tool disagreeing with the
+  same-moment curl beyond live-clock tolerance; (B) the briefing missing the
+  standing rule or any stage; (C) a stack trace instead of "ENGINE DOWN";
+  (D) paused tool-screenshot md5 != direct /frame md5.
+
+**What shipped.** `ChimeraEngine/mcp_studio.py` — a second FastMCP server,
+`chimera-studio` (registered in `.mcp.json` and `opencode.json`; the workflow
+engine `chimera-engine` is untouched — that one owns "proven", this one owns
+"what's on screen"). Twelve tools: `state` (vitals: chrome + overlay + show +
+joints + gait + water + volp in one read), `screenshot` (the pixel-clean
+/frame channel to a PNG with md5), `transport` (play/pause/scrub/speed/step —
+the D1 clock), `pose_joint` (ROM-clamped intent; the C1 ownership law stands),
+`joints` (the editor document), `click` (aimed via the geometry the panels
+publish), `console` (the one-path escape hatch — `METHOD /path [json]` through
+the SAME handler the HTTP server runs), `log_tail` (the F4 recorder's edge),
+`reel`, `stages` (the board's own feed, read never owned), and `briefing`.
+Every tool answers "ENGINE DOWN (localhost:8090 unreachable)" when the engine
+is down — an AI cannot fix what it cannot parse.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_mcp_studio_verify.{py,log}`):
+  - **A:** paused — show/joints/log tool reads == same-moment curl, exact
+    (the D1 freeze law makes paused frames deterministic). PASS
+  - **B:** standing rule verbatim ("EARLIEST NON-GREEN GATE: B7 articulate"),
+    11/11 stage rows byte-anchored in the briefing. PASS
+  - **C:** dead port -> `ENGINE DOWN: http://localhost:59999 unreachable
+    (URLError). Start chimera_engine.exe (port 8090) and retry.` PASS
+  - **D:** paused tool screenshot md5 == direct /frame md5. PASS
+  - **E (round-trips):** transport +1 step advanced the clock exactly 1/240 s;
+    pose_joint knee_L 30 acked `theta_applied 30.000000` owner=edit; play
+    handed the pose back to the show. PASS
+- **Found while verifying (fixed same session):** the F4 twin's list field is
+  `lines` (dicts {seq,t,kind,detail}), not `last` — the probe's first draft
+  KeyError'd a PASSING engine. Read the response before asserting its shape
+  (the /joint ack lesson, twice learned).
+- **Files:** `ChimeraEngine/mcp_studio.py`, `.mcp.json`, `opencode.json`,
+  this doc. No engine binary changes (the surface is the API's twin).
+- **Next per the menu:** C4 scene outliner (the Godot Scene dock: the live
+  systems as a tree with toggles routed through these same endpoints), C2
+  inspector, E2 deep links, D5 render-to-MP4, D6 camera bookmarks.
