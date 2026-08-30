@@ -19,6 +19,7 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
+#include <mutex>
 
 struct StudioStage {
     std::string id;       // "B0" .. "B10"
@@ -292,6 +293,24 @@ public:
     void console_submit_line(const std::string& line);  // Enter AND POST /console — one path
     void console_result(const std::string& resp);       // engine -> UI, render thread
     void build_console();                       // draw list (called when open)
+
+    // ── F4: THE RECORDER's ring — the LOG stream (left dock mode 3) ──
+    // The engine pushes each event the moment it happens; the dock draws the
+    // tail, newest at the bottom. The FILE holds everything — the stream is
+    // the live edge of the same lines, never a summary.
+    struct LogLine { uint64_t seq; std::string t, kind, detail; };
+    std::vector<LogLine> log_ring_;
+    uint64_t log_total_ = 0;                    // the session's full count
+    std::string log_file_;                      // the session file's name
+    mutable std::mutex log_m_;                  // pushes arrive on the HTTP thread; draws on the render thread
+    void log_push(uint64_t seq, uint64_t total, const std::string& t,
+                  const std::string& kind, const std::string& detail);
+    // wrapped-row cache: rebuilt ONLY when a line lands or the dock width
+    // changes — re-wrapping 200 lines every frame spiked ft (chrome gate B)
+    struct LogRow { std::string s; float r, g, b; };
+    std::vector<LogRow> log_rows_;
+    uint64_t log_rows_total_ = ~0ull;
+    size_t   log_rows_maxc_  = 0;
 
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,

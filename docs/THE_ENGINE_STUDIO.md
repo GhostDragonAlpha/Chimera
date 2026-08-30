@@ -546,3 +546,78 @@ unescape — posted lines carry escaped JSON.
 - **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`,
   `engine/ui.{hpp,cpp}`, this doc.
 - **Next per the menu:** E2 deep links, F4 recorder — and the rest by value.
+
+## SHIPPED — F4: THE RECORDER (2026-08-30)
+
+- **Statement:** every gate-relevant state change through the api chokepoint
+  (blob uploads, mode flips, intents) plus externally-posted gate verdicts
+  lands as a timestamped JSON line in a per-session on-disk file AND in the
+  LOG dock's stream — the same lines, in the same order, at the moment it
+  happens. The log records OUTCOMES: a line claiming success for a failed
+  event is a lie. Named boundaries: panel-only gestures (dock switches) are
+  not events; the stream is a tail view — the file holds everything.
+- **Prediction (unmeasured at naming time):** a covered endpoint's success
+  is followed within 1 s by a parsing file line carrying its outcome; the
+  served stream's tail equals the file's tail; a 50-event burst shows no
+  seq gap or reorder in either; a posted verdict lands verbatim (escapes,
+  Unicode and all); the burst costs < 0.5 ms of frame time.
+- **Falsifiers (named before the build):** (A) a covered endpoint succeeding
+  without a parsing file line within 1 s; (B) stream tail != file tail;
+  (C) a seq gap or reorder in the burst; (D) a posted verdict not verbatim;
+  (E) burst cost > 0.5 ms.
+
+**What shipped.** `Engine::log_event(kind, detail)` — one mutex, one
+monotonic seq, a millisecond wall timestamp, JSON-escaped, `fprintf` +
+`fflush` to `session_YYYYmmdd_HHMMSS.jsonl` (opened FIRST in `Engine::init`,
+before any covered state change can exist; closed in shutdown after the
+console worker joins) and a push to the UI ring (200-line tail). The
+chokepoint in `main.cpp` logs at the END of the api chain, POSTs only, with
+the RESPONSE BODY as the detail — the endpoint's own answer is the outcome
+(/joint also appends `joint=<name>` from the request, because the response
+omits which joint moved). Kinds: upload (the five `_bin` blobs), mode
+(/show /joints /gait /water_clock /studio /studio_chrome), intent (/joint),
+gate (POST /log — externally-posted verdicts, verbatim). `GET /log` serves
+{file, n, last-50 lines}; `POST /log` records and answers the seq. The LOG
+dock (left dock mode 3, workspace menu row 8) draws the tail newest-at-
+bottom, kind-colored (upload blue / mode green / intent yellow / gate
+purple), wrapped by the same greedy law as the docs browser — and the
+wrapped rows are CACHED, rebuilt only when a line lands or the dock width
+changes (see below). `get_string` learned `\uXXXX` (surrogate pairs
+included): a posted verdict's em-dash and CJK land verbatim, not as
+ascii-escaped soup.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_log_verify.{py,log}`,
+  `f4_log_stream.png` — PrintWindow, dock in LOG mode):
+  - **D:** `probe heartbeat 'q' \ backslash<newline>newline<tab>tab —
+    verbatim or it is a lie` — found verbatim in the file in 0.00-0.01 s
+    AND in the served stream, after the \uXXXX fix (the first run caught
+    the em-dash landing as `\u2014`: the falsifier fired, the engine was
+    fixed, not the probe). PASS
+  - **A:** /mesh_bin 1110396B, /hinge_bin, /joints_bin uploads logged
+    `-> {"ok":true}` in 0.01 s; /show flip logged with its verbatim answer
+    in 0.00-0.01 s; /joint intent logged `joint=knee_L ->
+    {"ok":true,"owner":"edit",...,"theta_applied":30.000000}` in 0.00 s.
+    PASS
+  - **C:** 50-post burst — 50/50 in the file, seq 1..58 continuous, no
+    reorder; the served ring's burst lines in order. PASS
+  - **E:** idle 0.315-1.070 ms -> burst 0.300-0.325 ms (delta negative;
+    50 posts in 0.22-0.34 s, budget 0.5 ms). PASS
+  - **B:** last-3 file details == last-3 served details, byte-equal. PASS
+  - **Regressions on the final binary:** `_stage_verify.py`,
+    `_docs_verify.py`, `_console_verify.py` — ALL PASS. See the chrome note.
+- **Found while verifying (two probe-side truths, documented):**
+  - `_chrome_verify.py`'s gates B (ring max in band) and E (row verbatim)
+    are FLAKY independent of F4: both failed with the LOG dock CLOSED
+    (mode-3 branch never drawn), and E's failures show the gait clock
+    advancing between the probe's expectation read and its rows read
+    (steps equal, lam drifted — two reads of a live clock). Post-cache-fix
+    with the LOG dock OPEN, B passed 4/4. F4's own cost gate (E above)
+    measured the recorder itself at negative delta every run.
+  - The LOG dock's first draft re-wrapped 200 lines EVERY FRAME — that
+    was a real F4 cost and it did move the chrome probe's B gate. Fixed
+    by the change-only rebuild cache; that is when B stopped failing with
+    the dock open.
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`,
+  `engine/ui.{hpp,cpp}`, this doc.
+- **Next per the menu:** E2 deep links — and the board's own earliest
+  non-green gate, B5 anatomy referee, is what the strip keeps naming.

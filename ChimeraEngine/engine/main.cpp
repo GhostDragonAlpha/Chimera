@@ -163,7 +163,37 @@ static std::string get_string(const std::string& body, const char* key) {
     if (p >= body.size() || body[p] != '"') return "";
     p++;
     // F1: posted console lines carry escaped JSON (\" \\ \n) — unescape them
+    // F4: and \uXXXX too (json.dumps' ensure_ascii) — a posted verdict must
+    // land VERBATIM, em-dashes and CJK included (surrogate pairs decoded).
     std::string out;
+    auto hex4 = [&](size_t at, uint32_t& v) -> bool {
+        if (at + 4 > body.size()) return false;
+        v = 0;
+        for (int k = 0; k < 4; ++k) {
+            char c = body[at + k]; v <<= 4;
+            if (c >= '0' && c <= '9') v |= c - '0';
+            else if (c >= 'a' && c <= 'f') v |= c - 'a' + 10;
+            else if (c >= 'A' && c <= 'F') v |= c - 'A' + 10;
+            else return false;
+        }
+        return true;
+    };
+    auto utf8 = [&](uint32_t cp) {
+        if (cp < 0x80) out += static_cast<char>(cp);
+        else if (cp < 0x800) {
+            out += static_cast<char>(0xC0 | (cp >> 6));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        } else if (cp < 0x10000) {
+            out += static_cast<char>(0xE0 | (cp >> 12));
+            out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        } else {
+            out += static_cast<char>(0xF0 | (cp >> 18));
+            out += static_cast<char>(0x80 | ((cp >> 12) & 0x3F));
+            out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+        }
+    };
     while (p < body.size() && body[p] != '"') {
         if (body[p] == '\\' && p + 1 < body.size()) {
             char e = body[p + 1];
@@ -171,6 +201,25 @@ static std::string get_string(const std::string& body, const char* key) {
             if (e == 'n') { out += '\n'; p += 2; continue; }
             if (e == 't') { out += '\t'; p += 2; continue; }
             if (e == 'r') { out += '\r'; p += 2; continue; }
+            if (e == 'b') { out += '\b'; p += 2; continue; }
+            if (e == 'f') { out += '\f'; p += 2; continue; }
+            if (e == 'u') {
+                uint32_t hi = 0;
+                if (hex4(p + 2, hi)) {
+                    p += 6;
+                    if (hi >= 0xD800 && hi <= 0xDBFF &&
+                        p + 1 < body.size() && body[p] == '\\' && body[p + 1] == 'u') {
+                        uint32_t lo = 0;
+                        if (hex4(p + 2, lo) && lo >= 0xDC00 && lo <= 0xDFFF) {
+                            utf8(0x10000 + ((hi - 0xD800) << 10) + (lo - 0xDC00));
+                            p += 6;
+                            continue;
+                        }
+                    }
+                    utf8(hi);
+                    continue;
+                }
+            }
         }
         out += body[p++];
     }
@@ -1403,12 +1452,84 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/log" && method == "GET") {
+            // F4: the recorder's served tail — the file is the record; this is
+            // its live edge. A probe diffs the two; they must never disagree.
+            if (g_engine) {
+                auto jesc = [](const std::string& s) {
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) {
+                        if (c == '"' || c == '\\') { o += '\\'; o += c; }
+                        else if (c == '\n') o += "\\n";
+                        else if (c == '\r') o += "\\r";
+                        else if (c == '\t') o += "\\t";
+                        else o += c;
+                    }
+                    return o;
+                };
+                const StudioUI& u = g_engine->ui_;
+                std::string lines;
+                {
+                    std::lock_guard<std::mutex> lk(u.log_m_);
+                    size_t n = u.log_ring_.size();
+                    size_t start = n > 50 ? n - 50 : 0;
+                    for (size_t i = start; i < n; ++i) {
+                        const auto& e = u.log_ring_[i];
+                        lines += (i > start ? "," : "");
+                        lines += std::string("{\"seq\":") + std::to_string(e.seq)
+                               + ",\"t\":\"" + e.t + "\",\"kind\":\"" + jesc(e.kind)
+                               + "\",\"detail\":\"" + jesc(e.detail) + "\"}";
+                    }
+                }
+                body = std::string("{\"file\":\"") + jesc(g_engine->log_file())
+                     + "\",\"n\":" + std::to_string(g_engine->log_count())
+                     + ",\"lines\":[" + lines + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/log" && method == "POST") {
+            // F4: an externally-posted gate verdict lands VERBATIM in the same
+            // record as the engine's own events — kind "gate" by convention.
+            if (g_engine) {
+                std::string kind = get_string(req_body, "kind");
+                std::string detail = get_string(req_body, "detail");
+                if (kind.empty()) kind = "gate";
+                g_engine->log_event(kind, detail);
+                body = std::string("{\"ok\":true,\"seq\":")
+                     + std::to_string(g_engine->log_count()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
             content_type = "application/json";
         } else {
             body = "Not found";
+        }
+
+        // F4: the recorder — every covered state change lands at the moment it
+        // happens, with its OUTCOME (the response body is the truth of what
+        // happened; a logged success for a failed event would be a lie).
+        if (g_engine && method == "POST") {
+            const char* kind = nullptr;
+            if (p == "/mesh_bin" || p == "/hinge_bin" || p == "/joints_bin" ||
+                p == "/gait_bin" || p == "/water_bin") kind = "upload";
+            else if (p == "/show" || p == "/joints" || p == "/gait" ||
+                     p == "/water_clock" || p == "/studio" ||
+                     p == "/studio_chrome") kind = "mode";
+            else if (p == "/joint") kind = "intent";
+            if (kind) {
+                std::string d = method + " " + p + " " +
+                                std::to_string(req_body.size()) + "B";
+                if (p == "/joint") {   // the response omits WHICH joint — the
+                    std::string j = get_string(req_body, "joint");   // record
+                    if (!j.empty()) d += " joint=" + j;              // must not
+                }
+                g_engine->log_event(kind, d + " -> " + body);
+            }
         }
     };
     bool http_ok = server.start(http_port, api);

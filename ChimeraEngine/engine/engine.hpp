@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <stdio.h>
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -155,7 +156,20 @@ public:
     void console_exec(const std::string& line);
     int  console_pending();
     void console_drain();              // render thread: hand finished responses to the UI
+    // ── F4: THE RECORDER — done-is-a-log, as a stream ──
+    // Every gate-relevant state change through the api chokepoint (uploads,
+    // mode flips, intents) plus externally-posted gate verdicts lands as a
+    // timestamped JSON line in the session file AND in the UI's ring — the
+    // same line in both, in issue order, at the moment it happens. The log
+    // records OUTCOMES: a line that claims an event that failed is a lie.
+    void log_event(const std::string& kind, const std::string& detail);
+    std::string log_file() const { return log_file_; }
+    uint64_t    log_count() const { return log_seq_.load(); }
 private:
+    std::string        log_file_;
+    FILE*              log_fp_ = nullptr;
+    std::mutex         log_m_;
+    std::atomic<uint64_t> log_seq_{0};
     ApiFn api_;
     std::thread             console_thread_;
     std::mutex              console_m_;

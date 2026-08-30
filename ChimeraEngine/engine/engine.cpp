@@ -352,6 +352,26 @@ bool Engine::init(const EngineConfig& cfg) {
     cfg_ = cfg;
     g_key_engine = this;   // WndProc ('P' pose toggle) reaches the engine through this
 
+    // ── F4: the recorder opens the session log FIRST — before any covered state
+    //    change can happen, so no event can ever precede the file that records it.
+    {
+        char name[64];
+        std::time_t now = std::time(nullptr);
+        std::tm tmv{}; localtime_s(&tmv, &now);
+        snprintf(name, sizeof(name), "session_%04d%02d%02d_%02d%02d%02d.jsonl",
+                 tmv.tm_year + 1900, tmv.tm_mon + 1, tmv.tm_mday,
+                 tmv.tm_hour, tmv.tm_min, tmv.tm_sec);
+        log_file_ = name;
+        log_fp_ = fopen(name, "ab");
+        if (!log_fp_) {
+            fprintf(stderr, "studio: cannot open session log %s — recorder offline\n", name);
+            log_file_.clear();
+        } else {
+            printf("studio: session log -> %s\n", name);
+        }
+        ui_.log_file_ = log_file_;
+    }
+
     // ── 1. Win32 window ──────────────────────────────────────────────────────────────
     if (!create_window(cfg.width, cfg.height)) {
         fprintf(stderr, "Failed to create window\n");
@@ -653,6 +673,14 @@ void Engine::shutdown() {
     }
     console_cv_.notify_all();
     if (console_thread_.joinable()) console_thread_.join();
+
+    // F4: the recorder outlives every event source; the file closes LAST among
+    // the teardown's early steps, after the worker that could still log joins.
+    {
+        std::lock_guard<std::mutex> lk(log_m_);
+        if (log_fp_) { fflush(log_fp_); fclose(log_fp_); log_fp_ = nullptr; }
+    }
+
     vkDeviceWaitIdle(device_);
 
     ui_.shutdown();   // THE STUDIO: before any pool/device teardown
@@ -1615,6 +1643,52 @@ void Engine::console_drain() {
         done.swap(console_done_);
     }
     for (const std::string& r : done) ui_.console_result(r);
+}
+
+// ── F4: the recorder ─────────────────────────────────────────────────────────
+// One JSON line per event, at the moment it happens, to the session file AND
+// the LOG dock's ring — same bytes, same order. The file is the record; the
+// ring is only its tail view.
+static std::string log_jesc(const std::string& s) {
+    std::string o; o.reserve(s.size() + 8);
+    for (char c : s) {
+        switch (c) {
+            case '"':  o += "\\\""; break;
+            case '\\': o += "\\\\"; break;
+            case '\n': o += "\\n";  break;
+            case '\r': o += "\\r";  break;
+            case '\t': o += "\\t";  break;
+            default:   o += c;
+        }
+    }
+    return o;
+}
+
+void Engine::log_event(const std::string& kind, const std::string& detail) {
+    // wall-clock timestamp, millisecond precision
+    using namespace std::chrono;
+    auto now_tp  = system_clock::now();
+    auto ms      = duration_cast<milliseconds>(now_tp.time_since_epoch()) % 1000;
+    std::time_t now = system_clock::to_time_t(now_tp);
+    std::tm tmv{}; localtime_s(&tmv, &now);
+    char tbuf[32];
+    snprintf(tbuf, sizeof(tbuf), "%04d-%02d-%02dT%02d:%02d:%02d.%03d",
+             tmv.tm_year + 1900, tmv.tm_mon + 1, tmv.tm_mday,
+             tmv.tm_hour, tmv.tm_min, tmv.tm_sec, (int)ms.count());
+    std::string tstr = tbuf;
+
+    uint64_t seq;
+    {
+        std::lock_guard<std::mutex> lk(log_m_);
+        seq = ++log_seq_;
+        if (log_fp_) {
+            fprintf(log_fp_, "{\"seq\":%llu,\"t\":\"%s\",\"kind\":\"%s\",\"detail\":\"%s\"}\n",
+                    (unsigned long long)seq, tstr.c_str(),
+                    log_jesc(kind).c_str(), log_jesc(detail).c_str());
+            fflush(log_fp_);   // a line on disk the moment it happens, not on exit
+        }
+    }
+    ui_.log_push(seq, seq, tstr, kind, detail);   // the stream sees the same line
 }
 
 // F3: the chrome's HUD rows, pushed from the engine's own state. The gait

@@ -203,6 +203,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 if (i == 0) { left_mode_ = 0; }                          // BOARD
                 if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
                 if (i == 7) { left_mode_ = 2; selected_stage_ = -1; }    // DOCS (E1)
+                if (i == 8) { left_mode_ = 3; selected_stage_ = -1; }    // LOG (F4)
             }
             if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
             if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker
@@ -689,7 +690,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f,
          left_.collapsed ? "+" : (left_mode_ == 1 ? "JOINTS - the editor (C1)"
             : (left_mode_ == 2 ? "DOCS - the browser (E1)"
-            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))),
+            : (left_mode_ == 3 ? "LOG - the recorder (F4)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
     if (!left_.collapsed && left_mode_ == 2) {
@@ -756,6 +758,67 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         docs_sb_thumb_[0] = sb_x - 1; docs_sb_thumb_[1] = thumb_y;
         docs_sb_thumb_[2] = 8.f; docs_sb_thumb_[3] = thumb_h;
         rect(sb_x - 1, thumb_y, 8, thumb_h, 0.45f, 0.60f, 1.00f, 0.95f);
+    } else if (!left_.collapsed && left_mode_ == 3) {
+        // F4: THE RECORDER's stream. The session file holds everything; this
+        // dock draws the tail, newest at the bottom — the same lines in the
+        // same order (the /log probe diffs the served tail against the file).
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        char ib[192];
+        snprintf(ib, sizeof(ib), "%s  |  %llu events  |  the file holds everything",
+                 log_file_.empty() ? "(recorder offline)" : log_file_.c_str(),
+                 (unsigned long long)log_total_);
+        text(x, y, ib, 0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        // wrap oldest-to-newest, then keep only the rows that fit — the newest
+        // line lands at the bottom. REBUILT ONLY ON CHANGE (a new event or a
+        // new dock width): wrapping 200 lines every frame spiked frame time.
+        size_t maxc = static_cast<size_t>((R[1][2] - 20) / advance_);
+        if (maxc < 8) maxc = 8;
+        {
+            std::lock_guard<std::mutex> lk(log_m_);
+            if (log_rows_total_ != log_total_ || log_rows_maxc_ != maxc) {
+                log_rows_.clear();
+                for (const auto& e : log_ring_) {
+                    float r = 0.55f, g = 0.58f, b = 0.65f;
+                    if      (e.kind == "upload") { r = 0.30f; g = 0.60f; b = 1.00f; }
+                    else if (e.kind == "mode")   { r = 0.25f; g = 0.75f; b = 0.35f; }
+                    else if (e.kind == "intent") { r = 0.90f; g = 0.80f; b = 0.30f; }
+                    else if (e.kind == "gate")   { r = 0.60f; g = 0.45f; b = 0.90f; }
+                    char head[40];
+                    snprintf(head, sizeof(head), "[%llu] %.8s ",
+                             (unsigned long long)e.seq, e.t.c_str() + 11);
+                    std::string line = std::string(head) + e.kind + " " + e.detail;
+                    if (line.empty()) { log_rows_.push_back({ "", r, g, b }); continue; }
+                    size_t pos = 0;
+                    while (pos < line.size()) {
+                        size_t n = line.size() - pos;
+                        if (n > maxc) {
+                            n = maxc;
+                            size_t sp = line.rfind(' ', pos + n);
+                            if (sp != std::string::npos && sp > pos) n = sp - pos;
+                        }
+                        log_rows_.push_back({ line.substr(pos, n), r, g, b });
+                        pos += n;
+                        while (pos < line.size() && line[pos] == ' ') ++pos;
+                    }
+                }
+                log_rows_total_ = log_total_;
+                log_rows_maxc_  = maxc;
+            }
+        }
+        if (log_rows_.empty()) {
+            text(x, y, "no events yet - the recorder is listening", 0.45f, 0.47f, 0.52f, 1.f);
+        } else {
+            int visible_n = static_cast<int>((y_max - y) / lh) + 1;
+            if (visible_n < 1) visible_n = 1;
+            size_t start = log_rows_.size() > static_cast<size_t>(visible_n)
+                         ? log_rows_.size() - static_cast<size_t>(visible_n) : 0;
+            for (size_t i = start; i < log_rows_.size(); ++i) {
+                if (y > y_max) break;
+                text(x, y, log_rows_[i].s, log_rows_[i].r, log_rows_[i].g, log_rows_[i].b, 0.95f);
+                y += lh;
+            }
+        }
     } else if (!left_.collapsed && left_mode_ == 1) {
         // C1: THE JOINTS EDITOR. Every row is the pack's own data: name, the
         // derived ROM as the slider's hard range, the live theta from the
@@ -855,16 +918,17 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
         text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
         const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - the editor (C1)", "GAIT    - parked",
-                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - the browser (E1)"};
-        for (int i = 0; i < 8; ++i) {
-            bool live = (i == 0 || i == 2 || i == 7);
+                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - the browser (E1)",
+                            "LOG     - the recorder (F4)"};
+        for (int i = 0; i < 9; ++i) {
+            bool live = (i == 0 || i == 2 || i == 7 || i == 8);
             text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
             if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;
         }
         y += 6;
         text(x, y, "click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f, 1.f); y += lh;
-        text(x, y, "next per the menu: C1 joints editor (live), E1 docs", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "next per the menu: C1 joints, E1 docs, F1 console, F4 log", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
         text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
     }
 
@@ -1052,6 +1116,16 @@ void StudioUI::console_result(const std::string& resp) {
     for (auto& e : console_log_) {
         if (!e.done) { e.resp = resp; e.done = true; return; }
     }
+}
+
+// F4: an event lands the moment it happens — the dock's tail and the session
+// file carry the same line
+void StudioUI::log_push(uint64_t seq, uint64_t total, const std::string& t,
+                        const std::string& kind, const std::string& detail) {
+    std::lock_guard<std::mutex> lk(log_m_);
+    log_ring_.push_back({seq, t, kind, detail});
+    if (log_ring_.size() > 200) log_ring_.erase(log_ring_.begin());
+    log_total_ = total;
 }
 
 void StudioUI::build_console() {
