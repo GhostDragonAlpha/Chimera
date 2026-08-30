@@ -1139,6 +1139,10 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/reel" && method == "GET") {
+            // D3: the grab ledger (newest first) — the dyad's evidence-tray channel
+            body = g_engine ? g_engine->reel_json() : "{\"ok\":false,\"error\":\"no engine\"}";
+            content_type = "application/json";
         } else if (p == "/studio" && method == "POST") {
             // THE ENGINE STUDIO: the F1 toggle's HTTP twin (agents can't press keys)
             if (g_engine) {

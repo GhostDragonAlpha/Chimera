@@ -43,6 +43,17 @@ public:
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
 
+    // ── D3: THE REEL — the engine owns the grab ledger (the UI owns the pixels) ──
+    struct ReelEntry {
+        uint64_t seq;
+        std::string wall;                 // "YYYY-MM-DD HH:MM:SS" local
+        double show_t, theta;             // the show clock at grab time (deg for theta)
+        std::string joint;                // current joint name, or "" when no show
+        double cam_r, cam_theta, cam_phi;
+        double light[3];
+    };
+    std::string reel_json() const;        // newest-first ledger for GET /reel
+
     // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
     bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                    uint32_t vcount, uint32_t icount);
@@ -355,6 +366,11 @@ private:
     VkBuffer capture_staging_ = VK_NULL_HANDLE;
     VkDeviceMemory capture_staging_mem_ = VK_NULL_HANDLE;
     VkDeviceSize capture_staging_size_ = 0;
+    // D3: the reel ledger (render thread writes, HTTP thread reads via reel_json)
+    mutable std::mutex reel_mutex_;
+    std::vector<ReelEntry> reel_entries_;   // newest last, capped at StudioUI::REEL_MAX
+    uint64_t reel_seq_ = 0;
+    void reel_note_grab();                  // render thread: thumbnail + ledger at grab time
 
     // ── GPU bitonic sort (back-to-front splat ordering, no CPU in the per-frame path) ──
     VkShaderModule        sort_mod_ = VK_NULL_HANDLE;

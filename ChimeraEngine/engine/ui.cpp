@@ -65,25 +65,35 @@ void StudioUI::on_mouse_move(int x, int y) {
         float ns = static_cast<float>(ext_.height) - static_cast<float>(y);
         float mx = ext_.height * bottom_.max_frac;
         bottom_.size = ns < bottom_.min_size ? bottom_.min_size : (ns > mx ? mx : ns);
+    } else if (drag_kind_ == 6) {   // D3: reel panel top border: height follows (above the timeline)
+        float bh = bottom_.collapsed ? 22.f : bottom_.size;
+        float ns = static_cast<float>(ext_.height) - bh - static_cast<float>(y);
+        float mx = ext_.height * reel_.max_frac;
+        reel_.size = ns < reel_.min_size ? reel_.min_size : (ns > mx ? mx : ns);
     } else if (drag_kind_ == 5) {   // D1: dragging the playhead — every move is a scrub
         if (cb_scrub_) cb_scrub_(scrub_time_at(x));
     }
 }
 
-void StudioUI::layout(uint32_t w, uint32_t h, float R[4][4]) const {
+void StudioUI::layout(uint32_t w, uint32_t h, float R[5][4]) const {
     // strip: top, full width. bottom: between left/right, docked low.
-    // left/right: between strip and bottom, docked to their edges.
+    // reel: between left/right, directly above the bottom timeline.
+    // left/right: between strip and (bottom + reel), docked to their edges.
     float sh = strip_.collapsed ? 22.f : strip_.size;
     if (sh > h) sh = static_cast<float>(h);
     float bh = bottom_.collapsed ? 22.f : bottom_.size;
     if (bh > h - sh) bh = static_cast<float>(h) - sh;
     if (bh < 22.f) bh = 22.f;
+    float rh = reel_.collapsed ? 22.f : reel_.size;
+    if (rh > static_cast<float>(h) - sh - bh) rh = static_cast<float>(h) - sh - bh;
+    if (rh < 22.f) rh = 22.f;
     float lw = left_.collapsed  ? 22.f : left_.size;
     float rw = right_.collapsed ? 22.f : right_.size;
     R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
-    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh - bh;
-    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh - bh;
+    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh - bh - rh;
+    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh - bh - rh;
     R[3][0] = lw; R[3][1] = static_cast<float>(h) - bh; R[3][2] = static_cast<float>(w) - lw - rw; R[3][3] = bh;
+    R[4][0] = lw; R[4][1] = static_cast<float>(h) - bh - rh; R[4][2] = static_cast<float>(w) - lw - rw; R[4][3] = rh;
 }
 
 bool StudioUI::hit_strip_title(int x, int y) const {
@@ -98,9 +108,14 @@ bool StudioUI::hit_right_title(int x, int y) const {
     return x >= static_cast<int>(ext_.width) - 22 && y >= static_cast<int>(sh);
 }
 bool StudioUI::hit_bottom_title(int x, int y) const {
-    float R[4][4]; layout(ext_.width, ext_.height, R);
+    float R[5][4]; layout(ext_.width, ext_.height, R);
     return y >= static_cast<int>(R[3][1]) && y < static_cast<int>(R[3][1] + 22)
         && x >= static_cast<int>(R[3][0]) && x < static_cast<int>(R[3][0] + R[3][2]);
+}
+bool StudioUI::hit_reel_title(int x, int y) const {
+    float R[5][4]; layout(ext_.width, ext_.height, R);
+    return y >= static_cast<int>(R[4][1]) && y < static_cast<int>(R[4][1] + 22)
+        && x >= static_cast<int>(R[4][0]) && x < static_cast<int>(R[4][0] + R[4][2]);
 }
 
 float StudioUI::scrub_time_at(int x) const {
@@ -113,8 +128,8 @@ float StudioUI::scrub_time_at(int x) const {
 
 bool StudioUI::wants_mouse(int x, int y) {
     if (!visible) return false;
-    float R[4][4]; layout(ext_.width, ext_.height, R);
-    for (int i = 0; i < 4; ++i) {
+    float R[5][4]; layout(ext_.width, ext_.height, R);
+    for (int i = 0; i < 5; ++i) {
         if (x >= R[i][0] && x < R[i][0] + R[i][2] && y >= R[i][1] && y < R[i][1] + R[i][3]) return true;
     }
     return false;
@@ -127,12 +142,13 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
         drag_kind_ = 0;
         return had;
     }
-    float R[4][4]; layout(ext_.width, ext_.height, R);
+    float R[5][4]; layout(ext_.width, ext_.height, R);
     // resize borders first (a 6 px grab band on the panel's inner edge)
     if (!strip_.collapsed && y >= R[0][3] - 3 && y <= R[0][3] + 3) { drag_kind_ = 1; return true; }
     if (!left_.collapsed  && x >= R[1][2] - 3 && x <= R[1][2] + 3 && y >= R[1][1] && y < R[1][1] + R[1][3]) { drag_kind_ = 2; return true; }
     if (!right_.collapsed && x >= R[2][0] - 3 && x <= R[2][0] + 3 && y >= R[2][1] && y < R[2][1] + R[2][3]) { drag_kind_ = 3; return true; }
     if (!bottom_.collapsed && y >= R[3][1] - 3 && y <= R[3][1] + 3 && x >= R[3][0] && x < R[3][0] + R[3][2]) { drag_kind_ = 4; return true; }
+    if (!reel_.collapsed && y >= R[4][1] - 3 && y <= R[4][1] + 3 && x >= R[4][0] && x < R[4][0] + R[4][2]) { drag_kind_ = 6; return true; }
     // D1: the scrub bar — press grabs the playhead (drags scrub; a click lands one)
     if (!bottom_.collapsed && clk_total_ > 0.0
         && x >= scrub_rect_[0] && x <= scrub_rect_[0] + scrub_rect_[2]
@@ -156,6 +172,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
     if (hit_left_title(x, y))  { left_.collapsed  = !left_.collapsed;  return true; }
     if (hit_right_title(x, y)) { right_.collapsed = !right_.collapsed; return true; }
     if (hit_bottom_title(x, y)){ bottom_.collapsed = !bottom_.collapsed; return true; }
+    if (hit_reel_title(x, y))  { reel_.collapsed  = !reel_.collapsed;  return true; }
     // anywhere else inside a panel: consume (never leak a camera orbit through the UI)
     return wants_mouse(x, y);
 }
@@ -203,32 +220,31 @@ void StudioUI::poll_board() {
 void StudioUI::uv_cell(int ch, float& u0, float& v0, float& u1, float& v1) const {
     int idx = ch - 32;
     if (idx < 0 || idx > 94) idx = 0;   // 95 is the white cell
-    float aw = cell_w_ * ATLAS_COLS, ah = cell_h_ * ATLAS_ROWS;
-    u0 = (idx % ATLAS_COLS) * cell_w_ / aw;
-    v0 = (idx / ATLAS_COLS) * cell_h_ / ah;
-    u1 = u0 + cell_w_ / aw;
-    v1 = v0 + cell_h_ / ah;
+    // UVs are over the FULL atlas (font cells are the top-left sub-rect)
+    u0 = (idx % ATLAS_COLS) * cell_w_ / atlas_w_;
+    v0 = (idx / ATLAS_COLS) * cell_h_ / atlas_h_;
+    u1 = u0 + cell_w_ / atlas_w_;
+    v1 = v0 + cell_h_ / atlas_h_;
 }
 
 void StudioUI::uv_white(float& u0, float& v0, float& u1, float& v1) const {
     // the DEL slot (index 95) is filled solid white; sample its center so rect
     // edges never bleed glyph ink from the neighboring cell
-    float aw = cell_w_ * ATLAS_COLS, ah = cell_h_ * ATLAS_ROWS;
-    float cx = (15 + 0.5f) * cell_w_ / aw;
-    float cy = (5 + 0.5f) * cell_h_ / ah;
-    float mx = 1.5f / aw, my = 1.5f / ah;
+    float cx = (15 + 0.5f) * cell_w_ / atlas_w_;
+    float cy = (5 + 0.5f) * cell_h_ / atlas_h_;
+    float mx = 1.5f / atlas_w_, my = 1.5f / atlas_h_;
     u0 = cx - mx; v0 = cy - my; u1 = cx + mx; v1 = cy + my;
 }
 
 void StudioUI::rect(float x, float y, float w, float h, float r, float g, float b, float a) {
     float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
     Vert v[6] = {
-        {x,     y,     u0, v0, r, g, b, a},
-        {x + w, y,     u1, v0, r, g, b, a},
-        {x + w, y + h, u1, v1, r, g, b, a},
-        {x,     y,     u0, v0, r, g, b, a},
-        {x + w, y + h, u1, v1, r, g, b, a},
-        {x,     y + h, u0, v1, r, g, b, a},
+        {x,     y,     u0, v0, r, g, b, a, 0.f},
+        {x + w, y,     u1, v0, r, g, b, a, 0.f},
+        {x + w, y + h, u1, v1, r, g, b, a, 0.f},
+        {x,     y,     u0, v0, r, g, b, a, 0.f},
+        {x + w, y + h, u1, v1, r, g, b, a, 0.f},
+        {x,     y + h, u0, v1, r, g, b, a, 0.f},
     };
     verts_.insert(verts_.end(), v, v + 6);
 }
@@ -247,16 +263,97 @@ void StudioUI::text(float x, float y, const std::string& s, float r, float g, fl
         float u0, v0, u1, v1; uv_cell(static_cast<unsigned char>(c), u0, v0, u1, v1);
         float x0 = pen, y0 = y, x1 = pen + cell_w_, y1 = y + cell_h_;
         Vert v[6] = {
-            {x0, y0, u0, v0, r, g, b, a},
-            {x1, y0, u1, v0, r, g, b, a},
-            {x1, y1, u1, v1, r, g, b, a},
-            {x0, y0, u0, v0, r, g, b, a},
-            {x1, y1, u1, v1, r, g, b, a},
-            {x0, y1, u0, v1, r, g, b, a},
+            {x0, y0, u0, v0, r, g, b, a, 0.f},
+            {x1, y0, u1, v0, r, g, b, a, 0.f},
+            {x1, y1, u1, v1, r, g, b, a, 0.f},
+            {x0, y0, u0, v0, r, g, b, a, 0.f},
+            {x1, y1, u1, v1, r, g, b, a, 0.f},
+            {x0, y1, u0, v1, r, g, b, a, 0.f},
         };
         verts_.insert(verts_.end(), v, v + 6);
         pen += advance_;
     }
+}
+
+// D3: a reel tile's image — flags=1, UVs into the thumbnail grid below the font cells.
+void StudioUI::thumb_uv(int slot, float& u0, float& v0, float& u1, float& v1) const {
+    float font_h = cell_h_ * ATLAS_ROWS;
+    float px = static_cast<float>((slot % 4) * THUMB_W);
+    float py = font_h + static_cast<float>((slot / 4) * THUMB_H);
+    u0 = px / atlas_w_;               v0 = py / atlas_h_;
+    u1 = (px + THUMB_W) / atlas_w_;   v1 = (py + THUMB_H) / atlas_h_;
+}
+
+void StudioUI::thumb(float x, float y, float w, float h, int slot) {
+    float u0, v0, u1, v1; thumb_uv(slot, u0, v0, u1, v1);
+    Vert v[6] = {
+        {x,     y,     u0, v0, 1.f, 1.f, 1.f, 1.f, 1.f},
+        {x + w, y,     u1, v0, 1.f, 1.f, 1.f, 1.f, 1.f},
+        {x + w, y + h, u1, v1, 1.f, 1.f, 1.f, 1.f, 1.f},
+        {x,     y,     u0, v0, 1.f, 1.f, 1.f, 1.f, 1.f},
+        {x + w, y + h, u1, v1, 1.f, 1.f, 1.f, 1.f, 1.f},
+        {x,     y + h, u0, v1, 1.f, 1.f, 1.f, 1.f, 1.f},
+    };
+    verts_.insert(verts_.end(), v, v + 6);
+}
+
+// D3: a grab lands — text into the ring, pixels into its atlas slot. Render thread.
+void StudioUI::reel_push(const uint8_t* rgba, const std::string& l1,
+                         const std::string& l2, const std::string& l3) {
+    if (dev_ == VK_NULL_HANDLE || thumb_stage_map_ == nullptr || font_img_ == VK_NULL_HANDLE) return;
+    int slot = static_cast<int>(reel_seq_ % REEL_MAX);
+    tiles_[slot].used = true;
+    tiles_[slot].l1 = l1; tiles_[slot].l2 = l2; tiles_[slot].l3 = l3;
+    ++reel_seq_;
+    if (reel_count_ < REEL_MAX) ++reel_count_;
+
+    std::memcpy(thumb_stage_map_, rgba, static_cast<size_t>(THUMB_W) * THUMB_H * 4);
+
+    extern VkQueue g_ui_queue;
+    extern VkCommandPool g_ui_cmd_pool;
+    VkCommandBuffer cmd;
+    VkCommandBufferAllocateInfo cai{};
+    cai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    cai.commandPool = g_ui_cmd_pool;
+    cai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    cai.commandBufferCount = 1;
+    vkAllocateCommandBuffers(dev_, &cai, &cmd);
+    VkCommandBufferBeginInfo bbi{};
+    bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    bbi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    vkBeginCommandBuffer(cmd, &bbi);
+    auto barrier = [&](VkImageLayout oldl, VkImageLayout newl,
+                       VkAccessFlags srca, VkAccessFlags dsta,
+                       VkPipelineStageFlags srcs, VkPipelineStageFlags dsts) {
+        VkImageMemoryBarrier b{};
+        b.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        b.oldLayout = oldl; b.newLayout = newl;
+        b.srcAccessMask = srca; b.dstAccessMask = dsta;
+        b.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        b.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        b.image = font_img_;
+        b.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        vkCmdPipelineBarrier(cmd, srcs, dsts, 0, 0, nullptr, 0, nullptr, 1, &b);
+    };
+    barrier(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_TRANSFER_WRITE_BIT,
+            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+    VkBufferImageCopy cp{};
+    cp.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+    cp.imageOffset = { (slot % 4) * THUMB_W,
+                       static_cast<int32_t>(cell_h_ * ATLAS_ROWS) + (slot / 4) * THUMB_H, 0 };
+    cp.imageExtent = { static_cast<uint32_t>(THUMB_W), static_cast<uint32_t>(THUMB_H), 1 };
+    vkCmdCopyBufferToImage(cmd, thumb_stage_, font_img_, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &cp);
+    barrier(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    vkEndCommandBuffer(cmd);
+    VkSubmitInfo si{};
+    si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    si.commandBufferCount = 1; si.pCommandBuffers = &cmd;
+    vkQueueSubmit(g_ui_queue, 1, &si, VK_NULL_HANDLE);
+    vkQueueWaitIdle(g_ui_queue);
+    vkFreeCommandBuffers(dev_, g_ui_cmd_pool, 1, &cmd);
 }
 
 static void status_color(const std::string& s, float& r, float& g, float& b) {
@@ -277,7 +374,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     verts_.reserve(8192);
     if (!visible) return;
 
-    float R[4][4]; layout(win_w, win_h, R);
+    float R[5][4]; layout(win_w, win_h, R);
     hots_.clear();
     const float lh = cell_h_;                       // one text line
     const float TR = 0.86f, TG = 0.88f, TB = 0.92f; // text color
@@ -361,6 +458,46 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         for (const std::string& line : status_lines_) {
             text(x, y, line, TR, TG, TB, 0.95f); y += lh;
             if (y > R[2][1] + R[2][3] - lh) break;
+        }
+    }
+
+    // ── the REEL (D3: every /frame grab lands here — the evidence tray, on-screen) ──
+    rect(R[4][0], R[4][1], R[4][2], R[4][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[4][0], R[4][1], R[4][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    {
+        char rb[64];
+        snprintf(rb, sizeof(rb), "REEL (D3) - every /frame grab lands here  [%d/%d]", reel_count_, REEL_MAX);
+        text(R[4][0] + 8, R[4][1] + (22 - lh) * 0.5f, reel_.collapsed ? "+" : rb, 0.62f, 0.66f, 0.74f, 1.f);
+    }
+    if (!reel_.collapsed) {
+        float cap_h = 3 * lh + 8;                            // the three metadata lines under a tile
+        float th = R[4][3] - 22 - 8 - cap_h;                 // thumbnail draw height
+        if (th < 24.f) th = 24.f;
+        float tw = th * (16.f / 9.f);
+        if (reel_count_ == 0) {
+            text(R[4][0] + 10, R[4][1] + 30,
+                 "no grabs yet - GET /frame (or /stream) and the capture docks here with its t, joint, theta, camera",
+                 0.85f, 0.55f, 0.30f, 1.f);
+        } else {
+            int show_n = reel_count_ < REEL_MAX ? reel_count_ : REEL_MAX;
+            for (int k = 0; k < show_n; ++k) {
+                float tx = R[4][0] + 10 + k * (tw + 10);
+                if (tx + tw > R[4][0] + R[4][2] - 8) break;  // clip: the newest stay visible
+                int slot = static_cast<int>((reel_seq_ - 1 - k) % REEL_MAX);  // newest first
+                const ReelTile& tl = tiles_[slot];
+                float ty = R[4][1] + 26;
+                rect(tx - 1, ty - 1, tw + 2, th + 2, 0.35f, 0.37f, 0.42f, 1.f);
+                if (tl.used) thumb(tx, ty, tw, th, slot);
+                float ly = ty + th + 4;
+                // caption lines clip to the tile width (monospace: arithmetic, not hope)
+                size_t fit = static_cast<size_t>(tw / advance_);
+                std::string s1 = tl.l1.size() > fit ? tl.l1.substr(0, fit) : tl.l1;
+                std::string s2 = tl.l2.size() > fit ? tl.l2.substr(0, fit) : tl.l2;
+                std::string s3 = tl.l3.size() > fit ? tl.l3.substr(0, fit) : tl.l3;
+                text(tx, ly,          s1, 1.0f, 0.85f, 0.40f, 1.f);
+                text(tx, ly + lh,     s2, TR, TG, TB, 0.95f);
+                text(tx, ly + 2 * lh, s3, 0.45f, 0.47f, 0.52f, 1.f);
+            }
         }
     }
 
@@ -529,11 +666,22 @@ bool StudioUI::create_font_atlas() {
                 px[o + 0] = px[o + 1] = px[o + 2] = 255;
             }
     }
-    // pack to R8 (the text is white-on-black: any channel is coverage)
-    std::vector<uint8_t> r8(static_cast<size_t>(aw) * ah);
+    // pack to RGBA8 (rgb=white, a=coverage; the thumb grid below starts at a=0)
+    // D3: ONE image holds the font cells AND the reel's 4x3 thumbnail grid.
+    // The font cells are the top-left aw x ah sub-rect of an atlas_w_-wide image —
+    // the row stride is atlas_w_, not aw (getting this wrong smears every glyph).
+    atlas_w_ = static_cast<uint32_t>(aw) > static_cast<uint32_t>(4 * THUMB_W)
+             ? static_cast<uint32_t>(aw) : static_cast<uint32_t>(4 * THUMB_W);
+    atlas_h_ = static_cast<uint32_t>(ah) + 3 * THUMB_H;
+    std::vector<uint8_t> r8(static_cast<size_t>(atlas_w_) * atlas_h_ * 4, 0);
     {
         const uint8_t* px = static_cast<const uint8_t*>(bits);
-        for (size_t i = 0; i < r8.size(); ++i) r8[i] = px[i * 4];
+        for (size_t y = 0; y < static_cast<size_t>(ah); ++y)
+            for (size_t x = 0; x < static_cast<size_t>(aw); ++x) {
+                size_t di = (y * atlas_w_ + x) * 4;
+                r8[di + 0] = 255; r8[di + 1] = 255; r8[di + 2] = 255;
+                r8[di + 3] = px[(y * aw + x) * 4];
+            }
     }
     SelectObject(hdc, oldbmp); DeleteObject(bmp);
     SelectObject(hdc, old);    DeleteObject(font);
@@ -561,8 +709,8 @@ bool StudioUI::create_font_atlas() {
     VkImageCreateInfo ici{};
     ici.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     ici.imageType = VK_IMAGE_TYPE_2D;
-    ici.format = VK_FORMAT_R8_UNORM;
-    ici.extent = { static_cast<uint32_t>(aw), static_cast<uint32_t>(ah), 1 };
+    ici.format = VK_FORMAT_R8G8B8A8_UNORM;
+    ici.extent = { atlas_w_, atlas_h_, 1 };
     ici.mipLevels = 1; ici.arrayLayers = 1;
     ici.samples = VK_SAMPLE_COUNT_1_BIT;
     ici.tiling = VK_IMAGE_TILING_OPTIMAL;
@@ -620,7 +768,7 @@ bool StudioUI::create_font_atlas() {
             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
     VkBufferImageCopy cp{};
     cp.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-    cp.imageExtent = { static_cast<uint32_t>(aw), static_cast<uint32_t>(ah), 1 };
+    cp.imageExtent = { atlas_w_, atlas_h_, 1 };
     vkCmdCopyBufferToImage(cmd, stage, font_img_, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &cp);
     barrier(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
             VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
@@ -639,9 +787,26 @@ bool StudioUI::create_font_atlas() {
     vci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     vci.image = font_img_;
     vci.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    vci.format = VK_FORMAT_R8_UNORM;
+    vci.format = VK_FORMAT_R8G8B8A8_UNORM;
     vci.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
     if (vkCreateImageView(dev_, &vci, nullptr, &font_view_) != VK_SUCCESS) return false;
+
+    // D3: the reel's persistent thumb staging buffer (host-visible, mapped once)
+    {
+        VkBufferCreateInfo tbci{};
+        tbci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        tbci.size = static_cast<VkDeviceSize>(THUMB_W) * THUMB_H * 4;
+        tbci.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+        if (vkCreateBuffer(dev_, &tbci, nullptr, &thumb_stage_) != VK_SUCCESS) return false;
+        VkMemoryRequirements tmr; vkGetBufferMemoryRequirements(dev_, thumb_stage_, &tmr);
+        VkMemoryAllocateInfo tai{};
+        tai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        tai.allocationSize = tmr.size;
+        tai.memoryTypeIndex = mem_type_host_;
+        if (vkAllocateMemory(dev_, &tai, nullptr, &thumb_stage_mem_) != VK_SUCCESS) return false;
+        vkBindBufferMemory(dev_, thumb_stage_, thumb_stage_mem_, 0);
+        vkMapMemory(dev_, thumb_stage_mem_, 0, tbci.size, 0, &thumb_stage_map_);
+    }
 
     VkSamplerCreateInfo sci{};
     sci.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -757,14 +922,15 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT; stages[1].module = fm; stages[1].pName = "main";
 
     VkVertexInputBindingDescription vbd{ 0, sizeof(Vert), VK_VERTEX_INPUT_RATE_VERTEX };
-    VkVertexInputAttributeDescription vad[3]{};
+    VkVertexInputAttributeDescription vad[4]{};
     vad[0] = { 0, 0, VK_FORMAT_R32G32_SFLOAT,       0  };
     vad[1] = { 1, 0, VK_FORMAT_R32G32_SFLOAT,       8  };
     vad[2] = { 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, 16 };
+    vad[3] = { 3, 0, VK_FORMAT_R32_SFLOAT,          32 };   // D3: 0 font, 1 reel thumb
     VkPipelineVertexInputStateCreateInfo vin{};
     vin.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vin.vertexBindingDescriptionCount = 1; vin.pVertexBindingDescriptions = &vbd;
-    vin.vertexAttributeDescriptionCount = 3; vin.pVertexAttributeDescriptions = vad;
+    vin.vertexAttributeDescriptionCount = 4; vin.pVertexAttributeDescriptions = vad;
     VkPipelineInputAssemblyStateCreateInfo ia{};
     ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -835,6 +1001,12 @@ void StudioUI::shutdown() {
     if (font_samp_ != VK_NULL_HANDLE) vkDestroySampler(dev_, font_samp_, nullptr);
     if (font_view_ != VK_NULL_HANDLE) vkDestroyImageView(dev_, font_view_, nullptr);
     if (font_img_ != VK_NULL_HANDLE) { vkDestroyImage(dev_, font_img_, nullptr); vkFreeMemory(dev_, font_mem_, nullptr); }
+    if (thumb_stage_ != VK_NULL_HANDLE) {
+        vkUnmapMemory(dev_, thumb_stage_mem_);
+        vkDestroyBuffer(dev_, thumb_stage_, nullptr);
+        vkFreeMemory(dev_, thumb_stage_mem_, nullptr);
+        thumb_stage_ = VK_NULL_HANDLE; thumb_stage_map_ = nullptr;
+    }
     if (rp_ != VK_NULL_HANDLE) vkDestroyRenderPass(dev_, rp_, nullptr);
     dev_ = VK_NULL_HANDLE;
 }

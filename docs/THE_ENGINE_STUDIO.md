@@ -173,3 +173,39 @@ blue), the looping playhead, and the live readout `t / total | joint θ | state`
   rom_flex, joints_loaded}` out. The dyad can now pose the body by name and
   number, exactly.
 - **Next per the menu:** D3 reel (capture → filmstrip with metadata), then B3.
+
+## SHIPPED — D3: THE REEL (2026-08-29)
+
+A capture is only evidence if it is inspectable in the window where judgment
+happens. Every `/frame` (or `/stream`) grab now lands in the REEL — a fifth
+panel docked above the timeline — as a filmstrip tile with its metadata
+composed AT GRAB TIME on the render thread: show t, joint, theta, camera
+(r/theta/phi), light direction, wall timestamp. A ring of 12, newest first,
+oldest evicted. The engine owns the ledger (`GET /reel`, newest-first JSON);
+the UI owns the pixels. One RGBA atlas holds font cells (top) + the 4x3
+thumbnail grid (bottom); one descriptor, one draw call, a per-vertex flag picks
+font-coverage vs thumbnail-RGBA in the fragment shader.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_reel_verify.{py,log}`,
+  `_d3_printwindow.png` — captured through PrintWindow because the operator's
+  game owned the foreground; we do not fight the operator for their screen):
+  - **A — /frame parity:** md5-identical with the reel live (studio on/off).
+    The dyad channel stays pixel-clean. PASS
+  - **B — metadata = grab-time truth:** reel theta == /show theta to 0.001 deg;
+    joint, show_t, camera, light, wall stamp all equal the independent reads.
+    PASS at two posed grabs (spine_upper T=10.73, spine_lower T=17.5)
+  - **C — the ring:** count caps at 12, window = last 12 grabs, newest-first
+    order verified by seq. PASS
+  - **D — posed captures differ:** distinct md5s; tiles read as distinct poses
+    in the on-screen strip. PASS
+  - **cost:** reel on/off frame-time differential ~0.05 ms (budget 0.5 ms). PASS
+- **Found while building (fixed same session):** the first atlas build smeared
+  every glyph — font cells must be written at the atlas row stride, and the
+  glyph UVs must be over the full atlas, not the font sub-rect. Rule 7 caught
+  it in the first screenshot; the probe could not have.
+- **Found while verifying (environmental, not D3's):** parity testing against a
+  free-running show clock compares two different poses — pause before parity.
+  The probe's own first bug, documented so the next agent doesn't re-pay for it.
+- **Endpoint:** `GET /reel` -> `{count, cap, grabs_total, entries:[{seq, wall,
+  show_t, joint, theta, cam, light}]}` newest first.
+- **Next per the menu:** B3 stage panels (the agent-up-to-speed feature).

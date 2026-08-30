@@ -11,6 +11,7 @@
 #include <string>
 #include <unordered_set>
 #include <atomic>
+#include <ctime>
 
 // ── Minimal GLFW-free Win32 window helpers ─────────────────────────────────────────────
 
@@ -3579,6 +3580,91 @@ bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t
     return true;
 }
 
+// D3: THE REEL — every grab lands. Render thread, called from frame()'s capture
+// readback, so the metadata IS the state at grab time (t, joint, theta, camera,
+// light). The UI gets the pixels; the ledger (reel_json) is the dyad's channel.
+void Engine::reel_note_grab() {
+    if (capture_rgba_.empty() || capture_w_ == 0 || capture_h_ == 0) return;
+    const int TW = StudioUI::THUMB_W, TH = StudioUI::THUMB_H;
+    const uint32_t sw = capture_w_, sh = capture_h_;
+    static std::vector<uint8_t> tb;
+    tb.assign(static_cast<size_t>(TW) * TH * 4, 0);
+    for (int ty = 0; ty < TH; ++ty) {
+        uint32_t y0 = static_cast<uint32_t>(static_cast<uint64_t>(ty) * sh / TH);
+        uint32_t y1 = static_cast<uint32_t>(static_cast<uint64_t>(ty + 1) * sh / TH);
+        if (y1 <= y0) y1 = y0 + 1;
+        for (int tx = 0; tx < TW; ++tx) {
+            uint32_t x0 = static_cast<uint32_t>(static_cast<uint64_t>(tx) * sw / TW);
+            uint32_t x1 = static_cast<uint32_t>(static_cast<uint64_t>(tx + 1) * sw / TW);
+            if (x1 <= x0) x1 = x0 + 1;
+            uint32_t r = 0, g = 0, b = 0, a = 0, n = 0;
+            for (uint32_t y = y0; y < y1 && y < sh; ++y)
+                for (uint32_t x = x0; x < x1 && x < sw; ++x) {
+                    const uint8_t* p = &capture_rgba_[(static_cast<size_t>(y) * sw + x) * 4];
+                    r += p[0]; g += p[1]; b += p[2]; a += p[3]; ++n;
+                }
+            uint8_t* d = &tb[(static_cast<size_t>(ty) * TW + tx) * 4];
+            d[0] = static_cast<uint8_t>(r / n); d[1] = static_cast<uint8_t>(g / n);
+            d[2] = static_cast<uint8_t>(b / n); d[3] = static_cast<uint8_t>(a / n);
+        }
+    }
+
+    ReelEntry e{};
+    e.seq = reel_seq_;
+    {
+        std::time_t now = std::time(nullptr);
+        std::tm tmv{}; localtime_s(&tmv, &now);
+        char wb[32]; std::strftime(wb, sizeof(wb), "%Y-%m-%d %H:%M:%S", &tmv);
+        e.wall = wb;
+    }
+    e.show_t = show_time_.load(std::memory_order_relaxed);
+    e.cam_r = g_cam.radius; e.cam_theta = g_cam.theta; e.cam_phi = g_cam.phi;
+    e.light[0] = frost_light_x_.load(); e.light[1] = frost_light_y_.load(); e.light[2] = frost_light_z_.load();
+    float per = show_period();
+    uint32_t nj = show_joint_count();
+    if (joints_loaded_ && nj) {
+        uint32_t cur = static_cast<uint32_t>(e.show_t / per) % nj;
+        e.joint = show_joint_name(cur);
+        e.theta = show_current_theta();
+    }
+
+    char l1[96], l2[96], l3[128];
+    if (!e.joint.empty()) snprintf(l1, sizeof(l1), "t%.2f %s", e.show_t, e.joint.c_str());
+    else                  snprintf(l1, sizeof(l1), "t%.2f (no show)", e.show_t);
+    snprintf(l2, sizeof(l2), "%+.1fd  %s", e.theta, e.wall.c_str() + 11);
+    snprintf(l3, sizeof(l3), "r%.1f %.2f/%.2f  L%.2f/%.2f/%.2f",
+             e.cam_r, e.cam_theta, e.cam_phi, e.light[0], e.light[1], e.light[2]);
+    ui_.reel_push(tb.data(), l1, l2, l3);
+
+    {
+        std::lock_guard<std::mutex> lk(reel_mutex_);
+        reel_entries_.push_back(e);
+        while (reel_entries_.size() > static_cast<size_t>(StudioUI::REEL_MAX))
+            reel_entries_.erase(reel_entries_.begin());
+    }
+    ++reel_seq_;
+}
+
+std::string Engine::reel_json() const {
+    std::lock_guard<std::mutex> lk(reel_mutex_);
+    std::string s = "{\"count\":" + std::to_string(reel_entries_.size())
+                  + ",\"cap\":" + std::to_string(StudioUI::REEL_MAX)
+                  + ",\"grabs_total\":" + std::to_string(reel_seq_) + ",\"entries\":[";
+    for (size_t i = reel_entries_.size(); i-- > 0;) {   // newest first
+        const ReelEntry& e = reel_entries_[i];
+        char eb[512];
+        snprintf(eb, sizeof(eb),
+            "{\"seq\":%llu,\"wall\":\"%s\",\"show_t\":%.6f,\"joint\":\"%s\",\"theta\":%.4f,"
+            "\"cam\":[%.4f,%.4f,%.4f],\"light\":[%.3f,%.3f,%.3f]}",
+            static_cast<unsigned long long>(e.seq), e.wall.c_str(), e.show_t, e.joint.c_str(),
+            e.theta, e.cam_r, e.cam_theta, e.cam_phi, e.light[0], e.light[1], e.light[2]);
+        s += eb;
+        if (i) s += ",";
+    }
+    s += "]}";
+    return s;
+}
+
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
@@ -4327,6 +4413,7 @@ bool Engine::frame() {
         }
         vkUnmapMemory(device_, capture_staging_mem_);
         capture_ready_.store(true);
+        reel_note_grab();   // D3: every grab lands in the reel
     }
     // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
     // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.

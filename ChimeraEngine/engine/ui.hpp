@@ -69,11 +69,12 @@ public:
 
 private:
     // ── draw list (immediate mode: rebuilt every frame) ──
-    struct Vert { float x, y, u, v, r, g, b, a; };
+    struct Vert { float x, y, u, v, r, g, b, a, flags; };  // flags: 0 font, 1 reel thumb (D3)
     std::vector<Vert> verts_;
     void rect(float x, float y, float w, float h, float r, float g, float b, float a);
     void rect_outline(float x, float y, float w, float h, float t, float r, float g, float b, float a);
     void text(float x, float y, const std::string& s, float r, float g, float b, float a);
+    void thumb(float x, float y, float w, float h, int slot);   // D3: a reel tile's image
 
     // ── panels (A2: edge-docked, collapsible, drag-resizable — Blender's area law) ──
     struct Panel {
@@ -85,12 +86,14 @@ private:
     Panel left_ { 300.f, 26.f, 0.45f, false };  // STUDIO panel (left, below the strip)
     Panel right_{ 330.f, 26.f, 0.45f, false };  // STATUS panel (right, below the strip)
     Panel bottom_{118.f, 26.f, 0.35f, false };  // D1: the TIMELINE (bottom, between left/right)
-    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead
+    Panel reel_ { 172.f, 26.f, 0.40f, false };  // D3: the REEL (above the timeline)
+    int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead, 6 reel
     bool  hit_strip_title(int x, int y) const;
     bool  hit_left_title(int x, int y) const;
     bool  hit_right_title(int x, int y) const;
     bool  hit_bottom_title(int x, int y) const;
-    void  layout(uint32_t w, uint32_t h, float out_rects[4][4]) const;  // strip, left, right, bottom
+    bool  hit_reel_title(int x, int y) const;
+    void  layout(uint32_t w, uint32_t h, float out_rects[5][4]) const;  // strip, left, right, bottom, reel
 
     // ── clickable controls (D1: rebuilt every frame by prepare, hit-tested on click) ──
     struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed
@@ -119,6 +122,14 @@ public:
     }
     float scrub_time_at(int x) const;            // map a cursor x to a time on the bar
 
+    // ── D3: THE REEL — every /frame grab lands here (the engine pushes; the UI draws) ──
+    static const int REEL_MAX = 12, THUMB_W = 384, THUMB_H = 216;
+    struct ReelTile { bool used = false; std::string l1, l2, l3; };
+    // Render thread only. rgba = THUMB_W*THUMB_H*4 bytes, RGBA8. Slot = seq % REEL_MAX.
+    void reel_push(const uint8_t* rgba, const std::string& l1,
+                   const std::string& l2, const std::string& l3);
+    int  reel_count() const { return reel_count_; }
+
 private:
 
     // ── board file polling (the repo's gate truth, read never owned) ──
@@ -145,6 +156,8 @@ private:
     VkDescriptorPool dpool_ = VK_NULL_HANDLE;
     VkDescriptorSet  dset_  = VK_NULL_HANDLE;
     // font atlas (GDI-rasterized monospace — no vendored font files, no deps)
+    // D3: ONE RGBA8 image — font cells up top (rgb=white, a=coverage), the
+    // reel's 4x3 thumbnail grid below. One descriptor, one draw call.
     VkImage        font_img_  = VK_NULL_HANDLE;
     VkDeviceMemory font_mem_  = VK_NULL_HANDLE;
     VkImageView    font_view_ = VK_NULL_HANDLE;
@@ -152,7 +165,17 @@ private:
     float          cell_w_ = 0.f, cell_h_ = 0.f;   // glyph cell px
     float          advance_ = 0.f;                  // monospace advance px
     int            ascent_ = 0;
+    uint32_t       atlas_w_ = 0, atlas_h_ = 0;      // full image incl. thumb grid
     static const int ATLAS_COLS = 16, ATLAS_ROWS = 6;  // chars 32..127 (DEL slot = white)
+    // D3: reel ring (CPU-side tile text + a persistently-mapped staging buffer
+    // that each push copies into its atlas slot with a one-shot submit)
+    ReelTile       tiles_[12];
+    int            reel_count_ = 0;
+    uint64_t       reel_seq_   = 0;
+    VkBuffer       thumb_stage_     = VK_NULL_HANDLE;
+    VkDeviceMemory thumb_stage_mem_ = VK_NULL_HANDLE;
+    void*          thumb_stage_map_ = nullptr;
+    void           thumb_uv(int slot, float& u0, float& v0, float& u1, float& v1) const;
     // dynamic vertex buffer (host-visible, persistently mapped; grown on demand)
     VkBuffer       vbuf_     = VK_NULL_HANDLE;
     VkDeviceMemory vmem_     = VK_NULL_HANDLE;
