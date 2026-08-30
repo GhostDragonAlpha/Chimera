@@ -209,3 +209,60 @@ font-coverage vs thumbnail-RGBA in the fragment shader.
 - **Endpoint:** `GET /reel` -> `{count, cap, grabs_total, entries:[{seq, wall,
   show_t, joint, theta, cam, light}]}` newest first.
 - **Next per the menu:** B3 stage panels (the agent-up-to-speed feature).
+
+---
+
+## SHIPPED — B3: THE STAGE PANELS (2026-08-29)
+
+**Rule 0 — a panel that paraphrases is a panel that lies.**
+- **Statement:** an agent (or the operator) can click any stage node on the
+  strip and read that stage's complete Operating-Manual task envelope — LAW,
+  FALSIFIER, VERDICT, REFEREE TOOL, ARTIFACT, NEXT ACTION — rendered as the
+  pipeline doc's own words, and any word the panel invents or silently drops
+  is a bug by definition.
+- **Prediction:** every one of the 44 status cells (11 stages x 4 columns) and
+  every envelope field the doc holds will round-trip verbatim into the board
+  feed; clicking a node selects it, re-clicking closes it, and the selection
+  is readable over HTTP so an agent can aim a click without eyes.
+- **Falsifiers (named before the build):** (A) any doc cell or envelope field
+  missing or altered in `studio_board.json`; (B) a click at a node's computed
+  center not selecting that stage, or a re-click not closing the panel; (C) a
+  screenshot that shows paraphrase, markup bleed (`**`), or silent truncation
+  — the panel must say when it clips.
+
+**What shipped.** `tools/studio_board.py` parses `docs/THE_BODY_PIPELINE.md`
+into `studio_board.json`: 11 stages, each with its verbatim status cells plus
+`law / falsifier / tool / artifact / spec_title / spec` (bold stripped;
+the `### B7b` spec attaches to B7). The UI registers the strip nodes as hot
+regions; a click selects (white outline), a re-click deselects, and the left
+dock renders the envelope via `text_wrap` — or the workspace menu when nothing
+is selected. New endpoints: `POST /ui_click {x,y}` (queued onto the render
+thread, consumed before `ui_.prepare` in both frame paths) and `GET /studio`
+-> `{on, selected, w, h}` so an agent can compute node centers from the live
+extent and aim its own clicks.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_stage_verify.py`,
+  `_b3_stage_shot2.png`, `_b3_stage_shot3.png` — PrintWindow again, the
+  operator's game still owns the foreground):
+  - **A — verbatim feed:** 11 stages; all 44 cells found verbatim in the doc;
+    envelopes on B5/B6/B7/B8; B5 spec 846 chars verbatim. PASS
+  - **B — click round-trip:** clicks at computed centers select B5, B0, B10;
+    re-click closes; `GET /studio.selected` agrees every time. PASS
+  - **C — the visual read:** VERDICT renders `NEXT` with no markup bleed;
+    overflow ends in `... (clipped - widen this dock or collapse the reel to
+    read on)` and NOT one line more. PASS
+- **Found while verifying (fixed same session):** two honest-lie bugs the
+  first screenshot caught — the `cell` field kept the doc's `**` bold markers
+  (the feed stripped them everywhere else), and the clip indicator was drawn
+  while `text_wrap` kept drawing past it — an indicator that says "clipped"
+  over unclipped text is a lie. `text_wrap` now takes `y_max`: lines past the
+  dock floor are never drawn, but the walk continues so the return value
+  still reports where the text WOULD have ended. Rule 7 (read the screenshot)
+  earned its keep twice more.
+- **Layout note:** the docks yield height to the reel+timeline stack, so the
+  indicator's advice is literal — collapse the reel and the dock grows by the
+  reel's height; widen the dock and the wrap shortens.
+- **Files:** `tools/studio_board.py`, `ChimeraEngine/engine/ui.{hpp,cpp}`,
+  `engine.{hpp,cpp}`, `main.cpp`, this doc.
+- **Next per the menu:** C1 joints editor (theta sliders + gizmo + weight-paint
+  heat overlay), then E1 docs browser, F2/F3.

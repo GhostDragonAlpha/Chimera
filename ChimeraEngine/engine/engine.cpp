@@ -3692,6 +3692,12 @@ bool Engine::frame() {
                            show_speed_.load(), nj, cur, per, show_joint_name(cur),
                            show_current_theta());
     }
+    // B3: consume a queued synthetic click (agents drive the panels over HTTP —
+    // input lands on the render thread, same discipline as the WndProc's)
+    if (ui_click_pending_.exchange(false)) {
+        ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
+        ui_.on_lbutton(0, 0, false);
+    }
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -4453,6 +4459,12 @@ bool Engine::frame_idle_ui() {
         ui_.set_show_clock(t, nj * static_cast<double>(per), show_playing_.load(),
                            show_speed_.load(), nj, cur, per, show_joint_name(cur),
                            show_current_theta());
+    }
+    // B3: consume a queued synthetic click (idle path too — the Studio must
+    // answer even when every 3D path idles)
+    if (ui_click_pending_.exchange(false)) {
+        ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
+        ui_.on_lbutton(0, 0, false);
     }
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;

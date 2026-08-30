@@ -23,6 +23,15 @@ struct StudioStage {
     std::string id;       // "B0" .. "B10"
     std::string name;     // "ACQUIRE" ..
     std::string status;   // green | partial | next | pending | blocked | rolling
+    // B3: the stage's envelope, VERBATIM from docs/THE_BODY_PIPELINE.md (a panel
+    // that paraphrases is a panel that lies)
+    std::string law;        // the Law/method cell
+    std::string tool;       // the referee tool cell
+    std::string artifact;   // the output-artifact cell (with paths)
+    std::string falsifier;  // the gate cell
+    std::string cell;       // the Monkey-status cell (the verdict row)
+    std::string spec_title; // the ### envelope's title, when the doc has one
+    std::string spec;       // the numbered steps (the task envelope itself)
 };
 
 struct StudioBoard {
@@ -57,6 +66,11 @@ public:
     bool wants_mouse(int x, int y);   // cursor over any panel rect?
     bool mouse_captured() const { return drag_kind_ != 0; }
 
+    // B3: the selected stage's panel (-1 = none, the left dock shows the menu).
+    // Set by clicking a strip node (Hot id 100+i); read by /studio GET for agents.
+    int  selected_stage() const { return selected_stage_; }
+    std::string selected_stage_id() const;
+
     // Render thread: poll the board file (mtime, throttled), rebuild the draw
     // list, upload the vertex buffer. Called once per frame BEFORE recording.
     void prepare(uint32_t win_w, uint32_t win_h);
@@ -75,6 +89,12 @@ private:
     void rect_outline(float x, float y, float w, float h, float t, float r, float g, float b, float a);
     void text(float x, float y, const std::string& s, float r, float g, float b, float a);
     void thumb(float x, float y, float w, float h, int slot);   // D3: a reel tile's image
+    // B3: greedy word-wrap at maxc columns (monospace: arithmetic); splits on
+    // newlines first. Lines whose top is past y_max are NOT drawn, but the walk
+    // continues — the returned y is where the text WOULD end, so callers can
+    // detect clipping honestly. Returns the y of the NEXT free line.
+    float text_wrap(float x, float y, const std::string& s, size_t maxc,
+                    float r, float g, float b, float a, float y_max = 1e30f);
 
     // ── panels (A2: edge-docked, collapsible, drag-resizable — Blender's area law) ──
     struct Panel {
@@ -96,9 +116,10 @@ private:
     void  layout(uint32_t w, uint32_t h, float out_rects[5][4]) const;  // strip, left, right, bottom, reel
 
     // ── clickable controls (D1: rebuilt every frame by prepare, hit-tested on click) ──
-    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed
+    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed; 100+i = strip node i (B3)
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
+    int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
 
     // ── the show clock's view (D1: pushed by the Engine every frame — the UI never owns it) ──
     double clk_t_ = 0.0, clk_total_ = 0.0, clk_speed_ = 1.0, clk_theta_ = 0.0;

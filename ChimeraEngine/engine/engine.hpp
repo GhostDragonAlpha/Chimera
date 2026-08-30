@@ -371,7 +371,19 @@ private:
     std::vector<ReelEntry> reel_entries_;   // newest last, capped at StudioUI::REEL_MAX
     uint64_t reel_seq_ = 0;
     void reel_note_grab();                  // render thread: thumbnail + ledger at grab time
-
+public:
+    // B3: a queued synthetic click (HTTP thread posts, render thread consumes —
+    // the same discipline as g_pending_resize: input lands on the render thread)
+    void queue_ui_click(int x, int y) {
+        ui_click_x_.store(x); ui_click_y_.store(y); ui_click_pending_.store(true);
+    }
+    // The layout space the panels live in (GET /studio reports it so agents can
+    // aim synthetic clicks without a /frame grab — idle mode has no capture).
+    uint32_t win_w() const { return extent_.width; }
+    uint32_t win_h() const { return extent_.height; }
+private:
+    std::atomic<int>  ui_click_x_{0}, ui_click_y_{0};
+    std::atomic<bool> ui_click_pending_{false};
     // ── GPU bitonic sort (back-to-front splat ordering, no CPU in the per-frame path) ──
     VkShaderModule        sort_mod_ = VK_NULL_HANDLE;
     VkPipeline            sort_pipe_ = VK_NULL_HANDLE;

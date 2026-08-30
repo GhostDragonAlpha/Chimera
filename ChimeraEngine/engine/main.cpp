@@ -1152,6 +1152,28 @@ int main(int argc, char** argv) {
             body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
             content_type = "application/json";
         } else if (p == "/studio" && method == "GET") {
+            // B3: the panel state for agents — visibility + the selected stage
+            // + the layout space (synthetic clicks aim in client pixels)
+            if (g_engine) {
+                std::string sel = g_engine->ui_.selected_stage_id();
+                body = std::string("{\"on\":") + (g_engine->ui_.visible ? "true" : "false")
+                     + ",\"selected\":" + (sel.empty() ? "null" : "\"" + sel + "\"")
+                     + ",\"w\":" + std::to_string(g_engine->win_w())
+                     + ",\"h\":" + std::to_string(g_engine->win_h()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/ui_click" && method == "POST") {
+            // B3: a synthetic click, queued onto the render thread (the same
+            // discipline as the WndProc's) — agents drive panels over HTTP.
+            if (g_engine) {
+                g_engine->queue_ui_click(static_cast<int>(get_float(req_body, "x", 0.0f)),
+                                         static_cast<int>(get_float(req_body, "y", 0.0f)));
+            }
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/studio" && method == "GET") {
             body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
             content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {

@@ -54,15 +54,37 @@ def classify(cell: str) -> str:
 def parse_pipeline(doc: Path):
     text = doc.read_text(encoding="utf-8")
     stages = []
-    # The B0-B10 table rows: | **B5** | ANATOMY REFEREE | ... | Monkey status |
+    # The B0-B10 table rows: | **B5** | NAME | law | tool | artifact | gate | status |
+    # B3 (the stage panel): every cell is the envelope — law, referee tool,
+    # artifact path, falsifier — VERBATIM. A panel that paraphrases is a panel
+    # that lies; the JSON carries the doc's own words or nothing.
     for m in re.finditer(r"^\|\s*\*\*(B\d+)\*\*\s*\|([^|]+)\|(.*)\|$",
                          text, flags=re.MULTILINE):
         sid = m.group(1)
         name = m.group(2).strip()
         cells = [c.strip() for c in m.group(3).split("|")]
         status_cell = cells[-1] if cells else ""
+        # strip the doc's bold markers for on-screen rendering (the words stay verbatim)
+        clean = [re.sub(r"\*\*", "", c) for c in cells]
         stages.append({"id": sid, "name": name, "status": classify(status_cell),
-                       "cell": status_cell})
+                       "cell": clean[-1] if clean else "",
+                       "law":      clean[0] if len(clean) > 0 else "",
+                       "tool":     clean[1] if len(clean) > 1 else "",
+                       "artifact": clean[2] if len(clean) > 2 else "",
+                       "falsifier": clean[3] if len(clean) > 3 else ""})
+
+    # The stage-spec envelopes (### B5 — ... sections): the numbered steps an
+    # agent executes. "B7b" attaches to stage B7 (its title stays verbatim).
+    specs = {}
+    for m in re.finditer(r"^### (B\d+\w?)\s*—\s*(.+?)\n(.*?)(?=^### |\n## |\Z)",
+                         text, flags=re.MULTILINE | re.DOTALL):
+        spec_id = re.match(r"B\d+", m.group(1)).group(0)
+        body = re.sub(r"\*\*", "", m.group(3).strip())   # same display-strip as the cells
+        specs[spec_id] = {"title": m.group(2).strip(), "body": body}
+    for s in stages:
+        sp = specs.get(s["id"])
+        s["spec_title"] = sp["title"] if sp else ""
+        s["spec"] = sp["body"] if sp else ""
 
     # The "Monkey status board" section is the doc's own summary — it OUTRANKS
     # per-cell prose (B0's cell mentions a *teddy* gate pending the operator;
@@ -115,7 +137,10 @@ def main() -> int:
         return 1
 
     board = {
-        "stages": [{"id": s["id"], "name": s["name"], "status": s["status"]}
+        "stages": [{"id": s["id"], "name": s["name"], "status": s["status"],
+                    "law": s["law"], "tool": s["tool"], "artifact": s["artifact"],
+                    "falsifier": s["falsifier"], "cell": s["cell"],
+                    "spec_title": s["spec_title"], "spec": s["spec"]}
                    for s in stages],
         "standing": standing_rule(stages),
         "source": "docs/THE_BODY_PIPELINE.md",

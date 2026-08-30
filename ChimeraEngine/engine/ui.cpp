@@ -158,12 +158,17 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
         return true;
     }
     // D1: the timeline's buttons (play/pause, frame-step, speed)
+    // B3: the strip's stage nodes (id 100+i) select/deselect the stage panel
     for (const Hot& h : hots_) {
         if (x >= h.x && x < h.x + h.w && y >= h.y && y < h.y + h.h) {
             if (h.id == 1 && cb_play_toggle_) cb_play_toggle_();
             if (h.id == 2 && cb_step_) cb_step_(-1);
             if (h.id == 3 && cb_step_) cb_step_(+1);
             if (h.id == 4 && cb_speed_cycle_) cb_speed_cycle_();
+            if (h.id >= 100) {
+                int i = h.id - 100;
+                selected_stage_ = (selected_stage_ == i) ? -1 : i;
+            }
             return true;
         }
     }
@@ -198,16 +203,27 @@ void StudioUI::poll_board() {
     StudioBoard b;
     b.standing = ui_json_string(body, "standing");
     b.updated  = ui_json_string(body, "updated");
-    // stages: walk the flat "id"/"name"/"status" triples the tool writes
+    // stages: walk the flat per-stage objects the tool writes (B3: the envelope
+    // cells ride along — law, tool, artifact, falsifier, cell, spec)
     size_t cur = 0;
     for (int i = 0; i < 32; ++i) {
         size_t pos = body.find("\"id\"", cur);
         if (pos == std::string::npos) break;
         StudioStage s;
-        s.id     = ui_json_string(body, "id", pos);
-        s.name   = ui_json_string(body, "name", pos);
-        s.status = ui_json_string(body, "status", pos);
+        s.id        = ui_json_string(body, "id", pos);
+        s.name      = ui_json_string(body, "name", pos);
+        s.status    = ui_json_string(body, "status", pos);
+        s.law       = ui_json_string(body, "law", pos);
+        s.tool      = ui_json_string(body, "tool", pos);
+        s.artifact  = ui_json_string(body, "artifact", pos);
+        s.falsifier = ui_json_string(body, "falsifier", pos);
+        s.cell      = ui_json_string(body, "cell", pos);
+        s.spec_title = ui_json_string(body, "spec_title", pos);
+        s.spec      = ui_json_string(body, "spec", pos);
         if (s.id.empty()) break;
+        // JSON escapes newlines in the spec body; restore them for the wrap
+        for (size_t p2 = s.spec.find("\\n"); p2 != std::string::npos; p2 = s.spec.find("\\n", p2))
+            s.spec.replace(p2, 2, 1, '\n');
         b.stages.push_back(s);
         cur = pos + 4;
     }
@@ -273,6 +289,37 @@ void StudioUI::text(float x, float y, const std::string& s, float r, float g, fl
         verts_.insert(verts_.end(), v, v + 6);
         pen += advance_;
     }
+}
+
+// B3: greedy word-wrap (monospace arithmetic; newlines are hard breaks first).
+float StudioUI::text_wrap(float x, float y, const std::string& s, size_t maxc,
+                          float r, float g, float b, float a, float y_max) {
+    if (maxc < 8) maxc = 8;
+    size_t start = 0;
+    while (start < s.size()) {
+        size_t nl = s.find('\n', start);
+        std::string para = s.substr(start, nl == std::string::npos ? nl : nl - start);
+        start = (nl == std::string::npos) ? s.size() : nl + 1;
+        if (para.empty()) { y += cell_h_; continue; }   // blank line stays a blank line
+        while (!para.empty()) {
+            if (para.size() <= maxc) {
+                if (y <= y_max) text(x, y, para, r, g, b, a);
+                y += cell_h_; break;
+            }
+            size_t cut = para.rfind(' ', maxc);
+            if (cut == std::string::npos || cut == 0) cut = maxc;
+            if (y <= y_max) text(x, y, para.substr(0, cut), r, g, b, a);
+            y += cell_h_;
+            para = para.substr(cut + (cut < para.size() && para[cut] == ' ' ? 1 : 0));
+        }
+    }
+    return y;
+}
+
+std::string StudioUI::selected_stage_id() const {
+    if (selected_stage_ < 0 || selected_stage_ >= static_cast<int>(board_.stages.size()))
+        return "";
+    return board_.stages[selected_stage_].id;
 }
 
 // D3: a reel tile's image — flags=1, UVs into the thumbnail grid below the font cells.
@@ -399,8 +446,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 const StudioStage& s = board_.stages[i];
                 float x = pad + i * (bw + gap);
                 float cr, cg, cb; status_color(s.status, cr, cg, cb);
+                bool sel = (static_cast<int>(i) == selected_stage_);
                 rect(x, y0, bw, node_h, cr * 0.35f, cg * 0.35f, cb * 0.35f, 0.92f);
-                rect_outline(x, y0, bw, node_h, s.status == "next" ? 3.f : 1.f, cr, cg, cb, 1.f);
+                rect_outline(x, y0, bw, node_h, s.status == "next" ? 3.f : (sel ? 2.f : 1.f), cr, cg, cb, 1.f);
+                if (sel) rect_outline(x - 2, y0 - 2, bw + 4, node_h + 4, 1.5f, 1.f, 1.f, 1.f, 1.f);
+                hots_.push_back({ x, y0, bw, node_h, 100 + static_cast<int>(i) });   // B3: click -> its panel
                 // id centered, name under it (monospace: centering is arithmetic)
                 float idw = s.id.size() * advance_;
                 text(x + (bw - idw) * 0.5f, y0 + 4, s.id, 1.f, 1.f, 1.f, 1.f);
@@ -424,11 +474,52 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         }
     }
 
-    // ── the STUDIO panel (left): the menu + the join's provenance ──
+    // ── the STUDIO panel (left): the menu + the join's provenance — or, when a
+    // strip node is selected (B3), the stage's task envelope, VERBATIM ──
     rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.07f, 0.08f, 0.11f, 0.85f);
     rect(R[1][0], R[1][1], R[1][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
-    text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f, left_.collapsed ? "+" : "STUDIO", TR, TG, TB, 1.f);
-    if (!left_.collapsed) {
+    const bool have_sel = selected_stage_ >= 0
+                       && selected_stage_ < static_cast<int>(board_.stages.size());
+    text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f,
+         left_.collapsed ? "+" : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"),
+         TR, TG, TB, 1.f);
+    if (!left_.collapsed && have_sel) {
+        // B3: the Operating Manual's task envelope, rendered. Every word below
+        // is the pipeline doc's own; the panel invents nothing.
+        const StudioStage& st = board_.stages[selected_stage_];
+        float cr, cg, cb; status_color(st.status, cr, cg, cb);
+        size_t maxc = static_cast<size_t>((R[1][2] - 20) / advance_);
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        auto row = [&](const char* label, const std::string& body, float r, float g, float b) {
+            if (y > y_max) return;
+            text(x, y, label, 0.62f, 0.66f, 0.74f, 1.f); y += lh;
+            y = text_wrap(x + 8, y, body, maxc - 2, r, g, b, 1.f, y_max); y += 4;
+        };
+        text(x, y, st.status, cr, cg, cb, 1.f);
+        std::string hint = "  [click the node again to close]";
+        text(x + st.status.size() * advance_ + 4, y, hint, 0.45f, 0.47f, 0.52f, 1.f); y += lh + 6;
+        row("LAW (verbatim):", st.law, TR, TG, TB);
+        row("FALSIFIER (named before the run):", st.falsifier, 1.0f, 0.85f, 0.40f);
+        row("VERDICT (the doc's own row):", st.cell, cr, cg, cb);
+        row("REFEREE TOOL:", st.tool, TR, TG, TB);
+        row("ARTIFACT:", st.artifact, 0.55f, 0.85f, 0.55f);
+        if (!st.spec.empty()) {
+            if (y <= y_max) { text(x, y, "NEXT ACTION (the envelope):", 0.62f, 0.66f, 0.74f, 1.f); y += lh; }
+            float y_end = text_wrap(x + 8, y, st.spec, maxc - 2, TR, TG, TB, 0.95f, y_max);
+            if (y_end > y_max + lh) {
+                // clipped: say so, honestly — the Blender law is that areas yield
+                // space (collapse the reel/timeline or widen the dock to read on)
+                rect(R[1][0], y_max - 2, R[1][2], lh + 4, 0.07f, 0.08f, 0.11f, 0.95f);
+                text(x, y_max, "... (clipped - widen this dock or collapse the reel to read on)",
+                     0.85f, 0.55f, 0.30f, 1.f);
+            }
+            y = y_end;
+        } else if (y <= y_max) {
+            text(x, y, "NEXT ACTION: (no envelope in the doc yet - the row above is the law)",
+                 0.85f, 0.55f, 0.30f, 1.f);
+        }
+    } else if (!left_.collapsed) {
         float x = R[1][0] + 10, y = R[1][1] + 30;
         text(x, y, "the JOIN of engine state + repo truth", 0.55f, 0.58f, 0.65f, 1.f); y += lh + 6;
         text(x, y, board_.loaded ? "board: live (studio_board.json)" : "board: no file yet",
@@ -442,7 +533,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             y += lh;
         }
         y += 6;
-        text(x, y, "next per the menu: D1 timeline + D3 reel", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f, 1.f); y += lh;
+        text(x, y, "next per the menu: B3 stage panels", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
         text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
     }
 
