@@ -675,3 +675,71 @@ is down — an AI cannot fix what it cannot parse.
 - **Next per the menu:** C4 scene outliner (the Godot Scene dock: the live
   systems as a tree with toggles routed through these same endpoints), C2
   inspector, E2 deep links, D5 render-to-MP4, D6 camera bookmarks.
+
+## SHIPPED — C4: THE OUTLINER (2026-08-30)
+
+- **Statement:** the outliner is a LIVE VIEW of engine state, not a copy —
+  every row the dock draws is composed by the ENGINE at read time (one
+  formatting site, `Engine::scene_rows()`) from the same atomics the HTTP
+  endpoints serve, and every toggle routes through the console's one path
+  (`console_exec`), so the panel, the HTTP twin, and the F4 record can never
+  tell three different stories about the same switch.
+- **Prediction (unmeasured at naming time):** the served rows equal the
+  independent endpoint reads at the same configuration for every atom that
+  has an independent read; a `/scene` POST flips the target endpoint within
+  1 s and the F4 tail names the INNER endpoint (not `/scene`); an aimed
+  `/ui_click` at a served rect toggles exactly that row and no other; the
+  view costs < 0.5 ms of frame time.
+- **Falsifiers (named before the build):** (A) any row's state != its
+  independent endpoint read (show, joints, volp, gait, water_clock, frost,
+  chrome — water_vis has no GET twin; its POST echo is the only read, noted
+  not hidden); (B) `/scene` POST fails to flip `/gait` in 1 s, or the F4 tail
+  lacks a mode event naming `POST /gait`; (C) an aimed click at the gait
+  row's served rect fails the off-then-on round-trip, or any OTHER row moves
+  with it; (D) ft_avg(SCENE) - ft_avg(BOARD) >= 0.5 ms; (E) `_stage_verify.py`
+  regresses.
+
+**What shipped.** The SCENE workspace (menu row 1, formerly the parked
+"MODEL" row) opens the outliner in the left dock: ten atoms — `body` and
+`overlay` (status-only: "36815 tris" / "loaded"), then `show`, `joints`,
+`volp`, `gait`, `water_clock`, `water_vis`, `frost`, `chrome` as toggleable
+rows with `[on]`/`[off]` chips, each with a live detail string (the show's
+clock+speed, the joint count, the volp mode, the gait steps+omega, the water
+clock's totals). A click on a toggleable row calls `Engine::scene_toggle`,
+which rebuilds rows from FRESH state at click time (never the pushed view)
+and queues the inner line — `POST /gait {"on":false}` and kin — through
+`console_exec`; the F4 chokepoint then logs the inner endpoint's event with
+its outcome, automatically, because there is no second path. The HTTP twin:
+`GET /scene` serves the same `scene_rows()` plus the row hit-rects (only
+while the dock is in SCENE mode — the aim map for `/ui_click`) and
+`left_mode`; `POST /scene {"id","on"}` queues through `scene_exec` and
+returns the queued line. `/scene` is deliberately NOT an F4 chokepoint kind —
+the inner line logs itself; a double log would be a lie about what happened.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_scene_verify.{py,log}`,
+  ALL PASS first run):
+  - **A:** 7/7 atoms with independent reads matched exactly (show, joints,
+    volp, gait, water_clock, frost, chrome); status rows honest
+    (`body=36815 tris`, `overlay=none`, `volp=no kernel`, `frost=no pack`).
+    PASS
+  - **B:** `POST /scene {"id":"gait","on":true}` queued
+    `POST /gait {"on":true}`, `/gait` flipped in 0.03 s, and the F4 tail's
+    new event was kind=mode `POST /gait 11B -> {"ok":true,...}` — zero
+    `/scene` self-events. PASS
+  - **C:** 10 rects served; the aimed click at the gait row's rect toggled
+    /gait off, then on; no other row moved on either click. PASS
+  - **D:** ft_scene 0.351 ms vs ft_board 0.373 ms — delta -0.022 ms (the
+    view is inside measurement noise). PASS
+  - **E:** `_stage_verify.py` re-run after all of the above — 9/9 PASS.
+    PASS
+- **Seen, kept (honest rendering):** the water clock row shows
+  `inj=0/4294967295` — the endpoint's own uninitialized `inj_target`
+  (UINT32_MAX). The outliner renders the engine's state, not a flattering
+  one; the oddity belongs to the water clock's defaults, not this panel.
+- **Files:** `engine/ui.{hpp,cpp}` (SceneRow, the mode-4 dock, menu row 1,
+  hot range 600+), `engine/engine.{hpp,cpp}` (`scene_rows`/`scene_command`/
+  `scene_exec`/`scene_toggle`, the cb wiring, both push sites),
+  `engine/main.cpp` (GET/POST `/scene`), this doc.
+- **Next per the menu:** C2 inspector, E2 deep links, D5 render-to-MP4, D6
+  camera bookmarks — and the board's own earliest non-green gate, B5 anatomy
+  referee, is what the strip keeps naming.

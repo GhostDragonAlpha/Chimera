@@ -632,6 +632,9 @@ bool Engine::init(const EngineConfig& cfg) {
             // F1: the console issues request lines; the engine's worker owns
             // execution through the SAME handler main wires to the HTTP server
             ui_.cb_console_ = [this](const std::string& line) { console_exec(line); };
+            // C4: the outliner's row toggles — rebuilt from FRESH state at click
+            // time (never the pushed view), routed through the console's one path
+            ui_.cb_scene_toggle_ = [this](int row) { scene_toggle(row); };
             console_thread_ = std::thread([this] { console_worker(); });
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
@@ -1585,6 +1588,81 @@ void Engine::console_exec(const std::string& line) {
         console_q_.push(line);
     }
     console_cv_.notify_one();
+}
+
+// ── C4: THE OUTLINER ──
+// scene_rows() is the ONE formatting site: the left dock draws exactly this,
+// and GET /scene serves exactly this. Every row is composed from live engine
+// state at read time — there is no stored row state to drift.
+std::vector<StudioUI::SceneRow> Engine::scene_rows() {
+    std::vector<StudioUI::SceneRow> rows;
+    auto add = [&](const char* id, const char* label, const std::string& detail,
+                   int state, bool toggleable) {
+        StudioUI::SceneRow r; r.id = id; r.label = label; r.detail = detail;
+        r.state = state; r.toggleable = toggleable; rows.push_back(std::move(r));
+    };
+    {
+        char d[64]; snprintf(d, sizeof(d), has_mesh_ ? "%u tris" : "no mesh",
+                             tri_idx_count_ / 3);
+        add("body", "body", d, has_mesh_ ? 1 : 0, false);
+    }
+    add("overlay", "overlay", has_overlay_ ? "loaded" : "none", has_overlay_ ? 1 : 0, false);
+    {
+        char d[64]; snprintf(d, sizeof(d), "t=%.2fs x%.2f", show_time_.load(),
+                             show_speed_.load());
+        add("show", "show", d, show_playing_.load() ? 1 : 0, true);
+    }
+    {
+        char d[64]; snprintf(d, sizeof(d), "%u joints", j_n_joints_);
+        add("joints", "joints", d, joints_on_.load() != 0 ? 1 : 0, true);
+    }
+    {
+        bool volp = volp_mode_.load() == 1;
+        add("volp", "volp", volp_loaded() ? (volp ? "mode=volp" : "mode=blend") : "no kernel",
+            volp ? 1 : 0, volp_loaded());
+    }
+    {
+        char d[96]; snprintf(d, sizeof(d), "steps=%llu omega=%.2f",
+                             (unsigned long long)gait_steps_total_.load(), gait_omega_.load());
+        add("gait", "gait", d, gait_on_.load() ? 1 : 0, true);
+    }
+    {
+        char d[96]; snprintf(d, sizeof(d), "steps_total=%llu inj=%u/%u",
+                             (unsigned long long)water_clock_steps_total_.load(),
+                             water_clock_inj_count_.load(), water_clock_inj_target_.load());
+        add("water_clock", "water clock", d, water_clock_on_.load() ? 1 : 0, true);
+    }
+    add("water_vis", "water vis", "the field, drawn", water_vis_on_.load() ? 1 : 0, true);
+    add("frost", "frost", frost_loaded_ ? "decode + render" : "no pack",
+        frost_on_.load() ? 1 : 0, frost_loaded_);
+    add("chrome", "chrome", "the studio bar", ui_.bar_on_ ? 1 : 0, true);
+    return rows;
+}
+
+std::string Engine::scene_command(const std::string& id, bool on) {
+    if (id == "show")        return std::string("POST /show {\"playing\":") + (on ? "true" : "false") + "}";
+    if (id == "joints")      return std::string("POST /joints {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "volp")        return std::string("POST /volp {\"mode\":\"") + (on ? "volp" : "blend") + "\"}";
+    if (id == "gait")        return std::string("POST /gait {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "water_clock") return std::string("POST /water_clock {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "water_vis")   return std::string("POST /water_vis {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "frost")       return std::string("POST /frost {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "chrome")      return std::string("POST /studio_chrome {\"on\":") + (on ? "true" : "false") + "}";
+    return "";
+}
+
+std::string Engine::scene_exec(const std::string& id, bool on) {
+    std::string line = scene_command(id, on);
+    if (!line.empty()) console_exec(line);
+    return line;
+}
+
+void Engine::scene_toggle(int row) {
+    std::vector<StudioUI::SceneRow> rows = scene_rows();   // FRESH state at click time
+    if (row < 0 || row >= static_cast<int>(rows.size())) return;
+    const StudioUI::SceneRow& r = rows[row];
+    if (!r.toggleable) return;
+    scene_exec(r.id, r.state == 0);
 }
 
 int Engine::console_pending() {
@@ -4065,6 +4143,8 @@ bool Engine::frame() {
         ui_.set_joints_view(joint_view_scratch_, 0, -1);
         ui_.set_gizmo(false, 0, 0, 0, 0, "");
     }
+    // C4: the outliner's view — composed from live state, one formatting site
+    ui_.set_scene_view(scene_rows());
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -4871,6 +4951,8 @@ bool Engine::frame_idle_ui() {
         ui_.set_joints_view(joint_view_scratch_, 0, -1);
         ui_.set_gizmo(false, 0, 0, 0, 0, "");
     }
+    // C4: the outliner answers in idle too — same one formatting site
+    ui_.set_scene_view(scene_rows());
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);

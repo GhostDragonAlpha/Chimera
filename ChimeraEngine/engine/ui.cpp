@@ -201,12 +201,18 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id >= 300 && h.id < 400) {
                 int i = h.id - 300;          // the workspace rows (A3); three are live so far
                 if (i == 0) { left_mode_ = 0; }                          // BOARD
+                if (i == 1) { left_mode_ = 4; selected_stage_ = -1; }    // SCENE (C4)
                 if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
                 if (i == 7) { left_mode_ = 2; selected_stage_ = -1; }    // DOCS (E1)
                 if (i == 8) { left_mode_ = 3; selected_stage_ = -1; }    // LOG (F4)
             }
             if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
             if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker
+            if (h.id >= 600 && h.id < 700) {                             // C4: the outliner's rows
+                int i = h.id - 600;
+                if (i >= 0 && i < static_cast<int>(scene_.size()) &&
+                    scene_[i].toggleable && cb_scene_toggle_) cb_scene_toggle_(i);
+            }
             return true;
         }
     }
@@ -691,9 +697,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
          left_.collapsed ? "+" : (left_mode_ == 1 ? "JOINTS - the editor (C1)"
             : (left_mode_ == 2 ? "DOCS - the browser (E1)"
             : (left_mode_ == 3 ? "LOG - the recorder (F4)"
-            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")))),
+            : (left_mode_ == 4 ? "SCENE - the outliner (C4)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
+    if (left_mode_ != 4) scene_row_rects_.clear(); // same law for the outliner
     if (!left_.collapsed && left_mode_ == 2) {
         // E1: THE DOCS BROWSER. The five docs the menu names, verbatim (the
         // panel's FNV hash is served over HTTP — a rendered line that is not
@@ -819,6 +827,41 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 y += lh;
             }
         }
+    } else if (!left_.collapsed && left_mode_ == 4) {
+        // C4: THE OUTLINER. Every row is composed by the ENGINE from live state
+        // at read time (one formatting site: Engine::scene_rows()); the panel
+        // only draws. A toggle click routes through the console's one path
+        // (Engine::scene_exec -> console_exec), so the F4 recorder logs the
+        // inner endpoint's event automatically — no parallel mutation path.
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        text(x, y, "the scene's atoms - every row is live engine state",
+             0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "click [on]/[off] = toggle (the console's one path)",
+             0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        scene_row_rects_.assign(scene_.size(), {0.f, 0.f, 0.f, 0.f});
+        const float chip_w = 5 * advance_;
+        for (size_t i = 0; i < scene_.size(); ++i) {
+            if (y > y_max) {
+                text(x, y_max, "... (clipped - widen this dock or collapse the reel to read on)",
+                     0.85f, 0.55f, 0.30f, 1.f);
+                break;
+            }
+            const SceneRow& r = scene_[i];
+            if (r.toggleable) {
+                bool on = r.state != 0;
+                text(x, y, on ? "[on] " : "[off]",
+                     on ? 0.25f : 0.62f, on ? 0.75f : 0.40f, on ? 0.35f : 0.36f, 1.f);
+                hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 600 + static_cast<int>(i) });
+                scene_row_rects_[i] = { x - 2, y - 2, R[1][2] - 20, lh + 4 };
+            } else {
+                text(x, y, " --  ", 0.45f, 0.47f, 0.52f, 1.f);
+            }
+            text(x + chip_w + 6, y, r.label, TR, TG, TB, 1.f);
+            float dx = x + chip_w + 6 + (r.label.size() + 1) * advance_;
+            text(dx, y, r.detail, 0.45f, 0.47f, 0.52f, 1.f);
+            y += lh + 2;
+        }
     } else if (!left_.collapsed && left_mode_ == 1) {
         // C1: THE JOINTS EDITOR. Every row is the pack's own data: name, the
         // derived ROM as the slider's hard range, the live theta from the
@@ -917,18 +960,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
              board_.loaded ? 0.25f : 0.85f, board_.loaded ? 0.75f : 0.55f, board_.loaded ? 0.35f : 0.30f, 1.f); y += lh;
         text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
         text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
-        const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - the editor (C1)", "GAIT    - parked",
+        const char* ws[] = {"BOARD   (this strip)", "SCENE   - the outliner (C4)", "JOINTS  - the editor (C1)", "GAIT    - parked",
                             "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - the browser (E1)",
                             "LOG     - the recorder (F4)"};
         for (int i = 0; i < 9; ++i) {
-            bool live = (i == 0 || i == 2 || i == 7 || i == 8);
+            bool live = (i == 0 || i == 1 || i == 2 || i == 7 || i == 8);
             text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
             if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;
         }
         y += 6;
         text(x, y, "click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f, 1.f); y += lh;
-        text(x, y, "next per the menu: C1 joints, E1 docs, F1 console, F4 log", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "next per the menu: C2 inspector, D5 render-to-MP4, D6 bookmarks", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
         text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
     }
 

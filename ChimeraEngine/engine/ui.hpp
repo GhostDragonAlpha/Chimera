@@ -294,6 +294,20 @@ public:
     void console_result(const std::string& resp);       // engine -> UI, render thread
     void build_console();                       // draw list (called when open)
 
+    // ── C4: THE OUTLINER (the SCENE workspace's left-dock mode, left_mode_ 4) ──
+    // The engine's live systems as a list with working toggles — the Scene-dock
+    // equivalent. The ENGINE composes the rows from its own atomics at read time
+    // (one formatting site for the glass AND the /scene twin — no drift); a
+    // toggle click routes through console_exec — the console's ONE PATH — so the
+    // F4 recorder logs the inner endpoint's event like any mode flip.
+    struct SceneRow { std::string id, label, detail; int state = 0; bool toggleable = false; };
+    std::vector<SceneRow> scene_;
+    std::vector<std::array<float, 4>> scene_row_rects_;   // prepare-owned (aiming)
+    std::function<void(int)> cb_scene_toggle_;            // row index -> the engine
+    void set_scene_view(std::vector<SceneRow> rows) { scene_ = std::move(rows); }
+    const std::vector<SceneRow>& scene_view() const { return scene_; }
+    const std::vector<std::array<float, 4>>& scene_rects() const { return scene_row_rects_; }
+
     // ── F4: THE RECORDER's ring — the LOG stream (left dock mode 3) ──
     // The engine pushes each event the moment it happens; the dock draws the
     // tail, newest at the bottom. The FILE holds everything — the stream is

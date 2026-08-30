@@ -1502,6 +1502,70 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/scene" && method == "GET") {
+            // C4: the outliner's HTTP twin. The rows are Engine::scene_rows() —
+            // the ONE formatting site, identical to what the left dock draws.
+            // The rects are the aim map for /ui_click (only meaningful while
+            // the dock is in SCENE mode — served empty otherwise).
+            if (g_engine) {
+                auto jesc = [](const std::string& s) {
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) {
+                        if (c == '"' || c == '\\') { o += '\\'; o += c; }
+                        else if (c == '\n') o += "\\n";
+                        else if (c == '\r') o += "\\r";
+                        else if (c == '\t') o += "\\t";
+                        else o += c;
+                    }
+                    return o;
+                };
+                auto rows = g_engine->scene_rows();
+                std::string rs;
+                for (size_t i = 0; i < rows.size(); ++i) {
+                    const auto& r = rows[i];
+                    rs += (i ? "," : "");
+                    rs += std::string("{\"id\":\"") + jesc(r.id) + "\",\"label\":\"" + jesc(r.label)
+                        + "\",\"detail\":\"" + jesc(r.detail) + "\",\"state\":" + std::to_string(r.state)
+                        + ",\"toggleable\":" + (r.toggleable ? "true" : "false") + "}";
+                }
+                std::string rects;
+                if (g_engine->ui_.left_mode() == 4) {
+                    const auto& sr = g_engine->ui_.scene_rects();
+                    for (size_t i = 0; i < sr.size(); ++i) {
+                        rects += (i ? "," : "");
+                        char rb[128];
+                        snprintf(rb, sizeof(rb), "[%.1f,%.1f,%.1f,%.1f]", sr[i][0], sr[i][1], sr[i][2], sr[i][3]);
+                        rects += rb;
+                    }
+                }
+                body = std::string("{\"left_mode\":") + std::to_string(g_engine->ui_.left_mode())
+                     + ",\"rows\":[" + rs + "],\"rects\":[" + rects + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/scene" && method == "POST") {
+            // C4: {"id":"gait","on":true} — routes through Engine::scene_exec,
+            // i.e. the console's one path. The inner endpoint's own event is
+            // what the F4 recorder logs; /scene itself is NOT a chokepoint kind
+            // (a double-log would be a lie about what happened).
+            if (g_engine) {
+                std::string id = get_string(req_body, "id");
+                bool on = get_bool(req_body, "on", true);
+                std::string line = g_engine->scene_exec(id, on);
+                auto jesc = [](const std::string& s) {
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) { if (c == '"' || c == '\\') { o += '\\'; o += c; } else o += c; }
+                    return o;
+                };
+                if (!line.empty())
+                    body = std::string("{\"ok\":true,\"queued\":\"") + jesc(line) + "\"}";
+                else
+                    body = std::string("{\"ok\":false,\"error\":\"unknown or untoggleable id\"}");
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";

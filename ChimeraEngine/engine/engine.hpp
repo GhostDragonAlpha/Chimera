@@ -156,6 +156,15 @@ public:
     void console_exec(const std::string& line);
     int  console_pending();
     void console_drain();              // render thread: hand finished responses to the UI
+    // ── C4: THE OUTLINER — the scene's atoms, one formatting site ──
+    // scene_rows() composes every row from live engine state AT READ TIME (the
+    // HTTP twin GET /scene serves exactly this). A toggle never mutates state
+    // directly: scene_exec routes through console_exec (the console's one
+    // path), so the F4 recorder logs the inner endpoint's event automatically.
+    std::vector<StudioUI::SceneRow> scene_rows();
+    std::string scene_command(const std::string& id, bool on);   // the line, or ""
+    std::string scene_exec(const std::string& id, bool on);      // queue it, return the line
+    void        scene_toggle(int row);                           // ui click -> fresh state -> exec
     // ── F4: THE RECORDER — done-is-a-log, as a stream ──
     // Every gate-relevant state change through the api chokepoint (uploads,
     // mode flips, intents) plus externally-posted gate verdicts lands as a
