@@ -440,6 +440,12 @@ bool Engine::init(const EngineConfig& cfg) {
         fprintf(stderr, "Failed to find Vulkan physical device\n");
         return false;
     }
+    // F2: the status bar names the GPU it runs on — the device's OWN name
+    {
+        VkPhysicalDeviceProperties dprops{};
+        vkGetPhysicalDeviceProperties(phys_dev_, &dprops);
+        ui_.set_gpu_name(dprops.deviceName);
+    }
 
     // ── 5. Queue families ────────────────────────────────────────────────────────────
     QueueFamilies qf = find_queue_families(phys_dev_);
@@ -1506,12 +1512,45 @@ void Engine::gait_theta(double& tL, double& tR) const {
     }
 }
 
+// F3: the chrome's HUD rows, pushed from the engine's own state. The gait
+// row's lam is the Owaki surrogate s = max(0, -sin phi), derived by inverting
+// the G1 map on the SAME theta mirror the hinge pose reads — the shader's own
+// load term, no new GPU channel. (G3 real contact load is still blocked
+// upstream — the row says "surrogate" on its face.)
+void Engine::push_hud_state() {
+    if (gait_on_.load(std::memory_order_relaxed) && gait_loaded_) {
+        double tL, tR; gait_theta(tL, tR);
+        double sL = gait_tha_l_ != 0.0 ? (tL - gait_thm_l_) / gait_tha_l_ : 0.0;
+        double sR = gait_tha_r_ != 0.0 ? (tR - gait_thm_r_) / gait_tha_r_ : 0.0;
+        double lamL = (-sL) > 0.0 ? -sL : 0.0;   // lam = max(0, -sin phi)
+        double lamR = (-sR) > 0.0 ? -sR : 0.0;
+        ui_.set_gait_hud(true, lamL, lamR, tL, tR,
+                         gait_steps_total_.load(std::memory_order_relaxed),
+                         gait_omega_.load(std::memory_order_relaxed));
+    } else {
+        ui_.set_gait_hud(false, 0, 0, 0, 0, 0, 0);
+    }
+    if (water_clock_on_.load(std::memory_order_relaxed) && water_loaded_) {
+        ui_.set_water_hud(true,
+                          water_clock_steps_total_.load(std::memory_order_relaxed),
+                          water_clock_dt_.load(std::memory_order_relaxed),
+                          water_clock_inj_target_.load(std::memory_order_relaxed),
+                          water_clock_inj_count_.load(std::memory_order_relaxed));
+    } else {
+        ui_.set_water_hud(false, 0, 0, -1, 0);
+    }
+}
+
 bool Engine::load_gait(const std::vector<double>& consts, const std::vector<int32_t>& edges,
                        const double phi0[8], const double theta0[2]) {
     if (consts.size() < 37 || edges.size() < 16) {
         fprintf(stderr, "gait: bad setup (%zu consts, %zu edges)\n", consts.size(), edges.size());
         return false;
     }
+    // F3: keep the G1 map constants host-side so the HUD's lam row derives
+    // from the theta mirror (consts layout: 25 THM_L 26 THA_L 27 THM_R 28 THA_R)
+    gait_thm_l_ = consts[25]; gait_tha_l_ = consts[26];
+    gait_thm_r_ = consts[27]; gait_tha_r_ = consts[28];
     vkDeviceWaitIdle(device_);
 
     upload_buffer(consts.data(), consts.size() * sizeof(double),
@@ -3791,7 +3830,9 @@ bool Engine::frame() {
         // E1: hidden + idle never reaches prepare() — run the panels' polls
         // anyway or the HTTP twins (board, docs) freeze with the overlay.
         ui_.idle_poll();
-        if (ui_.visible && ui_.ok()) return frame_idle_ui();
+        // F2/F3: the chrome presents hidden+idle too — "always visible" means
+        // the clear + bar frame still renders when the overlay is closed.
+        if ((ui_.visible || ui_.wants_chrome()) && ui_.ok()) return frame_idle_ui();
         return true;
     }
     // D1: push the show clock's view to the timeline panel (the UI never owns time)
@@ -3804,6 +3845,7 @@ bool Engine::frame() {
                            show_speed_.load(), nj, cur, per, show_joint_name(cur),
                            show_current_theta());
     }
+    push_hud_state();   // F3: the gait/water rows, from the engine's own state
     // B3: consume a queued synthetic click (agents drive the panels over HTTP —
     // input lands on the render thread, same discipline as the WndProc's)
     if (ui_click_pending_.exchange(false)) {
@@ -4509,10 +4551,12 @@ bool Engine::frame() {
                        swap_imgs_[sc_idx], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &blit, VK_FILTER_LINEAR);
 
-        if (ui_.visible && ui_.ok()) {
+        if ((ui_.visible || ui_.wants_chrome()) && ui_.ok()) {
             // THE STUDIO: draw the overlay straight into the swapchain image.
             // The render pass takes it from TRANSFER_DST to PRESENT_SRC itself.
             // rt_image_ is never touched — the dyad's /frame stays pixel-clean.
+            // F2/F3: wants_chrome() keeps the status bar + HUD on the glass
+            // even with the overlay closed — "always visible" is literal.
             VkRenderPassBeginInfo urp{};
             urp.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             urp.renderPass        = ui_.render_pass();
@@ -4633,6 +4677,7 @@ bool Engine::frame_idle_ui() {
                            show_speed_.load(), nj, cur, per, show_joint_name(cur),
                            show_current_theta());
     }
+    push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     // B3: consume a queued synthetic click (idle path too — the Studio must
     // answer even when every 3D path idles)
     if (ui_click_pending_.exchange(false)) {

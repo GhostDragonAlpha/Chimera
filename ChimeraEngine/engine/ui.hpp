@@ -224,6 +224,53 @@ public:
     // is closed. 1 Hz each, cheap; the panels read the repo, never write it.
     void        idle_poll() { poll_board(); docs_poll(); }
 
+    // ── F2/F3: THE CHROME — the status bar + HUD, drawn whether the overlay ──
+    // is open or not ("always visible, overlay or no overlay"). Every number
+    // is the engine's own state, pushed by the engine/main — the UI never
+    // derives on its own. The strings served on /studio_chrome are the SAME
+    // strings build_chrome() draws: the HTTP twin cannot drift from the glass.
+    static constexpr float BAR_H = 24.f;
+    static const int FT_RING = 120;             // the histogram's frame-time ring
+    bool     bar_on_ = true;                    // F2 default ON; POST /studio_chrome toggles
+    float    ft_ring_[FT_RING] = {};
+    int      ft_ring_head_ = 0, ft_ring_n_ = 0;
+    uint64_t ft_pushes_ = 0;                    // liveness proof for the twin
+    std::string gpu_name_;                      // pushed once at device pick
+    // F3 rows — pushed per frame by the engine; drawn only while the mode is live
+    struct HudGait  { bool on = false; double lamL = 0, lamR = 0, thL = 0, thR = 0;
+                      uint64_t steps = 0; double omega = 0; } hud_gait_;
+    struct HudWater { bool on = false; uint64_t steps = 0; double dt = 0;
+                      int32_t inj_t = -1, inj_c = 0; } hud_water_;
+    // the chrome's drawn strings (build_chrome fills; the twin serves verbatim)
+    std::string chrome_stage_, chrome_fps_, chrome_gpu_;
+    std::vector<std::string> hud_rows_;
+    void push_frame_time(float ms) {
+        ft_ring_[ft_ring_head_] = ms;
+        ft_ring_head_ = (ft_ring_head_ + 1) % FT_RING;
+        if (ft_ring_n_ < FT_RING) ++ft_ring_n_;
+        ++ft_pushes_;
+    }
+    void set_gpu_name(const std::string& s) { gpu_name_ = s; }
+    void set_gait_hud(bool on, double lL, double lR, double tL, double tR,
+                      uint64_t steps, double om) {
+        hud_gait_.on = on; hud_gait_.lamL = lL; hud_gait_.lamR = lR;
+        hud_gait_.thL = tL; hud_gait_.thR = tR;
+        hud_gait_.steps = steps; hud_gait_.omega = om;
+    }
+    void set_water_hud(bool on, uint64_t steps, double dt, int32_t it, int32_t ic) {
+        hud_water_.on = on; hud_water_.steps = steps; hud_water_.dt = dt;
+        hud_water_.inj_t = it; hud_water_.inj_c = ic;
+    }
+    bool hud_show_on() const { return !joints_.empty() && clk_n_ > 0; }
+    bool wants_chrome() const {
+        return bar_on_ || hud_show_on() || hud_gait_.on || hud_water_.on;
+    }
+    std::string board_standing() const { return board_.standing; }
+    void        build_chrome();               // the bar + HUD draw list (+ twin strings)
+    float fps_f()    const { return fps_; }      // the twin reads the same
+    float ft_avg_f() const { return ft_avg_; }   // numbers the bar draws
+    float ft_max_f() const { return ft_max_; }
+
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,
                         const std::string& name, double theta) {

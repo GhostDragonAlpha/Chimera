@@ -89,21 +89,24 @@ void StudioUI::layout(uint32_t w, uint32_t h, float R[5][4]) const {
     // strip: top, full width. bottom: between left/right, docked low.
     // reel: between left/right, directly above the bottom timeline.
     // left/right: between strip and (bottom + reel), docked to their edges.
+    // F2: the status bar owns the bottom BAR_H px when it's on — every panel
+    // yields to it, so the bar never covers content (and content never the bar).
+    const float hh = static_cast<float>(h) - (bar_on_ ? BAR_H : 0.f);
     float sh = strip_.collapsed ? 22.f : strip_.size;
-    if (sh > h) sh = static_cast<float>(h);
+    if (sh > hh) sh = hh;
     float bh = bottom_.collapsed ? 22.f : bottom_.size;
-    if (bh > h - sh) bh = static_cast<float>(h) - sh;
+    if (bh > hh - sh) bh = hh - sh;
     if (bh < 22.f) bh = 22.f;
     float rh = reel_.collapsed ? 22.f : reel_.size;
-    if (rh > static_cast<float>(h) - sh - bh) rh = static_cast<float>(h) - sh - bh;
+    if (rh > hh - sh - bh) rh = hh - sh - bh;
     if (rh < 22.f) rh = 22.f;
     float lw = left_.collapsed  ? 22.f : left_.size;
     float rw = right_.collapsed ? 22.f : right_.size;
     R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
-    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = static_cast<float>(h) - sh - bh - rh;
-    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = static_cast<float>(h) - sh - bh - rh;
-    R[3][0] = lw; R[3][1] = static_cast<float>(h) - bh; R[3][2] = static_cast<float>(w) - lw - rw; R[3][3] = bh;
-    R[4][0] = lw; R[4][1] = static_cast<float>(h) - bh - rh; R[4][2] = static_cast<float>(w) - lw - rw; R[4][3] = rh;
+    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = hh - sh - bh - rh;
+    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = hh - sh - bh - rh;
+    R[3][0] = lw; R[3][1] = hh - bh; R[3][2] = static_cast<float>(w) - lw - rw; R[3][3] = bh;
+    R[4][0] = lw; R[4][1] = hh - bh - rh; R[4][2] = static_cast<float>(w) - lw - rw; R[4][3] = rh;
 }
 
 bool StudioUI::hit_strip_title(int x, int y) const {
@@ -619,10 +622,13 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     docs_poll();    // E1: unconditional — the HTTP twin stays live in any dock mode
     verts_.clear();
     verts_.reserve(8192);
-    if (!visible) return;
+    hots_.clear();
+    hud_rows_.clear();
+    // F2/F3: the chrome draws whether the overlay is open or not. With the
+    // overlay closed it is the ONLY thing drawn — "always visible" is literal.
+    if (!visible) { build_chrome(); return; }
 
     float R[5][4]; layout(win_w, win_h, R);
-    hots_.clear();
     const float lh = cell_h_;                       // one text line
     const float TR = 0.86f, TG = 0.88f, TB = 0.92f; // text color
 
@@ -987,6 +993,89 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         rect_outline(gizmo_[0] - 5, gizmo_[1] - 5, 10, 10, 1.f, 0.2f, 0.2f, 0.2f, 1.f);
         text(gizmo_[0] + 8, gizmo_[1] - lh * 0.5f, gizmo_label_, 1.0f, 0.85f, 0.40f, 1.f);
     }
+
+    build_chrome();   // F2/F3: the status bar + HUD draw over everything, always
+}
+
+// ── F2/F3: THE CHROME — the engine wearing its own vital signs ─────────────
+// The bar owns the bottom BAR_H px (layout() yields it); the HUD rows sit at
+// the viewport's top-left (right of the left dock when the overlay is open).
+// Every string drawn here is ALSO the string the HTTP twin serves — one
+// formatting site, so the glass and the twin can never disagree.
+
+void StudioUI::build_chrome() {
+    const float lh = cell_h_;
+    const float W = static_cast<float>(ext_.width);
+    const float H = static_cast<float>(ext_.height);
+    char b[256];
+
+    // ── F3: the HUD rows — present only while their mode is live ──
+    float R[5][4]; layout(ext_.width, ext_.height, R);
+    float hx = visible ? R[1][0] + R[1][2] + 10.f : 10.f;
+    float hy = visible ? R[0][3] + 8.f : 10.f;
+    hud_rows_.clear();
+    if (hud_show_on()) {
+        const StudioJoint& j = joints_[clk_cur_ < joints_.size() ? clk_cur_ : 0];
+        snprintf(b, sizeof(b), "SHOW %s  theta %.2f deg  ROM [%.1f .. %.1f]",
+                 clk_name_.c_str(), clk_theta_, j.ext, j.flex);
+        hud_rows_.emplace_back(b);
+    }
+    if (hud_gait_.on) {
+        snprintf(b, sizeof(b), "GAIT lamL %.3f  lamR %.3f (surrogate)  steps %llu  omega %.2f",
+                 hud_gait_.lamL, hud_gait_.lamR,
+                 static_cast<unsigned long long>(hud_gait_.steps), hud_gait_.omega);
+        hud_rows_.emplace_back(b);
+    }
+    if (hud_water_.on) {
+        snprintf(b, sizeof(b), "WATER steps %llu  dt %.3f  inj %d/%d",
+                 static_cast<unsigned long long>(hud_water_.steps), hud_water_.dt,
+                 hud_water_.inj_t, hud_water_.inj_c);
+        hud_rows_.emplace_back(b);
+    }
+    for (size_t i = 0; i < hud_rows_.size(); ++i) {
+        // a dark chip behind each row keeps it readable over any render
+        float rw = static_cast<float>(hud_rows_[i].size()) * advance_ + 16.f;
+        rect(hx - 6, hy - 3, rw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
+        text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
+        hy += lh + 4;
+    }
+
+    // ── F2: the status bar ──
+    if (!bar_on_) { chrome_stage_.clear(); chrome_fps_.clear(); chrome_gpu_.clear(); return; }
+    float by = H - BAR_H;
+    rect(0, by, W, BAR_H, 0.06f, 0.07f, 0.10f, 0.95f);
+    rect(0, by, W, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);   // the studio's accent line
+
+    // left: the board's standing line, verbatim (the current-stage readout)
+    chrome_stage_ = board_.loaded ? board_.standing : "no board file";
+    text(8, by + (BAR_H - lh) * 0.5f, chrome_stage_, 0.30f, 0.60f, 1.00f, 1.f);
+
+    // center: FPS + the frame-time histogram (the ring, oldest -> newest)
+    float hist_w = static_cast<float>(FT_RING) * 3.f;
+    float cx = W * 0.5f - hist_w * 0.5f;
+    snprintf(b, sizeof(b), "%.0f fps  %.2f ms", fps_, ft_avg_);
+    chrome_fps_ = b;
+    text(cx - 8 - static_cast<float>(chrome_fps_.size()) * advance_,
+         by + (BAR_H - lh) * 0.5f, chrome_fps_, 0.86f, 0.88f, 0.92f, 1.f);
+    float hb = by + 3.f, hh = BAR_H - 6.f;
+    rect(cx, hb, hist_w, hh, 0.10f, 0.11f, 0.15f, 0.9f);
+    for (int i = 0; i < ft_ring_n_; ++i) {
+        float v = ft_ring_[(ft_ring_head_ - ft_ring_n_ + i + FT_RING) % FT_RING];
+        float f = v / 33.3f; if (f > 1.f) f = 1.f;
+        float bh2 = f * hh; if (bh2 < 1.f && v > 0.f) bh2 = 1.f;
+        float cr = 0.30f, cg = 0.80f, cb = 0.40f;            // < 16.7 ms: green
+        if (v > 33.3f)      { cr = 0.90f; cg = 0.25f; cb = 0.25f; }
+        else if (v > 16.7f) { cr = 0.95f; cg = 0.75f; cb = 0.20f; }
+        rect(cx + i * 3.f, hb + hh - bh2, 2.f, bh2, cr, cg, cb, 1.f);
+    }
+    // the 16.7 ms line — the 60 fps budget, drawn across the histogram
+    rect(cx, hb + hh * (1.f - 16.7f / 33.3f), hist_w, 1.f, 1.f, 1.f, 1.f, 0.45f);
+
+    // right: the GPU's own name + the swapchain extent
+    snprintf(b, sizeof(b), "%s  %ux%u", gpu_name_.c_str(), ext_.width, ext_.height);
+    chrome_gpu_ = b;
+    text(W - 8 - static_cast<float>(chrome_gpu_.size()) * advance_,
+         by + (BAR_H - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
 }
 
 // ── Vulkan: init / resources / record ─────────────────────────────────────────

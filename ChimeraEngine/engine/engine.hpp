@@ -132,6 +132,12 @@ public:
     // Latest commanded knee angles (deg), written by the gait kernel into a
     // host-visible mirror; read per frame for the hinge pose + /gait status.
     void gait_theta(double& tL, double& tR) const;
+    // F3: the G1 map constants (consts[25..28]), saved at load so the HUD's
+    // Owaki load surrogate lam = max(0, -sin phi) can be derived from the live
+    // theta mirror by inverting theta = THM + THA * sin(phi) — no GPU readback.
+    double gait_thm_l_ = 0.0, gait_tha_l_ = 1.0, gait_thm_r_ = 0.0, gait_tha_r_ = 1.0;
+    // F3: push the chrome's HUD rows (gait/water) — called from both frame paths
+    void push_hud_state();
 
     // ── VOLP-ARAP KNEE KERNEL (H13 — the blend's successor, agent_logs/kimi/volp_arap_01.md)
     // The SHIP-path law as ONE compute dispatch per frame: bi-Laplacian smooth

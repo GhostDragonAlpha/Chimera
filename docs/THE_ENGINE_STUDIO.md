@@ -407,3 +407,82 @@ HTTP twins (board + docs) live on the hidden-and-idle path.
   routing), `engine/ui.{hpp,cpp}` (DocsState, poll/wrap/scroll, picker,
   scrollbar), `engine/main.cpp` (GET/POST /studio_doc), this doc.
 - **Next per the menu:** F2/F3 (status bar + HUD).
+
+## SHIPPED — F2/F3: THE CHROME (status bar + HUD) (2026-08-29)
+
+- **Statement:** the engine wears its own vital signs. A status bar — FPS,
+  a live 120-frame frame-time histogram, the GPU's own name, the board's
+  standing line — is drawn on EVERY presented frame whether the overlay is
+  open or closed, and a HUD shows the live context rows (show: joint +
+  theta + ROM; gait: the Owaki lam surrogate per foot; water: the clock's
+  bookkeeping), each row present only while its mode is live. Every number
+  is the engine's own state, and /studio_chrome serves the SAME strings the
+  glass draws — one formatting site, no drift possible.
+- **Prediction (unmeasured at naming time):** with the overlay closed, the
+  twin still advances (frame pushes increase over 1.5 s); the ring holds
+  exactly 120 frame times with its max inside the engine log's own band;
+  the stage line equals studio_board.json's standing verbatim and the GPU
+  name matches WMI; the SHOW row's paused theta equals /joints within
+  0.05 deg and its ROM equals the pack's; the gait row's lam equals
+  max(0,-(th-THM)/THA) of the row's own thetas to 1e-9; the water steps
+  strictly increase; the bar costs < 0.5 ms.
+- **Falsifiers (named before the build):** (A) any chrome field stale with
+  the overlay closed, or a switchable row visible while its mode is off;
+  (B) ring discipline broken (n != 120, insane values, max outside the
+  log's band); (C) stage/GPU disagreeing with the independent reads;
+  (D) SHOW row missing, theta frozen while playing, paused theta off >
+  0.05 deg, or ROM strings != the pack; (E) lam off the derivation by >
+  1e-9, outside [0,1], or surviving /gait off; (F) water steps not
+  advancing, or the row surviving the clock off; (G) bar cost > 0.5 ms.
+
+**What shipped.** `layout()` yields the bottom 24 px to the bar (every
+panel shrinks honestly; the bar never covers content). The bar: standing
+line left, FPS + the frame-time histogram center (green < 16.7 ms, yellow
+< 33.3, red above, the 60 fps budget line drawn across), GPU name +
+swapchain extent right. The HUD rows draw as dark chips at the viewport's
+top-left (right of the left dock when the overlay is open). The render
+gating now keys on `wants_chrome()` — hidden+idle still presents the
+clear + chrome frame. The gait row's lam is the shader's OWN Owaki load
+term s = max(0,-sin phi), derived host-side by inverting the G1 map on
+the same theta mirror the hinge pose reads (the G1 consts are kept from
+load_gait) — no new GPU channel. New twin: `GET /studio_chrome` (bar
+state, fps/ft, the full-precision ring + gait thetas — %.17g where a
+derivation feeds on them), `POST /studio_chrome {"on":...}` (the bar's
+kill switch — default ON; the toggle exists so the cost is measurable and
+the operator has an out). main pushes every frame's time into the ring.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_chrome_verify.{py,log}`,
+  `f23_chrome_{hidden,open}.png` — PrintWindow; the operator's game owned
+  the screen):
+  - **A:** pushes 299 -> 385 in 1.5 s with the overlay CLOSED; no phantom
+    gait/water rows. PASS
+  - **B:** ring 120/120, values in (8.5, 10.1] ms, max 10.036 inside the
+    log's [8.990, 10.090]. PASS
+  - **C:** stage == the board's standing verbatim; Vulkan "NVIDIA GeForce
+    RTX 4090" == WMI's adapter. PASS
+  - **D:** SHOW row present; ROM (-169.7, 119.2) == the pack's; theta
+    moved 97.87 -> 76.99 while playing; paused, the row's 69.71 ==
+    /joints' 69.706. PASS
+  - **E:** lamL/lamR == the derivation to 1e-9; in [0,1]; the row's string
+    == the formatting of its own served values; the row dies with /gait
+    off. PASS
+  - **F:** water steps 714 -> 1432; the row dies with the clock off. PASS
+  - **G:** no bar 0.367 ms -> bar 0.337 ms (delta -0.030, budget 0.5). PASS
+  - **E1/B3 regressions:** `_docs_verify.py` (updated to read bar_h from
+    the chrome twin — the docks honestly yield 24 px, so the track-page
+    law is now 20.25 lines) and `_stage_verify.py` — ALL PASS both.
+- **Found while verifying (fixed same session):** the twin's gait thetas
+  went out as std::to_string's 6 decimals — the probe's lam check failed
+  at 1e-8 against the engine's full-double lam. The displayed values
+  matched to 6 places; only the derivation caught the rounding. The twin
+  now serves %.17g wherever a derivation feeds on a number.
+- **Named boundaries (honest deviations from the menu text):** water
+  Sigma-V is NOT mirrored live — the clock deliberately avoids readbacks,
+  so Sigma-V stays on the batch verification path (/water_step); the row
+  carries the clock's bookkeeping. Gait lam is the Owaki SURROGATE (the
+  row says so on its face) — G3 real contact load is still blocked
+  upstream (gait.comp line 3).
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`,
+  `engine/ui.{hpp,cpp}`, this doc.
+- **Next per the menu:** E2 deep links, F1 console, F4 recorder — and the
+  rest by value.

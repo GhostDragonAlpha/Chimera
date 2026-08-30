@@ -1275,7 +1275,74 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
-        } else if (p == "/studio" && method == "GET") {
+        } else if (p == "/studio_chrome" && method == "GET") {
+            // F2/F3: the chrome's HTTP twin. The strings served here are the
+            // SAME strings build_chrome() drew last frame — the twin cannot
+            // drift from the glass. Live even with the overlay closed.
+            if (g_engine) {
+                const StudioUI& u = g_engine->ui_;
+                // full precision where the twin's numbers feed a derivation —
+                // std::to_string's 6 decimals would round the gait thetas and
+                // break bit-exact lam checks downstream
+                char dbuf[4][40];
+                snprintf(dbuf[0], 40, "%.17g", u.hud_gait_.lamL);
+                snprintf(dbuf[1], 40, "%.17g", u.hud_gait_.lamR);
+                snprintf(dbuf[2], 40, "%.17g", u.hud_gait_.thL);
+                snprintf(dbuf[3], 40, "%.17g", u.hud_gait_.thR);
+                std::string ring;
+                for (int i = 0; i < u.ft_ring_n_; ++i) {
+                    float v = u.ft_ring_[(u.ft_ring_head_ - u.ft_ring_n_ + i + StudioUI::FT_RING)
+                                         % StudioUI::FT_RING];
+                    ring += (i ? "," : "") + std::to_string(v);
+                }
+                std::string rows;
+                for (size_t i = 0; i < u.hud_rows_.size(); ++i) {
+                    rows += (i ? "," : "");
+                    rows += "\"" + u.hud_rows_[i] + "\"";
+                }
+                body = std::string("{\"bar_on\":") + (u.bar_on_ ? "true" : "false")
+                     + ",\"bar_h\":" + std::to_string(StudioUI::BAR_H)
+                     + ",\"fps\":" + std::to_string(u.fps_f())
+                     + ",\"ft_avg\":" + std::to_string(u.ft_avg_f())
+                     + ",\"ft_max\":" + std::to_string(u.ft_max_f())
+                     + ",\"pushes\":" + std::to_string(static_cast<unsigned long long>(u.ft_pushes_))
+                     + ",\"ring_n\":" + std::to_string(u.ft_ring_n_)
+                     + ",\"ring\":[" + ring + "]"
+                     + ",\"gpu\":\"" + u.gpu_name_ + "\""
+                     + ",\"stage\":\"" + u.chrome_stage_ + "\""
+                     + ",\"fps_str\":\"" + u.chrome_fps_ + "\""
+                     + ",\"gpu_str\":\"" + u.chrome_gpu_ + "\""
+                     + ",\"hud_rows\":[" + rows + "]"
+                     + ",\"gait\":{\"on\":" + (u.hud_gait_.on ? std::string("true") : std::string("false"))
+                     + ",\"lamL\":" + dbuf[0]
+                     + ",\"lamR\":" + dbuf[1]
+                     + ",\"thL\":" + dbuf[2]
+                     + ",\"thR\":" + dbuf[3]
+                     + ",\"steps\":" + std::to_string(static_cast<unsigned long long>(u.hud_gait_.steps))
+                     + ",\"omega\":" + std::to_string(u.hud_gait_.omega) + "}"
+                     + ",\"water\":{\"on\":" + (u.hud_water_.on ? std::string("true") : std::string("false"))
+                     + ",\"steps\":" + std::to_string(static_cast<unsigned long long>(u.hud_water_.steps))
+                     + ",\"dt\":" + std::to_string(u.hud_water_.dt)
+                     + ",\"inj_t\":" + std::to_string(u.hud_water_.inj_t)
+                     + ",\"inj_c\":" + std::to_string(u.hud_water_.inj_c) + "}"
+                     + ",\"show_row\":" + (u.hud_show_on() ? "true" : "false") + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/studio_chrome" && method == "POST") {
+            // F2: the bar's kill switch (default ON — "always visible" is the
+            // ship state; the toggle exists so its cost is measurable and the
+            // operator has an out).
+            if (g_engine) {
+                if (req_body.find("\"on\"") != std::string::npos)
+                    g_engine->ui_.bar_on_ = get_bool(req_body, "on", true);
+                body = std::string("{\"ok\":true,\"bar_on\":")
+                     + (g_engine->ui_.bar_on_ ? "true" : "false") + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
@@ -1554,6 +1621,8 @@ int main(int argc, char** argv) {
         if (ft_ms > ft_max) ft_max = ft_ms;
         if (ft_ms > 16.7) ft_over16++;
         if (ft_ms > 33.3) ft_over33++;
+        // F2: every frame's time lands on the status bar's histogram ring
+        engine.ui_.push_frame_time(static_cast<float>(ft_ms));
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
         // and fought llama-server (65%% GPU) for every slice — each inference burst
