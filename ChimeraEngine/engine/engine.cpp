@@ -175,9 +175,15 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         return 0;
     }
 
-    // Scroll wheel → zoom
+    // Scroll wheel → the docs browser when its dock is under the cursor (E1:
+    // panels are not transparent to input), else camera zoom
     if (msg == WM_MOUSEWHEEL) {
         float delta = static_cast<float>(GET_WHEEL_DELTA_WPARAM(wp)) / 120.0f;
+        if (g_key_engine && g_key_engine->ui_.visible) {
+            POINT pt{ (int)(short)LOWORD(lp), (int)(short)HIWORD(lp) };   // wheel coords are SCREEN
+            ScreenToClient(hwnd, &pt);
+            if (g_key_engine->ui_.on_wheel(pt.x, pt.y, delta)) return 0;
+        }
         g_cam.radius = fmaxf(radius_floor(), fminf(100.0f, g_cam.radius + delta * 2.0f));
         return 0;
     }
@@ -3782,6 +3788,9 @@ bool Engine::frame() {
         // THE STUDIO: with nothing loaded the 3D paths all idle — but the board
         // is exactly what an incoming agent needs to see, so the overlay still
         // presents (clear + UI pass only).
+        // E1: hidden + idle never reaches prepare() — run the panels' polls
+        // anyway or the HTTP twins (board, docs) freeze with the overlay.
+        ui_.idle_poll();
         if (ui_.visible && ui_.ok()) return frame_idle_ui();
         return true;
     }

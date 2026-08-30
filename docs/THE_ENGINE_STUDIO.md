@@ -340,3 +340,70 @@ slider clicks.
 - **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`, `engine/ui.{hpp,cpp}`,
   `engine/shaders/joints.comp`, this doc.
 - **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
+
+## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
+
+- **Statement:** the DOCS workspace renders the repo's own workflow docs
+  VERBATIM — the panel's bytes ARE the file's bytes (provable over HTTP by an
+  FNV-1a/64 hash), live with git (a save re-reads within the poll), and
+  scrollable under both the wheel and an agent's exact POST.
+- **Prediction (unmeasured at naming time):** the served hash matches the
+  file's hash for all five docs; appending one line to a doc moves the served
+  hash within 5 s and restoring the file restores the hash; a POSTed scroll
+  lands to the hundredth; the scrollbar's track click pages by exactly
+  track_height / cell_h lines.
+- **Falsifiers (named before the build):** (A) any of the five docs' served
+  FNV or line count differing from the file's; (B) an appended marker not
+  live in the served hash within 5 s, or the restore not byte-exact (md5);
+  (C) a POSTed scroll not landing exact, the clamp not landing on
+  scroll_max, or the track page off the 21.25-line law; (G) the DOCS dock
+  costing > 0.5 ms a frame over the BOARD dock.
+
+**What shipped.** The DOCS workspace (A3 row 8) is the left dock's mode 2:
+a picker of the five docs the menu names (THE_BODY_PIPELINE,
+THE_ARTISTS_SOLID, THE_MASTER_LIST, THE_TRIANGLE_GUIDE,
+THE_OPERATING_MANUAL), the doc re-wrapped to the dock's live width by the
+same greedy law as text_wrap (the browser and the renderer can never
+disagree about a line break), a scrollbar whose thumb drag and track page
+use the panel's own geometry, and wheel routing in the WndProc (over the
+dock -> the doc; elsewhere -> the camera zoom). Read-only by architecture:
+the panel READS the repo (1 Hz mtime poll, the board's discipline) and
+never writes it. New endpoints: `GET /studio_doc` (doc, path, mtime, the
+verbatim-proof FNV, line counts, scroll and scroll_max) and
+`POST /studio_doc` ({"doc": i} picks; {"scroll": N} lands an exact scroll,
+clamped by the panel's own geometry). `StudioUI::idle_poll()` keeps both
+HTTP twins (board + docs) live on the hidden-and-idle path.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_docs_verify.{py,log}`,
+  `e1_docs_dock.png` — PrintWindow; the operator's game owned the screen):
+  - **A:** all five docs — served FNV == file FNV, served line count ==
+    file line count (121 / 914 / 1076 / 182 / 139). PASS
+  - **B:** marker live in the served hash after 0.75 s; restore live after
+    1.00 s; file md5 byte-exact after the gate. PASS
+  - **C:** scroll 100.000 landed exact; 999999 clamped to scroll_max
+    4822.00; the track click paged 0.00 -> 21.25 (the law: 21.25). PASS
+  - **G:** board 8.930 ms -> docs 8.983 ms (delta +0.053, budget 0.5). PASS
+  - **Idempotence:** the probe run twice back-to-back — ALL PASS both times.
+  - **B3 regression:** `_stage_verify.py` re-run — ALL PASS.
+- **Found while verifying (fixed same session):** `Engine::frame()`'s
+  hidden-and-idle early return (`n_==0 && !has_mesh_`, overlay closed)
+  returned BEFORE `ui_.prepare()` — so the 1 Hz polls never ran and both
+  HTTP twins served a frozen empty state the moment the operator hid the
+  overlay. The B3 board had the same latent freeze; E1's design ("the twin
+  stays live in any dock mode") exposed it. Fix: `idle_poll()` runs the
+  board + docs polls on that path.
+- **Found while verifying (the probe's own bugs, documented so the next
+  agent doesn't re-pay):** the workspace row TOGGLES — a probe that
+  blindly clicks its setup row undoes itself on re-run (click only when
+  not already in the mode); the menu rows exist ONLY in mode 0 with no
+  stage selected (a selected stage shows its envelope instead — close it
+  before aiming at a menu row); and from a workspace the way back to the
+  menu is a STRIP NODE click, not a dock click — gate G's first draft
+  "measured" board-vs-docs by clicking picker rows both times.
+- **Known nit (not a falsifier):** the dock's footer line ("... N more
+  lines") is drawn unwrapped and can overrun the dock's right edge by a few
+  pixels; every content line wraps to the dock width.
+- **Files:** `engine/engine.cpp` (idle_poll on the hidden-idle path, wheel
+  routing), `engine/ui.{hpp,cpp}` (DocsState, poll/wrap/scroll, picker,
+  scrollbar), `engine/main.cpp` (GET/POST /studio_doc), this doc.
+- **Next per the menu:** F2/F3 (status bar + HUD).

@@ -118,7 +118,7 @@ private:
     Panel bottom_{118.f, 26.f, 0.35f, false };  // D1: the TIMELINE (bottom, between left/right)
     Panel reel_ { 172.f, 26.f, 0.40f, false };  // D3: the REEL (above the timeline)
     int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead,
-                            // 6 reel, 7 joint slider (C1)
+                            // 6 reel, 7 joint slider (C1), 8 docs scrollbar (E1)
     bool  hit_strip_title(int x, int y) const;
     bool  hit_left_title(int x, int y) const;
     bool  hit_right_title(int x, int y) const;
@@ -130,6 +130,7 @@ private:
     struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed;
                                                 // 100+i = strip node i (B3); 300+i = workspace row i,
                                                 // 400+i = joint row i (C1: select = gizmo + paint)
+                                                // 500+i = docs picker row i (E1)
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
     int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
@@ -147,6 +148,32 @@ private:
     bool        gizmo_vis_ = false;
     float       gizmo_[4] = {0, 0, 0, 0};       // x0,y0 (J) -> x1,y1 (J + axis * band RMS)
     std::string gizmo_label_;
+
+    // ── E1: THE DOCS BROWSER (the DOCS workspace's left-dock mode, left_mode_ 2) ──
+    // Read-only, verbatim, current with git: the file is re-read when its
+    // mtime moves (1 Hz poll — the board's discipline). The UI READS the repo;
+    // it never writes it. `fnv` is FNV-1a/64 over the file's exact bytes — the
+    // verbatim proof the HTTP twin serves.
+    struct DocsState {
+        std::vector<std::string> paths;             // the menu's five (E1 names them)
+        int      current = 0;
+        std::string raw;                            // the file's exact bytes
+        std::vector<std::string> lines;             // split on '\n'
+        std::vector<std::string> display;           // re-wrapped to the dock width
+        size_t   wrap_cols = 0;                     // the column count `display` was wrapped at
+        uint64_t mtime = 0;
+        uint64_t fnv = 0;
+        float    scroll = 0.f;                      // in DISPLAY lines
+        std::chrono::steady_clock::time_point last_poll{};
+    };
+    DocsState docs_;
+    float    docs_scroll_max_ = 0.f;            // last prepared (visible-dependent)
+    float    docs_sb_track_[4] = {0, 0, 0, 0};  // the scrollbar's live track rect
+    float    docs_sb_thumb_[4] = {0, 0, 0, 0};  // ... and its live thumb rect
+    void     docs_init();                       // fills `paths` (the menu's five, once)
+    void     docs_poll();                       // mtime -> reload -> rewrap (1 Hz)
+    void     docs_rewrap(size_t maxc);          // greedy, same law as text_wrap
+    void     docs_clamp_scroll();
 
     // ── the show clock's view (D1: pushed by the Engine every frame — the UI never owns it) ──
     double clk_t_ = 0.0, clk_total_ = 0.0, clk_speed_ = 1.0, clk_theta_ = 0.0;
@@ -179,6 +206,23 @@ public:
     // (the same discipline as B3's w/h: the UI publishes, never hides)
     float line_height() const { return cell_h_; }
     float advance() const { return advance_; }
+
+    // ── E1: the docs browser's HTTP twin (agents read what the panel shows) ──
+    bool        on_wheel(int x, int y, float delta);   // true = a panel took it
+    int         docs_current() const { return docs_.current; }
+    std::string docs_path() const;
+    uint64_t    docs_mtime() const { return docs_.mtime; }
+    uint64_t    docs_fnv() const { return docs_.fnv; }
+    size_t      docs_line_count() const { return docs_.lines.size(); }
+    size_t      docs_display_count() const { return docs_.display.size(); }
+    float       docs_scroll() const { return docs_.scroll; }
+    float       docs_scroll_max() const { return docs_scroll_max_; }
+    void        docs_set(int idx);
+    void        docs_set_scroll(float s);
+    // E1: the hidden+idle path in Engine::frame() returns BEFORE prepare() —
+    // without this the HTTP twins (board, docs) freeze the moment the overlay
+    // is closed. 1 Hz each, cheap; the panels read the repo, never write it.
+    void        idle_poll() { poll_board(); docs_poll(); }
 
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,

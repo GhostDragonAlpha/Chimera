@@ -75,6 +75,13 @@ void StudioUI::on_mouse_move(int x, int y) {
     } else if (drag_kind_ == 7) {   // C1: dragging a theta slider — every move is an intent
         if (cb_joint_theta_ && drag_joint_ >= 0)
             cb_joint_theta_(drag_joint_, slider_theta_at(drag_joint_, x));
+    } else if (drag_kind_ == 8) {   // E1: dragging the docs scrollbar — thumb follows the cursor
+        float track_h = docs_sb_track_[3] - docs_sb_thumb_[3];
+        if (track_h > 0.f && docs_scroll_max_ > 0.f) {
+            float f = (static_cast<float>(y) - docs_sb_track_[1] - docs_sb_thumb_[3] * 0.5f) / track_h;
+            docs_.scroll = f * docs_scroll_max_;
+            docs_clamp_scroll();
+        }
     }
 }
 
@@ -189,11 +196,32 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 left_mode_ = 0;              // a stage click always shows its envelope (B3)
             }
             if (h.id >= 300 && h.id < 400) {
-                int i = h.id - 300;          // the workspace rows (A3); only two are live so far
+                int i = h.id - 300;          // the workspace rows (A3); three are live so far
                 if (i == 0) { left_mode_ = 0; }                          // BOARD
                 if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
+                if (i == 7) { left_mode_ = 2; selected_stage_ = -1; }    // DOCS (E1)
             }
             if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
+            if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker
+            return true;
+        }
+    }
+    // E1: the docs scrollbar — press on the thumb grabs it (drag_kind_ 8);
+    // a track click pages by exactly the visible line count (the panel's own
+    // geometry, so the HTTP twin can predict it)
+    if (left_mode_ == 2 && !left_.collapsed && docs_sb_track_[3] > 0.f) {
+        if (x >= docs_sb_thumb_[0] - 2 && x <= docs_sb_thumb_[0] + docs_sb_thumb_[2] + 2 &&
+            y >= docs_sb_thumb_[1] && y <= docs_sb_thumb_[1] + docs_sb_thumb_[3]) {
+            drag_kind_ = 8;
+            return true;
+        }
+        if (x >= docs_sb_track_[0] - 2 && x <= docs_sb_track_[0] + docs_sb_track_[2] + 2 &&
+            y >= docs_sb_track_[1] && y <= docs_sb_track_[1] + docs_sb_track_[3]) {
+            float R2[5][4]; layout(ext_.width, ext_.height, R2);
+            float visible_n = (docs_sb_track_[3]) / cell_h_;
+            if (y < docs_sb_thumb_[1]) docs_.scroll -= visible_n;
+            else                       docs_.scroll += visible_n;
+            docs_clamp_scroll();
             return true;
         }
     }
@@ -461,6 +489,119 @@ void StudioUI::reel_push(const uint8_t* rgba, const std::string& l1,
     vkFreeCommandBuffers(dev_, g_ui_cmd_pool, 1, &cmd);
 }
 
+// ── E1: THE DOCS BROWSER — the repo's own workflow docs, verbatim, in a panel ──
+
+void StudioUI::docs_init() {
+    if (!docs_.paths.empty()) return;
+    // The menu (docs/THE_ENGINE_STUDIO.md, E1) names the five. The exe's CWD
+    // is build/Release — the repo root is four levels up.
+    const char* base = "../../../../docs/";
+    docs_.paths = {
+        std::string(base) + "THE_BODY_PIPELINE.md",
+        std::string(base) + "THE_ARTISTS_SOLID.md",
+        std::string(base) + "THE_MASTER_LIST.md",
+        std::string(base) + "THE_TRIANGLE_GUIDE.md",
+        std::string(base) + "THE_OPERATING_MANUAL.md",
+    };
+}
+
+std::string StudioUI::docs_path() const {
+    if (docs_.paths.empty() || docs_.current < 0 ||
+        docs_.current >= static_cast<int>(docs_.paths.size())) return "";
+    return docs_.paths[docs_.current];
+}
+
+static uint64_t fnv1a64(const std::string& s) {
+    uint64_t h = 14695981039346656037ull;
+    for (unsigned char c : s) { h ^= c; h *= 1099511628211ull; }
+    return h;
+}
+
+void StudioUI::docs_poll() {
+    docs_init();
+    auto now = std::chrono::steady_clock::now();
+    if (std::chrono::duration<float>(now - docs_.last_poll).count() < 1.0f) return;
+    docs_.last_poll = now;
+
+    std::string path = docs_path();
+    if (path.empty()) return;
+    WIN32_FILE_ATTRIBUTE_DATA fad{};
+    if (!GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fad)) return;
+    uint64_t mt = (static_cast<uint64_t>(fad.ftLastWriteTime.dwHighDateTime) << 32)
+                | fad.ftLastWriteTime.dwLowDateTime;
+    if (mt == docs_.mtime) return;
+    docs_.mtime = mt;
+
+    // Read the file's EXACT bytes — the browser's one job is to not interpret
+    std::ifstream f(path, std::ios::binary);
+    if (!f.is_open()) return;
+    docs_.raw.assign((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    docs_.fnv = fnv1a64(docs_.raw);
+    docs_.lines.clear();
+    size_t start = 0;
+    while (start <= docs_.raw.size()) {
+        size_t nl = docs_.raw.find('\n', start);
+        std::string line = docs_.raw.substr(start, nl == std::string::npos ? nl : nl - start);
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        docs_.lines.push_back(std::move(line));
+        if (nl == std::string::npos) break;
+        start = nl + 1;
+    }
+    docs_.wrap_cols = 0;      // force a rewrap at the dock's current width
+}
+
+void StudioUI::docs_rewrap(size_t maxc) {
+    if (maxc < 8) maxc = 8;
+    if (docs_.wrap_cols == maxc) return;
+    docs_.wrap_cols = maxc;
+    docs_.display.clear();
+    // The same greedy law as text_wrap — the browser and the renderer can
+    // never disagree about where a line breaks
+    for (const std::string& line : docs_.lines) {
+        std::string para = line;
+        if (para.empty()) { docs_.display.emplace_back(); continue; }
+        while (!para.empty()) {
+            if (para.size() <= maxc) { docs_.display.push_back(para); break; }
+            size_t cut = para.rfind(' ', maxc);
+            if (cut == std::string::npos || cut == 0) cut = maxc;
+            docs_.display.push_back(para.substr(0, cut));
+            para = para.substr(cut + (cut < para.size() && para[cut] == ' ' ? 1 : 0));
+        }
+    }
+    docs_clamp_scroll();
+}
+
+void StudioUI::docs_clamp_scroll() {
+    if (docs_.scroll < 0.f) docs_.scroll = 0.f;
+    if (docs_.scroll > docs_scroll_max_) docs_.scroll = docs_scroll_max_;
+}
+
+void StudioUI::docs_set(int idx) {
+    docs_init();
+    if (idx < 0 || idx >= static_cast<int>(docs_.paths.size())) return;
+    if (idx == docs_.current) return;
+    docs_.current = idx;
+    docs_.mtime = 0;                       // force a reload on the next poll
+    docs_.scroll = 0.f;
+    docs_.last_poll = std::chrono::steady_clock::time_point{};
+    docs_poll();
+}
+
+void StudioUI::docs_set_scroll(float s) {
+    docs_.scroll = s;
+    docs_clamp_scroll();
+}
+
+bool StudioUI::on_wheel(int x, int y, float delta) {
+    if (!visible || left_mode_ != 2 || left_.collapsed) return false;
+    float R[5][4]; layout(ext_.width, ext_.height, R);
+    if (x < R[1][0] || x >= R[1][0] + R[1][2] || y < R[1][1] || y >= R[1][1] + R[1][3])
+        return false;
+    docs_.scroll -= delta * 3.0f;          // one notch = 3 lines (the platform convention)
+    docs_clamp_scroll();
+    return true;
+}
+
 static void status_color(const std::string& s, float& r, float& g, float& b) {
     if      (s == "green")   { r = 0.25f; g = 0.75f; b = 0.35f; }
     else if (s == "partial") { r = 0.90f; g = 0.70f; b = 0.20f; }
@@ -475,6 +616,7 @@ static void status_color(const std::string& s, float& r, float& g, float& b) {
 void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     ext_.width = win_w; ext_.height = win_h;
     poll_board();
+    docs_poll();    // E1: unconditional — the HTTP twin stays live in any dock mode
     verts_.clear();
     verts_.reserve(8192);
     if (!visible) return;
@@ -540,10 +682,75 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                        && selected_stage_ < static_cast<int>(board_.stages.size());
     text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f,
          left_.collapsed ? "+" : (left_mode_ == 1 ? "JOINTS - the editor (C1)"
-            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")),
+            : (left_mode_ == 2 ? "DOCS - the browser (E1)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
-    if (!left_.collapsed && left_mode_ == 1) {
+    if (!left_.collapsed && left_mode_ == 2) {
+        // E1: THE DOCS BROWSER. The five docs the menu names, verbatim (the
+        // panel's FNV hash is served over HTTP — a rendered line that is not
+        // the file's line is a bug by definition). Read-only by architecture.
+        docs_init();
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        for (size_t i = 0; i < docs_.paths.size(); ++i) {
+            std::string nm = docs_.paths[i];
+            nm = nm.substr(nm.find_last_of('/') + 1);
+            if (nm.size() > 3) nm = nm.substr(0, nm.size() - 3);   // strip .md
+            bool cur = static_cast<int>(i) == docs_.current;
+            if (cur) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
+            text(x, y, nm, cur ? 0.45f : 0.42f, cur ? 0.75f : 0.44f, cur ? 1.00f : 0.50f, 1.f);
+            hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 500 + static_cast<int>(i) });
+            y += lh + 2;
+        }
+        char ib[160];
+        snprintf(ib, sizeof(ib), "%zu lines  |  read-only  |  re-read on file change (1 Hz)",
+                 docs_.lines.size());
+        text(x, y, ib, 0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        // the text, wrapped to the CURRENT dock width (narrow the dock and the
+        // wrap follows next frame — the wrap is derived, never stored stale)
+        size_t maxc = static_cast<size_t>((R[1][2] - 20 - 14) / advance_);
+        docs_rewrap(maxc);
+        float text_top = y;
+        int visible_n = static_cast<int>((y_max - text_top) / lh) + 1;
+        if (visible_n < 1) visible_n = 1;
+        docs_scroll_max_ = docs_.display.size() > static_cast<size_t>(visible_n)
+            ? static_cast<float>(docs_.display.size() - visible_n) : 0.f;
+        docs_clamp_scroll();
+        int first = static_cast<int>(docs_.scroll);
+        for (size_t i = static_cast<size_t>(first); i < docs_.display.size(); ++i) {
+            if (y > y_max) break;
+            text(x, y, docs_.display[i], TR, TG, TB, 0.95f);
+            y += lh;
+        }
+        size_t last_shown = first + static_cast<size_t>(visible_n);
+        if (last_shown < docs_.display.size() && y_max >= text_top) {
+            char cb[96];
+            snprintf(cb, sizeof(cb), "... (%zu more lines - wheel / drag the bar)",
+                     docs_.display.size() - last_shown);
+            rect(R[1][0], y_max - 2, R[1][2] - 12, lh + 4, 0.07f, 0.08f, 0.11f, 0.95f);
+            text(x, y_max, cb, 0.85f, 0.55f, 0.30f, 1.f);
+        }
+        // the scrollbar: track + thumb, sized by visible/total (derived, like
+        // every other number in this panel)
+        float sb_x = R[1][0] + R[1][2] - 10;
+        docs_sb_track_[0] = sb_x; docs_sb_track_[1] = text_top;
+        docs_sb_track_[2] = 6.f; docs_sb_track_[3] = y_max + lh - text_top;
+        rect(sb_x, text_top, 6, docs_sb_track_[3], 0.12f, 0.13f, 0.17f, 0.95f);
+        float thumb_h = docs_sb_track_[3];
+        float thumb_y = text_top;
+        if (!docs_.display.empty() && docs_scroll_max_ > 0.f) {
+            thumb_h = docs_sb_track_[3] * static_cast<float>(visible_n)
+                    / static_cast<float>(docs_.display.size());
+            if (thumb_h < 20.f) thumb_h = 20.f;
+            if (thumb_h > docs_sb_track_[3]) thumb_h = docs_sb_track_[3];
+            thumb_y = text_top + (docs_.scroll / docs_scroll_max_)
+                    * (docs_sb_track_[3] - thumb_h);
+        }
+        docs_sb_thumb_[0] = sb_x - 1; docs_sb_thumb_[1] = thumb_y;
+        docs_sb_thumb_[2] = 8.f; docs_sb_thumb_[3] = thumb_h;
+        rect(sb_x - 1, thumb_y, 8, thumb_h, 0.45f, 0.60f, 1.00f, 0.95f);
+    } else if (!left_.collapsed && left_mode_ == 1) {
         // C1: THE JOINTS EDITOR. Every row is the pack's own data: name, the
         // derived ROM as the slider's hard range, the live theta from the
         // joints state buffer. Click a name -> gizmo + weight-paint on that
@@ -642,9 +849,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
         text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
         const char* ws[] = {"BOARD   (this strip)", "MODEL   - parked", "JOINTS  - the editor (C1)", "GAIT    - parked",
-                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - parked"};
+                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - the browser (E1)"};
         for (int i = 0; i < 8; ++i) {
-            bool live = (i == 0 || i == 2);
+            bool live = (i == 0 || i == 2 || i == 7);
             text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
             if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;

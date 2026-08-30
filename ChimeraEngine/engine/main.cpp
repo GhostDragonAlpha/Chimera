@@ -1241,9 +1241,41 @@ int main(int argc, char** argv) {
             }
             body = "{\"ok\":true}";
             content_type = "application/json";
-        } else if (p == "/studio" && method == "GET") {
-            body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
+        } else if (p == "/studio_doc" && method == "GET") {
+            // E1: the docs browser's state for agents — which doc, its file
+            // mtime, and the FNV-1a/64 of the bytes the panel holds. A probe
+            // hashes the file itself; the two MUST match (verbatim = the law).
+            if (g_engine) {
+                char hb[32];
+                snprintf(hb, sizeof(hb), "%016llx",
+                         static_cast<unsigned long long>(g_engine->ui_.docs_fnv()));
+                body = std::string("{\"doc\":") + std::to_string(g_engine->ui_.docs_current())
+                     + ",\"path\":\"" + g_engine->ui_.docs_path() + "\""
+                     + ",\"mtime\":" + std::to_string(static_cast<unsigned long long>(g_engine->ui_.docs_mtime()))
+                     + ",\"fnv\":\"" + hb + "\""
+                     + ",\"n_lines\":" + std::to_string(g_engine->ui_.docs_line_count())
+                     + ",\"n_display\":" + std::to_string(g_engine->ui_.docs_display_count())
+                     + ",\"scroll\":" + std::to_string(g_engine->ui_.docs_scroll())
+                     + ",\"scroll_max\":" + std::to_string(g_engine->ui_.docs_scroll_max()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
             content_type = "application/json";
+        } else if (p == "/studio_doc" && method == "POST") {
+            // E1: agents can't drag — pick a doc ({"doc":i}) or land an exact
+            // scroll ({"scroll":N}, clamped by the panel's own geometry).
+            if (g_engine) {
+                if (req_body.find("\"doc\"") != std::string::npos)
+                    g_engine->ui_.docs_set(static_cast<int>(get_float(req_body, "doc", 0.0f)));
+                if (req_body.find("\"scroll\"") != std::string::npos)
+                    g_engine->ui_.docs_set_scroll(get_float(req_body, "scroll", 0.0f));
+                body = std::string("{\"ok\":true,\"doc\":") + std::to_string(g_engine->ui_.docs_current())
+                     + ",\"scroll\":" + std::to_string(g_engine->ui_.docs_scroll()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/studio" && method == "GET") {
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
