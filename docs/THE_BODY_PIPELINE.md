@@ -19,7 +19,7 @@
 | **B2** | REGISTER | every triangle gets a center; centers hash into derived cubes; dual graph built; cube index ≡ dual neighborhood | chimera `tri_ca` registry | substrate + report | any neighbor missed by the cube ring | DONE (address law 100%) |
 | **B3** | SKELETON | rod cage → collinear chains → joints (the skeleton is a graph, not a list of names) | chimera census | `skeleton/census.json` | any articulation with no census home | DONE (236 bones, 40 joints) |
 | **B4** | FACTORY | per-joint center, axis (bilateral/central law), capsule-contact ROM | chimera factory | `skeleton/factory_rom.json` | F1 symmetry, F2 no-contact, F4 blind spot — recorded, never patched | DONE (19 joints) |
-| **B5** | ANATOMY REFEREE | ligament/muscle ROM limits for the factory's blind spots (extension stops, ball joints); species-sane bands | **OpenSim** (+ Oku macaque) | `anatomy_limits.json` | limits contradicting a measured bone stop = the model's pose is wrong, not the bone | **NEXT** |
+| **B5** | ANATOMY REFEREE | ligament/muscle ROM limits for the factory's blind spots (extension stops, ball joints); species-sane bands | **OpenSim** (limblab/monkeyArmModel, MIT — Oku 2021 falsified as a source: ODE, author-request only) | `anatomy_limits.json` | limits contradicting a measured bone stop = the model's pose is wrong, not the bone | DONE (forelimb limits; jaw, hip_L flexion, tail_base extension = earned no-data) |
 | **B6** | DYNAMICS REFEREE | MJCF skeleton from the factory; contact forces vs the substrate's λ; gait algorithm sandbox | **MuJoCo** | `*_mjcf.xml` + referee report | λ mismatch > the derived tolerance = our contact solve is wrong (not MuJoCo) | pending B5 |
 | **B7** | ARTICULATE | generalized joints kernel (the SHOW) + volp-ARAP skin per joint | chimera engine (`joints.comp`, volp) | live articulation | any joint's skin tearing/spiking at mid-ROM | SHOW live; volp-generalization pending |
 | **B8** | BEHAVE | CPG gait + real load feedback + footstep planning from measured contact (H16) | chimera CPG + substrate λ | the walk, the footstep choices | metamorphic rotate-world; energy no-pump; referee (B6) agreement | CPG walks (knees); full-skeleton + footsteps pending |
@@ -112,9 +112,17 @@ time: the earliest non-green gate.
 
 ---
 
-## Monkey status board (2026-08-29)
+## Monkey status board (2026-08-30)
 
-- B0–B4, B9: **green.**
-- B7: knees volp-green (H13); generalized SHOW live; **volp-generalization = B7b, next after B5/B6.**
+- B0–B5, B9: **green.**
+- B7: knees volp-green (H13); generalized SHOW live; **volp-generalization = B7b, next after B6.**
 - B8: knees walk (bit-exact CPG, real λ at κ*, G4 verdict recorded); **full-skeleton + footsteps = H16.**
-- **B5 is the next stage.** Then B6, B7b, B8, B10.
+- B5 landed 2026-08-30 (evidence `.tmp/anatomy/b5_extract.{py,log}`, artifact
+  `.tmp/skeleton/anatomy_limits.json`): forelimb limits from limblab/monkeyArmModel
+  (MIT; shoulder 3-DOF, elbow extension stop 20° short of straight / flexion max 140°,
+  wrist 2-DOF); jaw, hip_L flexion, tail_base extension carry earned no-data rows.
+  Recorded contradiction: elbow_R bone stop 166.78° (mesh-rest reference) vs model
+  140° (from straight) — frames differ, the bone governs. Observation for B7b:
+  side-R segment ratio (upper:fore 0.265) diverges from the model (0.883) and our
+  own L side (1.255) — a factory-recheck candidate, not a B5 gate failure.
+- **B6 is the next stage.** Then B7b, B8, B10.

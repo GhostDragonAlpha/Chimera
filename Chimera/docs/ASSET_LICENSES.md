@@ -24,3 +24,7 @@ Non-negotiable ledger of asset provenance and licenses.
 ## Footstep Sounds
 
 - **Ground_Sand_Sound footstep pack**: Source: CC0 sources (kenney.nl, sonniss GDC, freesound CC0 filter), License: CC0 1.0 Universal
+
+## Referee Models (B5 anatomy)
+
+- **monkeyArmModel** (macaque arm, OpenSim; Chan & Moran 2006/2008): Source: github.com/limblab/monkeyArmModel (cloned 2026-08-30, `.tmp/anatomy/monkeyArmModel/`), License: MIT (repo LICENSE). Role per the referee contract: consumes nothing at runtime; answers "where do ligaments/muscles stop the forelimb joints" for `anatomy_limits.json`.
