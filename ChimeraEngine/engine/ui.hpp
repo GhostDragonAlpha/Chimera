@@ -344,6 +344,14 @@ public:
     const std::vector<std::array<float, 4>>& cam_rects() const { return cam_mark_rects_; }
     std::array<float, 4> cam_save_rect() const { return cam_save_rect_; }
 
+    // ── D5: THE CAPTURE SESSION (the CAPTURE workspace's left-dock mode 5) ──
+    // The engine composes the session document (capture_kv — one formatting
+    // site, shared with GET /capture); the dock only draws it.
+    std::vector<std::pair<std::string, std::string>> capture_kv_;
+    void set_capture_view(std::vector<std::pair<std::string, std::string>> kv) {
+        capture_kv_ = std::move(kv);
+    }
+
     // ── F4: THE RECORDER's ring — the LOG stream (left dock mode 3) ──
     // The engine pushes each event the moment it happens; the dock draws the
     // tail, newest at the bottom. The FILE holds everything — the stream is

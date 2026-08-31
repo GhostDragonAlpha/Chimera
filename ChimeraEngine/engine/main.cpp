@@ -1713,6 +1713,149 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/capture" && method == "GET") {
+            // D5: the capture session's twin — the SAME capture_kv() document
+            // the CAPTURE dock draws.
+            if (g_engine) {
+                auto jesc = [](const std::string& s) {
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) { if (c == '"' || c == '\\') { o += '\\'; o += c; } else o += c; }
+                    return o;
+                };
+                auto kv = g_engine->capture_kv();
+                std::string ls;
+                for (size_t i = 0; i < kv.size(); ++i) {
+                    ls += (i ? "," : "");
+                    ls += std::string("{\"k\":\"") + jesc(kv[i].first)
+                        + "\",\"v\":\"" + jesc(kv[i].second) + "\"}";
+                }
+                body = std::string("{\"state\":") + std::to_string(g_engine->capture_state_.load())
+                     + ",\"lines\":[" + ls + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/capture" && method == "POST") {
+            // D5: {"op":"render","t0":0,"t1":2,"fps":24,"camera":"alpha",
+            // "name":"walk"} — a WAITING endpoint (the /mesh_bin discipline):
+            // the handler drives scrub -> present -> capture -> PNG per step;
+            // the render thread owns the GPU. The clock (playing + time) is
+            // restored after — a render never steals the operator's clock.
+            if (!g_engine) {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            } else if (g_engine->capture_state_.load() == 1) {
+                body = "{\"ok\":false,\"error\":\"a render is already running\"}";
+            } else if (g_engine->scene_rows()[0].state == 0) {   // the body row: no mesh
+                body = "{\"ok\":false,\"error\":\"no mesh loaded\"}";
+            } else {
+                double t0 = get_double(req_body, "t0", 0.0);
+                double t1 = get_double(req_body, "t1", 1.0);
+                int fps = static_cast<int>(get_double(req_body, "fps", 24.0));
+                std::string name = get_string(req_body, "name");
+                std::string camera = get_string(req_body, "camera");
+                if (fps < 1) fps = 1; if (fps > 60) fps = 60;
+                if (t0 < 0.0) t0 = 0.0;
+                if (t1 <= t0) t1 = t0 + 1.0 / fps;
+                if (name.empty()) {
+                    char nb[32]; time_t now = time(nullptr);
+                    strftime(nb, sizeof(nb), "cap_%H%M%S", localtime(&now));
+                    name = nb;
+                }
+                for (char& c : name)   // path-safe: the name becomes a directory
+                    if (!(isalnum(c) || c == '_' || c == '-')) c = '_';
+                std::string dir = std::string("captures/") + name;
+                CreateDirectoryA("captures", nullptr);
+                CreateDirectoryA(dir.c_str(), nullptr);
+                {
+                    std::lock_guard<std::mutex> lk(g_engine->cap_m_);
+                    g_engine->cap_t0_ = t0; g_engine->cap_t1_ = t1; g_engine->cap_fps_ = fps;
+                    g_engine->cap_name_ = name; g_engine->cap_dir_ = dir;
+                    g_engine->cap_camera_ = camera; g_engine->cap_error_.clear();
+                }
+                g_engine->capture_done_.store(0);
+                g_engine->capture_state_.store(1);
+                // camera first (the membrane request's thread discipline)
+                if (!camera.empty()) {
+                    float v[8];
+                    if (g_engine->cam_mark_get(camera, v)) {
+                        {
+                            std::lock_guard<std::mutex> lk(g_mem_mutex);
+                            memcpy(g_mem_req.cam_full, v, sizeof(v));
+                            g_mem_req.cam_full_set = true;
+                            g_mem_req.valid = true;
+                            g_mem_pending = true;
+                            g_mem_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_mem_mutex);
+                        g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                    }
+                }
+                bool was_playing = g_engine->show_playing_.load();
+                double was_time = g_engine->show_time_.load();
+                g_engine->show_playing_.store(false);
+                int N = static_cast<int>((t1 - t0) * fps + 0.5);
+                if (N < 1) N = 1;
+                g_engine->capture_total_.store(N);
+                int written = 0;
+                for (int i = 0; i < N; ++i) {
+                    double t = t0 + static_cast<double>(i) / fps;
+                    g_engine->show_scrub_.store(t);
+                    // wait for the scrub to land (paused clock: exact)
+                    auto dl = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+                    while (std::fabs(g_engine->show_time_.load() - t) > 1e-9) {
+                        if (std::chrono::steady_clock::now() > dl) break;
+                        Sleep(2);
+                    }
+                    g_engine->request_capture();
+                    auto dl2 = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+                    while (!g_engine->capture_ready()) {
+                        if (std::chrono::steady_clock::now() > dl2) break;
+                        Sleep(2);
+                    }
+                    std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                    if (!g_engine->capture_ready() || !g_engine->capture_frame(rgba, w, h)) {
+                        std::lock_guard<std::mutex> lk(g_engine->cap_m_);
+                        g_engine->cap_error_ = "capture timeout at frame " + std::to_string(i);
+                        break;
+                    }
+                    std::vector<uint8_t> pngb = png::encode_rgba(rgba.data(), w, h);
+                    char fp[300];
+                    snprintf(fp, sizeof(fp), "%s/f%04d.png", dir.c_str(), i);
+                    FILE* f = fopen(fp, "wb");
+                    if (!f) {
+                        std::lock_guard<std::mutex> lk(g_engine->cap_m_);
+                        g_engine->cap_error_ = "cannot write ";
+                        g_engine->cap_error_ += fp;
+                        break;
+                    }
+                    fwrite(pngb.data(), 1, pngb.size(), f);
+                    fclose(f);
+                    ++written;
+                    g_engine->capture_done_.store(written);
+                    g_engine->capture_t_.store(t);
+                }
+                // hand the clock back, exactly as found. The scrub lands on
+                // the render thread's NEXT frame — so WAIT for it before
+                // answering (the same discipline the per-frame scrub uses).
+                // "ok" must mean the clock IS back, not that it will be soon.
+                g_engine->show_scrub_.store(was_time);
+                auto dl3 = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+                while (std::fabs(g_engine->show_time_.load() - was_time) > 1e-9) {
+                    if (std::chrono::steady_clock::now() > dl3) break;
+                    Sleep(2);
+                }
+                g_engine->show_playing_.store(was_playing);   // only once the time landed
+                g_engine->capture_state_.store(written == N ? 2 : 3);
+                if (written == N)
+                    body = std::string("{\"ok\":true,\"frames\":") + std::to_string(written)
+                         + ",\"dir\":\"" + dir + "\"}";
+                else {
+                    std::lock_guard<std::mutex> lk(g_engine->cap_m_);
+                    body = std::string("{\"ok\":false,\"frames\":") + std::to_string(written)
+                         + ",\"error\":\"" + g_engine->cap_error_ + "\"}";
+                }
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
@@ -2027,7 +2170,10 @@ int main(int argc, char** argv) {
         // the GPU predictably and paces display delivery. timeBeginPeriod(1) is set
         // in main() so these short sleeps land at ~1 ms granularity, not 15.6.
         {
-            const double target_ms = 1000.0 / 300.0;
+            // Headless (minimized): 120 fps is plenty for captures nobody is
+            // watching, and halves the GPU pressure on whatever the operator
+            // is actually looking at (the frame-stutter law, extended).
+            const double target_ms = 1000.0 / (engine.headless_minimized_.load() ? 120.0 : 300.0);
             double busy_ms = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::high_resolution_clock::now() - ft0).count() / 1e3;
             if (busy_ms < target_ms) {

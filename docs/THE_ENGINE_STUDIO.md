@@ -861,6 +861,104 @@ match because both read the same `g_cam`.
   `engine/engine.{hpp,cpp}` (the store, persistence, `set_camera_full`, cb
   wiring + both push sites), `engine/main.cpp` (membrane request grew
   `cam_full[8]`, GET/POST `/cameras`), this doc.
-- **Next per the menu:** E2 deep links, D5 render-to-MP4, B4 ledger — and
+- **Next per the menu:** E2 deep links, B4 ledger — and
   the board's own earliest non-green gate, B5 anatomy referee, is what the
   strip keeps naming.
+
+## SHIPPED — D5: RENDER-TO-MP4 (2026-08-30)
+
+- **Statement:** a render is an OFFLINE capture SESSION owned by the engine —
+  `POST /capture {"op":"render","t0","t1","fps","camera","name"}` scrubs the
+  studio clock through N = round((t1-t0)·fps) exact poses, presenting and
+  capturing each through the SAME offscreen path /frame uses, writing
+  `captures/<name>/f%04d.png`, then handing the clock (time AND playing)
+  back exactly as found. The MP4 encode is the DRIVER's job
+  (`cpp_bridge.encode_movie` → ffmpeg); the engine's job is frame-exact
+  capture. A camera bookmark name frames the whole render through the D6
+  membrane discipline.
+- **Prediction (unmeasured at naming time):** every captured PNG is
+  md5-identical to an independent scrub+grab at the same t (the render is
+  the show, not a look-alike); the operator's clock survives a render
+  bit-exactly, paused or playing; the encoded MP4 reads back with the
+  requested fps and frame count; the CAPTURE dock's served record equals
+  the directory on disk; and all of it works with the window MINIMIZED.
+- **Falsifiers (named before the build):** (A) frame count ≠
+  round((t1-t0)·fps), stale files counted as fresh, or any frame's md5 ≠
+  the independent grab at the same t; (B) the clock (time or playing)
+  differs from before the render, in either the paused or the playing
+  case; (C) ffprobe reads back a different rate or frame count; (D)
+  `GET /capture`'s record disagrees with the directory on disk; (E) the
+  studio chain (`_cameras_verify.py`, nesting inspect → scene → stage)
+  regresses.
+
+**What shipped.** The CAPTURE dock (menu row 6, left dock mode 5) draws the
+live session document — state, name, range, fps, frames done/total, last
+frame t, dir — from the ONE formatting site `Engine::capture_kv()`, which
+`GET /capture` serves verbatim (the dock and the twin can never drift).
+The endpoint is WAITING (the /mesh_bin discipline): the HTTP handler drives
+scrub → present → capture → PNG per step while the render thread owns the
+GPU, refuses a second concurrent render and a render with no mesh loaded,
+sanitizes the name into a path-safe directory, and answers only when the
+session is done or failed — including waiting for the RESTORE scrub to
+land, so `ok` means the clock IS back, not that it will be soon.
+
+**The TWO bugs the probe found (and the fixes).** (1) The pre-existing
+"the /frame endpoint works even when minimized" comment was a LIE: with a
+0x0 surface, `vkAcquireNextImageKHR` returns OUT_OF_DATE every frame and
+both `frame()` and the idle path returned BEFORE the capture block — every
+/frame and /capture timed out on a minimized window, which is exactly how
+the operator runs while gaming. Fixed: on OUT_OF_DATE with 0x0 caps, fall
+through with `can_present=false` (the blit+UI block is entirely inside
+`if (can_present)`; submit is ungated), set `headless_minimized_`, and pace
+the main loop at 120 fps when headless instead of 300. (2) The DEVICE_LOST
+crashes — three of them, all in the probe's LOAD phase, all on the SECOND
+probe run against one engine process. Not churn (a dedicated
+minimize/restore-mid-render test passed 48/48 frames), not the new
+fall-through: the JOINTS kernel's descriptor set binds two buffers it does
+not own — `hinge_rest_buf_` (binding 0, "Rest"), destroyed+recreated by
+every `set_hinge`, and `tri_vbuf_` (binding 4, "Out"), destroyed+recreated
+by every mesh full-load — and NOTHING re-pointed the set afterward, so the
+next dispatch read a destroyed buffer (illegal access → device lost). A
+fresh engine never reproduced it because the load order mesh → hinge →
+joints ends consistent; only a RELOAD dangled. The water-vis (W4) and
+frost (H9) sets already carried the cure — a dirty flag set at recreation,
+a lazy rebind in frame() before the dispatch — so the joints and hinge
+sets got the same: `joints_desc_dirty_` (set by `load_mesh` AND
+`set_hinge`), `hinge_desc_dirty_` (set by `load_mesh`), `joints_rebind()`
+/ `hinge_rebind()` called at the dispatch sites. Verdict: the exact repro
+— the full probe run TWICE on one engine, window VISIBLE at ~299 fps —
+passes ALL gates both times with zero validation errors on stderr. Known
+same-class instance NOT fixed (untested path, no probe coverage): the volp
+debug kernel binds `tri_vbuf_` at binding 6 with no rebind — flagged for
+its own membrane when the volp path gets one.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_capture_verify.{py,log}` —
+  ALL PASS force-minimized AND ALL PASS twice on one visible engine, the
+  reload repro; churn: `engine/scratch/_churn_test.py`):
+  - **A:** N=4 = round(0.5·8), all fresh; per-frame md5 == independent
+    scrub+grab, zero mismatches. PASS
+  - **B:** paused case: before(t=3.21, playing=False) → after(t=3.21,
+    playing=False), bit-exact (the endpoint waits for the restore scrub to
+    land before answering; the probe reads the clock BEFORE its own md5
+    grabs scrub it — an earlier FAIL was the probe reading after them).
+    Playing case: hands back running. PASS
+  - **C:** ffprobe readback: rate 8/1, 4 frames — as requested. PASS
+  - **D:** served record == directory: state=done, 2/2 frames on disk for
+    the playing render. PASS
+  - **E:** `_cameras_verify.py` ALL PASS (12 chain gates, nesting inspect →
+    scene → stage). PASS
+  - **Reload (the crash's own falsifier):** the probe run TWICE against one
+    engine process, window visible — the second run's load phase (mesh +
+    hinge + joints RELOADED over live ones) was the DEVICE_LOST repro;
+    post-fix: ALL PASS both runs, zero VK errors on stderr. PASS
+  - **Churn (beyond the named falsifiers):** 48/48 frames with 4
+    minimize/restore cycles mid-render; engine alive; /frame still answers.
+- **Files:** `engine/engine.{hpp,cpp}` (session state, `capture_kv()`,
+  both push sites, the OUT_OF_DATE fall-through + `headless_minimized_`,
+  `joints_rebind()` / `hinge_rebind()` + their dirty flags),
+  `engine/ui.{hpp,cpp}` (CAPTURE dock: menu row 6, mode 5),
+  `engine/main.cpp` (GET/POST `/capture` — the render waits for the
+  clock-restore scrub to land before answering; headless pacing), this doc.
+- **Next per the menu:** E2 deep links, B4 ledger — and the board's own
+  earliest non-green gate, B5 anatomy referee, is what the strip keeps
+  naming.

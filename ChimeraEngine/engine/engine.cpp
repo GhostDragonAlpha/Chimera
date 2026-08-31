@@ -1316,6 +1316,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         upload_buffer(nullptr, 0, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
         tri_idx_count_ = 0;
         has_mesh_ = false;
+        joints_desc_dirty_ = true;   // tri_vbuf_ recreated — the old handle dangles
+        hinge_desc_dirty_ = true;
         return true;
     }
     // Vertex buffer: DEVICE_LOCAL (the hot path must stay in VRAM — a host-visible
@@ -1358,6 +1360,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     has_mesh_ = true;
     water_vis_desc_dirty_ = true;   // buffers recreated -> the water-vis set must rebind (H4)
     frost_desc_dirty_ = true;       // same for the frost decode set (H9)
+    joints_desc_dirty_ = true;      // same for the joints set (binding 4 = tri_vbuf_)
+    hinge_desc_dirty_ = true;       // same for the hinge set (binding 3 = tri_vbuf_)
     // Measure the bounding sphere about the origin (the camera target) — the
     // zoom floor derives from THIS, so the near plane can never slice the
     // mesh no matter how far in the operator scrolls. Vertex stride = 9
@@ -1504,6 +1508,12 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                 }
                 vkUpdateDescriptorSets(device_, 4, w, 0, nullptr);
             }
+            // upload_buffer DESTROYED and recreated hinge_rest_buf_ above —
+            // the JOINTS kernel's set binds it too (binding 0, "Rest") and
+            // still points at the dead handle. Its dispatch choked on exactly
+            // this (VK_ERROR_DEVICE_LOST, _launch_err.log, D5 hunt). The
+            // water/frost precedent: mark dirty, rebind lazily in frame().
+            joints_desc_dirty_ = true;
         } else {
             fprintf(stderr, "hinge.spv missing — CPU pose fallback\n");
         }
@@ -1860,6 +1870,28 @@ void Engine::set_camera_full(const float v[8]) {
     g_cam.phi       = v[2];
     g_cam.target[0] = v[3]; g_cam.target[1] = v[4]; g_cam.target[2] = v[5];
     g_cam.pan_x     = v[6]; g_cam.pan_y     = v[7];
+}
+
+// ── D5: THE CAPTURE SESSION's document — one formatting site ──
+std::vector<std::pair<std::string, std::string>> Engine::capture_kv() {
+    std::vector<std::pair<std::string, std::string>> kv;
+    auto add = [&](const char* k, const std::string& v) { kv.emplace_back(k, v); };
+    char nb[96];
+    int st = capture_state_.load();
+    add("state", st == 0 ? "idle" : st == 1 ? "rendering" : st == 2 ? "done" : "FAILED");
+    std::lock_guard<std::mutex> lk(cap_m_);
+    if (!cap_name_.empty()) add("name", cap_name_);
+    if (st != 0) {
+        snprintf(nb, sizeof(nb), "%.3f .. %.3f s", cap_t0_, cap_t1_); add("range", nb);
+        snprintf(nb, sizeof(nb), "%d", cap_fps_); add("fps", nb);
+        if (!cap_camera_.empty()) add("camera", cap_camera_);
+        snprintf(nb, sizeof(nb), "%d / %d", capture_done_.load(), capture_total_.load());
+        add("frames", nb);
+        snprintf(nb, sizeof(nb), "t = %.4f s", capture_t_.load()); add("last frame", nb);
+        if (!cap_dir_.empty()) add("dir", cap_dir_);
+        if (!cap_error_.empty()) add("error", cap_error_);
+    }
+    return kv;
 }
 
 int Engine::console_pending() {
@@ -2637,6 +2669,50 @@ void Engine::water_vis_rebind() {
     }
     vkUpdateDescriptorSets(device_, 6, w, 0, nullptr);
     water_vis_desc_dirty_ = false;
+}
+
+// (Re)point the hinge descriptor set at the LIVE buffers. set_hinge updates
+// the set itself; the dirty flag covers the OTHER recreator — load_mesh
+// replacing tri_vbuf_ (binding 3, "Out"). Same lazy discipline as W4/H9.
+void Engine::hinge_rebind() {
+    if (hinge_desc_set_ == VK_NULL_HANDLE || !has_mesh_) return;
+    VkBuffer bufs[4] = { hinge_rest_buf_, hinge_wL_buf_, hinge_wR_buf_, tri_vbuf_ };
+    VkWriteDescriptorSet w[4]{};
+    VkDescriptorBufferInfo infos[4]{};
+    for (uint32_t k = 0; k < 4; ++k) {
+        infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+        w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        w[k].dstSet = hinge_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
+        w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        w[k].pBufferInfo = &infos[k];
+    }
+    vkUpdateDescriptorSets(device_, 4, w, 0, nullptr);
+    hinge_desc_dirty_ = false;
+}
+
+// (Re)point the joints descriptor set at the LIVE buffers. The set binds TWO
+// buffers it does not own: hinge_rest_buf_ (binding 0, "Rest" — recreated by
+// every set_hinge) and tri_vbuf_ (binding 4, "Out" — recreated by every mesh
+// full-load). Either recreation left the set pointing at a DESTROYED buffer;
+// the next dispatch was an illegal access -> VK_ERROR_DEVICE_LOST. That was
+// the crash that hunted D5: the first probe run on a fresh engine always
+// passed (load order mesh -> hinge -> joints ends consistent), the SECOND
+// run on the same engine died in the load phase. frame() calls this lazily,
+// before the joints dispatch — same discipline as water_vis_rebind (W4).
+void Engine::joints_rebind() {
+    if (joints_desc_set_ == VK_NULL_HANDLE || !joints_loaded_ || !has_mesh_) return;
+    VkBuffer bufs[5] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_ };
+    VkWriteDescriptorSet w[5]{};
+    VkDescriptorBufferInfo infos[5]{};
+    for (uint32_t k = 0; k < 5; ++k) {
+        infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+        w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        w[k].dstSet = joints_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
+        w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        w[k].pBufferInfo = &infos[k];
+    }
+    vkUpdateDescriptorSets(device_, 5, w, 0, nullptr);
+    joints_desc_dirty_ = false;
 }
 
 // ── THE FROST DECODE (H9) ────────────────────────────────────────────────────
@@ -4357,6 +4433,8 @@ bool Engine::frame() {
     }
     // D6: the bookmark chips — the store's own names, every frame
     ui_.set_cam_view(cam_mark_names());
+    // D5: the capture session document — one formatting site
+    ui_.set_capture_view(capture_kv());
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -4488,9 +4566,19 @@ bool Engine::frame() {
     if (acquire_res == VK_ERROR_OUT_OF_DATE_KHR) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
-        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0) {
             resize(caps.currentExtent.width, caps.currentExtent.height);
-        return true;  // next frame presents on the fresh swapchain
+            return true;  // next frame presents on the fresh swapchain
+        }
+        // 0x0 surface = MINIMIZED: fall through with can_present=false. The
+        // offscreen target renders + captures without the swapchain — that is
+        // the headless law this block's comment promises. The old early
+        // return made it a lie: minimized, frame() never reached the capture
+        // block and every /frame and /capture timed out (caught by the D5
+        // probe while the operator had the window minimized mid-game).
+        headless_minimized_.store(true);
+    } else if (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR) {
+        headless_minimized_.store(false);
     }
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
     bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
@@ -4579,6 +4667,7 @@ bool Engine::frame() {
 
         struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t pad; }
             jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed), 0 };
+        if (joints_desc_dirty_) joints_rebind();   // rest/Out recreated -> rebind BEFORE dispatch
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,
                                 0, 1, &joints_desc_set_, 0, nullptr);
@@ -4593,6 +4682,7 @@ bool Engine::frame() {
             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
             0, 1, &jmb, 0, nullptr, 0, nullptr);
     } else if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
+        if (hinge_desc_dirty_) hinge_rebind();   // tri_vbuf_ recreated -> rebind BEFORE dispatch
         struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;
                          float thetaL, thetaR; uint32_t flags; uint32_t n; } hpc{};
         hpc.JL[0] = hinge_JL_[0]; hpc.JL[1] = hinge_JL_[1]; hpc.JL[2] = hinge_JL_[2];
@@ -5180,6 +5270,8 @@ bool Engine::frame_idle_ui() {
     }
     // D6: the bookmark chips answer in idle too — same store
     ui_.set_cam_view(cam_mark_names());
+    // D5: the capture session answers in idle too — same document
+    ui_.set_capture_view(capture_kv());
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
@@ -5199,9 +5291,15 @@ bool Engine::frame_idle_ui() {
     if (acquire_res == VK_ERROR_OUT_OF_DATE_KHR) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
-        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0) {
             resize(caps.currentExtent.width, caps.currentExtent.height);
-        return true;
+            return true;
+        }
+        // 0x0 = minimized: fall through with can_present=false — the idle path
+        // keeps the UI's own captures servable headless (same law as frame()).
+        headless_minimized_.store(true);
+    } else if (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR) {
+        headless_minimized_.store(false);
     }
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
     bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);

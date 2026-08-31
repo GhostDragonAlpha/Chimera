@@ -205,6 +205,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
                 if (i == 7) { left_mode_ = 2; selected_stage_ = -1; }    // DOCS (E1)
                 if (i == 8) { left_mode_ = 3; selected_stage_ = -1; }    // LOG (F4)
+                if (i == 6) { left_mode_ = 5; selected_stage_ = -1; }    // CAPTURE (D5)
             }
             if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
             if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker
@@ -703,7 +704,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             : (left_mode_ == 2 ? "DOCS - the browser (E1)"
             : (left_mode_ == 3 ? "LOG - the recorder (F4)"
             : (left_mode_ == 4 ? "SCENE - the outliner (C4)"
-            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))))),
+            : (left_mode_ == 5 ? "CAPTURE - render-to-MP4 (D5)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")))))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
     if (left_mode_ != 4) { scene_row_rects_.clear(); scene_sel_rects_.clear(); } // same law
@@ -831,6 +833,29 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 text(x, y, log_rows_[i].s, log_rows_[i].r, log_rows_[i].g, log_rows_[i].b, 0.95f);
                 y += lh;
             }
+        }
+    } else if (!left_.collapsed && left_mode_ == 5) {
+        // D5: THE CAPTURE SESSION. The engine composes the document
+        // (capture_kv — the same site GET /capture serves); the dock draws it.
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        text(x, y, "offline render: scrub the clock, grab each frame",
+             0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "POST /capture {\"op\":\"render\",\"t0\":0,\"t1\":2,\"fps\":24}",
+             0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        text(x, y, "then: cpp_bridge.encode_movie(frames, out.mp4, fps)",
+             0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        for (const auto& kv : capture_kv_) {
+            if (y > y_max) break;
+            text(x, y, kv.first, 0.62f, 0.66f, 0.74f, 1.f);
+            text(x + 12 * advance_, y, kv.second,
+                 kv.first == "state" ? (kv.second == "FAILED" ? 0.85f : kv.second == "done" ? 0.25f : 1.0f)
+                                     : TR,
+                 kv.first == "state" ? (kv.second == "FAILED" ? 0.55f : kv.second == "done" ? 0.75f : 0.85f)
+                                     : TG,
+                 kv.first == "state" ? (kv.second == "FAILED" ? 0.30f : kv.second == "done" ? 0.35f : 0.40f)
+                                     : TB, 1.f);
+            y += lh;
         }
     } else if (!left_.collapsed && left_mode_ == 4) {
         // C4: THE OUTLINER. Every row is composed by the ENGINE from live state
@@ -977,10 +1002,10 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
         text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
         const char* ws[] = {"BOARD   (this strip)", "SCENE   - the outliner (C4)", "JOINTS  - the editor (C1)", "GAIT    - parked",
-                            "WATER   - parked", "FROST   - parked", "CAPTURE - parked", "DOCS    - the browser (E1)",
+                            "WATER   - parked", "FROST   - parked", "CAPTURE - render-to-MP4 (D5)", "DOCS    - the browser (E1)",
                             "LOG     - the recorder (F4)"};
         for (int i = 0; i < 9; ++i) {
-            bool live = (i == 0 || i == 1 || i == 2 || i == 7 || i == 8);
+            bool live = (i == 0 || i == 1 || i == 2 || i == 6 || i == 7 || i == 8);
             text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
             if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;

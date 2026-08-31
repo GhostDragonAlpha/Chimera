@@ -188,6 +188,25 @@ public:
     bool        cam_mark_get(const std::string& name, float out[8]);
     std::vector<std::string> cam_mark_names();
     void        set_camera_full(const float v[8]);      // render thread (or membrane req)
+    // ── D5: THE CAPTURE SESSION — render-to-MP4's engine half ──
+    // A render is a DETERMINISTIC offline capture: the D1 clock scrubbed in
+    // exact 1/fps steps, each step presented and grabbed through the engine's
+    // own capture path, written as captures/<name>/f%04d.png. The MP4 encode
+    // is the driver's job (cpp_bridge.encode_movie / ffmpeg) — the engine
+    // carries no codec. capture_kv() is the ONE formatting site: the CAPTURE
+    // dock draws it, GET /capture serves it.
+    std::atomic<int>    capture_state_{0};          // 0 idle, 1 rendering, 2 done, 3 failed
+    std::atomic<int>    capture_done_{0}, capture_total_{0};
+    std::atomic<double> capture_t_{0.0};            // the clock time of the last frame written
+    std::mutex          cap_m_;                     // guards the four fields below
+    double              cap_t0_ = 0.0, cap_t1_ = 0.0;
+    int                 cap_fps_ = 24;
+    std::string         cap_name_, cap_dir_, cap_camera_, cap_error_;
+    std::vector<std::pair<std::string, std::string>> capture_kv();
+    // true while the window is minimized (0x0 surface): frames render headless
+    // into the offscreen target. The main loop paces to a kinder cadence then —
+    // the operator's game owns the GPU.
+    std::atomic<bool> headless_minimized_{false};
     // ── F4: THE RECORDER — done-is-a-log, as a stream ──
     // Every gate-relevant state change through the api chokepoint (uploads,
     // mode flips, intents) plus externally-posted gate verdicts lands as a
@@ -340,6 +359,8 @@ private:
     VkPipeline      joints_pipe_ = VK_NULL_HANDLE;
     VkDescriptorPool joints_desc_pool_ = VK_NULL_HANDLE;
     VkDescriptorSet joints_desc_set_ = VK_NULL_HANDLE;
+    bool            joints_desc_dirty_ = false;  // hinge_rest_/tri_vbuf_ recreated -> rebind
+    void            joints_rebind();             // (re)point the joints set at the live buffers
     std::chrono::steady_clock::time_point joints_t0_;
     std::chrono::steady_clock::time_point show_last_{};   // D1: last frame's stamp (render thread)
     float           j_sweep_period_ = 4.0f;      // seconds per joint in the show
@@ -593,6 +614,8 @@ private:
     VkDescriptorSet  hinge_desc_set_ = VK_NULL_HANDLE;
     VkBuffer        hinge_rest_buf_ = VK_NULL_HANDLE, hinge_wL_buf_ = VK_NULL_HANDLE, hinge_wR_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  hinge_rest_mem_ = VK_NULL_HANDLE, hinge_wL_mem_ = VK_NULL_HANDLE, hinge_wR_mem_ = VK_NULL_HANDLE;
+    bool            hinge_desc_dirty_ = false;   // tri_vbuf_ recreated -> rebind (like W4/H9)
+    void            hinge_rebind();              // (re)point the hinge set at the live buffers
 
     // gait CPG state (H7 stage 2)
     bool            gait_loaded_ = false;
