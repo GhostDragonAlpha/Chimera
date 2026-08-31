@@ -1141,5 +1141,108 @@ instrument.
   - **The cp1252 console strikes again** (same class as `studio_board.py`'s `≥`):
     a window title with a glyph it cannot encode killed the `--minimize`
     falsifier outright. Sanitized.
-- **Next per the menu:** G2 the dyad scan (one image per call, N reads per shot,
-  resume-safe) — then the eye's report decides what the engine needs.
+- **Next per the menu:** G2 the dyad scan — shipped, see below.
+
+---
+
+## SHIPPED — G2: THE DYAD SCAN (2026-08-31)
+
+**`tools/dyad_scan.py`.** The eye reads the glass, one image per call; its report
+is the work list.
+
+```
+python tools/dyad_scan.py --shots 8 --reads 3
+python tools/dyad_scan.py --shots 4 --crop 2230,92,330,900    # one panel, close
+python tools/dyad_scan.py --prompt-file my_question.txt --shots 2
+python tools/dyad_scan.py --resume Saved/dyad/<run_id>
+```
+
+### Terms of engagement (operator, 2026-08-31)
+
+**THERE IS NO SCORE.** No alignment, no threshold, no pass/fail, no points. The
+eye is not a gate to clear; it is a second mind looking at the same window. The
+craft is entirely in what you ASK — be descriptive about what you are looking for
+and it will tell you its opinion. *"Living in this world is subjective and so is
+this process."*
+
+So N reads per shot are **not a vote and are never averaged**. All are reported
+verbatim. Where the eye disagrees with itself on the SAME image, that
+disagreement **is** the finding: the thing it is arguing about is ambiguous in the
+picture. Resume-safe, flush-after-every-read (a 6-minute vision call is never
+lost), and the HTTP twins are recorded beside every shot because the eye reads
+pixels while the twins read state.
+
+### Two laws the instrument earned the hard way
+
+- **The scan perturbs the frame rate it records.** Every capture calls
+  `vkQueueWaitIdle`, so mid-scan the engine reads **10.7 fps / 84 ms**; at rest it
+  is **56 fps / 8.95 ms**. Believing the per-shot number would be an instrument
+  convicting the engine for the instrument's own stall. The tool now takes clean
+  samples before and after and marks every per-shot twin
+  `_fps_is_under_capture_load`. (The eye read the mid-scan "7 fps" *off the glass*
+  and reported it as a defect — it was looking at my stall.)
+- **The eye corrects itself under magnification.** The whole-window report claimed
+  "glyph collision on the trailing characters" of three STATUS lines. Two close
+  reads of that panel both said there is none — *"every character sits in its own
+  monospace cell… the density is just a small font rendered tightly"* — and found
+  the REAL defect instead (the clipped FPS line below). A whole-window read at 1:1
+  is too coarse to judge 9 px text. `--crop` is the higher-magnification
+  instrument. An eye's first claim is a claim; magnification is how you test it.
+
+### The first three defects it named — all fixed
+
+1. **The STATUS panel's FPS line was clipped at the panel edge.** It is
+   arithmetic, not taste: 36 chars × 9 px = 324 px in a 330 px dock, so it cannot
+   fit its own padding. The **panel's width** now picks the format, degrading in
+   tiers, so a number is never cut mid-digit (a truncated "9" reads as "9" *and*
+   as "95" depending on where the border falls).
+2. **The standing rule was printed twice** — under the stage strip and again in
+   the status bar: *"duplicated, low-value, adds noise."* The board states the
+   RULE (B2, computed by `tools/studio_board.py`); the bar now states WHERE YOU
+   ARE, derived from `board_.stages` rather than parsed out of the board's
+   sentence. One source, so neither can drift. The bar reads `B7 ARTICULATE`.
+3. **The whole UI was too small for 2K.** Root cause was ONE number: a fixed 16 px
+   Consolas whose GDI metrics *become* `advance_` and `cell_h_` — the unit every
+   text position is measured in. So the fix is one derived factor, not a hunt:
+   `ui_scale_ = window_height / DESIGN_H(1080)`, applied to the font, the bar, the
+   collapsed title bars and the panel sizes. **Nothing was re-tuned for 1440** —
+   the proportion the eye approved at 1080p is what is preserved. Measured: UI
+   coverage **41.2% → 49.8%**, which is the 1080p figure exactly; `lh` 24→29,
+   `advance` 9→12. Panel sizes are stored in DESIGN units and the drag handler
+   converts at the seam (`to_design`), or a panel jumps by the scale factor the
+   instant you release it.
+
+   **KNOWN LIMIT, recorded not hidden:** the scale is derived **once in `init()`**.
+   `create_font_atlas()` allocates a new `VkImage` while the descriptor that
+   samples it is written once at init — rebuilding at runtime left `dset_` bound
+   to the old image (measured: the UI dropped to **1.0% coverage**). A mid-session
+   resize does not rescale yet; the fix is to update the descriptor and destroy
+   the old image/view, in its own turn.
+
+### The eye's current list (Saved/dyad/2026-08-31_145002, its own priority)
+
+1. **The empty black viewport reads as BROKEN, not as an empty scene.** Grid +
+   axes + a "no mesh loaded" placeholder. *"This is your single biggest defect."*
+2. **The grid is broken:** REEL (D3) and TIMELINE (D1) span only the CENTRE
+   column, leaving black rectangles bottom-left and bottom-right. *"Those two
+   black blocks look like a layout bug, not intentional whitespace."*
+3. **Zero horizontal margins:** the title line and the B0–B10 row run edge to
+   edge, so the top feels cramped and unframed.
+4. `+ cam` is a plain grey box beside three blue-outlined ones — inconsistent
+   affordance; all four orphaned in empty black.
+5. Too many competing accent colours and no on-screen key for the gate colours.
+6. The bottom bar is under-filled: large empty gaps between its three clusters.
+
+### ONE OPEN TENSION — an operator decision, not mine
+
+After the 1.33× scale the eye **still** says the type is too small: *"At
+2560×1440 the type does not scale up, so it looks tiny… scale type up ~1.5× for
+4K."*
+
+The scale preserved the 1080p **proportion** exactly, which is the defensible
+derived answer. The eye is asking for a larger **relative** size than that design.
+Those are not the same request, and closing the gap means picking a number —
+which is taste, and taste is the operator's. **Options:** (a) keep the derived
+proportion and accept the eye's objection as recorded; (b) add one explicit
+legibility factor (e.g. type height as a fraction of screen height) and derive
+*that* instead; (c) let the operator set it by eye, since they are the terminal.
