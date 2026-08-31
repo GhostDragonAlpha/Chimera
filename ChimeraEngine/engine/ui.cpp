@@ -1270,6 +1270,24 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // ── C1: THE GIZMO — the selected joint's center + axis over the viewport,
     // projected by the engine through the mesh pass's own VP (drawn last, over
     // everything — it is screen-space truth about the model underneath) ──
+    // ── THE VIEWPORT REFERENCE FRAME, under everything else in the viewport ──
+    // Drawn FIRST, so the gizmo, the chrome and the console all sit on top of it.
+    // These are screen-space segments over world points the engine projected —
+    // the grid is an instrument, never matter.
+    if (visible) {
+        for (const auto& gl : grid_)
+            line(gl.x0, gl.y0, gl.x1, gl.y1, 1.f, gl.r, gl.g, gl.b, gl.a);
+        if (viewport_empty_) {
+            // SAY IT. A void makes the eye invent an explanation, and the
+            // explanation it invents is "render failed".
+            const char* msg = "no mesh loaded  -  POST /mesh_bin (or /membrane_bin)";
+            float w = static_cast<float>(strlen(msg)) * advance_;
+            text((static_cast<float>(ext_.width) - w) * 0.5f,
+                 static_cast<float>(ext_.height) * 0.5f,
+                 msg, 0.42f, 0.45f, 0.52f, 1.f);
+        }
+    }
+
     if (gizmo_vis_ && visible) {
         line(gizmo_[0], gizmo_[1], gizmo_[2], gizmo_[3], 2.5f, 1.0f, 0.85f, 0.20f, 1.f);
         rect(gizmo_[0] - 3, gizmo_[1] - 3, 6, 6, 1.0f, 0.85f, 0.20f, 1.f);   // J, the center

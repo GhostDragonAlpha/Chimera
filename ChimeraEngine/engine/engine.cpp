@@ -3897,6 +3897,91 @@ static void record_glass_copy(VkCommandBuffer cb, VkImage swap_img,
                             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
 }
 
+// ── THE VIEWPORT REFERENCE FRAME (2026-08-31) ───────────────────────────────────
+// The eye's #1 defect: an empty viewport reads as a crashed renderer, not as an
+// empty scene. This draws a ground grid + an XYZ triad so the centre of the window
+// has mass and the eye has somewhere to land.
+//
+// EVERY NUMBER IS DERIVED FROM THE CAMERA, none chosen:
+//   spacing = the power of ten nearest to radius/5 — so the grid reads at the
+//             same density whether you are looking at a paw or a planet, and it
+//             steps by decades as you dolly instead of sliding continuously
+//   extent  = spacing * ceil(radius / spacing) — the grid always reaches past the
+//             orbit sphere, so it never ends inside the frame
+//   axis len= one spacing, so the triad is exactly one grid cell long
+// The plane is y = 0 with +Y up, which is the engine's own convention
+// (perspective() negates the Y row so world +Y stays up on screen).
+void Engine::push_grid_overlay() {
+    std::vector<StudioGridLine> lines;
+    lines.reserve(128);
+    ui_.set_viewport_empty(n_ == 0 && !has_mesh_);
+    if (!last_vp_valid_) { ui_.set_grid_lines(std::move(lines)); return; }
+
+    const float R  = (g_cam.radius > 1e-3f) ? g_cam.radius : 1e-3f;
+    const float sp = powf(10.0f, floorf(log10f(R / 5.0f)));
+    const int   n  = (int)ceilf(R / sp);
+    const float h  = sp * static_cast<float>(n);
+
+    auto seg = [&](float ax, float ay, float az, float bx, float by, float bz,
+                   float r, float g, float b, float a) {
+        float p0[3] = { ax, ay, az }, p1[3] = { bx, by, bz };
+        float x0, y0, x1, y1;
+        if (project_world(p0, x0, y0) && project_world(p1, x1, y1))
+            lines.push_back({ x0, y0, x1, y1, r, g, b, a });
+    };
+
+    // the two lines through the origin read as the axes of the plane, so they are
+    // brighter than the rest — no separate legend, no invented colour key
+    const float GR = 0.20f, GG = 0.23f, GB = 0.30f, GA = 0.50f;
+    const float AR = 0.26f, AG = 0.30f, AB = 0.40f, AA = 0.85f;
+    for (int i = -n; i <= n; ++i) {
+        const float v = sp * static_cast<float>(i);
+        const bool  mid = (i == 0);
+        seg(-h, 0.f, v, h, 0.f, v, mid ? AR : GR, mid ? AG : GG, mid ? AB : GB, mid ? AA : GA);
+        seg(v, 0.f, -h, v, 0.f, h, mid ? AR : GR, mid ? AG : GG, mid ? AB : GB, mid ? AA : GA);
+    }
+    // the triad: one cell long, +X red, +Y up green, +Z blue
+    seg(0, 0, 0, sp, 0, 0, 0.85f, 0.35f, 0.35f, 0.95f);
+    seg(0, 0, 0, 0, sp, 0, 0.35f, 0.85f, 0.45f, 0.95f);
+    seg(0, 0, 0, 0, 0, sp, 0.40f, 0.60f, 1.00f, 0.95f);
+
+    ui_.set_grid_lines(std::move(lines));
+}
+
+void Engine::update_camera_matrices(float proj[16], float view[16]) {
+    float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
+    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, 0.1f, 1000.0f);
+
+    update_camera_input(g_cam, cfg_.dt);
+
+    // Build eye position from spherical coords + pan offset
+    float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
+    float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
+    float eye[3] = {
+        g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
+        g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y,
+        g_cam.target[2] - g_cam.radius * c * cx
+    };
+    // Up vector = ∂(eye)/∂phi (the direction the camera tilts "up" as elevation increases).
+    // This is unit-length for every (theta, phi) — no pole singularity — so the camera can spin
+    // continuously over the top (free rotation on both axes) without the old +-1.55 rad stopper.
+    float up_vec[3] = {-s * sx, c, s * cx};
+    look_at(view, eye, g_cam.target, up_vec);
+    // publish the eye too: the frost light and anything else that needs "where the
+    // camera is" reads last_eye_, so there is exactly one camera law.
+    last_eye_[0] = eye[0]; last_eye_[1] = eye[1]; last_eye_[2] = eye[2];
+    // C1: stash the VP for the gizmo, /project, and the viewport grid.
+    //
+    // sizeof(proj) is 8, NOT 64 — `float proj[16]` in a parameter list DECAYS TO
+    // A POINTER, so a straight sizeof copies two floats and leaves the rest zero.
+    // A zeroed projection makes cw == 0, so project_world() answers "behind the
+    // camera" for every point in the world and the grid silently does not exist.
+    // The size is spelled out; never let a decayed array measure itself.
+    std::memcpy(last_proj_, proj, 16 * sizeof(float));
+    std::memcpy(last_view_, view, 16 * sizeof(float));
+    last_vp_valid_ = true;
+}
+
 // ── GPU bitonic sort (back-to-front splat ordering — no CPU in the per-frame path) ─────────
 
 static uint32_t next_pow2(uint32_t v) {
@@ -4547,29 +4632,8 @@ bool Engine::frame() {
 
     // Upload uniform buffer (camera matrices + resolution)
     float proj[16], view[16];
-    float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
-    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, 0.1f, 1000.0f);
-
-    // Process keyboard input (WASD/QE/Space/Ctrl/R)
-    update_camera_input(g_cam, cfg_.dt);
-
-    // Build eye position from spherical coords + pan offset
-    float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
-    float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
-    float eye[3] = {
-        g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
-        g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y,
-        g_cam.target[2] - g_cam.radius * c * cx
-    };
-    // Up vector = ∂(eye)/∂phi (the direction the camera tilts "up" as elevation increases).
-    // This is unit-length for every (theta, phi) — no pole singularity — so the camera can spin
-    // continuously over the top (free rotation on both axes) without the old +-1.55 rad stopper.
-    float up_vec[3] = {-s * sx, c, s * cx};
-    look_at(view, eye, g_cam.target, up_vec);
-    // C1: stash this frame's VP for the gizmo + the /project verification channel
-    std::memcpy(last_proj_, proj, sizeof(proj));
-    std::memcpy(last_view_, view, sizeof(view));
-    last_vp_valid_ = true;
+    update_camera_matrices(proj, view);
+    push_grid_overlay();          // the viewport's frame of reference (see its note)
 
     // Depth sort is done on the GPU (radix sort, recorded in the command buffer below). Stash the
     // view matrix's z-row, which the depth-key pass needs as push constants.
@@ -4855,11 +4919,12 @@ bool Engine::frame() {
         vkCmdPipelineBarrier(cmd_bufs_[img_idx],
             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
             0, 1, &fmb, 0, nullptr, 0, nullptr);
-        // view dir = toward the camera (e42's view_to_cam = eye - target); eye is
-        // the SAME float expression the camera UBO used above, widened to double.
-        double eye[3] = { (double)(g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x),
-                          (double)(g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y),
-                          (double)(g_cam.target[2] - g_cam.radius * c * cx) };
+        // view dir = toward the camera (e42's view_to_cam = eye - target).
+        // The eye is the SAME vector update_camera_matrices computed for the UBO —
+        // read from last_eye_, not recomputed here. It used to be a third copy of
+        // the spherical expression, which is exactly how an eye that reads the
+        // light drifts from the eye that renders the frame.
+        double eye[3] = { (double)last_eye_[0], (double)last_eye_[1], (double)last_eye_[2] };
         double vd[3] = { eye[0] - (double)g_cam.target[0],
                          eye[1] - (double)g_cam.target[1],
                          eye[2] - (double)g_cam.target[2] };
@@ -5447,6 +5512,14 @@ bool Engine::frame_idle_ui() {
     bool do_capture = capture_requested_.exchange(false);
     bool do_glass   = glass_requested_.exchange(false);
     bool ui_drawn   = false;
+
+    // the SAME camera law frame() uses, so /project and the gizmo stay live when
+    // nothing is loaded (they used to go dead here — last_vp_valid_ was never set
+    // on the idle path, so the emptiest viewport was also the one with no frame
+    // of reference at all).
+    float proj[16], view[16];
+    update_camera_matrices(proj, view);
+    push_grid_overlay();
 
     VkCommandBufferBeginInfo bbi{};
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

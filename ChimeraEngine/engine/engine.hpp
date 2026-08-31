@@ -358,6 +358,14 @@ public:
     int                   joint_index(const std::string& name) const;  // -1 unknown
     void                  request_joint_edit(int idx, float deg);      // HTTP/UI intent
     bool                  project_world(const float p[3], float& sx, float& sy) const;
+    bool                  vp_valid() const { return last_vp_valid_; }
+    // ONE camera law, two loops (2026-08-31). frame() stashed the view/proj for
+    // the C1 gizmo and /project; frame_idle_ui() never did, so with nothing
+    // loaded -- exactly when the emptiest viewport needs a reference frame --
+    // project_world() answered false and the gizmo was dead. Both loops now call
+    // this, so there is one place that defines where the camera is.
+    void                  update_camera_matrices(float proj[16], float view[16]);
+    void                  push_grid_overlay();
     void                  camera_state(float out[8]) const;  // r,theta,phi,target xyz,pan xy
 
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
@@ -399,6 +407,7 @@ private:
     std::vector<StudioJoint> joint_view_scratch_;     // per-frame UI feed (reused buffer)
     float                 last_proj_[16]{};           // stashed per frame for the gizmo
     float                 last_view_[16]{};           // (and the /project verification channel)
+    float                 last_eye_[3]{};             // where the camera IS — one law, read by the frost light too
     bool                  last_vp_valid_ = false;
 
 private:

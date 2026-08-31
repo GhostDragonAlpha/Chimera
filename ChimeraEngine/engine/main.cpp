@@ -1940,8 +1940,14 @@ int main(int argc, char** argv) {
             }
             content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
+            // vp_valid: is the stashed view/projection live? The C1 gizmo, /project
+            // and the viewport grid all answer from it, so a false here means the
+            // viewport has no frame of reference -- published because otherwise the
+            // only symptom is "the grid silently isn't there".
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
-                 + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
+                 + ",\"active\":" + (g_membrane_active ? "true" : "false")
+                 + ",\"vp_valid\":" + (g_engine && g_engine->vp_valid() ? "true" : "false")
+                 + "}";
             content_type = "application/json";
         } else {
             body = "Not found";

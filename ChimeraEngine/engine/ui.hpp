@@ -54,6 +54,10 @@ struct StudioJoint {
     float ext = 0.f, flex = 0.f, theta = 0.f;
 };
 
+// 2026-08-31: one screen-space segment of the viewport reference frame, built
+// from world points the ENGINE projected (project_world). An instrument, never matter.
+struct StudioGridLine { float x0, y0, x1, y1, r, g, b, a; };
+
 class StudioUI {
 public:
     bool visible = false;    // F1 toggles; the viewport stays live underneath
@@ -153,6 +157,8 @@ private:
     bool        gizmo_vis_ = false;
     float       gizmo_[4] = {0, 0, 0, 0};       // x0,y0 (J) -> x1,y1 (J + axis * band RMS)
     std::string gizmo_label_;
+    std::vector<StudioGridLine> grid_;                // the viewport reference frame
+    bool        viewport_empty_ = false;        // nothing loaded — say so
 
     // ── E1: THE DOCS BROWSER (the DOCS workspace's left-dock mode, left_mode_ 2) ──
     // Read-only, verbatim, current with git: the file is re-read when its
@@ -208,6 +214,21 @@ public:
         gizmo_vis_ = vis; gizmo_[0] = x0; gizmo_[1] = y0; gizmo_[2] = x1; gizmo_[3] = y1;
         gizmo_label_ = label;
     }
+
+    // ── THE VIEWPORT REFERENCE FRAME (2026-08-31 — the eye's #1 defect) ───────
+    // An empty 3D viewport reads as BROKEN, not as empty: "no grid, no origin
+    // axes ... it's indistinguishable from a crashed GL context. This is the
+    // biggest fix you can make."
+    //
+    // A grid is a DECLARED INSTRUMENT, not a body: it is the viewport's frame of
+    // reference, the way a Blender grid is. It must never be mistaken for matter,
+    // so it is drawn by the UI in screen space, from world points the ENGINE
+    // projected through its own camera (project_world) — one projection law, so
+    // the grid cannot disagree with whatever is standing on it.
+    void set_grid_lines(std::vector<StudioGridLine> lines) { grid_ = std::move(lines); }
+    // honest emptiness: when there is genuinely nothing loaded, SAY SO in the
+    // viewport instead of leaving a void the eye has to interpret.
+    void set_viewport_empty(bool empty) { viewport_empty_ = empty; }
     int  left_mode() const { return left_mode_; }
     // C1: the layout space's font metrics — agents aim slider clicks from these
     // (the same discipline as B3's w/h: the UI publishes, never hides)
