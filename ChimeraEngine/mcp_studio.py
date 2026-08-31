@@ -182,6 +182,14 @@ def t_stages() -> dict:
     return json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 
 
+def t_link(stage: int) -> dict:
+    """E2: the deep link — open the DOCS dock on the pipeline doc at the
+    membrane section that named `stage`'s falsifier/spec. The SAME jump the
+    glass click on the envelope's [docs ->] row makes (one resolution law for
+    both). ok=false means the stage has no doc target; check `line`."""
+    return _req("POST", "/link", {"stage": int(stage)})
+
+
 def t_briefing() -> str:
     """THE CONTEXT TRANSFER. One call = everything a fresh AI (or a returning
     one) needs: where the project stands (the board's own words), what the
@@ -230,7 +238,8 @@ def t_briefing() -> str:
     L.append("state · screenshot · transport(play/pause/time/speed/step) · "
              "pose_joint(joint,theta) · joints · click(x,y) · "
              "console('METHOD /path [json]') — the one-path escape hatch · "
-             "log_tail · reel · stages · briefing (this)")
+             "log_tail · reel · stages · link(stage) — E2: jump the docs dock "
+             "to a stage's own section · briefing (this)")
     L.append("Rules of the house: the overlay never touches /frame (screenshots "
              "are pixel-clean); the UI proposes, the engine owns; read "
              "docs/THE_ENGINE_STUDIO.md for the shipped-feature ledger.")
@@ -301,6 +310,13 @@ try:
         """The pipeline board: all 11 stages with status + verbatim cells and
         the standing rule (the repo's own feed, read never owned)."""
         return json.dumps(_guard(t_stages), indent=2)
+
+    @mcp.tool()
+    def link(stage: int) -> str:
+        """E2 deep link: open the DOCS dock at the membrane section that named
+        `stage` (B0-B10). The context-transfer channel — follow the board row
+        to its spec. Returns ok + the doc line it landed on."""
+        return json.dumps(_guard(t_link, stage))
 
     @mcp.tool()
     def briefing() -> str:

@@ -34,6 +34,10 @@ struct StudioStage {
     std::string cell;       // the Monkey-status cell (the verdict row)
     std::string spec_title; // the ### envelope's title, when the doc has one
     std::string spec;       // the numbered steps (the task envelope itself)
+    // E2: the deep link — the stage's own line numbers in the pipeline doc,
+    // DERIVED by tools/studio_board.py (never hardcoded here): row_line = the
+    // glance-table row; spec_line = the ### envelope's heading (-1 = none).
+    int row_line = -1, spec_line = -1;
 };
 
 struct StudioBoard {
@@ -161,6 +165,8 @@ private:
         std::string raw;                            // the file's exact bytes
         std::vector<std::string> lines;             // split on '\n'
         std::vector<std::string> display;           // re-wrapped to the dock width
+        std::vector<int> display_src;               // E2: display line -> source line (the wrap map)
+        int      pending_line = -1;                 // E2: a deep link awaiting resolution (source line)
         size_t   wrap_cols = 0;                     // the column count `display` was wrapped at
         uint64_t mtime = 0;
         uint64_t fnv = 0;
@@ -220,6 +226,15 @@ public:
     float       docs_scroll_max() const { return docs_scroll_max_; }
     void        docs_set(int idx);
     void        docs_set_scroll(float s);
+    // ── E2: DEEP LINKS — a stage's falsifier/spec row jumps the DOCS dock to
+    // the membrane section that named it. The TARGET is the tool-derived line
+    // (spec_line when the doc has a ### envelope, else the glance-table row);
+    // the LANDING is resolved in prepare() through the live wrap map, so the
+    // glass click and the /link twin land identically by construction.
+    int         docs_link_line(int stage_index) const;  // the resolution law (-1 = no link)
+    void        docs_link_stage(int stage_index);       // navigate: doc 0 + pending_line
+    int         docs_top_src() const;                   // source line under the scroll's top
+    float       link_hot_[4] = {0, 0, 0, 0};            // the envelope's link row rect (last prepared)
     // E1: the hidden+idle path in Engine::frame() returns BEFORE prepare() —
     // without this the HTTP twins (board, docs) freeze the moment the overlay
     // is closed. 1 Hz each, cheap; the panels read the repo, never write it.

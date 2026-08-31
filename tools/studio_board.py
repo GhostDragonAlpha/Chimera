@@ -71,7 +71,11 @@ def parse_pipeline(doc: Path):
                        "law":      clean[0] if len(clean) > 0 else "",
                        "tool":     clean[1] if len(clean) > 1 else "",
                        "artifact": clean[2] if len(clean) > 2 else "",
-                       "falsifier": clean[3] if len(clean) > 3 else ""})
+                       "falsifier": clean[3] if len(clean) > 3 else "",
+                       # E2: the deep link — this row's own line in the doc
+                       # (0-based). Derived, never hardcoded: a doc edit moves
+                       # the number, the Studio just reads it.
+                       "row_line": text.count("\n", 0, m.start())})
 
     # The stage-spec envelopes (### B5 — ... sections): the numbered steps an
     # agent executes. "B7b" attaches to stage B7 (its title stays verbatim).
@@ -80,11 +84,15 @@ def parse_pipeline(doc: Path):
                          text, flags=re.MULTILINE | re.DOTALL):
         spec_id = re.match(r"B\d+", m.group(1)).group(0)
         body = re.sub(r"\*\*", "", m.group(3).strip())   # same display-strip as the cells
-        specs[spec_id] = {"title": m.group(2).strip(), "body": body}
+        specs[spec_id] = {"title": m.group(2).strip(), "body": body,
+                          "line": text.count("\n", 0, m.start())}   # E2: the heading's line
     for s in stages:
         sp = specs.get(s["id"])
         s["spec_title"] = sp["title"] if sp else ""
         s["spec"] = sp["body"] if sp else ""
+        # E2: the membrane section's line when the doc has one (-1 = link to
+        # the glance-table row instead — the falsifier's other home)
+        s["spec_line"] = sp["line"] if sp else -1
 
     # The "Monkey status board" section is the doc's own summary — it OUTRANKS
     # per-cell prose (B0's cell mentions a *teddy* gate pending the operator;
@@ -122,6 +130,10 @@ def standing_rule(stages):
 
 
 def main() -> int:
+    # The doc's own cells may carry math glyphs (>=, lambda); a cp1252 console
+    # must not take the tool down after the JSON is already written.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
     ap = argparse.ArgumentParser()
     ap.add_argument("--doc", default=str(DEFAULT_DOC))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -140,7 +152,8 @@ def main() -> int:
         "stages": [{"id": s["id"], "name": s["name"], "status": s["status"],
                     "law": s["law"], "tool": s["tool"], "artifact": s["artifact"],
                     "falsifier": s["falsifier"], "cell": s["cell"],
-                    "spec_title": s["spec_title"], "spec": s["spec"]}
+                    "spec_title": s["spec_title"], "spec": s["spec"],
+                    "row_line": s["row_line"], "spec_line": s["spec_line"]}
                    for s in stages],
         "standing": standing_rule(stages),
         "source": "docs/THE_BODY_PIPELINE.md",

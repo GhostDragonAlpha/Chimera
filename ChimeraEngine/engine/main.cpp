@@ -1290,7 +1290,17 @@ int main(int argc, char** argv) {
                      + ",\"lh\":" + std::to_string(g_engine->ui_.line_height())
                      + ",\"advance\":" + std::to_string(g_engine->ui_.advance())
                      + ",\"w\":" + std::to_string(g_engine->win_w())
-                     + ",\"h\":" + std::to_string(g_engine->win_h()) + "}";
+                     + ",\"h\":" + std::to_string(g_engine->win_h())
+                     // E2: the envelope's link-row rect (client pixels), zeroed
+                     // when no envelope is up — panels publish their rects,
+                     // never hide them (the /joints law); a synthetic click on
+                     // its center IS the glass deep link.
+                     + ",\"link\":[" + std::to_string(g_engine->ui_.link_hot_[0])
+                     + "," + std::to_string(g_engine->ui_.link_hot_[1])
+                     + "," + std::to_string(g_engine->ui_.link_hot_[2])
+                     + "," + std::to_string(g_engine->ui_.link_hot_[3]) + "]"
+                     + ",\"link_stage\":" + std::to_string(g_engine->ui_.selected_stage())
+                     + "}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
@@ -1319,7 +1329,11 @@ int main(int argc, char** argv) {
                      + ",\"n_lines\":" + std::to_string(g_engine->ui_.docs_line_count())
                      + ",\"n_display\":" + std::to_string(g_engine->ui_.docs_display_count())
                      + ",\"scroll\":" + std::to_string(g_engine->ui_.docs_scroll())
-                     + ",\"scroll_max\":" + std::to_string(g_engine->ui_.docs_scroll_max()) + "}";
+                     + ",\"scroll_max\":" + std::to_string(g_engine->ui_.docs_scroll_max())
+                     // E2: the source line under the scroll's top (the wrap map
+                     // read back) — a deep link's landing is PROVED here: the
+                     // probe polls until top_src == the stage's doc line.
+                     + ",\"top_src\":" + std::to_string(g_engine->ui_.docs_top_src()) + "}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
@@ -1334,6 +1348,25 @@ int main(int argc, char** argv) {
                     g_engine->ui_.docs_set_scroll(get_float(req_body, "scroll", 0.0f));
                 body = std::string("{\"ok\":true,\"doc\":") + std::to_string(g_engine->ui_.docs_current())
                      + ",\"scroll\":" + std::to_string(g_engine->ui_.docs_scroll()) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/link" && method == "POST") {
+            // E2: the deep link's HTTP twin — {"stage":N} makes the SAME
+            // docs_link_stage() call the glass click dispatches (one resolution
+            // law for both). The landing resolves on the next prepare() through
+            // the live wrap map, so the response returns the TARGET (the source
+            // line docs_link_line() resolves); GET /studio_doc shows the scroll
+            // once a frame has landed it.
+            if (g_engine) {
+                int stage = static_cast<int>(get_float(req_body, "stage", -1.0f));
+                g_engine->ui_.docs_link_stage(stage);
+                int line = g_engine->ui_.docs_link_line(stage);
+                body = std::string("{\"ok\":") + (line >= 0 ? "true" : "false")
+                     + ",\"stage\":" + std::to_string(stage)
+                     + ",\"line\":" + std::to_string(line)
+                     + ",\"doc\":" + std::to_string(g_engine->ui_.docs_current()) + "}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
@@ -1873,7 +1906,7 @@ int main(int argc, char** argv) {
                 p == "/gait_bin" || p == "/water_bin") kind = "upload";
             else if (p == "/show" || p == "/joints" || p == "/gait" ||
                      p == "/water_clock" || p == "/studio" ||
-                     p == "/studio_chrome") kind = "mode";
+                     p == "/studio_chrome" || p == "/link") kind = "mode";
             else if (p == "/joint") kind = "intent";
             if (kind) {
                 std::string d = method + " " + p + " " +

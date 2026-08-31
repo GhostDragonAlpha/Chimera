@@ -962,3 +962,91 @@ its own membrane when the volp path gets one.
 - **Next per the menu:** E2 deep links, B4 ledger — and the board's own
   earliest non-green gate, B5 anatomy referee, is what the strip keeps
   naming.
+
+## SHIPPED — E2: DEEP LINKS (2026-08-31)
+
+- **Statement:** a dock row is a link when its TARGET is derived from the doc
+  by `tools/studio_board.py` (`row_line` = the glance-table row, `spec_line`
+  = the `###` envelope's heading, −1 when absent) and its LANDING is resolved
+  through the LIVE wrap map in `prepare()` — so the glass click on the
+  envelope's `[docs ->]` FALSIFIER / NEXT ACTION rows (hot ids 900/901) and
+  `POST /link {"stage":N}` land identically BY CONSTRUCTION: one resolution
+  law (`docs_link_line()` → `pending_line` → the target source line's FIRST
+  display line, clamped by `scroll_max`) for both glass and HTTP.
+- **Prediction (unmeasured at naming time):** every stage's link lands the
+  DOCS dock at exactly its own doc line; a synthetic click on the FALSIFIER
+  row's hotspot produces the same `(doc, top_src)` as POST /link for the same
+  stage; the wrap map is monotonic and total.
+- **Falsifiers (named before the build):** (A) any board-JSON `row_line` /
+  `spec_line` whose doc line does NOT contain that stage's glance-table row /
+  `###` envelope heading — the target is a lie (offline, no engine needed);
+  (B) POST /link `{"stage":i}` for ANY i fails to land — GET /studio_doc never
+  shows doc 0 with `top_src ==` the stage's derived line within 6 s; (C) the
+  synthetic click lands a DIFFERENT `(doc, top_src)` than POST /link for the
+  same stage — two resolution laws exist and the "one law" claim is false;
+  (D) the wrap map breaks — the live `top_src` sweep over scroll is not
+  non-decreasing, or a byte-exact re-derivation of `docs_rewrap()` at the
+  dock's own width disagrees with the engine's display count, or some source
+  line maps to zero display lines.
+
+**What shipped.** The board JSON carries each stage's own line numbers in the
+pipeline doc (derived, never hardcoded — a doc edit moves the number and the
+Studio just reads it). `docs_rewrap()` now records `display_src` (display line
+→ source line) alongside the wrapped text; a deep link sets `pending_line`
+and switches to the DOCS workspace, and the NEXT prepare() — after the rewrap,
+with `scroll_max` known — puts the target's first display line at the top,
+the same clamp a human's scroll obeys. The envelope draws `[docs ->]` on its
+FALSIFIER and NEXT ACTION rows with their live rect published as `link`
+(client pixels, zeroed when no envelope is up) so a synthetic click IS the
+glass deep link; `GET /studio_doc` serves `top_src` (the source line under
+the scroll's top — the wrap map read back), which is where a landing is
+PROVED. The MCP twin gained `link(stage)` over POST /link, and the briefing's
+driving manual names it.
+
+**The bugs found while verifying (all probe-side; the engine was innocent).**
+(1) Falsifier A first fired on B7: its `spec_line` points at `### B7b — VOLP
+GENERALIZATION`, not a plain `### B7`. Not a bug — the doc has no plain B7
+envelope, and the tool's own law attaches `B7b` to stage B7 (whose pending
+status is exactly "volp-generalization"); that section IS B7's membrane.
+The probe asserted `^### B7\b` and fired on the truth; it now accepts the
+tool's `B\d+\w?` law. (2) Falsifier D failed on run 1 with a live-sweep
+inversion: C's second landing poll could pass SPURIOUSLY — after the glass
+leg, scroll already sat at the target, so POST /link's fresh `pending_line`
+could still be in flight when D started sweeping; one frame resolved it
+mid-sweep and jumped the scroll back. A standalone sweep showed zero
+inversions (the map is monotonic). Fixed by starting each C leg from a
+PROVEN-OTHER scroll (`scroll_to(0)` + a quiescence check) and giving D its
+own quiescence pre-check — a landing must be observed as a CHANGE, not merely
+seen. (3) `studio_board.py` crashed with `UnicodeEncodeError` AFTER writing
+the JSON: B5's status cell now carries `≥`, which the cp1252 console cannot
+print. Fixed with `sys.stdout.reconfigure(errors="replace")` — the tool no
+longer dies on a glyph the doc is allowed to contain.
+
+- **Rule 0 verdicts** (evidence: `tools/probe_studio_e2.py`,
+  `.tmp/e2_probe/results.json` + `engine_stdout.log` — ALL PASS twice
+  back-to-back, fresh engine each run):
+  - **A:** all 11 stages' `row_line`s contain their `| **B#** |` glance-table
+    row; B5–B8's `spec_line`s are their `###` headings (B7 → its own B7b
+    section, per the tool's law). PASS
+  - **B:** POST /link lands doc 0 with `top_src ==` the derived line for ALL
+    11 stages (B5–B8 at their envelope headings, the rest at their table
+    rows), each within the 6 s poll. PASS
+  - **C:** glass `(0, 54)` vs http `(0, 54)` — identical landing from the same
+    clean start for B5's spec heading; one resolution law, glass and HTTP.
+    PASS
+  - **D:** `maxc=29` (the dock's own width ÷ advance) reproduces the engine's
+    `n_display=456`; the live sweep over all 437 readable scroll positions is
+    non-decreasing AND byte-identical to the re-derived map; every one of the
+    144 source lines maps to ≥1 display line. PASS
+  - **VK errors in the engine log:** zero (validation / VK_ERROR /
+    device-lost pattern). PASS
+- **Files:** `engine/ui.{hpp,cpp}` (`display_src` wrap map, `pending_line`,
+  public `docs_link_line()` / `docs_link_stage()` / `docs_top_src()`, hot rows
+  900/901 + the `[docs ->]` affordance, `link_hot_` rect), `engine/main.cpp`
+  (POST `/link`; GET `/studio` serves the link rect; GET `/studio_doc` serves
+  `top_src`), `tools/studio_board.py` (`row_line` / `spec_line` derivation +
+  the console-encoding fix), `ChimeraEngine/mcp_studio.py` (`t_link` + the MCP
+  tool + the briefing line), `tools/probe_studio_e2.py`, this doc.
+- **Next per the menu:** B4 ledger, then the rest of the menu by value (C3
+  modes, D2 markers, D4 A/B compare) — and the board's own earliest non-green
+  gate, B7 articulate, is what the strip keeps naming.

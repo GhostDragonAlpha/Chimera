@@ -46,6 +46,18 @@ static std::string ui_json_string(const std::string& body, const char* key, size
     return body.substr(start, p - start);
 }
 
+// E2: the board JSON's integer fields (row_line / spec_line — the deep links)
+static int ui_json_int(const std::string& body, const char* key, size_t from, int dflt) {
+    std::string needle = std::string("\"") + key + "\"";
+    size_t pos = body.find(needle, from);
+    if (pos == std::string::npos) return dflt;
+    size_t p = pos + needle.size();
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size() || body[p] != ':') return dflt;
+    ++p; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    return static_cast<int>(strtol(body.c_str() + p, nullptr, 10));
+}
+
 // ── input ─────────────────────────────────────────────────────────────────────
 
 void StudioUI::on_mouse_move(int x, int y) {
@@ -219,6 +231,8 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id >= 800 && h.id < 850 && cb_cam_recall_)             // D6: recall a shot
                 cb_cam_recall_(h.id - 800);
             if (h.id == 850 && cb_cam_save_) cb_cam_save_();             // D6: save the live camera
+            if ((h.id == 900 || h.id == 901) && selected_stage_ >= 0)    // E2: the deep link
+                docs_link_stage(selected_stage_);
             return true;
         }
     }
@@ -289,6 +303,8 @@ void StudioUI::poll_board() {
         s.cell      = ui_json_string(body, "cell", pos);
         s.spec_title = ui_json_string(body, "spec_title", pos);
         s.spec      = ui_json_string(body, "spec", pos);
+        s.row_line  = ui_json_int(body, "row_line", pos, -1);    // E2: the deep links
+        s.spec_line = ui_json_int(body, "spec_line", pos, -1);
         if (s.id.empty()) break;
         // JSON escapes newlines in the spec body; restore them for the wrap
         for (size_t p2 = s.spec.find("\\n"); p2 != std::string::npos; p2 = s.spec.find("\\n", p2))
@@ -571,18 +587,22 @@ void StudioUI::docs_rewrap(size_t maxc) {
     if (docs_.wrap_cols == maxc) return;
     docs_.wrap_cols = maxc;
     docs_.display.clear();
+    docs_.display_src.clear();
     // The same greedy law as text_wrap — the browser and the renderer can
     // never disagree about where a line breaks
+    int src = 0;
     for (const std::string& line : docs_.lines) {
         std::string para = line;
-        if (para.empty()) { docs_.display.emplace_back(); continue; }
+        if (para.empty()) { docs_.display.emplace_back(); docs_.display_src.push_back(src); ++src; continue; }
         while (!para.empty()) {
-            if (para.size() <= maxc) { docs_.display.push_back(para); break; }
+            if (para.size() <= maxc) { docs_.display.push_back(para); docs_.display_src.push_back(src); break; }
             size_t cut = para.rfind(' ', maxc);
             if (cut == std::string::npos || cut == 0) cut = maxc;
             docs_.display.push_back(para.substr(0, cut));
+            docs_.display_src.push_back(src);
             para = para.substr(cut + (cut < para.size() && para[cut] == ' ' ? 1 : 0));
         }
+        ++src;
     }
     docs_clamp_scroll();
 }
@@ -606,6 +626,34 @@ void StudioUI::docs_set(int idx) {
 void StudioUI::docs_set_scroll(float s) {
     docs_.scroll = s;
     docs_clamp_scroll();
+}
+
+// ── E2: DEEP LINKS ────────────────────────────────────────────────────────────
+int StudioUI::docs_link_line(int stage_index) const {
+    if (stage_index < 0 || stage_index >= static_cast<int>(board_.stages.size()))
+        return -1;
+    const StudioStage& st = board_.stages[stage_index];
+    // the membrane section when the doc has one; the falsifier's other home
+    // (the glance-table row) otherwise. Both derived by studio_board.py.
+    return st.spec_line >= 0 ? st.spec_line : st.row_line;
+}
+
+void StudioUI::docs_link_stage(int stage_index) {
+    int line = docs_link_line(stage_index);
+    if (line < 0) return;
+    left_mode_ = 2;                 // the DOCS workspace
+    selected_stage_ = -1;           // the way back is the strip node (the workspace law)
+    docs_set(0);                    // THE_BODY_PIPELINE.md — the board's own source
+    docs_.pending_line = line;      // resolved in prepare() through the live wrap map
+}
+
+int StudioUI::docs_top_src() const {
+    if (docs_.display_src.empty()) return -1;
+    int top = static_cast<int>(docs_.scroll);
+    if (top < 0) top = 0;
+    if (top >= static_cast<int>(docs_.display_src.size()))
+        top = static_cast<int>(docs_.display_src.size()) - 1;
+    return docs_.display_src[top];
 }
 
 bool StudioUI::on_wheel(int x, int y, float delta) {
@@ -709,6 +757,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
     if (left_mode_ != 4) { scene_row_rects_.clear(); scene_sel_rects_.clear(); } // same law
+    if (!(left_mode_ == 0 && have_sel)) link_hot_[2] = 0.f;   // E2: same law — no envelope, no link rect
     if (!left_.collapsed && left_mode_ == 2) {
         // E1: THE DOCS BROWSER. The five docs the menu names, verbatim (the
         // panel's FNV hash is served over HTTP — a rendered line that is not
@@ -739,6 +788,16 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         if (visible_n < 1) visible_n = 1;
         docs_scroll_max_ = docs_.display.size() > static_cast<size_t>(visible_n)
             ? static_cast<float>(docs_.display.size() - visible_n) : 0.f;
+        // E2: a deep link lands HERE — after the rewrap (the wrap map is fresh)
+        // and with scroll_max known, so the clamp is the same law a human's
+        // scroll obeys. The target source line's FIRST display line goes top.
+        if (docs_.pending_line >= 0) {
+            int tgt = docs_.pending_line;
+            docs_.pending_line = -1;
+            for (size_t i = 0; i < docs_.display_src.size(); ++i) {
+                if (docs_.display_src[i] == tgt) { docs_.scroll = static_cast<float>(i); break; }
+            }
+        }
         docs_clamp_scroll();
         int first = static_cast<int>(docs_.scroll);
         for (size_t i = static_cast<size_t>(first); i < docs_.display.size(); ++i) {
@@ -975,13 +1034,36 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         std::string hint = "  [click the node again to close]";
         text(x + st.status.size() * advance_ + 4, y, hint, 0.45f, 0.47f, 0.52f, 1.f); y += lh + 6;
         row("LAW (verbatim):", st.law, TR, TG, TB);
-        row("FALSIFIER (named before the run):", st.falsifier, 1.0f, 0.85f, 0.40f);
+        {
+            // E2: the falsifier row IS the deep link — click it and the DOCS
+            // dock opens at the membrane section that named it (the same jump
+            // POST /link {"stage":...} makes; one resolution law for both).
+            float y0 = y;
+            row("FALSIFIER (named before the run):", st.falsifier, 1.0f, 0.85f, 0.40f);
+            if (docs_link_line(selected_stage_) >= 0 && y0 <= y_max) {
+                hots_.push_back({ x - 4, y0 - 2, R[1][2] - 30, y - y0 + 2, 900 });
+                link_hot_[0] = x - 4; link_hot_[1] = y0 - 2;
+                link_hot_[2] = R[1][2] - 30; link_hot_[3] = y - y0 + 2;
+                text(R[1][0] + R[1][2] - 12 - 9 * advance_, y0, "[docs ->]",
+                     0.30f, 0.60f, 1.00f, 1.f);
+            }
+        }
         row("VERDICT (the doc's own row):", st.cell, cr, cg, cb);
         row("REFEREE TOOL:", st.tool, TR, TG, TB);
         row("ARTIFACT:", st.artifact, 0.55f, 0.85f, 0.55f);
         if (!st.spec.empty()) {
-            if (y <= y_max) { text(x, y, "NEXT ACTION (the envelope):", 0.62f, 0.66f, 0.74f, 1.f); y += lh; }
+            float y0 = y;
+            if (y <= y_max) {
+                text(x, y, "NEXT ACTION (the envelope):", 0.62f, 0.66f, 0.74f, 1.f);
+                if (docs_link_line(selected_stage_) >= 0)   // E2: the spec's own section
+                    text(R[1][0] + R[1][2] - 12 - 9 * advance_, y, "[docs ->]",
+                         0.30f, 0.60f, 1.00f, 1.f);
+                y += lh;
+            }
             float y_end = text_wrap(x + 8, y, st.spec, maxc - 2, TR, TG, TB, 0.95f, y_max);
+            if (docs_link_line(selected_stage_) >= 0 && y0 <= y_max)
+                hots_.push_back({ x - 4, y0 - 2, R[1][2] - 30,
+                                  (y_end < y_max ? y_end : y_max + lh) - y0 + 2, 901 });
             if (y_end > y_max + lh) {
                 // clipped: say so, honestly — the Blender law is that areas yield
                 // space (collapse the reel/timeline or widen the dock to read on)
