@@ -732,10 +732,13 @@ the inner line logs itself; a double log would be a lie about what happened.
     view is inside measurement noise). PASS
   - **E:** `_stage_verify.py` re-run after all of the above — 9/9 PASS.
     PASS
-- **Seen, kept (honest rendering):** the water clock row shows
-  `inj=0/4294967295` — the endpoint's own uninitialized `inj_target`
-  (UINT32_MAX). The outliner renders the engine's state, not a flattering
-  one; the oddity belongs to the water clock's defaults, not this panel.
+- **Found while verifying C2 (fixed same session):** the water clock row
+  showed `inj=0/4294967295` — that was THIS feature's formatting bug, not the
+  engine's state: `inj_target` is int32 with -1 = "no target", the endpoint
+  has always served -1, and the row's `%u` re-interpreted the sign bit. The
+  "honest rendering" note this section used to carry was wrong about whose
+  oddity it was; the C2 probe's value-for-value comparison caught it, which
+  is exactly what gate A is for.
 - **Files:** `engine/ui.{hpp,cpp}` (SceneRow, the mode-4 dock, menu row 1,
   hot range 600+), `engine/engine.{hpp,cpp}` (`scene_rows`/`scene_command`/
   `scene_exec`/`scene_toggle`, the cb wiring, both push sites),
@@ -743,3 +746,66 @@ the inner line logs itself; a double log would be a lie about what happened.
 - **Next per the menu:** C2 inspector, E2 deep links, D5 render-to-MP4, D6
   camera bookmarks — and the board's own earliest non-green gate, B5 anatomy
   referee, is what the strip keeps naming.
+
+## SHIPPED — C2: THE INSPECTOR (2026-08-30)
+
+- **Statement:** the inspector is the C4 live-view law applied to depth —
+  selecting an outliner atom serves its FULL state document, composed by the
+  ENGINE at read time (one formatting site, `Engine::inspect_kv`) from the
+  same atomics the named endpoints serve; the panel holds no properties of
+  its own, so it cannot drift or invent. Selection is pure VIEW state: one
+  atomic, no console path, no F4 event (nothing in the scene changes).
+- **Prediction (unmeasured at naming time):** every inspector line that names
+  a value equals the independent endpoint's same-named field at the same
+  moment; selection is drivable identically from the glass (label click) and
+  HTTP (`POST /inspect`); the chip and the label are separate intents that
+  never cross; the open inspector costs < 0.5 ms.
+- **Falsifiers (named before the build):** (A) any inspector key/value
+  disagrees with the independent endpoint's same-named field (gait, show,
+  water_clock — the three richest documents); (B) `POST /inspect` fails to
+  move the served view, or deselect fails to return STATUS, or id-select
+  picks the wrong row; (C) a chip click toggles WITHOUT selecting, or a label
+  click selects WITHOUT toggling; (D) ft delta >= 0.5 ms; (E)
+  `_scene_verify.py` regresses.
+
+**What shipped.** The outliner row is now TWO intents: the chip
+(`[on]`/`[off]`) is the toggle (unchanged, one path), the label selects the
+atom for inspection. The right dock becomes `INSPECT - <atom> (C2)`: the
+FPS pulse stays on top, then the atom's full document — gait serves
+loaded/on/steps-per-frame/omega/steps_total/thetaL/thetaR; show serves
+playing/time/speed/n_joints/period/current/theta; every atom down to chrome
+serves its whole endpoint state. The footer shows the exact console line for
+the toggle (`toggle: POST /gait {"on":false}`) — the edit path is taught in
+place, and it is the SAME one path. Re-click the row (or `POST /inspect
+{"row":-1}`) and STATUS returns. The HTTP twin: `GET /inspect` serves the
+same `inspect_kv()` document; `POST /inspect {"row"|"id"}` selects. The
+/scene twin grew `inspect_row` and a `sel_rects` aim map. Selection is NOT
+an F4 event by design — a log line would claim a scene change that never
+happened.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_inspect_verify.{py,log}`,
+  ALL PASS):
+  - **A:** 12/12 fields across gait, show, water_clock matched the
+    independent endpoints value-for-value (show paused first — the D1 freeze
+    law makes the clock comparison exact). PASS
+  - **B:** id-select (`{"id":"gait"}`) landed row 5; `{"row":-1}` returned
+    STATUS; row 999 refused with an error. PASS
+  - **C:** chip click toggled /gait with inspect_row unmoved; label click
+    selected row 5 with /gait unmoved; label re-click deselected. The two
+    intents never crossed. PASS
+  - **D:** ft_inspect 0.963 ms vs ft_board 0.911 ms — delta +0.052 ms. PASS
+  - **E:** `_scene_verify.py` re-run after all of the above — ALL PASS
+    (including its own nested `_stage_verify.py`). PASS
+- **Found while verifying (fixed same session):** gate A caught a REAL bug in
+  C4's shipped code — the water clock row printed `inj=0/4294967295` because
+  the row's `%u` re-interpreted `inj_target`'s sign bit (int32, -1 = "no
+  target"; the endpoint has always served -1). The C4 doc's "honest
+  rendering" note was wrong about whose oddity it was — corrected in place.
+  This is the value-for-value gate doing exactly its job.
+- **Files:** `engine/ui.{hpp,cpp}` (inspect view, chip/label split, the
+  right-dock inspector), `engine/engine.{hpp,cpp}` (`inspect_row_`,
+  `inspect_kv`, the cb + both push sites), `engine/main.cpp`
+  (GET/POST `/inspect`, `/scene` grew `inspect_row` + `sel_rects`), this doc.
+- **Next per the menu:** E2 deep links, D5 render-to-MP4, D6 camera
+  bookmarks, B4 ledger — and the board's own earliest non-green gate, B5
+  anatomy referee, is what the strip keeps naming.

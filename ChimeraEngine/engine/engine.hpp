@@ -165,6 +165,12 @@ public:
     std::string scene_command(const std::string& id, bool on);   // the line, or ""
     std::string scene_exec(const std::string& id, bool on);      // queue it, return the line
     void        scene_toggle(int row);                           // ui click -> fresh state -> exec
+    // ── C2: THE INSPECTOR — the selected atom's full state document ──
+    // Selection is pure VIEW state (mutates nothing in the scene): one atomic,
+    // no console routing. inspect_kv() is the ONE formatting site — the right
+    // dock draws it, GET /inspect serves it.
+    std::atomic<int> inspect_row_{-1};                           // -1 = STATUS
+    std::vector<std::pair<std::string, std::string>> inspect_kv(int row);
     // ── F4: THE RECORDER — done-is-a-log, as a stream ──
     // Every gate-relevant state change through the api chokepoint (uploads,
     // mode flips, intents) plus externally-posted gate verdicts lands as a

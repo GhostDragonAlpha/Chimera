@@ -1538,8 +1538,20 @@ int main(int argc, char** argv) {
                         rects += rb;
                     }
                 }
+                std::string srects;
+                if (g_engine->ui_.left_mode() == 4) {
+                    const auto& sr = g_engine->ui_.scene_sel_rects();
+                    for (size_t i = 0; i < sr.size(); ++i) {
+                        srects += (i ? "," : "");
+                        char rb[128];
+                        snprintf(rb, sizeof(rb), "[%.1f,%.1f,%.1f,%.1f]", sr[i][0], sr[i][1], sr[i][2], sr[i][3]);
+                        srects += rb;
+                    }
+                }
                 body = std::string("{\"left_mode\":") + std::to_string(g_engine->ui_.left_mode())
-                     + ",\"rows\":[" + rs + "],\"rects\":[" + rects + "]}";
+                     + ",\"inspect_row\":" + std::to_string(g_engine->inspect_row_.load())
+                     + ",\"rows\":[" + rs + "],\"rects\":[" + rects + "]"
+                     + ",\"sel_rects\":[" + srects + "]}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
@@ -1562,6 +1574,66 @@ int main(int argc, char** argv) {
                     body = std::string("{\"ok\":true,\"queued\":\"") + jesc(line) + "\"}";
                 else
                     body = std::string("{\"ok\":false,\"error\":\"unknown or untoggleable id\"}");
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/inspect" && method == "GET") {
+            // C2: the inspector's HTTP twin — the SAME inspect_kv() document
+            // the right dock draws, composed fresh at read time.
+            if (g_engine) {
+                auto jesc = [](const std::string& s) {
+                    std::string o; o.reserve(s.size() + 16);
+                    for (char c : s) { if (c == '"' || c == '\\') { o += '\\'; o += c; } else o += c; }
+                    return o;
+                };
+                int ir = g_engine->inspect_row_.load();
+                if (ir < 0) {
+                    body = "{\"row\":-1}";
+                } else {
+                    auto rows = g_engine->scene_rows();
+                    auto kv = g_engine->inspect_kv(ir);
+                    std::string ls;
+                    for (size_t i = 0; i < kv.size(); ++i) {
+                        ls += (i ? "," : "");
+                        ls += std::string("{\"k\":\"") + jesc(kv[i].first)
+                            + "\",\"v\":\"" + jesc(kv[i].second) + "\"}";
+                    }
+                    std::string id = (ir < static_cast<int>(rows.size())) ? rows[ir].id : "";
+                    std::string label = (ir < static_cast<int>(rows.size())) ? rows[ir].label : "";
+                    body = std::string("{\"row\":") + std::to_string(ir)
+                         + ",\"id\":\"" + jesc(id) + "\",\"label\":\"" + jesc(label)
+                         + "\",\"lines\":[" + ls + "]}";
+                }
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/inspect" && method == "POST") {
+            // C2: select ({"row":i} or {"id":"gait"}) / deselect ({"row":-1}).
+            // Pure view state — no console path, no F4 event (nothing in the
+            // scene changed; a log line here would claim an event that isn't).
+            if (g_engine) {
+                int row = -2;   // -2 = not specified
+                if (req_body.find("\"row\"") != std::string::npos)
+                    row = static_cast<int>(get_float(req_body, "row", -2.0f));
+                else if (req_body.find("\"id\"") != std::string::npos) {
+                    std::string id = get_string(req_body, "id");
+                    auto rows = g_engine->scene_rows();
+                    for (size_t i = 0; i < rows.size(); ++i)
+                        if (rows[i].id == id) { row = static_cast<int>(i); break; }
+                }
+                if (row == -2) {
+                    body = "{\"ok\":false,\"error\":\"need row or id\"}";
+                } else {
+                    int n = static_cast<int>(g_engine->scene_rows().size());
+                    if (row < -1 || row >= n) {
+                        body = "{\"ok\":false,\"error\":\"row out of range\"}";
+                    } else {
+                        g_engine->inspect_row_.store(row);
+                        body = std::string("{\"ok\":true,\"row\":") + std::to_string(row) + "}";
+                    }
+                }
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }

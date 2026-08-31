@@ -635,6 +635,10 @@ bool Engine::init(const EngineConfig& cfg) {
             // C4: the outliner's row toggles — rebuilt from FRESH state at click
             // time (never the pushed view), routed through the console's one path
             ui_.cb_scene_toggle_ = [this](int row) { scene_toggle(row); };
+            // C2: selecting a row is pure view state — re-click deselects
+            ui_.cb_scene_select_ = [this](int row) {
+                inspect_row_.store(inspect_row_.load() == row ? -1 : row);
+            };
             console_thread_ = std::thread([this] { console_worker(); });
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
@@ -1627,7 +1631,7 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
         add("gait", "gait", d, gait_on_.load() ? 1 : 0, true);
     }
     {
-        char d[96]; snprintf(d, sizeof(d), "steps_total=%llu inj=%u/%u",
+        char d[96]; snprintf(d, sizeof(d), "steps_total=%llu inj=%d/%d",
                              (unsigned long long)water_clock_steps_total_.load(),
                              water_clock_inj_count_.load(), water_clock_inj_target_.load());
         add("water_clock", "water clock", d, water_clock_on_.load() ? 1 : 0, true);
@@ -1663,6 +1667,79 @@ void Engine::scene_toggle(int row) {
     const StudioUI::SceneRow& r = rows[row];
     if (!r.toggleable) return;
     scene_exec(r.id, r.state == 0);
+}
+
+// ── C2: THE INSPECTOR's document — one formatting site for glass and twin ──
+// Every value is read from the SAME atomics the named endpoint serves; the
+// inspector holds no properties of its own, so it cannot drift or invent.
+std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
+    std::vector<std::pair<std::string, std::string>> kv;
+    std::vector<StudioUI::SceneRow> rows = scene_rows();
+    if (row < 0 || row >= static_cast<int>(rows.size())) return kv;
+    const std::string& id = rows[row].id;
+    auto add = [&](const char* k, const std::string& v) { kv.emplace_back(k, v); };
+    auto b = [](bool v) { return v ? "true" : "false"; };
+    char nb[96];
+    if (id == "body") {
+        add("mesh", b(has_mesh_));
+        snprintf(nb, sizeof(nb), "%u", tri_idx_count_ / 3); add("tris", nb);
+    } else if (id == "overlay") {
+        add("loaded", b(has_overlay_));
+        snprintf(nb, sizeof(nb), "%u", ov_idx_count_ / 3); add("tris", nb);
+    } else if (id == "show") {
+        double t = show_time_.load();
+        uint32_t nj = show_joint_count();
+        float per = show_period();
+        uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
+        add("playing", b(show_playing_.load()));
+        snprintf(nb, sizeof(nb), "%.3f s", t); add("time", nb);
+        snprintf(nb, sizeof(nb), "%.2f", show_speed_.load()); add("speed", nb);
+        snprintf(nb, sizeof(nb), "%u", nj); add("n_joints", nb);
+        snprintf(nb, sizeof(nb), "%.3f s", per); add("period", nb);
+        add("current", show_joint_name(cur));
+        snprintf(nb, sizeof(nb), "%+.3f deg", show_current_theta()); add("theta", nb);
+    } else if (id == "joints") {
+        add("on", b(joints_on_.load() != 0));
+        add("owner", joints_owner_.load(std::memory_order_relaxed) == 1 ? "edit" : "show");
+        int sel = selected_joint_.load(std::memory_order_relaxed);
+        add("selected", (sel >= 0 && sel < static_cast<int>(j_names_.size()))
+                        ? j_names_[sel] : std::string("none"));
+        snprintf(nb, sizeof(nb), "%u", j_n_joints_); add("n_joints", nb);
+    } else if (id == "volp") {
+        add("loaded", b(volp_loaded()));
+        add("mode", volp_mode_.load() == 1 ? "volp" : "blend");
+        add("manual", b(volp_manual_.load()));
+        snprintf(nb, sizeof(nb), "%d", volp_M_.load()); add("M", nb);
+        const float* st = volp_stats();
+        if (st) { snprintf(nb, sizeof(nb), "%.6f", st[0]); add("dV", nb); }
+    } else if (id == "gait") {
+        double tL = 0, tR = 0; gait_theta(tL, tR);
+        add("loaded", b(gait_loaded()));
+        add("on", b(gait_on_.load()));
+        snprintf(nb, sizeof(nb), "%d", gait_steps_per_frame_.load()); add("steps/frame", nb);
+        snprintf(nb, sizeof(nb), "%.4f", gait_omega_.load()); add("omega", nb);
+        snprintf(nb, sizeof(nb), "%llu", (unsigned long long)gait_steps_total_.load());
+        add("steps_total", nb);
+        snprintf(nb, sizeof(nb), "%+.4f", tL); add("thetaL", nb);
+        snprintf(nb, sizeof(nb), "%+.4f", tR); add("thetaR", nb);
+    } else if (id == "water_clock") {
+        add("on", b(water_clock_on_.load()));
+        snprintf(nb, sizeof(nb), "%d", water_clock_steps_per_frame_.load()); add("steps/frame", nb);
+        snprintf(nb, sizeof(nb), "%d", water_clock_inj_target_.load()); add("inj_target", nb);
+        snprintf(nb, sizeof(nb), "%d", water_clock_inj_count_.load()); add("inj_count", nb);
+        snprintf(nb, sizeof(nb), "%llu", (unsigned long long)water_clock_steps_total_.load());
+        add("steps_total", nb);
+    } else if (id == "water_vis") {
+        add("on", b(water_vis_on_.load()));
+    } else if (id == "frost") {
+        add("loaded", b(frost_loaded_));
+        add("on", b(frost_on_.load()));
+        snprintf(nb, sizeof(nb), "%u", frost_tris()); add("n_tris", nb);
+        snprintf(nb, sizeof(nb), "%llu", (unsigned long long)frost_frame_.load()); add("frame", nb);
+    } else if (id == "chrome") {
+        add("bar_on", b(ui_.bar_on_));
+    }
+    return kv;
 }
 
 int Engine::console_pending() {
@@ -4144,7 +4221,20 @@ bool Engine::frame() {
         ui_.set_gizmo(false, 0, 0, 0, 0, "");
     }
     // C4: the outliner's view — composed from live state, one formatting site
-    ui_.set_scene_view(scene_rows());
+    {
+        auto rows = scene_rows();
+        int ir = inspect_row_.load();
+        if (ir >= 0 && ir < static_cast<int>(rows.size())) {
+            const auto& r = rows[ir];
+            std::string hint = r.toggleable
+                ? "toggle: " + scene_command(r.id, r.state == 0)
+                : "read-only atom (status row)";
+            ui_.set_inspect_view(ir, r.id, r.label, inspect_kv(ir), hint);
+        } else {
+            ui_.set_inspect_view(-1, "", "", {}, "");
+        }
+        ui_.set_scene_view(std::move(rows));
+    }
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -4952,7 +5042,20 @@ bool Engine::frame_idle_ui() {
         ui_.set_gizmo(false, 0, 0, 0, 0, "");
     }
     // C4: the outliner answers in idle too — same one formatting site
-    ui_.set_scene_view(scene_rows());
+    {
+        auto rows = scene_rows();
+        int ir = inspect_row_.load();
+        if (ir >= 0 && ir < static_cast<int>(rows.size())) {
+            const auto& r = rows[ir];
+            std::string hint = r.toggleable
+                ? "toggle: " + scene_command(r.id, r.state == 0)
+                : "read-only atom (status row)";
+            ui_.set_inspect_view(ir, r.id, r.label, inspect_kv(ir), hint);
+        } else {
+            ui_.set_inspect_view(-1, "", "", {}, "");
+        }
+        ui_.set_scene_view(std::move(rows));
+    }
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);

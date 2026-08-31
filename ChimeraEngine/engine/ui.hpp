@@ -308,6 +308,25 @@ public:
     const std::vector<SceneRow>& scene_view() const { return scene_; }
     const std::vector<std::array<float, 4>>& scene_rects() const { return scene_row_rects_; }
 
+    // ── C2: THE INSPECTOR (the right dock, when an outliner row is selected) ──
+    // The same live-view law applied to depth: the ENGINE composes the selected
+    // atom's full state document at read time (one formatting site, shared with
+    // the /inspect twin); the panel holds no properties of its own. Selection
+    // is pure VIEW state (it mutates nothing in the scene), so it does not
+    // route through the console — only state mutation does.
+    int inspect_row_ = -1;                                 // pushed by the engine
+    std::string inspect_id_, inspect_label_, inspect_hint_;
+    std::vector<std::pair<std::string, std::string>> inspect_kv_;
+    std::vector<std::array<float, 4>> scene_sel_rects_;   // label-rect aim map
+    std::function<void(int)> cb_scene_select_;            // row index -> the engine
+    void set_inspect_view(int row, std::string id, std::string label,
+                          std::vector<std::pair<std::string, std::string>> kv,
+                          std::string hint) {
+        inspect_row_ = row; inspect_id_ = std::move(id); inspect_label_ = std::move(label);
+        inspect_kv_ = std::move(kv); inspect_hint_ = std::move(hint);
+    }
+    const std::vector<std::array<float, 4>>& scene_sel_rects() const { return scene_sel_rects_; }
+
     // ── F4: THE RECORDER's ring — the LOG stream (left dock mode 3) ──
     // The engine pushes each event the moment it happens; the dock draws the
     // tail, newest at the bottom. The FILE holds everything — the stream is

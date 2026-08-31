@@ -213,6 +213,8 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 if (i >= 0 && i < static_cast<int>(scene_.size()) &&
                     scene_[i].toggleable && cb_scene_toggle_) cb_scene_toggle_(i);
             }
+            if (h.id >= 700 && h.id < 800 && cb_scene_select_)           // C2: inspect a row
+                cb_scene_select_(h.id - 700);
             return true;
         }
     }
@@ -701,7 +703,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
-    if (left_mode_ != 4) scene_row_rects_.clear(); // same law for the outliner
+    if (left_mode_ != 4) { scene_row_rects_.clear(); scene_sel_rects_.clear(); } // same law
     if (!left_.collapsed && left_mode_ == 2) {
         // E1: THE DOCS BROWSER. The five docs the menu names, verbatim (the
         // panel's FNV hash is served over HTTP — a rendered line that is not
@@ -837,9 +839,10 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         float y_max = R[1][1] + R[1][3] - lh;
         text(x, y, "the scene's atoms - every row is live engine state",
              0.45f, 0.47f, 0.52f, 1.f); y += lh;
-        text(x, y, "click [on]/[off] = toggle (the console's one path)",
+        text(x, y, "chip = toggle (one path)  |  label = inspect (C2)",
              0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
         scene_row_rects_.assign(scene_.size(), {0.f, 0.f, 0.f, 0.f});
+        scene_sel_rects_.assign(scene_.size(), {0.f, 0.f, 0.f, 0.f});
         const float chip_w = 5 * advance_;
         for (size_t i = 0; i < scene_.size(); ++i) {
             if (y > y_max) {
@@ -848,16 +851,26 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 break;
             }
             const SceneRow& r = scene_[i];
+            bool is_sel = static_cast<int>(i) == inspect_row_;
+            if (is_sel) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
             if (r.toggleable) {
                 bool on = r.state != 0;
                 text(x, y, on ? "[on] " : "[off]",
                      on ? 0.25f : 0.62f, on ? 0.75f : 0.40f, on ? 0.35f : 0.36f, 1.f);
-                hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 600 + static_cast<int>(i) });
-                scene_row_rects_[i] = { x - 2, y - 2, R[1][2] - 20, lh + 4 };
+                // the chip is the toggle; the label is the inspector (C2) —
+                // two intents, two rects, never crossed
+                hots_.push_back({ x - 2, y - 2, chip_w + 8, lh + 4, 600 + static_cast<int>(i) });
+                scene_row_rects_[i] = { x - 2, y - 2, chip_w + 8, lh + 4 };
+                hots_.push_back({ x + chip_w + 4, y - 2, R[1][2] - 20 - chip_w - 4, lh + 4,
+                                  700 + static_cast<int>(i) });
+                scene_sel_rects_[i] = { x + chip_w + 4, y - 2, R[1][2] - 20 - chip_w - 4, lh + 4 };
             } else {
                 text(x, y, " --  ", 0.45f, 0.47f, 0.52f, 1.f);
+                hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 700 + static_cast<int>(i) });
+                scene_sel_rects_[i] = { x - 2, y - 2, R[1][2] - 20, lh + 4 };
             }
-            text(x + chip_w + 6, y, r.label, TR, TG, TB, 1.f);
+            text(x + chip_w + 6, y, r.label,
+                 is_sel ? 0.45f : TR, is_sel ? 0.75f : TG, is_sel ? 1.00f : TB, 1.f);
             float dx = x + chip_w + 6 + (r.label.size() + 1) * advance_;
             text(dx, y, r.detail, 0.45f, 0.47f, 0.52f, 1.f);
             y += lh + 2;
@@ -975,18 +988,43 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
     }
 
-    // ── the STATUS panel (right): the engine's own live rows, honest ──
+    // ── the STATUS panel (right): the engine's own live rows, honest — or,
+    // when an outliner row is selected, the INSPECTOR (C2): the atom's full
+    // state document, engine-composed. The FPS pulse stays on top either way.
     rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.07f, 0.08f, 0.11f, 0.85f);
     rect(R[2][0], R[2][1], R[2][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
-    text(R[2][0] + 8, R[2][1] + (22 - lh) * 0.5f, right_.collapsed ? "+" : "STATUS (live)", TR, TG, TB, 1.f);
+    {
+        std::string rtitle = inspect_row_ >= 0
+            ? "INSPECT - " + inspect_label_ + " (C2)" : "STATUS (live)";
+        text(R[2][0] + 8, R[2][1] + (22 - lh) * 0.5f,
+             right_.collapsed ? "+" : rtitle, TR, TG, TB, 1.f);
+    }
     if (!right_.collapsed) {
         float x = R[2][0] + 10, y = R[2][1] + 30;
+        float y_max = R[2][1] + R[2][3] - lh;
         char buf[128];
         snprintf(buf, sizeof(buf), "FPS %.0f | ft avg %.2f ms | max %.2f ms", fps_, ft_avg_, ft_max_);
         text(x, y, buf, 0.55f, 0.85f, 0.55f, 1.f); y += lh + 6;
-        for (const std::string& line : status_lines_) {
-            text(x, y, line, TR, TG, TB, 0.95f); y += lh;
-            if (y > R[2][1] + R[2][3] - lh) break;
+        if (inspect_row_ >= 0) {
+            // C2: every line is the engine's document for the selected atom —
+            // key dim, value bright; the panel invents nothing.
+            for (const auto& kv : inspect_kv_) {
+                if (y > y_max) break;
+                text(x, y, kv.first, 0.62f, 0.66f, 0.74f, 1.f);
+                text(x + 16 * advance_, y, kv.second, TR, TG, TB, 1.f);
+                y += lh;
+            }
+            if (!inspect_hint_.empty() && y <= y_max) {
+                y += 4;
+                text(x, y, inspect_hint_, 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+            }
+            if (y <= y_max)
+                text(x, y, "[click the row again to close]", 0.45f, 0.47f, 0.52f, 1.f);
+        } else {
+            for (const std::string& line : status_lines_) {
+                text(x, y, line, TR, TG, TB, 0.95f); y += lh;
+                if (y > y_max) break;
+            }
         }
     }
 
