@@ -36,6 +36,8 @@ struct MembraneRequest {
     float cam_radius = 12.0f;
     float cam_theta  = 0.0f;
     float cam_phi    = 0.3f;
+    float cam_full[8] = {};      // D6: r,theta,phi,target xyz,pan xy (recall)
+    bool cam_full_set = false;   // true: apply all 8, ignore the r/theta/phi fields
     bool camera_only = false;    // true: only move the camera, keep the loaded membrane
     bool valid = false;
 };
@@ -1638,6 +1640,79 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/cameras" && method == "GET") {
+            // D6: the bookmarks twin — the engine's store, verbatim (the glass
+            // chips draw the same names in the same order).
+            if (g_engine) {
+                auto names = g_engine->cam_mark_names();
+                std::string bs;
+                for (size_t i = 0; i < names.size(); ++i) {
+                    float v[8];
+                    if (!g_engine->cam_mark_get(names[i], v)) continue;
+                    char vb[256];
+                    snprintf(vb, sizeof(vb), "[%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g]",
+                             v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
+                    bs += (i ? "," : "");
+                    bs += std::string("{\"name\":\"") + names[i] + "\",\"v\":" + vb + "}";
+                }
+                body = std::string("{\"bookmarks\":[") + bs + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/cameras" && method == "POST") {
+            // D6: {"op":"save","name":"x"} (live capture; name optional ->
+            // auto camN) · {"op":"save","name":"x","v":[8]} (exact numbers —
+            // an AI frames a shot from a derivation) · {"op":"recall",
+            // "name":"x"} (applies all 8 through the membrane request, the
+            // render-thread discipline) · {"op":"delete","name":"x"}.
+            if (g_engine) {
+                std::string op = get_string(req_body, "op");
+                std::string name = get_string(req_body, "name");
+                if (op == "save") {
+                    size_t vp = req_body.find("\"v\"");
+                    if (vp != std::string::npos) {
+                        size_t lb = req_body.find('[', vp);
+                        float v[8];
+                        if (lb != std::string::npos &&
+                            sscanf(req_body.c_str() + lb + 1, "%f,%f,%f,%f,%f,%f,%f,%f",
+                                   &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6], &v[7]) == 8 &&
+                            g_engine->cam_mark_save_exact(name, v)) {
+                            body = std::string("{\"ok\":true,\"name\":\"") + name + "\"}";
+                        } else {
+                            body = "{\"ok\":false,\"error\":\"bad v (need 8 floats) or empty name\"}";
+                        }
+                    } else {
+                        std::string nm = g_engine->cam_mark_save(name);
+                        body = std::string("{\"ok\":true,\"name\":\"") + nm + "\"}";
+                    }
+                } else if (op == "recall") {
+                    float v[8];
+                    if (!g_engine->cam_mark_get(name, v)) {
+                        body = "{\"ok\":false,\"error\":\"no such bookmark\"}";
+                    } else {
+                        {
+                            std::lock_guard<std::mutex> lk(g_mem_mutex);
+                            memcpy(g_mem_req.cam_full, v, sizeof(v));
+                            g_mem_req.cam_full_set = true;
+                            g_mem_req.valid = true;
+                            g_mem_pending = true;
+                            g_mem_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_mem_mutex);
+                        bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                        body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                    }
+                } else if (op == "delete") {
+                    body = g_engine->cam_mark_delete(name)
+                         ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"no such bookmark\"}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"op must be save|recall|delete\"}";
+                }
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/debug" && method == "GET") {
             body = "{\"n\":" + std::to_string(g_engine ? g_engine->particle_count() : 0)
                  + ",\"active\":" + (g_membrane_active ? "true" : "false") + "}";
@@ -1714,7 +1789,10 @@ int main(int argc, char** argv) {
         {
             std::lock_guard<std::mutex> lk(g_mem_mutex);
             if (g_mem_pending && g_mem_req.valid) {
-                if (g_mem_req.camera_only) {
+                if (g_mem_req.cam_full_set) {          // D6: a bookmark recall — all 8 floats
+                    engine.set_camera_full(g_mem_req.cam_full);
+                    g_mem_req.cam_full_set = false;
+                } else if (g_mem_req.camera_only) {
                     engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
                 } else {
                     engine.load_membrane(g_mem_req.term, g_mem_req.pos, g_mem_req.count);

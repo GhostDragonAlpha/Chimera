@@ -327,6 +327,23 @@ public:
     }
     const std::vector<std::array<float, 4>>& scene_sel_rects() const { return scene_sel_rects_; }
 
+    // ── D6: CAMERA BOOKMARKS — named shots as chips under the HUD rows ──
+    // A bookmark is a NAMED 8-float camera state (r, theta, phi, target xyz,
+    // pan xy) owned by the ENGINE and persisted to camera_bookmarks.txt (CWD).
+    // The engine pushes the name list every frame (one store for the glass AND
+    // the /cameras twin); a chip click recalls, the "+" chip saves the live
+    // camera with an auto name. Recall applies the full 8 floats — POST
+    // /camera's r/theta/phi-only semantics would zero the operator's pan.
+    std::vector<std::string> cam_marks_;
+    std::vector<std::array<float, 4>> cam_mark_rects_;      // prepare-owned (aiming)
+    std::array<float, 4> cam_save_rect_{0.f, 0.f, 0.f, 0.f};
+    std::function<void(int)> cb_cam_recall_;                // index -> the engine
+    std::function<void()> cb_cam_save_;
+    void set_cam_view(std::vector<std::string> names) { cam_marks_ = std::move(names); }
+    const std::vector<std::string>& cam_view() const { return cam_marks_; }
+    const std::vector<std::array<float, 4>>& cam_rects() const { return cam_mark_rects_; }
+    std::array<float, 4> cam_save_rect() const { return cam_save_rect_; }
+
     // ── F4: THE RECORDER's ring — the LOG stream (left dock mode 3) ──
     // The engine pushes each event the moment it happens; the dock draws the
     // tail, newest at the bottom. The FILE holds everything — the stream is

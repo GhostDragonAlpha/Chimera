@@ -639,6 +639,18 @@ bool Engine::init(const EngineConfig& cfg) {
             ui_.cb_scene_select_ = [this](int row) {
                 inspect_row_.store(inspect_row_.load() == row ? -1 : row);
             };
+            // D6: camera bookmarks — the glass path runs ON the render thread
+            // (ui clicks land there), so recall/save apply directly; the HTTP
+            // path goes through the membrane request. Both end in the same
+            // set_camera_full / cam_mark_save.
+            cam_marks_load();
+            ui_.cb_cam_recall_ = [this](int i) {
+                std::vector<std::string> names = cam_mark_names();
+                if (i < 0 || i >= static_cast<int>(names.size())) return;
+                float v[8];
+                if (cam_mark_get(names[i], v)) set_camera_full(v);
+            };
+            ui_.cb_cam_save_ = [this] { cam_mark_save(""); };
             console_thread_ = std::thread([this] { console_worker(); });
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
@@ -1740,6 +1752,114 @@ std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
         add("bar_on", b(ui_.bar_on_));
     }
     return kv;
+}
+
+// ── D6: CAMERA BOOKMARKS ──
+// One engine-owned store; the glass chips and the /cameras twin both read it.
+// Persistence is a flat file (name + 8 floats per line) in the CWD — the same
+// discipline as the session logs; the served JSON twin is the formatting site.
+static const char* CAM_MARKS_FILE = "camera_bookmarks.txt";
+
+void Engine::cam_marks_load() {
+    std::lock_guard<std::mutex> lk(cam_marks_m_);
+    cam_marks_.clear();
+    FILE* f = fopen(CAM_MARKS_FILE, "r");
+    if (!f) return;
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        CamBookmark b;
+        char nm[64];
+        if (sscanf(line, "%63s %f %f %f %f %f %f %f %f", nm,
+                   &b.v[0], &b.v[1], &b.v[2], &b.v[3], &b.v[4], &b.v[5],
+                   &b.v[6], &b.v[7]) == 9) {
+            b.name = nm;
+            cam_marks_.push_back(b);
+        }
+    }
+    fclose(f);
+}
+
+void Engine::cam_marks_persist() {
+    std::lock_guard<std::mutex> lk(cam_marks_m_);
+    FILE* f = fopen(CAM_MARKS_FILE, "w");
+    if (!f) return;
+    for (const auto& b : cam_marks_)
+        fprintf(f, "%s %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n", b.name.c_str(),
+                b.v[0], b.v[1], b.v[2], b.v[3], b.v[4], b.v[5], b.v[6], b.v[7]);
+    fclose(f);
+}
+
+std::string Engine::cam_mark_save(const std::string& name) {
+    float v[8]; camera_state(v);
+    std::string nm = name;
+    {
+        std::lock_guard<std::mutex> lk(cam_marks_m_);
+        if (nm.empty()) {
+            int n = static_cast<int>(cam_marks_.size()) + 1;
+            char nb[32]; snprintf(nb, sizeof(nb), "cam%d", n);
+            nm = nb;   // auto-name: the count is the derivation, no taste
+        }
+        for (char& c : nm) if (c == ' ' || c == '\t') c = '_';   // flat-file safe
+        for (auto& b : cam_marks_)
+            if (b.name == nm) { memcpy(b.v, v, sizeof(b.v)); goto saved; }
+        { CamBookmark b; b.name = nm; memcpy(b.v, v, sizeof(b.v)); cam_marks_.push_back(b); }
+        saved:;
+    }
+    cam_marks_persist();
+    return nm;
+}
+
+bool Engine::cam_mark_save_exact(const std::string& name, const float v[8]) {
+    if (name.empty()) return false;
+    {
+        std::lock_guard<std::mutex> lk(cam_marks_m_);
+        std::string nm = name;
+        for (char& c : nm) if (c == ' ' || c == '\t') c = '_';
+        for (auto& b : cam_marks_)
+            if (b.name == nm) { memcpy(b.v, v, sizeof(b.v)); goto stored; }
+        { CamBookmark b; b.name = nm; memcpy(b.v, v, sizeof(b.v)); cam_marks_.push_back(b); }
+        stored:;
+    }
+    cam_marks_persist();
+    return true;
+}
+
+bool Engine::cam_mark_delete(const std::string& name) {
+    bool found = false;
+    {
+        std::lock_guard<std::mutex> lk(cam_marks_m_);
+        for (size_t i = 0; i < cam_marks_.size(); ++i)
+            if (cam_marks_[i].name == name) {
+                cam_marks_.erase(cam_marks_.begin() + i);
+                found = true;
+                break;
+            }
+    }
+    if (found) cam_marks_persist();
+    return found;
+}
+
+bool Engine::cam_mark_get(const std::string& name, float out[8]) {
+    std::lock_guard<std::mutex> lk(cam_marks_m_);
+    for (const auto& b : cam_marks_)
+        if (b.name == name) { memcpy(out, b.v, sizeof(b.v)); return true; }
+    return false;
+}
+
+std::vector<std::string> Engine::cam_mark_names() {
+    std::lock_guard<std::mutex> lk(cam_marks_m_);
+    std::vector<std::string> out;
+    out.reserve(cam_marks_.size());
+    for (const auto& b : cam_marks_) out.push_back(b.name);
+    return out;
+}
+
+void Engine::set_camera_full(const float v[8]) {
+    g_cam.radius    = fmaxf(radius_floor(), v[0]);
+    g_cam.theta     = v[1];
+    g_cam.phi       = v[2];
+    g_cam.target[0] = v[3]; g_cam.target[1] = v[4]; g_cam.target[2] = v[5];
+    g_cam.pan_x     = v[6]; g_cam.pan_y     = v[7];
 }
 
 int Engine::console_pending() {
@@ -4235,6 +4355,8 @@ bool Engine::frame() {
         }
         ui_.set_scene_view(std::move(rows));
     }
+    // D6: the bookmark chips — the store's own names, every frame
+    ui_.set_cam_view(cam_mark_names());
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -5056,6 +5178,8 @@ bool Engine::frame_idle_ui() {
         }
         ui_.set_scene_view(std::move(rows));
     }
+    // D6: the bookmark chips answer in idle too — same store
+    ui_.set_cam_view(cam_mark_names());
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);

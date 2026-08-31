@@ -809,3 +809,58 @@ happened.
 - **Next per the menu:** E2 deep links, D5 render-to-MP4, D6 camera
   bookmarks, B4 ledger — and the board's own earliest non-green gate, B5
   anatomy referee, is what the strip keeps naming.
+
+## SHIPPED — D6: CAMERA BOOKMARKS (2026-08-30)
+
+- **Statement:** a camera bookmark is a NAMED 8-float camera state (r, theta,
+  phi, target xyz, pan xy) owned by the ENGINE and persisted to
+  `camera_bookmarks.txt`; saving captures the live camera verbatim, recalling
+  applies the full state through the SAME membrane-request thread discipline
+  as POST /camera, and the store is served over HTTP — so a glass chip
+  click, a human POST, and an AI call frame the IDENTICAL shot.
+- **Prediction (unmeasured at naming time):** recall round-trips all 8
+  components to within 1e-4 (read back through /project's cam field, the
+  independent read); a paused re-recall reproduces the frame md5 exactly
+  while a different camera does not; the served list equals the file on
+  disk; the chips cost < 0.5 ms.
+- **Falsifiers (named before the build):** (A) any of the 8 components wrong
+  by > 1e-4 after moving away — for a live-captured bookmark AND an
+  exact-numbers one with non-zero target/pan (the half POST /camera cannot
+  set); (B) paused pixel identity breaks, or two different bookmarks share
+  an md5; (C) GET /cameras disagrees with the file on disk, or delete /
+  unknown-recall misbehave; (D) chips cost >= 0.5 ms; (E) the studio chain
+  (`_inspect_verify.py`, which nests scene, which nests stage) regresses.
+
+**What shipped.** Bookmark chips under the viewport's HUD rows — `[1 alpha]
+[2 beta] [+ cam]` — one click recalls, `+ cam` saves the live camera with an
+auto name. The engine owns the store (`cam_marks_`), persists every mutation
+to `camera_bookmarks.txt` (flat: name + 8 floats, same CWD discipline as the
+session logs), and loads it at studio init — bookmarks survive relaunch.
+`set_camera_full` applies all 8 floats (radius floor respected); the glass
+path calls it directly (ui clicks land on the render thread), the HTTP path
+crosses through a membrane request (`cam_full_set`), same discipline as
+POST /camera. The twin: `GET /cameras` (the store, verbatim) ·
+`POST /cameras {"op":"save"}` (live capture or `"v":[8]` exact numbers — an
+AI frames a shot from a derivation) · `{"op":"recall"}` · `{"op":"delete"}`.
+The reel independently captions each grab with its camera — the two stories
+match because both read the same `g_cam`.
+
+- **Rule 0 verdicts** (evidence: `engine/scratch/_cameras_verify.{py,log}`,
+  ALL PASS):
+  - **A:** exact-numbers recall (non-zero target+pan): worst |delta| =
+    0.00e+00, bit-exact. Live-capture recall: 1.2e-08 (float reparse noise,
+    4 orders under the bar). PASS
+  - **B:** paused — alpha md5 `3c6dcc79…`; moved away: differs; re-recalled:
+    identical; beta: distinct. PASS
+  - **C:** served == file on disk (3 bookmarks, values to 1e-6); unknown
+    recall refused; delete removes from both. PASS
+  - **D:** ft_zero 2.259 ms → ft_chips 2.481 ms — delta +0.222 ms. PASS
+  - **E:** `_inspect_verify.py` ALL PASS (which re-ran `_scene_verify.py`
+    ALL PASS, which re-ran `_stage_verify.py` 9/9). PASS
+- **Files:** `engine/ui.{hpp,cpp}` (the chips, hot range 800+/850),
+  `engine/engine.{hpp,cpp}` (the store, persistence, `set_camera_full`, cb
+  wiring + both push sites), `engine/main.cpp` (membrane request grew
+  `cam_full[8]`, GET/POST `/cameras`), this doc.
+- **Next per the menu:** E2 deep links, D5 render-to-MP4, B4 ledger — and
+  the board's own earliest non-green gate, B5 anatomy referee, is what the
+  strip keeps naming.

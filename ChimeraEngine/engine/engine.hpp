@@ -171,6 +171,23 @@ public:
     // dock draws it, GET /inspect serves it.
     std::atomic<int> inspect_row_{-1};                           // -1 = STATUS
     std::vector<std::pair<std::string, std::string>> inspect_kv(int row);
+    // ── D6: CAMERA BOOKMARKS — named 8-float shots, engine-owned, persisted ──
+    // One store for the glass chips and the /cameras twin. save captures the
+    // LIVE camera verbatim (camera_state); recall applies all 8 floats
+    // (set_camera_full) — POST /camera's r/theta/phi-only semantics would
+    // zero the operator's pan. Persisted to camera_bookmarks.txt (CWD) on
+    // every mutation, loaded once at studio init.
+    struct CamBookmark { std::string name; float v[8]; };
+    std::vector<CamBookmark>   cam_marks_;
+    std::mutex                 cam_marks_m_;
+    void        cam_marks_load();                       // once, at studio init
+    void        cam_marks_persist();                    // caller holds NO lock
+    std::string cam_mark_save(const std::string& name); // live capture; auto-name if empty
+    bool        cam_mark_save_exact(const std::string& name, const float v[8]);
+    bool        cam_mark_delete(const std::string& name);
+    bool        cam_mark_get(const std::string& name, float out[8]);
+    std::vector<std::string> cam_mark_names();
+    void        set_camera_full(const float v[8]);      // render thread (or membrane req)
     // ── F4: THE RECORDER — done-is-a-log, as a stream ──
     // Every gate-relevant state change through the api chokepoint (uploads,
     // mode flips, intents) plus externally-posted gate verdicts lands as a

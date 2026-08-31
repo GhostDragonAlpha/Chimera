@@ -215,6 +215,9 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             }
             if (h.id >= 700 && h.id < 800 && cb_scene_select_)           // C2: inspect a row
                 cb_scene_select_(h.id - 700);
+            if (h.id >= 800 && h.id < 850 && cb_cam_recall_)             // D6: recall a shot
+                cb_cam_recall_(h.id - 800);
+            if (h.id == 850 && cb_cam_save_) cb_cam_save_();             // D6: save the live camera
             return true;
         }
     }
@@ -1300,6 +1303,32 @@ void StudioUI::build_chrome() {
         rect(hx - 6, hy - 3, rw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
         text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
         hy += lh + 4;
+    }
+
+    // ── D6: the camera bookmarks — one chip per named shot, then "+ cam".
+    // Same chip language as the HUD rows; click = recall, "+" = save the live
+    // camera. The rects are the aim map the /cameras twin serves.
+    cam_mark_rects_.assign(cam_marks_.size(), {0.f, 0.f, 0.f, 0.f});
+    cam_save_rect_ = {0.f, 0.f, 0.f, 0.f};
+    {
+        float cx2 = hx - 6, cy = hy - 3;
+        for (size_t i = 0; i < cam_marks_.size(); ++i) {
+            std::string cap = "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]";
+            float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
+            rect(cx2, cy, cw, lh + 6, 0.10f, 0.13f, 0.22f, 0.85f);
+            rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
+            text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
+            hots_.push_back({ cx2, cy, cw, lh + 6, 800 + static_cast<int>(i) });
+            cam_mark_rects_[i] = { cx2, cy, cw, lh + 6 };
+            cx2 += cw + 6;
+        }
+        std::string cap = "+ cam";
+        float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
+        rect(cx2, cy, cw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
+        rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.45f, 0.47f, 0.52f, 0.9f);
+        text(cx2 + 6, cy + 3, cap, 0.45f, 0.47f, 0.52f, 1.f);
+        hots_.push_back({ cx2, cy, cw, lh + 6, 850 });
+        cam_save_rect_ = { cx2, cy, cw, lh + 6 };
     }
 
     // ── F2: the status bar ──
