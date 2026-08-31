@@ -123,9 +123,17 @@ void StudioUI::layout(uint32_t w, uint32_t h, float R[5][4]) const {
     if (rh < th) rh = th;
     float lw = left_.collapsed  ? th : left_.size  * ui_scale_;
     float rw = right_.collapsed ? th : right_.size * ui_scale_;
+    // left/right: between strip and the status bar — the DOCKEDGE RUNS THE FULL
+    // HEIGHT now. It used to stop above the reel + timeline, which left two solid
+    // black rectangles in the bottom corners. The eye: "those two black blocks
+    // look like a missing panel or a layout bug, not intentional whitespace. The
+    // eye can't track a clean grid because the vertical boundaries disagree
+    // between the upper and lower thirds." The timeline and the reel are the
+    // CENTRE column's own bands (Blender/After Effects do the same: full-height
+    // docks, transport in the middle), so no column boundary ever disagrees.
     R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
-    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = hh - sh - bh - rh;
-    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = hh - sh - bh - rh;
+    R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = hh - sh;
+    R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = hh - sh;
     R[3][0] = lw; R[3][1] = hh - bh; R[3][2] = static_cast<float>(w) - lw - rw; R[3][3] = bh;
     R[4][0] = lw; R[4][1] = hh - bh - rh; R[4][2] = static_cast<float>(w) - lw - rw; R[4][3] = rh;
 }
