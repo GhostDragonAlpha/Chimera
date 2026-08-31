@@ -61,27 +61,35 @@ static int ui_json_int(const std::string& body, const char* key, size_t from, in
 // ── input ─────────────────────────────────────────────────────────────────────
 
 void StudioUI::on_mouse_move(int x, int y) {
+    // Panel sizes are stored in DESIGN units and multiplied by ui_scale_ at
+    // layout time, so a drag — which arrives in SCREEN pixels — must be converted
+    // at the boundary or the panel jumps by the scale factor the instant you let
+    // go. Clamp in screen px (that is what max_frac is a fraction of), then
+    // divide on the way in. One conversion, at the seam, so the two cannot drift.
+    auto to_design = [&](float px, const Panel& p) {
+        float mn = p.min_size * ui_scale_;
+        float v  = (px < mn) ? mn : px;
+        return v / ui_scale_;
+    };
     if (drag_kind_ == 1) {          // strip bottom border: height follows the cursor
-        float ns = static_cast<float>(y);
         float mx = ext_.height * strip_.max_frac;
-        strip_.size = ns < strip_.min_size ? strip_.min_size : (ns > mx ? mx : ns);
+        strip_.size = to_design(static_cast<float>(y) > mx ? mx : static_cast<float>(y), strip_);
     } else if (drag_kind_ == 2) {   // left panel right border: width follows
-        float ns = static_cast<float>(x);
         float mx = ext_.width * left_.max_frac;
-        left_.size = ns < left_.min_size ? left_.min_size : (ns > mx ? mx : ns);
+        left_.size = to_design(static_cast<float>(x) > mx ? mx : static_cast<float>(x), left_);
     } else if (drag_kind_ == 3) {   // right panel left border: width follows (from the right edge)
-        float ns = static_cast<float>(ext_.width) - static_cast<float>(x);
         float mx = ext_.width * right_.max_frac;
-        right_.size = ns < right_.min_size ? right_.min_size : (ns > mx ? mx : ns);
+        float ns = static_cast<float>(ext_.width) - static_cast<float>(x);
+        right_.size = to_design(ns > mx ? mx : ns, right_);
     } else if (drag_kind_ == 4) {   // bottom panel top border: height follows (from the bottom edge)
-        float ns = static_cast<float>(ext_.height) - static_cast<float>(y);
         float mx = ext_.height * bottom_.max_frac;
-        bottom_.size = ns < bottom_.min_size ? bottom_.min_size : (ns > mx ? mx : ns);
+        float ns = static_cast<float>(ext_.height) - static_cast<float>(y);
+        bottom_.size = to_design(ns > mx ? mx : ns, bottom_);
     } else if (drag_kind_ == 6) {   // D3: reel panel top border: height follows (above the timeline)
-        float bh = bottom_.collapsed ? 22.f : bottom_.size;
-        float ns = static_cast<float>(ext_.height) - bh - static_cast<float>(y);
+        float bh = bottom_.collapsed ? title_h() : bottom_.size * ui_scale_;
         float mx = ext_.height * reel_.max_frac;
-        reel_.size = ns < reel_.min_size ? reel_.min_size : (ns > mx ? mx : ns);
+        float ns = static_cast<float>(ext_.height) - bh - static_cast<float>(y);
+        reel_.size = to_design(ns > mx ? mx : ns, reel_);
     } else if (drag_kind_ == 5) {   // D1: dragging the playhead — every move is a scrub
         if (cb_scrub_) cb_scrub_(scrub_time_at(x));
     } else if (drag_kind_ == 7) {   // C1: dragging a theta slider — every move is an intent
@@ -103,17 +111,18 @@ void StudioUI::layout(uint32_t w, uint32_t h, float R[5][4]) const {
     // left/right: between strip and (bottom + reel), docked to their edges.
     // F2: the status bar owns the bottom BAR_H px when it's on — every panel
     // yields to it, so the bar never covers content (and content never the bar).
-    const float hh = static_cast<float>(h) - (bar_on_ ? BAR_H : 0.f);
-    float sh = strip_.collapsed ? 22.f : strip_.size;
+    const float th = title_h();                    // a collapsed title bar, scaled
+    const float hh = static_cast<float>(h) - (bar_on_ ? bar_h() : 0.f);
+    float sh = strip_.collapsed ? th : strip_.size * ui_scale_;
     if (sh > hh) sh = hh;
-    float bh = bottom_.collapsed ? 22.f : bottom_.size;
+    float bh = bottom_.collapsed ? th : bottom_.size * ui_scale_;
     if (bh > hh - sh) bh = hh - sh;
-    if (bh < 22.f) bh = 22.f;
-    float rh = reel_.collapsed ? 22.f : reel_.size;
+    if (bh < th) bh = th;
+    float rh = reel_.collapsed ? th : reel_.size * ui_scale_;
     if (rh > hh - sh - bh) rh = hh - sh - bh;
-    if (rh < 22.f) rh = 22.f;
-    float lw = left_.collapsed  ? 22.f : left_.size;
-    float rw = right_.collapsed ? 22.f : right_.size;
+    if (rh < th) rh = th;
+    float lw = left_.collapsed  ? th : left_.size  * ui_scale_;
+    float rw = right_.collapsed ? th : right_.size * ui_scale_;
     R[0][0] = 0; R[0][1] = 0; R[0][2] = static_cast<float>(w); R[0][3] = sh;
     R[1][0] = 0; R[1][1] = sh; R[1][2] = lw; R[1][3] = hh - sh - bh - rh;
     R[2][0] = static_cast<float>(w) - rw; R[2][1] = sh; R[2][2] = rw; R[2][3] = hh - sh - bh - rh;
@@ -125,11 +134,11 @@ bool StudioUI::hit_strip_title(int x, int y) const {
     return y >= 0 && y < 22 && x >= 0 && x < static_cast<int>(ext_.width);
 }
 bool StudioUI::hit_left_title(int x, int y) const {
-    float sh = strip_.collapsed ? 22.f : strip_.size;
+    float sh = strip_.collapsed ? title_h() : strip_.size * ui_scale_;
     return x >= 0 && x < 22 && y >= static_cast<int>(sh);
 }
 bool StudioUI::hit_right_title(int x, int y) const {
-    float sh = strip_.collapsed ? 22.f : strip_.size;
+    float sh = strip_.collapsed ? title_h() : strip_.size * ui_scale_;
     return x >= static_cast<int>(ext_.width) - 22 && y >= static_cast<int>(sh);
 }
 bool StudioUI::hit_bottom_title(int x, int y) const {
@@ -679,6 +688,9 @@ static void status_color(const std::string& s, float& r, float& g, float& b) {
 
 void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     ext_.width = win_w; ext_.height = win_h;
+
+    // (The scale is derived once in init() — see the note there. Nothing here
+    // rebuilds the font atlas at runtime: the descriptor is written once.)
     poll_board();
     docs_poll();    // E1: unconditional — the HTTP twin stays live in any dock mode
     verts_.clear();
@@ -1112,8 +1124,24 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     if (!right_.collapsed) {
         float x = R[2][0] + 10, y = R[2][1] + 30;
         float y_max = R[2][1] + R[2][3] - lh;
+        // THE FPS PULSE FITS THE PANEL, OR IT DEGRADES (2026-08-31, found by the
+        // eye on the glass at 2K: "the green FPS line runs into the panel's right
+        // edge with no trailing space and its value is truncated at the border").
+        // It is arithmetic, not taste: the full string is 36 chars at 9px advance
+        // = 324px, and the right dock is 330px wide — it cannot fit its own
+        // padding. THE PANEL'S WIDTH PICKS THE FORMAT, in tiers, so a number is
+        // never silently cut in half mid-digit (a truncated "9" reads as "9" and
+        // as "95" depending on where the border falls — a lie either way).
+        float avail = R[2][2] - 20.f;                       // the panel's own padding
+        int   maxch = (int)(avail / (advance_ > 0.f ? advance_ : 8.f));
         char buf[128];
         snprintf(buf, sizeof(buf), "FPS %.0f | ft avg %.2f ms | max %.2f ms", fps_, ft_avg_, ft_max_);
+        if ((int)strlen(buf) > maxch)
+            snprintf(buf, sizeof(buf), "FPS %.0f | ft %.2f ms | max %.2f", fps_, ft_avg_, ft_max_);
+        if ((int)strlen(buf) > maxch)
+            snprintf(buf, sizeof(buf), "FPS %.0f | ft %.1f ms", fps_, ft_avg_);
+        if ((int)strlen(buf) > maxch)
+            snprintf(buf, sizeof(buf), "FPS %.0f", fps_);
         text(x, y, buf, 0.55f, 0.85f, 0.55f, 1.f); y += lh + 6;
         if (inspect_row_ >= 0) {
             // C2: every line is the engine's document for the selected atom —
@@ -1440,13 +1468,31 @@ void StudioUI::build_chrome() {
 
     // ── F2: the status bar ──
     if (!bar_on_) { chrome_stage_.clear(); chrome_fps_.clear(); chrome_gpu_.clear(); return; }
-    float by = H - BAR_H;
-    rect(0, by, W, BAR_H, 0.06f, 0.07f, 0.10f, 0.95f);
+    float by = H - bar_h();
+    rect(0, by, W, bar_h(), 0.06f, 0.07f, 0.10f, 0.95f);
     rect(0, by, W, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);   // the studio's accent line
 
-    // left: the board's standing line, verbatim (the current-stage readout)
-    chrome_stage_ = board_.loaded ? board_.standing : "no board file";
-    text(8, by + (BAR_H - lh) * 0.5f, chrome_stage_, 0.30f, 0.60f, 1.00f, 1.f);
+    // left: WHERE YOU ARE -- the stage's id + name, not the board's sentence.
+    // 2026-08-31, the eye on the glass: "EARLIEST NON-GREEN GATE: B7 articulate --
+    // the next stage [next] appears twice -- once under the stage bar at top and
+    // again in the bottom status bar. Duplicated, low-value, adds noise."
+    //
+    // The standing RULE is the board's to state (B2: computed by
+    // tools/studio_board.py, never edited here). The bar is a pointer to the stage
+    // you are on. Both are derived from board_.stages -- the bar no longer reprints
+    // the board's own sentence, so neither can drift from the other.
+    chrome_stage_.clear();
+    if (board_.loaded) {
+        for (const auto& s : board_.stages) {
+            if (s.status == "next") { chrome_stage_ = s.id + " " + s.name; break; }
+        }
+        // no 'next' row (every gate green, or the board says something we do not
+        // model) -- fall back to the standing line rather than showing nothing.
+        if (chrome_stage_.empty()) chrome_stage_ = board_.standing;
+    } else {
+        chrome_stage_ = "no board file";
+    }
+    text(8, by + (bar_h() - lh) * 0.5f, chrome_stage_, 0.30f, 0.60f, 1.00f, 1.f);
 
     // center: FPS + the frame-time histogram (the ring, oldest -> newest)
     float hist_w = static_cast<float>(FT_RING) * 3.f;
@@ -1454,8 +1500,8 @@ void StudioUI::build_chrome() {
     snprintf(b, sizeof(b), "%.0f fps  %.2f ms", fps_, ft_avg_);
     chrome_fps_ = b;
     text(cx - 8 - static_cast<float>(chrome_fps_.size()) * advance_,
-         by + (BAR_H - lh) * 0.5f, chrome_fps_, 0.86f, 0.88f, 0.92f, 1.f);
-    float hb = by + 3.f, hh = BAR_H - 6.f;
+         by + (bar_h() - lh) * 0.5f, chrome_fps_, 0.86f, 0.88f, 0.92f, 1.f);
+    float hb = by + 3.f, hh = bar_h() - 6.f;
     rect(cx, hb, hist_w, hh, 0.10f, 0.11f, 0.15f, 0.9f);
     for (int i = 0; i < ft_ring_n_; ++i) {
         float v = ft_ring_[(ft_ring_head_ - ft_ring_n_ + i + FT_RING) % FT_RING];
@@ -1473,7 +1519,7 @@ void StudioUI::build_chrome() {
     snprintf(b, sizeof(b), "%s  %ux%u", gpu_name_.c_str(), ext_.width, ext_.height);
     chrome_gpu_ = b;
     text(W - 8 - static_cast<float>(chrome_gpu_.size()) * advance_,
-         by + (BAR_H - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
+         by + (bar_h() - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
 }
 
 // ── Vulkan: init / resources / record ─────────────────────────────────────────
@@ -1530,10 +1576,12 @@ bool StudioUI::create_font_atlas() {
     // GDI rasterization of the system monospace font — zero vendored assets.
     HDC hdc = CreateCompatibleDC(nullptr);
     if (!hdc) return false;
-    HFONT font = CreateFontW(-16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+    HFONT font = CreateFontW(-(int)lroundf(DESIGN_FONT_PX * ui_scale_), 0, 0, 0, FW_NORMAL,
+                             FALSE, FALSE, FALSE,
                              DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                              CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, L"Consolas");
-    if (!font) font = CreateFontW(-16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+    if (!font) font = CreateFontW(-(int)lroundf(DESIGN_FONT_PX * ui_scale_), 0, 0, 0, FW_NORMAL,
+                                  FALSE, FALSE, FALSE,
                                   DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                                   CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, L"Courier New");
     HGDIOBJ old = SelectObject(hdc, font);
@@ -1754,6 +1802,19 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
                     uint32_t w, uint32_t h, uint32_t mem_type_host) {
     dev_ = dev; phys_ = phys; mem_type_host_ = mem_type_host;
     ext_ = { w, h };
+
+    // THE 2K SCALE IS DERIVED HERE, ONCE, BEFORE THE ATLAS EXISTS.
+    // Not in prepare(), and that is not laziness: create_font_atlas() allocates a
+    // new VkImage while the descriptor set that samples it is written exactly
+    // once, here in init(). Rebuilding it at runtime leaves dset_ bound to the
+    // old image — measured 2026-08-31, the UI dropped to 1.0% coverage because
+    // every glyph sampled a stale atlas. Doing it properly means updating the
+    // descriptor (and destroying the old image/view), which is its own turn.
+    // A mid-session RESIZE therefore does not rescale yet; recorded, not hidden.
+    {
+        float s = (h > 0) ? (static_cast<float>(h) / DESIGN_H) : 1.f;
+        ui_scale_ = (s < 1.f) ? 1.f : s;      // never below the design size
+    }
 
     // render pass: LOAD the blitted 3D frame, draw, leave it PRESENT-able.
     // initialLayout matches the post-blit TRANSFER_DST (the idle path clears

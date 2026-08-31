@@ -245,7 +245,31 @@ public:
     // is the engine's own state, pushed by the engine/main — the UI never
     // derives on its own. The strings served on /studio_chrome are the SAME
     // strings build_chrome() draws: the HTTP twin cannot drift from the glass.
-    static constexpr float BAR_H = 24.f;
+    // ── THE 2K SCALE (2026-08-31, operator decree + the eye's report) ──────────
+    // "We will make this project run on a 2K monitor and the monitor resolution
+    // should match the project in all efforts including the dyad." The eye, at
+    // 2560x1440: "Text is too small for 2560x1440 ... most body text is one step
+    // too small to be comfortable."
+    //
+    // Every layout number below is the DESIGN value — the one this UI was built
+    // and read at, on a 1080p panel. Nothing is re-tuned for 2K; the window's own
+    // height derives one factor and the design values are MULTIPLIED by it. The
+    // proportion the eye approved at 1080p is thus preserved at any resolution,
+    // which is the only defensible thing to preserve (choosing new pixel numbers
+    // for 1440 would be taste, and taste is not ours to spend).
+    //
+    // Root cause of "too small": the font. advance_ and cell_h_ come straight
+    // from GDI metrics for a fixed 16px Consolas, and every text position in this
+    // UI is measured in multiples of those two numbers. Scale the font and the
+    // whole layout follows — which is why this is one factor and not a hunt.
+    static constexpr float DESIGN_H       = 1080.f;   // the height the design was read at
+    static constexpr float DESIGN_FONT_PX = 16.f;     // the Consolas it was read at
+    static constexpr float DESIGN_TITLE_H = 22.f;     // a collapsed panel's title bar
+    float ui_scale_ = 1.f;                            // derived in prepare()
+    float bar_h()   const { return BAR_H * ui_scale_; }
+    float title_h() const { return DESIGN_TITLE_H * ui_scale_; }
+
+    static constexpr float BAR_H = 24.f;   // DESIGN value at scale 1; use bar_h()
     static const int FT_RING = 120;             // the histogram's frame-time ring
     bool     bar_on_ = true;                    // F2 default ON; POST /studio_chrome toggles
     float    ft_ring_[FT_RING] = {};

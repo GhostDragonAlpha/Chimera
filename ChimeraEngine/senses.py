@@ -10,6 +10,19 @@ CHIMERA_VISION_BACKEND=ollama to restore the retired qwen3.8 path (kept verbatim
 
 AUDIO (the sound dyad) still needs the Omni model on the dedicated llama-server; when that
 server is down the ear is DARK -- an advisory FAIL, never a block (sound is additive).
+
+THE ONE-IMAGE WALL (2026-08-31, operator): the eye is whatever LM Studio has resident, and
+what is resident today is `dirk-qwen3.8-27b@iq4_xs` -- chosen because it fits in the GPU and
+is therefore fast, and it pays for that with a SMALL context (~74k). A movie inlined as twelve
+384px frames does not fit, and the failure is not a clean error: it is a truncated read that
+looks like a verdict. The operator's rule: **one picture per report.** N frames means N calls
+and N reports, aggregated afterwards.
+
+So the wall is enforced HERE, in code, instead of living as a thing to remember. It is an
+env-tunable ceiling rather than a hard-coded 1, because the model is ADOPTED, never pinned:
+when a resident model has room for a batch, raise CHIMERA_SENSES_MAX_IMAGES and the lane
+obeys. The ollama lane keeps sizing num_ctx to the frames it is given (that is what
+FRAME_TOKENS is for), so it is exempt.
 """
 from __future__ import annotations
 
@@ -37,6 +50,13 @@ MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2048"))
 # context is sized EXACTLY to the frames + answer, so a 256K model is not hauled into VRAM for a
 # movie. Re-measure if you change the frame resolution (see `_post`). (Ollama lane only.)
 FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
+
+# THE ONE-IMAGE WALL. Images allowed PER CALL on the adoptive (LM Studio) lane: 1 by default,
+# because the resident model's context is unknown to us and today's resident model
+# (qwen3.8 iq4_xs, chosen to fit the GPU) has ~74k -- a 12-frame movie inlined into one request
+# does not fit, and it fails by truncation rather than by error. 0 = no ceiling (use only when
+# you know the resident model has the room). The ollama lane sizes num_ctx instead (see _post).
+MAX_IMAGES_PER_CALL = int(os.environ.get("CHIMERA_SENSES_MAX_IMAGES", "1"))
 
 
 def _lm_gateway():
@@ -71,9 +91,40 @@ def _b64(path: str) -> str:
         return base64.b64encode(f.read()).decode()
 
 
+def _count_images(content) -> int:
+    if not isinstance(content, list):
+        return 0
+    return sum(1 for p in content
+               if isinstance(p, dict) and p.get("type") == "image_url")
+
+
+def _enforce_image_wall(content) -> None:
+    """THE ONE-IMAGE WALL, raised before the request goes out.
+
+    The resident model is ADOPTED, never pinned, so this is a ceiling that can be
+    raised (CHIMERA_SENSES_MAX_IMAGES) rather than a hard ban -- but the default
+    is 1, and a breach is an ERROR rather than a silent truncation. A movie that
+    quietly loses its last eight frames still returns a confident-sounding
+    verdict, which is the one failure mode an instrument must not have.
+
+    Callers wanting a movie must loop: one call per frame, N reports, aggregated
+    afterwards (see tools/dyad_scan.py's READS_PER_SHOT).
+    """
+    if MAX_IMAGES_PER_CALL <= 0:
+        return
+    n = _count_images(content)
+    if n > MAX_IMAGES_PER_CALL:
+        raise ValueError(
+            f"senses: {n} images in one call, ceiling is {MAX_IMAGES_PER_CALL} "
+            f"(CHIMERA_SENSES_MAX_IMAGES). The resident model's context cannot hold a "
+            f"batch and would truncate silently -- loop one frame per call instead "
+            f"(watch_one / see) and aggregate the reports.")
+
+
 def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX_TOKENS,
           endpoint: str = VISION_URL, model: str = VISION_MODEL):
     if VISION_BACKEND != "ollama":
+        _enforce_image_wall(content)
         return _post_lmstudio(content, timeout, temperature)
     # content arrives as OpenAI-style parts (text + image_url). The native Ollama /api/chat wants
     # `content` as a string and `images` as a list of raw base64 (no data: prefix).
@@ -118,28 +169,64 @@ def _post_lmstudio(content, timeout: int, temperature: float):
 
 
 def see(png: str, prompt: str, timeout: int = 300) -> str | None:
-    """EYE: qwen3.8 reads one image -> a term. None if the eye is dark (Ollama down / error)."""
+    """EYE: the resident model reads one image -> a term. None if the eye is dark."""
     try:
         return (_post([{"type": "text", "text": prompt},
                        {"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(png)}}],
                       timeout) or "").strip() or None
+    except ValueError:
+        raise                      # the one-image wall: a guard that cannot be heard is not a guard
     except Exception as e:
         print(f"[senses] see FAILED: {e}")
         return None
 
 
+def watch_one(png: str, prompt: str, timeout: int = 300) -> str | None:
+    """ONE FRAME, ONE REPORT. The eye reads a single image -> a term. None if dark.
+
+    This is the shape the resident model can actually hold (see MAX_IMAGES_PER_CALL).
+    Every harness in this repo used to fake it with `watch([one_path])`; it now has a
+    name, because a movie is N of these and the difference between "a movie" and "one
+    frame" is the difference between reading and confirming.
+    """
+    return see(png, prompt, timeout=timeout)
+
+
 def watch(frames: list[str], prompt: str, timeout: int = 360) -> str | None:
-    """MOVIE: qwen3.8 reads an ORDERED sequence of frames as video -> a term describing the
-    unfolding. None if dark. (This is what lets the appearance dyad judge the MOVIE, not just the
-    end still.)"""
+    """MOVIE: an ORDERED sequence of frames read as video -> a term describing the
+    unfolding. None if dark.
+
+    On the adoptive (LM Studio) lane this RAISES when `frames` is longer than the
+    per-call image ceiling: the frames would be inlined into one request and silently
+    truncated. Loop with watch_one()/see() and aggregate the reports instead. The
+    ollama lane still sizes num_ctx to the whole list, so it accepts a batch.
+    """
     try:
         content = [{"type": "text", "text": prompt}]
         for p in frames:
             content.append({"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(p)}})
         return (_post(content, timeout) or "").strip() or None
+    except ValueError:
+        raise                      # the one-image wall: see above
     except Exception as e:
         print(f"[senses] watch FAILED: {e}")
         return None
+
+
+def read_movie(frames: list[str], prompt: str, timeout: int = 300) -> list:
+    """A movie the resident eye can actually read: ONE CALL PER FRAME, N reports back.
+
+    [(frame_path, report_or_None), ...] in order. Nothing is aggregated and nothing is
+    judged here -- aggregation is a decision about evidence (see tools/dyad_scan.py), and
+    an instrument should hand back what it measured.
+
+    This is the operator's rule made literal: "you can't give it more than one picture
+    per report". 24 shots is 24 calls, and that is the cost of the eye being fast.
+    """
+    out = []
+    for p in frames:
+        out.append((p, watch_one(p, prompt, timeout=timeout)))
+    return out
 
 
 def hear(wav: str, prompt: str, timeout: int = 300) -> str | None:

@@ -272,11 +272,23 @@ int main(int argc, char** argv) {
     timeBeginPeriod(1);
     // Config
     EngineConfig cfg;
-    cfg.width  = 1920;
-    cfg.height = 1080;
+    // 2K DECREE (2026-08-31, operator): "we will make this project run on a 2K
+    // monitor and the monitor resolution should match the project in all efforts
+    // including the dyad". The primary display measures 2560x1440, so that is the
+    // window AND the capture: the eye reads the glass at the resolution the
+    // operator sees it, never a downscale. (Every downscaled dyad frame in this
+    // repo was sized to 384px because a 3D bear's silhouette survives it; panel
+    // TEXT does not -- at 384px the instrument is unreadable to the eye.)
+    // argv[3]/argv[4] override for a box with a different panel.
+    cfg.width  = 2560;
+    cfg.height = 1440;
     cfg.n_particles = 1200;
     cfg.G      = 1.0f;
     cfg.dt     = 0.02f;
+    if (argc > 3) {
+        int w = atoi(argv[3]), h = atoi(argv[4]);
+        if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
+    }
 
     // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
     int http_port = 8080;
