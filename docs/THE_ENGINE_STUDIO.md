@@ -94,6 +94,20 @@
   gate verdicts) appended to an on-disk session log with timestamps — the
   "done-is-a-log" doctrine as a visible stream.
 
+## G. The dyad's channels (how the eye reads the engine)
+
+- **G1 — The glass channel.** `GET /glass` — the COMPOSITED window: viewport
+  **plus** the overlay, the docks, the status bar, the HUD, the console and the
+  reel. The twin of `/frame`, which is deliberately pixel-clean (it copies
+  `rt_image_`; the Studio is drawn straight into the swapchain and never touches
+  it). **Without G1 there is no capture in this repo that can see the
+  instrument** — measured 2026-08-31: 49.8% of the glass was invisible to every
+  capture path we had.
+- **G2 — The dyad scan.** Sweeps through the glass, one image per vision call
+  (the resident eye has a small context and cannot take a batch), N reads per
+  shot, resume-safe, with the HTTP twins recorded beside every shot. The eye's
+  report is the work list: **the dyad drives, the operator supervises.**
+
 ---
 
 ## Recommended build order (the spine first)
@@ -1050,3 +1064,82 @@ longer dies on a glyph the doc is allowed to contain.
 - **Next per the menu:** B4 ledger, then the rest of the menu by value (C3
   modes, D2 markers, D4 A/B compare) — and the board's own earliest non-green
   gate, B7 articulate, is what the strip keeps naming.
+
+---
+
+## SHIPPED — G1: THE GLASS CHANNEL (2026-08-31)
+
+**The one-line finding:** the Studio is drawn into the SWAPCHAIN
+(`engine.cpp`, the render pass inside `frame()`), and `/frame` copies
+`rt_image_`, which the overlay "never touched — the dyad's /frame stays
+pixel-clean". That was deliberate and it is still right. But nobody had priced
+the consequence: **the instrument existed in no capture the repo could make.**
+Zero hits repo-wide for `PrintWindow|BitBlt|mss|ImageGrab|win32gui`. The eye
+could see the physics and never the window. Measured on the first glass grab:
+**49.8% of the screen was invisible** (docks 73% covered, status bar 87%, top
+bar 100%, centre 39% — the pipeline board).
+
+**`GET /glass`** copies the swapchain *after* `ui_.record()` into its OWN
+staging buffer and its OWN destination (`glass_rgba_`):
+
+| | `/frame` | `/glass` |
+|---|---|---|
+| reads | `rt_image_` (offscreen) | `swap_imgs_[sc_idx]` (presented) |
+| contains | the 3D render only | render + overlay + docks + bar + HUD + console + reel |
+| destination | `capture_rgba_` | `glass_rgba_` |
+| lands in the reel | yes (D3) | **no** — the reel is the pixel-clean ledger |
+
+`TRANSFER_SRC_BIT` on the swapchain images was already set (`engine.cpp:862`,
+commented *"frame capture reads the swapchain image"*) — the flag had been
+waiting years for the route that used it.
+
+**Two pre-existing defects the build walked into, both fixed:**
+
+1. **`/frame` could not complete at all.** With `n_ == 0` and no mesh the engine
+   lives in `frame_idle_ui()`, which serviced *no* capture — while its own
+   comment claimed "the idle path keeps the UI's own captures servable
+   headless". Claim and code disagreed; the operator's eye hit the code. Both
+   channels now follow **one law** (`readback_captures()` + the shared
+   `record_glass_copy()` recorder) so an idle grab cannot drift from a rendered
+   one. `/frame` in idle clears `rt_image_` to the studio background rather than
+   reading an offscreen image nothing drew this pass.
+2. **Launching minimized silently loses the whole swapchain** — a 0×0 surface
+   extent fails `vkCreateSwapchainKHR`, and nothing reports it until a capture
+   times out three seconds later.
+
+**NO PRESENT, NO GLASS.** `can_present == false` (minimized / out-of-date) now
+returns `{"ok":false,"error":"no present: the window is minimized or the
+swapchain is out of date -- there is no glass to read"}` instead of last frame's
+pixels. An instrument that reports on a window nobody can see is worse than no
+instrument.
+
+- **Rule 0 verdicts** (evidence: `tools/probe_glass.py`, artefacts
+  `.tmp/glass_probe/`, idempotent across runs):
+  - **A — the pixel-clean channel never moves:** `frame(overlay ON)` is
+    **byte-identical** to `frame(overlay OFF)` (sha256 `0957ed3f51953e23` both
+    ways). PASS
+  - **B — the glass carries the panels:** diff-pixels `overlay OFF = 56,430`
+    (chrome alone) → `overlay ON = 1,032,734` (**18×**). PASS
+  - **C — THE ABLATION:** turning the chrome off shrinks it
+    `1,032,734 → 1,001,774`, and `frame` stays byte-identical. Without this the
+    channel would be a second capture route wearing a new name. PASS
+  - **D — stability:** three grabs, show clock paused →
+    `[1032734, 1032734, 1032734]`, spread **0.0000%**. PASS
+  - **D-loud** (`--minimize`): minimized `/glass` **refuses** rather than
+    returning a stale frame. PASS
+  - **E:** zero VK errors. PASS
+- **Files:** `engine/engine.cpp` (`ensure_glass_staging`, `record_glass_copy`,
+  `readback_captures`, `glass_frame`, the glass block in both `frame()` and
+  `frame_idle_ui()`), `engine/engine.hpp` (the GLASS CHANNEL block + error
+  enum), `engine/main.cpp` (`GET /glass`), `tools/probe_glass.py`, this doc.
+- **Two laws the run earned:**
+  - **Quiescence on the glass is NOT byte-identity.** The glass carries the
+    status bar's LIVE fps readout, so it is never twice identical — defining
+    settling as equality made the instrument report "never settled" on a channel
+    that measured perfectly still. The stable quantity is the **structure**
+    (diff-pixel count), not the digits.
+  - **The cp1252 console strikes again** (same class as `studio_board.py`'s `≥`):
+    a window title with a glyph it cannot encode killed the `--minimize`
+    falsifier outright. Sanitized.
+- **Next per the menu:** G2 the dyad scan (one image per call, N reads per shot,
+  resume-safe) — then the eye's report decides what the engine needs.
