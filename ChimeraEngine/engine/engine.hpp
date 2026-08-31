@@ -48,6 +48,33 @@ public:
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
 
+    // ── THE GLASS CHANNEL (2026-08-31) ───────────────────────────────────────
+    // /frame reads rt_image_: PIXEL-CLEAN, because the Studio overlay is drawn
+    // straight into the swapchain and never touches rt_image_ (engine.cpp, the
+    // render pass inside frame()). That is deliberate and stays. But it means the
+    // dyad has never been able to SEE the instrument -- the docked panels, the
+    // status bar, the HUD, the console and the reel exist only in the swapchain.
+    //
+    // /glass reads the SWAPCHAIN image AFTER ui_.record() -- the composited
+    // window, exactly what the operator is looking at. Separate staging AND a
+    // separate destination, so a glass grab can never stomp the pixel-clean
+    // frame that /frame, the reel thumbnails and the physics dyad read.
+    //
+    // GLASS_ERR_NAMED: a glass capture fails LOUDLY rather than returning a
+    // stale frame. can_present is false when the surface is 0x0 (minimized) or
+    // the swapchain is out of date -- there is no presented image to read, and
+    // silently handing back last frame's pixels would be an instrument that
+    // reports on a window nobody can see.
+    enum { GLASS_OK = 0, GLASS_ERR_NO_PRESENT = 1, GLASS_ERR_NO_FRAME = 2 };
+    void request_glass() { glass_err_.store(GLASS_OK); glass_ready_.store(false); glass_requested_.store(true); }
+    bool glass_ready() const { return glass_ready_.load(); }
+    int  glass_err()   const { return glass_err_.load(); }
+    bool glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
+    // shared by frame() and frame_idle_ui(): map + BGRA->RGBA swizzle into the
+    // two destinations. One implementation, so an idle grab cannot drift from a
+    // rendered one.
+    void readback_captures(bool do_capture, bool do_glass);
+
     // ── D3: THE REEL — the engine owns the grab ledger (the UI owns the pixels) ──
     struct ReelEntry {
         uint64_t seq;
@@ -390,6 +417,7 @@ private:
     void record_command_buffer(VkCommandBuffer cb);
     void resize(uint32_t w, uint32_t h);
     void ensure_capture_staging();
+    void ensure_glass_staging();
     bool create_sort_pipeline();
     void ensure_sort_buffers(uint32_t count);
     void destroy_sort_resources();
@@ -491,6 +519,17 @@ private:
     VkBuffer capture_staging_ = VK_NULL_HANDLE;
     VkDeviceMemory capture_staging_mem_ = VK_NULL_HANDLE;
     VkDeviceSize capture_staging_size_ = 0;
+
+    // the glass channel's OWN staging + destination (see the GLASS CHANNEL note)
+    std::atomic<bool> glass_requested_{false};
+    std::atomic<bool> glass_ready_{false};
+    std::atomic<int>  glass_err_{GLASS_OK};
+    std::mutex glass_mutex_;
+    std::vector<uint8_t> glass_rgba_;
+    uint32_t glass_w_ = 0, glass_h_ = 0;
+    VkBuffer glass_staging_ = VK_NULL_HANDLE;
+    VkDeviceMemory glass_staging_mem_ = VK_NULL_HANDLE;
+    VkDeviceSize glass_staging_size_ = 0;
     // D3: the reel ledger (render thread writes, HTTP thread reads via reel_json)
     mutable std::mutex reel_mutex_;
     std::vector<ReelEntry> reel_entries_;   // newest last, capped at StudioUI::REEL_MAX

@@ -1214,6 +1214,44 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
                 content_type = "application/json";
             }
+        } else if (p == "/glass" && method == "GET") {
+            // THE GLASS CHANNEL: the composited window -- viewport + the Studio's
+            // docked panels, status bar and HUD -- as the operator sees it. The
+            // twin of /frame, which stays pixel-clean by design.
+            if (g_engine) {
+                g_engine->request_glass();
+                auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+                while (!g_engine->glass_ready()) {
+                    if (std::chrono::steady_clock::now() > deadline) { body = "{\"ok\":false,\"error\":\"glass timeout\"}"; break; }
+                    Sleep(5);
+                }
+                if (g_engine->glass_ready()) {
+                    int gerr = g_engine->glass_err();
+                    if (gerr == Engine::GLASS_ERR_NO_PRESENT) {
+                        // FAIL LOUDLY: no presented image exists (minimized / out-of-date
+                        // swapchain). A stale frame here would be an instrument claiming to
+                        // have read a window that was never on screen.
+                        body = "{\"ok\":false,\"error\":\"no present: the window is minimized or the "
+                               "swapchain is out of date -- there is no glass to read\"}";
+                        content_type = "application/json";
+                    } else {
+                        std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                        if (g_engine->glass_frame(rgba, w, h)) {
+                            std::vector<uint8_t> encoded = png::encode_rgba(rgba.data(), w, h);
+                            body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
+                            content_type = "image/png";
+                        } else {
+                            body = "{\"ok\":false,\"error\":\"no glass frame\"}";
+                            content_type = "application/json";
+                        }
+                    }
+                } else {
+                    content_type = "application/json";
+                }
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+                content_type = "application/json";
+            }
         } else if (p == "/show" && method == "POST") {
             // THE STUDIO CLOCK (D1): the timeline's HTTP twin.
             // {"playing":bool, "time":T, "speed":S, "step":N} — step is N frames

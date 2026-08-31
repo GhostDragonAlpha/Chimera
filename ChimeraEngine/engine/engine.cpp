@@ -730,6 +730,7 @@ void Engine::shutdown() {
     }
     if (comp_params_buf_) { vkDestroyBuffer(device_, comp_params_buf_, nullptr); vkFreeMemory(device_, comp_params_mem_, nullptr); }
     if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
+    if (glass_staging_)   { vkDestroyBuffer(device_, glass_staging_, nullptr);   vkFreeMemory(device_, glass_staging_mem_, nullptr); }
     destroy_sort_resources();
     destroy_skin_resources();
     destroy_triangle_resources();
@@ -3832,6 +3833,70 @@ void Engine::ensure_capture_staging() {
     capture_staging_size_ = size;
 }
 
+// The glass channel's staging, allocated by the SAME law as the pixel-clean one
+// (host-visible + coherent, sized to the swapchain extent). It is a SEPARATE
+// buffer on purpose: the two channels must never share a destination, or a glass
+// grab silently overwrites the frame /frame and the reel just handed out.
+void Engine::ensure_glass_staging() {
+    VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
+    if (glass_staging_ != VK_NULL_HANDLE && size == glass_staging_size_) return;
+    if (glass_staging_ != VK_NULL_HANDLE) {
+        vkDestroyBuffer(device_, glass_staging_, nullptr);
+        vkFreeMemory(device_, glass_staging_mem_, nullptr);
+        glass_staging_ = VK_NULL_HANDLE;
+    }
+    VkBufferCreateInfo bci{};
+    bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bci.size        = size;
+    bci.usage       = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    vkCreateBuffer(device_, &bci, nullptr, &glass_staging_);
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, glass_staging_, &mr);
+    VkMemoryAllocateInfo ai{};
+    ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai.allocationSize  = mr.size;
+    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    vkAllocateMemory(device_, &ai, nullptr, &glass_staging_mem_);
+    vkBindBufferMemory(device_, glass_staging_, glass_staging_mem_, 0);
+    glass_staging_size_ = size;
+}
+
+// ── THE GLASS CHANNEL — one law, two loops ─────────────────────────────────────
+// Both frame() and frame_idle_ui() draw the Studio into the swapchain, and both
+// must service the capture requests. Sharing ONE recorder is the whole point:
+// two copies of this law is two things that drift, and the drift shows up as a
+// capture that works in one loop and times out in the other -- which is exactly
+// the bug this function was written to fix (see frame_idle_ui).
+//
+// `cur` is the swapchain image's layout on entry: PRESENT_SRC after the UI render
+// pass, TRANSFER_DST when only the clear/blit ran. It is handed back as
+// PRESENT_SRC, because the queue presents this image.
+static void record_glass_copy(VkCommandBuffer cb, VkImage swap_img,
+                              VkImageLayout cur, VkBuffer dst, VkExtent2D extent) {
+    if (cur != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL)
+        transition_image_layout(cb, swap_img, cur, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT,
+                                VK_ACCESS_TRANSFER_READ_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT | VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT);
+    VkBufferImageCopy greg{};
+    greg.bufferOffset      = 0;
+    greg.bufferRowLength   = 0;
+    greg.bufferImageHeight = 0;
+    greg.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    greg.imageSubresource.mipLevel       = 0;
+    greg.imageSubresource.baseArrayLayer = 0;
+    greg.imageSubresource.layerCount     = 1;
+    greg.imageOffset = {0, 0, 0};
+    greg.imageExtent = {extent.width, extent.height, 1};
+    vkCmdCopyImageToBuffer(cb, swap_img, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dst, 1, &greg);
+    transition_image_layout(cb, swap_img, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                            VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                            VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+}
+
 // ── GPU bitonic sort (back-to-front splat ordering — no CPU in the per-frame path) ─────────
 
 static uint32_t next_pow2(uint32_t v) {
@@ -4255,6 +4320,15 @@ bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t
     out_rgba = capture_rgba_;
     w = capture_w_;
     h = capture_h_;
+    return true;
+}
+
+bool Engine::glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h) {
+    std::lock_guard<std::mutex> lk(glass_mutex_);
+    if (glass_rgba_.empty()) return false;
+    out_rgba = glass_rgba_;
+    w = glass_w_;
+    h = glass_h_;
     return true;
 }
 
@@ -5130,8 +5204,33 @@ bool Engine::frame() {
         } else {
             transition_image_layout(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                                    VK_ACCESS_TRANSFER_WRITE_BIT, 0,
-                                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+                                     VK_ACCESS_TRANSFER_WRITE_BIT, 0,
+                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+        }
+    }
+
+    // ── THE GLASS CHANNEL ────────────────────────────────────────────────────
+    // Copy the COMPOSITED swapchain image -- viewport + the Studio's overlay --
+    // into the glass staging. Both branches of the present block above leave
+    // swap_imgs_[sc_idx] in PRESENT_SRC, so it must be taken to TRANSFER_SRC for
+    // the copy and handed BACK to PRESENT_SRC before the queue presents it.
+    // (The usage flag is already there: the swapchain is created with
+    // TRANSFER_SRC_BIT at engine.cpp:862.)
+    //
+    // NO PRESENT, NO GLASS: can_present is false when the surface is 0x0
+    // (minimized) or the swapchain is out of date. There is no presented image to
+    // read, and returning last frame's pixels would be an instrument reporting
+    // on a window nobody can see -- so it fails loudly instead.
+    bool do_glass = glass_requested_.exchange(false);
+    if (do_glass) {
+        if (!can_present) {
+            glass_err_.store(GLASS_ERR_NO_PRESENT);
+            glass_ready_.store(true);        // ready, so HTTP can report the failure
+        } else {
+            ensure_glass_staging();
+            // both branches above leave the swapchain in PRESENT_SRC
+            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                              VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, glass_staging_, extent_);
         }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
@@ -5177,7 +5276,23 @@ bool Engine::frame() {
             recreate_after_frame = true;
     }
 
-    // Read back the captured frame (BGRA -> RGBA) into the shared CPU buffer
+    // the one readback law, shared with frame_idle_ui()
+    readback_captures(do_capture, do_glass);
+    if (do_capture) reel_note_grab();   // D3: every grab lands in the reel
+
+    // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
+    // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
+    if (recreate_after_frame) {
+        VkSurfaceCapabilitiesKHR caps{};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
+        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
+            resize(caps.currentExtent.width, caps.currentExtent.height);
+    }
+    image_idx_ = (image_idx_ + 1) % MAX_FRAMES_IN_FLIGHT;
+    return true;  // a present failure (minimized window) is not fatal — skip, retry next frame
+}
+
+void Engine::readback_captures(bool do_capture, bool do_glass) {
     if (do_capture) {
         vkQueueWaitIdle(queue_);
         void* mapped = nullptr;
@@ -5198,23 +5313,48 @@ bool Engine::frame() {
         }
         vkUnmapMemory(device_, capture_staging_mem_);
         capture_ready_.store(true);
-        reel_note_grab();   // D3: every grab lands in the reel
     }
-    // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
-    // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
-    if (recreate_after_frame) {
-        VkSurfaceCapabilitiesKHR caps{};
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
-        if (caps.currentExtent.width != 0 && caps.currentExtent.height != 0)
-            resize(caps.currentExtent.width, caps.currentExtent.height);
+    // the glass readback: same BGRA->RGBA swizzle (the swapchain is B8G8R8A8,
+    // same as rt_image_), the same vkQueueWaitIdle the pixel-clean path already
+    // paid -- but into glass_rgba_, never capture_rgba_, and it never touches the
+    // reel: the reel is the pixel-clean capture ledger the dyad reads.
+    if (do_glass && glass_err_.load() == GLASS_OK) {
+        if (!do_capture) vkQueueWaitIdle(queue_);
+        void* gmap = nullptr;
+        vkMapMemory(device_, glass_staging_mem_, 0, glass_staging_size_, 0, &gmap);
+        {
+            std::lock_guard<std::mutex> lk(glass_mutex_);
+            size_t px = static_cast<size_t>(extent_.width) * extent_.height;
+            glass_rgba_.resize(px * 4);
+            const uint8_t* src = static_cast<const uint8_t*>(gmap);
+            for (size_t i = 0; i < px; ++i) {
+                glass_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
+                glass_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
+                glass_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
+                glass_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
+            }
+            glass_w_ = extent_.width;
+            glass_h_ = extent_.height;
+        }
+        vkUnmapMemory(device_, glass_staging_mem_);
+        glass_ready_.store(true);
     }
-    image_idx_ = (image_idx_ + 1) % MAX_FRAMES_IN_FLIGHT;
-    return true;  // a present failure (minimized window) is not fatal — skip, retry next frame
 }
 
 // THE STUDIO: the overlay with nothing loaded — the pipeline board is the
 // agent-onboarding view, so it must present even when every 3D path idles.
-// Same per-slot sync discipline as frame(); no offscreen pass, no capture.
+// Same per-slot sync discipline as frame().
+//
+// CAPTURES ARE SERVICED HERE TOO (2026-08-31). The comment below used to read
+// "no offscreen pass, no capture" and the function matched it: with no mesh and
+// no particles the engine lives in THIS loop, so GET /frame could never
+// complete -- it timed out for the whole idle session, and the glass channel
+// would have inherited the same hole. The claim and the code disagreed, and the
+// code was the one the operator's eye hit. Now:
+//   /frame -> rt_image_ cleared to the studio background (there is honestly
+//             nothing rendered; a stale or uninitialized offscreen image would
+//             be an instrument reading a frame that was never drawn)
+//   /glass -> the composited swapchain, exactly as frame() serves it
 bool Engine::frame_idle_ui() {
     // D1: the clock ticks here too — idle must not freeze the studio's time
     {
@@ -5304,6 +5444,10 @@ bool Engine::frame_idle_ui() {
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
     bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
 
+    bool do_capture = capture_requested_.exchange(false);
+    bool do_glass   = glass_requested_.exchange(false);
+    bool ui_drawn   = false;
+
     VkCommandBufferBeginInfo bbi{};
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     vkResetCommandBuffer(cmd_bufs_[img_idx], 0);
@@ -5317,6 +5461,37 @@ bool Engine::frame_idle_ui() {
         VkImageSubresourceRange sr{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         vkCmdClearColorImage(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &cc, 1, &sr);
+
+        // /frame in idle: there is no offscreen render this pass, so the honest
+        // pixel-clean image is the studio background -- NOT whatever rt_image_
+        // happened to hold. UNDEFINED as the old layout discards the contents,
+        // which is exactly right before a clear.
+        if (do_capture) {
+            ensure_capture_staging();
+            transition_image_layout(cmd_bufs_[img_idx], rt_image_,
+                                    VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                    0, VK_ACCESS_TRANSFER_WRITE_BIT,
+                                    VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+            vkCmdClearColorImage(cmd_bufs_[img_idx], rt_image_,
+                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &cc, 1, &sr);
+            transition_image_layout(cmd_bufs_[img_idx], rt_image_,
+                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                    VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+                                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+            VkBufferImageCopy region{};
+            region.bufferOffset      = 0;
+            region.bufferRowLength   = 0;
+            region.bufferImageHeight = 0;
+            region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+            region.imageSubresource.mipLevel       = 0;
+            region.imageSubresource.baseArrayLayer = 0;
+            region.imageSubresource.layerCount     = 1;
+            region.imageOffset = {0, 0, 0};
+            region.imageExtent = {extent_.width, extent_.height, 1};
+            vkCmdCopyImageToBuffer(cmd_bufs_[img_idx], rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                   capture_staging_, 1, &region);
+        }
+
         VkRenderPassBeginInfo urp{};
         urp.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         urp.renderPass        = ui_.render_pass();
@@ -5325,6 +5500,21 @@ bool Engine::frame_idle_ui() {
         vkCmdBeginRenderPass(cmd_bufs_[img_idx], &urp, VK_SUBPASS_CONTENTS_INLINE);
         ui_.record(cmd_bufs_[img_idx]);
         vkCmdEndRenderPass(cmd_bufs_[img_idx]);
+        ui_drawn = true;
+    }
+    if (do_glass) {
+        if (!can_present) {
+            glass_err_.store(GLASS_ERR_NO_PRESENT);
+            glass_ready_.store(true);
+        } else {
+            ensure_glass_staging();
+            // the UI render pass leaves the swapchain in PRESENT_SRC; with no UI
+            // it is still TRANSFER_DST from the clear above.
+            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                              ui_drawn ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+                                       : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                              glass_staging_, extent_);
+        }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
 
@@ -5364,6 +5554,8 @@ bool Engine::frame_idle_ui() {
         if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
             recreate_after_frame = true;
     }
+    // the SAME readback law as frame() — one implementation, two loops
+    readback_captures(do_capture, do_glass);
     if (recreate_after_frame) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
