@@ -249,3 +249,22 @@ coverage 6/18 cells (33%)   QD-score 45.0
 - **assumption:** The market is a static reference tool for checking item values rather than an active place where prices change based on supply, demand, or player action.
 - **violation:** Every item listed on the market has a hidden "supply score" that shifts with each transaction; if too many players sell the same item within one station cycle, its buy price drops by up to 40% due to oversaturation, forcing sellers to time their listings strategically rather than treating posted values as permanent.
 - **why it works:** The market transforms from a passive reference into an active system that responds to player behavior, rewarding strategic timing and observation of supply patterns. This opens genuine emergent depth without being arbitrary or frustrating.
+
+## Run (fast judge) - 1 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     8/10     8/10
+coupling         .       8/10     6/10
+delay            .        .        .  
+scarcity         .        .        .  
+agency           .       8/10      .  
+identity         .        .       9/10
+
+coverage 7/18 cells (39%)   QD-score 54.0
+```
+
+### UCostlessLifeEndingDiagnostic  (9/10)  `identity|scope2`
+- **assumption:** This system is a debug/testing tool that instantly kills the player character with zero penalty, intended for developers rather than normal gameplay use.
+- **violation:** The system does not kill the player character; instead it swaps their consciousness into a randomly generated NPC body at a random location, and the original body becomes an AI-controlled duplicate that continues your quests independently — you must survive in the new body while your old self slowly unravels the world around you.
+- **why it works:** VERDICT: KEEP

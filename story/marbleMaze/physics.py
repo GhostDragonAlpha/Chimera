@@ -40,6 +40,10 @@ import numpy as np
 _HERE = Path(__file__).resolve().parent
 NUMBERS_PATH = _HERE / "numbers.json"
 TILTS_PATH = _HERE / "tilt.json"
+# THE LIVE RUN RECORDS TO ITS OWN FILE -- never tilt.json.  tilt.json is the stored
+# record (the win); a live run is a scratch take that must not overwrite it just
+# because someone pressed Play.  Replaying a live take reads this instead.
+LIVE_PATH = _HERE / "live_record.json"
 
 # buffer layout (ParticleEngine.core.COL)
 NCOLS = 28
@@ -104,6 +108,104 @@ KEYMAP = {
 DEFAULT_PLAY_RATE = 0.0130
 
 _STATE = {"verify": None}
+
+# ── THE LIVE MARBLE ──────────────────────────────────────────────────────────
+# RULE 0 (live sim): the marble can be driven by a LIVE tilt the operator sets
+# each frame, independent of any stored record.  Play starts the live roll; arrow
+# keys change the table's tilt NOW and the marble obeys within one frame.  While
+# the marble runs it is ALSO recorded to tilt.json (pass-indexed), so the run
+# remains a replayable record -- the matrix.  When no live session is active the
+# module falls back to replaying tilt.json exactly (the win record, the scrub).
+#
+# THE LIVE MARBLE INTEGRATES IN WHOLE PASSES, each pass = substeps of dt marble
+# seconds, identically to `_integrate`.  A pass boundary is crossed every
+# 1/(dt*substeps) seconds of real time, and at each boundary one tilt event is
+# appended.  So the recorded run replays to the SAME path as the live run -- F4
+# lives; appended at each whole-pass boundary).  Replays exactly (F4).
+_LIVE = {
+    "active": False,     # a live session has begun (tilt set or play pressed)
+    "running": False,     # the marble is integrating under the live tilt
+    "recording": False,   # the live run is being appended to tilt.json
+    "x": 0.0, "y": 0.0, "vx": 0.0, "vy": 0.0,
+    "pitch": 0.0, "roll": 0.0,
+    "pass": 0,            # last recorded pass index, advances one per whole pass
+    "pass_frac": 0.0,     # fractional progress toward the next whole pass
+}
+
+
+def _live_reset(nums: dict):
+    """Return the live marble to the start, clear any run, keep it inactive."""
+    sx, sy = nums.get("start", [0.0, 2.6])
+    _LIVE.update(active=False, running=False, recording=False,
+                 x=float(sx), y=float(sy), vx=0.0, vy=0.0,
+                 pitch=0.0, roll=0.0, **{"pass": 0}, pass_frac=0.0)
+
+
+def live_state() -> dict:
+    """The live marble's current state, or None when no live session is active."""
+    if not _LIVE["active"]:
+        return None
+    return dict(_LIVE)
+
+
+def live_tick(frame_dt: float, nums: dict | None = None):
+    """Advance the live marble one real frame.  Called by the viewer every render
+    tick while this membrane is the loaded deck and the marble is running.
+
+    The marble integrates in WHOLE PASSES of marble time (dt*substeps each), so an
+    arrow pressed now changes the tilt the next pass integrates under -- and each
+    pass boundary appends its tilt to tilt.json.  The result is a record that
+    replays to the same path (F4)."""
+    if not _LIVE["running"]:
+        return
+    nums = nums or _load_numbers()
+    nsub = int(nums.get("substeps", 4))
+    sub = float(nums.get("dt", 0.08))
+    g = float(nums.get("gravity", 9.81))
+    cap = float(nums.get("speed_cap", 1.6))
+    r = float(nums.get("marble_r", 0.16))
+    wt = float(nums.get("wall_t", 0.05))
+    bounce = float(nums.get("bounce", 0.5))
+    damp = float(nums.get("damp", 0.985))
+    # whole passes per real second: one pass = dt*substeps marble-seconds
+    live_pps = 1.0 / (float(nums.get("dt", 0.08)) * int(nums.get("substeps", 4)))
+    # how many whole passes this real frame covers
+    _LIVE["pass_frac"] += live_pps * float(frame_dt)
+    while _LIVE["pass_frac"] >= 1.0:
+        # ── ONE WHOLE PASS, identical to `_integrate`'s inner loop ─────────────
+        for _ in range(nsub):
+            ax = g * math.sin(_LIVE["roll"])
+            ay = -g * math.sin(_LIVE["pitch"])
+            _LIVE["vx"] += ax * sub
+            _LIVE["vy"] += ay * sub
+            _LIVE["x"] += _LIVE["vx"] * sub
+            _LIVE["y"] += _LIVE["vy"] * sub
+            _LIVE["x"], _LIVE["y"], _LIVE["vx"], _LIVE["vy"] = _collide(
+                _LIVE["x"], _LIVE["y"], _LIVE["vx"], _LIVE["vy"], r, wt, bounce)
+            sp = math.hypot(_LIVE["vx"], _LIVE["vy"])
+            if sp > cap:
+                _LIVE["vx"] *= cap / sp
+                _LIVE["vy"] *= cap / sp
+            _LIVE["vx"] *= damp
+            _LIVE["vy"] *= damp
+        _LIVE["pass_frac"] -= 1.0
+        # THE RUN IS ALSO A TAKE -- recorded to live_record.json, NOT tilt.json, so a
+        # live session can never erase the stored win record.  Each pass appends one
+        # tilt event; replaying this file reproduces the same path (F4).
+        if _LIVE["recording"]:
+            _LIVE["pass"] += 1
+            ev = {"pass": _LIVE["pass"],
+                  "pitch": round(float(_LIVE["pitch"]), 6),
+                  "roll": round(float(_LIVE["roll"]), 6)}
+            tilts = []
+            if LIVE_PATH.exists():
+                try:
+                    tilts = json.loads(LIVE_PATH.read_text())
+                except Exception:
+                    tilts = []
+            tilts.append(ev)
+            _atomic(LIVE_PATH, lambda p: p.write_text(json.dumps(tilts, indent=2)))
+            _STATE["verify"] = None
 
 
 def _atomic(path: Path, fn):
@@ -194,7 +296,7 @@ def _step(x, y, vx, vy, pitch, roll, nums):
 
 def _integrate(nums: dict, tilts: list[dict], P: int):
     """Replay the tilt record to pass P: the marble's exact path, plus the
-    table's current tilt (for the visual)."""
+    table's current tilt (for the visual). Returns (x, y, pitch, roll, vx, vy)."""
     start = np.asarray(nums.get("start", [0.0, 2.6]), dtype=float)
     x, y = float(start[0]), float(start[1])
     vx = vy = 0.0
@@ -207,7 +309,71 @@ def _integrate(nums: dict, tilts: list[dict], P: int):
             roll = float(evs[ei]["roll"])
             ei += 1
         x, y, vx, vy = _step(x, y, vx, vy, pitch, roll, nums)
-    return x, y, pitch, roll
+    return x, y, pitch, roll, vx, vy
+
+
+def _step_frac(x, y, vx, vy, pitch, roll, nums: dict, n: float):
+    """n full-passes-worth of substeps, n may be fractional -- full substeps then
+    a partial one, so playback shows the marble ROLLING through a pass instead of
+    hopping to the pass-end position."""
+    dt = float(nums.get("dt", 0.08))
+    damp = float(nums.get("damp", 0.985))
+    g = float(nums.get("gravity", 9.81))
+    cap = float(nums.get("speed_cap", 1.6))
+    bounce = float(nums.get("bounce", 0.5))
+    r = float(nums.get("marble_r", 0.16))
+    wt = float(nums.get("wall_t", 0.05))
+    m = int(n)
+    f = n - m
+    for _ in range(m):
+        ax = g * math.sin(roll)      # +roll tips the +x edge down -> marble rolls right
+        ay = -g * math.sin(pitch)    # +pitch tips the +y edge up -> marble rolls down
+        vx += ax * dt
+        vy += ay * dt
+        x += vx * dt
+        y += vy * dt
+        x, y, vx, vy = _collide(x, y, vx, vy, r, wt, bounce)
+        sp = math.hypot(vx, vy)
+        if sp > cap:
+            vx *= cap / sp
+            vy *= cap / sp
+        vx *= damp
+        vy *= damp
+    if f > 1e-9:
+        d = dt * f
+        ax = g * math.sin(roll)
+        ay = -g * math.sin(pitch)
+        vx += ax * d
+        vy += ay * d
+        x += vx * d
+        y += vy * d
+        x, y, vx, vy = _collide(x, y, vx, vy, r, wt, bounce)
+        sp = math.hypot(vx, vy)
+        if sp > cap:
+            vx *= cap / sp
+            vy *= cap / sp
+        vx *= damp ** f
+        vy *= damp ** f
+    return x, y, vx, vy
+
+
+def _integrate_frac(nums: dict, tilts: list[dict], t: float):
+    """Replay to a FRACTIONAL pass (t in 0..1): full passes then one partial pass.
+    The partial pass runs under the tilt that pass full+1 would run under, so the
+    marble's path is exact and its motion is continuous."""
+    P_total = int(nums.get("tilt_max_passes", 240))
+    pt = float(np.clip(t, 0.0, 1.0)) * P_total
+    full = int(pt)
+    frac = pt - full
+    x, y, pitch, roll, vx, vy = _integrate(nums, tilts, full)
+    if frac > 1e-9:
+        evs = sorted([e for e in tilts if float(e["pass"]) <= full + 1],
+                     key=lambda e: e["pass"])
+        if evs:
+            pitch, roll = float(evs[-1]["pitch"]), float(evs[-1]["roll"])
+        x, y, vx, vy = _step_frac(x, y, vx, vy, pitch, roll, nums,
+                                  frac * int(nums.get("substeps", 4)))
+    return x, y, pitch, roll, vx, vy
 
 
 def _rotate(pitch, roll, pts):
@@ -225,8 +391,12 @@ def _rotate(pitch, roll, pts):
 
 
 def _emit_body(nums: dict, t: float) -> np.ndarray:
-    P = _pass_at(nums, t)
-    x, y, pitch, roll = _integrate(nums, _load_tilts(), P)
+    live = live_state()
+    if live is not None:
+        x, y = live["x"], live["y"]
+        pitch, roll = live["pitch"], live["roll"]
+    else:
+        x, y, pitch, roll, *_ = _integrate_frac(nums, _load_tilts(), t)
     gx, gy = float(nums.get("goal", [0.0, -2.6])[0]), float(nums.get("goal", [0.0, -2.6])[1])
     goal_r = float(nums.get("goal_r", 0.30))
     won = math.hypot(x - gx, y - gy) < goal_r
@@ -301,39 +471,75 @@ def emit(nums: dict, t: float = 1.0) -> np.ndarray:
     return _emit_body(nums, t)
 
 
-def handle_key(code: str, down: bool = True, t: float = 1.0,
-               nums: dict | None = None) -> dict | None:
-    """The deck's controls: arrows tilt the table (recorded to tilt.json),
-    KeyR resets the marble, Space plays/pauses.
+def live_reset_term(nums: dict | None = None):
+    """Clear any live session (used when entering the deck fresh, so a previous
+    visitor's run does not bleed into the new board).  The stored record survives."""
+    _live_reset(nums or _load_numbers())
 
-    A tilt event applies from the NEXT pass, so appending one leaves the
-    marble's path continuous -- the operator's input is a join, not a teleport.
-    """
+
+def handle_key(code: str, down: bool = True, t: float = 1.0,
+                nums: dict | None = None) -> dict | None:
+    """The deck's controls.  This is a LIVE SIM: pressing Play drops the marble and
+    it rolls under the current tilt; arrow keys tilt the table NOW and the marble
+    obeys next frame -- you steer while it plays.  The whole run is recorded to
+    tilt.json as you go, so it stays a replayable record (the matrix).
+
+      Space      toggle the live roll (start / pause -- no record needed to begin)
+      Arrows     tilt the table live: set the tilt immediately, marble follows
+      KeyR       reset the marble to the start and clear the record
+      N / M      gear the playback rate (for replaying a recorded run)
+
+    A tilt applies immediately to the live state, so the operator's input is a
+    steering wheel, not a teleport -- and because the marble is also recorded, the
+    same tilts replay to the same path (F4)."""
     if not down or code not in KEYMAP:
         return None
     nums = nums or _load_numbers()
     action = KEYMAP[code][0]
+
     if action == "toggle_play":
-        return {"cmd": "toggle_play", "rate": DEFAULT_PLAY_RATE}
+        # THE LIVE ROLL STARTS COLD. No record required: the marble drops and runs
+        # under whatever tilt is set (initially flat). Starting a run also begins
+        # recording it to live_record.json (NOT tilt.json -- the stored win is safe).
+        if _LIVE["running"]:
+            _LIVE["running"] = False
+            return {"cmd": "toggle_play", "rate": DEFAULT_PLAY_RATE, "playing": False}
+        _LIVE["active"] = True
+        _LIVE["running"] = True
+        _LIVE["recording"] = True
+        # a fresh take: clear last run's recording so the new one is clean
+        try:
+            LIVE_PATH.write_text("[]")
+        except Exception:
+            pass
+        return {"cmd": "toggle_play", "rate": DEFAULT_PLAY_RATE, "playing": True}
+
     if action == "reset":
+        # RESET clears the live run AND the stored record (a fresh board, empty).
         _atomic(TILTS_PATH, lambda p: p.write_text("[]"))
+        try:
+            LIVE_PATH.write_text("[]")
+        except Exception:
+            pass
+        _live_reset(nums)
         _STATE["verify"] = None
         return {"cmd": "switch", "name": "reset", "t": 0.0}
+
     if action == "slower":
         return {"cmd": "rate", "x": 0.5}
     if action == "faster":
         return {"cmd": "rate", "x": 2.0}
 
+    # ── THE ARROWS TILT THE TABLE LIVE ──────────────────────────────────────────
+    # They set the live tilt immediately (and arm a live session), whether the
+    # marble is rolling or parked.  The next live_tick integrates under this new
+    # tilt, so the marble changes direction within a frame of the keypress.
     max_t = math.radians(float(nums.get("max_tilt_deg", 26)))
     step = math.radians(float(nums.get("tilt_step_deg", 6)))
-    cur = _pass_at(nums, t)
-    tilts = _load_tilts()
-    pitch = roll = 0.0
-    for e in reversed(tilts):
-        if float(e["pass"]) <= cur:
-            pitch = float(e["pitch"])
-            roll = float(e["roll"])
-            break
+    if not _LIVE["active"]:
+        _live_reset(nums)
+        _LIVE["active"] = True
+    pitch, roll = _LIVE["pitch"], _LIVE["roll"]
     if action == "pitch_up":
         pitch = _clamp(pitch - step, -max_t, max_t)
     elif action == "pitch_down":
@@ -342,14 +548,10 @@ def handle_key(code: str, down: bool = True, t: float = 1.0,
         roll = _clamp(roll - step, -max_t, max_t)
     elif action == "roll_right":
         roll = _clamp(roll + step, -max_t, max_t)
-    ev = {"pass": cur + 1, "pitch": round(float(pitch), 6), "roll": round(float(roll), 6)}
-    if tilts and tilts[-1]["pass"] == ev["pass"] and abs(tilts[-1]["pitch"] - ev["pitch"]) < 1e-9 \
-            and abs(tilts[-1]["roll"] - ev["roll"]) < 1e-9:
-        return None
-    tilts.append(ev)
-    _atomic(TILTS_PATH, lambda p: p.write_text(json.dumps(tilts, indent=2)))
-    _STATE["verify"] = None
-    return {"cmd": "switch", "name": action, "pass": ev["pass"]}
+    _LIVE["pitch"], _LIVE["roll"] = pitch, roll
+    # THE TILT IS THE INPUT: re-emit so the table visibly rotates this frame.
+    return {"cmd": "switch", "name": action, "pass": _LIVE["pass"],
+            "max_pass": int(nums.get("tilt_max_passes", 240))}
 
 
 def _verify(nums: dict) -> dict:
@@ -368,19 +570,26 @@ def _verify(nums: dict) -> dict:
 def state_readout(nums: dict, t: float = 1.0) -> dict:
     """The game state: where the marble is, the table's tilt, whether it is home."""
     nums = nums or _load_numbers()
-    P = _pass_at(nums, t)
-    tilts = _load_tilts()
-    x, y, pitch, roll = _integrate(nums, tilts, P)
+    live = live_state()
+    if live is not None:
+        x, y = live["x"], live["y"]
+        pitch, roll = live["pitch"], live["roll"]
+        tilts = _load_tilts()
+    else:
+        tilts = _load_tilts()
+        x, y, pitch, roll, *_ = _integrate_frac(nums, tilts, t)
     gx, gy = float(nums.get("goal", [0.0, -2.6])[0]), float(nums.get("goal", [0.0, -2.6])[1])
     dist = math.hypot(x - gx, y - gy)
     return {
         "t": round(t, 4),
-        "pass": P,
+        "pass": _pass_at(nums, t) if live is None else _LIVE["pass"],
         "marble": [round(x, 3), round(y, 3)],
         "tilt_deg": [round(math.degrees(pitch), 1), round(math.degrees(roll), 1)],
         "goal_dist": round(dist, 3),
         "won": bool(dist < float(nums.get("goal_r", 0.30))),
         "events": len(tilts),
+        "live": live is not None,
+        "running": bool(_LIVE["running"]),
         "replay": _verify(nums),
         "keymap": [{"key": kk, "action": a, "label": l} for kk, (a, l) in KEYMAP.items()],
     }

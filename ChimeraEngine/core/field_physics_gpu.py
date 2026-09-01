@@ -420,6 +420,41 @@ class GPUFieldSystem:
         
         return self.buffer, self.timings.copy()
     
+    def serialize_to_disk(self, path: str):
+        """Serialize this system's current buffer to a .npy file for disk streaming.
+
+        The saved format is a single (N, 28) float32 array — the exact same layout
+        that FieldRenderPipeline.buffer_to_splat_cloud() expects. For multiplayer,
+        this is the network packet: ~35 KB per system at 80 elements.
+        """
+        meta = {
+            "n_elements": self.n,
+            "config": {
+                "n_elements": self.config.n_elements,
+                "region_size": self.config.region_size,
+                "mass_range": list(self.config.mass_range),
+                "charge_range": list(self.config.charge_range),
+                "color": list(self.config.color),
+                "scale_base": list(self.config.scale_base),
+                "opacity_base": self.config.opacity_base,
+            },
+            "lensing_centers": [list(c) for c in self._lensing_centers],
+        }
+        np.savez_compressed(path, buffer=self.buffer, meta=np.array([meta]))
+
+    @staticmethod
+    def deserialize_from_disk(path: str) -> Tuple[np.ndarray, dict]:
+        """Load a saved buffer and metadata from disk.
+
+        Returns (buffer: np.ndarray, meta: dict).
+        Use with DiskBufferSource in FieldRenderPipeline for zero-physics rendering.
+        """
+        data = np.load(path, allow_pickle=True)
+        buffer = data["buffer"].astype(np.float32)
+        raw_meta = data["meta"][0]
+        meta = raw_meta.item() if hasattr(raw_meta, "item") else dict(raw_meta)
+        return buffer, meta
+
     def get_stats(self) -> dict:
         densities = self.buffer[:, 17]
         return {

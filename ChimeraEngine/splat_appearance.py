@@ -162,7 +162,8 @@ def membrane_buffer(term: str, t: float = 1.0) -> np.ndarray | None:
     """
     t = float(np.clip(t, 0.0, 1.0))
     key = (term, round(t, 6))  # round to avoid float-key noise
-    if key in _TCACHE:
+    live = membrane_is_live(term)
+    if (not live) and key in _TCACHE:
         return _TCACHE[key].copy()
     if len(_TCACHE) > 4096:          # safety net under the playback prune; never unbounded
         _TCACHE.clear()
@@ -185,7 +186,8 @@ def membrane_buffer(term: str, t: float = 1.0) -> np.ndarray | None:
     if buf.ndim != 2 or buf.shape[1] != 28 or buf.shape[0] == 0:
         return None
 
-    _TCACHE[key] = buf.copy()
+    if not live:
+        _TCACHE[key] = buf.copy()
     return buf
 
 
@@ -277,6 +279,38 @@ def solo(term: str, state) -> dict:
     for k in [k for k in _TCACHE if k[0] == term]:
         del _TCACHE[k]
     return {"applied": True, "term": term, "solo": state}
+
+
+def membrane_is_live(term: str) -> bool:
+    """True when the membrane runs a LIVE sim (its marble is driven by per-frame
+    ticks and a live tilt, not by replaying a stored record).  The viewer uses this
+    to know whether to pump live_tick and freeze the t playhead."""
+    mod = membrane_module(term)
+    return mod is not None and hasattr(mod, "live_tick")
+
+
+def membrane_live_reset(term: str, nums: dict | None = None):
+    """Clear a live-sim membrane's running session (entering the deck fresh).
+    No-op for replay-only membranes."""
+    mod = membrane_module(term)
+    if mod is None or not hasattr(mod, "live_reset_term"):
+        return
+    try:
+        mod.live_reset_term(nums or _NUMBERS.get(term, {}))
+    except Exception:
+        pass
+
+
+def membrane_live_tick(term: str, dt: float):
+    """Advance a live-sim membrane one frame (no-op for replay-only membranes)."""
+    mod = membrane_module(term)
+    if mod is None or not hasattr(mod, "live_tick"):
+        return
+    nums = _NUMBERS.get(term, {})
+    try:
+        mod.live_tick(dt, nums)
+    except Exception:
+        pass
 
 
 def prune_time_cache(term: str, keep: int = 8):

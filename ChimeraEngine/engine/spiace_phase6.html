@@ -47,6 +47,12 @@
   <div class="row"><label>Gap:</label><span class="val" id="fly-gap">--</span></div>
   <div class="row"><label>Char speed:</label><span class="val" id="fly-cspeed">--</span></div>
   <div class="row"><label>Transfer:</label><span class="val" id="fly-transfer">--</span></div>
+  <div class="row"><label>Ship:</label><span class="val" id="ship-mode">off (T)</span></div>
+  <div class="row"><label>Fuel:</label><span class="val" id="ship-fuel">--</span></div>
+  <div class="row"><label>Delta-v:</label><span class="val" id="ship-dv">--</span></div>
+  <div class="row"><label>Airspeed:</label><span class="val" id="ship-vair">--</span></div>
+  <div class="row"><label>Dyn press:</label><span class="val" id="ship-q">--</span></div>
+  <div class="row"><label>Skin temp:</label><span class="val" id="ship-skin">--</span></div>
 </div>
 <div id="err"></div>
 <div class="panel" id="ctrl-panel">
@@ -63,6 +69,8 @@
   <div class="row"><input type="range" id="b-slider" min="0" max="1000" value="1" style="width:120px;accent-color:#f77"></div>
   <div class="row"><button id="btn-heat" class="active">Heat: on</button><span class="val" id="heat-info">Phase 8</span></div>
   <div class="row"><button id="btn-acoustic" class="active">Acoustic: on</button><span class="val" id="acoustic-info">Phase 9</span></div>
+  <div class="row"><button id="btn-viz">Light Viz: off (L)</button><span class="val" id="viz-info">flux field</span></div>
+  <div class="row"><button id="btn-bear">Bear: stay (B)</button><button id="btn-bearjump">Jump (H)</button><span class="val" id="bear-info">teddy</span></div>
   <div class="row"><label>Modes:</label>
     <button id="btn-cpu" class="active">CPU BH</button>
     <button id="btn-cpuem">CPU BH+EM</button>
@@ -155,8 +163,11 @@ fn main(@builtin(global_invocation_id) gid: vec3u) {
 
 <script id="sh-raster" type="x-shader/x-wgsl">
 // raster.wgsl — tile-based splat rasterizer, HDR output + Mip-Splatting AA
+// Phase 10.5: TILE_SIZE 16 kept (JS binning) — see the JS TILE_SIZE comment
+// for the 8-vs-16 measurement. MAX_PTILE 64->256: the 64 cap dropped
+// contributions in dense tiles — staircase pattern; 256 is register-cheap.
 const TILE_SIZE: u32 = 16u;
-const MAX_PTILE : u32 = 64u;
+const MAX_PTILE : u32 = 256u;
 const EPS       : f32 = 1e-8f;
 
 struct Params {
@@ -670,16 +681,24 @@ let B_field = [0, 0, B_FIELD_DEFAULT]; // global uniform magnetic field (Tesla)
 // in f64 on the CPU before uploading f32 — positions of ~1e11 m would
 // otherwise lose all sub-1e4 m precision in f32 buffers.
 const WORLD_SCALE = 1e-11;
-const TILE_SIZE = 16;
-// TARGET_RESOLUTION: the single resolution this renderer targets for
-// visual quality. 4K UHD (3840×2160) is where splat-based terrain stops
-// looking like blobs and starts resolving into surface features. This is
-// NOT hardware-dependent — it's our design target, same as a game engine
-// targeting "4K" regardless of whether the player has a 1080p or 5K display.
+const TILE_SIZE = 16; // Phase 10.5 evaluated 8 vs 16: at 4K the fracture LOD
+// law generates ~114k splats and TILE_SIZE=8 quadrupled tile incidences to
+// 1.5M slots/frame (67 ms CPU binning, 35 fps). 16 with the global rank
+// order keeps seams fixed (rank is the seam fix, not tile size) at 4x fewer
+// slots. Falsifier: GPU >= 50 fps at 4K; seam ratio >= 1.3 means regress.
+// TARGET_RESOLUTION: the design target resolution. 4K UHD (3840×2160) is
+// where splat-based terrain resolves into surface features instead of blobs.
+// This is our quality contract — same philosophy as any engine targeting "4K".
 const TARGET_RESOLUTION_W = 3840;
 const TARGET_RESOLUTION_H = 2160;
-const MAX_PARTICLES = 8192; // bumped from 4096: enough headroom for fracture at 4K
-const MAX_TREE_NODES = 2_000_000; // tree size cap (~288 MB of 144-byte nodes)
+// DPR scaling: on Retina/HiDPI displays (DPR=2 or 3), multiply canvas size
+// so each CSS pixel maps to 2-3 physical pixels. Without this, a 4K display
+// renders at half resolution and looks just as blurry as 1080p.
+const DPR_SCALE = Math.min(window.devicePixelRatio || 1, 3);
+const MAX_PARTICLES = 1_000_000;
+const MAX_TREE_NODES = 4_000_000; // ~576 MB at 144 B/node — cap for N=1M
+// Benchmark mode: ?benchmark=N sets particles.length to N on load,
+// skipping all planet/orbital generation. E.g. ?benchmark=1000000
 
 // ---- BARNES-HUT TREE (CPU) ----
 // A node carries the base geometry (bbox, children, leaf span) plus one
@@ -921,7 +940,44 @@ const SPECULAR_SHININESS = 80.0;
 const SPECULAR_INTENSITY = 0.3;
 const DIFFUSE_BASE = 0.15;   // minimum illumination (no pure black shadows)
 
+// ---- LIGHT-VIZ MODE (L key) ----------------------------------------------
+// Proof-with-light: every splat false-colored by the irradiance the TREE
+// delivers to it (p.flux, filled by the same traversal that does gravity).
+// Hue = log10(flux / E_1AU) drifting slowly in time (the psychedelic part);
+// brightness log-mapped over ~8 decades so the star's neighborhood, the
+// habitable band, and the outer dark all read in one frame. Blackbody
+// emission from temperature is added on top — nothing lit from outside the
+// membrane, ever. Splats without a flux field (render-only fracture/mip
+// extras) fall back to the analytic L/4 pi d^2 so the whole scene stays in
+// the same field.
+let vizMode = 0; // 0 = physical color, 1 = light-field false color
+window.__vizMode = 0;
+function hsv2rgb(h, s, v) {
+  const i = Math.floor(h * 6), f = h * 6 - i;
+  const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+  switch (i % 6) {
+    case 0: return [v, t, p]; case 1: return [q, v, p]; case 2: return [p, v, t];
+    case 3: return [p, q, v]; case 4: return [t, p, v]; default: return [v, p, q];
+  }
+}
+function lightVizColor(p) {
+  let f = p.flux;
+  if (f === undefined) { // render-only splat: analytic starlight at its position
+    const d2 = Math.max(p.pos[0]*p.pos[0] + p.pos[1]*p.pos[1] + p.pos[2]*p.pos[2],
+                        R_STAR * R_STAR);
+    f = L_STAR / (FOUR_PI * d2);
+  }
+  const lg = Math.log10(Math.max(f, 1e-3) / E_1AU); // 0.0 at 1 AU
+  const hue = (((lg + 3) * 0.14) + performance.now() * 2e-5) % 1; // slow hue drift
+  const v = Math.max(0.06, Math.min(3.2, 0.5 + 0.30 * lg));
+  const [r, g, b] = hsv2rgb(hue < 0 ? hue + 1 : hue, 0.95, v);
+  const bb = blackbodyRGB(p.temp || 300);
+  const e = Math.pow((p.temp || 300) / T_STAR, 4) * STAR_HDR;
+  return [r + bb[0]*e, g + bb[1]*e, b + bb[2]*e];
+}
+
 function displayColor(p) {
+  if (vizMode === 1) return lightVizColor(p);
   if (p.isStar) return [STAR_TINT[0] * STAR_HDR, STAR_TINT[1] * STAR_HDR, STAR_TINT[2] * STAR_HDR];
   // Track C2: selected particle gets a bright white highlight overlay.
   // Guard against -1 === -1: render-only splats (Track D mip/fracture
@@ -1090,16 +1146,22 @@ const SHELF_WIDTH = 0.18;
 //          radiative-equilibrium prediction at its orbital distance
 // Habitable zone from the spec's equilibrium model: T_eq(d) =
 // T_star*sqrt(R_star/2d)*(1-A)^(1/4) = 271/sqrt(d_AU) K, so the HZ band
-// [210 K, 278 K] spans 0.95..1.67 AU. All four planets sit inside it.
+// [210 K, 278 K] spans 0.95..1.67 AU; B rides the warm edge at 0.85 AU
+// (T_eq 294 K — see its PLANET_SPECS comment for why it moved).
 // Mass-radius: R = R_earth*(M/M_earth)^0.27 (Zeng-style super-Earth/
 // mini-Neptune scaling). Geology: relief amplitude ~ 1/g (low-gravity
 // worlds hold taller mountains — Olympus Mons vs Everest), clamped.
 const M_EARTH = 5.972e24, R_EARTH = 6.371e6; // AU already declared @615
-const HZ_INNER_AU = 0.95, HZ_OUTER_AU = 1.67; // T_eq 278 K .. 210 K
+const HZ_INNER_AU = 0.85, HZ_OUTER_AU = 1.67; // T_eq 294 K .. 210 K
 const PLANET_SPECS = [
   // name, a (m), mass (kg), theta0 (rad), dem seed offsets — deterministic
   { name: 'A', a: 1.00 * AU, mass: 1.0 * M_EARTH, theta0: 0.0, seed: [10.0, 10.0] },
-  { name: 'B', a: 0.95 * AU, mass: 0.5 * M_EARTH, theta0: 1.9, seed: [137.3, 291.7] },
+  // B at 0.85 AU, not 0.95: 0.95 was nearly co-orbital with A (synodic 13.2 yr
+  // — a launch window opens once a decade, and the t=0 porkchop floor measured
+  // 20.9 km/s, beyond any tank). 0.85 AU: synodic 3.6 yr, Hohmann ~2.5 km/s.
+  // theta0 = 5.85 rad puts B AT the A->B window at t=0 (departure condition
+  // theta_B = theta_A + pi - omega_B*tofH, tofH = 0.446 yr -> 335.1 deg).
+  { name: 'B', a: 0.85 * AU, mass: 0.5 * M_EARTH, theta0: 5.85, seed: [137.3, 291.7] },
   { name: 'C', a: 1.30 * AU, mass: 2.0 * M_EARTH, theta0: 3.8, seed: [533.9, 87.1] },
   { name: 'D', a: 1.67 * AU, mass: 5.0 * M_EARTH, theta0: 5.0, seed: [941.5, 613.7] },
 ];
@@ -1117,6 +1179,7 @@ for (const s of PLANET_SPECS) {
 let planets = [];
 function planetPos(i) { return planets[i].core.pos; }
 window.__planetPos = (i) => [...planets[i].core.pos]; // test hook
+window.__planetVel = (i) => [...planets[i].core.vel]; // test hook (F16 probe)
 // Sea level is DERIVED, never tuned (mirrors PlanetOnion._tune_sea_level):
 // generateSyntheticDEM normalizes the noise potential, then sets the
 // threshold at the area-weighted (1 - EARTH_LAND_FRACTION) quantile minus
@@ -1279,9 +1342,41 @@ window.__groundWitness = () => {
   return { maxErr, checked };
 };
 
+// Phase 10.5 seam falsifier (lazy; armed by test_phase6.py): if tile
+// artifacts are gone, mean brightness-step across tile-boundary pixel
+// columns/rows matches the interior. Ratio >= 1.3 means seams persist.
+// Reads the PRESENTED frame back from the GPU — a 2d-canvas drawImage of a
+// WebGPU canvas post-present returns blank (drawing buffer not preserved;
+// measured: all-zero image, ratio 0.0, false pass).
+function seamStatsFromPixels(img, W, H, stride) {
+  const lum = (o) => 0.2126 * img[o + 2] + 0.7152 * img[o + 1] + 0.0722 * img[o]; // BGRA
+  let cbSum = 0, cbN = 0, ciSum = 0, ciN = 0; // column boundaries vs interior
+  for (let y = 0; y < H; y++) {
+    const row = y * stride;
+    for (let x = 1; x < W; x++) {
+      const d = Math.abs(lum(row + x * 4) - lum(row + (x - 1) * 4));
+      if (x % TILE_SIZE === 0) { cbSum += d; cbN++; } else { ciSum += d; ciN++; }
+    }
+  }
+  let rbSum = 0, rbN = 0, riSum = 0, riN = 0; // row boundaries vs interior
+  for (let y = 1; y < H; y++) {
+    const row = y * stride, prev = (y - 1) * stride;
+    for (let x = 0; x < W; x++) {
+      const d = Math.abs(lum(row + x * 4) - lum(prev + x * 4));
+      if (y % TILE_SIZE === 0) { rbSum += d; rbN++; } else { riSum += d; riN++; }
+    }
+  }
+  const colRatio = (cbSum / Math.max(cbN, 1)) / Math.max(ciSum / Math.max(ciN, 1), 1e-9);
+  const rowRatio = (rbSum / Math.max(rbN, 1)) / Math.max(riSum / Math.max(riN, 1), 1e-9);
+  return { colRatio, rowRatio, ratio: Math.max(colRatio, rowRatio),
+           colBoundaryMean: cbSum / Math.max(cbN, 1),
+           colInteriorMean: ciSum / Math.max(ciN, 1), W, H };
+}
+let seamReadBuf = null, seamPending = null;
+window.__seamCheck = () => { window.__seamResult = null; window.__seamCapture = true; };
+
 // Debug probe for E1 divergence hunts (test-only introspection).
-window.__debugGround = () => {
-  const pp = planetPos(0);
+window.__debugGround = () => {  const pp = planetPos(0);
   let worst = null, worstErr = -1;
   for (const p of particles) {
     if (!p._terrainCol) continue;
@@ -1399,10 +1494,10 @@ function spawnPlanet(pi = 0, terrainDEM = null) {
     // ~5e6 m (sigma ~1.3e6) tiles the surface. (The old 8e6 m floor made
     // every splat larger than the planet itself: 300 stacked planet-sized
     // splats rendered as a uniform blue wash at ~30x overdraw, 7 fps.)
-    // Splat radius set for the TARGET resolution (4K). At 4K, R_PL × 0.1
-    // gives ~637 km per splat — enough grains to resolve terrain features
-    // without bloating into each other. The LOD law (N = ρ·r_px²) will
-    // automatically select coarser or finer levels based on screen distance.
+    // Splat radius set for TARGET_RESOLUTION (4K). At 4K with DPR=2, each
+    // grain is ~637 km and covers a consistent screen angle regardless of
+    // display hardware. The LOD law (N = ρ·r_px²) selects coarser or finer
+    // levels based on distance — this radius just anchors the base level.
     const renderRadius = R_PL * 0.1; // ~637 km at Earth radius, targets 4K quality
 
     // Color from elevation band (set as display color via temp/lum hack)
@@ -1515,6 +1610,40 @@ function spawnPlanet(pi = 0, terrainDEM = null) {
   return planetParticles;
 }
 
+// ---- BENCHMARK MODE ----
+// Spawns N particles uniformly in a sphere of radius R_BM to stress-test
+// the Barnes-Hut tree construction and GPU traversal without building any
+// planetary system. Mass/log-uniform, charge/log-uniform sign-randomized,
+// all at 300 K blackbody (so lum/heat are non-zero for kernel exercise).
+const R_BM = 1e11; // 1 AU — similar scale to the orbital cloud
+function spawnBenchmarkCloud(n) {
+  particles = [];
+  nextId = 0;
+  treeCache = null; // benchmark: fresh cloud, rebuild tree once
+  let rngState = 42;
+  function rngf() { rngState = (rngState * 1664525 + 1013904223) | 0; return ((rngState >>> 0) / 4294967296); }
+  for (let i = 0; i < n; i++) {
+    // Uniform in sphere: reject sampling on cube, or use spherical coords
+    // with r = R * u^(1/3) for uniform volume distribution.
+    const theta = rngf() * 2 * Math.PI;
+    const cosTheta = 2 * rngf() - 1;
+    const sinTheta = Math.sqrt(1 - cosTheta * cosTheta);
+    const r = R_BM * Math.pow(rngf(), 1/3);
+    const pos = [r * sinTheta * Math.cos(theta), r * cosTheta, r * sinTheta * Math.sin(theta)];
+    // Zero initial velocity — just watching the tree build and render
+    const mass = 1e8 + rngf() * 1e12; // 1e8 .. 1e12 kg
+    const radiusPhys = Math.cbrt(3 * mass / (FOUR_PI * RHO_BODY));
+    const qmag = Math.pow(10, 3 + rngf() * 3); // log-uniform 1e3..1e6 C
+    const charge = (rngf() < 0.5 ? -1 : 1) * qmag;
+    const p = createParticle(pos, [0,0,0], mass, radiusPhys * 2, false, charge, 0);
+    // Set temp to something visible for light/heat kernels
+    p.temp = 300;
+    p.lum = FOUR_PI * radiusPhys * radiusPhys * SIGMA * Math.pow(p.temp, 4);
+    p.heat = p.lum;
+    particles.push(p);
+  }
+}
+
 function spawnSystem(count) {
   const starMass = 1.989e30;
   // Exactly `count` particles total: 1 star + 300 planet-A surface splats +
@@ -1581,6 +1710,27 @@ function nearestPlanetTo(pos) {
     const c = planets[i].core.pos;
     const d = Math.hypot(pos[0] - c[0], pos[1] - c[1], pos[2] - c[2]);
     const s = d - planets[i].radius;
+    if (s < bestSurf) { bestSurf = s; bestDist = d; best = i; }
+  }
+  return { i: best, dist: bestDist, surf: bestSurf };
+}
+
+// Frame-START variant: cores hold frame-END state (the tree integrates
+// before stepShip runs), so at high timeScale a core is up to v*dt (~1.5e9 m
+// at 1e6x) away from where the frame actually STARTS. Any per-frame decision
+// made against frame-END cores — like stepShip's substep-regime choice — is
+// garbage exactly when it matters (measured, _probe_transfer out5: deep-space
+// h=500 s chosen for a ship sitting 150 km up the launch well; 9.38 m/s^2 of
+// gravity applied for 500 s straight, then a phantom sub-surface drag fling
+// to 134 km/s when the overtaking planet tunneled through the ship).
+function nearestPlanetToAt(pos, backDt) {
+  let best = -1, bestSurf = Infinity, bestDist = Infinity;
+  for (let i = 0; i < planets.length; i++) {
+    const pl = planets[i], cv = pl.core.vel, c = pl.core.pos;
+    const d = Math.hypot(pos[0] - (c[0]-cv[0]*backDt),
+                         pos[1] - (c[1]-cv[1]*backDt),
+                         pos[2] - (c[2]-cv[2]*backDt));
+    const s = d - pl.radius;
     if (s < bestSurf) { bestSurf = s; bestDist = d; best = i; }
   }
   return { i: best, dist: bestDist, surf: bestSurf };
@@ -1714,9 +1864,34 @@ function integrateParticle(p, dt) {
 // is identical to full-rate; only the discretization is coarser.
 let lodTime = false;
 const lodAccum = { frames: 0, dt: 0 };
+// Tree cache: rebuild only when particles move significantly.
+// For static benchmark clouds (zero velocity), the tree is built once
+// and reused forever — no O(N log N) per-frame rebuild at scale.
+let treeCache = null; // { tree, positions, dirty }
+const TREE_REBUILD_THRESHOLD = 1e6; // meters — rebuild if any particle moved this far since last build
+function isTreeDirty() {
+  if (!treeCache || treeCache.dirty) return true;
+  if (particles.length !== treeCache.positions.length) return true;
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    const c = treeCache.positions[i];
+    const dx = p.pos[0] - c[0], dy = p.pos[1] - c[1], dz = p.pos[2] - c[2];
+    if (dx*dx + dy*dy + dz*dz > TREE_REBUILD_THRESHOLD * TREE_REBUILD_THRESHOLD) return true;
+  }
+  return false;
+}
+function getTree() {
+  if (isTreeDirty()) {
+    const tree = buildTree(particles);
+    // Snapshot positions for next-frame dirty check
+    const posSnap = particles.map(p => [...p.pos]);
+    treeCache = { tree, positions: posSnap, dirty: false };
+  }
+  return treeCache.tree;
+}
 
 function cpuBarnesHut(dt) {
-  const tree = buildTree(particles);
+  const tree = getTree();
   const fluxOut = { v: 0, t: 0, p: 0 }; // v = irradiance (light), t = temperature field (heat), p = pressure field (acoustic)
   // The system membrane's tick this frame (deep membranes always fire)
   let tick = true, tickDt = dt;
@@ -1896,7 +2071,7 @@ function serializeTreeForGPU(tree) {
 
   function getOrCreateOffset(node) {
     if (offsets.has(node)) return offsets.get(node);
-    if (nodeIdx >= MAX_TREE_NODES) throw new Error('tree exceeds 2M-node cap');
+    if (nodeIdx >= MAX_TREE_NODES) throw new Error(`tree exceeds ${MAX_TREE_NODES.toLocaleString()}-node cap`);
     offsets.set(node, nodeIdx++);
     return offsets.get(node);
   }
@@ -1987,7 +2162,8 @@ async function initWebGPU() {
   device = await adapter.requestDevice();
   displayFormat = navigator.gpu.getPreferredCanvasFormat();
   gpuCtx = canvas.getContext('webgpu');
-  gpuCtx.configure({ device, format: displayFormat, alphaMode: 'premultiplied' });
+  gpuCtx.configure({ device, format: displayFormat, alphaMode: 'premultiplied',
+    usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC }); // COPY_SRC: __seamCheck readback
 
   const W = canvas.width, H = canvas.height;
   COLS = Math.ceil(W / TILE_SIZE);
@@ -2176,8 +2352,8 @@ async function gpuBarnesHut(dt) {
   device.queue.writeBuffer(gQuantsBuf, 0, quantsArr);
   device.queue.writeBuffer(gPressBuf, 0, pressArr);
 
-  // CPU builds the tree, serialize + upload
-  const tree = buildTree(particles);
+  // CPU builds the tree (cached), serialize + upload
+  const tree = getTree();
   const ser = serializeTreeForGPU(tree);
   const treeData = packTree(ser);
   if (treeData.byteLength > gTreeBuf.size) {
@@ -2321,9 +2497,37 @@ function camForward() {
   const cp = Math.cos(camPitch);
   return [cp * Math.sin(camYaw), Math.sin(camPitch), cp * Math.cos(camYaw)];
 }
-function camRight() { // forward x up
+function camRight() { // forward x up, NORMALIZED — the raw cross product's
+  // magnitude is |f||u|sin(theta), so an unnormalized right vector shrinks
+  // toward zero as the view pitches toward curUp and stretches to 1 at the
+  // horizon. Every consumer (axis gizmo, WASD strafe) saw axes/speed grow
+  // and shrink with camera pitch (measured, operator report). Near gimbal
+  // lock (view parallel to up) fall back to any fixed perpendicular.
   const f = camForward(), u = curUp;
-  return [f[1]*u[2]-f[2]*u[1], f[2]*u[0]-f[0]*u[2], f[0]*u[1]-f[1]*u[0]];
+  const r = [f[1]*u[2]-f[2]*u[1], f[2]*u[0]-f[0]*u[2], f[0]*u[1]-f[1]*u[0]];
+  const L = Math.hypot(r[0], r[1], r[2]);
+  if (L < 1e-9) {
+    const t = Math.abs(f[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+    const r2 = [f[1]*t[2]-f[2]*t[1], f[2]*t[0]-f[0]*t[2], f[0]*t[1]-f[1]*t[0]];
+    const L2 = Math.hypot(r2[0], r2[1], r2[2]) || 1;
+    return [r2[0]/L2, r2[1]/L2, r2[2]/L2];
+  }
+  return [r[0]/L, r[1]/L, r[2]/L];
+}
+// Roll (Q/E, flight mode): the missing third camera DOF. curUp stays the
+// MEMBRANE's up (Track B's rule — radially out near a planet); camRoll is
+// the pilot's own rotation about the view axis on top of it. Rodrigues
+// rotation of curUp around forward; identity when camRoll = 0.
+let camRoll = 0;
+function effUp() {
+  if (camRoll === 0) return curUp;
+  const f = camForward(), u = curUp;
+  const c = Math.cos(camRoll), s = Math.sin(camRoll);
+  const fxu = [f[1]*u[2]-f[2]*u[1], f[2]*u[0]-f[0]*u[2], f[0]*u[1]-f[1]*u[0]];
+  const fdu = f[0]*u[0] + f[1]*u[1] + f[2]*u[2];
+  return [u[0]*c + fxu[0]*s + f[0]*fdu*(1-c),
+          u[1]*c + fxu[1]*s + f[1]*fdu*(1-c),
+          u[2]*c + fxu[2]*s + f[2]*fdu*(1-c)];
 }
 function setCamLookAt(target) {
   const dx = target[0]-camPos[0], dy = target[1]-camPos[1], dz = target[2]-camPos[2];
@@ -2549,6 +2753,926 @@ window.__enterFoot = () => enterFootMode();   // test hook
 window.__exitFoot = () => exitFootMode();     // test hook
 window.__heightAt = (lat, lon, pi = 0) => heightAt(lat, lon, pi); // test hook (E3 placement)
 
+// ==========================================================================
+// PHASE 11: SHIP PHYSICS — Tsiolkovsky rocket + atmospheric re-entry
+// Rule 0 — STATEMENT: a point-mass ship with honest rocket bookkeeping
+//   (thrust = ve*mdot, mass falls as fuel burns) flying through per-planet
+//   exponential atmospheres reproduces the classical ascent / re-entry
+//   numbers with no per-phase tuning.
+//   PREDICTIONS: (F14) a 3 s full-throttle deep-space burn leaves fuel
+//   within 5% of m0*exp(-dv/ve); (F15) a staged 5.5 km/s entry peaks skin
+//   temperature within 10% of a fine-dt reference integration of the same
+//   Sutton-Graves heating ODE; (F16) the full arc surface-A -> orbit ->
+//   transfer -> land-B completes inside the 33.2 km/s budget with touchdown
+//   gap < 0.01 m; (F17) thrustWork + exhaustKE - propKE closes with
+//   1/2*ve^2*m_burned within 2% (analytic identity, exact per substep).
+//   FALSIFIERS: those four, asserted in test_phase6.py.
+// The ship is NOT a tree particle: its gravity is the direct star+planet-core
+// sum (orbitals <= 1e12 kg contribute < 1e-6 of a planet's g at touchdown
+// range — below every falsifier floor), so the ship works identically in
+// CPU and GPU modes and never perturbs the energy falsifiers.
+// ==========================================================================
+const SHIP_DRY   = 10000;              // kg dry mass
+const SHIP_FUEL0 = 420000;             // kg — m0/mf = 43, dv budget 33.2 km/s (openly a game ship:
+                                       // measured arc demand ~15.7 km/s with this autopilot — slow
+                                       // vertical ascent ~2.7, escape-from-A burn ~9.9 (the tracking
+                                       // controller pays honest escape — measured sink in probe #4),
+                                       // B-entry pre-brake ~2.8, flare ~0.3. Aerocapture (the drag
+                                       // model already exists) would cut the pre-brake — Phase 12+.
+const SHIP_ISP   = 900;                // s, nuclear thermal (NERVA-heritage). 450 s hydrolox left
+                                       // the honest 16.0 km/s arc demand 4% from empty — flaky.
+const SHIP_G0    = 9.80665;
+const SHIP_VE    = SHIP_ISP * SHIP_G0; // 8826 m/s exhaust velocity
+const SHIP_THRUST = 2.0 * (SHIP_DRY + SHIP_FUEL0) * SHIP_G0; // 3.92 MN, liftoff TWR 2
+const SHIP_CDA   = 10;                 // m^2 drag area (Cd*A)
+const SHIP_V_ENTRY = 6000;             // m/s — interface speed ceiling; F15 validated 5.5 km/s
+const SHIP_NOSE_R = 1.0;               // m nose radius (Sutton-Graves)
+const SHIP_HEAT_AREA = 4;              // m^2 heated reference area
+const SHIP_SKIN_MC   = 200 * 500;      // J/K — 200 kg skin at 500 J/kg/K
+const SHIP_EPS_A     = 8;              // m^2 emissivity*area for radiative cooling
+const G_E_REF = G * M_EARTH / (R_EARTH * R_EARTH); // 9.82 m/s^2 reference g
+
+let shipMode = false;
+const shipLawDbg = { branch: '', closing: 0, cap: 0, altT: 0, aTop: 0, tFall: 0, tBurn: 0 };
+const ship = { pos: [0, 0, 0], vel: [0, 0, 0], fuel: SHIP_FUEL0, skinT: 288, planet: -1,
+               thrustWork: 0, exhaustKE: 0, propKE: 0, burned: 0, thrustS: 0,
+               peakSkinT: 288, peakQdot: 0, peakDynP: 0 };
+let shipAutoTarget = -1, shipAutoPhase = 'idle';
+let shipTransfer = null; // Lambert cruise plan state (Phase 11 transfer)
+
+function shipMass() { return SHIP_DRY + ship.fuel; }
+// Per-planet exponential atmosphere, DERIVED from surface gravity: surface
+// density scales with g (same molar mass/temperature assumed), scale height
+// inversely with g. rho0*H is invariant — every planet wraps the same mass
+// of air per unit area per unit surface gravity.
+function atmoScaleH(pi) { return 8500 * G_E_REF / planets[pi].g; }
+function atmoRho0(pi)   { return 1.225 * planets[pi].g / G_E_REF; }
+function atmoTop(pi)    { return atmoScaleH(pi) * Math.log(1e6); }
+function atmoDensity(pi, alt) {
+  if (alt <= 0) return atmoRho0(pi);
+  return atmoRho0(pi) * Math.exp(-alt / atmoScaleH(pi));
+}
+
+// Direct point-mass gravity: star + planet cores only (see header note).
+// nearI/nearPos: evaluate the NEAR planet's pull from its predicted substep
+// position (cores hold frame-end state — see shipSubstep); without it the
+// frozen core aims g up to ~0.17 rad off for a whole frame at high time
+// scale, injecting ~g_t*dt of lateral velocity per frame (measured, probe v2).
+function shipGravity(pos, nearI = -1, nearPos = null) {
+  let gx = 0, gy = 0, gz = 0;
+  const star = particles[0];
+  let dx = star.pos[0]-pos[0], dy = star.pos[1]-pos[1], dz = star.pos[2]-pos[2];
+  let d2 = dx*dx + dy*dy + dz*dz;
+  let f = G * star.mass / (d2 * Math.sqrt(d2) + 1e-30);
+  gx += f*dx; gy += f*dy; gz += f*dz;
+  for (let i = 0; i < planets.length; i++) {
+    const pl = planets[i];
+    const cp = (i === nearI && nearPos) ? nearPos : pl.core.pos;
+    dx = cp[0]-pos[0]; dy = cp[1]-pos[1]; dz = cp[2]-pos[2];
+    d2 = dx*dx + dy*dy + dz*dz;
+    f = G * pl.core.mass / (d2 * Math.sqrt(d2) + 1e-30);
+    gx += f*dx; gy += f*dy; gz += f*dz;
+  }
+  return [gx, gy, gz];
+}
+
+// Enter from foot mode = launch pad (refuelled, at rest on the ground).
+// Enter from flight mode = staging hook (camera position, local-frame rest).
+function enterShipMode() {
+  if (footMode) {
+    const wp = charWorldPos();
+    const up = groundNormal(character.lat, character.lon, character.planet);
+    ship.pos = [wp[0] + up[0]*2, wp[1] + up[1]*2, wp[2] + up[2]*2];
+    ship.vel = [...planets[character.planet].core.vel]; // at rest wrt ground
+    ship.planet = character.planet;
+    ship.fuel = SHIP_FUEL0; // refuelled on the pad
+    footMode = false;
+  } else {
+    ship.pos = [...camPos];
+    const near = nearestPlanetTo(camPos);
+    ship.vel = (near.i >= 0 && near.surf < 9 * planets[near.i].radius)
+      ? [...planets[near.i].core.vel] : [0, 0, 0];
+    ship.planet = near.i;
+  }
+  ship.skinT = 288;
+  ship.thrustWork = 0; ship.exhaustKE = 0; ship.propKE = 0; ship.burned = 0;
+  ship.peakSkinT = 288; ship.peakQdot = 0; ship.peakDynP = 0;
+  shipMode = true; focusIdx = -1;
+  return true;
+}
+function exitShipMode() { shipMode = false; shipAutoTarget = -1; shipAutoPhase = 'idle'; shipTransfer = null; }
+
+// Touchdown: convert the ship state into a grounded character on that planet.
+function shipTouchdown(pi) {
+  const pl = planets[pi], c = pl.core.pos;
+  const [lat, lon] = latLonFromDir(ship.pos[0]-c[0], ship.pos[1]-c[1], ship.pos[2]-c[2]);
+  character.planet = pi; character.lat = lat; character.lon = lon;
+  character.alt = 0; character.velN = 0; character.velE = 0; character.velU = 0;
+  character.grounded = true;
+  shipMode = false; shipAutoTarget = -1; shipAutoPhase = 'idle';
+  footMode = true; focusIdx = -1;
+}
+
+// Lambert solver (star-only two-body, universal variables with Stumpff
+// functions, safeguarded Newton with numeric derivative). Given r1, r2 and
+// time of flight: the velocity at r1 of the ballistic arc through both.
+// This is what makes the cruise leg FREE — the wanted path obeys gravity
+// instead of fighting it. (The previous constant-velocity heliocentric
+// spiral held ~0.4 g of continuous thrust: measured 106 kg/s at 1e6x,
+// tank dry in 2e6 s of sim, on three consecutive runs.)
+function lambertSolve(r1v, r2v, tof, GM) {
+  const r1 = Math.hypot(r1v[0], r1v[1], r1v[2]);
+  const r2 = Math.hypot(r2v[0], r2v[1], r2v[2]);
+  if (r1 < 1 || r2 < 1 || tof <= 0) return null;
+  const cosD = Math.max(-1, Math.min(1,
+    (r1v[0]*r2v[0] + r1v[1]*r2v[1] + r1v[2]*r2v[2]) / (r1 * r2)));
+  // Orbit normal is -Y (prograde orbits carry -Y angular momentum, see the
+  // tH comment below): signed transfer angle positive when cross(r1,r2)
+  // points along -Y.
+  const crossY = r1v[2]*r2v[0] - r1v[0]*r2v[2];
+  const sinD = Math.sqrt(Math.max(0, 1 - cosD*cosD)) * (crossY < 0 ? 1 : -1);
+  const A = sinD * Math.sqrt(r1 * r2 / Math.max(1e-12, 1 - cosD));
+  if (Math.abs(A) < 1e-6) { // 180 deg transfer is singular: nudge r2 off it
+    const th = Math.atan2(r2v[2], r2v[0]) + 1e-6;
+    return lambertSolve(r1v, [r2*Math.cos(th), r2v[1], r2*Math.sin(th)], tof, GM);
+  }
+  const C = (z) => z > 1e-9 ? (1 - Math.cos(Math.sqrt(z))) / z
+                  : z < -1e-9 ? (Math.cosh(Math.sqrt(-z)) - 1) / (-z) : 0.5;
+  const S = (z) => { if (z > 1e-9) { const s = Math.sqrt(z); return (s - Math.sin(s)) / (s*s*s); }
+                     if (z < -1e-9) { const s = Math.sqrt(-z); return (Math.sinh(s) - s) / (s*s*s); }
+                     return 1/6; };
+  const tofOf = (z) => {
+    const cz = C(z), sz = S(z);
+    const y = r1 + r2 + A * (z * sz - 1) / Math.sqrt(cz);
+    if (y < 0) return -1; // outside the elliptic family for this geometry
+    const x = Math.sqrt(y / cz);
+    return (x*x*x * sz + A * Math.sqrt(y)) / Math.sqrt(GM);
+  };
+  let z = 0;
+  for (let it = 0; it < 40; it++) {
+    const t0 = tofOf(z);
+    if (t0 < 0) { z += 0.5; continue; }
+    const F = t0 - tof;
+    if (Math.abs(F) < 1e-6 * tof) break;
+    const dz = Math.max(Math.abs(z) * 1e-4, 1e-6);
+    const t1 = tofOf(z + dz);
+    if (t1 < 0 || t1 === t0) break;
+    let zn = z - F / ((t1 - t0) / dz);
+    let guard = 0;
+    while (tofOf(zn) < 0 && guard++ < 20) zn = (zn + z) / 2; // stay solvable
+    z = zn;
+  }
+  // Convergence gate: a diverged Newton still returns SOME z, and the scan
+  // that consumes this will happily pick a garbage arc with accidentally-low
+  // cost (measured: the antipodal launch picked a 15 km/s phantom). No
+  // time-of-flight match, no solution.
+  const tf = tofOf(z);
+  if (tf < 0 || Math.abs(tf - tof) > 1e-4 * tof) return null;
+  const cz = C(z), sz = S(z);
+  const y = r1 + r2 + A * (z * sz - 1) / Math.sqrt(cz);
+  if (y <= 0) return null;
+  const f = 1 - y / r1, g = A * Math.sqrt(y / GM);
+  const gd = 1 - y / r2;
+  if (Math.abs(g) < 1e-9) return null;
+  return { v1: [(r2v[0] - f*r1v[0]) / g, (r2v[1] - f*r1v[1]) / g, (r2v[2] - f*r1v[2]) / g],
+           v2: [(gd*r2v[0] - r1v[0]) / g, (gd*r2v[1] - r1v[1]) / g, (gd*r2v[2] - r1v[2]) / g] };
+}
+
+
+// Porkchop row scan for the transfer cruise: times of flight around the
+// Hohmann value, each solved by Lambert, each priced as DEPARTURE burn
+// (|v1 - current velocity|) + ARRIVAL burn (|v2 - target velocity|).
+// Shared by shipAutoWant and the __transferScan witness.
+function transferScan(GMt, rT, cT, vT, omega, fromPos, fromVel) {
+  const rS = Math.hypot(fromPos[0], fromPos[1], fromPos[2]) || 1;
+  const tofH = Math.PI * Math.sqrt(Math.pow((rS + rT) / 2, 3) / GMt);
+  // The target's orbit is circular: its SPEED is constant, only the DIRECTION
+  // rotates with longitude. Price the arrival burn against the velocity the
+  // target will have AT ARRIVAL — not its current vector. (Measured bug:
+  // pricing against the current vT inflates the arrival term by up to
+  // 2*vC*sin(dtheta/2) — a phantom 52-90 km/s "floor" on arcs the ballistic
+  // witness priced at 0.8-2.5 km/s. This one line was the F16 sink.)
+  const vTCirc = Math.hypot(vT[0], vT[1], vT[2]);
+  const rows = [];
+  for (const k of [0.4, 0.55, 0.7, 0.85, 1.0, 1.2, 1.45, 1.75, 2.1, 2.5]) {
+    const tof = tofH * k;
+    const thA = Math.atan2(cT[2], cT[0]) + omega * tof; // target at arrival
+    const r2 = [rT * Math.cos(thA), 0, rT * Math.sin(thA)];
+    const sol = lambertSolve(fromPos, r2, tof, GMt);
+    if (!sol) { rows.push({ k, ok: false }); continue; }
+    const vTA = [-Math.sin(thA) * vTCirc, 0, Math.cos(thA) * vTCirc]; // prograde (-Y L)
+    const cost = Math.hypot(sol.v1[0]-fromVel[0], sol.v1[1]-fromVel[1], sol.v1[2]-fromVel[2])
+               + Math.hypot(sol.v2[0]-vTA[0], sol.v2[1]-vTA[1], sol.v2[2]-vTA[2]);
+    rows.push({ k, tof, ok: true, cost, v1: sol.v1 });
+  }
+  return rows;
+}
+
+// ESCAPE CORRECTION (the transfer leg's missing physics — measured,
+// _probe_transfer out5): the Lambert vSol is a HELIOCENTRIC velocity. A ship
+// that just topped the ascend is bound deep in the launch well (~1.3 km/s
+// radial at r ≈ R + 150 km, where escape needs sqrt(vInf^2 + 2GM/r) ≈ 11.3
+// km/s — not vInf = 2.5 km/s). An uncorrected commit burns 2.5 km/s, leaves
+// the ship bound, and it falls back into the atmosphere; at 1e6x the
+// overtaking planet then tunnels through the ship and a phantom sub-surface
+// drag step flings it to 134 km/s. While the ship is inside the nearest
+// planet's Hill sphere, command the hyperbolic departure speed for the
+// CURRENT radius along the wanted asymptote: |v_rel| = sqrt(vInf^2 +
+// 2GM/r), which relaxes to the heliocentric want as r -> rHill.
+function escapeCorrect(vW, tRem) {
+  const n2 = nearestPlanetTo(ship.pos);
+  if (n2.i < 0) return vW;
+  const plN = planets[n2.i], cvN = plN.core.vel, cN0 = plN.core.pos;
+  const cN = [cN0[0]-cvN[0]*tRem, cN0[1]-cvN[1]*tRem, cN0[2]-cvN[2]*tRem];
+  const rN = Math.hypot(ship.pos[0]-cN[0], ship.pos[1]-cN[1], ship.pos[2]-cN[2]);
+  const aN = Math.hypot(cN[0], cN[1], cN[2]) || 1;
+  const rHill = aN * Math.cbrt(plN.core.mass / (3 * particles[0].mass));
+  if (rN >= rHill) return vW;
+  const wx = vW[0]-cvN[0], wy = vW[1]-cvN[1], wz = vW[2]-cvN[2];
+  const vInf = Math.hypot(wx, wy, wz);
+  if (vInf < 100) return vW; // plan barely leaves the well: nothing to correct
+  const vEsc = Math.sqrt(vInf*vInf + 2*G*plN.core.mass/Math.max(rN, plN.radius));
+  // Periapsis honesty: the heliocentric asymptote direction is only valid for
+  // a trajectory that CLEARS the surface. Commanded raw from the top of the
+  // ascend, any inward radial component dives the still-slow ship into the
+  // terrain before the tracker spins up to escape speed (measured,
+  // _probe_escape: burn -> sub-surface plastic crash -> velocity reset ->
+  // burn again -> 256 t gone in one frame). Strip the inward component; the
+  // post-escape Lambert re-solves recover the asymptote direction.
+  const rUx = (ship.pos[0]-cN[0])/rN, rUy = (ship.pos[1]-cN[1])/rN,
+        rUz = (ship.pos[2]-cN[2])/rN;
+  let dHx = wx/vInf, dHy = wy/vInf, dHz = wz/vInf;
+  const inw = dHx*rUx + dHy*rUy + dHz*rUz; // <0: toward the planet
+  if (inw < 0) {
+    dHx -= inw*rUx; dHy -= inw*rUy; dHz -= inw*rUz;
+    const dL = Math.hypot(dHx, dHy, dHz) || 1;
+    dHx /= dL; dHy /= dL; dHz /= dL;
+  }
+  return [cvN[0]+dHx*vEsc, cvN[1]+dHy*vEsc, cvN[2]+dHz*vEsc];
+}
+
+// Autopilot: returns the wanted velocity vector for the current phase.
+// Phases: ascend (leave the launch atmosphere) -> transfer (heliocentric
+// intercept with circular-orbit baseline + late velocity-match blend) ->
+// descend (capped-speed profile to touchdown). Fuel honesty: gravity
+// feedforward (hover) is ONLY applied in the final landing flare — anywhere
+// else the ship coasts/falls and thrusts only to correct the velocity error.
+function shipAutoWant(h, tRem = 0) {
+  const target = planets[shipAutoTarget];
+  const near = nearestPlanetTo(ship.pos);
+  // Core prediction: planet cores hold FRAME-END state (the tree integrates
+  // before stepShip runs) while the ship substeps through the frame. Back the
+  // core up to substep time (pos - vel*tRem) so guidance geometry is
+  // continuous across frame boundaries — without this the core teleports
+  // ~v*dt once per frame (9.4e5 m at 2000x), swinging the radial reference
+  // ~0.17 rad/frame and injecting 40-140 m/s of phantom tracking error that
+  // the tracker paid 200+ t of propellant to digest (measured, probe v2).
+  const vT = target.core.vel, cT0 = target.core.pos;
+  const cT = [cT0[0]-vT[0]*tRem, cT0[1]-vT[1]*tRem, cT0[2]-vT[2]*tRem];
+  const dTx = cT[0]-ship.pos[0], dTy = cT[1]-ship.pos[1], dTz = cT[2]-ship.pos[2];
+  const distT = Math.hypot(dTx, dTy, dTz);
+  // Same prediction for the NEAR planet's surface distance (phase checks).
+  let nearSurf = near.surf;
+  if (near.i >= 0 && tRem > 0) {
+    const plN = planets[near.i], cvN = plN.core.vel, cN0 = plN.core.pos;
+    nearSurf = Math.hypot(ship.pos[0]-(cN0[0]-cvN[0]*tRem),
+                          ship.pos[1]-(cN0[1]-cvN[1]*tRem),
+                          ship.pos[2]-(cN0[2]-cvN[2]*tRem)) - plN.radius;
+  }
+  if (shipAutoPhase === 'idle')
+    shipAutoPhase = (near.i >= 0 && nearSurf < atmoTop(near.i)) ? 'ascend' : 'transfer';
+  else if (shipAutoPhase === 'ascend' && nearSurf > atmoTop(near.i))
+    shipAutoPhase = 'transfer';
+  else if (shipAutoPhase === 'transfer') {
+    // ~2x B's Hill radius: inside this, the target's well — which the
+    // heliocentric Lambert arc does not model — bends the path by ~0.26 rad
+    // per pass (measured: an arc-guided approach missed by 9.3e8 m and chased
+    // the planet dry when the endgame box sat at 1e8 m). Hand off to the
+    // descend law, which free-falls the well (never burns to fall faster)
+    // and lets the atmosphere do the braking.
+    if (distT < 2e9) shipAutoPhase = 'descend';
+    // NO fallback-to-ascend here (removed, measured _probe_escape): the escape
+    // burn is retrograde-tangential and gravity curves the ship back below
+    // 0.5*atmoTop DURING the burn; flipping to 'ascend' there commanded a
+    // radial climb ~90 deg off the escape asymptote, and the two wants
+    // whipsawed per-substep until the tank died (138 t ascend + 123 t
+    // transfer in ONE frame, ship parked dry on A). escapeCorrect already
+    // commands the right hyperbolic departure from ANY radius in the well —
+    // falling deeper just raises vEsc. Trust it.
+  }
+  else if (shipAutoPhase === 'descend' && distT > 6e9)
+    shipAutoPhase = 'transfer'; // missed the well entirely — re-solve a fresh intercept
+  if (shipAutoPhase === 'ascend') {
+    const pl = planets[near.i], cvA = pl.core.vel, cA0 = pl.core.pos;
+    const cA = [cA0[0]-cvA[0]*tRem, cA0[1]-cvA[1]*tRem, cA0[2]-cvA[2]*tRem];
+    const dAx = ship.pos[0]-cA[0], dAy = ship.pos[1]-cA[1], dAz = ship.pos[2]-cA[2];
+    const dA = Math.hypot(dAx, dAy, dAz) || 1;
+    const ux = dAx/dA, uy = dAy/dA, uz = dAz/dA;
+    const vUp = Math.min(1500, 100 + 0.05 * Math.max(nearSurf, 0));
+    return [cvA[0] + ux*vUp, cvA[1] + uy*vUp, cvA[2] + uz*vUp];
+  }
+  if (shipAutoPhase === 'transfer') {
+    const GMt = G * particles[0].mass;
+    // Measured-rate target propagation (measured, _probe_f16: the nominal
+    // 2*pi/tKepler rate mis-phased the arrival by 7.6e8 m — a 0.26% omega
+    // error from N-body perturbation over the 1.4e7 s arc became a fly-by
+    // OUTSIDE B's well; the ship receded to 4.9e9 m without ever entering
+    // the descend cone). Propagate the intercept point with the target's
+    // CURRENT angular rate: omLive = v_tangential/r = (c x v)_y with sign
+    // flipped for the prograde (-Y) convention. Each re-solve re-measures,
+    // so the propagation error shrinks with tofRem and the late corrections
+    // home on the target's TRUE state.
+    const omLive = (cT[0]*vT[2] - cT[2]*vT[0]) / Math.max(cT[0]*cT[0] + cT[2]*cT[2], 1);
+    const omega = omLive > 0 ? omLive : 2 * Math.PI / target.tKepler;
+    const rT = Math.hypot(cT[0], cT[1], cT[2]);
+    // CRUISE: ballistic Lambert arc + coast. Burn to the solved transfer
+    // velocity, then want = current velocity (tracking error 0 -> NO thrust:
+    // free-fall IS the path). Re-solve on a cadence that TIGHTENS toward
+    // arrival (tof/50, clamped to [1e4, 2e6] s): at the far end a 2e6 s
+    // cycle is fine, but the whole encounter takes ~1e6 s — a coarse cycle
+    // skips the final correction (measured: closest approach 9.3e8 m, outside
+    // the old 1e8 m endgame box, so the homing never engaged). Each re-solve
+    // corrects from the current state, so errors never accumulate.
+    if (!shipTransfer) shipTransfer = { converged: false, nextSolve: -1e18, vSol: null, tArr: 0, commit: null, vStart: null, dvPlan: 0 };
+    const st = shipTransfer;
+    if (st.converged && simTime < st.nextSolve) return [...ship.vel];
+    // Mid-burn: keep commanding the SAME solved velocity until converged —
+    // re-scanning every frame wanders the target as the velocity changes.
+    // IMPULSIVE-BURN SEMANTICS: convergence is eB < 25 OR the delivered
+    // impulse |v - vStart| >= 95% of the plan. Without the second clause a
+    // burn commanded near a planet NEVER converges at high timeScale: gravity
+    // re-perturbs ship.vel by ~g*h every substep while the tracker gain is
+    // h/tau = 0.5, so the standing error equilibrates at ~2*g*h (>25 m/s near
+    // A at h >= 4 s) and the tracker holds the throttle open against gravity
+    // until the tank dies (measured, _probe_transfer.py: 236 t -> 0 in ~2e4 s
+    // at 1e6x, then a ballistic sun-dive and a 274 km/s numerical slingshot).
+    if (!st.converged && st.vSol && simTime < st.nextSolve) {
+      const eB = Math.hypot(st.vSol[0]-ship.vel[0], st.vSol[1]-ship.vel[1], st.vSol[2]-ship.vel[2]);
+      const delivered = st.vStart
+        ? Math.hypot(ship.vel[0]-st.vStart[0], ship.vel[1]-st.vStart[1], ship.vel[2]-st.vStart[2])
+        : 0;
+      if (eB < 25 || delivered >= 0.95 * st.dvPlan) { st.converged = true; return [...ship.vel]; }
+      return escapeCorrect(st.vSol, tRem);
+    }
+    const rS = Math.hypot(ship.pos[0], ship.pos[1], ship.pos[2]) || 1;
+    // FIXED-EPOCH RE-SOLVE: once committed, the arrival TIME is part of the
+    // plan. Re-solving with a fresh "k * tofH from now" re-anchors the
+    // arrival 0.45 yr into the future every cycle — a receding horizon that
+    // rides alongside the target forever, bleeding micro-corrections
+    // (measured, probe #7: 298 t of 57-290 m/s commits, distT wandering
+    // 1-2e10 m, tank dead without an intercept). Correct against the
+    // ORIGINAL arrival epoch instead: tof shrinks, the solve tightens, and
+    // the arrival actually happens.
+    if (st.tArr > simTime + 1e4 && st.vSol) {
+      const tofRem = st.tArr - simTime;
+      const thA = Math.atan2(cT[2], cT[0]) + omega * tofRem;
+      const r2 = [rT*Math.cos(thA), 0, rT*Math.sin(thA)];
+      const sol = lambertSolve(ship.pos, r2, tofRem, GMt);
+      if (sol) {
+        const dc = Math.hypot(sol.v1[0]-ship.vel[0], sol.v1[1]-ship.vel[1], sol.v1[2]-ship.vel[2]);
+        if (dc <= 8000) { // sane correction is m/s-class; the 8 km/s gate stands
+          st.nextSolve = simTime + Math.min(2e6, Math.max(1e4, tofRem / 50));
+          st.vSol = sol.v1;
+          st.vStart = [...ship.vel];
+          const vW0 = escapeCorrect(sol.v1, tRem); // TRUE impulse incl. escape
+          st.dvPlan = Math.hypot(vW0[0]-ship.vel[0], vW0[1]-ship.vel[1], vW0[2]-ship.vel[2]);
+          st.commit = { k: 0, cost: dc, dep: dc,
+                        vSolMag: Math.hypot(sol.v1[0], sol.v1[1], sol.v1[2]) }; // k=0: correction
+          if (dc < 25) { st.converged = true; return [...ship.vel]; }
+          st.converged = false;
+          return vW0;
+        }
+      }
+      // solve failed or correction insane: fall through and re-anchor fresh
+    }
+    // The rendezvous geometry is whatever the launch moment left, so a
+    // single "Hohmann time" guess can demand >25 km/s (measured, probe #4).
+    // Scan times of flight around the Hohmann value and keep the arc whose
+    // DEPARTURE + ARRIVAL burns are cheapest — a one-row porkchop plot.
+    // (Shared with the __transferScan witness: single source of truth.)
+    const rows = transferScan(GMt, rT, cT, vT, omega, ship.pos, ship.vel);
+    let best = null;
+    for (const row of rows) {
+      if (!row.ok) continue;
+      if (!best || row.cost < best.cost) best = row;
+    }
+    if (!best) { // every solve failed: co-orbit at the current radius (free)
+      const vC = Math.sqrt(GMt / rS);
+      const rHx = ship.pos[0]/rS, rHz = ship.pos[2]/rS;
+      return [-rHz*vC, 0, rHx*vC]; // prograde (orbits carry -Y angular momentum)
+    }
+    const dep = Math.hypot(best.v1[0]-ship.vel[0], best.v1[1]-ship.vel[1], best.v1[2]-ship.vel[2]);
+    // COMMIT GATE: Newton convergence flickers row to row, frame to frame —
+    // if every CHEAP row is non-converged on this scan, `best` falls to a
+    // high-tof "stop and fall" conic whose departure velocity is near-zero
+    // heliocentric (measured, probe #6: committed k=2.5-class arc, tracker
+    // obediently killed 30 km/s of orbital speed, tank dry, sun-dive to
+    // 0.065 AU at 162 km/s). A window-launched A->B arc needs ~1.5-3 km/s of
+    // departure; NOTHING above 8 km/s is ever this mission's plan. Refuse it,
+    // coast, re-scan soon — a flickering row costs one cycle, not the ship.
+    if (dep > 8000) {
+      st.converged = true; // coast state: want = current velocity
+      st.vSol = null;
+      st.nextSolve = simTime + 1e5;
+      return [...ship.vel];
+    }
+    st.tArr = simTime + best.tof; // the arrival epoch is now part of the plan
+    st.nextSolve = simTime + Math.min(2e6, Math.max(1e4, best.tof / 50));
+    st.vSol = best.v1;
+    st.vStart = [...ship.vel];
+    const vW0 = escapeCorrect(best.v1, tRem); // TRUE impulse incl. escape —
+      // dvPlan must price the hyperbolic departure (~10-11 km/s from the top
+      // of the ascend), not the heliocentric vInf (~2.5 km/s), else the
+      // impulsive-convergence clause declares victory after 2.4 km/s and the
+      // bound ship falls back into the atmosphere (measured, out5).
+    st.dvPlan = Math.hypot(vW0[0]-ship.vel[0], vW0[1]-ship.vel[1], vW0[2]-ship.vel[2]);
+    st.commit = { k: best.k, cost: best.cost, dep, dvPlan: st.dvPlan,
+                  vSolMag: Math.hypot(best.v1[0], best.v1[1], best.v1[2]) };
+    if (dep < 25) { st.converged = true; return [...ship.vel]; }
+    st.converged = false;
+    return vW0;
+  }
+  // descend (from the 2e9 m handoff to touchdown). TWO regimes:
+  //
+  // VACUUM (altT > atmoTop): ballistic coast. The old law tracked
+  // "vT - u*vDown" in full 3D — but the radial line to an ORBITING target
+  // rotates, the tree moves the core once per FRAME while the ship substeps
+  // thousands of times against the frozen cT/vT, and every lateral micro-
+  // error was serviced at 100% duty (measured, _probe_descend.py: 300+ t of
+  // 100%-lateral burn below the 50R substep boundary, tank dry at 1.4e8 m —
+  // a geometry tax, not physics; brake=0 the whole way). In vacuum the fall
+  // IS the path: the ONLY legitimate burn is the radial overspeed brake,
+  // and energy accounting says it must fire LOW: free-fall from the 2e9
+  // handoff arrives at ~8.6 km/s no matter what is done high up (reverse
+  // Oberth), so the brake waits until the remaining fall time barely fits
+  // the burn, then holds the speed that free-falls to V_ENTRY at the
+  // atmosphere edge. Lateral error is COMMANDED TO ZERO in vacuum — the
+  // atmosphere and the flare null what the Lambert arc left (F15's regime).
+  //
+  // ATMOSPHERE (altT <= atmoTop): drag brakes for free; vTerm cap + flare
+  // floor + full 3D tracking — validated by F15 and probe #6's soft landing.
+  const ux = -dTx/distT, uy = -dTy/distT, uz = -dTz/distT; // away from target center
+  const [lat, lon] = latLonFromDir(-dTx, -dTy, -dTz);
+  const altT = distT - (target.radius + heightAt(lat, lon, shipAutoTarget));
+  const aTop = atmoTop(shipAutoTarget);
+  if (altT > aTop) {
+    const vrx = ship.vel[0]-vT[0], vry = ship.vel[1]-vT[1], vrz = ship.vel[2]-vT[2];
+    const closing = -(vrx*ux + vry*uy + vrz*uz); // >0: approaching
+    const GMT = G * target.core.mass;
+    const rEI = target.radius + aTop;
+    // predicted interface speed^2 under free-fall from here (energy integral)
+    const vEI2 = closing*closing + 2*GMT*(1/rEI - 1/distT);
+    shipLawDbg.altT = altT; shipLawDbg.aTop = aTop; shipLawDbg.closing = closing;
+    if (vEI2 > SHIP_V_ENTRY*SHIP_V_ENTRY && closing > 0) {
+      // Braking is mandatory — but only NOW if waiting leaves too little
+      // fall time for the burn (thrust-limited). Until then: coast.
+      const aT = SHIP_THRUST / shipMass();
+      const tBurn = (Math.sqrt(vEI2) - SHIP_V_ENTRY) / aT;
+      const tFall = (distT - rEI) / closing;
+      shipLawDbg.tFall = tFall; shipLawDbg.tBurn = tBurn;
+      if (tFall < 1.5 * tBurn) {
+        // hold the speed that free-falls to V_ENTRY at the interface
+        const vCap = Math.sqrt(Math.max(0,
+          SHIP_V_ENTRY*SHIP_V_ENTRY - 2*GMT*(1/rEI - 1/distT)));
+        const excess = closing - vCap;
+        shipLawDbg.branch = 'brake'; shipLawDbg.cap = vCap;
+        if (excess > 5) // deadband: never service noise
+          return [ship.vel[0] + ux*excess, ship.vel[1] + uy*excess, ship.vel[2] + uz*excess];
+        shipLawDbg.branch = 'brake-idle';
+      } else shipLawDbg.branch = 'coast-gate';
+    } else shipLawDbg.branch = 'coast';
+    // Impact-parameter control: the entry cone at handoff is rEI/distT ~ 0.4
+    // deg, so a few m/s of lateral velocity becomes a multi-million-metre
+    // miss after the ~2e5 s fall — and a phasing-biased arrival (measured,
+    // _probe_f16: perigee 7.6e8 m = 144 R_B, receded without ever entering)
+    // is a fly-by, not a landing. Null the lateral velocity against the
+    // CURRENT target line, gated by a deadband that widens as the cone
+    // widens: fires O(1) times per fall, costs ~vLat (tens of m/s), and is
+    // NOT the old 100%-duty lateral tracker (probe_descend's 300 t bleed).
+    const vLx = vrx + closing*ux, vLy = vry + closing*uy, vLz = vrz + closing*uz;
+    const vLat = Math.hypot(vLx, vLy, vLz);
+    if (closing > 0 && vLat > Math.max(3, 0.3 * closing * rEI / distT)) {
+      // Aim at the LEAD point (target's position when the fall ends), not the
+      // current line: aiming at the current center is pure pursuit — the
+      // target keeps moving (~32 km/s) through the ~2e5 s fall and the chase
+      // burns the tank (measured, _probe_f16 v2: 42 t dry in one descend
+      // leg, 14.5 km/s of pursuit curvature). Lead = constant-bearing
+      // interception: O(1) small burns per fall.
+      const tLead = (distT - rEI) / Math.max(closing, 1);
+      const lx = cT[0] + vT[0]*tLead - ship.pos[0],
+            ly = cT[1] + vT[1]*tLead - ship.pos[1],
+            lz = cT[2] + vT[2]*tLead - ship.pos[2];
+      const lL = Math.hypot(lx, ly, lz) || 1;
+      shipLawDbg.branch = 'latnull'; shipLawDbg.vLat = vLat;
+      return [vT[0] + (lx/lL)*closing, vT[1] + (ly/lL)*closing, vT[2] + (lz/lL)*closing];
+    }
+    return [...ship.vel]; // coast: free-fall IS the path — zero error, zero burn
+  }
+  const rhoT = atmoDensity(shipAutoTarget, Math.max(altT, 0));
+  const vTerm = Math.sqrt(2 * shipMass() * target.g / Math.max(rhoT * SHIP_CDA, 1e-30));
+  const vDown = Math.min(6000, vTerm, Math.max(3, 0.05 * Math.max(altT, 0)));
+  shipLawDbg.branch = 'atmo'; shipLawDbg.altT = altT; shipLawDbg.aTop = aTop;
+  shipLawDbg.cap = vDown; shipLawDbg.closing = -( (ship.vel[0]-vT[0])*ux + (ship.vel[1]-vT[1])*uy + (ship.vel[2]-vT[2])*uz );
+  return [vT[0] - ux*vDown, vT[1] - uy*vDown, vT[2] - uz*vDown];
+}
+
+function shipSubstep(h, sIdx, nSteps) {
+  const m = shipMass();
+  const near = nearestPlanetTo(ship.pos);
+  const pl = planets[near.i];
+  // Core prediction: pl.core.pos is the FRAME-END state (the tree integrates
+  // before stepShip runs). Back it up to this substep's time so geometry,
+  // gravity, and the touchdown check are continuous within and across frames.
+  // Without this the core teleports ~v*dt once per frame (9.4e5 m at 2000x),
+  // which produced: phantom touchdown at 180 km true altitude, phantom
+  // landing-flare hover burns (81 t) at 190 km, and 40-140 m/s/frame of
+  // injected lateral tracking error (207 t) — all measured, probe v2.
+  const tRem = (nSteps - sIdx) * h;
+  const cv0 = pl.core.vel, c0 = pl.core.pos;
+  const c = [c0[0]-cv0[0]*tRem, c0[1]-cv0[1]*tRem, c0[2]-cv0[2]*tRem];
+  const rx = ship.pos[0]-c[0], ry = ship.pos[1]-c[1], rz = ship.pos[2]-c[2];
+  const dist = Math.hypot(rx, ry, rz) || 1;
+  const [lat, lon] = latLonFromDir(rx, ry, rz);
+  const hTerr = heightAt(lat, lon, near.i);
+  const altTerr = dist - (pl.radius + hTerr);
+  if (ship.burnDbg) { // DBG (F16 leak hunt): what does burn-time geometry see?
+    const bd = ship.burnDbg;
+    if (altTerr < (bd.minAltTerr ?? 1e30)) bd.minAltTerr = altTerr;
+    if (hTerr > (bd.maxH ?? -1e30)) bd.maxH = hTerr;
+    bd.nearI = near.i;
+  }
+  const vrx = ship.vel[0]-pl.core.vel[0], vry = ship.vel[1]-pl.core.vel[1],
+        vrz = ship.vel[2]-pl.core.vel[2];
+  const vRelMag = Math.hypot(vrx, vry, vrz);
+  const g = shipGravity(ship.pos, near.i, c);
+  const rho = altTerr > 0 ? atmoDensity(near.i, altTerr) : 0; // underground is
+    // rock, not air: the crash guard owns sub-surface physics; applying
+    // surface-density drag there was the +107-350 km/s fling (out5/v2)
+  // drag acceleration (relative wind)
+  let dax = 0, day = 0, daz = 0;
+  if (rho > 1e-14 && vRelMag > 1e-6) {
+    const k = 0.5 * rho * vRelMag * SHIP_CDA / m;
+    dax = -k*vrx; day = -k*vry; daz = -k*vrz;
+  }
+  // thrust: autopilot tracking or manual W (camera forward), Tsiolkovsky bookkeeping
+  let tax = 0, tay = 0, taz = 0;
+  let trR = 0, trL = 0, trP = 0; // DBG (F16 leak hunt): trace error decomposition
+  if (ship.fuel > 0) {
+    let acx = 0, acy = 0, acz = 0;
+    if (shipAutoTarget >= 0) {
+      const vw = shipAutoWant(h, tRem);
+      const tau = Math.max(2*h, 2);
+      let ex = vw[0]-ship.vel[0], ey = vw[1]-ship.vel[1], ez = vw[2]-ship.vel[2];
+      // DBG (F16 leak hunt): pre-clamp error decomposition + driver accounting
+      const bd = ship.burnDbg || (ship.burnDbg = { steps: 0, burnSteps: 0,
+        brake: 0, lat: 0, inward: 0, flare: 0,
+        maxErrRadPre: 0, maxErrLatPre: 0, maxErrPost: 0, sumErrPost: 0,
+        errFirst: 0, errLast: 0, errFirstMax: 0,
+        dvTFrame: 0, dcTFrame: 0 });
+      bd.steps++;
+      if (shipAutoPhase === 'descend') {
+        const ux0 = rx/dist, uy0 = ry/dist, uz0 = rz/dist;
+        const eR0 = ex*ux0 + ey*uy0 + ez*uz0;
+        const eL0 = Math.sqrt(Math.max(0, ex*ex+ey*ey+ez*ez - eR0*eR0));
+        if (eR0 > bd.maxErrRadPre) bd.maxErrRadPre = eR0;
+        if (eL0 > bd.maxErrLatPre) bd.maxErrLatPre = eL0;
+        if (sIdx === 0) { bd.errFirst = eL0; if (eL0 > bd.errFirstMax) bd.errFirstMax = eL0; }
+        if (sIdx === nSteps-1) bd.errLast = eL0;
+        const ux = ux0, uy = uy0, uz = uz0;
+        const aDot = (ex*ux + ey*uy + ez*uz) / tau;
+        // Never burn to fall faster — gravity does that for free. But strip
+        // the inward-radial error ONLY while actually descending AND above
+        // the flare zone:
+        //  - vr >= 0 (ascending): must be damped back onto the profile, else
+        //    the clamp + flare FF form a neutral band (hover thrust = g, no
+        //    restoring force) that porpoised 300-1400 m for 3600 s and
+        //    burned 204 t without landing (probe v3).
+        //  - altTerr <= 2000 (flare zone): the profile is LAW — full tracking
+        //    both directions, else a ship creeping at vr in (-0.5, 0) gets
+        //    its pull-down stripped and hangs above the -0.5 touchdown gate
+        //    burning hover FF until the tank dies (probe v4: 205 t pinned).
+        const vrNow = vrx*ux0 + vry*uy0 + vrz*uz0; // < 0 = descending
+        if (aDot < 0 && vrNow < 0 && altTerr > 2000) { ex -= ux*aDot*tau; ey -= uy*aDot*tau; ez -= uz*aDot*tau; }
+        if (altTerr < 2000) { ex -= g[0]*tau; ey -= g[1]*tau; ez -= g[2]*tau; }    // landing flare: hover FF
+        const eP = Math.hypot(ex, ey, ez);
+        trR = eR0; trL = eL0; trP = eP; // DBG (F16 leak hunt)
+        if (eP > bd.maxErrPost) bd.maxErrPost = eP;
+        bd.sumErrPost += eP;
+      }
+      acx = ex/tau; acy = ey/tau; acz = ez/tau;
+    } else if (keys['KeyW']) {
+      const f = camForward();
+      const am = SHIP_THRUST / m;
+      acx = f[0]*am; acy = f[1]*am; acz = f[2]*am;
+    }
+    const acm = Math.hypot(acx, acy, acz);
+    if (acm > 1e-5) {
+      const F = Math.min(1, m * acm / SHIP_THRUST) * SHIP_THRUST;
+      const dm = Math.min(ship.fuel, F / SHIP_VE * h);
+      const ux = acx/acm, uy = acy/acm, uz = acz/acm;
+      tax = ux*F/m; tay = uy*F/m; taz = uz*F/m;
+      // F17 counters — per substep, BEFORE the velocity update. Identity:
+      // F*(v.d)h + 1/2 dm |v - ve*d|^2 - 1/2 dm |v|^2 = 1/2 dm ve^2 exactly.
+      const vDotD = ship.vel[0]*ux + ship.vel[1]*uy + ship.vel[2]*uz;
+      const exx = ship.vel[0]-SHIP_VE*ux, exy = ship.vel[1]-SHIP_VE*uy, exz = ship.vel[2]-SHIP_VE*uz;
+      ship.thrustWork += F * vDotD * h;
+      ship.exhaustKE += 0.5 * dm * (exx*exx + exy*exy + exz*exz);
+      ship.propKE += 0.5 * dm * (ship.vel[0]*ship.vel[0] + ship.vel[1]*ship.vel[1] + ship.vel[2]*ship.vel[2]);
+      ship.burned += dm; ship.fuel -= dm; ship.thrustS += h;
+      // DBG (F16 leak hunt): attribute this burn to its driver
+      if (ship.burnDbg && shipAutoTarget >= 0) {
+        const bd = ship.burnDbg; bd.burnSteps++;
+        if (shipAutoPhase === 'descend') {
+          if (altTerr < 2000) bd.flare += dm;
+          else {
+            const tRad = ux*rx/dist + uy*ry/dist + uz*rz/dist; // thrust dir vs outward radial
+            if (tRad > 0.5) bd.brake += dm;
+            else if (tRad < -0.5) bd.inward += dm;
+            else bd.lat += dm;
+          }
+        }
+      }
+    }
+  }
+  // semi-implicit Euler (symplectic — same family as the tree integrator)
+  ship.vel[0] += (g[0]+dax+tax)*h; ship.vel[1] += (g[1]+day+tay)*h; ship.vel[2] += (g[2]+daz+taz)*h;
+  ship.pos[0] += ship.vel[0]*h; ship.pos[1] += ship.vel[1]*h; ship.pos[2] += ship.vel[2]*h;
+  // Sutton-Graves stagnation heating + radiative cooling toward ambient
+  if (rho > 1e-14 && vRelMag > 100) {
+    const qdot = 1.83e-4 * Math.sqrt(rho / SHIP_NOSE_R) * vRelMag * vRelMag * vRelMag;
+    ship.skinT += qdot * SHIP_HEAT_AREA / SHIP_SKIN_MC * h;
+    if (qdot > ship.peakQdot) ship.peakQdot = qdot;
+  }
+  ship.skinT -= SHIP_EPS_A * SIGMA * (Math.pow(ship.skinT, 4) - Math.pow(pl.tEq, 4)) / SHIP_SKIN_MC * h;
+  if (ship.skinT > ship.peakSkinT) ship.peakSkinT = ship.skinT;
+  const dynP = 0.5 * rho * vRelMag * vRelMag;
+  if (dynP > ship.peakDynP) ship.peakDynP = dynP;
+  // touchdown / plastic crash — POST-INTEGRATION state: at h=0.05 the ship
+  // moves up to 300 m per substep at entry speed; checking pre-integration
+  // geometry tunnels that far under the surface before anyone notices. The
+  // 0.5 m/s vr threshold (not 0) absorbs the spurious ~5e-3 m/s drift a
+  // pad-resting ship sees from the tree integrating the core once per frame
+  // (measured bug).
+  const rx2 = ship.pos[0]-c[0], ry2 = ship.pos[1]-c[1], rz2 = ship.pos[2]-c[2];
+  const dist2 = Math.hypot(rx2, ry2, rz2) || 1;
+  const [lat2, lon2] = latLonFromDir(rx2, ry2, rz2);
+  const alt2 = dist2 - (pl.radius + heightAt(lat2, lon2, near.i));
+  const vrx2 = ship.vel[0]-pl.core.vel[0], vry2 = ship.vel[1]-pl.core.vel[1],
+        vrz2 = ship.vel[2]-pl.core.vel[2];
+  const vRel2 = Math.hypot(vrx2, vry2, vrz2);
+  if (ship._traceN) { // DBG (F16 leak hunt): per-substep ring buffer
+    ship._trace[ship._traceI % ship._traceN] =
+      [alt2, (vrx2*rx2+vry2*ry2+vrz2*rz2)/dist2, shipLawDbg.cap,
+       shipLawDbg.branch, trR, trL, trP, Math.hypot(tax, tay, taz),
+       ship.fuel, hTerr,
+       Math.hypot(ship.vel[0], ship.vel[1], ship.vel[2]), shipAutoPhase,
+       h, near.i, ship.pos[0], ship.pos[1], ship.pos[2],
+       Math.hypot(g[0], g[1], g[2]), Math.hypot(dax, day, daz),
+       altTerr, dist, c[0], c[1], c[2]];
+    ship._traceI++;
+  }
+  if (alt2 <= 3) {
+    const vr = (vrx2*rx2 + vry2*ry2 + vrz2*rz2) / dist2; // < 0 = descending
+    if (vr < -0.5) {
+      if (vRel2 < 8) { shipTouchdown(near.i); return; }
+      ship.vel = [...pl.core.vel]; // plastic crash: come to rest, stay a ship
+      const push = (3 - alt2) / dist2;
+      ship.pos[0] += rx2*push; ship.pos[1] += ry2*push; ship.pos[2] += rz2*push;
+    } else if (alt2 < 0) {
+      const push = -alt2 / dist2; // never tunnel while resting
+      ship.pos[0] += rx2*push; ship.pos[1] += ry2*push; ship.pos[2] += rz2*push;
+    }
+  }
+}
+
+// Substep driver: 0.05 s steps near a planet (atmosphere/touchdown accuracy),
+// capped so a huge dt inside 50 R degrades accuracy instead of hanging the
+// frame. DEEP SPACE NEEDS SUBSTEPS TOO: at 1e6x a frame is 5e4 s, and the
+// autopilot's tracking error per step grows with h (each step re-aims
+// against the rotating orbital baseline; error ~ (omega*h)^2 per step).
+// Measured: at one 5e4 s step/frame the transfer leg burned 13 km/s without
+// arriving — twice, on two tank sizes. h <= 500 s keeps the whole A->B
+// transfer's tracking noise under ~0.2 km/s for ~100 cheap substeps/frame.
+function stepShip(dt) {
+  // SWEPT close test: which planet comes within 50 R of the ship AT ANY TIME
+  // during this frame? Endpoint checks are not enough — at 1e6x a core sweeps
+  // ~1.5e9 m per frame and can cross the 50 R bubble (3.2e8 m) entirely
+  // between frame boundaries (measured, _probe_transfer out5/out6: deep-space
+  // h=500 s chosen while a planet tunneled through the ship's frame ->
+  // phantom sub-surface drag step, +107 km/s fling). Closest approach of the
+  // relative segment r(t) = (pos - cStart) + (vShip - vCore)*t is exact and
+  // cheap for 4 planets.
+  let near = nearestPlanetToAt(ship.pos, dt); // frame-START cores (see above)
+  let close = false;
+  for (let i = 0; i < planets.length; i++) {
+    const pl = planets[i], cv = pl.core.vel, c0 = pl.core.pos;
+    const rx = ship.pos[0]-(c0[0]-cv[0]*dt), ry = ship.pos[1]-(c0[1]-cv[1]*dt),
+          rz = ship.pos[2]-(c0[2]-cv[2]*dt);
+    const vx = ship.vel[0]-cv[0], vy = ship.vel[1]-cv[1], vz = ship.vel[2]-cv[2];
+    const vv = vx*vx + vy*vy + vz*vz;
+    const tS = vv > 0 ? Math.max(0, Math.min(dt, -(rx*vx + ry*vy + rz*vz) / vv)) : 0;
+    const dMin = Math.hypot(rx + vx*tS, ry + vy*tS, rz + vz*tS);
+    if (dMin - pl.radius < 50 * pl.radius) {
+      close = true;
+      if (dMin - pl.radius < near.surf) near = { i, dist: dMin, surf: dMin - pl.radius };
+    }
+  }
+  const steps0 = close ? Math.min(Math.ceil(dt / 0.05), 4000)
+                       : Math.min(Math.max(Math.ceil(dt / 500), 1), 400);
+  let h = dt / steps0;
+  // SURFACE-APPROACH TIGHTENING: when the closest sweep approach dips near
+  // the terrain, cap the substep so the ship moves <= ~1/20 of the remaining
+  // surface distance per step (floor 500 m of travel). Without this a
+  // 12.5 s close-regime step at entry speed crosses the WHOLE atmosphere
+  // (117 km) plus the crust in one stride; the drag term then applies
+  // surface density underground for the full step BEFORE the post-
+  // integration crash guard can fire (measured, _probe_escape v2: da =
+  // 3.4e4 m/s^2 at alt=-150 km flung the dead ship to 428 km/s and the
+  // guard read the result as a soft touchdown). Near-surface frames at
+  // extreme timeScale simply cover less sim time — accuracy over speed.
+  if (close && near.i >= 0) {
+    const plN = planets[near.i], cvN = plN.core.vel;
+    const vRelN = Math.hypot(ship.vel[0]-cvN[0], ship.vel[1]-cvN[1], ship.vel[2]-cvN[2]);
+    const hCap = 0.05 * Math.max(near.surf, 500) / Math.max(vRelN, 1);
+    if (hCap < h) {
+      const st2 = Math.min(Math.ceil(dt / hCap), 40000);
+      h = dt / st2;
+    }
+  }
+  const steps = Math.max(1, Math.round(dt / h));
+  // DBG (F16 leak hunt): how much did the auto-target's core jump since the
+  // last frame's stepShip? The tree integrates cores once per FRAME while the
+  // ship substeps up to 4000x against frozen cT/vT — a per-frame sawtooth in
+  // the want vector that the tracker pays propellant to digest.
+  if (shipAutoTarget >= 0 && ship.burnDbg) {
+    const tc = planets[shipAutoTarget].core;
+    if (ship._dbgT) {
+      ship.burnDbg.dvTFrame = Math.hypot(tc.vel[0]-ship._dbgT[0], tc.vel[1]-ship._dbgT[1], tc.vel[2]-ship._dbgT[2]);
+      ship.burnDbg.dcTFrame = Math.hypot(tc.pos[0]-ship._dbgT[3], tc.pos[1]-ship._dbgT[4], tc.pos[2]-ship._dbgT[5]);
+    }
+    ship._dbgT = [tc.vel[0], tc.vel[1], tc.vel[2], tc.pos[0], tc.pos[1], tc.pos[2]];
+  }
+  for (let s = 0; s < steps && shipMode; s++) shipSubstep(h, s, steps);
+}
+
+window.__enterShip = () => enterShipMode();
+window.__exitShip = () => exitShipMode();
+window.__shipAuto = (pi, phase) => { if (!shipMode) enterShipMode(); shipAutoTarget = pi; shipAutoPhase = phase || 'idle'; shipTransfer = null; };
+window.__shipSetState = (pos, vel) => {
+  ship.pos = [...pos]; ship.vel = [...vel];
+  shipMode = true; footMode = false; focusIdx = -1;
+  shipAutoTarget = -1; shipAutoPhase = 'idle'; shipTransfer = null;
+  ship.planet = nearestPlanetTo(pos).i;
+  ship.skinT = 288; ship.peakSkinT = 288; ship.peakQdot = 0; ship.peakDynP = 0;
+  ship.burnDbg = null; ship._dbgT = null; // DBG (F16 leak hunt): fresh counters
+  ship.fuel = SHIP_FUEL0; ship.burned = 0; ship.thrustS = 0; // fresh ship state
+};
+window.__setTimeScale = (x) => { timeScale = x; $('time-scale').textContent = x.toFixed(1) + 'x'; };
+// DBG (F16 leak hunt): per-substep trace ring buffer — see shipSubstep.
+window.__traceShip = (n) => { ship._trace = new Array(n); ship._traceN = n; ship._traceI = 0; };
+window.__shipTrace = () => {
+  if (!ship._traceN) return [];
+  const n = Math.min(ship._traceI, ship._traceN), out = new Array(n);
+  for (let i = 0; i < n; i++)
+    out[i] = ship._trace[(ship._traceI - n + i + ship._traceN) % ship._traceN];
+  return out;
+};
+window.__shipState = () => ({
+  mode: shipMode, pos: [...ship.pos], vel: [...ship.vel], fuel: ship.fuel,
+  mass: shipMass(), dv: SHIP_VE * Math.log(shipMass() / SHIP_DRY),
+  skinT: ship.skinT, planet: ship.planet, phase: shipAutoPhase, auto: shipAutoTarget,
+  thrustWork: ship.thrustWork, exhaustKE: ship.exhaustKE, propKE: ship.propKE,
+  burned: ship.burned, peakSkinT: ship.peakSkinT, peakQdot: ship.peakQdot,
+  peakDynP: ship.peakDynP, dry: SHIP_DRY, fuel0: SHIP_FUEL0, ve: SHIP_VE, thrust: SHIP_THRUST,
+  thrustS: ship.thrustS, plan: shipTransfer && shipTransfer.commit || null,
+  time: simTime,
+  ts: shipTransfer ? { conv: shipTransfer.converged, nextSolve: shipTransfer.nextSolve,
+                       tArr: shipTransfer.tArr,
+                       dvPlan: shipTransfer.dvPlan || 0,
+                       delivered: shipTransfer.vStart ? Math.hypot(
+                         ship.vel[0]-shipTransfer.vStart[0],
+                         ship.vel[1]-shipTransfer.vStart[1],
+                         ship.vel[2]-shipTransfer.vStart[2]) : 0,
+                       vSolMag: shipTransfer.vSol ? Math.hypot(shipTransfer.vSol[0], shipTransfer.vSol[1], shipTransfer.vSol[2]) : 0 } : null,
+  burnDbg: ship.burnDbg ? { ...ship.burnDbg } : null });
+// Autopilot introspection for probes: wanted velocity, tracking error,
+// distance to the auto-target, and the tracking error DECOMPOSED into
+// radial (outward+) / lateral parts in the target frame — the shipSubstep
+// clamp only pays the outward-radial and lateral parts, so this tells a
+// probe exactly which component the tracker is burning on.
+window.__shipWant = () => {
+  if (shipAutoTarget < 0) return null;
+  const vw = shipAutoWant(500);
+  const t = planets[shipAutoTarget], c = t.core.pos, vT = t.core.vel;
+  const rx = ship.pos[0]-c[0], ry = ship.pos[1]-c[1], rz = ship.pos[2]-c[2];
+  const dist = Math.hypot(rx, ry, rz) || 1;
+  const ux = rx/dist, uy = ry/dist, uz = rz/dist;
+  const ex = vw[0]-ship.vel[0], ey = vw[1]-ship.vel[1], ez = vw[2]-ship.vel[2];
+  const errRad = ex*ux + ey*uy + ez*uz; // >0: tracker wants to brake/escape
+  const err = Math.hypot(ex, ey, ez);
+  const vrx = ship.vel[0]-vT[0], vry = ship.vel[1]-vT[1], vrz = ship.vel[2]-vT[2];
+  const vRad = vrx*ux + vry*uy + vrz*uz; // <0: closing
+  return { want: vw, err, errRad,
+           errLat: Math.sqrt(Math.max(0, err*err - errRad*errRad)),
+           vRad, vRel: Math.hypot(vrx, vry, vrz),
+           distT: dist, speed: Math.hypot(ship.vel[0], ship.vel[1], ship.vel[2]),
+           law: { ...shipLawDbg } };
+};
+// Lambert unit witness: solve a known transfer, then propagate the arc
+// ballistically (semi-implicit Euler at the cruise's 500 s step, star-only)
+// and report the miss distance at arrival. A correct solver + a coasting
+// integrator land within ~1e6 m; a broken one misses by ~1e10.
+window.__lambertWitness = (r1m, r2m, deg, tof) => {
+  const GM = G * particles[0].mass;
+  const r1 = [r1m, 0, 0];
+  const th = deg * Math.PI / 180;
+  const r2 = [r2m * Math.cos(th), 0, r2m * Math.sin(th)];
+  const sol = lambertSolve(r1, r2, tof, GM);
+  if (!sol) return { ok: false };
+  const p = [...r1], v = [...sol.v1];
+  const h = 500;
+  const steps = Math.round(tof / h);
+  for (let s = 0; s < steps; s++) {
+    const r = Math.hypot(p[0], p[1], p[2]);
+    const a = -GM / (r * r * r);
+    v[0] += a*p[0]*h; v[1] += a*p[1]*h; v[2] += a*p[2]*h;
+    p[0] += v[0]*h; p[1] += v[1]*h; p[2] += v[2]*h;
+  }
+  const miss = Math.hypot(p[0]-r2[0], p[1]-r2[1], p[2]-r2[2]);
+  // cost vs the circular orbits at both ends (what the ship actually pays)
+  const vC1 = Math.sqrt(GM / r1m), vC2 = Math.sqrt(GM / r2m);
+  const t1 = [0, 0, 1], t2 = [-Math.sin(th), 0, Math.cos(th)]; // prograde tangents (-Y L)
+  const cost = Math.hypot(sol.v1[0]-t1[0]*vC1, sol.v1[1], sol.v1[2]-t1[2]*vC1)
+             + Math.hypot(sol.v2[0]-t2[0]*vC2, sol.v2[1], sol.v2[2]-t2[2]*vC2);
+  return { ok: true, miss, cost,
+           v1mag: Math.hypot(sol.v1[0], sol.v1[1], sol.v1[2]),
+           v2mag: Math.hypot(sol.v2[0], sol.v2[1], sol.v2[2]) };
+};
+// Porkchop witness: expose the live cruise scan, with both bodies'
+// heliocentric longitudes, so a probe can tell "launch geometry is bad"
+// apart from "cruise logic is burning". Same transferScan the autopilot
+// uses — no second implementation. Args (both optional): ti = target planet
+// index (default: the autopilot's), fromPi = depart from that planet's core
+// state instead of the ship's (window shopping before the ship is engaged —
+// the parked pad rides the core, offset is 4e-5 of the orbital radius).
+window.__transferScan = (ti, fromPi) => {
+  const target = planets[ti !== undefined ? ti : shipAutoTarget];
+  if (!target) return null;
+  const cT = target.core.pos, vT = target.core.vel;
+  const GMt = G * particles[0].mass;
+  const rT = Math.hypot(cT[0], cT[1], cT[2]);
+  const omega = 2 * Math.PI / target.tKepler;
+  const src = (fromPi !== undefined) ? planets[fromPi].core : ship;
+  const rows = transferScan(GMt, rT, cT, vT, omega, src.pos, src.vel);
+  return {
+    rS: Math.hypot(src.pos[0], src.pos[1], src.pos[2]),
+    rT,
+    shipLonDeg: Math.atan2(src.pos[2], src.pos[0]) * 180 / Math.PI,
+    tgtLonDeg: Math.atan2(cT[2], cT[0]) * 180 / Math.PI,
+    shipSpeed: Math.hypot(src.vel[0], src.vel[1], src.vel[2]),
+    rows: rows.map(r => r.ok ? { k: r.k, cost: r.cost, tof: r.tof } : { k: r.k, ok: false })
+  };
+};
+// F15 reference: fine-dt (0.01 s) standalone integration of the SAME entry
+// ODEs (exponential atmosphere, point gravity, CdA drag, Sutton-Graves
+// heating, radiative cooling) in the PLANET frame (core at rest at the
+// origin). The frame shift is Galilean-exact up to the planet's orbital
+// acceleration over the entry (~6e-3 m/s^2, far below the 10% tolerance).
+// NOTE: freezing the core in the WORLD frame is NOT equivalent — the ship's
+// 30 km/s orbital velocity then vastly exceeds escape speed from the frozen
+// core and it flies away after one skim (measured: 354 K vs 2613 K).
+window.__reentryPredict = (pos, vel, pi, tMax = 2400) => {  const pl = planets[pi];
+  const c0 = pl.core.pos, cv0 = pl.core.vel;
+  const p = [pos[0]-c0[0], pos[1]-c0[1], pos[2]-c0[2]];   // planet frame
+  const v = [vel[0]-cv0[0], vel[1]-cv0[1], vel[2]-cv0[2]];
+  let T = 288, peak = 288, peakQ = 0, t = 0;
+  const m = SHIP_DRY + SHIP_FUEL0; // unpowered entry
+  const h = 0.01;
+  while (t < tMax) {
+    const dist = Math.hypot(p[0], p[1], p[2]) || 1;
+    const [la, lo] = latLonFromDir(p[0], p[1], p[2]);
+    const alt = dist - (pl.radius + heightAt(la, lo, pi));
+    if (alt <= 0) break;
+    const vm = Math.hypot(v[0], v[1], v[2]);
+    const rho = atmoDensity(pi, Math.max(alt, 0));
+    const gMag = G * pl.mass / (dist * dist);
+    const k = 0.5 * rho * vm * SHIP_CDA / m;
+    v[0] += (-gMag*p[0]/dist - k*v[0]) * h;
+    v[1] += (-gMag*p[1]/dist - k*v[1]) * h;
+    v[2] += (-gMag*p[2]/dist - k*v[2]) * h;
+    p[0] += v[0]*h; p[1] += v[1]*h; p[2] += v[2]*h;
+    if (rho > 1e-14 && vm > 100) {
+      const q = 1.83e-4 * Math.sqrt(rho / SHIP_NOSE_R) * vm * vm * vm;
+      T += q * SHIP_HEAT_AREA / SHIP_SKIN_MC * h;
+      if (q > peakQ) peakQ = q;
+    }
+    T -= SHIP_EPS_A * SIGMA * (Math.pow(T, 4) - Math.pow(pl.tEq, 4)) / SHIP_SKIN_MC * h;
+    if (T > peak) peak = T;
+    t += h;
+  }
+  return { peakSkinT: peak, peakQdot: peakQ, duration: t };
+};
+
 // Local tangent basis at the character: up = terrain normal (E1), and
 // north/east complete the frame. Foot-mode yaw is measured from north
 // toward east; pitch is above the horizon.
@@ -2588,6 +3712,251 @@ window.__charWalkWitness = (secs = 5) => {
   return { track, expected, relErr: Math.abs(track - expected) / expected, gap };
 };
 
+// ==========================================================================
+// TEDDY BEAR — a render-only splat agent driven by the membrane's own physics
+// Rule 0 — STATEMENT: an agent built from render-only splats (never in
+//   particles[], so the tree and the 500-count falsifier never see it) whose
+//   motion is produced by the SAME physics as the character (g = G*M/r^2,
+//   ground = heightAt, Coulomb friction) behaves identically to a physics
+//   particle while costing the N-body tree nothing.
+//   PREDICTIONS: at rest the gap to the queried ground is < 0.01 m with zero
+//   velocity; follow mode strictly closes distance to the character; a jump
+//   exceeds 0.2 m and lands at EXACTLY alt 0 after one full 2 pi yaw spin.
+//   FALSIFIERS: __bearRestWitness / __bearFollowWitness / __bearJumpWitness,
+//   asserted in test_phase6.py. (Resemblance to a teddy bear is THE HUMAN's
+//   terminal — the operator judges the render.)
+// Interaction: B toggles follow, H jumps (the on-command flourish).
+// ==========================================================================
+const TEDDY_SPEED = 1.8;   // m/s — faster than WALK_SPEED 1.4 so it catches up
+const TEDDY_SPACING = 0.04; // m between splat centers on the fur surface
+const FUR  = [0.42, 0.27, 0.13];
+const TAN  = [0.70, 0.53, 0.33];
+const DARK = [0.05, 0.04, 0.03];
+// Parts in a local frame: x = right, y = up (feet at y=0), z = forward.
+// rz tilts the part around the forward axis (arms hang slightly outward).
+const TEDDY_PARTS = [
+  { c: [-0.16, 0.30, 0.02],  r: [0.11, 0.30, 0.13],  col: FUR },           // leg L
+  { c: [ 0.16, 0.30, 0.02],  r: [0.11, 0.30, 0.13],  col: FUR },           // leg R
+  { c: [0, 0.85, 0],         r: [0.32, 0.38, 0.26],  col: FUR },           // body
+  { c: [0, 0.82, 0.16],      r: [0.22, 0.28, 0.12],  col: TAN },           // belly
+  { c: [-0.40, 1.05, 0],     r: [0.10, 0.28, 0.11],  col: FUR, rz:  0.35 },// arm L
+  { c: [ 0.40, 1.05, 0],     r: [0.10, 0.28, 0.11],  col: FUR, rz: -0.35 },// arm R
+  { c: [0, 1.45, 0.02],      r: [0.24, 0.24, 0.22],  col: FUR },           // head
+  { c: [0, 1.38, 0.22],      r: [0.11, 0.09, 0.09],  col: TAN },           // snout
+  { c: [0, 1.44, 0.30],      r: [0.045, 0.035, 0.03], col: DARK },         // nose
+  { c: [-0.09, 1.52, 0.20],  r: [0.03, 0.03, 0.02],  col: DARK },          // eye L
+  { c: [ 0.09, 1.52, 0.20],  r: [0.03, 0.03, 0.02],  col: DARK },          // eye R
+  { c: [-0.17, 1.66, 0],     r: [0.09, 0.09, 0.05],  col: FUR },           // ear L
+  { c: [ 0.17, 1.66, 0],     r: [0.09, 0.09, 0.05],  col: FUR },           // ear R
+  { c: [-0.17, 1.66, 0.045], r: [0.05, 0.05, 0.03],  col: TAN },           // inner ear L
+  { c: [ 0.17, 1.66, 0.045], r: [0.05, 0.05, 0.03],  col: TAN },           // inner ear R
+];
+const teddy = { lat: 0.3, lon: 1.0 + 3e-6, alt: 0, velN: 0, velE: 0, velU: 0,
+                grounded: true, yaw: 0, spinVel: 0, mode: 'stay', planet: 0 };
+
+// Tile a Fibonacci lattice over each ellipsoid part -> fur of overlapping
+// Gaussians. Splat radius 0.6x spacing so adjacent kernels overlap inside
+// the 2-sigma raster cutoff (no gaps, no moire).
+function buildTeddySplats() {
+  const out = [];
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const sRad = TEDDY_SPACING * 0.6;
+  for (const part of TEDDY_PARTS) {
+    const [a, b, c2] = part.r;
+    const rm = (a + b + c2) / 3; // mean radius -> surface point count
+    const n = Math.max(6, Math.ceil(4 * Math.PI * rm * rm / (TEDDY_SPACING * TEDDY_SPACING)));
+    const cosR = Math.cos(part.rz || 0), sinR = Math.sin(part.rz || 0);
+    for (let i = 0; i < n; i++) {
+      const uy = 1 - (i / Math.max(n - 1, 1)) * 2;
+      const ur = Math.sqrt(Math.max(0, 1 - uy * uy));
+      const th = golden * i;
+      const ux = Math.cos(th) * ur, uz = Math.sin(th) * ur;
+      let lx = a * ux, ly = b * uy, lz = c2 * uz;              // part-space offset
+      let nx = ux / a, ny = uy / b, nz = uz / c2;              // ellipsoid normal
+      const nl = Math.hypot(nx, ny, nz) || 1; nx /= nl; ny /= nl; nz /= nl;
+      if (part.rz) { // tilt around local z (forward)
+        const x2 = lx * cosR - ly * sinR, y2 = lx * sinR + ly * cosR;
+        lx = x2; ly = y2;
+        const nx2 = nx * cosR - ny * sinR, ny2 = nx * sinR + ny * cosR;
+        nx = nx2; ny = ny2;
+      }
+      out.push({
+        pos: [0, 0, 0], radius: sRad, _bearR: sRad,
+        _terrainCol: part.col, _normal: [0, 1, 0], _elev: 1, // _elev>0: never ocean-specular
+        flux: 0, radiusPhys: sRad, temp: 271, albedo: 0.3,
+        _lx: lx + part.c[0], _ly: ly + part.c[1], _lz: lz + part.c[2],
+        _ln: [nx, ny, nz],
+      });
+    }
+  }
+  return out;
+}
+const teddySplats = buildTeddySplats();
+
+// One physics step — the same laws as stepCharacter, on the bear's state.
+// Follow input derives direction-to-character in the local tangent plane.
+function stepTeddy(dt) {
+  const pl = planets[teddy.planet];
+  const r = pl.radius + heightAt(teddy.lat, teddy.lon, teddy.planet) + teddy.alt;
+  const g = G * pl.mass / (r * r); // DERIVED from planet mass, like the character
+  let moveN = 0, moveE = 0;
+  if (teddy.mode === 'follow' && footMode && character.planet === teddy.planet) {
+    const cosLatF = Math.max(Math.cos(teddy.lat), 1e-6);
+    let dLon = character.lon - teddy.lon;
+    if (dLon > Math.PI) dLon -= 2 * Math.PI;
+    if (dLon < -Math.PI) dLon += 2 * Math.PI;
+    const dN = (character.lat - teddy.lat) * r;
+    const dE = dLon * cosLatF * r;
+    const dist = Math.hypot(dN, dE);
+    if (dist > 2.5) { moveN = dN / dist; moveE = dE / dist; } // stops 2.5 m away
+  }
+  if (teddy.grounded) {
+    if (moveN || moveE) {
+      teddy.velN = moveN * TEDDY_SPEED;
+      teddy.velE = moveE * TEDDY_SPEED;
+      teddy.yaw = Math.atan2(moveE, moveN); // face the walk direction
+    } else {
+      // Coulomb friction with exact-zero clamp (same as stepCharacter —
+      // exponential decay would asymptote and fail the rest falsifier)
+      const v = Math.hypot(teddy.velN, teddy.velE);
+      const dec = Math.min(v, FRICTION_MU * g * dt);
+      if (v > 0) { teddy.velN -= teddy.velN / v * dec; teddy.velE -= teddy.velE / v * dec; }
+    }
+  }
+  teddy.velU -= g * dt;
+  teddy.alt += teddy.velU * dt;
+  teddy.lat += teddy.velN * dt / r;
+  teddy.lat = Math.max(-1.55, Math.min(1.55, teddy.lat));
+  const cosLat = Math.max(Math.cos(teddy.lat), 1e-6);
+  teddy.lon += teddy.velE * dt / (r * cosLat);
+  if (teddy.lon >= 2 * Math.PI) teddy.lon -= 2 * Math.PI;
+  if (teddy.lon < 0) teddy.lon += 2 * Math.PI;
+  if (!teddy.grounded && teddy.spinVel) teddy.yaw += teddy.spinVel * dt; // mid-air spin
+  if (teddy.alt <= 0) {
+    teddy.alt = 0; teddy.velU = 0; teddy.grounded = true;
+    if (teddy.spinVel) { // landed: stop the spin, wrap yaw to [-pi, pi]
+      teddy.spinVel = 0;
+      teddy.yaw = Math.atan2(Math.sin(teddy.yaw), Math.cos(teddy.yaw));
+    }
+  } else teddy.grounded = false;
+}
+
+// The on-command flourish: a jump whose airtime carries EXACTLY one full
+// yaw revolution (spinVel = 2 pi / t_air, t_air from the local g).
+function teddyJump() {
+  if (!teddy.grounded || !planets.length) return false;
+  const pl = planets[teddy.planet];
+  const r = pl.radius + heightAt(teddy.lat, teddy.lon, teddy.planet);
+  const g = G * pl.mass / (r * r);
+  const vU = 3.5; // m/s
+  teddy.velU = vU;
+  teddy.grounded = false;
+  teddy.spinVel = 2 * Math.PI / (2 * vU / g);
+  return true;
+}
+
+// Per frame: step the agent, then place every fur splat in the world from
+// the bear's membrane frame (planet core + local basis), rotating normals
+// with the same basis so N.L lighting stays honest. Flux is one analytic
+// starlight sample for the whole bear — the field varies on planetary
+// scales, the bear is ~2 m.
+function updateTeddy(dt) {
+  if (!planets.length) { // benchmark mode has no membrane: hide the bear
+    for (const s of teddySplats) s.radius = 0;
+    return;
+  }
+  stepTeddy(dt);
+  const pl = planets[teddy.planet];
+  const up = groundNormal(teddy.lat, teddy.lon, teddy.planet);
+  const north = [-Math.sin(teddy.lat) * Math.cos(teddy.lon), Math.cos(teddy.lat),
+                 -Math.sin(teddy.lat) * Math.sin(teddy.lon)];
+  const east = [-Math.sin(teddy.lon), 0, Math.cos(teddy.lon)];
+  const cy = Math.cos(teddy.yaw), sy = Math.sin(teddy.yaw);
+  const fwd = [north[0] * cy + east[0] * sy, north[1] * cy + east[1] * sy,
+               north[2] * cy + east[2] * sy];
+  const right = [up[1] * fwd[2] - up[2] * fwd[1],   // up x fwd
+                 up[2] * fwd[0] - up[0] * fwd[2],
+                 up[0] * fwd[1] - up[1] * fwd[0]];
+  const d = dirFromLatLon(teddy.lat, teddy.lon);
+  const r = pl.radius + heightAt(teddy.lat, teddy.lon, teddy.planet) + teddy.alt;
+  const c = pl.core.pos;
+  const base = [c[0] + r * d[0], c[1] + r * d[1], c[2] + r * d[2]];
+  const d2 = Math.max(base[0] * base[0] + base[1] * base[1] + base[2] * base[2],
+                      R_STAR * R_STAR);
+  const flux = L_STAR / (FOUR_PI * d2);
+  for (const s of teddySplats) {
+    s.radius = s._bearR;
+    s.pos[0] = base[0] + right[0] * s._lx + up[0] * s._ly + fwd[0] * s._lz;
+    s.pos[1] = base[1] + right[1] * s._lx + up[1] * s._ly + fwd[1] * s._lz;
+    s.pos[2] = base[2] + right[2] * s._lx + up[2] * s._ly + fwd[2] * s._lz;
+    s._normal[0] = right[0] * s._ln[0] + up[0] * s._ln[1] + fwd[0] * s._ln[2];
+    s._normal[1] = right[1] * s._ln[0] + up[1] * s._ln[1] + fwd[1] * s._ln[2];
+    s._normal[2] = right[2] * s._ln[0] + up[2] * s._ln[1] + fwd[2] * s._ln[2];
+    s.flux = flux;
+  }
+  window.__teddyPos = base;
+}
+
+// Witnesses (lazy; called by test_phase6.py, not at load). Each saves and
+// restores the live state, exactly like __charWitness.
+window.__bearRestWitness = (secs = 1) => {
+  const saved = { ...teddy };
+  Object.assign(teddy, { lat: 0.3, lon: 1.05, alt: 1, velN: 0.5, velE: -0.3,
+                         velU: 0, grounded: false, mode: 'stay', spinVel: 0, planet: 0 });
+  const steps = Math.round(secs * 60);
+  for (let s = 0; s < steps; s++) stepTeddy(1 / 60);
+  const restSpeed = Math.hypot(teddy.velN, teddy.velE, teddy.velU);
+  const gap = teddy.alt; // alt IS the roundtrip gap to the queried ground
+  const landed = teddy.grounded;
+  Object.assign(teddy, saved);
+  return { restSpeed, gap, landed };
+};
+window.__bearFollowWitness = (secs = 3) => {
+  const savedT = { ...teddy }, savedC = { ...character }, savedMode = footMode;
+  Object.assign(character, { lat: 0.3, lon: 1.0, alt: 0, velN: 0, velE: 0,
+                             velU: 0, grounded: true, planet: 0 });
+  Object.assign(teddy, { lat: 0.3, lon: 1.0 + 10 / (planets[0].radius * Math.cos(0.3)),
+                         alt: 0, velN: 0, velE: 0, velU: 0, grounded: true,
+                         mode: 'follow', spinVel: 0, planet: 0, yaw: 0 });
+  footMode = true; // follow only engages while the character is on foot
+  const r = planets[0].radius + heightAt(0.3, 1.0, 0);
+  const d0 = 10;
+  const steps = Math.round(secs * 60);
+  for (let s = 0; s < steps; s++) stepTeddy(1 / 60);
+  const d1 = Math.hypot((character.lat - teddy.lat) * r,
+                        (character.lon - teddy.lon) * Math.cos(0.3) * r);
+  Object.assign(teddy, savedT); Object.assign(character, savedC); footMode = savedMode;
+  return { d0, d1, closed: d1 < d0 };
+};
+window.__bearJumpWitness = () => {
+  const saved = { ...teddy };
+  Object.assign(teddy, { lat: 0.3, lon: 1.0, alt: 0, velN: 0, velE: 0, velU: 0,
+                         grounded: true, mode: 'stay', spinVel: 0, planet: 0, yaw: 0 });
+  const launched = teddyJump();
+  let maxAlt = 0, frames = 0;
+  while (!teddy.grounded && frames < 600) { stepTeddy(1 / 60); maxAlt = Math.max(maxAlt, teddy.alt); frames++; }
+  const finalAlt = teddy.alt, landed = teddy.grounded;
+  Object.assign(teddy, saved);
+  return { launched, maxAlt, finalAlt, landed, frames };
+};
+window.__teddyState = () => ({ ...teddy, splats: teddySplats.length });
+window.__bearJump = () => teddyJump();
+window.__bearFollow = false;
+// Test hook: put the character 4 m north of the bear in foot mode, camera
+// facing it (bear turned to face back) — for the teddy screenshot.
+window.__gotoTeddy = () => {
+  const pl = planets[teddy.planet];
+  character.planet = teddy.planet;
+  character.lat = teddy.lat + 4 / pl.radius;
+  character.lon = teddy.lon;
+  character.alt = 0; character.velN = 0; character.velE = 0; character.velU = 0;
+  character.grounded = true;
+  teddy.yaw = Math.PI; // face south, toward the camera
+  footMode = true; shipMode = false;
+  camYaw = Math.PI; camPitch = -0.12;
+  return true;
+};
+
 
 // Mouse drag = look (click = pick, handled below with drag suppression)
 let dragState = null, suppressPick = false;
@@ -2609,10 +3978,11 @@ window.addEventListener('mouseup', () => {
 });
 
 function resize() {
-  // Target: 4K UHD (3840×2160). Canvas fills the window up to this size.
-  // This is our single design target — not hardware-dependent, not incremental.
-  canvas.width  = Math.min(window.innerWidth,  TARGET_RESOLUTION_W);
-  canvas.height = Math.min(window.innerHeight, TARGET_RESOLUTION_H);
+  // Canvas size = min(viewport, target) × DPR. On a Retina display this gives
+  // ~2× the physical pixels; on standard displays it's just viewport-sized.
+  // The splat radius is set for TARGET_RESOLUTION so grain density is consistent.
+  canvas.width  = Math.min(Math.round(window.innerWidth  * DPR_SCALE), TARGET_RESOLUTION_W);
+  canvas.height = Math.min(Math.round(window.innerHeight * DPR_SCALE), TARGET_RESOLUTION_H);
 }
 window.addEventListener('resize', resize);
 resize();
@@ -2764,7 +4134,7 @@ function planPlanetLOD(nPhysics) {
   const H = canvas.height;
   const rPx = pl.radius * H / (2 * Math.max(dist, 1) * 0.414); // tan(fov/2), fov=pi/4
   const nTarget = Math.max(LOD_N_MIN, Math.round(LOD_RHO * rPx * rPx));
-  const budget = MAX_PARTICLES - nPhysics; // fracture cap: renderer budget minus physics
+  const budget = Math.min(MAX_PARTICLES - nPhysics, Math.floor(fractureBudget)); // fracture cap: renderer budget minus physics, frame-time adaptive (Phase 10.5)
   if (pi === 0 && !terrainPyramid) terrainPyramid = buildTerrainPyramid();
   const counts = pi === 0 ? terrainPyramid.map(l => l.length) : [300];
   const baseCount = counts[0];
@@ -2822,7 +4192,32 @@ function planPlanetLOD(nPhysics) {
 // depth-sort back-to-front within each tile, build the scatter
 // permutation. Returns everything the GPU passes need.
 const relPosArr = new Float32Array(MAX_PARTICLES * 4);
+// Phase 10.5: ONE global depth order, shared by every tile. Per-tile
+// independent sorts could invert a shared splat pair between adjacent tiles
+// (cw varies across a wide splat) -> "A on top here, B on top there" seams.
+// A global rank is a total order, so every tile composes the same pair the
+// same way. Falsifier: __seamCheck() boundary/interior gradient ratio >= 1.3
+// means the seams are NOT sort divergence and this diagnosis is wrong.
+const depthArr = new Float64Array(MAX_PARTICLES);
+const rankArr  = new Int32Array(MAX_PARTICLES);
+const visIdx   = []; // reused each frame: indices that survived culling
+// Phase 10.5 perf: allocation-free two-pass binning. The old per-slot
+// {i, depth} objects + per-tile Array.sort cost 67 ms at 4K (1.5M slots).
+// Now: record each visible splat's tile RANGE, count incidences, prefix-sum,
+// then scatter in GLOBAL RANK ORDER — per-tile segments come out rank-sorted
+// with zero per-tile sorting and zero per-slot allocation.
+const tileX0 = new Int32Array(MAX_PARTICLES);
+const tileX1 = new Int32Array(MAX_PARTICLES);
+const tileY0 = new Int32Array(MAX_PARTICLES);
+const tileY1 = new Int32Array(MAX_PARTICLES);
+const MAX_TILES = 480 * 270 + 8; // 4K @ TILE_SIZE=16 (+ margin)
+const tileCountsArr  = new Uint32Array(MAX_TILES);
+const tileOffsetsArr = new Uint32Array(MAX_TILES);
+const tileCursor     = new Uint32Array(MAX_TILES);
+let slotBuf = new Int32Array(1 << 20); // tile incidences; grows on demand
+const colArr = new Float32Array(MAX_PARTICLES * 4); // persistent — no per-frame alloc
 function prepareSplats() {
+  const prepT0 = performance.now(); // Phase 10.5 perf probe (4K falsifier)
   const n = particles.length;
   const W = canvas.width, H = canvas.height;
   const eye = [camPos[0]*WORLD_SCALE, camPos[1]*WORLD_SCALE, camPos[2]*WORLD_SCALE];
@@ -2831,7 +4226,7 @@ function prepareSplats() {
   // Non-reversed-Z: visible points get clip w > 0, which both the CPU cull
   // test and the rasterizer's 1/w projection rely on. (No depth buffer is
   // used anywhere in this pipeline, so reversed-Z buys nothing here.)
-  const viewRot = lookAt([0,0,0], camForward(), curUp);
+  const viewRot = lookAt([0,0,0], camForward(), effUp());
   const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
   // clip = proj * view * pos. multiplyMat4(a, b) returns a*b, so the
   // projection must be the LEFT factor — (viewRot * proj) * v applies the
@@ -2849,7 +4244,7 @@ function prepareSplats() {
   // or a fracture shell. Render-only splats append AFTER the physics
   // particles (indices n..nRender-1); the tree never sees them.
   const lodPlan = planPlanetLOD(n);
-  const extras = lodPlan.extras;
+  const extras = lodPlan.extras.concat(teddySplats); // bear rides the same render-only path
   const lodReplaces = lodPlan.mode !== 'base';
   const nRender = n + extras.length;
   pb[18] = nRender;
@@ -2868,8 +4263,7 @@ function prepareSplats() {
   // test IS the near plane.)
   const nearW = Math.max((lastFlight ? lastFlight.alt : 1e9) * 0.5, 1) * WORLD_SCALE;
 
-  // Project every particle on the CPU (f64) for culling + tile binning
-  const buckets = new Array(COLS * ROWS);
+  // Project every particle on the CPU (f64) for culling + tile-range record
   const culled = [];
   for (let i = 0; i < n; i++) {
     const p = particles[i];
@@ -2903,21 +4297,17 @@ function prepareSplats() {
     relPosArr[i*4+3] = ok ? rScaled : 0; // w=0 -> preprocess culls it
     if (i === 0) window.__starProj = { cw, sx, sy, rpx, ok }; // debug probe
     if (!ok) { culled.push(i); continue; }
+    visIdx.push(i); depthArr[i] = cw;
     // Bin into EVERY tile the splat footprint overlaps (cutoff at 2 sigma,
     // matching the raster's d2>4 reject). Center-only binning clipped wide
     // splats to their home 16px tile — the star rendered as a square.
-    const rad = 2 * rpx;
-    const tx0 = Math.max(0, Math.floor((sx - rad) / TILE_SIZE));
-    const tx1 = Math.min(COLS - 1, Math.floor((sx + rad) / TILE_SIZE));
-    const ty0 = Math.max(0, Math.floor((sy - rad) / TILE_SIZE));
-    const ty1 = Math.min(ROWS - 1, Math.floor((sy + rad) / TILE_SIZE));
-    for (let ty = ty0; ty <= ty1; ty++) {
-      for (let tx = tx0; tx <= tx1; tx++) {
-        const tid = ty * COLS + tx;
-        if (!buckets[tid]) buckets[tid] = [];
-        buckets[tid].push({ i, depth: cw });
-      }
-    }
+    // Phase 10.5: +1px margin so edge-touching splats land in ALL tiles the
+    // footprint grazes (floor() rounding used to drop the boundary tile).
+    const rad = 2 * rpx + 1;
+    tileX0[i] = Math.max(0, Math.floor((sx - rad) / TILE_SIZE));
+    tileX1[i] = Math.min(COLS - 1, Math.floor((sx + rad) / TILE_SIZE));
+    tileY0[i] = Math.max(0, Math.floor((sy - rad) / TILE_SIZE));
+    tileY1[i] = Math.min(ROWS - 1, Math.floor((sy + rad) / TILE_SIZE));
   }
 
   // Track D: project the render-only splats (mip level or fracture shell)
@@ -2953,47 +4343,67 @@ function prepareSplats() {
     relPosArr[i*4+2] = rz;
     relPosArr[i*4+3] = ok ? rScaled : 0;
     if (!ok) { culled.push(i); continue; }
-    const rad2 = 2 * rpx;
-    const ux0 = Math.max(0, Math.floor((sx - rad2) / TILE_SIZE));
-    const ux1 = Math.min(COLS - 1, Math.floor((sx + rad2) / TILE_SIZE));
-    const uy0 = Math.max(0, Math.floor((sy - rad2) / TILE_SIZE));
-    const uy1 = Math.min(ROWS - 1, Math.floor((sy + rad2) / TILE_SIZE));
-    for (let ty = uy0; ty <= uy1; ty++) {
-      for (let tx = ux0; tx <= ux1; tx++) {
-        const tid = ty * COLS + tx;
-        if (!buckets[tid]) buckets[tid] = [];
-        buckets[tid].push({ i, depth: cw });
+    visIdx.push(i); depthArr[i] = cw;
+    const rad2 = 2 * rpx + 1; // Phase 10.5: +1px margin (see particle loop)
+    tileX0[i] = Math.max(0, Math.floor((sx - rad2) / TILE_SIZE));
+    tileX1[i] = Math.min(COLS - 1, Math.floor((sx + rad2) / TILE_SIZE));
+    tileY0[i] = Math.max(0, Math.floor((sy - rad2) / TILE_SIZE));
+    tileY1[i] = Math.min(ROWS - 1, Math.floor((sy + rad2) / TILE_SIZE));
+  }
+
+  // Phase 10.5: assign the GLOBAL depth rank (far first), then bin with a
+  // two-pass counting scatter in rank order — every tile's segment comes out
+  // rank-sorted (no per-tile sort) and every tile resolves a shared splat
+  // pair identically (no cross-tile inversion seams).
+  visIdx.sort((a, b) => depthArr[b] - depthArr[a]);
+  for (let r = 0; r < visIdx.length; r++) rankArr[visIdx[r]] = r;
+
+  const nTiles = COLS * ROWS;
+  const counts = tileCountsArr.subarray(0, nTiles);
+  const offsets = tileOffsetsArr.subarray(0, nTiles);
+  counts.fill(0);
+  // Pass 1: count incidences per tile
+  for (let r = 0; r < visIdx.length; r++) {
+    const i = visIdx[r];
+    for (let ty = tileY0[i]; ty <= tileY1[i]; ty++) {
+      const rowBase = ty * COLS;
+      for (let tx = tileX0[i]; tx <= tileX1[i]; tx++) counts[rowBase + tx]++;
+    }
+  }
+  // Prefix sum -> offsets; grow the slot buffer if needed
+  let total = 0;
+  for (let t = 0; t < nTiles; t++) { offsets[t] = total; total += counts[t]; }
+  if (total + culled.length > slotBuf.length) {
+    slotBuf = new Int32Array(Math.max(slotBuf.length * 2, total + culled.length));
+  }
+  // Pass 2: scatter in rank order — per-tile segments are rank-sorted for free
+  tileCursor.set(offsets);
+  for (let r = 0; r < visIdx.length; r++) {
+    const i = visIdx[r];
+    for (let ty = tileY0[i]; ty <= tileY1[i]; ty++) {
+      const rowBase = ty * COLS;
+      for (let tx = tileX0[i]; tx <= tileX1[i]; tx++) {
+        slotBuf[tileCursor[rowBase + tx]++] = i;
       }
     }
   }
-
-  // Tile-grouped order, back-to-front (far first) within each tile
-  const counts = new Uint32Array(COLS * ROWS);
-  const offsets = new Uint32Array(COLS * ROWS);
-  const order = [];       // sorted slot -> original particle index
-  for (let t = 0; t < COLS*ROWS; t++) {
-    offsets[t] = order.length;
-    const b = buckets[t];
-    if (b) {
-      b.sort((a, b2) => b2.depth - a.depth); // far first (back-to-front)
-      for (const e of b) order.push(e.i);
-      counts[t] = b.length;
-    }
-  }
-  for (const i of culled) order.push(i); // overflow slots past all tiles
+  let orderLen = total;
+  for (const i of culled) slotBuf[orderLen++] = i; // overflow slots (w=0)
+  visIdx.length = 0; // reuse next frame
   window.__dbgRender = { n: nRender, visible: nRender - culled.length, eye,
+    prepMs: performance.now() - prepT0, slots: total,
     starRel: [relPosArr[0], relPosArr[1], relPosArr[2], relPosArr[3]],
-    countsTotal: counts.reduce((a, b) => a + b, 0) };
+    countsTotal: total };
 
   device.queue.writeBuffer(rPosBuf, 0, relPosArr, 0, nRender * 4);
   // Slots outnumber particles (a splat sits in every tile its footprint
   // overlaps), so sortedIdxBuf grows on demand; the raster resolves
   // slot -> particle via sorted_idx and reads the ORIGINAL-order buffers.
-  if (order.length * 4 > sortedIdxBuf.size) {
+  if (orderLen * 4 > sortedIdxBuf.size) {
     sortedIdxBuf.destroy();
-    sortedIdxBuf = createBuf(order.length * 8, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
+    sortedIdxBuf = createBuf(orderLen * 8, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC);
   }
-  device.queue.writeBuffer(sortedIdxBuf, 0, new Uint32Array(order));
+  device.queue.writeBuffer(sortedIdxBuf, 0, slotBuf, 0, orderLen);
   device.queue.writeBuffer(tileCountsBuf, 0, counts);
   device.queue.writeBuffer(tileOffsetsBuf, 0, offsets);
 
@@ -3021,7 +4431,8 @@ function prepareSplats() {
   // Colors every frame: each splat's emissive color IS the membrane's
   // contained light and heat at that cell (scattered starlight from the
   // tree-delivered flux + blackbody emission from temperature).
-  const colArr = new Float32Array(nRender * 4);
+  // colArr is persistent (16 MB, allocated once) — stale entries in culled
+  // slots are never read (raster skips w<=0).
   for (let i = 0; i < n; i++) {
     const c = displayColor(particles[i]);
     colArr[i*4]   = c[0];
@@ -3116,8 +4527,9 @@ function renderFrame(n) {
   vbPass.end();
 
   // Pass 7: post (bloom composite + ACES tonemap + gamma) -> canvas
+  const canvasTex = gpuCtx.getCurrentTexture();
   const postPass = enc.beginRenderPass({
-    colorAttachments: [{ view: gpuCtx.getCurrentTexture().createView(),
+    colorAttachments: [{ view: canvasTex.createView(),
       clearValue:{r:0,g:0,b:0,a:1}, loadOp:'clear', storeOp:'store' }]
   });
   postPass.setPipeline(postPipeline);
@@ -3134,7 +4546,33 @@ function renderFrame(n) {
   postPass.draw(4, 1, 0, 0);
   postPass.end();
 
+  // Phase 10.5: armed seam capture — copy the presented frame into a
+  // readback buffer in the SAME encoder (the current texture expires at
+  // task end; a post-present readback returns blank).
+  if (window.__seamCapture) {
+    window.__seamCapture = false;
+    const bpr = Math.ceil(W * 4 / 256) * 256;
+    const need = bpr * H;
+    if (!seamReadBuf || seamReadBuf.size < need) {
+      if (seamReadBuf) seamReadBuf.destroy();
+      seamReadBuf = createBuf(need, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ);
+    }
+    enc.copyTextureToBuffer({ texture: canvasTex },
+      { buffer: seamReadBuf, bytesPerRow: bpr }, [W, H, 1]);
+    seamPending = { bpr, cw: W, ch: H };
+  }
+
   device.queue.submit([enc.finish()]);
+
+  if (seamPending) {
+    const { bpr, cw, ch } = seamPending; seamPending = null;
+    device.queue.onSubmittedWorkDone().then(async () => {
+      await seamReadBuf.mapAsync(GPUMapMode.READ);
+      const px = new Uint8Array(seamReadBuf.getMappedRange());
+      window.__seamResult = seamStatsFromPixels(px, cw, ch, bpr);
+      seamReadBuf.unmap();
+    });
+  }
 }
 
 // ---- UI HANDLERS ----
@@ -3187,13 +4625,14 @@ $('btn-add').onclick = () => {
     p.lum = FOUR_PI * p.radiusPhys * p.radiusPhys * SIGMA * Math.pow(p.temp, 4);
   }
 };
-$('btn-reset').onclick = () => { particles = []; nextId = 0; spawnSystem(500); prevEnergy = null;
-  terrainPyramid = null; fractureSplats = []; fractureKey = { count: 0, axis: [0, 0, 0] }; };
+$('btn-reset').onclick = () => { particles = []; nextId = 0; treeCache = null; spawnSystem(500); prevEnergy = null;
+  terrainPyramid = null; fractureSplats = []; fractureKey = { count: 0, axis: [0, 0, 0] };
+  shipMode = false; shipAutoTarget = -1; shipAutoPhase = 'idle'; footMode = false; };
 // Track A2: toggle terrain source between procedural and synthetic DEM
 $('btn-terrain').onclick = () => {
   if (terrainSource === 'procedural') { terrainSource = 'dem'; $('btn-terrain').textContent = 'Terrain: Synthetic DEM'; }
   else { terrainSource = 'procedural'; $('btn-terrain').textContent = 'Terrain: Procedural'; }
-  particles = []; nextId = 0; spawnSystem(500); prevEnergy = null;
+  particles = []; nextId = 0; treeCache = null; spawnSystem(500); prevEnergy = null;
   terrainPyramid = null; fractureSplats = []; fractureKey = { count: 0, axis: [0, 0, 0] };
 };
 $('btn-center').onclick = () => {
@@ -3231,6 +4670,20 @@ $('btn-acoustic').onclick = () => {
   $('btn-acoustic').textContent = 'Acoustic: ' + (acousticEnabled ? 'on' : 'off');
   $('btn-acoustic').classList.toggle('active', acousticEnabled);
 };
+// Light-viz toggle: false-color the tree's irradiance field (proof with light)
+$('btn-viz').onclick = () => {
+  vizMode = vizMode === 1 ? 0 : 1;
+  window.__vizMode = vizMode;
+  $('btn-viz').textContent = 'Light Viz: ' + (vizMode ? 'on (L)' : 'off (L)');
+  $('btn-viz').classList.toggle('active', vizMode === 1);
+};
+$('btn-bear').onclick = () => {
+  teddy.mode = teddy.mode === 'follow' ? 'stay' : 'follow';
+  window.__bearFollow = teddy.mode === 'follow';
+  $('btn-bear').textContent = 'Bear: ' + teddy.mode + ' (B)';
+  $('btn-bear').classList.toggle('active', teddy.mode === 'follow');
+};
+$('btn-bearjump').onclick = () => teddyJump();
 $('b-slider').oninput = (e) => {
   const microT = parseInt(e.target.value);
   B_field = [0, 0, microT * 1e-6]; // store in Tesla
@@ -3258,7 +4711,7 @@ canvas.addEventListener('click', (e) => {
     const d2 = rx*rx + ry*ry + rz*rz;
     if (d2 > 1e16) continue; // too far
     // Project to screen for distance check
-    const viewRot = lookAt([0,0,0], camForward(), curUp);
+    const viewRot = lookAt([0,0,0], camForward(), effUp());
     const W = canvas.width, H = canvas.height;
     const proj = perspective(Math.PI/4, W/H, 0.1, 1000, false);
     const vp = multiplyMat4(proj, viewRot);
@@ -3274,20 +4727,41 @@ canvas.addEventListener('click', (e) => {
 });
 // Track C2: Escape clears selection; Track B4: F focuses/frames a particle
  document.addEventListener('keydown', (e) => {
-   if (e.code === 'Escape') { selectedParticleIdx = -1; focusIdx = -1; if (footMode) exitFootMode(); }
+   if (e.code === 'Escape') { selectedParticleIdx = -1; focusIdx = -1;
+     if (footMode) exitFootMode(); else if (shipMode) exitShipMode(); }
    if (e.code === 'KeyG') {
      // Track E3: land / take off. Phase 10: enterFootMode finds the NEAREST
      // planet and refuses the void itself (returns false), so no local check.
      if (footMode) exitFootMode();
-     else enterFootMode();
+     else if (!shipMode) enterFootMode();
+   }
+   if (e.code === 'KeyT') {
+     // Phase 11: foot -> ship (launch pad), ship -> flight, flight -> ship
+     if (footMode) enterShipMode();
+     else if (shipMode) exitShipMode();
+     else enterShipMode();
    }
    if (e.code === 'KeyF') {
      if (focusIdx >= 0) focusIdx = -1; // toggle off
-     else if (!footMode) {
+     else if (!footMode && !shipMode) {
        const t = selectedParticleIdx >= 0 ? selectedParticleIdx : nearestToForwardRay();
        if (t >= 0) focusIdx = t;
      }
    }
+   if (e.code === 'KeyL') {
+     // Light-viz: false-color flux field (same as btn-viz)
+     vizMode = vizMode === 1 ? 0 : 1;
+     window.__vizMode = vizMode;
+     $('btn-viz').textContent = 'Light Viz: ' + (vizMode ? 'on (L)' : 'off (L)');
+     $('btn-viz').classList.toggle('active', vizMode === 1);
+   }
+   if (e.code === 'KeyB') { // bear follow toggle (same as btn-bear)
+     teddy.mode = teddy.mode === 'follow' ? 'stay' : 'follow';
+     window.__bearFollow = teddy.mode === 'follow';
+     $('btn-bear').textContent = 'Bear: ' + teddy.mode + ' (B)';
+     $('btn-bear').classList.toggle('active', teddy.mode === 'follow');
+   }
+   if (e.code === 'KeyH') teddyJump(); // bear jump + mid-air spin
  });
 $('theta-slider').oninput = (e) => {
   theta = parseInt(e.target.value) / 10;
@@ -3317,6 +4791,13 @@ function setModeButtons() {
 // ---- MAIN LOOP ----
 let lastTime = performance.now();
 let frameCount = 0, fps = 0;
+// Phase 10.5: adaptive detail budget. The fracture LOD law (N = rho*r_px^2)
+// at 4K demands ~114k splats at the default planet view — measured 38.5 fps,
+// falsifier tripped. The budget adapts: EMA fps below 55 shrinks it 3%/frame,
+// headroom grows it back toward uncapped. At 720p60 it never engages, so the
+// D1/D2 law assertions (720p, law-exact counts) are untouched.
+let fpsEma = 60;
+let fractureBudget = MAX_PARTICLES;
 let prevEnergy = null;
 let gravMs = 0;
 
@@ -3333,7 +4814,23 @@ async function main() {
     $('err').style.display = 'block';
   }
 
-  spawnSystem(500);
+  // Benchmark mode: ?benchmark=N skips the planetary system and just
+  // spawns N random particles in a sphere to stress-test the tree + renderer.
+  const bmMatch = location.search.match(/\?benchmark=(\d+)/);
+  if (bmMatch) {
+    const n = parseInt(bmMatch[1], 10);
+    try {
+      spawnBenchmarkCloud(n);
+      $('sys-info').textContent = `SPIACE Benchmark — ${n.toLocaleString()} particles`;
+      console.log(`BENCHMARK: spawned ${particles.length} particles, tree will build next frame`);
+    } catch(e) {
+      console.error('BENCHMARK SPAWN ERROR:', e);
+      $('err').textContent = 'Benchmark spawn error: ' + e.message;
+      $('err').style.display = 'block';
+    }
+  } else {
+    spawnSystem(500);
+  }
   // Membrane panel (Track A1: planet membrane info; clock is per-frame
   // from measureFlight — Track T — set in the loop)
   $('mem-depth').textContent = '0';
@@ -3346,11 +4843,16 @@ async function main() {
     window.__frames = frameCount;
     lastRawDt = Math.max(rawDt, 1e-3); // wall dt for camera-velocity estimate
     reanchorTerrain(); // Phase 10: terrain rides its (possibly moved) core
+    updateTeddy(Math.min(rawDt, 0.05)); // bear agent: physics + splat placement
     window.__sample = () => ({ p1: [...particles[1].pos], v1: [...particles[1].vel] });
     if (frameCount % 10 === 0) {
       fps = Math.round(1 / Math.max(rawDt, 1e-6));
       $('fps').textContent = fps + ' fps';
     }
+    fpsEma = fpsEma * 0.95 + (1 / Math.max(rawDt, 1e-6)) * 0.05;
+    if (fpsEma < 55) fractureBudget = Math.max(1000, fractureBudget * 0.97);
+    else if (fpsEma > 58 && fractureBudget < MAX_PARTICLES)
+      fractureBudget = Math.min(MAX_PARTICLES, fractureBudget * 1.03);
 
     const t0 = performance.now();
 
@@ -3479,11 +4981,19 @@ async function main() {
                             alt: character.alt, gap: charGap(), speed,
                             grounded: character.grounded, mode: 'foot',
                             planet: character.planet, pos: charWorldPos() };
+    } else if (shipMode) {
+      // Phase 11: the ship steps AFTER the tree physics (fresh planet cores).
+      // The camera rides 2 m above the hull along the current local up.
+      stepShip(dt);
+      if (shipMode) { // may have auto-landed into foot mode mid-step
+        camPos = [ship.pos[0] + curUp[0]*2, ship.pos[1] + curUp[1]*2, ship.pos[2] + curUp[2]*2];
+        window.__charInfo = { active: false, mode: 'ship' };
+      }
     } else {
       window.__charInfo = { active: false, mode: 'flight' };
     }
-    if (!footMode) {
-      const f = camForward(), r = camRight(), u = curUp;
+    if (!footMode && !shipMode) {
+      const f = camForward(), r = camRight(), u = effUp();
       const step = fl.speed * rawDt;
       let mx = 0, my = 0, mz = 0;
       if (keys['KeyW']) { mx += f[0]; my += f[1]; mz += f[2]; }
@@ -3492,7 +5002,13 @@ async function main() {
       if (keys['KeyA']) { mx -= r[0]; my -= r[1]; mz -= r[2]; }
       if (keys['Space'])      { mx += u[0]; my += u[1]; mz += u[2]; }
       if (keys['ShiftLeft'])  { mx -= u[0]; my -= u[1]; mz -= u[2]; }
+      if (keys['KeyQ']) camRoll += 1.5 * rawDt; // third DOF: roll about the view axis
+      if (keys['KeyE']) camRoll -= 1.5 * rawDt;
       camPos[0] += mx * step; camPos[1] += my * step; camPos[2] += mz * step;
+    } else if (camRoll !== 0) {
+      // Foot/ship: the membrane owns up (Track B) — auto-level the roll.
+      camRoll *= Math.pow(0.02, rawDt);
+      if (Math.abs(camRoll) < 1e-3) camRoll = 0;
     }
 
     // B4: focus/frame — fly to framing distance and track the particle
@@ -3523,7 +5039,8 @@ async function main() {
       $('fly-focus').textContent = focusIdx >= 0 ? '#' + focusIdx : 'none (F)';
       // Track E: foot-mode rows
       const ci = window.__charInfo;
-      $('fly-mode').textContent = footMode ? 'foot (G/Esc to fly)' : 'flight (G to land)';
+      $('fly-mode').textContent = footMode ? 'foot (G/Esc to fly, T launch)'
+        : (shipMode ? 'ship (T exit, W burn)' : 'flight (G to land, T ship)');
       $('fly-gap').textContent = footMode && ci ? ci.gap.toFixed(4) + ' m' : '--';
       $('fly-cspeed').textContent = footMode && ci ? ci.speed.toFixed(2) + ' m/s' : '--';
       $('mem-clock').textContent = fl.clock.toFixed(2) + 'x';
@@ -3534,6 +5051,28 @@ async function main() {
           ' | dv ' + fmtSpeed(tr.relSpeed) +
           ' | TCA ' + (isFinite(tr.tca) ? fmtTime(tr.tca) : 'receding')
         : '--';
+      // Phase 11: ship telemetry rows
+      if (shipMode) {
+        const nearS = nearestPlanetTo(ship.pos);
+        const plS = planets[nearS.i];
+        const vrm = Math.hypot(ship.vel[0]-plS.core.vel[0], ship.vel[1]-plS.core.vel[1],
+                               ship.vel[2]-plS.core.vel[2]);
+        $('ship-mode').textContent = shipAutoTarget >= 0
+          ? 'auto->' + planets[shipAutoTarget].name + ' ' + shipAutoPhase : 'manual';
+        $('ship-fuel').textContent = (ship.fuel / 1000).toFixed(1) + ' t';
+        $('ship-dv').textContent = (SHIP_VE * Math.log(shipMass() / SHIP_DRY) / 1000).toFixed(2) + ' km/s';
+        $('ship-vair').textContent = fmtSpeed(vrm);
+        const rhoS = atmoDensity(nearS.i, Math.max(nearS.surf, 0));
+        $('ship-q').textContent = (0.5 * rhoS * vrm * vrm).toExponential(1) + ' Pa';
+        $('ship-skin').textContent = ship.skinT.toFixed(0) + ' K (peak ' + ship.peakSkinT.toFixed(0) + ')';
+      } else {
+        $('ship-mode').textContent = 'off (T)';
+        $('ship-fuel').textContent = '--';
+        $('ship-dv').textContent = '--';
+        $('ship-vair').textContent = '--';
+        $('ship-q').textContent = '--';
+        $('ship-skin').textContent = '--';
+      }
       $('mem-extent').textContent = (fl.membrane >= 0 ? planets[fl.membrane].radius : SYSTEM_EXTENT).toExponential(2) + ' m';
       // Phase 10 witness: the system snapshot the test polls
       window.__systemStats = {

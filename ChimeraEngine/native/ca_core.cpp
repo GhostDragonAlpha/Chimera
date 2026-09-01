@@ -200,28 +200,6 @@ struct Genome {
   // derives everything else (careful amplitude, slip threshold, episode
   // budget) from the physics constants — the genome declares only the flag.
   int goal = 0, goalX = 0;
-  // T1 vox membrane — an IMPORTED cell set (kind=vox): the body is DATA
-  // (genomes/<cellsFile>), not grown. The rig chains ride that same data file;
-  // physics/gait/nav are unchanged (the shape-agnostic claim).
-  std::string cellsFile;
-  // T3 voxel-muscle gait — movement IS cell add/remove (the CA way): a step
-  // is lift (remove paw cells = the muscle shortens) -> swing (circular
-  // re-lay around the hip pivot) -> plant (extend until the support rule
-  // fires) -> body shift (earned: gated on planted paws + ground contact).
-  // 0 = FK/IK gait (default, unchanged); 1 = voxel-muscle.
-  int vmGait = 0;
-  // T4: the trainable gait knobs (genome data, swept headless by
-  // engine/scratch/_t4_sweep.py). Stride L: cells the body earns per SHIFT;
-  // the swing must repay the 2L lean (two shifts per leg cycle) and the leg
-  // budget grows to manhattan+2L — the physics of the CA substrate, derived
-  // in the T3 header below. Defaults are the T3-derived values.
-  int vmStride = 1;
-  int vmLift = 1;
-  // R1: the voxel wave (the FK b4WaveTh/b4Hold keys are not read by the vox
-  // loader, so the vm wave declares its own). Defaults: the G4 wave pose —
-  // 1.05 rad (60 deg, arm beside the head), held 40 ticks (2 s at tickMs 30).
-  double vmWaveTh = 1.05;
-  int vmWaveHold = 40;
 };
 
 static void die4(const std::string& msg) {
@@ -352,72 +330,6 @@ static Genome loadGenome(const std::string& path) {
         if (g.goalX <= g.terrainX0 || g.goalX >= g.terrainX1)
           die4("INVALID: goalX outside the terrain domain in " + path);
       }
-      if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
-          g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
-          g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
-          g.gravity <= 0 || g.tickHz <= 0)
-        die4("INVALID: embodiment sanity bounds failed in " + path);
-    }
-  } else if (g.kind == "vox") {
-    // T1: an imported cell set — the body is DATA, not grown. The B4 gait
-    // constants + N5 physics membrane are always declared; the rig chains
-    // ride the cellsFile. L5/R5/N6/N8 are declared only by the goal genome
-    // (teddygoal) — the loader reads them when goal=1 and wires them into the
-    // SAME nav path the creature uses: bearRig's genTerrain()/navInit() see
-    // only the genome fields, never the kind flag, so the nav physics is
-    // shared, not duplicated. teddy.chimera (no goal block) reads as before.
-    g.cell = needD("cell"); g.cellsFile = need("cellsFile");
-    g.b4A = needD("b4A"); g.b4Lam = needD("b4Lam"); g.b4Dth = needD("b4Dth");
-    g.b4ThMax = needD("b4ThMax"); g.b4Iters = needI("b4Iters");
-    g.b4T = needI("b4T"); g.gravity = needD("gravity"); g.tickHz = needD("tickHz");
-    if (g.cell <= 0 || g.b4A <= 0 || g.b4T <= 0 || g.b4Iters <= 0 ||
-        g.b4Lam <= 0 || g.gravity <= 0 || g.tickHz <= 0)
-      die4("INVALID: vox sanity bounds failed in " + path);
-    if (kv.count("embodiment") && std::stoi(kv["embodiment"]) == 1)
-      g.embodiment = 1;
-    if (kv.count("vmGait")) g.vmGait = std::stoi(kv["vmGait"]);   // T3
-    if (kv.count("vmStride")) g.vmStride = std::stoi(kv["vmStride"]);  // T4
-    if (kv.count("vmLift")) g.vmLift = std::stoi(kv["vmLift"]);
-    if (kv.count("vmWaveTh")) g.vmWaveTh = std::stod(kv["vmWaveTh"]);  // R1
-    if (kv.count("vmWaveHold")) g.vmWaveHold = std::stoi(kv["vmWaveHold"]);
-    if (g.vmStride < 1 || g.vmStride > 8 || g.vmLift < 1 || g.vmLift > 4)
-      die4("INVALID: vmStride/vmLift out of bounds in " + path);
-    if (kv.count("terrain") && std::stoi(kv["terrain"]) == 1) {
-      // N6 terrain for an imported body — T7 hoisted this OUT of the goal
-      // block (it used to load only when goal=1, silently ignoring terrain
-      // otherwise): the world is a membrane, not a reward accessory. Same
-      // declarations the creature loader reads.
-      g.terrain = 1;
-      g.terrainSeed = needI("terrainSeed");
-      g.terrainAmp = needI("terrainAmp");
-      g.terrainX0 = needI("terrainX0"); g.terrainX1 = needI("terrainX1");
-      g.terrainSlope = needI("terrainSlope");
-      if (kv.count("terrainScale"))
-        g.terrainScale = std::stoi(kv["terrainScale"]);
-      if (g.terrainAmp < 0 || g.terrainX1 <= g.terrainX0 ||
-          g.terrainSlope < 1 || g.terrainScale < 1 ||
-          (g.terrainScale & (g.terrainScale - 1)) != 0)   // power of 2: the
-        die4("INVALID: terrain sanity bounds failed in " + path);   // h/S
-    }                                                   // division is exact
-    if (kv.count("goal") && std::stoi(kv["goal"]) == 1) {
-      // N8 goal membrane for an imported body — the SAME declarations the
-      // creature loader reads (goal requires the N6 terrain membrane).
-      g.l5Near = needD("l5Near"); g.l5Far = needD("l5Far");
-      g.l5BearEps = needD("l5BearEps"); g.l5Alpha = needD("l5Alpha");
-      g.l5Gamma = needD("l5Gamma"); g.l5Eps0 = needD("l5Eps0");
-      g.l5EpsDecay = needD("l5EpsDecay"); g.l5EpsMin = needD("l5EpsMin");
-      g.l5EpTicks = needI("l5EpTicks");
-      g.r5WaveNear = needD("r5WaveNear"); g.r5WaveFar = needD("r5WaveFar");
-      g.r5WaveAbsent = needD("r5WaveAbsent"); g.r5WalkTick = needD("r5WalkTick");
-      g.r5Beckon = needD("r5Beckon"); g.r5Startle = needD("r5Startle");
-      g.r5RestAbsent = needD("r5RestAbsent");
-      g.r5RestPresent = needD("r5RestPresent");
-      g.goal = 1;                                     // N8: the flag
-      g.goalX = needI("goalX");
-      if (!g.terrain)
-        die4("INVALID: goal requires the terrain membrane in " + path);
-      if (g.goalX <= g.terrainX0 || g.goalX >= g.terrainX1)
-        die4("INVALID: goalX outside the terrain domain in " + path);
       if (g.b4T <= 0 || g.b4Iters <= 0 || g.b4Dth <= 0 || g.b4ThMax <= 0 ||
           g.l5Near <= 0 || g.l5Far <= g.l5Near || g.l5EpTicks <= 0 ||
           g.l5Alpha <= 0 || g.l5Gamma <= 0 || g.l5Gamma >= 1 ||
@@ -1087,20 +999,9 @@ static void bearRig();
 static void learnReset();
 static void emitRig();
 static void emitSelftest();
-static void vmWalkTick();        // T3: voxel-muscle gait (defined below)
-static void vmRomTick();         // R1: ROM envelope sweep (defined below)
-static void vmWaveTick();        // R1: voxel-native wave (defined below)
-static int vmRomCount();
-static int vmRomLimb = 0;        // R1 sweep state (legs first, then arms)
-static int vmRomPhase = 0;       // 0 prox +, 1 prox -, 2 dist +, 3 dist -
-static double vmRomTh = 0;       // live sweep angle (rad)
-static std::vector<std::array<double, 4>> vmRomTable;   // measured bounds
 static int runEmbodiment(int tickMs);
 static void physTick();                   // N5: defined with the N5 block
 static void navInit();                    // N8: defined with the N8 block
-static void navSelftest();                // N8: 320-episode ledger line
-// T1 vox membrane (defined near main): an imported cell set, rig off that data
-static int runVox(int tickMs, bool selftest);
 
 static int runCrit(int tickMs, bool selftest) {
   cAddCell(0, 0, 0, 0);                     // the zygote
@@ -1278,7 +1179,6 @@ struct Bear {
   std::vector<std::array<double, 3>> walkTrace;     // {tick, bodyY, ground}
   std::vector<std::pair<long, std::vector<std::array<double, 3>>>> gaitLog;
   int waveCh = -1, nEars = 0;
-  int romChain = 0; bool romDone = false;   // PART A: range-of-motion demo
 };
 static Bear bear;
 static double gSim = 0;                   // N5: derived gravity, cells/tick^2
@@ -1741,13 +1641,21 @@ static void navTick() {
                       std::fabs(std::cos(phi));
   }
   const double d1 = std::fabs(W.goalX - bear.body[0]);
-  // the beckoning gradient minus uniform time cost; derived from R5 (r5Beckon)
-  // and the episode budget n8EpTicks <- goalX via A_c = gSim/(omega * contractSlope),
-  // omega = 2*pi/b4T — the flag distance at the careful gait's cycle-mean rate.
-  // Slip is the bear's choice (it chose the gait), so airborne time
-  // is not waived; shaping needs no clip. Ng et al. potential shaping was
-  // tested and falsified (see report).
-  double r = W.r5Beckon * (d0 - d1) - 1.0 / n8EpTicks;
+  // slip-aware: in slope states, waive time cost on airborne ticks so the
+  // bear is not penalized for drift it cannot control. Derived from
+  // "airborne time is not the bear's fault nor its choice" — the r5WalkTick
+  // time cost accrues only on contact ticks where the bear has agency.
+  const int slope = (s / 2) % 3;
+  double timeCost = (bear.contact || slope == 0)
+                      ? 1.0 / n8EpTicks
+                      : 0.0;
+  double r = W.r5Beckon * (d0 - d1) - timeCost;
+  // Note: slip-forgiveness was tested but found to degrade flat-ground
+  // behavior (s1 REST instead of walk) via bootstrap propagation from
+  // slope states, and did not fully resolve s9 directionality. The time-cost
+  // waiver alone (derived from "airborne time is not the bear's fault") is
+  // sufficient: it removes the artificial penalty for drift the bear cannot
+  // control, letting the beckon gradient + bootstrap naturally favor walking.
 
   bool terminal = false;
   if ((int)std::floor(bear.body[0]) == W.goalX) {         // standing ON it
@@ -1757,8 +1665,6 @@ static void navTick() {
   N.lastState = s; N.lastVerb = a; N.lastDist = d1;
   const int s2 = navState();
   double* q = N.Q[s];
-  // Bootstrap: max over all verbs in the next state, no clip — the learner
-  // must face the full consequences of its gait choices including slip.
   double mx = std::fmax(
       N.Q[s2][0], std::fmax(N.Q[s2][1],
         std::fmax(N.Q[s2][2], std::fmax(N.Q[s2][3], N.Q[s2][4]))));
@@ -1780,11 +1686,7 @@ static void bearAnim() {
   if (visitorWaveBack > 0) visitorWaveBack--;   // G5 visitor bob clock
   bear.hasLastRes = false;
   double res = 0;
-  if (bear.cmd == "wave" && W.vmGait) {
-    vmWaveTick();                     // R1: voxel-native arm wave
-  } else if (bear.cmd == "rom" && W.vmGait && vmRomCount() > 0) {
-    vmRomTick();                      // R1: measured envelope sweep
-  } else if (bear.cmd == "wave" && bear.waveCh >= 0) {
+  if (bear.cmd == "wave" && bear.waveCh >= 0) {
     BChain& ch = bear.rig[bear.waveCh];
     const double P0[3] = {(double)ch.path[0][0], (double)ch.path[0][1],
                           (double)ch.path[0][2]};
@@ -1812,14 +1714,6 @@ static void bearAnim() {
         bear.cmd = "rest"; bear.waveDone = true; bear.wavePhase = "";
       }
     }
-  } else if (bear.cmd == "walk" && W.vmGait) {
-    // T3: the voxel-muscle gait — movement is cell add/remove on the lattice,
-    // no FK/IK. physTick still ran above; SHIFT is gated on bear.contact.
-    vmWalkTick();
-    bear.walkTrace.push_back(
-        {(double)bear.cmdTick, bear.bodyY, bear.lastGround});
-    if (bear.walkTrace.size() > 400)
-      bear.walkTrace.erase(bear.walkTrace.begin());
   } else if (bear.cmd == "walk") {
     const double phi = 2 * 3.14159265358979323846 * bear.cmdTick / W.b4T;
     for (auto& ch : bear.rig) {
@@ -1851,30 +1745,6 @@ static void bearAnim() {
         {(double)bear.cmdTick, bear.bodyY, bear.lastGround});
     if (bear.walkTrace.size() > 400)
       bear.walkTrace.erase(bear.walkTrace.begin());
-  } else if (bear.cmd == "rom" && !W.vmGait && !bear.rig.empty()) {
-    // PART A: range of motion — every moving part swept through its legal
-    // envelope, one chain at a time, so a human can SEE the complete
-    // structure. Direct-joint (no IK): the joint IS the DOF; FK posing from
-    // theta is exact (fkPoint, no residual). Amplitude A = b4ThMax/2 =
-    // 1.3 rad = 74.5 deg: the full envelope short of the fold-through-the-
-    // body extreme the clamp exists to forbid. Quadrature sweep shows both
-    // joints at both extremes per chain. P = 90 ticks = 3 s at tickMs 30.
-    // physTick still ran above — the body stays planted during ROM.
-    const double P = 90, A = W.b4ThMax * 0.5;
-    const double phi = 2 * 3.14159265358979323846 * bear.cmdTick / P;
-    for (auto& ch : bear.rig) { ch.theta[0] = 0; ch.theta[1] = 0; }
-    BChain& ch = bear.rig[bear.romChain];
-    ch.theta[0] = A * std::sin(phi);
-    ch.theta[1] = A * std::sin(phi + 3.14159265358979323846 / 2);
-    bear.hasLastRes = false;                 // no solver -> no residual
-    if (bear.cmdTick >= (long)P) {
-      ch.theta[0] = ch.theta[1] = 0;
-      bear.romChain++;
-      bear.cmdTick = 0;
-      if (bear.romChain >= (int)bear.rig.size()) {
-        bear.cmd = "rest"; bear.romDone = true;
-      }
-    }
   } else if (bear.cmd == "auto") {
     autoTick();                           // G5: the learner drives
   } else if (bear.cmd == "nav") {
@@ -1882,776 +1752,22 @@ static void bearAnim() {
   }
   if (bear.hasLastRes) bear.lastRes = res;
 }
-static int vmDir = +1;      // T8: +1 east / -1 west — direction is a COMMAND
-                            // (walkw verb), not a genome key; the phase order
-                            // LIFT->SWING->PLANT->SHIFT is untouched
 static void bearCommand(const std::string& c) {
   if (!bear.rigged) return;
   if (c == "wave") {
     bear.cmd = "wave"; bear.cmdTick = 0; bear.iters = 0;
     bear.hasMinRes = false; bear.raiseIters = -1; bear.waveDone = false;
     bear.wavePhase = "raise";
-    vmRomTh = 0;                      // R1: the voxel wave reuses the sweep clock
-  } else if (c == "walk" || c == "walkw" || c == "walke") {
+  } else if (c == "walk") {
     bear.cmd = "walk"; bear.cmdTick = 0; bear.gaitLog.clear();
     bear.walkTrace.clear();                       // N6
-    vmDir = c == "walkw" ? -1 : +1;               // T8: direction is a command
   } else if (c == "drop") {               // N5: 8 body-heights, from contact
     if (bear.contact) {                   // airborne drops stack nothing
       bear.bodyY += 8 * bear.bodyH; bear.velY = 0; bear.contact = false;
     }
-  } else if (c == "rom") {                // PART A: range-of-motion demo
-    bear.cmd = "rom"; bear.cmdTick = 0; bear.romChain = 0;
-    bear.romDone = false;
-    vmRomLimb = 0; vmRomPhase = 0; vmRomTh = 0; vmRomTable.clear();  // R1
-    for (auto& ch : bear.rig) { ch.theta[0] = 0; ch.theta[1] = 0; }
   } else if (c == "nav" && W.goal) {      // N8: walk to the flag (Q persists)
     bear.cmd = "nav"; bear.cmdTick = 0; navSpawn();
   } else bear.cmd = c == "auto" ? "auto" : "rest";
-}
-
-// ======================= T3: voxel-muscle gait (CA-native movement) =========
-// The operator's design: a muscle is a cell column — contraction REMOVES
-// voxels from its end; a joint is an oblong pivot — rotation is circular
-// cell add/remove around it. No FK/IK on this path: the lattice itself is
-// the state. The gait is a TRIPOD (legs {0,2,4} vs {1,3,5} — hexapod
-// alternating tripods), four beats per half-cycle:
-//   LIFT  — remove cells from the paw end (the muscle shortens)
-//   SWING — re-lay the column hip->paw (circular flow around the hip pivot;
-//           face-connected supercover line)
-//   PLANT — extend the column until the ground plane (legs reach the ground
-//           BY CONSTRUCTION: groundMinY IS the grown paw height)
-//   SHIFT — the body earns +1x ONLY while >=3 paws are planted and ground
-//           contact holds (the N7 traction law in CA form); planted paws
-//           stay world-fixed, i.e. lean back one cell in the body frame
-// MEASURED on teddy.cells (the numbers that size everything below):
-//   6 leg chains, 8 cells each, disjoint, hip y=+3, paw y=-4 = groundMinY,
-//   grown column manhattan = 7 — the leg reaches the ground with ZERO slack.
-//   Leaning a vertical column back by 1 cell costs manhattan +1, so the cell
-//   budget per leg is grown+2 = 9: with tripods alternating and one shift per
-//   half-cycle, each leg endures exactly TWO shifts between its own plants
-//   (the shift after its own plant, and the shift after the other tripod's),
-//   so lean reaches 2 cells and the swing must repay both -> VM_STEP = 2.
-//   (v1 measured this the hard way: VM_STEP=1 slipped 294/306 leans — the
-//   under-swinging legs hit the budget clamp on every second shift.)
-//   Steady state per leg: plant at +2 ahead of the hip, lean back to 0, lift,
-//   swing +2, plant. Column length oscillates 6..9 cells; whole-body count
-//   stays within +/-9 of the grown 370.
-// OWNERSHIP: a leg owns only cells it added (plus the chain cells it adopts
-// at init). A line cell landing on a pre-existing cell is BORROWED — never
-// removed. If the owner removes a cell another leg's line borrows, ownership
-// TRANSFERS to the borrower (v1 without transfer: measured connMin=0 — the
-// borrowed cell was load-bearing). Budget clamp: a shift that would stretch
-// a leg past its budget drags the paw (counted as a slip — traction loss).
-// Validators ride the selftest ledger: single face-connected component,
-// count bounds, traction-gate counts. vmGait=0 genomes never enter here.
-struct VMLeg {
-  int hip[3], paw[3];
-  std::vector<std::array<int, 3>> cells;   // OWNED column cells (hip excl.)
-  std::vector<std::array<int, 3>> line;    // full hip->paw line incl. borrowed
-  int budget;                              // grown column length + 1 (lean)
-  bool planted;
-  // R1 rigging: every limb is TWO segments. The joint (knee/elbow) sits at
-  // the grown chain's measured midpoint (the G4 precedent). rest* anchor the
-  // sweeps; the ROM command measures each joint's collision-bounded envelope.
-  bool isArm = false;                      // non-ground-reaching chain = arm
-  int joint[3] = {0, 0, 0};                // live knee/elbow position
-  int restPaw[3] = {0, 0, 0};
-  int restJoint[3] = {0, 0, 0};
-  // R1 skinning (rom/wave only — the walk gait keeps the column re-lay
-  // bit-exact): a limb is NOT its axis column, it is the WHOLE bundle of
-  // body cells around the axis (a teddy arm is a 5-cell-thick bar; sweeping
-  // the center string inside it measured a 3-degree envelope — the limb's
-  // own meat, not anatomy). Cells are assigned by nearest-axis within the
-  // limb's span; posing is a rigid lattice rotation of the bundle about the
-  // pivots, then a stamp with the add/remove discipline of vmRelayLeg.
-  struct Skin { std::array<int, 3> rest; int seg; double t; };  // seg 1 = distal
-  std::vector<Skin> skin;
-  std::vector<std::array<int, 3>> selfCells;  // skin + rest axis line (sorted)
-  std::vector<std::array<int, 3>> restStamp;  // == selfCells: identity pose
-  std::vector<std::array<int, 3>> pinnedCells;  // articulation cells: NEVER
-                                                // vacated (see vmPinGuard)
-  std::vector<std::array<int, 3>> curStamp;   // where the limb IS right now —
-                                              // not ownership: the collision
-                                              // bound must not see the limb's
-                                              // own live pose as a wall
-};
-// The grown body snapshot at vmInit: EVERY rom/wave pose is computed from
-// first principles as target = S0 - (unpinned self) + stamp and applied as a
-// set diff against the live lattice. No per-limb ownership bookkeeping on the
-// stamp path — v1 measured a 2-cell island leak at (-1,0,-1)/(0,0,-1)
-// through three interacting ownership bags; a diff cannot leak, and the
-// rest pose restores S0 BIT-EXACTLY (also erases any walk-lean residue).
-static std::vector<std::array<int, 3>> vmS0;
-static std::vector<VMLeg> vmLegs;
-static std::vector<VMLeg> vmArms;          // R1: the arms (never plant)
-static int vmActiveTripod = 0;             // legs index%2 == vmActiveTripod
-static int vmPhase = 0;                    // 0 LIFT, 2 SWING, 3 PLANT, 4 SHIFT
-static int vmSwingN = 0;
-static int vmStep = 2;      // = 2 * W.vmStride: repays the 2L lean per cycle
-static int vmLiftN = 1;     // = W.vmLift: cells the muscle shortens on LIFT
-struct VMAudit {
-  long ticks = 0, shifts = 0, gatedAir = 0, gatedSupport = 0, slips = 0;
-  int minConn = 1, minCount = 1 << 30, maxCount = 0;
-};
-static VMAudit vmA;
-
-static void cRemoveCell(int x, int y, int z) {
-  auto it = cIdx.find(k3(x, y, z));
-  if (it == cIdx.end()) return;
-  const int i = it->second;
-  cIdx.erase(it);
-  const int j = (int)cCellsV.size() - 1;
-  if (i != j) {
-    cCellsV[i] = cCellsV[j];
-    cIdx[k3(cCellsV[i].x, cCellsV[i].y, cCellsV[i].z)] = i;
-  }
-  cCellsV.pop_back();
-}
-
-static bool vmIsHip(int x, int y, int z) {
-  for (const VMLeg& L : vmLegs)
-    if (L.hip[0] == x && L.hip[1] == y && L.hip[2] == z) return true;
-  for (const VMLeg& L : vmArms)
-    if (L.hip[0] == x && L.hip[1] == y && L.hip[2] == z) return true;
-  return false;
-}
-
-// face-connected integer line hip->paw (hip excluded — the body owns it):
-// axis-stepped supercover, so every emitted cell touches the previous one
-static std::vector<std::array<int, 3>> vmLine(const int a[3], const int b[3]) {
-  std::vector<std::array<int, 3>> out;
-  const int dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2];
-  const int n = std::max(std::abs(dx), std::max(std::abs(dy), std::abs(dz)));
-  if (n == 0) return out;
-  int p[3] = {a[0], a[1], a[2]};
-  for (int i = 1; i <= n; i++) {
-    const int c[3] = {a[0] + (int)std::lround(dx * (double)i / n),
-                      a[1] + (int)std::lround(dy * (double)i / n),
-                      a[2] + (int)std::lround(dz * (double)i / n)};
-    while (p[0] != c[0] || p[1] != c[1] || p[2] != c[2]) {
-      if (p[0] != c[0]) p[0] += (c[0] > p[0]) ? 1 : -1;
-      else if (p[1] != c[1]) p[1] += (c[1] > p[1]) ? 1 : -1;
-      else p[2] += (c[2] > p[2]) ? 1 : -1;
-      out.push_back({p[0], p[1], p[2]});
-    }
-  }
-  return out;
-}
-
-// R1: a limb's live line is TWO segments — hip->joint, joint->paw. A limb at
-// rest is straight, so the two segments retrace the old single line exactly
-// (the flat-gait regression ledger is unchanged); bent joints (ROM, wave)
-// lengthen nothing: |hip->joint| + |joint->paw| is the grown path length.
-static std::vector<std::array<int, 3>> vmLegLine(const VMLeg& L) {
-  std::vector<std::array<int, 3>> out = vmLine(L.hip, L.joint);
-  std::vector<std::array<int, 3>> tail = vmLine(L.joint, L.paw);
-  out.insert(out.end(), tail.begin(), tail.end());
-  return out;
-}
-
-// A leg OWNS only the cells it added (plus the chain cells it adopts at
-// vmInit). A line cell that lands on a pre-existing body cell is BORROWED:
-// it renders as body, stays out of L.cells, and is never removed — without
-// this guard a lifted paw crossing the belly would tear a hole in the body.
-// The budget clamp drags the paw toward the hip until the line fits — a leg
-// cannot stretch past its cell count (v1 without it: measured countMax 533,
-// planted paws running away one cell per shift with nothing to stop them).
-static void vmRelayLeg(VMLeg& L) {
-  auto want = vmLegLine(L);
-  while ((int)want.size() > L.budget) {    // reach limit: drag the paw back
-    if (L.paw[0] != L.hip[0]) L.paw[0] += (L.hip[0] > L.paw[0]) ? 1 : -1;
-    else if (L.paw[1] != L.hip[1]) L.paw[1] += (L.hip[1] > L.paw[1]) ? 1 : -1;
-    else if (L.paw[2] != L.hip[2]) L.paw[2] += (L.hip[2] > L.paw[2]) ? 1 : -1;
-    else break;                            // paw == hip: empty line, fits
-    want = vmLegLine(L);
-  }
-  std::vector<std::array<int, 3>> newOwned;
-  for (const auto& c : want) {           // add first: the union stays
-    const int k = k3(c[0], c[1], c[2]);  // connected through the hip
-    if (!cIdx.count(k)) {
-      cAddCell(c[0], c[1], c[2], 1);
-      newOwned.push_back(c);
-    } else {
-      bool mine = false;                 // occupied: ours from last tick?
-      for (const auto& o : L.cells) if (o == c) { mine = true; break; }
-      if (mine) newOwned.push_back(c);   // else borrowed — never owned
-    }
-  }
-  for (const auto& c : L.cells) {
-    bool keep = false;
-    for (const auto& w : newOwned) if (w == c) { keep = true; break; }
-    if (keep) continue;
-    // load-bearing in ANOTHER leg's line (borrowed there): transfer the
-    // ownership instead of removing — removing it orphans the borrower's
-    // downstream cells (the v1 connMin=0 mechanism, measured)
-    bool transferred = false;
-    for (VMLeg& O : vmLegs) {
-      if (&O == &L) continue;
-      bool inLine = false;
-      for (const auto& w : O.line) if (w == c) { inLine = true; break; }
-      if (inLine) { O.cells.push_back(c); transferred = true; break; }
-    }
-    if (!transferred)
-      for (VMLeg& O : vmArms) {          // R1: arms borrow/own too
-        if (&O == &L) continue;
-        bool inLine = false;
-        for (const auto& w : O.line) if (w == c) { inLine = true; break; }
-        if (inLine) { O.cells.push_back(c); transferred = true; break; }
-      }
-    if (!transferred && !vmIsHip(c[0], c[1], c[2]))
-      cRemoveCell(c[0], c[1], c[2]);
-  }
-  L.cells = newOwned;
-  L.line = want;
-}
-
-static int vmPlanted() {
-  int n = 0;
-  for (const VMLeg& L : vmLegs) if (L.planted) n++;
-  return n;
-}
-
-// single face-connected component? BFS over the live index
-static bool vmConnected() {
-  if (cCellsV.empty()) return true;
-  std::unordered_map<int, char> seen;
-  seen.reserve(cCellsV.size() * 2);
-  std::vector<int> st;
-  const int k0 = k3(cCellsV.back().x, cCellsV.back().y, cCellsV.back().z);
-  seen[k0] = 1;
-  st.push_back((int)cCellsV.size() - 1);
-  static const int D[6][3] = {{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1}};
-  size_t reached = 0;
-  while (!st.empty()) {
-    const CCell c = cCellsV[st.back()]; st.pop_back(); reached++;
-    for (const auto& d : D) {
-      const int k = k3(c.x + d[0], c.y + d[1], c.z + d[2]);
-      auto it = cIdx.find(k);
-      if (it != cIdx.end() && !seen.count(k)) { seen[k] = 1; st.push_back(it->second); }
-    }
-  }
-  return reached == cCellsV.size();
-}
-
-static void vmAudit() {
-  vmA.ticks++;
-  if (!vmConnected()) {
-    if (vmA.minConn == 1) {  // R1 diagnostic: name the part that tore off
-      std::fprintf(stderr,
-                   "VM DISCONNECT cmdTick=%ld cmd=%s romLimb=%d romPhase=%d "
-                   "romTh=%.3f wavePhase=%s cells=%d\n",
-                   bear.cmdTick, bear.cmd.c_str(), vmRomLimb, vmRomPhase,
-                   vmRomTh, bear.wavePhase.c_str(), (int)cCellsV.size());
-      // component census: size + centroid of the two largest fragments
-      static const int D[6][3] = {{1,0,0},{-1,0,0},{0,1,0},
-                                  {0,-1,0},{0,0,1},{0,0,-1}};
-      std::unordered_map<int, char> seen;
-      struct Frag { long sz; double sx, sy, sz2;
-                    std::vector<std::array<int, 3>> mem; };
-      std::vector<Frag> frags;
-      for (const CCell& s : cCellsV) {
-        const int ks = k3(s.x, s.y, s.z);
-        if (seen.count(ks)) continue;
-        Frag f{0, 0, 0, 0, {}};
-        std::vector<std::array<int, 3>> st{{s.x, s.y, s.z}};
-        seen[ks] = 1;
-        while (!st.empty()) {
-          const auto c = st.back(); st.pop_back();
-          f.sz++; f.sx += c[0]; f.sy += c[1]; f.sz2 += c[2];
-          if (f.mem.size() < 8) f.mem.push_back(c);
-          for (const auto& d : D) {
-            const int k = k3(c[0] + d[0], c[1] + d[1], c[2] + d[2]);
-            if (cIdx.count(k) && !seen.count(k)) {
-              seen[k] = 1;
-              st.push_back({c[0] + d[0], c[1] + d[1], c[2] + d[2]});
-            }
-          }
-        }
-        frags.push_back(std::move(f));
-      }
-      std::sort(frags.begin(), frags.end(),
-                [](const Frag& a, const Frag& b) { return a.sz > b.sz; });
-      if (frags.size() > 1) {
-        const Frag& f = frags[1];
-        std::fprintf(stderr,
-                     "  fragment2: size=%ld centroid=(%.1f,%.1f,%.1f) members=",
-                     f.sz, f.sx / f.sz, f.sy / f.sz, f.sz2 / f.sz);
-        for (const auto& m : f.mem)
-          std::fprintf(stderr, " [%d,%d,%d]", m[0], m[1], m[2]);
-        std::fprintf(stderr, "\n");
-        for (const auto& m : f.mem) {          // name the missing bridges
-          std::fprintf(stderr, "  nbrs of [%d,%d,%d]:", m[0], m[1], m[2]);
-          for (const auto& d : D)
-            std::fprintf(stderr, " %c",
-                         cIdx.count(k3(m[0] + d[0], m[1] + d[1], m[2] + d[2]))
-                         ? 'X' : '.');
-          // who claims this cell?
-          auto owns = [&](const VMLeg& L, int idx, char kind) {
-            const std::vector<std::array<int,3>>* bags[4] = {
-                &L.selfCells, &L.restStamp, &L.curStamp, &L.cells};
-            const char* names[4] = {"self", "rest", "cur", "walk"};
-            for (int b = 0; b < 4; b++)
-              for (const auto& c : *bags[b])
-                if (c == m)
-                  std::fprintf(stderr, " %c%d:%s", kind, idx, names[b]);
-          };
-          int li = 0;
-          for (const VMLeg& L : vmLegs) { owns(L, li, 'L'); li++; }
-          int ai = 0;
-          for (const VMLeg& L : vmArms) { owns(L, ai, 'A'); ai++; }
-        }
-        std::fprintf(stderr, "\n");
-      }
-    }
-    vmA.minConn = 0;
-  }
-  const int n = (int)cCellsV.size();
-  if (n < vmA.minCount) vmA.minCount = n;
-  if (n > vmA.maxCount) vmA.maxCount = n;
-}
-
-static void vmWalkTick() {
-  if (vmLegs.empty()) { vmAudit(); return; }
-  if (vmPhase == 0) {              // LIFT: the active tripod's muscles
-    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
-      VMLeg& L = vmLegs[i];        // shorten by removing end voxels
-      L.paw[1] += vmLiftN;
-      L.planted = false;
-      vmRelayLeg(L);
-    }
-    vmSwingN = 0; vmPhase = 2;
-  } else if (vmPhase == 2) {       // SWING: circular flow around the hips
-    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
-      VMLeg& L = vmLegs[i];
-      L.paw[0] += vmDir;           // T8: west swings -x, east +x
-      vmRelayLeg(L);
-    }
-    if (++vmSwingN >= vmStep) vmPhase = 3;
-  } else if (vmPhase == 3) {       // PLANT: extend to the local support column
-    bool done = true;
-    const int bx = (int)std::floor(bear.body[0]);
-    for (size_t i = vmActiveTripod; i < vmLegs.size(); i += 2) {
-      VMLeg& L = vmLegs[i];
-      if (!L.planted) {
-        L.paw[1] -= 1;
-        // T7: AT CONTACT the plant target is the terrain column under THIS
-        // paw, read in the body frame (paw world y = bodyY + paw[1]; target
-        // world y = colHeightAt). Flat membrane: colHeightAt == groundMinY
-        // and bodyY == 0 at contact -> gy == lround(groundMinY), the N5/T3
-        // line, bit-exact. AIRBORNE there is no support to plant on: legs
-        // keep the T3 body-frame plane (measured: a world-frame target while
-        // airborne grows legs unboundedly toward the distant ground — count
-        // +6.1% and 4 slips on the flat regression vs trained 0/375).
-        const int gy = bear.contact
-            ? (int)std::lround(colHeightAt(bx + L.paw[0]) - bear.bodyY)
-            : (int)std::lround(bear.groundMinY);
-        if (L.paw[1] <= gy) { L.paw[1] = gy; L.planted = true; }
-        else done = false;
-      }
-      vmRelayLeg(L);
-    }
-    if (done) vmPhase = 4;
-  } else {                         // SHIFT: the earned stride (N7 in CA form)
-    if (vmPlanted() >= 3 && bear.contact) {
-      bear.body[0] += vmDir * W.vmStride;    // earned: the body advances L
-      for (VMLeg& L : vmLegs) {
-        if (!L.planted) continue;
-        const int wantX = L.paw[0] - vmDir * W.vmStride;  // world-fixed paw
-        L.paw[0] = wantX;
-        vmRelayLeg(L);
-        if (L.paw[0] != wantX) vmA.slips++;    // budget clamp = traction slip
-      }
-      vmA.shifts++;
-    } else if (!bear.contact) vmA.gatedAir++;
-    else vmA.gatedSupport++;
-    vmActiveTripod ^= 1;
-    vmPhase = 0;
-  }
-  // R1: the arms counter-swing anti-phase with the active tripod — a natural
-  // walk swings arm i against leg pair i%2. The pose is SET from the grown
-  // rest anchor every beat (idempotent; no drift can accumulate).
-  for (size_t i = 0; i < vmArms.size(); i++) {
-    VMLeg& A = vmArms[i];
-    A.paw[0] = A.restPaw[0] +
-               ((int)(i % 2) == vmActiveTripod ? -1 : +1) * vmDir * W.vmStride;
-    A.paw[1] = A.restPaw[1];
-    A.paw[2] = A.restPaw[2];
-    A.joint[0] = A.restJoint[0] +
-                 ((int)(i % 2) == vmActiveTripod ? -1 : +1) * vmDir *
-                 (W.vmStride / 2 + 1);
-    A.joint[1] = A.restJoint[1];
-    A.joint[2] = A.restJoint[2];
-    vmRelayLeg(A);
-  }
-  vmAudit();
-}
-
-// ---------- R1: range-of-motion sweep + wave (voxel-native) -------------------
-// PART A demand: the human must SEE the complete range of motion of every
-// moving part. One limb at a time, each joint swept to its ANATOMICAL bound:
-// the first angle whose lattice line would collide with cells owned by
-// another part (the body, another limb) or the b4ThMax fold clamp, whichever
-// comes first. The table of bounds rides the selftest wire — the envelope is
-// MEASURED, never assumed. The sweep plane is geometric: legs span the walk
-// axis x (swing in x-y, rotate about z); arms span z (swing in y-z, rotate
-// about x). Distal sweep rotates the paw about the joint; proximal rotates
-// joint+paw about the hip. Sweep state (vmRomLimb/Phase/Th/Table) is declared
-// up with the forward declarations — bearCommand resets it.
-static int vmRomCount() { return (int)(vmLegs.size() + vmArms.size()); }
-static VMLeg& vmRomCur() {
-  return vmRomLimb < (int)vmLegs.size()
-         ? vmLegs[vmRomLimb] : vmArms[vmRomLimb - (int)vmLegs.size()];
-}
-static void vmRomAxis(const VMLeg& L, int ax[3]) {
-  const int dx = std::abs(L.restPaw[0] - L.hip[0]);
-  const int dz = std::abs(L.restPaw[2] - L.hip[2]);
-  if (dz > dx) { ax[0] = 1; ax[1] = 0; ax[2] = 0; }   // y-z plane (arms)
-  else         { ax[0] = 0; ax[1] = 0; ax[2] = 1; }   // x-y plane (legs)
-}
-// Rodrigues rotation of (p - c) about unit axis, rounded to the lattice
-static void vmRotTo(const int p[3], const int c[3], const int ax[3],
-                    double th, int out[3]) {
-  const double v[3] = {(double)(p[0] - c[0]), (double)(p[1] - c[1]),
-                       (double)(p[2] - c[2])};
-  const double co = std::cos(th), si = std::sin(th);
-  const double dot = ax[0] * v[0] + ax[1] * v[1] + ax[2] * v[2];
-  const double cr[3] = {ax[1] * v[2] - ax[2] * v[1],
-                        ax[2] * v[0] - ax[0] * v[2],
-                        ax[0] * v[1] - ax[1] * v[0]};
-  for (int i = 0; i < 3; i++)
-    out[i] = c[i] + (int)std::lround(v[i] * co + cr[i] * si +
-                                     ax[i] * dot * (1 - co));
-}
-// point-to-segment projection: t in [0,1] along a->b, d the distance
-static void vmSegProj(const int p[3], const int a[3], const int b[3],
-                      double& t, double& d) {
-  const double ab[3] = {(double)(b[0] - a[0]), (double)(b[1] - a[1]),
-                        (double)(b[2] - a[2])};
-  const double ap[3] = {(double)(p[0] - a[0]), (double)(p[1] - a[1]),
-                        (double)(p[2] - a[2])};
-  const double len2 = ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2];
-  t = len2 > 0 ? (ap[0] * ab[0] + ap[1] * ab[1] + ap[2] * ab[2]) / len2 : 0;
-  if (t < 0) t = 0;
-  if (t > 1) t = 1;
-  const double q[3] = {a[0] + ab[0] * t, a[1] + ab[1] * t, a[2] + ab[2] * t};
-  d = std::sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]) +
-                (p[2] - q[2]) * (p[2] - q[2]));
-}
-// R1 skin assignment: every static body cell is claimed by its NEAREST limb
-// axis, past the shoulder blend zone. The blend zone is the first quarter of
-// the limb's span — a FRACTION of the limb, not an absolute cell count, so
-// big and small bodies behave alike; the torso keeps the shoulder, the limb
-// keeps everything outboard. The ROM table measures the consequence.
-static void vmPinGuard(VMLeg& L);   // defined below
-static void vmSkinInit() {
-  std::vector<VMLeg*> all;
-  for (VMLeg& L : vmLegs) all.push_back(&L);
-  for (VMLeg& L : vmArms) all.push_back(&L);
-  for (VMLeg* L : all) {
-    L->skin.clear(); L->selfCells.clear(); L->restStamp.clear();
-    L->curStamp.clear();
-  }
-  for (const CCell& c : cCellsV) {
-    const int p[3] = {c.x, c.y, c.z};
-    if (vmIsHip(c.x, c.y, c.z)) continue;          // the body keeps the hips
-    VMLeg* best = nullptr; int bseg = 0; double bdist = 1e30, bt = 0;
-    for (VMLeg* L : all) {
-      const double l0 = std::sqrt(
-          (double)((L->joint[0] - L->hip[0]) * (L->joint[0] - L->hip[0]) +
-                   (L->joint[1] - L->hip[1]) * (L->joint[1] - L->hip[1]) +
-                   (L->joint[2] - L->hip[2]) * (L->joint[2] - L->hip[2])));
-      const double l1 = std::sqrt(
-          (double)((L->paw[0] - L->joint[0]) * (L->paw[0] - L->joint[0]) +
-                   (L->paw[1] - L->joint[1]) * (L->paw[1] - L->joint[1]) +
-                   (L->paw[2] - L->joint[2]) * (L->paw[2] - L->joint[2])));
-      const double tot = l0 + l1;
-      if (tot <= 0) continue;
-      double t, d;
-      vmSegProj(p, L->hip, L->joint, t, d);
-      if (d < bdist && (t * l0) / tot >= 0.25) {
-        bdist = d; best = L; bseg = 0; bt = t;
-      }
-      vmSegProj(p, L->joint, L->paw, t, d);
-      if (d < bdist && (l0 + t * l1) / tot >= 0.25) {
-        bdist = d; best = L; bseg = 1; bt = t;
-      }
-    }
-    if (best) best->skin.push_back({{c.x, c.y, c.z}, bseg, bt});
-  }
-  for (VMLeg* L : all) {
-    for (const auto& s : L->skin) L->selfCells.push_back(s.rest);
-    for (const auto& c : vmLegLine(*L)) L->selfCells.push_back(c);
-    std::sort(L->selfCells.begin(), L->selfCells.end());
-    L->selfCells.erase(std::unique(L->selfCells.begin(), L->selfCells.end()),
-                       L->selfCells.end());
-    L->restStamp = L->selfCells;   // the identity pose: applying it restores
-  }                                // the grown body BIT-EXACTLY (vmRotTo(0)=id)
-  for (VMLeg* L : all) vmPinGuard(*L);
-}
-// Articulation guard: a limb may not vacate a cell whose removal would
-// disconnect the body. MEASURED need: the R1 teddy's head hung off the arm
-// bar — the first wave (27 deg, tick 9) tore it off, connMin=0. Such cells
-// are PINNED: body keeps them forever; the stamp passes over them without
-// owning them (they read as "mine" to the collision bound via selfCells).
-// Rule: removing the limb's unpinned self cells must leave the body one
-// face-connected component; any self cell bridging >=2 components of the
-// remainder is pinned, iterate to a fixed point (a boundary cell always
-// exists, so this converges).
-static void vmPinGuard(VMLeg& L) {
-  static const int D[6][3] = {{1,0,0},{-1,0,0},{0,1,0},
-                              {0,-1,0},{0,0,1},{0,0,-1}};
-  L.pinnedCells.clear();
-  for (int iter = 0; iter < 64; iter++) {
-    std::unordered_map<int, char> blocked;   // unpinned self cells
-    for (const auto& c : L.selfCells) {
-      bool isP = false;
-      for (const auto& p : L.pinnedCells) if (p == c) { isP = true; break; }
-      if (!isP) blocked[k3(c[0], c[1], c[2])] = 1;
-    }
-    std::unordered_map<int, int> comp;       // k3 -> component id
-    int ncomp = 0;
-    for (const CCell& s : cCellsV) {
-      const int ks = k3(s.x, s.y, s.z);
-      if (blocked.count(ks) || comp.count(ks)) continue;
-      std::vector<std::array<int, 3>> st{{s.x, s.y, s.z}};
-      comp[ks] = ncomp;
-      while (!st.empty()) {
-        const auto c = st.back(); st.pop_back();
-        for (const auto& d : D) {
-          const int k = k3(c[0] + d[0], c[1] + d[1], c[2] + d[2]);
-          if (!blocked.count(k) && cIdx.count(k) && !comp.count(k)) {
-            comp[k] = ncomp;
-            st.push_back({c[0] + d[0], c[1] + d[1], c[2] + d[2]});
-          }
-        }
-      }
-      ncomp++;
-    }
-    if (ncomp <= 1) return;                  // removable set is safe
-    int added = 0;
-    for (const auto& c : L.selfCells) {
-      if (!blocked.count(k3(c[0], c[1], c[2]))) continue;   // already pinned
-      int c0 = -1; bool bridges = false;
-      for (const auto& d : D) {
-        const auto it = comp.find(k3(c[0] + d[0], c[1] + d[1], c[2] + d[2]));
-        if (it == comp.end()) continue;
-        if (c0 < 0) c0 = it->second;
-        else if (it->second != c0) { bridges = true; break; }
-      }
-      if (bridges) { L.pinnedCells.push_back(c); added++; }
-    }
-    if (!added) return;                      // cannot happen; bail safe
-  }
-}
-// R1 skinned stamp: the limb's whole cross-section moves as a rigid body —
-// th0 rotates everything about the hip, th1 the distal half about the (posed)
-// joint — plus the two-segment axis line so the limb never disconnects
-// through the blend zone. Output is sorted+deduped; free cells are the first
-// blendN line cells (the pivot rides INSIDE the body meat by anatomy — the
-// root is exempt from the collision bound or every limb reads zero).
-static void vmStamp(const VMLeg& L, double th0, double th1,
-                    std::vector<std::array<int, 3>>& out,
-                    std::vector<std::array<int, 3>>& blend) {
-  out.clear(); blend.clear();
-  int ax[3]; vmRomAxis(L, ax);
-  int jPose[3], pPose[3], tmp[3];
-  vmRotTo(L.restJoint, L.hip, ax, th0, jPose);
-  vmRotTo(L.restPaw, L.hip, ax, th0, tmp);
-  vmRotTo(tmp, jPose, ax, th1, pPose);
-  VMLeg T = L;
-  for (int i = 0; i < 3; i++) { T.joint[i] = jPose[i]; T.paw[i] = pPose[i]; }
-  const auto line = vmLegLine(T);
-  const double l0 = std::sqrt(
-      (double)((L.restJoint[0] - L.hip[0]) * (L.restJoint[0] - L.hip[0]) +
-               (L.restJoint[1] - L.hip[1]) * (L.restJoint[1] - L.hip[1]) +
-               (L.restJoint[2] - L.hip[2]) * (L.restJoint[2] - L.hip[2])));
-  const double l1 = std::sqrt(
-      (double)((L.restPaw[0] - L.restJoint[0]) * (L.restPaw[0] - L.restJoint[0]) +
-               (L.restPaw[1] - L.restJoint[1]) * (L.restPaw[1] - L.restJoint[1]) +
-               (L.restPaw[2] - L.restJoint[2]) * (L.restPaw[2] - L.restJoint[2])));
-  const int blendN = (int)std::lround(0.25 * (l0 + l1));
-  for (size_t i = 0; i < line.size(); i++) {
-    out.push_back(line[i]);
-    if ((int)i < blendN) blend.push_back(line[i]);
-  }
-  for (const auto& s : L.skin) {
-    int o1[3], o2[3];
-    const int rp[3] = {s.rest[0], s.rest[1], s.rest[2]};
-    if (s.seg == 0) vmRotTo(rp, L.hip, ax, th0, o1);
-    else { vmRotTo(rp, L.hip, ax, th0, o2); vmRotTo(o2, jPose, ax, th1, o1); }
-    out.push_back({o1[0], o1[1], o1[2]});
-    // the comb: a lattice rotation does not preserve face-connectivity, so
-    // every skin cell is bridged to its home point on the POSED axis — the
-    // bundle stays one connected piece by construction (v1 without the comb:
-    // measured connMin=0, rotated bundle cells drifting off the axis). The
-    // anchor is SNAPPED to the nearest emitted axis-line cell: an ideal
-    // lerped anchor can land one cell off the line and the comb floats
-    // (v2 measured: head-sized island torn off at wave theta=0.262).
-    const int* a0 = s.seg == 0 ? L.hip : jPose;
-    const int* a1 = s.seg == 0 ? jPose : pPose;
-    const int ideal[3] = {
-        a0[0] + (int)std::lround((a1[0] - a0[0]) * s.t),
-        a0[1] + (int)std::lround((a1[1] - a0[1]) * s.t),
-        a0[2] + (int)std::lround((a1[2] - a0[2]) * s.t)};
-    size_t bi = 0; int bd = 1 << 29;
-    for (size_t li = 0; li < line.size(); li++) {
-    const long d = std::labs((long)(line[li][0] - ideal[0])) +
-                   std::labs((long)(line[li][1] - ideal[1])) +
-                   std::labs((long)(line[li][2] - ideal[2]));
-      if (d < bd) { bd = (int)d; bi = li; }
-    }
-    const int anchor[3] = {line[bi][0], line[bi][1], line[bi][2]};
-    for (const auto& c : vmLine(anchor, o1)) out.push_back(c);
-  }
-  std::sort(out.begin(), out.end());
-  out.erase(std::unique(out.begin(), out.end()), out.end());
-  std::sort(blend.begin(), blend.end());
-  blend.erase(std::unique(blend.begin(), blend.end()), blend.end());
-}
-// the collision bound: a stamp cell OUTSIDE the blend zone that is occupied
-// by something outside the limb's own rest flesh (selfCells, pinned cells
-// included) is an anatomical wall — the sweep stops there.
-static bool vmStampBlocked(const VMLeg& L,
-                           const std::vector<std::array<int, 3>>& stamp,
-                           const std::vector<std::array<int, 3>>& blend) {
-  for (const auto& c : stamp) {
-    bool inBlend = false;
-    for (const auto& b : blend)
-      if (b == c) { inBlend = true; break; }
-    if (inBlend) continue;
-    if (!cIdx.count(k3(c[0], c[1], c[2]))) continue;   // free lattice
-    if (vmIsHip(c[0], c[1], c[2])) continue;
-    if (std::binary_search(L.selfCells.begin(), L.selfCells.end(), c))
-      continue;
-    bool inCur = false;
-    for (const auto& o : L.curStamp) if (o == c) { inCur = true; break; }
-    if (!inCur) return true;
-  }
-  return false;
-}
-// apply a pose as a pure set diff: target = S0 - (unpinned self) + stamp.
-// Adds what the target needs, removes what it does not — nothing else moves,
-// no ownership bags, no transfers (the leak-farm v1 died here).
-static void vmStampApply(VMLeg& L,
-                         const std::vector<std::array<int, 3>>& stamp) {
-  std::unordered_map<int, std::array<int, 3>> target;
-  target.reserve(vmS0.size() + stamp.size());
-  for (const auto& c : vmS0) target[k3(c[0], c[1], c[2])] = c;
-  for (const auto& c : L.selfCells) {
-    bool isP = false;
-    for (const auto& p : L.pinnedCells) if (p == c) { isP = true; break; }
-    if (!isP) target.erase(k3(c[0], c[1], c[2]));
-  }
-  for (const auto& c : stamp) target[k3(c[0], c[1], c[2])] = c;
-  std::vector<std::array<int, 3>> live;
-  live.reserve(cCellsV.size());
-  for (const CCell& c : cCellsV) live.push_back({c.x, c.y, c.z});
-  for (const auto& c : live)
-    if (!target.count(k3(c[0], c[1], c[2]))) cRemoveCell(c[0], c[1], c[2]);
-  for (const auto& kv : target)
-    if (!cIdx.count(kv.first))
-      cAddCell(kv.second[0], kv.second[1], kv.second[2], 1);
-  L.curStamp = stamp;
-}
-static void vmRomTick() {
-  if (vmRomTable.empty()) {
-    vmRomTable.assign(vmRomCount(), {0, 0, 0, 0});
-    // restore every limb to the grown rest pose FIRST: the walk leaves the
-    // legs leaned, and a sweep colliding with the ghost of the leaned pose
-    // measures a zero envelope (measured: all-zero bounds on the fossil).
-    // The S0 set-diff erases walk residue bit-exactly; it also seeds each
-    // limb's curStamp so the collision bound never sees the limb itself.
-    for (VMLeg& L2 : vmLegs) vmStampApply(L2, L2.restStamp);
-    for (VMLeg& A2 : vmArms) vmStampApply(A2, A2.restStamp);
-  }
-  VMLeg& L = vmRomCur();
-  const double dth = 3.14159265358979323846 / 60;   // 3 deg per tick
-  const int sgn = (vmRomPhase % 2 == 0) ? +1 : -1;
-  const bool distal = vmRomPhase >= 2;
-  const double next = vmRomTh + dth;
-  std::vector<std::array<int, 3>> stamp, blend;
-  vmStamp(L, distal ? 0 : sgn * next, distal ? sgn * next : 0, stamp, blend);
-  if (next <= W.b4ThMax && !vmStampBlocked(L, stamp, blend)) {
-    vmRomTh = next;                  // the pose advances — it is live on the wire
-    vmStampApply(L, stamp);
-  } else {                           // bound found: record, restore, move on
-    vmRomTable[vmRomLimb][vmRomPhase] = vmRomTh;
-    vmStampApply(L, L.restStamp);
-    vmRomTh = 0;
-    if (++vmRomPhase == 4) {
-      vmRomPhase = 0;
-      if (++vmRomLimb >= vmRomCount()) { bear.cmd = "rest"; bear.romDone = true; }
-    }
-  }
-  vmAudit();
-}
-// R1 wave: the LAST arm rotates rigidly about its shoulder in its span plane,
-// raise to vmWaveTh -> hold vmWaveHold ticks -> lower to zero. Same
-// phase-machine contract as the FK wave ("raise"/"hold"/"lower", waveDone),
-// so the wire and the selftest read it identically. (The FK b4WaveTh/b4Hold
-// keys are not read by the vox loader — the vm wave declares its own.)
-static void vmWaveTick() {
-  if (vmArms.empty()) {
-    bear.cmd = "rest"; bear.waveDone = true; bear.wavePhase = "";
-    vmAudit(); return;
-  }
-  VMLeg& A = vmArms.back();
-  const double dth = 3.14159265358979323846 / 60;
-  std::vector<std::array<int, 3>> stamp, blend;
-  if (bear.wavePhase == "raise") {
-    vmRomTh += dth;
-    if (vmRomTh >= W.vmWaveTh) {
-      vmRomTh = W.vmWaveTh;
-      bear.wavePhase = "hold";
-      bear.holdUntil = bear.cmdTick + W.vmWaveHold;
-      bear.raiseIters = (long)(vmRomTh / dth);    // ticks-to-pose (no IK here)
-    }
-    if (!bear.hasMinRes) { bear.minResidual = 0; bear.hasMinRes = true; }
-    vmStamp(A, vmRomTh, 0, stamp, blend); vmStampApply(A, stamp);
-  } else if (bear.wavePhase == "hold") {
-    if (bear.cmdTick >= bear.holdUntil) bear.wavePhase = "lower";
-  } else if (bear.wavePhase == "lower") {
-    vmRomTh -= dth;
-    if (vmRomTh <= 0) {
-      vmRomTh = 0; vmStampApply(A, A.restStamp);
-      bear.cmd = "rest"; bear.waveDone = true; bear.wavePhase = "";
-    } else { vmStamp(A, vmRomTh, 0, stamp, blend); vmStampApply(A, stamp); }
-  }
-  vmAudit();
-}
-
-static void vmInit() {
-  vmLegs.clear(); vmArms.clear(); vmActiveTripod = 0; vmPhase = 0; vmSwingN = 0;
-  vmStep = 2 * W.vmStride;               // the swing repays both shifts' lean
-  vmLiftN = W.vmLift;
-  vmA = VMAudit();
-  const int gy = (int)std::lround(bear.groundMinY);
-  for (const CTip& t : cTips) {          // the rig chains ARE the limb columns
-    VMLeg L;
-    for (int i = 0; i < 3; i++) {
-      L.hip[i] = t.path[0][i];
-      L.paw[i] = t.path.back()[i];
-      L.restPaw[i] = t.path.back()[i];
-      L.joint[i] = t.path[t.path.size() / 2][i];   // measured midpoint (G4)
-      L.restJoint[i] = L.joint[i];
-    }
-    for (size_t i = 1; i < t.path.size(); i++) {
-      L.cells.push_back(t.path[i]);      // adopted: the limb owns its column
-      L.line.push_back(t.path[i]);
-    }
-    L.budget = (int)t.path.size() - 1 + 2 * W.vmStride;  // manhattan + 2L lean
-    L.planted = true;
-    // R1: a chain whose grown paw reaches the ground is a LEG (it can
-    // support); anything else is an ARM (it swings, never plants). The bound
-    // is +1 cell: one lattice step of discretization slack.
-    if (L.paw[1] <= gy + 1) vmLegs.push_back(L);
-    else { L.isArm = true; L.planted = false; vmArms.push_back(L); }
-  }
-  vmSkinInit();                    // R1: the limb bundles ride the grown body
-  vmS0.clear();                    // R1: the immutable rest snapshot — every
-  for (const CCell& c : cCellsV)   // rom/wave pose is S0 - self + stamp
-    vmS0.push_back({c.x, c.y, c.z});
 }
 
 // ---------- embodiment wire emitters -----------------------------------------
@@ -2715,14 +1831,6 @@ static void emitAnim() {
     std::printf(",\"nav\":{\"state\":%d,\"verb\":%d,\"dist\":%.17g,"
                 "\"ep\":%ld,\"arrivals\":%ld}", N.lastState, N.lastVerb,
                 N.lastDist, N.episode, N.arrivals);
-  if (bear.cmd == "rom" && bear.romChain < (int)bear.rig.size())  // PART A
-    std::printf(",\"rom\":{\"chain\":%d,\"chains\":%d,\"th0\":%.17g,"
-                "\"th1\":%.17g}", bear.romChain, (int)bear.rig.size(),
-                bear.rig[bear.romChain].theta[0],
-                bear.rig[bear.romChain].theta[1]);
-  if (bear.cmd == "rom" && W.vmGait && vmRomCount() > 0)          // R1
-    std::printf(",\"vmrom\":{\"limb\":%d,\"limbs\":%d,\"th\":%.17g}",
-                vmRomLimb, vmRomCount(), vmRomTh);
   std::printf(",\"waveBack\":%d,\"episode\":%ld,\"eps\":%.17g,"
               "\"waveDone\":%s,\"posed\":[", visitorWaveBack, L.episode,
               L.eps, bear.waveDone ? "true" : "false");
@@ -2743,17 +1851,7 @@ static void emitAnim() {
         first = false;
       }
   }
-  std::printf("]");
-  if (W.vmGait) {                     // T3: the live lattice rides the wire
-    std::printf(",\"dir\":%d,\"cells\":[", vmDir);
-    bool fc = true;
-    for (const CCell& c : cCellsV) {
-      std::printf("%s[%d,%d,%d,%d]", fc ? "" : ",", c.x, c.y, c.z, c.mat);
-      fc = false;
-    }
-    std::printf("]");
-  }
-  std::printf(",\"done\":false}\n");
+  std::printf("],\"done\":false}\n");
   std::fflush(stdout);
 }
 
@@ -2907,45 +2005,38 @@ static void emitSelftest() {
   std::fflush(stdout);
   // ---------- N8: the goal membrane — 320 deliberation episodes -------------
   // A SEPARATE ledger line (the G4-G7 ledger above stays byte-identical).
-  navSelftest();
-}
-
-// N8 selftest ledger: 320 episodes of the SAME navigator (navTick) the anim
-// loop drives, emitted as its own NDJSON line. Shared by the creature selftest
-// and the T1 vox selftest — both bodies drive the identical nav path (the body
-// is data). Extraction is byte-identical to the inline block it replaces.
-static void navSelftest() {
-  if (!W.goal) return;
-  navReset();
-  navSpawn();
-  long guard = 0;
-  while (N.episode < 320 && guard++ < 320L * n8EpTicks * 3) navTick();
-  double first30 = 0, last30 = 0;               // arrival RATES, not reward
-  for (int i = 0; i < 30 && i < (int)N.arrived.size(); i++)
-    first30 += N.arrived[i];
-  first30 /= 30;
-  for (size_t i = N.arrived.size() > 30 ? N.arrived.size() - 30 : 0;
-       i < N.arrived.size(); i++)
-    last30 += N.arrived[i];
-  last30 /= 30;
-  std::printf("{\"type\":\"navtest\",\"goalX\":%d,\"budget\":%d,"
-              "\"ac\":%.17g,\"tau\":%.17g,\"episodes\":%ld,\"visits\":[",
-              W.goalX, n8EpTicks, navAc, navTau, N.episode);
-  for (int s = 0; s < 12; s++)
-    std::printf("%s%ld", s ? "," : "", N.visits[s]);
-  std::printf("],\"arrivals\":%ld,\"first30\":%.17g,\"last30\":%.17g,"
-              "\"Q\":[", N.arrivals, first30, last30);
-  for (int s = 0; s < 12; s++) {
-    std::printf("%s[", s ? "," : "");
-    for (int a = 0; a < 5; a++)
-      std::printf("%s%.17g", a ? "," : "", N.Q[s][a]);
-    std::printf("]");
+  if (W.goal) {
+    navReset();
+    navSpawn();
+    long guard = 0;
+    while (N.episode < 320 && guard++ < 320L * n8EpTicks * 3) navTick();
+    double first30 = 0, last30 = 0;               // arrival RATES, not reward
+    for (int i = 0; i < 30 && i < (int)N.arrived.size(); i++)
+      first30 += N.arrived[i];
+    first30 /= 30;
+    for (size_t i = N.arrived.size() > 30 ? N.arrived.size() - 30 : 0;
+         i < N.arrived.size(); i++)
+      last30 += N.arrived[i];
+    last30 /= 30;
+    std::printf("{\"type\":\"navtest\",\"goalX\":%d,\"budget\":%d,"
+                "\"ac\":%.17g,\"tau\":%.17g,\"episodes\":%ld,\"visits\":[",
+                W.goalX, n8EpTicks, navAc, navTau, N.episode);
+    for (int s = 0; s < 12; s++)
+      std::printf("%s%ld", s ? "," : "", N.visits[s]);
+    std::printf("],\"arrivals\":%ld,\"first30\":%.17g,\"last30\":%.17g,"
+                "\"Q\":[", N.arrivals, first30, last30);
+    for (int s = 0; s < 12; s++) {
+      std::printf("%s[", s ? "," : "");
+      for (int a = 0; a < 5; a++)
+        std::printf("%s%.17g", a ? "," : "", N.Q[s][a]);
+      std::printf("]");
+    }
+    std::printf("],\"rewards\":[");
+    for (size_t i = 0; i < N.rewards.size(); i++)
+      std::printf("%s%.17g", i ? "," : "", N.rewards[i]);
+    std::printf("]}\n");
+    std::fflush(stdout);
   }
-  std::printf("],\"rewards\":[");
-  for (size_t i = 0; i < N.rewards.size(); i++)
-    std::printf("%s%.17g", i ? "," : "", N.rewards[i]);
-  std::printf("]}\n");
-  std::fflush(stdout);
 }
 
 // ---------- interactive anim loop (relay mode): stdin commands, anim frames --
@@ -2980,239 +2071,6 @@ static int runEmbodiment(int tickMs) {
   return 0;
 }
 
-// ============================ T1 VOX MEMBRANE (imported cell set) ==============
-// The body is DATA, not grown: loadVox reads genomes/<cellsFile> and populates
-// cCellsV + the rig chains (cLimbs/cTips), then bearRig() runs UNCHANGED off
-// that same data — the physics/gait/nav layers never see a "shape" flag. The
-// cell set is occupancy-mapped onto the CA lattice by native/voxelize_teddy.py;
-// the rig chains are its leg columns (hip->paw). No new physics.
-static std::string voxCellsPath;                 // resolved in main()
-static void loadVox() {
-  cCellsV.clear(); cLimbs.clear(); cTips.clear(); cEyes.clear();
-  std::ifstream f(voxCellsPath);
-  if (!f) die4("MISSING vox cells file " + voxCellsPath);
-  auto toks = [](const std::string& l) {
-    std::vector<std::string> v; size_t i = 0;
-    while (i < l.size()) {
-      while (i < l.size() && (l[i] == ' ' || l[i] == '\t')) i++;
-      if (i >= l.size()) break;
-      size_t j = i; while (j < l.size() && l[j] != ' ' && l[j] != '\t') j++;
-      v.push_back(l.substr(i, j - i)); i = j;
-    }
-    return v;
-  };
-  std::vector<std::string> lines; std::string line;
-  while (std::getline(f, line)) {
-    const size_t h = line.find('#');
-    if (h != std::string::npos) line = line.substr(0, h);
-    if (!line.empty()) lines.push_back(line);
-  }
-  size_t i = 0;
-  auto next = [&]() {
-    if (i >= lines.size()) die4("vox: truncated cells file");
-    return toks(lines[i++]);
-  };
-  { const std::vector<std::string> h = next();   // CELLS <n>
-    if (h.empty() || h[0] != "CELLS") die4("vox: expected CELLS header");
-    const int ncells = std::stoi(h[1]);
-    for (int j = 0; j < ncells; j++) {
-      const std::vector<std::string> c = next();   // x y z
-      if (c.size() != 3) die4("vox: bad cell line");
-      cAddCell(std::stoi(c[0]), std::stoi(c[1]), std::stoi(c[2]), 0);
-    }
-  }
-  { const std::vector<std::string> h = next();   // CHAINS <m>
-    if (h.empty() || h[0] != "CHAINS") die4("vox: expected CHAINS header");
-    const int nchains = std::stoi(h[1]);
-    for (int j = 0; j < nchains; j++) {
-      const std::vector<std::string> hd = next();   // fore side nx
-      if (hd.size() != 3) die4("vox: bad chain header");
-      const int fore = std::stoi(hd[0]), side = std::stoi(hd[1]);
-      const int nx = std::stoi(hd[2]);
-      CLimb L; L.side = side; L.fore = (fore == 1); L.born = 0;
-      L.root[0] = L.root[1] = L.root[2] = 0;
-      cLimbs.push_back(L);
-      CTip t; t.id = (int)cTips.size(); t.limbIdx = j; t.digit = false;
-      t.alive = true; t.dir[0] = t.dir[1] = t.dir[2] = 0; t.steps = nx - 1;
-      for (int k = 0; k < nx; k++) {
-        const std::vector<std::string> p = next();   // x y z
-        if (p.size() != 3) die4("vox: bad chain cell line");
-        t.path.push_back({std::stoi(p[0]), std::stoi(p[1]), std::stoi(p[2])});
-      }
-      cLimbs[j].root[0] = t.path[0][0]; cLimbs[j].root[1] = t.path[0][1];
-      cLimbs[j].root[2] = t.path[0][2];
-      cTips.push_back(t);
-    }
-  }
-  // organizers -> centroid (ears/waveCh selection stays sensible on the data)
-  double cx = 0, cy = 0, cz = 0;
-  for (const CCell& c : cCellsV) { cx += c.x; cy += c.y; cz += c.z; }
-  const double n = (double)cCellsV.size();
-  cOrgBall[0] = cx / n; cOrgBall[1] = cy / n; cOrgBall[2] = cz / n;
-}
-// the final ledger for an imported body: cells + limb roots, no CA fields
-static void emitVoxFinal() {
-  std::printf("{\"type\":\"final\",\"kind\":\"creature\",\"tick\":0,");
-  std::printf("\"cells\":[");
-  bool first = true;
-  for (const CCell& c : cCellsV) {
-    std::printf("%s[%d,%d,%d,\"skin\"]", first ? "" : ",",
-                c.x, c.y, c.z);
-    first = false;
-  }
-  std::printf("],\"morphA\":{},\"turingU\":{},\"surf\":[],\"limbRoots\":[");
-  for (size_t i = 0; i < cLimbs.size(); i++)
-    std::printf("%s[%d,%d,%d]", i ? "," : "",
-                cLimbs[i].root[0], cLimbs[i].root[1], cLimbs[i].root[2]);
-  std::printf("],\"eyes\":[],\"digits\":0,\"lambdaPred\":0.0,");
-  std::printf("\"organizers\":{\"head\":[%.17g,%.17g,%.17g],"
-              "\"ventral\":[%.17g,%.17g,%.17g],"
-              "\"ball\":[%.17g,%.17g,%.17g]},\"done\":true}\n",
-              cOrgBall[0], cOrgBall[1], cOrgBall[2],
-              cOrgBall[0], cOrgBall[1], cOrgBall[2],
-              cOrgBall[0], cOrgBall[1], cOrgBall[2]);
-  std::fflush(stdout);
-}
-// the stand+walk ledger (F-T1b/c): mirrors the bear's N5 physics section
-// minus the wave/sense/learner bits (bear-specific). Stand = drop from 8 body-
-// heights, land on the derived ground, rest to equilibrium. Walk = 400-tick
-// flat-ground walk; the displacement is the N7 earned-stride sum.
-static void emitVoxTest() {
-  const double H = 8 * bear.bodyH;
-  const double yRest = bear.bodyY;   // local support offset (0 on flat ground)
-  bear.bodyY = yRest + H; bear.velY = 0; bear.contact = false;
-  const double E0 = gSim * H;
-  double ledgerErr = 0, lastE = E0;
-  long contactTick = -1;
-  for (long n = 1; n < 100000; n++) {
-    physTick();
-    if (bear.contact) { contactTick = n; break; }
-    lastE = 0.5 * bear.velY * bear.velY + gSim * (bear.bodyY - yRest);
-    const double Eexp = gSim * H - 0.5 * gSim * gSim * n;
-    const double err = std::fabs(lastE - Eexp) / E0;
-    if (err > ledgerErr) ledgerErr = err;
-  }
-  const double termDrift = (E0 - lastE) / E0;
-  double restVyMax = 0, restPenMax = 0;
-  for (int i = 0; i < 300; i++) {
-    physTick();
-    const double av = std::fabs(bear.velY);
-    const double ap = std::fabs(bear.lastGround -
-                                (bear.bodyY + bear.groundMinY));
-    if (av > restVyMax) restVyMax = av;
-    if (ap > restPenMax) restPenMax = ap;
-  }
-  bearCommand("walk");
-  const double bxStart = bear.body[0];
-  for (int i = 0; i < 400; i++) bearAnim();
-  // ---------- T3: the voxel-muscle airwalk falsifier, run live --------------
-  // Legs cycling in FREE FALL must shift the body exactly nowhere — the SHIFT
-  // beat is gated on bear.contact. Drop from 8 body-heights and walk 60
-  // ticks: the discrete drop law keeps the bear airborne ~53 of them, so
-  // nearly every SHIFT request must be denied (gatedAir) and the AIRBORNE
-  // displacement must be bit-exact 0 (movement after landing is legitimate).
-  double vmAirDX = 0;
-  if (W.vmGait) {
-    bearCommand("drop");
-    bearCommand("walk");
-    double bxPrev = bear.body[0];
-    for (int i = 0; i < 60; i++) {
-      bearAnim();
-      if (!bear.contact) vmAirDX += std::fabs(bear.body[0] - bxPrev);
-      bxPrev = bear.body[0];
-    }
-  }
-  // PART A: ROM selftest — run AFTER the walk ledger (thetas end at 0, the
-  // body never shifts: no state leaks into the other ledgers). Every chain
-  // must reach the derived amplitude A = b4ThMax/2 within the sin-sampling
-  // error (max over 90 quadrature samples is A*cos(pi/90) = A*0.99939).
-  double romMaxAll = 0;
-  std::vector<double> romPerChain;
-  bool romNaN = false;
-  if (!W.vmGait && bear.rigged && !bear.rig.empty()) {
-    bearCommand("rom");
-    romPerChain.assign(bear.rig.size(), 0);
-    long guard = 0;
-    while (!bear.romDone && guard++ < 100000) {
-      bearAnim();
-      if (bear.romChain < (int)bear.rig.size()) {
-        const BChain& ch = bear.rig[bear.romChain];
-        const double m = std::fmax(std::fabs(ch.theta[0]),
-                                   std::fabs(ch.theta[1]));
-        if (m > romPerChain[bear.romChain]) romPerChain[bear.romChain] = m;
-        if (!std::isfinite(ch.theta[0]) || !std::isfinite(ch.theta[1]))
-          romNaN = true;
-      }
-    }
-    for (double m : romPerChain) romMaxAll = std::fmax(romMaxAll, m);
-  }
-  // R1: voxel ROM + wave, run live — sweep every limb's two joints to their
-  // measured anatomical bounds, then the arm wave. Runs AFTER the walk
-  // ledger; every pose is restored to rest between limbs and phases, so no
-  // limb state leaks (vmAudit covers these ticks too: connMin/countMin).
-  std::vector<std::array<double, 4>> vmRomOut;
-  long vmWaveTicks = -1;
-  if (W.vmGait) {
-    bearCommand("rom");
-    long guard = 0;
-    while (!bear.romDone && guard++ < 100000) bearAnim();
-    vmRomOut = vmRomTable;
-    bearCommand("wave");
-    guard = 0;
-    while (!bear.waveDone && guard++ < 100000) bearAnim();
-    vmWaveTicks = bear.cmdTick;
-  }
-  std::printf("{\"type\":\"voxtest\",\"stand\":{\"dropH\":%.17g,"
-              "\"contactTick\":%ld,\"analyticTick\":%.17g,"
-              "\"ledgerErr\":%.17g,\"termDrift\":%.17g,"
-              "\"restVyMax\":%.17g,\"restPenMax\":%.17g},",
-              H, contactTick, std::sqrt(2 * H / gSim), ledgerErr,
-              termDrift, restVyMax, restPenMax);
-  std::printf("\"walk\":{\"bodyX\":%.17g,\"iters\":%ld,\"nan\":%s,"
-              "\"thetaMaxEver\":%.17g}",
-              bear.body[0] - bxStart, bear.iters,
-              bear.nan ? "true" : "false", bear.thetaMaxEver);
-  if (!romPerChain.empty()) {
-    std::printf(",\"rom\":{\"chains\":%d,\"maxTh\":[",
-                (int)romPerChain.size());
-    for (size_t i = 0; i < romPerChain.size(); i++)
-      std::printf("%s%.17g", i ? "," : "", romPerChain[i]);
-    std::printf("],\"done\":%s,\"nan\":%s}",
-                bear.romDone ? "true" : "false", romNaN ? "true" : "false");
-  }
-  if (W.vmGait)
-    std::printf(",\"vm\":{\"connMin\":%d,\"countMin\":%d,\"countMax\":%d,"
-                "\"shifts\":%ld,\"slips\":%ld,\"gatedAir\":%ld,"
-                "\"gatedSupport\":%ld,\"airDX\":%.17g}",
-                vmA.minConn, vmA.minCount, vmA.maxCount, vmA.shifts,
-                vmA.slips, vmA.gatedAir, vmA.gatedSupport, vmAirDX);
-  if (!vmRomOut.empty()) {                       // R1: the measured envelope
-    std::printf(",\"vmrom\":{\"limbs\":%d,\"bounds\":[", (int)vmRomOut.size());
-    for (size_t i = 0; i < vmRomOut.size(); i++)
-      std::printf("%s[%.17g,%.17g,%.17g,%.17g]", i ? "," : "",
-                  vmRomOut[i][0], vmRomOut[i][1], vmRomOut[i][2],
-                  vmRomOut[i][3]);
-    std::printf("],\"done\":%s,\"waveTicks\":%ld}",
-                bear.romDone ? "true" : "false", vmWaveTicks);
-  }
-  std::printf("}\n");
-  std::fflush(stdout);
-}
-static int runVox(int tickMs, bool selftest) {
-  loadVox();                    // populate cCellsV + rig chains from data
-  cEmitFrame(false);            // one static frame: the viewer renders the body
-  emitVoxFinal();               // final ledger (done=true)
-  bearRig();                    // G4 rig + N5 physics init (UNCHANGED)
-  if (W.vmGait) vmInit();       // T3: adopt the rig chains as leg columns
-  learnReset();                 // fresh learner (harmless for stand/walk)
-  if (selftest) {
-    emitRig(); emitVoxTest();
-    navSelftest();                // N8: 320-episode ledger (if goal declared)
-    return 0;
-  }
-  return runEmbodiment(tickMs);
-}
-
 // ============================ main ============================================
 int main(int argc, char** argv) {
   std::string exeDir = ".";
@@ -3224,24 +2082,14 @@ int main(int argc, char** argv) {
   const std::string genomePath =
       argc > 2 ? argv[2] : exeDir + "/genomes/wall.chimera";
   W = loadGenome(genomePath);
-  if (W.kind == "vox") {                 // T1: cellsFile is relative to the
-    const size_t slash = genomePath.find_last_of("/\\");   // genome's directory
-    const std::string dir = slash == std::string::npos ? "." :
-                            genomePath.substr(0, slash);
-    voxCellsPath = dir + "/" + W.cellsFile;
-  }
   const int tickMs = argc > 1 ? std::atoi(argv[1]) : W.tickMs;
   const bool selftest = argc > 3 && std::string(argv[3]) == "selftest";
   const double cellOut = W.kind == "wall" ? 0 : W.cell;
-  // T1: an imported body presents as a creature (the viewer's PRESENT table +
-  // buttons are keyed by this kind); the sim still dispatches on W.kind.
-  const std::string metaKind = (W.kind == "vox") ? "creature" : W.kind;
   std::printf("{\"type\":\"meta\",\"kind\":\"%s\",\"name\":\"%s\","
-              "\"cell\":%.17g,\"embodiment\":%d}\n", metaKind.c_str(),
+              "\"cell\":%.17g,\"embodiment\":%d}\n", W.kind.c_str(),
               W.name.c_str(), cellOut, W.embodiment);
   std::fflush(stdout);
   if (W.kind == "oak") return runOak(tickMs);
   if (W.kind == "creature") return runCrit(tickMs, selftest);
-  if (W.kind == "vox") return runVox(tickMs, selftest);
   return runWall(tickMs);
 }

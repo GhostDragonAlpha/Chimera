@@ -193,6 +193,11 @@ class LiveViewer:
                 if self._playing:
                     with self._lock:
                         self._t = (self._t + dt * self._play_rate) % 1.0
+                # THE LIVE MARBLE IS PUMPED EVERY FRAME, not from the t playhead. A
+                # live-sim membrane (marble maze) integrates its marble under the
+                # operator's current tilt each tick; replay-only membranes ignore it.
+                if self._playing and self._loaded and self._sa.membrane_is_live(self._loaded):
+                    self._sa.membrane_live_tick(self._loaded, dt)
                 if self._sim is not None:
                     # ── THE MUJOCO STAND SIM -- the real body, standing under its policy. ──────
                     # The StandSimulator owns the physics; the viewer's only job is to step it at
@@ -989,6 +994,14 @@ def handle(handler) -> bool:
             v._paused = (qs.get("on") or ["1"])[0] not in ("0", "", "false")
         _send(handler, 200, "application/json",
               json.dumps({"paused": v._paused, "t": v._t, "ticks": v._ticks}).encode()); return True
+    if path == "/live-reset":
+        # A DECK IS ENTERED CLEAN. The live-sim marble is a module singleton; a previous
+        # visitor's run would otherwise bleed into the new board. Clear the running session
+        # (the stored record survives) so PLAY starts a fresh drop.
+        import splat_appearance as _sa
+        term = (qs.get("term") or [""])[0]
+        _sa.membrane_live_reset(term)
+        _send(handler, 204, "text/plain", b""); return True
     if path == "/invalidate" or path == "/reload":
         # THE CACHES ARE KEYED ON THE TERM ALONE and nothing in the key mentions the numbers the
         # buffer was emitted from, so after `Chimera/core/grow.py` the viewer keeps serving the buffer
@@ -1059,10 +1072,21 @@ def handle(handler) -> bool:
         kind = cmd.get("cmd")
         if kind == "toggle_play":
             with v._lock:
-                v._playing = not v._playing
+                # A deck may report its own playing flag (the marble maze is a LIVE
+                # sim: Space starts the live roll, and the membrane says whether it is
+                # now running). Honor it; fall back to a flip when it is silent.
+                if "playing" in cmd:
+                    v._playing = bool(cmd["playing"])
+                else:
+                    v._playing = not v._playing
                 if v._playing:
                     v._paused = False
-                    if v._t >= 1.0:                       # a finished record replays from the top
+                    # LIVE SIM: the marble is driven by per-frame ticks, not the t
+                    # playhead, so freeze t at 0 -- the render reads the live state,
+                    # not t. (A replay-only deck would still advance t here.)
+                    if v._sa.membrane_is_live(term):
+                        v._t = 0.0
+                    elif v._t >= 1.0:                    # a finished record replays from the top
                         v._t = 0.0
                     r = cmd.get("rate")                  # the deck's requested pace on play
                     if r is not None and abs(v._play_rate - 1.0) < 1e-9:
@@ -1076,16 +1100,25 @@ def handle(handler) -> bool:
             with v._lock:
                 v._play_rate = max(0.005, min(8.0, v._play_rate * float(cmd.get("x", 1.0))))
         elif kind == "switch":
-            # THE OPERATOR THROWS A SWITCH. The membrane already rewrote its own
-            # timeline (switches.json); the deck's only job is to drop the cached
-            # buffers so the next frame re-emits under the new matrix -- a switch
-            # is an event in the record, not a camera change.
+            # THE OPERATOR THROWS A SWITCH -- tilt the table, reset the board.
+            # For a LIVE sim the steering keys keep the marble running (they just
+            # change the live tilt); only a reset parks it.
             _sa.invalidate(term)
+            name = cmd.get("name")
             if "t" in cmd:
                 v.set_time(float(cmd.get("t", 0.0)))   # board reset: marble back to the start
                 with v._lock:
                     v._playing = False                 # reset hands the board back to the operator
                     v._paused = False
+            elif name in ("pitch_up", "pitch_down", "roll_left", "roll_right"):
+                # A live sim steers without stopping -- the marble keeps rolling under
+                # the new tilt, so playback (the per-frame tick pump) stays on.
+                if not v._sa.membrane_is_live(term):
+                    p_total = float(cmd.get("max_pass", 240)) or 240.0
+                    with v._lock:
+                        v._playing = False
+                        v._paused = False
+                    v.set_time(min(1.0, float(cmd.get("pass", 0)) / p_total))
             v.force_reload()
         with v._lock:
             deck = {"playing": v._playing, "paused": v._paused,
@@ -1173,7 +1206,7 @@ def _stream(handler):
             handler.wfile.write(f"Content-Length: {len(jpg)}\r\n\r\n".encode())
             handler.wfile.write(jpg)
             handler.wfile.write(b"\r\n")
-            time.sleep(1 / 30)
+            time.sleep(1 / 60)   # the render thread emits at 60fps; hand every frame through
     except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
         pass                                                            # the browser closed the tab -- fine
     finally:
@@ -1608,7 +1641,18 @@ paintTree();
 function pick(t){
   if(WALKING && t!=='theHuman') sitDown();   /* WALKING is `var` below: undefined here on first load, never a throw */
   term=t;
-  fetch('/scene?term='+encodeURIComponent(t));
+  fetch('/scene?term='+encodeURIComponent(t)).then(()=>{
+    /* A DECK IS PICKED CLEAN. The viewer is a singleton and keeps the previous
+       operator's playhead -- the last visitor's replay would be mid-motion under the
+       new board. Entering a deck hands over a paused board at the START (the record
+       survives; only the playhead rewinds), so Play means "watch the win", not
+       "inherit someone's loop". */
+    if((INDEX[t]||{}).deck){
+      fetch('/pause?on=1');
+      fetch('/scrub?term='+encodeURIComponent(t)+'&t=0');
+      fetch('/live-reset?term='+encodeURIComponent(t));   /* a fresh board: drop any previous visitor's run */
+    }
+  });
   /* THE TREE FOLLOWS THE PICK, it does not merely highlight it: opening this term's ancestors is
      what makes a jump from anywhere -- a breadcrumb, a search hit -- land somewhere legible. The
      `on` class is applied by row() from `term`, so the highlight has one source of truth. */
@@ -2033,9 +2077,14 @@ function applyDeck(r){
   deckPoll();
 }
 async function deckTogglePlay(){
+  /* THE BUTTON GIVES UP THE KEYBOARD. Clicking play leaves focus on the <button>, and the
+     deck keydown guard swallows every arrow while a button owns focus -- the operator would
+     press arrows and "have no control". Releasing focus hands the keys back to the window,
+     which is the deck's real keyboard. */
+  try{ standbtn.blur(); }catch(e){}
   try{ const r=await fetch('/key?term='+encodeURIComponent(term)+'&code=Space&down=1&t='+(tsl.value/1000).toFixed(4)).then(x=>x.json());
        applyDeck(r); }catch(e){}
-}
+ }
 function deckPoll(){
   if(!DECK) return;
   fetch('/state?term='+encodeURIComponent(term))   /* no t: the server reads the LIVE playhead */

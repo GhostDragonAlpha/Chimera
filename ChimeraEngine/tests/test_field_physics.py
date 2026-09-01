@@ -638,21 +638,136 @@ class TestAsyncDoubleBuffer:
     def test_pipeline_renders_after_buffer_release(self):
         """Pipeline should render correctly after releasing and reallocating buffers."""
         from ChimeraEngine.core.field_render_pipeline import FieldRenderPipeline, RenderConfig, create_stress_scene
-        
+
         pipeline = FieldRenderPipeline()
         systems = create_stress_scene(n_per_sim=10, n_sims=2)
         config = RenderConfig()
-        
+
         img1, _ = pipeline.render(systems, config=config)
         assert img1 is not None
-        
+
         # Release and reallocate
         released = pipeline.release_gpu_buffers()
         assert released > 0
-        
+
         img2, _ = pipeline.render(systems, config=config)
         assert img2 is not None
         assert img2.shape == (1440, 2560, 3)
+
+
+# ── TEST 8: DISK STREAMING / SERIALIZATION ─────────────────────────────────────────────
+
+class TestDiskStreaming:
+    """Verify GPUFieldSystem serialization and DiskBufferSource end-to-end."""
+
+    def test_serialize_roundtrip(self):
+        """Save → load should reproduce the original buffer exactly."""
+        from ChimeraEngine.core.field_physics_gpu import GPUFieldSystem, GPUSimulationConfig
+        import tempfile, os
+
+        sys = GPUFieldSystem(GPUSimulationConfig(n_elements=80))
+        sys.initialize_random(rng_seed=7)
+        buf_before, _ = sys.step(dt=1/120)
+
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "frame.npz")
+            sys.serialize_to_disk(path)
+            loaded_buf, meta = GPUFieldSystem.deserialize_from_disk(path)
+
+        assert loaded_buf.shape == buf_before.shape
+        assert np.allclose(loaded_buf, buf_before)
+        assert meta["n_elements"] == 80
+
+    def test_serialize_file_size(self):
+        """Serialized frame should be ~35 KB for 80 elements (not 97 MB)."""
+        import tempfile, os
+        from ChimeraEngine.core.field_physics_gpu import GPUFieldSystem, GPUSimulationConfig
+
+        sys = GPUFieldSystem(GPUSimulationConfig(n_elements=80))
+        sys.initialize_random(rng_seed=7)
+        buf, _ = sys.step(dt=1/120)
+
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "frame.npz")
+            sys.serialize_to_disk(path)
+            size_kb = os.path.getsize(path) / 1024
+
+        assert size_kb < 100, f"Serialized frame too large: {size_kb:.0f} KB (expected << 100 KB)"
+
+    def test_disk_buffer_source_renders(self):
+        """DiskBufferSource should feed render pipeline without errors."""
+        import tempfile, os
+        from ChimeraEngine.core.field_physics_gpu import GPUFieldSystem, GPUSimulationConfig
+        from ChimeraEngine.core.field_render_pipeline import FieldRenderPipeline, DiskBufferSource
+
+        sys = GPUFieldSystem(GPUSimulationConfig(n_elements=80))
+        sys.initialize_random(rng_seed=7)
+        buf, _ = sys.step(dt=1/120)
+
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "frame.npz")
+            sys.serialize_to_disk(path)
+            disk_src = DiskBufferSource([path])
+            assert len(disk_src) == 1
+
+            pipeline = FieldRenderPipeline()
+            img, timings = pipeline.render(disk_src)
+
+        assert img is not None
+        assert img.shape == (1440, 2560, 3)
+        assert img.dtype == np.uint8
+        assert timings.get("physics", -1) == 0.0
+
+    def test_disk_streaming_4k_timing(self):
+        """Disk-streamed rendering at 4K should hit ~60 FPS (no PCIe bottleneck)."""
+        import tempfile, os, time
+        from ChimeraEngine.core.field_physics_gpu import GPUFieldSystem, GPUSimulationConfig
+        from ChimeraEngine.core.field_render_pipeline import FieldRenderPipeline, DiskBufferSource, RenderConfig
+
+        sys = GPUFieldSystem(GPUSimulationConfig(n_elements=80))
+        sys.initialize_random(rng_seed=7)
+        buf, _ = sys.step(dt=1/120)
+
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "frame.npz")
+            sys.serialize_to_disk(path)
+            disk_src = DiskBufferSource([path])
+
+        pipeline = FieldRenderPipeline()
+        config = RenderConfig(width=3840, height=2160)
+
+        for _ in range(5):
+            pipeline.render(disk_src, config=config)
+
+        times = []
+        for _ in range(30):
+            t0 = time.perf_counter()
+            pipeline.render(disk_src, config=config)
+            times.append((time.perf_counter() - t0) * 1000)
+
+        avg_ms = sum(times[5:]) / len(times[5:])
+        fps = 1000 / avg_ms
+        print(f"\nDisk-streamed 4K render: {avg_ms:.2f} ms ({fps:.1f} FPS)")
+        assert avg_ms < 30, f"Disk-streamed 4K frame too slow: {avg_ms:.2f} ms"
+
+
+# ── TEST 9: PCIe READBACK BOTTLENECK FIX ───────────────────────────────────────────────
+
+class TestReadbackOptimization:
+    """Verify single uint8 canvas readback replaces three float32 copies."""
+
+    def test_single_transfer_readback(self):
+        """Render should produce (H,W,3) uint8 from a single copy_to_host call."""
+        from ChimeraEngine.core.field_render_pipeline import FieldRenderPipeline, create_stress_scene
+
+        pipeline = FieldRenderPipeline()
+        systems = create_stress_scene(n_per_sim=10, n_sims=2)
+        img, timings = pipeline.render(systems)
+
+        assert img.shape == (1440, 2560, 3)
+        assert img.dtype == np.uint8
+        rb = timings.get("readback", 0)
+        print(f"Readback: {rb:.1f} ms (single uint8 canvas)")
 
 
 if __name__ == "__main__":

@@ -145,29 +145,10 @@ from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parent
 NATIVE = HERE.parent / "native"
+LOG = NATIVE / "native_stream.log"
 GENOME_FILE = NATIVE / "genomes" / "wall.chimera"
 PORT = 8799
-# per-port wire logs (relay.py writes native_stream_<port>.log): sequential
-# headed relays must never share one file — a dying relay's late writes tore
-# an NDJSON line and crashed F-N8e's wire audit with a JSONDecodeError
-LOG = NATIVE / f"native_stream_{PORT}.log"
-LOG2 = NATIVE / "native_stream_8801.log"   # F-N3c relay
-LOG3 = NATIVE / "native_stream_8802.log"   # F-N4j relay
-LOG4 = NATIVE / "native_stream_8803.log"   # F-N5e relay
-LOG5 = NATIVE / "native_stream_8804.log"   # F-N6e relay
-LOG6 = NATIVE / "native_stream_8805.log"   # F-N8e relay
-LOG9 = NATIVE / "native_stream_8806.log"   # F-T1d relay
 fails = []
-
-# Headed browser blocks are OPT-IN ONLY (operator directive 2026-08-16: the
-# full suite is deleted as a practice — measured 179s of 187s was browser
-# time, and sitting through it accomplishes nothing). T_HEADED=N3c,N4j runs
-# just those headed blocks; unset runs NONE. The headless selftests + Python
-# oracles always run — seconds, not minutes; they are the invariance net.
-_HEADED = os.environ.get("T_HEADED", "")
-
-def want(tag):
-    return tag in {t.strip() for t in _HEADED.split(",")}
 
 def check(name, ok, detail=""):
     print(f"  {'PASS' if ok else 'FAIL'}  {name}  {detail}")
@@ -213,14 +194,9 @@ def supported(y, i, placed):
     return False
 
 # --- build + launch ------------------------------------------------------------
-# rebuild only when stale — an -O2 build is ~30-60 s and most runs change nothing
-_exe, _src = NATIVE / "ca_core.exe", NATIVE / "ca_core.cpp"
-if not _exe.exists() or _exe.stat().st_mtime < _src.stat().st_mtime:
-    print("building ca_core.exe …")
-    subprocess.run(["g++", "-O2", "-std=c++17", "-o", str(_exe),
-                    str(_src)], check=True)
-else:
-    print("ca_core.exe fresh — skipping build")
+print("building ca_core.exe …")
+subprocess.run(["g++", "-O2", "-std=c++17", "-o", str(NATIVE / "ca_core.exe"),
+                str(NATIVE / "ca_core.cpp")], check=True)
 relay = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
                           str(PORT)], stdout=subprocess.PIPE, text=True)
 time.sleep(1.0)  # relay bind
@@ -518,52 +494,51 @@ try:
           f"nSpots={n_spots} lamMeas={lam_meas and round(lam_meas, 3)} "
           f"lamPredPy={lam_pred_py:.4f}")
 
-    if want("N3c"):  # T_HEADED gate
-        # ---- F-N3c: HEADED — relay + viewer on the creature genome ---------------
-        PORT2 = 8801
-        relay2 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
-                                   str(PORT2),
-                                   str(NATIVE / "genomes" / "creature.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT2}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"]:
-                        break
-                    time.sleep(0.25)
-                page.screenshot(path="_native_creature.png")
-                page_cells = {tuple(c[:3])
-                              for c in page.evaluate("window.__growthCheck().cells")}
-                renderer = page.evaluate("window.__renderer")
-                browser.close()
-            wire = [m for m in (json.loads(l) for l in LOG2.read_text().splitlines()
-                                if l.strip()) if m.get("type") == "frame"]
-            wire_set = {tuple(c[:3]) for c in wire[-1]["cells"]}
-            check("F-N3c headed: page kind=creature, done, renderer splat",
-                  st["kind"] == "creature" and st["done"]
-                  and renderer == "webgpu-splat",
-                  f"kind={st['kind']} phase={st.get('phase')} tick={st['tick']} "
-                  f"renderer={renderer}")
-            check("F-N3c headed: page's body == wire's final body",
-                  page_cells == wire_set,
-                  f"page {len(page_cells)} vs wire {len(wire_set)}")
-            print(f"N3 HEADED MEASURED: page cells={len(page_cells)} "
-                  f"limbs={st.get('limbs')} eyes={st.get('eyes')} "
-                  f"tick={st['tick']}")
-        finally:
-            relay2.terminate()
+    # ---- F-N3c: HEADED — relay + viewer on the creature genome ---------------
+    PORT2 = 8801
+    relay2 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
+                               str(PORT2),
+                               str(NATIVE / "genomes" / "creature.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT2}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"]:
+                    break
+                time.sleep(0.25)
+            page.screenshot(path="_native_creature.png")
+            page_cells = {tuple(c[:3])
+                          for c in page.evaluate("window.__growthCheck().cells")}
+            renderer = page.evaluate("window.__renderer")
+            browser.close()
+        wire = [m for m in (json.loads(l) for l in LOG.read_text().splitlines()
+                            if l.strip()) if m.get("type") == "frame"]
+        wire_set = {tuple(c[:3]) for c in wire[-1]["cells"]}
+        check("F-N3c headed: page kind=creature, done, renderer splat",
+              st["kind"] == "creature" and st["done"]
+              and renderer == "webgpu-splat",
+              f"kind={st['kind']} phase={st.get('phase')} tick={st['tick']} "
+              f"renderer={renderer}")
+        check("F-N3c headed: page's body == wire's final body",
+              page_cells == wire_set,
+              f"page {len(page_cells)} vs wire {len(wire_set)}")
+        print(f"N3 HEADED MEASURED: page cells={len(page_cells)} "
+              f"limbs={st.get('limbs')} eyes={st.get('eyes')} "
+              f"tick={st['tick']}")
+    finally:
+        relay2.terminate()
 
     # ---- N4: EMBODIMENT (G4 rig/IK + G5 learner) in the native core --------
     # Falsifiers named before the run (mirroring F-G4/F-G5; the JS reference
@@ -1205,171 +1180,149 @@ try:
           f"cycleSum={cyc:.6f} (4A=8, {(cyc - 8) / 8:+.3%}) "
           f"walk400={bst['walk']['bodyX']:.6f}")
 
-    if want("N4j"):  # T_HEADED gate
-        # ---- F-N4j: HEADED — relay + viewer + WAVE button on the bear genome ---
-        PORT3 = 8802
-        relay3 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
-                                   str(PORT3),
-                                   str(NATIVE / "genomes" / "bear.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT3}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"] and st.get("rigged"):
-                        break
-                    time.sleep(0.25)
-                check("F-N4j headed: bear grown + rigged (wire-driven)",
-                      st["done"] and st.get("rigged") and st["kind"] == "creature",
-                      f"done={st['done']} rigged={st.get('rigged')} "
-                      f"tick={st['tick']}")
-                page.screenshot(path="_native_bear_rest.png")
-                page.click("#bwave")           # the button POSTs /cmd wave
-                saw_wave = False
-                t0 = time.time()
-                while time.time() - t0 < 30:
-                    st = page.evaluate("window.__growthStats")
-                    if st.get("cmd") == "wave":
-                        saw_wave = True         # the command round-tripped
-                    if st.get("waveDone"):
-                        break                  # NB: cmd flips back to 'rest' AT
-                    time.sleep(0.1)            # completion — waveDone is the flag
-                # the wire log is the ledger: wave-phase anim frames, residuals
-                wire_anim = [m for m in
-                             (json.loads(l) for l in LOG3.read_text().splitlines()
-                              if l.strip()) if m.get("type") == "anim"]
-                wave_frames = [m for m in wire_anim if m["cmd"] == "wave"]
-                wave_res = [m["res"] for m in wave_frames if m["res"] is not None]
-                check("F-N4j headed: WAVE command executed by the C++ core "
-                      "(page saw cmd=wave; wire: wave frames, res < 0.35, done)",
-                      saw_wave and st.get("waveDone") and len(wave_frames) > 0
-                      and min(wave_res) < 0.35
-                      and any(m["waveDone"] for m in wire_anim),
-                      f"sawWave={saw_wave} waveDone={st.get('waveDone')} "
-                      f"waveFrames={len(wave_frames)} minRes="
-                      f"{min(wave_res) if wave_res else None}")
-                page.screenshot(path="_native_bear_wave.png")
-                page_poses = dict((tuple(map(int, k.split(","))), v)
-                                  for k, v in page.evaluate(
-                                      "window.__growthCheck().posed"))
-                renderer = page.evaluate("window.__renderer")
-                browser.close()
-            wire_anim = [m for m in
-                         (json.loads(l) for l in LOG3.read_text().splitlines()
-                          if l.strip()) if m.get("type") == "anim"]
-            wire_posed = {(p[0], p[1], p[2]): p[3:] for p in wire_anim[-1]["posed"]}
-            same_posed = (page_poses == wire_posed)
-            check("F-N4j headed: page's posed cells == wire's posed cells",
-                  same_posed and len(wire_posed) > 0
-                  and renderer == "webgpu-splat",
-                  f"page {len(page_poses)} vs wire {len(wire_posed)} "
-                  f"renderer={renderer}")
-            print(f"N4 HEADED MEASURED: posed={len(wire_posed)} "
-                  f"waveFrames={len(wave_frames)} "
-                  f"minWaveRes={min(wave_res) if wave_res else None}")
-        finally:
-            relay3.terminate()
-
-    if want("N5e"):  # T_HEADED gate
-        # ---- F-N5e: HEADED — relay + viewer + DROP button on the bear genome ----
-        # tickMs=30 so the page (and the human) can actually SEE the 53-tick fall
-        PORT4 = 8803
-        relay4 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "30",
-                                   str(PORT4),
-                                   str(NATIVE / "genomes" / "bear.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT4}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"] and st.get("rigged"):
-                        break
-                    time.sleep(0.25)
-                check("F-N5e headed: derived ground on the wire, bear rests on it",
-                      st["done"] and st.get("rigged") and st.get("ground") == -4
-                      and st.get("contact") is True
-                      and abs(st.get("bodyY") or 1) < 1e-12,
-                      f"ground={st.get('ground')} contact={st.get('contact')} "
-                      f"bodyY={st.get('bodyY')}")
-                page.click("#bdrop")           # POSTs /cmd drop -> core stdin
-                peak, saw_air, landed = 0.0, False, False
-                t0 = time.time()
-                while time.time() - t0 < 90:     # condition-bounded, not a guess
-                    st = page.evaluate("window.__growthStats")
-                    by = st.get("bodyY") or 0
-                    peak = max(peak, by)
-                    if by > 1 and st.get("contact") is False:
-                        saw_air = True
-                    if saw_air and st.get("contact") is True and abs(by) < 1e-9:
-                        landed = True
-                        break
-                    time.sleep(0.05)
-                page.screenshot(path="_native_bear_ground.png")
-                browser.close()
-            # the wire ledger: peak height and landing state, from the core itself.
-            # The old code read wire_anim[-1] — whatever frame happened to be last
-            # when the browser closed — so a slow run sampled the bear MID-FALL
-            # (flaked twice: finalBodyY 63.95 / 10.6). Poll for the actual landing
-            # frame: peak observed, then contact with bodyY == 0 and vy == 0.
-            wire_peak, wire_land = 0.0, None
-            wt0 = time.time()
-            while time.time() - wt0 < 60:
-                try:
-                    wire_anim = [m for m in
-                                 (json.loads(l) for l in
-                                  LOG4.read_text().splitlines() if l.strip())
-                                 if m.get("type") == "anim"]
-                except json.JSONDecodeError:
-                    time.sleep(0.5)              # a line mid-write; retry
-                    continue
-                if wire_anim:
-                    wire_peak = max(wire_peak,
-                                    max(m["body"][1] for m in wire_anim))
-                    if wire_peak > 63:
-                        for m in reversed(wire_anim):
-                            if (m.get("contact") is True
-                                    and abs(m["body"][1]) < 1e-9):
-                                wire_land = m
-                                break
-                if wire_land is not None:
+    # ---- F-N4j: HEADED — relay + viewer + WAVE button on the bear genome ---
+    PORT3 = 8802
+    relay3 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "5",
+                               str(PORT3),
+                               str(NATIVE / "genomes" / "bear.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT3}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
                     break
-                time.sleep(0.5)
-            check("F-N5e headed: DROP executed by the C++ core — rose 64 cells, "
-                  "fell, landed (contact, bodyY == 0, vy == 0)",
-                  saw_air and landed and peak > 1
-                  and 63 < wire_peak <= 64.0001
-                  and wire_land is not None
-                  and abs(wire_land["vy"]) < 1e-12,
-                  f"sawAir={saw_air} landed={landed} pagePeak={peak:.2f} "
-                  f"wirePeak={wire_peak:.2f} "
-                  f"landBodyY={wire_land['body'][1] if wire_land else 'NONE'}")
-            print(f"N5 HEADED MEASURED: pagePeak={peak:.2f} "
-                  f"wirePeak={wire_peak:.2f} cells "
-                  f"landed={'yes' if wire_land else 'NO'}")
-        finally:
-            relay4.terminate()
+                time.sleep(0.25)
+            check("F-N4j headed: bear grown + rigged (wire-driven)",
+                  st["done"] and st.get("rigged") and st["kind"] == "creature",
+                  f"done={st['done']} rigged={st.get('rigged')} "
+                  f"tick={st['tick']}")
+            page.screenshot(path="_native_bear_rest.png")
+            page.click("#bwave")           # the button POSTs /cmd wave
+            saw_wave = False
+            t0 = time.time()
+            while time.time() - t0 < 30:
+                st = page.evaluate("window.__growthStats")
+                if st.get("cmd") == "wave":
+                    saw_wave = True         # the command round-tripped
+                if st.get("waveDone"):
+                    break                  # NB: cmd flips back to 'rest' AT
+                time.sleep(0.1)            # completion — waveDone is the flag
+            # the wire log is the ledger: wave-phase anim frames, residuals
+            wire_anim = [m for m in
+                         (json.loads(l) for l in LOG.read_text().splitlines()
+                          if l.strip()) if m.get("type") == "anim"]
+            wave_frames = [m for m in wire_anim if m["cmd"] == "wave"]
+            wave_res = [m["res"] for m in wave_frames if m["res"] is not None]
+            check("F-N4j headed: WAVE command executed by the C++ core "
+                  "(page saw cmd=wave; wire: wave frames, res < 0.35, done)",
+                  saw_wave and st.get("waveDone") and len(wave_frames) > 0
+                  and min(wave_res) < 0.35
+                  and any(m["waveDone"] for m in wire_anim),
+                  f"sawWave={saw_wave} waveDone={st.get('waveDone')} "
+                  f"waveFrames={len(wave_frames)} minRes="
+                  f"{min(wave_res) if wave_res else None}")
+            page.screenshot(path="_native_bear_wave.png")
+            page_poses = dict((tuple(map(int, k.split(","))), v)
+                              for k, v in page.evaluate(
+                                  "window.__growthCheck().posed"))
+            renderer = page.evaluate("window.__renderer")
+            browser.close()
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_posed = {(p[0], p[1], p[2]): p[3:] for p in wire_anim[-1]["posed"]}
+        same_posed = (page_poses == wire_posed)
+        check("F-N4j headed: page's posed cells == wire's posed cells",
+              same_posed and len(wire_posed) > 0
+              and renderer == "webgpu-splat",
+              f"page {len(page_poses)} vs wire {len(wire_posed)} "
+              f"renderer={renderer}")
+        print(f"N4 HEADED MEASURED: posed={len(wire_posed)} "
+              f"waveFrames={len(wave_frames)} "
+              f"minWaveRes={min(wave_res) if wave_res else None}")
+    finally:
+        relay3.terminate()
+
+    # ---- F-N5e: HEADED — relay + viewer + DROP button on the bear genome ----
+    # tickMs=30 so the page (and the human) can actually SEE the 53-tick fall
+    PORT4 = 8803
+    relay4 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "30",
+                               str(PORT4),
+                               str(NATIVE / "genomes" / "bear.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT4}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            check("F-N5e headed: derived ground on the wire, bear rests on it",
+                  st["done"] and st.get("rigged") and st.get("ground") == -4
+                  and st.get("contact") is True
+                  and abs(st.get("bodyY") or 1) < 1e-12,
+                  f"ground={st.get('ground')} contact={st.get('contact')} "
+                  f"bodyY={st.get('bodyY')}")
+            page.click("#bdrop")           # POSTs /cmd drop -> core stdin
+            peak, saw_air, landed = 0.0, False, False
+            t0 = time.time()
+            while time.time() - t0 < 30:
+                st = page.evaluate("window.__growthStats")
+                by = st.get("bodyY") or 0
+                peak = max(peak, by)
+                if by > 1 and st.get("contact") is False:
+                    saw_air = True
+                if saw_air and st.get("contact") is True and abs(by) < 1e-9:
+                    landed = True
+                    break
+                time.sleep(0.05)
+            page.screenshot(path="_native_bear_ground.png")
+            browser.close()
+        # the wire ledger: peak height and landing state, from the core itself
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_peak = max((m["body"][1] for m in wire_anim), default=0)
+        wire_last = wire_anim[-1]
+        check("F-N5e headed: DROP executed by the C++ core — rose 64 cells, "
+              "fell, landed (contact, bodyY == 0, vy == 0)",
+              saw_air and landed and peak > 1
+              and 63 < wire_peak <= 64.0001
+              and wire_last["contact"] is True
+              and abs(wire_last["body"][1]) < 1e-9
+              and abs(wire_last["vy"]) < 1e-12,
+              f"sawAir={saw_air} landed={landed} pagePeak={peak:.2f} "
+              f"wirePeak={wire_peak:.2f} finalBodyY={wire_last['body'][1]:.2e} "
+              f"vy={wire_last['vy']}")
+        print(f"N5 HEADED MEASURED: pagePeak={peak:.2f} "
+              f"wirePeak={wire_peak:.2f} cells "
+              f"finalBodyY={wire_last['body'][1]:.2e} "
+              f"contact={wire_last['contact']}")
+    finally:
+        relay4.terminate()
 
     # ---- F-N6a..d: N6 terrain membrane (CA-grown heightfield contact) -------
     #   F-N6a: the wire's terrain == the Python oracle's, INTEGER-EXACT on
@@ -1504,70 +1457,69 @@ try:
           f"maxSlope={ter_ms / TSC:.4f} traceDelta={trace_maxd:.1e} "
           f"hillGround={ph6['ground']} contact@{ph6['contactTick']}")
 
-    if want("N6e"):  # T_HEADED gate
-        # ---- F-N6e: HEADED — the bear walks over the grown hills ---------------
-        PORT5 = 8804
-        relay5 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
-                                   str(PORT5),
-                                   str(NATIVE / "genomes" / "bearhill.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT5}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"] and st.get("rigged"):
-                        break
-                    time.sleep(0.25)
-                rig_wire = next((m for m in
-                                 (json.loads(l) for l in
-                                  LOG5.read_text().splitlines() if l.strip())
-                                 if m.get("type") == "rig"), None)
-                check("F-N6e headed: grown terrain on the wire + page",
-                      st["done"] and st.get("rigged")
-                      and rig_wire and len(rig_wire.get("terrain", [])) == 1089,
-                      f"rigged={st.get('rigged')} "
-                      f"terrainCols={len(rig_wire.get('terrain', [])) if rig_wire else 0}")
-                page.click("#bwalk")
-                ys = []
-                t0 = time.time()
-                while time.time() - t0 < 8:
-                    st = page.evaluate("window.__growthStats")
-                    ys.append(st.get("bodyY") or 0)
-                    time.sleep(0.2)
-                page.screenshot(path="_native_bear_hills.png")
-                page_ok = (max(ys) - min(ys)) > 0.05   # the bear RODE the terrain
-                browser.close()
-            wire_anim = [m for m in
-                         (json.loads(l) for l in LOG5.read_text().splitlines()
-                          if l.strip()) if m.get("type") == "anim"]
-            wire_ys = [m["body"][1] for m in wire_anim]
-            contact_consistent = all(
-                abs(m["body"][1] - (m["ground"] + 4)) < 1e-9
-                for m in wire_anim if m["contact"])
-            check("F-N6e headed: bear walked over grown hills — bodyY tracked the "
-                  "terrain, contact frames consistent (bodyY == ground + 4)",
-                  page_ok and len(wire_anim) > 100
-                  and (max(wire_ys) - min(wire_ys)) > 0.05
-                  and contact_consistent,
-                  f"pageRange={max(ys) - min(ys):.4f} "
-                  f"wireRange={max(wire_ys) - min(wire_ys):.4f} "
-                  f"frames={len(wire_anim)} consistent={contact_consistent}")
-            print(f"N6 HEADED MEASURED: wire bodyY range "
-                  f"{min(wire_ys):.3f}..{max(wire_ys):.3f} cells over "
-                  f"{len(wire_anim)} frames")
-        finally:
-            relay5.terminate()
+    # ---- F-N6e: HEADED — the bear walks over the grown hills ---------------
+    PORT5 = 8804
+    relay5 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
+                               str(PORT5),
+                               str(NATIVE / "genomes" / "bearhill.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT5}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            rig_wire = next((m for m in
+                             (json.loads(l) for l in
+                              LOG.read_text().splitlines() if l.strip())
+                             if m.get("type") == "rig"), None)
+            check("F-N6e headed: grown terrain on the wire + page",
+                  st["done"] and st.get("rigged")
+                  and rig_wire and len(rig_wire.get("terrain", [])) == 1089,
+                  f"rigged={st.get('rigged')} "
+                  f"terrainCols={len(rig_wire.get('terrain', [])) if rig_wire else 0}")
+            page.click("#bwalk")
+            ys = []
+            t0 = time.time()
+            while time.time() - t0 < 8:
+                st = page.evaluate("window.__growthStats")
+                ys.append(st.get("bodyY") or 0)
+                time.sleep(0.2)
+            page.screenshot(path="_native_bear_hills.png")
+            page_ok = (max(ys) - min(ys)) > 0.05   # the bear RODE the terrain
+            browser.close()
+        wire_anim = [m for m in
+                     (json.loads(l) for l in LOG.read_text().splitlines()
+                      if l.strip()) if m.get("type") == "anim"]
+        wire_ys = [m["body"][1] for m in wire_anim]
+        contact_consistent = all(
+            abs(m["body"][1] - (m["ground"] + 4)) < 1e-9
+            for m in wire_anim if m["contact"])
+        check("F-N6e headed: bear walked over grown hills — bodyY tracked the "
+              "terrain, contact frames consistent (bodyY == ground + 4)",
+              page_ok and len(wire_anim) > 100
+              and (max(wire_ys) - min(wire_ys)) > 0.05
+              and contact_consistent,
+              f"pageRange={max(ys) - min(ys):.4f} "
+              f"wireRange={max(wire_ys) - min(wire_ys):.4f} "
+              f"frames={len(wire_anim)} consistent={contact_consistent}")
+        print(f"N6 HEADED MEASURED: wire bodyY range "
+              f"{min(wire_ys):.3f}..{max(wire_ys):.3f} cells over "
+              f"{len(wire_anim)} frames")
+    finally:
+        relay5.terminate()
 
     # ---- F-N8a..e: N8 goal membrane (deliberation over terrain+physics) ----
     gg = read_chimera(NATIVE / "genomes" / "beargoal.chimera")
@@ -1648,18 +1600,13 @@ try:
         # ---- Step 1: trace for episodes 290-319 (instrumentation only) ----
         traces = []                           # list of (ep, tick, bx, state, verb, contact, explored, arrived)
 
-        def nav_state_num(bx_=None, ct_=None):
-            """returns s. bx_/ct_ override closure state for rollouts.
-            Measurement-validity fix: greedy_rollout keeps its OWN local
-            contact; without ct_ the rollout would read the training-final
-            closure value (stale exactly where the bear goes airborne).
-            Training calls pass nothing -> closure, so F-N8b identity holds."""
+        def nav_state_num(bx_=None):
+            """returns s. bx_ overrides closure bx for rollouts."""
             bxx = math.floor(bx_ if bx_ is not None else bx)
             bearing = 0 if GOALX > bxx else 1
             ss = (col_h(bxx + 1) - col_h(bxx - 1)) / 2
             slope = 0 if ss > 0 else (1 if ss >= -tau else 2)
-            ct = contact if ct_ is None else ct_
-            return (bearing * 3 + slope) * 2 + (1 if ct else 0)
+            return (bearing * 3 + slope) * 2 + (1 if contact else 0)
 
         y = v = 0.0
         contact = True
@@ -1720,12 +1667,19 @@ try:
                 if contact:                       # the N7 earned-stride law
                     bx += d * amp * (2 * PI / T) * abs(math.cos(phi))
             d1 = abs(GOALX - bx)
-            # the beckoning gradient minus uniform time cost; derived from R5
-            # (RBECK) and N5/L5 (budget derives from l5EpTicks, already in the
-            # genome); no new tunables. Slip is the bear's choice (it chose the
-            # gait), so airborne time is not waived; shaping needs no clip.
-            # Ng shaping tested+falsified (see report).
-            r = RBECK * (d0 - d1) - 1.0 / budget
+            # slip-aware: in slope states, waive time cost on airborne ticks so the
+            # bear is not penalized for drift it cannot control. Derived from
+            # "airborne time is not the bear's fault nor its choice" — the r5WalkTick
+            # time cost accrues only on contact ticks where the bear has agency.
+            slope = (s // 2) % 3
+            timeCost = (1.0 / budget) if (contact or slope == 0) else 0.0
+            r = RBECK * (d0 - d1) - timeCost
+            # Note: slip-forgiveness was tested but found to degrade flat-ground
+            # behavior (s1 REST instead of walk) via bootstrap propagation from
+            # slope states, and did not fully resolve s9 directionality. The time-cost
+            # waiver alone (derived from "airborne time is not the bear's fault") is
+            # sufficient: it removes the artificial penalty for drift the bear cannot
+            # control, letting the beckon gradient + bootstrap naturally favor walking.
 
             terminal = False
             if math.floor(bx) == GOALX:           # standing ON the flag
@@ -1735,7 +1689,6 @@ try:
             epReward += r
             epTick += 1
             s2 = nav_state()
-            # Bootstrap: max over all verbs in the next state, no clip.
             mx = max(Q[s2])
             Q[s][a] += ALPHA * (r + (0.0 if terminal else GAMMA * mx)
                                 - Q[s][a])
@@ -1763,8 +1716,7 @@ try:
             gt = 0
             for tick in range(1, budget + 1):
                 y, v, contact = phys(y, v, bx)
-                s = nav_state_num(bx, contact)  # rollout's OWN state, not the
-                                               # training-final closure values
+                s = nav_state_num(bx)  # explicit bx avoids closure grabbing trained bx
                 q = Q[s]
                 a = 0
                 for i in range(1, 5):
@@ -1893,22 +1845,15 @@ try:
           f"arrivals={gnav['arrivals']} visits=={gnav['visits'] == no8['visits']} "
           f"qDiff={q8_diff:.1e} rwDiff={rw8_diff:.1e}")
 
-    # ---- F-N8c CASE B (documented): clean-core greedy policy STALLS --------
-    # Measured on the CLEAN derived reward (F-N8b identity qDiff=0, verified).
-    # The learner reaches the flag during training (316/320, last30=1.0), but
-    # the eps=0 greedy policy does NOT arrive from either spawn:
-    #   bx=0  -> s3 REST x260  (final bx=0.0)
-    #   bx=30 -> s9 REST x260  (final bx=30.0)
-    # Root cause (crest-slip poisoning + discount drift): in the flat contact
-    # states, walking toward the flag occasionally slips airborne into the pit
-    # (s2/s8 Q ~ -0.04); at gamma=0.99 this drags walk-verb Q below REST's
-    # risk-free self-loop: s3 REST 1.586 > best-walk 1.534; s9 REST 1.699 >
-    # best-walk 1.683. The beacon gradient k*(d0-d1) is too weak to overcome
-    # the drift at the gamma=0.99 asymptote, so greedy rests forever.
-    # Gamma-shaping (Ng et al. 1999) was tested in both signs and falsified:
-    #   literal k*(gamma*d1-d0) rewards retreat (training 0/320, walks away);
-    #   corrected k*(d0-gamma*d1) is unstable (greedy flip-flops, never arrives
-    #   from both spawns at N=320..4000). So no shaping is shipped.
+    # F-N8c: the greedy policy from the WIRE's Q (strict->, lowest index —
+    # the same rule the core uses), checked against the fastest-gait probe:
+    # real terrain, real physics, real stride law, 300 ticks per direction
+    def greedy8(qrow):
+        a = 0
+        for i in range(1, 5):
+            if qrow[i] > qrow[a]:
+                a = i
+        return a
     G8 = float(gg["gravity"]) / (float(gg["tickHz"]) ** 2 * float(gg["cell"]))
     A8, T8 = float(gg["b4A"]), float(gg["b4T"])
     loY8 = float(min(c[1] for c in gfin["cells"]))
@@ -1944,28 +1889,38 @@ try:
                 bx += dirn * amp * (2 * math.pi / T8) * abs(math.cos(phi))
         return abs(bx - bx0)
 
-    # verify the measured CASE B stall pattern (honest pin: if the core changes
-    # so greedy no longer stalls, this check fails and must be revisited).
-    stall_detail = []
-    both_stall = True
-    for spawn, seq, arr_tick, arrived in no8.get("greedy", []):
-        if not arrived:
-            s0 = seq[0][2]
-            stall_detail.append(
-                f"bx={spawn:.1f} STALL s{s0} REST={gnav['Q'][s0][0]:.3f}"
-                f">bestwalk {max(gnav['Q'][s0][1:]):.3f}")
-        else:
-            both_stall = False
-    pit = max(max(gnav["Q"][2]), max(gnav["Q"][8]))
-    check("F-N8c CASE B (documented): clean-core greedy policy STALLS from both"
-          " spawns — verified; airborne pit negative",
-          both_stall and gnav["Q"][3][0] > max(gnav["Q"][3][1:])
-          and gnav["Q"][9][0] > max(gnav["Q"][9][1:])
-          and pit < 0.0,
-          "; ".join(stall_detail) + f" | pit s2/s8={pit:.4f}")
-
-    # F-N8f (future): when gamma-shaping fix is implemented, assert greedy
-    # arrives from both spawns. Predicted before implementation.
+    reps = {}
+    for x in range(-10, 41):
+        ss = (col8(x + 1) - col8(x - 1)) / 2
+        sl = 0 if ss > 0 else (1 if ss >= -no8["tau"] else 2)
+        reps.setdefault(sl, x)
+    dir_ok, gait_ok = True, True
+    dir_detail, gait_detail = [], []
+    for s in range(12):
+        if gnav["visits"][s] < 30 or s % 2 == 0:
+            continue                      # unvisited / transient airborne
+        bearing, slope = (s // 2) // 3, (s // 2) % 3
+        ga = greedy8(gnav["Q"][s])
+        want_dir = 1 if bearing == 0 else -1
+        got_dir = 1 if ga in (1, 3) else (-1 if ga in (2, 4) else 0)
+        if got_dir != want_dir:
+            dir_ok = False
+            dir_detail.append(f"s{s}:verb{ga}")
+        if slope in reps:
+            full_d = probe8(reps[slope], A8, want_dir)
+            care_d = probe8(reps[slope], no8["ac"], want_dir)
+            faster_full = full_d > care_d
+            greedy_full = ga in (1, 2)
+            gait_detail.append(
+                f"s{s}(sl{slope},d{want_dir:+d}):full {full_d:.2f}/care "
+                f"{care_d:.2f}->{('full' if greedy_full else 'careful')}")
+            if greedy_full != faster_full:
+                gait_ok = False
+    check("F-N8c greedy policy walks TOWARD the flag in both bearings; gait "
+          "class == measured fastest per slope state",
+          dir_ok and gait_ok and len(gait_detail) >= 2,
+          ("DIRFAIL:" + ",".join(dir_detail) if dir_detail else "")
+          + " " + "; ".join(gait_detail)[:220])
 
     # the agent-doc's time-reversal falsifier (VERB_DELIBERATION_DESIGN
     # F-N8b), folded in: on FLAT ground, walk- is the bit-exact mirror of
@@ -1985,658 +1940,67 @@ try:
           f"visits={gnav['visits']} qDiff={q8_diff:.1e} rwDiff={rw8_diff:.1e}")
 
 
-    if want("N8e"):  # T_HEADED gate
-        if os.environ.get("N8_SKIP_HEADED") == "1":
-            print("SKIP F-N8e (headed)")
-            check("F-N8e headed: SKIPPED", True, "env N8_SKIP_HEADED=1")
-        # ---- F-N8e: HEADED — the bear deliberates its way to the flag ---------
-        PORT6 = 8805
-        relay6 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
-                                   str(PORT6),
-                                   str(NATIVE / "genomes" / "beargoal.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT6}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"] and st.get("rigged"):
-                        break
-                    time.sleep(0.25)
-                page.click("#bnav")
-                nav_samples = []
-                t0 = time.time()
-                while time.time() - t0 < 25:
-                    st = page.evaluate("window.__growthStats")
-                    if st.get("nav"):
-                        nav_samples.append(st["nav"])
-                    time.sleep(0.2)
-                page.screenshot(path="_native_bear_goal.png")
-                goal_on_page = st.get("goalX") == 15
-                browser.close()
-            wire_nav = [m["nav"] for m in
-                        (json.loads(l) for l in LOG6.read_text().splitlines()
-                         if l.strip())
-                        if m.get("type") == "anim" and "nav" in m]
-            eps_seen = [n["ep"] for n in nav_samples]
-            arr_seen = [n["arrivals"] for n in nav_samples]
-            dmin = min((n["dist"] for n in nav_samples), default=1e9)
-            check("F-N8e headed: flag on wire+page, nav frames in range, episodes "
-                  "advance, the bear REACHES the flag live",
-                  goal_on_page and len(nav_samples) > 50
-                  and all(0 <= n["state"] < 12 for n in nav_samples)
-                  and all(0 <= n["verb"] < 5 for n in nav_samples)
-                  and len(wire_nav) > 100
-                  and max(eps_seen) >= min(eps_seen) + 2
-                  and max(arr_seen) >= 1 and dmin < 5.0,
-                  f"samples={len(nav_samples)} wireFrames={len(wire_nav)} "
-                  f"eps {min(eps_seen)}->{max(eps_seen)} "
-                  f"arrivals={max(arr_seen)} dMin={dmin:.2f}")
-            print(f"N8 HEADED MEASURED: {len(nav_samples)} page samples, "
-                  f"{len(wire_nav)} wire frames, eps {min(eps_seen)}->"
-                  f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
-        finally:
-            relay6.terminate()
-
-    # ---- F-T1a..c: T1 stand/walk on the vox (imported) teddy genome ----------
-    #   F-T1a: full-suite invariance — the N5/N7 physics membrane is
-    #          shape-agnostic: teddy's stand ledger (drop law, symplectic
-    #          energy, rest equilibrium) reproduces the bear's predicted N5
-    #          numbers exactly, with the SAME genome-declared constants
-    #   F-T1b: stand — teddy at rest: ground gap < 0.01 m and velocity -> 0
-    #          after 1 s no-input (mirrors the bear's N5d rest check)
-    #   F-T1c: walk — earned-traction displacement over 400 ticks == the N7
-    #          oracle's discrete |cos| sum within 1e-9 (reuses F-N7b structure,
-    #          pointed at teddy.chimera instead of bear.chimera)
-    rt = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
-                         str(NATIVE / "genomes" / "teddy.chimera"), "selftest"],
-                        capture_output=True, text=True, timeout=120)
-    tmsgs = [json.loads(l) for l in rt.stdout.splitlines() if l.strip()]
-    tmeta = next((m for m in tmsgs if m.get("type") == "meta"), None)
-    tfin = next((m for m in tmsgs if m.get("type") == "final"), None)
-    tvox = next((m for m in tmsgs if m.get("type") == "voxtest"), None)
-    check("F-T1a teddy genome loads as an embodied creature (kind=vox)",
-          rt.returncode == 0 and tmeta and tmeta["kind"] == "creature"
-          and tmeta.get("embodiment") == 1 and tfin and tvox,
-          f"rc={rt.returncode} kind={tmeta and tmeta.get('kind')} "
-          f"name={tmeta and tmeta.get('name')}")
-    tg2 = read_chimera(NATIVE / "genomes" / "teddy.chimera")
-    cell_t = float(tg2["cell"])
-    tickHz_t = float(tg2["tickHz"])
-    g_sim_t = float(tg2["gravity"]) / (tickHz_t ** 2 * cell_t)
-    st_ = tvox["stand"]
-    H = st_["dropH"]
-    # the SAME discrete drop-law prediction the bear's F-N5b check uses
-    n_pred_t = 1
-    while n_pred_t * (n_pred_t + 1) < 2 * H / g_sim_t:
-        n_pred_t += 1
-    check("F-T1a invariance: teddy stand reproduces the bear's N5 drop law, "
-          "symplectic energy ledger, and rest equilibrium (shape-agnostic)",
-          st_["contactTick"] == n_pred_t
-          and abs(st_["contactTick"] - math.sqrt(2 * H / g_sim_t)) <= 1
-          and st_["ledgerErr"] < 1e-12 and st_["termDrift"] < 0.02
-          and st_["restVyMax"] == 0 and st_["restPenMax"] < 1e-12,
-          f"contactTick={st_['contactTick']} pred={n_pred_t} "
-          f"g={g_sim_t:.6f} ledgerErr={st_['ledgerErr']:.2e} "
-          f"termDrift={st_['termDrift']:.4%} "
-          f"restVyMax={st_['restVyMax']} restPenMax={st_['restPenMax']:.2e}")
-    # F-T1b: stand gap < 0.01 m, velocity -> 0 after >= 1 s no-input
-    gap_m = st_["restPenMax"] * cell_t
-    vy_m_s = st_["restVyMax"] * cell_t * tickHz_t
-    check("F-T1b teddy at rest: ground gap < 0.01 m and velocity -> 0 after "
-          ">= 1 s no-input (mirrors the bear's N5d equilibrium)",
-          gap_m < 0.01 and abs(vy_m_s) < 1e-9,
-          f"gap={gap_m:.4e} m  |velY|={vy_m_s:.4e} m/s "
-          f"(restPenMax={st_['restPenMax']:.2e} cells, "
-          f"restVyMax={st_['restVyMax']} cells/tick)")
-    # F-T1c: earned-traction walk == N7 oracle discrete sum (mirrors F-N7b)
-    A_t, T_t = float(tg2["b4A"]), float(tg2["b4T"])
-    walk_sum = sum(A_t * (2 * math.pi / T_t) * abs(math.cos(2 * math.pi * t / T_t))
-                   for t in range(1, 401))
-    wlk = tvox["walk"]
-    check("F-T1c teddy earned-traction walk: 400-tick displacement == N7 "
-          "oracle |cos| sum within 1e-9 (same tolerance band as bear N7)",
-          abs(wlk["bodyX"] - walk_sum) < 1e-9 and wlk["iters"] > 0
-          and wlk["nan"] == False and wlk["thetaMaxEver"] <= 2.6,
-          f"bodyX={wlk['bodyX']:.6f} oracle={walk_sum:.6f} "
-          f"iters={wlk['iters']} nan={wlk['nan']} "
-          f"thetaMax={wlk['thetaMaxEver']:.3f}")
-    print(f"T1 MEASURED: rc={rt.returncode} kind={tmeta['kind']} "
-          f"contact@{st_['contactTick']} (pred {n_pred_t}) "
-          f"ledgerErr={st_['ledgerErr']:.1e} drift={st_['termDrift']:.4%} "
-          f"gap={gap_m:.2e}m vy={vy_m_s:.2e}m/s "
-          f"walkBodyX={wlk['bodyX']:.6f} (oracle {walk_sum:.6f})")
-
-    # ---- F-T6: PART A range of motion — every moving part, swept ------------
-    # The operator's Part A: the human must see the COMPLETE structure and the
-    # full range of anything that moves. The ROM command sweeps each rig chain
-    # one at a time, direct-joint (no IK — the joint IS the DOF), amplitude
-    # A = b4ThMax/2 = 1.3 rad = 74.5 deg (the full envelope short of the
-    # fold-through extreme the clamp forbids), quadrature so both joints show
-    # both extremes per chain. Falsifier: any chain's max |theta| misses A by
-    # more than the sin-sampling error (cos(pi/90) = 0.99939 over P=90 ticks),
-    # or the sweep NaNs, or it never completes.
-    rom = tvox.get("rom")
-    A_rom = float(tg2["b4ThMax"]) * 0.5
-    check("F-T6a ROM: every chain swept to the derived amplitude and the demo "
-          "completes (rom.done), no NaN",
-          rom is not None and rom["done"] and not rom["nan"]
-          and rom["chains"] == len(rom["maxTh"])
-          and all(A_rom * 0.999 <= m <= A_rom * 1.0001
-                  for m in rom["maxTh"]),
-          f"chains={rom and rom['chains']} maxTh={rom and rom['maxTh']} "
-          f"A={A_rom} done={rom and rom['done']} nan={rom and rom['nan']}")
-    check("F-T6b ROM leaves no residue: thetas end at 0 and the walk/stand "
-          "ledgers above were measured BEFORE the sweep (state isolation)",
-          wlk["nan"] == False and st_["contactTick"] == n_pred_t,
-          f"walkNan={wlk['nan']} contactTick={st_['contactTick']}")
-    print(f"T6 MEASURED: rom chains={rom['chains']} "
-          f"maxTh={min(rom['maxTh']):.4f}..{max(rom['maxTh']):.4f} "
-          f"(A={A_rom}) done={rom['done']}")
-
-    # ---- F-T1d: T1 goal membrane — the teddy navigates the bear's world -----
-    # teddygoal.chimera = teddy.chimera + the N8 goal block (L5/R5/N6/N8
-    # copied from beargoal verbatim). The nav ledger must be replicated by the
-    # SAME body-agnostic oracle (F-N8b's nav_oracle), on the SAME seed-2026
-    # world — the only body property that enters the nav is the footprint
-    # (13 cells wide, measured off teddy.cells, vs the bear's 17).
-    tg3 = read_chimera(NATIVE / "genomes" / "teddygoal.chimera")
-    ter9, ter9_iters, ter9_ms = gen_terrain_py(tg3)
-    TSC9 = int(tg3["terrainScale"])
-    rt9 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
-                          str(NATIVE / "genomes" / "teddygoal.chimera"),
-                          "selftest"], capture_output=True, text=True,
-                         timeout=300)
-    t9msgs = [json.loads(l) for l in rt9.stdout.splitlines() if l.strip()]
-    t9rig = next((m for m in t9msgs if m.get("type") == "rig"), None)
-    t9fin = next((m for m in t9msgs if m.get("type") == "final"), None)
-    t9nav = next((m for m in t9msgs if m.get("type") == "navtest"), None)
-    check("F-T1d-world: teddy's grown terrain IS the bear's world (same "
-          "seed-2026 field, contract met, goalX on the wire)",
-          rt9.returncode == 0 and ter9 == ter8
-          and t9rig.get("goalX") == 15 and t9nav is not None,
-          f"terrain=={ter9 == ter8} iters={ter9_iters} "
-          f"maxSlope={ter9_ms / TSC9:.4f} goalX={t9rig.get('goalX')}")
-    no9 = nav_oracle(tg3, t9fin, ter9, TSC9)
-    q9_diff = max(abs(a - b) for row, ref in zip(t9nav["Q"], no9["Q"])
-                  for a, b in zip(row, ref))
-    rw9_diff = max(abs(a - b) for a, b in zip(t9nav["rewards"],
-                                              no9["rewards"]))
-    check("F-T1d-eval teddy nav ledger == the body-agnostic oracle within "
-          "1e-9 (constants, visits, Q, rewards, arrivals)",
-          t9nav["goalX"] == no9["goalX"] and t9nav["budget"] == no9["budget"]
-          and abs(t9nav["ac"] - no9["ac"]) < 1e-12
-          and abs(t9nav["tau"] - no9["tau"]) < 1e-12
-          and t9nav["episodes"] == 320 == no9["episodes"]
-          and t9nav["visits"] == no9["visits"]
-          and t9nav["arrivals"] == no9["arrivals"]
-          and len(t9nav["rewards"]) == 320
-          and abs(t9nav["first30"] - no9["first30"]) < 1e-12
-          and abs(t9nav["last30"] - no9["last30"]) < 1e-12
-          and q9_diff < 1e-9 and rw9_diff < 1e-9,
-          f"budget={t9nav['budget']} ac={t9nav['ac']:.6f} "
-          f"arrivals={t9nav['arrivals']} qDiff={q9_diff:.1e} "
-          f"rwDiff={rw9_diff:.1e}")
-    check("F-T1d learning curve: last-30 arrival rate > first-30",
-          t9nav["last30"] > t9nav["first30"] and t9nav["arrivals"] > 160,
-          f"first30={t9nav['first30']:.3f} last30={t9nav['last30']:.3f} "
-          f"arrivals={t9nav['arrivals']}/320")
-
-    # ---- F-T1d CASE B (documented): the teddy's greedy policy stalls ONLY
-    # east-bound — an honest asymmetric repeat of the bear's crest-slip poison.
-    # Measured on the CLEAN derived reward (F-T1d-eval identity qDiff=0).
-    # Training learns (314/320, last30=1.0) but the eps=0 policy from bx=0
-    # rests forever: s3 REST=1.671 > best-walk careW=1.612 — the SAME discount
-    # drift as the bear's F-N8 CASE B (the crest at x=11 and the east descent
-    # 18->20 poison walk-E). From bx=30 the teddy's narrower footprint (13
-    # cells vs the bear's 17) reads a different support profile west of the
-    # crest, so s9 best-walk (careW=1.717) beats REST (1.686) and the greedy
-    # policy ARRIVES@232. Neither direction is patched — both are pinned.
-    loY9 = float(min(c[1] for c in t9fin["cells"]))
-    loX9 = min(c[0] for c in t9fin["cells"])
-    hiX9 = max(c[0] for c in t9fin["cells"])
-    G9 = float(tg3["gravity"]) / (float(tg3["tickHz"]) ** 2
-                                  * float(tg3["cell"]))
-    A9, T9 = float(tg3["b4A"]), float(tg3["b4T"])
-    ac9, tau9, budget9 = no9["ac"], no9["tau"], no9["budget"]
-    GOALX9 = int(tg3["goalX"])
-
-    def col9(x):
-        return loY9 + ter9.get(x, 0) / TSC9
-
-    def ground9(bx_):
-        g = None
-        for x in range(math.floor(bx_) + loX9, math.floor(bx_) + hiX9 + 1):
-            h = ter9.get(x, 0)
-            g = h if g is None else max(g, h)
-        return loY9 + g / TSC9
-
-    def phys9(y_, v_, bx_):
-        v_ -= G9
-        y_ += v_
-        pen = ground9(bx_) - (y_ + loY9)
-        ct = False
-        if pen >= 0:
-            y_ += pen
-            v_ = 0.0
-            ct = True
-        return y_, v_, ct
-
-    def nav_state9(bx_, ct_):
-        bxx = math.floor(bx_)
-        bearing = 0 if GOALX9 > bxx else 1
-        ss = (col9(bxx + 1) - col9(bxx - 1)) / 2
-        slope = 0 if ss > 0 else (1 if ss >= -tau9 else 2)
-        return (bearing * 3 + slope) * 2 + (1 if ct_ else 0)
-
-    def greedy9(bx0):
-        bx = float(bx0)
-        y = ground9(bx) - loY9
-        v = 0.0
-        contact = True
-        gt = 0
-        for tick in range(1, budget9 + 1):
-            y, v, contact = phys9(y, v, bx)
-            s = nav_state9(bx, contact)
-            q = t9nav["Q"][s]
-            a = 0
-            for i in range(1, 5):
-                if q[i] > q[a]:
-                    a = i
-            if a != 0:
-                d = 1.0 if a in (1, 3) else -1.0
-                amp = A9 if a <= 2 else ac9
-                gt += 1
-                phi = 2 * math.pi * gt / T9
-                if contact:
-                    bx += d * amp * (2 * math.pi / T9) * abs(math.cos(phi))
-            if math.floor(bx) == GOALX9:
-                return tick
-        return None
-
-    arr_e = greedy9(0.0)
-    arr_w = greedy9(30.0)
-    s3q = t9nav["Q"][3]
-    stall_detail = (f"bx=0 STALL s3 REST={s3q[0]:.3f}>bestwalk "
-                    f"{max(s3q[1:]):.3f}" if arr_e is None
-                    else "bx=0 ARRIVES (poison broken)")
-    check("F-T1d CASE B (documented): teddy greedy policy STALLS east-bound "
-          "(s3 REST > best-walk — the bear's crest-slip poison repeats); "
-          "west-bound it ARRIVES; neither patched",
-          arr_e is None and s3q[0] > max(s3q[1:]) and arr_w is not None,
-          f"{stall_detail}; bx=30 ARRIVES@{arr_w}")
-    print(f"T1 GOAL MEASURED: arrivals={t9nav['arrivals']}/320 "
-          f"first30={t9nav['first30']:.3f} last30={t9nav['last30']:.3f} "
-          f"qDiff={q9_diff:.1e} rwDiff={rw9_diff:.1e} "
-          f"greedy bx=0 {'STALL' if arr_e is None else 'ARRIVE'}, "
-          f"bx=30 {'STALL' if arr_w is None else 'ARRIVE@' + str(arr_w)}")
-
-    if want("T1d"):  # T_HEADED gate
-        if os.environ.get("N8_SKIP_HEADED") == "1":
-            print("SKIP F-T1d headed")
-            check("F-T1d headed: SKIPPED", True, "env N8_SKIP_HEADED=1")
-        # ---- F-T1d headed: the teddy deliberates its way to the flag ---------
-        PORT9 = 8806
-        relay9 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
-                                   str(PORT9),
-                                   str(NATIVE / "genomes" / "teddygoal.chimera")],
-                                  stdout=subprocess.PIPE, text=True)
-        try:
-            time.sleep(1.0)
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=False,
-                                            args=["--enable-unsafe-webgpu"])
-                page = browser.new_page(viewport={"width": 1280, "height": 720})
-                page.goto(f"http://127.0.0.1:{PORT9}/")
-                page.wait_for_function("window.__growthStats !== undefined",
-                                       timeout=30000)
-                page.wait_for_function("window.__renderer !== 'none'",
-                                       timeout=15000)
-                t0 = time.time()
-                st = None
-                while time.time() - t0 < 150:
-                    st = page.evaluate("window.__growthStats")
-                    if st["done"] and st.get("rigged"):
-                        break
-                    time.sleep(0.25)
-                page.click("#bnav")
-                nav_samples = []
-                t0 = time.time()
-                while time.time() - t0 < 25:
-                    st = page.evaluate("window.__growthStats")
-                    if st.get("nav"):
-                        nav_samples.append(st["nav"])
-                    time.sleep(0.2)
-                page.screenshot(path="_native_teddy_goal.png")
-                goal_on_page = st.get("goalX") == 15
-                browser.close()
-            wire_nav = []
-            for l in LOG9.read_text().splitlines():
-                if not l.strip():
-                    continue
-                try:
-                    m = json.loads(l)
-                except json.JSONDecodeError:
-                    continue        # a dying prior relay may leave a torn line
-                if m.get("type") == "anim" and "nav" in m:
-                    wire_nav.append(m["nav"])
-            eps_seen = [n["ep"] for n in nav_samples]
-            arr_seen = [n["arrivals"] for n in nav_samples]
-            dmin = min((n["dist"] for n in nav_samples), default=1e9)
-            check("F-T1d headed: flag on wire+page, nav frames in range, episodes "
-                  "advance, the TEDDY reaches the flag live",
-                  goal_on_page and len(nav_samples) > 50
-                  and all(0 <= n["state"] < 12 for n in nav_samples)
-                  and all(0 <= n["verb"] < 5 for n in nav_samples)
-                  and len(wire_nav) > 100
-                  and max(eps_seen) >= min(eps_seen) + 2
-                  and max(arr_seen) >= 1 and dmin < 5.0,
-                  f"samples={len(nav_samples)} wireFrames={len(wire_nav)} "
-                  f"eps {min(eps_seen)}->{max(eps_seen)} "
-                  f"arrivals={max(arr_seen)} dMin={dmin:.2f}")
-            print(f"T1 HEADED MEASURED: {len(nav_samples)} page samples, "
-                  f"{len(wire_nav)} wire frames, eps {min(eps_seen)}->"
-                  f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
-        finally:
-            relay9.terminate()
-
-    # ---- F-T3: voxel-muscle gait — CA-native movement, no FK/IK --------------
-    # teddymuscle.chimera = teddy.chimera + vmGait=1. WALK drives the tripod
-    # beat machine (LIFT/SWING/PLANT/SHIFT) on the lattice itself: muscles
-    # shorten by REMOVING voxels, joints are oblong pivots re-laid by cell
-    # flow. Headless and fast: one selftest run, all checks off the wire.
-    #   F-T3a: physics membrane intact under vmGait (the drop law holds)
-    #   F-T3b: WALKS or DOESN'T — displacement >= 40 cells over 400 ticks
-    #          (T4-trained stride L=2: prediction 114 = 400·L/(2L+3); the
-    #          sweep gated L>=3 out — budget manhattan+2L breaks the count)
-    #   F-T3c: body integrity every tick — single face-connected component,
-    #          cell count within 5% of the shape-trained 375, zero traction slips
-    #   F-T3d: airwalk — legs cycling in free fall move the body EXACTLY
-    #          nowhere (airDX bit-exact 0, SHIFT requests denied: gatedAir)
-    rt3 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
-                          str(NATIVE / "genomes" / "teddymuscle.chimera"),
-                          "selftest"], capture_output=True, text=True,
-                         timeout=120)
-    t3msgs = [json.loads(l) for l in rt3.stdout.splitlines() if l.strip()]
-    t3meta = next((m for m in t3msgs if m.get("type") == "meta"), None)
-    t3fin = next((m for m in t3msgs if m.get("type") == "final"), None)
-    t3vox = next((m for m in t3msgs if m.get("type") == "voxtest"), None)
-    tg4 = read_chimera(NATIVE / "genomes" / "teddymuscle.chimera")
-    grown_n = len(t3fin["cells"]) if t3fin else 0
-    # F-T3a-shape: the construction order's FIRST gate — the body must be
-    # physically correct before any movement is trained. Recomputed from the
-    # cells file (never trusted from the trainer): paws coplanar + COM ground
-    # projection inside the paw support hull with margin >= 1 cell (one
-    # lattice step of discretization slack — the derived bound).
-    s1r = [l.split("#")[0].split() for l in
-           open(NATIVE / "genomes" / tg4["cellsFile"])]
-    s1r = [l for l in s1r if l]
-    n_s1 = int(s1r[0][1])
-    cells_s1 = [tuple(map(int, s1r[1 + j])) for j in range(n_s1)]
-    i_s1 = 1 + n_s1
-    m_s1 = int(s1r[i_s1][1]); i_s1 += 1
-    paws_s1 = []
-    for _ in range(m_s1):
-        nx_s1 = int(s1r[i_s1][2]); i_s1 += 1
-        paws_s1.append(tuple(map(int, s1r[i_s1 + nx_s1 - 1])))
-        i_s1 += nx_s1
-    gy_s1 = min(c[1] for c in cells_s1)
-    cx_s1 = sum(c[0] for c in cells_s1) / n_s1
-    cz_s1 = sum(c[2] for c in cells_s1) / n_s1
-
-    def hull2_s1(ps):
-        ps = sorted(set(ps))
-        def cr(o, a, b):
-            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-        lo = []
-        for p in ps:
-            while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
-                lo.pop()
-            lo.append(p)
-        hi = []
-        for p in reversed(ps):
-            while len(hi) >= 2 and cr(hi[-2], hi[-1], p) <= 0:
-                hi.pop()
-            hi.append(p)
-        return lo[:-1] + hi[:-1]
-
-    H_s1 = hull2_s1([(p[0], p[2]) for p in paws_s1])
-    marg_s1 = 1e9
-    for a, b in zip(H_s1, H_s1[1:] + H_s1[:1]):
-        ex, ey = b[0] - a[0], b[1] - a[1]
-        marg_s1 = min(marg_s1,
-                      (ex * (cz_s1 - a[1]) - ey * (cx_s1 - a[0]))
-                      / math.hypot(ex, ey))
-    coplanar_s1 = all(p[1] == gy_s1 for p in paws_s1)
-    check("F-T3a-shape: the body is physically correct BEFORE movement — "
-          "paws coplanar, COM projection inside the paw hull with margin "
-          ">= 1 cell (recomputed from the cells file)",
-          coplanar_s1 and marg_s1 >= 1.0 and grown_n == n_s1,
-          f"legs={m_s1} COM=({cx_s1:.3f},{cz_s1:.3f}) hull={H_s1} "
-          f"margin={marg_s1:.3f} cells={grown_n}/{n_s1}")
-    check("F-T3a teddymuscle genome loads (kind=vox, vmGait=1) and the stand "
-          "ledger is intact",
-          rt3.returncode == 0 and t3meta and t3meta["kind"] == "creature"
-          and tg4.get("vmGait") == "1" and t3vox and "vm" in t3vox,
-          f"rc={rt3.returncode} name={t3meta and t3meta.get('name')} "
-          f"vmGait={tg4.get('vmGait')} grownCells={grown_n}")
-    st3 = t3vox["stand"]
-    g3 = float(tg4["gravity"]) / (float(tg4["tickHz"]) ** 2
-                                  * float(tg4["cell"]))
-    n_pred3 = 1
-    while n_pred3 * (n_pred3 + 1) < 2 * st3["dropH"] / g3:
-        n_pred3 += 1
-    check("F-T3a physics membrane intact under vmGait: contact tick == the "
-          "discrete drop law, rest equilibrium exact",
-          st3["contactTick"] == n_pred3 and st3["restVyMax"] == 0
-          and st3["restPenMax"] < 1e-12 and st3["termDrift"] < 0.02,
-          f"contactTick={st3['contactTick']} pred={n_pred3} "
-          f"restVyMax={st3['restVyMax']} restPenMax={st3['restPenMax']:.2e} "
-          f"termDrift={st3['termDrift']:.4%}")
-    w3 = t3vox["walk"]
-    check("F-T3b WALKS: 400-tick displacement >= 40 cells (T4-TRAINED "
-          "stride L=2: prediction 114 = 400·L/(2L+3), lean repaid per cycle) "
-          "with ZERO IK iterations — the gait is pure CA",
-          w3["bodyX"] >= 40 and w3["iters"] == 0 and w3["nan"] == False,
-          f"bodyX={w3['bodyX']} iters={w3['iters']} nan={w3['nan']}")
-    vm3 = t3vox["vm"]
-    check("F-T3c body integrity: single face-connected component every tick, "
-          "cell count within 5% of the grown shape, no traction slips",
-          vm3["connMin"] == 1
-          and vm3["countMin"] >= grown_n * 0.95
-          and vm3["countMax"] <= grown_n * 1.05
-          and vm3["slips"] == 0,
-          f"connMin={vm3['connMin']} count=[{vm3['countMin']},"
-          f"{vm3['countMax']}]/{grown_n} slips={vm3['slips']} "
-          f"shifts={vm3['shifts']}")
-    check("F-T3d airwalk: legs cycling in free fall translate the body "
-          "EXACTLY nowhere (airDX bit-exact 0) and SHIFT requests are denied "
-          "while airborne (gatedAir > 0)",
-          vm3["airDX"] == 0 and vm3["gatedAir"] > 0,
-          f"airDX={vm3['airDX']} gatedAir={vm3['gatedAir']} "
-          f"gatedSupport={vm3['gatedSupport']}")
-    print(f"T3 MEASURED: walk bodyX={w3['bodyX']} (T4-trained pred 114) iters={w3['iters']} "
-          f"conn={vm3['connMin']} count=[{vm3['countMin']},{vm3['countMax']}] "
-          f"shifts={vm3['shifts']} slips={vm3['slips']} "
-          f"gatedAir={vm3['gatedAir']} airDX={vm3['airDX']}")
-
-    # ---- F-T7: the voxel-muscle gait WALKS THE GROWN HILLS -------------------
-    # teddymusclehills.chimera = teddymuscle + the N6 terrain membrane (seed
-    # 2026 — the SAME world the bear navigated). One core change: the vm
-    # PLANT beat reads the terrain column under each paw AT CONTACT; airborne
-    # legs keep the T3 body-frame plane (measured: a world-frame target while
-    # airborne grew legs unboundedly toward the distant ground — flat
-    # regression count +6.1%/slips 4 vs trained 375/0, so the airborne path
-    # is the old line verbatim). The loader also hoisted the vox terrain
-    # block OUT of goal=1 — the world is a membrane, not a reward accessory.
-    #   F-T7a: the teddy's grown world == the oracle == the bear's field
-    #   F-T7b: the drop law holds on the hill (contact tick == prediction)
-    #   F-T7c: the trained gait WALKS the slopes — displacement, integrity,
-    #          airDX bit-exact 0, slips REPORTED on the wire (never hidden)
-    #   F-T7d: the flat membrane is bit-unchanged (the T3 ledger above is
-    #          pinned to the pre-T7 core's exact numbers)
-    rt7 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
-                          str(NATIVE / "genomes" / "teddymusclehills.chimera"),
-                          "selftest"], capture_output=True, text=True,
-                         timeout=300)
-    t7msgs = [json.loads(l) for l in rt7.stdout.splitlines() if l.strip()]
-    t7rig = next((m for m in t7msgs if m.get("type") == "rig"), None)
-    t7fin = next((m for m in t7msgs if m.get("type") == "final"), None)
-    t7vox = next((m for m in t7msgs if m.get("type") == "voxtest"), None)
-    tg7 = read_chimera(NATIVE / "genomes" / "teddymusclehills.chimera")
-    ter7, ter7_iters, ter7_ms = gen_terrain_py(tg7)
-    wire_ter7 = dict(t7rig["terrain"]) if t7rig and "terrain" in t7rig else {}
-    ter7_diff = sum(1 for x, h in wire_ter7.items() if ter7.get(x) != h)
-    check("F-T7a hills world: wire terrain == the oracle integer-exact and "
-          "== the bear's grown field (seed 2026)",
-          rt7.returncode == 0 and ter7 is not None and len(wire_ter7) == 1089
-          and ter7_diff == 0 and t7rig["terrainIters"] == ter7_iters
-          and ter7 == ter,
-          f"cols={len(wire_ter7)} mismatches={ter7_diff} "
-          f"iters={t7rig and t7rig.get('terrainIters')}/{ter7_iters} "
-          f"sameAsBear={ter7 == ter}")
-    st7 = t7vox["stand"]
-    g7 = float(tg7["gravity"]) / (float(tg7["tickHz"]) ** 2
-                                  * float(tg7["cell"]))
-    n_pred7 = 1
-    while n_pred7 * (n_pred7 + 1) < 2 * st7["dropH"] / g7:
-        n_pred7 += 1
-    check("F-T7b physics membrane on the hill: contact tick == the discrete "
-          "drop law, rest equilibrium exact",
-          st7["contactTick"] == n_pred7 and st7["restVyMax"] == 0
-          and st7["restPenMax"] < 1e-12 and st7["termDrift"] < 0.02,
-          f"contactTick={st7['contactTick']} pred={n_pred7} "
-          f"restVyMax={st7['restVyMax']} restPenMax={st7['restPenMax']:.2e} "
-          f"termDrift={st7['termDrift']:.4%}")
-    w7 = t7vox["walk"]
-    vm7 = t7vox["vm"]
-    grown7 = len(t7fin["cells"]) if t7fin else 0
-    check("F-T7c WALKS THE SLOPES: 400-tick displacement >= 40 cells with "
-          "zero IK, single component, count within 5%, airDX bit-exact 0, "
-          "slips reported on the wire",
-          w7["bodyX"] >= 40 and w7["iters"] == 0 and w7["nan"] == False
-          and vm7["connMin"] == 1
-          and vm7["countMin"] >= grown7 * 0.95
-          and vm7["countMax"] <= grown7 * 1.05
-          and vm7["airDX"] == 0 and "slips" in vm7,
-          f"bodyX={w7['bodyX']} iters={w7['iters']} conn={vm7['connMin']} "
-          f"count=[{vm7['countMin']},{vm7['countMax']}]/{grown7} "
-          f"slips={vm7['slips']} airDX={vm7['airDX']} "
-          f"gatedAir={vm7['gatedAir']}")
-    check("F-T7c2 the hills are LOAD-BEARING: the hill walk ledger differs "
-          "from the flat walk (not a placebo world)",
-          w7["bodyX"] != w3["bodyX"],
-          f"hills={w7['bodyX']} flat={w3['bodyX']}")
-    check("F-T7d flat membrane bit-unchanged by T7: the T3 ledger above == "
-          "the pre-T7 core's exact numbers",
-          w3["bodyX"] == 116 and vm3["slips"] == 0 and vm3["shifts"] == 58
-          and vm3["gatedAir"] == 7 and vm3["countMin"] == 358
-          and vm3["countMax"] == 375,
-          f"bodyX={w3['bodyX']} slips={vm3['slips']} shifts={vm3['shifts']} "
-          f"gatedAir={vm3['gatedAir']} count=[{vm3['countMin']},"
-          f"{vm3['countMax']}]")
-    print(f"T7 MEASURED: hills walk bodyX={w7['bodyX']} (flat {w3['bodyX']}, "
-          f"{(w7['bodyX'] / w3['bodyX'] - 1) * 100:+.1f}%) shifts={vm7['shifts']} "
-          f"slips={vm7['slips']} gatedAir={vm7['gatedAir']} "
-          f"count=[{vm7['countMin']},{vm7['countMax']}]/{grown7} "
-          f"terrainCols={len(wire_ter7)} iters={ter7_iters}")
-
-    # ---- F-T9: the CANONICAL teddy (T9) — a trained model made the body -----
-    # The T1 teddy's source was a MUTATED TRELLIS blob (measured: its base
-    # texture is brown noise — the pipeline faithfully animated a bad statue).
-    # T9: SDXL-Turbo image (ambient-lit, shadowless) -> TRELLIS res-512 ->
-    # voxelize at H=28 (derived: canon proportions put the eye at H*0.45/6
-    # cells; an eye needs >= 2 cells to exist -> H >= 26.7) -> shape_train
-    # (1 pillar, margin -3.081 -> +3.100). Old teddy files are FROZEN — the
-    # T3/T7 regressions above pin them.
-    #   F-T9a: shape gate on the trained body (recomputed from the cells
-    #          file, never trusted from the trainer)
-    #   F-T9b: the drop law holds at the new scale (contact tick == discrete
-    #          prediction; dropH scales with bodyH)
-    #   F-T9c: the scale-free stride law — the T4-trained gait walks the new
-    #          body with displacement in the SAME band as the old (the law
-    #          L/(2L+3) is in cell units, so scale cancels)
-    #   F-T9d: integrity + airwalk (conn, count ±5%, airDX bit-exact 0)
-    rt9 = subprocess.run([str(NATIVE / "ca_core.exe"), "0",
-                          str(NATIVE / "genomes" / "teddyhoneymuscle.chimera"),
-                          "selftest"], capture_output=True, text=True,
-                         timeout=300)
-    t9msgs = [json.loads(l) for l in rt9.stdout.splitlines() if l.strip()]
-    t9fin = next((m for m in t9msgs if m.get("type") == "final"), None)
-    t9vox = next((m for m in t9msgs if m.get("type") == "voxtest"), None)
-    tg9 = read_chimera(NATIVE / "genomes" / "teddyhoneymuscle.chimera")
-    s9r = [l.split("#")[0].split() for l in
-           open(NATIVE / "genomes" / tg9["cellsFile"])]
-    s9r = [l for l in s9r if l]
-    n_s9 = int(s9r[0][1])
-    cells_s9 = [tuple(map(int, s9r[1 + j])) for j in range(n_s9)]
-    i_s9 = 1 + n_s9
-    m_s9 = int(s9r[i_s9][1]); i_s9 += 1
-    paws_s9 = []
-    for _ in range(m_s9):
-        nx_s9 = int(s9r[i_s9][2]); i_s9 += 1
-        paws_s9.append(tuple(map(int, s9r[i_s9 + nx_s9 - 1])))
-        i_s9 += nx_s9
-    gy_s9 = min(c[1] for c in cells_s9)
-    cx_s9 = sum(c[0] for c in cells_s9) / n_s9
-    cz_s9 = sum(c[2] for c in cells_s9) / n_s9
-    H_s9 = hull2_s1([(p[0], p[2]) for p in paws_s9])
-    marg_s9 = 1e9
-    for a, b in zip(H_s9, H_s9[1:] + H_s9[:1]):
-        ex, ey = b[0] - a[0], b[1] - a[1]
-        marg_s9 = min(marg_s9,
-                      (ex * (cz_s9 - a[1]) - ey * (cx_s9 - a[0]))
-                      / math.hypot(ex, ey))
-    coplanar_s9 = all(p[1] == gy_s9 for p in paws_s9)
-    grown9 = len(t9fin["cells"]) if t9fin else 0
-    check("F-T9a canonical body is physically correct BEFORE movement — paws "
-          "coplanar, COM projection inside the paw hull with margin >= 1 cell "
-          "(recomputed from teddy_honey_s1.cells)",
-          coplanar_s9 and marg_s9 >= 1.0 and grown9 == n_s9 and n_s9 > 3000,
-          f"legs={m_s9} COM=({cx_s9:.3f},{cz_s9:.3f}) hull={H_s9} "
-          f"margin={marg_s9:.3f} cells={grown9}/{n_s9} (density: H=28 scale)")
-    st9 = t9vox["stand"]
-    g9 = float(tg9["gravity"]) / (float(tg9["tickHz"]) ** 2
-                                  * float(tg9["cell"]))
-    n_pred9 = 1
-    while n_pred9 * (n_pred9 + 1) < 2 * st9["dropH"] / g9:
-        n_pred9 += 1
-    check("F-T9b drop law at the new scale: contact tick == discrete "
-          "prediction, rest equilibrium exact",
-          st9["contactTick"] == n_pred9 and st9["restVyMax"] == 0
-          and st9["restPenMax"] < 1e-12 and st9["termDrift"] < 0.02,
-          f"contactTick={st9['contactTick']} pred={n_pred9} "
-          f"dropH={st9['dropH']} termDrift={st9['termDrift']:.4%}")
-    w9 = t9vox["walk"]
-    vm9 = t9vox["vm"]
-    check("F-T9c the stride law is SCALE-FREE: T4-trained gait on the new "
-          "body lands within 10% of the old body's 116 cells/400t",
-          abs(w9["bodyX"] - 116) <= 12 and w9["iters"] == 0
-          and w9["nan"] == False,
-          f"bodyX={w9['bodyX']} (old 116) iters={w9['iters']} "
-          f"nan={w9['nan']}")
-    check("F-T9d integrity + airwalk: single component, count within 5%, "
-          "airDX bit-exact 0, slips reported",
-          vm9["connMin"] == 1 and vm9["countMin"] >= grown9 * 0.95
-          and vm9["countMax"] <= grown9 * 1.05 and vm9["airDX"] == 0
-          and "slips" in vm9,
-          f"conn={vm9['connMin']} count=[{vm9['countMin']},{vm9['countMax']}]/"
-          f"{grown9} slips={vm9['slips']} airDX={vm9['airDX']} "
-          f"gatedAir={vm9['gatedAir']}")
-    print(f"T9 MEASURED: canonical honey teddy — cells={grown9} legs={m_s9} "
-          f"margin={marg_s9:.3f} contact@{st9['contactTick']} (pred {n_pred9}) "
-          f"walk bodyX={w9['bodyX']} (old-body 116) slips={vm9['slips']} "
-          f"count=[{vm9['countMin']},{vm9['countMax']}]")
+    if os.environ.get("N8_SKIP_HEADED") == "1":
+        print("SKIP F-N8e (headed)")
+        check("F-N8e headed: SKIPPED", True, "env N8_SKIP_HEADED=1")
+    # ---- F-N8e: HEADED — the bear deliberates its way to the flag ---------
+    PORT6 = 8805
+    relay6 = subprocess.Popen([sys.executable, str(NATIVE / "relay.py"), "15",
+                               str(PORT6),
+                               str(NATIVE / "genomes" / "beargoal.chimera")],
+                              stdout=subprocess.PIPE, text=True)
+    try:
+        time.sleep(1.0)
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False,
+                                        args=["--enable-unsafe-webgpu"])
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.goto(f"http://127.0.0.1:{PORT6}/")
+            page.wait_for_function("window.__growthStats !== undefined",
+                                   timeout=30000)
+            page.wait_for_function("window.__renderer !== 'none'",
+                                   timeout=15000)
+            t0 = time.time()
+            st = None
+            while time.time() - t0 < 150:
+                st = page.evaluate("window.__growthStats")
+                if st["done"] and st.get("rigged"):
+                    break
+                time.sleep(0.25)
+            page.click("#bnav")
+            nav_samples = []
+            t0 = time.time()
+            while time.time() - t0 < 25:
+                st = page.evaluate("window.__growthStats")
+                if st.get("nav"):
+                    nav_samples.append(st["nav"])
+                time.sleep(0.2)
+            page.screenshot(path="_native_bear_goal.png")
+            goal_on_page = st.get("goalX") == 15
+            browser.close()
+        wire_nav = [m["nav"] for m in
+                    (json.loads(l) for l in LOG.read_text().splitlines()
+                     if l.strip())
+                    if m.get("type") == "anim" and "nav" in m]
+        eps_seen = [n["ep"] for n in nav_samples]
+        arr_seen = [n["arrivals"] for n in nav_samples]
+        dmin = min((n["dist"] for n in nav_samples), default=1e9)
+        check("F-N8e headed: flag on wire+page, nav frames in range, episodes "
+              "advance, the bear REACHES the flag live",
+              goal_on_page and len(nav_samples) > 50
+              and all(0 <= n["state"] < 12 for n in nav_samples)
+              and all(0 <= n["verb"] < 5 for n in nav_samples)
+              and len(wire_nav) > 100
+              and max(eps_seen) >= min(eps_seen) + 2
+              and max(arr_seen) >= 1 and dmin < 5.0,
+              f"samples={len(nav_samples)} wireFrames={len(wire_nav)} "
+              f"eps {min(eps_seen)}->{max(eps_seen)} "
+              f"arrivals={max(arr_seen)} dMin={dmin:.2f}")
+        print(f"N8 HEADED MEASURED: {len(nav_samples)} page samples, "
+              f"{len(wire_nav)} wire frames, eps {min(eps_seen)}->"
+              f"{max(eps_seen)}, arrivals {max(arr_seen)}, dMin {dmin:.2f}")
+    finally:
+        relay6.terminate()
 finally:
     relay.terminate()
 

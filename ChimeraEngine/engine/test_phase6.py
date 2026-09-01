@@ -52,6 +52,17 @@ Tests:
     FALSIFIER 13 (per-planet thermal equilibrium within 15%), membrane
     context transitions logged (window.__membraneLog), __systemStats
     witness (planet count, periods, temps)
+19. PHASE 10.5: tile artifact elimination — TILE_SIZE=8, one global depth
+    rank ordering every tile identically, MAX_PTILE=256, 1px bin margin;
+    SEAM FALSIFIER (tile-boundary vs interior brightness-step ratio < 1.3
+    at max-density fracture view), 4K FALSIFIER (GPU >= 50 fps at 3840x2160)
+20. PHASE 11: ship physics + atmospheric re-entry — FALSIFIER 14
+    (Tsiolkovsky: fuel after a 3 s void burn within 5% of m0*exp(-dv/ve)),
+    FALSIFIER 15 (staged 5.5 km/s re-entry peak skin temp within 10% of the
+    fine-dt Sutton-Graves reference), FALSIFIER 16 (full arc surface-A ->
+    orbit -> transfer -> land-B under autopilot, gap <0.01 m, at rest),
+    FALSIFIER 17 (rocket energy closure: thrustWork + exhaustKE - propKE
+    vs 1/2 ve^2 m_burned within 2%)
 
 Falsifier: If combined energy drift exceeds 1% over 60 frames in CPU
 BH+EM mode, the kernel-translated EM force (or its PE accounting) has
@@ -70,6 +81,8 @@ PHASE_URL = "file:///E:/PythonChimera/ChimeraEngine/engine/spiace_phase6.html"
 ENGINE_DIR = "E:/PythonChimera/ChimeraEngine/engine"
 SCREENSHOT_START = os.path.join(ENGINE_DIR, "spiace_phase6_screenshot.png")
 SCREENSHOT_FINAL = os.path.join(ENGINE_DIR, "spiace_phase6_final.png")
+SCREENSHOT_LIGHTVIZ = os.path.join(ENGINE_DIR, "spiace_phase6_lightviz.png")
+SCREENSHOT_TEDDY = os.path.join(ENGINE_DIR, "spiace_phase6_teddy.png")
 
 
 def text(page, sel):
@@ -343,9 +356,10 @@ def test_spiace_phase6_kernels():
 
         # ---- B4: focus/frame flight ----
         page.evaluate("window.__focusOn(5)")  # a terrain splat
-        page.wait_for_timeout(3500)
-        focus_txt = text(page, "#fly-focus")
-        assert focus_txt == "#5", f"focus HUD shows {focus_txt!r}, expected '#5'"
+        page.wait_for_function(
+            "document.getElementById('fly-focus').textContent === '#5'",
+            timeout=15000)
+        page.wait_for_timeout(3500)  # let the flight converge
         dist = page.evaluate(
             "(() => { const p = window.__flightInfo.camPos; const c = window.__planetPos(0); "
             " return Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]); })()")
@@ -355,9 +369,11 @@ def test_spiace_phase6_kernels():
         assert dist < 1.2e8, f"focus flight did not converge (dist {dist:.3e} m)"
         assert dist > 1e6, f"focus flight overshot into the planet (dist {dist:.3e} m)"
         page.keyboard.press("Escape")  # release focus
-        page.wait_for_timeout(300)
-        assert text(page, "#fly-focus") == "none (F)", \
-            f"focus not released by Escape: {text(page, '#fly-focus')!r}"
+        # Poll, don't sleep: at dense fracture views (25k+ splats at TILE_SIZE=8)
+        # the frame rate can dip, and #fly-focus only repaints every 10 frames.
+        page.wait_for_function(
+            "document.getElementById('fly-focus').textContent === 'none (F)'",
+            timeout=15000)
         page.click("#btn-center")
         page.wait_for_timeout(200)
 
@@ -485,15 +501,40 @@ def test_spiace_phase6_kernels():
                 f"D2 FALSIFIER TRIPPED at r_px={rpx}: count {li['count']} vs law {n_exp}"
         assert counts_seen[0] < counts_seen[1] < counts_seen[2], \
             f"D2 FALSIFIER TRIPPED: fracture counts not increasing: {counts_seen}"
-        # Budget cap: r_px = 300 -> law wants 31500, budget caps it
+        # Budget cap check: at r_px = 300 the law wants 31500 splats.
+        # With MAX_PARTICLES=1M the budget is huge so we should match
+        # the law, not hit the cap. If the budget were small we'd pin there.
         dist = R_PL * H_canvas / (2 * 300 * 0.414)
         page.evaluate(f"window.__setCam({pa[0] + dist}, {pa[1]}, {pa[2]})")
         page.evaluate(f"window.__lookAt({pa[0]}, {pa[1]}, {pa[2]})")
         page.wait_for_timeout(300)
         li = page.evaluate("window.__lodInfo")
         print(f"D2 cap: r_px={li['rPx']:.1f} count={li['count']} budget={li['budgetCap']}")
-        assert li["count"] == li["budgetCap"], \
-            f"D2: budget cap not applied ({li['count']} != {li['budgetCap']})"
+        n_target_300 = round(0.35 * 300 * 300)
+        err_pct_cap = abs(li["count"] - n_target_300) / n_target_300 * 100
+        assert err_pct_cap <= 20, \
+            f"D2 FALSIFIER TRIPPED at r_px=300: count {li['count']} vs law {n_target_300}"
+        # Also verify the budget is indeed large (not a tiny cap)
+        assert li["budgetCap"] > n_target_300, \
+            f"D2: budget cap too small ({li['budgetCap']} < {n_target_300})"
+
+        # ---- PHASE 10.5: TILE ARTIFACT ELIMINATION ----
+        # Seam falsifier (Rule 0 stated in sh-raster/prepareSplats): with a
+        # global rank order, MAX_PTILE=256, 1px bin margin, TILE_SIZE=8, the
+        # mean brightness step across tile-boundary pixel columns/rows must
+        # match the interior. Camera is at the r_px=300 max-density fracture
+        # view (~31.5k splats) — the worst case for tile divergence.
+        page.evaluate("window.__seamCheck()")
+        page.wait_for_function("window.__seamResult !== null && window.__seamResult !== undefined",
+                               timeout=20000)
+        seam = page.evaluate("window.__seamResult")
+        print(f"Seam check: colRatio={seam['colRatio']:.3f} "
+              f"rowRatio={seam['rowRatio']:.3f} "
+              f"(boundary mean {seam['colBoundaryMean']:.3f} vs "
+              f"interior {seam['colInteriorMean']:.3f})")
+        assert seam["ratio"] < 1.3, \
+            f"PHASE 10.5 FALSIFIER TRIPPED: tile-boundary gradient ratio " \
+            f"{seam['ratio']:.2f} >= 1.3 — seams persist"
         page.click("#btn-center")
         page.wait_for_timeout(300)
 
@@ -539,6 +580,30 @@ def test_spiace_phase6_kernels():
             assert nodes_after > 1, \
                 f"tree degenerate after GPU mode ({nodes_after} nodes)"
             print(f"After GPU mode: tree healthy ({nodes_after} nodes)")
+
+            # ---- PHASE 10.5: 4K GPU THROUGHPUT ----
+            # Falsifier: GPU mode must hold >= 50 fps with the canvas at
+            # 3840x2160 and all kernels active. Below that, the Phase 10.5
+            # changes (TILE_SIZE=8 -> 4x tiles, MAX_PTILE=256) cost too much.
+            page.set_viewport_size({"width": 3840, "height": 2160})
+            page.wait_for_timeout(600)  # resize event -> canvas realloc
+            cw4k = page.evaluate("document.getElementById('c').width")
+            ch4k = page.evaluate("document.getElementById('c').height")
+            page.click("#btn-gpu")
+            page.wait_for_timeout(2500)  # let the adaptive detail budget converge
+            f0 = page.evaluate("window.__frames || 0")
+            page.wait_for_timeout(2000)
+            f1 = page.evaluate("window.__frames || 0")
+            fps_4k = (f1 - f0) / 2.0
+            print(f"GPU 4K ({cw4k}x{ch4k}): {fps_4k:.1f} fps "
+                  f"(fracture budget adapted: "
+                  f"{page.evaluate('window.__lodInfo && window.__lodInfo.budgetCap')})")
+            assert fps_4k >= 50, \
+                f"PHASE 10.5 FALSIFIER TRIPPED: {fps_4k:.1f} fps at 4K < 50"
+            assert err_visible(page) is None, f"#err shown at 4K: {err_visible(page)}"
+            page.click("#btn-cpu")
+            page.set_viewport_size({"width": 1280, "height": 720})
+            page.wait_for_timeout(400)
         else:
             print("WebGPU not available — GPU mode test skipped gracefully")
 
@@ -683,6 +748,252 @@ def test_spiace_phase6_kernels():
         assert drift_mp < 1.0, \
             f"FALSIFIER 12 TRIPPED: multi-planet energy drift {drift_mp}% >= 1%"
 
+        # ---- PHASE 11: SHIP PHYSICS + ATMOSPHERIC RE-ENTRY (F14-F17) ----
+        # Rule 0 statement/prediction/falsifiers are declared in the HTML
+        # ship-module header; every falsifier prints its measured numbers.
+        import time as _time
+
+        # F14: Tsiolkovsky — 3 s full-throttle burn in deep space (manual W).
+        page.evaluate("window.__setTimeScale(1)")
+        page.evaluate("window.__setCam(2e11, 0, 5e10)")
+        page.evaluate("window.__enterShip()")
+        st0 = page.evaluate("window.__shipState()")
+        assert st0["mode"] is True, "F14 setup: ship mode did not engage"
+        assert abs(st0["fuel"] - st0["fuel0"]) < 1.0, "F14 setup: not fuelled"
+        page.keyboard.down("w")
+        page.wait_for_timeout(3000)
+        page.keyboard.up("w")
+        page.wait_for_timeout(200)
+        st1 = page.evaluate("window.__shipState()")
+        dv_meas = _math.sqrt(sum(v * v for v in st1["vel"]))
+        m0 = st1["dry"] + st1["fuel0"]
+        fuel_pred = m0 * _math.exp(-dv_meas / st1["ve"]) - st1["dry"]
+        err14 = abs(st1["fuel"] - fuel_pred) / fuel_pred
+        print(f"\nF14 Tsiolkovsky: burn dv={dv_meas:.2f} m/s, fuel left "
+              f"{st1['fuel']:.1f} kg vs analytic {fuel_pred:.1f} kg "
+              f"({err14*100:.3f}%)")
+        assert 30 < dv_meas < 120, f"F14 setup: unexpected dv {dv_meas} m/s"
+        assert err14 < 0.05, \
+            f"FALSIFIER 14 TRIPPED: fuel {st1['fuel']:.1f} kg vs analytic {fuel_pred:.1f} kg"
+        page.evaluate("window.__exitShip()")
+
+        # F15: staged re-entry over planet B — 5.5 km/s prograde + 500 m/s
+        # down from 130 km; fine-dt (0.01 s) reference from __reentryPredict.
+        pb = page.evaluate("window.__planetPos(1)")
+        plB = page.evaluate("window.__systemStats.planets[1]")
+        rb = plB["radius"]
+        rn = _math.sqrt(sum(v * v for v in pb))
+        up = [v / rn for v in pb]                       # radial out (star at origin)
+        tH = [-up[2], 0.0, up[0]]                       # prograde tangential
+        alt0 = 130e3
+        epos = [pb[i] + up[i] * (rb + alt0) for i in range(3)]
+        cv = plB["vel"]
+        evel = [cv[i] + tH[i] * 5.5e3 - up[i] * 500.0 for i in range(3)]
+        pred = page.evaluate(f"window.__reentryPredict({epos}, {evel}, 1)")
+        page.evaluate(f"window.__shipSetState({epos}, {evel})")
+        page.evaluate("window.__setTimeScale(20)")
+        t_leg = _time.time()
+        while _time.time() - t_leg < 240:
+            page.wait_for_timeout(2000)
+            st = page.evaluate("window.__shipState()")
+            ci = page.evaluate("window.__charInfo")
+            if ci["mode"] == "foot" or not st["mode"]:
+                break  # down (one way or the other)
+            if st["peakSkinT"] > 400 and st["skinT"] < 0.7 * st["peakSkinT"]:
+                break  # past the heating peak and cooling
+        page.evaluate("window.__setTimeScale(1)")
+        st15 = page.evaluate("window.__shipState()")
+        err15 = abs(st15["peakSkinT"] - pred["peakSkinT"]) / pred["peakSkinT"]
+        print(f"F15 re-entry @B: peak skin {st15['peakSkinT']:.0f} K vs "
+              f"reference {pred['peakSkinT']:.0f} K ({err15*100:.1f}%), "
+              f"peak q-dot {st15['peakQdot']:.2e} W/m^2, peak dynP "
+              f"{st15['peakDynP']:.2e} Pa (ref duration {pred['duration']:.0f} s)")
+        assert pred["peakSkinT"] > 400, \
+            f"F15 setup: reference entry never heated ({pred['peakSkinT']:.0f} K)"
+        assert err15 < 0.10, \
+            f"FALSIFIER 15 TRIPPED: peak skin {st15['peakSkinT']:.0f} K vs " \
+            f"reference {pred['peakSkinT']:.0f} K ({err15*100:.1f}%)"
+
+        # F16: the complete narrative arc — surface of A -> orbit ->
+        # heliocentric transfer -> descent -> touchdown on planet B,
+        # flown by the autopilot (__shipAuto), fuel-honest throughout.
+        page.click("#btn-reset")
+        page.wait_for_function(
+            "document.getElementById('particle-count').textContent === '500'",
+            timeout=15000)
+        # Leg 0: launch window. B's phasing decides the transfer price
+        # (measured porkchop floor: 20.9 km/s at a bad phasing vs ~2.5 km/s
+        # at the window — no tank fixes geometry). Fast-forward at 1e6x with
+        # nobody aboard until the scan finds an affordable arc, then land the
+        # clock and walk to the pad. The scan is the autopilot's OWN
+        # transferScan (single source of truth), run from A's core state.
+        page.evaluate("window.__setTimeScale(1e6)")
+        t_leg = _time.time()
+        best_cost, scan = None, None
+        while _time.time() - t_leg < 240:
+            page.wait_for_timeout(500)
+            scan = page.evaluate("window.__transferScan(1, 0)")
+            costs = [r["cost"] for r in scan["rows"] if r.get("cost") is not None]
+            best_cost = min(costs) if costs else None
+            if best_cost is not None and best_cost <= 4000:
+                break
+        page.evaluate("window.__setTimeScale(1)")
+        assert best_cost is not None and best_cost <= 4000, \
+            f"F16 window: no affordable A->B arc after 240 s ff (best {best_cost})"
+        print(f"F16 arc: launch window open — cheapest converged arc "
+              f"{best_cost:.0f} m/s (B lon {scan['tgtLonDeg']:.1f} deg)")
+        pa = page.evaluate("window.__planetPos(0)")
+        plA = page.evaluate("window.__systemStats.planets[0]")
+        ra = plA["radius"]
+        lat0, lon0 = 0.3, 1.0
+        elevA = page.evaluate(f"window.__heightAt({lat0}, {lon0}, 0)")
+        dA = ra + elevA + 1.7 + 2.0
+        px, py, pz = (_math.cos(lat0) * _math.cos(lon0), _math.sin(lat0),
+                      _math.cos(lat0) * _math.sin(lon0))
+        page.evaluate(f"window.__setCam({pa[0]+dA*px}, {pa[1]+dA*py}, {pa[2]+dA*pz})")
+        page.evaluate("window.__enterFoot()")
+        page.wait_for_function(
+            "window.__charInfo && window.__charInfo.active && window.__charInfo.grounded",
+            timeout=15000)
+        page.evaluate("window.__enterShip()")   # launch pad: refuelled
+        page.evaluate("window.__shipAuto(1)")   # target: planet B
+        page.evaluate("window.__setTimeScale(50)")
+        # Leg 1: ascend out of A's atmosphere
+        t_leg = _time.time()
+        st = page.evaluate("window.__shipState()")
+        while _time.time() - t_leg < 120:
+            page.wait_for_timeout(500)
+            st = page.evaluate("window.__shipState()")
+            if st["phase"] == "transfer":
+                break
+        assert st["phase"] == "transfer", f"F16 ascend: stuck in phase {st['phase']}"
+        print(f"F16 arc: ascend complete — fuel {st['fuel']:.0f} kg "
+              f"({st['fuel0']-st['fuel']:.0f} kg burned)")
+        # Leg 2: heliocentric transfer at 1e6x
+        page.evaluate("window.__setTimeScale(1e6)")
+        t_leg = _time.time()
+        while _time.time() - t_leg < 300:
+            page.wait_for_timeout(2000)
+            st = page.evaluate("window.__shipState()")
+            if st["phase"] == "descend" or not st["mode"]:
+                break
+        assert st["phase"] == "descend" or not st["mode"], \
+            f"F16 transfer: stuck in phase {st['phase']} (fuel {st['fuel']:.0f} kg)"
+        print(f"F16 arc: transfer complete — fuel {st['fuel']:.0f} kg, "
+              f"phase '{st['phase']}'")
+        # Leg 3: descent + touchdown. The coast-in from the 2e9 m handoff is
+        # honest free-fall at ~1.4-3 km/s (~8e5 s of sim) — run it at 2e4x,
+        # then drop to 2000x at ~1.5 R_B so the entry flare keeps 0.05
+        # s-class substeps.
+        page.evaluate("window.__setTimeScale(2e4)")
+        t_leg = _time.time()
+        while _time.time() - t_leg < 120:
+            page.wait_for_timeout(1000)
+            w = page.evaluate("window.__shipWant()")
+            ci = page.evaluate("window.__charInfo")
+            if ci["mode"] == "foot" or (w and w["distT"] < 8e6):
+                break
+        page.evaluate("window.__setTimeScale(2000)")
+        t_leg = _time.time()
+        while _time.time() - t_leg < 120:
+            page.wait_for_timeout(1000)
+            ci = page.evaluate("window.__charInfo")
+            if ci["mode"] == "foot":
+                break
+        page.evaluate("window.__setTimeScale(1)")
+        ci = page.evaluate("window.__charInfo")
+        assert ci["mode"] == "foot", \
+            f"FALSIFIER 16 TRIPPED: never touched down (mode {ci['mode']})"
+        assert ci["planet"] == 1, \
+            f"FALSIFIER 16 TRIPPED: landed on planet {ci['planet']}, expected B(1)"
+        page.wait_for_timeout(800)  # settle
+        ci2 = page.evaluate("window.__charInfo")
+        assert abs(ci2["gap"]) < 0.01, \
+            f"FALSIFIER 16 TRIPPED: gap after landing {ci2['gap']} m >= 0.01 m"
+        assert ci2["speed"] < 1e-6, \
+            f"FALSIFIER 16 TRIPPED: not at rest after landing ({ci2['speed']} m/s)"
+        print(f"F16 arc: LANDED on planet B — gap {ci2['gap']:.4f} m, "
+              f"rest speed {ci2['speed']:.2e} m/s")
+
+        # F17: rocket energy closure over the arc — thrustWork + exhaustKE
+        # - propKE == 1/2 ve^2 m_burned (analytic identity, exact per substep)
+        stf = page.evaluate("window.__shipState()")
+        chem = 0.5 * stf["ve"] ** 2 * stf["burned"]
+        closure = stf["thrustWork"] + stf["exhaustKE"] - stf["propKE"]
+        err17 = abs(closure / chem - 1.0) if chem > 0 else 1.0
+        print(f"F17 energy closure: thrustWork {stf['thrustWork']:.3e} J + "
+              f"exhaustKE {stf['exhaustKE']:.3e} J - propKE {stf['propKE']:.3e} J "
+              f"= {closure:.3e} J vs chemical {chem:.3e} J "
+              f"({(closure/chem - 1)*100:.4f}%)")
+        assert stf["burned"] > 1000, f"F17 setup: only {stf['burned']:.0f} kg burned"
+        assert stf["fuel"] > 0, \
+            f"F16 arc: ran out of fuel before landing (burned {stf['burned']:.0f} kg)"
+        assert err17 < 0.02, \
+            f"FALSIFIER 17 TRIPPED: energy closure off by {err17*100:.2f}%"
+
+        # ---- TEDDY BEAR: render-only splat agent on membrane physics ----
+        print("\n--- Teddy bear: splat agent ---")
+        tstate = page.evaluate("() => window.__teddyState()")
+        print(f"Bear: {tstate['splats']} fur splats, mode={tstate['mode']}, "
+              f"planet={tstate['planet']}")
+        assert tstate["splats"] > 500, "teddy bear splat build failed"
+        assert text(page, "#particle-count") == "500", \
+            "bear leaked into the physics tree (particle count changed)"
+
+        rest = page.evaluate("() => window.__bearRestWitness(1)")
+        print(f"Bear rest: speed={rest['restSpeed']:.2e} m/s "
+              f"gap={rest['gap']:.2e} m landed={rest['landed']}")
+        assert rest["restSpeed"] < 1e-6, \
+            f"BEAR FALSIFIER TRIPPED: rest speed {rest['restSpeed']} m/s"
+        assert abs(rest["gap"]) < 0.01, \
+            f"BEAR FALSIFIER TRIPPED: rest gap {rest['gap']} m"
+
+        fol = page.evaluate("() => window.__bearFollowWitness(3)")
+        print(f"Bear follow: {fol['d0']:.1f} m -> {fol['d1']:.2f} m over 3 s")
+        assert fol["closed"] and fol["d1"] < 0.7 * fol["d0"], \
+            f"BEAR FALSIFIER TRIPPED: follow did not close " \
+            f"({fol['d0']} -> {fol['d1']} m)"
+
+        jmp = page.evaluate("() => window.__bearJumpWitness()")
+        print(f"Bear jump: max alt {jmp['maxAlt']:.2f} m, landed={jmp['landed']}, "
+              f"final alt {jmp['finalAlt']} m after {jmp['frames']} frames")
+        assert jmp["launched"], "bear jump did not launch"
+        assert jmp["maxAlt"] > 0.2, \
+            f"BEAR FALSIFIER TRIPPED: jump only reached {jmp['maxAlt']} m"
+        assert jmp["landed"] and jmp["finalAlt"] == 0, \
+            "BEAR FALSIFIER TRIPPED: did not land exactly at 0"
+
+        # Key toggles: B toggles follow live
+        page.keyboard.press("KeyB")
+        assert page.evaluate("() => window.__bearFollow") is True, \
+            "KeyB did not toggle bear follow"
+        assert text(page, "#btn-bear") == "Bear: follow (B)"
+        page.keyboard.press("KeyB")
+        assert page.evaluate("() => window.__bearFollow") is False
+        print("Bear follow toggle (B) OK")
+
+        # Teddy visual: character next to the bear on planet A, facing it
+        page.evaluate("() => window.__gotoTeddy()")
+        page.wait_for_timeout(600)  # a few frames: updateTeddy + render
+        ci_t = page.evaluate("() => window.__charInfo")
+        assert ci_t["mode"] == "foot", f"teddy shot setup: mode {ci_t['mode']}"
+        page.screenshot(path=SCREENSHOT_TEDDY, full_page=False)
+        assert os.path.exists(SCREENSHOT_TEDDY), "Teddy screenshot not saved"
+        print(f"Screenshot saved: {SCREENSHOT_TEDDY}")
+        page.evaluate("() => window.__exitFoot()")
+        page.click("#btn-center")  # stable framed view for the flux field shot
+
+        # ---- LIGHT-VIZ: false-color flux field (proof with light) ----
+        page.keyboard.press("KeyL")
+        assert page.evaluate("() => window.__vizMode") == 1, "KeyL did not enable light-viz"
+        page.wait_for_timeout(600)
+        page.screenshot(path=SCREENSHOT_LIGHTVIZ, full_page=False)
+        assert os.path.exists(SCREENSHOT_LIGHTVIZ), "Light-viz screenshot not saved"
+        print(f"Screenshot saved: {SCREENSHOT_LIGHTVIZ}")
+        page.keyboard.press("KeyL")
+        assert page.evaluate("() => window.__vizMode") == 0, "light-viz did not toggle off"
+        print("Light-viz toggle (L) OK")
+
         # ---- Final screenshot ----
         page.screenshot(path=SCREENSHOT_FINAL, full_page=False)
         assert os.path.exists(SCREENSHOT_FINAL), "Final screenshot not saved"
@@ -700,7 +1011,7 @@ def test_spiace_phase6_kernels():
         assert not bad_console, \
             "WebGPU validation failures in console:\n" + "\n".join(bad_console[:5])
 
-        print("\n=== All Phase 6 + 7 + 8 + 9 + 10 + Track D/E assertions passed! ===")
+        print("\n=== All Phase 6-11 + Track D/E assertions passed! ===")
         browser.close()
 
 
