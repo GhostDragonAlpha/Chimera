@@ -1,0 +1,107 @@
+{
+ "run_id": "2026-09-01_083848_v2",
+ "model": "qwen3.8-flash-next",
+ "served": "dirk-qwen3.8-27b",
+ "context": null,
+ "rows": [
+  {
+   "case": "clean",
+   "tris_removed": 0,
+   "tris": 36630,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083848_v2\\clean.png",
+   "seconds": 22.9,
+   "report": "PART: torso\nThe chest shows vertical dark slits splitting the surface into separate strips, i.e. a torn/missing patch of geometry.",
+   "expect": [
+    "none",
+    "intact",
+    "no hole",
+    "no tear",
+    "no defect",
+    "no missing"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  },
+  {
+   "case": "chest_hole",
+   "tris_removed": 90,
+   "tris": 36540,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083848_v2\\chest_hole.png",
+   "seconds": 19.8,
+   "report": "PART: torso\n\nThe chest/ribcage area shows open gaps where the surface is missing, exposing the interior structure rather than a closed skin.",
+   "expect": [
+    "chest",
+    "torso",
+    "trunk",
+    "sternum",
+    "ribcage",
+    "body"
+   ],
+   "matched": [
+    "chest",
+    "torso",
+    "ribcage"
+   ],
+   "correct": null,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 0,
+    "localised": false
+   }
+  },
+  {
+   "case": "neck_tear",
+   "tris_removed": 405,
+   "tris": 36225,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083848_v2\\neck_tear.png",
+   "seconds": 31.4,
+   "report": "PART: torso\nThe chest area is open, exposing rib‑like interior structures where the outer surface should be closed.",
+   "expect": [
+    "neck",
+    "throat",
+    "cervical"
+   ],
+   "matched": [],
+   "correct": null,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 0,
+    "localised": false
+   }
+  },
+  {
+   "case": "foot_cut",
+   "tris_removed": 826,
+   "tris": 35804,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083848_v2\\foot_cut.png",
+   "seconds": 33.1,
+   "report": "PART: torso\n\nThe chest shows dark gaps between exposed rib‑like bars where the outer surface is missing.",
+   "expect": [
+    "foot",
+    "feet",
+    "ankle",
+    "leg",
+    "toe",
+    "paw"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 1198,
+    "bbox_w": 43,
+    "bbox_h": 40,
+    "localised": true
+   }
+  }
+ ]
+}

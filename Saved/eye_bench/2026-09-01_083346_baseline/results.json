@@ -1,0 +1,92 @@
+{
+ "run_id": "2026-09-01_083346_baseline",
+ "model": "qwen3.8-flash-next",
+ "served": "dirk-qwen3.8-27b",
+ "context": null,
+ "rows": [
+  {
+   "case": "clean",
+   "tris_removed": 0,
+   "tris": 36630,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083346_baseline\\clean.png",
+   "seconds": 25.4,
+   "report": "PART: torso\nThe central body shows an open gap in the chest/torso where the outer skin surface is missing, exposing the rib-like internal structure instead of a closed patch.",
+   "expect": [
+    "none",
+    "intact",
+    "no hole",
+    "no tear",
+    "no defect",
+    "no missing"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  },
+  {
+   "case": "chest_hole",
+   "tris_removed": 90,
+   "tris": 36540,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083346_baseline\\chest_hole.png",
+   "seconds": 19.8,
+   "report": "PART: torso\nThe chest/torso shows an open, jagged-edged gap where the skin surface is missing, exposing the interior.",
+   "expect": [
+    "chest",
+    "torso",
+    "trunk",
+    "sternum",
+    "ribcage",
+    "body"
+   ],
+   "matched": [
+    "chest",
+    "torso"
+   ],
+   "correct": true,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  },
+  {
+   "case": "neck_tear",
+   "tris_removed": 405,
+   "tris": 36225,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083346_baseline\\neck_tear.png",
+   "seconds": 25.7,
+   "report": "PART: torso\n\nThe chest shows vertical dark gaps where the surface mesh is torn open, letting you see through to the interior/background.",
+   "expect": [
+    "neck",
+    "throat",
+    "cervical"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  },
+  {
+   "case": "foot_cut",
+   "tris_removed": 826,
+   "tris": 35804,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_083346_baseline\\foot_cut.png",
+   "seconds": 23.7,
+   "report": "PART: torso\nThe front of the body is open, showing internal rib-like structure instead of a closed skin surface.",
+   "expect": [
+    "foot",
+    "feet",
+    "ankle",
+    "leg",
+    "toe",
+    "paw"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  }
+ ]
+}

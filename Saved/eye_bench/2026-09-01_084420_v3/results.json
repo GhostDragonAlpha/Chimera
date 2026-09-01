@@ -1,0 +1,105 @@
+{
+ "run_id": "2026-09-01_084420_v3",
+ "model": "qwen3.8-flash-next",
+ "served": "dirk-qwen3.8-27b",
+ "context": null,
+ "rows": [
+  {
+   "case": "clean",
+   "tris_removed": 0,
+   "tris": 36630,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_084420_v3\\clean.png",
+   "seconds": 26.6,
+   "report": "PART: torso\n\nThe front of the torso shows an open gap where the surface is missing, exposing a dark interior void rather than a closed mesh.",
+   "want_part": null,
+   "expect": [
+    "none",
+    "intact",
+    "no hole",
+    "no tear",
+    "no defect",
+    "no missing",
+    "clean"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b"
+  },
+  {
+   "case": "leg_hole",
+   "tris_removed": 192,
+   "tris": 36438,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_084420_v3\\leg_hole.png",
+   "seconds": 18.1,
+   "report": "PART: torso\n\nThere is a visible tear/missing patch of surface on the front of the chest and belly, breaking the mesh open between the arms and legs.",
+   "want_part": "lower leg",
+   "expect": [
+    "lower",
+    "leg"
+   ],
+   "matched": [
+    "leg"
+   ],
+   "correct": true,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 11510,
+    "bbox_w": 209,
+    "bbox_h": 196,
+    "localised": true
+   }
+  },
+  {
+   "case": "chest_hole",
+   "tris_removed": 236,
+   "tris": 36394,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_084420_v3\\chest_hole.png",
+   "seconds": 18.3,
+   "report": "PART: torso\n\nThe front of the chest shows an open gap where the skin surface is missing, exposing the interior rather than a closed mesh.",
+   "want_part": "chest",
+   "expect": [
+    "chest"
+   ],
+   "matched": [
+    "chest"
+   ],
+   "correct": true,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 11574,
+    "bbox_w": 208,
+    "bbox_h": 178,
+    "localised": true
+   }
+  },
+  {
+   "case": "neck_hole",
+   "tris_removed": 276,
+   "tris": 36354,
+   "upload_ok": true,
+   "png": "E:\\PythonChimera\\Saved\\eye_bench\\2026-09-01_084420_v3\\neck_hole.png",
+   "seconds": 23.2,
+   "report": "PART: chest\n\nThe front of the torso has an irregular gap where the surface is absent, showing through to the interior rather than a closed mesh.",
+   "want_part": "neck",
+   "expect": [
+    "neck"
+   ],
+   "matched": [],
+   "correct": false,
+   "finish_reason": "stop",
+   "served": "dirk-qwen3.8-27b",
+   "visibility": {
+    "viewport_diff_px": 7259,
+    "bbox_w": 196,
+    "bbox_h": 159,
+    "localised": true
+   }
+  }
+ ]
+}
