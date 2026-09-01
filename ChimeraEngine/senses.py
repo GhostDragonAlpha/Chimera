@@ -52,7 +52,7 @@ AUDIO_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
 # 2560x1440 read was taking 480-500s. Asking for only the tokens a report needs
 # is the difference: the report is ~1.1k tokens of prose, and every token past
 # that is the eye talking itself into a longer answer nobody asked for.
-MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "1400"))
+MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2600"))
 
 # Measured vision-token cost of one frame at 384px (prompt_eval_count delta): 86 tokens. The
 # context is sized EXACTLY to the frames + answer, so a 256K model is not hauled into VRAM for a
@@ -87,7 +87,7 @@ FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 # one-image-per-call wall (MAX_IMAGES_PER_CALL) stays, because a report is ABOUT
 # one picture — batching frames would make the eye describe a sequence instead of
 # judging a frame. The headroom is there if a future decree wants it.
-SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "dirk-qwen3.8-27b")
+SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "qwen3.8-flash-next")
 SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "130048"))
 
 # A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
@@ -300,23 +300,36 @@ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = 
                                  headers={"Content-Type": "application/json"})
     resp = gw.lm_urlopen(req, timeout=max(timeout, 600), agent="senses")
     payload = json.loads(resp.read())
-    # Which model ACTUALLY served. Not assumed, not the one we asked for: the
-    # gateway adopts the resident model, so the decree and the server can differ,
-    # and a report is only comparable to another report from the same eye.
-    global _SERVED
+    global _SERVED, _FINISH
     try:
         _SERVED = payload.get("model") or _SERVED
+        choice = (payload.get("choices") or [{}])[0]
+        _FINISH = choice.get("finish_reason") or _FINISH
     except Exception:
         pass
     return payload["choices"][0]["message"].get("content") or ""
 
 
 _SERVED: str | None = None
+_FINISH: str | None = None
 
 
 def _last_served_model():
     """The model id from the most recent response — what actually served."""
     return _SERVED
+
+
+def last_finish_reason():
+    """Why the eye stopped talking.
+
+    THIS IS THE TRUNCATION TELL. `finish_reason == "length"` means the report was
+    cut off by max_tokens — mid-sentence, usually mid-word. A truncated report is
+    a LOST report, and filing one as if it were complete is exactly the silent
+    success this project exists to kill. It is not a rare case: the verbose eye
+    (qwen3.8-flash-next) had 5 of its 6 non-empty reads truncated at 1400 tokens,
+    and 2 reads came back empty because reasoning ate the whole budget.
+    """
+    return _FINISH
 
 
 def see(png: str, prompt: str, timeout: int = 300) -> str | None:

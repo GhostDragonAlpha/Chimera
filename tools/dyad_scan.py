@@ -275,8 +275,18 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
             except Exception as e:
                 text = None
                 print(f"      read {r}: FAILED {type(e).__name__}: {str(e)[:100]}")
+            # A report the eye was not allowed to finish is not a report. Record
+            # it as truncated rather than filing a sentence that stops mid-word
+            # as though that were the whole finding.
+            finish = senses.last_finish_reason()
+            trunc = (finish == "length")
+            if trunc:
+                print(f"      read {r}: TRUNCATED by the token cap "
+                      f"({senses.MAX_TOKENS}) — raise --max-tokens or shorten the ask",
+                      flush=True)
             shot["reads"].append({
-                "read": r, "seconds": round(time.time() - t0, 1), "report": text})
+                "read": r, "seconds": round(time.time() - t0, 1), "report": text,
+                "finish_reason": finish, "truncated": trunc})
             if text:
                 print(f"      read {r}: {time.time()-t0:.1f}s  {len(text)} chars")
             # flush after EVERY read: a 6-minute vision call must never be lost
