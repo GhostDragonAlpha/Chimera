@@ -1,0 +1,328 @@
+{
+ "run_id": "2026-08-31_214903",
+ "started": "2026-08-31T21:51:08",
+ "engine": {
+  "on": true,
+  "selected": null,
+  "left_mode": 0,
+  "lh": 29.0,
+  "advance": 12.0,
+  "w": 2560,
+  "h": 1440,
+  "link": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "link_stage": -1
+ },
+ "prompt": "I am developing a 3D engine and this is a real screenshot of its application window, at the full resolution of the monitor it runs on. I want your honest opinion on what you are looking at.\n\nDescribe what you see: does the layout, framing, and positioning look wrong or right? Look at it like an artist. Could it be framed better? Where does the image itself lose you? Is it confusing?\n\nBe specific about defects. Is any text too small to read, cut off, overlapping, or colliding with something else? Are the panels and windows legible, and are they proportioned sensibly against the size of the window? Is anything cramped, off-balance, or adrift in empty space? Is the 3D viewport visible, and if it is empty does the window still read as a working application?\n\nTell me what you actually see and what you think is wrong with it. I am not looking for praise, I am looking for defects.",
+ "crop": null,
+ "reads_per_shot": 1,
+ "shots": [
+  {
+   "index": 0,
+   "theta": 0.0,
+   "camera": [
+    12.0,
+    0.0,
+    0.3
+   ],
+   "raw_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_214903\\frames\\shot_00.png",
+   "compact_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_214903\\frames\\shot_00_compact.png",
+   "compact_bytes": 96419,
+   "raw_bytes": 14748233,
+   "twins": {
+    "studio": {
+     "on": true,
+     "selected": null,
+     "left_mode": 0,
+     "lh": 29.0,
+     "advance": 12.0,
+     "w": 2560,
+     "h": 1440,
+     "link": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "link_stage": -1
+    },
+    "chrome": {
+     "bar_on": true,
+     "bar_h": 24.0,
+     "fps": 10.201838,
+     "ft_avg": 89.00132,
+     "ft_max": 1750.854004,
+     "pushes": 638299,
+     "ring_n": 120,
+     "ring": [
+      9.979,
+      10.018,
+      1802.862061,
+      9.779,
+      9.557,
+      9.987,
+      9.997,
+      8.996,
+      9.997,
+      9.999,
+      9.998,
+      9.994,
+      9.992,
+      9.987,
+      10.01,
+      9.502,
+      10.029,
+      8.991,
+      9.995,
+      9.235,
+      10.038,
+      9.988,
+      10.018,
+      9.842,
+      9.989,
+      9.991,
+      9.991,
+      9.494,
+      8.996,
+      9.975,
+      8.997,
+      9.512,
+      9.991,
+      9.983,
+      9.998,
+      9.994,
+      9.989,
+      9.994,
+      8.997,
+      8.99,
+      9.01,
+      8.999,
+      9.589,
+      9.988,
+      10.002,
+      10.0,
+      9.998,
+      9.504,
+      9.994,
+      9.964,
+      9.918,
+      8.995,
+      9.961,
+      9.987,
+      9.007,
+      8.979,
+      9.988,
+      9.578,
+      9.483,
+      10.011,
+      9.939,
+      10.015,
+      10.089,
+      9.521,
+      9.979,
+      1746.105957,
+      9.627,
+      9.996,
+      9.943,
+      10.029,
+      10.021,
+      10.002,
+      9.496,
+      9.997,
+      8.995,
+      9.94,
+      9.766,
+      10.506,
+      1757.248047,
+      9.781,
+      9.598,
+      9.986,
+      8.991,
+      8.976,
+      9.995,
+      10.038,
+      9.996,
+      9.996,
+      9.948,
+      10.013,
+      10.007,
+      9.991,
+      9.973,
+      9.978,
+      9.994,
+      10.016,
+      9.963,
+      9.984,
+      9.935,
+      10.016,
+      1750.854004,
+      9.705,
+      9.045,
+      8.993,
+      8.968,
+      10.063,
+      10.0,
+      9.989,
+      9.991,
+      9.99,
+      10.077,
+      9.953,
+      9.99,
+      9.927,
+      9.987,
+      9.497,
+      9.992,
+      9.505,
+      9.992,
+      10.033
+     ],
+     "gpu": "NVIDIA GeForce RTX 4090",
+     "stage": "B7 ARTICULATE",
+     "fps_str": "10 fps  89.00 ms",
+     "gpu_str": "NVIDIA GeForce RTX 4090  2560x1440",
+     "hud_rows": [],
+     "gait": {
+      "on": false,
+      "lamL": 0,
+      "lamR": 0,
+      "thL": 0,
+      "thR": 0,
+      "steps": 0,
+      "omega": 0.0
+     },
+     "water": {
+      "on": false,
+      "steps": 0,
+      "dt": 0.0,
+      "inj_t": -1,
+      "inj_c": 0
+     },
+     "show_row": false
+    },
+    "scene": {
+     "left_mode": 0,
+     "inspect_row": -1,
+     "rows": [
+      {
+       "id": "body",
+       "label": "body",
+       "detail": "no mesh",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "overlay",
+       "label": "overlay",
+       "detail": "none",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "show",
+       "label": "show",
+       "detail": "t=9.56s x1.00",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "joints",
+       "label": "joints",
+       "detail": "0 joints",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "volp",
+       "label": "volp",
+       "detail": "no kernel",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "gait",
+       "label": "gait",
+       "detail": "steps=0 omega=7.85",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_clock",
+       "label": "water clock",
+       "detail": "steps_total=0 inj=0/-1",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_vis",
+       "label": "water vis",
+       "detail": "the field, drawn",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "frost",
+       "label": "frost",
+       "detail": "no pack",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "chrome",
+       "label": "chrome",
+       "detail": "the studio bar",
+       "state": 1,
+       "toggleable": true
+      }
+     ],
+     "rects": [],
+     "sel_rects": []
+    },
+    "show": {
+     "playing": false,
+     "time": 9.555944,
+     "speed": 1.0,
+     "n_joints": 0,
+     "period": 4.0,
+     "total": 0.0,
+     "current": "?",
+     "theta": 0.0,
+     "joints_loaded": false,
+     "rom_ext": 0.0,
+     "rom_flex": 0.0
+    },
+    "_fps_is_under_capture_load": true
+   },
+   "reads": [
+    {
+     "read": 0,
+     "seconds": 8.0,
+     "report": null
+    }
+   ]
+  }
+ ],
+ "fps_before": {
+  "samples": [
+   {
+    "fps": 53.995842,
+    "ft_avg": 9.563723,
+    "ft_max": 10.043
+   },
+   {
+    "fps": 53.636024,
+    "ft_avg": 9.683167,
+    "ft_max": 10.019
+   },
+   {
+    "fps": 53.902115,
+    "ft_avg": 9.605667,
+    "ft_max": 10.517
+   }
+  ],
+  "note": "no capture in flight; this is the quotable number"
+ }
+}

@@ -30,6 +30,7 @@ import base64
 import json
 import os
 import re
+import time
 import urllib.request
 
 # VISION / TEXT backend selection -- LM Studio resident model is the decree default.
@@ -52,27 +53,25 @@ MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2048"))
 FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 
 # ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-08-31) ─────────────
-#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b@iq4_xs     context ceiling 75,000
+#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b        loaded context 130,048
 #
-# This consciously supersedes the studio's older "adopt, never pin" rule for the
-# vision lane. That rule existed so no agent could silently pull a multi-GB model
-# the operator never asked for; pinning HERE does the opposite — it names one
-# model so the dyad's readings are comparable run to run. A eye that changes
-# identity between readings is an eye whose reports cannot be compared, and
-# comparing reports is the whole instrument.
-#
-# Why iq4_xs and not the newer, larger `qwen3.8-flash-next-reap-320`: that one is
-# text-only. LM Studio refuses images from it outright —
+# Measured from LM Studio's own surface (GET /api/v0/models, the only one that
+# distinguishes RESIDENT from merely on-disk), 2026-08-31:
+#     id=dirk-qwen3.8-27b  state=loaded  type=vlm  quant=Q4_K_XL
+#     max_context_length=262144  loaded_context_length=130048
+# `type: vlm` is the whole ballgame — the previous candidate
+# (qwen3.8-flash-next-reap-320) is `type: llm` and refuses images outright:
 #   "The provided messages contain images, but qwen3.8-flash-next-reap-320 does
 #    not support image inputs."
-# A faster or stronger model is irrelevant to a dyad that cannot see. `can_see()`
-# below now proves capability in one request instead of after a whole scan.
+# A faster or stronger model is irrelevant to a dyad that cannot see.
 #
-# The ceiling is the model's own: ~75k tokens, which is why the dyad is one image
-# per call (MAX_IMAGES_PER_CALL). The env vars remain as an escape hatch, but the
-# defaults are the decree.
-SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "dirk-qwen3.8-27b@iq4_xs")
-SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "75000"))
+# The ceiling is the SERVER'S OWN reported loaded context, not a guess and not the
+# 75,000 of the earlier iq4_xs quant. It is a budget, not a licence: the
+# one-image-per-call wall (MAX_IMAGES_PER_CALL) stays, because a report is ABOUT
+# one picture — batching frames would make the eye describe a sequence instead of
+# judging a frame. The headroom is there if a future decree wants it.
+SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "dirk-qwen3.8-27b")
+SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "130048"))
 
 # A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
 # smallest possible image that still proves the resident model ACCEPTS an image
@@ -139,24 +138,41 @@ def can_see(timeout: int = 60):
     if not available(timeout=min(timeout, 10)):
         return False, None, "no model is resident (the eye is dark)"
     served = None
-    try:
-        raw = _post([{"type": "text", "text": "Reply with the single word: seen."},
-                     {"type": "image_url",
-                      "image_url": {"url": "data:image/png;base64," + _PROBE_PNG_B64}}],
-                    timeout)
-        served = _last_served_model()
-        if not raw:
-            return False, served, "the eye answered nothing"
-        return True, served, None
-    except Exception as e:
-        msg = str(e)
-        if hasattr(e, "read"):                       # HTTPError carries the real reason
-            try:
-                body = json.loads(e.read().decode("utf-8", "replace"))
-                msg = str(body.get("error", {}).get("message") or msg)
-            except Exception:
-                pass
-        return False, _last_served_model(), msg
+    reason = None
+    # TRY MORE THAN ONCE. A 400 here is not proof of blindness: swapping the
+    # resident model while a call is in flight makes LM Studio answer 400 with
+    # "Engine protocol startup was aborted", and lm_gateway's own docstring says
+    # to ride that out rather than fail the turn. Failing the first 400 cost a
+    # whole scan on a perfectly good eye.
+    #
+    # But a refusal that NAMES the capability is final — retrying it would just
+    # wait longer to learn the same thing.
+    for attempt in range(3):
+        try:
+            raw = _post([{"type": "text", "text": "Reply with the single word: seen."},
+                         {"type": "image_url",
+                          "image_url": {"url": "data:image/png;base64," + _PROBE_PNG_B64}}],
+                        timeout)
+            served = _last_served_model()
+            if not raw:
+                reason = "the eye answered nothing"
+                break
+            return True, served, None
+        except Exception as e:
+            msg = str(e)
+            if hasattr(e, "read"):                   # HTTPError carries the real reason
+                try:
+                    body = json.loads(e.read().decode("utf-8", "replace"))
+                    msg = str(body.get("error", {}).get("message") or msg)
+                except Exception:
+                    pass
+            reason = msg
+            served = served or _last_served_model()
+            if "does not support image" in msg or "image input" in msg:
+                break                                # final: the eye genuinely cannot see
+            if attempt < 2:
+                time.sleep(5.0 * (attempt + 1))      # mid-handover; ride it out
+    return False, served, reason
 
 
 def resident_model(timeout: float = 8.0):

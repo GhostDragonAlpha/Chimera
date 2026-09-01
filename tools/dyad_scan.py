@@ -192,6 +192,8 @@ def quiesce(tag: str, timeout=12.0) -> bool:
 
 CROP: tuple | None = None
 OUT: Path = SAVED
+READ_TIMEOUT = 1800          # seconds per vision call; --read-timeout overrides
+                             # (a 2560x1440 frame on the Q4_K_XL quant is slow)
 
 
 # ── the scan ─────────────────────────────────────────────────────────────────
@@ -240,7 +242,13 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
             t0 = time.time()
             try:
                 import senses
-                text = senses.see(str(small), prompt, timeout=600)
+                # A 2K frame on the big quant is SLOW: 600s was not enough. A
+                # timeout is a transport failure, not a verdict, so it is retried
+                # once before the read is recorded as nothing.
+                text = senses.see(str(small), prompt, timeout=READ_TIMEOUT)
+                if text is None:
+                    print(f"      read {r}: timed out — retrying once", flush=True)
+                    text = senses.see(str(small), prompt, timeout=READ_TIMEOUT)
             except Exception as e:
                 text = None
                 print(f"      read {r}: FAILED {type(e).__name__}: {str(e)[:100]}")
@@ -286,7 +294,7 @@ def write_markdown(run_dir: Path, report: dict) -> None:
 
 
 def main() -> int:
-    global CROP, OUT
+    global CROP, OUT, READ_TIMEOUT
     ap = argparse.ArgumentParser(description="the dyad reads the glass, one image per call")
     ap.add_argument("--shots", type=int, default=8, help="camera stops around the subject")
     ap.add_argument("--reads", type=int, default=3, help="reads per shot (NOT a vote)")
@@ -294,10 +302,13 @@ def main() -> int:
     ap.add_argument("--phi", type=float, default=0.30)
     ap.add_argument("--crop", default=None, help="x,y,w,h — inspect one region closely")
     ap.add_argument("--prompt-file", default=None, help="a file holding the question")
+    ap.add_argument("--read-timeout", type=int, default=READ_TIMEOUT,
+                    help="seconds allowed per vision call (2K on the big quant is slow)")
     ap.add_argument("--keep-raw", action="store_true", help="keep the 14MB engine PNGs")
     ap.add_argument("--resume", default=None, help="run dir to continue")
     a = ap.parse_args()
 
+    READ_TIMEOUT = a.read_timeout
     if a.crop:
         CROP = tuple(int(v) for v in a.crop.split(","))
         if len(CROP) != 4:

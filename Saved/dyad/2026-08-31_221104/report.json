@@ -1,0 +1,328 @@
+{
+ "run_id": "2026-08-31_221104",
+ "started": "2026-08-31T22:11:13",
+ "engine": {
+  "on": true,
+  "selected": null,
+  "left_mode": 0,
+  "lh": 29.0,
+  "advance": 12.0,
+  "w": 2560,
+  "h": 1440,
+  "link": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "link_stage": -1
+ },
+ "prompt": "I am developing a 3D engine and this is a real screenshot of its application window, at the full resolution of the monitor it runs on. I want your honest opinion on what you are looking at.\n\nDescribe what you see: does the layout, framing, and positioning look wrong or right? Look at it like an artist. Could it be framed better? Where does the image itself lose you? Is it confusing?\n\nBe specific about defects. Is any text too small to read, cut off, overlapping, or colliding with something else? Are the panels and windows legible, and are they proportioned sensibly against the size of the window? Is anything cramped, off-balance, or adrift in empty space? Is the 3D viewport visible, and if it is empty does the window still read as a working application?\n\nTell me what you actually see and what you think is wrong with it. I am not looking for praise, I am looking for defects.",
+ "crop": null,
+ "reads_per_shot": 1,
+ "shots": [
+  {
+   "index": 0,
+   "theta": 0.0,
+   "camera": [
+    12.0,
+    0.0,
+    0.3
+   ],
+   "raw_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_221104\\frames\\shot_00.png",
+   "compact_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_221104\\frames\\shot_00_compact.png",
+   "compact_bytes": 96418,
+   "raw_bytes": 14748233,
+   "twins": {
+    "studio": {
+     "on": true,
+     "selected": null,
+     "left_mode": 0,
+     "lh": 29.0,
+     "advance": 12.0,
+     "w": 2560,
+     "h": 1440,
+     "link": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "link_stage": -1
+    },
+    "chrome": {
+     "bar_on": true,
+     "bar_h": 24.0,
+     "fps": 10.38452,
+     "ft_avg": 87.373436,
+     "ft_max": 1261.707031,
+     "pushes": 702673,
+     "ring_n": 120,
+     "ring": [
+      9.004,
+      9.003,
+      8.846,
+      8.996,
+      8.703,
+      8.992,
+      8.996,
+      9.497,
+      8.999,
+      9.284,
+      9.0,
+      8.876,
+      9.001,
+      8.501,
+      9.042,
+      8.993,
+      8.999,
+      9.013,
+      8.992,
+      8.999,
+      8.953,
+      9.001,
+      8.999,
+      9.232,
+      8.505,
+      8.988,
+      8.945,
+      8.999,
+      9.036,
+      8.993,
+      1275.321045,
+      10.056,
+      8.857,
+      8.997,
+      8.998,
+      9.112,
+      9.002,
+      8.495,
+      9.003,
+      9.855,
+      8.993,
+      1288.75,
+      9.779,
+      8.995,
+      8.996,
+      8.996,
+      9.077,
+      8.995,
+      8.996,
+      9.055,
+      8.991,
+      8.997,
+      8.996,
+      8.999,
+      8.996,
+      9.256,
+      9.001,
+      8.998,
+      8.995,
+      8.996,
+      9.513,
+      9.059,
+      9.001,
+      8.997,
+      9.167,
+      8.875,
+      8.506,
+      8.582,
+      8.568,
+      8.538,
+      8.997,
+      9.0,
+      9.164,
+      8.996,
+      8.959,
+      8.998,
+      8.998,
+      9.213,
+      1263.043945,
+      9.356,
+      9.504,
+      8.999,
+      8.999,
+      9.031,
+      8.995,
+      8.982,
+      9.051,
+      8.993,
+      1255.702026,
+      9.856,
+      8.947,
+      8.994,
+      8.975,
+      9.003,
+      8.508,
+      9.003,
+      9.001,
+      8.999,
+      9.032,
+      9.993,
+      8.989,
+      8.995,
+      8.978,
+      8.995,
+      1261.707031,
+      8.911,
+      8.998,
+      9.096,
+      8.65,
+      8.996,
+      8.996,
+      8.998,
+      8.998,
+      8.956,
+      8.993,
+      8.997,
+      8.998,
+      9.513,
+      9.0,
+      8.458
+     ],
+     "gpu": "NVIDIA GeForce RTX 4090",
+     "stage": "B7 ARTICULATE",
+     "fps_str": "10 fps  87.37 ms",
+     "gpu_str": "NVIDIA GeForce RTX 4090  2560x1440",
+     "hud_rows": [],
+     "gait": {
+      "on": false,
+      "lamL": 0,
+      "lamR": 0,
+      "thL": 0,
+      "thR": 0,
+      "steps": 0,
+      "omega": 0.0
+     },
+     "water": {
+      "on": false,
+      "steps": 0,
+      "dt": 0.0,
+      "inj_t": -1,
+      "inj_c": 0
+     },
+     "show_row": false
+    },
+    "scene": {
+     "left_mode": 0,
+     "inspect_row": -1,
+     "rows": [
+      {
+       "id": "body",
+       "label": "body",
+       "detail": "no mesh",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "overlay",
+       "label": "overlay",
+       "detail": "none",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "show",
+       "label": "show",
+       "detail": "t=9.56s x1.00",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "joints",
+       "label": "joints",
+       "detail": "0 joints",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "volp",
+       "label": "volp",
+       "detail": "no kernel",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "gait",
+       "label": "gait",
+       "detail": "steps=0 omega=7.85",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_clock",
+       "label": "water clock",
+       "detail": "steps_total=0 inj=0/-1",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_vis",
+       "label": "water vis",
+       "detail": "the field, drawn",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "frost",
+       "label": "frost",
+       "detail": "no pack",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "chrome",
+       "label": "chrome",
+       "detail": "the studio bar",
+       "state": 1,
+       "toggleable": true
+      }
+     ],
+     "rects": [],
+     "sel_rects": []
+    },
+    "show": {
+     "playing": false,
+     "time": 9.555944,
+     "speed": 1.0,
+     "n_joints": 0,
+     "period": 4.0,
+     "total": 0.0,
+     "current": "?",
+     "theta": 0.0,
+     "joints_loaded": false,
+     "rom_ext": 0.0,
+     "rom_flex": 0.0
+    },
+    "_fps_is_under_capture_load": true
+   },
+   "reads": [
+    {
+     "read": 0,
+     "seconds": 483.1,
+     "report": "Overall read: it's a monospace/terminal‑styled engine HUD over an empty perspective grid. It *works* as a debug surface, but as a composed window it reads top‑heavy and adrift — three clusters of text pinned to the top corners and center, a big dead black band across the upper viewport, and two thin control strips floating in the lower third with nothing anchoring them. The 3D view is visible (grid floor + green/red axis cross at horizon) but empty, so the window reads as an idle/empty state rather than a ready‑to‑work app.\n\nSpecific defects:\n\n- **Text collision / truncation (the one hard bug).** In the left STUDIO panel, line 2 \"the JOIN of engine state + repo truth\" runs straight into the camera‑preset buttons `[1 alpha] [2 beta] [3 closeup]`. The word \"truth\" is clipped/overlapped by the left edge of `[1 alpha]`. That's a real layout collision, not just tight spacing.\n- **Dead void in the upper viewport.** The horizon sits ~35–40% down, leaving a large pure‑black band between the top toolbar and the grid that does nothing. The composition is bottom‑weighted (grid) while all the UI weight is at the very top — off‑balance.\n- **Floating, ungrouped panels.** Left STUDIO text, right STATUS text, and the center help lines have no background fill or borders; they're just glyphs over the render. The perspective grid lines pass *behind* the left help block (below the horizon), which makes that area busy and reads as debug text dumped on top of a frame rather than docked panels.\n- **REEL and TIMELINE are adrift.** Two thin horizontal bars in the lower third with a large empty gap between them, not visually connected to each other or to the grid. They look pasted on, not docked. The REEL bar's \"[0/12]\" strip is mostly empty space.\n- **Empty‑state framing weakens the \"working app\" read.** \"no mesh loaded\", \"no grabs yet\", \"no joints pack\" are honest, but with no object and a void above, the center feels abandoned rather than ready. The axis cross floating at an empty horizon doesn't help.\n- **Minor legibility/consistency nits:** orange used for all three \"empty/error\" body lines is low‑contrast on near‑black; inconsistent caps (\"JOIN\", \"volp‑ARAP\"); the top gate tabs use green/blue/gold/purple with no legend, which is a bit noisy.\n\nFraming fixes that would help most:\n1. Fix the left‑panel overlap — give the preset buttons their own row or push the STUDIO text into a narrower column / add a panel background so nothing collides.\n2. Give left/right/center info real panels (subtle fill + 1px border) and consistent gutters, so they read as UI, not overlay text.\n3. Kill the top void: raise the horizon, or add a faint sky gradient/vignette/fog to the upper viewport so it's intentional space, not black.\n4. Dock REEL + TIMELINE into one bottom timeline bar (or at least remove the gap) so they anchor to the window edge instead of floating mid‑viewport.\n\nLegibility at 2560×1440 is otherwise fine — nothing else is cut off or unreadable; the collision above and the empty/adrift framing are the things that actually lose me."
+    }
+   ]
+  }
+ ],
+ "fps_before": {
+  "samples": [
+   {
+    "fps": 55.19112,
+    "ft_avg": 9.405554,
+    "ft_max": 10.086
+   },
+   {
+    "fps": 56.072449,
+    "ft_avg": 9.231685,
+    "ft_max": 9.58
+   },
+   {
+    "fps": 55.758675,
+    "ft_avg": 9.034054,
+    "ft_max": 9.506
+   }
+  ],
+  "note": "no capture in flight; this is the quotable number"
+ }
+}
