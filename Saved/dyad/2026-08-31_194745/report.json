@@ -1,0 +1,328 @@
+{
+ "run_id": "2026-08-31_194745",
+ "started": "2026-08-31T19:47:46",
+ "engine": {
+  "on": true,
+  "selected": null,
+  "left_mode": 0,
+  "lh": 29.0,
+  "advance": 12.0,
+  "w": 2560,
+  "h": 1440,
+  "link": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "link_stage": -1
+ },
+ "prompt": "I am developing a 3D engine and this is a real screenshot of its application window, at the full resolution of the monitor it runs on. I want your honest opinion on what you are looking at.\n\nDescribe what you see: does the layout, framing, and positioning look wrong or right? Look at it like an artist. Could it be framed better? Where does the image itself lose you? Is it confusing?\n\nBe specific about defects. Is any text too small to read, cut off, overlapping, or colliding with something else? Are the panels and windows legible, and are they proportioned sensibly against the size of the window? Is anything cramped, off-balance, or adrift in empty space? Is the 3D viewport visible, and if it is empty does the window still read as a working application?\n\nTell me what you actually see and what you think is wrong with it. I am not looking for praise, I am looking for defects.",
+ "crop": null,
+ "reads_per_shot": 1,
+ "shots": [
+  {
+   "index": 0,
+   "theta": 0.0,
+   "camera": [
+    12.0,
+    0.0,
+    0.3
+   ],
+   "raw_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_194745\\frames\\shot_00.png",
+   "compact_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_194745\\frames\\shot_00_compact.png",
+   "compact_bytes": 96575,
+   "raw_bytes": 14748233,
+   "twins": {
+    "studio": {
+     "on": true,
+     "selected": null,
+     "left_mode": 0,
+     "lh": 29.0,
+     "advance": 12.0,
+     "w": 2560,
+     "h": 1440,
+     "link": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "link_stage": -1
+    },
+    "chrome": {
+     "bar_on": true,
+     "bar_h": 24.0,
+     "fps": 10.813266,
+     "ft_avg": 84.058647,
+     "ft_max": 1279.21106,
+     "pushes": 229214,
+     "ring_n": 120,
+     "ring": [
+      9.506,
+      9.496,
+      9.508,
+      9.599,
+      8.506,
+      8.498,
+      8.996,
+      9.505,
+      9.505,
+      9.01,
+      9.5,
+      8.936,
+      9.51,
+      9.504,
+      9.508,
+      9.003,
+      9.512,
+      8.512,
+      8.559,
+      9.507,
+      9.006,
+      9.506,
+      9.003,
+      9.497,
+      9.515,
+      9.499,
+      9.515,
+      9.49,
+      1284.484009,
+      9.434,
+      9.501,
+      9.503,
+      8.954,
+      9.508,
+      9.5,
+      9.508,
+      9.499,
+      8.991,
+      1270.910034,
+      9.433,
+      9.427,
+      8.505,
+      9.0,
+      8.508,
+      9.501,
+      9.507,
+      10.03,
+      9.499,
+      9.507,
+      9.498,
+      9.066,
+      8.996,
+      8.63,
+      9.512,
+      9.505,
+      9.442,
+      9.649,
+      9.539,
+      9.003,
+      9.502,
+      9.5,
+      9.509,
+      9.507,
+      9.019,
+      9.507,
+      8.512,
+      10.004,
+      9.022,
+      9.509,
+      9.554,
+      9.194,
+      9.627,
+      9.315,
+      8.505,
+      9.02,
+      8.995,
+      8.751,
+      1266.732056,
+      9.378,
+      8.505,
+      9.509,
+      9.505,
+      9.007,
+      10.003,
+      9.457,
+      9.483,
+      9.519,
+      1280.563965,
+      9.436,
+      8.997,
+      9.509,
+      9.501,
+      9.507,
+      9.001,
+      9.504,
+      9.562,
+      9.501,
+      9.203,
+      8.997,
+      9.511,
+      9.544,
+      9.504,
+      9.001,
+      9.508,
+      1279.21106,
+      8.952,
+      9.506,
+      8.997,
+      9.581,
+      9.502,
+      9.501,
+      8.503,
+      9.508,
+      9.45,
+      9.495,
+      9.506,
+      8.999,
+      9.502,
+      9.155,
+      9.5
+     ],
+     "gpu": "NVIDIA GeForce RTX 4090",
+     "stage": "B7 ARTICULATE",
+     "fps_str": "11 fps  84.06 ms",
+     "gpu_str": "NVIDIA GeForce RTX 4090  2560x1440",
+     "hud_rows": [],
+     "gait": {
+      "on": false,
+      "lamL": 0,
+      "lamR": 0,
+      "thL": 0,
+      "thR": 0,
+      "steps": 0,
+      "omega": 0.0
+     },
+     "water": {
+      "on": false,
+      "steps": 0,
+      "dt": 0.0,
+      "inj_t": -1,
+      "inj_c": 0
+     },
+     "show_row": false
+    },
+    "scene": {
+     "left_mode": 0,
+     "inspect_row": -1,
+     "rows": [
+      {
+       "id": "body",
+       "label": "body",
+       "detail": "no mesh",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "overlay",
+       "label": "overlay",
+       "detail": "none",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "show",
+       "label": "show",
+       "detail": "t=9.56s x1.00",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "joints",
+       "label": "joints",
+       "detail": "0 joints",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "volp",
+       "label": "volp",
+       "detail": "no kernel",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "gait",
+       "label": "gait",
+       "detail": "steps=0 omega=7.85",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_clock",
+       "label": "water clock",
+       "detail": "steps_total=0 inj=0/-1",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_vis",
+       "label": "water vis",
+       "detail": "the field, drawn",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "frost",
+       "label": "frost",
+       "detail": "no pack",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "chrome",
+       "label": "chrome",
+       "detail": "the studio bar",
+       "state": 1,
+       "toggleable": true
+      }
+     ],
+     "rects": [],
+     "sel_rects": []
+    },
+    "show": {
+     "playing": false,
+     "time": 9.555944,
+     "speed": 1.0,
+     "n_joints": 0,
+     "period": 4.0,
+     "total": 0.0,
+     "current": "?",
+     "theta": 0.0,
+     "joints_loaded": false,
+     "rom_ext": 0.0,
+     "rom_flex": 0.0
+    },
+    "_fps_is_under_capture_load": true
+   },
+   "reads": [
+    {
+     "read": 0,
+     "seconds": 103.5,
+     "report": "Overall read: it looks like a working tool, not a broken one — but as a composition it's top‑heavy and center‑empty, and the thing that should be the hero (the 3D viewport) is the weakest element on screen. The chrome (title bar, gate strip, side columns, bottom status) all read fine; the middle does not earn its space.\n\nConcrete defects:\n\n- **Text/button collision at top center.** The camera button row `[1 alpha] [2 beta] [3 closeup] + cam` sits in the same horizontal band as the left panel's first line `the JOIN of engine state + repo truth`. The end of that gray line runs right into / under the `[1 alpha]` box. Either drop the help text, move the buttons down a row, or give the left column a hard right edge so they can't overlap.\n- **No separation between panels and viewport.** The STUDIO (left) and STATUS (right) blocks are just text on the same near‑black background as the 3D scene — no panel fill, border, or shadow. You cannot tell where UI ends and 3D begins; the grid/void seems to continue behind them. Give each column a distinct surface (even a 1px edge or a slightly different bg) so they read as panels, not floating text.\n- **The viewport is empty and unbalanced.** It's a perspective floor grid plus two tiny axis lines and one caption (`no mesh loaded`). The upper ~half of the view is pure black with no horizon glow, skybox, or fog to sell depth, and there's a large dead band between that caption (mid‑height) and the REEL strip near the bottom. Content clusters at the top; the lower center is void. For an engine studio the viewport should be the focal point — right now the eye has nowhere to land except the faint grid. Even empty, add a horizon line/glow, a visible origin gizmo of normal size (the green/red axis marks are minuscule), and maybe a subtle vignette so it reads as \"scene with nothing in it\" rather than \"render failed.\"\n- **Low‑contrast text.** The gray lines — `GAIT/WATER/FROST - parked`, the help block, `(docs/THE_ENGINE_STUDIO.md)` — are dim on near‑black and will be hard to read at arm's length. Bump their luminance or use a distinct muted color with more separation from the bg.\n- **Inconsistent button styling.** `+ cam` is plain text while `[1 alpha]` etc. are boxed; it looks like an orphan rather than a control. Box it or style it deliberately as a label.\n- **Gate‑strip logic vs. message.** The strip shows three non‑green gates (B7 blue, B8 olive, B10 purple) but the line below only says `EARLIEST NON-GREEN GATE: B7`. That's technically correct (\"earliest\") but visually under‑explains why B8/B10 are colored differently; a reader will wonder if those are errors.\n- **Bottom meter is cryptic.** The green segmented bar with red tick marks has no label or scale; the red ticks look like error flags out of context. Add a unit/label (frame budget? ms?) so it's legible at a glance.\n\nProportions of the side columns (~16–17% each) are sensible for 2560×1440; that part is fine. The real problem is framing: three horizontal chrome bands plus two text columns leave a rectangular hole in the middle that should be the star but is empty and dark. Fix the panel/viewport boundary, populate or dress the viewport (horizon + proper gizmo), and resolve the top‑center overlap, and it'll read as a confident working app instead of a sparse one.\n\nOne caveat: I'm inferring the `[1 alpha]` / `repo truth` overlap from pixel positions in the screenshot; if your actual layout has them on separate rows at runtime, ignore that bullet — but verify, because at this resolution they appear to share a line."
+    }
+   ]
+  }
+ ],
+ "fps_before": {
+  "samples": [
+   {
+    "fps": 55.145847,
+    "ft_avg": 9.158053,
+    "ft_max": 9.876
+   },
+   {
+    "fps": 55.65588,
+    "ft_avg": 9.315339,
+    "ft_max": 10.005
+   },
+   {
+    "fps": 56.06131,
+    "ft_avg": 9.235456,
+    "ft_max": 10.012
+   }
+  ],
+  "note": "no capture in flight; this is the quotable number"
+ }
+}

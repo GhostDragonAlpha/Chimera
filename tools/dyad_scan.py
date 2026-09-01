@@ -55,6 +55,9 @@ except Exception:
 ROOT = Path("E:/PythonChimera")
 sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 
+import senses          # the dyad's perception — imported here so the capability
+                       # probe can run BEFORE a frame is ever rendered
+
 SAVED = ROOT / "Saved" / "dyad"
 URL = "http://localhost:8090"
 
@@ -316,6 +319,27 @@ def main() -> int:
         st = req_json("GET", "/studio", timeout=6)
     except Exception as e:
         raise SystemExit(f"engine is down on :8090 ({e})")
+
+    # THE EYE COMES FIRST. A scan whose eye cannot see costs a full render pass
+    # and a multi-minute vision call before it fails, so the capability probe runs
+    # before anything is built. The served model is reported, not assumed: the
+    # gateway adopts whatever is resident, so the decreed eye and the serving eye
+    # can silently differ — and two reports are only comparable from one eye.
+    print("checking the eye...", flush=True)
+    ok, served, why = senses.can_see(timeout=120)
+    print(f"  decreed eye : {senses.SENSES_MODEL}")
+    print(f"  serving     : {served or '(unknown)'}")
+    print(f"  takes images: {ok}" + ("" if ok else f"  -> {why}"))
+    if not ok:
+        raise SystemExit(
+            f"THE EYE IS BLIND: {why}\n"
+            f"  A dyad whose eye cannot see is not a dyad. Load a vision-capable model\n"
+            f"  in LM Studio (the decreed eye is {senses.SENSES_MODEL}).")
+    if served and served != senses.SENSES_MODEL:
+        print(f"  !! WARNING: the serving model is NOT the decreed eye "
+              f"({served} != {senses.SENSES_MODEL}).\n"
+              f"     The gateway adopts whatever is resident, so this run's reports\n"
+              f"     are NOT comparable to the earlier ones. Recorded in report.json.")
 
     print(f"dyad scan -> {run_dir}")
     print(f"engine {st['w']}x{st['h']}  overlay={st['on']}  "

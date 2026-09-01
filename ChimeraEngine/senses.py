@@ -51,7 +51,34 @@ MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2048"))
 # movie. Re-measure if you change the frame resolution (see `_post`). (Ollama lane only.)
 FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 
-# THE ONE-IMAGE WALL. Images allowed PER CALL on the adoptive (LM Studio) lane: 1 by default,
+# ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-08-31) ─────────────
+#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b@iq4_xs     context ceiling 75,000
+#
+# This consciously supersedes the studio's older "adopt, never pin" rule for the
+# vision lane. That rule existed so no agent could silently pull a multi-GB model
+# the operator never asked for; pinning HERE does the opposite — it names one
+# model so the dyad's readings are comparable run to run. A eye that changes
+# identity between readings is an eye whose reports cannot be compared, and
+# comparing reports is the whole instrument.
+#
+# Why iq4_xs and not the newer, larger `qwen3.8-flash-next-reap-320`: that one is
+# text-only. LM Studio refuses images from it outright —
+#   "The provided messages contain images, but qwen3.8-flash-next-reap-320 does
+#    not support image inputs."
+# A faster or stronger model is irrelevant to a dyad that cannot see. `can_see()`
+# below now proves capability in one request instead of after a whole scan.
+#
+# The ceiling is the model's own: ~75k tokens, which is why the dyad is one image
+# per call (MAX_IMAGES_PER_CALL). The env vars remain as an escape hatch, but the
+# defaults are the decree.
+SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "dirk-qwen3.8-27b@iq4_xs")
+SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "75000"))
+
+# A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
+# smallest possible image that still proves the resident model ACCEPTS an image
+# at all. See can_see().
+_PROBE_PNG_B64 = ("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGMUERFhwAaYsIoOWgkA"
+                  "NXAATOBnBRAAAAAASUVORK5CYII=")
 # because the resident model's context is unknown to us and today's resident model
 # (qwen3.8 iq4_xs, chosen to fit the GPU) has ~74k -- a 12-frame movie inlined into one request
 # does not fit, and it fails by truncation rather than by error. 0 = no ceiling (use only when
@@ -84,6 +111,68 @@ def available(timeout: float = 3.0) -> bool:
             return len(models) > 0                      # a resident model = an open eye
     except Exception:
         return False
+
+
+def can_see(timeout: int = 60):
+    """Can the eye that will ACTUALLY SERVE take an image?
+
+    `available()` only asks "is a model listed?", which is not the same question.
+    A model can be on disk, answer text perfectly, and refuse every image — and
+    when that happens a dyad run does not fail fast, it fails after however long
+    it took to build and encode the frame. So: send the smallest image that is
+    still an image, and let the server answer. LM Studio says so in one line:
+
+      "The provided messages contain images, but <model> does not support image
+       inputs."
+
+    WHICH MODEL THIS TESTS — read this before trusting it: Chimera/core/lm_gateway
+    ADOPTS THE RESIDENT model and rewrites every outgoing body at it
+    (ADOPT_RESIDENT), deliberately, so two clients on one GPU cannot evict each
+    other. So naming a model does not select it. This probe therefore reports on
+    the model that is RESIDENT — which is exactly the one that will serve, i.e.
+    the one that matters. `served` below is read back from the response, not
+    assumed, so a decree that is not actually loaded is visible instead of silent.
+
+    Returns (True, served_id, None) if the eye sees, else (False, served_id, reason).
+    A dyad whose eye cannot see is not a dyad — it is a monad with a delay.
+    """
+    if not available(timeout=min(timeout, 10)):
+        return False, None, "no model is resident (the eye is dark)"
+    served = None
+    try:
+        raw = _post([{"type": "text", "text": "Reply with the single word: seen."},
+                     {"type": "image_url",
+                      "image_url": {"url": "data:image/png;base64," + _PROBE_PNG_B64}}],
+                    timeout)
+        served = _last_served_model()
+        if not raw:
+            return False, served, "the eye answered nothing"
+        return True, served, None
+    except Exception as e:
+        msg = str(e)
+        if hasattr(e, "read"):                       # HTTPError carries the real reason
+            try:
+                body = json.loads(e.read().decode("utf-8", "replace"))
+                msg = str(body.get("error", {}).get("message") or msg)
+            except Exception:
+                pass
+        return False, _last_served_model(), msg
+
+
+def resident_model(timeout: float = 8.0):
+    """The model id RESIDENT in memory — the one the gateway will serve.
+    /api/v0/models is the only surface that distinguishes loaded from on-disk.
+    Returns None when it cannot be determined (and the caller must say so)."""
+    try:
+        with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=timeout) as r:
+            payload = json.load(r)
+        for m in payload.get("data", []):
+            if m.get("state") == "loaded" or m.get("status") == "loaded":
+                return m.get("id")
+        ids = [m.get("id") for m in payload.get("data", [])]
+        return ids[0] if ids else None
+    except Exception:
+        return None
 
 
 def _b64(path: str) -> str:
@@ -158,14 +247,34 @@ def _post_lmstudio(content, timeout: int, temperature: float):
     fair-queue gateway (single endpoint law; adopt-never-pin; NoModelLoaded = eye dark).
     Images pass as base64 data URLs -- the OpenAI parts format needs no reassembly here."""
     gw = _lm_gateway()
-    body = {"model": "resident",                       # gateway retargets to whatever is loaded
+    body = {"model": SENSES_MODEL,   # NAMED, not "resident" — see the decree above.
+                                     # A dyad whose eye changes identity between
+                                     # readings produces reports that cannot be
+                                     # compared, and comparison is the instrument.
             "messages": [{"role": "user", "content": content}],
             "temperature": temperature, "stream": False}
     req = urllib.request.Request(LMSTUDIO_URL + "/v1/chat/completions",
                                  data=json.dumps(body).encode("utf-8"),
                                  headers={"Content-Type": "application/json"})
     resp = gw.lm_urlopen(req, timeout=max(timeout, 600), agent="senses")
-    return json.loads(resp.read())["choices"][0]["message"].get("content") or ""
+    payload = json.loads(resp.read())
+    # Which model ACTUALLY served. Not assumed, not the one we asked for: the
+    # gateway adopts the resident model, so the decree and the server can differ,
+    # and a report is only comparable to another report from the same eye.
+    global _SERVED
+    try:
+        _SERVED = payload.get("model") or _SERVED
+    except Exception:
+        pass
+    return payload["choices"][0]["message"].get("content") or ""
+
+
+_SERVED: str | None = None
+
+
+def _last_served_model():
+    """The model id from the most recent response — what actually served."""
+    return _SERVED
 
 
 def see(png: str, prompt: str, timeout: int = 300) -> str | None:
