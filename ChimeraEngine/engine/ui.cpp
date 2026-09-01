@@ -1098,11 +1098,23 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         }
     } else if (!left_.collapsed) {
         float x = R[1][0] + 10, y = R[1][1] + 30;
-        text(x, y, "the JOIN of engine state + repo truth", 0.55f, 0.58f, 0.65f, 1.f); y += lh + 6;
-        text(x, y, board_.loaded ? "board: live (studio_board.json)" : "board: no file yet",
-             board_.loaded ? 0.25f : 0.85f, board_.loaded ? 0.75f : 0.55f, board_.loaded ? 0.35f : 0.30f, 1.f); y += lh;
-        text(x, y, "feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 8;
-        text(x, y, "workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f, 1.f); y += lh + 2;
+        // THE DOCK IS A BOUNDARY (2026-08-31, found by the eye on the glass at 2K:
+        // "the JOIN of engine state + repo truth" ran ~70px past this dock's right
+        // edge and under the [1 alpha] chip in the centre column). The selected-node
+        // path above already wraps to maxc; the default view never did, so a long line
+        // bled into the viewport. Same law as the STATUS panel: fits or degrades --
+        // here it wraps, and the dock's width picks the columns (arithmetic, not taste).
+        size_t maxc = static_cast<size_t>((R[1][2] - 20) / advance_);
+        float y_max = R[1][1] + R[1][3] - lh;
+        auto line = [&](const char* s, float r, float g, float b) {
+            if (y > y_max) return;
+            y = text_wrap(x, y, s, maxc, r, g, b, 1.f, y_max);   // returns the next free line
+        };
+        line("the JOIN of engine state + repo truth", 0.55f, 0.58f, 0.65f); y += 6;
+        if (board_.loaded) line("board: live (studio_board.json)", 0.25f, 0.75f, 0.35f);
+        else               line("board: no file yet",            0.85f, 0.55f, 0.30f);
+        line("feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f); y += 8;
+        line("workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f); y += 2;
         const char* ws[] = {"BOARD   (this strip)", "SCENE   - the outliner (C4)", "JOINTS  - the editor (C1)", "GAIT    - parked",
                             "WATER   - parked", "FROST   - parked", "CAPTURE - render-to-MP4 (D5)", "DOCS    - the browser (E1)",
                             "LOG     - the recorder (F4)"};
@@ -1113,9 +1125,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             y += lh;
         }
         y += 6;
-        text(x, y, "click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f, 1.f); y += lh;
-        text(x, y, "next per the menu: C2 inspector, D5 render-to-MP4, D6 bookmarks", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
-        text(x, y, "(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f, 1.f);
+        line("click a stage node above -> its envelope (B3)", 0.30f, 0.60f, 1.00f);
+        line("next per the menu: C2 inspector, D5 render-to-MP4, D6 bookmarks", 0.45f, 0.47f, 0.52f);
+        line("(docs/THE_ENGINE_STUDIO.md)", 0.45f, 0.47f, 0.52f);
     }
 
     // ── the STATUS panel (right): the engine's own live rows, honest — or,
