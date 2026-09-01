@@ -1,0 +1,327 @@
+{
+ "run_id": "2026-08-31_224859",
+ "started": "2026-08-31T22:49:07",
+ "engine": {
+  "on": true,
+  "selected": null,
+  "left_mode": 0,
+  "lh": 29.0,
+  "advance": 12.0,
+  "w": 2560,
+  "h": 1440,
+  "link": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "link_stage": -1
+ },
+ "prompt": "This is a real screenshot of a 3D engine window. In the centre viewport is a triangle-mesh animal body — a monkey — standing on a perspective grid. It is not a static model: the engine is articulating it right now, driving each joint through a range of motion that was DERIVED from the skeleton, on the engine's own clock. This is the system working.\n\nI want your honest opinion on the BODY, not the interface.\n\nLook at the animal the way an artist would. Does it read as a believable creature? Where does it look wrong? Specifically:\n\n- Is anything torn, stretched, spiked, or detached — skin pulling away from a joint, holes, limbs separating from the torso?\n- Does the pose look like something an animal could actually do, or does a joint bend in a direction it should not?\n- Are the proportions and silhouette readable, or does any part collapse, flatten, or vanish?\n- Does it make contact with the ground, and does the contact look honest?\n- Is the surface shading coherent — does the form read as volume, or does it look flat, noisy, or patchy?\n\nBe specific about WHERE on the body each defect is. Name the body part. I am not looking for praise and I am not looking for a list of features — I am looking for what is wrong with this creature, most severe first. If something looks correct, do not spend words on it.",
+ "crop": null,
+ "reads_per_shot": 1,
+ "shots": [
+  {
+   "index": 0,
+   "camera": "operator's (untouched)",
+   "theta": null,
+   "show_t": 0.0,
+   "raw_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_224859\\frames\\shot_00.png",
+   "compact_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_224859\\frames\\shot_00_compact.png",
+   "compact_bytes": 332081,
+   "raw_bytes": 14748233,
+   "twins": {
+    "studio": {
+     "on": true,
+     "selected": null,
+     "left_mode": 0,
+     "lh": 29.0,
+     "advance": 12.0,
+     "w": 2560,
+     "h": 1440,
+     "link": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "link_stage": -1
+    },
+    "chrome": {
+     "bar_on": true,
+     "bar_h": 24.0,
+     "fps": 94.960091,
+     "ft_avg": 7.644167,
+     "ft_max": 1247.891968,
+     "pushes": 383211,
+     "ring_n": 120,
+     "ring": [
+      0.36,
+      0.617,
+      0.388,
+      0.532,
+      1247.891968,
+      0.798,
+      0.364,
+      0.775,
+      0.567,
+      0.386,
+      0.359,
+      0.316,
+      0.47,
+      0.383,
+      0.369,
+      0.467,
+      0.326,
+      0.325,
+      0.33,
+      0.31,
+      0.348,
+      0.604,
+      0.332,
+      0.338,
+      0.307,
+      0.316,
+      0.465,
+      0.338,
+      0.322,
+      0.329,
+      0.336,
+      0.554,
+      0.4,
+      0.348,
+      0.323,
+      0.372,
+      0.414,
+      0.312,
+      0.325,
+      0.334,
+      0.36,
+      0.317,
+      0.322,
+      0.284,
+      0.567,
+      0.373,
+      0.418,
+      0.353,
+      0.494,
+      0.462,
+      0.468,
+      0.396,
+      0.397,
+      0.365,
+      0.647,
+      0.422,
+      0.432,
+      0.355,
+      0.614,
+      0.456,
+      0.343,
+      0.362,
+      0.307,
+      0.421,
+      0.417,
+      0.379,
+      0.381,
+      0.318,
+      0.525,
+      0.487,
+      0.357,
+      0.499,
+      0.705,
+      0.357,
+      0.341,
+      0.35,
+      0.324,
+      0.337,
+      0.408,
+      0.422,
+      0.417,
+      0.463,
+      0.445,
+      0.385,
+      0.408,
+      0.371,
+      0.346,
+      0.415,
+      0.324,
+      0.324,
+      0.29,
+      0.597,
+      0.471,
+      0.385,
+      0.341,
+      0.319,
+      0.365,
+      0.345,
+      0.33,
+      0.304,
+      0.316,
+      0.417,
+      0.576,
+      0.374,
+      0.368,
+      0.377,
+      0.369,
+      0.389,
+      0.293,
+      0.324,
+      0.462,
+      0.463,
+      0.352,
+      0.4,
+      0.602,
+      0.363,
+      0.367,
+      0.343,
+      0.294,
+      0.469
+     ],
+     "gpu": "NVIDIA GeForce RTX 4090",
+     "stage": "B7 ARTICULATE",
+     "fps_str": "95 fps  7.64 ms",
+     "gpu_str": "NVIDIA GeForce RTX 4090  2560x1440",
+     "hud_rows": [
+      "SHOW spine_upper  theta 117.62 deg  ROM [-169.7 .. 119.2]"
+     ],
+     "gait": {
+      "on": false,
+      "lamL": 0,
+      "lamR": 0,
+      "thL": 0,
+      "thR": 0,
+      "steps": 0,
+      "omega": 0.0
+     },
+     "water": {
+      "on": false,
+      "steps": 0,
+      "dt": 0.0,
+      "inj_t": -1,
+      "inj_c": 0
+     },
+     "show_row": true
+    },
+    "scene": {
+     "left_mode": 0,
+     "inspect_row": -1,
+     "rows": [
+      {
+       "id": "body",
+       "label": "body",
+       "detail": "36815 tris",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "overlay",
+       "label": "overlay",
+       "detail": "none",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "show",
+       "label": "show",
+       "detail": "t=9.39s x1.00",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "joints",
+       "label": "joints",
+       "detail": "19 joints",
+       "state": 1,
+       "toggleable": true
+      },
+      {
+       "id": "volp",
+       "label": "volp",
+       "detail": "no kernel",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "gait",
+       "label": "gait",
+       "detail": "steps=0 omega=7.85",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_clock",
+       "label": "water clock",
+       "detail": "steps_total=0 inj=0/-1",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_vis",
+       "label": "water vis",
+       "detail": "the field, drawn",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "frost",
+       "label": "frost",
+       "detail": "no pack",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "chrome",
+       "label": "chrome",
+       "detail": "the studio bar",
+       "state": 1,
+       "toggleable": true
+      }
+     ],
+     "rects": [],
+     "sel_rects": []
+    },
+    "show": {
+     "playing": false,
+     "time": 9.391323,
+     "speed": 1.0,
+     "n_joints": 19,
+     "period": 4.0,
+     "total": 76.0,
+     "current": "spine_upper",
+     "theta": 117.623289,
+     "joints_loaded": true,
+     "rom_ext": -169.729996,
+     "rom_flex": 119.160004
+    },
+    "_fps_is_under_capture_load": true
+   },
+   "reads": [
+    {
+     "read": 0,
+     "seconds": 208.8,
+     "report": "Most severe first:\n\n1. **Neck / upper-chest tear.** At the base of the neck where it meets the torso there is a clear mesh failure: jagged spike-triangles sticking out and an open gap where the skin has pulled away from the body. This is exactly at the `spine_upper` joint (the HUD shows it driven to ~117° inside a ±~170° ROM), so the extreme bend is shredding the topology instead of deforming it. This is the worst defect — it reads as torn, not articulated.\n\n2. **Chest hole.** Just below that tear, on the front pectoral surface, there's a flat dark elliptical cavity — missing geometry / non-manifold patch rather than a shaded form. It looks like a hole punched in the chest.\n\n3. **Proportions and silhouette are wrong for a monkey.** Head is oversized relative to the body; torso is short, narrow and stubby; arms and legs are too long and stick-thin. The overall read is a lanky humanoid, not a compact quadruped-capable primate. Shoulders are underdeveloped (just small deltoid bumps), so the upper arms look grafted on rather than growing out of the torso.\n\n4. **Hands / fingers.** Both hands are oversized with spindly digits; on the right hand (viewer's left) one finger spikes outward at an angle that no knuckle should allow. The grip/splay reads broken.\n\n5. **Ground contact is unverified and looks dishonest.** The legs terminate at the bottom edge of the viewport — no feet are visible, so there's no readable foot-on-grid contact; it appears to float or be cropped rather than standing.\n\nShading otherwise reads as coherent matte volume (clay-like), so surface noise/flatness isn't a major issue — the problems are geometric: the neck tear and chest hole first, then wrong proportions, then the hands, then missing feet."
+    }
+   ]
+  }
+ ],
+ "fps_before": {
+  "samples": [
+   {
+    "fps": 299.403595,
+    "ft_avg": 0.87864,
+    "ft_max": 1.351
+   },
+   {
+    "fps": 294.8797,
+    "ft_avg": 0.74018,
+    "ft_max": 18.802
+   },
+   {
+    "fps": 299.687714,
+    "ft_avg": 0.414597,
+    "ft_max": 0.843
+   }
+  ],
+  "note": "no capture in flight; this is the quotable number"
+ }
+}

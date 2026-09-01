@@ -192,7 +192,10 @@ def quiesce(tag: str, timeout=12.0) -> bool:
 
 CROP: tuple | None = None
 OUT: Path = SAVED
-READ_TIMEOUT = 1800          # seconds per vision call; --read-timeout overrides
+READ_TIMEOUT = 1800
+POSES = False          # --poses: sweep the SHOW CLOCK (the pose axis)
+ORBIT = False          # --orbit: sweep the camera (opt-in; Guide S5 says leave it)
+PERIOD = 12.0          # the show period to sweep across, seconds          # seconds per vision call; --read-timeout overrides
                              # (a 2560x1440 frame on the Q4_K_XL quant is slow)
 
 
@@ -222,8 +225,24 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
         if i in done:
             print(f"  shot {i:02d}: already done, skipping (resume)")
             continue
-        theta = 2.0 * 3.14159265358979 * i / max(1, shots)
-        set_camera(radius, theta, phi)
+        # WHAT MOVES BETWEEN SHOTS — three modes, and the default is the one the
+        # Triangle Guide allows. §5: "Never set the camera from a driver or
+        # kernel. The operator orbits while it moves; that is the point." So the
+        # scan leaves the operator's framing ALONE unless --orbit is asked for.
+        #
+        # --poses sweeps the SHOW CLOCK instead, which is the right axis for an
+        # articulating body: the pose is the thing under test, and the camera is
+        # the operator's. (Pausing first, then scrubbing to exact instants — the
+        # show clock is a parameter, not a wall clock.)
+        theta = None
+        show_t = None
+        if POSES:
+            show_t = (PERIOD * i / max(1, shots)) if shots > 1 else 0.0
+            req_json("POST", "/show", {"playing": False})
+            req_json("POST", "/show", {"time": show_t, "step": 0})
+        elif ORBIT:
+            theta = 2.0 * 3.14159265358979 * i / max(1, shots)
+            set_camera(radius, theta, phi)
         quiesce(f"s{i:02d}")
 
         raw = frames_dir / f"shot_{i:02d}.png"
@@ -231,11 +250,15 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
         small = frames_dir / f"shot_{i:02d}_compact.png"
         csize = compact(raw, small)
 
-        shot = {"index": i, "theta": round(theta, 5), "camera": [radius, theta, phi],
+        shot = {"index": i, "camera": "operator's (untouched)" if not ORBIT else [radius, theta, phi],
+                "theta": round(theta, 5) if theta is not None else None,
+                "show_t": round(show_t, 4) if show_t is not None else None,
                 "raw_png": str(raw), "compact_png": str(small),
                 "compact_bytes": csize, "raw_bytes": raw.stat().st_size,
                 "twins": twins(), "reads": []}
-        print(f"  shot {i:02d}: theta={theta:.2f} raw={shot['raw_bytes']/1e6:.2f}MB "
+        what = f"show_t={show_t:.2f}s" if show_t is not None else (
+               f"theta={theta:.2f}" if theta is not None else "camera untouched")
+        print(f"  shot {i:02d}: {what} raw={shot['raw_bytes']/1e6:.2f}MB "
               f"compact={csize/1e3:.0f}KB  fps={shot['twins'].get('chrome',{}).get('fps')}")
 
         for r in range(reads):
@@ -281,7 +304,15 @@ def write_markdown(run_dir: Path, report: dict) -> None:
              f"- engine: {report['engine'].get('w')}x{report['engine'].get('h')}", ""]
     for s in report["shots"]:
         ch = s["twins"].get("chrome", {})
-        lines.append(f"## shot {s['index']:02d} — theta {s['theta']:.2f}")
+        # which axis this shot moved along — None on the axes it did not touch,
+        # so format the label from whichever one is actually set
+        if s.get("show_t") is not None:
+            what = f"show t = {s['show_t']:.2f}s"
+        elif s.get("theta") is not None:
+            what = f"theta {s['theta']:.2f}"
+        else:
+            what = "camera untouched (Guide §5)"
+        lines.append(f"## shot {s['index']:02d} — {what}")
         lines.append(f"`fps {ch.get('fps')} · ft avg {ch.get('ft_avg')} ms · "
                      f"stage: {ch.get('stage', '')}`")
         lines.append("")
@@ -294,7 +325,7 @@ def write_markdown(run_dir: Path, report: dict) -> None:
 
 
 def main() -> int:
-    global CROP, OUT, READ_TIMEOUT
+    global CROP, OUT, READ_TIMEOUT, POSES, ORBIT, PERIOD
     ap = argparse.ArgumentParser(description="the dyad reads the glass, one image per call")
     ap.add_argument("--shots", type=int, default=8, help="camera stops around the subject")
     ap.add_argument("--reads", type=int, default=3, help="reads per shot (NOT a vote)")
@@ -302,6 +333,12 @@ def main() -> int:
     ap.add_argument("--phi", type=float, default=0.30)
     ap.add_argument("--crop", default=None, help="x,y,w,h — inspect one region closely")
     ap.add_argument("--prompt-file", default=None, help="a file holding the question")
+    ap.add_argument("--poses", type=int, default=0,
+                    help="sweep the SHOW CLOCK to N instants (the pose axis)")
+    ap.add_argument("--orbit", action="store_true",
+                    help="sweep the camera around the subject (opt-in: Guide S5)")
+    ap.add_argument("--period", type=float, default=12.0,
+                    help="show-clock period to sweep across, seconds")
     ap.add_argument("--read-timeout", type=int, default=READ_TIMEOUT,
                     help="seconds allowed per vision call (2K on the big quant is slow)")
     ap.add_argument("--keep-raw", action="store_true", help="keep the 14MB engine PNGs")
@@ -309,6 +346,7 @@ def main() -> int:
     a = ap.parse_args()
 
     READ_TIMEOUT = a.read_timeout
+    POSES, ORBIT, PERIOD = a.poses, a.orbit, a.period
     if a.crop:
         CROP = tuple(int(v) for v in a.crop.split(","))
         if len(CROP) != 4:

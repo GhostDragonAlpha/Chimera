@@ -1,0 +1,330 @@
+{
+ "run_id": "2026-08-31_223250",
+ "started": "2026-08-31T22:32:56",
+ "engine": {
+  "on": true,
+  "selected": null,
+  "left_mode": 0,
+  "lh": 29.0,
+  "advance": 12.0,
+  "w": 2560,
+  "h": 1440,
+  "link": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "link_stage": -1
+ },
+ "prompt": "I am developing a 3D engine and this is a real screenshot of its application window, at the full resolution of the monitor it runs on. I want your honest opinion on what you are looking at.\n\nDescribe what you see: does the layout, framing, and positioning look wrong or right? Look at it like an artist. Could it be framed better? Where does the image itself lose you? Is it confusing?\n\nBe specific about defects. Is any text too small to read, cut off, overlapping, or colliding with something else? Are the panels and windows legible, and are they proportioned sensibly against the size of the window? Is anything cramped, off-balance, or adrift in empty space? Is the 3D viewport visible, and if it is empty does the window still read as a working application?\n\nTell me what you actually see and what you think is wrong with it. I am not looking for praise, I am looking for defects.",
+ "crop": null,
+ "reads_per_shot": 1,
+ "shots": [
+  {
+   "index": 0,
+   "theta": 0.0,
+   "camera": [
+    12.0,
+    0.0,
+    0.3
+   ],
+   "raw_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_223250\\frames\\shot_00.png",
+   "compact_png": "E:\\PythonChimera\\Saved\\dyad\\2026-08-31_223250\\frames\\shot_00_compact.png",
+   "compact_bytes": 207255,
+   "raw_bytes": 14748233,
+   "twins": {
+    "studio": {
+     "on": true,
+     "selected": null,
+     "left_mode": 0,
+     "lh": 29.0,
+     "advance": 12.0,
+     "w": 2560,
+     "h": 1440,
+     "link": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "link_stage": -1
+    },
+    "chrome": {
+     "bar_on": true,
+     "bar_h": 24.0,
+     "fps": 94.5177,
+     "ft_avg": 7.60637,
+     "ft_max": 1253.343018,
+     "pushes": 97372,
+     "ring_n": 120,
+     "ring": [
+      0.339,
+      0.348,
+      0.344,
+      0.337,
+      0.421,
+      0.378,
+      0.335,
+      0.31,
+      1253.343018,
+      0.793,
+      0.514,
+      0.667,
+      0.536,
+      0.572,
+      0.495,
+      0.406,
+      0.417,
+      0.357,
+      0.442,
+      0.434,
+      0.359,
+      0.488,
+      0.356,
+      0.43,
+      0.395,
+      0.401,
+      0.416,
+      0.582,
+      0.516,
+      0.404,
+      0.414,
+      0.339,
+      0.46,
+      0.445,
+      0.389,
+      0.393,
+      0.318,
+      0.366,
+      0.328,
+      0.312,
+      0.354,
+      0.369,
+      0.308,
+      0.308,
+      0.286,
+      0.34,
+      0.363,
+      0.54,
+      0.373,
+      0.386,
+      0.547,
+      0.489,
+      0.449,
+      0.369,
+      0.375,
+      0.526,
+      0.369,
+      0.464,
+      0.514,
+      0.703,
+      0.493,
+      0.541,
+      0.542,
+      0.62,
+      0.623,
+      0.565,
+      0.512,
+      0.528,
+      0.698,
+      0.526,
+      0.405,
+      0.348,
+      0.333,
+      0.411,
+      0.421,
+      0.352,
+      0.371,
+      0.369,
+      0.414,
+      0.394,
+      0.352,
+      0.334,
+      0.394,
+      0.384,
+      0.397,
+      0.354,
+      0.333,
+      0.429,
+      0.387,
+      0.336,
+      0.348,
+      0.31,
+      0.373,
+      0.337,
+      0.324,
+      0.355,
+      0.372,
+      0.312,
+      0.302,
+      0.333,
+      0.4,
+      0.369,
+      0.346,
+      0.373,
+      0.338,
+      0.348,
+      0.403,
+      0.306,
+      0.315,
+      0.301,
+      0.518,
+      0.498,
+      0.35,
+      0.336,
+      0.352,
+      0.434,
+      0.39,
+      0.313,
+      0.338,
+      0.291
+     ],
+     "gpu": "NVIDIA GeForce RTX 4090",
+     "stage": "B7 ARTICULATE",
+     "fps_str": "95 fps  7.61 ms",
+     "gpu_str": "NVIDIA GeForce RTX 4090  2560x1440",
+     "hud_rows": [
+      "SHOW spine_upper  theta 117.62 deg  ROM [-169.7 .. 119.2]"
+     ],
+     "gait": {
+      "on": false,
+      "lamL": 0,
+      "lamR": 0,
+      "thL": 0,
+      "thR": 0,
+      "steps": 0,
+      "omega": 0.0
+     },
+     "water": {
+      "on": false,
+      "steps": 0,
+      "dt": 0.0,
+      "inj_t": -1,
+      "inj_c": 0
+     },
+     "show_row": true
+    },
+    "scene": {
+     "left_mode": 0,
+     "inspect_row": -1,
+     "rows": [
+      {
+       "id": "body",
+       "label": "body",
+       "detail": "36815 tris",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "overlay",
+       "label": "overlay",
+       "detail": "none",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "show",
+       "label": "show",
+       "detail": "t=9.39s x1.00",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "joints",
+       "label": "joints",
+       "detail": "19 joints",
+       "state": 1,
+       "toggleable": true
+      },
+      {
+       "id": "volp",
+       "label": "volp",
+       "detail": "no kernel",
+       "state": 1,
+       "toggleable": false
+      },
+      {
+       "id": "gait",
+       "label": "gait",
+       "detail": "steps=0 omega=7.85",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_clock",
+       "label": "water clock",
+       "detail": "steps_total=0 inj=0/-1",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "water_vis",
+       "label": "water vis",
+       "detail": "the field, drawn",
+       "state": 0,
+       "toggleable": true
+      },
+      {
+       "id": "frost",
+       "label": "frost",
+       "detail": "no pack",
+       "state": 0,
+       "toggleable": false
+      },
+      {
+       "id": "chrome",
+       "label": "chrome",
+       "detail": "the studio bar",
+       "state": 1,
+       "toggleable": true
+      }
+     ],
+     "rects": [],
+     "sel_rects": []
+    },
+    "show": {
+     "playing": false,
+     "time": 9.391323,
+     "speed": 1.0,
+     "n_joints": 19,
+     "period": 4.0,
+     "total": 76.0,
+     "current": "spine_upper",
+     "theta": 117.623289,
+     "joints_loaded": true,
+     "rom_ext": -169.729996,
+     "rom_flex": 119.160004
+    },
+    "_fps_is_under_capture_load": true
+   },
+   "reads": [
+    {
+     "read": 0,
+     "seconds": 496.1,
+     "report": "**Overall read:** It looks like a working tool, not a broken one — the 3D viewport is live (humanoid + perspective grid), status/timeline/reel are all populated. But as a *composition* it's top‑heavy and the hero subject is framed badly, so the first thing that loses me is the model itself.\n\n**The framing defect (biggest issue).** The body is cropped at the waist: no head, most of the torso gone, just hips→feet plus two dangling forearms. Meanwhile there's a large dead black zone *below* the feet down to the REEL strip. So the subject sits top‑weighted in the viewport with empty space where its head should be and void where its shadow/ground should be. The camera is zoomed/positioned wrong — it doesn't fit the model, and there's no ground plane contact (the grid starts mid‑shin). To an artist this reads as a clipped capture or a render that hasn't auto‑framed, not an intentional shot. Fix: frame to bounding box, put feet on the grid horizon, fill vertical space.\n\n**Balance / proportion.**\n- Both side panels are top‑anchored text blocks with tall empty bottoms; they don't read as bounded panels — the background shade difference from the viewport is too subtle, so they look like floating text rather than windows. Give them a visible edge or fill the height (scroll region, pinned footer).\n- The REEL and TIMELINE strips sit low‑center but stop short of the right edge, leaving an asymmetric right margin that doesn't match the left — the bottom third feels lopsided.\n- Net effect: top 40% is busy, bottom 30% is mostly black with two narrow strips adrift in it.\n\n**Legibility / text defects.**\n- No hard collisions or clipped words; the real problem is *low‑contrast dim gray* on near‑black (the explanatory lines under the workspace list, the timeline ruler ticks, the \"r12.0 0.00/0.30\" sub‑labels). At 2560×1440 it's readable but tiring; bump secondary text contrast ~2 stops.\n- Left panel wraps awkwardly (\"the JOIN of engine state + repo truth\" → 3 lines; \"workspaces (A3 - click to switch):\" → 2). Either widen the column or shorten strings so they don't break mid‑phrase.\n- The REEL's four thumbnails are **identical** with identical labels (`t9.39 spine_upp +117.6d 22:33 r12.0 0.00/0.30` ×4). That looks like a placeholder/bug, not data — it undercuts the \"live\" claim and is the second thing that reads as broken.\n- The center bottom `36 fps 25.13 ms` followed by a row of dashes looks like an unfinished progress bar; either complete it or remove the dashes.\n\n**Confusing / unclear.**\n- Acronym soup with no legend: C1, C4, D3, D5, E1, F4, A3 appear inline without explanation; \"EARLIEST NON‑GREEN GATE\" and \"+ cam\" are opaque to anyone but you. The relationship between the gate tabs (top), the workspace list (left), and REEL/TIMELINE (bottom) isn't visually grouped — three separate systems competing for attention with no hierarchy cue.\n- The rainbow of gate colors (green/blue/olive/purple) is functional but noisy at the very top where your eye lands first; consider muting inactive gates so B7's blue pops more cleanly.\n\n**Quick fix list, in priority order:** 1) auto‑frame the model and ground it on the grid; 2) make side panels visually bounded (border or filled height); 3) raise contrast of secondary text and timeline ticks; 4) de‑duplicate or label the REEL frames so they don't look like a bug; 5) span the bottom strips full‑width to kill the right margin asymmetry.\n\nIt's not ugly — it's coherent and clearly functional — but the cropped hero shot plus top‑heavy, half‑empty panels make it read as \"tool in development\" rather than \"polished application.\" The framing of the 3D subject is the single change that would most improve how it looks."
+    }
+   ]
+  }
+ ],
+ "fps_before": {
+  "samples": [
+   {
+    "fps": 298.303772,
+    "ft_avg": 0.823127,
+    "ft_max": 1.281
+   },
+   {
+    "fps": 291.980743,
+    "ft_avg": 0.54288,
+    "ft_max": 27.125
+   },
+   {
+    "fps": 299.442139,
+    "ft_avg": 0.355407,
+    "ft_max": 0.588
+   }
+  ],
+  "note": "no capture in flight; this is the quotable number"
+ }
+}

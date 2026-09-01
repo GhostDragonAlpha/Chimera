@@ -44,8 +44,15 @@ AUDIO_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
 
 # The eye's answer budget. qwen3.8 is a REASONING model: with `think` on it burns the whole budget
 # on `reasoning_content` and returns EMPTY `content`. We run it with thinking DISABLED (`think:false`)
-# so the answer comes straight out -- then a small budget is plenty. (Ollama lane only.)
-MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2048"))
+# so the answer comes straight out -- then a small budget is plenty.
+#
+# THIS IS ALSO THE SPEED LEVER (2026-08-31). MAX_TOKENS was only ever sent on the
+# OLLAMA lane; the LM Studio lane -- the one this studio actually runs -- sent no
+# cap at all, so the server defaulted and the model was free to keep going. A
+# 2560x1440 read was taking 480-500s. Asking for only the tokens a report needs
+# is the difference: the report is ~1.1k tokens of prose, and every token past
+# that is the eye talking itself into a longer answer nobody asked for.
+MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "1400"))
 
 # Measured vision-token cost of one frame at 384px (prompt_eval_count delta): 86 tokens. The
 # context is sized EXACTLY to the frames + answer, so a 256K model is not hauled into VRAM for a
@@ -53,12 +60,22 @@ MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2048"))
 FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 
 # ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-08-31) ─────────────
-#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b        loaded context 130,048
+#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b        context ~16,000 (operator)
 #
-# Measured from LM Studio's own surface (GET /api/v0/models, the only one that
-# distinguishes RESIDENT from merely on-disk), 2026-08-31:
-#     id=dirk-qwen3.8-27b  state=loaded  type=vlm  quant=Q4_K_XL
-#     max_context_length=262144  loaded_context_length=130048
+# THE CONTEXT IS THE OPERATOR'S CALL, NOT OURS TO MANAGE. They set it — "let's
+# make 16,000 the standard size because I can fit all that on GPU" — and it is
+# loaded by them, in LM Studio, at load time (a request cannot change it; the
+# context is fixed when the model is loaded). We record what the server reports
+# and never push a num_ctx at it: LM Studio owns the loaded context, and
+# overriding it can trigger a reload, which is the eviction war
+# core/lm_gateway exists to prevent.
+#
+# For the record, so the next agent does not re-derive it: the context is the
+# dominant cost of a read. Loaded at 130,048, one 2560x1440 frame took 483s. The
+# same frame at ~16,000 takes 56s. A frame that size is 3,771 prompt tokens
+# (measured), a report is ~1,400, so ~5,200 is what is actually needed; 16,000
+# is the operator's headroom, and it fits on their GPU. Slower or faster is
+# theirs to choose — the instrument just reports what it saw.
 # `type: vlm` is the whole ballgame — the previous candidate
 # (qwen3.8-flash-next-reap-320) is `type: llm` and refuses images outright:
 #   "The provided messages contain images, but qwen3.8-flash-next-reap-320 does
@@ -230,7 +247,7 @@ def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX
           endpoint: str = VISION_URL, model: str = VISION_MODEL):
     if VISION_BACKEND != "ollama":
         _enforce_image_wall(content)
-        return _post_lmstudio(content, timeout, temperature)
+        return _post_lmstudio(content, timeout, temperature, max_tokens)
     # content arrives as OpenAI-style parts (text + image_url). The native Ollama /api/chat wants
     # `content` as a string and `images` as a list of raw base64 (no data: prefix).
     text = ""
@@ -258,16 +275,25 @@ def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX
         return msg.get("content") or ""
 
 
-def _post_lmstudio(content, timeout: int, temperature: float):
+def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = MAX_TOKENS):
     """THE DECREE LANE: LM Studio's RESIDENT model over /v1/chat/completions, through the
     fair-queue gateway (single endpoint law; adopt-never-pin; NoModelLoaded = eye dark).
     Images pass as base64 data URLs -- the OpenAI parts format needs no reassembly here."""
     gw = _lm_gateway()
+    # max_tokens IS SENT HERE. The budget existed but was only ever honoured on
+    # the retired ollama lane, so the lane that actually runs had no ceiling and
+    # the eye took 8 minutes to say what fits in 1.4k tokens.
+    #
+    # num_ctx is deliberately NOT sent: LM Studio owns the loaded context
+    # (130,048, reported by /api/v0/models), and pushing a num_ctx at it can
+    # trigger a reload -- which is the eviction war core/lm_gateway exists to
+    # prevent. We cap what the eye may SAY, never what it may SEE.
     body = {"model": SENSES_MODEL,   # NAMED, not "resident" — see the decree above.
                                      # A dyad whose eye changes identity between
                                      # readings produces reports that cannot be
                                      # compared, and comparison is the instrument.
             "messages": [{"role": "user", "content": content}],
+            "max_tokens": max_tokens,
             "temperature": temperature, "stream": False}
     req = urllib.request.Request(LMSTUDIO_URL + "/v1/chat/completions",
                                  data=json.dumps(body).encode("utf-8"),
