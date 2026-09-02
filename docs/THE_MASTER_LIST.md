@@ -1126,3 +1126,26 @@ bind holds at LOW strain; high-strain gait strain is the next, harder probe
 
 **Relay litter** (`relay_*.out`) gitignored; both splat relays left running on
 8799/8811 as the operator's other window, idle-cost ~2 python processes.
+
+**THE KNEE MARCH RESTORED (same session, evening).** The Aug-29 two-knee show
+(`.tmp/hinge_setup.py` → `/mesh_bin` + `/hinge_bin`, engine-side march on its own
+clock, probe15's contact-derived axis law) is live again after the engine
+restart: L band 1,639 / R 1,641 verts, half-period frame delta 306k px.
+
+**The all-joints pack is NOT loaded — honestly.** H15's `joints_pack.bin` has a
+degenerate assignment law: distal sets are NESTED (hip ⊇ knee ⊇ ankle), so the
+dominant-argmax collapses knees/ankles into hips (0-vert bands — measured, both
+npz and bin). `.tmp/b7b_fields.py` (disjoint rings, v5 fold law) was written
+Aug 30 but never run; it was run this session and produced
+`.tmp/b7b/joint_fields.npz` (19 rings, knees 1,680/1,668 verts, ratios sane).
+Two gates then fired honestly:
+- **F-d knee axis gate FAIL** — factory knee axis flexes ANTERIOR; the validated
+  leg_move_v2 law (contact-bisected inter-knee axis) flexes POSTERIOR
+  (cosine −0.485). The factory B4 row for knees is suspect; the march uses the
+  validated law and is unaffected.
+- **B7b unified gates FAIL for knee_L** (`.tmp/b7b/smoke_kneeL_v4.log`): volume
+  leak at full flexion (pen 0.026, blend would fix) and cold-band 0.147 ≫ 0.0015
+  — the fold law needs work before an all-joints show can ship. joints 0/1.
+So the window runs the two-knee march; the 19-joint show waits on the fold law.
+That is the next joint work, and it is exactly "the joints we were having
+trouble with."
