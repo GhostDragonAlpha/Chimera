@@ -1242,3 +1242,63 @@ This is the first judgment the machine has filed against the instrument
 itself — the dyad watching the dyad's own window. Action taken: the camera/
 ground/chrome defects become the Studio's work list, judged by re-scan.
 Evidence: `Saved/dyad/2026-09-02_010015/` (raw + compact + report.md).
+
+**R1 CLOSING CHAIN (2026-09-02 morning): four solvers, all measured, one
+verdict.** The membrane's settle requirement forced a solver ladder, each rung
+falsified with numbers: (1) explicit Euler — dt-ladder measured every stable
+dt > 5e-6 diverges at mid-flexion, and below the cliff the settle timescale is
+~1e5 iterations (`.tmp/r1_dt_ladder.json`); (2) Hessian-free Newton–CG — the
+clamped bend/curvature laws make the Hessian singular along saturated modes
+(CG dies on direction 1) and the residual discontinuous at the clamp band, so
+residual-monotone backtracking rejects every step (`.tmp/r1_implicit.json`);
+(3) Jacobi-preconditioned fixed point — the cotan operator's degree scale is
+the wrong preconditioner at this stiffness spread, field NaN'd (`.tmp/
+r1_precond.json`); (4) the ratified B7b splu+Schur golden solve remains the
+only solver that settles this law, and it solves ARAP+volume, not the pure CA
+spring law. VERDICT: R1-as-written is FALSIFIED as a *construction* — the CA
+surface springs alone cannot be settled at interactive rates with any solver
+tried; the fold signature it predicted is real (measured at ROM ends) but the
+law's cost is prohibitive. Successor per membrane: explicit skin-attachment
+constraints (deterministic, shippable), keeping the CA springs as the
+*relaxation* layer, not the pose carrier. The knee march (validated hinge
+law) is the shipped behavior.
+
+**THE MEASUREMENT LAW, earned the hard way (2026-09-02): `/frame?glass=1` was
+never a route** — the HTTP dispatcher strips query strings (main.cpp), so that
+URL silently serves the CLEAN frame. Several "the UI is dead" diagnoses this
+day were this probe bug; the real glass channel is **/glass** (which
+dyad_scan.py always used correctly — the instrument was right, the ad-hoc
+probes were wrong). Rule: an ad-hoc probe must be validated against the
+canalized tool BEFORE its verdicts are believed.
+
+**TOOL FEATURE 1 — SESSION SNAPSHOT/RESTORE (2026-09-02, the
+tool-alongside-the-game decree).** Every successful *_bin upload is written
+through to `session_snapshot/<endpoint>.blob`; `--restore` at boot (or POST
+/session {"op":"restore"}) replays the blobs through the SAME api handler
+(invoke_api — raw bytes, nested call). Proven live: kill → boot --restore →
+{"replayed":2,"failed":0}, hinge engaged, zero scripts. Measured trap: restore
+before the frame loop starts makes waiting endpoints time out (blob applies,
+ack lies) — boot restore is a deferred thread with retry.
+
+**TOOL FEATURE 2 — THE TRANSPORT DRIVES THE LIVE CLOCK (2026-09-02).** The
+dyad's eye filed "no play button, no timeline" honestly: the D1 timeline was
+bound to the joints-pack clock while the hinge march read the wall clock.
+The clock source is now what is loaded — joints pack → 19-joint show; hinge
+only → show clock drives the hinge phase (hinge_time()) and the timeline
+draws the march mode. Proven at the pixel level: pause freezes the pose
+(0 px), scrub lands exact distinct poses (107k px), resume marches. /show GET
+now reports clock:"hinge" with live period/total. This is the seed of the
+movie-timeline editor: the transport, the scrub-exact poses, and the reel all
+exist on one clock now.
+
+**THE DYAD'S SECOND VERDICT (2026-09-02 08:53, 2 shots × 1 read, ~700s each,
+no truncation).** Filed against the rebuilt chrome (perception-floor fixes
+live, camera fit recalled mid-scan — several framing defects are stale).
+Still-open defects, by root cause: (a) viewport/panel tonal separation — the
+3D space reads as leaking under the interface; (b) subject ungrounded — no
+contact shadow at the feet; (c) stray underline artifacts through STATUS rows
+(hunt: likely the per-row hover underline drawn unconditionally); (d) camera
+chip toolbar left-pinned, unbalanced; (e) title bar carries help text that
+belongs in a tooltip. (a)+(b) are rendering features with game value
+(grounding, viewport frame); (c) is a bug; (d)+(e) chrome polish.
+Evidence: `Saved/dyad/2026-09-02_085351/`.
