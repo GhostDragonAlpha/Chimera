@@ -727,7 +727,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     const float TR = 0.86f, TG = 0.88f, TB = 0.92f; // text color
 
     // ── the stage strip (B1: the pipeline map; B2: the standing rule, displayed) ──
-    rect(R[0][0], R[0][1], R[0][2], R[0][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[0][0], R[0][1], R[0][2], R[0][3], 0.07f, 0.08f, 0.11f, 0.97f);   // near-opaque: the scene must not leak under the chrome (the eye, defect a)
     rect(R[0][0], R[0][1], R[0][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
     text(8, (22 - lh) * 0.5f, "THE ENGINE STUDIO - pipeline board (B0-B10)  [F1] hide  [click bar] collapse  [drag edge] resize",
          0.62f, 0.66f, 0.74f, 1.f);
@@ -1202,7 +1202,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     }
 
     // ── the REEL (D3: every /frame grab lands here — the evidence tray, on-screen) ──
-    rect(R[4][0], R[4][1], R[4][2], R[4][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[4][0], R[4][1], R[4][2], R[4][3], 0.07f, 0.08f, 0.11f, 0.97f);   // near-opaque (defect a)
     rect(R[4][0], R[4][1], R[4][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
     {
         char rb[64];
@@ -1242,7 +1242,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     }
 
     // ── the TIMELINE (D1: the show clock, drawn; the engine owns the time) ──
-    rect(R[3][0], R[3][1], R[3][2], R[3][3], 0.07f, 0.08f, 0.11f, 0.88f);
+    rect(R[3][0], R[3][1], R[3][2], R[3][3], 0.07f, 0.08f, 0.11f, 0.97f);   // near-opaque (defect a)
     rect(R[3][0], R[3][1], R[3][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
     text(R[3][0] + 8, R[3][1] + (22 - lh) * 0.5f,
          bottom_.collapsed ? "+" : "TIMELINE (D1) - the show clock is a parameter",
