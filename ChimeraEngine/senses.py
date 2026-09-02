@@ -298,7 +298,9 @@ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = 
     req = urllib.request.Request(LMSTUDIO_URL + "/v1/chat/completions",
                                  data=json.dumps(body).encode("utf-8"),
                                  headers={"Content-Type": "application/json"})
-    resp = gw.lm_urlopen(req, timeout=max(timeout, 600), agent="senses")
+    # timeout=None (decree: disabled) passes through untouched — urlopen waits forever
+    resp = gw.lm_urlopen(req, timeout=timeout if timeout is None else max(timeout, 600),
+                         agent="senses")
     payload = json.loads(resp.read())
     global _SERVED, _FINISH
     try:
@@ -332,12 +334,40 @@ def last_finish_reason():
     return _FINISH
 
 
+# TIMEOUT DISABLED (operator decree 2026-09-02): "the model is very very slow so
+# you have to wait a long long time and timeout should be disabled I will decide
+# if we need to start over." A read waits FOREVER; the operator owns restarts.
+# The legacy `timeout` arguments are accepted and ignored so no caller breaks.
+READ_TIMEOUT_DISABLED = None
+
+
+def ensure_eye() -> bool:
+    """The on-demand load: a read that finds the eye dark loads the decreed model
+    first. "You have to just call it with a command request" — this is that call.
+    Returns True when the eye is light. Never unloads (the operator owns restarts)."""
+    try:
+        import eye_control
+        st = eye_control.status()
+        if st.get("eye_state") == "loaded":
+            return True
+        print(f"[senses] eye dark — loading {eye_control.EYE_MODEL} on demand "
+              f"(unbounded wait; the operator decides when to start over) ...", flush=True)
+        r = eye_control.load()
+        return bool(r.get("ok"))
+    except Exception as e:
+        print(f"[senses] ensure_eye FAILED: {e}")
+        return False
+
+
 def see(png: str, prompt: str, timeout: int = 300) -> str | None:
-    """EYE: the resident model reads one image -> a term. None if the eye is dark."""
+    """EYE: the resident model reads one image -> a term. None if the eye is dark.
+    The timeout argument is accepted for compatibility and IGNORED (decree:
+    timeouts disabled — the wait is unbounded; the operator decides about restarts)."""
+    ensure_eye()
     try:
         return (_post([{"type": "text", "text": prompt},
                        {"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(png)}}],
-                      timeout) or "").strip() or None
+                      READ_TIMEOUT_DISABLED) or "").strip() or None
     except ValueError:
         raise                      # the one-image wall: a guard that cannot be heard is not a guard
     except Exception as e:
@@ -347,29 +377,19 @@ def see(png: str, prompt: str, timeout: int = 300) -> str | None:
 
 def watch_one(png: str, prompt: str, timeout: int = 300) -> str | None:
     """ONE FRAME, ONE REPORT. The eye reads a single image -> a term. None if dark.
-
-    This is the shape the resident model can actually hold (see MAX_IMAGES_PER_CALL).
-    Every harness in this repo used to fake it with `watch([one_path])`; it now has a
-    name, because a movie is N of these and the difference between "a movie" and "one
-    frame" is the difference between reading and confirming.
-    """
-    return see(png, prompt, timeout=timeout)
+    Timeout argument ignored (decree: disabled)."""
+    return see(png, prompt)
 
 
 def watch(frames: list[str], prompt: str, timeout: int = 360) -> str | None:
     """MOVIE: an ORDERED sequence of frames read as video -> a term describing the
-    unfolding. None if dark.
-
-    On the adoptive (LM Studio) lane this RAISES when `frames` is longer than the
-    per-call image ceiling: the frames would be inlined into one request and silently
-    truncated. Loop with watch_one()/see() and aggregate the reports instead. The
-    ollama lane still sizes num_ctx to the whole list, so it accepts a batch.
-    """
+    unfolding. None if dark. Timeout ignored (decree: disabled)."""
+    ensure_eye()
     try:
         content = [{"type": "text", "text": prompt}]
         for p in frames:
             content.append({"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(p)}})
-        return (_post(content, timeout) or "").strip() or None
+        return (_post(content, READ_TIMEOUT_DISABLED) or "").strip() or None
     except ValueError:
         raise                      # the one-image wall: see above
     except Exception as e:

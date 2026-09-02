@@ -1194,3 +1194,21 @@ implicit/semi-implicit integrator for the CA stack (the real solve for the
 membrane as written), OR the operator amends R1 to the ARAP law and the dyad
 judges the visuals (taste is the operator's terminal). Evidence:
 `.tmp/r1_knee_signature*.json` (runs 1-7).
+
+**THE EYE DECREE (2026-09-02, operator): Flash Next for everything; the eye is
+a command; timeouts are dead.** Three decrees, implemented verbatim:
+(1) `qwen3.8-flash-next` is THE model — eye and text lane both (supersedes the
+2026-08-31 dirk-qwen3.8-27b decree; `senses.py` already defaulted to it, the
+stale comments now say so). (2) `ChimeraEngine/eye_control.py` — status/load/
+unload over the lms CLI, unbounded waits; and `senses.ensure_eye()` loads the
+decreed eye ON DEMAND when a read finds it dark ("just call it with a command
+request"), at the 32k context the operator's full load produced (101 GB
+resident, measured). Nothing ever auto-unloads — restarts are the operator's.
+(3) TIMEOUTS DISABLED: `senses.see/watch/watch_one` wait forever (urllib
+timeout=None; the legacy arguments are accepted and ignored) — the 447s read
+that my harness kept killing is now a legal read, and the operator decides
+when to start over, not a socket. First proof under the new law: the eye read
+the Studio pipeline board glass in 447s and delivered a real defect list
+(top-heavy chrome, three stacked rows eating the viewport) before the token
+cap cut it — the cap is a BUDGET row, not a transport row; it stays.
+Evidence: `Saved/dyad/2026-09-02_004300/` (glass + compact + report).
