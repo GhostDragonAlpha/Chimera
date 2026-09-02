@@ -230,6 +230,23 @@ public:
     bool        cam_mark_get(const std::string& name, float out[8]);
     std::vector<std::string> cam_mark_names();
     void        set_camera_full(const float v[8]);      // render thread (or membrane req)
+    // ── TIMELINE KEY MARKS (tool feature 4 — the movie-timeline seed) ──
+    // Named POSES on the live clock: a key remembers a clock time; recall
+    // scrubs to it (a paused clock lands the exact pose). Persisted to
+    // timeline_keymarks.txt like the camera bookmarks; "rego" is the D5
+    // capture's return key (re-timed by an explicit save, never by scrubbing).
+    struct KeyMark { std::string name; double t; };
+    std::vector<KeyMark>       key_marks_;
+    std::mutex                 key_marks_m_;
+    // list() hands out pairs (the UI's diamond loop and HTTP JSON both want
+    // name/time without the struct); storage stays named for readability.
+    void        key_marks_load();                       // once, at studio init
+    void        key_marks_persist();                    // caller holds NO lock
+    std::string key_mark_save(const std::string& name); // live clock time; auto-name if empty
+    bool        key_mark_delete(const std::string& name);
+    bool        key_mark_time(const std::string& name, double& out_t);
+    void        key_marks_clear();
+    std::vector<std::pair<std::string, double>> key_marks_list();
     // ── D5: THE CAPTURE SESSION — render-to-MP4's engine half ──
     // A render is a DETERMINISTIC offline capture: the D1 clock scrubbed in
     // exact 1/fps steps, each step presented and grabbed through the engine's

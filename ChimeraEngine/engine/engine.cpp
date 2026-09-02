@@ -623,6 +623,15 @@ bool Engine::init(const EngineConfig& cfg) {
                 show_speed_.store(s);
             };
             ui_.cb_scrub_ = [this](double t) { show_scrub_.store(t < 0.0 ? 0.0 : t); };
+            // TIMELINE KEY MARKS: a diamond click scrubs to the pose; the
+            // KEY button keys the live clock time (auto-name keyN, as the
+            // camera's save auto-names camN).
+            ui_.cb_key_recall_ = [this](int i) {
+                std::vector<std::pair<std::string, double>> ks = key_marks_list();
+                if (i < 0 || i >= static_cast<int>(ks.size())) return;
+                show_scrub_.store(ks[i].second < 0.0 ? 0.0 : ks[i].second);
+            };
+            ui_.cb_key_save_ = [this] { key_mark_save(std::string()); };
             // C1: the joints editor's intents — select (gizmo + paint target)
             // toggles; a theta intent is an ownership claim (editor takes the pose).
             ui_.cb_joint_select_ = [this](int idx) {
@@ -644,6 +653,7 @@ bool Engine::init(const EngineConfig& cfg) {
             // path goes through the membrane request. Both end in the same
             // set_camera_full / cam_mark_save.
             cam_marks_load();
+            key_marks_load();
             ui_.cb_cam_recall_ = [this](int i) {
                 std::vector<std::string> names = cam_mark_names();
                 if (i < 0 || i >= static_cast<int>(names.size())) return;
@@ -1941,6 +1951,94 @@ std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
 // Persistence is a flat file (name + 8 floats per line) in the CWD — the same
 // discipline as the session logs; the served JSON twin is the formatting site.
 static const char* CAM_MARKS_FILE = "camera_bookmarks.txt";
+static const char* KEY_MARKS_FILE = "timeline_keymarks.txt";
+
+// ── TIMELINE KEY MARKS (tool feature 4) — the camera-bookmark pattern on the
+// live clock: a key is a NAME and a TIME; recall is a scrub. The pose is not
+// stored (the clock IS the pose storage — replay the same law, get the same
+// pose), so a key file is 30 bytes and cannot drift from the rig.
+void Engine::key_marks_load() {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    key_marks_.clear();
+    FILE* f = fopen(KEY_MARKS_FILE, "r");
+    if (!f) return;
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        char nm[64]; double t;
+        if (sscanf(line, "%63s %lf", nm, &t) == 2) {
+            KeyMark k; k.name = nm; k.t = t;
+            key_marks_.push_back(k);
+        }
+    }
+    fclose(f);
+}
+
+void Engine::key_marks_persist() {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    FILE* f = fopen(KEY_MARKS_FILE, "w");
+    if (!f) return;
+    for (const auto& k : key_marks_)
+        fprintf(f, "%s %.9f\n", k.name.c_str(), k.t);
+    fclose(f);
+}
+
+std::string Engine::key_mark_save(const std::string& name) {
+    double t = show_time_.load(std::memory_order_relaxed);
+    std::string nm = name;
+    {
+        std::lock_guard<std::mutex> lk(key_marks_m_);
+        if (nm.empty()) {
+            int n = static_cast<int>(key_marks_.size()) + 1;
+            char nb[32]; snprintf(nb, sizeof(nb), "key%d", n);
+            nm = nb;
+        }
+        for (char& c : nm) if (c == ' ' || c == '\t') c = '_';
+        for (auto& k : key_marks_)
+            if (k.name == nm) { k.t = t; goto stored; }
+        { KeyMark k; k.name = nm; k.t = t; key_marks_.push_back(k); }
+        stored:;
+    }
+    key_marks_persist();
+    return nm;
+}
+
+bool Engine::key_mark_delete(const std::string& name) {
+    bool found = false;
+    {
+        std::lock_guard<std::mutex> lk(key_marks_m_);
+        for (size_t i = 0; i < key_marks_.size(); ++i)
+            if (key_marks_[i].name == name) {
+                key_marks_.erase(key_marks_.begin() + i);
+                found = true;
+                break;
+            }
+    }
+    if (found) key_marks_persist();
+    return found;
+}
+
+bool Engine::key_mark_time(const std::string& name, double& out_t) {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    for (const auto& k : key_marks_)
+        if (k.name == name) { out_t = k.t; return true; }
+    return false;
+}
+
+void Engine::key_marks_clear() {
+    {
+        std::lock_guard<std::mutex> lk(key_marks_m_);
+        key_marks_.clear();
+    }
+    key_marks_persist();
+}
+
+std::vector<std::pair<std::string, double>> Engine::key_marks_list() {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    std::vector<std::pair<std::string, double>> out;
+    out.reserve(key_marks_.size());
+    for (const auto& k : key_marks_) out.emplace_back(k.name, k.t);
+    return out;   // copy-under-lock (C4's rule)
+}
 
 void Engine::cam_marks_load() {
     std::lock_guard<std::mutex> lk(cam_marks_m_);
@@ -4717,6 +4815,7 @@ bool Engine::frame() {
                            show_playing_.load(), show_speed_.load(), nj, cur, per,
                            nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
                            show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
+                           ui_.set_key_marks(key_marks_list(), src);   // D1: the timeline's key diamonds
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
@@ -5636,6 +5735,7 @@ bool Engine::frame_idle_ui() {
                            show_playing_.load(), show_speed_.load(), nj, cur, per,
                            nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
                            show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
+                           ui_.set_key_marks(key_marks_list(), src);   // D1: the timeline's key diamonds
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles

@@ -1055,6 +1055,64 @@ int main(int argc, char** argv) {
                 body = "{\"on\":false,\"loaded\":false}";
             }
             content_type = "application/json";
+        } else if (p == "/keys" && (method == "GET" || method == "POST")) {
+            // TIMELINE KEY MARKS: named poses on the live clock (tool feature 4).
+            // GET  -> {"keys":[{"name":..,"t":..}..]}
+            // POST {"op":"save","name":X}    -> key the live clock (no name = auto keyN)
+            // POST {"op":"recall","name":X}  -> scrub to the key's time
+            // POST {"op":"delete","name":X}  -> remove the key
+            // POST {"op":"clear"}            -> remove all keys
+            if (method == "GET") {
+                std::string out = "{\"keys\":[";
+                if (g_engine) {
+                    auto ks = g_engine->key_marks_list();
+                    bool first = true;
+                    for (const auto& k : ks) {
+                        if (!first) out += ",";
+                        first = false;
+                        out += "{\"name\":\"" + k.first + "\",\"t\":" + std::to_string(k.second) + "}";
+                    }
+                }
+                out += "]}";
+                body = out;
+            } else {
+                std::string op, name;
+                auto get_str = [&](const char* key, std::string& val) {
+                    std::string pat = std::string("\"") + key + "\"";
+                    size_t kp = req_body.find(pat);
+                    if (kp == std::string::npos) return;
+                    size_t cp = req_body.find(':', kp + pat.size());
+                    if (cp == std::string::npos) return;
+                    size_t q1 = req_body.find('"', cp + 1);
+                    if (q1 == std::string::npos) return;
+                    size_t q2 = req_body.find('"', q1 + 1);
+                    if (q2 == std::string::npos) return;
+                    val = req_body.substr(q1 + 1, q2 - q1 - 1);
+                };
+                get_str("op", op);
+                get_str("name", name);
+                if (!g_engine) { body = "{\"ok\":false}"; }
+                else if (op == "recall") {
+                    double t = 0.0;
+                    bool ok = g_engine->key_mark_time(name, t);
+                    if (ok) g_engine->show_scrub_.store(t < 0.0 ? 0.0 : t);
+                    body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                         + ",\"t\":" + std::to_string(t) + "}";
+                } else if (op == "delete") {
+                    body = std::string("{\"ok\":")
+                         + (g_engine->key_mark_delete(name) ? "true" : "false") + "}";
+                } else if (op == "clear") {
+                    g_engine->key_marks_clear();
+                    body = "{\"ok\":true}";
+                } else {   // save is the default op (the KEY button's intent)
+                    std::string nm = g_engine->key_mark_save(name);
+                    double t = 0.0;
+                    g_engine->key_mark_time(nm, t);
+                    body = "{\"ok\":true,\"name\":\"" + nm + "\",\"t\":"
+                         + std::to_string(t) + "}";
+                }
+            }
+            content_type = "application/json";
         } else if (p == "/strain" && method == "POST") {
             // THE STRAIN OVERLAY toggle: on = kernel tints the membrane by true
             // area strain (blue compress / red stretch). Read-only elsewhere.

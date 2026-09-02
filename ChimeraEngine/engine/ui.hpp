@@ -136,10 +136,11 @@ private:
     void  layout(uint32_t w, uint32_t h, float out_rects[5][4]) const;  // strip, left, right, bottom, reel
 
     // ── clickable controls (D1: rebuilt every frame by prepare, hit-tested on click) ──
-    struct Hot { float x, y, w, h; int id; };   // id: 1 play/pause, 2 step-, 3 step+, 4 speed;
+    struct Hot { float x, y, w, h; int id; float hit_t = 0.f; };  // id: 1 play/pause, 2 step-, 3 step+, 4 speed;
                                                 // 100+i = strip node i (B3); 300+i = workspace row i,
                                                 // 400+i = joint row i (C1: select = gizmo + paint)
                                                 // 500+i = docs picker row i (E1)
+                                                // 700+i = key-mark diamond i (hit_t = key time)
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
     int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
@@ -204,6 +205,8 @@ public:
     // callbacks into the Engine (wired in Engine::init — the panel issues, the engine owns)
     std::function<void()>     cb_play_toggle_;
     std::function<void(int)>  cb_step_;          // ±1 frames of 1/240 s
+    std::function<void(int)>  cb_key_recall_;    // scrub to key i (h.w carries hit_t)
+    std::function<void()>     cb_key_save_;      // key the live clock time
     std::function<void()>     cb_speed_cycle_;
     std::function<void(double)> cb_scrub_;       // absolute time target
     // C1: the joints editor's intents — select toggles the gizmo+paint target;
@@ -451,6 +454,16 @@ public:
         if (source == "hinge") { clk_total_ = hinge_period; }   // scrub maps over one march period
     }
     float scrub_time_at(int x) const;            // map a cursor x to a time on the bar
+
+    // ── TIMELINE KEY MARKS (tool feature 4): named poses on the live clock. ──
+    // The engine pushes the list each clock push; the timeline draws diamonds
+    // at each key's time; a diamond click scrubs to it. The KEY button keys
+    // the live clock time under an auto name (keyN), like the camera's save.
+    void set_key_marks(std::vector<std::pair<std::string, double>> ks, const std::string& src) {
+        key_marks_ui_ = std::move(ks); key_marks_src_ = src;
+    }
+    std::vector<std::pair<std::string, double>> key_marks_ui_;
+    std::string key_marks_src_;                  // which clock the keys live on
 
     // ── D3: THE REEL — every /frame grab lands here (the engine pushes; the UI draws) ──
     static const int REEL_MAX = 12, THUMB_W = 384, THUMB_H = 216;

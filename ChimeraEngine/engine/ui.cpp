@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cmath>
 #include <fstream>
+#include <algorithm>
 
 // ── local helpers (no external deps — the engine's standing rule) ─────────────
 
@@ -192,10 +193,19 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
     if (!right_.collapsed && x >= R[2][0] - 3 && x <= R[2][0] + 3 && y >= R[2][1] && y < R[2][1] + R[2][3]) { drag_kind_ = 3; return true; }
     if (!bottom_.collapsed && y >= R[3][1] - 3 && y <= R[3][1] + 3 && x >= R[3][0] && x < R[3][0] + R[3][2]) { drag_kind_ = 4; return true; }
     if (!reel_.collapsed && y >= R[4][1] - 3 && y <= R[4][1] + 3 && x >= R[4][0] && x < R[4][0] + R[4][2]) { drag_kind_ = 6; return true; }
-    // D1: the scrub bar — press grabs the playhead (drags scrub; a click lands one)
+    // D1: the scrub bar — press grabs the playhead (drags scrub; a click lands one).
+    // A diamond hotspot consumes the press first: click a key marker, land its
+    // pose; drag elsewhere on the bar to scrub.
     if (!bottom_.collapsed && clk_total_ > 0.0
         && x >= scrub_rect_[0] && x <= scrub_rect_[0] + scrub_rect_[2]
         && y >= scrub_rect_[1] - 4 && y <= scrub_rect_[1] + scrub_rect_[3] + 4) {
+        for (const Hot& h : hots_) {
+            if (h.id >= 700 && h.id < 800
+                && x >= h.x - 4 && x < h.x + h.w + 4 && y >= h.y - 3 && y < h.y + h.h + 3) {
+                if (cb_key_recall_) cb_key_recall_(h.id - 700);
+                return true;
+            }
+        }
         drag_kind_ = 5;
         if (cb_scrub_) cb_scrub_(scrub_time_at(x));
         return true;
@@ -248,6 +258,9 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id >= 800 && h.id < 850 && cb_cam_recall_)             // D6: recall a shot
                 cb_cam_recall_(h.id - 800);
             if (h.id == 850 && cb_cam_save_) cb_cam_save_();             // D6: save the live camera
+            if (h.id >= 700 && h.id < 800 && cb_key_recall_)             // D1: key-mark diamonds
+                cb_key_recall_(h.id - 700);
+            if (h.id == 905 && cb_key_save_) cb_key_save_();             // D1: KEY button
             if ((h.id == 900 || h.id == 901) && selected_stage_ >= 0)    // E2: the deep link
                 docs_link_stage(selected_stage_);
             return true;
@@ -1252,6 +1265,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         button(bx, " +1f ", 3, false);
         char spb[16]; snprintf(spb, sizeof(spb), " %.2gx ", clk_speed_);
         button(bx, spb, 4, false);
+        button(bx, " KEY ", 905, false);   // key the live clock time (tool feature 4)
 
         // the readout: time / loop, joint, theta, state — the engine's own rows
         char tb[192];
@@ -1277,12 +1291,25 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 // half-period marks: the ROM's extremes (cos law: 0 and P/2)
                 rect(scrub_rect_[0] + scrub_rect_[2] * 0.25f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
                 rect(scrub_rect_[0] + scrub_rect_[2] * 0.75f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
+                // THE KEY MARKS: diamonds on the bar, amber, clickable — click
+                // one and the clock lands that pose (a paused clock = exact).
+                for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
+                    double kt = key_marks_ui_[ki].second;
+                    double lkt = clk_hinge_period_ > 0.0
+                                 ? kt - floor(kt / clk_hinge_period_) * clk_hinge_period_ : kt;
+                    float kx = scrub_rect_[0] + static_cast<float>(lkt / clk_hinge_period_) * scrub_rect_[2];
+                    float cw = fminf(7.f, bar_h * 0.45f);
+                    rect(kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
+                    hots_.push_back({ kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw,
+                                      700 + static_cast<int>(ki) });
+                }
                 double lt = clk_hinge_period_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_hinge_period_) * clk_hinge_period_ : 0.0;
                 float px = scrub_rect_[0] + static_cast<float>(lt / clk_hinge_period_) * scrub_rect_[2];
                 rect(px - 1, bar_y - 2, 3, bar_h + 4, 1.f, 1.f, 1.f, 1.f);
-                char hb[128];
-                snprintf(hb, sizeof(hb), "hinge march  t = %.3f / %.1f s  |  scrub/step = exact knee poses",
-                         lt, clk_hinge_period_);
+                char hb[160];
+                snprintf(hb, sizeof(hb), "hinge march  t = %.3f / %.1f s  |  %zu key%s |  scrub/step = exact knee poses",
+                         lt, clk_hinge_period_, key_marks_ui_.size(),
+                         key_marks_ui_.size() == 1 ? "" : "s");
                 text(x, bar_y + bar_h + 6, hb, 0.62f, 0.66f, 0.74f, 1.f);
             } else {
                 text(x, bar_y, "no clock - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
@@ -1296,6 +1323,17 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 bool cur = (i == clk_cur_);
                 rect(fx, bar_y + 2, 2.f, bar_h - 4,
                      cur ? 0.30f : 0.45f, cur ? 0.60f : 0.47f, cur ? 1.00f : 0.52f, 1.f);
+            }
+            // key marks over the joints show's total (same diamonds, same law)
+            for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
+                double kt = key_marks_ui_[ki].second;
+                double lkt = clk_total_ > 0.0 ? kt - floor(kt / clk_total_) * clk_total_ : kt;
+                if (lkt < 0.0 || lkt > clk_total_) continue;
+                float kx = scrub_rect_[0] + static_cast<float>(lkt / clk_total_) * scrub_rect_[2];
+                float cw = fminf(7.f, bar_h * 0.45f);
+                rect(kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
+                hots_.push_back({ kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw,
+                                  700 + static_cast<int>(ki) });
             }
             // the playhead (loops over the show's total)
             double lt = clk_total_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : 0.0;
