@@ -61,16 +61,17 @@ import senses          # the dyad's perception — imported here so the capabili
 SAVED = ROOT / "Saved" / "dyad"
 URL = "http://localhost:8090"
 
-# The default question. Descriptive, not leading: it says what we are looking for
-# and asks for an opinion. It does not say what the answer should be — an eye told
-# the answer confirms instead of observing.
-DEFAULT_PROMPT = """I am developing a 3D engine and this is a real screenshot of its application window, at the full resolution of the monitor it runs on. I want your honest opinion on what you are looking at.
+# The default question. Two parts (the briefing above it carries WHAT the
+# project is; this asks HOW to answer). Part A observes; Part B reasons about
+# mechanism and fix. Not leading: it never says what the answer should be —
+# an eye told the answer confirms instead of observing.
+DEFAULT_PROMPT = """Above is the full knowledge of my project; the attached image is a real screenshot of its editor window at the monitor's full resolution. Answer in two parts.
 
-Describe what you see: does the layout, framing, and positioning look wrong or right? Look at it like an artist. Could it be framed better? Where does the image itself lose you? Is it confusing?
+PART A — LOOK: audit the screenshot against THE SCAFFOLDING in the briefing. Is every intended feature present and findable? Then the artist's pass: framing, composition, collisions, contrast, legibility, anything cramped, adrift, or unreadable. Name drift from the scaffolding explicitly (an intended feature that is missing or broken is a top-priority defect).
 
-Be specific about defects. Is any text too small to read, cut off, overlapping, or colliding with something else? Are the panels and windows legible, and are they proportioned sensibly against the size of the window? Is anything cramped, off-balance, or adrift in empty space? Is the 3D viewport visible, and if it is empty does the window still read as a working application?
+PART B — REASON: for each defect, hypothesize which MECHANISM behind the pixels failed and propose a concrete fix a developer could act on. If anything you see contradicts the LIVE STATE block, call it out — that contradiction is usually the bug itself.
 
-Tell me what you actually see and what you think is wrong with it. I am not looking for praise, I am looking for defects."""
+I am not looking for praise. I am looking for defects and your best guesses at their causes."""
 
 
 # ── engine talk ──────────────────────────────────────────────────────────────
@@ -140,6 +141,73 @@ def clean_fps(samples: int = 3) -> dict:
 
 def set_camera(radius, theta, phi) -> None:
     req_json("POST", "/camera", {"cam_radius": radius, "cam_theta": theta, "cam_phi": phi})
+
+
+# ── THE KNOWLEDGE CHANNEL (operator directive, 2026-09-02) ───────────────────
+# The eye has NO access to the project. Every scan message is composed as:
+#   BRIEFING (what the project contains + THE SCAFFOLDING: the editor's
+#            intended feature map, so the eye audits against DESIGN INTENT
+#            and flags drift — a missing intended feature is a defect)
+# + LIVE STATE (the engine's own numbers at this instant; a see-vs-state
+#            contradiction is usually the bug)
+# + THE ASK (two parts: LOOK, then REASON — root-cause hypotheses + fixes)
+BRIEFING_PATH = SAVED / "BRIEFING.md"
+
+
+def load_briefing() -> str:
+    try:
+        return BRIEFING_PATH.read_text(encoding="utf-8").strip()
+    except OSError as e:
+        return ("(briefing file missing — tell the developer: "
+                f"Saved/dyad/BRIEFING.md unreadable: {e})")
+
+
+def live_state_lines() -> str:
+    """A compact honest readout of the engine's own state, fetched fresh per
+    shot. This is the second half of the knowledge channel: the eye judges
+    what it SEES against what the engine SAYS it is doing."""
+    lines = []
+    try:
+        ch = req_json("GET", "/studio_chrome", timeout=8)
+        lines.append(f"stage: {ch.get('stage', '?')}  "
+                     f"board stages parsed: {ch.get('board', {}).get('stages', '?')}")
+        lines.append(f"fps: {ch.get('fps', 0):.0f}  "
+                     f"ft_avg_ms: {ch.get('ft_avg', 0):.2f}  "
+                     "(NOTE: under capture load; clean fps is sampled separately)")
+        lines.append(f"ui draw ok: {ch.get('rec', {}).get('ok')}")
+    except Exception as e:
+        lines.append(f"studio_chrome: unreachable ({str(e)[:80]})")
+    try:
+        show = req_json("GET", "/show", timeout=8)
+        lines.append(f"clock: {show.get('clock', '?')}  playing: {show.get('playing')}  "
+                     f"t: {show.get('time', 0):.2f}s / total: {show.get('total', 0):.2f}s")
+    except Exception as e:
+        lines.append(f"/show: unreachable ({str(e)[:80]})")
+    try:
+        scene = req_json("GET", "/scene", timeout=8)
+        rows = scene.get("rows", [])
+        parts = [f"{r.get('id')}={r.get('detail')}" +
+                 (" [ON]" if r.get("state") else "") for r in rows]
+        lines.append("scene: " + "; ".join(parts))
+    except Exception as e:
+        lines.append(f"/scene: unreachable ({str(e)[:80]})")
+    try:
+        keys = req_json("GET", "/keys", timeout=8)
+        names = [k.get("name") for k in keys.get("keys", [])]
+        lines.append(f"timeline key marks: {len(names)} {names}")
+    except Exception as e:
+        lines.append(f"/keys: unreachable ({str(e)[:80]})")
+    return "\n".join(lines)
+
+
+def compose_message(prompt: str) -> str:
+    """Briefing + live state + the ask. Self-contained: the eye's ENTIRE
+    knowledge of the project is this message."""
+    return (load_briefing()
+            + "\n\n## LIVE STATE (the engine's own numbers at this instant)\n\n"
+            + live_state_lines()
+            + "\n\n---\n\n"
+            + prompt)
 
 
 # ── pixels ───────────────────────────────────────────────────────────────────
@@ -261,6 +329,12 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
         print(f"  shot {i:02d}: {what} raw={shot['raw_bytes']/1e6:.2f}MB "
               f"compact={csize/1e3:.0f}KB  fps={shot['twins'].get('chrome',{}).get('fps')}")
 
+        # THE KNOWLEDGE CHANNEL: every read's message is composed fresh —
+        # briefing + THIS shot's live state + the ask. The eye never reads a
+        # bare question again.
+        message = compose_message(prompt)
+        shot["live_state"] = message.split("## LIVE STATE")[1].split("---")[0].strip() \
+            if "## LIVE STATE" in message else None
         for r in range(reads):
             t0 = time.time()
             try:
@@ -268,10 +342,10 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
                 # A 2K frame on the big quant is SLOW: 600s was not enough. A
                 # timeout is a transport failure, not a verdict, so it is retried
                 # once before the read is recorded as nothing.
-                text = senses.see(str(small), prompt, timeout=READ_TIMEOUT)
+                text = senses.see(str(small), message, timeout=READ_TIMEOUT)
                 if text is None:
                     print(f"      read {r}: timed out — retrying once", flush=True)
-                    text = senses.see(str(small), prompt, timeout=READ_TIMEOUT)
+                    text = senses.see(str(small), message, timeout=READ_TIMEOUT)
             except Exception as e:
                 text = None
                 print(f"      read {r}: FAILED {type(e).__name__}: {str(e)[:100]}")
