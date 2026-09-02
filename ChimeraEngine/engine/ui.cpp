@@ -1198,8 +1198,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             for (const auto& kv : inspect_kv_) {
                 if (y > y_max) break;
                 text(x, y, kv.first, 0.62f, 0.66f, 0.74f, 1.f);
-                text(x + 16 * advance_, y, kv.second, TR, TG, TB, 1.f);
-                y += lh;
+                // The value fits the columns right of the key tab, or it wraps —
+                // a long value must not run under the viewport edge.
+                const size_t val_maxc = maxch > 17 ? static_cast<size_t>(maxch) - 17 : 8;
+                y = text_wrap(x + 16 * advance_, y, kv.second, val_maxc, TR, TG, TB, 1.f, y_max);
+                y += 1;
             }
             if (!inspect_hint_.empty() && y <= y_max) {
                 y += 4;
@@ -1208,9 +1211,15 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             if (y <= y_max)
                 text(x, y, "[click the row again to close]", 0.45f, 0.47f, 0.52f, 1.f);
         } else {
+            // The STATUS rows fit the panel or they wrap — same law as the left
+            // dock's default view (found by the eye: a long status line bled under
+            // the viewport). The panel's width picks the columns, arithmetic not
+            // taste; text_wrap yields at y_max like every other consumer.
+            const size_t status_maxc = static_cast<size_t>(avail / (advance_ > 0.f ? advance_ : 8.f));
             for (const std::string& line : status_lines_) {
-                text(x, y, line, TR, TG, TB, 0.95f); y += lh;
                 if (y > y_max) break;
+                y = text_wrap(x, y, line, status_maxc, TR, TG, TB, 0.95f, y_max);
+                y += 2;
             }
         }
     }
