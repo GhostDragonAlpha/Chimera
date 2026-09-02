@@ -107,6 +107,8 @@ public:
     void pose_hinge();   // per-frame, after the frame fence wait
     bool hinge_active() const { return hinge_active_; }
     float hinge_period() const { return hinge_period_; }
+    bool strain_on() const { return strain_on_.load(std::memory_order_relaxed); }
+    void strain_set(bool on) { strain_on_.store(on, std::memory_order_relaxed); }
 
     // ── THE WATER SOLVER ON THE CA FIELD (B15 — port of .tmp/tri_water.py) ──
     // Order-consistent Gauss-Seidel: per-color parallel dispatches, sequential
@@ -677,6 +679,26 @@ private:
     float           hinge_romL_ = 0.f, hinge_romR_ = 0.f;
     float           hinge_period_ = 4.f, hinge_phaseR_ = 3.14159265f;
     std::chrono::steady_clock::time_point hinge_t0_{};
+    // ── THE STRAIN OVERLAY (tool feature 3, the CA law made visible) ──
+    // True per-triangle area strain computed ON THE CPU from the SAME analytic
+    // FK law the kernels execute (no readback, works for both hinge paths),
+    // scattered to a per-vertex SSBO and tinted in the kernel (flags bit1):
+    // blue = compression, red = stretch, ±10% saturates, rest color at 0.
+    // The R1 signature — front stretch / back compression at the knee —
+    // rendered live on the march. Color map is FIXED (honest saturation),
+    // no per-band normalization constants to tune.
+    std::vector<uint32_t> mesh_tris_;         // index list, kept from /mesh_bin
+    std::vector<float>    tri_rest_area_;     // per-triangle rest area (mesh-set)
+    std::vector<uint32_t> strain_vt_;         // touched verts (hinge bands)
+    std::vector<int32_t>  strain_rank_;       // vert -> strain_vt_ index (-1 untouched)
+    std::vector<float>    strain_acc_, strain_posed_;  // frame scratch
+    std::vector<uint32_t> strain_cnt_;
+    VkBuffer              strain_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory        strain_mem_ = VK_NULL_HANDLE;
+    float*                strain_map_ = nullptr;
+    uint32_t              strain_cap_ = 0;
+    std::atomic<bool>     strain_on_{false};
+    void            compute_strain();          // per-frame, before the pose dispatch
     // GPU hinge kernel (the CA-field path): rest state + weights as SSBOs,
     // pose computed by hinge.comp into the vertex buffer each frame.
     VkShaderModule  hinge_mod_ = VK_NULL_HANDLE;

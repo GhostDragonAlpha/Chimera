@@ -1355,6 +1355,10 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     }
     mesh_cpu_ = verts;
     tri_vfloats_ = verts.size();
+    // THE STRAIN OVERLAY: keep the index list — true triangle strain needs the
+    // adjacency, and the loader used to throw it away.
+    mesh_tris_.assign(indices.begin(), indices.end());
+    tri_rest_area_.clear();
     upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
                   VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, tri_ibuf_, tri_imem_);
     tri_idx_count_ = icount;
@@ -1363,6 +1367,22 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     frost_desc_dirty_ = true;       // same for the frost decode set (H9)
     joints_desc_dirty_ = true;      // same for the joints set (binding 4 = tri_vbuf_)
     hinge_desc_dirty_ = true;       // same for the hinge set (binding 3 = tri_vbuf_)
+    // THE STRAIN OVERLAY: rest areas are a REST-SHAPE property — computed once
+    // per mesh, here, from the kept index list. strain_flags_ marks which
+    // records carry a strain value (verts_touched order from set_hinge).
+    tri_rest_area_.clear();
+    if (!mesh_tris_.empty()) {
+        tri_rest_area_.reserve(mesh_tris_.size() / 3);
+        for (size_t t = 0; t + 2 < mesh_tris_.size(); t += 3) {
+            const float* A = mesh_cpu_.data() + (size_t)mesh_tris_[t] * 9;
+            const float* B = mesh_cpu_.data() + (size_t)mesh_tris_[t + 1] * 9;
+            const float* C = mesh_cpu_.data() + (size_t)mesh_tris_[t + 2] * 9;
+            float ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
+            float wx = C[0] - A[0], wy = C[1] - A[1], wz = C[2] - A[2];
+            float cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
+            tri_rest_area_.push_back(0.5f * sqrtf(cx * cx + cy * cy + cz * cz));
+        }
+    }
     // Measure the bounding sphere about the origin (the camera target) — the
     // zoom floor derives from THIS, so the near plane can never slice the
     // mesh no matter how far in the operator scrolls. Vertex stride = 9
@@ -1421,6 +1441,42 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
     hinge_period_ = period; hinge_phaseR_ = phaseR;
     hinge_t0_ = std::chrono::steady_clock::now();
 
+    // ── THE STRAIN OVERLAY: touched-vertex set + per-vertex SSBO ────────────
+    // verts_touched order (wL/wR nonzero, disjoint bands) is the compact
+    // domain of the strain math; rank_ scatters a compact index -> vertex.
+    {
+        strain_vt_.clear(); strain_vt_.reserve(nv);
+        for (size_t i = 0; i < nv; ++i)
+            if (wL[i] != 0.0f || wR[i] != 0.0f) strain_vt_.push_back(static_cast<uint32_t>(i));
+        strain_rank_.assign(nv, -1);
+        for (size_t r = 0; r < strain_vt_.size(); ++r) strain_rank_[strain_vt_[r]] = static_cast<int32_t>(r);
+        strain_acc_.assign(strain_vt_.size(), 0.f);       // compact: indexed by rank
+        strain_posed_.assign(strain_vt_.size() * 3, 0.f); // compact xyz per rank
+        strain_cnt_.assign(strain_vt_.size(), 0u);
+        const VkDeviceSize need = static_cast<VkDeviceSize>(nv) * sizeof(float);
+        if (strain_buf_ == VK_NULL_HANDLE || strain_cap_ < nv) {
+            if (strain_map_) { vkUnmapMemory(device_, strain_mem_); strain_map_ = nullptr; }
+            if (strain_buf_ != VK_NULL_HANDLE) { vkDestroyBuffer(device_, strain_buf_, nullptr); strain_buf_ = VK_NULL_HANDLE; }
+            if (strain_mem_ != VK_NULL_HANDLE) { vkFreeMemory(device_, strain_mem_, nullptr); strain_mem_ = VK_NULL_HANDLE; }
+            VkBufferCreateInfo sbci{};
+            sbci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+            sbci.size  = need;
+            sbci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+            vkCreateBuffer(device_, &sbci, nullptr, &strain_buf_);
+            VkMemoryRequirements smr; vkGetBufferMemoryRequirements(device_, strain_buf_, &smr);
+            VkMemoryAllocateInfo sai{};
+            sai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            sai.allocationSize = smr.size;
+            sai.memoryTypeIndex = find_mem_type(smr.memoryTypeBits,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkAllocateMemory(device_, &sai, nullptr, &strain_mem_);
+            vkBindBufferMemory(device_, strain_buf_, strain_mem_, 0);
+            vkMapMemory(device_, strain_mem_, 0, need, 0, reinterpret_cast<void**>(&strain_map_));
+            strain_cap_ = nv;
+        }
+        std::memset(strain_map_, 0, need);   // 0 = rest color until the first frame
+    }
+
     // ── GPU hinge kernel setup (the CA-field path) ─────────────────────────
     // rest state + weights as SSBOs; hinge.comp poses into tri_vbuf_ per frame.
     {
@@ -1442,8 +1498,8 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                           VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_wR_buf_, hinge_wR_mem_);
 
             if (hinge_pipe_ == VK_NULL_HANDLE && hinge_mod_ != VK_NULL_HANDLE) {
-                VkDescriptorSetLayoutBinding b[4] = {};
-                for (int k = 0; k < 4; ++k) {
+                VkDescriptorSetLayoutBinding b[5] = {};
+                for (int k = 0; k < 5; ++k) {
                     b[k].binding = k;
                     b[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
                     b[k].descriptorCount = 1;
@@ -1451,14 +1507,14 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                 }
                 VkDescriptorSetLayoutCreateInfo dlci{};
                 dlci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-                dlci.bindingCount = 4;
+                dlci.bindingCount = 5;
                 dlci.pBindings = b;
                 vkCreateDescriptorSetLayout(device_, &dlci, nullptr, &hinge_desc_layout_);
 
                 VkPushConstantRange pcr{};
                 pcr.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
                 pcr.offset = 0;
-                pcr.size = 3 * 16 + 9 * 4;   // vec4 JL/JR/axis + 7 floats + 2 uints
+                pcr.size = 3 * 16 + 10 * 4;  // vec4 JL/JR/axis + 8 floats + 2 uints
                 VkPipelineLayoutCreateInfo plci{};
                 plci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
                 plci.setLayoutCount = 1;
@@ -1478,7 +1534,7 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
 
                 VkDescriptorPoolSize ps{};
                 ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-                ps.descriptorCount = 4;
+                ps.descriptorCount = 5;
                 VkDescriptorPoolCreateInfo dpci{};
                 dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
                 dpci.maxSets = 1;
@@ -1493,13 +1549,14 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                 vkAllocateDescriptorSets(device_, &dsai, &hinge_desc_set_);
             }
             if (hinge_desc_set_ != VK_NULL_HANDLE) {
-                VkDescriptorBufferInfo infos[4] = {};
+                VkDescriptorBufferInfo infos[5] = {};
                 infos[0].buffer = hinge_rest_buf_; infos[0].range = VK_WHOLE_SIZE;
                 infos[1].buffer = hinge_wL_buf_;   infos[1].range = VK_WHOLE_SIZE;
                 infos[2].buffer = hinge_wR_buf_;   infos[2].range = VK_WHOLE_SIZE;
                 infos[3].buffer = tri_vbuf_;       infos[3].range = VK_WHOLE_SIZE;
-                VkWriteDescriptorSet w[4] = {};
-                for (int k = 0; k < 4; ++k) {
+                infos[4].buffer = strain_buf_;     infos[4].range = VK_WHOLE_SIZE;
+                VkWriteDescriptorSet w[5] = {};
+                for (int k = 0; k < 5; ++k) {
                     w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
                     w[k].dstSet = hinge_desc_set_;
                     w[k].dstBinding = k;
@@ -1507,7 +1564,7 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
                     w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
                     w[k].pBufferInfo = &infos[k];
                 }
-                vkUpdateDescriptorSets(device_, 4, w, 0, nullptr);
+                vkUpdateDescriptorSets(device_, 5, w, 0, nullptr);
             }
             // upload_buffer DESTROYED and recreated hinge_rest_buf_ above —
             // the JOINTS kernel's set binds it too (binding 0, "Rest") and
@@ -1584,6 +1641,111 @@ void Engine::pose_hinge() {
     VkBufferCopy bc{}; bc.size = hinge_rest_.size() * sizeof(float);
     vkCmdCopyBuffer(cb, tri_staging_buf_, tri_vbuf_, 1, &bc);
     end_single_time_cmd(cb);
+
+    // Same tint the kernel applies (below), so the CPU fallback path shows the
+    // identical overlay — one law, two executors.
+    if (strain_on_.load(std::memory_order_relaxed) && strain_map_ != nullptr) {
+        for (size_t r = 0; r < strain_vt_.size(); ++r) {
+            const float s = strain_map_[strain_vt_[r]] * 10.f;   // SSBO value: mean strain per vert
+            const float t = fminf(fabsf(s), 1.f);
+            float* col = buf + (size_t)strain_vt_[r] * 9 + 6;
+            if (s >= 0.f) {                            // stretch: toward red
+                col[0] = fminf(col[0] + 0.55f * t, 1.f);
+                col[1] = fminf(col[1] + 0.10f * t, 1.f);
+                col[2] = fmaxf(col[2] - 0.55f * t, 0.f);
+            } else {                                   // compression: toward blue
+                col[0] = fmaxf(col[0] - 0.35f * t, 0.f);
+                col[1] = fmaxf(col[1] - 0.10f * t, 0.f);
+                col[2] = fminf(col[2] + 0.55f * t, 1.f);
+            }
+        }
+    }
+}
+
+// Triangle area from the pose cache: each corner is either touched (posed
+// position from posed_[rank*3 ..]) or rigid (its REST position from
+// hinge_rest_ — a rigid corner does not move).
+static inline float tri_area_posed(const uint32_t* tri, int32_t ra, int32_t rb, int32_t rc,
+                                   const std::vector<float>& posed, const float* rest) {
+    const float* A = (ra >= 0) ? &posed[(size_t)ra * 3] : rest + (size_t)tri[0] * 9;
+    const float* B = (rb >= 0) ? &posed[(size_t)rb * 3] : rest + (size_t)tri[1] * 9;
+    const float* C = (rc >= 0) ? &posed[(size_t)rc * 3] : rest + (size_t)tri[2] * 9;
+    float ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
+    float wx = C[0] - A[0], wy = C[1] - A[1], wz = C[2] - A[2];
+    float cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
+    return 0.5f * sqrtf(cx * cx + cy * cy + cz * cz);
+}
+
+// THE STRAIN OVERLAY — true per-triangle area strain from the SAME analytic FK
+// law the kernels execute, computed on the CPU with zero GPU readbacks:
+//   1. pose the touched verts exactly as pose_hinge/hinge.comp do (Rodrigues
+//      about the band's joint by theta * w);
+//   2. area(A') of every triangle with >=1 touched vert;
+//   3. e = area'/area_rest - 1 per triangle, scattered to its touched verts
+//      by area weight (the vertex strain is the area-weighted mean of its
+//      adjacent triangles' strain — the standard surface measure);
+//   4. write the per-vertex scalar into the SSBO (0 = untouched/rest).
+// The kernel (hinge.comp, flags bit1) converts scalar -> tint; ±10% saturates.
+void Engine::compute_strain() {
+    if (!strain_on_.load(std::memory_order_relaxed)) return;   // off: no work at all
+    if (!hinge_active_ || strain_map_ == nullptr || mesh_tris_.empty()
+        || tri_rest_area_.empty() || strain_vt_.empty()) return;
+
+    const float t = hinge_time();
+    float thL_deg, thR_deg;
+    if (gait_on_.load(std::memory_order_relaxed) && gait_loaded_) {
+        double tL, tR; gait_theta(tL, tR);
+        thL_deg = static_cast<float>(tL); thR_deg = static_cast<float>(tR);
+    } else {
+        const float two_pi = 6.28318530718f;
+        float ph = fmodf(t, hinge_period_) / hinge_period_;
+        thL_deg = (0.5f - 0.5f * cosf(two_pi * ph)) * hinge_romL_;
+        thR_deg = (0.5f - 0.5f * cosf(two_pi * ph + hinge_phaseR_)) * hinge_romR_;
+    }
+    if (volp_manual_.load(std::memory_order_relaxed)) {          // H13: same override as the pose paths
+        thL_deg = volp_thL_.load(std::memory_order_relaxed);
+        thR_deg = volp_thR_.load(std::memory_order_relaxed);
+    }
+    const float thL = thL_deg * 0.01745329251f, thR = thR_deg * 0.01745329251f;
+
+    // 1. pose the touched verts (the compact domain — one Rodrigues each)
+    const float ax = hinge_axis_[0], ay = hinge_axis_[1], az = hinge_axis_[2];
+    const float* rest = hinge_rest_.data();
+    for (size_t r = 0; r < strain_vt_.size(); ++r) {
+        const uint32_t i = strain_vt_[r];
+        const float wL = hinge_wL_[i], wR = hinge_wR_[i];
+        const float th = thL * wL + thR * wR;
+        const float* J = (wL >= wR) ? hinge_JL_ : hinge_JR_;
+        const float c = cosf(th), s = sinf(th);
+        const float* src = rest + (size_t)i * 9;
+        const float vx = src[0] - J[0], vy = src[1] - J[1], vz = src[2] - J[2];
+        const float cx = ay * vz - az * vy, cy = az * vx - ax * vz, cz = ax * vy - ay * vx;
+        const float d = ax * vx + ay * vy + az * vz;
+        strain_posed_[r * 3 + 0] = vx * c + cx * s + ax * d * (1.f - c) + J[0];
+        strain_posed_[r * 3 + 1] = vy * c + cy * s + ay * d * (1.f - c) + J[1];
+        strain_posed_[r * 3 + 2] = vz * c + cz * s + az * d * (1.f - c) + J[2];
+    }
+
+    // 2+3. per-triangle area strain, scattered to touched verts by area weight
+    std::fill(strain_cnt_.begin(), strain_cnt_.end(), 0u);
+    const size_t ntri = mesh_tris_.size() / 3;
+    for (size_t tci = 0; tci < ntri; ++tci) {
+        const uint32_t ia = mesh_tris_[tci * 3], ib = mesh_tris_[tci * 3 + 1], ic = mesh_tris_[tci * 3 + 2];
+        const int32_t ra = strain_rank_[ia], rb = strain_rank_[ib], rc = strain_rank_[ic];
+        if (ra < 0 && rb < 0 && rc < 0) continue;                 // rigid triangle: e = 0 exactly
+        const float e = tri_area_posed(mesh_tris_.data() + tci * 3, ra, rb, rc,
+                                       strain_posed_, rest)
+                        / tri_rest_area_[tci] - 1.f;
+        if (ra >= 0) { strain_acc_[ra] += e; ++strain_cnt_[ra]; }
+        if (rb >= 0) { strain_acc_[rb] += e; ++strain_cnt_[rb]; }
+        if (rc >= 0) { strain_acc_[rc] += e; ++strain_cnt_[rc]; }
+    }
+    // 4. area-weighted mean per touched vertex -> SSBO (0 stays untouched)
+    for (size_t r = 0; r < strain_vt_.size(); ++r) {
+        const float s = strain_cnt_[r] ? strain_acc_[r] / static_cast<float>(strain_cnt_[r]) : 0.f;
+        strain_acc_[r] = 0.f;                                     // reset for the next frame
+        strain_map_[strain_vt_[r]] = s;
+    }
 }
 
 // ── THE GAIT CPG ON THE CA FIELD (H7 stage 2) ────────────────────────────────
@@ -1662,6 +1824,8 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
     add("water_vis", "water vis", "the field, drawn", water_vis_on_.load() ? 1 : 0, true);
     add("frost", "frost", frost_loaded_ ? "decode + render" : "no pack",
         frost_on_.load() ? 1 : 0, frost_loaded_);
+    add("strain", "strain", hinge_active_ ? "area strain" : "no hinge",
+        strain_on_.load() ? 1 : 0, hinge_active_);
     add("chrome", "chrome", "the studio bar", ui_.bar_on_ ? 1 : 0, true);
     return rows;
 }
@@ -1674,6 +1838,7 @@ std::string Engine::scene_command(const std::string& id, bool on) {
     if (id == "water_clock") return std::string("POST /water_clock {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "water_vis")   return std::string("POST /water_vis {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "frost")       return std::string("POST /frost {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "strain")      return std::string("POST /strain {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "chrome")      return std::string("POST /studio_chrome {\"on\":") + (on ? "true" : "false") + "}";
     return "";
 }
@@ -1754,6 +1919,12 @@ std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
         add("steps_total", nb);
     } else if (id == "water_vis") {
         add("on", b(water_vis_on_.load()));
+    } else if (id == "strain") {
+        add("on", b(strain_on_.load()));
+        snprintf(nb, sizeof(nb), "%zu", strain_vt_.size()); add("touched verts", nb);
+        snprintf(nb, sizeof(nb), "%zu", tri_rest_area_.size()); add("triangles", nb);
+        add("measure", "area strain, area-weighted mean");
+        add("color", "blue = compress, red = stretch (+/-10% sat)");
     } else if (id == "frost") {
         add("loaded", b(frost_loaded_));
         add("on", b(frost_on_.load()));
@@ -2677,17 +2848,17 @@ void Engine::water_vis_rebind() {
 // replacing tri_vbuf_ (binding 3, "Out"). Same lazy discipline as W4/H9.
 void Engine::hinge_rebind() {
     if (hinge_desc_set_ == VK_NULL_HANDLE || !has_mesh_) return;
-    VkBuffer bufs[4] = { hinge_rest_buf_, hinge_wL_buf_, hinge_wR_buf_, tri_vbuf_ };
-    VkWriteDescriptorSet w[4]{};
-    VkDescriptorBufferInfo infos[4]{};
-    for (uint32_t k = 0; k < 4; ++k) {
+    VkBuffer bufs[5] = { hinge_rest_buf_, hinge_wL_buf_, hinge_wR_buf_, tri_vbuf_, strain_buf_ };
+    VkWriteDescriptorSet w[5]{};
+    VkDescriptorBufferInfo infos[5]{};
+    for (uint32_t k = 0; k < 5; ++k) {
         infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
         w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         w[k].dstSet = hinge_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
         w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         w[k].pBufferInfo = &infos[k];
     }
-    vkUpdateDescriptorSets(device_, 4, w, 0, nullptr);
+    vkUpdateDescriptorSets(device_, 5, w, 0, nullptr);
     hinge_desc_dirty_ = false;
 }
 
@@ -4639,6 +4810,11 @@ bool Engine::frame() {
     // NOTE: the fence is NOT reset here — an early return (OUT_OF_DATE) would leave
     // it reset-but-never-submitted and the next wait on this slot would hang.
     // Reset happens at the submit site, immediately before vkQueueSubmit.
+    // THE STRAIN OVERLAY: the CPU computes true area strain from the SAME
+    // analytic FK law (works for both the CPU fallback and the GPU kernel),
+    // then the kernel tints when the overlay flag is set. One call, both paths.
+    compute_strain();
+
     // CPU hinge fallback (only when the GPU kernel didn't build); the GPU path
     // is recorded into the command buffer below.
     if (hinge_active_ && hinge_pipe_ == VK_NULL_HANDLE && tri_vmap_ != nullptr) pose_hinge();
@@ -4848,6 +5024,7 @@ bool Engine::frame() {
             hpc.thetaL = static_cast<float>(tL); hpc.thetaR = static_cast<float>(tR);
         }
         hpc.flags = gait_drives ? 1u : 0u;
+        if (strain_on_.load(std::memory_order_relaxed)) hpc.flags |= 2u;   // bit1: strain tint
         hpc.n = static_cast<uint32_t>(hinge_wL_.size());
         // H13: the manual verification override applies to BOTH pose laws —
         // hinge.comp's theta-mode (flags bit0) IS the blend law at a fixed

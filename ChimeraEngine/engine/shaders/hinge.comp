@@ -19,13 +19,15 @@ layout(push_constant) uniform PC {
     float thetaL;   // gait mode (H7): commanded L knee angle (deg)
     float thetaR;   // gait mode: commanded R knee angle (deg)
     uint  flags;    // bit0: pose from thetaL/thetaR (gait CPG) not the cosine march
+                    // bit1: strain tint on (binding 4 carries per-vertex area strain)
     uint  n;
 } pc;
 
-layout(std430, binding = 0) readonly  buffer Rest { float rest[]; };
-layout(std430, binding = 1) readonly  buffer WL   { float wL[];   };
-layout(std430, binding = 2) readonly  buffer WR   { float wR[];   };
-layout(std430, binding = 3) writeonly buffer Out  { float vout[]; };
+layout(std430, binding = 0) readonly  buffer Rest   { float rest[];   };
+layout(std430, binding = 1) readonly  buffer WL     { float wL[];     };
+layout(std430, binding = 2) readonly  buffer WR     { float wR[];     };
+layout(std430, binding = 3) writeonly buffer Out    { float vout[];   };
+layout(std430, binding = 4) readonly  buffer Strain { float strain[]; };
 
 void main() {
     uint i = gl_GlobalInvocationID.x;
@@ -62,7 +64,27 @@ void main() {
         vout[i * 9 + kk * 3 + 1] = o.y;
         vout[i * 9 + kk * 3 + 2] = o.z;
     }
-    vout[i * 9 + 6] = rest[i * 9 + 6];             // colors pass through
-    vout[i * 9 + 7] = rest[i * 9 + 7];
-    vout[i * 9 + 8] = rest[i * 9 + 8];
+    float cr = rest[i * 9 + 6];                    // colors pass through
+    float cg = rest[i * 9 + 7];
+    float cb = rest[i * 9 + 8];
+    if ((pc.flags & 2u) != 0u) {
+        // THE STRAIN OVERLAY: true area strain from the engine's CPU mirror of
+        // THIS law, tinted onto the membrane — blue = compression, red =
+        // stretch, +/-10% saturates the ramp, 0 = rest color. Same math as the
+        // CPU fallback path (Engine::pose_hinge), one law, two executors.
+        float s = strain[i] * 10.0;                    // 1.0 at the +/-10% saturation point
+        float t = clamp(abs(s), 0.0, 1.0);
+        if (s >= 0.0) {                                // stretch: toward red
+            cr = min(cr + 0.55 * t, 1.0);
+            cg = min(cg + 0.10 * t, 1.0);
+            cb = max(cb - 0.55 * t, 0.0);
+        } else {                                       // compression: toward blue
+            cr = max(cr - 0.35 * t, 0.0);
+            cg = max(cg - 0.10 * t, 0.0);
+            cb = min(cb + 0.55 * t, 1.0);
+        }
+    }
+    vout[i * 9 + 6] = cr;
+    vout[i * 9 + 7] = cg;
+    vout[i * 9 + 8] = cb;
 }

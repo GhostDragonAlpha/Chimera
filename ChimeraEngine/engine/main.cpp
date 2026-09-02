@@ -1055,6 +1055,28 @@ int main(int argc, char** argv) {
                 body = "{\"on\":false,\"loaded\":false}";
             }
             content_type = "application/json";
+        } else if (p == "/strain" && method == "POST") {
+            // THE STRAIN OVERLAY toggle: on = kernel tints the membrane by true
+            // area strain (blue compress / red stretch). Read-only elsewhere.
+            bool on = g_engine ? g_engine->strain_on() : false;
+            {
+                size_t op = req_body.find("\"on\"");
+                if (op != std::string::npos) {
+                    size_t cp = req_body.find(':', op + 4);
+                    if (cp != std::string::npos) {
+                        size_t a = req_body.find_first_not_of(" \t", cp + 1);
+                        if (a != std::string::npos)
+                            on = req_body.compare(a, 4, "true") == 0;
+                    }
+                }
+            }
+            if (g_engine) g_engine->strain_set(on);
+            body = std::string("{\"ok\":true,\"on\":") + (on ? "true" : "false") + "}";
+            content_type = "application/json";
+        } else if (p == "/strain" && method == "GET") {
+            body = std::string("{\"on\":") + (g_engine && g_engine->strain_on() ? "true" : "false")
+                 + ",\"hinge\":" + (g_engine && g_engine->hinge_active() ? "true" : "false") + "}";
+            content_type = "application/json";
         } else if (p == "/frost_debug" && method == "POST") {
             // Bit-exactness snapshot: arms the debug write on the next dispatched
             // frame; returns [i32 * F*3 colors][i32 * F*14 kernel inputs].
