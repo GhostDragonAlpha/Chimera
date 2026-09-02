@@ -780,9 +780,13 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                     text(x + (bw - sw) * 0.5f, y0 + 8 + 2 * lh, st, cr, cg, cb, 1.f);
                 }
             }
-            // B2: the standing rule, displayed - computed by the tool, never edited here
+            // B2: the standing rule, displayed - computed by the tool, never edited here.
+            // 2026-09-02, the knowledge-armed eye (C5): this line wore warning amber, the
+            // color of "something broke", for what is a POINTER to the next stage. It now
+            // wears the same accent blue as the bottom bar's stage pointer -- amber stays
+            // reserved for genuine failures ("no board file" above keeps it).
             float sy = y0 + node_h + 4;
-            text(8, sy, board_.standing, 1.0f, 0.85f, 0.40f, 1.f);
+            text(8, sy, board_.standing, 0.30f, 0.60f, 1.00f, 1.f);
             std::string src = "docs/THE_BODY_PIPELINE.md " + board_.updated;
             text(static_cast<float>(win_w) - src.size() * advance_ - 8, sy, src, 0.45f, 0.47f, 0.52f, 1.f);
         }

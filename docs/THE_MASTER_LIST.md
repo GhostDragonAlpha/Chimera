@@ -1383,3 +1383,28 @@ see-vs-state contradictions — that contradiction is usually the bug). Proof
 the channel was needed: the eye graded "no board file" as a style problem
 for three scans while it was an argv-contract bug. The briefing is a living
 document: every new editor mechanism lands there in the same commit.
+
+**THE ABSENCE LAW (2026-09-02, earned against the eye itself — 4th verdict,
+`Saved/dyad/2026-09-02_132118/`).** The first knowledge-armed read produced
+the sharpest reasoning yet (mechanism hypotheses, see-vs-state calls) — and
+4 of its 5 top "absent" claims were FALSE. It reported the timeline strip,
+the contact shadow, the strain tint, and the histogram as missing from a
+frame that CONTAINS all four (pixel ground truth on that exact PNG: 2,057
+amber timeline px, 70k tint px, zero empty bottom rows). Given a checklist
+of what SHOULD exist, the eye reported "I cannot see it" as "it is gone" —
+briefing bias, the visual cousin of the board-file law. THE LAW: an LLM eye's
+absence claim is a claim, not a measurement; every "missing feature" verdict
+is checked against pixel ground truth of the same frame before any code
+changes. What the scan DID catch, real: the standing-rule line wore warning
+amber for what is a pointer (C5 — fixed: accent blue; amber reserved for
+genuine failures), and the framing point that the hero reads un-grounded at
+default zoom. Scanner hardened the same day: a failed read's log line now
+flushes (read 1's 40-minute loss was a stdout buffer dying with the process),
+and `last_finish_reason()` is exception-guarded so a read error can never
+kill the record loop mid-scan.
+
+**TEXT FITS THE PANEL OR IT WRAPS — EVERY PANEL (2026-09-02, 62a44a45).** The
+fits-or-wraps law the eye found on the left dock extended to the last
+uncovered consumers: STATUS rows and inspector values now wrap to the
+panel's own width (text_wrap, y_max-yielding like everywhere else). Verified
+at pixel level: zero text pixels in the right dock's last 6 inner columns.

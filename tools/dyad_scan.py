@@ -348,11 +348,17 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
                     text = senses.see(str(small), message, timeout=READ_TIMEOUT)
             except Exception as e:
                 text = None
-                print(f"      read {r}: FAILED {type(e).__name__}: {str(e)[:100]}")
+                # flush=True: a 40-minute read failing must never be lost to a
+                # stdout buffer that dies with the process (this exact bug hid
+                # read 1 of run 2026-09-02_132118 for an hour).
+                print(f"      read {r}: FAILED {type(e).__name__}: {str(e)[:100]}", flush=True)
             # A report the eye was not allowed to finish is not a report. Record
             # it as truncated rather than filing a sentence that stops mid-word
             # as though that were the whole finding.
-            finish = senses.last_finish_reason()
+            try:
+                finish = senses.last_finish_reason()
+            except Exception:
+                finish = "unknown"
             trunc = (finish == "length")
             if trunc:
                 print(f"      read {r}: TRUNCATED by the token cap "
