@@ -1408,3 +1408,16 @@ fits-or-wraps law the eye found on the left dock extended to the last
 uncovered consumers: STATUS rows and inspector values now wrap to the
 panel's own width (text_wrap, y_max-yielding like everywhere else). Verified
 at pixel level: zero text pixels in the right dock's last 6 inner columns.
+
+**TOOL FEATURE 6 — DERIVED CAMERA FIT (2026-09-02, C6 from the 4th verdict).**
+Framing was a hand-saved bookmark; now it is a derivation. `camera_fit()`
+reads the live mesh AABB, aims the target at its CENTER (the boot camera
+targeted the origin while the mesh is centered at (3.5, 1.33, 0.34) — that
+3.5-unit offset WAS the cropped-feet defect, derived from data), and sets
+distance = half_diag / sin(22.5°) × 1.05 (the bounding-sphere fit for the
+45° FOV, whole mesh visible by construction). Theta/phi stay the operator's;
+pan zeroes. `POST /cameras {"op":"fit"}` runs it through the same
+membrane-request discipline as recall (render-thread, never mid-frame); a
+successful `--restore` boot now auto-fits, so the engine never boots into a
+cropped hero. Verified on the glass: solid subject bbox fully inside the
+viewport, margins 592/914/62/106 px.

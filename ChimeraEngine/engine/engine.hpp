@@ -411,6 +411,12 @@ public:
     void                  update_camera_matrices(float proj[16], float view[16]);
     void                  push_grid_overlay();
     void                  camera_state(float out[8]) const;  // r,theta,phi,target xyz,pan xy
+    // C6 (2026-09-02, the eye): framing is a DERIVATION, not a bookmark. Reads the
+    // live mesh AABB, aims the target at its center, and distances the camera so
+    // the whole subject fits the 45° FOV (dist = half_diag / sin(22.5°) — the
+    // bounding-sphere fit — with a 5% margin). Theta/phi are the operator's and
+    // are kept; pan zeroes. Returns false with no mesh.
+    bool                  camera_fit(float out[8]);
 
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,

@@ -66,6 +66,10 @@ those packs load.
 - **Dark flattened shape on the floor** = contact shadow, projected along the
   light — it must track the pose (bigger when the body compresses).
 - **Grid** = the floor plane y=0; an instrument, not matter.
+- **Camera framing** is derived from the mesh at boot (`fit`): the target is
+  the mesh's own center and the distance fits its bounding sphere, so the
+  whole subject should be inside the viewport with margin. If limbs are cut
+  off, say WHICH limb and at WHICH edge — that is a framing bug, not taste.
 
 ## LIVE STATE (per scan, injected below the screenshot's ask)
 
@@ -78,6 +82,10 @@ contradiction is usually the bug.
 
 Part A — LOOK: composition, framing, collision, contrast, legibility, drift
 from THE SCAFFOLDING above (missing intended features are top-priority).
+HONESTY RULE (earned 2026-09-02): an absence claim must be stated as "I
+could not see X in THIS view" — never "X is missing from the engine". Small
+or off-center features can be invisible at a given zoom while fully present;
+check LIVE STATE first and reconcile.
 
 Part B — REASON: for each defect, hypothesize WHICH MECHANISM failed and
 suggest a concrete fix, e.g. "orange warning under the title = the file the

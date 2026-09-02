@@ -1893,6 +1893,26 @@ int main(int argc, char** argv) {
                         bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
                         body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                     }
+                } else if (op == "fit") {
+                    // C6 (the eye): framing derived from the live mesh — same
+                    // membrane-request discipline as recall, so the camera moves
+                    // on the render thread, never mid-frame.
+                    float v[8];
+                    if (!g_engine->camera_fit(v)) {
+                        body = "{\"ok\":false,\"error\":\"no mesh loaded\"}";
+                    } else {
+                        {
+                            std::lock_guard<std::mutex> lk(g_mem_mutex);
+                            memcpy(g_mem_req.cam_full, v, sizeof(v));
+                            g_mem_req.cam_full_set = true;
+                            g_mem_req.valid = true;
+                            g_mem_pending = true;
+                            g_mem_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_mem_mutex);
+                        bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                        body = ok ? "{\"ok\":true,\"fit\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                    }
                 } else if (op == "delete") {
                     body = g_engine->cam_mark_delete(name)
                          ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"no such bookmark\"}";
@@ -2164,7 +2184,18 @@ int main(int argc, char** argv) {
                     fflush(stdout);
                     bool ok = resp.find("\"failed\":0") != std::string::npos
                            && resp.find("\"replayed\":0") == std::string::npos;
-                    if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) break;
+                    if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) {
+                        // C6 (the eye, 2026-09-02): the boot camera targets the origin
+                        // and crops the subject's feet. After a successful restore,
+                        // re-derive the framing from the mesh that just came back —
+                        // the operator never boots into a cropped hero. (A named
+                        // bookmark is one POST /cameras {"op":"recall"} away.)
+                        std::string fresp, fct;
+                        engine.invoke_api("POST", "/cameras", "{\"op\":\"fit\"}", fresp, fct);
+                        printf("session: boot fit -> %s\n", fresp.c_str());
+                        fflush(stdout);
+                        break;
+                    }
                     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
                 }
             }).detach();

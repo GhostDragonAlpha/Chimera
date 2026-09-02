@@ -2171,6 +2171,32 @@ std::vector<std::string> Engine::cam_mark_names() {
     return out;
 }
 
+bool Engine::camera_fit(float out[8]) {
+    // THE MESH IS THE TRUTH. The AABB comes from the same CPU copy the loaders
+    // fill; the target is its center — a camera that targets the origin when the
+    // subject stands on the floor crops exactly the feet the eye complained
+    // about (2026-09-02). Radius is the bounding-sphere fit for the 45° FOV.
+    if (mesh_cpu_.empty()) return false;
+    float lo[3] = { 1e30f, 1e30f, 1e30f }, hi[3] = { -1e30f, -1e30f, -1e30f };
+    for (size_t i = 0; i + 2 < mesh_cpu_.size(); i += 9) {
+        for (int k = 0; k < 3; ++k) {
+            float c = mesh_cpu_[i + k];
+            if (c < lo[k]) lo[k] = c;
+            if (c > hi[k]) hi[k] = c;
+        }
+    }
+    float cx = 0.5f * (lo[0] + hi[0]), cy = 0.5f * (lo[1] + hi[1]), cz = 0.5f * (lo[2] + hi[2]);
+    float dx = hi[0] - lo[0], dy = hi[1] - lo[1], dz = hi[2] - lo[2];
+    float half_diag = 0.5f * sqrtf(dx * dx + dy * dy + dz * dz);
+    // 45° vertical FOV: dist = r / sin(fov/2); +5% margin so no limb kisses the edge
+    float dist = fmaxf(radius_floor(), half_diag / sinf(3.14159265f * 0.125f) * 1.05f);
+    camera_state(out);
+    out[0] = dist;
+    out[3] = cx; out[4] = cy; out[5] = cz;
+    out[6] = 0.f; out[7] = 0.f;
+    return true;
+}
+
 void Engine::set_camera_full(const float v[8]) {
     g_cam.radius    = fmaxf(radius_floor(), v[0]);
     g_cam.theta     = v[1];
