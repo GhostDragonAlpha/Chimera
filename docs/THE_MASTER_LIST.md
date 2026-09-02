@@ -1112,5 +1112,17 @@ a default-on or persisted `studio_board.json` flag is the candidate fix.
 frost-cannot-detach bet (hard triangles vs derived 2D Gaussians under CA lattice
 motion; falsifiers named in the header before any run: 2.0 px centroid, 10% cov).
 
+**BET-F1 first leg RUN (2026-09-01, same session): FROST HOLDS.** 40,000-tick
+area+bend+curv integration over the 57,312-tri deduped lattice (dt 5e-7,
+deterministic seed-0 fold), both legs rendered at 4 capture ticks. Measured:
+centroid drift max 1.033 px (falsify > 2.0), cov rel err max 3.8% (falsify >
+10%), residual-vs-strain Pearson −0.144 (falsify > +0.5 — residuals SHRINK with
+strain, slope −0.001 px/strain-unit). The derived-splat frost rides the CA
+strain. Evidence: `models/cad_bear/frost_binding.json` +
+`ChimeraEngine/engine/scratch/proof_restore/frost_tick*.png`. Honest note: the
+fold barely relaxed over the run (strain 1.17→0.93, rms disp ≤0.016 bond) — the
+bind holds at LOW strain; high-strain gait strain is the next, harder probe
+(that is BET-F1's second leg, not this one's).
+
 **Relay litter** (`relay_*.out`) gitignored; both splat relays left running on
 8799/8811 as the operator's other window, idle-cost ~2 python processes.
