@@ -1333,3 +1333,38 @@ vs a far pose, bend-vs-rest differ by 104k px, recall is deterministic
 (736 px noise), and the diamonds land exactly where the law puts them
 (t=0 → bar x0; t=1.0/4.0 → x0+0.25·bar_w). Re-timing a key is an explicit
 save, never a scrub (the "rego" discipline from D5's capture return).
+
+**THE DYAD'S THIRD VERDICT (2026-09-02 12:09+12:18, 2 scans × 3 reads).** Filed
+against the window with the strain overlay marching and key diamonds on the
+timeline. Actionable defects, and what they rooted to: (1) the orange "no
+board file" dev message in the header — ROOT: argv[2] is the board path and
+`--restore` was being handed to it; flags are no longer paths, board restored
+(stage nodes 3.7k → 24k px, B7 ARTICULATE live); (2) "+ cam" chip grammar —
+bracketed like its siblings; (3) chip row ran through the right dock's top —
+right-aligned at the dock's LEFT edge; (4) the "underline artifacts" under
+STATUS rows — the grid bleeding through 0.92-alpha docks; docks now 0.97;
+(5) contact shadow — SHIPPED (planar projection along the light, pose-tracking,
+298 fps); (6) left-panel ragged wrapping + right-panel alignment — OPEN (the
+per-panel text-layout pass); (7) viewport composition (subject size, camera
+angle, "front not back") — the eye's taste items, camera presets are the tool.
+Evidence: `Saved/dyad/2026-09-02_120925/`, `Saved/dyad/2026-09-02_120954/`.
+
+**TOOL FEATURE 5 — THE CONTACT SHADOW (2026-09-02, shipped 21a50ece).** The
+mesh drawn again, planar-projected onto the grid floor (y=0) along THE light
+vector render_tri.frag shades by — lit side and shadow always agree. Zero CPU
+work, zero readbacks: the projection happens per-vertex in
+render_tri_shadow.vert on whatever the GPU hinge pose wrote, so the shadow
+marches with the knees by construction. Blended translucent black (0.38),
+depth-write off, culling OFF (the recon mesh's winding is unreliable).
+Proven: ~30k dark px in a properly planar band (127 px tall vs the subject's
+~700), tracking the pose (rest 32.5k → bend 24.7k px), 298.6 fps. The wiring
+lesson is recorded: the first build silently reused the standard vertex stage
+— the shadow drew exactly where the mesh draws, perfectly hidden. THE
+PROJECTOR IS LOAD-BEARING; a pass with a no-op stage is an invisible pass.
+
+**THE BOARD-FILE LAW (2026-09-02, earned twice).** A "missing file" message
+is a claim about the world — verify the claim before trusting the message.
+The board file was valid the whole time; the engine's argv contract ate it.
+Related: the poll's failure latch (mtime set before parse) turned one
+transient failure into a permanent lie — a latch must only short-circuit a
+path that has SUCCEEDED once.
