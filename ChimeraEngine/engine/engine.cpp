@@ -3932,8 +3932,13 @@ void Engine::push_grid_overlay() {
 
     // the two lines through the origin read as the axes of the plane, so they are
     // brighter than the rest — no separate legend, no invented colour key
-    const float GR = 0.20f, GG = 0.23f, GB = 0.30f, GA = 0.50f;
-    const float AR = 0.26f, AG = 0.30f, AB = 0.40f, AA = 0.85f;
+    // 2026-09-02, the eye on the glass: "the perspective grid is so low-contrast
+    // (dim blue on near-black) that it doesn't read as a floor" — measured: the
+    // bottom third's max luminance was 24/765. THE PERCEPTION FLOOR LAW: a line
+    // that cannot clear ~40/255 on black does not exist for the viewer. The
+    // plane reads as a floor now; the axes-of-the-plane distinction is kept.
+    const float GR = 0.30f, GG = 0.34f, GB = 0.46f, GA = 0.70f;
+    const float AR = 0.42f, AG = 0.48f, AB = 0.62f, AA = 0.90f;
     for (int i = -n; i <= n; ++i) {
         const float v = sp * static_cast<float>(i);
         const bool  mid = (i == 0);
@@ -3941,9 +3946,12 @@ void Engine::push_grid_overlay() {
         seg(v, 0.f, -h, v, 0.f, h, mid ? AR : GR, mid ? AG : GG, mid ? AB : GB, mid ? AA : GA);
     }
     // the triad: one cell long, +X red, +Y up green, +Z blue
-    seg(0, 0, 0, sp, 0, 0, 0.85f, 0.35f, 0.35f, 0.95f);
-    seg(0, 0, 0, 0, sp, 0, 0.35f, 0.85f, 0.45f, 0.95f);
-    seg(0, 0, 0, 0, 0, sp, 0.40f, 0.60f, 1.00f, 0.95f);
+    // 2026-09-02, the eye: "too small and unlabeled" — alpha to 1.0 and the
+    // Y arm brightened so up reads first (the eye lands on the axis gizmo as
+    // the one spatial anchor); color IS the label, no text drawn.
+    seg(0, 0, 0, sp, 0, 0, 1.00f, 0.40f, 0.40f, 1.f);
+    seg(0, 0, 0, 0, sp, 0, 0.40f, 1.00f, 0.50f, 1.f);
+    seg(0, 0, 0, 0, 0, sp, 0.45f, 0.70f, 1.00f, 1.f);
 
     ui_.set_grid_lines(std::move(lines));
 }

@@ -763,8 +763,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
 
     // ── the STUDIO panel (left): the menu + the join's provenance — or, when a
     // strip node is selected (B3), the stage's task envelope, VERBATIM ──
-    rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.07f, 0.08f, 0.11f, 0.85f);
-    rect(R[1][0], R[1][1], R[1][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.10f, 0.11f, 0.15f, 0.92f);   // 2026-09-02, the eye: panel fill ~25/255 on black is sub-perception — containers read as bare text
+    rect(R[1][0], R[1][1], R[1][2], 22, 0.17f, 0.18f, 0.25f, 0.97f);        // header band raised with the fill
+    rect_outline(R[1][0], R[1][1], R[1][2], R[1][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f); // the container line: a panel is a thing on screen, not a rumor
     const bool have_sel = selected_stage_ >= 0
                        && selected_stage_ < static_cast<int>(board_.stages.size());
     text(R[1][0] + 8, R[1][1] + (22 - lh) * 0.5f,
@@ -1133,8 +1134,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // ── the STATUS panel (right): the engine's own live rows, honest — or,
     // when an outliner row is selected, the INSPECTOR (C2): the atom's full
     // state document, engine-composed. The FPS pulse stays on top either way.
-    rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.07f, 0.08f, 0.11f, 0.85f);
-    rect(R[2][0], R[2][1], R[2][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
+    rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.10f, 0.11f, 0.15f, 0.92f);   // 2026-09-02, the eye: same perception-floor law as the left dock
+    rect(R[2][0], R[2][1], R[2][2], 22, 0.17f, 0.18f, 0.25f, 0.97f);
+    rect_outline(R[2][0], R[2][1], R[2][2], R[2][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f);
     {
         std::string rtitle = inspect_row_ >= 0
             ? "INSPECT - " + inspect_label_ + " (C2)" : "STATUS (live)";
@@ -1487,8 +1489,10 @@ void StudioUI::build_chrome() {
         float cx2 = hx - 6, cy = hy - 3;
         for (size_t i = 0; i < cam_marks_.size(); ++i) {
             std::string cap = "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]";
+            // 2026-09-02, the eye: backing must be OPAQUE — at 0.85 a finger's
+            // bright pixels bleed through and "merge into the chip borders".
             float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
-            rect(cx2, cy, cw, lh + 6, 0.10f, 0.13f, 0.22f, 0.85f);
+            rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
             rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
             text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
             hots_.push_back({ cx2, cy, cw, lh + 6, 800 + static_cast<int>(i) });
@@ -1496,8 +1500,15 @@ void StudioUI::build_chrome() {
             cx2 += cw + 6;
         }
         std::string cap = "+ cam";
-        float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
-        rect(cx2, cy, cw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
+        // 2026-09-02, the eye: "+ cam" rendered narrower than its siblings and
+        // read as clipped. The chip was sized for "[+ cam]" (the +12 padding is
+        // the bracket pair the other chips draw but this one doesn't) — the
+        // drawn string is " + cam "; the width is DERIVED from what is drawn,
+        // not from the constant, and the leading space is the gap from the
+        // last chip: 6px gap + 6px text padding = one advance. Sizing it to the
+        // drawn string ends the clipped look without a magic constant.
+        float cw = 6.f + (static_cast<float>(cap.size()) + 2.f) * advance_ + 6.f;
+        rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
         rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.45f, 0.47f, 0.52f, 0.9f);
         text(cx2 + 6, cy + 3, cap, 0.45f, 0.47f, 0.52f, 1.f);
         hots_.push_back({ cx2, cy, cw, lh + 6, 850 });
@@ -1556,8 +1567,31 @@ void StudioUI::build_chrome() {
     // right: the GPU's own name + the swapchain extent
     snprintf(b, sizeof(b), "%s  %ux%u", gpu_name_.c_str(), ext_.width, ext_.height);
     chrome_gpu_ = b;
-    text(W - 8 - static_cast<float>(chrome_gpu_.size()) * advance_,
-         by + (bar_h() - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
+    float gpu_x = W - 8.f - static_cast<float>(chrome_gpu_.size()) * advance_;
+    text(gpu_x, by + (bar_h() - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
+
+    // THE LEGEND (2026-09-02, the eye on the glass: "two competing progress
+    // metaphors ... no legend explaining why B8 is brown or B10 purple").
+    // Drawn right-to-left from the GPU text: swatch + word, the swatch carrying
+    // the EXACT status_color() values the strip draws, so the legend cannot
+    // drift from the map it explains. Fits between the histogram and the GPU
+    // row or it degrades (drops the two hues the board least uses), never overlaps.
+    {
+        struct Leg { const char* w; float r, g, b; };
+        static const Leg legs[] = { {"rolling", 0.60f, 0.45f, 0.90f}, {"blocked", 0.85f, 0.28f, 0.28f},
+                                    {"next", 0.30f, 0.60f, 1.00f}, {"partial", 0.90f, 0.70f, 0.20f},
+                                    {"done", 0.25f, 0.75f, 0.35f} };
+        const int NLEG = 5;
+        float lx = gpu_x - 24.f;   // breathing gap before the GPU text
+        float ly = by + (bar_h() - lh) * 0.5f;
+        for (int i = 0; i < NLEG; ++i) {
+            float ww = 6.f + 5.f + strlen(legs[i].w) * advance_ + 16.f;
+            if (lx - ww < cx + hist_w + 16.f) break;   // out of room: degrade, don't overlap
+            lx -= ww;
+            rect(lx, ly + lh * 0.28f, 6.f, lh * 0.44f, legs[i].r, legs[i].g, legs[i].b, 1.f);
+            text(lx + 11.f, ly, legs[i].w, legs[i].r, legs[i].g, legs[i].b, 0.95f);
+        }
+    }
 }
 
 // ── Vulkan: init / resources / record ─────────────────────────────────────────
@@ -1589,9 +1623,12 @@ bool StudioUI::ensure_vbuf(VkDeviceSize bytes) {
 }
 
 void StudioUI::record(VkCommandBuffer cb) {
-    if (verts_.empty() || !ok()) return;
+    ++rec_calls_;
+    if (verts_.empty()) { ++rec_bail_verts_; return; }
+    if (!ok())          { ++rec_bail_ok_;   return; }
     VkDeviceSize bytes = verts_.size() * sizeof(Vert);
-    if (!ensure_vbuf(bytes)) return;
+    if (!ensure_vbuf(bytes)) { ++rec_bail_vbuf_; return; }
+    ++rec_draws_;
     std::memcpy(vmap_, verts_.data(), bytes);
 
     VkViewport vp{};
@@ -1887,7 +1924,7 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     rci.attachmentCount = 1; rci.pAttachments = &att;
     rci.subpassCount = 1; rci.pSubpasses = &sub;
     rci.dependencyCount = 2; rci.pDependencies = deps;
-    if (vkCreateRenderPass(dev_, &rci, nullptr, &rp_) != VK_SUCCESS) return false;
+    if (vkCreateRenderPass(dev_, &rci, nullptr, &rp_) != VK_SUCCESS) { fprintf(stderr, "studio init: render pass FAILED\n"); return false; }
 
     if (!create_font_atlas()) { fprintf(stderr, "studio: font atlas failed\n"); return false; }
 
@@ -1900,16 +1937,16 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     VkDescriptorSetLayoutCreateInfo dci{};
     dci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     dci.bindingCount = 1; dci.pBindings = &bind;
-    if (vkCreateDescriptorSetLayout(dev_, &dci, nullptr, &dsl_) != VK_SUCCESS) return false;
+    if (vkCreateDescriptorSetLayout(dev_, &dci, nullptr, &dsl_) != VK_SUCCESS) { fprintf(stderr, "studio init: descriptor set layout FAILED\n"); return false; }
     VkDescriptorPoolSize ps{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 };
     VkDescriptorPoolCreateInfo pci{};
     pci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     pci.maxSets = 1; pci.poolSizeCount = 1; pci.pPoolSizes = &ps;
-    if (vkCreateDescriptorPool(dev_, &pci, nullptr, &dpool_) != VK_SUCCESS) return false;
+    if (vkCreateDescriptorPool(dev_, &pci, nullptr, &dpool_) != VK_SUCCESS) { fprintf(stderr, "studio init: descriptor pool FAILED\n"); return false; }
     VkDescriptorSetAllocateInfo dai{};
     dai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     dai.descriptorPool = dpool_; dai.descriptorSetCount = 1; dai.pSetLayouts = &dsl_;
-    if (vkAllocateDescriptorSets(dev_, &dai, &dset_) != VK_SUCCESS) return false;
+    if (vkAllocateDescriptorSets(dev_, &dai, &dset_) != VK_SUCCESS) { fprintf(stderr, "studio init: descriptor set alloc FAILED\n"); return false; }
     VkDescriptorImageInfo ii{ font_samp_, font_view_, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
     VkWriteDescriptorSet wr{};
     wr.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -1981,7 +2018,7 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     lci.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     lci.setLayoutCount = 1; lci.pSetLayouts = &dsl_;
     lci.pushConstantRangeCount = 1; lci.pPushConstantRanges = &pcr;
-    if (vkCreatePipelineLayout(dev_, &lci, nullptr, &layout_) != VK_SUCCESS) return false;
+    if (vkCreatePipelineLayout(dev_, &lci, nullptr, &layout_) != VK_SUCCESS) { fprintf(stderr, "studio init: pipeline layout FAILED\n"); return false; }
 
     VkGraphicsPipelineCreateInfo gpi{};
     gpi.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1998,6 +2035,7 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     VkResult pr = vkCreateGraphicsPipelines(dev_, VK_NULL_HANDLE, 1, &gpi, nullptr, &pipe_);
     vkDestroyShaderModule(dev_, vm, nullptr);
     vkDestroyShaderModule(dev_, fm, nullptr);
+    if (pr != VK_SUCCESS) fprintf(stderr, "studio init: UI pipeline FAILED (%d)\n", (int)pr);
     return pr == VK_SUCCESS;
 }
 

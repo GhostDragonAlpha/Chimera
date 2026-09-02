@@ -1452,6 +1452,12 @@ int main(int argc, char** argv) {
                      + ",\"ft_avg\":" + std::to_string(u.ft_avg_f())
                      + ",\"ft_max\":" + std::to_string(u.ft_max_f())
                      + ",\"pushes\":" + std::to_string(static_cast<unsigned long long>(u.ft_pushes_))
+                     + ",\"rec\":{" + std::string(u.ok() ? "\"ok\":true" : "\"ok\":false")
+                     + ",\"calls\":" + std::to_string(static_cast<unsigned long long>(u.rec_calls_))
+                     + ",\"draws\":" + std::to_string(static_cast<unsigned long long>(u.rec_draws_))
+                     + ",\"bail_verts\":" + std::to_string(static_cast<unsigned long long>(u.rec_bail_verts_))
+                     + ",\"bail_ok\":" + std::to_string(static_cast<unsigned long long>(u.rec_bail_ok_))
+                     + ",\"bail_vbuf\":" + std::to_string(static_cast<unsigned long long>(u.rec_bail_vbuf_)) + "}"
                      + ",\"ring_n\":" + std::to_string(u.ft_ring_n_)
                      + ",\"ring\":[" + ring + "]"
                      + ",\"gpu\":\"" + u.gpu_name_ + "\""

@@ -305,6 +305,11 @@ public:
     // the chrome's drawn strings (build_chrome fills; the twin serves verbatim)
     std::string chrome_stage_, chrome_fps_, chrome_gpu_;
     std::vector<std::string> hud_rows_;
+    // 2026-09-02, the zero-pixel probe: record()'s liveness, served on the twin.
+    // The chrome strings can be fresh while the draw is dead — the twin MUST be
+    // able to say which side of record() the chain breaks on.
+    uint64_t rec_calls_ = 0, rec_draws_ = 0;
+    uint64_t rec_bail_verts_ = 0, rec_bail_ok_ = 0, rec_bail_vbuf_ = 0;
     void push_frame_time(float ms) {
         ft_ring_[ft_ring_head_] = ms;
         ft_ring_head_ = (ft_ring_head_ + 1) % FT_RING;
