@@ -1149,3 +1149,22 @@ Two gates then fired honestly:
 So the window runs the two-knee march; the 19-joint show waits on the fold law.
 That is the next joint work, and it is exactly "the joints we were having
 trouble with."
+
+**F-c GATE RESOLVED (same session, late): the scheme gate now measures the
+deployed protocol, and the operating point is DERIVED, not inherited.** The
+v4 cold-start gate (pose straight to full flexion, compare CG to golden) was
+falsified as a criterion — no deployed frame ever cold-poses; the march is
+warm-stepped (the D1 decree). A warm-stepped amendment was STATED with its own
+falsifier (`.tmp/b7b_warm_gate.py`), the amendment then FALSIFIED the v1 point
+(32,32,0.5): three steps over band, worst 1.6e-2 at full flexion — and a grid
+derivation (`.tmp/b7b_opderive.py/2.py`, 12+2 points, full 30-step chains)
+landed **M=64, K=128, omega=0.5: all 30 steps in band, worst 1.7e-4 (band
+1.5e-3, 10x margin)**. Honest residues: omega=0.7 fails at exactly -80 deg
+where 0.5 passes (the contact-stiff regime is omega-sensitive, not just
+budget-starved); knee_L keeps an F1 LOSS at the flagged full-flexion angle
+(volp pen 0.0248 vs blend 0.0009) which per the H13 protocol goes to the DYAD
+— the blend is disqualified as a shippable law by F2 regardless (dV -3.4e-2 =
+75x T_VOL). Evidence: `.tmp/b7b/b7b_warm_gate.json`, `b7b_opderive.json`,
+`b7b_opderive2.json`. Remaining for the 19-joint show: the pen-at-full-flex
+dyad row for the knees, the same gate chain for the other 18 joints, and the
+B4 factory-axis sign row.
