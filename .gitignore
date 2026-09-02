@@ -302,3 +302,6 @@ ChimeraEngine/native/nul
 # mesh_view artifacts + regenerated mesh input (derived, rebuildable)
 /Saved/mesh_view/
 /Chimera/Python/
+
+# native relay stdout litter (per-launch logs, never source)
+/ChimeraEngine/native/relay_*.out

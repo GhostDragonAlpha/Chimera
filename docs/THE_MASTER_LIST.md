@@ -1073,3 +1073,44 @@ six-step loop (READ → MEMBRANE → BUILD → MEASURE → REPORT → HAND BACK)
 paste-back format, the earned-blocked rule, and the task-envelope template
 every legal task arrives in. `docs/THE_TRIANGLE_GUIDE.md` is the domain laws.
 Weaker agents operate by those two documents, pointed at from `AGENTS.md`.
+
+## 12 · THE RESURRECTION SESSION (2026-09-01 — operator believed the creature deleted; measured: it was not)
+
+**The report was wrong in the useful direction.** Operator asked for "the CA bear",
+and the session first resurrected the WRONG system — the voxel splat relays
+(`relay.py` + `ca_core.exe`, ports 8799/8811, `teddymuscle.chimera` →
+`teddy-muscle-v1`, then `teddywalk.chimera` → `teddy-walk-hills-v1` on
+`teddy_stand_r1.cells`). Those are the SPLAT bear. The operator's correction named
+the actual subject: the TRIANGLE-matter creature — teddy/monkey midline split,
+CA = physics = rendering through the C++ engine. Diagnosis, not apology: a log
+mtime (16:45 wire log) was read as a task spec. The newest artifact is not always
+the current subject.
+
+**The creature is alive — measured, not believed:**
+- git working tree clean (the AI revert only removed the retired UE lane; nothing
+  in this pipeline tracked was deleted), `build_monkey()` intact at
+  `tools/split_creature.py::67`, both GLBs on disk (`.tmp/cad_bear_rebuild.glb`,
+  `.tmp/split_creature.glb`), and the anti-deletion copy held:
+  `Saved/meshes/monkey_birth.bin` + `sally_monkey.bin` (Aug 31 22:24–28).
+- `monkey_birth.bin` POSTed through the Vulkan engine's real-triangle route
+  `/mesh_bin` (engine rebuilt 16:08, port 8090) — orbit rendered at
+  `ChimeraEngine/engine/scratch/monkey_check/` (~40k lit px/frame), then the
+  engine window itself verified rendering the subject: `/frame` grab =
+  151k lit px (`.tmp/window_now.png`).
+
+**The Studio was found, not rebuilt.** After the session's engine restart the
+window came up bare — `ui_.visible` defaults OFF and agents cannot press F1. The
+HTTP twins are the fix and are now the documented path: `POST /studio {"on":true}`
+(docks/board, the F1 twin, `main.cpp:1324`) and `POST /studio_chrome {"on":true}`
+(the studio bar). Verified `on:true`, bar at 283 fps; show clock running
+(`/show` playing, t advancing). The operator's own feature list — docks,
+timeline + play, Blender-style viewer — is §A–§D of `docs/THE_ENGINE_STUDIO.md`,
+shipped G1–G9. Open tension: overlay/chrome reset on every engine relaunch;
+a default-on or persisted `studio_board.json` flag is the candidate fix.
+
+**New tool landed:** `tools/bet_f1_frost_binding.py` — BET-F1 first leg, the
+frost-cannot-detach bet (hard triangles vs derived 2D Gaussians under CA lattice
+motion; falsifiers named in the header before any run: 2.0 px centroid, 10% cov).
+
+**Relay litter** (`relay_*.out`) gitignored; both splat relays left running on
+8799/8811 as the operator's other window, idle-cost ~2 python processes.
