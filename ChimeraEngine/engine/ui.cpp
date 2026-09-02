@@ -729,8 +729,17 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // ── the stage strip (B1: the pipeline map; B2: the standing rule, displayed) ──
     rect(R[0][0], R[0][1], R[0][2], R[0][3], 0.07f, 0.08f, 0.11f, 0.97f);   // near-opaque: the scene must not leak under the chrome (the eye, defect a)
     rect(R[0][0], R[0][1], R[0][2], 22, 0.13f, 0.14f, 0.19f, 0.95f);
-    text(8, (22 - lh) * 0.5f, "THE ENGINE STUDIO - pipeline board (B0-B10)  [F1] hide  [click bar] collapse  [drag edge] resize",
-         0.62f, 0.66f, 0.74f, 1.f);
+    // 2026-09-02, the eye (defect e): this row read as permanent help clutter.
+    // It IS the tooltip zone — a title belongs in the corner, context help in
+    // the margin the cursor already occupies.
+    text(8, (22 - lh) * 0.5f, "THE ENGINE STUDIO",
+         0.55f, 0.58f, 0.65f, 1.f);
+    {
+        // context help lives at the cursor's end of the bar, dim, right-aligned
+        const char* help = "[F1] hide   [click bar] collapse   [drag edge] resize   [`] console";
+        float hw = static_cast<float>(strlen(help)) * advance_;
+        text(static_cast<float>(ext_.width) - hw - 10.f, (22 - lh) * 0.5f, help, 0.42f, 0.45f, 0.52f, 1.f);
+    }
     if (!strip_.collapsed) {
         float y0 = 30.f;
         float node_h = strip_.size - 30.f - lh - 12.f;
@@ -1256,9 +1265,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             rect_outline(bx, y, bw, 20, 1.f, hot ? 0.30f : 0.45f, hot ? 0.60f : 0.47f,
                          hot ? 1.00f : 0.52f, 1.f);
             text(bx + 7, y + (20 - lh) * 0.5f, label, TR, TG, TB, 1.f);
-            hots_.push_back({ bx, y, bw, 20, id });
-            bx += bw + 8;
-        };
+        hots_.push_back({ bx, y, bw, 20, id });
+        bx += bw + 8;
+    };
         float bx = x;
         button(bx, clk_playing_ ? "PAUSE" : "PLAY ", 1, true);
         button(bx, " -1f ", 2, false);
@@ -1544,7 +1553,19 @@ void StudioUI::build_chrome() {
     cam_mark_rects_.assign(cam_marks_.size(), {0.f, 0.f, 0.f, 0.f});
     cam_save_rect_ = {0.f, 0.f, 0.f, 0.f};
     {
-        float cx2 = hx - 6, cy = hy - 3;
+        // 2026-09-02, the eye (defect d): the row was left-pinned under the
+        // HUD rows, leaving the toolbar's right half dead. Right-ALIGN the
+        // whole chip row to the viewport's right edge (10 px margin): the
+        // viewport keeps the left, the shot controls own the right — the
+        // balance the eye asked for. Row width first (names are known),
+        // then draw from the computed start.
+        float row_w = 0.f;
+        for (size_t i = 0; i < cam_marks_.size(); ++i)
+            row_w += static_cast<float>(std::string("[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]").size()) * advance_ + 12.f + 6.f;
+        row_w += 6.f + (5.f + 2.f) * advance_ + 6.f;   // the "+ cam" chip: one leading-space gap + 5-char cap + trailing pad
+        float vw = visible ? (R[2][0] + R[2][2]) : (W - 10.f);   // viewport's right edge
+        float cx2 = (vw - 10.f - row_w) > (hx - 6) ? (vw - 10.f - row_w) : (hx - 6);
+        float cy = hy - 3;
         for (size_t i = 0; i < cam_marks_.size(); ++i) {
             std::string cap = "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]";
             // 2026-09-02, the eye: backing must be OPAQUE — at 0.85 a finger's
