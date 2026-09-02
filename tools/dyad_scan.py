@@ -71,7 +71,12 @@ PART A — LOOK: audit the screenshot against THE SCAFFOLDING in the briefing. I
 
 PART B — REASON: for each defect, hypothesize which MECHANISM behind the pixels failed and propose a concrete fix a developer could act on. If anything you see contradicts the LIVE STATE block, call it out — that contradiction is usually the bug itself.
 
-I am not looking for praise. I am looking for defects and your best guesses at their causes."""
+I am not looking for praise. I am looking for defects and your best guesses at their causes.
+
+LENGTH LAW: your whole answer must fit ~400 words. One line per defect for
+Part A (the checklist exists so you can be terse); one short paragraph per
+defect for Part B. A truncated answer is a LOST answer — terseness is how
+your findings survive."""
 
 
 # ── engine talk ──────────────────────────────────────────────────────────────
@@ -343,8 +348,13 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
                 # timeout is a transport failure, not a verdict, so it is retried
                 # once before the read is recorded as nothing.
                 text = senses.see(str(small), message, timeout=READ_TIMEOUT)
-                if text is None:
-                    print(f"      read {r}: timed out — retrying once", flush=True)
+                # A falsy read is a LOST read in two ways: None = transport
+                # failure, "" = the budget burned on reasoning with nothing left
+                # for content (qwen3's known mode — run 2026-09-02_143752 lost
+                # its retry exactly this way: finish=length, 0 chars). Both get
+                # one retry; a fresh call often skips the deliberation.
+                if not text:
+                    print(f"      read {r}: {'timed out' if text is None else 'EMPTY (budget→reasoning)'} — retrying once", flush=True)
                     text = senses.see(str(small), message, timeout=READ_TIMEOUT)
             except Exception as e:
                 text = None
