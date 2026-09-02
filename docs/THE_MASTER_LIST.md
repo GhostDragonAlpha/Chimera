@@ -1212,3 +1212,33 @@ the Studio pipeline board glass in 447s and delivered a real defect list
 (top-heavy chrome, three stacked rows eating the viewport) before the token
 cap cut it — the cap is a BUDGET row, not a transport row; it stays.
 Evidence: `Saved/dyad/2026-09-02_004300/` (glass + compact + report).
+
+**THE DYAD'S FIRST COMPLETE VERDICT (2026-09-02 01:00, 542s read, 5,762 chars,
+no truncation — the unbounded-wait law proven end to end).** Shot 00, camera
+untouched (Guide §5), 2560x1440, engine 57 fps under capture. The eye read the
+FULL pipeline board and filed 12 defects, two families:
+
+FRAMING — the viewport fails as a picture: (1) subject CROPPED at the top,
+head/neck run behind the camera-chip row — "amputated by your own HUD";
+(2) top-heavy: figure floats upper-third, lower ~55-60% is dead black;
+(3) ground grid too low-contrast to read as a floor — "limbs look
+disembodied"; (4) no rule-of-thirds/centering, contact point ambiguous;
+(5) viewport never reads as occupied.
+
+UI LAYERING — (6) camera chips collide with geometry, no opaque backing,
+fingers merge into chip borders; (7) "+ cam" chip clipped/narrower;
+(8) STUDIO/STATUS panels are bare text on black — no container, no border;
+(9) both side columns half-empty below the fold — top-weighted;
+(10) type too small for 2560-wide, footer rule empty;
+(11) two competing progress metaphors (color strip vs the yellow gate line)
+with no legend for brown/purple; (12) axis gizmo too small, unlabeled.
+
+Net verdict, verbatim: "Only marginally" does it read as a working app —
+"the image loses you in the lower half." The named fixes, in the eye's own
+order: pull camera back so head-to-feet fits with margin; brighten the ground
+grid; give side panels real containers that fill their columns; backing plates
+behind chips; fix +cam clipping; put content on the footer rule or drop it.
+This is the first judgment the machine has filed against the instrument
+itself — the dyad watching the dyad's own window. Action taken: the camera/
+ground/chrome defects become the Studio's work list, judged by re-scan.
+Evidence: `Saved/dyad/2026-09-02_010015/` (raw + compact + report.md).
