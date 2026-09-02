@@ -1317,3 +1317,19 @@ Proven at pixel level on a paused deep bend (θL≈73°): 1,207 stretch px on
 the knee's front, 154 compression px on the back — paused-identical captures,
 zero motion contamination. The R1 membrane went from "a number in a file" to
 "the color of the skin" — which is the whole point of the instrument.
+
+**TOOL FEATURE 4 — TIMELINE KEY MARKS (2026-09-02, shipped 4ff88f1a).** Named
+poses on the live clock — the movie-timeline seed the operator asked for and
+the dyad's timeline verdict pointed at. A key is a NAME and a CLOCK TIME;
+recall is a scrub, so a paused clock lands the exact pose. The pose is NOT
+stored — the clock is the pose storage (replay the same law, get the same
+pose) — so a key file is 30 bytes and cannot drift from the rig. Persisted
+to `timeline_keymarks.txt` (the camera-bookmark pattern). `POST/GET /keys`
+(save auto-names keyN, recall, delete, clear); the timeline gains an amber
+KEY button and clickable diamonds on the scrub bar in BOTH clock modes;
+diamond presses hit-test before the drag, so a click lands the pose and a
+drag still scrubs. Proven at pixel level: recall deep_bend changes 108k px
+vs a far pose, bend-vs-rest differ by 104k px, recall is deterministic
+(736 px noise), and the diamonds land exactly where the law puts them
+(t=0 → bar x0; t=1.0/4.0 → x0+0.25·bar_w). Re-timing a key is an explicit
+save, never a scrub (the "rego" discipline from D5's capture return).
