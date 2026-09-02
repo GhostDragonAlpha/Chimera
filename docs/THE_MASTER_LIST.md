@@ -1168,3 +1168,29 @@ budget-starved); knee_L keeps an F1 LOSS at the flagged full-flexion angle
 `b7b_opderive2.json`. Remaining for the 19-joint show: the pen-at-full-flex
 dyad row for the knees, the same gate chain for the other 18 joints, and the
 B4 factory-axis sign row.
+
+**R1 KNEE SIGNATURE — tested through SIX solver iterations, honestly
+inconclusive-to-falsified, with the redirect earned (same session, late).**
+The membrane (THE_CONTROL_RIG R1: pose the bone, CA surface springs re-wrap
+the skin, front stretches + / back folds −, monotone in theta) was run on the
+creature's knee_L over the 24-angle ROM. Solver history, all honest:
+max-norm descent never converged (run 1); fixed per-vert steps oscillated
+apart (run 2); Jacobi preconditioner ignored curvature stiffness, blown in 7
+(run 3); full-mesh Euler dt=5e-7 could not settle inside budget — every
+"convergence" was the frozen start (run 4); the LOCALIZED SUBMESH (window +
+Dirichlet shank + pinned border, force-residual settle, dt bisected) showed
+the fold at low angles — back strain NEGATIVE (-0.0044/-0.0063/-0.0068 at
+6-19 deg) — then stalled CAP as the bridge-stretch mode took over (run 5);
+the RATIFIED b7b golden solve (ARAP+volume, res 1e-8, run 6-7) produced the
+signature at the ENDS of the ROM (front +0.0084/back -0.0011 at 6.3 deg;
+front + / back - at every theta >= 82 deg) but NOT mid-range, where ARAP's
+rigidity absorbs the fold (back positive 12-76 deg) — FALSIFIER FIRED.
+**The critical caveat, recorded:** the golden solve is NOT the membrane's
+stated law (pure CA area+bend+curvature springs); the substitution changed
+the physics under test. Verdict: R1-via-ARAP falsified; R1-as-written
+UNTESTED mid-range — no affordable settled CA-spring solve exists yet. The
+named successor stands: explicit skin-attachment constraints, OR an
+implicit/semi-implicit integrator for the CA stack (the real solve for the
+membrane as written), OR the operator amends R1 to the ARAP law and the dyad
+judges the visuals (taste is the operator's terminal). Evidence:
+`.tmp/r1_knee_signature*.json` (runs 1-7).
