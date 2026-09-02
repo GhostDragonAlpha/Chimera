@@ -310,7 +310,12 @@ int main(int argc, char** argv) {
 
     // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
     // in the CWD — tools/studio_board.py writes it next to the exe.
-    if (argc > 2) engine.ui_.set_board_file(argv[2]);
+    // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
+    // made argv[2] == "--restore" the board path, GetFileAttributesExA failed,
+    // and the window booted "no board file" forever (the eye's #1 defect:
+    // "a raw developer/console message leaking into the product UI").
+    if (argc > 2 && std::string(argv[2]).rfind("--", 0) != 0)
+        engine.ui_.set_board_file(argv[2]);
 
     // ── HTTP server for Python shim communication ───────────────────────────────
     // F1: the handler is a NAMED function — the HTTP server and the console's
@@ -1556,6 +1561,8 @@ int main(int argc, char** argv) {
                      + ",\"ring\":[" + ring + "]"
                      + ",\"gpu\":\"" + u.gpu_name_ + "\""
                      + ",\"stage\":\"" + u.chrome_stage_ + "\""
+                     + ",\"board\":{\"stages\":" + std::to_string(u.board().stages.size())
+                     + ",\"standing\":\"" + u.board().standing.substr(0, 60) + "\"}"
                      + ",\"fps_str\":\"" + u.chrome_fps_ + "\""
                      + ",\"gpu_str\":\"" + u.chrome_gpu_ + "\""
                      + ",\"hud_rows\":[" + rows + "]"

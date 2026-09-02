@@ -306,7 +306,12 @@ void StudioUI::poll_board() {
     if (!GetFileAttributesExA(board_path_.c_str(), GetFileExInfoStandard, &fad)) return;
     uint64_t mt = (static_cast<uint64_t>(fad.ftLastWriteTime.dwHighDateTime) << 32)
                 | fad.ftLastWriteTime.dwLowDateTime;
-    if (mt == last_mtime_) return;
+    // 2026-09-02, the eye: the window booted shouting "no board file" while the
+    // file sat valid next to the exe. The old gate latched last_mtime_ BEFORE
+    // the parse, so one transient failure at boot locked the empty board
+    // forever (mtime never changes -> never retried). Retry while unhealthy:
+    // an unchanged mtime only short-circuits a board that already parsed.
+    if (mt == last_mtime_ && board_.loaded) return;
     last_mtime_ = mt;
 
     std::ifstream f(board_path_, std::ios::binary);
@@ -785,7 +790,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
 
     // ── the STUDIO panel (left): the menu + the join's provenance — or, when a
     // strip node is selected (B3), the stage's task envelope, VERBATIM ──
-    rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.10f, 0.11f, 0.15f, 0.92f);   // 2026-09-02, the eye: panel fill ~25/255 on black is sub-perception — containers read as bare text
+    rect(R[1][0], R[1][1], R[1][2], R[1][3], 0.10f, 0.11f, 0.15f, 0.97f);   // 0.97: at 0.92 the grid bled through as "underline artifacts" under STATUS rows (the eye, twice)
     rect(R[1][0], R[1][1], R[1][2], 22, 0.17f, 0.18f, 0.25f, 0.97f);        // header band raised with the fill
     rect_outline(R[1][0], R[1][1], R[1][2], R[1][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f); // the container line: a panel is a thing on screen, not a rumor
     const bool have_sel = selected_stage_ >= 0
@@ -1156,7 +1161,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // ── the STATUS panel (right): the engine's own live rows, honest — or,
     // when an outliner row is selected, the INSPECTOR (C2): the atom's full
     // state document, engine-composed. The FPS pulse stays on top either way.
-    rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.10f, 0.11f, 0.15f, 0.92f);   // 2026-09-02, the eye: same perception-floor law as the left dock
+    rect(R[2][0], R[2][1], R[2][2], R[2][3], 0.10f, 0.11f, 0.15f, 0.97f);   // same law: no bleed-through underlines
     rect(R[2][0], R[2][1], R[2][2], 22, 0.17f, 0.18f, 0.25f, 0.97f);
     rect_outline(R[2][0], R[2][1], R[2][2], R[2][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f);
     {
@@ -1562,9 +1567,12 @@ void StudioUI::build_chrome() {
         float row_w = 0.f;
         for (size_t i = 0; i < cam_marks_.size(); ++i)
             row_w += static_cast<float>(std::string("[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]").size()) * advance_ + 12.f + 6.f;
-        row_w += 6.f + (5.f + 2.f) * advance_ + 6.f;   // the "+ cam" chip: one leading-space gap + 5-char cap + trailing pad
-        float vw = visible ? (R[2][0] + R[2][2]) : (W - 10.f);   // viewport's right edge
-        float cx2 = (vw - 10.f - row_w) > (hx - 6) ? (vw - 10.f - row_w) : (hx - 6);
+        row_w += 6.f + 7.f * advance_ + 12.f;   // the "[+ cam]" chip: gap + 7-char cap + the chips' 12px padding
+        // 2nd-scan fix: right-align at the RIGHT DOCK'S LEFT edge (not its right
+        // edge — that ran the row THROUGH the dock's top, colliding with the
+        // FPS readout). The chips live in the viewport, never over a panel.
+        float vw = visible ? (R[2][0] - 10.f) : (W - 10.f);   // viewport's right edge
+        float cx2 = (vw - row_w) > (hx - 6) ? (vw - row_w) : (hx - 6);
         float cy = hy - 3;
         for (size_t i = 0; i < cam_marks_.size(); ++i) {
             std::string cap = "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]";
@@ -1578,18 +1586,16 @@ void StudioUI::build_chrome() {
             cam_mark_rects_[i] = { cx2, cy, cw, lh + 6 };
             cx2 += cw + 6;
         }
-        std::string cap = "+ cam";
-        // 2026-09-02, the eye: "+ cam" rendered narrower than its siblings and
-        // read as clipped. The chip was sized for "[+ cam]" (the +12 padding is
-        // the bracket pair the other chips draw but this one doesn't) — the
-        // drawn string is " + cam "; the width is DERIVED from what is drawn,
-        // not from the constant, and the leading space is the gap from the
-        // last chip: 6px gap + 6px text padding = one advance. Sizing it to the
-        // drawn string ends the clipped look without a magic constant.
-        float cw = 6.f + (static_cast<float>(cap.size()) + 2.f) * advance_ + 6.f;
+        std::string cap = "[+ cam]";
+        // 2026-09-02, the eye (2nd scan): "+ cam" had a different visual grammar
+        // than its bracketed siblings — "two different button grammars in one
+        // toolbar = confusing affordance". It wears the SAME chips' language
+        // now (brackets, border, the row's blue); its ink stays dimmer than the
+        // recall chips because save is rarer than recall.
+        float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
         rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
-        rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.45f, 0.47f, 0.52f, 0.9f);
-        text(cx2 + 6, cy + 3, cap, 0.45f, 0.47f, 0.52f, 1.f);
+        rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
+        text(cx2 + 6, cy + 3, cap, 0.45f, 0.55f, 0.80f, 1.f);
         hots_.push_back({ cx2, cy, cw, lh + 6, 850 });
         cam_save_rect_ = { cx2, cy, cw, lh + 6 };
     }
