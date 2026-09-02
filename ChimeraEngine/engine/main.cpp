@@ -17,6 +17,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <fstream>
+#include <iterator>
+#include <thread>
 #include <chrono>
 #include <mutex>
 #include <condition_variable>
@@ -1955,8 +1958,65 @@ int main(int argc, char** argv) {
                  + ",\"vp_valid\":" + (g_engine && g_engine->vp_valid() ? "true" : "false")
                  + "}";
             content_type = "application/json";
+        } else if (p == "/session" && method == "GET") {
+            // SESSION SNAPSHOT status — what a restore would replay.
+            body = "{";
+            bool first = true;
+            for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+                std::ifstream f(std::string("session_snapshot/") + ep + ".blob", std::ios::binary | std::ios::ate);
+                if (!first) body += ",";
+                first = false;
+                body += std::string("\"") + ep + "\":" + (f ? std::to_string((long long)f.tellg()) : std::string("null"));
+            }
+            body += "}";
+            content_type = "application/json";
+        } else if (p == "/session" && method == "POST") {
+            // RESTORE: replay the snapshot blobs through the SAME handler the
+            // HTTP server runs (invoke_api — raw bytes, nested call). The
+            // console worker's law holds: this handler must not be the render
+            // thread, and it is not — the HTTP worker (or argv restore at boot).
+            std::string op = get_string(req_body, "op");
+            if (op == "restore") {
+                int done = 0, failed = 0;
+                std::string detail;
+                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+                    std::string fp = std::string("session_snapshot/") + ep + ".blob";
+                    std::ifstream f(fp, std::ios::binary);
+                    if (!f) continue;
+                    std::string blob((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+                    std::string resp2, ct2;
+                    g_engine->invoke_api("POST", std::string("/") + ep, blob, resp2, ct2);
+                    bool okr = resp2.find("\"ok\":true") != std::string::npos;
+                    done += okr ? 1 : 0; failed += okr ? 0 : 1;
+                    detail += std::string(ep) + (okr ? ":ok " : ":FAIL ");
+                }
+                body = std::string("{\"ok\":") + (failed == 0 && done > 0 ? "true" : "false")
+                     + ",\"replayed\":" + std::to_string(done)
+                     + ",\"failed\":" + std::to_string(failed)
+                     + ",\"detail\":\"" + detail + "\"}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"want op=restore\"}";
+            }
+            content_type = "application/json";
         } else {
             body = "Not found";
+        }
+
+        // ── SESSION SNAPSHOT (2026-09-02, the tool-alongside-the-game decree):
+        // every successful *_bin upload is written THROUGH to
+        // session_snapshot/<endpoint>.blob — a folder of raw bytes, replayed
+        // verbatim by restore through the engine's stored api handler. The
+        // session log records metadata; the snapshot holds the PAYLOADS. Today's
+        // restarts cost three hand-run scripts; a reload is now one flag.
+        if (g_engine && method == "POST" &&
+            (p == "/mesh_bin" || p == "/hinge_bin" || p == "/joints_bin" ||
+             p == "/gait_bin" || p == "/water_bin") &&
+            body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);   // idempotent
+            std::string fn = "session_snapshot/" + p.substr(1) + ".blob";
+            std::ofstream f(fn, std::ios::binary);
+            if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
+            else fprintf(stderr, "snapshot: cannot write %s\n", fn.c_str());
         }
 
         // F4: the recorder — every covered state change lands at the moment it
@@ -1985,6 +2045,33 @@ int main(int argc, char** argv) {
     engine.set_api(api);   // F1: the console's worker runs the SAME handler
     if (!http_ok) {
         fprintf(stderr, "Warning: Failed to start HTTP server on port %d\n", http_port);
+    }
+
+    // SESSION SNAPSHOT: --restore (any argv position) replays the last session's
+    // uploads at boot — mesh, hinge, joints, gait, water — through the SAME
+    // handler (invoke_api). A restart is one flag, not a hand-run script pile.
+    // The replay re-snapshots each blob (same bytes, idempotent).
+    // MEASURED 2026-09-02: invoking this on the main thread BEFORE the frame
+    // loop starts makes the waiting endpoints time out (their fences are
+    // consumed by frame()) — the blob still applies, but the ack is a lie.
+    // So: deferred detached thread, after the loop is alive; retry on FAIL.
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "--restore") {
+            std::thread([&engine] {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+                for (int attempt = 0; attempt < 3; ++attempt) {
+                    std::string resp, ct;
+                    engine.invoke_api("POST", "/session", "{\"op\":\"restore\"}", resp, ct);
+                    printf("session: boot restore -> %s\n", resp.c_str());
+                    fflush(stdout);
+                    bool ok = resp.find("\"failed\":0") != std::string::npos
+                           && resp.find("\"replayed\":0") == std::string::npos;
+                    if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) break;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                }
+            }).detach();
+            break;
+        }
     }
 
     printf("Chimera Engine running at http://localhost:%d/state\n", http_port);

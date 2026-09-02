@@ -180,6 +180,18 @@ public:
     using ApiFn = std::function<void(const std::string&, const std::string&,
                                      const std::string&, std::string&, std::string&)>;
     void set_api(ApiFn fn) { std::lock_guard<std::mutex> lk(console_m_); api_ = std::move(fn); }
+    // ── SESSION SNAPSHOT (the tool-alongside-the-game decree): direct nested
+    // api invocation for restore — the HTTP handler's own path, raw bytes in,
+    // response out. The console's text-line path would corrupt binary blobs.
+    // Function copied under the lock, called outside it — console_worker's
+    // exact concurrency pattern (the handler must never run under console_m_).
+    void invoke_api(const std::string& method, const std::string& path,
+                    const std::string& req_body, std::string& resp, std::string& ctype) {
+        ApiFn fn;
+        { std::lock_guard<std::mutex> lk(console_m_); fn = api_; }
+        if (fn) fn(method, path, req_body, resp, ctype);
+        else resp = "{\"ok\":false,\"error\":\"no api handler wired\"}";
+    }
     void console_exec(const std::string& line);
     int  console_pending();
     void console_drain();              // render thread: hand finished responses to the UI
