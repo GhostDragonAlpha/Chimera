@@ -1014,6 +1014,16 @@ bool Engine::compile_shaders() {
     tri_vert_mod_ = create_shader_module(device_, trivert_spv);
     tri_frag_mod_ = create_shader_module(device_, trifrag_spv);
     if (tri_vert_mod_ == VK_NULL_HANDLE || tri_frag_mod_ == VK_NULL_HANDLE) return false;
+    // THE CONTACT SHADOW: optional at init (the engine still runs if the spv
+    // is stale) — the shadow is an instrument upgrade, not a load-bearing wall.
+    {
+        auto shspv = read_file((base + "/shaders/render_tri_shadow.frag.spv").c_str());
+        if (!shspv.empty())
+            tri_shadow_frag_mod_ = create_shader_module(device_, shspv);
+        auto shvsp = read_file((base + "/shaders/render_tri_shadow.vert.spv").c_str());
+        if (!shvsp.empty())
+            tri_shadow_vert_mod_ = create_shader_module(device_, shvsp);
+    }
 
     if (!comp_spv.empty()) {
         comp_mod_ = create_shader_module(device_, comp_spv);
@@ -1312,6 +1322,33 @@ bool Engine::create_triangle_pipeline() {
     if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_wire_pipeline_) != VK_SUCCESS) {
         fprintf(stderr, "Failed to create triangle wireframe pipeline\n");
         return false;
+    }
+    // Shadow twin (the eye's "subject ungrounded", 2026-09-02): the same mesh
+    // projected to the floor plane by the vertex stage; blended translucent
+    // black, no depth write (the mesh's own depth test decides visibility).
+    // Culling stays OFF — the recon mesh's winding is unreliable (the fill
+    // pipeline is CULL_MODE_NONE for the same reason), and a culled shadow is
+    // an invisible shadow. Requires its own frag module (flat alpha) —
+    // silently skipped if the module failed to load.
+    if (tri_shadow_frag_mod_ != VK_NULL_HANDLE && tri_shadow_vert_mod_ != VK_NULL_HANDLE) {
+        ras.polygonMode = VK_POLYGON_MODE_FILL;
+        ras.cullMode    = VK_CULL_MODE_NONE;
+        stages[0].module = tri_shadow_vert_mod_;   // THE projection — without this
+                                                   // the shadow draws at the mesh's own
+                                                   // position, hidden behind the subject
+        stages[1].module = tri_shadow_frag_mod_;
+        blend.blendEnable = VK_TRUE;
+        blend.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        blend.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.colorBlendOp        = VK_BLEND_OP_ADD;
+        blend.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+        blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.alphaBlendOp        = VK_BLEND_OP_ADD;
+        ds.depthWriteEnable = VK_FALSE;
+        if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_shadow_pipeline_) != VK_SUCCESS) {
+            fprintf(stderr, "Failed to create triangle shadow pipeline\n");
+            tri_shadow_pipeline_ = VK_NULL_HANDLE;
+        }
     }
     vkDestroyPipelineCache(device_, cache, nullptr);
 
@@ -4931,12 +4968,15 @@ bool Engine::frame() {
         float proj[16];
         float view[16];
         float resolution[2];
-        float pad[2];
+        float floor_y;      // the grid plane (the shadow projects onto it)
+        float shadow_alpha; // contact shadow opacity (0 = off)
     } ubo{};
     std::memcpy(ubo.proj, proj, sizeof(proj));
     std::memcpy(ubo.view, view, sizeof(view));
     ubo.resolution[0] = static_cast<float>(extent_.width);
     ubo.resolution[1] = static_cast<float>(extent_.height);
+    ubo.floor_y = 0.0f;   // THE grid plane: push_grid_overlay draws the floor at y=0
+    ubo.shadow_alpha = 0.38f;
 
     // Per-slot camera UBO, host-visible + persistently mapped: create once, memcpy
     // per frame. NO staging buffer, NO queue submit, NO vkQueueWaitIdle per frame —
@@ -5446,6 +5486,17 @@ bool Engine::frame() {
         if (frost_draw) {
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     frost_render_layout_, 1, 1, &frost_frag_set_, 0, nullptr);
+        }
+        // THE CONTACT SHADOW first (blended over the cleared background, under
+        // the mesh): the flattened mesh on the floor plane, moving with the
+        // pose. Depth write is off, so the mesh's own draw wins the depth test.
+        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
         }
         if (mesh_mode_ != 1) {
             vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,

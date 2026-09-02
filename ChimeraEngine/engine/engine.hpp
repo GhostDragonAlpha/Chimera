@@ -633,8 +633,11 @@ private:
     // ── triangle mesh rendering ──────────────────────────────────────────────
     bool create_triangle_pipeline();
     VkShaderModule tri_vert_mod_ = VK_NULL_HANDLE, tri_frag_mod_ = VK_NULL_HANDLE;
+    VkShaderModule tri_shadow_frag_mod_ = VK_NULL_HANDLE;   // contact shadow (planar projection)
+    VkShaderModule tri_shadow_vert_mod_ = VK_NULL_HANDLE;   // projects to the floor plane
     VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
     VkPipeline      tri_wire_pipeline_ = VK_NULL_HANDLE; // same shaders, VK_POLYGON_MODE_LINE
+    VkPipeline      tri_shadow_pipeline_ = VK_NULL_HANDLE; // shadow twin: blended, no depth write
     uint32_t        mesh_mode_ = 0;   // 0 = fill, 1 = wire only, 2 = fill + wire overlay
     VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  tri_vmem_, tri_imem_;
