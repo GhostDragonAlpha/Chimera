@@ -60,7 +60,7 @@ struct StudioGridLine { float x0, y0, x1, y1, r, g, b, a; };
 
 class StudioUI {
 public:
-    bool visible = false;    // F1 toggles; the viewport stays live underneath
+    bool visible = true;     // default-ON (2026-09-01): a relaunch must not come up bare — F1 still toggles; the viewport stays live underneath
 
     bool init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
               uint32_t w, uint32_t h, uint32_t mem_type_host);
