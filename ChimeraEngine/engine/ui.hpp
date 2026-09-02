@@ -191,6 +191,11 @@ private:
     // ── the show clock's view (D1: pushed by the Engine every frame — the UI never owns it) ──
     double clk_t_ = 0.0, clk_total_ = 0.0, clk_speed_ = 1.0, clk_theta_ = 0.0;
     bool   clk_playing_ = true;
+    // the LIVE CLOCK's identity (2026-09-02): "joints" (the 19-joint show),
+    // "hinge" (the knee march), "none". The buttons drive whichever is live.
+    std::string clk_source_ = "none";
+    float clk_hinge_period_ = 0.f;
+    bool   hinge_live_ = false;
     uint32_t clk_n_ = 0, clk_cur_ = 0;
     float  clk_period_ = 4.0f;
     std::string clk_name_;
@@ -437,9 +442,13 @@ public:
 
     void set_show_clock(double t, double total, bool playing, double speed,
                         uint32_t n, uint32_t cur, float period,
-                        const std::string& name, double theta) {
+                        const std::string& name, double theta,
+                        const std::string& source = "joints", float hinge_period = 0.f) {
         clk_t_ = t; clk_total_ = total; clk_playing_ = playing; clk_speed_ = speed;
         clk_n_ = n; clk_cur_ = cur; clk_period_ = period; clk_name_ = name; clk_theta_ = theta;
+        clk_source_ = source; clk_hinge_period_ = hinge_period;
+        hinge_live_ = (source == "hinge");
+        if (source == "hinge") { clk_total_ = hinge_period; }   // scrub maps over one march period
     }
     float scrub_time_at(int x) const;            // map a cursor x to a time on the bar
 

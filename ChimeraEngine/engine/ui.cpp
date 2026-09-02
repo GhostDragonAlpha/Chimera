@@ -1265,9 +1265,29 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         float bar_h = 16.f;
         scrub_rect_[0] = x; scrub_rect_[1] = bar_y;
         scrub_rect_[2] = R[3][0] + R[3][2] - 10 - x; scrub_rect_[3] = bar_h;
-        if (clk_n_ == 0 || clk_total_ <= 0.0) {
-            text(x, bar_y, "no joints pack - POST .tmp/skeleton/joints_pack.bin to /joints_bin, then /joints on",
-                 0.85f, 0.55f, 0.30f, 1.f);
+        if (clk_n_ == 0 && clk_total_ <= 0.0) {
+            // THE TRANSPORT DRIVES THE LIVE CLOCK (2026-09-02): with no joints
+            // pack the hinge march IS the show — same buttons, same scrub bar,
+            // phase over the hinge's own period. The dead instruction text the
+            // eye read ("no play button, no timeline") is gone: a clock that
+            // exists is a clock that plays.
+            if (hinge_live_ && clk_hinge_period_ > 0.f) {
+                rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.12f, 0.13f, 0.17f, 0.95f);
+                rect_outline(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 1.f, 0.35f, 0.37f, 0.42f, 1.f);
+                // half-period marks: the ROM's extremes (cos law: 0 and P/2)
+                rect(scrub_rect_[0] + scrub_rect_[2] * 0.25f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
+                rect(scrub_rect_[0] + scrub_rect_[2] * 0.75f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
+                double lt = clk_hinge_period_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_hinge_period_) * clk_hinge_period_ : 0.0;
+                float px = scrub_rect_[0] + static_cast<float>(lt / clk_hinge_period_) * scrub_rect_[2];
+                rect(px - 1, bar_y - 2, 3, bar_h + 4, 1.f, 1.f, 1.f, 1.f);
+                char hb[128];
+                snprintf(hb, sizeof(hb), "hinge march  t = %.3f / %.1f s  |  scrub/step = exact knee poses",
+                         lt, clk_hinge_period_);
+                text(x, bar_y + bar_h + 6, hb, 0.62f, 0.66f, 0.74f, 1.f);
+            } else {
+                text(x, bar_y, "no clock - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
+                     0.85f, 0.55f, 0.30f, 1.f);
+            }
         } else {
             rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.12f, 0.13f, 0.17f, 0.95f);
             rect_outline(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 1.f, 0.35f, 0.37f, 0.42f, 1.f);

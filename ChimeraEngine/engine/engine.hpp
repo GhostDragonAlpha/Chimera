@@ -106,6 +106,7 @@ public:
     void stop_hinge();
     void pose_hinge();   // per-frame, after the frame fence wait
     bool hinge_active() const { return hinge_active_; }
+    float hinge_period() const { return hinge_period_; }
 
     // ── THE WATER SOLVER ON THE CA FIELD (B15 — port of .tmp/tri_water.py) ──
     // Order-consistent Gauss-Seidel: per-color parallel dispatches, sequential
@@ -347,6 +348,18 @@ public:
     std::atomic<double>   show_speed_{1.0};
     std::atomic<double>   show_time_{0.0};
     std::atomic<double>   show_scrub_{-1.0};         // >= 0: pending scrub target
+    // THE TRANSPORT DRIVES THE LIVE CLOCK (2026-09-02, the tool decree):
+    // the hinge march used to read the wall clock (steady_clock - hinge_t0_),
+    // so the D1 timeline was DEAD whenever no joints pack was loaded — the
+    // dyad's eye filed it honestly ("no play button, no timeline"). The clock
+    // SOURCE is now what is loaded: joints pack -> the show sweeps joints;
+    // hinge only -> the show clock drives the hinge phase directly.
+    std::atomic<bool>     hinge_follow_clock_{true};   // march phase = show clock
+    float       hinge_time() const {
+        return hinge_follow_clock_.load(std::memory_order_relaxed)
+             ? static_cast<float>(show_time_.load(std::memory_order_relaxed))
+             : std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+    }
     // Show metadata for the timeline panel + /show (render-thread owned reads):
     uint32_t    show_joint_count() const { return j_n_joints_; }
     float       show_period() const { return j_sweep_period_; }

@@ -1303,15 +1303,26 @@ int main(int argc, char** argv) {
                 float per = g_engine->show_period();
                 uint32_t nj = g_engine->show_joint_count();
                 uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
+                // THE TRANSPORT DRIVES THE LIVE CLOCK: with no joints pack the
+                // period/total answer from the HINGE (its period, its ROMs) so
+                // the timeline is live whenever a clock IS (the eye: "no play
+                // button, no timeline" — the march is the show here).
+                bool hinge_live = g_engine->hinge_active();
+                float per_eff = nj ? per : (hinge_live ? g_engine->hinge_period() : 0.f);
+                double total_eff = nj ? nj * static_cast<double>(per)
+                                      : (hinge_live ? static_cast<double>(per_eff) : 0.0);
                 body = std::string("{\"playing\":") + (g_engine->show_playing_.load() ? "true" : "false")
                      + ",\"time\":" + std::to_string(t)
                      + ",\"speed\":" + std::to_string(g_engine->show_speed_.load())
                      + ",\"n_joints\":" + std::to_string(nj)
-                     + ",\"period\":" + std::to_string(per)
-                     + ",\"total\":" + std::to_string(nj * static_cast<double>(per))
-                     + ",\"current\":\"" + g_engine->show_joint_name(cur) + "\""
-                     + ",\"theta\":" + std::to_string(g_engine->show_current_theta())
-                     + ",\"joints_loaded\":" + (g_engine->joints_loaded() ? "true" : "false");
+                     + ",\"period\":" + std::to_string(per_eff)
+                     + ",\"total\":" + std::to_string(total_eff)
+                     + ",\"clock\":\"" + std::string(nj ? "joints" : (hinge_live ? "hinge" : "none")) + "\""
+                     + ",\"current\":\"" + (nj ? g_engine->show_joint_name(cur)
+                                                : std::string(hinge_live ? "knees (hinge march)" : "none")) + "\""
+                     + ",\"theta\":" + std::to_string(nj ? g_engine->show_current_theta() : 0.0)
+                     + ",\"joints_loaded\":" + (g_engine->joints_loaded() ? "true" : "false")
+                     + ",\"hinge_loaded\":" + (hinge_live ? "true" : "false");
                 float re_ = 0.f, rf_ = 0.f;
                 g_engine->show_current_rom(re_, rf_);
                 body += ",\"rom_ext\":" + std::to_string(re_)

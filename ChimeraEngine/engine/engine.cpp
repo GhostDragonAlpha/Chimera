@@ -1537,7 +1537,7 @@ void Engine::stop_hinge() {
 // is done reading the buffer). Rodrigues per vertex about (J, axis) by
 // theta * w; normals rotate identically (records are pos3 nrm3 col3, stride 9).
 void Engine::pose_hinge() {
-    float t = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+    float t = hinge_time();   // the transport drives the live clock (D1, 2026-09-02)
     float thL_deg, thR_deg;
     if (gait_on_.load(std::memory_order_relaxed) && gait_loaded_) {
         double tL, tR; gait_theta(tL, tR);          // H7: the gait CPG commands the knees
@@ -4533,14 +4533,19 @@ bool Engine::frame() {
         return true;
     }
     // D1: push the show clock's view to the timeline panel (the UI never owns time)
+    // THE TRANSPORT DRIVES THE LIVE CLOCK: the push names the SOURCE so the
+    // panel serves whichever clock is loaded (joints show / hinge march).
     {
         double t = show_time_.load(std::memory_order_relaxed);
         float per = show_period();
         uint32_t nj = show_joint_count();
         uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
-        ui_.set_show_clock(t, nj * static_cast<double>(per), show_playing_.load(),
-                           show_speed_.load(), nj, cur, per, show_joint_name(cur),
-                           show_current_theta());
+        bool hinge_now = hinge_active_ && nj == 0;
+        std::string src = nj ? "joints" : (hinge_now ? "hinge" : "none");
+        ui_.set_show_clock(t, nj ? nj * static_cast<double>(per) : (hinge_now ? hinge_period_ : 0.0),
+                           show_playing_.load(), show_speed_.load(), nj, cur, per,
+                           nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
+                           show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
@@ -4836,7 +4841,7 @@ bool Engine::frame() {
         hpc.axis[0] = hinge_axis_[0]; hpc.axis[1] = hinge_axis_[1]; hpc.axis[2] = hinge_axis_[2];
         hpc.romL = hinge_romL_; hpc.romR = hinge_romR_;
         hpc.period = hinge_period_; hpc.phaseR = hinge_phaseR_;
-        hpc.time = std::chrono::duration<float>(std::chrono::steady_clock::now() - hinge_t0_).count();
+        hpc.time = hinge_time();   // the transport drives the live clock (D1, 2026-09-02)
         bool gait_drives = gait_on_.load(std::memory_order_relaxed) && gait_loaded_;
         if (gait_drives) {
             double tL, tR; gait_theta(tL, tR);
@@ -5448,9 +5453,12 @@ bool Engine::frame_idle_ui() {
         float per = show_period();
         uint32_t nj = show_joint_count();
         uint32_t cur = nj ? static_cast<uint32_t>(t / per) % nj : 0;
-        ui_.set_show_clock(t, nj * static_cast<double>(per), show_playing_.load(),
-                           show_speed_.load(), nj, cur, per, show_joint_name(cur),
-                           show_current_theta());
+        bool hinge_now = hinge_active_ && nj == 0;
+        std::string src = nj ? "joints" : (hinge_now ? "hinge" : "none");
+        ui_.set_show_clock(t, nj ? nj * static_cast<double>(per) : (hinge_now ? hinge_period_ : 0.0),
+                           show_playing_.load(), show_speed_.load(), nj, cur, per,
+                           nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
+                           show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles
