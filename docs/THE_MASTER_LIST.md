@@ -1368,3 +1368,18 @@ The board file was valid the whole time; the engine's argv contract ate it.
 Related: the poll's failure latch (mtime set before parse) turned one
 transient failure into a permanent lie — a latch must only short-circuit a
 path that has SUCCEEDED once.
+
+**THE KNOWLEDGE CHANNEL (2026-09-02, operator decree — shipped 8e0af2e0).**
+"The dyad only knows what you tell it each message." Every scan message is
+now self-contained: BRIEFING (`Saved/dyad/BRIEFING.md` — what the project is,
+THE SCAFFOLDING: an ASCII diagram + checklist of the editor's INTENDED
+features, so the eye audits against design intent and flags DRIFT; mechanism
+notes: orange text = a warning, diamonds = key marks, skin tints = strain,
+the dark floor shape = contact shadow) + LIVE STATE (the engine's own numbers
+fetched fresh per shot: stage, board count, fps, clock, scene rows, key
+marks) + the two-part ask (PART A LOOK: scaffold audit + artist pass;
+PART B REASON: hypothesize the failed mechanism, propose a fix, and call out
+see-vs-state contradictions — that contradiction is usually the bug). Proof
+the channel was needed: the eye graded "no board file" as a style problem
+for three scans while it was an argv-contract bug. The briefing is a living
+document: every new editor mechanism lands there in the same commit.
