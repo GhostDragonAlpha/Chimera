@@ -1302,3 +1302,18 @@ chip toolbar left-pinned, unbalanced; (e) title bar carries help text that
 belongs in a tooltip. (a)+(b) are rendering features with game value
 (grounding, viewport frame); (c) is a bug; (d)+(e) chrome polish.
 Evidence: `Saved/dyad/2026-09-02_085351/`.
+
+**TOOL FEATURE 3 — THE STRAIN OVERLAY (2026-09-02, shipped 6278e3be).** The R1
+chain's parting gift: the fold signature the four-solver chain measured in
+JSON is now a live Studio mode. The engine keeps the mesh index list (the
+loader used to throw it away), precomputes rest areas once per mesh, and
+every frame computes TRUE per-triangle area strain on the CPU from the SAME
+analytic FK law the pose kernels execute — no GPU readback, works for both
+the GPU kernel and the CPU fallback. The scalar reaches hinge.comp as SSBO
+binding 4; flags bit1 tints: blue compression / red stretch, ±10% saturates
+the ramp, 0 = rest color. `POST/GET /strain` toggles; the outliner row is
+toggleable with inspector detail (touched verts, triangles, color decode).
+Proven at pixel level on a paused deep bend (θL≈73°): 1,207 stretch px on
+the knee's front, 154 compression px on the back — paused-identical captures,
+zero motion contamination. The R1 membrane went from "a number in a file" to
+"the color of the skin" — which is the whole point of the instrument.
