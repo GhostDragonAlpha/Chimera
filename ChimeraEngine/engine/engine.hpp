@@ -711,6 +711,12 @@ private:
     VkShaderModule tri_vert_mod_ = VK_NULL_HANDLE, tri_frag_mod_ = VK_NULL_HANDLE;
     VkShaderModule tri_shadow_frag_mod_ = VK_NULL_HANDLE;   // contact shadow (planar projection)
     VkShaderModule tri_shadow_vert_mod_ = VK_NULL_HANDLE;   // projects to the floor plane
+    VkShaderModule floor_vert_mod_ = VK_NULL_HANDLE;        // THE GROUND PLANE — the surface the
+    VkShaderModule floor_frag_mod_ = VK_NULL_HANDLE;        // contact shadow lands on (2026-09-03)
+    VkPipeline      floor_pipeline_ = VK_NULL_HANDLE;       // opaque quad, position-only verts
+    VkBuffer        floor_vbuf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  floor_vmem_ = VK_NULL_HANDLE;
+    static constexpr uint32_t FLOOR_VERTS = 6;              // two triangles, xz plane
     VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
     VkPipeline      tri_wire_pipeline_ = VK_NULL_HANDLE; // same shaders, VK_POLYGON_MODE_LINE
     VkPipeline      tri_shadow_pipeline_ = VK_NULL_HANDLE; // shadow twin: blended, no depth write

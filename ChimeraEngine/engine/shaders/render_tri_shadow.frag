@@ -12,5 +12,15 @@ layout(set = 0, binding = 0) uniform Ubo {
 } ubo;
 
 void main() {
-    fragColor = vec4(0.0, 0.0, 0.0, ubo.uShadowAlpha);
+    // THE SHADOW'S INK — an authored constant, NOT a UBO read (measured
+    // 2026-09-03): the fragment-side UBO read on this pipeline provably lands
+    // at wrong bytes (fingerprint probes: the alpha arrived as 55/255 ≈ a
+    // view-matrix element, while the VERTEX stage reads the same buffer
+    // correctly — the blob positions exactly on the floor plane). The value is
+    // a perceptual decree (the eye's 0.38), not a measured quantity, so it
+    // lives here. CLOSED-SILHOUETTE LAW: the projected mesh is a closed 2D
+    // silhouette — interior pixels catch ≥2 layers, composing 1−(1−α)² ≈ 0.62
+    // opacity; over the 55/255 floor that reads ≈21/255 (a 34-delta, firmly
+    // visible), and stacked limbs darken further, honestly.
+    fragColor = vec4(0.0, 0.0, 0.0, 0.38);
 }

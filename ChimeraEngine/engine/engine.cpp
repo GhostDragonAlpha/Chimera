@@ -1069,6 +1069,14 @@ bool Engine::compile_shaders() {
         auto shvsp = read_file((base + "/shaders/render_tri_shadow.vert.spv").c_str());
         if (!shvsp.empty())
             tri_shadow_vert_mod_ = create_shader_module(device_, shvsp);
+        // THE GROUND PLANE: same optional-instrument policy — a stale/missing
+        // spv costs the floor, not the engine.
+        auto fvspv = read_file((base + "/shaders/floor.vert.spv").c_str());
+        if (!fvspv.empty())
+            floor_vert_mod_ = create_shader_module(device_, fvspv);
+        auto ffspv = read_file((base + "/shaders/floor.frag.spv").c_str());
+        if (!ffspv.empty())
+            floor_frag_mod_ = create_shader_module(device_, ffspv);
     }
 
     if (!comp_spv.empty()) {
@@ -1369,6 +1377,22 @@ bool Engine::create_triangle_pipeline() {
         fprintf(stderr, "Failed to create triangle wireframe pipeline\n");
         return false;
     }
+    // THE GROUND PLANE geometry: one static quad on the xz plane, big enough
+    // that the camera's usual orbits never see its edge. y is IGNORED by the
+    // vertex stage (the UBO's floor plane owns it) but set to 0 for clarity.
+    // BUFFER GATE FIX (2026-09-03): this used to ALSO require floor_pipeline_
+    // != VK_NULL_HANDLE — but the pipeline is created LATER in this function, so
+    // on the only call the gate was false and floor_vbuf_ stayed null forever:
+    // the draw site's guard silently skipped the quad every frame. The buffer
+    // never depended on the pipeline; gate on the buffer alone.
+    if (floor_vbuf_ == VK_NULL_HANDLE) {
+        const float R = 60.f;
+        const float q[FLOOR_VERTS * 3] = {
+            -R, 0.f, -R,   R, 0.f, -R,   R, 0.f,  R,
+            -R, 0.f, -R,   R, 0.f,  R,  -R, 0.f,  R,
+        };
+        upload_buffer(q, sizeof(q), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, floor_vbuf_, floor_vmem_);
+    }
     // Shadow twin (the eye's "subject ungrounded", 2026-09-02): the same mesh
     // projected to the floor plane by the vertex stage; blended translucent
     // black, no depth write (the mesh's own depth test decides visibility).
@@ -1391,10 +1415,61 @@ bool Engine::create_triangle_pipeline() {
         blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         blend.alphaBlendOp        = VK_BLEND_OP_ADD;
         ds.depthWriteEnable = VK_FALSE;
+        ds.depthTestEnable  = VK_FALSE;
+        // FLOOR-COEXIST (2026-09-03, two rounds): the shadow projects onto the
+        // SAME y=0 plane the floor rasterizes, so its fragment depth equals the
+        // floor's only up to float ulps — LESS rejected every fragment (shadow
+        // = 0 pixels measured), and LESS_OR_EQUAL still rejected the half where
+        // the interpolated depth lands 1e-6 FARTHER. A decal that draws
+        // immediately after the floor and before the mesh must not gamble on
+        // depth equality at all: test OFF, write OFF. The mesh (drawn later,
+        // depth-tested) still wins where it stands in front.
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_shadow_pipeline_) != VK_SUCCESS) {
             fprintf(stderr, "Failed to create triangle shadow pipeline\n");
             tri_shadow_pipeline_ = VK_NULL_HANDLE;
         }
+    }
+    // THE GROUND PLANE twin: position-only verts (one vec3), opaque, depth-test
+    // ON + depth-write ON — the floor is world geometry the subject stands ON,
+    // and the shadow's no-depth-write draw must lose to it where they overlap.
+    // Built ONLY if both modules loaded (same instrument policy as the shadow).
+    if (floor_vert_mod_ != VK_NULL_HANDLE && floor_frag_mod_ != VK_NULL_HANDLE) {
+        printf("floor: building pipeline (modules ok)\n");
+        VkVertexInputBindingDescription fbinding{};
+        fbinding.binding   = 0;
+        fbinding.stride    = sizeof(float) * 3;
+        fbinding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        VkVertexInputAttributeDescription fattrs[1] = {};
+        fattrs[0].location = 0; fattrs[0].binding = 0;
+        fattrs[0].format   = VK_FORMAT_R32G32B32_SFLOAT;
+        fattrs[0].offset   = 0;
+
+        stages[0].module = floor_vert_mod_;
+        stages[1].module = floor_frag_mod_;
+
+        vi.pVertexBindingDescriptions   = &fbinding;
+        vi.pVertexAttributeDescriptions = fattrs;
+        vi.vertexAttributeDescriptionCount = 1;
+
+        blend.blendEnable = VK_FALSE;             // opaque
+        ds.depthTestEnable  = VK_TRUE;            // shared ds now carries the shadow's
+                                                  // depthTestEnable=FALSE — pin the
+                                                  // floor's own law explicitly
+        ds.depthWriteEnable = VK_TRUE;
+        ds.depthCompareOp    = VK_COMPARE_OP_LESS; // shared ds carries the shadow's
+                                                   // LESS_OR_EQUAL — pin the floor's
+                                                   // own law explicitly
+        ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent
+
+        if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &floor_pipeline_) != VK_SUCCESS) {
+            fprintf(stderr, "Failed to create floor pipeline\n");
+            floor_pipeline_ = VK_NULL_HANDLE;
+        } else {
+            printf("floor: pipeline created\n");
+        }
+    } else {
+        printf("floor: SKIPPED (vert=%p frag=%p)\n", (void*)floor_vert_mod_, (void*)floor_frag_mod_);
     }
     vkDestroyPipelineCache(device_, cache, nullptr);
 
@@ -3709,6 +3784,10 @@ bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uin
 }
 
 void Engine::destroy_triangle_resources() {
+    if (floor_pipeline_) { vkDestroyPipeline(device_, floor_pipeline_, nullptr); floor_pipeline_ = VK_NULL_HANDLE; }
+    if (floor_vbuf_) { vkDestroyBuffer(device_, floor_vbuf_, nullptr); vkFreeMemory(device_, floor_vmem_, nullptr); floor_vbuf_ = VK_NULL_HANDLE; }
+    if (floor_vert_mod_) { vkDestroyShaderModule(device_, floor_vert_mod_, nullptr); floor_vert_mod_ = VK_NULL_HANDLE; }
+    if (floor_frag_mod_) { vkDestroyShaderModule(device_, floor_frag_mod_, nullptr); floor_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_pipeline_) { vkDestroyPipeline(device_, tri_pipeline_, nullptr); tri_pipeline_ = VK_NULL_HANDLE; }
     if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
     if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
@@ -5821,6 +5900,17 @@ bool Engine::frame() {
         if (frost_draw) {
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     frost_render_layout_, 1, 1, &frost_frag_set_, 0, nullptr);
+        }
+        // THE GROUND PLANE first of all (opaque, depth-writing): the surface
+        // the contact shadow lands on. The shadow (no depth write) blends over
+        // it; the mesh's depth-tested draw wins where they overlap.
+        if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &fvb, &foff);
+            vkCmdDraw(cmd_bufs_[img_idx], FLOOR_VERTS, 1, 0, 0);
         }
         // THE CONTACT SHADOW first (blended over the cleared background, under
         // the mesh): the flattened mesh on the floor plane, moving with the

@@ -1684,3 +1684,29 @@ mirrors every append into a human-readable `Saved/dyad/dyad_log.txt` (markdown-n
 flattened, one line per call) and the DYAD page serves THAT — the .jsonl stays the machine
 record. Round 5 verdict: **YES — clean plain prose; the dock is finished.** The engine
 still renders files verbatim; readability is the writer's job, not the renderer's.
+
+### 2026-09-03 — THE FLOOR AND THE SHADOW THAT FINALLY LANDS (render lane, 5 fixes + 1 law)
+**Membrane (Rule 0):** a light ground plane (55/255) under the contact shadow gives it a receivable
+surface (delta ~21/255 > perception) without changing the key or the creature's shading. **PASS —
+measured, then judged by the eye (GSQ RCO, 17.2s): "long, sharply defined shadow... soles sit
+directly on the plane, no gap. VERDICT: GROUNDED."**
+The path there killed five distinct defects, each earning the next measurement:
+1. **Buffer gate** — floor_vbuf_ creation was gated on floor_pipeline_ != NULL, but the pipeline is
+   created LATER in the same function → the buffer never existed and the draw guard silently
+   skipped the quad forever. Gate on the buffer alone.
+2. **Measurement discipline** — turntable cameras swing below the plane ("sky" read 55 = the
+   floor's underside) and dock panels pollute /glass bands; pin the camera, stop the show, sample
+   the viewport rows of /frame, classify by luminance bucket.
+3. **Depth coexistence** — shadow and floor rasterize the SAME plane: fragment depth is equal only
+   up to float ulps. LESS discarded every fragment; LESS_OR_EQUAL still discarded the farther
+   half. The decal draws between floor and mesh → depthTest OFF, write OFF (mesh still wins by
+   draw order + its own test).
+4. **Closed-silhouette law** — the projected mesh is closed: interior pixels catch >=2 layers,
+   composing 1-(1-a)^2 ~ 0.62 at a=0.38 (floor 55 -> shadow 21, stacks to 8). The dyad's
+   "detached shadow" was this perception bar all along.
+5. **Fragment UBO untrustworthy on this pipeline** — fingerprint probes: the alpha arrived as
+   55/255 (~a view-matrix element) while the VERTEX stage reads the same buffer correctly. The
+   alpha is an authored perceptual decree, not a measurement → it lives in the shader.
+Final histogram (floor region): 55 x66.8k, 21 x10.3k, 8 x5.5k, deep-stack x6.5k — clean buckets,
+no garbage. Isolation-test discipline (red quad / magenta blob / RGB fingerprints) carried every
+step; both isolation shaders are back to production ink.
