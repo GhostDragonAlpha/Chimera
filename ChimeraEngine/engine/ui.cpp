@@ -91,6 +91,7 @@ void StudioUI::studio_state_load() {
         if (!std::isfinite(value)) continue;
         if (key == "visible") visible = value != 0.0;
         else if (key == "bar_on") bar_on_ = value != 0.0;
+        else if (key == "console_open") console_open_ = value != 0.0;
         else if (key == "left_mode") left_mode_ = static_cast<int>(value);
         else if (key == "selected_stage") selected_stage_ = static_cast<int>(value);
         else if (key == "docs_current") docs_.current = static_cast<int>(value);
@@ -115,6 +116,7 @@ void StudioUI::studio_state_save() {
     f << "version 1\n"
       << "visible " << (visible ? 1 : 0) << "\n"
       << "bar_on " << (bar_on_ ? 1 : 0) << "\n"
+      << "console_open " << (console_open_ ? 1 : 0) << "\n"
       << "left_mode " << left_mode_ << "\n"
       << "selected_stage " << selected_stage_ << "\n"
       << "docs_current " << docs_.current << "\n"
@@ -135,6 +137,7 @@ std::string StudioUI::studio_state_json() const {
     std::string out = "{\"path\":\"studio_state.txt\",\"version\":1";
     out += ",\"visible\":" + std::string(visible ? "true" : "false");
     out += ",\"bar_on\":" + std::string(bar_on_ ? "true" : "false");
+    out += ",\"console_open\":" + std::string(console_open_ ? "true" : "false");
     out += ",\"left_mode\":" + std::to_string(left_mode_);
     out += ",\"selected_stage\":" + std::to_string(selected_stage_);
     out += ",\"docs_current\":" + std::to_string(docs_.current);

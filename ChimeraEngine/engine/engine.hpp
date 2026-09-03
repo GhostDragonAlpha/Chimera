@@ -622,6 +622,10 @@ public:
     // them. The HTTP caller never touches StudioUI directly and retains the
     // target line in its response for existing automation clients.
     bool request_ui_link(int stage, int& line, int& doc);
+    // F1a: apply console presentation changes on the render thread and return
+    // the committed open state; the HTTP handler never mutates StudioUI.
+    bool request_console_ui(const std::string& line, bool has_line,
+                            bool open, bool has_open, bool& open_result);
     // The layout space the panels live in (GET /studio reports it so agents can
     // aim synthetic clicks without a /frame grab — idle mode has no capture).
     uint32_t win_w() const { return extent_.width; }
@@ -634,6 +638,19 @@ private:
     std::atomic<bool> compare_request_pending_{false};
     std::atomic<int>  link_request_stage_{-1};
     std::atomic<bool> link_request_pending_{false};
+    std::mutex        console_ui_submit_m_;
+    std::mutex        console_ui_m_;
+    std::condition_variable console_ui_cv_;
+    std::atomic<bool>  console_ui_pending_{false};
+    bool               console_ui_done_ = false;
+    bool               console_ui_cancelled_ = false;
+    bool               console_ui_ok_ = false;
+    bool               console_ui_has_line_ = false;
+    bool               console_ui_has_open_ = false;
+    bool               console_ui_open_ = false;
+    std::string        console_ui_line_;
+    bool               console_ui_stop_ = false;
+    void               consume_console_ui_request();
     std::mutex        link_request_submit_m_;
     std::mutex        link_request_m_;
     std::condition_variable link_request_cv_;

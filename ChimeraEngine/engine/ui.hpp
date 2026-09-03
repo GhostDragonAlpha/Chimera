@@ -80,6 +80,8 @@ public:
     bool studio_visible() const { return visible; }
     void toggle_visible() { set_visible(!visible); }
     void set_bar_on(bool on) { bar_on_ = on; studio_state_save(); }
+    void set_console_open(bool on) { console_open_ = on; console_hist_nav_ = -1; studio_state_save(); }
+    bool console_is_open() const { return console_open_; }
     bool bar_on() const { return bar_on_; }
     const char* studio_state_path() const { return studio_state_file_; }
     std::string studio_state_json() const;
@@ -391,7 +393,7 @@ public:
     struct ConsoleEntry { std::string cmd, resp; bool done = false; };
     std::vector<ConsoleEntry> console_log_;     // the scrollback (capped at 200)
     std::function<void(const std::string&)> cb_console_;   // the engine owns execution
-    void console_toggle() { console_open_ = !console_open_; console_hist_nav_ = -1; }
+    void console_toggle() { set_console_open(!console_open_); }
     bool console_open() const { return console_open_; }
     void console_char(int c);                   // WM_CHAR route (printables, BS, CR)
     void console_key(int vk);                   // UP/DOWN recall, ESCAPE closes

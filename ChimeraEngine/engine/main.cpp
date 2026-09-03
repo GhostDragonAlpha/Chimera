@@ -1670,7 +1670,7 @@ int main(int argc, char** argv) {
                     entries += std::string("{\"cmd\":\"") + jesc(e.cmd) + "\",\"done\":"
                              + (e.done ? "true" : "false") + ",\"resp\":\"" + jesc(e.resp) + "\"}";
                 }
-                body = std::string("{\"open\":") + (u.console_open_ ? "true" : "false")
+                body = std::string("{\"open\":") + (u.console_is_open() ? "true" : "false")
                      + ",\"input\":\"" + jesc(u.console_input_) + "\""
                      + ",\"hist_n\":" + std::to_string(u.console_history_.size())
                      + ",\"pending\":" + std::to_string(g_engine->console_pending())
@@ -1680,16 +1680,19 @@ int main(int argc, char** argv) {
             }
             content_type = "application/json";
         } else if (p == "/console" && method == "POST") {
-            // F1: a posted line enters the SAME path as a typed Enter —
-            // history + scrollback + the worker queue. {"open":bool} sets the
-            // console's visibility absolutely (agents can't send `).
+            // F1a: the HTTP worker queues presentation changes; the render
+            // thread applies the same console path as keyboard input and then
+            // acknowledges the committed open state.
             if (g_engine) {
-                if (req_body.find("\"line\"") != std::string::npos)
-                    g_engine->ui_.console_submit_line(get_string(req_body, "line"));
-                if (req_body.find("\"open\"") != std::string::npos)
-                    g_engine->ui_.console_open_ = get_bool(req_body, "open", true);
-                body = std::string("{\"ok\":true,\"open\":")
-                     + (g_engine->ui_.console_open_ ? "true" : "false") + "}";
+                const bool has_line = req_body.find("\"line\"") != std::string::npos;
+                const bool has_open = req_body.find("\"open\"") != std::string::npos;
+                const std::string line = has_line ? get_string(req_body, "line") : std::string();
+                const bool open = get_bool(req_body, "open", false);
+                bool open_result = false;
+                const bool ok = g_engine->request_console_ui(line, has_line, open, has_open, open_result);
+                body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                     + ",\"open\":" + (open_result ? "true" : "false")
+                     + (ok ? "}" : ",\"error\":\"console request not applied\"}");
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }

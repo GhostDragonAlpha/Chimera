@@ -783,6 +783,32 @@ unescape — posted lines carry escaped JSON.
   `engine/ui.{hpp,cpp}`, this doc.
 - **Next per the menu:** E2 deep links, F4 recorder — and the rest by value.
 
+## SHIPPED — F1a: RENDER-THREAD CONSOLE CONTROL (2026-09-03)
+
+- **Statement:** console visibility and posted console lines are presentation
+  actions owned by the render thread, regardless of whether they originate from
+  keyboard input or HTTP.
+- **Prediction:** `POST /console {"open":bool}` and `POST /console {"line":...}`
+  are consumed in both normal and idle frame paths; the command enters the same
+  history/worker path as a typed Enter, while the response reports only after
+  the requested console state has been applied.
+- **Falsifier:** reject the change if the HTTP handler directly writes
+  `console_open_`, `console_input_`, `console_history_`, or `console_log_`; if
+  either render path fails to consume the request; or if a timeout reports a
+  committed UI result.
+- **Implementation:** `Engine::request_console_ui()` serializes HTTP callers,
+  queues the optional open/line operation, and waits for render-thread
+  acknowledgment. The render thread applies `set_console_open()` and
+  `console_submit_line()` through the existing console worker path. Shutdown
+  wakes blocked callers; a stalled request returns `ok:false` and does not read
+  mutable UI state from the HTTP thread. Console visibility is also persisted by
+  the A2 workspace store.
+- **Verification boundary:** source falsifiers passed for one declaration and
+  definition, two frame-path consumers, render-thread-only UI mutation, no direct
+  HTTP console writes, atomic pending state, and shutdown wakeup. Debug compiled
+  and linked successfully; runtime API probing remains open because the live
+  Release process was not interrupted.
+
 ## SHIPPED — F4: THE RECORDER (2026-08-30)
 
 - **Statement:** every gate-relevant state change through the api chokepoint

@@ -734,7 +734,13 @@ void Engine::shutdown() {
         std::lock_guard<std::mutex> lk(console_m_);
         console_stop_ = true;
     }
+    {
+        std::lock_guard<std::mutex> lk(console_ui_m_);
+        console_ui_stop_ = true;
+        console_ui_done_ = true;
+    }
     console_cv_.notify_all();
+    console_ui_cv_.notify_all();
     if (console_thread_.joinable()) console_thread_.join();
 
     // F4: the recorder outlives every event source; the file closes LAST among
@@ -4988,6 +4994,67 @@ bool Engine::request_ui_link(int stage, int& line, int& doc) {
     return link_request_ok_;
 }
 
+// F1a: the HTTP console membrane. The request is serialized because the render
+// thread has one StudioUI owner and acknowledgments must belong to one caller.
+bool Engine::request_console_ui(const std::string& line, bool has_line,
+                                bool open, bool has_open, bool& open_result) {
+    std::lock_guard<std::mutex> submit_lk(console_ui_submit_m_);
+    {
+        std::lock_guard<std::mutex> lk(console_ui_m_);
+        if (console_ui_stop_) {
+            open_result = false;
+            return false;
+        }
+        console_ui_done_ = false;
+        console_ui_cancelled_ = false;
+        console_ui_ok_ = false;
+        console_ui_has_line_ = has_line;
+        console_ui_has_open_ = has_open;
+        console_ui_open_ = open;
+        console_ui_line_ = line;
+    }
+    console_ui_pending_ = true;
+    std::unique_lock<std::mutex> lk(console_ui_m_);
+    const bool signaled = console_ui_cv_.wait_for(lk, std::chrono::seconds(3),
+        [this] { return console_ui_done_ || console_ui_stop_; });
+    if (!signaled || console_ui_stop_) {
+        if (!signaled) {
+            std::lock_guard<std::mutex> cancel_lk(console_ui_m_);
+            console_ui_cancelled_ = true;
+        }
+        open_result = false;
+        return false;
+    }
+    open_result = console_ui_open_;
+    return console_ui_ok_;
+}
+
+void Engine::consume_console_ui_request() {
+    if (!console_ui_pending_.exchange(false)) return;
+    // Hold the request lock through application and acknowledgment. This closes
+    // the timeout race where a caller could cancel after the render thread had
+    // copied the payload but before it mutated StudioUI.
+    std::unique_lock<std::mutex> lk(console_ui_m_);
+    if (console_ui_cancelled_) {
+        console_ui_done_ = true;
+        console_ui_ok_ = false;
+        lk.unlock();
+        console_ui_cv_.notify_one();
+        return;
+    }
+    const bool has_line = console_ui_has_line_;
+    const bool has_open = console_ui_has_open_;
+    const bool open = console_ui_open_;
+    const std::string line = console_ui_line_;
+    if (has_open) ui_.set_console_open(open);
+    if (has_line) ui_.console_submit_line(line);
+    console_ui_open_ = ui_.console_is_open();
+    console_ui_ok_ = true;
+    console_ui_done_ = true;
+    lk.unlock();
+    console_ui_cv_.notify_one();
+}
+
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
@@ -5035,6 +5102,7 @@ bool Engine::frame() {
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
+    consume_console_ui_request(); // F1a: HTTP presentation requests land here
     // B3: consume a queued synthetic click (agents drive the panels over HTTP —
     // input lands on the render thread, same discipline as the WndProc's)
     // D4a: HTTP compare requests are consumed on the render thread, before
@@ -6000,6 +6068,7 @@ bool Engine::frame_idle_ui() {
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles
+    consume_console_ui_request(); // F1a: HTTP presentation requests land here
     // B3: consume a queued synthetic click (idle path too — the Studio must
     // answer even when every 3D path idles)
     // D4a: HTTP compare requests are consumed on the render thread, before

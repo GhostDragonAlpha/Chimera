@@ -1520,6 +1520,21 @@ struct in ui.hpp avoids circular includes. When a joint pack is loaded and
 keys are saved with joint info, the per-joint rows populate — the editor
 can now author animation per-joint, not just per-clock.
 
+**TOOL FEATURE 10f — RENDER-THREAD CONSOLE CONTROL (2026-09-03).** The
+`POST /console` path no longer mutates `StudioUI` from the HTTP worker. An
+acknowledged, serialized request is consumed by the render thread in both normal
+and idle frame paths; it applies optional `open` state and optional `line` input,
+then reports the committed console visibility. Lines still enter the existing
+history and console worker/API path, so keyboard and HTTP commands converge on
+one execution route. Console visibility is included in the persisted Studio
+workspace state. Rule-0 membrane: **statement** one render-thread owner keeps
+keyboard and HTTP console presentation consistent; **prediction** both paths
+produce the same history/open behavior without simulation or camera mutation;
+**falsifier** direct HTTP UI writes, a missing idle consumer, a response before
+acknowledgment, or a fabricated result after timeout. Source falsifiers passed
+and the configured Debug build/link passed; runtime API probing remains open
+because the live Release process was not interrupted.
+
 **TOOL FEATURE 10e — PERSISTED STUDIO WORKSPACE (2026-09-03).** The Engine
 Studio now owns a versioned `studio_state.txt` key/value store for visibility,
 chrome, workspace, document selection/scroll, panel sizes, and collapse flags.
