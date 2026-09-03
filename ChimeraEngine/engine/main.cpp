@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <cmath>
 #include <fstream>
 #include <iterator>
 #include <thread>
@@ -117,8 +118,15 @@ static bool g_skin_pending = false;
 static bool g_skin_applied = false;
 
 // ── Minimal JSON helpers (no external deps) ───────────────────────────────────────
+// MSVC's %.6g prints non-finite floats as "nan"/"inf"/"-inf" — bare tokens that
+// are ILLEGAL in JSON. Physics particles reach deep-space values within minutes,
+// so every /state fetch was malformed JSON past that point (measured 2026-09-03:
+// a deterministic cut at 104948 chars that full-parse clients died on). JSON's
+// own name for the value is the fix: null is legal, "nan" is a lie.
 static std::string fmt_float(float f) {
     char buf[32];
+    if (f != f || f >= HUGE_VALF || f <= -HUGE_VALF)
+        return "null";
     if (f == static_cast<float>(static_cast<int>(f)))
         sprintf(buf, "%d", static_cast<int>(f));
     else
@@ -340,7 +348,7 @@ int main(int argc, char** argv) {
                     + ',' + fmt_float(parts[i].size)
                     + ']';
             }
-            json += ']}';
+            json += "]}";   // NEVER ']}'  — a multichar literal narrows to ONE char and eats the ']' (the 2026-09-03 /state JSON bug)
             body = std::move(json);
             content_type = "application/json";
         } else if (p == "/control" && method == "POST") {
@@ -1523,8 +1531,16 @@ int main(int argc, char** argv) {
                 char hb[32];
                 snprintf(hb, sizeof(hb), "%016llx",
                          static_cast<unsigned long long>(g_engine->ui_.docs_fnv()));
+                // The path is JSON-escaped: the log pages carry ABSOLUTE Windows
+                // paths, and a raw backslash is an illegal \escape in JSON —
+                // every full-parse client died on it (found by the twin test).
+                std::string pj;
+                for (char c : g_engine->ui_.docs_path()) {
+                    if (c == '\\' || c == '"') { pj += '\\'; pj += c; }
+                    else pj += c;
+                }
                 body = std::string("{\"doc\":") + std::to_string(g_engine->ui_.docs_current())
-                     + ",\"path\":\"" + g_engine->ui_.docs_path() + "\""
+                     + ",\"path\":\"" + pj + "\""
                      + ",\"mtime\":" + std::to_string(static_cast<unsigned long long>(g_engine->ui_.docs_mtime()))
                      + ",\"fnv\":\"" + hb + "\""
                      + ",\"n_lines\":" + std::to_string(g_engine->ui_.docs_line_count())
@@ -2153,7 +2169,19 @@ int main(int argc, char** argv) {
             // console worker's law holds: this handler must not be the render
             // thread, and it is not — the HTTP worker (or argv restore at boot).
             std::string op = get_string(req_body, "op");
-            if (op == "restore") {
+            if (op == "clear") {
+                // An intentional emptiness must persist like a subject does:
+                // clear deletes the snapshot blobs, so the next boot restores
+                // NOTHING — an engine born empty on purpose, not by amnesia.
+                // (Without this, default-on boot restore would resurrect a
+                // subject the operator deliberately removed.)
+                int cleared = 0;
+                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+                    std::string fp = std::string("session_snapshot/") + ep + ".blob";
+                    if (DeleteFileA(fp.c_str())) ++cleared;
+                }
+                body = "{\"ok\":true,\"cleared\":" + std::to_string(cleared) + "}";
+            } else if (op == "restore") {
                 int done = 0, failed = 0;
                 std::string detail;
                 for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
@@ -2172,7 +2200,7 @@ int main(int argc, char** argv) {
                      + ",\"failed\":" + std::to_string(failed)
                      + ",\"detail\":\"" + detail + "\"}";
             } else {
-                body = "{\"ok\":false,\"error\":\"want op=restore\"}";
+                body = "{\"ok\":false,\"error\":\"want op=restore|clear\"}";
             }
             content_type = "application/json";
         } else {
@@ -2224,16 +2252,23 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Warning: Failed to start HTTP server on port %d\n", http_port);
     }
 
-    // SESSION SNAPSHOT: --restore (any argv position) replays the last session's
-    // uploads at boot — mesh, hinge, joints, gait, water — through the SAME
-    // handler (invoke_api). A restart is one flag, not a hand-run script pile.
+    // SESSION SNAPSHOT: boot restore is DEFAULT-ON (2026-09-03, the recurring
+    // "engine without the object" defect — the operator, the eye, and every
+    // agent each forgot the old opt-in flag, and a fresh boot is born empty
+    // because the subject lives only in VRAM). Every boot now replays the last
+    // session's uploads — mesh, hinge, joints, gait, water — through the SAME
+    // handler (invoke_api). `--no-restore` (any argv position) opts out for
+    // tests; POST /session {"op":"clear"} makes emptiness intentional.
     // The replay re-snapshots each blob (same bytes, idempotent).
     // MEASURED 2026-09-02: invoking this on the main thread BEFORE the frame
     // loop starts makes the waiting endpoints time out (their fences are
     // consumed by frame()) — the blob still applies, but the ack is a lie.
     // So: deferred detached thread, after the loop is alive; retry on FAIL.
-    for (int i = 1; i < argc; ++i) {
-        if (std::string(argv[i]) == "--restore") {
+    {
+        bool boot_restore = true;
+        for (int i = 1; i < argc; ++i)
+            if (std::string(argv[i]) == "--no-restore") boot_restore = false;
+        if (boot_restore) {
             std::thread([&engine] {
                 std::this_thread::sleep_for(std::chrono::milliseconds(1500));
                 for (int attempt = 0; attempt < 3; ++attempt) {
@@ -2258,7 +2293,6 @@ int main(int argc, char** argv) {
                     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
                 }
             }).detach();
-            break;
         }
     }
 

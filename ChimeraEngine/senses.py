@@ -38,6 +38,8 @@ import time
 import urllib.request
 from pathlib import Path
 
+import dyad_log   # every report lands in Saved/dyad/dyad_log.jsonl (operator decree 2026-09-03)
+
 # VISION / TEXT backend selection -- LM Studio resident model is the decree default.
 VISION_BACKEND = os.environ.get("CHIMERA_VISION_BACKEND", "lmstudio").strip().lower()
 VISION_URL = os.environ.get("CHIMERA_VISION_URL", "http://localhost:11434")      # ollama lane
@@ -441,13 +443,25 @@ def see(png: str, prompt: str, timeout: int = 300) -> str | None:
     The timeout argument is accepted for compatibility and IGNORED (decree:
     timeouts disabled — the wait is unbounded; the operator decides about restarts)."""
     ensure_eye()
+    t0 = time.time()
     try:
-        return (_post([{"type": "text", "text": prompt},
-                       {"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(png)}}],
-                      READ_TIMEOUT_DISABLED) or "").strip() or None
+        out = (_post([{"type": "text", "text": prompt},
+                      {"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(png)}}],
+                     READ_TIMEOUT_DISABLED) or "").strip() or None
+        dyad_log.append("see", model=dyad_model(), served=_last_served_model(),
+                        prompt_chars=len(prompt or ""), n_images=1, image=png,
+                        report=out, elapsed_s=time.time() - t0,
+                        finish_reason=last_finish_reason())
+        return out
     except ValueError:
+        dyad_log.append("see", model=dyad_model(), prompt_chars=len(prompt or ""),
+                        n_images=1, image=png, error="one-image wall breach",
+                        elapsed_s=time.time() - t0)
         raise                      # the one-image wall: a guard that cannot be heard is not a guard
     except Exception as e:
+        dyad_log.append("see", model=dyad_model(), prompt_chars=len(prompt or ""),
+                        n_images=1, image=png, error=f"{type(e).__name__}: {e}",
+                        elapsed_s=time.time() - t0)
         print(f"[senses] see FAILED: {e}")
         return None
 
@@ -462,14 +476,26 @@ def watch(frames: list[str], prompt: str, timeout: int = 360) -> str | None:
     """MOVIE: an ORDERED sequence of frames read as video -> a term describing the
     unfolding. None if dark. Timeout ignored (decree: disabled)."""
     ensure_eye()
+    t0 = time.time()
     try:
         content = [{"type": "text", "text": prompt}]
         for p in frames:
             content.append({"type": "image_url", "image_url": {"url": "data:image/png;base64," + _b64(p)}})
-        return (_post(content, READ_TIMEOUT_DISABLED) or "").strip() or None
+        out = (_post(content, READ_TIMEOUT_DISABLED) or "").strip() or None
+        dyad_log.append("watch", model=dyad_model(), served=_last_served_model(),
+                        prompt_chars=len(prompt or ""), n_images=len(frames),
+                        image=(frames[0] if frames else ""), report=out,
+                        elapsed_s=time.time() - t0, finish_reason=last_finish_reason())
+        return out
     except ValueError:
+        dyad_log.append("watch", model=dyad_model(), prompt_chars=len(prompt or ""),
+                        n_images=len(frames), image=(frames[0] if frames else ""),
+                        error="one-image wall breach", elapsed_s=time.time() - t0)
         raise                      # the one-image wall: see above
     except Exception as e:
+        dyad_log.append("watch", model=dyad_model(), prompt_chars=len(prompt or ""),
+                        n_images=len(frames), image=(frames[0] if frames else ""),
+                        error=f"{type(e).__name__}: {e}", elapsed_s=time.time() - t0)
         print(f"[senses] watch FAILED: {e}")
         return None
 
@@ -494,6 +520,7 @@ def hear(wav: str, prompt: str, timeout: int = 300) -> str | None:
     """EAR: the Omni model on the dedicated llama-server listens to audio -> a term. None if the
     ear is dark. ADVISORY quality (llama.cpp audio is 'experimental') -- the operator is the
     authoritative ear. Requires the audio backend (llama-server) -- qwen3.8 cannot hear."""
+    t0 = time.time()
     try:
         body = {"messages": [{"role": "user", "content": [
                     {"type": "text", "text": prompt},
@@ -503,8 +530,14 @@ def hear(wav: str, prompt: str, timeout: int = 300) -> str | None:
                                      data=json.dumps(body).encode("utf-8"),
                                      headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=timeout) as r:
-            return (json.load(r)["choices"][0]["message"].get("content") or "").strip() or None
+            out = (json.load(r)["choices"][0]["message"].get("content") or "").strip() or None
+        dyad_log.append("hear", model="omni(ear)", prompt_chars=len(prompt or ""),
+                        image=wav, report=out, elapsed_s=time.time() - t0)
+        return out
     except Exception as e:
+        dyad_log.append("hear", model="omni(ear)", prompt_chars=len(prompt or ""),
+                        image=wav, error=f"{type(e).__name__}: {e}",
+                        elapsed_s=time.time() - t0)
         print(f"[senses] hear FAILED: {e}")
         return None
 

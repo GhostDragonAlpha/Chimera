@@ -1642,3 +1642,33 @@ which is taste, and taste is the operator's. **Options:** (a) keep the derived
 proportion and accept the eye's objection as recorded; (b) add one explicit
 legibility factor (e.g. type height as a fraction of screen height) and derive
 *that* instead; (c) let the operator set it by eye, since they are the terminal.
+
+**2026-09-03 TWO LOGS IN THE EDITOR (operator decree).** "One log for the engine and
+another for the dyad log, both available in the editor — especially the dyad log so I can
+watch the reports it gives." The DOCS browser now has three LIVE pages: **DYAD LOG**
+(`Saved/dyad/dyad_log.jsonl` — every senses.py see/watch/hear report, written by the new
+`ChimeraEngine/dyad_log.py`: one JSON line per call with requested model, actually-served
+model, prompt/image counts, report (capped at 16k chars, true length kept), error, elapsed,
+finish reason; failures and dark-eye calls are logged too — a log of only successes is a
+lie), **ENGINE LOG** (the F4 session file), and **SESSIONS** (boot/exit record). Live pages
+poll at 4 Hz with a TAIL-FOLLOW LAW: the view pins to the newest line until the reader
+scrolls up (LIVE/PAUSED chip re-arms); the HTTP twin obeys the same contract — POST scroll
+away from bottom detaches, scroll to bottom re-arms. Verified: append→re-read 4→5 lines,
+overflow tail-pin, paused-view-stays-put, re-arm, twin parity on 8090.
+
+**2026-09-03 THE SUBJECT IS THE ENGINE'S OWN STATE (the recurring "engine without the
+object" defect, killed at the root).** Boot restore is now DEFAULT-ON: every launch replays
+`session_snapshot/*.blob` (mesh/hinge/joints/gait/water) through the real API handler ~1.5 s
+after boot, then re-fits the camera. `--no-restore` opts out (tests); POST /session
+{"op":"clear"} makes emptiness INTENTIONAL (deletes the blobs; a cleared engine stays
+cleared). Verified by `tools/subject_restore_test.py` (PASS): bare boot auto-restores the
+creature (~2 s), --no-restore stays empty, a corrupt blob fails honestly (mesh_bin:FAIL,
+replayed 0) with the engine alive.
+
+**2026-09-03 TWO SILENT JSON CORRUPTIONS, found while testing.** (1) `/state` ended
+`json += '}]}'` — a MULTICHAR LITERAL that narrows to one char, eating the closing `]`:
+every /state response was malformed JSON since inception, and only head/regex clients never
+noticed. (2) MSVC `%.6g` prints non-finite floats as `nan`/`inf` — illegal JSON tokens; the
+formatter now emits `null`. `/state` parses fully for the first time. Also fixed:
+`/studio_doc`'s path field is now JSON-escaped (Windows abs paths from the log pages broke
+full-parse clients).

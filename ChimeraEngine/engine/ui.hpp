@@ -191,7 +191,9 @@ private:
     // it never writes it. `fnv` is FNV-1a/64 over the file's exact bytes — the
     // verbatim proof the HTTP twin serves.
     struct DocsState {
-        std::vector<std::string> paths;             // the menu's five (E1 names them)
+        std::vector<std::string> paths;             // the menu's five (E1) + the LIVE LOG pages
+        int      log_page = -1;                     // DYAD LOG page index (paths[log_page])
+        int      sessions_page = -1;                // SESSIONS page index (cross-session recorder)
         int      current = 0;
         std::string raw;                            // the file's exact bytes
         std::vector<std::string> lines;             // split on '\n'
@@ -202,6 +204,12 @@ private:
         uint64_t mtime = 0;
         uint64_t fnv = 0;
         float    scroll = 0.f;                      // in DISPLAY lines
+        // The LOG pages' tail-follow flag (engine session log, dyad log): the
+        // view sticks to the newest line until the human scrolls UP — one notch
+        // up detaches, scrolling back to the bottom (or clicking the chip)
+        // re-arms. Without this, a live log the human is reading scrolls
+        // itself out from under their eyes.
+        bool     follow_tail = true;
         std::chrono::steady_clock::time_point last_poll{};
     };
     DocsState docs_;

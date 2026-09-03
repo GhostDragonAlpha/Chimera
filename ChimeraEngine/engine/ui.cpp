@@ -355,7 +355,12 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 if (i == 6) { left_mode_ = 5; selected_stage_ = -1; }    // CAPTURE (D5)
             }
             if (h.id >= 400 && h.id < 500 && cb_joint_select_) cb_joint_select_(h.id - 400);
-            if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker
+            if (h.id >= 500 && h.id < 600) docs_set(h.id - 500);         // E1: the doc picker (legacy range)
+            if (h.id >= 800 && h.id < 900) docs_set(h.id - 800);         // E1: the doc picker (8 pages)
+            if (h.id == 700) {                                           // LOG follow chip: re-arm + jump to the live edge
+                docs_.follow_tail = true;
+                docs_.scroll = docs_scroll_max_;
+            }
             if (h.id >= 600 && h.id < 700) {                             // C4: the outliner's rows
                 int i = h.id - 600;
                 if (i >= 0 && i < static_cast<int>(scene_.size()) &&
@@ -745,19 +750,51 @@ void StudioUI::reel_push(const uint8_t* rgba, const std::string& l1,
 }
 
 // ── E1: THE DOCS BROWSER — the repo's own workflow docs, verbatim, in a panel ──
+// Pages 5-7 are LIVE LOGS: DYAD (Saved/dyad/dyad_log.jsonl, written by the
+// Python senses lane), ENGINE (the F4 session file, CWD-relative), SESSIONS
+// (the cross-session recorder). The dyad path is repo-root-anchored via the
+// engine module's own location — the exe's CWD is build/Release, and the
+// log's home is <repo>/Saved/dyad/ no matter where the exe runs from.
+static std::string ui_log_file_name() {
+    char mod[MAX_PATH];
+    DWORD n = GetModuleFileNameA(nullptr, mod, MAX_PATH);   // <...>/build/Release/chimera_engine.exe
+    if (n == 0 || n >= MAX_PATH) return "Saved/dyad/dyad_log.jsonl";
+    std::string exe(mod, n);
+    for (int i = 0; i < 5; ++i) {   // exe -> Release -> build -> engine -> ChimeraEngine -> REPO ROOT
+        size_t s = exe.find_last_of("/\\");
+        if (s == std::string::npos) break;
+        exe.resize(s);
+    }
+    return exe + "/Saved/dyad/dyad_log.jsonl";
+}
+static constexpr int DYAD_LOG_PAGE = 5;
 
 void StudioUI::docs_init() {
     if (!docs_.paths.empty()) return;
     // The menu (docs/THE_ENGINE_STUDIO.md, E1) names the five. The exe's CWD
     // is build/Release — the repo root is four levels up.
     const char* base = "../../../../docs/";
+    // Pages 0-4: the workflow docs the board names. Pages 5-7: THE LIVE LOGS
+    // (operator decree 2026-09-03: "two logs ... both available in the editor,
+    // especially the dyad log"). All are plain text files the poll loop
+    // re-reads when their mtime moves. DYAD is repo-root-anchored (written by
+    // the Python senses lane, outside the exe's CWD); ENGINE is the F4 session
+    // file (CWD-relative; the member is set by the engine before first draw);
+    // SESSIONS is the cross-session boot record (CWD-relative).
     docs_.paths = {
         std::string(base) + "THE_BODY_PIPELINE.md",
         std::string(base) + "THE_ARTISTS_SOLID.md",
         std::string(base) + "THE_MASTER_LIST.md",
         std::string(base) + "THE_TRIANGLE_GUIDE.md",
         std::string(base) + "THE_OPERATING_MANUAL.md",
+        ui_log_file_name(),                            // page 5: DYAD LOG (the eye's reports)
+        log_file_,                                     // page 6: ENGINE LOG (F4's session file)
+        "sessions.jsonl",                              // page 7: SESSIONS (boot/exit record)
     };
+    docs_.log_page = DYAD_LOG_PAGE;
+    docs_.sessions_page = static_cast<int>(docs_.paths.size()) - 1;
+    if (docs_.current > static_cast<int>(docs_.paths.size()) - 1) docs_.current = 0;
+    if (docs_.current == DYAD_LOG_PAGE + 1 && log_file_.empty()) docs_.current = DYAD_LOG_PAGE;
 }
 
 std::string StudioUI::docs_path() const {
@@ -775,7 +812,13 @@ static uint64_t fnv1a64(const std::string& s) {
 void StudioUI::docs_poll() {
     docs_init();
     auto now = std::chrono::steady_clock::now();
-    if (std::chrono::duration<float>(now - docs_.last_poll).count() < 1.0f) return;
+    // The LIVE LOG pages re-read at 4 Hz (250 ms) — the docs docs poll at 1 Hz;
+    // a tail the operator watches must move at the pace the eye expects. The
+    // mtime guard below still does the real work: no change, no re-read.
+    bool is_log = docs_.current == docs_.log_page || docs_.current == docs_.sessions_page
+               || docs_.current == docs_.log_page + 1;
+    float period = is_log ? 0.25f : 1.0f;
+    if (std::chrono::duration<float>(now - docs_.last_poll).count() < period) return;
     docs_.last_poll = now;
 
     std::string path = docs_path();
@@ -843,6 +886,7 @@ void StudioUI::docs_set(int idx) {
     if (idx < 0 || idx >= static_cast<int>(docs_.paths.size())) return;
     docs_.current = idx;
     docs_.scroll = 0.f;
+    docs_.follow_tail = true;              // opening a log lands on its newest line
     docs_.mtime = 0;                       // force a reload on the next poll
     docs_.last_poll = std::chrono::steady_clock::time_point{};
     docs_poll();
@@ -851,6 +895,11 @@ void StudioUI::docs_set(int idx) {
 
 void StudioUI::docs_set_scroll(float s) {
     docs_.scroll = s;
+    // THE TAIL LAW, one site: pinned at the bottom (or beyond), detached anywhere
+    // below it. The HTTP twin obeys the same contract as the wheel — an agent's
+    // scroll behaves like a human's, and a log the reader left is a log that
+    // stays put while new lines land.
+    docs_.follow_tail = (docs_.scroll >= docs_scroll_max_ - 0.5f);
     docs_clamp_scroll();
     studio_state_save();
 }
@@ -890,6 +939,10 @@ bool StudioUI::on_wheel(int x, int y, float delta) {
     if (x < R[1][0] || x >= R[1][0] + R[1][2] || y < R[1][1] || y >= R[1][1] + R[1][3])
         return false;
     docs_.scroll -= delta * 3.0f;          // one notch = 3 lines (the platform convention)
+    // TAIL-FOLLOW: one notch UP detaches the view from the live edge (the
+    // human is reading history); reaching the bottom re-arms it.
+    if (delta > 0.f) docs_.follow_tail = false;
+    if (docs_.scroll >= docs_scroll_max_ - 0.5f) docs_.follow_tail = true;
     docs_clamp_scroll();
     studio_state_save();
     return true;
@@ -1021,19 +1074,53 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         float x = R[1][0] + 10, y = R[1][1] + 30;
         float y_max = R[1][1] + R[1][3] - lh;
         for (size_t i = 0; i < docs_.paths.size(); ++i) {
-            std::string nm = docs_.paths[i];
-            nm = nm.substr(nm.find_last_of('/') + 1);
-            if (nm.size() > 3) nm = nm.substr(0, nm.size() - 3);   // strip .md
+            std::string nm;
+            if (static_cast<int>(i) == docs_.log_page)           nm = "DYAD LOG - the eye's reports";
+            else if (static_cast<int>(i) == docs_.log_page + 1)  nm = "ENGINE LOG - this session";
+            else if (static_cast<int>(i) == docs_.sessions_page) nm = "SESSIONS - boot/exit record";
+            else {
+                nm = docs_.paths[i];
+                nm = nm.substr(nm.find_last_of('/') + 1);
+                if (nm.size() > 3) nm = nm.substr(0, nm.size() - 3);   // strip .md
+            }
             bool cur = static_cast<int>(i) == docs_.current;
             if (cur) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
             text(x, y, nm, cur ? 0.45f : 0.42f, cur ? 0.75f : 0.44f, cur ? 1.00f : 0.50f, 1.f);
-            hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 500 + static_cast<int>(i) });
+            hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 800 + static_cast<int>(i) });
             y += lh + 2;
         }
-        char ib[160];
-        snprintf(ib, sizeof(ib), "%zu lines  |  read-only  |  re-read on file change (1 Hz)",
-                 docs_.lines.size());
+        bool cur_is_log = docs_.current == docs_.log_page || docs_.current == docs_.log_page + 1
+                       || docs_.current == docs_.sessions_page;
+        char ib[192];
+        if (cur_is_log) {
+            // The live pages name what they count: the dyad log is REPORTS (the
+            // eye's verdicts), the engine log is EVENTS, sessions is BOOTS.
+            snprintf(ib, sizeof(ib), "%s  |  %zu lines  |  re-read on file change",
+                     docs_.current == docs_.log_page ? "the dyad's written record"
+                     : docs_.current == docs_.sessions_page ? "one line per boot/exit"
+                     : "the recorder's stream",
+                     docs_.lines.size());
+        } else {
+            snprintf(ib, sizeof(ib), "%zu lines  |  read-only  |  re-read on file change (1 Hz)",
+                     docs_.lines.size());
+        }
         text(x, y, ib, 0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        if (cur_is_log) {
+            // The FOLLOW chip: LIVE sticks to the newest line; PAUSED means the
+            // human scrolled up to read history - click re-arms and jumps down.
+            bool live = docs_.follow_tail;
+            float cw = 6 * advance_ + 14;                 // "PAUSED" + padding
+            rect(R[1][0] + 10, y - 2, cw, lh + 2,
+                 live ? 0.10f : 0.20f, live ? 0.32f : 0.16f, live ? 0.20f : 0.24f, 0.95f);
+            text(R[1][0] + 14, y, live ? "LIVE" : "PAUSED",
+                 live ? 0.45f : 0.95f, live ? 0.95f : 0.65f, live ? 0.60f : 0.45f, 1.f);
+            hots_.push_back({ R[1][0] + 10, y - 2, cw, lh + 2, 700 });
+            text(R[1][0] + 10 + cw + 10, y,
+                 live ? "stuck to the newest line (scroll up to read history)"
+                      : "click to jump back to the newest line",
+                 0.45f, 0.47f, 0.52f, 1.f);
+            y += lh + 4;
+        }
         // the text, wrapped to the CURRENT dock width (narrow the dock and the
         // wrap follows next frame — the wrap is derived, never stored stale)
         size_t maxc = static_cast<size_t>((R[1][2] - 20 - 14) / advance_);
@@ -1052,9 +1139,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             for (size_t i = 0; i < docs_.display_src.size(); ++i) {
                 if (docs_.display_src[i] == tgt) { docs_.scroll = static_cast<float>(i); break; }
             }
+            docs_.follow_tail = (docs_.scroll >= docs_scroll_max_ - 0.5f);   // a deep link is a read-history act
         }
         if (docs_scroll_max_ <= 0.f) docs_.scroll = 0.f;
         else docs_clamp_scroll();
+        if (docs_.follow_tail) docs_.scroll = docs_scroll_max_;   // LOG pages: the live edge owns the view
         int first = static_cast<int>(docs_.scroll);
         for (size_t i = static_cast<size_t>(first); i < docs_.display.size(); ++i) {
             if (y > y_max) break;
