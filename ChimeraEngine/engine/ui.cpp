@@ -552,9 +552,49 @@ float StudioUI::slider_theta_at(int row, int x) const {
     return joints_[row].ext + f * (joints_[row].flex - joints_[row].ext);
 }
 
+// 2026-09-03, the eye (loaded review r5): docs pages rendered "JOIN _" and
+// "repo_" — the atlas is ASCII (32..126) but the markdown source speaks UTF-8:
+// em dashes, typographic quotes, and ellipses decoded to junk glyphs that read
+// as broken underscores. The draw entry normalizes: known typographic
+// characters map to their ASCII homes; any other multibyte sequence is dropped.
+// The atlas stays ASCII; the text reads.
+static std::string ascii_text(const std::string& s) {
+    std::string out;
+    out.reserve(s.size());
+    for (size_t i = 0; i < s.size();) {
+        unsigned char c = static_cast<unsigned char>(s[i]);
+        if (c < 0x80) { out.push_back(static_cast<char>(c)); ++i; continue; }
+        unsigned cp = 0; int len = 0;
+        if      ((c & 0xE0) == 0xC0) { cp = c & 0x1Fu; len = 2; }
+        else if ((c & 0xF0) == 0xE0) { cp = c & 0x0Fu; len = 3; }
+        else if ((c & 0xF8) == 0xF0) { cp = c & 0x07u; len = 4; }
+        else { ++i; continue; }                       // stray continuation byte
+        if (i + static_cast<size_t>(len) > s.size()) { ++i; continue; }
+        bool ok = true;
+        for (int k = 1; k < len; ++k) {
+            unsigned char cc = static_cast<unsigned char>(s[i + k]);
+            if ((cc & 0xC0) != 0x80) { ok = false; break; }
+            cp = (cp << 6) | (cc & 0x3Fu);
+        }
+        if (!ok) { ++i; continue; }
+        i += static_cast<size_t>(len);
+        switch (cp) {
+            case 0x2010: case 0x2011: case 0x2012: case 0x2013: case 0x2014:
+            case 0x2212: out.push_back('-');  break;      // dashes
+            case 0x2018: case 0x2019: out.push_back('\''); break;
+            case 0x201C: case 0x201D: out.push_back('"');  break;
+            case 0x2026: out.append("...");   break;      // ellipsis
+            case 0x00A0: out.push_back(' ');  break;      // nbsp
+            case 0x00D7: out.push_back('x');  break;      // multiplication sign
+            default: break;                               // unknown: drop
+        }
+    }
+    return out;
+}
+
 void StudioUI::text(float x, float y, const std::string& s, float r, float g, float b, float a) {
     float pen = x;
-    for (char c : s) {
+    for (char c : ascii_text(s)) {
         float u0, v0, u1, v1; uv_cell(static_cast<unsigned char>(c), u0, v0, u1, v1);
         float x0 = pen, y0 = y, x1 = pen + cell_w_, y1 = y + cell_h_;
         Vert v[6] = {
@@ -895,24 +935,28 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // 2026-09-02, the eye (defect e): this row read as permanent help clutter.
     // It IS the tooltip zone — a title belongs in the corner, context help in
     // the margin the cursor already occupies.
-    text(8, (22 - lh) * 0.5f, "THE ENGINE STUDIO",
+    // 2026-09-03, the eye (defect 3, standing since the first review): the title
+    // line and the stage row ran edge to edge — "cramped and unframed". The
+    // inset matches the strip's own vertical inset (30) — one number, uniform
+    // breathing border, nothing invented.
+    text(30, (22 - lh) * 0.5f, "THE ENGINE STUDIO",
          0.55f, 0.58f, 0.65f, 1.f);
     {
         // context help lives at the cursor's end of the bar, dim, right-aligned
         const char* help = "[F1] hide   [click bar] collapse   [drag edge] resize   [`] console";
         float hw = static_cast<float>(strlen(help)) * advance_;
-        text(static_cast<float>(ext_.width) - hw - 10.f, (22 - lh) * 0.5f, help, 0.42f, 0.45f, 0.52f, 1.f);
+        text(static_cast<float>(ext_.width) - hw - 30.f, (22 - lh) * 0.5f, help, 0.42f, 0.45f, 0.52f, 1.f);
     }
     if (!strip_.collapsed) {
         float y0 = 30.f;
         float node_h = strip_.size - 30.f - lh - 12.f;
         if (node_h < 14.f) node_h = 14.f;
         if (!board_.loaded) {
-            text(8, y0 + 6, "no board file - run: python tools/studio_board.py  (the repo's gate truth, read never owned)",
+            text(30, y0 + 6, "no board file - run: python tools/studio_board.py  (the repo's gate truth, read never owned)",
                  0.85f, 0.55f, 0.30f, 1.f);
         } else {
             size_t n = board_.stages.size();
-            float pad = 8.f, gap = 6.f;
+            float pad = 30.f, gap = 6.f;
             float bw = (static_cast<float>(win_w) - 2 * pad - (n - 1) * gap) / n;
             for (size_t i = 0; i < n; ++i) {
                 const StudioStage& s = board_.stages[i];
@@ -1457,7 +1501,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             // invents nothing. VIEW ONLY — toggles stay in SCENE mode (left dock).
             if (y <= y_max && !scene_.empty()) {
                 y += 6;
-                text(x, y, "SCENE - live systems (SCENE mode to toggle)", 0.45f, 0.47f, 0.52f, 1.f);
+                // header fits the dock or it lies clipped (the eye, r6): the dock
+                // is ~34 columns; the header must be shorter before it draws.
+                text(x, y, "SCENE - live systems (view only)", 0.45f, 0.47f, 0.52f, 1.f);
                 y += lh + 2;
                 for (const auto& r : scene_) {
                     if (y > y_max) break;
@@ -1644,11 +1690,13 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                     float tx = scrub_rect_[0] + (i / 10.f) * scrub_rect_[2];
                     rect(tx, mid - 5.f, 1.f, 10.f, 0.45f, 0.48f, 0.56f, 1.f);
                 }
-                text(x, bar_y, "no clock loaded - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
-                     0.85f, 0.55f, 0.30f, 1.f);
+                // one line, BELOW the bar like every clocked branch (the in-bar
+                // zone is glyph-height, and lh > bar_h — an in-bar label overlaps
+                // anything under the bar; the eye, loaded review r6). The label
+                // IS the hint; a second line was clutter + collision.
                 text(x, bar_y + bar_h + 6,
-                     "keys, markers and the playhead land here the moment a clock exists",
-                     0.45f, 0.47f, 0.52f, 1.f);
+                     "no clock loaded - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
+                     0.85f, 0.55f, 0.30f, 1.f);
             }
         } else {
             rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.12f, 0.13f, 0.17f, 0.95f);
@@ -1697,7 +1745,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         // mini-scrub bar + amber diamonds (clickable). Unkeyed keys go in
         // the "UNGROUPED" row. This is the visual bridge between the key
         // system and the joint system — you SEE which joint owns which key.
-        {
+        // 2026-09-03, the eye (r7): the sheet drew even with NO clock loaded —
+        // persisted keys produced a floating "UNKEYED" row that overlapped the
+        // no-clock hint text. A dope sheet is rows ALONG a time axis; without
+        // a clock there is no axis, so the sheet waits for one.
+        if (clk_n_ > 0 || clk_total_ > 0.0 || (hinge_live_ && clk_hinge_period_ > 0.f)) {
             float dy = bar_y + bar_h + 22;   // start below the info text
             float dw = scrub_rect_[2];        // same width as the master bar
             float dh = 14.f;                  // row height
@@ -2105,15 +2157,15 @@ void StudioUI::build_chrome() {
             cx2 += cw + 6;
         }
         std::string cap = "[+ cam]";
-        // 2026-09-02, the eye (2nd scan): "+ cam" had a different visual grammar
-        // than its bracketed siblings — "two different button grammars in one
-        // toolbar = confusing affordance". It wears the SAME chips' language
-        // now (brackets, border, the row's blue); its ink stays dimmer than the
-        // recall chips because save is rarer than recall.
+        // 2026-09-02, the eye (2nd scan): grammar unified — brackets, border, row
+        // blue. 2026-09-03, the eye (loaded review r1) STILL read the chip as a
+        // "dim grey box" — the dimmed ink was the remaining tell. Two rounds is
+        // the law: the save/recall distinction lives in the LABEL (+ cam), the
+        // color carries only affordance (clickable = the row's blue).
         float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
         rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
         rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
-        text(cx2 + 6, cy + 3, cap, 0.45f, 0.55f, 0.80f, 1.f);
+        text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
         hots_.push_back({ cx2, cy, cw, lh + 6, 850 });
         cam_save_rect_ = { cx2, cy, cw, lh + 6 };
     }

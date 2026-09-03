@@ -1556,6 +1556,21 @@ state change. **Lane guard:** the subject is loaded through `/mesh_bin`
 not load it over the creature. Camera framing note: auto-frame (r≈27.9) renders
 the subject small in an 800×600 `/frame`; r≈14–16 fills it.
 
+### Chrome polish batch (2026-09-03, loaded review rounds 5–8)
+
+Four more rounds against fresh glass: `[+ cam]` ink unified with its siblings
+(two rounds of the eye flagging the dim variant is the law — the save/recall
+distinction lives in the label, color carries only affordance); title row and
+stage strip inset 30px, derived from the strip's own vertical inset, not
+invented; the no-clock timeline hint moved below the bar (lh > bar_h — the
+in-bar label overlapped the line under it) and merged into one line; the
+right-dock scene header shortened to fit the dock's ~34 columns; and the D7
+dope sheet now waits for a clock — persisted keys produced a floating
+UNKEYED row overlapping the no-clock hint (an instrument with no time axis).
+The protocol doc (`docs/THE_DYAD_PROTOCOL.md`) gained the leading-question
+law after r7: a primed report is contamination. Round 8 verdict: "layout is
+clean" — all three checks pass.
+
 ### The bottom bands learn to be panels (2026-09-03, loaded review rounds 2–4)
 
 The dyad walked the fix chain against each glass capture: the TIMELINE's no-
