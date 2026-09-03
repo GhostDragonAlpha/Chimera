@@ -1421,3 +1421,14 @@ membrane-request discipline as recall (render-thread, never mid-frame); a
 successful `--restore` boot now auto-fits, so the engine never boots into a
 cropped hero. Verified on the glass: solid subject bbox fully inside the
 viewport, margins 592/914/62/106 px.
+
+**TOOL FEATURE 7 — DOPE SHEET (2026-09-02, D7 from the 5th verdict).
+Per-joint key rows in the timeline.** The flat scrub bar gains per-joint
+rows: each joint that owns key marks gets a labeled row with its own
+mini-timeline and amber diamond key marks. Keys without a joint go in the
+UNKEYED row. The KeyMark struct gains a joint field; save captures the
+selected joint (the gizmo target); the HTTP /keys API returns joint info;
+persistence is backward-compatible (optional 3rd column). The DopeKey
+struct in ui.hpp avoids circular includes. When a joint pack is loaded and
+keys are saved with joint info, the per-joint rows populate — the editor
+can now author animation per-joint, not just per-clock.
