@@ -1467,6 +1467,28 @@ int main(int argc, char** argv) {
                  + ",\"segments\":" + std::to_string(g_engine ? g_engine->ui_.rig_segment_count() : 0)
                  + "}";
             content_type = "application/json";
+        } else if (p == "/light" && (method == "GET" || method == "POST")) {
+            // THE LIGHT (2026-09-03): one scene-level fact. POST steers it
+            // ({"x","y","z"} — normalized by the Studio; a zero vector is
+            // refused), GET reads it back. The lit flank AND the contact
+            // shadow consume this same vector through the UBO — they rotate
+            // together in the same frame by construction.
+            if (g_engine && method == "POST") {
+                const float* cur = g_engine->light_dir();
+                float lx = get_float(req_body, "x", cur[0]);
+                float ly = get_float(req_body, "y", cur[1]);
+                float lz = get_float(req_body, "z", cur[2]);
+                g_engine->set_light(lx, ly, lz);
+            }
+            if (g_engine) {
+                const float* L = g_engine->light_dir();
+                body = std::string("{\"x\":") + std::to_string(L[0])
+                     + ",\"y\":" + std::to_string(L[1])
+                     + ",\"z\":" + std::to_string(L[2]) + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/studio" && method == "POST") {
             // THE ENGINE STUDIO: visibility plus deterministic workspace selection.
             if (g_engine) {

@@ -80,6 +80,23 @@ public:
     bool studio_visible() const { return visible; }
     void toggle_visible() { set_visible(!visible); }
     void set_bar_on(bool on) { bar_on_ = on; studio_state_save(); }
+    // ── THE LIGHT: one scene-level fact (2026-09-03, membrane) ──────────────
+    // Owned by the Studio (persisted in the state file, steered over /light),
+    // consumed ONLY by vertex stages through the UBO — fragment UBO reads are
+    // measured-untrustworthy on this pipeline (fingerprint probes 2026-09-03).
+    // The lit flank (render_tri.frag, via varying) and the contact shadow's
+    // projection (render_tri_shadow.vert) are THIS vector by construction —
+    // they cannot disagree, so they cannot drift. Defaults are the historical
+    // hardcoded key direction; a zero vector is refused (unit-length kept).
+    float light_dir_[3] = { 0.35f, 0.8f, 0.45f };
+    void  set_light_dir(float x, float y, float z) {
+        float L = sqrtf(x * x + y * y + z * z);
+        if (L > 1e-4f) {
+            light_dir_[0] = x / L; light_dir_[1] = y / L; light_dir_[2] = z / L;
+            studio_state_save();
+        }
+    }
+    const float* light_dir() const { return light_dir_; }
     void set_console_open(bool on) { console_open_ = on; console_hist_nav_ = -1; studio_state_save(); }
     bool console_is_open() const { return console_open_; }
     bool bar_on() const { return bar_on_; }

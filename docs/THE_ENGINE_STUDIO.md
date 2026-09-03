@@ -1732,3 +1732,20 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   render_tri_shadow.spv flushed.
 - FPS falsifier (floor+shadow, membrane A closeout): 299.4 fps / 0.37 ms avg — NOT OBSERVED.
   Grid confirmed UNREGRESSED: it is a UI-space overlay drawn by the dock, not world geometry.
+
+- 2026-09-03 — THE LIGHT IS ONE FACT (membrane, SHIPPED `c3458fd5`-lineage). The key light was
+  hardcoded TWICE (render_tri.frag shading + render_tri_shadow.vert projection) — a duplicated
+  fact waiting to drift. Now one Studio-owned vector: UBO -> VERTEX stages only (frag reads it
+  via varying), /light HTTP twin (GET readback, POST normalizes), persisted in studio_state.txt
+  (light_x/y/z), survives restart. Measured: coupled steering PASS (key right -> shadow centroid
+  +618 px; key left -> -140 px); persistence PASS; default reproduces the historical look
+  (normalized 0.3563, 0.8144, 0.4581); FPS falsifier NOT OBSERVED (299.7 fps, present-capped).
+- THE ALIGNMENT TRAP, CLASS-KILLED: the first C++ pad sat AFTER light_dir[3] (offset 148) while
+  std140 starts a vec4 at 160 — L read as (0,0,0), normalize() = NaN, clamp(NaN) = 0: body
+  ambient-only-dark (L~36), shadow dead. Fix: pad BEFORE the vector (148..159), light_dir at 160,
+  light_tail to 176. static_assert(sizeof(ubo)==176) now refuses any future drift at compile time.
+- THE EYE'S ROUND (qwen3.8-27b-gsq-rco, finish=stop, non-leading prompt): "VERDICT: GROUNDED";
+  tight foot contact patches + graded penumbra confirmed. Its "not ONE coherent key" is the
+  standing three-point decree (key+fill+hemisphere, 2026-09-03) doing its job — the single-source
+  look is what left flanks near-black. OPEN ITEM from its list: dotted/jagged normal seam at the
+  neck base (smooth-normal leak) — queued for a smoothing membrane.

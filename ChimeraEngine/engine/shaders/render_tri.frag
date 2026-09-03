@@ -14,14 +14,22 @@
 //   amb   hemisphere mix(0.15, 0.35, up) — sky light above, dark-floor bounce
 //         below; replaces flat 0.25 so verticals (arms, flanks) get 0.25 and
 //         up-facing surfaces get more, down-facing less. Scene-coherent.
+//
+// THE LIGHT IS ONE FACT (2026-09-03 membrane): the key's direction arrives as
+// a VERTEX-stage varying (vLightDir, read from the UBO by render_tri.vert —
+// vertex UBO reads are the measured-trustworthy ones; fragment block reads on
+// this pipeline are not). The fill is derived opposite-and-lower from the SAME
+// vector, so steering /light moves the whole rig coherently and the contact
+// shadow (same UBO vector in render_tri_shadow.vert) always agrees.
 layout(location = 0) in vec3 vNormal;
 layout(location = 1) in vec3 vColor;
+layout(location = 2) in vec3 vLightDir;   // THE key (unit length, from the UBO)
 layout(location = 0) out vec4 fragColor;
 void main() {
     vec3 N = normalize(vNormal);
-    vec3 K = normalize(vec3(0.35, 0.8, 0.45));    // THE key (shadow.vert agrees)
-    vec3 F = normalize(vec3(-0.35, 0.25, -0.45)); // fill: opposite, lower
-    float key  = clamp((dot(N, K) + 0.10) * (1.0 / 1.10), 0.0, 1.0) * 0.85;
+    vec3 K = normalize(vLightDir);                 // THE key (the shadow's L too)
+    vec3 F = normalize(vec3(-K.x, -0.3, -K.z));    // fill: opposite, lower
+    float key  = clamp((dot(N, K) + 0.10) * (0.9090909), 0.0, 1.0) * 0.85;
     float fill = max(dot(N, F), 0.0) * 0.18;
     float amb  = mix(0.15, 0.35, N.y * 0.5 + 0.5);
     fragColor = vec4(vColor * (amb + key + fill), 1.0);

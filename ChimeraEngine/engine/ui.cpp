@@ -1,5 +1,6 @@
 // ui.cpp — THE ENGINE STUDIO overlay (see ui.hpp for the law this file lives under)
 #include "ui.hpp"
+#include <cmath>
 
 #include <windows.h>
 #include <cstdio>
@@ -80,6 +81,15 @@ void StudioUI::studio_state_clamp() {
     if (left_mode_ < 0 || left_mode_ > 6) left_mode_ = 0;
     if (docs_.current < 0 || docs_.current > 4) docs_.current = 0;
     if (docs_.scroll < 0.f) docs_.scroll = 0.f;
+    // THE LIGHT: a loaded record is normalized (or restored to the historical
+    // default if degenerate) — the shaders normalize too, but the stored file
+    // should hold the honest unit vector.
+    {
+        float L = sqrtf(light_dir_[0] * light_dir_[0] + light_dir_[1] * light_dir_[1]
+                      + light_dir_[2] * light_dir_[2]);
+        if (L < 1e-4f) { light_dir_[0] = 0.35f; light_dir_[1] = 0.8f; light_dir_[2] = 0.45f; }
+        else { light_dir_[0] /= L; light_dir_[1] /= L; light_dir_[2] /= L; }
+    }
 }
 
 void StudioUI::studio_state_load() {
@@ -114,6 +124,9 @@ void StudioUI::studio_state_load() {
         else if (key == "right_collapsed") right_.collapsed = value != 0.0;
         else if (key == "bottom_collapsed") bottom_.collapsed = value != 0.0;
         else if (key == "reel_collapsed") reel_.collapsed = value != 0.0;
+        else if (key == "light_x") light_dir_[0] = static_cast<float>(value);
+        else if (key == "light_y") light_dir_[1] = static_cast<float>(value);
+        else if (key == "light_z") light_dir_[2] = static_cast<float>(value);
     }
     studio_state_clamp();
 }
@@ -138,7 +151,10 @@ void StudioUI::studio_state_save() {
       << "left_collapsed " << (left_.collapsed ? 1 : 0) << "\n"
       << "right_collapsed " << (right_.collapsed ? 1 : 0) << "\n"
       << "bottom_collapsed " << (bottom_.collapsed ? 1 : 0) << "\n"
-      << "reel_collapsed " << (reel_.collapsed ? 1 : 0) << "\n";
+      << "reel_collapsed " << (reel_.collapsed ? 1 : 0) << "\n"
+      << "light_x " << light_dir_[0] << "\n"
+      << "light_y " << light_dir_[1] << "\n"
+      << "light_z " << light_dir_[2] << "\n";
 }
 
 std::string StudioUI::studio_state_json() const {
@@ -159,7 +175,9 @@ std::string StudioUI::studio_state_json() const {
     out += ",\"left_collapsed\":" + std::string(left_.collapsed ? "true" : "false");
     out += ",\"right_collapsed\":" + std::string(right_.collapsed ? "true" : "false");
     out += ",\"bottom_collapsed\":" + std::string(bottom_.collapsed ? "true" : "false");
-    out += ",\"reel_collapsed\":" + std::string(reel_.collapsed ? "true" : "false") + "}";
+    out += ",\"reel_collapsed\":" + std::string(reel_.collapsed ? "true" : "false");
+    out += ",\"light\":[" + std::to_string(light_dir_[0]) + "," + std::to_string(light_dir_[1])
+         + "," + std::to_string(light_dir_[2]) + "]}";
     return out;
 }
 

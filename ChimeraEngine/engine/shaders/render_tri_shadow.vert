@@ -25,11 +25,14 @@ layout(set = 0, binding = 0) uniform Ubo {
     float uFloorY;        // the grid plane's height (the shadow's canvas)
     float uShadowAlpha;   // contact alpha A0 (the decreed 0.38)
     float uShadowH0;      // derived reference height (alpha halves at H0/2)
+    vec4 uLightDir;       // THE LIGHT — the same vector render_tri.frag shades by.
+                          // VEC4 (std140: a vec3 here would misalign by 16 —
+                          // measured NaN light + vanished shadow); w unused.
 } ubo;
 layout(location = 0) out float vAlpha;   // per-vertex shadow opacity
 
 void main() {
-    vec3 L = normalize(vec3(0.35, 0.8, 0.45));   // THE light (render_tri.frag's)
+    vec3 L = normalize(ubo.uLightDir.xyz);       // THE light (the frag's key, one fact)
     float t = (aPos.y - ubo.uFloorY) / max(L.y, 1e-4);
     vec3 sp = aPos - L * t;                      // slide down the light ray...
     sp.y = ubo.uFloorY;                          // ...and pin to the floor plane

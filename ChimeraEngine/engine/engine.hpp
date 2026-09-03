@@ -428,6 +428,11 @@ public:
     bool                  rig_overlay_on() const { return rig_overlay_on_.load(std::memory_order_relaxed); }
     void                  push_rig_overlay();
 
+    // THE LIGHT (2026-09-03): the Studio owns the vector; the renderer reads it
+    // per frame for the UBO. POST /light is this setter's HTTP twin.
+    void                  set_light(float x, float y, float z) { ui_.set_light_dir(x, y, z); }
+    const float*          light_dir() const { return ui_.light_dir(); }
+
 
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,

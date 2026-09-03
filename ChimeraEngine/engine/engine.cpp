@@ -5401,7 +5401,22 @@ bool Engine::frame() {
         float shadow_alpha; // contact shadow opacity (0 = off)
         float shadow_h0;    // THE penumbra's reference height (derived at load:
                             // alpha halves at half the mesh's y-extent)
+        float light_pad[3]; // std140: the vec4 must START on a 16-byte boundary
+                            // (offset 160). After shadow_h0 (ends 148) the pad
+                            // fills 148..159 — the pad goes BEFORE the vector,
+                            // not after: a trailing pad leaves light_dir at 148
+                            // while the shader reads 160 (measured: L=(0,0,0),
+                            // NaN key, ambient-only body, dead shadow).
+        float light_dir[3]; // THE LIGHT (Studio-owned, /light steers it): one
+                            // vector for the lit flank AND the shadow — they
+                            // cannot disagree, so they cannot drift. Consumed
+                            // by VERTEX stages only; fragments get it via
+                            // varying (frag-side UBO reads are untrustworthy).
+        float light_tail;   // 172..175: block size lands at 176 = GLSL's
     } ubo{};
+    static_assert(sizeof(ubo) == 176,
+        "UBO layout drifted from the shaders' std140 block (176 B) — "
+        "light/matrix reads land on the wrong bytes (the 2026-09-03 alignment trap)");
     std::memcpy(ubo.proj, proj, sizeof(proj));
     std::memcpy(ubo.view, view, sizeof(view));
     ubo.resolution[0] = static_cast<float>(extent_.width);
@@ -5409,6 +5424,10 @@ bool Engine::frame() {
     ubo.floor_y = 0.0f;   // THE grid plane: push_grid_overlay draws the floor at y=0
     ubo.shadow_alpha = 0.38f;
     ubo.shadow_h0 = fmaxf(g_mesh_ymax - g_mesh_ymin, 1e-3f);
+    {
+        const float* L = ui_.light_dir();   // already unit-length (Studio normalizes)
+        ubo.light_dir[0] = L[0]; ubo.light_dir[1] = L[1]; ubo.light_dir[2] = L[2];
+    }
 
     // Per-slot camera UBO, host-visible + persistently mapped: create once, memcpy
     // per frame. NO staging buffer, NO queue submit, NO vkQueueWaitIdle per frame —
