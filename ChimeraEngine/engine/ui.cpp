@@ -1482,6 +1482,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         char rb[64];
         snprintf(rb, sizeof(rb), "REEL (D3) - every /frame grab lands here  [%d/%d]", reel_count_, REEL_MAX);
         text(R[4][0] + 8, R[4][1] + (22 - lh) * 0.5f, reel_.collapsed ? "+" : rb, 0.62f, 0.66f, 0.74f, 1.f);
+        rect_outline(R[4][0], R[4][1], R[4][2], R[4][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f);   // the container line, same law as the docks
         if (!reel_.collapsed && compare_a_slot_ >= 0 && compare_b_slot_ >= 0) {
             const char* cmp = " A/B ACTIVE ";
             float cw = static_cast<float>(strlen(cmp)) * advance_ + 8.f;
@@ -1497,7 +1498,25 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         if (th < 24.f) th = 24.f;
         float tw = th * (16.f / 9.f);
         if (reel_count_ == 0) {
-            text(R[4][0] + 10, R[4][1] + 30,
+            // same honesty as the no-clock timeline (the eye, 2026-09-03): state
+            // the tray's shape, don't leave a void. ALL REEL_MAX slots are drawn
+            // (the header counts to REEL_MAX; six slots next to [0/12] was a lie
+            // the eye caught), sized to fill the band's width exactly.
+            float ty = R[4][1] + 26;
+            rect(R[4][0] + 10, ty, R[4][2] - 20, th, 0.10f, 0.11f, 0.15f, 0.95f);
+            const float gap = 8.f;
+            const float fit_w = (R[4][2] - 20.f - (REEL_MAX - 1) * gap) / static_cast<float>(REEL_MAX);
+            const float fit_h = fit_w * (9.f / 16.f);
+            for (int i = 0; i < REEL_MAX; ++i) {
+                float px = R[4][0] + 10 + i * (fit_w + gap);
+                rect_outline(px, ty + 6, fit_w, fit_h, 1.f,
+                             i == 0 ? 0.85f : 0.30f, i == 0 ? 0.60f : 0.33f,
+                             i == 0 ? 0.25f : 0.40f, 1.f);
+                char ib[16]; snprintf(ib, sizeof(ib), "%d", i);
+                text(px + 4, ty + 8, ib, i == 0 ? 0.85f : 0.40f,
+                     i == 0 ? 0.60f : 0.42f, i == 0 ? 0.25f : 0.50f, 1.f);
+            }
+            text(R[4][0] + 10, ty + th + 2,
                  "no grabs yet - GET /frame (or /stream) and the capture docks here with its t, joint, theta, camera",
                  0.85f, 0.55f, 0.30f, 1.f);
         } else {
@@ -1530,6 +1549,10 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     text(R[3][0] + 8, R[3][1] + (22 - lh) * 0.5f,
          bottom_.collapsed ? "+" : "TIMELINE (D1) - the show clock is a parameter",
          0.62f, 0.66f, 0.74f, 1.f);
+    // the container line, same law as the docks (2026-09-03, the eye): the
+    // timeline and reel never got one, so the bottom bands read as voids with
+    // text in them — not panels. A panel is a thing on screen, not a rumor.
+    rect_outline(R[3][0], R[3][1], R[3][2], R[3][3], 1.f, 0.30f, 0.60f, 1.00f, 0.55f);
     if (!bottom_.collapsed) {
         float x = R[3][0] + 10, y = R[3][1] + 28;
         // buttons: [PAUSE/PLAY] [-1f] [+1f] [speed] — ASCII glyphs (the atlas is ASCII)
@@ -1607,8 +1630,25 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                          key_marks_ui_.size() == 1 ? "" : "s");
                 text(x, bar_y + bar_h + 6, hb, 0.62f, 0.66f, 0.74f, 1.f);
             } else {
-                text(x, bar_y, "no clock - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
+                // 2026-09-03, the eye (loaded review): with no clock loaded this
+                // band was one amber line of void — the dyad read the empty
+                // bottom band as dead space. A viewport gets a grid before a
+                // mesh; the timeline gets the same honesty: an instrument
+                // scaffold (baseline + ticks + readout) that states what fills
+                // it. Static, truth-bearing, and gone the moment a clock lands.
+                rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.10f, 0.11f, 0.15f, 0.95f);
+                rect_outline(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 1.f, 0.50f, 0.55f, 0.65f, 1.f);
+                const float mid = bar_y + bar_h * 0.5f;
+                rect(scrub_rect_[0], mid, scrub_rect_[2], 1.f, 0.40f, 0.44f, 0.52f, 1.f);
+                for (int i = 1; i < 10; ++i) {
+                    float tx = scrub_rect_[0] + (i / 10.f) * scrub_rect_[2];
+                    rect(tx, mid - 5.f, 1.f, 10.f, 0.45f, 0.48f, 0.56f, 1.f);
+                }
+                text(x, bar_y, "no clock loaded - POST /hinge_bin (the march) or /joints_bin (the 19-joint show)",
                      0.85f, 0.55f, 0.30f, 1.f);
+                text(x, bar_y + bar_h + 6,
+                     "keys, markers and the playhead land here the moment a clock exists",
+                     0.45f, 0.47f, 0.52f, 1.f);
             }
         } else {
             rect(scrub_rect_[0], bar_y, scrub_rect_[2], bar_h, 0.12f, 0.13f, 0.17f, 0.95f);

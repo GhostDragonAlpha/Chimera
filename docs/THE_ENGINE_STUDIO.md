@@ -1556,6 +1556,19 @@ state change. **Lane guard:** the subject is loaded through `/mesh_bin`
 not load it over the creature. Camera framing note: auto-frame (r≈27.9) renders
 the subject small in an 800×600 `/frame`; r≈14–16 fills it.
 
+### The bottom bands learn to be panels (2026-09-03, loaded review rounds 2–4)
+
+The dyad walked the fix chain against each glass capture: the TIMELINE's no-
+clock branch was one amber line of void → an instrument scaffold (baseline +
+ticks) inside the scrub rect, brighter outline; then both bottom bands got the
+blue container line the docks always had — "a panel is a thing on screen" was
+never applied to R[3]/R[4], which was the perceptual root of the original
+defect 2; then the empty REEL tray drew 6 of 12 slots next to a header that
+counts to 12 — the eye caught the lie, so the tray now draws ALL REEL_MAX
+slots, sized to fill the band exactly (slot 0 promoted, amber). Round-4
+verdict: "slots 0–11 stretch edge-to-edge… none [remaining] that reads as
+broken/placeholder." Shipped to the operator's window in Release `963da89e…`.
+
 ### The right dock's no-selection view (2026-09-03, the loaded review)
 
 The dyad's second review (creature loaded, `Saved/dyad/2026-09-03_loaded_review`)

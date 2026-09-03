@@ -1593,3 +1593,10 @@ now lists the live `/scene` rows (chip + label + detail) under its status lines 
 the dock reads as a full instrument instead of 77% void. View-only by law:
 mutations stay behind SCENE-mode toggles and the console. Verified by band
 measurement, `/scene` parity, and a dyad visual read.
+
+**2026-09-03 bottom-band panels.** No-clock TIMELINE draws an instrument
+scaffold (baseline + ticks) instead of a void; TIMELINE and REEL gained the
+docks' blue container line (the original defect 2's perceptual root); the
+empty REEL tray draws all `REEL_MAX` slots sized to the band — the header's
+count and the tray's shape now agree. Dyad round-4: no region reads as broken
+or placeholder.
