@@ -5009,6 +5009,13 @@ bool Engine::frame() {
     console_drain();    // F1: finished console responses land in the scrollback
     // B3: consume a queued synthetic click (agents drive the panels over HTTP —
     // input lands on the render thread, same discipline as the WndProc's)
+    // D4a: HTTP compare requests are consumed on the render thread, before
+    // prepare() publishes the current glass. GET /compare therefore reads a
+    // committed selection, never a half-applied network intent.
+    if (compare_request_pending_.exchange(false)) {
+        ui_.apply_compare_request(compare_request_slot_.load(),
+                                  compare_request_clear_.load());
+    }
     if (ui_click_pending_.exchange(false)) {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
         ui_.on_lbutton(0, 0, false);
@@ -5951,6 +5958,13 @@ bool Engine::frame_idle_ui() {
     console_drain();    // F1: the console answers even when every 3D path idles
     // B3: consume a queued synthetic click (idle path too — the Studio must
     // answer even when every 3D path idles)
+    // D4a: HTTP compare requests are consumed on the render thread, before
+    // prepare() publishes the current glass. GET /compare therefore reads a
+    // committed selection, never a half-applied network intent.
+    if (compare_request_pending_.exchange(false)) {
+        ui_.apply_compare_request(compare_request_slot_.load(),
+                                  compare_request_clear_.load());
+    }
     if (ui_click_pending_.exchange(false)) {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
         ui_.on_lbutton(0, 0, false);

@@ -1427,6 +1427,27 @@ int main(int argc, char** argv) {
             // D3: the grab ledger (newest first) — the dyad's evidence-tray channel
             body = g_engine ? g_engine->reel_json() : "{\"ok\":false,\"error\":\"no engine\"}";
             content_type = "application/json";
+        } else if (p == "/compare" && (method == "GET" || method == "POST")) {
+            // D4a: the automation twin of the reel's visible A/B selector.
+            // POST queues intent; the render thread commits it before prepare(),
+            // and GET exposes only that committed view state.
+            if (g_engine && method == "POST") {
+                std::string op = get_string(req_body, "op");
+                bool clear = (op == "clear");
+                int slot = static_cast<int>(get_float(req_body, "slot", -1.0f));
+                g_engine->queue_ui_compare(slot, clear);
+                body = "{\"ok\":true,\"queued\":true}";
+            } else if (g_engine) {
+                const StudioUI& u = g_engine->ui_;
+                body = std::string("{\"ok\":true,\"a_slot\":") + std::to_string(u.compare_a_slot())
+                     + ",\"b_slot\":" + std::to_string(u.compare_b_slot())
+                     + ",\"a_seq\":" + std::to_string(static_cast<unsigned long long>(u.compare_a_seq()))
+                     + ",\"b_seq\":" + std::to_string(static_cast<unsigned long long>(u.compare_b_seq()))
+                     + "}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/rig" && (method == "GET" || method == "POST")) {
             // D8: explicit FK overlay control/state. Parent links are authored
             // by the rig map; this endpoint never infers topology.

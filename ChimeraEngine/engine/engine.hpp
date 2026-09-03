@@ -611,6 +611,13 @@ public:
     void queue_ui_click(int x, int y) {
         ui_click_x_.store(x); ui_click_y_.store(y); ui_click_pending_.store(true);
     }
+    // D4a: compare commands use the same render-thread membrane as visible clicks.
+    // slot >= 0 selects a reel tile; clear requests no selected pair.
+    void queue_ui_compare(int slot, bool clear = false) {
+        compare_request_slot_.store(slot);
+        compare_request_clear_.store(clear);
+        compare_request_pending_.store(true);
+    }
     // The layout space the panels live in (GET /studio reports it so agents can
     // aim synthetic clicks without a /frame grab — idle mode has no capture).
     uint32_t win_w() const { return extent_.width; }
@@ -618,6 +625,9 @@ public:
 private:
     std::atomic<int>  ui_click_x_{0}, ui_click_y_{0};
     std::atomic<bool> ui_click_pending_{false};
+    std::atomic<int>  compare_request_slot_{-1};
+    std::atomic<bool> compare_request_clear_{false};
+    std::atomic<bool> compare_request_pending_{false};
     // ── GPU bitonic sort (back-to-front splat ordering, no CPU in the per-frame path) ──
     VkShaderModule        sort_mod_ = VK_NULL_HANDLE;
     VkPipeline            sort_pipe_ = VK_NULL_HANDLE;

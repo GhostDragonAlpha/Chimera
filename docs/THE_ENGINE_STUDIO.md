@@ -518,6 +518,40 @@ would otherwise point at newly written pixels.
 
 ---
 
+## SHIPPED — D4a: A/B COMPARE HTTP TWIN (2026-09-02)
+
+**Statement:** the A/B comparison can be controlled and inspected through the
+same render-thread membrane as the Studio UI, so HTTP automation and visible
+clicks cannot diverge.
+
+**Prediction:** `GET /compare` reports the selected A/B reel sequence IDs;
+`POST /compare {"slot":n}` applies the same A → B → new-A selection law, and
+`POST /compare {"op":"clear"}` clears it. Invalid or evicted slots do not enter
+compare, and no simulation state changes.
+
+**Falsifier:** reject the feature if HTTP and glass use different selection
+rules, an invalid slot is accepted, reported state differs from the selected tile
+sequence, requests mutate `/show` or camera state, or the endpoint acts outside
+the render-thread queue.
+
+**What shipped.** `Engine::queue_ui_compare()` carries HTTP intent through
+atomics; both normal and idle frame paths consume that request before
+`StudioUI::prepare()`. The UI applies the same `compare_select()` and
+`compare_clear()` functions used by visible reel hit regions. `GET /compare`
+returns committed `a_slot`, `b_slot`, `a_seq`, and `b_seq`; POST returns
+`queued:true` because the render thread has not necessarily consumed the request
+at response time.
+
+- **Verification:** Debug configuration compiled and linked successfully;
+  source falsifiers passed for the queue API, exactly two render-path consumers,
+  shared UI selection law, committed GET readback, explicit clear operation, and
+  absence of direct engine mutation from the endpoint. `git diff --check` passed.
+  Runtime glass/API verification remains intentionally open because the
+  operator's Release executable was left running and was not interrupted.
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`, `engine/ui.hpp`, this doc.
+
+---
+
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 
 - **Statement:** the DOCS workspace renders the repo's own workflow docs

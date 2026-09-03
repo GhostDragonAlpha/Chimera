@@ -1458,6 +1458,19 @@ passed for selection order, clear/reset, ring invalidation, view-only behavior,
 and independent A/B metadata. Runtime glass verification remains open because
 the live Release process was not interrupted.
 
+**TOOL FEATURE 10c — A/B COMPARE HTTP TWIN (2026-09-02, D4a).** The compare
+selection now has a deterministic automation twin. `POST /compare {"slot":n}`
+queues the same A → B → new-A selection law used by reel tile clicks;
+`POST /compare {"op":"clear"}` queues a clear. `GET /compare` reports the
+committed `a_slot`, `b_slot`, and the selected reel `a_seq`/`b_seq`. Both normal
+and idle render paths consume the atomic request before `prepare()`, so the
+HTTP thread never mutates view state directly and GET never claims a pending
+request is applied. Invalid or evicted slots are rejected by the shared UI
+selection law. Debug compiled and linked; source falsifiers passed for the two
+consumers, shared dispatch, queued POST semantics, committed GET readback, and
+no simulation/camera mutation. Runtime API/glass verification remains open
+because the live Release process was not interrupted.
+
 **TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
 Sheet diamonds are now authoring controls rather than display-only markers.
 They use a dedicated `1000+i` hit-ID range, so they cannot collide with scene

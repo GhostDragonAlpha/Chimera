@@ -510,6 +510,22 @@ public:
                    const std::string& l2, const std::string& l3);
     int  reel_count() const { return reel_count_; }
 
+    // D4a: HTTP requests are applied by the render thread through this same
+    // selection law; getters expose committed state, never pending intent.
+    void apply_compare_request(int slot, bool clear) {
+        if (clear) compare_clear(); else compare_select(slot);
+    }
+    int compare_a_slot() const { return compare_a_slot_; }
+    int compare_b_slot() const { return compare_b_slot_; }
+    uint64_t compare_a_seq() const {
+        return (compare_a_slot_ >= 0 && tiles_[compare_a_slot_].used)
+             ? tiles_[compare_a_slot_].seq : 0;
+    }
+    uint64_t compare_b_seq() const {
+        return (compare_b_slot_ >= 0 && tiles_[compare_b_slot_].used)
+             ? tiles_[compare_b_slot_].seq : 0;
+    }
+
     // ── D4: A/B evidence compare — view state only, never a second renderer ──
     int compare_a_slot_ = -1, compare_b_slot_ = -1;
     void compare_select(int slot);
