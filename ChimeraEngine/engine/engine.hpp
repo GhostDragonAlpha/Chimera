@@ -85,6 +85,7 @@ public:
         double light[3];
     };
     std::string reel_json() const;        // newest-first ledger for GET /reel
+    void push_timeline_markers();         // D2: derive markers from show windows + reel ledger
 
     // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
     bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
