@@ -1448,6 +1448,30 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 y = text_wrap(x, y, line, status_maxc, TR, TG, TB, 0.95f, y_max);
                 y += 2;
             }
+            // 2026-09-03, the eye (loaded review): with no atom selected this dock
+            // drew its 7 status rows and left ~77% of itself empty — the dyad read
+            // the voids under the side panels as dead space ("half of both side
+            // panels are dead black space"). The engine already composes the live
+            // scene rows every frame (the /scene twin's own source), so the STATUS
+            // view shows them: an honest readout covers the dock, the panel
+            // invents nothing. VIEW ONLY — toggles stay in SCENE mode (left dock).
+            if (y <= y_max && !scene_.empty()) {
+                y += 6;
+                text(x, y, "SCENE - live systems (SCENE mode to toggle)", 0.45f, 0.47f, 0.52f, 1.f);
+                y += lh + 2;
+                for (const auto& r : scene_) {
+                    if (y > y_max) break;
+                    // state chip: on = green, off = dim grey, read-only row = blue
+                    float cr = 0.55f, cg = 0.85f, cb = 0.55f;
+                    if (r.toggleable && r.state == 0) { cr = cg = cb = 0.45f; }
+                    else if (!r.toggleable)           { cr = 0.55f; cg = 0.70f; cb = 0.95f; }
+                    rect(x, y + lh * 0.30f, 5, 5, cr, cg, cb, 1.f);
+                    const size_t row_maxc = status_maxc > 2 ? status_maxc - 2 : 8;
+                    y = text_wrap(x + 12, y, r.label + "  " + r.detail, row_maxc,
+                                  TR, TG, TB, 0.92f, y_max);
+                    y += 1;
+                }
+            }
         }
     }
 

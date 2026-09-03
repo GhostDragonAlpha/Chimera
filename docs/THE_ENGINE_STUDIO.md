@@ -1556,6 +1556,19 @@ state change. **Lane guard:** the subject is loaded through `/mesh_bin`
 not load it over the creature. Camera framing note: auto-frame (r≈27.9) renders
 the subject small in an 800×600 `/frame`; r≈14–16 fills it.
 
+### The right dock's no-selection view (2026-09-03, the loaded review)
+
+The dyad's second review (creature loaded, `Saved/dyad/2026-09-03_loaded_review`)
+re-scored its six empty-viewport defects: 1/5/6 fixed, 2/3/4 open, and named the
+right dock's ~77% void the worst one — measured: 13 text bands ending at y=325
+of a panel running to y=1416. Fix: when no atom is selected, the STATUS view now
+also renders the live scene rows the engine composes every frame for `/scene`
+(state chip + label + detail, view-only — toggles remain SCENE-mode's alone).
+One formatting site holds: the drawn rows are the `/scene` rows, not a copy.
+Verified: Debug build/link; drawn bands 13→25, deepest y 325→1431; rows equal
+`GET /scene` on 8092; the dyad's read: "Filled… No longer a few lines then
+void." The left dock is now the under-filled panel — the eye's next item.
+
 ### The eye's current list (Saved/dyad/2026-08-31_145002, its own priority)
 
 1. **The empty black viewport reads as BROKEN, not as an empty scene.** Grid +

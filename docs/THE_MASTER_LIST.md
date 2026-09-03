@@ -1587,3 +1587,9 @@ cloud"), and the `/studio` state object present with `studio_state.txt` writing
 on first change. Lane guard recorded in `docs/THE_ENGINE_STUDIO.md`: `/mesh_bin`
 triangles are the subject lane; `/membrane_bin` splats are retired and must not
 overwrite the creature.
+
+**2026-09-03 right-dock scene summary.** With no atom selected, the STATUS panel
+now lists the live `/scene` rows (chip + label + detail) under its status lines —
+the dock reads as a full instrument instead of 77% void. View-only by law:
+mutations stay behind SCENE-mode toggles and the console. Verified by band
+measurement, `/scene` parity, and a dyad visual read.
