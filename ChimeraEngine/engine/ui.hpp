@@ -212,6 +212,7 @@ public:
     std::function<void()>     cb_play_toggle_;
     std::function<void(int)>  cb_step_;          // ±1 frames of 1/240 s
     std::function<void(int)>  cb_key_recall_;    // scrub to key i (h.w carries hit_t)
+    std::function<void(int)>  cb_dope_key_recall_; // D9: recall key time + select keyed joint
     std::function<void()>     cb_key_save_;      // key the live clock time
     std::function<void(int)>  cb_key_delete_;    // G1: delete key by index
     std::function<void()>     cb_key_clear_;     // G1: clear all keys

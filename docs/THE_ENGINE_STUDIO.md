@@ -389,6 +389,34 @@ All screen-space instruments are clipped to the central viewport rectangle.
   this doc.
 - **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
 
+## SHIPPED — D9: ACTIONABLE DOPE SHEET KEYS (2026-09-02)
+
+**Statement:** every visible Dope Sheet key diamond is an authoring control,
+not merely a marker: clicking it recalls the saved clock time and selects the
+joint stored on that key.
+
+**Prediction:** a keyed diamond click will queue its exact persisted `t` and
+select its persisted joint; an unkeyed key will clear joint selection. Existing
+master-timeline diamonds and scene-inspector hits will remain independent.
+
+**Falsifier:** reject the feature if a Dope Sheet key has no distinct hit region,
+if its selected joint is not the saved joint, if recalled time differs from the
+saved time by more than `1e-6`, or if the master timeline/key behavior regresses.
+
+**What shipped.** Dope Sheet diamonds now use the dedicated `1000+i` hot-ID
+range, avoiding the existing `700+i` scene-inspector/master-key collision. The
+engine's `cb_dope_key_recall_` resolves the key through `key_marks_list_info()`,
+selects the saved joint by name, and queues the exact saved time through the
+same render-thread clock scrub path. Keys without joint metadata remain honest:
+they scrub time and leave selection unset rather than claiming anatomy.
+
+- **Build:** Debug configuration compiled and linked successfully. Release
+  source compilation passed; final linking was blocked only because the live
+  Release executable held its output file open, so the running operator session
+  was not interrupted.
+- **Files:** `engine/engine.cpp`, `engine/ui.cpp`, `engine/ui.hpp`, this doc.
+- **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
+
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 
 - **Statement:** the DOCS workspace renders the repo's own workflow docs

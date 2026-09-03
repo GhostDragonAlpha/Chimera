@@ -262,6 +262,8 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id == 850 && cb_cam_save_) cb_cam_save_();             // D6: save the live camera
             if (h.id >= 700 && h.id < 800 && cb_key_recall_)             // D1: key-mark diamonds
                 cb_key_recall_(h.id - 700);
+            if (h.id >= 1000 && h.id < 1100 && cb_dope_key_recall_)       // D9: Dope Sheet key diamonds
+                cb_dope_key_recall_(h.id - 1000);
             if (h.id == 905 && cb_key_save_) cb_key_save_();             // D1: KEY button
             if (h.id == 906 && cb_rig_toggle_) cb_rig_toggle_();         // D8: RIG overlay toggle
             if (h.id >= 910 && h.id < 930 && cb_key_recall_)             // G1: recall pose by index
@@ -1503,7 +1505,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                     float cw = fminf(8.f, (dh - 4) * 0.5f);
                     rect(kx - cw * 0.5f, dy + (dh - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
                     hots_.push_back({ kx - cw * 0.5f, dy + (dh - cw) * 0.5f, cw, cw,
-                                      700 + static_cast<int>(indices[ki]) });
+                                      1000 + static_cast<int>(indices[ki]) });
                 }
                 dy += dh + 2;
             }

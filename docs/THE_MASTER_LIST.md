@@ -1422,6 +1422,16 @@ successful `--restore` boot now auto-fits, so the engine never boots into a
 cropped hero. Verified on the glass: solid subject bbox fully inside the
 viewport, margins 592/914/62/106 px.
 
+**TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
+Sheet diamonds are now authoring controls rather than display-only markers.
+They use a dedicated `1000+i` hit-ID range, so they cannot collide with scene
+inspection or the master timeline's `700+i` keys. Clicking a diamond resolves
+its persisted key metadata, selects the saved joint by name, and queues the
+exact saved clock time through the existing render-thread scrub path. An
+unkeyed key scrubs time but clears joint selection honestly. Debug compiled and
+linked successfully; Release compilation passed and linking was blocked only by
+the live executable lock.
+
 **TOOL FEATURE 8 — AUTHORED FK RIG OVERLAY (2026-09-02, D8).** The JOINTS
 workspace now displays the live creature rig as a toggleable screen-space
 instrument. The JNT1 pack contains joint centers, axes, ROM, weights, and names

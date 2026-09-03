@@ -643,6 +643,14 @@ bool Engine::init(const EngineConfig& cfg) {
                 if (i < 0 || i >= static_cast<int>(ks.size())) return;
                 show_scrub_.store(ks[i].second < 0.0 ? 0.0 : ks[i].second);
             };
+            ui_.cb_dope_key_recall_ = [this](int i) {
+                std::vector<KeyMarkInfo> keys = key_marks_list_info();
+                if (i < 0 || i >= static_cast<int>(keys.size())) return;
+                const KeyMarkInfo& key = keys[static_cast<size_t>(i)];
+                selected_joint_.store(key.joint.empty() ? -1 : joint_index(key.joint),
+                                      std::memory_order_relaxed);
+                show_scrub_.store(key.t < 0.0 ? 0.0 : key.t, std::memory_order_relaxed);
+            };
             ui_.cb_key_save_ = [this] {
                 int sel = selected_joint_.load(std::memory_order_relaxed);
                 std::string jn = (sel >= 0 && sel < static_cast<int>(j_names_.size())) ? j_names_[sel] : std::string();
