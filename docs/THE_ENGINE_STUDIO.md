@@ -1542,6 +1542,20 @@ pixels while the twins read state.
    resize does not rescale yet; the fix is to update the descriptor and destroy
    the old image/view, in its own turn.
 
+### The subject baseline (2026-09-03, post binary-swap)
+
+The live window is the **triangle lane**: `chimera_engine.exe` rebuilt from HEAD
+(exe sha256 prefix `4cc84f9c…`), the creature loaded via `POST /mesh_bin` from
+`Saved/meshes/monkey_birth.bin` (the SALLY monkey birth mesh). Triple-verified:
+pixel analysis (object fills frame at orbit r=16), the dyad's independent visual
+read ("a solid shaded triangle-mesh creature… a continuous polygonal mesh rather
+than a particle cloud"), and `GET /studio` reporting the `state` object — the
+persistence binary confirmed live, with `studio_state.txt` written on first
+state change. **Lane guard:** the subject is loaded through `/mesh_bin`
+(triangles). The `/membrane_bin` splat/orb route is the retired presenter — do
+not load it over the creature. Camera framing note: auto-frame (r≈27.9) renders
+the subject small in an 800×600 `/frame`; r≈14–16 fills it.
+
 ### The eye's current list (Saved/dyad/2026-08-31_145002, its own priority)
 
 1. **The empty black viewport reads as BROKEN, not as an empty scene.** Grid +

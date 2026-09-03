@@ -1577,3 +1577,13 @@ survive load; **falsifier** literal `\\n` records, malformed JSON, bypassed
 setters, or out-of-bounds panels. Static source checks and the configured Debug build/link passed; runtime
 relaunch verification remains open because the live Release process was not
 interrupted.
+
+**2026-09-03 binary swap + subject baseline.** The operator's live Release exe
+was rebuilt from HEAD (`4cc84f9c…`, closing the gap the local agent measured:
+the old instance predated persistence), the triangle creature
+(`Saved/meshes/monkey_birth.bin` via `/mesh_bin`) reloaded and triple-verified —
+pixel fraction, dyad visual read ("continuous polygonal mesh, not a particle
+cloud"), and the `/studio` state object present with `studio_state.txt` writing
+on first change. Lane guard recorded in `docs/THE_ENGINE_STUDIO.md`: `/mesh_bin`
+triangles are the subject lane; `/membrane_bin` splats are retired and must not
+overwrite the creature.
