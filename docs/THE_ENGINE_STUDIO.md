@@ -152,6 +152,31 @@ It is the engine drawing its own state and the repo's own truth over the viewpor
   `engine/engine.{hpp,cpp}` + `engine/main.cpp`, `tools/studio_board.py`.
 - **Next per the menu:** D1 timeline + D3 reel, then B3 stage panels.
 
+## SHIPPED — A2 FOLLOW-UP: PERSISTED STUDIO WORKSPACE (2026-09-03)
+
+- **Statement:** the editor's presentation state can be persisted in one
+  engine-owned store and restored on relaunch without changing simulation state.
+- **Prediction:** visibility, chrome, workspace, document selection/scroll,
+  panel sizes, and collapse flags round-trip through `studio_state.txt`; malformed
+  or non-finite values are ignored, valid panel sizes are clamped to the current
+  window, and an invalid saved stage selection is cleared after the live board
+  loads.
+- **Falsifier:** reject the implementation if the saved file contains literal
+  escape text instead of line records, `/studio` exposes invalid JSON, any HTTP
+  or keyboard path bypasses the `StudioUI` state owner, or restored values can
+  create out-of-bounds panel geometry.
+- **Implementation:** versioned key/value records are loaded before the first
+  frame and saved only after completed UI actions. The existing `/studio` readback
+  includes the same JSON snapshot; F1 and `/studio_chrome` use the same setters
+  as visible controls. Document scroll is clamped only after `prepare()` derives
+  the current display range, so a valid restored position is not erased during
+  startup.
+- **Verification:** source checks cover valid newline/JSON literals,
+  finite-value filtering, setter ownership, board-relative stage clamping, and
+  deferred document-range clamping. The configured Debug build compiled and
+  linked successfully; runtime relaunch verification remains open because the
+  live Release process was not interrupted.
+
 ## SHIPPED — D1: THE TIMELINE (2026-08-29)
 
 The show clock is a **parameter**, not a wall clock. The joints SHOW (H15) no

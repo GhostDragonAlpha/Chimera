@@ -76,6 +76,13 @@ public:
 
     void set_board_file(const std::string& path) { board_path_ = path; }
     void set_fps(float fps, float ft_avg, float ft_max) { fps_ = fps; ft_avg_ = ft_avg; ft_max_ = ft_max; }
+    void set_visible(bool on) { visible = on; studio_state_save(); }
+    bool studio_visible() const { return visible; }
+    void toggle_visible() { set_visible(!visible); }
+    void set_bar_on(bool on) { bar_on_ = on; studio_state_save(); }
+    bool bar_on() const { return bar_on_; }
+    const char* studio_state_path() const { return studio_state_file_; }
+    std::string studio_state_json() const;
     void set_status_lines(const std::vector<std::string>& lines) { status_lines_ = lines; }
     const StudioBoard& board() const { return board_; }
 
@@ -262,7 +269,7 @@ public:
     // viewport instead of leaving a void the eye has to interpret.
     void set_viewport_empty(bool empty) { viewport_empty_ = empty; }
     int  left_mode() const { return left_mode_; }
-    void set_left_mode(int m) { left_mode_ = m; selected_stage_ = -1; }
+    void set_left_mode(int m) { left_mode_ = m; selected_stage_ = -1; studio_state_save(); }
     // C1: the layout space's font metrics — agents aim slider clicks from these
     // (the same discipline as B3's w/h: the UI publishes, never hides)
     float line_height() const { return cell_h_; }
@@ -530,6 +537,14 @@ public:
     int compare_a_slot_ = -1, compare_b_slot_ = -1;
     void compare_select(int slot);
     void compare_clear();
+
+    // ── A2: persisted Studio layout (one key/value store, loaded once) ──
+    // Presentation state is editor state, not simulation state: it survives a
+    // relaunch, but every value is clamped against the current window geometry.
+    const char* studio_state_file_ = "studio_state.txt";
+    void studio_state_load();
+    void studio_state_save();
+    void studio_state_clamp();
 
     // ── board file polling (the repo's gate truth, read never owned) ──
     std::string board_path_ = "studio_board.json";   // relative to the engine CWD

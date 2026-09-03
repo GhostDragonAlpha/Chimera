@@ -1463,7 +1463,7 @@ int main(int argc, char** argv) {
             // THE ENGINE STUDIO: visibility plus deterministic workspace selection.
             if (g_engine) {
                 bool on = get_bool(req_body, "on", !g_engine->ui_.visible);
-                g_engine->ui_.visible = on;
+                g_engine->ui_.set_visible(on);
                 std::string mode = get_string(req_body, "mode");
                 int mode_id = -1;
                 if (mode == "board") mode_id = 0;
@@ -1500,6 +1500,7 @@ int main(int argc, char** argv) {
                      + "," + std::to_string(g_engine->ui_.link_hot_[3]) + "]"
                      + ",\"link_stage\":" + std::to_string(g_engine->ui_.selected_stage())
                      + ",\"rig_overlay\":" + (g_engine->rig_overlay_on() ? "true" : "false")
+                     + ",\"state\":" + g_engine->ui_.studio_state_json()
                      + "}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
@@ -1638,7 +1639,7 @@ int main(int argc, char** argv) {
             // operator has an out).
             if (g_engine) {
                 if (req_body.find("\"on\"") != std::string::npos)
-                    g_engine->ui_.bar_on_ = get_bool(req_body, "on", true);
+                    g_engine->ui_.set_bar_on(get_bool(req_body, "on", true));
                 body = std::string("{\"ok\":true,\"bar_on\":")
                      + (g_engine->ui_.bar_on_ ? "true" : "false") + "}";
             } else {

@@ -357,7 +357,7 @@ public:
     // (the dyad's /frame stays pixel-clean — the presentation-layer law).
     // F1 toggles; the viewport stays live and orbitable underneath.
     StudioUI ui_;
-    void ui_toggle() { ui_.visible = !ui_.visible; }
+    void ui_toggle() { ui_.toggle_visible(); }
 
     // ── THE STUDIO CLOCK (D1 — the timeline) ────────────────────────────────
     // The show's time is a PARAMETER, not a wall clock: play/pause/speed are

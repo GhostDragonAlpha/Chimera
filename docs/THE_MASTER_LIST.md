@@ -1519,3 +1519,20 @@ persistence is backward-compatible (optional 3rd column). The DopeKey
 struct in ui.hpp avoids circular includes. When a joint pack is loaded and
 keys are saved with joint info, the per-joint rows populate — the editor
 can now author animation per-joint, not just per-clock.
+
+**TOOL FEATURE 10e — PERSISTED STUDIO WORKSPACE (2026-09-03).** The Engine
+Studio now owns a versioned `studio_state.txt` key/value store for visibility,
+chrome, workspace, document selection/scroll, panel sizes, and collapse flags.
+State loads before the first frame and saves after completed UI actions; panel
+sizes are clamped against the current window and non-finite values are ignored.
+The board-relative selected stage is cleared if the live board does not contain
+it. F1, `/studio`, and `/studio_chrome` all use the same setters, while
+`GET /studio` exposes the same valid JSON snapshot for automation. Document
+scroll is clamped after the current wrapped display range is measured, preserving
+valid restored positions during startup. Rule-0 membrane: **statement** one
+engine-owned presentation store restores the editor context without simulation
+mutation; **prediction** valid values round-trip and invalid geometry cannot
+survive load; **falsifier** literal `\\n` records, malformed JSON, bypassed
+setters, or out-of-bounds panels. Static source checks and the configured Debug build/link passed; runtime
+relaunch verification remains open because the live Release process was not
+interrupted.

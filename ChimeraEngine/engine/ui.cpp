@@ -60,6 +60,98 @@ static int ui_json_int(const std::string& body, const char* key, size_t from, in
     return static_cast<int>(strtol(body.c_str() + p, nullptr, 10));
 }
 
+// ── persisted Studio layout (A2) ───────────────────────────────────────────────
+
+void StudioUI::studio_state_clamp() {
+    auto clamp_panel = [](Panel& p, float extent, float scale) {
+        if (extent <= 0.f || scale <= 0.f) return;
+        float lo = p.min_size;
+        float hi = (extent * p.max_frac) / scale;
+        if (hi < lo) hi = lo;
+        if (p.size < lo) p.size = lo;
+        if (p.size > hi) p.size = hi;
+    };
+    clamp_panel(strip_, static_cast<float>(ext_.height), ui_scale_);
+    clamp_panel(left_, static_cast<float>(ext_.width), ui_scale_);
+    clamp_panel(right_, static_cast<float>(ext_.width), ui_scale_);
+    clamp_panel(bottom_, static_cast<float>(ext_.height), ui_scale_);
+    clamp_panel(reel_, static_cast<float>(ext_.height), ui_scale_);
+    if (left_mode_ < 0 || left_mode_ > 6) left_mode_ = 0;
+    if (docs_.current < 0 || docs_.current > 4) docs_.current = 0;
+    if (docs_.scroll < 0.f) docs_.scroll = 0.f;
+}
+
+void StudioUI::studio_state_load() {
+    std::ifstream f(studio_state_file_);
+    if (!f.is_open()) return;
+    std::string key;
+    double value = 0.0;
+    while (f >> key >> value) {
+        if (key == "version") continue;
+        if (!std::isfinite(value)) continue;
+        if (key == "visible") visible = value != 0.0;
+        else if (key == "bar_on") bar_on_ = value != 0.0;
+        else if (key == "left_mode") left_mode_ = static_cast<int>(value);
+        else if (key == "selected_stage") selected_stage_ = static_cast<int>(value);
+        else if (key == "docs_current") docs_.current = static_cast<int>(value);
+        else if (key == "docs_scroll") docs_.scroll = static_cast<float>(value);
+        else if (key == "strip_size") strip_.size = static_cast<float>(value);
+        else if (key == "left_size") left_.size = static_cast<float>(value);
+        else if (key == "right_size") right_.size = static_cast<float>(value);
+        else if (key == "bottom_size") bottom_.size = static_cast<float>(value);
+        else if (key == "reel_size") reel_.size = static_cast<float>(value);
+        else if (key == "strip_collapsed") strip_.collapsed = value != 0.0;
+        else if (key == "left_collapsed") left_.collapsed = value != 0.0;
+        else if (key == "right_collapsed") right_.collapsed = value != 0.0;
+        else if (key == "bottom_collapsed") bottom_.collapsed = value != 0.0;
+        else if (key == "reel_collapsed") reel_.collapsed = value != 0.0;
+    }
+    studio_state_clamp();
+}
+
+void StudioUI::studio_state_save() {
+    std::ofstream f(studio_state_file_, std::ios::trunc);
+    if (!f.is_open()) return;
+    f << "version 1\n"
+      << "visible " << (visible ? 1 : 0) << "\n"
+      << "bar_on " << (bar_on_ ? 1 : 0) << "\n"
+      << "left_mode " << left_mode_ << "\n"
+      << "selected_stage " << selected_stage_ << "\n"
+      << "docs_current " << docs_.current << "\n"
+      << "docs_scroll " << docs_.scroll << "\n"
+      << "strip_size " << strip_.size << "\n"
+      << "left_size " << left_.size << "\n"
+      << "right_size " << right_.size << "\n"
+      << "bottom_size " << bottom_.size << "\n"
+      << "reel_size " << reel_.size << "\n"
+      << "strip_collapsed " << (strip_.collapsed ? 1 : 0) << "\n"
+      << "left_collapsed " << (left_.collapsed ? 1 : 0) << "\n"
+      << "right_collapsed " << (right_.collapsed ? 1 : 0) << "\n"
+      << "bottom_collapsed " << (bottom_.collapsed ? 1 : 0) << "\n"
+      << "reel_collapsed " << (reel_.collapsed ? 1 : 0) << "\n";
+}
+
+std::string StudioUI::studio_state_json() const {
+    std::string out = "{\"path\":\"studio_state.txt\",\"version\":1";
+    out += ",\"visible\":" + std::string(visible ? "true" : "false");
+    out += ",\"bar_on\":" + std::string(bar_on_ ? "true" : "false");
+    out += ",\"left_mode\":" + std::to_string(left_mode_);
+    out += ",\"selected_stage\":" + std::to_string(selected_stage_);
+    out += ",\"docs_current\":" + std::to_string(docs_.current);
+    out += ",\"docs_scroll\":" + std::to_string(docs_.scroll);
+    out += ",\"strip_size\":" + std::to_string(strip_.size);
+    out += ",\"left_size\":" + std::to_string(left_.size);
+    out += ",\"right_size\":" + std::to_string(right_.size);
+    out += ",\"bottom_size\":" + std::to_string(bottom_.size);
+    out += ",\"reel_size\":" + std::to_string(reel_.size);
+    out += ",\"strip_collapsed\":" + std::string(strip_.collapsed ? "true" : "false");
+    out += ",\"left_collapsed\":" + std::string(left_.collapsed ? "true" : "false");
+    out += ",\"right_collapsed\":" + std::string(right_.collapsed ? "true" : "false");
+    out += ",\"bottom_collapsed\":" + std::string(bottom_.collapsed ? "true" : "false");
+    out += ",\"reel_collapsed\":" + std::string(reel_.collapsed ? "true" : "false") + "}";
+    return out;
+}
+
 // ── input ─────────────────────────────────────────────────────────────────────
 
 void StudioUI::on_mouse_move(int x, int y) {
@@ -184,6 +276,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
     if (!visible) return false;
     if (!down) {
         bool had = drag_kind_ != 0;
+        if (had == true && drag_kind_ >= 1 && drag_kind_ <= 8) studio_state_save();
         drag_kind_ = 0;
         drag_joint_ = -1;
         return had;
@@ -238,6 +331,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 int i = h.id - 100;
                 selected_stage_ = (selected_stage_ == i) ? -1 : i;
                 left_mode_ = 0;              // a stage click always shows its envelope (B3)
+                studio_state_save();
             }
             if (h.id >= 300 && h.id < 400) {
                 int i = h.id - 300;          // the workspace rows (A3); three are live so far
@@ -301,11 +395,12 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
         }
     }
     // title bars toggle collapse (Blender's area header law: every area collapses)
-    if (hit_strip_title(x, y)) { strip_.collapsed = !strip_.collapsed; return true; }
-    if (hit_left_title(x, y))  { left_.collapsed  = !left_.collapsed;  return true; }
-    if (hit_right_title(x, y)) { right_.collapsed = !right_.collapsed; return true; }
-    if (hit_bottom_title(x, y)){ bottom_.collapsed = !bottom_.collapsed; return true; }
-    if (hit_reel_title(x, y))  { reel_.collapsed  = !reel_.collapsed;  return true; }
+    if (hit_strip_title(x, y)) { strip_.collapsed = !strip_.collapsed; studio_state_save(); return true; }
+    if (hit_left_title(x, y))  { left_.collapsed  = !left_.collapsed;  studio_state_save(); return true; }
+    if (hit_right_title(x, y)) { right_.collapsed = !right_.collapsed; studio_state_save(); return true; }
+    if (hit_bottom_title(x, y)){ bottom_.collapsed = !bottom_.collapsed; studio_state_save(); return true; }
+    if (hit_reel_title(x, y))  { reel_.collapsed  = !reel_.collapsed;  studio_state_save(); return true; }
+
     // anywhere else inside a panel: consume (never leak a camera orbit through the UI)
     return wants_mouse(x, y);
 }
@@ -364,6 +459,11 @@ void StudioUI::poll_board() {
     }
     b.loaded = !b.stages.empty();
     board_ = std::move(b);
+    if (board_.loaded && (selected_stage_ < -1 ||
+                          selected_stage_ >= static_cast<int>(board_.stages.size()))) {
+        selected_stage_ = -1;
+        studio_state_save();
+    }
 }
 
 // ── draw list ─────────────────────────────────────────────────────────────────
@@ -681,23 +781,27 @@ void StudioUI::docs_rewrap(size_t maxc) {
 
 void StudioUI::docs_clamp_scroll() {
     if (docs_.scroll < 0.f) docs_.scroll = 0.f;
-    if (docs_.scroll > docs_scroll_max_) docs_.scroll = docs_scroll_max_;
+    // A zero maximum is also the pre-measurement value during initialization.
+    // prepare() applies the zero-range clamp after it has measured the display.
+    if (docs_scroll_max_ > 0.f && docs_.scroll > docs_scroll_max_)
+        docs_.scroll = docs_scroll_max_;
 }
 
 void StudioUI::docs_set(int idx) {
     docs_init();
     if (idx < 0 || idx >= static_cast<int>(docs_.paths.size())) return;
-    if (idx == docs_.current) return;
     docs_.current = idx;
-    docs_.mtime = 0;                       // force a reload on the next poll
     docs_.scroll = 0.f;
+    docs_.mtime = 0;                       // force a reload on the next poll
     docs_.last_poll = std::chrono::steady_clock::time_point{};
     docs_poll();
+    studio_state_save();
 }
 
 void StudioUI::docs_set_scroll(float s) {
     docs_.scroll = s;
     docs_clamp_scroll();
+    studio_state_save();
 }
 
 // ── E2: DEEP LINKS ────────────────────────────────────────────────────────────
@@ -717,6 +821,7 @@ void StudioUI::docs_link_stage(int stage_index) {
     selected_stage_ = -1;           // the way back is the strip node (the workspace law)
     docs_set(0);                    // THE_BODY_PIPELINE.md — the board's own source
     docs_.pending_line = line;      // resolved in prepare() through the live wrap map
+    studio_state_save();
 }
 
 int StudioUI::docs_top_src() const {
@@ -735,6 +840,7 @@ bool StudioUI::on_wheel(int x, int y, float delta) {
         return false;
     docs_.scroll -= delta * 3.0f;          // one notch = 3 lines (the platform convention)
     docs_clamp_scroll();
+    studio_state_save();
     return true;
 }
 
@@ -848,8 +954,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             : (left_mode_ == 5 ? "CAPTURE - render-to-MP4 (D5)"
             : (left_mode_ == 6 ? "POSES - the library (G1)"
             : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))))))),
-         TR, TG, TB, 1.f);
-    if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
+         TR, TG, TB, 1.f);        if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
+
     if (left_mode_ != 4) { scene_row_rects_.clear(); scene_sel_rects_.clear(); } // same law
     if (!(left_mode_ == 0 && have_sel)) link_hot_[2] = 0.f;   // E2: same law — no envelope, no link rect
     if (!left_.collapsed && left_mode_ == 2) {
@@ -892,7 +998,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 if (docs_.display_src[i] == tgt) { docs_.scroll = static_cast<float>(i); break; }
             }
         }
-        docs_clamp_scroll();
+        if (docs_scroll_max_ <= 0.f) docs_.scroll = 0.f;
+        else docs_clamp_scroll();
         int first = static_cast<int>(docs_.scroll);
         for (size_t i = static_cast<size_t>(first); i < docs_.display.size(); ++i) {
             if (y > y_max) break;
@@ -2309,8 +2416,9 @@ bool StudioUI::init(VkDevice dev, VkPhysicalDevice phys, VkFormat swap_fmt,
     // A mid-session RESIZE therefore does not rescale yet; recorded, not hidden.
     {
         float s = (h > 0) ? (static_cast<float>(h) / DESIGN_H) : 1.f;
-        ui_scale_ = (s < 1.f) ? 1.f : s;      // never below the design size
+            ui_scale_ = (s < 1.f) ? 1.f : s;      // never below the design size
     }
+    studio_state_load();
 
     // render pass: LOAD the blitted 3D frame, draw, leave it PRESENT-able.
     // initialLayout matches the post-blit TRANSFER_DST (the idle path clears
