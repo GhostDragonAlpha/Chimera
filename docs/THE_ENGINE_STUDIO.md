@@ -438,8 +438,9 @@ the thread-safe reel ledger. The UI receives the read-only marker feed and draws
 compact ticks on both hinge and joints timelines: blue starts, amber ends, and
 green capture events. The normal and idle frame paths both refresh the feed, so
 hidden or mesh-idle Studio operation cannot freeze the timeline's event view.
-Marker labels are retained in the engine-fed data for a future hover inspector;
-this increment intentionally does not invent a second interaction surface.
+The marker labels are retained in the engine-fed data and are inspectable by
+hovering the marker lane; this remains read-only and does not invent a second
+interaction surface.
 
 - **Verification:** Debug configuration compiled and linked successfully;
   structural falsifiers passed for two frame-path feeds, two boundaries per
@@ -447,6 +448,40 @@ this increment intentionally does not invent a second interaction surface.
   kinds/colors. `git diff --check` passed.
 - **Files:** `engine/engine.{hpp,cpp}`, `engine/ui.{hpp,cpp}`, this doc.
 - **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
+
+## SHIPPED — D2 FOLLOW-UP: MARKER HOVER INSPECTION (2026-09-02)
+
+**Statement:** when the pointer rests on a derived timeline marker, the Studio
+can identify that marker from the engine-fed label, kind, and source time without
+changing the clock, pose, or marker feed.
+
+**Prediction:** a pointer inside the scrub lane and within half the marker-lane
+height of a visible marker produces a bounded readout containing its kind, exact
+source time, and label; moving away, hiding the overlay, or collapsing the
+transport clears the readout. Playback, scrubbing, and key-diamond clicks remain
+unchanged.
+
+**Falsifier:** reject the change if a tooltip appears without a nearby marker, if
+its kind/label/time differs from the selected engine marker, if it changes
+transport state, if it survives pointer departure or overlay hiding, or if the
+readout can extend outside the window.
+
+**What shipped.** `StudioUI::on_mouse_move()` retains the render-thread pointer;
+`prepare()` resolves the nearest marker using the same loop-normalized x law as
+the marker renderer. The tolerance is derived from the active scrub-bar height,
+the tooltip is clamped to the window, and hidden-state cleanup clears stale
+hover. The UI reads `timeline_markers_`; it owns no marker or clock state and
+issues no transport callback.
+
+- **Verification:** Debug configuration compiled and linked successfully;
+  source falsifiers passed for pointer tracking, hidden-state clearing, exactly
+  one current-frame hover resolution, marker metadata rendering, no transport
+  callback from the hover path, and intact console compilation. `git diff --check`
+  passed. Runtime glass verification remains intentionally open because the
+  operator's Release executable was left running and was not interrupted.
+- **Files:** `engine/ui.{hpp,cpp}`, this doc.
+
+---
 
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 

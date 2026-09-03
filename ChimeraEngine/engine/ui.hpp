@@ -132,6 +132,12 @@ private:
     Panel reel_ { 172.f, 26.f, 0.40f, false };  // D3: the REEL (above the timeline)
     int   drag_kind_ = 0;   // 0 none, 1 strip border, 2 left, 3 right, 4 bottom, 5 scrub playhead,
                             // 6 reel, 7 joint slider (C1), 8 docs scrollbar (E1)
+    int   cursor_x_ = -1, cursor_y_ = -1;  // last render-thread pointer position
+    bool  marker_hover_ = false;            // D3: derived read-only timeline tooltip
+    float marker_hover_x_ = 0.f, marker_hover_y_ = 0.f;
+    double marker_hover_t_ = 0.0;
+    int   marker_hover_kind_ = 0;
+    std::string marker_hover_label_;
     bool  hit_strip_title(int x, int y) const;
     bool  hit_left_title(int x, int y) const;
     bool  hit_right_title(int x, int y) const;

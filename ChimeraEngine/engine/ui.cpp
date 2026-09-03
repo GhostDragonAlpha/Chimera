@@ -63,6 +63,7 @@ static int ui_json_int(const std::string& body, const char* key, size_t from, in
 // ── input ─────────────────────────────────────────────────────────────────────
 
 void StudioUI::on_mouse_move(int x, int y) {
+    cursor_x_ = x; cursor_y_ = y;
     // Panel sizes are stored in DESIGN units and multiplied by ui_scale_ at
     // layout time, so a drag — which arrives in SCREEN pixels — must be converted
     // at the boundary or the panel jumps by the scale factor the instant you let
@@ -736,7 +737,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     hud_rows_.clear();
     // F2/F3: the chrome draws whether the overlay is open or not. With the
     // overlay closed it is the ONLY thing drawn — "always visible" is literal.
-    if (!visible) { build_chrome(); build_console(); return; }
+    if (!visible) {
+        marker_hover_ = false;
+        marker_hover_label_.clear();
+        build_chrome(); build_console(); return;
+    }
 
     float R[5][4]; layout(win_w, win_h, R);
     const float lh = cell_h_;                       // one text line
@@ -1607,8 +1612,54 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         text(gizmo_[0] + 8, gizmo_[1] - lh * 0.5f, gizmo_label_, 1.0f, 0.85f, 0.40f, 1.f);
     }
 
-    build_chrome();   // F2/F3: the status bar + HUD draw over everything, always
-    build_console();  // F1: the console tops everything when it's open
+    // D3: resolve hover from the current frame's timeline geometry. This is
+    // read-only presentation; no transport state moves and the tooltip is never
+    // one frame stale.
+    marker_hover_ = false;
+    marker_hover_label_.clear();
+    if (cursor_x_ >= 0 && cursor_y_ >= 0 && !bottom_.collapsed && clk_total_ > 0.0f) {
+        const float hover_y0 = scrub_rect_[1] - 6.f;
+        const float hover_y1 = scrub_rect_[1] + scrub_rect_[3] + 6.f;
+        if (cursor_y_ >= hover_y0 && cursor_y_ <= hover_y1 && scrub_rect_[2] > 0.f) {
+            const double period = clk_hinge_period_ > 0.f ? clk_hinge_period_ : clk_total_;
+            const float px = static_cast<float>(cursor_x_);
+            const float max_dx = fmaxf(1.f, scrub_rect_[3] * 0.5f);  // half the active marker lane height
+            double best = 1e30;
+            for (const auto& marker : timeline_markers_) {
+                if (period <= 0.0) break;
+                double mt = marker.t - floor(marker.t / period) * period;
+                float mx = scrub_rect_[0] + static_cast<float>(mt / period) * scrub_rect_[2];
+                float dx = fabsf(px - mx);
+                if (dx <= max_dx && dx < best) {
+                    best = dx; marker_hover_ = true; marker_hover_x_ = mx;
+                    marker_hover_y_ = scrub_rect_[1]; marker_hover_t_ = marker.t;
+                    marker_hover_kind_ = marker.kind; marker_hover_label_ = marker.label;
+                }
+            }
+        }
+    }
+
+    // D3: show the derived marker metadata only while the pointer is close to
+    // the marker tick.
+    if (marker_hover_) {
+        char hb[256];
+        const char* kind = marker_hover_kind_ == 1 ? "WINDOW START"
+                           : marker_hover_kind_ == 3 ? "WINDOW END" : "CAPTURE";
+        snprintf(hb, sizeof(hb), "%s  |  t = %.6f s  |  %s",
+                 kind, marker_hover_t_, marker_hover_label_.c_str());
+        float hw = static_cast<float>(strlen(hb)) * advance_ + 12.f;
+        float hx = marker_hover_x_ + 8.f;
+        if (hx + hw > static_cast<float>(win_w) - 6.f) hx = marker_hover_x_ - hw - 8.f;
+        if (hx < 6.f) hx = 6.f;
+        float hy = marker_hover_y_ - lh - 10.f;
+        if (hy < R[0][3] + 4.f) hy = marker_hover_y_ + scrub_rect_[3] + 8.f;
+        rect(hx, hy, hw, lh + 6.f, 0.04f, 0.05f, 0.08f, 0.96f);
+        rect_outline(hx, hy, hw, lh + 6.f, 1.f, 0.30f, 0.60f, 1.00f, 0.8f);
+        text(hx + 6.f, hy + 3.f, hb, 0.86f, 0.88f, 0.92f, 1.f);
+    }
+
+    build_chrome();
+    build_console();
 }
 
 // ── F1: THE CONSOLE — the HTTP API's interactive twin ──────────────────────

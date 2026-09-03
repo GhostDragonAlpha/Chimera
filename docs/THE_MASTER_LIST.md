@@ -1430,8 +1430,20 @@ count, sweep period, and thread-safe reel ledger; the UI uses the same loop
 normalization as the playhead. Blue start ticks, amber end ticks, and green
 capture ticks are drawn on hinge and joints timelines. Debug compiled and linked;
 source falsifiers passed for both frame paths and the `2 × joint count + reel
-count` derivation. Marker labels are retained for a future hover inspector but
-are not yet a separate interaction surface.
+count` derivation. Marker labels are retained in the engine-fed data and are
+inspectable through the D2 hover readout described below.
+
+**TOOL FEATURE 10a — TIMELINE MARKER HOVER INSPECTION (2026-09-02, D2
+follow-up).** Hovering a derived marker within the scrub lane displays its
+engine-fed kind, exact source time, and label. Pointer tracking is render-thread
+state only; nearest-marker selection uses the same loop-normalized position law
+as drawing, with tolerance derived from half the active marker-lane height.
+The tooltip is window-clamped and clears when the pointer leaves, the overlay is
+hidden, or the transport is collapsed. It does not mutate the clock, pose, or
+marker feed and does not issue a transport callback. Debug compiled and linked;
+source falsifiers passed for current-frame resolution, metadata rendering,
+hidden-state clearing, no transport mutation, and tooltip bounds. Runtime glass
+verification remains open because the live Release process was not interrupted.
 
 **TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
 Sheet diamonds are now authoring controls rather than display-only markers.
