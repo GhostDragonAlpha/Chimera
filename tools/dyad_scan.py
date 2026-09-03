@@ -73,10 +73,14 @@ PART B — REASON: for each defect, hypothesize which MECHANISM behind the pixel
 
 I am not looking for praise. I am looking for defects and your best guesses at their causes.
 
-LENGTH LAW: your whole answer must fit ~400 words. One line per defect for
-Part A (the checklist exists so you can be terse); one short paragraph per
-defect for Part B. A truncated answer is a LOST answer — terseness is how
-your findings survive."""
+LENGTH LAW: fill as much of your 60,000-token budget as possible. Be thorough.
+For each defect found in Part A, provide in Part B: (1) the hypothesized root cause,
+(2) the exact mechanism that failed, (3) a concrete fix with file names and line
+numbers if you can infer them, (4) what the fixed behavior should look like, and
+(5) any side effects or regressions to watch for. If you see patterns across
+defects (e.g. a shared root cause), say so explicitly. If the LIVE STATE block
+contradicts what you see, that contradiction is the highest-priority finding.
+A truncated answer is a LOST answer — thoroughness is how your findings survive."""
 
 
 # ── engine talk ──────────────────────────────────────────────────────────────

@@ -13,7 +13,7 @@ from typing import Iterable
 
 
 DEFAULT_BASE = "http://localhost:1234/v1"
-DEFAULT_MODEL = "unsloth/qwen3.6-35b-a3b"
+DEFAULT_MODEL = "qwen3.8-27b-nvfp4-mtp"
 
 
 @dataclass

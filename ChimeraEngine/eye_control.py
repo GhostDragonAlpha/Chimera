@@ -36,8 +36,8 @@ import time
 import urllib.request
 
 LMSTUDIO_URL = "http://localhost:1234"
-EYE_MODEL = "qwen3.8-flash-next"        # THE decree (2026-09-02): Flash Next for everything
-EYE_CONTEXT_FLOOR = 32000               # the operator's full-context load measured 32k
+EYE_MODEL = "qwen3.8-27b-nvfp4-mtp"       # THE decree (2026-09-02): nvfp4-mtp for everything
+EYE_CONTEXT_FLOOR = 60000                # the operator's 60k token budget
 
 
 def _lms(*args, timeout_s: float = None) -> tuple[int, str]:

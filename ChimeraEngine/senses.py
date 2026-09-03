@@ -5,24 +5,28 @@ Judge should be set to whatever the current model is loaded in LM Studio" -- ado
 pinned, routed through core/lm_gateway's fair queue (the single-endpoint law), which raises
 NoModelLoaded when nothing is resident -> the eye is DARK -> a FAIL, never a skip. Requests go
 over the OpenAI-compatible /v1/chat/completions as base64 data-URL image parts; context budget
-is the server's own (68k at time of decree), so no num_ctx math here. Set
+is the server's own (60,672 at time of update), so no num_ctx math here. Set
 CHIMERA_VISION_BACKEND=ollama to restore the retired qwen3.8 path (kept verbatim below).
 
 AUDIO (the sound dyad) still needs the Omni model on the dedicated llama-server; when that
 server is down the ear is DARK -- an advisory FAIL, never a block (sound is additive).
 
-THE ONE-IMAGE WALL (2026-08-31, operator): the eye is whatever LM Studio has resident, and
-what is resident today is `dirk-qwen3.8-27b@iq4_xs` -- chosen because it fits in the GPU and
-is therefore fast, and it pays for that with a SMALL context (~74k). A movie inlined as twelve
-384px frames does not fit, and the failure is not a clean error: it is a truncated read that
-looks like a verdict. The operator's rule: **one picture per report.** N frames means N calls
-and N reports, aggregated afterwards.
+THE ONE-IMAGE WALL (2026-08-31, operator): the eye is whatever LM Studio has resident.
+The current resident is `qwen3.8-27b-nvfp4-mtp` -- a fast VLM with 60,672 context.
+A movie inlined as twelve 384px frames does not fit, and the failure is not a clean error:
+it is a truncated read that looks like a verdict. The operator's rule: **one picture per
+report.** N frames means N calls and N reports, aggregated afterwards.
 
 So the wall is enforced HERE, in code, instead of living as a thing to remember. It is an
 env-tunable ceiling rather than a hard-coded 1, because the model is ADOPTED, never pinned:
 when a resident model has room for a batch, raise CHIMERA_SENSES_MAX_IMAGES and the lane
 obeys. The ollama lane keeps sizing num_ctx to the frames it is given (that is what
 FRAME_TOKENS is for), so it is exempt.
+
+BUDGET (2026-09-02, operator): "no prompt to it will have more than 60,000 tokens in one
+shot but you should try to fill up as much of that 60,000 as you can" -- the eye's answer
+cap is 60,000 tokens. The model is VERY FAST with this quant, so elaborate, detailed
+analysis is feasible. Truncation at 60k is a LOST answer.
 """
 from __future__ import annotations
 
@@ -42,63 +46,59 @@ LMSTUDIO_URL = os.environ.get("CHIMERA_LMSTUDIO_URL", "http://localhost:1234")  
 # AUDIO backend -- the dedicated llama-server (the Omni model) for the ear only.
 AUDIO_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
 
-# The eye's answer budget. qwen3.8 is a REASONING model: with `think` on it burns the whole budget
-# on `reasoning_content` and returns EMPTY `content`. We run it with thinking DISABLED (`think:false`)
-# so the answer comes straight out -- then a small budget is plenty.
+# The eye's answer budget. qwen3.8-27b-nvfp4-mtp is a REASONING model with a 60,672-token
+# context window. The operator wants elaborate answers: fill as much of the 60k budget
+# as possible. We cap at 60,000 tokens. This is the speed lever: more tokens = longer answer = more time.
+# The model is VERY FAST with this quant, so the trade-off favors quality.
 #
-# THIS IS ALSO THE SPEED LEVER (2026-08-31). MAX_TOKENS was only ever sent on the
-# OLLAMA lane; the LM Studio lane -- the one this studio actually runs -- sent no
-# cap at all, so the server defaulted and the model was free to keep going. A
-# 2560x1440 read was taking 480-500s. Asking for only the tokens a report needs
-# is the difference: the report is ~1.1k tokens of prose, and every token past
-# that is the eye talking itself into a longer answer nobody asked for.
-MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "2600"))
+# Previous budget was 2,600 (qwen3.8-flash-next era). The new model has 23x more
+# context, and the operator wants every token used. Truncation at 60k is a LOST
+# answer -- the eye was cut off mid-thought.
+MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "60000"))
 
 # Measured vision-token cost of one frame at 384px (prompt_eval_count delta): 86 tokens. The
 # context is sized EXACTLY to the frames + answer, so a 256K model is not hauled into VRAM for a
 # movie. Re-measure if you change the frame resolution (see `_post`). (Ollama lane only.)
 FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 
-# ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-08-31) ─────────────
-#   CHIMERA SENSES MODEL = dirk-qwen3.8-27b        context ~16,000 (operator)
+# ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-09-02) ─────────────
+#   CHIMERA SENSES MODEL = qwen3.8-27b-nvfp4-mtp   context 60,672 (operator)
 #
-# THE CONTEXT IS THE OPERATOR'S CALL, NOT OURS TO MANAGE. They set it — "let's
-# make 16,000 the standard size because I can fit all that on GPU" — and it is
-# loaded by them, in LM Studio, at load time (a request cannot change it; the
-# context is fixed when the model is loaded). We record what the server reports
-# and never push a num_ctx at it: LM Studio owns the loaded context, and
-# overriding it can trigger a reload, which is the eviction war
-# core/lm_gateway exists to prevent.
+# THE CONTEXT IS THE OPERATOR'S CALL, NOT OURS TO MANAGE. They set it — loaded
+# by them, in LM Studio, at load time (a request cannot change it; the context
+# is fixed when the model is loaded). We record what the server reports and never
+# push a num_ctx at it: LM Studio owns the loaded context, and overriding it can
+# trigger a reload, which is the eviction war core/lm_gateway exists to prevent.
 #
 # For the record, so the next agent does not re-derive it: the context is the
-# dominant cost of a read. Loaded at 130,048, one 2560x1440 frame took 483s. The
-# same frame at ~16,000 takes 56s. A frame that size is 3,771 prompt tokens
-# (measured), a report is ~1,400, so ~5,200 is what is actually needed; 16,000
-# is the operator's headroom, and it fits on their GPU. Slower or faster is
-# theirs to choose — the instrument just reports what it saw.
-# `type: vlm` is the whole ballgame — the previous candidate
-# (qwen3.8-flash-next-reap-320) is `type: llm` and refuses images outright:
-#   "The provided messages contain images, but qwen3.8-flash-next-reap-320 does
-#    not support image inputs."
-# A faster or stronger model is irrelevant to a dyad that cannot see.
+# dominant cost of a read. Loaded at 60,672, one 2560x1440 frame takes ~30-60s
+# on this fast quant. A frame that size is ~3,771 prompt tokens (measured), the
+# briefing is ~1,500 tokens, and the question ~500 tokens, so ~5,800 is what is
+# actually needed as INPUT. The remaining ~55,000 tokens are the eye's answer
+# budget — fill it with elaborate, detailed analysis.
 #
-# The ceiling is the SERVER'S OWN reported loaded context, not a guess and not the
-# 75,000 of the earlier iq4_xs quant. It is a budget, not a licence: the
-# one-image-per-call wall (MAX_IMAGES_PER_CALL) stays, because a report is ABOUT
-# one picture — batching frames would make the eye describe a sequence instead of
-# judging a frame. The headroom is there if a future decree wants it.
-SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "qwen3.8-flash-next")
-SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "130048"))
+# `type: vlm` is the whole ballgame — the model MUST accept images.
+# qwen3.8-27b-nvfp4-mtp is a VLM (vision-language model) that accepts images
+# and has a 60,672-token context. The operator chose it for speed + quality.
+#
+# The ceiling is the SERVER'S OWN reported loaded context (60,672), not a guess.
+# It is a budget, not a licence: the one-image-per-call wall (MAX_IMAGES_PER_CALL)
+# stays, because a report is ABOUT one picture — batching frames would make the
+# eye describe a sequence instead of judging a frame. The headroom is there if
+# a future decree wants it.
+SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "qwen3.8-27b-nvfp4-mtp")
+SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "60672"))
 
 # A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
 # smallest possible image that still proves the resident model ACCEPTS an image
 # at all. See can_see().
 _PROBE_PNG_B64 = ("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGMUERFhwAaYsIoOWgkA"
                   "NXAATOBnBRAAAAAASUVORK5CYII=")
-# because the resident model's context is unknown to us and today's resident model
-# (qwen3.8 iq4_xs, chosen to fit the GPU) has ~74k -- a 12-frame movie inlined into one request
-# does not fit, and it fails by truncation rather than by error. 0 = no ceiling (use only when
-# you know the resident model has the room). The ollama lane sizes num_ctx instead (see _post).
+# The resident model (qwen3.8-27b-nvfp4-mtp) has 60,672 context tokens. A movie
+# inlined as twelve 384px frames does not fit, and the failure is not a clean
+# error: it is a truncated read that looks like a verdict. 0 = no ceiling (use
+# only when you know the resident model has the room). The ollama lane sizes
+# num_ctx instead (see _post).
 MAX_IMAGES_PER_CALL = int(os.environ.get("CHIMERA_SENSES_MAX_IMAGES", "1"))
 
 
@@ -280,14 +280,14 @@ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = 
     fair-queue gateway (single endpoint law; adopt-never-pin; NoModelLoaded = eye dark).
     Images pass as base64 data URLs -- the OpenAI parts format needs no reassembly here."""
     gw = _lm_gateway()
-    # max_tokens IS SENT HERE. The budget existed but was only ever honoured on
-    # the retired ollama lane, so the lane that actually runs had no ceiling and
-    # the eye took 8 minutes to say what fits in 1.4k tokens.
-    #
-    # num_ctx is deliberately NOT sent: LM Studio owns the loaded context
-    # (130,048, reported by /api/v0/models), and pushing a num_ctx at it can
-    # trigger a reload -- which is the eviction war core/lm_gateway exists to
-    # prevent. We cap what the eye may SAY, never what it may SEE.
+# max_tokens IS SENT HERE. The budget is 60,000 tokens — filling as much of
+# the 60,672 context as possible. The model is fast (nvfp4 quant), so longer
+# answers are feasible. Truncation at 60k is a LOST answer.
+#
+# num_ctx is deliberately NOT sent: LM Studio owns the loaded context
+# (60,672, reported by /api/v0/models), and pushing a num_ctx at it can
+# trigger a reload -- which is the eviction war core/lm_gateway exists to
+# prevent. We cap what the eye may SAY, never what it may SEE.
     body = {"model": SENSES_MODEL,   # NAMED, not "resident" — see the decree above.
                                      # A dyad whose eye changes identity between
                                      # readings produces reports that cannot be
@@ -327,9 +327,8 @@ def last_finish_reason():
     THIS IS THE TRUNCATION TELL. `finish_reason == "length"` means the report was
     cut off by max_tokens — mid-sentence, usually mid-word. A truncated report is
     a LOST report, and filing one as if it were complete is exactly the silent
-    success this project exists to kill. It is not a rare case: the verbose eye
-    (qwen3.8-flash-next) had 5 of its 6 non-empty reads truncated at 1400 tokens,
-    and 2 reads came back empty because reasoning ate the whole budget.
+    success this project exists to kill.    With the 60k budget, truncation is rare
+    but still possible on very elaborate answers.
     """
     return _FINISH
 
@@ -350,7 +349,7 @@ def ensure_eye() -> bool:
         st = eye_control.status()
         if st.get("eye_state") == "loaded":
             return True
-        print(f"[senses] eye dark — loading {eye_control.EYE_MODEL} on demand "
+        print(f"[senses] eye dark — loading {SENSES_MODEL} on demand "
               f"(unbounded wait; the operator decides when to start over) ...", flush=True)
         r = eye_control.load()
         return bool(r.get("ok"))
