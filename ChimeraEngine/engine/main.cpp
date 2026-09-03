@@ -1113,7 +1113,8 @@ int main(int argc, char** argv) {
                     body = "{\"ok\":true}";
                 } else {   // save is the default op (the KEY button's intent)
                     int sel = g_engine->selected_joint_.load(std::memory_order_relaxed);
-                    std::string jn = g_engine->show_joint_name(sel);
+                    std::string jn = (sel >= 0 && sel < static_cast<int>(g_engine->show_joint_count()))
+                                    ? g_engine->show_joint_name(static_cast<uint32_t>(sel)) : std::string();
                     std::string nm = g_engine->key_mark_save(name, jn);
                     double t = 0.0;
                     g_engine->key_mark_time(nm, t);
@@ -1426,13 +1427,35 @@ int main(int argc, char** argv) {
             // D3: the grab ledger (newest first) — the dyad's evidence-tray channel
             body = g_engine ? g_engine->reel_json() : "{\"ok\":false,\"error\":\"no engine\"}";
             content_type = "application/json";
+        } else if (p == "/rig" && (method == "GET" || method == "POST")) {
+            // D8: explicit FK overlay control/state. Parent links are authored
+            // by the rig map; this endpoint never infers topology.
+            if (g_engine && method == "POST") {
+                bool on = get_bool(req_body, "on", g_engine->rig_overlay_on());
+                g_engine->set_rig_overlay(on);
+            }
+            body = std::string("{\"on\":") + ((g_engine && g_engine->rig_overlay_on()) ? "true" : "false")
+                 + ",\"segments\":" + std::to_string(g_engine ? g_engine->ui_.rig_segment_count() : 0)
+                 + "}";
+            content_type = "application/json";
         } else if (p == "/studio" && method == "POST") {
-            // THE ENGINE STUDIO: the F1 toggle's HTTP twin (agents can't press keys)
+            // THE ENGINE STUDIO: visibility plus deterministic workspace selection.
             if (g_engine) {
                 bool on = get_bool(req_body, "on", !g_engine->ui_.visible);
                 g_engine->ui_.visible = on;
+                std::string mode = get_string(req_body, "mode");
+                int mode_id = -1;
+                if (mode == "board") mode_id = 0;
+                else if (mode == "joints") mode_id = 1;
+                else if (mode == "docs") mode_id = 2;
+                else if (mode == "log") mode_id = 3;
+                else if (mode == "scene") mode_id = 4;
+                else if (mode == "capture") mode_id = 5;
+                else if (mode == "poses") mode_id = 6;
+                if (mode_id >= 0) g_engine->ui_.set_left_mode(mode_id);
             }
-            body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false") + "}";
+            body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false")
+                 + ",\"left_mode\":" + std::to_string(g_engine ? g_engine->ui_.left_mode() : -1) + "}";
             content_type = "application/json";
         } else if (p == "/studio" && method == "GET") {
             // B3: the panel state for agents — visibility + the selected stage
@@ -1455,6 +1478,7 @@ int main(int argc, char** argv) {
                      + "," + std::to_string(g_engine->ui_.link_hot_[2])
                      + "," + std::to_string(g_engine->ui_.link_hot_[3]) + "]"
                      + ",\"link_stage\":" + std::to_string(g_engine->ui_.selected_stage())
+                     + ",\"rig_overlay\":" + (g_engine->rig_overlay_on() ? "true" : "false")
                      + "}";
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";

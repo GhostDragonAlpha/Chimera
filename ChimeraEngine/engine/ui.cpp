@@ -263,6 +263,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id >= 700 && h.id < 800 && cb_key_recall_)             // D1: key-mark diamonds
                 cb_key_recall_(h.id - 700);
             if (h.id == 905 && cb_key_save_) cb_key_save_();             // D1: KEY button
+            if (h.id == 906 && cb_rig_toggle_) cb_rig_toggle_();         // D8: RIG overlay toggle
             if (h.id >= 910 && h.id < 930 && cb_key_recall_)             // G1: recall pose by index
                 cb_key_recall_(h.id - 910);
             if (h.id >= 930 && h.id < 940 && cb_key_delete_)             // G1: delete pose by index
@@ -1101,6 +1102,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                  0.45f, 0.47f, 0.52f, 1.f); y += lh;
             text(x, y, "drag a slider = pose intent (clamps to the derived ROM)",
                  0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+            std::string rig_label = rig_overlay_ui_ ? "[RIG ON]  FK chain overlay" : "[RIG OFF] FK chain overlay";
+            text(x, y, rig_label, rig_overlay_ui_ ? 0.30f : 0.62f,
+                 rig_overlay_ui_ ? 0.75f : 0.40f, rig_overlay_ui_ ? 1.00f : 0.42f, 1.f);
+            hots_.push_back({ x - 2, y - 2, 22 * advance_, lh + 4, 906 });
+            y += lh + 4;
             const float name_w = 15 * advance_;
             const float val_w  = 8 * advance_;
             float tx = x + name_w + 4;
@@ -1514,8 +1520,50 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     // These are screen-space segments over world points the engine projected —
     // the grid is an instrument, never matter.
     if (visible) {
+        // D8/C1 overlays belong to the central viewport only. Clip screen-space
+        // instruments at the dock boundaries so a long projected axis cannot
+        // bleed into the REEL or timeline chrome.
+        const float clip_x0 = R[1][2], clip_y0 = R[0][3];
+        const float clip_x1 = R[2][0], clip_y1 = R[4][1];
+        auto inside_viewport = [&](float px, float py) {
+            return px >= clip_x0 && px <= clip_x1 && py >= clip_y0 && py <= clip_y1;
+        };
+        auto clipped_line = [&](float ax, float ay, float bx, float by, float th,
+                                float r, float g, float b, float a) {
+            // Liang-Barsky: retain the portion inside the central viewport.
+            float dx = bx - ax, dy = by - ay;
+            float t0 = 0.f, t1 = 1.f;
+            auto cut = [&](float p, float q) {
+                if (fabsf(p) < 1e-6f) return q >= 0.f;
+                float t = q / p;
+                if (p < 0.f) { if (t > t1) return false; if (t > t0) t0 = t; }
+                else         { if (t < t0) return false; if (t < t1) t1 = t; }
+                return true;
+            };
+            if (!cut(-dx, ax - clip_x0) || !cut(dx, clip_x1 - ax) ||
+                !cut(-dy, ay - clip_y0) || !cut(dy, clip_y1 - ay)) return;
+            line(ax + t0 * dx, ay + t0 * dy, ax + t1 * dx, ay + t1 * dy,
+                 th, r, g, b, a);
+        };
         for (const auto& gl : grid_)
-            line(gl.x0, gl.y0, gl.x1, gl.y1, 1.f, gl.r, gl.g, gl.b, gl.a);
+            clipped_line(gl.x0, gl.y0, gl.x1, gl.y1, 1.f, gl.r, gl.g, gl.b, gl.a);
+        // D8: the authored FK chain, projected by the engine. This is an
+        // editor instrument over the membrane, not a second renderable body.
+        if (rig_overlay_ui_) {
+            for (const auto& rs : rig_segments_) {
+                const float r = rs.selected ? 1.00f : 0.30f;
+                const float g = rs.selected ? 0.72f : 0.75f;
+                const float b = rs.selected ? 0.18f : 0.95f;
+                clipped_line(rs.x0, rs.y0, rs.x1, rs.y1, rs.selected ? 3.0f : 2.0f,
+                             r, g, b, rs.selected ? 0.95f : 0.72f);
+                if (inside_viewport(rs.x0, rs.y0))
+                    rect(rs.x0 - 2.5f, rs.y0 - 2.5f, 5.f, 5.f, r, g, b,
+                         rs.selected ? 1.f : 0.82f);
+                if (inside_viewport(rs.x1, rs.y1))
+                    rect(rs.x1 - 2.5f, rs.y1 - 2.5f, 5.f, 5.f, r, g, b,
+                         rs.selected ? 1.f : 0.82f);
+            }
+        }
         if (viewport_empty_) {
             // SAY IT. A void makes the eye invent an explanation, and the
             // explanation it invents is "render failed".

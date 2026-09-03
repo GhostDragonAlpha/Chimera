@@ -58,6 +58,10 @@ struct StudioJoint {
 // from world points the ENGINE projected (project_world). An instrument, never matter.
 struct StudioGridLine { float x0, y0, x1, y1, r, g, b, a; };
 
+// 2026-09-02: one explicit FK segment projected by the engine. Parent links are
+// authored by the rig topology, never inferred from spatial proximity.
+struct StudioRigSegment { float x0, y0, x1, y1; bool selected; };
+
 class StudioUI {
 public:
     bool visible = true;     // default-ON (2026-09-01): a relaunch must not come up bare — F1 still toggles; the viewport stays live underneath
@@ -159,6 +163,8 @@ private:
     float       gizmo_[4] = {0, 0, 0, 0};       // x0,y0 (J) -> x1,y1 (J + axis * band RMS)
     std::string gizmo_label_;
     std::vector<StudioGridLine> grid_;                // the viewport reference frame
+    std::vector<StudioRigSegment> rig_segments_;      // D8: projected FK links
+    bool        rig_overlay_ui_ = true;              // engine-pushed toggle state
     bool        viewport_empty_ = false;        // nothing loaded — say so
 
     // ── E1: THE DOCS BROWSER (the DOCS workspace's left-dock mode, left_mode_ 2) ──
@@ -213,6 +219,7 @@ public:
     std::function<void(double)> cb_scrub_;       // absolute time target
     // C1: the joints editor's intents — select toggles the gizmo+paint target;
     // a theta intent is an ownership claim (the editor takes the pose)
+    std::function<void()>           cb_rig_toggle_;  // D8: toggle explicit FK overlay
     std::function<void(int)>         cb_joint_select_;
     std::function<void(int, float)>  cb_joint_theta_;
 
@@ -236,6 +243,11 @@ public:
     // projected through its own camera (project_world) — one projection law, so
     // the grid cannot disagree with whatever is standing on it.
     void set_grid_lines(std::vector<StudioGridLine> lines) { grid_ = std::move(lines); }
+    void set_rig_segments(std::vector<StudioRigSegment> segments, bool enabled) {
+        rig_segments_ = std::move(segments); rig_overlay_ui_ = enabled;
+    }
+    bool rig_overlay() const { return rig_overlay_ui_; }
+    size_t rig_segment_count() const { return rig_segments_.size(); }
     // honest emptiness: when there is genuinely nothing loaded, SAY SO in the
     // viewport instead of leaving a void the eye has to interpret.
     void set_viewport_empty(bool empty) { viewport_empty_ = empty; }

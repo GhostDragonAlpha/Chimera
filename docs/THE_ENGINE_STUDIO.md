@@ -355,6 +355,40 @@ slider clicks.
   `engine/shaders/joints.comp`, this doc.
 - **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
 
+## SHIPPED — D8: THE AUTHORED FK RIG OVERLAY (2026-09-02)
+
+**Statement:** the JOINTS workspace can show the loaded creature's authored FK
+links as a toggleable viewport instrument, without inventing parent links from
+spatial proximity or altering the triangle mesh.
+
+**Prediction:** the known 19-joint monkey pack produces exactly 18 projected FK
+segments; turning the overlay off changes only central-viewport overlay pixels,
+and turning it back on restores the same segment count and visible chain.
+
+**Falsifier:** reject the feature if the loaded pack cannot produce the 18
+explicit links, if the toggle does not round-trip, if overlay pixels bleed into
+the reel/timeline chrome, or if an endpoint is not coincident with its source
+joint projection under the engine's camera law.
+
+**What shipped.** The native FK topology is represented by an explicit name map:
+neck → jaw/spine, spine → tail/shoulders/hips, and limb chains through wrists and
+ankles. The JNT1 payload has centers, axes, ROM, weights, and names but no parent
+array, so unknown links are omitted rather than guessed. `push_rig_overlay()`
+projects the live joint centers through the engine camera; the Studio draws the
+segments and endpoint markers in cyan/amber screen space. JOINTS exposes a
+`[RIG ON/OFF] FK chain overlay` control, `POST/GET /rig` reports and toggles it,
+and `POST /studio {"mode":"joints"}` selects the workspace deterministically.
+All screen-space instruments are clipped to the central viewport rectangle.
+
+- **Verification:** 19 joints → **18 authored FK segments**; toggle
+  `true → false → true`; the on/off capture changed 7,388 central-viewport
+  pixels; the final glass showed the chain without chrome bleed. Independent
+  pixel probes confirmed the tail edge and both ankle edges were present, so
+  the dyad's conflicting visual claims were not used to corrupt valid rig data.
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/main.cpp`, `engine/ui.{hpp,cpp}`,
+  this doc.
+- **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
+
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 
 - **Statement:** the DOCS workspace renders the repo's own workflow docs

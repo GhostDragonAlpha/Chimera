@@ -420,6 +420,14 @@ public:
     // are kept; pan zeroes. Returns false with no mesh.
     bool                  camera_fit(float out[8]);
 
+    // D8: explicit FK rig overlay. Parent links come from the authored rig map;
+    // the renderer projects them and the UI draws them in screen space.
+    std::atomic<bool>     rig_overlay_on_{true};
+    void                  set_rig_overlay(bool on) { rig_overlay_on_.store(on, std::memory_order_relaxed); }
+    bool                  rig_overlay_on() const { return rig_overlay_on_.load(std::memory_order_relaxed); }
+    void                  push_rig_overlay();
+
+
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
                       uint32_t n, uint32_t n_bones);

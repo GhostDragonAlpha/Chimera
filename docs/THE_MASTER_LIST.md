@@ -1422,6 +1422,20 @@ successful `--restore` boot now auto-fits, so the engine never boots into a
 cropped hero. Verified on the glass: solid subject bbox fully inside the
 viewport, margins 592/914/62/106 px.
 
+**TOOL FEATURE 8 — AUTHORED FK RIG OVERLAY (2026-09-02, D8).** The JOINTS
+workspace now displays the live creature rig as a toggleable screen-space
+instrument. The JNT1 pack contains joint centers, axes, ROM, weights, and names
+but no parents, so the overlay uses the native rig's explicit name topology and
+never infers links by proximity. The known 19-joint monkey pack yields 18
+segments: neck → jaw/spine, spine → tail/shoulders/hips, and the limb chains to
+wrists/ankles. `POST/GET /rig` controls and reports the overlay; `POST /studio
+{"mode":"joints"}` selects JOINTS deterministically. The UI clips the grid and
+FK instruments to the central viewport, keeping them out of reel/timeline
+chrome. Verified: 19 → 18, toggle `true → false → true`, 7,388 central
+viewport pixels changed, and independent pixel probes confirmed the tail and
+ankle edges. The dyad's contradictory absence claims were falsified against
+the same captured pixels and did not trigger a rig-data change.
+
 **TOOL FEATURE 7 — DOPE SHEET (2026-09-02, D7 from the 5th verdict).
 Per-joint key rows in the timeline.** The flat scrub bar gains per-joint
 rows: each joint that owns key marks gets a labeled row with its own

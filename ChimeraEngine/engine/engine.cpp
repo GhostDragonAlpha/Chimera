@@ -655,6 +655,9 @@ bool Engine::init(const EngineConfig& cfg) {
                 }
             };
             ui_.cb_key_clear_ = [this] { key_marks_clear(); };
+            ui_.cb_rig_toggle_ = [this] {
+                set_rig_overlay(!rig_overlay_on());
+            };
             // C1: the joints editor's intents — select (gizmo + paint target)
             // toggles; a theta intent is an ownership claim (editor takes the pose).
             ui_.cb_joint_select_ = [this](int idx) {
@@ -4274,6 +4277,45 @@ static void record_glass_copy(VkCommandBuffer cb, VkImage swap_img,
                             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
 }
 
+// D8: THE AUTHORED FK TOPOLOGY — these links are the native rig's semantic
+// parent map. The JNT1 upload intentionally carries centers/axes/ROM but no
+// parent array, so the overlay uses this map and refuses spatial inference.
+void Engine::push_rig_overlay() {
+    std::vector<StudioRigSegment> segments;
+    if (!rig_overlay_on() || !joints_loaded_ || !j_state_map_ || !last_vp_valid_) {
+        ui_.set_rig_segments(std::move(segments), rig_overlay_on());
+        return;
+    }
+
+    static const std::pair<const char*, const char*> FK[] = {
+        {"neck", "jaw"},
+        {"neck", "spine_upper"}, {"spine_upper", "spine_mid"},
+        {"spine_mid", "spine_lower"}, {"spine_lower", "tail_base"},
+        {"tail_base", "tail_mid"},
+        {"spine_upper", "shoulder_L"}, {"shoulder_L", "elbow_L"},
+        {"elbow_L", "wrist_L"},
+        {"spine_upper", "shoulder_R"}, {"shoulder_R", "elbow_R"},
+        {"elbow_R", "wrist_R"},
+        {"spine_lower", "hip_L"}, {"hip_L", "knee_L"},
+        {"knee_L", "ankle_L"},
+        {"spine_lower", "hip_R"}, {"hip_R", "knee_R"},
+        {"knee_R", "ankle_R"}
+    };
+    const int selected = selected_joint_.load(std::memory_order_relaxed);
+    const float* st = static_cast<const float*>(j_state_map_);
+    for (const auto& edge : FK) {
+        int a = joint_index(edge.first), b = joint_index(edge.second);
+        if (a < 0 || b < 0 || a >= static_cast<int>(j_n_joints_) || b >= static_cast<int>(j_n_joints_))
+            continue;  // absent anatomy is omitted, never replaced by a guessed link
+        float pa[3] = { st[a * 8 + 0], st[a * 8 + 1], st[a * 8 + 2] };
+        float pb[3] = { st[b * 8 + 0], st[b * 8 + 1], st[b * 8 + 2] };
+        float x0, y0, x1, y1;
+        if (project_world(pa, x0, y0) && project_world(pb, x1, y1))
+            segments.push_back({x0, y0, x1, y1, a == selected || b == selected});
+    }
+    ui_.set_rig_segments(std::move(segments), true);
+}
+
 // ── THE VIEWPORT REFERENCE FRAME (2026-08-31) ───────────────────────────────────
 // The eye's #1 defect: an empty viewport reads as a crashed renderer, not as an
 // empty scene. This draws a ground grid + an XYZ triad so the centre of the window
@@ -5035,7 +5077,8 @@ bool Engine::frame() {
     // Upload uniform buffer (camera matrices + resolution)
     float proj[16], view[16];
     update_camera_matrices(proj, view);
-    push_grid_overlay();          // the viewport's frame of reference (see its note)
+    push_grid_overlay();
+    push_rig_overlay();          // the viewport's frame of reference (see its note)
 
     // Depth sort is done on the GPU (radix sort, recorded in the command buffer below). Stash the
     // view matrix's z-row, which the depth-key pass needs as push constants.
@@ -5947,6 +5990,7 @@ bool Engine::frame_idle_ui() {
     float proj[16], view[16];
     update_camera_matrices(proj, view);
     push_grid_overlay();
+    push_rig_overlay();
 
     VkCommandBufferBeginInfo bbi{};
     bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
