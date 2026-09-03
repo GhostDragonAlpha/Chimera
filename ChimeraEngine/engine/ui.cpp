@@ -756,16 +756,21 @@ void StudioUI::reel_push(const uint8_t* rgba, const std::string& l1,
 // engine module's own location — the exe's CWD is build/Release, and the
 // log's home is <repo>/Saved/dyad/ no matter where the exe runs from.
 static std::string ui_log_file_name() {
+    // The DYAD LOG page serves the HUMAN-READABLE companion (dyad_log.txt):
+    // the .jsonl is the machine record tools parse; the editor page is what
+    // the operator's eyes get. The WRITER owns the formatting (dyad_log.py
+    // mirrors every append into the .txt) — the engine stays a verbatim
+    // file browser and renders no JSON artifacts it does not understand.
     char mod[MAX_PATH];
     DWORD n = GetModuleFileNameA(nullptr, mod, MAX_PATH);   // <...>/build/Release/chimera_engine.exe
-    if (n == 0 || n >= MAX_PATH) return "Saved/dyad/dyad_log.jsonl";
+    if (n == 0 || n >= MAX_PATH) return "Saved/dyad/dyad_log.txt";
     std::string exe(mod, n);
     for (int i = 0; i < 5; ++i) {   // exe -> Release -> build -> engine -> ChimeraEngine -> REPO ROOT
         size_t s = exe.find_last_of("/\\");
         if (s == std::string::npos) break;
         exe.resize(s);
     }
-    return exe + "/Saved/dyad/dyad_log.jsonl";
+    return exe + "/Saved/dyad/dyad_log.txt";
 }
 static constexpr int DYAD_LOG_PAGE = 5;
 
@@ -1084,13 +1089,23 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 if (nm.size() > 3) nm = nm.substr(0, nm.size() - 3);   // strip .md
             }
             bool cur = static_cast<int>(i) == docs_.current;
-            if (cur) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
-            text(x, y, nm, cur ? 0.45f : 0.42f, cur ? 0.75f : 0.44f, cur ? 1.00f : 0.50f, 1.f);
+            if (cur) {
+                rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
+                rect(R[1][0] + 2, y - 2, 4, lh + 4, 0.30f, 0.60f, 1.00f, 0.95f);   // the selection accent: readable at a glance
+            }
+            text(x, y, nm, cur ? 0.55f : 0.42f, cur ? 0.85f : 0.44f, cur ? 1.00f : 0.50f, 1.f);
             hots_.push_back({ x - 2, y - 2, R[1][2] - 20, lh + 4, 800 + static_cast<int>(i) });
             y += lh + 2;
         }
         bool cur_is_log = docs_.current == docs_.log_page || docs_.current == docs_.log_page + 1
                        || docs_.current == docs_.sessions_page;
+        if (cur_is_log) {
+            // THE DIVIDER: a styled band behind the section line — the same
+            // treatment as the dock's top bar, so the log section reads as its
+            // own block (the eye: "plain inline text ... feels light").
+            rect(R[1][0] + 2, y - 3, R[1][2] - 4, lh + 5, 0.17f, 0.18f, 0.25f, 0.95f);
+            y += lh + 5;
+        }
         char ib[192];
         if (cur_is_log) {
             // The live pages name what they count: the dyad log is REPORTS (the
@@ -1109,21 +1124,33 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             // The FOLLOW chip: LIVE sticks to the newest line; PAUSED means the
             // human scrolled up to read history - click re-arms and jumps down.
             bool live = docs_.follow_tail;
-            float cw = 6 * advance_ + 14;                 // "PAUSED" + padding
+            // A BUTTON, unambiguously: filled hit-area, state dot, and the label
+            // names the ACTION a click performs (the eye: "reads like a status
+            // badge ... nothing signals click me to pause").
+            float cw = 8 * advance_ + 30;
             rect(R[1][0] + 10, y - 2, cw, lh + 2,
-                 live ? 0.10f : 0.20f, live ? 0.32f : 0.16f, live ? 0.20f : 0.24f, 0.95f);
-            text(R[1][0] + 14, y, live ? "LIVE" : "PAUSED",
-                 live ? 0.45f : 0.95f, live ? 0.95f : 0.65f, live ? 0.60f : 0.45f, 1.f);
+                 live ? 0.13f : 0.24f, live ? 0.40f : 0.22f, live ? 0.22f : 0.13f, 0.98f);
+            rect_outline(R[1][0] + 10, y - 2, cw, lh + 2, 1.f,
+                         live ? 0.35f : 0.80f, live ? 0.75f : 0.62f, live ? 0.55f : 0.30f, 0.90f);
+            // icon glyphs drawn as TEXT so the atlas carries them: pause = two
+            // bars, resume = a triangle — the icon must agree with the label
+            // (the eye: "a solid square reads as stop, not pause").
+            text(R[1][0] + 15, y, live ? "||" : ">",
+                 live ? 0.50f : 1.00f, live ? 1.00f : 0.85f, live ? 0.55f : 0.40f, 1.f);
+            text(R[1][0] + 45, y, live ? "PAUSE" : "RESUME",
+                 live ? 0.80f : 1.00f, live ? 1.00f : 0.80f, live ? 0.85f : 0.50f, 1.f);
             hots_.push_back({ R[1][0] + 10, y - 2, cw, lh + 2, 700 });
             text(R[1][0] + 10 + cw + 10, y,
-                 live ? "stuck to the newest line (scroll up to read history)"
-                      : "click to jump back to the newest line",
+                 live ? "tail-following the newest line (scroll up to read history)"
+                      : "reading history - RESUME or scroll to bottom for the live edge",
                  0.45f, 0.47f, 0.52f, 1.f);
             y += lh + 4;
         }
         // the text, wrapped to the CURRENT dock width (narrow the dock and the
-        // wrap follows next frame — the wrap is derived, never stored stale)
-        size_t maxc = static_cast<size_t>((R[1][2] - 20 - 14) / advance_);
+        // wrap follows next frame — the wrap is derived, never stored stale).
+        // 34px total inset: lines must not kiss the dock's right edge (the eye
+        // called the padding "tight" — longer tokens were one glyph from clipping).
+        size_t maxc = static_cast<size_t>((R[1][2] - 20 - 14 - 16) / advance_);
         docs_rewrap(maxc);
         float text_top = y;
         int visible_n = static_cast<int>((y_max - text_top) / lh) + 1;

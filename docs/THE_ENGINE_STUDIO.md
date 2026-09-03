@@ -1672,3 +1672,15 @@ noticed. (2) MSVC `%.6g` prints non-finite floats as `nan`/`inf` — illegal JSO
 formatter now emits `null`. `/state` parses fully for the first time. Also fixed:
 `/studio_doc`'s path field is now JSON-escaped (Windows abs paths from the log pages broke
 full-parse clients).
+
+**2026-09-03 LOG PAGES: five dyad rounds to clean.** The eye reviewed the new log pages
+five times (each round: fix -> recapture -> re-judge): (1) missing section boundary,
+weak selection, chip reads as badge, tight padding, scratch data in the log -> divider,
+selection accent stripe, scratch pruned; (2) boundary still light -> styled section band;
+(3) LIVE chip must be a BUTTON (filled, icon, label names the action) -> PAUSE/RESUME
+button; (4) icon must agree with label (`||` pause bars / `>` resume triangle, ASCII atlas)
++ log body leaked the eye's own markdown -> the WRITER owns formatting: dyad_log.py now
+mirrors every append into a human-readable `Saved/dyad/dyad_log.txt` (markdown-normalized,
+flattened, one line per call) and the DYAD page serves THAT — the .jsonl stays the machine
+record. Round 5 verdict: **YES — clean plain prose; the dock is finished.** The engine
+still renders files verbatim; readability is the writer's job, not the renderer's.
