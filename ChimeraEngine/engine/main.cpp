@@ -1070,12 +1070,14 @@ int main(int argc, char** argv) {
             if (method == "GET") {
                 std::string out = "{\"keys\":[";
                 if (g_engine) {
-                    auto ks = g_engine->key_marks_list();
+                    auto ks = g_engine->key_marks_list_info();
                     bool first = true;
                     for (const auto& k : ks) {
                         if (!first) out += ",";
                         first = false;
-                        out += "{\"name\":\"" + k.first + "\",\"t\":" + std::to_string(k.second) + "}";
+                        out += "{\"name\":\"" + k.name + "\",\"t\":" + std::to_string(k.t);
+                        if (!k.joint.empty()) out += ",\"joint\":\"" + k.joint + "\"";
+                        out += "}";
                     }
                 }
                 out += "]}";
@@ -1110,11 +1112,15 @@ int main(int argc, char** argv) {
                     g_engine->key_marks_clear();
                     body = "{\"ok\":true}";
                 } else {   // save is the default op (the KEY button's intent)
-                    std::string nm = g_engine->key_mark_save(name);
+                    int sel = g_engine->selected_joint_.load(std::memory_order_relaxed);
+                    std::string jn = g_engine->show_joint_name(sel);
+                    std::string nm = g_engine->key_mark_save(name, jn);
                     double t = 0.0;
                     g_engine->key_mark_time(nm, t);
                     body = "{\"ok\":true,\"name\":\"" + nm + "\",\"t\":"
-                         + std::to_string(t) + "}";
+                         + std::to_string(t);
+                    if (!jn.empty()) body += ",\"joint\":\"" + jn + "\"";
+                    body += "}";
                 }
             }
             content_type = "application/json";

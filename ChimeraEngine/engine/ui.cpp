@@ -7,6 +7,7 @@
 #include <cmath>
 #include <fstream>
 #include <algorithm>
+#include <unordered_map>
 
 // ── local helpers (no external deps — the engine's standing rule) ─────────────
 
@@ -1437,6 +1438,71 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             snprintf(jb, sizeof(jb), "joint %u/%u: %s  (%.1f s windows)", clk_cur_ + 1, clk_n_,
                      clk_name_.c_str(), clk_period_);
             text(x, bar_y + bar_h + 6, jb, 0.62f, 0.66f, 0.74f, 1.f);
+        }
+
+        // ── D7: THE DOPE SHEET — per-joint key rows below the master scrub ──
+        // Group dope_keys_ by joint. Each group gets one row: name label +
+        // mini-scrub bar + amber diamonds (clickable). Unkeyed keys go in
+        // the "UNGROUPED" row. This is the visual bridge between the key
+        // system and the joint system — you SEE which joint owns which key.
+        {
+            float dy = bar_y + bar_h + 22;   // start below the info text
+            float dw = scrub_rect_[2];        // same width as the master bar
+            float dh = 14.f;                  // row height
+            const float label_w = 90.f;      // joint name column width
+
+            // group by joint
+            std::unordered_map<std::string, std::vector<size_t>> groups;
+            for (size_t i = 0; i < dope_keys_.size(); ++i) {
+                std::string j = dope_keys_[i].joint.empty() ? "UNKEYED" : dope_keys_[i].joint;
+                groups[j].push_back(i);
+            }
+            // stable order: named joints first (alphabetical), UNKEYED last
+            std::vector<std::string> order;
+            for (auto& p : groups)
+                if (p.first != "UNKEYED") order.push_back(p.first);
+            std::sort(order.begin(), order.end());
+            if (groups.count("UNKEYED")) order.push_back("UNKEYED");
+
+            float total_dh = static_cast<float>(order.size()) * (dh + 2.f);
+            float max_dy = R[3][1] + R[3][3] - total_dh - 4;
+            if (dy > max_dy) dy = max_dy;   // clamp so rows stay inside the dock
+
+            for (auto& jn : order) {
+                auto& indices = groups[jn];
+                float row_x = x;
+                // background
+                rect(row_x, dy, dw, dh, 0.08f, 0.09f, 0.12f, 0.90f);
+                // label (dim, fixed-width column)
+                std::string label = jn.size() > 10 ? jn.substr(0, 9) + "." : jn;
+                text(row_x + 2, dy + (dh - lh) * 0.5f, label, 0.48f, 0.50f, 0.58f, 0.9f);
+                // mini-scrub bar
+                float mbx = row_x + label_w;
+                float mbw = dw - label_w - 4;
+                rect(mbx, dy + 2, mbw, dh - 4, 0.10f, 0.11f, 0.14f, 0.85f);
+                // playhead line on every row
+                double period = clk_hinge_period_ > 0.f ? clk_hinge_period_ : clk_total_;
+                if (period > 0.0) {
+                    double lt = clk_t_ - floor(clk_t_ / period) * period;
+                    float px = mbx + static_cast<float>(lt / period) * mbw;
+                    rect(px - 0.5f, dy, 1.f, dh, 0.5f, 0.52f, 0.58f, 0.7f);
+                }
+                // key diamonds
+                for (size_t ki = 0; ki < indices.size(); ++ki) {
+                    const auto& dk = dope_keys_[indices[ki]];
+                    double period2 = clk_hinge_period_ > 0.f ? clk_hinge_period_ : clk_total_;
+                    double lkt = period2 > 0.0
+                        ? dk.t - floor(dk.t / period2) * period2 : dk.t;
+                    float kx = mbx + static_cast<float>(lkt / period2) * mbw;
+                    float cw = fminf(8.f, (dh - 4) * 0.5f);
+                    rect(kx - cw * 0.5f, dy + (dh - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
+                    hots_.push_back({ kx - cw * 0.5f, dy + (dh - cw) * 0.5f, cw, cw,
+                                      700 + static_cast<int>(indices[ki]) });
+                }
+                dy += dh + 2;
+            }
+            // total dope sheet height (so the dock can account for it)
+            dope_sheet_h_ = dy - (bar_y + bar_h + 22);
         }
     }
 

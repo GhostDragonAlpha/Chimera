@@ -643,7 +643,11 @@ bool Engine::init(const EngineConfig& cfg) {
                 if (i < 0 || i >= static_cast<int>(ks.size())) return;
                 show_scrub_.store(ks[i].second < 0.0 ? 0.0 : ks[i].second);
             };
-            ui_.cb_key_save_ = [this] { key_mark_save(std::string()); };
+            ui_.cb_key_save_ = [this] {
+                int sel = selected_joint_.load(std::memory_order_relaxed);
+                std::string jn = (sel >= 0 && sel < static_cast<int>(j_names_.size())) ? j_names_[sel] : std::string();
+                key_mark_save(std::string(), jn);
+            };
             ui_.cb_key_delete_ = [this](int i) {
                 std::vector<std::pair<std::string, double>> ks = key_marks_list();
                 if (i >= 0 && i < static_cast<int>(ks.size())) {
@@ -2022,9 +2026,10 @@ void Engine::key_marks_load() {
     if (!f) return;
     char line[256];
     while (fgets(line, sizeof(line), f)) {
-        char nm[64]; double t;
-        if (sscanf(line, "%63s %lf", nm, &t) == 2) {
-            KeyMark k; k.name = nm; k.t = t;
+        char nm[64], jn[64] = ""; double t;
+        int n = sscanf(line, "%63s %lf %63s", nm, &t, jn);
+        if (n >= 2) {
+            KeyMark k; k.name = nm; k.t = t; k.joint = (n >= 3) ? jn : "";
             key_marks_.push_back(k);
         }
     }
@@ -2036,11 +2041,14 @@ void Engine::key_marks_persist() {
     FILE* f = fopen(KEY_MARKS_FILE, "w");
     if (!f) return;
     for (const auto& k : key_marks_)
-        fprintf(f, "%s %.9f\n", k.name.c_str(), k.t);
+        if (k.joint.empty())
+            fprintf(f, "%s %.9f\n", k.name.c_str(), k.t);
+        else
+            fprintf(f, "%s %.9f %s\n", k.name.c_str(), k.t, k.joint.c_str());
     fclose(f);
 }
 
-std::string Engine::key_mark_save(const std::string& name) {
+std::string Engine::key_mark_save(const std::string& name, const std::string& joint) {
     double t = show_time_.load(std::memory_order_relaxed);
     std::string nm = name;
     {
@@ -2052,8 +2060,8 @@ std::string Engine::key_mark_save(const std::string& name) {
         }
         for (char& c : nm) if (c == ' ' || c == '\t') c = '_';
         for (auto& k : key_marks_)
-            if (k.name == nm) { k.t = t; goto stored; }
-        { KeyMark k; k.name = nm; k.t = t; key_marks_.push_back(k); }
+            if (k.name == nm) { k.t = t; k.joint = joint; goto stored; }
+        { KeyMark k; k.name = nm; k.t = t; k.joint = joint; key_marks_.push_back(k); }
         stored:;
     }
     key_marks_persist();
@@ -2096,6 +2104,14 @@ std::vector<std::pair<std::string, double>> Engine::key_marks_list() {
     out.reserve(key_marks_.size());
     for (const auto& k : key_marks_) out.emplace_back(k.name, k.t);
     return out;   // copy-under-lock (C4's rule)
+}
+
+std::vector<Engine::KeyMarkInfo> Engine::key_marks_list_info() {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    std::vector<KeyMarkInfo> out;
+    out.reserve(key_marks_.size());
+    for (const auto& k : key_marks_) out.push_back({k.name, k.t, k.joint});
+    return out;
 }
 
 void Engine::cam_marks_load() {
@@ -4908,6 +4924,12 @@ bool Engine::frame() {
                            nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
                            show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
                            ui_.set_key_marks(key_marks_list(), src);   // D1: the timeline's key diamonds
+                           // D7: push joint-aware key marks for the dope sheet
+                           { auto li = key_marks_list_info();
+                             std::vector<StudioUI::DopeKey> dk;
+                             dk.reserve(li.size());
+                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});
+                             ui_.set_dope_keys(std::move(dk)); }
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
@@ -5842,6 +5864,12 @@ bool Engine::frame_idle_ui() {
                            nj ? show_joint_name(cur) : std::string(hinge_now ? "knees (hinge march)" : "none"),
                            show_current_theta(), src, hinge_now ? hinge_period_ : 0.f);
                            ui_.set_key_marks(key_marks_list(), src);   // D1: the timeline's key diamonds
+                           // D7: push joint-aware key marks for the dope sheet (idle path)
+                           { auto li = key_marks_list_info();
+                             std::vector<StudioUI::DopeKey> dk;
+                             dk.reserve(li.size());
+                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});
+                             ui_.set_dope_keys(std::move(dk)); }
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles

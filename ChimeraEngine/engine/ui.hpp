@@ -465,7 +465,13 @@ public:
     void set_key_marks(std::vector<std::pair<std::string, double>> ks, const std::string& src) {
         key_marks_ui_ = std::move(ks); key_marks_src_ = src;
     }
+    // D7: joint-aware key marks for the dope sheet — standalone struct to avoid
+    // pulling engine.hpp into this header.
+    struct DopeKey { std::string name; double t; std::string joint; };
+    void set_dope_keys(std::vector<DopeKey> dk) { dope_keys_ = std::move(dk); }
     std::vector<std::pair<std::string, double>> key_marks_ui_;
+    std::vector<DopeKey> dope_keys_;              // D7: joint-grouped key marks
+    float dope_sheet_h_ = 0.f;                   // D7: height of the dope sheet rows
     std::string key_marks_src_;                  // which clock the keys live on
 
     // ── D3: THE REEL — every /frame grab lands here (the engine pushes; the UI draws) ──
