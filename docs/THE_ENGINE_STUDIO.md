@@ -1749,3 +1749,17 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   standing three-point decree (key+fill+hemisphere, 2026-09-03) doing its job — the single-source
   look is what left flanks near-black. OPEN ITEM from its list: dotted/jagged normal seam at the
   neck base (smooth-normal leak) — queued for a smoothing membrane.
+
+- 2026-09-03 — THE SPECKLE INQUEST (the eye's neck-dots finding, three hypotheses MEASURED):
+  (1) NaN normals — FALSIFIED: a load-gate normal repair (non-finite/non-unit -> area-weighted
+  adjacent-face sum) found ZERO bad verts; frames bit-identical. Gate KEPT: the class is now
+  dead for every future mesh.
+  (2) Exactly-zero-area tris — FALSIFIED as the dot source, and EVICTED anyway: the birth mesh
+  carried 206 collinear triangles (36630 -> 36424 on the /scene row); frame bit-identical.
+  Eviction KEPT: they cost raster work and are a measured flicker class at other angles.
+  (3) VERDICT: the dots are SUB-PIXEL SLIVERS at the tessellation creases (504 tris with area
+  < 1e-4, ~0.01px wide at the operator's framing) — real geometry of the surface folds
+  (shoulders/wrists/groin, exactly the eye's artifact map). No renderer defect.
+  OPEN (queued, needs its own membrane): MSAA 4x kills the whole aliasing class (dots AND
+  shadow-edge jaggies); the mesher's crease tessellation is the root-cause cure. The eye rates
+  the speckle FAINT — "you have to look closely / zoom to register it".

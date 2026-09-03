@@ -1497,12 +1497,61 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         hinge_desc_dirty_ = true;
         return true;
     }
+    // THE NORMAL-HYGIENE GATE (2026-09-03, the eye's speckle finding): a degenerate
+    // triangle ships a zero-length stored normal; normalize(0) is NaN in the shader
+    // and the vertex shades to a bright speckle (measured: a dotted arc at the neck
+    // base). Any vertex whose stored normal is non-finite or far from unit length
+    // is re-derived here as the area-weighted sum of its adjacent face normals —
+    // in load_mesh, the one gate every upload path passes through, so the class is
+    // dead for all meshes, not just this one. Healthy vertices are untouched.
+    std::vector<float> clean(verts);           // mutable working copy
+    const size_t nv = clean.size() / 9;
+    auto nrm_bad = [](const float* n) {
+        if (!std::isfinite(n[0]) || !std::isfinite(n[1]) || !std::isfinite(n[2])) return true;
+        float len = sqrtf(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+        return len < 0.5f || len > 2.0f;       // only genuinely-broken normals repair
+    };
+    std::vector<char> bad(nv, 0);
+    size_t nbad = 0;
+    for (size_t v = 0; v < nv; ++v)
+        if (nrm_bad(clean.data() + v * 9 + 3)) { bad[v] = 1; ++nbad; }
+    if (nbad > 0) {
+        std::vector<float> acc(nv * 3, 0.0f);
+        for (size_t t = 0; t + 2 < indices.size(); t += 3) {
+            uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
+            if ((size_t)ia >= nv || (size_t)ib >= nv || (size_t)ic >= nv) continue;
+            const float* A = clean.data() + (size_t)ia * 9;
+            const float* B = clean.data() + (size_t)ib * 9;
+            const float* C = clean.data() + (size_t)ic * 9;
+            float ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
+            float wx = C[0] - A[0], wy = C[1] - A[1], wz = C[2] - A[2];
+            float fx = uy * wz - uz * wy, fy = uz * wx - ux * wz, fz2 = ux * wy - uy * wx; // area-weighted
+            if (!std::isfinite(fx) || !std::isfinite(fy) || !std::isfinite(fz2)) continue;
+            const uint32_t tri[3] = { ia, ib, ic };
+            for (int k = 0; k < 3; ++k) {
+                uint32_t v = tri[k];
+                if (!bad[v]) continue;         // only the broken verts accumulate
+                acc[(size_t)v * 3 + 0] += fx; acc[(size_t)v * 3 + 1] += fy; acc[(size_t)v * 3 + 2] += fz2;
+            }
+        }
+        for (size_t v = 0; v < nv; ++v) {
+            if (!bad[v]) continue;
+            float nx = acc[v * 3], ny = acc[v * 3 + 1], nz = acc[v * 3 + 2];
+            float len = sqrtf(nx * nx + ny * ny + nz * nz);
+            if (len > 1e-12f) {
+                clean[v * 9 + 3] = nx / len; clean[v * 9 + 4] = ny / len; clean[v * 9 + 5] = nz / len;
+            } else {                            // isolated: every adjacent face degenerate
+                clean[v * 9 + 3] = 0.0f; clean[v * 9 + 4] = 1.0f; clean[v * 9 + 5] = 0.0f;
+            }
+        }
+        fprintf(stderr, "[load_mesh] normal hygiene: repaired %zu/%zu verts\n", nbad, nv);
+    }
     // Vertex buffer: DEVICE_LOCAL (the hot path must stay in VRAM — a host-visible
     // buffer cost ~6 ms/frame of PCIe traffic when the GPU hinge kernel wrote it).
     // CPU-side writes (update_mesh, hinge restore) go through a persistent
     // host-visible STAGING buffer + one transfer; the draw/compute path never
     // leaves the GPU.
-    upload_buffer(verts.data(), static_cast<VkDeviceSize>(verts.size()) * sizeof(float),
+    upload_buffer(clean.data(), static_cast<VkDeviceSize>(clean.size()) * sizeof(float),
                   VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
                   tri_vbuf_, tri_vmem_);
     {
@@ -1529,15 +1578,42 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         vkBindBufferMemory(device_, tri_staging_buf_, tri_staging_mem_, 0);
         vkMapMemory(device_, tri_staging_mem_, 0, sz, 0, &tri_vmap_);
     }
-    mesh_cpu_ = verts;
-    tri_vfloats_ = verts.size();
+    mesh_cpu_ = clean;
+    tri_vfloats_ = clean.size();
+    // THE DEGENERATE EVICTION (2026-09-03, same eye finding — the speckle dots):
+    // the birth mesh carries 206 EXACTLY-zero-area triangles (collinear verts).
+    // They contribute nothing to the surface, but on the GPU the MVP transform's
+    // f32 rounding can reopen them into sub-pixel slivers that rasterize as 1px
+    // dots along the pinched creases — measured flicker class. Evicted here, in
+    // the same load gate; per-vertex systems (hinge/gait/springs) are untouched,
+    // and tri_rest_area_/strain stay consistent because they are recomputed from
+    // the KEPT list. 206/36630 = 0.56% of the indices.
+    std::vector<uint32_t> clean_idx;
+    clean_idx.reserve(indices.size());
+    size_t n_evict = 0;
+    for (size_t t = 0; t + 2 < indices.size(); t += 3) {
+        uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
+        bool keep = true;
+        if ((size_t)ia < nv && (size_t)ib < nv && (size_t)ic < nv) {
+            const float* A = clean.data() + (size_t)ia * 9;
+            const float* B = clean.data() + (size_t)ib * 9;
+            const float* C = clean.data() + (size_t)ic * 9;
+            double ux = (double)B[0] - A[0], uy = (double)B[1] - A[1], uz = (double)B[2] - A[2];
+            double wx = (double)C[0] - A[0], wy = (double)C[1] - A[1], wz = (double)C[2] - A[2];
+            double cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
+            if (0.5 * sqrt(cx * cx + cy * cy + cz * cz) < 1e-12) { keep = false; ++n_evict; }
+        }
+        if (keep) { clean_idx.push_back(ia); clean_idx.push_back(ib); clean_idx.push_back(ic); }
+    }
+    if (n_evict > 0)
+        fprintf(stderr, "[load_mesh] degenerate eviction: dropped %zu zero-area tris\n", n_evict);
     // THE STRAIN OVERLAY: keep the index list — true triangle strain needs the
     // adjacency, and the loader used to throw it away.
-    mesh_tris_.assign(indices.begin(), indices.end());
+    mesh_tris_.assign(clean_idx.begin(), clean_idx.end());
     tri_rest_area_.clear();
-    upload_buffer(indices.data(), static_cast<VkDeviceSize>(indices.size()) * sizeof(uint32_t),
+    upload_buffer(clean_idx.data(), static_cast<VkDeviceSize>(clean_idx.size()) * sizeof(uint32_t),
                   VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, tri_ibuf_, tri_imem_);
-    tri_idx_count_ = icount;
+    tri_idx_count_ = static_cast<uint32_t>(clean_idx.size());
     has_mesh_ = true;
     water_vis_desc_dirty_ = true;   // buffers recreated -> the water-vis set must rebind (H4)
     frost_desc_dirty_ = true;       // same for the frost decode set (H9)
@@ -1566,8 +1642,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     float r2max = 0.0f;
     float ymin = 0.0f, ymax = 1.0f;   // H0 defaults sane for degenerate payloads
     bool first = true;
-    for (size_t i = 0; i + 2 < verts.size(); i += 9) {
-        float x = verts[i], y = verts[i + 1], z = verts[i + 2];
+    for (size_t i = 0; i + 2 < clean.size(); i += 9) {
+        float x = clean[i], y = clean[i + 1], z = clean[i + 2];
         float r2 = x * x + y * y + z * z;
         if (r2 > r2max) r2max = r2;
         if (first)      { ymin = y; ymax = y; first = false; }
