@@ -1763,3 +1763,24 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   OPEN (queued, needs its own membrane): MSAA 4x kills the whole aliasing class (dots AND
   shadow-edge jaggies); the mesher's crease tessellation is the root-cause cure. The eye rates
   the speckle FAINT — "you have to look closely / zoom to register it".
+
+- 2026-09-03 — MSAA 4x ON THE SCENE PASS (membrane, SHIPPED). Architecture discovered, not
+  assumed: ALL 3D content renders into ONE offscreen pass (rt_render_pass_ -> rt_image_), the
+  live render pass is dead code (its only rpb.framebuffer reference is rt_framebuffer_), and
+  the swapchain receives a blit. So one resolve point serves every consumer — /frame capture,
+  the present blit, the pixel-clean background clear — all untouched, all automatically AA'd.
+  Mechanics: rt_samples_ queried (limits.framebufferColor/DepthSampleCounts, 1x fallback),
+  rt_msaa_image_ (4x canvas, attachment 2, STORE=DONT_CARE), rt_image_ becomes the 1x RESOLVE
+  (validation law: resolves are always 1x — first build inverted the roles and the layers
+  caught it: resolve=4x rejected, framebuffer mismatch, clearValueCount 2<3, device lost),
+  clear array 3 deep, rt depth 4x, all five pipelines' rasterizationSamples = rt_samples_
+  (single source: pass compatibility can never drift), create_offscreen recreate-safe on
+  resize. UI pass untouched; splat pipeline_ (unused but pass-compatible) flipped too.
+- MEASURED: 4x active by pixel fingerprint (intermediate-value silhouette-edge pixels 7 -> 110;
+  1x hard steps give ~0), framing matched A/B (bbox x995-1590 y189-1197 identical, body 51697
+  px, shadow 68201 px), floor law intact (p50 55), /light steering spot-check ok, validation
+  clean on the shipped binary. FPS: launch-transient 4.64 ms during restore+measurement storm;
+  steady state present-capped 299.4 fps / 0.39 ms. The EYE (gsq-rco, non-leading): shadow edge
+  "clearly smoother... consistent with 4x doing its job", creases correctly unchanged (mesh
+  seams, not aliasing), NO new artifacts. VERDICT: IMPROVED. Neck speckle persists (faint) —
+  confirmed NOT aliasing; its cure stays queued at the mesher (crease tessellation).

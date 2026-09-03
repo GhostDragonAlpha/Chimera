@@ -1168,7 +1168,7 @@ bool Engine::create_pipeline() {
     // Multisampling — disabled for splat rendering
     VkPipelineMultisampleStateCreateInfo ms{};
     ms.sType                = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    ms.rasterizationSamples = rt_samples_;   // MUST equal the offscreen pass (pass compatibility)
     ms.sampleShadingEnable  = VK_FALSE;
 
     // Color blend
@@ -1317,7 +1317,7 @@ bool Engine::create_triangle_pipeline() {
     // Multisampling — disabled
     VkPipelineMultisampleStateCreateInfo ms{};
     ms.sType                = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    ms.rasterizationSamples = rt_samples_;   // MUST equal the offscreen pass (pass compatibility)
     ms.sampleShadingEnable  = VK_FALSE;
 
     // Color blend — opaque
@@ -3469,7 +3469,7 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
         ras.lineWidth = 1.0f;
         VkPipelineMultisampleStateCreateInfo ms{};
         ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-        ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+        ms.rasterizationSamples = rt_samples_;   // frost fill renders into the MSAA offscreen pass too
         VkPipelineColorBlendAttachmentState blend{};
         blend.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
                                VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -5988,7 +5988,7 @@ bool Engine::frame() {
     clears[0].color.float32[2] = 0.06f;
     clears[0].color.float32[3] = 1.0f;
     clears[1].depthStencil.depth = 1.0f;
-    rpb.clearValueCount   = 2;
+    rpb.clearValueCount   = 3;   // att 2 (the MSAA canvas) also LOAD_OP_CLEARs at 4x
     rpb.pClearValues       = clears;
 
     vkCmdBeginRenderPass(cmd_bufs_[img_idx], &rpb, VK_SUBPASS_CONTENTS_INLINE);
@@ -6632,11 +6632,40 @@ void Engine::destroy_depth_resources() {
 }
 
 void Engine::create_offscreen() {
+    // MSAA 4x (2026-09-03 membrane): the scene renders INTO a multisample image;
+    // the pass auto-resolves into rt_image_. Every consumer (capture, blit, the
+    // pixel-clean background clear) keeps touching rt_image_ and never knows.
+    // Falsifier at the query: if the GPU can't do 4x for color AND depth, fall
+    // back to 1x — structurally identical to the pre-MSAA pass (no resolve).
+    VkPhysicalDeviceProperties props{};
+    vkGetPhysicalDeviceProperties(phys_dev_, &props);
+    VkPhysicalDeviceLimits lim = props.limits;
+    auto has = [&lim](VkSampleCountFlags f, VkSampleCountFlags want) {
+        return (f & want) == want;
+    };
+    rt_samples_ = VK_SAMPLE_COUNT_1_BIT;
+    if (has(lim.framebufferColorSampleCounts, VK_SAMPLE_COUNT_4_BIT) &&
+        has(lim.framebufferDepthSampleCounts,   VK_SAMPLE_COUNT_4_BIT)) {
+        rt_samples_ = VK_SAMPLE_COUNT_4_BIT;
+    } else {
+        fprintf(stderr, "[msaa] 4x unsupported (color=0x%x depth=0x%x) — rendering at 1x\n",
+                (unsigned)lim.framebufferColorSampleCounts,
+                (unsigned)lim.framebufferDepthSampleCounts);
+    }
+    const bool msaa = rt_samples_ == VK_SAMPLE_COUNT_4_BIT;
+    // Recreate-safety: create_offscreen runs again on every resize — release the
+    // previous MSAA block first (rt_image_ and friends are released by the caller).
+    if (rt_msaa_view_)   { vkDestroyImageView(device_, rt_msaa_view_, nullptr); rt_msaa_view_ = VK_NULL_HANDLE; }
+    if (rt_msaa_image_)  { vkDestroyImage(device_, rt_msaa_image_, nullptr); rt_msaa_image_ = VK_NULL_HANDLE; }
+    if (rt_msaa_mem_)    { vkFreeMemory(device_, rt_msaa_mem_, nullptr); rt_msaa_mem_ = VK_NULL_HANDLE; }
+
     // Offscreen render target: /frame renders to this and captures from it, so the capture never
     // depends on the (minimizable) window. Color-only, final layout TRANSFER_SRC for direct readback.
+    // At 4x this attachment is the RESOLVE target (validation law: resolves are always 1x) —
+    // the multisample canvas below is the subpass's color attachment.
     VkAttachmentDescription color{};
     color.format         = swap_fmt_;
-    color.samples        = VK_SAMPLE_COUNT_1_BIT;
+    color.samples        = VK_SAMPLE_COUNT_1_BIT;    // resolve targets are ALWAYS 1x
     color.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
     color.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -6644,13 +6673,28 @@ void Engine::create_offscreen() {
     color.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
     color.finalLayout    = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 
+    // The multisample canvas the scene draws into (only present at 4x).
+    VkAttachmentDescription msaa_att{};
+    msaa_att.format         = swap_fmt_;
+    msaa_att.samples        = rt_samples_;
+    msaa_att.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    msaa_att.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE;   // data lives in the resolve
+    msaa_att.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    msaa_att.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    msaa_att.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
+    msaa_att.finalLayout    = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
     VkAttachmentReference color_ref{};
-    color_ref.attachment = 0;
+    color_ref.attachment = msaa ? 2 : 0;   // at 4x the SCENE draws into the multisample att
     color_ref.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference msaa_ref{};
+    msaa_ref.attachment = 0;               // ...and resolves into rt_image_ (1x, the law)
+    msaa_ref.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkAttachmentDescription depth{};
     depth.format         = VK_FORMAT_D32_SFLOAT;
-    depth.samples        = VK_SAMPLE_COUNT_1_BIT;
+    depth.samples        = rt_samples_;
     depth.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depth.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
     depth.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -6667,15 +6711,52 @@ void Engine::create_offscreen() {
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments    = &color_ref;
     subpass.pDepthStencilAttachment = &depth_ref;
+    if (msaa) {
+        subpass.pResolveAttachments = &msaa_ref;   // MSAA image (att 2) -> rt_image_ (att 0)
+    }
 
-    VkAttachmentDescription attachments[2] = { color, depth };
+    VkAttachmentDescription attachments[3] = { color, depth, msaa_att };
     VkRenderPassCreateInfo rpci{};
     rpci.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    rpci.attachmentCount = 2;
+    rpci.attachmentCount = msaa ? 3 : 2;
     rpci.pAttachments    = attachments;
     rpci.subpassCount    = 1;
-    rpci.pSubpasses      = &subpass;
-    vkCreateRenderPass(device_, &rpci, nullptr, &rt_render_pass_);
+    rpci.pSubpasses      = &subpass;    vkCreateRenderPass(device_, &rpci, nullptr, &rt_render_pass_);
+
+    // The multisample canvas (4x): the scene's actual attachment 2. Resolution
+    // into rt_image_ happens inside the render pass, free of extra barriers.
+    if (msaa) {
+        VkImageCreateInfo mici{};
+        mici.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        mici.imageType     = VK_IMAGE_TYPE_2D;
+        mici.format        = swap_fmt_;
+        mici.extent        = {extent_.width, extent_.height, 1};
+        mici.mipLevels     = 1;
+        mici.arrayLayers   = 1;
+        mici.samples       = rt_samples_;
+        mici.tiling        = VK_IMAGE_TILING_OPTIMAL;
+        mici.usage         = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        mici.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        if (vkCreateImage(device_, &mici, nullptr, &rt_msaa_image_) == VK_SUCCESS) {
+            VkMemoryRequirements mmr; vkGetImageMemoryRequirements(device_, rt_msaa_image_, &mmr);
+            VkMemoryAllocateInfo mai{};
+            mai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            mai.allocationSize  = mmr.size;
+            mai.memoryTypeIndex = find_mem_type(mmr.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+            if (vkAllocateMemory(device_, &mai, nullptr, &rt_msaa_mem_) == VK_SUCCESS &&
+                vkBindImageMemory(device_, rt_msaa_image_, rt_msaa_mem_, 0) == VK_SUCCESS) {
+                VkImageViewCreateInfo mvci{};
+                mvci.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+                mvci.image    = rt_msaa_image_;
+                mvci.viewType = VK_IMAGE_VIEW_TYPE_2D;
+                mvci.format   = swap_fmt_;
+                mvci.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                mvci.subresourceRange.levelCount = 1;
+                mvci.subresourceRange.layerCount = 1;
+                vkCreateImageView(device_, &mvci, nullptr, &rt_msaa_view_);
+            }
+        }
+    }
 
     VkImageCreateInfo ici{};
     ici.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -6713,7 +6794,7 @@ void Engine::create_offscreen() {
     di.imageType     = VK_IMAGE_TYPE_2D;
     di.format        = VK_FORMAT_D32_SFLOAT;
     di.extent        = {extent_.width, extent_.height, 1};
-    di.mipLevels     = 1; di.arrayLayers = 1; di.samples = VK_SAMPLE_COUNT_1_BIT;
+    di.mipLevels     = 1; di.arrayLayers = 1; di.samples = rt_samples_;   // MSAA depth (matches the pass)
     di.tiling        = VK_IMAGE_TILING_OPTIMAL;
     di.usage         = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     di.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -6737,8 +6818,8 @@ void Engine::create_offscreen() {
     VkFramebufferCreateInfo fci{};
     fci.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     fci.renderPass      = rt_render_pass_;
-    fci.attachmentCount = 2;
-    VkImageView off_attach[2] = { rt_view_, rt_depth_view_ };
+    VkImageView off_attach[3] = { rt_view_, rt_depth_view_, rt_msaa_view_ };
+    fci.attachmentCount = msaa ? 3 : 2;
     fci.pAttachments    = off_attach;
     fci.width           = extent_.width;
     fci.height          = extent_.height;

@@ -576,6 +576,16 @@ private:
     VkImage  rt_image_     = VK_NULL_HANDLE;
     VkDeviceMemory rt_mem_ = VK_NULL_HANDLE;
     VkImageView rt_view_   = VK_NULL_HANDLE;
+    // MSAA 4x (2026-09-03 membrane): the scene renders INTO this multisample
+    // image; the pass auto-resolves into rt_image_ — every consumer (capture,
+    // blit, background clear) keeps touching rt_image_ and never knows.
+    VkImage  rt_msaa_image_ = VK_NULL_HANDLE;
+    VkDeviceMemory rt_msaa_mem_ = VK_NULL_HANDLE;
+    VkImageView rt_msaa_view_   = VK_NULL_HANDLE;
+    // Queried (limits.framebufferColor/DepthSampleCounts) before use; falls
+    // back to 1x (structure identical to the pre-MSAA pass) on any GPU that
+    // cannot. Pipelines read this so pass compatibility can never drift.
+    VkSampleCountFlagBits rt_samples_ = VK_SAMPLE_COUNT_1_BIT;
     VkRenderPass rt_render_pass_ = VK_NULL_HANDLE;
     VkFramebuffer rt_framebuffer_ = VK_NULL_HANDLE;
 
