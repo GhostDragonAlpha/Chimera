@@ -152,6 +152,8 @@ private:
                                                 // 500+i = docs picker row i (E1)
                                                 // 700+i = master key-mark diamond i (hit_t = key time)
                                                 // 1000+i = Dope Sheet key diamond i (joint-aware recall)
+                                                // 1100+i = reel tile i (D4: choose A/B compare)
+                                                // 1112 = clear A/B compare
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
     int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
@@ -502,13 +504,16 @@ public:
 
     // ── D3: THE REEL — every /frame grab lands here (the engine pushes; the UI draws) ──
     static const int REEL_MAX = 12, THUMB_W = 384, THUMB_H = 216;
-    struct ReelTile { bool used = false; std::string l1, l2, l3; };
+    struct ReelTile { bool used = false; uint64_t seq = 0; std::string l1, l2, l3; };
     // Render thread only. rgba = THUMB_W*THUMB_H*4 bytes, RGBA8. Slot = seq % REEL_MAX.
     void reel_push(const uint8_t* rgba, const std::string& l1,
                    const std::string& l2, const std::string& l3);
     int  reel_count() const { return reel_count_; }
 
-private:
+    // ── D4: A/B evidence compare — view state only, never a second renderer ──
+    int compare_a_slot_ = -1, compare_b_slot_ = -1;
+    void compare_select(int slot);
+    void compare_clear();
 
     // ── board file polling (the repo's gate truth, read never owned) ──
     std::string board_path_ = "studio_board.json";   // relative to the engine CWD

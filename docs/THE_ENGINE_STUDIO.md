@@ -483,6 +483,41 @@ issues no transport callback.
 
 ---
 
+## SHIPPED — D4: A/B CAPTURE COMPARE (2026-09-02)
+
+**Statement:** the Studio can compare two already-captured reel images side by
+side while preserving each tile's grab-time metadata; comparison is a view of
+evidence, not a second renderer or simulation.
+
+**Prediction:** selecting two reel tiles will show those exact captures as A and
+B in the central viewport, with distinct sequence labels and independent
+metadata. Selecting a third tile starts a new A selection; clearing compare
+returns to the normal viewport and reel without changing `/show`, `/frame`, the
+camera, or the reel ledger.
+
+**Falsifier:** reject the feature if fewer than two valid reel selections can
+enter compare, either image is not the selected atlas tile, metadata is mixed
+between captures, selection mutates engine state, an overwritten ring slot
+remains selectable, or the normal reel layout regresses.
+
+**What shipped.** Reel tiles use dedicated `1100 + slot` hit regions and the
+header exposes a clear control while A/B is active. The render-thread view state
+selects A, then B, and a third selection starts a new pair. The compare pane
+reads the existing reel atlas and each tile's stored sequence/caption data,
+draws the two captures side by side in the central viewport, and deliberately
+issues no engine callback. A ring-slot overwrite clears any selection that
+would otherwise point at newly written pixels.
+
+- **Verification:** Debug configuration compiled and linked successfully;
+  source falsifiers passed for dedicated hit IDs, A/B/third-selection behavior,
+  clear behavior, ring overwrite invalidation, view-only rendering, and
+  independent A/B captions. `git diff --check` passed. Runtime glass verification
+  remains intentionally open because the operator's Release executable was left
+  running and was not interrupted.
+- **Files:** `engine/ui.{hpp,cpp}`, this doc.
+
+---
+
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 
 - **Statement:** the DOCS workspace renders the repo's own workflow docs

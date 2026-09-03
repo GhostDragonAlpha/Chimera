@@ -1445,6 +1445,19 @@ source falsifiers passed for current-frame resolution, metadata rendering,
 hidden-state clearing, no transport mutation, and tooltip bounds. Runtime glass
 verification remains open because the live Release process was not interrupted.
 
+**TOOL FEATURE 10b — A/B CAPTURE COMPARE (2026-09-02, D4).** The REEL now
+supports a view-only two-capture comparison. Reel tiles use dedicated
+`1100 + slot` hit regions: the first valid tile selects A, the second selects B,
+and a third starts a new A/B pair; the header clear control removes the pair.
+The central viewport draws the existing atlas images side by side and reads
+sequence/caption metadata from the selected tiles independently. A reel-ring
+overwrite invalidates any selection that points at that slot, so stale pixels
+cannot masquerade as an old capture. No second renderer, simulation, clock, or
+engine callback is introduced. Debug compiled and linked; source falsifiers
+passed for selection order, clear/reset, ring invalidation, view-only behavior,
+and independent A/B metadata. Runtime glass verification remains open because
+the live Release process was not interrupted.
+
 **TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
 Sheet diamonds are now authoring controls rather than display-only markers.
 They use a dedicated `1000+i` hit-ID range, so they cannot collide with scene

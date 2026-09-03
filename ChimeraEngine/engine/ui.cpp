@@ -265,6 +265,9 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 cb_key_recall_(h.id - 700);
             if (h.id >= 1000 && h.id < 1100 && cb_dope_key_recall_)       // D9: Dope Sheet key diamonds
                 cb_dope_key_recall_(h.id - 1000);
+            if (h.id >= 1100 && h.id < 1112)                                // D4: choose a reel capture
+                compare_select(h.id - 1100);
+            if (h.id == 1112) compare_clear();                              // D4: clear A/B compare
             if (h.id == 905 && cb_key_save_) cb_key_save_();             // D1: KEY button
             if (h.id == 906 && cb_rig_toggle_) cb_rig_toggle_();         // D8: RIG overlay toggle
             if (h.id >= 910 && h.id < 930 && cb_key_recall_)             // G1: recall pose by index
@@ -509,12 +512,34 @@ void StudioUI::thumb(float x, float y, float w, float h, int slot) {
     verts_.insert(verts_.end(), v, v + 6);
 }
 
+void StudioUI::compare_clear() {
+    compare_a_slot_ = -1;
+    compare_b_slot_ = -1;
+}
+
+void StudioUI::compare_select(int slot) {
+    if (slot < 0 || slot >= REEL_MAX || !tiles_[slot].used) return;
+    if (compare_a_slot_ < 0) {
+        compare_a_slot_ = slot;
+        compare_b_slot_ = -1;
+    } else if (compare_b_slot_ < 0) {
+        if (slot != compare_a_slot_) compare_b_slot_ = slot;
+    } else {
+        // A third choice starts a new pair; this prevents an invisible
+        // selection history from becoming a second state surface.
+        compare_a_slot_ = slot;
+        compare_b_slot_ = -1;
+    }
+}
+
 // D3: a grab lands — text into the ring, pixels into its atlas slot. Render thread.
 void StudioUI::reel_push(const uint8_t* rgba, const std::string& l1,
                          const std::string& l2, const std::string& l3) {
     if (dev_ == VK_NULL_HANDLE || thumb_stage_map_ == nullptr || font_img_ == VK_NULL_HANDLE) return;
     int slot = static_cast<int>(reel_seq_ % REEL_MAX);
+    if (compare_a_slot_ == slot || compare_b_slot_ == slot) compare_clear();
     tiles_[slot].used = true;
+    tiles_[slot].seq = reel_seq_;
     tiles_[slot].l1 = l1; tiles_[slot].l2 = l2; tiles_[slot].l3 = l3;
     ++reel_seq_;
     if (reel_count_ < REEL_MAX) ++reel_count_;
@@ -1315,6 +1340,14 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         char rb[64];
         snprintf(rb, sizeof(rb), "REEL (D3) - every /frame grab lands here  [%d/%d]", reel_count_, REEL_MAX);
         text(R[4][0] + 8, R[4][1] + (22 - lh) * 0.5f, reel_.collapsed ? "+" : rb, 0.62f, 0.66f, 0.74f, 1.f);
+        if (!reel_.collapsed && compare_a_slot_ >= 0 && compare_b_slot_ >= 0) {
+            const char* cmp = " A/B ACTIVE ";
+            float cw = static_cast<float>(strlen(cmp)) * advance_ + 8.f;
+            float cx = R[4][0] + R[4][2] - cw - 8.f;
+            rect(cx, R[4][1] + 2.f, cw - 4.f, 18.f, 0.16f, 0.17f, 0.22f, 0.95f);
+            text(cx + 4.f, R[4][1] + (22 - lh) * 0.5f, cmp, 1.f, 0.72f, 0.25f, 1.f);
+            hots_.push_back({cx, R[4][1] + 2.f, cw - 4.f, 18.f, 1112});
+        }
     }
     if (!reel_.collapsed) {
         float cap_h = 3 * lh + 8;                            // the three metadata lines under a tile
@@ -1344,6 +1377,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 text(tx, ly,          s1, 1.0f, 0.85f, 0.40f, 1.f);
                 text(tx, ly + lh,     s2, TR, TG, TB, 0.95f);
                 text(tx, ly + 2 * lh, s3, 0.45f, 0.47f, 0.52f, 1.f);
+                hots_.push_back({tx, ty, tw, th, 1100 + slot});
             }
         }
     }
@@ -1539,6 +1573,39 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             }
             // total dope sheet height (so the dock can account for it)
             dope_sheet_h_ = dy - (bar_y + bar_h + 22);
+        }
+    }
+
+    // D4: side-by-side evidence compare. The images and captions come directly
+    // from the selected reel slots; this is a view, not a second render path.
+    if (compare_a_slot_ >= 0 && compare_b_slot_ >= 0 &&
+        tiles_[compare_a_slot_].used && tiles_[compare_b_slot_].used) {
+        const float vx0 = R[1][2], vx1 = R[2][0];
+        const float vy0 = R[0][3], vy1 = R[4][1];
+        const float gap = 12.f;
+        const float half_w = (vx1 - vx0 - gap - 20.f) * 0.5f;
+        const float image_h = fminf(half_w * (9.f / 16.f), vy1 - vy0 - 5.f * lh - 30.f);
+        if (half_w > 40.f && image_h > 24.f) {
+            rect(vx0, vy0, vx1 - vx0, vy1 - vy0, 0.035f, 0.045f, 0.07f, 0.98f);
+            text(vx0 + 10.f, vy0 + 8.f, "D4 A/B COMPARE - captured evidence (view only)",
+                 0.86f, 0.88f, 0.92f, 1.f);
+            const int slots[2] = {compare_a_slot_, compare_b_slot_};
+            for (int side = 0; side < 2; ++side) {
+                const float px = vx0 + 10.f + side * (half_w + gap);
+                const float py = vy0 + 26.f;
+                rect_outline(px - 1.f, py - 1.f, half_w + 2.f, image_h + 2.f, 2.f,
+                             side == 0 ? 0.30f : 1.00f, side == 0 ? 0.60f : 0.72f,
+                             side == 0 ? 1.00f : 0.25f, 1.f);
+                thumb(px, py, half_w, image_h, slots[side]);
+                const ReelTile& tile = tiles_[slots[side]];
+                char tag[16]; snprintf(tag, sizeof(tag), "%c  seq %llu", side == 0 ? 'A' : 'B',
+                                       static_cast<unsigned long long>(tile.seq));
+                text(px, py + image_h + 6.f, tag, 1.f, side == 0 ? 0.72f : 0.86f,
+                     side == 0 ? 0.25f : 0.30f, 1.f);
+                text(px, py + image_h + 6.f + lh, tile.l1, 0.86f, 0.88f, 0.92f, 1.f);
+                text(px, py + image_h + 6.f + 2.f * lh, tile.l2, 0.62f, 0.66f, 0.74f, 1.f);
+                text(px, py + image_h + 6.f + 3.f * lh, tile.l3, 0.45f, 0.47f, 0.52f, 1.f);
+            }
         }
     }
 
