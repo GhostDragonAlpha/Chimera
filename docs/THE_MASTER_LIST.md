@@ -1422,6 +1422,17 @@ successful `--restore` boot now auto-fits, so the engine never boots into a
 cropped hero. Verified on the glass: solid subject bbox fully inside the
 viewport, margins 592/914/62/106 px.
 
+**TOOL FEATURE 10 — DERIVED TIMELINE EVENT MARKERS (2026-09-02, D2).** The
+Engine Studio timeline now receives a read-only marker feed derived from engine
+state: two boundary markers per authored joint sweep window and one marker per
+recorded reel capture. `Engine::push_timeline_markers()` uses the live joint
+count, sweep period, and thread-safe reel ledger; the UI uses the same loop
+normalization as the playhead. Blue start ticks, amber end ticks, and green
+capture ticks are drawn on hinge and joints timelines. Debug compiled and linked;
+source falsifiers passed for both frame paths and the `2 × joint count + reel
+count` derivation. Marker labels are retained for a future hover inspector but
+are not yet a separate interaction surface.
+
 **TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
 Sheet diamonds are now authoring controls rather than display-only markers.
 They use a dedicated `1000+i` hit-ID range, so they cannot collide with scene

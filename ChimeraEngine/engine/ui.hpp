@@ -144,7 +144,8 @@ private:
                                                 // 100+i = strip node i (B3); 300+i = workspace row i,
                                                 // 400+i = joint row i (C1: select = gizmo + paint)
                                                 // 500+i = docs picker row i (E1)
-                                                // 700+i = key-mark diamond i (hit_t = key time)
+                                                // 700+i = master key-mark diamond i (hit_t = key time)
+                                                // 1000+i = Dope Sheet key diamond i (joint-aware recall)
     std::vector<Hot> hots_;
     float scrub_rect_[4] = {0, 0, 0, 0};        // the scrub bar's live rect
     int   selected_stage_ = -1;                 // B3: -1 none; click the same node again to close
@@ -482,6 +483,12 @@ public:
     // pulling engine.hpp into this header.
     struct DopeKey { std::string name; double t; std::string joint; };
     void set_dope_keys(std::vector<DopeKey> dk) { dope_keys_ = std::move(dk); }
+    // D2: timeline markers are engine-fed event positions; the UI only draws.
+    struct TimelineMarker { double t; std::string label; int kind; };
+    void set_timeline_markers(std::vector<TimelineMarker> markers) {
+        timeline_markers_ = std::move(markers);
+    }
+    std::vector<TimelineMarker> timeline_markers_;
     std::vector<std::pair<std::string, double>> key_marks_ui_;
     std::vector<DopeKey> dope_keys_;              // D7: joint-grouped key marks
     float dope_sheet_h_ = 0.f;                   // D7: height of the dope sheet rows

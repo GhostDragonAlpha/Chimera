@@ -4937,6 +4937,29 @@ std::string Engine::reel_json() const {
     return s;
 }
 
+// D2: the timeline marker feed is derived from the same live sources as the
+// panels' other twins. Kind 1 is a joint sweep-window start, kind 3 is its
+// end, and kind 2 is a recorded reel capture. No marker owns time or pose state.
+void Engine::push_timeline_markers() {
+    std::vector<StudioUI::TimelineMarker> markers;
+    if (joints_loaded_ && j_sweep_period_ > 0.f) {
+        markers.reserve(static_cast<size_t>(j_n_joints_) * 2);
+        for (uint32_t i = 0; i < j_n_joints_; ++i) {
+            const double t0 = static_cast<double>(i) * j_sweep_period_;
+            const double t1 = static_cast<double>(i + 1) * j_sweep_period_;
+            markers.push_back({t0, show_joint_name(i) + " start", 1});
+            markers.push_back({t1, show_joint_name(i) + " end", 3});
+        }
+    }
+    {
+        std::lock_guard<std::mutex> lk(reel_mutex_);
+        markers.reserve(markers.size() + reel_entries_.size());
+        for (const auto& e : reel_entries_)
+            markers.push_back({e.show_t, e.joint.empty() ? "capture" : e.joint, 2});
+    }
+    ui_.set_timeline_markers(std::move(markers));
+}
+
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
@@ -4978,8 +5001,9 @@ bool Engine::frame() {
                            { auto li = key_marks_list_info();
                              std::vector<StudioUI::DopeKey> dk;
                              dk.reserve(li.size());
-                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});
-                             ui_.set_dope_keys(std::move(dk)); }
+                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});                              ui_.set_dope_keys(std::move(dk)); }
+                            push_timeline_markers();
+
     }
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
@@ -5919,8 +5943,9 @@ bool Engine::frame_idle_ui() {
                            { auto li = key_marks_list_info();
                              std::vector<StudioUI::DopeKey> dk;
                              dk.reserve(li.size());
-                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});
-                             ui_.set_dope_keys(std::move(dk)); }
+                             for (auto& i : li) dk.push_back({i.name, i.t, i.joint});                              ui_.set_dope_keys(std::move(dk)); }
+                            push_timeline_markers();
+
     }
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles

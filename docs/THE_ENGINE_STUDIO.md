@@ -417,6 +417,37 @@ they scrub time and leave selection unset rather than claiming anatomy.
 - **Files:** `engine/engine.cpp`, `engine/ui.cpp`, `engine/ui.hpp`, this doc.
 - **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
 
+## SHIPPED — D2: DERIVED TIMELINE EVENT MARKERS (2026-09-02)
+
+**Statement:** the timeline can display event markers derived from the engine's
+live state without becoming a second clock or marker authority.
+
+**Prediction:** a 19-joint show produces 38 sweep-boundary markers—one start and
+one end for each `j_sweep_period_` window—and each recorded reel entry produces
+one capture marker. Marker positions use the same loop normalization as the
+playhead and key diamonds.
+
+**Falsifier:** reject the feature if marker count differs from `2 × joint count +
+reel count`, if a marker's normalized position is more than one pixel from its
+source time, if markers appear without their source state, or if scrub/key
+behavior regresses.
+
+**What shipped.** `Engine::push_timeline_markers()` derives start/end markers
+from the loaded joint count and sweep period, then appends capture markers from
+the thread-safe reel ledger. The UI receives the read-only marker feed and draws
+compact ticks on both hinge and joints timelines: blue starts, amber ends, and
+green capture events. The normal and idle frame paths both refresh the feed, so
+hidden or mesh-idle Studio operation cannot freeze the timeline's event view.
+Marker labels are retained in the engine-fed data for a future hover inspector;
+this increment intentionally does not invent a second interaction surface.
+
+- **Verification:** Debug configuration compiled and linked successfully;
+  structural falsifiers passed for two frame-path feeds, two boundaries per
+  joint, capture-source consumption under the reel mutex, and distinct marker
+  kinds/colors. `git diff --check` passed.
+- **Files:** `engine/engine.{hpp,cpp}`, `engine/ui.{hpp,cpp}`, this doc.
+- **Next per the menu:** E1 docs browser, then F2/F3 (status bar + HUD).
+
 ## SHIPPED — E1: THE DOCS BROWSER (2026-08-29)
 
 - **Statement:** the DOCS workspace renders the repo's own workflow docs

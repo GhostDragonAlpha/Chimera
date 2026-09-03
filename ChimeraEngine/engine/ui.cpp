@@ -1393,6 +1393,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 // half-period marks: the ROM's extremes (cos law: 0 and P/2)
                 rect(scrub_rect_[0] + scrub_rect_[2] * 0.25f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
                 rect(scrub_rect_[0] + scrub_rect_[2] * 0.75f, bar_y + 2, 2.f, bar_h - 4, 0.45f, 0.47f, 0.52f, 1.f);
+                // D2: derived sweep-window and reel-capture markers share the
+                // same loop normalization as the playhead and key marks.
+                for (const auto& marker : timeline_markers_) {
+                    double period_m = clk_hinge_period_ > 0.0 ? clk_hinge_period_ : clk_total_;
+                    if (period_m <= 0.0) continue;
+                    double mt = marker.t - floor(marker.t / period_m) * period_m;
+                    float mx = scrub_rect_[0] + static_cast<float>(mt / period_m) * scrub_rect_[2];
+                    float mr = 0.30f, mg = 0.80f, mb = 0.45f;
+                    if (marker.kind == 1) { mr = 0.30f; mg = 0.60f; mb = 1.00f; }
+                    else if (marker.kind == 3) { mr = 0.90f; mg = 0.55f; mb = 0.20f; }
+                    rect(mx - 0.5f, bar_y - 2.f, 1.f, 4.f, mr, mg, mb, 0.95f);
+                }
                 // THE KEY MARKS: diamonds on the bar, amber, clickable — click
                 // one and the clock lands that pose (a paused clock = exact).
                 for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
@@ -1425,6 +1437,17 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 bool cur = (i == clk_cur_);
                 rect(fx, bar_y + 2, 2.f, bar_h - 4,
                      cur ? 0.30f : 0.45f, cur ? 0.60f : 0.47f, cur ? 1.00f : 0.52f, 1.f);
+            }
+            // D2: authored joint-window starts and recorded captures. These
+            // markers are read-only engine events, not alternate key marks.
+            for (const auto& marker : timeline_markers_) {
+                if (clk_total_ <= 0.0) continue;
+                double mt = marker.t - floor(marker.t / clk_total_) * clk_total_;
+                float mx = scrub_rect_[0] + static_cast<float>(mt / clk_total_) * scrub_rect_[2];
+                float mr = 0.30f, mg = 0.80f, mb = 0.45f;
+                if (marker.kind == 1) { mr = 0.30f; mg = 0.60f; mb = 1.00f; }
+                else if (marker.kind == 3) { mr = 0.90f; mg = 0.55f; mb = 0.20f; }
+                rect(mx - 0.5f, bar_y - 2.f, 1.f, 4.f, mr, mg, mb, 0.95f);
             }
             // key marks over the joints show's total (same diamonds, same law)
             for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
