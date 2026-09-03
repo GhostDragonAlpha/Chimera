@@ -1784,3 +1784,23 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   "clearly smoother... consistent with 4x doing its job", creases correctly unchanged (mesh
   seams, not aliasing), NO new artifacts. VERDICT: IMPROVED. Neck speckle persists (faint) —
   confirmed NOT aliasing; its cure stays queued at the mesher (crease tessellation).
+
+## 2026-09-03 — The sliver inquest closes: the dots were never triangles (membrane FALSIFIED honestly)
+- STATEMENT tested: crease speckles are sub-pixel sliver triangles; collapsing width<1/4px
+  tris (sub-sample by MSAA physics) at the load gate erases the dots.
+- THREE hypotheses killed by identical-framing A/B (monkey_full recall, clock stopped,
+  warm-spike detector, 3px clusters): edge<=1px collapse (18 tris, A/B identical), width
+  metric ground truth (mesher emits a CONTINUUM: 170<0.14px, 460<0.36px, 2945<1px wide),
+  width<1/4px collapse (268 tris, body 123161->123163 px, spikes 18->20 — noise).
+- The detector itself was twice wrong and twice corrected (neutral-color filter missed
+  warm body dots; "fit" framing landed the camera INSIDE the mesh — backfaces culled,
+  floor+shadow only; operator bookmark monkey_full is the standing framing).
+- THE ANSWER: the two stable "dots" are the AA signature of diagonal lit rim edges —
+  correct 4x behavior, not defects. The EYE's DEFECTS verdict named the real class:
+  "dark/bright mottling along the fold" = COINCIDENT SKIN LAYERS z-fighting at creases
+  (deterministic: two-frame flip test = 0 — constant MVP picks the same winner; shimmer
+  appears only on the turntable). Owner: the skin-wrap generator, not the renderer.
+- KEPT (zero-cost physics guards, measured no-op on this mesh): normal hygiene gate,
+  zero-area eviction (206), width<1/4px sub-sample collapse (268 here). Any future mesh
+  with real degeneracy dies at load with three log lines. FPS falsifier: NOT OBSERVED
+  (299.3 present-capped). QUEUED at the mesher: crease skin-layer separation (root cure).

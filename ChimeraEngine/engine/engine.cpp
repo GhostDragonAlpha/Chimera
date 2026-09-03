@@ -1590,7 +1590,23 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     // the KEPT list. 206/36630 = 0.56% of the indices.
     std::vector<uint32_t> clean_idx;
     clean_idx.reserve(indices.size());
-    size_t n_evict = 0;
+    // The sub-pixel threshold needs the model radius BEFORE the loop: 1px at the
+    // auto-framed camera is ~ r/720 world units (measured: r=10 -> body half-width
+    // ~595px on a 1440p viewport ~ 60px/unit).
+    float rfit2 = 0.0f;
+    for (size_t i = 0; i + 2 < clean.size(); i += 9) {
+        float x = clean[i], y = clean[i + 1], z = clean[i + 2];
+        rfit2 = (std::max)(rfit2, x * x + y * y + z * z);
+    }
+    const float px1 = sqrtf(rfit2) / 720.0f;      // ~1px at the auto frame
+    // The physically-derived cut: at 4x MSAA a feature wider than 1/4 px still
+    // catches a sample (renders as a blended line). Below 1/4 px it is
+    // sub-sample — dot-or-nothing, unresolvable by ANY sampling rate. Measured:
+    // the mesher gradates a CONTINUUM of thin tris at creases (170 < 0.14px,
+    // 460 < 0.36px, 2945 < 1px wide), so the cut belongs at the sampling
+    // physics, not at a taste threshold. Width = |cross|/longest-edge.
+    const float sliver_max = 0.25f * px1;
+    size_t n_evict = 0, n_collapse = 0;
     for (size_t t = 0; t + 2 < indices.size(); t += 3) {
         uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
         bool keep = true;
@@ -1602,11 +1618,36 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
             double wx = (double)C[0] - A[0], wy = (double)C[1] - A[1], wz = (double)C[2] - A[2];
             double cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
             if (0.5 * sqrt(cx * cx + cy * cy + cz * cz) < 1e-12) { keep = false; ++n_evict; }
+            else {
+                // THE SUB-PIXEL SLIVER COLLAPSE (2026-09-03, MSAA follow-up):
+                // tiny but WELL-SHAPED triangles (longest edge <= ~0.5px at the
+                // auto frame) cannot cover a full sample even at 4x — the
+                // sampler quantizes them into the 1px dots the eye mapped on the
+                // creases. Collapse in place to (0,0,0): a degenerate triangle
+                // emits no fragments (the rasterizer's own law — the evicted
+                // zeros already ride this path at zero pixel cost), and
+                // collapse-in-place never renumbers, so every lane that stores
+                // triangle references stays aligned.
+                double eab = sqrt(ux * ux + uy * uy + uz * uz);
+                double ebc = sqrt((double)(C[0] - B[0]) * (C[0] - B[0]) + (double)(C[1] - B[1]) * (C[1] - B[1]) + (double)(C[2] - B[2]) * (C[2] - B[2]));
+                double eca = sqrt(wx * wx + wy * wy + wz * wz);
+                double eM = (std::max)(eab, (std::max)(ebc, eca));
+                // width = 2*area / longest edge = |cross| / eM — the tri's
+                // minimal-footprint statistic. Sub-sample-width tris collapse.
+                double width = sqrt(cx * cx + cy * cy + cz * cz) / (std::max)(eM, 1e-12);
+                if (width < (double)sliver_max) {
+                    clean_idx.push_back(0); clean_idx.push_back(0); clean_idx.push_back(0);
+                    ++n_collapse;
+                    continue;
+                }
+            }
         }
         if (keep) { clean_idx.push_back(ia); clean_idx.push_back(ib); clean_idx.push_back(ic); }
     }
     if (n_evict > 0)
         fprintf(stderr, "[load_mesh] degenerate eviction: dropped %zu zero-area tris\n", n_evict);
+    if (n_collapse > 0)
+        fprintf(stderr, "[load_mesh] sliver collapse: neutralized %zu sub-sample tris (width < %.5f wu)\n", n_collapse, sliver_max);
     // THE STRAIN OVERLAY: keep the index list — true triangle strain needs the
     // adjacency, and the loader used to throw it away.
     mesh_tris_.assign(clean_idx.begin(), clean_idx.end());
@@ -1632,7 +1673,9 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
             float ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
             float wx = C[0] - A[0], wy = C[1] - A[1], wz = C[2] - A[2];
             float cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
-            tri_rest_area_.push_back(0.5f * sqrtf(cx * cx + cy * cy + cz * cz));
+            // collapsed slivers ride as exact 0 — clamp so no downstream
+            // strain division can ever see a zero rest area.
+            tri_rest_area_.push_back((std::max)(0.5f * sqrtf(cx * cx + cy * cy + cz * cz), 1e-12f));
         }
     }
     // Measure the bounding sphere about the origin (the camera target) — the
