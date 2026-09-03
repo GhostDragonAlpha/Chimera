@@ -1262,6 +1262,37 @@ longer dies on a glyph the doc is allowed to contain.
   modes, D2 markers, D4 A/B compare) — and the board's own earliest non-green
   gate, B7 articulate, is what the strip keeps naming.
 
+## SHIPPED — E2a: RENDER-THREAD DEEP-LINK ACK (2026-09-03)
+
+- **Statement:** HTTP deep-link navigation must cross the same render-thread
+  membrane as visible Studio clicks; the network handler may request and await
+  a committed landing, but it must never mutate `StudioUI` directly.
+- **Prediction:** `POST /link {"stage":N}` will be consumed in both the normal
+  and idle render paths, apply the same `docs_link_stage()` operation as the
+  glass link, and return the committed source line/document. Concurrent link
+  requests will serialize instead of replacing one another's stage.
+- **Falsifier:** reject the change if either render path lacks a consumer, if
+  the HTTP handler still calls a `StudioUI` navigation method directly, if a
+  request can be acknowledged before render-thread application, if concurrent
+  requests overwrite one another, or if a timeout reports a fabricated landing.
+
+**What shipped.** `Engine::request_ui_link()` owns a single-slot request and
+acknowledgment membrane. A submission mutex serializes HTTP callers; the stage
+is published atomically; the render thread resolves the board-derived line,
+calls `docs_link_stage()`, records the committed document, and signals the
+waiting caller. `frame()` and `frame_idle_ui()` consume the same request before
+`prepare()`, so docs navigation remains live with or without a mesh. A three-
+second wait returns `ok:false`, `line:-1`, and `doc:-1` on a stalled render rather
+than reading unsynchronized UI state or claiming a landing that did not happen.
+
+- **Verification:** Debug compiled and linked successfully. Source falsifiers
+  passed: two render-path consumers, two render-thread UI applications, no
+  direct `/link` UI call from the HTTP handler, serialized submission, and
+  acknowledgment through the condition variable. Runtime API/glass probing
+  remains open because the live Release executable was not interrupted.
+- **Files:** `engine/engine.{hpp,cpp}` (queued request, serialization, render
+  consumers), `engine/main.cpp` (acknowledged `/link` response), this doc.
+
 ---
 
 ## SHIPPED — G1: THE GLASS CHANNEL (2026-08-31)

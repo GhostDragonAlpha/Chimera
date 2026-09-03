@@ -1471,6 +1471,20 @@ consumers, shared dispatch, queued POST semantics, committed GET readback, and
 no simulation/camera mutation. Runtime API/glass verification remains open
 because the live Release process was not interrupted.
 
+**TOOL FEATURE 10d — RENDER-THREAD DEEP-LINK ACK (2026-09-03, E2a).** The
+`POST /link {"stage":N}` path now uses `Engine::request_ui_link()` instead of
+mutating `StudioUI` from the HTTP worker. A submission mutex serializes
+concurrent callers; the stage request is consumed and resolved on the render
+thread in both `frame()` and `frame_idle_ui()` before `prepare()`, then the
+committed document and source line are acknowledged through a condition
+variable. The glass and HTTP paths therefore share the same `docs_link_stage()`
+operation without a cross-thread UI race. A stalled request returns `ok:false`,
+`line:-1`, and `doc:-1` rather than fabricating a landing. Debug compiled and
+linked; source falsifiers passed for both consumers, render-thread-only UI
+application, serialized submission, and no direct HTTP-thread navigation.
+Runtime API/glass verification remains open because the live Release process
+was not interrupted.
+
 **TOOL FEATURE 9 — ACTIONABLE DOPE SHEET KEYS (2026-09-02, D9).** Dope
 Sheet diamonds are now authoring controls rather than display-only markers.
 They use a dedicated `1000+i` hit-ID range, so they cannot collide with scene

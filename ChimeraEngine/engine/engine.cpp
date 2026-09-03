@@ -4960,6 +4960,34 @@ void Engine::push_timeline_markers() {
     ui_.set_timeline_markers(std::move(markers));
 }
 
+// E2a: enqueue a deep link and wait only for its render-thread commit. The
+// caller is the HTTP worker; the render thread owns every StudioUI mutation.
+bool Engine::request_ui_link(int stage, int& line, int& doc) {
+    // Serialize the single-slot request so concurrent HTTP callers cannot
+    // replace the stage while another caller waits for its acknowledgment.
+    std::lock_guard<std::mutex> submit_lk(link_request_submit_m_);
+    {
+        std::lock_guard<std::mutex> lk(link_request_m_);
+        link_request_done_ = false;
+        link_request_ok_ = false;
+        link_request_line_ = -1;
+        link_request_doc_ = 0;
+    }
+    link_request_stage_.store(stage, std::memory_order_relaxed);
+    link_request_pending_.store(true, std::memory_order_release);
+    std::unique_lock<std::mutex> lk(link_request_m_);
+    const bool signaled = link_request_cv_.wait_for(lk, std::chrono::seconds(3),
+        [this] { return link_request_done_; });
+    if (!signaled) {
+        line = -1;
+        doc = -1;
+        return false;
+    }
+    line = link_request_line_;
+    doc = link_request_doc_;
+    return link_request_ok_;
+}
+
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
@@ -5015,6 +5043,22 @@ bool Engine::frame() {
     if (compare_request_pending_.exchange(false)) {
         ui_.apply_compare_request(compare_request_slot_.load(),
                                   compare_request_clear_.load());
+    }
+    // E2a: resolve the HTTP deep link on the render thread before prepare()
+    // publishes the glass; the HTTP worker only receives the committed result.
+    if (link_request_pending_.exchange(false)) {
+        const int stage = link_request_stage_.load(std::memory_order_relaxed);
+        const int line = ui_.docs_link_line(stage);
+        const bool ok = line >= 0;
+        if (ok) ui_.docs_link_stage(stage);
+        {
+            std::lock_guard<std::mutex> lk(link_request_m_);
+            link_request_ok_ = ok;
+            link_request_line_ = ok ? line : -1;
+            link_request_doc_ = ui_.docs_current();
+            link_request_done_ = true;
+        }
+        link_request_cv_.notify_one();
     }
     if (ui_click_pending_.exchange(false)) {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);
@@ -5964,6 +6008,22 @@ bool Engine::frame_idle_ui() {
     if (compare_request_pending_.exchange(false)) {
         ui_.apply_compare_request(compare_request_slot_.load(),
                                   compare_request_clear_.load());
+    }
+    // E2a: resolve the HTTP deep link on the render thread before prepare()
+    // publishes the glass; the HTTP worker only receives the committed result.
+    if (link_request_pending_.exchange(false)) {
+        const int stage = link_request_stage_.load(std::memory_order_relaxed);
+        const int line = ui_.docs_link_line(stage);
+        const bool ok = line >= 0;
+        if (ok) ui_.docs_link_stage(stage);
+        {
+            std::lock_guard<std::mutex> lk(link_request_m_);
+            link_request_ok_ = ok;
+            link_request_line_ = ok ? line : -1;
+            link_request_doc_ = ui_.docs_current();
+            link_request_done_ = true;
+        }
+        link_request_cv_.notify_one();
     }
     if (ui_click_pending_.exchange(false)) {
         ui_.on_lbutton(ui_click_x_.load(), ui_click_y_.load(), true);

@@ -1553,20 +1553,18 @@ int main(int argc, char** argv) {
             }
             content_type = "application/json";
         } else if (p == "/link" && method == "POST") {
-            // E2: the deep link's HTTP twin — {"stage":N} makes the SAME
-            // docs_link_stage() call the glass click dispatches (one resolution
-            // law for both). The landing resolves on the next prepare() through
-            // the live wrap map, so the response returns the TARGET (the source
-            // line docs_link_line() resolves); GET /studio_doc shows the scroll
-            // once a frame has landed it.
+            // E2a: the deep link's HTTP twin uses the render-thread membrane.
+            // The response is sent only after the same docs_link_stage() call
+            // used by the glass has committed and the landing target is known.
             if (g_engine) {
                 int stage = static_cast<int>(get_float(req_body, "stage", -1.0f));
-                g_engine->ui_.docs_link_stage(stage);
-                int line = g_engine->ui_.docs_link_line(stage);
-                body = std::string("{\"ok\":") + (line >= 0 ? "true" : "false")
+                int line = -1, doc = -1;
+                bool ok = g_engine->request_ui_link(stage, line, doc);
+                body = std::string("{\"ok\":") + (ok ? "true" : "false")
                      + ",\"stage\":" + std::to_string(stage)
                      + ",\"line\":" + std::to_string(line)
-                     + ",\"doc\":" + std::to_string(g_engine->ui_.docs_current()) + "}";
+                     + ",\"doc\":" + std::to_string(doc)
+                     + (ok ? "}" : ",\"error\":\"link not resolved\"}");
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }

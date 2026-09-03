@@ -618,6 +618,10 @@ public:
         compare_request_clear_.store(clear);
         compare_request_pending_.store(true);
     }
+    // E2a: deep-link requests are acknowledged after the render thread applies
+    // them. The HTTP caller never touches StudioUI directly and retains the
+    // target line in its response for existing automation clients.
+    bool request_ui_link(int stage, int& line, int& doc);
     // The layout space the panels live in (GET /studio reports it so agents can
     // aim synthetic clicks without a /frame grab — idle mode has no capture).
     uint32_t win_w() const { return extent_.width; }
@@ -628,6 +632,15 @@ private:
     std::atomic<int>  compare_request_slot_{-1};
     std::atomic<bool> compare_request_clear_{false};
     std::atomic<bool> compare_request_pending_{false};
+    std::atomic<int>  link_request_stage_{-1};
+    std::atomic<bool> link_request_pending_{false};
+    std::mutex        link_request_submit_m_;
+    std::mutex        link_request_m_;
+    std::condition_variable link_request_cv_;
+    bool               link_request_done_ = false;
+    bool               link_request_ok_ = false;
+    int                link_request_line_ = -1;
+    int                link_request_doc_ = 0;
     // ── GPU bitonic sort (back-to-front splat ordering, no CPU in the per-frame path) ──
     VkShaderModule        sort_mod_ = VK_NULL_HANDLE;
     VkPipeline            sort_pipe_ = VK_NULL_HANDLE;
