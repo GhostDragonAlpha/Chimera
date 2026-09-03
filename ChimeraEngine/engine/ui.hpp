@@ -240,6 +240,7 @@ public:
     // viewport instead of leaving a void the eye has to interpret.
     void set_viewport_empty(bool empty) { viewport_empty_ = empty; }
     int  left_mode() const { return left_mode_; }
+    void set_left_mode(int m) { left_mode_ = m; selected_stage_ = -1; }
     // C1: the layout space's font metrics — agents aim slider clicks from these
     // (the same discipline as B3's w/h: the UI publishes, never hides)
     float line_height() const { return cell_h_; }

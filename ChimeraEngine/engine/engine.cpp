@@ -126,6 +126,18 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         if ((wp & 0xFF) == VK_F1 && !(lp & 0x40000000) && g_key_engine) {
             g_key_engine->ui_toggle();
         }
+        // F2-F8: workspace shortcuts (G1 panel added 2026-09-02)
+        if (!(lp & 0x40000000) && g_key_engine && g_key_engine->ui_.visible) {
+            int wk = -1;
+            if ((wp & 0xFF) == VK_F2) wk = 0;   // BOARD
+            if ((wp & 0xFF) == VK_F3) wk = 4;   // SCENE
+            if ((wp & 0xFF) == VK_F4) wk = 1;   // JOINTS
+            if ((wp & 0xFF) == VK_F5) wk = 6;   // POSES
+            if ((wp & 0xFF) == VK_F6) wk = 2;   // DOCS
+            if ((wp & 0xFF) == VK_F7) wk = 3;   // LOG
+            if ((wp & 0xFF) == VK_F8) wk = 5;   // CAPTURE
+            if (wk >= 0) g_key_engine->ui_.set_left_mode(wk);
+        }
     } else if (msg == WM_KEYUP || msg == WM_SYSKEYUP) {
         g_keys[wp & 0xFF] = false;
     }
@@ -1845,8 +1857,10 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
         r.state = state; r.toggleable = toggleable; rows.push_back(std::move(r));
     };
     {
-        char d[64]; snprintf(d, sizeof(d), has_mesh_ ? "%u tris" : "no mesh",
-                             tri_idx_count_ / 3);
+        char d[96]; snprintf(d, sizeof(d), has_mesh_ ? "%u tris, %u verts, r=%.1f" : "no mesh",
+                             tri_idx_count_ / 3,
+                             static_cast<unsigned>(mesh_cpu_.size() / 9),
+                             g_mesh_sphere);
         add("body", "body", d, has_mesh_ ? 1 : 0, false);
     }
     add("overlay", "overlay", has_overlay_ ? "loaded" : "none", has_overlay_ ? 1 : 0, false);
