@@ -1540,15 +1540,21 @@ int main(int argc, char** argv) {
             }
             content_type = "application/json";
         } else if (p == "/studio_doc" && method == "POST") {
-            // E1: agents can't drag — pick a doc ({"doc":i}) or land an exact
-            // scroll ({"scroll":N}, clamped by the panel's own geometry).
+            // E1a: HTTP docs navigation is acknowledged after the render thread
+            // applies it, matching visible docs controls and idle behavior.
             if (g_engine) {
-                if (req_body.find("\"doc\"") != std::string::npos)
-                    g_engine->ui_.docs_set(static_cast<int>(get_float(req_body, "doc", 0.0f)));
-                if (req_body.find("\"scroll\"") != std::string::npos)
-                    g_engine->ui_.docs_set_scroll(get_float(req_body, "scroll", 0.0f));
-                body = std::string("{\"ok\":true,\"doc\":") + std::to_string(g_engine->ui_.docs_current())
-                     + ",\"scroll\":" + std::to_string(g_engine->ui_.docs_scroll()) + "}";
+                const bool has_doc = req_body.find("\"doc\"") != std::string::npos;
+                const bool has_scroll = req_body.find("\"scroll\"") != std::string::npos;
+                const int doc = static_cast<int>(get_float(req_body, "doc", 0.0f));
+                const float scroll = get_float(req_body, "scroll", 0.0f);
+                int doc_result = -1;
+                float scroll_result = 0.f;
+                const bool ok = g_engine->request_ui_doc(doc, has_doc, scroll, has_scroll,
+                                                         doc_result, scroll_result);
+                body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                     + ",\"doc\":" + std::to_string(doc_result)
+                     + ",\"scroll\":" + std::to_string(scroll_result)
+                     + (ok ? "}" : ",\"error\":\"docs request not applied\"}");
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }

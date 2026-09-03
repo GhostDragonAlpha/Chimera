@@ -739,8 +739,14 @@ void Engine::shutdown() {
         console_ui_stop_ = true;
         console_ui_done_ = true;
     }
+    {
+        std::lock_guard<std::mutex> lk(doc_request_m_);
+        doc_request_stop_ = true;
+        doc_request_done_ = true;
+    }
     console_cv_.notify_all();
     console_ui_cv_.notify_all();
+    doc_request_cv_.notify_all();
     if (console_thread_.joinable()) console_thread_.join();
 
     // F4: the recorder outlives every event source; the file closes LAST among
@@ -5052,6 +5058,66 @@ void Engine::consume_console_ui_request() {
     console_ui_cv_.notify_one();
 }
 
+// E1a: queue docs navigation and wait for the render-thread commit. The same
+// request lock covers cancellation and application, so a timeout cannot land
+// stale document state on a later frame.
+bool Engine::request_ui_doc(int doc, bool has_doc, float scroll, bool has_scroll,
+                            int& doc_result, float& scroll_result) {
+    std::lock_guard<std::mutex> submit_lk(doc_request_submit_m_);
+    {
+        std::lock_guard<std::mutex> lk(doc_request_m_);
+        if (doc_request_stop_) {
+            doc_result = -1;
+            scroll_result = 0.f;
+            return false;
+        }
+        doc_request_done_ = false;
+        doc_request_cancelled_ = false;
+        doc_request_ok_ = false;
+        doc_request_has_doc_ = has_doc;
+        doc_request_has_scroll_ = has_scroll;
+        doc_request_doc_ = doc;
+        doc_request_scroll_ = scroll;
+    }
+    doc_request_pending_.store(true, std::memory_order_release);
+    std::unique_lock<std::mutex> lk(doc_request_m_);
+    const bool signaled = doc_request_cv_.wait_for(lk, std::chrono::seconds(3),
+        [this] { return doc_request_done_ || doc_request_stop_; });
+    if (!signaled || doc_request_stop_) {
+        if (!signaled) doc_request_cancelled_ = true;
+        doc_result = -1;
+        scroll_result = 0.f;
+        return false;
+    }
+    doc_result = doc_request_doc_result_;
+    scroll_result = doc_request_scroll_result_;
+    return doc_request_ok_;
+}
+
+void Engine::consume_doc_request() {
+    if (!doc_request_pending_.exchange(false)) return;
+    std::unique_lock<std::mutex> lk(doc_request_m_);
+    if (doc_request_cancelled_) {
+        doc_request_done_ = true;
+        doc_request_ok_ = false;
+        lk.unlock();
+        doc_request_cv_.notify_one();
+        return;
+    }
+    const bool has_doc = doc_request_has_doc_;
+    const bool has_scroll = doc_request_has_scroll_;
+    const int doc = doc_request_doc_;
+    const float scroll = doc_request_scroll_;
+    if (has_doc) ui_.docs_set(doc);
+    if (has_scroll) ui_.docs_set_scroll(scroll);
+    doc_request_doc_result_ = ui_.docs_current();
+    doc_request_scroll_result_ = ui_.docs_scroll();
+    doc_request_ok_ = true;
+    doc_request_done_ = true;
+    lk.unlock();
+    doc_request_cv_.notify_one();
+}
+
 // ── Frame submission ─────────────────────────────────────────────────────────────────────
 
 bool Engine::frame() {
@@ -5100,6 +5166,7 @@ bool Engine::frame() {
     push_hud_state();   // F3: the gait/water rows, from the engine's own state
     console_drain();    // F1: finished console responses land in the scrollback
     consume_console_ui_request(); // F1a: HTTP presentation requests land here
+    consume_doc_request();         // E1a: HTTP docs requests land here
     // B3: consume a queued synthetic click (agents drive the panels over HTTP —
     // input lands on the render thread, same discipline as the WndProc's)
     // D4a: HTTP compare requests are consumed on the render thread, before
@@ -6066,6 +6133,7 @@ bool Engine::frame_idle_ui() {
     push_hud_state();   // F3: idle presents the chrome too (gait/water rows)
     console_drain();    // F1: the console answers even when every 3D path idles
     consume_console_ui_request(); // F1a: HTTP presentation requests land here
+    consume_doc_request();         // E1a: HTTP docs requests land here
     // B3: consume a queued synthetic click (idle path too — the Studio must
     // answer even when every 3D path idles)
     // D4a: HTTP compare requests are consumed on the render thread, before

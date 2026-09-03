@@ -1520,6 +1520,20 @@ struct in ui.hpp avoids circular includes. When a joint pack is loaded and
 keys are saved with joint info, the per-joint rows populate — the editor
 can now author animation per-joint, not just per-clock.
 
+**TOOL FEATURE 10g — RENDER-THREAD DOCS CONTROL (2026-09-03).** The
+`POST /studio_doc` path no longer mutates `DocsState` from the HTTP worker. An
+acknowledged, serialized request is consumed by the render thread in both normal
+and idle frame paths; it applies optional document selection and optional scroll,
+then reports the committed document and clamped scroll. Cancellation is guarded
+by the request mutex and shutdown wakes blocked callers. Rule-0 membrane:
+**statement** one render-thread owner keeps visible and HTTP docs navigation
+consistent; **prediction** both paths produce the same document/scroll state
+without simulation, pose, camera, or mesh mutation; **falsifier** direct HTTP
+DocsState writes, a missing frame-path consumer, late stale application, or
+unacknowledged endpoint success. Source falsifiers passed and the configured
+Debug build/link passed; runtime API probing remains open because the live
+Release process was not interrupted.
+
 **TOOL FEATURE 10f — RENDER-THREAD CONSOLE CONTROL (2026-09-03).** The
 `POST /console` path no longer mutates `StudioUI` from the HTTP worker. An
 acknowledged, serialized request is consumed by the render thread in both normal

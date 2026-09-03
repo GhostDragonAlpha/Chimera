@@ -809,6 +809,30 @@ unescape — posted lines carry escaped JSON.
   and linked successfully; runtime API probing remains open because the live
   Release process was not interrupted.
 
+## SHIPPED — E1a: RENDER-THREAD DOCS CONTROL (2026-09-03)
+
+- **Statement:** document selection and scrolling are render-thread-owned editor
+  actions whether they originate from the docs panel or HTTP.
+- **Prediction:** `POST /studio_doc {"doc":N}`, `{"scroll":N}`, or both applies
+  in the same order as visible docs controls in normal and idle paths; the
+  response reports the acknowledged document and clamped scroll values, and no
+  HTTP worker mutates `DocsState` directly.
+- **Falsifier:** reject the change if `/studio_doc` directly calls `docs_set()`
+  or `docs_set_scroll()` from the HTTP handler, either frame path misses the
+  request, a timed-out request applies stale navigation later, or the request
+  changes simulation, pose, camera, or mesh state.
+- **Implementation:** `Engine::request_ui_doc()` serializes callers, queues the
+  optional document and scroll operations, and waits for render-thread
+  acknowledgment. The normal and idle frame paths consume the same request;
+  cancellation is protected by the request mutex, and shutdown wakes blocked
+  callers. The existing UI methods remain the single state owner and continue
+  to persist document state through the A2 workspace store.
+- **Verification boundary:** source falsifiers passed for one declaration and
+  definition, two frame-path consumers, atomic pending state, render-thread-only
+  DocsState mutation, HTTP no-direct-write discipline, cancellation, and
+  shutdown wakeup. Debug compiled and linked successfully; runtime API probing
+  remains open because the live Release process was not interrupted.
+
 ## SHIPPED — F4: THE RECORDER (2026-08-30)
 
 - **Statement:** every gate-relevant state change through the api chokepoint

@@ -626,6 +626,10 @@ public:
     // the committed open state; the HTTP handler never mutates StudioUI.
     bool request_console_ui(const std::string& line, bool has_line,
                             bool open, bool has_open, bool& open_result);
+    // E1a: acknowledge docs selection/scroll after the render thread applies
+    // it; the HTTP worker never mutates DocsState directly.
+    bool request_ui_doc(int doc, bool has_doc, float scroll, bool has_scroll,
+                        int& doc_result, float& scroll_result);
     // The layout space the panels live in (GET /studio reports it so agents can
     // aim synthetic clicks without a /frame grab — idle mode has no capture).
     uint32_t win_w() const { return extent_.width; }
@@ -651,6 +655,21 @@ private:
     std::string        console_ui_line_;
     bool               console_ui_stop_ = false;
     void               consume_console_ui_request();
+    std::mutex        doc_request_submit_m_;
+    std::mutex        doc_request_m_;
+    std::condition_variable doc_request_cv_;
+    std::atomic<bool>  doc_request_pending_{false};
+    bool               doc_request_done_ = false;
+    bool               doc_request_cancelled_ = false;
+    bool               doc_request_ok_ = false;
+    bool               doc_request_has_doc_ = false;
+    bool               doc_request_has_scroll_ = false;
+    int                doc_request_doc_ = 0;
+    float              doc_request_scroll_ = 0.f;
+    int                doc_request_doc_result_ = 0;
+    float              doc_request_scroll_result_ = 0.f;
+    bool               doc_request_stop_ = false;
+    void               consume_doc_request();
     std::mutex        link_request_submit_m_;
     std::mutex        link_request_m_;
     std::condition_variable link_request_cv_;
