@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cmath>
 #include <fstream>
+#include <sstream>
 #include <algorithm>
 #include <unordered_map>
 
@@ -84,9 +85,16 @@ void StudioUI::studio_state_clamp() {
 void StudioUI::studio_state_load() {
     std::ifstream f(studio_state_file_);
     if (!f.is_open()) return;
-    std::string key;
-    double value = 0.0;
-    while (f >> key >> value) {
+    // Parse each record independently. Some MSVC library versions set failbit
+    // when extracting tokens such as "nan" or "inf" into a double; parsing the
+    // entire file with operator>> would then silently discard every later record.
+    // A malformed line is one bad record, not permission to lose the workspace.
+    std::string line;
+    while (std::getline(f, line)) {
+        std::istringstream row(line);
+        std::string key;
+        double value = 0.0;
+        if (!(row >> key >> value)) continue;
         if (key == "version") continue;
         if (!std::isfinite(value)) continue;
         if (key == "visible") visible = value != 0.0;

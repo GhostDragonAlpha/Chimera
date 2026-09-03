@@ -809,6 +809,26 @@ unescape — posted lines carry escaped JSON.
   and linked successfully; runtime API probing remains open because the live
   Release process was not interrupted.
 
+## SHIPPED — A2a: LINE-ISOLATED STATE RECOVERY (2026-09-03)
+
+- **Statement:** one malformed numeric record in `studio_state.txt` must not
+  suppress valid workspace records that follow it.
+- **Prediction:** when `nan`, `inf`, or another invalid numeric token appears in
+  the middle of the state file, that record is skipped, later valid records are
+  restored, and the next save rewrites a clean key/value file.
+- **Falsifier:** reject the change if a malformed line terminates state loading,
+  later valid layout values are lost, invalid geometry reaches the UI, or the
+  engine cannot serve `/studio` afterward.
+- **Implementation:** `StudioUI::studio_state_load()` now reads one physical line
+  at a time through an isolated `std::istringstream`. Extraction failures and
+  non-finite values are ignored for that line only; the existing finite checks
+  and layout clamps remain in force.
+- **Verification:** configured Debug build/link passed. Focused source checks
+  confirmed line-isolated parsing, finite filtering, removal of the old
+  whole-stream loop, and retention of later fields. A malformed-line recovery
+  model check passed. Runtime fixture verification remains open for this new
+  behavior; the local agent's evidence directory was not modified.
+
 ## SHIPPED — E1a: RENDER-THREAD DOCS CONTROL (2026-09-03)
 
 - **Statement:** document selection and scrolling are render-thread-owned editor

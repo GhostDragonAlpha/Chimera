@@ -1520,6 +1520,18 @@ struct in ui.hpp avoids circular includes. When a joint pack is loaded and
 keys are saved with joint info, the per-joint rows populate — the editor
 can now author animation per-joint, not just per-clock.
 
+**TOOL FEATURE 10h — LINE-ISOLATED STUDIO STATE RECOVERY (2026-09-03).**
+`StudioUI::studio_state_load()` now parses each physical state-file record in an
+isolated `std::istringstream`. A malformed or non-finite numeric token is skipped
+without terminating the rest of the load, so valid records later in the file are
+still recovered before the existing clamp and clean-save path. Rule-0 membrane:
+**statement** one malformed record must not erase later valid workspace state;
+**prediction** `nan`, `inf`, or another invalid middle line is ignored while later
+panel/document values restore and `/studio` remains served; **falsifier** parser
+termination, lost later values, invalid geometry, or endpoint failure. Debug
+build/link and focused source/recovery checks passed; a runtime fixture for this
+new behavior remains open.
+
 **TOOL FEATURE 10g — RENDER-THREAD DOCS CONTROL (2026-09-03).** The
 `POST /studio_doc` path no longer mutates `DocsState` from the HTTP worker. An
 acknowledged, serialized request is consumed by the render thread in both normal
