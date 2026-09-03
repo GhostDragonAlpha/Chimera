@@ -40,6 +40,24 @@
 7. **RECORD + PUSH** — verdict lines into `docs/THE_ENGINE_STUDIO.md` + master
    list, commit, push. The critique history accumulates; sessions inherit it.
 
+## PARALLEL OPERATION (2026-09-03, operator decree)
+
+Two agents work the repo at once; the operator runs a Bionic harness beside
+them. Engine churn is a FACT OF LIFE, not an incident. The standing rules:
+
+- **Never trust engine state — verify it.** Before any capture or judgment:
+  `GET /state` + `GET /studio` (state object? mesh loaded?) + which port.
+  A vanished creature mid-session is a PEER AT WORK (restart for a build),
+  not a bug: reload `Saved/meshes/monkey_birth.bin` via `/mesh_bin` and move on.
+- **Kill discipline.** Kill only PIDs you spawned, or verify ownership first
+  (port + exe path + start time). Ports: 8090 operator/live, 8092 the dev
+  loop, 8093 reserved for the local agent's isolated instances.
+- **Binary identity.** Pin every verdict to an exe hash + spv hash (the
+  stale-spv incident proves a clean build is not proof the right code runs).
+- **Cooldown, not lock contention:** if a port is down, wait and re-probe;
+  assume a peer is mid-swap. Never "fix" a down port by spawning a duplicate
+  on the same port.
+
 ## MECHANICS (hard-won, do not relitigate)
 
 - **ONE image per `senses.watch` call** (CHIMERA_SENSES_MAX_IMAGES=1; the
@@ -66,6 +84,7 @@
 | 2026-09-03 | r2 | faint scaffold, missing container lines | both | dyad r3 |
 | 2026-09-03 | r3 | reel header [0/12] vs 6 slots | all 12 slots | dyad r4: "none reads as broken" |
 | 2026-09-03 | r5–r8 | +cam ink, title margins (16→30, derived from the strip's vertical inset), timeline label overlap, scene-header clip, dope sheet drawing without a clock | all five | r7 caught my primed report (protocol hardened); r8: "layout is clean" |
+| 2026-09-03 | render lane | GSQ RCO as eye (30.3s, sharp read): lighting now soft/symmetric; shadow detached from contact point; floor barely visible | lighting fix landed (mean 69.9→94.0, dim-band 0.290→0.085); floor/shadow membrane OPEN | pixel stats + GSQ read, same camera both sides |
 
 **r7 lesson (law now):** a leading question manufactures findings. I named
 `JOIN _` / `repo_` and the dyad obligingly "found" them in pure-ASCII source.

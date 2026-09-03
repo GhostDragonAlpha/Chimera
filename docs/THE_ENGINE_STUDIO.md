@@ -1556,6 +1556,24 @@ state change. **Lane guard:** the subject is loaded through `/mesh_bin`
 not load it over the creature. Camera framing note: auto-frame (r≈27.9) renders
 the subject small in an 800×600 `/frame`; r≈14–16 fills it.
 
+### The stale-spv incident and the lighting fix (2026-09-03, render lane)
+
+The dyad's lighting critique ("severely underexposed single-source... near-black
+and merge into the background") led to a build-system fault, not just a shader:
+CMake's hand-list compiled SEVEN shaders while the triangle lane's .spv files
+were copied STALE — `render_tri.frag` edits never reached the GPU. The list is
+derived now (every .vert/.frag/.comp/.glsl in shaders/ compiles; stage kept in
+the spv name for vert/frag pairs, bare stem for compute; collision guard).
+Shipped with the derived lighting membrane: key 0.85 + wrap 0.10 unchanged in
+direction (the contact shadow must keep agreeing), fill 0.18 opposite the key
+(4.7:1 key:fill, the readable-form band), hemisphere ambient mix(0.15,0.35,up).
+Measured same-camera: subject mean 69.9→94.0, near-black dim-band 0.290→0.085.
+The GSQ RCO eye (30.3s per read, served-by verified) confirms soft symmetric
+lighting, no vanishing limbs; its findings — shadow detached from the contact
+point, floor barely visible — are the next membrane (one problem: nothing
+visible for the shadow to land on). The viewport "strut" from r7 is the grid's
+bright green Y triad arm at the origin, a feature ("up reads first"), misread.
+
 ### Chrome polish batch (2026-09-03, loaded review rounds 5–8)
 
 Four more rounds against fresh glass: `[+ cam]` ink unified with its siblings

@@ -36,6 +36,7 @@ import os
 import re
 import time
 import urllib.request
+from pathlib import Path
 
 # VISION / TEXT backend selection -- LM Studio resident model is the decree default.
 VISION_BACKEND = os.environ.get("CHIMERA_VISION_BACKEND", "lmstudio").strip().lower()
@@ -87,6 +88,73 @@ FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
 # eye describe a sequence instead of judging a frame. The headroom is there if
 # a future decree wants it.
 SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "qwen3.8-27b-nvfp4-mtp")
+
+# 2026-09-03, operator decree (revised after the wrong-model incident): the dyad
+# FOLLOWS THE OPERATOR'S LOADED MODEL. Precedence:
+#   1. Saved/dyad_model.txt        — an EXPLICIT pin (one model id), only for
+#                                    controlled A/B comparisons. Read fresh
+#                                    every call. "auto"/blank = not pinned.
+#   2. AUTO-FOLLOW (the default):  whatever vision model the operator has LOADED
+#                                    in LM Studio right now (/api/v0/models,
+#                                    state=="loaded", type vlm). The operator
+#                                    loads GSQ RCO -> the dyad is GSQ RCO. They
+#                                    load nvfp4-mtp -> the dyad follows. The dyad
+#                                    NEVER asks the server to load or evict.
+#   3. default (nvfp4-mtp)         — only reachable when nothing is loaded (the
+#                                    on-demand path; eye_control refuses to load
+#                                    over a resident model, so this cannot evict).
+# Every identity change is logged once (the identity law: reports from different
+# eyes are not comparable, so the change itself must be on the record).
+_DYAD_MODEL_FILE = Path(__file__).resolve().parent.parent / "Saved" / "dyad_model.txt"
+_ACTIVE_MODEL = SENSES_MODEL
+
+def _pinned_model() -> str | None:
+    """The explicit pin, if any. "auto"/blank/missing = not pinned."""
+    try:
+        if _DYAD_MODEL_FILE.exists():
+            txt = _DYAD_MODEL_FILE.read_text(encoding="utf-8").strip()
+            if txt and txt.lower() != "auto":
+                return txt
+    except OSError:
+        pass
+    return None
+
+def _loaded_vlm() -> str | None:
+    """The operator's loaded vision model, if any. Pure read; never loads."""
+    try:
+        with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=4) as r:
+            models = json.load(r).get("data", [])
+    except Exception:
+        return None
+    for m in models:
+        if m.get("state") == "loaded" and m.get("type") == "vlm":
+            return m.get("id")
+    return None
+
+def dyad_model() -> str:
+    """The dyad's current eye: pin > loaded > default. Fresh every call."""
+    global _ACTIVE_MODEL
+    m = _pinned_model() or _loaded_vlm() or SENSES_MODEL
+    if m != _ACTIVE_MODEL:
+        print(f"[senses] dyad model switch: {_ACTIVE_MODEL} -> {m}", flush=True)
+        _ACTIVE_MODEL = m
+    return m
+
+def set_dyad_model(name: str) -> None:
+    """Write the pin ("" or "auto" = follow the loaded model). Verified against
+    LM Studio's served list when reachable — a typo'd id is a silently dark eye."""
+    _DYAD_MODEL_FILE.parent.mkdir(parents=True, exist_ok=True)
+    name = (name or "auto").strip()
+    _DYAD_MODEL_FILE.write_text(name + "\n", encoding="utf-8")
+    if name not in ("", "auto"):
+        try:
+            with urllib.request.urlopen(LMSTUDIO_URL + "/v1/models", timeout=3) as r:
+                served = [m.get("id") for m in json.load(r).get("data", [])]
+            if served and name not in served:
+                print(f"[senses] WARNING: '{name}' not in LM Studio's served list: {served}", flush=True)
+        except Exception:
+            pass  # server down: the write stands; _post will name the miss
+    print(f"[senses] dyad pin set to: {name or 'auto (follow the loaded model)'}", flush=True)
 SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "60672"))
 
 # A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
@@ -288,7 +356,7 @@ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = 
 # (60,672, reported by /api/v0/models), and pushing a num_ctx at it can
 # trigger a reload -- which is the eviction war core/lm_gateway exists to
 # prevent. We cap what the eye may SAY, never what it may SEE.
-    body = {"model": SENSES_MODEL,   # NAMED, not "resident" — see the decree above.
+    body = {"model": dyad_model(),    # named per call: override file > env > default.
                                      # A dyad whose eye changes identity between
                                      # readings produces reports that cannot be
                                      # compared, and comparison is the instrument.
@@ -341,17 +409,27 @@ READ_TIMEOUT_DISABLED = None
 
 
 def ensure_eye() -> bool:
-    """The on-demand load: a read that finds the eye dark loads the decreed model
-    first. "You have to just call it with a command request" — this is that call.
-    Returns True when the eye is light. Never unloads (the operator owns restarts)."""
+    """Light the eye WITHOUT touching the operator's loaded models. Laws:
+    - the resolved eye (dyad_model()) already loaded -> True.
+    - a DIFFERENT model is resident -> NEVER load (lms load can evict the
+      operator's choice — measured 2026-09-03). Report honestly, stay dark.
+    - NOTHING is resident -> load the resolved eye (the documented on-demand
+      decree); nothing can be evicted because nothing is loaded."""
     try:
         import eye_control
-        st = eye_control.status()
+        want = dyad_model()
+        st = eye_control.status(want)          # the RESOLVED eye's state, not the default's
         if st.get("eye_state") == "loaded":
             return True
-        print(f"[senses] eye dark — loading {SENSES_MODEL} on demand "
+        resident = st.get("loaded") or []
+        if resident:
+            print(f"[senses] eye '{want}' is dark but {resident} is resident — "
+                  f"NOT auto-loading (eviction risk). Load '{want}' yourself or "
+                  f"clear the pin to follow the loaded model.", flush=True)
+            return False
+        print(f"[senses] eye dark, nothing resident — loading {want} on demand "
               f"(unbounded wait; the operator decides when to start over) ...", flush=True)
-        r = eye_control.load()
+        r = eye_control.load(model=want)
         return bool(r.get("ok"))
     except Exception as e:
         print(f"[senses] ensure_eye FAILED: {e}")

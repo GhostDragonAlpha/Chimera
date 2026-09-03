@@ -23,17 +23,59 @@ endif()
 set(SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 set(SPIRV_DIR  "${CMAKE_BINARY_DIR}/shaders")
 
-# Compile GLSL -> SPIR-V at build time (hardcoded shader names)
+# 2026-09-03, the stale-spv incident: the old hand-list compiled SEVEN shaders
+# while the triangle lane (render_tri*, shadow, frost, joints, hinge, gait,
+# volp, water_*) shipped PREHISTORIC .spv files — a lighting change to
+# render_tri.frag built clean and changed NOTHING on screen because its .spv
+# was copied, not compiled. The list is now DERIVED: every .vert/.frag/.comp/
+# .glsl in shaders/ compiles to a .spv. A new shader file is wired by existing;
+# a deleted one stops building. No shader can silently rot again.
+
+# Compile GLSL -> SPIR-V at build time (derived from the source tree)
 if(GLSL_VALIDATOR)
-    set(COMPILED_SHADERS
-        "${SPIRV_DIR}/render.vert.spv"
-        "${SPIRV_DIR}/render.frag.spv"
-        "${SPIRV_DIR}/compute.spv"
-        "${SPIRV_DIR}/sort.spv"
-        "${SPIRV_DIR}/skin.spv"
-        "${SPIRV_DIR}/ui.vert.spv"
-        "${SPIRV_DIR}/ui.frag.spv"
+    file(GLOB SHADER_SOURCES
+        "${SHADER_DIR}/*.vert"
+        "${SHADER_DIR}/*.frag"
+        "${SHADER_DIR}/*.comp"
+        "${SHADER_DIR}/*.glsl"
     )
+    set(SHADER_STAGE_vert vert)
+    set(SHADER_STAGE_frag frag)
+    set(SHADER_STAGE_comp comp)
+    set(SHADER_STAGE_glsl comp)
+    set(COMPILED_SHADERS "")
+    foreach(src ${SHADER_SOURCES})
+        get_filename_component(name "${src}" NAME)
+        get_filename_component(stem "${src}" NAME_WE)
+        string(REGEX REPLACE "^.*\\." "" ext "${name}")
+        set(stage "${SHADER_STAGE_${ext}}")
+        if(NOT stage)
+            message(FATAL_ERROR "unknown shader stage for ${name}")
+        endif()
+        # Output naming (matches the engine's read_file names exactly):
+        #   render.vert -> render.vert.spv     (stages keep the extension —
+        #   render.frag -> render.frag.spv      vert/frag PAIRS share a stem)
+        #   compute.glsl -> compute.spv        (compute sources use the bare stem)
+        if(stage STREQUAL "comp")
+            set(out "${SPIRV_DIR}/${stem}.spv")
+        else()
+            set(out "${SPIRV_DIR}/${name}.spv")
+        endif()
+        if(COMPILED_SHADERS)
+            list(FIND COMPILED_SHADERS "${out}" dup)
+            if(NOT dup EQUAL -1)
+                message(FATAL_ERROR "shader output collision: ${out}")
+            endif()
+        endif()
+        add_custom_command(
+            OUTPUT "${out}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${SPIRV_DIR}"
+            COMMAND "${GLSL_VALIDATOR}" -S "${stage}" -V "${src}" -o "${out}"
+            DEPENDS "${src}"
+            COMMENT "Compiling ${name} -> ${stem}.spv"
+        )
+        list(APPEND COMPILED_SHADERS "${out}")
+    endforeach()
 
     add_custom_command(
         OUTPUT "${SPIRV_DIR}/render.vert.spv"
