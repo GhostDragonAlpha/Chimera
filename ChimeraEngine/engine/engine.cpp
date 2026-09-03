@@ -5018,10 +5018,7 @@ bool Engine::request_console_ui(const std::string& line, bool has_line,
     const bool signaled = console_ui_cv_.wait_for(lk, std::chrono::seconds(3),
         [this] { return console_ui_done_ || console_ui_stop_; });
     if (!signaled || console_ui_stop_) {
-        if (!signaled) {
-            std::lock_guard<std::mutex> cancel_lk(console_ui_m_);
-            console_ui_cancelled_ = true;
-        }
+        if (!signaled) console_ui_cancelled_ = true;
         open_result = false;
         return false;
     }
