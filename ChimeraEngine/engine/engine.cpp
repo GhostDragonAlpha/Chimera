@@ -632,6 +632,13 @@ bool Engine::init(const EngineConfig& cfg) {
                 show_scrub_.store(ks[i].second < 0.0 ? 0.0 : ks[i].second);
             };
             ui_.cb_key_save_ = [this] { key_mark_save(std::string()); };
+            ui_.cb_key_delete_ = [this](int i) {
+                std::vector<std::pair<std::string, double>> ks = key_marks_list();
+                if (i >= 0 && i < static_cast<int>(ks.size())) {
+                    key_mark_delete(ks[i].first);
+                }
+            };
+            ui_.cb_key_clear_ = [this] { key_marks_clear(); };
             // C1: the joints editor's intents — select (gizmo + paint target)
             // toggles; a theta intent is an ownership claim (editor takes the pose).
             ui_.cb_joint_select_ = [this](int idx) {
@@ -2185,6 +2192,14 @@ bool Engine::camera_fit(float out[8]) {
             if (c > hi[k]) hi[k] = c;
         }
     }
+    // FIT v2 (2026-09-02, the eye's confirmation scan): the floor is part of
+    // the composition. v1 centered the mesh's own AABB and framed the body
+    // perfectly — feet 4 px from the viewport's bottom edge — while the floor
+    // plane (y=0, where the contact shadow lives) fell out of frame below.
+    // The grid is an unconditional instrument and the shadow sits ON it, so
+    // the fit's box extends down to the floor whenever the body floats above:
+    // the frame gains ground reference, derived from the scene law, not taste.
+    if (lo[1] > 0.0f) lo[1] = 0.0f;
     float cx = 0.5f * (lo[0] + hi[0]), cy = 0.5f * (lo[1] + hi[1]), cz = 0.5f * (lo[2] + hi[2]);
     float dx = hi[0] - lo[0], dy = hi[1] - lo[1], dz = hi[2] - lo[2];
     float half_diag = 0.5f * sqrtf(dx * dx + dy * dy + dz * dz);

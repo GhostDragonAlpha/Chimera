@@ -207,6 +207,8 @@ public:
     std::function<void(int)>  cb_step_;          // ±1 frames of 1/240 s
     std::function<void(int)>  cb_key_recall_;    // scrub to key i (h.w carries hit_t)
     std::function<void()>     cb_key_save_;      // key the live clock time
+    std::function<void(int)>  cb_key_delete_;    // G1: delete key by index
+    std::function<void()>     cb_key_clear_;     // G1: clear all keys
     std::function<void()>     cb_speed_cycle_;
     std::function<void(double)> cb_scrub_;       // absolute time target
     // C1: the joints editor's intents — select toggles the gizmo+paint target;

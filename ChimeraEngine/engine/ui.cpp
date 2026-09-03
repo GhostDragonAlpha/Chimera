@@ -242,6 +242,7 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 if (i == 0) { left_mode_ = 0; }                          // BOARD
                 if (i == 1) { left_mode_ = 4; selected_stage_ = -1; }    // SCENE (C4)
                 if (i == 2) { left_mode_ = 1; selected_stage_ = -1; }    // JOINTS (C1)
+                if (i == 3) { left_mode_ = 6; selected_stage_ = -1; }    // POSES (G1)
                 if (i == 7) { left_mode_ = 2; selected_stage_ = -1; }    // DOCS (E1)
                 if (i == 8) { left_mode_ = 3; selected_stage_ = -1; }    // LOG (F4)
                 if (i == 6) { left_mode_ = 5; selected_stage_ = -1; }    // CAPTURE (D5)
@@ -261,6 +262,12 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
             if (h.id >= 700 && h.id < 800 && cb_key_recall_)             // D1: key-mark diamonds
                 cb_key_recall_(h.id - 700);
             if (h.id == 905 && cb_key_save_) cb_key_save_();             // D1: KEY button
+            if (h.id >= 910 && h.id < 930 && cb_key_recall_)             // G1: recall pose by index
+                cb_key_recall_(h.id - 910);
+            if (h.id >= 930 && h.id < 940 && cb_key_delete_)             // G1: delete pose by index
+                cb_key_delete_(h.id - 930);
+            if (h.id == 940 && cb_key_save_) cb_key_save_();             // G1: save current pose
+            if (h.id == 941 && cb_key_clear_) cb_key_clear_();           // G1: clear all poses
             if ((h.id == 900 || h.id == 901) && selected_stage_ >= 0)    // E2: the deep link
                 docs_link_stage(selected_stage_);
             return true;
@@ -805,7 +812,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             : (left_mode_ == 3 ? "LOG - the recorder (F4)"
             : (left_mode_ == 4 ? "SCENE - the outliner (C4)"
             : (left_mode_ == 5 ? "CAPTURE - render-to-MP4 (D5)"
-            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO")))))),
+            : (left_mode_ == 6 ? "POSES - the library (G1)"
+            : (have_sel ? board_.stages[selected_stage_].id + " - " + board_.stages[selected_stage_].name : "STUDIO"))))))),
          TR, TG, TB, 1.f);
     if (left_mode_ != 1) slider_tracks_.clear();   // stale hit-rects are a lie
     if (left_mode_ != 4) { scene_row_rects_.clear(); scene_sel_rects_.clear(); } // same law
@@ -967,6 +975,64 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                  kv.first == "state" ? (kv.second == "FAILED" ? 0.30f : kv.second == "done" ? 0.35f : 0.40f)
                                      : TB, 1.f);
             y += lh;
+        }
+    } else if (!left_.collapsed && left_mode_ == 6) {
+        // G1: THE POSES LIBRARY. Every saved key mark as a row: name, time,
+        // and delete button. Click a name -> recall (scrub to that time).
+        // The engine pushes key_marks_ui_ every frame; the panel only draws.
+        float x = R[1][0] + 10, y = R[1][1] + 30;
+        float y_max = R[1][1] + R[1][3] - lh;
+        float dock_w = R[1][2] - 20;
+        const float name_w = 14 * advance_;
+        const float time_w = 7 * advance_;
+        const float del_w = 3 * advance_;
+        char hb[128];
+        snprintf(hb, sizeof(hb), "saved poses: %zu", key_marks_ui_.size());
+        text(x, y, hb, 0.62f, 0.66f, 0.74f, 1.f); y += lh;
+        text(x, y, "click name = recall   click x = delete", 0.45f, 0.47f, 0.52f, 1.f); y += lh + 4;
+        if (key_marks_ui_.empty()) {
+            text(x, y, "no poses saved yet", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+            text(x, y, "press KEY or POST /keys {\"action\":\"save\"}", 0.45f, 0.47f, 0.52f, 1.f); y += lh;
+        } else {
+            for (size_t i = 0; i < key_marks_ui_.size(); ++i) {
+                if (y > y_max) {
+                    text(x, y_max, "... (clipped)", 0.85f, 0.55f, 0.30f, 1.f);
+                    break;
+                }
+                const auto& kp = key_marks_ui_[i];
+                const std::string& nm = kp.first;
+                double kt = kp.second;
+                // highlight if this is the current pose (scrub matches)
+                double cur_t = clk_t_;
+                double period = clk_hinge_period_ > 0.0 ? clk_hinge_period_ : clk_total_ > 0.0 ? clk_total_ : 4.0;
+                double local_cur = cur_t - floor(cur_t / period) * period;
+                double local_key = kt - floor(kt / period) * period;
+                bool current = std::abs(local_cur - local_key) < 0.05 || std::abs(local_cur - local_key + period) < 0.05 || std::abs(local_cur - local_key - period) < 0.05;
+                // row background for current pose
+                if (current) rect(R[1][0] + 2, y - 2, R[1][2] - 4, lh + 4, 0.13f, 0.16f, 0.24f, 0.95f);
+                // name (clickable -> recall)
+                text(x, y, nm, current ? 0.45f : TR, current ? 0.75f : TG, current ? 1.00f : TB, 1.f);
+                hots_.push_back({ x - 2, y - 2, name_w + 6, lh + 4, 910 + static_cast<int>(i) });
+                // time value
+                char tb[32]; snprintf(tb, sizeof(tb), "t=%.2f", kt);
+                text(x + name_w + 6, y, tb, 0.62f, 0.66f, 0.74f, 1.f);
+                // delete button (x)
+                float dx = x + name_w + 6 + time_w;
+                text(dx, y, "x", 0.85f, 0.35f, 0.30f, 1.f);
+                hots_.push_back({ dx - 2, y - 2, del_w + 4, lh + 4, 930 + static_cast<int>(i) });
+                y += lh + 2;
+            }
+        }
+        // action buttons at the bottom
+        if (y + lh * 2 < y_max) {
+            y += 4;
+            text(x, y, "[SAVE current]", 0.30f, 0.75f, 0.45f, 1.f);
+            hots_.push_back({ x - 2, y - 2, 16 * advance_, lh + 4, 940 });
+            y += lh;
+            if (!key_marks_ui_.empty()) {
+                text(x, y, "[CLEAR all]", 0.85f, 0.45f, 0.30f, 1.f);
+                hots_.push_back({ x - 2, y - 2, 14 * advance_, lh + 4, 941 });
+            }
         }
     } else if (!left_.collapsed && left_mode_ == 4) {
         // C4: THE OUTLINER. Every row is composed by the ENGINE from live state
@@ -1147,11 +1213,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         else               line("board: no file yet",            0.85f, 0.55f, 0.30f);
         line("feed: tools/studio_board.py", 0.45f, 0.47f, 0.52f); y += 8;
         line("workspaces (A3 - click to switch):", 0.62f, 0.66f, 0.74f); y += 2;
-        const char* ws[] = {"BOARD   (this strip)", "SCENE   - the outliner (C4)", "JOINTS  - the editor (C1)", "GAIT    - parked",
+        const char* ws[] = {"BOARD   (this strip)", "SCENE   - the outliner (C4)", "JOINTS  - the editor (C1)", "POSES   - the library (G1)",
                             "WATER   - parked", "FROST   - parked", "CAPTURE - render-to-MP4 (D5)", "DOCS    - the browser (E1)",
                             "LOG     - the recorder (F4)"};
         for (int i = 0; i < 9; ++i) {
-            bool live = (i == 0 || i == 1 || i == 2 || i == 6 || i == 7 || i == 8);
+            bool live = (i == 0 || i == 1 || i == 2 || i == 3 || i == 6 || i == 7 || i == 8);
             text(x + 8, y, ws[i], live ? 0.30f : 0.42f, live ? 0.60f : 0.44f, live ? 1.00f : 0.50f, 1.f);
             if (live) hots_.push_back({ x + 4, y - 2, R[1][2] - 30, lh + 4, 300 + i });
             y += lh;
