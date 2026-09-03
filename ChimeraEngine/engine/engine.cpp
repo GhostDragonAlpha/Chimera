@@ -47,6 +47,14 @@ static std::atomic<uint32_t> g_pending_resize_h{0};
 // at the wall of deletion"). Derived from the geometry, never a constant.
 static float      g_mesh_sphere = 0.0f;
 static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
+// THE PENUMBRA'S MEASURE (2026-09-03): the contact shadow's alpha falls with
+// the occluder's height above the floor — real penumbrae widen with
+// occluder-receiver distance, contact stays darkest. The reference height H0
+// is DERIVED at load, not chosen: alpha reaches HALF its contact value at
+// half the mesh's own y-extent (a half-body-height limb casts a half-strength
+// shadow). Consumed by render_tri_shadow.vert via the UBO.
+static float      g_mesh_ymin = 0.0f;
+static float      g_mesh_ymax = 1.0f;
 
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
@@ -1556,11 +1564,18 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     // mesh no matter how far in the operator scrolls. Vertex stride = 9
     // (pos3 + normal3 + color3).
     float r2max = 0.0f;
+    float ymin = 0.0f, ymax = 1.0f;   // H0 defaults sane for degenerate payloads
+    bool first = true;
     for (size_t i = 0; i + 2 < verts.size(); i += 9) {
-        float r2 = verts[i] * verts[i] + verts[i + 1] * verts[i + 1] + verts[i + 2] * verts[i + 2];
+        float x = verts[i], y = verts[i + 1], z = verts[i + 2];
+        float r2 = x * x + y * y + z * z;
         if (r2 > r2max) r2max = r2;
+        if (first)      { ymin = y; ymax = y; first = false; }
+        else if (y < ymin) ymin = y;
+        else if (y > ymax) ymax = y;
     }
     g_mesh_sphere = sqrtf(r2max);
+    g_mesh_ymin = ymin; g_mesh_ymax = ymax;
     return true;
 }
 
@@ -5384,6 +5399,8 @@ bool Engine::frame() {
         float resolution[2];
         float floor_y;      // the grid plane (the shadow projects onto it)
         float shadow_alpha; // contact shadow opacity (0 = off)
+        float shadow_h0;    // THE penumbra's reference height (derived at load:
+                            // alpha halves at half the mesh's y-extent)
     } ubo{};
     std::memcpy(ubo.proj, proj, sizeof(proj));
     std::memcpy(ubo.view, view, sizeof(view));
@@ -5391,6 +5408,7 @@ bool Engine::frame() {
     ubo.resolution[1] = static_cast<float>(extent_.height);
     ubo.floor_y = 0.0f;   // THE grid plane: push_grid_overlay draws the floor at y=0
     ubo.shadow_alpha = 0.38f;
+    ubo.shadow_h0 = fmaxf(g_mesh_ymax - g_mesh_ymin, 1e-3f);
 
     // Per-slot camera UBO, host-visible + persistently mapped: create once, memcpy
     // per frame. NO staging buffer, NO queue submit, NO vkQueueWaitIdle per frame —

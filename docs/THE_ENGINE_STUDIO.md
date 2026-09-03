@@ -1710,3 +1710,25 @@ The path there killed five distinct defects, each earning the next measurement:
 Final histogram (floor region): 55 x66.8k, 21 x10.3k, 8 x5.5k, deep-stack x6.5k — clean buckets,
 no garbage. Isolation-test discipline (red quad / magenta blob / RGB fingerprints) carried every
 step; both isolation shaders are back to production ink.
+
+### 2026-09-03 (cont.) — THE HEIGHT-DERIVED PENUMBRA (membrane B, PASS)
+**Membrane (Rule 0):** shadow opacity falling with the occluder's height above the floor reads more
+grounded than uniform ink — real penumbrae widen with occluder-receiver distance, contact stays
+darkest. **Prediction:** foot-contact darker than the spread silhouette; eye keeps GROUNDED and
+reads the shadow as more natural. **Falsifier:** contact lightens / wash detaches / verdict drops.
+**RESULT: PASS** — measured AND judged.
+- **H0 derived, not chosen:** alpha halves at half the mesh's own y-extent, measured at load
+  (g_mesh_ymin/ymax join g_mesh_sphere's bounds loop); A0 stays the decreed 0.38.
+- **Alpha computed in the VERTEX stage** (whose UBO reads are the measured-trustworthy ones) and
+  interpolated to the fragment as a varying — the fragment stage now reads NO UBO on this pipeline
+  at all (the fingerprint-probe defect is structurally avoided, not patched).
+- Measured: identical shadow footprint (22,314 px), redistributed — spread 30-35 (was 18-23),
+  mid-fall 18-23, contact zone 0-11 (feet keep the tight dark contact). Floor untouched (55).
+- The eye (GSQ RCO, 21.6s) independently discovered the compositing law: "overlapping regions
+  where two projected parts cross and darken again, which only happens with a semi-transparent
+  falloff... soft penumbra-like gradient rather than a crisp cut-out. VERDICT: GROUNDED."
+- Housekeeping: CMake COMMENT printed the bare stem for stage shaders (log-only lie; outputs were
+  always correct .vert.spv/.frag.spv pairs with a collision guard) — fixed; stale bare-stem
+  render_tri_shadow.spv flushed.
+- FPS falsifier (floor+shadow, membrane A closeout): 299.4 fps / 0.37 ms avg — NOT OBSERVED.
+  Grid confirmed UNREGRESSED: it is a UI-space overlay drawn by the dock, not world geometry.

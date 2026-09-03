@@ -72,7 +72,7 @@ if(GLSL_VALIDATOR)
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${SPIRV_DIR}"
             COMMAND "${GLSL_VALIDATOR}" -S "${stage}" -V "${src}" -o "${out}"
             DEPENDS "${src}"
-            COMMENT "Compiling ${name} -> ${stem}.spv"
+            COMMENT "Compiling ${name} -> ${name}.spv"
         )
         list(APPEND COMPILED_SHADERS "${out}")
     endforeach()
