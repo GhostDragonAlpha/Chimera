@@ -476,6 +476,27 @@ public:
     const std::vector<std::array<float, 4>>& cam_rects() const { return cam_mark_rects_; }
     std::array<float, 4> cam_save_rect() const { return cam_save_rect_; }
 
+    // ── THE CONTEXT MENU (2026-09-03, the operator): a QUICK right-click opens
+    // a verb menu for what is under the cursor; a right-DRAG keeps panning.
+    // First customers: the D6 camera bookmark chips — Recall / Overwrite /
+    // DELETE, the verb the chips never had (the store's cam_mark_delete was
+    // HTTP-only). Generic form: items + a target index + one engine callback.
+    struct CtxItem { std::string label; int verb; };       // verb: engine-side action id
+    struct CtxRect { float x, y, w, h; int target; std::vector<CtxItem> items; };
+    std::vector<CtxRect> rctx_;                            // right-click customers, rebuilt in prepare()
+    std::vector<CtxItem> ctx_items_;
+    float ctx_x_ = 0.f, ctx_y_ = 0.f;
+    int   ctx_index_ = -1;                                 // the object the menu targets
+    float ctx_travel_ = 0.f;                               // right-press travel px (click/drag split)
+    float rdown_x_ = 0.f, rdown_y_ = 0.f;
+    float ctx_item_h() const { return 22.f * ui_scale_; }
+    void  ctx_measure(float& w, float& h) const;
+    void on_rbutton_down(int x, int y);
+    bool on_rbutton_up(int x, int y);                      // true: consumed (menu opened/activated/closed)
+    void ctx_close() { ctx_items_.clear(); ctx_index_ = -1; }
+    bool ctx_open()  const { return !ctx_items_.empty(); }
+    std::function<void(int, int)> cb_ctx_cam_;             // (bookmark index, verb)
+
     // ── D5: THE CAPTURE SESSION (the CAPTURE workspace's left-dock mode 5) ──
     // The engine composes the session document (capture_kv — one formatting
     // site, shared with GET /capture); the dock only draws it.

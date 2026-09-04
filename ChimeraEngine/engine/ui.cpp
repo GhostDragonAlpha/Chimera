@@ -301,8 +301,79 @@ bool StudioUI::wants_mouse(int x, int y) {
     return false;
 }
 
+// ── THE CONTEXT MENU (2026-09-03, the operator): click/drag split ────────────
+// A right-press RECORDS its start and travel; it keeps the existing pan law
+// untouched (drag math reads g_last_* in WndProc exactly as before). At
+// release, travel under 4 px means a CLICK: open the menu at the cursor (or
+// close it if it was already open — a second click anywhere dismisses).
+// Items land their verb and close; a click elsewhere closes. The menu lives
+// in the UI only — no engine state, no persistence, nothing to restore.
+void StudioUI::ctx_measure(float& w, float& h) const {
+    w = 0.f;
+    for (const auto& it : ctx_items_)
+        w = (std::max)(w, static_cast<float>(it.label.size()) * advance_);
+    w += 24.f * ui_scale_;
+    h = static_cast<float>(ctx_items_.size()) * ctx_item_h() + 8.f * ui_scale_;
+}
+
+void StudioUI::on_rbutton_down(int x, int y) {
+    rdown_x_ = static_cast<float>(x); rdown_y_ = static_cast<float>(y);
+    ctx_travel_ = 0.f;
+}
+
+bool StudioUI::on_rbutton_up(int x, int y) {
+    if (!visible) return false;
+    ctx_travel_ += fabsf(static_cast<float>(x) - rdown_x_)
+                 + fabsf(static_cast<float>(y) - rdown_y_);
+    if (ctx_travel_ >= 4.f * ui_scale_) {          // a DRAG: pan, never menu work
+        ctx_close();
+        return false;
+    }
+    // a CLICK
+    if (ctx_open()) {
+        float w, h; ctx_measure(w, h);
+        bool inside = x >= ctx_x_ && x < ctx_x_ + w && y >= ctx_y_ && y < ctx_y_ + h;
+        int hit = inside ? static_cast<int>((y - ctx_y_ - 4.f * ui_scale_) / ctx_item_h()) : -1;
+        int verb = (inside && hit >= 0 && hit < static_cast<int>(ctx_items_.size()))
+                 ? ctx_items_[hit].verb : -1;
+        int target = ctx_index_;
+        ctx_close();
+        if (inside && verb >= 0 && target >= 0 && cb_ctx_cam_)
+            cb_ctx_cam_(target, verb);             // the verb lands AFTER the close
+        return true;                               // a click on the open menu is consumed
+    }
+    // fresh menu: only over a registered customer rect (rctx_, rebuilt in prepare())
+    for (const auto& rc : rctx_) {
+        if (x >= rc.x && x < rc.x + rc.w && y >= rc.y && y < rc.y + rc.h) {
+            ctx_index_ = rc.target;
+            ctx_items_ = rc.items;
+            float w, h; ctx_measure(w, h);
+            float W = static_cast<float>(ext_.width), H = static_cast<float>(ext_.height);
+            ctx_x_ = (x + w > W - 4.f) ? (W - 4.f - w) : static_cast<float>(x);
+            ctx_y_ = (y + h > H - bar_h() - 4.f) ? (H - bar_h() - 4.f - h) : static_cast<float>(y);
+            return true;
+        }
+    }
+    return false;                                  // plain click on nothing: pan release
+}
+
 bool StudioUI::on_lbutton(int x, int y, bool down) {
     if (!visible) return false;
+    // A left press while the menu is open: click ON the menu ACTIVATES the
+    // item (menus answer on press, the immediate-mode law); click OUTSIDE
+    // dismisses. Either way the press is consumed — never an orbit underneath.
+    if (down && ctx_open()) {
+        float w, h; ctx_measure(w, h);
+        bool inside = x >= ctx_x_ && x < ctx_x_ + w && y >= ctx_y_ && y < ctx_y_ + h;
+        int hit = inside ? static_cast<int>((y - ctx_y_ - 4.f * ui_scale_) / ctx_item_h()) : -1;
+        int verb = (inside && hit >= 0 && hit < static_cast<int>(ctx_items_.size()))
+                 ? ctx_items_[hit].verb : -1;
+        int target = ctx_index_;
+        ctx_close();
+        if (inside && verb >= 0 && target >= 0 && cb_ctx_cam_)
+            cb_ctx_cam_(target, verb);
+        return true;
+    }
     if (!down) {
         bool had = drag_kind_ != 0;
         if (had == true && drag_kind_ >= 1 && drag_kind_ <= 8) studio_state_save();
@@ -2109,6 +2180,22 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
 
     build_chrome();
     build_console();
+
+    // ── THE CONTEXT MENU draw — LAST chrome, so it rides above everything.
+    // It lives here, not in build_chrome(), because that builder early-returns
+    // when the status bar is off — a menu must draw in every chrome state.
+    if (ctx_open()) {
+        float w, h; ctx_measure(w, h);
+        rect(ctx_x_, ctx_y_, w, h, 0.10f, 0.11f, 0.16f, 0.98f);
+        rect_outline(ctx_x_, ctx_y_, w, h, 1.f, 0.30f, 0.60f, 1.00f, 0.95f);
+        float iy = ctx_y_ + 4.f * ui_scale_;
+        for (const auto& it : ctx_items_) {
+            float ir = 0.85f, ig = 0.87f, ib = 0.92f;
+            if (it.verb == 2) { ir = 0.95f; ig = 0.45f; ib = 0.40f; }   // Delete reads as the destructive verb it is
+            text(ctx_x_ + 10.f, iy, it.label, ir, ig, ib, 1.f);
+            iy += ctx_item_h();
+        }
+    }
 }
 
 // ── F1: THE CONSOLE — the HTTP API's interactive twin ──────────────────────
@@ -2275,6 +2362,7 @@ void StudioUI::build_chrome() {
     // camera. The rects are the aim map the /cameras twin serves.
     cam_mark_rects_.assign(cam_marks_.size(), {0.f, 0.f, 0.f, 0.f});
     cam_save_rect_ = {0.f, 0.f, 0.f, 0.f};
+    rctx_.clear();                                  // right-click customers rebuild every frame
     {
         // 2026-09-02, the eye (defect d): the row was left-pinned under the
         // HUD rows, leaving the toolbar's right half dead. Right-ALIGN the
@@ -2302,6 +2390,11 @@ void StudioUI::build_chrome() {
             text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
             hots_.push_back({ cx2, cy, cw, lh + 6, 800 + static_cast<int>(i) });
             cam_mark_rects_[i] = { cx2, cy, cw, lh + 6 };
+            // THE CONTEXT MENU's first customer: each bookmark chip carries its
+            // verbs — Recall / Overwrite / Delete. The click/drag split keeps
+            // pan on the same button (ui.hpp, the context-menu block).
+            rctx_.push_back({ cx2, cy, cw, lh + 6, static_cast<int>(i),
+                { { "Recall", 0 }, { "Overwrite", 1 }, { "Delete", 2 } } });
             cx2 += cw + 6;
         }
         std::string cap = "[+ cam]";

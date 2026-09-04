@@ -45,14 +45,19 @@ N, idx_count = struct.unpack('<II', raw[:8])
 V = np.frombuffer(raw, np.float32, N * 9, 24).reshape(-1, 9)[:, :3].astype(np.float64)
 
 b = open(PACK, 'rb').read()
-assert b[:4] == b'JNT1', 'not a JNT1 pack'
+IS_JNT2 = (b[:4] == b'JNT2')
+assert b[:4] in (b'JNT1', b'JNT2'), 'not a JNT pack'
 nv, nj, nl = struct.unpack('<III', b[4:16])
 p = 16 + nl
 assign = np.frombuffer(b, np.int32, nv, p); p += nv * 4
 w = np.frombuffer(b, np.float32, nv, p); p += nv * 4
 J = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3); p += nj * 12
 ax = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3); p += nj * 12
-rom = np.frombuffer(b, np.float32, nj * 2, p)
+rom = np.frombuffer(b, np.float32, nj * 2, p); p += nj * 8
+# JNT2: trailing FK parent map — the second bone of every crease (LBS).
+parents = None
+if IS_JNT2:
+    parents = np.frombuffer(b, np.int32, nj, p)
 names = [n.decode() for n in b[16:16 + nl].split(b'\x00')[:nj]]
 ix = {n: i for i, n in enumerate(names)}
 
@@ -128,6 +133,28 @@ for a, bnm in zip(AXIAL_CHAIN, AXIAL_CHAIN[1:]):
 zz_detail = ', '.join(bad_zz + axial_short) if (bad_zz or axial_short) else \
     'limb bends < 90 deg; axial links >= 0.2 wu'
 check(6, 'no zigzag at rest', not (bad_zz or axial_short), zz_detail)
+
+# 7 — FK parent map (JNT2; the LBS second bone must be the overlay's own law)
+if IS_JNT2:
+    FK_PARENTS = {
+        'neck': -1, 'jaw': 'neck',
+        'spine_upper': 'neck', 'spine_mid': 'spine_upper',
+        'spine_lower': 'spine_mid', 'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
+        'shoulder_L': 'spine_upper', 'elbow_L': 'shoulder_L', 'wrist_L': 'elbow_L',
+        'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
+        'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
+        'hip_R': 'spine_lower', 'knee_R': 'hip_R', 'ankle_R': 'knee_R',
+    }
+    bad_par = []
+    for nme, want in FK_PARENTS.items():
+        got = int(parents[ix[nme]])
+        want_ix = -1 if want == -1 else ix[want]
+        if got != want_ix:
+            bad_par.append(f'{nme}: {got} != {want_ix}')
+    check(7, 'FK parent map', not bad_par,
+          ', '.join(bad_par) if bad_par else f'all {nj} parents match the overlay FK law')
+else:
+    print('  [7] FK parent map        SKIP  (JNT1 pack — legacy pose law)')
 
 print()
 if fails:

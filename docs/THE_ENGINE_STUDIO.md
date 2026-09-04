@@ -2004,3 +2004,40 @@ rotate theta*w about the owner) makes adjacent verts rotate 112 vs 62 deg at
 extreme angles. The cure is 2-bone linear-blend skinning (LBS): crease verts
 transform under joint AND parent, blended. Engine kernel + pack format (JNT2)
 arc — queued.
+
+## THE CONTEXT MENU (2026-09-03, the operator's request)
+
+The operator could ADD camera bookmarks all day (+ cam works) but could not
+DELETE one — `cam_mark_delete` existed with an HTTP twin and no hand. A quick
+right-click is now a CONTEXT MENU.
+
+**The click/drag law.** The right button already pans by dragging; the menu
+lives in the split: a right-press with under 4 px of travel at release is a
+CLICK and opens the menu; a drag stays pan, byte-for-byte the old math. The
+menu is UI-only state (nothing persisted, nothing restored).
+
+**First customers — the D6 bookmark chips:** Recall / Overwrite / Delete.
+Delete answers the exact complaint; Overwrite re-saves the live camera under
+the chip's name; Recall mirrors the left-click. Activation is press-based
+(immediate-mode law), a click elsewhere dismisses, the menu clamps on-screen,
+and it draws LAST so it rides above every panel.
+
+**Generic form:** customers register a rect + verb list each frame
+(`rctx_`, rebuilt in prepare()); the engine wires one callback
+(`cb_ctx_cam_`) through the same store the /cameras twin serves — UI and API
+stay one law.
+
+**Verified live (synthetic PostMessage clicks, 2560x1440):** right-click the
+`[10 zz_ctx_test]` chip -> menu at cursor -> Delete -> the name left the
+store AND camera_bookmarks.txt, neighbors untouched (controlled two-chip
+experiment; an early neighbor loss was proven to be the TEST's stale
+coordinates after re-layout, not an engine defect).
+
+**Falsifiers named before the build:** menu opening on a drag (no — drag
+short-circuits before menu code); deletion not persisting (no — file
+re-read confirms); menu items dead (no — Delete verified end-to-end);
+capture stuck after menu use (no — release path unchanged).
+
+**Where the menu grows next:** pose chips (G1) get Recall/Delete; scene rows
+get Isolate/Show/Hide; the viewport gets Frame Selected / Fit. The skeleton
+is built to take them — register a rect, list verbs, wire the callback.

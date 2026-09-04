@@ -62,14 +62,15 @@ N, idx_count = struct.unpack('<II', raw[:8])
 V = np.frombuffer(raw, np.float32, N * 9, 24).reshape(-1, 9)[:, :3].astype(np.float64)
 
 b = open(PACK, 'rb').read()
-assert b[:4] == b'JNT1'
+assert b[:4] in (b'JNT1', b'JNT2')
 nv, nj, nl = struct.unpack('<III', b[4:16])
 p = 16 + nl
 assign = np.frombuffer(b, np.int32, nv, p).copy(); p += nv * 4
 w = np.frombuffer(b, np.float32, nv, p).copy(); p += nv * 4
 J = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3).copy(); p += nj * 12
 ax = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3).copy(); p += nj * 12
-rom = np.frombuffer(b, np.float32, nj * 2, p).copy().reshape(nj, 2)
+rom = np.frombuffer(b, np.float32, nj * 2, p).copy().reshape(nj, 2); p += nj * 8
+parents = (np.frombuffer(b, np.int32, nj, p) if b[:4] == b'JNT2' else None)
 names = [n.decode() for n in b[16:16 + nl].split(b'\x00')[:nj]]
 ix = {n: i for i, n in enumerate(names)}
 
@@ -295,10 +296,12 @@ if all(checks.values()):
             i = ix[pair + side]
             rom[i] = (tab['ext_stop_deg'], tab['flex_stop_deg'])
     names_blob = b''.join(n.encode() + b'\x00' for n in names)
-    pack = (b'JNT1' + struct.pack('<III', nv, nj, len(names_blob)) + names_blob
+    pack = (b'JNT2' + struct.pack('<III', nv, nj, len(names_blob)) + names_blob
             + assign.astype(np.int32).tobytes() + w.astype(np.float32).tobytes()
             + J.astype(np.float32).tobytes() + ax.astype(np.float32).tobytes()
-            + rom.astype(np.float32).tobytes())
+            + rom.astype(np.float32).tobytes()
+            + (parents.astype(np.int32).tobytes() if parents is not None
+               else np.full(nj, -1, np.int32).tobytes()))
     open(PACK, 'wb').write(pack)
     result['pack_patched'] = True
     print(f"\npack patched with symmetric paired flex ROMs: {PACK}")

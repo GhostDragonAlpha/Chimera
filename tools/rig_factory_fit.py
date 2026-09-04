@@ -23,9 +23,9 @@ the exact bytes the engine holds — and derives everything from the mesh:
      owner = the segment's driving joint. w = d2/(d1+d2): 1 deep in a band,
      0.5 at boundaries — bends blend across the crease instead of tearing.
      NO vertex is unassigned; NO band is empty. Falsifier of record.
-  5. Outputs: JNT1 pack (engine wire format), .npz source, MJCF primate
-     template (mirror law in the tree itself, for the B6 referee), and a
-     refit report.
+  5. Outputs: JNT2 pack (engine wire format: JNT1 record PLUS the FK parent
+     map), .npz source, MJCF primate template (mirror law in the tree
+     itself, for the B6 referee), and a refit report.
 
 Run:  python tools/rig_factory_fit.py
 """
@@ -197,7 +197,18 @@ djaw = np.linalg.norm(V - J['jaw'], axis=1)
 face = np.where((assign_name == 'neck') & (djaw < 0.8))[0]
 face = face[np.argsort(djaw[face])][:150]
 assign_name[face] = 'jaw'
-w[face] = 0.85
+
+# ENVELOPE WEIGHTS (the rigger's law, JNT2 — 2026-09-03): w fades from 0.5 at
+# the segment's OWN crease (t=0, blending with the PARENT bone — exactly the
+# kernel's second influence) to 1.0 mid-segment. The measured tear lived in
+# the old w cliff: hard segmentation put w=1 within one edge of w=0, so 125
+# deg of rotation concentrated on a single-edge transition (62.9x edge
+# stretch at the elbow, skin torn open). The envelope spreads the transition
+# over the proximal half of every segment; LBS then bounds the stretch.
+t_own = t[np.arange(N), best]                   # projection along OWN segment
+smooth = t_own * t_own * (3.0 - 2.0 * t_own)    # C1 smoothstep
+w = 0.5 + 0.5 * smooth
+w[face] = 0.85                                  # jaw keeps its dedicated weight
 
 # ── 5. EMIT: names fixed to the legacy order (D7 keys reference indices) ─────
 names = ['neck', 'jaw', 'spine_upper', 'spine_mid', 'spine_lower', 'tail_base',
@@ -252,10 +263,26 @@ os.makedirs(os.path.dirname(PACK_OUT), exist_ok=True)
 if os.path.exists(PACK_OUT) and not os.path.exists(PACK_OUT + '.pre_refit.bak'):
     shutil.copyfile(PACK_OUT, PACK_OUT + '.pre_refit.bak')   # keep the ORIGINAL convict
 names_blob = b''.join(n.encode() + b'\x00' for n in names)
-pack = (b'JNT1' + struct.pack('<III', N, nj, len(names_blob)) + names_blob
-        + assign_i32.tobytes() + w_f32.tobytes() + Jf.tobytes() + AXf.tobytes() + ROMf.tobytes())
+# JNT2: the FK parent map — the SECOND BONE of every crease. Authority is the
+# engine's own overlay FK table (Engine::push_rig_overlay); the LBS kernel
+# blends each vertex between its joint and this parent. -1 = root/central.
+JNT2_PARENTS = {
+    'neck': -1, 'jaw': 'neck',
+    'spine_upper': 'neck', 'spine_mid': 'spine_upper',
+    'spine_lower': 'spine_mid', 'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
+    'shoulder_L': 'spine_upper', 'elbow_L': 'shoulder_L', 'wrist_L': 'elbow_L',
+    'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
+    'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
+    'hip_R': 'spine_lower', 'knee_R': 'hip_R', 'ankle_R': 'knee_R',
+}
+parents_i32 = np.array([-1 if JNT2_PARENTS[nme] == -1 else names.index(JNT2_PARENTS[nme])
+                        for nme in names], np.int32)
+pack = (b'JNT2' + struct.pack('<III', N, nj, len(names_blob)) + names_blob
+        + assign_i32.tobytes() + w_f32.tobytes() + Jf.tobytes() + AXf.tobytes() + ROMf.tobytes()
+        + parents_i32.tobytes())
 open(PACK_OUT, 'wb').write(pack)
 np.savez(NPZ_OUT, vert_joint=assign_i32, vert_w=w_f32, J=Jf, axis=AXf, rom=ROMf,
+         parents=parents_i32,
          names=np.array(names, dtype='<U11'))
 
 # ── 6. MJCF TEMPLATE — the mirror law lives in the tree itself ───────────────

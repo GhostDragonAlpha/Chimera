@@ -457,10 +457,14 @@ private:
     uint32_t        j_n_verts_ = 0, j_n_joints_ = 0;
     std::vector<std::string> j_names_;
     std::vector<float> j_rom_;                  // per joint [ext, flex] (DEGREES)
+    // JNT2: the FK parent map — the second bone of every crease (LBS blend).
+    // Authority is the overlay FK table (push_rig_overlay); the pack carries it.
+    std::vector<int32_t> j_parents_;            // per joint (-1 = root/central)
+    bool                j_lbs_mode_ = false;    // JNT2: 2-bone LBS; false = JNT1 legacy
     VkBuffer        j_assign_buf_ = VK_NULL_HANDLE, j_w_buf_ = VK_NULL_HANDLE,
-                    j_state_buf_ = VK_NULL_HANDLE;
+                    j_state_buf_ = VK_NULL_HANDLE, j_parent_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
-                    j_state_mem_ = VK_NULL_HANDLE;
+                    j_state_mem_ = VK_NULL_HANDLE, j_parent_mem_ = VK_NULL_HANDLE;
     void*           j_state_map_ = nullptr;      // host-visible: J/axis/theta per joint
     VkShaderModule  joints_mod_ = VK_NULL_HANDLE;
     VkDescriptorSetLayout joints_dsl_ = VK_NULL_HANDLE;

@@ -196,8 +196,12 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         return 0;
     }
 
-    // Right-mouse drag → pan
+    // Right-mouse drag → pan; a QUICK right-click → the context menu (the
+    // click/drag split lives in StudioUI::on_rbutton_up — travel under 4 px
+    // is a click and the menu opens/handles it; a drag is pan, untouched).
     if (msg == WM_RBUTTONDOWN) {
+        if (g_key_engine && g_key_engine->ui_.visible)
+            g_key_engine->ui_.on_rbutton_down((int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
         SetCapture(hwnd);
         g_mouse_captured = true;
         g_last_mx = (int)(short)LOWORD(lp);
@@ -206,6 +210,9 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     }
     if (msg == WM_RBUTTONUP) {
         if (g_mouse_captured) { ReleaseCapture(); g_mouse_captured = false; }
+        if (g_key_engine && g_key_engine->ui_.visible &&
+            g_key_engine->ui_.on_rbutton_up((int)(short)LOWORD(lp), (int)(short)HIWORD(lp)))
+            return 0;   // the menu consumed the click
         return 0;
     }
     if (msg == WM_MOUSEMOVE && g_mouse_captured) {
@@ -732,6 +739,16 @@ bool Engine::init(const EngineConfig& cfg) {
                 if (cam_mark_get(names[i], v)) set_camera_full(v);
             };
             ui_.cb_cam_save_ = [this] { cam_mark_save(""); };
+            // THE CONTEXT MENU (2026-09-03, the operator): verbs for a bookmark
+            // chip — the store's cam_mark_delete finally has a hand on it.
+            ui_.cb_ctx_cam_ = [this](int idx, int verb) {
+                std::vector<std::string> names = cam_mark_names();
+                if (idx < 0 || idx >= static_cast<int>(names.size())) return;
+                const std::string& nm = names[idx];
+                if      (verb == 0) { float v[8]; if (cam_mark_get(nm, v)) set_camera_full(v); }
+                else if (verb == 1) cam_mark_save(nm);
+                else if (verb == 2) cam_mark_delete(nm);
+            };
             console_thread_ = std::thread([this] { console_worker(); });
             printf("THE ENGINE STUDIO: overlay ready (F1)\n");
         } else {
@@ -3457,17 +3474,17 @@ void Engine::hinge_rebind() {
 // before the joints dispatch — same discipline as water_vis_rebind (W4).
 void Engine::joints_rebind() {
     if (joints_desc_set_ == VK_NULL_HANDLE || !joints_loaded_ || !has_mesh_) return;
-    VkBuffer bufs[5] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_ };
-    VkWriteDescriptorSet w[5]{};
-    VkDescriptorBufferInfo infos[5]{};
-    for (uint32_t k = 0; k < 5; ++k) {
+    VkBuffer bufs[6] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_ };
+    VkWriteDescriptorSet w[6]{};
+    VkDescriptorBufferInfo infos[6]{};
+    for (uint32_t k = 0; k < 6; ++k) {
         infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
         w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         w[k].dstSet = joints_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
         w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         w[k].pBufferInfo = &infos[k];
     }
-    vkUpdateDescriptorSets(device_, 5, w, 0, nullptr);
+    vkUpdateDescriptorSets(device_, 6, w, 0, nullptr);
     joints_desc_dirty_ = false;
 }
 
@@ -3781,9 +3798,16 @@ bool Engine::set_eye_class(const std::vector<uint32_t>& cls) {
     return true;
 }
 
-// ── H15: the all-joints articulation ─────────────────────────────────────────
+// ── H15: the all-joints articulation ────────────────────────────────────────
 // Blob 'JNT1': [magic][u32 n_verts][u32 n_joints][u32 names_len][names][assign
 // i32*n][w f32*n][J f32*3j][axis f32*3j][rom f32*2j (deg, ext|flex)].
+// Blob 'JNT2' (2026-09-03): the JNT1 record PLUS a trailing FK parent map
+// (i32*nj, -1 = root/central). The parent is the SECOND BONE of every crease:
+// JNT2 flips the kernel's pose law from angle-scaling (JNT1, tears at full
+// flexion — adjacent verts scale theta differently and the surface pulls
+// apart) to 2-bone linear-blend skinning (transforms blend; the crease folds).
+// The parent map's authority is the engine's own overlay FK table
+// (push_rig_overlay) — no new anatomy is invented by this loader.
 bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     // THE JOINTS LANE STANDS ALONE (2026-09-03): the rest pose is the MESH —
     // hinge_rest_ is a set_hinge artifact, and requiring it forced every clean
@@ -3793,7 +3817,9 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     // copy, not a source. When a hinge IS engaged the two are equal by
     // construction, so the old behavior is preserved bit-for-bit there.
     if (!has_mesh_ || mesh_cpu_.empty()) { fprintf(stderr, "joints: no mesh rest\n"); return false; }
-    if (blob.size() < 16 || memcmp(blob.data(), "JNT1", 4) != 0) {
+    const bool is_jnt2 = (blob.size() >= 16 && memcmp(blob.data(), "JNT2", 4) == 0);
+    if (blob.size() < 16 ||
+        (!is_jnt2 && memcmp(blob.data(), "JNT1", 4) != 0)) {
         fprintf(stderr, "joints: bad blob\n"); return false;
     }
     const uint8_t* p = blob.data() + 4;
@@ -3817,6 +3843,26 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     const float* J = reinterpret_cast<const float*>(p); p += nj * 12;
     const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
     const float* rom = reinterpret_cast<const float*>(p);
+    p += nj * 8;   // JNT1 ended here; JNT2 continues past the ROM array
+    // JNT2: trailing FK parent map (i32 per joint). A JNT1 blob ends at ROM —
+    // a JNT2 blob must carry nj more int32s, or it is truncated, not legacy.
+    j_parents_.clear();
+    if (is_jnt2) {
+        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nj) * 4) {
+            fprintf(stderr, "joints: JNT2 truncated parent map\n"); return false;
+        }
+        const int32_t* par = reinterpret_cast<const int32_t*>(p);
+        j_parents_.assign(par, par + nj);
+        for (uint32_t k = 0; k < nj; ++k) {
+            int32_t pk = j_parents_[k];
+            if (pk >= static_cast<int32_t>(nj)) {   // -1 legal (root); >= nj is not
+                fprintf(stderr, "joints: JNT2 parent %d out of range\n", k); return false;
+            }
+        }
+        p += size_t(nj) * 4;
+    }
+    j_lbs_mode_ = is_jnt2;
+    if (j_parents_.empty()) j_parents_.assign(nj, -1);   // JNT1: all roots — the legacy law never reads this
     // Count law against the MESH, not the hinge: tri_vfloats_ is the live
     // vertex payload the kernel's Out buffer (tri_vbuf_) actually holds.
     // (hinge_wL_.size() was set_hinge-only state — always empty on a boot
@@ -3859,6 +3905,10 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
 
     upload_buffer(assign, nv * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_assign_buf_, j_assign_mem_);
     upload_buffer(w, nv * sizeof(float), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_w_buf_, j_w_mem_);
+    // JNT2: the parent map rides along as binding 5. Always uploaded (JNT1
+    // gets the all-(-1) map) so the descriptor set is never partially bound.
+    upload_buffer(j_parents_.data(), nj * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                  j_parent_buf_, j_parent_mem_);
 
     // joints state: per joint 8 floats [Jx Jy Jz Ax Ay Az 0 theta(rad)], host-visible
     {
@@ -3889,14 +3939,14 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         }
     }
 
-    // pipeline (5 SSBOs + 16 B push constants: n, nj, paint, pad — C1)
-    if (!w_make_pipeline(device_, "shaders/joints.spv", 5, 16,
+    // pipeline (6 SSBOs + 16 B push constants: n, nj, paint, flags — C1/JNT2)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 6, 16,
                          joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
         fprintf(stderr, "joints: pipeline failed\n"); return false;
     }
     {
         VkDescriptorPoolSize ps{};
-        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 5;
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 6;
         if (joints_desc_pool_) vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr);
         VkDescriptorPoolCreateInfo dpci{};
         dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -3907,10 +3957,10 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         dsai.descriptorPool = joints_desc_pool_; dsai.descriptorSetCount = 1;
         dsai.pSetLayouts = &joints_dsl_;
         vkAllocateDescriptorSets(device_, &dsai, &joints_desc_set_);
-        VkBuffer bufs[5] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_ };
-        VkWriteDescriptorSet wr[5]{};
-        VkDescriptorBufferInfo infos[5]{};
-        for (uint32_t k = 0; k < 5; ++k) {
+        VkBuffer bufs[6] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_ };
+        VkWriteDescriptorSet wr[6]{};
+        VkDescriptorBufferInfo infos[6]{};
+        for (uint32_t k = 0; k < 6; ++k) {
             infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
             wr[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             wr[k].dstSet = joints_desc_set_; wr[k].dstBinding = k;
@@ -3918,11 +3968,12 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
             wr[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             wr[k].pBufferInfo = &infos[k];
         }
-        vkUpdateDescriptorSets(device_, 5, wr, 0, nullptr);
+        vkUpdateDescriptorSets(device_, 6, wr, 0, nullptr);
     }
     joints_t0_ = std::chrono::steady_clock::now();
     joints_loaded_ = true;
-    printf("JOINTS loaded: %u verts, %u joints (the show sweeps each through its ROM)\n", nv, nj);
+    printf("JOINTS loaded: %u verts, %u joints (%s pose law; the show sweeps each through its ROM)\n",
+           nv, nj, j_lbs_mode_ ? "JNT2 2-bone LBS" : "JNT1 legacy");
     return true;
 }
 
@@ -3933,6 +3984,7 @@ std::string Engine::joints_status() const {
     uint32_t cur = j_n_joints_ ? static_cast<uint32_t>(t / per) % j_n_joints_ : 0;
     std::string s = std::string("{\"loaded\":true,\"on\":") + (joints_on_.load() ? "true" : "false")
         + ",\"n_joints\":" + std::to_string(j_n_joints_)
+        + ",\"law\":\"" + (j_lbs_mode_ ? "JNT2-LBS" : "JNT1-legacy") + "\""
         + ",\"current\":\"" + (cur < j_names_.size() ? j_names_[cur] : std::string("?")) + "\""
         + ",\"t\":" + std::to_string(t) + "}";
     return s;
@@ -5889,8 +5941,11 @@ bool Engine::frame() {
             st[cur * 8 + 7] = th;
         }
 
-        struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t pad; }
-            jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed), 0 };
+        // JNT2: bit0 of the old pad field is now the POSE LAW flag — legacy
+        // (JNT1) or 2-bone LBS (JNT2). The push-constant block stays 16 B.
+        struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t flags; }
+            jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed),
+                 j_lbs_mode_ ? 0u : 1u };
         if (joints_desc_dirty_) joints_rebind();   // rest/Out recreated -> rebind BEFORE dispatch
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,
