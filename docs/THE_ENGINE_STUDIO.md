@@ -1866,3 +1866,17 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   on untextured clay; form detail there = normals/textures, a content-layer feature),
   plus the standing neck-seam item (mesher-owned). Renderer-side defect class CLOSED;
   the eye's remaining list is the mesher's crease cure + material work.
+
+## 2026-09-03 — The cyclorama: the floor becomes a studio sweep (two drafts, the eye directs)
+- THE EYE TWICE: "back plane falls off flat... silhouette edge muddy." DERIVED: a real
+  sweep darkens with distance; the fade radius is the mesh's own measured extent
+  (ubo.uMeshR = g_mesh_sphere, slots into the unused UBO tail — 176 B layout intact,
+  static_assert still guards), computed in floor.vert (vertex UBO reads only), fading
+  from 55 at the subject outward. Inner zone untouched: the ink law (55 -> 21) is
+  measured where the eye looks.
+- DRAFT 1 (outer 18 @ 3R): MEASURED HOLD — the eye: separation won, but "overcooked,
+  black void, cast shadow reads as a second object." Applied its prescription verbatim.
+- DRAFT 2 (outer 32 @ 5R, eased): MEASURED — floor@55 inner zone intact (31,354 px),
+  outer pool at 28-36 (2.10M px), horizon glow survives, body untouched (122,796 px),
+  FPS 296/0.37ms. DYAD VERDICT PENDING: the eye's endpoint returned 400 on every image
+  request (minimal prompt too) at 20:5x — server-side; pixel verdicts carried the ship.

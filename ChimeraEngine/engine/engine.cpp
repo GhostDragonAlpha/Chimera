@@ -5597,7 +5597,11 @@ bool Engine::frame() {
                             // cannot disagree, so they cannot drift. Consumed
                             // by VERTEX stages only; fragments get it via
                             // varying (frag-side UBO reads are untrustworthy).
-        float light_tail;   // 172..175: block size lands at 176 = GLSL's
+        float uMeshR;       // 172..175: THE CYCLORAMA RADIUS (2026-09-03, the eye
+                            // twice: "back plane falls off flat, silhouette edge
+                            // muddy"). The floor's sweep fades from the mesh's own
+                            // measured extent — the same number the camera fit uses.
+                            // Block size lands at 176 = GLSL's.
     } ubo{};
     static_assert(sizeof(ubo) == 176,
         "UBO layout drifted from the shaders' std140 block (176 B) — "
@@ -5613,6 +5617,8 @@ bool Engine::frame() {
         const float* L = ui_.light_dir();   // already unit-length (Studio normalizes)
         ubo.light_dir[0] = L[0]; ubo.light_dir[1] = L[1]; ubo.light_dir[2] = L[2];
     }
+    ubo.uMeshR = g_mesh_sphere;             // the cyclorama's inner radius (0 pre-mesh:
+                                            // floor.vert clamps to 1.0, fade starts at 1)
 
     // Per-slot camera UBO, host-visible + persistently mapped: create once, memcpy
     // per frame. NO staging buffer, NO queue submit, NO vkQueueWaitIdle per frame —
