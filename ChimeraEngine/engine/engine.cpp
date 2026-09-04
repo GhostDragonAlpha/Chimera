@@ -2327,13 +2327,30 @@ void Engine::key_marks_load() {
     key_marks_.clear();
     FILE* f = fopen(KEY_MARKS_FILE, "r");
     if (!f) return;
-    char line[256];
+    char line[4096];
     while (fgets(line, sizeof(line), f)) {
         char nm[64], jn[64] = ""; double t;
         int n = sscanf(line, "%63s %lf %63s", nm, &t, jn);
         if (n >= 2) {
             KeyMark k; k.name = nm; k.t = t; k.joint = (n >= 3) ? jn : "";
-            key_marks_.push_back(k);
+            // D7-POSE: a trailing ".keys <n> <thetas...>" record restores the pose
+            const char* tag = strstr(line, " .keys ");
+            if (tag) {
+                unsigned cnt = 0;
+                if (sscanf(tag, " .keys %u", &cnt) == 1 && cnt > 0 && cnt < 4096) {
+                    const char* p = strchr(tag + 1, ' ') + 1;   // past ".keys"
+                    p = strchr(p, ' ') + 1;                     // past the count
+                    k.pose.reserve(cnt);
+                    for (unsigned i = 0; i < cnt && p && *p; ++i) {
+                        char* end = nullptr;
+                        float v = strtof(p, &end);
+                        if (end == p) break;                    // parse stop: keep what we have
+                        k.pose.push_back(v);
+                        p = end;
+                    }
+                }
+            }
+            key_marks_.push_back(std::move(k));
         }
     }
     fclose(f);
@@ -2343,17 +2360,34 @@ void Engine::key_marks_persist() {
     std::lock_guard<std::mutex> lk(key_marks_m_);
     FILE* f = fopen(KEY_MARKS_FILE, "w");
     if (!f) return;
-    for (const auto& k : key_marks_)
+    for (const auto& k : key_marks_) {
         if (k.joint.empty())
-            fprintf(f, "%s %.9f\n", k.name.c_str(), k.t);
+            fprintf(f, "%s %.9f", k.name.c_str(), k.t);
         else
-            fprintf(f, "%s %.9f %s\n", k.name.c_str(), k.t, k.joint.c_str());
+            fprintf(f, "%s %.9f %s", k.name.c_str(), k.t, k.joint.c_str());
+        // D7-POSE: the saved pose rides as a ".keys <n> <radians...>" record —
+        // keys saved without a pack keep the old two/three-field lines.
+        if (!k.pose.empty()) {
+            fprintf(f, " .keys %zu", k.pose.size());
+            for (float th : k.pose) fprintf(f, " %.6f", th);
+        }
+        fprintf(f, "\n");
+    }
     fclose(f);
 }
 
 std::string Engine::key_mark_save(const std::string& name, const std::string& joint) {
     double t = show_time_.load(std::memory_order_relaxed);
     std::string nm = name;
+    // D7-POSE: the key carries the WHOLE pose at save (every joint's current
+    // theta), not just a timestamp. No pack / no map = the key degrades to the
+    // old timestamp-only form (the pose restore just skips).
+    std::vector<float> snap;
+    if (joints_loaded_ && j_state_map_ != nullptr && j_n_joints_ > 0) {
+        const float* st = static_cast<const float*>(j_state_map_);
+        snap.resize(j_n_joints_);
+        for (uint32_t k = 0; k < j_n_joints_; ++k) snap[k] = st[k * 8 + 7];
+    }
     {
         std::lock_guard<std::mutex> lk(key_marks_m_);
         if (nm.empty()) {
@@ -2363,12 +2397,45 @@ std::string Engine::key_mark_save(const std::string& name, const std::string& jo
         }
         for (char& c : nm) if (c == ' ' || c == '\t') c = '_';
         for (auto& k : key_marks_)
-            if (k.name == nm) { k.t = t; k.joint = joint; goto stored; }
-        { KeyMark k; k.name = nm; k.t = t; k.joint = joint; key_marks_.push_back(k); }
+            if (k.name == nm) { k.t = t; k.joint = joint; k.pose = std::move(snap); goto stored; }
+        { KeyMark k; k.name = nm; k.t = t; k.joint = joint; k.pose = std::move(snap); key_marks_.push_back(k); }
         stored:;
     }
     key_marks_persist();
     return nm;
+}
+
+// D7-POSE: snapshot all thetas from the render thread's state buffer (the
+// caller may be the HTTP thread — the map is persistently mapped host-visible
+// and thetas are single floats; a torn read costs one frame of one key, not
+// worth a render-thread round-trip on SAVE).
+bool Engine::key_capture_pose(std::vector<float>& out) {
+    if (!joints_loaded_ || j_state_map_ == nullptr || j_n_joints_ == 0) return false;
+    const float* st = static_cast<const float*>(j_state_map_);
+    out.resize(j_n_joints_);
+    for (uint32_t k = 0; k < j_n_joints_; ++k) out[k] = st[k * 8 + 7];
+    return true;
+}
+
+// D7-POSE: restore a whole pose. The snapshot goes through the render thread
+// (pose_pending_/pose_applied_ — the same race-safe pattern as single-joint
+// intents): it swaps all thetas at once (no joint-at-a-time flicker) and flips
+// the pose owner to EDIT so the show clock stops overwriting them.
+bool Engine::key_apply_pose(const std::vector<float>& pose) {
+    if (!joints_loaded_ || j_state_map_ == nullptr || j_n_joints_ == 0) return false;
+    if (pose.size() != j_n_joints_) return false;   // pack changed under the key: reject, don't blend garbage
+    {
+        std::lock_guard<std::mutex> lk(pose_req_m_);
+        pose_req_ = pose;
+        pose_applied_.store(false, std::memory_order_relaxed);
+        pose_pending_.store(true, std::memory_order_relaxed);
+    }
+    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+    while (pose_pending_.load(std::memory_order_relaxed)) {
+        if (std::chrono::steady_clock::now() > deadline) return false;
+        Sleep(1);
+    }
+    return pose_applied_.load(std::memory_order_relaxed);
 }
 
 bool Engine::key_mark_delete(const std::string& name) {
@@ -2390,6 +2457,14 @@ bool Engine::key_mark_time(const std::string& name, double& out_t) {
     std::lock_guard<std::mutex> lk(key_marks_m_);
     for (const auto& k : key_marks_)
         if (k.name == name) { out_t = k.t; return true; }
+    return false;
+}
+
+// D7-POSE: the key's saved thetas, copy-under-lock (C4's rule).
+bool Engine::key_mark_pose(const std::string& name, std::vector<float>& out) {
+    std::lock_guard<std::mutex> lk(key_marks_m_);
+    for (const auto& k : key_marks_)
+        if (k.name == name) { out = k.pose; return !k.pose.empty(); }
     return false;
 }
 
@@ -5746,6 +5821,22 @@ bool Engine::frame() {
             // C1: THE EDITOR owns the pose. Consume a pending intent (clamped
             // to the pack's derived ROM — the slider's hard range is the law);
             // every other theta stays exactly where the last intent left it.
+            // D7-POSE: a whole-pose restore lands here first — all thetas swap
+            // at once, then the owner stays EDIT for the frame's dispatch.
+            if (pose_pending_.exchange(false, std::memory_order_relaxed)) {
+                std::vector<float> snap;
+                {
+                    std::lock_guard<std::mutex> lk(pose_req_m_);
+                    snap = std::move(pose_req_);
+                    pose_req_.clear();
+                }
+                if (snap.size() == j_n_joints_) {
+                    float* stw = static_cast<float*>(j_state_map_);
+                    for (uint32_t k = 0; k < j_n_joints_; ++k) stw[k * 8 + 7] = snap[k];
+                    joints_owner_.store(1, std::memory_order_relaxed);
+                    pose_applied_.store(true, std::memory_order_relaxed);
+                }
+            }
             if (edit_pending_.exchange(false, std::memory_order_relaxed)) {
                 int idx = edit_joint_.load(std::memory_order_relaxed);
                 float deg = edit_theta_deg_.load(std::memory_order_relaxed);

@@ -236,7 +236,12 @@ public:
     // scrubs to it (a paused clock lands the exact pose). Persisted to
     // timeline_keymarks.txt like the camera bookmarks; "rego" is the D5
     // capture's return key (re-timed by an explicit save, never by scrubbing).
-    struct KeyMark { std::string name; double t; std::string joint; };  // D7: joint groups the dope sheet
+    struct KeyMark { std::string name; double t; std::string joint;         // D7: joint groups the dope sheet
+                     std::vector<float> pose; };  // D7-POSE (2026-09-03): the WHOLE
+                                                  // pose at save — j_n_joints_ thetas
+                                                  // (radians, j_state_map_ stride-8 +7
+                                                  // layout). Recall restores it: keys
+                                                  // become poses, not just timestamps.
     std::vector<KeyMark>       key_marks_;
     std::mutex                 key_marks_m_;
     // list() hands out pairs (the UI's diamond loop and HTTP JSON both want
@@ -246,7 +251,10 @@ public:
     std::string key_mark_save(const std::string& name, const std::string& joint = "");
     bool        key_mark_delete(const std::string& name);
     bool        key_mark_time(const std::string& name, double& out_t);
+    bool        key_mark_pose(const std::string& name, std::vector<float>& out);  // D7-POSE: copy-under-lock
     void        key_marks_clear();
+    bool        key_capture_pose(std::vector<float>& out);   // D7-POSE: snapshot all thetas
+    bool        key_apply_pose(const std::vector<float>& pose); // D7-POSE: restore via render thread
     std::vector<std::pair<std::string, double>> key_marks_list();
     struct KeyMarkInfo { std::string name; double t; std::string joint; };
     std::vector<KeyMarkInfo> key_marks_list_info();
@@ -469,6 +477,13 @@ private:
     // C1 editor internals (the public API is up with the show clock):
     std::atomic<int>      edit_joint_{-1};            // pending intent: which joint
     std::atomic<float>    edit_theta_deg_{0.0f};      // pending intent: requested theta
+    // D7-POSE: whole-pose restore intents. pose_pending_ carries a snapshot; the
+    // render thread swaps it into j_state_map_ (all thetas at once — no
+    // joint-at-a-time flicker) and flips the owner to EDIT, same as an intent.
+    std::mutex              pose_req_m_;
+    std::vector<float>      pose_req_;                  // under mutex: pending snapshot
+    std::atomic<bool>       pose_pending_{false};
+    std::atomic<bool>       pose_applied_{false};
     std::vector<float>    j_gizmo_len_;               // per joint: band RMS radius about J
     std::vector<StudioJoint> joint_view_scratch_;     // per-frame UI feed (reused buffer)
     float                 last_proj_[16]{};           // stashed per frame for the gizmo

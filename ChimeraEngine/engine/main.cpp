@@ -1106,13 +1106,21 @@ int main(int argc, char** argv) {
                 };
                 get_str("op", op);
                 get_str("name", name);
-                if (!g_engine) { body = "{\"ok\":false}"; }
-                else if (op == "recall") {
+                if (!g_engine) { body = "{\"ok\":false}";                } else if (op == "recall") {
                     double t = 0.0;
                     bool ok = g_engine->key_mark_time(name, t);
                     if (ok) g_engine->show_scrub_.store(t < 0.0 ? 0.0 : t);
+                    // D7-POSE: the key also carries the WHOLE pose at save —
+                    // restore it through the render thread (owner -> EDIT, all
+                    // thetas at once). A timestamp-only key keeps the old
+                    // scrub-only behavior.
+                    bool posed = false;
+                    if (ok) {
+                        std::vector<float> snap;
+                        if (g_engine->key_mark_pose(name, snap)) posed = g_engine->key_apply_pose(snap);
+                    }
                     body = std::string("{\"ok\":") + (ok ? "true" : "false")
-                         + ",\"t\":" + std::to_string(t) + "}";
+                         + ",\"t\":" + std::to_string(t) + ",\"posed\":" + (posed ? "true" : "false") + "}";
                 } else if (op == "delete") {
                     body = std::string("{\"ok\":")
                          + (g_engine->key_mark_delete(name) ? "true" : "false") + "}";

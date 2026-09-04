@@ -1886,3 +1886,18 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
 - SEAM CURE: floor quad R 60->300 (same two triangles) — the edge sits beyond every
   framing the fit can produce. MEASURED: zero strong horizontal transitions in the upper
   frame (was the seam), floor@55 31,361 px, pool intact, body 122,808 px, show playing.
+
+## 2026-09-03 — D7-POSE: keys become POSES, not just timestamps (the release's editor win)
+- A key now captures the WHOLE pose at save (every joint's theta from j_state_map_ stride-8
+  +7) and recall restores it through the render thread (pose_pending_/pose_applied_ — the
+  intents pattern; all thetas swap at once, no joint-at-a-time flicker; owner -> EDIT).
+- PERSISTENCE: ".keys <n> <radians...>" record per key, backward compatible (old lines
+  load unchanged; keys saved without a pack keep the old format). MEASURED round-trip:
+  the record survives load->persist byte-exact.
+- MEASURED gates: save with no pack = graceful degradation (old-format line); recall with
+  a size-mismatched pose = rejected ("posed":false), scrub still applies — no garbage
+  blending, ever. The live apply path rides the same j_state_map_ write the joints editor
+  verifies (harness falsifier A: set==reported).
+- HONEST LIMIT: the end-to-end live-pose apply needs a mesh+pack pair in one session; the
+  birth mesh's pack pairing is a mesher-side task (queued). The write path, the gates, and
+  the persistence are verified; the flicker-free swap is the render thread's own pattern.
