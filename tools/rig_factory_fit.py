@@ -256,6 +256,23 @@ for i, nme in enumerate(names):
     else:
         AXf[i] = axl
     ROMf[i] = ROM_central.get(nme, ROM_L.get(src, (-30.0, 60.0)))
+# THE REFEREE OWNS THE PAIRED STOPS (2026-09-04): the tables above are only the
+# factory's fallback — the B5 referee's measured bone stops are the authority,
+# so its verdicts are OVERLAID here from the verdict file. A missing file is a
+# loud warning, never a silent fall-back to round-1 numbers (the regression
+# this retires: the envelope re-emit shipped elbow flex 60 where the referee
+# shipped 125).
+_ref_path = os.path.join(ROOT, '.tmp/skeleton/rom_referee_r2.json')
+if os.path.exists(_ref_path):
+    _ref = json.load(open(_ref_path))
+    _shipped = _ref.get('shipped', {})
+    for _pair, _tab in _shipped.items():
+        for _s in ('_L', '_R'):
+            ROMf[names.index(_pair + _s)] = (_tab['ext_stop_deg'], _tab['flex_stop_deg'])
+    print(f"ROM overlay: {len(_shipped)} referee verdicts applied to the pack")
+else:
+    print("WARNING: no referee verdict file .tmp/skeleton/rom_referee_r2.json — "
+          "pack carries factory fallback ROMs; run tools/rom_referee_r2.py")
 assign_i32 = np.array([names.index(a) for a in assign_name], np.int32)
 w_f32 = w.astype(np.float32)
 

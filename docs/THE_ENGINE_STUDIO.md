@@ -2041,3 +2041,32 @@ capture stuck after menu use (no — release path unchanged).
 **Where the menu grows next:** pose chips (G1) get Recall/Delete; scene rows
 get Isolate/Show/Hide; the viewport gets Frame Selected / Fit. The skeleton
 is built to take them — register a rect, list verbs, wire the callback.
+
+## JNT2 ELBOW, THE EYE'S VERDICT (2026-09-04, tools/jnt2_dyad_verdict.py)
+
+The membrane's last open falsifier went to the eye: both elbows posed to the
+measured 125-degree stop, one frame, briefing + live state + the ask. The
+report is Saved/dyad/jnt2_elbow_verdict.md.
+
+- **PRIMARY FALSIFIER PASSES: NO TEAR.** The crease is continuous on the
+  visible face of both elbows — the JNT2 blend + envelope weights hold where
+  the legacy law tore (62.9x edge stretch -> ~1.6x mean).
+- **THE EYE'S OWN FINDING, CONFIRMED BY ARITHMETIC:** the posed forearms read
+  as flat splayed blades, not folded limbs. Root cause is NOT the skin — the
+  REFEREE'S hinge-axis derivation is degenerate for near-collinear bones: at
+  rest the forearm is within ~10 deg of the upper arm (|u x v| = 0.18), so
+  n = u x v inherits the rest pose's sideways splay (axis mostly world-z).
+  Flexing 125 deg about it swings the forearm 1.40 in x vs 0.29 in z — the
+  wing splay IS the true kinematics of that axis. The fix (next arc): when
+  |u x v| is degenerate, the fold plane's normal comes from the body's own
+  sagittal law (the spine axes, +/-x) — para-sagittal flexion, the primate
+  anatomy the mesh already implies. Shared-axis mirror law is preserved
+  (x-hat on both sides).
+- The eye also read "no editor chrome" — MY capture error, not a UI crash:
+  /frame is the viewport-only target; the chrome lives in /glass. Correction
+  recorded here so the next verdict request captions its image honestly.
+- Durable fix shipped in the factory (rig_factory_fit.py): the B5 referee's
+  verdict file is now OVERLAID onto the ROM tables at emit time — the
+  envelope-weights re-emit had silently regressed the referee's measured
+  stops (elbow 125 -> round-1 60); a missing verdict file is now a loud
+  warning, never a silent fall-back.
