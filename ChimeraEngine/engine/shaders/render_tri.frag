@@ -32,5 +32,11 @@ void main() {
     float key  = clamp((dot(N, K) + 0.10) * (0.9090909), 0.0, 1.0) * 0.85;
     float fill = max(dot(N, F), 0.0) * 0.18;
     float amb  = mix(0.15, 0.35, N.y * 0.5 + 0.5);
-    fragColor = vec4(vColor * (amb + key + fill), 1.0);
+    // ENERGY CONSERVATION (2026-09-03, the eye's "overexposed orange" feet):
+    // amb+key+fill can reach ~1.38 for up-facing normals caught by the key —
+    // more light out than in, which a diffuse surface cannot do. Measured:
+    // angle-dependent saturation (feet p95=170 static, hot only when the
+    // turntable swings them toward the key). The albedo is the physical cap:
+    // outgoing diffuse <= albedo, so the summed irradiance clamps to 1.0.
+    fragColor = vec4(vColor * min(amb + key + fill, 1.0), 1.0);
 }

@@ -1854,3 +1854,15 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   window is placed FLUSH — client bottom == work-area bottom (measured: (0,-87)-(2576,1392);
   1392 == 1440 taskbar-adjusted work bottom). Title bar hangs off the top by design:
   content beats chrome. Durable: every boot, any launch path.
+
+## 2026-09-03 — Energy conservation clamp on the creature shader (the hot-feet membrane)
+- DERIVATION: amb+key+fill reaches ~1.38x albedo for up-facing normals under the key —
+  more out than in; a diffuse surface cannot do that. The albedo is the physical cap.
+- FIX: fragColor = albedo * min(amb+key+fill, 1.0). MEASURED at identical framing
+  (runA baseline): 4,475 hottest px toned (meanL 158->143, max 181->153), rest of the
+  body untouched, saturation now impossible at ANY turntable angle. FPS 296/0.37ms.
+- THE EYE (gsq-rco): highlights "improved at best," feet still read hot when swung into
+  the key — residual is the ALBEDO going flat (physically correct for a directional key
+  on untextured clay; form detail there = normals/textures, a content-layer feature),
+  plus the standing neck-seam item (mesher-owned). Renderer-side defect class CLOSED;
+  the eye's remaining list is the mesher's crease cure + material work.
