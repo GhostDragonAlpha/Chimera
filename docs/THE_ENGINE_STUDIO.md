@@ -1958,3 +1958,49 @@ visually before the refit; the refit generalizes it to the whole skeleton.
 
 **Queued:** re-measure paired ROM bone stops on the fitted frame (B5 referee,
 round 2); gait development against the symmetric frame in the mujoco-warp lab.
+
+## 2026-09-03 (night) — B5 REFEREE ROUND 2: derived axes + measured symmetric stops
+
+**The referee convicted the round-1 axes.** Measured: the elbow's stored hinge
+axis was 27 deg from PARALLEL to its own parent bone — a cone sweep that can
+never fold (which is why the first referee draft found "no contact anywhere").
+**The derivation that replaces it:** a hinge axis is not a free parameter — it
+is the NORMAL of the plane containing the bones the joint connects,
+n = (J - parent) x (child - J). Verified live: every limb hinge now sits at
+exactly 90.0 deg to both its parent and child bone. And since R bones are
+x-negations of L bones, (-u) x (-v) = u x v — **L and R share the identical
+axis vector; the mirror law for axes falls out of the cross product itself.**
+
+**Two more laws the referee forced:**
+- Central joints (spine/neck/tail/jaw) ride the mirror axis (x := 0). The
+  medoid snaps had drifted off-axis (up to 0.20 wu — the mesh itself is
+  asymmetric), which broke the mirror conjugation for every limb hung off
+  the spine. With centers on-axis and derived axes, the conjugation identity
+  R(+t) = mirror(L(+t)) holds to 0.0e+00 wu on all six pairs.
+- Wrist/ankle axes derive from the mesh-measured hand/foot tips (distal
+  links end at tips, not joints).
+
+**Bone-stop semantics (corrected twice, honestly):** skin-fold measurement
+measures skin self-contact, not ROM — retired. Bone-stop measurement needs
+capsule semantics: bones are THICK (radius 0.05), contact = sampled probe
+interior within 0.10 of a static segment, pivot zone (0.15) excluded (that
+contact is the joint; ligaments live there). Three failed drafts are in the
+transcript: clamp-erased contact, grandchild self-touch at 2 deg, pivot
+filter that also erased the knee's real stop. The diagnostic scans that
+convicted each are recorded above.
+
+**Measured stops (symmetric by law, L/R equal within 0 deg):**
+elbow flex 130/130 -> ship +125; hip flex 120/120 -> ship +115;
+knee flex 114/114 -> ship +109. Shoulder/wrist/ankle: no separable bone
+stop exists in a stick skeleton (near-collinear capsules, ligament-limited
+DOF) — pack ROMs kept, recorded as anatomy findings, not failures.
+**Live:** POST accepted; both elbows clamp at exactly 125.000, 28,415 px
+deform; both knees at 109, 17,037 px deform.
+
+**The eye's verdict at full flexion: DEFECTS — and it is the next membrane.**
+Both arms bend symmetrically, but the SKIN tears at the elbow crease at 125
+deg: single-bone partial-rotation skinning (one (joint,w) pair per vertex,
+rotate theta*w about the owner) makes adjacent verts rotate 112 vs 62 deg at
+extreme angles. The cure is 2-bone linear-blend skinning (LBS): crease verts
+transform under joint AND parent, blended. Engine kernel + pack format (JNT2)
+arc — queued.

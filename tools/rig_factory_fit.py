@@ -106,6 +106,13 @@ J = {}
 snap = {}
 for name, lm in L_landmarks.items():
     J[name], snap[name] = medoid_snap(lm)
+# THE AXIS LAW: CENTRAL joints ride the mirror axis (x := 0). The medoid
+# snaps drift off-axis because the mesh itself is asymmetric (x up to 0.20);
+# a spine that is not on the axis breaks the mirror conjugation for every
+# limb hung off it (the referee's M check convicted exactly this).
+for _cn in ('neck', 'jaw', 'spine_upper', 'spine_mid', 'spine_lower',
+            'tail_base', 'tail_mid'):
+    J[_cn] = J[_cn] * np.array([0.0, 1.0, 1.0])
 
 # ── 3. THE MIRROR LAW: R limbs are x-negated copies, never fitted ────────────
 for name in list(L_landmarks):
@@ -204,14 +211,46 @@ ROMf = np.zeros((nj, 2), np.float32)
 for i, nme in enumerate(names):
     Jf[i] = J[nme]
     src = nme if not nme.endswith('_R') else nme[:-2] + '_L'
-    AXf[i] = AXIS_L[src]
+    axl = AXIS_L[src]
+    # THE HINGE AXIS IS DERIVED, NOT CARRIED (referee round 2 finding): the
+    # round-1 axes were rod-fold artifacts — the elbow's was 27 deg from
+    # PARALLEL to its own parent bone, a cone sweep that can never fold.
+    # A hinge's axis is the NORMAL of the plane containing the bones it
+    # connects: n = (J - parent) x (child - J). And since R bones are
+    # x-negations of L bones, (-u) x (-v) = u x v — L and R share the
+    # IDENTICAL axis vector, the mirror law for axes via the cross product.
+    # Central joints (neck/spine/tail/jaw) keep their measured sweep axes.
+    parent_of = {'shoulder': 'spine_upper', 'elbow': 'shoulder', 'wrist': 'elbow',
+                 'hip': 'spine_lower', 'knee': 'hip', 'ankle': 'knee'}
+    child_of = {'shoulder': 'elbow', 'elbow': 'wrist', 'hip': 'knee', 'knee': 'ankle'}
+    base = nme[:-2] if nme.endswith(('_L', '_R')) else None
+    if base in parent_of:
+        pk = parent_of[base] + ('_' + nme[-1] if parent_of[base] + '_' + nme[-1] in J else '')
+        P = J[pk]
+        C = None
+        if base in child_of:
+            C = J[child_of[base] + '_' + nme[-1]]
+        elif base == 'wrist':   # distal links end at the measured mesh tips
+            C = hand_tip_L if nme.endswith('_L') else np.array([-hand_tip_L[0], hand_tip_L[1], hand_tip_L[2]])
+        elif base == 'ankle':
+            C = foot_tip_L if nme.endswith('_L') else np.array([-foot_tip_L[0], foot_tip_L[1], foot_tip_L[2]])
+        if C is not None:
+            u = J[nme] - P
+            v2 = C - J[nme]
+            nax = np.cross(u, v2)
+            nn = np.linalg.norm(nax)
+            AXf[i] = nax / nn if nn > 1e-9 else axl
+        else:
+            AXf[i] = axl
+    else:
+        AXf[i] = axl
     ROMf[i] = ROM_central.get(nme, ROM_L.get(src, (-30.0, 60.0)))
 assign_i32 = np.array([names.index(a) for a in assign_name], np.int32)
 w_f32 = w.astype(np.float32)
 
 os.makedirs(os.path.dirname(PACK_OUT), exist_ok=True)
-if os.path.exists(PACK_OUT):
-    shutil.copyfile(PACK_OUT, PACK_OUT + '.pre_refit.bak')
+if os.path.exists(PACK_OUT) and not os.path.exists(PACK_OUT + '.pre_refit.bak'):
+    shutil.copyfile(PACK_OUT, PACK_OUT + '.pre_refit.bak')   # keep the ORIGINAL convict
 names_blob = b''.join(n.encode() + b'\x00' for n in names)
 pack = (b'JNT1' + struct.pack('<III', N, nj, len(names_blob)) + names_blob
         + assign_i32.tobytes() + w_f32.tobytes() + Jf.tobytes() + AXf.tobytes() + ROMf.tobytes())
@@ -235,10 +274,11 @@ def chain_L():
 
 def chain_R():
     neg = lambda p: np.array([-p[0], p[1], p[2]])
-    # SAME axes and ROMs as L (the mirror law: only the POSITION negates)
-    return body_xml('shoulder_R', neg(J['shoulder_L']) - J['spine_upper'], AXIS_L['shoulder_L'], ROM_L['shoulder_L'],
-           body_xml('elbow_R', neg(J['elbow_L']) - neg(J['shoulder_L']), AXIS_L['elbow_L'], ROM_L['elbow_L'],
-           body_xml('wrist_R', neg(J['wrist_L']) - neg(J['elbow_L']), AXIS_L['wrist_L'], ROM_L['wrist_L'])))
+    afl = lambda a: np.array([a[0], -a[1], -a[2]])   # the axis mirror law
+    # MIRRORED axes and SAME ROMs as L: +theta flexes both sides identically
+    return body_xml('shoulder_R', neg(J['shoulder_L']) - J['spine_upper'], afl(AXIS_L['shoulder_L']), ROM_L['shoulder_L'],
+           body_xml('elbow_R', neg(J['elbow_L']) - neg(J['shoulder_L']), afl(AXIS_L['elbow_L']), ROM_L['elbow_L'],
+           body_xml('wrist_R', neg(J['wrist_L']) - neg(J['elbow_L']), afl(AXIS_L['wrist_L']), ROM_L['wrist_L'])))
 
 def leg_chain(side):
     if side == 'L':
@@ -246,9 +286,10 @@ def leg_chain(side):
                body_xml('knee_L', J['knee_L'] - J['hip_L'], AXIS_L['knee_L'], ROM_L['knee_L'],
                body_xml('ankle_L', J['ankle_L'] - J['knee_L'], AXIS_L['ankle_L'], ROM_L['ankle_L'])))
     neg = lambda p: np.array([-p[0], p[1], p[2]])
-    return body_xml('hip_R', neg(J['hip_L']) - J['spine_lower'], AXIS_L['hip_L'], ROM_L['hip_L'],
-           body_xml('knee_R', neg(J['knee_L']) - neg(J['hip_L']), AXIS_L['knee_L'], ROM_L['knee_L'],
-           body_xml('ankle_R', neg(J['ankle_L']) - neg(J['knee_L']), AXIS_L['ankle_L'], ROM_L['ankle_L'])))
+    afl = lambda a: np.array([a[0], -a[1], -a[2]])   # the axis mirror law
+    return body_xml('hip_R', neg(J['hip_L']) - J['spine_lower'], afl(AXIS_L['hip_L']), ROM_L['hip_L'],
+           body_xml('knee_R', neg(J['knee_L']) - neg(J['hip_L']), afl(AXIS_L['knee_L']), ROM_L['knee_L'],
+           body_xml('ankle_R', neg(J['ankle_L']) - neg(J['knee_L']), afl(AXIS_L['ankle_L']), ROM_L['ankle_L'])))
 
 axial = body_xml('neck', J['neck'] - J['spine_upper'], AXIS_L['neck'], ROM_central['neck'],
          body_xml('jaw', J['jaw'] - J['neck'], AXIS_L['jaw'], ROM_central['jaw']))
