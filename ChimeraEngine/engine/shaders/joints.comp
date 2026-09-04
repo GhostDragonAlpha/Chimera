@@ -10,20 +10,14 @@
 //    the exact H15 law as shipped; a JNT1 pack must pose bit-identically
 //    forever (the falsifier was named before this file was rewritten).
 //
-//  LBS (JNT2, pc.legacy = 0) — 2-bone linear-blend skinning. The tear at full
-//    flexion exists because rotations don't interpolate linearly: adjacent
-//    crease verts scale theta differently (112 deg vs 62 deg about the same
-//    pivot) and the surface pulls apart. LBS blends TRANSFORMS instead:
-//
-//        v' = w_i * F_own(v)   +   (1 - w_i) * F_parent-of-band(v)
-//
-//    where F is a COMPOSED FK WORLD FRAME (2026-09-04, the operator's
-//    fingertip conviction): shipped-first-draft blended two SINGLE-LEVEL
-//    rotations about independent pivots, so an ancestor's arc reached a deep
-//    band only diluted by (1-w) — bending the elbow left the hand behind and
-//    the skin stretched. The law of every rigged character: a joint's pose
-//    is the COMPOSITION of its whole FK chain, own rotation first, every
-//    level about its own FIXED REST pivot:
+//  LBS (JNT2, pc.legacy = 0) — 2-bone linear-blend skinning over COMPOSED
+//    FK world frames (2026-09-04, the operator's fingertip conviction: the
+//    first draft blended two single-level rotations about independent
+//    pivots, so an ancestor's arc reached a deep band only diluted by
+//    (1-w) — the hand stayed behind and the skin stretched). The law of
+//    every rigged character: a joint's pose is the COMPOSITION of its whole
+//    FK chain, own rotation first, every level about its own FIXED REST
+//    pivot:
 //
 //        p' = R_own( R_parent( ... R_root( p ) ) )
 //
@@ -34,12 +28,25 @@
 //    parent's world frame; identity when the band joint is parentless). At
 //    any angle the output is a convex combination of two rigid motions of
 //    the SAME rest point, so wherever w varies smoothly the surface stays
-//    connected — and now the ancestor motion is SHARED by both terms, so a
+//    connected — and the ancestor motion is SHARED by both terms, so a
 //    vertex inherits 100% of every ancestor's arc plus its own blended arc.
 //    At rest (all thetas 0) every R_k is exactly I and t_k exactly 0, so the
 //    rest pose is bit-identical by construction.
 //    NOTE: chains deeper than 8 truncate (named boundary; this skeleton's
 //    deepest chain is 4: spine_lower -> shoulder -> elbow -> wrist).
+//
+// THE MATTER PASS (M1, 2026-09-04): the posed surface is a COMMAND; matter
+// is the surface itself carrying constraints. After the pose (or in
+// matter-only re-dispatches), each vertex relaxes against its mesh
+// neighbors (adjacency CSR, bindings 7-9): p' = lerp(p, rest-dir at the
+// mean rest edge length, k_stretch) — the TRIANGLE LAW (edges resist
+// deviation from rest; k = 0.5 halves the error per iteration) — then the
+// GROUND LAW (G3's measured plane, y >= y_ground). Double-buffered: the
+// pose stage reads vout, matter-only stages read Work (staged from Out by
+// the CPU copy between dispatches), so every invocation sees a CONSISTENT
+// previous iteration — the determinism law (V5) forbids in-place Jacobi.
+// At rest every constraint is already satisfied: the pass is a no-op
+// bit-for-bit (the falsifier that keeps it honest).
 //
 // C1: WEIGHT-PAINT mode (pc.paint >= 0). Blender's weight-paint law: the
 // selected joint's band is colored by its own weight (blue 0 -> green ->
@@ -53,7 +60,15 @@ layout(push_constant) uniform PC {
     uint n;
     uint n_joints;
     int  paint;      // C1: joint index to weight-paint, -1 = off
-    uint flags;      // bit0: legacy pose law (JNT1) — else 2-bone LBS (JNT2)
+    uint flags;      // bit0: legacy JNT1; bit1: strain tint; bit2: matter pass
+                     // bit3: matter-only stage; bit4: emit (write vout too)
+                     // bit6: read half 1 (ping-pong selector)
+    float k_stretch; // matter edge stiffness — TUNED 0.1 (the derived 0.5
+                     // DIVERGED under coupled Jacobi: see engine.hpp M1 note)
+                     // error per iteration; 4 iterations => 94% converged
+    float y_ground;  // matter ground plane — MEASURED (G3): Y_G = -0.0195
+    float iters;     // matter iterations (CPU counts them)
+    float pad0;
 } pc;
 
 layout(std430, binding = 0) readonly  buffer Rest    { float rest[]; };
@@ -64,6 +79,14 @@ layout(std430, binding = 3) readonly  buffer JState  { float js[]; };
 layout(std430, binding = 4) buffer Out      { float vout[]; };      // In+Out: the tint reads back its own pass-through colors
 layout(std430, binding = 5) readonly  buffer Parent  { int   parent[]; };  // JNT2: FK parent per joint (-1 = none)
 layout(std430, binding = 6) readonly  buffer Strain  { float strain[]; };  // per-vert area strain (CPU mirror of THIS law)
+// THE MATTER PASS (M1): mesh adjacency as CSR + the scratch the matter stage
+// writes into (the CPU copies it back over Out between iterations — double
+// buffered, so every invocation reads a CONSISTENT previous iteration: the
+// determinism law, V5, forbids in-place Jacobi reads).
+layout(std430, binding = 7) readonly  buffer EdgeOff { uint  eoff[]; };  // nv+1
+layout(std430, binding = 8) readonly  buffer EdgeNbr { uint  enbr[]; };  // 2E
+layout(std430, binding = 9) readonly  buffer EdgeLen { float elen[]; };  // 2E rest lengths
+layout(std430, binding = 10) buffer  Work    { float work[]; };          // nv*6: two halves (ping-pong)
 
 vec3 heat(float w) {                          // the standard weight ramp on [0,1]
     w = clamp(w, 0.0, 1.0);
@@ -78,18 +101,74 @@ vec3 rodr(vec3 v, vec3 a, float c, float s, vec3 Jp) {
     return v * c + cross(a, v) * s + a * dot(a, v) * (1.0 - c) + Jp;
 }
 
+// THE MATTER STAGE: one deterministic Jacobi sweep. Edge law: each neighbor
+// offset is scaled to its REST length; the vertex moves k_stretch of the MEAN
+// of those errors. Form chosen over the neighbor-mean-target version because
+// this one is EXACTLY ZERO at rest (|d| == L => every error term vanishes) —
+// the rest-identity falsifier holds bit-honestly, even on curved surfaces
+// (a mean-target operator shrinks curves at rest: offsets don't cancel).
+// Stretched edges (|d| > L) pull the vertex toward the neighbor; compressed
+// push away. EVERY neighbor read comes from the read half (base), written
+// results go to the OTHER half — no invocation ever reads a half another is
+// writing this dispatch (strict ping-pong, the determinism law V5).
+vec3 matter_step(uint i, uint base, vec3 p) {
+    uint b = eoff[i], e = eoff[i + 1u];
+    if (e > b) {
+        vec3 corr = vec3(0.0); float tot = 0.0;
+        for (uint k = b; k < e; ++k) {
+            uint nb = enbr[k];
+            vec3 q = vec3(work[base + nb * 3u + 0u], work[base + nb * 3u + 1u], work[base + nb * 3u + 2u]);
+            vec3 d = q - p;
+            float L = max(elen[k], 1e-6f);
+            // SIGNED correctly (the 2026-09-04 falsifier catch: the shipped
+            // factor (L/|d| - 1) was the ANTI-relax — stretched edges pushed
+            // apart, error grew every iteration). (1 - L/|d|) = u*(|d|-L):
+            // stretched pulls p toward q, compressed pushes away.
+            corr += d * (1.0 - L / max(length(d), 1e-6f));
+            tot += 1.0;
+        }
+        p += pc.k_stretch * corr / tot;
+    }
+    if (p.y < pc.y_ground) p.y = pc.y_ground;  // the ground law (G3's plane)
+    return p;
+}
+
 void main() {
     uint i = gl_GlobalInvocationID.x;
     if (i >= pc.n) return;
 
+    bool matter_only = (pc.flags & 8u) != 0u;
     int j = joint[i];
-    if (j < 0) {
+
+    if (j < 0 && !matter_only) {
         for (uint k = 0; k < 9; ++k) vout[i * 9 + k] = rest[i * 9 + k];
         if (pc.paint >= 0) {                  // unassigned verts dim like any non-band vert
             vout[i * 9 + 6] *= 0.25; vout[i * 9 + 7] *= 0.25; vout[i * 9 + 8] *= 0.25;
         }
+        if ((pc.flags & 4u) != 0u) {          // matter: seed half 0 with rest
+            work[i * 3 + 0u] = rest[i * 9 + 0]; work[i * 3 + 1u] = rest[i * 9 + 1];
+            work[i * 3 + 2u] = rest[i * 9 + 2];
+        }
         return;
     }
+
+    if (matter_only) {
+        // THE MATTER-ONLY STAGE: strict ping-pong. Read half = bit6 (0 ->
+        // floats [0, 3n), 1 -> [3n, 6n)); write half = the other one. The
+        // last iteration adds bit4 and also emits into vout (positions only;
+        // colors were written by the pose pass). Unassigned verts participate
+        // too — matter is the whole surface, not the joint bands.
+        uint base = ((pc.flags & 64u) != 0u) ? pc.n * 3u : 0u;
+        uint dst  = (base == 0u) ? pc.n * 3u : 0u;
+        vec3 p = vec3(work[base + i * 3u + 0u], work[base + i * 3u + 1u], work[base + i * 3u + 2u]);
+        p = matter_step(i, base, p);
+        work[dst + i * 3u + 0u] = p.x; work[dst + i * 3u + 1u] = p.y; work[dst + i * 3u + 2u] = p.z;
+        if ((pc.flags & 16u) != 0u) {
+            vout[i * 9 + 0] = p.x; vout[i * 9 + 1] = p.y; vout[i * 9 + 2] = p.z;
+        }
+        return;
+    }
+
     float wgt = w[i];
 
     uint jo = uint(j) * 8u;
@@ -97,6 +176,7 @@ void main() {
     vec3 a1 = vec3(js[jo + 3u], js[jo + 4u], js[jo + 5u]);
     float th1 = js[jo + 7u];
 
+    vec3 P;                                    // the posed position, for matter
     if ((pc.flags & 1u) != 0u) {
         // ── LEGACY (JNT1): theta scaled by the vertex's own weight. Exact
         // shipped H15 law — do not touch; the bit-compat prediction holds it.
@@ -109,6 +189,7 @@ void main() {
                           rest[i * 9 + kk * 3 + 2]) - base;
             vec3 r = v * c + cross(a1, v) * s + a1 * dot(a1, v) * (1.0 - c);
             vec3 o = r + base;
+            if (kk == 0u) P = o;
             vout[i * 9 + kk * 3 + 0] = o.x;
             vout[i * 9 + kk * 3 + 1] = o.y;
             vout[i * 9 + kk * 3 + 2] = o.z;
@@ -145,11 +226,21 @@ void main() {
             vec3 r1 = M1 * v + T1;                  // band joint's world frame
             vec3 r2 = M2 * v + T2;                  // parent's world frame
             vec3 o = wgt * r1 + (1.0 - wgt) * r2;   // the convex blend — the cure
+            if (kk == 0u) P = o;
             vout[i * 9 + kk * 3 + 0] = o.x;
             vout[i * 9 + kk * 3 + 1] = o.y;
             vout[i * 9 + kk * 3 + 2] = o.z;
         }
     }
+
+    // THE MATTER SEED (combined with the pose): the just-posed position is
+    // written to half 0 of Work; the matter-only dispatches then relax it
+    // ping-pong style. (No relaxation here — a same-dispatch neighbor read
+    // of vout would race with the other invocations' writes. V5.)
+    if ((pc.flags & 4u) != 0u) {
+        work[i * 3 + 0u] = P.x; work[i * 3 + 1u] = P.y; work[i * 3 + 2u] = P.z;
+    }
+
     float cr = rest[i * 9 + 6];                    // colors: rest by default
     float cg = rest[i * 9 + 7];
     float cb = rest[i * 9 + 8];

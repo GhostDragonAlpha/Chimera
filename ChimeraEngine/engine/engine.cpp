@@ -874,6 +874,10 @@ void Engine::shutdown() {
     if (volp_st_buf_)    { vkDestroyBuffer(device_, volp_st_buf_, nullptr);  vkFreeMemory(device_, volp_st_mem_, nullptr); }
     if (volp_rb_buf_)    { vkDestroyBuffer(device_, volp_rb_buf_, nullptr);  vkFreeMemory(device_, volp_rb_mem_, nullptr); }
 
+    // THE MATTER PASS (M1): the adjacency CSR + the ping-pong Work buffer.
+    if (j_csr_buf_) { vkDestroyBuffer(device_, j_csr_buf_, nullptr); vkFreeMemory(device_, j_csr_mem_, nullptr); j_csr_buf_ = VK_NULL_HANDLE; }
+    if (j_work_buf_) { vkDestroyBuffer(device_, j_work_buf_, nullptr); vkFreeMemory(device_, j_work_mem_, nullptr); j_work_buf_ = VK_NULL_HANDLE; }
+
     // gait CPG resources
     if (gait_pipe_)        vkDestroyPipeline(device_, gait_pipe_, nullptr);
     if (gait_layout_)      vkDestroyPipelineLayout(device_, gait_layout_, nullptr);
@@ -2247,6 +2251,59 @@ void Engine::compute_strain_joints() {
     }
 }
 
+// ── THE MATTER PASS's truth channel (M1, 2026-09-04): measure the LAST
+// dispatched surface state (Work half 0, the persistent host mirror) against
+// the REST edge lengths — the same law the kernel relaxes, evaluated on the
+// CPU: mean/max edge stretch and RMS length error (%), verts below ground.
+// iters=0 turns the pass into the pure-LBS control; iters=4 reads the
+// matter-passed surface. The DIFFERENCE is the pass's effect, on the
+// engine's own numbers, not a screenshot's. (Advisory channel: the host map
+// is unsynchronized with the render thread, so a rare torn sample can spike
+// max — the controlled A/B averages that out.)
+// Public forwarders (main.cpp's /matter HTTP twins; the state atom is private).
+float Engine::matter_iters() const { return matter_iters_.load(std::memory_order_relaxed); }
+void Engine::matter_iters_set(float it) {
+    if (it < 0.0f) it = 0.0f;
+    if (it > 64.0f) it = 64.0f;
+    matter_iters_.store(it, std::memory_order_relaxed);
+}
+float Engine::matter_k() const { return matter_k_.load(std::memory_order_relaxed); }
+void Engine::matter_k_set(float k) {
+    if (k < 0.001f) k = 0.001f;
+    if (k > 0.9f) k = 0.9f;
+    matter_k_.store(k, std::memory_order_relaxed);
+}
+
+void Engine::matter_stats(float& s_mean, float& s_max, float& rms, uint32_t& below) {
+    s_mean = s_max = rms = 0.f; below = 0;
+    if (j_work_map_ == nullptr || j_edge_nbr_.empty() || j_n_verts_ == 0) return;
+    const float* wp = static_cast<const float*>(j_work_map_);   // nv*6, half 0 = [0, 3n)
+    const uint32_t n = j_n_verts_;
+    double sum_rel = 0.0, sum_sq = 0.0, max_rel = 0.0;
+    uint64_t cnt = 0;
+    for (uint32_t a = 0; a < n; ++a) {
+        for (uint32_t k = j_edge_off_[a]; k < j_edge_off_[a + 1]; ++k) {
+            const uint32_t b = j_edge_nbr_[k];
+            if (b <= a) continue;                    // each unique edge exactly once
+            const float dx = wp[b * 3 + 0] - wp[a * 3 + 0];
+            const float dy = wp[b * 3 + 1] - wp[a * 3 + 1];
+            const float dz = wp[b * 3 + 2] - wp[a * 3 + 2];
+            const float L   = j_edge_len_[k];
+            const float len = sqrtf(dx * dx + dy * dy + dz * dz);
+            const float rel = (len - L) / L;        // + = stretched
+            sum_rel += rel; sum_sq += double(rel) * rel; ++cnt;
+            if (rel > max_rel) max_rel = rel;
+        }
+    }
+    if (cnt) {
+        s_mean = static_cast<float>(sum_rel / double(cnt));
+        s_max  = static_cast<float>(max_rel);
+        rms    = static_cast<float>(sqrt(sum_sq / double(cnt)));
+    }
+    for (uint32_t v = 0; v < n; ++v)
+        if (wp[v * 3 + 1] < MATTER_YG - 1e-5f) ++below;
+}
+
 // ── THE GAIT CPG ON THE CA FIELD (H7 stage 2) ────────────────────────────────
 // Port of .tmp/gait_ref.py (the golden CPU reference). Schedule: per engine
 // tick, one workgroup of 8 invocations runs one fixed-order RK4 step
@@ -2327,6 +2384,12 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
         frost_on_.load() ? 1 : 0, frost_loaded_);
     add("strain", "strain", hinge_active_ ? "area strain" : "no hinge",
         strain_on_.load() ? 1 : 0, hinge_active_);
+    {
+        char d[96]; snprintf(d, sizeof(d), "%zu edges, k=%.2f, %d it",
+                             j_edge_nbr_.size() / 2, matter_k(), (int)MATTER_ITERS);
+        add("matter", "matter", joints_loaded_ && j_lbs_mode_ ? d : "needs JNT2",
+            matter_on_.load() ? 1 : 0, joints_loaded_ && j_lbs_mode_);
+    }
     add("chrome", "chrome", "the studio bar", ui_.bar_on_ ? 1 : 0, true);
     return rows;
 }
@@ -2340,6 +2403,7 @@ std::string Engine::scene_command(const std::string& id, bool on) {
     if (id == "water_vis")   return std::string("POST /water_vis {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "frost")       return std::string("POST /frost {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "strain")      return std::string("POST /strain {\"on\":") + (on ? "true" : "false") + "}";
+    if (id == "matter")      return std::string("POST /matter {\"on\":") + (on ? "true" : "false") + "}";
     if (id == "chrome")      return std::string("POST /studio_chrome {\"on\":") + (on ? "true" : "false") + "}";
     return "";
 }
@@ -2426,6 +2490,13 @@ std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
         snprintf(nb, sizeof(nb), "%zu", tri_rest_area_.size()); add("triangles", nb);
         add("measure", "area strain, area-weighted mean");
         add("color", "blue = compress, red = stretch (+/-10% sat)");
+    } else if (id == "matter") {
+        add("on", b(matter_on_.load()));
+        snprintf(nb, sizeof(nb), "%zu", j_edge_nbr_.size() / 2); add("edges", nb);
+        snprintf(nb, sizeof(nb), "%.2f", matter_k()); add("k_stretch (tuned)", nb);
+        snprintf(nb, sizeof(nb), "%d", (int)MATTER_ITERS); add("iterations", nb);
+        snprintf(nb, sizeof(nb), "%.4f", MATTER_YG); add("y_ground (measured)", nb);
+        add("law", "edges resist deviation from rest; ground forbids depth");
     } else if (id == "frost") {
         add("loaded", b(frost_loaded_));
         add("on", b(frost_on_.load()));
@@ -3583,17 +3654,23 @@ void Engine::hinge_rebind() {
 // before the joints dispatch — same discipline as water_vis_rebind (W4).
 void Engine::joints_rebind() {
     if (joints_desc_set_ == VK_NULL_HANDLE || !joints_loaded_ || !has_mesh_) return;
-    VkBuffer bufs[7] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_ };
-    VkWriteDescriptorSet w[7]{};
-    VkDescriptorBufferInfo infos[7]{};
-    for (uint32_t k = 0; k < 7; ++k) {
-        infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+    VkBuffer bufs[11] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
+                          j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_ };
+    VkWriteDescriptorSet w[11]{};
+    VkDescriptorBufferInfo infos[11]{};
+    for (uint32_t k = 0; k < 11; ++k) {
+        infos[k].buffer = bufs[k];
+        if (k == 7 || k == 8 || k == 9)
+            infos[k].range = (k == 7) ? j_csr_off_sz_ : (k == 8) ? j_csr_nbr_sz_ : j_csr_len_sz_;
+        else infos[k].range = VK_WHOLE_SIZE;
+        if (k == 8)  infos[k].offset = j_csr_off_sz_;
+        if (k == 9)  infos[k].offset = j_csr_off_sz_ + j_csr_nbr_sz_;
         w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         w[k].dstSet = joints_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
         w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         w[k].pBufferInfo = &infos[k];
     }
-    vkUpdateDescriptorSets(device_, 7, w, 0, nullptr);
+    vkUpdateDescriptorSets(device_, 11, w, 0, nullptr);
     joints_desc_dirty_ = false;
 }
 
@@ -4038,6 +4115,114 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     j_n_verts_ = nv; j_n_joints_ = nj;
     j_rom_.assign(rom, rom + nj * 2);
 
+    // THE MATTER PASS (M1): build the mesh adjacency CSR — unique undirected
+    // edges from the index list, rest lengths from hinge_rest_ (the pack's
+    // rest positions). One packed GPU buffer: offsets | neighbors | lengths,
+    // with member sizes recorded so the shader sees the right arrays.
+    {
+        const float* rst = hinge_rest_.data();
+        std::vector<std::pair<uint32_t, uint32_t>> edges;
+        edges.reserve(mesh_tris_.size());
+        auto add_edge = [&](uint32_t a, uint32_t b) {
+            if (a == b) return;
+            if (a > b) std::swap(a, b);
+            edges.emplace_back(a, b);
+        };
+        for (size_t t = 0; t + 2 < mesh_tris_.size(); t += 3) {
+            add_edge(mesh_tris_[t], mesh_tris_[t + 1]);
+            add_edge(mesh_tris_[t + 1], mesh_tris_[t + 2]);
+            add_edge(mesh_tris_[t + 2], mesh_tris_[t]);
+        }
+        std::sort(edges.begin(), edges.end());
+        edges.erase(std::unique(edges.begin(), edges.end()), edges.end());
+        const size_t nvS = nv;
+        j_edge_off_.assign(nvS + 1, 0);
+        j_edge_nbr_.clear(); j_edge_nbr_.reserve(edges.size() * 2);
+        j_edge_len_.clear(); j_edge_len_.reserve(edges.size() * 2);
+        for (size_t e = 0; e < edges.size(); ++e) {
+            const auto& [a, b] = edges[e];
+            j_edge_nbr_.push_back(b);
+            j_edge_len_.push_back(std::sqrt(
+                (rst[a * 9 + 0] - rst[b * 9 + 0]) * (rst[a * 9 + 0] - rst[b * 9 + 0]) +
+                (rst[a * 9 + 1] - rst[b * 9 + 1]) * (rst[a * 9 + 1] - rst[b * 9 + 1]) +
+                (rst[a * 9 + 2] - rst[b * 9 + 2]) * (rst[a * 9 + 2] - rst[b * 9 + 2])));
+        }
+        // second direction: sort by b, walk again (build offset array after)
+        j_edge_off_[0] = 0;
+        std::vector<uint32_t> cnt(nvS + 1, 0);
+        for (const auto& e2 : edges) { cnt[e2.first]++; cnt[e2.second]++; }
+        for (size_t v = 0; v < nvS; ++v) j_edge_off_[v + 1] = j_edge_off_[v] + cnt[v];
+        // scatter: place neighbors in order using a moving cursor per vert
+        std::vector<uint32_t> cur(j_edge_off_.begin(), j_edge_off_.end() - 1);
+        std::vector<uint32_t> nbr2(edges.size() * 2);
+        std::vector<float> len2(edges.size() * 2);
+        // lengths per (a,b) pair — recompute cheaply from the sorted list
+        std::vector<uint32_t> first_dir(edges.size());
+        for (size_t e = 0; e < edges.size(); ++e) {
+            const auto& [a, b] = edges[e];
+            nbr2[cur[a]] = b;
+            len2[cur[a]] = std::sqrt(
+                (rst[a * 9 + 0] - rst[b * 9 + 0]) * (rst[a * 9 + 0] - rst[b * 9 + 0]) +
+                (rst[a * 9 + 1] - rst[b * 9 + 1]) * (rst[a * 9 + 1] - rst[b * 9 + 1]) +
+                (rst[a * 9 + 2] - rst[b * 9 + 2]) * (rst[a * 9 + 2] - rst[b * 9 + 2]));
+            ++cur[a];
+            nbr2[cur[b]] = a;
+            len2[cur[b]] = len2[cur[a] - 1];
+            ++cur[b];
+        }
+        j_edge_nbr_ = std::move(nbr2);
+        j_edge_len_ = std::move(len2);
+        (void)first_dir;
+
+        // M1: each sub-allocation padded to 16 bytes — descriptor OFFSETS must
+        // satisfy minStorageBufferOffsetAlignment (VUID-00328 fired on the raw
+        // off+nbr stride: 512008 % 16 = 8, the write was dropped, gWork stayed
+        // untouched and /matter_state read its sentinels).
+        j_csr_off_sz_ = (((nvS + 1) * sizeof(uint32_t)) + 15u) & ~15ull;
+        j_csr_nbr_sz_ = ((j_edge_nbr_.size() * sizeof(uint32_t)) + 15u) & ~15ull;
+        j_csr_len_sz_ = ((j_edge_len_.size() * sizeof(float)) + 15u) & ~15ull;
+        const VkDeviceSize total = j_csr_off_sz_ + j_csr_nbr_sz_ + j_csr_len_sz_;
+        if (j_csr_buf_ != VK_NULL_HANDLE) { vkDestroyBuffer(device_, j_csr_buf_, nullptr); vkFreeMemory(device_, j_csr_mem_, nullptr); j_csr_buf_ = VK_NULL_HANDLE; }
+        VkBufferCreateInfo cb2{};
+        cb2.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        cb2.size = total;
+        cb2.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+        vkCreateBuffer(device_, &cb2, nullptr, &j_csr_buf_);
+        VkMemoryRequirements mr2; vkGetBufferMemoryRequirements(device_, j_csr_buf_, &mr2);
+        VkMemoryAllocateInfo ai2{};
+        ai2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        ai2.allocationSize = mr2.size;
+        ai2.memoryTypeIndex = find_mem_type(mr2.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &ai2, nullptr, &j_csr_mem_);
+        vkBindBufferMemory(device_, j_csr_buf_, j_csr_mem_, 0);
+        void* csr_map = nullptr;
+        vkMapMemory(device_, j_csr_mem_, 0, total, 0, &csr_map);
+        uint8_t* dst2 = static_cast<uint8_t*>(csr_map);
+        // raw byte counts for the copies; PADDED strides for the gaps between
+        std::memcpy(dst2, j_edge_off_.data(), (size_t)(nvS + 1) * sizeof(uint32_t)); dst2 += j_csr_off_sz_;
+        std::memcpy(dst2, j_edge_nbr_.data(), j_edge_nbr_.size() * sizeof(uint32_t)); dst2 += j_csr_nbr_sz_;
+        std::memcpy(dst2, j_edge_len_.data(), j_edge_len_.size() * sizeof(float));
+        vkUnmapMemory(device_, j_csr_mem_);
+
+        if (j_work_buf_ != VK_NULL_HANDLE) { vkDestroyBuffer(device_, j_work_buf_, nullptr); vkFreeMemory(device_, j_work_mem_, nullptr); j_work_buf_ = VK_NULL_HANDLE; j_work_map_ = nullptr; }
+        VkBufferCreateInfo wb{};
+        wb.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        wb.size = static_cast<VkDeviceSize>(nv) * 6 * sizeof(float);
+        wb.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+        vkCreateBuffer(device_, &wb, nullptr, &j_work_buf_);
+        VkMemoryRequirements wmr; vkGetBufferMemoryRequirements(device_, j_work_buf_, &wmr);
+        VkMemoryAllocateInfo wai{};
+        wai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        wai.allocationSize = wmr.size;
+        wai.memoryTypeIndex = find_mem_type(wmr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vkAllocateMemory(device_, &wai, nullptr, &j_work_mem_);
+        vkBindBufferMemory(device_, j_work_buf_, j_work_mem_, 0);
+        if (j_work_map_) vkUnmapMemory(device_, j_work_mem_);
+        vkMapMemory(device_, j_work_mem_, 0, wb.size, 0, &j_work_map_);
+    }
+
     // C1: the gizmo's axis length is DERIVED, not picked — the RMS radius of
     // the joint's own band (assign == k) about its center J. A big joint gets
     // a long axis, a small joint a short one, from the pack's own geometry.
@@ -4092,14 +4277,14 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         }
     }
 
-    // pipeline (7 SSBOs + 16 B push constants: n, nj, paint, flags — C1/JNT2 + strain)
-    if (!w_make_pipeline(device_, "shaders/joints.spv", 7, 16,
+    // pipeline (11 SSBOs + 32 B push constants: n, nj, paint, flags + matter params — M1)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 11, 32,
                          joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
         fprintf(stderr, "joints: pipeline failed\n"); return false;
     }
     {
         VkDescriptorPoolSize ps{};
-        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 7;
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 11;
         if (joints_desc_pool_) vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr);
         VkDescriptorPoolCreateInfo dpci{};
         dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -4110,18 +4295,27 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         dsai.descriptorPool = joints_desc_pool_; dsai.descriptorSetCount = 1;
         dsai.pSetLayouts = &joints_dsl_;
         vkAllocateDescriptorSets(device_, &dsai, &joints_desc_set_);
-        VkBuffer bufs[7] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_ };
-        VkWriteDescriptorSet wr[7]{};
-        VkDescriptorBufferInfo infos[7]{};
-        for (uint32_t k = 0; k < 7; ++k) {
-            infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
+        VkBuffer bufs[11] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
+                              j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_ };
+        VkWriteDescriptorSet wr[11]{};
+        VkDescriptorBufferInfo infos[11]{};
+        for (uint32_t k = 0; k < 11; ++k) {
+            infos[k].buffer = bufs[k];
+            // the CSR rides as THREE arrays in one buffer — point each binding
+            // at its own offset (off | nbr | len)
+            if (k == 8)  infos[k].offset = j_csr_off_sz_;
+            if (k == 9)  infos[k].offset = j_csr_off_sz_ + j_csr_nbr_sz_;
+            if (k == 7 || k == 8 || k == 9) infos[k].range = (k == 7) ? j_csr_off_sz_
+                                                          : (k == 8) ? j_csr_nbr_sz_
+                                                          : j_csr_len_sz_;
+            else infos[k].range = VK_WHOLE_SIZE;
             wr[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             wr[k].dstSet = joints_desc_set_; wr[k].dstBinding = k;
             wr[k].descriptorCount = 1;
             wr[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             wr[k].pBufferInfo = &infos[k];
         }
-        vkUpdateDescriptorSets(device_, 7, wr, 0, nullptr);
+        vkUpdateDescriptorSets(device_, 11, wr, 0, nullptr);
     }
     joints_t0_ = std::chrono::steady_clock::now();
     joints_loaded_ = true;
@@ -6129,13 +6323,16 @@ bool Engine::frame() {
             st[cur * 8 + 7] = th;
         }
 
-        // JNT2: bit0 of the old pad field is now the POSE LAW flag — legacy
-        // (JNT1) or 2-bone LBS (JNT2). bit1: the strain tint (hinge.comp's
-        // contract, same ramp, same CPU mirror). The push-constant block stays 16 B.
-        struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t flags; }
+        // JNT2/M1: bit0 = pose law (JNT1 legacy / JNT2 LBS), bit1 = strain tint,
+        // bit2 = the matter pass seeds Work half 0 with the posed positions.
+        // Push-constant block is 32 B (pose flags + the matter params).
+        struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t flags;
+                          float k_stretch, y_ground, iters, pad0; }
             jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed),
                  (j_lbs_mode_ ? 0u : 1u)
-                 | (strain_on_.load(std::memory_order_relaxed) ? 2u : 0u) };
+                 | (strain_on_.load(std::memory_order_relaxed) ? 2u : 0u)
+                 | ((matter_on_.load(std::memory_order_relaxed) && j_lbs_mode_) ? 4u : 0u),
+                 matter_k(), MATTER_YG, matter_iters_.load(std::memory_order_relaxed), 0.0f };
         if (joints_desc_dirty_) joints_rebind();   // rest/Out recreated -> rebind BEFORE dispatch
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,
@@ -6146,10 +6343,47 @@ bool Engine::frame() {
         VkMemoryBarrier jmb{};
         jmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
         jmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-        jmb.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+        jmb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT
+                          | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
         vkCmdPipelineBarrier(cmd_bufs_[img_idx],
-            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
             0, 1, &jmb, 0, nullptr, 0, nullptr);
+        // THE MATTER PASS (M1): the seed sits in Work half 0 (the pose dispatch
+        // wrote it). Strict ping-pong Jacobi — read half0/write half1, then
+        // alternate; the LAST dispatch also emits into vout (positions only;
+        // colors were written by the pose pass). A barrier after every dispatch
+        // (each reads the previous one's writes); no CPU copies anywhere.
+        if ((jpc.flags & 4u) != 0u) {
+            const uint32_t wg = (j_n_verts_ + 255) / 256;
+            const int iters = static_cast<int>(matter_iters_.load(std::memory_order_relaxed));
+            if (iters <= 0) {
+                // iters == 0: the seed IS the readback — pure-LBS surface state,
+                // staged into half 0 where /matter_state reads it. No relax,
+                // no emit: the visible frame stays the raw LBS command.
+            } else
+            for (int it = 0; it < iters; ++it) {
+                JointsPC mpc{};
+                mpc.n = jpc.n; mpc.nj = jpc.nj; mpc.paint = -1;
+                mpc.flags = 8u                                   // matter-only stage
+                          | ((it & 1) ? 64u : 0u)                // odd iters read half 1
+                          | ((it == iters - 1) ? 16u : 0u);      // emit on the last
+                mpc.k_stretch = matter_k(); mpc.y_ground = MATTER_YG; mpc.iters = MATTER_ITERS;
+                vkCmdPushConstants(cmd_bufs_[img_idx], joints_layout_, VK_SHADER_STAGE_COMPUTE_BIT,
+                                   0, sizeof(mpc), &mpc);
+                vkCmdDispatch(cmd_bufs_[img_idx], wg, 1, 1);
+                VkMemoryBarrier mb{};
+                mb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+                mb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+                mb.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT
+                                 | ((it == iters - 1) ? VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT : 0);
+                vkCmdPipelineBarrier(cmd_bufs_[img_idx],
+                    VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                    (it == iters - 1) ? (VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT)
+                                      : VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                    0, 1, &mb, 0, nullptr, 0, nullptr);
+            }
+        }
     } else if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
         if (hinge_desc_dirty_) hinge_rebind();   // tri_vbuf_ recreated -> rebind BEFORE dispatch
         struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;

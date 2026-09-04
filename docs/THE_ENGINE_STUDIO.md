@@ -2249,3 +2249,36 @@ region moved ~15% of the arc and read frozen. Tint at the crease: 17,438 px,
 crease-localized, not flooded. Small-angle control: elbow at 2 deg tints 695
 px (the x10 magnifier's floor at the sharpest gradient) — monotone response,
 no flood. Rest pose: all thetas zero on boot, identity holds by construction.
+
+## THE MATTER PASS (M1) — the surface becomes matter (2026-09-04)
+
+The operator's diagnosis: "everything is disjointed because nothing is
+referenced to anything else." The composed-FK fix made skin FOLLOW bones;
+this arc makes the surface RESIST — matter, not paint.
+
+**The pass**: after the joints kernel poses the surface (Work half 0 seeded),
+N Jacobi iterations relax every vertex against its mesh-edge rest lengths
+(CSR adjacency built at load; strict ping-pong halves — V5 determinism) and
+pin the surface to G3's measured ground plane. Bindings 7-10, /matter +
+/matter_state are the HTTP twins; the CPU mirror (matter_stats) evaluates
+the same law on the readback.
+
+**Three falsifier catches, each a real bug the numbers exposed:**
+1. Descriptor alignment (VUID-00328): the CSR's off|nbr|len sub-allocations
+   rode on unpadded strides; binding 9's offset 512,008 % 16 = 8 — the write
+   was dropped, Work stayed zero. Every CSR stride is 16-padded now.
+2. The canonical-frame loss: the joints pack (18,572 verts) and the live
+   mesh (18,459) disagreed after a mid-arc restart — the 18,572 frame was
+   birth mesh + ~113 runtime vertex splits and died with the process. Honest
+   fix: canonical = monkey_birth.bin exactly, pack regenerated (factory →
+   referee knee 152/152 flex 136/136 ext, all symmetric; gate 7/7).
+3. THE ANTI-RELAX: the shipped factor (L/|d| − 1) was sign-inverted —
+   stretched edges pushed apart, error GREW every iteration (1.9% → 5e6%
+   worst-edge by iter 32). (1 − L/|d|) = u·(|d|−L) is the relaxation;
+   the rest-identity law survives the flip.
+
+**k is TUNED, not derived** (Rule 1's lesson, paid again): the "derived"
+k=0.5 diverged; measured optimum k=0.2, 48 iters — at knee 120°/elbow 90°:
+worst-edge error 147.1% (pure LBS) → 18.9% (matter); RMS 2.49% → 0.65%.
+Frame cost 0.43 → 0.53 ms avg at 300 fps. Live-tunable via /matter {k, iters};
+iters=0 is the pure-LBS readback control.

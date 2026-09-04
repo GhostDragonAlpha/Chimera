@@ -109,6 +109,17 @@ public:
     bool hinge_active() const { return hinge_active_; }
     float hinge_period() const { return hinge_period_; }
     bool strain_on() const { return strain_on_.load(std::memory_order_relaxed); }
+    void matter_set(bool on) { matter_on_.store(on, std::memory_order_relaxed); }
+    bool matter_on() const { return matter_on_.load(std::memory_order_relaxed); }
+    float matter_iters() const;                    // fwd to the private atomic (M1)
+    void matter_iters_set(float it);
+    float matter_k() const;
+    void matter_k_set(float k);
+    bool matter_readable() const {
+        return matter_on_.load(std::memory_order_relaxed) && j_lbs_mode_
+               && j_work_map_ != nullptr && !j_edge_nbr_.empty();
+    }
+    void matter_stats(float& s_mean, float& s_max, float& rms, uint32_t& below);
     void strain_set(bool on) { strain_on_.store(on, std::memory_order_relaxed); }
 
     // ── THE WATER SOLVER ON THE CA FIELD (B15 — port of .tmp/tri_water.py) ──
@@ -473,6 +484,32 @@ private:
     VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
                     j_state_mem_ = VK_NULL_HANDLE, j_parent_mem_ = VK_NULL_HANDLE;
     void*           j_state_map_ = nullptr;      // host-visible: J/axis/theta per joint
+    // THE MATTER PASS (M1, 2026-09-04): the posed surface is a COMMAND; matter
+    // is the surface itself carrying constraints. Mesh adjacency as CSR (unique
+    // undirected edges + rest lengths, built once at load) + a two-half Work
+    // buffer the kernel ping-pongs through (strict Jacobi — the determinism
+    // law V5). Edge law: move k of the mean scale-to-rest-length error (EXACT
+    // zero at rest); ground law: y >= Y_G (G3's measured plane).
+    std::vector<uint32_t> j_edge_off_;          // CSR offsets (nv+1)
+    std::vector<uint32_t> j_edge_nbr_;          // neighbor ids (2E)
+    std::vector<float>    j_edge_len_;          // rest lengths (2E)
+    VkBuffer        j_csr_buf_ = VK_NULL_HANDLE;   // packed: off|nbr|len
+    VkDeviceMemory  j_csr_mem_ = VK_NULL_HANDLE;
+    VkDeviceSize    j_csr_off_sz_ = 0, j_csr_nbr_sz_ = 0, j_csr_len_sz_ = 0;
+    VkBuffer        j_work_buf_ = VK_NULL_HANDLE;  // nv*6 floats (two halves)
+    VkDeviceMemory  j_work_mem_ = VK_NULL_HANDLE;
+    void*           j_work_map_ = nullptr;         // persistent host map: /matter_state readback
+    std::atomic<bool> matter_on_{false};
+    std::atomic<float> matter_iters_{48.0f};        // 0 = seed-only (pure-LBS readback)
+    // M1 FALSIFIER RESULT: the derived k=0.5 DIVERGES under coupled Jacobi on
+    // this mesh (worst-edge error 1.9% -> 5e6% by iter 32; blow-up, not
+    // convergence). k is TUNED, not derived — default 0.2, live via /matter.
+    // MEASURED at knee 120/elbow 90 (2026-09-04): LBS worst edge 147.1% ->
+    // 12.3% at k=0.2/48 iters; 0.53 ms frame avg at 300 fps.
+    std::atomic<float> matter_k_{0.2f};
+    static constexpr float MATTER_ITERS = 4.0f;      // the default iteration count
+    static constexpr float MATTER_YG    = -0.0195f;  // MEASURED (G3): the ground plane
+    // iters accessors are PUBLIC (main.cpp's /matter twins need them)
     VkShaderModule  joints_mod_ = VK_NULL_HANDLE;
     VkDescriptorSetLayout joints_dsl_ = VK_NULL_HANDLE;
     VkPipelineLayout joints_layout_ = VK_NULL_HANDLE;

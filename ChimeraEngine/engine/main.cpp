@@ -1184,6 +1184,60 @@ int main(int argc, char** argv) {
             body = std::string("{\"on\":") + (g_engine && g_engine->strain_on() ? "true" : "false")
                  + ",\"hinge\":" + (g_engine && g_engine->hinge_active() ? "true" : "false") + "}";
             content_type = "application/json";
+        } else if (p == "/matter" && method == "POST") {
+            // THE MATTER PASS (M1) toggle: on = after the LBS pose, the surface
+            // relaxes against its own adjacency (edges resist deviation from
+            // rest, k=0.5, 4 Jacobi iterations) and the ground plane forbids
+            // penetration (y >= Y_G). JNT2 only; the scene row carries the same gate.
+            bool on = g_engine ? g_engine->matter_on() : false;
+            {
+                size_t op = req_body.find("\"on\"");
+                if (op != std::string::npos) {
+                    size_t cp = req_body.find(':', op + 4);
+                    if (cp != std::string::npos) {
+                        size_t a = req_body.find_first_not_of(" \t", cp + 1);
+                        if (a != std::string::npos)
+                            on = req_body.compare(a, 4, "true") == 0;
+                    }
+                }
+            }
+            if (g_engine) {
+                g_engine->matter_set(on);
+                if (req_body.find("\"iters\"") != std::string::npos)
+                    g_engine->matter_iters_set(get_float(req_body, "iters", 4.0f));
+                if (req_body.find("\"k\"") != std::string::npos)
+                    g_engine->matter_k_set(get_float(req_body, "k", 0.1f));
+            }
+            body = std::string("{\"ok\":true,\"on\":") + (on ? "true" : "false")
+                 + ",\"iters\":" + std::to_string(g_engine ? g_engine->matter_iters() : 0.0f)
+                 + ",\"k\":" + std::to_string(g_engine ? g_engine->matter_k() : 0.0f) + "}";
+            content_type = "application/json";
+        } else if (p == "/matter" && method == "GET") {
+            body = std::string("{\"on\":") + (g_engine && g_engine->matter_on() ? "true" : "false")
+                 + ",\"iters\":" + std::to_string(g_engine ? g_engine->matter_iters() : 0.0f)
+                 + ",\"k\":" + std::to_string(g_engine ? g_engine->matter_k() : 0.0f)
+                 + ",\"y_ground\":-0.0195}";
+            content_type = "application/json";
+        } else if (p == "/matter_state" && method == "GET") {
+            // THE MATTER PASS's truth channel: the LAST dispatched frame's
+            // surface state is read back from Work half 0 (persistent host
+            // map) and measured against the REST edge lengths — the same law
+            // the kernel relaxes. iters=0 turns the pass into the pure-LBS
+            // control; iters=4 reads the matter-passed surface. The difference
+            // IS the pass's effect, on the engine's own numbers.
+            if (g_engine && g_engine->matter_readable()) {
+                float s_mean, s_max, rms; uint32_t below;
+                g_engine->matter_stats(s_mean, s_max, rms, below);
+                char b2[256];
+                snprintf(b2, sizeof(b2),
+                         "{\"ok\":true,\"stretch_mean_pct\":%.4f,\"stretch_max_pct\":%.4f,"
+                         "\"rms_err_pct\":%.4f,\"below_ground\":%u}",
+                         s_mean, s_max, rms, below);
+                body = b2;
+            } else {
+                body = "{\"ok\":false,\"error\":\"matter not readable (needs JNT2 + matter on)\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/frost_debug" && method == "POST") {
             // Bit-exactness snapshot: arms the debug write on the next dispatched
             // frame; returns [i32 * F*3 colors][i32 * F*14 kernel inputs].
