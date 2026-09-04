@@ -15,14 +15,31 @@
 //    crease verts scale theta differently (112 deg vs 62 deg about the same
 //    pivot) and the surface pulls apart. LBS blends TRANSFORMS instead:
 //
-//        v' = w_i * R(j, theta_j) * v   +   (1 - w_i) * R(p, theta_p) * v
+//        v' = w_i * F_own(v)   +   (1 - w_i) * F_parent-of-band(v)
 //
-//    where p = parent(j) (the FK map every pack now carries). At any angle
-//    the output is a convex combination of two rigid motions of the SAME
-//    rest point, so wherever w varies smoothly the surface stays connected —
-//    the crease folds instead of tearing. At theta_p = 0 this degenerates to
-//    clean 1-bone LBS (lerp of rest and posed); at rest (all thetas 0) both
-//    laws are exactly identity, so the rest pose is untouched by construction.
+//    where F is a COMPOSED FK WORLD FRAME (2026-09-04, the operator's
+//    fingertip conviction): shipped-first-draft blended two SINGLE-LEVEL
+//    rotations about independent pivots, so an ancestor's arc reached a deep
+//    band only diluted by (1-w) — bending the elbow left the hand behind and
+//    the skin stretched. The law of every rigged character: a joint's pose
+//    is the COMPOSITION of its whole FK chain, own rotation first, every
+//    level about its own FIXED REST pivot:
+//
+//        p' = R_own( R_parent( ... R_root( p ) ) )
+//
+//    accumulated root->own as an affine (M, T) with
+//        R_k = Rodrigues(a_k, theta_k),  t_k = J_k - R_k J_k,
+//        M <- R_k M,  T <- R_k T + t_k  per level.
+//    Term 2 is the same accumulation STOPPING BEFORE the band joint (the
+//    parent's world frame; identity when the band joint is parentless). At
+//    any angle the output is a convex combination of two rigid motions of
+//    the SAME rest point, so wherever w varies smoothly the surface stays
+//    connected — and now the ancestor motion is SHARED by both terms, so a
+//    vertex inherits 100% of every ancestor's arc plus its own blended arc.
+//    At rest (all thetas 0) every R_k is exactly I and t_k exactly 0, so the
+//    rest pose is bit-identical by construction.
+//    NOTE: chains deeper than 8 truncate (named boundary; this skeleton's
+//    deepest chain is 4: spine_lower -> shoulder -> elbow -> wrist).
 //
 // C1: WEIGHT-PAINT mode (pc.paint >= 0). Blender's weight-paint law: the
 // selected joint's band is colored by its own weight (blue 0 -> green ->
@@ -97,27 +114,37 @@ void main() {
             vout[i * 9 + kk * 3 + 2] = o.z;
         }
     } else {
-        // ── LBS (JNT2): blend the two RIGID transforms of this rest vertex.
-        int pj = parent[j];                          // -1 = no parent (root/central)
-        vec3 J2 = vec3(0.0); vec3 a2 = vec3(0.0, 1.0, 0.0); float th2 = 0.0;
-        if (pj >= 0) {
-            uint po = uint(pj) * 8u;
-            J2  = vec3(js[po + 0u], js[po + 1u], js[po + 2u]);
-            a2  = vec3(js[po + 3u], js[po + 4u], js[po + 5u]);
-            th2 = js[po + 7u];
+        // ── LBS (JNT2): blend the two COMPOSED world frames of this rest vert.
+        // Walk the FK chain root->own once; term 1 consumes the whole chain,
+        // term 2 stops before the band joint (the parent's frame).
+        int chain[8]; int depth = 0;
+        int cj = j;
+        while (cj >= 0 && depth < 8) { chain[depth++] = cj; cj = parent[cj]; }
+        mat3 M1 = mat3(1.0); vec3 T1 = vec3(0.0);
+        mat3 M2 = mat3(1.0); vec3 T2 = vec3(0.0);
+        for (int k = depth - 1; k >= 0; --k) {      // root first, own last
+            uint po = uint(chain[k]) * 8u;
+            vec3 Jk = vec3(js[po + 0u], js[po + 1u], js[po + 2u]);
+            vec3 ak = vec3(js[po + 3u], js[po + 4u], js[po + 5u]);
+            float tk = js[po + 7u];
+            float ck = cos(tk), sk = sin(tk);
+            // Rodrigues as a matrix: R = c I + (1-c) a a^T + s [a]x
+            mat3 Rk = ck * mat3(1.0)
+                    + (1.0 - ck) * outerProduct(ak, ak)
+                    + sk * mat3(vec3(0.0,  ak.z, -ak.y),
+                                vec3(-ak.z, 0.0,  ak.x),
+                                vec3( ak.y, -ak.x, 0.0));
+            vec3 off = Jk - Rk * Jk;                // the pivot's translation
+            T1 = Rk * T1 + off;  M1 = Rk * M1;
+            if (k > 0) { T2 = Rk * T2 + off;  M2 = Rk * M2; }
         }
-        float c1 = cos(th1), s1 = sin(th1);
-        float c2 = cos(th2), s2 = sin(th2);
         for (uint kk = 0; kk < 2; ++kk) {            // 0 = position, 1 = normal
-            vec3 base1 = (kk == 0) ? J1 : vec3(0.0);
-            vec3 base2 = (kk == 0) ? J2 : vec3(0.0);
             vec3 v = vec3(rest[i * 9 + kk * 3 + 0],
                           rest[i * 9 + kk * 3 + 1],
                           rest[i * 9 + kk * 3 + 2]);
-            // child-joint rigid motion about J1; parent rigid motion about J2
-            vec3 r1 = rodr(v - base1, a1, c1, s1, base1);
-            vec3 r2 = (pj >= 0) ? rodr(v - base2, a2, c2, s2, base2) : v;
-            vec3 o = wgt * r1 + (1.0 - wgt) * r2;    // the convex blend — the cure
+            vec3 r1 = M1 * v + T1;                  // band joint's world frame
+            vec3 r2 = M2 * v + T2;                  // parent's world frame
+            vec3 o = wgt * r1 + (1.0 - wgt) * r2;   // the convex blend — the cure
             vout[i * 9 + kk * 3 + 0] = o.x;
             vout[i * 9 + kk * 3 + 1] = o.y;
             vout[i * 9 + kk * 3 + 2] = o.z;

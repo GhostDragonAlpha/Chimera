@@ -2158,47 +2158,69 @@ void Engine::compute_strain_joints() {
     const float* rest = hinge_rest_.data();
     const float* st = static_cast<const float*>(j_state_map_);
 
-    // 1. pose the touched verts (compact domain: assign >= 0) — the EXACT LBS
-    // law of joints.comp's JNT2 branch, vertex for vertex:
-    //   o = wgt * R(J1, a1, th1) v  +  (1-wgt) * R(J2, a2, th2) v
-    // Two FULL rigid motions of the same rest point, convexly blended — the
-    // blend-of-transforms form, not angle scaling. (An earlier draft composed
-    // angle-scaled Rodrigues calls: the JNT1-shaped law, and at 125 deg it
-    // disagreed with the kernel by tens of degrees at the crease — a flooded,
-    // lying tint. The falsifier caught it; this is the correction.)
+    // 1. pose the touched verts (compact domain: assign >= 0) — the EXACT law
+    // of joints.comp's JNT2 branch, vertex for vertex (2026-09-04 composed-FK
+    // edition):
+    //   o = wgt * (M1 v + T1)  +  (1-wgt) * (M2 v + T2)
+    // where (M1,T1) is the band joint's COMPOSED world frame (own rotation
+    // first, then ancestors', every level about its own fixed rest pivot) and
+    // (M2,T2) the same accumulation stopping BEFORE the band joint. History:
+    // v1 composed angle-scaled Rodrigues calls (the JNT1 shape — flooded tint,
+    // caught by the falsifier); v2 blended two SINGLE-level rotations (deep
+    // bands inherited only (1-w) of an ancestor's arc — the operator saw
+    // stretched skin with frozen fingertips). This is the third and current
+    // law; the mirror and the kernel are one law, or the tint lies.
     for (size_t i = 0; i < nv; ++i) {
         const int j = j_assign_cpu_[i];
         if (j < 0) continue;                        // untouched stays posed_ = rest
-        const uint32_t jo = static_cast<uint32_t>(j) * 8u;
         const float w = j_w_cpu_[i];
-        const float th1 = st[jo + 7];               // FULL joint angle (no w scaling)
-        const int pj = (j < static_cast<int>(j_parents_.size())) ? j_parents_[j] : -1;
-        // (No early skip on zero angles: Rodrigues at th=0 is bit-exact rest,
-        // and skipping would leave the PREVIOUS frame's position in the scratch
-        // — phantom strain on every frame after a pose change. Always write.)
+        // the FK chain root->own (deepest chain on this skeleton: 4)
+        int chain[8]; int depth = 0;
+        for (int cj = j; cj >= 0 && depth < 8; ++depth) {
+            chain[depth] = cj;
+            cj = (cj < static_cast<int>(j_parents_.size())) ? j_parents_[cj] : -1;
+        }
+        float M1[9] = {1,0,0, 0,1,0, 0,0,1}, T1[3] = {0,0,0};
+        float M2[9] = {1,0,0, 0,1,0, 0,0,1}, T2[3] = {0,0,0};
+        // (No early skip on zero angles: identity composes to exact rest, and
+        // skipping would leave the PREVIOUS frame's position in the scratch —
+        // phantom strain. Always write.)
+        for (int k = depth - 1; k >= 0; --k) {      // root first, own last
+            const uint32_t o = static_cast<uint32_t>(chain[k]) * 8u;
+            const float th = st[o + 7];
+            const float Jv[3] = { st[o + 0], st[o + 1], st[o + 2] };
+            const float ax = st[o + 3], ay = st[o + 4], az = st[o + 5];
+            const float c = cosf(th), s = sinf(th), ic = 1.f - c;
+            const float R[9] = {                    // R = cI + (1-c) aaT + s [a]x
+                c + ic * ax * ax,     ic * ax * ay - s * az,  ic * ax * az + s * ay,
+                ic * ay * ax + s * az,  c + ic * ay * ay,     ic * ay * az - s * ax,
+                ic * az * ax - s * ay,  ic * az * ay + s * ax,  c + ic * az * az };
+            auto step = [&](float M[9], float T[3]) {
+                float nM[9], nT[3];
+                for (int r = 0; r < 3; ++r) {
+                    const float Rt0 = R[r * 3], Rt1 = R[r * 3 + 1], Rt2 = R[r * 3 + 2];
+                    nT[r] = Rt0 * T[0] + Rt1 * T[1] + Rt2 * T[2]
+                          + (Jv[r] - (Rt0 * Jv[0] + Rt1 * Jv[1] + Rt2 * Jv[2]));
+                    for (int cc = 0; cc < 3; ++cc)
+                        nM[r * 3 + cc] = Rt0 * M[cc] + Rt1 * M[3 + cc] + Rt2 * M[6 + cc];
+                }
+                for (int q = 0; q < 9; ++q) M[q] = nM[q];
+                T[0] = nT[0]; T[1] = nT[1]; T[2] = nT[2];
+            };
+            step(M1, T1);
+            if (k > 0) step(M2, T2);                // parent frame: stop before own
+        }
         const float* src = rest + i * 9;
         const float v0x = src[0], v0y = src[1], v0z = src[2];
-        auto rodr = [&](float th, uint32_t o, float& ox, float& oy, float& oz) {
-            const float Jx = st[o + 0], Jy = st[o + 1], Jz = st[o + 2];
-            const float ax = st[o + 3], ay = st[o + 4], az = st[o + 5];
-            const float c = cosf(th), s = sinf(th);
-            const float vx = v0x - Jx, vy = v0y - Jy, vz = v0z - Jz;
-            const float cx = ay * vz - az * vy, cy = az * vx - ax * vz, cz = ax * vy - ay * vx;
-            const float d = ax * vx + ay * vy + az * vz;
-            ox = vx * c + cx * s + ax * d * (1.f - c) + Jx;
-            oy = vy * c + cy * s + ay * d * (1.f - c) + Jy;
-            oz = vz * c + cz * s + az * d * (1.f - c) + Jz;
-        };
-        float r1x, r1y, r1z, r2x = v0x, r2y = v0y, r2z = v0z;
-        rodr(th1, jo, r1x, r1y, r1z);
-        // pj == -1 (root): the parent term is R(0) = identity — keep r2 = rest
-        // and SKIP the call (an unsigned (-1)*8 index was the OOB read that
-        // killed the first /strain-on frame; found by arithmetic, not debugger).
-        if (pj >= 0)
-            rodr(st[static_cast<uint32_t>(pj) * 8u + 7], static_cast<uint32_t>(pj) * 8u, r2x, r2y, r2z);
-        strain_posed_[strain_rank_[i] * 3 + 0] = w * r1x + (1.f - w) * r2x;
-        strain_posed_[strain_rank_[i] * 3 + 1] = w * r1y + (1.f - w) * r2y;
-        strain_posed_[strain_rank_[i] * 3 + 2] = w * r1z + (1.f - w) * r2z;
+        const float p1x = M1[0] * v0x + M1[1] * v0y + M1[2] * v0z + T1[0];
+        const float p1y = M1[3] * v0x + M1[4] * v0y + M1[5] * v0z + T1[1];
+        const float p1z = M1[6] * v0x + M1[7] * v0y + M1[8] * v0z + T1[2];
+        const float p2x = M2[0] * v0x + M2[1] * v0y + M2[2] * v0z + T2[0];
+        const float p2y = M2[3] * v0x + M2[4] * v0y + M2[5] * v0z + T2[1];
+        const float p2z = M2[6] * v0x + M2[7] * v0y + M2[8] * v0z + T2[2];
+        strain_posed_[strain_rank_[i] * 3 + 0] = w * p1x + (1.f - w) * p2x;
+        strain_posed_[strain_rank_[i] * 3 + 1] = w * p1y + (1.f - w) * p2y;
+        strain_posed_[strain_rank_[i] * 3 + 2] = w * p1z + (1.f - w) * p2z;
     }
 
     // 2+3. per-triangle area strain, scattered to touched verts by area weight

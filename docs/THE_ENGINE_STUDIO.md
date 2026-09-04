@@ -2211,3 +2211,41 @@ tibia direction; M conjugation exact) -> gate 7/7 PASS -> live POST -> /joints
 reports the exact measured stations -> rest strain A/B: 0 changed px
 (falsifier clean) -> elbow_L at 90: 9,536 tinted px in a 128-px crease band,
 nowhere else (positive control). Operator state restored (show owns, playing).
+
+## SHIPPED — COMPOSED-FK LBS: THE FINGERTIP MEMBRANE (2026-09-04)
+
+The operator's conviction, from the locked frame: bending shoulder/elbow
+stretched the rest of the membrane while fingertips stayed frozen — "only the
+joint is having any effect on the rest of the membranes."
+
+**Root cause (kernel archaeology, joints.comp):** shipped JNT2 blended two
+SINGLE-LEVEL rotations about independent pivots — a vertex saw only its own
+joint's arc plus (1-w) of its IMMEDIATE parent's. An ancestor's rotation
+reached deep bands only as the (1-w) residue of the one-level blend: hand
+verts (w=0.85 to the wrist) inherited ~15% of the elbow's arc and none of
+the shoulder's. The rest was stretch. Every rigged character law says a
+joint's pose is the COMPOSITION of its FK chain:
+
+    p' = R_own( R_parent( ... R_root( p ) ) )
+
+accumulated root->own as an affine (M, T): R_k = Rodrigues(a_k, th_k),
+t_k = J_k - R_k J_k, M <- R_k M, T <- R_k T + t_k. Term 1 = the band joint's
+full world frame; term 2 = the same accumulation STOPPING BEFORE the band
+joint (the parent's frame; identity when parentless). Ancestor motion is now
+SHARED by both blend terms — a vertex inherits 100% of every ancestor's arc
+plus its own blended arc. Convexity (the tear cure) is preserved: still a
+lerp of two rigid motions of the same rest point. Normals ride the rotation
+parts (kk=1). At all-zero thetas every R_k is exactly I — rest bit-identity
+by construction. Chains deeper than 8 truncate (named boundary; deepest here
+is 4). The CPU strain mirror (compute_strain_joints) was rewritten to the
+same composition — v3, after v1 (angle-scaled, the flooded-tint lie) and v2
+(single-level, the stretch lie); the mirror and the kernel are ONE law.
+
+**Verification on the operator's locked frame (camera untouched, elbow_L=90
+preserved):** shoulder_L 0->60 moves 24,057 px, of which 13,515 (56%) land
+inside the hand region (projected wrist +-110 px) — under the old law that
+region moved ~15% of the arc and read frozen. Tint at the crease: 17,438 px,
+10,630 of them in the crease band (y 600-720), tapering to a 696-px tail —
+crease-localized, not flooded. Small-angle control: elbow at 2 deg tints 695
+px (the x10 magnifier's floor at the sharpest gradient) — monotone response,
+no flood. Rest pose: all thetas zero on boot, identity holds by construction.
