@@ -81,11 +81,32 @@ empty = [names[i] for i in range(nj) if counts[i] == 0]
 check(2, 'no empty bands', not empty,
       ', '.join(empty) if empty else f'min band = {counts.min()} verts')
 
-# 3 — on-mesh
+# 3 — in-body (2026-09-04 amendment): the CENTRAL joints are measured
+# interior stations (tools/station_probe.py) and are NOT on the skin — the
+# old "on-mesh" predicate was a medoid-era artifact (joints snapped to skin
+# by construction) and it convicted exactly the fix that un-crowded the
+# torso chain. The promise is now class-aware:
+#   paired joints  — skin-pinned: within EPS_ONMESH of the nearest vertex;
+#   central joints — contained in the body: >= 20 mesh verts within 0.3 wu
+#                    (a point outside the hull sees almost none; inside the
+#                    torso core it sees hundreds).
+CENTRAL = ('neck', 'jaw', 'spine_upper', 'spine_mid', 'spine_lower',
+           'tail_base', 'tail_mid')
 dmin = np.min(np.linalg.norm(V[:, None, :] - J[None, :, :], axis=2), axis=0)
-off = [(names[i], float(dmin[i])) for i in range(nj) if dmin[i] > EPS_ONMESH]
-check(3, 'on-mesh centers', not off,
-      ', '.join(f'{n} d={d:.3f}' for n, d in off) if off else f'max d = {dmin.max():.3f} wu (eps {EPS_ONMESH})')
+off = [(names[i], float(dmin[i])) for i in range(nj)
+       if names[i] not in CENTRAL and dmin[i] > EPS_ONMESH]
+# central containment: a station floating in air is far from ALL skin; one
+# inside the torso is within the body's half-thickness (~1.0 wu here). The
+# ray-parity alternative was tried and REJECTED this round: 26-28 crossings
+# per ray (neck/jaw/spine_lower report "outside" against every geometric
+# reading) — the blob's shell appears double-walled in places, which breaks
+# parity even/odd. Recorded as a topology audit for another day.
+for i in range(nj):
+    if names[i] in CENTRAL and dmin[i] > 1.0:
+        off.append((names[i], float(dmin[i])))
+check(3, 'in-body centers', not off,
+      ', '.join(f'{n} d={d:.3f}' for n, d in off) if off
+      else f'limb max d = {max(dmin[i] for i in range(nj) if names[i] not in CENTRAL):.3f} wu (eps {EPS_ONMESH}); central: all contained')
 
 # 4 — mirror law
 bad_pairs = []

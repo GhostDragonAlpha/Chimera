@@ -2171,3 +2171,43 @@ blank backtick glyph.
   "joint k/N" form returns with the show. VERIFIED live: hud_rows = ["EDIT elbow_L
   theta +0.00 deg ROM [-145.0 .. 125.0]"] while the show was paused and the elbow owned.
 - Operator state restored after verification: selection cleared, show playing.
+
+## SHIPPED — THE MEASURED-STATION RIG (2026-09-04)
+
+The viewport tags' first conviction: the operator read the per-joint chips and
+reported neck, jaw, spine_upper/mid/lower, and both ankles "too high" (lower
+spine "too high" reading = the whole chain crowded above the shoulder line —
+there was no lumbar joint at all: old seeds 7.71/6.86/5.68 vs shoulder 5.89).
+
+**The measurement (tools/station_probe.py)** — stations re-derived from the
+mesh's own anatomy, not re-guessed: neck := the skull-base flare (neck-tube
+width min 0.52 at y 7.46; head z-extent jump 0.54->1.82 at 7.52 — the old
+seed 8.37 was INSIDE the head); jaw := the mouth-valley crease (front-face
+x-extent collapse 1.5->0.34 at y 8.26; old 9.05 was near the crown);
+spine_upper/mid/lower := withers / girdle midpoint / pelvis (5.89/4.66/3.42 —
+the girdles ARE the operator-approved shoulder/hip lines); ankle := the
+tarsal break (foot flare ends y 0.35; old 1.17 was mid-shank). CONSEQUENCE,
+not a pick: femur 1.51 ≈ tibia 1.57 — the leg segments became equal.
+
+**Two laws had to be amended to accept their own fix:**
+1. THE CENTRAL-STATION LAW (factory): central joints no longer medoid-snap.
+   The snap drags interior anchors onto the nearest SKIN patch (first refit
+   came back snap_d 0.576 — the disease itself). Stations are the authority:
+   x=0 (axis law), y/z = measured (z = tail-robust slice median; the plain
+   mean was poisoned by the hanging tail). Paired joints keep the medoid —
+   on thin limbs skin IS the joint (ankle snap_d 0.076).
+2. GATE CHECK 3 (rig_gate.py): "on-mesh centers" was a medoid-era artifact
+   that convicted exactly the fix. The promise is class-aware now: paired
+   joints skin-pinned (eps 0.3 — limb max d = 0.000, every limb joint is
+   exactly a mesh vertex), centrals within 1.0 wu of skin (half-thickness).
+   Ray-parity containment was tried and REJECTED this round: 26-28 crossings
+   per ray even where the station is geometrically mid-tube — the blob is
+   double-walled in places and parity even/odd is meaningless on it. Blob
+   topology audit = named future work. (Blob layout settled: 24-B header,
+   N*36 verts, then tris — the second header uint32 is NOT the tri count.)
+
+**Verification:** referee ALL PASS (knee stop re-measured 152 on the new
+tibia direction; M conjugation exact) -> gate 7/7 PASS -> live POST -> /joints
+reports the exact measured stations -> rest strain A/B: 0 changed px
+(falsifier clean) -> elbow_L at 90: 9,536 tinted px in a 128-px crease band,
+nowhere else (positive control). Operator state restored (show owns, playing).

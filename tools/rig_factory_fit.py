@@ -61,11 +61,22 @@ print(f'canonical frame: {N} verts (engine order, mesh_bin.blob)')
 # about x-hat acts only in y-z, so the sagittal AXIS table and the ROM stops
 # are mirror-invariant — no re-derivation, the same numbers serve both sides.
 L_landmarks = {
-    'neck':        (0.0260, 8.3711, 0.6614),
-    'jaw':         (0.1843, 9.0493, 0.3625),
-    'spine_upper': (0.0260, 7.7121, 0.0140),
-    'spine_mid':   (0.0260, 6.8580, -0.1195),
-    'spine_lower': (0.0260, 5.6824, 0.0874),
+    # STATIONS re-derived from the mesh's own anatomy (tools/station_probe.py,
+    # 2026-09-04 — the operator's viewport-tag audit convicted six seeds as
+    # "too high"): neck := the skull-base flare (neck-tube width minimum 0.52
+    # at y 7.46, head z-extent jump 0.54->1.82 at 7.52; the old seed sat
+    # INSIDE the head at 8.37; z seed moved to the column line, tube cz ~ 0).
+    # jaw := the mouth-valley crease (front-face x-extent collapse 1.5->0.34
+    # at y 8.26; the old seed 9.05 was near the crown). spine_upper/mid/
+    # lower := withers / girdle midpoint / pelvis — the two girdles ARE the
+    # operator-approved shoulder (5.89) and hip (3.42) lines; the old seeds
+    # (7.71/6.86/5.68) crowded the whole chain above the shoulder line,
+    # leaving no lumbar joint at all.
+    'neck':        (0.0260, 7.4600, 0.0000),
+    'jaw':         (0.1843, 8.2600, 0.3625),
+    'spine_upper': (0.0260, 5.8900, 0.0140),
+    'spine_mid':   (0.0260, 4.6600, -0.1195),
+    'spine_lower': (0.0260, 3.4200, 0.0874),
     'tail_base':   (0.0260, 3.9607, -0.7033),
     'tail_mid':    (0.0260, 3.9497, -1.8190),
     'shoulder_L':  (0.9975, 6.0733, -0.0677),
@@ -73,7 +84,10 @@ L_landmarks = {
     'wrist_L':     (2.3269, 4.1482, -0.1016),
     'hip_L':       (0.4727, 3.1696, 0.1627),
     'knee_L':      (0.4937, 1.7670, 0.1299),
-    'ankle_L':     (0.5132, 1.1693, 0.0325),
+    # ankle := the tarsal break (the foot flare ends at y 0.35; the old seed
+    # 1.17 was mid-shank) — which also makes the leg segments EQUAL: femur
+    # 3.42->1.90 = 1.52, tibia 1.90->0.38 = 1.52.
+    'ankle_L':     (0.5132, 0.3800, 0.0325),
 }
 # ROMs: central = measured stops (anchors were on the axis); pairs take L on
 # both sides (the R stops were folded from off-frame anchors — retired).
@@ -129,6 +143,26 @@ J = {}
 snap = {}
 for name, lm in L_landmarks.items():
     J[name], snap[name] = medoid_snap(lm)
+# THE CENTRAL-STATION LAW (2026-09-04): the CENTRAL joints do not medoid-snap.
+# The snap pulls an interior anchor onto the nearest SKIN patch (dorsal side),
+# which is exactly the "too high" disease the operator's tag audit convicted:
+# the first refit after the station patch returned snap_d 0.576 (spine_upper)
+# and 0.441 (jaw), y dragged +0.24 off the measured stations. The station
+# probe is the authority instead: x=0 (axis law), y=the measured station,
+# z=the tail-robust median of the torso-core slice at that height (the plain
+# mean is poisoned by the hanging tail; the head slice needs no cut). Paired
+# (limb) joints KEEP the medoid — on thin limbs skin IS the joint (ankle
+# snap_d 0.076), and their R twins are exact mirrors either way.
+STATION_J = {
+    'neck':        (7.46,  0.004),   # skull-base flare; tube center
+    'jaw':         (8.26,  0.981),   # mouth-valley crease; head-slice median
+    'spine_upper': (5.89, -0.168),   # withers (= the shoulder-girdle line)
+    'spine_mid':   (4.66,  0.248),   # girdle midpoint (lumbar)
+    'spine_lower': (3.42,  0.116),   # pelvis (= the hip-girdle line)
+}
+for _cn, (_sy, _sz) in STATION_J.items():
+    J[_cn] = np.array([0.0, _sy, _sz])
+    snap[_cn] = 0.0                    # exact by construction, not fit distance
 # THE AXIS LAW: CENTRAL joints ride the mirror axis (x := 0). The medoid
 # snaps drift off-axis because the mesh itself is asymmetric (x up to 0.20);
 # a spine that is not on the axis breaks the mirror conjugation for every
