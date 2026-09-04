@@ -1309,7 +1309,11 @@ bool Engine::create_triangle_pipeline() {
     ras.depthClampEnable    = VK_FALSE;
     ras.rasterizerDiscardEnable = VK_FALSE;
     ras.polygonMode         = VK_POLYGON_MODE_FILL;
-    ras.cullMode            = VK_CULL_MODE_NONE;
+    ras.cullMode            = VK_CULL_MODE_BACK_BIT;   // THE Z-FIGHT CURE (2026-09-03): birth mesh
+                                                            // winding is MEASURED consistent (every directed
+                                                            // edge exactly once; signed vol +13.8) — culling
+                                                            // halves the rasterized layers, so the 882
+                                                            // coincident opposite-facing pairs can never fight
     ras.frontFace           = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     ras.depthBiasEnable     = VK_FALSE;
     ras.lineWidth           = 1.0f;
@@ -1515,7 +1519,40 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     size_t nbad = 0;
     for (size_t v = 0; v < nv; ++v)
         if (nrm_bad(clean.data() + v * 9 + 3)) { bad[v] = 1; ++nbad; }
-    if (nbad > 0) {
+    // THE DEVIANCY EXTENSION (2026-09-03, the light-locked mottling): a vertex
+    // whose stored normal points OPPOSITE to its own faces' winding-consistent
+    // area-weighted average (dot < 0) is a folded-layer crease — the skin-wrap
+    // scrambled the direction. Measured: the crease speckle moves WITH a light
+    // flip (15% stable overlap across key left/right), i.e. shading noise from
+    // these normals, not depth fighting; backface culling killed only the thin
+    // true-z-fight slice. Sharp-but-sane creases (dot >= 0) keep their stored
+    // normals — healthy vertices stay bit-identical.
+    size_t ndev = 0;
+    {
+        std::vector<float> facc(nv * 3, 0.0f);
+        for (size_t t = 0; t + 2 < indices.size(); t += 3) {
+            uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
+            if ((size_t)ia >= nv || (size_t)ib >= nv || (size_t)ic >= nv) continue;
+            const float* A = clean.data() + (size_t)ia * 9;
+            const float* B = clean.data() + (size_t)ib * 9;
+            const float* C = clean.data() + (size_t)ic * 9;
+            float ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
+            float wx = C[0] - A[0], wy = C[1] - A[1], wz = C[2] - A[2];
+            float fx = uy * wz - uz * wy, fy = uz * wx - ux * wz, fz = ux * wy - uy * wx;
+            facc[(size_t)ia * 3 + 0] += fx; facc[(size_t)ia * 3 + 1] += fy; facc[(size_t)ia * 3 + 2] += fz;
+            facc[(size_t)ib * 3 + 0] += fx; facc[(size_t)ib * 3 + 1] += fy; facc[(size_t)ib * 3 + 2] += fz;
+            facc[(size_t)ic * 3 + 0] += fx; facc[(size_t)ic * 3 + 1] += fy; facc[(size_t)ic * 3 + 2] += fz;
+        }
+        for (size_t v = 0; v < nv; ++v) {
+            if (bad[v]) continue;
+            const float* n = clean.data() + v * 9 + 3;
+            float fl = sqrtf(facc[v * 3] * facc[v * 3] + facc[v * 3 + 1] * facc[v * 3 + 1] + facc[v * 3 + 2] * facc[v * 3 + 2]);
+            if (fl < 1e-12f) continue;
+            float dot = n[0] * facc[v * 3] + n[1] * facc[v * 3 + 1] + n[2] * facc[v * 3 + 2];
+            if (dot < 0.0f) { bad[v] = 1; ++ndev; }
+        }
+    }
+    if (nbad > 0 || ndev > 0) {
         std::vector<float> acc(nv * 3, 0.0f);
         for (size_t t = 0; t + 2 < indices.size(); t += 3) {
             uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
@@ -1544,7 +1581,7 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
                 clean[v * 9 + 3] = 0.0f; clean[v * 9 + 4] = 1.0f; clean[v * 9 + 5] = 0.0f;
             }
         }
-        fprintf(stderr, "[load_mesh] normal hygiene: repaired %zu/%zu verts\n", nbad, nv);
+        fprintf(stderr, "[load_mesh] normal hygiene: repaired %zu/%zu verts (%zu broken + %zu deviant)\n", nbad + ndev, nv, nbad, ndev);
     }
     // Vertex buffer: DEVICE_LOCAL (the hot path must stay in VRAM — a host-visible
     // buffer cost ~6 ms/frame of PCIe traffic when the GPU hinge kernel wrote it).

@@ -1804,3 +1804,24 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   zero-area eviction (206), width<1/4px sub-sample collapse (268 here). Any future mesh
   with real degeneracy dies at load with three log lines. FPS falsifier: NOT OBSERVED
   (299.3 present-capped). QUEUED at the mesher: crease skin-layer separation (root cure).
+
+## 2026-09-03 — Backface culling on the tri lane + the mottling inquest (measured)
+- AUDIT: birth mesh winding is PERFECTLY consistent (every directed edge exactly once —
+  the manifold law; signed volume +13.8; 0 non-manifold edges) — the old splat-era comment
+  "winding kept unordered by intent" was falsified. 882 near-coincident OPPOSITE-facing
+  pairs (<5e-4 wu) found at creases: the z-fight fuel; both layers rasterized because the
+  tri pipeline ran CULL_MODE_NONE with a positive-Y viewport.
+- CURE 1: CULL_MODE_BACK_BIT on the tri pipeline (one line, frontFace CCW held). MEASURED:
+  body renders right-side-out (bbox identical, 123,331 warm px), mottling speckle 766->726
+  px, all back-face bright pins dead. FPS falsifier: not observed (299 / 0.37 ms).
+- CLASSIFIER: light-flip test (key left vs right, camera fixed) — crease speckle overlap
+  only 15%, mass moves WITH the light: LIGHT-LOCKED shading noise, not depth fighting.
+  Corollary: backface culling cannot kill the bulk; it lives in the folded-layer geometry.
+- CURE 2 (guard): load-gate normal deviancy repair — stored normal opposing its own
+  winding-consistent face average (dot<0) is rebuilt as that average. On THIS mesh: 0
+  deviant, frames bit-identical (measured no-op; stored normals already sane). Kept: future
+  meshes with scrambled normals self-heal at load. Normal side == cull side by construction.
+- THE EYE (gsq-rco, non-leading SHIP/HOLD): silhouette clean, shadow correct, "acceptable
+  low-poly clay shading"; HOLD on: neck speckle ring (mesher-side, standing item), HOT FOOT
+  HIGHLIGHTS (up-facing normals saturating under key+fill+hemisphere), flat shadow flank.
+  QUEUED: foot-highlight clamp membrane; crease skin-layer separation at the mesher.
