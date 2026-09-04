@@ -1880,3 +1880,6 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   outer pool at 28-36 (2.10M px), horizon glow survives, body untouched (122,796 px),
   FPS 296/0.37ms. DYAD VERDICT PENDING: the eye's endpoint returned 400 on every image
   request (minimal prompt too) at 20:5x — server-side; pixel verdicts carried the ship.
+- VERDICT (eye recovered, gsq-rco): "separates cleanly... nothing floats... darkening
+  right — subtle rather than dramatic... VERDICT: SHIP." Minor notes: faint straight
+  horizon seam (quad edge vs sky) + the standing neck pixel. Seam cure queued.
